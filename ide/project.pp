@@ -171,6 +171,7 @@ type
     FUnitInfo: TUnitInfo;
     procedure SetEditorComponent(const AValue: TSourceEditorInterface);
   private
+    FIsLocked: Boolean;
     FIsVisibleTab: Boolean;
     FPageIndex: integer;
     FWindowIndex: integer;
@@ -200,6 +201,7 @@ type
     property TopLine: Integer read FTopLine write FTopLine;
     property CursorPos: TPoint read FCursorPos write FCursorPos;
     property FoldState: String read FFoldState write FFoldState;
+    property IsLocked: Boolean read FIsLocked  write FIsLocked;
     property CustomHighlighter: Boolean read FCustomHighlighter write FCustomHighlighter; // SetCustomHighlighter
     property SyntaxHighlighter: TLazSyntaxHighlighter read FSyntaxHighlighter write FSyntaxHighlighter; // SetSyntaxHighlighter
   end;
@@ -1093,6 +1095,7 @@ begin
     FEditorComponent := AValue;
     UnitInfo.FEditorInfoList.MakeUnUsedEditorInfo(Self);
     PageIndex := -1; // calls UnitInfo.UpdatePageIndex
+    IsLocked := False;
   end
   else begin
     PageIndex := -1;
@@ -1166,6 +1169,7 @@ begin
   CursorPos := Point(XMLConfig.GetValue(Path+'CursorPos/X',-1),
                      XMLConfig.GetValue(Path+'CursorPos/Y',-1));
   FFoldState := XMLConfig.GetValue(Path+'FoldState/Value', '');
+  FIsLocked := XMLConfig.GetValue(Path+'IsLocked/Value', False);
   FSyntaxHighlighter := StrToLazSyntaxHighlighter(
   XMLConfig.GetValue(Path+'SyntaxHighlighter/Value',
                      LazSyntaxHighlighterNames[UnitInfo.DefaultSyntaxHighlighter]));
@@ -1179,6 +1183,7 @@ begin
     XMLConfig.SetDeleteValue(Path+'TopLine/Value', FTopLine, -1);
     XMLConfig.SetDeleteValue(Path+'CursorPos/X', FCursorPos.X, -1);
     XMLConfig.SetDeleteValue(Path+'CursorPos/Y', FCursorPos.Y, -1);
+    XMLConfig.SetDeleteValue(Path+'IsLocked/Value', FIsLocked, False);
     XMLConfig.SetDeleteValue(Path+'FoldState/Value', FoldState, '');
     XMLConfig.SetDeleteValue(Path+'SyntaxHighlighter/Value',
                              LazSyntaxHighlighterNames[fSyntaxHighlighter],

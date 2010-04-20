@@ -220,6 +220,8 @@ const
   ecGotoEditor9             = ecGotoEditor8 + 1;
   ecGotoEditor0             = ecGotoEditor9 + 1;
 
+  ecLockEditor              = ecFirstLazarus + 370;
+
   // marker
   ecSetFreeBookmark         = ecFirstLazarus + 381;
   ecPrevBookmark            = ecFirstLazarus + 382;

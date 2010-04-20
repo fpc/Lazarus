@@ -809,6 +809,9 @@ type
        ): string; override;
     procedure MarkUnitsModifiedUsingSubComponent(SubComponent: TComponent);
 
+    function GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
+      ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
+
     // project(s)
     procedure DoLoadDefaultCompilerOptions(AProject: TProject);
     function DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult; override;
@@ -7692,7 +7695,10 @@ begin
       //DebugLn(['TMainIDE.DoOpenFileInSourceEditor NewCaretXY=',dbgs(NewCaretXY),' NewTopLine=',NewTopLine]);
     end;
 
+    NewSrcEdit.IsLocked := AnEditorInfo.IsLocked;
     AnEditorInfo.EditorComponent := NewSrcEdit;
+    if (not (ofProjectLoading in Flags)) then
+      OnSrcNotebookEditorVisibleChanged(NewSrcEdit.SourceNotebook);
     //debugln(['TMainIDE.DoOpenFileInSourceEditor ',AnUnitInfo.Filename,' ',AnUnitInfo.EditorIndex]);
 
     // restore source editor settings
@@ -7722,8 +7728,8 @@ begin
 
   // update statusbar and focus editor
   if (not (ofProjectLoading in Flags)) then begin
-    SrcNotebook.ShowOnTop;
-    SrcNotebook.FocusEditor;
+    SourceEditorManager.ActiveEditor := NewSrcEdit;
+    SourceEditorManager.ShowActiveWindowOnTop(True);
   end;
   SrcNoteBook.UpdateStatusBar;
   SrcNotebook.BringToFront;
@@ -7853,6 +7859,7 @@ begin
     MainIDEBar.itmFileCloseAll.Enabled:=True;
     NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.EditorInfo[0].SyntaxHighlighter;
     NewUnitInfo.GetClosedOrNewEditorInfo.EditorComponent := NewSrcEdit;
+    OnSrcNotebookEditorVisibleChanged(NewSrcEdit.SourceNotebook);
 
     // create component
     AncestorType:=NewFileDescriptor.ResourceClass;
@@ -9029,6 +9036,51 @@ begin
     end;
   end;
   UnitList.Free;
+end;
+
+function TMainIDE.GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
+  ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
+var
+  i: Integer;
+begin
+  Result := nil;
+  if AnUnitInfo.OpenEditorInfoCount = 0 then
+    exit;
+  // find caret on screen, rather than last focused
+  i := 0;
+  while (i < AnUnitInfo.OpenEditorInfoCount) do begin
+    Result := AnUnitInfo.OpenEditorInfo[i];
+    if TSourceEditor(Result.EditorComponent).IsCaretOnScreen(ACaretPoint,
+                       not TSourceEditor(Result.EditorComponent).IsLocked)
+    or (TSourceEditor(Result.EditorComponent).TopLine = WantedTopLine)
+    then
+      exit;
+    inc(i);
+  end;
+  // find unlocked
+  i := 0;
+  while (i < AnUnitInfo.OpenEditorInfoCount) do begin
+    Result := AnUnitInfo.OpenEditorInfo[i];
+    if (not TSourceEditor(Result.EditorComponent).IsLocked) or
+       TSourceEditor(Result.EditorComponent).IsCaretOnScreen(ACaretPoint)
+    then
+      exit;
+    inc(i);
+  end;
+  // open new copy
+  i := 0;
+  if AnUnitInfo.OpenEditorInfoCount > 0 then
+    while (i < SourceEditorManager.SourceWindowCount) and
+          (SourceEditorManager.SourceWindowByLastFocused[i].IndexOfEditorInShareWith
+             (TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent)) >= 0)
+    do
+      inc(i);
+  if i < SourceEditorManager.SourceWindowCount then
+    i := SourceEditorManager.IndexOfSourceWindow(SourceEditorManager.SourceWindowByLastFocused[i]);
+  if DoOpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo, -1, i, []) = mrOk then
+    Result := AnUnitInfo.OpenEditorInfo[0]
+  else
+    Result := nil;
 end;
 
 function TMainIDE.LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
@@ -12363,9 +12415,10 @@ var
   AFileName: string;
   SearchedFilename: string;
   LogCaretXY: TPoint;
-  TopLine: integer;
   OpenFlags: TOpenFlags;
   SrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+  AnEditorInfo: TUnitEditorInfo;
 begin
   Result:=false;
   if pos('(',SearchResultsView.GetSelectedText) > 0 then
@@ -12382,21 +12435,28 @@ begin
     end;
     if SearchedFilename<>'' then begin
       // open the file in the source editor
-      Result:=(DoOpenEditorFile(SearchedFilename,-1,-1,OpenFlags)=mrOk);
+      AnUnitInfo := Project1.UnitInfoWithFilename(SearchedFilename);
+      AnEditorInfo := nil;
+      if AnUnitInfo <> nil then
+        AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, LogCaretXY);
+      if AnEditorInfo <> nil then begin
+        SourceEditorManager.ActiveEditor := TSourceEditor(AnEditorInfo.EditorComponent);
+        Result := True;
+      end else
+        Result:=(DoOpenEditorFile(SearchedFilename,-1,-1,OpenFlags)=mrOk);
       if Result then begin
         // set caret position
         SourceEditorManager.AddJumpPointClicked(Self);
         SrcEdit:=SourceEditorManager.ActiveEditor;
         if LogCaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
           LogCaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
-        TopLine:=LogCaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
-        if TopLine<1 then TopLine:=1;
         if FocusEditor then begin
           SearchResultsView.ShowOnTop;
           SourceEditorManager.ShowActiveWindowOnTop(True);
         end;
         SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
-        SrcEdit.EditorComponent.TopLine:=TopLine;
+        if not SrcEdit.IsLocked then
+          SrcEdit.CenterCursor(True);
         with SrcEdit.EditorComponent do begin
           LeftChar:= Math.Max(LogCaretXY.X-CharsInWindow,1);
         end;
@@ -13638,7 +13698,7 @@ function TMainIDE.DoJumpToCodePos(
   AddJumpPoint: boolean; FocusEditor: boolean; MarkLine: Boolean): TModalResult;
 var
   NewSrcEdit: TSourceEditor;
-  LinesInWin, MinLines, CurTopLine: Integer;
+  AnEditorInfo: TUnitEditorInfo;
 begin
   Result:=mrCancel;
   if NewSource=nil then begin
@@ -13661,7 +13721,16 @@ begin
   if (ActiveUnitInfo = nil) or (NewSource<>ActiveUnitInfo.Source)
   then begin
     // jump to other file -> open it
-    Result:=DoOpenEditorFile(NewSource.Filename,-1,-1,[ofOnlyIfExists,ofRegularFile]);
+    ActiveUnitInfo := Project1.UnitInfoWithFilename(NewSource.Filename);
+    AnEditorInfo := nil;
+    if ActiveUnitInfo <> nil then
+      AnEditorInfo := GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), NewTopLine);
+    if AnEditorInfo <> nil then begin
+      SourceEditorManager.ActiveEditor := TSourceEditor(AnEditorInfo.EditorComponent);
+      Result := mrOK;
+    end
+    else
+      Result:=DoOpenEditorFile(NewSource.Filename,-1,-1,[ofOnlyIfExists,ofRegularFile]);
     if Result<>mrOk then begin
       UpdateSourceNames;
       exit;
@@ -13669,31 +13738,26 @@ begin
     NewSrcEdit := SourceEditorManager.ActiveEditor;
   end
   else begin
-    NewSrcEdit:=ActiveSrcEdit;
+    AnEditorInfo := GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), NewTopLine);
+    if AnEditorInfo <> nil then begin
+      NewSrcEdit := TSourceEditor(AnEditorInfo.EditorComponent);
+      SourceEditorManager.ActiveEditor := NewSrcEdit;
+    end
+    else
+      NewSrcEdit:=ActiveSrcEdit;
   end;
   if NewX<1 then NewX:=1;
   if NewY<1 then NewY:=1;
-  if NewTopLine<1 then begin
-    CurTopLine := NewSrcEdit.EditorComponent.TopLine;
-    LinesInWin := NewSrcEdit.EditorComponent.LinesInWindow;
-    MinLines := Min(Max(LinesInWin div 5, 2), LinesInWin div 3);
-    if (NewY <= CurTopLine) or (NewY >= CurTopLine + LinesInWin)
-    then
-      NewTopLine := Max(1, NewY - (LinesInWin div 2))
-    else
-    if NewY < CurTopLine + MinLines then
-      NewTopLine := Max(1, NewY - MinLines)
-    else
-    if NewY > CurTopLine + LinesInWin - MinLines then
-      NewTopLine := Max(1, NewY - LinesInWin + MinLines)
-    else
-      NewTopLine := CurTopLine;
-  end;
   //debugln(['[TMainIDE.DoJumpToCodePos] ',NewX,',',NewY,',',NewTopLine]);
   with NewSrcEdit.EditorComponent do 
   begin
     MoveLogicalCaretIgnoreEOL(Point(NewX,NewY));
-    TopLine:=NewTopLine;
+    if not NewSrcEdit.IsLocked then begin
+      if NewTopLine < 1 then
+        NewSrcEdit.CenterCursor(True)
+      else
+        TopLine:=NewTopLine;
+    end;
     //DebugLn('TMainIDE.DoJumpToCodePos NewY=',dbgs(NewY),' ',dbgs(TopLine),' ',dbgs(NewTopLine));
     LeftChar:=Max(NewX-CharsInWindow,1);
   end;
@@ -14641,14 +14705,24 @@ var
   function GetSrcEdit(AMark: TProjectBookmark): TSourceEditor;
   var
     UInf: TUnitInfo;
-    i: Integer;
+    i, j: Integer;
   begin
     if AMark.UnitInfo is TSourceEditor
     then Result := TSourceEditor(AMark.UnitInfo)
     else begin        // find the nearest open View
       UInf := TUnitInfo(AMark.UnitInfo);
       Result := TSourceEditor(UInf.OpenEditorInfo[0].EditorComponent);
-      for i := 1 to UInf.OpenEditorInfoCount - 1 do
+      j := 0;
+      while (j < UInf.OpenEditorInfoCount) and
+            (Result.IsLocked) and (not Result.IsCaretOnScreen(AMark.CursorPos))
+      do begin
+        inc(j);
+        if j < UInf.OpenEditorInfoCount then
+          Result := TSourceEditor(UInf.OpenEditorInfo[j].EditorComponent);
+      end;
+      if j >= UInf.OpenEditorInfoCount then
+        exit(nil);
+      for i := j + 1 to UInf.OpenEditorInfoCount - 1 do
       begin
         if (not Backward) and
            (GetWinForEdit(Result) > GetWinForEdit(TSourceEditor(UInf.OpenEditorInfo[i].EditorComponent)) )
@@ -14697,6 +14771,7 @@ var
   i: Integer;
   CurPos, CurFound: TProjectBookmark;
   AnUnitInfo: TUnitInfo;
+  AnEditorInfo: TUnitEditorInfo;
 begin
   if ID < 0 then begin
     // ID < 0  => next/prev
@@ -14713,7 +14788,8 @@ begin
       CurFound := nil;
     i := 0;
       while (i < Project1.Bookmarks.Count) and
-            (CompareBookmarkEditorPos(CurPos, Project1.Bookmarks[i]) = 0)
+            ( (GetSrcEdit(Project1.Bookmarks[i]) = nil) or
+              (CompareBookmarkEditorPos(CurPos, Project1.Bookmarks[i]) = 0) )
       do
         inc(i);
       if i >= Project1.Bookmarks.Count then
@@ -14722,15 +14798,17 @@ begin
       CurFound := Project1.Bookmarks[i];
       inc(i);
       while (i < Project1.Bookmarks.Count) do begin
-        if (CompareBookmarkEditorPos(CurPos, Project1.Bookmarks[i]) <> 0) then begin
-          if (not Backward) and
-             (CompareBookmarkEditorPos(Project1.Bookmarks[i], CurFound) > 0)
-          then
-            CurFound := Project1.Bookmarks[i];
-          if (Backward) and
-             (CompareBookmarkEditorPos(Project1.Bookmarks[i], CurFound) < 0)
-          then
-            CurFound := Project1.Bookmarks[i];
+        if (GetSrcEdit(Project1.Bookmarks[i]) <> nil) then begin
+          if (CompareBookmarkEditorPos(CurPos, Project1.Bookmarks[i]) <> 0) then begin
+            if (not Backward) and
+               (CompareBookmarkEditorPos(Project1.Bookmarks[i], CurFound) > 0)
+            then
+              CurFound := Project1.Bookmarks[i];
+            if (Backward) and
+               (CompareBookmarkEditorPos(Project1.Bookmarks[i], CurFound) < 0)
+            then
+              CurFound := Project1.Bookmarks[i];
+          end;
         end;
         inc(i);
       end;
@@ -14744,17 +14822,22 @@ begin
     AnEditor := GetSrcEdit(CurFound);
   end
   else begin
-  AnEditor := nil;
-  AnUnitInfo := TUnitInfo(Project1.Bookmarks.UnitInfoForBookmarkWithIndex(ID));
-  if (AnUnitInfo <> nil) and (AnUnitInfo.OpenEditorInfoCount > 0) then
-    AnEditor := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
-  if AnEditor = nil then exit;
+    AnEditor := nil;
+    AnUnitInfo := TUnitInfo(Project1.Bookmarks.UnitInfoForBookmarkWithIndex(ID));
+    AnEditorInfo := nil;
+    if (AnUnitInfo <> nil) and (AnUnitInfo.OpenEditorInfoCount > 0) then
+      AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo,
+                        Project1.Bookmarks.BookmarkWithID(ID).CursorPos);
+    if AnEditorInfo <> nil then
+      AnEditor := TSourceEditor(AnEditorInfo.EditorComponent);
+    if AnEditor = nil then exit;
   end;
 
   SourceEditorManager.ActiveEditor := AnEditor;
   SourceEditorManager.ShowActiveWindowOnTop(True);
   AnEditor.EditorComponent.GotoBookMark(ID);
-  AnEditor.CenterCursor;
+  if not AnEditor.IsLocked then
+    AnEditor.CenterCursor(True);
 end;
 
 //this is fired when the editor is focused, changed, ?.  Anything that causes the status change
@@ -14775,6 +14858,7 @@ begin
   if p <> nil then begin
     p.PageIndex := SrcEdit.PageIndex;
     p.WindowIndex := SourceEditorManager.IndexOfSourceWindow(SrcEdit.SourceNotebook);
+    p.IsLocked := SrcEdit.IsLocked;
   end
   else if SrcEdit.IsNewSharedEditor then begin
     // attach to UnitInfo
@@ -15360,6 +15444,7 @@ var DestIndex, UnitIndex: integer;
   DestJumpPoint: TProjectJumpHistoryPosition;
   CursorPoint, NewJumpPoint: TProjectJumpHistoryPosition;
   JumpHistory : TProjectJumpHistory;
+  AnEditorInfo: TUnitEditorInfo;
 begin
   DestEditor := nil;
   NewCaretXY.Y:=-1;
@@ -15423,7 +15508,9 @@ begin
       JumpHistory.HistoryIndex:=DestIndex;
       NewCaretXY:=DestJumpPoint.CaretXY;
       NewTopLine:=DestJumpPoint.TopLine;
-      DestEditor:=TSourceEditor(Project1.Units[UnitIndex].OpenEditorInfo[0].EditorComponent);
+      AnEditorInfo := GetAvailableUnitEditorInfo(Project1.Units[UnitIndex], NewCaretXY);
+      if AnEditorInfo <> nil then
+        DestEditor:=TSourceEditor(AnEditorInfo.EditorComponent);
       {$IFDEF VerboseJumpHistory}
       writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] Result Line=',NewCaretXY.Y,' Col=',NewCaretXY.X);
       {$ENDIF}

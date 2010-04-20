@@ -201,6 +201,7 @@ type
   private
     //FAOwner is normally a TSourceNotebook.  This is set in the Create constructor.
     FAOwner: TComponent;
+    FIsLocked: Boolean;
     FIsNewSharedEditor: Boolean;
     FSharedValues: TSourceEditorSharedValues;
     FEditor: TIDESynEditor;
@@ -245,6 +246,7 @@ type
     function GetSharedEditors(Index: Integer): TSourceEditor;
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     function GetSource: TStrings;
+    procedure SetIsLocked(const AValue: Boolean);
     procedure SetPageName(const AValue: string);
     procedure UpdateExecutionSourceMark;
     procedure UpdatePageName;
@@ -392,7 +394,7 @@ type
     function CaretInSelection(const ACaretPos: TPoint): Boolean;
 
     // cursor
-    procedure CenterCursor;
+    procedure CenterCursor(SoftCenter: Boolean = False);
     function TextToScreenPosition(const Position: TPoint): TPoint; override;
     function ScreenToTextPosition(const Position: TPoint): TPoint; override;
     function ScreenToPixelPosition(const Position: TPoint): TPoint; override;
@@ -407,6 +409,7 @@ type
     function GetTopLine: Integer; override;
     procedure SetTopLine(const AValue: Integer); override;
     function CursorInPixel: TPoint; override;
+    function IsCaretOnScreen(ACaret: TPoint; UseSoftCenter: Boolean = False): Boolean;
 
     // text
     function SearchReplace(const ASearch, AReplace: string;
@@ -468,6 +471,7 @@ type
     function SharedEditorCount: Integer;
     property SharedEditors[Index: Integer]: TSourceEditor read GetSharedEditors;
     property IsNewSharedEditor: Boolean read FIsNewSharedEditor write FIsNewSharedEditor;
+    property IsLocked: Boolean read FIsLocked write SetIsLocked;
   end;
 
   //============================================================================
@@ -596,6 +600,7 @@ type
     procedure SrcEditMenuCopyToExistingWindowClicked(Sender: TObject);
     procedure SrcEditMenuMoveToNewWindowClicked(Sender: TObject);
     procedure SrcEditMenuMoveToExistingWindowClicked(Sender: TObject);
+    procedure EditorLockClicked(Sender: TObject);
   public
     procedure DeleteBreakpointClicked(Sender: TObject);
     procedure ToggleBreakpointClicked(Sender: TObject);
@@ -668,7 +673,6 @@ type
     procedure EditorChanged(Sender: TObject);
     procedure DoClose(var CloseAction: TCloseAction); override;
 
-    function IndexOfEditorInShareWith(AnOtherEditor: TSourceEditor): Integer;
   protected
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
     function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
@@ -781,6 +785,7 @@ type
                                          EditorComp: TComponent): TSourceEditor;
     function GetActiveSE: TSourceEditor;                                        { $note deprecate and use SetActiveEditor}
     procedure CheckCurrentCodeBufferChanged;
+    function IndexOfEditorInShareWith(AnOtherEditor: TSourceEditor): Integer;
 
     procedure UpdateStatusBar;
     procedure ClearErrorLines; override;
@@ -826,11 +831,13 @@ type
   private
     FActiveWindow: TSourceNotebook;
     FSourceWindowList: TFPList;
+    FSourceWindowByFocusList: TFPList;
     FUpdateLock: Integer;
     FShowWindowOnTop: Boolean;
     FShowWindowOnTopFocus: Boolean;
     procedure FreeSourceWindows;
     function GetActiveSourceWindowIndex: integer;
+    function GetSourceWindowByLastFocused(Index: Integer): TSourceEditorWindowInterface;
     procedure SetActiveSourceWindowIndex(const AValue: integer);
   protected
     FChangeNotifyLists: Array [TsemChangeReason] of TMethodList;
@@ -849,6 +856,9 @@ type
     function  IndexOfSourceWindow(AWindow: TSourceEditorWindowInterface): integer;
     property  ActiveSourceWindowIndex: integer
               read GetActiveSourceWindowIndex write SetActiveSourceWindowIndex;
+    function  IndexOfSourceWindowByLastFocused(AWindow: TSourceEditorWindowInterface): integer;
+    property  SourceWindowByLastFocused[Index: Integer]: TSourceEditorWindowInterface
+              read GetSourceWindowByLastFocused;
     // Editors
     function  SourceEditorIntfWithFilename(const Filename: string): TSourceEditorInterface;
               override;
@@ -910,6 +920,7 @@ type
     function GetActiveSrcEditor: TSourceEditor;
     function GetSourceEditorsByPage(WindowIndex, PageIndex: integer
       ): TSourceEditor;
+    function GetSourceNbByLastFocused(Index: Integer): TSourceNotebook;
     function GetSrcEditors(Index: integer): TSourceEditor;
     procedure SetActiveSourceNotebook(const AValue: TSourceNotebook);
     function GetSourceNotebook(Index: integer): TSourceNotebook;
@@ -924,6 +935,8 @@ type
     function  ActiveOrNewSourceWindow: TSourceNotebook;
     function  NewSourceWindow: TSourceNotebook;
     function  SourceWindowWithPage(const APage: TPage): TSourceNotebook;
+    property  SourceWindowByLastFocused[Index: Integer]: TSourceNotebook
+              read GetSourceNbByLastFocused;
     // Editors
     function  SourceEditorCount: integer; override;
     function  GetActiveSE: TSourceEditor;                                       { $note deprecate and use ActiveEditor}
@@ -1174,6 +1187,8 @@ var
   SrcEditMenuCopyToOtherWindow: TIDEMenuSection;
   SrcEditMenuCopyToOtherWindowNew: TIDEMenuCommand;
   SrcEditMenuCopyToOtherWindowList: TIDEMenuSection;
+  // EditorLocks
+  SrcEditMenuEditorLock: TIDEMenuCommand;
   {$ENDIF}
 
 
@@ -1242,6 +1257,10 @@ begin
                         'Close All Other Pages',uemCloseOtherPages, nil, nil, nil);
 
     {$IFnDEF SingleSrcWindow}
+    // Lock Editor
+    SrcEditMenuEditorLock := RegisterIDEMenuCommand(SrcEditMenuSectionPages,
+                                                    'LockEditor', uemLockPage);
+    SrcEditMenuEditorLock.ShowAlwaysCheckable := True;
     // Move to other Window
     SrcEditMenuMoveToNewWindow   := RegisterIDEMenuCommand(SrcEditMenuSectionPages,
                                     'MoveToNewWindow', uemMoveToNewWindow);
@@ -2901,6 +2920,9 @@ Begin
   ecInsertCVSSource:
     InsertCVSKeyword('Source');
 
+  ecLockEditor:
+    IsLocked := not IsLocked;
+
   else
     begin
       Handled:=false;
@@ -3857,6 +3879,15 @@ Begin
   Result := FEditor.Lines;
 end;
 
+procedure TSourceEditor.SetIsLocked(const AValue: Boolean);
+begin
+  if FIsLocked = AValue then exit;
+  FIsLocked := AValue;
+  UpdatePageName;
+  SourceNotebook.UpdateStatusBar;
+  UpdateProjectFile;
+end;
+
 procedure TSourceEditor.SetPageName(const AValue: string);
 begin
   if FPageName=AValue then exit;
@@ -3875,6 +3906,7 @@ begin
     NewPageName:=Format('%s:%d', [FPageName, (p+1) mod 10])
   else
     NewPageName:=FPageName;
+  if IsLocked then NewPageName:='!'+NewPageName;
   if Modified then NewPageName:='*'+NewPageName;
   if SourceNotebook.NoteBookPages[p] <> NewPageName then begin
     SourceNotebook.NoteBookPages[p] := NewPageName;
@@ -4182,10 +4214,30 @@ end;
 
   Center the current cursor line in editor.
 -------------------------------------------------------------------------------}
-procedure TSourceEditor.CenterCursor;
-var NewTopLine: integer;
+procedure TSourceEditor.CenterCursor(SoftCenter: Boolean = False);
+var
+  NewTopLine: integer;
+  Y, CurTopLine, LinesInWin, MinLines: Integer;
 begin
-  NewTopLine:=EditorComponent.CaretY-((EditorComponent.LinesInWindow-1) div 2);
+  if SoftCenter then begin
+    CurTopLine := EditorComponent.TopLine;
+    LinesInWin := EditorComponent.LinesInWindow;
+    MinLines := Min(Max(LinesInWin div 5, 1), 5);
+    Y := EditorComponent.CaretY;
+    if (Y <= CurTopLine) or (Y >= CurTopLine + LinesInWin)
+    then
+      NewTopLine := Max(1, Y - (LinesInWin div 2))
+    else
+    if Y < CurTopLine + MinLines then
+      NewTopLine := Max(1, Y - MinLines)
+    else
+    if Y > CurTopLine + LinesInWin - MinLines then
+      NewTopLine := Max(1, Y - LinesInWin + MinLines)
+    else
+      NewTopLine := CurTopLine;
+  end
+  else
+    NewTopLine:=EditorComponent.CaretY-((EditorComponent.LinesInWindow-1) div 2);
   if NewTopLine<1 then NewTopLine:=1;
   EditorComponent.TopLine:=NewTopLine;
 end;
@@ -4314,6 +4366,22 @@ end;
 function TSourceEditor.CursorInPixel: TPoint;
 begin
   Result:=Point(FEditor.CaretXPix,FEditor.CaretYPix);
+end;
+
+function TSourceEditor.IsCaretOnScreen(ACaret: TPoint; UseSoftCenter: Boolean = False): Boolean;
+var
+  LinesInWin, MinLines: Integer;
+begin
+  if UsesoftCenter then begin
+    LinesInWin := EditorComponent.LinesInWindow;
+    MinLines := Min(Max(LinesInWin div 5, 1), 5);
+  end
+  else
+    MinLines := 0;
+  Result := (ACaret.y >= FEditor.TopLine + MinLines) and
+            (ACaret.Y <= FEditor.TopLine + FEditor.LinesInWindow - MinLines) and
+            (ACaret.X >= FEditor.LeftChar) and
+            (ACaret.X <= FEditor.LeftChar + FEditor.CharsInWindow);
 end;
 
 function TSourceEditor.SearchReplace(const ASearch, AReplace: string;
@@ -5002,11 +5070,14 @@ begin
     end;
 
     {$IFnDEF SingleSrcWindow}
+    // Editor locks
+    SrcEditMenuEditorLock.Checked := ASrcEdit.IsLocked;
+    // Multi win
     SrcEditMenuMoveToOtherWindowList.Clear;
     NBAvail := False;
     for i := 0 to Manager.SourceWindowCount - 1 do
       if (i <> Manager.IndexOfSourceWindow(self)) and
-         (Manager.SourceWindows[i].IndexOfEditorInShareWith(GetActiveSE) < 0)
+         (Manager.SourceWindows[i].IndexOfEditorInShareWith(ASrcEdit) < 0)
       then begin
         NBAvail := True;
         with RegisterIDEMenuCommand(SrcEditMenuMoveToOtherWindowList,
@@ -5024,7 +5095,7 @@ begin
     NBAvail := False;
     SrcEditMenuCopyToOtherWindowList.Clear;
     for i := 0 to Manager.SourceWindowCount - 1 do
-      if (Manager.SourceWindows[i].IndexOfEditorInShareWith(GetActiveSE) < 0) and
+      if (Manager.SourceWindows[i].IndexOfEditorInShareWith(ASrcEdit) < 0) and
          (i <> Manager.IndexOfSourceWindow(self))
       then begin
         NBAvail := True;
@@ -5148,6 +5219,9 @@ begin
   SrcEditMenuEditorProperties.OnClick:=@EditorPropertiesClicked;
 
   {$IFnDEF SingleSrcWindow}
+  // EditorLocks
+  SrcEditMenuEditorLock.OnClick := @EditorLockClicked;
+  // MultiWin
   SrcEditMenuMoveToNewWindow.OnClick := @SrcEditMenuMoveToNewWindowClicked;
   SrcEditMenuMoveToOtherWindowNew.OnClick := @SrcEditMenuMoveToNewWindowClicked;
 
@@ -6500,6 +6574,11 @@ begin
   MoveEditor(PageIndex, (Sender as TIDEMenuItem).Tag, -1)
 end;
 
+procedure TSourceNotebook.EditorLockClicked(Sender: TObject);
+begin
+  GetActiveSE.IsLocked := not GetActiveSE.IsLocked;
+end;
+
 Procedure TSourceNotebook.UpdateStatusBar;
 var
   tempEditor: TSourceEditor;
@@ -6543,11 +6622,17 @@ begin
     else
       PanelFileMode := '';
 
-    If TempEditor.ReadOnly then
+    If TempEditor.ReadOnly then begin
       if PanelFileMode <> '' then
-        PanelFileMode := Format(lisUEReadOnly, [PanelFileMode])
-      else
-        PanelFileMode := uepReadonly;
+        PanelFileMode := PanelFileMode + lisUEModeSeparator;
+      PanelFileMode := PanelFileMode + uepReadonly;
+    end;
+
+    If TempEditor.IsLocked then begin
+      if PanelFileMode <> '' then
+        PanelFileMode := PanelFileMode + lisUEModeSeparator;
+      PanelFileMode := PanelFileMode + ueLocked;
+    end;
 
     PanelXY := Format(' %6d:%4d',
                  [TempEditor.CurrentCursorYLine,TempEditor.CurrentCursorXLine]);
@@ -7529,6 +7614,7 @@ procedure TSourceEditorManagerBase.FreeSourceWindows;
 var
   s: TSourceEditorWindowInterface;
 begin
+  FSourceWindowByFocusList.Clear;
   while FSourceWindowList.Count > 0 do begin
     s := TSourceEditorWindowInterface(FSourceWindowList[0]);
     FSourceWindowList.Delete(0);
@@ -7540,6 +7626,11 @@ end;
 function TSourceEditorManagerBase.GetActiveSourceWindowIndex: integer;
 begin
   Result := IndexOfSourceWindow(ActiveSourceWindow);
+end;
+
+function TSourceEditorManagerBase.GetSourceWindowByLastFocused(Index: Integer): TSourceEditorWindowInterface;
+begin
+  Result := TSourceEditorWindowInterface(FSourceWindowByFocusList[Index]);
 end;
 
 procedure TSourceEditorManagerBase.SetActiveSourceWindowIndex(
@@ -7561,6 +7652,8 @@ begin
     AValue.SetFocus;
 
   FActiveWindow := AValue as TSourceNotebook;
+  FSourceWindowByFocusList.Remove(AValue);
+  FSourceWindowByFocusList.Insert(0, AValue);
 
   // Todo: Each synEdit needs it's own beautifier
   if SourceEditorCount > 0 then
@@ -7665,6 +7758,11 @@ begin
       exit;
     dec(Result);
   end;
+end;
+
+function TSourceEditorManagerBase.IndexOfSourceWindowByLastFocused(AWindow: TSourceEditorWindowInterface): integer;
+begin
+  Result := FSourceWindowByFocusList.IndexOf(AWindow);
 end;
 
 function TSourceEditorManagerBase.SourceEditorIntfWithFilename(
@@ -7860,6 +7958,7 @@ begin
     FChangeNotifyLists[i] := TMethodList.Create;
   SrcEditorIntf.SourceEditorManagerIntf := Self;
   FSourceWindowList := TFPList.Create;
+  FSourceWindowByFocusList := TFPList.Create;
   FCompletionPlugins := TFPList.Create;
   FUpdateLock := 0;
   inherited;
@@ -7875,6 +7974,7 @@ begin
   SrcEditorIntf.SourceEditorManagerIntf := nil; // xx move down
   FreeAndNil(FCompletionPlugins);
   FreeAndNil(FSourceWindowList);
+  FreeAndNil(FSourceWindowByFocusList);
   for i := low(TsemChangeReason) to high(TsemChangeReason) do
     FChangeNotifyLists[i].Free;;
   inherited Destroy;
@@ -7961,6 +8061,11 @@ begin
     Result := SourceWindows[WindowIndex].FindSourceEditorWithPageIndex(PageIndex)
   else
     Result := nil;
+end;
+
+function TSourceEditorManager.GetSourceNbByLastFocused(Index: Integer): TSourceNotebook;
+begin
+  Result := TSourceNotebook(inherited SourceWindowByLastFocused[Index]);
 end;
 
 function TSourceEditorManager.GetSrcEditors(Index: integer): TSourceEditor;
@@ -8431,7 +8536,8 @@ begin
       ActiveEditor := NewEditor;
       ShowActiveWindowOnTop(True);
       with NewEditor.EditorComponent do begin
-        TopLine:=NewTopLine;
+        if not NewEditor.IsLocked then
+          TopLine:=NewTopLine;
         LogicalCaretXY:=NewCaretXY;
       end;
     end;
@@ -8698,6 +8804,7 @@ begin
     Result.IncUpdateLock;
   FSourceWindowList.Add(Result);
   FSourceWindowList.Sort(TListSortCompare(@SortSourceWindows));
+  FSourceWindowByFocusList.Add(Result);
   if Activate then begin
     ActiveSourceWindow := Result;
     ShowActiveWindowOnTop(False);
@@ -8712,6 +8819,7 @@ begin
   if FSourceWindowList = nil then exit;
   i := FSourceWindowList.IndexOf(AWindow);
   FSourceWindowList.Remove(AWindow);
+  FSourceWindowByFocusList.Remove(AWindow);
   if SourceWindowCount = 0 then
     ActiveSourceWindow := nil
   else if ActiveSourceWindow = AWindow then

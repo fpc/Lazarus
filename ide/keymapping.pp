@@ -471,6 +471,8 @@ begin
   ecGotoEditor9: SetResult(VK_9,[ssAlt],VK_UNKNOWN,[]);
   ecGotoEditor0: SetResult(VK_0,[ssAlt],VK_UNKNOWN,[]);
 
+  ecLockEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
   EcFoldLevel1: SetResult(VK_1,[ssAlt,ssShift],VK_UNKNOWN,[]);
   EcFoldLevel2: SetResult(VK_2,[ssAlt,ssShift],VK_UNKNOWN,[]);
   EcFoldLevel3: SetResult(VK_3,[ssAlt,ssShift],VK_UNKNOWN,[]);
@@ -902,6 +904,8 @@ begin
   ecGotoEditor8: SetResult(VK_8,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoEditor9: SetResult(VK_9,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoEditor0: SetResult(VK_0,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
+  ecLockEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   EcFoldLevel1: SetResult(VK_1,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   EcFoldLevel2: SetResult(VK_2,[ssAlt,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1515,6 +1519,8 @@ begin
   ecGotoEditor9: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoEditor0: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
+  ecLockEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+
   (*
   EcFoldLevel1: SetResult(VK_1,[ssMeta,ssShift],VK_UNKNOWN,[]);
   EcFoldLevel2: SetResult(VK_2,[ssMeta,ssShift],VK_UNKNOWN,[]);
@@ -1966,6 +1972,8 @@ begin
     ecCopyEditorNextWindow:    Result := srkmecCopyEditorNextWindow;
     ecCopyEditorPrevWindow:    Result := srkmecCopyEditorPrevWindow;
     ecCopyEditorNewWindow:     Result := srkmecCopyEditorNewWindow;
+
+    ecLockEditor:              Result := srkmecLockEditor;
 
     ecGotoEditor1..
     ecGotoEditor0             : Result:= Format(srkmecGotoEditor,[cmd-ecGotoEditor1]);
@@ -2721,6 +2729,8 @@ begin
   AddDefault(C, 'Copy to next window', srkmecCopyEditorNextWindow, ecCopyEditorNextWindow);
   AddDefault(C, 'Copy to prior window', srkmecCopyEditorPrevWindow, ecCopyEditorPrevWindow);
   AddDefault(C, 'Copy to new window', srkmecCopyEditorNewWindow, ecCopyEditorNewWindow);
+
+  AddDefault(C, 'Lock editor', srkmecLockEditor, ecLockEditor);
 
   // file menu
   C:=Categories[AddCategory('FileMenu',srkmCatFileMenu,nil)];

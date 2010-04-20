@@ -2009,6 +2009,7 @@ resourcestring
   uemProcedureJump = 'Procedure Jump';
   uemClosePage = '&Close Page';
   uemCloseOtherPages = 'Close All &Other Pages';
+  uemLockPage = '&Lock Page';
   uemCopyToNewWindow = 'Copy to new Window';
   uemCopyToOtherWindow = 'Copy to other Window';
   uemCopyToOtherWindowNew = 'New Window';
@@ -2068,6 +2069,7 @@ resourcestring
   ueFileROText1='The file "';
   ueFileROText2='" is not writable.';
   ueModified='Modified';
+  ueLocked='Locked';
   uepReadonly= 'Readonly';
   uepIns='INS';
   uepOvr='OVR';
@@ -2303,6 +2305,7 @@ resourcestring
   srkmecCopyEditorNextWindow     = 'Copy editor to next free window';
   srkmecCopyEditorPrevWindow     = 'Copy editor to prior free window';
   srkmecCopyEditorNewWindow      = 'Copy editor to new window';
+  srkmecLockEditor               = 'Lock Editor';
 
   lisKMGoToSourceEditor1 = 'Go to source editor 1';
   lisKMGoToSourceEditor2 = 'Go to source editor 2';
@@ -2956,7 +2959,7 @@ resourcestring
   lisUEReplaceThisOccurrenceOfWith = 'Replace this occurrence of %s%s%s%s '
     +'with %s%s%s?';
   lisUESearching = 'Searching: %s';
-  lisUEReadOnly = '%s/ReadOnly';
+  lisUEModeSeparator = '/';
   lisUEGotoLine = 'Goto line:';
   lisGotoLine = 'Goto line';
   
