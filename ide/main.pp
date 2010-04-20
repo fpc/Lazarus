@@ -16690,6 +16690,7 @@ procedure TMainIDE.DoCommand(ACommand: integer);
 var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
+  AForm: TCustomForm;
 begin
   GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
   case FDisplayState of
@@ -16697,8 +16698,11 @@ begin
       if Assigned(ActiveSourceEditor) then
         ActiveSourceEditor.DoEditorExecuteCommand(ACommand);
     dsForm:                  // send command to form editor
-      if Assigned(ActiveUnitInfo) then
-        TDesigner(GetDesignerFormOfSource(ActiveUnitInfo,False).Designer).DoCommand(ACommand);
+      if Assigned(ActiveUnitInfo) then begin
+        AForm:=GetDesignerFormOfSource(ActiveUnitInfo,False);
+        if (AForm<>nil) and (AForm.Designer<>nil) then
+          TDesigner(AForm.Designer).DoCommand(ACommand);
+      end;
   end;
 end;
 
