@@ -34,12 +34,12 @@ unit SourceEditProcs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, GraphType, Graphics, Controls,
-  SynEdit, SynEditHighlighter, SynRegExpr, SynCompletion,
-  BasicCodeTools, CodeTree, CodeAtom, CodeCache, SourceChanger, CodeToolManager,
-  PascalParserTool, KeywordFuncLists, FileProcs, IdentCompletionTool,
-  LazIDEIntf, TextTools, IDETextConverter,
-  DialogProcs, MainIntf, EditorOptions, CodeToolsOptions;
+  Classes, SysUtils, LCLProc, LCLType, GraphType, Graphics, Controls, SynEdit,
+  SynEditHighlighter, SynRegExpr, SynCompletion, BasicCodeTools, CodeTree,
+  CodeAtom, CodeCache, SourceChanger, CodeToolManager, PascalParserTool,
+  KeywordFuncLists, FileProcs, IdentCompletionTool, PascalReaderTool,
+  LazIDEIntf, TextTools, IDETextConverter, DialogProcs, MainIntf, EditorOptions,
+  CodeToolsOptions;
 
 type
 
@@ -217,6 +217,7 @@ var
   AColor: TColor;
   ANode: TCodeTreeNode;
   ItemNode: TCodeTreeNode;
+  SubNode: TCodeTreeNode;
 begin
   Result.X := 0;
   Result.Y := ACanvas.TextHeight('W');
@@ -342,7 +343,7 @@ begin
           s:=IdentItem.Tool.ExtractProcHead(ItemNode,
             [phpWithoutClassName,phpWithoutName,phpWithVarModifiers,
              phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
-             phpWithOfObject]);
+             phpWithOfObject,phpWithoutSemicolon]);
         end;
 
       ctnProperty:
@@ -361,7 +362,24 @@ begin
       ctnTypeDefinition:
         begin
           ANode:=IdentItem.Tool.FindTypeNodeOfDefinition(ItemNode);
-          s:=' = '+IdentItem.Tool.ExtractNode(ANode,[]);
+          s:=' = ';
+          case ANode.Desc of
+          ctnClass,ctnObject,ctnObjCClass,ctnCPPClass:
+            begin
+              case ANode.Desc of
+              ctnClass: s:=s+'class';
+              ctnObject: s:=s+'object';
+              ctnObjCClass: s:=s+'objcclass';
+              ctnCPPClass: s:=s+'cppclass';
+              end;
+              IdentItem.Tool.BuildSubTree(ANode);
+              SubNode:=IdentItem.Tool.FindInheritanceNode(ANode);
+              if SubNode<>nil then
+                s:=s+IdentItem.Tool.ExtractNode(SubNode,[]);
+            end;
+          else
+            s:=s+IdentItem.Tool.ExtractNode(ANode,[]);
+          end;
         end;
 
       ctnConstDefinition:
