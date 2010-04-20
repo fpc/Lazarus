@@ -471,10 +471,11 @@ var
 begin
   if Visible and (AIndex >= 0) and (AIndex < ItemList.Count) then
   begin
+    // CalcHintRect uses the current index
+    FHint.Index := AIndex;
     // calculate the size
     R := FHint.CalcHintRect(Monitor.Width, ItemList[AIndex], nil);
 
-    FHint.Index := AIndex;
     if R.Right <= ClientWidth then begin
       FHint.Hide;
       Exit;
