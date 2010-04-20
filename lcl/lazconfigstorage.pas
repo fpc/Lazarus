@@ -98,6 +98,8 @@ type
 
   TConfigMemStorage = class(TConfigStorage)
   private
+    procedure CreateRoot;
+    procedure CreateChilds(Node: TConfigMemStorageNode);
     procedure Modify(const APath: string; Mode: TConfigMemStorageModification;
                      var AValue: string);
   protected
@@ -360,6 +362,16 @@ end;
 
 { TConfigMemStorage }
 
+procedure TConfigMemStorage.CreateRoot;
+begin
+  Root:=TConfigMemStorageNode.Create(nil,'');
+end;
+
+procedure TConfigMemStorage.CreateChilds(Node: TConfigMemStorageNode);
+begin
+  Node.Childs:=TAvgLvlTree.Create(@CompareConfigMemStorageNodes);
+end;
+
 procedure TConfigMemStorage.Modify(const APath: string;
   Mode: TConfigMemStorageModification; var AValue: string);
 var
@@ -381,7 +393,7 @@ begin
   end else begin
     if Root=nil then begin
       if Mode in [cmsmDelete,cmsmDeleteValue] then exit;
-      Root:=TConfigMemStorageNode.Create(nil,'');
+      CreateRoot;
     end;
     Node:=Root;
     repeat
@@ -391,7 +403,7 @@ begin
         // child node
         if Node.Childs=nil then begin
           if Mode in [cmsmDelete,cmsmDeleteValue] then exit;
-          Node.Childs:=TAvgLvlTree.Create(@CompareConfigMemStorageNodes);
+          CreateChilds(Node);
         end;
         ChildNode:=Node.Childs.FindKey(StartPos,@ComparePCharWithConfigMemStorageNode);
         if ChildNode=nil then begin
@@ -549,14 +561,73 @@ end;
 
 procedure TConfigMemStorage.SaveToConfig(Config: TConfigStorage;
   const APath: string);
-begin
 
+  procedure Save(Node: TConfigMemStorageNode; SubPath: string);
+  var
+    ChildNode: TAvgLvlTreeNode;
+    Child: TConfigMemStorageNode;
+    Names: String;
+  begin
+    if Node=nil then exit;
+    SubPath:=SubPath+'_'+Node.Name+'/';
+    Config.SetDeleteValue(SubPath+'Value',Node.Value,'');
+    Names:='';
+    if Node.Childs<>nil then begin
+      ChildNode:=Node.Childs.FindLowest;
+      while ChildNode<>nil do begin
+        Child:=TConfigMemStorageNode(ChildNode.Data);
+        if Names<>'' then Names:=Names+'/';
+        Names:=Names+Child.Name;
+        Save(Child,SubPath);
+        ChildNode:=Node.Childs.FindSuccessor(ChildNode);
+      end;
+    end;
+    Config.SetDeleteValue(SubPath+'Childs',Names,'');
+  end;
+
+begin
+  Save(Root,APath);
 end;
 
 procedure TConfigMemStorage.LoadFromToConfig(Config: TConfigStorage;
   const APath: string);
-begin
 
+  procedure Load(Node: TConfigMemStorageNode; SubPath: string);
+  var
+    ChildNames: string;
+    ChildName: string;
+    p: PChar;
+    StartPos: PChar;
+    Child: TConfigMemStorageNode;
+  begin
+    if Node=nil then exit;
+    SubPath:=SubPath+'_'+Node.Name+'/';
+    Node.Value:=Config.GetValue(SubPath+'Value','');
+    ChildNames:=Config.GetValue(SubPath+'Childs','');
+    if ChildNames<>'' then begin
+      p:=PChar(ChildNames);
+      repeat
+        StartPos:=p;
+        while not (p^ in ['/',#0]) do inc(p);
+        SetLength(ChildName,p-StartPos);
+        if ChildName<>'' then
+          System.Move(StartPos^,ChildName[1],p-StartPos);
+        Child:=TConfigMemStorageNode.Create(Node,ChildName);
+        if Node.Childs=nil then
+          CreateChilds(Node);
+        Node.Childs.Add(Child);
+        Load(Child,SubPath);
+        if p=#0 then break;
+        inc(p);
+      until false;
+    end;
+  end;
+
+begin
+  Clear;
+  if Root=nil then
+    CreateRoot;
+  Load(Root,APath);
 end;
 
 { TConfigMemStorageNode }
