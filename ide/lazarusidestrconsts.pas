@@ -722,7 +722,7 @@ resourcestring
   lisInfoBuildErrors = 'Errors:';
   lisInfoBuildHint = 'Hints:';
   lisInfoBuildWarning = 'Warnings:';
-  lisInfoBuildBuild   = 'Build';
+  lisInfoBuildProject   = 'Project:';
   lisInfoBuildComplile = 'Compiling...';
   lisFPCTooOld = 'FPC too old';
   lisTheProjectUsesTheNewFPCResourcesWhichRequiresAtLea = 'The project uses '

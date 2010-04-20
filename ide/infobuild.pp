@@ -39,6 +39,7 @@ type
 
   TCompileInfoDlg = class (TForm)
     BClose: TBitBtn;
+    lbProject: TLabel;
     lbInfo: TLabel;
     LInfoError: TLabel;
     LInfoHint: TLabel;
@@ -134,6 +135,7 @@ begin
   NLines    := 0;
 
 
+  lbProject.Caption    := lisInfoBuildProject;
   LInfoLines.Caption   := lisInfoBuildLines;
   LInfoError.Caption   := lisInfoBuildErrors;
   LInfoHint.Caption    := lisInfoBuildHint;
@@ -164,7 +166,7 @@ end;
 
 procedure TCompileInfoDlg.SetProjectName(const Sname : String);
 begin
-  lbInfo.Caption := lisInfoBuildBuild + ' '+ ExtractFileName(Sname);
+  lbInfo.Caption := ExtractFileName(Sname);
 end;
 
 procedure TCompileInfoDlg.SetStatus(const SStatus : String);
