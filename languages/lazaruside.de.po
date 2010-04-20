@@ -7072,11 +7072,6 @@ msgstr "Index"
 msgid "Aborted..."
 msgstr "Abgebrochen..."
 
-#: lazarusidestrconsts.lisinfobuildbuild
-msgctxt "lazarusidestrconsts.lisinfobuildbuild"
-msgid "Build"
-msgstr "Neukompilieren"
-
 #: lazarusidestrconsts.lisinfobuildcaption
 msgid "Compile Project"
 msgstr "Kompiliere Projekt"
@@ -7110,6 +7105,10 @@ msgstr "Alles abbrechen"
 #: lazarusidestrconsts.lisinfobuildnote
 msgid "Notes:"
 msgstr "Bemerkungen:"
+
+#: lazarusidestrconsts.lisinfobuildproject
+msgid "Project:"
+msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildsuccess
 msgid "Success..."
@@ -12619,6 +12618,14 @@ msgstr "Diese Zusammenstellung von Optionen für das Kompilieren von Lazarus wir
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Diese Anweisung kann nicht extrahiert werden.%sBitte wählen Sie etwas Code, um eine neue Prozedur/Methode zu extrahieren."
 
+#: lazarusidestrconsts.listinfobuildautocloseonsuccess
+msgid "&Automatically close on success"
+msgstr ""
+
+#: lazarusidestrconsts.listinfobuildcompiling
+msgid "Compiling:"
+msgstr ""
+
 #: lazarusidestrconsts.listitle
 msgid "&Title"
 msgstr "&Titel"
@@ -12781,13 +12788,13 @@ msgstr "Schriftart ohne UTF-8"
 msgid "Goto line:"
 msgstr "Springe zu Zeile:"
 
+#: lazarusidestrconsts.lisuemodeseparator
+msgid "/"
+msgstr ""
+
 #: lazarusidestrconsts.lisuenotfound
 msgid "Not found"
 msgstr "Nicht gefunden"
-
-#: lazarusidestrconsts.lisuereadonly
-msgid "%s/ReadOnly"
-msgstr "%s/Schreibgeschützt"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
@@ -14287,6 +14294,10 @@ msgstr "Cursor zum Zeilenanfang bewegen"
 msgid "Move cursor to text start in line"
 msgstr "Cursor an den Beginn des Texts in der Zeile setzen"
 
+#: lazarusidestrconsts.srkmeclockeditor
+msgid "Lock Editor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr "Ressourcenstring erzeugen"
@@ -14848,6 +14859,10 @@ msgstr "Die Datei »"
 msgid "\" is not writable."
 msgstr "« ist schreibgeschützt."
 
+#: lazarusidestrconsts.uelocked
+msgid "Locked"
+msgstr ""
+
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "Überwachung an Cursorpos. &hinzufügen"
@@ -14956,6 +14971,10 @@ msgstr "Umgekehrte Zuweisung"
 #: lazarusidestrconsts.uemlineending
 msgid "Line ending"
 msgstr "Zeilenende"
+
+#: lazarusidestrconsts.uemlockpage
+msgid "&Lock Page"
+msgstr ""
 
 #: lazarusidestrconsts.uemmovepageleft
 msgid "Move page left"

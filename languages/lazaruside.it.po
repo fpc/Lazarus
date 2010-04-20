@@ -7071,11 +7071,6 @@ msgstr "Indice"
 msgid "Aborted..."
 msgstr "Annullato..."
 
-#: lazarusidestrconsts.lisinfobuildbuild
-msgctxt "lazarusidestrconsts.lisinfobuildbuild"
-msgid "Build"
-msgstr "Esegui build"
-
 #: lazarusidestrconsts.lisinfobuildcaption
 msgid "Compile Project"
 msgstr ""
@@ -7109,6 +7104,10 @@ msgstr "Interrompi"
 #: lazarusidestrconsts.lisinfobuildnote
 msgid "Notes:"
 msgstr "Note:"
+
+#: lazarusidestrconsts.lisinfobuildproject
+msgid "Project:"
+msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildsuccess
 msgid "Success..."
@@ -12618,6 +12617,14 @@ msgstr ""
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Questo comando non puè² essere estratto.%sSelezionare del codice per estrarre una nuova procedura/metodo."
 
+#: lazarusidestrconsts.listinfobuildautocloseonsuccess
+msgid "&Automatically close on success"
+msgstr ""
+
+#: lazarusidestrconsts.listinfobuildcompiling
+msgid "Compiling:"
+msgstr ""
+
 #: lazarusidestrconsts.listitle
 msgid "&Title"
 msgstr "Titolo"
@@ -12780,13 +12787,13 @@ msgstr "Carattere senza UTF-8"
 msgid "Goto line:"
 msgstr "Vai alla riga:"
 
+#: lazarusidestrconsts.lisuemodeseparator
+msgid "/"
+msgstr ""
+
 #: lazarusidestrconsts.lisuenotfound
 msgid "Not found"
 msgstr "Non trovato"
-
-#: lazarusidestrconsts.lisuereadonly
-msgid "%s/ReadOnly"
-msgstr "%s/SolaLettura"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
@@ -14282,6 +14289,10 @@ msgstr "Sposta il cursore alla linea di partenza"
 msgid "Move cursor to text start in line"
 msgstr ""
 
+#: lazarusidestrconsts.srkmeclockeditor
+msgid "Lock Editor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr "Stringa risorsa make"
@@ -14843,6 +14854,10 @@ msgstr "Il file \""
 msgid "\" is not writable."
 msgstr "\" non è scrivibile."
 
+#: lazarusidestrconsts.uelocked
+msgid "Locked"
+msgstr ""
+
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "Aggiungi &watch al cursore"
@@ -14949,6 +14964,10 @@ msgstr "Inverti assegnamento"
 
 #: lazarusidestrconsts.uemlineending
 msgid "Line ending"
+msgstr ""
+
+#: lazarusidestrconsts.uemlockpage
+msgid "&Lock Page"
 msgstr ""
 
 #: lazarusidestrconsts.uemmovepageleft

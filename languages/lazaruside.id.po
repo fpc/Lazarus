@@ -7061,11 +7061,6 @@ msgstr ""
 msgid "Aborted..."
 msgstr ""
 
-#: lazarusidestrconsts.lisinfobuildbuild
-msgctxt "lazarusidestrconsts.lisinfobuildbuild"
-msgid "Build"
-msgstr "Bangun"
-
 #: lazarusidestrconsts.lisinfobuildcaption
 msgid "Compile Project"
 msgstr ""
@@ -7098,6 +7093,10 @@ msgstr "Batalkan"
 
 #: lazarusidestrconsts.lisinfobuildnote
 msgid "Notes:"
+msgstr ""
+
+#: lazarusidestrconsts.lisinfobuildproject
+msgid "Project:"
 msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildsuccess
@@ -12608,6 +12607,14 @@ msgstr ""
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Pernyataan ini tidak bisa diekstrak.%sSilahkan pilih beberapa kode untuk mengekstrak procedure/method baru."
 
+#: lazarusidestrconsts.listinfobuildautocloseonsuccess
+msgid "&Automatically close on success"
+msgstr ""
+
+#: lazarusidestrconsts.listinfobuildcompiling
+msgid "Compiling:"
+msgstr ""
+
 #: lazarusidestrconsts.listitle
 msgid "&Title"
 msgstr ""
@@ -12770,13 +12777,13 @@ msgstr "Font tanpa  UTF-8"
 msgid "Goto line:"
 msgstr "Pergi ke baris :"
 
+#: lazarusidestrconsts.lisuemodeseparator
+msgid "/"
+msgstr ""
+
 #: lazarusidestrconsts.lisuenotfound
 msgid "Not found"
 msgstr "Tidak ditemukan"
-
-#: lazarusidestrconsts.lisuereadonly
-msgid "%s/ReadOnly"
-msgstr "%s/HanyaBaca"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
@@ -14272,6 +14279,10 @@ msgstr "Pindahkan kursorke awal baris"
 msgid "Move cursor to text start in line"
 msgstr ""
 
+#: lazarusidestrconsts.srkmeclockeditor
+msgid "Lock Editor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr "Buat string resource"
@@ -14833,6 +14844,10 @@ msgstr "File \""
 msgid "\" is not writable."
 msgstr "\" tidak bisa ditulisi."
 
+#: lazarusidestrconsts.uelocked
+msgid "Locked"
+msgstr ""
+
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "Tambah &Pengawasan Di Kursor"
@@ -14939,6 +14954,10 @@ msgstr "Balikkan Penempatan"
 
 #: lazarusidestrconsts.uemlineending
 msgid "Line ending"
+msgstr ""
+
+#: lazarusidestrconsts.uemlockpage
+msgid "&Lock Page"
 msgstr ""
 
 #: lazarusidestrconsts.uemmovepageleft

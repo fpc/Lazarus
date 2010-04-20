@@ -7033,11 +7033,6 @@ msgstr ""
 msgid "Aborted..."
 msgstr ""
 
-#: lazarusidestrconsts.lisinfobuildbuild
-msgctxt "lazarusidestrconsts.lisinfobuildbuild"
-msgid "Build"
-msgstr "Bou"
-
 #: lazarusidestrconsts.lisinfobuildcaption
 msgid "Compile Project"
 msgstr ""
@@ -7070,6 +7065,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildnote
 msgid "Notes:"
+msgstr ""
+
+#: lazarusidestrconsts.lisinfobuildproject
+msgid "Project:"
 msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildsuccess
@@ -12557,6 +12556,14 @@ msgstr ""
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr ""
 
+#: lazarusidestrconsts.listinfobuildautocloseonsuccess
+msgid "&Automatically close on success"
+msgstr ""
+
+#: lazarusidestrconsts.listinfobuildcompiling
+msgid "Compiling:"
+msgstr ""
+
 #: lazarusidestrconsts.listitle
 msgid "&Title"
 msgstr "&Titel"
@@ -12717,12 +12724,12 @@ msgstr "Lettertipe sonder UTF-8"
 msgid "Goto line:"
 msgstr ""
 
-#: lazarusidestrconsts.lisuenotfound
-msgid "Not found"
+#: lazarusidestrconsts.lisuemodeseparator
+msgid "/"
 msgstr ""
 
-#: lazarusidestrconsts.lisuereadonly
-msgid "%s/ReadOnly"
+#: lazarusidestrconsts.lisuenotfound
+msgid "Not found"
 msgstr ""
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
@@ -14213,6 +14220,10 @@ msgstr ""
 msgid "Move cursor to text start in line"
 msgstr ""
 
+#: lazarusidestrconsts.srkmeclockeditor
+msgid "Lock Editor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr ""
@@ -14774,6 +14785,10 @@ msgstr ""
 msgid "\" is not writable."
 msgstr ""
 
+#: lazarusidestrconsts.uelocked
+msgid "Locked"
+msgstr ""
+
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr ""
@@ -14880,6 +14895,10 @@ msgstr ""
 
 #: lazarusidestrconsts.uemlineending
 msgid "Line ending"
+msgstr ""
+
+#: lazarusidestrconsts.uemlockpage
+msgid "&Lock Page"
 msgstr ""
 
 #: lazarusidestrconsts.uemmovepageleft

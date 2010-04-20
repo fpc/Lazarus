@@ -7059,11 +7059,6 @@ msgstr ""
 msgid "Aborted..."
 msgstr ""
 
-#: lazarusidestrconsts.lisinfobuildbuild
-msgctxt "lazarusidestrconsts.lisinfobuildbuild"
-msgid "Build"
-msgstr "Bouw"
-
 #: lazarusidestrconsts.lisinfobuildcaption
 msgid "Compile Project"
 msgstr ""
@@ -7096,6 +7091,10 @@ msgstr "Afbreken"
 
 #: lazarusidestrconsts.lisinfobuildnote
 msgid "Notes:"
+msgstr ""
+
+#: lazarusidestrconsts.lisinfobuildproject
+msgid "Project:"
 msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildsuccess
@@ -12606,6 +12605,14 @@ msgstr ""
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Dit statement kan niet worden gedistilleerd.%sSelecteer meer code om een nieuwe procedure te distilleren."
 
+#: lazarusidestrconsts.listinfobuildautocloseonsuccess
+msgid "&Automatically close on success"
+msgstr ""
+
+#: lazarusidestrconsts.listinfobuildcompiling
+msgid "Compiling:"
+msgstr ""
+
 #: lazarusidestrconsts.listitle
 msgid "&Title"
 msgstr ""
@@ -12768,13 +12775,13 @@ msgstr "Lettertype zonder UTF-8"
 msgid "Goto line:"
 msgstr "Ga naar regel :"
 
+#: lazarusidestrconsts.lisuemodeseparator
+msgid "/"
+msgstr ""
+
 #: lazarusidestrconsts.lisuenotfound
 msgid "Not found"
 msgstr "Niet gevonden."
-
-#: lazarusidestrconsts.lisuereadonly
-msgid "%s/ReadOnly"
-msgstr "%s/uitsluitend leesbaar"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
@@ -14270,6 +14277,10 @@ msgstr "Verplaats cursor naar regelbegin"
 msgid "Move cursor to text start in line"
 msgstr ""
 
+#: lazarusidestrconsts.srkmeclockeditor
+msgid "Lock Editor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr "Maak resource string"
@@ -14831,6 +14842,10 @@ msgstr "Het bestand \""
 msgid "\" is not writable."
 msgstr "\" is niet beschrijfbaar."
 
+#: lazarusidestrconsts.uelocked
+msgid "Locked"
+msgstr ""
+
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "&Kijk op positie cursor toevoegen"
@@ -14937,6 +14952,10 @@ msgstr "Draai toekenning om"
 
 #: lazarusidestrconsts.uemlineending
 msgid "Line ending"
+msgstr ""
+
+#: lazarusidestrconsts.uemlockpage
+msgid "&Lock Page"
 msgstr ""
 
 #: lazarusidestrconsts.uemmovepageleft

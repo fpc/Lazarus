@@ -7063,11 +7063,6 @@ msgstr "Indeksas"
 msgid "Aborted..."
 msgstr "Nutraukta…"
 
-#: lazarusidestrconsts.lisinfobuildbuild
-msgctxt "lazarusidestrconsts.lisinfobuildbuild"
-msgid "Build"
-msgstr "Daryti"
-
 #: lazarusidestrconsts.lisinfobuildcaption
 msgid "Compile Project"
 msgstr "Kompiliuoti projektą"
@@ -7101,6 +7096,10 @@ msgstr "Nutraukti"
 #: lazarusidestrconsts.lisinfobuildnote
 msgid "Notes:"
 msgstr "Pastabos:"
+
+#: lazarusidestrconsts.lisinfobuildproject
+msgid "Project:"
+msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildsuccess
 msgid "Success..."
@@ -12610,6 +12609,14 @@ msgstr ""
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Sakinį ištraukti neis.%sPrieš ištraukiant naują procedūrą/metodą pažymėkite kažkiek kodo."
 
+#: lazarusidestrconsts.listinfobuildautocloseonsuccess
+msgid "&Automatically close on success"
+msgstr ""
+
+#: lazarusidestrconsts.listinfobuildcompiling
+msgid "Compiling:"
+msgstr ""
+
 #: lazarusidestrconsts.listitle
 msgid "&Title"
 msgstr "&Antraštė"
@@ -12776,13 +12783,13 @@ msgstr "Ne UTF-8 šriftas"
 msgid "Goto line:"
 msgstr "Rodyti eilutę:"
 
+#: lazarusidestrconsts.lisuemodeseparator
+msgid "/"
+msgstr ""
+
 #: lazarusidestrconsts.lisuenotfound
 msgid "Not found"
 msgstr "Nerasta"
-
-#: lazarusidestrconsts.lisuereadonly
-msgid "%s/ReadOnly"
-msgstr "%s/Tik skaitymui"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
@@ -14282,6 +14289,10 @@ msgstr "Perkelti žymeklį į eilutės pradžia"
 msgid "Move cursor to text start in line"
 msgstr ""
 
+#: lazarusidestrconsts.srkmeclockeditor
+msgid "Lock Editor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr "Sukurti išteklių eilutę"
@@ -14843,6 +14854,10 @@ msgstr "Failas „"
 msgid "\" is not writable."
 msgstr "“ nėra skirtas rašymui."
 
+#: lazarusidestrconsts.uelocked
+msgid "Locked"
+msgstr ""
+
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "&Stebėti esantį ties žymekliu"
@@ -14948,6 +14963,10 @@ msgstr "Sukeisti priskyrimą"
 
 #: lazarusidestrconsts.uemlineending
 msgid "Line ending"
+msgstr ""
+
+#: lazarusidestrconsts.uemlockpage
+msgid "&Lock Page"
 msgstr ""
 
 #: lazarusidestrconsts.uemmovepageleft

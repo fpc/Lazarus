@@ -7036,11 +7036,6 @@ msgstr "אינדקס"
 msgid "Aborted..."
 msgstr "מבוטל ..."
 
-#: lazarusidestrconsts.lisinfobuildbuild
-msgctxt "lazarusidestrconsts.lisinfobuildbuild"
-msgid "Build"
-msgstr "בנה"
-
 #: lazarusidestrconsts.lisinfobuildcaption
 msgid "Compile Project"
 msgstr "הדר פרויקט"
@@ -7074,6 +7069,10 @@ msgstr "בטל"
 #: lazarusidestrconsts.lisinfobuildnote
 msgid "Notes:"
 msgstr "הערות:"
+
+#: lazarusidestrconsts.lisinfobuildproject
+msgid "Project:"
+msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildsuccess
 msgid "Success..."
@@ -12581,6 +12580,14 @@ msgstr ""
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr ""
 
+#: lazarusidestrconsts.listinfobuildautocloseonsuccess
+msgid "&Automatically close on success"
+msgstr ""
+
+#: lazarusidestrconsts.listinfobuildcompiling
+msgid "Compiling:"
+msgstr ""
+
 #: lazarusidestrconsts.listitle
 msgid "&Title"
 msgstr "כותרת (&T)"
@@ -12741,13 +12748,13 @@ msgstr "גופן ללא UTF-8"
 msgid "Goto line:"
 msgstr ""
 
+#: lazarusidestrconsts.lisuemodeseparator
+msgid "/"
+msgstr ""
+
 #: lazarusidestrconsts.lisuenotfound
 msgid "Not found"
 msgstr "לא נמצא"
-
-#: lazarusidestrconsts.lisuereadonly
-msgid "%s/ReadOnly"
-msgstr ""
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
@@ -14239,6 +14246,10 @@ msgstr ""
 msgid "Move cursor to text start in line"
 msgstr ""
 
+#: lazarusidestrconsts.srkmeclockeditor
+msgid "Lock Editor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr ""
@@ -14800,6 +14811,10 @@ msgstr ""
 msgid "\" is not writable."
 msgstr ""
 
+#: lazarusidestrconsts.uelocked
+msgid "Locked"
+msgstr ""
+
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "הוסף צפייה (&W) מהסמן"
@@ -14906,6 +14921,10 @@ msgstr ""
 
 #: lazarusidestrconsts.uemlineending
 msgid "Line ending"
+msgstr ""
+
+#: lazarusidestrconsts.uemlockpage
+msgid "&Lock Page"
 msgstr ""
 
 #: lazarusidestrconsts.uemmovepageleft

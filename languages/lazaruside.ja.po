@@ -7064,11 +7064,6 @@ msgstr "索引"
 msgid "Aborted..."
 msgstr "中止しました.."
 
-#: lazarusidestrconsts.lisinfobuildbuild
-msgctxt "lazarusidestrconsts.lisinfobuildbuild"
-msgid "Build"
-msgstr "構築"
-
 #: lazarusidestrconsts.lisinfobuildcaption
 msgid "Compile Project"
 msgstr "プロジェクトをコンパイル"
@@ -7102,6 +7097,10 @@ msgstr "中止"
 #: lazarusidestrconsts.lisinfobuildnote
 msgid "Notes:"
 msgstr "ノート:"
+
+#: lazarusidestrconsts.lisinfobuildproject
+msgid "Project:"
+msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildsuccess
 msgid "Success..."
@@ -12609,6 +12608,14 @@ msgstr "このLazarus構築オプションセットは、このインストー�
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "この文は抽出できません。%s新しい手続き/メソッドを抽出するためにコードの一部を選択してください。"
 
+#: lazarusidestrconsts.listinfobuildautocloseonsuccess
+msgid "&Automatically close on success"
+msgstr ""
+
+#: lazarusidestrconsts.listinfobuildcompiling
+msgid "Compiling:"
+msgstr ""
+
 #: lazarusidestrconsts.listitle
 msgid "&Title"
 msgstr "タイトル(&T)"
@@ -12771,13 +12778,13 @@ msgstr "UTF-8でないフォント"
 msgid "Goto line:"
 msgstr "移動先の行:"
 
+#: lazarusidestrconsts.lisuemodeseparator
+msgid "/"
+msgstr ""
+
 #: lazarusidestrconsts.lisuenotfound
 msgid "Not found"
 msgstr "見つかりません"
-
-#: lazarusidestrconsts.lisuereadonly
-msgid "%s/ReadOnly"
-msgstr "%s/読み込み専用"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
@@ -14275,6 +14282,10 @@ msgstr "カーソルを行頭に移動"
 msgid "Move cursor to text start in line"
 msgstr ""
 
+#: lazarusidestrconsts.srkmeclockeditor
+msgid "Lock Editor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr "リソース文字列作成"
@@ -14836,6 +14847,10 @@ msgstr "ファイル \""
 msgid "\" is not writable."
 msgstr "\"は書き込み不可です。"
 
+#: lazarusidestrconsts.uelocked
+msgid "Locked"
+msgstr ""
+
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "カーソル位置の変数を監視に追加(&W)"
@@ -14942,6 +14957,10 @@ msgstr "代入を反転"
 
 #: lazarusidestrconsts.uemlineending
 msgid "Line ending"
+msgstr ""
+
+#: lazarusidestrconsts.uemlockpage
+msgid "&Lock Page"
 msgstr ""
 
 #: lazarusidestrconsts.uemmovepageleft

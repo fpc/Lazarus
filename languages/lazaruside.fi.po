@@ -7046,11 +7046,6 @@ msgstr ""
 msgid "Aborted..."
 msgstr ""
 
-#: lazarusidestrconsts.lisinfobuildbuild
-msgctxt "lazarusidestrconsts.lisinfobuildbuild"
-msgid "Build"
-msgstr "Käännä"
-
 #: lazarusidestrconsts.lisinfobuildcaption
 msgid "Compile Project"
 msgstr "Tietoja projektin käännöksestä"
@@ -7084,6 +7079,10 @@ msgstr "Keskeytä"
 #: lazarusidestrconsts.lisinfobuildnote
 msgid "Notes:"
 msgstr "Huomioita:"
+
+#: lazarusidestrconsts.lisinfobuildproject
+msgid "Project:"
+msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildsuccess
 msgid "Success..."
@@ -12585,6 +12584,14 @@ msgstr ""
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Tästä ei voi tehdä omaa aliohjelmaa.%sOle hyvä ja valitse ensin jokin muu koodin osa josta voi tehdä uusi aliohjelma tai metodi"
 
+#: lazarusidestrconsts.listinfobuildautocloseonsuccess
+msgid "&Automatically close on success"
+msgstr ""
+
+#: lazarusidestrconsts.listinfobuildcompiling
+msgid "Compiling:"
+msgstr ""
+
 #: lazarusidestrconsts.listitle
 msgid "&Title"
 msgstr ""
@@ -12747,13 +12754,13 @@ msgstr ""
 msgid "Goto line:"
 msgstr "Hyppää riville :"
 
+#: lazarusidestrconsts.lisuemodeseparator
+msgid "/"
+msgstr ""
+
 #: lazarusidestrconsts.lisuenotfound
 msgid "Not found"
 msgstr "Ei löytynyt"
-
-#: lazarusidestrconsts.lisuereadonly
-msgid "%s/ReadOnly"
-msgstr ""
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
@@ -14249,6 +14256,10 @@ msgstr "Siirrä kursori rivin alkuun"
 msgid "Move cursor to text start in line"
 msgstr ""
 
+#: lazarusidestrconsts.srkmeclockeditor
+msgid "Lock Editor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr ""
@@ -14810,6 +14821,10 @@ msgstr "Tiedosto \""
 msgid "\" is not writable."
 msgstr "\" ei voida tallentaa."
 
+#: lazarusidestrconsts.uelocked
+msgid "Locked"
+msgstr ""
+
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr ""
@@ -14917,6 +14932,10 @@ msgstr "Käännä sijoitus päinvastaiseksi"
 #: lazarusidestrconsts.uemlineending
 msgid "Line ending"
 msgstr "Rivinloppu"
+
+#: lazarusidestrconsts.uemlockpage
+msgid "&Lock Page"
+msgstr ""
 
 #: lazarusidestrconsts.uemmovepageleft
 msgid "Move page left"

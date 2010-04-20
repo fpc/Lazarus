@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-20 03:59+0300\n"
+"PO-Revision-Date: 2010-04-21 01:44+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -7057,11 +7057,6 @@ msgstr "Индекс"
 msgid "Aborted..."
 msgstr "Прервано..."
 
-#: lazarusidestrconsts.lisinfobuildbuild
-msgctxt "lazarusidestrconsts.lisinfobuildbuild"
-msgid "Build"
-msgstr "Сборка"
-
 #: lazarusidestrconsts.lisinfobuildcaption
 msgid "Compile Project"
 msgstr "Компиляция проекта"
@@ -7095,6 +7090,10 @@ msgstr "Прервать"
 #: lazarusidestrconsts.lisinfobuildnote
 msgid "Notes:"
 msgstr "Заметок:"
+
+#: lazarusidestrconsts.lisinfobuildproject
+msgid "Project:"
+msgstr "Проект:"
 
 #: lazarusidestrconsts.lisinfobuildsuccess
 msgid "Success..."
@@ -12595,6 +12594,14 @@ msgstr "Этот набор параметров сборки Lazarus не по�
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Это выражение не может быть извлечено.%sВыберите какой-то код, чтобы извлечь новую процедуру/метод."
 
+#: lazarusidestrconsts.listinfobuildautocloseonsuccess
+msgid "&Automatically close on success"
+msgstr "&Автоматически закрывать в случае успеха"
+
+#: lazarusidestrconsts.listinfobuildcompiling
+msgid "Compiling:"
+msgstr "Компиляция:"
+
 #: lazarusidestrconsts.listitle
 msgid "&Title"
 msgstr "&Заголовок"
@@ -12756,13 +12763,13 @@ msgstr "Шрифт без UTF-8"
 msgid "Goto line:"
 msgstr "Перейти к строке:"
 
+#: lazarusidestrconsts.lisuemodeseparator
+msgid "/"
+msgstr "/"
+
 #: lazarusidestrconsts.lisuenotfound
 msgid "Not found"
 msgstr "Не найден"
-
-#: lazarusidestrconsts.lisuereadonly
-msgid "%s/ReadOnly"
-msgstr "%s/только чтение"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
@@ -14258,6 +14265,10 @@ msgstr "Переместить курсор в начало строки"
 msgid "Move cursor to text start in line"
 msgstr "Переместить курсор на начало текста в строке"
 
+#: lazarusidestrconsts.srkmeclockeditor
+msgid "Lock Editor"
+msgstr "Зафиксировать положение в редакторе"
+
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr "Создать строку ресурсов"
@@ -14819,6 +14830,10 @@ msgstr "Файл \""
 msgid "\" is not writable."
 msgstr "\" не для записи."
 
+#: lazarusidestrconsts.uelocked
+msgid "Locked"
+msgstr "Зафиксирован"
+
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "Добавить &наблюдение у курсора"
@@ -14925,6 +14940,10 @@ msgstr "Инвертировать присвоение"
 #: lazarusidestrconsts.uemlineending
 msgid "Line ending"
 msgstr "Конец строки"
+
+#: lazarusidestrconsts.uemlockpage
+msgid "&Lock Page"
+msgstr "З&афиксировать положение в редакторе"
 
 #: lazarusidestrconsts.uemmovepageleft
 msgid "Move page left"

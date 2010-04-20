@@ -7060,11 +7060,6 @@ msgstr "Índice"
 msgid "Aborted..."
 msgstr "Abortado..."
 
-#: lazarusidestrconsts.lisinfobuildbuild
-msgctxt "lazarusidestrconsts.lisinfobuildbuild"
-msgid "Build"
-msgstr "Construir"
-
 #: lazarusidestrconsts.lisinfobuildcaption
 msgid "Compile Project"
 msgstr "Compilar Projeto"
@@ -7098,6 +7093,10 @@ msgstr "Abortar"
 #: lazarusidestrconsts.lisinfobuildnote
 msgid "Notes:"
 msgstr "Notas:"
+
+#: lazarusidestrconsts.lisinfobuildproject
+msgid "Project:"
+msgstr ""
 
 #: lazarusidestrconsts.lisinfobuildsuccess
 msgid "Success..."
@@ -12601,6 +12600,14 @@ msgstr "Este conjunto de opções para contrução Lazarus não é suportado por
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Esta declaração não pode ser extraída.%sFavor selecionar algum código para extrair um novo procedimento/método."
 
+#: lazarusidestrconsts.listinfobuildautocloseonsuccess
+msgid "&Automatically close on success"
+msgstr ""
+
+#: lazarusidestrconsts.listinfobuildcompiling
+msgid "Compiling:"
+msgstr ""
+
 #: lazarusidestrconsts.listitle
 msgid "&Title"
 msgstr "&Título"
@@ -12763,13 +12770,13 @@ msgstr "Fonte sem UTF-8"
 msgid "Goto line:"
 msgstr "Ir para Linha :"
 
+#: lazarusidestrconsts.lisuemodeseparator
+msgid "/"
+msgstr ""
+
 #: lazarusidestrconsts.lisuenotfound
 msgid "Not found"
 msgstr "Não encontrado"
-
-#: lazarusidestrconsts.lisuereadonly
-msgid "%s/ReadOnly"
-msgstr "%s/Somente Leitura"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
@@ -14266,6 +14273,10 @@ msgstr "Mover cursor para o início da linha"
 msgid "Move cursor to text start in line"
 msgstr "Mover cursor para início do texto na linha"
 
+#: lazarusidestrconsts.srkmeclockeditor
+msgid "Lock Editor"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
 msgstr "Criar recurso de sequência de caracteres"
@@ -14827,6 +14838,10 @@ msgstr "O arquivo \""
 msgid "\" is not writable."
 msgstr "\" não pode ser escrito."
 
+#: lazarusidestrconsts.uelocked
+msgid "Locked"
+msgstr ""
+
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
 msgstr "Adicionar &Observador sob o Cursor"
@@ -14933,6 +14948,10 @@ msgstr "Inverter Atribuição"
 #: lazarusidestrconsts.uemlineending
 msgid "Line ending"
 msgstr "Finalização linha"
+
+#: lazarusidestrconsts.uemlockpage
+msgid "&Lock Page"
+msgstr ""
 
 #: lazarusidestrconsts.uemmovepageleft
 msgid "Move page left"
