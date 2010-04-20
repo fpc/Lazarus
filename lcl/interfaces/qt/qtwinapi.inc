@@ -5068,17 +5068,25 @@ var
     begin
       inc(SBUpdatesCount);
 
-      if (ScrollInfo.nPos < ScrollBar.getMin) then
-        ScrollInfo.nPos := ScrollBar.getMin
-      else
-      if (ScrollInfo.nPos > ScrollBar.getMax) then
-        ScrollInfo.nPos := ScrollBar.getMax;
-
       if SBUpdatesCount = 1 then
         ScrollBar.BeginUpdate;
       try
         if (ScrollInfo.FMask and SIF_UPDATEPOLICY) = 0 then
-          ScrollBar.setValue(ScrollInfo.nPos);
+        begin
+          {do not setValue() if values are equal, since it calls
+           signalValueChanged() which sends unneeded LM_SCROLL msgs }
+          if ScrollBar.getValue = ScrollInfo.nPos then
+            SBUpdatesCount := 0;
+
+          if (ScrollInfo.nPos < ScrollBar.getMin) then
+            ScrollInfo.nPos := ScrollBar.getMin
+          else
+          if (ScrollInfo.nPos > ScrollBar.getMax) then
+            ScrollInfo.nPos := ScrollBar.getMax;
+
+          if SBUpdatesCount > 0 then
+            ScrollBar.setValue(ScrollInfo.nPos);
+        end;
       finally
         if SBUpdatesCount = 1 then
           ScrollBar.EndUpdate;
