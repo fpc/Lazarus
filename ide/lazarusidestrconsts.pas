@@ -723,6 +723,7 @@ resourcestring
   lisInfoBuildHint = 'Hints:';
   lisInfoBuildWarning = 'Warnings:';
   lisInfoBuildProject   = 'Project:';
+  listInfoBuildCompiling = 'Compiling:';
   lisInfoBuildComplile = 'Compiling...';
   lisFPCTooOld = 'FPC too old';
   lisTheProjectUsesTheNewFPCResourcesWhichRequiresAtLea = 'The project uses '
@@ -736,6 +737,7 @@ resourcestring
   lisInfoBuildCaption = 'Compile Project';
   lisInfoBuildMakeAbort = 'Abort';
   lisInfoBuildNote = 'Notes:';
+  listInfoBuildAutoCloseOnSuccess = '&Automatically close on success';
 
   // file dialogs
   lisOpenFile = 'Open file';

@@ -1,8 +1,9 @@
 object CompileInfoDlg: TCompileInfoDlg
-  Left = 989
-  Height = 181
-  Top = 278
+  Left = 677
+  Height = 167
+  Top = 462
   Width = 384
+  AutoSize = True
   BorderIcons = []
   BorderStyle = bsDialog
   Caption = 'Compile project'
@@ -10,10 +11,11 @@ object CompileInfoDlg: TCompileInfoDlg
   ChildSizing.TopBottomSpacing = 6
   ChildSizing.HorizontalSpacing = 6
   ChildSizing.VerticalSpacing = 6
-  ClientHeight = 181
+  ClientHeight = 167
   ClientWidth = 384
   FormStyle = fsStayOnTop
   KeyPreview = True
+  OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
@@ -24,8 +26,6 @@ object CompileInfoDlg: TCompileInfoDlg
     Top = 6
     Width = 372
     Align = alTop
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    AutoSize = True
     BevelInner = bvRaised
     BevelOuter = bvLowered
     ClientHeight = 26
@@ -33,31 +33,38 @@ object CompileInfoDlg: TCompileInfoDlg
     ParentFont = False
     TabOrder = 0
     object lbInfo: TLabel
-      AnchorSideLeft.Control = lbProject
-      AnchorSideLeft.Side = asrBottom
+      AnchorSideLeft.Control = PnlTitle
       AnchorSideTop.Control = PnlTitle
       AnchorSideRight.Control = PnlTitle
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = PnlTitle
       AnchorSideBottom.Side = asrBottom
-      Left = 59
-      Height = 26
-      Top = 0
-      Width = 309
+      Left = 80
+      Height = 22
+      Top = 2
+      Width = 288
       Anchors = [akTop, akLeft, akRight, akBottom]
       AutoSize = False
-      BorderSpacing.Left = 14
+      BorderSpacing.Left = 80
+      BorderSpacing.Top = 2
       BorderSpacing.Right = 4
+      BorderSpacing.Bottom = 2
       Layout = tlCenter
       ParentColor = False
     end
     object lbProject: TLabel
-      Left = 6
+      AnchorSideLeft.Control = PnlTitle
+      AnchorSideTop.Control = PnlTitle
+      AnchorSideBottom.Control = PnlTitle
+      AnchorSideBottom.Side = asrBottom
+      Left = 4
       Height = 22
       Top = 2
       Width = 39
-      Align = alLeft
+      Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Left = 4
+      BorderSpacing.Top = 2
+      BorderSpacing.Bottom = 2
       Caption = 'Project:'
       Layout = tlCenter
       ParentColor = False
@@ -65,27 +72,32 @@ object CompileInfoDlg: TCompileInfoDlg
   end
   object Panel1: TPanel
     Left = 6
-    Height = 63
+    Height = 26
     Top = 38
     Width = 372
-    Align = alClient
+    Align = alTop
     BevelInner = bvRaised
     BevelOuter = bvLowered
-    ClientHeight = 63
+    ClientHeight = 26
     ClientWidth = 372
     ParentColor = False
     TabOrder = 1
     object PCurrentStatus: TLabel
-      Left = 4
-      Height = 55
-      Top = 4
-      Width = 364
-      Align = alClient
-      Alignment = taCenter
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 80
+      Height = 22
+      Top = 2
+      Width = 288
+      Anchors = [akTop, akLeft, akRight, akBottom]
       AutoSize = False
-      BorderSpacing.Left = 2
+      BorderSpacing.Left = 80
       BorderSpacing.Top = 2
-      BorderSpacing.Right = 2
+      BorderSpacing.Right = 4
       BorderSpacing.Bottom = 2
       Color = clBtnFace
       Layout = tlCenter
@@ -93,14 +105,33 @@ object CompileInfoDlg: TCompileInfoDlg
       Transparent = False
       WordWrap = True
     end
+    object lbCompiling: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 4
+      Height = 22
+      Top = 2
+      Width = 50
+      Anchors = [akTop, akLeft, akBottom]
+      BorderSpacing.Left = 4
+      BorderSpacing.Top = 2
+      BorderSpacing.Bottom = 2
+      Caption = 'Compiling:'
+      Layout = tlCenter
+      ParentColor = False
+    end
   end
   object pnlButton: TPanel
     Left = 6
     Height = 26
-    Top = 149
+    Top = 135
     Width = 372
-    Align = alBottom
+    Align = alTop
     AutoSize = True
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
     BevelOuter = bvNone
     ClientHeight = 26
     ClientWidth = 372
@@ -115,7 +146,7 @@ object CompileInfoDlg: TCompileInfoDlg
       AutoSize = True
       Cancel = True
       Caption = '&OK'
-      Constraints.MinHeight = 23
+      Constraints.MinHeight = 25
       Constraints.MinWidth = 75
       Default = True
       Kind = bkOK
@@ -128,9 +159,9 @@ object CompileInfoDlg: TCompileInfoDlg
   object pnlInfo: TPanel
     Left = 6
     Height = 36
-    Top = 107
+    Top = 70
     Width = 372
-    Align = alBottom
+    Align = alTop
     AutoSize = True
     BevelOuter = bvNone
     ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
@@ -368,11 +399,22 @@ object CompileInfoDlg: TCompileInfoDlg
       end
     end
   end
+  object cbAutoCloseOnSuccess: TCheckBox
+    Left = 6
+    Height = 17
+    Top = 112
+    Width = 372
+    Align = alTop
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'cbAutoCloseOnSuccess'
+    TabOrder = 4
+  end
   object tmrCloseForm: TTimer
     Enabled = False
     Interval = 2000
     OnTimer = tmrCloseFormTimer
-    left = 320
-    top = 136
+    left = 256
+    top = 48
   end
 end

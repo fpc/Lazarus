@@ -39,8 +39,10 @@ type
 
   TCompileInfoDlg = class (TForm)
     BClose: TBitBtn;
+    cbAutoCloseOnSuccess: TCheckBox;
     lbProject: TLabel;
     lbInfo: TLabel;
+    lbCompiling: TLabel;
     LInfoError: TLabel;
     LInfoHint: TLabel;
     LInfoLines: TLabel;
@@ -65,6 +67,7 @@ type
     PnlTitle : TPanel;
     tmrCloseForm: TTimer;
     procedure BCloseClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure tmrCloseFormTimer(Sender: TObject);
@@ -122,8 +125,15 @@ begin
     SetStatus('Aborted...!');
     MakeBold;
     SetCanClose;
-  end else
+  end
+  else
     Close;
+end;
+
+procedure TCompileInfoDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  EnvironmentOptions.AutoCloseCompileDialog := cbAutoCloseOnSuccess.Checked;
+  EnvironmentOptions.Save(False);
 end;
 
 procedure TCompileInfoDlg.FormCreate (Sender: TObject);
@@ -134,8 +144,8 @@ begin
   NNotes    := 0;
   NLines    := 0;
 
-
   lbProject.Caption    := lisInfoBuildProject;
+  lbCompiling.Caption  := listInfoBuildCompiling;
   LInfoLines.Caption   := lisInfoBuildLines;
   LInfoError.Caption   := lisInfoBuildErrors;
   LInfoHint.Caption    := lisInfoBuildHint;
@@ -144,6 +154,8 @@ begin
   BClose.Kind          := bkNoToAll;
   BClose.Caption       := lisInfoBuildMakeAbort;
   Caption              := lisInfoBuildCaption;
+  cbAutoCloseOnSuccess.Caption := listInfoBuildAutoCloseOnSuccess;
+  cbAutoCloseOnSuccess.Checked := EnvironmentOptions.AutoCloseCompileDialog;
 
   ToAbort              := True;
   BClose.LoadGlyphFromLazarusResource('btn_ok');
@@ -232,7 +244,7 @@ begin
   ToAbort        := False;
   BClose.Kind    := bkOk;
   BClose.Caption := lisMenuClose;
-  if EnvironmentOptions.AutoCloseCompileDialog and (NErrors = 0) then
+  if cbAutoCloseOnSuccess.Checked and (NErrors = 0) then
     tmrCloseForm.Enabled := True;
 end;
 
