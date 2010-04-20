@@ -60,7 +60,7 @@ type
   end;
   TAbstractIDEOptionsClass = class of TAbstractIDEOptions;
 
-  TAbstractIDEEnvironmentOptions = class(TAbstractIDEOp tions);
+  TAbstractIDEEnvironmentOptions = class(TAbstractIDEOptions);
   TAbstractIDEProjectOptions = class(TAbstractIDEOptions);
   TAbstractIDEHelpOptions = class(TAbstractIDEEnvironmentOptions);
 

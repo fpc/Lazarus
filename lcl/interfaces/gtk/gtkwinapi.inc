@@ -9105,7 +9105,7 @@ begin
       if (ScrollInfo.fMask and SIF_DISABLENOSCROLL) = 0 then
         IsScrollbarVis := false
       else
-        ;// scrollbar should look disabled (no thumbbar and grayed appareance)
+        ;// scrollbar should look disabled (no thumbbar and grayed appearance)
          // maybe not possible in gtk
     end;
   end;

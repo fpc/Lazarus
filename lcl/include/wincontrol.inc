@@ -3641,8 +3641,8 @@ begin
     FAdjustClientRectRealized := R;
     {$IFDEF OldAutoSize}
     ReAlign;
-    Resize;
     {$ENDIF}
+    Resize;
     AdjustSize;
   end;
 end;
