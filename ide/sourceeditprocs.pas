@@ -364,19 +364,27 @@ begin
           ANode:=IdentItem.Tool.FindTypeNodeOfDefinition(ItemNode);
           s:=' = ';
           case ANode.Desc of
-          ctnClass,ctnObject,ctnObjCClass,ctnCPPClass:
+          ctnClass,ctnObject,ctnObjCClass,ctnObjCCategory,
+          ctnCPPClass,
+          ctnClassInterface,ctnObjCProtocol,ctnDispinterface:
             begin
               case ANode.Desc of
               ctnClass: s:=s+'class';
               ctnObject: s:=s+'object';
               ctnObjCClass: s:=s+'objcclass';
+              ctnObjCCategory: s:=s+'objccategory';
               ctnCPPClass: s:=s+'cppclass';
+              ctnClassInterface: s:=s+'interface';
+              ctnObjCProtocol: s:=s+'objcprotocol';
+              ctnDispinterface: s:=s+'dispinterface';
               end;
               IdentItem.Tool.BuildSubTree(ANode);
               SubNode:=IdentItem.Tool.FindInheritanceNode(ANode);
               if SubNode<>nil then
                 s:=s+IdentItem.Tool.ExtractNode(SubNode,[]);
             end;
+          ctnRecordType:
+            s:=s+'record';
           else
             s:=s+IdentItem.Tool.ExtractNode(ANode,[]);
           end;
