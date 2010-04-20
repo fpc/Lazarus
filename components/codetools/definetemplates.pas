@@ -124,7 +124,7 @@ const
       'i386', 'powerpc', 'm68k', 'x86_64', 'sparc', 'arm'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..60] of shortstring = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..62] of shortstring = (
     'i386-linux-gtk',
     'i386-linux-gtk2',
     'i386-linux-qt',
@@ -156,6 +156,8 @@ const
     'i386-darwin-qt',
     'i386-darwin-fpgui',
     'i386-darwin-nogui',
+    'i386-haiku-qt',
+    'i386-haiku-nogui',
     'powerpc-darwin-gtk',
     'powerpc-darwin-gtk2',
     'powerpc-darwin-carbon',
@@ -760,6 +762,7 @@ begin
   or (CompareText(TargetOS,'openbsd')=0)
   or (CompareText(TargetOS,'darwin')=0)
   or (CompareText(TargetOS,'solaris')=0)
+  or (CompareText(TargetOS,'haiku')=0)
   then
     Result:='unix'
   else
