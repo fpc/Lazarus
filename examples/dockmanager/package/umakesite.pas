@@ -741,8 +741,7 @@ begin
   fo := Owner; //our owner also owns the forms
   if AName = '' then begin
     Result := TForm(TForm.NewInstance);
-    if DisableUpdate then
-      Result.DisableAlign;
+    Result.DisableAlign;
     Result.Create(fo); //named Form1, Form2... - not now???
   end else begin
   //create new instance
@@ -754,12 +753,13 @@ begin
       exit(nil); //bad form name
     end;
     Result := TWinControl(fc.NewInstance);
-    if DisableUpdate then
-      Result.DisableAlign;
+    Result.DisableAlign;
     Result.Create(fo);
     if Result.Name <> AName then
       TryRename(Result, AName);
   end;
+  if not DisableUpdate then
+    Result.EnableAlign;
   Result.Visible := True; //required for docking
 end;
 
