@@ -99,7 +99,7 @@ uses
   // source editing
   SourceEditor, CodeToolsOptions, IDEOptionDefs, CheckLFMDlg,
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
-  SourceEditProcs, MsgQuickFixes, ViewUnit_dlg,
+  SourceEditProcs, MsgQuickFixes, ViewUnit_dlg, FPDocEditWindow,
   // converter
   ChgEncodingDlg, ConvertDelphi, MissingPropertiesDlg, LazXMLForms,
   // rest of the ide
@@ -388,7 +388,7 @@ type
       LogCaret, OldLogCaret: TPoint; FirstLinePos, LastLinePos: Integer;
       Reason: TSynEditorCommand; SetIndentProc: TSynBeautifierSetIndentProc): Boolean;
     procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
-    procedure OnSrcNotebookEditorVisibleChanged(Sender: TObject);
+    procedure OnSrcNotebookEditorActived(Sender: TObject);
     procedure OnSrcNotebookEditorPlaceBookmark(Sender: TObject; var Mark: TSynEditMark);
     procedure OnSrcNotebookEditorClearBookmark(Sender: TObject; var Mark: TSynEditMark);
     procedure OnSrcNotebookEditorDoSetBookmark(Sender: TObject; ID: Integer; Toggle: Boolean);
@@ -1956,10 +1956,10 @@ begin
   SourceEditorManager.OnGetIndent := @OnSrcNoteBookGetIndent;
   SourceEditorManager.OnCurrentCodeBufferChanged:=@OnSrcNotebookCurCodeBufferChanged;
   SourceEditorManager.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
-  SourceEditorManager.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
-  SourceEditorManager.OnEditorChanged := @OnSrcNotebookEditorChanged;
+  SourceEditorManager.RegisterChangeEvent(semEditorActivate, @OnSrcNotebookEditorActived);
+  SourceEditorManager.RegisterChangeEvent(semEditorStatus, @OnSrcNotebookEditorChanged);
   SourceEditorManager.OnEditorMoved := @OnSrcNotebookEditorMoved;
-  SourceEditorManager.OnEditorClosed := @OnSrcNotebookEditorClosed;
+  SourceEditorManager.RegisterChangeEvent(semEditorDestroy, @OnSrcNotebookEditorClosed);
   SourceEditorManager.OnPlaceBookmark := @OnSrcNotebookEditorPlaceBookmark;
   SourceEditorManager.OnClearBookmark := @OnSrcNotebookEditorClearBookmark;
   SourceEditorManager.OnSetBookmark := @OnSrcNotebookEditorDoSetBookmark;
@@ -7698,8 +7698,6 @@ begin
 
     NewSrcEdit.IsLocked := AnEditorInfo.IsLocked;
     AnEditorInfo.EditorComponent := NewSrcEdit;
-    if (not (ofProjectLoading in Flags)) then
-      OnSrcNotebookEditorVisibleChanged(NewSrcEdit.SourceNotebook);
     //debugln(['TMainIDE.DoOpenFileInSourceEditor ',AnUnitInfo.Filename,' ',AnUnitInfo.EditorIndex]);
 
     // restore source editor settings
@@ -7860,7 +7858,6 @@ begin
     MainIDEBar.itmFileCloseAll.Enabled:=True;
     NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.EditorInfo[0].SyntaxHighlighter;
     NewUnitInfo.GetClosedOrNewEditorInfo.EditorComponent := NewSrcEdit;
-    OnSrcNotebookEditorVisibleChanged(NewSrcEdit.SourceNotebook);
 
     // create component
     AncestorType:=NewFileDescriptor.ResourceClass;
@@ -8967,7 +8964,7 @@ end;
 
 procedure TMainIDE.DoShowFPDocEditor;
 begin
-  SourceEditorManager.ShowFPDocEditor;
+  FPDocEditWindow.DoShowFPDocEditor;
 end;
 
 function TMainIDE.CreateNewUniqueFilename(const Prefix, Ext: string;
@@ -14615,15 +14612,17 @@ begin
   SourceEditorManager.ShowActiveWindowOnTop(True);
 end;
 
-Procedure TMainIDE.OnSrcNotebookEditorVisibleChanged(Sender: TObject);
+Procedure TMainIDE.OnSrcNotebookEditorActived(Sender: TObject);
 var
   ActiveUnitInfo: TUnitInfo;
+  ASrcEdit: TSourceEditor;
 begin
   if SourceEditorManager.SourceEditorCount = 0 then Exit;
+  ASrcEdit := TSourceEditor(Sender);
 
   if Sender <> nil then
-    Project1.UpdateVisibleUnit(TSourceNotebook(Sender).ActiveEditor,
-      SourceEditorManager.IndexOfSourceWindow(TSourceNotebook(Sender)));
+    Project1.UpdateVisibleUnit(ASrcEdit,
+      SourceEditorManager.IndexOfSourceWindow(ASrcEdit.SourceNotebook));
 
   ActiveUnitInfo :=
     Project1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);

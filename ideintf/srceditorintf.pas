@@ -205,7 +205,15 @@ type
              deprecated {$IFDEF VER2_5}'use SourceEditorManagerIntf'{$ENDIF};   // deprecated in 0.9.29 March 2010
   end;
 
-  TsemChangeReason = (semWindowCreate, semWindowDestroy);
+  TsemChangeReason = (
+    semWindowCreate,    // Called after creation of a Window
+    semWindowDestroy,   // Called after removal of a Window
+    semWindowActivate,  // Window was activated
+    semEditorCreate,
+    semEditorDestroy,
+    semEditorActivate,
+    semEditorStatus     // any status change of the editor (Caret, Selection, topline, ...)
+  );
 
   TSourceEditorManagerInterface = class(TComponent)
   protected

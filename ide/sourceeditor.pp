@@ -62,7 +62,7 @@ uses
   CodeTemplatesDlg, TodoDlg, TodoList, CodeToolsOptions,
   SortSelectionDlg, EncloseSelectionDlg, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
-  FPDocHints, FPDocEditWindow,
+  FPDocHints,
   BaseDebugManager, Debugger, MainIntf, GotoFrm;
 
 type
@@ -833,6 +833,7 @@ type
     FSourceWindowList: TFPList;
     FSourceWindowByFocusList: TFPList;
     FUpdateLock: Integer;
+    FActiveEditorLock: Integer;
     FShowWindowOnTop: Boolean;
     FShowWindowOnTopFocus: Boolean;
     procedure FreeSourceWindows;
@@ -846,6 +847,8 @@ type
     function  GetSourceWindows(Index: integer): TSourceEditorWindowInterface; override;
     function  GetActiveEditor: TSourceEditorInterface; override;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); override;
+    procedure DoActiveEditorChanged;
+    procedure DoEditorStatusChanged(AEditor: TSourceEditor);
     function  GetSourceEditors(Index: integer): TSourceEditorInterface; override;
     function  GetUniqueSourceEditors(Index: integer): TSourceEditorInterface; override;
   public
@@ -900,13 +903,9 @@ type
     procedure IncUpdateLock;
     procedure DecUpdateLock;
     procedure ShowActiveWindowOnTop(Focus: Boolean = False);
-    procedure UpdateFPDocEditor;
   private
-    FOnEditorVisibleChanged: TNotifyEvent;
     FOnCurrentCodeBufferChanged: TNotifyEvent;
   public
-    property OnEditorVisibleChanged: TNotifyEvent
-             read FOnEditorVisibleChanged write FOnEditorVisibleChanged;
     property OnCurrentCodeBufferChanged: TNotifyEvent
              read FOnCurrentCodeBufferChanged write FOnCurrentCodeBufferChanged;
   end;
@@ -995,7 +994,6 @@ type
     procedure SetupShortCuts;
 
     function FindUniquePageName(FileName:string; IgnoreEditor: TSourceEditor):string;
-    procedure ShowFPDocEditor;
     function SomethingModified: boolean;
     procedure HideHint;
     procedure LockAllEditorsInSourceChangeCache;
@@ -1033,8 +1031,6 @@ type
     FOnClickLink: TMouseEvent;
     FOnCloseClicked: TOnCloseSrcEditor;
     FOnDeleteLastJumpPoint: TNotifyEvent;
-    FOnEditorChanged: TNotifyEvent;
-    FOnEditorClosed: TNotifyEvent;
     FOnEditorMoved: TNotifyEvent;
     FOnEditorPropertiesClicked: TNotifyEvent;
     FOnFindDeclarationClicked: TNotifyEvent;
@@ -1071,12 +1067,8 @@ type
              read FOnGetIndent write FOnGetIndent;
     property OnDeleteLastJumpPoint: TNotifyEvent
              read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
-    property OnEditorChanged: TNotifyEvent
-             read FOnEditorChanged write FOnEditorChanged;
     property OnEditorMoved: TNotifyEvent
              read FOnEditorMoved write FOnEditorMoved;
-    property OnEditorClosed: TNotifyEvent
-             read FOnEditorClosed write FOnEditorClosed;
     property OnEditorPropertiesClicked: TNotifyEvent
              read FOnEditorPropertiesClicked write FOnEditorPropertiesClicked;
     property OnFindDeclarationClicked: TNotifyEvent
@@ -5270,6 +5262,8 @@ begin
   FPageIndex := AValue;
   if FUpdateLock = 0 then begin
     FPageIndex := Max(0, Min(FPageIndex, FNotebook.PageCount-1));
+    if Assigned(Manager) and (FNotebook.PageIndex = FPageIndex) then
+      Manager.DoActiveEditorChanged;
     FNotebook.PageIndex := FPageIndex;
   end;
 end;
@@ -5466,8 +5460,8 @@ Begin
   SenderDeleted:=(Sender as TControl).Parent=nil;
   if SenderDeleted then exit;
   UpdateStatusBar;
-  if assigned(Manager) and Assigned(Manager.OnEditorChanged) then
-    Manager.OnEditorChanged(Sender);
+  if assigned(Manager) then
+    Manager.DoEditorStatusChanged(FindSourceEditorWithEditorComponent(TSynEdit(Sender)));
 End;
 
 procedure TSourceNotebook.DoClose(var CloseAction: TCloseAction);
@@ -6008,8 +6002,7 @@ begin
   UpdateProjectFiles;
   DestWin.UpdateProjectFiles;
   // Update IsVisibleTab; needs UnitEditorInfo created in DestWin.UpdateProjectFiles
-  if Assigned(Manager.OnEditorVisibleChanged) then
-    Manager.OnEditorVisibleChanged(Self);
+  Manager.DoActiveEditorChanged;
 end;
 
 procedure TSourceNotebook.ActivateHint(const ScreenPos: TPoint;
@@ -6650,8 +6643,6 @@ begin
   Statusbar.EndUpdate;
 
   CheckCurrentCodeBufferChanged;
-  if assigned(Manager) then
-    Manager.UpdateFPDocEditor;
 End;
 
 function TSourceNotebook.FindPageWithEditor(
@@ -6783,12 +6774,10 @@ Begin
        not TempEditor.HasExecutionMarks and
        (TempEditor.FileName <> '') then
       TempEditor.FillExecutionMarks;
-    if Assigned(Manager.OnEditorVisibleChanged) then
-      Manager.OnEditorVisibleChanged(Self);
+    Manager.DoActiveEditorChanged;
   end;
 
   CheckCurrentCodeBufferChanged;
-  Manager.UpdateFPDocEditor;
 end;
 
 Procedure TSourceNotebook.ProcessParentCommand(Sender: TObject;
@@ -7660,11 +7649,10 @@ begin
     TSourceEditor(SourceEditors[0]).EditorComponent.Beautifier.OnGetDesiredIndent
       := @TSourceNotebook(ActiveSourceWindow).EditorGetIndent;
 
-  if Assigned(OnEditorVisibleChanged) then
-    OnEditorVisibleChanged(nil);
   if Assigned(OnCurrentCodeBufferChanged) then
     OnCurrentCodeBufferChanged(nil);
-  UpdateFPDocEditor;
+  FChangeNotifyLists[semWindowActivate].CallNotifyEvents(FActiveWindow);
+  DoActiveEditorChanged;
 end;
 
 function TSourceEditorManagerBase.GetSourceWindows(Index: integer
@@ -7686,13 +7674,30 @@ procedure TSourceEditorManagerBase.SetActiveEditor(
 var
   Window: TSourceEditorWindowInterface;
 begin
-  if (FActiveWindow <> nil) and (FActiveWindow.IndexOfEditor(AValue) >= 0) then
-    Window := FActiveWindow
-  else
-    Window := SourceWindowWithEditor(AValue);
-  if Window = nil then exit;
-  ActiveSourceWindow := TSourceNotebook(Window);
-  Window.ActiveEditor := AValue;
+  inc(FActiveEditorLock);
+  try
+    if (FActiveWindow <> nil) and (FActiveWindow.IndexOfEditor(AValue) >= 0) then
+      Window := FActiveWindow
+    else
+      Window := SourceWindowWithEditor(AValue);
+    if Window = nil then exit;
+    ActiveSourceWindow := TSourceNotebook(Window);
+    Window.ActiveEditor := AValue;
+  finally
+    dec(FActiveEditorLock);
+    DoActiveEditorChanged;
+  end;
+end;
+
+procedure TSourceEditorManagerBase.DoActiveEditorChanged;
+begin
+  if FActiveEditorLock > 0 then exit;
+  FChangeNotifyLists[semEditorActivate].CallNotifyEvents(ActiveEditor);
+end;
+
+procedure TSourceEditorManagerBase.DoEditorStatusChanged(AEditor: TSourceEditor);
+begin
+  FChangeNotifyLists[semEditorStatus].CallNotifyEvents(AEditor);
 end;
 
 function TSourceEditorManagerBase.GetSourceEditors(Index: integer
@@ -7961,6 +7966,7 @@ begin
   FSourceWindowByFocusList := TFPList.Create;
   FCompletionPlugins := TFPList.Create;
   FUpdateLock := 0;
+  FActiveEditorLock := 0;
   inherited;
 end;
 
@@ -8028,18 +8034,6 @@ begin
   ActiveSourceWindow.ShowOnTop;
   if Focus then
     TSourceNotebook(ActiveSourceWindow).FocusEditor;
-end;
-
-procedure TSourceEditorManagerBase.UpdateFPDocEditor;
-var
-  SrcEdit: TSourceEditor;
-  CaretPos: TPoint;
-begin
-  if FPDocEditor = nil then exit;
-  SrcEdit:= TSourceEditor(ActiveEditor);
-  if SrcEdit=nil then exit;
-  CaretPos := SrcEdit.EditorComponent.CaretXY;
-  FPDocEditor.UpdateFPDocEditor(SrcEdit.Filename,CaretPos);
 end;
 
 { TSourceEditorManager }
@@ -8163,14 +8157,14 @@ procedure TSourceEditorManager.NewEditorCreated(AEditor: TSourceEditor);
 begin
   if FDefaultCompletionForm <> nil then
     FDefaultCompletionForm.AddEditor(AEditor.EditorComponent);
+  FChangeNotifyLists[semEditorCreate].CallNotifyEvents(AEditor);
 end;
 
 procedure TSourceEditorManager.EditorRemoved(AEditor: TSourceEditor);
 begin
   if FDefaultCompletionForm <> nil then
     FDefaultCompletionForm.RemoveEditor(AEditor.EditorComponent);
-  if Assigned(OnEditorClosed) then
-    OnEditorClosed(AEditor);
+  FChangeNotifyLists[semEditorDestroy].CallNotifyEvents(AEditor);
 end;
 
 procedure TSourceEditorManager.Notification(AComponent: TComponent;
@@ -8451,12 +8445,6 @@ begin
       Result:=ShortName+'('+IntToStr(i)+')';
     until PageNameExists(Result)=false;
   end;
-end;
-
-procedure TSourceEditorManager.ShowFPDocEditor;
-begin
-  DoShowFPDocEditor;
-  UpdateFPDocEditor;
 end;
 
 function TSourceEditorManager.SomethingModified: boolean;

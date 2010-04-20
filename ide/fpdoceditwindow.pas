@@ -42,6 +42,7 @@ uses
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
   // IDEIntf
   ProjectIntf, LazIDEIntf, IDEHelpIntf, LazHelpIntf, Menus,
+  SrcEditorIntf,
   // IDE
   IDEOptionDefs, EnvironmentOpts, PackageSystem, IDEProcs, LazarusIDEStrConsts,
   FPDocSelectInherited, FPDocSelectLink, CodeHelp;
@@ -175,6 +176,7 @@ type
     function GetCurrentModuleName: string;
     procedure JumpToError(Item : TFPDocItem; LineCol: TPoint);
     function GUIModified: boolean;
+    procedure DoEditorUpdate(Sender: TObject);
   private
     FLastTopicControl: TControl;
     FInTopicSetup: Boolean;
@@ -215,6 +217,7 @@ begin
 
   if not FPDocEditor.Visible then
     FPDocEditor.UpdateButtons;
+  FPDocEditor.DoEditorUpdate(SourceEditorManagerIntf.ActiveEditor);
   FPDocEditor.Show;
   FPDocEditor.MakeFullyVisible;
 end;
@@ -292,6 +295,9 @@ begin
   SaveButton.LoadGlyphFromLazarusResource('laz_save');
 
   FInTopicSetup := false;
+
+  SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate, @DoEditorUpdate);
+  SourceEditorManagerIntf.RegisterChangeEvent(semEditorStatus, @DoEditorUpdate);
 end;
 
 procedure TFPDocEditor.FormDestroy(Sender: TObject);
@@ -301,6 +307,8 @@ begin
   if assigned(CodeHelpBoss) then
     CodeHelpBoss.RemoveAllHandlersOfObject(Self);
   Application.RemoveAllHandlersOfObject(Self);
+  SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorActivate, @DoEditorUpdate);
+  SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorStatus, @DoEditorUpdate);
 end;
 
 procedure TFPDocEditor.FormKeyDown(Sender: TObject; var Key: Word;
@@ -951,6 +959,17 @@ begin
     or (SeeAlsoMemo.Text<>FOldVisualValues[fpdiSeeAlso])
     or (ErrorsMemo.Text<>FOldVisualValues[fpdiErrors])
     or (ExampleEdit.Text<>FOldVisualValues[fpdiExample]);
+end;
+
+procedure TFPDocEditor.DoEditorUpdate(Sender: TObject);
+var
+  SrcEdit: TSourceEditorInterface;
+  CaretPos: TPoint;
+begin
+  if Sender=nil then exit;
+  SrcEdit:= TSourceEditorInterface(Sender);
+  CaretPos := SrcEdit.CursorScreenXY;
+  UpdateFPDocEditor(SrcEdit.FileName, CaretPos);
 end;
 
 procedure TFPDocEditor.FillTopicCombo;
