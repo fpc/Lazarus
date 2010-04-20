@@ -4302,6 +4302,55 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  ScrollWindowEx
+  Params:  HWnd       - handle of window to scroll
+           DX         - horizontal amount to scroll
+           DY         - vertical amount to scroll
+           PRcScroll  - pointer to scroll rectangle
+           PRcClip    - pointer to clip rectangle
+           HRgnUpdate - handle of update region
+           PRcUpdate  - pointer to update rectangle
+           Flags      - scrolling flags
+
+  Returns: True if succesfull
+
+  The ScrollWindowEx function scrolls the content of the specified window's
+  client area
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.ScrollWindowEx(HWnd: HWND; DX, DY: Integer; PRcScroll,
+  PRcClip: PRect; HRgnUpdate: HRGN; PRcUpdate: PRect; Flags: UINT): Boolean;
+var
+  R: TRect;
+  W: TQtWidget;
+begin
+  Result := False;
+  if (HWND = 0) then exit;
+
+  W := TQtWidget(HWND);
+  if ((Flags and SW_SCROLLCHILDREN) <> 0) or (PRcScroll = nil) then
+    W.scroll(dx, dy, nil)
+  else
+    W.scroll(dx, dy, @PRcScroll);
+
+  if ((Flags and SW_INVALIDATE) <> 0) then
+  begin
+    if IsValidGDIObject(HRgnUpdate) then
+    begin
+      R := TQtRegion(HRgnUpdate).getBoundingRect;
+      PRcUpdate := @R;
+      W.Update(@R);
+    end else
+    if PRcClip <> nil then
+    begin
+      PRcUpdate := PRcClip;
+      W.Update(PrcClip);
+    end;
+  end;
+
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
   Function: SelectClipRGN
   Params:  DC, RGN
   Returns: longint

@@ -216,7 +216,7 @@ type
     procedure frame_resize(ANewWidth, ANewHeight: Integer);
     procedure resize(ANewWidth, ANewHeight: Integer);
     procedure releaseMouse;
-    procedure scroll(dx, dy: integer);
+    procedure scroll(dx, dy: integer; ARect: PRect = nil); virtual;
     procedure setAutoFillBackground(const AValue: Boolean);
     procedure setAttribute(const Attr: QtWidgetAttribute; const TurnOn: Boolean = True);
     procedure setBackgroundRole(const ARole: QPaletteColorRole);
@@ -399,6 +399,7 @@ type
   public
     function CanPaintBackground: Boolean; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure scroll(dx, dy: integer; ARect: PRect = nil); override;
   end;
   
   { TQtGraphicView }
@@ -3341,11 +3342,12 @@ begin
     QWidget_releaseMouse(AGrabWidget);
 end;
 
-procedure TQtWidget.scroll(dx, dy: integer);
+procedure TQtWidget.scroll(dx, dy: integer; ARect: PRect = nil);
 begin
-  QWidget_scroll(getContainerWidget, dx, dy);
-  FScrollX := FScrollX + dx;
-  FScrollY := FScrollY + dy;
+  if ARect = nil then
+    QWidget_scroll(getContainerWidget, dx, dy)
+  else
+    QWidget_scroll(getContainerWidget, dx, dy, ARect);
 end;
 
 procedure TQtWidget.setAutoFillBackground(const AValue: Boolean);
@@ -9565,6 +9567,13 @@ begin
   else
     Result := inherited EventFilter(Sender, Event);
   end;
+end;
+
+procedure TQtViewPort.scroll(dx, dy: integer; ARect: PRect = nil);
+begin
+  inherited scroll(dx, dy, ARect);
+  FScrollX := FScrollX + dx;
+  FScrollY := FScrollY + dy;
 end;
 
 {------------------------------------------------------------------------------
