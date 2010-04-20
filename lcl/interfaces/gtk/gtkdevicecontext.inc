@@ -141,6 +141,7 @@ begin
     dec(GdiObject^.DCCount);
     if GdiObject^.DCCount < 0 then
       RaiseGDBException('');
+    ReleaseGDIObject(GDIObject);
   end;
 
   GdiObject := NewValue;
@@ -148,6 +149,7 @@ begin
   if GdiObject <> nil
   then begin
     inc(GdiObject^.DCCount);
+    ReferenceGDIObject(GDIObject);
   end;
 end;
 

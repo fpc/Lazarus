@@ -154,7 +154,7 @@ type
     and when 0 calls DisposeGDIObject. }
   PGDIObject = ^TGDIObject;
   TGDIObject = record
-    RefCount: integer;
+    RefCount: integer; // see ReleaseGDIObject, ReferenceGDIObject
     DCCount: integer; // number of DeviceContexts using this GDIObject
     Owner: TGtkDeviceContext;
     {$ifdef TraceGdiCalls}
@@ -589,7 +589,12 @@ const
 
 function InternalNewPGDIObject: PGDIObject;
 procedure InternalDisposePGDIObject(GDIObject: PGdiObject);
-
+type
+  TReferenceGDIObject = procedure(GDIObject: PGdiObject) of object;
+  TReleaseGDIObject = function(GDIObject: PGdiObject): boolean of object;
+var
+  ReleaseGDIObject: TReleaseGDIObject; // see TGtkWidgetSet.ReleaseGDIObject
+  ReferenceGDIObject: TReferenceGDIObject; // see TGtkWidgetSet.ReferenceGDIObject
 
 {$IFDEF DebugLCLComponents}
 var

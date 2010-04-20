@@ -180,6 +180,8 @@ type
                                   const GDIType: TGDIType): Boolean;virtual;
     function NewGDIObject(const GDIType: TGDIType): PGdiObject;virtual;
     procedure DisposeGDIObject(GdiObject: PGdiObject);virtual;
+    function ReleaseGDIObject(GdiObject: PGdiObject): boolean;virtual;
+    procedure ReferenceGDIObject(GdiObject: PGdiObject);virtual;
     function CreateDefaultBrush: PGdiObject;virtual;
     function CreateDefaultFont: PGdiObject;virtual;
     function CreateDefaultPen: PGdiObject;virtual;

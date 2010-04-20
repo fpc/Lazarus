@@ -2270,6 +2270,8 @@ end;
   Params:  none
   Returns: Nothing
 
+  DeleteObject is allowed while the object is still selected. The msdn docs
+  are misleading. Marc tested with resource profiler under win XP.
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 
@@ -2283,56 +2285,7 @@ function TGtkWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
     DebugLn('Exception will follow:');
     DebugLn();
     {$endif}
-    RaiseGDBException('TGtkWidgetSet.DeleteObject invalid GdiObject='+dbghex(GdiObject));
-  end;
-  
-  procedure RaiseGDIObjectIsStillUsed;
-  var
-    CurGDIObject: PGDIObject;
-    DC: TGtkDeviceContext;
-  begin
-    {$ifdef TraceGdiCalls}
-    DebugLn();
-    DebugLn('TGtkWidgetSet.DeleteObject: TraceCall for still used object: ');
-    DumpBackTrace(PgdiObject(GdiObject)^.StackAddrs);
-    DebugLn();
-    DebugLn('Exception will follow:');
-    DebugLn();
-    {$endif}
-    // do not raise an exception, because this is a common bug in many programs
-    // just give a warning
-    CurGDIObject:=PGdiObject(GdiObject);
-    debugln('TGtkWidgetSet.DeleteObject GdiObject='+dbgs(CurGDIObject)
-       +' '+dbgs(CurGDIObject^.GDIType)
-       +' is still used. DCCount='+dbgs(CurGDIObject^.DCCount));
-    DC:=FindDCWithGDIObject(CurGDIObject);
-    if DC<>nil then begin
-      DebugLn(['DC: ',dbgs(Pointer(DC)),' ',
-        GetWidgetDebugReport(DC.Widget)]);
-    end else begin
-      DebugLn(['No DC found with this GDIObject => either the DCCount is wrong or the DC is not in the DC list']);
-    end;
-    //DumpStack;
-    //RaiseGDBException('');
-  end;
-  
-  procedure RaiseInvalidGDIOwner;
-  var
-    o: PGDIObject;
-  begin
-    {$ifdef TraceGdiCalls}
-    DebugLn();
-    DebugLn('TGtkWidgetSet.DeleteObject: TraceCall for invalid object: ');
-    DumpBackTrace(PgdiObject(GdiObject)^.StackAddrs);
-    DebugLn();
-    DebugLn('Exception will follow:');
-    DebugLn();
-    {$endif}
-    o:=PGdiObject(GdiObject);
-    RaiseGDBException('TGtkWidgetSet.DeleteObject invalid owner of'
-      +' GdiObject='+dbgs(o)
-      +' Owner='+dbgs(o^.Owner)
-      +' Owner.OwnedGDIObjects='+dbgs(o^.Owner.OwnedGDIObjects[o^.GDIType]));
+    RaiseGDBException('TGtkWidgetSet.DeleteObject invalid GdiObject='+dbgs(GdiObject));
   end;
 
 var
@@ -2343,128 +2296,21 @@ begin
     exit;
   end;
   {$IFDEF DebugLCLComponents}
-  if DebugGdiObjects.IsDestroyed(PGDIObject(GDIObject)) then begin
+  if DebugGdiObjects.IsDestroyed(GDIObject) then begin
     DebugLn(['TGtkWidgetSet.DeleteObject object already deleted ',GDIObject]);
-    debugln(DebugGdiObjects.GetInfo(PGDIObject(GDIObject),true));
+    debugln(DebugGdiObjects.GetInfo(PGdiObject(GDIObject),true));
     Halt;
   end;
   {$ENDIF}
-  
+
   // Find out if we want to release internal GDI object
-  GDIObjectExists:=FGDIObjects.Contains(PGDIObject(GDIObject));
+  GDIObjectExists:=FGDIObjects.Contains(PGdiObject(GDIObject));
   Result:=GDIObjectExists;
   if not GDIObjectExists then begin
     RaiseInvalidGDIObject;
   end;
-  
-  with PGdiObject(GDIObject)^ do
-  begin
-    if DCCount>0 then begin
-      RaiseGDIObjectIsStillUsed;
-      exit(false);
-    end;
 
-    if Owner<>nil then begin
-      if Owner.OwnedGDIObjects[GDIType]<>PGdiObject(GDIObject) then
-        RaiseInvalidGDIOwner;
-      Owner.OwnedGDIObjects[GDIType]:=nil;
-    end;
-
-    case GDIType of
-      gdiFont:
-        begin
-          if GDIFontObject<>nil then begin
-            //DebugLn(['TGtkWidgetSet.DeleteObject GDIObject=',dbgs(Pointer(PtrInt(GDIObject))),' GDIFontObject=',dbgs(GDIFontObject)]);
-            FontCache.Unreference(GDIFontObject);
-          end;
-        end;
-      gdiBrush:
-        begin
-          {$IFDEF DebugGDKTraps}
-          BeginGDKErrorTrap;
-          {$ENDIF}
-          {$IFDEF DebugGDIBrush}
-          debugln('TGtkWidgetSet.DeleteObject gdiBrush: ',DbgS(GdiObject));
-          //if Cardinal(GdiObject)=$404826F4 then RaiseGDBException('');
-          {$ENDIF}
-          if (GDIBrushPixmap <> nil) then
-            gdk_pixmap_unref(GDIBrushPixmap);
-          {$IFDEF DebugGDKTraps}
-          EndGDKErrorTrap;
-          {$ENDIF}
-
-          FreeGDIColor(@GDIBrushColor);
-        end;
-      gdiBitmap:
-        begin
-          {$IFDEF DebugGDKTraps}
-          BeginGDKErrorTrap;
-          {$ENDIF}
-          case GDIBitmapType of
-            gbBitmap:
-              begin
-                if GDIBitmapObject <> nil then
-                  gdk_bitmap_unref(GDIBitmapObject);
-              end;
-            gbPixmap:
-              begin
-                if GDIPixmapObject.Image <> nil then
-                  gdk_pixmap_unref(GDIPixmapObject.Image);
-                if GDIPixmapObject.Mask <> nil then
-                  gdk_bitmap_unref(GDIPixmapObject.Mask);
-              end;
-              gbPixbuf:
-                begin
-                  if GDIPixbufObject <> nil then
-                    gdk_pixbuf_unref(GDIPixbufObject);
-                end;
-          end;
-
-          if (Visual <> nil) and (not SystemVisual) then
-            gdk_visual_unref(Visual);
-          if Colormap <> nil then
-            gdk_colormap_unref(Colormap);
-          {$IFDEF DebugGDKTraps}
-          EndGDKErrorTrap;
-          {$ENDIF}
-        end;
-      gdiPen:
-        begin
-          FreeGDIColor(@GDIPenColor);
-          FreeMem(GDIPenDashes);
-        end;
-      gdiRegion:
-        begin
-          if (GDIRegionObject <> nil) then
-            gdk_region_destroy(GDIRegionObject);
-        end;
-      gdiPalette:
-        begin
-          {$IFDEF DebugGDKTraps}
-          BeginGDKErrorTrap;
-          {$ENDIF}
-          If PaletteVisual <> nil then
-            gdk_visual_unref(PaletteVisual);
-          If PaletteColormap <> nil then
-            gdk_colormap_unref(PaletteColormap);
-          {$IFDEF DebugGDKTraps}
-          EndGDKErrorTrap;
-          {$ENDIF}
-
-          FreeAndNil(RGBTable);
-          FreeAndNil(IndexTable);
-        end;
-      else begin
-        Result:= false;
-        DebugLn('[TGtkWidgetSet.DeleteObject] TODO : Unimplemented GDI type');
-        Assert(False, 'Trace:TODO : Unimplemented GDI object in delete object');
-      end;
-    end;
-  end;
-
-  { Dispose of the GDI object }
-  //DebugLn('[TGtkWidgetSet.DeleteObject] ',Result,'  ',DbgS(GDIObject,8),'  ',FGDIObjects.Count);
-  DisposeGDIObject(PGDIObject(GDIObject));
+  Result:=ReleaseGDIObject(PGdiObject(GDIObject));
 end;
 
 {------------------------------------------------------------------------------
