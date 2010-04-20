@@ -61,6 +61,7 @@ type
     constructor Create(TheXMLConfig: TXMLConfig);
     constructor Create(TheXMLConfig: TXMLConfig; const StartPath: string);
     destructor Destroy; override;
+    procedure Clear; override;
     property XMLConfig: TXMLConfig read FXMLConfig;
     property FreeXMLConfig: boolean read FFreeXMLConfig write FFreeXMLConfig;
     procedure WriteToDisk; override;
@@ -944,6 +945,11 @@ destructor TXMLOptionsStorage.Destroy;
 begin
   if FreeXMLConfig then FreeAndNil(FXMLConfig);
   inherited Destroy;
+end;
+
+procedure TXMLOptionsStorage.Clear;
+begin
+  FXMLConfig.Clear;
 end;
 
 procedure TXMLOptionsStorage.WriteToDisk;

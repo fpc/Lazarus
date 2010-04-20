@@ -46,7 +46,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Graphics, Forms, FileUtil,
-  AvgLvlTree, AVL_Tree,
+  AvgLvlTree, AVL_Tree, LazConfigStorage,
   DefineTemplates, CodeToolManager, Laz_XMLWrite, Laz_XMLCfg, CodeCache,
   PropEdits, LazIDEIntf, MacroIntf, PackageIntf,
   EditDefineTree, CompilerOptions, CompOptsModes,
@@ -2324,7 +2324,6 @@ begin
   FDefineTemplates:=TLazPackageDefineTemplates.Create(Self);
   fPublishOptions:=TPublishPackageOptions.Create(Self);
   FProvides:=TStringList.Create;
-  FCustomOptions:=TStringToStringTree.Create(false);
   Clear;
   FUsageOptions.ParsedOpts.InvalidateParseOnChange:=true;
 end;
@@ -2333,7 +2332,6 @@ destructor TLazPackage.Destroy;
 begin
   Include(FFlags,lpfDestroying);
   Clear;
-  FreeAndNil(FCustomOptions);
   FreeAndNil(fPublishOptions);
   FreeAndNil(FProvides);
   FreeAndNil(FDefineTemplates);
@@ -2375,28 +2373,31 @@ begin
   // break and free required dependencies
   while FFirstRequiredDependency<>nil do
     DeleteRequiredDependency(FFirstRequiredDependency);
-  FAddToProjectUsesSection:=true;
-  FAuthor:='';
-  FAutoInstall:=pitNope;
+  if not (lpfDestroying in FFlags) then begin
+    FAddToProjectUsesSection:=true;
+    FAuthor:='';
+    FAutoInstall:=pitNope;
+    FComponents.Clear;
+    FCompilerOptions.Clear;
+    FDescription:='';
+    FDirectory:='';
+    FDirectoryExpandedChangeStamp:=InvalidParseStamp;
+    FHasDirectory:=false;
+    FHasStaticDirectory:=false;
+    FVersion.Clear;
+    FFilename:='';
+    FIconFile:='';
+    FInstalled:=pitNope;
+    FName:='';
+    FPackageType:=lptRunAndDesignTime;
+    FRegistered:=false;
+    ClearCustomOptions;
+  end;
   for i:=FComponents.Count-1 downto 0 do Components[i].Free;
-  FComponents.Clear;
-  FCompilerOptions.Clear;
-  FDescription:='';
-  FDirectory:='';
-  FDirectoryExpandedChangeStamp:=InvalidParseStamp;
-  FHasDirectory:=false;
-  FHasStaticDirectory:=false;
-  FVersion.Clear;
-  FFilename:='';
   for i:=FRemovedFiles.Count-1 downto 0 do RemovedFiles[i].Free;
   FRemovedFiles.Clear;
   for i:=FFiles.Count-1 downto 0 do Files[i].Free;
   FFiles.Clear;
-  FIconFile:='';
-  FInstalled:=pitNope;
-  FName:='';
-  FPackageType:=lptRunAndDesignTime;
-  FRegistered:=false;
   FUsageOptions.Clear;
   fPublishOptions.Clear;
   FProvides.Clear;
@@ -2552,7 +2553,7 @@ begin
   fPublishOptions.LoadFromXMLConfig(XMLConfig,Path+'PublishOptions/',
                                     PathDelimChanged);
   LoadStringList(XMLConfig,FProvides,Path+'Provides/');
-  LoadStringToStringTree(XMLConfig,FCustomOptions,Path+'CustomOptions');
+  //LoadStringToStringTree(XMLConfig,FCustomOptions,Path+'CustomOptions');
   EndUpdate;
   Modified:=false;
   UnlockModified;
@@ -2618,7 +2619,7 @@ begin
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/',UsePathDelim);
   fPublishOptions.SaveToXMLConfig(XMLConfig,Path+'PublishOptions/',UsePathDelim);
   SaveStringList(XMLConfig,FProvides,Path+'Provides/');
-  SaveStringToStringTree(XMLConfig,FCustomOptions,Path+'CustomOptions');
+  //SaveStringToStringTree(XMLConfig,FCustomOptions,Path+'CustomOptions');
   Modified:=false;
 end;
 

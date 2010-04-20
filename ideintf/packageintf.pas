@@ -23,7 +23,7 @@ unit PackageIntf;
 interface
 
 uses
-  Classes, SysUtils, Forms, NewItemIntf, AvgLvlTree;
+  Classes, SysUtils, Forms, LazConfigStorage, NewItemIntf, AvgLvlTree;
   
 const
   PkgDescGroupName = 'Package';
@@ -91,7 +91,7 @@ type
 
   TIDEPackage = class(TLazPackageID)
   protected
-    FCustomOptions: TStringToStringTree;
+    FCustomOptions: TConfigStorage;
     FFilename: string;
     function GetDirectoryExpanded: string; virtual; abstract;
     function GetModified: boolean; virtual; abstract;
@@ -100,11 +100,14 @@ type
   public
     function IsVirtual: boolean; virtual; abstract;
     function ReadOnly: boolean; virtual; abstract;
+    constructor Create;
+    destructor Destroy; override;
+    procedure ClearCustomOptions;
   public
     property Filename: string read FFilename write SetFilename;//the .lpk filename
     property Modified: boolean read GetModified write SetModified;
     property DirectoryExpanded: string read GetDirectoryExpanded;
-    property CustomOptions: TStringToStringTree read FCustomOptions;
+    property CustomOptions: TConfigStorage read FCustomOptions;
   end;
 
 type
@@ -542,6 +545,25 @@ procedure TLazPackageID.AssignID(Source: TLazPackageID);
 begin
   Name:=Source.Name;
   Version.Assign(Source.Version);
+end;
+
+{ TIDEPackage }
+
+constructor TIDEPackage.Create;
+begin
+  inherited Create;
+  FCustomOptions:=TConfigMemStorage.Create('',false);
+end;
+
+destructor TIDEPackage.Destroy;
+begin
+  FreeAndNil(FCustomOptions);
+  inherited Destroy;
+end;
+
+procedure TIDEPackage.ClearCustomOptions;
+begin
+  TConfigMemStorage(FCustomOptions).Clear;
 end;
 
 initialization

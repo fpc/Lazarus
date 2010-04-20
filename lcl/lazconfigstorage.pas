@@ -46,6 +46,7 @@ type
   public
     constructor Create(const Filename: string; LoadFromDisk: Boolean); virtual;
     destructor Destroy; override;
+    procedure Clear; virtual; abstract;
     function  GetValue(const APath, ADefault: String): String;
     function  GetValue(const APath: String; ADefault: Integer): Integer;
     function  GetValue(const APath: String; ADefault: Boolean): Boolean;
@@ -121,6 +122,9 @@ type
     function GetFilename: string; override;
     procedure WriteToDisk; override;
     destructor Destroy; override;
+    procedure Clear; override;
+    procedure SaveToConfig(Config: TConfigStorage; const APath: string);
+    procedure LoadFromToConfig(Config: TConfigStorage; const APath: string);
   end;
 
 function CompareConfigMemStorageNames(p1, p2: PChar): integer;
@@ -536,6 +540,23 @@ destructor TConfigMemStorage.Destroy;
 begin
   FreeAndNil(Root);
   inherited Destroy;
+end;
+
+procedure TConfigMemStorage.Clear;
+begin
+  FreeAndNil(Root);
+end;
+
+procedure TConfigMemStorage.SaveToConfig(Config: TConfigStorage;
+  const APath: string);
+begin
+
+end;
+
+procedure TConfigMemStorage.LoadFromToConfig(Config: TConfigStorage;
+  const APath: string);
+begin
+
 end;
 
 { TConfigMemStorageNode }
