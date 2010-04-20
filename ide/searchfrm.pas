@@ -626,6 +626,7 @@ begin
   SearchingLabel.Caption:=lissSearching;
   SearchTextLabel.Caption:=lissSearchText;
   Caption:=dlgSearchCaption;
+  btnCancel.Caption:=dlgCancel;
 
   fProgress:=TIDESearchInTextProgress.Create;
   FProgress.OnAddMatch:=@OnAddMatch;
@@ -639,7 +640,6 @@ begin
   fSearchProject:= false;
   fSearchOpen:= false;
   fSearchFiles:= false;
-  Caption:= dlgSearchCaption;
 end;
 
 procedure TSearchForm.OnAddMatch(const Filename: string; const StartPos,
