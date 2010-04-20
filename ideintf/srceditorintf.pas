@@ -208,10 +208,11 @@ type
   TsemChangeReason = (
     semWindowCreate,    // Called after creation of a Window
     semWindowDestroy,   // Called after removal of a Window
-    semWindowActivate,  // Window was activated
+    semWindowActivate,  // Window is now ActiveSourceWindow (does not vave to be focused)
+    semWindowFocused,   // The window became the active win of the application
     semEditorCreate,
     semEditorDestroy,
-    semEditorActivate,
+    semEditorActivate,  // Editor is ActiveEditor
     semEditorStatus     // any status change of the editor (Caret, Selection, topline, ...)
   );
 
