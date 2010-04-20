@@ -2479,6 +2479,7 @@ var
   CodePos: Integer;
   LineEndPos: LongInt;
   LineStartPos: LongInt;
+  IsEmpty: Boolean;
 begin
   SrcStart:=MinPosition;
   if SrcStart<1 then SrcStart:=1;
@@ -2497,17 +2498,30 @@ begin
         begin
           // line end in code found
           if (Result>SrcStart) and (Source[Result-1] in [#10,#13])
-          and (Source[Result]<>Source[Result-1]) then dec(Result);
+          and (Source[Result]<>Source[Result-1]) then
+            dec(Result);
           // test if it is a comment line (a line without code and at least one
           // comment)
           CodePos:=0;
           LineEndPos:=Result;
           // go to line start
           TestPos:=Result;
-          while (TestPos>SrcStart) and (not (Source[TestPos-1] in [#10,#13])) do
+          IsEmpty:=true;
+          while (TestPos>SrcStart) do begin
+            case Source[TestPos-1] of
+            #10,#13: break;
+            ' ',#9: ;
+            else IsEmpty:=false;
+            end;
             dec(TestPos);
-          LineStartPos:=TestPos;
+          end;
+          if IsEmpty then begin
+            // empty line
+            exit;
+          end;
+
           // read line from start to end
+          LineStartPos:=TestPos;
           while TestPos<LineEndPos do begin
             case Source[TestPos] of
               '{':
@@ -2567,7 +2581,7 @@ begin
             end;
           end;
           if CodePos>0 then begin
-            // there is code in the line
+            // the line is not empty
             Result:=CodePos+1;
             exit;
           end;
