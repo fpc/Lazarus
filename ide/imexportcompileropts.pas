@@ -229,6 +229,7 @@ begin
   OpenRecentButton.Caption:=lisIECOOpenRecent;
   SaveButton.Caption:=lisIECOSaveToFile;
   OpenButton.Caption:=lisIECOLoadFromFile;
+  CancelButton.Caption:=dlgCancel;
   OpenButton.LoadGlyphFromStock(idButtonOpen);
   if OpenButton.Glyph.Empty then
     OpenButton.LoadGlyphFromLazarusResource('laz_open');
