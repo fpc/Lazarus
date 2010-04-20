@@ -1072,6 +1072,10 @@ begin
     exit; //not the right time to do anything
 //how to determine old bounds?
   rNew := FDockSite.ClientRect;
+//try catch bad calls (Win32)?????
+  if (rNew.Right <= 0) or (rNew.Bottom <= 0) then
+    exit;
+
   if not CompareMem(@rNew, @FSiteRect, sizeof(rNew)) then
     Force := True;  //something has changed
   if not Force then

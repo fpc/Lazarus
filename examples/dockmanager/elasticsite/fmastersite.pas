@@ -31,8 +31,6 @@ var
 
 implementation
 
-uses
-  fClientForm;
 
 { TMasterSite }
 
@@ -70,11 +68,6 @@ begin
   DockMaster.AddElasticSites(self, [alBottom]);
   DockMaster.CreateDockable('', True, False);
   DockMaster.CreateDockable('', True, False);
-//all specific classes must be registered!
-{
-  RegisterClass(TViewWindow);
-  DockMaster.CreateDockable('ViewWindow1', True);
-}
 end;
 
 initialization

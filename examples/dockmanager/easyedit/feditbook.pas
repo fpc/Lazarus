@@ -11,7 +11,7 @@ unit fEditBook;
 {$mode objfpc}{$H+}
 
 { TODO : figure out what's wrong with the mru list - with multiple windows }
-{$DEFINE mru} //problems with MRU list???
+{.$DEFINE mru} //problems with MRU list???
 
 interface
 
@@ -102,6 +102,7 @@ begin
   se := TEditPage.Create(Owner);
   se.ManualDock(self);
   se.LoadFile(AName);
+  Result := True;
 end;
 
 { TEditPage }

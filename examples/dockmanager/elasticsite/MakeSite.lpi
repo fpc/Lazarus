@@ -38,7 +38,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="2">
       <Unit0>
         <Filename Value="MakeSite.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -51,14 +51,6 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="fMasterSite"/>
       </Unit1>
-      <Unit2>
-        <Filename Value="fclientform.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="ViewWindow"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="fClientForm"/>
-      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -379,7 +379,7 @@ begin
   ctl := Sender as TControl;
   //if not (csDestroying in ctl.ComponentState) and (ctl.HostDockSite = nil) then begin
   //if (ctl.HostDockSite = nil) then
-  WrapDockable(ctl);
+    WrapDockable(ctl);
 end;
 
 procedure TDockMaster.LoadFromFile(const AName: string);
@@ -760,6 +760,8 @@ begin
     if Result.Name <> AName then
       TryRename(Result, AName);
   end;
+  if DisableUpdate then
+    Result.EnableAlign;
   Result.Visible := True; //required for docking
 end;
 
@@ -787,9 +789,13 @@ begin
   try
   //keep undocked extent
     r := Client.BoundsRect;
+    {$IFnDEF old}
     r.Right := r.Left + Client.UndockWidth;
     r.Bottom := r.Top + Client.UndockHeight;
     //site.ClientRect := r;
+    {$ELSE}
+    r.TopLeft := Client.ControlOrigin;
+    {$ENDIF}
     Site.BoundsRect := r;
     Client.Align := alNone;
     //Client.Visible := True; //otherwise docking may be rejected
