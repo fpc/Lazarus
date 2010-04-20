@@ -10431,7 +10431,7 @@ var
   AParent: QTabWidgetH;
 begin
   AParent := getTabWidget;
-  if AParent <> nil then
+  if (AParent <> nil) and QWidget_isVisible(AParent) then
     Result := QTabWidget_indexOf(AParent, Widget)
   else
     Result := -1;
