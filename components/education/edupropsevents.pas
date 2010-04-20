@@ -73,9 +73,9 @@ type
     EventsExtRadioBtn: TRadioButton;
     EventsFullRadioBtn: TRadioButton;
     rdGrpEvents: TRadioGroup;
-    stTextEvents: TLabel;
-    stTextProps: TLabel;
-    stTextProps2: TLabel;
+    stTextEvents: TStaticText;
+    stTextProps2: TStaticText;
+    stTextProps: TStaticText;
 
     procedure EventsExtRadioBtnClick(Sender: TObject);
     procedure EventsFullRadioBtnClick(Sender: TObject);
@@ -105,8 +105,8 @@ procedure Register;
 begin
   EduPropsEventsOptions:=TEduPropsEventsOptions.Create;
   EducationOptions.Root.Add(EduPropsEventsOptions);
-  RegisterIDEOptionsEditor(EduOptionID,TEduPropsEventsFrame,EduPropsEventsOptionsID);
-
+  EduPropsEventsOptionsID:=RegisterIDEOptionsEditor(EduOptionID,
+                           TEduPropsEventsFrame,EduPropsEventsOptionsID)^.Index;
 end;
 
 { TEduPropsEventsOptions }
@@ -168,6 +168,7 @@ end;
 
 { TEduPropsEventsFrame }
 
+
 procedure TEduPropsEventsFrame.PropsMinRadioBtnClick(Sender: TObject);
 begin
   grpBoxProps.Caption:=ersGrpBoxPropsMin;
@@ -212,6 +213,8 @@ begin
     stTextProps2.Visible:=false;
 end;
 
+
+
 function TEduPropsEventsFrame.GetTitle: String;
 begin
   Result:=ersEduPropsEventsTitle;
@@ -243,8 +246,6 @@ begin
   EventsMinRadioBtn.Caption:= ersShowMinimal;
   EventsExtRadioBtn.Caption:= ersShowExtended;
   EventsFullRadioBtn.Caption:= ersRdBtnFull;
-
-
 
   stTextProps2.Caption:=ersStTextPropsExt;
   stTextProps2.Visible:=false;
@@ -282,7 +283,7 @@ end;
 
 class function TEduPropsEventsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result:=TEduOptions;
+  Result:=EducationIDEOptionsClass;
 end;
 
 procedure TEduPropsEventsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -298,8 +299,6 @@ begin
 
 end;
 
-initialization
-  {$I edupropsevents.lrs}
+{$R *.lfm}
 
 end.
-

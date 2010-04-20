@@ -90,7 +90,8 @@ procedure Register;
 begin
   EduComponentPaletteOptions:=TEduComponentPaletteOptions.Create;
   EducationOptions.Root.Add(EduComponentPaletteOptions);
-  RegisterIDEOptionsEditor(EduOptionID,TEduCompPaletteFrame,EduOptionCompPaletteID);
+  EduOptionCompPaletteID:=RegisterIDEOptionsEditor(EduOptionID,
+                            TEduCompPaletteFrame,EduOptionCompPaletteID)^.Index;
 end;
 
 { TEduCompPaletteFrame }
@@ -343,7 +344,7 @@ end;
 
 class function TEduCompPaletteFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result:=TEduOptions;
+  Result:=EducationIDEOptionsClass;
 end;
 
 procedure TEduCompPaletteFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -434,8 +435,6 @@ begin
   end;
 end;
 
-initialization
-  {$I educomppalette.lrs}
+{$R *.lfm}
 
 end.
-

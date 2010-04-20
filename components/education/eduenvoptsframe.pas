@@ -72,8 +72,9 @@ procedure Register;
 begin
   EduGeneralOptions:=TEduGeneralOptions.Create;
   EducationOptions.Root.Add(EduGeneralOptions);
-  RegisterIDEOptionsGroup(EduOptionID,TEduOptions);
-  RegisterIDEOptionsEditor(EduOptionID,TEduEnvFrame,EduOptionGeneralID);
+  EduOptionID:=RegisterIDEOptionsGroup(EduOptionID,TEduOptions)^.Index;
+  EduOptionGeneralID:=RegisterIDEOptionsEditor(EduOptionID,TEduEnvFrame,
+                                                     EduOptionGeneralID)^.Index;
 
   LazarusIDE.AddHandlerOnProjectOpened(@EducationOptions.OnProjectOpened);
 end;
@@ -109,11 +110,13 @@ end;
 procedure TEduEnvFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
   EnableCheckBox.Checked:=EducationOptions.Enabled;
+  //OnLoadIDEOptions(Self,EducationOptions);
 end;
 
 procedure TEduEnvFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   EducationOptions.Enabled:=EnableCheckBox.Checked;
+  //OnSaveIDEOptions(Self,EducationOptions);
   if EducationOptions.Save<>mrOk then
     DebugLn(['TEduEnvFrame.WriteSettings Failed']);
   EducationOptions.Apply;
@@ -121,7 +124,7 @@ end;
 
 class function TEduEnvFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := nil;
+  Result := EducationIDEOptionsClass;
 end;
 
 { TEduGeneralOptions }
@@ -148,8 +151,6 @@ begin
   Result:=inherited Save(Config);
 end;
 
-initialization
-  {$I eduenvoptsframe.lrs}
+{$R *.lfm}
 
 end.
-

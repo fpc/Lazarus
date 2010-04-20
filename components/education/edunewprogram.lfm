@@ -4,8 +4,8 @@ inherited EduNewPrgFrame: TEduNewPrgFrame
   ClientHeight = 320
   ClientWidth = 453
   TabOrder = 0
-  DesignLeft = 795
-  DesignTop = 54
+  DesignLeft = 539
+  DesignTop = 23
   object SrcGroupBox: TGroupBox[0]
     Left = 6
     Height = 262
@@ -30,7 +30,6 @@ inherited EduNewPrgFrame: TEduNewPrgFrame
       ParentColor = False
       ParentFont = False
       TabOrder = 0
-      BookMarkOptions.OnChange = nil
       Gutter.Width = 61
       Gutter.MouseActions = <      
         item

@@ -427,6 +427,7 @@ end;
 
 function TIDEOptionsDialog.PassesFilter(ARec: PIDEOptionsGroupRec): Boolean;
 begin
+  //DebugLn(['TIDEOptionsDialog.PassesFilter ',DbgSName(ARec^.GroupClass),' ',DbgSName(OptionsFilter)]);
   if (ARec^.GroupClass = nil) and (OptionsFilter <> nil) then
     Exit(False);
   if (OptionsFilter<>nil) and (ARec^.GroupClass <> nil)

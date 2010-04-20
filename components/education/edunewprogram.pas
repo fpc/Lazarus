@@ -127,7 +127,8 @@ procedure Register;
 begin
   EduNewPrgOptions:=TEduNewPrgOptions.Create;
   EducationOptions.Root.Add(EduNewPrgOptions);
-  RegisterIDEOptionsEditor(EduOptionID,TEduNewPrgFrame,EduOptionNewPrgID);
+  EduOptionNewPrgID:=RegisterIDEOptionsEditor(EduOptionID,TEduNewPrgFrame,
+                                              EduOptionNewPrgID)^.Index;
 
   FileDescSingleFileProgram:=TFileDescSingleFileProgram.Create;
   RegisterProjectFileDescriptor(FileDescSingleFileProgram,FileDescGroupName);
@@ -317,7 +318,7 @@ end;
 
 class function TEduNewPrgFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result:=TEduOptions;
+  Result:=EducationIDEOptionsClass;
 end;
 
 procedure TEduNewPrgFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -363,8 +364,6 @@ begin
   Result:=ersASimpleProgramOnlyOneFileIsCreatedAndAddedToTheCur;
 end;
 
-initialization
-  {$I edunewprogram.lrs}
+{$R *.lfm}
 
 end.
-

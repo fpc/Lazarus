@@ -68,7 +68,7 @@ resourcestring
   ersGrpBoxEventsFull = 'Events: Full Configuration';
 
   ersStTextPropsMin = 'Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, Width, MaxLength, Picture, Columns';
-  ersStTextPropsExt ='Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField, InitialDir';
+  ersStTextPropsExt ='Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-Properties';
   ersStTextPropsFull = 'All Properties available';
 
   ersStTextEventsMin = 'OnClick, OnChange, OnMouseMove';
@@ -83,19 +83,30 @@ resourcestring
   ersEduCompPaletteTitle = 'Component palette';
   ersEduNewProgramTitle = 'New program';
   ersEduMenuTitle = 'Menus';
+  ersEduOIPages = 'Object Inspector';
 
   ersRdBtnFull = 'Show All';
   ersEnableEduCheckBoxCaption = 'Enable education settings';
+  ersShowOIPages = 'Show Object Inspector Pages';
+
+  ersEduSBTitle = 'Speed Buttons';
+  ersShowSelection = 'Show Selection';
+  ersVisibleSpeedButtons = 'Visible SpeedButtons';
+
+
+
 
 const
   DefaultEduOptionsFilename = 'education.xml';
-
-  EduOptionID = 2000;
-    EduOptionGeneralID     = 100;
-    EduOptionCompPaletteID = 200;
-    EduOptionMenuID        = 300;
-    EduOptionNewPrgID      = 400;
-    EduPropsEventsOptionsID = 500;
+var
+  EduOptionID: integer = 2000;
+    EduOptionGeneralID: integer       = 100;
+    EduOptionCompPaletteID: integer   = 200;
+    EduOptionMenuID: integer          = 300;
+    EduOptionNewPrgID: integer        = 400;
+    EduPropsEventsOptionsID: integer  = 500;
+    EduOIPagesOptionsID: integer      = 600;
+    EduSpeedButtonsOptionsID: integer = 700;
 
 type
 
@@ -173,6 +184,9 @@ type
     property Enabled: boolean read FEnabled write SetEnabled;
     property NeedLoad: boolean read FNeedLoad write FNeedLoad;
   end;
+
+type
+  EducationIDEOptionsClass = TAbstractIDEEnvironmentOptions;
 
 var
   EducationOptions: TEduOptions = nil;
@@ -460,4 +474,3 @@ finalization
   FreeAndNil(EducationOptions);
 
 end.
-

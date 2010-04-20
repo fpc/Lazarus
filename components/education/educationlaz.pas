@@ -1,4 +1,4 @@
-{ This file was automatically created by Lazarus. do not edit!
+{ This file was automatically created by Lazarus. Do not edit!
   This source is only used to compile and install the package.
  }
 
@@ -8,7 +8,8 @@ interface
 
 uses
     EduEnvOptsFrame, EduOptions, EduPkgSystem, EduCompPalette, EduMenu, 
-  EduNewProgram, EduPropsEvents, LazarusPackageIntf;
+  EduNewProgram, EduPropsEvents, EduOIPages, EduOptionsDlg, EduSpeedButtons, 
+  LazarusPackageIntf;
 
 implementation
 
@@ -20,6 +21,9 @@ begin
   RegisterUnit('EduMenu', @EduMenu.Register); 
   RegisterUnit('EduNewProgram', @EduNewProgram.Register); 
   RegisterUnit('EduPropsEvents', @EduPropsEvents.Register); 
+  RegisterUnit('EduOIPages', @EduOIPages.Register); 
+  RegisterUnit('EduOptionsDlg', @EduOptionsDlg.Register); 
+  RegisterUnit('EduSpeedButtons', @EduSpeedButtons.Register); 
 end; 
 
 initialization

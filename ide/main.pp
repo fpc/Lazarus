@@ -4293,6 +4293,7 @@ begin
       else
         AOptionsFilter := TAbstractIDEEnvironmentOptions;
     IDEOptionsDialog.OptionsFilter := AOptionsFilter;
+    DebugLn(['TMainIDE.DoOpenIDEOptions ',DbgSName(IDEOptionsDialog.OptionsFilter)]);
     IDEOptionsDialog.OpenEditor(AEditor);
 
     with IDEOptionsDialog do

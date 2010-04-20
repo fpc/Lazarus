@@ -93,7 +93,8 @@ procedure Register;
 begin
   EduMenuOptions:=TEduMenuOptions.Create;
   EducationOptions.Root.Add(EduMenuOptions);
-  RegisterIDEOptionsEditor(EduOptionID,TEduMenuFrame,EduOptionMenuID);
+  EduOptionMenuID:=RegisterIDEOptionsEditor(EduOptionID,TEduMenuFrame,
+                                            EduOptionMenuID)^.Index;
 end;
 
 { TEduMenuFrame }
@@ -309,7 +310,7 @@ end;
 
 class function TEduMenuFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result:=TEduOptions;
+  Result:=EducationIDEOptionsClass;
 end;
 
 procedure TEduMenuFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -439,8 +440,6 @@ begin
     ApplyRecursive(IDEMenuRoots[i]);
 end;
 
-initialization
-  {$I edumenu.lrs}
+{$R *.lfm}
 
 end.
-

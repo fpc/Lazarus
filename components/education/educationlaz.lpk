@@ -15,7 +15,7 @@
     <Description Value="IDE package for training, courses and education."/>
     <License Value="LGPL-2 or any later"/>
     <Version Major="1" Release="1"/>
-    <Files Count="8">
+    <Files Count="15">
       <Item1>
         <Filename Value="eduenvoptsframe.pas"/>
         <HasRegisterProc Value="True"/>
@@ -54,6 +54,37 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="EduPropsEvents"/>
       </Item8>
+      <Item9>
+        <Filename Value="eduoipages.lfm"/>
+        <Type Value="LFM"/>
+      </Item9>
+      <Item10>
+        <Filename Value="eduoipages.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="EduOIPages"/>
+      </Item10>
+      <Item11>
+        <Filename Value="eduoptionsdlg.lfm"/>
+        <Type Value="LFM"/>
+      </Item11>
+      <Item12>
+        <Filename Value="eduoptionsdlg.lrs"/>
+        <Type Value="LRS"/>
+      </Item12>
+      <Item13>
+        <Filename Value="eduoptionsdlg.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="EduOptionsDlg"/>
+      </Item13>
+      <Item14>
+        <Filename Value="eduspeedbuttons.lfm"/>
+        <Type Value="LFM"/>
+      </Item14>
+      <Item15>
+        <Filename Value="eduspeedbuttons.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="EduSpeedButtons"/>
+      </Item15>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

@@ -4,27 +4,26 @@ inherited EduPropsEventsFrame: TEduPropsEventsFrame
   ClientHeight = 393
   ClientWidth = 456
   TabOrder = 0
-  DesignLeft = 415
-  DesignTop = 302
+  DesignLeft = 713
+  DesignTop = 9
   object OptsPanel: TPanel[0]
-    Left = 0
+    Left = 8
     Height = 128
     Top = 0
-    Width = 456
-    Align = alTop
+    Width = 440
+    Align = alCustom
     ChildSizing.Layout = cclTopToBottomThenLeftToRight
     ChildSizing.ControlsPerLine = 2
     ClientHeight = 128
-    ClientWidth = 456
+    ClientWidth = 440
     TabOrder = 0
     object rdGrpProps: TRadioGroup
-      Left = 7
-      Height = 114
-      Top = 7
+      Left = 24
+      Height = 105
+      Top = 8
       Width = 185
-      Align = alLeft
+      Align = alCustom
       AutoFill = True
-      BorderSpacing.Around = 6
       Caption = 'rdGrpProps'
       ChildSizing.LeftRightSpacing = 6
       ChildSizing.TopBottomSpacing = 6
@@ -34,7 +33,7 @@ inherited EduPropsEventsFrame: TEduPropsEventsFrame
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 95
+      ClientHeight = 87
       ClientWidth = 181
       OnClick = rdGrpPropsClick
       TabOrder = 0
@@ -45,9 +44,7 @@ inherited EduPropsEventsFrame: TEduPropsEventsFrame
         Width = 165
         Align = alCustom
         Caption = 'PropsMinRadioBtn'
-        Checked = True
         OnClick = PropsMinRadioBtnClick
-        State = cbChecked
         TabOrder = 0
         TabStop = False
       end
@@ -74,13 +71,12 @@ inherited EduPropsEventsFrame: TEduPropsEventsFrame
       end
     end
     object rdGrpEvents: TRadioGroup
-      Left = 198
-      Height = 114
-      Top = 7
+      Left = 224
+      Height = 105
+      Top = 8
       Width = 185
-      Align = alLeft
+      Align = alCustom
       AutoFill = True
-      BorderSpacing.Around = 6
       Caption = 'rdGrpEvents'
       ChildSizing.LeftRightSpacing = 6
       ChildSizing.TopBottomSpacing = 6
@@ -90,7 +86,7 @@ inherited EduPropsEventsFrame: TEduPropsEventsFrame
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 95
+      ClientHeight = 87
       ClientWidth = 181
       TabOrder = 1
       object EventsMinRadioBtn: TRadioButton
@@ -100,9 +96,7 @@ inherited EduPropsEventsFrame: TEduPropsEventsFrame
         Width = 160
         Align = alCustom
         Caption = 'EventsMinRadioBtn'
-        Checked = True
         OnClick = EventsMinRadioBtnClick
-        State = cbChecked
         TabOrder = 0
       end
       object EventsExtRadioBtn: TRadioButton
@@ -128,50 +122,47 @@ inherited EduPropsEventsFrame: TEduPropsEventsFrame
     end
   end
   object grpBoxEvents: TGroupBox[1]
-    Left = 0
+    Left = 32
     Height = 65
-    Top = 256
-    Width = 456
-    Align = alTop
+    Top = 288
+    Width = 392
     Caption = 'grpBoxEvents'
-    ClientHeight = 46
-    ClientWidth = 452
+    ClientHeight = 47
+    ClientWidth = 388
     TabOrder = 1
-    object stTextEvents: TLabel
+    object stTextEvents: TStaticText
       Left = 14
-      Height = 18
+      Height = 25
       Top = 8
-      Width = 81
+      Width = 369
       Caption = 'stTextEvents'
-      ParentColor = False
+      TabOrder = 0
     end
   end
   object grpBoxProps: TGroupBox[2]
-    Left = 0
+    Left = 32
     Height = 128
-    Top = 128
-    Width = 456
-    Align = alTop
+    Top = 144
+    Width = 392
     Caption = 'grpBoxProps'
-    ClientHeight = 109
-    ClientWidth = 452
+    ClientHeight = 110
+    ClientWidth = 388
     TabOrder = 2
-    object stTextProps: TLabel
+    object stTextProps: TStaticText
       Left = 14
-      Height = 18
+      Height = 25
       Top = 8
-      Width = 74
+      Width = 368
       Caption = 'stTextProps'
-      ParentColor = False
+      TabOrder = 0
     end
-    object stTextProps2: TLabel
-      AnchorSideTop.Side = asrBottom
+    object stTextProps2: TStaticText
       Left = 14
-      Height = 18
+      Height = 64
       Top = 40
-      Width = 82
+      Width = 368
       Caption = 'stTextProps2'
-      ParentColor = False
+      TabOrder = 1
     end
   end
 end

@@ -1,0 +1,48 @@
+inherited EduOIPagesFrame: TEduOIPagesFrame
+  Height = 393
+  Width = 456
+  ClientHeight = 393
+  ClientWidth = 456
+  TabOrder = 0
+  DesignLeft = 792
+  DesignTop = 2
+  object OptsPanel: TPanel[0]
+    Left = 8
+    Height = 152
+    Top = 8
+    Width = 440
+    Align = alCustom
+    ChildSizing.Layout = cclTopToBottomThenLeftToRight
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 152
+    ClientWidth = 440
+    TabOrder = 0
+    object grpBoxOIPages: TGroupBox
+      Left = 40
+      Height = 96
+      Top = 16
+      Width = 272
+      Align = alCustom
+      Caption = 'grpBoxOIPages'
+      ClientHeight = 78
+      ClientWidth = 268
+      TabOrder = 0
+      object ckBoxFavs: TCheckBox
+        Left = 22
+        Height = 17
+        Top = 16
+        Width = 71
+        Caption = 'ckBoxFavs'
+        TabOrder = 0
+      end
+      object ckBoxRestricted: TCheckBox
+        Left = 22
+        Height = 17
+        Top = 48
+        Width = 97
+        Caption = 'ckBoxRestricted'
+        TabOrder = 1
+      end
+    end
+  end
+end

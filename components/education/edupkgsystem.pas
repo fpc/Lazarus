@@ -103,7 +103,7 @@ end;
 
 class function TEduPkgSystemFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result:=TEduOptions;
+  Result:=EducationIDEOptionsClass;
 end;
 
 { TEduPkgSystemOptions }
@@ -155,8 +155,6 @@ begin
   Result:=inherited Save(Config);
 end;
 
-initialization
-  {$I edupkgsystem.lrs}
+{$R *.lfm}
 
 end.
-

@@ -67,8 +67,6 @@ begin
 
 end;
 
-initialization
-  {$I eduoptionsdlg.lrs}
+{$R *.lfm}
 
 end.
-
