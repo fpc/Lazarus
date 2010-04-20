@@ -2725,7 +2725,7 @@ begin
 
     fShowTabCloseButtons :=
       XMLConfig.GetValue(
-      'EditorOptions/General/Editor/ShowTabCloseButtons', False);
+      'EditorOptions/General/Editor/ShowTabCloseButtons', True);
     FHideSingleTabInWindow :=
       XMLConfig.GetValue(
       'EditorOptions/General/Editor/HideSingleTabInWindow', True);
