@@ -771,8 +771,8 @@ procedure TCustomForm.UpdateShowInTaskBar;
 var
   Value: TShowInTaskBar;
 begin
-  if (Application.MainForm = Self) or (not HandleAllocated)
-    or (FormStyle = fsMDIChild) then Exit;
+  if (Application.MainForm = Self) or (not HandleAllocated) or (Parent<>nil)
+    or (FormStyle = fsMDIChild) or (not Showing) then Exit;
   Value := ShowInTaskBar;
   if (Value = stDefault) or (csDesigning in ComponentState) then
     case Application.TaskBarBehavior of
@@ -780,7 +780,10 @@ begin
       tbMultiButton: Value := stAlways;
       else // nothing
     end;
-  TWSCustomFormClass(WidgetSetClass).SetShowInTaskbar(Self, Value);
+  if FRealizedShowInTaskBar<>Value then begin
+    FRealizedShowInTaskBar:=Value;
+    TWSCustomFormClass(WidgetSetClass).SetShowInTaskbar(Self, Value);
+  end;
 end;
 
 class procedure TCustomForm.WSRegisterClass;
@@ -2316,7 +2319,6 @@ begin
 
   Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');
   UpdateMenu;
-  UpdateShowInTaskBar;
 
   {$IFDEF OldAutoSize}
   // activate focus if visible
@@ -2453,6 +2455,7 @@ begin
       {$ENDIF}
       LCLIntf.SetFocus(FActiveControl.Handle);
     end;
+    UpdateShowInTaskBar;
   end;
   {$ENDIF}
 end;

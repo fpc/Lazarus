@@ -437,6 +437,7 @@ type
     FOnWindowStateChange: TNotifyEvent;
     FPixelsPerInch: Longint;
     FPosition: TPosition;
+    FRealizedShowInTaskBar: TShowInTaskbar;
     FRestoredLeft: integer;
     FRestoredTop: integer;
     FRestoredWidth: integer;
