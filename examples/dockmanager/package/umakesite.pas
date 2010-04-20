@@ -760,8 +760,6 @@ begin
     if Result.Name <> AName then
       TryRename(Result, AName);
   end;
-  if DisableUpdate then
-    Result.EnableAlign;
   Result.Visible := True; //required for docking
 end;
 
