@@ -3906,7 +3906,7 @@ begin
     NewPageName:=Format('%s:%d', [FPageName, (p+1) mod 10])
   else
     NewPageName:=FPageName;
-  if IsLocked then NewPageName:='!'+NewPageName;
+  if IsLocked then NewPageName:='%'+NewPageName;
   if Modified then NewPageName:='*'+NewPageName;
   if SourceNotebook.NoteBookPages[p] <> NewPageName then begin
     SourceNotebook.NoteBookPages[p] := NewPageName;
