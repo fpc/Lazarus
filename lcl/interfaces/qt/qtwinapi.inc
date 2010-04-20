@@ -5035,11 +5035,14 @@ var
   function UpdateScrollInfo: Integer;
   var
     iReCountMax: Integer;
+    SBUpdatesCount: Integer;
   begin
     Result := 0;
+    SBUpdatesCount := 0;
 
     if (ScrollInfo.FMask and SIF_RANGE) <> 0 then
     begin
+      inc(SBUpdatesCount);
       ScrollBar.setMinimum(ScrollInfo.nMin);
 
       // we must recount ScrollBar.Max since invalid value raises AV
@@ -5055,6 +5058,7 @@ var
       // segfaults if we don't check Enabled property
       if ScrollBar.getEnabled then
       begin
+        inc(SBUpdatesCount);
         ScrollBar.setPageStep(ScrollInfo.nPage);
         ScrollBar.setSingleStep((ScrollBar.getPageStep div 6) + 1);
       end;
@@ -5062,18 +5066,22 @@ var
 
     if (ScrollInfo.FMask and SIF_POS) <> 0 then
     begin
-      ScrollBar.BeginUpdate;
-      try
-        if (ScrollInfo.nPos < ScrollBar.getMin) then
-          ScrollInfo.nPos := ScrollBar.getMin
-        else
-        if (ScrollInfo.nPos > ScrollBar.getMax) then
-          ScrollInfo.nPos := ScrollBar.getMax;
+      inc(SBUpdatesCount);
 
+      if (ScrollInfo.nPos < ScrollBar.getMin) then
+        ScrollInfo.nPos := ScrollBar.getMin
+      else
+      if (ScrollInfo.nPos > ScrollBar.getMax) then
+        ScrollInfo.nPos := ScrollBar.getMax;
+
+      if SBUpdatesCount = 1 then
+        ScrollBar.BeginUpdate;
+      try
         if (ScrollInfo.FMask and SIF_UPDATEPOLICY) = 0 then
           ScrollBar.setValue(ScrollInfo.nPos);
       finally
-        ScrollBar.EndUpdate;
+        if SBUpdatesCount = 1 then
+          ScrollBar.EndUpdate;
       end;
     end;
 
