@@ -1519,7 +1519,6 @@ const
   //  'dsNone', 'dsIdle', 'dsStop', 'dsPause', 'dsInit', 'dsRun', 'dsError'
   //);
 var
-  Editor: TSourceEditor;
   MsgResult: TModalResult;
   i: Integer;
 begin
@@ -1578,11 +1577,8 @@ begin
 
   // unmark execution line
   if (FDebugger.State <> dsPause) and (SourceEditorManager <> nil)
-  then begin
-    Editor := SourceEditorManager.GetActiveSE;
-    if Editor <> nil
-    then Editor.ExecutionLine := -1;
-  end;
+  then
+    SourceEditorManager.ClearExecutionLines;
 
   if ((FDebugger.State = dsPause) or
       ((FDebugger.State = dsRun) and (OldState = dsInit))
