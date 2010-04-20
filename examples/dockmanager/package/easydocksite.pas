@@ -1067,11 +1067,13 @@ procedure TEasyTree.ResetBounds(Force: Boolean);
 var
   rNew: TRect;
 begin
+  DebugLn(['TEasyTree.ResetBounds ']);
 //drop site resized - never called in Lazarus???
   if (csLoading in FDockSite.ComponentState) then
     exit; //not the right time to do anything
 //how to determine old bounds?
   rNew := FDockSite.ClientRect;
+  DebugLn(['TEasyTree.ResetBounds ',dbgs(rNew)]);
 //try catch bad calls (Win32)?????
   if (rNew.Right <= 0) or (rNew.Bottom <= 0) then
     exit;

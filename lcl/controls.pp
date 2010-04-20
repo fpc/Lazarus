@@ -1732,6 +1732,7 @@ type
     function DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
                      AControlList: TFPList; var ARect: TRect): Boolean; virtual;
     procedure DoChildSizingChange(Sender: TObject); virtual;
+    procedure DoOnChangeBounds; override;
     {$IFDEF OldAutoSize}
     procedure ResizeDelayedAutoSizeChildren; virtual;
     {$ENDIF}

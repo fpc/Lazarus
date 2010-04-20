@@ -3172,6 +3172,13 @@ begin
   ReAlign;
 end;
 
+procedure TWinControl.DoOnChangeBounds;
+begin
+  inherited DoOnChangeBounds;
+  if FUseDockManager and (DockManager<>nil) then
+    DockManager.ResetBounds(false);
+end;
+
 {$IFDEF OldAutoSize}
 procedure TWinControl.ResizeDelayedAutoSizeChildren;
 var
@@ -7777,8 +7784,7 @@ begin
       ' -> New=',Dbgs(Bounds(ALeft,ATop,AWidth,AHeight))]);
       {$ENDIF}
       inherited SetBounds(ALeft, ATop, AWidth, AHeight);
-      if FUseDockManager and (DockManager <> nil) then
-        DockManager.ResetBounds(False);
+      //DebugLn(['TWinControl.SetBounds ',DbgSName(Self),' FUseDockManager=',FUseDockManager,' ',DbgSName(DockManager)]);
     finally
       {$IFDEF OldAutoSize}
       UnlockRealizeBounds;

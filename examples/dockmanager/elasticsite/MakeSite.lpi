@@ -62,11 +62,7 @@
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)\"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
-      <LCLWidgetType Value="win32"/>
     </SearchPaths>
-    <CodeGeneration>
-      <TargetOS Value="Win32"/>
-    </CodeGeneration>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

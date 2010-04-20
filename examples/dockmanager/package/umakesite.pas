@@ -232,7 +232,7 @@ begin
   AForm.EnableAlign;
 end;
 
-//function TDockMaster.CreateDockable(const AName: string; site: TWinControl;
+//function TDockMaster.CreateDockable(const AName: string; site: TWinControl);
 function TDockMaster.CreateDockable(const AName: string;
   fMultiInst, DisableUpdate: boolean; fWrap: boolean): TWinControl;
 var
