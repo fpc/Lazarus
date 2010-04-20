@@ -72,7 +72,8 @@ type
       X, Y: Integer);
     procedure FormEndDock(Sender, Target: TObject; X, Y: Integer);
   protected //utilities
-    function  ReloadForm(const AName: string; fMultiInst: boolean): TWinControl; virtual;
+    function  ReloadForm(const AName: string; fMultiInst,
+                         DisableUpdate: boolean): TWinControl; virtual;
     function  WrapDockable(Client: TControl): TFloatingSite;
   private
     LastPanel: TDockPanel;  //last elastic panel created
@@ -88,13 +89,15 @@ type
     destructor Destroy; override;
     procedure AddElasticSites(AForm: TCustomForm; Sides: sDockSides);
     //function  CreateDockable(const AName: string; site: TWinControl; fMultiInst: boolean; fWrap: boolean = True): TWinControl;
-    function  CreateDockable(const AName: string; fMultiInst: boolean; fWrap: boolean = True): TWinControl;
+    function  CreateDockable(const AName: string;
+        fMultiInst, DisableUpdate: boolean; fWrap: boolean = True): TWinControl;
     function  MakeDockable(AForm: TWinControl; fWrap: boolean = True): TForm;
     procedure DumpSites;
   //persistence
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
-    function  ReloadDockedControl(const AName: string; Site: TWinControl): TControl; virtual;
+    function  ReloadDockedControl(const AName: string; Site: TWinControl;
+                                  DisableUpdate: boolean): TControl; virtual;
     //function  SaveDockedControl(ACtrl:  TControl; Site: TWinControl): string; virtual;
     procedure LoadFromFile(const AName: string);
     procedure SaveToFile(const AName: string);
@@ -180,6 +183,7 @@ begin
 {$ELSE}
   po := AForm; //owned by the form - proper destruction
 {$ENDIF}
+  AForm.DisableAlign;
   for side := low(side) to high(side) do begin
     if (side in AllowedSides) and (side in Sides) then begin
       pnlName := AlignString[side] + AForm.Name;
@@ -225,11 +229,12 @@ begin
       LastPanel := pnl; //for reload layout
     end;
   end;
+  AForm.EnableAlign;
 end;
 
 //function TDockMaster.CreateDockable(const AName: string; site: TWinControl;
 function TDockMaster.CreateDockable(const AName: string;
-  fMultiInst: boolean; fWrap: boolean): TWinControl;
+  fMultiInst, DisableUpdate: boolean; fWrap: boolean): TWinControl;
 var
   nb: TCustomDockSite;
 begin
@@ -241,7 +246,7 @@ Options (to come or to be removed)
   otherwise an already existing instance is returned. (really returned?)
 *)
 //get the form
-  Result := ReloadForm(AName, fMultiInst);
+  Result := ReloadForm(AName, fMultiInst, DisableUpdate);
   if Result = nil then
     exit;
   MakeDockable(Result, fWrap);
@@ -255,56 +260,53 @@ var
   Res: TWinControlAccess absolute AForm;
 begin
   Result := nil;
-  //AForm.DisableAlign;
-  try
+  AForm.DisableAlign;
   //check make dockable
-    { TODO -cdocking : problems with IDE windows:
-      wrapping results in exceptions - conflicts with OnEndDock? }
-    if Res.DragKind <> dkDock then begin
-    //make it dockable
-      Res.DragKind := dkDock;
-      //if not ForIDE then //problems with the IDE?
-        Res.OnEndDock := @FormEndDock; //float into default host site
-    end;
-    Res.DragMode := dmAutomatic;
-  //wrap into floating site, if requested (not on restore Layout)
-    if fWrap then begin
-    //wrap into dock site
-      Site := WrapDockable(AForm);
-    end;
-  //create a docking handle - should become a component?
-    img := TImage.Create(AForm); //we could own the img, and be notified when its parent becomes nil
-    img.Align := alNone;
-    //if ForIDE then
-    try //begin  //prevent problems with the following code!
-      img.AnchorParallel(akRight,0,Result); //anchor to Result=Site or to AForm?
-      img.AnchorParallel(akTop,0,Result);
-    except
-      DebugLn('error AnchorParallel');
-    end;
-    img.Anchors:=[akRight,akTop];
-    img.Cursor := crHandPoint;
-    img.Parent := AForm;
-    r := AForm.ClientRect;
-    r.bottom := 16;
-    r.Left := r.Right - 16;
-    img.BoundsRect := r;
-    if DockGrip <> nil then  //problem: find grabber picture!?
-      try
-        img.Picture := DockGrip;
-      except
-        on E: Exception do begin
-          DebugLn('exception loading picture ',E.Message);
-        end;
-      end;
-    //else???
-    img.OnMouseMove := @DockHandleMouseMove;
-    img.Visible := True;
-  //make visible, so that it can be docked without problems
-    AForm.Visible := True;
-  finally
-    //AForm.EnableAlign;
+  { TODO -cdocking : problems with IDE windows:
+    wrapping results in exceptions - conflicts with OnEndDock? }
+  if Res.DragKind <> dkDock then begin
+  //make it dockable
+    Res.DragKind := dkDock;
+    //if not ForIDE then //problems with the IDE?
+      Res.OnEndDock := @FormEndDock; //float into default host site
   end;
+  Res.DragMode := dmAutomatic;
+//wrap into floating site, if requested (not on restore Layout)
+  if fWrap then begin
+  //wrap into dock site
+    Site := WrapDockable(AForm);
+  end;
+//create a docking handle - should become a component?
+  img := TImage.Create(AForm); //we could own the img, and be notified when its parent becomes nil
+  img.Align := alNone;
+  //if ForIDE then
+  try //begin  //prevent problems with the following code!
+    img.AnchorParallel(akRight,0,Result); //anchor to Result=Site or to AForm?
+    img.AnchorParallel(akTop,0,Result);
+  except
+    DebugLn('error AnchorParallel');
+  end;
+  img.Anchors:=[akRight,akTop];
+  img.Cursor := crHandPoint;
+  img.Parent := AForm;
+  r := AForm.ClientRect;
+  r.bottom := 16;
+  r.Left := r.Right - 16;
+  img.BoundsRect := r;
+  if DockGrip <> nil then  //problem: find grabber picture!?
+    try
+      img.Picture := DockGrip;
+    except
+      on E: Exception do begin
+        DebugLn('exception loading picture ',E.Message);
+      end;
+    end;
+  //else???
+  img.OnMouseMove := @DockHandleMouseMove;
+  img.Visible := True;
+//make visible, so that it can be docked without problems
+  AForm.Visible := True;
+  AForm.EnableAlign;
   img.BringToFront;
   if ForIDE and fWrap and assigned(Site) and assigned(Site.DockManager) then begin
     //site.DockManager.ResetBounds(True); //doesn't help
@@ -314,7 +316,7 @@ begin
 end;
 
 function TDockMaster.ReloadDockedControl(const AName: string;
-  Site: TWinControl): TControl;
+  Site: TWinControl; DisableUpdate: boolean): TControl;
 var
   i: integer;
   lst: TStringList;
@@ -329,6 +331,8 @@ begin
   if AName <> '' then begin
     Result := Screen.FindForm(AName);
     if Result <> nil then begin
+      if DisableUpdate then
+        Result.DisableAutoSizing;
       Result.Visible := True; //empty edit book?
       exit; //found it
     end;
@@ -336,7 +340,7 @@ begin
 //not found
   Result := inherited ReloadControl(AName, Site);
   if Result = nil then
-    Result := ReloadForm(AName, True);
+    Result := ReloadForm(AName, True, DisableUpdate);
 end;
 
 {$IFDEF old}
@@ -450,13 +454,14 @@ var
   begin
   (* AName is <align><form>
   *)
-    hcomp := self.ReloadForm(FormName, True); //try multi-instance first
+    hcomp := self.ReloadForm(FormName, True, True); //try multi-instance first
     if host <> nil then begin
       AddElasticSites(host, [aln]);
       Result := LastPanel; //found or created
       host.BoundsRect := SiteRec.Bounds;
       Result.BoundsRect := SiteRec.Extent;
       Result.AutoExpand := SiteRec.AutoExpand;
+      Result.EnableAlign;
       exit;
     end;
   //failed
@@ -651,7 +656,8 @@ begin
   Stream.Write(SiteRec, sizeof(SiteRec));
 end;
 
-function TDockMaster.ReloadForm(const AName: string; fMultiInst: boolean): TWinControl;
+function TDockMaster.ReloadForm(const AName: string;
+  fMultiInst, DisableUpdate: boolean): TWinControl;
 var
   //instname: string
   basename: string;
@@ -712,6 +718,8 @@ begin
   if AName <> '' then begin
     Result := Screen.FindForm(AName);
     if Result <> nil then begin
+      if DisableUpdate then
+        Result.DisableAlign;
       Result.Visible := True; //empty edit book?
       exit; //found it
     end;
@@ -721,6 +729,8 @@ begin
     TWinControlAccess(Factory).ReloadDockedControl(AName, ctl);
     if ctl is TWinControl then begin
       Result := TWinControl(ctl);
+      if DisableUpdate then
+        Result.DisableAlign;
       exit;
     end; //else assume that we should do everything?
     FreeAndNil(ctl);
@@ -728,7 +738,10 @@ begin
 //search/create ourselves
   fo := Owner; //our owner also owns the forms
   if AName = '' then begin
-    Result := TForm.Create(fo); //named Form1, Form2... - not now???
+    Result := TForm(TForm.NewInstance);
+    if DisableUpdate then
+      Result.DisableAlign;
+    Result.Create(fo); //named Form1, Form2... - not now???
   end else begin
   //create new instance
     //DebugLn('!!! create new: ', AName);
@@ -738,7 +751,10 @@ begin
       DebugLn(basename , ' is not a registered class');
       exit(nil); //bad form name
     end;
-    Result := fc.Create(fo);
+    Result := TWinControl(fc.NewInstance);
+    if DisableUpdate then
+      Result.DisableAlign;
+    Result.Create(fo);
     if Result.Name <> AName then
       TryRename(Result, AName);
   end;
@@ -763,7 +779,9 @@ begin
   then
     exit(nil); //do nothing with client under destruction!
 
-  Site := TFloatingSite.Create(Self); //we own the new site
+  Site := TFloatingSite(TFloatingSite.NewInstance);
+  Site.DisableAlign;
+  Site.Create(Self); //we own the new site
   try
   //keep undocked extent
     r := Client.BoundsRect;
@@ -788,6 +806,7 @@ begin
 //retry make client auto-dockable
   ctl.DragKind := dkDock;
   ctl.DragMode := dmAutomatic;
+  Site.EnableAlign;
 end;
 
 procedure TDockMaster.DockHandleMouseMove(Sender: TObject; Shift: TShiftState;

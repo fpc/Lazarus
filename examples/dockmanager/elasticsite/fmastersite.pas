@@ -37,8 +37,11 @@ uses
 { TMasterSite }
 
 procedure TMasterSite.buCreateFormClick(Sender: TObject);
+var
+  AControl: TWinControl;
 begin
-  DockMaster.CreateDockable('', True);
+  AControl:=DockMaster.CreateDockable('', True, True);
+  AControl.EnableAlign;
 end;
 
 procedure TMasterSite.buDumpClick(Sender: TObject);
@@ -62,11 +65,15 @@ begin
 end;
 
 procedure TMasterSite.FormCreate(Sender: TObject);
+var
+  AControl: TWinControl;
 begin
   DockMaster := TDockMaster.Create(self); //(Application)?
   DockMaster.AddElasticSites(self, [alBottom]);
-  DockMaster.CreateDockable('', True);
-  DockMaster.CreateDockable('', True);
+  AControl:=DockMaster.CreateDockable('', True, True);
+  AControl.EnableAlign;
+  AControl:=DockMaster.CreateDockable('', True, True);
+  AControl.EnableAlign;
 //all specific classes must be registered!
 {
   RegisterClass(TViewWindow);
