@@ -65,15 +65,11 @@ begin
 end;
 
 procedure TMasterSite.FormCreate(Sender: TObject);
-var
-  AControl: TWinControl;
 begin
   DockMaster := TDockMaster.Create(self); //(Application)?
   DockMaster.AddElasticSites(self, [alBottom]);
-  AControl:=DockMaster.CreateDockable('', True, True);
-  AControl.EnableAlign;
-  AControl:=DockMaster.CreateDockable('', True, True);
-  AControl.EnableAlign;
+  DockMaster.CreateDockable('', True, False);
+  DockMaster.CreateDockable('', True, False);
 //all specific classes must be registered!
 {
   RegisterClass(TViewWindow);

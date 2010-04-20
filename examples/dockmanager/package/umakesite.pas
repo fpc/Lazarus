@@ -246,10 +246,12 @@ Options (to come or to be removed)
   otherwise an already existing instance is returned. (really returned?)
 *)
 //get the form
-  Result := ReloadForm(AName, fMultiInst, DisableUpdate);
+  Result := ReloadForm(AName, fMultiInst, true);
   if Result = nil then
     exit;
   MakeDockable(Result, fWrap);
+  if not DisableUpdate then
+    Result.EnableAlign;
 end;
 
 function TDockMaster.MakeDockable(AForm: TWinControl; fWrap: boolean): TForm;
