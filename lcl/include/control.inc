@@ -4025,7 +4025,10 @@ var
   DockObject: TDragDockObject;
   NewPosition: TPoint;
 begin
-  DropControl.DisableAutoSizing;
+  if DropControl<>nil then
+    DropControl.DisableAutoSizing;
+  if NewDockSite<>nil then
+    NewDockSite.DisableAutoSizing;
   if (NewDockSite=nil) then begin
     // undock / float this control
     // float the control at the same screen position
@@ -4079,7 +4082,10 @@ begin
       end;
     end;
   end;
-  DropControl.EnableAutoSizing;
+  if NewDockSite<>nil then
+    NewDockSite.EnableAutoSizing;
+  if DropControl<>nil then
+    DropControl.EnableAutoSizing;
 end;
 
 {------------------------------------------------------------------------------
