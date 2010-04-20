@@ -260,6 +260,7 @@ var
   r: TRect;
   Site: TFloatingSite absolute Result;
   Res: TWinControlAccess absolute AForm;
+  ok: Boolean;
 begin
   Result := nil;
   AForm.DisableAlign;
@@ -282,11 +283,14 @@ begin
   img := TImage.Create(AForm); //we could own the img, and be notified when its parent becomes nil
   img.Align := alNone;
   //if ForIDE then
+  ok:=false;
   try //begin  //prevent problems with the following code!
     img.AnchorParallel(akRight,0,Result); //anchor to Result=Site or to AForm?
     img.AnchorParallel(akTop,0,Result);
-  except
-    DebugLn('error AnchorParallel');
+    ok:=true;
+  finally
+    if not ok then
+      DebugLn('error AnchorParallel');
   end;
   img.Anchors:=[akRight,akTop];
   img.Cursor := crHandPoint;
@@ -808,6 +812,7 @@ begin
     DebugLn('error WrapDockable: ' + Client.Name);
     if Client.HostDockSite <> Site then
       Site.Release;
+    raise;
   end;
 //retry make client auto-dockable
   ctl.DragKind := dkDock;
