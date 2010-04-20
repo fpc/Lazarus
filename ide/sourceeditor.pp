@@ -845,6 +845,7 @@ type
     function  GetActiveSourceWindow: TSourceEditorWindowInterface; override;
     procedure SetActiveSourceWindow(const AValue: TSourceEditorWindowInterface); override;
     function  GetSourceWindows(Index: integer): TSourceEditorWindowInterface; override;
+    procedure DoWindowFocused(AWindow: TSourceNotebook);  // Includes Focus to ChildControl (aka Activated)
     function  GetActiveEditor: TSourceEditorInterface; override;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); override;
     procedure DoActiveEditorChanged;
@@ -1054,9 +1055,7 @@ type
     FOnToggleObjectInspClicked: TNotifyEvent;
     FOnUserCommandProcessed: TOnUserCommandProcessed;
     FOnViewJumpHistory: TNotifyEvent;
-    FOnWindowActivate: TNotifyEvent;
   public
-    property OnWindowActivate: TNotifyEvent read FOnWindowActivate write FOnWindowActivate;
     property OnAddJumpPoint: TOnAddJumpPoint
              read FOnAddJumpPoint write FOnAddJumpPoint;
     property OnCloseClicked: TOnCloseSrcEditor
@@ -7225,8 +7224,8 @@ begin
   inherited Activate;
   if assigned(Manager) then
     Manager.ActiveSourceWindow := self;
-  if assigned(Manager) and assigned(Manager.OnWindowActivate) then
-    Manager.OnWindowActivate(self);
+  if assigned(Manager) then
+    Manager.DoWindowFocused(Self);
 end;
 
 procedure TSourceNotebook.UpdateActiveEditColors(AEditor: TSynEdit);
@@ -7659,6 +7658,11 @@ function TSourceEditorManagerBase.GetSourceWindows(Index: integer
   ): TSourceEditorWindowInterface;
 begin
   Result := TSourceEditorWindowInterface(FSourceWindowList[Index]);
+end;
+
+procedure TSourceEditorManagerBase.DoWindowFocused(AWindow: TSourceNotebook);
+begin
+  FChangeNotifyLists[semWindowFocused].CallNotifyEvents(FActiveWindow);
 end;
 
 function TSourceEditorManagerBase.GetActiveEditor: TSourceEditorInterface;
@@ -8785,7 +8789,6 @@ var
 begin
   Result := TSourceNotebook.Create(Self);
   Result.FreeNotification(self);
-  Result.OnActivate := OnWindowActivate;
   Result.OnDropFiles := @OnFilesDroping;
 
   for i := 1 to FUpdateLock do

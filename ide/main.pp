@@ -1948,7 +1948,7 @@ end;
 procedure TMainIDE.SetupSourceNotebook;
 begin
   TSourceEditorManager.Create(OwningComponent);
-  SourceEditorManager.OnWindowActivate := @OnSrcNoteBookActivated;
+  SourceEditorManager.RegisterChangeEvent(semWindowFocused, @OnSrcNoteBookActivated);
   SourceEditorManager.OnAddJumpPoint := @OnSrcNoteBookAddJumpPoint;
   SourceEditorManager.OnCloseClicked := @OnSrcNotebookFileClose;
   SourceEditorManager.OnClickLink := @OnSrcNoteBookClickLink;
