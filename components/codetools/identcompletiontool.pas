@@ -772,6 +772,7 @@ var
   CurItem: TIdentifierListItem;
   FoundFirst: Boolean;
   SamePos: Integer;
+  l: Integer;
 begin
   Result:=Prefix;
   FoundFirst:=false;
@@ -786,7 +787,10 @@ begin
         FoundFirst:=true;
       end else begin
         SamePos:=length(Prefix)+1;
-        while (SamePos<=length(Result))
+        l:=length(Result);
+        if l>length(CurItem.Identifier) then
+          l:=length(CurItem.Identifier);
+        while (SamePos<=l)
         and (UpChars[CurItem.Identifier[SamePos]]=UpChars[Result[SamePos]])
         do
           inc(SamePos);
