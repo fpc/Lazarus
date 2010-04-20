@@ -1422,6 +1422,10 @@ msgstr "Cacher l'EDI à l'exécution"
 msgid "Hide Messages Icons"
 msgstr "Cacher les icônes des messages"
 
+#: lazarusidestrconsts.dlghidesingletabinnotebook
+msgid "Hide tab in single page windows"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Couleur de surlignage"
@@ -2238,6 +2242,10 @@ msgstr "Complétion de propriété"
 #: lazarusidestrconsts.dlgpropnamecolor
 msgid "Property Name"
 msgstr "nom de propriété"
+
+#: lazarusidestrconsts.dlgqautoclosecompiledialog
+msgid "Auto close compile dialog"
+msgstr ""
 
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"

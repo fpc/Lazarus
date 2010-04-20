@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-17 20:48+0300\n"
+"PO-Revision-Date: 2010-04-20 03:59+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1432,6 +1432,10 @@ msgstr "Скрывать окна IDE при запуске"
 msgid "Hide Messages Icons"
 msgstr "Скрывать значки в окне сообщений"
 
+#: lazarusidestrconsts.dlghidesingletabinnotebook
+msgid "Hide tab in single page windows"
+msgstr "Скрывать заголовок одиночной вкладки"
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Выделение"
@@ -2248,6 +2252,10 @@ msgstr "Завершение свойств"
 #: lazarusidestrconsts.dlgpropnamecolor
 msgid "Property Name"
 msgstr "Имя свойства"
+
+#: lazarusidestrconsts.dlgqautoclosecompiledialog
+msgid "Auto close compile dialog"
+msgstr "Автоматически закрывать диалог компиляции"
 
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"

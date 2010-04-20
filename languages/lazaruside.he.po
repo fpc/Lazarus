@@ -1418,6 +1418,10 @@ msgstr ""
 msgid "Hide Messages Icons"
 msgstr ""
 
+#: lazarusidestrconsts.dlghidesingletabinnotebook
+msgid "Hide tab in single page windows"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr ""
@@ -2230,6 +2234,10 @@ msgstr "השלמת תכונות"
 #: lazarusidestrconsts.dlgpropnamecolor
 msgid "Property Name"
 msgstr "שם התכונה"
+
+#: lazarusidestrconsts.dlgqautoclosecompiledialog
+msgid "Auto close compile dialog"
+msgstr ""
 
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"

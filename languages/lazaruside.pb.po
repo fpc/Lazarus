@@ -1433,6 +1433,10 @@ msgstr "Esconder a janela da IDE ao executar"
 msgid "Hide Messages Icons"
 msgstr "Ocultar ícones mensagens"
 
+#: lazarusidestrconsts.dlghidesingletabinnotebook
+msgid "Hide tab in single page windows"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Realçar Cor"
@@ -2247,6 +2251,10 @@ msgstr "Complemento propriedade"
 #: lazarusidestrconsts.dlgpropnamecolor
 msgid "Property Name"
 msgstr "Nome da propriedade"
+
+#: lazarusidestrconsts.dlgqautoclosecompiledialog
+msgid "Auto close compile dialog"
+msgstr ""
 
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"

@@ -1423,6 +1423,10 @@ msgstr "Startuojant programą slėpti IKA langus"
 msgid "Hide Messages Icons"
 msgstr "slėpti pranešimų piktogramas"
 
+#: lazarusidestrconsts.dlghidesingletabinnotebook
+msgid "Hide tab in single page windows"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Paryškinimo spalva"
@@ -2238,6 +2242,10 @@ msgstr "„Property“ užbaigimas"
 #: lazarusidestrconsts.dlgpropnamecolor
 msgid "Property Name"
 msgstr "Savybės pavadinimas"
+
+#: lazarusidestrconsts.dlgqautoclosecompiledialog
+msgid "Auto close compile dialog"
+msgstr ""
 
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"

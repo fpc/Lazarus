@@ -1425,6 +1425,10 @@ msgstr "IDE-Fenster beim Start verstecken"
 msgid "Hide Messages Icons"
 msgstr "Nachrichten-Icons verbergen"
 
+#: lazarusidestrconsts.dlghidesingletabinnotebook
+msgid "Hide tab in single page windows"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "Hervorhebungsfarbe"
@@ -2246,6 +2250,10 @@ msgstr "Eigenschaftenvervollständigung"
 #: lazarusidestrconsts.dlgpropnamecolor
 msgid "Property Name"
 msgstr "Name der Eigenschaft"
+
+#: lazarusidestrconsts.dlgqautoclosecompiledialog
+msgid "Auto close compile dialog"
+msgstr ""
 
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"

@@ -1422,6 +1422,10 @@ msgstr "运行时隐藏 IDE 窗口"
 msgid "Hide Messages Icons"
 msgstr ""
 
+#: lazarusidestrconsts.dlghidesingletabinnotebook
+msgid "Hide tab in single page windows"
+msgstr ""
+
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
 msgstr "高亮颜色"
@@ -2240,6 +2244,10 @@ msgstr "属性自动完成"
 #: lazarusidestrconsts.dlgpropnamecolor
 msgid "Property Name"
 msgstr "属性名称"
+
+#: lazarusidestrconsts.dlgqautoclosecompiledialog
+msgid "Auto close compile dialog"
+msgstr ""
 
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"
