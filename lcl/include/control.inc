@@ -4096,6 +4096,7 @@ var
   FloatHost: TWinControl;
 begin
   DebugLn(['TControl.ManualFloat ',DbgSName(Self)]);
+  DisableAutoSizing;
   // undock from old host dock site
   if HostDockSite = nil then
   begin
@@ -4123,6 +4124,7 @@ begin
     else
       Dock(nil, TheScreenRect);
   end;
+  EnableAutoSizing;
 end;
 
 {------------------------------------------------------------------------------
