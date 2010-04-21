@@ -5515,6 +5515,7 @@ msgid "Enter the name of the exception"
 msgstr "例外の名称を入力"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmeventlog
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmeventlog"
 msgid "Event Log"
 msgstr "イベントログ"
 
@@ -7794,7 +7795,7 @@ msgid "Toggle view component palette"
 msgstr "コンポーネントパレットの表示の切り替え"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "Toggle view Debug Events"
+msgid "Toggle view Debuger Event Log"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
@@ -9237,8 +9238,9 @@ msgid "&Components"
 msgstr "コンポーネント(&C)"
 
 #: lazarusidestrconsts.lismenuviewdebugevents
-msgid "Debug events"
-msgstr ""
+msgctxt "lazarusidestrconsts.lismenuviewdebugevents"
+msgid "Event Log"
+msgstr "イベントログ"
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
 msgid "Debug output"

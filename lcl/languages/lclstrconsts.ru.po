@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-03-13 21:10+0300\n"
+"PO-Revision-Date: 2010-04-22 00:53+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -578,7 +578,7 @@ msgstr "--gtk-debug flags     Включить указанные отладоч
 
 #: lclstrconsts.rsgtkoptiondisplay
 msgid "--display h:s:d       Connect to the specified X server, where \"h\" is the hostname, \"s\" is the server number (usually 0), and \"d\" is the display number (typically omitted). If --display is not specified, the DISPLAY environment variable is used."
-msgstr "--display h:s:d       Связаться с указанным X-сервером, где \"h\" - имя хост-машины, \"s\" - номер сервера (обычно 0), и \"d\" - номер дисплея (обычно опускают). Если не задан --display, используется переменная окружения DISPLAY."
+msgstr "--display h:s:d       Связаться с указанным сервером X, где \"h\" - имя хост-машины, \"s\" - номер сервера (обычно 0), и \"d\" - номер дисплея (обычно опускается). Если не задан --display, используется переменная окружения DISPLAY."
 
 #: lclstrconsts.rsgtkoptionmodule
 msgid "--gtk-module module   Load the specified module at startup."
@@ -586,7 +586,7 @@ msgstr "--gtk-module модуль   Загрузить указанный мод
 
 #: lclstrconsts.rsgtkoptionname
 msgid "--name programe       Set program name to \"progname\". If not specified, program name will be set to ParamStrUTF8(0)."
-msgstr "--name имяпрог       Установить имя программы в \"имяпрог\". Если не указано, имя программы будет установлено в ParamStrUTF8(0)."
+msgstr "--name имяпрог       Установить имя программы в \"имяпрог\". Если не задано, имя программы будет установлено в ParamStrUTF8(0)."
 
 #: lclstrconsts.rsgtkoptionnodebug
 msgid "--gtk-no-debug flags  Turn off specific Gtk+ trace/debug messages."
@@ -601,12 +601,13 @@ msgid "--no-xshm             Disable use of the X Shared Memory Extension."
 msgstr "--no-xshm             Запрет использования расширений X по разделяемой памяти."
 
 #: lclstrconsts.rsgtkoptionsync
-msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
-msgstr "--sync                Вызов XSynchronize (display, True) после установлени соединения с Xserver'ом. Это облегчает отладку ошибок протокола X, т.к. запросы буферизации X будут отключены, и ошибки X будут получены сразу после запроса протокола, который вызвал эту ошибку, обработанную сервером X."
+#| msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
+msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
+msgstr "--sync                Вызвать XSynchronize (display, True) после установления соединения с сервером X. Это облегчает отладку ошибок протокола X, так как запросы буферизации X будут отключены, и ошибки X будут получаться сразу после обработки сервером X запроса протокола, который вызвал ошибку."
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"
-msgstr "%s: Уже зарегистрирован"
+msgstr "%s: уже зарегистрирован"
 
 #: lclstrconsts.rshelpcontextnotfound
 msgid "Help Context not found"

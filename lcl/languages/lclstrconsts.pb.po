@@ -602,7 +602,9 @@ msgid "--no-xshm             Disable use of the X Shared Memory Extension."
 msgstr "--no-xshm             Desativa uso da Extensão de Memória X Compartilhada."
 
 #: lclstrconsts.rsgtkoptionsync
-msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
+#, fuzzy
+#| msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
+msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgstr "--sync                Chama XSynchronize (display, True) após a conexão com Xserver for estabelecida. Isto cria fácil depuração de erros do protocolo X, porque X solicita que a armazenagem seja desativada e erro X são recebidos imediatamente após o protocolo solicitar que a geração de erros seja processada pelo servidor X."
 
 #: lclstrconsts.rshelpalreadyregistered

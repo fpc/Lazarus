@@ -5517,6 +5517,7 @@ msgid "Enter the name of the exception"
 msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmeventlog
+msgctxt "lazarusidestrconsts.lisdebugoptionsfrmeventlog"
 msgid "Event Log"
 msgstr "Záznam udalostí"
 
@@ -7796,7 +7797,7 @@ msgid "Toggle view component palette"
 msgstr "Prepnúť zobrazenie Palety komponentov"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-msgid "Toggle view Debug Events"
+msgid "Toggle view Debuger Event Log"
 msgstr ""
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
@@ -9239,8 +9240,9 @@ msgid "&Components"
 msgstr "&Komponenty"
 
 #: lazarusidestrconsts.lismenuviewdebugevents
-msgid "Debug events"
-msgstr ""
+msgctxt "lazarusidestrconsts.lismenuviewdebugevents"
+msgid "Event Log"
+msgstr "Záznam udalostí"
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
 msgid "Debug output"
