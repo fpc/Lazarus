@@ -97,6 +97,7 @@ type
     procedure ExternalUpdate(var Astr: WideString; AClear: Boolean = True);
     procedure IsChanged; // OnChange triggered by program action
   protected
+    procedure Put(Index: Integer; const S: string); override;
     function GetTextStr: string; override;
     function GetCount: integer; override;
     function Get(Index : Integer) : string; override;
@@ -182,6 +183,16 @@ begin
     (FOwner as TCustomMemo).Modified := False;
     (FOwner as TCustomMemo).OnChange(self);
   end;
+end;
+
+procedure TQtMemoStrings.Put(Index: Integer; const S: string);
+var
+  W: WideString;
+begin
+  FStringList[Index] := S;
+  W := FStringList.Text;
+  ExternalUpdate(W, True);
+  FTextChanged := False;
 end;
 
 {------------------------------------------------------------------------------
