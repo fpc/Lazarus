@@ -162,12 +162,14 @@ type
     procedure SetHideControls(const AValue: boolean);
   protected
     procedure DoChange; virtual;
+    procedure DoBeginUpdate; virtual;
     procedure DoEndUpdate(Changed: boolean); virtual;
     procedure OnPageAddedComponent(Component: TRegisteredComponent); virtual;
     procedure OnPageRemovedComponent(Page: TBaseComponentPage;
                                 Component: TRegisteredComponent); virtual;
     procedure OnComponentVisibleChanged(
                                      AComponent: TRegisteredComponent); virtual;
+    procedure OnPageVisibleChanged(APage: TBaseComponentPage); virtual;
     procedure Update; virtual;
     procedure UpdateVisible(AComponent: TRegisteredComponent); virtual;
     procedure SetBaseComponentPageClass(
@@ -328,6 +330,7 @@ procedure TBaseComponentPage.SetVisible(const AValue: boolean);
 begin
   if FVisible=AValue then exit;
   FVisible:=AValue;
+  if (FPalette<>nil) then FPalette.OnPageVisibleChanged(Self);
 end;
 
 procedure TBaseComponentPage.OnComponentVisibleChanged(
@@ -435,10 +438,16 @@ end;
 procedure TBaseComponentPage.UpdateVisible;
 var
   i: Integer;
+  HasVisibleComponents: Boolean;
 begin
-  if Palette<>nil then
-    for i:=0 to Count-1 do
+  if Palette<>nil then begin
+    HasVisibleComponents:=false;
+    for i:=0 to Count-1 do begin
       Palette.UpdateVisible(Items[i]);
+      if Items[i].Visible then HasVisibleComponents:=true;
+    end;
+    Visible:=HasVisibleComponents and (PageName<>'');
+  end;
 end;
 
 { TBaseComponentPalette }
@@ -478,6 +487,11 @@ begin
     Update;
 end;
 
+procedure TBaseComponentPalette.DoBeginUpdate;
+begin
+
+end;
+
 procedure TBaseComponentPalette.DoEndUpdate(Changed: boolean);
 begin
   if Assigned(OnEndUpdate) then OnEndUpdate(Self,Changed);
@@ -497,6 +511,12 @@ end;
 
 procedure TBaseComponentPalette.OnComponentVisibleChanged(
   AComponent: TRegisteredComponent);
+begin
+  DoChange;
+end;
+
+procedure TBaseComponentPalette.OnPageVisibleChanged(APage: TBaseComponentPage
+  );
 begin
   DoChange;
 end;
@@ -568,6 +588,7 @@ begin
   inc(FUpdateLock);
   if FUpdateLock=1 then begin
     fChanged:=Change;
+    DoBeginUpdate;
     if Assigned(OnBeginUpdate) then OnBeginUpdate(Self);
   end else
     fChanged:=fChanged or Change;

@@ -84,6 +84,7 @@ type
     procedure SetSelected(const AValue: TRegisteredComponent);
     procedure CreatePopupMenu;
   protected
+    procedure DoBeginUpdate; override;
     procedure DoEndUpdate(Changed: boolean); override;
     procedure OnPageAddedComponent(Component: TRegisteredComponent); override;
     procedure OnPageRemovedComponent(Page: TBaseComponentPage;
@@ -343,6 +344,11 @@ begin
   PopupMenu.Items.Add(FindComponentMenuItem);
 end;
 
+procedure TComponentPalette.DoBeginUpdate;
+begin
+  inherited DoBeginUpdate;
+end;
+
 procedure TComponentPalette.DoEndUpdate(Changed: boolean);
 begin
   if Changed or fNoteBookNeedsUpdate then UpdateNoteBookButtons;
@@ -461,6 +467,7 @@ var
   ButtonCount: Integer;
   MaxBtnPerRow: Integer;
 begin
+  //DebugLn(['TComponentPalette.ReAlignButtons ',Page.Caption,' ',Page.ClientWidth]);
   if FNoteBook<>nil then
     NoteBook.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
   try
@@ -471,6 +478,7 @@ begin
       if not (CurButton is TSpeedButton) then continue;
       inc(ButtonCount);
     end;
+    if ButtonCount=0 then exit;
 
     ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
 
@@ -488,7 +496,8 @@ begin
       CurButton.SetBounds(
         ButtonX + ((j-1) div Rows) * ComponentPaletteBtnWidth,
         ((j-1) mod Rows) * ComponentPaletteBtnHeight,
-        CurButton.Width,CurButton.Height)
+        CurButton.Width,CurButton.Height);
+      //DebugLn(['TComponentPalette.ReAlignButtons ',CurButton.Name,' ',dbgs(CurButton.BoundsRect)]);
     end;
   finally
     if NoteBook<>nil then
@@ -527,8 +536,13 @@ begin
     for i:=FNoteBook.PageCount-1 downto 0 do begin
       PageIndex:=IndexOfPageComponent(FNoteBook.Page[i]);
       if (PageIndex<0) or (not Pages[PageIndex].Visible) then begin
-        if PageIndex>=0 then
-          Pages[i].PageComponent:=nil;
+        if PageIndex>=0 then begin
+          CurPage:=Pages[PageIndex];
+          CurBtn:=TSpeedButton(CurPage.SelectButton);
+          CurPage.SelectButton:=nil;
+          CurBtn.Free;
+          Pages[PageIndex].PageComponent:=nil;
+        end;
         FNoteBook.Pages.Delete(i);
       end;
     end;
@@ -555,6 +569,7 @@ begin
       CurNoteBookPage:=TPage(CurPage.PageComponent);
       if not (CurNoteBookPage is TPage) then RaiseException('CurNoteBookPage');
       CurNoteBookPage.OnResize:=@OnPageResize;
+      //DebugLn(['TComponentPalette.UpdateNoteBookButtons PAGE=',CurPage.PageName,' PageIndex=',CurNoteBookPage.PageIndex]);
 
       // create selection button
       if CurPage.SelectButton=nil
@@ -579,6 +594,7 @@ begin
       for j:=0 to CurPage.Count-1 do begin
         CurComponent:=TPkgComponent(CurPage[j]);
         if CurComponent.Visible then begin
+          //DebugLn(['TComponentPalette.UpdateNoteBookButtons ',DbgSName(CurComponent.ComponentClass),' ',CurComponent.Visible]);
           if CurComponent.Button=nil then begin
             CurBtn:=TSpeedButton.Create(nil);
             CurComponent.Button:=CurBtn;
@@ -598,15 +614,18 @@ begin
               CurBtn.PopupMenu:=Self.PopupMenu;
               Parent := CurNoteBookPage;
             end;
-            //writeln('TComponentPalette.UpdateNoteBookButtons Created Button: ',CurComponent.ComponentClass.ClassName,' ',CurComponent.Button.Name);
+            //debugln(['TComponentPalette.UpdateNoteBookButtons Created Button: ',CurComponent.ComponentClass.ClassName,' ',CurComponent.Button.Name]);
+          end else begin
+            TControl(CurComponent.Button).Parent := CurNoteBookPage;
+            //DebugLn(['TComponentPalette.UpdateNoteBookButtons Keep Button: ',CurComponent.ComponentClass.ClassName,' ',CurComponent.Button.Name,' ',DbgSName(TControl(CurComponent.Button).Parent)]);
           end;
         end else if CurComponent.Button<>nil then begin
-          //writeln('TComponentPalette.UpdateNoteBookButtons Destroy Button: ',CurComponent.ComponentClass.ClassName,' ',CurComponent.Button.Name);
+          //debugln(['TComponentPalette.UpdateNoteBookButtons Destroy Button: ',CurComponent.ComponentClass.ClassName,' ',CurComponent.Button.Name]);
           CurComponent.Button.Free;
           CurComponent.Button:=nil;
         end;
       end;
-      
+
       ReAlignButtons(CurNoteBookPage);
     end;
     // restore active page
