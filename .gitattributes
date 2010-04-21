@@ -738,6 +738,7 @@ components/education/edupropsevents.lfm svneol=native#text/plain
 components/education/edupropsevents.lrs svneol=native#text/plain
 components/education/edupropsevents.pas svneol=native#text/plain
 components/education/eduspeedbuttons.lfm svneol=native#text/plain
+components/education/eduspeedbuttons.pas svneol=native#text/plain
 components/externhelp/README.txt svneol=native#text/plain
 components/externhelp/externhelp.lpk svneol=native#text/plain
 components/externhelp/externhelp.pas svneol=native#text/plain
