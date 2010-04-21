@@ -67,6 +67,17 @@ procedure Register;
 
 implementation
 
+resourcestring
+  lisdescription = 'Simple CGI Application%sA CGI (Common Gateway Interface) '
+    +'program in Free Pascal.%sThe program file is automatically maintained '
+    +'by Lazarus.%sThis kind of application is deprecated, for CGI programs '
+    +'or Apache modules, please use the LazWeb package instead.';
+  lisdescrmod = 'Simple CGI Module%sA datamodule for CGI applications.%sThis '
+    +'module is deprecated, please use the CGI module support of the LazWeb '
+    +'package instead.';
+  lissimplecgiapp = 'Simple CGI Application';
+  lissimplecgimod = 'Simple CGI Module';
+
 procedure Register;
 begin
   FileDescriptorCGIModule:=TFileDescPascalUnitWithCGIDataModule.Create;
@@ -86,16 +97,12 @@ end;
 
 function TCGIApplicationDescriptor.GetLocalizedName: string;
 begin
-  Result:='Simple CGI Application';
+  Result:=lissimplecgiapp;
 end;
 
 function TCGIApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:='Simple CGI Application'#13#10
-          +'A CGI (Common Gateway Interface) program in Free Pascal.'#13#10
-          +'The program file is automatically maintained by Lazarus.'#13#10
-          +'This kind of application is deprecated, for CGI programs or Apache modules, '
-          +'please use the LazWeb package instead';
+  Result:=Format(lisdescription,[#13#10,#13#10,#13#10]);
 end;
 
 function TCGIApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
@@ -163,15 +170,12 @@ end;
 
 function TFileDescPascalUnitWithCGIDataModule.GetLocalizedName: string;
 begin
-  Result:='Simple CGI Module';
+  Result:=lissimplecgimod;
 end;
 
 function TFileDescPascalUnitWithCGIDataModule.GetLocalizedDescription: string;
 begin
-  Result:='Simple CGI Module'#13#10
-         +'A datamodule for CGI applications.'
-         +'This module is deprecated, please use the CGI module support '
-         +'of the lazweb package instead';
+  Result:=Format(lisdescrmod,[#13#10,#13#10]);
 end;
 
 end.
