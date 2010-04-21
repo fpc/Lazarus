@@ -6158,7 +6158,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomLabel, 'Caption', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomStaticText, 'Caption', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomCheckBox, 'Caption', TStringMultilinePropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TTranslateString), TControl, 'Hint', TStringMultilinePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TTranslateString), TComponent, 'Hint', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TTabOrder), TControl, 'TabOrder', TTabOrderPropertyEditor);
   RegisterPropertyEditor(TypeInfo(ShortString), nil, '', TCaptionPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TStrings), nil, '', TStringsPropertyEditor);
