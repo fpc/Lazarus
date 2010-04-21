@@ -16707,10 +16707,14 @@ begin
       if Assigned(ActiveSourceEditor) then
         ActiveSourceEditor.DoEditorExecuteCommand(ACommand);
     dsForm:                  // send command to form editor
-      if Assigned(ActiveUnitInfo) then begin
-        AForm:=GetDesignerFormOfSource(ActiveUnitInfo,False);
-        if (AForm<>nil) and (AForm.Designer<>nil) then
-          TDesigner(AForm.Designer).DoCommand(ACommand);
+      begin
+        if FLastFormActivated <> nil then
+          GetUnitWithForm(FLastFormActivated, ActiveSourceEditor, ActiveUnitInfo);
+        if Assigned(ActiveUnitInfo) then begin
+          AForm:=GetDesignerFormOfSource(ActiveUnitInfo,False);
+          if (AForm<>nil) and (AForm.Designer<>nil) then
+            TDesigner(AForm.Designer).DoCommand(ACommand);
+        end;
       end;
   end;
 end;
