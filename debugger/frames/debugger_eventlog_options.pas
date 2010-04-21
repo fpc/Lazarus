@@ -26,18 +26,9 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, StdCtrls, Spin, CheckLst,
-  LazarusIDEStrConsts, IDEOptionsIntf, EnvironmentOpts;
+  Debugger, LazarusIDEStrConsts, IDEOptionsIntf, EnvironmentOpts;
 
 type
-  TEventLogEvent = (
-    eeBreakpoint,
-    eeProcess,
-    eeThread,
-    eeModule,
-    eeOutput,
-    eeWindow,
-    eeDebugger
-  );
   { TDebuggerEventLogOptionsFrame }
 
   TDebuggerEventLogOptionsFrame = class(TAbstractIDEOptionsEditor)
@@ -49,7 +40,7 @@ type
     gbColors: TGroupBox;
     seLimitLinecount: TSpinEdit;
   private
-    class function GetEventStr(AEvent: TEventLogEvent): String;
+    class function GetCategoryStr(ACategory: TDBGEventCategory): String;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -64,16 +55,16 @@ implementation
 
 { TDebuggerEventLogOptionsFrame }
 
-class function TDebuggerEventLogOptionsFrame.GetEventStr(AEvent: TEventLogEvent): String;
+class function TDebuggerEventLogOptionsFrame.GetCategoryStr(ACategory: TDBGEventCategory): String;
 begin
-  case AEvent of
-    eeBreakpoint: Result := lisDebugOptionsFrmBreakpoint;
-    eeProcess: Result := lisDebugOptionsFrmProcess;
-    eeThread: Result := lisDebugOptionsFrmThread;
-    eeModule: Result := lisDebugOptionsFrmModule;
-    eeOutput: Result := lisDebugOptionsFrmOutput;
-    eeWindow: Result := lisDebugOptionsFrmWindow;
-    eeDebugger: Result := lisDebugOptionsFrmDebugger;
+  case ACategory of
+    ecBreakpoint: Result := lisDebugOptionsFrmBreakpoint;
+    ecProcess: Result := lisDebugOptionsFrmProcess;
+    ecThread: Result := lisDebugOptionsFrmThread;
+    ecModule: Result := lisDebugOptionsFrmModule;
+    ecOutput: Result := lisDebugOptionsFrmOutput;
+    ecWindow: Result := lisDebugOptionsFrmWindow;
+    ecDebugger: Result := lisDebugOptionsFrmDebugger;
   else
     Result := '???';
   end;
@@ -86,7 +77,7 @@ end;
 
 procedure TDebuggerEventLogOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 var
-  Event: TEventLogEvent;
+  Category: TDBGEventCategory;
 begin
   // general
   gbGeneral.Caption := lisMenuInsertGeneral;
@@ -95,8 +86,8 @@ begin
 
   // messages
   gbMessages.Caption := lisMenuViewMessages;
-  for Event := Low(TEventLogEvent) to High(TEventLogEvent) do
-    cbMessages.Items.Add(GetEventStr(Event));
+  for Category := Low(TDBGEventCategory) to High(TDBGEventCategory) do
+    cbMessages.Items.Add(GetCategoryStr(Category));
 
   // colors
   gbColors.Caption := dlgEnvColors;
@@ -105,9 +96,9 @@ end;
 
 procedure TDebuggerEventLogOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 
-  procedure SetChecked(AEvent: TEventLogEvent; AChecked: Boolean); inline;
+  procedure SetChecked(ACategory: TDBGEventCategory; AChecked: Boolean); inline;
   begin
-    cbMessages.Checked[Ord(AEvent)] := AChecked;
+    cbMessages.Checked[Ord(ACategory)] := AChecked;
   end;
 
 begin
@@ -116,21 +107,21 @@ begin
     chkClearLogOnRun.Checked := DebuggerEventLogClearOnRun;
     chkLimitLinecount.Checked := DebuggerEventLogCheckLineLimit;
     seLimitLinecount.Value := DebuggerEventLogLineLimit;
-    SetChecked(eeBreakpoint, DebuggerEventLogShowBreakpoint);
-    SetChecked(eeProcess, DebuggerEventLogShowProcess);
-    SetChecked(eeThread, DebuggerEventLogShowThread);
-    SetChecked(eeModule, DebuggerEventLogShowModule);
-    SetChecked(eeOutput, DebuggerEventLogShowOutput);
-    SetChecked(eeWindow, DebuggerEventLogShowWindow);
-    SetChecked(eeDebugger, DebuggerEventLogShowDebugger);
+    SetChecked(ecBreakpoint, DebuggerEventLogShowBreakpoint);
+    SetChecked(ecProcess, DebuggerEventLogShowProcess);
+    SetChecked(ecThread, DebuggerEventLogShowThread);
+    SetChecked(ecModule, DebuggerEventLogShowModule);
+    SetChecked(ecOutput, DebuggerEventLogShowOutput);
+    SetChecked(ecWindow, DebuggerEventLogShowWindow);
+    SetChecked(ecDebugger, DebuggerEventLogShowDebugger);
   end;
 end;
 
 procedure TDebuggerEventLogOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 
-  function GetChecked(AEvent: TEventLogEvent): Boolean; inline;
+  function GetChecked(ACategory: TDBGEventCategory): Boolean; inline;
   begin
-    Result := cbMessages.Checked[Ord(AEvent)];
+    Result := cbMessages.Checked[Ord(ACategory)];
   end;
 
 begin
@@ -139,13 +130,13 @@ begin
     DebuggerEventLogClearOnRun := chkClearLogOnRun.Checked;
     DebuggerEventLogCheckLineLimit := chkLimitLinecount.Checked;
     DebuggerEventLogLineLimit := seLimitLinecount.Value;
-    DebuggerEventLogShowBreakpoint := GetChecked(eeBreakpoint);
-    DebuggerEventLogShowProcess := GetChecked(eeProcess);
-    DebuggerEventLogShowThread := GetChecked(eeThread);
-    DebuggerEventLogShowModule := GetChecked(eeModule);
-    DebuggerEventLogShowOutput := GetChecked(eeOutput);
-    DebuggerEventLogShowWindow := GetChecked(eeWindow);
-    DebuggerEventLogShowDebugger := GetChecked(eeDebugger);
+    DebuggerEventLogShowBreakpoint := GetChecked(ecBreakpoint);
+    DebuggerEventLogShowProcess := GetChecked(ecProcess);
+    DebuggerEventLogShowThread := GetChecked(ecThread);
+    DebuggerEventLogShowModule := GetChecked(ecModule);
+    DebuggerEventLogShowOutput := GetChecked(ecOutput);
+    DebuggerEventLogShowWindow := GetChecked(ecWindow);
+    DebuggerEventLogShowDebugger := GetChecked(ecDebugger);
   end;
 end;
 
