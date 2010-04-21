@@ -113,6 +113,7 @@ uses
   editor_mouseaction_options_advanced, editor_color_options,
   editor_codetools_options, editor_codefolding_options,
   editor_general_misc_options, editor_dividerdraw_options,
+  editor_multiwindow_options,
   codetools_general_options, codetools_codecreation_options,
   codetools_classcompletion_options, atom_checkboxes_options,
   codetools_wordpolicy_options, codetools_linesplitting_options,
@@ -9047,47 +9048,154 @@ end;
 
 function TMainIDE.GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
   ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
+
+  function EditorMatches(AEditInfo: TUnitEditorInfo;
+     AAccess: TEditorOptionsEditAccessOrderEntry; ALockRun: Integer = 0): Boolean;
+  var
+    AEdit: TSourceEditor;
+  begin
+    AEdit := TSourceEditor(AEditInfo.EditorComponent);
+    Result := False;
+    case AAccess.SearchLocked of
+      eoeaIgnoreLock: ;
+      eoeaLockedOnly:   if not AEdit.IsLocked then exit;
+      eoeaUnlockedOnly: if AEdit.IsLocked then exit;
+      eoeaLockedFirst:  if (not AEdit.IsLocked) and (ALockRun = 0) then exit;
+      eoeaLockedLast:   if (AEdit.IsLocked) and (ALockRun = 0) then exit;
+    end;
+    case AAccess.SearchInView of
+      eoeaIgnoreInView: ;
+      eoeaInViewOnly:   if not AEdit.IsCaretOnScreen(ACaretPoint, False) then exit;
+      eoeaInViewSoftCenterOnly: if not AEdit.IsCaretOnScreen(ACaretPoint, True) then exit;
+    end;
+    Result := True;
+  end;
+
+  function AvailSrcWindowIndex: Integer;
+  var
+    i: Integer;
+  begin
+    Result := -1;
+    i := 0;
+    if AnUnitInfo.OpenEditorInfoCount > 0 then
+      while (i < SourceEditorManager.SourceWindowCount) and
+            (SourceEditorManager.SourceWindowByLastFocused[i].IndexOfEditorInShareWith
+               (TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent)) >= 0)
+      do
+        inc(i);
+    if i < SourceEditorManager.SourceWindowCount then
+      Result := SourceEditorManager.IndexOfSourceWindow(SourceEditorManager.SourceWindowByLastFocused[i]);
+  end;
+
 var
-  i: Integer;
+  i, j, w, LockRun: Integer;
+  Access: TEditorOptionsEditAccessOrderEntry;
 begin
   Result := nil;
-  if AnUnitInfo.OpenEditorInfoCount = 0 then
-    exit;
-  // find caret on screen, rather than last focused
-  i := 0;
-  while (i < AnUnitInfo.OpenEditorInfoCount) do begin
-    Result := AnUnitInfo.OpenEditorInfo[i];
-    if TSourceEditor(Result.EditorComponent).IsCaretOnScreen(ACaretPoint,
-                       not TSourceEditor(Result.EditorComponent).IsLocked)
-    or (TSourceEditor(Result.EditorComponent).TopLine = WantedTopLine)
-    then
-      exit;
-    inc(i);
+  if AnUnitInfo.OpenEditorInfoCount = 0 then exit;
+  for i := 0 to EditorOpts.MultiWinEditAccessOrder.Count - 1 do begin
+    Access := EditorOpts.MultiWinEditAccessOrder[i];
+    if not Access.Enabled then continue;
+    LockRun := 1;
+    if Access.SearchLocked in [eoeaLockedFirst, eoeaLockedLast] then LockRun := 0;
+    repeat
+      case Access.RealSearchOrder of
+        eoeaOrderByEditFocus, eoeaOrderByListPref:
+          begin
+            for j := 0 to AnUnitInfo.OpenEditorInfoCount - 1 do
+              if EditorMatches(AnUnitInfo.OpenEditorInfo[j], Access) then begin
+                Result := AnUnitInfo.OpenEditorInfo[j];
+                break;
+              end;
+          end;
+        eoeaOrderByWindowFocus:
+          begin
+            for w := 0 to SourceEditorManager.SourceWindowCount - 1 do begin
+              for j := 0 to AnUnitInfo.OpenEditorInfoCount - 1 do
+                if (TSourceEditor(AnUnitInfo.OpenEditorInfo[j].EditorComponent).SourceNotebook
+                    = SourceEditorManager.SourceWindowByLastFocused[w])
+                and EditorMatches(AnUnitInfo.OpenEditorInfo[j], Access) then begin
+                  Result := AnUnitInfo.OpenEditorInfo[j];
+                  break;
+                end;
+              if Result <> nil then break;
+            end;
+          end;
+        eoeaOrderByOldestEditFocus:
+          begin
+            for j := AnUnitInfo.OpenEditorInfoCount - 1 downto 0 do
+              if EditorMatches(AnUnitInfo.OpenEditorInfo[j], Access) then begin
+                Result := AnUnitInfo.OpenEditorInfo[j];
+                break;
+              end;
+          end;
+        eoeaOrderByOldestWindowFocus:
+          begin
+            for w := SourceEditorManager.SourceWindowCount - 1 downto 0 do begin
+              for j := 0 to AnUnitInfo.OpenEditorInfoCount - 1 do
+                if (TSourceEditor(AnUnitInfo.OpenEditorInfo[j].EditorComponent).SourceNotebook
+                    = SourceEditorManager.SourceWindowByLastFocused[w])
+                and EditorMatches(AnUnitInfo.OpenEditorInfo[j], Access) then begin
+                  Result := AnUnitInfo.OpenEditorInfo[j];
+                  break;
+                end;
+              if Result <> nil then break;
+            end;
+          end;
+        eoeaOnlyCurrentEdit:
+          begin
+            LockRun := 1;
+            for j := 0 to AnUnitInfo.OpenEditorInfoCount - 1 do
+              if (AnUnitInfo.OpenEditorInfo[j].EditorComponent = SourceEditorManager.ActiveEditor)
+              and EditorMatches(AnUnitInfo.OpenEditorInfo[j], Access) then begin
+                Result := AnUnitInfo.OpenEditorInfo[j];
+                break;
+              end;
+          end;
+        eoeaOnlyCurrentWindow:
+          begin
+            LockRun := 1;
+            for j := 0 to AnUnitInfo.OpenEditorInfoCount - 1 do
+              if (TSourceEditor(AnUnitInfo.OpenEditorInfo[j].EditorComponent).SourceNotebook
+                  = SourceEditorManager.ActiveSourceWindow)
+              and EditorMatches(AnUnitInfo.OpenEditorInfo[j], Access) then begin
+                Result := AnUnitInfo.OpenEditorInfo[j];
+                break;
+              end;
+          end;
+      end;
+      inc(LockRun);
+    until (LockRun > 1) or (Result <> nil);
+    if (Result = nil) then
+      case Access.SearchOpenNew of
+        eoeaNoNewTab: ;
+        eoeaNewTabInExistingWindowOnly:
+          begin
+            w := AvailSrcWindowIndex;
+            if w >= 0 then
+              if DoOpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo, -1, w, []) = mrOk then
+                Result := AnUnitInfo.OpenEditorInfo[0]; // newly opened will be last focused
+          end;
+        eoeaNewTabInNewWindowOnly:
+          begin
+            if DoOpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo,
+                           -1, SourceEditorManager.SourceWindowCount, []) = mrOk
+            then
+              Result := AnUnitInfo.OpenEditorInfo[0]; // newly opened will be last focused
+          end;
+        eoeaNewTabInExistingOrNewWindow:
+          begin
+            w := AvailSrcWindowIndex;
+            if w < 0 then w := SourceEditorManager.SourceWindowCount;
+            if DoOpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo, -1, w, []) = mrOk then
+              Result := AnUnitInfo.OpenEditorInfo[0]; // newly opened will be last focused
+          end;
+      end;
+    if Result <> nil then
+      break;
   end;
-  // find unlocked
-  i := 0;
-  while (i < AnUnitInfo.OpenEditorInfoCount) do begin
-    Result := AnUnitInfo.OpenEditorInfo[i];
-    if (not TSourceEditor(Result.EditorComponent).IsLocked) or
-       TSourceEditor(Result.EditorComponent).IsCaretOnScreen(ACaretPoint)
-    then
-      exit;
-    inc(i);
-  end;
-  // open new copy
-  i := 0;
-  if AnUnitInfo.OpenEditorInfoCount > 0 then
-    while (i < SourceEditorManager.SourceWindowCount) and
-          (SourceEditorManager.SourceWindowByLastFocused[i].IndexOfEditorInShareWith
-             (TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent)) >= 0)
-    do
-      inc(i);
-  if i < SourceEditorManager.SourceWindowCount then
-    i := SourceEditorManager.IndexOfSourceWindow(SourceEditorManager.SourceWindowByLastFocused[i]);
-  if DoOpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo, -1, i, []) = mrOk then
-    Result := AnUnitInfo.OpenEditorInfo[0]
-  else
-    Result := nil;
+  if Result = nil then // should never happen
+    Result := AnUnitInfo.OpenEditorInfo[0];
 end;
 
 function TMainIDE.LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;

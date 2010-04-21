@@ -1,0 +1,255 @@
+inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
+  Height = 387
+  Width = 521
+  Anchors = [akTop]
+  AutoSize = False
+  ClientHeight = 387
+  ClientWidth = 521
+  Visible = False
+  DesignLeft = 2048
+  DesignTop = 143
+  object AccessTypePanel: TPanel[0]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblAccessType
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 224
+    Top = 163
+    Width = 509
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    BevelOuter = bvNone
+    ClientHeight = 224
+    ClientWidth = 509
+    TabOrder = 0
+    object listAccessType: TCheckListBox
+      AnchorSideLeft.Control = AccessTypePanel
+      AnchorSideTop.Control = AccessTypePanel
+      AnchorSideBottom.Control = AccessTypePanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 0
+      Height = 224
+      Top = 0
+      Width = 200
+      Align = alLeft
+      Constraints.MinWidth = 120
+      ExtendedSelect = False
+      ItemHeight = 0
+      OnClick = listAccessTypeClickCheck
+      OnClickCheck = listAccessTypeClickCheck
+      OnExit = listAccessTypeClickCheck
+      OnKeyUp = listAccessTypeKeyUp
+      TabOrder = 0
+    end
+    object Splitter1: TSplitter
+      Left = 200
+      Height = 224
+      Top = 0
+      Width = 5
+    end
+    object Panel2: TPanel
+      Left = 205
+      Height = 224
+      Top = 0
+      Width = 304
+      Align = alClient
+      BevelOuter = bvNone
+      ClientHeight = 224
+      ClientWidth = 304
+      Constraints.MinWidth = 100
+      TabOrder = 2
+      object lblAccessTypeDesc: TLabel
+        Left = 0
+        Height = 16
+        Top = 0
+        Width = 304
+        Align = alTop
+        Caption = 'lblAccessTypeDesc'
+        ParentColor = False
+        WordWrap = True
+      end
+    end
+  end
+  object Bevel1a: TBevel[1]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblEditActivationOrderSection
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 3
+    Top = 54
+    Width = 60
+    BorderSpacing.Bottom = 6
+  end
+  object lblEditActivationOrderSection: TLabel[2]
+    AnchorSideLeft.Control = Bevel1a
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = chkHideSingleTab
+    AnchorSideTop.Side = asrBottom
+    Left = 70
+    Height = 16
+    Top = 47
+    Width = 167
+    BorderSpacing.Left = 10
+    BorderSpacing.Bottom = 6
+    Caption = 'lblEditActivationOrderSection'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Bevel1: TBevel[3]
+    AnchorSideLeft.Control = lblEditActivationOrderSection
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblEditActivationOrderSection
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 247
+    Height = 3
+    Top = 54
+    Width = 274
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 10
+  end
+  object Panel1: TPanel[4]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblEditActivationOrderSection
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 66
+    Top = 69
+    Width = 509
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    BevelOuter = bvNone
+    ClientHeight = 66
+    ClientWidth = 509
+    TabOrder = 1
+    object lblAccessOrder: TLabel
+      Left = 0
+      Height = 16
+      Top = 0
+      Width = 509
+      Align = alTop
+      BorderSpacing.Bottom = 6
+      Caption = 'lblAccessOrder'
+      ParentColor = False
+      WordWrap = True
+    end
+    object radioAccessOrderEdit: TRadioButton
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = lblAccessOrder
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 19
+      Top = 22
+      Width = 509
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'radioAccessOrderEdit'
+      OnChange = radioAccessOrderEditChange
+      TabOrder = 0
+    end
+    object radioAccessOrderWin: TRadioButton
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = radioAccessOrderEdit
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 19
+      Top = 41
+      Width = 509
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Bottom = 6
+      Caption = 'radioAccessOrderWin'
+      OnChange = radioAccessOrderEditChange
+      TabOrder = 1
+    end
+  end
+  object lblAccessType: TLabel[5]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Panel1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 16
+    Top = 141
+    Width = 521
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'lblAccessType'
+    ParentColor = False
+  end
+  object Bevel2a: TBevel[6]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblMultiWinTabSection
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 3
+    Top = 7
+    Width = 60
+    BorderSpacing.Bottom = 6
+  end
+  object lblMultiWinTabSection: TLabel[7]
+    AnchorSideLeft.Control = Bevel1a
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 70
+    Height = 16
+    Top = 0
+    Width = 127
+    BorderSpacing.Left = 10
+    BorderSpacing.Bottom = 6
+    Caption = 'lblMultiWinTabSection'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Bevel2: TBevel[8]
+    AnchorSideLeft.Control = lblEditActivationOrderSection
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblMultiWinTabSection
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 247
+    Height = 3
+    Top = 7
+    Width = 274
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 10
+  end
+  object chkHideSingleTab: TCheckBox[9]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblMultiWinTabSection
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 22
+    Width = 509
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'chkHideSingleTab'
+    TabOrder = 2
+  end
+end

@@ -1417,6 +1417,14 @@ resourcestring
   //dlgCodeToolsTab = 'Code Tools';
   lisAutomaticFeatures = 'Automatic features';
 
+  dlgMultiWinOptions = 'Multi Window';
+  dlgMultiWinTabGroup = 'Tabs:';
+  dlgMultiWinAccessGroup = 'Find jump target editor:';
+  dlgMultiWinAccessOrder     = 'Order to use for editors matching the same criteria';
+  dlgMultiWinAccessOrderEdit = 'Most recent focused editor for this file';
+  dlgMultiWinAccessOrderWin  = 'Editor (for file) in most recent focused window';
+  dlgMultiWinAccessType      = 'Priority list of criteria to choose an editor:';
+
   dlgDividerOnOff = 'Draw divider';
   dlgDividerDrawDepth = 'Draw divider level';
   dlgDividerTopColor = 'Line color';
@@ -1522,6 +1530,51 @@ resourcestring
   dlgAddHiAttrGroupGutter   = 'Gutter';
   dlgAddHiAttrGroupSyncroEdit    = 'Syncron Edit';
   dlgAddHiAttrGroupTemplateEdit  = 'Template Edit';
+
+  dlgEditAccessCaptionLockedInView            = 'Locked, if text in view';
+  dlgEditAccessCaptionUnLockedInSoftView       = 'Unlocked, if text in centered view';
+  dlgEditAccessCaptionUnLocked                = 'Unlocked';
+  dlgEditAccessCaptionUnLockedOpenNewInOldWin = 'New tab in existing window';
+  dlgEditAccessCaptionUnLockedOpenNewInNewWin = 'New tab in new window';
+  dlgEditAccessCaptionIgnLockedOldEdit        = 'Ignore Locks, longest unused editor';
+  dlgEditAccessCaptionIgnLockedOnlyActEdit    = 'Ignore Locks, if editor is current';
+  dlgEditAccessCaptionIgnLockedOnlyActWin     = 'Ignore Locks, if editor in current window';
+  dlgEditAccessCaptionUnLockedOpenNewInAnyWin = 'New tab, existing or new window';
+
+  dlgEditAccessDescLockedInView =
+    'This option will use a locked (and only a locked) Editor, '+
+    'which does not need to scroll in order to display the target jump point'+
+    '(target jump point is already in visible screen area)';
+  dlgEditAccessDescUnLockedInSoftView =
+    'This option will use a not locked Editor, '+
+    'which does not need to scroll in order to display the target jump point'+
+    '(target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)';
+  dlgEditAccessDescUnLocked =
+    'This option will use any not locked Editor';
+  dlgEditAccessDescUnLockedOpenNewInOldWin =
+    'This option will open a new Tab in an existing (and only in an existing) Window, '+
+    'if no unlocked tab is found. '+
+    'A tab is only opened if a window exists, that has not yet an editor for the target file';
+  dlgEditAccessDescUnLockedOpenNewInNewWin =
+    'This option will open a new Tab in a new (and always in a new) Window, '+
+    'if no unlocked tab is found. '+
+    'This option will always succeed, further options are never tested';
+  dlgEditAccessDescIgnLockedOldEdit =
+    'This option will use the longest unused editor for the file, '+
+    'even if it is locked and/or needs scrolling. '+
+    'This always looks at the editor, never the window, to find the longest unused. ' +
+    'This option will always succeed, further options are never tested';
+  dlgEditAccessDescIgnLockedOnlyActEdit =
+    'This option will check if the current active editor has the target file '+
+    'and if it is, it will use the current editor, even if it is locked and/or needs scrolling.';
+  dlgEditAccessDescIgnLockedOnlyActWin =
+    'This option will check if there is an editorfor the target file in the current window'+
+    'and if there is, it will use this editor, even if it is locked and/or needs scrolling.';
+  dlgEditAccessDescUnLockedOpenNewInAnyWin =
+    'This option will open a new Tab in an existing or new Window, '+
+    'if no unlocked tab is found. '+
+    'This option will always succeed, further options are never tested';
+
   
   lisClearKeyMapping = 'Clear Key Mapping';
 

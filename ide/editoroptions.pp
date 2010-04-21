@@ -891,6 +891,168 @@ type
                           DefObject: TPersistent= nil; OnlyProperty: String= '');
   end;
 
+  TEditorOptionsEditAccessInViewState =
+    (eoeaIgnoreInView,          // Find any editor
+     eoeaInViewOnly,            // Only editors, with the jump-target in their current visible area
+     eoeaInViewSoftCenterOnly   // Only editors, with the jump-target in their current visible soft center (exclude up to 5 lines top/bottom)
+    );
+  TEditorOptionsEditAccessLockedState =
+    (eoeaIgnoreLock,     // Find any editor
+     eoeaLockedOnly,     // Only use locked Editor (e.g for InView = eoeaInViewOnly)
+     eoeaUnlockedOnly,   // Only use unlocked Editors (default)
+     eoeaLockedFirst,    // Search locked Editors first (each group according to Order)
+     eoeaLockedLast      // Search locked Editoes last
+    );
+  TEditorOptionsEditAccessOrder =
+    (eoeaOrderByEditFocus,       // prefer the editors in the order they were last focused
+     eoeaOrderByWindowFocus,     // prefer the editors in the order their window was last focused
+     eoeaOrderByOldestEditFocus, // Reverse order by last focused
+     eoeaOrderByOldestWindowFocus,
+     eoeaOnlyCurrentEdit,        // search only the current-active editor (and only if it has the correct file)
+     eoeaOnlyCurrentWindow,      // search only the current window (if it has an editor for the desired file)
+     eoeaOrderByListPref         // follow global setting on the list
+    );
+  TEditorOptionsEditAccessOpenNew =
+    (eoeaNoNewTab,                     // Do not open a new tab, if none found
+     eoeaNewTabInExistingWindowOnly,   // Open a new tab in existing (last focus) window, if possible
+     eoeaNewTabInNewWindowOnly,        // Open a new tab in new window
+     eoeaNewTabInExistingOrNewWindow   // Open a new tab in existing or new window
+    );
+  TEditorOptionsEditAccessDefaultEntry = record
+    SearchLocked: TEditorOptionsEditAccessLockedState;
+    SearchInView: TEditorOptionsEditAccessInViewState;
+    SearchOrder: TEditorOptionsEditAccessOrder;
+    SearchOpenNew: TEditorOptionsEditAccessOpenNew;
+    Enabled: Boolean;
+    ID: String;
+    Caption, Desc: String;
+  end;
+  TEditorOptionsEditAccessDefaults = Array [0..8] of TEditorOptionsEditAccessDefaultEntry;
+
+const
+  // captions and desc are set in TEditorOptions.Create
+  EditorOptionsEditAccessDefaults: TEditorOptionsEditAccessDefaults =
+  ( // Find locked - InView
+    (SearchLocked: eoeaLockedOnly;        SearchInView:  eoeaInViewOnly;
+     SearchOrder:  eoeaOrderByListPref;   SearchOpenNew: eoeaNoNewTab;
+     Enabled:      True;                  ID:            'Locked_InView';
+     Caption: '';                         Desc: '' ),
+    // Find unlocked
+    (SearchLocked: eoeaUnlockedOnly;      SearchInView:  eoeaInViewSoftCenterOnly;
+     SearchOrder:  eoeaOrderByListPref;   SearchOpenNew: eoeaNoNewTab;
+     Enabled:      False;                 ID:            'UnLocked_InSoftView';
+     Caption: '';                         Desc: '' ),
+    (SearchLocked: eoeaUnlockedOnly;      SearchInView:  eoeaIgnoreInView;
+     SearchOrder:  eoeaOrderByListPref;   SearchOpenNew: eoeaNoNewTab;
+     Enabled:      True;                  ID:            'UnLocked';
+     Caption: '';                         Desc: '' ),
+    // open new tab
+    (SearchLocked: eoeaUnlockedOnly;      SearchInView:  eoeaIgnoreInView;
+     SearchOrder:  eoeaOrderByListPref;   SearchOpenNew: eoeaNewTabInExistingWindowOnly;
+     Enabled:      False;                 ID:            'UnLocked_OpenNewInOldWin';
+     Caption: '';                         Desc: '' ),
+    (SearchLocked: eoeaUnlockedOnly;      SearchInView:  eoeaIgnoreInView;
+     SearchOrder:  eoeaOrderByListPref;   SearchOpenNew: eoeaNewTabInNewWindowOnly;
+     Enabled:      False;                 ID:            'UnLocked_OpenNewInNewWin';
+     Caption: '';                         Desc: '' ),
+    // Ignore locks
+    (SearchLocked: eoeaIgnoreLock;        SearchInView:  eoeaIgnoreInView;
+     SearchOrder:  eoeaOrderByOldestEditFocus; SearchOpenNew: eoeaNoNewTab;
+     Enabled:      False;                 ID:            'IgnLocked_OldEdit';
+     Caption: '';                         Desc: '' ),
+    (SearchLocked: eoeaIgnoreLock;        SearchInView:  eoeaIgnoreInView;
+     SearchOrder:  eoeaOnlyCurrentEdit;   SearchOpenNew: eoeaNoNewTab;
+     Enabled:      False;                 ID:            'IgnLocked_OnlyActEdit';
+     Caption: '';                         Desc: '' ),
+    (SearchLocked: eoeaIgnoreLock;        SearchInView:  eoeaIgnoreInView;
+     SearchOrder:  eoeaOnlyCurrentWindow; SearchOpenNew: eoeaNoNewTab;
+     Enabled:      False;                 ID:            'IgnLocked_OnlyActWin';
+     Caption: '';                         Desc: '' ),
+    // Fallback (must be last)
+    (SearchLocked: eoeaUnlockedOnly;      SearchInView:  eoeaIgnoreInView;
+     SearchOrder:  eoeaOrderByListPref;   SearchOpenNew: eoeaNewTabInExistingOrNewWindow;
+     Enabled:      True;                  ID:            'UnLocked_OpenNewInAnyWin';
+     Caption: '';                         Desc: '' )
+  );
+  EditorOptionsEditAccessUserDef: TEditorOptionsEditAccessDefaultEntry =
+    (SearchLocked: eoeaUnlockedOnly;      SearchInView:  eoeaIgnoreInView;
+     SearchOrder:  eoeaOrderByListPref;   SearchOpenNew: eoeaNoNewTab;
+     Enabled:      True;                  ID:            '';
+     Caption: '';                         Desc: '' );
+
+type
+
+  TEditorOptionsEditAccessOrderList = class;
+
+  { TEditorOptionsEditAccessOrderEntry }
+
+  TEditorOptionsEditAccessOrderEntry = class(TPersistent)
+  private
+    FId: String;
+    FList: TEditorOptionsEditAccessOrderList;
+    FCaption: String;
+    FDesc: String;
+    FEnabled: Boolean;
+    FIsFallback: Boolean;
+    FDefaults: TEditorOptionsEditAccessOrderEntry;
+    FSearchInView: TEditorOptionsEditAccessInViewState;
+    FSearchLocked: TEditorOptionsEditAccessLockedState;
+    FSearchOpenNew: TEditorOptionsEditAccessOpenNew;
+    FSearchOrder: TEditorOptionsEditAccessOrder;
+    procedure AssignFrom(AValue: TEditorOptionsEditAccessDefaultEntry);
+    procedure SetEnabled(const AValue: Boolean);
+  public
+    constructor Create(AList: TEditorOptionsEditAccessOrderList);
+    destructor Destroy; override;
+    procedure Assign(Src: TEditorOptionsEditAccessOrderEntry); reintroduce;
+    procedure InitFrom(AValue: TEditorOptionsEditAccessDefaultEntry);
+  public
+    function RealSearchOrder: TEditorOptionsEditAccessOrder;
+    property Defaults: TEditorOptionsEditAccessOrderEntry read FDefaults;
+    property ID: String read FId write FId;
+    property IsFallback: Boolean read FIsFallback;
+    property Desc: String read FDesc write FDesc;
+  //published
+    property Caption: String
+             read FCaption write FCaption;
+  published
+    property Enabled: Boolean
+             read FEnabled write SetEnabled;
+  public
+    property SearchLocked: TEditorOptionsEditAccessLockedState
+             read FSearchLocked write FSearchLocked;
+    property SearchInView: TEditorOptionsEditAccessInViewState
+             read FSearchInView write FSearchInView;
+    property SearchOrder: TEditorOptionsEditAccessOrder
+             read FSearchOrder write FSearchOrder;
+    property SearchOpenNew: TEditorOptionsEditAccessOpenNew
+             read FSearchOpenNew write FSearchOpenNew;
+    //property IgnoreTopLineAdjustment;
+  end;
+
+  { TEditorOptionsEditAccessOrderList }
+
+  TEditorOptionsEditAccessOrderList = class(TPersistent)
+  private
+    FList: TFPList;
+    FSearchOrder: TEditorOptionsEditAccessOrder;
+    function GetItems(Index: Integer): TEditorOptionsEditAccessOrderEntry;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure InitDefaults;
+    procedure Assign(Src: TEditorOptionsEditAccessOrderList); reintroduce;
+    procedure LoadFromXMLConfig(XMLConfig:TRttiXMLConfig; Path: String);
+    procedure SaveToXMLConfig(XMLConfig:TRttiXMLConfig; Path: String);
+    function Count: Integer;
+    property Items[Index: Integer]: TEditorOptionsEditAccessOrderEntry
+             read GetItems; default;
+  published
+    property SearchOrder: TEditorOptionsEditAccessOrder
+             read FSearchOrder write FSearchOrder;
+  end;
+
 
   { TEditorOptions - Editor Options object used to hold the editor options }
 
@@ -968,6 +1130,9 @@ type
 
     // Code Folding
     FUseCodeFolding: Boolean;
+
+    // Multi window
+    FMultiWinEditAccessOrder: TEditorOptionsEditAccessOrderList;
 
     function OldAdditionalAttributeName(NewAha:String): string;
   public
@@ -1139,6 +1304,10 @@ type
     // Code Folding
     property UseCodeFolding: Boolean
         read FUseCodeFolding write FUseCodeFolding default True;
+
+    // Multi window
+    property MultiWinEditAccessOrder: TEditorOptionsEditAccessOrderList
+        read FMultiWinEditAccessOrder write FMultiWinEditAccessOrder;
   end;
 
 const
@@ -2427,6 +2596,161 @@ begin
   FCustomSavedActions := Result;
 end;
 
+{ TEditorOptionsEditAccessOrderList }
+
+function TEditorOptionsEditAccessOrderList.GetItems(Index: Integer): TEditorOptionsEditAccessOrderEntry;
+begin
+  Result := TEditorOptionsEditAccessOrderEntry(FList[Index]);
+end;
+
+constructor TEditorOptionsEditAccessOrderList.Create;
+begin
+  Flist := TFPList.Create;
+  FSearchOrder := eoeaOrderByEditFocus;
+end;
+
+destructor TEditorOptionsEditAccessOrderList.Destroy;
+begin
+  Clear;
+  FreeAndNil(FList);
+  inherited Destroy;
+end;
+
+procedure TEditorOptionsEditAccessOrderList.Clear;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    Items[i].Free;
+  FList.Clear;
+end;
+
+procedure TEditorOptionsEditAccessOrderList.InitDefaults;
+var
+  i: Integer;
+  Entry: TEditorOptionsEditAccessOrderEntry;
+begin
+  for i := 0 to high(EditorOptionsEditAccessDefaults) do begin
+    Entry := TEditorOptionsEditAccessOrderEntry.Create(Self);
+    Entry.InitFrom(EditorOptionsEditAccessDefaults[i]);
+    FList.Add(Entry);
+  end;
+  Entry.FIsFallback := True;
+end;
+
+procedure TEditorOptionsEditAccessOrderList.Assign(Src: TEditorOptionsEditAccessOrderList);
+var
+  i: Integer;
+  Entry: TEditorOptionsEditAccessOrderEntry;
+begin
+  Clear;
+  FSearchOrder := Src.FSearchOrder;
+  for i := 0 to Src.Count - 1 do begin
+    Entry := TEditorOptionsEditAccessOrderEntry.Create(Self);
+    Entry.Assign(Src[i]);
+    FList.Add(Entry);
+  end;
+end;
+
+procedure TEditorOptionsEditAccessOrderList.LoadFromXMLConfig(XMLConfig: TRttiXMLConfig;
+  Path: String);
+var
+  i: Integer;
+  def: TEditorOptionsEditAccessOrderList;
+begin
+  def := TEditorOptionsEditAccessOrderList.Create;
+  XMLConfig.ReadObject(Path + 'Main/', self, def);
+  def.Free;
+  Path := Path + 'Entry/';
+  for i := 0 to Count - 1 do
+    XMLConfig.ReadObject(Path + Items[i].ID + '/', Items[i], Items[i].FDefaults);
+end;
+
+procedure TEditorOptionsEditAccessOrderList.SaveToXMLConfig(XMLConfig: TRttiXMLConfig;
+  Path: String);
+var
+  i: Integer;
+  def: TEditorOptionsEditAccessOrderList;
+begin
+  def := TEditorOptionsEditAccessOrderList.Create;
+  XMLConfig.WriteObject(Path + 'Main/', Self, def);
+  def.Free;
+  Path := Path + 'Entry/';
+  for i := 0 to Count - 1 do
+    XMLConfig.WriteObject(Path + Items[i].ID + '/', Items[i], Items[i].FDefaults);
+end;
+
+function TEditorOptionsEditAccessOrderList.Count: Integer;
+begin
+  Result := FList.Count;
+end;
+
+{ TEditorOptionsEditAccessOrderEntry }
+
+procedure TEditorOptionsEditAccessOrderEntry.AssignFrom(AValue: TEditorOptionsEditAccessDefaultEntry);
+begin
+  FId      := AValue.ID;
+  FCaption := AValue.Caption;
+  FDesc    := AValue.Desc;
+  FEnabled := AValue.Enabled;
+  FSearchInView  := AValue.SearchInView;
+  FSearchLocked  := AValue.SearchLocked;
+  FSearchOpenNew := AValue.SearchOpenNew;
+  FSearchOrder   := AValue.SearchOrder;
+end;
+
+procedure TEditorOptionsEditAccessOrderEntry.SetEnabled(const AValue: Boolean);
+begin
+  FEnabled := AValue or FIsFallback;
+end;
+
+constructor TEditorOptionsEditAccessOrderEntry.Create(AList: TEditorOptionsEditAccessOrderList);
+begin
+  inherited Create;
+  FList := AList;
+end;
+
+destructor TEditorOptionsEditAccessOrderEntry.Destroy;
+begin
+  FreeAndNil(FDefaults);
+  inherited Destroy;
+end;
+
+procedure TEditorOptionsEditAccessOrderEntry.Assign(Src: TEditorOptionsEditAccessOrderEntry);
+begin
+  FId      := Src.FID;
+  FCaption := Src.FCaption;
+  FDesc    := Src.FDesc;
+  FEnabled := Src.FEnabled;
+  FIsFallback := Src.FIsFallback;
+  FSearchInView  := Src.FSearchInView;
+  FSearchLocked  := Src.FSearchLocked;
+  FSearchOpenNew := Src.FSearchOpenNew;
+  FSearchOrder   := Src.FSearchOrder;
+  FreeAndNil(FDefaults);
+  if Src.FDefaults <> nil then begin
+    FDefaults := TEditorOptionsEditAccessOrderEntry.Create(nil);
+    FDefaults.Assign(Src.FDefaults);
+  end;
+end;
+
+procedure TEditorOptionsEditAccessOrderEntry.InitFrom(AValue: TEditorOptionsEditAccessDefaultEntry);
+begin
+  AssignFrom(AValue);
+  FDefaults := TEditorOptionsEditAccessOrderEntry.Create(nil);
+  FDefaults.AssignFrom(AValue);
+end;
+
+function TEditorOptionsEditAccessOrderEntry.RealSearchOrder: TEditorOptionsEditAccessOrder;
+begin
+  Result := SearchOrder;
+  if Result = eoeaOrderByListPref then begin
+    if FList = nil then Result := eoeaOrderByEditFocus;
+    Result := FList.SearchOrder;
+    if Result = eoeaOrderByListPref then Result := eoeaOrderByEditFocus;
+  end;
+end;
+
 { TEditorOptions }
 
 constructor TEditorOptions.Create;
@@ -2529,6 +2853,28 @@ begin
       end;
   end;
 
+  EditorOptionsEditAccessDefaults[0].Caption := dlgEditAccessCaptionLockedInView;
+  EditorOptionsEditAccessDefaults[0].Desc    := dlgEditAccessDescLockedInView;
+  EditorOptionsEditAccessDefaults[1].Caption := dlgEditAccessCaptionUnLockedInSoftView;
+  EditorOptionsEditAccessDefaults[1].Desc    := dlgEditAccessDescUnLockedInSoftView;
+  EditorOptionsEditAccessDefaults[2].Caption := dlgEditAccessCaptionUnLocked;
+  EditorOptionsEditAccessDefaults[2].Desc    := dlgEditAccessDescUnLocked;
+  EditorOptionsEditAccessDefaults[3].Caption := dlgEditAccessCaptionUnLockedOpenNewInOldWin  ;
+  EditorOptionsEditAccessDefaults[3].Desc    := dlgEditAccessDescUnLockedOpenNewInOldWin;
+  EditorOptionsEditAccessDefaults[4].Caption := dlgEditAccessCaptionUnLockedOpenNewInNewWin;
+  EditorOptionsEditAccessDefaults[4].Desc    := dlgEditAccessDescUnLockedOpenNewInNewWin;
+  EditorOptionsEditAccessDefaults[5].Caption := dlgEditAccessCaptionIgnLockedOldEdit;
+  EditorOptionsEditAccessDefaults[5].Desc    := dlgEditAccessDescIgnLockedOldEdit;
+  EditorOptionsEditAccessDefaults[6].Caption := dlgEditAccessCaptionIgnLockedOnlyActEdit;
+  EditorOptionsEditAccessDefaults[6].Desc    := dlgEditAccessDescIgnLockedOnlyActEdit;
+  EditorOptionsEditAccessDefaults[7].Caption := dlgEditAccessCaptionIgnLockedOnlyActWin;
+  EditorOptionsEditAccessDefaults[7].Desc    := dlgEditAccessDescIgnLockedOnlyActWin;
+  EditorOptionsEditAccessDefaults[8].Caption := dlgEditAccessCaptionUnLockedOpenNewInAnyWin;
+  EditorOptionsEditAccessDefaults[8].Desc    := dlgEditAccessDescUnLockedOpenNewInAnyWin;
+
+  FMultiWinEditAccessOrder := TEditorOptionsEditAccessOrderList.Create;
+  FMultiWinEditAccessOrder.InitDefaults;
+
   // update translation
   EditorOptionsFoldInfoPas[ 0].Name := dlgFoldPasProcedure;
   EditorOptionsFoldInfoPas[ 1].Name := dlgFoldLocalPasVarType;
@@ -2628,6 +2974,7 @@ begin
   FMouseGutterActionsFoldExp.Free;
   FMouseGutterActionsLines.Free;
   fKeyMap.Free;
+  FreeAndNil(FMultiWinEditAccessOrder);
   XMLConfig.Free;
   FTempMouseSettings.Free;
   inherited Destroy;
@@ -2896,6 +3243,8 @@ begin
       FTempMouseSettings.WriteBack;
     end;
 
+    FMultiWinEditAccessOrder.LoadFromXMLConfig(XMLConfig, 'EditorOptions/MultiWin/');
+
   except
     on E: Exception do
       DebugLn('[TEditorOptions.Load] ERROR: ', e.Message);
@@ -3105,6 +3454,8 @@ begin
       XMLConfig.DeletePath('EditorOptions/Mouse/GutterFoldCol');
       XMLConfig.DeletePath('EditorOptions/Mouse/GutterLineNum');
     end;
+
+    FMultiWinEditAccessOrder.SaveToXMLConfig(XMLConfig, 'EditorOptions/MultiWin/');
 
     InvalidateFileStateCache;
     XMLConfig.Flush;

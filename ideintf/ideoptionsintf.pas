@@ -180,6 +180,7 @@ const
     EdtOptionsCodeFolding = 700;
       EdtOptionsCodeFoldingMouse = 701;
     EdtOptionsDrawDivider = 800;
+    EdtOptionsMultiWindow = 900;
 
   GroupCodetools    = 300;
     CdtOptionsGeneral         = 100;
