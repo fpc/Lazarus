@@ -7398,8 +7398,12 @@ begin
     TabIndex := TabIndexAtClientPos(Point(X,Y));
     if TabIndex < 0 then begin
       TabPos := TabRect(PageCount-1);
-      if (TabPos.Right > 1) and (X > TabPos.Right) then
+      if (TabPos.Right > 1) and (X > TabPos.Left) then
         TabIndex := PageCount - 1;
+    end;
+    if TabIndex < 0 then begin
+      Accept := False;
+      exit;
     end;
 
     LastIndex := FDragOverIndex;
@@ -7575,7 +7579,7 @@ begin
     TabIndex := TabIndexAtClientPos(Point(X,Y));
     if TabIndex < 0 then begin
       TabPos := TabRect(PageCount-1);
-      if (TabPos.Right > 1) and (X > TabPos.Right) then
+      if (TabPos.Right > 1) and (X > TabPos.Left) then
         TabIndex := PageCount - 1;
     end;
     TabPos := TabRect(TabIndex);
