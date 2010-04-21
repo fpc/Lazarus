@@ -97,11 +97,10 @@ type
     procedure ExternalUpdate(var Astr: WideString; AClear: Boolean = True);
     procedure IsChanged; // OnChange triggered by program action
   protected
-    procedure Put(Index: Integer; const S: string); override;
     function GetTextStr: string; override;
     function GetCount: integer; override;
     function Get(Index : Integer) : string; override;
-    //procedure SetSorted(Val : boolean); virtual;
+    procedure Put(Index: Integer; const S: string); override;
   public
     constructor Create(TextEdit : QTextEditH; TheOwner: TWinControl);
     destructor Destroy; override;
@@ -110,9 +109,7 @@ type
     procedure Delete(Index : integer); override;
     procedure Insert(Index : integer; const S: string); override;
     procedure SetText(TheText: PChar); override;
-    //procedure Sort; virtual;
   public
-    //property Sorted: boolean read FSorted write SetSorted;
     property Owner: TWinControl read FOwner;
     procedure TextChangedHandler; cdecl;
   end;
@@ -130,10 +127,10 @@ implementation
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.InternalUpdate;
 var
-  Astr: WideString;
+  W: WideString;
 begin
-  QTextEdit_toPlainText(FQtTextEdit,@Astr); // get the memo content
-  FStringList.Text := UTF16ToUTF8(Astr);
+  QTextEdit_toPlainText(FQtTextEdit,@W); // get the memo content
+  FStringList.Text := UTF16ToUTF8(W);
   FTextChanged := False;
 end;
 
@@ -146,17 +143,17 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.ExternalUpdate(var Astr: WideString; AClear: Boolean = True);
 var
-  Str: WideString;
+  W: WideString;
 begin
   FUpdating := True;
-  Str := GetUtf8String(AStr);
+  W := GetUtf8String(AStr);
   if AClear then
   begin
     QTextEdit_clear(FQtTextEdit);
-    QTextEdit_setPlainText(FQtTextEdit,@Str);
+    QTextEdit_setPlainText(FQtTextEdit,@W);
   end
   else
-    QTextEdit_append(FQtTextEdit,@Str);
+    QTextEdit_append(FQtTextEdit,@W);
 
   if QTextEdit_alignment(FQtTextEdit) <> AlignmentMap[TCustomMemo(FOwner).Alignment] then
     QTextEdit_setAlignment(FQtTextEdit, AlignmentMap[TCustomMemo(FOwner).Alignment]);
@@ -183,16 +180,6 @@ begin
     (FOwner as TCustomMemo).Modified := False;
     (FOwner as TCustomMemo).OnChange(self);
   end;
-end;
-
-procedure TQtMemoStrings.Put(Index: Integer; const S: string);
-var
-  W: WideString;
-begin
-  FStringList[Index] := S;
-  W := FStringList.Text;
-  ExternalUpdate(W, True);
-  FTextChanged := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -236,6 +223,15 @@ begin
   else Result := '';
 end;
 
+procedure TQtMemoStrings.Put(Index: Integer; const S: string);
+var
+  W: WideString;
+begin
+  if FTextChanged then InternalUpdate;
+  FStringList[Index] := S;
+  W := GetUTF8String(S);
+  TQtTextEdit(FOwner.Handle).setLineText(Index, W);
+end;
 
 {------------------------------------------------------------------------------
   Method: TQtMemoStrings.Create
@@ -310,7 +306,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.Assign(Source: TPersistent);
 var
-  Astr: WideString;
+  W: WideString;
 begin
   if (Source=Self) or (Source=nil)
   then
@@ -319,12 +315,12 @@ begin
   begin
     FStringList.Clear;
     FStringList.Text := TStrings(Source).Text;
-    Astr := FStringList.Text;
-    ExternalUpdate(Astr,True);
+    W := FStringList.Text;
+    ExternalUpdate(W,True);
     FTextChanged := False;
     exit;
   end;
-  Inherited Assign(Source);
+  inherited Assign(Source);
 end;
 
 {------------------------------------------------------------------------------
@@ -340,8 +336,7 @@ begin
   FStringList.Clear;
   
   if not (csDestroying in FOwner.ComponentState)
-  and not (csFreeNotification in FOwner.ComponentState)
-  then
+  and not (csFreeNotification in FOwner.ComponentState) then
     QTextEdit_clear(FQtTextEdit);
     
   FTextChanged := False;
@@ -358,15 +353,18 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.Delete(Index: integer);
 var
-  Astr: WideString;
+  W: WideString;
 begin
   if FTextChanged then InternalUpdate;
-  if Index < FStringList.Count then
+  if (Index >= 0) and (Index < FStringList.Count) then
   begin
     FStringList.Delete(Index);
-    Astr := FStringList.Text;
-    ExternalUpdate(AStr,True);
+    TQtTextEdit(FOwner.Handle).removeLine(Index);
+    {TODO: remove old way after testing
+    W := FStringList.Text;
+    ExternalUpdate(W, True);
     FTextChanged := False;
+    }
   end;
 end;
 
@@ -379,16 +377,24 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.Insert(Index: integer; const S: string);
 var
-  Astr: WideString;
+  W: WideString;
 begin
   if FTextChanged then InternalUpdate;
   if Index < 0 then Index := 0;
   if Index <= FStringList.Count then
   begin
-    FStringList.Insert(Index,S);
-    Astr := S;
-    ExternalUpdate(AStr, False);
-    FTextChanged := False;
+    FStringList.Insert(Index, S);
+    // append is much faster in case when we add strings
+    if TQtTextEdit(FOwner.Handle).getBlockCount - Index <= 1 then
+    begin
+      W := S;
+      ExternalUpdate(W, False);
+      FTextChanged := False;
+    end else
+    begin
+      W := GetUTF8String(S);
+      TQtTextEdit(FOwner.Handle).insertLine(Index, W);
+    end;
   end;
 end;
 
@@ -401,13 +407,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.SetText(TheText: PChar);
 Var
-  str: String;
-  Astr: WideString;
+  S: String;
+  W: WideString;
 begin
-  str := StrPas(TheText);
-  FStringList.Text := str;
-  AStr := Str;
-  ExternalUpdate(Astr,True);
+  S := StrPas(TheText);
+  FStringList.Text := S;
+  W := S;
+  ExternalUpdate(W,True);
   FTextChanged := False;
 end;
 
