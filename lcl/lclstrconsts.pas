@@ -136,7 +136,7 @@ resourceString
   rsgtkOptionSync = '--sync                Call XSynchronize (display, True) '
     +'after the Xserver connection has been established. This makes debugging '
     +'X protocol errors easier, because X request buffering will be disabled '
-    +'and X errors will be received immediatey after the protocol request that '
+    +'and X errors will be received immediately after the protocol request that '
     +'generated the error has been processed by the X server.';
   rsgtkOptionNoXshm = '--no-xshm             Disable use of the X Shared '
     +'Memory Extension.';
