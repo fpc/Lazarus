@@ -1133,6 +1133,7 @@ procedure TCustomForm.MoveToDefaultPosition;
 
 var
   X, Y : integer;
+  p: TPosition;
 begin
   if (Parent = nil) and (ParentWindow = 0) then
   begin
@@ -1140,7 +1141,10 @@ begin
     X := Left;
     Y := Top;
 
-    if  (Position = poMainFormCenter)
+    p:=Position;
+    if (Position = poMainFormCenter) and (Application.Mainform=nil) then
+      p:=poScreenCenter;
+    if  (P = poMainFormCenter)
     and (FormStyle = fsMDIChild)
     and (Self <> Application.Mainform)
     then begin
@@ -1148,7 +1152,7 @@ begin
       Y := (Application.Mainform.ClientHeight - Height) div 2;
     end
     else begin
-      case Position of
+      case P of
       poDesktopCenter :
         begin
           X := (Screen.DesktopWidth - Width) div 2;
