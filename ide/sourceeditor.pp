@@ -720,7 +720,7 @@ type
     procedure GotoNextSharedEditor(Backward: Boolean = False);
     procedure MoveEditorNextWindow(Backward: Boolean = False; Copy: Boolean = False);
     procedure MoveEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer);
-    procedure CopyEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer);
+    procedure CopyEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer; Focus: Boolean = False);
     procedure ProcessParentCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
        var Handled: boolean);
@@ -5975,7 +5975,7 @@ begin
 end;
 
 procedure TSourceNotebook.CopyEditor(OldPageIndex, NewWindowIndex,
-  NewPageIndex: integer);
+  NewPageIndex: integer; Focus: Boolean = False);
 var
   DestWin: TSourceNotebook;
   SrcEdit, NewEdit: TSourceEditor;
@@ -6003,6 +6003,10 @@ begin
   UpdateProjectFiles;
   DestWin.UpdateProjectFiles;
   // Update IsVisibleTab; needs UnitEditorInfo created in DestWin.UpdateProjectFiles
+  if Focus then begin
+    Manager.ActiveEditor := NewEdit;
+    Manager.ShowActiveWindowOnTop(True);
+  end;
   Manager.DoActiveEditorChanged;
 end;
 
@@ -6842,7 +6846,7 @@ begin
   ecCopyEditorPrevWindow:
     MoveEditorNextWindow(True, True);
   ecCopyEditorNewWindow:
-    CopyEditor(FindPageWithEditor(GetActiveSE), Manager.IndexOfSourceWindow(Manager.CreateNewWindow(True)), -1);
+    CopyEditor(FindPageWithEditor(GetActiveSE), Manager.IndexOfSourceWindow(Manager.CreateNewWindow(True)), -1, True);
 
 
   ecOpenFileAtCursor:
