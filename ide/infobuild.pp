@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, LCLType,
-  LCLProc, ExtCtrls, StdCtrls, ExtDlgs, LazIDEIntf, LazarusIDEStrConsts;
+  LCLProc, ExtCtrls, StdCtrls, ExtDlgs, LazIDEIntf, LazarusIDEStrConsts, FileCtrl;
 
 type
 
@@ -178,7 +178,7 @@ end;
 
 procedure TCompileInfoDlg.SetProjectName(const Sname : String);
 begin
-  lbInfo.Caption := ExtractFileName(Sname);
+  lbInfo.Caption := MiniMizeName(Sname, lbInfo.Canvas, lbInfo.Width);
 end;
 
 procedure TCompileInfoDlg.SetStatus(const SStatus : String);
