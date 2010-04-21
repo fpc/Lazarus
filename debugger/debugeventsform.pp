@@ -37,15 +37,12 @@ uses
   Debugger, DebuggerDlg, LazarusIDEStrConsts, EnvironmentOpts;
 
 type
-  TDBGEventCategories = set of TDBGEventCategory;
-
   { TDbgEventsForm }
 
   TDbgEventsForm = class(TDebuggerDlg)
-    ckgFilter: TCheckGroup;
     imlMain: TImageList;
     lstFilteredEvents: TListView;
-    procedure ckgFilterItemClick(Sender: TObject; Index: integer);
+    procedure lstFilteredEventsResize(Sender: TObject);
   private
     FEvents: TStringList;
     FFilter: TDBGEventCategories;
@@ -53,8 +50,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure SetEvents(const AEvents: TStrings; const AFilter: TDBGEventCategories);
-    procedure GetEvents(const AResultEvents: TStrings; var AResultFilter: TDBGEventCategories);
+    procedure SetEvents(const AEvents: TStrings);
+    procedure GetEvents(const AResultEvents: TStrings);
     procedure Clear;
     procedure AddEvent(const ACategory: TDBGEventCategory; const AText: String);
   end; 
@@ -65,13 +62,10 @@ implementation
 
 { TDbgEventsForm }
 
-procedure TDbgEventsForm.ckgFilterItemClick(Sender: TObject; Index: integer);
+procedure TDbgEventsForm.lstFilteredEventsResize(Sender: TObject);
 begin
-  if ckgFilter.Checked[Index] then
-    Include(FFilter, TDBGEventCategory(Index))
-  else
-    Exclude(FFilter, TDBGEventCategory(Index));
-  UpdateFilteredList;
+  // workaround: ListColumn.AutoSize does not work properly
+  lstFilteredEvents.Column[0].Width := lstFilteredEvents.ClientWidth;
 end;
 
 procedure TDbgEventsForm.UpdateFilteredList;
@@ -116,25 +110,35 @@ begin
     lstFilteredEvents.Items[lstFilteredEvents.Items.Count -1].MakeVisible(False);
 end;
 
-procedure TDbgEventsForm.SetEvents(const AEvents: TStrings; const AFilter: TDBGEventCategories);
-var
-  i: TDBGEventCategory;
+procedure TDbgEventsForm.SetEvents(const AEvents: TStrings);
 begin
   if AEvents <> nil then
     FEvents.Assign(AEvents)
   else
     FEvents.Clear;
-  FFilter := AFilter;
-  for i := Low(TDBGEventCategory) to High(TDBGEventCategory) do
-    ckgFilter.Checked[Ord(i)] := i in FFilter;
+
+  FFilter := [];
+  if EnvironmentOptions.DebuggerEventLogShowBreakpoint then
+    Include(FFilter, ecBreakpoint);
+  if EnvironmentOptions.DebuggerEventLogShowProcess then
+    Include(FFilter, ecProcess);
+  if EnvironmentOptions.DebuggerEventLogShowThread then
+    Include(FFilter, ecThread);
+  if EnvironmentOptions.DebuggerEventLogShowModule then
+    Include(FFilter, ecModule);
+  if EnvironmentOptions.DebuggerEventLogShowOutput then
+    Include(FFilter, ecOutput);
+  if EnvironmentOptions.DebuggerEventLogShowWindow then
+    Include(FFilter, ecWindow);
+  if EnvironmentOptions.DebuggerEventLogShowDebugger then
+    Include(FFilter, ecDebugger);
+
   UpdateFilteredList;
 end;
 
-procedure TDbgEventsForm.GetEvents(const AResultEvents: TStrings;
-  var AResultFilter: TDBGEventCategories);
+procedure TDbgEventsForm.GetEvents(const AResultEvents: TStrings);
 begin
   AResultEvents.Assign(FEvents);
-  AResultFilter := FFilter;
 end;
 
 procedure TDbgEventsForm.Clear;
@@ -148,14 +152,6 @@ begin
   inherited Create(AOwner);
   Caption := lisMenuViewDebugEvents;
   FEvents := TStringList.Create;
-  ckgFilter.Items.Clear;
-  ckgFilter.Items.Add(lisDebugOptionsFrmBreakpoint);
-  ckgFilter.Items.Add(lisDebugOptionsFrmProcess);
-  ckgFilter.Items.Add(lisDebugOptionsFrmThread);
-  ckgFilter.Items.Add(lisDebugOptionsFrmModule);
-  ckgFilter.Items.Add(lisDebugOptionsFrmOutput);
-  ckgFilter.Items.Add(lisDebugOptionsFrmWindow);
-  ckgFilter.Items.Add(lisDebugOptionsFrmDebugger);
 end;
 
 destructor TDbgEventsForm.Destroy;

@@ -1,62 +1,28 @@
 inherited DbgEventsForm: TDbgEventsForm
   Left = 514
-  Height = 348
-  Top = 228
+  Height = 208
+  Top = 368
   Width = 577
-  ActiveControl = ckgFilter.CheckBox0
-  ClientHeight = 348
+  ClientHeight = 208
   ClientWidth = 577
-  object ckgFilter: TCheckGroup[0]
+  object lstFilteredEvents: TListView[0]
     Left = 0
-    Height = 48
+    Height = 208
     Top = 0
-    Width = 577
-    Align = alTop
-    AutoFill = True
-    AutoSize = True
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 1
-    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-    ChildSizing.EnlargeVertical = crsHomogenousChildResize
-    ChildSizing.ShrinkHorizontal = crsScaleChilds
-    ChildSizing.ShrinkVertical = crsScaleChilds
-    ChildSizing.Layout = cclTopToBottomThenLeftToRight
-    ChildSizing.ControlsPerLine = 2
-    Color = clForm
-    ColumnLayout = clVerticalThenHorizontal
-    Columns = 4
-    Items.Strings = (
-      'Breakpoint'
-      'Process'
-      'Thread'
-      'Module'
-      'Output'
-      'Window'
-      'Debugger'
-    )
-    OnItemClick = ckgFilterItemClick
-    ParentColor = False
-    TabOrder = 0
-    Data = {
-      0700000002020202020202
-    }
-  end
-  object lstFilteredEvents: TListView[1]
-    Left = 0
-    Height = 300
-    Top = 48
     Width = 577
     Align = alClient
     Columns = <    
       item
+        Width = 100
       end>
     ItemIndex = -1
     ShowColumnHeaders = False
     SmallImages = imlMain
-    TabOrder = 1
+    TabOrder = 0
     ViewStyle = vsReport
+    OnResize = lstFilteredEventsResize
   end
-  object imlMain: TImageList[2]
+  object imlMain: TImageList[1]
     left = 199
     top = 232
     Bitmap = {

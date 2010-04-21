@@ -111,9 +111,6 @@ type
     // here are all choices stored
     FUserSourceFiles: TStringList;
 
-    // Filter events that are show in the event log
-    FEventsFilter: set of TDBGEventCategory;
-
     // when the debug output log is not open, store the debug log internally
     FHiddenDebugOutputLog: TStringList;
     FHiddenDebugEventsLog: TStringList;
@@ -1742,7 +1739,7 @@ begin
       begin
         if FHiddenDebugEventsLog=nil then
           FHiddenDebugEventsLog:=TStringList.Create;
-        TDbgEventsForm(FDialogs[ddtEvents]).GetEvents(FHiddenDebugEventsLog, FEventsFilter);
+        TDbgEventsForm(FDialogs[ddtEvents]).GetEvents(FHiddenDebugEventsLog);
       end;
     end;
     FDialogs[DlgType]:=nil;
@@ -1818,7 +1815,7 @@ var
   TheDialog: TDbgEventsForm;
 begin
   TheDialog := TDbgEventsForm(FDialogs[ddtEvents]);
-  TheDialog.SetEvents(FHiddenDebugEventsLog, FEventsFilter);
+  TheDialog.SetEvents(FHiddenDebugEventsLog);
   if FHiddenDebugEventsLog <> nil then
     FreeAndNil(FHiddenDebugEventsLog);
 end;
@@ -1922,22 +1919,6 @@ begin
   FRunTimer := TTimer.Create(Self);
   FRunTimer.Interval := 1;
   FRunTimer.OnTimer := @OnRunTimer;
-
-  FEventsFilter := [];
-  if EnvironmentOptions.DebuggerEventLogShowBreakpoint then
-    Include(FEventsFilter, ecBreakpoint);
-  if EnvironmentOptions.DebuggerEventLogShowProcess then
-    Include(FEventsFilter, ecProcess);
-  if EnvironmentOptions.DebuggerEventLogShowThread then
-    Include(FEventsFilter, ecThread);
-  if EnvironmentOptions.DebuggerEventLogShowModule then
-    Include(FEventsFilter, ecModule);
-  if EnvironmentOptions.DebuggerEventLogShowOutput then
-    Include(FEventsFilter, ecOutput);
-  if EnvironmentOptions.DebuggerEventLogShowWindow then
-    Include(FEventsFilter, ecWindow);
-  if EnvironmentOptions.DebuggerEventLogShowDebugger then
-    Include(FEventsFilter, ecDebugger);
 
   inherited Create(TheOwner);
 end;

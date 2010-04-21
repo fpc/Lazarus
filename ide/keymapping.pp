@@ -2773,7 +2773,7 @@ begin
     ecToggleRegisters);
   AddDefault(C, 'Toggle view Assembler', lisKMToggleViewAssembler,
     ecToggleAssembler);
-  AddDefault(C, 'Toggle view Debug Events', lisKMToggleViewDebugEvents, ecToggleDebugEvents);
+  AddDefault(C, 'Toggle view Event Log', lisKMToggleViewDebugEvents, ecToggleDebugEvents);
   AddDefault(C, 'Toggle view Debugger Output', lisKMToggleViewDebuggerOutput,
     ecToggleDebuggerOut);
   AddDefault(C, 'View Units', lisHintViewUnits, ecViewUnits);

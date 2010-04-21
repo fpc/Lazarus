@@ -301,7 +301,7 @@ resourcestring
   lisMenuViewCallStack = 'Call Stack';
   lisMenuViewAssembler = 'Assembler';
   lisMenuViewDebugOutput = 'Debug output';
-  lisMenuViewDebugEvents = 'Debug events';
+  lisMenuViewDebugEvents = 'Event Log';
   lisMenuIDEInternals = 'IDE internals';
   lisMenuPackageLinks = 'Package links ...';
   
@@ -2515,7 +2515,7 @@ resourcestring
   lisKMToggleViewCallStack = 'Toggle view Call Stack';
   lisKMToggleViewRegisters = 'Toggle view Registers';
   lisKMToggleViewAssembler = 'Toggle view Assembler';
-  lisKMToggleViewDebugEvents = 'Toggle view Debug Events';
+  lisKMToggleViewDebugEvents = 'Toggle view Debuger Event Log';
   lisKMToggleViewDebuggerOutput = 'Toggle view Debugger Output';
   srkmCatProjectMenu    = 'Project menu commands';
   lisKMNewProject = 'New project';

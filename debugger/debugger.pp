@@ -1231,6 +1231,7 @@ type
     ecOutput,     // DebugOutput calls
     ecWindow,
     ecDebugger);  // debugger errors and warnings
+  TDBGEventCategories = set of TDBGEventCategory;
 
   TDBGEventNotify = procedure(Sender: TObject; const ACategory: TDBGEventCategory;
                               const AText: String) of object;
