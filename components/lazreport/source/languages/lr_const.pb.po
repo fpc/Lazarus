@@ -266,7 +266,7 @@ msgstr "AVG(<Expressão> [,NomeBanda [,1]])/Calcula a média de <Expressão> pel
 
 #: lr_const.sdescriptioncopy
 msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
-msgstr ""
+msgstr "COPY(<String>, <Posição>, <Tamanho>)/Retorna <Tamanho> caracteres de <String> iniciando na <Posição>."
 
 #: lr_const.sdescriptioncount
 msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
@@ -290,7 +290,7 @@ msgstr "FORMATTEXT(<Máscara>, <String>)/Aplica <Máscara> para uma dada <String
 
 #: lr_const.sdescriptionfrac
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
-msgstr ""
+msgstr "FRAC(<Valor>)/Retorna a parte fracionária do <Valor> de ponto flutuante."
 
 #: lr_const.sdescriptioninput
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
@@ -298,7 +298,7 @@ msgstr "INPUT(<Título> [,Padrão])/Mostra janela de diálogo com cabeçalho <T�
 
 #: lr_const.sdescriptionint
 msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
-msgstr ""
+msgstr "INT(<Valor>)/Retorna a parte inteira de um <Valor> de ponto flutuante."
 
 #: lr_const.sdescriptionlength
 msgid "LENGTH(<String>)/Returns length of <String>."
@@ -342,11 +342,11 @@ msgstr "POS(<SubString>, <String>)/Retorna a posição da <SubString> para uma d
 
 #: lr_const.sdescriptionround
 msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
-msgstr ""
+msgstr "ROUND(<Valor>)/Arrendoda o <Valor> de ponto flutuante para o número inteiro mais próximo."
 
 #: lr_const.sdescriptionstr
 msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
-msgstr ""
+msgstr "STR(<Valor>)/Converte um dado <Valor> numérico em \"string\"."
 
 #: lr_const.sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."

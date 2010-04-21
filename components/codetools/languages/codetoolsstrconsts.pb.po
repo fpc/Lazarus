@@ -637,7 +637,7 @@ msgstr "Não situado no fonte"
 
 #: codetoolsstrconsts.ctsprocedureorfunctionorconstructorordestructor
 msgid "procedure or function or constructor or destructor"
-msgstr ""
+msgstr "procedimento ou função ou construtor ou destruidor"
 
 #: codetoolsstrconsts.ctsprocessorspecific
 msgid "processor specific"

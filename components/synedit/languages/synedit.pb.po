@@ -30,7 +30,6 @@ msgid "Block"
 msgstr "Bloco"
 
 #: syneditstrconst.syns_attrbrackets
-#, fuzzy
 msgid "Brackets"
 msgstr "Parênteses"
 
@@ -44,19 +43,19 @@ msgstr "Caractere"
 
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
-msgstr ""
+msgstr "\"Diff\" Marcador Pedaço"
 
 #: syneditstrconst.syns_attrchunkmixed
 msgid "Diff Chunk Line Counts"
-msgstr ""
+msgstr "\"Diff\" Contagem Linhas Pedaço"
 
 #: syneditstrconst.syns_attrchunknew
 msgid "Diff Chunk New Line Count"
-msgstr ""
+msgstr "\"Diff\" Nova contagem linha Pedaço"
 
 #: syneditstrconst.syns_attrchunkorig
 msgid "Diff Chunk Original Line Count"
-msgstr ""
+msgstr "\"Diff\" Contagem original linha Pedaço"
 
 #: syneditstrconst.syns_attrclass
 msgid "Class"
@@ -177,19 +176,19 @@ msgstr "Rótulo"
 
 #: syneditstrconst.syns_attrlineadded
 msgid "Diff Added line"
-msgstr ""
+msgstr "\"Diff\" Linha Adicionada"
 
 #: syneditstrconst.syns_attrlinechanged
 msgid "Diff Changed Line"
-msgstr ""
+msgstr "\"Diff\" Linha Modificada"
 
 #: syneditstrconst.syns_attrlinecontext
 msgid "Diff Context Line"
-msgstr ""
+msgstr "\"Diff\" Linha Contexto"
 
 #: syneditstrconst.syns_attrlineremoved
 msgid "Diff Removed Line"
-msgstr ""
+msgstr "\"Diff\" Linha Removida"
 
 #: syneditstrconst.syns_attrmacro
 msgid "Macro"
@@ -221,7 +220,7 @@ msgstr "Valor Atributo \"Namespace\""
 
 #: syneditstrconst.syns_attrnewfile
 msgid "Diff New File"
-msgstr ""
+msgstr "\"Diff\" Novo Arquivo"
 
 #: syneditstrconst.syns_attrnonreservedkeyword
 msgid "Non-reserved keyword"
@@ -245,7 +244,7 @@ msgstr "Operador"
 
 #: syneditstrconst.syns_attrorigfile
 msgid "Diff Original File"
-msgstr ""
+msgstr "\"Diff\" Arquivo Original"
 
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"

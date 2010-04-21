@@ -21,7 +21,7 @@ msgstr "Acompanhamento Teste LazReport"
 #: maincalleditor.cercomposite
 msgctxt "maincalleditor.cercomposite"
 msgid "Composite"
-msgstr ""
+msgstr "Composto"
 
 #: maincalleditor.cereditreport
 msgctxt "maincalleditor.cereditreport"
@@ -30,48 +30,48 @@ msgstr "Editar Relatório"
 
 #: maincalleditor.cerhintcloseapp
 msgid "Close application"
-msgstr ""
+msgstr "Fechar aplicação"
 
 #: maincalleditor.cerhintcomposite
 msgid "This Action will Load and Preview a composite Report"
-msgstr ""
+msgstr "Esta Ação irá carregar e Pré-visualizar um Relatório composto"
 
 #: maincalleditor.cerhinteditreport
 msgid "Edit active report"
-msgstr ""
+msgstr "Editar relatório ativo"
 
 #: maincalleditor.cerhintnewreport
 msgid "Create and edit a empty report"
-msgstr ""
+msgstr "Criar e editar um relatório vazio"
 
 #: maincalleditor.cerhintopenreport
 msgid "Open an existing report"
-msgstr ""
+msgstr "Abrir um relatório existente"
 
 #: maincalleditor.cerhintprevgrid
 msgid "Print preview current DbGrid content"
-msgstr ""
+msgstr "Imprimir pré-visualização do conteúdo atual do \"DbGrid\""
 
 #: maincalleditor.cerhintprevreport
 msgid "Preview active report"
-msgstr ""
+msgstr "Pré-visualizar o relatório ativo"
 
 #: maincalleditor.cerhintprnreport
 msgid "Print directly the active report (i.e. without preview)"
-msgstr ""
+msgstr "Imprimir diretamente o relatório ativo (sem pré-visualizar)"
 
 #: maincalleditor.cerhintthumbnails
 msgid "This Action will Load and Preview a thumbnails Report"
-msgstr ""
+msgstr "Esta Ação irá carregar e Pré-visualizar um relatório de miniaturas"
 
 #: maincalleditor.cerindex
 msgctxt "maincalleditor.cerindex"
 msgid "Index"
-msgstr ""
+msgstr "Índice"
 
 #: maincalleditor.cerindexfields
 msgid "Index Fields: %s"
-msgstr ""
+msgstr "Campos Índices: %s"
 
 #: maincalleditor.cernewreport
 msgid "New report"
@@ -176,12 +176,12 @@ msgstr "Acompanhamento Teste LazReport"
 
 #: TFRMMAIN.LBLEXPR.CAPTION
 msgid "Expression"
-msgstr ""
+msgstr "Expressão"
 
 #: TFRMMAIN.LBLINDEX.CAPTION
 msgctxt "TFRMMAIN.LBLINDEX.CAPTION"
 msgid "Index"
-msgstr ""
+msgstr "Índice"
 
 #: TFRMMAIN.MENUITEM1.CAPTION
 msgid "Files"

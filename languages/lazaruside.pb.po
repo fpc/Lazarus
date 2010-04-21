@@ -331,7 +331,7 @@ msgstr "Recuo automático"
 
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
-msgstr "Auto remover métodos vazios"
+msgstr "Remover automaticamente métodos vazios"
 
 #: lazarusidestrconsts.dlgautoren
 msgid "Auto rename file lowercase"
@@ -764,7 +764,6 @@ msgid "Unit Style:"
 msgstr "Estilo de unidade:"
 
 #: lazarusidestrconsts.dlgcouseasdefault
-#, fuzzy
 #| msgid "Use these settings as default for new projects"
 msgid "Use these compiler options as default for new projects"
 msgstr "Usar estes ajustes como padrão para novos projetos"
@@ -1131,11 +1130,11 @@ msgstr "Localizar texto sob o cursor"
 
 #: lazarusidestrconsts.dlgfolddiffchunk
 msgid "Chunk"
-msgstr ""
+msgstr "Pedaço"
 
 #: lazarusidestrconsts.dlgfolddiffchunksect
 msgid "Chunk section"
-msgstr ""
+msgstr "Pedaço seção"
 
 #: lazarusidestrconsts.dlgfolddifffile
 msgctxt "lazarusidestrconsts.dlgfolddifffile"
@@ -1144,7 +1143,7 @@ msgstr "Arquivo"
 
 #: lazarusidestrconsts.dlgfoldhtmlasp
 msgid "ASP"
-msgstr ""
+msgstr "ASP"
 
 #: lazarusidestrconsts.dlgfoldhtmlcomment
 msgctxt "lazarusidestrconsts.dlgfoldhtmlcomment"
@@ -1435,7 +1434,7 @@ msgstr "Ocultar ícones mensagens"
 
 #: lazarusidestrconsts.dlghidesingletabinnotebook
 msgid "Hide tab in single page windows"
-msgstr ""
+msgstr "Ocultar aba janelas em páginas simples"
 
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
@@ -1459,7 +1458,7 @@ msgstr "Mostrar dica parâmetro \"Sender\" não usado"
 
 #: lazarusidestrconsts.dlghintsunused
 msgid "Show Hints for unused units in main source"
-msgstr "Mostrar dicas unidades não utilizadas no código"
+msgstr "Mostrar dicas unidades não utilizadas"
 
 #: lazarusidestrconsts.dlghomekeyjumpstoneareststart
 msgid "Home key jumps to nearest start"
@@ -2057,7 +2056,7 @@ msgstr "Sem realce"
 
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
-msgstr ""
+msgstr "Posição abas \"notebook\" fonte"
 
 #: lazarusidestrconsts.dlgnotebooktabposbottom
 msgctxt "lazarusidestrconsts.dlgnotebooktabposbottom"
@@ -2254,7 +2253,7 @@ msgstr "Nome da propriedade"
 
 #: lazarusidestrconsts.dlgqautoclosecompiledialog
 msgid "Auto close compile dialog"
-msgstr ""
+msgstr "Fechar automaticamente o diálogo compilação"
 
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"
@@ -3256,7 +3255,7 @@ msgstr "Adicionar pacote %s ao projeto?"
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
-msgstr ""
+msgstr "Adicionar pacote ao projeto"
 
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
@@ -3276,7 +3275,7 @@ msgstr "Adicionar interfaces unidade"
 
 #: lazarusidestrconsts.lisaddunitnotrecommended
 msgid "Add unit (not recommended)"
-msgstr ""
+msgstr "Adicionar unidade (não recomendado)"
 
 #: lazarusidestrconsts.lisaddvalue
 msgid "Add value:"
@@ -3533,7 +3532,7 @@ msgstr "Pacotes disponíveis"
 
 #: lazarusidestrconsts.lisbackupchangedfiles
 msgid "Make backup of changed files"
-msgstr ""
+msgstr "Fazer cópia de segurança dos arquivos modificados"
 
 #: lazarusidestrconsts.lisbackupfilefailed
 msgid "Backup file failed"
@@ -4263,19 +4262,19 @@ msgstr "&Fechar"
 
 #: lazarusidestrconsts.lisclosealltabsclose
 msgid "Close files"
-msgstr ""
+msgstr "Fechar arquivos"
 
 #: lazarusidestrconsts.lisclosealltabshide
 msgid "Hide window"
-msgstr ""
+msgstr "Ocultar janela"
 
 #: lazarusidestrconsts.lisclosealltabsquestion
 msgid "Closing a Source Editor Window. Do you want close all files or hide the window?"
-msgstr ""
+msgstr "Fechando uma Janela Editor Fonte. Deseja fechar todos os arquivos ou ocultar a janela?"
 
 #: lazarusidestrconsts.lisclosealltabstitle
 msgid "Close Source Editor Window"
-msgstr ""
+msgstr "Fechar Janela Editor Fonte"
 
 #: lazarusidestrconsts.liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -5167,7 +5166,7 @@ msgstr "Controle precisa de um controle-pai"
 
 #: lazarusidestrconsts.lisconvautoremoveproperties
 msgid "Automatic removal of unknown properties"
-msgstr ""
+msgstr "Remoção automática de propriedades desconhecidas"
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -5191,35 +5190,35 @@ msgstr "Converter projeto ou pacote"
 
 #: lazarusidestrconsts.lisconverttarget1
 msgid "Lazarus/LCL"
-msgstr ""
+msgstr "Lazarus/LCL"
 
 #: lazarusidestrconsts.lisconverttarget2
 msgid "Lazarus/LCL for Windows only"
-msgstr ""
+msgstr "Lazarus/LCL apenas para Windows"
 
 #: lazarusidestrconsts.lisconverttarget3
 msgid "Both Lazarus/LCL and Delphi"
-msgstr ""
+msgstr "Ambos Lazarus/LCL e Delphi"
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
-msgstr ""
+msgstr "Substituições Tipos"
 
 #: lazarusidestrconsts.lisconvtypestoreplace
 msgid "Types to replace"
-msgstr ""
+msgstr "Tipos à substituir"
 
 #: lazarusidestrconsts.lisconvunitreplacements
 msgid "Unit Replacements"
-msgstr ""
+msgstr "Substituições Unidades"
 
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
-msgstr ""
+msgstr "Unidades à substituir"
 
 #: lazarusidestrconsts.lisconvunitstypesproperties
 msgid "Units, Types and Properties"
-msgstr ""
+msgstr "Unidades, Tipos e Propriedades"
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -5231,7 +5230,7 @@ msgstr "Copiar todas as mensagens, incluse as escondidas, para Área de Transfer
 
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy all items to clipboard"
-msgstr ""
+msgstr "Copiar todos os items para a Área de Transf."
 
 #: lazarusidestrconsts.liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
@@ -5263,11 +5262,11 @@ msgstr "Cópiar um formulário inteiro não está implementado."
 
 #: lazarusidestrconsts.liscopyitemtoclipboard
 msgid "Copy item to clipboard"
-msgstr ""
+msgstr "Copiar item para Área Transferência"
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy selected items to clipboard"
-msgstr ""
+msgstr "Copiar itens selecionados para Área Transf."
 
 #: lazarusidestrconsts.liscopyselectedmessagestoclipboard
 msgid "Copy selected messages to clipboard"
@@ -5712,7 +5711,7 @@ msgstr "Delphi"
 
 #: lazarusidestrconsts.lisdelphipackage
 msgid "Delphi package"
-msgstr ""
+msgstr "Pacote Delphi"
 
 #: lazarusidestrconsts.lisdelphiproject
 msgid "Delphi project"
@@ -5720,7 +5719,7 @@ msgstr "Projeto Delphi"
 
 #: lazarusidestrconsts.lisdelphiunit
 msgid "Delphi unit"
-msgstr ""
+msgstr "Unidade Delphi"
 
 #: lazarusidestrconsts.lisdesthereisalreadyanothercomponentwiththename
 msgid "There is already another component with the name %s%s%s."
@@ -6781,7 +6780,7 @@ msgstr "obter palavra na posição atual do cursor"
 
 #: lazarusidestrconsts.lisgotoline
 msgid "Goto line"
-msgstr ""
+msgstr "Ir para a linha"
 
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -6853,7 +6852,7 @@ msgstr "Passar para"
 
 #: lazarusidestrconsts.lishintstepout
 msgid "Run until function returns"
-msgstr ""
+msgstr "Executar até o retorno da função"
 
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
@@ -7097,7 +7096,7 @@ msgstr "Notas:"
 
 #: lazarusidestrconsts.lisinfobuildproject
 msgid "Project:"
-msgstr ""
+msgstr "Projeto:"
 
 #: lazarusidestrconsts.lisinfobuildsuccess
 msgid "Success..."
@@ -7310,7 +7309,7 @@ msgstr "%s é um %s.%sEsta dependência circular não é permitida."
 
 #: lazarusidestrconsts.lisjhjumphistory
 msgid "Jump History"
-msgstr ""
+msgstr "Saltar para Histórico"
 
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
@@ -7792,7 +7791,7 @@ msgstr "Alternar vista paleta de componentes"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
 msgid "Toggle view Debuger Event Log"
-msgstr ""
+msgstr "Alternar vista Eventos Depuração"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
 msgid "Toggle view Debugger Output"
@@ -7872,7 +7871,7 @@ msgstr "Diretório Lazarus não encontrado"
 
 #: lazarusidestrconsts.lislazarusdiroverride
 msgid "directory, to be used as a basedirectory"
-msgstr ""
+msgstr "diretório para ser usado como diretório base"
 
 #: lazarusidestrconsts.lislazaruseditorv
 msgid "Lazarus IDE v%s"
@@ -8482,10 +8481,9 @@ msgid "Convert Delphi unit to Lazarus unit ..."
 msgstr "Converter unidade Delphi para Lazarus ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-#, fuzzy
 #| msgid "Convert DFM file to LFM ..."
 msgid "Convert binary DFM file to text LFM and check syntax ..."
-msgstr "Converter arquivo DFM para LFM ..."
+msgstr "Converter arquivo binário DFM para LFM texto e verificar sintaxe..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
 msgid "Convert encoding of projects/packages ..."
@@ -9040,7 +9038,7 @@ msgstr "Passar Para"
 
 #: lazarusidestrconsts.lismenustepout
 msgid "Step out"
-msgstr ""
+msgstr "Passar Fora"
 
 #: lazarusidestrconsts.lismenustepover
 msgid "Step over"
@@ -9245,7 +9243,6 @@ msgid "IDE speed buttons"
 msgstr "Botões IDE"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
-#, fuzzy
 #| msgid "Jump-History ..."
 msgid "Jump History ..."
 msgstr "Saltar para histórico ..."
@@ -9339,35 +9336,36 @@ msgstr "Pacotes faltando"
 
 #: lazarusidestrconsts.lismissingunitschoices
 msgid "Your choices are:"
-msgstr ""
+msgstr "Suas opções são:"
 
 #: lazarusidestrconsts.lismissingunitscomment
+#, fuzzy
 msgid "Comment Out"
-msgstr ""
+msgstr "Comentar"
 
 #: lazarusidestrconsts.lismissingunitsfordelphi
 msgid "For Delphi only"
-msgstr ""
+msgstr "Apenas para Delphi"
 
 #: lazarusidestrconsts.lismissingunitsinfo1
 msgid "1) Comment out the selected units."
-msgstr ""
+msgstr "1) Comentar as unidades selecionadas."
 
 #: lazarusidestrconsts.lismissingunitsinfo1b
 msgid "1) Use the units only for Delphi."
-msgstr ""
+msgstr "1) Usar as unidades apenas para Delphi."
 
 #: lazarusidestrconsts.lismissingunitsinfo2
 msgid "2) Search for units. Found paths are added to project settings."
-msgstr ""
+msgstr "2) Procurar por unidades. Caminhos encontrados serão adicionados aos ajustes do projeto."
 
 #: lazarusidestrconsts.lismissingunitsinfo3
 msgid "3) Abort now, install packages or fix paths and try again."
-msgstr ""
+msgstr "3) Abortar agora, instalar pacotes ou corrigir caminhos e tentar novamente."
 
 #: lazarusidestrconsts.lismissingunitssearch
 msgid "Search Unit Path"
-msgstr ""
+msgstr "Caminho Busca Unidades"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -11357,7 +11355,7 @@ msgstr "Diretório de saída do Projeto (ex. o diretório ppu)"
 
 #: lazarusidestrconsts.lisprojectpath
 msgid "Project Path:"
-msgstr ""
+msgstr "Caminho Projeto:"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
@@ -11519,11 +11517,10 @@ msgid "Open Project"
 msgstr "Abrir Projeto"
 
 #: lazarusidestrconsts.lispwopenrecentproject
-#, fuzzy
 #| msgid "Open Recent"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open Recent Project"
-msgstr "Abrir Recente"
+msgstr "Abrir Projeto Recente"
 
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
@@ -11618,11 +11615,11 @@ msgstr "Núm. Repetição:"
 
 #: lazarusidestrconsts.lisreplacementproptypes
 msgid "Replacement Properties and Types"
-msgstr ""
+msgstr "Substituição Propriedades e Tipos"
 
 #: lazarusidestrconsts.lisreplaceremoveunknown
 msgid "Replace unknown types and properties"
-msgstr ""
+msgstr "Substituir tipos e propriedades desconhecidas"
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."
@@ -11831,7 +11828,7 @@ msgstr "Localizar por"
 
 #: lazarusidestrconsts.lissearchunit
 msgid "Search unit"
-msgstr ""
+msgstr "Procurar unidade"
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
@@ -11983,7 +11980,7 @@ msgstr "Ignorar carregamento do último projeto"
 
 #: lazarusidestrconsts.lissmallerratherthanfaster
 msgid "smaller rather than faster"
-msgstr "menor em vez de mais rápido"
+msgstr "Menor ao invés de mais rápido"
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
@@ -12100,7 +12097,7 @@ msgstr "Localizar texto"
 
 #: lazarusidestrconsts.lisstartconversion
 msgid "Start Conversion"
-msgstr ""
+msgstr "Iniciar Conversão"
 
 #: lazarusidestrconsts.lisstartwithanewproject
 msgid "Start with a new project"
@@ -12540,7 +12537,7 @@ msgstr "Estes ajustes são armazenados com o projeto."
 
 #: lazarusidestrconsts.listheseunitswerenotfound
 msgid "These units were not found:"
-msgstr ""
+msgstr "Estas unidades não foram encontradas:"
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
@@ -12552,7 +12549,7 @@ msgstr "A unidade %s%s%s já existe.%sIgnorar forçará a renomeação,%sCancela
 
 #: lazarusidestrconsts.listheunitbelongstopackage
 msgid "The unit belongs to package %s."
-msgstr ""
+msgstr "A unidade pertence ao pacote %s."
 
 #: lazarusidestrconsts.listheunitexiststwiceintheunitpathofthe
 msgid "The unit %s exists twice in the unit path of the %s:"
@@ -12604,11 +12601,11 @@ msgstr "Esta declaração não pode ser extraída.%sFavor selecionar algum códi
 
 #: lazarusidestrconsts.listinfobuildautocloseonsuccess
 msgid "&Automatically close on success"
-msgstr ""
+msgstr "Fechar &automaticamente em caso de sucesso"
 
 #: lazarusidestrconsts.listinfobuildcompiling
 msgid "Compiling:"
-msgstr ""
+msgstr "Compilando:"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -12767,14 +12764,13 @@ msgid "Font without UTF-8"
 msgstr "Fonte sem UTF-8"
 
 #: lazarusidestrconsts.lisuegotoline
-#, fuzzy
 #| msgid "Goto line :"
 msgid "Goto line:"
 msgstr "Ir para Linha :"
 
 #: lazarusidestrconsts.lisuemodeseparator
 msgid "/"
-msgstr ""
+msgstr "/"
 
 #: lazarusidestrconsts.lisuenotfound
 msgid "Not found"
@@ -13204,10 +13200,9 @@ msgid "Unit name contains ..."
 msgstr "Nome unidade contém ..."
 
 #: lazarusidestrconsts.lisunitnotfound
-#, fuzzy
 #| msgid "Unit not found"
 msgid "A unit not found in"
-msgstr "Unidade não encontrada"
+msgstr "Uma unidade não encontrada em"
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -13222,10 +13217,9 @@ msgid "Unit paths"
 msgstr "Caminho das unidades"
 
 #: lazarusidestrconsts.lisunitsnotfound2
-#, fuzzy
 #| msgid "Units not found"
 msgid "Units not found in"
-msgstr "Unidades não encontradas"
+msgstr "Unidades não encontradas em"
 
 #: lazarusidestrconsts.lisunusedunits
 msgid "Unused units"
@@ -13465,10 +13459,9 @@ msgid "Available scanners"
 msgstr "\"Scanners\" disponíveis"
 
 #: lazarusidestrconsts.rsbuild
-#, fuzzy
 #| msgid "Build:"
 msgid "&Build:"
-msgstr "Construção:"
+msgstr "&Construir"
 
 #: lazarusidestrconsts.rscharacterset
 msgid "Character set:"
@@ -14008,15 +14001,15 @@ msgstr "Copiar seleção para Área de Transferência"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
-msgstr ""
+msgstr "Copiar editor para nova janela"
 
 #: lazarusidestrconsts.srkmeccopyeditornextwindow
 msgid "Copy editor to next free window"
-msgstr ""
+msgstr "Copiar editor para nova janela livre"
 
 #: lazarusidestrconsts.srkmeccopyeditorprevwindow
 msgid "Copy editor to prior free window"
-msgstr ""
+msgstr "Copia editor para janela livre anterior"
 
 #: lazarusidestrconsts.srkmeccustomtool
 msgid "Custom tool %d"
@@ -14277,7 +14270,7 @@ msgstr "Mover cursor para início do texto na linha"
 
 #: lazarusidestrconsts.srkmeclockeditor
 msgid "Lock Editor"
-msgstr ""
+msgstr "Travar Editor"
 
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
@@ -14297,15 +14290,15 @@ msgstr "Mover editor extremo esquerdo"
 
 #: lazarusidestrconsts.srkmecmoveeditornewwindow
 msgid "Move editor to new window"
-msgstr ""
+msgstr "Mover editor para nova janela"
 
 #: lazarusidestrconsts.srkmecmoveeditornextwindow
 msgid "Move editor to next free window"
-msgstr ""
+msgstr "Mover editor para próxima janela livre"
 
 #: lazarusidestrconsts.srkmecmoveeditorprevwindow
 msgid "Move editor to prior free window"
-msgstr ""
+msgstr "Mover editor para janela anterior livre"
 
 #: lazarusidestrconsts.srkmecmoveeditorright
 msgid "Move editor right"
@@ -14325,11 +14318,11 @@ msgstr "Ir para o próximo editor"
 
 #: lazarusidestrconsts.srkmecnextsharededitor
 msgid "Go to next editor with same Source"
-msgstr ""
+msgstr "Ir para o próximo editor com o mesmo Fonte"
 
 #: lazarusidestrconsts.srkmecnextwindow
 msgid "Go to next window"
-msgstr ""
+msgstr "Ir para nova janela"
 
 #: lazarusidestrconsts.srkmecnormalselect
 msgid "Normal selection mode"
@@ -14385,11 +14378,11 @@ msgstr "Ir para o editor anterior"
 
 #: lazarusidestrconsts.srkmecprevsharededitor
 msgid "Go to prior editor with same Source"
-msgstr ""
+msgstr "Ir para editor anterior com o mesmo Fonte"
 
 #: lazarusidestrconsts.srkmecprevwindow
 msgid "Go to prior window"
-msgstr ""
+msgstr "Ir para janela anterior"
 
 #: lazarusidestrconsts.srkmecprocedurelist
 msgid "Procedure List ..."
@@ -14842,7 +14835,7 @@ msgstr "\" não pode ser escrito."
 
 #: lazarusidestrconsts.uelocked
 msgid "Locked"
-msgstr ""
+msgstr "Travado"
 
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
@@ -14877,16 +14870,16 @@ msgstr "Copiar nome de arquivo"
 
 #: lazarusidestrconsts.uemcopytonewwindow
 msgid "Copy to new Window"
-msgstr ""
+msgstr "Copiar para nova Janela"
 
 #: lazarusidestrconsts.uemcopytootherwindow
 msgid "Copy to other Window"
-msgstr ""
+msgstr "Copiar para outra Janela"
 
 #: lazarusidestrconsts.uemcopytootherwindownew
 msgctxt "lazarusidestrconsts.uemcopytootherwindownew"
 msgid "New Window"
-msgstr ""
+msgstr "Nova Janela"
 
 #: lazarusidestrconsts.uemcut
 msgctxt "lazarusidestrconsts.uemcut"
@@ -14953,7 +14946,7 @@ msgstr "Finalização linha"
 
 #: lazarusidestrconsts.uemlockpage
 msgid "&Lock Page"
-msgstr ""
+msgstr "&Travar Página"
 
 #: lazarusidestrconsts.uemmovepageleft
 msgid "Move page left"
@@ -14973,16 +14966,16 @@ msgstr "Mover página extrema direita"
 
 #: lazarusidestrconsts.uemmovetonewwindow
 msgid "Move to new Window"
-msgstr ""
+msgstr "Mover para nova Janela"
 
 #: lazarusidestrconsts.uemmovetootherwindow
 msgid "Move to other Window"
-msgstr ""
+msgstr "Mover para outra Janela"
 
 #: lazarusidestrconsts.uemmovetootherwindownew
 msgctxt "lazarusidestrconsts.uemmovetootherwindownew"
 msgid "New Window"
-msgstr ""
+msgstr "Nova Janela"
 
 #: lazarusidestrconsts.uemnextbookmark
 msgid "Goto next Bookmark"

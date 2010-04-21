@@ -510,7 +510,7 @@ msgstr "Valor de propriedade inválido"
 
 #: objinspstrconsts.oisisnotavalidmethodname
 msgid "%s%s%s is not a valid method name."
-msgstr ""
+msgstr "%s%s%s não é um nome de método válido."
 
 #: objinspstrconsts.oisitemsselected
 msgid "%u items selected"
