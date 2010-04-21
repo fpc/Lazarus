@@ -384,7 +384,8 @@ end;
 
 destructor TEduComponentPaletteOptions.Destroy;
 begin
-  IDEComponentPalette.RemoveHandlerUpdateVisible(@VoteForVisible);
+  if IDEComponentPalette<>nil then
+    IDEComponentPalette.RemoveHandlerUpdateVisible(@VoteForVisible);
   FreeAndNil(fVisible);
   inherited Destroy;
 end;
