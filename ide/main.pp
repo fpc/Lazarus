@@ -1695,7 +1695,15 @@ procedure TMainIDE.MainIDEFormCloseQuery(Sender: TObject;
   var CanClose: boolean);
 var
   MsgResult: integer;
+{$IFDEF EnableIDEDocking}
+const IsClosing: Boolean = False;
+{$ENDIF}
 begin
+  {$IFDEF EnableIDEDocking}
+  CanClose := True;
+  if IsClosing then Exit;
+  IsClosing := True;
+  {$ENDIF}
   CanClose := False;
   FCheckingFilesOnDisk := True;
   try
@@ -1733,6 +1741,9 @@ begin
 
     CanClose:=(DoCloseProject <> mrAbort);
   finally
+    {$IFDEF EnableIDEDocking}
+    IsClosing := False;
+    {$ENDIF}
     FCheckingFilesOnDisk:=false;
     if not CanClose then
       DoCheckFilesOnDisk(false);
