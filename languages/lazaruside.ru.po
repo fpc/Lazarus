@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-22 00:46+0300\n"
+"PO-Revision-Date: 2010-04-22 02:46+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3440,7 +3440,7 @@ msgstr "Добавить краткое описание к подробному
 
 #: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
 msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
-msgstr "Приложение%sГрафическая программа на LCL/FreePascal. Программный файл автоматически поддерживается lazarus."
+msgstr "Приложение%sГрафическая программа на LCL/FreePascal. Файл программы автоматически поддерживается Lazarus."
 
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
@@ -3715,7 +3715,7 @@ msgstr "Невозможно создать файл %s%s%s"
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 msgid "Cannot find lazarus starter:%s%s"
-msgstr "Невозможно найти пускатель lazarus:%s%s"
+msgstr "Невозможно найти пускатель Lazarus:%s%s"
 
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
@@ -6177,7 +6177,7 @@ msgstr "Каталог с исходным кодом FPC \"%s\" имеет не
 
 #: lazarusidestrconsts.lisenvoptdlginvalidlazarusdir
 msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
-msgstr "Каталог lazarus \"%s\" выглядит некорректно. Обычно он содержит каталоги lcl, debugger, designer, components, ... ."
+msgstr "Каталог Lazarus \"%s\" выглядит некорректно. Обычно он содержит каталоги lcl, debugger, designer, components, ... ."
 
 #: lazarusidestrconsts.lisenvoptdlginvalidmakefilename
 msgid "Invalid make filename"
@@ -6694,7 +6694,7 @@ msgstr "Компилятор FreePascal не найден"
 
 #: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
-msgstr "Программа FreePascal, использующая TCustomApplication для лёгкой проверки параметров командной строки, обработки исключений и т. д. Программный файл автоматически поддерживается lazarus."
+msgstr "Программа FreePascal, использующая TCustomApplication для лёгкой проверки параметров командной строки, обработки исключений и т. д. Файл программы автоматически поддерживается Lazarus."
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 msgid "Freepascal source directory"
@@ -8167,7 +8167,7 @@ msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis lib
 
 #: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
 msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
-msgstr "Библиотека%sБиблиотека FreePascal (.dll в Windows, .so в Linux, .dylib в MacOS X). Файл исходного кода библиотеки автоматически управляется Lazarus."
+msgstr "Библиотека%sБиблиотека FreePascal (.dll в Windows, .so в Linux, .dylib в MacOS X). Файл исходного кода библиотеки автоматически поддерживается Lazarus."
 
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
@@ -10894,7 +10894,7 @@ msgstr "Невозможно создать каталог исходного к
 
 #: lazarusidestrconsts.lispkgmangunabletocreatetargetdirectoryforlazarus
 msgid "Unable to create target directory for lazarus:%s%s%s%s.%sThis directory is needed for the new changed lazarus IDE with your custom packages."
-msgstr "Невозможно создать целевой каталог для lazarus:%s%s%s%s.%sЭтот каталог нужен для вновь изменённой IDE lazarus с вашими пакетами."
+msgstr "Невозможно создать целевой каталог для lazarus:%s%s%s%s.%sЭтот каталог нужен для вновь изменённой IDE Lazarus с вашими пакетами."
 
 #: lazarusidestrconsts.lispkgmangunabletodeletefile
 msgid "Unable to delete file %s%s%s."
@@ -11197,7 +11197,7 @@ msgstr "Программа"
 
 #: lazarusidestrconsts.lisprogramafreepascalprogramtheprogramfileisautomatic
 msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
-msgstr "Программа%sПрограмма FreePascal. Файл программы автоматически поддерживается lazarus."
+msgstr "Программа%sПрограмма FreePascal. Файл программы автоматически поддерживается Lazarus."
 
 #: lazarusidestrconsts.lisprogramdetected
 msgid "Program detected"
@@ -12296,7 +12296,7 @@ msgstr "Текущий каталог Lazarus %s%s%s%sне выглядит ко
 
 #: lazarusidestrconsts.listhecurrentunitpathforthefileisthepathtothelclunits
 msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
-msgstr "Текущий путь модуля для файла %s%s%s%s - %s%s%s%s.%s%sПуть к модулям LCL %s%s%s отсутствует.%s%sПодсказка для новичков:%sСоздайте приложение lazarus и поместите файл в каталог проекта."
+msgstr "Текущий путь модуля для файла %s%s%s%s - %s%s%s%s.%s%sПуть к модулям LCL %s%s%s отсутствует.%s%sПодсказка для новичков:%sСоздайте приложение Lazarus и поместите файл в каталог проекта."
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
@@ -12352,7 +12352,7 @@ msgstr "Файл %s%s%s не является проектом Lazarus.%sСоз�
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
-msgstr "Файл %s%s%s%sвыглядит как программа. Закрыть текущий проект и создать новый проект lazarus для этой программы?%s\"Нет\" откроет файл как обычный исходный код."
+msgstr "Файл %s%s%s%sвыглядит как программа. Закрыть текущий проект и создать новый проект Lazarus для этой программы?%s\"Нет\" откроет файл как обычный исходный код."
 
 #: lazarusidestrconsts.listhefileseemstobetheprogramfileofanexistinglazarusp
 msgid "The file %s seems to be the program file of an existing lazarus Project."
@@ -12456,7 +12456,7 @@ msgstr "Пакет %s не может быть удалён, так как тр�
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
-msgstr "Программа %smake%s не найдена.%sЭто средство нужно, чтобы собрать lazarus.%s"
+msgstr "Программа %smake%s не найдена.%sЭто средство нужно, чтобы собрать Lazarus.%s"
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
@@ -13434,7 +13434,7 @@ msgstr "Ошибка разбора XML в файле %s%sОшибка: %s"
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
-msgstr "Вы не можете пересобрать lazarus при отладке или компиляции."
+msgstr "Вы не можете пересобрать Lazarus при отладке или компиляции."
 
 #: lazarusidestrconsts.locwndsrceditor
 msgctxt "lazarusidestrconsts.locwndsrceditor"
