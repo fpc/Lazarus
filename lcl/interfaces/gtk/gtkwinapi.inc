@@ -3459,7 +3459,9 @@ var
   
   function XLFDToFontType: integer;
   begin
-    if (xlfd.PointSize=0)and(xlfd.PixelSize=0) then
+    if ((xlfd.PointSize=0) and (xlfd.PixelSize=0))
+         or ((xlfd.PointSize=120) and (xlfd.PixelSize=17)) // see bug 16298
+    then
       result := TRUETYPE_FONTTYPE
     else
       result := RASTER_FONTTYPE or DEVICE_FONTTYPE;
