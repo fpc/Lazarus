@@ -12295,6 +12295,8 @@ var MaxMessages: integer;
   OpenFlags: TOpenFlags;
   CurDir: string;
   NewFilename: String;
+  AnUnitInfo: TUnitInfo;
+  AnEditorInfo: TUnitEditorInfo;
 begin
   Result:=false;
 
@@ -12341,7 +12343,16 @@ begin
 
     if SearchedFilename<>'' then begin
       // open the file in the source editor
-      Result:=(DoOpenEditorFile(SearchedFilename,-1,-1,OpenFlags)=mrOk);
+      AnUnitInfo := Project1.UnitInfoWithFilename(SearchedFilename);
+      AnEditorInfo := nil;
+      if AnUnitInfo <> nil then
+        AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, LogCaretXY);
+      if AnEditorInfo <> nil then begin
+        SourceEditorManager.ActiveEditor := TSourceEditor(AnEditorInfo.EditorComponent);
+        Result := True;
+      end
+      else
+        Result:=(DoOpenEditorFile(SearchedFilename,-1,-1,OpenFlags)=mrOk);
       if Result then begin
         // set caret position
         SourceEditorManager.AddJumpPointClicked(Self);
@@ -13878,6 +13889,8 @@ var
   OpenFlags: TOpenFlags;
   ErrorFilename: string;
   ErrorTopLine: integer;
+  AnUnitInfo: TUnitInfo;
+  AnEditorInfo: TUnitEditorInfo;
 begin
   if CodeToolBoss.ErrorMessage='' then begin
     UpdateSourceNames;
@@ -13909,9 +13922,18 @@ begin
     OpenFlags:=[ofOnlyIfExists,ofUseCache];
     if CodeToolBoss.ErrorCode.IsVirtual then
       Include(OpenFlags,ofVirtualFile);
-    if DoOpenEditorFile(ErrorFilename,-1,-1,OpenFlags)=mrOk
-    then begin
+
+    AnUnitInfo := Project1.UnitInfoWithFilename(ErrorFilename);
+    AnEditorInfo := nil;
+    ActiveSrcEdit := nil;
+    if AnUnitInfo <> nil then
+      AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, ErrorCaret);
+    if AnEditorInfo <> nil then
+      ActiveSrcEdit := TSourceEditor(AnEditorInfo.EditorComponent)
+    else
+    if DoOpenEditorFile(ErrorFilename,-1,-1,OpenFlags)=mrOk then
       ActiveSrcEdit:=SourceEditorManager.ActiveEditor;
+    if ActiveSrcEdit<> nil then begin
       MessagesView.ShowOnTop;
       with ActiveSrcEdit.EditorComponent do begin
         LogicalCaretXY:=ErrorCaret;
