@@ -444,7 +444,9 @@ end;
 
 procedure TEduSpeedButtonsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  FillSpeedButtonsTreeView;
+  if AOptions=EducationOptions then begin
+    FillSpeedButtonsTreeView;
+  end;
 end;
 
 procedure TEduSpeedButtonsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
@@ -453,7 +455,6 @@ begin
   HideAllButton.Caption:=ersHideAll;
   ShowSelectionButton.Caption:=ersShowSelection;
   SpeedButtonsGroupBox.Caption:=ersVisibleSpeedButtons;
-
 end;
 
 class function TEduSpeedButtonsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
@@ -463,7 +464,9 @@ end;
 
 procedure TEduSpeedButtonsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-   SaveFillSpeedButtonsTreeView;
+  if AOptions=EducationOptions then begin
+    SaveFillSpeedButtonsTreeView;
+  end;
 end;
 
 {$R *.lfm}

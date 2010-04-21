@@ -7,7 +7,7 @@ unit educationlaz;
 interface
 
 uses
-    EduEnvOptsFrame, EduOptions, EduPkgSystem, EduCompPalette, EduMenu, 
+  EduEnvOptsFrame, EduOptions, EduPkgSystem, EduCompPalette, EduMenu,
   EduNewProgram, EduPropsEvents, EduOIPages, EduOptionsDlg, EduSpeedButtons, 
   LazarusPackageIntf;
 

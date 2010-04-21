@@ -96,8 +96,6 @@ var
   Options: TEditorOptions;
 begin
   Options := EditorOpts;
-  if Assigned(OnSaveIDEOptions) then
-    OnSaveIDEOptions(Self, Options);
   SpacePreviewSynEdit.Highlighter := GetHighlighter(Options);
   Options.GetSynEditPreviewSettings(SpacePreviewSynEdit);
   SpacePreviewSynEdit.Gutter.Visible := False;
@@ -112,8 +110,7 @@ var
 begin
   ACodeToolsOptions := TCodeToolsOptions.Create;
   try
-    if Assigned(OnSaveIDEOptions) then
-      OnSaveIDEOptions(Self, ACodeToolsOptions);
+    WriteSettings(ACodeToolsOptions);
     Options.Assign(ACodeToolsOptions);
   finally
     ACodeToolsOptions.Free;

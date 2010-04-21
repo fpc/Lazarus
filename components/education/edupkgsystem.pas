@@ -93,12 +93,14 @@ end;
 
 procedure TEduPkgSystemFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-
+  if AOptions=EducationOptions then begin
+  end;
 end;
 
 procedure TEduPkgSystemFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-
+  if AOptions=EducationOptions then begin
+  end;
 end;
 
 class function TEduPkgSystemFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

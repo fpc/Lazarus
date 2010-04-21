@@ -283,10 +283,12 @@ end;
 
 procedure TEduNewPrgFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  AddNewPrgBtnCheckBox.Checked:=EduNewPrgOptions.AddButton;
-  AddNewPrgMenuItmCheckBox.Checked:=EduNewPrgOptions.AddMenuItem;
-  AddToNewDlgCheckBox.Checked:=EduNewPrgOptions.AddToNewDialog;
-  SrcSynEdit.Lines.Text:=EduNewPrgOptions.Source.Text;
+  if AOptions=EducationOptions then begin
+    AddNewPrgBtnCheckBox.Checked:=EduNewPrgOptions.AddButton;
+    AddNewPrgMenuItmCheckBox.Checked:=EduNewPrgOptions.AddMenuItem;
+    AddToNewDlgCheckBox.Checked:=EduNewPrgOptions.AddToNewDialog;
+    SrcSynEdit.Lines.Text:=EduNewPrgOptions.Source.Text;
+  end;
 end;
 
 procedure TEduNewPrgFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
@@ -323,10 +325,12 @@ end;
 
 procedure TEduNewPrgFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  EduNewPrgOptions.AddButton:=AddNewPrgBtnCheckBox.Checked;
-  EduNewPrgOptions.AddMenuItem:=AddNewPrgMenuItmCheckBox.Checked;
-  EduNewPrgOptions.AddToNewDialog:=AddToNewDlgCheckBox.Checked;
-  EduNewPrgOptions.Source:=SrcSynEdit.Lines;
+  if AOptions=EducationOptions then begin
+    EduNewPrgOptions.AddButton:=AddNewPrgBtnCheckBox.Checked;
+    EduNewPrgOptions.AddMenuItem:=AddNewPrgMenuItmCheckBox.Checked;
+    EduNewPrgOptions.AddToNewDialog:=AddToNewDlgCheckBox.Checked;
+    EduNewPrgOptions.Source:=SrcSynEdit.Lines;
+  end;
 end;
 
 { TFileDescSingleFileProgram }

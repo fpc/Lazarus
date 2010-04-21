@@ -298,7 +298,9 @@ end;
 
 procedure TEduMenuFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  FillMenuTree;
+  if AOptions=EducationOptions then begin
+    FillMenuTree;
+  end;
 end;
 
 procedure TEduMenuFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
@@ -315,7 +317,9 @@ end;
 
 procedure TEduMenuFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  SaveMenuTree;
+  if AOptions=EducationOptions then begin
+    SaveMenuTree;
+  end;
 end;
 
 { TEduMenuOptions }

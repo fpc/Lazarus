@@ -329,7 +329,9 @@ end;
 
 procedure TEduCompPaletteFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  FillComponentTreeView;
+  if AOptions=EducationOptions then begin
+    FillComponentTreeView;
+  end;
 end;
 
 procedure TEduCompPaletteFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
@@ -348,7 +350,9 @@ end;
 
 procedure TEduCompPaletteFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  SaveFillComponentTreeView;
+  if AOptions=EducationOptions then begin
+    SaveFillComponentTreeView;
+  end;
 end;
 
 { TEduComponentPaletteOptions }
@@ -427,20 +431,8 @@ begin
 end;
 
 procedure TEduComponentPaletteOptions.Apply(Enable: boolean);
-var
-  i: Integer;
-  Page: TBaseComponentPage;
-  j: Integer;
-  Comp: TRegisteredComponent;
 begin
   inherited Apply(Enable);
-  for i:=0 to IDEComponentPalette.Count-1 do begin
-    Page:=IDEComponentPalette[i];
-    for j:=0 to Page.Count-1 do begin
-      Comp:=Page[j];
-      Comp.Visible:=(not Enable) or ComponentVisible[Comp.ComponentClass.ClassName];
-    end;
-  end;
   if IDEComponentPalette<>nil then
     IDEComponentPalette.UpdateVisible;
 end;

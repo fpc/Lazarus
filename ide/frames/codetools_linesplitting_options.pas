@@ -92,8 +92,6 @@ var
   Options: TEditorOptions;
 begin
   Options := EditorOpts;
-  if Assigned(OnSaveIDEOptions) then
-    OnSaveIDEOptions(Self, Options);
   SplitPreviewSynEdit.Highlighter := GetHighlighter(Options);
   Options.GetSynEditPreviewSettings(SplitPreviewSynEdit);
   SplitPreviewSynEdit.Gutter.Visible := False;
@@ -101,14 +99,14 @@ begin
   SplitPreviewSynEdit.ReadOnly := True;
 end;
 
-procedure TCodetoolsLineSplittingOptionsFrame.WriteBeautifyCodeOptions(Options: TBeautifyCodeOptions);
+procedure TCodetoolsLineSplittingOptionsFrame.WriteBeautifyCodeOptions(
+  Options: TBeautifyCodeOptions);
 var
   ACodeToolsOptions: TCodeToolsOptions;
 begin
   ACodeToolsOptions := TCodeToolsOptions.Create;
   try
-    if Assigned(OnSaveIDEOptions) then
-      OnSaveIDEOptions(Self, ACodeToolsOptions);
+    WriteSettings(ACodeToolsOptions);
     Options.Assign(ACodeToolsOptions);
   finally
     ACodeToolsOptions.Free;

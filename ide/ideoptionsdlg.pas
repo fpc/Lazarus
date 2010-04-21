@@ -241,7 +241,9 @@ var
   i: integer;
   Rec: PIDEOptionsGroupRec;
   Instance: TAbstractIDEOptions;
+  InstanceList: TFPList;
 begin
+  InstanceList:=TFPList.Create;
   for i := 0 to IDEEditorGroups.Count - 1 do
   begin
     Rec := IDEEditorGroups[i];
@@ -252,8 +254,9 @@ begin
       if Rec^.GroupClass <> nil then
       begin
         Instance := Rec^.GroupClass.GetInstance;
-        if Instance <> nil then
+        if (InstanceList.IndexOf(Instance)<0) and (Instance <> nil) then
         begin
+          InstanceList.Add(Instance);
           Instance.DoBeforeRead;
           ReadSettings(Instance);
           Instance.DoAfterRead;
@@ -263,6 +266,7 @@ begin
   end;
   // load settings that does not belong to any group
   ReadSettings(nil);
+  InstanceList.Free;
 end;
 
 procedure TIDEOptionsDialog.WriteAll;

@@ -132,8 +132,10 @@ end;
 
 procedure TEduOIPagesFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  ckBoxFavs.Checked:=EduOIPagesOptions.OIPageFavs;
-  ckBoxRestricted.Checked:=EduOIPagesOptions.OIPageRestricted;
+  if AOptions=EducationOptions then begin
+    ckBoxFavs.Checked:=EduOIPagesOptions.OIPageFavs;
+    ckBoxRestricted.Checked:=EduOIPagesOptions.OIPageRestricted;
+  end;
 end;
 
 procedure TEduOIPagesFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
@@ -150,8 +152,10 @@ end;
 
 procedure TEduOIPagesFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  EduOIPagesOptions.OIPageFavs:=ckBoxFavs.Checked;
-  EduOIPagesOptions.OIPageRestricted:=ckBoxRestricted.Checked;
+  if AOptions=EducationOptions then begin
+    EduOIPagesOptions.OIPageFavs:=ckBoxFavs.Checked;
+    EduOIPagesOptions.OIPageRestricted:=ckBoxRestricted.Checked;
+  end;
 end;
 
 {$R *.lfm}

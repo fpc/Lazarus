@@ -222,15 +222,15 @@ end;
 
 procedure TEduPropsEventsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  if AOptions=EducationOptions then begin
+    PropsMinRadioBtn.Checked:=EduPropsEventsOptions.PropsMinimal;
+    PropsExtRadioBtn.Checked:=EduPropsEventsOptions.PropsExt;
+    PropsFullRadioBtn.Checked:=EduPropsEventsOptions.PropsFull;
 
-   PropsMinRadioBtn.Checked:=EduPropsEventsOptions.PropsMinimal;
-   PropsExtRadioBtn.Checked:=EduPropsEventsOptions.PropsExt;
-   PropsFullRadioBtn.Checked:=EduPropsEventsOptions.PropsFull;
-
-   EventsMinRadioBtn.Checked:=EduPropsEventsOptions.EventsMinimal;
-   EventsExtRadioBtn.Checked:=EduPropsEventsOptions.EventsExt;
-   EventsFullRadioBtn.Checked:=EduPropsEventsOptions.EventsFull;
-
+    EventsMinRadioBtn.Checked:=EduPropsEventsOptions.EventsMinimal;
+    EventsExtRadioBtn.Checked:=EduPropsEventsOptions.EventsExt;
+    EventsFullRadioBtn.Checked:=EduPropsEventsOptions.EventsFull;
+  end;
 end;
 
 procedure TEduPropsEventsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
@@ -288,15 +288,15 @@ end;
 
 procedure TEduPropsEventsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  if AOptions=EducationOptions then begin
+    EduPropsEventsOptions.PropsMinimal:=PropsMinRadioBtn.Checked;
+    EduPropsEventsOptions.PropsExt:=PropsExtRadioBtn.Checked;
+    EduPropsEventsOptions.PropsFull:=PropsFullRadioBtn.Checked;
 
-  EduPropsEventsOptions.PropsMinimal:=PropsMinRadioBtn.Checked;
-  EduPropsEventsOptions.PropsExt:=PropsExtRadioBtn.Checked;
-  EduPropsEventsOptions.PropsFull:=PropsFullRadioBtn.Checked;
-
-  EduPropsEventsOptions.EventsMinimal:=EventsMinRadioBtn.Checked;
-  EduPropsEventsOptions.EventsExt:=EventsExtRadioBtn.Checked;
-  EduPropsEventsOptions.EventsFull:=EventsFullRadioBtn.Checked;
-
+    EduPropsEventsOptions.EventsMinimal:=EventsMinRadioBtn.Checked;
+    EduPropsEventsOptions.EventsExt:=EventsExtRadioBtn.Checked;
+    EduPropsEventsOptions.EventsFull:=EventsFullRadioBtn.Checked;
+  end;
 end;
 
 {$R *.lfm}
