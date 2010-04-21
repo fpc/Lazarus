@@ -6705,6 +6705,8 @@ begin
         (OldIndex, Manager.IndexOfSourceWindow(self), NewIndex);
     end;
   end;
+  Manager.ActiveSourceWindow := self;
+  Manager.ShowActiveWindowOnTop(True);
 end;
 
 function TSourceNotebook.NotebookCanDragTabMove(Sender, Source: TObject;
