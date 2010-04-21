@@ -16,6 +16,8 @@
 }
 
 { TWin32WSCustomListView }
+const
+  AutoSizeWidth = LVSCW_AUTOSIZE{_USEHEADER};
 
 type
   TLVStyleType = (lsStyle, lsInvert, lsExStyle);
@@ -395,7 +397,7 @@ begin
   then Exit;
 
   if AAutoSize
-  then ListView_SetColumnWidth(ALV.Handle, AIndex, LVSCW_AUTOSIZE)
+  then ListView_SetColumnWidth(ALV.Handle, AIndex, AutoSizeWidth)
   else ListView_SetColumnWidth(ALV.Handle, AIndex, AColumn.Width);
 end;
 
@@ -473,7 +475,9 @@ begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetWidth')
   then Exit;
 
-  ListView_SetColumnWidth(ALV.Handle, AIndex, AWidth)
+  if AColumn.AutoSize
+  then ListView_SetColumnWidth(ALV.Handle, AIndex, AutoSizeWidth)
+  else ListView_SetColumnWidth(ALV.Handle, AIndex, AWidth)
 end;
 
 class procedure TWin32WSCustomListView.ColumnSetVisible(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean);
@@ -484,7 +488,9 @@ begin
   // TODO: implement with LV_COLUMN.subitem (associate different columns and insert/delete last.
 
   if AVisible
-  then ListView_SetColumnWidth(ALV.Handle, AIndex, AColumn.Width)
+  then if AColumn.AutoSize
+    then ListView_SetColumnWidth(ALV.Handle, AIndex, AutoSizeWidth)
+    else ListView_SetColumnWidth(ALV.Handle, AIndex, AColumn.Width)
   else ListView_SetColumnWidth(ALV.Handle, AIndex, 0);
 end;
 
