@@ -4630,8 +4630,10 @@ begin
   KeyPreview:=true;
   FProcessingCommand := false;
 
-  if EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(self.Name) = nil then
+  if EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(self.Name) = nil then begin
     EnvironmentOptions.CreateWindowLayout(self.name);
+    EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(self.Name).Clear;
+  end;
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, self.Name);
   ControlDocker:=TLazControlDocker.Create(Self);
   ControlDocker.Name:='SourceEditor';
