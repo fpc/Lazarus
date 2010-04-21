@@ -107,7 +107,7 @@ type
                            ): TRegisteredComponent; override;
     procedure RegisterCustomIDEComponents(
                        const RegisterProc: RegisterUnitComponentProc); override;
-    procedure ShowHideControls(Show: boolean); override;
+    procedure UpdateVisible; override;
   public
     property NoteBook: TNotebook read FNoteBook write SetNoteBook;
     property Selected: TRegisteredComponent read FSelected write SetSelected;
@@ -663,11 +663,11 @@ begin
   {$ENDIF}
 end;
 
-procedure TComponentPalette.ShowHideControls(Show: boolean);
+procedure TComponentPalette.UpdateVisible;
 begin
   NoteBook.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ShowHideControls'){$ENDIF};
   try
-    inherited ShowHideControls(Show);
+    inherited UpdateVisible;
   finally
     NoteBook.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ShowHideControls'){$ENDIF};
   end;

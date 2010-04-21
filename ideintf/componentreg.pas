@@ -77,7 +77,6 @@ type
     procedure AddToPalette; virtual;
     function CanBeCreatedInDesigner: boolean; virtual;
     function GetCreationClass: TComponentClass; virtual;
-    procedure ShowHideControl(Show: boolean);
     function IsTControl: boolean;
   public
     property ComponentClass: TComponentClass read FComponentClass;
@@ -117,7 +116,7 @@ type
     procedure Remove(AComponent: TRegisteredComponent);
     function FindComponent(const CompClassName: string): TRegisteredComponent;
     function FindButton(Button: TComponent): TRegisteredComponent;
-    procedure ShowHideControls(Show: boolean);
+    procedure UpdateVisible;
   public
     property Items[Index: integer]: TRegisteredComponent read GetItems; default;
     property PageName: string read FPageName;
@@ -132,15 +131,23 @@ type
 
   { TBaseComponentPalette }
   
+  TComponentPaletteHandlerType = (
+    cphtUpdateVisible // visibility of component palette icons is recomputed
+    );
+
   TEndUpdatePaletteEvent =
     procedure(Sender: TObject; PaletteChanged: boolean) of object;
   TGetComponentClass = procedure(const AClass: TComponentClass) of object;
+  TUpdateCompVisibleEvent = procedure(AComponent: TRegisteredComponent;
+                      var VoteVisible: integer { Visible>0 }  ) of object;
   RegisterUnitComponentProc = procedure(const Page, UnitName: ShortString;
                                         ComponentClass: TComponentClass);
 
   TBaseComponentPalette = class
   private
+    FHandlers: array[TComponentPaletteHandlerType] of TMethodList;
     FBaseComponentPageClass: TBaseComponentPageClass;
+    FHideControls: boolean;
     FItems: TList; // list of TBaseComponentPage
     FOnBeginUpdate: TNotifyEvent;
     FOnEndUpdate: TEndUpdatePaletteEvent;
@@ -148,6 +155,11 @@ type
     FUpdateLock: integer;
     fChanged: boolean;
     function GetItems(Index: integer): TBaseComponentPage;
+    procedure AddHandler(HandlerType: TComponentPaletteHandlerType;
+                         const AMethod: TMethod; AsLast: boolean = false);
+    procedure RemoveHandler(HandlerType: TComponentPaletteHandlerType;
+                            const AMethod: TMethod);
+    procedure SetHideControls(const AValue: boolean);
   protected
     procedure DoChange; virtual;
     procedure DoEndUpdate(Changed: boolean); virtual;
@@ -157,6 +169,7 @@ type
     procedure OnComponentVisibleChanged(
                                      AComponent: TRegisteredComponent); virtual;
     procedure Update; virtual;
+    procedure UpdateVisible(AComponent: TRegisteredComponent); virtual;
     procedure SetBaseComponentPageClass(
                                 const AValue: TBaseComponentPageClass); virtual;
     procedure SetRegisteredComponentClass(
@@ -182,10 +195,16 @@ type
     function FindButton(Button: TComponent): TRegisteredComponent;
     function CreateNewClassName(const Prefix: string): string;
     function IndexOfPageComponent(AComponent: TComponent): integer;
-    procedure ShowHideControls(Show: boolean); virtual;
+    procedure UpdateVisible; virtual;
     procedure IterateRegisteredClasses(Proc: TGetComponentClass);
     procedure RegisterCustomIDEComponents(
                         const RegisterProc: RegisterUnitComponentProc); virtual;
+    procedure RemoveAllHandlersOfObject(AnObject: TObject);
+    procedure AddHandlerUpdateVisible(
+                        const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent;
+                        AsLast: boolean = false);
+    procedure RemoveHandlerUpdateVisible(
+                       const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent);
   public
     property Pages[Index: integer]: TBaseComponentPage read GetItems; default;
     property UpdateLock: integer read FUpdateLock;
@@ -197,6 +216,7 @@ type
                                                    read FBaseComponentPageClass;
     property RegisteredComponentClass: TRegisteredComponentClass
                                                  read FRegisteredComponentClass;
+    property HideControls: boolean read FHideControls write SetHideControls;
   end;
   
 
@@ -290,12 +310,6 @@ begin
   Result:=FComponentClass;
   if Assigned(OnGetCreationClass) then
     OnGetCreationClass(Self,Result);
-end;
-
-procedure TRegisteredComponent.ShowHideControl(Show: boolean);
-begin
-  if IsTControl then
-    Visible:=Show;
 end;
 
 function TRegisteredComponent.IsTControl: boolean;
@@ -418,12 +432,13 @@ begin
   Result:=nil;
 end;
 
-procedure TBaseComponentPage.ShowHideControls(Show: boolean);
+procedure TBaseComponentPage.UpdateVisible;
 var
   i: Integer;
 begin
-  for i:=0 to Count-1 do
-    Items[i].ShowHideControl(Show);
+  if Palette<>nil then
+    for i:=0 to Count-1 do
+      Palette.UpdateVisible(Items[i]);
 end;
 
 { TBaseComponentPalette }
@@ -431,6 +446,28 @@ end;
 function TBaseComponentPalette.GetItems(Index: integer): TBaseComponentPage;
 begin
   Result:=TBaseComponentPage(FItems[Index]);
+end;
+
+procedure TBaseComponentPalette.AddHandler(
+  HandlerType: TComponentPaletteHandlerType; const AMethod: TMethod;
+  AsLast: boolean);
+begin
+  if FHandlers[HandlerType]=nil then
+    FHandlers[HandlerType]:=TMethodList.Create;
+  FHandlers[HandlerType].Add(AMethod);
+end;
+
+procedure TBaseComponentPalette.RemoveHandler(
+  HandlerType: TComponentPaletteHandlerType; const AMethod: TMethod);
+begin
+  FHandlers[HandlerType].Remove(AMethod);
+end;
+
+procedure TBaseComponentPalette.SetHideControls(const AValue: boolean);
+begin
+  if FHideControls=AValue then exit;
+  FHideControls:=AValue;
+  UpdateVisible;
 end;
 
 procedure TBaseComponentPalette.DoChange;
@@ -467,6 +504,21 @@ end;
 procedure TBaseComponentPalette.Update;
 begin
 
+end;
+
+procedure TBaseComponentPalette.UpdateVisible(AComponent: TRegisteredComponent
+  );
+var
+  Vote: Integer;
+  i: LongInt;
+begin
+  Vote:=1;
+  if HideControls and AComponent.IsTControl then dec(Vote);
+
+  i:=FHandlers[cphtUpdateVisible].Count;
+  while FHandlers[cphtUpdateVisible].NextDownIndex(i) do
+    TUpdateCompVisibleEvent(FHandlers[cphtUpdateVisible][i])(AComponent,Vote);
+  AComponent.Visible:=Vote>0;
 end;
 
 procedure TBaseComponentPalette.SetBaseComponentPageClass(
@@ -647,13 +699,13 @@ begin
     Result:=-1;
 end;
 
-procedure TBaseComponentPalette.ShowHideControls(Show: boolean);
+procedure TBaseComponentPalette.UpdateVisible;
 var
   i: Integer;
 begin
   BeginUpdate(false);
   for i:=0 to Count-1 do
-    Pages[i].ShowHideControls(Show);
+    Pages[i].UpdateVisible;
   EndUpdate;
 end;
 
@@ -675,6 +727,26 @@ procedure TBaseComponentPalette.RegisterCustomIDEComponents(
   const RegisterProc: RegisterUnitComponentProc);
 begin
 
+end;
+
+procedure TBaseComponentPalette.RemoveAllHandlersOfObject(AnObject: TObject);
+var
+  HandlerType: TComponentPaletteHandlerType;
+begin
+  for HandlerType:=Low(HandlerType) to High(HandlerType) do
+    FHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
+end;
+
+procedure TBaseComponentPalette.AddHandlerUpdateVisible(
+  const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent; AsLast: boolean);
+begin
+  AddHandler(cphtUpdateVisible,TMethod(OnUpdateCompVisibleEvent));
+end;
+
+procedure TBaseComponentPalette.RemoveHandlerUpdateVisible(
+  const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent);
+begin
+  RemoveHandler(cphtUpdateVisible,TMethod(OnUpdateCompVisibleEvent));
 end;
 
 

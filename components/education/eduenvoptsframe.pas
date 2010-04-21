@@ -27,7 +27,7 @@ uses
   Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
   Dialogs, ComCtrls, ExtCtrls, StdCtrls, AvgLvlTree,
   LazConfigStorage, IDEOptionsIntf, ComponentReg, IDEImagesIntf, LazIDEIntf,
-  EduOptions, EduCompPalette;
+  EduOptions;
 
 const
   EnvOptionsEducation = 2000;

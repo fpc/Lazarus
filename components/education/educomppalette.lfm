@@ -11,24 +11,24 @@ inherited EduCompPaletteFrame: TEduCompPaletteFrame
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 142
+    Left = 169
     Height = 397
     Top = 6
-    Width = 332
+    Width = 305
     Align = alClient
     Anchors = [akTop, akBottom]
     BorderSpacing.Around = 6
     Caption = 'ComponentsGroupBox'
-    ClientHeight = 379
-    ClientWidth = 328
+    ClientHeight = 378
+    ClientWidth = 301
     TabOrder = 0
     object ComponentsTreeView: TTreeView
       Left = 0
-      Height = 379
+      Height = 378
       Top = 0
-      Width = 328
+      Width = 301
       Align = alClient
-      DefaultItemHeight = 15
+      DefaultItemHeight = 19
       ReadOnly = True
       TabOrder = 0
       OnMouseDown = ComponentsTreeViewMouseDown
@@ -39,7 +39,7 @@ inherited EduCompPaletteFrame: TEduCompPaletteFrame
     Left = 0
     Height = 409
     Top = 0
-    Width = 136
+    Width = 163
     Align = alLeft
     AutoSize = True
     ChildSizing.LeftRightSpacing = 6
@@ -47,43 +47,49 @@ inherited EduCompPaletteFrame: TEduCompPaletteFrame
     ChildSizing.HorizontalSpacing = 6
     ChildSizing.VerticalSpacing = 6
     ClientHeight = 409
-    ClientWidth = 136
+    ClientWidth = 163
     TabOrder = 1
     object ShowAllButton: TButton
-      Left = 16
-      Height = 23
-      Top = 176
-      Width = 100
-      Align = alCustom
+      Left = 7
+      Height = 29
+      Top = 77
+      Width = 149
+      Align = alTop
+      AutoSize = True
       Caption = 'ShowAllButton'
       OnClick = ShowAllButtonClick
       TabOrder = 0
     end
     object HideAllButton: TButton
-      Left = 16
-      Height = 23
-      Top = 328
-      Width = 100
-      Align = alCustom
+      Left = 7
+      Height = 29
+      Top = 136
+      Width = 149
+      Align = alTop
+      AutoSize = True
+      BorderSpacing.Top = 30
       Caption = 'HideAllButton'
       OnClick = HideAllButtonClick
       TabOrder = 1
     end
     object ShowMinimalButton: TButton
-      Left = 16
-      Height = 23
-      Top = 96
-      Width = 100
-      Align = alCustom
+      Left = 7
+      Height = 29
+      Top = 7
+      Width = 149
+      Align = alTop
+      AutoSize = True
       Caption = 'ShowMinimalButton'
       OnClick = ShowMinimalButtonClick
       TabOrder = 2
     end
     object ShowExtendedButton: TButton
-      Left = 16
-      Height = 23
-      Top = 136
-      Width = 100
+      Left = 7
+      Height = 29
+      Top = 42
+      Width = 149
+      Align = alTop
+      AutoSize = True
       Caption = 'ShowExtendedButton'
       OnClick = ShowExtendedButtonClick
       TabOrder = 3

@@ -38,6 +38,7 @@ type
     fVisible: TStringToStringTree;
     function GetComponentVisible(ComponentName: string): boolean;
     procedure SetComponentVisible(ComponentName: string; const AValue: boolean);
+    procedure VoteForVisible(AComponent: TRegisteredComponent; var Vote: integer);
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -321,8 +322,6 @@ begin
   ComponentsTreeView.EndUpdate;
 end;
 
-
-
 function TEduCompPaletteFrame.GetTitle: String;
 begin
   Result:=ersEduCompPaletteTitle;
@@ -369,15 +368,23 @@ begin
     fVisible.Delete(ComponentName);
 end;
 
+procedure TEduComponentPaletteOptions.VoteForVisible(
+  AComponent: TRegisteredComponent; var Vote: integer);
+begin
+  if not ComponentVisible[AComponent.ComponentClass.ClassName] then dec(Vote,100);
+end;
+
 constructor TEduComponentPaletteOptions.Create;
 begin
   inherited Create;
   Name:='ComponentPalette';
   fVisible:=TStringToStringTree.Create(false);
+  IDEComponentPalette.AddHandlerUpdateVisible(@VoteForVisible);
 end;
 
 destructor TEduComponentPaletteOptions.Destroy;
 begin
+  IDEComponentPalette.RemoveHandlerUpdateVisible(@VoteForVisible);
   FreeAndNil(fVisible);
   inherited Destroy;
 end;
@@ -433,6 +440,8 @@ begin
       Comp.Visible:=(not Enable) or ComponentVisible[Comp.ComponentClass.ClassName];
     end;
   end;
+  if IDEComponentPalette<>nil then
+    IDEComponentPalette.UpdateVisible;
 end;
 
 {$R *.lfm}

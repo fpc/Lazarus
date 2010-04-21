@@ -3374,12 +3374,10 @@ begin
 end;
 
 procedure TMainIDE.UpdateIDEComponentPalette;
-var
-  ShowControlsInComponentalette: Boolean;
 begin
-  ShowControlsInComponentalette:=(FLastFormActivated=nil)
-    or (TDesigner(FLastFormActivated.Designer).LookupRoot is TControl);
-  IDEComponentPalette.ShowHideControls(ShowControlsInComponentalette);
+  IDEComponentPalette.HideControls:=(FLastFormActivated<>nil)
+    and (not (TDesigner(FLastFormActivated.Designer).LookupRoot is TControl));
+  IDEComponentPalette.UpdateVisible;
   SetupHints;
 end;
 

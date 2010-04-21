@@ -177,8 +177,8 @@ type
 
     // file
     function DoNewEditorFile(NewFileDescriptor: TProjectFileDescriptor;
-        NewFilename: string; const NewSource: string;
-        NewFlags: TNewFlags): TModalResult;
+                             NewFilename: string; const NewSource: string;
+                             NewFlags: TNewFlags): TModalResult;
     function DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
                        var NewFilename: string; const NewSource: string;
                        NewFlags: TNewFlags; NewOwner: TObject): TModalResult; virtual; abstract;
