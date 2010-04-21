@@ -966,8 +966,8 @@ var
   SrcEdit: TSourceEditorInterface;
   CaretPos: TPoint;
 begin
-  if Sender=nil then exit;
-  SrcEdit:= TSourceEditorInterface(Sender);
+  SrcEdit:= SourceEditorManagerIntf.ActiveEditor;
+  if SrcEdit=nil then exit;
   CaretPos := SrcEdit.CursorScreenXY;
   UpdateFPDocEditor(SrcEdit.FileName, CaretPos);
 end;
