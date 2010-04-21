@@ -74,10 +74,10 @@ type
   TWinControlClass = class of TWinControl;
   TControlClass = class of TControl;
 
-{$if (FPC_VERSION <= 2) and (FPC_RELEASE < 5)}
+//{$if (FPC_VERSION <= 2) and (FPC_RELEASE < 5)}
   TDate = type TDateTime;
   TTime = type TDateTime;
-{$endif}
+//{$endif}
 
   // ToDo: move this to a message definition unit
   TCMMouseWheel = record
