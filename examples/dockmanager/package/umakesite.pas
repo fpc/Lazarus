@@ -280,41 +280,45 @@ begin
   //wrap into dock site
     Site := WrapDockable(AForm);
   end;
-//create a docking handle - should become a component?
-  img := TImage.Create(AForm); //we could own the img, and be notified when its parent becomes nil
-  img.Align := alNone;
-  //if ForIDE then
-  ok:=false;
-  try //begin  //prevent problems with the following code!
-    img.AnchorParallel(akRight,0,Result); //anchor to Result=Site or to AForm?
-    img.AnchorParallel(akTop,0,Result);
-    ok:=true;
-  finally
-    if not ok then
-      DebugLn('error AnchorParallel');
-  end;
-  img.Anchors:=[akRight,akTop];
-  img.Cursor := crHandPoint;
-  img.Parent := AForm;
-  r := AForm.ClientRect;
-  r.bottom := 16;
-  r.Left := r.Right - 16;
-  img.BoundsRect := r;
-  if DockGrip <> nil then  //problem: find grabber picture!?
-    try
-      img.Picture := DockGrip;
-    except
-      on E: Exception do begin
-        DebugLn('exception loading picture ',E.Message);
-      end;
+  if DockGrip <> nil then begin
+  //create a docking handle - should become a component?
+    img := TImage.Create(AForm); //we could own the img, and be notified when its parent becomes nil
+    img.Align := alNone;
+    //if ForIDE then
+    ok:=false;
+    try //begin  //prevent problems with the following code!
+      img.AnchorParallel(akRight,0,Result); //anchor to Result=Site or to AForm?
+      img.AnchorParallel(akTop,0,Result);
+      ok:=true;
+    finally
+      if not ok then
+        DebugLn('error AnchorParallel');
     end;
-  //else???
-  img.OnMouseMove := @DockHandleMouseMove;
-  img.Visible := True;
+    img.Anchors:=[akRight,akTop];
+    img.Cursor := crHandPoint;
+    img.Parent := AForm;
+    r := AForm.ClientRect;
+    r.bottom := 16;
+    r.Left := r.Right - 16;
+    img.BoundsRect := r;
+    if DockGrip <> nil then  //problem: find grabber picture!?
+      try
+        img.Picture := DockGrip;
+      except
+        on E: Exception do begin
+          DebugLn('exception loading picture ',E.Message);
+        end;
+      end;
+    //else???
+    img.OnMouseMove := @DockHandleMouseMove;
+    img.Visible := True;
+  end else
+    img := nil;
 //make visible, so that it can be docked without problems
   AForm.Visible := True;
   AForm.EnableAlign;
-  img.BringToFront;
+  if img <> nil then
+    img.BringToFront;
   if ForIDE and fWrap and assigned(Site) and assigned(Site.DockManager) then begin
     //site.DockManager.ResetBounds(True); //doesn't help
     //AForm.Invalidate;
