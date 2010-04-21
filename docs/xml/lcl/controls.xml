@@ -5551,7 +5551,6 @@ It is up to the interface to handle moves instantly or queued.</remark>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CMMouseEnter">
-        <short>Control Message for entry of mouse</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5573,7 +5572,6 @@ It is up to the interface to handle moves instantly or queued.</remark>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CMHintShow">
-        <short>Control message for showing a hint</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6956,27 +6954,9 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ManualFloat">
-        <short>
-          <var>ManualFloat</var>
- - the opposite of 
-          
-          
-          
-          
-          
-          
-          
-          <var>ManualDock</var>, allows operator to Float a control</short>
-        <descr>
-          <pre>function TControl.ManualFloat(TheScreenRect: TRect;
-    KeepDockSiteSize: Boolean = true): Boolean;
-
-  Undock and float.
-  Float means here: create the floating dock site and dock this control into it.
-  Exception: Forms do not need float dock sites and float on their own.
-
-</pre>
-        </descr>
+        <short>Undocks the control into floating state.</short>
+        <descr>TWinControls float for themselves, for TControls a floating dock site is created, and the control is docked into it.
+</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.ManualFloat.Result">
@@ -7341,23 +7321,7 @@ Does nothing but call ChangeBounds.</descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TControl.BeginDrag">
-        <short>
-          <var>BeginDrag</var> - starts the dragging of a control</short>
-        <descr>
-          <pre>{------------------------------------------------------------------------------
-  Method: TControl.BeginDrag
-  Params: Immediate: Drag behaviour
-          Threshold: distance to move before dragging starts
-                     -1 uses the default value of Mouse.DragThreshold
-  Returns: Nothing
-
-  Starts the dragging of a control. If the Immediate flag is set, dragging
-  starts immediately.
- ------------------------------------------------------------------------------}
-</pre>
-        </descr>
-      </element>
+      <element name="TControl.BeginDrag"/>
       <!-- argument Visibility: default -->
       <element name="TControl.BeginDrag.Immediate">
         <short>If True, start dragging right now.</short>
@@ -8885,16 +8849,7 @@ Reads message from flag area, or stores a message
         <seealso/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TWinControl">
-        <short>The base class for all windowed controls.</short>
-        <descr>
-          <p>Defines many of the properties inherited by child classes, particularly those related to size, position, bounds, docking, the responses to mouse movements and key presses. </p>
-          <p>Defines procedures and functions related to windowed controls, some of which override virtual methods defined in ancestor classes.</p>
-        </descr>
-        <seealso>
-          <link id="#lcl.Controls.TControl"/>
-        </seealso>
-      </element>
+      <element name="TWinControl"/>
       <!-- variable Visibility: private -->
       <element name="TWinControl.FAlignLevel">
         <short/>
@@ -11782,8 +11737,6 @@ WinControls are found before Controls (if overlapping).</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.DisableAlign">
-        <short>
-          <var>DisableAlign</var> - turn off any alignment</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11896,8 +11849,6 @@ WinControls are found before Controls (if overlapping).</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.SetFocus">
-        <short>
-          <var>SetFocus</var> - give the current control the focus</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -15049,9 +15000,7 @@ The origin always is (0,0), regardless of an ScrollOffset.</descr>
         <short/>
       </element>
       <!-- function Visibility: protected -->
-      <element name="TControl.IsClientHeightStored">
-        <short>Is Client Height Stored?</short>
-      </element>
+      <element name="TControl.IsClientHeightStored"/>
       <!-- function result Visibility: default -->
       <element name="TControl.IsClientHeightStored.Result">
         <short/>
