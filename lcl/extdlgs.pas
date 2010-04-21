@@ -197,7 +197,8 @@ function CreateCalculatorForm(AOwner: TComponent; ALayout : TCalculatorLayout; A
 
 
 Type
-{ TCalendarDialog }
+  { TCalendarDialog }
+
   TCalendarDialog = class(TCommonDialog)
   private
     FDate: TDateTime;
@@ -1274,12 +1275,14 @@ var DF:TForm;
     okButton,cancelButton:TButton;
     panel:TPanel;
 begin
-  DF:=TForm.Create(Self.Owner); // Self.Owner, so that poOwnerFormCenter works
+  DF:=TForm(TForm.NewInstance);
+  DF.DisableAlign;
+  DF.Create(Self.Owner); // Self.Owner, so that poOwnerFormCenter works
   DF.Caption:=DialogTitle;
   DF.Position:=DialogPosition;
   DF.BorderStyle:=bsDialog;
   DF.AutoScroll:=false;
-  //DF.AutoSize:=true;
+  DF.AutoSize:=true;
 
   FCalendar:=TCalendar.Create(DF);
   with FCalendar do begin
@@ -1329,6 +1332,7 @@ begin
   DF.ClientWidth := FCalendar.Width;
   DF.ClientHeight := panel.Top+panel.Height;
 
+  DF.EnableAlign;
   Result:=DF.ShowModal=mrOK;
   FreeAndNil(DF);
 end;
