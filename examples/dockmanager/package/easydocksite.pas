@@ -955,7 +955,7 @@ begin
           DebugLn('start dragging from header: %s', [FDockSite.GetDockCaption(Control)]);
           //MousePos := Control.ClientToScreen(Point(1,1));
           //Mouse.CursorPos := MousePos; //todo: inside control?
-          Control.BeginDrag(False); //doesn't work!?
+          Control.BeginDrag(False);
           //Control.BeginDrag(True); //floats only - due to mouse outside control?
         end;
       end;
@@ -969,7 +969,18 @@ begin
         else
           FSplitter.Hide;
         end;
+
+{ TODO : How to set the cursor, depending on the zone part? }
+      case Part of
+        zpCaption:
+          //Screen.Cursor := crHandPoint;
+          //FDockSite.SetTempCursor(crHandPoint);
+          FDockSite.Cursor := crHandPoint; //seems to work
+        //else  SetCursor(crNone); //seems not required?
+        end;
+
       end;
+
 {
     CM_MOUSELEAVE:
       CheckNeedRedraw(nil, Rect(0,0,0,0), ldhpAll);

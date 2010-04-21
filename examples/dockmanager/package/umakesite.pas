@@ -199,6 +199,7 @@ begin
         //pnl.BorderStyle := bsSingle; // does not properly handle the size
         dm := TAppDockManager.Create(pnl);
         dm.SetStyle(hsForm);
+        dm.HideSingleCaption:=False; //always show header?
         pnl.DockSite := True;
         pnl.UseDockManager := True;
         pnl.Visible := True;

@@ -17,6 +17,7 @@ As with DockBook, closing docked forms results in Exceptions :-(
 {$mode objfpc}{$H+}
 
 {$DEFINE appdock} //using DockMaster/AppDockManager?
+{.$DEFINE DockGrip}
 
 interface
 
@@ -53,6 +54,16 @@ uses
   LCLproc,  //debugging only
   EasyDockSite, //EasyTree DockManager
   uMakeSite;    //AppDockManager
+
+// ----------- config --------------
+const
+{$IFDEF DockGrip}
+  HideSingleHeader = True; //headers only for multiple clients
+  HeaderStyle = hsForm; //form caption style
+{$ELSE}
+  HideSingleHeader: boolean = False; //always show dockheader
+  HeaderStyle: TEasyHeaderStyle = hsMinimal; //hsNone
+{$ENDIF}
 
 type
 {$IFDEF appdock}
@@ -169,16 +180,21 @@ begin
 (* select and configure the docking manager.
 *)
   inherited Loaded;
+{$IFDEF DockGrip}
   if DockGrip = nil then begin
     DockGrip := TPicture.Create;  //(Application);
     DockGrip.Assign(self.Image1.Picture);
   end;
+{$ELSE}
+  //leave nil
+  RemoveControl(Image1);
+{$ENDIF}
   if DockManager = nil then
     DockManager := TOurDockManager.Create(self);
   if DockManager is TEasyTree then begin
-  //adjust as desired (order required!?)
-    TEasyTree(DockManager).HideSingleCaption := True; //only show headers for multiple clients
-    TEasyTree(DockManager).SetStyle(hsForm);  //show client name in the header
+  //adjust as desired, in config section above (order required!?)
+    TEasyTree(DockManager).HideSingleCaption := HideSingleHeader;  // True; //only show headers for multiple clients
+    TEasyTree(DockManager).SetStyle(HeaderStyle);  //show client name in the header
   end;
 end;
 
