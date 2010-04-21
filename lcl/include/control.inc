@@ -2450,7 +2450,9 @@ procedure TControl.DoAllAutoSize;
     Exclude(AControl.FControlFlags,cfAutoSizeNeeded);
     if not AControl.IsControlVisible then exit;
 
-    if AControl.AutoSize then
+    if AControl.AutoSize
+    and (not ((AControl.Parent=nil) and (csDesigning in AControl.ComponentState)))
+    then
       AControl.DoAutoSize;
     if AControl is TWinControl then begin
       // recursive
