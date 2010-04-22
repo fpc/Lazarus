@@ -1019,7 +1019,7 @@ resourcestring
   dlgDesktopFiles = 'Desktop files';
   dlgSaveDFile = 'Save desktop settings to file';
   dlgLoadDFile = 'Load desktop settings from file';
-  dlgMinimizeAllOnMinimizeMain = 'Minimize all on minimize main';
+  dlgSingleTaskBarButton  = 'Show single button in TaskBar';
   dlgHideIDEOnRun = 'Hide IDE windows on run';
   dlgHideMessagesIcons = 'Hide Messages Icons';
   lisIDETitleStartsWithProjectName = 'IDE title starts with project name';

@@ -1281,6 +1281,8 @@ begin
   CreatePrimaryConfigPath;
   StartProtocol;
   LoadGlobalOptions;
+  if EnvironmentOptions.SingleTaskBarButton then
+    Application.TaskBarBehavior := tbSingleButton;
 
   // set the IDE mode to none (= editing mode)
   ToolStatus:=itNone;
@@ -4316,6 +4318,10 @@ begin
       IDEOptionsDialog.WriteAll;
       UpdateHighlighters(True);
       SourceEditorManager.ReloadEditorOptions;
+      if EnvironmentOptions.SingleTaskBarButton then
+        Application.TaskBarBehavior := tbSingleButton
+      else
+        Application.TaskBarBehavior := tbDefault;
     end;
   finally
     IDEOptionsDialog.Free;

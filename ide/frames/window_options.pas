@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, ExtCtrls,
   Spin, EnvironmentOpts, LazarusIDEStrConsts, IDEOptionDefs, ObjectInspector,
-  IDEOptionsIntf;
+  IDEOptionsIntf, InterfaceBase;
 
 type
   { TWindowOptionsFrame }
@@ -47,7 +47,7 @@ type
     lblWindowCaption: TLabel;
     LeftEdit: TSpinEdit;
     LeftLabel: TLabel;
-    MinimizeAllOnMinimizeMainCheckBox: TCheckBox;
+    SingleTaskBarButtonCheckBox: TCheckBox;
     RestoreWindowGeometryRadioButton: TRadioButton;
     TitleStartsWithProjectCheckBox: TCheckBox;
     TopEdit: TSpinEdit;
@@ -94,7 +94,9 @@ var
   i: Integer;
 begin
   // windows
-  MinimizeAllOnMinimizeMainCheckBox.Caption := dlgMinimizeAllOnMinimizeMain;
+  SingleTaskBarButtonCheckBox.Caption := dlgSingleTaskBarButton;
+  SingleTaskBarButtonCheckBox.Enabled :=
+    WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) = LCL_CAPABILITY_YES;
   HideIDEOnRunCheckBox.Caption := dlgHideIDEOnRun;
   HideMessagesIconsCheckBox.Caption := dlgHideMessagesIcons;
   TitleStartsWithProjectCheckBox.Caption:=lisIDETitleStartsWithProjectName;
@@ -139,7 +141,7 @@ begin
     SetWindowPositionsItem(0);
 
     // window minimizing and hiding
-    MinimizeAllOnMinimizeMainCheckBox.Checked := MinimizeAllOnMinimizeMain;
+    SingleTaskBarButtonCheckBox.Checked := SingleTaskBarButton;
     HideIDEOnRunCheckBox.Checked := HideIDEOnRun;
     HideMessagesIconsCheckBox.Checked := HideMessagesIcons;
     TitleStartsWithProjectCheckBox.Checked:=IDETitleStartsWithProject;
@@ -152,7 +154,7 @@ begin
   begin
     SaveLayout;
     // window minimizing
-    MinimizeAllOnMinimizeMain:=MinimizeAllOnMinimizeMainCheckBox.Checked;
+    SingleTaskBarButton := SingleTaskBarButtonCheckBox.Checked;
     HideIDEOnRun:=HideIDEOnRunCheckBox.Checked;
     HideMessagesIcons:=HideMessagesIconsCheckBox.Checked;
     IDETitleStartsWithProject:=TitleStartsWithProjectCheckBox.Checked;

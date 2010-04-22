@@ -160,7 +160,7 @@ type
     // window layout
     FIDEWindowLayoutList: TIDEWindowLayoutList;
     FIDEDialogLayoutList: TIDEDialogLayoutList;
-    FMinimizeAllOnMinimizeMain: boolean;
+    FSingleTaskBarButton: boolean;
     FHideIDEOnRun: boolean;
     FHideMessagesIcons: boolean;
     FComponentPaletteVisible: boolean;
@@ -336,8 +336,8 @@ type
                            read FIDEWindowLayoutList write FIDEWindowLayoutList;
     property IDEDialogLayoutList: TIDEDialogLayoutList
                            read FIDEDialogLayoutList write FIDEDialogLayoutList;
-    property MinimizeAllOnMinimizeMain: boolean read FMinimizeAllOnMinimizeMain
-                                               write FMinimizeAllOnMinimizeMain;
+    property SingleTaskBarButton: boolean read FSingleTaskBarButton
+                                               write FSingleTaskBarButton;
     property HideIDEOnRun: boolean read FHideIDEOnRun write FHideIDEOnRun;
     property HideMessagesIcons: boolean read fHideMessagesIcons write fHideMessagesIcons;
     property IDETitleStartsWithProject: boolean read FIDETitleStartsWithProject
@@ -665,7 +665,7 @@ begin
   FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
   if IDEWindowIntf.IDEDialogLayoutList=nil then
     IDEWindowIntf.IDEDialogLayoutList:=FIDEDialogLayoutList;
-  FMinimizeAllOnMinimizeMain:=false;
+  FSingleTaskBarButton:=false;
   FHideIDEOnRun:=false;
   FHideMessagesIcons:=false;
   FIDETitleStartsWithProject:=false;
@@ -917,8 +917,8 @@ begin
       Path+'Desktop/');
     FIDEDialogLayoutList.LoadFromConfig(FConfigStore,
       Path+'Desktop/Dialogs/');
-    FMinimizeAllOnMinimizeMain:=XMLConfig.GetValue(
-      Path+'Desktop/MinimizeAllOnMinimizeMain/Value',true);
+    FSingleTaskBarButton := XMLConfig.GetValue(
+      Path+'Desktop/SingleTaskBarButton/Value', False);
     FHideIDEOnRun:=XMLConfig.GetValue(
       Path+'Desktop/HideIDEOnRun/Value',false);
     FHideMessagesIcons:=XMLConfig.GetValue(
@@ -1205,8 +1205,8 @@ begin
     // windows
     FIDEWindowLayoutList.SaveToXMLConfig(XMLConfig,Path+'Desktop/');
     FIDEDialogLayoutList.SaveToConfig(FConfigStore,Path+'Desktop/Dialogs/');
-    XMLConfig.SetDeleteValue(Path+'Desktop/MinimizeAllOnMinimizeMain/Value',
-                             FMinimizeAllOnMinimizeMain,true);
+    XMLConfig.SetDeleteValue(Path+'Desktop/SingleTaskBarButton/Value',
+                             FSingleTaskBarButton, False);
     XMLConfig.SetDeleteValue(Path+'Desktop/HideIDEOnRun/Value',FHideIDEOnRun,
                              false);
     XMLConfig.SetDeleteValue(Path+'Desktop/HideMessagesIcons/Value',FHideMessagesIcons,
