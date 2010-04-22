@@ -412,7 +412,7 @@ begin
     aNode.SelectedIndex := 2;
     aNode.Expand(True);
     aNode := aNode.Parent;
-    if Assigned(aNode) and (aNode.ImageIndex in [0, 3, 12, 13, -1]) then
+    if Assigned(aNode) and ((aNode.ImageIndex in [0, 3, 12, 13]) or (ANode.ImageIndex = -1)) then
       PaintNodeError(aNode);
   end;
 end;
@@ -422,14 +422,14 @@ procedure TGUITestRunner.PaintNodeFailure(aNode: TTreeNode);
 begin
   while Assigned(aNode) do
   begin
-    if aNode.ImageIndex in [0, -1, 12, 13] then
+    if ((aNode.ImageIndex in [0, 12, 13]) or (ANode.ImageIndex = -1)) then
     begin
       aNode.ImageIndex := 3;
       aNode.SelectedIndex := 3;
       aNode.Expand(true);
     end;
     aNode := aNode.Parent;
-    if Assigned(aNode) and (aNode.ImageIndex in [0, -1, 12, 13]) then
+    if Assigned(aNode) and ((aNode.ImageIndex in [0, 12, 13]) or (ANode.ImageIndex = -1)) then
       PaintNodeFailure(aNode);
   end;
 end;
@@ -442,7 +442,7 @@ var
 begin
   if Assigned(aNode) then
   begin
-    if aNode.ImageIndex in [12, 13, -1] then
+    if ((aNode.ImageIndex in [12, 13]) or (ANode.ImageIndex = -1)) then
     begin
       aNode.ImageIndex := 0;
       aNode.SelectedIndex := 0;
