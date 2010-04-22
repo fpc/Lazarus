@@ -323,6 +323,9 @@ implementation
 uses
   Clipbrd, GraphMath, LCLProc, Math, Types;
 
+{$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
+{$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}
+
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
   Result :=
@@ -1011,6 +1014,7 @@ procedure TChart.UpdateExtent;
   begin
     if AUseMin then ALo := AMin;
     if AUseMax then AHi := AMax;
+    {$R-}{$Q-}
     case CASE_OF_TWO[ALo = Infinity, AHi = NegInfinity] of
       cotNone: begin // Both high and low boundary defined
         if ALo = AHi then begin
@@ -1030,6 +1034,7 @@ procedure TChart.UpdateExtent;
         AHi := DEFAULT_WIDTH / 2;
       end;
     end;
+    {$ifdef OverflowChecking}{$Q+}{$endif}{$ifdef RangeChecking}{$R+}{$endif}
   end;
 
 var
