@@ -3885,7 +3885,7 @@ begin
   {$IFDEF OldAutoSize}
   Result:=IsControlVisible;
   {$ELSE}
-  Result := IsControlVisible;
+  Result := (not (csDestroying in ComponentState)) and IsControlVisible;
   if Result and Assigned(Parent) then
     Result := Parent.HandleObjectShouldBeVisible;
   {$ENDIF}
