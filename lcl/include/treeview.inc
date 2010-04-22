@@ -2786,7 +2786,7 @@ begin
   FBackgroundColor := clWindow;
   FDefItemHeight := 20;
   FExpandSignType := tvestTheme;
-  FExpandSignSize := 9;
+  UpdateExpandSignSize;
   FTreeNodes := TTreeNodes.Create(Self);
   BorderStyle := bsSingle;
   BorderWidth := 0;
@@ -3894,11 +3894,27 @@ begin
   Result:=(tvoToolTips in FOptions);
 end;
 
+procedure TCustomTreeView.UpdateExpandSignSize;
+var
+  Details: TThemedElementDetails;
+begin
+  if ExpandSignType = tvestTheme then
+  begin
+    Details := ThemeServices.GetElementDetails(ttGlyphOpened);
+    FExpandSignSize := ThemeServices.GetDetailSize(Details).cx;
+  end
+  else
+    FExpandSignSize := 9;
+end;
+
 procedure TCustomTreeView.SetExpandSignType(Value: TTreeViewExpandSignType);
 begin
-  if Value=FExpandSignType then exit;
-  FExpandSignType:=Value;
-  Invalidate;
+  if Value <> FExpandSignType then
+  begin
+    FExpandSignType := Value;
+    UpdateExpandSignSize;
+    Invalidate;
+  end;
 end;
 
 procedure TCustomTreeView.SetDefaultItemHeight(Value: integer);
@@ -4288,15 +4304,16 @@ var
 
   procedure DrawExpandSign(MidX, MidY: integer; CollapseSign: boolean);
   const
-    PlusMinusDetail: array[Boolean] of TThemedTreeview =
+    PlusMinusDetail: array[Boolean {Hot}, Boolean {Expanded}] of TThemedTreeview =
     (
-      ttGlyphClosed,
-      ttGlyphOpened
+      (ttGlyphClosed, ttGlyphOpened),
+      (ttHotGlyphClosed, ttHotGlyphOpened)
     );
   var
     HalfSize, ALeft, ATop, ARight, ABottom: integer;
     Points: PPoint;
     Details: TThemedElementDetails;
+    R: TRect;
   begin
     if not ShowButtons then exit;
     with Canvas do
@@ -4304,49 +4321,56 @@ var
       Brush.Color:=BackgroundColor;
       Pen.Color:=FExpandSignColor;
       Pen.Style:=psSolid;
-      HalfSize:=FExpandSignSize shr 1;
-      if ((FExpandSignSize and 1)=0) then dec(HalfSize);
-      ALeft:=MidX-HalfSize;
-      ATop:=MidY-HalfSize;
-      ARight:=ALeft+(HalfSize shl 1);
-      ABottom:=ATop+(HalfSize shl 1);
+      HalfSize := FExpandSignSize shr 1;
+      if ((FExpandSignSize and 1) = 0) then
+        dec(HalfSize);
+      ALeft := MidX - HalfSize;
+      ATop := MidY - HalfSize;
+      ARight := ALeft + FExpandSignSize;
+      ABottom := ATop + FExpandSignSize;
       case ExpandSignType of
       tvestTheme:
         begin
-          //draw a themed expand sign
-          Details := ThemeServices.GetElementDetails(PlusMinusDetail[CollapseSign]);
-          ThemeServices.DrawElement(Canvas.Handle, Details, Rect(ALeft, ATop, ARight + 1, ABottom + 1), nil);
+          //draw a themed expand sign. Todo: track hot
+          R := Rect(ALeft, ATop, ARight + 1, ABottom + 1);
+          Details := ThemeServices.GetElementDetails(PlusMinusDetail[False, CollapseSign]);
+          if ThemeServices.HasTransparentParts(Details) then
+            Canvas.FillRect(R);
+          ThemeServices.DrawElement(Canvas.Handle, Details, R, nil);
         end;
       tvestPlusMinus:
         begin
           // draw a plus or a minus sign
-          Rectangle(ALeft, ATop, ARight+1, ABottom+1);
-          MoveTo(ALeft+2,MidY);
-          LineTo(ARight-2+1,MidY);
+          R := Rect(ALeft, ATop, ARight, ABottom);
+          Rectangle(R);
+          MoveTo(R.Left + 2, MidY);
+          LineTo(R.Right - 2, MidY);
           if not CollapseSign then
           begin
-            MoveTo(MidX,ATop+2);
-            LineTo(MidX,ABottom-2+1);
+            MoveTo(MidX, R.Top + 2);
+            LineTo(MidX, R.Bottom - 2);
 	  end;
         end;
       tvestArrow:
         begin
           // draw an arrow. down for collapse and right for expand
-          GetMem(Points,SizeOf(TPoint)*3);
+          R := Rect(ALeft, ATop, ARight, ABottom);
+          Canvas.FillRect(R);
+          GetMem(Points, SizeOf(TPoint) * 3);
           if CollapseSign then
           begin
             // draw an arrow down
-            Points[0]:=Point(ALeft,MidY);
-            Points[1]:=Point(ARight,MidY);
-            Points[2]:=Point(MidX,ABottom);
+            Points[0] := Point(R.Left, MidY);
+            Points[1] := Point(R.Right - 1, MidY);
+            Points[2] := Point(MidX, R.Bottom - 1);
           end else
           begin
             // draw an arrow right
-            Points[0]:=Point(MidX-1,ATop);
-            Points[1]:=Point(ARight-1,MidY);
-            Points[2]:=Point(MidX-1,ABottom);
+            Points[0] := Point(MidX - 1, ATop);
+            Points[1] := Point(R.Right - 2, MidY);
+            Points[2] := Point(MidX - 1, R.Bottom - 1);
           end;
-          Polygon(Points,3,false);
+          Polygon(Points, 3, False);
           FreeMem(Points);
         end;
       end;

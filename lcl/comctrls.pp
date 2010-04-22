@@ -2342,12 +2342,18 @@ const
                             tvoKeepCollapsedNodes, tvoAutoItemHeight];
 
 type
-  TTreeViewExpandSignType = (tvestTheme, tvestPlusMinus, tvestArrow);
+  TTreeViewExpandSignType = (
+    tvestTheme,      // use themed sign
+    tvestPlusMinus,  // use +/- sign
+    tvestArrow       // use arrow
+  );
+
   TTreeViewInsertMarkType = (
     tvimNone,
-    tvimAsFirstChild, // or as root
+    tvimAsFirstChild,  // or as root
     tvimAsNextSibling,
-    tvimAsPrevSibling);
+    tvimAsPrevSibling
+  );
 
   TCustomTreeView = class(TCustomControl)
   private
@@ -2461,6 +2467,7 @@ type
     procedure SetTopItem(Value: TTreeNode);
     procedure UpdateAllTops;
     procedure UpdateBottomItem;
+    procedure UpdateExpandSignSize;
     procedure UpdateMaxLvl;
     procedure UpdateMaxRight;
     procedure UpdateTopItem;
