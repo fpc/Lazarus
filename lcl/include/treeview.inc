@@ -4318,7 +4318,10 @@ var
     if not ShowButtons then exit;
     with Canvas do
     begin
-      Brush.Color:=BackgroundColor;
+      if (tvoRowSelect in FOptions) and NodeSelected then
+        Brush.Color := FSelectedColor
+      else
+        Brush.Color := FBackgroundColor;
       Pen.Color:=FExpandSignColor;
       Pen.Style:=psSolid;
       HalfSize := FExpandSignSize shr 1;
