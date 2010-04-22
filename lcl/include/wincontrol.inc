@@ -3079,6 +3079,9 @@ begin
       //DebugLn('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' AlignWork=',NeedAlignWork,' ControlCount=',ControlCount);
       //if AControl<>nil then DebugLn('  AControl=',AControl.Name,':',AControl.ClassName);
     //end;
+    // first let the DockManager align controls
+    if DockSite and UseDockManager and (DockManager<>nil) then
+      DockManager.ResetBounds(false);
     if NeedAlignWork then
     begin
       AdjustClientRect(RemainingClientRect);
@@ -3170,13 +3173,6 @@ begin
   if ControlCount=0 then exit;
   InvalidatePreferredSize;
   ReAlign;
-end;
-
-procedure TWinControl.DoOnChangeBounds;
-begin
-  inherited DoOnChangeBounds;
-  if FUseDockManager and (DockManager<>nil) then
-    DockManager.ResetBounds(false);
 end;
 
 {$IFDEF OldAutoSize}
@@ -8052,9 +8048,11 @@ begin
     ' -> NewBounds=',dbgs(NewBounds));
   {$ENDIF}
   {$IFDEF VerboseBug16184}
+  if (Parent=nil) and (Visible) then begin
     DebugLn('[TWinControl.DoSendBoundsToInterface] A ',DbgSName(Self),
     ' OldRelBounds=',dbgs(FBoundsRealized),
     ' -> NewBounds=',dbgs(NewBounds));
+  end;
   {$ENDIF}
   FBoundsRealized:=NewBounds;
   Include(FWinControlFlags,wcfBoundsRealized); // Note: set before calling widgetset, because used in WMSize

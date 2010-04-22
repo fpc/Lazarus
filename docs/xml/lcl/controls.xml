@@ -9081,7 +9081,7 @@ Reads message from flag area, or stores a message
       </element>
       <!-- variable Visibility: private -->
       <element name="TWinControl.FUseDockManager">
-        <short/>
+        <short>Create DockManager</short>
         <descr/>
         <seealso/>
       </element>
@@ -11170,6 +11170,7 @@ End;
       <!-- property Visibility: public -->
       <element name="TWinControl.DockSite">
         <short>Is this a dock site? (read/write, default is False)</short>
+        <descr>Enable this to use the DockManager automatically. For example to call DockManager.ResetBounds when the control resizes.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DoubleBuffered">
@@ -11300,7 +11301,8 @@ End;
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.UseDockManager">
-        <short>[!]Use an dock manager for control docking? (read/write)</short>
+        <short>Create DockManager for docking (read/write)</short>
+        <descr>The DockManager is created via a call to CreateDockManager.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.VisibleDockClientCount">
