@@ -129,7 +129,7 @@
     <Node29 Name="EditorMouseOptionsFrame" Path="_Editor_Options_Mouse" HasHelp="True" IsRoot="True"/>
     <Node30 Name="EditorMouseOptionsAdvFrame" Path="EditorMouseOptionsAdvanced" HasHelp="True" IsRoot="True"/>
     <Node31 Name="ProjectApplicationOptionsFrame" Path="Project_Options" HasHelp="True" IsRoot="True"/>
-    <Node32 Name="EditorMultiWindowOptionsFrame" Path="_Editor_Options_MultiWinodw" HasHelp="True" IsRoot="True"/>
+    <Node32 Name="EditorMultiWindowOptionsFrame" Path="_Editor_Options_MultiWindow" HasHelp="True" IsRoot="True"/>
   </Node55>
   <Node56 Name="UnusedUnitsDialog" Path="Find_Unused_Units" HasHelp="True"/>
   <Node57 Name="TUnusedUnitsDialog" Path="Find_Unused_Units" HasHelp="True"/>
