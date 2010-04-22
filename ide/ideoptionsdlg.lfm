@@ -12,7 +12,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
   Constraints.MinWidth = 700
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object ButtonPanel: TButtonPanel
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
@@ -46,6 +46,6 @@ object IDEOptionsDialog: TIDEOptionsDialog
     TabOrder = 0
     OnChange = CategoryTreeChange
     OnKeyDown = CategoryTreeKeyDown
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
 end
