@@ -38,6 +38,8 @@ type
     Bevel1a: TBevel;
     Bevel2a: TBevel;
     Bevel2: TBevel;
+    chkShowCloseBtn: TCheckBox;
+    chkShowNumbers: TCheckBox;
     chkHideSingleTab: TCheckBox;
     lblAccessTypeDesc: TLabel;
     lblMultiWinTabSection: TLabel;
@@ -47,6 +49,7 @@ type
     lblAccessOrder: TLabel;
     lblAccessType: TLabel;
     Panel1: TPanel;
+    pnlNBTabs: TPanel;
     radioAccessOrderEdit: TRadioButton;
     radioAccessOrderWin: TRadioButton;
     Panel2: TPanel;
@@ -125,6 +128,8 @@ begin
   radioAccessOrderWin.Caption := dlgMultiWinAccessOrderWin;
   lblAccessType.Caption := dlgMultiWinAccessType;
   chkHideSingleTab.Caption := dlgHideSingleTabInNotebook;
+  chkShowNumbers.Caption := dlgTabNumbersNotebook;
+  chkShowCloseBtn.Caption := dlgCloseButtonsNotebook;
 end;
 
 procedure TEditorMultiWindowOptionsFrame.ReadSettings(
@@ -134,6 +139,8 @@ var
 begin
   with TEditorOptions(AOptions) do begin
     chkHideSingleTab.Checked := HideSingleTabInWindow;
+    chkShowNumbers.Checked := ShowTabNumbers;
+    chkShowCloseBtn.Checked := ShowTabCloseButtons;
   end;
   FMultiWinEditAccessOrder.Assign(TEditorOptions(AOptions).MultiWinEditAccessOrder);
 
@@ -155,6 +162,8 @@ begin
   TEditorOptions(AOptions).MultiWinEditAccessOrder.Assign(FMultiWinEditAccessOrder);
   with TEditorOptions(AOptions) do begin
     HideSingleTabInWindow := chkHideSingleTab.Checked;
+    ShowTabNumbers := chkShowNumbers.Checked;
+    ShowTabCloseButtons := chkShowCloseBtn.Checked;
   end;
 end;
 

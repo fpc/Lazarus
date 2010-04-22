@@ -75,13 +75,10 @@ begin
     Items.Add(lisShowSpecialCharacters);
     // spaces
     Items.Add(dlgTrimTrailingSpaces);
-    // mouse
-    Items.Add(dlgCloseButtonsNotebook);
     // copying
     Items.Add(dlgFindTextatCursor);
     Items.Add(dlgCopyWordAtCursorOnCopyNone);
     Items.Add(dlgCopyPasteKeepFolds);
-    Items.Add(dlgTabNumbersNotebook);
   end;
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeLeaveLine);
   EditorTrimSpaceTypeCheckBox.Items.Add(dlgTrimSpaceTypeEditLine);
@@ -105,12 +102,10 @@ begin
     begin
       Checked[0] := eoShowSpecialChars in SynEditOptions;
       Checked[1] := eoTrimTrailingSpaces in SynEditOptions;
-      Checked[2] := ShowTabCloseButtons;
       //Checked[Items.IndexOf(dlgShowGutterHints)] := ShowGutterHints;
-      Checked[3] := FindTextAtCursor;
-      Checked[4] := CopyWordAtCursorOnCopyNone;
-      Checked[5] := eoFoldedCopyPaste in SynEditOptions2;
-      Checked[6] := ShowTabNumbers;
+      Checked[2] := FindTextAtCursor;
+      Checked[3] := CopyWordAtCursorOnCopyNone;
+      Checked[4] := eoFoldedCopyPaste in SynEditOptions2;
     end;
     EditorTrimSpaceTypeCheckBox.ItemIndex := ord(TrimSpaceType);
     EditorTabPositionCheckBox.ItemIndex := TabPosToIndex[TabPosition];
@@ -134,15 +129,13 @@ begin
   begin
     UpdateOptionFromBool(EditorOptionsGroupBox.Checked[0], eoShowSpecialChars);
     UpdateOptionFromBool(EditorOptionsGroupBox.Checked[1], eoTrimTrailingSpaces);
-    ShowTabCloseButtons := EditorOptionsGroupBox.Checked[2];
     //ShowGutterHints := CheckGroupItemChecked(EditorOptionsGroupBox, dlgShowGutterHints);
-    FindTextAtCursor := EditorOptionsGroupBox.Checked[3];
-    CopyWordAtCursorOnCopyNone := EditorOptionsGroupBox.Checked[4];
-    if EditorOptionsGroupBox.Checked[5] then
+    FindTextAtCursor := EditorOptionsGroupBox.Checked[2];
+    CopyWordAtCursorOnCopyNone := EditorOptionsGroupBox.Checked[3];
+    if EditorOptionsGroupBox.Checked[4] then
       SynEditOptions2 := SynEditOptions2 + [eoFoldedCopyPaste]
     else
       SynEditOptions2 := SynEditOptions2 - [eoFoldedCopyPaste];
-    ShowTabNumbers := EditorOptionsGroupBox.Checked[6];
     TrimSpaceType := TSynEditStringTrimmingType(EditorTrimSpaceTypeCheckBox.ItemIndex);
     TabPosition := TabIndexToPos[EditorTabPositionCheckBox.ItemIndex];
   end;

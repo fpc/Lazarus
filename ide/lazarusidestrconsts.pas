@@ -1417,9 +1417,9 @@ resourcestring
   //dlgCodeToolsTab = 'Code Tools';
   lisAutomaticFeatures = 'Automatic features';
 
-  dlgMultiWinOptions = 'Multi Window';
-  dlgMultiWinTabGroup = 'Tabs:';
-  dlgMultiWinAccessGroup = 'Find jump target editor:';
+  dlgMultiWinOptions = 'Pages and Windows';
+  dlgMultiWinTabGroup = 'Notebook Tabs:';
+  dlgMultiWinAccessGroup = 'Find editor for jump targets:';
   dlgMultiWinAccessOrder     = 'Order to use for editors matching the same criteria';
   dlgMultiWinAccessOrderEdit = 'Most recent focused editor for this file';
   dlgMultiWinAccessOrderWin  = 'Editor (for file) in most recent focused window';

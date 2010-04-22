@@ -6,8 +6,8 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
   ClientHeight = 387
   ClientWidth = 521
   Visible = False
-  DesignLeft = 2048
-  DesignTop = 143
+  DesignLeft = 2429
+  DesignTop = 124
   object AccessTypePanel: TPanel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = lblAccessType
@@ -17,15 +17,15 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 224
-    Top = 163
+    Height = 199
+    Top = 188
     Width = 509
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     BevelOuter = bvNone
-    ClientHeight = 224
+    ClientHeight = 199
     ClientWidth = 509
     TabOrder = 0
     object listAccessType: TCheckListBox
@@ -34,7 +34,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
       AnchorSideBottom.Control = AccessTypePanel
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 224
+      Height = 199
       Top = 0
       Width = 200
       Align = alLeft
@@ -49,18 +49,18 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     end
     object Splitter1: TSplitter
       Left = 200
-      Height = 224
+      Height = 199
       Top = 0
       Width = 5
     end
     object Panel2: TPanel
       Left = 205
-      Height = 224
+      Height = 199
       Top = 0
       Width = 304
       Align = alClient
       BevelOuter = bvNone
-      ClientHeight = 224
+      ClientHeight = 199
       ClientWidth = 304
       Constraints.MinWidth = 100
       TabOrder = 2
@@ -84,18 +84,18 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 54
+    Top = 79
     Width = 60
     BorderSpacing.Bottom = 6
   end
   object lblEditActivationOrderSection: TLabel[2]
     AnchorSideLeft.Control = Bevel1a
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = chkHideSingleTab
+    AnchorSideTop.Control = pnlNBTabs
     AnchorSideTop.Side = asrBottom
     Left = 70
     Height = 16
-    Top = 47
+    Top = 72
     Width = 167
     BorderSpacing.Left = 10
     BorderSpacing.Bottom = 6
@@ -113,7 +113,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 247
     Height = 3
-    Top = 54
+    Top = 79
     Width = 274
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 10
@@ -126,7 +126,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 66
-    Top = 69
+    Top = 94
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -188,7 +188,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 16
-    Top = 141
+    Top = 166
     Width = 521
     Anchors = [akTop, akLeft, akRight]
     Caption = 'lblAccessType'
@@ -235,21 +235,54 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 10
   end
-  object chkHideSingleTab: TCheckBox[9]
+  object pnlNBTabs: TPanel[9]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = lblMultiWinTabSection
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 19
+    Height = 44
     Top = 22
     Width = 509
     Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
-    Caption = 'chkHideSingleTab'
+    BevelOuter = bvNone
+    ChildSizing.EnlargeHorizontal = crsScaleChilds
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 44
+    ClientWidth = 509
     TabOrder = 2
+    object chkShowCloseBtn: TCheckBox
+      Left = 0
+      Height = 19
+      Top = 0
+      Width = 253
+      Caption = 'chkShowCloseBtn'
+      TabOrder = 0
+    end
+    object chkShowNumbers: TCheckBox
+      Left = 253
+      Height = 19
+      Top = 0
+      Width = 256
+      Caption = 'chkShowNumbers'
+      TabOrder = 1
+    end
+    object chkHideSingleTab: TCheckBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 19
+      Top = 19
+      Width = 253
+      Caption = 'chkHideSingleTab'
+      TabOrder = 2
+    end
   end
 end
