@@ -178,6 +178,7 @@ type
 
     function GetPackageCount: integer; virtual; abstract;
     function GetPackages(Index: integer): TIDEPackage; virtual; abstract;
+    function FindPackageWithName(const PkgName: string): TIDEPackage; virtual; abstract;
   end;
   
 var

@@ -234,6 +234,8 @@ type
     procedure LazarusSrcDirChanged; override;
     function GetPackageCount: integer; override;
     function GetPackages(Index: integer): TIDEPackage; override;
+    function FindPackageWithName(const PkgName: string): TIDEPackage; override;
+
 
     // project
     function OpenProjectDependencies(AProject: TProject;
@@ -2715,6 +2717,19 @@ end;
 function TPkgManager.GetPackages(Index: integer): TIDEPackage;
 begin
   Result:=PackageGraph.Packages[Index];
+end;
+
+function TPkgManager.FindPackageWithName(const PkgName: string): TIDEPackage;
+var
+  ID: TLazPackageID;
+begin
+  ID:=TLazPackageID.Create;
+  try
+    ID.Name:=PkgName;
+    Result:=PackageGraph.FindPackageWithID(ID);
+  finally
+    ID.Free;
+  end;
 end;
 
 function TPkgManager.DoCompileProjectDependencies(AProject: TProject;
