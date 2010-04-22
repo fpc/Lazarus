@@ -669,7 +669,7 @@ const
   Done: Boolean = False;
 begin
   if Done then exit;
-  WSRegisterStatusBar;
+  WSRegisterCustomTreeView;
 //  if not WSRegisterStatusBar then
 //    RegisterWSComponent(TCustomTreeView, TWSCustomTreeView);
   Done := True;
