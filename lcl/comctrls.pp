@@ -2332,14 +2332,15 @@ type
     tvoShowRoot,
     tvoShowSeparators,
     tvoToolTips,
-    tvoNoDoubleClickExpand
+    tvoNoDoubleClickExpand,
+    tvoThemedDraw
     );
   TTreeViewOptions = set of TTreeViewOption;
 
 const
   DefaultTreeViewOptions = [tvoShowRoot, tvoShowLines, tvoShowButtons,
                             tvoHideSelection, tvoToolTips,
-                            tvoKeepCollapsedNodes, tvoAutoItemHeight];
+                            tvoKeepCollapsedNodes, tvoAutoItemHeight, tvoThemedDraw];
 
 type
   TTreeViewExpandSignType = (

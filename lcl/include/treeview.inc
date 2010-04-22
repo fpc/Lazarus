@@ -4195,7 +4195,7 @@ procedure TCustomTreeView.DoPaintNode(Node: TTreeNode);
 var
   NodeRect: TRect;
   VertMid: integer;
-  NodeSelected: boolean;
+  NodeSelected, HasExpandSign: boolean;
 
   function InvertColor(AColor: TColor): TColor;
   var Red, Green, Blue: integer;
@@ -4215,6 +4215,8 @@ var
 
   procedure DrawVertLine(X, Y1, Y2: Integer);
   begin
+    if Y1 > Y2 then
+      Exit;
     if TreeLinePenStyle = psPattern then
     begin
       // since we draw node by node and always add 2 pixels we need to start always
@@ -4239,6 +4241,8 @@ var
 
   procedure DrawHorzLine(Y, X1, X2: Integer);
   begin
+    if X1 > X2 then
+      Exit;
     if TreeLinePenStyle = psPattern then
     begin
       // to match our DrawVertLine rules
@@ -4264,8 +4268,8 @@ var
   var
     CurMid: integer;
   begin
-    if (CurNode <> nil) and ((tvoShowRoot in Options) or (CurNode.Parent<>nil))
-    then begin
+    if (CurNode <> nil) and ((tvoShowRoot in Options) or (CurNode.Parent<>nil)) then
+    begin
       Result := DrawTreeLines(CurNode.Parent);
       if ShowLines then
       begin
@@ -4273,7 +4277,10 @@ var
         if CurNode = Node then
         begin
           // draw horizontal line
-          DrawHorzLine(VertMid, CurMid, Result + Indent);
+          if HasExpandSign then
+            DrawHorzLine(VertMid, CurMid + FExpandSignSize div 2, Result + Indent)
+          else
+            DrawHorzLine(VertMid, CurMid, Result + Indent);
         end;
 
         if (CurNode.GetNextSibling <> nil) then
@@ -4287,8 +4294,19 @@ var
         if (CurNode = Node) then
         begin
           // draw vertical line from top to horizontal line
-          if ((InsertMarkNode = Node) and (InsertMarkType=tvimAsNextSibling)) then
-            DrawVertLine(CurMid, NodeRect.Top, NodeRect.Bottom-1)
+          if HasExpandSign then
+          begin
+            if ((InsertMarkNode = Node) and (InsertMarkType = tvimAsNextSibling)) then
+            begin
+              DrawVertLine(CurMid, NodeRect.Top, Max(NodeRect.Top, VertMid - FExpandSignSize div 2));
+              DrawVertLine(CurMid, VertMid + FExpandSignSize div 2, NodeRect.Bottom - 1);
+            end
+            else
+              DrawVertLine(CurMid, NodeRect.Top, VertMid - FExpandSignSize div 2);
+          end
+          else
+          if ((InsertMarkNode = Node) and (InsertMarkType = tvimAsNextSibling)) then
+            DrawVertLine(CurMid, NodeRect.Top, NodeRect.Bottom - 1)
           else
             DrawVertLine(CurMid, NodeRect.Top, VertMid);
         end;
@@ -4315,15 +4333,10 @@ var
     Details: TThemedElementDetails;
     R: TRect;
   begin
-    if not ShowButtons then exit;
     with Canvas do
     begin
-      if (tvoRowSelect in FOptions) and NodeSelected then
-        Brush.Color := FSelectedColor
-      else
-        Brush.Color := FBackgroundColor;
-      Pen.Color:=FExpandSignColor;
-      Pen.Style:=psSolid;
+      Pen.Color := FExpandSignColor;
+      Pen.Style := psSolid;
       HalfSize := FExpandSignSize shr 1;
       if ((FExpandSignSize and 1) = 0) then
         dec(HalfSize);
@@ -4337,8 +4350,6 @@ var
           //draw a themed expand sign. Todo: track hot
           R := Rect(ALeft, ATop, ARight + 1, ABottom + 1);
           Details := ThemeServices.GetElementDetails(PlusMinusDetail[False, CollapseSign]);
-          if ThemeServices.HasTransparentParts(Details) then
-            Canvas.FillRect(R);
           ThemeServices.DrawElement(Canvas.Handle, Details, R, nil);
         end;
       tvestPlusMinus:
@@ -4358,7 +4369,6 @@ var
         begin
           // draw an arrow. down for collapse and right for expand
           R := Rect(ALeft, ATop, ARight, ABottom);
-          Canvas.FillRect(R);
           GetMem(Points, SizeOf(TPoint) * 3);
           if CollapseSign then
           begin
@@ -4458,13 +4468,57 @@ var
     end;
   end;
 
+  procedure DrawBackground(IsSelected: Boolean; ARect: TRect);
+  var
+    Details: TThemedElementDetails;
+    CurBackgroundColor: TColor;
+  begin
+    if (tvoRowSelect in Options) and IsSelected then
+      if tvoThemedDraw in Options then
+      begin
+        Details := ThemeServices.GetElementDetails(ttItemSelected);
+        ThemeServices.DrawElement(Canvas.Handle, Details, ARect, nil);
+        Exit;
+      end
+      else
+        CurBackgroundColor := FSelectedColor
+    else
+      CurBackgroundColor := FBackgroundColor;
+    if CurBackgroundColor <> clNone then
+    begin
+      Canvas.Brush.Color := CurBackgroundColor;
+      Canvas.FillRect(ARect);
+    end;
+  end;
+
+  procedure DrawNodeText(IsSelected: Boolean; NodeRect: TRect; AText: String);
+  var
+    Details: TThemedElementDetails;
+  begin
+    if IsSelected then
+    begin
+      Details := ThemeServices.GetElementDetails(ttItemSelected);
+      if not (tvoRowSelect in Options) then
+        if (tvoThemedDraw in Options) then
+          ThemeServices.DrawElement(Canvas.Handle, Details, NodeRect, nil)
+        else
+        begin
+          Canvas.Brush.Color := FSelectedColor;
+          Canvas.Font.Color := InvertColor(Brush.Color);
+          Canvas.FillRect(NodeRect);
+        end;
+    end
+    else
+      Details := ThemeServices.GetElementDetails(ttItemNormal);
+    ThemeServices.DrawText(Canvas, Details, AText, NodeRect, DT_CENTER or DT_VCENTER, 0);
+  end;
+
+
 var
   x, ImgIndex: integer;
-  CurBackgroundColor: TColor;
   CurTextRect: TRect;
   DrawState: TCustomDrawState;
   PaintImages: boolean;
-  TextY: Integer;
 begin
   NodeRect := Node.DisplayRect(False);
   if (NodeRect.Bottom < 0) or (NodeRect.Top >= (ClientHeight - ScrollBarWidth)) then
@@ -4485,20 +4539,13 @@ begin
   else
     PaintImages := True;
 
-  VertMid:=(NodeRect.Top + NodeRect.Bottom) div 2;
+  VertMid := (NodeRect.Top + NodeRect.Bottom) div 2;
+  HasExpandSign := ShowButtons and Node.HasChildren and ((tvoShowRoot in Options) or (Node.Parent <> nil));
   //DebugLn(['[TCustomTreeView.DoPaintNode] Node=',DbgS(Node),' Node.Text=',Node.Text,' NodeRect=',NodeRect.Left,',',NodeRect.Top,',',NodeRect.Right,',',NodeRect.Bottom,' VertMid=',VertMid]);
   with Canvas do
   begin
     // draw background
-    if (tvoRowSelect in FOptions) and NodeSelected then
-      CurBackgroundColor:=FSelectedColor
-    else
-      CurBackgroundColor:=FBackgroundColor;
-    if CurBackgroundColor<>clNone then
-    begin
-      Brush.Color:=CurBackgroundColor;
-      FillRect(NodeRect);
-    end;
+    DrawBackground(NodeSelected, NodeRect);
 
     // draw tree lines
     Pen.Color := TreeLineColor;
@@ -4507,7 +4554,7 @@ begin
     Pen.Style := psSolid;
 
     // draw expand sign
-    if Node.HasChildren and ((tvoShowRoot in Options) or (Node.Parent <> nil)) then
+    if HasExpandSign then
       DrawExpandSign(x - Indent + (Indent shr 1), VertMid, Node.Expanded);
 
     // draw icon
@@ -4541,19 +4588,10 @@ begin
     // draw text
     if Node.Text <> '' then
     begin
-      TextY := (NodeRect.Top + NodeRect.Bottom - TextHeight(Node.Text)) div 2;
-      if NodeSelected and (FSelectedColor<>clNone) then
-      begin
-        Brush.Color := FSelectedColor;
-        CurTextRect := NodeRect;
-        CurTextRect.Left := x;
-        CurTextRect.Right := x + TextWidth(Node.Text) + 1;
-        Font.Color := InvertColor(Brush.Color);
-        FillRect(CurTextRect);
-        TextOut(x + 1, TextY, Node.Text);
-      end
-      else
-        TextOut(x + 1, TextY, Node.Text);
+      CurTextRect := NodeRect;
+      CurTextRect.Left := x;
+      CurTextRect.Right := x + TextWidth(Node.Text) + Indent div 2;
+      DrawNodeText(NodeSelected, CurTextRect, Node.Text);
     end;
 
     // draw separator
