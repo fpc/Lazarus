@@ -971,6 +971,7 @@ begin
       PackageEditors.UpdateAllEditors;
     if ProjInspector<>nil then
       ProjInspector.UpdateItems;
+    DoCallNotifyHandler(pihtGraphChanged);
   end;
 end;
 

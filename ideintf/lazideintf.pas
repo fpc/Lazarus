@@ -403,7 +403,7 @@ procedure TLazIDEInterface.RemoveAllHandlersOfObject(AnObject: TObject);
 var
   HandlerType: TLazarusIDEHandlerType;
 begin
-  for HandlerType:=Low(TLazarusIDEHandlerType) to High(TLazarusIDEHandlerType) do
+  for HandlerType:=Low(HandlerType) to High(HandlerType) do
     FLazarusIDEHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
 end;
 

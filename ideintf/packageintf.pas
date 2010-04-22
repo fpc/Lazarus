@@ -23,7 +23,7 @@ unit PackageIntf;
 interface
 
 uses
-  Classes, SysUtils, Forms, LazConfigStorage, NewItemIntf, AvgLvlTree;
+  Classes, SysUtils, LCLProc, Forms, LazConfigStorage, NewItemIntf, AvgLvlTree;
   
 const
   PkgDescGroupName = 'Package';
@@ -155,9 +155,20 @@ type
     );
   TPkgIntfOwnerSearchFlags = set of TPkgIntfOwnerSearchFlag;
 
+  TPkgIntfHandlerType = (
+    pihtGraphChanged // called after loading/saving packages
+    );
+
   { TPackageEditingInterface }
 
   TPackageEditingInterface = class(TComponent)
+  protected
+    FHandlers: array[TPkgIntfHandlerType] of TMethodList;
+    procedure AddHandler(HandlerType: TPkgIntfHandlerType;
+                         const AMethod: TMethod; AsLast: boolean = false);
+    procedure RemoveHandler(HandlerType: TPkgIntfHandlerType;
+                            const AMethod: TMethod);
+    procedure DoCallNotifyHandler(HandlerType: TPkgIntfHandlerType);
   public
     function DoOpenPackageWithName(const APackageName: string;
                          Flags: TPkgOpenFlags;
@@ -179,6 +190,12 @@ type
     function GetPackageCount: integer; virtual; abstract;
     function GetPackages(Index: integer): TIDEPackage; virtual; abstract;
     function FindPackageWithName(const PkgName: string): TIDEPackage; virtual; abstract;
+
+    // events
+    procedure RemoveAllHandlersOfObject(AnObject: TObject);
+    procedure AddHandlerOnGraphChanged(const OnGraphChanged: TNotifyEvent;
+                                       AsLast: boolean = false);
+    procedure RemoveHandlerOnGraphChanged(const OnGraphChanged: TNotifyEvent);
   end;
   
 var
@@ -565,6 +582,49 @@ end;
 procedure TIDEPackage.ClearCustomOptions;
 begin
   TConfigMemStorage(FCustomOptions).Clear;
+end;
+
+{ TPackageEditingInterface }
+
+procedure TPackageEditingInterface.AddHandler(HandlerType: TPkgIntfHandlerType;
+  const AMethod: TMethod; AsLast: boolean);
+begin
+  if FHandlers[HandlerType]=nil then
+    FHandlers[HandlerType]:=TMethodList.Create;
+  FHandlers[HandlerType].Add(AMethod);
+end;
+
+procedure TPackageEditingInterface.RemoveHandler(
+  HandlerType: TPkgIntfHandlerType; const AMethod: TMethod);
+begin
+  FHandlers[HandlerType].Remove(AMethod);
+end;
+
+procedure TPackageEditingInterface.DoCallNotifyHandler(
+  HandlerType: TPkgIntfHandlerType);
+begin
+  FHandlers[HandlerType].CallNotifyEvents(Self);
+end;
+
+procedure TPackageEditingInterface.RemoveAllHandlersOfObject(AnObject: TObject
+  );
+var
+  HandlerType: TPkgIntfHandlerType;
+begin
+  for HandlerType:=Low(HandlerType) to High(HandlerType) do
+    FHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
+end;
+
+procedure TPackageEditingInterface.AddHandlerOnGraphChanged(
+  const OnGraphChanged: TNotifyEvent; AsLast: boolean);
+begin
+  AddHandler(pihtGraphChanged,TMethod(OnGraphChanged));
+end;
+
+procedure TPackageEditingInterface.RemoveHandlerOnGraphChanged(
+  const OnGraphChanged: TNotifyEvent);
+begin
+  RemoveHandler(pihtGraphChanged,TMethod(OnGraphChanged));
 end;
 
 initialization
