@@ -10,5 +10,4 @@ object FloatingSite: TFloatingSite
   OnUnDock = FormUnDock
   UseDockManager = True
   LCLVersion = '0.9.29'
-  Visible = True
 end

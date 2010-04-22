@@ -393,6 +393,7 @@ end;
 procedure NoteBookAdd(ABook: TCustomDockSite; AItem: TControl);
 begin
   AItem.ManualDock(ABook);
+  AItem.Visible := True;
 end;
 
 function  TryRename(AComp: TComponent; const NewName: string): boolean;
@@ -635,7 +636,9 @@ begin
 {$ENDIF}
 
 //some checks
-  if (Control = nil) or (not Control.Visible) or (DropCtl = Control) then begin
+  if (Control = nil)
+  //or (not Control.Visible)
+  or (DropCtl = Control) then begin
   //bug? The dock site is changed when a control is dropped onto itself!?
     DebugLn('Redock-----');
     exit; //nothing changed
@@ -704,8 +707,8 @@ begin
   NewZone := TEasyZone.Create(self);
   NewZone.ChildControl := Control as TControl;
   Control.Align := alNone;
-  if Control is TCustomForm then
-    TCustomForm(Control).BorderStyle := bsNone;
+//is this still required?
+  //if Control is TCustomForm then TCustomForm(Control).BorderStyle := bsNone;
 
 //special case: in root zone (empty dock site)
 
@@ -798,6 +801,7 @@ begin
       OldZone.Free;
     end;
   end;
+  Control.Visible := True;
   ResetBounds(True); //splitters may have to be inserted
 end;
 
@@ -944,6 +948,8 @@ begin
           DockSite.Invalidate;
         {$ELSE}
           Control.ManualDock(nil, nil, alNone); //do float
+        { TODO -cLCL : OnEndDock not called by ManualDock? }
+          TWinControlAccess(Control).DoEndDock(nil, Control.Left, Control.Top);
         {$ENDIF}
         end;
       end;

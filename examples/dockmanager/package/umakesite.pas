@@ -243,7 +243,6 @@ var
   Res: TWinControlAccess absolute AForm;
 begin
   Result := nil;
-  AForm.Visible := True;
 //check already dockable
   { TODO -cdocking : problems with IDE windows:
     wrapping results in exceptions - conflicts with OnEndDock? }
@@ -258,7 +257,7 @@ begin
     Site := WrapDockable(AForm);
     AForm.EnableAlign;
   end;
-//make visible, so that it can be docked without problems
+//IDE?
   if ForIDE and fWrap and assigned(Site) and assigned(Site.DockManager) then begin
     Site.Invalidate;
   end;
@@ -280,8 +279,9 @@ begin
   if AName <> '' then begin
     Result := Screen.FindForm(AName);
     if Result <> nil then begin
-      //if DisableUpdate then Result.DisableAutoSizing;
+    {$IFDEF ForceVisible}
       Result.Visible := True; //empty edit book?
+    {$ENDIF}
       exit; //found it
     end;
   end;
@@ -648,6 +648,8 @@ begin
   The name is split into basename and instance number.
   A component of T<basename> is created (and named AName - automatic!).
 
+  The form is not made visible by default.
+
   Result type? (a TWinControl is sufficient as a DockSite)
 *)
 //search existing forms
@@ -655,7 +657,9 @@ begin
     Result := Screen.FindForm(AName);
     if Result <> nil then begin
       //if DisableUpdate then Result.DisableAlign;
+    {$IFDEF ForceVisible}
       Result.Visible := True; //empty edit book?
+    {$ENDIF}
       exit; //found it
     end;
   end;
@@ -699,7 +703,7 @@ begin
       TryRename(Result, AName);
   end;
   //if not DisableUpdate then Result.EnableAlign;
-  Result.Visible := True; //required for docking
+  //Result.Visible := True; //required for docking
 end;
 
 function TDockMaster.WrapDockable(Client: TControl): TFloatingSite;
@@ -716,7 +720,7 @@ begin
 *)
   if (csDestroying in Client.ComponentState)
   or assigned(Client.HostDockSite) //already wrapped
-  or not Client.Visible //or force visible (below)?
+  //or not Client.Visible //or force visible (below)?
   then
     exit(nil); //do nothing with client under destruction!
 
@@ -729,9 +733,13 @@ begin
     r.Bottom := r.Top + Client.UndockHeight;
     Site.BoundsRect := r;
     //DebugLn('Before Wrap: ', DbgS(Site.BoundsRect));
-    //Site.Visible := True;
     Client.Align := alNone;
-    //Client.Visible := True; //otherwise docking may be rejected - see above
+    //retry make client auto-dockable
+    ctl.DragKind := dkDock;
+    ctl.DragMode := dmAutomatic;
+  {$IFDEF ForceVisible}
+    Client.Visible := True;
+  {$ENDIF}
     Client.ManualDock(Site);
     //DebugLn('After Wrap: ', DbgS(Site.BoundsRect));
 
@@ -748,9 +756,10 @@ begin
       Site.Release;
     raise;
   end;
-//retry make client auto-dockable
+{//retry make client auto-dockable
   ctl.DragKind := dkDock;
   ctl.DragMode := dmAutomatic;
+}
 end;
 
 procedure TDockMaster.DumpSites;
