@@ -100,11 +100,14 @@ begin
         end;
       teTreeview:
         begin
-          if Details.Part = TVP_GLYPH then
+          if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
           begin
             Result.Painter := gptExpander;
             Result.Shadow := GTK_SHADOW_NONE;
-            Result.State := GTK_STATE_NORMAL;
+            if Details.Part = TVP_GLYPH then
+              Result.State := GTK_STATE_NORMAL
+            else
+              Result.State := GTK_STATE_PRELIGHT;
             Result.Widget := GetStyleWidget(lgsTreeView);
             Result.Detail := 'treeview';
             if Details.State = GLPS_CLOSED then
@@ -122,7 +125,7 @@ function TGtk2ThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize
 var
   AValue: TGValue;
 begin
-  if (Details.Element = teTreeView) and (Details.Part = TVP_GLYPH) then
+  if (Details.Element = teTreeView) and (Details.Part in [TVP_GLYPH, TVP_HOTGLYPH]) then
   begin
     FillChar(AValue, SizeOf(AValue), 0);
     g_value_init(@AValue, G_TYPE_INT);

@@ -352,8 +352,9 @@ type
     ttTreeviewDontCare,
     ttTreeviewRoot,
     ttItemNormal, ttItemHot, ttItemSelected, ttItemDisabled, ttItemSelectedNotFocus,
-    ttGlyphClosed, ttGlyphOpened, 
-    ttBranch
+    ttGlyphClosed, ttGlyphOpened,
+    ttBranch,
+    ttHotGlyphClosed, ttHotGlyphOpened
   );
 
   // 'Window' theme data
@@ -1639,6 +1640,11 @@ begin
           Part := TVP_BRANCH;
           Base := Ord(ttBranch);
         end;
+      ttHotGlyphClosed..ttHotGlyphOpened:
+        begin
+          Part := TVP_HOTGLYPH;
+          Base := Ord(ttHotGlyphClosed);
+        end;
     else
       Part := 0;
       Base := 0;
@@ -1872,7 +1878,7 @@ begin
       if Details.Part = TP_SPLITBUTTONDROPDOWN then
         Result.cx := 12;
     teTreeView:
-      if Details.Part = TVP_GLYPH then
+      if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
         Result := Size(9, 9);
   end;
 end;
@@ -2225,7 +2231,10 @@ begin
      ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) or
      ((Details.Element = teWindow) and (Details.Part >= WP_SYSBUTTON) and
      (Details.Part <= WP_MDIHELPBUTTON)) then
-    Result := Details.State in [2, 6, 10];
+    Result := Details.State in [2, 6, 10]
+  else
+  if (Details.Element = teTreeview) and (Details.Part = TVP_HOTGLYPH) then
+    Result := True;
 end;
 
 function TThemeServices.IsChecked(Details: TThemedElementDetails): Boolean;

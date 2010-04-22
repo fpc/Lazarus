@@ -66,7 +66,6 @@ uses
   TmSchema;
 
 const
-
   ThemeDataNames: array[TThemedElement] of PWideChar = (
     'button',      // teButton
     'clock',       // teClock
@@ -91,6 +90,33 @@ const
     'trackbar',    // teTrackBar
     'traynotify',  // teTrayNotify
     'treeview',    // teTreeview
+    'window'       // teWindow
+  );
+
+  ThemeDataNamesVista: array[TThemedElement] of PWideChar = (
+    'button',      // teButton
+    'clock',       // teClock
+    'combobox',    // teComboBox
+    'edit',        // teEdit
+    'explorerbar', // teExplorerBar
+    'header',      // teHeader
+    'explorer::listview',    // teListView
+    'menu',        // teMenu
+    'page',        // tePage
+    'progress',    // teProgress
+    'rebar',       // teRebar
+    'scrollbar',   // teScrollBar
+    'spin',        // teSpin
+    'startpanel',  // teStartPanel
+    'status',      // teStatus
+    'tab',         // teTab
+    'taskband',    // teTaskBand
+    'taskbar',     // teTaskBar
+    'toolbar',     // teToolBar
+    'tooltip',     // teToolTip
+    'trackbar',    // teTrackBar
+    'traynotify',  // teTrayNotify
+    'explorer::treeview',    // teTreeview
     'window'       // teWindow
   );
 
@@ -135,6 +161,8 @@ begin
 end;
 
 function TWin32ThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;
+var
+  R: TRect;
 begin
   // GetThemeInt(Theme[Details.Element], Details.Part, Details.State, TMT_HEIGHT, Result);
   // does not work for some reason
@@ -142,6 +170,12 @@ begin
   begin
     if (Details.Element = teToolBar) and (Details.Part = TP_SPLITBUTTONDROPDOWN) then
        Result.cx := 12
+    else
+    if (Details.Element = teTreeview) and (Details.Part in [TVP_GLYPH, TVP_HOTGLYPH]) then
+    begin
+      R := Rect(0, 0, 800, 800);
+      GetThemePartSize(GetTheme(Details.Element), 0, Details.Part, Details.State, @R, TS_TRUE, Result);
+    end
     else
       Result := inherited GetDetailSize(Details);
   end
@@ -254,7 +288,12 @@ end;
 function TWin32ThemeServices.GetTheme(Element: TThemedElement): HTHEME;
 begin
   if (FThemeData[Element] = 0) then
-    FThemeData[Element] := OpenThemeData(0, ThemeDataNames[Element]);
+  begin
+    if (WindowsVersion >= wvVista) then
+      FThemeData[Element] := OpenThemeData(0, ThemeDataNamesVista[Element])
+    else
+      FThemeData[Element] := OpenThemeData(0, ThemeDataNames[Element]);
+  end;
   Result := FThemeData[Element];
 end;
 
@@ -301,6 +340,12 @@ begin
       Brush := CreateSolidBrush(ColorToRGB(clInfoBk));
       FillRect(DC, ARect, Brush);
       DeleteObject(Brush);
+    end
+    else
+    if (Details.Element = teTreeview) and (Details.Part = TVP_HOTGLYPH) and (WindowsVersion < wvVista) then
+    begin
+      Details.Part := TVP_GLYPH;
+      inherited;
     end;
   end
   else

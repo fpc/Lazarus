@@ -285,7 +285,7 @@ var
   ButtonDrawInfo: HIThemeButtonDrawInfo;
   LabelRect: HIRect;
 begin
-  if Details.Part = TVP_GLYPH then
+  if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
   begin
     ButtonDrawInfo.version := 0;
     ButtonDrawInfo.State := GetDrawState(Details);
@@ -430,7 +430,7 @@ const
 begin
   case Details.Element of
     teTreeView:
-      if (Details.Part = TVP_GLYPH) then
+      if (Details.Part in [TVP_GLYPH, TVP_HOTGLYPH]) then
       begin
         Result := Types.Size(
           GetCarbonThemeMetric(kThemeMetricDisclosureTriangleWidth),

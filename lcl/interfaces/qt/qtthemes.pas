@@ -245,6 +245,7 @@ begin
               begin
                 opt := QStyleOption_create(Integer(QStyleOptionVersion),
                   Integer(QStyleOptionSO_Default));
+                QStyleOption_setState(opt, GetControlState(Details));
                 if AViewPortPaint then
                 begin
                   {we must reinitialize QPainter brush from opt since
@@ -618,7 +619,7 @@ begin
       end;
     teTreeView:
       begin
-        if Details.Part = TVP_GLYPH then
+        if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
         begin
           Result.DrawVariant := qdvPrimitive;
           Result.PrimitiveElement := QStylePE_IndicatorBranch;
