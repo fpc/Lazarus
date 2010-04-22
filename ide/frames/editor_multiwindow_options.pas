@@ -25,9 +25,8 @@ unit editor_multiwindow_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, StdCtrls, ExtCtrls, Graphics,
-  LCLType, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, Controls,
-  SynEditHighlighter, SynEditHighlighterFoldBase, Spin, ComCtrls, ColorBox, CheckLst, Buttons;
+  Classes, SysUtils, StdCtrls, ExtCtrls,
+  LCLType, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, CheckLst;
 
 type
 

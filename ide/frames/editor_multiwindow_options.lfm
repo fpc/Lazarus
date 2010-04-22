@@ -1,9 +1,9 @@
 inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
-  Height = 387
+  Height = 415
   Width = 521
   Anchors = [akTop]
   AutoSize = False
-  ClientHeight = 387
+  ClientHeight = 415
   ClientWidth = 521
   Visible = False
   DesignLeft = 2429
@@ -17,15 +17,15 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 199
-    Top = 188
+    Height = 233
+    Top = 182
     Width = 509
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     BevelOuter = bvNone
-    ClientHeight = 199
+    ClientHeight = 233
     ClientWidth = 509
     TabOrder = 0
     object listAccessType: TCheckListBox
@@ -34,11 +34,11 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
       AnchorSideBottom.Control = AccessTypePanel
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 199
+      Height = 160
       Top = 0
-      Width = 200
-      Align = alLeft
-      Constraints.MinWidth = 120
+      Width = 509
+      Align = alTop
+      Constraints.MinHeight = 100
       ExtendedSelect = False
       ItemHeight = 0
       OnClick = listAccessTypeClickCheck
@@ -47,33 +47,36 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
       OnKeyUp = listAccessTypeKeyUp
       TabOrder = 0
     end
-    object Splitter1: TSplitter
-      Left = 200
-      Height = 199
-      Top = 0
-      Width = 5
-    end
     object Panel2: TPanel
-      Left = 205
-      Height = 199
-      Top = 0
-      Width = 304
+      Left = 0
+      Height = 68
+      Top = 165
+      Width = 509
       Align = alClient
       BevelOuter = bvNone
-      ClientHeight = 199
-      ClientWidth = 304
-      Constraints.MinWidth = 100
-      TabOrder = 2
+      ClientHeight = 68
+      ClientWidth = 509
+      Constraints.MinHeight = 50
+      TabOrder = 1
       object lblAccessTypeDesc: TLabel
         Left = 0
         Height = 16
         Top = 0
-        Width = 304
+        Width = 509
         Align = alTop
         Caption = 'lblAccessTypeDesc'
         ParentColor = False
         WordWrap = True
       end
+    end
+    object Splitter1: TSplitter
+      Cursor = crVSplit
+      Left = 0
+      Height = 5
+      Top = 160
+      Width = 509
+      Align = alTop
+      ResizeAnchor = akTop
     end
   end
   object Bevel1a: TBevel[1]
@@ -84,7 +87,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 79
+    Top = 73
     Width = 60
     BorderSpacing.Bottom = 6
   end
@@ -95,7 +98,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 70
     Height = 16
-    Top = 72
+    Top = 66
     Width = 167
     BorderSpacing.Left = 10
     BorderSpacing.Bottom = 6
@@ -113,7 +116,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 247
     Height = 3
-    Top = 79
+    Top = 73
     Width = 274
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 10
@@ -126,7 +129,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 66
-    Top = 94
+    Top = 88
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -188,7 +191,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 16
-    Top = 166
+    Top = 160
     Width = 521
     Anchors = [akTop, akLeft, akRight]
     Caption = 'lblAccessType'
@@ -242,7 +245,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 44
+    Height = 38
     Top = 22
     Width = 509
     Anchors = [akTop, akLeft, akRight]
@@ -255,7 +258,7 @@ inherited EditorMultiWindowOptionsFrame: TEditorMultiWindowOptionsFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 44
+    ClientHeight = 38
     ClientWidth = 509
     TabOrder = 2
     object chkShowCloseBtn: TCheckBox
