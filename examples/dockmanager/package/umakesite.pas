@@ -729,7 +729,7 @@ begin
     r.Bottom := r.Top + Client.UndockHeight;
     Site.BoundsRect := r;
     //DebugLn('Before Wrap: ', DbgS(Site.BoundsRect));
-    Site.Visible := True;
+    //Site.Visible := True;
     Client.Align := alNone;
     //Client.Visible := True; //otherwise docking may be rejected - see above
     Client.ManualDock(Site);
@@ -741,6 +741,7 @@ begin
       //Client.Left := 0;
       Site.DockManager.ResetBounds(True);
     end;
+    Site.Visible := True;
   except
     DebugLn('error WrapDockable: ' + Client.Name);
     if Client.HostDockSite <> Site then
