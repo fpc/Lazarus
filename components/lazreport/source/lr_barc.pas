@@ -91,6 +91,7 @@ type
     procedure Draw(aCanvas: TCanvas); override;
     procedure Print(Stream: TStream); override;
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
+    function  GenerateBitmap: TBitmap;
     
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
@@ -276,16 +277,13 @@ begin
   Stream.Write(Param, SizeOf(Param));
 end;
 
-procedure TfrBarCodeView.Draw(aCanvas:TCanvas);
+function TfrBarCodeView.GenerateBitmap: TBitmap;
 var
   Txt: String;
   hg: Integer;
-  Bmp : TBitMap;
   h, oldh: HFont;
   newdx,newdy : Integer;
-  
 begin
-  BeginDraw(aCanvas);
   Memo1.Assign(Memo);
 
   if (Memo1.Count>0) and (Memo1[0][1]<>'[') then
@@ -310,7 +308,7 @@ begin
   {$ELSE}
   BarC.ShowText:=False;
   {$ENDIF}
-  
+
   if bcNames[Param.cBarType, 1] = 'A' then
     BarC.Text := Txt
   else
@@ -334,9 +332,9 @@ begin
     dx := BarC.Width;
     newdx:=Round(dx*Param.cRatio);
   end;
-  
+
   if Trim(BarC.Text)='0' then Exit;
-  
+
   if (Param.cAngle = 90) or (Param.cAngle = 270) then
     if Param.cShowText then
       hg := dx - 14
@@ -357,75 +355,83 @@ begin
     BarC.Top:=hg;
     BarC.Height:=-hg;
   end;
-  
+
   if Param.cAngle = 180 then
     BarC.Top:=dy-hg
   else
   if Param.cAngle = 270 then
     BarC.Left:=dx-hg;
 
-  Bmp:=TBitMap.Create;
-  try
-    Bmp.Width:=dx;
-    Bmp.Height:=dy;
-    Bmp.Canvas.Brush.Style:=bsSolid;
-    Bmp.Canvas.Brush.Color:=clWhite;
-    Bmp.Canvas.FillRect(Rect(0,0,Dx,Dy));
-    
-    BarC.DrawBarcode(Bmp.Canvas);
+  Result:=TBitMap.Create;
 
-    if Param.cShowText then
+  Result.Width:=dx;
+  Result.Height:=dy;
+  Result.Canvas.Brush.Style:=bsSolid;
+  Result.Canvas.Brush.Color:=clWhite;
+  Result.Canvas.FillRect(Rect(0,0,Dx,Dy));
+
+  BarC.DrawBarcode(Result.Canvas);
+
+  if Param.cShowText then
+  begin
+    with Result.Canvas do
     begin
-      with Bmp.Canvas do
-      begin
-        Font.Color := clBlack;
-        Font.Name := 'Courier New';
-        Font.Height := -12;
-        Font.Style := [];
+      Font.Color := clBlack;
+      Font.Name := 'Courier New';
+      Font.Height := -12;
+      Font.Style := [];
 
-        if Param.cAngle = 0 then
+      if Param.cAngle = 0 then
+      begin
+        Brush.Color:=clWhite;
+        Brush.Style:=bsSolid;
+        FillRect(Rect(0,dy-12,dx,dy));
+        TextOut((dx - TextWidth(Txt)) div 2, dy - 12, Txt);
+      end
+      else
+        if Param.cAngle = 90 then
         begin
           Brush.Color:=clWhite;
           Brush.Style:=bsSolid;
-          FillRect(Rect(0,dy-12,dx,dy));
-          TextOut((dx - TextWidth(Txt)) div 2, dy - 12, Txt);
+          FillRect(Rect(dx - 12,0,dx,dy));
+
+          TextOut(dx - 12, dy - (dy - TextWidth(Txt)) div 2, Txt);
         end
         else
-          if Param.cAngle = 90 then
+          if Param.cAngle = 180 then
           begin
             Brush.Color:=clWhite;
             Brush.Style:=bsSolid;
-            FillRect(Rect(dx - 12,0,dx,dy));
+            FillRect(Rect(0,0,dx,12));
 
-            TextOut(dx - 12, dy - (dy - TextWidth(Txt)) div 2, Txt);
+            TextOut((dx - TextWidth(Txt)) div 2, 1, Txt);
           end
           else
-            if Param.cAngle = 180 then
-            begin
-              Brush.Color:=clWhite;
-              Brush.Style:=bsSolid;
-              FillRect(Rect(0,0,dx,12));
+          begin
+            Brush.Color:=clWhite;
+            Brush.Style:=bsSolid;
+            FillRect(Rect(0,0,12,dy));
 
-              TextOut((dx - TextWidth(Txt)) div 2, 1, Txt);
-            end
-            else
-            begin
-              Brush.Color:=clWhite;
-              Brush.Style:=bsSolid;
-              FillRect(Rect(0,0,12,dy));
-
-              //here text it's write in barcode :o( TextOut(12, (dy - TextWidth(Txt)) div 2, Txt);
-            end;
-      end;
+            //here text it's write in barcode :o( TextOut(12, (dy - TextWidth(Txt)) div 2, Txt);
+          end;
     end;
+  end;
 
-    dx:=newdx;
-    dy:=newdy;
-    
+  dx:=newdx;
+  dy:=newdy;
+end;
+
+procedure TfrBarCodeView.Draw(aCanvas:TCanvas);
+var
+  Bmp : TBitMap;
+begin
+  BeginDraw(aCanvas);
+
+  Bmp := GenerateBitmap;
+  try
     CalcGaps;
     ShowBackground;
-    
-    aCanvas.StretchDraw(DRect,BMP);
+    aCanvas.StretchDraw(DRect,Bmp);
   finally
     Bmp.Free;
   end;

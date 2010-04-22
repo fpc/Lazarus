@@ -187,8 +187,12 @@ begin
     oldy := View.y;
     View.x := 0;
     View.y := 0;
-    Bitmap := TBitmap.Create;
+
+    Bitmap := TfrBarCodeView(View).GenerateBitmap;
     try
+        w := Round(Bitmap.Width * PDFEscx + 1) ;
+        h := Round(Bitmap.Height * PDFEscy + 1) ;
+
         PRImage := TPRImage.Create(PRPanel);
         PRImage.Parent := PRPanel;
         PRImage.Stretch := True;
@@ -198,15 +202,11 @@ begin
         PRImage.Height := h;
         PRImage.Width := w;
 
-        Bitmap.Height := View.dy;
-        Bitmap.Width := View.dx;
-
-        TfrBarCodeView(View).Draw(Bitmap.Canvas);
-
         PRImage.Picture.Bitmap := Bitmap;
     finally
         FreeAndNil(Bitmap);
     end;
+
     View.x := oldX;
     View.y := oldY;
 end;
@@ -304,7 +304,7 @@ begin
       ShowShape(TfrShapeView(View), nx, ny, ndy, ndx);
 
     end else begin
-      if View.FillColor <> clNone then
+      if (View.FillColor <> clNone) and not (View is TfrBarCodeView) then
           ShowBackGround(View, nx, ny, ndy, ndx);
 
       if View is TfrBarCodeView then
