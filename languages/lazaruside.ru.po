@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-22 02:46+0300\n"
+"PO-Revision-Date: 2010-04-23 02:38+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -994,6 +994,86 @@ msgstr "Завершить идентификатор"
 msgid "Invert"
 msgstr "Обратить"
 
+#: lazarusidestrconsts.dlgeditaccesscaptionignlockedoldedit
+msgid "Ignore Locks, longest unused editor"
+msgstr "Игнорировать фиксацию для не использовавшегося наибольшее время редактора"
+
+#: lazarusidestrconsts.dlgeditaccesscaptionignlockedonlyactedit
+msgid "Ignore Locks, if editor is current"
+msgstr "Игнорировать фиксацию для текущего редактора"
+
+#: lazarusidestrconsts.dlgeditaccesscaptionignlockedonlyactwin
+msgid "Ignore Locks, if editor in current window"
+msgstr "Игнорировать фиксацию для редактора в текущем окне"
+
+#: lazarusidestrconsts.dlgeditaccesscaptionlockedinview
+msgid "Locked, if text in view"
+msgstr "Зафиксированный, если текст в области просмотра"
+
+#: lazarusidestrconsts.dlgeditaccesscaptionunlocked
+msgid "Unlocked"
+msgstr "Незафиксированный"
+
+#: lazarusidestrconsts.dlgeditaccesscaptionunlockedinsoftview
+msgid "Unlocked, if text in centered view"
+msgstr "Незафиксированный, если текст в центре области просмотра"
+
+#: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinanywin
+msgid "New tab, existing or new window"
+msgstr "Новая вкладка в существующем или новом окне"
+
+#: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinnewwin
+msgid "New tab in new window"
+msgstr "Новая вкладка в новом окне"
+
+#: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinoldwin
+msgid "New tab in existing window"
+msgstr "Новая вкладка в существующем окне"
+
+#: lazarusidestrconsts.dlgeditaccessdescignlockedoldedit
+#| msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. This always looks at the editor, never the window, to find the longest unused. This option will always succeed, further options are never tested"
+msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. This always looks at the editor, never the window, to find the longest unused. This option will always succeed, further options are never tested."
+msgstr "Использование этого критерия приводит к выбору не использовавшегося наибольшее время редактора для файла, даже если он зафиксирован и/или ему требуется прокрутка. На соответствие этому критерию проверяется редактор, а не окно. Критерий всегда имеет соответствия, поэтому следующие за ним не анализируются."
+
+#: lazarusidestrconsts.dlgeditaccessdescignlockedonlyactedit
+msgid "This option will check if the current active editor has the target file and if it is, it will use the current editor, even if it is locked and/or needs scrolling."
+msgstr "Использование этого критерия приводит к проверке наличия целевого файла в текущем активном редакторе. Если файл открыт, будет использоваться текущий редактор, даже если он зафиксирован и/или ему требуется прокрутка."
+
+#: lazarusidestrconsts.dlgeditaccessdescignlockedonlyactwin
+#| msgid "This option will check if there is an editorfor the target file in the current windowand if there is, it will use this editor, even if it is locked and/or needs scrolling."
+msgid "This option will check if there is an editor for the target file in the current window and if there is, it will use this editor, even if it is locked and/or needs scrolling."
+msgstr "Использование этого критерия приводит к проверке наличия редактора для целевого файла в текущем окне. Найденный редактор будет использован, даже если он зафиксирован и/или ему требуется прокрутка."
+
+#: lazarusidestrconsts.dlgeditaccessdesclockedinview
+#| msgid "This option will use a locked (and only a locked) Editor, which does not need to scroll in order to display the target jump point(target jump point is already in visible screen area)"
+msgid "This option will use a locked (and only a locked) Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen area)."
+msgstr "Использование этого критерия приводит к выбору зафиксированного (и только зафиксированного) редактора, которому не требуется прокрутка для отображения целевой точки перехода (она уже находится в области просмотра)."
+
+#: lazarusidestrconsts.dlgeditaccessdescunlocked
+#| msgid "This option will use any not locked Editor"
+msgid "This option will use any not locked Editor."
+msgstr "Использование этого критерия приводит к выбору любого незафиксированного редактора."
+
+#: lazarusidestrconsts.dlgeditaccessdescunlockedinsoftview
+#| msgid "This option will use a not locked Editor, which does not need to scroll in order to display the target jump point(target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)"
+msgid "This option will use a not locked Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)."
+msgstr "Использование этого критерия приводит к выбору незафиксированного редактора, которому не требуется прокрутка для отображения целевой точки перехода (она уже находится в центре области просмотра, то есть исключая 2-5 строк сверху и снизу)."
+
+#: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinanywin
+#| msgid "This option will open a new Tab in an existing or new Window, if no unlocked tab is found. This option will always succeed, further options are never tested"
+msgid "This option will open a new Tab in an existing or new Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
+msgstr "Использование этого критерия приводит к открытию новой вкладки в существующем или новом окне, если не найдено незафиксированного редактора. Критерий всегда имеет соответствия, поэтому следующие за ним не анализируются."
+
+#: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinnewwin
+#| msgid "This option will open a new Tab in a new (and always in a new) Window, if no unlocked tab is found. This option will always succeed, further options are never tested"
+msgid "This option will open a new Tab in a new (and always in a new) Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
+msgstr "Использование этого критерия приводит к открытию новой вкладки в новом (и только в новом) окне, если не найдено незафиксированного редактора. Критерий всегда имеет соответствия, поэтому следующие за ним не анализируются."
+
+#: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinoldwin
+#| msgid "This option will open a new Tab in an existing (and only in an existing) Window, if no unlocked tab is found. A tab is only opened if a window exists, that has not yet an editor for the target file"
+msgid "This option will open a new Tab in an existing (and only in an existing) Window, if no unlocked tab is found. A tab is only opened if a window exists, that has not yet an editor for the target file."
+msgstr "Использование этого критерия приводит к открытию новой вкладки в существующем (и только в существующем) окне, если не найдено незафиксированного редактора. Вкладка открывается только при наличии окна, не имеющего редактора для целевого файла."
+
 #: lazarusidestrconsts.dlgedital
 msgid "Italic"
 msgstr "Курсив"
@@ -1673,10 +1753,6 @@ msgstr "Максимальное количество недавних прое�
 msgid "Method insert policy"
 msgstr "Политика вставки методов"
 
-#: lazarusidestrconsts.dlgminimizeallonminimizemain
-msgid "Minimize all on minimize main"
-msgstr "Сворачивать все при сворачивании главной"
-
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
 msgstr "Смешивать методы и свойства"
@@ -2041,6 +2117,37 @@ msgstr "Сообщения"
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
 msgstr "Множественное выделение"
+
+#: lazarusidestrconsts.dlgmultiwinaccessgroup
+#| msgid "Find jump target editor:"
+msgid "Find editor for jump targets:"
+msgstr "Выбор редактора для перехода:"
+
+#: lazarusidestrconsts.dlgmultiwinaccessorder
+msgid "Order to use for editors matching the same criteria"
+msgstr "Порядок использования редакторов, отвечающих одинаковым критериям"
+
+#: lazarusidestrconsts.dlgmultiwinaccessorderedit
+msgid "Most recent focused editor for this file"
+msgstr "Последний выбранный редактор для данного файла"
+
+#: lazarusidestrconsts.dlgmultiwinaccessorderwin
+msgid "Editor (for file) in most recent focused window"
+msgstr "Редактор (для файла) в последнем выбранном окне"
+
+#: lazarusidestrconsts.dlgmultiwinaccesstype
+msgid "Priority list of criteria to choose an editor:"
+msgstr "Список критериев выбора редактора по приоритету:"
+
+#: lazarusidestrconsts.dlgmultiwinoptions
+#| msgid "Multi Window"
+msgid "Pages and Windows"
+msgstr "Вкладки и окна"
+
+#: lazarusidestrconsts.dlgmultiwintabgroup
+#| msgid "Tabs:"
+msgid "Notebook Tabs:"
+msgstr "Вкладки редакторов:"
 
 #: lazarusidestrconsts.dlgnaming
 msgid "Naming"
@@ -2524,6 +2631,10 @@ msgstr "Показывать используемые файлы"
 #: lazarusidestrconsts.dlgshowwarnings
 msgid "Show Warnings"
 msgstr "Показывать предупреждения"
+
+#: lazarusidestrconsts.dlgsingletaskbarbutton
+msgid "Show single button in TaskBar"
+msgstr "Показывать одну кнопку в панели задач"
 
 #: lazarusidestrconsts.dlgskipforwarddeclarations
 msgid "Skip forward declarations"
@@ -14870,12 +14981,14 @@ msgid "Copy Filename"
 msgstr "Копировать имя файла"
 
 #: lazarusidestrconsts.uemcopytonewwindow
-msgid "Copy to new Window"
-msgstr "Копировать в новое окно"
+#| msgid "Copy to new Window"
+msgid "Clone to new Window"
+msgstr "Клонировать в новом окне"
 
 #: lazarusidestrconsts.uemcopytootherwindow
-msgid "Copy to other Window"
-msgstr "Копировать в другое окно"
+#| msgid "Copy to other Window"
+msgid "Clone to other Window"
+msgstr "Клонировать в другом окне"
 
 #: lazarusidestrconsts.uemcopytootherwindownew
 msgctxt "lazarusidestrconsts.uemcopytootherwindownew"

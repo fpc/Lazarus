@@ -981,6 +981,78 @@ msgstr "Completa l'identificador"
 msgid "Invert"
 msgstr ""
 
+#: lazarusidestrconsts.dlgeditaccesscaptionignlockedoldedit
+msgid "Ignore Locks, longest unused editor"
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccesscaptionignlockedonlyactedit
+msgid "Ignore Locks, if editor is current"
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccesscaptionignlockedonlyactwin
+msgid "Ignore Locks, if editor in current window"
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccesscaptionlockedinview
+msgid "Locked, if text in view"
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccesscaptionunlocked
+msgid "Unlocked"
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccesscaptionunlockedinsoftview
+msgid "Unlocked, if text in centered view"
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinanywin
+msgid "New tab, existing or new window"
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinnewwin
+msgid "New tab in new window"
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinoldwin
+msgid "New tab in existing window"
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccessdescignlockedoldedit
+msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. This always looks at the editor, never the window, to find the longest unused. This option will always succeed, further options are never tested."
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccessdescignlockedonlyactedit
+msgid "This option will check if the current active editor has the target file and if it is, it will use the current editor, even if it is locked and/or needs scrolling."
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccessdescignlockedonlyactwin
+msgid "This option will check if there is an editor for the target file in the current window and if there is, it will use this editor, even if it is locked and/or needs scrolling."
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccessdesclockedinview
+msgid "This option will use a locked (and only a locked) Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen area)."
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccessdescunlocked
+msgid "This option will use any not locked Editor."
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccessdescunlockedinsoftview
+msgid "This option will use a not locked Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)."
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinanywin
+msgid "This option will open a new Tab in an existing or new Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinnewwin
+msgid "This option will open a new Tab in a new (and always in a new) Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinoldwin
+msgid "This option will open a new Tab in an existing (and only in an existing) Window, if no unlocked tab is found. A tab is only opened if a window exists, that has not yet an editor for the target file."
+msgstr ""
+
 #: lazarusidestrconsts.dlgedital
 msgid "Italic"
 msgstr "Itàlica"
@@ -1659,10 +1731,6 @@ msgstr "Màx.fitxers projecte recents"
 msgid "Method insert policy"
 msgstr "Política d'inserir mètodes"
 
-#: lazarusidestrconsts.dlgminimizeallonminimizemain
-msgid "Minimize all on minimize main"
-msgstr "Minimitza totes les finestes en minimitzar la principal"
-
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
 msgstr "Barreja els mètodes i les propietats"
@@ -2026,6 +2094,34 @@ msgstr ""
 #: lazarusidestrconsts.dlgmultiselect
 msgid "Multi Select"
 msgstr "Sel·lecció múltiple"
+
+#: lazarusidestrconsts.dlgmultiwinaccessgroup
+msgid "Find editor for jump targets:"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultiwinaccessorder
+msgid "Order to use for editors matching the same criteria"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultiwinaccessorderedit
+msgid "Most recent focused editor for this file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultiwinaccessorderwin
+msgid "Editor (for file) in most recent focused window"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultiwinaccesstype
+msgid "Priority list of criteria to choose an editor:"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultiwinoptions
+msgid "Pages and Windows"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmultiwintabgroup
+msgid "Notebook Tabs:"
+msgstr ""
 
 #: lazarusidestrconsts.dlgnaming
 msgid "Naming"
@@ -2514,6 +2610,10 @@ msgstr "Mostra els fitxers utilitzats"
 #: lazarusidestrconsts.dlgshowwarnings
 msgid "Show Warnings"
 msgstr "Mostra els avisos"
+
+#: lazarusidestrconsts.dlgsingletaskbarbutton
+msgid "Show single button in TaskBar"
+msgstr ""
 
 #: lazarusidestrconsts.dlgskipforwarddeclarations
 msgid "Skip forward declarations"
@@ -14873,11 +14973,11 @@ msgid "Copy Filename"
 msgstr ""
 
 #: lazarusidestrconsts.uemcopytonewwindow
-msgid "Copy to new Window"
+msgid "Clone to new Window"
 msgstr ""
 
 #: lazarusidestrconsts.uemcopytootherwindow
-msgid "Copy to other Window"
+msgid "Clone to other Window"
 msgstr ""
 
 #: lazarusidestrconsts.uemcopytootherwindownew
