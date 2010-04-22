@@ -3,19 +3,20 @@ unit uMakeSite;
 
 Owners:
 The DockMaster can own all floating forms, for easy enumeration.
-The DockMaster can own all dock grips, for easy detection of the dockable forms.
-  Handle destruction how?
 The owner of the dockable forms is responsible for creating or finding dockable forms?
   The auto-created forms are/shall be owned by DockMaster.Owner?
 
 Problems:
 
-Forms are not (easily) dockable on all platforms,
-  we add a grabber icon to each dockable form,
-  and wrap them in a managed floating form.
+Forms are not (easily) dockable on all platforms!
+  We wrap them into a managed floating form, that always shows dockheaders.
+
+  Eventually all forms/wincontrols should use a floating dockhost form,
+  on all platforms that do not allow to dock forms.
 
 Default floating sites are owned by Application,
   we have to create the floating sites in the form.OnEndDock event.
+  Beware: client.OnEndDock handlers are replaced in MakeDockable!
 
   Owning panels is dangerous, they are not destroyed with their parent form!
 *)
@@ -68,12 +69,9 @@ type
   //TDockMaster = class(TComponent)
   TDockMaster = class(TCustomDockMaster)
   protected //event handlers
-    procedure DockHandleMouseMove(Sender: TObject; Shift: TShiftState;
-      X, Y: Integer);
     procedure FormEndDock(Sender, Target: TObject; X, Y: Integer);
   protected //utilities
-    function  ReloadForm(const AName: string; fMultiInst,
-                         DisableUpdate: boolean): TWinControl; virtual;
+    function  ReloadForm(const AName: string; fMultiInst: boolean): TWinControl; virtual;
     function  WrapDockable(Client: TControl): TFloatingSite;
   private
     LastPanel: TDockPanel;  //last elastic panel created
@@ -88,17 +86,14 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure AddElasticSites(AForm: TCustomForm; Sides: sDockSides);
-    //function  CreateDockable(const AName: string; site: TWinControl; fMultiInst: boolean; fWrap: boolean = True): TWinControl;
     function  CreateDockable(const AName: string;
-        fMultiInst, DisableUpdate: boolean; fWrap: boolean = True): TWinControl;
+        fMultiInst: boolean; fWrap: boolean = True): TWinControl;
     function  MakeDockable(AForm: TWinControl; fWrap: boolean = True): TForm;
     procedure DumpSites;
   //persistence
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
-    function  ReloadDockedControl(const AName: string; Site: TWinControl;
-                                  DisableUpdate: boolean): TControl; virtual;
-    //function  SaveDockedControl(ACtrl:  TControl; Site: TWinControl): string; virtual;
+    function  ReloadDockedControl(const AName: string; Site: TWinControl): TControl; virtual;
     procedure LoadFromFile(const AName: string);
     procedure SaveToFile(const AName: string);
   end;
@@ -109,24 +104,12 @@ var
 implementation
 
 uses
-  //SynEdit,  //try editor notebooks
   Dialogs,
   LCLIntf, LCLProc;
 
 type
-  TWinControlAccess = class(TWinControl)
-  end;
-  TControlAccess = class(TControl)
-  end;
-
-{
-const //what characters are acceptable, for unique names?
-  PanelNames: array[TAlign] of string = (
-    '', '', //alNone, alTop,
-    '_Elastic_Bottom_', '_Elastic_Left_', '_Elastic_Right_',
-    '', ''  //alClient, alCustom
-  );
-}
+  TWinControlAccess = class(TWinControl) end;
+  TControlAccess = class(TControl) end;
 
 { TDockMaster }
 
@@ -197,9 +180,11 @@ begin
         pnl.Align := side;
         pnl.BorderWidth := 1;
         //pnl.BorderStyle := bsSingle; // does not properly handle the size
+      (* Create and configure DockManager
+      *)
         dm := TAppDockManager.Create(pnl);
         dm.SetStyle(hsForm);
-        dm.HideSingleCaption:=False; //always show header?
+        dm.HideSingleCaption:=False; //always show header, for docking forms
         pnl.DockSite := True;
         pnl.UseDockManager := True;
         pnl.Visible := True;
@@ -233,11 +218,8 @@ begin
   AForm.EnableAlign;
 end;
 
-//function TDockMaster.CreateDockable(const AName: string; site: TWinControl);
 function TDockMaster.CreateDockable(const AName: string;
-  fMultiInst, DisableUpdate: boolean; fWrap: boolean): TWinControl;
-var
-  nb: TCustomDockSite;
+  fMultiInst: boolean; fWrap: boolean): TWinControl;
 begin
 (* Create a dockable form, based on its name.
   Used also to restore a layout.
@@ -247,87 +229,43 @@ Options (to come or to be removed)
   otherwise an already existing instance is returned. (really returned?)
 *)
 //get the form
-  Result := ReloadForm(AName, fMultiInst, true);
+  Result := ReloadForm(AName, fMultiInst);
   if Result = nil then
     exit;
   MakeDockable(Result, fWrap);
-  if not DisableUpdate then
-    Result.EnableAlign;
+//problem with first show?
+  //Result.Invalidate; - doesn't help
 end;
 
 function TDockMaster.MakeDockable(AForm: TWinControl; fWrap: boolean): TForm;
 var
-  img: TImage;
-  r: TRect;
   Site: TFloatingSite absolute Result;
   Res: TWinControlAccess absolute AForm;
-  ok: Boolean;
 begin
   Result := nil;
-  AForm.DisableAlign;
-  //check make dockable
+  AForm.Visible := True;
+//check already dockable
   { TODO -cdocking : problems with IDE windows:
     wrapping results in exceptions - conflicts with OnEndDock? }
-  if Res.DragKind <> dkDock then begin
-  //make it dockable
-    Res.DragKind := dkDock;
-    //if not ForIDE then //problems with the IDE?
-      Res.OnEndDock := @FormEndDock; //float into default host site
-  end;
+//make it dockable
+  Res.DragKind := dkDock;
   Res.DragMode := dmAutomatic;
 //wrap into floating site, if requested (not on restore Layout)
   if fWrap then begin
-  //wrap into dock site
+    //if not ForIDE then //problems with the IDE?
+      Res.OnEndDock := @FormEndDock; //float into default host site
+    AForm.DisableAlign;
     Site := WrapDockable(AForm);
+    AForm.EnableAlign;
   end;
-  if DockGrip <> nil then begin
-  //create a docking handle - should become a component?
-    img := TImage.Create(AForm); //we could own the img, and be notified when its parent becomes nil
-    img.Align := alNone;
-    //if ForIDE then
-    ok:=false;
-    try //begin  //prevent problems with the following code!
-      img.AnchorParallel(akRight,0,Result); //anchor to Result=Site or to AForm?
-      img.AnchorParallel(akTop,0,Result);
-      ok:=true;
-    finally
-      if not ok then
-        DebugLn('error AnchorParallel');
-    end;
-    img.Anchors:=[akRight,akTop];
-    img.Cursor := crHandPoint;
-    img.Parent := AForm;
-    r := AForm.ClientRect;
-    r.bottom := 16;
-    r.Left := r.Right - 16;
-    img.BoundsRect := r;
-    if DockGrip <> nil then  //problem: find grabber picture!?
-      try
-        img.Picture := DockGrip;
-      except
-        on E: Exception do begin
-          DebugLn('exception loading picture ',E.Message);
-        end;
-      end;
-    //else???
-    img.OnMouseMove := @DockHandleMouseMove;
-    img.Visible := True;
-  end else
-    img := nil;
 //make visible, so that it can be docked without problems
-  AForm.Visible := True;
-  AForm.EnableAlign;
-  if img <> nil then
-    img.BringToFront;
   if ForIDE and fWrap and assigned(Site) and assigned(Site.DockManager) then begin
-    //site.DockManager.ResetBounds(True); //doesn't help
-    //AForm.Invalidate;
     Site.Invalidate;
   end;
 end;
 
 function TDockMaster.ReloadDockedControl(const AName: string;
-  Site: TWinControl; DisableUpdate: boolean): TControl;
+  Site: TWinControl): TControl;
 var
   i: integer;
   lst: TStringList;
@@ -342,8 +280,7 @@ begin
   if AName <> '' then begin
     Result := Screen.FindForm(AName);
     if Result <> nil then begin
-      if DisableUpdate then
-        Result.DisableAutoSizing;
+      //if DisableUpdate then Result.DisableAutoSizing;
       Result.Visible := True; //empty edit book?
       exit; //found it
     end;
@@ -351,20 +288,8 @@ begin
 //not found
   Result := inherited ReloadControl(AName, Site);
   if Result = nil then
-    Result := ReloadForm(AName, True, DisableUpdate);
+    Result := ReloadForm(AName, True);
 end;
-
-{$IFDEF old}
-function TDockMaster.SaveDockedControl(ACtrl: TControl;
-  Site: TWinControl): string;
-begin
-  if Assigned(FOnSave) then
-    Result := FOnSave(ACtrl);
-  if Result = '' then
-    Result := Site.GetDockCaption(ACtrl);
-end;
-{$ELSE}
-{$ENDIF}
 
 procedure TDockMaster.FormEndDock(Sender, Target: TObject; X, Y: Integer);
 var
@@ -465,7 +390,7 @@ var
   begin
   (* AName is <align><form>
   *)
-    hcomp := self.ReloadForm(FormName, True, True); //try multi-instance first
+    hcomp := self.ReloadForm(FormName, True); //try multi-instance first
     if host <> nil then begin
       AddElasticSites(host, [aln]);
       Result := LastPanel; //found or created
@@ -668,7 +593,7 @@ begin
 end;
 
 function TDockMaster.ReloadForm(const AName: string;
-  fMultiInst, DisableUpdate: boolean): TWinControl;
+  fMultiInst: boolean): TWinControl;
 var
   //instname: string
   basename: string;
@@ -729,8 +654,7 @@ begin
   if AName <> '' then begin
     Result := Screen.FindForm(AName);
     if Result <> nil then begin
-      if DisableUpdate then
-        Result.DisableAlign;
+      //if DisableUpdate then Result.DisableAlign;
       Result.Visible := True; //empty edit book?
       exit; //found it
     end;
@@ -740,8 +664,7 @@ begin
     TWinControlAccess(Factory).ReloadDockedControl(AName, ctl);
     if ctl is TWinControl then begin
       Result := TWinControl(ctl);
-      if DisableUpdate then
-        Result.DisableAlign;
+      //if DisableUpdate then Result.DisableAlign;
       exit;
     end; //else assume that we should do everything?
     FreeAndNil(ctl);
@@ -749,9 +672,13 @@ begin
 //search/create ourselves
   fo := Owner; //our owner also owns the forms
   if AName = '' then begin
+  {$IFDEF new}
     Result := TForm(TForm.NewInstance);
-    Result.DisableAlign;
+    //Result.DisableAlign;
     Result.Create(fo); //named Form1, Form2... - not now???
+  {$ELSE}
+    Result := TForm.Create(fo); //named Form1, Form2... - not now???
+  {$ENDIF}
   end else begin
   //create new instance
     //DebugLn('!!! create new: ', AName);
@@ -761,14 +688,17 @@ begin
       DebugLn(basename , ' is not a registered class');
       exit(nil); //bad form name
     end;
+  {$IFDEF new}
     Result := TWinControl(fc.NewInstance);
     Result.DisableAlign;
     Result.Create(fo);
-    if Result.Name <> AName then
+  {$ELSE}
+    Result := TWinControl(fc.Create(fo));
+  {$ENDIF}
+    if (AName <> '') and (Result.Name <> AName) then
       TryRename(Result, AName);
   end;
-  if not DisableUpdate then
-    Result.EnableAlign;
+  //if not DisableUpdate then Result.EnableAlign;
   Result.Visible := True; //required for docking
 end;
 
@@ -790,23 +720,21 @@ begin
   then
     exit(nil); //do nothing with client under destruction!
 
-  Site := TFloatingSite(TFloatingSite.NewInstance);
-  Site.DisableAlign;
-  Site.Create(Self); //we own the new site
+
+  Site := TFloatingSite.Create(self); //DockMaster owns the new site
   try
   //keep undocked extent
     r := Client.BoundsRect;
-    {$IFnDEF old}
     r.Right := r.Left + Client.UndockWidth;
     r.Bottom := r.Top + Client.UndockHeight;
-    //site.ClientRect := r;
-    {$ELSE}
-    r.TopLeft := Client.ControlOrigin;
-    {$ENDIF}
     Site.BoundsRect := r;
+    //DebugLn('Before Wrap: ', DbgS(Site.BoundsRect));
+    Site.Visible := True;
     Client.Align := alNone;
-    //Client.Visible := True; //otherwise docking may be rejected
+    //Client.Visible := True; //otherwise docking may be rejected - see above
     Client.ManualDock(Site);
+    //DebugLn('After Wrap: ', DbgS(Site.BoundsRect));
+
     if ForIDE then begin
       //Site.Invalidate; //helps?
       //Client.Top := 0;
@@ -822,23 +750,6 @@ begin
 //retry make client auto-dockable
   ctl.DragKind := dkDock;
   ctl.DragMode := dmAutomatic;
-  Site.EnableAlign;
-end;
-
-procedure TDockMaster.DockHandleMouseMove(Sender: TObject; Shift: TShiftState;
-  X, Y: Integer);
-var
-  ctl: TControl;  // absolute Sender;
-begin
-(* Handler for DockHandle.OnMouseMove.
-  When the left button is pressed, start dragging (for docking).
-*)
-  if ssLeft in Shift then begin
-    ctl := Sender as TControl;
-    if ForIDE then
-      TWinControlAccess(ctl.Parent).DragKind := dkDock;
-    ctl.Parent.BeginDrag(ForIDE); //start immediately?
-  end;
 end;
 
 procedure TDockMaster.DumpSites;

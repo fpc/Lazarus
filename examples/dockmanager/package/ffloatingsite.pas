@@ -1,8 +1,11 @@
 unit fFloatingSite;
 (* Floating dock host.
   Host one or more docked clients.
-  To distinguish multiple clients, use the form header style (named caption).
   Destroy the site on the last undock.
+
+  To allow for un/docking forms without widgetset support, use dock headers.
+  To distinguish multiple clients, use the form header style (named caption).
+    Default are unnamed headers, override app specifc with hsForm.
 
   Handle flaws of the Delphi docking model (improper undock).
   - Disallow TControls to float (else nothing but trouble).
@@ -10,14 +13,13 @@ unit fFloatingSite;
     host site, to allow for continued docking of other clients.
 
 Problems:
-As with DockBook, closing docked forms results in Exceptions :-(
+As with DockBook, closing docked forms may result in Exceptions :-(
 
 *)
 
 {$mode objfpc}{$H+}
 
 {$DEFINE appdock} //using DockMaster/AppDockManager?
-{.$DEFINE DockGrip}
 
 interface
 
@@ -27,7 +29,6 @@ uses
 
 type
   TFloatingSite = class(TForm)
-    Image1: TImage;
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormDockDrop(Sender: TObject; Source: TDragDockObject;
       X, Y: Integer);
@@ -45,9 +46,6 @@ type
     procedure UpdateCaption(without: TControl);
   end;
 
-var
-  DockGrip: TPicture;
-
 implementation
 
 uses
@@ -57,13 +55,8 @@ uses
 
 // ----------- config --------------
 const
-{$IFDEF DockGrip}
-  HideSingleHeader = True; //headers only for multiple clients
-  HeaderStyle = hsForm; //form caption style
-{$ELSE}
-  HideSingleHeader: boolean = False; //always show dockheader
-  HeaderStyle: TEasyHeaderStyle = hsMinimal; //hsNone
-{$ENDIF}
+  HideSingleHeader = False; //always show dockheader, for undocking forms
+  HeaderStyle = hsMinimal;  //default to small headers (no caption bar)
 
 type
 {$IFDEF appdock}
@@ -124,8 +117,6 @@ begin
     //verify that both Parent and HostDockSite are cleared
       DebugLn('Undocked %s P=%p H=%p', [ctl.Name,
         pointer(ctl.Parent), pointer(ctl.HostDockSite)]);
-      //DebugLn('P=%p H=%p', [ctl.Parent, ctl.HostDockSite]);
-      //DebugLn('%x', [self]);
     end;
     if ctl is TCustomForm then begin
       //frm.Close; --- Exception!
@@ -135,7 +126,9 @@ begin
   end;
   //EndFormUpdate;
 {$ELSE}
-  //not required?
+  if DockClientCount > 0 then
+    CloseAction := caHide
+  else
 {$ENDIF}
   CloseAction := caFree;
 end;
@@ -180,15 +173,6 @@ begin
 (* select and configure the docking manager.
 *)
   inherited Loaded;
-{$IFDEF DockGrip}
-  if DockGrip = nil then begin
-    DockGrip := TPicture.Create;  //(Application);
-    DockGrip.Assign(self.Image1.Picture);
-  end;
-{$ELSE}
-  //leave nil
-  RemoveControl(Image1);
-{$ENDIF}
   if DockManager = nil then
     DockManager := TOurDockManager.Create(self);
   if DockManager is TEasyTree then begin

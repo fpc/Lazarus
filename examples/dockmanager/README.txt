@@ -1,6 +1,11 @@
 The examples/dockmanager directory contains several projects,
 provided by DoDi <DrDiettrich1@aol.com>
 
+!!!BEWARE!!!
+As long as new autosizing doesn't work properly,
+you'll have to use -dOldAutoSize.
+
+
 patches/
 ========
 contains some patches, which may not yet have found their way into the LCL.

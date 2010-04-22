@@ -1,4 +1,8 @@
 unit fMasterSite;
+(* Test dockable forms and elastic sites, and save/restore layout.
+
+ToDo: restore layout does not re-use existing forms?
+*)
 
 {$mode objfpc}{$H+}
 
@@ -31,15 +35,16 @@ var
 
 implementation
 
+{$IFDEF TestUnwrapped}
+uses
+  EasyDockSite; //CreateUniqueComponentName
+{$ENDIF}
 
 { TMasterSite }
 
 procedure TMasterSite.buCreateFormClick(Sender: TObject);
-var
-  AControl: TWinControl;
 begin
-  AControl:=DockMaster.CreateDockable('', True, True);
-  AControl.EnableAlign;
+  DockMaster.CreateDockable('', True, True);
 end;
 
 procedure TMasterSite.buDumpClick(Sender: TObject);
@@ -63,11 +68,25 @@ begin
 end;
 
 procedure TMasterSite.FormCreate(Sender: TObject);
+var
+  f: TWinControl;
 begin
   DockMaster := TDockMaster.Create(self); //(Application)?
   DockMaster.AddElasticSites(self, [alBottom]);
-  DockMaster.CreateDockable('', True, False);
-  DockMaster.CreateDockable('', True, False);
+  f := DockMaster.CreateDockable('', True);
+  if f.HostDockSite <> nil then
+    f := f.HostDockSite;
+  f.Top := 300;
+{$IFDEF TestUnwrapped}
+  f := DockMaster.CreateDockable('', True, False);
+  if f.Name = '' then //name it - for unique caption
+    f.Name := CreateUniqueComponentName(f.ClassName, f.Owner);
+{$ELSE}
+  f := DockMaster.CreateDockable('', True);
+  if f.HostDockSite <> nil then
+    f := f.HostDockSite;
+  f.Top := 600;
+{$ENDIF}
 end;
 
 initialization

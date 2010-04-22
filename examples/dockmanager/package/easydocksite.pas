@@ -330,6 +330,7 @@ function  ScreenRect(ACtrl: TControl): TRect;
 function  NoteBookCreate(AOwner: TWinControl): TCustomDockSite;
 procedure NoteBookAdd(ABook: TCustomDockSite; AItem: TControl); //to be removed
 function  TryRename(AComp: TComponent; const NewName: string): boolean;
+function  CreateUniqueComponentName(const AClassName: string; OwnerComponent: TComponent): string;
 
 const
   CustomDockSiteID = 1;

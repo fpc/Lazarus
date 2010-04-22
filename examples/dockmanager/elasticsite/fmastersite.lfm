@@ -8,6 +8,7 @@ object MasterSite: TMasterSite
   ClientWidth = 400
   OnCreate = FormCreate
   LCLVersion = '0.9.29'
+  Visible = True
   object buDump: TButton
     Left = 144
     Height = 23
