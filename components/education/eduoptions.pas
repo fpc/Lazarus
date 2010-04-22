@@ -399,6 +399,7 @@ function TEduOptions.SaveToFile(Filename: string): TModalResult;
 var
   Config: TConfigStorage;
 begin
+  //DebugLn(['TEduOptions.SaveToFile ',Filename]);
   Config:=GetIDEConfigStorage(Filename,false);
   try
     Result:=Save(Config);
@@ -428,11 +429,14 @@ end;
 procedure TEduOptions.DoAfterWrite;
 begin
   inherited DoAfterWrite;
+  if EducationOptions.Save<>mrOk then
+    DebugLn(['TEduOptions.DoAfterWrite Failed']);
   Apply;
 end;
 
 procedure TEduOptions.Apply;
 begin
+  //DebugLn(['TEduOptions.Apply ']);
   Root.Apply(Enabled);
 end;
 

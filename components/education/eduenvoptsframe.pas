@@ -118,8 +118,6 @@ procedure TEduEnvFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   if AOptions=EducationOptions then begin
     EducationOptions.Enabled:=EnableCheckBox.Checked;
-    if EducationOptions.Save<>mrOk then
-      DebugLn(['TEduEnvFrame.WriteSettings Failed']);
   end;
 end;
 
