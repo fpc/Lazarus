@@ -49,7 +49,7 @@ uses
   AvgLvlTree, AVL_Tree, LazConfigStorage,
   DefineTemplates, CodeToolManager, Laz_XMLWrite, Laz_XMLCfg, CodeCache,
   PropEdits, LazIDEIntf, MacroIntf, PackageIntf,
-  EditDefineTree, CompilerOptions, CompOptsModes,
+  EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs,
   LazarusIDEStrConsts, IDEProcs, ComponentReg,
   TransferMacros, FileReferenceList, PublishModule;
 
@@ -2475,6 +2475,7 @@ var
   FileVersion: integer;
   OldFilename: String;
   PathDelimChanged: boolean;
+  Config: TXMLOptionsStorage;
 
   procedure LoadFiles(const ThePath: string; List: TFPList);
   var
@@ -2553,7 +2554,12 @@ begin
   fPublishOptions.LoadFromXMLConfig(XMLConfig,Path+'PublishOptions/',
                                     PathDelimChanged);
   LoadStringList(XMLConfig,FProvides,Path+'Provides/');
-  //LoadStringToStringTree(XMLConfig,FCustomOptions,Path+'CustomOptions');
+  Config:=TXMLOptionsStorage.Create(XMLConfig);
+  try
+    TConfigMemStorage(CustomOptions).LoadFromToConfig(Config,Path+'CustomOptions/');
+  finally
+    Config.Free;
+  end;
   EndUpdate;
   Modified:=false;
   UnlockModified;
@@ -2564,6 +2570,7 @@ procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
   );
 var
   UsePathDelim: TPathDelimSwitch;
+  Config: TXMLOptionsStorage;
 
   function f(const AFilename: string): string;
   begin
@@ -2619,7 +2626,12 @@ begin
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/',UsePathDelim);
   fPublishOptions.SaveToXMLConfig(XMLConfig,Path+'PublishOptions/',UsePathDelim);
   SaveStringList(XMLConfig,FProvides,Path+'Provides/');
-  //SaveStringToStringTree(XMLConfig,FCustomOptions,Path+'CustomOptions');
+  Config:=TXMLOptionsStorage.Create(XMLConfig);
+  try
+    TConfigMemStorage(CustomOptions).SaveToConfig(Config,Path+'CustomOptions');
+  finally
+    Config.Free;
+  end;
   Modified:=false;
 end;
 
