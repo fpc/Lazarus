@@ -4476,7 +4476,10 @@ var
     if (tvoRowSelect in Options) and IsSelected then
       if tvoThemedDraw in Options then
       begin
-        Details := ThemeServices.GetElementDetails(ttItemSelected);
+        if Focused then
+          Details := ThemeServices.GetElementDetails(ttItemSelected)
+        else
+          Details := ThemeServices.GetElementDetails(ttItemSelectedNotFocus);
         ThemeServices.DrawElement(Canvas.Handle, Details, ARect, nil);
         Exit;
       end
@@ -4497,7 +4500,10 @@ var
   begin
     if IsSelected then
     begin
-      Details := ThemeServices.GetElementDetails(ttItemSelected);
+      if Focused then
+        Details := ThemeServices.GetElementDetails(ttItemSelected)
+      else
+        Details := ThemeServices.GetElementDetails(ttItemSelectedNotFocus);
       if not (tvoRowSelect in Options) then
         if (tvoThemedDraw in Options) then
           ThemeServices.DrawElement(Canvas.Handle, Details, NodeRect, nil)
