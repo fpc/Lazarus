@@ -117,6 +117,8 @@ type
     property OnOpenUnit: TNotifyEvent read FOnOpenUnit write FOnOpenUnit;
   end;
 
+function CompareControlsWithTag(Control1, Control2: Pointer): integer;
+
 implementation
 
 function CompareRegisteredComponents(Data1, Data2: Pointer): integer;
@@ -138,6 +140,19 @@ begin
   AClassName:=String(Key);
   RegComp:=TRegisteredComponent(Data);
   Result:=CompareText(AClassName,RegComp.ComponentClass.ClassName);
+end;
+
+function CompareControlsWithTag(Control1, Control2: Pointer): integer;
+var
+  Ctrl1: TControl absolute Control1;
+  Ctrl2: TControl absolute Control2;
+begin
+  if Ctrl1.Tag>Ctrl2.Tag then
+    Result:=1
+  else if Ctrl1.Tag<Ctrl2.Tag then
+    Result:=-1
+  else
+    Result:=0;
 end;
 
 { TComponentPalette }
@@ -464,44 +479,51 @@ var
   buttonx: integer;
   CurButton: TSpeedButton;
   Rows: Integer;
-  ButtonCount: Integer;
   MaxBtnPerRow: Integer;
+  ButtonTree: TAVLTree;
+  Node: TAVLTreeNode;
 begin
   //DebugLn(['TComponentPalette.ReAlignButtons ',Page.Caption,' ',Page.ClientWidth]);
   if FNoteBook<>nil then
     NoteBook.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
+  ButtonTree:=nil;
   try
-    ButtonCount:=0;
+    ButtonTree:=TAVLTree.Create(@CompareControlsWithTag);
+
     // skip the first control (this is the selection tool (TSpeedButton))
     for j:= 1 to Page.ControlCount-1 do begin
       CurButton:=TSpeedbutton(Page.Controls[j]);
       if not (CurButton is TSpeedButton) then continue;
-      inc(ButtonCount);
+      ButtonTree.Add(CurButton);
     end;
-    if ButtonCount=0 then exit;
+    if ButtonTree.Count=0 then exit;
 
     ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
 
     MaxBtnPerRow:=((Page.ClientWidth - ButtonX) div ComponentPaletteBtnWidth);
     if MaxBtnPerRow<1 then MaxBtnPerRow:=1;
-    Rows:=((ButtonCount-1) div MaxBtnPerRow)+1;
+    Rows:=((ButtonTree.Count-1) div MaxBtnPerRow)+1;
     //DebugLn(['TComponentPalette.ReAlignButtons ',DbgSName(Page),' PageIndex=',Page.PageIndex,' ClientRect=',dbgs(Page.ClientRect)]);
     // automatically set optimal row count and re-position controls to use height optimally
 
     if Rows <= 0 then Rows:= 1; // avoid division by zero
 
-    for j:= 1 to Page.ControlCount-1 do begin
-      CurButton:=TSpeedbutton(Page.Controls[j]);
-      if not (CurButton is TSpeedButton) then continue;
+    j:=0;
+    Node:=ButtonTree.FindLowest;
+    while Node<>nil do begin
+      CurButton:=TSpeedbutton(Node.Data);
       CurButton.SetBounds(
-        ButtonX + ((j-1) div Rows) * ComponentPaletteBtnWidth,
-        ((j-1) mod Rows) * ComponentPaletteBtnHeight,
+        ButtonX + (j div Rows) * ComponentPaletteBtnWidth,
+        (j mod Rows) * ComponentPaletteBtnHeight,
         CurButton.Width,CurButton.Height);
       //DebugLn(['TComponentPalette.ReAlignButtons ',CurButton.Name,' ',dbgs(CurButton.BoundsRect)]);
+      inc(j);
+      Node:=ButtonTree.FindSuccessor(Node);
     end;
   finally
     if NoteBook<>nil then
       NoteBook.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
+    FreeAndNil(ButtonTree);
   end;
 end;
 
@@ -516,6 +538,7 @@ var
   CurPageIndex: Integer;
   j: Integer;
   OldActivePage: String;
+  BtnIndex: Integer;
 begin
   if fUpdatingNotebook then exit;
   if IsUpdateLocked then begin
@@ -591,9 +614,11 @@ begin
       end;
 
       // create component buttons
+      BtnIndex:=0;
       for j:=0 to CurPage.Count-1 do begin
         CurComponent:=TPkgComponent(CurPage[j]);
         if CurComponent.Visible then begin
+          inc(BtnIndex);
           //DebugLn(['TComponentPalette.UpdateNoteBookButtons ',DbgSName(CurComponent.ComponentClass),' ',CurComponent.Visible]);
           if CurComponent.Button=nil then begin
             CurBtn:=TSpeedButton.Create(nil);
@@ -610,13 +635,17 @@ begin
               Flat := true;
               OnClick := @ComponentBtnClick;
               OnDblClick := @ComponentBtnDblClick;
+              ShowHint := true;
               Hint := CurComponent.ComponentClass.ClassName;
               CurBtn.PopupMenu:=Self.PopupMenu;
               Parent := CurNoteBookPage;
+              Tag:=BtnIndex;
             end;
             //debugln(['TComponentPalette.UpdateNoteBookButtons Created Button: ',CurComponent.ComponentClass.ClassName,' ',CurComponent.Button.Name]);
           end else begin
-            TControl(CurComponent.Button).Parent := CurNoteBookPage;
+            CurBtn:=TSpeedButton(CurComponent.Button);
+            CurBtn.Parent := CurNoteBookPage;
+            CurBtn.Tag:=BtnIndex;
             //DebugLn(['TComponentPalette.UpdateNoteBookButtons Keep Button: ',CurComponent.ComponentClass.ClassName,' ',CurComponent.Button.Name,' ',DbgSName(TControl(CurComponent.Button).Parent)]);
           end;
         end else if CurComponent.Button<>nil then begin
