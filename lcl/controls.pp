@@ -830,7 +830,9 @@ type
     cfBaseBoundsValid,
     cfPreferredSizeValid,
     cfPreferredMinSizeValid,
+    {$IFDEF OldAutoSize}
     cfOnResizeNeeded,
+    {$ENDIF}
     cfOnChangeBoundsNeeded
     );
   TControlFlags = set of TControlFlag;

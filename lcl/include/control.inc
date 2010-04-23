@@ -874,7 +874,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.DoOnResize;
 begin
+  {$IFDEF OldAutoSize}
   Exclude(FControlFlags,cfOnResizeNeeded);
+  {$ENDIF}
   if Assigned(FOnResize) then FOnResize(Self);
   DoCallNotifyHandler(chtOnResize);
 end;
@@ -2464,6 +2466,27 @@ procedure TControl.DoAllAutoSize;
     end;
   end;
 
+  function CallAllOnResize(AControl: TControl): boolean;
+  // the OnResize event is called for Delphi compatibility after child resizes
+  var
+    AWinControl: TWinControl;
+    i: Integer;
+  begin
+    if AControl=nil then exit(true);
+    Result:=false;
+    if cfAutoSizeNeeded in FControlFlags then begin
+      // something has changed => the autosizing must restart
+      exit;
+    end;
+    if AControl is TWinControl then begin
+      AWinControl:=TWinControl(AControl);
+      for i:=0 to AWinControl.ControlCount-1 do
+        if not CallAllOnResize(AWinControl.Controls[i]) then exit;
+    end;
+    AControl.Resize;
+    Result:=true;
+  end;
+
 begin
   if Parent<>nil then raise Exception.Create('TControl.DoAllAutoSize Parent<>nil');
   if AutoSizingAll then exit;
@@ -2480,6 +2503,8 @@ begin
       DebugLn(['TControl.DoAllAutoSize LOOP ',DbgSName(Self),' ',dbgs(BoundsRect)]);
       {$ENDIF}
       AutoSizeControl(Self);
+      if not (cfAutoSizeNeeded in FControlFlags) then
+        CallAllOnResize(Self);
     end;
   finally
     fAutoSizingAll:=false;
@@ -3062,14 +3087,19 @@ end;
 procedure TControl.Resize;
 begin
   if ([csLoading,csDestroying]*ComponentState<>[]) then exit;
+  {$IFNDEF OldAutoSize}
+  if AutoSizeDelayed then exit;
+  {$ENDIF}
 
   if (FLastResizeWidth<>Width) or (FLastResizeHeight<>Height)
   or (FLastResizeClientWidth<>ClientWidth)
   or (FLastResizeClientHeight<>ClientHeight) then begin
+    {$IFDEF OldAutoSize}
     if FormIsUpdating then begin
       Include(FControlFlags,cfOnResizeNeeded);
       exit;
     end;
+    {$ENDIF}
     //if AnsiCompareText('NOTEBOOK',Name)=0 then
     {DebugLn(['[TControl.Resize] ',Name,':',ClassName,
     ' Last=',FLastResizeWidth,',',FLastResizeHeight,
