@@ -530,7 +530,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
       OnChange = ColorElementTreeChange
       OnClick = ColorElementTreeClick
-      Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowLines, tvoToolTips, tvoNoDoubleClickExpand]
+      Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowLines, tvoToolTips, tvoThemedDraw, tvoNoDoubleClickExpand]
     end
   end
   object ColorPreview: TSynEdit[8]

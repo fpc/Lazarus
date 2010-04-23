@@ -62,6 +62,6 @@ object RestrictionBrowserView: TRestrictionBrowserView
     ShowLines = False
     TabOrder = 2
     OnSelectionChanged = IssueTreeViewSelectionChanged
-    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowRoot, tvoToolTips]
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
 end

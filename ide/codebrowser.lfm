@@ -148,7 +148,7 @@ object CodeBrowserView: TCodeBrowserView
     TabOrder = 2
     OnMouseDown = BrowseTreeViewMouseDown
     OnShowHint = BrowseTreeViewShowHint
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object StatusBar1: TStatusBar
     Left = 0

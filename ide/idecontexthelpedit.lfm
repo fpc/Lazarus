@@ -37,7 +37,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
       DefaultItemHeight = 19
       ReadOnly = True
       TabOrder = 0
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
     object CreateHelpNodeForControlButton: TButton
       Left = 6
@@ -84,7 +84,7 @@ object ContextHelpEditorDlg: TContextHelpEditorDlg
       ReadOnly = True
       TabOrder = 0
       OnSelectionChanged = HelpNodesTreeViewSelectionChanged
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
     object HelpNodePropertiesGroupBox: TGroupBox
       Left = 6

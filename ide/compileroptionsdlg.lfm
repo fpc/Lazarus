@@ -1139,7 +1139,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         ReadOnly = True
         TabOrder = 0
         OnSelectionChanged = InhTreeViewSelectionChanged
-        Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+        Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       end
       object InhItemMemo: TMemo
         Left = 6
@@ -1747,7 +1747,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     ReadOnly = True
     TabOrder = 2
     OnSelectionChanged = CategoryTreeViewSelectionChanged
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object CategorySplitter: TSplitter
     Left = 121

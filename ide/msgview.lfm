@@ -24,7 +24,7 @@ inherited MessagesView: TMessagesView
     ShowRoot = False
     TabOrder = 0
     OnExit = MessageViewExit
-    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoToolTips]
+    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoToolTips, tvoThemedDraw]
   end
   object MainPopupMenu: TPopupMenu[1]
     OnPopup = MainPopupMenuPopup

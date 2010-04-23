@@ -47,7 +47,7 @@ inherited EditorMouseOptionsAdvFrame: TEditorMouseOptionsAdvFrame
     ShowRoot = False
     TabOrder = 1
     OnChange = ContextTreeChange
-    Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowLines, tvoToolTips, tvoNoDoubleClickExpand]
+    Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowLines, tvoToolTips, tvoThemedDraw, tvoNoDoubleClickExpand]
   end
   object Splitter1: TSplitter[2]
     Left = 130

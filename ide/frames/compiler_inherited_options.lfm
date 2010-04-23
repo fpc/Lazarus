@@ -3,11 +3,12 @@ inherited CompilerInheritedOptionsFrame: TCompilerInheritedOptionsFrame
   Width = 576
   ClientHeight = 444
   ClientWidth = 576
+  TabOrder = 0
   DesignLeft = 957
   DesignTop = 308
   object InhNoteLabel: TLabel[0]
     Left = 0
-    Height = 14
+    Height = 16
     Top = 0
     Width = 576
     Align = alTop
@@ -17,20 +18,20 @@ inherited CompilerInheritedOptionsFrame: TCompilerInheritedOptionsFrame
   object InhTreeView: TTreeView[1]
     Left = 0
     Height = 247
-    Top = 14
+    Top = 16
     Width = 576
     Align = alTop
-    DefaultItemHeight = 15
+    DefaultItemHeight = 17
     ReadOnly = True
     RightClickSelect = True
     TabOrder = 0
     OnSelectionChanged = InhTreeViewSelectionChanged
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object InhItemMemo: TMemo[2]
     Left = 0
-    Height = 178
-    Top = 266
+    Height = 176
+    Top = 268
     Width = 576
     Align = alClient
     ReadOnly = True
@@ -41,7 +42,7 @@ inherited CompilerInheritedOptionsFrame: TCompilerInheritedOptionsFrame
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 261
+    Top = 263
     Width = 576
     Align = alTop
     ResizeAnchor = akTop

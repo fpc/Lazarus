@@ -44,7 +44,7 @@ object CodeExplorerView: TCodeExplorerView
         OnDblClick = CodeTreeviewDblClick
         OnDeletion = CodeTreeviewDeletion
         OnKeyUp = CodeTreeviewKeyUp
-        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand]
+        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw, tvoNoDoubleClickExpand]
       end
       object CodeTreeviewButtonPanel: TPanel
         Left = 0
@@ -145,7 +145,7 @@ object CodeExplorerView: TCodeExplorerView
         OnDblClick = DirectivesTreeViewDblClick
         OnDeletion = DirectivesTreeViewDeletion
         OnKeyUp = DirectivesTreeViewKeyUp
-        Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+        Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
       end
     end
   end

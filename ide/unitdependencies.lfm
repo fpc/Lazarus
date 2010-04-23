@@ -90,6 +90,6 @@ object UnitDependenciesView: TUnitDependenciesView
     OnCollapsing = UnitTreeViewCollapsing
     OnExpanding = UnitTreeViewExpanding
     OnMouseDown = UnitTreeViewMouseDown
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
 end

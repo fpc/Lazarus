@@ -84,7 +84,7 @@ object ComponentListForm: TComponentListForm
           TabOrder = 0
           OnDblClick = TreePalletteDblClick
           OnKeyDown = TreePalletteKeyDown
-          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand]
+          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoThemedDraw, tvoNoDoubleClickExpand]
         end
       end
     end
@@ -114,7 +114,7 @@ object ComponentListForm: TComponentListForm
           TabOrder = 0
           OnDblClick = TreeInheritanceDblClick
           OnKeyDown = TreeInheritanceKeyDown
-          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand]
+          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw, tvoNoDoubleClickExpand]
         end
       end
     end

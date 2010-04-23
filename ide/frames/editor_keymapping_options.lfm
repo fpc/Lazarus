@@ -56,7 +56,7 @@ inherited EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     TabOrder = 1
     OnDblClick = KeyMappingTreeViewDblClick
     OnSelectionChanged = KeyMappingTreeViewSelectionChanged
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object KeyMappingFindKeyButton: TButton[3]
     AnchorSideLeft.Control = Owner

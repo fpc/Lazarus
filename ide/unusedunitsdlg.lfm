@@ -22,7 +22,7 @@ object UnusedUnitsDialog: TUnusedUnitsDialog
     ScrollBars = ssAutoBoth
     TabOrder = 0
     OnSelectionChanged = UnitsTreeViewSelectionChanged
-    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object Panel1: TPanel
     Left = 0

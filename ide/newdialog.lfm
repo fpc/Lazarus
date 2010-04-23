@@ -3,7 +3,6 @@ object NewOtherDialog: TNewOtherDialog
   Height = 395
   Top = 204
   Width = 476
-  ActiveControl = ItemsTreeView
   BorderIcons = [biSystemMenu]
   Caption = 'NewOtherDialog'
   ClientHeight = 395
@@ -29,13 +28,13 @@ object NewOtherDialog: TNewOtherDialog
       Top = 0
       Width = 178
       Align = alClient
-      DefaultItemHeight = 15
+      DefaultItemHeight = 17
       ReadOnly = True
       ScrollBars = ssAutoBoth
       TabOrder = 0
       OnDblClick = OkButtonClick
       OnSelectionChanged = ItemsTreeViewSelectionChanged
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
     object DescriptionGroupBox: TGroupBox
       AnchorSideLeft.Control = ItemsTreeView
@@ -54,7 +53,7 @@ object NewOtherDialog: TNewOtherDialog
       TabOrder = 1
       object DescriptionLabel: TLabel
         Left = 6
-        Height = 14
+        Height = 16
         Top = 6
         Width = 265
         Align = alTop
@@ -65,8 +64,8 @@ object NewOtherDialog: TNewOtherDialog
       end
       object InheritableComponentsListView: TListView
         Left = 0
-        Height = 307
-        Top = 26
+        Height = 305
+        Top = 28
         Width = 277
         Align = alClient
         Columns = <        
@@ -79,6 +78,7 @@ object NewOtherDialog: TNewOtherDialog
             Width = 250
           end>
         HideSelection = False
+        ItemIndex = -1
         ReadOnly = True
         RowSelect = True
         ScrollBars = ssAutoBoth
