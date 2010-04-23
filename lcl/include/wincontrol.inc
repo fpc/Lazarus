@@ -7715,7 +7715,7 @@ end;
 function TWinControl.DoUnDockClientMsg(NewTarget, Client: TControl): boolean;
 begin
   Result := True;
-  DebugLn(['TWinControl.DoUnDockClientMsg ',DbgSName(Self),' ',DbgSName(Client),' ',DbgSName(Client.Parent)]);
+  DebugLn(['TWinControl.DoUnDockClientMsg ',DbgSName(Self),' Client=',DbgSName(Client),' Client.Parent=',DbgSName(Client.Parent)]);
   if FUseDockManager and (DockManager <> nil) then
     DockManager.RemoveControl(Client);
 end;
