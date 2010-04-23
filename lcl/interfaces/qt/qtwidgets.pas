@@ -6270,7 +6270,11 @@ begin
     QEventKeyRelease: SlotKey(Sender, Event);
     QEventMouseButtonPress,
     QEventMouseButtonRelease,
-    QEventMouseButtonDblClick: Result := SlotTabBarMouse(Sender, Event);
+    QEventMouseButtonDblClick:
+      begin
+        if QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton then
+          Result := SlotTabBarMouse(Sender, Event);
+      end;
   else
     QEvent_ignore(Event);
   end;
