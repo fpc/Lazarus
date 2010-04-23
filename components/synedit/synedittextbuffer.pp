@@ -80,26 +80,12 @@ type
                                     aLinePos, aBytePos, aCount, aLineBrkCnt: Integer; aText: String);
   end;
 
-  { TSynManagedStorageMem }
-
-  TSynManagedStorageMem = class(TSynEditStorageMem)
-  protected
-    // Todo: Add Flags,which updates are required
-    procedure LineTextChanged(AIndex: Integer); virtual;
-    procedure InsertedLines(AIndex, ACount: Integer); virtual;
-    procedure DeletedLines(AIndex, ACount: Integer); virtual;
-  end;
-
   { TSynEditStringMemory }
-  TSynEditStringRangeEntry = record
-    Index: TClass;
-    Data: TSynManagedStorageMem;
-  end;
 
   TSynEditStringMemory = class(TSynEditStorageMem)
   private
     FAttributeSize: Integer;
-    FRangeList: Array of TSynEditStringRangeEntry;
+    FRangeList: TSynManagedStorageMemList;
     FRangeListLock: Integer;
     function GetAttribute(Index: Integer; Pos: Integer; Size: Word): Pointer;
     function GetAttributeSize: Integer;
@@ -118,6 +104,7 @@ type
     procedure SetCapacity(const AValue: Integer); override;
   public
     constructor Create;
+    destructor Destroy; override;
 
     procedure InsertRows(AIndex, ACount: Integer); override;
     procedure DeleteRows(AIndex, ACount: Integer); override;
@@ -1120,33 +1107,33 @@ const
 constructor TSynEditStringMemory.Create;
 begin
   inherited Create;
+  FRangeList := TSynManagedStorageMemList.Create;
   FRangeListLock := 0;
   AttributeSize := 0;
-  FRangeList := nil;
+end;
+
+destructor TSynEditStringMemory.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FRangeList);
 end;
 
 procedure TSynEditStringMemory.InsertRows(AIndex, ACount: Integer);
-var
-  i: Integer;
 begin
   // Managed lists to get Mave, Count, instead of InsertRows
   inc(FRangeListLock);
   inherited InsertRows(AIndex, ACount);
   dec(FRangeListLock);
-  for i := 0 to length(FRangeList) - 1 do
-    FRangeList[i].Data.InsertedLines(AIndex, ACount);
+  FRangeList.CallInsertedLines(AIndex, ACount);
 end;
 
 procedure TSynEditStringMemory.DeleteRows(AIndex, ACount: Integer);
-var
-  i: Integer;
 begin
   // Managed lists to get Mave, Count, instead of InsertRows
   inc(FRangeListLock);
   inherited DeleteRows(AIndex, ACount);
   dec(FRangeListLock);
-  for i := 0 to length(FRangeList) - 1 do
-    FRangeList[i].Data.DeletedLines(AIndex, ACount);
+  FRangeList.CallDeletedLines(AIndex, ACount);
 end;
 
 procedure TSynEditStringMemory.Move(AFrom, ATo, ALen: Integer);
@@ -1161,8 +1148,7 @@ begin
     for i:=ATo+Alen-Len to ATo+ALen -1 do Strings[i]:='';
   end;
   inherited Move(AFrom, ATo, ALen);
-  for i := 0 to length(FRangeList) - 1 do
-    FRangeList[i].Data.Move(AFrom, ATo, ALen);
+  FRangeList.CallMove(AFrom, ATo, ALen);
 end;
 
 procedure TSynEditStringMemory.SetCount(const AValue: Integer);
@@ -1174,16 +1160,12 @@ begin
     Strings[i]:='';
   OldCount := Count;
   inherited SetCount(AValue);
-  for i := 0 to length(FRangeList) - 1 do
-    FRangeList[i].Data.Count := AValue;
+  FRangeList.ChildCounts := AValue;
   if FRangeListLock = 0 then begin
-    if OldCount > Count then begin
-      for i := 0 to length(FRangeList) - 1 do
-        FRangeList[i].Data.DeletedLines(Count, OldCount - Count);
-    end else begin
-      for i := 0 to length(FRangeList) - 1 do
-        FRangeList[i].Data.InsertedLines(OldCount, Count - OldCount);
-    end;
+    if OldCount > Count then
+      FRangeList.CallDeletedLines(Count, OldCount - Count)
+    else
+      FRangeList.CallInsertedLines(OldCount, Count - OldCount);
   end;
 end;
 
@@ -1209,13 +1191,10 @@ begin
 end;
 
 procedure TSynEditStringMemory.SetString(Index: Integer; const AValue: String);
-var
-  i: Integer;
 begin
   (PString(Mem + Index * FAttributeSize))^ := AValue;
   if FRangeListLock = 0 then
-    for i := 0 to length(FRangeList) - 1 do
-      FRangeList[i].Data.LineTextChanged(Index);
+    FRangeList.CallLineTextChanged(Index);
 end;
 
 function TSynEditStringMemory.ItemSize: Integer;
@@ -1224,12 +1203,9 @@ begin
 end;
 
 procedure TSynEditStringMemory.SetCapacity(const AValue: Integer);
-var
-  i: Integer;
 begin
   inherited SetCapacity(AValue);
-  for i := 0 to length(FRangeList) - 1 do
-    FRangeList[i].Data.Capacity := AValue;
+  FRangeList.ChildCapacities := AValue;
 end;
 
 function TSynEditStringMemory.GetObject(Index: Integer): TObject;
@@ -1238,13 +1214,8 @@ begin
 end;
 
 function TSynEditStringMemory.GetRange(Index: TClass): TSynManagedStorageMem;
-var
-  i: Integer;
 begin
-  for i := 0 to length(FRangeList) - 1 do
-    if FRangeList[i].Index = Index then
-      exit(FRangeList[i].Data);
-  Result := nil;
+  Result := FRangeList[Index];
 end;
 
 procedure TSynEditStringMemory.SetObject(Index: Integer; const AValue: TObject);
@@ -1253,34 +1224,8 @@ begin
 end;
 
 procedure TSynEditStringMemory.SetRange(Index: TClass; const AValue: TSynManagedStorageMem);
-var
-  i, j: Integer;
 begin
-  i := length(FRangeList) - 1;
-  while (i >= 0) and (FRangeList[i].Index <> Index) do
-    dec(i);
-
-  if i < 0 then begin
-    if AValue = nil then begin
-      debugln('Removing none existent range');
-      exit;
-    end;
-    j := length(FRangeList);
-    SetLength(FRangeList, j + 1);
-    FRangeList[j].Data := AValue;
-    FRangeList[j].Index := Index;
-  end
-  else
-  begin
-    if AValue <> nil then
-      DebugLn(['TSynEditStringMemory.SetRange - Overwriting old range at index=', i, ' index=', dbgs(Index)]);
-    FRangeList[i].Data := AValue;
-    if AValue = nil then begin
-      for j := i to length(FRangeList) - 2 do
-        FRangeList[j] := FRangeList[j+1];
-      SetLength(FRangeList, length(FRangeList) - 1);
-    end;
-  end;
+  FRangeList[Index] := AValue;
 
   if AValue <> nil then begin
     AValue.Capacity := Capacity;
@@ -1310,7 +1255,8 @@ end;
 
 { TLineRangeNotificationList }
 
-procedure TLineRangeNotificationList.CallRangeNotifyEvents(Sender: TSynEditStrings; aIndex, aCount: Integer);
+procedure TLineRangeNotificationList.CallRangeNotifyEvents(Sender: TSynEditStrings;
+  aIndex, aCount: Integer);
 var
   i: LongInt;
 begin
@@ -1330,20 +1276,6 @@ begin
   while NextDownIndex(i) do
     TStringListLineEditEvent(Items[i])(Sender, aLinePos, aBytePos, aCount,
                              aLineBrkCnt, aText);
-end;
-
-{ TSynManagedStorageMem }
-
-procedure TSynManagedStorageMem.LineTextChanged(AIndex: Integer);
-begin  // empty base class
-end;
-
-procedure TSynManagedStorageMem.InsertedLines(AIndex, ACount: Integer);
-begin  // empty base class
-end;
-
-procedure TSynManagedStorageMem.DeletedLines(AIndex, ACount: Integer);
-begin  // empty base class
 end;
 
 end.

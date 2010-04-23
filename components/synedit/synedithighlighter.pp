@@ -216,7 +216,7 @@ type
     fAttributes: TStringList;
     fAttrChangeHooks: TMethodList;
     FCapabilities: TSynHighlighterCapabilities;
-    FCurrentLines: TSynEditStrings;
+    FCurrentLines: TSynEditStringsBase;
     FCurrentRanges: TSynHighlighterRangeList;
     FDrawDividerLevel: Integer;
     FLineIndex: Integer;
@@ -225,7 +225,7 @@ type
     fEnabled: Boolean;
     fWordBreakChars: TSynIdentChars;
     FIsScanning: Boolean;
-    procedure SetCurrentLines(const AValue: TSynEditStrings);
+    procedure SetCurrentLines(const AValue: TSynEditStringsBase);
     procedure SetDrawDividerLevel(const AValue: Integer);
     procedure SetEnabled(const Value: boolean);                                 //DDH 2001-10-23
   protected
@@ -273,8 +273,8 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
     procedure EndUpdate;
-    procedure AttachToLines(Lines: TSynEditStrings);
-    procedure DetachFromLines(Lines: TSynEditStrings);
+    procedure AttachToLines(Lines: TSynEditStringsBase);
+    procedure DetachFromLines(Lines: TSynEditStringsBase);
   public
     function GetEol: Boolean; virtual; abstract;
     function GetRange: Pointer; virtual;
@@ -292,7 +292,7 @@ type
       read GetDrawDivider;
     property DrawDividerLevel: Integer read FDrawDividerLevel write SetDrawDividerLevel;
   public
-    property CurrentLines: TSynEditStrings read FCurrentLines write SetCurrentLines;
+    property CurrentLines: TSynEditStringsBase read FCurrentLines write SetCurrentLines;
 
     procedure StartAtLineIndex(LineNumber:Integer); virtual; // 0 based
     procedure ContinueNextLine; // To be called at EOL; does not read the range
@@ -1282,7 +1282,7 @@ begin
   end;
 end;
 
-procedure TSynCustomHighlighter.SetCurrentLines(const AValue: TSynEditStrings);
+procedure TSynCustomHighlighter.SetCurrentLines(const AValue: TSynEditStringsBase);
 begin
   if AValue = FCurrentLines then
     exit;
@@ -1290,7 +1290,7 @@ begin
   FCurrentRanges := TSynHighlighterRangeList(AValue.Ranges[ClassType]);
 end;
 
-procedure TSynCustomHighlighter.AttachToLines(Lines: TSynEditStrings);
+procedure TSynCustomHighlighter.AttachToLines(Lines: TSynEditStringsBase);
 var
   r: TSynHighlighterRangeList;
 begin
@@ -1305,7 +1305,7 @@ begin
   FCurrentLines := nil;
 end;
 
-procedure TSynCustomHighlighter.DetachFromLines(Lines: TSynEditStrings);
+procedure TSynCustomHighlighter.DetachFromLines(Lines: TSynEditStringsBase);
 var
   r: TSynHighlighterRangeList;
 begin

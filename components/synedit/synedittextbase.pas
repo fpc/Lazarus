@@ -57,7 +57,6 @@ type
 
 type
 
-
   { TSynEditStorageMem }
 
   TSynEditStorageMem = class
@@ -83,15 +82,56 @@ type
     property Count: Integer read FCount write SetCount;
   end;
 
+  { TSynManagedStorageMem }
+
+  TSynManagedStorageMem = class(TSynEditStorageMem)
+  protected
+    // Todo: Add Flags,which updates are required
+    procedure LineTextChanged(AIndex: Integer); virtual;
+    procedure InsertedLines(AIndex, ACount: Integer); virtual;
+    procedure DeletedLines(AIndex, ACount: Integer); virtual;
+  end;
+
+
+  { TSynManagedStorageMemList }
+
+  TSynManagedStorageMemList = class
+  private
+    FStorageMemList: Array of TSynManagedStorageMem;
+    FClassList: Array of TClass;
+    function GetStorageMems(Index: TClass): TSynManagedStorageMem;
+    procedure SetStorageMems(Index: TClass; const AValue: TSynManagedStorageMem);
+    procedure SetChildCapacities(const AValue: Integer);
+    procedure SetChildCounts(const AValue: Integer);
+  public
+    procedure CallMove(AFrom, ATo, ALen: Integer);
+    procedure CallLineTextChanged(AIndex: Integer);
+    procedure CallInsertedLines(AIndex, ACount: Integer);
+    procedure CallDeletedLines(AIndex, ACount: Integer);
+    property ChildCapacities: Integer write SetChildCapacities;
+    property ChildCounts: Integer write SetChildCounts;
+    property StorageMems[Index: TClass]: TSynManagedStorageMem
+             read GetStorageMems write SetStorageMems; default;
+  end;
+
+  { TSynEditStringsBase }
+
+  TSynEditStringsBase = class(TStrings)
+  protected
+    function GetRange(Index: TClass): TSynEditStorageMem; virtual; abstract;
+    procedure PutRange(Index: TClass; const ARange: TSynEditStorageMem); virtual; abstract;
+  public
+    procedure SendHighlightChanged(aIndex, aCount: Integer); virtual; abstract;
+    property Ranges[Index: TClass]: TSynEditStorageMem read GetRange write PutRange;
+  end;
+
   { TSynEditStrings }
 
-  TSynEditStrings = class(TStrings)
+  TSynEditStrings = class(TSynEditStringsBase)
   protected
     FIsUtf8: Boolean;
     function  GetIsUtf8 : Boolean; virtual;
     procedure SetIsUtf8(const AValue : Boolean); virtual;
-    function GetRange(Index: TClass): TSynEditStorageMem; virtual; abstract;
-    procedure PutRange(Index: TClass; const ARange: TSynEditStorageMem); virtual; abstract;
     function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; virtual; abstract;
     procedure SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer); virtual; abstract;
 
@@ -138,6 +178,7 @@ type
 
     procedure AddEditHandler(AHandler: TStringListLineEditEvent);
     procedure RemoveEditHandler(AHandler: TStringListLineEditEvent);
+    procedure SendHighlightChanged(aIndex, aCount: Integer); override;
   public
     function GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
     function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; virtual; abstract;
@@ -163,12 +204,10 @@ type
     property CurUndoList: TSynEditUndoList read GetCurUndoList; // Re or Undo (Redo while undoing)
     property IsUndoing: Boolean read GetIsUndoing write SetIsUndoing;
     property IsRedoing: Boolean read GetIsRedoing write SetIsRedoing;
-    procedure SendHighlightChanged(aIndex, aCount: Integer);
   public
     property ExpandedStrings[Index: integer]: string read GetExpandedString;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
     property IsUtf8: Boolean read GetIsUtf8 write SetIsUtf8;
-    property Ranges[Index: TClass]: TSynEditStorageMem read GetRange write PutRange;
   end;
 
   { TSynEditStringsLinked }
@@ -409,6 +448,11 @@ begin
   RemoveGenericHandler(senrEditAction, TMethod(AHandler));
 end;
 
+procedure TSynEditStrings.SendHighlightChanged(aIndex, aCount: Integer);
+begin
+  SendNotification(senrHighlightChanged, Self, aIndex, aCount);
+end;
+
 function TSynEditStrings.GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
 begin
   Result := GetPhysicalCharWidths(Strings[Index], Index);
@@ -525,11 +569,6 @@ begin
   end;
 
   Result := BytePos + 1 + PhysicalPos - ScreenPos;
-end;
-
-procedure TSynEditStrings.SendHighlightChanged(aIndex, aCount: Integer);
-begin
-  SendNotification(senrHighlightChanged, Self, aIndex, aCount);
 end;
 
 { TSynEditStringsLinked }
@@ -1240,6 +1279,118 @@ begin
     System.Move((FMem+AFrom*ItemSize)^, (FMem+ATo*ItemSize)^, Alen*ItemSize);
     FillChar((FMem+AFrom*ItemSize)^, Len*ItemSize, 0);
   end;
+end;
+
+{ TSynManagedStorageMem }
+
+procedure TSynManagedStorageMem.LineTextChanged(AIndex: Integer);
+begin  // empty base class
+end;
+
+procedure TSynManagedStorageMem.InsertedLines(AIndex, ACount: Integer);
+begin  // empty base class
+end;
+
+procedure TSynManagedStorageMem.DeletedLines(AIndex, ACount: Integer);
+begin  // empty base class
+end;
+
+{ TSynManagedStorageMemList }
+
+function TSynManagedStorageMemList.GetStorageMems(Index: TClass): TSynManagedStorageMem;
+var
+  i: Integer;
+begin
+  Result := nil;
+  i := length(FClassList);
+  while (i > 0) and (Result = nil) do begin
+    dec(i);
+    if FClassList[i] = Index then
+      Result := FStorageMemList[i];
+  end;
+end;
+
+procedure TSynManagedStorageMemList.SetStorageMems(Index: TClass;
+  const AValue: TSynManagedStorageMem);
+var
+  i, j: Integer;
+begin
+  i := length(FClassList) - 1;
+  while (i >= 0) and (FClassList[i] <> Index) do
+    dec(i);
+
+  if i < 0 then begin
+    if AValue = nil then begin
+      debugln('Removing none existent range');
+      exit;
+    end;
+    j := length(FClassList);
+    SetLength(FClassList, j + 1);
+    SetLength(FStorageMemList, j + 1);
+    FClassList[j]      := Index;
+    FStorageMemList[j] := AValue;
+  end
+  else begin
+    if AValue <> nil then
+      DebugLn(['TSynEditStringMemory.SetRange - Overwriting old range at index=', i, ' index=', dbgs(Index)]);
+    FStorageMemList[i] := AValue;
+    if AValue = nil then begin
+      for j := i to length(FClassList) - 2 do begin
+        FClassList[j]      := FClassList[j+1];
+        FStorageMemList[j] := FStorageMemList[j+1];
+      end;
+      SetLength(FClassList, length(FClassList) - 1);
+      SetLength(FStorageMemList, length(FStorageMemList) - 1);
+    end;
+  end;
+end;
+
+procedure TSynManagedStorageMemList.SetChildCapacities(const AValue: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to high(FStorageMemList) do
+    FStorageMemList[i].Capacity := AValue;
+end;
+
+procedure TSynManagedStorageMemList.SetChildCounts(const AValue: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to high(FStorageMemList) do
+    FStorageMemList[i].Count := AValue;
+end;
+
+procedure TSynManagedStorageMemList.CallMove(AFrom, ATo, ALen: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to high(FStorageMemList) do
+    FStorageMemList[i].Move(AFrom, ATo, ALen);
+end;
+
+procedure TSynManagedStorageMemList.CallLineTextChanged(AIndex: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to high(FStorageMemList) do
+    FStorageMemList[i].LineTextChanged(AIndex);
+end;
+
+procedure TSynManagedStorageMemList.CallInsertedLines(AIndex, ACount: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to high(FStorageMemList) do
+    FStorageMemList[i].InsertedLines(AIndex, ACount);
+end;
+
+procedure TSynManagedStorageMemList.CallDeletedLines(AIndex, ACount: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to high(FStorageMemList) do
+    FStorageMemList[i].DeletedLines(AIndex, ACount);
 end;
 
 end.
