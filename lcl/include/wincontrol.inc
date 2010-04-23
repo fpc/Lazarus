@@ -33,7 +33,7 @@
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxTPage';
-const CheckPostionName = 'MainIDE';
+const CheckPostionName = 'LCLInterfaceRadioGroup';
 const CheckPostionParentName = 'xxxEnvVarsPage';
 
 function CheckPosition(AControl: TControl): boolean;
@@ -2733,7 +2733,7 @@ var
       if CheckPosition(Control) then
       with Control do begin
         DebugLn(['[TWinControl.AlignControls.DoPosition] After Anchoring',
-          ' ',Name,':',ClassName,
+          ' Self=',DbgSName(Self),
           ' Align=',AlignNames[AAlign],
           ' Control=',dbgsName(Control),
           ' Old= l=',Left,',t=',Top,',w=',Width,',h=',Height,
@@ -3880,8 +3880,11 @@ function TWinControl.GetClientRect: TRect;
                       or (FClientHeight<>NewClientRect.Bottom);
       FClientWidth:=NewClientRect.Right;
       FClientHeight:=NewClientRect.Bottom;
-      {$IFDEF VerboseSizeMsg}
-      DebugLn(['StoreClientRect ',Name,':',ClassName,' ',FClientWidth,',',FClientHeight,' HandleAllocated=',HandleAllocated]);
+      {$IF defined(VerboseNewAutoSize) or defined(CHECK_POSITION)}
+      {$IFDEF CHECK_POSITION}
+      if CheckPosition(Self) then
+      {$ENDIF}
+        DebugLn(['StoreClientRect ',Name,':',ClassName,' ',FClientWidth,',',FClientHeight,' HandleAllocated=',HandleAllocated]);
       {$ENDIF}
       if ClientSizeChanged then begin
         for i:=0 to ControlCount-1 do
@@ -3900,7 +3903,8 @@ begin
     then begin
       // the LCL interface provided a ClientRect
     end
-    else if HandleAllocated then begin
+    else if HandleAllocated and (wcfBoundsRealized in FWinControlFlags) then
+    begin
       // update clientrect from interface
       LCLIntf.GetClientRect(Handle, Result);
       // the LCL is not always in sync with the interface
@@ -3910,8 +3914,11 @@ begin
       // this often anticipates later LM_SIZE messages from the interface
       // and reduces resizes
       LCLIntf.GetWindowSize(Handle, InterfaceWidth, InterfaceHeight);
-      {$IFDEF VerboseNewAutoSize}
-      debugln('TWinControl.GetClientRect ',DbgSName(Self),' Interface=',dbgs(InterfaceWidth),',',dbgs(InterfaceHeight),' Result=',dbgs(Result),' Bounds=',dbgs(BoundsRect));
+      {$IF defined(VerboseNewAutoSize) or defined(CHECK_POSITION)}
+      {$IFDEF CHECK_POSITION}
+      if CheckPosition(Self) then
+      {$ENDIF}
+        debugln('TWinControl.GetClientRect ',DbgSName(Self),' Interface=',dbgs(InterfaceWidth),',',dbgs(InterfaceHeight),' Result=',dbgs(Result),' Bounds=',dbgs(BoundsRect));
       {$ENDIF}
       Result.Right:=Width-(InterfaceWidth-Result.Right);
       Result.Bottom:=Height-(InterfaceHeight-Result.Bottom);
@@ -6730,16 +6737,16 @@ var
   NewLeft, NewTop: integer;
   NewBoundsRealized: TRect;
 begin
-  {$IFDEF VerboseSizeMsg}
+  {$IF defined(VerboseSizeMsg) or defined(CHECK_POSITION)}
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
   {$ENDIF}
   DebugLn(['TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
-    ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0]);
+    ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0,' ClientRectInvalid=',ClientRectNeedsInterfaceUpdate]);
   {$ENDIF}
   {$IFDEF VerboseBug16184}
   DebugLn(['TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
-    ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0]);
+    ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0,' ClientRectInvalid=',ClientRectNeedsInterfaceUpdate]);
   {$ENDIF}
 
   NewLeft:=Left;
@@ -8045,7 +8052,8 @@ begin
   if CheckPosition(Self) then
     DebugLn('[TWinControl.DoSendBoundsToInterface] A ',DbgSName(Self),
     ' OldRelBounds=',dbgs(FBoundsRealized),
-    ' -> NewBounds=',dbgs(NewBounds));
+    ' -> NewBounds=',dbgs(NewBounds),
+    ' ClientRect=',dbgs(ClientRect));
   {$ENDIF}
   {$IFDEF VerboseBug16184}
   if (Parent=nil) and (Visible) then begin

@@ -914,7 +914,7 @@ end;
 
 procedure TConfigureBuildLazarusDlg.FormShow(Sender: TObject);
 begin
-  Advanced := Options.Advanced;
+
 end;
 
 procedure TConfigureBuildLazarusDlg.HelpButtonClick(Sender: TObject);
@@ -1120,6 +1120,8 @@ begin
   TargetOSEdit.Text:=Options.TargetOS;
   TargetDirectoryComboBox.Text:=Options.TargetDirectory;
   TargetCPUComboBox.Text:=Options.TargetCPU;
+
+  Advanced := Options.Advanced;
 
   Invalidate;
 end;
