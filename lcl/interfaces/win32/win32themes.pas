@@ -331,6 +331,13 @@ var
 begin
   if ThemesEnabled then
   begin
+    if (Details.Element = teTreeview) and (Details.Part = TVP_HOTGLYPH) and (WindowsVersion < wvVista) then
+      Details.Part := TVP_GLYPH;
+    if (Details.Element = teTreeview) and (Details.Part = TVP_TREEITEM) and (WindowsVersion < wvVista) then
+    begin
+      inherited;
+      Exit;
+    end;
     with Details do
       DrawThemeBackground(Theme[Element], DC, Part, State, R, ClipRect);
     if (Details.Element = teToolTip) and (Details.Part = TTP_STANDARD) and (WindowsVersion < wvVista) then
@@ -340,12 +347,6 @@ begin
       Brush := CreateSolidBrush(ColorToRGB(clInfoBk));
       FillRect(DC, ARect, Brush);
       DeleteObject(Brush);
-    end
-    else
-    if (Details.Element = teTreeview) and (Details.Part = TVP_HOTGLYPH) and (WindowsVersion < wvVista) then
-    begin
-      Details.Part := TVP_GLYPH;
-      inherited;
     end;
   end
   else
