@@ -128,7 +128,7 @@ begin
               Result.Painter := gptFlatBox;
               case Details.State of
                 TREIS_SELECTED,
-                TREIS_HOTSELECTED: Result.State := GTK_STATE_SELECTED
+                TREIS_HOTSELECTED: Result.State := GTK_STATE_SELECTED;
               else
                 Result.State := GTK_STATE_NORMAL;
               end;
@@ -138,15 +138,16 @@ begin
             if AIndex = 1 then
             begin
               Result.Detail := 'treeview';
-              case Details.State of
-                TREIS_SELECTED,
-                TREIS_SELECTEDNOTFOCUS:
-                  begin
-                    Result.Painter := gptFocus;
-                    Result.State := GTK_STATE_PRELIGHT;
-                  end;
-                  else
-                    Result.Painter := gptNone;
+              Result.State := GTK_STATE_SELECTED;
+              if Details.State = TREIS_SELECTED then
+                Result.Painter := gptFocus
+              else
+              if Details.State = TREIS_SELECTEDNOTFOCUS then
+                Result.Painter := gptFlatBox
+              else
+              begin
+                Result.State := GTK_STATE_NORMAL;
+                Result.Painter := gptNone;
               end;
             end;
           end;
