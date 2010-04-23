@@ -4527,6 +4527,11 @@ var
     end
     else
       Details := ThemeServices.GetElementDetails(ttItemNormal);
+
+    if ((tvoThemedDraw in Options) or
+      (tvoRowSelect in Options)) and IsSelected then
+        Canvas.Font.Color := InvertColor(Brush.Color);
+
     ThemeServices.DrawText(Canvas, Details, AText, NodeRect, DT_CENTER or DT_VCENTER, 0);
   end;
 
