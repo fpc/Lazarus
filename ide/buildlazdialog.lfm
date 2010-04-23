@@ -103,7 +103,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
     Anchors = [akTop, akLeft, akRight, akBottom]
     OnEnter = NotebookPageChanged
     OnPageChanged = NotebookPageChanged
-    PageIndex = 0
+    PageIndex = 1
     TabOrder = 1
     object QuickBuildOptionsPage: TPage
       AnchorSideBottom.Side = asrBottom
@@ -366,6 +366,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
         Width = 325
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
+        OnEditingDone = TargetOsEditEditingDone
         TabOrder = 5
       end
       object TargetDirectoryComboBox: TComboBox

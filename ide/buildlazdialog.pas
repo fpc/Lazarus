@@ -235,6 +235,7 @@ type
     procedure QuickBuildOptionsRadioGroupClick(Sender: TObject);
     procedure SaveSettingsButtonClick(Sender: TObject);
     procedure TargetDirectoryButtonClick(Sender: TObject);
+    procedure TargetOsEditEditingDone(Sender: TObject);
   private
     FAdvanced: Boolean;
     FOptions: TBuildLazarusOptions;
@@ -1050,6 +1051,12 @@ begin
   finally
     DirDialog.Free;
   end;
+end;
+
+procedure TConfigureBuildLazarusDlg.TargetOsEditEditingDone(Sender: TObject);
+begin
+  TargetOsEdit.Text:=lowercase(TargetOsEdit.Text);
+  DebugLn(['TConfigureBuildLazarusDlg.TargetOsEditEditingDone ',TargetOsEdit.Text]);
 end;
 
 function TConfigureBuildLazarusDlg.GetMakeModeAtX(const X: Integer;
