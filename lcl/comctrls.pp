@@ -2547,6 +2547,8 @@ type
     procedure WMLButtonDown(var AMessage: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMNotify(var AMessage: TLMNotify); message LM_NOTIFY;
     procedure Resize; override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
   protected
     property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
     property BorderStyle default bsSingle;

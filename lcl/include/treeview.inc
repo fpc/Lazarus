@@ -5063,6 +5063,18 @@ begin
   inherited Resize;
 end;
 
+procedure TCustomTreeView.DoEnter;
+begin
+  Invalidate;
+  inherited DoEnter;
+end;
+
+procedure TCustomTreeView.DoExit;
+begin
+  Invalidate;
+  inherited DoExit;
+end;
+
 procedure TCustomTreeView.InternalSelectionChanged;
 begin
   if fSelectionChangeEventLock>0 then begin
