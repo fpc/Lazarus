@@ -4528,8 +4528,8 @@ var
     else
       Details := ThemeServices.GetElementDetails(ttItemNormal);
 
-    if ((tvoThemedDraw in Options) or
-      (tvoRowSelect in Options)) and IsSelected then
+    if ( (tvoThemedDraw in Options) or
+         (tvoRowSelect in Options) ) and Focused and IsSelected then
         Canvas.Font.Color := InvertColor(Brush.Color);
 
     ThemeServices.DrawText(Canvas, Details, AText, NodeRect, DT_CENTER or DT_VCENTER, 0);
