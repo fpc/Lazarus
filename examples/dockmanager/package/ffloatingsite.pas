@@ -94,42 +94,33 @@ end;
 
 procedure TFloatingSite.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
-{$IFDEF new}
 var
   i: integer;
   ctl: TControl;
-  frm: TCustomForm absolute ctl;
-{$ELSE}
-{$ENDIF}
+  //frm: TCustomForm absolute ctl;
 begin
 (* When an empty site is closed, it shall be freed.
-  Otherwise the clients must be handled (close forms).
-
-  Currently closing docked forms leads to exceptions :-(
+  Otherwise the clients must be handled (close forms?).
 *)
-{$IFDEF new}
-  //BeginFormUpdate;
   for i := DockClientCount - 1 downto 0 do begin
     ctl := DockClients[i];
+    ctl.Visible := False; //handle rest invisibly
     ctl.ManualDock(nil);
-    //Application.ReleaseComponent(ctl); --- Exception!
+    //if ctl.Owner = nil then ctl.Destroy; //seems to work, but is this okay???
+{
+//Application.ReleaseComponent(ctl); --- Exception!
     if ctl <> nil then begin
     //verify that both Parent and HostDockSite are cleared
       DebugLn('Undocked %s P=%p H=%p', [ctl.Name,
         pointer(ctl.Parent), pointer(ctl.HostDockSite)]);
     end;
     if ctl is TCustomForm then begin
-      //frm.Close; --- Exception!
+      frm.Close; //--- Exception!
       //frm.Release; --- also Exception!
       //frm.Hide;
     end;
+}
   end;
-  //EndFormUpdate;
-{$ELSE}
-  if DockClientCount > 0 then
-    CloseAction := caHide
-  else
-{$ENDIF}
   CloseAction := caFree;
 end;
 

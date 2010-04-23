@@ -2889,7 +2889,6 @@ examples/dockmanager/package/felasticsite.pas svneol=native#text/pascal
 examples/dockmanager/package/ffloatingsite.lfm svneol=native#text/plain
 examples/dockmanager/package/ffloatingsite.lrs svneol=native#text/plain
 examples/dockmanager/package/ffloatingsite.pas svneol=native#text/pascal
-examples/dockmanager/package/pin.ico -text
 examples/dockmanager/package/umakesite.pas svneol=native#text/pascal
 examples/dockmanager/package/uminirestore.pas svneol=native#text/pascal
 examples/dockmanager/package/zoneheader.inc svneol=native#text/pascal
