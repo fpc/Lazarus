@@ -592,6 +592,7 @@ begin
   CarbonWidgetSet := Self;
   inherited Create;
   FTerminating := False;
+  fMenuEnabled := True;
 
   FTimerMap := TMap.Create(its4, SizeOf(TWSTimerProc));
   FCurrentCursor := 0;

@@ -990,8 +990,6 @@ function TCarbonWidgetSet.FloodFill(DC: HDC; X, Y: Integer;
                    Color: TGraphicsColor;
                    FillStyle: TGraphicsFillStyle;
                    Brush: HBRUSH): Boolean;
-var
-  r,g,b,a: single;
 begin
   Result := False;
 
@@ -1908,12 +1906,9 @@ begin
   COLOR_APPWORKSPACE:
     R := GetThemeBrushAsColor(kThemeBrushUtilityWindowBackgroundActive, Depth, True, C);
   COLOR_HIGHLIGHT:
-    // kThemeBrushAlternatePrimaryHighlightColor is used as highlight in Finder
-    R := GetThemeBrushAsColor(kThemeBrushAlternatePrimaryHighlightColor, Depth, True, C);
-    //R := GetThemeBrushAsColor(kThemeBrushPrimaryHighlightColor, Depth, True, C);
+    R := GetThemeBrushAsColor(kThemeBrushPrimaryHighlightColor, Depth, True, C);
   COLOR_HIGHLIGHTTEXT:
-    R := GetThemeTextColor(kThemeTextColorWhite, Depth, True, C);
-    //R := GetThemeTextColor(kThemeTextColorPushButtonPressed, Depth, True, C);
+    R := GetThemeTextColor(kThemeTextColorPushButtonPressed, Depth, True, C);
   COLOR_SCROLLBAR, COLOR_BTNFACE:
     R := GetThemeBrushAsColor(kThemeBrushButtonFaceActive, Depth, True, C);
   COLOR_BTNSHADOW:

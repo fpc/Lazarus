@@ -167,6 +167,8 @@ type
     fHiddenWin  : WindowRef;
     fWinContent : HIViewRef; // actuall content view
 
+    fPrevMenuEnabled  : Boolean; // was menu enabled before showing modal
+
     procedure BoundsChanged; override;
 
     procedure RegisterWindowEvents; virtual;

@@ -1706,7 +1706,7 @@ begin
 
   //if ((LCLObject as TCustomForm).Menu <> nil) and ((LCLObject as TCustomForm).Menu.HandleAllocated) and
   //   (CarbonWidgetSet.MainMenu <>  (LCLObject as TCustomForm).Menu.Handle) then
-  CarbonWidgetSet.SetMainMenuEnabled(True);
+  CarbonWidgetSet.SetMainMenuEnabled(fPrevMenuEnabled);
 
   OSError(
     SetWindowModality(fWindowRef, kWindowModalityNone, nil),
@@ -1727,14 +1727,20 @@ begin
     Self, 'ShowModal', SSetModality);
 
   SelectWindow(fWindowRef);
-  {if ((LCLObject as TCustomForm).Menu <> nil) and ((LCLObject as TCustomForm).Menu.HandleAllocated) and
-     (CarbonWidgetSet.MainMenu <>  (LCLObject as TCustomForm).Menu.Handle) then begin}
 
-  // Always disable the main menu, so the modal window cannot be called again
-  // if it's previously called by the menu shortcut
-  // see bug #15913
-  CarbonWidgetSet.SetMainMenuEnabled(False);
-  //end;
+  fPrevMenuEnabled:=CarbonWidgetset.MenuEnabled;
+
+  if ((LCLObject as TCustomForm).Menu <> nil) and
+     ((LCLObject as TCustomForm).Menu.HandleAllocated) and
+     (CarbonWidgetSet.MainMenu = (LCLObject as TCustomForm).Menu.Handle) then
+  begin
+    CarbonWidgetSet.SetMainMenuEnabled(True)
+  end
+  else
+    // Disable the main menu, so the modal window cannot be called again
+    // if it's previously called by the menu shortcut
+    // see bug #15913
+    CarbonWidgetSet.SetMainMenuEnabled(False);
 end;
 
 {------------------------------------------------------------------------------

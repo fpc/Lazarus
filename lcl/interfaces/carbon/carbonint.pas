@@ -68,7 +68,6 @@ type
     FTimerMap: TMap; // the map contains all installed timers
     FCurrentCursor: HCURSOR;
     FMainMenu: HMENU; // Main menu attached to menu bar
-    FMenuDisableCount: Integer; // The modal menu counter
     FCaptureWidget: HWND; // Captured widget (TCarbonWidget descendant)
     FFocusedWidget: HWND; // Forced Focus widgetset (TCarbonWidget descendant)
     FOpenEventHandlerUPP: AEEventHandlerUPP;
@@ -76,6 +75,7 @@ type
 
     FAppLoop: TApplicationMainLoop;
     FAppStdEvents: Boolean;
+    fMenuEnabled: Boolean;
 
     {$ifdef CarbonUseCocoa}
       pool: NSAutoreleasePool;
@@ -136,6 +136,7 @@ type
     procedure SetMainMenuEnabled(AEnabled: Boolean);
     procedure SetRootMenu(const AMenu: HMENU);
     property MainMenu: HMENU read FMainMenu;
+    property MenuEnabled: Boolean read fMenuEnabled;
   public
     procedure SetCaptureWidget(const AWidget: HWND);
     procedure SetTextFractional(ACanvas: TCanvas; AEnabled: Boolean);

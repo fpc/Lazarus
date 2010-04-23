@@ -554,18 +554,11 @@ begin
     DebugLn('TCarbonWidgetSet.SetMainMenuEnabled AEnabled: ' + DbgS(AEnabled));
   {$ENDIF}
 
-  if AEnabled then
-    dec(FMenuDisableCount)
-  else
-    inc(FMenuDisableCount);
-
+  fMenuEnabled:=AEnabled;
   if FMainMenu <> 0 then
   begin
     if csDesigning in TCarbonMenu(FMainMenu).LCLMenuItem.ComponentState then Exit;
-
-    if (AEnabled and (FMenuDisableCount=0)) or
-       ((not AEnabled) and (FMenuDisableCount<>0)) then
-      TCarbonMenu(FMainMenu).SetEnable(AEnabled);
+    TCarbonMenu(FMainMenu).SetEnable(AEnabled);
   end;
 end;
 
@@ -580,12 +573,12 @@ begin
   {$IFDEF VerboseLCLIntf}
     DebugLn('TCarbonWidgetSet.SetRootMenu AMenu: ' + DbgS(AMenu));
   {$ENDIF}
-  
   if (AMenu <> 0) and CheckMenu(AMenu, 'SetRootMenu') and 
      not (csDesigning in TCarbonMenu(AMenu).LCLMenuItem.ComponentState) then    
   begin
     TCarbonMenu(AMenu).AttachToMenuBar;    
     FMainMenu := AMenu;
+    SetMainMenuEnabled(MenuEnabled);
   end;
 end;
 
