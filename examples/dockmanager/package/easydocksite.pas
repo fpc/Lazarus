@@ -949,7 +949,8 @@ begin
         {$ELSE}
           Control.ManualDock(nil, nil, alNone); //do float
         { TODO -cLCL : OnEndDock not called by ManualDock? }
-          TWinControlAccess(Control).DoEndDock(nil, Control.Left, Control.Top);
+          //TWinControlAccess(Control).DoEndDock(nil, Control.Left, Control.Top);
+          Control.Visible := False;
         {$ENDIF}
         end;
       end;
