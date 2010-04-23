@@ -4286,6 +4286,17 @@ var
         if (CurNode.GetNextSibling <> nil) then
         begin
           // draw vertical line to next brother
+          if (CurNode = Node) and HasExpandSign then
+          begin
+            if (Node.Parent = nil) and (Node.GetPrevSibling = nil) then
+              DrawVertLine(CurMid, VertMid + FExpandSignSize div 2, NodeRect.Bottom)
+            else
+            begin
+              DrawVertLine(CurMid, NodeRect.Top, Max(NodeRect.Top, VertMid - FExpandSignSize div 2));
+              DrawVertLine(CurMid, VertMid + FExpandSignSize div 2, NodeRect.Bottom - 1);
+            end;
+          end
+          else
           if (Node.Parent = nil) and (Node.GetPrevSibling = nil) then
             DrawVertLine(CurMid, VertMid, NodeRect.Bottom)
           else
