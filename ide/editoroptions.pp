@@ -3075,7 +3075,7 @@ begin
       'EditorOptions/General/Editor/ShowTabCloseButtons', True);
     FHideSingleTabInWindow :=
       XMLConfig.GetValue(
-      'EditorOptions/General/Editor/HideSingleTabInWindow', True);
+      'EditorOptions/General/Editor/HideSingleTabInWindow', False);
     fShowTabNumbers :=
       XMLConfig.GetValue('EditorOptions/General/Editor/ShowTabNumbers', False);
     fTabPosition := tpTop;
@@ -3323,7 +3323,7 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/ShowTabCloseButtons'
       , fShowTabCloseButtons, True);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/HideSingleTabInWindow'
-      , FHideSingleTabInWindow, True);
+      , FHideSingleTabInWindow, False);
     XMLConfig.SetDeleteValue('EditorOptions/General/Editor/ShowTabNumbers'
       , fShowTabNumbers, False);
     XMLConfig.WriteObject('EditorOptions/General/Editor/', self, nil, 'TabPosition');
