@@ -20,6 +20,7 @@ type
   TGtk2ThemeServices = class(TGtkThemeServices)
   protected
     function GetGtkStyleParams(DC: HDC; Details: TThemedElementDetails; AIndex: Integer): TGtkStyleParams; override;
+    function GetParamsCount(Details: TThemedElementDetails): Integer; override;
   public
     function GetDetailSize(Details: TThemedElementDetails): TSize; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
@@ -116,9 +117,49 @@ begin
               Result.Expander := GTK_EXPANDER_EXPANDED;
 
             Result.ExpanderSize := GetDetailSize(Details).cx;
+          end
+          else
+          if Details.Part = TVP_TREEITEM then
+          begin
+            Result.Widget := GetStyleWidget(lgsTreeView);
+            Result.Shadow := GTK_SHADOW_NONE;
+            if AIndex = 0 then
+            begin
+              Result.Painter := gptFlatBox;
+              case Details.State of
+                TREIS_SELECTED,
+                TREIS_HOTSELECTED: Result.State := GTK_STATE_SELECTED
+              else
+                Result.State := GTK_STATE_NORMAL;
+              end;
+              Result.Detail := 'cell_even';
+            end
+            else
+            if AIndex = 1 then
+            begin
+              Result.Detail := 'treeview';
+              case Details.State of
+                TREIS_SELECTED,
+                TREIS_SELECTEDNOTFOCUS:
+                  begin
+                    Result.Painter := gptFocus;
+                    Result.State := GTK_STATE_PRELIGHT;
+                  end;
+                  else
+                    Result.Painter := gptNone;
+              end;
+            end;
           end;
         end;
     end;
+end;
+
+function TGtk2ThemeServices.GetParamsCount(Details: TThemedElementDetails): Integer;
+begin
+  if (Details.Element = teTreeview) and (Details.Part = TVP_TREEITEM) then
+    Result := 2
+  else
+    Result := inherited GetParamsCount(Details);
 end;
 
 function TGtk2ThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;

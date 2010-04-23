@@ -74,7 +74,7 @@ type
   protected
     procedure DrawPixmap(DC: HDC; Area: PGdkRectangle; PixmapIndex: Byte); virtual;
 
-    function GetParamsCount(Details: TThemedElementDetails): Integer;
+    function GetParamsCount(Details: TThemedElementDetails): Integer; virtual;
     function GetGtkStyleParams(DC: HDC; Details: TThemedElementDetails; AIndex: Integer): TGtkStyleParams; virtual;
 
     function InitThemes: Boolean; override;
@@ -174,8 +174,7 @@ begin
   end;
 end;
 
-function TGtkThemeServices.GetParamsCount(Details: TThemedElementDetails
-  ): Integer;
+function TGtkThemeServices.GetParamsCount(Details: TThemedElementDetails): Integer;
 begin
   Result := 1;
   if (Details.Element = teToolBar) and (Details.Part = TP_SPLITBUTTONDROPDOWN) then
