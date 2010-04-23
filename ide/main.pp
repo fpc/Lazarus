@@ -16613,27 +16613,27 @@ end;
 
 procedure TMainIDE.mnuEditCopyClicked(Sender: TObject);
 begin
-  DoCommand(ecCopy);
+  DoSourceEditorCommand(ecCopy);
 end;
 
 procedure TMainIDE.mnuEditCutClicked(Sender: TObject);
 begin
-  DoCommand(ecCut);
+  DoSourceEditorCommand(ecCut);
 end;
 
 procedure TMainIDE.mnuEditPasteClicked(Sender: TObject);
 begin
-  DoCommand(ecPaste);
+  DoSourceEditorCommand(ecPaste);
 end;
 
 procedure TMainIDE.mnuEditRedoClicked(Sender: TObject);
 begin
-  DoCommand(ecRedo);
+  DoSourceEditorCommand(ecRedo);
 end;
 
 procedure TMainIDE.mnuEditUndoClicked(Sender: TObject);
 begin
-  DoCommand(ecUndo);
+  DoSourceEditorCommand(ecUndo);
 end;
 
 procedure TMainIDE.mnuEditIndentBlockClicked(Sender: TObject);
@@ -16837,6 +16837,7 @@ var
   ActiveUnitInfo: TUnitInfo;
   AForm: TCustomForm;
 begin
+  // todo: if focus is really on a designer or the source editor
   GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
   case FDisplayState of
     dsSource:                // send command to source editor
@@ -16848,8 +16849,8 @@ begin
           GetUnitWithForm(FLastFormActivated, ActiveSourceEditor, ActiveUnitInfo);
         if Assigned(ActiveUnitInfo) then begin
           AForm:=GetDesignerFormOfSource(ActiveUnitInfo,False);
-          if (AForm<>nil) and (AForm.Designer<>nil) then
-            TDesigner(AForm.Designer).DoCommand(ACommand);
+
+          // ToDo: call designer
         end;
       end;
   end;
@@ -16865,7 +16866,8 @@ begin
     CurFocusControl:=GetParentForm(CurFocusControl);
     if (CurFocusControl<>MainIDEBar) and not(CurFocusControl is TSourceNotebook) then
     begin
-//    MainIDEBar.mnuMainMenu.ShortcutHandled := false; // Shortcut not handled yet
+      // continue processing shortcut, not handled yet
+      MainIDEBar.mnuMainMenu.ShortcutHandled := false;
       exit;
     end;
   end;
