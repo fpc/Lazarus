@@ -1913,6 +1913,7 @@ begin
         end;
       QEventMove: SlotMove(Event);
       QEventResize: SlotResize(Event);
+      QEventContentsRectChange: LCLObject.DoAdjustClientRectChange(False);
       QEventPaint:
         begin
           if canPaintBackground then
