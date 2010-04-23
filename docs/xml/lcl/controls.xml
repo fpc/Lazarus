@@ -5688,7 +5688,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DockTrackNoTarget">
-        <short>Track the docking process when no target has been specified</short>
+        <short>Adjust the DockRect for floating state (not over a DockSite)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5712,6 +5712,7 @@ Without a DockManager both extents are required, because no (valid) alignment in
           <p>If NewDockSite=Nil, Parent is set to Nil (in preparation of floating the control).</p>
           <p>Otherwise ARect is adjusted to fit into the logical ClientRect of the NewDockSite. The origin is adjusted according to Align[??? should be DropAlign!], so that the control sits at the according side of the NewDockSite.</p>
           <p>Finally the computed coordinates are stored, in BoundsRectForNewParent when the NewDockSite differs from Parent, else in BoundsRect.</p>
+          <p>ARect is the perfect BoundsRect for the control, in screen coordinates when it becomes floating, or in client coordinates of the target docksite.</p>
         </descr>
         <errors/>
         <seealso/>
@@ -5742,7 +5743,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoEndDock">
-        <short>End the docking process</short>
+        <short>Invokes the OnEndDock handler</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5780,7 +5781,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoStartDock">
-        <short>Start the docking process</short>
+        <short>Invokes the OnStartDock handler</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5791,8 +5792,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoStartDrag">
-        <short>
-          <var>DoStartDrag</var> - start performing the drag</short>
+        <short>Invokes the OnStartDrag handler</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6825,8 +6825,9 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.OnEndDock">
-        <short>Event handler for the end of a docking manoeuvre</short>
+        <short>Event handler for the end of a docking operation</short>
         <descr>
+          <p>This message is sent to the dragged control.</p>
           <p>Sender is the control to be docked.</p>
           <p>Target is the control into which the Sender is docked, or Nil when dragging has been aborted.</p>
           <p>X and Y are the screen coordinates of the drop.</p>
@@ -6836,6 +6837,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
       <element name="TControl.OnEndDrag">
         <short>Event handler for the end of a dragging process</short>
         <descr>
+          <p>This message is sent to the dragged control.</p>
           <p>Sender is the dragged control.</p>
           <p>Target is the control onto which the Sender has been dropped, or Nil when dragging has been aborted.</p>
           <p>X and Y are the screen coordinates of the drop.</p>
@@ -6866,11 +6868,17 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.OnStartDock">
-        <short>Event handler for the start of a docking manoeuvre</short>
+        <short>Event handler for the start of a docking operation</short>
+        <descr>
+          <p>The handler can provide a special DragDock object, otherwise a default object is created.</p>
+        </descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.OnStartDrag">
-        <short>Event handler for start of dragging process</short>
+        <short>Event handler for start of dragging operation</short>
+        <descr>
+          <p>The handler can provide a special DragControl object, otherwise a default object is created.</p>
+        </descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.OnEditingDone">

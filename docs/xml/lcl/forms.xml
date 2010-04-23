@@ -3211,7 +3211,6 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.Close">
-        <short>Close the form and release its resources</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9594,7 +9593,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
           <link id="#rtl.Classes.TComponent.Loaded">TComponent.Loaded</link>
         </seealso>
       </element>
-      <element name="TForm.Create" link="#LCL.Forms.TCustomForm.Create"/>
+      <element name="TForm.Create"/>
       <element name="TScreen.DataModuleCount">
         <short>The number of data modules on the screen</short>
       </element>
