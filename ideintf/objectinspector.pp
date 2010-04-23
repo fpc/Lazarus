@@ -474,7 +474,7 @@ type
       SetDrawHorzGridLines default True;
     property ExpandedProperties: TStringList read FExpandedProperties
                                             write FExpandedProperties;
-    property Indent: integer read FIndent write FIndent default 9;
+    property Indent: integer read FIndent write FIndent;
     property ItemIndex: integer read FItemIndex write SetItemIndex;
     property Layout: TOILayout read FLayout write FLayout default oilHorizontal;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
@@ -808,6 +808,8 @@ end;
 constructor TOICustomPropertyGrid.CreateWithParams(AnOwner:TComponent;
   APropertyEditorHook:TPropertyEditorHook; TypeFilter:TTypeKinds;
   DefItemHeight: integer);
+var
+  Details: TThemedElementDetails;
 begin
   inherited Create(AnOwner);
   FLayout := oilHorizontal;
@@ -830,7 +832,8 @@ begin
   FTopY:=0;
   FSplitterX:=100;
   FPreferredSplitterX:=FSplitterX;
-  FIndent:=9;
+  Details := ThemeServices.GetElementDetails(ttGlyphOpened);
+  FIndent := ThemeServices.GetDetailSize(Details).cx;
 
   FBackgroundColor:=DefBackgroundColor;
   FReferencesColor:=DefReferencesColor;
@@ -2454,9 +2457,11 @@ var
     );
   var
     Details: TThemedElementDetails;
+    Size: TSize;
   begin
     Details := ThemeServices.GetElementDetails(PlusMinusDetail[Minus]);
-    ThemeServices.DrawElement(Canvas.Handle, Details, Rect(X, Y, X + 9, Y + 9), nil);
+    Size := ThemeServices.GetDetailSize(Details);
+    ThemeServices.DrawElement(Canvas.Handle, Details, Rect(X, Y, X + Size.cx, Y + Size.cy), nil);
   end;
 
   procedure DrawActiveRow(X, Y: Integer);
