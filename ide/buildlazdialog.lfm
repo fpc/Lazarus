@@ -124,11 +124,13 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       end
       object AppLCLLabel: TLabel
         AnchorSideLeft.Control = QuickLCLInterfaceComboLabel
+        AnchorSideTop.Control = AppLCLInterfaceComboBox
+        AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = QuickBuildOptionsPage
         AnchorSideRight.Side = asrBottom
         Left = 240
         Height = 18
-        Top = 84
+        Top = 81
         Width = 40
         BorderSpacing.Right = 24
         Caption = 'Target'
@@ -136,10 +138,12 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       end
       object IDELCLLabel: TLabel
         AnchorSideLeft.Control = QuickLCLInterfaceComboLabel
+        AnchorSideTop.Control = IDELCLInterfaceComboBox
+        AnchorSideTop.Side = asrCenter
         AnchorSideRight.Side = asrBottom
         Left = 240
         Height = 18
-        Top = 132
+        Top = 129
         Width = 22
         BorderSpacing.Right = 24
         Caption = 'IDE'
