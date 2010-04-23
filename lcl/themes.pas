@@ -2124,7 +2124,7 @@ begin
       end;
     teTreeView:
       begin
-        if Details.Part = TVP_GLYPH then
+        if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
         begin
           Rectangle(DC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
           Tmp := (ARect.Bottom + ARect.Top) shr 1;
@@ -2135,6 +2135,18 @@ begin
             Tmp := (ARect.Left + ARect.Right) shr 1;
             MoveToEx(DC, Tmp, ARect.Top + 2, nil);
             LineTo(DC, Tmp, ARect.Bottom - 2);
+          end;
+        end
+        else
+        if Details.Part = TVP_TREEITEM then
+        begin
+          case Details.State of
+            TREIS_NORMAL: FillWithColor(ARect, clWindow);
+            TREIS_HOT: FillWithColor(ARect, clHotLight);
+            TREIS_SELECTED: FillWithColor(ARect, clHighlight);
+            TREIS_DISABLED: FillWithColor(ARect, clWindow);
+            TREIS_SELECTEDNOTFOCUS: FillWithColor(ARect, clBtnFace);
+            TREIS_HOTSELECTED: FillWithColor(ARect, clHighlight);
           end;
         end;
       end;
