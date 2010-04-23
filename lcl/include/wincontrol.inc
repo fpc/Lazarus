@@ -33,7 +33,7 @@
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxTPage';
-const CheckPostionName = 'LCLInterfaceRadioGroup';
+const CheckPostionName = 'MainForm';
 const CheckPostionParentName = 'xxxEnvVarsPage';
 
 function CheckPosition(AControl: TControl): boolean;
@@ -3902,6 +3902,7 @@ var
   InterfaceWidth, InterfaceHeight: integer;
 begin
   if wcfClientRectNeedsUpdate in FWinControlFlags then begin
+    //DebugLn(['TWinControl.GetClientRect ',HandleAllocated,' ',wcfBoundsRealized in FWinControlFlags]);
     if TWSWinControlClass(WidgetSetClass).GetDefaultClientRect(Self,
       Left, Top, Width, Height, Result)
     then begin
@@ -6676,14 +6677,7 @@ procedure TWinControl.WMMove(var Message: TLMMove);
 var
   NewWidth, NewHeight: Integer;
 begin
-  {$IFDEF VerboseSizeMsg}
-  DebugLn(['TWinControl.WMMove A ',DbgSName(Self),' Message=',Message.XPos,',',Message.YPos,
-    ' BoundsRealized=',FBoundsRealized.Left,',',FBoundsRealized.Top,
-    ' FromIntf=',Message.MoveType=Move_SourceIsInterface,
-    ',',FBoundsRealized.Right-FBoundsRealized.Left,
-    'x',FBoundsRealized.Bottom-FBoundsRealized.Top]);
-  {$ENDIF}
-  {$IFDEF VerboseBug16184}
+  {$IF defined (VerboseSizeMsg) or defined(VerboseBug16184)}
   DebugLn(['TWinControl.WMMove A ',DbgSName(Self),' Message=',Message.XPos,',',Message.YPos,
     ' BoundsRealized=',FBoundsRealized.Left,',',FBoundsRealized.Top,
     ' FromIntf=',Message.MoveType=Move_SourceIsInterface,
@@ -6692,8 +6686,9 @@ begin
   {$ENDIF}
   NewWidth := Width;
   NewHeight := Height;
-  if Message.MoveType = Move_SourceIsInterface then
+  if (Message.MoveType and Move_SourceIsInterface)>0 then
   begin
+    if not (wcfBoundsRealized in FWinControlFlags) then exit;
     // interface widget has moved
     // -> update size and realized bounds
     NewWidth := FBoundsRealized.Right - FBoundsRealized.Left;
@@ -6741,21 +6736,17 @@ var
   NewLeft, NewTop: integer;
   NewBoundsRealized: TRect;
 begin
-  {$IF defined(VerboseSizeMsg) or defined(CHECK_POSITION)}
+  {$IF defined(VerboseSizeMsg) or defined(CHECK_POSITION) or defined(VerboseBug16184)}
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
   {$ENDIF}
   DebugLn(['TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
     ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0,' ClientRectInvalid=',ClientRectNeedsInterfaceUpdate]);
   {$ENDIF}
-  {$IFDEF VerboseBug16184}
-  DebugLn(['TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
-    ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0,' ClientRectInvalid=',ClientRectNeedsInterfaceUpdate]);
-  {$ENDIF}
 
   NewLeft:=Left;
   NewTop:=Top;
-  if (Message.SizeType and Size_SourceIsInterface) > 0 then
+  if ((Message.SizeType and Size_SourceIsInterface) > 0) then
   begin
     // interface widget has resized
     // -> update realized position and realized bounds
@@ -6764,14 +6755,17 @@ begin
       ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0,
       ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
     {$ENDIF}
+    if not (wcfBoundsRealized in FWinControlFlags) then exit;
+
     NewLeft := FBoundsRealized.Left;
     NewTop := FBoundsRealized.Top;
     if HandleAllocated then
       GetWindowRelativePosition(Handle, NewLeft, NewTop);
     //DebugLn('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
     NewBoundsRealized := Bounds(NewLeft, NewTop, Message.Width, Message.Height);
-    if CompareRect(@NewBoundsRealized, @FBoundsRealized) and
-       (not (wcfClientRectNeedsUpdate in FWinControlFlags)) then exit;
+    if CompareRect(@NewBoundsRealized,@FBoundsRealized)
+    and (not (wcfClientRectNeedsUpdate in FWinControlFlags)) then
+      exit;
 
     {$IFNDEF OldAutoSize}
     //DebugLn(['TWinControl.WMSize ',DbgSName(Self),' phases=',dbgs(AutoSizePhases)]);
