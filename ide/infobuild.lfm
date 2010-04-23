@@ -1,6 +1,6 @@
 object CompileInfoDlg: TCompileInfoDlg
   Left = 677
-  Height = 173
+  Height = 201
   Top = 462
   Width = 384
   AutoSize = True
@@ -11,7 +11,7 @@ object CompileInfoDlg: TCompileInfoDlg
   ChildSizing.TopBottomSpacing = 6
   ChildSizing.HorizontalSpacing = 6
   ChildSizing.VerticalSpacing = 6
-  ClientHeight = 173
+  ClientHeight = 201
   ClientWidth = 384
   FormStyle = fsStayOnTop
   KeyPreview = True
@@ -21,11 +21,12 @@ object CompileInfoDlg: TCompileInfoDlg
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object PnlTitle: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
     Left = 6
     Height = 26
     Top = 6
     Width = 372
-    Align = alTop
     BevelInner = bvRaised
     BevelOuter = bvLowered
     ClientHeight = 26
@@ -71,11 +72,16 @@ object CompileInfoDlg: TCompileInfoDlg
     end
   end
   object Panel1: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PnlTitle
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = PnlTitle
+    AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 26
     Top = 38
     Width = 372
-    Align = alTop
+    Anchors = [akTop, akLeft, akRight]
     BevelInner = bvRaised
     BevelOuter = bvLowered
     ClientHeight = 26
@@ -123,11 +129,16 @@ object CompileInfoDlg: TCompileInfoDlg
     end
   end
   object pnlButton: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbAutoCloseOnSuccess
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = PnlTitle
+    AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 26
     Top = 141
     Width = 372
-    Align = alTop
+    Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
@@ -156,12 +167,16 @@ object CompileInfoDlg: TCompileInfoDlg
     end
   end
   object pnlInfo: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Panel1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = PnlTitle
+    AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 40
     Top = 70
     Width = 372
-    Align = alTop
-    AutoSize = True
+    Anchors = [akTop, akLeft, akRight]
     BevelOuter = bvNone
     ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
     ChildSizing.EnlargeVertical = crsHomogenousChildResize
@@ -399,11 +414,16 @@ object CompileInfoDlg: TCompileInfoDlg
     end
   end
   object cbAutoCloseOnSuccess: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = pnlInfo
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = PnlTitle
+    AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 19
     Top = 116
     Width = 372
-    Align = alTop
+    Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
     Caption = 'cbAutoCloseOnSuccess'
