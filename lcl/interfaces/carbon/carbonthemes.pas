@@ -19,7 +19,7 @@ uses
   // lcl
   LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
   // widgetset
-  CarbonProc, CarbonCanvas;
+  CarbonProc, CarbonCanvas, CarbonGDIObjects;
   
 type
   { TCarbonThemeServices }
@@ -284,26 +284,36 @@ function TCarbonThemeServices.DrawTreeviewElement(DC: TCarbonDeviceContext;
 var
   ButtonDrawInfo: HIThemeButtonDrawInfo;
   LabelRect: HIRect;
+  b: TCarbonBrush;
 begin
-  if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
-  begin
-    ButtonDrawInfo.version := 0;
-    ButtonDrawInfo.State := GetDrawState(Details);
-    ButtonDrawInfo.kind := kThemeDisclosureTriangle;
-    if Details.State = GLPS_CLOSED then
-      ButtonDrawInfo.value := kThemeDisclosureRight
-    else
-      ButtonDrawInfo.value := kThemeDisclosureDown;
+  case Details.Part of
+    TVP_TREEITEM:
+    begin
+      b:=TCarbonBrush.Create(False);
+      b.SetColor( ColorToRGB(clHighlight), True);
+      DC.FillRect(R, b);
+      b.Free;
+    end;
+    TVP_GLYPH, TVP_HOTGLYPH:
+    begin
+      ButtonDrawInfo.version := 0;
+      ButtonDrawInfo.State := GetDrawState(Details);
+      ButtonDrawInfo.kind := kThemeDisclosureTriangle;
+      if Details.State = GLPS_CLOSED then
+        ButtonDrawInfo.value := kThemeDisclosureRight
+      else
+        ButtonDrawInfo.value := kThemeDisclosureDown;
 
-    ButtonDrawInfo.adornment := kThemeAdornmentNone;
-    LabelRect := RectToCGRect(R);
+      ButtonDrawInfo.adornment := kThemeAdornmentNone;
+      LabelRect := RectToCGRect(R);
 
-    OSError(
-      HIThemeDrawButton(LabelRect, ButtonDrawInfo, DC.CGContext,
-        kHIThemeOrientationNormal, @LabelRect),
-      Self, 'DrawTreeviewElement', 'HIThemeDrawButton');
+      OSError(
+        HIThemeDrawButton(LabelRect, ButtonDrawInfo, DC.CGContext,
+          kHIThemeOrientationNormal, @LabelRect),
+        Self, 'DrawTreeviewElement', 'HIThemeDrawButton');
 
-    Result := CGRectToRect(LabelRect);
+      Result := CGRectToRect(LabelRect);
+    end;
   end;
 end;
 

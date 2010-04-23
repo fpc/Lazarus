@@ -1908,9 +1908,12 @@ begin
   COLOR_APPWORKSPACE:
     R := GetThemeBrushAsColor(kThemeBrushUtilityWindowBackgroundActive, Depth, True, C);
   COLOR_HIGHLIGHT:
-    R := GetThemeBrushAsColor(kThemeBrushPrimaryHighlightColor, Depth, True, C);
+    // kThemeBrushAlternatePrimaryHighlightColor is used as highlight in Finder
+    R := GetThemeBrushAsColor(kThemeBrushAlternatePrimaryHighlightColor, Depth, True, C);
+    //R := GetThemeBrushAsColor(kThemeBrushPrimaryHighlightColor, Depth, True, C);
   COLOR_HIGHLIGHTTEXT:
-    R := GetThemeTextColor(kThemeTextColorPushButtonPressed, Depth, True, C);
+    R := GetThemeTextColor(kThemeTextColorWhite, Depth, True, C);
+    //R := GetThemeTextColor(kThemeTextColorPushButtonPressed, Depth, True, C);
   COLOR_SCROLLBAR, COLOR_BTNFACE:
     R := GetThemeBrushAsColor(kThemeBrushButtonFaceActive, Depth, True, C);
   COLOR_BTNSHADOW:
