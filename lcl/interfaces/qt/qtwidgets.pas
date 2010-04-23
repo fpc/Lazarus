@@ -897,6 +897,7 @@ type
 
   TQtAbstractItemView = class(TQtAbstractScrollArea)
   private
+    FCheckable: boolean;
     FOldDelegate: QAbstractItemDelegateH;
     FNewDelegate: QLCLItemDelegateH;
     FSignalActivated: QAbstractItemView_hookH;
@@ -933,6 +934,7 @@ type
     procedure setEditTriggers(ATriggers: QAbstractItemViewEditTriggers);
     procedure setSelectionMode(AMode: QAbstractItemViewSelectionMode);
     procedure setSelectionBehavior(ABehavior: QAbstractItemViewSelectionBehavior);
+    property Checkable: boolean read FCheckable write FCheckable;
     property IconSize: TSize read getIconSize write setIconSize;
     property OwnerDrawn: Boolean read GetOwnerDrawn write SetOwnerDrawn;
   public
@@ -950,7 +952,6 @@ type
 
   TQtListWidget = class(TQtListView)
   private
-    FCheckable: boolean;
     FSelectionChangeHook: QListWidget_hookH;
     FItemClickedHook: QListWidget_hookH;
     FItemTextChangedHook: QListWidget_hookH;
@@ -986,7 +987,6 @@ type
     procedure removeItem(AIndex: Integer);
     function rowCount: integer;
     procedure exchangeItems(AIndex1, AIndex2: Integer);
-    property Checkable: boolean read FCheckable write FCheckable;
   end;
   
   { TQtHeaderView }
@@ -1075,6 +1075,7 @@ type
   public
     destructor Destroy; override;
     procedure DestroyNotify(AWidget: TQtWidget); override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure ClearItems;
     procedure DeleteItem(const AIndex: integer);
@@ -8178,6 +8179,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Create');
   {$endif}
+  FCheckable := False;
   FHideSelection := False;
   FOwnerData := False;
   FSyncingItems := False;
@@ -8213,6 +8215,45 @@ begin
   if AWidget = FHeader then
     FHeader := nil;
   inherited DestroyNotify(AWidget);
+end;
+
+function TQtTreeWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+var
+  item: QTreeWidgetItemH;
+begin
+  if LCLObject = nil then
+    exit;
+  Result := False;
+  QEvent_accept(Event);
+  if Checkable then
+  begin
+    if ( (QEvent_type(Event) = QEventKeyPress) or
+     (QEvent_type(Event) = QEventKeyRelease) ) and
+      (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Space) then
+    begin
+      if QEvent_type(Event) = QEventKeyRelease then
+      begin
+        item := currentItem;
+        if QTreeWidgetItem_checkState(Item, 0) = QtChecked then
+          QTreeWidgetItem_setCheckState(Item, 0, QtUnChecked)
+        else
+          QTreeWidgetItem_setCheckState(Item, 0, QtChecked);
+        // send click msg
+        if item <> nil then
+          SignalItemClicked(Item, 0);
+      end;
+      inherited EventFilter(Sender, Event);
+      QEvent_ignore(Event);
+      Result := True;
+    end else
+      Result:=inherited EventFilter(Sender, Event);
+  end else
+  if (QEvent_type(Event) = QEventMouseButtonPress) or
+    (QEvent_type(Event) = QEventMouseButtonRelease) then
+    {eat mouse button events -> signalItemClicked is fired}
+  else
+    Result:=inherited EventFilter(Sender, Event);
 end;
 
 procedure TQtTreeWidget.OwnerDataNeeded(Event: QEventH);

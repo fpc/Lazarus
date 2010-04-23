@@ -1396,10 +1396,24 @@ const
     QAbstractItemViewSelectedClicked,
     QAbstractItemViewNoEditTriggers
   );
+var
+  SavedCheckable: Boolean;
+  i: Integer;
+  Item: QTreeWidgetItemH;
+  NewItem: QTreeWidgetItemH;
+  ItemFlags: QtItemFlags;
+  Parent: QWidgetH;
 begin
   if not WSCheckHandleAllocated(ALV, 'SetProperty')
   then Exit;
   case AProp of
+    lvpCheckboxes:
+      begin
+        SavedCheckable := TQtTreeWidget(ALV.Handle).Checkable;
+        TQtTreeWidget(ALV.Handle).Checkable := AIsSet;
+        if SavedCheckable <> AIsSet then
+          RecreateWnd(ALV);
+      end;
     lvpMultiSelect:
       begin
         if (TQtTreeWidget(ALV.Handle).getSelectionMode <> QAbstractItemViewNoSelection) then
