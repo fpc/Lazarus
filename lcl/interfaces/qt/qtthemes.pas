@@ -119,17 +119,18 @@ var
   Palette: QPaletteH;
   AColor: TQColor;
   ABrush: QBrushH;
-  W: QWidgetH;
-  AViewportPaint: Boolean = false;
+  Widget: QWidgetH;
+  AViewportPaint: Boolean;
 begin
   if (Context <> nil) then
   begin
+    AViewportPaint := False;
     Context.save;
     try
       if Context.Parent <> nil then
       begin
-        W := QWidget_parentWidget(Context.Parent);
-        if (W <> nil) and QObject_inherits(W,'QAbstractScrollArea') then
+        Widget := QWidget_parentWidget(Context.Parent);
+        if (Widget <> nil) and QObject_inherits(Widget,'QAbstractScrollArea') then
         begin
           {do not set any palette on QAbstractScrollArea viewport ! }
           AViewportPaint := True;
@@ -177,6 +178,27 @@ begin
             QStyleOptionHeader_setOrientation(QStyleOptionHeaderH(opt), QtHorizontal);
           end
           else
+          if (Element.ControlElement = QStyleCE_ItemViewItem) then
+          begin
+            opt := QStyleOptionViewItemV4_create();
+
+            if AViewPortPaint then
+            begin
+              {we must reinitialize QPainter brush from opt since
+              brush isn't property initialized on all themes}
+              QStyleOption_setState(opt, GetControlState(Details));
+              QStyleOption_initFrom(opt, Context.Parent);
+              Palette := QPalette_create();
+              QStyleOption_palette(opt, Palette);
+              AColor := QPalette_color(Palette, QPaletteHighlight)^;
+              ABrush := QBrush_create(QPainter_brush(Context.Widget));
+              QBrush_setColor(ABrush, @AColor);
+              QBrush_setStyle(ABrush, QtSolidPattern);
+              QStyleOptionViewItemV4_setBackgroundBrush(QStyleOptionViewItemV4H(opt), ABrush);
+              QPalette_destroy(Palette);
+              QBrush_destroy(ABrush);
+            end;
+          end else
             opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion), LongInt(QStyleOptionSO_Default));
 
           QStyleOption_setState(opt, GetControlState(Details));
@@ -245,30 +267,21 @@ begin
               begin
                 opt := QStyleOption_create(Integer(QStyleOptionVersion),
                   Integer(QStyleOptionSO_Default));
+
                 QStyleOption_setState(opt, GetControlState(Details));
                 if AViewPortPaint then
                 begin
-                  {we must reinitialize QPainter brush from opt since
-                  it isn't property initialised, also we must fillrect
-                  because dots are visible inside branch}
-                  QStyleOption_initFrom(opt, Context.Parent);
-                  Palette := QPalette_create();
-                  QStyleOption_palette(opt, Palette);
-                  Context.FillRect(ARect.Left, ARect.Top,
-                    ARect.Right - ARect.Left,
-                    ARect.Bottom - ARect.Top);
-                  AColor := QPalette_color(Palette, QPaletteBackground)^;
+                  Context.translate(-1, -1);
                   ABrush := QBrush_create(QPainter_brush(Context.Widget));
-                  QBrush_setColor(ABrush, @AColor);
                   QBrush_setStyle(ABrush, QtNoBrush);
                   QPainter_setBrush(Context.Widget, ABrush);
-                  QPalette_destroy(Palette);
                   QBrush_destroy(ABrush);
                 end;
               end;
             else
               opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
           end;
+
           QStyleOption_setState(opt, GetControlState(Details));
           QStyleOption_setRect(opt, @ARect);
           QStyle_drawPrimitive(Style, Element.PrimitiveElement, opt, Context.Widget);
@@ -369,11 +382,26 @@ begin
      ((Details.Element = teScrollBar) and (Details.Part in [SBP_UPPERTRACKHORZ, SBP_LOWERTRACKHORZ, SBP_THUMBBTNHORZ, SBP_GRIPPERHORZ])) then
     Result := Result or QStyleState_Horizontal;
 
-  if (Details.Element = teTreeview) and (Details.Part = TVP_GLYPH) then
+  if (Details.Element = teTreeview) then
   begin
-    Result := Result or QStyleState_Children;
-    if Details.State = GLPS_OPENED then
-      Result := Result or QStyleState_Open;
+    if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
+    begin
+      Result := Result or QStyleState_Children;
+      if Details.State = GLPS_OPENED then
+        Result := Result or QStyleState_Open;
+    end else
+    if Details.Part in [TVP_TREEITEM] then
+    begin
+      Result := Result or QStyleState_Item;
+      case Details.State of
+        TREIS_SELECTED:
+          Result := Result or QStyleState_Selected or QStyleState_HasFocus;
+        TREIS_SELECTEDNOTFOCUS:
+          Result := Result or QStyleState_Selected;
+        TREIS_HOTSELECTED:
+          Result := Result or QStyleState_Selected or QStyleState_MouseOver;
+      end;
+    end;
   end;
 end;
 
@@ -383,6 +411,13 @@ begin
     teRebar :
       if Details.Part in [RP_GRIPPER, RP_GRIPPERVERT] then
         Result := Size(-1, -1);
+    teTreeView:
+      if Details.Part in [TVP_GLYPH, TVP_HOTGLYPH] then
+      begin
+        Result := inherited;
+        inc(Result.cx);
+        inc(Result.cy);
+      end;
     else
       Result := inherited;
   end;
@@ -623,6 +658,11 @@ begin
         begin
           Result.DrawVariant := qdvPrimitive;
           Result.PrimitiveElement := QStylePE_IndicatorBranch;
+        end else
+        if Details.Part in [TVP_TREEITEM] then
+        begin
+          Result.DrawVariant := qdvControl;
+          Result.ControlElement := QStyleCE_ItemViewItem;
         end;
       end;
     teToolTip:
