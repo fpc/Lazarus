@@ -777,8 +777,8 @@ begin
   for i:=0 to ChildCount-1 do begin
     Child:=WinControl.Controls[i];
     ChildData:=Childs[Child];
-    if (ChildData.Visible)
-    and (Child.Align=alNone)
+    if not ChildData.Visible then continue;
+    if (Child.Align=alNone)
     and (Side in Child.Anchors) and (Child.AnchorSide[Side].Control=nil)
     then begin
       // this is a non aligned control
@@ -799,6 +799,14 @@ begin
         end;
       end else begin
         SetFixedLeftTop(ChildData,Side,Child.GetSidePosition(Side)-MoveDiff);
+      end;
+    end else if (Child.Align=alCustom)
+    and (Side in AnchorAlign[alCustom]) then begin
+      if FindMinimum then begin
+        // no auto move
+      end else begin
+        // don't move alCustom, but use them for bounds computation
+        SetFixedLeftTop(ChildData,Side,Child.GetSidePosition(Side));
       end;
     end;
   end;
@@ -1017,10 +1025,6 @@ begin
   VisibleCount:=0;
   for i:=0 to ChildCount-1 do begin
     Child:=WinControl.Controls[i];
-    if (Child.Align=alCustom) and Child.IsControlVisible then begin
-      // this is not LCL business
-      exit;
-    end;
     FixControlProperties(Child);
     ChildData:=Childs[Child];
     if ChildData.Visible then
@@ -7871,7 +7875,7 @@ begin
     debugln(['TWinControl.CalculatePreferredSize ',DbgSName(Self),
       ' HandleAllocated=',HandleAllocated,
       ' Cur=',Width,'x',Height,
-      ' Client=',OldClientRect.Right,'x',OldClientRect.Bottom,
+      ' Client=',CurClientRect.Right,'x',CurClientRect.Bottom,
       ' NewWidth=',NewWidth,' NewHeight=',NewHeight,
       ' NewClientWidth=',NewClientWidth,' NewClientHeight=',NewClientHeight]);
     {$ENDIF}
