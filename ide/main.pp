@@ -16849,7 +16849,7 @@ begin
           GetUnitWithForm(FLastFormActivated, ActiveSourceEditor, ActiveUnitInfo);
         if Assigned(ActiveUnitInfo) then begin
           AForm:=GetDesignerFormOfSource(ActiveUnitInfo,False);
-
+          if AForm<>nil then ;
           // ToDo: call designer
         end;
       end;
