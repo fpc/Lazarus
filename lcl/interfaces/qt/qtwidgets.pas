@@ -5023,7 +5023,8 @@ begin
         LCLObject.DoAdjustClientRectChange(False);
         SlotShow(True);
         {send dummy LM_SIZE to LCL}
-        if LCLObject.ClientRectNeedsInterfaceUpdate then
+        if (FGroupBoxType <> tgbtNormal) and
+          LCLObject.ClientRectNeedsInterfaceUpdate then
         begin
           OldSize.cx := LCLObject.Height;
           OldSize.cy := LCLObject.Width;
