@@ -52,9 +52,18 @@
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
     <CustomOptions Childs="ExternHelp">
-      <_ExternHelp Childs="Count/Item1">
-        <_Count Value="1"/>
-        <_Item1 Childs="Filename/Name/URL/WithSubDirectories">
+      <_ExternHelp Childs="Count/Item1/Item2">
+        <_Count Value="2"/>
+        <_Item1 Childs="Filename/Name/URL">
+          <_Filename Childs="Value">
+            <_Value Value="$(FPCSrcDir)/rtl/win32/windows.pp"/>
+          </_Filename>
+          <_Name Value="Windows"/>
+          <_URL Childs="Value">
+            <_Value Value="http://social.msdn.microsoft.com/Search/en-us?query=$(Identifier)"/>
+          </_URL>
+        </_Item1>
+        <_Item2 Childs="Filename/Name/URL/WithSubDirectories">
           <_Filename Childs="Value">
             <_Value Value="$(FPCSrcDir)/packages/gtk2/"/>
           </_Filename>
@@ -65,7 +74,7 @@
           <_WithSubDirectories Childs="Value">
             <_Value Value="True"/>
           </_WithSubDirectories>
-        </_Item1>
+        </_Item2>
       </_ExternHelp>
     </CustomOptions>
   </Package>
