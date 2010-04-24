@@ -50,6 +50,7 @@ type
     SingleTaskBarButtonCheckBox: TCheckBox;
     RestoreWindowGeometryRadioButton: TRadioButton;
     TitleStartsWithProjectCheckBox: TCheckBox;
+    ProjectDirInIdeTitleCheckBox: TCheckBox;
     TopEdit: TSpinEdit;
     TopLabel: TLabel;
     UseWindowManagerSettingRadioButton: TRadioButton;
@@ -102,7 +103,9 @@ begin
   TitleStartsWithProjectCheckBox.Caption:=lisIDETitleStartsWithProjectName;
   TitleStartsWithProjectCheckBox.Hint:=
     lisTitleInTaskbarShowsForExampleProject1LpiLazarus;
-
+  ProjectDirInIdeTitleCheckBox.Caption:=lisIDEProjectDirInIdeTitle;
+  ProjectDirInIdeTitleCheckBox.Hint:=
+    lisProjectDirectoryIsShowedInIdeTitleBar;
   // Window Positions
   WindowPositionsGroupBox.Caption := dlgWinPos;
   with WindowPositionsListBox.Items do
@@ -145,6 +148,7 @@ begin
     HideIDEOnRunCheckBox.Checked := HideIDEOnRun;
     HideMessagesIconsCheckBox.Checked := HideMessagesIcons;
     TitleStartsWithProjectCheckBox.Checked:=IDETitleStartsWithProject;
+    ProjectDirInIdeTitleCheckBox.Checked:=IDEProjectDirectoryInIdeTitle;
   end;
 end;
 
@@ -158,6 +162,7 @@ begin
     HideIDEOnRun:=HideIDEOnRunCheckBox.Checked;
     HideMessagesIcons:=HideMessagesIconsCheckBox.Checked;
     IDETitleStartsWithProject:=TitleStartsWithProjectCheckBox.Checked;
+    IDEProjectDirectoryInIdeTitle:=ProjectDirInIdeTitleCheckBox.Checked;
   end;
 end;
 

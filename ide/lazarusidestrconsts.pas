@@ -1023,6 +1023,7 @@ resourcestring
   dlgHideIDEOnRun = 'Hide IDE windows on run';
   dlgHideMessagesIcons = 'Hide Messages Icons';
   lisIDETitleStartsWithProjectName = 'IDE title starts with project name';
+  lisIDEProjectDirInIdeTitle = 'Show project directory in IDE title';
   dlgDesktopHints = 'Hints';
   dlgPalHints = 'Hints for component palette';
   dlgSpBHints = 'Hints for main speed buttons (open, save, ...)';
@@ -1038,6 +1039,9 @@ resourcestring
   dlgWinPos = 'Window Positions';
   lisTitleInTaskbarShowsForExampleProject1LpiLazarus = 'Title in taskbar '
     +'shows for example: project1.lpi - Lazarus';
+  lisProjectDirectoryIsShowedInIdeTitleBar = 'Title in taskbar '
+    +'shows also directory path of the project';
+
   dlgMainMenu = 'Main Menu';
   dlgSrcEdit = 'Source Editor';
   dlgMsgs = 'Messages';

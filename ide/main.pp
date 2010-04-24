@@ -12154,7 +12154,7 @@ end;
 
 procedure TMainIDE.UpdateCaption;
 var
-  NewCaption, NewTitle, ProjectName: String;
+  NewCaption, NewTitle, ProjectName, DirName: String;
 begin
   if MainIDEBar = nil then Exit;
   if ToolStatus = itExiting then Exit;
@@ -12174,6 +12174,12 @@ begin
         ProjectName := ExtractFileName(Project1.ProjectInfoFile);
       if ProjectName <> '' then
       begin
+        if EnvironmentOptions.IDEProjectDirectoryInIdeTitle then
+        begin
+          DirName := ExtractFileDir(Project1.ProjectInfoFile);
+          if DirName <> '' then
+            ProjectName := ProjectName + ' ('+DirName+')';
+        end;
         if EnvironmentOptions.IDETitleStartsWithProject then
           NewCaption := ProjectName + ' - ' + NewCaption
         else

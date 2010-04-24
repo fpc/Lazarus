@@ -144,6 +144,7 @@ type
     FFileHasChangedOnDisk: boolean;
     FIDESpeedButtonsVisible: boolean;
     FIDETitleStartsWithProject: boolean;
+    FIDEProjectDirectoryInIdeTitle: boolean;
     FShowButtonGlyphs: TApplicationShowGlyphs;
     FShowMenuGlyphs: TApplicationShowGlyphs;
     FXMLCfg: TXMLConfig;
@@ -342,6 +343,8 @@ type
     property HideMessagesIcons: boolean read fHideMessagesIcons write fHideMessagesIcons;
     property IDETitleStartsWithProject: boolean read FIDETitleStartsWithProject
                                                write FIDETitleStartsWithProject;
+    property IDEProjectDirectoryInIdeTitle: boolean read FIDEProjectDirectoryInIdeTitle
+                                                    write FIDEProjectDirectoryInIdeTitle;
     property ComponentPaletteVisible: boolean read FComponentPaletteVisible
                                               write FComponentPaletteVisible;
     property IDESpeedButtonsVisible: boolean read FIDESpeedButtonsVisible
@@ -669,6 +672,7 @@ begin
   FHideIDEOnRun:=false;
   FHideMessagesIcons:=false;
   FIDETitleStartsWithProject:=false;
+  FIDEProjectDirectoryInIdeTitle:=false;
   FComponentPaletteVisible:=true;
   FIDESpeedButtonsVisible:=true;
 
@@ -925,6 +929,8 @@ begin
       Path+'Desktop/HideMessagesIcons/Value',false);
     FIDETitleStartsWithProject:=XMLConfig.GetValue(
       Path+'Desktop/IDETitleStartsWithProject/Value',false);
+    IDEProjectDirectoryInIdeTitle:=XMLConfig.GetValue(
+      Path+'Desktop/IDEProjectDirectoryInIdeTitle/Value',false);
     FComponentPaletteVisible:=XMLConfig.GetValue(
       Path+'Desktop/ComponentPaletteVisible/Value',true);
     FIDESpeedButtonsVisible:=XMLConfig.GetValue(
@@ -1213,6 +1219,8 @@ begin
                              false);
     XMLConfig.SetDeleteValue(Path+'Desktop/IDETitleStartsWithProject/Value',
                              FIDETitleStartsWithProject,false);
+    XMLConfig.SetDeleteValue(Path+'Desktop/IDEProjectDirectoryInIdeTitle/Value',
+                             FIDEProjectDirectoryInIdeTitle,false);
     XMLConfig.SetDeleteValue(Path+'Desktop/ComponentPaletteVisible/Value',
                              FComponentPaletteVisible,true);
     XMLConfig.SetDeleteValue(Path+'Desktop/IDESpeedButtonsVisible/Value',

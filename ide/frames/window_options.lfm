@@ -1,7 +1,7 @@
 inherited WindowOptionsFrame: TWindowOptionsFrame
-  Height = 451
+  Height = 473
   Width = 566
-  ClientHeight = 451
+  ClientHeight = 473
   ClientWidth = 566
   TabOrder = 0
   Visible = False
@@ -33,7 +33,7 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
   end
   object WindowPositionsGroupBox: TGroupBox[2]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = TitleStartsWithProjectCheckBox
+    AnchorSideTop.Control = ProjectDirInIdeTitleCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
@@ -41,7 +41,7 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 357
-    Top = 94
+    Top = 116
     Width = 566
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
@@ -338,5 +338,18 @@ inherited WindowOptionsFrame: TWindowOptionsFrame
     ParentShowHint = False
     ShowHint = True
     TabOrder = 4
+  end
+  object ProjectDirInIdeTitleCheckBox: TCheckBox[5]
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = TitleStartsWithProjectCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 22
+    Top = 88
+    Width = 200
+    Caption = 'ProjectDirInIdeTitleCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 5
   end
 end
