@@ -69,6 +69,7 @@ Hwang Weng Sun
 Ido Kanner
 James Chandler Jr.
 Jan Foster
+Jarto Tarpio
 Jason King
 Jeffrey A. Wormsley
 Jeroen van Idekinge
