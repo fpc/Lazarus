@@ -130,11 +130,56 @@ type
     procedure WriteDebugReport;
   end;
 
+procedure LoadStringToStringTree(Config: TConfigStorage; const Path: string;
+                                 Tree: TStringToStringTree);
+procedure SaveStringToStringTree(Config: TConfigStorage; const Path: string;
+                                 Tree: TStringToStringTree);
+
 function CompareConfigMemStorageNames(p1, p2: PChar): integer;
 function CompareConfigMemStorageNodes(Node1, Node2: Pointer): integer;
 function ComparePCharWithConfigMemStorageNode(aPChar, ANode: Pointer): integer;
 
 implementation
+
+procedure LoadStringToStringTree(Config: TConfigStorage; const Path: string;
+  Tree: TStringToStringTree);
+var
+  Cnt: LongInt;
+  SubPath: String;
+  CurName: String;
+  CurValue: String;
+  i: Integer;
+begin
+  Tree.Clear;
+  Cnt:=Config.GetValue(Path+'Count',0);
+  for i:=0 to Cnt-1 do begin
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    CurName:=Config.GetValue(SubPath+'Name','');
+    CurValue:=Config.GetValue(SubPath+'Value','');
+    Tree.Values[CurName]:=CurValue;
+  end;
+end;
+
+procedure SaveStringToStringTree(Config: TConfigStorage; const Path: string;
+  Tree: TStringToStringTree);
+var
+  Node: TAvgLvlTreeNode;
+  Item: PStringToStringItem;
+  i: Integer;
+  SubPath: String;
+begin
+  Config.SetDeleteValue(Path+'Count',Tree.Tree.Count,0);
+  Node:=Tree.Tree.FindLowest;
+  i:=0;
+  while Node<>nil do begin
+    Item:=PStringToStringItem(Node.Data);
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    Config.SetDeleteValue(SubPath+'Name',Item^.Name,'');
+    Config.SetDeleteValue(SubPath+'Value',Item^.Value,'');
+    Node:=Tree.Tree.FindSuccessor(Node);
+    inc(i);
+  end;
+end;
 
 function CompareConfigMemStorageNames(p1, p2: PChar): integer;
 // compare strings till / or #0
