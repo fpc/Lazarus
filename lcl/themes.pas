@@ -2347,6 +2347,16 @@ begin
       Inc(R.Top, 1);
     end;
   end;
+  if (Details.Element = teTreeview) and (Details.Part = TVP_TREEITEM) then
+  begin
+    case Details.State of
+      TREIS_SELECTED,
+      TREIS_HOTSELECTED: Canvas.Font.Color := clHighlightText;
+      TREIS_SELECTEDNOTFOCUS: Canvas.Font.Color := clBtnText;
+    else
+      Canvas.Font.Color := clWindowText;
+    end;
+  end;
   Canvas.TextRect(R, R.Left, R.Top, S, TXTStyle);
   Canvas.Font.Color := OldColor;
 end;
