@@ -19,7 +19,7 @@
     </CompilerOptions>
     <Description Value="Help for pascal bindings"/>
     <License Value="modified LGPL"/>
-    <Version Major="1" Minor="1"/>
+    <Version Major="1" Minor="3"/>
     <Files Count="2">
       <Item1>
         <Filename Value="externhelpfrm.pas"/>
@@ -52,8 +52,8 @@
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
     <CustomOptions Childs="ExternHelp">
-      <_ExternHelp Childs="Count/Item1/Item2">
-        <_Count Value="2"/>
+      <_ExternHelp Childs="Count/Item1/Item2/Item3">
+        <_Count Value="3"/>
         <_Item1 Childs="Filename/Name/URL">
           <_Filename Childs="Value">
             <_Value Value="$(FPCSrcDir)/rtl/win32/windows.pp"/>
@@ -63,7 +63,16 @@
             <_Value Value="http://social.msdn.microsoft.com/Search/en-us?query=$(Identifier)"/>
           </_URL>
         </_Item1>
-        <_Item2 Childs="Filename/Name/URL/WithSubDirectories">
+        <_Item2 Childs="Filename/Name/URL">
+          <_Filename Childs="Value">
+            <_Value Value="$(FPCSrcDir)/packages/postgres/src/postgres.pp"/>
+          </_Filename>
+          <_Name Value="PostgreSQL"/>
+          <_URL Childs="Value">
+            <_Value Value="http://search.postgresql.org/search?q=$(Identifier)"/>
+          </_URL>
+        </_Item2>
+        <_Item3 Childs="Filename/Name/URL/WithSubDirectories">
           <_Filename Childs="Value">
             <_Value Value="$(FPCSrcDir)/packages/gtk2/"/>
           </_Filename>
@@ -74,7 +83,7 @@
           <_WithSubDirectories Childs="Value">
             <_Value Value="True"/>
           </_WithSubDirectories>
-        </_Item2>
+        </_Item3>
       </_ExternHelp>
     </CustomOptions>
   </Package>
