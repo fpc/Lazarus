@@ -475,6 +475,11 @@ procedure TWin32ThemeServices.DrawText(ACanvas: TPersistent;
   Details: TThemedElementDetails; const S: String; R: TRect; Flags,
   Flags2: Cardinal);
 begin
+  if (Details.Element = teTreeview) and (Details.Part = TVP_TREEITEM) and (WindowsVersion < wvVista) then
+  begin
+    inherited;
+    Exit;
+  end;
   if ThemesEnabled then
     DrawText(TCanvas(ACanvas).Handle, Details, S, R, Flags, Flags2)
   else
