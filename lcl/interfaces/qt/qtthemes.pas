@@ -155,6 +155,7 @@ begin
 
       ARect := R;
       Element := GetDrawElement(Details);
+      StyleState := GetControlState(Details);
       case Element.DrawVariant of
         qdvNone:
           inherited DrawElement(DC, Details, R, ClipRect);
@@ -187,20 +188,12 @@ begin
 
             if AViewPortPaint then
             begin
-              {we must reinitialize QPainter brush from opt since
-              brush isn't property initialized on all themes}
-              QStyleOption_setState(opt, GetControlState(Details));
+              {we must initialize proper brush for tree item}
               QStyleOption_initFrom(opt, Context.Parent);
               Palette := QPalette_create();
               QStyleOption_palette(opt, Palette);
-              StyleState := GetControlState(Details);
-              if (StyleState and QStyleState_HasFocus) <> 0 then
-                AColor := QPalette_color(Palette, QPaletteActive, QPaletteHighLight)^
-              else
-              if (StyleState and QStyleState_Selected) <> 0 then
-                AColor := QPalette_color(Palette, QPaletteInActive, QPaletteHighLight)^
-              else
-                AColor := QPalette_color(Palette, QPaletteHighLight)^;
+              // do not change AColor, we reuse it in focus rect drawing
+              AColor := QPalette_color(Palette, QPaletteHighLight)^;
               ABrush := QBrush_create(QPainter_brush(Context.Widget));
               QBrush_setColor(ABrush, @AColor);
               QBrush_setStyle(ABrush, QtSolidPattern);
@@ -211,11 +204,28 @@ begin
           end else
             opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion), LongInt(QStyleOptionSO_Default));
 
-          QStyleOption_setState(opt, GetControlState(Details));
+          QStyleOption_setState(opt, StyleState);
           QStyleOption_setRect(opt, @ARect);
 
           QStyle_drawControl(Style, Element.ControlElement, opt, Context.Widget);
           QStyleOption_Destroy(opt);
+
+          // draw focus rect for treeview item if needed
+          if (Element.ControlElement = QStyleCE_ItemViewItem) then
+          begin
+            if (StyleState and QStyleState_HasFocus) <> 0 then
+            begin
+              opt := QStyleOptionFocusRect_create();
+              QStyleOption_setRect(opt, @ARect);
+              // we reuse AColor from QStyleOptionViewItemV4
+              QStyleOptionFocusRect_setBackgroundColor(QStyleOptionFocusRectH(opt),
+                @AColor);
+              QStyle_drawPrimitive(Style, QStylePE_FrameFocusRect, opt,
+                Context.Widget, Context.Parent);
+              QStyleOption_Destroy(opt);
+            end;
+          end;
+
         end;
         qdvComplexControl:
         begin
@@ -255,7 +265,7 @@ begin
             QStyleOptionComplex_setSubControls(QStyleOptionComplexH(opt),
               Element.SubControls);
 
-          QStyleOption_setState(opt, GetControlState(Details));
+          QStyleOption_setState(opt, StyleState);
           QStyleOption_setRect(opt, @ARect);
           QStyle_drawComplexControl(Style, Element.ComplexControl,
             QStyleOptionComplexH(opt), Context.Widget);
@@ -278,7 +288,7 @@ begin
                 opt := QStyleOption_create(Integer(QStyleOptionVersion),
                   Integer(QStyleOptionSO_Default));
 
-                QStyleOption_setState(opt, GetControlState(Details));
+                QStyleOption_setState(opt, StyleState);
                 if AViewPortPaint then
                 begin
                   Context.translate(-1, -1);
@@ -292,7 +302,7 @@ begin
               opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
           end;
 
-          QStyleOption_setState(opt, GetControlState(Details));
+          QStyleOption_setState(opt, StyleState);
           QStyleOption_setRect(opt, @ARect);
           QStyle_drawPrimitive(Style, Element.PrimitiveElement, opt, Context.Widget);
           QStyleOption_Destroy(opt);
