@@ -153,12 +153,13 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure ClearItemsStoredInUserSettings;
-    procedure ClearItemsStoredInPackages(const Name: string = '*');
+    procedure ClearItemsStoredInPackages(Parent: TExternHelpItem;
+                                         const Name: string = '*');
     class function GetGroupCaption: string; override;
     class function GetInstance: TAbstractIDEOptions; override;
     function Load(Config: TConfigStorage; KeepPackageOpts: boolean): TModalResult; virtual;
     function Save(Config: TConfigStorage): TModalResult; virtual;
-    procedure LoadOptionsFromPackage(Pkg: TIDEPackage);
+    procedure LoadOptionsFromPackage(Pkg: TIDEPackage; Parent: TExternHelpItem);
     procedure LoadOptionsFromPackages;
     procedure SaveOptionsToPackage(Pkg: TIDEPackage);
     procedure SaveOptionsToPackages;
@@ -283,7 +284,7 @@ end;
 procedure TExternHelpOptions.PkgFileLoaded(Sender: TObject);
 begin
   if Sender is TIDEPackage then
-    LoadOptionsFromPackage(TIDEPackage(Sender));
+    LoadOptionsFromPackage(TIDEPackage(Sender),RootItem);
 end;
 
 procedure TExternHelpOptions.LoadNode(Config: TConfigStorage; Path: string;
@@ -361,14 +362,15 @@ begin
   end;
 end;
 
-procedure TExternHelpOptions.ClearItemsStoredInPackages(const Name: string);
+procedure TExternHelpOptions.ClearItemsStoredInPackages(Parent: TExternHelpItem;
+  const Name: string);
 var
   i: Integer;
   Item: TExternHelpItem;
 begin
-  if RootItem<>nil then begin
-    for i:=RootItem.ChildCount-1 downto 0 do begin
-      Item:=RootItem.Childs[i];
+  if Parent<>nil then begin
+    for i:=Parent.ChildCount-1 downto 0 do begin
+      Item:=Parent.Childs[i];
       if (Item.StoreIn<>'')
       and (Name='*') or (SysUtils.CompareText(Item.StoreIn,Name)=0) then
         Item.Free;
@@ -376,7 +378,8 @@ begin
   end;
 end;
 
-procedure TExternHelpOptions.LoadOptionsFromPackage(Pkg: TIDEPackage);
+procedure TExternHelpOptions.LoadOptionsFromPackage(Pkg: TIDEPackage;
+  Parent: TExternHelpItem);
 var
   Cnt: integer;
   i: Integer;
@@ -384,12 +387,13 @@ var
   NewItem: TExternHelpItem;
 begin
   if Pkg.Name='' then exit;
-  ClearItemsStoredInPackages(Pkg.Name);
+  ClearItemsStoredInPackages(Parent,Pkg.Name);
   Path:='ExternHelp/';
   Cnt:=Pkg.CustomOptions.GetValue(Path+'Count',0);
+  //DebugLn(['TExternHelpOptions.LoadOptionsFromPackage ',Pkg.Name,' Cnt=',Cnt]);
   for i:=1 to Cnt do begin
     NewItem:=TExternHelpItem.Create;
-    RootItem.AddChild(NewItem);
+    Parent.AddChild(NewItem);
     NewItem.StoreIn:=Pkg.Name;
     LoadNode(Pkg.CustomOptions,Path+'Item'+IntToStr(i)+'/',NewItem);
   end;
@@ -400,9 +404,9 @@ var
   i: Integer;
 begin
   if PackageEditingInterface=nil then exit;
-  ClearItemsStoredInPackages('*');
+  ClearItemsStoredInPackages(RootItem,'*');
   for i:=0 to PackageEditingInterface.GetPackageCount-1 do
-    LoadOptionsFromPackage(PackageEditingInterface.GetPackages(i));
+    LoadOptionsFromPackage(PackageEditingInterface.GetPackages(i),RootItem);
 end;
 
 procedure TExternHelpOptions.SaveOptionsToPackage(Pkg: TIDEPackage);
@@ -411,40 +415,62 @@ var
   Path: String;
   Item: TExternHelpItem;
   i: Integer;
+  TmpRoot: TExternHelpItem;
+  Changed: Boolean;
 begin
   if Pkg.Name='' then exit;
-  Path:='ExternHelp/';
+  //DebugLn(['TExternHelpOptions.SaveOptionsToPackage START ',Pkg.Name]);
+
+  // check if something changed
+  TmpRoot:=TExternHelpItem.Create;
+  try
+    LoadOptionsFromPackage(Pkg,TmpRoot);
+    Changed:=false;
+    Cnt:=0;
+    for i:=0 to RootItem.ChildCount-1 do begin
+      Item:=RootItem.Childs[i];
+      if SysUtils.CompareText(Item.StoreIn,Pkg.Name)<>0 then continue;
+      if (Cnt=TmpRoot.ChildCount)
+      or (not TmpRoot.Childs[Cnt].IsEqual(Item,true)) then begin
+        Changed:=true;
+        break;
+      end;
+      inc(Cnt);
+    end;
+    if TmpRoot.ChildCount>Cnt then Changed:=true;
+    if not Changed then exit;
+  finally
+    TmpRoot.Free;
+  end;
+  DebugLn(['TExternHelpOptions.SaveOptionsToPackage CHANGED: ',Pkg.Name]);
+
+  // save to package and mark it modified
+  Path:='ExternHelp';
   Pkg.CustomOptions.DeletePath(Path);
+  Path:=Path+'/';
   Cnt:=0;
   for i:=0 to RootItem.ChildCount-1 do begin
     Item:=RootItem.Childs[i];
+    //DebugLn(['TExternHelpOptions.SaveOptionsToPackage ',Item.Name,' StoreIN=',Item.StoreIn,' ',SysUtils.CompareText(Item.StoreIn,Pkg.Name)=0]);
     if SysUtils.CompareText(Item.StoreIn,Pkg.Name)<>0 then continue;
     inc(Cnt);
-    SaveNode(Pkg.CustomOptions,Path+'Item'+IntToStr(i)+'/',Item);
+    SaveNode(Pkg.CustomOptions,Path+'Item'+IntToStr(Cnt)+'/',Item);
   end;
   Pkg.CustomOptions.SetDeleteValue(Path+'Count',Cnt,0);
+  Pkg.Modified:=True;
+  DebugLn(['TExternHelpOptions.SaveOptionsToPackage MODIFIED: ',Pkg.Name]);
 end;
 
 procedure TExternHelpOptions.SaveOptionsToPackages;
 var
   i: Integer;
-  Item: TExternHelpItem;
-  SavedPackages: TFPList;
   Pkg: TIDEPackage;
 begin
   if PackageEditingInterface=nil then exit;
-  SavedPackages:=TFPList.Create;
-  try
-    for i:=0 to RootItem.ChildCount-1 do begin
-      Item:=RootItem.Childs[i];
-      if Item.StoreIn='' then continue;
-      Pkg:=PackageEditingInterface.FindPackageWithName(Item.StoreIn);
-      if (Pkg=nil) or (SavedPackages.IndexOf(Pkg)>=0) then continue;
-      SavedPackages.Add(Pkg);
-      SaveOptionsToPackage(Pkg);
-    end;
-  finally
-    SavedPackages.Free;
+  for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
+    Pkg:=PackageEditingInterface.GetPackages(i);
+    if Pkg.ReadOnly then continue;
+    SaveOptionsToPackage(Pkg);
   end;
 end;
 
@@ -1078,12 +1104,12 @@ begin
   ExternHelpOptions.Assign(Options);
   try
     ExternHelpOptions.Save;
-    ExternHelpOptions.SaveOptionsToPackages;
   except
     on E: Exception do begin
       DebugLn(['TExternHelpGeneralOptsFrame.WriteSettings unable to write file ',ExternHelpOptions.Filename,': ',E.Message]);
     end;
   end;
+  ExternHelpOptions.SaveOptionsToPackages;
   ExternHelpOptions.UpdateHelpDB;
 end;
 

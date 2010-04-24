@@ -17,7 +17,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="Help for pscal bindings"/>
+    <Description Value="Help for pascal bindings"/>
     <License Value="modified LGPL"/>
     <Version Major="1" Minor="1"/>
     <Files Count="2">
@@ -51,5 +51,22 @@
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
+    <CustomOptions Childs="ExternHelp">
+      <_ExternHelp Childs="Count/Item1">
+        <_Count Value="1"/>
+        <_Item1 Childs="Filename/Name/URL/WithSubDirectories">
+          <_Filename Childs="Value">
+            <_Value Value="$(FPCSrcDir)/packages/gtk2/"/>
+          </_Filename>
+          <_Name Value="Gtk2"/>
+          <_URL Childs="Value">
+            <_Value Value="http://www.google.com/custom?domains=library.gnome.org&amp;sitesearch=library.gnome.org&amp;q=$(Identifier)"/>
+          </_URL>
+          <_WithSubDirectories Childs="Value">
+            <_Value Value="True"/>
+          </_WithSubDirectories>
+        </_Item1>
+      </_ExternHelp>
+    </CustomOptions>
   </Package>
 </CONFIG>

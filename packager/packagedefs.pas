@@ -2503,7 +2503,7 @@ var
     else
       Exclude(FFlags,lpfAutoIncrementVersionOnBuild);
   end;
-  
+
 begin
   Flags:=Flags+[lpfLoading];
   FileVersion:=XMLConfig.GetValue(Path+'Version',0);
@@ -2557,7 +2557,7 @@ begin
   LoadStringList(XMLConfig,FProvides,Path+'Provides/');
   Config:=TXMLOptionsStorage.Create(XMLConfig);
   try
-    TConfigMemStorage(CustomOptions).LoadFromToConfig(Config,Path+'CustomOptions/');
+    TConfigMemStorage(CustomOptions).LoadFromConfig(Config,Path+'CustomOptions/');
   finally
     Config.Free;
   end;
@@ -2630,7 +2630,7 @@ begin
   SaveStringList(XMLConfig,FProvides,Path+'Provides/');
   Config:=TXMLOptionsStorage.Create(XMLConfig);
   try
-    TConfigMemStorage(CustomOptions).SaveToConfig(Config,Path+'CustomOptions');
+    TConfigMemStorage(CustomOptions).SaveToConfig(Config,Path+'CustomOptions/');
   finally
     Config.Free;
   end;
