@@ -4525,12 +4525,18 @@ var
           Canvas.Brush.Color := FSelectedColor;
           Canvas.Font.Color := InvertColor(Brush.Color);
           Canvas.FillRect(NodeRect);
-        end;
+        end
+      else
+      if not (tvoThemedDraw in Options) then
+        Canvas.Font.Color := Font.Color;
     end
     else
       Details := ThemeServices.GetElementDetails(ttItemNormal);
 
-    ThemeServices.DrawText(Canvas, Details, AText, NodeRect, DT_CENTER or DT_VCENTER, 0);
+    if (tvoThemedDraw in Options) then
+      ThemeServices.DrawText(Canvas, Details, AText, NodeRect, DT_CENTER or DT_VCENTER, 0)
+    else
+      DrawText(Canvas.Handle, PChar(AText), -1, NodeRect, DT_CENTER or DT_VCENTER);
   end;
 
 
