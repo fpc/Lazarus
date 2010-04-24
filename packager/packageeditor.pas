@@ -187,6 +187,7 @@ type
     RemovedFilesNode: TTreeNode;
     RemovedRequiredNode: TTreeNode;
     FPlugins: TStringList;
+    FNeedUpdateAll: boolean;
     procedure SetupComponents;
     procedure UpdateTitle;
     procedure UpdateButtons;
@@ -202,6 +203,7 @@ type
     procedure ExtendUnitIncPathForNewUnit(const AnUnitFilename,
       AnIncludeFile: string);
     function CanBeAddedToProject: boolean;
+    procedure IdleHandler(Sender: TObject; var Done: Boolean);
   protected
     procedure SetLazPackage(const AValue: TLazPackage); override;
   public
@@ -216,7 +218,7 @@ type
     procedure DoSave(SaveAs: boolean);
     procedure DoSortFiles;
     procedure DoOpenPkgFile(PkgFile: TPkgFile);
-    procedure UpdateAll; override;
+    procedure UpdateAll(Immediately: boolean); override;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -272,7 +274,7 @@ type
     function PublishPackage(APackage: TLazPackage): TModalResult;
     function CompilePackage(APackage: TLazPackage;
                             CompileClean,CompileRequired: boolean): TModalResult;
-    procedure UpdateAllEditors;
+    procedure UpdateAllEditors(Immediately: boolean);
     function InstallPackage(APackage: TLazPackage): TModalResult;
     function UninstallPackage(APackage: TLazPackage): TModalResult;
     function ViewPkgSource(APackage: TLazPackage): TModalResult;
@@ -395,7 +397,7 @@ begin
       end;
       PkgFile.Filename:=AFilename;
       LazPackage.UnremovePkgFile(PkgFile);
-      UpdateAll;
+      UpdateAll(true);
     end;
   end else begin
     Dependency:=GetCurrentDependency(Removed);
@@ -814,7 +816,7 @@ begin
         exit;
       LazPackage.RemoveFile(CurFile);
     end;
-    UpdateAll;
+    UpdateAll(true);
   end else if ANode.Parent=RequiredPackagesNode then begin
     // get current dependency
     CurDependency:=LazPackage.RequiredDepByIndex(NodeIndex);
@@ -965,7 +967,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
       FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,
                                           FileType,PkgFileFlags,cpNormal);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
-    UpdateAll;
+    UpdateAll(true);
   end;
   
   procedure AddVirtualUnit(AddParams: TAddToPkgResult);
@@ -974,7 +976,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
       FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
                                           PkgFileFlags,cpNormal);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
-    UpdateAll;
+    UpdateAll(true);
   end;
   
   procedure AddNewComponent(AddParams: TAddToPkgResult);
@@ -990,7 +992,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
     end;
     // open file in editor
     PackageEditors.CreateNewFile(Self,AddParams);
-    UpdateAll;
+    UpdateAll(true);
   end;
   
   procedure AddRequiredPkg(AddParams: TAddToPkgResult);
@@ -1006,7 +1008,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
     with AddParams do
       FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
                                           PkgFileFlags,cpNormal);
-    UpdateAll;
+    UpdateAll(true);
   end;
   
   procedure AddNewFile(AddParams: TAddToPkgResult);
@@ -1045,7 +1047,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
         end;
         FNextSelectedPart := LazPackage.AddFile(NewFilename,NewUnitName,NewFileType,
                                             NewPkgFileFlags, cpNormal);
-        UpdateAll;
+        UpdateAll(true);
       end;
     end;
   end;
@@ -1109,7 +1111,7 @@ begin
   if CurFile.AddToUsesPkgSection=AddToUsesPkgSectionCheckBox.Checked then exit;
   CurFile.AddToUsesPkgSection:=AddToUsesPkgSectionCheckBox.Checked;
   LazPackage.Modified:=not Removed;
-  UpdateAll;
+  UpdateAll(true);
 end;
 
 procedure TPackageEditorForm.AddToProjectClick(Sender: TObject);
@@ -1176,7 +1178,7 @@ begin
   if CurFile.HasRegisterProc=CallRegisterProcCheckBox.Checked then exit;
   CurFile.HasRegisterProc:=CallRegisterProcCheckBox.Checked;
   LazPackage.Modified:=not Removed;
-  UpdateAll;
+  UpdateAll(true);
 end;
 
 procedure TPackageEditorForm.ChangeFileTypeMenuItemClick(Sender: TObject);
@@ -1199,7 +1201,7 @@ begin
       if CurFile.FileType<>CurPFT then begin
         CurFile.FileType:=CurPFT;
         LazPackage.Modified:=true;
-        UpdateAll;
+        UpdateAll(true);
       end;
       exit;
     end;
@@ -1259,7 +1261,7 @@ begin
   FLazPackage.Editor:=Self;
   PackageEditors.ApplyLayout(Self);
   // update components
-  UpdateAll;
+  UpdateAll(true);
   // show files
   FilesNode.Expanded:=true;
 end;
@@ -1462,9 +1464,16 @@ begin
   FilesTreeView.AnchorToNeighbour(akBottom,0,FilePropsGroupBox);
 end;
 
-procedure TPackageEditorForm.UpdateAll;
+procedure TPackageEditorForm.UpdateAll(Immediately: boolean);
 begin
   if LazPackage=nil then exit;
+  if not Immediately then begin
+    if FNeedUpdateAll then exit;
+    FNeedUpdateAll:=true;
+    Application.AddOnIdleHandler(@IdleHandler);
+    exit;
+  end;
+  FNeedUpdateAll:=false;
   FilesTreeView.BeginUpdate;
   UpdateTitle;
   UpdateButtons;
@@ -1923,6 +1932,13 @@ begin
   Result:=PackageEditors.AddToProject(LazPackage,true)=mrOk;
 end;
 
+procedure TPackageEditorForm.IdleHandler(Sender: TObject; var Done: Boolean);
+begin
+  if FNeedUpdateAll then
+    UpdateAll(true);
+  Application.RemoveOnIdleHandler(@IdleHandler);
+end;
+
 procedure TPackageEditorForm.DoSave(SaveAs: boolean);
 begin
   PackageEditors.SavePackage(LazPackage,SaveAs);
@@ -1947,13 +1963,13 @@ begin
     mtConfirmation,[mbYes,mbNo],0)<>mrYes
   then exit;
   PackageEditors.RevertPackage(LazPackage);
-  UpdateAll;
+  UpdateAll(true);
 end;
 
 procedure TPackageEditorForm.DoPublishProject;
 begin
   PackageEditors.PublishPackage(LazPackage);
-  UpdateAll;
+  UpdateAll(true);
 end;
 
 procedure TPackageEditorForm.DoEditVirtualUnit;
@@ -1964,7 +1980,7 @@ begin
   CurFile:=GetCurrentFile(Removed);
   if (CurFile=nil) or Removed then exit;
   if ShowEditVirtualPackageDialog(CurFile)=mrOk then
-    UpdateAll;
+    UpdateAll(true);
 end;
 
 procedure TPackageEditorForm.DoMoveCurrentFile(Offset: integer);
@@ -1994,7 +2010,7 @@ var
 begin
   TreeSelection:=StoreCurrentTreeSelection;
   LazPackage.SortFiles;
-  UpdateAll;
+  UpdateAll(true);
   ApplyTreeSelection(TreeSelection,true);
 end;
 
@@ -2294,11 +2310,11 @@ begin
     Result:=mrCancel;
 end;
 
-procedure TPackageEditors.UpdateAllEditors;
+procedure TPackageEditors.UpdateAllEditors(Immediately: boolean);
 var
   i: Integer;
 begin
-  for i:=0 to Count-1 do Editors[i].UpdateAll;
+  for i:=0 to Count-1 do Editors[i].UpdateAll(Immediately);
 end;
 
 function TPackageEditors.InstallPackage(APackage: TLazPackage): TModalResult;

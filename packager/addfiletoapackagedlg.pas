@@ -174,7 +174,7 @@ begin
     if HasRegisterProc then
       Include(FileFlags,pffHasRegisterProc);
     APackage.AddFile(Filename,Unit_Name,FileType,FileFlags,cpNormal);
-    if APackage.Editor<>nil then APackage.Editor.UpdateAll;
+    if APackage.Editor<>nil then APackage.Editor.UpdateAll(true);
     APackage.EndUpdate;
 
     ModalResult:=mrOk;

@@ -802,7 +802,7 @@ type
     function GetLazPackage: TLazPackage; virtual;
     procedure SetLazPackage(const AValue: TLazPackage); virtual; abstract;
   public
-    procedure UpdateAll; virtual; abstract;
+    procedure UpdateAll(Immediately: boolean); virtual; abstract;
     property LazPackage: TLazPackage read GetLazPackage write SetLazPackage;
   end;
   
@@ -2270,7 +2270,10 @@ begin
 end;
 
 procedure TLazPackage.SetModified(const AValue: boolean);
+var
+  OldModified: Boolean;
 begin
+  OldModified:=Modified;
   if AValue and (FModifiedLock>0) then exit;
   if AValue then begin
     Include(FFlags,lpfModified);
@@ -2283,6 +2286,8 @@ begin
   Exclude(FFlags,lpfSkipSaving);
   if not AValue then
     PublishOptions.Modified:=false;
+  if (OldModified<>Modified) and (Editor<>nil) then
+    Editor.UpdateAll(false);
 end;
 
 procedure TLazPackage.SetName(const AValue: string);

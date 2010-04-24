@@ -975,7 +975,7 @@ begin
   end;
   if GraphChanged then begin
     if PackageEditors<>nil then
-      PackageEditors.UpdateAllEditors;
+      PackageEditors.UpdateAllEditors(false);
     if ProjInspector<>nil then
       ProjInspector.UpdateItems;
     DoCallNotifyHandler(pihtGraphChanged,Self);
@@ -2616,7 +2616,7 @@ begin
     AddFileToRecentPackages(APackage.Filename);
   end;
 
-  if APackage.Editor<>nil then APackage.Editor.UpdateAll;
+  if APackage.Editor<>nil then APackage.Editor.UpdateAll(true);
   Result:=mrOk;
 end;
 
@@ -2862,7 +2862,7 @@ begin
   if Result<>mrYes then exit;
   
   OldPkgFile.Filename:=NewFilename;
-  if OldPackage.Editor<>nil then OldPackage.Editor.UpdateAll;
+  if OldPackage.Editor<>nil then OldPackage.Editor.UpdateAll(true);
   OldPackage.Modified:=true;
 
   Result:=mrOk;
