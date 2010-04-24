@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-23 02:38+0300\n"
+"PO-Revision-Date: 2010-04-24 19:19+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -7048,6 +7048,10 @@ msgstr "Идентификатор содержит ..."
 msgid "IDE Options:"
 msgstr "Параметры IDE:"
 
+#: lazarusidestrconsts.lisideprojectdirinidetitle
+msgid "Show project directory in IDE title"
+msgstr "Отображать каталог проекта в заголовке IDE"
+
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"
 msgstr "Начинать заголовок IDE с имени проекта"
@@ -11434,6 +11438,10 @@ msgstr "Проект изменён на диске"
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
 msgstr "Имя каталога проекта"
+
+#: lazarusidestrconsts.lisprojectdirectoryisshowedinidetitlebar
+msgid "Title in taskbar shows also directory path of the project"
+msgstr "Отображать в заголовке в панели задач также путь к каталогу проекта"
 
 #: lazarusidestrconsts.lisprojectfilename
 msgid "Project filename"

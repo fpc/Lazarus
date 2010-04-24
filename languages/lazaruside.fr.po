@@ -7037,6 +7037,10 @@ msgstr "Identifiant contient ..."
 msgid "IDE Options:"
 msgstr "Options de l'EDI :"
 
+#: lazarusidestrconsts.lisideprojectdirinidetitle
+msgid "Show project directory in IDE title"
+msgstr ""
+
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"
 msgstr ""
@@ -11419,6 +11423,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
 msgstr "Répertoire du projet"
+
+#: lazarusidestrconsts.lisprojectdirectoryisshowedinidetitlebar
+msgid "Title in taskbar shows also directory path of the project"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojectfilename
 msgid "Project filename"
