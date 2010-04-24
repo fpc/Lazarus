@@ -36,9 +36,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, LazConfigStorage, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazHelpIntf,
-  PackageIntf, MacroIntf, IDEOptionsIntf, LazIDEIntf, BaseIDEIntf, IDEDialogs,
-  HelpIntfs, IDEImagesIntf;
+  Dialogs, LazConfigStorage, ComCtrls, Buttons, StdCtrls, ExtCtrls, ButtonPanel,
+  LazHelpIntf, PackageIntf, MacroIntf, IDEOptionsIntf, LazIDEIntf, BaseIDEIntf,
+  IDEDialogs, HelpIntfs, IDEImagesIntf, SrcEditorIntf;
 
 const
   ExternHelpConfigVersion = 1;
@@ -56,13 +56,16 @@ resourcestring
   ehrsDeleteItem = 'Delete item';
   ehrsBrowseForPath = 'Browse for path';
   ehrsGeneral = 'General';
-  ehrsBrowse = 'Browse';
+  ehrsBrowse = 'Browse ...';
   ehrsMacrofy = 'Macrofy';
   ehrsReplaceCommonDirectoriesWithMacros = 'Replace common directories with '
     +'macros';
+  ehrsEditorFile = 'Editor file ...';
   ehrsStoreThisURLIn = 'Store this URL in';
   ehrsIncludeSubDirectories = 'Include sub directories';
+  ehrsSelectAFileFromTheSourceEditor = 'Select a file from the source editor';
   ehrsChooseAPascalUnit = 'Choose a pascal unit';
+  ehrsSelectFile = 'Select file';
   ehrsDirectoryNotFound = 'Directory not found: %s';
   ehrsFileNotFound = 'File not found: %s';
   ehrsWarning = 'Warning';
@@ -70,6 +73,17 @@ resourcestring
   ehrsMySettings = 'My settings (default)';
 
 type
+
+  { TExternHelpFileSelector }
+
+  TExternHelpFileSelector = class(TForm)
+  published
+    FileListBox: TListBox;
+    ButtonPanel1: TButtonPanel;
+    procedure ButtonPanel1OKButtonClick(Sender: TObject);
+  public
+    constructor Create(TheOwner: TComponent); override;
+  end;
 
   { TExternHelpItem }
 
@@ -184,6 +198,7 @@ type
 
   TExternHelpGeneralOptsFrame = class(TAbstractIDEOptionsEditor)
     AddSpeedButton: TSpeedButton;
+    SelEditorFileButton: TButton;
     WithSubDirsCheckBox: TCheckBox;
     FileMacrofyButton: TButton;
     DeleteSpeedButton: TSpeedButton;
@@ -219,6 +234,7 @@ type
       var DragObject: TDragObject);
     procedure NameEditChange(Sender: TObject);
     procedure NameEditEditingDone(Sender: TObject);
+    procedure SelEditorFileButtonClick(Sender: TObject);
     procedure StoreComboBoxEditingDone(Sender: TObject);
     procedure URLMemoEditingDone(Sender: TObject);
     procedure WithSubDirsCheckBoxEditingDone(Sender: TObject);
@@ -846,6 +862,74 @@ begin
   NameChanged(ItemsTreeView.Selected,S,true,true);
 end;
 
+procedure TExternHelpGeneralOptsFrame.SelEditorFileButtonClick(Sender: TObject);
+var
+  Selector: TExternHelpFileSelector;
+  i: Integer;
+  Filename: String;
+  Files: TStringList;
+  j: Integer;
+  Filename2: String;
+  SelTVNode: TTreeNode;
+  Item: TExternHelpItem;
+begin
+  if SourceEditorManagerIntf=nil then exit;
+  Files:=TStringList.Create;
+  Selector:=TExternHelpFileSelector.Create(GetParentForm(Self));
+  try
+    // collect open editor files
+    for i:=0 to SourceEditorManagerIntf.SourceEditorCount-1 do begin
+      Filename:=SourceEditorManagerIntf.SourceEditors[i].FileName;
+      j:=Files.Count-1;
+      while (j>=0) and (CompareFilenames(Files[j],Filename)<>0) do dec(j);
+      if j>=0 then continue;
+      Files.Add(Filename);
+    end;
+    // shorten file names
+    for i:=0 to Files.Count-1 do begin
+      Filename:=ExtractFileName(Files[i]);
+      j:=Files.Count-1;
+      while (j>=0)
+      and ((i=j) or (CompareFilenames(ExtractFileName(Files[j]),Filename)<>0)) do
+        dec(j);
+      if (j<0) then begin
+        // short file is unique => use short file
+        Files[i]:=Filename;
+      end;
+    end;
+    Selector.FileListBox.Items:=Files;
+    Selector.Position:=poOwnerFormCenter;
+    Selector.Caption:=ehrsSelectFile;
+    if Files.Count>0 then
+      Selector.FileListBox.ItemIndex:=0;
+    if (Selector.ShowModal=mrOK) then begin
+      i:=Selector.FileListBox.ItemIndex;
+      if i>=0 then begin
+        Filename2:=Selector.FileListBox.Items[i];
+        for i:=0 to SourceEditorManagerIntf.SourceEditorCount-1 do begin
+          Filename:=SourceEditorManagerIntf.SourceEditors[i].FileName;
+          if (CompareFilenames(Filename2,Filename)=0)
+          or (CompareFilenames(Filename2,ExtractFileName(Filename))=0) then
+          begin
+            Filename:=Macrofy(FileName);
+            FilenameEdit.Text:=Filename;
+            SelTVNode:=ItemsTreeView.Selected;
+            if (SelTVNode<>nil) and (TObject(SelTVNode.Data) is TExternHelpItem)
+            then begin
+              Item:=TExternHelpItem(SelTVNode.Data);
+              Item.Filename:=Filename;
+            end;
+            exit;
+          end;
+        end;
+      end;
+    end;
+  finally
+    Selector.Free;
+    Files.Free;
+  end;
+end;
+
 procedure TExternHelpGeneralOptsFrame.StoreComboBoxEditingDone(Sender: TObject);
 var
   S: String;
@@ -1087,6 +1171,8 @@ begin
   FileBrowseButton.Hint:=ehrsBrowseForPath;
   FileMacrofyButton.Caption:=ehrsMacrofy;
   FileMacrofyButton.Hint:=ehrsReplaceCommonDirectoriesWithMacros;
+  SelEditorFileButton.Caption:=ehrsEditorFile;
+  SelEditorFileButton.Hint:=ehrsSelectAFileFromTheSourceEditor;
   WithSubDirsCheckBox.Caption:=ehrsIncludeSubDirectories;
   StoreLabel.Caption:=ehrsStoreThisURLIn;
   FMySettingsCaption:=ehrsMySettings;
@@ -1394,6 +1480,35 @@ begin
 
   // otherwise use default
   Result:=inherited ShowHelp(Query, BaseNode, NewNode, QueryItem, ErrMsg);
+end;
+
+{ TExternHelpFileSelector }
+
+procedure TExternHelpFileSelector.ButtonPanel1OKButtonClick(Sender: TObject);
+begin
+  ModalResult:=mrOk;
+end;
+
+constructor TExternHelpFileSelector.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+
+  FileListBox:=TListBox.Create(Self);
+  with FileListBox do begin
+    Name:='FileListBox';
+    Align:=alClient;
+    Parent:=Self;
+  end;
+
+  ButtonPanel1:=TButtonPanel.Create(Self);
+  with ButtonPanel1 do begin
+    Name:='ButtonPanel1';
+    Align:=alBottom;
+    ShowButtons:=[pbOK,pbCancel];
+    OKButton.OnClick:=@ButtonPanel1OKButtonClick;
+    OKButton.ModalResult:=mrNone;
+    Parent:=Self;
+  end;
 end;
 
 finalization
