@@ -869,7 +869,7 @@ begin
             OnMouseWheel:= @LazTVMouseWheel;
             ShowHint:= true;
             RowSelect := True;
-            Options := Options + [tvoAllowMultiselect];
+            Options := Options + [tvoAllowMultiselect] - [tvoThemedDraw]; // we are using custom draw
             PopupMenu := popList;
             NewTreeView.Canvas.Brush.Color:= clWhite;
           end;//with
