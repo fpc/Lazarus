@@ -3,34 +3,52 @@ inherited fObfuscateSettings: TfObfuscateSettings
   Width = 275
   ClientHeight = 271
   ClientWidth = 275
+  TabOrder = 0
   DesignLeft = 426
   DesignTop = 292
   object cbRemoveWhiteSpace: TCheckBox[0]
-    Left = 8
+    AnchorSideLeft.Control = cbEnabled
+    AnchorSideTop.Control = rgObfuscateCaps
+    AnchorSideTop.Side = asrBottom
+    Left = 6
     Height = 17
-    Top = 160
+    Top = 133
     Width = 117
+    BorderSpacing.Top = 6
     Caption = 'Remove &white space'
     Checked = True
     State = cbChecked
     TabOrder = 2
   end
   object cbRemoveComments: TCheckBox[1]
-    Left = 8
+    AnchorSideLeft.Control = cbEnabled
+    AnchorSideTop.Control = cbRemoveWhiteSpace
+    AnchorSideTop.Side = asrBottom
+    Left = 6
     Height = 17
-    Top = 180
+    Top = 156
     Width = 108
+    BorderSpacing.Top = 6
     Caption = 'Remove c&omments'
     Checked = True
     State = cbChecked
     TabOrder = 3
   end
   object rgObfuscateCaps: TRadioGroup[2]
-    Left = 8
-    Height = 108
-    Top = 38
-    Width = 169
+    AnchorSideLeft.Control = cbEnabled
+    AnchorSideTop.Control = cbEnabled
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 98
+    Top = 29
+    Width = 263
+    Anchors = [akTop, akLeft, akRight]
     AutoFill = True
+    AutoSize = True
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
     Caption = 'Obfuscate word &caps'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -40,8 +58,8 @@ inherited fObfuscateSettings: TfObfuscateSettings
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 90
-    ClientWidth = 165
+    ClientHeight = 80
+    ClientWidth = 259
     ItemIndex = 0
     Items.Strings = (
       'ALL CAPITALS'
@@ -52,30 +70,41 @@ inherited fObfuscateSettings: TfObfuscateSettings
     TabOrder = 1
   end
   object cbRebreak: TCheckBox[3]
-    Left = 8
+    AnchorSideLeft.Control = cbEnabled
+    AnchorSideTop.Control = cbRemoveIndent
+    AnchorSideTop.Side = asrBottom
+    Left = 6
     Height = 17
-    Top = 220
+    Top = 202
     Width = 82
+    BorderSpacing.Top = 6
     Caption = 'Rebreak &lines'
     Checked = True
     State = cbChecked
     TabOrder = 5
   end
   object cbRemoveIndent: TCheckBox[4]
-    Left = 8
+    AnchorSideLeft.Control = cbEnabled
+    AnchorSideTop.Control = cbRemoveComments
+    AnchorSideTop.Side = asrBottom
+    Left = 6
     Height = 17
-    Top = 200
+    Top = 179
     Width = 90
+    BorderSpacing.Top = 6
     Caption = 'Remove &indent'
     Checked = True
     State = cbChecked
     TabOrder = 4
   end
   object cbEnabled: TCheckBox[5]
-    Left = 8
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
     Height = 17
-    Top = 8
+    Top = 6
     Width = 97
+    BorderSpacing.Around = 6
     Caption = '&Obfuscate mode'
     TabOrder = 0
   end
