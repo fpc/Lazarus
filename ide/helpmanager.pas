@@ -380,7 +380,7 @@ begin
   try
     R := Rect(0, 0, 600, 200);
     OldFont := SelectObject(DC, HGDIOBJ(Font.Reference.Handle));
-    Flags := DT_CalcRect;
+    Flags := DT_CALCRECT or DT_EXPANDTABS;
     inc(Flags, DT_WordBreak);
     LabelText := GetLabelText;
     DrawText(DC, PChar(LabelText), Length(LabelText), R, Flags);

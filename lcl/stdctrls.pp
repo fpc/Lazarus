@@ -29,7 +29,7 @@ interface
 
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LMessages, Graphics,
+  Classes, SysUtils, types, LCLStrConsts, LCLType, LCLProc, LMessages, Graphics,
   GraphType, ExtendedStrings, LCLIntf, ClipBrd, ActnList, Controls,
   TextStrings, Forms, Menus, LResources;
 
@@ -1386,6 +1386,8 @@ type
     procedure CalculatePreferredSize(
                          var PreferredWidth, PreferredHeight: integer;
                          WithThemeSpace: Boolean); override;
+    procedure CalculateSize(MaxWidth: integer;
+                            var NeededWidth, NeededHeight: integer);
     procedure DoAutoSize; override;
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure TextChanged; override;

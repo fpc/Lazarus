@@ -30,16 +30,28 @@ procedure TCustomLabel.CalculatePreferredSize(
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 // assumes: (Parent <> nil) and Parent.HandleAllocated
 var
-  R: TRect;
-  DC: HDC;
-  Flags: Cardinal;
-  OldFont: HGDIOBJ;
-  LabelText: string;
+  AWidth: Integer;
 begin
   if (Parent = nil) or (not Parent.HandleAllocated) then Exit;
+  if WidthIsAnchored and WordWrap and HasMultiLine then
+    AWidth:=Width
+  else
+    AWidth:=10000;
+  CalculateSize(AWidth,PreferredWidth,PreferredHeight);
+end;
+
+procedure TCustomLabel.CalculateSize(MaxWidth: integer; var NeededWidth,
+  NeededHeight: integer);
+var
+  DC: HDC;
+  R: TRect;
+  OldFont: HGDIOBJ;
+  Flags: cardinal;
+  LabelText: String;
+begin
   DC := GetDC(Parent.Handle);
   try
-    R := Rect(0, 0, Width, Height);
+    R := Rect(0, 0, MaxWidth, 10000);
     OldFont := SelectObject(DC, HGDIOBJ(Font.Reference.Handle));
     Flags := DT_CALCRECT or DT_EXPANDTABS;
     if WordWrap then
@@ -52,8 +64,9 @@ begin
     DrawText(DC, PChar(LabelText), Length(LabelText), R, Flags);
     SelectObject(DC, OldFont);
     // add one to be able to display disabled label
-    PreferredWidth := R.Right - R.Left + 1;
-    PreferredHeight := R.Bottom - R.Top + 1;
+    NeededWidth := R.Right - R.Left + 1;
+    NeededHeight := R.Bottom - R.Top + 1;
+    //DebugLn(['TCustomLabel.CalculatePreferredSize ',DbgSName(Self),' R=',dbgs(R),' MaxWidth=',MaxWidth,' DT_WORDBREAK=',(DT_WORDBREAK and Flags)>0,' LabelText="',LabelText,'"']);
   finally
     ReleaseDC(Parent.Handle, DC);
   end;
@@ -209,7 +222,7 @@ begin
     TextTop := 0;
   end else
   begin
-    GetPreferredSize(lTextWidth, lTextHeight, True);
+    CalculateSize(Width, lTextWidth, lTextHeight);
     case Layout of
       tlCenter: TextTop := (Height - lTextHeight) div 2;
       tlBottom: TextTop := Height - lTextHeight;
@@ -313,8 +326,10 @@ begin
   InvalidatePreferredSize;
   if OptimalFill and (not AutoSize) then
     AdjustFontForOptimalFill;
+  {$IFDEF OldAutoSize}
   if (Parent <> nil) and Parent.AutoSize then
     Parent.AdjustSize;
+  {$ENDIF}
   AdjustSize;
 end;
 
