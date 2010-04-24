@@ -4885,6 +4885,7 @@ end;
 function TQtRadioButton.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
+  W: WideString;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -4960,6 +4961,9 @@ begin
   {$ENDIF}
   QLayout_setContentsMargins(ALayout, LeftMargin, TopMargin, RightMargin, BottomMargin);
   QLayout_invalidate(ALayout);
+
+  if LCLObject <> nil then
+    LCLObject.DoAdjustClientRectChange(False);
 end;
 
 function TQtGroupBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -4986,7 +4990,6 @@ begin
   QLayout_addWidget(Layout, FCentralWidget);
   QWidget_setLayout(Result, QLayoutH(Layout));
   QWidget_setAttribute(Result, QtWA_LayoutOnEntireRect, True);
-  setLayoutThemeMargins(Layout, Result);
 end;
 
 function TQtGroupBox.CanPaintBackground: Boolean;
@@ -5007,6 +5010,11 @@ begin
   case QEvent_type(Event) of
     QEventFontChange,
     QEventStyleChange: setLayoutThemeMargins(QWidget_layout(Widget), Widget);
+    QEventShow:
+      begin
+        LCLObject.DoAdjustClientRectChange(False);
+        SlotShow(True);
+      end;
     else
       Result := inherited EventFilter(Sender, Event);
   end;
