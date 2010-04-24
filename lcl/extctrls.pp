@@ -601,7 +601,7 @@ type
     FProportional: Boolean;
     FTransparent: Boolean;
     FStretch: Boolean;
-    FUseParentCanvas: boolean;
+    FUseAncestorCanvas: boolean;
     function  GetCanvas: TCanvas;
     procedure SetPicture(const AValue: TPicture);
     procedure SetCenter(const AValue : Boolean);

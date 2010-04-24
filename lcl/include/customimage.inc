@@ -27,7 +27,7 @@ begin
   FTransparent := False;
   FPicture := TPicture.Create;
   FPicture.OnChange := @PictureChanged;
-  FUseParentCanvas := False;
+  FUseAncestorCanvas := False;
   SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
 end;
 
@@ -44,7 +44,7 @@ var
   TempBitmap: TBitmap;
 begin
   //debugln('TCustomImage.GetCanvas A ',DbgSName(Self),' ',DbgSName(FPicture.Graphic));
-  if not FUseParentCanvas and (FPicture.Graphic = nil) then
+  if not FUseAncestorCanvas and (FPicture.Graphic = nil) then
   begin
     // make a new bitmap to draw on
     TempBitmap := TBitmap.Create;
@@ -56,9 +56,9 @@ begin
       TempBitmap.Free;
     end;
   end;
-  //debugln('TCustomImage.GetCanvas B ',DbgSName(Self),' ',DbgSName(FPicture.Graphic));
+  //debugln(['TCustomImage.GetCanvas B ',DbgSName(Self),' ',DbgSName(FPicture.Graphic),' FUseParentCanvas=',FUseAncestorCanvas]);
   // try draw on the bitmap, not on the form's canvas
-  if not FUseParentCanvas and (FPicture.Graphic is TBitmap) then
+  if not FUseAncestorCanvas and (FPicture.Graphic is TBitmap) then
     Result := TBitmap(FPicture.Graphic).Canvas
   else
     Result := inherited Canvas;
@@ -195,7 +195,7 @@ var
   C: TCanvas;
 begin
   // detect loop
-  if FUseParentCanvas then exit;
+  if FUseAncestorCanvas then exit;
 
   if csDesigning in ComponentState
   then DrawFrame;
@@ -207,11 +207,11 @@ begin
   R := DestRect;
   C.StretchDraw(R, Picture.Graphic);
 
+  FUseAncestorCanvas := True;
   try
-    FUseParentCanvas := True;
     inherited Paint;
   finally
-    FUseParentCanvas := False;
+    FUseAncestorCanvas := False;
   end;
 end;
 
