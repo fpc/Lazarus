@@ -59,6 +59,7 @@ type
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
+    procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); override;
     function GetDetailSize(Details: TThemedElementDetails): TSize; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
 
@@ -67,6 +68,7 @@ type
   end;
 
 implementation
+uses qtint, qtproc;
 
 { TQtThemeServices }
 
@@ -121,6 +123,7 @@ var
   ABrush: QBrushH;
   Widget: QWidgetH;
   AViewportPaint: Boolean;
+  StyleState: QStyleState;
 begin
   if (Context <> nil) then
   begin
@@ -190,7 +193,14 @@ begin
               QStyleOption_initFrom(opt, Context.Parent);
               Palette := QPalette_create();
               QStyleOption_palette(opt, Palette);
-              AColor := QPalette_color(Palette, QPaletteHighlight)^;
+              StyleState := GetControlState(Details);
+              if (StyleState and QStyleState_HasFocus) <> 0 then
+                AColor := QPalette_color(Palette, QPaletteActive, QPaletteHighLight)^
+              else
+              if (StyleState and QStyleState_Selected) <> 0 then
+                AColor := QPalette_color(Palette, QPaletteInActive, QPaletteHighLight)^
+              else
+                AColor := QPalette_color(Palette, QPaletteHighLight)^;
               ABrush := QBrush_create(QPainter_brush(Context.Widget));
               QBrush_setColor(ABrush, @AColor);
               QBrush_setStyle(ABrush, QtSolidPattern);
@@ -309,6 +319,69 @@ procedure TQtThemeServices.DrawIcon(DC: HDC;
   Index: Integer);
 begin
 
+end;
+
+procedure TQtThemeServices.DrawText(ACanvas: TPersistent;
+  Details: TThemedElementDetails; const S: String; R: TRect; Flags,
+  Flags2: Cardinal);
+var
+  Palette: QPaletteH;
+  Brush: QBrushH;
+  Context: TQtDeviceContext;
+  Widget: QWidgetH;
+  W: WideString;
+begin
+  case Details.Element of
+    teTreeView:
+      begin
+        Context := TQtDeviceContext(TCanvas(ACanvas).Handle);
+        if Details.Part = TVP_TREEITEM then
+        begin
+          Palette := nil;
+          if Context.Parent <> nil then
+          begin
+            Widget := QWidget_parentWidget(Context.Parent);
+            if (Widget <> nil) and QObject_inherits(Widget,'QAbstractScrollArea') then
+              Palette := QPalette_create(QWidget_palette(Widget))
+            else
+              Palette := QPalette_create(QWidget_palette(Context.Parent));
+          end;
+
+          if Palette = nil then
+          begin
+            inherited;
+            exit;
+          end;
+
+          W := GetUTF8String(S);
+          Context.save;
+          try
+            Context.SetBkMode(TRANSPARENT);
+            if Details.State = TREIS_SELECTEDNOTFOCUS then
+              QPalette_setCurrentColorGroup(Palette, QPaletteInactive)
+            else
+              QPalette_setCurrentColorGroup(Palette, QPaletteActive);
+
+            if Details.State in
+              [TREIS_SELECTED, TREIS_HOTSELECTED, TREIS_SELECTEDNOTFOCUS] then
+              QStyle_drawItemText(Style, Context.Widget, @R,
+                DTFlagsToQtFlags(Flags), Palette,
+                not IsDisabled(Details), @W, QPaletteHighlightedText)
+            else
+              QStyle_drawItemText(Style, Context.Widget, @R,
+                DTFlagsToQtFlags(Flags), Palette,
+                not IsDisabled(Details), @W, QPaletteText);
+          finally
+            Context.restore;
+          end;
+          QPalette_destroy(Palette);
+        end else
+          inherited;
+      end;
+
+    else
+      inherited;
+  end;
 end;
 
 function TQtThemeServices.HasTransparentParts(Details: TThemedElementDetails): Boolean;

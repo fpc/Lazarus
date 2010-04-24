@@ -162,6 +162,7 @@ type
 
   procedure EventTrace(message : string; data : pointer);
   function HwndFromWidgetH(const WidgetH: QWidgetH): HWND;
+  function DTFlagsToQtFlags(const Flags: Cardinal): Integer;
 
 
 const
@@ -196,6 +197,54 @@ const
   KEYMAP_VKUNKNOWN = $10000;
   KEYMAP_TOGGLE    = $20000;
   KEYMAP_EXTENDED  = $40000;
+
+function DTFlagsToQtFlags(const Flags: Cardinal): Integer;
+const
+  QtTextSingleLine            = $0100;
+  QtTextDontClip              = $0200;
+  QtTextExpandTabs            = $0400;
+  QtTextShowMnemonic          = $0800;
+  QtTextWordWrap              = $1000;
+  QtTextWrapAnywhere          = $2000;
+  QtTextHideMnemonic          = $8000;
+  QtTextDontPrint             = $4000;
+  QtTextIncludeTrailingSpaces =	$08000000;
+  QtTextJustificationForced   = $10000;
+begin
+  Result := 0;
+  // horizontal alignment
+  if Flags and DT_CENTER <> 0 then
+    Result := Result or  QtAlignHCenter
+  else
+  if Flags and DT_RIGHT <> 0 then
+    Result := Result or QtAlignRight
+  else
+    Result := Result or QtAlignLeft;
+  // vertical alignment
+  if Flags and DT_VCENTER <> 0 then
+    Result := Result or QtAlignVCenter
+  else
+  if Flags and DT_BOTTOM <> 0 then
+    Result := Result or QtAlignBottom
+  else
+    Result := Result or QtAlignTop;
+
+  // mutually exclusive wordbreak and singleline
+  if Flags and DT_WORDBREAK <> 0 then
+    Result := Result or QtTextWordWrap
+  else
+  if Flags and DT_SINGLELINE <> 0 then
+    Result := Result or QtTextSingleLine;
+
+  if Flags and DT_NOPREFIX = 0 then
+    Result := Result or QtTextShowMnemonic;
+
+  if Flags and DT_NOCLIP <> 0 then
+    Result := Result or QtTextDontClip;
+
+  if Flags and DT_EXPANDTABS <> 0 then
+    Result := Result or QtTextExpandTabs;
+end;
   
 procedure EventTrace(message: string; data: pointer);
 begin
