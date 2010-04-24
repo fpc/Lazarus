@@ -154,6 +154,7 @@ type
                                           out Directory: string);
     procedure GetWritablePkgOutputDirectory(APackage: TLazPackage;
                                             var AnOutDirectory: string);
+    procedure PackageFileLoaded(Sender: TObject);
     procedure OnCheckInstallPackageList(PkgIDList: TFPList; var Ok: boolean);
     function LoadDependencyList(FirstDependency: TPkgDependency): TModalResult;
     procedure OnOpenPackageForCurrentSrcEditFile(Sender: TObject);
@@ -622,6 +623,11 @@ begin
   debugln('TPkgManager.GetWritablePkgOutputDirectory APackage=',APackage.IDAsString,' AnOutDirectory="',AnOutDirectory,'"');
 end;
 
+procedure TPkgManager.PackageFileLoaded(Sender: TObject);
+begin
+  DoCallNotifyHandler(pihtPackageFileLoaded,Sender);
+end;
+
 procedure TPkgManager.OnCheckInstallPackageList(PkgIDList: TFPList;
   var Ok: boolean);
 var
@@ -971,7 +977,7 @@ begin
       PackageEditors.UpdateAllEditors;
     if ProjInspector<>nil then
       ProjInspector.UpdateItems;
-    DoCallNotifyHandler(pihtGraphChanged);
+    DoCallNotifyHandler(pihtGraphChanged,Self);
   end;
 end;
 
@@ -1757,6 +1763,7 @@ begin
   OnGetDependencyOwnerDescription:=@GetDependencyOwnerDescription;
   OnGetDependencyOwnerDirectory:=@GetDependencyOwnerDirectory;
   OnGetWritablePkgOutputDirectory:=@GetWritablePkgOutputDirectory;
+  OnPackageFileLoaded:=@PackageFileLoaded;
 
   // componentpalette
   IDEComponentPalette:=TComponentPalette.Create;

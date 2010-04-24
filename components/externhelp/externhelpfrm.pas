@@ -144,15 +144,20 @@ type
     FHelpDB: TExternalHelpDatabase;
     FLastSavedChangeStep: integer;
     procedure SetFilename(const AValue: string);
+    procedure PkgFileLoaded(Sender: TObject);
+    procedure LoadNode(Config: TConfigStorage; Path: string; Node: TExternHelpItem);
+    procedure SaveNode(Config: TConfigStorage; Path: string; Node: TExternHelpItem);
   public
     RootItem: TExternHelpRootItem;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure ClearItemsStoredInPackages(const Name: string = '*');
     class function GetGroupCaption: string; override;
     class function GetInstance: TAbstractIDEOptions; override;
     function Load(Config: TConfigStorage): TModalResult; virtual;
     function Save(Config: TConfigStorage): TModalResult; virtual;
+    procedure LoadOptionsFromPackage(Pkg: TIDEPackage);
     function LoadFromFile(Filename: string): TModalResult; virtual;
     function SaveToFile(Filename: string): TModalResult; virtual;
     function Load: TModalResult; virtual;
@@ -270,6 +275,45 @@ begin
   FFilename:=AValue;
 end;
 
+procedure TExternHelpOptions.PkgFileLoaded(Sender: TObject);
+begin
+  if Sender is TIDEPackage then
+    LoadOptionsFromPackage(TIDEPackage(Sender));
+end;
+
+procedure TExternHelpOptions.LoadNode(Config: TConfigStorage; Path: string;
+  Node: TExternHelpItem);
+var
+  i, NewCount: Integer;
+  NewItem: TExternHelpItem;
+begin
+  Node.Name:=Config.GetValue(Path+'Name','');
+  Node.Filename:=Config.GetValue(Path+'Filename/Value','');
+  Node.WithSubDirectories:=Config.GetValue(Path+'WithSubDirectories/Value',false);
+  Node.URL:=Config.GetValue(Path+'URL/Value','');
+  NewCount:=Config.GetValue(Path+'ChildCount',0);
+  for i:=1 to NewCount do begin
+    NewItem:=TExternHelpItem.Create;
+    NewItem.StoreIn:=Node.StoreIn;
+    Node.AddChild(NewItem);
+    LoadNode(Config,Path+'Item'+IntToStr(i)+'/',NewItem);
+  end;
+end;
+
+procedure TExternHelpOptions.SaveNode(Config: TConfigStorage; Path: string;
+  Node: TExternHelpItem);
+var
+  i: Integer;
+begin
+  Config.SetDeleteValue(Path+'Name',Node.Name,'');
+  Config.SetDeleteValue(Path+'Filename/Value',Node.Filename,'');
+  Config.SetDeleteValue(Path+'WithSubDirectories/Value',Node.WithSubDirectories,false);
+  Config.SetDeleteValue(Path+'URL/Value',Node.URL,'');
+  Config.SetDeleteValue(Path+'ChildCount',Node.ChildCount,0);
+  for i:=1 to Node.ChildCount do
+    SaveNode(Config,Path+'Item'+IntToStr(i)+'/',Node.Childs[i-1]);
+end;
+
 constructor TExternHelpOptions.Create;
 var
   OldHelpDB: THelpDatabase;
@@ -283,6 +327,7 @@ begin
   else
     FHelpDB:=TExternalHelpDatabase(HelpDatabases.CreateHelpDatabase('External help',
                                                TExternalHelpDatabase,true));
+  PackageEditingInterface.AddHandlerOnPackageFileLoaded(@PkgFileLoaded);
 end;
 
 destructor TExternHelpOptions.Destroy;
@@ -297,6 +342,40 @@ begin
   RootItem.Clear;
 end;
 
+procedure TExternHelpOptions.ClearItemsStoredInPackages(const Name: string);
+var
+  i: Integer;
+  Item: TExternHelpItem;
+begin
+  if RootItem<>nil then begin
+    for i:=RootItem.ChildCount-1 downto 0 do begin
+      Item:=RootItem.Childs[i];
+      if (Item.StoreIn<>'')
+      and (Name='*') or (SysUtils.CompareText(Item.StoreIn,Name)=0) then
+        Item.Free;
+    end;
+  end;
+end;
+
+procedure TExternHelpOptions.LoadOptionsFromPackage(Pkg: TIDEPackage);
+var
+  Cnt: integer;
+  i: Integer;
+  Path: String;
+  NewItem: TExternHelpItem;
+begin
+  if Pkg.Name='' then exit;
+  ClearItemsStoredInPackages(Pkg.Name);
+  Path:='ExternHelp/';
+  Cnt:=Pkg.CustomOptions.GetValue(Path+'Count',0);
+  for i:=1 to Cnt do begin
+    NewItem:=TExternHelpItem.Create;
+    RootItem.AddChild(NewItem);
+    NewItem.StoreIn:=Pkg.Name;
+    LoadNode(Pkg.CustomOptions,Path+'Item'+IntToStr(i)+'/',NewItem);
+  end;
+end;
+
 class function TExternHelpOptions.GetGroupCaption: string;
 begin
   Result:=ehrsGroupTitle;
@@ -308,56 +387,22 @@ begin
 end;
 
 function TExternHelpOptions.Load(Config: TConfigStorage): TModalResult;
-
-  procedure LoadNode(Path: string; Node: TExternHelpItem);
-  var
-    i, NewCount: Integer;
-    NewItem: TExternHelpItem;
-  begin
-    Node.Name:=Config.GetValue(Path+'Name','');
-    Node.Filename:=Config.GetValue(Path+'Filename/Value','');
-    Node.WithSubDirectories:=Config.GetValue(Path+'WithSubDirectories/Value',false);
-    Node.URL:=Config.GetValue(Path+'URL/Value','');
-    Node.StoreIn:=Config.GetValue(Path+'Store/Where','');
-    NewCount:=Config.GetValue(Path+'ChildCount',0);
-    for i:=1 to NewCount do begin
-      NewItem:=TExternHelpItem.Create;
-      Node.AddChild(NewItem);
-      LoadNode(Path+'Item'+IntToStr(i)+'/',NewItem);
-    end;
-  end;
-
 var
   Path: String;
 begin
   Result:=mrOk;
   Clear;
   Path:='ExternHelp/';
-  LoadNode(Path+'Items/',RootItem);
+  LoadNode(Config,Path+'Items/',RootItem);
 end;
 
 function TExternHelpOptions.Save(Config: TConfigStorage): TModalResult;
-
-  procedure SaveNode(Path: string; Node: TExternHelpItem);
-  var
-    i: Integer;
-  begin
-    Config.SetDeleteValue(Path+'Name',Node.Name,'');
-    Config.SetDeleteValue(Path+'Filename/Value',Node.Filename,'');
-    Config.SetDeleteValue(Path+'WithSubDirectories/Value',Node.WithSubDirectories,false);
-    Config.SetDeleteValue(Path+'URL/Value',Node.URL,'');
-    Config.SetDeleteValue(Path+'Store/Where',Node.StoreIn,'');
-    Config.SetDeleteValue(Path+'ChildCount',Node.ChildCount,0);
-    for i:=1 to Node.ChildCount do
-      SaveNode(Path+'Item'+IntToStr(i)+'/',Node.Childs[i-1]);
-  end;
-
 var
   Path: String;
 begin
   Result:=mrOk;
   Path:='ExternHelp/';
-  SaveNode(Path+'Items/',RootItem);
+  SaveNode(Config,Path+'Items/',RootItem);
 end;
 
 function TExternHelpOptions.LoadFromFile(Filename: string): TModalResult;

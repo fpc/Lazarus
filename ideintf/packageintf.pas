@@ -156,7 +156,9 @@ type
   TPkgIntfOwnerSearchFlags = set of TPkgIntfOwnerSearchFlag;
 
   TPkgIntfHandlerType = (
-    pihtGraphChanged // called after loading/saving packages
+    pihtGraphChanged, // called after loading/saving packages, changing dependencies
+    pihtPackageFileLoaded  { called after loading a lpk,
+           before the package is initialized and the dependencies are resolved }
     );
 
   { TPackageEditingInterface }
@@ -168,7 +170,7 @@ type
                          const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TPkgIntfHandlerType;
                             const AMethod: TMethod);
-    procedure DoCallNotifyHandler(HandlerType: TPkgIntfHandlerType);
+    procedure DoCallNotifyHandler(HandlerType: TPkgIntfHandlerType; Sender: TObject);
   public
     function DoOpenPackageWithName(const APackageName: string;
                          Flags: TPkgOpenFlags;
@@ -196,6 +198,9 @@ type
     procedure AddHandlerOnGraphChanged(const OnGraphChanged: TNotifyEvent;
                                        AsLast: boolean = false);
     procedure RemoveHandlerOnGraphChanged(const OnGraphChanged: TNotifyEvent);
+    procedure AddHandlerOnPackageFileLoaded(const OnPkgLoaded: TNotifyEvent;
+                                        AsLast: boolean = false);
+    procedure RemoveHandlerOnPackageFileLoaded(const OnPkgLoaded: TNotifyEvent);
   end;
   
 var
@@ -601,9 +606,9 @@ begin
 end;
 
 procedure TPackageEditingInterface.DoCallNotifyHandler(
-  HandlerType: TPkgIntfHandlerType);
+  HandlerType: TPkgIntfHandlerType; Sender: TObject);
 begin
-  FHandlers[HandlerType].CallNotifyEvents(Self);
+  FHandlers[HandlerType].CallNotifyEvents(Sender);
 end;
 
 procedure TPackageEditingInterface.RemoveAllHandlersOfObject(AnObject: TObject
@@ -625,6 +630,18 @@ procedure TPackageEditingInterface.RemoveHandlerOnGraphChanged(
   const OnGraphChanged: TNotifyEvent);
 begin
   RemoveHandler(pihtGraphChanged,TMethod(OnGraphChanged));
+end;
+
+procedure TPackageEditingInterface.AddHandlerOnPackageFileLoaded(
+  const OnPkgLoaded: TNotifyEvent; AsLast: boolean);
+begin
+  AddHandler(pihtPackageFileLoaded,TMethod(OnPkgLoaded));
+end;
+
+procedure TPackageEditingInterface.RemoveHandlerOnPackageFileLoaded(
+  const OnPkgLoaded: TNotifyEvent);
+begin
+  RemoveHandler(pihtPackageFileLoaded,TMethod(OnPkgLoaded));
 end;
 
 initialization

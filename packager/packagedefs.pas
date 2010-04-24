@@ -841,6 +841,7 @@ var
   OnGetDependencyOwnerDescription: TGetDependencyOwnerDescription = nil;
   OnGetDependencyOwnerDirectory: TGetDependencyOwnerDirectory = nil;
   OnGetWritablePkgOutputDirectory: TGetWritablePkgOutputDirectory = nil;
+  OnPackageFileLoaded: TNotifyEvent = nil;
 
 function CompareLazPackageID(Data1, Data2: Pointer): integer;
 function CompareNameWithPackageID(Key, Data: Pointer): integer;
@@ -2560,6 +2561,7 @@ begin
   finally
     Config.Free;
   end;
+
   EndUpdate;
   Modified:=false;
   UnlockModified;
