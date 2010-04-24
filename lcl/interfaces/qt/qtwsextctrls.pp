@@ -456,6 +456,7 @@ var
   Str: WideString;
 begin
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
+  QtGroupBox.GroupBoxType := tgbtRadioGroup;
 
   Str := GetUtf8String(AWinControl.Caption);
   QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
@@ -481,7 +482,8 @@ var
   Str: WideString;
 begin
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
-  
+  QtGroupBox.GroupBoxType := tgbtCheckGroup;
+
   Str := GetUtf8String(AWinControl.Caption);
   QGroupBox_setTitle(QGroupBoxH(QtGroupBox.Widget), @Str);
 

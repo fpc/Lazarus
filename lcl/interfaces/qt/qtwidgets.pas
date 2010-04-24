@@ -52,7 +52,9 @@ type
   TChildOfComplexWidget = (ccwNone,
                           ccwComboBox,
                           ccwTreeWidget);
-
+  TQtGroupBoxType = (tgbtNormal,
+                   tgbtCheckGroup,
+                   tgbtRadioGroup);
   // records
   TPaintData = record
     PaintWidget: QWidgetH;
@@ -557,6 +559,7 @@ type
 
   TQtGroupBox = class(TQtWidget)
   private
+    FGroupBoxType: TQtGroupBoxType;
     procedure setLayoutThemeMargins(ALayout: QLayoutH; AWidget: QWidgetH);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
@@ -566,6 +569,7 @@ type
     function getText: WideString; override;
     procedure setText(const W: WideString); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
+    property GroupBoxType: TQtGroupBoxType read FGroupBoxType write FGroupBoxType;
   end;
   
   { TQtToolBar }
@@ -4975,6 +4979,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtGroupBox.Create ');
   {$endif}
+  FGroupBoxType := tgbtNormal;
   FHasPaint := True;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
@@ -5001,6 +5006,9 @@ end;
 
 function TQtGroupBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
+var
+  ResizeEvent: QResizeEventH;
+  NewSize, OldSize: TSize;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -5014,6 +5022,17 @@ begin
       begin
         LCLObject.DoAdjustClientRectChange(False);
         SlotShow(True);
+        {send dummy LM_SIZE to LCL}
+        if LCLObject.ClientRectNeedsInterfaceUpdate then
+        begin
+          OldSize.cx := LCLObject.Height;
+          OldSize.cy := LCLObject.Width;
+          NewSize := OldSize;
+          inc(OldSize.cx);
+          inc(OldSize.cy);
+          ResizeEvent := QResizeEvent_create(@NewSize, @OldSize);
+          QCoreApplication_postEvent(Widget, ResizeEvent, -1);
+        end;
       end;
     else
       Result := inherited EventFilter(Sender, Event);
