@@ -67,7 +67,7 @@ resourcestring
   ehrsFileNotFound = 'File not found: %s';
   ehrsWarning = 'Warning';
   ehrsExternal = 'External';
-  ehrsMySettings = 'My settings';
+  ehrsMySettings = 'My settings (default)';
 
 type
 
@@ -152,15 +152,19 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure ClearItemsStoredInUserSettings;
     procedure ClearItemsStoredInPackages(const Name: string = '*');
     class function GetGroupCaption: string; override;
     class function GetInstance: TAbstractIDEOptions; override;
-    function Load(Config: TConfigStorage): TModalResult; virtual;
+    function Load(Config: TConfigStorage; KeepPackageOpts: boolean): TModalResult; virtual;
     function Save(Config: TConfigStorage): TModalResult; virtual;
     procedure LoadOptionsFromPackage(Pkg: TIDEPackage);
-    function LoadFromFile(Filename: string): TModalResult; virtual;
+    procedure LoadOptionsFromPackages;
+    procedure SaveOptionsToPackage(Pkg: TIDEPackage);
+    procedure SaveOptionsToPackages;
+    function LoadFromFile(Filename: string; KeepPackageOpts: boolean): TModalResult; virtual;
     function SaveToFile(Filename: string): TModalResult; virtual;
-    function Load: TModalResult; virtual;
+    function Load(KeepPackageOpts: boolean): TModalResult; virtual;
     function Save: TModalResult; virtual;
     function GetFullFilename: string;
     function IsEqual(Src: TExternHelpOptions): boolean;
@@ -258,7 +262,8 @@ begin
   ExternHelpOptionGeneralID:=RegisterIDEOptionsEditor(ExternHelpOptionID,
       TExternHelpGeneralOptsFrame,ExternHelpOptionGeneralID)^.Index;
   try
-    ExternHelpOptions.Load;
+    ExternHelpOptions.Load(false);
+    ExternHelpOptions.LoadOptionsFromPackages;
   except
     on E: Exception do begin
       DebugLn(['Error reading externhelp options ',ExternHelpOptions.Filename,': ',E.Message]);
@@ -342,6 +347,20 @@ begin
   RootItem.Clear;
 end;
 
+procedure TExternHelpOptions.ClearItemsStoredInUserSettings;
+var
+  i: Integer;
+  Item: TExternHelpItem;
+begin
+  if RootItem<>nil then begin
+    for i:=RootItem.ChildCount-1 downto 0 do begin
+      Item:=RootItem.Childs[i];
+      if (Item.StoreIn='') then
+        Item.Free;
+    end;
+  end;
+end;
+
 procedure TExternHelpOptions.ClearItemsStoredInPackages(const Name: string);
 var
   i: Integer;
@@ -376,6 +395,59 @@ begin
   end;
 end;
 
+procedure TExternHelpOptions.LoadOptionsFromPackages;
+var
+  i: Integer;
+begin
+  if PackageEditingInterface=nil then exit;
+  ClearItemsStoredInPackages('*');
+  for i:=0 to PackageEditingInterface.GetPackageCount-1 do
+    LoadOptionsFromPackage(PackageEditingInterface.GetPackages(i));
+end;
+
+procedure TExternHelpOptions.SaveOptionsToPackage(Pkg: TIDEPackage);
+var
+  Cnt: Integer;
+  Path: String;
+  Item: TExternHelpItem;
+  i: Integer;
+begin
+  if Pkg.Name='' then exit;
+  Path:='ExternHelp/';
+  Pkg.CustomOptions.DeletePath(Path);
+  Cnt:=0;
+  for i:=0 to RootItem.ChildCount-1 do begin
+    Item:=RootItem.Childs[i];
+    if SysUtils.CompareText(Item.StoreIn,Pkg.Name)<>0 then continue;
+    inc(Cnt);
+    SaveNode(Pkg.CustomOptions,Path+'Item'+IntToStr(i)+'/',Item);
+  end;
+  Pkg.CustomOptions.SetDeleteValue(Path+'Count',Cnt,0);
+end;
+
+procedure TExternHelpOptions.SaveOptionsToPackages;
+var
+  i: Integer;
+  Item: TExternHelpItem;
+  SavedPackages: TFPList;
+  Pkg: TIDEPackage;
+begin
+  if PackageEditingInterface=nil then exit;
+  SavedPackages:=TFPList.Create;
+  try
+    for i:=0 to RootItem.ChildCount-1 do begin
+      Item:=RootItem.Childs[i];
+      if Item.StoreIn='' then continue;
+      Pkg:=PackageEditingInterface.FindPackageWithName(Item.StoreIn);
+      if (Pkg=nil) or (SavedPackages.IndexOf(Pkg)>=0) then continue;
+      SavedPackages.Add(Pkg);
+      SaveOptionsToPackage(Pkg);
+    end;
+  finally
+    SavedPackages.Free;
+  end;
+end;
+
 class function TExternHelpOptions.GetGroupCaption: string;
 begin
   Result:=ehrsGroupTitle;
@@ -386,12 +458,16 @@ begin
   Result:=ExternHelpOptions;
 end;
 
-function TExternHelpOptions.Load(Config: TConfigStorage): TModalResult;
+function TExternHelpOptions.Load(Config: TConfigStorage;
+  KeepPackageOpts: boolean): TModalResult;
 var
   Path: String;
 begin
   Result:=mrOk;
-  Clear;
+  if KeepPackageOpts then
+    ClearItemsStoredInUserSettings
+  else
+    Clear;
   Path:='ExternHelp/';
   LoadNode(Config,Path+'Items/',RootItem);
 end;
@@ -399,19 +475,30 @@ end;
 function TExternHelpOptions.Save(Config: TConfigStorage): TModalResult;
 var
   Path: String;
+  Item: TExternHelpItem;
+  i: Integer;
+  Cnt: Integer;
 begin
   Result:=mrOk;
   Path:='ExternHelp/';
-  SaveNode(Config,Path+'Items/',RootItem);
+  Cnt:=0;
+  for i:=1 to RootItem.ChildCount do begin
+    Item:=RootItem.Childs[i-1];
+    if Item.StoreIn<>'' then continue;
+    inc(Cnt);
+    SaveNode(Config,Path+'Items/Item'+IntToStr(Cnt)+'/',Item);
+  end;
+  Config.SetDeleteValue(Path+'Items/ChildCount',Cnt,0);
 end;
 
-function TExternHelpOptions.LoadFromFile(Filename: string): TModalResult;
+function TExternHelpOptions.LoadFromFile(Filename: string;
+  KeepPackageOpts: boolean): TModalResult;
 var
   Config: TConfigStorage;
 begin
   Config:=GetIDEConfigStorage(Filename,true);
   try
-    Result:=Load(Config);
+    Result:=Load(Config,KeepPackageOpts);
   finally
     Config.Free;
   end;
@@ -432,9 +519,9 @@ begin
   end;
 end;
 
-function TExternHelpOptions.Load: TModalResult;
+function TExternHelpOptions.Load(KeepPackageOpts: boolean): TModalResult;
 begin
-  Result:=LoadFromFile(Filename);
+  Result:=LoadFromFile(Filename,KeepPackageOpts);
   FLastSavedChangeStep:=ChangeStep;
 end;
 
@@ -559,6 +646,7 @@ var
   TVNode: TTreeNode;
   InsertType: TTreeViewInsertMarkType;
 begin
+  if State=dsDragEnter then ;
   if (Source<>ItemsTreeView) or (FDragNode=nil) then begin
     Accept:=false;
     exit;
@@ -663,13 +751,14 @@ end;
 procedure TExternHelpGeneralOptsFrame.ItemsTreeViewEditing(Sender: TObject;
   Node: TTreeNode; var AllowEdit: Boolean);
 begin
-
+  if AllowEdit or (Node=nil) then ;
 end;
 
 procedure TExternHelpGeneralOptsFrame.ItemsTreeViewEndDrag(Sender,
   Target: TObject; X, Y: Integer);
 begin
   FDragNode:=nil;
+  if (Target=nil) or (X=0) or (Y=0) then ;
   ItemsTreeView.Options:=ItemsTreeView.Options-[tvoAutoInsertMark];
 end;
 
@@ -711,6 +800,7 @@ end;
 procedure TExternHelpGeneralOptsFrame.ItemsTreeViewStartDrag(Sender: TObject;
   var DragObject: TDragObject);
 begin
+  if DragObject=nil then ;
   ItemsTreeView.Options:=ItemsTreeView.Options+[tvoAutoInsertMark];
 end;
 
@@ -950,6 +1040,7 @@ end;
 
 procedure TExternHelpGeneralOptsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  if not (AOptions is TAbstractIDEHelpOptions) then exit;
   Options.Assign(ExternHelpOptions);
   FillStoreInCombobox;
   FillItemsTreeView;
@@ -959,6 +1050,7 @@ end;
 
 procedure TExternHelpGeneralOptsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
+  if ADialog=nil then ;
   NameLabel.Caption:=ehrsName;
   FilenameLabel.Caption:=ehrsUnitFileOrUnitDirectory;
   URLLabel.Caption:=ehrsURL;
@@ -981,17 +1073,18 @@ end;
 
 procedure TExternHelpGeneralOptsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  if not ExternHelpOptions.IsEqual(Options) then begin
-    ExternHelpOptions.Assign(Options);
-    try
-      ExternHelpOptions.Save;
-    except
-      on E: Exception do begin
-        DebugLn(['TExternHelpGeneralOptsFrame.WriteSettings unable to write file ',ExternHelpOptions.Filename,': ',E.Message]);
-      end;
+  if not (AOptions is TAbstractIDEHelpOptions) then exit;
+  if ExternHelpOptions.IsEqual(Options) then exit;
+  ExternHelpOptions.Assign(Options);
+  try
+    ExternHelpOptions.Save;
+    ExternHelpOptions.SaveOptionsToPackages;
+  except
+    on E: Exception do begin
+      DebugLn(['TExternHelpGeneralOptsFrame.WriteSettings unable to write file ',ExternHelpOptions.Filename,': ',E.Message]);
     end;
-    ExternHelpOptions.UpdateHelpDB;
   end;
+  ExternHelpOptions.UpdateHelpDB;
 end;
 
 { TExternHelpItem }
