@@ -121,6 +121,7 @@ type
     function DoCloseAllPackageEditors: TModalResult; virtual; abstract;
     function AddPackageDependency(APackage: TLazPackage; const ReqPackage: string;
                                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract;
+    procedure OpenHiddenModifiedPackages; virtual; abstract;
 
     // package graph
     procedure DoShowPackageGraphPathList(PathList: TFPList); virtual; abstract;

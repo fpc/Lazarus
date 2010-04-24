@@ -581,6 +581,7 @@ type
     FTranslated: string;
     FUpdateLock: integer;
     FUsageOptions: TPkgAdditionalCompilerOptions;
+    FUserIgnoreChangeStamp: integer;
     FUserReadOnly: boolean;
     function GetAutoIncrementVersionOnBuild: boolean;
     function GetComponentCount: integer;
@@ -787,6 +788,8 @@ type
     property Translated: string read FTranslated write FTranslated;
     property UsageOptions: TPkgAdditionalCompilerOptions read FUsageOptions;
     property UserReadOnly: boolean read FUserReadOnly write SetUserReadOnly;
+    property UserIgnoreChangeStamp: integer read FUserIgnoreChangeStamp
+                                            write FUserIgnoreChangeStamp;
   end;
   
   PLazPackage = ^TLazPackage;
@@ -2269,9 +2272,13 @@ end;
 procedure TLazPackage.SetModified(const AValue: boolean);
 begin
   if AValue and (FModifiedLock>0) then exit;
-  if AValue then
-    Include(FFlags,lpfModified)
-  else
+  if AValue then begin
+    Include(FFlags,lpfModified);
+    if FChangeStamp<High(FChangeStamp) then
+      inc(FChangeStamp)
+    else
+      FChangeStamp:=low(FChangeStamp);
+  end else
     Exclude(FFlags,lpfModified);
   Exclude(FFlags,lpfSkipSaving);
   if not AValue then

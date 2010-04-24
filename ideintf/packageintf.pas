@@ -93,6 +93,7 @@ type
   protected
     FCustomOptions: TConfigStorage;
     FFilename: string;
+    FChangeStamp: integer;
     function GetDirectoryExpanded: string; virtual; abstract;
     function GetModified: boolean; virtual; abstract;
     procedure SetFilename(const AValue: string); virtual; abstract;
@@ -108,6 +109,7 @@ type
     property Modified: boolean read GetModified write SetModified;
     property DirectoryExpanded: string read GetDirectoryExpanded;
     property CustomOptions: TConfigStorage read FCustomOptions;
+    property ChangeStamp: integer read FChangeStamp;
   end;
 
 type

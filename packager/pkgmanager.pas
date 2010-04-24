@@ -273,6 +273,7 @@ type
     function DoOpenPackageFile(AFilename: string;
                          Flags: TPkgOpenFlags;
                          ShowAbort: boolean): TModalResult; override;
+    procedure OpenHiddenModifiedPackages; override;
     function DoSavePackage(APackage: TLazPackage;
                            Flags: TPkgSaveFlags): TModalResult; override;
     function DoSaveAllPackages(Flags: TPkgSaveFlags): TModalResult; override;
@@ -2505,6 +2506,22 @@ begin
 
   // the source editor highlighting depends on the compiler mode
   MainIDEInterface.UpdateHighlighters;
+end;
+
+procedure TPkgManager.OpenHiddenModifiedPackages;
+var
+  i: Integer;
+  APackage: TLazPackage;
+  Editor: TPackageEditorForm;
+begin
+  for i:=0 to PackageGraph.Count-1 do begin
+    APackage:=PackageGraph.Packages[i];
+    if (APackage.Editor=nil) and APackage.Modified
+    and (APackage.UserIgnoreChangeStamp<>APackage.ChangeStamp) then begin
+      Editor:=PackageEditors.OpenEditor(APackage);
+      Editor.Visible:=true;
+    end;
+  end;
 end;
 
 function TPkgManager.DoSavePackage(APackage: TLazPackage;

@@ -15805,6 +15805,9 @@ begin
 
   if (FRemoteControlTimer=nil) and EnableRemoteControl then
     SetupRemoteControl;
+
+  if Screen.GetCurrentModalForm=nil then
+    PkgBoss.OpenHiddenModifiedPackages;
 end;
 
 procedure TMainIDE.OnApplicationActivate(Sender: TObject);
