@@ -5070,23 +5070,23 @@ begin
   inherited WMNotify(AMessage);
 end;
 
+procedure TCustomTreeView.WMSetFocus(var Message: TLMSetFocus);
+begin
+  Invalidate;
+  inherited;
+end;
+
+procedure TCustomTreeView.WMKillFocus(var Message: TLMKillFocus);
+begin
+  Invalidate;
+  inherited;
+end;
+
 procedure TCustomTreeView.Resize;
 begin
   FStates:=FStates+[tvsScrollbarChanged,
                     tvsBottomItemNeedsUpdate];
   inherited Resize;
-end;
-
-procedure TCustomTreeView.DoEnter;
-begin
-  Invalidate;
-  inherited DoEnter;
-end;
-
-procedure TCustomTreeView.DoExit;
-begin
-  Invalidate;
-  inherited DoExit;
 end;
 
 procedure TCustomTreeView.InternalSelectionChanged;

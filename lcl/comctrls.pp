@@ -2546,9 +2546,9 @@ type
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
     procedure WMLButtonDown(var AMessage: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMNotify(var AMessage: TLMNotify); message LM_NOTIFY;
+    procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
+    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
     procedure Resize; override;
-    procedure DoEnter; override;
-    procedure DoExit; override;
   protected
     property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
     property BorderStyle default bsSingle;
