@@ -1563,7 +1563,7 @@ begin
   Result := DisplayTextLeft;
   TV := TreeView;
   if TV <> nil then
-    Inc(Result, TV.Canvas.TextWidth(Text) + 1); // +1 because we draw from left + 1
+    Inc(Result, TV.Canvas.TextWidth(Text) + TV.Indent div 2);
 end;
 
 function TTreeNode.AlphaSort: Boolean;
