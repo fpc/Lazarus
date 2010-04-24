@@ -3410,13 +3410,15 @@ begin
 end;
 
 procedure TCustomTreeView.GetInsertMarkAt(X, Y: Integer;
-  var AnInsertMarkNode: TTreeNode; var AnInsertMarkType: TTreeViewInsertMarkType
+  out AnInsertMarkNode: TTreeNode; out AnInsertMarkType: TTreeViewInsertMarkType
   );
 var
   ANode: TTreeNode;
   NodeRect: TRect;
   NodeMidY: integer;
 begin
+  AnInsertMarkNode:=nil;
+  AnInsertMarkType:=tvimNone;
   if Y<0 then Y:=0;
   if Y>=ClientHeight then Y:=ClientHeight-1;
   ANode:=GetNodeAtY(Y);
