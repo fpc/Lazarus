@@ -65,7 +65,7 @@
         </_Item1>
         <_Item2 Childs="Filename/Name/URL">
           <_Filename Childs="Value">
-            <_Value Value="$(FPCSrcDir)/packages/postgres/src/postgres.pp"/>
+            <_Value Value="$(FPCSrcDir)/packages/postgres/src/"/>
           </_Filename>
           <_Name Value="PostgreSQL"/>
           <_URL Childs="Value">
