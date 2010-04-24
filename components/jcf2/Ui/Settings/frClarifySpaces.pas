@@ -82,6 +82,7 @@ type
     procedure cbTabsToSpacesClick(Sender: TObject);
     procedure cbSpacesToTabsClick(Sender: TObject);
     procedure cbMaxSpacesClick(Sender: TObject);
+    procedure FrameResize(Sender:TObject);
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -263,6 +264,11 @@ end;
 procedure TfClarifySpaces.cbMaxSpacesClick(Sender: TObject);
 begin
   edtMaxSpacesInCode.Enabled := cbMaxSpaces.Checked;
+end;
+
+procedure TfClarifySpaces.FrameResize(Sender:TObject);
+begin
+  gbColon.Width:=trunc(Width*0.5);
 end;
 
 initialization
