@@ -183,6 +183,7 @@ function StrToDouble(const s: string): double;
 
 // debugging
 procedure RaiseGDBException(const Msg: string);
+procedure RaiseAndCatchException;
 procedure DumpExceptionBackTrace;
 procedure DumpStack;
 function GetStackTrace(UseCache: boolean): string;
@@ -1503,6 +1504,14 @@ begin
   debugln(rsCreatingGdbCatchableError);
   DumpStack;
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
+end;
+
+procedure RaiseAndCatchException;
+begin
+  try
+    raise Exception.Create('');
+  except
+  end;
 end;
 
 procedure DumpExceptionBackTrace;

@@ -490,7 +490,8 @@ begin
         Accepted := ADockObjectCopy.Control.HostDockSite.DoUnDock(TWinControl(ADockObjectCopy.DragTarget), ADockObjectCopy.Control)
       else
       if ADockObjectCopy.DragTarget = nil then
-        Accepted := True else
+        Accepted := True
+      else
       if ADockObjectCopy.Control.HostDockSite = nil then
         Accepted := True;
     end;

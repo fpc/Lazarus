@@ -2846,6 +2846,7 @@ var
   P: TPoint;
   FloatHost: TWinControl;
 begin
+  DebugLn(['TControl.DoFloatMsg ',DbgSName(Self),' Floating=',Floating]);
   if Floating and (Parent <> nil) then
   begin
     P := Parent.ClientToScreen(Point(Left, Top));

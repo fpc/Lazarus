@@ -619,10 +619,16 @@ type
             begin
               // opposite side +- preferred size
               NewDist:=ChildData.Sides[OppositeSide].Distance[Direction];
-              if Side in [akLeft,akRight] then
-                CurSize:=ChildData.PreferredSize[asboHorizontal]
-              else
-                CurSize:=ChildData.PreferredSize[asboVertical];
+              CurSize:=0;
+              if ((OppositeSide in [akLeft,akTop])
+              and (ChildData.Sides[OppositeSide].Side=asrRight))
+              or ((OppositeSide in [akRight,akBottom])
+              and (ChildData.Sides[OppositeSide].Side=asrLeft)) then begin
+                if Side in [akLeft,akRight] then
+                  CurSize:=ChildData.PreferredSize[asboHorizontal]
+                else
+                  CurSize:=ChildData.PreferredSize[asboVertical];
+              end;
               inc(NewDist,CurSize);
               // check if opposite side need a bigger distance
               if ChildData.Sides[Side].Distance[Direction]<NewDist then
@@ -711,6 +717,7 @@ begin
       end;
     end;
   end;
+  //WriteDebugReport('ComputePositons','  ');
   Result:=true;
 end;
 
