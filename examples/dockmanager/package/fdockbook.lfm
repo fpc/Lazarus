@@ -12,9 +12,9 @@ inherited EasyDockBook: TEasyDockBook
   OnCreate = FormCreate
   OnDockDrop = FormDockDrop
   OnDockOver = FormDockOver
+  OnEndDock = FormEndDock
   OnGetSiteInfo = FormGetSiteInfo
   OnUnDock = FormUnDock
-  Visible = True
   object pnlDock: TPanel[0]
     Left = 0
     Height = 300

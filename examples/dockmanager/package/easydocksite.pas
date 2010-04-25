@@ -381,13 +381,17 @@ const
 function  NoteBookCreate(AOwner: TWinControl): TCustomDockSite;
 begin
 (* Create default dockbook type.
+  Dockable notebooks must not have an specific owner.
 *)
 {
   if assigned(AppDockBookClass) then
     Result := AppDockBookClass.Create(AOwner)
   else
 }
-  Result := TEasyDockBook.Create(AOwner);
+  //Result := TEasyDockBook.Create(AOwner);
+  Result := TEasyDockBook.Create(Application);
+  { TODO : form style should become bsNone when docked - workaround here }
+  Result.BorderStyle := bsNone;
 end;
 
 procedure NoteBookAdd(ABook: TCustomDockSite; AItem: TControl);
@@ -676,7 +680,7 @@ begin
       {$IFDEF replace}
         NoteBook.ReplaceDockedControl(DropZone.ChildControl, NoteBook, nil, alCustom);
       {$ELSE}
-        NoteBook.ManualDock(nil, nil); //float it - purpose???
+        //NoteBook.ManualDock(nil, nil); //float it - purpose???
       //hack: manually dock the notebook
         FReplacingControl := NoteBook; //ignore insert (see above)
         NoteBook.ManualDock(FDockSite); //move into DockClients[]

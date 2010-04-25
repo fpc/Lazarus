@@ -54,6 +54,7 @@ HostDockSite.UpdateDockCaption (provide composed dock caption)
 
 {.$DEFINE undockFix}
 {$DEFINE closeFix}
+{$DEFINE autoWrap}  //request FloatingDockSiteClass
 
 interface
 
@@ -88,6 +89,7 @@ type
       X, Y: Integer);
     procedure FormDockOver(Sender: TObject; Source: TDragDockObject;
       X, Y: Integer; State: TDragState; var Accept: Boolean);
+    procedure FormEndDock(Sender, Target: TObject; X, Y: Integer);
     procedure FormGetSiteInfo(Sender: TObject; DockClient: TControl;
       var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean);
     procedure FormUnDock(Sender: TObject; Client: TControl;
@@ -97,6 +99,7 @@ type
     Tabs: TTabs;
     CurTab: TTabButton;
   protected
+    function GetFloatingDockSiteClass: TWinControlClass; override;
     function GetDefaultDockCaption: string; override;
     function GetControlTab(AControl: TControl): TTabButton;
     procedure AfterUndock(tabidx: integer); virtual;
@@ -166,12 +169,16 @@ begin
   for i := DockClientCount - 1 downto 0 do begin
     ctl := DockClients[i];
     if not (csDestroying in ctl.ComponentState) then begin
+    {$IFDEF old}
       ctl.Visible := True; //make hidden notebook pages visible
       if ctl is TCustomForm then
         if frm.CloseQuery then
           frm.Close
         else
           ctl.Visible := True; //make hidden notebook pages visible
+    {$ELSE}
+      ctl.Visible := False; //hide notebook page
+    {$ENDIF}
     end;
   end;
   inherited Destroy;
@@ -228,6 +235,12 @@ begin
   Accept := True; //this is the default, can be omitted
 //make DockRect reflect the docking area
   Source.DockRect := ScreenRect(pnlDock);
+end;
+
+procedure TEasyDockBook.FormEndDock(Sender, Target: TObject; X, Y: Integer);
+begin
+(* wrap into an FloatHost
+*)
 end;
 
 procedure TEasyDockBook.FormGetSiteInfo(Sender: TObject; DockClient: TControl;
@@ -361,6 +374,17 @@ begin
     else
       Result := Result + ', ' + pg.Caption;
   end;
+end;
+
+function TEasyDockBook.GetFloatingDockSiteClass: TWinControlClass;
+begin
+(* Try: request a floating site
+*)
+{$IFDEF autoWrap}
+  Result:= TFloatingSite;
+{$ELSE}
+  Result := inherited GetFloatingDockSiteClass;
+{$ENDIF}
 end;
 
 {$IFDEF new}

@@ -25,6 +25,7 @@ Default floating sites are owned by Application,
 
 {$DEFINE ownPanels} //elastic panels owned by DockMaster?
 {.$DEFINE appDockMgr} //using special AppDockManager?
+{.$DEFINE NeedHost}  //request float host?
 
 interface
 
@@ -251,8 +252,12 @@ begin
   Res.DragMode := dmAutomatic;
 //wrap into floating site, if requested (not on restore Layout)
   if fWrap then begin
+  {$IFDEF NeedHost}
+    Res.FloatingDockSiteClass := TFloatingSite;
+  {$ELSE}
     //if not ForIDE then //problems with the IDE?
       Res.OnEndDock := @FormEndDock; //float into default host site
+  {$ENDIF}
     AForm.DisableAlign;
     Site := WrapDockable(AForm);
     AForm.EnableAlign;
