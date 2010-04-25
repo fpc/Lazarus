@@ -3,30 +3,47 @@ inherited fCompilerDirectReturns: TfCompilerDirectReturns
   Width = 399
   ClientHeight = 261
   ClientWidth = 399
+  OnResize = FrameResize
+  TabOrder = 0
   DesignLeft = 395
   DesignTop = 293
   object Label1: TLabel[0]
-    Left = 8
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
     Height = 14
-    Top = 4
+    Top = 6
     Width = 200
+    BorderSpacing.Around = 6
     Caption = 'Use a new line before compiler directives:'
     ParentColor = False
   end
   object Label2: TLabel[1]
-    Left = 8
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = rgBeforeUses
+    AnchorSideTop.Side = asrBottom
+    Left = 6
     Height = 14
-    Top = 128
+    Top = 119
     Width = 192
+    BorderSpacing.Top = 6
+    BorderSpacing.Around = 6
     Caption = 'Use a new line after compiler directives:'
     ParentColor = False
   end
   object rgBeforeUses: TRadioGroup[2]
-    Left = 8
-    Height = 89
-    Top = 30
-    Width = 117
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = rgBeforeStatements
+    Left = 6
+    Height = 81
+    Top = 26
+    Width = 115
+    Anchors = [akTop, akLeft, akRight]
     AutoFill = True
+    AutoSize = True
+    BorderSpacing.Around = 6
     Caption = 'Uses clause'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -36,8 +53,8 @@ inherited fCompilerDirectReturns: TfCompilerDirectReturns
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 71
-    ClientWidth = 113
+    ClientHeight = 63
+    ClientWidth = 111
     Items.Strings = (
       'Always'
       'Leave as is'
@@ -46,11 +63,17 @@ inherited fCompilerDirectReturns: TfCompilerDirectReturns
     TabOrder = 0
   end
   object rgBeforeStatements: TRadioGroup[3]
-    Left = 131
-    Height = 89
-    Top = 30
-    Width = 117
+    AnchorSideTop.Control = rgBeforeUses
+    AnchorSideRight.Control = rgBeforeGeneral
+    AnchorSideBottom.Control = rgBeforeUses
+    AnchorSideBottom.Side = asrBottom
+    Left = 127
+    Height = 81
+    Top = 26
+    Width = 127
+    Anchors = [akTop, akRight, akBottom]
     AutoFill = True
+    BorderSpacing.Right = 6
     Caption = 'Statements'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -60,8 +83,8 @@ inherited fCompilerDirectReturns: TfCompilerDirectReturns
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 71
-    ClientWidth = 113
+    ClientHeight = 63
+    ClientWidth = 123
     Items.Strings = (
       'Always'
       'Leave as is'
@@ -70,11 +93,18 @@ inherited fCompilerDirectReturns: TfCompilerDirectReturns
     TabOrder = 1
   end
   object rgBeforeGeneral: TRadioGroup[4]
-    Left = 254
-    Height = 89
-    Top = 30
-    Width = 117
+    AnchorSideTop.Control = rgBeforeUses
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = rgBeforeUses
+    AnchorSideBottom.Side = asrBottom
+    Left = 260
+    Height = 81
+    Top = 26
+    Width = 133
+    Anchors = [akTop, akRight, akBottom]
     AutoFill = True
+    BorderSpacing.Right = 6
     Caption = 'Other places'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -84,8 +114,8 @@ inherited fCompilerDirectReturns: TfCompilerDirectReturns
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 71
-    ClientWidth = 113
+    ClientHeight = 63
+    ClientWidth = 129
     Items.Strings = (
       'Always'
       'Leave as is'
@@ -94,11 +124,18 @@ inherited fCompilerDirectReturns: TfCompilerDirectReturns
     TabOrder = 2
   end
   object rgAfterGeneral: TRadioGroup[5]
-    Left = 254
-    Height = 89
-    Top = 154
-    Width = 117
+    AnchorSideTop.Control = rgAfterUses
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = rgAfterUses
+    AnchorSideBottom.Side = asrBottom
+    Left = 260
+    Height = 81
+    Top = 139
+    Width = 133
+    Anchors = [akTop, akRight, akBottom]
     AutoFill = True
+    BorderSpacing.Right = 6
     Caption = 'Other places'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -108,8 +145,8 @@ inherited fCompilerDirectReturns: TfCompilerDirectReturns
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 71
-    ClientWidth = 113
+    ClientHeight = 63
+    ClientWidth = 129
     Items.Strings = (
       'Always'
       'Leave as is'
@@ -118,11 +155,17 @@ inherited fCompilerDirectReturns: TfCompilerDirectReturns
     TabOrder = 3
   end
   object rgAfterStatements: TRadioGroup[6]
-    Left = 131
-    Height = 89
-    Top = 154
-    Width = 117
+    AnchorSideTop.Control = rgAfterUses
+    AnchorSideRight.Control = rgAfterGeneral
+    AnchorSideBottom.Control = rgAfterUses
+    AnchorSideBottom.Side = asrBottom
+    Left = 127
+    Height = 81
+    Top = 139
+    Width = 127
+    Anchors = [akTop, akRight, akBottom]
     AutoFill = True
+    BorderSpacing.Right = 6
     Caption = 'Statements'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -132,8 +175,8 @@ inherited fCompilerDirectReturns: TfCompilerDirectReturns
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 71
-    ClientWidth = 113
+    ClientHeight = 63
+    ClientWidth = 123
     Items.Strings = (
       'Always'
       'Leave as is'
@@ -142,11 +185,18 @@ inherited fCompilerDirectReturns: TfCompilerDirectReturns
     TabOrder = 4
   end
   object rgAfterUses: TRadioGroup[7]
-    Left = 8
-    Height = 89
-    Top = 154
-    Width = 117
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = rgAfterStatements
+    Left = 6
+    Height = 81
+    Top = 139
+    Width = 115
+    Anchors = [akTop, akLeft, akRight]
     AutoFill = True
+    AutoSize = True
+    BorderSpacing.Around = 6
     Caption = 'Uses clause'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -156,8 +206,8 @@ inherited fCompilerDirectReturns: TfCompilerDirectReturns
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 71
-    ClientWidth = 113
+    ClientHeight = 63
+    ClientWidth = 111
     Items.Strings = (
       'Always'
       'Leave as is'

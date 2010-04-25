@@ -46,6 +46,7 @@ type
     rgAfterStatements: TRadioGroup;
     rgAfterUses: TRadioGroup;
     Label2: TLabel;
+    procedure FrameResize(Sender:TObject);
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -62,6 +63,14 @@ implementation
 
 uses
   JcfSettings, SettingsTypes, jcfuiconsts;
+
+procedure TfCompilerDirectReturns.FrameResize(Sender:TObject);
+begin
+  rgBeforeGeneral.Width := (Width-24) div 3;
+  rgBeforeStatements.Width := rgBeforeGeneral.Width;
+  rgAfterGeneral.Width := rgBeforeGeneral.Width;
+  rgAfterStatements.Width := rgBeforeGeneral.Width;
+end;
 
 constructor TfCompilerDirectReturns.Create(AOwner: TComponent);
 begin
