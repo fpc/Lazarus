@@ -850,7 +850,7 @@ msgstr "Сортиров&ать Uses программы"
 
 #: jcfuiconsts.listransformsortusesclauses
 msgid "Sort &uses clauses"
-msgstr "Сортировать &выражения Uses"
+msgstr "Сортировка &выражений Uses"
 
 #: jcfuiconsts.listransformtransform
 msgid "Transform"
