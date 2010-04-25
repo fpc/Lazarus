@@ -45,6 +45,7 @@ type
     Label1: TLabel;
     rgElseIf: TRadioGroup;
     rgElseBegin: TRadioGroup;
+    procedure FrameResize(Sender:TObject);
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -61,6 +62,11 @@ implementation
 
 uses
   JcfSettings, SettingsTypes, JcfHelp, jcfuiconsts;
+
+procedure TfClarifyBlocks.FrameResize(Sender:TObject);
+begin
+  rgBlock.Width := (Width-18) div 2;
+end;
 
 constructor TfClarifyBlocks.Create(AOwner: TComponent);
 begin
