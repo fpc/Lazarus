@@ -53,6 +53,7 @@ type
     procedure cbInsertImplementationClick(Sender: TObject);
     procedure cbRemoveEnabledClick(Sender: TObject);
     procedure cbFindReplaceClick(Sender: TObject);
+    procedure FrameResize(Sender:TObject);
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -154,6 +155,11 @@ procedure TfUses.cbFindReplaceClick(Sender: TObject);
 begin
   mFind.Enabled    := cbFindReplace.Checked;
   mReplace.Enabled := cbFindReplace.Checked;
+end;
+
+procedure TfUses.FrameResize(Sender:TObject);
+begin
+  mInsertImplementation.Width := (Width-24) div 2;
 end;
 
 initialization
