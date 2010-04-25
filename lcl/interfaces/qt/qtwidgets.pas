@@ -191,6 +191,7 @@ type
     function getClientBounds: TRect; virtual;
     function getClientOffset: TPoint; virtual;
     function getEnabled: Boolean;
+    function getFont: QFontH;
     function getFocusPolicy: QtFocusPolicy;
     function getFrameGeometry: TRect;
     function getGeometry: TRect; virtual;
@@ -902,8 +903,10 @@ type
   TQtAbstractItemView = class(TQtAbstractScrollArea)
   private
     FCheckable: boolean;
+    FHideSelection: Boolean;
     FOldDelegate: QAbstractItemDelegateH;
     FNewDelegate: QLCLItemDelegateH;
+    FOwnerData: Boolean;
     FSignalActivated: QAbstractItemView_hookH;
     FSignalClicked: QAbstractItemView_hookH;
     FSignalDoubleClicked: QAbstractItemView_hookH;
@@ -911,6 +914,7 @@ type
     FSignalPressed: QAbstractItemView_hookH;
     FSignalViewportEntered: QAbstractItemView_hookH;
     FAbstractItemViewportEventHook: QObject_hookH;
+    FViewStyle: Integer;
     function getIconSize: TSize;
     function GetOwnerDrawn: Boolean;
     procedure setIconSize(const AValue: TSize);
@@ -938,9 +942,13 @@ type
     procedure setEditTriggers(ATriggers: QAbstractItemViewEditTriggers);
     procedure setSelectionMode(AMode: QAbstractItemViewSelectionMode);
     procedure setSelectionBehavior(ABehavior: QAbstractItemViewSelectionBehavior);
+    procedure setWordWrap(const AValue: Boolean); virtual;
     property Checkable: boolean read FCheckable write FCheckable;
+    property HideSelection: Boolean read FHideSelection write FHideSelection;
     property IconSize: TSize read getIconSize write setIconSize;
     property OwnerDrawn: Boolean read GetOwnerDrawn write SetOwnerDrawn;
+    property OwnerData: Boolean read FOwnerData write FOwnerData;
+    property ViewStyle: Integer read FViewStyle write FViewStyle;
   public
     procedure ItemDelegateSizeHint(option: QStyleOptionViewItemH; index: QModelIndexH; Size: PSize); cdecl; virtual;
     procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; virtual;
@@ -949,7 +957,23 @@ type
   { TQtListView }
 
   TQtListView = class(TQtAbstractItemView)
+  private
+    function getGridSize: TSize;
+    function getSpacing: Integer;
+    procedure setSpacing(const AValue: integer);
+    procedure setGridSize(const AValue: TSize);
   public
+    procedure setLayoutMode(const ALayoutMode: QListViewLayoutMode);
+    procedure setMovement(const AMovement: QListViewMovement);
+    procedure setResizeMode(const AResizeMode: QListViewResizeMode);
+    procedure setUniformItemSizes(const AEnable: Boolean);
+    procedure setViewFlow(const AFlow: QListViewFlow);
+    procedure setViewMode(const AMode: QListViewViewMode);
+    procedure setWordWrap(const AValue: Boolean); override;
+    procedure setWrapping(const AWrapping: Boolean);
+    procedure LayoutItems;
+    property GridSize: TSize read getGridSize write setGridSize;
+    property Spacing: Integer read getSpacing write setSpacing;
   end;
 
   { TQtListWidget }
@@ -960,6 +984,8 @@ type
     FItemClickedHook: QListWidget_hookH;
     FItemTextChangedHook: QListWidget_hookH;
     FDontPassSelChange: Boolean;
+    function getItemCount: Integer;
+    procedure setItemCount(const AValue: Integer);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -977,20 +1003,30 @@ type
   public
     procedure ClearItems;
     function currentRow: Integer;
+    function currentItem: QListWidgetItemH;
     function IndexAt(APoint: PQtPoint): Integer;
     procedure insertItem(AIndex: Integer; AText: String); overload;
     procedure insertItem(AIndex: Integer; AText: PWideString); overload;
+    function itemAt(APoint: TPoint): QListWidgetItemH; overload;
+    function itemAt(x: Integer; y: Integer): QListWidgetItemH; overload;
     function getItem(AIndex: Integer): QListWidgetItemH;
     function getItemSelected(AItem: QListWidgetItemH): Boolean;
+    function getItemVisible(AItem: QListWidgetItemH): Boolean;
+    function getRow(AItem: QListWidgetItemH): integer;
     function getSelCount: Integer;
     function getVisualItemRect(AItem: QListWidgetItemH): TRect;
+    function selectedItems: TPtrIntArray;
     procedure setCurrentRow(row: Integer);
-    procedure setItemText(AIndex: Integer; AText: String);
+    procedure setCurrentItem(AItem: QListWidgetItemH);
+    procedure setItemText(AIndex: Integer; AText: String); overload;
+    procedure setItemText(AIndex: Integer; AText: String; AAlignment: Integer); overload;
     procedure setItemSelected(AItem: QListWidgetItemH; const ASelect: Boolean);
+    procedure setItemVisible(AItem: QListWidgetItemH; Const AVisible: Boolean);
     procedure scrollToItem(row: integer; hint: QAbstractItemViewScrollHint);
     procedure removeItem(AIndex: Integer);
     function rowCount: integer;
     procedure exchangeItems(AIndex1, AIndex2: Integer);
+    property ItemCount: Integer read getItemCount write setItemCount;
   end;
   
   { TQtHeaderView }
@@ -1038,7 +1074,7 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     procedure setAllColumnsShowFocus(AValue: Boolean);
-    procedure setWordWrap(AValue: Boolean);
+    procedure setWordWrap(const AValue: Boolean); override;
     procedure setRootIsDecorated(AValue: Boolean);
     property ColWidth[AIndex: Integer]: Integer read getColWidth write setColWidth;
     property ColVisible[AIndex: Integer]: Boolean read getColVisible write setColVisible;
@@ -1049,8 +1085,6 @@ type
 
   TQtTreeWidget = class(TQtTreeView)
   private
-    FHideSelection: Boolean;
-    FOwnerData: Boolean;
     FSyncingItems: Boolean;
     FSorting: Boolean;
     FHeader: TQtHeaderView;
@@ -1120,11 +1154,9 @@ type
 
     property ColCount: Integer read getColCount write setColCount;
     property Header: TQtHeaderView read getHeader;
-    property HideSelection: Boolean read FHideSelection write FHideSelection;
     property ItemCount: Integer read getItemCount write setItemCount;
     property MaxColSize[ACol: Integer]: Integer read getMaxColSize write setMaxColSize;
     property MinColSize[ACol: Integer]: Integer read getMinColSize write setMinColSize;
-    property OwnerData: Boolean read FOwnerData write FOwnerData;
     property SortEnabled: Boolean read getSortEnabled write setSortEnabled;
   end;
   
@@ -3166,6 +3198,11 @@ end;
 function TQtWidget.getEnabled: Boolean;
 begin
   Result := QWidget_isEnabled(Widget);
+end;
+
+function TQtWidget.getFont: QFontH;
+begin
+  Result := QWidget_font(Widget);
 end;
 
 function TQtWidget.getFocusPolicy: QtFocusPolicy;
@@ -7566,10 +7603,107 @@ begin
     DeliverMessage(Msg);
 end;
 
+{ TQtListView }
+
+function TQtListView.getGridSize: TSize;
+begin
+  QListView_gridSize(QListViewH(Widget), @Result);
+end;
+
+function TQtListView.getSpacing: Integer;
+begin
+  Result := QListView_spacing(QListViewH(Widget));
+end;
+
+procedure TQtListView.setGridSize(const AValue: TSize);
+begin
+  QListView_setGridSize(QListViewH(Widget), @AValue);
+end;
+
+procedure TQtListView.setLayoutMode(const ALayoutMode: QListViewLayoutMode);
+begin
+  QListView_setLayoutMode(QListViewH(Widget), ALayoutMode);
+end;
+
+procedure TQtListView.setMovement(const AMovement: QListViewMovement);
+begin
+  QListView_setMovement(QListViewH(Widget), AMovement);
+end;
+
+procedure TQtListView.setResizeMode(const AResizeMode: QListViewResizeMode);
+begin
+  QListView_setResizeMode(QListViewH(Widget), AResizeMode);
+end;
+
+procedure TQtListView.setSpacing(const AValue: integer);
+begin
+  QListView_setSpacing(QListViewH(Widget), AValue);
+end;
+
+procedure TQtListView.setUniformItemSizes(const AEnable: Boolean);
+begin
+  QListView_setUniformItemSizes(QListViewH(Widget), AEnable);
+end;
+
+procedure TQtListView.setViewFlow(const AFlow: QListViewFlow);
+begin
+  QListView_setFlow(QListViewH(Widget), AFlow);
+end;
+
+procedure TQtListView.setViewMode(const AMode: QListViewViewMode);
+begin
+  QListView_setViewMode(QListViewH(Widget), AMode);
+end;
+
+procedure TQtListView.setWordWrap(const AValue: Boolean);
+begin
+  QListView_setWordWrap(QListViewH(Widget), AValue);
+end;
+
+procedure TQtListView.setWrapping(const AWrapping: Boolean);
+begin
+  QListView_setWrapping(QListViewH(Widget), AWrapping);
+end;
+
+procedure TQtListView.LayoutItems;
+begin
+  QListView_doItemsLayout(QListViewH(Widget));
+end;
+
+{ TQtListWidget }
+
+function TQtListWidget.getItemCount: Integer;
+begin
+  Result := QListWidget_count(QListWidgetH(Widget));
+end;
+
+procedure TQtListWidget.setItemCount(const AValue: Integer);
+var
+  i: Integer;
+  AList: QStringListH;
+  WStr: WideString;
+begin
+  if AValue = ItemCount then
+    exit;
+  BeginUpdate;
+  try
+    ClearItems;
+    AList := QStringList_create();
+    WStr := '';
+    for i := 0 to AValue do
+      QStringList_append(AList, @WStr);
+    QListWidget_addItems(QListWidgetH(Widget), AList);
+    QStringList_destroy(AList);
+  finally
+    EndUpdate;
+  end;
+end;
+
 function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
 begin
+  FViewStyle := 0;
   FCheckable := False;
   FDontPassSelChange := False;
   if AParams.WndParent <> 0 then
@@ -7670,7 +7804,7 @@ begin
           (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
         begin
           MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
-          Item := QListWidget_itemAt(QListWidgetH(Widget), @MousePos);
+          Item := itemAt(MousePos.x, MousePos.y);
           if (Item <> nil) and
             ((QListWidgetItem_flags(Item) and QtItemIsUserCheckable) <> 0) then
           begin
@@ -7811,6 +7945,11 @@ begin
   Result := QListWidget_currentRow(QListWidgetH(Widget));
 end;
 
+function TQtListWidget.currentItem: QListWidgetItemH;
+begin
+  Result := QListWidget_currentItem(QListWidgetH(Widget));
+end;
+
 function TQtListWidget.IndexAt(APoint: PQtPoint): Integer;
 var
   AModelIndex: QModelIndexH;
@@ -7839,6 +7978,16 @@ begin
   QListWidget_insertItem(QListWidgetH(Widget), AIndex, Item);
 end;
 
+function TQtListWidget.itemAt(APoint: TPoint): QListWidgetItemH;
+begin
+  Result := ItemAt(APoint.X, APoint.Y);
+end;
+
+function TQtListWidget.itemAt(x: Integer; y: Integer): QListWidgetItemH;
+begin
+  Result := QListWidget_itemAt(QListWidgetH(Widget), x, y);
+end;
+
 function TQtListWidget.getItem(AIndex: Integer): QListWidgetItemH;
 begin
   Result := QListWidget_item(QListWidgetH(Widget), AIndex);
@@ -7852,12 +8001,25 @@ begin
     Result := False;
 end;
 
-function TQtListWidget.getSelCount: Integer;
-var
-  SItems: TPtrIntArray;
+function TQtListWidget.getItemVisible(AItem: QListWidgetItemH): Boolean;
 begin
-  QListWidget_selectedItems(QListWidgetH(Widget), @SItems);
-  Result := length(SItems);
+  if AItem = nil then
+    Result := False
+  else
+    Result := not QListWidget_isItemHidden(QListWidgetH(AItem), AItem);
+end;
+
+function TQtListWidget.getRow(AItem: QListWidgetItemH): integer;
+begin
+  if AItem = nil then
+    Result := -1
+  else
+    Result := QListWidget_row(QListWidgetH(Widget), AItem);
+end;
+
+function TQtListWidget.getSelCount: Integer;
+begin
+  Result := length(selectedItems);
 end;
 
 function TQtListWidget.getVisualItemRect(AItem: QListWidgetItemH): TRect;
@@ -7865,6 +8027,11 @@ begin
   Result := Rect(0, 0, 0, 0);
   if AItem <> nil then
     QListWidget_visualItemRect(QListWidgetH(Widget), @Result, AItem);
+end;
+
+function TQtListWidget.selectedItems: TPtrIntArray;
+begin
+  QListWidget_selectedItems(QListWidgetH(Widget), @Result);
 end;
 
 {------------------------------------------------------------------------------
@@ -7882,6 +8049,11 @@ begin
     FDontPassSelChange := True;
     QListWidget_setCurrentRow(QListWidgetH(Widget), row);
   end;
+end;
+
+procedure TQtListWidget.setCurrentItem(AItem: QListWidgetItemH);
+begin
+  QListWidget_setCurrentItem(QListWidgetH(Widget), AItem);
 end;
 
 procedure TQtListWidget.setItemText(AIndex: Integer; AText: String);
@@ -7905,11 +8077,41 @@ begin
     insertItem(AIndex, @Str);
 end;
 
+procedure TQtListWidget.setItemText(AIndex: Integer; AText: String;
+  AAlignment: Integer);
+var
+  Item: QListWidgetItemH;
+  Str: WideString;
+  R: TRect;
+begin
+  Str := GetUTF8String(AText);
+  if (AIndex >= 0) and (AIndex < rowCount) then
+  begin
+    Item := getItem(AIndex);
+    QListWidgetItem_setText(Item, @Str);
+    QListWidgetItem_setTextAlignment(Item, AAlignment);
+    {we must update our custom delegate}
+    if OwnerDrawn then
+    begin
+      R := getVisualItemRect(Item);
+      Update(@R);
+    end;
+  end else
+    insertItem(AIndex, @Str);
+end;
+
 procedure TQtListWidget.setItemSelected(AItem: QListWidgetItemH;
   const ASelect: Boolean);
 begin
   if AItem <> nil then
     QListWidget_setItemSelected(QListWidgetH(Widget), AItem, ASelect);
+end;
+
+procedure TQtListWidget.setItemVisible(AItem: QListWidgetItemH;
+  const AVisible: Boolean);
+begin
+  if AItem <> nil then
+    QListWidget_setItemHidden(QListWidgetH(Widget), AItem, not AVisible);
 end;
 
 procedure TQtListWidget.scrollToItem(row: integer;
@@ -8162,7 +8364,7 @@ begin
   QTreeView_setUniformRowHeights(QTreeViewH(Widget), AValue);
 end;
 
-procedure TQtTreeView.setWordWrap(AValue: Boolean);
+procedure TQtTreeView.setWordWrap(const AValue: Boolean);
 begin
   QTreeView_setWordWrap(QTreeViewH(Widget), AValue);
 end;
@@ -8212,6 +8414,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Create');
   {$endif}
+  FViewStyle := 0;
   FCheckable := False;
   FHideSelection := False;
   FOwnerData := False;
@@ -8551,7 +8754,7 @@ end;
 
 function TQtTreeWidget.itemAt(APoint: TPoint): QTreeWidgetItemH;
 begin
-  Result := QTreeWidget_itemAt(QTreeWidgetH(Widget), APoint.x, APoint.y);
+  Result := itemAt(APoint.X, APoint.Y);
 end;
 
 function TQtTreeWidget.itemAt(x: Integer; y: Integer): QTreeWidgetItemH;
@@ -8608,11 +8811,8 @@ begin
 end;
 
 function TQtTreeWidget.selCount: Integer;
-var
-  FPInts: TPtrIntArray;
 begin
-  QTreeWidget_selectedItems(QTreeWidgetH(Widget), @FPInts);
-  Result := length(FPInts);
+  Result := length(selectedItems);
 end;
 
 function TQtTreeWidget.selectedItems: TPtrIntArray;
@@ -10881,6 +11081,11 @@ procedure TQtAbstractItemView.setSelectionBehavior(
   ABehavior: QAbstractItemViewSelectionBehavior);
 begin
   QAbstractItemView_setSelectionBehavior(QAbstractItemViewH(Widget), ABehavior);
+end;
+
+procedure TQtAbstractItemView.setWordWrap(const AValue: Boolean);
+begin
+  // override
 end;
 
 procedure TQtAbstractItemView.ItemDelegateSizeHint(
