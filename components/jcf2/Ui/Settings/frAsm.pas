@@ -53,6 +53,7 @@ type
     Label2: TLabel;
     edtParamsIndent: TSpinEdit;
     cbParamsIndent: TCheckBox;
+    procedure FrameResize(Sender:TObject);
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -70,6 +71,11 @@ uses
   JcfHelp, JcfSettings, jcfuiconsts,
   { local }
   Capitalisation, SettingsTypes, SetAsm;
+
+procedure TfAsm.FrameResize(Sender:TObject);
+begin
+  rgCaps.Width := (Width-18) div 2;
+end;
 
 function TfAsm.GetTitle: String;
 begin
