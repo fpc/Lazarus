@@ -6785,7 +6785,10 @@ begin
     {$ENDIF}
 
     FBoundsRealized := NewBoundsRealized;
-    InvalidatePreferredSize;
+    {$IFNDEF OldAutoSize}
+    if Parent<>nil then
+    {$ENDIF}
+      InvalidatePreferredSize;
   end;
 
   {$IFDEF OldAutoSize}

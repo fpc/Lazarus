@@ -438,7 +438,8 @@ begin
     // notify before autosizing
     BoundsChanged;
     if PosSizeKept then exit;
-    AdjustSize;
+    if (Parent<>nil) or SizeChanged then
+      AdjustSize;
   finally
     dec(FSizeLock);
   end;
