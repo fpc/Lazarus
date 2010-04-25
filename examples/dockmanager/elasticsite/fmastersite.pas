@@ -73,10 +73,11 @@ var
 begin
   DockMaster := TDockMaster.Create(self); //(Application)?
   DockMaster.AddElasticSites(self, [alBottom]);
-  f := DockMaster.CreateDockable('', True);
+  f := DockMaster.CreateDockable('', True, False);
   if f.HostDockSite <> nil then
     f := f.HostDockSite;
   f.Top := 300;
+  f.Show;
 {$IFDEF TestUnwrapped}
   f := DockMaster.CreateDockable('', True, False);
   if f.Name = '' then //name it - for unique caption
@@ -87,6 +88,7 @@ begin
     f := f.HostDockSite;
   f.Top := 600;
 {$ENDIF}
+  f.Show;
 end;
 
 initialization

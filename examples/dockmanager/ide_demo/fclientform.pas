@@ -18,7 +18,6 @@ uses
 
 type
   TViewWindow = class(TForm)
-    Image1: TImage;
     Label1: TLabel;
     procedure FormEndDock(Sender, Target: TObject; X, Y: Integer);
     procedure Image1MouseMove(Sender: TObject; Shift: TShiftState;

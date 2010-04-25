@@ -188,7 +188,7 @@ end;
 {$ENDIF}
 
 initialization
-  {$I ffloatingsite.lrs}
+  {.$I ffloatingsite.lrs}
 
 end.
 

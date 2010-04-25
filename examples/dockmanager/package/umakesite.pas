@@ -72,8 +72,8 @@ type
   protected //event handlers
     procedure FormEndDock(Sender, Target: TObject; X, Y: Integer);
   protected //utilities
-    function  ReloadForm(const AName: string; fMultiInst: boolean): TWinControl; virtual;
-    function  WrapDockable(Client: TControl): TFloatingSite;
+    function  ReloadForm(const AName: string; fMultiInst: boolean; fVisible: boolean): TWinControl; virtual;
+    function  WrapDockable(Client: TControl; fVisible: boolean): TFloatingSite;
   private
     LastPanel: TDockPanel;  //last elastic panel created
   {$IFDEF ownPanels}
@@ -88,8 +88,8 @@ type
     destructor Destroy; override;
     procedure AddElasticSites(AForm: TCustomForm; Sides: sDockSides);
     function  CreateDockable(const AName: string;
-        fMultiInst: boolean; fWrap: boolean = True): TWinControl;
-    function  MakeDockable(AForm: TWinControl; fWrap: boolean = True): TForm;
+        fMultiInst: boolean; fWrap: boolean = True; fVisible: boolean = False): TWinControl;
+    function  MakeDockable(AForm: TWinControl; fWrap: boolean = True; fVisible: boolean = False): TForm;
     procedure DumpSites;
   //persistence
     procedure LoadFromStream(Stream: TStream);
@@ -220,7 +220,7 @@ begin
 end;
 
 function TDockMaster.CreateDockable(const AName: string;
-  fMultiInst: boolean; fWrap: boolean): TWinControl;
+  fMultiInst: boolean; fWrap: boolean; fVisible: boolean): TWinControl;
 begin
 (* Create a dockable form, based on its name.
   Used also to restore a layout.
@@ -230,15 +230,15 @@ Options (to come or to be removed)
   otherwise an already existing instance is returned. (really returned?)
 *)
 //get the form
-  Result := ReloadForm(AName, fMultiInst);
+  Result := ReloadForm(AName, fMultiInst, False);
   if Result = nil then
     exit;
-  MakeDockable(Result, fWrap);
+  MakeDockable(Result, fWrap, fVisible);
 //problem with first show?
   //Result.Invalidate; - doesn't help
 end;
 
-function TDockMaster.MakeDockable(AForm: TWinControl; fWrap: boolean): TForm;
+function TDockMaster.MakeDockable(AForm: TWinControl; fWrap, fVisible: boolean): TForm;
 var
   Site: TFloatingSite absolute Result;
   Res: TWinControlAccess absolute AForm;
@@ -259,7 +259,7 @@ begin
       Res.OnEndDock := @FormEndDock; //float into default host site
   {$ENDIF}
     AForm.DisableAlign;
-    Site := WrapDockable(AForm);
+    Site := WrapDockable(AForm, fVisible);
     AForm.EnableAlign;
   end;
 //IDE?
@@ -293,7 +293,7 @@ begin
 //not found
   Result := inherited ReloadControl(AName, Site);
   if Result = nil then
-    Result := ReloadForm(AName, True);
+    Result := ReloadForm(AName, False, True);
 end;
 
 procedure TDockMaster.FormEndDock(Sender, Target: TObject; X, Y: Integer);
@@ -318,7 +318,7 @@ begin
   ctl := Sender as TControl;
   //if not (csDestroying in ctl.ComponentState) and (ctl.HostDockSite = nil) then begin
   //if (ctl.HostDockSite = nil) then
-    WrapDockable(ctl);
+    WrapDockable(ctl, True);
 end;
 
 procedure TDockMaster.LoadFromFile(const AName: string);
@@ -395,7 +395,7 @@ var
   begin
   (* AName is <align><form>
   *)
-    hcomp := self.ReloadForm(FormName, True); //try multi-instance first
+    hcomp := self.ReloadForm(FormName, True, False); //try multi-instance first
     if host <> nil then begin
       AddElasticSites(host, [aln]);
       Result := LastPanel; //found or created
@@ -403,6 +403,7 @@ var
       Result.BoundsRect := SiteRec.Extent;
       Result.AutoExpand := SiteRec.AutoExpand;
       Result.EnableAlign;
+      Result.Visible := True;
       exit;
     end;
   //failed
@@ -598,7 +599,7 @@ begin
 end;
 
 function TDockMaster.ReloadForm(const AName: string;
-  fMultiInst: boolean): TWinControl;
+  fMultiInst: boolean; fVisible: boolean): TWinControl;
 var
   //instname: string
   basename: string;
@@ -681,13 +682,7 @@ begin
 //search/create ourselves
   fo := Owner; //our owner also owns the forms
   if AName = '' then begin
-  {$IFDEF new}
-    Result := TForm(TForm.NewInstance);
-    //Result.DisableAlign;
-    Result.Create(fo); //named Form1, Form2... - not now???
-  {$ELSE}
     Result := TForm.Create(fo); //named Form1, Form2... - not now???
-  {$ENDIF}
   end else begin
   //create new instance
     //DebugLn('!!! create new: ', AName);
@@ -697,21 +692,16 @@ begin
       DebugLn(basename , ' is not a registered class');
       exit(nil); //bad form name
     end;
-  {$IFDEF new}
-    Result := TWinControl(fc.NewInstance);
-    Result.DisableAlign;
-    Result.Create(fo);
-  {$ELSE}
     Result := TWinControl(fc.Create(fo));
-  {$ENDIF}
     if (AName <> '') and (Result.Name <> AName) then
       TryRename(Result, AName);
   end;
   //if not DisableUpdate then Result.EnableAlign;
-  //Result.Visible := True; //required for docking
+  if fVisible then
+    Result.Visible := True;
 end;
 
-function TDockMaster.WrapDockable(Client: TControl): TFloatingSite;
+function TDockMaster.WrapDockable(Client: TControl; fVisible: boolean): TFloatingSite;
 var
   Site: TFloatingSite absolute Result;
   ctl: TControlAccess absolute Client;
@@ -742,10 +732,8 @@ begin
     //retry make client auto-dockable
     ctl.DragKind := dkDock;
     ctl.DragMode := dmAutomatic;
-  {$IFDEF ForceVisible}
-    Client.Visible := True;
-  {$ENDIF}
     Client.ManualDock(Site);
+    Client.Visible := True; //shown only if Site is visible
     //DebugLn('After Wrap: ', DbgS(Site.BoundsRect));
 
     if ForIDE then begin
@@ -754,7 +742,8 @@ begin
       //Client.Left := 0;
       Site.DockManager.ResetBounds(True);
     end;
-    Site.Visible := True;
+    if fVisible then;
+      Site.Visible := True;
   except
     DebugLn('error WrapDockable: ' + Client.Name);
     if Client.HostDockSite <> Site then
