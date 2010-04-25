@@ -25,6 +25,8 @@ type
     function GetDetailSize(Details: TThemedElementDetails): TSize; override;
     function GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean; override;
     function GetOption(AOption: TThemeOption): Integer; override;
+    procedure DrawElement(DC: HDC; Details: TThemedElementDetails;
+       const R: TRect; ClipRect: PRect); override;
   end;
 
 implementation
@@ -129,6 +131,9 @@ begin
               case Details.State of
                 TREIS_SELECTED,
                 TREIS_HOTSELECTED: Result.State := GTK_STATE_SELECTED;
+                TREIS_SELECTEDNOTFOCUS: Result.State := GTK_STATE_ACTIVE;
+                TREIS_HOT: Result.State := GTK_STATE_PRELIGHT;
+                TREIS_DISABLED: Result.State := GTK_STATE_INSENSITIVE;
               else
                 Result.State := GTK_STATE_NORMAL;
               end;
@@ -138,12 +143,11 @@ begin
             if AIndex = 1 then
             begin
               Result.Detail := 'treeview';
-              Result.State := GTK_STATE_SELECTED;
               if Details.State = TREIS_SELECTED then
+              begin
+                Result.State := GTK_STATE_SELECTED;
                 Result.Painter := gptFocus
-              else
-              if Details.State = TREIS_SELECTEDNOTFOCUS then
-                Result.Painter := gptFlatBox
+              end
               else
               begin
                 Result.State := GTK_STATE_NORMAL;
@@ -307,6 +311,24 @@ begin
   else
     Result := inherited GetOption(AOption);
   end;
+end;
+
+procedure TGtk2ThemeServices.DrawElement(DC: HDC;
+  Details: TThemedElementDetails; const R: TRect; ClipRect: PRect);
+var
+  Widget: PGtkWidget;
+begin
+  if (Details.Element = teTreeview) and (Details.Part = TVP_TREEITEM) and
+     (Details.State = TREIS_SELECTED) then
+  begin
+    // lie to cleanlooks theme
+    Widget := GetStyleWidget(lgsTreeView);
+    GTK_WIDGET_SET_FLAGS(Widget, GTK_HAS_FOCUS);
+    inherited DrawElement(DC, Details, R, ClipRect);
+    GTK_WIDGET_UNSET_FLAGS(Widget, GTK_HAS_FOCUS);
+  end
+  else
+    inherited DrawElement(DC, Details, R, ClipRect);
 end;
 
 end.
