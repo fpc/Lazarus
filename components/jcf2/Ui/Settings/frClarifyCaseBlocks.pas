@@ -47,6 +47,7 @@ type
     rgElseCase: TRadioGroup;
     rgCaseBegin: TRadioGroup;
     rgCaseElseBegin: TRadioGroup;
+    procedure FrameResize(Sender:TObject);
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -63,6 +64,11 @@ implementation
 
 uses
   JcfSettings, SettingsTypes, JcfHelp, jcfuiconsts;
+
+procedure TfClarifyCaseBlocks.FrameResize(Sender:TObject);
+begin
+  rgLabel.Width := (Width-18) div 2;
+end;
 
 constructor TfClarifyCaseBlocks.Create(AOwner: TComponent);
 begin
