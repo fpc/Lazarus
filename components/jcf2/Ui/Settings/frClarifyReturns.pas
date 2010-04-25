@@ -51,6 +51,7 @@ type
     cbUsesClauseOnePerLine: TCheckBox;
     cbInsertReturns: TCheckBox;
     cbBreakAfterUses: TCheckBox;
+    procedure FrameResize(Sender:TObject);
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -68,6 +69,10 @@ implementation
 uses
   SettingsTypes, JcfSettings, SetReturns, JcfHelp, jcfuiconsts;
 
+procedure TfClarifyReturns.FrameResize(Sender:TObject);
+begin
+  gbInsert.Width := (Width-18) div 2;
+end;
 
 constructor TfClarifyReturns.Create(AOwner: TComponent);
 begin
