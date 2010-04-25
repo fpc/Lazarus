@@ -47,6 +47,7 @@ type
     rgConstants: TRadioGroup;
     rgDirectives: TRadioGroup;
     procedure cbEnableClick(Sender: TObject);
+    procedure FrameResize(Sender:TObject);
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -116,6 +117,11 @@ begin
   rgDirectives.Enabled := cbEnable.Checked;
   rgOperators.Enabled := cbEnable.Checked;
   rgTypes.Enabled := cbEnable.Checked;
+end;
+
+procedure TfrReservedCapsSettings.FrameResize(Sender:TObject);
+begin
+  rgOperators.Width := (Width-18) div 2;
 end;
 
 procedure TfrReservedCapsSettings.ReadSettings(AOptions: TAbstractIDEOptions);
