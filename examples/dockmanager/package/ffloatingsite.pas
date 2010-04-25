@@ -187,6 +187,8 @@ begin
 end;
 {$ENDIF}
 
+{$R *.lfm}
+
 initialization
   {.$I ffloatingsite.lrs}
 

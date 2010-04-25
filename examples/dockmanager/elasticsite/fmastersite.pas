@@ -35,10 +35,11 @@ var
 
 implementation
 
-{$IFDEF TestUnwrapped}
 uses
-  EasyDockSite; //CreateUniqueComponentName
+{$IFDEF TestUnwrapped}
+  EasyDockSite, //CreateUniqueComponentName
 {$ENDIF}
+  LCLProc;
 
 { TMasterSite }
 
@@ -73,17 +74,19 @@ var
 begin
   DockMaster := TDockMaster.Create(self); //(Application)?
   DockMaster.AddElasticSites(self, [alBottom]);
-  f := DockMaster.CreateDockable('', True, False);
+  f := DockMaster.CreateDockable('', True);
+  //f.Visible := True; //???
   if f.HostDockSite <> nil then
     f := f.HostDockSite;
   f.Top := 300;
   f.Show;
+  DebugLn('Clients: %d', [f.ControlCount]);
 {$IFDEF TestUnwrapped}
   f := DockMaster.CreateDockable('', True, False);
   if f.Name = '' then //name it - for unique caption
     f.Name := CreateUniqueComponentName(f.ClassName, f.Owner);
 {$ELSE}
-  f := DockMaster.CreateDockable('', True);
+  f := DockMaster.CreateDockable('', False);
   if f.HostDockSite <> nil then
     f := f.HostDockSite;
   f.Top := 600;
@@ -91,8 +94,10 @@ begin
   f.Show;
 end;
 
+{$R *.lfm}
+
 initialization
-  {$I fmastersite.lrs}
+  {.$I fmastersite.lrs}
 
 end.
 

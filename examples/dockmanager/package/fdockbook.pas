@@ -487,8 +487,10 @@ begin
     Parent.BeginDrag(False); //delayed docking of the container form
 end;
 
+{$R *.lfm}
+
 initialization
-  {$I fdockbook.lrs}
+  {.$I fdockbook.lrs}
   RegisterClass(TEasyDockBook);
 end.
 
