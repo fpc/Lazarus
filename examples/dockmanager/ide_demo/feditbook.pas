@@ -268,8 +268,9 @@ begin
   inherited AfterUndock(tabidx);
 end;
 
+{$R *.lfm}
+
 initialization
-  {$I feditbook.lrs}
   RegisterClass(TEditBook);
   RegisterClass(TEditPage);
 end.

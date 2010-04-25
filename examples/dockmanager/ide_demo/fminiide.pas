@@ -302,8 +302,7 @@ begin
     //Result := ACtrl.HostDockSite.GetDockCaption(ACtrl);
 end;
 
-initialization
-  {$I fminiide.lrs}
+{$R *.lfm}
 
 end.
 

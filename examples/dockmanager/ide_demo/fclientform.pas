@@ -66,8 +66,7 @@ begin
   end;
 end;
 
-initialization
-  {$I fclientform.lrs}
+{$R *.lfm}
 
 end.
 
