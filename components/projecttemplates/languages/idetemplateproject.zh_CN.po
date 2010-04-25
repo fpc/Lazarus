@@ -20,3 +20,7 @@ msgstr "通过模板新建工程"
 msgid "Project templates options"
 msgstr "工程模板选项"
 
+#: idetemplateproject.stemplatecategory
+msgid "Template projects"
+msgstr ""
+

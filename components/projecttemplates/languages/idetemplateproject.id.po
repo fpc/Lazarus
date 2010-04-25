@@ -17,3 +17,7 @@ msgstr "Proyek baru dari template"
 msgid "Project templates options"
 msgstr "Opsi template proyek"
 
+#: idetemplateproject.stemplatecategory
+msgid "Template projects"
+msgstr ""
+

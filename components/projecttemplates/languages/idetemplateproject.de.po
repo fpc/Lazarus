@@ -17,3 +17,7 @@ msgstr "Neues Projekt aus Vorlage"
 msgid "Project templates options"
 msgstr "Optionen für Projektvorlagen"
 
+#: idetemplateproject.stemplatecategory
+msgid "Template projects"
+msgstr ""
+

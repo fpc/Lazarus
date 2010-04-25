@@ -15,5 +15,9 @@ msgstr "Novo projeto do modelo"
 
 #: idetemplateproject.sprojecttemplatesettings
 msgid "Project templates options"
-msgstr "Opções de modelos de projeto"
+msgstr "Opções de projeto de modelos"
+
+#: idetemplateproject.stemplatecategory
+msgid "Template projects"
+msgstr "Projetos de Modelos"
 

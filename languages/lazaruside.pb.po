@@ -996,75 +996,75 @@ msgstr "Inverter"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionignlockedoldedit
 msgid "Ignore Locks, longest unused editor"
-msgstr ""
+msgstr "Ignorar Bloqueios, editor não usado por mais tempo"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionignlockedonlyactedit
 msgid "Ignore Locks, if editor is current"
-msgstr ""
+msgstr "Ignorar Bloqueios, se o editor for o atual"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionignlockedonlyactwin
 msgid "Ignore Locks, if editor in current window"
-msgstr ""
+msgstr "Ignorar Bloqueios, se o editor estiver na janela atual"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionlockedinview
 msgid "Locked, if text in view"
-msgstr ""
+msgstr "Bloqueado, se o texto estiver em exibição"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlocked
 msgid "Unlocked"
-msgstr ""
+msgstr "Desbloqueado"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlockedinsoftview
 msgid "Unlocked, if text in centered view"
-msgstr ""
+msgstr "Desbloqueado, se o texto estiver em exibição centralizada"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinanywin
 msgid "New tab, existing or new window"
-msgstr ""
+msgstr "Nova aba, existente ou nova janela"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinnewwin
 msgid "New tab in new window"
-msgstr ""
+msgstr "Nova aba em nova janela"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinoldwin
 msgid "New tab in existing window"
-msgstr ""
+msgstr "Nova aba em janela existente"
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedoldedit
 msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. This always looks at the editor, never the window, to find the longest unused. This option will always succeed, further options are never tested."
-msgstr ""
+msgstr "Esta opção usará o editor não usado por mais tempo para o arquivo, mesmo se estiver bloqueado e/ou precise de deslocamento. Isto sempre olha para o editor, nunca a janela, para encontrar o não usado por mais tempo. Esta opção será sempre bem-sucedida, demais opções nunca serão testadas."
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedonlyactedit
 msgid "This option will check if the current active editor has the target file and if it is, it will use the current editor, even if it is locked and/or needs scrolling."
-msgstr ""
+msgstr "Esta opção irá verificar se o atual editor ativo tem o arquivo alvo e em caso positivo, irá usar o editor atual, mesmo se ele estiver bloqueado e/ou precise de deslocamento."
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedonlyactwin
 msgid "This option will check if there is an editor for the target file in the current window and if there is, it will use this editor, even if it is locked and/or needs scrolling."
-msgstr ""
+msgstr "Esta opção irá verificar se existe um editor para o arquivo alvo na janela atual e se existir, irá usar este editor, mesmo se ele estiver bloqueado e/ou precise de deslocamento."
 
 #: lazarusidestrconsts.dlgeditaccessdesclockedinview
 msgid "This option will use a locked (and only a locked) Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen area)."
-msgstr ""
+msgstr "Esta opção ira usar um editor bloqueado (e somente um bloqueado), que não precise se deslocar a fim de mostrar o ponto se salto alvo (ponto de salto alvo já está na área visível da tela)."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlocked
 msgid "This option will use any not locked Editor."
-msgstr ""
+msgstr "Esta opção irá usar qualquer Editor não bloqueado."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedinsoftview
 msgid "This option will use a not locked Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)."
-msgstr ""
+msgstr "Esta opção irá usar um Editor não bloqueado, que não precise se deslocar a fim de mostrar o ponto de salto alvo (ponto de salto alvo já está na área visível da tela, excluindo 2-5 linhas no topo/fundo)."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinanywin
 msgid "This option will open a new Tab in an existing or new Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
-msgstr ""
+msgstr "Esta opção irá abrir uma nova Aba em uma Janela existente ou nova, se nenhuma aba bloqueada for encontrada. Esta opção será sempre bem-sucedida, demais opções nunca serão testadas."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinnewwin
 msgid "This option will open a new Tab in a new (and always in a new) Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
-msgstr ""
+msgstr "Esta opção irá abrir uma nova Aba em uma nova (e sempre em uma nova) Janela, se nenhuma aba bloqueada for encontrada. Esta opção será sempre bem-sucedida, demais opções nunca serão testadas."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinoldwin
 msgid "This option will open a new Tab in an existing (and only in an existing) Window, if no unlocked tab is found. A tab is only opened if a window exists, that has not yet an editor for the target file."
-msgstr ""
+msgstr "Esta opção irá abrir uma nova Aba em uma Janela existente (e somente em uma existente), se nenhuma aba bloqueada for encontrada. Uma aba é aberta somente se a janela existir, que ainda não tenha um editor para o arquivo alvo."
 
 #: lazarusidestrconsts.dlgedital
 msgid "Italic"
@@ -1506,7 +1506,7 @@ msgstr "Ocultar ícones mensagens"
 
 #: lazarusidestrconsts.dlghidesingletabinnotebook
 msgid "Hide tab in single page windows"
-msgstr "Ocultar aba janelas em páginas simples"
+msgstr "Ocultar aba de janelas em páginas únicas"
 
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
@@ -1685,7 +1685,7 @@ msgstr "Exibir formulários do projeto"
 
 #: lazarusidestrconsts.dlgmainviewframes
 msgid "View project frames"
-msgstr "Mostrar bordas projeto"
+msgstr "Exibir bordas projeto"
 
 #: lazarusidestrconsts.dlgmainviewunits
 msgid "View project units"
@@ -2111,31 +2111,31 @@ msgstr "Seleção múltipla"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
 msgid "Find editor for jump targets:"
-msgstr ""
+msgstr "Localizar editor para os alvos do salto:"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
 msgid "Order to use for editors matching the same criteria"
-msgstr ""
+msgstr "Ordem à usar para editores correspondentes ao mesmo critério"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorderedit
 msgid "Most recent focused editor for this file"
-msgstr ""
+msgstr "Mais recente editor focado para este arquivo"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorderwin
 msgid "Editor (for file) in most recent focused window"
-msgstr ""
+msgstr "Editor (para arquivo) na mais recente janela focada"
 
 #: lazarusidestrconsts.dlgmultiwinaccesstype
 msgid "Priority list of criteria to choose an editor:"
-msgstr ""
+msgstr "Lista de critérios prioritária para escolher um editor:"
 
 #: lazarusidestrconsts.dlgmultiwinoptions
 msgid "Pages and Windows"
-msgstr ""
+msgstr "Páginas e Janelas"
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
 msgid "Notebook Tabs:"
-msgstr ""
+msgstr "Abas \"Notebook\":"
 
 #: lazarusidestrconsts.dlgnaming
 msgid "Naming"
@@ -2622,7 +2622,7 @@ msgstr "Mostrar Avisos"
 
 #: lazarusidestrconsts.dlgsingletaskbarbutton
 msgid "Show single button in TaskBar"
-msgstr ""
+msgstr "Mostrar um único botão na Barra de Tarefas"
 
 #: lazarusidestrconsts.dlgskipforwarddeclarations
 msgid "Skip forward declarations"
@@ -7041,7 +7041,7 @@ msgstr "Opções da IDE:"
 
 #: lazarusidestrconsts.lisideprojectdirinidetitle
 msgid "Show project directory in IDE title"
-msgstr ""
+msgstr "Mostrar diretório do projeto no título da IDE"
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"
@@ -7875,79 +7875,79 @@ msgstr "Alternar marcador 9"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
 msgid "Toggle view Assembler"
-msgstr "Alternar visualização Assembler"
+msgstr "Alternar exibição Assembler"
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
 msgid "Toggle view Breakpoints"
-msgstr "Alternar vista pontos de parada"
+msgstr "Alternar exibição pontos de parada"
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
 msgid "Toggle view Call Stack"
-msgstr "Alternar vista chamada de pilha"
+msgstr "Alternar exibição chamada de pilha"
 
 #: lazarusidestrconsts.liskmtoggleviewcodeexplorer
 msgid "Toggle view Code Explorer"
-msgstr "Alternar vista explorador de código"
+msgstr "Alternar exibição explorador de código"
 
 #: lazarusidestrconsts.liskmtoggleviewcomponentpalette
 msgid "Toggle view component palette"
-msgstr "Alternar vista paleta de componentes"
+msgstr "Alternar exibição paleta de componentes"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
 msgid "Toggle view Debuger Event Log"
-msgstr "Alternar vista Eventos Depuração"
+msgstr "Alternar exibição Histórico Eventos Depuração"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
 msgid "Toggle view Debugger Output"
-msgstr "Alternar vista saída do depurador"
+msgstr "Alternar exibição Saída do Depurador"
 
 #: lazarusidestrconsts.liskmtoggleviewdocumentationeditor
 msgid "Toggle view Documentation Editor"
-msgstr "Alternar vista Editor de Documentação"
+msgstr "Alternar exibição Editor de Documentação"
 
 #: lazarusidestrconsts.liskmtoggleviewidespeedbuttons
 msgid "Toggle view IDE speed buttons"
-msgstr "Alternar vista botões da IDE"
+msgstr "Alternar exibição botões da IDE"
 
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
 msgid "Toggle view Local Variables"
-msgstr "Alternar vista Variáveis Locais"
+msgstr "Alternar exibição Variáveis Locais"
 
 #: lazarusidestrconsts.liskmtoggleviewmessages
 msgid "Toggle view Messages"
-msgstr "Alternar vista Mensagens"
+msgstr "Alternar exibição Mensagens"
 
 #: lazarusidestrconsts.liskmtoggleviewobjectinspector
 msgid "Toggle view Object Inspector"
-msgstr "Alternar vista Inspetor de Objetos"
+msgstr "Alternar exibição Inspetor de Objetos"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
 msgid "Toggle view Registers"
-msgstr "Alternar visualização Registros"
+msgstr "Alternar exibição Registradores"
 
 #: lazarusidestrconsts.liskmtoggleviewsearchresults
 msgid "Toggle view Search Results"
-msgstr "Alternar vista Resultados de Pesquisa"
+msgstr "Alternar exibição Resultados de Pesquisa"
 
 #: lazarusidestrconsts.liskmtoggleviewsourceeditor
 msgid "Toggle view Source Editor"
-msgstr "Alternar vista Editor Código"
+msgstr "Alternar exibição Editor Código"
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
 msgid "Toggle view Watches"
-msgstr "Alternar vista Observadores"
+msgstr "Alternar exibição Observadores"
 
 #: lazarusidestrconsts.liskmviewjumphistory
 msgid "View jump history"
-msgstr "Mostrar histórico de saltos"
+msgstr "Exibir histórico de saltos"
 
 #: lazarusidestrconsts.liskmviewprojectoptions
 msgid "View project options"
-msgstr "Mostrar opções projeto"
+msgstr "Exibir opções de projeto"
 
 #: lazarusidestrconsts.liskmviewprojectsource
 msgid "View project source"
-msgstr "Mostrar fonte projeto"
+msgstr "Exibir fonte do projeto"
 
 #: lazarusidestrconsts.liskmviewunitinfo
 msgid "View Unit Info"
@@ -9290,7 +9290,7 @@ msgstr "Seleção em maiúsculas"
 
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
-msgstr "&Visualizar"
+msgstr "&Exibir"
 
 #: lazarusidestrconsts.lismenuviewanchoreditor
 #| msgid "View Anchor Editor"
@@ -9380,7 +9380,7 @@ msgstr "Resultados da busca"
 
 #: lazarusidestrconsts.lismenuviewsource
 msgid "&View Source"
-msgstr "&Mostrar Fonte"
+msgstr "&Exibir Fonte"
 
 #: lazarusidestrconsts.lismenuviewsourceeditor
 msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
@@ -9394,7 +9394,7 @@ msgstr "Lista ToDo (Para Fazer)"
 
 #: lazarusidestrconsts.lismenuviewtoggleformunit
 msgid "Toggle form/unit view"
-msgstr "Alternar vista formulário/unidade"
+msgstr "Alternar exibição formulário/unidade"
 
 #: lazarusidestrconsts.lismenuviewunitdependencies
 #| msgid "View Unit Dependencies"
@@ -10072,7 +10072,7 @@ msgstr "Aplicar alterações"
 
 #: lazarusidestrconsts.lispckeditcallregisterprocedureofselectedunit
 msgid "Call %sRegister%s procedure of selected unit"
-msgstr "Chamar procedimento %sRegister%s da unidade selecionada"
+msgstr "Chamar procedimento de %sRegistro%s da unidade selecionada"
 
 #: lazarusidestrconsts.lispckeditcleardependencydefaultfilename
 msgid "Clear dependency filename"
@@ -10284,7 +10284,7 @@ msgstr "Desinstalar"
 
 #: lazarusidestrconsts.lispckeditviewpackgesource
 msgid "View Package Source"
-msgstr "Visualizar Fonte do Pacote"
+msgstr "Exibir Fonte do Pacote"
 
 #: lazarusidestrconsts.lispckexplautocreated
 msgid "AutoCreated"
@@ -10515,7 +10515,7 @@ msgstr "Nome de unidade e nome de arquivo não coincidem.%sEx: unit1.pas e Unit1
 
 #: lazarusidestrconsts.lispeviewtodolist
 msgid "View ToDo list"
-msgstr "Mostrar lista para fazer (ToDo)"
+msgstr "Exibir lista para fazer (ToDo)"
 
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
@@ -11427,7 +11427,7 @@ msgstr "Diretório do projeto"
 
 #: lazarusidestrconsts.lisprojectdirectoryisshowedinidetitlebar
 msgid "Title in taskbar shows also directory path of the project"
-msgstr ""
+msgstr "Título na Barra de Tarefas também mostra o caminho do projeto"
 
 #: lazarusidestrconsts.lisprojectfilename
 msgid "Project filename"
@@ -13431,15 +13431,15 @@ msgstr "Copiar informações de versão para Área de Transferência"
 
 #: lazarusidestrconsts.lisviewbreakpointproperties
 msgid "View Breakpoint Properties"
-msgstr "Mostrar Propriedades Pontos de Paradas"
+msgstr "Exibir Propriedades Pontos de Paradas"
 
 #: lazarusidestrconsts.lisviewprojectunits
 msgid "View Project Units"
-msgstr "Mostrar Unidades do Projeto"
+msgstr "Exibir Unidades do Projeto"
 
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"
-msgstr "Mostrar Fonte (.lfm)"
+msgstr "Exibir Fonte (.lfm)"
 
 #: lazarusidestrconsts.lisvsrforwardsearch
 msgid "Forward Search"
@@ -14378,7 +14378,7 @@ msgstr "Mover cursor para início do texto na linha"
 
 #: lazarusidestrconsts.srkmeclockeditor
 msgid "Lock Editor"
-msgstr "Travar Editor"
+msgstr "Bloquear Editor"
 
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
@@ -14762,7 +14762,7 @@ msgstr "Verificação de Sintaxe"
 
 #: lazarusidestrconsts.srkmectoggleassembler
 msgid "View assembler"
-msgstr "Mostrar assembler"
+msgstr "Exibir assembler"
 
 #: lazarusidestrconsts.srkmectogglebreakpoint
 msgid "toggle break point"
@@ -14770,27 +14770,27 @@ msgstr "alternar ponto de parada"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
-msgstr "Mostrar Pontos de parada"
+msgstr "Exibir Pontos de parada"
 
 #: lazarusidestrconsts.srkmectogglecallstack
 msgid "View call stack"
-msgstr "Mostrar chamada de pilha"
+msgstr "Exibir chamada de pilha"
 
 #: lazarusidestrconsts.srkmectogglecodebrowser
 msgid "View code browser"
-msgstr "Mostrar navegador código"
+msgstr "Exibir navegador de código"
 
 #: lazarusidestrconsts.srkmectogglecodeexpl
 msgid "View Code Explorer"
-msgstr "Mostrar Explorador de Código"
+msgstr "Exibir Explorador de Código"
 
 #: lazarusidestrconsts.srkmectogglecomppalette
 msgid "View component palette"
-msgstr "Mostrar paleta de componentes"
+msgstr "Exibir paleta de componentes"
 
 #: lazarusidestrconsts.srkmectoggledebuggerout
 msgid "View debugger output"
-msgstr "Mostrar saída do depurador"
+msgstr "Exibir saída do depurador"
 
 #: lazarusidestrconsts.srkmectoggleformunit
 msgid "Switch between form and unit"
@@ -14798,16 +14798,16 @@ msgstr "Alternar entre formulários e unidades"
 
 #: lazarusidestrconsts.srkmectogglefpdoceditor
 msgid "View Documentation Editor"
-msgstr "Mostrar Editor de Documentação"
+msgstr "Exibir Editor de Documentação"
 
 #: lazarusidestrconsts.srkmectoggleidespeedbtns
 msgctxt "lazarusidestrconsts.srkmectoggleidespeedbtns"
 msgid "View IDE speed buttons"
-msgstr "Mostrar botões da IDE"
+msgstr "Exibir botões da IDE"
 
 #: lazarusidestrconsts.srkmectogglelocals
 msgid "View local variables"
-msgstr "Mostrar variáveis locais"
+msgstr "Exibir variáveis locais"
 
 #: lazarusidestrconsts.srkmectogglemarker
 msgid "Toggle Marker %d"
@@ -14819,7 +14819,7 @@ msgstr "Alternar realce Palavra Atual"
 
 #: lazarusidestrconsts.srkmectogglemessages
 msgid "View messages"
-msgstr "Mostrar mensagens"
+msgstr "Exibir mensagens"
 
 #: lazarusidestrconsts.srkmectogglemode
 msgid "Toggle Mode"
@@ -14827,27 +14827,27 @@ msgstr "Modo alternado"
 
 #: lazarusidestrconsts.srkmectoggleobjectinsp
 msgid "View Object Inspector"
-msgstr "Mostrar Inspetor de Objetos"
+msgstr "Exibir Inspetor de Objetos"
 
 #: lazarusidestrconsts.srkmectoggleregisters
 msgid "View registers"
-msgstr "Mostrar registros"
+msgstr "Exibir registradores"
 
 #: lazarusidestrconsts.srkmectogglerestrictionbrowser
 msgid "View restriction browser"
-msgstr "Mostrar navegador restrições"
+msgstr "Exibir navegador de restrições"
 
 #: lazarusidestrconsts.srkmectogglesearchresults
 msgid "View Search Results"
-msgstr "Mostrar Resultados da Busca"
+msgstr "Exibir Resultados da Pesquisa"
 
 #: lazarusidestrconsts.srkmectogglesourceeditor
 msgid "View Source Editor"
-msgstr "Mostrar Editor de Código"
+msgstr "Exibir Editor de Código"
 
 #: lazarusidestrconsts.srkmectogglewatches
 msgid "View watches"
-msgstr "Mostrar observadores"
+msgstr "Exibir observadores"
 
 #: lazarusidestrconsts.srkmecunfoldall
 msgid "Unfold all"
@@ -14867,31 +14867,31 @@ msgstr "Primeiro Usuário"
 
 #: lazarusidestrconsts.srkmecviewanchoreditor
 msgid "View anchor editor"
-msgstr "Mostrar editor de âncoras"
+msgstr "Exibir editor de âncoras"
 
 #: lazarusidestrconsts.srkmecviewcomponents
 msgid "View components"
-msgstr "Mostrar componentes"
+msgstr "Exibir componentes"
 
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
-msgstr "Mostrar formulários"
+msgstr "Exibir formulários"
 
 #: lazarusidestrconsts.srkmecviewtodolist
 msgid "View todo list"
-msgstr "Mostrar lista para fazer (ToDo)"
+msgstr "Exibir lista para fazer (ToDo)"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"
-msgstr "Mostrar dependências da unidade"
+msgstr "Exibir dependências da unidade"
 
 #: lazarusidestrconsts.srkmecviewunitinfo
 msgid "View unit information"
-msgstr "Mostrar informações da unidade"
+msgstr "Exibir informações da unidade"
 
 #: lazarusidestrconsts.srkmecviewunits
 msgid "View units"
-msgstr "Mostrar unidades"
+msgstr "Exibir unidades"
 
 #: lazarusidestrconsts.srkmecwordcompletion
 msgid "Word completion"
@@ -14943,7 +14943,7 @@ msgstr "\" não pode ser escrito."
 
 #: lazarusidestrconsts.uelocked
 msgid "Locked"
-msgstr "Travado"
+msgstr "Bloqueado"
 
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
@@ -14977,16 +14977,14 @@ msgid "Copy Filename"
 msgstr "Copiar nome de arquivo"
 
 #: lazarusidestrconsts.uemcopytonewwindow
-#, fuzzy
 #| msgid "Copy to new Window"
 msgid "Clone to new Window"
-msgstr "Copiar para nova Janela"
+msgstr "Clonar para nova Janela"
 
 #: lazarusidestrconsts.uemcopytootherwindow
-#, fuzzy
 #| msgid "Copy to other Window"
 msgid "Clone to other Window"
-msgstr "Copiar para outra Janela"
+msgstr "Clonar para outra Janela"
 
 #: lazarusidestrconsts.uemcopytootherwindownew
 msgctxt "lazarusidestrconsts.uemcopytootherwindownew"
@@ -15058,7 +15056,7 @@ msgstr "Finalização linha"
 
 #: lazarusidestrconsts.uemlockpage
 msgid "&Lock Page"
-msgstr "&Travar Página"
+msgstr "&Bloquear Página"
 
 #: lazarusidestrconsts.uemmovepageleft
 msgid "Move page left"
