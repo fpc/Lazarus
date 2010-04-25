@@ -1401,7 +1401,7 @@ end;
 procedure TCustomForm.DoDock(NewDockSite: TWinControl; var ARect: TRect);
 //Save or restore the borderstyle
 begin
-  if (NewDockSite <> HostDockSite) and ((NewDockSite = nil) or Floating) then
+  if (NewDockSite <> HostDockSite) and ((NewDockSite = nil) or (HostDockSite=nil)) then
   begin
     if NewDockSite = nil then begin
       //Restore the form borderstyle

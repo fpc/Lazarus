@@ -473,6 +473,9 @@ var
   DragMsg: TDragMessage;
   Accepted: Boolean;
   TargetPos: TPoint;
+  AControl: TControl;
+  P: TPoint;
+  Moved: Boolean;
 begin
   ADockObjectCopy := FDockObject;
   if FDockObject <> nil then
@@ -483,9 +486,35 @@ begin
     ADockObjectCopy.HideDockImage;
     ADockObjectCopy.Floating := ADockObjectCopy.DragTarget = nil;
 
+    Moved:=false;
     Accepted := ADockObjectCopy.DragTarget <> nil;
+
     if ADropped then
     begin
+      //DebugLn(['TDockPerformer.DragStop Dropped ',ADockObjectCopy.Control.Floating,' ',ADockObjectCopy.Floating,' ',DbgSName(ADockObjectCopy.Control)]);
+      if ADockObjectCopy.Control.Floating and ADockObjectCopy.Floating then
+      begin
+        // just move
+        AControl:=ADockObjectCopy.Control;
+        if AControl.Parent<>nil then
+        begin
+          P := AControl.Parent.ClientToScreen(Point(AControl.Left, AControl.Top));
+          with ADockObjectCopy.DockRect do
+          begin
+            AControl.Parent.BoundsRect :=
+              Bounds(Left + AControl.Parent.Left - P.X,
+                     Top + AControl.Parent.Top - P.Y,
+                     Right - Left + AControl.Parent.Width - AControl.Width,
+                     Bottom - Top + AControl.Parent.Height - AControl.Height);
+          end;
+        end else begin
+          AControl.BoundsRect:=ADockObjectCopy.DockRect;
+        end;
+        //DebugLn(['TDockPerformer.DragStop MOVED']);
+        Moved:=true;
+        Accepted:=true;
+      end;
+
       if ADockObjectCopy.Control.HostDockSite <> nil then
         Accepted := ADockObjectCopy.Control.HostDockSite.DoUnDock(TWinControl(ADockObjectCopy.DragTarget), ADockObjectCopy.Control)
       else
@@ -501,10 +530,10 @@ begin
       TargetPos := ADockObjectCopy.DragTargetPos //controls can override the position
     else
       TargetPos := ADockObjectCopy.DragPos; //otherwise take the current position
-    Accepted := Accepted and (ADockObjectCopy.Floating or SendCmDragMsg(ADockObjectCopy, dmDragLeave)) and ADropped;
+    Accepted := Accepted and (Moved or ADockObjectCopy.Floating or SendCmDragMsg(ADockObjectCopy, dmDragLeave)) and ADropped;
     ADockObjectCopy.FDropped := Accepted;
 
-    if Accepted and ADockObjectCopy.Floating then
+    if Accepted and (not Moved) and ADockObjectCopy.Floating then
     begin
       ParentForm := GetParentForm(ADockObjectCopy.Control);
       if (ParentForm <> nil) and
