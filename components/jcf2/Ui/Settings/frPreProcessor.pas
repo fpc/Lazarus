@@ -107,24 +107,8 @@ begin
 end;
 
 procedure TfPreProcessor.FrameResize(Sender: TObject);
-var
-  liClientHeight: integer;
 begin
-  liClientHeight := ClientHeight -
-    (cbEnable.Top + cbEnable.Height +
-    lblCompilerOptions.Height + lblSymbols.Height +
-    (GUI_PAD * 3));
-
-  mSymbols.Height := (liClientHeight div 2);
-  mSymbols.Left   := 0;
-  mSymbols.Width  := ClientWidth;
-
-  lblCompilerOptions.Top := mSymbols.Top + mSymbols.Height + GUI_PAD;
-  mOptions.Top    := lblCompilerOptions.Top + lblCompilerOptions.Height + GUI_PAD;
-  mOptions.Height := ClientHeight - mOptions.Top;
-  mOptions.Left   := 0;
-  mOptions.Width  := ClientWidth;
-
+  mSymbols.Height := (mSymbols.Height+mOptions.Height) div 2;
 end;
 
 initialization
