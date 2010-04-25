@@ -1391,7 +1391,7 @@ type
     procedure DoAutoSize; override;
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure TextChanged; override;
-    procedure Resize; override;
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure FontChanged(Sender: TObject); override;
     class function GetControlClassDefaultSize: TPoint; override;
 

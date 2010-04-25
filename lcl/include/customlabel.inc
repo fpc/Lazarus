@@ -193,11 +193,18 @@ begin
   UpdateSize;
 end;
 
-procedure TCustomLabel.Resize;
+procedure TCustomLabel.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
+var
+  WidthChanged: Boolean;
 begin
-  inherited Resize;
+  WidthChanged:=AWidth<>Width;
+  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
   if OptimalFill and (not AutoSize) then
     AdjustFontForOptimalFill;
+  if WidthChanged and WordWrap then begin
+    InvalidatePreferredSize;
+    AdjustSize;
+  end;
 end;
 
 function TCustomLabel.GetShowAccelChar : Boolean;
