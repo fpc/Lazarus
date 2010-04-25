@@ -182,7 +182,7 @@ type
     procedure SetFixedLeftTop(ChildData: TAutoSizeCtrlData; Side: TAnchorKind;
                               NewLeftTop: integer);
     property Childs[AControl: TControl]: TAutoSizeCtrlData read GetChilds; default;
-    procedure WriteDebugReport(const Title, Prefix: string);
+    procedure WriteDebugReport(const Title, Prefix: string; OnlyVisible: boolean = true);
   end;
 
 const
@@ -409,6 +409,7 @@ type
     CurAnchors: TAnchors;
     CurSize: LongInt;
     FoundSides: TAnchors;
+    AddPreferredSize: Boolean;
   begin
     if ChildData.Sides[Side].DistanceState[Direction]
       in [assdfValid,assdfUncomputable]
@@ -457,7 +458,8 @@ type
               ChildData.Sides[Side].DistanceState[Direction]:=assdfValid;
             end else begin
               // for example: left side is anchored to left side of parent,
-              //             right distance is needed
+              //              right distance is needed
+              AddPreferredSize:=true;
               if OppositeSide in CurAnchors then begin
                 // compute opposite side first
                 Result:=ComputePosition(ChildData,OppositeSide,Direction);
@@ -473,13 +475,26 @@ type
                   exit;
                 end;
                 NewDist:=ChildData.Sides[OppositeSide].Distance[Direction];
+                if (ChildData.Sides[OppositeSide].CtrlData<>nil)
+                and (ChildData.Sides[OppositeSide].CtrlData<>Self)
+                then begin
+                  // opposite side is anchored to a sibling
+                  if ((OppositeSide in [akLeft,akTop])
+                      and (ChildData.Sides[OppositeSide].Side<>asrRight))
+                  or ((OppositeSide in [akRight,akBottom])
+                      and (ChildData.Sides[OppositeSide].Side<>asrLeft))
+                  then
+                    AddPreferredSize:=false;
+                end;
               end else begin
                 NewDist:=ChildData.Sides[OppositeSide].Space;
               end;
-              if Side in [akLeft,akRight] then
-                inc(NewDist,ChildData.PreferredSize[asboHorizontal])
-              else
-                inc(NewDist,ChildData.PreferredSize[asboVertical]);
+              if AddPreferredSize then begin
+                if Side in [akLeft,akRight] then
+                  inc(NewDist,ChildData.PreferredSize[asboHorizontal])
+                else
+                  inc(NewDist,ChildData.PreferredSize[asboVertical]);
+              end;
               ChildData.Sides[Side].Distance[Direction]:=NewDist;
               ChildData.Sides[Side].DistanceState[Direction]:=assdfValid;
             end;
@@ -621,16 +636,17 @@ type
               NewDist:=ChildData.Sides[OppositeSide].Distance[Direction];
               CurSize:=0;
               if ((OppositeSide in [akLeft,akTop])
-              and (ChildData.Sides[OppositeSide].Side=asrRight))
+                  and (ChildData.Sides[OppositeSide].Side=asrRight))
               or ((OppositeSide in [akRight,akBottom])
-              and (ChildData.Sides[OppositeSide].Side=asrLeft)) then begin
+                  and (ChildData.Sides[OppositeSide].Side=asrLeft))
+              then begin
                 if Side in [akLeft,akRight] then
                   CurSize:=ChildData.PreferredSize[asboHorizontal]
                 else
                   CurSize:=ChildData.PreferredSize[asboVertical];
               end;
               inc(NewDist,CurSize);
-              // check if opposite side need a bigger distance
+              // check if opposite side needs a bigger distance
               if ChildData.Sides[Side].Distance[Direction]<NewDist then
                 ChildData.Sides[Side].Distance[Direction]:=NewDist;
             end;
@@ -1246,7 +1262,8 @@ begin
   ChildData.Sides[Side].DistanceState[assddLeftTop]:=assdfValid;
 end;
 
-procedure TAutoSizeCtrlData.WriteDebugReport(const Title, Prefix: string);
+procedure TAutoSizeCtrlData.WriteDebugReport(const Title, Prefix: string;
+  OnlyVisible: boolean);
 
   function GetDistance(a: TAnchorKind; d: TAutoSizeSideDistDirection): string;
   begin
@@ -1285,7 +1302,8 @@ begin
       ' DistBR=',GetDistance(a,assddRightBottom)]);
   end;
   for i:=0 to ChildCount-1 do
-    Childs[WinControl.Controls[i]].WriteDebugReport('',Prefix+dbgs(i)+': ');
+    if WinControl.Controls[i].Visible or (not OnlyVisible) then
+      Childs[WinControl.Controls[i]].WriteDebugReport('',Prefix+dbgs(i)+': ');
 end;
 
 { TAutoSizeBox }
