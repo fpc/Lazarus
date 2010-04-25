@@ -3700,6 +3700,7 @@ end;
 -------------------------------------------------------------------------------}
 function TWinControl.ClientRectNeedsInterfaceUpdate: boolean;
 var
+  InterfaceWidth, InterfaceHeight: integer;
   IntfClientRect: TRect;
 begin
   if (not HandleAllocated) or (csDestroyingHandle in ControlState)
@@ -3708,9 +3709,18 @@ begin
     exit(false);
   if wcfClientRectNeedsUpdate in FWinControlFlags then
     exit(true);
+  // get the current interface bounds
+  LCLIntf.GetWindowSize(Handle,InterfaceWidth,InterfaceHeight);
   LCLIntf.GetClientRect(Handle,IntfClientRect);
+  // The LCL is not always in sync with the interface.
+  // Add the difference between LCL size and interface size to the
+  // interface clientrect
+  inc(IntfClientRect.Right,Width-InterfaceWidth);
+  inc(IntfClientRect.Bottom,Height-InterfaceHeight);
   Result:=(FClientWidth<>IntfClientRect.Right)
        or (FClientHeight<>IntfClientRect.Bottom);
+  if Result then
+    Include(FWinControlFlags,wcfClientRectNeedsUpdate);
 end;
 
 {-------------------------------------------------------------------------------
