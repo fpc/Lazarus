@@ -66,11 +66,11 @@ begin
 end;
 
 Const
-  STemplateCategory = 'Template projects';
   STemplateSettings = 'itmTemplateSettings';
   SItmtemplate = 'itmTemplate';
   
 Resourcestring
+  STemplateCategory = 'Template projects';
   SProjectTemplateSettings = 'Project templates options';
   SNewFromTemplate = 'New project from template';
 

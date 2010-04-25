@@ -12,3 +12,7 @@ msgstr ""
 msgid "Project templates options"
 msgstr ""
 
+#: idetemplateproject.stemplatecategory
+msgid "Template projects"
+msgstr ""
+
