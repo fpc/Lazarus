@@ -4008,6 +4008,9 @@ begin
     RaiseAlreadyDocking;
     
   // dock
+  {$IFNDEF OldAutoSize}
+  DisableAutoSizing;
+  {$ENDIF}
   Include(FControlState, csDocking);
   try
     OldHostDockSite:=HostDockSite;
@@ -4020,7 +4023,7 @@ begin
         NewDockSite.FDockClients.Add(Self);
     end;
 
-    //debugln('TControl.Dock A ',DbgSName(Self));
+    //debugln(['TControl.Dock A ',DbgSName(Self),' NewDockSite=',DbgSName(NewDockSite),' ',NewDockSite.Visible]);
 
     DoDock(NewDockSite,ARect);
 
@@ -4037,6 +4040,11 @@ begin
       NewDockSite.FDockClients.Remove(Self);
     Exclude(FControlState, csDocking);
   end;
+  {$IFNDEF OldAutoSize}
+  EnableAutoSizing;
+  {$ENDIF}
+
+  //DebugLn(['TControl.Dock END ',DbgSName(Self),' ',DbgSName(HostDockSite)]);
 end;
 
 {------------------------------------------------------------------------------
@@ -4179,6 +4187,9 @@ var
 begin
   Result := False;
 
+  {$IFNDEF OldAutoSize}
+  DisableAutoSizing;
+  {$ENDIF}
   OldDockSite := Control.HostDockSite;
   if (OldDockSite<>nil) and (not HostDockSiteManagerAvailable(OldDockSite)) then
     exit;
@@ -4192,6 +4203,9 @@ begin
       OldDockSite.DockManager.SetReplacingControl(nil);
   end;
   Result:=Control.ManualDock(NewDockSite,DropControl,ControlSide);
+  {$IFNDEF OldAutoSize}
+  EnableAutoSizing;
+  {$ENDIF}
 end;
 
 procedure TControl.AddHandlerOnResize(const OnResizeEvent: TNotifyEvent;
