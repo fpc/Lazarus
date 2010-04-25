@@ -556,7 +556,11 @@ begin
   FloatingClass:=FloatingDockSiteClass;
   if (FloatingClass<>nil) and (FloatingClass<>TWinControlClass(ClassType)) then
   begin
-    Result := FloatingClass.Create(Application);
+    Result := TWinControl(FloatingClass.NewInstance);
+    {$IFNDEF OldAutoSize}
+    Result.DisableAutoSizing;
+    {$ENDIF}
+    Result.Create(Application);
     // resize with minimal resizes
     NewClientWidth:=Bounds.Right-Bounds.Left;
     NewClientHeight:=Bounds.Bottom-Bounds.Top;
@@ -565,6 +569,9 @@ begin
     Result.SetBounds(Bounds.Left,Bounds.Top,NewWidth,NewHeight);
     Result.SetClientSize(Point(NewClientWidth,NewClientHeight));
     debugln('TControl.CreateFloatingDockSite A ',DbgSName(Self),' ',DbgSName(Result),' ',dbgs(Result.BoundsRect));
+    {$IFNDEF OldAutoSize}
+    Result.EnableAutoSizing;
+    {$ENDIF}
   end;
 end;
 
@@ -2854,6 +2861,7 @@ begin
       FloatHost.Caption := FloatHost.GetDockCaption(Self);
       ADockSource.DragTarget := FloatHost;
     end;
+    FloatHost.Show;
   end;
 end;
 

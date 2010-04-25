@@ -5365,7 +5365,7 @@ begin
     end;
   end
   else
-    inherited;
+    inherited DoFloatMsg(ADockSource);
 end;
 
 function TWinControl.GetDockCaption(AControl: TControl): String;
