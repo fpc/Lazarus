@@ -4,21 +4,28 @@ inherited frAnyCapsSettings: TfrAnyCapsSettings
   ClientHeight = 230
   ClientWidth = 366
   OnResize = FrameResize
+  TabOrder = 0
   DesignLeft = 649
   DesignTop = 352
   object Label1: TLabel[0]
-    Left = 108
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = Owner
+    Left = 102
     Height = 14
-    Top = 3
+    Top = 0
     Width = 162
     Caption = 'Set capitalisation on these words '
     ParentColor = False
   end
   object cbEnableAnyWords: TCheckBox[1]
-    Left = 8
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
     Height = 17
-    Top = 5
+    Top = 6
     Width = 50
+    BorderSpacing.Around = 6
     Caption = 'Enable'
     Checked = True
     OnClick = cbEnableAnyWordsClick
@@ -26,11 +33,18 @@ inherited frAnyCapsSettings: TfrAnyCapsSettings
     TabOrder = 0
   end
   object mWords: TMemo[2]
-    Left = 0
-    Height = 190
-    Top = 40
-    Width = 366
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cbEnableAnyWords
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideBottom.Control = Owner
+    Left = 6
+    Height = 195
+    Top = 29
+    Width = 354
     Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
     ScrollBars = ssVertical
     TabOrder = 1
   end
