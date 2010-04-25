@@ -3674,8 +3674,8 @@ begin
     {$IFDEF OldAutoSize}
     ReAlign;
     {$ENDIF}
-    Resize;
     AdjustSize;
+    Resize;
   end;
 end;
 
