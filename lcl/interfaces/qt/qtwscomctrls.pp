@@ -1419,7 +1419,11 @@ begin
         if (TQtTreeWidget(ALV.Handle).getSelectionMode <> QAbstractItemViewNoSelection) then
           TQtTreeWidget(ALV.Handle).setSelectionMode(BoolToSelectionMode[AIsSet]);
       end;
-    lvpShowColumnHeaders: TQtTreeWidget(ALV.Handle).setHeaderVisible(AIsSet);
+    lvpShowColumnHeaders:
+      begin
+        with TQtTreeWidget(ALV.Handle) do
+          setHeaderVisible(AIsSet and (TListView(ALV).ViewStyle = vsReport));
+      end;
     lvpReadOnly: TQtTreeWidget(ALV.Handle).setEditTriggers(BoolToEditTriggers[AIsSet]);
     lvpRowSelect:
       begin
@@ -1470,6 +1474,8 @@ begin
     Exit;
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
   TreeWidget := QTreeWidgetH(QtTreeWidget.Widget);
+  with QtTreeWidget do
+    setHeaderVisible(TListView(ALV).ShowColumnHeaders and (AValue = vsReport));
   case AValue of
     vsIcon:
       begin
