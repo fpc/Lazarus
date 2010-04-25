@@ -89,6 +89,20 @@ procedure Register;
 
 implementation
 
+resourcestring
+  sFPCUnTestApp = 'FPCUnit Test Application';
+  sFPCUnTestAppDesc = 'FPCUnit Test Application%sAn application to run '
+    +'fpcunit test cases.%sThe program file is automatically maintained by '
+    +'Lazarus.';
+  sFPCUnTestCase = 'FPCUnit Test Case';
+  sFPCUnTestCaseDesc = 'FPCUnit Test Case%sA unit containing a FPCUnit Test '
+    +'Case.';
+  sWriteYourOwnTest = 'Write your own test';
+  sFPCUnConsoleTestApp = 'FPCUnit Console Test Application';
+  sFPCUnConsoleTestDesc = 'FPCUnit Console Test Application%sAn application '
+    +'to run fpcunit test cases in console mode.%sThe program file is '
+    +'automatically maintained by Lazarus.';
+
 procedure Register;
 begin
   FileDescriptorFPCUnitTestCase:=TFileDescPascalUnitFPCUnitTestCase.Create;
@@ -109,7 +123,7 @@ end;
 
 function TFPCUnitApplicationDescriptor.GetLocalizedName: string;
 begin
-  Result:='FPCUnit Test Application';
+  Result:=sFPCUnTestApp;
 end;
 
 function TFPCUnitApplicationDescriptor.GetLocalizedDescription: string;
@@ -117,10 +131,7 @@ var
   le: string;
 begin
   le := System.LineEnding;
-  Result:='FPCUnit Test Application'+le+le
-          +'An application to run fpcunit test cases.'+le
-          +'The program file is '
-          +'automatically maintained by Lazarus.';
+  Result:=Format(sFPCUnTestAppDesc,[le+le,le]);
 end;
 
 function TFPCUnitApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
@@ -233,13 +244,12 @@ end;
 
 function TFileDescPascalUnitFPCUnitTestCase.GetLocalizedName: string;
 begin
-  Result:='FPCUnit Test Case';
+  Result:=sFPCUnTestCase;
 end;
 
 function TFileDescPascalUnitFPCUnitTestCase.GetLocalizedDescription: string;
 begin
-  Result:='FPCUnit Test Case'#13
-         +'A unit containing a FPCUnit Test Case.';
+  Result:=Format(sFPCUnTestCaseDesc,[#13]);
 end;
 
 function TFileDescPascalUnitFPCUnitTestCase.GetInterfaceSource(const Filename,
@@ -288,7 +298,7 @@ begin
                    +'end;'+le;
   Result:='procedure '+TestCaseName+'.TestHookUp;'+le
     +'begin'+le
-    +'  Fail(''Write your own test'');'+le
+    +'  Fail('+sWriteYourOwnTest+');'+le
     +'end;'+le
     +le
     +setupMethod
@@ -311,7 +321,7 @@ end;
 
 function TFPCUnitConsoleApplicationDescriptor.GetLocalizedName: string;
 begin
-  Result:='FPCUnit Console Test Application';
+  Result:=sFPCUnConsoleTestApp;
 end;
 
 function TFPCUnitConsoleApplicationDescriptor.GetLocalizedDescription: string;
@@ -319,10 +329,7 @@ var
   le: string;
 begin
   le := System.LineEnding;
-  Result:='FPCUnit Console Test Application'+le+le
-          +'An application to run fpcunit test cases in console mode.'+le
-          +'The program file is '
-          +'automatically maintained by Lazarus.';
+  Result:=Format(sFPCUnConsoleTestDesc,[le+le,le]);
 end;
 
 function TFPCUnitConsoleApplicationDescriptor.InitProject(
