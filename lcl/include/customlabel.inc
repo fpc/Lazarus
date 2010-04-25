@@ -33,7 +33,7 @@ var
   AWidth: Integer;
 begin
   if (Parent = nil) or (not Parent.HandleAllocated) then Exit;
-  if WidthIsAnchored and WordWrap and HasMultiLine then
+  if WidthIsAnchored and WordWrap then
     AWidth:=Width
   else
     AWidth:=10000;
