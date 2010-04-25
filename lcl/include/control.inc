@@ -561,7 +561,7 @@ begin
     {$IFNDEF OldAutoSize}
     Result.DisableAutoSizing;
     {$ENDIF}
-    Result.Create(Application);
+    Result.Create(Self);
     // resize with minimal resizes
     NewClientWidth:=Bounds.Right-Bounds.Left;
     NewClientHeight:=Bounds.Bottom-Bounds.Top;
