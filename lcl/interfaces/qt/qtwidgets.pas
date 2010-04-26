@@ -352,6 +352,7 @@ type
     FHScrollbar: TQtScrollBar;
     FVScrollbar: TQtScrollbar;
   public
+    function viewportWidget: QWidgetH;
     function horizontalScrollBar: TQtScrollBar;
     function verticalScrollBar: TQtScrollBar;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
@@ -920,7 +921,7 @@ type
     procedure setIconSize(const AValue: TSize);
     procedure SetOwnerDrawn(const AValue: Boolean);
   protected
-    procedure OwnerDataNeeded(Event: QEventH); virtual;
+    procedure OwnerDataNeeded(ARect: TRect); virtual;
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     procedure signalActivated(index: QModelIndexH); cdecl; virtual;
@@ -990,7 +991,7 @@ type
     procedure setItemCount(const AValue: Integer);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
-    procedure OwnerDataNeeded(Event: QEventH); override;
+    procedure OwnerDataNeeded(ARect: TRect); override;
   public
     FList: TStrings;
   public
@@ -1112,7 +1113,7 @@ type
     procedure setSortEnabled(const AValue: Boolean);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
-    procedure OwnerDataNeeded(Event: QEventH); override;
+    procedure OwnerDataNeeded(ARect: TRect); override;
   public
     destructor Destroy; override;
     procedure DestroyNotify(AWidget: TQtWidget); override;
@@ -6200,7 +6201,7 @@ begin
   FUndoAvailableHook := QTextEdit_hook_create(Widget);
   QTextEdit_hook_hook_undoAvailable(FUndoAvailableHook, @SignalUndoAvailable);
 
-  FViewportEventHook := QObject_hook_create(QAbstractScrollArea_viewport(QTextEditH(Widget)));
+  FViewportEventHook := QObject_hook_create(viewportWidget);
   QObject_hook_hook_events(FViewportEventHook, @viewportEventFilter);
 
 end;
@@ -6226,19 +6227,13 @@ begin
 end;
 
 function TQtTextEdit.getContextMenuPolicy: QtContextMenuPolicy;
-var
-  w: QWidgetH;
 begin
-  w := QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget));
-  Result := QWidget_contextMenuPolicy(w)
+  Result := QWidget_contextMenuPolicy(viewPortWidget);
 end;
 
 procedure TQtTextEdit.setContextMenuPolicy(const AValue: QtContextMenuPolicy);
-var
-  w: QWidgetH;
 begin
-  w := QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget));
-  QWidget_setContextMenuPolicy(w, AValue);
+  QWidget_setContextMenuPolicy(viewportWidget, AValue);
 end;
 
 procedure TQtTextEdit.SignalUndoAvailable(b: Boolean); cdecl;
@@ -7692,7 +7687,7 @@ begin
     ClearItems;
     AList := QStringList_create();
     WStr := '';
-    for i := 0 to AValue do
+    for i := 1 to AValue do
       QStringList_append(AList, @WStr);
     QListWidget_addItems(QListWidgetH(Widget), AList);
     QStringList_destroy(AList);
@@ -7717,28 +7712,28 @@ begin
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
-procedure TQtListWidget.OwnerDataNeeded(Event: QEventH);
+procedure TQtListWidget.OwnerDataNeeded(ARect: TRect);
 var
   R: TRect;
   TopItem: Integer;
   i: Integer;
-  j: Integer;
   VHeight: Integer; // viewport height
   RowHeight: Integer;
   item: QListWidgetItemH;
   v: QVariantH;
   WStr: WideString;
+  DataStr: WideString;
 begin
-  exit;
+
   {do not set items during design time}
-  if csDesigning in LCLObject.ComponentState then
+  if (csDesigning in LCLObject.ComponentState) then
     exit;
 
   if ItemCount < 1 then
     exit;
 
   {TODO: add QtDecorationRole (icon) etc ... }
-  QWidget_contentsRect(QAbstractScrollArea_viewport(QTreeWidgetH(Widget)), @R);
+  QWidget_contentsRect(viewportWidget, @R);
   VHeight := R.Bottom - R.Top;
 
   item := itemAt(0, 1);
@@ -7755,23 +7750,41 @@ begin
     while (i < (VHeight + RowHeight)) do
     begin
       item := itemAt(0, i + 1);
-      if item <> nil then
+      if (item <> nil) then
       begin
         TopItem := getRow(Item);
         RowHeight := QAbstractItemView_sizeHintForRow(QListWidgetH(Widget), TopItem);
 
         if (TopItem < 0) or (TopItem > TListView(LCLObject).Items.Count - 1) then
-          continue;
+          break;
+
+        if (TListView(LCLObject).Items[TopItem].ImageIndex <> -1) then
+        begin
+          // TODO: paint icons and reduce paint overhead by checking icon
+        end;
 
         WStr := GetUTF8String(TListView(LCLObject).Items[TopItem].Caption);
 
-        v := QVariant_create(PWideString(@WStr));
-        try
-          QListWidgetItem_setData(item, Ord(QtDisplayRole), v);
-        finally
-          QVariant_destroy(v);
+        // reduce paint overhead by checking text
+        v := QVariant_create();
+        QListWidgetItem_data(item, v, Ord(QtDisplayRole));
+        if QVariant_isValid(v) then
+          QVariant_toString(v, @DataStr)
+        else
+          DataStr := '';
+        QVariant_destroy(v);
+
+        if (DataStr <> WStr) then
+        begin
+          v := QVariant_create(PWideString(@WStr));
+          try
+            QListWidgetItem_setData(item, Ord(QtDisplayRole), v);
+          finally
+            QVariant_destroy(v);
+          end;
         end;
-      end;
+      end else
+        break;
 
       inc(i, RowHeight);
     end;
@@ -8551,7 +8564,7 @@ begin
     Result:=inherited EventFilter(Sender, Event);
 end;
 
-procedure TQtTreeWidget.OwnerDataNeeded(Event: QEventH);
+procedure TQtTreeWidget.OwnerDataNeeded(ARect: TRect);
 var
   R: TRect;
   TopItem: Integer;
@@ -8573,7 +8586,7 @@ begin
     exit;
 
   {TODO: add QtDecorationRole (icon) etc ... }
-  QWidget_contentsRect(QAbstractScrollArea_viewport(QTreeWidgetH(Widget)), @R);
+  QWidget_contentsRect(viewportWidget, @R);
   VHeight := R.Bottom - R.Top;
 
   item := QTreeWidget_itemAt(QTreeWidgetH(Widget), 0, 1);
@@ -9300,7 +9313,7 @@ end;
 
 function TQtTableView.getViewPort: QWidgetH;
 begin
-  Result := QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget));
+  Result := viewportWidget;
 end;
 
 function TQtTableView.getClientBounds: TRect;
@@ -10032,6 +10045,12 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
+
+function TQtAbstractScrollArea.viewportWidget: QWidgetH;
+begin
+  Result := QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget));
+end;
+
 function TQtAbstractScrollArea.horizontalScrollBar: TQtScrollBar;
 begin
   {$ifdef VerboseQt}
@@ -10181,9 +10200,9 @@ begin
   begin
     P := getClientOffset;
     OffsetRect(ARect^, -P.X , -P.Y);
-    QWidget_update(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)), ARect);
+    QWidget_update(viewportWidget, ARect);
   end else
-    QWidget_update(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)));
+    QWidget_update(viewportWidget);
 end;
 
 procedure TQtAbstractScrollArea.Repaint(ARect: PRect);
@@ -10194,9 +10213,9 @@ begin
   begin
     P := getClientOffset;
     OffsetRect(ARect^, -P.X , -P.Y);
-    QWidget_repaint(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)), ARect);
+    QWidget_repaint(viewportWidget, ARect);
   end else
-    QWidget_repaint(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)));
+    QWidget_repaint(viewportWidget);
 end;
 
 { TQtCustomControl }
@@ -10969,7 +10988,7 @@ begin
   end;
 end;
 
-procedure TQtAbstractItemView.OwnerDataNeeded(Event: QEventH);
+procedure TQtAbstractItemView.OwnerDataNeeded(ARect: TRect);
 begin
   // override
 end;
@@ -11045,7 +11064,7 @@ begin
 
   QAbstractItemView_hook_hook_viewportEntered(FSignalViewportEntered, @SignalViewportEntered);
 
-  FAbstractItemViewportEventHook := QObject_hook_create(QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget)));
+  FAbstractItemViewportEventHook := QObject_hook_create(viewportWidget);
   QObject_hook_hook_events(FAbstractItemViewportEventHook, @itemViewViewportEventFilter);
 end;
 
@@ -11063,6 +11082,8 @@ end;
 
 function TQtAbstractItemView.itemViewViewportEventFilter(Sender: QObjectH;
   Event: QEventH): Boolean; cdecl;
+var
+  R: TRect;
 begin
   {we install only mouse events on QAbstractItemView viewport}
   Result := False;
@@ -11072,8 +11093,12 @@ begin
     BeginEventProcessing;
 
     {ownerdata is needed only before qt paint's data}
-    if FOwnerData and (QEvent_type(Event) = QEventPaint) then
-      OwnerDataNeeded(Event);
+    if (ViewStyle >= 0) and FOwnerData and
+      (QEvent_type(Event) = QEventPaint) then
+    begin
+      QPaintEvent_rect(QPaintEventH(Event), @R);
+      OwnerDataNeeded(R);
+    end;
 
     case QEvent_type(Event) of
       QEventMouseButtonPress,

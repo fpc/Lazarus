@@ -1417,8 +1417,9 @@ begin
   if not WSCheckHandleAllocated(ALV, 'BeginUpdate') then
     Exit;
   QtWidget := TQtWidget(ALV.Handle);
+  if not QtWidget.InUpdate then
+    QtWidget.setUpdatesEnabled(False);
   QtWidget.BeginUpdate;
-  QtWidget.setUpdatesEnabled(False);
 end;
 
 class procedure TQtWSCustomListView.EndUpdate(const ALV: TCustomListView);
@@ -1430,10 +1431,7 @@ begin
   QtWidget := TQtWidget(ALV.Handle);
   QtWidget.EndUpdate;
   if not QtWidget.InUpdate then
-  begin
     QtWidget.setUpdatesEnabled(True);
-    QtWidget.Update(nil);
-  end;
 end;
 
 {------------------------------------------------------------------------------
