@@ -140,7 +140,7 @@ end;
 
 procedure TListItems.BeginUpdate;
 begin
-  // todo:
+  Owner.BeginUpdate;
 end;
 
 {------------------------------------------------------------------------------
@@ -174,7 +174,7 @@ end;
 
 procedure TListItems.EndUpdate;
 begin
-  // todo:
+  Owner.EndUpdate;
 end;
 
 {------------------------------------------------------------------------------}
