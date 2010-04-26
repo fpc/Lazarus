@@ -6617,8 +6617,10 @@ var
   GtkLeft, GtkTop, GtkWidth, GtkHeight: integer;
   TopLeftChanged, WidthHeightChanged, IsTopLevelWidget: boolean;
   MessageDelivered: boolean;
+  {$IFDEF OldAutoSize}
   SizeMsg: TLMSize;
   MoveMsg: TLMMove;
+  {$ENDIF}
   PosMsg : TLMWindowPosChanged;
   MainWidget: PGtkWidget;
   FixedWidget: PGtkWidget;
@@ -6728,7 +6730,11 @@ begin
         y := GtkTop;
         cx := GtkWidth;
         cy := GtkHeight;
+        {$IFDEF OldAutoSize}
         flags := 0;
+        {$ELSE}
+        flags := SWP_SourceIsInterface;
+        {$ENDIF}
       end;
       MessageDelivered := DeliverMessage(LCLControl, PosMsg) = 0;
     finally
@@ -6740,6 +6746,7 @@ begin
     UpdateLCLSize;
   end;
 
+  {$IFDEF OldAutoSize}
   // then send a LM_SIZE message
   if WidthHeightChanged then begin
     {$IFDEF VerboseSizeMsg}
@@ -6793,6 +6800,8 @@ begin
     MessageDelivered := (DeliverMessage(LCLControl,  MoveMsg) = 0);
     if not MessageDelivered then exit;
   end;
+  {$ENDIF}
+
   {$ifndef gtk1}
   if GtkWidgetIsA(aWidget, GTKAPIWidget_Type) and
      not (wwiNoEraseBkgnd in GetWidgetInfo(aWidget)^.Flags) then

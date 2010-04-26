@@ -6886,11 +6886,11 @@ begin
     and (not (wcfClientRectNeedsUpdate in FWinControlFlags)) then
       exit;
 
-    { $IFDEF VerboseAllAutoSize}
+    {$IFDEF VerboseAllAutoSize}
     DebugLn(['TWinControl.WMWindowPosChanged CHANGED BY INTF ',dbgsname(Self),' Message=',NewLeft,',',NewTop,',',NewWidth,'x',NewHeight,
       ' BoundsRealized=',dbgs(FBoundsRealized),
       ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
-    { $ENDIF}
+    {$ENDIF}
     FBoundsRealized := NewBoundsRealized;
     {$IFNDEF OldAutoSize}
     //DebugLn(['TWinControl.WMSize ',DbgSName(Self),' phases=',dbgs(AutoSizePhases)]);
