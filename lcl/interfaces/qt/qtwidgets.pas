@@ -961,8 +961,10 @@ type
 
   TQtListView = class(TQtAbstractItemView)
   private
+    function getBatchSize: integer;
     function getGridSize: TSize;
     function getSpacing: Integer;
+    procedure setBatchSize(const AValue: integer);
     procedure setSpacing(const AValue: integer);
     procedure setGridSize(const AValue: TSize);
   public
@@ -975,6 +977,7 @@ type
     procedure setWordWrap(const AValue: Boolean); override;
     procedure setWrapping(const AWrapping: Boolean);
     procedure LayoutItems;
+    property BatchSize: integer read getBatchSize write setBatchSize;
     property GridSize: TSize read getGridSize write setGridSize;
     property Spacing: Integer read getSpacing write setSpacing;
   end;
@@ -7602,6 +7605,11 @@ end;
 
 { TQtListView }
 
+function TQtListView.getBatchSize: integer;
+begin
+  Result := QListView_batchSize(QListViewH(Widget));
+end;
+
 function TQtListView.getGridSize: TSize;
 begin
   QListView_gridSize(QListViewH(Widget), @Result);
@@ -7610,6 +7618,11 @@ end;
 function TQtListView.getSpacing: Integer;
 begin
   Result := QListView_spacing(QListViewH(Widget));
+end;
+
+procedure TQtListView.setBatchSize(const AValue: integer);
+begin
+  QListView_setBatchSize(QListViewH(Widget), AValue);
 end;
 
 procedure TQtListView.setGridSize(const AValue: TSize);

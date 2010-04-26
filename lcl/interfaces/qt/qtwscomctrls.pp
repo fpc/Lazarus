@@ -1590,13 +1590,25 @@ end;
 
 class procedure TQtWSCustomListView.SetAllocBy(const ALV: TCustomListView;
   const AValue: Integer);
-//var
-//  QtTreeWidget: TQtTreeWidget;
+var
+  QtList: TQtListWidget;
+  NewValue: integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'SetAllocBy') then
     Exit;
-  // QtTreeWidget := TQtTreeWidget(ALV.Handle);
-  // QtTreeWidget.ItemCount := AValue;
+  if TListView(ALV).ViewStyle <> vsReport then
+  begin
+    NewValue := AValue;
+    if NewValue < 0 then
+      NewValue := 0;
+    QtList := TQtListWidget(ALV.Handle);
+    if NewValue > 0 then
+    begin
+      QtList.setLayoutMode(QListViewBatched);
+      QtList.BatchSize := NewValue;
+    end else
+      QtList.setLayoutMode(QListViewSinglePass);
+  end;
 end;
 
 class procedure TQtWSCustomListView.SetIconArrangement(
