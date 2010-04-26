@@ -804,6 +804,7 @@ type
     procedure GetSupportedSourceMimeTypes(List: TStrings); virtual;
     function GetResourceType: TResourceType; virtual;
     class function GetFileExtensions: string; virtual;
+    class function IsStreamFormatSupported(Stream: TStream): Boolean; virtual;
   public
     property Empty: Boolean read GetEmpty;
     property Height: Integer read GetHeight write SetHeight;
@@ -901,18 +902,25 @@ type
     procedure Progress(Sender: TObject; Stage: TProgressStage;
                        PercentDone: Byte; RedrawNow: Boolean; const R: TRect;
                        const Msg: string; var DoContinue: boolean); virtual;
+    procedure LoadFromStreamWithClass(Stream: TStream; AClass: TGraphicClass);
   public
     constructor Create;
     destructor Destroy; override;
-    procedure LoadFromFile(const Filename: string);
-    procedure SaveToFile(const Filename: string; const FileExt: string = '');
-    procedure SaveToStreamWithFileExt(Stream: TStream; const FileExt: string);
-    procedure LoadFromStreamWithFileExt(Stream: TStream; const FileExt: string);
-    procedure LoadFromLazarusResource(const AName: string);
+
+    procedure Clear; virtual;
+    // load methods
     procedure LoadFromClipboardFormat(FormatID: TClipboardFormat);
-    procedure LoadFromClipboardFormatID(ClipboardType: TClipboardType;
-      FormatID: TClipboardFormat);
+    procedure LoadFromClipboardFormatID(ClipboardType: TClipboardType; FormatID: TClipboardFormat);
+    procedure LoadFromFile(const Filename: string);
+    procedure LoadFromLazarusResource(const AName: string);
+    procedure LoadFromStream(Stream: TStream);
+    procedure LoadFromStreamWithFileExt(Stream: TStream; const FileExt: string);
+    // save methods
     procedure SaveToClipboardFormat(FormatID: TClipboardFormat);
+    procedure SaveToFile(const Filename: string; const FileExt: string = '');
+    procedure SaveToStream(Stream: TStream);
+    procedure SaveToStreamWithFileExt(Stream: TStream; const FileExt: string);
+
     class function SupportsClipboardFormat(FormatID: TClipboardFormat): Boolean;
     procedure Assign(Source: TPersistent); override;
     class procedure RegisterFileFormat(const AnExtension, ADescription: string;
@@ -920,7 +928,6 @@ type
     class procedure RegisterClipboardFormat(FormatID: TClipboardFormat;
       AGraphicClass: TGraphicClass);
     class procedure UnregisterGraphicClass(AClass: TGraphicClass);
-    procedure Clear; virtual;
     function FindGraphicClassWithFileExt(const Ext: string;
       ExceptionOnNotFound: boolean = true): TGraphicClass;
   public
@@ -1412,6 +1419,7 @@ type
     procedure WriteStream(AStream: TMemoryStream); override;
   public
     class function GetFileExtensions: string; override;
+    class function IsStreamFormatSupported(Stream: TStream): Boolean; override;
     class function IsFileExtensionSupported(const FileExtension: string): boolean;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
   end;
@@ -1470,6 +1478,7 @@ type
     procedure InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter); override;
     class function GetSharedImageClass: TSharedRasterImageClass; override;
   public
+    class function IsStreamFormatSupported(Stream: TStream): Boolean; override;
     class function GetFileExtensions: string; override;
   end;
 
@@ -1487,6 +1496,7 @@ type
     class function GetWriterClass: TFPCustomImageWriterClass; override;
     class function GetSharedImageClass: TSharedRasterImageClass; override;
   public
+    class function IsStreamFormatSupported(Stream: TStream): Boolean; override;
     class function GetFileExtensions: string; override;
   end;
 
@@ -1742,6 +1752,7 @@ type
     class function GetSharedImageClass: TSharedRasterImageClass; override;
   public
     constructor Create; override;
+    class function IsStreamFormatSupported(Stream: TStream): Boolean; override;
     class function GetFileExtensions: string; override;
   public
     property CompressionQuality: TJPEGQualityRange read FQuality write FQuality;

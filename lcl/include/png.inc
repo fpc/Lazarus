@@ -35,6 +35,27 @@ begin
   Result := TSharedPortableNetworkGraphic;
 end;
 
+class function TPortableNetworkGraphic.IsStreamFormatSupported(Stream: TStream): Boolean;
+const
+  Signature: array[0..7] of Byte = ($89, $50, $4E, $47, $0D, $0A, $1A, $0A);
+var
+  Pos: Int64;
+  SigCheck: array[0..7] of byte;
+  r: integer;
+begin
+  Pos := Stream.Position;
+  try
+    Stream.Read(SigCheck, SizeOf(SigCheck));
+    Result := False;
+    for r := 0 to 7 do
+      if (SigCheck[r] <> Signature[r]) then
+        Exit;
+    Result := True;
+  finally
+    Stream.Position := Pos;
+  end;
+end;
+
 class function TPortableNetworkGraphic.GetWriterClass: TFPCustomImageWriterClass;
 begin
   Result := TLazWriterPNG;

@@ -29,6 +29,20 @@ begin
   FQuality := 75;
 end;
 
+class function TJPEGImage.IsStreamFormatSupported(Stream: TStream): Boolean;
+var
+  Pos: Int64;
+  SOI: Word;
+begin
+  Pos := Stream.Position;
+  try
+    Stream.Read(SOI, SizeOf(SOI));
+    Result := SOI = $FFD8;
+  finally
+    Stream.Position := Pos;
+  end;
+end;
+
 procedure TJPEGImage.FinalizeReader(AReader: TFPCustomImageReader);
 begin
   FProgressiveEncoding := TFPReaderJPEG(AReader).ProgressiveEncoding;

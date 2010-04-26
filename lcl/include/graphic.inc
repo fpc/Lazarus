@@ -234,6 +234,11 @@ begin
   Result:='';
 end;
 
+class function TGraphic.IsStreamFormatSupported(Stream: TStream): Boolean;
+begin
+  Result := False;
+end;
+
 procedure TGraphic.LoadFromFile(const Filename: string);
 var
   Stream: TStream;

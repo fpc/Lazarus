@@ -25,6 +25,21 @@ begin
   Result:='';
 end;
 
+class function TFPImageBitmap.IsStreamFormatSupported(Stream: TStream): Boolean;
+var
+  Pos: Int64;
+  Reader: TFPCustomImageReader;
+begin
+  Pos := Stream.Position;
+  Reader := GetReaderClass.Create;
+  try
+    Result := Reader.CheckContents(Stream);
+  finally
+    Reader.Free;
+    Stream.Position := Pos;
+  end;
+end;
+
 procedure TFPImageBitmap.FinalizeReader(AReader: TFPCustomImageReader);
 begin
 end;

@@ -194,6 +194,7 @@ resourceString
   rsErrorCreatingDeviceContext = 'Error creating device context for %s.%s';
   rsIndexOutOfBounds = '%s Index %d out of bounds 0 .. %d';
   rsUnknownPictureExtension = 'Unknown picture extension';
+  rsUnknownPictureFormat = 'Unknown picture format';
   rsBitmaps = 'Bitmaps';
   rsPixmap = 'Pixmap';
   rsPortableNetworkGraphic = 'Portable Network Graphic';

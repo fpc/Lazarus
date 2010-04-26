@@ -38,6 +38,7 @@ type
     function GetFormatFilter(Index: integer): String;
     function FindExt(const Ext: string): TGraphicClass;
     function FindClassName(const AClassname: string): TGraphicClass;
+    function FindByStreamFormat(Stream: TStream): TGraphicClass;
     procedure Remove(AClass: TGraphicClass);
     procedure BuildFilterStrings(GraphicClass: TGraphicClass;
                                  var Descriptions, Filters: string);
@@ -136,8 +137,7 @@ begin
   Result := nil;
 end;
 
-function TPicFileFormatsList.FindClassName(
-  const AClassName: string): TGraphicClass;
+function TPicFileFormatsList.FindClassName(const AClassName: string): TGraphicClass;
 var
   I: Integer;
 begin
@@ -145,6 +145,19 @@ begin
   for I := Count-1 downto 0 do begin
     Result := GetFormats(I)^.GraphicClass;
     if AnsiCompareText(Result.ClassName,AClassname)=0 then
+      Exit;
+  end;
+  Result := nil;
+end;
+
+function TPicFileFormatsList.FindByStreamFormat(Stream: TStream): TGraphicClass;
+var
+  I: Integer;
+begin
+  for I := Count - 1 downto 0 do
+  begin
+    Result := GetFormats(I)^.GraphicClass;
+    if Result.IsStreamFormatSupported(Stream) then
       Exit;
   end;
   Result := nil;
@@ -514,6 +527,16 @@ begin
   end;
 end;
 
+procedure TPicture.LoadFromStream(Stream: TStream);
+var
+  GraphicClass: TGraphicClass;
+begin
+  GraphicClass := GetPicFileFormats.FindByStreamFormat(Stream);
+  if GraphicClass = nil then
+    raise EInvalidGraphic.Create(rsUnknownPictureFormat);
+  LoadFromStreamWithClass(Stream, GraphicClass);
+end;
+
 procedure TPicture.SaveToFile(const Filename: string; const FileExt: string = '');
 var
   Ext: string;
@@ -532,6 +555,12 @@ begin
   finally
     Stream.Free;
   end;
+end;
+
+procedure TPicture.SaveToStream(Stream: TStream);
+begin
+  if Assigned(Graphic) then
+    Graphic.SaveToStream(Stream);
 end;
 
 procedure TPicture.SaveToStreamWithFileExt(Stream: TStream; const FileExt: string);
@@ -577,29 +606,8 @@ end;
 
 procedure TPicture.LoadFromStreamWithFileExt(Stream: TStream;
   const FileExt: string);
-var
-  GraphicClass: TGraphicClass;
-  NewGraphic: TGraphic;
-  ok: Boolean;
 begin
-  GraphicClass := FindGraphicClassWithFileExt(FileExt);
-
-  NewGraphic := GraphicClass.Create;
-  ok:=false;
-  try
-    NewGraphic.OnProgress := @Progress;
-    //DebugLn(['TPicture.LoadFromStreamWithFileExt ',Stream.Position,' ',Stream.Size,' ',DbgSName(Stream)]);
-    NewGraphic.LoadFromStream(Stream);
-    ok:=true;
-  finally
-    // this try..finally construction will in case of an exception
-    // not alter the error backtrace output
-    if not ok then NewGraphic.Free;
-  end;
-  FGraphic.Free;
-  FGraphic := NewGraphic;
-  FGraphic.OnChange := @Changed;
-  Changed(Self);
+  LoadFromStreamWithClass(Stream, FindGraphicClassWithFileExt(FileExt));
 end;
 
 procedure TPicture.LoadFromClipboardFormat(FormatID: TClipboardFormat);
@@ -707,6 +715,28 @@ begin
   DoContinue:=true;
   if Assigned(FOnProgress) then
     FOnProgress(Sender, Stage, PercentDone, RedrawNow, R, Msg, DoContinue);
+end;
+
+procedure TPicture.LoadFromStreamWithClass(Stream: TStream; AClass: TGraphicClass);
+var
+  NewGraphic: TGraphic;
+  ok: Boolean;
+begin
+  NewGraphic := AClass.Create;
+  ok:=false;
+  try
+    NewGraphic.OnProgress := @Progress;
+    NewGraphic.LoadFromStream(Stream);
+    ok:=true;
+  finally
+    // this try..finally construction will in case of an exception
+    // not alter the error backtrace output
+    if not ok then NewGraphic.Free;
+  end;
+  FGraphic.Free;
+  FGraphic := NewGraphic;
+  FGraphic.OnChange := @Changed;
+  Changed(Self);
 end;
 
 procedure TPicture.ReadData(Stream: TStream);
