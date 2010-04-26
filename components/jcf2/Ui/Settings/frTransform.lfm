@@ -52,13 +52,13 @@ inherited fTransform: TfTransform
     AnchorSideTop.Control = cbBlockEndSemicolons
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 139
+    Height = 162
     Top = 116
     Width = 154
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Sort &uses clauses'
-    ClientHeight = 121
+    ClientHeight = 144
     ClientWidth = 150
     TabOrder = 2
     object cbSortInterfaceUses: TCheckBox
@@ -74,10 +74,11 @@ inherited fTransform: TfTransform
     end
     object cbSortImplementationUses: TCheckBox
       AnchorSideLeft.Control = bgSortUses
+      AnchorSideTop.Control = cbSortInterfaceUses
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 17
-      Top = 6
+      Top = 29
       Width = 138
       BorderSpacing.Around = 6
       Caption = 'Sort i&mplementation uses'
@@ -89,7 +90,7 @@ inherited fTransform: TfTransform
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 17
-      Top = 75
+      Top = 98
       Width = 106
       BorderSpacing.Around = 6
       Caption = 'Break on &comment'
@@ -101,7 +102,7 @@ inherited fTransform: TfTransform
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 17
-      Top = 52
+      Top = 75
       Width = 93
       BorderSpacing.Around = 6
       Caption = 'Break on &return'
@@ -113,7 +114,7 @@ inherited fTransform: TfTransform
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 17
-      Top = 98
+      Top = 121
       Width = 129
       BorderSpacing.Around = 6
       Caption = 'Only with no comments'
@@ -125,7 +126,7 @@ inherited fTransform: TfTransform
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 17
-      Top = 29
+      Top = 52
       Width = 106
       BorderSpacing.Around = 6
       Caption = 'Sort &program uses'
@@ -141,7 +142,7 @@ inherited fTransform: TfTransform
     AnchorSideBottom.Control = bgSortUses
     AnchorSideBottom.Side = asrBottom
     Left = 166
-    Height = 139
+    Height = 162
     Top = 116
     Width = 240
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -159,7 +160,7 @@ inherited fTransform: TfTransform
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 121
+    ClientHeight = 144
     ClientWidth = 236
     Items.Strings = (
       'Alphabetic'
