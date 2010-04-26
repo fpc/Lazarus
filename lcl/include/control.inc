@@ -5085,7 +5085,7 @@ end;
 procedure TControl.WMWindowPosChanged(var Message: TLMWindowPosChanged);
 begin
   // Do not handle this message and leave it to WMSize and WMMove
-  Message.Result:= 0;
+  Message.Result := 0;
 end;
 
 {------------------------------------------------------------------------------

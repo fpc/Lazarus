@@ -729,17 +729,25 @@ begin
       Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER);
     end else
     begin
-      Flags := SW_SHOW;
       if TControl(Sender) is TCustomForm then
+      begin
         case TCustomForm(Sender).WindowState of
           wsMaximized: Flags := SW_SHOWMAXIMIZED;
           wsMinimized: Flags := SW_SHOWMINIMIZED;
+        else
+          Flags := SW_SHOW;
         end;
-      Windows.ShowWindow(Handle, Flags);
-      { ShowWindow does not send WM_SHOWWINDOW when creating overlapped maximized window }
-      { TODO: multiple WM_SHOWWINDOW when maximizing after initial show? }
-      if Flags = SW_SHOWMAXIMIZED then
-        Windows.SendMessage(Handle, WM_SHOWWINDOW, 1, 0);
+        Windows.ShowWindow(Handle, Flags);
+        { ShowWindow does not send WM_SHOWWINDOW when creating overlapped maximized window }
+        { TODO: multiple WM_SHOWWINDOW when maximizing after initial show? }
+        if Flags = SW_SHOWMAXIMIZED then
+          Windows.SendMessage(Handle, WM_SHOWWINDOW, 1, 0);
+      end
+      else
+      begin
+        Windows.SetWindowPos(Handle, 0, 0, 0, 0, 0,
+          SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or SWP_SHOWWINDOW);
+      end;
     end;
   end
   else
