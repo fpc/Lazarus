@@ -2055,8 +2055,9 @@ function FilenameIsMatching(const Mask, Filename: string;
 var
   DirStartMask, DirEndMask,
   DirStartFile, DirEndFile,
-  AsteriskPos,
   BracketMaskPos, BracketFilePos: integer;
+  StopChar: LongInt;
+  Fits: Boolean;
 
   function TryNextOr: boolean;
   begin
@@ -2100,9 +2101,8 @@ begin
     DirEndMask:=FindDirectoryEnd(Mask,DirStartMask);
     DirEndFile:=FindDirectoryEnd(Filename,DirStartFile);
     //debugln('  Compare "',copy(Mask,DirStartMask,DirEndMask-DirStartMask),'"',
-       //' "',copy(Filename,DirStartFile,DirEndFile-DirStartFile),'"');
+    //   ' "',copy(Filename,DirStartFile,DirEndFile-DirStartFile),'"');
     // compare directories
-    AsteriskPos:=0;
     BracketMaskPos:=0;
     while (DirStartMask<DirEndMask) do begin
       //debugln(['FilenameIsMatching ',DirStartMask,' ',Mask[DirStartMask],' - ',DirStartFile,' ',Pchar(Filename)[DirStartFile-1]]);
@@ -2118,7 +2118,27 @@ begin
       '*':
         begin
           inc(DirStartMask);
-          AsteriskPos:=DirStartMask;
+          Fits:=false;
+          if (DirStartMask=DirEndMask) then begin
+            Fits:=true;
+          end else begin
+            StopChar:=DirStartMask;
+            if (BracketMaskPos>0) then begin
+              while (StopChar<DirEndMask) and (Mask[StopChar]<>'}') do
+                inc(StopChar);
+              inc(StopChar);
+            end;
+            if StopChar>=DirEndMask then
+              Fits:=false
+            else begin
+              while (DirStartFile<DirEndFile)
+              and (not CharsEqual(Filename[DirStartFile],Mask[DirStartMask]))
+              do
+                inc(DirStartFile);
+              Fits:=DirStartFile<DirEndFile;
+            end;
+          end;
+          if (not Fits) and (not TryNextOr) then exit;
           continue;
         end;
       '{':
@@ -2127,6 +2147,8 @@ begin
           BracketMaskPos:=DirStartMask;
           BracketFilePos:=DirStartFile;
           continue;
+        end else begin
+          // treat as normal character
         end;
       ',':
         if BracketMaskPos>0 then begin
@@ -2146,15 +2168,17 @@ begin
           until false;
           BracketMaskPos:=0;
           continue;
+        end else begin
+          // treat as normal character
         end;
       '}':
-        begin
-          if BracketMaskPos>0 then begin
-            // Bracket operator fits complete
-            inc(DirStartMask);
-            BracketMaskPos:=0;
-            continue;
-          end;
+        if BracketMaskPos>0 then begin
+          // Bracket operator fits complete
+          inc(DirStartMask);
+          BracketMaskPos:=0;
+          continue;
+        end else begin
+          // treat as normal character
         end;
       end;
       if Mask[DirStartMask]=SpecialChar then begin
@@ -2169,13 +2193,7 @@ begin
         inc(DirStartFile);
       end else begin
         // chars different
-        if BracketMaskPos>0 then begin
-          // try next Or
-          if not TryNextOr then exit;
-        end else if AsteriskPos>0 then begin
-          // * operator always fits
-          inc(DirStartFile);
-        end else begin
+        if (BracketMaskPos=0) or (not TryNextOr) then begin
           // filename does not match
           exit;
         end;
