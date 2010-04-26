@@ -129,6 +129,7 @@ function SearchPascalFileInDir(const ShortFilename, BaseDirectory: string;
 function SearchPascalFileInPath(const ShortFilename, BasePath, SearchPath,
                       Delimiter: string; SearchCase: TCTSearchFileCase): string;
 
+// search paths
 function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
 function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
 function MinimizeSearchPath(const SearchPath: string): string;
@@ -1791,12 +1792,31 @@ var
   EndPos: LongInt;
   NextStartPos: LongInt;
   CmpPos: LongInt;
+  UseQuickCompare: Boolean;
+  PathStr: String;
+  CurFilename: String;
 begin
   Result:=nil;
   if SearchPath=nil then exit;
-  if APath=nil then exit;
+  if (APath=nil) or (APathLen=0) then exit;
   // ignore trailing PathDelim at end
   while (APathLen>1) and (APath[APathLen-1]=PathDelim) do dec(APathLen);
+
+  {$IFDEF CaseInsensitiveFilenames}
+  UseQuickCompare:=false;
+  {$ELSE}
+    {$IFDEF NotLiteralFilenames}
+    CmpPos:=0;
+    while (CmpPos<APathLen) and (ord(APath[CmpPos]<128)) do inc(CmpPos);
+    UseQuickCompare:=CmpPos=APathLen;
+    {$ELSE}
+    UseQuickCompare:=true;
+    {$ENDIF}
+  {$ENDIF}
+  if not UseQuickCompare then begin
+    SetLength(PathStr,APathLen);
+    System.Move(APath^,PathStr[1],APathLen);
+  end;
 
   StartPos:=0;
   while StartPos<SearchPathLen do begin
@@ -1809,14 +1829,25 @@ begin
     while (EndPos>StartPos+1) and (SearchPath[EndPos-1]=PathDelim) do
       dec(EndPos);
     // compare current path
-    if EndPos-StartPos=APathLen then begin
-      CmpPos:=0;
-      while CmpPos<APathLen do begin
-        if APath[CmpPos]<>SearchPath[StartPos+CmpPos] then
-          break;
-        inc(CmpPos);
+    if UseQuickCompare then begin
+      if EndPos-StartPos=APathLen then begin
+        CmpPos:=0;
+        while CmpPos<APathLen do begin
+          if APath[CmpPos]<>SearchPath[StartPos+CmpPos] then
+            break;
+          inc(CmpPos);
+        end;
+        if CmpPos=APathLen then begin
+          Result:=@SearchPath[StartPos];
+          exit;
+        end;
       end;
-      if CmpPos=APathLen then begin
+    end else if EndPos>StartPos then begin
+      // use CompareFilenames
+      CurFilename:='';
+      SetLength(CurFilename,EndPos-StartPos);
+      System.Move(SearchPath[StartPos],CurFilename[1],EndPos-StartPos);
+      if CompareFilenames(PathStr,CurFilename)=0 then begin
         Result:=@SearchPath[StartPos];
         exit;
       end;
@@ -2026,8 +2057,33 @@ var
   DirStartFile, DirEndFile,
   AsteriskPos,
   BracketMaskPos, BracketFilePos: integer;
+
+  function TryNextOr: boolean;
+  begin
+    Result:=false;
+    if BracketMaskPos<1 then exit;
+    repeat
+      inc(DirStartMask);
+      if DirStartMask>=DirEndMask then exit; // error, missing }
+      if Mask[DirStartMask]=SpecialChar then begin
+        // special char -> next char is normal char
+        inc(DirStartMask);
+      end else if Mask[DirStartMask]='}' then begin
+        // bracket found (= end of Or operator)
+        // -> filename does not match
+        exit;
+      end else if Mask[DirStartMask]=',' then begin
+        // next Or found
+        // -> reset filename position and compare
+        inc(DirStartMask);
+        DirStartFile:=BracketFilePos;
+        exit(true);
+      end;
+    until false;
+  end;
+
 begin
-  //debugln('[FilenameIsMatching] Mask="',Mask,'" Filename="',Filename,'" MatchExactly=',MatchExactly);
+  //debugln(['[FilenameIsMatching] Mask="',Mask,'" Filename="',Filename,'" MatchExactly=',MatchExactly]);
   Result:=false;
   if (Filename='') then exit;
   if (Mask='') then begin
@@ -2043,19 +2099,21 @@ begin
     // find ends of directories
     DirEndMask:=FindDirectoryEnd(Mask,DirStartMask);
     DirEndFile:=FindDirectoryEnd(Filename,DirStartFile);
-    // debugln('  Compare "',copy(Mask,DirStartMask,DirEndMask-DirStartMask),'"',
-    //   ' "',copy(Filename,DirStartFile,DirEndFile-DirStartFile),'"');
+    //debugln('  Compare "',copy(Mask,DirStartMask,DirEndMask-DirStartMask),'"',
+       //' "',copy(Filename,DirStartFile,DirEndFile-DirStartFile),'"');
     // compare directories
     AsteriskPos:=0;
     BracketMaskPos:=0;
-    while (DirStartMask<DirEndMask) and (DirStartFile<DirEndFile) do begin
-      //debugln('FilenameIsMatching ',DirStartMask,' ',Mask[DirStartMask],' - ',DirStartFile,' ',Filename[DirStartFile]);
+    while (DirStartMask<DirEndMask) do begin
+      //debugln(['FilenameIsMatching ',DirStartMask,' ',Mask[DirStartMask],' - ',DirStartFile,' ',Pchar(Filename)[DirStartFile-1]]);
       case Mask[DirStartMask] of
       '?':
-        begin
+        if DirStartFile<DirEndFile then begin
           inc(DirStartMask);
           inc(DirStartFile);
           continue;
+        end else begin
+          if not TryNextOr then exit;
         end;
       '*':
         begin
@@ -2105,31 +2163,15 @@ begin
         if (DirStartMask>=DirEndMask) then exit;
       end;
       // compare char
-      if CharsEqual(Mask[DirStartMask],Filename[DirStartFile]) then begin
+      if (DirStartFile<DirEndFile)
+      and CharsEqual(Mask[DirStartMask],Filename[DirStartFile]) then begin
         inc(DirStartMask);
         inc(DirStartFile);
       end else begin
         // chars different
         if BracketMaskPos>0 then begin
           // try next Or
-          repeat
-            inc(DirStartMask);
-            if DirStartMask>=DirEndMask then exit; // error, missing }
-            if Mask[DirStartMask]=SpecialChar then begin
-              // special char -> next char is normal char
-              inc(DirStartMask);
-            end else if Mask[DirStartMask]='}' then begin
-              // bracket found (= end of Or operator)
-              // -> filename does not match
-              exit;
-            end else if Mask[DirStartMask]=',' then begin
-              // next Or found
-              // -> reset filename position and compare
-              inc(DirStartMask);
-              DirStartFile:=BracketFilePos;
-              break;
-            end;
-          until false;
+          if not TryNextOr then exit;
         end else if AsteriskPos>0 then begin
           // * operator always fits
           inc(DirStartFile);
