@@ -1079,6 +1079,10 @@ msgstr "Kesalahan Tidak Dikenal, silahkan laporkan bug ini"
 msgid "Unknown picture extension"
 msgstr "Ekstensi gambar tidak dikenal"
 
+#: lclstrconsts.rsunknownpictureformat
+msgid "Unknown picture format"
+msgstr ""
+
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
 msgstr "Format bitmap tidak didukung."

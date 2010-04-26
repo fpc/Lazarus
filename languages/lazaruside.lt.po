@@ -9744,6 +9744,14 @@ msgstr "Object Pascal - numatyta"
 msgid "object path"
 msgstr "kelias iki objekto"
 
+#: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
+msgid "Switch to Object Inspector Favorites tab"
+msgstr ""
+
+#: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestabafterasking
+msgid "Switch to Object Inspector Favorites tab after asking for component name"
+msgstr ""
+
 #: lazarusidestrconsts.lisoff
 msgid "? (Off)"
 msgstr "? (Pasyvus)"

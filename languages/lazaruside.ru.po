@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-26 00:45+0300\n"
+"PO-Revision-Date: 2010-04-27 02:36+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -9748,6 +9748,14 @@ msgstr "Object Pascal - по умолчанию"
 #: lazarusidestrconsts.lisobjectpath
 msgid "object path"
 msgstr "путь объекта"
+
+#: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
+msgid "Switch to Object Inspector Favorites tab"
+msgstr "Переключаться на вкладку 'Избранное' инспектора объектов"
+
+#: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestabafterasking
+msgid "Switch to Object Inspector Favorites tab after asking for component name"
+msgstr "Переключаться на вкладку 'Избранное' инспектора объектов после запроса имени компонента"
 
 #: lazarusidestrconsts.lisoff
 msgid "? (Off)"

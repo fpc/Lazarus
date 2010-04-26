@@ -1078,6 +1078,10 @@ msgstr "Bilinmeyen hata, lütfen bu hatayı bildirin"
 msgid "Unknown picture extension"
 msgstr "Bilinmeyen resim genişletmesi"
 
+#: lclstrconsts.rsunknownpictureformat
+msgid "Unknown picture format"
+msgstr ""
+
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
 msgstr "Desteklenmeyen bitmap biçimi."

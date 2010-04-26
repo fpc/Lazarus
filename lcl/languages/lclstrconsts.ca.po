@@ -1078,6 +1078,10 @@ msgstr "Error desconegut. Sisplau reporteu-lo"
 msgid "Unknown picture extension"
 msgstr "Extensió d'imatge desconeguda"
 
+#: lclstrconsts.rsunknownpictureformat
+msgid "Unknown picture format"
+msgstr ""
+
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
 msgstr "Format de mapa de bits no suportat"

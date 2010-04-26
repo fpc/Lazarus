@@ -1080,6 +1080,10 @@ msgstr "Unbekannter Fehler, bitte melden Sie diesen Bug."
 msgid "Unknown picture extension"
 msgstr "Unbekannte Bilddateiendung"
 
+#: lclstrconsts.rsunknownpictureformat
+msgid "Unknown picture format"
+msgstr ""
+
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
 msgstr "Nicht unterstütztes Bitmap-Format"

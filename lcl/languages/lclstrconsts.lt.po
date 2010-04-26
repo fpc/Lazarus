@@ -1080,6 +1080,10 @@ msgstr "Nežinoma klaida, prašau praneškite kūrėjams apie šią klaidą."
 msgid "Unknown picture extension"
 msgstr "Nežinomas paveikslo plėtinys"
 
+#: lclstrconsts.rsunknownpictureformat
+msgid "Unknown picture format"
+msgstr ""
+
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
 msgstr "Nepalaikomas rastrinio paveikslo formatas."

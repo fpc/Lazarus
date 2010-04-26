@@ -1079,6 +1079,10 @@ msgstr "未知错误, 请报告这个错误"
 msgid "Unknown picture extension"
 msgstr "未知图形文件后缀"
 
+#: lclstrconsts.rsunknownpictureformat
+msgid "Unknown picture format"
+msgstr ""
+
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
 msgstr "未支持的位图格式"

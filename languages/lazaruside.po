@@ -9680,6 +9680,14 @@ msgstr ""
 msgid "object path"
 msgstr ""
 
+#: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
+msgid "Switch to Object Inspector Favorites tab"
+msgstr ""
+
+#: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestabafterasking
+msgid "Switch to Object Inspector Favorites tab after asking for component name"
+msgstr ""
+
 #: lazarusidestrconsts.lisoff
 msgid "? (Off)"
 msgstr ""

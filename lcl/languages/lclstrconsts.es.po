@@ -1078,6 +1078,10 @@ msgstr "Error desconocido. Por favor, informe de este fallo"
 msgid "Unknown picture extension"
 msgstr "Extensión de imagen inválida"
 
+#: lclstrconsts.rsunknownpictureformat
+msgid "Unknown picture format"
+msgstr ""
+
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
 msgstr "Formato de mapa de bits no soportado"

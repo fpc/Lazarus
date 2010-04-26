@@ -1067,6 +1067,10 @@ msgstr ""
 msgid "Unknown picture extension"
 msgstr ""
 
+#: lclstrconsts.rsunknownpictureformat
+msgid "Unknown picture format"
+msgstr ""
+
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
 msgstr ""

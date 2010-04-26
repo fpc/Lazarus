@@ -1081,6 +1081,10 @@ msgstr "Neznáma chyba, prosím ohláste túto chybu"
 msgid "Unknown picture extension"
 msgstr "Neznáma prípona obrázku"
 
+#: lclstrconsts.rsunknownpictureformat
+msgid "Unknown picture format"
+msgstr ""
+
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
 msgstr "Nepodporovaný formát bitmapy"

@@ -9754,6 +9754,14 @@ msgstr ""
 msgid "object path"
 msgstr "对象文件(obj)路径"
 
+#: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
+msgid "Switch to Object Inspector Favorites tab"
+msgstr ""
+
+#: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestabafterasking
+msgid "Switch to Object Inspector Favorites tab after asking for component name"
+msgstr ""
+
 #: lazarusidestrconsts.lisoff
 msgid "? (Off)"
 msgstr "? (关闭)"

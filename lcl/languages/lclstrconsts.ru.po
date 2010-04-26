@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-22 00:53+0300\n"
+"PO-Revision-Date: 2010-04-27 02:39+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1074,6 +1074,10 @@ msgstr "Неизвестная ошибка, сообщите о ней разр
 #: lclstrconsts.rsunknownpictureextension
 msgid "Unknown picture extension"
 msgstr "Неизвестное расширение файла изображения"
+
+#: lclstrconsts.rsunknownpictureformat
+msgid "Unknown picture format"
+msgstr "Неизвестный формат изображения"
 
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."

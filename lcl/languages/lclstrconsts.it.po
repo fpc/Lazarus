@@ -1077,6 +1077,10 @@ msgstr "Errore sconosciuto. Per favore, riporta questo errore al team di svilupp
 msgid "Unknown picture extension"
 msgstr "Estensione immagine sconosciuta"
 
+#: lclstrconsts.rsunknownpictureformat
+msgid "Unknown picture format"
+msgstr ""
+
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
 msgstr "Formato bitmap non supportato."
