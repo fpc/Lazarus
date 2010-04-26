@@ -241,6 +241,7 @@ begin
           with TreeView1.Items.AddChild(Node, AListView.Items[I].SubItems[J]) do
           begin
             ImageIndex := AListView.Items[I].SubItemImages[J];
+            SelectedIndex := ImageIndex;
           end;
         end;
       end;
