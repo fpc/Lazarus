@@ -52,9 +52,9 @@ type
     Bevel9: TBevel;
     CheckDiskChangesWithLoadingCheckBox: TCheckBox;
     lblButtons: TLabel;
+    lblCenter: TLabel;
     lblMenus: TLabel;
     lblHints: TLabel;
-    lblCenter: TLabel;
     LanguageComboBox: TComboBox;
     lblDesktopFiles: TLabel;
     lblGlyphs: TLabel;
