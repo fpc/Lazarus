@@ -919,6 +919,8 @@ type
     function GetOwnerDrawn: Boolean;
     procedure setIconSize(const AValue: TSize);
     procedure SetOwnerDrawn(const AValue: Boolean);
+  protected
+    procedure OwnerDataNeeded(Event: QEventH); virtual;
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     procedure signalActivated(index: QModelIndexH); cdecl; virtual;
@@ -988,6 +990,7 @@ type
     procedure setItemCount(const AValue: Integer);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    procedure OwnerDataNeeded(Event: QEventH); override;
   public
     FList: TStrings;
   public
@@ -1107,14 +1110,13 @@ type
     procedure setMaxColSize(ACol: Integer; const AValue: Integer);
     procedure setMinColSize(ACol: Integer; const AValue: Integer);
     procedure setSortEnabled(const AValue: Boolean);
-    procedure OwnerDataNeeded(Event: QEventH);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    procedure OwnerDataNeeded(Event: QEventH); override;
   public
     destructor Destroy; override;
     procedure DestroyNotify(AWidget: TQtWidget); override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
-    function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure ClearItems;
     procedure DeleteItem(const AIndex: integer);
     function currentRow: Integer;
@@ -7706,12 +7708,74 @@ begin
   FViewStyle := -1;
   FCheckable := False;
   FDontPassSelChange := False;
+  FOwnerData := False;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
     Parent := nil;
   Result := QListWidget_create(Parent);
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
+end;
+
+procedure TQtListWidget.OwnerDataNeeded(Event: QEventH);
+var
+  R: TRect;
+  TopItem: Integer;
+  i: Integer;
+  j: Integer;
+  VHeight: Integer; // viewport height
+  RowHeight: Integer;
+  item: QListWidgetItemH;
+  v: QVariantH;
+  WStr: WideString;
+begin
+  exit;
+  {do not set items during design time}
+  if csDesigning in LCLObject.ComponentState then
+    exit;
+
+  if ItemCount < 1 then
+    exit;
+
+  {TODO: add QtDecorationRole (icon) etc ... }
+  QWidget_contentsRect(QAbstractScrollArea_viewport(QTreeWidgetH(Widget)), @R);
+  VHeight := R.Bottom - R.Top;
+
+  item := itemAt(0, 1);
+  if item <> nil then
+  begin
+    TopItem := getRow(Item);
+    RowHeight := QAbstractItemView_sizeHintForRow(QListWidgetH(Widget), TopItem);
+
+    if (TopItem < 0) or (TopItem > TListView(LCLObject).Items.Count - 1) then
+      exit;
+
+    i := 0;
+
+    while (i < (VHeight + RowHeight)) do
+    begin
+      item := itemAt(0, i + 1);
+      if item <> nil then
+      begin
+        TopItem := getRow(Item);
+        RowHeight := QAbstractItemView_sizeHintForRow(QListWidgetH(Widget), TopItem);
+
+        if (TopItem < 0) or (TopItem > TListView(LCLObject).Items.Count - 1) then
+          continue;
+
+        WStr := GetUTF8String(TListView(LCLObject).Items[TopItem].Caption);
+
+        v := QVariant_create(PWideString(@WStr));
+        try
+          QListWidgetItem_setData(item, Ord(QtDisplayRole), v);
+        finally
+          QVariant_destroy(v);
+        end;
+      end;
+
+      inc(i, RowHeight);
+    end;
+  end;
 end;
 
 procedure TQtListWidget.AttachEvents;
@@ -7819,15 +7883,8 @@ begin
         end else
           SendEventToParent;
       end;
-      else
-      begin
-        if (ViewStyle in [Ord(vsIcon), Ord(vsSmallIcon)]) then
-          exit;
-        {do not change selection if mousepressed and mouse moved}
-        Result := (QEvent_type(Event) = QEventMouseMove) and
-          hasFocus and (QApplication_mouseButtons() > 0);
-        QEvent_ignore(Event);
-      end;
+    else
+      Result := inherited itemViewViewportEventFilter(Sender, Event);
     end;
   end;
 end;
@@ -8581,18 +8638,6 @@ begin
       inc(i, RowHeight);
     end;
   end;
-end;
-
-function TQtTreeWidget.itemViewViewportEventFilter(Sender: QObjectH;
-  Event: QEventH): Boolean; cdecl;
-begin
-  if LCLObject = nil then
-    exit;
-  {ownerdata is needed only before qt paint's data}
-  if FOwnerData and (QEvent_type(Event) = QEventPaint) then
-    OwnerDataNeeded(Event);
-
-  Result := inherited itemViewViewportEventFilter(Sender, Event);
 end;
 
 procedure TQtTreeWidget.ClearItems;
@@ -10924,6 +10969,11 @@ begin
   end;
 end;
 
+procedure TQtAbstractItemView.OwnerDataNeeded(Event: QEventH);
+begin
+  // override
+end;
+
 constructor TQtAbstractItemView.Create(const AWinControl: TWinControl;
   const AParams: TCreateParams);
 begin
@@ -11020,12 +11070,19 @@ begin
   if (LCLObject <> nil) then
   begin
     BeginEventProcessing;
+
+    {ownerdata is needed only before qt paint's data}
+    if FOwnerData and (QEvent_type(Event) = QEventPaint) then
+      OwnerDataNeeded(Event);
+
     case QEvent_type(Event) of
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick: SlotMouse(Sender, Event);
       else
       begin
+        if (ViewStyle in [Ord(vsIcon), Ord(vsSmallIcon)]) then
+          exit;
         {do not change selection if mousepressed and mouse moved}
         Result := (QEvent_type(Event) = QEventMouseMove) and
           hasFocus and (QApplication_mouseButtons() > 0);
