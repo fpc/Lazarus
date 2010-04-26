@@ -55,7 +55,7 @@ procedure ShowCalendarPopup(const Position: TPoint; ADate: TDateTime;
 
 implementation
 
-{$if not defined(ver2_2)}
+{$ifndef ver2_2}
 {$R *.lfm}
 {$ENDIF}
 

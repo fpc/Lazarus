@@ -61,7 +61,7 @@ uses
 {$endif}
 
 // Types for FPC 2.2.4 support for WinCE
-{$if defined(ver2_2)}
+{$ifdef ver2_2}
 type
   TFPResourceHandle = THandle;
   TFPResourceHGlobal = THandle;
