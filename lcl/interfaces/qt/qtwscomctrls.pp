@@ -621,7 +621,7 @@ end;
 
 class function TQtWSCustomListView.IsIconView(const AList: TCustomListView): boolean;
 begin
-  Result := TListView(AList).ViewStyle = vsIcon;
+  Result := TListView(AList).ViewStyle <> vsReport;
 end;
 
 class function TQtWSCustomListView.CreateHandle(const AWinControl: TWinControl;
@@ -633,21 +633,28 @@ begin
   if IsIconView(TCustomListView(AWinControl)) then
   begin
     QtListWidget := TQtListWidget.Create(AWinControl, AParams);
-    QtListWidget.ViewStyle := Ord(vsIcon);
-    QtListWidget.setViewMode(QListViewIconMode);
-    // emabarcadero docs says
-    // vsIcon
-    // Each item appears as a full-sized icon with a label below it.
-    // The user can drag the items to any location in the list view window.
-    QtListWidget.setResizeMode(QListViewAdjust);
-    QtListWidget.setMovement(QListViewFree);
-    QtListWidget.Checkable := TCustomListView(AWinControl).Checkboxes;
-    with TCustomListView(AWinControl) do
+    QtListWidget.ViewStyle := Ord(TListView(AWinControl).ViewStyle);
+    if TListView(AWinControl).ViewStyle in [vsIcon, vsSmallIcon] then
     begin
-      QtListWidget.setWrapping(IconOptions.AutoArrange);
-      QtListWidget.setViewFlow(IconArngToQListFlow[IconOptions.Arrangement]);
-      QtListWidget.setWordWrap(IconOptions.WrapText);
-    end;
+      // emabarcadero docs says
+      // vsIcon, vsSmallIcon
+      // Each item appears as a full-sized icon with a label below it.
+      // The user can drag the items to any location in the list view window.
+      QtListWidget.setViewMode(QListViewIconMode);
+      QtListWidget.setResizeMode(QListViewAdjust);
+      QtListWidget.setMovement(QListViewFree);
+
+      with TCustomListView(AWinControl) do
+      begin
+        QtListWidget.setWrapping(IconOptions.AutoArrange);
+        QtListWidget.setViewFlow(IconArngToQListFlow[IconOptions.Arrangement]);
+        QtListWidget.setWordWrap(IconOptions.WrapText);
+      end;
+
+    end else
+      QtListWidget.setViewMode(QListViewListMode);
+
+    QtListWidget.Checkable := TCustomListView(AWinControl).Checkboxes;
     QtListWidget.AttachEvents;
     Result := TLCLIntfHandle(QtListWidget);
   end else
@@ -1608,7 +1615,8 @@ begin
     // iaLeft without arrange, so we must set GridSize in that case
     {$note set workaround for QListView bug via QtList.GridSize}
     QtList := TQtListWidget(ALV.Handle);
-    QtList.setViewFlow(IconArngToQListFlow[AValue]);
+    if QtList.ViewStyle <> Ord(vsList) then
+      QtList.setViewFlow(IconArngToQListFlow[AValue]);
   end;
 end;
 
@@ -1672,7 +1680,8 @@ begin
   case AProp of
     lvpAutoArrange:
       begin
-        if IsIconView(ALV) then
+        if IsIconView(ALV) and
+          (TQtListWidget(ALV.Handle).ViewStyle <> Ord(vsList)) then
           TQtListWidget(ALV.Handle).setWrapping(AIsSet);
       end;
     lvpCheckboxes:
@@ -1747,8 +1756,7 @@ begin
     Exit;
   QtItemView := TQtAbstractItemView(ALV.Handle);
 
-  if ((QtItemView.ViewStyle = Ord(vsIcon)) or (AValue = vsIcon))
-  and (QtItemView.ViewStyle <> Ord(AValue)) then
+  if (QtItemView.ViewStyle <> Ord(AValue)) then
   begin
     RecreateWnd(ALV);
     exit;

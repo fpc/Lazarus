@@ -7821,7 +7821,7 @@ begin
       end;
       else
       begin
-        if (ViewStyle = Ord(vsIcon)) then
+        if (ViewStyle in [Ord(vsIcon), Ord(vsSmallIcon)]) then
           exit;
         {do not change selection if mousepressed and mouse moved}
         Result := (QEvent_type(Event) = QEventMouseMove) and
