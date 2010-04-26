@@ -11175,12 +11175,13 @@ begin
       QEventMouseButtonDblClick: SlotMouse(Sender, Event);
       else
       begin
-        if (ViewStyle in [Ord(vsIcon), Ord(vsSmallIcon)]) then
-          exit;
-        {do not change selection if mousepressed and mouse moved}
-        Result := (QEvent_type(Event) = QEventMouseMove) and
-          hasFocus and (QApplication_mouseButtons() > 0);
-        QEvent_ignore(Event);
+        if not (ViewStyle in [Ord(vsIcon), Ord(vsSmallIcon)]) then
+        begin
+          {do not change selection if mousepressed and mouse moved}
+          Result := (QEvent_type(Event) = QEventMouseMove) and
+            hasFocus and (QApplication_mouseButtons() > 0);
+          QEvent_ignore(Event);
+        end;
       end;
     end;
     EndEventProcessing;
