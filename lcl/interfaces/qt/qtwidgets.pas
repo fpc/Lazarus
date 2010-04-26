@@ -7821,6 +7821,8 @@ begin
       end;
       else
       begin
+        if (ViewStyle = Ord(vsIcon)) then
+          exit;
         {do not change selection if mousepressed and mouse moved}
         Result := (QEvent_type(Event) = QEventMouseMove) and
           hasFocus and (QApplication_mouseButtons() > 0);
