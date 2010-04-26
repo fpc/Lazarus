@@ -60,6 +60,9 @@ begin
     if not HasMultiLine then
       Flags := Flags or DT_SINGLELINE;
 
+    if not ShowAccelChar then
+      Flags := Flags or DT_NOPREFIX;
+
     LabelText := GetLabelText;
     DrawText(DC, PChar(LabelText), Length(LabelText), R, Flags);
     SelectObject(DC, OldFont);
@@ -168,11 +171,6 @@ begin
     FFocusControl.SetFocus;
 end;
 
-function TCustomLabel.GetAlignment : TAlignment;
-begin
-  Result := FAlignment;
-end;
-
 function TCustomLabel.GetLabelText: string;
 begin
   Result := Caption;
@@ -184,6 +182,7 @@ begin
   begin
     FShowAccelChar := Value;
     Invalidate;
+    UpdateSize;
   end;
 end;
 
@@ -205,11 +204,6 @@ begin
     InvalidatePreferredSize;
     AdjustSize;
   end;
-end;
-
-function TCustomLabel.GetShowAccelChar : Boolean;
-begin
-  Result := FShowAccelChar;
 end;
 
 function TCustomLabel.CanTab: boolean;

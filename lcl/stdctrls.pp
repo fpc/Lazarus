@@ -1398,8 +1398,6 @@ type
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
-    function  GetShowAccelChar: Boolean;
-    function  GetAlignment: TAlignment;
     function  GetLabelText: string; virtual;
     function  GetTransparent: boolean;
     procedure SetColor(NewColor: TColor); override;
@@ -1411,10 +1409,10 @@ type
     procedure Loaded; override;
     procedure UpdateSize;
 
-    property Alignment: TAlignment read GetAlignment write SetAlignment default taLeftJustify;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;
-    property ShowAccelChar: Boolean read GetShowAccelChar write SetShowAccelChar default true;
+    property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default true;
     property Transparent: boolean read GetTransparent write SetTransparent default true;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default false;
     property OptimalFill: Boolean read FOptimalFill write SetOptimalFill default false;
