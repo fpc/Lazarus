@@ -154,7 +154,7 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
     ARect, TextRect: Windows.Rect;
     Details: TThemedElementDetails;
     OldColor: COLORREF;
-    OldBackColor: COLORREF;
+    OldBkMode: Integer;
   {$ifdef WindowsUnicodeSupport}
     AnsiBuffer: string;
     WideBuffer: widestring;
@@ -185,7 +185,7 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
 
     // draw text
     TextRect.Left := TextRect.Left + 2;
-    OldBackColor := Windows.SetBkColor(Data^._HDC, lgBrush.lbColor);
+    OldBkMode := Windows.SetBkMode(Data^._HDC, TRANSPARENT);
     if not Enabled then
       OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_GRAYTEXT))
     else
@@ -210,14 +210,14 @@ class procedure TWin32WSCustomCheckListBox.DefaultWndHandler(
     Windows.DrawText(Data^._HDC, PChar(CheckListBox.Items[Data^.ItemID]), -1,
       TextRect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
   {$endif}
+    // restore old colors
+    Windows.SetTextColor(Data^._HDC, OldColor);
+    Windows.SetBkMode(Data^._HDC, OldBkMode);
     if Enabled and ((Data^.itemState and ODS_FOCUS) > 0) and CheckListBox.Focused then
     begin
       TextRect.Left := TextRect.Left - 2;
-      DrawFocusRect(Data^._HDC, TextRect);
+      Windows.DrawFocusRect(Data^._HDC, TextRect);
     end;
-    // restore old colors
-    Windows.SetTextColor(Data^._HDC, OldColor);
-    Windows.SetBkColor(Data^._HDC, OldBackColor);
   end;
 
 begin
