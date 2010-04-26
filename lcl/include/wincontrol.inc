@@ -6843,8 +6843,8 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWinControl.WMSize
-  Params:   Message: TLMSize
+  Method: TWinControl.WMWindowPosChanged
+  Params:   Message: TLMWindowPosChanged
   Returns:  nothing
 
   Event handler for size/move messages. This is called, whenever left, top,
@@ -6871,47 +6871,47 @@ begin
     ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.WindowPos^.flags and SWP_SourceIsInterface)>0,' ClientRectInvalid=',ClientRectNeedsInterfaceUpdate]);
   {$ENDIF}
 
-  if ((Message.WindowPos^.flags and SWP_SourceIsInterface) > 0) then
-  begin
-    // interface widget has moved/resized
-    // -> update realized bounds
-    {$IFDEF VerboseAllAutoSize}
-    DebugLn(['TWinControl.WMWindowPosChanged FROM INTF ',dbgsname(Self),' Message=',NewLeft,',',NewTop,',',NewWidth,'x',NewHeight,
-      ' BoundsRealized=',dbgs(FBoundsRealized),
-      ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
-    {$ENDIF}
-    //DebugLn('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
-    NewBoundsRealized := Bounds(NewLeft, NewTop, NewWidth, NewHeight);
-    if CompareRect(@NewBoundsRealized,@FBoundsRealized)
-    and (not (wcfClientRectNeedsUpdate in FWinControlFlags)) then
-      exit;
+  if ((Message.WindowPos^.flags and SWP_SourceIsInterface) = 0) then
+    inherited WMWindowPosChanged(Message);
 
-    {$IFDEF VerboseAllAutoSize}
-    DebugLn(['TWinControl.WMWindowPosChanged CHANGED BY INTF ',dbgsname(Self),' Message=',NewLeft,',',NewTop,',',NewWidth,'x',NewHeight,
-      ' BoundsRealized=',dbgs(FBoundsRealized),
-      ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
-    {$ENDIF}
-    FBoundsRealized := NewBoundsRealized;
-    {$IFNDEF OldAutoSize}
-    //DebugLn(['TWinControl.WMSize ',DbgSName(Self),' phases=',dbgs(AutoSizePhases)]);
-    if ([caspCreatingHandles,caspComputingBounds]*AutoSizePhases<>[])
-    or (not (wcfBoundsRealized in FWinControlFlags))
-    then begin
-      // while the LCL is creating handles the widgetset may send default bounds
-      // we have not yet told the widgetset the final bounds
-      // => the InvalidatePreferredSize and the InvalidateClientRectCache
-      //    (invoked by the widgetset) may trigger a further loop in the auto
-      //    size algorithm to take care of the new bounds
-      // => do not call SetBounds, as this will set the Bounds to the widgetset
-      //    default values.
-      //DebugLn(['TWinControl.WMSize from intf ignored, because phases=',dbgs(AutoSizePhases),' boundsrealized=',wcfBoundsRealized in FWinControlFlags]);
-      exit;
-    end;
+  // interface widget has moved/resized
+  // -> update realized bounds
+  {$IFDEF VerboseAllAutoSize}
+  DebugLn(['TWinControl.WMWindowPosChanged FROM INTF ',dbgsname(Self),' Message=',NewLeft,',',NewTop,',',NewWidth,'x',NewHeight,
+    ' BoundsRealized=',dbgs(FBoundsRealized),
+    ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
+  {$ENDIF}
+  //DebugLn('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
+  NewBoundsRealized := Bounds(NewLeft, NewTop, NewWidth, NewHeight);
+  if CompareRect(@NewBoundsRealized,@FBoundsRealized)
+  and (not (wcfClientRectNeedsUpdate in FWinControlFlags)) then
+    exit;
 
-    if Parent<>nil then
-      InvalidatePreferredSize;
-    {$ENDIF}
+  {$IFDEF VerboseAllAutoSize}
+  DebugLn(['TWinControl.WMWindowPosChanged CHANGED BY INTF ',dbgsname(Self),' Message=',NewLeft,',',NewTop,',',NewWidth,'x',NewHeight,
+    ' BoundsRealized=',dbgs(FBoundsRealized),
+    ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
+  {$ENDIF}
+  FBoundsRealized := NewBoundsRealized;
+  {$IFNDEF OldAutoSize}
+  //DebugLn(['TWinControl.WMSize ',DbgSName(Self),' phases=',dbgs(AutoSizePhases)]);
+  if ([caspCreatingHandles,caspComputingBounds]*AutoSizePhases<>[])
+  or (not (wcfBoundsRealized in FWinControlFlags))
+  then begin
+    // while the LCL is creating handles the widgetset may send default bounds
+    // we have not yet told the widgetset the final bounds
+    // => the InvalidatePreferredSize and the InvalidateClientRectCache
+    //    (invoked by the widgetset) may trigger a further loop in the auto
+    //    size algorithm to take care of the new bounds
+    // => do not call SetBounds, as this will set the Bounds to the widgetset
+    //    default values.
+    //DebugLn(['TWinControl.WMSize from intf ignored, because phases=',dbgs(AutoSizePhases),' boundsrealized=',wcfBoundsRealized in FWinControlFlags]);
+    exit;
   end;
+
+  if Parent<>nil then
+    InvalidatePreferredSize;
+  {$ENDIF}
 
   {$IFNDEF OldAutoSize}
   if Parent<>nil then

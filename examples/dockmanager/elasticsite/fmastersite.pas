@@ -78,7 +78,9 @@ begin
   //f.Visible := True; //???
   if f.HostDockSite <> nil then
     f := f.HostDockSite;
+  DebugLn(['TMasterSite.FormCreate AAA1']);
   f.Top := 300;
+  DebugLn(['TMasterSite.FormCreate AAA2']);
   f.Show;
   DebugLn('Clients: %d', [f.ControlCount]);
 {$IFDEF TestUnwrapped}

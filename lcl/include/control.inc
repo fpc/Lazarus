@@ -589,8 +589,9 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.GetFloating: Boolean;
 begin
-  // a non-windowed control never can float for itself
-  Result := (HostDockSite <> nil) and (HostDockSite is FloatingDockSiteClass);
+  // a non-windowed control can never float for itself
+  Result := (HostDockSite <> nil) and (HostDockSite is FloatingDockSiteClass)
+      and (HostDockSite.DockClientCount<=1);
 end;
 
 {------------------------------------------------------------------------------

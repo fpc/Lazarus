@@ -1419,7 +1419,9 @@ end;
 
 function TCustomForm.GetFloating: Boolean;
 begin
-  Result := (HostDockSite = nil) and (FloatingDockSiteClass = ClassType);
+  Result := ((HostDockSite = nil) and (Parent=nil)
+            and (FloatingDockSiteClass = ClassType))
+         or (inherited GetFloating);
 end;
 
 function TCustomForm.GetDefaultDockCaption: String;
