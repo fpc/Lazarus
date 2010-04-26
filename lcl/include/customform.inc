@@ -656,7 +656,7 @@ begin
 
   inherited WMSize(Message);
 
-  if (Message.SizeType and not Size_SourceIsInterface) = Size_Restored then
+  if (Message.SizeType and Size_Restored)>0 then
   begin
     FRestoredLeft := Left;
     FRestoredTop := Top;
@@ -664,6 +664,23 @@ begin
     FRestoredHeight := Height;
     //DebugLn('[TCustomForm.WMSize] saving restored bounds ',DbgSName(Self),' ',dbgs(FRestoredWidth),'x',dbgs(FRestoredHeight));
   end;
+end;
+
+procedure TCustomForm.WMWindowPosChanged(var Message: TLMWindowPosChanged);
+begin
+  if (Parent=nil) and (Message.WindowPos<>nil)
+  and ((Message.WindowPos^.flags and SWP_SourceIsInterface)>0)
+  then begin
+    // this is a top level form (constraints depend on window manager)
+    // and the widgetset set a size
+    if (Message.WindowPos^.cx<>Width) or (Message.WindowPos^.cy<>Height) then
+    begin
+      // the window manager sets another size => disable autosize to prevent endless loop
+      Include(FFormState,fsDisableAutoSize);
+    end;
+  end;
+
+  inherited WMWindowPosChanged(Message);
 end;
 
 procedure TCustomForm.CMBiDiModeChanged(var Message: TLMessage);
@@ -680,9 +697,11 @@ begin
   lMessage.Result := 0;
   DisableAlign;
   try
+    {$IFDEF OldAutoSize}
     if Parent<>nil then
       Parent.ReAlign
     else
+    {$ENDIF}
       AdjustSize;
     for i := 0 to ComponentCount - 1 do
     begin

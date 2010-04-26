@@ -6617,10 +6617,10 @@ var
   GtkLeft, GtkTop, GtkWidth, GtkHeight: integer;
   TopLeftChanged, WidthHeightChanged, IsTopLevelWidget: boolean;
   MessageDelivered: boolean;
-  {$IFDEF OldAutoSize}
+  { $IFDEF OldAutoSize}
   SizeMsg: TLMSize;
   MoveMsg: TLMMove;
-  {$ENDIF}
+  { $ENDIF}
   PosMsg : TLMWindowPosChanged;
   MainWidget: PGtkWidget;
   FixedWidget: PGtkWidget;
@@ -6730,10 +6730,9 @@ begin
         y := GtkTop;
         cx := GtkWidth;
         cy := GtkHeight;
-        {$IFDEF OldAutoSize}
-        flags := 0;
-        {$ELSE}
-        flags := SWP_SourceIsInterface;
+        flags:=0;
+        {$IFNDEF OldAutoSize}
+       // flags := SWP_SourceIsInterface;
         {$ENDIF}
       end;
       MessageDelivered := DeliverMessage(LCLControl, PosMsg) = 0;
@@ -6746,12 +6745,12 @@ begin
     UpdateLCLSize;
   end;
 
-  {$IFDEF OldAutoSize}
+  { $IFDEF OldAutoSize}
   // then send a LM_SIZE message
   if WidthHeightChanged then begin
-    {$IFDEF VerboseSizeMsg}
+    { $IFDEF VerboseSizeMsg}
     DebugLn('Send LM_SIZE To LCL ',LCLControl.Name,':',LCLControl.ClassName);
-    {$ENDIF}
+    { $ENDIF}
     with SizeMsg do
     begin
       Result := 0;
@@ -6786,9 +6785,9 @@ begin
 
   // then send a LM_MOVE message
   if TopLeftChanged then begin
-    {$IFDEF VerboseSizeMsg}
+    { $IFDEF VerboseSizeMsg}
     DebugLn('Send LM_MOVE To LCL ',LCLControl.Name,':',LCLControl.ClassName);
-    {$ENDIF}
+    { $ENDIF}
     with MoveMsg do
     begin
       Result := 0;
@@ -6800,7 +6799,7 @@ begin
     MessageDelivered := (DeliverMessage(LCLControl,  MoveMsg) = 0);
     if not MessageDelivered then exit;
   end;
-  {$ENDIF}
+  { $ENDIF}
 
   {$ifndef gtk1}
   if GtkWidgetIsA(aWidget, GTKAPIWidget_Type) and

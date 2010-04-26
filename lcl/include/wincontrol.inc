@@ -6871,7 +6871,8 @@ begin
     ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.WindowPos^.flags and SWP_SourceIsInterface)>0,' ClientRectInvalid=',ClientRectNeedsInterfaceUpdate]);
   {$ENDIF}
 
-  if ((Message.WindowPos^.flags and SWP_SourceIsInterface) = 0) then begin
+  if (Message.WindowPos=nil)
+  or ((Message.WindowPos^.flags and SWP_SourceIsInterface) = 0) then begin
     inherited WMWindowPosChanged(Message);
     exit;
   end;
@@ -6889,11 +6890,11 @@ begin
   and (not (wcfClientRectNeedsUpdate in FWinControlFlags)) then
     exit;
 
-  {$IFDEF VerboseAllAutoSize}
+  { $IFDEF VerboseAllAutoSize}
   DebugLn(['TWinControl.WMWindowPosChanged CHANGED BY INTF ',dbgsname(Self),' Message=',NewLeft,',',NewTop,',',NewWidth,'x',NewHeight,
     ' BoundsRealized=',dbgs(FBoundsRealized),
     ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
-  {$ENDIF}
+  { $ENDIF}
   FBoundsRealized := NewBoundsRealized;
   {$IFNDEF OldAutoSize}
   //DebugLn(['TWinControl.WMSize ',DbgSName(Self),' phases=',dbgs(AutoSizePhases)]);
@@ -8173,13 +8174,13 @@ begin
     ' -> NewBounds=',dbgs(NewBounds),
     ' ClientRect=',dbgs(ClientRect));
   {$ENDIF}
-  {$IFDEF VerboseBug16184}
+  { $IFDEF VerboseBug16184}
   if (Parent=nil) and (Visible) then begin
     DebugLn('[TWinControl.DoSendBoundsToInterface] A ',DbgSName(Self),
     ' OldRelBounds=',dbgs(FBoundsRealized),
     ' -> NewBounds=',dbgs(NewBounds));
   end;
-  {$ENDIF}
+  { $ENDIF}
   FBoundsRealized:=NewBounds;
   Include(FWinControlFlags,wcfBoundsRealized); // Note: set before calling widgetset, because used in WMSize
   //if Parent=nil then DebugLn(['TWinControl.DoSendBoundsToInterface ',DbgSName(Self),' ',dbgs(BoundsRect)]);
