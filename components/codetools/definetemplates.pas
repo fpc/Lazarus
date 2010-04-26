@@ -576,6 +576,10 @@ function CreateDefinesInDirectories(const SourcePaths, FlagName: string
 
 function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string;
                      const OnProgress: TDefinePoolProgress): TStringList;
+function CompressFileList(Files: TStringList): TStringList;
+function UncompressFileList(Files: TStringList): TStringList;
+function RunTool(const Filename, Params: string;
+                 WorkingDirectory: string = ''): TStringList;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
@@ -612,7 +616,7 @@ var
     Filename: String;
   begin
     //DebugLn(['Search CurDir=',CurDir]);
-    if FindFirstUTF8(CurDir+FileMask,faAnyFile,FileInfo)=0 then begin
+    if FindFirstUTF8(Directory+CurDir+FileMask,faAnyFile,FileInfo)=0 then begin
       repeat
         inc(FileCount);
         if (FileCount mod 100=0) and Assigned(OnProgress) then begin
@@ -653,8 +657,112 @@ begin
   Result:=TStringList.Create;
   FileCount:=0;
   Abort:=false;
-  Search(CleanAndExpandDirectory(Directory));
+  Directory:=CleanAndExpandDirectory(Directory);
+  Search('');
   if Abort then FreeAndNil(Result);
+end;
+
+function CompressFileList(Files: TStringList): TStringList;
+var
+  i: Integer;
+  Filename: string;
+  LastFilename: String;
+  p: Integer;
+begin
+  Result:=TStringList.Create;
+  LastFilename:='';
+  for i:=0 to Files.Count-1 do begin
+    Filename:=TrimFilename(Files[i]);
+    p:=1;
+    while (p<=length(Filename)) and (p<=length(LastFilename))
+    and (Filename[p]=LastFilename[p]) do
+      inc(p);
+    Result.Add(IntToStr(p-1)+':'+copy(Filename,p,length(Filename)));
+    LastFilename:=Filename;
+  end;
+end;
+
+function UncompressFileList(Files: TStringList): TStringList;
+var
+  LastFilename: String;
+  i: Integer;
+  Filename: string;
+  p: Integer;
+  Same: Integer;
+begin
+  Result:=TStringList.Create;
+  LastFilename:='';
+  try
+    for i:=0 to Files.Count-1 do begin
+      Filename:=Files[i];
+      p:=1;
+      Same:=0;
+      while (p<=length(Filename)) and (Filename[p] in ['0'..'9']) do begin
+        Same:=Same*10+ord(Filename[p])-ord('0');
+        inc(p);
+      end;
+      inc(p);
+      Filename:=copy(LastFilename,1,Same)+copy(Filename,p,length(Filename));
+      Result.Add(Filename);
+      LastFilename:=Filename;
+    end;
+  except
+  end;
+end;
+
+function RunTool(const Filename, Params: string;
+  WorkingDirectory: string): TStringList;
+var
+  buf: string;
+  TheProcess: TProcess;
+  OutputLine: String;
+  OutLen: Integer;
+  LineStart, i: Integer;
+  CmdLine: String;
+begin
+  Result:=TStringList.Create;
+  try
+    TheProcess := TProcess.Create(nil);
+    try
+      CmdLine:=UTF8ToSys(Filename);
+      //if System.Pos(' ',CmdLine)>0 then
+        CmdLine:='"'+CmdLine+'"';
+      if Params<>'' then
+        CmdLine:=CmdLine+' '+Params;
+      TheProcess.CommandLine := CmdLine;
+      TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
+      TheProcess.ShowWindow := swoHide;
+      TheProcess.Execute;
+      OutputLine:='';
+      SetLength(buf,4096);
+      repeat
+        if (TheProcess.Output<>nil) then begin
+          OutLen:=TheProcess.Output.Read(Buf[1],length(Buf));
+        end else
+          OutLen:=0;
+        LineStart:=1;
+        i:=1;
+        while i<=OutLen do begin
+          if Buf[i] in [#10,#13] then begin
+            OutputLine:=OutputLine+copy(Buf,LineStart,i-LineStart);
+            Result.Add(OutputLine);
+            OutputLine:='';
+            if (i<OutLen) and (Buf[i+1] in [#10,#13]) and (Buf[i]<>Buf[i+1])
+            then
+              inc(i);
+            LineStart:=i+1;
+          end;
+          inc(i);
+        end;
+        OutputLine:=copy(Buf,LineStart,OutLen-LineStart+1);
+      until OutLen=0;
+      TheProcess.WaitOnExit;
+    finally
+      TheProcess.Free;
+    end;
+  except
+    FreeAndNil(Result);
+  end;
 end;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
