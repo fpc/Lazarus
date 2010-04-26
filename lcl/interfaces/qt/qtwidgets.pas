@@ -938,7 +938,9 @@ type
   public
     procedure clearSelection;
     function getModel: QAbstractItemModelH;
+    function getRowHeight(ARowIndex: integer): integer;
     function getSelectionMode: QAbstractItemViewSelectionMode;
+    function getVisibleRowCount: integer; virtual;
 
     procedure modelIndex(retval: QModelIndexH; row, column: Integer; parent: QModelIndexH = nil);
     function visualRect(Index: QModelIndexH): TRect;
@@ -1021,6 +1023,7 @@ type
     function getItemVisible(AItem: QListWidgetItemH): Boolean;
     function getRow(AItem: QListWidgetItemH): integer;
     function getSelCount: Integer;
+    function getVisibleRowCount: integer; override;
     function getVisualItemRect(AItem: QListWidgetItemH): TRect;
     function selectedItems: TPtrIntArray;
     procedure setCurrentRow(row: Integer);
@@ -1127,15 +1130,16 @@ type
     procedure setCurrentRow(row: Integer);
     function currentItem: QTreeWidgetItemH;
     procedure setCurrentItem(AItem: QTreeWidgetItemH);
+    function getRow(AItem: QTreeWidgetItemH): integer;
     function headerItem: QTreeWidgetItemH;
     function itemAt(APoint: TPoint): QTreeWidgetItemH; overload;
     function itemAt(x: Integer; y: Integer): QTreeWidgetItemH; overload;
-    function indexOfTopLevelItem(AItem: QTreeWidgetItemH): Integer;
     procedure insertTopLevelItem(AIndex: Integer; AItem: QTreeWidgetItemH);
     function takeTopLevelItem(AIndex: Integer): QTreeWidgetItemH;
     function topLevelItem(AIndex: Integer): QTreeWidgetItemH;
     function visualItemRect(AItem: QTreeWidgetItemH): TRect;
     function getItemVisible(AItem: QTreeWidgetItemH): Boolean;
+    function getVisibleRowCount: integer; override;
     procedure setItemVisible(AItem: QTreeWidgetItemH; Const AVisible: Boolean);
     procedure setItemText(AItem: QTreeWidgetItemH; const AColumn: Integer;
       const AText: WideString; const AAlignment: QtAlignment);
@@ -7753,7 +7757,7 @@ begin
   if item <> nil then
   begin
     TopItem := getRow(Item);
-    RowHeight := QAbstractItemView_sizeHintForRow(QListWidgetH(Widget), TopItem);
+    RowHeight := getRowHeight(TopItem);
 
     if (TopItem < 0) or (TopItem > TListView(LCLObject).Items.Count - 1) then
       exit;
@@ -7766,7 +7770,7 @@ begin
       if (item <> nil) then
       begin
         TopItem := getRow(Item);
-        RowHeight := QAbstractItemView_sizeHintForRow(QListWidgetH(Widget), TopItem);
+        RowHeight := getRowHeight(TopItem);
 
         if (TopItem < 0) or (TopItem > TListView(LCLObject).Items.Count - 1) then
           break;
@@ -8105,6 +8109,32 @@ end;
 function TQtListWidget.getSelCount: Integer;
 begin
   Result := length(selectedItems);
+end;
+
+function TQtListWidget.getVisibleRowCount: integer;
+var
+  R: TRect;
+  i: integer;
+  item: QListWidgetItemH;
+  RowIndex: integer;
+  RowHeight: integer;
+begin
+  Result := 0;
+  QWidget_contentsRect(viewportWidget, @R);
+  i := 0;
+  repeat
+    item := itemAt(0, i);
+    if item <> nil then
+    begin
+      RowIndex := getRow(Item);
+      RowHeight := getRowHeight(RowIndex);
+      inc(Result);
+      if RowHeight <= 0 then
+        RowHeight := 1;
+      inc(i, RowHeight);
+    end else
+      inc(i, 1);
+  until i >= R.Bottom;
 end;
 
 function TQtListWidget.getVisualItemRect(AItem: QListWidgetItemH): TRect;
@@ -8606,8 +8636,8 @@ begin
   if item <> nil then
   begin
 
-    TopItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), item);
-    RowHeight := QAbstractItemView_sizeHintForRow(QTreeWidgetH(Widget), TopItem);
+    TopItem := getRow(item);
+    RowHeight := getRowHeight(TopItem);
 
     if (TopItem < 0) or (TopItem > TListView(LCLObject).Items.Count - 1) then
       exit;
@@ -8620,8 +8650,8 @@ begin
       if item <> nil then
       begin
 
-        TopItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), item);
-        RowHeight := QAbstractItemView_sizeHintForRow(QTreeWidgetH(Widget), TopItem);
+        TopItem := getRow(item);
+        RowHeight := getRowHeight(TopItem);
 
         if (TopItem < 0) or (TopItem > TListView(LCLObject).Items.Count - 1) then
           continue;
@@ -8794,7 +8824,7 @@ var
   TWI: QTreeWidgetItemH;
 begin
   TWI := QTreeWidget_currentItem(QTreeWidgetH(Widget));
-  Result := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), TWI);
+  Result := getRow(TWI);
 end;
 
 {------------------------------------------------------------------------------
@@ -8820,6 +8850,11 @@ begin
   QTreeWidget_setCurrentItem(QTreeWidgetH(Widget), AItem);
 end;
 
+function TQtTreeWidget.getRow(AItem: QTreeWidgetItemH): integer;
+begin
+  Result := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), AItem);
+end;
+
 function TQtTreeWidget.headerItem: QTreeWidgetItemH;
 begin
   Result := QTreeWidget_headerItem(QTreeWidgetH(Widget));
@@ -8833,11 +8868,6 @@ end;
 function TQtTreeWidget.itemAt(x: Integer; y: Integer): QTreeWidgetItemH;
 begin
   Result := QTreeWidget_itemAt(QTreeWidgetH(Widget), x, y);
-end;
-
-function TQtTreeWidget.indexOfTopLevelItem(AItem: QTreeWidgetItemH): Integer;
-begin
-  Result := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), AItem);
 end;
 
 procedure TQtTreeWidget.insertTopLevelItem(AIndex: Integer;
@@ -8867,6 +8897,32 @@ end;
 function TQtTreeWidget.getItemVisible(AItem: QTreeWidgetItemH): Boolean;
 begin
   Result := not QTreeWidget_isItemHidden(QTreeWidgetH(Widget), AItem);
+end;
+
+function TQtTreeWidget.getVisibleRowCount: integer;
+var
+  R: TRect;
+  i: integer;
+  item: QTreeWidgetItemH;
+  RowIndex: integer;
+  RowHeight: integer;
+begin
+  Result := 0;
+  QWidget_contentsRect(viewportWidget, @R);
+  i := 0;
+  repeat
+    item := itemAt(0, i);
+    if item <> nil then
+    begin
+      RowIndex := getRow(Item);
+      RowHeight := getRowHeight(RowIndex);
+      if RowHeight <= 0 then
+        RowHeight := 1;
+      inc(Result);
+      inc(i, RowHeight);
+    end else
+      inc(i, 1);
+  until i >= R.Bottom;
 end;
 
 procedure TQtTreeWidget.setItemVisible(AItem: QTreeWidgetItemH;
@@ -8917,7 +8973,7 @@ begin
   NMLV.hdr.hwndfrom := LCLObject.Handle;
   NMLV.hdr.code := LVN_ITEMCHANGED;
 
-  AIndex := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), AItem);
+  AIndex := getRow(AItem);
 
   if AIndex = -1 then
     exit;
@@ -9015,7 +9071,7 @@ begin
   NMLV.hdr.hwndfrom := LCLObject.Handle;
   NMLV.hdr.code := NM_CLICK;
 
-  NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
+  NMLV.iItem := getRow(Item);
 
   NMLV.iSubItem := Column;
   NMLV.uNewState := UINT(NM_CLICK);
@@ -9069,7 +9125,7 @@ begin
   NMLV.hdr.hwndfrom := LCLObject.Handle;
   NMLV.hdr.code := NM_DBLCLK;
 
-  NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
+  NMLV.iItem := getRow(Item);
 
   NMLV.iSubItem := Column;
   NMLV.uNewState := UINT(NM_DBLCLK);
@@ -9099,7 +9155,7 @@ begin
   NMLV.hdr.hwndfrom := LCLObject.Handle;
   NMLV.hdr.code := LVN_ITEMCHANGED;
 
-  NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
+  NMLV.iItem := getRow(Item);
 
   NMLV.iSubItem := Column;
   NMLV.uNewState := LVIS_FOCUSED;
@@ -9181,7 +9237,7 @@ begin
   NMLV.hdr.hwndfrom := LCLObject.Handle;
   NMLV.hdr.code := LVN_ITEMCHANGING;
 
-  AIndex := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Current);
+  AIndex := getRow(Current);
 
   AParent := nil;
   if Current <> nil then
@@ -9227,7 +9283,7 @@ begin
       Msg.Msg := CN_NOTIFY;
       NMLV.hdr.hwndfrom := LCLObject.Handle;
       NMLV.hdr.code := LVN_ITEMCHANGED;
-      NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Previous);
+      NMLV.iItem := getRow(Previous);
       AParent := QTreeWidgetItem_parent(Previous);
       if AParent <> nil then
         ASubIndex := QTreeWidgetItem_indexOfChild(AParent, Previous)
@@ -11147,9 +11203,20 @@ begin
   Result := QAbstractItemView_model(QAbstractItemViewH(Widget));
 end;
 
+function TQtAbstractItemView.getRowHeight(ARowIndex: integer): integer;
+begin
+  Result := QAbstractItemView_sizeHintForRow(QAbstractItemViewH(Widget),
+    ARowIndex);
+end;
+
 function TQtAbstractItemView.getSelectionMode: QAbstractItemViewSelectionMode;
 begin
   Result := QAbstractItemView_SelectionMode(QAbstractItemViewH(Widget));
+end;
+
+function TQtAbstractItemView.getVisibleRowCount: integer;
+begin
+  Result := 0;
 end;
 
 procedure TQtAbstractItemView.modelIndex(retval: QModelIndexH; row, column: Integer; parent: QModelIndexH = nil);

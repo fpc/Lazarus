@@ -113,6 +113,7 @@ type
     class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer); override;
 
     class function GetBoundingRect(const ALV: TCustomListView): TRect; override;
+    class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
 
     class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetIconArrangement(const ALV: TCustomListView; const AValue: TIconArrangement); override;
@@ -1462,7 +1463,7 @@ begin
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
     TWI := QtTreeWidget.currentItem;
-    i := QtTreeWidget.indexOfTopLevelItem(TWI);
+    i := QtTreeWidget.getRow(TWI);
     if QTreeWidgetItem_isSelected(TWI) then
       Result := i
     else
@@ -1493,7 +1494,7 @@ begin
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
     TWI := QtTreeWidget.itemAt(x, y);
-    Result := QtTreeWidget.indexOfTopLevelItem(TWI);
+    Result := QtTreeWidget.getRow(TWI);
   end;
 end;
 
@@ -1586,6 +1587,15 @@ begin
   if not WSCheckHandleAllocated(ALV, 'GetBoundingRect') then
     Exit;
   Result := TQtWidget(ALV.Handle).getFrameGeometry;
+end;
+
+class function TQtWSCustomListView.GetVisibleRowCount(const ALV: TCustomListView
+  ): Integer;
+begin
+  Result := 0;
+  if not WSCheckHandleAllocated(ALV, 'GetVisibleRowCount') then
+    Exit;
+  Result := TQtAbstractItemView(ALV.Handle).getVisibleRowCount;
 end;
 
 class procedure TQtWSCustomListView.SetAllocBy(const ALV: TCustomListView;
