@@ -5,12 +5,17 @@ unit CollectionPropEditForm;
 interface
 
 uses
-  Classes, SysUtils, Forms, ComCtrls, StdCtrls;
+  Classes, SysUtils, Forms, ComCtrls, StdCtrls, ActnList, LCLType;
 
 type
   { TCollectionPropertyEditorForm }
 
   TCollectionPropertyEditorForm = class(TForm)
+    actAdd: TAction;
+    actDel: TAction;
+    actMoveUp: TAction;
+    actMoveDown: TAction;
+    ActionList1: TActionList;
     CollectionListBox: TListBox;
     ToolBar1: TToolBar;
     AddButton: TToolButton;
@@ -18,13 +23,13 @@ type
     ToolButton3: TToolButton;
     MoveUpButton: TToolButton;
     MoveDownButton: TToolButton;
-    procedure AddButtonClick(Sender: TObject);
+    procedure actAddExecute(Sender: TObject);
+    procedure actDelExecute(Sender: TObject);
+    procedure actMoveDownExecute(Sender: TObject);
+    procedure actMoveUpExecute(Sender: TObject);
     procedure CollectionListBoxClick(Sender: TObject);
-    procedure DeleteButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure MoveDownButtonClick(Sender: TObject);
-    procedure MoveUpButtonClick(Sender: TObject);
   private
     FCollection: TCollection;
     FOwnerPersistent: TPersistent;
@@ -57,14 +62,21 @@ uses
 procedure TCollectionPropertyEditorForm.FormCreate(Sender: TObject);
 begin
   ToolBar1.Images := IDEImages.Images_16;
-  AddButton.Caption := oiColEditAdd;
-  DeleteButton.Caption := oiColEditDelete;
-  MoveUpButton.Caption := oiColEditUp;
-  MoveDownButton.Caption := oiColEditDown;
-  AddButton.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
-  DeleteButton.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
-  MoveUpButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
-  MoveDownButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
+  actAdd.Caption := oiColEditAdd;
+  actDel.Caption := oiColEditDelete;
+  actMoveUp.Caption := oiColEditUp;
+  actMoveDown.Caption := oiColEditDown;
+  actAdd.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
+  actDel.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
+  actMoveUp.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
+  actMoveDown.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
+  actMoveUp.ShortCut := scCtrl or VK_UP;
+  actMoveDown.ShortCut := scCtrl or VK_DOWN;
+
+  actAdd.Hint := oiColEditAdd;
+  actDel.Hint := oiColEditDelete;
+  actMoveUp.Hint := oiColEditUp;
+  actMoveDown.Hint := oiColEditDown;
 end;
 
 procedure TCollectionPropertyEditorForm.FormDestroy(Sender: TObject);
@@ -73,41 +85,14 @@ begin
     GlobalDesignHook.RemoveAllHandlersForObject(Self);
 end;
 
-procedure TCollectionPropertyEditorForm.MoveDownButtonClick(Sender: TObject);
-var
-  I: Integer;
+procedure TCollectionPropertyEditorForm.CollectionListBoxClick(Sender: TObject);
 begin
-  if Collection = nil then Exit;
-
-  I := CollectionListBox.ItemIndex;
-  if I >= Collection.Count - 1 then Exit;
-
-  Collection.Items[I].Index := I + 1;
-  CollectionListBox.ItemIndex := I + 1;
-
-  FillCollectionListBox;
-  SelectInObjectInspector(True, False);
-  Modified;
+  UpdateButtons;
+  UpdateCaption;
+  SelectInObjectInspector(False, False);
 end;
 
-procedure TCollectionPropertyEditorForm.MoveUpButtonClick(Sender: TObject);
-var
-  I: Integer;
-begin
-  if Collection = nil then Exit;
-
-  I := CollectionListBox.ItemIndex;
-  if I < 0 then Exit;
-
-  Collection.Items[I].Index := I - 1;
-  CollectionListBox.ItemIndex := I - 1;
-
-  FillCollectionListBox;
-  SelectInObjectInspector(True, False);
-  Modified;
-end;
-
-procedure TCollectionPropertyEditorForm.AddButtonClick(Sender: TObject);
+procedure TCollectionPropertyEditorForm.actAddExecute(Sender: TObject);
 begin
   if Collection = nil then Exit;
   Collection.Add;
@@ -121,14 +106,7 @@ begin
   Modified;
 end;
 
-procedure TCollectionPropertyEditorForm.CollectionListBoxClick(Sender: TObject);
-begin
-  UpdateButtons;
-  UpdateCaption;
-  SelectInObjectInspector(False, False);
-end;
-
-procedure TCollectionPropertyEditorForm.DeleteButtonClick(Sender: TObject);
+procedure TCollectionPropertyEditorForm.actDelExecute(Sender: TObject);
 var
   I : Integer;
   NewItemIndex: Integer;
@@ -180,6 +158,40 @@ begin
   UpdateCaption;
 end;
 
+procedure TCollectionPropertyEditorForm.actMoveDownExecute(Sender: TObject);
+var
+  I: Integer;
+begin
+  if Collection = nil then Exit;
+
+  I := CollectionListBox.ItemIndex;
+  if I >= Collection.Count - 1 then Exit;
+
+  Collection.Items[I].Index := I + 1;
+  CollectionListBox.ItemIndex := I + 1;
+
+  FillCollectionListBox;
+  SelectInObjectInspector(True, False);
+  Modified;
+end;
+
+procedure TCollectionPropertyEditorForm.actMoveUpExecute(Sender: TObject);
+var
+  I: Integer;
+begin
+  if Collection = nil then Exit;
+
+  I := CollectionListBox.ItemIndex;
+  if I < 0 then Exit;
+
+  Collection.Items[I].Index := I - 1;
+  CollectionListBox.ItemIndex := I - 1;
+
+  FillCollectionListBox;
+  SelectInObjectInspector(True, False);
+  Modified;
+end;
+
 procedure TCollectionPropertyEditorForm.UpdateCaption;
 var
   NewCaption: String;
@@ -207,10 +219,10 @@ var
   I: Integer;
 begin
   I := CollectionListBox.ItemIndex;
-  AddButton.Enabled := Collection <> nil;
-  DeleteButton.Enabled := I > -1;
-  MoveUpButton.Enabled := I > 0;
-  MoveDownButton.Enabled := (I >= 0) and (I < Collection.Count - 1);
+  actAdd.Enabled := Collection <> nil;
+  actDel.Enabled := I > -1;
+  actMoveUp.Enabled := I > 0;
+  actMoveDown.Enabled := (I >= 0) and (I < Collection.Count - 1);
 end;
 
 procedure TCollectionPropertyEditorForm.ComponentRenamed(AComponent: TComponent);

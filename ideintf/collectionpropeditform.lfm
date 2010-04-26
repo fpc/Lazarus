@@ -1,11 +1,10 @@
 object CollectionPropertyEditorForm: TCollectionPropertyEditorForm
-  Left = 176
+  Left = 742
   Height = 300
   Top = 232
   Width = 190
   HorzScrollBar.Page = 189
   VertScrollBar.Page = 299
-  ActiveControl = CollectionListBox
   BorderStyle = bsSizeToolWin
   Caption = 'CollectionPropertyEditorForm'
   ClientHeight = 300
@@ -30,33 +29,37 @@ object CollectionPropertyEditorForm: TCollectionPropertyEditorForm
     object AddButton: TToolButton
       Left = 1
       Top = 2
-      Caption = 'Add'
-      OnClick = AddButtonClick
+      Action = actAdd
+      ParentShowHint = False
+      ShowHint = True
     end
     object DeleteButton: TToolButton
       Left = 45
       Top = 2
-      Caption = 'Delete'
-      OnClick = DeleteButtonClick
+      Action = actDel
+      ParentShowHint = False
+      ShowHint = True
     end
     object ToolButton3: TToolButton
       Left = 89
       Top = 2
-      Width = 3
+      Width = 4
       Caption = 'ToolButton3'
       Style = tbsDivider
     end
     object MoveUpButton: TToolButton
-      Left = 92
+      Left = 93
       Top = 2
-      Caption = 'Up'
-      OnClick = MoveUpButtonClick
+      Action = actMoveUp
+      ParentShowHint = False
+      ShowHint = True
     end
     object MoveDownButton: TToolButton
-      Left = 136
+      Left = 137
       Top = 2
-      Caption = 'Down'
-      OnClick = MoveDownButtonClick
+      Action = actMoveDown
+      ParentShowHint = False
+      ShowHint = True
     end
   end
   object CollectionListBox: TListBox
@@ -68,5 +71,27 @@ object CollectionPropertyEditorForm: TCollectionPropertyEditorForm
     ItemHeight = 0
     OnClick = CollectionListBoxClick
     TabOrder = 1
+  end
+  object ActionList1: TActionList
+    left = 61
+    top = 109
+    object actAdd: TAction
+      Caption = 'Add'
+      OnExecute = actAddExecute
+      ShortCut = 45
+    end
+    object actDel: TAction
+      Caption = 'Del'
+      OnExecute = actDelExecute
+      ShortCut = 46
+    end
+    object actMoveUp: TAction
+      Caption = 'Up'
+      OnExecute = actMoveUpExecute
+    end
+    object actMoveDown: TAction
+      Caption = 'Down'
+      OnExecute = actMoveDownExecute
+    end
   end
 end
