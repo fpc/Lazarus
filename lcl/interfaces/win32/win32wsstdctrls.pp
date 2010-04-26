@@ -532,7 +532,6 @@ begin
   // remember we are a groupbox in need of erasebackground hack
   if ThemeServices.ThemesEnabled and not Params.WindowInfo^.needParentPaint then
     Params.WindowInfo^.isGroupBox := true;
-  AWinControl.InvalidateClientRectCache(true);
   Result := Params.Window;
 end;
 
