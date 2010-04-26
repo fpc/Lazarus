@@ -1788,6 +1788,7 @@ type
     procedure WMDestroy(var Message: TLMDestroy); message LM_DESTROY;
     procedure WMMove(var Message: TLMMove); message LM_MOVE;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
+    procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
     procedure CNKeyDown(var Message: TLMKeyDown); message CN_KEYDOWN;
     procedure CNSysKeyDown(var Message: TLMKeyDown); message CN_SYSKEYDOWN;
     procedure CNKeyUp(var Message: TLMKeyUp); message CN_KEYUP;

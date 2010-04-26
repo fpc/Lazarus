@@ -799,19 +799,21 @@ const
   SIF_UPDATEPOLICY = $100;
 
 
+{ WMWindowPosChanged message constants}
   SWP_NOSIZE = 1;
   SWP_NOMOVE = 2;
   SWP_NOZORDER = 4;
   SWP_NOREDRAW = 8;
   SWP_NOACTIVATE = $10;
+  SWP_SourceIsInterface = 128; // this flag can be combined with the above
 
-{ WMSIZE Message Constants}
+{ WMSIZE message constants}
   Size_Restored = 0; // the default
   Size_Minimized = 1;
   Size_Maximized = 2;
   Size_MaxShow = 3;
   Size_MaxHide = 4;
-  Size_SourceIsInterface = 128; // this is a flag. Can be combined with the above
+  Size_SourceIsInterface = 128; // this flag can be combined with the above
 
   SIZENORMAL = Size_Restored;
   SIZEICONIC = Size_Minimized;
@@ -821,7 +823,7 @@ const
 
 { WMMove Message Constants }
   Move_Default = 0;
-  Move_SourceIsInterface = 128; // this is flag. Can be combined with the above
+  Move_SourceIsInterface = 128; // this flag can be combined with the above
 
 //==============================================
 // Window Styles

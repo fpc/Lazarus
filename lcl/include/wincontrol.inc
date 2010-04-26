@@ -3744,8 +3744,6 @@ begin
   inc(IntfClientRect.Bottom,Height-InterfaceHeight);
   Result:=(FClientWidth<>IntfClientRect.Right)
        or (FClientHeight<>IntfClientRect.Bottom);
-  if Result then
-    Include(FWinControlFlags,wcfClientRectNeedsUpdate);
 end;
 
 {-------------------------------------------------------------------------------
@@ -6839,6 +6837,88 @@ begin
   else
     SetBounds(NewLeft, NewTop, Message.Width, Message.Height);
   if ((Message.SizeType and Size_SourceIsInterface) > 0)
+  and ClientRectNeedsInterfaceUpdate then
+    DoAdjustClientRectChange;
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  Method: TWinControl.WMSize
+  Params:   Message: TLMSize
+  Returns:  nothing
+
+  Event handler for size/move messages. This is called, whenever left, top,
+  width, height, clientwidth or clientheight have changed.
+  If the source of the message is the interface, the new size is stored
+  in FBoundsRealized to avoid sending a SetBounds back to the interface.
+ ------------------------------------------------------------------------------}
+procedure TWinControl.WMWindowPosChanged(var Message: TLMWindowPosChanged);
+var
+  NewLeft, NewTop, NewWidth, NewHeight: integer;
+  NewBoundsRealized: TRect;
+begin
+  if Message.WindowPos=nil then exit;
+  NewLeft := Message.WindowPos^.x;
+  NewTop := Message.WindowPos^.y;
+  NewWidth := Message.WindowPos^.cx;
+  NewHeight := Message.WindowPos^.cy;
+
+  {$IF defined(VerboseSizeMsg) or defined(CHECK_POSITION) or defined(VerboseBug16184)}
+  {$IFDEF CHECK_POSITION}
+  if CheckPosition(Self) then
+  {$ENDIF}
+  DebugLn(['TWinControl.WMWindowPosChanged START ',DbgSName(Self),' Message=',NewLeft,',',NewTop,',',NewWidth,'x',NewHeight,
+    ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.WindowPos^.flags and SWP_SourceIsInterface)>0,' ClientRectInvalid=',ClientRectNeedsInterfaceUpdate]);
+  {$ENDIF}
+
+  if ((Message.WindowPos^.flags and SWP_SourceIsInterface) > 0) then
+  begin
+    // interface widget has moved/resized
+    // -> update realized bounds
+    {$IFDEF VerboseAllAutoSize}
+    DebugLn(['TWinControl.WMWindowPosChanged FROM INTF ',dbgsname(Self),' Message=',NewLeft,',',NewTop,',',NewWidth,'x',NewHeight,
+      ' BoundsRealized=',dbgs(FBoundsRealized),
+      ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
+    {$ENDIF}
+    //DebugLn('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
+    NewBoundsRealized := Bounds(NewLeft, NewTop, NewWidth, NewHeight);
+    if CompareRect(@NewBoundsRealized,@FBoundsRealized)
+    and (not (wcfClientRectNeedsUpdate in FWinControlFlags)) then
+      exit;
+
+    { $IFDEF VerboseAllAutoSize}
+    DebugLn(['TWinControl.WMWindowPosChanged CHANGED BY INTF ',dbgsname(Self),' Message=',NewLeft,',',NewTop,',',NewWidth,'x',NewHeight,
+      ' BoundsRealized=',dbgs(FBoundsRealized),
+      ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
+    { $ENDIF}
+    FBoundsRealized := NewBoundsRealized;
+    {$IFNDEF OldAutoSize}
+    //DebugLn(['TWinControl.WMSize ',DbgSName(Self),' phases=',dbgs(AutoSizePhases)]);
+    if ([caspCreatingHandles,caspComputingBounds]*AutoSizePhases<>[])
+    or (not (wcfBoundsRealized in FWinControlFlags))
+    then begin
+      // while the LCL is creating handles the widgetset may send default bounds
+      // we have not yet told the widgetset the final bounds
+      // => the InvalidatePreferredSize and the InvalidateClientRectCache
+      //    (invoked by the widgetset) may trigger a further loop in the auto
+      //    size algorithm to take care of the new bounds
+      // => do not call SetBounds, as this will set the Bounds to the widgetset
+      //    default values.
+      //DebugLn(['TWinControl.WMSize from intf ignored, because phases=',dbgs(AutoSizePhases),' boundsrealized=',wcfBoundsRealized in FWinControlFlags]);
+      exit;
+    end;
+
+    if Parent<>nil then
+      InvalidatePreferredSize;
+    {$ENDIF}
+  end;
+
+  {$IFNDEF OldAutoSize}
+  if Parent<>nil then
+    SetBoundsKeepBase(NewLeft, NewTop, NewWidth, NewHeight)
+  else
+    SetBounds(NewLeft, NewTop, NewWidth, NewHeight);
+  if ((Message.WindowPos^.flags and SWP_SourceIsInterface) > 0)
   and ClientRectNeedsInterfaceUpdate then
     DoAdjustClientRectChange;
   {$ENDIF}
