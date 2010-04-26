@@ -6748,9 +6748,9 @@ begin
   { $IFDEF OldAutoSize}
   // then send a LM_SIZE message
   if WidthHeightChanged then begin
-    { $IFDEF VerboseSizeMsg}
+    {$IFDEF VerboseSizeMsg}
     DebugLn('Send LM_SIZE To LCL ',LCLControl.Name,':',LCLControl.ClassName);
-    { $ENDIF}
+    {$ENDIF}
     with SizeMsg do
     begin
       Result := 0;
@@ -6785,9 +6785,9 @@ begin
 
   // then send a LM_MOVE message
   if TopLeftChanged then begin
-    { $IFDEF VerboseSizeMsg}
+    {$IFDEF VerboseSizeMsg}
     DebugLn('Send LM_MOVE To LCL ',LCLControl.Name,':',LCLControl.ClassName);
-    { $ENDIF}
+    {$ENDIF}
     with MoveMsg do
     begin
       Result := 0;

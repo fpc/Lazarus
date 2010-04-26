@@ -8174,13 +8174,13 @@ begin
     ' -> NewBounds=',dbgs(NewBounds),
     ' ClientRect=',dbgs(ClientRect));
   {$ENDIF}
-  { $IFDEF VerboseBug16184}
+  {$IFDEF VerboseBug16184}
   if (Parent=nil) and (Visible) then begin
     DebugLn('[TWinControl.DoSendBoundsToInterface] A ',DbgSName(Self),
     ' OldRelBounds=',dbgs(FBoundsRealized),
     ' -> NewBounds=',dbgs(NewBounds));
   end;
-  { $ENDIF}
+  {$ENDIF}
   FBoundsRealized:=NewBounds;
   Include(FWinControlFlags,wcfBoundsRealized); // Note: set before calling widgetset, because used in WMSize
   //if Parent=nil then DebugLn(['TWinControl.DoSendBoundsToInterface ',DbgSName(Self),' ',dbgs(BoundsRect)]);
