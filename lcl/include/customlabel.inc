@@ -49,6 +49,13 @@ var
   Flags: cardinal;
   LabelText: String;
 begin
+  LabelText := GetLabelText;
+  if LabelText='' then begin
+    NeededWidth:=1;
+    NeededHeight:=1;
+    exit;
+  end;
+
   DC := GetDC(Parent.Handle);
   try
     R := Rect(0, 0, MaxWidth, 10000);
@@ -63,7 +70,6 @@ begin
     if not ShowAccelChar then
       Flags := Flags or DT_NOPREFIX;
 
-    LabelText := GetLabelText;
     DrawText(DC, PChar(LabelText), Length(LabelText), R, Flags);
     SelectObject(DC, OldFont);
     // add one to be able to display disabled label
