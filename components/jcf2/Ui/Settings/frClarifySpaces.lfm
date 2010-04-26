@@ -20,31 +20,30 @@ inherited fClarifySpaces: TfClarifySpaces
     TabOrder = 0
   end
   object cbSpaceClassHeritage: TCheckBox[1]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = cbFixSpacing
+    AnchorSideLeft.Control = cbMoveSpacesToBeforeColon
+    AnchorSideTop.Control = cbMoveSpacesToBeforeColon
     AnchorSideTop.Side = asrBottom
-    Left = 6
+    Left = 230
     Height = 17
-    Top = 29
+    Top = 291
     Width = 151
-    BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'Space before class &heritage'
     TabOrder = 1
   end
   object gbColon: TGroupBox[2]
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = cbSpaceClassHeritage
+    AnchorSideTop.Control = cbFixSpacing
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = gbTabs
     Left = 6
-    Height = 294
-    Top = 52
+    Height = 317
+    Top = 29
     Width = 218
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Spaces &before colon in'
-    ClientHeight = 276
+    ClientHeight = 299
     ClientWidth = 214
     TabOrder = 2
     object lblSpaceBeforeColonVar: TLabel
