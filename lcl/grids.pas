@@ -3075,7 +3075,7 @@ begin
     if IsSelected then begin
       Canvas.Brush.Color := SelectedColor;
       SetCanvasFont(GetColumnFont(aCol, False));
-      Canvas.Font.Color := clWindow;
+      Canvas.Font.Color := clHighlightText;
       FLastFont:=nil;
     end else begin
       AColor := GetColumnColor(aCol, gdFixed in AState);
