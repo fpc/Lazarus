@@ -60,6 +60,13 @@ uses
   {$define extdecl := stdcall}
 {$endif}
 
+// Types for FPC 2.2.4 support for WinCE
+{$if defined(ver2_2)}
+type
+  TFPResourceHandle = THandle;
+  TFPResourceHGlobal = THandle;
+{$endif}
+
 type
 {$IFDEF USE_UTF8BIDI_LCL}
   TUTF8Char = UTF8BIDI.TUTF8Char;
@@ -75,8 +82,8 @@ type
   PCriticalSection = ^TCriticalSection;
 
   TDockImageOperation = (disShow, disMove, disHide);
-  
-{$ifndef WINDOWS}
+
+  {$ifndef WINDOWS}
   {$IFDEF CPU64}
   // temp solution for 32bit system.Thandle
   THandle = type PtrUInt;

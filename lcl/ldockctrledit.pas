@@ -93,7 +93,9 @@ type
 
 implementation
 
+{$if not defined(ver2_2)}
 {$R *.lfm}
+{$ENDIF}
 
 { TLazDockControlEditorDlg }
 

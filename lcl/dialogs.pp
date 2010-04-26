@@ -538,8 +538,10 @@ procedure Register;
 
 implementation
 
+{$if not defined(ver2_2)}
 {$R forms/finddlgunit.lfm}
 {$R forms/replacedlgunit.lfm}
+{$ENDIF}
 
 uses 
   Math, WSDialogs;

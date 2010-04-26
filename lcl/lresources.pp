@@ -40,7 +40,9 @@ uses
   FPCAdds, TypInfo, DynQueue, LCLType, LCLProc, LCLStrConsts, LazConfigStorage;
 
 {$DEFINE UseLRS}
+{$if not defined(ver2_2)}
 {$DEFINE UseRES}
+{$endif}
 
 const
   LRSComment =  // do not translate this!
