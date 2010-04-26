@@ -1183,6 +1183,7 @@ type
   TListView = class(TCustomListView)
   published
     property Align;
+    property AllocBy;
     property Anchors;
     property BorderSpacing;
     property BorderStyle;
