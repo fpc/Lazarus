@@ -471,6 +471,7 @@ type
 
   TDefinePoolProgress = procedure(Sender: TObject;
     Index, MaxIndex: integer; // MaxIndex=-1 if unknown
+    const Msg: string;
     var Abort: boolean) of object;
 
   TDefinePool = class
@@ -480,7 +481,8 @@ type
     FOnProgress: TDefinePoolProgress;
     function GetItems(Index: integer): TDefineTemplate;
     procedure SetEnglishErrorMsgFilename(const AValue: string);
-    function CheckAbort(ProgressID, MaxIndex: integer): boolean;
+    function CheckAbort(ProgressID, MaxIndex: integer; const Msg: string
+                        ): boolean;
   public
     property Items[Index: integer]: TDefineTemplate read GetItems; default;
     function Count: integer;
@@ -572,8 +574,12 @@ function GetDefaultCompilerFilename: string;
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
                                     ): TDefineTemplate;
 
-function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string
-                     ): TStringList;
+type
+  TGatherFileProgress = procedure(Sender: TObject; PercentDone: Byte;
+                          const Msg: string; var aContinue : Boolean) of object;
+
+function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string;
+                     const OnProgress: TGatherFileProgress): TStringList;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
@@ -594,20 +600,30 @@ type
 
 // some useful functions
 
-function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string): TStringList;
+function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string;
+  const OnProgress: TGatherFileProgress): TStringList;
 {  ExcludeDirMask: check FilenameIsMatching vs the short file name of a directory
    IncludeFileMask: check FilenameIsMatching vs the short file name of a file
 }
+var
+  FileCount: integer;
+  aContinue: boolean;
 
   procedure Search(CurDir: string);
   var
     FileInfo: TSearchRec;
     ShortFilename: String;
     Filename: String;
+    aContinue: Boolean;
   begin
     //DebugLn(['Search CurDir=',CurDir]);
     if FindFirstUTF8(CurDir+FileMask,faAnyFile,FileInfo)=0 then begin
       repeat
+        inc(FileCount);
+        if (FileCount mod 100=0) and Assigned(OnProgress) then begin
+          OnProgress(nil,0,'Scanned files: '+IntToStr(FileCount),aContinue);
+          if not aContinue then break;
+        end;
         ShortFilename:=FileInfo.Name;
         if (ShortFilename='') or (ShortFilename='.') or (ShortFilename='..') then
           continue;
@@ -619,6 +635,7 @@ function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string): TStrin
           or (not FilenameIsMatching(ExcludeDirMask,ShortFilename,true))
           then begin
             Search(Filename+PathDelim);
+            if not aContinue then break;
           end else begin
             //DebugLn(['Search DIR MISMATCH ',Filename]);
           end;
@@ -639,7 +656,10 @@ function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string): TStrin
 
 begin
   Result:=TStringList.Create;
+  FileCount:=0;
+  aContinue:=true;
   Search(CleanAndExpandDirectory(Directory));
+  if not aContinue then FreeAndNil(Result);
 end;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
@@ -2960,11 +2980,12 @@ begin
   FEnglishErrorMsgFilename:=AValue;
 end;
 
-function TDefinePool.CheckAbort(ProgressID, MaxIndex: integer): boolean;
+function TDefinePool.CheckAbort(ProgressID, MaxIndex: integer;
+  const Msg: string): boolean;
 begin
   Result:=false;
   if Assigned(OnProgress) then
-    OnProgress(Self,ProgressID,MaxIndex,Result);
+    OnProgress(Self,ProgressID,MaxIndex,Msg,Result);
 end;
 
 procedure TDefinePool.Add(ADefineTemplate: TDefineTemplate);
@@ -3552,7 +3573,7 @@ var
       end;
 
       inc(ProgressID);
-      if CheckAbort(ProgressID,-1) then exit(false);
+      if CheckAbort(ProgressID,-1,'') then exit(false);
       // read Makefile.fpc to get some hints
       MakeFileFPC:=ADirPath+'Makefile.fpc';
       SubDirs:='';
@@ -3792,7 +3813,7 @@ var
         DebugLn('FindStandardPPUSources Searching ',CurMask,' in ',ADirPath);
         {$ENDIF}
         inc(ProgressID);
-        if CheckAbort(ProgressID,-1) then exit(false);
+        if CheckAbort(ProgressID,-1,'') then exit(false);
         // search all ppu files in this directory
         if FindFirstUTF8(ADirPath+CurMask,faAnyFile,FileInfo)=0 then begin
           repeat
@@ -4182,7 +4203,7 @@ begin
     if not ok then
       FreeAndNil(Result);
     if (ProgressID>0) and Assigned(OnProgress) then
-      OnProgress(Self,ProgressID,ProgressID,Ok);
+      OnProgress(Self,ProgressID,ProgressID,'',Ok);
   end;
 end;
 

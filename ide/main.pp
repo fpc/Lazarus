@@ -551,7 +551,7 @@ type
                                        PropOwner: TObject): String;
     procedure CodeToolBossPrepareTree(Sender: TObject);
     procedure CodeToolBossProgress(Sender: TObject; Index, MaxIndex: integer;
-                                   var Abort: boolean);
+                                   const Msg: string; var Abort: boolean);
     procedure OnCodeToolBossGetIndenterExamples(Sender: TObject;
                 Code: TCodeBuffer; Step: integer; // starting at 0
                 var CodeBuffers: TFPList; // stopping when CodeBuffers=nil
@@ -13576,7 +13576,7 @@ begin
 end;
 
 procedure TMainIDE.CodeToolBossProgress(Sender: TObject; Index,
-  MaxIndex: integer; var Abort: boolean);
+  MaxIndex: integer; const Msg: string; var Abort: boolean);
 begin
   //DebugLn(['TMainIDE.CodeToolBossProgress ',Index,' ',MaxIndex]);
 end;
