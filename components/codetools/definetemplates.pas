@@ -626,7 +626,7 @@ function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string): TStrin
           // file
           if (IncludeFileMask='')
           or FilenameIsMatching(IncludeFileMask,ShortFilename,true) then begin
-            DebugLn(['Search ADD ',Filename]);
+            //DebugLn(['Search ADD ',Filename]);
             GatherFiles.Add(Filename);
           end else begin
             //DebugLn(['Search MISMATCH ',Filename]);
