@@ -6871,8 +6871,10 @@ begin
     ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.WindowPos^.flags and SWP_SourceIsInterface)>0,' ClientRectInvalid=',ClientRectNeedsInterfaceUpdate]);
   {$ENDIF}
 
-  if ((Message.WindowPos^.flags and SWP_SourceIsInterface) = 0) then
+  if ((Message.WindowPos^.flags and SWP_SourceIsInterface) = 0) then begin
     inherited WMWindowPosChanged(Message);
+    exit;
+  end;
 
   // interface widget has moved/resized
   // -> update realized bounds
