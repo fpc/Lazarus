@@ -715,6 +715,7 @@ begin
   Params.WindowInfo^.ParentMsgHandler := @ListViewParentMsgHandler;
   Params.WindowInfo^.needParentPaint := false;
   Result := Params.Window;
+  UpdateExStyle(Result, LVS_EX_SUBITEMIMAGES, LVS_EX_SUBITEMIMAGES);
 end;
 
 class procedure TWin32WSCustomListView.BeginUpdate(const ALV: TCustomListView);
