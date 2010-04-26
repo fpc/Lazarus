@@ -7703,7 +7703,7 @@ function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
 begin
-  FViewStyle := 0;
+  FViewStyle := -1;
   FCheckable := False;
   FDontPassSelChange := False;
   if AParams.WndParent <> 0 then
@@ -8416,7 +8416,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Create');
   {$endif}
-  FViewStyle := 0;
+  FViewStyle := -1;
   FCheckable := False;
   FHideSelection := False;
   FOwnerData := False;
