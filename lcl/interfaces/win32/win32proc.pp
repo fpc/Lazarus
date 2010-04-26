@@ -134,6 +134,9 @@ procedure BlendRect(ADC: HDC; const ARect: TRect; Color: ColorRef);
 function GetLastErrorText(AErrorCode: Cardinal): String;
 function BitmapToRegion(hBmp: HBITMAP; cTransparentColor: COLORREF = 0; cTolerance: COLORREF  = $101010): HRGN;
 
+function WndClassName(Wnd: HWND): String; inline;
+function WndText(Wnd: HWND): String; inline;
+
 { String functions that may be moved to the RTL in the future }
 function WideStrLCopy(dest, source: PWideChar; maxlen: SizeInt): PWideChar;
 procedure UpdateWindowsVersion;
@@ -286,6 +289,7 @@ begin
     // edit control messages start (todo: add more if needed)
     $00B0: Result := 'EM_GETSEL';
     $00B1: Result := 'EM_SETSEL';
+    $00B7: Result := 'EM_SCROLLCARET';
     $00C5: Result := 'EM_LIMITTEXT';
     $00CC: Result := 'EM_SETPASSWORDCHAR';
     $00CF: Result := 'EM_SETREADONLY';
@@ -443,6 +447,7 @@ begin
     $0312: Result := 'WM_HOTKEY';
     $0317: Result := 'WM_PRINT';
     $0318: Result := 'WM_PRINTCLIENT';
+    $031F: Result := 'WM_DWMNCRENDERINGCHANGED';
     $0358: Result := 'WM_HANDHELDFIRST';
     $035F: Result := 'WM_HANDHELDLAST';
     $0380: Result := 'WM_PENWINFIRST';
@@ -1774,6 +1779,22 @@ begin
   { terminate the string }
   Dest[counter] := #0;
   Result := Dest;
+end;
+
+function WndClassName(Wnd: HWND): String; inline;
+var
+  winClassName: array[0..19] of char;
+begin
+  GetClassName(Wnd, @winClassName, 20);
+  Result := winClassName;
+end;
+
+function WndText(Wnd: HWND): String; inline;
+var
+  winText: array[0..255] of char;
+begin
+  GetWindowText(Wnd, @winText, 256);
+  Result := winText;
 end;
 
 

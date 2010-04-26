@@ -51,22 +51,6 @@ begin
   Assert(False, 'Trace:PropEnumProc - Exit');
 end;
 
-function WndClassName(Wnd: HWND): String; inline;
-var
-  winClassName: array[0..19] of char;
-begin
-  GetClassName(Wnd, @winClassName, 20);
-  Result := winClassName;
-end;
-
-function WndText(Wnd: HWND): String; inline;
-var
-  winText: array[0..255] of char;
-begin
-  GetWindowText(Wnd, @winText, 256);
-  Result := winText;
-end;
-
 {------------------------------------------------------------------------------
  Function: CallDefaultWindowProc
  Params: Window - The window that receives a message
@@ -1029,7 +1013,7 @@ var
   
 begin
   Assert(False, 'Trace:WindowProc - Start');
-  
+
   FillChar(LMessage, SizeOf(LMessage), 0);
   PLMsg := @LMessage;
   WinProcess := True;
