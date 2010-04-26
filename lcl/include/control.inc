@@ -2862,8 +2862,8 @@ begin
     begin
       FloatHost.Caption := FloatHost.GetDockCaption(Self);
       ADockSource.DragTarget := FloatHost;
+      FloatHost.Show;
     end;
-    FloatHost.Show;
   end;
 end;
 
