@@ -23,6 +23,8 @@
 type        
   TSubItemUpdate = (siuText, siuImage);
   
+  { TListItemSubItems }
+
   TListItemSubItems = class(TStringList)
   private
     FChangeIndex: Integer;
@@ -39,6 +41,7 @@ type
     function Add(const S: string): Integer; override;
     procedure Clear; override;
     constructor Create(const AOwner: TListItem);
+    destructor Destroy; override;
     procedure Delete(AIndex: Integer); override;
     procedure Insert(AIndex: Integer; const S: string); override;
     property ImageIndex[const AIndex: Integer]: Integer read GetImageIndex write SetImageIndex;
@@ -135,6 +138,15 @@ begin
   FOwner := AOwner;
   FChangeIndex := -1;
   FUpdate := [];
+end;
+
+destructor TListItemSubItems.Destroy;
+var
+  n: Integer;
+begin
+  for n := 0 to Count - 1 do
+    Dispose(PListItemImageObject(pointer(inherited GetObject(n))));
+  inherited Destroy;
 end;
 
 procedure TListItemSubItems.Delete(AIndex: Integer);
