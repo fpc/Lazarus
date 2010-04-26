@@ -605,22 +605,22 @@ function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string): TStrin
     ShortFilename: String;
     Filename: String;
   begin
-    DebugLn(['Search CurDir=',CurDir]);
+    //DebugLn(['Search CurDir=',CurDir]);
     if FindFirstUTF8(CurDir+FileMask,faAnyFile,FileInfo)=0 then begin
       repeat
         ShortFilename:=FileInfo.Name;
         if (ShortFilename='') or (ShortFilename='.') or (ShortFilename='..') then
           continue;
-        debugln(['Search ShortFilename=',ShortFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0]);
+        //debugln(['Search ShortFilename=',ShortFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0]);
         Filename:=CurDir+ShortFilename;
         if (FileInfo.Attr and faDirectory)>0 then begin
           // directory
           if (ExcludeDirMask='')
-          or (FilenameIsMatching(ExcludeDirMask,ShortFilename,true))
+          or (not FilenameIsMatching(ExcludeDirMask,ShortFilename,true))
           then begin
             Search(Filename+PathDelim);
           end else begin
-            DebugLn(['Search DIR MISMATCH ',Filename]);
+            //DebugLn(['Search DIR MISMATCH ',Filename]);
           end;
         end else begin
           // file
@@ -629,7 +629,7 @@ function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string): TStrin
             DebugLn(['Search ADD ',Filename]);
             GatherFiles.Add(Filename);
           end else begin
-            DebugLn(['Search MISMATCH ',Filename]);
+            //DebugLn(['Search MISMATCH ',Filename]);
           end;
         end;
       until FindNextUTF8(FileInfo)<>0;

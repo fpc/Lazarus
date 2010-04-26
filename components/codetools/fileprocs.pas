@@ -2101,7 +2101,7 @@ begin
     DirEndMask:=FindDirectoryEnd(Mask,DirStartMask);
     DirEndFile:=FindDirectoryEnd(Filename,DirStartFile);
     //debugln('  Compare "',copy(Mask,DirStartMask,DirEndMask-DirStartMask),'"',
-    //   ' "',copy(Filename,DirStartFile,DirEndFile-DirStartFile),'"');
+      // ' "',copy(Filename,DirStartFile,DirEndFile-DirStartFile),'"');
     // compare directories
     BracketMaskPos:=0;
     while (DirStartMask<DirEndMask) do begin
@@ -2123,16 +2123,16 @@ begin
             Fits:=true;
           end else begin
             StopChar:=DirStartMask;
-            if (BracketMaskPos>0) then begin
+            if (BracketMaskPos>0) and (Mask[StopChar] in [',','}']) then begin
               while (StopChar<DirEndMask) and (Mask[StopChar]<>'}') do
                 inc(StopChar);
               inc(StopChar);
             end;
             if StopChar>=DirEndMask then
-              Fits:=false
+              Fits:=true
             else begin
               while (DirStartFile<DirEndFile)
-              and (not CharsEqual(Filename[DirStartFile],Mask[DirStartMask]))
+              and (not CharsEqual(Filename[DirStartFile],Mask[StopChar]))
               do
                 inc(DirStartFile);
               Fits:=DirStartFile<DirEndFile;
