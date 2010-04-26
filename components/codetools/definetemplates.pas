@@ -574,12 +574,8 @@ function GetDefaultCompilerFilename: string;
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
                                     ): TDefineTemplate;
 
-type
-  TGatherFileProgress = procedure(Sender: TObject; PercentDone: Byte;
-                          const Msg: string; var aContinue : Boolean) of object;
-
 function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string;
-                     const OnProgress: TGatherFileProgress): TStringList;
+                     const OnProgress: TDefinePoolProgress): TStringList;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
@@ -601,28 +597,27 @@ type
 // some useful functions
 
 function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string;
-  const OnProgress: TGatherFileProgress): TStringList;
+  const OnProgress: TDefinePoolProgress): TStringList;
 {  ExcludeDirMask: check FilenameIsMatching vs the short file name of a directory
    IncludeFileMask: check FilenameIsMatching vs the short file name of a file
 }
 var
   FileCount: integer;
-  aContinue: boolean;
+  Abort: boolean;
 
   procedure Search(CurDir: string);
   var
     FileInfo: TSearchRec;
     ShortFilename: String;
     Filename: String;
-    aContinue: Boolean;
   begin
     //DebugLn(['Search CurDir=',CurDir]);
     if FindFirstUTF8(CurDir+FileMask,faAnyFile,FileInfo)=0 then begin
       repeat
         inc(FileCount);
         if (FileCount mod 100=0) and Assigned(OnProgress) then begin
-          OnProgress(nil,0,'Scanned files: '+IntToStr(FileCount),aContinue);
-          if not aContinue then break;
+          OnProgress(nil,0,-1,'Scanned files: '+IntToStr(FileCount),Abort);
+          if Abort then break;
         end;
         ShortFilename:=FileInfo.Name;
         if (ShortFilename='') or (ShortFilename='.') or (ShortFilename='..') then
@@ -635,7 +630,7 @@ var
           or (not FilenameIsMatching(ExcludeDirMask,ShortFilename,true))
           then begin
             Search(Filename+PathDelim);
-            if not aContinue then break;
+            if Abort then break;
           end else begin
             //DebugLn(['Search DIR MISMATCH ',Filename]);
           end;
@@ -657,9 +652,9 @@ var
 begin
   Result:=TStringList.Create;
   FileCount:=0;
-  aContinue:=true;
+  Abort:=false;
   Search(CleanAndExpandDirectory(Directory));
-  if not aContinue then FreeAndNil(Result);
+  if Abort then FreeAndNil(Result);
 end;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
