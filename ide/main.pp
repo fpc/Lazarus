@@ -12955,7 +12955,7 @@ begin
   TComponentPalette(IDEComponentPalette).DoAfterComponentAdded;
   if EnvironmentOptions.CreateComponentFocusNameProperty
   and (ObjectInspector1<>nil) then begin
-    if ObjectInspector1.ShowFavorites then
+    if (ObjectInspector1.ShowFavorites) and (EnvironmentOptions.SwitchToFavoritesOITab) then
       Grid:=ObjectInspector1.FavouriteGrid
     else
       Grid:=ObjectInspector1.PropertyGrid;

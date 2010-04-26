@@ -4684,6 +4684,10 @@ resourcestring
   lisAskNameOnCreate = 'Ask name on create';
   lisAskForComponentNameAfterPuttingItOnForm = 'Ask for component '
     +'name after putting it on a designer form';
+  lisOFESwitchToObjectInspectorFavoritesTab = 'Switch to Object Inspector '
+    +'Favorites tab';
+  lisOFESwitchToObjectInspectorFavoritesTabAfterAsking = 'Switch to Object '
+    +'Inspector Favorites tab after asking for component name';
   lisEmpty = 'Empty';
   lisNotAValidPascalIdentifier = 'Not a valid pascal identifier';
   lisThereIsAlreadyAComponentWithThisName = 'There is already a component '

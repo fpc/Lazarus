@@ -168,6 +168,7 @@ type
 
     // designer
     FCreateComponentFocusNameProperty: boolean;
+    FSwitchToFavoritesOITab: boolean;
     FDesignerPaintLazy: boolean;
     FShowBorderSpacing: boolean;
     FShowGrid: boolean;
@@ -387,6 +388,8 @@ type
                                         write FDesignerPaintLazy;
     property CreateComponentFocusNameProperty: boolean read FCreateComponentFocusNameProperty
                                         write FCreateComponentFocusNameProperty;
+    property SwitchToFavoritesOITab: boolean read FSwitchToFavoritesOITab
+                                             write FSwitchToFavoritesOITab;
 
     // object inspector
     property ObjectInspectorOptions: TOIOptions read FObjectInspectorOptions
@@ -699,6 +702,7 @@ begin
   FRubberbandSelectsGrandChilds:=true;
   FDesignerPaintLazy:=true;
   FCreateComponentFocusNameProperty:=false;
+  FSwitchToFavoritesOITab:=false;
 
   // object inspector
   FObjectInspectorOptions:=TOIOptions.Create;
@@ -986,6 +990,8 @@ begin
        Path+'FormEditor/DesignerPaint/Lazy/Value',true);
     FCreateComponentFocusNameProperty:=XMLConfig.GetValue(
        Path+'FormEditor/CreateComponentFocusNameProperty/Value',false);
+    FSwitchToFavoritesOITab:=XMLConfig.GetValue(
+       Path+'FormEditor/SwitchToFavoritesOITab/Value',false);
 
     if not OnlyDesktop then begin
       // files
@@ -1269,6 +1275,8 @@ begin
        Path+'FormEditor/DesignerPaint/Lazy/Value',FDesignerPaintLazy,true);
     XMLConfig.SetDeleteValue(
        Path+'FormEditor/CreateComponentFocusNameProperty/Value',FCreateComponentFocusNameProperty,false);
+    XMLConfig.SetDeleteValue(
+       Path+'FormEditor/SwitchToFavoritesOITab/Value',FSwitchToFavoritesOITab,false);
 
     XMLConfig.SetDeleteValue(
        Path+'ShowCompileDialog/Value',FShowCompileDialog,False);

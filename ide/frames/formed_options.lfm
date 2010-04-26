@@ -134,14 +134,14 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 187
-    Top = 214
+    Height = 207
+    Top = 220
     Width = 769
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'FormEditMiscGroupBox'
-    ClientHeight = 169
+    ClientHeight = 189
     ClientWidth = 765
     TabOrder = 1
     object ShowComponentCaptionsCheckBox: TCheckBox
@@ -236,6 +236,7 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       BorderSpacing.Top = 3
       BorderSpacing.Bottom = 3
       Caption = 'CreateCompFocusNameCheckBox'
+      OnChange = CreateCompFocusNameCheckBoxChange
       ParentShowHint = False
       ShowHint = True
       TabOrder = 5
@@ -257,17 +258,32 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
     end
     object CheckPackagesOnFormCreateCheckBox: TCheckBox
       AnchorSideLeft.Control = FormEditMiscGroupBox
-      AnchorSideTop.Control = CreateCompFocusNameCheckBox
+      AnchorSideTop.Control = SwitchToFavoritesOITabCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 6
       Height = 17
-      Top = 146
+      Top = 166
       Width = 210
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
       BorderSpacing.Bottom = 6
       Caption = 'CheckPackagesOnFormCreateCheckBox'
       TabOrder = 7
+    end
+    object SwitchToFavoritesOITabCheckBox: TCheckBox
+      AnchorSideLeft.Control = FormEditMiscGroupBox
+      AnchorSideTop.Control = CreateCompFocusNameCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 12
+      Height = 17
+      Top = 146
+      Width = 183
+      BorderSpacing.Left = 12
+      BorderSpacing.Top = 3
+      Caption = 'SwitchToFavoritesOITabCheckBox'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 8
     end
   end
   object GuideLinesGroupBox: TGroupBox[2]
@@ -279,7 +295,7 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 232
-    Height = 61
+    Height = 67
     Top = 147
     Width = 537
     Anchors = [akTop, akLeft, akRight]
@@ -287,7 +303,7 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'GuideLinesGroupBox'
-    ClientHeight = 43
+    ClientHeight = 49
     ClientWidth = 533
     TabOrder = 2
     object ShowGuideLinesCheckBox: TCheckBox
@@ -296,7 +312,7 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 17
-      Top = 0
+      Top = 6
       Width = 521
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
@@ -313,7 +329,7 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 17
-      Top = 20
+      Top = 26
       Width = 521
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
@@ -332,12 +348,12 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
     AnchorSideBottom.Control = GuideLinesGroupBox
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 208
+    Height = 214
     Top = 0
     Width = 226
     Anchors = [akTop, akLeft, akBottom]
     Caption = 'DesignerColorsGroupBox'
-    ClientHeight = 190
+    ClientHeight = 196
     ClientWidth = 222
     TabOrder = 3
     object ColorsListBox: TColorListBox
@@ -345,7 +361,7 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideTop.Control = DesignerColorsGroupBox
       AnchorSideBottom.Control = ColorBox
       Left = 6
-      Height = 150
+      Height = 156
       Top = 6
       Width = 210
       Style = [cbCustomColors]
@@ -366,7 +382,7 @@ inherited FormEditorOptionsFrame: TFormEditorOptionsFrame
       AnchorSideBottom.Side = asrBottom
       Left = 6
       Height = 22
-      Top = 162
+      Top = 168
       Width = 210
       Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbCustomColor, cbPrettyNames]
       Anchors = [akLeft, akBottom]

@@ -42,6 +42,7 @@ type
   { TFormEditorOptionsFrame }
 
   TFormEditorOptionsFrame = class(TAbstractIDEOptionsEditor)
+    SwitchToFavoritesOITabCheckBox:TCheckBox;
     CheckPackagesOnFormCreateCheckBox: TCheckBox;
     OpenDesignerOnOpenUnitCheckBox: TCheckBox;
     ColorBox: TColorBox;
@@ -69,6 +70,7 @@ type
     procedure ColorsListBoxGetColors(Sender: TCustomColorListBox;
       Items: TStrings);
     procedure ColorsListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure CreateCompFocusNameCheckBoxChange(Sender:TObject);
     procedure FrameResize(Sender: TObject);
   private
     FLoaded: Boolean;
@@ -128,6 +130,11 @@ procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
       Caption:=lisAskNameOnCreate;
       Hint:=lisAskForComponentNameAfterPuttingItOnForm;
     end;
+    with SwitchToFavoritesOITabCheckBox do
+    begin
+      Caption:=lisOFESwitchToObjectInspectorFavoritesTab;
+      Hint:=lisOFESwitchToObjectInspectorFavoritesTabAfterAsking;
+    end;
     RubberbandSelectsGrandChildsCheckBox.Caption:=dlgRubberbandSelectsGrandChildren;
   end;
 begin
@@ -169,6 +176,8 @@ begin
     RubberbandSelectsGrandChildsCheckBox.Checked := RubberbandSelectsGrandChilds;
     DesignerPaintLazyCheckBox.Checked := DesignerPaintLazy;
     CreateCompFocusNameCheckBox.Checked := CreateComponentFocusNameProperty;
+    SwitchToFavoritesOITabCheckBox.Checked := SwitchToFavoritesOITab;
+    SwitchToFavoritesOITabCheckBox.Enabled := CreateCompFocusNameCheckBox.Checked;
   end;
   FLoaded := True;
 end;
@@ -201,6 +210,7 @@ begin
     RubberbandSelectsGrandChilds := RubberbandSelectsGrandChildsCheckBox.Checked;
     DesignerPaintLazy := DesignerPaintLazyCheckBox.Checked;
     CreateComponentFocusNameProperty := CreateCompFocusNameCheckBox.Checked;
+    SwitchToFavoritesOITab := SwitchToFavoritesOITabCheckBox.Checked;
   end;
 end;
 
@@ -244,6 +254,12 @@ begin
   if not (FLoaded and User) then
     Exit;
   ColorBox.Selected := ColorsListBox.Selected;
+end;
+
+procedure TFormEditorOptionsFrame.CreateCompFocusNameCheckBoxChange(Sender:
+  TObject);
+begin
+  SwitchToFavoritesOITabCheckBox.Enabled := CreateCompFocusNameCheckBox.Checked;
 end;
 
 class function TFormEditorOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
