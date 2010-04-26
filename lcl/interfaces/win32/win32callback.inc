@@ -1525,18 +1525,9 @@ begin
       end;
       if not GetNeedParentPaint(WindowInfo, lWinControl) or (eraseBkgndCommand = ecDoubleBufferNoRemove) then
       begin
-        if ThemeServices.ThemesEnabled and WindowInfo^.isGroupBox and (lWinControl <> nil) then
-        begin
-          // Groupbox (which is a button) doesn't erase it's background properly; force repaint
-          lWinControl.EraseBackground(HDC(WParam));
-          LMessage.Result := 1;
-        end
-        else
-        begin
-          LMessage.Msg := LM_ERASEBKGND;
-          LMessage.WParam := WParam;
-          LMessage.LParam := LParam;
-        end;
+        LMessage.Msg := LM_ERASEBKGND;
+        LMessage.WParam := WParam;
+        LMessage.LParam := LParam;
       end else
       begin
         if not ThemeServices.ThemesEnabled then
