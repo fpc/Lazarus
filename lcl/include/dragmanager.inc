@@ -473,9 +473,11 @@ var
   DragMsg: TDragMessage;
   Accepted: Boolean;
   TargetPos: TPoint;
+  Moved: Boolean;
+  {$IFDEF EnableDockMove}
   AControl: TControl;
   P: TPoint;
-  Moved: Boolean;
+  {$ENDIF}
 begin
   ADockObjectCopy := FDockObject;
   if FDockObject <> nil then
@@ -495,6 +497,9 @@ begin
       if ADockObjectCopy.Control.Floating and ADockObjectCopy.Floating then
       begin
         DebugLn(['TDockPerformer.DragStop SIMPLE MOVE']);
+        {$IFDEF EnableDockMove}
+        // it works on wine, gtk, qt and carbon
+
         // just move
         AControl:=ADockObjectCopy.Control;
         if AControl.Parent<>nil then
@@ -514,6 +519,7 @@ begin
         //DebugLn(['TDockPerformer.DragStop MOVED']);
         Moved:=true;
         Accepted:=true;
+        {$ENDIF}
       end;
 
       if not Moved then begin
