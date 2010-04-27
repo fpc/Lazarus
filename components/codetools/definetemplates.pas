@@ -560,7 +560,18 @@ type
   public
 
   end;
-  
+
+  TFPCInfoType = (
+    fpciCompilerDate,      // -iD        Return compiler date
+    fpciShortVersion,      // -iV        Return short compiler version
+    fpciFullVersion,       // -iW        Return full compiler version
+    fpciCompilerOS,        // -iSO       Return compiler OS
+    fpciCompilerProcessor, // -iSP       Return compiler host processor
+    fpciTargetOS,          // -iTO       Return target OS
+    fpciTargetProcessor    // -iTP       Return target processor
+    );
+  TFPCInfoTypes = set of TFPCInfoType;
+
 function DefineActionNameToAction(const s: string): TDefineAction;
 function DefineTemplateFlagsToString(Flags: TDefineTemplateFlags): string;
 function GetDefaultSrcOSForTargetOS(const TargetOS: string): string;
@@ -580,6 +591,7 @@ function CompressFileList(Files: TStringList): TStringList;
 function UncompressFileList(Files: TStringList): TStringList;
 function RunTool(const Filename, Params: string;
                  WorkingDirectory: string = ''): TStringList;
+//function ParseFPCInfo(FPCInfo: string; TFPCInfoTypes: TFPCInfoTypes): boolean;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
@@ -720,12 +732,13 @@ var
   LineStart, i: Integer;
   CmdLine: String;
 begin
+  if not FileIsExecutable(Filename) then exit(nil);
   Result:=TStringList.Create;
   try
     TheProcess := TProcess.Create(nil);
     try
       CmdLine:=UTF8ToSys(Filename);
-      //if System.Pos(' ',CmdLine)>0 then
+      if System.Pos(' ',CmdLine)>0 then
         CmdLine:='"'+CmdLine+'"';
       if Params<>'' then
         CmdLine:=CmdLine+' '+Params;
