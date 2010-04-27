@@ -661,6 +661,10 @@ begin
     Result:=Result+',';
   end;
 
+  if IdentItem.GetDesc=ctnUseUnit then begin
+    Result:=Result+'.';
+  end;
+
   //DebugLn(['GetIdentCompletionValue END Result="',Result,'"']);
 end;
 
