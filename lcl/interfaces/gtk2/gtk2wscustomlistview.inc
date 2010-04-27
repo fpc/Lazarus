@@ -719,10 +719,14 @@ end;
 
 class procedure TGtk2WSCustomListView.ColumnSetAutoSize(const ALV: TCustomListView;
   const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean);
+const
+  SizingMap: array[Boolean] of TGtkTreeViewColumnSizing = (
+    GTK_TREE_VIEW_COLUMN_FIXED,
+    GTK_TREE_VIEW_COLUMN_AUTOSIZE
+  );
 var
   Widgets: PTVWidgets;
   GtkColumn: PGtkTreeViewColumn;
-  ColSizing: TGtkTreeViewColumnSizing;
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetAutoSize')
   then Exit;
@@ -735,15 +739,9 @@ begin
   GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
   if GtkColumn <> nil then
   begin
-    if AAutoSize then
-      ColSizing := GTK_TREE_VIEW_COLUMN_AUTOSIZE
-    else
-      ColSizing := GTK_TREE_VIEW_COLUMN_FIXED;
-
-    gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN (GtkColumn), True);
-    gtk_tree_view_column_set_sizing(GtkColumn, ColSizing);
+    gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN(GtkColumn), True);
+    gtk_tree_view_column_set_sizing(GtkColumn, SizingMap[AAutoSize]);
   end;
-
 end;
 
 class procedure TGtk2WSCustomListView.ColumnSetCaption(const ALV: TCustomListView;
