@@ -105,6 +105,8 @@ type
     property Visible default false;
   end;
 
+  TChartMarksOverlapPolicy = (opIgnore, opHideNeighbour);
+
   { TGenericChartMarks }
 
   generic TGenericChartMarks<_TLabelBrush, _TLinkPen, _TFramePen> =
@@ -117,6 +119,7 @@ type
     FLabelBrush: _TLabelBrush;
     FLabelFont: TFont;
     FLinkPen: _TLinkPen;
+    FOverlapPolicy: TChartMarksOverlapPolicy;
     FStyle: TSeriesMarksStyle;
 
     procedure SetClipped(const AValue: Boolean);
@@ -126,6 +129,7 @@ type
     procedure SetLabelBrush(const AValue: _TLabelBrush);
     procedure SetLabelFont(const AValue: TFont);
     procedure SetLinkPen(const AValue: _TLinkPen);
+    procedure SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
     procedure SetStyle(const AValue: TSeriesMarksStyle);
   protected
     function IsMarginRequired: Boolean;
@@ -151,6 +155,8 @@ type
     property Distance: TChartDistance read FDistance write SetDistance;
     property Format: String read FFormat write SetFormat;
     property LabelFont: TFont read FLabelFont write SetLabelFont;
+    property OverlapPolicy: TChartMarksOverlapPolicy
+      read FOverlapPolicy write SetOverlapPolicy default opIgnore;
     property Style: TSeriesMarksStyle read FStyle write SetStyle;
     property Visible default true;
   end;
@@ -421,6 +427,7 @@ begin
   InitHelper(FLabelBrush, _TLabelBrush);
   InitHelper(FLabelFont, TFont);
   InitHelper(FLinkPen, _TLinkPen);
+  FOverlapPolicy := opIgnore;
   FStyle := smsNone;
   FVisible := true;
 end;
@@ -530,6 +537,13 @@ procedure TGenericChartMarks.SetLinkPen(const AValue: _TLinkPen);
 begin
   if FLinkPen = AValue then exit;
   FLinkPen := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TGenericChartMarks.SetOverlapPolicy(AValue: TChartMarksOverlapPolicy);
+begin
+  if FOverlapPolicy = AValue then exit;
+  FOverlapPolicy := AValue;
   StyleChanged(Self);
 end;
 

@@ -583,6 +583,7 @@ procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas);
     with center do
       labelRect := BoundsSize(X - sz.cx div 2, Y - sz.cy div 2, sz);
     if
+      (Marks.OverlapPolicy = opHideNeighbour) and
       not IsRectEmpty(FPrevLabelRect) and
       IntersectRect(dummy, labelRect, FPrevLabelRect)
     then
