@@ -245,6 +245,7 @@ function dbgMemRange(P: PByte; Count: integer; Width: integer = 0): string; over
 function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string; overload;
 function dbgObjMem(AnObject: TObject): string; overload;
 function dbghex(i: Int64): string; overload;
+function DbgSWindowPosFlags(Flags: UInt): String;
 
 function DbgS(const i1,i2,i3,i4: integer): string; overload;
 function DbgS(const Shift: TShiftState): string; overload;
@@ -2514,6 +2515,43 @@ begin
   until i=0;
   if Negated then
     Result:='-'+Result;
+end;
+
+function DbgSWindowPosFlags(Flags: UInt): String;
+begin
+  Result := '';
+  if (SWP_NOSIZE and Flags) <> 0 then
+    Result := Result + 'SWP_NOSIZE, ';
+  if (SWP_NOMOVE and Flags) <> 0 then
+    Result := Result + 'SWP_NOMOVE, ';
+  if (SWP_NOZORDER and Flags) <> 0 then
+    Result := Result + 'SWP_NOZORDER, ';
+  if (SWP_NOREDRAW and Flags) <> 0 then
+    Result := Result + 'SWP_NOREDRAW, ';
+  if (SWP_NOACTIVATE and Flags) <> 0 then
+    Result := Result + 'SWP_NOACTIVATE, ';
+  if (SWP_DRAWFRAME and Flags) <> 0 then
+    Result := Result + 'SWP_DRAWFRAME, ';
+  if (SWP_SHOWWINDOW and Flags) <> 0 then
+    Result := Result + 'SWP_SHOWWINDOW, ';
+  if (SWP_HIDEWINDOW and Flags) <> 0 then
+    Result := Result + 'SWP_HIDEWINDOW, ';
+  if (SWP_NOCOPYBITS and Flags) <> 0 then
+    Result := Result + 'SWP_NOCOPYBITS, ';
+  if (SWP_NOOWNERZORDER and Flags) <> 0 then
+    Result := Result + 'SWP_NOOWNERZORDER, ';
+  if (SWP_NOSENDCHANGING and Flags) <> 0 then
+    Result := Result + 'SWP_NOSENDCHANGING, ';
+  if (SWP_DEFERERASE and Flags) <> 0 then
+    Result := Result + 'SWP_DEFERERASE, ';
+  if (SWP_ASYNCWINDOWPOS and Flags) <> 0 then
+    Result := Result + 'SWP_ASYNCWINDOWPOS, ';
+  if (SWP_STATECHANGED and Flags) <> 0 then
+    Result := Result + 'SWP_STATECHANGED, ';
+  if (SWP_SourceIsInterface and Flags) <> 0 then
+    Result := Result + 'SWP_SourceIsInterface, ';
+  if Result <> '' then
+    Delete(Result, Length(Result) - 1, 2);
 end;
 
 function DbgS(const i1, i2, i3, i4: integer): string;

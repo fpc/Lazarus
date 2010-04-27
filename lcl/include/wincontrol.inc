@@ -6856,21 +6856,11 @@ procedure TWinControl.WMWindowPosChanged(var Message: TLMWindowPosChanged);
 var
   NewLeft, NewTop, NewWidth, NewHeight: integer;
   NewBoundsRealized: TRect;
-  {$IFDEF VerboseAllAutoSize}
-  S: String;
-  {$ENDIF}
 begin
   if Message.WindowPos=nil then exit;
 
   {$IFDEF VerboseAllAutoSize}
-  S := '';
-  if (Message.WindowPos^.flags and SWP_NOSIZE) = 0 then
-    S := S + 'Resize ';
-  if (Message.WindowPos^.flags and SWP_NOMOVE) = 0 then
-    S := S + 'Move ';
-  if (Message.WindowPos^.flags and SWP_NOMOVE) = 0 then
-    S := S + 'Move ';
-  DebugLn(S);
+  DebugLn(DbgSName(Self) + ' : ' + DbgSWindowPosFlags(Message.WindowPos^.flags));
   {$ENDIF}
 
   NewLeft := Message.WindowPos^.x;
