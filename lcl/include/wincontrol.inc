@@ -3126,9 +3126,11 @@ begin
     // first let the DockManager align controls
     if DockSite and UseDockManager and (DockManager<>nil) then
       DockManager.ResetBounds(false);
+    AdjustClientRect(RemainingClientRect);
+    FAdjustClientRectRealized:=RemainingClientRect;
+
     if NeedAlignWork then
     begin
-      AdjustClientRect(RemainingClientRect);
       //DebugLn(['TWinControl.AlignControls AAA1 ',DbgSName(Self),' RemainingClientRect=',dbgs(RemainingClientRect),' ',dbgs(ClientRect)]);
       RemainingBorderSpace:=Rect(0,0,0,0);
       // adjust RemainingClientRect by ChildSizing properties
@@ -3684,7 +3686,7 @@ begin
   if not CompareRect(@R, @FAdjustClientRectRealized) then
   begin
     // client rect changed since last AlignControl
-    {$IFDEF VerboseAllAutoSize}
+    {$IF defined(VerboseAllAutoSize) or defined(VerboseClientRectBugFix)}
     DebugLn('TWinControl.DoAdjustClientRectChange ClientRect changed ',Name,':',ClassName,
       ' Old=',Dbgs(FAdjustClientRectRealized.Right),'x',DbgS(FAdjustClientRectRealized.Bottom),
       ' New=',DbgS(r.Right),'x',DbgS(r.Bottom));
@@ -3969,6 +3971,8 @@ function TWinControl.GetClientRect: TRect;
         {$IFDEF OldAutoSize}
         for i:=0 to ControlCount-1 do
           Controls[i].fLastAlignedBoundsTried:=0;
+        {$ELSE}
+        FAdjustClientRectRealized:=Rect(0,0,0,0);
         {$ENDIF}
       end;
       Exclude(FWinControlFlags,wcfClientRectNeedsUpdate);
@@ -6780,8 +6784,8 @@ begin
       GetWindowSize(Handle, NewWidth, NewHeight);
     FBoundsRealized := Bounds(Message.XPos, Message.YPos, NewWidth, NewHeight);
     {$IFNDEF OldAutoSize}
-    InvalidatePreferredChildSizes;
-    if AutoSizingAll then begin
+    if ([caspCreatingHandles,caspComputingBounds]*AutoSizePhases<>[])
+    then begin
       // while the LCL is creating handles the widgetset may send default bounds
       // we have not yet told the widgetset the final bounds
       // => the InvalidatePreferredSize and the InvalidateClientRectCache
@@ -6789,6 +6793,7 @@ begin
       //    size algorithm to take care of the new bounds
       // => do not call SetBounds, as this will set the Bounds to the widgetset
       //    default values.
+      //DebugLn(['TWinControl.WMSize from intf ignored, because phases=',dbgs(AutoSizePhases),' boundsrealized=',wcfBoundsRealized in FWinControlFlags]);
       exit;
     end;
     {$ENDIF}
@@ -6837,13 +6842,13 @@ begin
       ' BoundsRealized=',dbgs(FBoundsRealized),
       ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
     {$ENDIF}
+    if not (wcfBoundsRealized in FWinControlFlags) then exit;
     {$IFDEF VerboseClientRectBugFix}
-    if Name=CheckClientRectName then
+    //if Name=CheckClientRectName then
     DebugLn(['TWinControl.WMSize FromIntf ',dbgsname(Self),' Message=',Message.Width,',',Message.Height,
       ' BoundsRealized=',dbgs(FBoundsRealized),
       ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
     {$ENDIF}
-    if not (wcfBoundsRealized in FWinControlFlags) then exit;
 
     NewLeft := FBoundsRealized.Left;
     NewTop := FBoundsRealized.Top;
@@ -6860,10 +6865,10 @@ begin
       ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
     {$ENDIF}
 
+    FBoundsRealized := NewBoundsRealized;
     {$IFNDEF OldAutoSize}
     //DebugLn(['TWinControl.WMSize ',DbgSName(Self),' phases=',dbgs(AutoSizePhases)]);
     if ([caspCreatingHandles,caspComputingBounds]*AutoSizePhases<>[])
-    or (not (wcfBoundsRealized in FWinControlFlags))
     then begin
       // while the LCL is creating handles the widgetset may send default bounds
       // we have not yet told the widgetset the final bounds
@@ -6877,7 +6882,6 @@ begin
     end;
     {$ENDIF}
 
-    FBoundsRealized := NewBoundsRealized;
     {$IFNDEF OldAutoSize}
     if Parent<>nil then
     {$ENDIF}
@@ -6899,6 +6903,13 @@ begin
   if ((Message.SizeType and Size_SourceIsInterface) > 0)
   and ClientRectNeedsInterfaceUpdate then
     DoAdjustClientRectChange;
+  {$ENDIF}
+  {$IFDEF VerboseClientRectBugFix}
+  //if Name=CheckClientRectName then
+  if ((Message.SizeType and Size_SourceIsInterface) > 0) then
+  DebugLn(['TWinControl.WMSize END ',dbgsname(Self),' Message=',Message.Width,',',Message.Height,
+    ' BoundsRealized=',dbgs(FBoundsRealized),' ClientRect=',dbgs(ClientRect),
+    ' ']);
   {$ENDIF}
 end;
 
