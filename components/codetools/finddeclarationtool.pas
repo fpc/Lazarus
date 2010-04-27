@@ -5284,25 +5284,38 @@ var
   NewCodeTool: TFindDeclarationTool;
   OldFlags: TFindDeclarationFlags;
   Node: TCodeTreeNode;
+  CollectResult: TIdentifierFoundResult;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(UsesNode);{$ENDIF}
   {$IFDEF ShowTriedParentContexts}
   DebugLn(['TFindDeclarationTool.FindIdentifierInUsesSection ',MainFilename,' fdfIgnoreUsedUnits=',fdfIgnoreUsedUnits in Params.Flags]);
   {$ENDIF}
   Result:=false;
+  // first search in used unit names
   if (Params.IdentifierTool=Self) then begin
     Node:=UsesNode.LastChild;
     while Node<>nil do begin
-      if CompareSrcIdentifiers(Node.StartPos,Params.Identifier) then begin
+      if (fdfCollect in Params.Flags) then begin
+        CollectResult:=DoOnIdentifierFound(Params,Node);
+        if CollectResult=ifrAbortSearch then begin
+          Result:=false;
+          exit;
+        end else if CollectResult=ifrSuccess then begin
+          Result:=true;
+          Params.SetResult(Self,Node);
+          exit;
+        end;
+      end else if CompareSrcIdentifiers(Node.StartPos,Params.Identifier) then begin
         // the searched identifier was a uses AUnitName, point to the identifier in
         // the uses section
-        Result:=true;
         Params.SetResult(Self,Node,Node.StartPos);
+        Result:=true;
         exit;
       end;
       Node:=Node.PriorBrother;
     end;
   end;
+
   if not (fdfIgnoreUsedUnits in Params.Flags) then begin
     // search in units
     Node:=UsesNode.LastChild;

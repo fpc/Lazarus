@@ -3300,7 +3300,7 @@ begin
   if (CompilerPath='') or (not FileIsExecutable(CompilerPath)) then exit;
   LastDefTempl:=nil;
   // find all initial compiler macros and all unit paths
-  // -> ask compiler with the -vm -vt switch
+  // -> ask compiler with the -va switch
   SetLength(Buf,1024);
   Step:='Init';
   try

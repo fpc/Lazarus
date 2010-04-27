@@ -173,7 +173,7 @@ type
     ilcfStartIsSubIdent,   // atom in front is point
     ilcfNeedsEndSemicolon, // after context a semicolon is needed. e.g. 'A| end'
     ilcfNoEndSemicolon,    // no semicolon after. E.g. 'A| else'
-    ilcfNeedsEndComma,     // after context a comma is needed. e.g. 'sysutil| classes'
+    ilcfNeedsEndComma,     // after context a comma is needed. e.g. 'uses sysutil| classes'
     ilcfIsExpression,      // is expression part of statement. e.g. 'if expr'
     ilcfCanProcDeclaration,// context allows to declare a procedure/method
     ilcfEndOfLine          // atom at end of line
@@ -1058,6 +1058,10 @@ begin
   ctnRecordCase:
     Ident:=@FoundContext.Tool.Src[Params.NewCleanPos];
 
+  ctnUseUnit:
+    if (FoundContext.Tool=Self) then begin
+      Ident:=@Src[FoundContext.Node.StartPos];
+    end;
   end;
   if Ident=nil then exit;
 
