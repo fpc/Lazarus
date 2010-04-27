@@ -800,12 +800,23 @@ const
 
 
 { WMWindowPosChanged message constants}
-  SWP_NOSIZE = 1;
-  SWP_NOMOVE = 2;
-  SWP_NOZORDER = 4;
-  SWP_NOREDRAW = 8;
-  SWP_NOACTIVATE = $10;
-  SWP_SourceIsInterface = 128; // this flag can be combined with the above
+  SWP_NOSIZE            = $00001;
+  SWP_NOMOVE            = $00002;
+  SWP_NOZORDER          = $00004;
+  SWP_NOREDRAW          = $00008;
+  SWP_NOACTIVATE        = $00010;
+  SWP_DRAWFRAME         = $00020;
+  SWP_FRAMECHANGED      = $00020;
+  SWP_SHOWWINDOW        = $00040;
+  SWP_HIDEWINDOW        = $00080;
+  SWP_NOCOPYBITS        = $00100;
+  SWP_NOOWNERZORDER     = $00200;
+  SWP_NOREPOSITION      = $00200;
+  SWP_NOSENDCHANGING    = $00400;
+  SWP_DEFERERASE        = $02000;
+  SWP_ASYNCWINDOWPOS    = $04000;
+  SWP_STATECHANGED      = $08000; // used by windows but not documented (used even in wine)
+  SWP_SourceIsInterface = $10000; // this flag can be combined with the above
 
 { WMSIZE message constants}
   Size_Restored = 0; // the default
