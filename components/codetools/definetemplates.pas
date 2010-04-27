@@ -748,6 +748,7 @@ begin
         CmdLine:='"'+CmdLine+'"';
       if Params<>'' then
         CmdLine:=CmdLine+' '+Params;
+      DebugLn(['RunTool ',Params]);
       TheProcess.CommandLine := CmdLine;
       TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
       TheProcess.ShowWindow := swoHide;
@@ -820,6 +821,7 @@ begin
   if fpciTargetOS in InfoTypes then Params:=Params+'TO';
   if fpciTargetProcessor in InfoTypes then Params:=Params+'TP';
   if Params='' then exit;
+  Params:='-i'+Params;
   List:=nil;
   try
     List:=RunTool(CompilerFilename,Params);
