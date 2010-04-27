@@ -8227,6 +8227,19 @@ var
   OldBounds: TRect;
   {$ENDIF}
 begin
+  {$IFNDEF OldAutoSize}
+  if (Parent=nil) and (not HandleObjectShouldBeVisible) then begin
+    { do not move invisible forms
+       Reason: It is common to do this:
+            Form1:=TForm1.Create(nil);
+            Form1.Top:=100;
+            Form1.Left:=100;
+            Form1.Show;
+       This moves the form around and confuses some windowmanagers.
+       Only send the last bounds. }
+    exit;
+  end;
+  {$ENDIF}
   NewBounds:=Bounds(Left, Top, Width, Height);
   {$IF defined(VerboseResizeFlicker)}
   if HandleAllocated then begin
