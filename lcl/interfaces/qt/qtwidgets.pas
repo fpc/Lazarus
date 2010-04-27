@@ -940,7 +940,8 @@ type
     function getModel: QAbstractItemModelH;
     function getRowHeight(ARowIndex: integer): integer;
     function getSelectionMode: QAbstractItemViewSelectionMode;
-    function getVisibleRowCount: integer; virtual;
+    function getTopItem: integer; virtual;
+    function getVisibleRowCount(const AFirstVisibleOnly: boolean = false): integer; virtual;
 
     procedure modelIndex(retval: QModelIndexH; row, column: Integer; parent: QModelIndexH = nil);
     function visualRect(Index: QModelIndexH): TRect;
@@ -1023,7 +1024,8 @@ type
     function getItemVisible(AItem: QListWidgetItemH): Boolean;
     function getRow(AItem: QListWidgetItemH): integer;
     function getSelCount: Integer;
-    function getVisibleRowCount: integer; override;
+    function getTopItem: integer; override;
+    function getVisibleRowCount(const AFirstVisibleOnly: boolean = false): integer; override;
     function getVisualItemRect(AItem: QListWidgetItemH): TRect;
     function selectedItems: TPtrIntArray;
     procedure setCurrentRow(row: Integer);
@@ -1139,7 +1141,8 @@ type
     function topLevelItem(AIndex: Integer): QTreeWidgetItemH;
     function visualItemRect(AItem: QTreeWidgetItemH): TRect;
     function getItemVisible(AItem: QTreeWidgetItemH): Boolean;
-    function getVisibleRowCount: integer; override;
+    function getTopItem: integer; override;
+    function getVisibleRowCount(const AFirstVisibleOnly: boolean = false): integer; override;
     procedure setItemVisible(AItem: QTreeWidgetItemH; Const AVisible: Boolean);
     procedure setItemText(AItem: QTreeWidgetItemH; const AColumn: Integer;
       const AText: WideString; const AAlignment: QtAlignment);
@@ -8111,7 +8114,20 @@ begin
   Result := length(selectedItems);
 end;
 
-function TQtListWidget.getVisibleRowCount: integer;
+function TQtListWidget.getTopItem: integer;
+begin
+  Result := getVisibleRowCount(True);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtListWidget.getVisibleRowCount
+  Params:  Boolean
+  Returns: if AFirstVisibleOnly = False (default) then it returns number
+  of visible rows, or 0 if there's no visible rows.
+  When AFirstVisibleOnly = True then it returns index of first visible row,
+  otherwise result is -1.
+ ------------------------------------------------------------------------------}
+function TQtListWidget.getVisibleRowCount(const AFirstVisibleOnly: boolean = false): integer;
 var
   R: TRect;
   i: integer;
@@ -8119,7 +8135,10 @@ var
   RowIndex: integer;
   RowHeight: integer;
 begin
-  Result := 0;
+  if AFirstVisibleOnly then
+    Result := -1
+  else
+    Result := 0;
   QWidget_contentsRect(viewportWidget, @R);
   i := 0;
   repeat
@@ -8127,6 +8146,11 @@ begin
     if item <> nil then
     begin
       RowIndex := getRow(Item);
+      if AFirstVisibleOnly then
+      begin
+        Result := RowIndex;
+        break;
+      end;
       RowHeight := getRowHeight(RowIndex);
       inc(Result);
       if RowHeight <= 0 then
@@ -8899,7 +8923,20 @@ begin
   Result := not QTreeWidget_isItemHidden(QTreeWidgetH(Widget), AItem);
 end;
 
-function TQtTreeWidget.getVisibleRowCount: integer;
+function TQtTreeWidget.getTopItem: integer;
+begin
+  Result := getVisibleRowCount(True);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtTreeWidget.getVisibleRowCount
+  Params:  Boolean
+  Returns: if AFirstVisibleOnly = False (default) then it returns number
+  of visible rows, or 0 if there's no visible rows.
+  When AFirstVisibleOnly = True then it returns index of first visible row,
+  otherwise result is -1.
+ ------------------------------------------------------------------------------}
+function TQtTreeWidget.getVisibleRowCount(const AFirstVisibleOnly: boolean = false): integer;
 var
   R: TRect;
   i: integer;
@@ -8907,7 +8944,10 @@ var
   RowIndex: integer;
   RowHeight: integer;
 begin
-  Result := 0;
+  if AFirstVisibleOnly then
+    Result := -1
+  else
+    Result := 0;
   QWidget_contentsRect(viewportWidget, @R);
   i := 0;
   repeat
@@ -8915,6 +8955,11 @@ begin
     if item <> nil then
     begin
       RowIndex := getRow(Item);
+      if AFirstVisibleOnly then
+      begin
+        Result := RowIndex;
+        break;
+      end;
       RowHeight := getRowHeight(RowIndex);
       if RowHeight <= 0 then
         RowHeight := 1;
@@ -11215,7 +11260,21 @@ begin
   Result := QAbstractItemView_SelectionMode(QAbstractItemViewH(Widget));
 end;
 
-function TQtAbstractItemView.getVisibleRowCount: integer;
+function TQtAbstractItemView.getTopItem: integer;
+begin
+  Result := -1;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtAbstractItemView.getVisibleRowCount
+  Params:  Boolean
+  Returns: if AFirstVisibleOnly = False (default) then it returns number
+  of visible rows, or 0 if there's no visible rows.
+  When AFirstVisibleOnly = True then it returns index of first visible row,
+  otherwise result is -1.
+  This function is used by TQtTreeWidget and TQtListWidget.
+ ------------------------------------------------------------------------------}
+function TQtAbstractItemView.getVisibleRowCount(const AFirstVisibleOnly: boolean = false): integer;
 begin
   Result := 0;
 end;

@@ -360,11 +360,6 @@ begin
   begin
     FStringList.Delete(Index);
     TQtTextEdit(FOwner.Handle).removeLine(Index);
-    {TODO: remove old way after testing
-    W := FStringList.Text;
-    ExternalUpdate(W, True);
-    FTextChanged := False;
-    }
   end;
 end;
 

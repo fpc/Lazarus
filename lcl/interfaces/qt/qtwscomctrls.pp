@@ -110,6 +110,7 @@ type
     class function GetItemAt(const ALV: TCustomListView; x,y: integer): Integer; override;
     class function GetSelCount(const ALV: TCustomListView): Integer; override;
     class function GetSelection(const ALV: TCustomListView): Integer; override;
+    class function GetTopItem(const ALV: TCustomListView): Integer; override;
     class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer); override;
 
     class function GetBoundingRect(const ALV: TCustomListView): TRect; override;
@@ -148,7 +149,6 @@ type
     class procedure SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer); virtual;
     class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); virtual;
     class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); virtual;
-//    class procedure SetIconOptions(const ALV: TCustomListView; const AValue: TIconOptions); virtual;
     class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); virtual;
     class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); virtual;
 
@@ -1542,6 +1542,22 @@ begin
     Result := -1;
 end;
 
+class function TQtWSCustomListView.GetTopItem(const ALV: TCustomListView
+  ): Integer;
+var
+  QtItemView: TQtAbstractItemView;
+begin
+  Result := -1;
+  if not WSCheckHandleAllocated(ALV, 'GetTopItem') then
+    Exit;
+  // according to embarcadero docs this should return
+  // only for vsList and vsReport
+  if not (TListView(ALV).ViewStyle in [vsList, vsReport]) then
+    exit;
+  QtItemView := TQtAbstractItemView(ALV.Handle);
+  Result := QtItemView.getTopItem;
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtWSCustomListView.SetSort
   Params:  None
@@ -1633,6 +1649,7 @@ begin
     // hm...seem that QListView have bug, doesn't want to rearrange items
     // in any case when iaTop and AutoArrange=True (then it looks same as
     // iaLeft without arrange, so we must set GridSize in that case
+    // update: bug is fixed in Qt-4.6.2
     {$note set workaround for QListView bug via QtList.GridSize}
     QtList := TQtListWidget(ALV.Handle);
     if QtList.ViewStyle <> Ord(vsList) then
