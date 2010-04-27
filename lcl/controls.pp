@@ -896,8 +896,10 @@ type
     FHelpType: THelpType;
     FHint: TTranslateString;
     FHostDockSite: TWinControl;
+    {$IFDEF OldAutoSize}
     fLastAlignedBounds: TRect;
     fLastAlignedBoundsTried: integer;
+    {$ENDIF}
     FLastChangebounds: TRect;
     FLastDoChangeBounds: TRect;
     FLastDoChangeClientSize: TPoint;
@@ -1067,7 +1069,9 @@ type
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
     procedure ChangeScale(Multiplier, Divider: Integer); virtual;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; virtual;
+    {$IFDEF OldAutoSize}
     procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
+    {$ENDIF}
     procedure SetBiDiMode(AValue: TBiDiMode); virtual;
     procedure SetParentBiDiMode(AValue: Boolean); virtual;
     function IsAParentAligning: boolean;

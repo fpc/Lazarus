@@ -1347,6 +1347,7 @@ begin
     OnShowHint(Self,HintInfo);
 end;
 
+{$IFDEF OldAutoSize}
 procedure TControl.SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer);
 { try to set the automatic changed bounds
   If the interface does not like our bounds, it sends a message with the real
@@ -1374,6 +1375,7 @@ begin
 
   SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight{$IFDEF OldAutoSize}, true{$ENDIF});
 end;
+{$ENDIF}
 
 function TControl.IsAParentAligning: boolean;
 var
@@ -3350,7 +3352,9 @@ begin
   //DebugLn(['TControl.SetAlign ',DbgSName(Self),' Old=',AlignNames[FAlign],' New=',AlignNames[Value],' ',Anchors<>AnchorAlign[FAlign]]);
   OldAlign:=FAlign;
   FAlign := Value;
+  {$IFDEF OldAutoSize}
   fLastAlignedBoundsTried:=0;
+  {$ENDIF}
   // if anchors were on default then change them to new default
   // This is done for Delphi compatibility.
   if (Anchors=AnchorAlign[OldAlign]) and (Anchors<>AnchorAlign[FAlign]) then
@@ -3366,8 +3370,12 @@ procedure TControl.SetAnchors(const AValue: TAnchors);
 begin
   if Anchors=AValue then exit;
   FAnchors:=AValue;
+  {$IFDEF OldAutoSize}
   fLastAlignedBoundsTried:=0;
   RequestAlign;
+  {$ELSE}
+  AdjustSize;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -3433,7 +3441,9 @@ begin
   FBaseBounds:=NewBaseBounds;
   Include(FControlFlags,cfBaseBoundsValid);
   FBaseParentClientSize:=NewBaseParentClientSize;
+  {$IFDEF OldAutoSize}
   fLastAlignedBounds:=Rect(0,0,0,0);
+  {$ENDIF}
 end;
 
 {$IFDEF OldAutoSize}
