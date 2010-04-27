@@ -114,6 +114,7 @@ type
     class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer); override;
 
     class function GetBoundingRect(const ALV: TCustomListView): TRect; override;
+    class function GetViewOrigin(const ALV: TCustomListView): TPoint; override;
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
 
     class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;
@@ -141,16 +142,12 @@ type
     class function GetDropTarget(const ALV: TCustomListView): Integer; virtual;
 
     class function GetHoverTime(const ALV: TCustomListView): Integer; virtual;
-
-    class function GetTopItem(const ALV: TCustomListView): Integer; virtual;
     class function GetViewOrigin(const ALV: TCustomListView): TPoint; virtual;
-    class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
 
     class procedure SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer); virtual;
     class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); virtual;
     class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); virtual;
     class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); virtual;
-    class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); virtual;
 
     class procedure SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint); virtual;
     *)
@@ -1603,6 +1600,18 @@ begin
   if not WSCheckHandleAllocated(ALV, 'GetBoundingRect') then
     Exit;
   Result := TQtWidget(ALV.Handle).getFrameGeometry;
+end;
+
+class function TQtWSCustomListView.GetViewOrigin(const ALV: TCustomListView
+  ): TPoint;
+var
+  QtItemView: TQtAbstractItemView;
+begin
+  Result := Point(0, 0);
+  if not WSCheckHandleAllocated(ALV, 'GetViewOrigin') then
+    Exit;
+  QtItemView := TQtAbstractItemView(ALV.Handle);
+  Result := QtItemView.getViewOrigin;
 end;
 
 class function TQtWSCustomListView.GetVisibleRowCount(const ALV: TCustomListView

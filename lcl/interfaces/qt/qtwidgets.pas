@@ -352,6 +352,7 @@ type
     FHScrollbar: TQtScrollBar;
     FVScrollbar: TQtScrollbar;
   public
+    function getViewOrigin: TPoint;
     function viewportWidget: QWidgetH;
     function horizontalScrollBar: TQtScrollBar;
     function verticalScrollBar: TQtScrollBar;
@@ -10159,6 +10160,15 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
+
+function TQtAbstractScrollArea.getViewOrigin: TPoint;
+var
+  R: TRect;
+begin
+  QWidget_rect(viewportWidget, @R);
+  // current bindings (2.1) does not assign TopLeft so it's always 0,0
+  Result := R.TopLeft;
+end;
 
 function TQtAbstractScrollArea.viewportWidget: QWidgetH;
 begin
