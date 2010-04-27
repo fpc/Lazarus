@@ -505,7 +505,7 @@ begin
   if not suppressMove then
     Windows.SetWindowPos(AWinControl.Handle, 0, IntfLeft, IntfTop, IntfWidth, IntfHeight,
       SWP_NOZORDER or SWP_NOACTIVATE);
-  LCLControlSizeNeedsUpdate(AWinControl, False);
+  LCLControlSizeNeedsUpdate(AWinControl, True);
 end;
 
 class procedure TWin32WSWinControl.SetColor(const AWinControl: TWinControl);
