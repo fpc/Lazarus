@@ -52,6 +52,7 @@ type
     procedure Dispatch(
       AChart: TChart; AEventId: TChartToolEventId; APoint: TPoint);
     function GetIndex: Integer; override;
+    procedure Handled;
     function IsActive: Boolean;
     procedure MouseDown(APoint: TPoint); virtual;
     procedure MouseMove(APoint: TPoint); virtual;
@@ -82,6 +83,7 @@ type
 
   TChartToolset = class(TBasicChartToolset)
   private
+    FIsHandled: Boolean;
     FTools: TChartTools;
     function GetItem(AIndex: Integer): TChartTool;
   public
@@ -345,7 +347,7 @@ end;
 procedure TChartTool.Dispatch(
   AChart: TChart; AEventId: TChartToolEventId; APoint: TPoint);
 begin
-  if (FChart <> nil) and (FChart <> AChart) then exit;
+  if not Enabled or (FChart <> nil) and (FChart <> AChart) then exit;
   FChart := AChart;
   try
     case AEventId of
@@ -370,6 +372,11 @@ end;
 function TChartTool.GetParentComponent: TComponent;
 begin
   Result := FToolset;
+end;
+
+procedure TChartTool.Handled;
+begin
+  Toolset.FIsHandled := true;
 end;
 
 function TChartTool.HasParent: Boolean;
@@ -468,19 +475,35 @@ function TChartToolset.Dispatch(
   AChart: TChart; AEventId: TChartToolEventId;
   AShift: TShiftState; APoint: TPoint): Boolean;
 var
-  i: Integer;
-begin
-  i := AChart.ActiveToolIndex;
-  if InRange(i, 0, Tools.Count - 1) then begin
-    Item[i].Dispatch(AChart, AEventId, APoint);
-    exit(true);
+  candidates: array of TChartTool;
+  candidateCount: Integer;
+
+  procedure AddCandidate(AIndex: Integer);
+  begin
+    candidates[candidateCount] := Item[AIndex];
+    candidateCount += 1;
   end;
+
+var
+  i, ai: Integer;
+begin
+  if Tools.Count = 0 then exit(false);
+
+  SetLength(candidates, Tools.Count);
+  candidateCount := 0;
+
+  ai := AChart.ActiveToolIndex;
+  if InRange(ai, 0, Tools.Count - 1) then
+    AddCandidate(ai);
   for i := 0 to Tools.Count - 1 do
-    with Item[i] do
-      if Enabled and (Shift = AShift) then begin
-        Dispatch(AChart, AEventId, APoint);
-        exit(true);
-      end;
+    if (i <> ai) and (Item[i].Shift = AShift) then
+      AddCandidate(i);
+
+  FIsHandled := false;
+  for i := 0 to candidateCount - 1 do begin
+    candidates[i].Dispatch(AChart, AEventId, APoint);
+    if FIsHandled then exit(true);
+  end;
   Result := false;
 end;
 
@@ -518,6 +541,7 @@ begin
   Activate;
   with APoint do
     FSelectionRect := Rect(X, Y, X, Y);
+  Handled;
 end;
 
 procedure TZoomDragTool.MouseMove(APoint: TPoint);
@@ -527,6 +551,7 @@ begin
   FChart.Canvas.Rectangle(FSelectionRect);
   FSelectionRect.BottomRight := APoint;
   FChart.Canvas.Rectangle(FSelectionRect);
+  Handled;
 end;
 
 procedure TZoomDragTool.MouseUp(APoint: TPoint);
@@ -573,6 +598,7 @@ begin
   end;
   CheckProportions;
   FChart.LogicalExtent := ext;
+  Handled;
 end;
 
 { TReticuleTool }
@@ -634,6 +660,7 @@ begin
   ext.a := center - sz;
   ext.b := center + sz;
   FChart.LogicalExtent := ext;
+  Handled;
 end;
 
 function TZoomClickTool.ZoomFactorIsStored: boolean;
@@ -654,6 +681,7 @@ procedure TPanDragTool.MouseDown(APoint: TPoint);
 begin
   Activate;
   FOrigin := APoint;
+  Handled;
 end;
 
 procedure TPanDragTool.MouseMove(APoint: TPoint);
@@ -675,12 +703,14 @@ begin
   ext.a += dd;
   ext.b += dd;
   FChart.LogicalExtent := ext;
+  Handled;
 end;
 
 procedure TPanDragTool.MouseUp(APoint: TPoint);
 begin
   Unused(APoint);
   Deactivate;
+  Handled;
 end;
 
 initialization
