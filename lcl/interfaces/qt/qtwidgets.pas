@@ -4754,8 +4754,15 @@ begin
     case QEvent_type(Event) of
       QEventResize:
         begin
+          {$IFDEF QTSizeFix}
+          if LCLObject.ClientRectNeedsInterfaceUpdate then begin
+            LCLObject.InvalidateClientRectCache(false);
+            LCLObject.DoAdjustClientRectChange;
+          end;
+          {$ELSE}
           LCLObject.InvalidateClientRectCache(true);
           LCLObject.DoAdjustClientRectChange;
+          {$ENDIF}
           
           {mdi area part begins}
           if MdiAreaHandle <> nil then
@@ -10135,8 +10142,15 @@ begin
     QEventResize:
     begin
       Result := False;
-      LCLObject.InvalidateClientRectCache(True);
+      {$IFDEF QTSizeFix}
+      if LCLObject.ClientRectNeedsInterfaceUpdate then begin
+        LCLObject.InvalidateClientRectCache(false);
+        LCLObject.DoAdjustClientRectChange;
+      end;
+      {$ELSE}
+      LCLObject.InvalidateClientRectCache(true);
       LCLObject.DoAdjustClientRectChange;
+      {$ENDIF}
     end;
     QEventLayoutRequest:
     begin
@@ -10293,8 +10307,15 @@ begin
   end;
   if ClassType = TQtCustomControl then
   begin
-    LCLObject.InvalidateClientRectCache(True);
+    {$IFDEF QTSizeFix}
+    if LCLObject.ClientRectNeedsInterfaceUpdate then begin
+      LCLObject.InvalidateClientRectCache(false);
+      LCLObject.DoAdjustClientRectChange;
+    end;
+    {$ELSE}
+    LCLObject.InvalidateClientRectCache(true);
     LCLObject.DoAdjustClientRectChange;
+    {$ENDIF}
   end;
 end;
 
