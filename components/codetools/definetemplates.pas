@@ -597,7 +597,13 @@ function RunTool(const Filename, Params: string;
 function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
                       out Infos: TFPCInfoStrings): boolean;
 function RunFPCInfo(const CompilerFilename: string;
-                    InfoTypes: TFPCInfoTypes): string;
+                   InfoTypes: TFPCInfoTypes; const Options: string =''): string;
+function ParseFPCVerbose(List: TStrings; out UnitPaths: TStrings;
+                         out Defines, Undefines: TStringToStringTree): boolean;
+function RunFPCVerbose(const CompilerFilename, TestFilename: string;
+                       out UnitPaths: TStrings;
+                       out Defines, Undefines: TStringToStringTree;
+                       const Options: string = ''): boolean;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
@@ -744,14 +750,15 @@ begin
     TheProcess := TProcess.Create(nil);
     try
       CmdLine:=UTF8ToSys(Filename);
-      if System.Pos(' ',CmdLine)>0 then
+      if (System.Pos(' ',CmdLine)>0) and (CmdLine[1]<>'"') then
         CmdLine:='"'+CmdLine+'"';
       if Params<>'' then
         CmdLine:=CmdLine+' '+Params;
-      DebugLn(['RunTool ',Params]);
+      //DebugLn(['RunTool ',Params]);
       TheProcess.CommandLine := CmdLine;
       TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
       TheProcess.ShowWindow := swoHide;
+      TheProcess.CurrentDirectory:=WorkingDirectory;
       TheProcess.Execute;
       OutputLine:='';
       SetLength(buf,4096);
@@ -806,7 +813,7 @@ begin
 end;
 
 function RunFPCInfo(const CompilerFilename: string;
-  InfoTypes: TFPCInfoTypes): string;
+  InfoTypes: TFPCInfoTypes; const Options: string): string;
 var
   Params: String;
   List: TStringList;
@@ -822,6 +829,8 @@ begin
   if fpciTargetProcessor in InfoTypes then Params:=Params+'TP';
   if Params='' then exit;
   Params:='-i'+Params;
+  if Options<>'' then
+    Params:=Params+' '+Options;
   List:=nil;
   try
     List:=RunTool(CompilerFilename,Params);
@@ -829,6 +838,151 @@ begin
     Result:=List[0];
   finally
     List.free;
+  end;
+end;
+
+function ParseFPCVerbose(List: TStrings; out UnitPaths: TStrings;
+  out Defines, Undefines: TStringToStringTree): boolean;
+
+  procedure UndefineSymbol(const UpperName: string);
+  begin
+    //DebugLn(['UndefineSymbol ',UpperName]);
+    Defines.Remove(UpperName);
+    Undefines[UpperName]:='';
+  end;
+
+  procedure DefineSymbol(const UpperName, Value: string);
+  begin
+    //DebugLn(['DefineSymbol ',UpperName]);
+    Undefines.Remove(UpperName);
+    Defines[UpperName]:=Value;
+  end;
+
+  procedure ProcessOutputLine(Line: string);
+  var
+    SymbolName, SymbolValue, UpLine, NewPath: string;
+    i, len, curpos: integer;
+  begin
+    len := length(Line);
+    if len <= 6 then Exit; // shortest match
+
+    CurPos := 1;
+    // strip timestamp e.g. [0.306]
+    if Line[CurPos] = '[' then begin
+      repeat
+        inc(CurPos);
+        if CurPos > len then Exit;
+      until line[CurPos] = ']';
+      Inc(CurPos, 2); // skip space too
+      if len - CurPos < 6 then Exit; // shortest match
+    end;
+
+    UpLine:=UpperCaseStr(Line);
+    //DebugLn(['ProcessOutputLine ',Line]);
+
+    case UpLine[CurPos] of
+      'M':
+        if StrLComp(@UpLine[CurPos], 'MACRO ', 6) = 0 then begin
+          // no macro
+          Inc(CurPos, 6);
+
+          if (StrLComp(@UpLine[CurPos], 'DEFINED: ', 9) = 0) then begin
+            Inc(CurPos, 9);
+            SymbolName:=copy(UpLine, CurPos, len);
+            DefineSymbol(SymbolName,'');
+            Exit;
+          end;
+
+          if (StrLComp(@UpLine[CurPos], 'UNDEFINED: ', 11) = 0) then begin
+            Inc(CurPos, 11);
+            SymbolName:=copy(UpLine,CurPos,len);
+            UndefineSymbol(SymbolName);
+            Exit;
+          end;
+
+          // MACRO something...
+          i := CurPos;
+          while (i <= len) and (Line[i]<>' ') do inc(i);
+          SymbolName:=copy(UpLine,CurPos,i-CurPos);
+          CurPos := i + 1; // skip space
+
+          if StrLComp(@UpLine[CurPos], 'SET TO ', 7) = 0 then begin
+            Inc(CurPos, 7);
+            SymbolValue:=copy(Line, CurPos, len);
+            DefineSymbol(SymbolName, SymbolValue);
+          end;
+        end;
+      'U':
+        if (StrLComp(@UpLine[CurPos], 'USING UNIT PATH: ', 17) = 0) then begin
+          Inc(CurPos, 17);
+          NewPath:=copy(Line,CurPos,len);
+          if not FilenameIsAbsolute(NewPath) then
+            NewPath:=ExpandFileNameUTF8(AnsiToUtf8(NewPath));
+          {$IFDEF VerboseFPCSrcScan}
+          DebugLn('Using unit path: "',NewPath,'"');
+          {$ENDIF}
+          UnitPaths.Add(NewPath);
+        end;
+    end;
+  end;
+
+var
+  i: Integer;
+begin
+  Result:=false;
+  UnitPaths:=TStringList.Create;
+  Defines:=TStringToStringTree.Create(true);
+  Undefines:=TStringToStringTree.Create(true);
+  try
+    for i:=0 to List.Count-1 do
+      ProcessOutputLine(List[i]);
+    Result:=true;
+  finally
+    if not Result then begin
+      FreeAndNil(UnitPaths);
+      FreeAndNil(Undefines);
+      FreeAndNil(Defines);
+    end;
+  end;
+end;
+
+function RunFPCVerbose(const CompilerFilename, TestFilename: string;
+  out UnitPaths: TStrings; out Defines, Undefines: TStringToStringTree;
+  const Options: string): boolean;
+var
+  Params: String;
+  Filename: String;
+  WorkDir: String;
+  List: TStringList;
+  fs: TFileStream;
+begin
+  Result:=false;
+  UnitPaths:=nil;
+  Defines:=nil;
+  Undefines:=nil;
+
+  // create empty file
+  try
+    fs:=TFileStream.Create(TestFilename,fmCreate);
+    fs.Free;
+  except
+    exit;
+  end;
+
+  Params:='-va';
+  if Options<>'' then
+    Params:=Params+' '+Options;
+  Filename:=ExtractFileName(TestFilename);
+  WorkDir:=ExtractFilePath(TestFilename);
+  Params:=Params+' '+Filename;
+  List:=nil;
+  try
+    DebugLn(['RunFPCVerbose ',CompilerFilename,' ',Params,' ',WorkDir]);
+    List:=RunTool(CompilerFilename,Params,WorkDir);
+    if (List=nil) or (List.Count=0) then exit;
+    Result:=ParseFPCVerbose(List,UnitPaths,Defines,Undefines);
+  finally
+    List.Free;
   end;
 end;
 
