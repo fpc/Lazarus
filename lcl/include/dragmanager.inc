@@ -491,8 +491,8 @@ begin
 
     if ADropped then
     begin
-      //DebugLn(['TDockPerformer.DragStop Dropped ',ADockObjectCopy.Control.Floating,' ',ADockObjectCopy.Floating,' ',DbgSName(ADockObjectCopy.Control)]);
-      if ADockObjectCopy.Control.Floating and ADockObjectCopy.Floating then
+      DebugLn(['TDockPerformer.DragStop Dropped ',ADockObjectCopy.Control.Floating,' ',ADockObjectCopy.Floating,' ',DbgSName(ADockObjectCopy.Control)]);
+      {if ADockObjectCopy.Control.Floating and ADockObjectCopy.Floating then
       begin
         // just move
         AControl:=ADockObjectCopy.Control;
@@ -513,7 +513,7 @@ begin
         //DebugLn(['TDockPerformer.DragStop MOVED']);
         Moved:=true;
         Accepted:=true;
-      end;
+      end;}
 
       if ADockObjectCopy.Control.HostDockSite <> nil then
         Accepted := ADockObjectCopy.Control.HostDockSite.DoUnDock(TWinControl(ADockObjectCopy.DragTarget), ADockObjectCopy.Control)
