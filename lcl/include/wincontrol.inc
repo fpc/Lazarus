@@ -33,7 +33,7 @@
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxTPage';
-const CheckPostionName = 'MainForm';
+const CheckPostionName = 'ClassPartInsertPolicyRadioGroup';
 const CheckPostionParentName = 'xxxEnvVarsPage';
 
 function CheckPosition(AControl: TControl): boolean;
@@ -3704,7 +3704,10 @@ var
   I: Integer;
 begin
   {$IFDEF VerboseClientRectBugFix}
-  DebugLn('[TWinControl.InvalidateClientRectCache] ',DbgSName(Self));
+  if Name='ClassPartInsertPolicyRadioGroup' then begin
+    DebugLn(['TWinControl.InvalidateClientRectCache ',DbgSName(Self)]);
+    DumpStack;
+  end;
   {$ENDIF}
   Include(FWinControlFlags,wcfClientRectNeedsUpdate);
 
@@ -3744,6 +3747,10 @@ begin
   inc(IntfClientRect.Bottom,Height-InterfaceHeight);
   Result:=(FClientWidth<>IntfClientRect.Right)
        or (FClientHeight<>IntfClientRect.Bottom);
+  {$IFDEF VerboseClientRectBugFix}
+  if (Name='ClassPartInsertPolicyRadioGroup') and Result then
+    DebugLn(['TWinControl.ClientRectNeedsInterfaceUpdate ',DbgSName(Self),' ',dbgs(IntfClientRect)]);
+  {$ENDIF}
 end;
 
 {-------------------------------------------------------------------------------
@@ -3761,13 +3768,24 @@ end;
   unneccessary resizes.
 -------------------------------------------------------------------------------}
 procedure TWinControl.DoSetBounds(ALeft, ATop, AWidth, AHeight : integer);
+var
+  OldWidth: LongInt;
+  OldHeight: LongInt;
 begin
-  {$IFDEF VerboseClientRectBugFix}
-  DbgOut('[TWinControl.DoSetBounds] ',Name,':',ClassName,
-  ' OldHeight=',DbgS(FHeight),' NewHeight=',DbgS(AHeight));
-  {$ENDIF}
+  //DbgOut('[TWinControl.DoSetBounds] ',Name,':',ClassName,' OldHeight=',DbgS(FHeight),' NewHeight=',DbgS(AHeight));
+  {$IFDEF OldAutoSize}
   InvalidateClientRectCache(False);
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+  {$ELSE}
+  OldWidth:=Width;
+  OldHeight:=Height;
+  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+  // adapt Clientrect
+  inc(FClientWidth,Width-OldWidth);
+  if FClientWidth<0 then FClientWidth:=0;
+  inc(FClientHeight,Height-OldHeight);
+  if FClientHeight<0 then FClientHeight:=0;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -3935,7 +3953,7 @@ var
   InterfaceWidth, InterfaceHeight: integer;
 begin
   if wcfClientRectNeedsUpdate in FWinControlFlags then begin
-    //DebugLn(['TWinControl.GetClientRect ',HandleAllocated,' ',wcfBoundsRealized in FWinControlFlags]);
+    //DebugLn(['TWinControl.GetClientRect ',DbgSName(Self),' ',HandleAllocated,' ',wcfBoundsRealized in FWinControlFlags]);
     if TWSWinControlClass(WidgetSetClass).GetDefaultClientRect(Self,
       Left, Top, Width, Height, Result)
     then begin
@@ -3958,6 +3976,11 @@ begin
       {$ENDIF}
         debugln('TWinControl.GetClientRect ',DbgSName(Self),' Interface=',dbgs(InterfaceWidth),',',dbgs(InterfaceHeight),' Result=',dbgs(Result),' Bounds=',dbgs(BoundsRect));
       {$ENDIF}
+      {$IFDEF VerboseClientRectBugFix}
+      if Name='ClassPartInsertPolicyRadioGroup' then
+        debugln('TWinControl.GetClientRect ',DbgSName(Self),' Interface=',dbgs(InterfaceWidth),',',dbgs(InterfaceHeight),' Result=',dbgs(Result),' Bounds=',dbgs(BoundsRect));
+      {$ENDIF}
+
       Result.Right:=Width-(InterfaceWidth-Result.Right);
       Result.Bottom:=Height-(InterfaceHeight-Result.Bottom);
     end else begin
@@ -6788,6 +6811,12 @@ begin
       ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0,
       ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
     {$ENDIF}
+    {$IFDEF VerboseClientRectBugFix}
+    if Name='ClassPartInsertPolicyRadioGroup' then
+    DebugLn(['TWinControl.WMSize A ',dbgsname(Self),' Message=',Message.Width,',',Message.Height,
+      ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0,
+      ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
+    {$ENDIF}
     if not (wcfBoundsRealized in FWinControlFlags) then exit;
 
     NewLeft := FBoundsRealized.Left;
@@ -8150,6 +8179,8 @@ end;
 procedure TWinControl.DoSendBoundsToInterface;
 var
   NewBounds: TRect;
+  OldClientRect: TRect;
+  NewClientRect: TRect;
   {$IF defined(VerboseResizeFlicker)}
   OldBounds: TRect;
   {$ENDIF}
@@ -8179,6 +8210,14 @@ begin
     ' -> NewBounds=',dbgs(NewBounds),
     ' ClientRect=',dbgs(ClientRect));
   {$ENDIF}
+
+  {$IFDEF VerboseClientRectBugFix}
+  if Name='ClassPartInsertPolicyRadioGroup' then
+  DebugLn('[TWinControl.DoSendBoundsToInterface] A ',DbgSName(Self),
+  ' OldRelBounds=',dbgs(FBoundsRealized),
+  ' -> NewBounds=',dbgs(NewBounds));
+  {$ENDIF}
+
   {$IFDEF VerboseBug16184}
   if (Parent=nil) and (Visible) then begin
     DebugLn('[TWinControl.DoSendBoundsToInterface] A ',DbgSName(Self),
@@ -8187,10 +8226,21 @@ begin
   end;
   {$ENDIF}
   FBoundsRealized:=NewBounds;
+  {$IFNDEF OldAutoSize}
+  OldClientRect:=ClientRect;
+  {$ENDIF}
   Include(FWinControlFlags,wcfBoundsRealized); // Note: set before calling widgetset, because used in WMSize
   //if Parent=nil then DebugLn(['TWinControl.DoSendBoundsToInterface ',DbgSName(Self),' ',dbgs(BoundsRect)]);
   // this can trigger WMSize messages
   TWSWinControlClass(WidgetSetClass).SetBounds(Self, Left, Top, Width, Height);
+  {$IFNDEF OldAutoSize}
+  NewClientRect:=ClientRect;
+  if not CompareRect(@OldClientRect,@NewClientRect) then begin
+    // the widgetset has changed the clientrect
+    //DebugLn(['TWinControl.DoSendBoundsToInterface ',DbgSName(Self),' Bounds=',dbgs(BoundsRect),' OldClientRect=',dbgs(OldClientRect),' NewClientRect=',dbgs(NewClientRect)]);
+    AdjustSize;
+  end;
+  {$ENDIF}
 end;
 
 procedure TWinControl.RealizeBounds;
