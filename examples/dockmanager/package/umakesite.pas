@@ -748,7 +748,7 @@ begin
       //Client.Left := 0;
       Site.DockManager.ResetBounds(True);
     end;
-    if fVisible then;
+    if fVisible then
       Site.Visible := True;
   except
     DebugLn('error WrapDockable: ' + Client.Name);
