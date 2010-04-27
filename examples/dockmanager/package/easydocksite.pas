@@ -289,6 +289,7 @@ type
     FOnSave: TOnSaveControl;
     FOnRestore: TOnReloadControl;
   public //become class functions?
+    function  MakeDockable(AForm: TWinControl; fWrap: boolean = True; fVisible: boolean = False): TForm; virtual;
     function SaveControl(Control: TControl; Site: TWinControl): string; virtual;
     function ReloadControl(const AName: string; Site: TWinControl): TControl; virtual;
     property OnSave: TOnSaveControl read FOnSave write FOnSave;
@@ -327,7 +328,7 @@ var
 function  ScreenRect(ACtrl: TControl): TRect;
 
 //primarily for DockManager internal use
-function  NoteBookCreate(AOwner: TWinControl): TCustomDockSite;
+function  NoteBookCreate: TCustomDockSite;
 procedure NoteBookAdd(ABook: TCustomDockSite; AItem: TControl); //to be removed
 function  TryRename(AComp: TComponent; const NewName: string): boolean;
 function  CreateUniqueComponentName(const AClassName: string; OwnerComponent: TComponent): string;
@@ -378,7 +379,7 @@ const
   HeaderButtons = [zpCloseButton];
 {$ENDIF}
 
-function  NoteBookCreate(AOwner: TWinControl): TCustomDockSite;
+function  NoteBookCreate: TCustomDockSite;
 begin
 (* Create default dockbook type.
   Dockable notebooks must not have an specific owner.
@@ -390,8 +391,9 @@ begin
 }
   //Result := TEasyDockBook.Create(AOwner);
   Result := TEasyDockBook.Create(Application);
+  DockLoader.MakeDockable(Result, False, False); //do not make visible here!
   { TODO : form style should become bsNone when docked - workaround here }
-  Result.BorderStyle := bsNone;
+  //Result.BorderStyle := bsNone;
 end;
 
 procedure NoteBookAdd(ABook: TCustomDockSite; AItem: TControl);
@@ -676,7 +678,7 @@ begin
         NoteBook := TCustomDockSite(DropCtl);
       end else begin
       //create new book
-        NoteBook := NoteBookCreate(FDockSite);
+        NoteBook := NoteBookCreate;
       {$IFDEF replace}
         NoteBook.ReplaceDockedControl(DropZone.ChildControl, NoteBook, nil, alCustom);
       {$ELSE}
@@ -690,6 +692,7 @@ begin
         NoteBookAdd(NoteBook, DropCtl); //put the original control into the notebook
         NoteBook.BoundsRect := r;
       {$ENDIF}
+        NoteBook.Show;
       end; //else use existing control
       NoteBookAdd(NoteBook, Control);
       FDockSite.Invalidate; //update notebook caption
@@ -697,9 +700,10 @@ begin
   {$IFDEF singleTab}
     end else if SingleTab and not (DropCtl is TEasyBook)  then begin
     //empty root zone, create new notebook
-      NoteBook := NoteBookCreate(FDockSite);
+      NoteBook := NoteBookCreate;
       NoteBook.ManualDock(FDockSite, nil, alClient);
       NoteBookAdd(NoteBook, Control);
+      NoteBook.Show;
       FDockSite.Invalidate; //update notebook caption
       exit;
   {$ELSE}
@@ -711,8 +715,6 @@ begin
   NewZone := TEasyZone.Create(self);
   NewZone.ChildControl := Control as TControl;
   Control.Align := alNone;
-//is this still required?
-  //if Control is TCustomForm then TCustomForm(Control).BorderStyle := bsNone;
 
 //special case: in root zone (empty dock site)
 
@@ -2150,6 +2152,25 @@ begin
 //last resort
   if Result = '' then
     Result := Control.Name; //definitely child.Name
+end;
+
+function TCustomDockMaster.MakeDockable(AForm: TWinControl; fWrap: boolean;
+  fVisible: boolean): TForm;
+var
+  wctl: TWinControlAccess absolute AForm;
+begin
+(* Result is the floating site, if created (fWrap).
+  fWrap here is ignored.
+To be overridden by final TDockMaster, for
+- wrapping
+- visibility
+*)
+//make it dockable
+  wctl.DragKind := dkDock;
+  wctl.DragMode := dmAutomatic;
+  if fVisible then
+    AForm.Show;
+  Result := nil; //not wrapped
 end;
 
 function TCustomDockMaster.ReloadControl(const AName: string;

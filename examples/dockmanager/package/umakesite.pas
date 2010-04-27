@@ -89,7 +89,7 @@ type
     procedure AddElasticSites(AForm: TCustomForm; Sides: sDockSides);
     function  CreateDockable(const AName: string;
         fMultiInst: boolean; fWrap: boolean = True; fVisible: boolean = False): TWinControl;
-    function  MakeDockable(AForm: TWinControl; fWrap: boolean = True; fVisible: boolean = False): TForm;
+    function  MakeDockable(AForm: TWinControl; fWrap: boolean = True; fVisible: boolean = False): TForm; override;
     procedure DumpSites;
   //persistence
     procedure LoadFromStream(Stream: TStream);
@@ -244,23 +244,23 @@ var
   Res: TWinControlAccess absolute AForm;
 begin
   Result := nil;
+  //Result  := inherited MakeDockable(AForm, fWrap, fVisible); - premature Visbile?
 //check already dockable
   { TODO -cdocking : problems with IDE windows:
     wrapping results in exceptions - conflicts with OnEndDock? }
 //make it dockable
   Res.DragKind := dkDock;
   Res.DragMode := dmAutomatic;
+//always force FloatingDockSite
+{$IFDEF NeedHost}
+  Res.FloatingDockSiteClass := TFloatingSite;
+{$ELSE}
+  //if not ForIDE then //problems with the IDE?
+    Res.OnEndDock := @FormEndDock; //float into default host site
+{$ENDIF}
 //wrap into floating site, if requested (not on restore Layout)
   if fWrap then begin
-  {$IFDEF NeedHost}
-    Res.FloatingDockSiteClass := TFloatingSite;
-  {$ELSE}
-    //if not ForIDE then //problems with the IDE?
-      Res.OnEndDock := @FormEndDock; //float into default host site
-  {$ENDIF}
-    AForm.DisableAlign;
     Site := WrapDockable(AForm, fVisible);
-    AForm.EnableAlign;
   end;
 //IDE?
   if ForIDE and fWrap and assigned(Site) and assigned(Site.DockManager) then begin
@@ -480,6 +480,7 @@ Notebooks?
       if site.DockManager = nil then
         TAppDockManager.Create(site);
       site.DockManager.LoadFromStream(Stream);
+      site.Show;
   {$ENDIF}
   end;
 end;
@@ -705,6 +706,7 @@ function TDockMaster.WrapDockable(Client: TControl; fVisible: boolean): TFloatin
 var
   Site: TFloatingSite absolute Result;
   ctl: TControlAccess absolute Client;
+  wctl: TWinControlAccess absolute Client;
   r: TRect;
 begin
 (* Wrap a control into a floating site.
@@ -729,11 +731,15 @@ begin
     Site.BoundsRect := r;
     //DebugLn('Before Wrap: ', DbgS(Site.BoundsRect));
     Client.Align := alNone;
-    //retry make client auto-dockable
+  {//retry make client auto-dockable?
     ctl.DragKind := dkDock;
-    ctl.DragMode := dmAutomatic;
+    ctl.DragMode := dmAutomatic;}
+    if Client is TWinControl then
+      wctl.DisableAlign;
     Client.ManualDock(Site);
-    Client.Visible := True; //shown only if Site is visible
+    Client.Visible := True; //shown only when Site becomes visible
+    if Client is TWinControl then
+      wctl.EnableAlign;
     //DebugLn('After Wrap: ', DbgS(Site.BoundsRect));
 
     if ForIDE then begin
@@ -750,10 +756,6 @@ begin
       Site.Release;
     raise;
   end;
-{//retry make client auto-dockable
-  ctl.DragKind := dkDock;
-  ctl.DragMode := dmAutomatic;
-}
 end;
 
 procedure TDockMaster.DumpSites;

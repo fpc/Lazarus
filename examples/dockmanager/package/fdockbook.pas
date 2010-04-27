@@ -54,7 +54,7 @@ HostDockSite.UpdateDockCaption (provide composed dock caption)
 
 {.$DEFINE undockFix}
 {$DEFINE closeFix}
-{$DEFINE autoWrap}  //request FloatingDockSiteClass
+{.$DEFINE autoWrap}  //request FloatingDockSiteClass
 
 interface
 
@@ -89,7 +89,6 @@ type
       X, Y: Integer);
     procedure FormDockOver(Sender: TObject; Source: TDragDockObject;
       X, Y: Integer; State: TDragState; var Accept: Boolean);
-    procedure FormEndDock(Sender, Target: TObject; X, Y: Integer);
     procedure FormGetSiteInfo(Sender: TObject; DockClient: TControl;
       var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean);
     procedure FormUnDock(Sender: TObject; Client: TControl;
@@ -237,12 +236,6 @@ begin
   Source.DockRect := ScreenRect(pnlDock);
 end;
 
-procedure TEasyDockBook.FormEndDock(Sender, Target: TObject; X, Y: Integer);
-begin
-(* wrap into an FloatHost
-*)
-end;
-
 procedure TEasyDockBook.FormGetSiteInfo(Sender: TObject; DockClient: TControl;
   var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean);
 begin
@@ -378,13 +371,12 @@ end;
 
 function TEasyDockBook.GetFloatingDockSiteClass: TWinControlClass;
 begin
-(* Try: request a floating site
+(* Try: request a floating site, if no OnEndDock handler is installed
 *)
-{$IFDEF autoWrap}
-  Result:= TFloatingSite;
-{$ELSE}
-  Result := inherited GetFloatingDockSiteClass;
-{$ENDIF}
+  if assigned(OnEndDock) then
+    Result := inherited GetFloatingDockSiteClass
+  else
+    Result:= TFloatingSite;
 end;
 
 {$IFDEF new}
@@ -482,7 +474,6 @@ begin
   Try prevent undocking of NOT docked form.
 *)
   inherited MouseMove(Shift, X, Y);
-  //if ssLeft in Shift then
   if (ssLeft in Shift) and (Parent.HostDockSite <> nil) then
     Parent.BeginDrag(False); //delayed docking of the container form
 end;
@@ -490,7 +481,6 @@ end;
 {$R *.lfm}
 
 initialization
-  {.$I fdockbook.lrs}
   RegisterClass(TEasyDockBook);
 end.
 
