@@ -376,8 +376,6 @@ begin
   Color := clBtnFace;
   FBackColor := clBtnFace;
 
-  FCurrentExtent := EmptyDoubleRect;
-
   FIsZoomed := false;
 
   FGraphBrush := TBrush.Create;
@@ -470,7 +468,7 @@ begin
 
   if not FIsZoomed then
     UpdateExtent;
-  FLogicalExtent := FCurrentExtent;
+  FCurrentExtent := FLogicalExtent;
   DrawTitleFoot(ACanvas);
   PrepareLegend(ACanvas, legendItems, legendRect);
   try
@@ -915,7 +913,6 @@ begin
   HideReticule;
   FLogicalExtent := AValue;
   FIsZoomed := true;
-  FCurrentExtent := FLogicalExtent;
   Invalidate;
 end;
 
@@ -1044,20 +1041,20 @@ var
 begin
   Extent.CheckBoundsOrder;
 
-  FCurrentExtent := EmptyExtent;
+  FLogicalExtent := EmptyExtent;
   for i := 0 to SeriesCount - 1 do begin
     s := Series[i];
     if not s.Active then continue;
     seriesBounds := EmptyExtent;
     s.GetGraphBounds(seriesBounds);
-    with FCurrentExtent do begin
+    with FLogicalExtent do begin
       a.X := Min(a.X, seriesBounds.a.X);
       b.X := Max(b.X, seriesBounds.b.X);
       a.Y := Min(a.Y, seriesBounds.a.Y);
       b.Y := Max(b.Y, seriesBounds.b.Y);
     end;
   end;
-  with FCurrentExtent, Extent do begin
+  with FLogicalExtent, Extent do begin
     SetBounds(a.X, b.X, XMin, XMax, UseXMin, UseXMax);
     SetBounds(a.Y, b.Y, YMin, YMax, UseYMin, UseYMax);
   end;
