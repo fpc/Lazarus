@@ -393,8 +393,7 @@ var
       PushEraseBkgndCommand(ecDiscard);
 
     // check if double buffering is requested
-    useDoubleBuffer := (ControlDC = 0) and (lWinControl.DoubleBuffered
-      or ThemeServices.ThemesEnabled);
+    useDoubleBuffer := (ControlDC = 0) and (lWinControl.DoubleBuffered or ThemeServices.ThemesEnabled);
     if useDoubleBuffer then
     begin
       if CurDoubleBuffer.DC <> 0 then

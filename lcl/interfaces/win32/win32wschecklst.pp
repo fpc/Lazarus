@@ -108,6 +108,13 @@ begin
     begin
       TWin32CheckListBoxStrings.DeleteItemRecords(Window);
     end;
+    WM_PAINT,
+    WM_PRINTCLIENT,
+    WM_ERASEBKGND:
+      begin
+        Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+        Exit;
+      end;
   end;
 
   Result := WindowProc(Window, Msg, WParam, LParam);
