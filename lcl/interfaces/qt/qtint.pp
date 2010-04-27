@@ -163,9 +163,13 @@ type
   procedure EventTrace(message : string; data : pointer);
   function HwndFromWidgetH(const WidgetH: QWidgetH): HWND;
   function DTFlagsToQtFlags(const Flags: Cardinal): Integer;
-
+  function GetQtVersion: String;
+  function QtVersionCheck(const AMajor, AMinor, AMicro: Integer): Boolean;
 
 const
+   QtVersionMajor: Integer = 0;
+   QtVersionMinor: Integer = 0;
+   QtVersionMicro: Integer = 0;
    TargetEntrys = 3;
    QEventLCLMessage = QEventUser;
    LCLQt_CheckSynchronize = QEventType(Ord(QEventUser) + $1001);
@@ -314,6 +318,89 @@ begin
         break;
     end;
   until Result <> nil;
+end;
+
+{------------------------------------------------------------------------------
+  Method: GetQtVersion
+  Params:  none
+  Returns: String
+
+  Returns current Qt lib version used by application.
+ ------------------------------------------------------------------------------}
+function GetQtVersion: String;
+begin
+  Result := QtVersion;
+end;
+
+procedure QtVersionInt(out AMajor, AMinor, AMicro: integer);
+var
+  S: String;
+  i: Integer;
+  sLen: integer;
+begin
+  AMajor := 0;
+  AMinor := 0;
+  AMicro := 0;
+  S := GetQtVersion;
+  sLen := length(S);
+
+  // 5 is usual length of qt version eg. 4.6.3
+  if sLen < 5 then
+    exit;
+  if sLen = 5 then
+  begin
+    TryStrToInt(S[1], AMajor);
+    TryStrToInt(S[3], AMinor);
+    TryStrToInt(S[5], AMicro);
+  end else
+  begin
+    i := Pos('.', S);
+    // major
+    if i > 0 then
+    begin
+      TryStrToInt(Copy(S, 1, i -1), AMajor);
+      Delete(S, 1, i - 1);
+    end;
+    // minor
+    i := Pos('.', S);
+    if i > 0 then
+    begin
+      TryStrToInt(Copy(S, 1, i -1), AMinor);
+      Delete(S, 1, i - 1);
+    end;
+    // micro
+    i := Pos('.', S);
+    if i > 0 then
+      TryStrToInt(Copy(S, 1, i -1), AMinor);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: QtVersionCheck
+  Params:  AMajor, AMinor, AMicro: Integer
+  Returns: Boolean
+
+  Function checks if qt lib version satisfies our function params values.
+  Returns TRUE if successfull.
+  It is possible to check Major and/or Minor version only (or any of those
+  3 params) by setting it's param to -1.
+  eg. QtVersionCheck(4, 5, -1) checks only major and minor version and will
+  not process micro version check.
+  NOTE: It checks qt lib version used by application.
+ ------------------------------------------------------------------------------}
+function QtVersionCheck(const AMajor, AMinor, AMicro: Integer): Boolean;
+begin
+  Result := False;
+  if AMajor > 0 then
+    Result := AMajor = QtVersionMajor;
+  if (AMajor > 0) and not Result then
+    exit;
+  if AMinor >= 0 then
+    Result := AMinor = QtVersionMinor;
+  if (AMinor >= 0) and not Result then
+    exit;
+  if AMicro >= 0 then
+    Result := AMicro = QtVersionMicro;
 end;
 
 {$I qtobject.inc}

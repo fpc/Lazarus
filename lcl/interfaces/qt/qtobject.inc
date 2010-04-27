@@ -27,6 +27,9 @@ begin
   inherited Create;
 
   App := QApplication_Create(@argc, argv);
+  {$J+}
+  QtVersionInt(QtVersionMajor, QtVersionMinor, QtVersionMicro);
+  {$J-}
   InitStockItems;
   QtWidgetSet := Self;
   ClearCachedColors;
