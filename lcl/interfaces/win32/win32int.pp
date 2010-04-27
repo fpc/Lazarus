@@ -185,8 +185,6 @@ type
     procedure DCRedraw(CanvasHandle: HDC); override;
     procedure SetDesigning(AComponent: TComponent); override;
 
-    procedure ShowHide(Sender: TObject);
-
     // create and destroy
     function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : THandle; override;
     function DestroyTimer(TimerHandle: THandle) : boolean; override;

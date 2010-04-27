@@ -86,6 +86,7 @@ type
     class procedure SetPopupParent(const ACustomForm: TCustomForm;
        const APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean;
       const Alpha: Byte); override;
@@ -103,6 +104,7 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TWin32WSScreen }
@@ -491,6 +493,28 @@ begin
       ShowWindow(AForm.Handle, SW_SHOWNA);
 end;
 
+class procedure TWin32WSCustomForm.ShowHide(const AWinControl: TWinControl);
+var
+  Flags: dword;
+begin
+  if AWinControl.HandleObjectShouldBeVisible then
+  begin
+    case TCustomForm(AWinControl).WindowState of
+      wsMaximized: Flags := SW_SHOWMAXIMIZED;
+      wsMinimized: Flags := SW_SHOWMINIMIZED;
+    else
+      Flags := SW_SHOW;
+    end;
+    Windows.ShowWindow(AWinControl.Handle, Flags);
+    { ShowWindow does not send WM_SHOWWINDOW when creating overlapped maximized window }
+    { TODO: multiple WM_SHOWWINDOW when maximizing after initial show? }
+    if Flags = SW_SHOWMAXIMIZED then
+      Windows.SendMessage(AWinControl.Handle, WM_SHOWWINDOW, 1, 0);
+  end
+  else
+    ShowWindow(AWinControl.Handle, SW_HIDE);
+end;
+
 class procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
   ShowWindow(ACustomForm.Handle, SW_SHOW);
@@ -546,6 +570,14 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
+end;
+
+class procedure TWin32WSHintWindow.ShowHide(const AWinControl: TWinControl);
+begin
+  if AWinControl.HandleObjectShouldBeVisible then
+    Windows.SetWindowPos(AWinControl.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER)
+  else
+    Windows.ShowWindow(AWinControl.Handle, SW_HIDE);
 end;
 
 end.

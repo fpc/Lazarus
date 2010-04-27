@@ -643,9 +643,17 @@ begin
 end;
 
 class procedure TWin32WSWinControl.ShowHide(const AWinControl: TWinControl);
+const
+  VisibilityToFlag: array[Boolean] of UINT = (SWP_HIDEWINDOW, SWP_SHOWWINDOW);
+var
+  Handle, ParentPanel: HWND;
 begin
-  // other methods also use ShowHide, can't move code
-  TWin32WidgetSet(WidgetSet).ShowHide(AWinControl);
+  Handle := AWinControl.Handle;
+  ParentPanel := GetWin32WindowInfo(Handle)^.ParentPanel;
+  if ParentPanel <> 0 then
+    Handle := ParentPanel;
+  Windows.SetWindowPos(Handle, 0, 0, 0, 0, 0,
+    SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or VisibilityToFlag[AWinControl.HandleObjectShouldBeVisible]);
 end;
 
 { TWin32WSDragImageList }

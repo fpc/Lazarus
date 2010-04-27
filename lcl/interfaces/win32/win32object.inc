@@ -705,59 +705,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.ShowHide
-  Params: Sender - The sending object
-  Returns: Nothing
-
-  Shows or hides a control
- ------------------------------------------------------------------------------}
-procedure TWin32WidgetSet.ShowHide(Sender: TObject);
-var
-  Handle: HWND;
-  ParentPanel: HWND;
-  Flags: dword;
-begin
-  Handle := ObjectToHWND(Sender);
-  ParentPanel := GetWin32WindowInfo(Handle)^.ParentPanel;
-  if ParentPanel <> 0 then
-    Handle := ParentPanel;
-  if TControl(Sender).HandleObjectShouldBeVisible then
-  begin
-    Assert(False, 'Trace: [TWin32WidgetSet.ShowHide] Showing the window');
-    if TControl(Sender).FCompStyle = csHintWindow then
-    begin
-      Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER);
-    end else
-    begin
-      if TControl(Sender) is TCustomForm then
-      begin
-        case TCustomForm(Sender).WindowState of
-          wsMaximized: Flags := SW_SHOWMAXIMIZED;
-          wsMinimized: Flags := SW_SHOWMINIMIZED;
-        else
-          Flags := SW_SHOW;
-        end;
-        Windows.ShowWindow(Handle, Flags);
-        { ShowWindow does not send WM_SHOWWINDOW when creating overlapped maximized window }
-        { TODO: multiple WM_SHOWWINDOW when maximizing after initial show? }
-        if Flags = SW_SHOWMAXIMIZED then
-          Windows.SendMessage(Handle, WM_SHOWWINDOW, 1, 0);
-      end
-      else
-      begin
-        Windows.SetWindowPos(Handle, 0, 0, 0, 0, 0,
-          SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or SWP_SHOWWINDOW);
-      end;
-    end;
-  end
-  else
-  begin
-    Assert(False, 'TRACE: [TWin32WidgetSet.ShowHide] Hiding the window');
-    ShowWindow(Handle, SW_HIDE);
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Method: TWin32WidgetSet.DCReDraw
   Params: CanvasHandle - HDC to redraw
   Returns: Nothing
