@@ -34,22 +34,26 @@ type
 
   TBackupOptionsFrame = class(TAbstractIDEOptionsEditor)
     BackupHelpLabel: TLabel;
-    BackupOtherGroupBox: TGroupBox;
-    BackupProjectGroupBox: TGroupBox;
-    BakOtherAddExtComboBox: TComboBox;
-    BakOtherAddExtLabel: TLabel;
-    BakOtherMaxCounterComboBox: TComboBox;
-    BakOtherMaxCounterLabel: TLabel;
-    BakOtherSubDirComboBox: TComboBox;
-    BakOtherSubDirLabel: TLabel;
-    BakOtherTypeRadioGroup: TRadioGroup;
-    BakProjAddExtComboBox: TComboBox;
-    BakProjAddExtLabel: TLabel;
-    BakProjMaxCounterComboBox: TComboBox;
-    BakProjMaxCounterLabel: TLabel;
-    BakProjSubDirComboBox: TComboBox;
-    BakProjSubDirLabel: TLabel;
-    BakProjTypeRadioGroup: TRadioGroup;
+    BakOtherAddExtComboBox:TComboBox;
+    BakOtherAddExtLabel:TLabel;
+    BakOtherMaxCounterComboBox:TComboBox;
+    BakOtherMaxCounterLabel:TLabel;
+    BakOtherSubDirComboBox:TComboBox;
+    BakOtherSubDirLabel:TLabel;
+    BakOtherTypeRadioGroup:TRadioGroup;
+    BakProjAddExtComboBox:TComboBox;
+    BakProjAddExtLabel:TLabel;
+    BakProjMaxCounterComboBox:TComboBox;
+    BakProjMaxCounterLabel:TLabel;
+    BakProjSubDirComboBox:TComboBox;
+    BakProjSubDirLabel:TLabel;
+    BakProjTypeRadioGroup:TRadioGroup;
+    Bevel2b:TBevel;
+    Bevel2a:TBevel;
+    Bevel1b:TBevel;
+    Bevel1a:TBevel;
+    BackupProjectGroupLabel:TLabel;
+    BackupOtherGroupLabel:TLabel;
     procedure BakTypeRadioGroupClick(Sender: TObject);
   private
   public
@@ -94,7 +98,7 @@ end;
 procedure TBackupOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   BackupHelpLabel.Caption := dlgEnvBackupHelpNote;
-  BackupProjectGroupBox.Caption := dlgProjFiles;
+  BackupProjectGroupLabel.Caption := dlgProjFiles;
 
   with BakProjTypeRadioGroup do
   begin
@@ -147,7 +151,7 @@ begin
     EndUpdate;
   end;
 
-  BackupOtherGroupBox.Caption := dlgEnvOtherFiles;
+  BackupOtherGroupLabel.Caption := dlgEnvOtherFiles;
   with BakOtherTypeRadioGroup do
   begin
     Caption:=dlgEnvType;
