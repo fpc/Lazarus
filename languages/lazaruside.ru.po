@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-27 02:36+0300\n"
+"PO-Revision-Date: 2010-04-28 02:57+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -958,7 +958,7 @@ msgstr "Завершать блоки"
 
 #: lazarusidestrconsts.dlgedcustomext
 msgid "User defined extension"
-msgstr "Пользовательское расширение"
+msgstr "Расширение пользователя"
 
 #: lazarusidestrconsts.dlgeddelay
 msgid "Delay"
@@ -1735,7 +1735,7 @@ msgstr "Обрезать пробелы (при подсветке текуще�
 
 #: lazarusidestrconsts.dlgmaxcntr
 msgid "Maximum counter"
-msgstr "Максимальный счетчик"
+msgstr "Максимум счетчика"
 
 #: lazarusidestrconsts.dlgmaxlinelength
 msgid "Max line length:"
