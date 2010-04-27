@@ -571,6 +571,9 @@ type
     fpciTargetProcessor    // -iTP       Return target processor
     );
   TFPCInfoTypes = set of TFPCInfoType;
+  TFPCInfoStrings = array[TFPCInfoType] of string;
+const
+  fpciAll = [low(TFPCInfoType)..high(TFPCInfoType)];
 
 function DefineActionNameToAction(const s: string): TDefineAction;
 function DefineTemplateFlagsToString(Flags: TDefineTemplateFlags): string;
@@ -591,7 +594,8 @@ function CompressFileList(Files: TStringList): TStringList;
 function UncompressFileList(Files: TStringList): TStringList;
 function RunTool(const Filename, Params: string;
                  WorkingDirectory: string = ''): TStringList;
-//function ParseFPCInfo(FPCInfo: string; TFPCInfoTypes: TFPCInfoTypes): boolean;
+function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
+                      out Infos: TFPCInfoStrings): boolean;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
@@ -776,6 +780,26 @@ begin
   except
     FreeAndNil(Result);
   end;
+end;
+
+function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
+  out Infos: TFPCInfoStrings): boolean;
+var
+  i: TFPCInfoType;
+  p: Integer;
+  StartPos: LongInt;
+begin
+  p:=1;
+  for i:=low(TFPCInfoType) to high(TFPCInfoType) do begin
+    if not (i in InfoTypes) then continue;
+    StartPos:=p;
+    while (p<=length(FPCInfo)) and (FPCInfo[p]<>' ') do inc(p);
+    if p=StartPos then exit(false);
+    Infos[i]:=copy(FPCInfo,StartPos,p-StartPos);
+    // skip space
+    inc(p);
+  end;
+  Result:=true;
 end;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
