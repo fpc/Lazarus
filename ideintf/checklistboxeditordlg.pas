@@ -19,13 +19,19 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, CheckLst,
   ExtCtrls, Buttons, ComCtrls, ButtonPanel, IDEImagesIntf, ObjInspStrConsts,
-  LCLType;
+  LCLType, ActnList;
 
 type
 
   { TCheckListBoxEditorDlg }
 
   TCheckListBoxEditorDlg = class(TForm)
+    actAdd: TAction;
+    actDel: TAction;
+    actEdit: TAction;
+    actMoveUp: TAction;
+    actMoveDown: TAction;
+    ActionList1: TActionList;
     BtnPanel: TButtonPanel;
     FCheck: TCheckListBox;
     aCheck: TCheckListBox;
@@ -37,13 +43,13 @@ type
     tbDown: TToolButton;
     ToolButton6: TToolButton;
     tbEdit: TToolButton;
-    procedure AddItem(Sender: TObject);
-    procedure DeleteItem(Sender: TObject);
+    procedure actAddExecute(Sender: TObject);
+    procedure actDelExecute(Sender: TObject);
+    procedure actEditExecute(Sender: TObject);
+    procedure actMoveDownExecute(Sender: TObject);
+    procedure actMoveUpExecute(Sender: TObject);
     procedure FCheckClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure ModifyItem(Sender: TObject);
-    procedure MoveDownItem(Sender: TObject);
-    procedure MoveUpItem(Sender: TObject);
     procedure ApplyCheck(Sender: TObject);
   private
     { private declarations }
@@ -78,84 +84,43 @@ end;
 
 { TCheckListBoxEditorDlg }
 
-procedure TCheckListBoxEditorDlg.AddItem(Sender:TObject);
+procedure TCheckListBoxEditorDlg.actAddExecute(Sender: TObject);
 var
   strItem: string;
 begin
   if InputQuery(clbCheckListBoxEditor, clbAdd, strItem) then
-   begin
+  begin
     FCheck.Items.Add(strItem);
     Change;
-   end;
+  end;
 end;
 
-procedure TCheckListBoxEditorDlg.DeleteItem(Sender:TObject);
-  var
-    OldIndex : integer;
+procedure TCheckListBoxEditorDlg.actDelExecute(Sender: TObject);
+var
+  OldIndex : integer;
 begin
   if FCheck.ItemIndex = -1 then exit;
-  if MessageDlg(clbCheckListBoxEditor,Format(clbDeleteQuest,[FCheck.ItemIndex,FCheck.Items[FCheck.ItemIndex]]),
+  if MessageDlg(clbCheckListBoxEditor, Format(clbDeleteQuest, [FCheck.ItemIndex, FCheck.Items[FCheck.ItemIndex]]),
     mtConfirmation, mbYesNo, 0) = mrYes then
-   begin
+  begin
     //  save old index
     OldIndex := FCheck.ItemIndex;
     FCheck.Items.Delete(FCheck.ItemIndex);
     if (FCheck.Count-1<OldIndex) then
-       FCheck.ItemIndex := FCheck.Count-1
-      else
-       FCheck.ItemIndex := OldIndex;
+      FCheck.ItemIndex := FCheck.Count-1
+    else
+      FCheck.ItemIndex := OldIndex;
     Change;
-   end;
+  end;
 end;
 
-procedure TCheckListBoxEditorDlg.FCheckClick(Sender: TObject);
+procedure TCheckListBoxEditorDlg.actEditExecute(Sender: TObject);
 begin
-  Change;
+  if FCheck.ItemIndex = -1 then exit;
+  FCheck.Items[FCheck.ItemIndex]:=InputBox(clbCheckListBoxEditor,clbModify,FCheck.Items[FCheck.ItemIndex]);
 end;
 
-procedure TCheckListBoxEditorDlg.FormCreate(Sender: TObject);
-begin
-  ToolBar.Images := IDEImages.Images_16;
-  tbAdd.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
-  tbDelete.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
-  tbUp.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
-  tbDown.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
-  tbEdit.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
-
-  Caption := clbCheckListBoxEditor;
-  BtnPanel.OKButton.Caption := oisOk;
-  BtnPanel.CancelButton.Caption := oisCancel;
-  BtnPanel.HelpButton.Caption := cActionListEditorHelpCategory;
-  BtnPanel.CloseButton.Kind := bkCustom;
-  BtnPanel.CloseButton.LoadGlyphFromStock(idButtonYes);
-  BtnPanel.CloseButton.Caption := sccsTrEdtApply;
-  BtnPanel.CloseButton.OnClick := @ApplyCheck;
-
-  tbAdd.Hint := clbAdd;
-  tbDelete.Hint := clbDeleteHint;
-  tbUp.Hint := clbUp;
-  tbDown.Hint := clbDown;
-  tbEdit.Hint := clbModify;
-  Modified := False;
-end;
-
-procedure TCheckListBoxEditorDlg.MoveUpItem(Sender:TObject);
-var
-  itemtmp: string;
-  checkedtmp: boolean;
-begin
-  if (FCheck.Items.Count<=1)or(FCheck.ItemIndex<1) then exit;
-  itemtmp:=FCheck.Items[FCheck.ItemIndex-1];
-  checkedtmp:=FCheck.Checked[FCheck.ItemIndex-1];
-  FCheck.Items[FCheck.ItemIndex-1]:=FCheck.Items[FCheck.ItemIndex];
-  FCheck.Checked[FCheck.ItemIndex-1]:=FCheck.Checked[FCheck.ItemIndex];
-  FCheck.Items[FCheck.ItemIndex]:=itemtmp;
-  FCheck.Checked[FCheck.ItemIndex]:=checkedtmp;
-  FCheck.ItemIndex:=FCheck.ItemIndex-1;
-  Change;
-end;
-
-procedure TCheckListBoxEditorDlg.MoveDownItem(Sender:TObject);
+procedure TCheckListBoxEditorDlg.actMoveDownExecute(Sender: TObject);
 var
   itemtmp: string;
   checkedtmp: boolean;
@@ -171,10 +136,54 @@ begin
   Change;
 end;
 
-procedure TCheckListBoxEditorDlg.ModifyItem(Sender:TObject);
+procedure TCheckListBoxEditorDlg.actMoveUpExecute(Sender: TObject);
+var
+  itemtmp: string;
+  checkedtmp: boolean;
 begin
-  if FCheck.ItemIndex = -1 then exit;
-  FCheck.Items[FCheck.ItemIndex]:=InputBox(clbCheckListBoxEditor,clbModify,FCheck.Items[FCheck.ItemIndex]);
+  if (FCheck.Items.Count<=1)or(FCheck.ItemIndex<1) then exit;
+  itemtmp:=FCheck.Items[FCheck.ItemIndex-1];
+  checkedtmp:=FCheck.Checked[FCheck.ItemIndex-1];
+  FCheck.Items[FCheck.ItemIndex-1]:=FCheck.Items[FCheck.ItemIndex];
+  FCheck.Checked[FCheck.ItemIndex-1]:=FCheck.Checked[FCheck.ItemIndex];
+  FCheck.Items[FCheck.ItemIndex]:=itemtmp;
+  FCheck.Checked[FCheck.ItemIndex]:=checkedtmp;
+  FCheck.ItemIndex:=FCheck.ItemIndex-1;
+  Change;
+end;
+
+procedure TCheckListBoxEditorDlg.FCheckClick(Sender: TObject);
+begin
+  Change;
+end;
+
+procedure TCheckListBoxEditorDlg.FormCreate(Sender: TObject);
+begin
+  ToolBar.Images := IDEImages.Images_16;
+  actAdd.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
+  actDel.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
+  actMoveUp.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
+  actMoveDown.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
+  actEdit.ImageIndex := IDEImages.LoadImage(16, 'laz_edit');
+
+  Caption := clbCheckListBoxEditor;
+  BtnPanel.OKButton.Caption := oisOk;
+  BtnPanel.CancelButton.Caption := oisCancel;
+  BtnPanel.HelpButton.Caption := cActionListEditorHelpCategory;
+  BtnPanel.CloseButton.Kind := bkCustom;
+  BtnPanel.CloseButton.LoadGlyphFromStock(idButtonYes);
+  BtnPanel.CloseButton.Caption := sccsTrEdtApply;
+  BtnPanel.CloseButton.OnClick := @ApplyCheck;
+
+  actAdd.Hint := clbAdd;
+  actDel.Hint := clbDeleteHint;
+  actMoveUp.Hint := clbUp;
+  actMoveDown.Hint := clbDown;
+  actEdit.Hint := clbModify;
+
+  actMoveUp.ShortCut := scCtrl or VK_UP;
+  actMoveDown.ShortCut := scCtrl or VK_DOWN;
+  Modified := False;
 end;
 
 procedure TCheckListBoxEditorDlg.ApplyCheck(Sender:TObject);
@@ -188,10 +197,10 @@ end;
 
 procedure TCheckListBoxEditorDlg.Change;
 begin
-  tbDelete.Enabled := FCheck.ItemIndex <> -1;
-  tbEdit.Enabled := FCheck.ItemIndex <> -1;
-  tbUp.Enabled := (FCheck.ItemIndex <> -1) and (FCheck.ItemIndex > 0);
-  tbDown.Enabled := (FCheck.ItemIndex <> -1) and (FCheck.ItemIndex < FCheck.Count - 1);
+  actDel.Enabled := FCheck.ItemIndex <> -1;
+  actEdit.Enabled := FCheck.ItemIndex <> -1;
+  actMoveUp.Enabled := (FCheck.ItemIndex <> -1) and (FCheck.ItemIndex > 0);
+  actMoveDown.Enabled := (FCheck.ItemIndex <> -1) and (FCheck.ItemIndex < FCheck.Count - 1);
 end;
 
 end.

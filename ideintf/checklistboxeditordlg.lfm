@@ -3,7 +3,6 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
   Height = 294
   Top = 154
   Width = 445
-  ActiveControl = FCheck
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'CheckListBoxEditorDlg'
@@ -13,7 +12,7 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
   Constraints.MinWidth = 200
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object FCheck: TCheckListBox
     Left = 0
     Height = 232
@@ -31,64 +30,57 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
     Width = 445
     AutoSize = True
     Caption = 'ToolBar'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 1
     object tbAdd: TToolButton
       Left = 1
       Top = 2
-      Caption = 'tbAdd'
+      Action = actAdd
       ParentShowHint = False
       ShowHint = True
-      OnClick = AddItem
     end
     object tbDelete: TToolButton
       Left = 24
       Top = 2
-      Caption = 'tbDelete'
-      Enabled = False
+      Action = actDel
       ParentShowHint = False
       ShowHint = True
-      OnClick = DeleteItem
     end
     object ToolButton3: TToolButton
       Left = 47
       Top = 2
-      Width = 9
+      Width = 4
       Caption = 'ToolButton3'
       Style = tbsDivider
     end
     object tbUp: TToolButton
-      Left = 56
+      Left = 51
       Top = 2
-      Caption = 'tbUp'
-      Enabled = False
+      Action = actMoveUp
       ParentShowHint = False
       ShowHint = True
-      OnClick = MoveUpItem
     end
     object tbDown: TToolButton
-      Left = 79
+      Left = 74
       Top = 2
-      Caption = 'tbDown'
-      Enabled = False
+      Action = actMoveDown
       ParentShowHint = False
       ShowHint = True
-      OnClick = MoveDownItem
     end
     object ToolButton6: TToolButton
-      Left = 102
+      Left = 97
       Top = 2
-      Width = 10
+      Width = 4
       Caption = 'ToolButton6'
       Style = tbsDivider
     end
     object tbEdit: TToolButton
-      Left = 112
+      Left = 101
       Top = 2
-      Caption = 'tbEdit'
-      Enabled = False
+      Action = actEdit
       ParentShowHint = False
       ShowHint = True
-      OnClick = ModifyItem
     end
   end
   object BtnPanel: TButtonPanel
@@ -98,5 +90,31 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
     Width = 433
     TabOrder = 2
     ShowBevel = False
+  end
+  object ActionList1: TActionList
+    left = 128
+    top = 64
+    object actAdd: TAction
+      Caption = 'Add'
+      OnExecute = actAddExecute
+      ShortCut = 45
+    end
+    object actDel: TAction
+      Caption = 'actDel'
+      OnExecute = actDelExecute
+      ShortCut = 46
+    end
+    object actMoveUp: TAction
+      Caption = 'actMoveUp'
+      OnExecute = actMoveUpExecute
+    end
+    object actMoveDown: TAction
+      Caption = 'actMoveDown'
+      OnExecute = actMoveDownExecute
+    end
+    object actEdit: TAction
+      Caption = 'Edit'
+      OnExecute = actEditExecute
+    end
   end
 end
