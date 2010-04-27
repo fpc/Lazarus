@@ -596,6 +596,8 @@ function RunTool(const Filename, Params: string;
                  WorkingDirectory: string = ''): TStringList;
 function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
                       out Infos: TFPCInfoStrings): boolean;
+function RunFPCInfo(const CompilerFilename: string;
+                    InfoTypes: TFPCInfoTypes): string;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
@@ -800,6 +802,32 @@ begin
     inc(p);
   end;
   Result:=true;
+end;
+
+function RunFPCInfo(const CompilerFilename: string;
+  InfoTypes: TFPCInfoTypes): string;
+var
+  Params: String;
+  List: TStringList;
+begin
+  Result:='';
+  Params:='';
+  if fpciCompilerDate in InfoTypes then Params:=Params+'D';
+  if fpciShortVersion in InfoTypes then Params:=Params+'V';
+  if fpciFullVersion in InfoTypes then Params:=Params+'W';
+  if fpciCompilerOS in InfoTypes then Params:=Params+'SO';
+  if fpciCompilerProcessor in InfoTypes then Params:=Params+'SP';
+  if fpciTargetOS in InfoTypes then Params:=Params+'TO';
+  if fpciTargetProcessor in InfoTypes then Params:=Params+'TP';
+  if Params='' then exit;
+  List:=nil;
+  try
+    List:=RunTool(CompilerFilename,Params);
+    if (List=nil) or (List.Count<1) then exit;
+    Result:=List[0];
+  finally
+    List.free;
+  end;
 end;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
