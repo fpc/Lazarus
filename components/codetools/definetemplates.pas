@@ -552,6 +552,7 @@ type
     Priority: integer;
     Targets: string; // comma separated list of OS, CPU, e.g. win32,unix,i386 or * for all
     function FitsTargets(const FilterTargets: string): boolean;
+    function FitsFilename(const aFilename: string): boolean;
   end;
 
   { TFPCSourceRules }
@@ -5859,7 +5860,10 @@ begin
   while true do begin
     Rule:=TFPCSourceRule(Node.Data);
     cmp:=CompareStr(Rule.Filename,Filename);
-    if cmp=0 then break;
+    if cmp=0 then begin
+      inc(Result,Rule.Priority);
+      break;
+    end;
     if cmp<0 then begin
       if Node.Left<>nil then
         Node:=Node.Left
@@ -5873,7 +5877,13 @@ begin
     end;
   end;
   // find lowest
-
+  while Node<>nil do begin
+    Node:=RulesSortedForFilenameStart.FindPrecessor(Node);
+    if Node=nil then exit;
+    Rule:=TFPCSourceRule(Node.Data);
+    if not Rule.FitsFilename(Filename) then exit;
+    inc(Result,Rule.Priority);
+  end;
 end;
 
 { TFPCSourceRule }
@@ -5910,6 +5920,12 @@ begin
     while not (FilterStartPos^ in [#0,',']) do inc(FilterStartPos);
   end;
   Result:=false;
+end;
+
+function TFPCSourceRule.FitsFilename(const aFilename: string): boolean;
+begin
+  Result:=(length(Filename)<=length(aFilename))
+         and CompareMem(Pointer(Filename),Pointer(aFilename),length(Filename));
 end;
 
 initialization
