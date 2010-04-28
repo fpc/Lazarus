@@ -550,17 +550,6 @@ const
     );
 
 type
-  TShortFilenameTreeItem = class
-  public
-    ShortFilename: string; // = ExtractFilename(Filename)
-    Filename: string;
-  end;
-
-  TShortFilenameTree = class
-  public
-
-  end;
-
   TFPCInfoType = (
     fpciCompilerDate,      // -iD        Return compiler date
     fpciShortVersion,      // -iV        Return short compiler version
@@ -582,6 +571,7 @@ function GetDefaultSrcOS2ForTargetOS(const TargetOS: string): string;
 procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
   var CPU, OS, WidgetSet: string);
 function GetCompiledTargetOS: string;
+function GetCompiledTargetCPU: string;
 function GetDefaultCompilerFilename: string;
 
 // functions to quickly setup some defines
@@ -606,6 +596,8 @@ function RunFPCVerbose(const CompilerFilename, TestFilename: string;
                        const Options: string = ''): boolean;
 function GatherUnitsInSearchPaths(SearchPaths: TStrings;
                     const OnProgress: TDefinePoolProgress): TStringToStringTree;
+function GatherUnitsInFPCSources(Files: TStringList;
+                              TargetOS, TargetCPU: string): TStringToStringTree;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
@@ -615,7 +607,7 @@ implementation
 
 
 type
-  TDefTemplUnitNameLink = class
+  TUnitNameLink = class
   public
     Unit_Name: string;
     Filename: string;
@@ -623,6 +615,21 @@ type
     UsedMacroCount: integer;
     Priority: integer;
   end;
+
+function CompareUnitNameLinks(Link1, Link2: Pointer): integer;
+var
+  UnitLink1: TUnitNameLink absolute Link1;
+  UnitLink2: TUnitNameLink absolute Link2;
+begin
+  Result:=CompareNames(UnitLink1.Unit_Name,UnitLink2.Unit_Name);
+end;
+
+function CompareUnitNameWithUnitNameLink(Name, Link: Pointer): integer;
+var
+  UnitLink: TUnitNameLink absolute Link;
+begin
+  Result:=CompareNames(AnsiString(Name),UnitLink.Unit_Name);
+end;
 
 // some useful functions
 
@@ -1038,6 +1045,106 @@ begin
   end;
 end;
 
+function GatherUnitsInFPCSources(Files: TStringList; TargetOS, TargetCPU: string
+  ): TStringToStringTree;
+
+  function ContainsWord(aWord, aTxt: PChar): boolean;
+  var
+    t: PChar;
+    w: PChar;
+  begin
+    if (aWord=nil) or (aWord^=#0) then exit(false);
+    if (aTxt=nil) then exit(false);
+    while (aTxt^<>#0) do begin
+      t:=aTxt;
+      w:=aWord;
+      while (w^=t^) do begin
+        inc(w);
+        inc(t);
+        if w^=#0 then exit(true);
+      end;
+      inc(aTxt);
+    end;
+    Result:=false;
+  end;
+
+var
+  i: Integer;
+  Filename: string;
+  Links: TAVLTree;
+  Unit_Name: String;
+  LastDirectory: String;
+  LastDirectoryPriority: Integer;
+  Directory: String;
+  DirPriority: LongInt;
+  SrcOS: String;
+  SrcOS2: String;
+  Node: TAVLTreeNode;
+  Link: TUnitNameLink;
+begin
+  Result:=nil;
+  if (Files=nil) or (Files.Count=0) then exit;
+  if TargetOS='' then
+    TargetOS:=GetCompiledTargetOS;
+  SrcOS:=GetDefaultSrcOSForTargetOS(TargetOS);
+  SrcOS2:=GetDefaultSrcOS2ForTargetOS(TargetOS);
+  if TargetCPU='' then
+    TargetCPU:=GetCompiledTargetCPU;
+  Links:=TAVLTree.Create(@CompareUnitNameLinks);
+  try
+    LastDirectory:='';
+    LastDirectoryPriority:=0;
+    for i:=0 to Files.Count-1 do begin
+      Filename:=Files[i];
+      if (CompareFileExt(Filename,'PAS',false)=0)
+      or (CompareFileExt(Filename,'PP',false)=0)
+      or (CompareFileExt(Filename,'P',false)=0)
+      then begin
+        Directory:=ExtractFilePath(Filename);
+        if LastDirectory=Directory then begin
+          DirPriority:=LastDirectoryPriority;
+        end else begin
+          DirPriority:=0;
+          if ContainsWord(PChar(TargetOS),PChar(Directory)) then inc(DirPriority);
+          if ContainsWord(PChar(TargetCPU),PChar(Directory)) then inc(DirPriority);
+          if ContainsWord(PChar(SrcOS),PChar(Directory)) then inc(DirPriority);
+          if ContainsWord(PChar(SrcOS2),PChar(Directory)) then inc(DirPriority);
+        end;
+        Unit_Name:=ExtractFileNameOnly(Filename);
+        Node:=Links.FindKey(Pointer(Unit_Name),@CompareUnitNameWithUnitNameLink);
+        if Node<>nil then begin
+          Link:=TUnitNameLink(Node.Data);
+          if Link.Priority<DirPriority then begin
+            // something better found
+            Link.Unit_Name:=Unit_Name;
+            Link.Filename:=Filename;
+            Link.Priority:=DirPriority;
+          end;
+        end else begin
+          // new unit source found => add to list
+          Link:=TUnitNameLink.Create;
+          Link.Unit_Name:=Unit_Name;
+          Link.Filename:=Filename;
+          Link.Priority:=DirPriority;
+          Links.Add(Link);
+        end;
+        LastDirectory:=Directory;
+        LastDirectoryPriority:=DirPriority;
+      end;
+    end;
+    Result:=TStringToStringTree.Create(false);
+    Node:=Links.FindLowest;
+    while Node<>Nil do begin
+      Link:=TUnitNameLink(Node.Data);
+      Result[Link.Unit_Name]:=Link.Filename;
+      Node:=Links.FindSuccessor(Node);
+    end;
+  finally
+    Links.FreeAndClear;
+    Links.Free;
+  end;
+end;
+
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 var
   MakefileFPC: TStringList;
@@ -1190,17 +1297,17 @@ begin
 end;
 
 function CompareUnitLinkNodes(NodeData1, NodeData2: pointer): integer;
-var Link1, Link2: TDefTemplUnitNameLink;
+var Link1, Link2: TUnitNameLink;
 begin
-  Link1:=TDefTemplUnitNameLink(NodeData1);
-  Link2:=TDefTemplUnitNameLink(NodeData2);
+  Link1:=TUnitNameLink(NodeData1);
+  Link2:=TUnitNameLink(NodeData2);
   Result:=CompareText(Link1.Unit_Name,Link2.Unit_Name);
 end;
 
 function CompareUnitNameWithUnitLinkNode(AUnitName: Pointer;
   NodeData: pointer): integer;
 begin
-  Result:=CompareText(String(AUnitName),TDefTemplUnitNameLink(NodeData).Unit_Name);
+  Result:=CompareText(String(AUnitName),TUnitNameLink(NodeData).Unit_Name);
 end;
 
 function CompareDirectoryDefines(NodeData1, NodeData2: pointer): integer;
@@ -1267,6 +1374,11 @@ end;
 function GetCompiledTargetOS: string;
 begin
   Result:=lowerCase({$I %FPCTARGETOS%});
+end;
+
+function GetCompiledTargetCPU: string;
+begin
+  Result:=lowerCase({$I %FPCTARGETCPU%});
 end;
 
 function GetDefaultCompilerFilename: string;
@@ -3784,14 +3896,14 @@ var
 
   function GatherUnits: boolean; forward;
 
-  function FindUnitLink(const AnUnitName: string): TDefTemplUnitNameLink;
+  function FindUnitLink(const AnUnitName: string): TUnitNameLink;
   var ANode: TAVLTreeNode;
     cmp: integer;
   begin
     if UnitTree=nil then GatherUnits;
     ANode:=UnitTree.Root;
     while ANode<>nil do begin
-      Result:=TDefTemplUnitNameLink(ANode.Data);
+      Result:=TUnitNameLink(ANode.Data);
       cmp:=CompareText(AnUnitName,Result.Unit_Name);
       if cmp<0 then
         ANode:=ANode.Left
@@ -3926,7 +4038,7 @@ var
     var
       AFilename, Ext, AUnitName, MacroFileName: string;
       FileInfo: TSearchRec;
-      NewUnitLink, OldUnitLink: TDefTemplUnitNameLink;
+      NewUnitLink, OldUnitLink: TUnitNameLink;
       i: integer;
       MacroCount, UsedMacroCount: integer;
       MakeFileFPC: String;
@@ -4013,7 +4125,7 @@ var
                         BuildMacroFileName(AFilename,MacroCount,UsedMacroCount);
                 if OldUnitLink=nil then begin
                   // first unit with this name
-                  NewUnitLink:=TDefTemplUnitNameLink.Create;
+                  NewUnitLink:=TUnitNameLink.Create;
                   NewUnitLink.Unit_Name:=AUnitName;
                   NewUnitLink.FileName:=MacroFileName;
                   NewUnitLink.MacroCount:=MacroCount;
@@ -4133,7 +4245,7 @@ var
   
 
   procedure AddFPCSourceLinkForUnit(const AnUnitName: string);
-  var UnitLink: TDefTemplUnitNameLink;
+  var UnitLink: TUnitNameLink;
     s: string;
   begin
     // search

@@ -149,6 +149,9 @@ procedure ClearEvalOperand(out V: TEvalOperand); inline;
 function EvalOperandIsTrue(const V: TEvalOperand): boolean; inline;
 function EvalOperandToInt64(const V: TEvalOperand): int64;
 function CompareEvalOperand(const Operand: TEvalOperand; Value: PChar): integer;
+function CompareNames(Name1: PChar; Name1Len: PtrInt;
+                      Name2: PChar; Name2Len: PtrInt): integer;
+function CompareNames(const Name1, Name2: string): integer; inline;
 
 implementation
 
