@@ -571,7 +571,6 @@ procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas);
   var
     labelRect: TRect;
     center: TPoint;
-    dummy: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
     sz: TSize;
   begin
     if AText = '' then exit;
@@ -582,13 +581,7 @@ procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas);
     center.Y += OFFSETS[ADir].Y * (Marks.Distance + sz.cy div 2);
     with center do
       labelRect := BoundsSize(X - sz.cx div 2, Y - sz.cy div 2, sz);
-    if
-      (Marks.OverlapPolicy = opHideNeighbour) and
-      not IsRectEmpty(FPrevLabelRect) and
-      IntersectRect(dummy, labelRect, FPrevLabelRect)
-    then
-      exit;
-    FPrevLabelRect := labelRect;
+    if Marks.IsLabelHiddenDueToOverlap(FPrevLabelRect, labelRect) then exit;
 
     // Link between the label and the bar.
     ACanvas.Pen.Assign(Marks.LinkPen);

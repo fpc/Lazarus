@@ -142,6 +142,8 @@ type
     procedure DrawLabel(
       ACanvas: TCanvas; const ALabelRect: TRect; const AText: String);
     function IsMarkLabelsVisible: Boolean;
+    function IsLabelHiddenDueToOverlap(
+      var APrevLabelRect: TRect; const ALabelRect: TRect): Boolean;
     function MeasureLabel(ACanvas: TCanvas; const AText: String): TSize;
 
   public
@@ -462,6 +464,19 @@ begin
   ACanvas.TextOut(pt.X, pt.Y, AText);
   if wasClipping then
     ACanvas.Clipping := true;
+end;
+
+function TGenericChartMarks.IsLabelHiddenDueToOverlap(
+  var APrevLabelRect: TRect; const ALabelRect: TRect): Boolean;
+var
+  dummy: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
+begin
+  Result :=
+    (OverlapPolicy = opHideNeighbour) and
+    not IsRectEmpty(APrevLabelRect) and
+    IntersectRect(dummy, ALabelRect, APrevLabelRect);
+  if not Result then
+    APrevLabelRect := ALabelRect;
 end;
 
 function TGenericChartMarks.IsMarginRequired: Boolean;
