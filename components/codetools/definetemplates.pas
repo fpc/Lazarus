@@ -543,6 +543,28 @@ type
     procedure WriteDebugReport;
     procedure CalcMemSize(Stats: TCTMemStats);
   end;
+
+  TFPCSourceRule = class
+  public
+    Filename: string;
+    IsDirectoy: boolean;
+    Priority: integer;
+    Targets: string; // comma separated list of OS, CPU, e.g. win32,unix,i386
+  end;
+
+  { TFPCSourceRules }
+
+  TFPCSourceRules = class
+  private
+    FItems: TFPList;// list of TFPCSourceRule
+    function GetItems(Index: integer): TFPCSourceRule;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    property Items[Index: integer]: TFPCSourceRule read GetItems;
+    function Count: integer;
+  end;
   
 const
   DefineTemplateFlagNames: array[TDefineTemplateFlag] of shortstring = (
@@ -5696,6 +5718,38 @@ begin
   end;
 end;
 
+
+{ TFPCSourceRules }
+
+function TFPCSourceRules.GetItems(Index: integer): TFPCSourceRule;
+begin
+  Result:=TFPCSourceRule(FItems[Index]);
+end;
+
+constructor TFPCSourceRules.Create;
+begin
+  FItems:=TFPList.Create;
+end;
+
+destructor TFPCSourceRules.Destroy;
+begin
+  Clear;
+  FreeAndNil(FItems);
+  inherited Destroy;
+end;
+
+procedure TFPCSourceRules.Clear;
+var
+  i: Integer;
+begin
+  for i:=0 to FItems.Count-1 do
+    TObject(FItems[i]).Free;
+end;
+
+function TFPCSourceRules.Count: integer;
+begin
+  Result:=FItems.Count;
+end;
 
 end.
 
