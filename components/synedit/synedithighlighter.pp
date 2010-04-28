@@ -209,6 +209,17 @@ type
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
   end;
 
+  { TSynEditLinesList }
+
+  TSynEditLinesList=class(TFPList)
+  private
+    function GetSynString(Index: Integer): TSynEditStringsBase;
+    procedure PutSynStrings(Index: Integer; const AValue: TSynEditStringsBase);
+  public
+    property Items[Index: Integer]: TSynEditStringsBase
+             read GetSynString write PutSynStrings; default;
+  end;
+
   { TSynCustomHighlighter }
 
   TSynCustomHighlighter = class(TComponent)
@@ -216,6 +227,7 @@ type
     fAttributes: TStringList;
     fAttrChangeHooks: TMethodList;
     FCapabilities: TSynHighlighterCapabilities;
+    FKnownLines: TSynEditLinesList;
     FCurrentLines: TSynEditStringsBase;
     FCurrentRanges: TSynHighlighterRangeList;
     FDrawDividerLevel: Integer;
@@ -225,7 +237,7 @@ type
     fEnabled: Boolean;
     fWordBreakChars: TSynIdentChars;
     FIsScanning: Boolean;
-    procedure SetCurrentLines(const AValue: TSynEditStringsBase);
+    function GetKnownRanges(Index: Integer): TSynHighlighterRangeList;
     procedure SetDrawDividerLevel(const AValue: Integer);
     procedure SetEnabled(const Value: boolean);                                 //DDH 2001-10-23
   protected
@@ -247,15 +259,20 @@ type
     procedure SetAttributesOnChange(AEvent: TNotifyEvent);
     procedure SetDefaultFilter(Value: string); virtual;
     procedure SetSampleSource(Value: string); virtual;
+    function GetRangeIdentifier: Pointer; virtual;
     function CreateRangeList: TSynHighlighterRangeList; virtual;
     function UpdateRangeInfoAtLine(Index: Integer): Boolean; virtual; // Returns true if range changed
     // code fold - only valid if hcCodeFolding in Capabilities
+    procedure SetCurrentLines(const AValue: TSynEditStringsBase); virtual;
     property  LineIndex: Integer read FLineIndex;
     property CurrentRanges: TSynHighlighterRangeList read FCurrentRanges;
     function GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting; virtual;
     function GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig; virtual;
     function GetDividerDrawConfigCount: Integer; virtual;
+    function PerformScan(StartIndex, EndIndex: Integer): Integer; virtual;
     property IsScanning: Boolean read FIsScanning;
+    property KnownRanges[Index: Integer]: TSynHighlighterRangeList read GetKnownRanges;
+    property KnownLines: TSynEditLinesList read FKnownLines;
   public
     procedure DefHighlightChange(Sender: TObject);
     property  AttributeChangeNeedScan: Boolean read FAttributeChangeNeedScan;
@@ -886,6 +903,18 @@ begin
 end;
 {$ENDIF}
 
+{ TSynEditLinesList }
+
+function TSynEditLinesList.GetSynString(Index: Integer): TSynEditStringsBase;
+begin
+  Result := TSynEditStringsBase(inherited Items[Index]);
+end;
+
+procedure TSynEditLinesList.PutSynStrings(Index: Integer; const AValue: TSynEditStringsBase);
+begin
+  inherited Items[Index] := AValue;
+end;
+
 { TSynCustomHighlighter }
 
 constructor TSynCustomHighlighter.Create(AOwner: TComponent);
@@ -893,6 +922,7 @@ begin
   {$IFDEF SYN_LAZARUS}
   FCapabilities:=GetCapabilities;
   {$ENDIF}
+  FKnownLines := TSynEditLinesList.Create;
   inherited Create(AOwner);
   fWordBreakChars := TSynWordBreakChars;
   fAttributes := TStringList.Create;
@@ -908,6 +938,7 @@ begin
   fAttributes.Free;
   fAttrChangeHooks.Free;
   inherited Destroy;
+  FreeAndNil(FKnownLines);
 end;
 
 procedure TSynCustomHighlighter.BeginUpdate;
@@ -1215,6 +1246,11 @@ procedure TSynCustomHighlighter.SetSampleSource(Value: string);
 begin
 end;
 
+function TSynCustomHighlighter.GetRangeIdentifier: Pointer;
+begin
+  Result := self;
+end;
+
 function TSynCustomHighlighter.CreateRangeList: TSynHighlighterRangeList;
 begin
   Result := TSynHighlighterRangeList.Create;
@@ -1237,31 +1273,36 @@ end;
 
 procedure TSynCustomHighlighter.ScanRanges;
 var
-  StartIndex, EndIndex, CurrentIndex, c: Integer;
+  StartIndex, EndIndex: Integer;
 begin
   StartIndex := CurrentRanges.NeedsReScanStartIndex;
   if (StartIndex < 0) or (StartIndex >= CurrentRanges.Count) then exit;
   EndIndex := CurrentRanges.NeedsReScanEndIndex + 1;
-  CurrentIndex := StartIndex;
-  c := CurrentLines.Count;
   FIsScanning := True;
   try
-    StartAtLineIndex(CurrentIndex);
-    NextToEol;
-    while UpdateRangeInfoAtLine(CurrentIndex) or
-          (CurrentIndex <= EndIndex)
-    do begin
-      inc(CurrentIndex);
-      if CurrentIndex = c then
-        break;
-      ContinueNextLine;
-      NextToEol;
-    end;
+    EndIndex :=  PerformScan(StartIndex, EndIndex);
   finally
     FIsScanning := False;
   end;
   CurrentRanges.ClearReScanNeeded;
-  CurrentLines.SendHighlightChanged(StartIndex, CurrentIndex - StartIndex + 1);
+  CurrentLines.SendHighlightChanged(StartIndex, EndIndex - StartIndex + 1);
+end;
+
+function TSynCustomHighlighter.PerformScan(StartIndex, EndIndex: Integer): Integer;
+var
+  c: Integer;
+begin
+  Result := StartIndex;
+  c := CurrentLines.Count;
+  StartAtLineIndex(Result);
+  NextToEol;
+  while UpdateRangeInfoAtLine(Result) or (Result <= EndIndex) do begin
+    inc(Result);
+    if Result = c then
+      break;
+    ContinueNextLine;
+    NextToEol;
+  end;
 end;
 
 procedure TSynCustomHighlighter.ScanAllRanges;
@@ -1287,19 +1328,20 @@ begin
   if AValue = FCurrentLines then
     exit;
   FCurrentLines := AValue;
-  FCurrentRanges := TSynHighlighterRangeList(AValue.Ranges[ClassType]);
+  FCurrentRanges := TSynHighlighterRangeList(AValue.Ranges[GetRangeIdentifier]);
 end;
 
 procedure TSynCustomHighlighter.AttachToLines(Lines: TSynEditStringsBase);
 var
   r: TSynHighlighterRangeList;
 begin
-  r := TSynHighlighterRangeList(Lines.Ranges[ClassType]);
+  r := TSynHighlighterRangeList(Lines.Ranges[GetRangeIdentifier]);
   if assigned(r) then
     r.IncRefCount
   else begin
+    FKnownLines.Add(Lines);
     r := CreateRangeList;
-    Lines.Ranges[ClassType] := r;
+    Lines.Ranges[GetRangeIdentifier] := r;
     r.InvalidateAll;
   end;
   FCurrentLines := nil;
@@ -1309,13 +1351,14 @@ procedure TSynCustomHighlighter.DetachFromLines(Lines: TSynEditStringsBase);
 var
   r: TSynHighlighterRangeList;
 begin
-  r := TSynHighlighterRangeList(Lines.Ranges[ClassType]);
+  r := TSynHighlighterRangeList(Lines.Ranges[GetRangeIdentifier]);
   if not assigned(r) then exit;
   r.DecRefCount;
   if r.RefCount = 0 then begin
-    Lines.Ranges[ClassType] := nil;
+    Lines.Ranges[GetRangeIdentifier] := nil;
     r.Free;
   end;
+  FKnownLines.Remove(Lines);
 end;
 
 procedure TSynCustomHighlighter.SetDrawDividerLevel(const AValue: Integer);
@@ -1323,6 +1366,11 @@ begin
   if FDrawDividerLevel = AValue then exit;
   FDrawDividerLevel := AValue;
   //DefHighlightChange(Self);
+end;
+
+function TSynCustomHighlighter.GetKnownRanges(Index: Integer): TSynHighlighterRangeList;
+begin
+  Result := TSynHighlighterRangeList(KnownLines[Index].Ranges[GetRangeIdentifier]);
 end;
 
 function TSynCustomHighlighter.GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting;

@@ -25,18 +25,16 @@ replace them with the notice and other provisions required by the GPL.
 If you do not delete the provisions above, a recipient may use your version
 of this file under either the MPL or the GPL.
 
-$Id$
-
 You may retrieve the latest version of this file at the SynEdit home page,
 located at http://SynEdit.SourceForge.net
 
-Known Issues:
 -------------------------------------------------------------------------------}
 {
-@abstract(Provides a Multiple-highlighter syntax highlighter for SynEdit)
-@author(Willo van der Merwe <willo@wack.co.za>, converted to SynEdit by David Muir <dhm@dmsoftware.co.uk>)
 @created(1999, converted to SynEdit 2000-06-23)
-@lastmod(2000-06-23)
+@author(Willo van der Merwe <willo@wack.co.za>
+@converted to SynEdit by David Muir <dhm@dmsoftware.co.uk>)
+@mostly rewritten for Lazarus by M. Friebe 04/2010
+
 The SynHighlighterMulti unit provides SynEdit with a multiple-highlighter syntax highlighter.
 This highlighter can be used to highlight text in which several languages are present, such as HTML.
 For example, in HTML as well as HTML tags there can also be JavaScript and/or VBScript present.
@@ -48,28 +46,101 @@ unit SynHighlighterMulti;
 interface
 
 uses
-  Classes,
-  SynEditTypes,
+  Classes, Graphics, SysUtils, LCLProc,
+  SynRegExpr, SynEditStrConst, SynEditTypes, SynEditTextBase,
   SynEditHighlighter;
 
 type
-  //GBN 31/01/2002
+
+  TSynHLightMultiVirtualSection = record
+    // X(Char): 1-based
+    // Y(Line): 0-based
+    StartPos, EndPos: TPoint;
+    MarkerStartPos, MarkerEndPos: TPoint; // Todo: set them
+    VirtualLine: Integer;
+  end;
+
+  PSynHLightMultiVirtualSection = ^TSynHLightMultiVirtualSection;
+
+  { TSynHLightMultiSectionList }
+  (* List of all parts of the original TextBuffer, which are to be scanned by one highlighter *)
+
+  TSynHLightMultiSectionList=class(TSynEditStorageMem)
+  private
+    function  GetSection(Index: Integer): TSynHLightMultiVirtualSection;
+    function GetSectionPointer(Index: Integer): PSynHLightMultiVirtualSection;
+    procedure SetSection(Index: Integer; const AValue: TSynHLightMultiVirtualSection);
+  protected
+    function ItemSize: Integer; override;
+  public
+    procedure Insert(AnIndex: Integer; AnSection: TSynHLightMultiVirtualSection);
+    procedure Delete(AnIndex: Integer);
+    property Sections[Index: Integer]: TSynHLightMultiVirtualSection
+             read GetSection write SetSection; default;
+    property PSections[Index: Integer]: PSynHLightMultiVirtualSection
+             read GetSectionPointer;
+    function IndexOfFirstSectionAtLineIdx(ALineIdx: Integer; ACharPos: Integer = -1;
+                                          UseNext: Boolean = True): Integer;
+    function IndexOfFirstSectionAtVirtualIdx(ALineIdx: Integer): Integer;
+  end;
+
+  { TSynHLightMultiVirtualLines }
+
+  TSynHLightMultiVirtualLines=class(TSynEditStringsBase)
+  private
+    FRangeList: TSynManagedStorageMemList;
+    FRealLines: TSynEditStrings;
+    FSectionList: TSynHLightMultiSectionList;
+    FRScanStartedWithLineCount: Integer;
+    FRScanStartedAtVLine: Integer;
+    FRegionScanStartRangeIndex: Integer;
+    FRegionScanRangeIndex: Integer;
+  protected
+    function  GetRange(Index: Pointer): TSynManagedStorageMem; override;
+    procedure PutRange(Index: Pointer; const ARange: TSynManagedStorageMem); override;
+    function  Get(Index: integer): string; override;
+    procedure Put(Index: integer; const S: string); override; // should not be called ever
+    function  GetCount: integer; override;
+    property SectionList: TSynHLightMultiSectionList read FSectionList;
+    //procedure SendHighlightChanged(aIndex, aCount: Integer); override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear; override;                                   // should not be called ever
+    procedure Delete(Index: Integer); override;                  // should not be called ever
+    procedure Insert(Index: Integer; const S: string); override; // should not be called ever
+    procedure PrepareRegionScan(AStartLineIdx: Integer);
+    procedure FinishRegionScan(AEndLineIdx: Integer);
+    procedure RegionScanUpdateFirstRegionEnd(AnEndPoint: TPoint);
+    procedure RegionScanUpdate0rInsertRegion(AStartPoint, AnEndPoint: TPoint);
+    procedure RegionScanUpdateLastRegionStart(AStartPoint: TPoint; ALineIndex: Integer);
+    procedure RealLinesInserted(AIndex, ACount: Integer);
+    procedure RealLinesDeleted(AIndex, ACount: Integer);
+    property  RealLines: TSynEditStrings read FRealLines write FRealLines;
+  end;
+
   TOnCheckMarker=procedure(Sender: TObject; var StartPos, MarkerLen: Integer;
     var MarkerText: String) of object;
 
-  TgmScheme = class(TCollectionItem)
+  { TSynHighlighterMultiScheme }
+
+  TSynHighlighterMultiScheme = class(TCollectionItem)
   private
-    fEndExpr: string;
-    fStartExpr: string;
+    FStartExpr, FEndExpr: string;
+    FConvertedStartExpr, FConvertedEndExpr: String;
+    FStartExprScanner, FEndExprScanner: TRegExpr;
+    FStartLineSet, FEndLineSet: Boolean;
+    FLastMatchLen: Integer;
     fHighlighter: TSynCustomHighLighter;
     fMarkerAttri: TSynHighlighterAttributes;
     fSchemeName: TComponentName;
     fCaseSensitive: Boolean;
-    //GBN 31/01/2002 - Start
     fOnCheckStartMarker: TOnCheckMarker;
     fOnCheckEndMarker: TOnCheckMarker;
-    //GBN 31/01/2002 - End
-    function ConvertExpression(const Value: string): string;
+    FVirtualLines: TSynHLightMultiVirtualLines;
+    function  GetConvertedLine: String;
+    function  GetConvertedEndExpr: String;
+    function  GetConvertedStartExpr: String;
     procedure MarkerAttriChanged(Sender: TObject);
     procedure SetMarkerAttri(const Value: TSynHighlighterAttributes);
     procedure SetHighlighter(const Value: TSynCustomHighlighter);
@@ -84,194 +155,656 @@ type
   public
     constructor Create(TheCollection: TCollection); override;
     destructor Destroy; override;
+  public
+    procedure ClearLinesSet;
+    function  FindStartPosInLine(ASearchPos: Integer): Integer;
+    function  FindEndPosInLine(ASearchPos: Integer): Integer;
+    property  LastMatchLen: Integer read FLastMatchLen;
+  public
+    property VirtualLines: TSynHLightMultiVirtualLines read FVirtualLines;
   published
     property CaseSensitive: Boolean read fCaseSensitive write SetCaseSensitive
       default True;
     property StartExpr: string read fStartExpr write SetStartExpr;
     property EndExpr: string read fEndExpr write SetEndExpr;
     property Highlighter: TSynCustomHighlighter read fHighlighter
-      write SetHighlighter;
+             write SetHighlighter;
     property MarkerAttri: TSynHighlighterAttributes read fMarkerAttri
-      write SetMarkerAttri;
+             write SetMarkerAttri;
     property SchemeName: TComponentName read fSchemeName write fSchemeName;
-    //GBN 31/01/2002 - Start
     property OnCheckStartMarker: TOnCheckMarker read fOnCheckStartMarker write fOnCheckStartMarker;
     property OnCheckEndMarker: TOnCheckMarker read fOnCheckEndMarker write fOnCheckEndMarker;
-    //GBN 31/01/2002 - End
   end;
-
-  TgmSchemeClass = class of TgmScheme;
 
   TSynMultiSyn = class;
 
-  TgmSchemes = class(TCollection)
+  { TSynHighlighterMultiSchemeList }
+
+  TSynHighlighterMultiSchemeList = class(TCollection)
   private
+    FCurrentLine, FConvertedCurrentLine: String;
     fOwner: TSynMultiSyn;
-    function GetItems(Index: integer): TgmScheme;
-    procedure SetItems(Index: integer; const Value: TgmScheme);
-{$IFDEF SYN_COMPILER_3_UP}
+    function GetConvertedCurrentLine: String;
+    function GetItems(Index: integer): TSynHighlighterMultiScheme;
+    procedure SetCurrentLine(const AValue: String);
+    procedure SetItems(Index: integer; const Value: TSynHighlighterMultiScheme);
   protected
+{$IFDEF SYN_COMPILER_3_UP}
     function GetOwner: TPersistent; override;
     procedure Update(Item: TCollectionItem); override;
 {$ENDIF}
+    procedure Notify(Item: TCollectionItem;Action: TCollectionNotification); override;
   public
     constructor Create(aOwner: TSynMultiSyn);
-    property Items[aIndex: integer]: TgmScheme read GetItems write SetItems;
+    property Items[aIndex: integer]: TSynHighlighterMultiScheme read GetItems write SetItems;
       default;
+  public
+    property ConvertedCurrentLine: String read GetConvertedCurrentLine;
+    property CurrentLine: String read FCurrentLine write SetCurrentLine;
   end;
 
-  TgmMarker = class
+  { TSynHighlighterMultiRangeList }
+
+  TSynHighlighterMultiRangeList = class(TSynHighlighterRangeList)
+  private
+    FDefaultVirtualLines: TSynHLightMultiVirtualLines;
+    FVirtualLines: TFPList;
   protected
-    fScheme: integer;
-    fStartPos: integer;
-    fMarkerLen: integer;
-    fMarkerText: string;
-    fIsOpenMarker: boolean;
+    //procedure SetCapacity(const AValue: Integer); override;
+    //procedure SetCount(const AValue: Integer); override;
+    //procedure Move(AFrom, ATo, ALen: Integer); override; // should not be called ever
+    //procedure LineTextChanged(AIndex: Integer); override;
+    //procedure InsertedLines(AIndex, ACount: Integer); override;
+    //procedure DeletedLines(AIndex, ACount: Integer); override;
   public
-    constructor Create(aScheme, aStartPos, aMarkerLen: integer;
-      aIsOpenMarker: boolean; const aMarkerText: string);
+    constructor Create;
+    destructor Destroy; override;
+    procedure ClearVLines;
+    procedure InitForScheme(AScheme: TSynHighlighterMultiSchemeList);
+    procedure CopyToScheme(AScheme: TSynHighlighterMultiSchemeList);
+    property DefaultVirtualLines: TSynHLightMultiVirtualLines read FDefaultVirtualLines;
+    //property VirtualLines[Index: TSynHighlighterMultiScheme]: TSynHLightMultiVirtualLines
+    //         read GetVirtualLines write SetVirtualLines;
   end;
+
+  { TSynMultiSyn }
 
   TSynMultiSyn = class(TSynCustomHighLighter)
   private
-    fDefaultLanguageName: String;
-    fMarkers: TList;
-    fMarker: TgmMarker;
-    fNextMarker: integer;
-    fCurrScheme: integer;
-    fTmpLine: String; {there're lots of highlighters not doing reference count...}
-    fTmpRange: pointer; {only works inside a single line for now}
+    FDefaultLanguageName: String;
+    FCurScheme: TSynHighlighterMultiScheme;
+    function GetDefaultVirtualLines: TSynHLightMultiVirtualLines;
     procedure SetDefaultHighlighter(const Value: TSynCustomHighLighter);
-    function GetMarkers(aIndex: integer): TgmMarker;
-    property Markers[aIndex: integer]: TgmMarker read GetMarkers;
-    //GBN 31/01/2002 - Start
-    procedure DoCheckMarker(Scheme:TgmScheme; StartPos, MarkerLen: Integer;
-      const MarkerText: String; Start: Boolean);
-    //GBN 31/01/2002 - End
+    procedure SetSchemes(const Value: TSynHighlighterMultiSchemeList);
+    function CurrentVirtualLines: TSynHLightMultiVirtualLines;
   protected
-    fSchemes: TgmSchemes;
-    fDefaultHighlighter: TSynCustomHighLighter;
-    fLine: string;
-    fLineNumber: Integer;
-    fTokenPos: integer;
-    fRun: Integer;
-    fSampleSource: string;
-    procedure SetSchemes(const Value: TgmSchemes);
-    procedure ClearMarkers;
+    FSchemes: TSynHighlighterMultiSchemeList;
+    FDefaultHighlighter: TSynCustomHighLighter;
+    FLine: string;
+    FLineNumber: Integer;
+    FTokenPos: integer;
+    FRun: Integer;
+    FSampleSource: string;
     function GetIdentChars: TSynIdentChars; override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes; override;
     function GetAttribCount: integer; override;
     function GetAttribute(idx: integer): TSynHighlighterAttributes; override;
+    function GetSampleSource: string; override;
+    procedure SetSampleSource(Value: string); override;
+
     procedure HookHighlighter(aHL: TSynCustomHighlighter);
     procedure UnhookHighlighter(aHL: TSynCustomHighlighter);
     procedure Notification(aComp: TComponent; aOp: TOperation); override;
-    function GetSampleSource: string; override;
-    procedure SetSampleSource(Value: string); override;
+    function  CreateRangeList: TSynHighlighterRangeList; override;
+    procedure SetCurrentLines(const AValue: TSynEditStringsBase); override;
+    procedure SchemeItemChanged(Item: TObject);
+    procedure SchemeChanged;
+    function  PerformScan(StartIndex, EndIndex: Integer): Integer; override;
   public
     {$IFNDEF SYN_CPPB_1} class {$ENDIF}
     function GetLanguageName: string; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetEol: Boolean; override;
-    function GetRange: Pointer; override;
-    function GetToken: string; override;
-    {$IFDEF SYN_LAZARUS}
-    procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
-    {$ENDIF}
-    function GetTokenAttribute: TSynHighlighterAttributes; override;
-    function GetTokenKind: integer; override;
-    function GetTokenPos: Integer; override;
     procedure Next; override;
-    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
-      LineNumber: Integer); override;
+    function  GetEol: Boolean; override;
+    function  GetToken: string; override;
+    procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
+    function  GetTokenAttribute: TSynHighlighterAttributes; override;
+    function  GetTokenKind: integer; override;
+    function  GetTokenPos: Integer; override;
+    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string; LineNumber: Integer); override;
+    function  GetRange: Pointer; override;
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
-    property CurrScheme: integer read fCurrScheme write fCurrScheme;
+  public
+    property DefaultVirtualLines: TSynHLightMultiVirtualLines read GetDefaultVirtualLines;
   published
-    property Schemes: TgmSchemes read fSchemes write SetSchemes;
+    property Schemes: TSynHighlighterMultiSchemeList read fSchemes write SetSchemes;
     property DefaultHighlighter: TSynCustomHighLighter read fDefaultHighlighter
       write SetDefaultHighlighter;
     property DefaultLanguageName: String read fDefaultLanguageName
       write fDefaultLanguageName;
   end;
 
-const
-  MaxNestedMultiSyn = 4;
-
 implementation
 
-uses
-  SynRegExpr,
-{$IFDEF SYN_CLX}
-  QGraphics,
-{$ELSE}
-  Graphics,
-{$ENDIF}
-{$IFDEF SYN_LAZARUS}
-  GraphType,
-{$ELSE}
-  SynEditMiscProcs,
-{$ENDIF}
-  SysUtils,
-  SynEditStrConst;
-
-const
-  { number of bits of the Range that will be used to store the SchemeIndex }
-  SchemeIndexSize = 5;
-  MaxSchemeCount = (1 shl SchemeIndexSize) -1;
-  { number of bits of the Range that will be used to store the SchemeRange }
-  SchemeRangeSize = 12;
-  MaxSchemeRange = (1 shl SchemeRangeSize) -1;
-
-{ TgmMarker }
-
-constructor TgmMarker.Create(aScheme, aStartPos,
-  aMarkerLen: integer; aIsOpenMarker: boolean; const aMarkerText: string);
+operator > (p1, p2 : TPoint) b : boolean;
 begin
-  fScheme := aScheme;
-  fStartPos := aStartPos;
-  fMarkerLen := aMarkerLen;
-  fIsOpenMarker := aIsOpenMarker;
-  fMarkerText := aMarkerText;
+  Result := (p1.y > p2.y) or ( (p1.y = p2.y) and (p1.x > p2.x) );
+end;
+
+operator < (p1, p2 : TPoint) b : boolean;
+begin
+  Result := (p1.y < p2.y) or ( (p1.y = p2.y) and (p1.x < p2.x) );
+end;
+
+{ TSynHLightMultiSectionList }
+
+function TSynHLightMultiSectionList.GetSection(Index: Integer): TSynHLightMultiVirtualSection;
+begin
+  Result := PSynHLightMultiVirtualSection(ItemPointer[Index])^;
+end;
+
+function TSynHLightMultiSectionList.GetSectionPointer(Index: Integer): PSynHLightMultiVirtualSection;
+begin
+  Result := PSynHLightMultiVirtualSection(ItemPointer[Index]);
+end;
+
+procedure TSynHLightMultiSectionList.SetSection(Index: Integer;
+  const AValue: TSynHLightMultiVirtualSection);
+begin
+  PSynHLightMultiVirtualSection(ItemPointer[Index])^ := AValue;
+end;
+
+function TSynHLightMultiSectionList.ItemSize: Integer;
+begin
+  Result := SizeOf(TSynHLightMultiVirtualSection);
+end;
+
+procedure TSynHLightMultiSectionList.Insert(AnIndex: Integer;
+  AnSection: TSynHLightMultiVirtualSection);
+begin
+  InsertRows(AnIndex, 1);
+  Sections[AnIndex] := AnSection;
+end;
+
+procedure TSynHLightMultiSectionList.Delete(AnIndex: Integer);
+begin
+  DeleteRows(AnIndex, 1);
+  if (Capacity > 16) and (Capacity > (Count * 2)) then
+    Capacity := Capacity - (Count div 2);
+end;
+
+function TSynHLightMultiSectionList.IndexOfFirstSectionAtLineIdx(ALineIdx: Integer;
+  ACharPos: Integer = -1; UseNext: Boolean = True): Integer;
+var
+  p, p1, p2: Integer;
+  s: PSynHLightMultiVirtualSection;
+begin
+  Result := -1;
+  p2 := Count;
+  if p2 = 0 then begin
+    if UseNext then Result := 0;
+    exit;
+  end;
+  p1 := p2 div 2;
+  dec(p2);
+  s := PSynHLightMultiVirtualSection(ItemPointer[p1]);
+  if (ALineIdx < s^.StartPos.y) or ( (ALineIdx = s^.StartPos.y) and (ACharPos < s^.StartPos.x) )
+  then begin          // target is in 0 .. p1-1
+    p2 := p1 - 1;
+    p1 := 0;
+  end;
+
+  while (p1 < p2) do begin
+    p := (p1 + p2 + 1) div 2;
+    s := PSynHLightMultiVirtualSection(ItemPointer[p]);
+    if (ALineIdx < s^.StartPos.y) or
+       ( (ALineIdx = s^.StartPos.y) and (ACharPos < s^.StartPos.x) )
+    then
+      p2 := p - 1     // target is in p1 .. p-1
+    else
+      p1 := p;        // target is in p .. p2
+  end;
+
+  s := PSynHLightMultiVirtualSection(ItemPointer[p1]);
+  if ( (s^.StartPos.y > ALineIdx) or ((s^.StartPos.y = ALineIdx) and (s^.StartPos.x > ACharPos)) )
+  then begin
+    dec(p1);
+    if p1 >= 0 then
+      s := PSynHLightMultiVirtualSection(ItemPointer[p1]);
+  end;
+
+  if (p1 < 0) or (s^.EndPos.y < ALineIdx) or
+    ( (s^.EndPos.y = ALineIdx) and (s^.EndPos.x < ACharPos) )
+  then begin
+    if UseNext then
+      Result := p1 + 1 // Could be p1 = Count // behind end
+    else
+      Result := -1;
+  end
+  else begin
+    Result := p1;
+  end;
+end;
+
+function TSynHLightMultiSectionList.IndexOfFirstSectionAtVirtualIdx(ALineIdx: Integer): Integer;
+var
+  p, p1, p2: Integer;
+  s: PSynHLightMultiVirtualSection;
+begin
+  Result := -1;
+  p2 := Count;
+  if p2 = 0 then
+    exit;
+  p1 := p2 div 2;
+  dec(p2);
+  s := PSynHLightMultiVirtualSection(ItemPointer[p1]);
+  if (ALineIdx < s^.VirtualLine) then begin
+    p2 := p1 - 1;          // target is in 0 .. p1-1
+    p1 := 0;
+  end;
+
+  while (p1 < p2) do begin
+    p := (p1 + p2 + 1) div 2;
+    s := PSynHLightMultiVirtualSection(ItemPointer[p]);
+    if (ALineIdx < s^.VirtualLine) then
+      p2 := p - 1   // target is in p1 .. p-1
+    else
+      p1 := p;      // target is in p .. p2
+  end;
+
+  s := PSynHLightMultiVirtualSection(ItemPointer[p1]);
+  if ALineIdx = s^.VirtualLine then begin
+    while (p1 >= 0) and (s^.VirtualLine = ALineIdx) do begin
+      dec(p1);
+      if p1 >= 0 then
+        s := PSynHLightMultiVirtualSection(ItemPointer[p1]);
+    end;
+    if (p1 < 0) or (s^.VirtualLine < ALineIdx) then
+      inc(p1);
+  end else begin
+    p2 := Count;
+    while (p1 < p2) and (s^.VirtualLine < ALineIdx) do begin
+      inc(p1);
+      if p1 < p2 then
+        s := PSynHLightMultiVirtualSection(ItemPointer[p1]);
+    end;
+    if (p1 = p2) or (s^.VirtualLine > ALineIdx) then
+      dec(p1);
+  end;
+
+  Result := p1;
+end;
+
+{ TSynHLightMultiVirtualLines }
+
+function TSynHLightMultiVirtualLines.GetRange(Index: Pointer): TSynManagedStorageMem;
+begin
+  Result := FRangeList[Index];
+end;
+
+procedure TSynHLightMultiVirtualLines.PutRange(Index: Pointer; const ARange: TSynManagedStorageMem);
+begin
+  FRangeList[Index] := ARange;
+  //if ARange <> nil then ;
+  {$note  set count/capacity ?}
+end;
+
+function TSynHLightMultiVirtualLines.Get(Index: integer): string;
+var
+  i, i2, c1, c2: Integer;
+  s: TSynHLightMultiVirtualSection;
+  t: String;
+begin
+  i := FSectionList.IndexOfFirstSectionAtVirtualIdx(Index);
+  if (i < 0) or (i >= FSectionList.Count) then
+    exit('');
+  s := FSectionList[i];
+  i2 := s.StartPos.y + Index - s.VirtualLine;
+  t := RealLines[i2];
+  c1 := 1;
+  if Index = s.VirtualLine then c1 := s.StartPos.x;
+  c2 := length(t);
+  if Index = s.VirtualLine + s.EndPos.y - s.StartPos.y then c2 := s.EndPos.x;
+  Result := copy(t, c1, c2 - c1 + 1);
+  inc(i);
+  while (i < FSectionList.Count) do begin
+    s := FSectionList[i];
+    if Index <> s.VirtualLine then break;
+    t := RealLines[s.StartPos.y];
+    c1 := s.StartPos.x;
+    c2 := length(t);
+    if s.EndPos.y = s.StartPos.y then c2 := s.EndPos.x;
+    Result := Result + copy(t, c1, c2 - c1 + 1);
+    inc(i);
+  end;
+end;
+
+procedure TSynHLightMultiVirtualLines.Put(Index: integer; const S: string);
+begin
+  raise Exception.Create('Not allowed');
+end;
+
+procedure TSynHLightMultiVirtualLines.Clear;
+begin
+  raise Exception.Create('Not allowed');
+end;
+
+procedure TSynHLightMultiVirtualLines.Delete(Index: Integer);
+begin
+  raise Exception.Create('Not allowed');
+end;
+
+procedure TSynHLightMultiVirtualLines.Insert(Index: Integer; const S: string);
+begin
+  raise Exception.Create('Not allowed');
+end;
+
+function TSynHLightMultiVirtualLines.GetCount: integer;
+var
+  s: TSynHLightMultiVirtualSection;
+begin
+  if FSectionList.Count = 0 then
+    exit(0);
+  s := FSectionList[FSectionList.Count - 1];
+  Result := s.VirtualLine + 1 + s.EndPos.y - s.StartPos.y;
+end;
+
+constructor TSynHLightMultiVirtualLines.Create;
+begin
+  FRangeList := TSynManagedStorageMemList.Create;
+  FSectionList := TSynHLightMultiSectionList.Create;
+end;
+
+destructor TSynHLightMultiVirtualLines.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FSectionList);
+  FreeAndNil(FRangeList);
+end;
+
+procedure TSynHLightMultiVirtualLines.PrepareRegionScan(AStartLineIdx: Integer);
+begin
+  FRegionScanRangeIndex := FSectionList.IndexOfFirstSectionAtLineIdx(AStartLineIdx, -1 ,True);
+  FRegionScanStartRangeIndex := FRegionScanRangeIndex;
+  FRScanStartedWithLineCount := Count;
+  if FRegionScanRangeIndex < FSectionList.Count then
+    FRScanStartedAtVLine := FSectionList[FRegionScanRangeIndex].VirtualLine
+  else
+    FRScanStartedAtVLine := FSectionList.Count;
+end;
+
+procedure TSynHLightMultiVirtualLines.FinishRegionScan(AEndLineIdx: Integer);
+var
+  i, NewVLine, StartVLine, LastEnd: Integer;
+  s: TSynHLightMultiVirtualSection;
+  VDiff: Integer;
+begin
+  while (FRegionScanRangeIndex < FSectionList.Count) and
+        (FSectionList.Sections[FRegionScanRangeIndex].StartPos.y <= AEndLineIdx)
+  do
+    FSectionList.Delete(FRegionScanRangeIndex);
+  // fix virtual lines on sections
+  NewVLine := 0;
+  StartVLine := 0;
+  VDiff := 0;
+  if (FRegionScanStartRangeIndex > 0) then begin
+    s := FSectionList.Sections[FRegionScanStartRangeIndex-1];
+    StartVLine := s.VirtualLine;
+    NewVLine := s.VirtualLine + s.EndPos.y - s.StartPos.y;
+    LastEnd := s.EndPos.y;
+  end
+  else
+    LastEnd := FSectionList.Sections[FRegionScanStartRangeIndex].StartPos.y;
+  for i := FRegionScanStartRangeIndex to FSectionList.Count - 1 do begin
+    s := FSectionList.Sections[i];
+    if s.StartPos.y > LastEnd then
+      inc(NewVLine);
+    if i = FRegionScanRangeIndex then
+      VDiff := NewVLine - s.VirtualLine;  // adjust ranges
+    FSectionList.PSections[i]^.VirtualLine := NewVLine;
+    NewVLine := NewVLine + s.EndPos.y - s.StartPos.y;
+    LastEnd := s.EndPos.y;
+  end;
+  if VDiff = 0 then
+    VDiff := Count - FRScanStartedWithLineCount;
+  if VDiff < 0 then begin
+    FRangeList.ChildDeleteRows(FRScanStartedAtVLine, -VDiff);
+    FRangeList.CallDeletedLines(FRScanStartedAtVLine, -VDiff);
+  end
+  else if VDiff > 0 then begin
+    FRangeList.ChildInsertRows(FRScanStartedAtVLine, VDiff);
+    FRangeList.CallInsertedLines(FRScanStartedAtVLine, VDiff);
+  end;
+end;
+
+procedure TSynHLightMultiVirtualLines.RegionScanUpdateFirstRegionEnd(AnEndPoint: TPoint);
+var
+  Sect: TSynHLightMultiVirtualSection;
+begin
+  //if FLineMap.Count = 0 then begin
+  //  Sect.StartPos := Point(1,1);
+  //  Sect.EndPos := AnEndPoint;
+  //  FLineMap.Insert(0, Sect);
+  //  FRegionScanRangeIndex := 1;
+  //  exit;
+  //end;
+  FSectionList.PSections[FRegionScanRangeIndex]^.EndPos := AnEndPoint;
+  inc(FRegionScanRangeIndex);
+end;
+
+procedure TSynHLightMultiVirtualLines.RegionScanUpdate0rInsertRegion(AStartPoint,
+  AnEndPoint: TPoint);
+var
+  Sect: TSynHLightMultiVirtualSection;
+begin
+  if (FRegionScanRangeIndex = FSectionList.Count)
+  or (FSectionList.Sections[FRegionScanRangeIndex].StartPos > AnEndPoint)
+  then begin
+    Sect.StartPos := AStartPoint;
+    Sect.EndPos := AnEndPoint;
+    FSectionList.Insert(FRegionScanRangeIndex, Sect);
+  end else begin
+    FSectionList.PSections[FRegionScanRangeIndex]^.StartPos := AStartPoint;
+    FSectionList.PSections[FRegionScanRangeIndex]^.EndPos := AnEndPoint;
+  end;
+  inc(FRegionScanRangeIndex);
+end;
+
+procedure TSynHLightMultiVirtualLines.RegionScanUpdateLastRegionStart(AStartPoint: TPoint;
+  ALineIndex: Integer);
+begin
+  while (FRegionScanRangeIndex < FSectionList.Count) and
+        (FSectionList.Sections[FRegionScanRangeIndex].EndPos.y <= ALineIndex)
+  do
+    FSectionList.Delete(FRegionScanRangeIndex);
+  FSectionList.PSections[FRegionScanRangeIndex]^.StartPos := AStartPoint;
+  inc(FRegionScanRangeIndex);
+end;
+
+procedure TSynHLightMultiVirtualLines.RealLinesInserted(AIndex, ACount: Integer);
+var
+  i: Integer;
+  s: TSynHLightMultiVirtualSection;
+begin
+  i := FSectionList.IndexOfFirstSectionAtLineIdx(AIndex, -1, True);
+  s := FSectionList[i];
+  if AIndex > s.StartPos.y then begin
+  end
+  while i < FSectionList.Count do begin
+    FSectionList.PSections[i]^.StartPos. :=
+  end;
+end;
+
+procedure TSynHLightMultiVirtualLines.RealLinesDeleted(AIndex, ACount: Integer);
+var
+  i: Integer;
+begin
+  for i := 0 to FSectionList.Count - 1 do begin
+  end;
+end;
+
+{ TSynHighlighterMultiRangeList }
+
+constructor TSynHighlighterMultiRangeList.Create;
+begin
+  inherited;
+  FVirtualLines := TFPList.Create;
+end;
+
+destructor TSynHighlighterMultiRangeList.Destroy;
+begin
+  inherited Destroy;
+  ClearVLines;
+  FreeAndNil(FVirtualLines);
+end;
+
+procedure TSynHighlighterMultiRangeList.ClearVLines;
+begin
+  FreeAndNil(FDefaultVirtualLines);
+  while FVirtualLines.Count > 0 do begin
+    TSynHLightMultiVirtualLines(FVirtualLines[0]).Destroy;
+    FVirtualLines.Delete(0);
+  end;
+  FVirtualLines.Clear;
+end;
+
+procedure TSynHighlighterMultiRangeList.InitForScheme(AScheme: TSynHighlighterMultiSchemeList);
+var
+  i: Integer;
+begin
+  ClearVLines;
+  FDefaultVirtualLines := TSynHLightMultiVirtualLines.Create;
+  for i := 0 to AScheme.Count - 1 do
+    FVirtualLines.Add(TSynHLightMultiVirtualLines.Create);
+end;
+
+procedure TSynHighlighterMultiRangeList.CopyToScheme(AScheme: TSynHighlighterMultiSchemeList);
+var
+  i: Integer;
+begin
+  for i := 0 to AScheme.Count - 1 do
+    AScheme[i].FVirtualLines := TSynHLightMultiVirtualLines(FVirtualLines[i]);
 end;
 
 { TSynMultiSyn }
 
-procedure TSynMultiSyn.ClearMarkers;
-{$IFNDEF FPC}
-const
-  { if the compiler stops here, something is wrong with the constants above }
-  { there is no special reason for this to be here. the constant must be
-  declared locally to avoid a compiler hint - or else Delphi shows a hint -, and
-  so this function was randomly chosen }
-  RangeInfoSize: byte = ( SizeOf(pointer) * 8 ) -
-    ( (MaxNestedMultiSyn * SchemeIndexSize) + SchemeRangeSize );
-{$ENDIF}
-var
-  i: integer;
+function TSynMultiSyn.CurrentVirtualLines: TSynHLightMultiVirtualLines;
 begin
-  for i := 0 to fMarkers.Count - 1 do
-    TObject(fMarkers[i]).Free;
-  fMarkers.Clear;
+  if FCurScheme <> nil then
+    Result := FCurScheme.VirtualLines
+  else
+    Result := DefaultVirtualLines;
 end;
 
 constructor TSynMultiSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fSchemes := TgmSchemes.Create(Self);
-  fCurrScheme := -1;
-  fMarkers := TList.Create;
+  fSchemes := TSynHighlighterMultiSchemeList.Create(Self);
+  FCurScheme := nil;
 end;
 
 destructor TSynMultiSyn.Destroy;
 begin
   FreeAndNil(fSchemes);
-  ClearMarkers;
-  FreeAndNil(fMarkers);
   { unhook notification handlers }
   DefaultHighlighter := nil;
   inherited Destroy;
+end;
+
+function TSynMultiSyn.PerformScan(StartIndex, EndIndex: Integer): Integer;
+var
+  i, j, c: Integer;
+  SearchPos, NewSearchPos, TmpSearchPos: Integer;
+  CurRegStart: TPoint;
+
+  procedure ChangeScheme(NewScheme: TSynHighlighterMultiScheme;
+    StartAtLine, StartAtChar: Integer);
+  var
+    VLines: TSynHLightMultiVirtualLines;
+  begin
+    if FCurScheme = nil
+    then VLines := DefaultVirtualLines
+    else VLines := FCurScheme.VirtualLines;
+    if CurRegStart.y < 0 then
+      VLines.RegionScanUpdateFirstRegionEnd(Point(StartAtChar-1, StartAtLine))
+    else
+      VLines.RegionScanUpdate0rInsertRegion(CurRegStart, Point(StartAtChar, StartAtLine));
+    FCurScheme := NewScheme;
+    CurRegStart.y := StartAtLine;
+    CurRegStart.x := StartAtChar;
+  end;
+begin
+  (* Scan regions *)
+  Result := StartIndex;
+  c := CurrentLines.Count - 1;
+  if c < 0 then begin
+    // Clear ?
+    exit;
+  end;
+
+  DefaultVirtualLines.PrepareRegionScan(Result);
+  for i := 0 to Schemes.Count - 1 do
+    Schemes[i].VirtualLines.PrepareRegionScan(Result);
+
+  CurRegStart.y := -1;
+  if Result = 0 then begin
+    CurRegStart.y := 1;
+    CurRegStart.x := 1;
+  end;
+  StartAtLineIndex(Result);
+  dec(Result);
+  repeat
+    inc(Result);
+    if Result <> StartIndex then
+      ContinueNextLine;
+
+    FSchemes.CurrentLine := CurrentLines[Result];
+    SearchPos := 1;
+    while SearchPos <= length(FLine) do begin
+      if FCurScheme <> nil then begin
+        // Find Endpoint for CurScheme
+        NewSearchPos := FCurScheme.FindEndPosInLine(SearchPos);
+        if NewSearchPos <= 0 then
+          break; // Ends in next line
+        SearchPos := NewSearchPos + FCurScheme.LastMatchLen;
+        ChangeScheme(nil, Result, SearchPos - FCurScheme.LastMatchLen);
+      end
+      else begin
+        // Find new start of a Scheme
+        NewSearchPos := -1;
+        for i := 0 to Schemes.Count - 1 do begin
+          TmpSearchPos := Schemes.Items[i].FindStartPosInLine(SearchPos);
+          if (NewSearchPos < 0) or (TmpSearchPos < NewSearchPos) then begin
+            j := i;
+            NewSearchPos := TmpSearchPos;
+          end;
+        end;
+        if NewSearchPos <= 0 then
+          break; // Not in this line
+        SearchPos := NewSearchPos + FCurScheme.LastMatchLen;
+        ChangeScheme(Schemes[j], Result, SearchPos);
+      end;
+    end;
+
+  until ((not UpdateRangeInfoAtLine(Result)) and (Result > EndIndex))
+     or (Result = c);
+
+  if Result = c then begin
+    ChangeScheme(FCurScheme, c, length(CurrentLines[c-1]) +  1);
+  end
+  else if CurRegStart.y > 0 then begin
+    if FCurScheme = nil
+    then DefaultVirtualLines.RegionScanUpdateLastRegionStart(CurRegStart, Result)
+    else FCurScheme.VirtualLines.RegionScanUpdateLastRegionStart(CurRegStart, Result);
+  end;
+  DefaultVirtualLines.FinishRegionScan(Result);
+  for i := 0 to Schemes.Count - 1 do
+    Schemes[i].VirtualLines.FinishRegionScan(Result);
+
+  (* Scan nested Highlighters *)
 end;
 
 function TSynMultiSyn.GetAttribCount: integer;
@@ -294,8 +827,8 @@ function TSynMultiSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttrib
 var
   iHL: TSynCustomHighlighter;
 begin
-  if (CurrScheme >= 0) and (Schemes[CurrScheme].Highlighter <> nil) then
-    iHL := Schemes[CurrScheme].Highlighter
+  if (FCurScheme <> nil) and (FCurScheme.Highlighter <> nil) then
+    iHL := FCurScheme.Highlighter
   else
     iHL := DefaultHighlighter;
   { the typecast to TSynMultiSyn is only necessary because the
@@ -309,10 +842,11 @@ end;
 
 function TSynMultiSyn.GetEol: Boolean;
 begin
-  if fMarker <> nil then
-    Result := False
-  else if fCurrScheme >= 0 then
-    Result := Schemes[CurrScheme].Highlighter.GetEol
+  //if fMarker <> nil then
+  //  Result := False
+  //else
+  if FCurScheme <> nil then
+    Result := FCurScheme.Highlighter.GetEol
   else if DefaultHighlighter <> nil then
     Result := DefaultHighlighter.GetEol
   else
@@ -321,8 +855,8 @@ end;
 
 function TSynMultiSyn.GetIdentChars: TSynIdentChars;
 begin
-  if CurrScheme >= 0 then
-    Result := Schemes[CurrScheme].Highlighter.IdentChars
+  if FCurScheme <> nil then
+    Result := FCurScheme.Highlighter.IdentChars
   else if DefaultHighlighter <> nil then
     Result := DefaultHighlighter.IdentChars
   else
@@ -335,32 +869,9 @@ begin
   Result := SYNS_LangGeneralMulti;
 end;
 
-function TSynMultiSyn.GetMarkers(aIndex: integer): TgmMarker;
-begin
-  Result := TgmMarker( fMarkers[ aIndex ] );
-end;
-
 function TSynMultiSyn.GetRange: Pointer;
-var
-  iHL: TSynCustomHighlighter;
-  iSchemeIndex: cardinal;
-  iSchemeRange: cardinal;
 begin
-  if (fCurrScheme < 0) then
-    iHL := DefaultHighlighter
-  else
-    iHL := Schemes[fCurrScheme].Highlighter;
-  iSchemeIndex := fCurrScheme +2;
-  Assert( iSchemeIndex <= MaxSchemeCount );
-  if iHL <> nil then begin
-    iSchemeRange := PtrUInt( iHL.GetRange );
-    Assert( (iSchemeRange <= MaxSchemeRange) or (iHL is TSynMultiSyn) );
-  end else
-    iSchemeRange := 0;
-  { checks the limit of nested MultiSyns }
-  Assert( iSchemeRange shr ((MaxNestedMultiSyn -1)*SchemeIndexSize + SchemeRangeSize) = 0 );
-  iSchemeRange := (iSchemeRange shl SchemeIndexSize) or iSchemeIndex;
-  Result := pointer(PtrInt(iSchemeRange));
+  Result := FCurScheme;
 end;
 
 function TSynMultiSyn.GetToken: string;
@@ -368,14 +879,9 @@ begin
   if DefaultHighlighter = nil then
     Result := fLine
   else
-    {$IFDEF SYN_LAZARUS}
     SetString(Result, (PChar(FLine) + fTokenPos), fRun - fTokenPos -1);
-    {$ELSE}
-    Result := Copy( fLine, fTokenPos +1, fRun - fTokenPos -1);
-    {$ENDIF}
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TSynMultiSyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
@@ -392,14 +898,14 @@ begin
     TokenStart:=PChar(FLine) + fTokenPos;
   end;
 end;
-{$ENDIF}
 
 function TSynMultiSyn.GetTokenAttribute: TSynHighlighterAttributes;
 begin
-  if fMarker <> nil then
-    Result := Schemes[fMarker.fScheme].MarkerAttri
-  else if CurrScheme >= 0 then
-    Result := Schemes[CurrScheme].Highlighter.GetTokenAttribute
+  //if fMarker <> nil then
+  //  Result := Schemes[fMarker.fScheme].MarkerAttri
+  //else
+  if FCurScheme <> nil then
+    Result := FCurScheme.Highlighter.GetTokenAttribute
   else if DefaultHighlighter <> nil then
     Result := DefaultHighlighter.GetTokenAttribute
   else
@@ -408,10 +914,11 @@ end;
 
 function TSynMultiSyn.GetTokenKind: integer;
 begin
-  if fMarker <> nil then
-    Result := 0
-  else if fCurrScheme >= 0 then
-    Result := Schemes[fCurrScheme].Highlighter.GetTokenKind
+  //if fMarker <> nil then
+  //  Result := 0
+  //else
+  if FCurScheme <> nil then
+    Result := FCurScheme.Highlighter.GetTokenKind
   else if DefaultHighlighter <> nil then
     Result := DefaultHighlighter.GetTokenKind
   else
@@ -430,84 +937,10 @@ begin
 end;
 
 procedure TSynMultiSyn.Next;
-
-  function FindMarker: TgmMarker;
-  var
-    c: integer;
-  begin
-    for c := 0 to fMarkers.Count -1 do
-      if Markers[c].fStartPos >= fRun then
-      begin
-        Result := Markers[c];
-        Exit;
-      end;
-    Result := nil;
-  end;
-
-var
-  iToken: String;
-  iHL: TSynCustomHighlighter;
 begin
   if DefaultHighlighter = nil then begin
-    if fRun > 1 then
-      Inc( fRun )
-    else
-      fRun := Length(fLine) + 2;
-    Exit;
   end;
 
-  if (fNextMarker < fMarkers.Count) and (fRun >= Markers[fNextMarker].fStartPos) then begin
-    fMarker := Markers[ fNextMarker ];
-    Inc( fNextMarker );
-    fTokenPos := fRun -1;
-    Inc( fRun, fMarker.fMarkerLen );
-    Exit;
-  end;
-  if (fRun = 1) then begin
-    if fMarkers.Count = 0 then
-      fTmpLine := fLine
-    else
-      fTmpLine := Copy( fLine, 1, Markers[fNextMarker].fStartPos -1 );
-    if CurrScheme >= 0 then
-      iHL := Schemes[CurrScheme].Highlighter
-    else
-      iHL := DefaultHighlighter;
-    iHL.SetLine( fTmpLine, fLineNumber );
-  end else if fMarker <> nil then begin
-    if fMarker.fIsOpenMarker then begin
-      fTmpRange := DefaultHighlighter.GetRange;
-      fCurrScheme := fMarker.fScheme;
-      Schemes[CurrScheme].Highlighter.ResetRange;  //GBN 31/01/2002 - >From Flavio
-    end else begin
-      fCurrScheme := -1;
-      DefaultHighlighter.SetRange( fTmpRange );
-    end;
-    fMarker := nil;
-    {}
-    if fNextMarker < fMarkers.Count then
-      fTmpLine := Copy( fLine, fRun, Markers[fNextMarker].fStartPos - fRun  )
-    else
-      fTmpLine := Copy( fLine, fRun, MaxInt );
-    if CurrScheme >= 0 then
-      iHL := Schemes[CurrScheme].Highlighter
-    else
-      iHL := DefaultHighlighter;
-    iHL.SetLine( fTmpLine, fLineNumber );
-  end else begin
-    if CurrScheme >= 0 then
-      iHL := Schemes[CurrScheme].Highlighter
-    else
-      iHL := DefaultHighlighter;
-    iHL.Next;
-  end;
-
-  fTokenPos := iHL.GetTokenPos;
-  iToken := iHL.GetToken;
-  if fNextMarker > 0 then begin
-    with Markers[ fNextMarker -1 ] do
-      Inc( fTokenPos, fStartPos + fMarkerLen -1 );
-  end;
-  Inc( fRun, (fTokenPos - fRun +1) + Length(iToken) );
 end;
 
 procedure TSynMultiSyn.Notification(aComp: TComponent; aOp: TOperation);
@@ -527,14 +960,24 @@ begin
   end;
 end;
 
+function TSynMultiSyn.CreateRangeList: TSynHighlighterRangeList;
+begin
+  Result := TSynHighlighterMultiRangeList.Create;
+  TSynHighlighterMultiRangeList(Result).InitForScheme(Schemes);
+  TSynHighlighterMultiRangeList(Result).CopyToScheme(Schemes);
+end;
+
+procedure TSynMultiSyn.SetCurrentLines(const AValue: TSynEditStringsBase);
+begin
+  inherited SetCurrentLines(AValue);
+  TSynHighlighterMultiRangeList(CurrentRanges).CopyToScheme(Schemes);
+end;
+
 procedure TSynMultiSyn.ResetRange;
 begin
-  fCurrScheme := -1;
-  fTmpRange := nil;
-  //GBN 31/02/2002 - From Flavio
+  FCurScheme := nil;
   if DefaultHighlighter <> nil then begin
     DefaultHighlighter.ResetRange;
-    fTmpRange := DefaultHighlighter.GetRange;
   end;
 end;
 
@@ -558,121 +1001,34 @@ begin
   end;
 end;
 
-//GBN 31/01/2002 - Start
-procedure TSynMultiSyn.DoCheckMarker(Scheme:TgmScheme; StartPos, MarkerLen: Integer; const MarkerText: String; Start: Boolean);
-var
-  aStartPos: Integer;
-  aMarkerLen: Integer;
-  aMarkerText: String;
+function TSynMultiSyn.GetDefaultVirtualLines: TSynHLightMultiVirtualLines;
 begin
-  aStartPos:=StartPos;
-  aMarkerLen:=MarkerLen;
-  aMarkerText:=MarkerText;
-  if (Start) and Assigned(Scheme.OnCheckStartMarker) then
-    Scheme.OnCheckStartMarker(Self,aStartPos,aMarkerLen,aMarkerText)
-  else if (not Start) and Assigned(Scheme.OnCheckEndMarker) then
-    Scheme.OnCheckEndMarker(Self,aStartPos,aMarkerLen,aMarkerText);
-  if (aMarkerText<>'') and (aMarkerLen>0) then
-    begin
-    fMarkers.Add(TgmMarker.Create(Scheme.Index, aStartPos, aMarkerLen,Start,aMarkerText));
-    end;
+  Result := TSynHighlighterMultiRangeList(CurrentRanges).DefaultVirtualLines;
 end;
-//GBN 31/01/2002 - End
 
 procedure TSynMultiSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
   LineNumber: Integer);
-var
-  iParser: TRegExpr;
-  iScheme: TgmScheme;
-  iExpr: String;
-  iLine: String;
-  iEaten: integer;
-  cScheme: integer;
 begin
-  ClearMarkers;
+  if IsScanning then exit;
 
-  iParser := TRegExpr.Create;
-  try
-    iEaten := 0;
-    iLine := NewValue;
-    if CurrScheme >= 0
-    then
-      iScheme := fSchemes[ CurrScheme ]
-    else
-      iScheme := nil;
-    while iLine <> '' do
-      if iScheme <> nil then begin
-        iParser.Expression := iScheme.ConvertExpression( iScheme.EndExpr );
-        if iParser.Exec( iScheme.ConvertExpression( iLine ) ) then begin
-          iExpr := Copy( NewValue, iParser.MatchPos[0] + iEaten, iParser.MatchLen[0] );
-          //GBN 31/01/2002 - Start
-          DoCheckMarker(iScheme, iParser.MatchPos[0] + iEaten, iParser.MatchLen[0],iExpr,False);
-          //fMarkers.Add( TgmMarker.Create( iScheme.Index, iParser.MatchPos[0] + iEaten,
-          //  iParser.MatchLen[0], False, iExpr ) );
-          //GBN 31/01/2002 - End
-          Delete( iLine, 1, iParser.MatchPos[0] -1 + iParser.MatchLen[0] );
-          Inc( iEaten, iParser.MatchPos[0] -1 + iParser.MatchLen[0] );
-          iScheme := nil;
-        end else
-          break;
-      end else begin
-        for cScheme := 0 to Schemes.Count -1 do begin
-          iScheme := Schemes[ cScheme ];
-          if (iScheme.StartExpr = '') or (iScheme.EndExpr = '') or
-            (iScheme.Highlighter = nil) or (not iScheme.Highlighter.Enabled) then
-          begin
-            continue;
-          end;
-          iParser.Expression := iScheme.ConvertExpression( iScheme.StartExpr );
-          if iParser.Exec( iScheme.ConvertExpression( iLine ) ) then begin
-            iExpr := Copy( NewValue, iParser.MatchPos[0] + iEaten, iParser.MatchLen[0] );
-            //GBN 31/01/2002 - Start
-            DoCheckMarker(iScheme, iParser.MatchPos[0] + iEaten, iParser.MatchLen[0],iExpr,True);
-            //fMarkers.Add( TgmMarker.Create( cScheme, iParser.MatchPos[0] + iEaten,
-            //  iParser.MatchLen[0], True, iExpr ) );
-            //GBN 31/01/2002 - End
-            Delete( iLine, 1, iParser.MatchPos[0] -1 + iParser.MatchLen[0] );
-            Inc( iEaten, iParser.MatchPos[0] -1 + iParser.MatchLen[0] );
-            break;
-          end;
-        end; {for}
-        if cScheme >= Schemes.Count then
-          break;
-      end; {else}
-
-  finally
-    iParser.Free;
-  end;
-
-  if LineNumber <> fLineNumber +1 then
-    fTmpRange := nil;
-  fLineNumber := LineNumber;
-  fLine := NewValue;
-  fMarker := nil;
+  FLineNumber := LineNumber;
+  FLine := NewValue;
+  //if LineNumber <> fLineNumber +1 then
+  //  fTmpRange := nil;
   fRun := 1;
   fTokenPos := 0;
-  fNextMarker := 0;
+  //fNextMarker := 0;
   Next;
 end;
 
 procedure TSynMultiSyn.SetRange(Value: Pointer);
-var
-  iSchemeRange: PtrInt;
 begin
-  if Value = nil then
-    Exit;
-  iSchemeRange := PtrUInt(Value);
-  fCurrScheme := (iSchemeRange and MaxSchemeCount) -2;
-  iSchemeRange := iSchemeRange shr SchemeIndexSize;
-  if (CurrScheme < 0) then begin
-    if DefaultHighlighter <> nil then
-      DefaultHighlighter.SetRange( pointer(iSchemeRange) );
-  end else begin
-    Schemes[CurrScheme].Highlighter.SetRange( pointer(iSchemeRange) );
-  end;
+  inherited;
+  FCurScheme := TSynHighlighterMultiScheme(Value);
+  {$note maybe default scheme if nil?}
 end;
 
-procedure TSynMultiSyn.SetSchemes(const Value: TgmSchemes);
+procedure TSynMultiSyn.SetSchemes(const Value: TSynHighlighterMultiSchemeList);
 begin
   fSchemes.Assign(Value);
 end;
@@ -697,50 +1053,117 @@ begin
   fSampleSource := Value;
 end;
 
-{ TgmSchemes }
-
-constructor TgmSchemes.Create(aOwner: TSynMultiSyn);
+procedure TSynMultiSyn.SchemeItemChanged(Item: TObject);
 begin
-  inherited Create(TgmScheme);
+  DefHighlightChange( Item );
+  {$note todo, rescan all}
+end;
+
+procedure TSynMultiSyn.SchemeChanged;
+var
+  i: Integer;
+begin
+  for i := 0 to KnownLines.Count - 1 do
+    TSynHighlighterMultiRangeList(KnownRanges[i]).InitForScheme(Schemes);
+  if CurrentLines <> nil then;
+    TSynHighlighterMultiRangeList(CurrentRanges).CopyToScheme(Schemes);
+  SchemeItemChanged(nil);
+end;
+
+{ TSynHighlighterMultiSchemeList }
+
+constructor TSynHighlighterMultiSchemeList.Create(aOwner: TSynMultiSyn);
+begin
+  inherited Create(TSynHighlighterMultiScheme);
   fOwner := aOwner;
 end;
 
-function TgmSchemes.GetItems(Index: integer): TgmScheme;
+function TSynHighlighterMultiSchemeList.GetItems(Index: integer): TSynHighlighterMultiScheme;
 begin
-  Result := inherited Items[Index] as TgmScheme;
+  Result := inherited Items[Index] as TSynHighlighterMultiScheme;
+end;
+
+function TSynHighlighterMultiSchemeList.GetConvertedCurrentLine: String;
+begin
+  if FConvertedCurrentLine = '' then
+    FConvertedCurrentLine := AnsiUpperCase(FCurrentLine);
+  Result := FConvertedCurrentLine;
+end;
+
+procedure TSynHighlighterMultiSchemeList.SetCurrentLine(const AValue: String);
+var
+  i: Integer;
+begin
+  if FCurrentLine = AValue then exit;
+  FCurrentLine := AValue;
+  for i := 0 to Count - 1 do
+    Items[i].ClearLinesSet;
 end;
 
 {$IFDEF SYN_COMPILER_3_UP}
-function TgmSchemes.GetOwner: TPersistent;
+function TSynHighlighterMultiSchemeList.GetOwner: TPersistent;
 begin
   Result := fOwner;
 end;
 {$ENDIF}
 
-procedure TgmSchemes.SetItems(Index: integer; const Value: TgmScheme);
+procedure TSynHighlighterMultiSchemeList.SetItems(Index: integer; const Value: TSynHighlighterMultiScheme);
 begin
   inherited Items[Index] := Value;
 end;
 
 {$IFDEF SYN_COMPILER_3_UP}
-procedure TgmSchemes.Update(Item: TCollectionItem);
+procedure TSynHighlighterMultiSchemeList.Update(Item: TCollectionItem);
 begin
-  fOwner.DefHighlightChange( Item );
+  // property of an Item changed
+  fOwner.SchemeItemChanged(Item);
 end;
+
+procedure TSynHighlighterMultiSchemeList.Notify(Item: TCollectionItem;
+  Action: TCollectionNotification);
+begin
+  // Item added/removed
+  inherited Notify(Item, Action);
+end;
+
 {$ENDIF}
 
-{ TgmScheme }
+{ TSynHighlighterMultiScheme }
 
-function TgmScheme.ConvertExpression(const Value: String): String;
+function TSynHighlighterMultiScheme.GetConvertedLine: String;
 begin
-  if not CaseSensitive then
-    Result := AnsiUpperCase(Value)
+  if FCaseSensitive then
+    Result := TSynHighlighterMultiSchemeList(Collection).ConvertedCurrentLine
   else
-    Result := Value;
+    Result := TSynHighlighterMultiSchemeList(Collection).CurrentLine;
 end;
 
-constructor TgmScheme.Create(TheCollection: TCollection);
+function TSynHighlighterMultiScheme.GetConvertedEndExpr: String;
 begin
+  if not FCaseSensitive then
+    Result := FEndExpr
+  else begin
+    if FConvertedEndExpr = '' then
+      FConvertedEndExpr := AnsiUpperCase(FEndExpr);
+    Result := FConvertedEndExpr
+  end;
+end;
+
+function TSynHighlighterMultiScheme.GetConvertedStartExpr: String;
+begin
+  if not FCaseSensitive then
+    Result := FStartExpr
+  else begin
+    if FConvertedStartExpr = '' then
+      FConvertedStartExpr := AnsiUpperCase(FStartExpr);
+    Result := FConvertedStartExpr
+  end;
+end;
+
+constructor TSynHighlighterMultiScheme.Create(TheCollection: TCollection);
+begin
+  FStartExprScanner := TRegExpr.Create;
+  FEndExprScanner := TRegExpr.Create;
   inherited Create(TheCollection);
   fCaseSensitive := True;
   fMarkerAttri := TSynHighlighterAttributes.Create(SYNS_AttrMarker, SYNS_XML_AttrMarker);
@@ -750,16 +1173,88 @@ begin
   MarkerAttri.InternalSaveDefaultValues;
 end;
 
-destructor TgmScheme.Destroy;
+destructor TSynHighlighterMultiScheme.Destroy;
 begin
   fMarkerAttri.Free;
   { unhook notification handlers }
   Highlighter := nil;
   inherited Destroy;
+  FreeAndNil(FStartExprScanner);
+  FreeAndNil(FEndExprScanner);
+end;
+
+procedure TSynHighlighterMultiScheme.ClearLinesSet;
+begin
+  FStartLineSet := False;
+  FEndLineSet := False;
+end;
+
+function TSynHighlighterMultiScheme.FindStartPosInLine(ASearchPos: Integer): Integer;
+var
+  t: String;
+begin
+  if not FStartLineSet then begin
+    FStartExprScanner.InputString := GetConvertedLine;
+    FStartLineSet := True;
+  end;
+
+  Repeat
+    if FStartExprScanner.Exec(ASearchPos) then begin
+      Result := FStartExprScanner.MatchPos[0];
+      FLastMatchLen := FStartExprScanner.MatchLen[0];
+
+      if Assigned(OnCheckStartMarker) then begin
+        t := FStartExprScanner.Match[0];
+        OnCheckStartMarker(TSynHighlighterMultiSchemeList(Collection).FOwner, Result, FLastMatchLen, t);
+        if (t <> '') and (FLastMatchLen > 0) then
+          exit;
+        ASearchPos := FStartExprScanner.MatchPos[0] + 1;
+      end
+      else
+        exit;
+    end
+    else begin
+      Result := -1;
+      FLastMatchLen := 0;
+      exit;
+    end;
+  until False;
+end;
+
+function TSynHighlighterMultiScheme.FindEndPosInLine(ASearchPos: Integer): Integer;
+var
+  t: String;
+begin
+  if not FEndLineSet then begin
+    FEndExprScanner.InputString := GetConvertedLine;
+    FEndLineSet:= True;
+  end;
+
+  Repeat
+    if FEndExprScanner.Exec(ASearchPos) then begin
+      Result := FEndExprScanner.MatchPos[0];
+      FLastMatchLen := FEndExprScanner.MatchLen[0];
+
+      if Assigned(OnCheckEndMarker) then begin
+        t := FEndExprScanner.Match[0];
+        OnCheckEndMarker(TSynHighlighterMultiSchemeList(Collection).FOwner, Result, FLastMatchLen, t);
+        if (t <> '') and (FLastMatchLen > 0) then
+          exit;
+        ASearchPos := FEndExprScanner.MatchPos[0] + 1;
+      end
+      else
+        exit;
+    end
+    else begin
+      Result := -1;
+      FLastMatchLen := 0;
+      exit;
+    end;
+  until False;
 end;
 
 {$IFDEF SYN_COMPILER_3_UP}
-function TgmScheme.GetDisplayName: String;
+function TSynHighlighterMultiScheme.GetDisplayName: String;
 begin
   if SchemeName <> '' then
     Result := SchemeName
@@ -768,70 +1263,74 @@ begin
 end;
 {$ENDIF SYN_COMPILER_3_UP}
 
-procedure TgmScheme.MarkerAttriChanged(Sender: TObject);
+procedure TSynHighlighterMultiScheme.MarkerAttriChanged(Sender: TObject);
 begin
   Changed( False );
 end;
 
-procedure TgmScheme.SetCaseSensitive(const Value: Boolean);
+procedure TSynHighlighterMultiScheme.SetCaseSensitive(const Value: Boolean);
 begin
   if fCaseSensitive <> Value then
   begin
     fCaseSensitive := Value;
+    FStartExprScanner.Expression := GetConvertedStartExpr;
+    FEndExprScanner.Expression := GetConvertedEndExpr;
     Changed( False );
   end;
 end;
 
 {$IFDEF SYN_COMPILER_3_UP}
-procedure TgmScheme.SetDisplayName(const Value: String);
+procedure TSynHighlighterMultiScheme.SetDisplayName(const Value: String);
 begin
   SchemeName := Value;
 end;
 {$ENDIF SYN_COMPILER_3_UP}
 
-procedure TgmScheme.SetEndExpr(const Value: string);
-var OldValue: String; //GBN 31/01/2002 - From Flavio
+procedure TSynHighlighterMultiScheme.SetEndExpr(const Value: string);
+var OldValue: String;
 begin
   if fEndExpr <> Value then
   begin
-    OldValue := fEndExpr; //GBN 31/01/2002 - From Flavio
-    fEndExpr := Value;
-    //GBN 31/01/2002 - From Flavio
-    if ConvertExpression( OldValue ) <> ConvertExpression( Value ) then
+    OldValue := GetConvertedEndExpr;
+    FConvertedEndExpr := '';
+    FEndExpr := Value;
+    FEndExprScanner.Expression := GetConvertedEndExpr;
+    if GetConvertedEndExpr <> OldValue then
       Changed( False );
   end;
 end;
 
-procedure TgmScheme.SetHighlighter(const Value: TSynCustomHighLighter);
+procedure TSynHighlighterMultiScheme.SetHighlighter(const Value: TSynCustomHighLighter);
 var
   iOwner: TSynMultiSyn;
 begin
   if Highlighter <> Value then
   begin
-    iOwner := TgmSchemes(Collection).fOwner;
+    iOwner := TSynHighlighterMultiSchemeList(Collection).fOwner;
     if Highlighter <> nil then
       iOwner.UnhookHighlighter( Highlighter );
     fHighlighter := Value;
-    if (Highlighter <> nil) and (Highlighter <> TgmSchemes(Collection).fOwner) then
+    if (Highlighter <> nil) and (Highlighter <> TSynHighlighterMultiSchemeList(Collection).fOwner) then
       iOwner.HookHighlighter( Highlighter );
     Changed(False);
   end;
 end;
 
-procedure TgmScheme.SetMarkerAttri(const Value: TSynHighlighterAttributes);
+procedure TSynHighlighterMultiScheme.SetMarkerAttri(const Value: TSynHighlighterAttributes);
 begin
   fMarkerAttri.Assign(Value);
 end;
 
-procedure TgmScheme.SetStartExpr(const Value: string);
-var OldValue: String; //GBN 31/01/2002 - From Flavio
+procedure TSynHighlighterMultiScheme.SetStartExpr(const Value: string);
+var OldValue: String;
 begin
   if fStartExpr <> Value then
   begin
-    OldValue   := fStartExpr; //GBN 31/01/2002 - From Flavio
-    fStartExpr := Value;
-    //GBN 31/01/2002 - From Flavio
-    if ConvertExpression( Value ) <> ConvertExpression( OldValue ) then
+    OldValue := GetConvertedStartExpr;
+    FConvertedStartExpr := '';
+    FStartExpr := Value;
+    FStartExprScanner.Expression := GetConvertedStartExpr;
+    if GetConvertedStartExpr <> OldValue then
       Changed( False );
   end;
 end;
