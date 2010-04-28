@@ -544,12 +544,14 @@ type
     procedure CalcMemSize(Stats: TCTMemStats);
   end;
 
+  { TFPCSourceRule }
+
   TFPCSourceRule = class
   public
     Filename: string;
-    IsDirectoy: boolean;
     Priority: integer;
-    Targets: string; // comma separated list of OS, CPU, e.g. win32,unix,i386
+    Targets: string; // comma separated list of OS, CPU, e.g. win32,unix,i386 or * for all
+    function FitsTargets(const FilterTargets: string): boolean;
   end;
 
   { TFPCSourceRules }
@@ -560,18 +562,24 @@ type
     FPriority: integer;
     FTargets: string;
     function GetItems(Index: integer): TFPCSourceRule;
+    procedure SetTargets(const AValue: string);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    property Items[Index: integer]: TFPCSourceRule read GetItems;
+    property Items[Index: integer]: TFPCSourceRule read GetItems; default;
     function Count: integer;
-    function Add: TFPCSourceRule;
-    function AddFile(const Filename: string): TFPCSourceRule;
-    function AddDirectory(const Filename: string): TFPCSourceRule;
+    function Add(const Filename: string): TFPCSourceRule;
+    procedure GetRulesForTargets(Targets: string;
+                                 var RulesSortedForFilenameStart: TAVLTree);
+    function GetPriority(Filename: string;
+                         RulesSortedForFilenameStart: TAVLTree): integer;
     property Priority: integer read FPriority write FPriority; // used for Add
-    property Targets: string read FTargets write FTargets; // used for Add
+    property Targets: string read FTargets write SetTargets; // used for Add, e.g. win32,unix,bsd or * for all
   end;
+
+var
+  DefaultFPCSourceRules: TFPCSourceRules;
   
 const
   DefineTemplateFlagNames: array[TDefineTemplateFlag] of shortstring = (
@@ -626,11 +634,14 @@ function RunFPCVerbose(const CompilerFilename, TestFilename: string;
 function GatherUnitsInSearchPaths(SearchPaths: TStrings;
                     const OnProgress: TDefinePoolProgress): TStringToStringTree;
 function GatherUnitsInFPCSources(Files: TStringList;
-                              TargetOS, TargetCPU: string): TStringToStringTree;
+                             TargetOS: string = ''; TargetCPU: string = '';
+                             Rules: TFPCSourceRules = nil): TStringToStringTree;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
                            var Dirs, SubDirs: string);
+
+function CompareFPCSourceRulesViaFilenameStart(Rule1, Rule2: Pointer): integer;
 
 implementation
 
@@ -640,6 +651,7 @@ type
   public
     Unit_Name: string;
     Filename: string;
+    ConflictFilename: string;
     MacroCount: integer;
     UsedMacroCount: integer;
     Priority: integer;
@@ -1074,8 +1086,8 @@ begin
   end;
 end;
 
-function GatherUnitsInFPCSources(Files: TStringList; TargetOS, TargetCPU: string
-  ): TStringToStringTree;
+function GatherUnitsInFPCSources(Files: TStringList; TargetOS: string;
+  TargetCPU: string; Rules: TFPCSourceRules): TStringToStringTree;
 
   function ContainsWord(aWord, aTxt: PChar): boolean;
   var
@@ -1110,17 +1122,29 @@ var
   SrcOS2: String;
   Node: TAVLTreeNode;
   Link: TUnitNameLink;
+  TargetRules: TAVLTree;
+  Priority: LongInt;
 begin
   Result:=nil;
   if (Files=nil) or (Files.Count=0) then exit;
+
+  // get default targets
   if TargetOS='' then
     TargetOS:=GetCompiledTargetOS;
   SrcOS:=GetDefaultSrcOSForTargetOS(TargetOS);
   SrcOS2:=GetDefaultSrcOS2ForTargetOS(TargetOS);
   if TargetCPU='' then
     TargetCPU:=GetCompiledTargetCPU;
+  if Rules=nil then Rules:=DefaultFPCSourceRules;
+
+  TargetRules:=nil;
   Links:=TAVLTree.Create(@CompareUnitNameLinks);
   try
+    // get priority rules for duplicate units
+    Rules.GetRulesForTargets(TargetOS+','+SrcOS+','+SrcOS2+','+TargetCPU,
+                             TargetRules);
+    if (TargetRules<>nil) and (TargetRules.Count=0) then
+      FreeAndNil(TargetRules);
     LastDirectory:='';
     LastDirectoryPriority:=0;
     for i:=0 to Files.Count-1 do begin
@@ -1129,32 +1153,46 @@ begin
       or (CompareFileExt(Filename,'PP',false)=0)
       or (CompareFileExt(Filename,'P',false)=0)
       then begin
+        // Filename is a pascal unit source
         Directory:=ExtractFilePath(Filename);
         if LastDirectory=Directory then begin
+          // same directory => reuse directory priority
           DirPriority:=LastDirectoryPriority;
         end else begin
+          // a new directory => recompute directory priority
           DirPriority:=0;
+          // default heuristic: add one point for every target in filename
           if ContainsWord(PChar(TargetOS),PChar(Directory)) then inc(DirPriority);
           if ContainsWord(PChar(TargetCPU),PChar(Directory)) then inc(DirPriority);
           if ContainsWord(PChar(SrcOS),PChar(Directory)) then inc(DirPriority);
           if ContainsWord(PChar(SrcOS2),PChar(Directory)) then inc(DirPriority);
         end;
+        Priority:=DirPriority;
+        // apply target rules
+        if TargetRules<>nil then
+          inc(Priority,Rules.GetPriority(Filename,TargetRules));
+        // add or update unitlink
         Unit_Name:=ExtractFileNameOnly(Filename);
         Node:=Links.FindKey(Pointer(Unit_Name),@CompareUnitNameWithUnitNameLink);
         if Node<>nil then begin
+          // duplicate unit
           Link:=TUnitNameLink(Node.Data);
-          if Link.Priority<DirPriority then begin
-            // something better found
+          if Link.Priority<Priority then begin
+            // found a better unit
             Link.Unit_Name:=Unit_Name;
             Link.Filename:=Filename;
-            Link.Priority:=DirPriority;
+            Link.ConflictFilename:='';
+            Link.Priority:=Priority;
+          end else if Link.Priority=Priority then begin
+            // unit with same priority => maybe a conflict
+            Link.ConflictFilename:=Link.ConflictFilename+';'+Filename;
           end;
         end else begin
           // new unit source found => add to list
           Link:=TUnitNameLink.Create;
           Link.Unit_Name:=Unit_Name;
           Link.Filename:=Filename;
-          Link.Priority:=DirPriority;
+          Link.Priority:=Priority;
           Links.Add(Link);
         end;
         LastDirectory:=Directory;
@@ -1166,9 +1204,13 @@ begin
     while Node<>Nil do begin
       Link:=TUnitNameLink(Node.Data);
       Result[Link.Unit_Name]:=Link.Filename;
+      if Link.ConflictFilename<>'' then begin
+        DebugLn(['GatherUnitsInFPCSources Ambiguous: ',Link.Filename,' ',Link.ConflictFilename]);
+      end;
       Node:=Links.FindSuccessor(Node);
     end;
   finally
+    TargetRules.Free;
     Links.FreeAndClear;
     Links.Free;
   end;
@@ -1304,6 +1346,14 @@ begin
     end;
   end;
   Params.Free;
+end;
+
+function CompareFPCSourceRulesViaFilenameStart(Rule1, Rule2: Pointer): integer;
+var
+  SrcRule1: TFPCSourceRule absolute Rule1;
+  SrcRule2: TFPCSourceRule absolute Rule2;
+begin
+  Result:=CompareStr(SrcRule1.Filename,SrcRule2.Filename);
 end;
 
 function DefineActionNameToAction(const s: string): TDefineAction;
@@ -1472,6 +1522,15 @@ begin
   end;
   
   Result:=DirsTempl;
+end;
+
+procedure InitDefaultFPCSourceRules;
+begin
+  DefaultFPCSourceRules:=TFPCSourceRules.Create;
+  with DefaultFPCSourceRules do begin
+    // put into an include file for easy edit via an editor
+    {$I fpcsrcrules.inc}
+  end;
 end;
 
 { TDefineTemplate }
@@ -5733,6 +5792,12 @@ begin
   Result:=TFPCSourceRule(FItems[Index]);
 end;
 
+procedure TFPCSourceRules.SetTargets(const AValue: string);
+begin
+  if FTargets=AValue then exit;
+  FTargets:=LowerCase(FTargets);
+end;
+
 constructor TFPCSourceRules.Create;
 begin
   FItems:=TFPList.Create;
@@ -5758,26 +5823,100 @@ begin
   Result:=FItems.Count;
 end;
 
-function TFPCSourceRules.Add: TFPCSourceRule;
+function TFPCSourceRules.Add(const Filename: string): TFPCSourceRule;
 begin
   Result:=TFPCSourceRule.Create;
   Result.Priority:=Priority;
   Result.Targets:=Targets;
+  Result.Filename:=SetDirSeparators(Filename);
   FItems.Add(Result);
 end;
 
-function TFPCSourceRules.AddFile(const Filename: string): TFPCSourceRule;
+procedure TFPCSourceRules.GetRulesForTargets(Targets: string;
+  var RulesSortedForFilenameStart: TAVLTree);
+var
+  i: Integer;
 begin
-  Result:=Add;
-  Result.Filename:=Filename;
+  if RulesSortedForFilenameStart=nil then
+    RulesSortedForFilenameStart:=
+                        TAVLTree.Create(@CompareFPCSourceRulesViaFilenameStart);
+  for i:=0 to Count-1 do
+    if Items[i].FitsTargets(Targets) then
+      RulesSortedForFilenameStart.Add(Items[i]);
 end;
 
-function TFPCSourceRules.AddDirectory(const Filename: string): TFPCSourceRule;
+function TFPCSourceRules.GetPriority(Filename: string;
+  RulesSortedForFilenameStart: TAVLTree): integer;
+var
+  Node: TAVLTreeNode;
+  Rule: TFPCSourceRule;
+  cmp: LongInt;
 begin
-  Result:=Add;
-  Result.Filename:=Filename;
-  Result.IsDirectoy:=true;
+  Result:=0;
+  // find first rule for Filename
+  Node:=RulesSortedForFilenameStart.Root;
+  // find nearest
+  while true do begin
+    Rule:=TFPCSourceRule(Node.Data);
+    cmp:=CompareStr(Rule.Filename,Filename);
+    if cmp=0 then break;
+    if cmp<0 then begin
+      if Node.Left<>nil then
+        Node:=Node.Left
+      else
+        break;
+    end else begin
+      if Node.Right<>nil then
+        Node:=Node.Right
+      else
+        break;
+    end;
+  end;
+  // find lowest
+
 end;
+
+{ TFPCSourceRule }
+
+function TFPCSourceRule.FitsTargets(const FilterTargets: string): boolean;
+var
+  FilterStartPos: PChar;
+  TargetPos: PChar;
+  FilterPos: PChar;
+begin
+  if Targets='*' then exit(true);
+  if (Targets='') or (FilterTargets='') then exit(false);
+  FilterStartPos:=PChar(FilterTargets);
+  while true do begin
+    while (FilterStartPos^=',') do inc(FilterStartPos);
+    if FilterStartPos^=#0 then exit(false);
+    TargetPos:=PChar(Targets);
+    repeat
+      while (TargetPos^=',') do inc(TargetPos);
+      if TargetPos^=#0 then break;
+      FilterPos:=FilterStartPos;
+      while (FilterPos^=TargetPos^) and (not (FilterPos^ in [#0,','])) do begin
+        inc(TargetPos);
+        inc(FilterPos);
+      end;
+      if (TargetPos^ in [#0,',']) then begin
+        // the target fits
+        exit(true);
+      end;
+      // try next target
+      while not (TargetPos^ in [#0,',']) do inc(TargetPos);
+    until TargetPos^=#0;
+    // next target filter
+    while not (FilterStartPos^ in [#0,',']) do inc(FilterStartPos);
+  end;
+  Result:=false;
+end;
+
+initialization
+  InitDefaultFPCSourceRules;
+
+finalization
+  FreeAndNil(DefaultFPCSourceRules);
 
 end.
 

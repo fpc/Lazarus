@@ -26,7 +26,7 @@
     <License Value="GPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="56">
+    <Files Count="57">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -250,8 +250,12 @@
       </Item55>
       <Item56>
         <Filename Value="otheridentifiertree.pas"/>
-        <UnitName Value="Unit1"/>
+        <UnitName Value="OtherIdentifierTree"/>
       </Item56>
+      <Item57>
+        <Filename Value="fpcsrcrules.inc"/>
+        <Type Value="Include"/>
+      </Item57>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
