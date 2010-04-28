@@ -237,7 +237,7 @@ begin
   //name it
     Client.Caption := cap;
     TryRename(Client, n);
-    DockMaster.MakeDockable(Client, fWrap);
+    DockMaster.MakeDockable(Client, fWrap, True);
     Result := Client;
   end;
 end;

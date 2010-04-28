@@ -45,7 +45,7 @@ uses
 
 procedure TMasterSite.buCreateFormClick(Sender: TObject);
 begin
-  DockMaster.CreateDockable('', True, True);
+  DockMaster.CreateDockable('', True, True, True);
 end;
 
 procedure TMasterSite.buDumpClick(Sender: TObject);

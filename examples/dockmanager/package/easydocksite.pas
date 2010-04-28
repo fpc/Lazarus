@@ -1218,6 +1218,11 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
           NewCtl.Width := ZoneRec.BottomRight.x;
           NewCtl.Height := ZoneRec.BottomRight.y;
         end;
+      {$IFDEF oldOrient}
+      {$ELSE}
+        NewZone.Orientation := doNoOrient;
+        NewCtl.DockOrientation := ZoneRec.Orientation;
+      {$ENDIF}
       end;
       while NewLvl < PrevLvl do begin
         PrevZone := PrevZone.Parent;
@@ -1280,8 +1285,13 @@ procedure TEasyTree.SaveToStream(Stream: TStream);
       child := Zone.ChildControl;
       if child = nil then
         ZoneName := ''
-      else
+      else begin
         ZoneName := SaveDockedControl(child); //ctrl or entire site
+      {$IFDEF oldOrient}
+      {$ELSE}
+        ZoneRec.Orientation := child.DockOrientation;
+      {$ENDIF}
+      end;
     //write descriptor
       Stream.Write(ZoneRec, sizeof(ZoneRec));
       Stream.WriteAnsiString(ZoneName);
@@ -2106,21 +2116,14 @@ var
 begin
 (* Save typename and clients.
 *)
-{
-  if DockManager <> nil then
-    Result := Name  //reload by name
-  else
-}
-  begin
-    ss := TStringStream.Create('');
-    try
-      ss.WriteByte(CustomDockSiteID);
-      ss.WriteAnsiString(ClassName);
-      SaveToStream(ss);
-      Result := ss.DataString;
-    finally
-      ss.Free;
-    end;
+  ss := TStringStream.Create('');
+  try
+    ss.WriteByte(CustomDockSiteID);
+    ss.WriteAnsiString(ClassName);
+    SaveToStream(ss);
+    Result := ss.DataString;
+  finally
+    ss.Free;
   end;
 end;
 
@@ -2153,7 +2156,7 @@ begin
     cn := strm.ReadAnsiString;
     ctl := DockLoader.ReloadControl(cn, self);
     if ctl <> nil then
-      ctl.ManualDock(self);
+      ctl.ManualDock(self); //orientation???
     //make visible?
   end;
 end;
