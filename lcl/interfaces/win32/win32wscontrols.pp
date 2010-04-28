@@ -627,7 +627,7 @@ end;
 class procedure TWin32WSWinControl.Invalidate(const AWinControl: TWinControl);
 begin
   // lpRect = nil updates entire client area of window
-  InvalidateRect(AWinControl.Handle, nil, true);
+  InvalidateRect(AWinControl.Handle, nil, True);
 end;
 
 class procedure TWin32WSWinControl.PaintTo(const AWinControl: TWinControl;

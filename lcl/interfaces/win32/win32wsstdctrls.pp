@@ -459,20 +459,14 @@ end;
 
 function GroupBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
-var
-  WindowInfo: PWin32WindowInfo;
 begin
   // move groupbox specific code here
   case Msg of
-    WM_UPDATEUISTATE:
-    begin
-      if ThemeServices.ThemesEnabled then
+    WM_NCHITTEST:
       begin
-        WindowInfo := GetWin32WindowInfo(Window);
-        if (WindowInfo <> nil) and (WindowInfo^.WinControl <> nil) then
-          WindowInfo^.WinControl.Invalidate;
+        Result := HTCLIENT;
+        Exit;
       end;
-    end;
   end;
   Result := WindowProc(Window, Msg, WParam, LParam);
 end;

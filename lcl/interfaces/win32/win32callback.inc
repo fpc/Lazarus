@@ -1834,12 +1834,6 @@ begin
         begin
           LMessage.Result := HTTRANSPARENT;
           WinProcess := false;
-        end
-        else
-        if (lWinControl is TCustomGroupBox) then
-        begin
-          LMessage.Result := HTCLIENT;
-          WinProcess := false;
         end;
       end;
     end;
@@ -2118,7 +2112,7 @@ begin
       end;
       // cross-interface compatible: complete invalidate on resize
       if (PWindowPos(LParam)^.flags and SWP_NOSIZE) = 0 then
-        Windows.InvalidateRect(Window, nil, true);
+        Windows.InvalidateRect(Window, nil, True);
     end;
     WM_MEASUREITEM:
     begin
@@ -2162,6 +2156,11 @@ begin
         Graphics.UpdateHandleObjects;
         ThemeServices.IntfDoOnThemeChange;
       end;
+    end;
+    WM_UPDATEUISTATE:
+    begin
+      if ThemeServices.ThemesEnabled then
+        InvalidateRect(Window, nil, True);
     end;
 
     { >= WM_USER }
