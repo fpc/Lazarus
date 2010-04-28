@@ -126,7 +126,7 @@ end;
 
 procedure TEditBook.LoadFromStream(strm: TStream);
 var
-  i, f, n: byte;
+  i, n: byte;
   fn: string;
 begin
 (* Merge list of files with already open files.

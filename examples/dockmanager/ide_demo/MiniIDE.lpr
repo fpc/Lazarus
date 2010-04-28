@@ -10,7 +10,7 @@ uses
   Forms, LResources, fminiide, EasyDockMgr, fclientform, fEditBook
   { you can add units after this };
 
-{$IFDEF WINDOWS}{$R MiniIDE.rc}{$ENDIF}
+{$IFDEF WINDOWS}{.$R MiniIDE.rc}{$ENDIF}
 {$R *.res}
 
 begin

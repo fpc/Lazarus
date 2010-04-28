@@ -53,6 +53,7 @@ LCL TODO:
 
 {$mode objfpc}{$H+}
 
+{$DEFINE ctlType} //save <name>:<classname>
 {$DEFINE RootDock} //allow docking into the root zone?
 //{$DEFINE newSplitter} //exclude splitter from remaining zone
 {.$DEFINE handle_existing} //dock controls existing in the dock site?
@@ -284,10 +285,18 @@ type
   but can be overridden by the application. This variable is not free'd.
   uMakeSite.DockMaster represents the full interface.
 *)
+  RControl = record
+    Name, ClassName, Caption: string;
+  end;
+
   TCustomDockMaster = class(TComponent)
   protected
+    rc: RControl;
     FOnSave: TOnSaveControl;
     FOnRestore: TOnReloadControl;
+    procedure CtlToRec(ctl: TControl);
+    procedure IdToRec(const ID: string);
+    function  RecToId: string;
   public //become class functions?
     function  MakeDockable(AForm: TWinControl; fWrap: boolean = True; fVisible: boolean = False): TForm; virtual;
     function SaveControl(Control: TControl; Site: TWinControl): string; virtual;
@@ -1092,13 +1101,11 @@ procedure TEasyTree.ResetBounds(Force: Boolean);
 var
   rNew: TRect;
 begin
-  DebugLn(['TEasyTree.ResetBounds ']);
 //drop site resized - never called in Lazarus???
   if (csLoading in FDockSite.ComponentState) then
     exit; //not the right time to do anything
 //how to determine old bounds?
   rNew := FDockSite.ClientRect;
-  DebugLn(['TEasyTree.ResetBounds ',dbgs(rNew)]);
 //try catch bad calls (Win32)?????
   if (rNew.Right <= 0) or (rNew.Bottom <= 0) then
     exit;
@@ -2131,6 +2138,7 @@ begin
     ctl := DockLoader.ReloadControl(cn, self);
     if ctl <> nil then
       ctl.ManualDock(self);
+    //make visible?
   end;
 end;
 
@@ -2150,8 +2158,47 @@ begin
   end else if Assigned(FOnSave) then
     Result := FOnSave(Control);
 //last resort
-  if Result = '' then
-    Result := Control.Name; //definitely child.Name
+  if Result = '' then begin
+    CtlToRec(Control);
+    Result := RecToId;
+  end;
+  //Result := Control.Name; //definitely child.Name
+end;
+
+procedure TCustomDockMaster.CtlToRec(ctl: TControl);
+begin
+//fill record with all names
+  rc.ClassName := ctl.ClassName;
+  rc.Name := ctl.Name;
+  rc.Caption := ctl.Caption; //obsolete
+end;
+
+procedure TCustomDockMaster.IdToRec(const ID: string);
+var
+  i: integer;
+begin
+//split <Name>':'<ClassName>'='<Caption>
+  i := Pos(':', ID);
+  if i > 0 then begin
+    rc.Name := Copy(ID, 1, i-1);
+    rc.ClassName := Copy(ID, i+1, Length(ID));
+    i := Pos('=', rc.ClassName);
+    if i > 0 then begin
+      rc.Caption := Copy(rc.ClassName, i+1, Length(rc.Caption));
+      SetLength(rc.ClassName, i-1);
+    end else
+      rc.Caption := rc.Name;
+  end else begin
+    rc.Caption := ID;
+    rc.ClassName := 'T'+ID;
+  //strip spaces from Caption
+    rc.Name := StringReplace(rc.Caption, ' ', '', [rfReplaceAll]);
+  end;
+end;
+
+function TCustomDockMaster.RecToId: string;
+begin
+  Result := rc.Name + ':' + rc.ClassName + '=' + rc.Caption
 end;
 
 function TCustomDockMaster.MakeDockable(AForm: TWinControl; fWrap: boolean;
@@ -2176,70 +2223,45 @@ end;
 function TCustomDockMaster.ReloadControl(const AName: string;
   Site: TWinControl): TControl;
 var
-  n: string;
-  basename: string;
   fc: TWinControlClass;
   fo: TComponent; //form owner
-  ctl: TControl;
   cmp: TComponent absolute Result;
-const
-  digits = ['0'..'9'];
-
-  procedure SplitName;
-  var
-    i, l, instno: integer;
-  begin
-  //find the instance number, if present
-    l := Length(AName);
-    i := l;
-    while AName[i] in digits do
-      dec(i);
-    //i now is the position of the last non-digit in the name
-  (*extract the instance number
-    TReader.ReadRootComponent appends "_nnn"
-  *)
-    if AName[i] = '_' then begin
-    //assume this is a multi-instance name
-      basename := 'T' + Copy(AName, 1, i-1);
-    end else
-      basename := 'T' + AName;
-  end;
-
 begin
 (* Reload from
 - saved site info (if CustomDockSite)
 - AppLoadStore
 - OnRestore
-- create by name
+- create from descriptor
 - DockSite
 *)
   Result := nil;
-  n := AName;
+  IdToRec(AName);
 //first check for special CustomDockSite format
   if ord(AName[1]) = CustomDockSiteID then
     Result := TCustomDockSite.ReloadSite(AName, Site)
   else if assigned(AppLoadStore)
-  and AppLoadStore(alsReloadControl, Site, Result, n) then begin
-    //all done
+  and AppLoadStore(alsReloadControl, Site, Result, rc.Name) then begin
+    //all done - string-argument questionable!
   end else if assigned(FOnRestore) then
-    Result := FOnRestore(n, Site);
+    Result := FOnRestore(rc.Name, Site);
   if Result <> nil then
     exit;
-//try create from name
-  SplitName;
-  fc := TWinControlClass(GetClass(basename));
+//load from descriptor
+  fc := TWinControlClass(GetClass(rc.ClassName));
   if not assigned(fc) then begin
-    DebugLn(basename , ' is not a registered class');
+    DebugLn(rc.ClassName, ' is not a registered class');
     //exit(nil); //bad form name
   end else begin
     fo := Owner;
     Result := fc.Create(fo);
-    if Result.Name <> AName then
-      TryRename(Result, AName);
+    if Result.Name <> rc.Name then
+      TryRename(Result, rc.Name);
+    if Result.Caption <> rc.Caption then
+      Result.Caption := rc.Caption;
   end;
 //last resort
   if Result = nil then
-    TWinControlAccess(Site).ReloadDockedControl(AName, Result);
+    TWinControlAccess(Site).ReloadDockedControl(rc.Name, Result);
 end;
 
 initialization
