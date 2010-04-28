@@ -295,7 +295,11 @@ begin
           SP_GRIPPER:
             begin
               Result.Painter := gptResizeGrip;
+              {$IFDEF Gtk2}
               Result.Edge := GDK_WINDOW_EDGE_SOUTH_EAST;
+              {$ELSE}
+              Result.Shadow := GTK_SHADOW_IN;
+              {$ENDIF}
             end;
         end;
       end;
