@@ -360,8 +360,13 @@ procedure TChartAxis.Draw(
   ACanvas: TCanvas; const AExtent: TDoubleRect;
   const ATransf: ICoordTransformer; var ARect: TRect);
 
+var
+  prevLabelRect: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
+
   procedure DrawLabelAndTick(const ALabelRect, ATickRect: TRect; const AText: String);
   begin
+    if Marks.IsLabelHiddenDueToOverlap(prevLabelRect, ALabelRect) then exit;
+
     ACanvas.Pen.Color := TickColor;
     ACanvas.Pen.Style := psSolid;
     ACanvas.Pen.Mode := pmCopy;
