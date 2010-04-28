@@ -360,9 +360,19 @@ procedure TChartAxis.Draw(
   ACanvas: TCanvas; const AExtent: TDoubleRect;
   const ATransf: ICoordTransformer; var ARect: TRect);
 
+  procedure DrawLabelAndTick(const ALabelRect, ATickRect: TRect; const AText: String);
+  begin
+    ACanvas.Pen.Color := TickColor;
+    ACanvas.Pen.Style := psSolid;
+    ACanvas.Pen.Mode := pmCopy;
+    ACanvas.Line(ATickRect);
+
+    Marks.DrawLabel(ACanvas, ALabelRect, AText);
+  end;
+
   procedure DrawXMark(AY: Integer; AMark: Double; const AText: String);
   var
-    x: Integer;
+    x, t: Integer;
     sz: TSize;
   begin
     x := ATransf.XGraphToImage(AMark);
@@ -375,22 +385,17 @@ procedure TChartAxis.Draw(
         x, ATransf.YGraphToImage(AExtent.b.Y));
     end;
 
-    ACanvas.Pen.Color := TickColor;
-    ACanvas.Pen.Style := psSolid;
-    ACanvas.Pen.Mode := pmCopy;
-    ACanvas.Line(x, AY - TickLength, x, AY + TickLength);
-
     sz := Marks.MeasureLabel(ACanvas, AText);
-    if Alignment = calTop then
-      AY += -TickLength - Marks.Distance - sz.cy
-    else
-      AY += TickLength + Marks.Distance;
-    Marks.DrawLabel(ACanvas, BoundsSize(x - sz.cx div 2, AY, sz), AText);
+    t := TickLength + Marks.Distance;
+    t := IfThen(Alignment = calTop, - t - sz.cy, t);
+    DrawLabelAndTick(
+      BoundsSize(x - sz.cx div 2, AY + t, sz),
+      Rect(x, AY - TickLength, x, AY + TickLength), AText);
   end;
 
   procedure DrawYMark(AX: Integer; AMark: Double; const AText: String);
   var
-    y: Integer;
+    y, t: Integer;
     sz: TSize;
   begin
     y := ATransf.YGraphToImage(AMark);
@@ -403,43 +408,28 @@ procedure TChartAxis.Draw(
         ATransf.XGraphToImage(AExtent.b.X), y);
     end;
 
-    ACanvas.Pen.Color := TickColor;
-    ACanvas.Pen.Style := psSolid;
-    ACanvas.Pen.Mode := pmCopy;
-    ACanvas.Line(AX - TickLength, y, AX + TickLength, y);
-
     sz := Marks.MeasureLabel(ACanvas, AText);
-    if Alignment = calLeft then
-      AX += -TickLength - Marks.Distance - sz.cx
-    else
-      AX += TickLength + Marks.Distance;
-    Marks.DrawLabel(ACanvas, BoundsSize(AX, y - sz.cy div 2, sz), AText);
+    t := TickLength + Marks.Distance;
+    t := IfThen(Alignment = calLeft, - t - sz.cx, t);
+    DrawLabelAndTick(
+      BoundsSize(AX + t, y - sz.cy div 2, sz),
+      Rect(AX - TickLength, y, AX + TickLength, y), AText);
   end;
 
-  procedure DoDraw(AMin, AMax: Double);
-  var
-    i, coord: Integer;
-    v: Double;
-  begin
-    if AMin = AMax then exit;
-    coord := SideByAlignment(ARect, Alignment, FSize);
-    for i := 0 to High(FMarkValues) do begin
-      v := GetTransform.AxisToGraph(FMarkValues[i]);
-      if IsVertical then
-        DrawYMark(coord, v, FMarkTexts[i])
-      else
-        DrawXMark(coord, v, FMarkTexts[i]);
-
-    end;
-  end;
-
+var
+  i, coord: Integer;
+  v: Double;
 begin
   if not Visible then exit;
   ACanvas.Font := Marks.LabelFont;
-  if IsVertical then
-    DoDraw(AExtent.a.Y, AExtent.b.Y)
-  else
-    DoDraw(AExtent.a.X, AExtent.b.X);
+  coord := SideByAlignment(ARect, Alignment, FSize);
+  for i := 0 to High(FMarkValues) do begin
+    v := GetTransform.AxisToGraph(FMarkValues[i]);
+    if IsVertical then
+      DrawYMark(coord, v, FMarkTexts[i])
+    else
+      DrawXMark(coord, v, FMarkTexts[i]);
+  end;
 end;
 
 procedure TChartAxis.DrawTitle(
