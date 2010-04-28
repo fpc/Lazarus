@@ -5,14 +5,15 @@ unit compiler_codegen_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, IDEOptionsIntf, Project, CompilerOptions, LazarusIDEStrConsts;
+  Classes,SysUtils,FileUtil,Forms,Controls,Graphics,Dialogs,StdCtrls,ExtCtrls,
+  IDEOptionsIntf,Project,CompilerOptions,LazarusIDEStrConsts;
 
 type
 
   { TCompilerCodegenOptionsFrame }
 
   TCompilerCodegenOptionsFrame = class(TAbstractIDEOptionsEditor)
+    Bevel1:TBevel;
     chkChecksIO: TCheckBox;
     chkChecksOverflow: TCheckBox;
     chkChecksRange: TCheckBox;
@@ -28,7 +29,6 @@ type
     grpOptimizations: TGroupBox;
     grpSmartLinkUnit: TGroupBox;
     grpTargetPlatform: TGroupBox;
-    lblOptMiddle: TLabel;
     lblTargetCPU: TLabel;
     lblTargetOS: TLabel;
     lblTargetProcessorProc: TLabel;
