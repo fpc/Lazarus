@@ -51,6 +51,7 @@ type
     procedure SetVisible(AValue: Boolean);
   public
     constructor Create; override;
+  public
     procedure Assign(Source: TPersistent); override;
   published
     property Visible: Boolean read FVisible write SetVisible default true;
@@ -70,6 +71,7 @@ type
     procedure StyleChanged(Sender: TObject);
   public
     constructor Create(AOwner: TCustomChart);
+  public
     procedure Assign(Source: TPersistent); override;
 
     procedure SetOwner(AOwner: TCustomChart);
@@ -93,7 +95,7 @@ type
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
-
+  public
     procedure Assign(Source: TPersistent); override;
   published
     property Alignment: TAlignment
@@ -141,9 +143,9 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure DrawLabel(
       ACanvas: TCanvas; const ALabelRect: TRect; const AText: String);
-    function IsMarkLabelsVisible: Boolean;
     function IsLabelHiddenDueToOverlap(
       var APrevLabelRect: TRect; const ALabelRect: TRect): Boolean;
+    function IsMarkLabelsVisible: Boolean;
     function MeasureLabel(ACanvas: TCanvas; const AText: String): TSize;
 
   public
@@ -205,6 +207,7 @@ type
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
+  public
     procedure Assign(Source: TPersistent); override;
 
     procedure Draw(ACanvas: TCanvas; ACenter: TPoint; AColor: TColor);
