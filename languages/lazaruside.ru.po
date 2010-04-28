@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-28 02:57+0300\n"
+"PO-Revision-Date: 2010-04-29 00:44+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -980,10 +980,6 @@ msgstr "Редактировать..."
 #: lazarusidestrconsts.dlgedfiles
 msgid "Editor files"
 msgstr "Файлы редактора"
-
-#: lazarusidestrconsts.dlgedhintcommand
-msgid "Hint: click on the command you want to edit"
-msgstr "Подсказка: щёлкните по команде, которая Вам нужна"
 
 #: lazarusidestrconsts.dlgedidcomlet
 msgctxt "lazarusidestrconsts.dlgedidcomlet"
@@ -6283,8 +6279,9 @@ msgid "The debugger file \"%s\" is not an executable."
 msgstr "Файл отладчика \"%s\" не исполняемый."
 
 #: lazarusidestrconsts.lisenvoptdlginvalidfpcsrcdir
-msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
-msgstr "Каталог с исходным кодом FPC \"%s\" имеет некорректную структуру. Обычно он содержит такие подкаталоги, как rtl, packages, compiler, ... ."
+#| msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
+msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl/inc, packages/fcl-base, ... ."
+msgstr "Каталог с исходным кодом FPC \"%s\" имеет некорректную структуру. Обычно он содержит такие подкаталоги, как rtl/inc, packages/fcl-base, ... ."
 
 #: lazarusidestrconsts.lisenvoptdlginvalidlazarusdir
 msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
@@ -6930,6 +6927,10 @@ msgstr "Справка по сообщениям компилятора FreePasc
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Подсказка: проверьте, содержат ли два пакета модули с одинаковым именем."
+
+#: lazarusidestrconsts.lishintdoubleclickonthecommandyouwanttoedit
+msgid "Hint: double click on the command you want to edit"
+msgstr "Подсказка: для редактирования команды дважды щёлкните по ней мышью"
 
 #: lazarusidestrconsts.lishintopen
 msgctxt "lazarusidestrconsts.lishintopen"

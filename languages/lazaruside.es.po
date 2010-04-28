@@ -969,10 +969,6 @@ msgstr "Editar..."
 msgid "Editor files"
 msgstr "Archivos del Editor"
 
-#: lazarusidestrconsts.dlgedhintcommand
-msgid "Hint: click on the command you want to edit"
-msgstr "Sugerencia: haga clic sobre el comando que desea editar"
-
 #: lazarusidestrconsts.dlgedidcomlet
 msgctxt "lazarusidestrconsts.dlgedidcomlet"
 msgid "Identifier completion"
@@ -6277,7 +6273,9 @@ msgid "The debugger file \"%s\" is not an executable."
 msgstr "El archivo de depurador \"%s\" no es un ejecutable."
 
 #: lazarusidestrconsts.lisenvoptdlginvalidfpcsrcdir
-msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
+#, fuzzy
+#| msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
+msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl/inc, packages/fcl-base, ... ."
 msgstr "El directorio de fuentes de FPC \"%s\" no parece el correcto. Normalmente contiene directorios como rtl, packages, compiler, ... ."
 
 #: lazarusidestrconsts.lisenvoptdlginvalidlazarusdir
@@ -6924,6 +6922,10 @@ msgstr "Ayuda para mensaje del compilador de FreePascal"
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Sugerencia: Compruebe si dos paquetes contienen una unidad con el mismo nombre."
+
+#: lazarusidestrconsts.lishintdoubleclickonthecommandyouwanttoedit
+msgid "Hint: double click on the command you want to edit"
+msgstr ""
 
 #: lazarusidestrconsts.lishintopen
 msgctxt "lazarusidestrconsts.lishintopen"

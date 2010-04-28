@@ -959,10 +959,6 @@ msgstr ""
 msgid "Editor files"
 msgstr ""
 
-#: lazarusidestrconsts.dlgedhintcommand
-msgid "Hint: click on the command you want to edit"
-msgstr ""
-
 #: lazarusidestrconsts.dlgedidcomlet
 msgctxt "lazarusidestrconsts.dlgedidcomlet"
 msgid "Identifier completion"
@@ -6233,7 +6229,7 @@ msgid "The debugger file \"%s\" is not an executable."
 msgstr ""
 
 #: lazarusidestrconsts.lisenvoptdlginvalidfpcsrcdir
-msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
+msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl/inc, packages/fcl-base, ... ."
 msgstr ""
 
 #: lazarusidestrconsts.lisenvoptdlginvalidlazarusdir
@@ -6879,6 +6875,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr ""
+
+#: lazarusidestrconsts.lishintdoubleclickonthecommandyouwanttoedit
+msgid "Hint: double click on the command you want to edit"
 msgstr ""
 
 #: lazarusidestrconsts.lishintopen
