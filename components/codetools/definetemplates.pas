@@ -557,6 +557,8 @@ type
   TFPCSourceRules = class
   private
     FItems: TFPList;// list of TFPCSourceRule
+    FPriority: integer;
+    FTargets: string;
     function GetItems(Index: integer): TFPCSourceRule;
   public
     constructor Create;
@@ -564,6 +566,11 @@ type
     procedure Clear;
     property Items[Index: integer]: TFPCSourceRule read GetItems;
     function Count: integer;
+    function Add: TFPCSourceRule;
+    function AddFile(const Filename: string): TFPCSourceRule;
+    function AddDirectory(const Filename: string): TFPCSourceRule;
+    property Priority: integer read FPriority write FPriority; // used for Add
+    property Targets: string read FTargets write FTargets; // used for Add
   end;
   
 const
@@ -5749,6 +5756,27 @@ end;
 function TFPCSourceRules.Count: integer;
 begin
   Result:=FItems.Count;
+end;
+
+function TFPCSourceRules.Add: TFPCSourceRule;
+begin
+  Result:=TFPCSourceRule.Create;
+  Result.Priority:=Priority;
+  Result.Targets:=Targets;
+  FItems.Add(Result);
+end;
+
+function TFPCSourceRules.AddFile(const Filename: string): TFPCSourceRule;
+begin
+  Result:=Add;
+  Result.Filename:=Filename;
+end;
+
+function TFPCSourceRules.AddDirectory(const Filename: string): TFPCSourceRule;
+begin
+  Result:=Add;
+  Result.Filename:=Filename;
+  Result.IsDirectoy:=true;
 end;
 
 end.
