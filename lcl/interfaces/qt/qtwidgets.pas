@@ -51,7 +51,8 @@ type
    We'll need it later for TQtScrollBar and probably TQtTabWidget}
   TChildOfComplexWidget = (ccwNone,
                           ccwComboBox,
-                          ccwTreeWidget);
+                          ccwTreeWidget,
+                          ccwAbstractScrollArea);
   TQtGroupBoxType = (tgbtNormal,
                    tgbtCheckGroup,
                    tgbtRadioGroup);
@@ -347,7 +348,6 @@ type
   { TQtAbstractScrollArea }
 
   TQtAbstractScrollArea = class(TQtFrame)
-  private
   protected
     FHScrollbar: TQtScrollBar;
     FVScrollbar: TQtScrollbar;
@@ -4754,12 +4754,7 @@ begin
     case QEvent_type(Event) of
       QEventResize:
         begin
-          {$IFDEF QTSizeFix}
-          if LCLObject.ClientRectNeedsInterfaceUpdate then begin
-            LCLObject.InvalidateClientRectCache(false);
-            LCLObject.DoAdjustClientRectChange;
-          end;
-          {$ELSE}
+          {$IFNDEF QTSizeFix}
           LCLObject.InvalidateClientRectCache(true);
           LCLObject.DoAdjustClientRectChange;
           {$ENDIF}
@@ -5450,6 +5445,7 @@ end;
 procedure TQtAbstractSlider.SlotValueChanged(p1: Integer); cdecl;
 var
   LMScroll: TLMScroll;
+  b: Boolean;
 begin
   {$ifdef VerboseQt}
   writeln('TQtAbstractSlider.SlotValueChanged() to value ',p1,' inUpdate ',inUpdate);
@@ -5467,8 +5463,20 @@ begin
   LMScroll.Pos := p1;
   LMScroll.ScrollCode := SIF_POS;
 
-  if not InUpdate or (getVisible and ((p1=getMin) or (p1=getMax))) then
+  b := p1 = getMax;
+  if not InUpdate or (getVisible and ((p1=getMin) or b)) then
+  begin
     DeliverMessage(LMScroll);
+    {$IFDEF QTSizeFix}
+    if b and (FChildOfComplexWidget = ccwAbstractScrollArea) then
+    begin
+      LCLObject.DoAdjustClientRectChange;
+      if not InUpdate then
+        QAbstractSlider_triggerAction(QAbstractSliderH(Widget),
+          QAbstractSliderSliderToMaximum);
+    end;
+    {$ENDIF}
+  end;
 end;
 
 procedure TQtAbstractSlider.SlotActionTriggered(action: Integer); cdecl;
@@ -10143,10 +10151,8 @@ begin
     begin
       Result := False;
       {$IFDEF QTSizeFix}
-      if LCLObject.ClientRectNeedsInterfaceUpdate then begin
-        LCLObject.InvalidateClientRectCache(false);
-        LCLObject.DoAdjustClientRectChange;
-      end;
+      // immediate update clientRect !
+      LCLObject.DoAdjustClientRectChange;
       {$ELSE}
       LCLObject.InvalidateClientRectCache(true);
       LCLObject.DoAdjustClientRectChange;
@@ -10198,6 +10204,7 @@ begin
   begin
     FHScrollBar := TQtScrollBar.CreateFrom(LCLObject,
       QAbstractScrollArea_horizontalScrollBar(QAbstractScrollAreaH(Widget)));
+    FHScrollBar.ChildOfComplexWidget := ccwAbstractScrollArea;
     FHScrollBar.FOwner := Self;
     FHScrollBar.setFocusPolicy(QtNoFocus);
     FHScrollBar.AttachEvents;
@@ -10219,6 +10226,7 @@ begin
   begin
     FVScrollbar := TQtScrollBar.CreateFrom(LCLObject,
       QAbstractScrollArea_verticalScrollBar(QAbstractScrollAreaH(Widget)));;
+    FVScrollBar.ChildOfComplexWidget := ccwAbstractScrollArea;
     FVScrollBar.FOwner := Self;
     FVScrollBar.setFocusPolicy(QtNoFocus);
     FVScrollbar.AttachEvents;
@@ -10305,14 +10313,10 @@ begin
       QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
     end;
   end;
+
   if ClassType = TQtCustomControl then
   begin
-    {$IFDEF QTSizeFix}
-    if LCLObject.ClientRectNeedsInterfaceUpdate then begin
-      LCLObject.InvalidateClientRectCache(false);
-      LCLObject.DoAdjustClientRectChange;
-    end;
-    {$ELSE}
+    {$IFNDEF QtSizeFix}
     LCLObject.InvalidateClientRectCache(true);
     LCLObject.DoAdjustClientRectChange;
     {$ENDIF}
@@ -10571,6 +10575,9 @@ end;
 
 function TQtCustomControl.getClientBounds: TRect;
 begin
+  {$IFDEF QTSizeFix}
+  QWidget_rect(viewportWidget, @Result);
+  {$ELSE}
   QWidget_contentsRect(Widget, @Result);
 
   if not FFrameOnlyAroundContents then
@@ -10581,6 +10588,7 @@ begin
     if (horizontalScrollBar.getVisibleTo(Widget)) then
       dec(Result.Bottom, horizontalScrollBar.getHeight);
   end;
+  {$ENDIF}
 end;
 
 procedure TQtCustomControl.grabMouse;
@@ -11031,7 +11039,7 @@ end;
 
 function TQtPage.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
-  if QEvent_type(Event) = QEventResize then
+  if (QEvent_type(Event) = QEventResize) and not InUpdate then
     LCLObject.Parent.InvalidateClientRectCache(False);
   Result:=inherited EventFilter(Sender, Event);
 end;
