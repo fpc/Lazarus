@@ -5018,7 +5018,7 @@ begin
   Ancestors:=nil;
   ListOfPFindContext:=nil;
   try
-    if not FindClassAndAncestors(ClassNode,Ancestors) then exit;
+    if not FindClassAndAncestors(ClassNode,Ancestors,false) then exit;
     if Ancestors=nil then exit(true);
     for i:=0 to Ancestors.Count-1 do begin
       Context:=PFindContext(Ancestors[i]);

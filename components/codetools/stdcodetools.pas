@@ -4889,7 +4889,7 @@ begin
   AncestorList:=nil;
   try
     if WithAncestors then begin
-      if not FindClassAndAncestors(ClassNode,AncestorList) then exit;
+      if not FindClassAndAncestors(ClassNode,AncestorList,true) then exit;
     end else begin
       AddFindContext(AncestorList,CreateFindContext(Self,ClassNode));
     end;

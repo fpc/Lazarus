@@ -806,7 +806,8 @@ type
       out ListOfPCodeXYPosition: TFPList;
       Flags: TFindDeclarationListFlags): boolean;
     function FindClassAndAncestors(ClassNode: TCodeTreeNode;
-      out ListOfPFindContext: TFPList): boolean; // without interfaces
+      out ListOfPFindContext: TFPList; ExceptionOnNotFound: boolean
+      ): boolean; // without interfaces
     function FindContextClassAndAncestors(const CursorPos: TCodeXYPosition;
       var ListOfPFindContext: TFPList): boolean; // without interfaces
     function FindAncestorOfClass(ClassNode: TCodeTreeNode;
@@ -3790,11 +3791,32 @@ begin
 end;
 
 function TFindDeclarationTool.FindClassAndAncestors(ClassNode: TCodeTreeNode;
-  out ListOfPFindContext: TFPList): boolean;
+  out ListOfPFindContext: TFPList; ExceptionOnNotFound: boolean): boolean;
 var
-  FoundContext: TFindContext;
-  CurTool: TFindDeclarationTool;
   Params: TFindDeclarationParams;
+
+  function Search: boolean;
+  var
+    CurTool: TFindDeclarationTool;
+    FoundContext: TFindContext;
+  begin
+    CurTool:=Self;
+    while CurTool.FindAncestorOfClass(ClassNode,Params,true) do begin
+      if (Params.NewCodeTool=nil) then break;
+      FoundContext.Tool:=Params.NewCodeTool;
+      FoundContext.Node:=Params.NewNode;
+      if IndexOfFindContext(ListOfPFindContext,@FoundContext)>=0 then break;
+      AddFindContext(ListOfPFindContext,FoundContext);
+      //debugln('TFindDeclarationTool.FindClassAndAncestors FoundContext=',DbgsFC(FoundContext));
+      CurTool:=Params.NewCodeTool;
+      ClassNode:=Params.NewNode;
+      if (ClassNode=nil)
+      or (not (ClassNode.Desc in AllClasses)) then
+        break;
+    end;
+    Result:=true;
+  end;
+
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
   Result:=false;
@@ -3809,26 +3831,16 @@ begin
   Params:=TFindDeclarationParams.Create;
   ActivateGlobalWriteLock;
   try
-    try
-      CurTool:=Self;
-      while CurTool.FindAncestorOfClass(ClassNode,Params,true) do begin
-        if (Params.NewCodeTool=nil) then break;
-        FoundContext.Tool:=Params.NewCodeTool;
-        FoundContext.Node:=Params.NewNode;
-        if IndexOfFindContext(ListOfPFindContext,@FoundContext)>=0 then break;
-        AddFindContext(ListOfPFindContext,FoundContext);
-        //debugln('TFindDeclarationTool.FindClassAndAncestors FoundContext=',DbgsFC(FoundContext));
-        CurTool:=Params.NewCodeTool;
-        ClassNode:=Params.NewNode;
-        if (ClassNode=nil)
-        or (not (ClassNode.Desc in AllClasses)) then
-          break;
+    if ExceptionOnNotFound then
+      Result:=Search
+    else begin
+      try
+        Result:=Search;
+      except
+        // catch syntax errors
+        on E: ECodeToolError do ;
+        on E: ELinkScannerError do ;
       end;
-      Result:=true;
-    except
-      // catch syntax errors
-      on E: ECodeToolError do ;
-      on E: ELinkScannerError do ;
     end;
   finally
     DeactivateGlobalWriteLock;
@@ -3864,7 +3876,7 @@ begin
 
     //debugln('TFindDeclarationTool.FindContextClassAndAncestors A ClassName=',ExtractClassName(ClassNode,false));
     // add class and ancestors type definition to ListOfPCodeXYPosition
-    if not FindClassAndAncestors(ClassNode,ListOfPFindContext)
+    if not FindClassAndAncestors(ClassNode,ListOfPFindContext,true)
     then exit;
     
     //debugln('TFindDeclarationTool.FindContextClassAndAncestors List: ',ListOfPFindContextToStr(ListOfPFindContext));
