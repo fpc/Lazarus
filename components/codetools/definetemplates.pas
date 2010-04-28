@@ -604,6 +604,8 @@ function RunFPCVerbose(const CompilerFilename, TestFilename: string;
                        out UnitPaths: TStrings;
                        out Defines, Undefines: TStringToStringTree;
                        const Options: string = ''): boolean;
+function GatherUnitsInSearchPaths(SearchPaths: TStrings;
+                    const OnProgress: TDefinePoolProgress): TStringToStringTree;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
@@ -983,6 +985,56 @@ begin
     Result:=ParseFPCVerbose(List,UnitPaths,Defines,Undefines);
   finally
     List.Free;
+  end;
+end;
+
+function GatherUnitsInSearchPaths(SearchPaths: TStrings;
+  const OnProgress: TDefinePoolProgress): TStringToStringTree;
+{ returns a stringtree,
+  where name is uppercase unitname and value is the full file name
+
+  first found wins
+  pas, pp, p wins vs ppu
+}
+var
+  i: Integer;
+  Directory: String;
+  FileCount: Integer;
+  Abort: boolean;
+  FileInfo: TSearchRec;
+  ShortFilename: String;
+  Filename: String;
+  Ext: String;
+  UpperUnitname: String;
+begin
+  Result:=TStringToStringTree.Create(true);
+  FileCount:=0;
+  Abort:=false;
+  for i:=0 to SearchPaths.Count-1 do begin
+    Directory:=CleanAndExpandDirectory(SearchPaths[i]);
+    if FindFirstUTF8(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
+      repeat
+        inc(FileCount);
+        if (FileCount mod 100=0) and Assigned(OnProgress) then begin
+          OnProgress(nil,0,-1,'Scanned files: '+IntToStr(FileCount),Abort);
+          if Abort then break;
+        end;
+        ShortFilename:=FileInfo.Name;
+        if (ShortFilename='') or (ShortFilename='.') or (ShortFilename='..') then
+          continue;
+        //debugln(['GatherUnitsInSearchPaths ShortFilename=',ShortFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0]);
+        Filename:=Directory+ShortFilename;
+        Ext:=UpperCaseStr(ExtractFileExt(ShortFilename));
+        if (Ext='.PAS') or (Ext='.PP') or (Ext='.P') or (Ext='.PPU') then begin
+          UpperUnitname:=UpperCaseStr(ExtractFileNameOnly(Filename));
+          if (not Result.Contains(UpperUnitname))
+          or ((Ext<>'.PPU') and (CompareFileExt(Result[UpperUnitname],'PPU',false)=0))
+          then
+            Result[UpperUnitname]:=Filename;
+        end;
+      until FindNextUTF8(FileInfo)<>0;
+    end;
+    FindCloseUTF8(FileInfo);
   end;
 end;
 
