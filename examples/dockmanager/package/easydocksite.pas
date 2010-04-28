@@ -16,11 +16,9 @@ Possible extensions:
   - separate docking management and dock site layout
   + various dock headers
   - multiple splitters (on zones without controls)
-  + persistence (requires application wide management of dock sources!)
+  + persistence (requires application-wide management of dock sources!)
   - purpose of Restore button?
-
-Known bugs:
-  + Problem with dragging header, seems to interfere with dragmanager (capture)?
+  - purpose of Close button? (currently: undock)
 
 More issues, concerning the rest of the LCL (mainly unit Controls):
 
@@ -53,7 +51,7 @@ LCL TODO:
 
 {$mode objfpc}{$H+}
 
-{$DEFINE ctlType} //save <name>:<classname>
+{$DEFINE ctlType} //save <name>:<classname>=<caption>
 {$DEFINE RootDock} //allow docking into the root zone?
 //{$DEFINE newSplitter} //exclude splitter from remaining zone
 {.$DEFINE handle_existing} //dock controls existing in the dock site?
@@ -276,22 +274,26 @@ type
   1) TCustomDockSite (notebooks...)
   2) AppLoadStore
   3) OnSave/Reload
-  4) default (Delphi) compatible handling.
+  4) Owner of DockMaster (Application)
+  5) default (Delphi) compatible handling.
 
   Customization is provided by OnSave/Restore handlers.
   Further customization is feasable using the AppLoadStore variable (below).
+  At the time of an call, DockLoader contains the full control description
+  (ControlDescriptor)
 
   The DockLoader variable is initialized to a default TCustomDockMaster instance,
-  but can be overridden by the application. This variable is not free'd.
+  owned by Application. It can be overridden by the application.
   uMakeSite.DockMaster represents the full interface.
 *)
-  RControl = record
+  RControlDescriptor = record
+    Ctrl: TControl;
     Name, ClassName, Caption: string;
   end;
 
   TCustomDockMaster = class(TComponent)
   protected
-    rc: RControl;
+    rc: RControlDescriptor;
     FOnSave: TOnSaveControl;
     FOnRestore: TOnReloadControl;
     procedure CtlToRec(ctl: TControl);
@@ -303,6 +305,7 @@ type
     function ReloadControl(const AName: string; Site: TWinControl): TControl; virtual;
     property OnSave: TOnSaveControl read FOnSave write FOnSave;
     property OnRestore: TOnReloadControl read FOnRestore write FOnRestore;
+    property ControlDescriptor: RControlDescriptor read rc;
   end;
 var
   DockLoader: TCustomDockMaster;
@@ -341,6 +344,7 @@ function  NoteBookCreate: TCustomDockSite;
 procedure NoteBookAdd(ABook: TCustomDockSite; AItem: TControl); //to be removed
 function  TryRename(AComp: TComponent; const NewName: string): boolean;
 function  CreateUniqueComponentName(const AClassName: string; OwnerComponent: TComponent): string;
+function  FindOwnedComponent(const AName: string; AOwner: TComponent): TComponent;
 
 const
   CustomDockSiteID = 1;
@@ -430,11 +434,27 @@ begin
   Result.Bottom := Result.Top + ACtrl.Height;
 end;
 
+function  FindOwnedComponent(const AName: string; AOwner: TComponent): TComponent;
+var
+  i: integer;
+begin
+  if assigned(AOwner) then begin
+    for i := 0 to AOwner.ComponentCount - 1 do begin
+      Result := AOwner.Components[i];
+      if CompareText(Result.Name, AName) = 0 then
+        exit; //found
+    end;
+  end;
+//not found
+  Result := nil;
+end;
+
 //from CustomFormEditor.pp
 function {TCustomFormEditor.}CreateUniqueComponentName(const AClassName: string;
   OwnerComponent: TComponent): string;
 var
-  i, j: integer;
+  inst: integer;
+  basename: string;
 begin
 (* Add instance number until unique.
   <T><basename> ==> <basename><_><number>
@@ -442,24 +462,22 @@ begin
   and stripping trailing digits and (optionally) '_'.
 *)
   Result:=AClassName;
-  if (OwnerComponent=nil) or (Result='') then exit;
-  i:=1;
+//strip leading 'T'
+  if (length(Result)>1) and (Result[1]='T') then
+    Result:=RightStr(Result,length(Result)-1);
+  if (OwnerComponent=nil) or (Result='') then
+    exit;
+//if trailing digit, append '_'
+  if Result[length(Result)] in ['0'..'9'] then
+    Result:=Result+'_';
+  basename := Result;
+  inst := 1;
   while true do begin
-    Result:=AClassName;
-  //strip leading 'T'
-    if (length(Result)>1) and (Result[1]='T') then
-      Result:=RightStr(Result,length(Result)-1);
-  //if trailing digit, append '_'
-    if Result[length(Result)] in ['0'..'9'] then
-      Result:=Result+'_';
-    Result:=Result+IntToStr(i);
   //append instance number
-    j:=OwnerComponent.ComponentCount-1;
-    while (j>=0)
-    and (CompareText(Result,OwnerComponent.Components[j].Name)<>0) do
-      dec(j);
-    if j<0 then exit;
-    inc(i);
+    Result := basename + IntToStr(inst);
+    if FindOwnedComponent(Result, OwnerComponent) = nil then
+      break;
+    inc(inst);
   end;
 end;
 
@@ -1164,7 +1182,7 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
   *)
     for i := FDockSite.DockClientCount - 1 downto 0 do begin
       ctl := FDockSite.DockClients[i];
-      ctl.Visible := True;
+      ctl.Visible := True; //False?
       ctl.ManualDock(nil);  //restore undocked position and extent
     end;
   end;
@@ -1195,7 +1213,7 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
         if NewCtl <> nil then begin
           NewCtl.Visible := True;
           NewZone.ChildControl := NewCtl;
-          SetReplacingControl(NewCtl);
+          SetReplacingControl(NewCtl); //prevent DockManager actions
           NewCtl.ManualDock(DockSite);
           NewCtl.Width := ZoneRec.BottomRight.x;
           NewCtl.Height := ZoneRec.BottomRight.y;
@@ -1263,7 +1281,7 @@ procedure TEasyTree.SaveToStream(Stream: TStream);
       if child = nil then
         ZoneName := ''
       else
-        ZoneName := SaveDockedControl(child);
+        ZoneName := SaveDockedControl(child); //ctrl or entire site
     //write descriptor
       Stream.Write(ZoneRec, sizeof(ZoneRec));
       Stream.WriteAnsiString(ZoneName);
@@ -1272,7 +1290,6 @@ procedure TEasyTree.SaveToStream(Stream: TStream);
         DoSaveZone(Zone.FirstChild, Level + 1); //all children of Level
     // recurse into next sibling
       Zone := Zone.NextSibling;
-      //if Zone <> nil then DoSaveZone(Zone, Level); //all siblings of Level
     end;
   end;
 
@@ -1281,7 +1298,6 @@ begin
   DoSaveZone(FTopZone, 1);
 //write end marker (dummy record of level 0)
   ZoneRec.Level := 0;
-  //ZoneRec.NameLen := 0;
   Stream.Write(ZoneRec, sizeof(ZoneRec));
 end;
 
@@ -2168,15 +2184,17 @@ end;
 procedure TCustomDockMaster.CtlToRec(ctl: TControl);
 begin
 //fill record with all names
+  rc.Ctrl := ctl;
   rc.ClassName := ctl.ClassName;
   rc.Name := ctl.Name;
-  rc.Caption := ctl.Caption; //obsolete
+  rc.Caption := ctl.Caption; //general purpose
 end;
 
 procedure TCustomDockMaster.IdToRec(const ID: string);
 var
   i: integer;
 begin
+  rc.Ctrl := nil; //flag: not yet found/created
 //split <Name>':'<ClassName>'='<Caption>
   i := Pos(':', ID);
   if i > 0 then begin
@@ -2231,11 +2249,12 @@ begin
 - saved site info (if CustomDockSite)
 - AppLoadStore
 - OnRestore
+- Owner
 - create from descriptor
 - DockSite
 *)
   Result := nil;
-  IdToRec(AName);
+  IdToRec(AName); //make all information accessible to external subroutines
 //first check for special CustomDockSite format
   if ord(AName[1]) = CustomDockSiteID then
     Result := TCustomDockSite.ReloadSite(AName, Site)
@@ -2246,18 +2265,25 @@ begin
     Result := FOnRestore(rc.Name, Site);
   if Result <> nil then
     exit;
+//check existing control
+  fo := Owner; //assume all freely dockable controls are owned by our owner (Application)
+  cmp := FindOwnedComponent(rc.Name, fo);
+  //if Result <> nil then
+  if Result is TControl then
+    exit;
+  Result := nil; //exclude non-controls
 //load from descriptor
   fc := TWinControlClass(GetClass(rc.ClassName));
   if not assigned(fc) then begin
     DebugLn(rc.ClassName, ' is not a registered class');
     //exit(nil); //bad form name
   end else begin
-    fo := Owner;
+  //init from descriptor
     Result := fc.Create(fo);
     if Result.Name <> rc.Name then
       TryRename(Result, rc.Name);
     if Result.Caption <> rc.Caption then
-      Result.Caption := rc.Caption;
+      Result.Caption := rc.Caption; //really?
   end;
 //last resort
   if Result = nil then
@@ -2272,7 +2298,7 @@ initialization
     DockLoader := TCustomDockMaster.Create(Application);
 finalization
   DestroyDockHeaderImages;
-  //FreeAndNil(LoadStore);
+  //FreeAndNil(LoadStore); - by owner!
 end.
 
 
