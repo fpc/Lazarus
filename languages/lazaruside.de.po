@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-17 21:16+0100\n"
+"PO-Revision-Date: 2010-04-28 21:49+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -265,7 +265,7 @@ msgstr "Strichpunkt hinzufügen"
 
 #: lazarusidestrconsts.dlgadjusttopline
 msgid "Adjust top line due to comment in front"
-msgstr "Ausrichten der oberen Zeile an Kommentar vorne"
+msgstr "Ausrichten der oberen Zeile vorne am Kommentar"
 
 #: lazarusidestrconsts.dlgallfiles
 msgid "All files"
@@ -338,7 +338,7 @@ msgstr "Verfügbare Formulare:"
 
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
-msgstr "Hintergrund"
+msgstr "Hintergrundfarbe"
 
 #: lazarusidestrconsts.dlgbaknosubdirectory
 msgid "(no subdirectory)"
@@ -1005,7 +1005,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlocked
 msgid "Unlocked"
-msgstr ""
+msgstr "Entsperrt"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlockedinsoftview
 msgid "Unlocked, if text in centered view"
@@ -1013,15 +1013,15 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinanywin
 msgid "New tab, existing or new window"
-msgstr ""
+msgstr "Neuer Reiter, vorhandenes oder neues Fenster"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinnewwin
 msgid "New tab in new window"
-msgstr ""
+msgstr "Neuer Reiter in neuem Fenster"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinoldwin
 msgid "New tab in existing window"
-msgstr ""
+msgstr "Neuer Reiter in vorhandenem Fenster"
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedoldedit
 msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. This always looks at the editor, never the window, to find the longest unused. This option will always succeed, further options are never tested."
@@ -1106,7 +1106,7 @@ msgstr "Elementattribute"
 
 #: lazarusidestrconsts.dlgendkeyjumpstoneareststart
 msgid "End key jumps to nearest end"
-msgstr "Ende-Taste springt zum nahesten End"
+msgstr "Ende-Taste springt zum nächsten Ende"
 
 #: lazarusidestrconsts.dlgentirescope
 msgid "&Entire Scope"
@@ -1499,7 +1499,7 @@ msgstr "Nachrichten-Icons verbergen"
 
 #: lazarusidestrconsts.dlghidesingletabinnotebook
 msgid "Hide tab in single page windows"
-msgstr ""
+msgstr "Reiter bei einseitigen Fenstern ausblenden"
 
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
@@ -1527,7 +1527,7 @@ msgstr "Hinweis a. überflüssige Units im Hauptquelltext"
 
 #: lazarusidestrconsts.dlghomekeyjumpstoneareststart
 msgid "Home key jumps to nearest start"
-msgstr "Pos1 springt zum nächsten Anfang"
+msgstr "Pos1-Taste springt zum nächsten Anfang"
 
 #: lazarusidestrconsts.dlghostapplication
 msgid "Host application"
@@ -2110,7 +2110,7 @@ msgstr "Mehrfachauswahl"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
 msgid "Find editor for jump targets:"
-msgstr ""
+msgstr "Editor für Sprungziele finden:"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
 msgid "Order to use for editors matching the same criteria"
@@ -2130,7 +2130,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmultiwinoptions
 msgid "Pages and Windows"
-msgstr ""
+msgstr "Seiten und Fenster"
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
 msgid "Notebook Tabs:"
@@ -2349,7 +2349,7 @@ msgstr "Name der Eigenschaft"
 
 #: lazarusidestrconsts.dlgqautoclosecompiledialog
 msgid "Auto close compile dialog"
-msgstr ""
+msgstr "Kompilerdialog automatisch schließen"
 
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"
@@ -2625,7 +2625,7 @@ msgstr "Warnungen anzeigen"
 
 #: lazarusidestrconsts.dlgsingletaskbarbutton
 msgid "Show single button in TaskBar"
-msgstr ""
+msgstr "Einzelnen Schalter im Taskbar anzeigen"
 
 #: lazarusidestrconsts.dlgskipforwarddeclarations
 msgid "Skip forward declarations"
@@ -2786,7 +2786,7 @@ msgstr "Rücknahme auch nach dem Speichern"
 #: lazarusidestrconsts.dlgundogroupoptions
 #| msgid "Undo options:"
 msgid "Undo / Redo:"
-msgstr "Undo-Einstellungen"
+msgstr "Einstellungen für Rücknahme"
 
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
@@ -6256,7 +6256,7 @@ msgstr "Übersetzungssprache angeben"
 
 #: lazarusidestrconsts.lisenvdoubleclickonmessagesjumpsotherwisesingleclick
 msgid "Double click on messages jumps (otherwise: single click)"
-msgstr "Doppelklick für Meldungssprünge (sonst Einfachklick)"
+msgstr "Doppelklick auf Meldungen springt zum Quelltext (sonst Einfachklick)"
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
@@ -7054,7 +7054,7 @@ msgstr "IDE-Einstellungen"
 
 #: lazarusidestrconsts.lisideprojectdirinidetitle
 msgid "Show project directory in IDE title"
-msgstr ""
+msgstr "Projektverzeichnis im IDE-Titel anzeigen"
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"
@@ -7213,7 +7213,7 @@ msgstr "Bemerkungen:"
 
 #: lazarusidestrconsts.lisinfobuildproject
 msgid "Project:"
-msgstr ""
+msgstr "Projekt:"
 
 #: lazarusidestrconsts.lisinfobuildsuccess
 msgid "Success..."
@@ -9762,11 +9762,11 @@ msgstr "Objektpfad"
 
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
 msgid "Switch to Object Inspector Favorites tab"
-msgstr ""
+msgstr "Zum Favoriten-Reiter des Objektinspektors umschalten"
 
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestabafterasking
 msgid "Switch to Object Inspector Favorites tab after asking for component name"
-msgstr ""
+msgstr "Nach der Abfrage des Komponentennamens zum Favoriten-Reiter des Objektinspektors umschalten"
 
 #: lazarusidestrconsts.lisoff
 msgid "? (Off)"
@@ -11461,7 +11461,7 @@ msgstr "Projektverzeichnis"
 
 #: lazarusidestrconsts.lisprojectdirectoryisshowedinidetitlebar
 msgid "Title in taskbar shows also directory path of the project"
-msgstr ""
+msgstr "Titel im Taskbar zeigt auch den Verzeichnispfad des Projekts"
 
 #: lazarusidestrconsts.lisprojectfilename
 msgid "Project filename"
@@ -12742,11 +12742,11 @@ msgstr "Diese Anweisung kann nicht extrahiert werden.%sBitte wählen Sie etwas C
 
 #: lazarusidestrconsts.listinfobuildautocloseonsuccess
 msgid "&Automatically close on success"
-msgstr ""
+msgstr "Bei Erfolg &automatisch schließen"
 
 #: lazarusidestrconsts.listinfobuildcompiling
 msgid "Compiling:"
-msgstr ""
+msgstr "Kompiliere:"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -12912,7 +12912,7 @@ msgstr "Springe zu Zeile:"
 
 #: lazarusidestrconsts.lisuemodeseparator
 msgid "/"
-msgstr ""
+msgstr "/"
 
 #: lazarusidestrconsts.lisuenotfound
 msgid "Not found"
@@ -14418,7 +14418,7 @@ msgstr "Cursor an den Beginn des Texts in der Zeile setzen"
 
 #: lazarusidestrconsts.srkmeclockeditor
 msgid "Lock Editor"
-msgstr ""
+msgstr "Sperr-Editor"
 
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
@@ -14983,7 +14983,7 @@ msgstr "« ist schreibgeschützt."
 
 #: lazarusidestrconsts.uelocked
 msgid "Locked"
-msgstr ""
+msgstr "Gesperrt"
 
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
@@ -15100,7 +15100,7 @@ msgstr "Zeilenende"
 
 #: lazarusidestrconsts.uemlockpage
 msgid "&Lock Page"
-msgstr ""
+msgstr "Seite sperren"
 
 #: lazarusidestrconsts.uemmovepageleft
 msgid "Move page left"

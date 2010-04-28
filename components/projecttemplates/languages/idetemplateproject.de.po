@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-03-28 20:37+0100\n"
+"PO-Revision-Date: 2010-04-28 21:31+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,5 +19,5 @@ msgstr "Optionen für Projektvorlagen"
 
 #: idetemplateproject.stemplatecategory
 msgid "Template projects"
-msgstr ""
+msgstr "Vorlagenprojekte"
 
