@@ -399,6 +399,11 @@ begin
   Result := WidgetSet.GetForegroundWindow;
 end;
 
+function GetIconInfo(AIcon: HICON; AIconInfo: PIconInfo): Boolean;
+begin
+  Result := WidgetSet.GetIconInfo(AIcon, AIconInfo);
+end;
+
 function GetKeyState(nVirtKey: Integer): Smallint;
 begin
   Result := WidgetSet.GetKeyState(nVirtKey);

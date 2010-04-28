@@ -1797,6 +1797,11 @@ begin
   Result := Windows.GetForegroundWindow;
 end;
 
+function TWin32WidgetSet.GetIconInfo(AIcon: HICON; AIconInfo: PIconInfo): Boolean;
+begin
+  Result := Windows.GetIconInfo(AIcon, AIconInfo);
+end;
+
 {------------------------------------------------------------------------------
   Method:  GetKeyState
   Params:  NVirtKey - The requested key

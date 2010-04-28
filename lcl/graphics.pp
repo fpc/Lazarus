@@ -1510,6 +1510,7 @@ type
     FImages: TFPList;
   protected
     procedure FreeHandle; override;
+    procedure UpdateFromHandle(NewHandle: THandle); virtual;
     function IsEmpty: boolean; override;
   public
     constructor Create; override;
@@ -1536,9 +1537,11 @@ type
     function GetPalette: HPALETTE;
   protected
     procedure RawImageNeeded(ADescOnly: Boolean);
+    procedure UpdateFromImage(const AImage: TRawImage);
   public
     constructor Create(AFormat: TPixelFormat; AHeight, AWidth: Word);
     constructor Create(const AImage: TRawImage);
+    constructor Create(const AInfo: TIconInfo); virtual;
     destructor Destroy; override;
 
     function ReleaseHandle: HBITMAP;
@@ -1602,6 +1605,8 @@ type
     procedure SetTransparent(Value: Boolean); override;
     procedure UnshareImage(CopyContent: boolean); override;
     procedure UpdateCurrentView;
+    procedure SetHandle(AValue: THandle); override;
+    function UpdateHandle(AValue: HICON): Boolean; virtual;
     function  UpdateHandles(ABitmap, AMask: HBITMAP): Boolean; override;
     procedure WriteStream(AStream: TMemoryStream); override;
   public
@@ -1703,6 +1708,7 @@ type
   private
     FHotSpot: TPoint;
   public
+    constructor Create(const AInfo: TIconInfo); override;
     property HotSpot: TPoint read FHotSpot write FHotSpot;
   end;
 
@@ -2502,6 +2508,15 @@ begin
   FreeAndNil(FontResourceCache);
   FreeAndNil(PenResourceCache);
   FreeAndNil(BrushResourceCache);
+end;
+
+{ TCursorImageImage }
+
+constructor TCursorImageImage.Create(const AInfo: TIconInfo);
+begin
+  inherited Create(AInfo);
+  FHotSpot.x := AInfo.xHotspot;
+  FHotSpot.y := AInfo.yHotspot;
 end;
 
 initialization

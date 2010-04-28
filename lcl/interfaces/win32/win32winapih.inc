@@ -107,6 +107,7 @@ function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint
 function GetDoubleClickTime: UINT; override;
 function GetFocus: HWND; override;
 function GetForegroundWindow: HWND; override;
+function GetIconInfo(AIcon: HICON; AIconInfo: PIconInfo): Boolean; override;
 function GetKeyState(NVirtKey: Integer): SmallInt; override;
 function GetMapMode(DC: HDC): Integer; override;
 function GetMonitorInfo(hMonitor: HMONITOR; lpmi: LCLType.PMonitorInfo): Boolean; override;

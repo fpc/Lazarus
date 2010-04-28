@@ -128,6 +128,7 @@ function GetDoubleClickTime: UINT; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetFocus: HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetFontLanguageInfo(DC: HDC): DWord; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetForegroundWindow: HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetIconInfo(AIcon: HICON; AIconInfo: PIconInfo): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetKeyState(nVirtKey: Integer): Smallint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetMapMode(DC: HDC): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetMonitorInfo(hMonitor: HMONITOR; lpmi: PMonitorInfo): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

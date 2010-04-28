@@ -118,6 +118,17 @@ begin
   FHandle := 0;
 end;
 
+procedure TSharedIcon.UpdateFromHandle(NewHandle: THandle);
+var
+  Info: TIconInfo;
+begin
+  FreeHandle;
+  FHandle := NewHandle;
+  // get the icon information
+  if WidgetSet.GetIconInfo(FHandle, @Info) then
+    Add(GetImagesClass.Create(Info));
+end;
+
 function TSharedIcon.IsEmpty: boolean;
 begin
   Result := inherited IsEmpty and (Count = 0);
@@ -200,21 +211,18 @@ end;
 constructor TIconImage.Create(const AImage: TRawImage);
 begin
   inherited Create;
-  FImage := AImage;
-  FHeight := FImage.Description.Height;
-  FWidth := FImage.Description.Width;
-  
-  case FImage.Description.Depth of
-     1: FPixelFormat := pf1Bit;
-     4: FPixelFormat := pf4Bit;
-     8: FPixelFormat := pf8Bit;
-    15: FPixelFormat := pf15Bit;
-    16: FPixelFormat := pf16Bit;
-    24: FPixelFormat := pf24Bit;
-    32: FPixelFormat := pf32Bit;
-  else
-    FPixelFormat := pfCustom;
-  end;
+  UpdateFromImage(AImage);
+end;
+
+constructor TIconImage.Create(const AInfo: TIconInfo);
+var
+  AImage: TRawImage;
+begin
+  inherited Create;
+  FHandle := AInfo.hbmColor;
+  FMaskHandle := AInfo.hbmMask;
+  if RawImage_FromBitmap(AImage, FHandle, FMaskHandle) then
+    UpdateFromImage(AImage);
 end;
 
 destructor TIconImage.Destroy;
@@ -270,6 +278,25 @@ begin
     Flags := [riqfRGB, riqfMask];
   end;
   ImagePtr^.Description := QueryDescription(Flags, Width, Height);
+end;
+
+procedure TIconImage.UpdateFromImage(const AImage: TRawImage);
+begin
+  FImage := AImage;
+  FHeight := FImage.Description.Height;
+  FWidth := FImage.Description.Width;
+
+  case FImage.Description.Depth of
+     1: FPixelFormat := pf1Bit;
+     4: FPixelFormat := pf4Bit;
+     8: FPixelFormat := pf8Bit;
+    15: FPixelFormat := pf15Bit;
+    16: FPixelFormat := pf16Bit;
+    24: FPixelFormat := pf24Bit;
+    32: FPixelFormat := pf32Bit;
+  else
+    FPixelFormat := pfCustom;
+  end;
 end;
 
 function TIconImage.ReleaseHandle: HBITMAP;
@@ -1093,6 +1120,34 @@ procedure TCustomIcon.UpdateCurrentView;
 begin
   FreeCanvasContext;
   Changed(Self);
+end;
+
+procedure TCustomIcon.SetHandle(AValue: THandle);
+begin
+  if FSharedImage.FHandle <> AValue
+  then begin
+    // if the handle is set externally we should unshare ourselves
+    FreeCanvasContext;
+    UnshareImage(false);
+    FreeSaveStream;
+    TSharedIcon(FSharedImage).Clear;
+  end;
+
+  if UpdateHandle(AValue)
+  then begin
+    if (TSharedIcon(FSharedImage).Count > 0) then
+      FCurrent := 0
+    else
+      FCurrent := -1;
+    Changed(Self);
+  end;
+end;
+
+function TCustomIcon.UpdateHandle(AValue: HICON): Boolean;
+begin
+  Result := FSharedImage.FHandle <> AValue;
+  if Result then
+    TSharedIcon(FSharedImage).UpdateFromHandle(AValue);
 end;
 
 function TCustomIcon.UpdateHandles(ABitmap, AMask: HBITMAP): Boolean;

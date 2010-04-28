@@ -237,7 +237,6 @@ end;
 
 procedure TCustomBitmap.SetBitmapHandle(const AValue: HBITMAP);
 begin
-  {$IFDEF VerboseLCLTodos}{$note remove when classcompletion checks intherited methods }{$ENDIF}
   inherited SetBitmapHandle(AValue);
 end;
 

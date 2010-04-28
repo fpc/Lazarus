@@ -980,6 +980,11 @@ begin
   Result := 0;
 end;
 
+function TWidgetSet.GetIconInfo(AIcon: HICON; AIconInfo: PIconInfo): Boolean;
+begin
+  Result := False;
+end;
+
 function TWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 begin
   Result := 0;
