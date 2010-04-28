@@ -707,6 +707,9 @@ type
   private
     FCurrentChangedHook: QTabWidget_hookH;
     FCloseRequestedHook: QTabWidget_hookH;
+    {$IFDEF QTSizeFix}
+    FStackedWidgetHook: QObject_hookH;
+    {$ENDIF}
     FTabBar: TQtTabBar;
     FStackWidget: QWidgetH;
     function getShowTabs: Boolean;
@@ -6486,10 +6489,21 @@ begin
 
   FCloseRequestedHook := QTabWidget_hook_create(Widget);
   QTabWidget_hook_hook_tabCloseRequested(FCloseRequestedHook, @SignalCloseRequested);
+  {$IFDEF QTSizeFix}
+  FStackedWidgetHook := QObject_hook_create(StackWidget);
+  QObject_hook_hook_events(FStackedWidgetHook, @EventFilter);
+  {$ENDIF}
 end;
 
 procedure TQtTabWidget.DetachEvents;
 begin
+  {$IFDEF QTSizeFix}
+  if FStackedWidgetHook <> nil then
+  begin
+    QObject_hook_destroy(FStackedWidgetHook);
+    FStackedWidgetHook := nil;
+  end;
+  {$ENDIF}
   QTabWidget_hook_destroy(FCurrentChangedHook);
   QTabWidget_hook_destroy(FCloseRequestedHook);
   inherited DetachEvents;
@@ -6503,7 +6517,19 @@ begin
   QEvent_accept(Event);
   if LCLObject = nil then
     exit;
-
+  {$IFDEF QTSizeFix}
+  if (Sender = FStackWidget) then
+  begin
+    case QEvent_type(Event) of
+      QEventResize:
+        if LCLObject.ClientRectNeedsInterfaceUpdate then
+          LCLObject.InvalidateClientRectCache(False);
+      // layoutRequest from stacked widget is very important !
+      QEventLayoutRequest: LCLObject.DoAdjustClientRectChange(False);
+    end;
+    exit;
+  end;
+  {$ENDIF}
   BeginEventProcessing;
   case QEvent_type(Event) of
     QEventKeyPress,
@@ -6522,7 +6548,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; p2: WideString): Integer; overload;
 begin
-  Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, @p2);
+  Result := insertTab(index, page, nil, p2);
 end;
 
 {------------------------------------------------------------------------------
@@ -11039,8 +11065,14 @@ end;
 
 function TQtPage.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
+  {$IFDEF QTSizeFix}
+  if (QEvent_type(Event) = QEventResize) and
+    LCLObject.Parent.ClientRectNeedsInterfaceUpdate  then
+      LCLObject.Parent.InvalidateClientRectCache(False);
+  {$ELSE}
   if (QEvent_type(Event) = QEventResize) and not InUpdate then
     LCLObject.Parent.InvalidateClientRectCache(False);
+  {$ENDIF}
   Result:=inherited EventFilter(Sender, Event);
 end;
 
