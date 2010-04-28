@@ -1176,7 +1176,7 @@ resourcestring
     +' Normally it contains directories like lcl, debugger, designer, components, ... .';
   lisEnvOptDlgFPCSrcDirNotFoundMsg = 'FPC source directory "%s" not found.';
   lisEnvOptDlgInvalidFPCSrcDir = 'The FPC source directory "%s" does not look correct.'
-    +' Normally it contains directories like rtl, packages, compiler, ... .';
+    +' Normally it contains directories like rtl/inc, packages/fcl-base, ... .';
   lisEnvOptDlgTestDirNotFoundMsg = 'Test directory "%s" not found.';
 
   // editor options
@@ -1378,7 +1378,6 @@ resourcestring
   dlgKeyMappingScheme = 'Key Mapping Scheme';
   dlgCheckConsistency = 'Check consistency';
   lisEdOptsChooseScheme = 'Choose Scheme';
-  dlgEdHintCommand = 'Hint: click on the command you want to edit';
   dlgLang = 'Language';
   lis0No1DrawDividerLinesOnlyForTopLevel2DrawLinesForFi = '0 = no, 1 = draw '
     +'divider lines only for top level, 2 = draw lines for first two '
@@ -4745,6 +4744,8 @@ resourcestring
 
   //Jump History dialog
   lisJHJumpHistory = 'Jump History';
+  lisHintDoubleClickOnTheCommandYouWantToEdit = 'Hint: double click on the '
+    +'command you want to edit';
 
 implementation
 

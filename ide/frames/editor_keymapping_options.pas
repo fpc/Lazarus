@@ -282,7 +282,7 @@ begin
   FDialog := ADialog;
   KeyMappingChooseSchemeButton.Caption := lisEdOptsChooseScheme;
   KeyMappingConsistencyCheckButton.Caption := dlgCheckConsistency;
-  KeyMappingHelpLabel.Caption := dlgEdHintCommand;
+  KeyMappingHelpLabel.Caption := lisHintDoubleClickOnTheCommandYouWantToEdit;
   KeyMappingFilterEdit.Text := lisFilter2;
   KeyMappingFindKeyButton.Caption := lisFindKeyCombination;
   KeyMappingTreeView.Images := IDEImages.Images_16;
