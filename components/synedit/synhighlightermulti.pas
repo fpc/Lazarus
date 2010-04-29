@@ -1209,7 +1209,7 @@ procedure TSynMultiSyn.Next;
   end;
 
 var
-  i, idx: Integer;
+  idx: Integer;
   RSect: TRunSectionInfo;
   HL: TSynCustomHighlighter;
   dummy: PChar;
@@ -1405,7 +1405,7 @@ procedure TSynMultiSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
     VLines: TSynHLightMultiVirtualLines;
     HL: TSynCustomHighlighter;
     s: TSynHLightMultiVirtualSection;
-    i, idx, x1, x2, tx1, tx2: Integer;
+    idx, x1, x2, tx1, tx2: Integer;
   begin
     FRunSectionInfo[ASchemeIdx].SectionIdx := -1;
     if ASchemeIdx > 0 then begin
