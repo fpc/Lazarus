@@ -560,7 +560,7 @@ type
   TFPCSourceRules = class
   private
     FItems: TFPList;// list of TFPCSourceRule
-    FPriority: integer;
+    FScore: integer;
     FTargets: string;
     function GetItems(Index: integer): TFPCSourceRule;
     procedure SetTargets(const AValue: string);
@@ -574,9 +574,9 @@ type
     function GetDefaultTargets(TargetOS, TargetCPU: string): string;
     procedure GetRulesForTargets(Targets: string;
                                  var RulesSortedForFilenameStart: TAVLTree);
-    function GetPriority(Filename: string;
-                         RulesSortedForFilenameStart: TAVLTree): integer;
-    property Priority: integer read FPriority write FPriority; // used for Add
+    function GetScore(Filename: string;
+                      RulesSortedForFilenameStart: TAVLTree): integer;
+    property Score: integer read FScore write FScore; // used for Add
     property Targets: string read FTargets write SetTargets; // used for Add, e.g. win32,unix,bsd or * for all
   end;
 
@@ -657,7 +657,7 @@ type
     ConflictFilename: string;
     MacroCount: integer;
     UsedMacroCount: integer;
-    Priority: integer;
+    Score: integer;
   end;
 
 function CompareUnitNameLinks(Link1, Link2: Pointer): integer;
@@ -1138,13 +1138,13 @@ var
   Links: TAVLTree;
   Unit_Name: String;
   LastDirectory: String;
-  LastDirectoryPriority: Integer;
+  LastDirScore: Integer;
   Directory: String;
-  DirPriority: LongInt;
+  DirScore: LongInt;
   Node: TAVLTreeNode;
   Link: TUnitNameLink;
   TargetRules: TAVLTree;
-  Priority: LongInt;
+  Score: LongInt;
   Targets: string;
 begin
   Result:=nil;
@@ -1157,12 +1157,12 @@ begin
   TargetRules:=nil;
   Links:=TAVLTree.Create(@CompareUnitNameLinks);
   try
-    // get priority rules for duplicate units
+    // get Score rules for duplicate units
     Rules.GetRulesForTargets(Targets,TargetRules);
     if (TargetRules<>nil) and (TargetRules.Count=0) then
       FreeAndNil(TargetRules);
     LastDirectory:='';
-    LastDirectoryPriority:=0;
+    LastDirScore:=0;
     for i:=0 to Files.Count-1 do begin
       Filename:=Files[i];
       if (CompareFileExt(Filename,'PAS',false)=0)
@@ -1172,31 +1172,31 @@ begin
         // Filename is a pascal unit source
         Directory:=ExtractFilePath(Filename);
         if LastDirectory=Directory then begin
-          // same directory => reuse directory priority
-          DirPriority:=LastDirectoryPriority;
+          // same directory => reuse directory Score
+          DirScore:=LastDirScore;
         end else begin
-          // a new directory => recompute directory priority
+          // a new directory => recompute directory score
           // default heuristic: add one point for every target in directory
-          DirPriority:=CountMatches(PChar(Targets),PChar(Directory));
+          DirScore:=CountMatches(PChar(Targets),PChar(Directory));
         end;
-        Priority:=DirPriority;
+        Score:=DirScore;
         // apply target rules
         if TargetRules<>nil then
-          inc(Priority,Rules.GetPriority(Filename,TargetRules));
+          inc(Score,Rules.GetScore(Filename,TargetRules));
         // add or update unitlink
         Unit_Name:=ExtractFileNameOnly(Filename);
         Node:=Links.FindKey(Pointer(Unit_Name),@CompareUnitNameWithUnitNameLink);
         if Node<>nil then begin
           // duplicate unit
           Link:=TUnitNameLink(Node.Data);
-          if Link.Priority<Priority then begin
+          if Link.Score<Score then begin
             // found a better unit
             Link.Unit_Name:=Unit_Name;
             Link.Filename:=Filename;
             Link.ConflictFilename:='';
-            Link.Priority:=Priority;
-          end else if Link.Priority=Priority then begin
-            // unit with same priority => maybe a conflict
+            Link.Score:=Score;
+          end else if Link.Score=Score then begin
+            // unit with same Score => maybe a conflict
             Link.ConflictFilename:=Link.ConflictFilename+';'+Filename;
           end;
         end else begin
@@ -1204,11 +1204,11 @@ begin
           Link:=TUnitNameLink.Create;
           Link.Unit_Name:=Unit_Name;
           Link.Filename:=Filename;
-          Link.Priority:=Priority;
+          Link.Score:=Score;
           Links.Add(Link);
         end;
         LastDirectory:=Directory;
-        LastDirectoryPriority:=DirPriority;
+        LastDirScore:=DirScore;
       end;
     end;
     Result:=TStringToStringTree.Create(false);
@@ -1217,7 +1217,7 @@ begin
       Link:=TUnitNameLink(Node.Data);
       Result[Link.Unit_Name]:=Link.Filename;
       if Link.ConflictFilename<>'' then begin
-        DebugLn(['GatherUnitsInFPCSources Ambiguous: ',Link.Filename,' ',Link.ConflictFilename]);
+        DebugLn(['GatherUnitsInFPCSources Ambiguous: ',Link.Score,' ',Link.Filename,' ',Link.ConflictFilename]);
       end;
       Node:=Links.FindSuccessor(Node);
     end;
@@ -4239,7 +4239,7 @@ var
                   NewUnitLink.FileName:=MacroFileName;
                   NewUnitLink.MacroCount:=MacroCount;
                   NewUnitLink.UsedMacroCount:=UsedMacroCount;
-                  NewUnitLink.Priority:=Priority;
+                  NewUnitLink.Score:=Priority;
                   UnitTree.Add(NewUnitLink);
                 end else begin
                   { there is another unit with this name
@@ -4327,15 +4327,15 @@ var
                     // <FPCSrcDir>/packages/base/libc/libc.pp
                     inc(Priority,2);
                   end;
-                  //DebugLn(['BrowseDirectory duplicate found: ',AUnitName,' OldUnitLink.Filename=',OldUnitLink.Filename,' MacroFileName=',MacroFileName,' Priority=',Priority,' OldUnitLink.Priority=',OldUnitLink.Priority]);
-                  if (Priority>OldUnitLink.Priority)
-                  or ((Priority=OldUnitLink.Priority)
+                  //DebugLn(['BrowseDirectory duplicate found: ',AUnitName,' OldUnitLink.Filename=',OldUnitLink.Filename,' MacroFileName=',MacroFileName,' Priority=',Priority,' OldUnitLink.Priority=',OldUnitLink.Score]);
+                  if (Priority>OldUnitLink.Score)
+                  or ((Priority=OldUnitLink.Score)
                      and (UsedMacroCount>OldUnitLink.UsedMacroCount))
                   then begin
                     // take the new macro filename
                     OldUnitLink.Filename:=MacroFileName;
                     OldUnitLink.MacroCount:=MacroCount;
-                    OldUnitLink.Priority:=Priority;
+                    OldUnitLink.Score:=Priority;
                   end;
                 end;
               end;
@@ -5847,7 +5847,7 @@ end;
 function TFPCSourceRules.Add(const Filename: string): TFPCSourceRule;
 begin
   Result:=TFPCSourceRule.Create;
-  Result.Priority:=Priority;
+  Result.Priority:=Score;
   Result.Targets:=Targets;
   DebugLn(['TFPCSourceRules.Add Targets="',Result.Targets,'" Priority=',Result.Priority]);
   Result.Filename:=SetDirSeparators(Filename);
@@ -5886,7 +5886,7 @@ begin
       RulesSortedForFilenameStart.Add(Items[i]);
 end;
 
-function TFPCSourceRules.GetPriority(Filename: string;
+function TFPCSourceRules.GetScore(Filename: string;
   RulesSortedForFilenameStart: TAVLTree): integer;
 var
   Node: TAVLTreeNode;
