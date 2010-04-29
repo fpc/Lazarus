@@ -917,6 +917,7 @@ type
     FSignalPressed: QAbstractItemView_hookH;
     FSignalViewportEntered: QAbstractItemView_hookH;
     FAbstractItemViewportEventHook: QObject_hookH;
+    FSyncingItems: Boolean;
     FViewStyle: Integer;
     function getIconSize: TSize;
     function GetOwnerDrawn: Boolean;
@@ -956,6 +957,7 @@ type
     property IconSize: TSize read getIconSize write setIconSize;
     property OwnerDrawn: Boolean read GetOwnerDrawn write SetOwnerDrawn;
     property OwnerData: Boolean read FOwnerData write FOwnerData;
+    property SyncingItems: Boolean read FSyncingItems write FSyncingItems;
     property ViewStyle: Integer read FViewStyle write FViewStyle;
   public
     procedure ItemDelegateSizeHint(option: QStyleOptionViewItemH; index: QModelIndexH; Size: PSize); cdecl; virtual;
@@ -991,6 +993,7 @@ type
 
   TQtListWidget = class(TQtListView)
   private
+    FCurrentItemChangedHook: QListWidget_hookH;
     FSelectionChangeHook: QListWidget_hookH;
     FItemClickedHook: QListWidget_hookH;
     FItemTextChangedHook: QListWidget_hookH;
@@ -1008,6 +1011,7 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
 
+    procedure signalCurrentItemChanged(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
     procedure signalItemTextChanged(ANewText: PWideString); cdecl;
     procedure signalItemClicked(item: QListWidgetItemH); cdecl;
     procedure signalSelectionChanged(); cdecl;
@@ -1099,7 +1103,6 @@ type
 
   TQtTreeWidget = class(TQtTreeView)
   private
-    FSyncingItems: Boolean;
     FSorting: Boolean;
     FHeader: TQtHeaderView;
     FSectionClicked: QHeaderView_hookH;
@@ -7754,6 +7757,7 @@ var
   Parent: QWidgetH;
 begin
   FViewStyle := -1;
+  FSyncingItems := False;
   FCheckable := False;
   FDontPassSelChange := False;
   FOwnerData := False;
@@ -7847,12 +7851,17 @@ end;
 procedure TQtListWidget.AttachEvents;
 begin
   inherited AttachEvents;
-  
+
+  FCurrentItemChangedHook := QListWidget_hook_create(Widget);
   FSelectionChangeHook := QListWidget_hook_create(Widget);
   FItemClickedHook := QListWidget_hook_create(Widget);
   FItemTextChangedHook := QListWidget_hook_create(Widget);
 
-  // OnSelectionChange event
+  // used only when we are handle of TListView
+  QListWidget_hook_hook_currentItemChanged(FCurrentItemChangedHook,
+    @signalCurrentItemChanged);
+
+  // OnSelectionChange event (listbox)
   QListWidget_hook_hook_itemSelectionChanged(FSelectionChangeHook, @signalSelectionChanged);
   QListWidget_hook_hook_itemClicked(FItemClickedHook, @signalItemClicked);
   QListWidget_hook_hook_currentTextChanged(FItemTextChangedHook, @signalItemTextChanged);
@@ -7860,6 +7869,7 @@ end;
 
 procedure TQtListWidget.DetachEvents;
 begin
+  QListWidget_hook_destroy(FCurrentItemChangedHook);
   QListWidget_hook_destroy(FSelectionChangeHook);
   QListWidget_hook_destroy(FItemClickedHook);
   QListWidget_hook_destroy(FItemTextChangedHook);
@@ -7952,6 +7962,81 @@ begin
     else
       Result := inherited itemViewViewportEventFilter(Sender, Event);
     end;
+  end;
+end;
+
+procedure TQtListWidget.signalCurrentItemChanged(current: QListWidgetItemH;
+  previous: QListWidgetItemH); cdecl;
+var
+  Msg: TLMNotify;
+  NMLV: TNMListView;
+  ASubIndex: Integer;
+  AIndex: Integer;
+begin
+  // only when TQtListWidget is handle of TListView !
+  if ViewStyle = -1 then
+    exit;
+
+  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(NMLV, SizeOf(NMLV), #0);
+
+  Msg.Msg := CN_NOTIFY;
+
+  NMLV.hdr.hwndfrom := LCLObject.Handle;
+  NMLV.hdr.code := LVN_ITEMCHANGING;
+
+  AIndex := getRow(Current);
+
+  ASubIndex := 0;
+
+  NMLV.iItem := AIndex;
+  NMLV.iSubItem := ASubIndex;
+  NMLV.uNewState := LVIS_SELECTED;
+  NMLV.uChanged := LVIF_STATE;
+
+  Msg.NMHdr := @NMLV.hdr;
+  DeliverMessage(Msg);
+
+  FSyncingItems := True;
+  try
+    if Current <> nil then
+    begin
+      FillChar(Msg, SizeOf(Msg), #0);
+      FillChar(NMLV, SizeOf(NMLV), #0);
+      Msg.Msg := CN_NOTIFY;
+      NMLV.hdr.hwndfrom := LCLObject.Handle;
+      NMLV.hdr.code := LVN_ITEMCHANGED;
+      NMLV.iItem := AIndex;
+      NMLV.iSubItem := ASubIndex;
+      if QListWidget_isItemSelected(QListWidgetH(Widget), Current) then
+        NMLV.uNewState := LVIS_SELECTED
+      else
+        NMLV.uOldState := LVIS_SELECTED;
+      NMLV.uChanged := LVIF_STATE;
+      Msg.NMHdr := @NMLV.hdr;
+      DeliverMessage(Msg);
+    end;
+
+    if Previous <> nil then
+    begin
+      FillChar(Msg, SizeOf(Msg), #0);
+      FillChar(NMLV, SizeOf(NMLV), #0);
+      Msg.Msg := CN_NOTIFY;
+      NMLV.hdr.hwndfrom := LCLObject.Handle;
+      NMLV.hdr.code := LVN_ITEMCHANGED;
+      NMLV.iItem := getRow(Previous);
+      ASubIndex := 0;
+      NMLV.iSubItem := ASubIndex;
+      if QListWidget_isItemSelected(QListWidgetH(Widget), Previous) then
+        NMLV.uNewState := LVIS_SELECTED
+      else
+        NMLV.uOldState := LVIS_SELECTED;
+      NMLV.uChanged := LVIF_STATE;
+      Msg.NMHdr := @NMLV.hdr;
+      DeliverMessage(Msg);
+    end;
+  finally
+    FSyncingItems := False;
   end;
 end;
 
