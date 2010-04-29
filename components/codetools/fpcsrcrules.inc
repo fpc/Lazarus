@@ -1,6 +1,7 @@
 {%MainUnit definetemplates.pas}
-Priority:=10;
+Priority:=100;
 Targets:='*';
 Add('rtl');
 Add('packages/fcl-');
+
 

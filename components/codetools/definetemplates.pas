@@ -571,6 +571,7 @@ type
     property Items[Index: integer]: TFPCSourceRule read GetItems; default;
     function Count: integer;
     function Add(const Filename: string): TFPCSourceRule;
+    function GetDefaultTargets(TargetOS, TargetCPU: string): string;
     procedure GetRulesForTargets(Targets: string;
                                  var RulesSortedForFilenameStart: TAVLTree);
     function GetPriority(Filename: string;
@@ -606,6 +607,7 @@ function DefineActionNameToAction(const s: string): TDefineAction;
 function DefineTemplateFlagsToString(Flags: TDefineTemplateFlags): string;
 function GetDefaultSrcOSForTargetOS(const TargetOS: string): string;
 function GetDefaultSrcOS2ForTargetOS(const TargetOS: string): string;
+function GetDefaultSrcCPUForTargetCPU(const TargetCPU: string): string;
 procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
   var CPU, OS, WidgetSet: string);
 function GetCompiledTargetOS: string;
@@ -1090,24 +1092,44 @@ end;
 function GatherUnitsInFPCSources(Files: TStringList; TargetOS: string;
   TargetCPU: string; Rules: TFPCSourceRules): TStringToStringTree;
 
-  function ContainsWord(aWord, aTxt: PChar): boolean;
+  function CountMatches(Targets, aTxt: PChar): integer;
+  // check how many of the comma separated words in Targets are in words of aTxt
   var
-    t: PChar;
-    w: PChar;
+    TxtStartPos: PChar;
+    TargetPos: PChar;
+    TxtPos: PChar;
   begin
-    if (aWord=nil) or (aWord^=#0) then exit(false);
-    if (aTxt=nil) then exit(false);
-    while (aTxt^<>#0) do begin
-      t:=aTxt;
-      w:=aWord;
-      while (w^=t^) do begin
-        inc(w);
-        inc(t);
-        if w^=#0 then exit(true);
+    Result:=0;
+    if (aTxt=nil) or (Targets=nil) then exit;
+    TxtStartPos:=aTxt;
+    while true do begin
+      while (not (IsIdentChar[TxtStartPos^])) do begin
+        if TxtStartPos^=#0 then exit;
+        inc(TxtStartPos);
       end;
-      inc(aTxt);
+      //DebugLn(['CountMatches TxtStartPos=',TxtStartPos]);
+      TargetPos:=Targets;
+      repeat
+        while (TargetPos^=',') do inc(TargetPos);
+        if TargetPos^=#0 then break;
+        //DebugLn(['CountMatches TargetPos=',TargetPos]);
+        TxtPos:=TxtStartPos;
+        while (TxtPos^=TargetPos^) and (not (TargetPos^ in [#0,','])) do begin
+          inc(TargetPos);
+          inc(TxtPos);
+        end;
+        //DebugLn(['CountMatches Test TargetPos=',TargetPos,' TxtPos=',TxtPos]);
+        if (TargetPos^ in [#0,',']) and (not IsIdentChar[TxtPos^]) then begin
+          // the target fits
+          //DebugLn(['CountMatches FITS']);
+          inc(Result);
+        end;
+        // try next target
+        while not (TargetPos^ in [#0,',']) do inc(TargetPos);
+      until TargetPos^=#0;
+      // next txt word
+      while IsIdentChar[TxtStartPos^] do inc(TxtStartPos);
     end;
-    Result:=false;
   end;
 
 var
@@ -1119,31 +1141,24 @@ var
   LastDirectoryPriority: Integer;
   Directory: String;
   DirPriority: LongInt;
-  SrcOS: String;
-  SrcOS2: String;
   Node: TAVLTreeNode;
   Link: TUnitNameLink;
   TargetRules: TAVLTree;
   Priority: LongInt;
+  Targets: string;
 begin
   Result:=nil;
   if (Files=nil) or (Files.Count=0) then exit;
 
   // get default targets
-  if TargetOS='' then
-    TargetOS:=GetCompiledTargetOS;
-  SrcOS:=GetDefaultSrcOSForTargetOS(TargetOS);
-  SrcOS2:=GetDefaultSrcOS2ForTargetOS(TargetOS);
-  if TargetCPU='' then
-    TargetCPU:=GetCompiledTargetCPU;
   if Rules=nil then Rules:=DefaultFPCSourceRules;
+  Targets:=Rules.GetDefaultTargets(TargetOS,TargetOS);
 
   TargetRules:=nil;
   Links:=TAVLTree.Create(@CompareUnitNameLinks);
   try
     // get priority rules for duplicate units
-    Rules.GetRulesForTargets(TargetOS+','+SrcOS+','+SrcOS2+','+TargetCPU,
-                             TargetRules);
+    Rules.GetRulesForTargets(Targets,TargetRules);
     if (TargetRules<>nil) and (TargetRules.Count=0) then
       FreeAndNil(TargetRules);
     LastDirectory:='';
@@ -1161,12 +1176,8 @@ begin
           DirPriority:=LastDirectoryPriority;
         end else begin
           // a new directory => recompute directory priority
-          DirPriority:=0;
-          // default heuristic: add one point for every target in filename
-          if ContainsWord(PChar(TargetOS),PChar(Directory)) then inc(DirPriority);
-          if ContainsWord(PChar(TargetCPU),PChar(Directory)) then inc(DirPriority);
-          if ContainsWord(PChar(SrcOS),PChar(Directory)) then inc(DirPriority);
-          if ContainsWord(PChar(SrcOS2),PChar(Directory)) then inc(DirPriority);
+          // default heuristic: add one point for every target in directory
+          DirPriority:=CountMatches(PChar(Targets),PChar(Directory));
         end;
         Priority:=DirPriority;
         // apply target rules
@@ -1427,6 +1438,15 @@ begin
   or (CompareText(TargetOS,'darwin')=0)
   then
     Result:='bsd';
+end;
+
+function GetDefaultSrcCPUForTargetCPU(const TargetCPU: string): string;
+begin
+  Result:='';
+  if (CompareText(TargetCPU,'i386')=0)
+  or (CompareText(TargetCPU,'x86_64')=0)
+  then
+    Result:='x86';
 end;
 
 procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
@@ -5796,7 +5816,7 @@ end;
 procedure TFPCSourceRules.SetTargets(const AValue: string);
 begin
   if FTargets=AValue then exit;
-  FTargets:=LowerCase(FTargets);
+  FTargets:=LowerCase(AValue);
 end;
 
 constructor TFPCSourceRules.Create;
@@ -5829,8 +5849,28 @@ begin
   Result:=TFPCSourceRule.Create;
   Result.Priority:=Priority;
   Result.Targets:=Targets;
+  DebugLn(['TFPCSourceRules.Add Targets="',Result.Targets,'" Priority=',Result.Priority]);
   Result.Filename:=SetDirSeparators(Filename);
   FItems.Add(Result);
+end;
+
+function TFPCSourceRules.GetDefaultTargets(TargetOS, TargetCPU: string): string;
+var
+  SrcOS: String;
+  SrcOS2: String;
+  SrcCPU: String;
+begin
+  if TargetOS='' then
+    TargetOS:=GetCompiledTargetOS;
+  if TargetCPU='' then
+    TargetCPU:=GetCompiledTargetCPU;
+  Result:=TargetOS+','+TargetCPU;
+  SrcOS:=GetDefaultSrcOSForTargetOS(TargetOS);
+  SrcOS2:=GetDefaultSrcOS2ForTargetOS(TargetOS);
+  SrcCPU:=GetDefaultSrcCPUForTargetCPU(TargetCPU);
+  if SrcOS<>'' then Result:=Result+','+SrcOS;
+  if SrcOS2<>'' then Result:=Result+','+SrcOS2;
+  if SrcCPU<>'' then Result:=Result+','+SrcCPU;
 end;
 
 procedure TFPCSourceRules.GetRulesForTargets(Targets: string;
@@ -5894,6 +5934,7 @@ var
   TargetPos: PChar;
   FilterPos: PChar;
 begin
+  //DebugLn(['TFPCSourceRule.FitsTargets FilterTargets="',FilterTargets,'" Targets="',Targets,'"']);
   if Targets='*' then exit(true);
   if (Targets='') or (FilterTargets='') then exit(false);
   FilterStartPos:=PChar(FilterTargets);
