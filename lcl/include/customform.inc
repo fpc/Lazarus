@@ -1653,7 +1653,7 @@ end;
 procedure TCustomForm.UpdateWindowState;
 Begin
 
-//TODO: Finish UpdateWindowState
+  //TODO: Finish UpdateWindowState
   Assert(False, 'Trace:TODO: [TCustomForm.UpdateWindowState]');
 end;
 
@@ -1668,7 +1668,8 @@ begin
   if FWindowState <> Value then
   begin
     FWindowState := Value;
-    if not (csDesigning in ComponentState) and Showing then
+    //DebugLn(['TCustomForm.SetWindowState ',DbgSName(Self),' ',ord(FWindowState),' csDesigning=',csDesigning in ComponentState,' Showing=',Showing]);
+    if (not (csDesigning in ComponentState)) and Showing then
       ShowWindow(Handle, ShowCommands[Value]);
   end;
 end;

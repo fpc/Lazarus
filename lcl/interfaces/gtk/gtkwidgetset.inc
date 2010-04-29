@@ -4256,6 +4256,7 @@ var
   Decor, Func : Longint;
   AWindow: PGdkWindow;
   ACustomForm: TCustomForm;
+  CurWindowState: TWindowState;
 begin
   if not (Sender is TWinControl) then
     RaiseWrongClass;
@@ -4341,7 +4342,10 @@ begin
        (ACustomForm.Parent = nil) and 
        (ACustomForm.ParentWindow = 0) then 
     begin
-      case ACustomForm.WindowState of
+      CurWindowState:=ACustomForm.WindowState;
+      if csDesigning in ACustomForm.ComponentState then
+        CurWindowState:=wsNormal;
+      case CurWindowState of
         wsNormal:
         begin
           gtk_window_deiconify(PGtkWindow(SenderWidget));

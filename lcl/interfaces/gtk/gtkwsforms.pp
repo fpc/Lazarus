@@ -211,7 +211,8 @@ end;
 { TGtkWSCustomForm }
 
 {$IFDEF GTK1}
-function GtkWSFormMapEvent(Widget: PGtkWidget; Event: PGdkEvent; WidgetInfo: PWidgetInfo): gboolean; cdecl;
+function GtkWSFormMapEvent(Widget: PGtkWidget; Event: PGdkEvent;
+  WidgetInfo: PWidgetInfo): gboolean; cdecl;
 var
   Message: TLMSize;
   AForm: TCustomForm;
