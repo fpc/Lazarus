@@ -465,6 +465,15 @@ begin
         Result := HTCLIENT;
         Exit;
       end;
+    WM_ENABLE:
+      begin
+        Result := WindowProc(Window, Msg, WParam, LParam);
+        // if it is groupbox and themed app then invalidate it on enable change
+        // to redraw graphic controls on it (issue 0007877)
+        if ThemeServices.ThemesAvailable then
+          InvalidateRect(Window, nil, True);
+        Exit;
+      end;
   end;
   Result := WindowProc(Window, Msg, WParam, LParam);
 end;

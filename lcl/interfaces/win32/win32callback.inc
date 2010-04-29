@@ -1474,10 +1474,6 @@ begin
       if not ThemeServices.ThemesEnabled
       and (lWinControl is TCustomBitBtn)
       then DrawBitBtnImage(TCustomBitBtn(lWinControl), TCustomBitBtn(lWinControl).Caption);
-      // if it is groupbox and themed app then invalidate it on enable change
-      // to redraw graphic controls on it (issue 0007877)
-      if ThemeServices.ThemesAvailable and (lWinControl is TCustomGroupBox) then
-        lWinControl.Invalidate;
     end;
     WM_ERASEBKGND:
     begin
