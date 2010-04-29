@@ -1304,7 +1304,7 @@ var
   i: Integer;
 begin
   inherited;
-  if (aOp = opRemove) then begin
+  if (aOp = opRemove) and (Schemes <> nil) then begin
     if (aComp = DefaultHighlighter) then
       DefaultHighlighter := nil
     else for i := 0 to Schemes.Count - 1 do
