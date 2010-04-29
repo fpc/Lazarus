@@ -6304,7 +6304,7 @@ begin
 
   Hdr.hwndFrom := LCLObject.Handle;
   Hdr.Code := TCN_SELCHANGE;
-  Hdr.idFrom := TQtTabWidget(LCLObject.Handle).GetLCLPageIndex(Index);
+  Hdr.idFrom := PtrUInt(TQtTabWidget(LCLObject.Handle).GetLCLPageIndex(Index));
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
   DeliverMessage(Msg);

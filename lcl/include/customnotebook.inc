@@ -851,7 +851,7 @@ begin
              (csDestroyingHandle in ControlState) then
           begin
             OldPageIndex := FPageIndex;
-            FPageIndex := NMHDR^.idfrom;
+            FPageIndex := PtrInt(NMHDR^.idfrom);
             if FPageIndex >= PageCount then
               FPageIndex := -1;
             //debugln(['TCustomNotebook.CNNotify ',DbgSName(Self),' A Old=',OldPageIndex,' fPageIndex=',fPageIndex,' FLoadedPageIndex=',FLoadedPageIndex]);
