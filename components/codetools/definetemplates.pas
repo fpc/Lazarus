@@ -1169,6 +1169,9 @@ begin
       or (CompareFileExt(Filename,'PP',false)=0)
       or (CompareFileExt(Filename,'P',false)=0)
       then begin
+        if CompareFilenameOnly(PChar(Filename),length(Filename),'fpmake',6,true)=0
+        then
+          continue; // skip the fpmake.pp files
         // Filename is a pascal unit source
         Directory:=ExtractFilePath(Filename);
         if LastDirectory=Directory then begin
@@ -1197,7 +1200,13 @@ begin
             Link.Score:=Score;
           end else if Link.Score=Score then begin
             // unit with same Score => maybe a conflict
-            Link.ConflictFilename:=Link.ConflictFilename+';'+Filename;
+            // be deterministic and choose the highest
+            if CompareStr(Filename,Link.Filename)>0 then begin
+              Link.ConflictFilename:=Link.ConflictFilename+';'+Link.Filename;
+              Link.Filename:=Filename;
+            end else begin
+              Link.ConflictFilename:=Link.ConflictFilename+';'+Filename;
+            end;
           end;
         end else begin
           // new unit source found => add to list
