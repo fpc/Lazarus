@@ -3,11 +3,12 @@ program SynTest;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Forms, GuiTestRunner, LResources,
-  TestBase,
-  TestSynSelection, TestSynBeautifier, TestSyncroEdit, TestTrimSpace;
+  Interfaces, Forms, GuiTestRunner, TestBase, TestSynSelection, TestSynBeautifier,
+  TestSyncroEdit, TestTrimSpace, TestHighlightXml, TestHighlightMulti;
 
-{$IFDEF WINDOWS}{$R SynTest.rc}{$ENDIF}
+{$IFDEF WINDOWS}{  $R SynTest.rc}{$ENDIF}
+
+{$R *.res}
 
 begin
   { $I SynTest.lrs}

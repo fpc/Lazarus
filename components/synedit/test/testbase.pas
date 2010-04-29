@@ -21,6 +21,7 @@ type
     function  TestFullText: String;
     procedure TestSetSelText(Value: String; PasteMode: TSynSelectionMode = smNormal);
     property ViewedTextBuffer;
+    property TextBuffer;
   end;
 
   { TTestBase }
