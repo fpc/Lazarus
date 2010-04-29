@@ -377,7 +377,7 @@ end;
 
 class procedure TWin32WSWinControl.AddControl(const AControl: TControl);
 var
-  ParentPanelHandle, ParentHandle, ChildHandle: HWND;
+  ParentHandle, ChildHandle: HWND;
 begin
   {$ifdef OldToolbar}
   if (AControl.Parent is TToolbar) then
@@ -393,10 +393,6 @@ begin
 
   Assert(False, 'Trace:AddControl - Parent Window Handle is $' + IntToHex(LongInt(ParentHandle), 8));
   Assert(False, 'Trace:AddControl - Child Window Handle is $' + IntToHex(LongInt(ChildHandle), 8));
-  // handle groupbox exception
-  ParentPanelHandle := GetWin32WindowInfo(ChildHandle)^.ParentPanel;
-  if ParentPanelHandle <> 0 then
-    ChildHandle := ParentPanelHandle;
   Windows.SetParent(ChildHandle, ParentHandle);
 end;
 
@@ -645,14 +641,8 @@ end;
 class procedure TWin32WSWinControl.ShowHide(const AWinControl: TWinControl);
 const
   VisibilityToFlag: array[Boolean] of UINT = (SWP_HIDEWINDOW, SWP_SHOWWINDOW);
-var
-  Handle, ParentPanel: HWND;
 begin
-  Handle := AWinControl.Handle;
-  ParentPanel := GetWin32WindowInfo(Handle)^.ParentPanel;
-  if ParentPanel <> 0 then
-    Handle := ParentPanel;
-  Windows.SetWindowPos(Handle, 0, 0, 0, 0, 0,
+  Windows.SetWindowPos(AWinControl.Handle, 0, 0, 0, 0, 0,
     SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or VisibilityToFlag[AWinControl.HandleObjectShouldBeVisible]);
 end;
 

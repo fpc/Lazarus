@@ -2446,9 +2446,6 @@ begin
       end;
       WM_NCDESTROY:
       begin
-        // free extra parent window for inner groupbox (if used)
-        if WindowInfo^.ParentPanel<>HWND(nil) then
-          Windows.DestroyWindow(WindowInfo^.ParentPanel);
         // free our own data associated with window
         if DisposeWindowInfo(Window) then
           WindowInfo := nil;

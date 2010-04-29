@@ -58,8 +58,6 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure AdaptBounds(const AWinControl: TWinControl;
-          var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
     class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign,
       UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
   end;
@@ -481,68 +479,18 @@ begin
   // customization of Params
   with Params do
   begin
-    if ThemeServices.ThemesEnabled and (AWinControl.Parent <> nil) and
-      (AWinControl.Parent is TCustomGroupBox) then
-    begin
-      // the parent of this groupbox is another groupbox: there is a bug in
-      // drawing the caption in that case, the caption of the child groupbox
-      // is drawn in system font, make an intermediate "ParentPanel", then
-      // the bug is hidden. Use 'ParentPanel' property of groupbox window
-      // to determine reference to this parent panel
-      // do not use 'ParentPanel' property for other controls!
-      Buddy := CreateWindowEx(0, @ClsName[0], nil, WS_CHILD or WS_CLIPCHILDREN or
-        WS_CLIPSIBLINGS or (Flags and WS_VISIBLE),
-        Left, Top, Width, Height, Parent, 0, HInstance, nil);
-      Left := 0;
-      Top := 0;
-      Flags := Flags or WS_VISIBLE;
-      // set P(aint)WinControl, for paint message to retrieve information
-      // about wincontrol (hack)
-      // allocate windowinfo record ourselves, we do not call WindowInitBuddy
-      BuddyWindowInfo := AllocWindowInfo(Buddy);
-      BuddyWindowInfo^.PWinControl := AWinControl;
-      if GetWin32WindowInfo(Parent)^.needParentPaint then
-        BuddyWindowInfo^.needParentPaint := true;
-      Parent := Buddy;
-    end;
     SubClassWndProc := @GroupBoxWindowProc;
     pClassName := @ButtonClsName[0];
     WindowTitle := StrCaption;
     Flags := Flags or BS_GROUPBOX;
   end;
   // create window
-  FinishCreateWindow(AWinControl, Params, false);
-  // handle winxp panel hack
-  with Params do
-  begin
-    if Buddy <> 0 then
-    begin
-      WindowInfo^.ParentPanel := Buddy;
-      // no need to subclass this parentpanel
-      Buddy := 0;
-    end;
-  end;
+  FinishCreateWindow(AWinControl, Params, False);
   // if themed but does not have tabpage as parent
   // remember we are a groupbox in need of erasebackground hack
   if ThemeServices.ThemesEnabled and not Params.WindowInfo^.needParentPaint then
-    Params.WindowInfo^.isGroupBox := true;
+    Params.WindowInfo^.isGroupBox := True;
   Result := Params.Window;
-end;
-
-class procedure TWin32WSCustomGroupBox.AdaptBounds(const AWinControl: TWinControl;
-  var Left, Top, Width, Height: integer; var SuppressMove: boolean);
-var
-  WinHandle, BuddyHandle: HWND;
-begin
-  WinHandle := AWinControl.Handle;
-  // check if we have a ``container'', if so, move that
-  BuddyHandle := GetWin32WindowInfo(WinHandle)^.ParentPanel;
-  if BuddyHandle <> 0 then
-  begin
-    MoveWindow(BuddyHandle, Left, Top, Width, Height, false);
-    Left := 0;
-    Top := 0;
-  end;
 end;
 
 class procedure TWin32WSCustomGroupBox.SetBiDiMode(

@@ -49,7 +49,6 @@ Type
     PopupMenu: TPopupMenu;
     DefWndProc: WNDPROC;
     ParentMsgHandler: TParentMsgHandlerProc;
-    ParentPanel: HWND;        // if non-zero, winxp groupbox parent window hack
     WinControl: TWinControl;
     PWinControl: TWinControl; // control to paint for
     AWinControl: TWinControl; // control associated with (for buddy controls)
