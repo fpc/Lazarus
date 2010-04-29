@@ -707,9 +707,7 @@ type
   private
     FCurrentChangedHook: QTabWidget_hookH;
     FCloseRequestedHook: QTabWidget_hookH;
-    {$IFDEF QTSizeFix}
     FStackedWidgetHook: QObject_hookH;
-    {$ENDIF}
     FTabBar: TQtTabBar;
     FStackWidget: QWidgetH;
     function getShowTabs: Boolean;
@@ -4757,11 +4755,6 @@ begin
     case QEvent_type(Event) of
       QEventResize:
         begin
-          {$IFNDEF QTSizeFix}
-          LCLObject.InvalidateClientRectCache(true);
-          LCLObject.DoAdjustClientRectChange;
-          {$ENDIF}
-          
           {mdi area part begins}
           if MdiAreaHandle <> nil then
           begin
@@ -5470,7 +5463,6 @@ begin
   if not InUpdate or (getVisible and ((p1=getMin) or b)) then
   begin
     DeliverMessage(LMScroll);
-    {$IFDEF QTSizeFix}
     if b and (FChildOfComplexWidget = ccwAbstractScrollArea) then
     begin
       LCLObject.DoAdjustClientRectChange;
@@ -5478,7 +5470,6 @@ begin
         QAbstractSlider_triggerAction(QAbstractSliderH(Widget),
           QAbstractSliderSliderToMaximum);
     end;
-    {$ENDIF}
   end;
 end;
 
@@ -6489,21 +6480,21 @@ begin
 
   FCloseRequestedHook := QTabWidget_hook_create(Widget);
   QTabWidget_hook_hook_tabCloseRequested(FCloseRequestedHook, @SignalCloseRequested);
-  {$IFDEF QTSizeFix}
+
   FStackedWidgetHook := QObject_hook_create(StackWidget);
   QObject_hook_hook_events(FStackedWidgetHook, @EventFilter);
-  {$ENDIF}
+
 end;
 
 procedure TQtTabWidget.DetachEvents;
 begin
-  {$IFDEF QTSizeFix}
+
   if FStackedWidgetHook <> nil then
   begin
     QObject_hook_destroy(FStackedWidgetHook);
     FStackedWidgetHook := nil;
   end;
-  {$ENDIF}
+
   QTabWidget_hook_destroy(FCurrentChangedHook);
   QTabWidget_hook_destroy(FCloseRequestedHook);
   inherited DetachEvents;
@@ -6517,7 +6508,7 @@ begin
   QEvent_accept(Event);
   if LCLObject = nil then
     exit;
-  {$IFDEF QTSizeFix}
+
   if (Sender = FStackWidget) then
   begin
     case QEvent_type(Event) of
@@ -6529,7 +6520,7 @@ begin
     end;
     exit;
   end;
-  {$ENDIF}
+
   BeginEventProcessing;
   case QEvent_type(Event) of
     QEventKeyPress,
@@ -10176,13 +10167,8 @@ begin
     QEventResize:
     begin
       Result := False;
-      {$IFDEF QTSizeFix}
       // immediate update clientRect !
       LCLObject.DoAdjustClientRectChange;
-      {$ELSE}
-      LCLObject.InvalidateClientRectCache(true);
-      LCLObject.DoAdjustClientRectChange;
-      {$ENDIF}
     end;
     QEventLayoutRequest:
     begin
@@ -10340,13 +10326,6 @@ begin
     end;
   end;
 
-  if ClassType = TQtCustomControl then
-  begin
-    {$IFNDEF QtSizeFix}
-    LCLObject.InvalidateClientRectCache(true);
-    LCLObject.DoAdjustClientRectChange;
-    {$ENDIF}
-  end;
 end;
 
 procedure TQtAbstractScrollArea.DestroyNotify(AWidget: TQtWidget);
@@ -10601,20 +10580,7 @@ end;
 
 function TQtCustomControl.getClientBounds: TRect;
 begin
-  {$IFDEF QTSizeFix}
   QWidget_rect(viewportWidget, @Result);
-  {$ELSE}
-  QWidget_contentsRect(Widget, @Result);
-
-  if not FFrameOnlyAroundContents then
-  begin
-    if (verticalScrollBar.getVisibleTo(Widget)) then
-      dec(Result.Right, verticalScrollBar.getWidth);
-
-    if (horizontalScrollBar.getVisibleTo(Widget)) then
-      dec(Result.Bottom, horizontalScrollBar.getHeight);
-  end;
-  {$ENDIF}
 end;
 
 procedure TQtCustomControl.grabMouse;
@@ -11065,14 +11031,9 @@ end;
 
 function TQtPage.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
-  {$IFDEF QTSizeFix}
   if (QEvent_type(Event) = QEventResize) and
     LCLObject.Parent.ClientRectNeedsInterfaceUpdate  then
       LCLObject.Parent.InvalidateClientRectCache(False);
-  {$ELSE}
-  if (QEvent_type(Event) = QEventResize) and not InUpdate then
-    LCLObject.Parent.InvalidateClientRectCache(False);
-  {$ENDIF}
   Result:=inherited EventFilter(Sender, Event);
 end;
 
