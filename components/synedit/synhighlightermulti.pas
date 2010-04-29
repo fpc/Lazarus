@@ -921,8 +921,12 @@ begin
 end;
 
 destructor TSynMultiSyn.Destroy;
+var
+  s: TSynHighlighterMultiSchemeList;
 begin
-  FreeAndNil(fSchemes);
+  s := FSchemes;
+  FSchemes := nil;
+  s.Free;
   { unhook notification handlers }
   DefaultHighlighter := nil;
   inherited Destroy;
@@ -1326,7 +1330,7 @@ end;
 procedure TSynMultiSyn.BeforeDetachedFromRangeList(ARangeList: TSynHighlighterRangeList);
 begin
   inherited BeforeDetachedFromRangeList(ARangeList);
-  if ARangeList.RefCount = 0 then begin
+  if (Schemes <> nil) and (ARangeList.RefCount = 0) then begin
     TSynHighlighterMultiRangeList(ARangeList).CleanUpForScheme(Schemes);
     if (TSynHighlighterMultiRangeList(ARangeList).DefaultVirtualLines <> nil) and
        (DefaultHighlighter <> nil)
@@ -1497,6 +1501,7 @@ procedure TSynMultiSyn.SchemeItemChanged(Item: TObject);
 var
   i: Integer;
 begin
+  if Schemes = nil then exit;
   DefHighlightChange( Item );
   for i := 0 to KnownLines.Count - 1 do
     KnownRanges[i].InvalidateAll;
