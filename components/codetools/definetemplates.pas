@@ -549,7 +549,7 @@ type
   TFPCSourceRule = class
   public
     Filename: string;
-    Priority: integer;
+    Score: integer;
     Targets: string; // comma separated list of OS, CPU, e.g. win32,unix,i386 or * for all
     function FitsTargets(const FilterTargets: string): boolean;
     function FitsFilename(const aFilename: string): boolean;
@@ -1159,6 +1159,8 @@ begin
   try
     // get Score rules for duplicate units
     Rules.GetRulesForTargets(Targets,TargetRules);
+    //DebugLn(['GatherUnitsInFPCSources ',Rules.GetScore('tests/tbs/tb0001.pp',TargetRules)]);
+
     if (TargetRules<>nil) and (TargetRules.Count=0) then
       FreeAndNil(TargetRules);
     LastDirectory:='';
@@ -1225,7 +1227,7 @@ begin
     while Node<>Nil do begin
       Link:=TUnitNameLink(Node.Data);
       Result[Link.Unit_Name]:=Link.Filename;
-      if Link.ConflictFilename<>'' then begin
+      if (Link.ConflictFilename<>'') and (Link.Score>=0) then begin
         DebugLn(['GatherUnitsInFPCSources Ambiguous: ',Link.Score,' ',Link.Filename,' ',Link.ConflictFilename]);
       end;
       Node:=Links.FindSuccessor(Node);
@@ -5856,9 +5858,9 @@ end;
 function TFPCSourceRules.Add(const Filename: string): TFPCSourceRule;
 begin
   Result:=TFPCSourceRule.Create;
-  Result.Priority:=Score;
+  Result.Score:=Score;
   Result.Targets:=Targets;
-  DebugLn(['TFPCSourceRules.Add Targets="',Result.Targets,'" Priority=',Result.Priority]);
+  DebugLn(['TFPCSourceRules.Add Targets="',Result.Targets,'" Priority=',Result.Score]);
   Result.Filename:=SetDirSeparators(Filename);
   FItems.Add(Result);
 end;
@@ -5903,14 +5905,21 @@ var
   cmp: LongInt;
 begin
   Result:=0;
+  {Node:=RulesSortedForFilenameStart.FindLowest;
+  while Node<>nil do begin
+    Rule:=TFPCSourceRule(Node.Data);
+    DebugLn(['TFPCSourceRules.GetScore Rule: ',Rule.Score,' ',Rule.Filename]);
+    Node:=RulesSortedForFilenameStart.FindSuccessor(Node);
+  end;}
   // find first rule for Filename
   Node:=RulesSortedForFilenameStart.Root;
-  // find nearest
+  // find nearest node
   while true do begin
     Rule:=TFPCSourceRule(Node.Data);
-    cmp:=CompareStr(Rule.Filename,Filename);
+    cmp:=CompareStr(Filename,Rule.Filename);
+    //DebugLn(['TFPCSourceRules.GetScore Rule.Filename=',Rule.Filename,' Filename=',Filename,' cmp=',cmp]);
     if cmp=0 then begin
-      inc(Result,Rule.Priority);
+      inc(Result,Rule.Score);
       break;
     end;
     if cmp<0 then begin
@@ -5925,13 +5934,15 @@ begin
         break;
     end;
   end;
-  // find lowest
+  // run through all fitting rules (the Filename is >= Rule.Filename)
+  if Rule.FitsFilename(Filename) then
+    inc(Result,Rule.Score);
   while Node<>nil do begin
     Node:=RulesSortedForFilenameStart.FindPrecessor(Node);
     if Node=nil then exit;
     Rule:=TFPCSourceRule(Node.Data);
     if not Rule.FitsFilename(Filename) then exit;
-    inc(Result,Rule.Priority);
+    inc(Result,Rule.Score);
   end;
 end;
 
