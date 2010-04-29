@@ -309,7 +309,7 @@ begin
     nmiwMessagesViewName: Result := dlgMsgs;
     nmiwCodeExplorerName: Result := lisCodeExplorer;
     nmiwFPDocEditorName: Result := lisCodeHelpMainFormCaption;
-    nmiwPkgGraphExplorer: Result := lisMenuPackageGraph;
+    nmiwPkgGraphExplorer: Result := dlgPackageGraph;
     nmiwProjectInspector: Result := lisMenuProjectInspector;
     nmiwUnitDependenciesName: Result := dlgUnitDepCaption;
     nmiwDbgOutput: Result := lisMenuViewDebugOutput;
@@ -325,7 +325,7 @@ begin
     nmiwAnchorEditor: Result := lisMenuViewAnchorEditor;
     nmiwCodeBrowser: Result := lisCodeBrowser;
     nmiwIssueBrowser: Result := lisMenuViewRestrictionBrowser;
-    nmiwJumpHistory: Result := lisMenuViewJumpHistory;
+    nmiwJumpHistory: Result := lisJHJumpHistory;
     nmiwInspect: Result := lisInspectDialog;
   else
     Result := NonModalIDEWindowNames[AWindow];
