@@ -49,6 +49,13 @@ begin
 end;
 {$ENDIF}
 
+function IsNotAligned(AControl: TControl): boolean;
+begin
+  Result:=(AControl.Align=alNone)
+      and (AControl.Anchors=[akLeft,akTop])
+      and (AControl.AnchorSide[akLeft].Control=nil)
+      and (AControl.AnchorSide[akTop].Control=nil);
+end;
 
 {------------------------------------------------------------------------------
   Autosizing Helper classes
@@ -805,9 +812,7 @@ begin
     Child:=WinControl.Controls[i];
     ChildData:=Childs[Child];
     if not ChildData.Visible then continue;
-    if (Child.Align=alNone)
-    and (Side in Child.Anchors) and (Child.AnchorSide[Side].Control=nil)
-    then begin
+    if IsNotAligned(Child) then begin
       // this is a non aligned control
       //DebugLn(['TAutoSizeCtrlData.DoMoveNonAlignedChilds Child=',DbgSName(Child),' Side=',dbgs(Side)]);
       if FindMinimum then begin
@@ -853,6 +858,7 @@ var
   MoveDiff: Integer;
   AlignList: TFPList;
   r: TRect;
+  i: Integer;
 begin
   if ChildCount=0 then exit;
   if WinControl.ChildSizing.Layout=cclNone then begin
@@ -875,7 +881,11 @@ begin
     Box:=nil;
     AlignList:=TFPList.Create;
     try
-      WinControl.CreateControlAlignList(alNone,AlignList,nil);
+      for i:=0 to WinControl.ControlCount-1 do begin
+        Child:=WinControl.Controls[i];
+        if Child.IsControlVisible and IsNotAligned(Child) then
+          AlignList.Add(Child);
+      end;
       if AlignList.Count=0 then exit;
       ChildSizing:=TControlChildSizing.Create(nil);
       Box:=TAutoSizeBox.Create;
@@ -990,7 +1000,8 @@ procedure TAutoSizeCtrlData.ComputePreferredClientArea(
 
         if UseCurrentWidth then
           NewWidth:=Child.Width
-        else if CurPreferredWidth>0 then
+        else if (CurPreferredWidth>0)
+        or ((CurPreferredWidth=0) and (csAutoSize0x0 in Child.ControlStyle)) then
           NewWidth:=CurPreferredWidth
         else
           NewWidth:=Child.GetDefaultWidth;
@@ -998,7 +1009,8 @@ procedure TAutoSizeCtrlData.ComputePreferredClientArea(
 
         if UseCurrentHeight then
           NewHeight:=Child.Height
-        else if CurPreferredHeight>0 then
+        else if (CurPreferredHeight>0)
+        or ((CurPreferredHeight=0) and (csAutoSize0x0 in Child.ControlStyle)) then
           NewHeight:=CurPreferredHeight
         else
           NewHeight:=Child.GetDefaultHeight;
@@ -1086,10 +1098,13 @@ begin
         end;
       end;
     end;
+    //WriteDebugReport('anchored','');
 
     SetupNonAlignedChilds(MoveNonAlignedChilds);
+    //WriteDebugReport('nonaligned','');
     // setup the dependencies for Aligned controls
     AlignChilds;
+    //WriteDebugReport('aligned','');
 
     // setup space for dependencies
     SetupSpace;
@@ -2482,14 +2497,6 @@ var
     end;
   end;
   
-  function IsNotAligned(AControl: TControl): boolean;
-  begin
-    Result:=(AControl.Align=alNone)
-        and (AControl.Anchors=[akLeft,akTop])
-        and (AControl.AnchorSide[akLeft].Control=nil)
-        and (AControl.AnchorSide[akTop].Control=nil);
-  end;
-
   procedure DoPosition(Control: TControl; AAlign: TAlign; AControlIndex: Integer);
   var
     NewLeft, NewTop, NewWidth, NewHeight: Integer;
@@ -8000,7 +8007,7 @@ end;
   Calculates the default/preferred width and height for a TWinControl, which is
   used by the LCL autosizing algorithms as default size. Only positive values
   are valid. Negative or 0 are treated as undefined and the LCL uses other sizes
-  instead.
+  instead (exception: csAutoSize0x0).
   TWinControl overrides this:
   If there are childs, their total preferred size is calculated.
   If this value can not be computed (e.g. the childs depend too much on their
@@ -8033,6 +8040,7 @@ begin
   if HandleAllocated then begin
     TWSWinControlClass(WidgetSetClass).GetPreferredSize(Self,
                                PreferredWidth, PreferredHeight, WithThemeSpace);
+    //DebugLn(['TWinControl.CalculatePreferredSize WidgetSet ',DbgSName(Self),' Preferred=',PreferredWidth,'x',PreferredHeight]);
   end;
 
   // check AdjustClientRect
@@ -8053,6 +8061,7 @@ begin
       Layout:=TAutoSizeCtrlData.Create(Self);
       Layout.ComputePreferredClientArea(false,NewMoveLeft,NewMoveRight,
                                         NewClientWidth,NewClientHeight);
+      //Layout.WriteDebugReport('TWinControl.CalculatePreferredSize ','  ');
       if (NewMoveLeft<>0) or (NewMoveRight<>0) then ;
     finally
       Layout.Free;

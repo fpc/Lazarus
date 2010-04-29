@@ -4841,6 +4841,7 @@ begin
         PreferredHeight:=Height;
     end;
 
+    {$IFDEF OldAutoSize}
     // if this control is aligned adjust PreferredWidth and/or PreferredHeight
     if WidthIsAnchored then begin
       // the control will be expanded to maximum width
@@ -4854,6 +4855,7 @@ begin
       //    aligning code
       PreferredHeight:=Height;
     end;
+    {$ENDIF}
     
     // apply constraints
     PreferredWidth:=Constraints.MinMaxWidth(PreferredWidth);
