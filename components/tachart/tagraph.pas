@@ -630,13 +630,15 @@ begin
   end;
 
   for i := 0 to AxisList.Count - 1 do
-    AxisList[i].Measure(ACanvas, FCurrentExtent, axisMargin);
+    AxisList[i].Measure(ACanvas, FCurrentExtent, true, axisMargin);
   axisMargin[calLeft] := Max(axisMargin[calLeft], Depth);
   axisMargin[calBottom] := Max(axisMargin[calBottom], Depth);
   for a := Low(a) to High(a) do
     SideByAlignment(FClipRect, a, -axisMargin[a]);
 
   CalculateTransformationCoeffs(GetMargins(ACanvas));
+  for i := 0 to AxisList.Count - 1 do
+    AxisList[i].Measure(ACanvas, FCurrentExtent, false, axisMargin);
 
   // Background
   with ACanvas do begin

@@ -153,7 +153,7 @@ type
       ACanvas: TCanvas; const ACenter: TPoint; var ARect: TRect);
     function IsVertical: Boolean; inline;
     procedure Measure(
-      ACanvas: TCanvas; const AExtent: TDoubleRect;
+      ACanvas: TCanvas; const AExtent: TDoubleRect; AFirstPass: Boolean;
       var AMargins: TChartAxisMargins);
 
   published
@@ -517,27 +517,29 @@ begin
 end;
 
 procedure TChartAxis.Measure(
-  ACanvas: TCanvas; const AExtent: TDoubleRect; var AMargins: TChartAxisMargins);
+  ACanvas: TCanvas; const AExtent: TDoubleRect; AFirstPass: Boolean;
+  var AMargins: TChartAxisMargins);
 
 const
   SOME_DIGIT = '0';
 
   procedure CalcVertSize;
   var
-    i, maxWidth: Integer;
+    i: Integer;
   begin
     if AExtent.a.Y = AExtent.b.Y then exit;
     GetMarkValues(AExtent.a.Y, AExtent.b.Y);
-    maxWidth := 0;
+    FSize := 0;
     for i := 0 to High(FMarkTexts) do
       with Marks.MeasureLabel(ACanvas, FMarkTexts[i]) do
-        maxWidth := Max(cx, maxWidth);
+        FSize := Max(cx, FSize);
     // CalculateTransformationCoeffs changes axis interval, so it is possibile
     // that a new mark longer then existing ones is introduced.
     // That will change marks width and reduce view area,
     // requiring another call to CalculateTransformationCoeffs...
     // So punt for now and just reserve space for extra digit unconditionally.
-    FSize := maxWidth + ACanvas.TextWidth(SOME_DIGIT);
+    if AFirstPass then
+      FSize += ACanvas.TextWidth(SOME_DIGIT);
   end;
 
   procedure CalcHorSize;
