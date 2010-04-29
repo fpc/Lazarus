@@ -7854,7 +7854,7 @@ begin
 
   // OnSelectionChange event
   QListWidget_hook_hook_itemSelectionChanged(FSelectionChangeHook, @signalSelectionChanged);
-  QListWidget_hook_hook_itemClicked(FSelectionChangeHook, @signalItemClicked);
+  QListWidget_hook_hook_itemClicked(FItemClickedHook, @signalItemClicked);
   QListWidget_hook_hook_currentTextChanged(FItemTextChangedHook, @signalItemTextChanged);
 end;
 
