@@ -58,7 +58,7 @@ uses
   Windows, Messages,
   {$ENDIF}
   Classes, Registry, Graphics, SynEditHighlighterFoldBase, SynEditMiscProcs,
-  SynEditTypes, SynEditHighlighter, SynEditTextBuffer,
+  SynEditTypes, SynEditHighlighter, SynEditTextBase, SynEditTextBuffer,
   SynEditStrConst;
 
 type
@@ -414,7 +414,7 @@ type
   protected
     function GetRangeClass: TSynCustomHighlighterRangeClass; override;
     procedure CreateRootCodeFoldBlock; override;
-    function CreateRangeList: TSynHighlighterRangeList; override;
+    function CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList; override;
     function UpdateRangeInfoAtLine(Index: Integer): Boolean; override; // Returns true if range changed
 
     function StartPascalCodeFoldBlock
@@ -3366,7 +3366,7 @@ begin
      cfbtAsm, cfbtRegion];
 end;
 
-function TSynPasSyn.CreateRangeList: TSynHighlighterRangeList;
+function TSynPasSyn.CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList;
 begin
   Result := TSynHighlighterPasRangeList.Create;
 end;

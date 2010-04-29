@@ -31,7 +31,8 @@ interface
 
 uses
   SysUtils, Classes, math, LCLType,
-  SynEditTypes, SynEditTextBuffer, SynEditHighlighter, SynEditHighlighterFoldBase;
+  SynEditTypes, SynEditTextBase, SynEditTextBuffer,
+  SynEditHighlighter, SynEditHighlighterFoldBase;
 
 type
 
@@ -63,7 +64,7 @@ type
     FXmlRangeInfoOpenPos: integer;
     FXmlRangeInfoClosePos: integer;
   protected
-    function  CreateRangeList: TSynHighlighterRangeList; override;
+    function  CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList; override;
     function  UpdateRangeInfoAtLine(Index: Integer): Boolean; override; // Returns true if range changed
 
     function  StartXmlCodeFoldBlock(ABlockType: Integer): TSynCustomCodeFoldBlock;
@@ -87,7 +88,7 @@ implementation
 const
   MaxFoldNestDeep = 500;
 
-function TSynCustomXmlHighlighter.CreateRangeList: TSynHighlighterRangeList;
+function TSynCustomXmlHighlighter.CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList;
 begin
   Result := TSynHighlighterXmlRangeList.Create;
 end;

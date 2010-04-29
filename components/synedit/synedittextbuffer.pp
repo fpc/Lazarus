@@ -90,12 +90,12 @@ type
     function GetAttribute(Index: Integer; Pos: Integer; Size: Word): Pointer;
     function GetAttributeSize: Integer;
     function GetObject(Index: Integer): TObject;
-    function GetRange(Index: TClass): TSynManagedStorageMem;
+    function GetRange(Index: Pointer): TSynManagedStorageMem;
     function GetString(Index: Integer): String;
     procedure SetAttribute(Index: Integer; Pos: Integer; Size: Word; const AValue: Pointer);
     procedure SetAttributeSize(const AValue: Integer);
     procedure SetObject(Index: Integer; const AValue: TObject);
-    procedure SetRange(Index: TClass; const AValue: TSynManagedStorageMem);
+    procedure SetRange(Index: Pointer; const AValue: TSynManagedStorageMem);
     procedure SetString(Index: Integer; const AValue: String);
   protected
     procedure Move(AFrom, ATo, ALen: Integer); override;
@@ -114,7 +114,7 @@ type
       read  GetAttribute write SetAttribute;
     property AttributeSize: Integer read  GetAttributeSize write SetAttributeSize;
 
-    property RangeList[Index: TClass]: TSynManagedStorageMem read GetRange write SetRange;
+    property RangeList[Index: Pointer]: TSynManagedStorageMem read GetRange write SetRange;
   end;
 
   { TSynEditStringList }
@@ -163,8 +163,8 @@ type
     procedure IgnoreSendNotification(AReason: TSynEditNotifyReason;
                                      IncIgnore: Boolean); override;
 
-    function GetRange(Index: TClass): TSynEditStorageMem; override;
-    procedure PutRange(Index: TClass; const ARange: TSynEditStorageMem); override;
+    function GetRange(Index: Pointer): TSynManagedStorageMem; override;
+    procedure PutRange(Index: Pointer; const ARange: TSynManagedStorageMem); override;
     function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; override;
     procedure SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer); override;
     function Get(Index: integer): string; override;
@@ -709,7 +709,7 @@ begin
     Result := nil;
 end;
 
-function TSynEditStringList.GetRange(Index: TClass): TSynEditStorageMem;
+function TSynEditStringList.GetRange(Index: Pointer): TSynManagedStorageMem;
 begin
   Result := FList.RangeList[Index];
 end;
@@ -820,9 +820,9 @@ begin
   EndUpdate;
 end;
 
-procedure TSynEditStringList.PutRange(Index: TClass; const ARange: TSynEditStorageMem);
+procedure TSynEditStringList.PutRange(Index: Pointer; const ARange: TSynManagedStorageMem);
 begin
-  FList.RangeList[Index] := ARange as TSynManagedStorageMem;
+  FList.RangeList[Index] := ARange;
 end;
 
 function TSynEditStringList.GetAttribute(const Owner: TClass; const Index: Integer): Pointer;
@@ -1213,7 +1213,7 @@ begin
   Result := (PObject(Mem + Index * FAttributeSize + SizeOf(String)))^;
 end;
 
-function TSynEditStringMemory.GetRange(Index: TClass): TSynManagedStorageMem;
+function TSynEditStringMemory.GetRange(Index: Pointer): TSynManagedStorageMem;
 begin
   Result := FRangeList[Index];
 end;
@@ -1223,7 +1223,7 @@ begin
   (PObject(Mem + Index * FAttributeSize + SizeOf(String)))^ := AValue;
 end;
 
-procedure TSynEditStringMemory.SetRange(Index: TClass; const AValue: TSynManagedStorageMem);
+procedure TSynEditStringMemory.SetRange(Index: Pointer; const AValue: TSynManagedStorageMem);
 begin
   FRangeList[Index] := AValue;
 
