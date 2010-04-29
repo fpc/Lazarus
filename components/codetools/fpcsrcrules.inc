@@ -8,10 +8,6 @@ Score:=1;
 Add('packages');
 
 Score:=-10;
-Add('compiler');
-Add('ide');
-Add('tests');
-Add('utils');
 Add('packages/libgbafpc/examples');
 Add('packages/ptc/examples');
 Add('packages/ncurses/examples');
