@@ -10,6 +10,8 @@ uses
   Forms
   { add your units here }, MainUnit;
 
+{$R *.res}
+
 begin
   Application.Initialize;
   Application.CreateForm(TCompStreamDemoForm, CompStreamDemoForm);

@@ -43,6 +43,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TCompStreamDemoForm }
 
 procedure TCompStreamDemoForm.WriteToStreamButtonClick(Sender: TObject);
@@ -168,9 +170,6 @@ begin
   else if CompareText(AClassName,'TCheckBox')=0 then
     ComponentClass:=TCheckBox;
 end;
-
-initialization
-  {$I mainunit.lrs}
 
 end.
 
