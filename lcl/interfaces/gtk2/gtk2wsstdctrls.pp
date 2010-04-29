@@ -1044,11 +1044,16 @@ begin
   
   // this should work but may not in all circumstances
   Index := -1;
-  if AWithEntry = False then begin // the current widget HAS an entry
+  if AWithEntry = False then
+  begin // the current widget HAS an entry
     GetText(ACustomComboBox, Text);
-    Index := ACustomComboBox.Items.IndexOf(Text);
+    if Text = '' then
+      Index := -1
+    else
+      Index := ACustomComboBox.Items.IndexOf(Text);
   end;
-  if Index = -1 then Index := GetItemIndex(ACustomComboBox);
+  if Index = -1 then
+    Index := GetItemIndex(ACustomComboBox);
 
   if PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button <> nil then
     FreeWidgetInfo(PGtkComboBoxPrivate(PGtkComboBox(ComboWidget)^.priv)^.button);
@@ -1618,7 +1623,10 @@ begin
   end
   else begin
     // if not an entry it is a readonly list so we will try to comply by matching the text to an item
-    Index := TCustomComboBox(AWinControl).Items.IndexOf(AText);
+    if AText = '' then
+      Index := -1
+    else
+      Index := TCustomComboBox(AWinControl).Items.IndexOf(AText);
     SetItemIndex(TCustomComboBox(AWinControl), Index);
   end;
   Dec(WidgetInfo^.ChangeLock);

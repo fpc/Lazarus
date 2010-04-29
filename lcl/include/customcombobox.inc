@@ -44,8 +44,7 @@ begin
   // and use the interface based list
   FItems:= NewStrings;
 
-  if FItemIndex <> -1 then
-    TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
+  TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
   TWSCustomComboBoxClass(WidgetSetClass).SetStyle(Self, FStyle);
   TWSCustomComboBoxClass(WidgetSetClass).SetArrowKeysTraverseList(Self, FArrowKeysTraverseList);
   TWSCustomComboBoxClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
