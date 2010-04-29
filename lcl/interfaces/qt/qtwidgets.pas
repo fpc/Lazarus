@@ -8667,7 +8667,6 @@ function TQtTreeWidget.CreateWidget(const AParams: TCreateParams):QWidgetH;
 var
   Parent: QWidgetH;
 begin
-  // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Create');
   {$endif}

@@ -159,9 +159,6 @@ begin
     QTextEdit_setAlignment(FQtTextEdit, AlignmentMap[TCustomMemo(FOwner).Alignment]);
     
   FUpdating := False;
-  {FillChar(Mess, SizeOf(Mess), #0);
-  (FOwner as TCustomMemo).Modified := False;
-  FOwner.Dispatch(TLMessage(Mess));}
   IsChanged;
   FUpdating := False;
 end;
