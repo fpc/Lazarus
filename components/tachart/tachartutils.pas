@@ -215,6 +215,7 @@ function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
 function PointDistY(const A, B: TPoint): Integer; inline;
 
+procedure PrepareSimplePen(ACanvas: TCanvas; AColor: TColor);
 procedure PrepareXorPen(ACanvas: TCanvas);
 
 function RectIntersectsRect(
@@ -492,6 +493,16 @@ end;
 function PointDistY(const A, B: TPoint): Integer; inline;
 begin
   Result := Abs(A.Y - B.Y);
+end;
+
+procedure PrepareSimplePen(ACanvas: TCanvas; AColor: TColor);
+begin
+  with ACanvas.Pen do begin
+    Color := AColor;
+    Style := psSolid;
+    Mode := pmCopy;
+    Width := 1;
+  end;
 end;
 
 procedure PrepareXorPen(ACanvas: TCanvas);

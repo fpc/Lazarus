@@ -553,9 +553,7 @@ end;
 
 procedure TChart.Clean(ACanvas: TCanvas; ARect: TRect);
 begin
-  ACanvas.Pen.Mode := pmCopy;
-  ACanvas.Pen.Style := psSolid;
-  ACanvas.Pen.Color := Color;
+  PrepareSimplePen(ACanvas, Color);
   ACanvas.Brush.Color := Color;
   ACanvas.Brush.Style := bsSolid;
   ACanvas.Rectangle(ARect);

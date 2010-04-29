@@ -366,12 +366,8 @@ var
   procedure DrawLabelAndTick(const ALabelRect, ATickRect: TRect; const AText: String);
   begin
     if Marks.IsLabelHiddenDueToOverlap(prevLabelRect, ALabelRect) then exit;
-
-    ACanvas.Pen.Color := TickColor;
-    ACanvas.Pen.Style := psSolid;
-    ACanvas.Pen.Mode := pmCopy;
+    PrepareSimplePen(ACanvas, TickColor);
     ACanvas.Line(ATickRect);
-
     Marks.DrawLabel(ACanvas, ALabelRect, AText);
   end;
 

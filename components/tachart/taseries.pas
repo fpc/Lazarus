@@ -690,9 +690,6 @@ begin
 
   FBarPen := TPen.Create;
   FBarPen.OnChange := @StyleChanged;
-  FBarPen.Mode := pmCopy;
-  FBarPen.Style := psSolid;
-  FBarPen.Width := 1;
   FBarPen.Color := clBlack;
   FBarBrush.Color := clRed;
 end;
