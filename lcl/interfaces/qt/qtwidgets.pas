@@ -373,6 +373,7 @@ type
     FFrameOnlyAroundContents: Boolean;
     FCornerWidget: TQtWidget;
     FViewPortWidget: TQtViewPort;
+    FResizing: Boolean; // guarantees clientRect in sync
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -10473,6 +10474,7 @@ begin
   {$endif}
   FHasPaint := True;
   FViewPortWidget := nil;
+  FResizing := False;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -10523,6 +10525,11 @@ begin
      (ClassType = TQtCustomControl) then
     Result := False
   else
+  if QEvent_type(Event) = QEventResize then
+  begin
+    FResizing := True; // be sure that getClientBounds returns correct
+    Result := inherited EventFilter(Sender, Event);
+  end else
   if QEvent_type(Event) = QEventWheel then
   begin
     if not horizontalScrollBar.getVisible and not verticalScrollBar.getVisible then
@@ -10568,6 +10575,8 @@ begin
     QEventPaint:
     begin
       retval^ := True;
+      if FResizing and (QEvent_type(Event) = QEventResize) then
+        FResizing := False;
       viewport.EventFilter(viewport.Widget, Event);
       QEvent_ignore(Event);
     end;
@@ -10664,7 +10673,19 @@ end;
 
 function TQtCustomControl.getClientBounds: TRect;
 begin
-  QWidget_rect(viewportWidget, @Result);
+  if FResizing then
+  begin
+    QWidget_contentsRect(Widget, @Result);
+    if not FFrameOnlyAroundContents then
+    begin
+      if (verticalScrollBar.getVisibleTo(Widget)) then
+        dec(Result.Right, verticalScrollBar.getWidth);
+
+     if (horizontalScrollBar.getVisibleTo(Widget)) then
+       dec(Result.Bottom, horizontalScrollBar.getHeight);
+    end;
+  end else
+    QWidget_rect(viewportWidget, @Result);
 end;
 
 procedure TQtCustomControl.grabMouse;
