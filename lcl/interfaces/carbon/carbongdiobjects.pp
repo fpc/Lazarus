@@ -1607,6 +1607,7 @@ var
   RGBA: array[0..3] of Single;
   AROP2: Integer;
   APatternSpace: CGColorSpaceRef;
+  BaseSpace : CGColorSpaceRef;
 begin
   if ADC = nil then Exit;
   if ADC.CGContext = nil then Exit;
@@ -1625,11 +1626,17 @@ begin
 
   if FCGPattern <> nil then
   begin
-    APatternSpace := CGColorSpaceCreatePattern(nil);
+    if not FColored then
+      BaseSpace:=CGColorSpaceCreateDeviceRGB
+    else
+    begin
+      BaseSpace:=nil;
+      RGBA[0] := 1.0;
+    end;
+    APatternSpace := CGColorSpaceCreatePattern(BaseSpace);
     CGContextSetFillColorSpace(ADC.CGContext, APatternSpace);
     CGColorSpaceRelease(APatternSpace);
-    if FColored then
-      RGBA[0] := 1.0;
+    if Assigned(BaseSpace) then CGColorSpaceRelease(BaseSpace);
     CGContextSetFillPattern(ADC.CGcontext, FCGPattern, @RGBA[0]);
   end
   else
