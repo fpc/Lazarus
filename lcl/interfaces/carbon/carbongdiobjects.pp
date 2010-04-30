@@ -972,21 +972,19 @@ var
   Buffer  : TCarbonTextLayoutBuffer;
   Handled : Boolean;
 begin
+  Result := noErr;
   Buffer := TCarbonTextLayoutBuffer(iRefCon);
-  if not Assigned(Buffer) then
-    Result := noErr
-  else
+  oCallbackStatus:=kATSULayoutOperationCallbackStatusHandled;
+
+  if Assigned(Buffer) then
   begin
     Handled := false;
     Buffer.DoJustify(iLineRef, Handled);
-    Result := noErr;
+    if Handled then oCallbackStatus:=kATSULayoutOperationCallbackStatusHandled;
   end;
 end;
 
 procedure TCarbonTextLayoutBuffer.DoJustify(iLineRef: ATSULineRef; var Handled: Boolean);
-type
-  TFixedArray = array [Word] of Fixed;
-  PFixedArray = ^TFixedArray;
 type
 	ATSLayoutRecord1 = packed record
 		glyphID: ATSGlyphRef;
@@ -999,34 +997,26 @@ type
   TATSLayoutRecordArray = array [Word] of ATSLayoutRecord1;
   PATSLayoutRecordArray = ^TATSLayoutRecordArray;
 var
-  Deltas  : PFixedArray;
   Count   : ItemCount;
   i, ofs  : Integer;
   Layouts   : PATSLayoutRecordArray;
   LayCount  : ItemCount;
 begin
   if not Assigned(FDX) or (FDXCount=0) then Exit;
-{ if idx < FDXCount then
-  begin}
-  Layouts:=nil;
   Laycount:=0;
   ATSUDirectGetLayoutDataArrayPtrFromLineRef( iLineRef,
     kATSUDirectDataLayoutRecordATSLayoutRecordVersion1, true, @Layouts, Laycount);
-  ATSUDirectGetLayoutDataArrayPtrFromLineRef (iLineRef,
-    kATSUDirectDataAdvanceDeltaFixedArray, true, @Deltas, Count);
   if Assigned(Layouts) and (Laycount>0) then
   begin
     ofs:=0;
     for i:=0 to Min(FDXCount, Min(LayCount, Count))-1 do
     begin
-      Deltas^[i] := Layouts^[i].realPos-Long2Fix(ofs);
       Layouts^[i].realPos:=Long2Fix(ofs);
       inc(ofs, FDX[i]);
     end;
   end;
   ATSUDirectReleaseLayoutDataArrayPtr(iLineRef, kATSUDirectDataLayoutRecordATSLayoutRecordCurrent, @Layouts );
-  ATSUDirectReleaseLayoutDataArrayPtr(iLineRef, kATSUDirectDataAdvanceDeltaFixedArray, @Deltas);
-//  end;
+  Handled:=True;
 end;
 
 function TCarbonTextLayoutBuffer.Draw(X, Y: Integer; Dx: PInteger; DXCount: Integer): Boolean;
