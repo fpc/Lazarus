@@ -564,10 +564,13 @@ type
   TQtGroupBox = class(TQtWidget)
   private
     FGroupBoxType: TQtGroupBoxType;
+    FCWEventHook: QObject_hookH;
     procedure setLayoutThemeMargins(ALayout: QLayoutH; AWidget: QWidgetH);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
     function CanPaintBackground: Boolean; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getText: WideString; override;
@@ -5050,6 +5053,26 @@ begin
   QWidget_setAttribute(Result, QtWA_LayoutOnEntireRect, True);
 end;
 
+procedure TQtGroupBox.AttachEvents;
+begin
+  inherited AttachEvents;
+  if FCentralWidget <> nil then
+  begin
+    FCWEventHook := QObject_hook_create(FCentralWidget);
+    QObject_hook_hook_events(FCWEventHook, @EventFilter);
+  end;
+end;
+
+procedure TQtGroupBox.DetachEvents;
+begin
+  if FCWEventHook <> nil then
+  begin
+    QObject_hook_destroy(FCWEventHook);
+    FCWEventHook := nil;
+  end;
+  inherited DetachEvents;
+end;
+
 function TQtGroupBox.CanPaintBackground: Boolean;
 begin
   Result := CanSendLCLMessage and getEnabled and
@@ -5067,6 +5090,14 @@ begin
   QEvent_accept(Event);
   if LCLObject = nil then
     exit;
+
+  if (Sender = FCentralWidget) then
+  begin
+    if (QEvent_type(Event) = QEventResize) and
+      LCLObject.ClientRectNeedsInterfaceUpdate then
+        LCLObject.InvalidateClientRectCache(False);
+    exit;
+  end;
 
   case QEvent_type(Event) of
     QEventFontChange,
