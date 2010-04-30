@@ -2819,7 +2819,25 @@ begin
 end;
 
 procedure TPascalParserTool.ReadVariableType;
-// creates nodes for variable type
+{ creates nodes for variable type
+
+  examples:
+
+    interface
+      var a:b;
+        a:b; cvar;
+        a:b; public name 'string constant';
+        a:b; public name <id>;
+        a:b; external name 'string constant';
+        a:b; cvar; external;
+        a:b; external 'library' name 'avar';
+
+    implementation
+
+    procedure c;
+    var d:e;
+      f:g=h;
+}
 begin
   ReadNextAtom;
   ParseType(CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
@@ -2867,13 +2885,14 @@ begin
     // examples:
     //   a: b; public;
     //   a: b; external;
-    //   a: b; external name 'c';
     //   a: b; external c;
+    //   a: b; external name 'c';
+    //   a: b; external 'library' name 'c';
     if UpAtomIs('EXTERNAL') then begin
       // read external identifier
       ReadNextAtom;
-      if (not UpAtomIs('NAME')) and AtomIsIdentifier(false) then
-        ReadConstant(true,false,[]);
+      if (CurPos.Flag<>cafSemicolon) and (not UpAtomIs('NAME')) then
+        ReadConstant(true,false,[]); // library name
     end else
       ReadNextAtom;
     if UpAtomIs('NAME') then begin
@@ -3064,6 +3083,7 @@ function TPascalParserTool.KeyWordFuncVar: boolean;
         a:b; public name <id>;
         a:b; external name 'string constant';
         a:b; cvar; external;
+        a:b; external 'library' name 'avar';
 
     implementation
 
