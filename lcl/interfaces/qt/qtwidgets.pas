@@ -214,11 +214,11 @@ type
     function isMaximized: Boolean;
     function IsWindow: Boolean;
     procedure lowerWidget; virtual;
-    procedure move(ANewLeft, ANewTop: Integer);
+    procedure move(ANewLeft, ANewTop: Integer); virtual;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual;
     procedure raiseWidget; virtual;
     procedure frame_resize(ANewWidth, ANewHeight: Integer);
-    procedure resize(ANewWidth, ANewHeight: Integer);
+    procedure resize(ANewWidth, ANewHeight: Integer); virtual;
     procedure releaseMouse;
     procedure scroll(dx, dy: integer; ARect: PRect = nil); virtual;
     procedure setAutoFillBackground(const AValue: Boolean);
@@ -234,7 +234,7 @@ type
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); virtual;
     procedure setFocusProxy(const AWidget: QWidgetH);
     procedure setFont(AFont: QFontH);
-    procedure setGeometry(ARect: TRect); overload;
+    procedure setGeometry(ARect: TRect); virtual;
     procedure setLayoutDirection(ADirection: QtLayoutDirection);
     procedure setMaximumSize(AWidth, AHeight: Integer);
     procedure setMask(AMask: QBitmapH); overload;
@@ -1437,6 +1437,12 @@ type
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+
+    // QRubberBand have it's own move,resize and setGeometry
+    procedure move(ANewLeft, ANewTop: Integer); override;
+    procedure resize(ANewWidth, ANewHeight: Integer); override;
+    procedure setGeometry(ARect: TRect); override;
+
     function getShape: QRubberBandShape;
     procedure setShape(AShape: QRubberBandShape);
   end;
@@ -11520,6 +11526,21 @@ constructor TQtRubberBand.Create(const AWinControl: TWinControl;
 begin
   FShape := QRubberBandLine;
   inherited Create(AWinControl, AParams);
+end;
+
+procedure TQtRubberBand.move(ANewLeft, ANewTop: Integer);
+begin
+  QRubberBand_move(QRubberBandH(Widget), ANewLeft, ANewTop);
+end;
+
+procedure TQtRubberBand.resize(ANewWidth, ANewHeight: Integer);
+begin
+  QRubberBand_resize(QRubberBandH(Widget), ANewWidth, ANewHeight);
+end;
+
+procedure TQtRubberBand.setGeometry(ARect: TRect);
+begin
+  QRubberBand_setGeometry(QRubberBandH(Widget), @ARect);
 end;
 
 function TQtRubberBand.getShape: QRubberBandShape;
