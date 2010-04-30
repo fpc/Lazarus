@@ -825,6 +825,7 @@ begin
   fAllMissingUnits.Free;
   fCachedRealUnitNames.Free;
   fCachedUnitNames.Free;
+  FreeAndNil(fSettings);
   inherited Destroy;
 end;
 
@@ -1143,17 +1144,21 @@ var
   PasFile, RelPath, SubPath, sUnitName: String;
 begin
   PasFileList:=FindAllFiles(APath,'*.pas',true);
-  for i:=0 to PasFileList.Count-1 do begin
-    PasFile:=PasFileList[i];
-    RelPath:=FileUtil.CreateRelativePath(PasFile, ABasePath);
-    SubPath:=ExtractFilePath(RelPath);
-    sUnitName:=ExtractFileNameOnly(RelPath);
-    if (SubPath<>'') and (sUnitName<>'') then begin
-      // Map path by unit name.
-      fCachedUnitNames[sUnitName]:=SubPath;
-      // Map real unit name by uppercase unit name.
-      fCachedRealUnitNames[UpperCase(sUnitName)]:=sUnitName;
+  try
+    for i:=0 to PasFileList.Count-1 do begin
+      PasFile:=PasFileList[i];
+      RelPath:=FileUtil.CreateRelativePath(PasFile, ABasePath);
+      SubPath:=ExtractFilePath(RelPath);
+      sUnitName:=ExtractFileNameOnly(RelPath);
+      if (SubPath<>'') and (sUnitName<>'') then begin
+        // Map path by unit name.
+        fCachedUnitNames[sUnitName]:=SubPath;
+        // Map real unit name by uppercase unit name.
+        fCachedRealUnitNames[UpperCase(sUnitName)]:=sUnitName;
+      end;
     end;
+  finally
+    PasFileList.Free;
   end;
 end;
 
