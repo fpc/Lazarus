@@ -5865,7 +5865,7 @@ begin
   Result:=TFPCSourceRule.Create;
   Result.Score:=Score;
   Result.Targets:=Targets;
-  DebugLn(['TFPCSourceRules.Add Targets="',Result.Targets,'" Priority=',Result.Score]);
+  //DebugLn(['TFPCSourceRules.Add Targets="',Result.Targets,'" Priority=',Result.Score]);
   Result.Filename:=SetDirSeparators(Filename);
   FItems.Add(Result);
 end;

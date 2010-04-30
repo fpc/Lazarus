@@ -658,11 +658,11 @@ end;
 
 procedure TIDEWindowLayout.ReadCurrentCoordinates;
 begin
-  if Form<>nil then begin
-    Left:=Form.RestoredLeft;
-    Top:=Form.RestoredTop;
-    Width:=Form.RestoredWidth;
-    Height:=Form.RestoredHeight;
+  if (Form<>nil) and (Form.WindowState=wsNormal) then begin
+    Left:=Form.Left;
+    Top:=Form.Top;
+    Width:=Form.Width;
+    Height:=Form.Height;
   end;
 end;
 
