@@ -637,8 +637,9 @@ function RunFPCVerbose(const CompilerFilename, TestFilename: string;
 function GatherUnitsInSearchPaths(SearchPaths: TStrings;
                     const OnProgress: TDefinePoolProgress): TStringToStringTree;
 function GatherUnitsInFPCSources(Files: TStringList;
-                             TargetOS: string = ''; TargetCPU: string = '';
-                             Rules: TFPCSourceRules = nil): TStringToStringTree;
+                   TargetOS: string = ''; TargetCPU: string = '';
+                   ConflictFilenames: TStringList = nil; // every line is semicolon separated list of files
+                   Rules: TFPCSourceRules = nil): TStringToStringTree;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
@@ -1090,7 +1091,8 @@ begin
 end;
 
 function GatherUnitsInFPCSources(Files: TStringList; TargetOS: string;
-  TargetCPU: string; Rules: TFPCSourceRules): TStringToStringTree;
+  TargetCPU: string; ConflictFilenames: TStringList;
+  Rules: TFPCSourceRules): TStringToStringTree;
 
   function CountMatches(Targets, aTxt: PChar): integer;
   // check how many of the comma separated words in Targets are in words of aTxt
@@ -1159,7 +1161,8 @@ begin
   try
     // get Score rules for duplicate units
     Rules.GetRulesForTargets(Targets,TargetRules);
-    //DebugLn(['GatherUnitsInFPCSources ',Rules.GetScore('tests/tbs/tb0001.pp',TargetRules)]);
+    //DebugLn(['GatherUnitsInFPCSources ',Rules.GetScore('packages/h',TargetRules)]);
+    //exit;
 
     if (TargetRules<>nil) and (TargetRules.Count=0) then
       FreeAndNil(TargetRules);
@@ -1227,8 +1230,10 @@ begin
     while Node<>Nil do begin
       Link:=TUnitNameLink(Node.Data);
       Result[Link.Unit_Name]:=Link.Filename;
-      if (Link.ConflictFilename<>'') and (Link.Score>=0) then begin
+      if (Link.ConflictFilename<>'') and (Link.Score>0) then begin
         DebugLn(['GatherUnitsInFPCSources Ambiguous: ',Link.Score,' ',Link.Filename,' ',Link.ConflictFilename]);
+        if ConflictFilenames<>nil then
+          ConflictFilenames.Add(Link.Filename+';'+Link.ConflictFilename);
       end;
       Node:=Links.FindSuccessor(Node);
     end;
@@ -5905,6 +5910,7 @@ var
   cmp: LongInt;
 begin
   Result:=0;
+  if Filename='' then exit;
   {Node:=RulesSortedForFilenameStart.FindLowest;
   while Node<>nil do begin
     Rule:=TFPCSourceRule(Node.Data);
@@ -5935,14 +5941,13 @@ begin
     end;
   end;
   // run through all fitting rules (the Filename is >= Rule.Filename)
-  if Rule.FitsFilename(Filename) then
-    inc(Result,Rule.Score);
   while Node<>nil do begin
+    Rule:=TFPCSourceRule(Node.Data);
+    if Rule.Filename[1]<>Filename[1] then exit;
+    if Rule.FitsFilename(Filename) then
+      inc(Result,Rule.Score);
     Node:=RulesSortedForFilenameStart.FindPrecessor(Node);
     if Node=nil then exit;
-    Rule:=TFPCSourceRule(Node.Data);
-    if not Rule.FitsFilename(Filename) then exit;
-    inc(Result,Rule.Score);
   end;
 end;
 
