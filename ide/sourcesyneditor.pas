@@ -54,7 +54,9 @@ type
     function CreateGutter(AOwner : TSynEditBase; AFoldedLinesView: TSynEditFoldedView;
                           ATextDrawer: TheTextDrawer): TSynGutter; override;
   public
+    function TextIndexToViewPos(aTextIndex : Integer) : Integer;
     property IDEGutterMarks: TIDESynGutterMarks read GetIDEGutterMarks;
+    property TopView;
     property TextBuffer;
   end;
 
@@ -116,6 +118,11 @@ function TIDESynEditor.CreateGutter(AOwner: TSynEditBase;
   AFoldedLinesView: TSynEditFoldedView; ATextDrawer: TheTextDrawer): TSynGutter;
 begin
   Result := TIDESynGutter.Create(AOwner, AFoldedLinesView, ATextDrawer);
+end;
+
+function TIDESynEditor.TextIndexToViewPos(aTextIndex: Integer): Integer;
+begin
+  Result := TextView.TextIndexToViewPos(aTextIndex - 1);
 end;
 
 { TIDESynGutter }

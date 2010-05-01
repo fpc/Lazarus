@@ -12600,11 +12600,16 @@ begin
           SearchResultsView.ShowOnTop;
           SourceEditorManager.ShowActiveWindowOnTop(True);
         end;
-        SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
-        if not SrcEdit.IsLocked then
-          SrcEdit.CenterCursor(True);
-        with SrcEdit.EditorComponent do begin
-          LeftChar:= Math.Max(LogCaretXY.X-CharsInWindow,1);
+        try
+          SrcEdit.BeginUpdate;
+          SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
+          if not SrcEdit.IsLocked then
+            SrcEdit.CenterCursor(True);
+          with SrcEdit.EditorComponent do begin
+            LeftChar:= Math.Max(LogCaretXY.X-CharsInWindow,1);
+          end;
+        finally
+          SrcEdit.EndUpdate;
         end;
         SrcEdit.ErrorLine:=LogCaretXY.Y;
       end;
@@ -13895,17 +13900,20 @@ begin
   if NewX<1 then NewX:=1;
   if NewY<1 then NewY:=1;
   //debugln(['[TMainIDE.DoJumpToCodePos] ',NewX,',',NewY,',',NewTopLine]);
-  with NewSrcEdit.EditorComponent do 
-  begin
-    MoveLogicalCaretIgnoreEOL(Point(NewX,NewY));
+  try
+    NewSrcEdit.BeginUpdate;
+    NewSrcEdit.EditorComponent.MoveLogicalCaretIgnoreEOL(Point(NewX,NewY));
     if not NewSrcEdit.IsLocked then begin
       if NewTopLine < 1 then
         NewSrcEdit.CenterCursor(True)
       else
-        TopLine:=NewTopLine;
+        NewSrcEdit.TopLine:=NewTopLine;
     end;
     //DebugLn('TMainIDE.DoJumpToCodePos NewY=',dbgs(NewY),' ',dbgs(TopLine),' ',dbgs(NewTopLine));
-    LeftChar:=Max(NewX-CharsInWindow,1);
+    with NewSrcEdit.EditorComponent do
+      LeftChar:=Max(NewX - CharsInWindow, 1);
+  finally
+    NewSrcEdit.EndUpdate;
   end;
   if MarkLine then
     NewSrcEdit.ErrorLine := NewY;
@@ -14994,9 +15002,14 @@ begin
 
   SourceEditorManager.ActiveEditor := AnEditor;
   SourceEditorManager.ShowActiveWindowOnTop(True);
-  AnEditor.EditorComponent.GotoBookMark(ID);
-  if not AnEditor.IsLocked then
-    AnEditor.CenterCursor(True);
+  try
+    AnEditor.BeginUpdate;
+    AnEditor.EditorComponent.GotoBookMark(ID);
+    if not AnEditor.IsLocked then
+      AnEditor.CenterCursor(True);
+  finally
+    AnEditor.EndUpdate;
+  end;
 end;
 
 //this is fired when the editor is focused, changed, ?.  Anything that causes the status change

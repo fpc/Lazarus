@@ -1198,6 +1198,16 @@ implementation
 
 {$R *.lfm}
 
+const
+  (* SoftCenter are th visible Lines in the Editor where the caret can be locateted,
+     without CenterCursor adjusting the topline.
+     SoftCenter is defined by the amount of lines on the top/bottom of fthe editor,
+     which are *not* part of it.
+  *)
+  SoftCenterFactor  = 5;  // One fifth of the "LinesInWindow"on each side (top/bottom)
+  SoftCenterMinimum = 1;
+  SoftCenterMaximum = 8;
+
 var
   SourceCompletionTimer: TIdleTimer = nil;
   SourceCompletionCaretXY: TPoint;
@@ -4250,16 +4260,21 @@ end;
 -------------------------------------------------------------------------------}
 procedure TSourceEditor.CenterCursor(SoftCenter: Boolean = False);
 var
-  NewTopLine: integer;
-  Y, CurTopLine, LinesInWin, MinLines: Integer;
+  Y, CurTopLine, LinesInWin, MinLines, NewTopLine: Integer;
 begin
+  LinesInWin := EditorComponent.LinesInWindow;
+  CurTopLine := EditorComponent.TopView;
+  Y := EditorComponent.TextIndexToViewPos(EditorComponent.CaretY);
+
   if SoftCenter then begin
-    CurTopLine := EditorComponent.TopLine;
-    LinesInWin := EditorComponent.LinesInWindow;
-    MinLines := Min(Max(LinesInWin div 5, 1), 5);
-    Y := EditorComponent.CaretY;
-    if (Y <= CurTopLine) or (Y >= CurTopLine + LinesInWin)
-    then
+    MinLines := Min(
+      Min( Max(LinesInWin div SoftCenterFactor, SoftCenterMinimum),
+           SoftCenterMaximum),
+      Max(LinesInWin div 2 - 1, 0) // make sure there is at least one line in the soft center
+      );
+
+    if (Y <= CurTopLine) or (Y >= CurTopLine + LinesInWin) then
+      // Caret not yet visible => hard-center
       NewTopLine := Max(1, Y - (LinesInWin div 2))
     else
     if Y < CurTopLine + MinLines then
@@ -4271,9 +4286,11 @@ begin
       NewTopLine := CurTopLine;
   end
   else
-    NewTopLine:=EditorComponent.CaretY-((EditorComponent.LinesInWindow-1) div 2);
-  if NewTopLine<1 then NewTopLine:=1;
-  EditorComponent.TopLine:=NewTopLine;
+    // not using SoftCenter
+    NewTopLine := Max(1, Y - (LinesInWin div 2));
+
+  if NewTopLine < 1 then NewTopLine := 1;
+  EditorComponent.TopView := NewTopLine;
 end;
 
 function TSourceEditor.TextToScreenPosition(const Position: TPoint): TPoint;
@@ -4404,16 +4421,23 @@ end;
 
 function TSourceEditor.IsCaretOnScreen(ACaret: TPoint; UseSoftCenter: Boolean = False): Boolean;
 var
-  LinesInWin, MinLines: Integer;
+  LinesInWin, MinLines, CurTopLine, Y: Integer;
 begin
+  LinesInWin := EditorComponent.LinesInWindow;
+  CurTopLine := EditorComponent.TopView;
+  Y := EditorComponent.TextIndexToViewPos(EditorComponent.CaretY);
   if UsesoftCenter then begin
-    LinesInWin := EditorComponent.LinesInWindow;
-    MinLines := Min(Max(LinesInWin div 5, 1), 5);
+    MinLines := Min(
+      Min( Max(LinesInWin div SoftCenterFactor, SoftCenterMinimum),
+           SoftCenterMaximum),
+      Max(LinesInWin div 2 - 1, 0) // make sure there is at least one line in the soft center
+      );
   end
   else
     MinLines := 0;
-  Result := (ACaret.y >= FEditor.TopLine + MinLines) and
-            (ACaret.Y <= FEditor.TopLine + FEditor.LinesInWindow - MinLines) and
+
+  Result := (Y >= CurTopLine + MinLines) and
+            (Y <= CurTopLine + LinesInWin - MinLines) and
             (ACaret.X >= FEditor.LeftChar) and
             (ACaret.X <= FEditor.LeftChar + FEditor.CharsInWindow);
 end;
