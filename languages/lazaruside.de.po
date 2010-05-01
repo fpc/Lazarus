@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-28 21:49+0100\n"
+"PO-Revision-Date: 2010-05-01 16:53+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -985,19 +985,19 @@ msgstr "Umkehren"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionignlockedoldedit
 msgid "Ignore Locks, longest unused editor"
-msgstr ""
+msgstr "Sperren übergehen, am längsten unbenutzter Editor"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionignlockedonlyactedit
 msgid "Ignore Locks, if editor is current"
-msgstr ""
+msgstr "Sperren übergehen,  wenn im aktuellen Editor"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionignlockedonlyactwin
 msgid "Ignore Locks, if editor in current window"
-msgstr ""
+msgstr "Sperren übergehen, wenn Editor im aktuellen Fenster"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionlockedinview
 msgid "Locked, if text in view"
-msgstr ""
+msgstr "Gesperrt wenn Text sichtbar ist"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlocked
 msgid "Unlocked"
@@ -1005,7 +1005,7 @@ msgstr "Entsperrt"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlockedinsoftview
 msgid "Unlocked, if text in centered view"
-msgstr ""
+msgstr "Entsperrt wenn Text im Zentrum des Ausschnitts"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinanywin
 msgid "New tab, existing or new window"
@@ -1021,39 +1021,39 @@ msgstr "Neuer Reiter in vorhandenem Fenster"
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedoldedit
 msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. This always looks at the editor, never the window, to find the longest unused. This option will always succeed, further options are never tested."
-msgstr ""
+msgstr "Diese Option wählt den am längsten freien Editor für die Datei und zwar selbst dann, wenn er gesperrt ist oder wenn gescrollt werden muß. Das bezieht sich auf den Editor und nicht auf das Fenster um den am längsten ungenutzten zu finden. Diese Option hat immer Erfolg, andere werden nicht mehr geprüft."
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedonlyactedit
 msgid "This option will check if the current active editor has the target file and if it is, it will use the current editor, even if it is locked and/or needs scrolling."
-msgstr ""
+msgstr "Diese Option prüft, ob die Zieldatei im derzeit aktiven Editor ist. Falls ja wird dieser genutzt, selbst wenn er gesperrt ist oder wenn er scrollen muß."
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedonlyactwin
 msgid "This option will check if there is an editor for the target file in the current window and if there is, it will use this editor, even if it is locked and/or needs scrolling."
-msgstr ""
+msgstr "Diese Option prüft, ob es im aktuellen Fenster einen Editor für die Zieldatei gibt und falls ja, wird dieser Editor genommen, selbst wenn er gesperrt ist oder wenn gescrollt werden muß."
 
 #: lazarusidestrconsts.dlgeditaccessdesclockedinview
 msgid "This option will use a locked (and only a locked) Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen area)."
-msgstr ""
+msgstr "Diese Option wählt einen gesperrten Editor, der das Sprungziel ohne Scrollen darstellen kann (das Ziel ist bereits im angezeigten Bildschirmbereich)."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlocked
 msgid "This option will use any not locked Editor."
-msgstr ""
+msgstr "Diese Option wählt einen beliebigen nicht-gesperrten Editor."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedinsoftview
 msgid "This option will use a not locked Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)."
-msgstr ""
+msgstr "Diese Option wählt einen nicht gesperrten Editor der ohne scrollen den Zielsprungpunkt anzeigen kann (das Ziel befindet sich bereits in der Mitte des sichtbaren Bereichs, nicht in den ersten/letzten 2-5 Zeilen)."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinanywin
 msgid "This option will open a new Tab in an existing or new Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
-msgstr ""
+msgstr "Diese Option öffnet einen neuen Reiter in einem vorhandenen oder neuen Fenster falls kein entsperrter Reiter gefunden wurde. Diese Option hat immer Erfolg und es werden keine weiteren Optionen mehr geprüft."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinnewwin
 msgid "This option will open a new Tab in a new (and always in a new) Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
-msgstr ""
+msgstr "Diese Option öffnet einen neuen Reiter immer in einem neuen Fenster falls kein entsperrter Reiter gefunden wurde. Diese Option hat immer Erfolg und es werden keine weiteren Optionen geprüft."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinoldwin
 msgid "This option will open a new Tab in an existing (and only in an existing) Window, if no unlocked tab is found. A tab is only opened if a window exists, that has not yet an editor for the target file."
-msgstr ""
+msgstr "Diese Option öffnet einen neuen Reiter in einem vorhandenen Fenster, falls kein entsperrter Reiter gefunden wird. Ein Reiter wird nur geöffnet, wenn ein Fenster verfügbar ist, das noch keinen Editor für die Zieldatei enthält."
 
 #: lazarusidestrconsts.dlgedital
 msgid "Italic"
@@ -2106,23 +2106,23 @@ msgstr "Mehrfachauswahl"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
 msgid "Find editor for jump targets:"
-msgstr "Editor für Sprungziele finden:"
+msgstr "Editorauswahl für Sprungziele:"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
 msgid "Order to use for editors matching the same criteria"
-msgstr ""
+msgstr "Reihenfolge für Editoren, für die die selben Kriterien gelten"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorderedit
 msgid "Most recent focused editor for this file"
-msgstr ""
+msgstr "Zuletzt fokussierter Editor für die Datei"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorderwin
 msgid "Editor (for file) in most recent focused window"
-msgstr ""
+msgstr "Editor (für die Datei) der zuletzt den Fokus hatte"
 
 #: lazarusidestrconsts.dlgmultiwinaccesstype
 msgid "Priority list of criteria to choose an editor:"
-msgstr ""
+msgstr "Kriterieren, nach denen ein Editor ausgewählt wird:"
 
 #: lazarusidestrconsts.dlgmultiwinoptions
 msgid "Pages and Windows"
@@ -2130,7 +2130,7 @@ msgstr "Seiten und Fenster"
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
 msgid "Notebook Tabs:"
-msgstr ""
+msgstr "Notebook-Reiter:"
 
 #: lazarusidestrconsts.dlgnaming
 msgid "Naming"
@@ -2749,7 +2749,7 @@ msgstr "Vorlagendateiname"
 
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim Spaces Style"
-msgstr "Leerzeichen-Abschneidungsmodus"
+msgstr "Leerzeichenbehandlung"
 
 #: lazarusidestrconsts.dlgtrimspacetypecaretmove
 msgid "Caret or Edit"
@@ -4603,7 +4603,7 @@ msgstr "Suche nach unbenannten Zeichenkonstanten"
 
 #: lazarusidestrconsts.liscodeobserver
 msgid "Code Observer"
-msgstr "Codeüberwacher (Code Observer)"
+msgstr "Codeüberwachung (Code Observer)"
 
 #: lazarusidestrconsts.liscodeobsignoreeconstants
 msgctxt "lazarusidestrconsts.liscodeobsignoreeconstants"
@@ -4744,7 +4744,7 @@ msgstr "%s Verzeichnis"
 #: lazarusidestrconsts.liscodetoolsdefsedit
 msgctxt "lazarusidestrconsts.liscodetoolsdefsedit"
 msgid "Edit"
-msgstr "Editieren"
+msgstr "Bearbeiten"
 
 #: lazarusidestrconsts.liscodetoolsdefselse
 msgid "Else"
@@ -6935,7 +6935,7 @@ msgstr "Hinweis: Prüfen Sie, ob zwei Packages Units mit gleichen Namen enthalte
 
 #: lazarusidestrconsts.lishintdoubleclickonthecommandyouwanttoedit
 msgid "Hint: double click on the command you want to edit"
-msgstr ""
+msgstr "Hinweis: Klicken Sie auf den Befehl, den Sie bearbeiten wollen"
 
 #: lazarusidestrconsts.lishintopen
 msgctxt "lazarusidestrconsts.lishintopen"
@@ -9214,7 +9214,7 @@ msgstr "Standard-Hilfemenü"
 #: lazarusidestrconsts.lismenutemplateedit
 msgctxt "lazarusidestrconsts.lismenutemplateedit"
 msgid "Edit"
-msgstr "Editieren"
+msgstr "Bearbeiten"
 
 #: lazarusidestrconsts.lismenutemplateexit
 msgctxt "lazarusidestrconsts.lismenutemplateexit"
@@ -15056,7 +15056,7 @@ msgstr "Auswahl einschließen"
 
 #: lazarusidestrconsts.uemencoding
 msgid "Encoding"
-msgstr "Kodieren"
+msgstr "Zeichenkodierung"
 
 #: lazarusidestrconsts.uemevaluatemodify
 msgid "&Evaluate/Modify..."
