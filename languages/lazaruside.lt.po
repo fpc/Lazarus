@@ -982,7 +982,7 @@ msgid "Invert"
 msgstr "Invertuoti"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionignlockedoldedit
-msgid "Ignore Locks, longest unused editor"
+msgid "Ignore Locks, use longest unused editor"
 msgstr ""
 
 #: lazarusidestrconsts.dlgeditaccesscaptionignlockedonlyactedit
@@ -1018,7 +1018,7 @@ msgid "New tab in existing window"
 msgstr ""
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedoldedit
-msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. This always looks at the editor, never the window, to find the longest unused. This option will always succeed, further options are never tested."
+msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. The determination of the longest unused editor does not look at the order in which the windows were focused, even if this is set by the setting for \"same criteria order\". This option will always succeed, further options are never tested."
 msgstr ""
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedonlyactedit
@@ -1046,11 +1046,11 @@ msgid "This option will open a new Tab in an existing or new Window, if no unloc
 msgstr ""
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinnewwin
-msgid "This option will open a new Tab in a new (and always in a new) Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
+msgid "If no unlocked tab is found, then this option will open a new Tab in a new Window (even if other existing windows could be used for the new tab). This option will always succeed, further options are never tested."
 msgstr ""
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinoldwin
-msgid "This option will open a new Tab in an existing (and only in an existing) Window, if no unlocked tab is found. A tab is only opened if a window exists, that has not yet an editor for the target file."
+msgid "If no unlocked tab is found, then this option will open a new Tab in an existing (and only in an existing) Window. A tab is only opened if a window exists, that has not yet an editor for the target file."
 msgstr ""
 
 #: lazarusidestrconsts.dlgedital
@@ -5712,6 +5712,10 @@ msgstr "Dešimtainis"
 #: lazarusidestrconsts.lisdefaultvalue
 msgid "Default value"
 msgstr "Numatytoji vertė"
+
+#: lazarusidestrconsts.lisdelayforhintsandcompletionbox
+msgid "Delay for hints and completion box"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
@@ -12040,6 +12044,10 @@ msgstr "Trumpai:"
 msgid "Show"
 msgstr "Rodyti"
 
+#: lazarusidestrconsts.lisshowdeclarationhints
+msgid "Show declaration hints"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
 msgstr ""
@@ -12083,6 +12091,10 @@ msgstr "Rodyti būsenos juostą"
 #: lazarusidestrconsts.lisshowunits
 msgid "Show units"
 msgstr "Rodyti modulius"
+
+#: lazarusidestrconsts.lisshowvaluehintswhiledebugging
+msgid "Show value hints while debugging"
+msgstr ""
 
 #: lazarusidestrconsts.lisshowversionandexit
 msgid "show version and exit"

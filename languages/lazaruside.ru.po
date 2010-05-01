@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-29 00:44+0300\n"
+"PO-Revision-Date: 2010-05-02 02:06+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -991,7 +991,8 @@ msgid "Invert"
 msgstr "Обратить"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionignlockedoldedit
-msgid "Ignore Locks, longest unused editor"
+#| msgid "Ignore Locks, longest unused editor"
+msgid "Ignore Locks, use longest unused editor"
 msgstr "Игнорировать фиксацию для не использовавшегося наибольшее время редактора"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionignlockedonlyactedit
@@ -1027,9 +1028,9 @@ msgid "New tab in existing window"
 msgstr "Новая вкладка в существующем окне"
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedoldedit
-#| msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. This always looks at the editor, never the window, to find the longest unused. This option will always succeed, further options are never tested"
-msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. This always looks at the editor, never the window, to find the longest unused. This option will always succeed, further options are never tested."
-msgstr "Использование этого критерия приводит к выбору не использовавшегося наибольшее время редактора для файла, даже если он зафиксирован и/или ему требуется прокрутка. На соответствие этому критерию проверяется редактор, а не окно. Критерий всегда имеет соответствия, поэтому следующие за ним не анализируются."
+#| msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. The determination of the longest unused editor does not look at the order in which the windows were focused, even if this is set by the setting for \"same criteria order\"This option will always succeed, further options are never tested."
+msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. The determination of the longest unused editor does not look at the order in which the windows were focused, even if this is set by the setting for \"same criteria order\". This option will always succeed, further options are never tested."
+msgstr "Использование этого критерия приводит к выбору не использовавшегося наибольшее время редактора для файла, даже если он зафиксирован и/или ему требуется прокрутка. При этом не учитывается порядок перевода фокуса в окна, даже если он переводился по тому же набору критериев. Критерий всегда имеет соответствия, поэтому следующие за ним не анализируются."
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedonlyactedit
 msgid "This option will check if the current active editor has the target file and if it is, it will use the current editor, even if it is locked and/or needs scrolling."
@@ -1061,14 +1062,14 @@ msgid "This option will open a new Tab in an existing or new Window, if no unloc
 msgstr "Использование этого критерия приводит к открытию новой вкладки в существующем или новом окне, если не найдено незафиксированного редактора. Критерий всегда имеет соответствия, поэтому следующие за ним не анализируются."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinnewwin
-#| msgid "This option will open a new Tab in a new (and always in a new) Window, if no unlocked tab is found. This option will always succeed, further options are never tested"
-msgid "This option will open a new Tab in a new (and always in a new) Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
-msgstr "Использование этого критерия приводит к открытию новой вкладки в новом (и только в новом) окне, если не найдено незафиксированного редактора. Критерий всегда имеет соответствия, поэтому следующие за ним не анализируются."
+#| msgid "If no unlocked tab is found, then this option will open a new Tab in a new  Window (even if other existing windows could be used for the new tab). This option will always succeed, further options are never tested."
+msgid "If no unlocked tab is found, then this option will open a new Tab in a new Window (even if other existing windows could be used for the new tab). This option will always succeed, further options are never tested."
+msgstr "Если не найдено незафиксированного редактора, использование этого критерия приводит к открытию новой вкладки в новом окне (даже если для этого могут быть использованы существующие окна). Критерий всегда имеет соответствия, поэтому следующие за ним не анализируются."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinoldwin
-#| msgid "This option will open a new Tab in an existing (and only in an existing) Window, if no unlocked tab is found. A tab is only opened if a window exists, that has not yet an editor for the target file"
-msgid "This option will open a new Tab in an existing (and only in an existing) Window, if no unlocked tab is found. A tab is only opened if a window exists, that has not yet an editor for the target file."
-msgstr "Использование этого критерия приводит к открытию новой вкладки в существующем (и только в существующем) окне, если не найдено незафиксированного редактора. Вкладка открывается только при наличии окна, не имеющего редактора для целевого файла."
+#| msgid "This option will open a new Tab in an existing (and only in an existing) Window, if no unlocked tab is found. A tab is only opened if a window exists, that has not yet an editor for the target file."
+msgid "If no unlocked tab is found, then this option will open a new Tab in an existing (and only in an existing) Window. A tab is only opened if a window exists, that has not yet an editor for the target file."
+msgstr "Если не найдено незафиксированного редактора, использование этого критерия приводит к открытию новой вкладки в существующем (и только в существующем) окне. Вкладка открывается только при наличии окна, ещё не имеющего редактора для целевого файла."
 
 #: lazarusidestrconsts.dlgedital
 msgid "Italic"
@@ -5717,6 +5718,10 @@ msgstr "Десятичное"
 #: lazarusidestrconsts.lisdefaultvalue
 msgid "Default value"
 msgstr "Значение по умолчанию"
+
+#: lazarusidestrconsts.lisdelayforhintsandcompletionbox
+msgid "Delay for hints and completion box"
+msgstr "Задержка вывода подсказок и окна автозавершения"
 
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
@@ -12037,6 +12042,10 @@ msgstr "Краткое:"
 msgid "Show"
 msgstr "Показать"
 
+#: lazarusidestrconsts.lisshowdeclarationhints
+msgid "Show declaration hints"
+msgstr "Выводить подсказки с объявлениями"
+
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
 msgstr "Показывать пустые модули/пакеты"
@@ -12080,6 +12089,10 @@ msgstr "Показывать строку состояния"
 #: lazarusidestrconsts.lisshowunits
 msgid "Show units"
 msgstr "Показывать модули"
+
+#: lazarusidestrconsts.lisshowvaluehintswhiledebugging
+msgid "Show value hints while debugging"
+msgstr "Выводить подсказки со значениями во время отладки"
 
 #: lazarusidestrconsts.lisshowversionandexit
 msgid "show version and exit"
