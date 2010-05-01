@@ -4325,54 +4325,12 @@ end;
 
 procedure TQtPushButton.preferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
-const
-  IconSpacing: Integer = 4;
 var
-  W: WideString;
-  AMetrics: QFontMetricsH;
-  AIcon: QIconH;
-  ASize: TSize;
+  Size: TSize;
 begin
-  PreferredWidth := 0;
-  PreferredHeight := 0;
-
-  // first part - text width/height calculation
-  W := getText;
-  if W <> '' then
-  begin
-    AMetrics := QFontMetrics_create(QWidget_font(Widget));
-    PreferredWidth := QFontMetrics_width(AMetrics, @W, -1);
-    PreferredHeight := QFontMetrics_height(AMetrics);
-    {$note TQtPushButton.preferredSize: there's a bug with QFontMetrics_width() & QFontMetrics_height()
-     on MacOSX (qt-4.3,qt-4.4)
-     so we must increase PrefW & PrefH for some reasonable value.}
-    {$IFDEF DARWIN}
-    PreferredWidth := PreferredWidth + (PreferredWidth div 4);
-    PreferredHeight := PreferredHeight + (PreferredHeight div 2);
-    {$ENDIF}
-    QFontMetrics_destroy(AMetrics);
-  end;
-
-  // second part - icon width/height
-  AIcon := QIcon_create();
-  QAbstractButton_icon(QAbstractButtonH(Widget), AIcon);
-  if not QIcon_isNull(AIcon) then
-  begin
-    ASize := getIconSize;
-    inc(PreferredWidth, ASize.cx + IconSpacing);
-    PreferredHeight := Max(PreferredHeight, ASize.cy + IconSpacing);
-  end;
-  QIcon_destroy(AIcon);
-
-  // third part - space between bounds and contents
-  inc(PreferredWidth, 10);
-  inc(PreferredHeight, 4);
-
-  if WithThemeSpace then
-  begin
-    inc(PreferredWidth, 6);
-    inc(PreferredHeight, 6);
-  end;
+  QPushButton_sizeHint(QPushButtonH(Widget), @Size);
+  PreferredWidth := Size.cx;
+  PreferredHeight := Size.cy;
 end;
 
 procedure TQtPushButton.SetDefault(const ADefault: Boolean);
@@ -5910,10 +5868,12 @@ end;
 
 procedure TQtLineEdit.preferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  Size: TSize;
 begin
-  QLineEdit_sizeHint(QLineEditH(Widget), @ASize);
-  PreferredHeight := ASize.cy;
-  PreferredWidth := ASize.cx;
+  QLineEdit_sizeHint(QLineEditH(Widget), @Size);
+  PreferredHeight := Size.cy;
+  PreferredWidth := Size.cx;
 end;
 
 procedure TQtLineEdit.setCursorPosition(const AValue: Integer);
