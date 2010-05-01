@@ -20,10 +20,10 @@
 }
 unit AllLCLUnits;
 
-{ At least 2.4.0 is required, except for wince which supports fpc 2.2.4 too }
+{ At least 2.4.0 is required, except for wince which supports fpc 2.2.0+ too }
 {$ifdef Wince}
-  {$if defined(ver1) or (defined(ver2) and (fpc_release<2)) or (defined(ver2_2) and (fpc_patch<4))}
-    {$fatal Lazarus for WinCE requires at least FPC 2.2.4}
+  {$if defined(ver1) or (defined(ver2) and (fpc_release<2))}// or (defined(ver2_2) and (fpc_patch<4))}
+    {$fatal Lazarus for WinCE requires at least FPC 2.2.0}
   {$endif}
 {$else}
   {$if defined(ver1) or (defined(ver2) and (fpc_release<4))}
