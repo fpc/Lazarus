@@ -858,12 +858,6 @@ end;
 class function TWin32WSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox): integer;
 begin
   Result := SendMessage(ACustomComboBox.Handle, CB_GETCURSEL, 0, 0);
-  if Result = LB_ERR Then
-  Begin
-    Assert(False, 'Trace:[TWin32WidgetSet.IntSendMessage3] Could not retrieve item index '+
-        'via LM_GETITEMINDEX; try selecting an item first');
-    Result := -1;
-  End;
 end;
 
 class function TWin32WSCustomComboBox.GetMaxLength(const ACustomComboBox: TCustomComboBox): integer;

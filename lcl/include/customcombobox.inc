@@ -42,15 +42,17 @@ begin
     FItems.Free;
   end;
   // and use the interface based list
-  FItems:= NewStrings;
+  FItems := NewStrings;
 
-  TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
+  if FItemIndex <> -1 then
+    TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
   TWSCustomComboBoxClass(WidgetSetClass).SetStyle(Self, FStyle);
   TWSCustomComboBoxClass(WidgetSetClass).SetArrowKeysTraverseList(Self, FArrowKeysTraverseList);
   TWSCustomComboBoxClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
   TWSCustomComboBoxClass(WidgetSetClass).SetMaxLength(Self, FMaxLength);
 
-  if FSelStart <> FSelLength then begin
+  if FSelStart <> FSelLength then
+  begin
     ASelStart:= FSelStart;
     ASelLength:= FSelLength;
     SelStart:= ASelStart;
@@ -898,10 +900,10 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomComboBox.GetItemIndex : integer;
 begin
-  if not (csDestroying in ComponentState)
-  and not (csDestroyingHandle in ControlState) and HandleAllocated then
+  if not (csDestroying in ComponentState) and
+     not (csDestroyingHandle in ControlState) and HandleAllocated then
     FItemIndex:= TWSCustomComboBoxClass(WidgetSetClass).GetItemIndex(Self);
-  Result:=FItemIndex;
+  Result := FItemIndex;
 end;
 
 {------------------------------------------------------------------------------
