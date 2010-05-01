@@ -2217,18 +2217,26 @@ begin
       DoViewAnchorEditor;
     nmiwMessagesViewName:
       DoShowMessagesView;
+    nmiwDbgOutput:
+      DebugBoss.ViewDebugDialog(ddtOutput, False);
+    nmiwDbgEvents:
+      DebugBoss.ViewDebugDialog(ddtEvents, False);
     nmiwBreakPoints:
-      ;//itmViewBreakPoints.OnClick(Self);
+      DebugBoss.ViewDebugDialog(ddtBreakpoints, False);
     nmiwWatches:
-      ;//itmViewWatches.OnClick(Self);
+      DebugBoss.ViewDebugDialog(ddtWatches, False);
     nmiwLocals:
-      ;//itmViewLocals.OnClick(Self);
+      DebugBoss.ViewDebugDialog(ddtLocals, False);
+    nmiwEvaluate:
+      DebugBoss.ViewDebugDialog(ddtEvaluate, False);
     nmiwRegisters:
-      ;//itmViewRegisters.OnClick(Self);
+      DebugBoss.ViewDebugDialog(ddtRegisters, False);
     nmiwCallStack:
-      ;//itmViewCallStack.OnClick(Self);
+      DebugBoss.ViewDebugDialog(ddtCallStack, False);
     nmiwAssembler:
-      ;//itmAssembler.OnClick(Self);
+      DebugBoss.ViewDebugDialog(ddtAssembler, False);
+    nmiwInspect:
+      DebugBoss.ViewDebugDialog(ddtInspect, False);
     end;
   end;
 end;

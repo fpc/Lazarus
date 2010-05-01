@@ -60,19 +60,6 @@ uses
 
 
 type
-  TDebugDialogType = (
-    ddtOutput,
-    ddtEvents,
-    ddtBreakpoints,
-    ddtWatches,
-    ddtLocals,
-    ddtCallStack,
-    ddtEvaluate,
-    ddtRegisters,
-    ddtAssembler,
-    ddtInspect
-    );
-
   { TDebugManager }
 
   TDebugManager = class(TBaseDebugManager)
@@ -126,7 +113,6 @@ type
                                            var ASrcEdit: TSourceEditor);
 
     // Dialog routines
-    procedure ViewDebugDialog(const ADialogType: TDebugDialogType);
     procedure DestroyDebugDialog(const ADialogType: TDebugDialogType);
     procedure InitDebugOutputDlg;
     procedure InitDebugEventsDlg;
@@ -196,6 +182,8 @@ type
 
     function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; override;
     function ShowWatchProperties(const AWatch: TIDEWatch; AWatchExpression: String = ''): TModalresult; override;
+
+    procedure ViewDebugDialog(const ADialogType: TDebugDialogType; BringToFront: Boolean = true); override;
   end;
 
 
@@ -1748,7 +1736,8 @@ begin
   RaiseException('Invalid debug window '+Sender.ClassName);
 end;
 
-procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType);
+procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType;
+  BringToFront: Boolean);
 const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
     TDbgOutputForm, TDbgEventsForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg,
@@ -1787,7 +1776,10 @@ begin
         TBreakPointsDlg(CurDialog).BaseDirectory:=Project1.ProjectDirectory;
     end;
   end;
-  FDialogs[ADialogType].Show;
+  if BringToFront then
+    FDialogs[ADialogType].ShowOnTop
+  else
+    FDialogs[ADialogType].Show;
 end;
 
 procedure TDebugManager.DestroyDebugDialog(const ADialogType: TDebugDialogType);

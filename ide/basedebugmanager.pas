@@ -44,6 +44,19 @@ uses
   Laz_XMLCfg, IDEOptionsIntf, LazarusIDEStrConsts;
 
 type
+  TDebugDialogType = (
+    ddtOutput,
+    ddtEvents,
+    ddtBreakpoints,
+    ddtWatches,
+    ddtLocals,
+    ddtCallStack,
+    ddtEvaluate,
+    ddtRegisters,
+    ddtAssembler,
+    ddtInspect
+    );
+
   { TBaseDebugManager }
   
   TDebugManagerState = (
@@ -132,6 +145,8 @@ type
     function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; virtual; abstract;
     function ShowWatchProperties(const AWatch: TIDEWatch; AWatchExpression: String = ''): TModalresult; virtual; abstract;
 
+    procedure ViewDebugDialog(const ADialogType: TDebugDialogType;
+                              BringToFront: Boolean = True); virtual; abstract;
   public
     property Commands: TDBGCommands read GetCommands;  // All current available commands of the debugger
     property Debuggers[const AIndex: Integer]: TDebuggerClass read GetDebuggerClass;
