@@ -15070,10 +15070,12 @@ begin
   writeln('');
   writeln('[TMainIDE.OnSrcNotebookShowHintForSource] ************ ',ActiveUnitInfo.Source.Filename,' X=',CaretPos.X,' Y=',CaretPos.Y);
   {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource A');{$ENDIF}
-  TIDEHelpManager(HelpBoss).GetHintForSourcePosition(ActiveUnitInfo.Filename,
-                                        CaretPos,BaseURL,SmartHintStr);
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
+  if EditorOpts.AutoToolTipSymbTools then begin
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource A');{$ENDIF}
+    TIDEHelpManager(HelpBoss).GetHintForSourcePosition(ActiveUnitInfo.Filename,
+                                          CaretPos,BaseURL,SmartHintStr);
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
+  end;
   case ToolStatus of
     itDebugger: begin
       if SrcEdit.SelectionAvailable and SrcEdit.CaretInSelection(CaretPos) then
