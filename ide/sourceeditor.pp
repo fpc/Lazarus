@@ -7054,7 +7054,7 @@ begin
   HideHint;
   if not Visible then exit;
   if (MainIDEInterface.ToolStatus=itDebugger) then
-    FMouseHintTimer.AutoEnabled := EditorOpts.AutoToolTipExprEval
+    FMouseHintTimer.AutoEnabled := EditorOpts.AutoToolTipExprEval or EditorOpts.AutoToolTipSymbTools
   else
     FMouseHintTimer.AutoEnabled := EditorOpts.AutoToolTipSymbTools;
 end;

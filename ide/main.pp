@@ -15065,17 +15065,16 @@ begin
 
 
   BaseURL:='';
+  SmartHintStr := '';
+  {$IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.OnSrcNotebookShowHintForSource] ************ ',ActiveUnitInfo.Source.Filename,' X=',CaretPos.X,' Y=',CaretPos.Y);
+  {$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource A');{$ENDIF}
+  TIDEHelpManager(HelpBoss).GetHintForSourcePosition(ActiveUnitInfo.Filename,
+                                        CaretPos,BaseURL,SmartHintStr);
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
   case ToolStatus of
-    itNone: begin
-      {$IFDEF IDE_DEBUG}
-      writeln('');
-      writeln('[TMainIDE.OnSrcNotebookShowHintForSource] ************ ',ActiveUnitInfo.Source.Filename,' X=',CaretPos.X,' Y=',CaretPos.Y);
-      {$ENDIF}
-      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource A');{$ENDIF}
-      TIDEHelpManager(HelpBoss).GetHintForSourcePosition(ActiveUnitInfo.Filename,
-                                            CaretPos,BaseURL,SmartHintStr);
-      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
-    end;
     itDebugger: begin
       if SrcEdit.SelectionAvailable and SrcEdit.CaretInSelection(CaretPos) then
         Expression := SrcEdit.GetText(True)
@@ -15101,10 +15100,11 @@ begin
       end;
       FreeAndNil(DBGType);
       FreeAndNil(DBGTypeDerefer);
-      SmartHintStr := Expression + ' = ' + DebugEval;
+      Expression := Expression + ' = ' + DebugEval;
+      if SmartHintStr<>'' then
+        SmartHintStr:=LineEnding+LineEnding+SmartHintStr;
+      SmartHintStr:=Expression+SmartHintStr;
     end;
-  else
-    Exit;
   end;
 
   if SmartHintStr <> '' then
