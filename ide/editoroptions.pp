@@ -1289,9 +1289,9 @@ type
     property AutoCodeParameters: Boolean
       read fAutoCodeParameters write fAutoCodeParameters default True;
     property AutoToolTipExprEval: Boolean
-      read fAutoToolTipExprEval write fAutoToolTipExprEval default True;
+      read fAutoToolTipExprEval write fAutoToolTipExprEval default True; // debugger hints
     property AutoToolTipSymbTools: Boolean
-      read fAutoToolTipSymbTools write fAutoToolTipSymbTools default True;
+      read fAutoToolTipSymbTools write fAutoToolTipSymbTools default True; // declaration hints
     property AutoDelayInMSec: Integer read fAutoDelayInMSec
       write fAutoDelayInMSec default 1000;
     property CodeTemplateFileName: String

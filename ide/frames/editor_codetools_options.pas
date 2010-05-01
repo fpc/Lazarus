@@ -43,6 +43,7 @@ type
     BracketCombo: TComboBox;
     BracketLabel: TLabel;
     BracketLink: TLabel;
+    AutoHintAndCompletionDelayLabel: TLabel;
     MarkupColorLink: TLabel;
     MarkupWordBevel1: TBevel;
     MarkupWordGroupLabel: TLabel;
@@ -162,11 +163,12 @@ procedure TEditorCodetoolsOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDial
 begin
   FDialog := ADialog;
 
-  AutoCompleteBlockCheckBox.Caption := dlgEdCompleteBlocks;
-  AutoToolTipExprEvalCheckBox.Caption := dlgTooltipEval;
-  AutoToolTipSymbToolsCheckBox.Caption := dlgTooltipTools;
   AutoRemoveEmptyMethodsOnSave.Caption := dlgAutoRemoveEmptyMethods;
+  AutoToolTipSymbToolsCheckBox.Caption := lisShowDeclarationHints;
+  AutoToolTipExprEvalCheckBox.Caption := lisShowValueHintsWhileDebugging;
+  AutoCompleteBlockCheckBox.Caption := dlgEdCompleteBlocks;
 
+  AutoHintAndCompletionDelayLabel.Caption:=lisDelayForHintsAndCompletionBox;
   AutoDelayLabel.Caption := dlgEdDelay;
   AutoDelayMinLabel.Caption := '0.5 ' + DlgTimeSecondUnit;
   AutoDelayMaxLabel.Caption := '4.0 ' + dlgTimeSecondUnit;
@@ -187,7 +189,6 @@ begin
   BracketCombo.Items.Add(dlgHighlightLeftOfCursor);
   BracketCombo.Items.Add(dlgHighlightRightOfCursor);
   BracketCombo.Items.Add(gldHighlightBothSidesOfCursor);
-
 end;
 
 procedure TEditorCodetoolsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

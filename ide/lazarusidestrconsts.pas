@@ -1401,6 +1401,7 @@ resourcestring
   dlgEdInvert = 'Invert';
   dlgEdIdComlet = 'Identifier completion';
   dlgEdCompleteBlocks = 'Complete blocks';
+  lisShowValueHintsWhileDebugging = 'Show value hints while debugging';
   dlgTooltipEval = 'Tooltip expression evaluation';
   dlgTooltipTools = 'Tooltip symbol Tools';
   dlgMarkupGroup = 'Word under Caret Highlight';
@@ -1409,7 +1410,9 @@ resourcestring
   dlgMarkupWordTrim = 'Trim Spaces (when highlighting current selection)';
   dlgMarkupWordNoTimer = 'Disable Timer for Markup Current Word';
   dlgAutoRemoveEmptyMethods = 'Auto remove empty methods';
+  lisShowDeclarationHints = 'Show declaration hints';
   dlgEdDelay = 'Delay';
+  lisDelayForHintsAndCompletionBox = 'Delay for hints and completion box';
   dlgTimeSecondUnit = 'sec';
   dlgEdCodeTempl = 'Code templates';
   dlgTplFName = 'Template file name';
