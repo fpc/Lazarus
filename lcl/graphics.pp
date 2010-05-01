@@ -1788,13 +1788,13 @@ procedure GetColorValues(Proc: TGetColorStringProc);
 function InvertColor(AColor: TColor): TColor;
 function DecColor(AColor: TColor; AQuantity: Byte): TColor;
 
-function Blue(rgb: TColor): BYTE;
-function Green(rgb: TColor): BYTE;
-function Red(rgb: TColor): BYTE;
+function Blue(rgb: TColor): BYTE; // does not work on system color
+function Green(rgb: TColor): BYTE; // does not work on system color
+function Red(rgb: TColor): BYTE; // does not work on system color
 function RGBToColor(R, G, B: Byte): TColor;
-procedure RedGreenBlue(rgb: TColor; out Red, Green, Blue: Byte);
+procedure RedGreenBlue(rgb: TColor; out Red, Green, Blue: Byte); // does not work on system color
 function FPColorToTColor(const FPColor: TFPColor): TColor;
-function TColorToFPColor(const c: TColor): TFPColor;
+function TColorToFPColor(const c: TColor): TFPColor; // does not work on system color
 
 // fonts
 procedure GetCharsetValues(Proc: TGetStrProc);
