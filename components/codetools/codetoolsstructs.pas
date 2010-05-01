@@ -127,6 +127,7 @@ type
     property Strings[const s: string]: string read GetStrings write SetStrings; default;
     property CaseSensitive: boolean read FCaseSensitive;
     property Tree: TAVLTree read FTree;
+    function AsText: string;
     procedure WriteDebugReport;
     function CalcMemSize: PtrUint;
     property CompareItemsFunc: TListSortCompare read GetCompareItemsFunc;
@@ -503,6 +504,20 @@ begin
     FTree.Delete(Node);
     Item:=PStringToStringTreeItem(Node.Data);
     Dispose(Item);
+  end;
+end;
+
+function TStringToStringTree.AsText: string;
+var
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+begin
+  Result:='';
+  Node:=Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToStringTreeItem(Node.Data);
+    Result:=Result+Item^.Name+'='+Item^.Value+LineEnding;
+    Node:=Tree.FindSuccessor(Node);
   end;
 end;
 

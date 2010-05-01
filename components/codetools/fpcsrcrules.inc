@@ -6,6 +6,9 @@ Add('packages/fcl-');
 
 Score:=1;
 Add('packages');
+Add('packages/fv');  // better than packages/amunits (unit msgbox)
+Add('packages/ncurses');  // better than packages/palmunits (unit from)
+Add('packages/hash');  // better than packages/palmunits (unit crc)
 
 Score:=-10;
 Add('packages/libgbafpc/examples');

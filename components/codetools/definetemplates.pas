@@ -648,7 +648,8 @@ function GatherUnitsInFPCSources(Files: TStringList;
                    Duplicates: TStringToStringTree = nil; // lower case unit to semicolon separated list of files
                    Rules: TFPCSourceRules = nil): TStringToStringTree;
 procedure CheckPPUSources(PPUFiles,  // lowercase unitname to filename
-                          AllDuplicates: TStringToStringTree; // lowercase unitname to semicolon separated list of files
+                          UnitToSource, // lowercase unitname to file name
+                          UnitToDuplicates: TStringToStringTree; // lowercase unitname to semicolon separated list of files
                           var Duplicates, Missing: TStringToStringTree);
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
@@ -1237,7 +1238,10 @@ begin
             // unit with same Score => maybe a conflict
             // be deterministic and choose the highest
             if CompareStr(Filename,Link.Filename)>0 then begin
-              Link.ConflictFilename:=Link.ConflictFilename+';'+Link.Filename;
+              if Link.ConflictFilename<>'' then
+                Link.ConflictFilename:=Link.ConflictFilename+';'+Link.Filename
+              else
+                Link.ConflictFilename:=Link.Filename;
               Link.Filename:=Filename;
             end else begin
               Link.ConflictFilename:=Link.ConflictFilename+';'+Filename;
@@ -1274,10 +1278,35 @@ begin
   end;
 end;
 
-procedure CheckPPUSources(PPUFiles, AllDuplicates: TStringToStringTree;
+procedure CheckPPUSources(PPUFiles, UnitToSource,
+  UnitToDuplicates: TStringToStringTree;
   var Duplicates, Missing: TStringToStringTree);
+var
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+  Unit_Name: String;
+  Filename: String;
+  SrcFilename: string;
+  DuplicateFilenames: string;
 begin
-
+  Node:=PPUFiles.Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToStringTreeItem(Node.Data);
+    Unit_Name:=Item^.Name;
+    Filename:=Item^.Value;
+    if CompareFileExt(Filename,'.ppu',false)=0 then begin
+      SrcFilename:=UnitToSource[Unit_Name];
+      if SrcFilename<>'' then begin
+        DuplicateFilenames:=UnitToDuplicates[Unit_Name];
+        if (DuplicateFilenames<>'') then
+          Duplicates[Unit_Name]:=DuplicateFilenames;
+      end else begin
+        if Missing<>nil then
+          Missing[Unit_Name]:=Filename;
+      end;
+    end;
+    Node:=PPUFiles.Tree.FindSuccessor(Node);
+  end;
 end;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
