@@ -1575,7 +1575,7 @@ msgstr "Nome do construtor precisa ser \"init\" (e o destrutor precisa ser \"don
 
 #: lazarusidestrconsts.dlginsspaceafter
 msgid "Insert space after"
-msgstr "Inserir espaço depois"
+msgstr "Inserir espaço após"
 
 #: lazarusidestrconsts.dlginsspacefront
 msgid "Insert space in front of"
@@ -2172,7 +2172,7 @@ msgstr "Topo"
 
 #: lazarusidestrconsts.dlgnotsplitlineafter
 msgid "Do not split line after:"
-msgstr "Não dividir a linha depois:"
+msgstr "Não dividir a linha após:"
 
 #: lazarusidestrconsts.dlgnotsplitlinefront
 msgid "Do not split line In front of:"
@@ -2668,7 +2668,7 @@ msgstr "Palavra-Chave estática nos objetos"
 
 #: lazarusidestrconsts.dlgstopafternrerr
 msgid "Stop after number of errors:"
-msgstr "Parar depois de números de erros:"
+msgstr "Parar após números de erros:"
 
 #: lazarusidestrconsts.dlgsubpropcolor
 msgid "SubProperties"
@@ -2774,7 +2774,7 @@ msgstr "Otimizações Incertas"
 
 #: lazarusidestrconsts.dlgundoaftersave
 msgid "Undo after save"
-msgstr "Desfazer depois de salvar"
+msgstr "Desfazer após salvar"
 
 #: lazarusidestrconsts.dlgundogroupoptions
 msgid "Undo / Redo:"
@@ -3588,7 +3588,7 @@ msgstr "Continuar Automaticamente"
 
 #: lazarusidestrconsts.lisautocontinueafter
 msgid "Auto continue after:"
-msgstr "Continuar autom. depois:"
+msgstr "Continuar autom. após:"
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
@@ -5078,7 +5078,7 @@ msgstr "Símbolo"
 
 #: lazarusidestrconsts.liscoexecuteafter
 msgid "Execute after"
-msgstr "Executar depois"
+msgstr "Executar após"
 
 #: lazarusidestrconsts.liscoexecutebefore
 msgid "Execute before"
@@ -6922,7 +6922,7 @@ msgstr "Dica: Verificar se dois pacotes contém uma unidade com o mesmo nome."
 
 #: lazarusidestrconsts.lishintdoubleclickonthecommandyouwanttoedit
 msgid "Hint: double click on the command you want to edit"
-msgstr ""
+msgstr "Dica: duplo clique no comando que deseja editar"
 
 #: lazarusidestrconsts.lishintopen
 msgctxt "lazarusidestrconsts.lishintopen"
@@ -8669,7 +8669,7 @@ msgstr "Inserir do Modelo..."
 
 #: lazarusidestrconsts.lismenueditorinsertnewitemafter
 msgid "Insert New Item (after)"
-msgstr "Inserir Novo Item (depois)"
+msgstr "Inserir Novo Item (após)"
 
 #: lazarusidestrconsts.lismenueditorinsertnewitembefore
 msgid "Insert New Item (before)"
@@ -9739,11 +9739,11 @@ msgstr "caminho objeto"
 
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
 msgid "Switch to Object Inspector Favorites tab"
-msgstr ""
+msgstr "Alternar para aba Favoritos do Inspetor de Objetos"
 
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestabafterasking
 msgid "Switch to Object Inspector Favorites tab after asking for component name"
-msgstr ""
+msgstr "Alternar para aba Favoritos do Inspetor de Objetos após pedir por um nome de componente"
 
 #: lazarusidestrconsts.lisoff
 msgid "? (Off)"

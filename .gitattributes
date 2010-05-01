@@ -970,9 +970,11 @@ components/jcf2/IdePlugin/lazarus/jcfideregister.pas svneol=native#text/pascal
 components/jcf2/IdePlugin/lazarus/jcfsettings.lpi svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/jcfuiconsts.pas svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/languages/jcfideregister.de.po svneol=native#text/plain
+components/jcf2/IdePlugin/lazarus/languages/jcfideregister.pb.po svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/languages/jcfideregister.po svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/languages/jcfideregister.ru.po svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/languages/jcfuiconsts.de.po svneol=native#text/plain
+components/jcf2/IdePlugin/lazarus/languages/jcfuiconsts.pb.po svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/languages/jcfuiconsts.po svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/languages/jcfuiconsts.ru.po svneol=native#text/plain
 components/jcf2/Include/JcfGlobal.inc svneol=native#text/plain
@@ -2448,6 +2450,7 @@ doceditor/images/styles_formatting24.bmp -text
 doceditor/images/treenode_add24.bmp -text
 doceditor/images/underline_blue24.bmp -text
 doceditor/languages/lazde.de.po svneol=native#text/plain
+doceditor/languages/lazde.pb.po svneol=native#text/plain
 doceditor/languages/lazde.po svneol=native#text/plain
 doceditor/languages/lazde.ru.po svneol=native#text/plain
 doceditor/lazde.ico -text svneol=unset#image/ico

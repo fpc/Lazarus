@@ -549,7 +549,7 @@ msgstr "lista enumeração faltando"
 
 #: codetoolsstrconsts.ctsmissingpointafterend
 msgid "missing . after end"
-msgstr "faltando \".\" depois do \"end\""
+msgstr "faltando \".\" após \"end\""
 
 #: codetoolsstrconsts.ctsmissingtypeidentifier
 msgid "missing type identifier"
@@ -673,7 +673,7 @@ msgstr "Biblioteca Tempo Execução"
 
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
-msgstr "\";\" esperado depois especificador de propriedade \"%s\", mas %s encontrado"
+msgstr "\";\" esperado após especificador de propriedade \"%s\", mas %s encontrado"
 
 #: codetoolsstrconsts.ctssemicolonnotfound
 msgid "semicolon not found"
