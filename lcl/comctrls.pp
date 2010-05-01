@@ -1927,6 +1927,7 @@ type
   TCustomTreeView = class;
   TTreeNodes = class;
   TTreeNode = class;
+  TTreeNodeClass = class of TTreeNode;
 
   TNodeState = (nsCut, nsDropHilited, nsFocused, nsSelected, nsMultiSelected,
                 nsExpanded, nsHasChildren, nsInTree, nsDeleting, nsBound);
@@ -1957,30 +1958,33 @@ const
 
 type
   TTVChangingEvent = procedure(Sender: TObject; Node: TTreeNode;
-    var AllowChange: Boolean) of object;
+                               var AllowChange: Boolean) of object;
   TTVChangedEvent = procedure(Sender: TObject; Node: TTreeNode) of object;
   TTVEditingEvent = procedure(Sender: TObject; Node: TTreeNode;
-    var AllowEdit: Boolean) of object;
+                              var AllowEdit: Boolean) of object;
   TTVEditedEvent = procedure(Sender: TObject; Node: TTreeNode;
-    var S: string) of object;
+                             var S: string) of object;
   TTVExpandingEvent = procedure(Sender: TObject; Node: TTreeNode;
-    var AllowExpansion: Boolean) of object;
+                                var AllowExpansion: Boolean) of object;
   TTVCollapsingEvent = procedure(Sender: TObject; Node: TTreeNode;
-    var AllowCollapse: Boolean) of object;
+                                 var AllowCollapse: Boolean) of object;
   TTVExpandedEvent = procedure(Sender: TObject; Node: TTreeNode) of object;
   TTVCompareEvent = procedure(Sender: TObject; Node1, Node2: TTreeNode;
-    var Compare: Integer) of object;
+                              var Compare: Integer) of object;
   TTVCustomDrawEvent = procedure(Sender: TCustomTreeView; const ARect: TRect;
-    var DefaultDraw: Boolean) of object;
+                                 var DefaultDraw: Boolean) of object;
   TTVCustomDrawItemEvent = procedure(Sender: TCustomTreeView; Node: TTreeNode;
-    State: TCustomDrawState; var DefaultDraw: Boolean) of object;
+                   State: TCustomDrawState; var DefaultDraw: Boolean) of object;
   TTVAdvancedCustomDrawEvent = procedure(Sender: TCustomTreeView;
-    const ARect: TRect; Stage: TCustomDrawStage;
-    var DefaultDraw: Boolean) of object;
+                                    const ARect: TRect; Stage: TCustomDrawStage;
+                                    var DefaultDraw: Boolean) of object;
   TTVAdvancedCustomDrawItemEvent = procedure(Sender: TCustomTreeView;
-    Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
-    var PaintImages, DefaultDraw: Boolean) of object;
-  TTVCustomCreateNodeEvent = procedure(Sender: TCustomTreeView; var ATreeNode: TTreenode) of object;
+              Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
+              var PaintImages, DefaultDraw: Boolean) of object;
+  TTVCustomCreateNodeEvent = procedure(Sender: TCustomTreeView;
+                                       var ATreeNode: TTreenode) of object;
+  TTVCreateNodeClassEvent = procedure(Sender: TCustomTreeView;
+                                      var NodeClass: TTreeNodeClass) of object;
 
   TTreeNodeCompare = function(Node1, Node2: TTreeNode): integer of object;
 
@@ -2386,6 +2390,7 @@ type
     FOnCollapsed: TTVExpandedEvent;
     FOnCollapsing: TTVCollapsingEvent;
     FOnCompare: TTVCompareEvent;
+    FOnCreateNodeClass: TTVCreateNodeClassEvent;
     FOnCustomCreateItem: TTVCustomCreateNodeEvent;
     FOnCustomDraw: TTVCustomDrawEvent;
     FOnCustomDrawItem: TTVCustomDrawItemEvent;
@@ -2568,6 +2573,7 @@ type
     property OnCollapsed: TTVExpandedEvent read FOnCollapsed write FOnCollapsed;
     property OnCollapsing: TTVCollapsingEvent read FOnCollapsing write FOnCollapsing;
     property OnCompare: TTVCompareEvent read FOnCompare write FOnCompare;
+    property OnCreateNodeClass: TTVCreateNodeClassEvent read FOnCreateNodeClass write FOnCreateNodeClass;
     property OnCustomCreateItem: TTVCustomCreateNodeEvent read FOnCustomCreateItem write FOnCustomCreateItem;
     property OnCustomDraw: TTVCustomDrawEvent read FOnCustomDraw write FOnCustomDraw;
     property OnCustomDrawItem: TTVCustomDrawItemEvent
@@ -2712,6 +2718,7 @@ type
     property OnCollapsing;
     property OnCompare;
     property OnContextPopup;
+    property OnCreateNodeClass;
     property OnCustomCreateItem;
     property OnCustomDraw;
     property OnCustomDrawItem;

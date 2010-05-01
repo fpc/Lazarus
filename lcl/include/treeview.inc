@@ -4743,12 +4743,19 @@ begin
 end;
 
 function TCustomTreeView.CreateNode: TTreeNode;
+var
+  NewNodeClass: TTreeNodeClass;
 begin
   Result := nil;
   if Assigned(FOnCustomCreateItem) then
     FOnCustomCreateItem(Self, Result);
   if Result = nil then
-    Result := TTreeNode.Create(Items);
+  begin
+    NewNodeClass:=TTreeNode;
+    if Assigned(OnCreateNodeClass) then
+      OnCreateNodeClass(Self,NewNodeClass);
+    Result := NewNodeClass.Create(Items);
+  end;
 end;
 
 procedure TCustomTreeView.ImageListChange(Sender: TObject);
