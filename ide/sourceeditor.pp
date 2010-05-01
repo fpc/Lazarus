@@ -2127,8 +2127,6 @@ begin
 end;
 
 procedure TSourceEditorSharedValues.BeginGlobalUpdate;
-var
-  i: Integer;
 begin
   inc(FInGlobalUpdate);
   if FInGlobalUpdate > 1 then exit;
@@ -2137,8 +2135,6 @@ begin
 end;
 
 procedure TSourceEditorSharedValues.EndGlobalUpdate;
-var
-  i: Integer;
 begin
   dec(FInGlobalUpdate);
   if FInGlobalUpdate > 0 then exit;
