@@ -26,7 +26,7 @@ unit ShellCtrls;
 interface
 
 uses
-  Classes, SysUtils, Forms, Graphics,
+  Classes, SysUtils, Forms, Graphics, LCLType,
   ComCtrls, FileUtil;
 
 type

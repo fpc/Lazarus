@@ -60,11 +60,15 @@ uses
   {$define extdecl := stdcall}
 {$endif}
 
-// Types for FPC 2.2.4 support for WinCE
+// Types for FPC 2.2.x support for WinCE
 {$ifdef ver2_2}
 type
   TFPResourceHandle = THandle;
   TFPResourceHGlobal = THandle;
+{$endif}
+{$ifdef ver2_2_0}
+const
+  AllFilesMask = '*.*';
 {$endif}
 
 type

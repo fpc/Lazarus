@@ -28,7 +28,8 @@ interface
 
 uses
   // Libs
-  Windows, commctrl,
+  Windows,
+  {$ifndef ver2_2_0}commctrl,{$endif}
   // RTL, LCL
   SysUtils, Classes, ImgList, GraphType, Graphics, LCLType,
   // Widgetset

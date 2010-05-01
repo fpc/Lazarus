@@ -10,7 +10,7 @@ uses
   {$ifdef win32}
   win32compat,
   {$else}
-  oleauto, aygshell,
+    {$ifndef ver2_2_0}oleauto, aygshell,{$endif}
   {$endif}
   // compatibility
   // RTL, LCL

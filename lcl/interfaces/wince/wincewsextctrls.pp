@@ -27,7 +27,8 @@ interface
 
 uses
   // RTL, FCL
-  Windows, SysUtils, commctrl,
+  Windows, SysUtils,
+  {$ifndef ver2_2_0}commctrl,{$endif}
   // Compatibility
   {$ifdef Win32}win32compat,{$endif}
   // LCL

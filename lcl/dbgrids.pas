@@ -1047,6 +1047,7 @@ begin
 
       StartUpdating;
       edField.Text := FTempText;
+      {$ifndef ver2_2_0}
       if edField.Lookup and edField.LookupCache then begin
         {$WARNINGS OFF}
         lst := TLookupListCracker(edField.LookupList).FList;
@@ -1059,6 +1060,7 @@ begin
              end;
         end;
       end;
+      {$endif}
       EndUpdating;
 
       EditingColumn(FEditingColumn, False);
@@ -3322,6 +3324,7 @@ var
   p: PLookupListRec;
 begin
   Result := inherited GetPickList;
+  {$ifndef ver2_2_0}
   if (Field<>nil) and Field.Lookup and Field.LookupCache then begin
     Result.Clear;
     {$WARNINGS OFF}
@@ -3332,6 +3335,7 @@ begin
       Result.AddObject(p^.Value, TObject(p));
     end;
   end;
+  {$endif}
 end;
 
 procedure TColumn.ApplyDisplayFormat;

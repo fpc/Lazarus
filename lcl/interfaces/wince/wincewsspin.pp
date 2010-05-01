@@ -26,16 +26,13 @@ unit WinCEWSSpin;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-  Spin, Controls, StdCtrls, LCLType, commctrl,
-  LCLProc,
-////////////////////////////////////////////////////
-  WSSpin, WSLCLClasses, Windows, WinCEInt, WinCEProc,
+  // Libs
+  {$ifndef ver2_2_0}commctrl,{$endif}
+  Windows,
+  // LCL
+  Spin, Controls, StdCtrls, LCLType, LCLProc,
+  // Widgetset
+  WSSpin, WSLCLClasses,  WinCEInt, WinCEProc,
   WinCEWSStdCtrls, WinCEWSControls;
   
 type

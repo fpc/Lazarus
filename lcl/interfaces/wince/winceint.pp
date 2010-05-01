@@ -32,7 +32,7 @@ interface
   FPC 2.0 or inferior isn't checked because it can't compile for wince }
 {$ifdef CPUARM}
   {$if defined(ver2_2) and (fpc_patch<1)}
-    {$fatal The Lazarus WinCE Interface in Lazarus 0.9.25+ requires at least FPC 2.2.1}
+//    {$fatal The Lazarus WinCE Interface in Lazarus 0.9.25+ requires at least FPC 2.2.1}
   {$endif}
 {$endif}
 
@@ -53,7 +53,7 @@ uses
   {$ifdef Win32}
     win32compat,
   {$else}
-    aygshell,
+    {$ifndef ver2_2_0}aygshell,{$endif}
   {$endif}
   // Libs
   Windows,

@@ -5343,7 +5343,11 @@ begin
   if ascii then
     fToken:=Classes.toString
   else
+    {$ifdef ver2_2_0}
+    fToken:=Classes.toString
+    {$else}
     fToken:=toWString;
+    {$endif}
 end;
 
 procedure TUTF8Parser.HandleMinus;

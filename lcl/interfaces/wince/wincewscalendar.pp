@@ -27,8 +27,13 @@ unit WinCEWSCalendar;
 interface
 
 uses
-  Calendar, SysUtils, Controls, LCLType, commctrl,WSProc,
-  WSCalendar, WSLCLClasses, Windows, WinCEDef, WinCEWSControls;
+  // Libs
+  {$ifndef ver2_2_0}commctrl,{$endif}
+  Windows,
+  // LCL
+  Calendar, SysUtils, Controls, LCLType,
+  // Widgetset
+  WSProc, WSCalendar, WSLCLClasses, WinCEDef, WinCEWSControls;
 
 type
 	
