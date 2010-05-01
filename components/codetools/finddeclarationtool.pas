@@ -6876,8 +6876,8 @@ var
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   {$IFDEF ShowExprEval}
-  DebugLn('[TFindDeclarationTool.ConvertNodeToExpressionType] A',
-  ' Node=',Node.DescAsString);
+  DebugLn(['[TFindDeclarationTool.ConvertNodeToExpressionType] A',
+  ' Node=',Node.DescAsString,' "',dbgstr(copy(ExtractNode(Node,[]),1,30)),'"']);
   {$ENDIF}
   BaseContext:=FindBaseTypeOfNode(Params,Node);
   Node:=BaseContext.Node;
@@ -6966,6 +6966,11 @@ begin
       Result.Context:=CreateFindContext(Self,Node);
     end;
   end;
+
+  {$IFDEF ShowExprEval}
+  DebugLn('[TFindDeclarationTool.ConvertNodeToExpressionType] END',
+  ' Expr=',ExprTypeToString(Result));
+  {$ENDIF}
 end;
 
 function TFindDeclarationTool.ReadOperandTypeAtCursor(
