@@ -76,6 +76,9 @@ type
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
     property ShellListView: TCustomShellListView read FShellListView write SetShellListView;
     property FileSortType: TFileSortType read FFileSortType write FFileSortType;
+
+    { Protected properties which users may want to access, see bug 15374 }
+    property Items;
   end;
 
   { TShellTreeView }
@@ -166,6 +169,8 @@ type
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
     property Root: string read FRoot write SetRoot;
     property ShellTreeView: TCustomShellTreeView read FShellTreeView write SetShellTreeView;
+    { Protected properties which users may want to access, see bug 15374 }
+    property Items;
   end;
 
   { TShellListView }
@@ -197,7 +202,6 @@ type
 //    property HotTrack;
 //    property HotTrackStyles;
 //    property HoverTime;
-//    property Items;
     property LargeImages;
     property MultiSelect;
 //    property OwnerData;
