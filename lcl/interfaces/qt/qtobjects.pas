@@ -287,6 +287,8 @@ type
     destructor Destroy; override;
     function containsPoint(X,Y: Integer): Boolean;
     function containsRect(R: TRect): Boolean;
+    function intersects(R: TRect): Boolean; overload;
+    function intersects(Rgn: QRegionH): Boolean; overload;
     function GetRegionType: integer;
     function getBoundingRect: TRect;
     function numRects: Integer;
@@ -1765,6 +1767,16 @@ end;
 function TQtRegion.containsRect(R: TRect): Boolean;
 begin
   Result := QRegion_contains(Widget, PRect(@R));
+end;
+
+function TQtRegion.intersects(R: TRect): Boolean;
+begin
+  Result := QRegion_intersects(Widget, PRect(@R));
+end;
+
+function TQtRegion.intersects(Rgn: QRegionH): Boolean;
+begin
+  Result := QRegion_intersects(Widget, Rgn);
 end;
 
 function TQtRegion.GetRegionType: integer;

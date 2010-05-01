@@ -4037,28 +4037,17 @@ end;
 
 function TQtWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 var
-  w: QWidgetH;
-  Region: QRegionH;
+  QtDC: TQtDeviceContext;
 begin
   {$ifdef VerboseQtWinAPI}
   writeln('[WinAPI RectVisible] ');
   {$endif}
   Result := False;
   if not IsValidDC(DC) then Exit;
-  w := TQtDeviceContext(DC).Parent;
-  if w <> nil then
-  begin
-    if QWidget_isVisible(w) then
-    begin
-      Region := QRegion_create;
-      try
-        QWidget_visibleRegion(w, Region);
-        Result := QRegion_contains(Region, PRect(@ARect));
-      finally
-        QRegion_destroy(Region);
-      end;
-    end;
-  end;
+  QtDC := TQtDeviceContext(DC);
+  // as MSDN says only clipping region can play here
+  if QtDC.getClipping then
+    Result := QtDC.getClipRegion.containsRect(ARect);
 end;
 
 {------------------------------------------------------------------------------

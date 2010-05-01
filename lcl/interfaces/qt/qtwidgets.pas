@@ -328,6 +328,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure AttachEvents; override;
   end;
@@ -5616,6 +5617,14 @@ begin
   QWidget_setFocusPolicy(Result, QtNoFocus);
   QWidget_setAutoFillBackground(Result, True);
   FHasPaint := True;
+end;
+
+procedure TQtScrollBar.setFocusPolicy(const APolicy: QtFocusPolicy);
+begin
+  if FOwnWidget and Assigned(LCLObject) and not LCLObject.TabStop then
+    inherited setFocusPolicy(QtNoFocus)
+  else
+    inherited setFocusPolicy(APolicy);
 end;
 
 function TQtScrollBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
