@@ -553,6 +553,8 @@ type
     Targets: string; // comma separated list of OS, CPU, e.g. win32,unix,i386 or * for all
     function FitsTargets(const FilterTargets: string): boolean;
     function FitsFilename(const aFilename: string): boolean;
+    function IsEqual(Rule: TFPCSourceRule): boolean;
+    procedure Assign(Rule: TFPCSourceRule);
   end;
 
   { TFPCSourceRules }
@@ -568,6 +570,9 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    function IsEqual(Rules: TFPCSourceRules): boolean;
+    procedure Assign(Rules: TFPCSourceRules);
+    function Clone: TFPCSourceRules;
     property Items[Index: integer]: TFPCSourceRule read GetItems; default;
     function Count: integer;
     function Add(const Filename: string): TFPCSourceRule;
@@ -635,7 +640,9 @@ function RunFPCVerbose(const CompilerFilename, TestFilename: string;
                        out Defines, Undefines: TStringToStringTree;
                        const Options: string = ''): boolean;
 function GatherUnitsInSearchPaths(SearchPaths: TStrings;
-                    const OnProgress: TDefinePoolProgress): TStringToStringTree;
+                    const OnProgress: TDefinePoolProgress): TStringToStringTree; // upper unit names to full file name
+procedure AdjustFPCSrcRulesForPPUPaths(Units: TStringToStringTree;
+                                       Rules: TFPCSourceRules);
 function GatherUnitsInFPCSources(Files: TStringList;
                    TargetOS: string = ''; TargetCPU: string = '';
                    ConflictFilenames: TStringList = nil; // every line is semicolon separated list of files
@@ -1045,6 +1052,7 @@ function GatherUnitsInSearchPaths(SearchPaths: TStrings;
 { returns a stringtree,
   where name is uppercase unitname and value is the full file name
 
+  SearchPaths are searched from last to start
   first found wins
   pas, pp, p wins vs ppu
 }
@@ -1062,7 +1070,7 @@ begin
   Result:=TStringToStringTree.Create(true);
   FileCount:=0;
   Abort:=false;
-  for i:=0 to SearchPaths.Count-1 do begin
+  for i:=SearchPaths.Count-1 downto 0 do begin
     Directory:=CleanAndExpandDirectory(SearchPaths[i]);
     if FindFirstUTF8(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
       repeat
@@ -1087,6 +1095,23 @@ begin
       until FindNextUTF8(FileInfo)<>0;
     end;
     FindCloseUTF8(FileInfo);
+  end;
+end;
+
+procedure AdjustFPCSrcRulesForPPUPaths(Units: TStringToStringTree;
+  Rules: TFPCSourceRules);
+var
+  Filename: string;
+  Rule: TFPCSourceRule;
+begin
+  // check unit httpd
+  Filename:=Units['HTTPD'];
+  if Filename<>'' then begin
+    Filename:=ChompPathDelim(ExtractFilePath(Filename));
+    Rule:=Rules.Add('packages/'+ExtractFileName(Filename));
+    Rule.Score:=10;
+    Rule.Targets:='*';
+    //DebugLn(['AdjustFPCSrcRulesForPPUPaths ',Rule.Filename,' ',Filename]);
   end;
 end;
 
@@ -5855,6 +5880,37 @@ begin
     TObject(FItems[i]).Free;
 end;
 
+function TFPCSourceRules.IsEqual(Rules: TFPCSourceRules): boolean;
+var
+  i: Integer;
+begin
+  Result:=false;
+  if Count<>Rules.Count then exit;
+  for i:=0 to Count-1 do
+    if not Items[i].IsEqual(Rules[i]) then exit;
+  Result:=true;
+end;
+
+procedure TFPCSourceRules.Assign(Rules: TFPCSourceRules);
+var
+  i: Integer;
+  SrcRule: TFPCSourceRule;
+  Rule: TFPCSourceRule;
+begin
+  Clear;
+  for i:=0 to Rules.Count-1 do begin
+    SrcRule:=Rules[i];
+    Rule:=Add(SrcRule.Filename);
+    Rule.Assign(SrcRule);
+  end;
+end;
+
+function TFPCSourceRules.Clone: TFPCSourceRules;
+begin
+  Result:=TFPCSourceRules.Create;
+  Result.Assign(Self);
+end;
+
 function TFPCSourceRules.Count: integer;
 begin
   Result:=FItems.Count;
@@ -5992,6 +6048,23 @@ function TFPCSourceRule.FitsFilename(const aFilename: string): boolean;
 begin
   Result:=(length(Filename)<=length(aFilename))
          and CompareMem(Pointer(Filename),Pointer(aFilename),length(Filename));
+end;
+
+function TFPCSourceRule.IsEqual(Rule: TFPCSourceRule): boolean;
+begin
+  Result:=false;
+  if (Filename<>Rule.Filename)
+  or (Score<>Rule.Score)
+  or (Targets<>Rule.Targets) then
+    exit;
+  Result:=true;
+end;
+
+procedure TFPCSourceRule.Assign(Rule: TFPCSourceRule);
+begin
+  Filename:=Rule.Filename;
+  Score:=Rule.Score;
+  Targets:=Rule.Targets;
 end;
 
 initialization

@@ -14,6 +14,8 @@ Add('packages/ncurses/examples');
 Add('packages/libndsfpc/examples');
 Add('packages/regexpr/src/old');
 Add('packages/amunits/src/otherlibs');
+Add('packages/httpd20/examples');
+Add('packages/httpd22/examples');
 
 Score:=10;
 Targets:='wince';
