@@ -2475,9 +2475,6 @@ var SrcStart: integer;
 
 var
   TestPos: integer;
-  CommentEndPos: LongInt;
-  CodePos: Integer;
-  LineEndPos: LongInt;
   LineStartPos: LongInt;
   IsEmpty: Boolean;
 begin
@@ -2487,6 +2484,8 @@ begin
     Result:=SrcStart;
     exit;
   end;
+  // simple heuristic
+  // will fail on lines:  // }
   Result:=Position-1;
   if Result>length(Source) then Result:=length(Source);
   while (Result>=SrcStart) do begin
@@ -2500,93 +2499,31 @@ begin
           if (Result>SrcStart) and (Source[Result-1] in [#10,#13])
           and (Source[Result]<>Source[Result-1]) then
             dec(Result);
-          // test if it is a comment line (a line without code and at least one
-          // comment)
-          CodePos:=0;
-          LineEndPos:=Result;
-          // go to line start
-          TestPos:=Result;
+          // test if in a // comment
+          LineStartPos:=Result;
           IsEmpty:=true;
-          while (TestPos>SrcStart) do begin
-            case Source[TestPos-1] of
-            #10,#13: break;
-            ' ',#9: ;
+          while (LineStartPos>SrcStart) do begin
+            case Source[LineStartPos-1] of
+              #10,#13: break;
+              ' ',#9: ;
             else IsEmpty:=false;
             end;
-            dec(TestPos);
+            dec(LineStartPos);
           end;
           if IsEmpty then begin
-            // empty line
+            // the line is empty
             exit;
           end;
-
-          // read line from start to end
-          LineStartPos:=TestPos;
-          while TestPos<LineEndPos do begin
-            case Source[TestPos] of
-              '{':
-                begin
-                  CommentEndPos:=FindCommentEnd(Source,TestPos,NestedComments);
-                  if CommentEndPos>Result then begin
-                    // startpos was in comment
-                    Result:=LineEndPos;
-                    exit;
-                  end;
-                  if StopAtDirectives and (Source[TestPos+1]='$') then begin
-                    Result:=CommentEndPos;
-                  end;
-                  TestPos:=CommentEndPos;
-                end;
-              '(':
-                if Source[TestPos+1]='*' then begin
-                  CommentEndPos:=FindCommentEnd(Source,TestPos,NestedComments);
-                  if CommentEndPos>Result then begin
-                    // startpos was in comment
-                    Result:=LineEndPos;
-                    exit;
-                  end;
-                  TestPos:=CommentEndPos;
-                end else begin
-                  CodePos:=TestPos;
-                  inc(TestPos);
-                end;
-              '/':
-                if Source[TestPos+1]='/' then begin
-                  // rest of line is comment
-                  break;
-                end else begin
-                  CodePos:=TestPos;
-                  inc(TestPos);
-                end;
-              '''':
-                begin
-                  // string constant
-                  inc(TestPos);
-                  while (TestPos<LineEndPos) and (Source[TestPos]<>'''') do
-                    inc(TestPos);
-                  CodePos:=TestPos;
-                  inc(TestPos);
-                end;
-              ' ',#9:
-                inc(TestPos);
-              ';',',':
-                begin
-                  if not SkipSemicolonComma then
-                    CodePos:=TestPos;
-                  inc(TestPos)
-                end;
-            else
-              CodePos:=TestPos;
-              inc(TestPos);
-            end;
+          TestPos:=LineStartPos;
+          while (Source[TestPos] in [' ',#9]) do inc(TestPos);
+          if (Source[TestPos]='/') and (Source[TestPos+1]='/') then begin
+            // the whole line is a // comment
+            // this comment belongs to the code
+            // => continue on next line
+            Result:=LineStartPos-1;
+            continue;
           end;
-          if CodePos>0 then begin
-            // the line is not empty
-            Result:=CodePos+1;
-            exit;
-          end;
-          // there is no code in the line => check next line
-          Result:=LineStartPos-1;
+          dec(Result);
         end;
 
       ' ',#9:
