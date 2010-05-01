@@ -3220,9 +3220,9 @@ examples/trayicon/frmtest.lfm -text
 examples/trayicon/frmtest.lrs svneol=native#text/pascal
 examples/trayicon/frmtest.pas -text
 examples/trayicon/icon.ico -text
-examples/trayicon/magnifier.res -text
 examples/trayicon/wndtray.dpr -text
 examples/trayicon/wndtray.lpi -text
+examples/trayicon/wndtray.res -text
 examples/treeview/README.txt svneol=native#text/plain
 examples/treeview/TV_Add_Remove.dpr svneol=native#text/pascal
 examples/treeview/TV_Add_Remove.res svneol=native#unset
