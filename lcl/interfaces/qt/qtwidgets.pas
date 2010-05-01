@@ -646,6 +646,8 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure preferredSize(var PreferredWidth, PreferredHeight: integer;
+      WithThemeSpace: Boolean); override;
     procedure SignalTextChanged(p1: PWideString); cdecl;
   end;
 
@@ -5904,6 +5906,14 @@ begin
       Result:=inherited EventFilter(Sender, Event);
   end else
     Result:=inherited EventFilter(Sender, Event);
+end;
+
+procedure TQtLineEdit.preferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  QLineEdit_sizeHint(QLineEditH(Widget), @ASize);
+  PreferredHeight := ASize.cy;
+  PreferredWidth := ASize.cx;
 end;
 
 procedure TQtLineEdit.setCursorPosition(const AValue: Integer);
