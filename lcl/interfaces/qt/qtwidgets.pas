@@ -544,7 +544,6 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-    
     procedure signalStateChanged(p1: Integer); cdecl;
   end;
 
@@ -813,6 +812,8 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure preferredSize(var PreferredWidth, PreferredHeight: integer;
+      WithThemeSpace: Boolean); override;
 
     procedure SlotActivate(index: Integer); cdecl;
     procedure SlotChange(p1: PWideString); cdecl;
@@ -7230,6 +7231,16 @@ begin
   end;
   
   EndEventProcessing;
+end;
+
+procedure TQtComboBox.preferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  Size: TSize;
+begin
+  QComboBox_sizeHint(QComboBoxH(Widget), @Size);
+  PreferredWidth := Size.cx;
+  PreferredHeight := Size.cy;
 end;
 
 procedure TQtComboBox.SlotActivate(index: Integer); cdecl;
