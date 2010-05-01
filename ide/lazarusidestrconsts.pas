@@ -1538,7 +1538,7 @@ resourcestring
   dlgAddHiAttrGroupTemplateEdit  = 'Template Edit';
 
   dlgEditAccessCaptionLockedInView            = 'Locked, if text in view';
-  dlgEditAccessCaptionUnLockedInSoftView       = 'Unlocked, if text in centered view';
+  dlgEditAccessCaptionUnLockedInSoftView      = 'Unlocked, if text in centered view';
   dlgEditAccessCaptionUnLocked                = 'Unlocked';
   dlgEditAccessCaptionUnLockedOpenNewInOldWin = 'New tab in existing window';
   dlgEditAccessCaptionUnLockedOpenNewInNewWin = 'New tab in new window';
@@ -1563,13 +1563,13 @@ resourcestring
     'A tab is only opened if a window exists, that has not yet an editor for the target file.';
   dlgEditAccessDescUnLockedOpenNewInNewWin =
     'If no unlocked tab is found, then this option will open a new Tab in a new '+
-    ' Window (even if other existing windows could be used for the new tab). '+
+    'Window (even if other existing windows could be used for the new tab). '+
     'This option will always succeed, further options are never tested.';
   dlgEditAccessDescIgnLockedOldEdit =
     'This option will use the longest unused editor for the file, '+
     'even if it is locked and/or needs scrolling. '+
     'The determination of the longest unused editor does not look at the order in which the windows were focused, '+
-    'even if this is set by the setting for "same criteria order"' +
+    'even if this is set by the setting for "same criteria order". ' +
     'This option will always succeed, further options are never tested.';
   dlgEditAccessDescIgnLockedOnlyActEdit =
     'This option will check if the current active editor has the target file '+
