@@ -250,6 +250,15 @@ begin
   ReleaseDC(0, DC);
 end;
 
+procedure TScreen.RemoveAllHandlersOfObject(AnObject: TObject);
+var
+  HandlerType: TScreenNotification;
+begin
+  for HandlerType:=Low(TScreenNotification) to High(TScreenNotification) do
+    FScreenHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
+  inherited RemoveAllHandlersOfObject(AnObject);
+end;
+
 procedure TScreen.AddHandlerFormAdded(OnFormAdded: TScreenFormEvent;
   AsLast: Boolean);
 begin
@@ -285,24 +294,27 @@ begin
 end;
 
 procedure TScreen.AddHandlerActiveFormChanged(
-  OnActiveFormChanged: TScreenActiveFormChangedEvent; AsLast: Boolean);
+  OnActiveFormChanged: TScreenFormEvent; AsLast: Boolean);
 begin
   AddHandler(snActiveFormChanged,TMethod(OnActiveFormChanged),AsLast);
 end;
 
 procedure TScreen.RemoveHandlerActiveFormChanged(
-  OnActiveFormChanged: TScreenActiveFormChangedEvent);
+  OnActiveFormChanged: TScreenFormEvent);
 begin
   RemoveHandler(snActiveFormChanged,TMethod(OnActiveFormChanged));
 end;
 
-procedure TScreen.RemoveAllHandlersOfObject(AnObject: TObject);
-var
-  HandlerType: TScreenNotification;
+procedure TScreen.AddHandlerFormVisibleChanged(
+  OnFormVisibleChanged: TScreenFormEvent; AsLast: Boolean);
 begin
-  for HandlerType:=Low(TScreenNotification) to High(TScreenNotification) do
-    FScreenHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
-  inherited RemoveAllHandlersOfObject(AnObject);
+  AddHandler(snFormVisibleChanged,TMethod(OnFormVisibleChanged),AsLast);
+end;
+
+procedure TScreen.RemoveHandlerFormVisibleChanged(
+  OnFormVisibleChanged: TScreenFormEvent);
+begin
+  RemoveHandler(snFormVisibleChanged,TMethod(OnFormVisibleChanged));
 end;
 
 {
@@ -598,8 +610,6 @@ end;
   Do not use this procedure. This procedure is used by TScreen internally.
  ------------------------------------------------------------------------------}
 procedure TScreen.AddForm(AForm: TCustomForm);
-var
-  i: Integer;
 begin
   FCustomForms.Add(AForm);
   FCustomFormsZOrdered.Add(AForm);
@@ -608,9 +618,7 @@ begin
     FFormList.Add(AForm);
     Application.UpdateVisible;
   end;
-  i := FScreenHandlers[snFormAdded].Count;
-  while FScreenHandlers[snFormAdded].NextDownIndex(i) do
-    TScreenFormEvent(FScreenHandlers[snFormAdded][i])(Self, AForm);
+  NotifyScreenFormHandler(snFormAdded,AForm);
 end;
 
 {------------------------------------------------------------------------------
@@ -739,12 +747,8 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TScreen.RemoveForm(AForm: TCustomForm);
-var
-  i: Integer;
 begin
-  i := FScreenHandlers[snRemoveForm].Count;
-  while FScreenHandlers[snRemoveForm].NextDownIndex(i) do
-    TScreenFormEvent(FScreenHandlers[snRemoveForm][i])(Self, AForm);
+  NotifyScreenFormHandler(snRemoveForm,AForm);
   FCustomForms.Remove(AForm);
   FCustomFormsZOrdered.Remove(AForm);
   FFormList.Remove(AForm);
@@ -822,17 +826,9 @@ end;
 procedure TScreen.UpdateLastActive;
 
   procedure NotifyOnActiveFormChanged;
-  var
-    i: Integer;
-    Handler: TScreenFormEvent;
   begin
     if Assigned(FOnActiveFormChange) then FOnActiveFormChange(Self);
-    i := FScreenHandlers[snActiveFormChanged].Count;
-    while FScreenHandlers[snActiveFormChanged].NextDownIndex(i) do
-    begin
-      Handler := TScreenFormEvent(FScreenHandlers[snActiveFormChanged][i]);
-      Handler(Self, FLastActiveCustomForm);
-    end;
+    NotifyScreenFormHandler(snActiveFormChanged,FLastActiveCustomForm);
   end;
 
   procedure NotifyOnActiveControlChanged;
@@ -913,6 +909,20 @@ end;
 procedure TScreen.DoRemoveDataModule(DataModule: TDataModule);
 begin
   FDataModuleList.Remove(DataModule);
+end;
+
+procedure TScreen.NotifyScreenFormHandler(HandlerType: TScreenNotification;
+  Form: TCustomForm);
+var
+  i: integer;
+  Handler: TScreenFormEvent;
+begin
+  i := FScreenHandlers[HandlerType].Count;
+  while FScreenHandlers[HandlerType].NextDownIndex(i) do
+  begin
+    Handler := TScreenFormEvent(FScreenHandlers[HandlerType][i]);
+    Handler(Self, Form);
+  end;
 end;
 
 // included by forms.pp

@@ -536,6 +536,7 @@ type
     procedure DoFirstShow; virtual;
     procedure UpdateWindowState;
     procedure VisibleChanging; override;
+    procedure VisibleChanged; override;
     procedure WndProc(var TheMessage : TLMessage); override;
     function VisibleIsStored: boolean;
     procedure DoSendBoundsToInterface; override;
@@ -878,8 +879,6 @@ type
   end;
 
   TScreenFormEvent = procedure(Sender: TObject; Form: TCustomForm) of object;
-  TScreenActiveFormChangedEvent = procedure(Sender: TObject;
-                                            LastForm: TCustomForm) of object;
   TScreenControlEvent = procedure(Sender: TObject;
                                   LastControl: TControl) of object;
 
@@ -887,7 +886,8 @@ type
     snFormAdded,
     snRemoveForm,
     snActiveControlChanged,
-    snActiveFormChanged
+    snActiveFormChanged,
+    snFormVisibleChanged
     );
 
   TMonitorDefaultTo = (mdNearest, mdNull, mdPrimary);
@@ -957,6 +957,8 @@ type
                             const Handler: TMethod);
     procedure DoAddDataModule(DataModule: TDataModule);
     procedure DoRemoveDataModule(DataModule: TDataModule);
+    procedure NotifyScreenFormHandler(HandlerType: TScreenNotification;
+                                      Form: TCustomForm);
   protected
     function GetHintFont: TFont; virtual;
     function GetIconFont: TFont; virtual;
@@ -977,6 +979,7 @@ type
     function FindDataModule(const DataModuleName: string): TDataModule;
     procedure UpdateScreen;
     // handler
+    procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure AddHandlerFormAdded(OnFormAdded: TScreenFormEvent;
                                   AsLast: Boolean=true);
     procedure RemoveHandlerFormAdded(OnFormAdded: TScreenFormEvent);
@@ -988,12 +991,12 @@ type
                                     AsLast: Boolean=true);
     procedure RemoveHandlerActiveControlChanged(
                                    OnActiveControlChanged: TScreenControlEvent);
-    procedure AddHandlerActiveFormChanged(
-                             OnActiveFormChanged: TScreenActiveFormChangedEvent;
-                             AsLast: Boolean=true);
-    procedure RemoveHandlerActiveFormChanged(
-                            OnActiveFormChanged: TScreenActiveFormChangedEvent);
-    procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
+    procedure AddHandlerActiveFormChanged(OnActiveFormChanged: TScreenFormEvent;
+                                          AsLast: Boolean=true);
+    procedure RemoveHandlerActiveFormChanged(OnActiveFormChanged: TScreenFormEvent);
+    procedure AddHandlerFormVisibleChanged(OnFormVisibleChanged: TScreenFormEvent;
+                                           AsLast: Boolean=true);
+    procedure RemoveHandlerFormVisibleChanged(OnFormVisibleChanged: TScreenFormEvent);
 
     function DisableForms(SkipForm: TCustomForm; DisabledList: TList = nil): TList;
     procedure EnableForms(var AFormList: TList);

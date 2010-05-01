@@ -1212,6 +1212,13 @@ begin
   inherited VisibleChanging;
 end;
 
+procedure TCustomForm.VisibleChanged;
+begin
+  inherited VisibleChanged;
+  if (Screen<>nil) then
+    Screen.NotifyScreenFormHandler(snFormVisibleChanged,Self);
+end;
+
 {------------------------------------------------------------------------------
        TCustomForm WndProc
 ------------------------------------------------------------------------------}
