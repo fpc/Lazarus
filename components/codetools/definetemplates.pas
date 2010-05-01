@@ -1118,6 +1118,8 @@ end;
 function GatherUnitsInFPCSources(Files: TStringList; TargetOS: string;
   TargetCPU: string; ConflictFilenames: TStringList;
   Rules: TFPCSourceRules): TStringToStringTree;
+{ returns tree lowercase unit name to file name (maybe relative)
+}
 
   function CountMatches(Targets, aTxt: PChar): integer;
   // check how many of the comma separated words in Targets are in words of aTxt
