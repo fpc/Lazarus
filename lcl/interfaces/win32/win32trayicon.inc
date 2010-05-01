@@ -47,7 +47,7 @@ const
   uIDTrayIcon = 25;
 
 var
-  vwsTrayIcon: TCustomTrayIcon;
+  msgTaskbarRestart: DWord = DWord(-1);
 
 {*******************************************************************
 *  TrayWndProc ()
@@ -69,18 +69,19 @@ var
 function TrayWndProc(Handle: HWND; iMsg: UINT; WParam_: WPARAM; LParam_:LPARAM):LRESULT; stdcall;
 var
   pt: TPoint;
+  vwsTrayIcon: TCustomTrayIcon;
 begin
   if iMsg = WM_USER + uIDTrayIcon then
   begin
-     case LParam_ of
+    vwsTrayIcon := TCustomTrayIcon(PtrUInt(GetWindowLong(Handle, GWL_USERDATA)));
+    case LParam_ of
       WM_RBUTTONUP:
       begin
-        if Assigned(vwsTrayIcon.OnMouseUp) then vwsTrayIcon.OnMouseUp(Application,
-         mbRight, KeysToShiftState(WParam_), LOWORD(lParam_), HIWORD(lParam_));
+        pt := Mouse.CursorPos;
+        if Assigned(vwsTrayIcon.OnMouseUp) then
+          vwsTrayIcon.OnMouseUp(Application, mbRight, KeysToShiftState(WParam_), pt.x, pt.y);
         if Assigned(vwsTrayIcon.PopUpMenu) then
         begin
-          pt := Mouse.CursorPos;// Gets cursor position in screen coords
-
           // Apparently SetForegroundWindow and PostMessage are necessary
           // because we're invoking the shortcut menu from a notification icon
           // This is an attempt to prevent from messing with the Z-order
@@ -89,31 +90,68 @@ begin
           vwsTrayIcon.PopUpMenu.Popup(pt.x, pt.y);
         end;
       end;
-      WM_RBUTTONDOWN: if Assigned(vwsTrayIcon.OnMouseDown) then vwsTrayIcon.OnMouseDown(Application,
-       mbRight, KeysToShiftState(WParam_), LOWORD(lParam_), HIWORD(lParam_));
-      WM_RBUTTONDBLCLK: if Assigned(vwsTrayIcon.OnDblClick) then vwsTrayIcon.OnDblClick(Application);
-
-      WM_MBUTTONDOWN: if Assigned(vwsTrayIcon.OnMouseDown) then vwsTrayIcon.OnMouseDown(Application,
-       mbMiddle, KeysToShiftState(WParam_), LOWORD(lParam_), HIWORD(lParam_));
-      WM_MBUTTONUP: if Assigned(vwsTrayIcon.OnMouseUp) then vwsTrayIcon.OnMouseUp(Application,
-       mbMiddle, KeysToShiftState(WParam_), LOWORD(lParam_), HIWORD(lParam_));
-
+      WM_RBUTTONDOWN:
+        if Assigned(vwsTrayIcon.OnMouseDown) then
+        begin
+          pt := Mouse.CursorPos;
+          vwsTrayIcon.OnMouseDown(Application, mbRight, KeysToShiftState(WParam_), pt.x, pt.y);
+        end;
+      WM_RBUTTONDBLCLK:
+        if Assigned(vwsTrayIcon.OnDblClick) then
+          vwsTrayIcon.OnDblClick(Application);
+      WM_MBUTTONDOWN:
+        if Assigned(vwsTrayIcon.OnMouseDown) then
+        begin
+          pt := Mouse.CursorPos;
+          vwsTrayIcon.OnMouseDown(Application, mbMiddle, KeysToShiftState(WParam_), pt.x, pt.y);
+        end;
+      WM_MBUTTONUP:
+        if Assigned(vwsTrayIcon.OnMouseUp) then
+        begin
+          pt := Mouse.CursorPos;
+          vwsTrayIcon.OnMouseUp(Application, mbMiddle, KeysToShiftState(WParam_), pt.x, pt.y);
+        end;
       WM_LBUTTONUP:
       begin
-        if Assigned(vwsTrayIcon.OnMouseUp) then vwsTrayIcon.OnMouseUp(Application,
-         mbLeft, KeysToShiftState(WParam_), LOWORD(lParam_), HIWORD(lParam_));
-        if Assigned(vwsTrayIcon.OnClick) then vwsTrayIcon.OnClick(Application);
+        pt := Mouse.CursorPos;
+        if Assigned(vwsTrayIcon.OnMouseUp) then
+          vwsTrayIcon.OnMouseUp(Application, mbLeft, KeysToShiftState(WParam_), pt.x, pt.y);
+        if Assigned(vwsTrayIcon.OnClick) then
+          vwsTrayIcon.OnClick(Application);
       end;
-      WM_LBUTTONDOWN: if Assigned(vwsTrayIcon.OnMouseDown) then vwsTrayIcon.OnMouseDown(Application,
-       mbLeft, KeysToShiftState(WParam_), LOWORD(lParam_), HIWORD(lParam_));
-      WM_LBUTTONDBLCLK: if Assigned(vwsTrayIcon.OnDblClick) then vwsTrayIcon.OnDblClick(Application);
+      WM_LBUTTONDOWN:
+        if Assigned(vwsTrayIcon.OnMouseDown) then
+        begin
+          pt := Mouse.CursorPos;
+          vwsTrayIcon.OnMouseDown(Application, mbLeft, KeysToShiftState(WParam_), pt.x, pt.y);
+        end;
+      WM_LBUTTONDBLCLK:
+        if Assigned(vwsTrayIcon.OnDblClick) then
+          vwsTrayIcon.OnDblClick(Application);
+      WM_MOUSEMOVE:
+        if Assigned(vwsTrayIcon.OnMouseMove) then
+        begin
+          pt := Mouse.CursorPos;
+          vwsTrayIcon.OnMouseMove(Application, KeysToShiftState(WParam_), pt.x, pt.y);
+        end;
+    end;
 
-      WM_MOUSEMOVE: if Assigned(vwsTrayIcon.OnMouseMove) then
-       vwsTrayIcon.OnMouseMove(Application, KeysToShiftState(WParam_), LOWORD(lParam_), HIWORD(lParam_));
-     end;
-
-     Result := 1;
-     Exit;
+    Result := 1;
+    Exit;
+  end
+  else
+  if iMsg = WM_CREATE then
+  begin
+    msgTaskbarRestart := RegisterWindowMessage('TaskbarCreated');
+    SetWindowLong(Handle, GWL_USERDATA, PtrInt(PCREATESTRUCT(LParam_)^.lpCreateParams));
+  end
+  else
+  if (iMsg = msgTaskbarRestart) then
+  begin
+    // add taskbar icon
+    vwsTrayIcon := TCustomTrayIcon(PtrUInt(GetWindowLong(Handle, GWL_USERDATA)));
+    if Assigned(vwsTrayIcon) then
+      TWin32WSCustomTrayIcon.AddIcon(vwsTrayIcon);
   end;
 
   Result := DefWindowProc(Handle, iMsg, WParam_, LParam_);
@@ -121,45 +159,7 @@ end;
 
 { TWin32WSCustomTrayIcon }
 
-{*******************************************************************
-*  TWin32WSCustomTrayIcon.Hide ()
-*
-*  DESCRIPTION:    Hides the main tray icon of the program
-*
-*  PARAMETERS:     None
-*
-*  RETURNS:        True if sucessfull, otherwise False
-*
-*******************************************************************}
-class function TWin32WSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
-var
-  tnid: TNotifyIconData;
-begin
-  // Fill TNotifyIconData
-  FillChar(tnid, SizeOf(tnid), 0);
-  tnid.cbSize := SizeOf(TNotifyIconData);
-  tnid.hWnd := ATrayIcon.Handle;
-  tnid.uID := uIDTrayIcon;
-
-  // Remove the icon
-  Result := Shell_NotifyIconA(NIM_DELETE, @tnid);
-
-  // Destroys the helper Windows
-  PostMessage(ATrayIcon.Handle, WM_CLOSE, 0, 0);
-  PostMessage(ATrayIcon.Handle, WM_DESTROY, 0, 0);
-end;
-
-{*******************************************************************
-*  TWin32WSCustomTrayIcon.Show ()
-*
-*  DESCRIPTION:    Shows the main tray icon of the program
-*
-*  PARAMETERS:     None
-*
-*  RETURNS:        True if sucessfull, otherwise False
-*
-*******************************************************************}
-class function TWin32WSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
+class function TWin32WSCustomTrayIcon.AddIcon(ATrayIcon: TCustomTrayIcon): Boolean;
 var
   tnida: TNotifyIconDataA;
   {$ifdef WindowsUnicodeSupport}
@@ -167,40 +167,7 @@ var
   AnsiBuffer: ansistring;
   WideBuffer: widestring;
   {$endif}
-  Window: Windows.TWndClassEx;
 begin
-  vwsTrayIcon := ATrayIcon;
-
-  ZeroMemory(@Window, SizeOf(TWndClassEx));
-  Window.cbSize := SizeOf(TWndClassEx);
-  Window.style := CS_OWNDC;
-  Window.lpfnWndProc := @TrayWndProc;
-  Window.cbClsExtra := 0;
-  Window.cbWndExtra := 0;
-  Window.hInstance := hInstance;
-//  Window.hIcon := Icon.Handle;
-  Window.hCursor := LoadCursor(0, IDC_ARROW);
-  Window.hbrBackground := HBRUSH(GetStockObject(NULL_BRUSH));
-  Window.lpszMenuName := nil;
-  Window.lpszClassName := szClassName;
-//  Window.hIconSm := hSmallIcon;
-
-  Windows.RegisterClassEx(Window);
-
-  ATrayIcon.Handle := CreateWindowEx(
-        0,            //* Ensure that there will be no button in the bar */
-        szClassName,        //* Name of the registered class */
-        szAppTitle,         //* Title of the window */
-        0,                  //* Style of the window */
-        0,                  //* x-position (at beginning) */
-        0,                  //* y-position (at beginning) */
-        CW_USEDEFAULT,      //* window width */
-        CW_USEDEFAULT,      //* window height */
-        0,                  //* handle to parent or owner window */
-        0,                  //* handle to menu */
-        hInstance,          //* handle to application instance */
-        nil);               //* pointer to window-creation data */
-
   {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
@@ -259,6 +226,82 @@ begin
   //  Create Taskbar icon
   Result := Shell_NotifyIconA(NIM_ADD, @tnida);
   {$endif}
+end;
+
+{*******************************************************************
+*  TWin32WSCustomTrayIcon.Hide ()
+*
+*  DESCRIPTION:    Hides the main tray icon of the program
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        True if sucessfull, otherwise False
+*
+*******************************************************************}
+
+class function TWin32WSCustomTrayIcon.Hide(const ATrayIcon: TCustomTrayIcon): Boolean;
+var
+  tnid: TNotifyIconData;
+begin
+  // Fill TNotifyIconData
+  FillChar(tnid, SizeOf(tnid), 0);
+  tnid.cbSize := SizeOf(TNotifyIconData);
+  tnid.hWnd := ATrayIcon.Handle;
+  tnid.uID := uIDTrayIcon;
+
+  // Remove the icon
+  Result := Shell_NotifyIconA(NIM_DELETE, @tnid);
+
+  // Destroys the helper Windows
+  PostMessage(ATrayIcon.Handle, WM_CLOSE, 0, 0);
+  PostMessage(ATrayIcon.Handle, WM_DESTROY, 0, 0);
+end;
+
+{*******************************************************************
+*  TWin32WSCustomTrayIcon.Show ()
+*
+*  DESCRIPTION:    Shows the main tray icon of the program
+*
+*  PARAMETERS:     None
+*
+*  RETURNS:        True if sucessfull, otherwise False
+*
+*******************************************************************}
+class function TWin32WSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
+var
+  Window: Windows.TWndClassEx;
+begin
+  if not GetClassInfo(hInstance, szClassName, @Window) then
+  begin
+    ZeroMemory(@Window, SizeOf(TWndClassEx));
+    Window.cbSize := SizeOf(TWndClassEx);
+    Window.style := CS_OWNDC;
+    Window.lpfnWndProc := @TrayWndProc;
+    Window.cbClsExtra := 0;
+    Window.cbWndExtra := 0;
+    Window.hInstance := hInstance;
+    Window.hCursor := LoadCursor(0, IDC_ARROW);
+    Window.hbrBackground := HBRUSH(GetStockObject(NULL_BRUSH));
+    Window.lpszMenuName := nil;
+    Window.lpszClassName := szClassName;
+    Windows.RegisterClassEx(Window);
+  end;
+
+  ATrayIcon.Handle := CreateWindowEx(
+        0,            //* Ensure that there will be no button in the bar */
+        szClassName,        //* Name of the registered class */
+        szAppTitle,         //* Title of the window */
+        0,                  //* Style of the window */
+        0,                  //* x-position (at beginning) */
+        0,                  //* y-position (at beginning) */
+        CW_USEDEFAULT,      //* window width */
+        CW_USEDEFAULT,      //* window height */
+        0,                  //* handle to parent or owner window */
+        0,                  //* handle to menu */
+        hInstance,          //* handle to application instance */
+        ATrayIcon);               //* pointer to window-creation data */
+
+  Result := AddIcon(ATrayIcon);
 end;
 
 {*******************************************************************

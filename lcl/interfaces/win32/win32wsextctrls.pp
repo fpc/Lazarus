@@ -189,6 +189,8 @@ type
   { TWin32WSCustomTrayIcon }
 
   TWin32WSCustomTrayIcon = class(TWSCustomTrayIcon)
+  protected
+    class function AddIcon(ATrayIcon: TCustomTrayIcon): Boolean;
   published
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
