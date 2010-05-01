@@ -645,8 +645,11 @@ procedure AdjustFPCSrcRulesForPPUPaths(Units: TStringToStringTree;
                                        Rules: TFPCSourceRules);
 function GatherUnitsInFPCSources(Files: TStringList;
                    TargetOS: string = ''; TargetCPU: string = '';
-                   ConflictFilenames: TStringList = nil; // every line is semicolon separated list of files
+                   Duplicates: TStringToStringTree = nil; // lower case unit to semicolon separated list of files
                    Rules: TFPCSourceRules = nil): TStringToStringTree;
+procedure CheckPPUSources(PPUFiles,  // lowercase unitname to filename
+                          AllDuplicates: TStringToStringTree; // lowercase unitname to semicolon separated list of files
+                          var Duplicates, Missing: TStringToStringTree);
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
@@ -1050,7 +1053,7 @@ end;
 function GatherUnitsInSearchPaths(SearchPaths: TStrings;
   const OnProgress: TDefinePoolProgress): TStringToStringTree;
 { returns a stringtree,
-  where name is uppercase unitname and value is the full file name
+  where name is lowercase unitname and value is the full file name
 
   SearchPaths are searched from last to start
   first found wins
@@ -1065,7 +1068,7 @@ var
   ShortFilename: String;
   Filename: String;
   Ext: String;
-  UpperUnitname: String;
+  LowerUnitname: String;
 begin
   Result:=TStringToStringTree.Create(true);
   FileCount:=0;
@@ -1084,13 +1087,13 @@ begin
           continue;
         //debugln(['GatherUnitsInSearchPaths ShortFilename=',ShortFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0]);
         Filename:=Directory+ShortFilename;
-        Ext:=UpperCaseStr(ExtractFileExt(ShortFilename));
-        if (Ext='.PAS') or (Ext='.PP') or (Ext='.P') or (Ext='.PPU') then begin
-          UpperUnitname:=UpperCaseStr(ExtractFileNameOnly(Filename));
-          if (not Result.Contains(UpperUnitname))
-          or ((Ext<>'.PPU') and (CompareFileExt(Result[UpperUnitname],'PPU',false)=0))
+        Ext:=LowerCase(ExtractFileExt(ShortFilename));
+        if (Ext='.pas') or (Ext='.pp') or (Ext='.p') or (Ext='.ppu') then begin
+          LowerUnitname:=lowercase(ExtractFileNameOnly(Filename));
+          if (not Result.Contains(LowerUnitname))
+          or ((Ext<>'.ppu') and (CompareFileExt(Result[LowerUnitname],'ppu',false)=0))
           then
-            Result[UpperUnitname]:=Filename;
+            Result[LowerUnitname]:=Filename;
         end;
       until FindNextUTF8(FileInfo)<>0;
     end;
@@ -1105,7 +1108,7 @@ var
   Rule: TFPCSourceRule;
 begin
   // check unit httpd
-  Filename:=Units['HTTPD'];
+  Filename:=Units['httpd'];
   if Filename<>'' then begin
     Filename:=ChompPathDelim(ExtractFilePath(Filename));
     Rule:=Rules.Add('packages/'+ExtractFileName(Filename));
@@ -1116,7 +1119,7 @@ begin
 end;
 
 function GatherUnitsInFPCSources(Files: TStringList; TargetOS: string;
-  TargetCPU: string; ConflictFilenames: TStringList;
+  TargetCPU: string; Duplicates: TStringToStringTree;
   Rules: TFPCSourceRules): TStringToStringTree;
 { returns tree lowercase unit name to file name (maybe relative)
 }
@@ -1259,8 +1262,8 @@ begin
       Result[Link.Unit_Name]:=Link.Filename;
       if (Link.ConflictFilename<>'') and (Link.Score>0) then begin
         DebugLn(['GatherUnitsInFPCSources Ambiguous: ',Link.Score,' ',Link.Filename,' ',Link.ConflictFilename]);
-        if ConflictFilenames<>nil then
-          ConflictFilenames.Add(Link.Filename+';'+Link.ConflictFilename);
+        if Duplicates<>nil then
+          Duplicates[Link.Unit_Name]:=Link.Filename+';'+Link.ConflictFilename;
       end;
       Node:=Links.FindSuccessor(Node);
     end;
@@ -1269,6 +1272,12 @@ begin
     Links.FreeAndClear;
     Links.Free;
   end;
+end;
+
+procedure CheckPPUSources(PPUFiles, AllDuplicates: TStringToStringTree;
+  var Duplicates, Missing: TStringToStringTree);
+begin
+
 end;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
