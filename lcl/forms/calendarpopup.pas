@@ -26,11 +26,10 @@ unit CalendarPopup;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  Calendar, LCLType;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Calendar, LCLProc, LCLType;
   
 type
-  TReturnDateEvent = procedure (Sender: TObject;const Date: TDateTime) of object;
+  TReturnDateEvent = procedure (Sender: TObject; const Date: TDateTime) of object;
 
   { TCalendarPopupForm }
 
@@ -46,8 +45,7 @@ type
     procedure Initialize(const PopupOrigin: TPoint; ADate: TDateTime);
     procedure ReturnDate;
   protected
-    procedure Paint;override;
-  public
+    procedure Paint; override;
   end;
 
 procedure ShowCalendarPopup(const Position: TPoint; ADate: TDateTime;
@@ -102,7 +100,8 @@ procedure TCalendarPopupForm.CalendarKeyDown(Sender: TObject; var Key: Word;
 var
   Handled: Boolean;
 begin
-  if Shift=[] then begin
+  if Shift=[] then
+  begin
     Handled := true;
     case Key of
     VK_ESCAPE:
