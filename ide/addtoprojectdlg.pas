@@ -334,11 +334,11 @@ begin
       for i:=0 to OpenDialog.Files.Count-1 do begin
         AFilename:=CleanAndExpandFilename(OpenDialog.Files[i]);
         if FileExistsUTF8(AFilename) then begin
+          NewPgkFileType:=FileNameToPkgFileType(AFilename);
           if ADirectory<>'' then
             AFilename:=CreateRelativePath(AFilename,ADirectory);
           NewListItem:=FilesListView.Items.Add;
           NewListItem.Caption:=AFilename;
-          NewPgkFileType:=FileNameToPkgFileType(AFilename);
           NewListItem.SubItems.Add(GetPkgFileTypeLocalizedName(NewPgkFileType));
         end;
       end;
