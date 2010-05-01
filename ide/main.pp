@@ -15748,7 +15748,7 @@ begin
     exit;
 
   SrcNB := TSourceNotebook(Sender);
-  if (SrcNB.EditorCount = 1) and (SrcNB.Editors[0].SharedEditorCount > 1) then begin
+  if (SrcNB.EditorCount = 1) then begin
     DoCloseEditorFile(SrcNB.Editors[0], []);
     CloseAction := caFree;
     exit;
