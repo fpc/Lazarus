@@ -156,6 +156,7 @@ type
   public
     procedure AddSharedEditor(AnEditor: TSourceEditor);
     procedure RemoveSharedEditor(AnEditor: TSourceEditor);
+    procedure SetActiveSharedEditor(AnEditor: TSourceEditor);
     function  SharedEditorCount: Integer;
     function  OtherSharedEditorCount: Integer;
     property  SharedEditors[Index: Integer]: TSourceEditor read GetSharedEditors;
@@ -171,6 +172,7 @@ type
     property ExecutionMark: TSourceMark read FExecutionMark write FExecutionMark;
     property MarksRequested: Boolean read FMarksRequested write FMarksRequested;
   private
+    FInGlobalUpdate: Integer;
     FModified: boolean;
     FIgnoreCodeBufferLock: integer;
     FEditorStampCommitedToCodetools: int64;
@@ -180,6 +182,8 @@ type
     procedure SetModified(const AValue: Boolean);
     procedure OnCodeBufferChanged(Sender: TSourceLog; SrcLogEntry: TSourceLogEntry);
   public
+    procedure BeginGlobalUpdate;
+    procedure EndGlobalUpdate;
     property Modified: Boolean read GetModified write SetModified;
     property  IgnoreCodeBufferLock: Integer read FIgnoreCodeBufferLock;
     procedure IncreaseIgnoreCodeBufferLock;
@@ -316,6 +320,8 @@ type
     procedure EndUndoBlock; override;
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
+    procedure BeginGlobalUpdate;
+    procedure EndGlobalUpdate;
     procedure IncreaseIgnoreCodeBufferLock; override;
     procedure DecreaseIgnoreCodeBufferLock; override;
     procedure UpdateCodeBuffer; override;// copy the source from EditorComponent
@@ -2120,6 +2126,26 @@ begin
   end;
 end;
 
+procedure TSourceEditorSharedValues.BeginGlobalUpdate;
+var
+  i: Integer;
+begin
+  inc(FInGlobalUpdate);
+  if FInGlobalUpdate > 1 then exit;
+  SynEditor.BeginUpdate;  // locks all shared SynEdits too
+  SynEditor.BeginUndoBlock;
+end;
+
+procedure TSourceEditorSharedValues.EndGlobalUpdate;
+var
+  i: Integer;
+begin
+  dec(FInGlobalUpdate);
+  if FInGlobalUpdate > 0 then exit;
+  SynEditor.EndUndoBlock;
+  SynEditor.EndUpdate;
+end;
+
 procedure TSourceEditorSharedValues.AddSharedEditor(AnEditor: TSourceEditor);
 begin
   if FSharedEditorList.IndexOf(AnEditor) < 0 then
@@ -2130,6 +2156,14 @@ procedure TSourceEditorSharedValues.RemoveSharedEditor(AnEditor: TSourceEditor
   );
 begin
   FSharedEditorList.Remove(AnEditor);
+end;
+
+procedure TSourceEditorSharedValues.SetActiveSharedEditor(AnEditor: TSourceEditor);
+begin
+  if FInGlobalUpdate > 0 then exit;
+  // Move to the front, for UpdateCodetools (get undo-caret from correct synedit)
+  FSharedEditorList.Remove(AnEditor);
+  FSharedEditorList.Insert(0, AnEditor);
 end;
 
 function TSourceEditorSharedValues.SharedEditorCount: Integer;
@@ -2192,6 +2226,7 @@ begin
   FExecutionLine:=-1;
   FExecutionMark := nil;
   FMarksRequested := False;
+  FInGlobalUpdate := 0;
 end;
 
 destructor TSourceEditorSharedValues.Destroy;
@@ -2595,6 +2630,7 @@ Begin
   {$ENDIF}
   if SourceNotebook<>nil then SourceNotebook.Visible:=true;
   FEditor.SetFocus;
+  FSharedValues.SetActiveSharedEditor(Self);
   //DebugLn('TSourceEditor.FocusEditor ',dbgsName(FindOwnerControl(GetFocus)),' ',dbgs(GetFocus));
   {$IFDEF VerboseFocus}
   writeln('TSourceEditor.FocusEditor END ',PageName,' ',FEditor.Name);
@@ -2635,7 +2671,7 @@ var
   s: String;
 begin
   //DebugLn('TSourceEditor.ProcessCommand Command=',dbgs(Command));
-
+  FSharedValues.SetActiveSharedEditor(Self);
   SourceCompletionTimer.AutoEnabled:=false;
 
   if (Command=ecChar) and (AChar=#27) then begin
@@ -2770,6 +2806,7 @@ var
   Handled: boolean;
 Begin
   //debugln('TSourceEditor.ProcessUserCommand A ',dbgs(Command));
+  FSharedValues.SetActiveSharedEditor(Self);
   Handled:=true;
 
   if Manager.ActiveSourceWindow <> SourceNotebook then begin
@@ -4012,6 +4049,16 @@ end;
 procedure TSourceEditor.EndUpdate;
 begin
   FEditor.EndUpdate;
+end;
+
+procedure TSourceEditor.BeginGlobalUpdate;
+begin
+  FSharedValues.BeginGlobalUpdate;
+end;
+
+procedure TSourceEditor.EndGlobalUpdate;
+begin
+  FSharedValues.EndGlobalUpdate;
 end;
 
 procedure TSourceEditor.SetPopupMenu(NewPopupMenu: TPopupMenu);
@@ -8486,12 +8533,8 @@ var
 begin
   for i:=0 to SourceEditorCount - 1 do begin
     if CodeToolBoss.SourceChangeCache.BufferIsModified(SourceEditors[i].CodeBuffer)
-    then begin
-      with SourceEditors[i].EditorComponent do begin
-        BeginUpdate;
-        BeginUndoBlock;
-      end;
-    end;
+    then
+      SourceEditors[i].BeginGlobalUpdate;
   end;
 end;
 
@@ -8502,12 +8545,8 @@ var
 begin
   for i:=0 to SourceEditorCount - 1 do begin
     if CodeToolBoss.SourceChangeCache.BufferIsModified(SourceEditors[i].CodeBuffer)
-    then begin
-      with SourceEditors[i].EditorComponent do begin
-        EndUndoBlock;
-        EndUpdate;
-      end;
-    end;
+    then
+      SourceEditors[i].EndGlobalUpdate;
   end;
 end;
 
