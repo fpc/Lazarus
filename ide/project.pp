@@ -352,7 +352,7 @@ type
     procedure CreateStartCode(Descriptor: TProjectFileDescriptor;
                               const NewUnitName: string);
     procedure IgnoreCurrentFileDateOnDisk;
-    procedure IncreaseAutoRevertLock;
+    procedure IncreaseAutoRevertLock; // do not auto revert from disk
     procedure DecreaseAutoRevertLock;
     function ParseUnitNameFromSource(TryCache: boolean): string;// fetch name fom source
     procedure ReadUnitNameFromSource(TryCache: boolean);// fetch unit name from source and update property UnitName
@@ -3226,11 +3226,8 @@ begin
   AnUnit.OnLoadSaveFilename:=@OnLoadSaveFilename;
   AnUnit.OnUnitNameChange:=@OnUnitNameChange;
   
-  // check if this is the new Main Unit
-  // or if this is the first unit, make it automatically the main unit
-  if (MainUnitID<0) and (UnitCount=1) then
-    MainUnitID:=0
-  else if MainUnitID=NewIndex then
+  // lock the main unit (when it is changed on disk it should *not* auto revert)
+  if MainUnitID=NewIndex then
     MainUnitInfo.IncreaseAutoRevertLock;
 
   if AddToProjectUsesClause and (MainUnitID>=0) and (MainUnitID<>NewIndex) then
