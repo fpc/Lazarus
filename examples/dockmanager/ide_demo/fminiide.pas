@@ -206,9 +206,14 @@ procedure TMainBar.buSaveClick(Sender: TObject);
 var
   strm: TFileStream;
 begin
+(* Save layout.
+  This should inlude ALL forms, not only the dockable ones!
+*)
   if dlgLayout.Execute then begin
     strm := TFileStream.Create(dlgLayout.FileName, fmCreate);
     try
+    //save non-dockable forms
+    //save dockable forms and sites
       DockMaster.SaveToStream(strm);
     finally
       strm.Free;
@@ -225,6 +230,8 @@ begin
 (* Create a client form, and dock it into a floating dock host site.
   We must force docking here, later the client will dock itself into
   a float host site, when it becomes floating.
+
+  Should use: DockMaster.CreateDockable(TViewWindow) - RegisterClass!
 *)
 //lookup existing (assume single instance forms)
   n := StringReplace(cap, ' ', '', [rfReplaceAll]);
@@ -233,12 +240,16 @@ begin
   //create the form
     Client := TViewWindow.Create(Self);
     Client.Label1.Caption := cap;
-    Client.Visible := True;
   //name it
     Client.Caption := cap;
     TryRename(Client, n);
     DockMaster.MakeDockable(Client, fWrap, True);
+    Client.Visible := True;
     Result := Client;
+  end else begin
+  //activate the existing form
+    Result.Show; //might be invisible
+    Result.SetFocus;
   end;
 end;
 

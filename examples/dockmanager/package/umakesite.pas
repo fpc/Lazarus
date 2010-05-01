@@ -277,7 +277,7 @@ var
   s: string;
   ctl: TControl;
 begin
-(* Reload docked forms
+(* Reload any docked forms, from Screen's collection
 *)
 //search existing forms
   Result := nil;
@@ -292,7 +292,7 @@ begin
   end;
 //not found
   Result := inherited ReloadControl(AName, Site);
-  if Result = nil then
+  if (Result = nil) and TryCreateControls then
     Result := ReloadForm(AName, False, True);
 end;
 
@@ -424,27 +424,11 @@ Notebooks?
   Ownership?
     When notebooks are dockable, they cannot be owned by the DockSite!
 *)
-  Stream.Position := 0; //rewind!
+//Allow for non-dockable forms information in front of this part!
+  //Stream.Position := 0; //rewind! - must be done by the caller
+{ TODO : add non-dockable forms, for full application layout }
 //restore all top level sites
   while ReadSite do begin
-  {$IFDEF old}
-    if SiteRec.NameLen = 0 then begin
-    //floating site
-      site := TFloatingSite.Create(self);
-      site.BoundsRect := SiteRec.Bounds;
-    end else begin
-    //hosted panel - find parent form
-      site := MakePanel(SiteName, SiteRec.Align);
-    end;
-  //debug
-    if site = nil then begin
-      exit; //stream error!
-    end;
-  //adjust host form
-    if site.DockManager = nil then
-      TAppDockManager.Create(site);
-    site.DockManager.LoadFromStream(Stream);
-  {$ELSE}
     case SiteRec.Kind of
     skEnd,      //end marker
     skNone:     //not to be saved/restored
@@ -471,17 +455,16 @@ Notebooks?
       ShowMessage('unhandled site kind: ' + SiteName);
       exit;
     end;
-    //debug
-      if site = nil then begin
-        ShowMessage('could not reload ' + SiteName);
-        exit; //stream error!
-      end;
-    //adjust host form
-      if site.DockManager = nil then
-        TAppDockManager.Create(site);
-      site.DockManager.LoadFromStream(Stream);
-      site.Show;
-  {$ENDIF}
+  //debug
+    if site = nil then begin
+      ShowMessage('could not reload ' + SiteName);
+      exit; //stream error!
+    end;
+  //adjust host form
+    if site.DockManager = nil then
+      TAppDockManager.Create(site);
+    site.DockManager.LoadFromStream(Stream);
+    site.Show;
   end;
 end;
 
@@ -497,29 +480,6 @@ procedure TDockMaster.SaveToStream(Stream: TStream);
       //destroy empty floating sites?
       exit;
     end;
-  {$IFDEF old}
-    if Site.DockManager = nil then
-      exit;
-    if Site is TDockPanel then begin
-      if site.Parent = nil then begin
-      //destroy orphaned panel?
-        site.Free;
-        exit;
-      end;
-      SiteRec.Bounds := Site.Parent.BoundsRect;
-      SiteRec.Extent := site.BoundsRect;
-      SiteRec.AutoExpand := (site as TDockPanel).AutoExpand;
-    end else {if Site.Parent = nil then} begin
-      SiteRec.Bounds := Site.BoundsRect
-    end;
-    SiteName := AName;
-    SiteRec.Align := Site.Align;
-    SiteRec.NameLen := Length(SiteName);
-    Stream.Write(SiteRec, sizeof(SiteRec));
-    if AName <> '' then
-      Stream.Write(SiteName[1], Length(SiteName));
-    Site.DockManager.SaveToStream(Stream);
-  {$ELSE}
     SiteRec.Kind := skNone;
   //handle elastic sites first!
     if Site is TDockPanel then begin
@@ -569,7 +529,6 @@ procedure TDockMaster.SaveToStream(Stream: TStream);
       ShowMessage('unhandled site ' + SiteName);
       //raise...
     end;
-  {$ENDIF}
   end;
 
 var
@@ -578,7 +537,7 @@ var
   wc: TWinControl absolute cmp;
 begin
 (* Save all floating sites and elastic panels.
-  The sites are in Components[].
+  The sites are in our Components[].
   The panels are in ElasticSites (if ownPanels is undefined).
 *)
 //save floating sites
@@ -589,13 +548,8 @@ begin
     end;
   end;
 //end marker
-{$IFDEF old}
-  SiteRec.Bounds.Right := -1;
-  SiteRec.NameLen := 0;
-{$ELSE}
   SiteRec.Kind := skEnd;
   //SiteName:='';
-{$ENDIF}
   Stream.Write(SiteRec, sizeof(SiteRec));
 end;
 

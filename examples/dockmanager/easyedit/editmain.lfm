@@ -6,7 +6,7 @@ object MainForm: TMainForm
   Caption = 'MainForm'
   Menu = MainMenu1
   OnCreate = FormCreate
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object MainMenu1: TMainMenu
     left = 10
     top = 10

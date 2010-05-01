@@ -59,10 +59,14 @@ var
 
 implementation
 
+uses
+  uMakeSite;
+
 { TMainForm }
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  TDockMaster.Create(self);
 {
   MyEdit := TEasyPages.Create(self);
   MyEdit.Align := alClient;

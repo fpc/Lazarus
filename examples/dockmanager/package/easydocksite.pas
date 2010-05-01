@@ -300,9 +300,10 @@ type
     procedure IdToRec(const ID: string);
     function  RecToId: string;
   public //become class functions?
+    TryCreateControls: boolean;
     function  MakeDockable(AForm: TWinControl; fWrap: boolean = True; fVisible: boolean = False): TForm; virtual;
-    function SaveControl(Control: TControl; Site: TWinControl): string; virtual;
-    function ReloadControl(const AName: string; Site: TWinControl): TControl; virtual;
+    function  SaveControl(Control: TControl; Site: TWinControl): string; virtual;
+    function  ReloadControl(const AName: string; Site: TWinControl): TControl; virtual;
     property OnSave: TOnSaveControl read FOnSave write FOnSave;
     property OnRestore: TOnReloadControl read FOnRestore write FOnRestore;
     property ControlDescriptor: RControlDescriptor read rc;
@@ -2087,6 +2088,7 @@ var
   dst: TDockSiteClass absolute ct;
 begin
 (* Restore from typename, then restore clients.
+  Called when AName[1]=CustomDockSiteID.
 *)
   Result := nil;
   ss := TStringStream.Create(AName);
@@ -2115,6 +2117,10 @@ var
   ss: TStringStream;
 begin
 (* Save typename and clients.
+  Write to string:
+  - CustomDockSiteID
+  - ClassName
+  - content (SaveToStream)
 *)
   ss := TStringStream.Create('');
   try
@@ -2136,6 +2142,15 @@ begin
 (* Save all docked controls.
   Flag nested custom dock sites - how?
 *)
+  if assigned(DockManager) then begin
+    DockManager.SaveToStream(strm);
+    exit;
+  end;
+{$IFDEF new}
+(* requires:
+- flag unmanaged
+- ctl.BoundsRect (within site!) -> translate for ManualDock
+*)
   n := DockClientCount;
   strm.WriteByte(n);
   for i := 0 to n-1 do begin
@@ -2143,6 +2158,9 @@ begin
     s := DockLoader.SaveControl(ctl, self);
     strm.WriteAnsiString(s);
   end;
+{$ELSE}
+  //unmanaged docksites unhandled
+{$ENDIF}
 end;
 
 procedure TCustomDockSite.LoadFromStream(strm: TStream);
@@ -2151,6 +2169,12 @@ var
   ctl: TControl;
   cn: string;
 begin
+  if assigned(DockManager) then begin
+    DockManager.LoadFromStream(strm);
+    exit;
+  end
+{$IFDEF new}
+//see SaveToStream!
   n := strm.ReadByte;
   for i := 1 to n do begin
     cn := strm.ReadAnsiString;
@@ -2159,6 +2183,9 @@ begin
       ctl.ManualDock(self); //orientation???
     //make visible?
   end;
+{$ELSE}
+  //unmanaged docksites unhandled
+{$ENDIF}
 end;
 
 { TCustomDockMaster }
@@ -2229,9 +2256,7 @@ var
 begin
 (* Result is the floating site, if created (fWrap).
   fWrap here is ignored.
-To be overridden by final TDockMaster, for
-- wrapping
-- visibility
+To be overridden by final TDockMaster, for wrapping.
 *)
 //make it dockable
   wctl.DragKind := dkDock;
@@ -2248,12 +2273,12 @@ var
   fo: TComponent; //form owner
   cmp: TComponent absolute Result;
 begin
-(* Reload from
-- saved site info (if CustomDockSite)
+(* Reload from:
+- CustomDockSite (allow for nested layouts)
 - AppLoadStore
 - OnRestore
-- Owner
-- create from descriptor
+- our Owner
+- create from descriptor (optionally)
 - DockSite
 *)
   Result := nil;
@@ -2275,18 +2300,20 @@ begin
   if Result is TControl then
     exit;
   Result := nil; //exclude non-controls
-//load from descriptor
-  fc := TWinControlClass(GetClass(rc.ClassName));
-  if not assigned(fc) then begin
-    DebugLn(rc.ClassName, ' is not a registered class');
-    //exit(nil); //bad form name
-  end else begin
-  //init from descriptor
-    Result := fc.Create(fo);
-    if Result.Name <> rc.Name then
-      TryRename(Result, rc.Name);
-    if Result.Caption <> rc.Caption then
-      Result.Caption := rc.Caption; //really?
+//create from descriptor?
+  if TryCreateControls then begin
+    fc := TWinControlClass(GetClass(rc.ClassName));
+    if not assigned(fc) then begin
+      DebugLn(rc.ClassName, ' is not a registered class');
+      //exit(nil); //bad form name
+    end else begin
+    //init from descriptor
+      Result := fc.Create(fo);
+      if Result.Name <> rc.Name then
+        TryRename(Result, rc.Name);
+      if Result.Caption <> rc.Caption then
+        Result.Caption := rc.Caption; //really?
+    end;
   end;
 //last resort
   if Result = nil then
