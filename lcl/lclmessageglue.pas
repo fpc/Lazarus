@@ -100,16 +100,18 @@ begin
     ' ',TComponent(Target).Name,':',TObject(Target).ClassName,
     ' Message=',GetMessageName(TLMessage(AMessage).Msg));
   {$ENDIF}
-  RefCounted:=false;
+  RefCounted := False;
   try
-    if Target is TLCLComponent then begin
+    if Target is TLCLComponent then
+    begin
       TLCLComponent(Target).IncLCLRefCount;
-      RefCounted:=true;
+      RefCounted := True;
     end;
     try
-      if Target is TControl
-      then TControl(Target).WindowProc(TLMessage(AMessage))
-      else Target.Dispatch(TLMessage(AMessage));
+      if Target is TControl then
+        TControl(Target).WindowProc(TLMessage(AMessage))
+      else
+        Target.Dispatch(TLMessage(AMessage));
     except
       Application.HandleException(nil);
     end;

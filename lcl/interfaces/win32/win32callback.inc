@@ -2390,7 +2390,7 @@ begin
   if NotifyUserInput then
     NotifyApplicationUserInput(PLMsg^.Msg);
 
-  if (lWinControl <> nil) and (PLMsg^.Msg <> LM_NULL) then
+  if Assigned(lWinControl) and (PLMsg^.Msg <> LM_NULL) then
     DeliverMessage(lWinControl, PLMsg^);
 
   // respond to result of LCL handling the message
