@@ -114,7 +114,7 @@ begin
     // delete handle
     APage.Parent := nil;
     // free the page
-    APage.Free;
+    Application.ReleaseComponent(APage);
   end;
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn(['TNBPages.Delete END ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex]);
