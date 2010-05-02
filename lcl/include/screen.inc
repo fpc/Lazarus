@@ -326,6 +326,7 @@ function TScreen.DisableForms(SkipForm: TCustomForm; DisabledList: TList = nil):
 var
   i: integer;
   AForm: TCustomForm;
+  AppHandle: HWND;
 begin
   Result := DisabledList;
   if Result = nil then
@@ -345,6 +346,8 @@ begin
       end;
     end;
   end;
+  if WidgetSet.GetLCLCapability(lcApplicationWindow) = LCL_CAPABILITY_YES then
+    EnableWindow(WidgetSet.AppHandle, False);
 end;
 
 {
@@ -355,7 +358,10 @@ procedure TScreen.EnableForms(var AFormList: TList);
 var
   i: integer;
   AForm: TCustomForm;
+  AppHandle: HWND;
 begin
+  if WidgetSet.GetLCLCapability(lcApplicationWindow) = LCL_CAPABILITY_YES then
+    EnableWindow(WidgetSet.AppHandle, True);
   if AFormList = nil then
     Exit;
   for i := AFormList.Count - 1 downto 0 do

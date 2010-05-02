@@ -74,6 +74,7 @@ type
     lcNeedMininimizeAppWithMainForm,
                                 // When main form is minimized, then minimize also app
     lcApplicationTitle,         // Can change application title in runtime
+    lcApplicationWindow,        // Application has a special root window
     lcFormIcon,                 // Forms have icon
     lcModalWindow,              // native modal windows support
     lcDragDockStartOnTitleClick // ability to start drag/dock events on title bar click

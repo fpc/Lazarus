@@ -532,6 +532,7 @@ begin
     lcAsyncProcess: Result := LCL_CAPABILITY_YES;
     lcModalWindow: Result := LCL_CAPABILITY_NO;
     lcDragDockStartOnTitleClick: Result := LCL_CAPABILITY_YES;
+    lcApplicationWindow: Result := LCL_CAPABILITY_YES;
   else
     Result := inherited;
   end;
