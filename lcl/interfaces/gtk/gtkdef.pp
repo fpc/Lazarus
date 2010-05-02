@@ -156,6 +156,7 @@ type
   TGDIObject = record
     RefCount: integer; // see ReleaseGDIObject, ReferenceGDIObject
     DCCount: integer; // number of DeviceContexts using this GDIObject
+    Shared: Boolean; // stock or system object which skips DeleteObject calls
     Owner: TGtkDeviceContext;
     {$ifdef TraceGdiCalls}
     StackAddrs: TCallBacksArray;

@@ -109,6 +109,8 @@ type
     FStockBlackPen: HPEN;
     FStockWhitePen: HPEN;
 
+    FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
+
     FWaitHandles: PWaitHandleEventHandler;
     {$ifdef unix}
     FChildSignalHandlers: PChildSignalEventHandler;
@@ -137,6 +139,8 @@ type
     procedure InitStockItems; virtual;
     procedure FreeStockItems; virtual;
     procedure InitSystemColors;
+    procedure InitSystemBrushes; virtual;
+    procedure FreeSystemBrushes; virtual;
     procedure PassCmdLineOptions; override;
    
 {$ifdef Unix}

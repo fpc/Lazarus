@@ -2291,12 +2291,14 @@ function TGtkWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 var
   GDIObjectExists: boolean;
 begin
-  if GDIObject=0 then begin
-    Result:=true;
-    exit;
+  if GDIObject = 0 then
+  begin
+    Result := True;
+    Exit;
   end;
   {$IFDEF DebugLCLComponents}
-  if DebugGdiObjects.IsDestroyed(GDIObject) then begin
+  if DebugGdiObjects.IsDestroyed(GDIObject) then
+  begin
     DebugLn(['TGtkWidgetSet.DeleteObject object already deleted ',GDIObject]);
     debugln(DebugGdiObjects.GetInfo(PGdiObject(GDIObject),true));
     Halt;
@@ -2304,13 +2306,14 @@ begin
   {$ENDIF}
 
   // Find out if we want to release internal GDI object
-  GDIObjectExists:=FGDIObjects.Contains(PGdiObject(GDIObject));
-  Result:=GDIObjectExists;
-  if not GDIObjectExists then begin
+  GDIObjectExists := FGDIObjects.Contains(PGdiObject(GDIObject));
+  Result := GDIObjectExists;
+  if not GDIObjectExists then
+  begin
     RaiseInvalidGDIObject;
   end;
 
-  Result:=ReleaseGDIObject(PGdiObject(GDIObject));
+  Result := ReleaseGDIObject(PGdiObject(GDIObject));
 end;
 
 {------------------------------------------------------------------------------
@@ -5713,12 +5716,23 @@ begin
   if (nIndex < 0) or (nIndex > MAX_SYS_COLORS)
   then begin
     Result := 0;
-    //RaiseException('');
     DumpStack;
     DebugLn(Format('ERROR: [TGtkWidgetSet.GetSysColor] Bad Value: %d. Valid Range between 0 and %d', [nIndex, MAX_SYS_COLORS]));
   end
-  else Result := SysColorMap[nIndex];
-  //Assert(False, Format('Trace:[TGtkWidgetSet.GetSysColor] Index %d --> %8x', [nIndex, Result]));
+  else
+    Result := SysColorMap[nIndex];
+end;
+
+function TGTKWidgetSet.GetSysColorBrush(nIndex: Integer): HBrush;
+begin
+  if (nIndex < 0) or (nIndex > MAX_SYS_COLORS)
+  then begin
+    Result := 0;
+    DumpStack;
+    DebugLn(Format('ERROR: [TGtkWidgetSet.GetSysColorBrush] Bad Value: %d. Valid Range between 0 and %d', [nIndex, MAX_SYS_COLORS]));
+  end
+  else
+    Result := FSysColorBrushes[nIndex];
 end;
 
 {------------------------------------------------------------------------------

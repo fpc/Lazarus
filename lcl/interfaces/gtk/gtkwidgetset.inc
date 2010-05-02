@@ -254,6 +254,7 @@ begin
   // Init stock objects;
   InitStockItems;
   InitSystemColors;
+  InitSystemBrushes;
 
   // clipboard
   ClipboardTypeAtoms[ctPrimarySelection]:=GDK_SELECTION_PRIMARY;
@@ -390,6 +391,7 @@ begin
 
   FreeAllStyles;
   FreeStockItems;
+  FreeSystemBrushes;
 
   if FGTKToolTips<>nil then begin
     {$IFDEF Gtk2}
@@ -1294,8 +1296,13 @@ procedure TGtkWidgetSet.FreeStockItems;
 
   procedure DeleteAndNilObject(var h: HGDIOBJ);
   begin
+    if h <> 0 then
+    begin
+      PGdiObject(h)^.Shared := False;
+      PGdiObject(h)^.RefCount := 1;
+    end;
     DeleteObject(h);
-    h:=0;
+    h := 0;
   end;
 
 begin
@@ -1324,6 +1331,40 @@ begin
   GetStyle(lgsTooltip);
 end;
 
+procedure TGTKWidgetSet.InitSystemBrushes;
+var
+  i: integer;
+  LogBrush: TLogBrush;
+begin
+  FillChar(LogBrush, SizeOf(TLogBrush), 0);
+  for i := Low(FSysColorBrushes) to High(FSysColorBrushes) do
+  begin
+    LogBrush.lbColor := GetSysColor(i);
+    FSysColorBrushes[i] := CreateBrushIndirect(LogBrush);
+    PGDIObject(FSysColorBrushes[i])^.Shared := True;
+  end;
+end;
+
+procedure TGTKWidgetSet.FreeSystemBrushes;
+
+  procedure DeleteAndNilObject(var h: HGDIOBJ);
+  begin
+    if h <> 0 then
+    begin
+      PGdiObject(h)^.Shared := False;
+      PGdiObject(h)^.RefCount := 1;
+    end;
+    DeleteObject(h);
+    h := 0;
+  end;
+
+var
+  i: integer;
+begin
+  for i := Low(FSysColorBrushes) to High(FSysColorBrushes) do
+    DeleteAndNilObject(FSysColorBrushes[i]);
+end;
+
 {------------------------------------------------------------------------------
   Method: TGtkWidgetSet.AppTerminate
   Params:  None
@@ -1348,29 +1389,38 @@ var
   LogBrush: TLogBrush;
   logPen : TLogPen;
 begin
-  FillChar(LogBrush,SizeOf(TLogBrush),0);
+  FillChar(LogBrush, SizeOf(TLogBrush), 0);
   LogBrush.lbStyle := BS_NULL;
   FStockNullBrush := CreateBrushIndirect(LogBrush);
+  PGDIObject(FStockNullBrush)^.Shared := True;
   LogBrush.lbStyle := BS_SOLID;
   LogBrush.lbColor := $000000;
   FStockBlackBrush := CreateBrushIndirect(LogBrush);
+  PGDIObject(FStockBlackBrush)^.Shared := True;
   LogBrush.lbColor := $C0C0C0;
   FStockLtGrayBrush := CreateBrushIndirect(LogBrush);
+  PGDIObject(FStockLtGrayBrush)^.Shared := True;
   LogBrush.lbColor := $808080;
   FStockGrayBrush := CreateBrushIndirect(LogBrush);
+  PGDIObject(FStockGrayBrush)^.Shared := True;
   LogBrush.lbColor := $404040;
   FStockDkGrayBrush := CreateBrushIndirect(LogBrush);
+  PGDIObject(FStockDkGrayBrush)^.Shared := True;
   LogBrush.lbColor := $FFFFFF;
   FStockWhiteBrush := CreateBrushIndirect(LogBrush);
+  PGDIObject(FStockWhiteBrush)^.Shared := True;
 
   LogPen.lopnStyle := PS_NULL;
   LogPen.lopnWidth.X := 1;
   LogPen.lopnColor := $FFFFFF;
   FStockNullPen := CreatePenIndirect(LogPen);
+  PGDIObject(FStockNullPen)^.Shared := True;
   LogPen.lopnStyle := PS_SOLID;
   FStockWhitePen := CreatePenIndirect(LogPen);
+  PGDIObject(FStockWhitePen)^.Shared := True;
   LogPen.lopnColor := $000000;
   FStockBlackPen := CreatePenIndirect(LogPen);
+  PGDIObject(FStockBlackPen)^.Shared := True;
 
   FStockSystemFont := 0;//Styles aren't initialized yet
 end;
@@ -4882,6 +4932,7 @@ begin
   FillStackAddrs(get_caller_frame(get_frame), @Result^.StackAddrs);
   {$endif}
   Result^.GDIType := GDIType;
+  Result^.Shared := False;
   inc(Result^.RefCount);
   FGDIObjects.Add(Result);
   //DebugLn('[TGtkWidgetSet.NewGDIObject] ',DbgS(Result),'  ',FGDIObjects.Count);
@@ -4897,10 +4948,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.DisposeGDIObject(GDIObject: PGdiObject);
 begin
-  if FGDIObjects.Contains(GDIObject) then begin
+  if FGDIObjects.Contains(GDIObject) then
+  begin
     FGDIObjects.Remove(GDIObject);
     GtkDef.InternalDisposePGDIObject(GDIObject);
-  end else
+  end
+  else
     RaiseGDBException('');
 end;
 
@@ -4956,12 +5009,14 @@ function TGTKWidgetSet.ReleaseGDIObject(GdiObject: PGdiObject): boolean;
   end;
 
 begin
-  if GDIObject=nil then begin
-    Result:=true;
+  if GDIObject = nil then
+  begin
+    Result := True;
     exit;
   end;
   {$IFDEF DebugLCLComponents}
-  if DebugGdiObjects.IsDestroyed(GDIObject) then begin
+  if DebugGdiObjects.IsDestroyed(GDIObject) then
+  begin
     DebugLn(['TGtkWidgetSet.ReleaseGDIObject object already deleted ',GDIObject]);
     debugln(DebugGdiObjects.GetInfo(GDIObject,true));
     Halt;
@@ -4971,25 +5026,29 @@ begin
   with PGdiObject(GDIObject)^ do
   begin
     dec(RefCount);
-    if RefCount>0 then begin
-      Result:=true;
+    if (RefCount > 0) or Shared then
+    begin
+      Result := True;
       exit;
     end;
-    if DCCount>0 then begin
+    if DCCount > 0 then
+    begin
       RaiseGDIObjectIsStillUsed;
-      exit(false);
+      exit(False);
     end;
 
-    if Owner<>nil then begin
-      if Owner.OwnedGDIObjects[GDIType]<>PGdiObject(GDIObject) then
+    if Owner <> nil then
+    begin
+      if Owner.OwnedGDIObjects[GDIType] <> PGdiObject(GDIObject) then
         RaiseInvalidGDIOwner;
-      Owner.OwnedGDIObjects[GDIType]:=nil;
+      Owner.OwnedGDIObjects[GDIType] := nil;
     end;
 
     case GDIType of
       gdiFont:
         begin
-          if GDIFontObject<>nil then begin
+          if GDIFontObject <> nil then
+          begin
             //DebugLn(['TGtkWidgetSet.DeleteObject GDIObject=',dbgs(Pointer(PtrInt(GDIObject))),' GDIFontObject=',dbgs(GDIFontObject)]);
             FontCache.Unreference(GDIFontObject);
           end;

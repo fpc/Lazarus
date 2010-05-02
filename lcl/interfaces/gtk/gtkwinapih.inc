@@ -56,7 +56,7 @@ function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: strin
 function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;
 function CreatePalette(const LogPalette: TLogPalette): HPALETTE; override;
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
-function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; Override;
+function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; override;
 function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN; override;
 
 procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
@@ -68,13 +68,13 @@ function DestroyIcon(Handle: HICON): Boolean; override;
 function DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean; override;
 function DrawFocusRect(DC: HDC; const Rect: TRect): boolean; override;
 function DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal; grfFlags: Cardinal): Boolean; override;
-function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; Override;
+function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
 
 function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean; override;
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
 function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
-procedure EnterCriticalSection(var CritSection: TCriticalSection); Override;
+procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
 function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool; override;
 function EnumFontFamilies(DC: HDC; Family: Pchar; EnumFontFamProc: FontEnumProc; LParam:Lparam):longint; override;
 function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint; override;
@@ -103,9 +103,9 @@ function GetCursorPos(var lpPoint: TPoint): Boolean; override;
 function GetDC(hWnd: HWND): HDC;  override;
 function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
 function GetDesignerDC(WindowHandle: HWND): HDC; override;
-function GetDeviceCaps(DC: HDC; Index: Integer): Integer; Override;
+function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override;
 function GetDeviceSize(DC: HDC; var p: TPoint): boolean; override;
-function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
+function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; override;
 function GetFocus: HWND; override;
 function GetFontLanguageInfo(DC: HDC): DWord; override;
 function GetKeyState(nVirtKey: Integer): Smallint; override;
@@ -121,8 +121,9 @@ function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
 function GetScrollInfo(Handle: HWND; SBStyle: Integer; var ScrollInfo: TScrollInfo): Boolean; override;
 function GetStockObject(Value: Integer): THandle; override;
 function GetSysColor(nIndex: Integer): DWORD; override;
+function GetSysColorBrush(nIndex: Integer): HBrush; override;
 function GetSystemMetrics(nIndex: Integer): Integer;  override;
-function GetTextColor(DC: HDC) : TColorRef; Override;
+function GetTextColor(DC: HDC) : TColorRef; override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
 function GetViewPortExtEx(DC: HDC; Size: PSize): Integer; override;
@@ -134,11 +135,11 @@ function GetWindowRect(Handle : hwnd; var ARect: TRect): Integer; override;
 function GetWindowRelativePosition(Handle : hwnd; var Left, Top: integer): boolean; override;
 function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
 function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
-  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; Override;
+  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; override;
 
 function HideCaret(hWnd: HWND): Boolean; override;
 
-procedure InitializeCriticalSection(var CritSection: TCriticalSection); Override;
+procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 function IsIconic(handle: HWND): boolean; override;
@@ -147,7 +148,7 @@ function IsWindowEnabled(handle: HWND): boolean; override;
 function IsWindowVisible(handle: HWND): boolean; override;
 function IsZoomed(handle: HWND): boolean; override;
 
-procedure LeaveCriticalSection(var CritSection: TCriticalSection); Override;
+procedure LeaveCriticalSection(var CritSection: TCriticalSection); override;
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 
 function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; override;
