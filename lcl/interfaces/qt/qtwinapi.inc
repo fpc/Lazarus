@@ -1645,7 +1645,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
 begin
-  result:=false;
+  Result := False;
 
   {$ifdef VerboseQtWinAPI}
     DebugLn('[WinAPI FillRect Rect=', dbgs(Rect),' Brush=', dbghex(Brush));
@@ -1656,9 +1656,8 @@ begin
   if not IsValidGdiObject(Brush) then
     exit;
 
-  TQTDeviceContext(DC).fillRect(@Rect, TQtBrush(Brush).Widget);
-
-  result := true;
+  TQtDeviceContext(DC).fillRect(@Rect, TQtBrush(Brush).Widget);
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -2917,8 +2916,10 @@ function TQtWidgetSet.GetSysColorBrush(nIndex: Integer): HBrush;
       QApplication_palette(Handle)
     else
       QApplication_palette(Handle, ClassName);
-
-    Result := HBrush(TQtBrush.Create(False));
+    if FSysColorBrushes[nIndex] = 0 then
+      Result := HBrush(TQtBrush.Create(False))
+    else
+      Result := FSysColorBrushes[nIndex];
     TQtBrush(Result).Widget := QBrush_create(QPalette_brush(Handle, Group, Role));
     TQtBrush(Result).FShared := True;
 
@@ -2929,7 +2930,10 @@ function TQtWidgetSet.GetSysColorBrush(nIndex: Integer): HBrush;
   var
     Color: TQColor;
   begin
-    Result := HBrush(TQtBrush.Create(True));
+    if FSysColorBrushes[nIndex] = 0 then
+      Result := HBrush(TQtBrush.Create(True))
+    else
+      Result := FSysColorBrushes[nIndex];
     Color := QBrush_Color(TQtBrush(Result).Widget)^;
     ColorRefToTQColor(ColorToRGB(AColor), Color);
     QBrush_setColor(TQtBrush(Result).Widget, @Color);
@@ -2943,7 +2947,11 @@ begin
     Exit;
   end;
 
-  if FSysColorBrushes[nIndex] = 0 then
+  if (FSysColorBrushes[nIndex] = 0) or
+    (
+    (FSysColorBrushes[nIndex] <> 0) and
+    (TQtBrush(FSysColorBrushes[nIndex]).Widget = nil)
+    ) then
   begin
     case nIndex of
       COLOR_SCROLLBAR               : Result:=GetBrush(QPaletteActive,   QPaletteButton);

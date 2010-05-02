@@ -289,7 +289,7 @@ begin
     QEventStyleChange:
       begin
         ClearCachedColors;
-        FreeSysColorBrushes;
+        FreeSysColorBrushes(True);
       end;
     LCLQt_Destroy:
       begin
@@ -607,7 +607,7 @@ begin
   DeleteAndNilObject(FStockSystemFont);
 end;
 
-procedure TQtWidgetSet.FreeSysColorBrushes;
+procedure TQtWidgetSet.FreeSysColorBrushes(const AInvalidateHandlesOnly: Boolean = False);
 
   procedure DeleteAndNilObject(var h: HGDIOBJ);
   begin
@@ -619,11 +619,24 @@ procedure TQtWidgetSet.FreeSysColorBrushes;
     end;
   end;
 
+  procedure InvalidateHandleOnly(AIndex: Integer; h: HGDIOBJ);
+  begin
+    if (h <> 0) and (TQtBrush(h).Widget <> nil) then
+    begin
+      QBrush_destroy(TQtBrush(h).Widget);
+      TQtBrush(h).Widget := nil;
+      getSysColorBrush(AIndex);
+    end;
+  end;
+
 var
   i: integer;
 begin
   for i := Low(FSysColorBrushes) to High(FSysColorBrushes) do
-    DeleteAndNilObject(FSysColorBrushes[i]);
+    if AInvalidateHandlesOnly then
+      InvalidateHandleOnly(i, FSysColorBrushes[i])
+    else
+      DeleteAndNilObject(FSysColorBrushes[i]);
 end;
 
 function TQtWidgetSet.GetQtDefaultDC: HDC;

@@ -141,7 +141,7 @@ type
     procedure SetQtDefaultDC(Handle: HDC); virtual;
     procedure InitStockItems;
     procedure FreeStockItems;
-    procedure FreeSysColorBrushes;
+    procedure FreeSysColorBrushes(const AInvalidateHandlesOnly: Boolean = False);
 
     property DragImageLock: Boolean read FDragImageLock write FDragImageLock;
     property OverrideCursor: TObject read FOverrideCursor write SetOverrideCursor;
