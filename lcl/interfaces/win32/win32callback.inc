@@ -2064,6 +2064,9 @@ begin
     WM_SYSCOMMAND:
     begin
       HandleSysCommand;
+      LMessage.Msg := Msg;
+      LMessage.WParam := WParam;
+      LMessage.LParam := LParam;
     end;
     WM_SYSKEYDOWN:
     begin
