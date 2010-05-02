@@ -349,8 +349,6 @@ end;
   Deletes line at Index.
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.Delete(Index: integer);
-var
-  W: WideString;
 begin
   if FTextChanged then InternalUpdate;
   if (Index >= 0) and (Index < FStringList.Count) then
@@ -455,7 +453,6 @@ end;
 
 procedure TQtComboStrings.Clear;
 var
-  I: Integer;
   C: Integer;
 begin
   C := Count;
@@ -551,7 +548,6 @@ end;
 
 procedure TQtListStrings.Clear;
 var
-  I: Integer;
   C: Integer;
 begin
   C := Count;

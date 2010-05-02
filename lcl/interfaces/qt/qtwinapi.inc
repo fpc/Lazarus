@@ -821,26 +821,15 @@ begin
   Result := False;
 
   if GDIObject = 0 then
-  begin
-    Result := true;
-
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('Trace:< [WinAPI DeleteObject]');
-    {$endif}
-
-    Exit;
-  end;
+    Exit(True);
 
   if not IsValidGDIObject(GDIObject) then
-  begin
-    {$ifdef VerboseQtWinAPI}
-      WriteLn('Trace:< [WinAPI DeleteObject] Invalid GDI Object');
-    {$endif}
-
     Exit;
-  end;
 
   aObject := TObject(GDIObject);
+
+  if (aObject is TQtResource) and TQtResource(aObject).FShared then
+    Exit(True);
 
   {------------------------------------------------------------------------------
     Font
@@ -2883,7 +2872,8 @@ begin
     {$ifdef VerboseQtWinAPI}
       WriteLn('Trace:Unknown lcl system color: [TQtWidgetSet.GetSysColor]');
     {$endif}
-    exit;
+    Result := 0;
+    Exit;
   end;
 
   if FCachedColors[nIndex] = nil then
@@ -2906,8 +2896,8 @@ begin
       COLOR_BTNHIGHLIGHT            : Result:=GetColor(QPaletteActive,   QPaletteLight);
       COLOR_3DDKSHADOW              : Result:=GetColor(QPaletteActive,   QPaletteShadow);
       COLOR_3DLIGHT                 : Result:=GetColor(QPaletteActive,   QPaletteMidlight);
-      COLOR_INFOTEXT                : Result:=GetColor(QPaletteInActive,   QPaletteToolTipText);
-      COLOR_INFOBK                  : Result:=GetColor(QPaletteInActive,   QPaletteToolTipBase);
+      COLOR_INFOTEXT                : Result:=GetColor(QPaletteInActive, QPaletteToolTipText);
+      COLOR_INFOBK                  : Result:=GetColor(QPaletteInActive, QPaletteToolTipBase);
       COLOR_HOTLIGHT                : Result:=GetColor(QPaletteActive,   QPaletteLight);
 
       // qt does not provide any methods to retrieve titlebar colors
@@ -2936,8 +2926,31 @@ begin
     end;
     FCachedColors[nIndex] := getMem(SizeOf(LongWord));
     FCachedColors[nIndex]^ := Result;
-  end else
+  end
+  else
     Result := FCachedColors[nIndex]^;
+end;
+
+function TQtWidgetSet.GetSysColorBrush(nIndex: Integer): HBrush;
+var
+  LogBrush: TLogBrush;
+begin
+  if (nIndex < 0) or (nIndex > MAX_SYS_COLORS) then
+  begin
+    Result := 0;
+    Exit;
+  end;
+
+  if FSysColorBrushes[nIndex] = 0 then
+  begin
+    // todo: implement properly with brushes
+    LogBrush.lbColor := GetSysColor(nIndex);
+    LogBrush.lbStyle := 0;
+    LogBrush.lbHatch := 0;
+    FSysColorBrushes[nIndex] := CreateBrushIndirect(LogBrush);
+    TQtResource(FSysColorBrushes[nIndex]).FShared := True;
+  end;
+  Result := FSysColorBrushes[nIndex];
 end;
 
 {------------------------------------------------------------------------------

@@ -336,7 +336,6 @@ procedure TQtThemeServices.DrawText(ACanvas: TPersistent;
   Flags2: Cardinal);
 var
   Palette: QPaletteH;
-  Brush: QBrushH;
   Context: TQtDeviceContext;
   Widget: QWidgetH;
   W: WideString;

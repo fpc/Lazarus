@@ -53,6 +53,7 @@ begin
   DestroyGlobalCaret;
   Clipboard.Free;
   FreeStockItems;
+  FreeSysColorBrushes;
   QtDefaultPrinter.Free;
   QtWidgetSet := nil;
   
@@ -564,7 +565,8 @@ function TQtWidgetSet.CreateDefaultFont: HFONT;
 var
   QtFont: TQtFont;
 begin
-  QtFont := TQtFont.Create(True, True);
+  QtFont := TQtFont.Create(True);
+  QtFont.FShared := True;
   QApplication_font(QtFont.Widget);
   Result := HFONT(QtFont);
 end;
@@ -580,8 +582,10 @@ procedure TQtWidgetSet.FreeStockItems;
 
   procedure DeleteAndNilObject(var h: HGDIOBJ);
   begin
+    if h <> 0 then
+      TQtResource(h).FShared := False;
     DeleteObject(h);
-    h:=0;
+    h := 0;
   end;
 
 begin
@@ -597,6 +601,25 @@ begin
   DeleteAndNilObject(FStockWhitePen);
 
   DeleteAndNilObject(FStockSystemFont);
+end;
+
+procedure TQtWidgetSet.FreeSysColorBrushes;
+
+  procedure DeleteAndNilObject(var h: HGDIOBJ);
+  begin
+    if h <> 0 then
+    begin
+      TQtResource(h).FShared := False;
+      DeleteObject(h);
+      h := 0;
+    end;
+  end;
+
+var
+  i: integer;
+begin
+  for i := Low(FSysColorBrushes) to High(FSysColorBrushes) do
+    DeleteAndNilObject(FSysColorBrushes[i]);
 end;
 
 function TQtWidgetSet.GetQtDefaultDC: HDC;

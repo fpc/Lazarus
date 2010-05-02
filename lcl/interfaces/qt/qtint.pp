@@ -70,7 +70,8 @@ type
     FDragImageList: QWidgetH;
     FDragHotSpot: TPoint;
     FDragImageLock: Boolean;
-    FCachedColors: Array[0..MAX_SYS_COLORS + 1] of PLongWord;
+    FCachedColors: array[0..MAX_SYS_COLORS] of PLongWord;
+    FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
     procedure ClearCachedColors;
     procedure SetOverrideCursor(const AValue: TObject);
   protected
@@ -138,8 +139,9 @@ type
     function GetQtDefaultDC: HDC; virtual;
     procedure DeleteDefaultDC; virtual;
     procedure SetQtDefaultDC(Handle: HDC); virtual;
-    procedure InitStockItems; virtual;
-    procedure FreeStockItems; virtual;
+    procedure InitStockItems;
+    procedure FreeStockItems;
+    procedure FreeSysColorBrushes;
 
     property DragImageLock: Boolean read FDragImageLock write FDragImageLock;
     property OverrideCursor: TObject read FOverrideCursor write SetOverrideCursor;

@@ -2979,7 +2979,6 @@ end;
 procedure TQtWidget.SlotContextMenu(Sender: QObjectH; Event: QEventH); cdecl;
 var
   Msg: TLMContextMenu;
-  Modifiers: QtKeyboardModifiers;
   MousePos: TQtPoint;
   QtEdit: IQtEdit;
   AResult: LResult;
@@ -3021,7 +3020,6 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
   MousePos := QContextMenuEvent_pos(QContextMenuEventH(Event))^;
   OffsetMousePos(@MousePos);
-  Modifiers := QInputEvent_modifiers(QInputEventH(Event));
 
   Msg.Msg := LM_CONTEXTMENU;
   Msg.hWnd := HWND(Self);
@@ -4508,7 +4506,7 @@ begin
     pmAuto:
       // active form is parent
       if Screen.ActiveForm <> nil then
-        NewParent := TQtWidget(Screen.ActiveForm).Widget;
+        NewParent := TQtWidget(Screen.ActiveForm.Handle).Widget;
     pmExplicit:
       // parent is FPopupParent
       if FPopupParent <> nil then
@@ -4913,7 +4911,6 @@ end;
 function TQtRadioButton.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
-  W: WideString;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -6045,7 +6042,6 @@ end;
 procedure TQtTextEdit.insertLine(const AIndex: integer; AText: WideString);
 var
   QtCursor: QTextCursorH;
-  b: Boolean;
   WrapMode: QTextEditLineWrapMode;
 begin
   WrapMode := QTextEdit_lineWrapMode(QTextEditH(Widget));
@@ -7132,8 +7128,6 @@ end;
 
 function TQtComboBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
-  ev: QEventH;
-  str: WideString;
   R, R1: TRect;
   ButtonRect: TRect;
   P: TQtPoint;
@@ -9725,10 +9719,6 @@ begin
 end;
 
 function TQtMenu.actionHandle: QActionH;
-var
-  i: Integer;
-  Arr: TQActions;
-  GotItem: boolean = False;
 begin
   if FActionHandle = nil then
   begin

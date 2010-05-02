@@ -174,7 +174,7 @@ type
     Widget: QFontH;
     Angle: Integer;
   public
-    constructor Create(CreateHandle: Boolean; Const AShared: Boolean = False); virtual;
+    constructor Create(CreateHandle: Boolean); virtual;
     destructor Destroy; override;
   public
     function getPointSize: Integer;
@@ -231,7 +231,7 @@ type
   private
   public
     Widget: QBrushH;
-    constructor Create(CreateHandle: Boolean; const AShared: Boolean = False); virtual;
+    constructor Create(CreateHandle: Boolean); virtual;
     destructor Destroy; override;
     function getColor: PQColor;
     procedure setColor(AColor: PQColor);
@@ -247,7 +247,7 @@ type
     FIsExtPen: Boolean;
   public
     Widget: QPenH;
-    constructor Create(CreateHandle: Boolean; const AShared: Boolean = False); virtual;
+    constructor Create(CreateHandle: Boolean); virtual;
     destructor Destroy; override;
   public
     function getCapStyle: QtPenCapStyle;
@@ -1206,7 +1206,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtFont.Create(CreateHandle: Boolean; Const AShared: Boolean = False);
+constructor TQtFont.Create(CreateHandle: Boolean);
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtFont.Create CreateHandle: ', dbgs(CreateHandle));
@@ -1215,7 +1215,7 @@ begin
   if CreateHandle then
     Widget := QFont_create;
   
-  FShared := AShared;
+  FShared := False;
   FMetrics := nil;
 end;
 
@@ -1459,7 +1459,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtBrush.Create(CreateHandle: Boolean; Const AShared: Boolean = False);
+constructor TQtBrush.Create(CreateHandle: Boolean);
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -1469,7 +1469,7 @@ begin
   if CreateHandle then
     Widget := QBrush_create;
   
-  FShared := AShared;
+  FShared := False;
   FSelected := False;
 end;
 
@@ -1537,7 +1537,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-constructor TQtPen.Create(CreateHandle: Boolean; const AShared: Boolean = False);
+constructor TQtPen.Create(CreateHandle: Boolean);
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtPen.Create CreateHandle: ', dbgs(CreateHandle));
@@ -1545,7 +1545,7 @@ begin
   
   if CreateHandle then
     Widget := QPen_create;
-  FShared := AShared;
+  FShared := False;
   FIsExtPen := False;
 end;
 
@@ -1780,8 +1780,6 @@ begin
 end;
 
 function TQtRegion.GetRegionType: integer;
-var
-  R: TRect;
 begin
   try
     if not IsPolyRegion and QRegion_isEmpty(Widget) then
@@ -2795,8 +2793,6 @@ end;
   Returns: Region type
  ------------------------------------------------------------------------------}
 function TQtDeviceContext.getRegionType(ARegion: QRegionH): integer;
-var
-  R: TRect;
 begin
   try
     if QRegion_isEmpty(ARegion) then
@@ -2883,14 +2879,13 @@ var
   APixmap, ATemp: QPixmapH;
   AMask: QBitmapH;
   ScaledImage: QImageH;
-  TmpRegion: QRegionH;
   NewRect: TRect;
 
   function NeedScaling: boolean;
   var
     R: TRect;
-    TgtW, TgtH, SrcW,
-    SrcH, ClpW, ClpH: integer;
+    TgtW, TgtH,
+    ClpW, ClpH: integer;
   begin
 
     if not getClipping or EqualRect(LocalRect, sourceRect^) then
@@ -2900,8 +2895,6 @@ var
 
     TgtW := LocalRect.Right - LocalRect.Left;
     TgtH := LocalRect.Right - LocalRect.Left;
-    SrcW := sourceRect^.Right - sourceRect^.Left;
-    SrcH := sourceRect^.Bottom - sourceRect^.Top;
     ClpW := R.Right - R.Left;
     ClpH := R.Bottom - R.Top;
 

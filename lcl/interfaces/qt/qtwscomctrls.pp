@@ -1045,7 +1045,6 @@ class function  TQtWSCustomListView.ItemGetPosition(const ALV: TCustomListView;
   const AIndex: Integer): TPoint;
 var
   QtListWidget: TQtListWidget;
-  LWI: QListWidgetItemH;
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
   R: TRect;
@@ -1252,7 +1251,6 @@ class procedure TQtWSCustomListView.ItemInsert(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem);
 var
   QtListWidget: TQtListWidget;
-  LWI: QListWidgetItemH;
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
   Str: WideString;
@@ -1316,7 +1314,6 @@ class procedure TQtWSCustomListView.ItemSetText(const ALV: TCustomListView;
   const AText: String);
 var
   QtListWidget: TQtListWidget;
-  LWI: QListWidgetItemH;
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
   Str: WideString;
@@ -1716,9 +1713,7 @@ const
   );
 var
   SavedCheckable: Boolean;
-  i: Integer;
   QtItemView: TQtAbstractItemView;
-  Parent: QWidgetH;
 begin
   if not WSCheckHandleAllocated(ALV, 'SetProperty')
   then Exit;
