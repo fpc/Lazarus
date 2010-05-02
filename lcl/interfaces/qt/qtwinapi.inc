@@ -2818,42 +2818,11 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetSysColor(nIndex: Integer): DWORD;
 
-  function GetPaletteColor(Palette: QPaletteH; Group: QPaletteColorGroup; Role: QPaletteColorRole): TColor;
-  var
-    QColor : PQColor;
-    QC: QColorH;
-  begin
-    QColor:=QPalette_color(Palette, Group, Role);
-    QC := QColor_create(QColor);
-    try
-      Result:=(QColor_red(QC) and $00FF) or ((QColor_green(QC) and $00FF) shl 8) or ((QColor_blue(QC) and $00FF) shl 16);
-    finally
-      QColor_destroy(QC);
-    end;
-  end;
-
-  function GetClInfo(Bk: Boolean): TColor;
-  var
-    APalette: QPaletteH;
-  begin
-    APalette := QPalette_create();
-    QToolTip_palette(APalette);
-    if Bk then
-      Result := GetPaletteColor(APalette, QPaletteActive, QPaletteWindow)
-    else
-      Result := GetPaletteColor(APalette, QPaletteActive, QPaletteWindowText);
-    QPalette_destroy(APalette);
-  end;
-
-  {------------------------------------------------------------------------------
-    Function: GetColor
-    Params:   A Qt color group and a Qt color role
-    Returns:  TColor
-
-  ------------------------------------------------------------------------------}
   function GetColor(Group: QPaletteColorGroup; Role: QPaletteColorRole; ClassName: PAnsiChar = nil): TColor;
   var
-    Handle : QPaletteH;
+    Handle: QPaletteH;
+    QColor: PQColor;
+    QC: QColorH;
   begin
     Handle := QPalette_create;
     if ClassName = nil then
@@ -2861,7 +2830,13 @@ function TQtWidgetSet.GetSysColor(nIndex: Integer): DWORD;
     else
       QApplication_palette(Handle, ClassName);
 
-    Result := GetPaletteColor(Handle, Group, Role);
+    QColor := QPalette_color(Handle, Group, Role);
+    QC := QColor_create(QColor);
+    try
+      Result := (QColor_red(QC) and $00FF) or ((QColor_green(QC) and $00FF) shl 8) or ((QColor_blue(QC) and $00FF) shl 16);
+    finally
+      QColor_destroy(QC);
+    end;
 
     QPalette_destroy(Handle);
   end;
@@ -2932,8 +2907,35 @@ begin
 end;
 
 function TQtWidgetSet.GetSysColorBrush(nIndex: Integer): HBrush;
-var
-  LogBrush: TLogBrush;
+
+  function GetBrush(Group: QPaletteColorGroup; Role: QPaletteColorRole; ClassName: PAnsiChar = nil): HBrush;
+  var
+    Handle: QPaletteH;
+  begin
+    Handle := QPalette_create;
+    if ClassName = nil then
+      QApplication_palette(Handle)
+    else
+      QApplication_palette(Handle, ClassName);
+
+    Result := HBrush(TQtBrush.Create(False));
+    TQtBrush(Result).Widget := QPalette_brush(Handle, Group, Role);
+    TQtBrush(Result).FShared := True;
+
+    QPalette_destroy(Handle);
+  end;
+
+  function GetSolidBrush(AColor: TColor): HBrush;
+  var
+    Color: TQColor;
+  begin
+    Result := HBrush(TQtBrush.Create(True));
+    Color := QBrush_Color(TQtBrush(Result).Widget)^;
+    ColorRefToTQColor(ColorToRGB(AColor), Color);
+    QBrush_setColor(TQtBrush(Result).Widget, @Color);
+    TQtBrush(Result).FShared := True;
+  end;
+
 begin
   if (nIndex < 0) or (nIndex > MAX_SYS_COLORS) then
   begin
@@ -2943,14 +2945,56 @@ begin
 
   if FSysColorBrushes[nIndex] = 0 then
   begin
-    // todo: implement properly with brushes
-    LogBrush.lbColor := GetSysColor(nIndex);
-    LogBrush.lbStyle := 0;
-    LogBrush.lbHatch := 0;
-    FSysColorBrushes[nIndex] := CreateBrushIndirect(LogBrush);
-    TQtResource(FSysColorBrushes[nIndex]).FShared := True;
-  end;
-  Result := FSysColorBrushes[nIndex];
+    case nIndex of
+      COLOR_SCROLLBAR               : Result:=GetBrush(QPaletteActive,   QPaletteButton);
+      COLOR_BACKGROUND              : Result:=GetBrush(QPaletteActive,   QPaletteWindow);
+      COLOR_WINDOW                  : Result:=GetBrush(QPaletteInActive, QPaletteBase);
+      COLOR_WINDOWFRAME             : Result:=GetBrush(QPaletteActive,   QPaletteShadow);
+      COLOR_WINDOWTEXT              : Result:=GetBrush(QPaletteActive,   QPaletteWindowText);
+      COLOR_ACTIVEBORDER            : Result:=GetBrush(QPaletteActive,   QPaletteWindow);
+      COLOR_INACTIVEBORDER          : Result:=GetBrush(QPaletteInactive, QPaletteWindow);
+      COLOR_APPWORKSPACE            : Result:=GetBrush(QPaletteActive,   QPaletteWindow);
+      COLOR_HIGHLIGHT               : Result:=GetBrush(QPaletteActive,   QPaletteHighlight);
+      COLOR_HIGHLIGHTTEXT           : Result:=GetBrush(QPaletteActive,   QPaletteHighlightedText);
+      COLOR_BTNFACE                 : Result:=GetBrush(QPaletteActive,   QPaletteButton);
+      COLOR_BTNSHADOW               : Result:=GetBrush(QPaletteActive,   QPaletteDark);
+      COLOR_GRAYTEXT                : Result:=GetBrush(QPaletteActive,   QPaletteText);
+      COLOR_BTNTEXT                 : Result:=GetBrush(QPaletteActive,   QPaletteButtonText);
+      COLOR_BTNHIGHLIGHT            : Result:=GetBrush(QPaletteActive,   QPaletteLight);
+      COLOR_3DDKSHADOW              : Result:=GetBrush(QPaletteActive,   QPaletteShadow);
+      COLOR_3DLIGHT                 : Result:=GetBrush(QPaletteActive,   QPaletteMidlight);
+      COLOR_INFOTEXT                : Result:=GetBrush(QPaletteInActive, QPaletteToolTipText);
+      COLOR_INFOBK                  : Result:=GetBrush(QPaletteInActive, QPaletteToolTipBase);
+      COLOR_HOTLIGHT                : Result:=GetBrush(QPaletteActive,   QPaletteLight);
+
+      // qt does not provide any methods to retrieve titlebar colors
+    {$IFNDEF MSWINDOWS}
+      COLOR_ACTIVECAPTION           : Result:=GetBrush(QPaletteActive,   QPaletteHighlight);
+      COLOR_INACTIVECAPTION         : Result:=GetBrush(QPaletteInActive, QPaletteHighlight);
+      COLOR_CAPTIONTEXT             : Result:=GetBrush(QPaletteActive,   QPaletteHighlightedText);
+      COLOR_INACTIVECAPTIONTEXT     : Result:=GetBrush(QPaletteInactive, QPaletteHighlightedText);
+      COLOR_GRADIENTACTIVECAPTION   : Result:=GetBrush(QPaletteActive,   QPaletteBase);
+      COLOR_GRADIENTINACTIVECAPTION : Result:=GetBrush(QPaletteInactive, QPaletteBase);
+    {$ELSE}
+      COLOR_ACTIVECAPTION           : Result:=GetSolidBrush(Windows.GetSysColor(COLOR_ACTIVECAPTION));
+      COLOR_INACTIVECAPTION         : Result:=GetSolidBrush(Windows.GetSysColor(COLOR_INACTIVECAPTION));
+      COLOR_CAPTIONTEXT             : Result:=GetSolidBrush(Windows.GetSysColor(COLOR_CAPTIONTEXT));
+      COLOR_INACTIVECAPTIONTEXT     : Result:=GetSolidBrush(Windows.GetSysColor(COLOR_INACTIVECAPTIONTEXT));
+      COLOR_GRADIENTACTIVECAPTION   : Result:=GetSolidBrush(Windows.GetSysColor(COLOR_GRADIENTACTIVECAPTION));
+      COLOR_GRADIENTINACTIVECAPTION : Result:=GetSolidBrush(Windows.GetSysColor(COLOR_GRADIENTINACTIVECAPTION));
+    {$ENDIF}
+      COLOR_MENU                    : Result:=GetBrush(QPaletteActive,   QPaletteButton, 'QMenu');
+      COLOR_MENUTEXT                : Result:=GetBrush(QPaletteActive,   QPaletteButtonText, 'QMenu');
+      COLOR_MENUHILIGHT             : Result:=GetBrush(QPaletteDisabled, QPaletteHighlight, 'QMenu');
+      COLOR_MENUBAR                 : Result:=GetBrush(QPaletteActive,   QPaletteButton, 'QMenu');
+      COLOR_FORM                    : Result:=GetBrush(QPaletteActive,   QPaletteWindow);
+    else
+      Result:=0;
+    end;
+    FSysColorBrushes[nIndex] := Result;
+  end
+  else
+    Result := FSysColorBrushes[nIndex];
 end;
 
 {------------------------------------------------------------------------------
