@@ -118,6 +118,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 Const
   ImageTypes = '.jpg.jpeg.bmp.xpm.png';
 
@@ -493,8 +495,5 @@ procedure TMainForm.APrevImageDirExecute(Sender: TObject);
 begin
   PreviousImageDir;
 end;
-
-initialization
-  {$i frmmain.lrs}
 
 end.

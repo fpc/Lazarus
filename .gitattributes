@@ -3027,7 +3027,6 @@ examples/imagelist/unit1.pas svneol=native#text/pascal
 examples/imgviewer/file.bmp -text svneol=native#image/bmp
 examples/imgviewer/file.xpm -text svneol=native#image/x-xpixmap
 examples/imgviewer/frmmain.lfm svneol=native#text/plain
-examples/imgviewer/frmmain.lrs svneol=native#text/pascal
 examples/imgviewer/frmmain.pas svneol=native#text/pascal
 examples/imgviewer/images.bmp -text svneol=native#image/bmp
 examples/imgviewer/imgview.dpr svneol=native#text/pascal

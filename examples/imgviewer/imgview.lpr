@@ -26,6 +26,8 @@ uses
   Interfaces,
   Forms, frmmain;
 
+{$R *.res}
+
 begin
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
