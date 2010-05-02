@@ -72,24 +72,24 @@ type
 
   TWin32WSCustomForm = class(TWSCustomForm)
   published
-    class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
-    class procedure SetBorderIcons(const AForm: TCustomForm;
-          const ABorderIcons: TBorderIcons); override;
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, 
+    class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
+    class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean;
+      const Alpha: Byte); override;
+    class procedure SetBorderIcons(const AForm: TCustomForm;
+          const ABorderIcons: TBorderIcons); override;
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop,
           AWidth, AHeight: Integer); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle: TFormStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
+    class procedure ShowModal(const ACustomForm: TCustomForm); override;
     class procedure SetPopupParent(const ACustomForm: TCustomForm;
        const APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
-    class procedure ShowModal(const ACustomForm: TCustomForm); override;
-    class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean;
-      const Alpha: Byte); override;
   end;
 
   { TWin32WSForm }

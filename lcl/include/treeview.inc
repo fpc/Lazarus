@@ -3730,10 +3730,12 @@ end;
 
 function TCustomTreeView.GetTopItem: TTreeNode;
 begin
-  if HandleAllocated then begin
+  if HandleAllocated then
+  begin
     UpdateTopItem;
     Result := FTopItem;
-  end else
+  end
+  else
     Result := FTopItem;
 end;
 
