@@ -2919,7 +2919,7 @@ function TQtWidgetSet.GetSysColorBrush(nIndex: Integer): HBrush;
       QApplication_palette(Handle, ClassName);
 
     Result := HBrush(TQtBrush.Create(False));
-    TQtBrush(Result).Widget := QPalette_brush(Handle, Group, Role);
+    TQtBrush(Result).Widget := QBrush_create(QPalette_brush(Handle, Group, Role));
     TQtBrush(Result).FShared := True;
 
     QPalette_destroy(Handle);
