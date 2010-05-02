@@ -1994,6 +1994,16 @@ begin
         begin
           SlotNCMouse(Sender, Event);
         end;
+      QEventPaletteChange,
+      QEventStyleChange:
+        begin
+          if FPalette <> nil then
+          begin
+            FPalette.Free;
+            FPalette := nil;
+            getPalette; // reinit widget palette
+          end;
+        end;
       QEventQueryWhatsThis: Result := True;
       QEventWhatsThis:
         begin
@@ -10560,6 +10570,7 @@ begin
     QEvent_accept(Event);
     FFrameOnlyAroundContents := QStyle_styleHint(QApplication_style(),
       QStyleSH_ScrollView_FrameOnlyAroundContents) > 0;
+    Result := inherited EventFilter(Sender, Event);
   end else
   {$IFDEF MSWINDOWS}
   {sometimes our IDE completely freezes, after screensaver activated

@@ -255,9 +255,6 @@ const
 {iaLeft} QListViewLeftToRight
   );
 
-  IconAutoArToQtResizeMode: array[Boolean] of QListViewResizeMode =
-    (QListViewFixed, QListViewAdjust);
-
 { TQtWSToolButton }
 
 {$ifdef WSToolBar}

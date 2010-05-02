@@ -452,10 +452,7 @@ begin
 end;
 
 procedure TQtComboStrings.Clear;
-var
-  C: Integer;
 begin
-  C := Count;
   inherited Clear;
 
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
@@ -547,10 +544,7 @@ begin
 end;
 
 procedure TQtListStrings.Clear;
-var
-  C: Integer;
 begin
-  C := Count;
   inherited Clear;
 
   if Assigned(FWinControl) and (FWinControl.HandleAllocated) then

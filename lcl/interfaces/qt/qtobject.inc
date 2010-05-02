@@ -286,6 +286,7 @@ begin
       if Assigned(Application) then
         Application.IntfAppDeactivate;
 
+    QEventApplicationPaletteChange,
     QEventStyleChange:
       begin
         ClearCachedColors;
