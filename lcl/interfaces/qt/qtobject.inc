@@ -286,7 +286,11 @@ begin
       if Assigned(Application) then
         Application.IntfAppDeactivate;
 
-    QEventStyleChange: ClearCachedColors;
+    QEventStyleChange:
+      begin
+        ClearCachedColors;
+        FreeSysColorBrushes;
+      end;
     LCLQt_Destroy:
       begin
         AObject := TQtObject(Pointer(QLCLMessageEvent_getWParam(QLCLMessageEventH(Event))));
