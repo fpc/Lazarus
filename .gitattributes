@@ -4448,6 +4448,7 @@ lcl/include/statuspanel.inc svneol=native#text/pascal
 lcl/include/statuspanels.inc svneol=native#text/pascal
 lcl/include/tabcontrol.inc svneol=native#text/pascal
 lcl/include/tabsheet.inc svneol=native#text/pascal
+lcl/include/tiffimage.inc svneol=native#text/pascal
 lcl/include/timer.inc svneol=native#text/pascal
 lcl/include/togglebox.inc svneol=native#text/pascal
 lcl/include/toolbar.inc svneol=native#text/pascal

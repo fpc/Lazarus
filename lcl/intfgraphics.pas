@@ -32,8 +32,9 @@ interface
 
 uses
   Classes, SysUtils, fpImage, FPReadBMP, FPWriteBMP, BMPComn, FPCAdds,
-  AvgLvlTree, LCLType,
-  LCLProc, GraphType, LCLIntf, FPReadPNG, FPWritePNG, IcnsTypes;
+  AvgLvlTree, LCLType, LCLversion,
+  LCLProc, GraphType, LCLIntf, FPReadPNG, FPWritePNG, FPReadTiff, FPWriteTiff,
+  IcnsTypes;
 
 type
   { TLazIntfImage }
@@ -578,6 +579,51 @@ type
     procedure Initialize(AImage: TLazIntfImage);
     procedure Finalize;
   end;
+
+  { TLazReaderTiff }
+
+const
+  LazTiffExtraPrefix = 'LazTiff';
+  LazTiffHostComputer = LazTiffExtraPrefix + 'HostComputer';
+  LazTiffMake = LazTiffExtraPrefix + 'Make';
+  LazTiffModel = LazTiffExtraPrefix + 'Model';
+  LazTiffSoftware = LazTiffExtraPrefix + 'Software';
+
+type
+  TLazReaderTiff = class(TFPReaderTiff, ILazImageReader)
+  private
+    FUpdateDescription: Boolean;
+    // the OnCreateImage event is "abused" to update the description after the
+    // format and before the image is read
+    FOrgEvent: TTiffCreateCompatibleImgEvent;
+    function  GetUpdateDescription: Boolean;
+    procedure SetUpdateDescription(AValue: Boolean);
+    procedure CreateImageHook(Sender: TFPReaderTiff; var NewImage: TFPCustomImage);
+  protected
+    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
+    function _AddRef: LongInt; stdcall;
+    function _Release: LongInt; stdcall;
+  protected
+    procedure InternalRead(Str:TStream; Img:TFPCustomImage); override;
+  public
+    property UpdateDescription: Boolean read GetUpdateDescription write SetUpdateDescription;
+  end;
+
+  { TLazWriterTiff }
+
+  TLazWriterTiff = class(TFPWriterTiff, ILazImageWriter)
+  private
+  protected
+    function QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
+    function _AddRef: LongInt; stdcall;
+    function _Release: LongInt; stdcall;
+  protected
+    procedure InternalWrite(Stream: TStream; Img: TFPCustomImage); override;
+  public
+    procedure Initialize(AImage: TLazIntfImage);
+    procedure Finalize;
+  end;
+
 
   { TLazReaderIcnsPart }
 
@@ -5672,6 +5718,161 @@ begin
 end;
 
 function TLazWriterPNG._Release: LongInt; stdcall;
+begin
+  Result := -1;
+end;
+
+{ TLazReaderTiff }
+
+procedure TLazReaderTiff.CreateImageHook(Sender: TFPReaderTiff; var NewImage: TFPCustomImage);
+var
+  Desc: TRawImageDescription;
+  IsAlpha, IsGray: Boolean;
+begin
+  if Assigned(FOrgEvent) then FOrgEvent(Sender, NewImage);
+
+  if not FUpdateDescription then Exit;
+  if not (theImage is TLazIntfImage) then Exit;
+
+  // init some default
+
+  IsGray := FirstImg.PhotoMetricInterpretation in [0, 1];
+  IsAlpha := FirstImg.AlphaBits <> 0;
+
+  if IsAlpha
+  then Desc.Init_BPP32_B8G8R8A8_BIO_TTB(FirstImg.ImageWidth, FirstImg.ImageHeight)
+  else Desc.Init_BPP24_B8G8R8_BIO_TTB(FirstImg.ImageWidth, FirstImg.ImageHeight);
+
+  if IsGray
+  then Desc.Format := ricfGray;
+
+  // check mask
+  if FirstImg.PhotoMetricInterpretation = 4
+  then begin
+    // todo: mask
+  end
+  else
+  // check palette
+  if FirstImg.PhotoMetricInterpretation = 3
+  then begin
+    // todo: palette
+  end
+  else begin
+    // no palette, adjust description
+    if IsGray
+    then begin
+      if IsAlpha
+      then begin
+        Desc.Depth := FirstImg.GrayBits + FirstImg.AlphaBits;
+      end
+      else begin
+        Desc.Depth := FirstImg.GrayBits;
+        Desc.BitsPerPixel := FirstImg.GrayBits;
+      end;
+      Desc.RedPrec := FirstImg.GrayBits;
+      Desc.RedShift := 0;
+    end
+    else begin
+      Desc.Depth := FirstImg.RedBits + FirstImg.GreenBits + FirstImg.BlueBits + FirstImg.AlphaBits;
+      if Desc.Depth > 32
+      then begin
+        // switch to 64bit description
+        Desc.BitsPerPixel := Desc.BitsPerPixel * 2;
+        Desc.RedPrec := 16;
+        Desc.RedShift := Desc.RedShift * 2;
+        Desc.GreenPrec := 16;
+        Desc.GreenShift := Desc.GreenShift * 2;
+        Desc.BluePrec := 16;
+        Desc.BlueShift := Desc.BlueShift * 2;
+        Desc.AlphaPrec := Desc.AlphaPrec * 2; // might be zero
+        Desc.AlphaShift := Desc.AlphaShift * 2;
+      end;
+    end;
+  end;
+
+  TLazIntfImage(theImage).DataDescription := Desc;
+end;
+
+function TLazReaderTiff.GetUpdateDescription: Boolean;
+begin
+  Result := FUpdateDescription;
+end;
+
+procedure TLazReaderTiff.InternalRead(Str: TStream; Img: TFPCustomImage);
+begin
+  FOrgEvent := OnCreateImage;
+  OnCreateImage := @CreateImageHook;
+  inherited InternalRead(Str, Img);
+  OnCreateImage := FOrgEvent;
+  FOrgEvent := nil;
+end;
+
+function TLazReaderTiff.QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
+begin
+  if GetInterface(iid, obj)
+  then Result := S_OK
+  else Result := E_NOINTERFACE;
+end;
+
+procedure TLazReaderTiff.SetUpdateDescription(AValue: Boolean);
+begin
+  FUpdateDescription := AValue;
+end;
+
+function TLazReaderTiff._AddRef: LongInt; stdcall;
+begin
+  Result := -1;
+end;
+
+function TLazReaderTiff._Release: LongInt; stdcall;
+begin
+  Result := -1;
+end;
+
+{ TLazWriterTiff }
+
+procedure TLazWriterTiff.Finalize;
+begin
+end;
+
+procedure TLazWriterTiff.Initialize(AImage: TLazIntfImage);
+begin
+  AImage.Extra[LazTiffSoftware] := 'TLazWriterTiff - Lazarus LCL: ' + lcl_version + ' - FPC: ' + {$I %FPCVERSION%};
+end;
+
+procedure TLazWriterTiff.InternalWrite(Stream: TStream; Img: TFPCustomImage);
+var
+  S: String;
+begin
+  AddImage(Img);
+
+  //add additional elements
+
+  S := Img.Extra[LazTiffHostComputer];
+  if S <> '' then AddEntryString(316, S);
+  S := Img.Extra[LazTiffMake];
+  if S <> '' then AddEntryString(271, S);
+  S := Img.Extra[LazTiffModel];
+  if S <> '' then AddEntryString(272, S);
+  S := Img.Extra[LazTiffSoftware];
+  if S <> '' then AddEntryString(305, S);
+
+  SaveToStream(Stream);
+end;
+
+function TLazWriterTiff.QueryInterface(const iid: TGuid; out obj): LongInt; stdcall;
+begin
+  if GetInterface(iid, obj)
+  then Result := S_OK
+  else Result := E_NOINTERFACE;
+end;
+
+function TLazWriterTiff._AddRef: LongInt; stdcall;
+begin
+  Result := -1;
+end;
+
+function TLazWriterTiff._Release: LongInt; stdcall;
 begin
   Result := -1;
 end;

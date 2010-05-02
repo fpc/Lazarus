@@ -205,6 +205,7 @@ resourceString
   rsIcns = 'OSX Icon Resource';
   rsCursor = 'Cursor';
   rsJpeg = 'Joint Picture Expert Group';
+  rsTiff = 'Tagged Image File Format';
   rsUnsupportedClipboardFormat = 'Unsupported clipboard format: %s';
   rsGroupIndexCannotBeLessThanPrevious = 'GroupIndex cannot be less than a '
     +'previous menu item''s GroupIndex';

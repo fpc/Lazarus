@@ -32,13 +32,14 @@ interface
 {$endif}
 
 uses
-  SysUtils, Math, Types, Classes, FPCAdds,
+  SysUtils, Math, Types, Classes, FPCAdds, LCLversion,
   FileUtil,
   FPImage, FPCanvas,
   FPWriteBMP,              // bmp support
   FPWritePNG, PNGComn,     // png support
   FPReadPNM, FPWritePNM,   // PNM (Portable aNyMap) support
   FPReadJpeg, FPWriteJpeg, // jpg support
+  FPReadTiff, FPTiffCmn,   // tiff support
   IntfGraphics,
   AvgLvlTree,
   LCLStrConsts, LCLType, LCLProc, LMessages, LCLIntf, LResources, LCLResCache,
@@ -1767,6 +1768,64 @@ type
     property Performance: TJPEGPerformance read FPerformance write FPerformance;
   end;
 
+  { TSharedTiffImage }
+
+  TSharedTiffImage = class(TSharedCustomBitmap)
+  end;
+
+  { TTiffImage }
+
+  TTiffUnit = (
+    tuUnknown,
+    tuNone,       // No absolute unit of measurement. Used for images that may have a non-square
+                  // aspect ratio, but no meaningful absolute dimensions.
+    tuInch,
+    tuCentimeter
+  );
+
+  TTiffImage = class(TFPImageBitmap)
+  private
+    FArtist: string;
+    FCopyright: string;
+    FDateTime: TDateTime;
+    FDocumentName: string;
+    FHostComputer: string;
+    FImageDescription: string;
+    FMake: string; {ScannerManufacturer}
+    FModel: string; {Scanner}
+    FResolutionUnit: TTiffUnit;
+    FSoftware: string;
+    FXResolution: TTiffRational;
+    FYResolution: TTiffRational;
+  protected
+    procedure InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader); override;
+    procedure InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter); override;
+    procedure FinalizeReader(AReader: TFPCustomImageReader); override;
+    class function GetReaderClass: TFPCustomImageReaderClass; override;
+    class function GetWriterClass: TFPCustomImageWriterClass; override;
+    class function GetSharedImageClass: TSharedRasterImageClass; override;
+  public
+    constructor Create; override;
+    class function GetFileExtensions: string; override;
+  public
+    property Artist: string read FArtist write FArtist;
+    property Copyright: string read FCopyright write FCopyright;
+    property DateTime: TDateTime read FDateTime write FDateTime;
+    property DocumentName: string read FDocumentName write FDocumentName;
+    property HostComputer: string read FHostComputer write FHostComputer;
+    property ImageDescription: string read FImageDescription write FImageDescription;
+//    property ImageIsMask: Boolean;
+//    property ImageIsPage: Boolean;
+//    property ImageIsThumbNail: Boolean;
+    property Make: string read FMake write FMake;
+    property Model: string read FModel write FModel;
+    property ResolutionUnit: TTiffUnit read FResolutionUnit write FResolutionUnit;
+    property Software: string read FSoftware write FSoftware;
+    property XResolution: TTiffRational read FXResolution write FXResolution;
+    property YResolution: TTiffRational read FYResolution write FYResolution;
+  end;
+
+
 function GraphicFilter(GraphicClass: TGraphicClass): string;
 function GraphicExtension(GraphicClass: TGraphicClass): string;
 function GraphicFileMask(GraphicClass: TGraphicClass): string;
@@ -2494,6 +2553,7 @@ end;
 {$I icnsicon.inc}
 {$I fpimagebitmap.inc}
 {$I bitmap.inc}
+{$I tiffimage.inc}
 
 function LocalGetSystemFont: HFont;
 begin
