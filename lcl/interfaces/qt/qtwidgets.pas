@@ -8255,7 +8255,7 @@ begin
   if AItem = nil then
     Result := False
   else
-    Result := not QListWidget_isItemHidden(QListWidgetH(AItem), AItem);
+    Result := not QListWidget_isItemHidden(QListWidgetH(Widget), AItem);
 end;
 
 function TQtListWidget.getRow(AItem: QListWidgetItemH): integer;
