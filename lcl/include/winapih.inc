@@ -144,6 +144,7 @@ function GetScrollInfo(Handle: HWND; SBStyle: Integer; var ScrollInfo: TScrollIn
 //function GetScrollRange --> independent
 function GetStockObject(Value: Integer): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetSysColor(nIndex: Integer): DWORD; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetSysColorBrush(nIndex: Integer): HBrush; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetSystemPaletteEntries(DC: HDC; StartIndex, NumEntries: UINT;
   var PaletteEntries): UINT; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetSystemMetrics(nIndex: Integer): Integer;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

@@ -466,6 +466,11 @@ begin
   Result := WidgetSet.GetSysColor(nIndex);
 end;
 
+function GetSysColorBrush(nIndex: Integer): HBrush;
+begin
+  Result := WidgetSet.GetSysColorBrush(nIndex);
+end;
+
 function GetSystemMetrics(nIndex: Integer): Integer;
 begin
   Result := WidgetSet.GetSystemMetrics(nIndex);

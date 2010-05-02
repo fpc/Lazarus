@@ -119,6 +119,7 @@ function GetRGNBox(Rgn: HRGN; lpRect : PRect) : Longint; override;
 function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean; override;
 function GetStockObject(Value: Integer): THandle; override;
 function GetSysColor(NIndex: Integer): DWORD; override;
+function GetSysColorBrush(nIndex: Integer): HBrush; override;
 function GetSystemMetrics(NIndex: Integer): Integer; override;
 function GetTextColor(DC: HDC): TColorRef; override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; Var Size: TSize): Boolean; override;

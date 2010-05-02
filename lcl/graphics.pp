@@ -1787,6 +1787,7 @@ function StringToColor(const S: shortstring): TColor;
 procedure GetColorValues(Proc: TGetColorStringProc);
 function InvertColor(AColor: TColor): TColor;
 function DecColor(AColor: TColor; AQuantity: Byte): TColor;
+function IsSysColor(AColor: TColor): Boolean;
 
 function Blue(rgb: TColor): BYTE; // does not work on system color
 function Green(rgb: TColor): BYTE; // does not work on system color
@@ -2462,6 +2463,11 @@ begin
   G := Max(0, Integer(G) - AQuantity);
   B := Max(0, Integer(B) - AQuantity);
   Result := RGBToColor(R, G, B);
+end;
+
+function IsSysColor(AColor: TColor): Boolean;
+begin
+  Result := (Cardinal(AColor) and Cardinal(SYS_COLOR_BASE)) <> 0;
 end;
 
 

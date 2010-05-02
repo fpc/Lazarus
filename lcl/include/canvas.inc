@@ -184,10 +184,7 @@ const
 var
   OldHandle: HBRUSH;
 begin
-//DebugLn('[TCanvas.CreateBrush] ',Classname,'  Self=',DbgS(Self)
-// ,'  Brush=',DbgS(Brush));
   OldHandle := SelectObject(FHandle, HGDIOBJ(Brush.Reference.Handle));
-  //debugln('TCanvas.CreateBrush ',ClassName,' Self=',DbgS(Self),' OldHandle=',DbgS(OldHandle),8),' NewHandle=',DbgS(Brush.Handle),' FSavedBrushHandle=',DbgS(Cardinal(FSavedBrushHandle));
   if (OldHandle <> HBRUSH(Brush.Reference.Handle)) and (FSavedBrushHandle=0) then
     FSavedBrushHandle := OldHandle;
   Include(FState, csBrushValid);

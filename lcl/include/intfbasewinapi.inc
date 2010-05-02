@@ -1048,6 +1048,16 @@ begin
   Result := 0;
 end;
 
+function TWidgetSet.GetSysColorBrush(nIndex: Integer): HBrush;
+var
+  LogBrush: TLogBrush;
+begin
+  LogBrush.lbColor := GetSysColor(nIndex);
+  LogBrush.lbStyle := 0; // BS_CLEAR
+  LogBrush.lbHatch := 0;
+  Result := CreateBrushIndirect(LogBrush);
+end;
+
 function TWidgetSet.GetSystemMetrics(nIndex: Integer): Integer;
 begin
   Result := 0;
