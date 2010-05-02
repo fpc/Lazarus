@@ -314,8 +314,10 @@ begin
     PageIndex := TCustomPage(AWinControl).PageIndex;
     RealIndex := TWin32WSCustomNotebook.GetPageRealIndex(TCustomNotebook(AWinControl.Parent), PageIndex);
     if RealIndex <> -1 then
-      Windows.SendMessage(PageControlHandle, TCM_DELETEITEM,
-        Windows.WPARAM(RealIndex), 0);
+    begin
+      Windows.SendMessage(PageControlHandle, TCM_DELETEITEM, Windows.WPARAM(RealIndex), 0);
+      AWinControl.Parent.InvalidateClientRectCache(False);
+    end;
   end;
   TWSWinControlClass(ClassParent).DestroyHandle(AWinControl);
 end;

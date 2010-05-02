@@ -111,7 +111,7 @@ var
   ParentNotebook: TCustomNotebook;
   i: integer;
 begin
-  if (AParent=Parent) or (pfInserting in FFlags) then Exit;
+  if (AParent = Parent) or (pfInserting in FFlags) then Exit;
   CheckNewParent(AParent);
   OldParent := Parent;
   if (OldParent <> AParent) and (OldParent <> nil) and
@@ -129,7 +129,7 @@ begin
   if (OldParent <> AParent) and (Parent <> nil) and (Parent is TCustomNotebook) then
   begin
     // add to new pagelist
-    ParentNotebook:=TCustomNotebook(Parent);
+    ParentNotebook := TCustomNotebook(Parent);
     i := ParentNotebook.PageList.IndexOf(Self);
     if i < 0 then
       ParentNotebook.InsertPage(Self, ParentNotebook.PageCount);
