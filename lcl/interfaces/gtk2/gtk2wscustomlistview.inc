@@ -580,7 +580,7 @@ begin
   i := AColumn.Index;
   GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), i);
   if GtkColumn <> nil then
-    Result := gtk_tree_view_column_get_fixed_width(GtkColumn);
+    Result := gtk_tree_view_column_get_width(GtkColumn);
 end;
 
 class procedure TGtk2WSCustomListView.ColumnInsert(const ALV: TCustomListView;

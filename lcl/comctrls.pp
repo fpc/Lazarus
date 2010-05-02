@@ -878,7 +878,8 @@ type
     function GetWidth: TWidth;
     procedure WSCreateColumn;
     procedure WSDestroyColumn;
-    function  WSUpdateAllowed: Boolean;
+    function WSUpdateAllowed: Boolean;
+    function WSReadAllowed: Boolean;
     procedure SetVisible(const AValue: Boolean);
     procedure SetAutoSize(const AValue: Boolean);
     procedure SetMinWidth(const AValue: TWidth);
@@ -890,6 +891,7 @@ type
   protected
     procedure SetIndex(AValue: Integer); override;
     function GetDisplayName: string; override;
+    function GetStoredWidth: Integer;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;

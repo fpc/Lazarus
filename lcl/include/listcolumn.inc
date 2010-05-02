@@ -116,20 +116,28 @@ begin
     and not (csDestroying in TListColumns(Collection).FOwner.ComponentState);
 end;
 
+function TListColumn.WSReadAllowed: Boolean;
+begin
+  Result := (Collection <> nil)
+    and (TListColumns(Collection).FOwner <> nil)
+    and TListColumns(Collection).FOwner.HandleAllocated
+    and ([csReading, csLoading] * TListColumns(Collection).FOwner.ComponentState = []);
+end;
+
 function TListColumn.GetWidth: TWidth;
 var
   LV: TCustomListView;
   WSWidth: integer;
 begin
-  if WSUpdateAllowed
+  if WSReadAllowed
   then begin
     LV := TListColumns(Collection).FOwner;
     WSWidth := TWSCustomListViewClass(LV.WidgetSetClass).ColumnGetWidth(LV, Index, Self);
-    if WSWidth < 0
-    then Result := FWidth
-    else Result := WSWidth;
-  end
-  else Result := FWidth;
+    // update stored width
+    if WSWidth >= 0 then
+      FWidth := WSWidth;
+  end;
+  Result := FWidth;
 end;
 
 procedure TListColumn.SetAlignment(const AValue: TAlignment);
@@ -250,6 +258,11 @@ function TListColumn.GetDisplayName: string;
 begin
   Result := Caption;
   if Result = '' then Result := inherited GetDisplayName;
+end;
+
+function TListColumn.GetStoredWidth: Integer;
+begin
+  Result := FWidth;
 end;
 
 procedure TListColumn.SetVisible(const AValue: Boolean);
