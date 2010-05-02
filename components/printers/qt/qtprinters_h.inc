@@ -8,11 +8,6 @@ type
   TQtPrinters = class(TPrinter)
   private
     FPagesEnum: TStrings;
-    FPrintSession: Integer;
-    FPrintSettings: Integer;
-    FPageFormat: QPrinterPageSize;
-    FBeginDocumentStatus: QPrinterPrinterState;
-    FNewPageStatus: QPrinterPrinterState;
     FPrinterHandle: TQtPrinter;
 
     procedure CreatePrintSettings;

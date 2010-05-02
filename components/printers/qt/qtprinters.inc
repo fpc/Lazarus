@@ -289,7 +289,6 @@ const
   SName = 'DoGetPaperName';
 var
   i: Integer;
-  Str: WideString;
 begin
   i := QtDefaultPrinter.PageSize;
   Result := FPagesEnum[i];
@@ -329,7 +328,6 @@ function TQtPrinters.DoGetPaperRect(AName: string; var APaperRc: TPaperRect): In
 const
   SName = 'DoGetPaperRect';
 var
-  SavedSize: QPrinterPageSize;
   i: Integer;
 begin
   {$IFDEF VERBOSE_QT_PRINTING}

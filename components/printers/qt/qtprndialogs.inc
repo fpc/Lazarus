@@ -47,7 +47,6 @@ var
   QtPrnDlg: QPrintDialogH;
   PrnOptions: QAbstractPrintDialogPrintDialogOptions;
   Str: WideString;
-  i: Integer;
 begin
   Result := False;
 
