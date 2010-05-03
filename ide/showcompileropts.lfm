@@ -3,6 +3,7 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
   Height = 194
   Top = 320
   Width = 390
+  ActiveControl = CmdLineMemo
   AutoSize = True
   Caption = 'Compiler Options'
   ClientHeight = 194
@@ -13,30 +14,23 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
   Position = poOwnerFormCenter
   LCLVersion = '0.9.29'
   object CmdLineGroupbox: TGroupBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
     AnchorSideBottom.Control = CloseButton
     Left = 6
-    Height = 150
+    Height = 144
     Top = 6
     Width = 378
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Command line parameters'
-    ClientHeight = 132
+    ClientHeight = 125
     ClientWidth = 374
     TabOrder = 0
     object CmdLineMemo: TMemo
-      AnchorSideLeft.Control = CmdLineGroupbox
-      AnchorSideTop.Control = CmdLineGroupbox
-      AnchorSideRight.Control = CmdLineGroupbox
       AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Control = CmdLineGroupbox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 120
+      Height = 113
       Top = 6
       Width = 362
       Align = alClient
@@ -53,9 +47,9 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
     AnchorSideTop.Control = CloseButton
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 17
-    Top = 167
-    Width = 131
+    Height = 22
+    Top = 161
+    Width = 171
     Caption = 'RelativePathsCheckBox'
     Checked = True
     OnChange = RelativePathsCheckBoxChange
@@ -70,8 +64,8 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 309
-    Height = 26
-    Top = 162
+    Height = 32
+    Top = 156
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True

@@ -2759,6 +2759,7 @@ begin
        
 }
   // append -o Option if neccessary
+  //DebugLn(['TBaseCompilerOptions.MakeOptionsString ',ccloDoNotAppendOutFileOption in Flags,' TargetFilename="',TargetFilename,'" CurMainSrcFile="',CurMainSrcFile,'" CurOutputDir="',CurOutputDir,'"']);
   if (not (ccloDoNotAppendOutFileOption in Flags)) and
     ((TargetFilename<>'') or (CurMainSrcFile<>'') or (CurOutputDir<>'')) then
   begin

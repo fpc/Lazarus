@@ -282,7 +282,7 @@ type
     procedure SetCompilerMessages;
     function GetUseAsDefault: Boolean;
   public
-    CompilerOpts: TBaseCompilerOptions;
+    CompilerOpts: TBaseCompilerOptions; // real options
     OldCompOpts: TBaseCompilerOptions; // set on loading, used for revert
 
     constructor Create(TheOwner: TComponent); override;
