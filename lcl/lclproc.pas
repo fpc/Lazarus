@@ -1510,7 +1510,7 @@ end;
 procedure RaiseAndCatchException;
 begin
   try
-    raise Exception.Create('');
+    if (length(rsERRORInLCL) div (length(rsERRORInLCL) div 10000))=0 then ;
   except
   end;
 end;
