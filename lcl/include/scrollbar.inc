@@ -47,8 +47,6 @@ const
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or Kinds[FKind];
-  if FKind = sbVertical then
-    Params.Style := Params.Style or SBS_LEFTALIGN;
   FRTLFactor := 1
 end;
 

@@ -5915,16 +5915,23 @@ end;
 procedure TWinControl.CreateParams(var Params : TCreateParams);
 begin
   FillChar(Params, SizeOf(Params),0);
-  Params.Caption := PChar(FCaption);
-  Params.Style := WS_CHILD or WS_CLIPSIBLINGS;
+  Params.Caption := PChar(Caption);
+  Params.Style := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
+  Params.ExStyle := 0;
+  if csAcceptsControls in ControlStyle then
+    Params.ExStyle := Params.ExStyle or WS_EX_CONTROLPARENT;
+  if TabStop then
+    Params.Style := Params.Style or WS_TABSTOP;
+
   if (Parent <> nil) then
     Params.WndParent := Parent.Handle
   else
-    Params.WndParent :=  ParentWindow;
-  Params.X := FLeft;
-  Params.Y := FTop;
-  Params.Width := FWidth;
-  Params.Height := FHeight;
+    Params.WndParent := ParentWindow;
+
+  Params.X := Left;
+  Params.Y := Top;
+  Params.Width := Width;
+  Params.Height := Height;
 end;
 
 {------------------------------------------------------------------------------

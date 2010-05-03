@@ -2516,7 +2516,6 @@ type
     function IsInsertMarkVisible: boolean; virtual;
     procedure Change(Node: TTreeNode); virtual;
     procedure Collapse(Node: TTreeNode); virtual;
-    procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure Delete(Node: TTreeNode); virtual;
     procedure DestroyWnd; override;

@@ -152,44 +152,33 @@ procedure PrepareCreateWindow(const AWinControl: TWinControl;
 begin
   with Params do
   begin
-    Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
-    FlagsEx := 0;
-    Assert(False, 'Trace:Setting flags');
     Window := HWND(nil);
     Buddy := HWND(nil);
-    Assert(False, 'Trace:Setting window');
-
-    Parent := CreateParams.WndParent;
-    if Parent = 0 then
-      Parent := TWin32WidgetSet(WidgetSet).AppHandle;
-
-    SubClassWndProc := @WindowProc;
-    StrCaption := AWinControl.Caption;
     WindowTitle := '';
-    Height := AWinControl.Height;
-    Left := AWinControl.Left;
-    //Parent := AWinControl.Parent;
-    Top := AWinControl.Top;
-    Width := AWinControl.Width;
-    if (WS_VISIBLE and CreateParams.Style) <> 0 then
-      Flags := Flags or WS_VISIBLE;
-    if csAcceptsControls in AWinControl.ControlStyle then
-      FlagsEx := FlagsEx or WS_EX_CONTROLPARENT;
-    if AWinControl.TabStop then
-      Flags := Flags or WS_TABSTOP;
-    Assert(False, 'Trace:Setting dimentions');
+    SubClassWndProc := @WindowProc;
+
+    Flags := CreateParams.Style;
+    FlagsEx := CreateParams.ExStyle;
+    Parent := CreateParams.WndParent;
+    if (Parent = 0) then
+      Parent := Win32WidgetSet.AppHandle;
+    StrCaption := CreateParams.Caption;
+
+    Left := CreateParams.X;
+    Top := CreateParams.Y;
+    Width := CreateParams.Width;
+    Height := CreateParams.Height;
+
     LCLBoundsToWin32Bounds(AWinControl, Left, Top, Width, Height);
     if AWinControl is TCustomControl then
       if TCustomControl(AWinControl).BorderStyle = bsSingle then
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     SetStdBiDiModeParams(AWinControl, Params);
+
     {$IFDEF VerboseSizeMsg}
     DebugLn('PrepareCreateWindow ' + dbgsName(AWinControl) + ' ' +
       Format('%d, %d, %d, %d', [Left, Top, Width, Height]));
     {$ENDIF}
-
-    Assert(False, Format('Trace:PrepareCreateWindow - Creating component %S with the caption of %S', [AWinControl.ClassName, AWinControl.Caption]));
-    Assert(False, Format('Trace:PrepareCreateWindow - Left: %D, Top: %D, Width: %D, Height: %D, Parent handle: 0x%X, instance handle: 0x%X', [Left, Top, Width, Height, Parent, HInstance]));
   end;
 end;
 

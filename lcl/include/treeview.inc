@@ -2824,28 +2824,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TCustomTreeView.CreateParams(var Params: TCreateParams);
-const
-  ScrollBar: array[TScrollStyle] of DWORD = (0, WS_HSCROLL, WS_VSCROLL,
-    WS_HSCROLL or WS_VSCROLL, WS_HSCROLL, WS_VSCROLL, WS_HSCROLL or WS_VSCROLL);
-  BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
-  ClassStylesOff = CS_VREDRAW or CS_HREDRAW;
-begin
-  inherited CreateParams(Params);
-  with Params do begin
-    {$IFOPT R+}{$DEFINE RangeCheckOn}{$R-}{$ENDIF}
-    WindowClass.Style := WindowClass.Style and not Cardinal(ClassStylesOff);
-    Style := Style or ScrollBar[FScrollBars] or BorderStyles[BorderStyle]
-      or WS_CLIPCHILDREN;
-    {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
-    if NewStyleControls and (BorderStyle = bsSingle) then
-    begin
-      Style := Style and not Cardinal(WS_BORDER);
-      ExStyle := ExStyle or WS_EX_CLIENTEDGE;
-    end;
-  end;
-end;
-
 procedure TCustomTreeView.CreateWnd;
 begin
   Exclude(FStates,tvsStateChanging);
