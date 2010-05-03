@@ -674,6 +674,7 @@ type
     function ColorChangeNeeded(const AColor: TQColor;
       const ATextRole: Boolean): Boolean;
   protected
+    FInReload: Boolean;
     FWidget: QWidgetH;
     FWidgetRole: QPaletteColorRole;
     FTextRole: QPaletteColorRole;
@@ -688,6 +689,8 @@ type
     constructor Create(AWidgetColorRole: QPaletteColorRole;
       AWidgetTextColorRole: QPaletteColorRole; AWidget: QWidgetH);
     destructor Destroy; override;
+    procedure ReloadPaletteBegin; // used in QEventPaletteChange !
+    procedure ReloadPaletteEnd; // used in QEventPaletteChange !
     procedure setColor(const AColor: PQColor); overload;
     procedure setTextColor(const AColor: PQColor);
     property Handle: QPaletteH read FHandle;
@@ -697,6 +700,7 @@ type
     property DefaultTextColor: TQColor read FDefaultTextColor;
     property DisabledColor: TQColor read FDisabledColor;
     property DisabledTextColor: TQColor read FDisabledTextColor;
+    property InReload: Boolean read FInReload;
   end;
 
 const
@@ -4002,6 +4006,7 @@ end;
 constructor TQtWidgetPalette.Create(AWidgetColorRole: QPaletteColorRole;
   AWidgetTextColorRole: QPaletteColorRole; AWidget: QWidgetH);
 begin
+  FInReload := False;
   FWidget := AWidget;
   FWidgetRole := AWidgetColorRole;
   FTextRole := AWidgetTextColorRole;
@@ -4039,8 +4044,9 @@ end;
 
 procedure TQtWidgetPalette.setColor(const AColor: PQColor);
 begin
-  if not ColorChangeNeeded(AColor^, False) then
+  if not ColorChangeNeeded(AColor^, False) and not FInReload then
     exit;
+
   QPalette_setColor(FHandle, QPaletteActive, FWidgetRole, AColor);
   QPalette_setColor(FHandle, QPaletteInActive, FWidgetRole, AColor);
 
@@ -4055,8 +4061,9 @@ end;
 
 procedure TQtWidgetPalette.setTextColor(const AColor: PQColor);
 begin
-  if not ColorChangeNeeded(AColor^, True) then
+  if not ColorChangeNeeded(AColor^, True) and not FInReload then
     exit;
+
   QPalette_setColor(FHandle, QPaletteActive, FTextRole, AColor);
   QPalette_setColor(FHandle, QPaletteInActive, FTextRole, AColor);
   if EqualTQColor(AColor^, FDefaultTextColor) or
@@ -4066,6 +4073,23 @@ begin
     QPalette_setColor(FHandle, QPaletteDisabled, FTextRole, AColor);
   QWidget_setPalette(FWidget, FHandle);
   FCurrentTextColor := AColor^;
+end;
+
+procedure TQtWidgetPalette.ReloadPaletteBegin;
+var
+  AOldCurrent, AOldText: TQColor;
+begin
+  FInReload := True;
+  AOldCurrent := FCurrentColor;
+  AOldText := FCurrentTextColor;
+  initializeSysColors;
+  FCurrentColor := AOldCurrent;
+  FCurrentTextColor := AOldText;
+end;
+
+procedure TQtWidgetPalette.ReloadPaletteEnd;
+begin
+  FInReload := False;
 end;
 
 { TQtActionGroup }

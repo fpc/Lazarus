@@ -286,11 +286,13 @@ begin
       if Assigned(Application) then
         Application.IntfAppDeactivate;
 
-    QEventApplicationPaletteChange,
-    QEventStyleChange:
+    QEventApplicationPaletteChange:
       begin
-        ClearCachedColors;
-        FreeSysColorBrushes(True);
+        if Sender = App then
+        begin
+          ClearCachedColors;
+          FreeSysColorBrushes(True);
+        end;
       end;
     LCLQt_Destroy:
       begin

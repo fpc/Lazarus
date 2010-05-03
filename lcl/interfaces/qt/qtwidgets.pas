@@ -1919,7 +1919,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
-  QColor: TQColor;
+  QColor, OldColor: TQColor;
   Color: TColor;
 begin
   BeginEventProcessing;
@@ -2000,15 +2000,23 @@ begin
       QEventPaletteChange,
       QEventStyleChange:
         begin
-          if (FPalette <> nil) and not InUpdate then
+          if (FPalette <> nil) and not InUpdate and not Palette.InReload then
           begin
-            FPalette.Free;
-            FPalette := nil;
-            getPalette; // reinit widget palette
+            OldColor := Palette.CurrentColor;
             // now set our fpalette color from LCL
             Color := ColorToRGB(LCLObject.Color);
             QColor_fromRgb(@QColor,Red(Color),Green(Color),Blue(Color));
-            SetColor(@QColor);
+            if not EqualTQColor(OldColor, QColor) then
+            begin
+              Palette.ReloadPaletteBegin;
+              try
+                SetColor(@QColor);
+                Result := True;
+                QEvent_accept(Event);
+              finally
+                Palette.ReloadPaletteEnd;
+              end;
+            end;
           end;
         end;
       QEventQueryWhatsThis: Result := True;
