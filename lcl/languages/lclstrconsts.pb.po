@@ -1064,6 +1064,10 @@ msgstr "Verde Musgo"
 msgid "Text"
 msgstr "Texto"
 
+#: lclstrconsts.rstiff
+msgid "Tagged Image File Format"
+msgstr ""
+
 #: lclstrconsts.rsunabletoloaddefaultfont
 msgid "Unable to load default font"
 msgstr "Impossível carregar fonte padrão"

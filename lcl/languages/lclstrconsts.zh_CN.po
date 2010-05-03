@@ -1067,6 +1067,10 @@ msgstr "青"
 msgid "Text"
 msgstr "文本"
 
+#: lclstrconsts.rstiff
+msgid "Tagged Image File Format"
+msgstr ""
+
 #: lclstrconsts.rsunabletoloaddefaultfont
 msgid "Unable to load default font"
 msgstr "无法装载默认字体"

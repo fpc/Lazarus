@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-27 02:39+0300\n"
+"PO-Revision-Date: 2010-05-03 19:26+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1062,6 +1062,10 @@ msgstr "Бирюзовый"
 #: lclstrconsts.rstext
 msgid "Text"
 msgstr "Текст"
+
+#: lclstrconsts.rstiff
+msgid "Tagged Image File Format"
+msgstr "Формат Tagged Image File"
 
 #: lclstrconsts.rsunabletoloaddefaultfont
 msgid "Unable to load default font"

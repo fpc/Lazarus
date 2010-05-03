@@ -1069,6 +1069,10 @@ msgstr ""
 msgid "Text"
 msgstr "Text"
 
+#: lclstrconsts.rstiff
+msgid "Tagged Image File Format"
+msgstr ""
+
 #: lclstrconsts.rsunabletoloaddefaultfont
 msgid "Unable to load default font"
 msgstr "Nemožno načítať predvolený font"
