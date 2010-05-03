@@ -4833,6 +4833,11 @@ begin
     Manager.OnEditorPropertiesClicked(Sender);
 end;
 
+type
+  TLineEnding = (leLF, leCR, leCRLF);
+const
+  LE_Strs : array [TLineEnding] of String = (#10, #13, #13#10);
+
 procedure TSourceNotebook.LineEndingClicked(Sender: TObject);
 var
   IDEMenuItem: TIDEMenuItem;
@@ -4844,10 +4849,10 @@ begin
   if SrcEdit=nil then exit;
   if not (Sender is TIDEMenuItem) then exit;
   if SrcEdit.CodeBuffer=nil then exit;
+
   IDEMenuItem:=TIDEMenuItem(Sender);
-  NewLineEnding:=IDEMenuItem.Caption;
+  NewLineEnding:=LE_Strs[TLineEnding(IDEMenuItem.Tag)];
   DebugLn(['TSourceNotebook.LineEndingClicked NewLineEnding=',NewLineEnding]);
-  NewLineEnding:=StringReplace(StringReplace(NewLineEnding,'CR',#13,[rfReplaceAll]),'LF',#10,[rfReplaceAll]);
   OldLineEnding:=SrcEdit.CodeBuffer.DiskLineEnding;
   if OldLineEnding='' then
     OldLineEnding:=LineEnding;
@@ -5374,46 +5379,37 @@ end;
 
 procedure TSourceNotebook.UpdateLineEndingMenuItems;
 var
-  List: TStringList;
-  i: Integer;
+  le: TLineEnding;
   SrcEdit: TSourceEditor;
-  DiskLineEnding: String;
-  CurLineEnding: string;
-  CurName: String;
-  CurCaption: String;
-  IDEMenuItem: TIDEMenuItem;
+  FileEndings: String;
+  IDEMenuItem: TIDEMenuCommand;
+const
+  LE_Names : array [TLineEnding] of String =(
+    'LF (Unix, Linux)',
+    'CR (Mac)',
+    'CRLF (Win, DOS)'
+  );
 begin
   SrcEditSubMenuLineEnding.ChildsAsSubMenu:=true;
   SrcEdit:=GetActiveSE;
-  DiskLineEnding:=LineEnding;
   if (SrcEdit<>nil) and (SrcEdit.CodeBuffer<>nil) then
-    DiskLineEnding:=SrcEdit.CodeBuffer.DiskLineEnding;
-  DiskLineEnding:=StringReplace(StringReplace(DiskLineEnding,#13,'CR',[rfReplaceAll]),#10,'LF',[rfReplaceAll]);
+    FileEndings:=SrcEdit.CodeBuffer.DiskLineEnding
+  else
+    FileEndings:=LineEnding;
   //DebugLn(['TSourceNotebook.UpdateEncodingMenuItems ',Encoding]);
-  List:=TStringList.Create;
-  List.add('LF');
-  List.add('CR');
-  List.add('CRLF');
-  for i:=0 to List.Count-1 do begin
-    CurName:='LineEnding'+IntToStr(i);
-    CurLineEnding:=List[i];
-    // warning! captions are later used as replacment for actuall LineEndings.
-    // This is note good practice to mix data and user interface.
-    CurCaption:=CurLineEnding;
-    if SrcEditSubMenuLineEnding.Count=i then begin
+  for le:=low(TLineEnding) to High(TLineEnding) do begin
+    if SrcEditSubMenuLineEnding.Count=Ord(le) then begin
       // add new item
       IDEMenuItem:=RegisterIDEMenuCommand(SrcEditSubMenuLineEnding,
-                             CurName,CurCaption,@LineEndingClicked);
+        'LineEnding'+IntToStr(Ord(le)),LE_Names[le],@LineEndingClicked);
     end else begin
-      IDEMenuItem:=SrcEditSubMenuLineEnding[i];
-      IDEMenuItem.Caption:=CurCaption;
+      IDEMenuItem:=SrcEditSubMenuLineEnding[Ord(le)] as TIDEMenuCommand;
+      IDEMenuItem.Caption:=LE_Names[le];
       IDEMenuItem.OnClick:=@LineEndingClicked;
     end;
-    if IDEMenuItem is TIDEMenuCommand then
-      TIDEMenuCommand(IDEMenuItem).Checked:=
-        DiskLineEnding=CurLineEnding;
+    IDEMenuItem.Tag:=Ord(le);
+    IDEMenuItem.Checked:=(FileEndings=LE_Strs[le]);
   end;
-  List.Free;
 end;
 
 procedure TSourceNotebook.UpdatePageNames;
