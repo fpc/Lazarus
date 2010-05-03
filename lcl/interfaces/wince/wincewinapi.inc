@@ -1785,6 +1785,13 @@ begin
   Result := Windows.GetSysColor(nIndex or SYS_COLOR_INDEX_FLAG);
 end;
 
+function TWinCEWidgetSet.GetSysColorBrush(nIndex: Integer): HBrush;
+begin
+  if NIndex = COLOR_FORM then
+    NIndex := COLOR_BTNFACE;
+  Result := Windows.GetSysColorBrush(nIndex or SYS_COLOR_INDEX_FLAG);
+end;
+
 {------------------------------------------------------------------------------
   Method:  GetSystemMetrics
   Params: NIndex - system metric to retrieve
