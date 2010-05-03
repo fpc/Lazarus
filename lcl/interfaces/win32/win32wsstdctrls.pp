@@ -396,15 +396,7 @@ begin
   PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
-  begin
-    case TScrollBar(AWinControl).Kind of
-      sbHorizontal:
-        Flags := Flags or SBS_HORZ;
-      sbVertical:
-        Flags := Flags or SBS_VERT;
-    end;
     pClassName := 'SCROLLBAR';
-  end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
@@ -848,9 +840,8 @@ var
   CurrentStyle: DWord;
 begin
   CurrentStyle := GetWindowLong(ACustomComboBox.Handle, GWL_STYLE);
-  if (CurrentStyle and ComboBoxStylesMask) =
-        CalcComboBoxWinFlags(ACustomComboBox) then
-    exit;
+  if (CurrentStyle and ComboBoxStylesMask) = CalcComboBoxWinFlags(ACustomComboBox) then
+    Exit;
 
   RecreateWnd(ACustomComboBox);
 end;
