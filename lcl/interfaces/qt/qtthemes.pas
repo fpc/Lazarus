@@ -46,6 +46,7 @@ type
   private
     FStyle: QStyleH;
     function GetStyle: QStyleH;
+    function GetStyleName: WideString;
   protected
     function InitThemes: Boolean; override;
     function UseThemes: Boolean; override;
@@ -55,6 +56,7 @@ type
     function GetControlState(Details: TThemedElementDetails): QStyleState;
     function GetDrawElement(Details: TThemedElementDetails): TQtDrawElement;
     property Style: QStyleH read GetStyle;
+    property StyleName: WideString read GetStyleName;
   public
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
@@ -76,6 +78,11 @@ function TQtThemeServices.GetStyle: QStyleH;
 begin
   FStyle := QApplication_style();
   Result := FStyle;
+end;
+
+function TQtThemeServices.GetStyleName: WideString;
+begin
+  QObject_objectName(Style, @Result);
 end;
 
 function TQtThemeServices.InitThemes: Boolean;
@@ -185,47 +192,16 @@ begin
           if (Element.ControlElement = QStyleCE_ItemViewItem) then
           begin
             opt := QStyleOptionViewItemV4_create();
-
-            if AViewPortPaint then
-            begin
-              {we must initialize proper brush for tree item}
-              QStyleOption_initFrom(opt, Context.Parent);
-              Palette := QPalette_create();
-              QStyleOption_palette(opt, Palette);
-              // do not change AColor, we reuse it in focus rect drawing
-              AColor := QPalette_color(Palette, QPaletteHighLight)^;
-              ABrush := QBrush_create(QPainter_brush(Context.Widget));
-              QBrush_setColor(ABrush, @AColor);
-              QBrush_setStyle(ABrush, QtSolidPattern);
-              QStyleOptionViewItemV4_setBackgroundBrush(QStyleOptionViewItemV4H(opt), ABrush);
-              QPalette_destroy(Palette);
-              QBrush_destroy(ABrush);
-            end;
+            QStyleOptionViewItem_setShowDecorationSelected(QStyleOptionViewItemV4H(opt), True);
           end else
             opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion), LongInt(QStyleOptionSO_Default));
 
           QStyleOption_setState(opt, StyleState);
           QStyleOption_setRect(opt, @ARect);
 
-          QStyle_drawControl(Style, Element.ControlElement, opt, Context.Widget);
+          QStyle_drawControl(Style, Element.ControlElement, opt, Context.Widget,
+            Context.Parent);
           QStyleOption_Destroy(opt);
-
-          // draw focus rect for treeview item if needed
-          if (Element.ControlElement = QStyleCE_ItemViewItem) then
-          begin
-            if (StyleState and QStyleState_HasFocus) <> 0 then
-            begin
-              opt := QStyleOptionFocusRect_create();
-              QStyleOption_setRect(opt, @ARect);
-              // we reuse AColor from QStyleOptionViewItemV4
-              QStyleOptionFocusRect_setBackgroundColor(QStyleOptionFocusRectH(opt),
-                @AColor);
-              QStyle_drawPrimitive(Style, QStylePE_FrameFocusRect, opt,
-                Context.Widget, Context.Parent);
-              QStyleOption_Destroy(opt);
-            end;
-          end;
-
         end;
         qdvComplexControl:
         begin
@@ -268,7 +244,7 @@ begin
           QStyleOption_setState(opt, StyleState);
           QStyleOption_setRect(opt, @ARect);
           QStyle_drawComplexControl(Style, Element.ComplexControl,
-            QStyleOptionComplexH(opt), Context.Widget);
+            QStyleOptionComplexH(opt), Context.Widget, Context.Parent);
           QStyleOption_Destroy(opt);
         end;
         qdvPrimitive:
@@ -304,7 +280,8 @@ begin
 
           QStyleOption_setState(opt, StyleState);
           QStyleOption_setRect(opt, @ARect);
-          QStyle_drawPrimitive(Style, Element.PrimitiveElement, opt, Context.Widget);
+          QStyle_drawPrimitive(Style, Element.PrimitiveElement, opt, Context.Widget,
+            Context.Parent);
           QStyleOption_Destroy(opt);
         end;
         qdvStandardPixmap:
@@ -339,6 +316,7 @@ var
   Context: TQtDeviceContext;
   Widget: QWidgetH;
   W: WideString;
+  TextRect: TRect;
 begin
   case Details.Element of
     teTreeView:
@@ -373,10 +351,30 @@ begin
 
             if Details.State in
               [TREIS_SELECTED, TREIS_HOTSELECTED, TREIS_SELECTEDNOTFOCUS] then
+            begin
+              // fix qt motif style behaviour which does not fillrect
+              // when drawing itemview if it doesn't have text
+              // assigned via QStyleViewItemViewV4_setText()
+              if Details.State = TREIS_SELECTED then
+              begin
+                if StyleName = 'motif' then
+                begin
+                  TextRect := R;
+                  with TextRect do
+                  begin
+                    Left := Left + 2;
+                    Top := Top + 2;
+                    Right := Right - 2;
+                    Bottom := Bottom - 2;
+                  end;
+                  QPainter_fillRect(Context.Widget, @TextRect, QtSolidPattern);
+                end;
+              end;
+
               QStyle_drawItemText(Style, Context.Widget, @R,
                 DTFlagsToQtFlags(Flags), Palette,
                 not IsDisabled(Details), @W, QPaletteHighlightedText)
-            else
+            end else
               QStyle_drawItemText(Style, Context.Widget, @R,
                 DTFlagsToQtFlags(Flags), Palette,
                 not IsDisabled(Details), @W, QPaletteText);
@@ -477,7 +475,7 @@ begin
       Result := Result or QStyleState_Item;
       case Details.State of
         TREIS_SELECTED:
-          Result := Result or QStyleState_Selected or QStyleState_HasFocus;
+          Result := Result or QStyleState_Selected or QStyleState_HasFocus or QStyleState_Active;
         TREIS_SELECTEDNOTFOCUS:
           Result := Result or QStyleState_Selected;
         TREIS_HOTSELECTED:
