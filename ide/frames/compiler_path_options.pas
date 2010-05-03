@@ -8,7 +8,8 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   Buttons, StdCtrls, LCLType, InterfaceBase, IDEOptionsIntf, Project,
   CompilerOptions, LazarusIDEStrConsts, PathEditorDlg, LazConf, IDEProcs,
-  CheckCompilerOpts, MacroIntf, ShowCompilerOpts, MainIntf;
+  CheckCompilerOpts, MacroIntf, ShowCompilerOpts, MainIntf,
+  project_application_options;
 
 type
 
@@ -51,6 +52,7 @@ type
     procedure DoLoadSave(Sender: TObject);
   protected
     procedure DoSaveSettings(AOptions: TAbstractIDEOptions);
+    function GetTargetFilename: string;
   public
     constructor Create(TheOwner: TComponent); override;
     function Check: boolean; override;
@@ -132,6 +134,7 @@ begin
   Options := TBaseCompilerOptionsClass(FCompilerOpts.ClassType).Create(FCompilerOpts.Owner);
   try
     DoSaveSettings(Options);
+    Options.TargetFilename:=GetTargetFilename;
     ShowCompilerOptionsDialog(Self, Options);
   finally
     Options.Free;
@@ -182,6 +185,34 @@ procedure TCompilerPathOptionsFrame.DoSaveSettings(AOptions: TAbstractIDEOptions
 begin
   if Assigned(OnSaveIDEOptions) then
     OnSaveIDEOptions(Self, AOptions);
+end;
+
+function TCompilerPathOptionsFrame.GetTargetFilename: string;
+
+  function Search(Control: TWinControl): string;
+  var
+    i: Integer;
+  begin
+    if Control is TProjectApplicationOptionsFrame then begin
+      Result:=TProjectApplicationOptionsFrame(Control).TargetFileEdit.Text;
+      exit;
+    end;
+    for i:=0 to Control.ControlCount-1 do begin
+      if Control.Controls[i] is TWinControl then begin
+        Result:=Search(TWinControl(Control.Controls[i]));
+        if Result<>'' then exit;
+      end;
+    end;
+  end;
+
+begin
+  if FCompilerOpts is TProjectCompilerOptions then begin
+    // the target filename is on the project options page
+    Result:=Search(GetParentForm(Self));
+    if Result<>'' then exit;
+    // project options frame not shown, use default
+    Result:=FCompilerOpts.TargetFilename;
+  end;
 end;
 
 constructor TCompilerPathOptionsFrame.Create(TheOwner: TComponent);

@@ -2759,7 +2759,7 @@ begin
        
 }
   // append -o Option if neccessary
-  //DebugLn(['TBaseCompilerOptions.MakeOptionsString ',ccloDoNotAppendOutFileOption in Flags,' TargetFilename="',TargetFilename,'" CurMainSrcFile="',CurMainSrcFile,'" CurOutputDir="',CurOutputDir,'"']);
+  //DebugLn(['TBaseCompilerOptions.MakeOptionsString ',DbgSName(Self),' ',ccloDoNotAppendOutFileOption in Flags,' TargetFilename="',TargetFilename,'" CurMainSrcFile="',CurMainSrcFile,'" CurOutputDir="',CurOutputDir,'"']);
   if (not (ccloDoNotAppendOutFileOption in Flags)) and
     ((TargetFilename<>'') or (CurMainSrcFile<>'') or (CurOutputDir<>'')) then
   begin
@@ -2981,6 +2981,9 @@ begin
   fOptionsString := CompOpts.fOptionsString;
   fLoaded := CompOpts.fLoaded;
 
+  // Target
+  TargetFilename := CompOpts.TargetFilename;
+
   // Search Paths
   StorePathDelim := CompOpts.StorePathDelim;
   IncludePath := CompOpts.fIncludePaths;
@@ -3109,6 +3112,9 @@ var
 begin
   Tool.AddPathsDiff('StorePathDelim',PathDelimSwitchToDelim[FStorePathDelim],
                               PathDelimSwitchToDelim[CompOpts.FStorePathDelim]);
+
+  // target
+  Tool.AddDiff('TargetFilename',fTargetFilename,CompOpts.fTargetFilename);
 
   // search paths
   Tool.Path:='Paths';

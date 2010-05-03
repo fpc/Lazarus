@@ -357,6 +357,9 @@ type
     // Beware: eventually LCLWidgetType will be replaced by a more generic solution
     property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
 
+    // target:
+    property TargetFilename: String read fTargetFilename write SetTargetFilename;
+
     // parsing:
     property SyntaxMode: string read FSyntaxMode write FSyntaxMode;
     property AssemblerStyle: Integer read fAssemblerStyle write fAssemblerStyle;
@@ -404,7 +407,6 @@ type
     property ExecutableType: TCompilationExecutableType
                                      read FExecutableType write FExecutableType;
     property UseExternalDbgSyms: Boolean read FUseExternalDbgSyms write FUseExternalDbgSyms;
-    property TargetFilename: String read fTargetFilename write SetTargetFilename;
 
     // messages:
     property ShowErrors: Boolean read fShowErrors write fShowErrors;
