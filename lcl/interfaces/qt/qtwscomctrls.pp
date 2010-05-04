@@ -190,7 +190,6 @@ type
   published
 {$ifdef WSToolBar}
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure SetColor(const AWinControl: TWinControl); override;
 {$endif}
   end;
 
@@ -200,7 +199,6 @@ type
   published
 {$ifdef WSToolBar}
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure SetColor(const AWinControl: TWinControl); override;
 {$endif}
   end;
 
@@ -268,31 +266,6 @@ begin
   Result := TLCLIntfHandle(QtToolButton);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TQtWSToolButton.SetColor
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSToolButton.SetColor(const AWinControl: TWinControl);
-var
-  QColor: TQColor;
-  Color: TColor;
-begin
-  if not WSCheckHandleAllocated(AWincontrol, 'SetColor')
-  then Exit;
-
-  if AWinControl.Color = CLR_INVALID then exit;
-
-  // Get the color numeric value (system colors are mapped to numeric colors depending on the widget style)
-  Color:=ColorToRGB(AWinControl.Color);
-
-  // Fill QColor
-  QColor_fromRgb(@QColor,Red(Color),Green(Color),Blue(Color));
-
-  // Set color of the widget to QColor
-  TQtAbstractButton(AWinControl.Handle).SetColor(@QColor);
-end;
-
 { TQtWSToolBar }
 
 class function TQtWSToolBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
@@ -303,31 +276,6 @@ begin
   QtToolBar.AttachEvents;
 
   Result := TLCLIntfHandle(QtToolBar);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSToolBar.SetColor
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TQtWSToolBar.SetColor(const AWinControl: TWinControl);
-var
-  QColor: TQColor;
-  Color: TColor;
-begin
-  if not WSCheckHandleAllocated(AWincontrol, 'SetColor')
-  then Exit;
-
-  if AWinControl.Color = CLR_INVALID then exit;
-
-  // Get the color numeric value (system colors are mapped to numeric colors depending on the widget style)
-  Color:=ColorToRGB(AWinControl.Color);
-
-  // Fill QColor
-  QColor_fromRgb(@QColor,Red(Color),Green(Color),Blue(Color));
-
-  // Set color of the widget to QColor
-  TQtToolBar(AWinControl.Handle).SetColor(@QColor);
 end;
 {$endif}
 
@@ -365,7 +313,8 @@ begin
     if QtTrackBar.getSliderPosition <> ATrackBar.Position then
       QtTrackBar.setSliderPosition(ATrackBar.Position);
 
-    if QtTrackBar.getOrientation <> TrackBarOrientationToQtOrientationMap[ATrackBar.Orientation] then
+    if QtTrackBar.getOrientation <>
+      TrackBarOrientationToQtOrientationMap[ATrackBar.Orientation] then
     begin
       QtTrackBar.Hide;
       QtTrackBar.setOrientation(TrackBarOrientationToQtOrientationMap[ATrackBar.Orientation]);
@@ -430,29 +379,29 @@ var
 begin
   QtProgressBar := TQtProgressBar(AProgressBar.Handle);
 
-  //  AProgressBar.Smooth is not supported by qt
+  // AProgressBar.Smooth is not supported by qt
 
   case AProgressBar.Orientation of
     pbVertical:
-    begin
-      QtProgressBar.setOrientation(QtVertical);
-      QtProgressBar.setInvertedAppearance(False);
-    end;
+      begin
+        QtProgressBar.setOrientation(QtVertical);
+        QtProgressBar.setInvertedAppearance(False);
+      end;
     pbRightToLeft:
+      begin
+        QtProgressBar.setOrientation(QtHorizontal);
+        QtProgressBar.setInvertedAppearance(True);
+      end;
+    pbTopDown:
+      begin
+        QtProgressBar.setOrientation(QtVertical);
+        QtProgressBar.setInvertedAppearance(True);
+      end;
+  else { pbHorizontal is default }
     begin
       QtProgressBar.setOrientation(QtHorizontal);
-      QtProgressBar.setInvertedAppearance(True);
+      QtProgressBar.setInvertedAppearance(False);
     end;
-    pbTopDown:
-    begin
-      QtProgressBar.setOrientation(QtVertical);
-      QtProgressBar.setInvertedAppearance(True);
-    end;
-  else { pbHorizontal is default }
-  begin
-    QtProgressBar.setOrientation(QtHorizontal);
-    QtProgressBar.setInvertedAppearance(False);
-  end;
   end;
 
   QtProgressBar.setTextVisible(AProgressBar.BarShowText);
@@ -539,7 +488,8 @@ var
   QtStatusBar: TQtStatusBar;
 begin
   QtStatusBar := TQtStatusBar.Create(AWinControl, AParams);
-  QtStatusBar.setSizeGripEnabled(TStatusBar(AWinControl).SizeGrip and TStatusBar(AWinControl).SizeGripEnabled);
+  QtStatusBar.setSizeGripEnabled(TStatusBar(AWinControl).SizeGrip and
+    TStatusBar(AWinControl).SizeGripEnabled);
 
   RecreatePanels(TStatusBar(AWinControl), QtStatusBar);
 
@@ -571,7 +521,8 @@ begin
   begin
     QStatusBar_clearMessage(QStatusBarH(QtStatusBar.Widget));
 
-    if (PanelIndex >= Low(QtStatusBar.Panels)) and (PanelIndex <= High(QtStatusBar.Panels)) then
+    if (PanelIndex >= Low(QtStatusBar.Panels)) and
+      (PanelIndex <= High(QtStatusBar.Panels)) then
     begin
       Str := GetUtf8String(AStatusBar.Panels[PanelIndex].Text);
       QLabel_setText(QtStatusBar.Panels[PanelIndex], @Str);
@@ -593,7 +544,8 @@ begin
     QtStatusBar.showMessage(@Str);
   end else
   begin
-    if (PanelIndex >= Low(QtStatusBar.Panels)) and (PanelIndex <= High(QtStatusBar.Panels)) then
+    if (PanelIndex >= Low(QtStatusBar.Panels)) and
+      (PanelIndex <= High(QtStatusBar.Panels)) then
     begin
       Str := GetUtf8String(AStatusBar.Panels[PanelIndex].Text);
       QLabel_setText(QtStatusBar.Panels[PanelIndex], @Str);
