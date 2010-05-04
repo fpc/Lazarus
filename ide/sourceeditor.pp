@@ -4860,6 +4860,8 @@ begin
     DebugLn(['TSourceNotebook.LineEndingClicked Old=',dbgstr(OldLineEnding),' New=',dbgstr(NewLineEnding)]);
     // change file
     SrcEdit.CodeBuffer.DiskLineEnding:=NewLineEnding;
+    SrcEdit.CodeBuffer.Source:=
+                    ChangeLineEndings(SrcEdit.CodeBuffer.Source,NewLineEnding);
     SrcEdit.CodeBuffer.Modified:=true;
     SrcEdit.Modified:=true;
   end;

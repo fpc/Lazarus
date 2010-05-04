@@ -841,10 +841,8 @@ begin
       EncodeSaving(Filename, s);
 
       // convert line ending to disk line ending
-      if (DiskLineEnding<>'') and (LineEnding <> DiskLineEnding) then begin
+      if (DiskLineEnding<>'') and (LineEnding <> DiskLineEnding) then
         s := ChangeLineEndings(s, DiskLineEnding);
-        //DebugLn(['TSourceLog.SaveToFile ',Filename]);
-      end;
       if s <> '' then
         fs.Write(s[1], length(s));
     finally
