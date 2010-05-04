@@ -302,7 +302,7 @@ begin
   if not FormEditingHook.GetDefaultComponentPosition(TypeClass,ParentCI,X,Y)
   then exit;
 
-  DisableAutoSize:={$IFDEF OldAutoSize}false{$ELSE}true{$ENDIF};
+  DisableAutoSize:=true;
   CompIntf:=FormEditingHook.CreateComponent(ParentCI,TypeClass,'',X,Y,0,0,
                                             DisableAutoSize);
   if Assigned(CompIntf) then begin

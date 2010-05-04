@@ -530,9 +530,7 @@ type
     procedure MoveToDefaultPosition; virtual;
     procedure UpdateShowing; override;
     procedure SetVisible(Value: boolean); override;
-    {$ifndef OldAutoSize}
     procedure AllAutoSized; override;
-    {$endif}
     procedure DoFirstShow; virtual;
     procedure UpdateWindowState;
     procedure VisibleChanging; override;

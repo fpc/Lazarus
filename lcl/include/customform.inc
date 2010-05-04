@@ -114,9 +114,7 @@ begin
   //DebugLn('[TCustomForm.Destroy] A ',Name,':',ClassName);
   if not (csDestroying in ComponentState) then GlobalNameSpace.BeginWrite;
   try
-    {$IFNDEF OldAutoSize}
     DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.Destroy'){$ENDIF};
-    {$ENDIF}
     FreeThenNil(FIcon);
     FreeIconHandles;
     Screen.RemoveForm(Self);
@@ -127,9 +125,7 @@ begin
     inherited Destroy;
     //DebugLn('[TCustomForm.Destroy] END ',Name,':',ClassName);
   finally
-    {$IFNDEF OldAutoSize}
     if not (csDestroying in ComponentState) then
-    {$ENDIF}
       GlobalNameSpace.EndWrite;
   end;
 end;
@@ -403,7 +399,6 @@ begin
   //DebugLn(['[TCustomForm.SetVisible] END ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',Visible]);
 end;
 
-{$ifndef OldAutoSize}
 procedure TCustomForm.AllAutoSized;
 begin
   inherited AllAutoSized;
@@ -413,7 +408,6 @@ begin
     MoveToDefaultPosition;
   end;
 end;
-{$endif}
 
 {------------------------------------------------------------------------------
   procedure TCustomForm.SetWindowFocus;
@@ -696,12 +690,7 @@ begin
   lMessage.Result := 0;
   DisableAlign;
   try
-    {$IFDEF OldAutoSize}
-    if Parent<>nil then
-      Parent.ReAlign
-    else
-    {$ENDIF}
-      AdjustSize;
+    AdjustSize;
     for i := 0 to ComponentCount - 1 do
     begin
       // all TControl descendants have this notification in TWinControl.CMBidiModeChanged
@@ -930,9 +919,7 @@ begin
   if FFormUpdateCount=0 then begin
     FormEndUpdated;
     Visible:=(fsVisible in FFormState);
-    {$IFNDEF OldAutoSize}
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.BeginFormUpdate'){$ENDIF};
-    {$ENDIF}
   end;
 end;
 
@@ -1080,18 +1067,14 @@ end;
 procedure TCustomForm.SetParent(NewParent: TWinControl);
 begin
   if Parent=NewParent then exit;
-  {$IFNDEF OldAutoSize}
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.SetParent'){$ENDIF};
-  {$ENDIF}
   try
     if HandleAllocated then DestroyHandle;
     inherited SetParent(NewParent);
     if (Parent=nil) and Visible then
       HandleNeeded;
   finally
-    {$IFNDEF OldAutoSize}
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.SetParent'){$ENDIF};
-    {$ENDIF}
   end;
 end;
 
@@ -2352,29 +2335,6 @@ begin
   Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');
   UpdateMenu;
 
-  {$IFDEF OldAutoSize}
-  // activate focus if visible
-  if Visible then begin
-    if (ActiveControl = nil) and (not (csDesigning in ComponentState))
-    and (Parent=nil) then begin
-      // automatically choose a control to focus
-      {$IFDEF VerboseFocus}
-      DebugLn('TCustomForm.CreateWnd ',DbgSName(Self),' Set ActiveControl := ',DbgSName(FindDefaultForActiveControl));
-      {$ENDIF}
-      ActiveControl := FindDefaultForActiveControl;
-    end;
-    if (Parent=nil)
-    and (FActiveControl<>nil) and FActiveControl.HandleAllocated
-    and FActiveControl.CanFocus
-    and ([csLoading,csDestroying,csDesigning]*ComponentState=[]) then begin
-      {$IFDEF VerboseFocus}
-      DebugLn('TCustomForm.CreateWnd A ',DbgSName(Self),' FActiveControl=',DbgSName(FActiveControl));
-      {$ENDIF}
-      LCLIntf.SetFocus(FActiveControl.Handle);
-    end;
-  end;
-  {$ENDIF}
-
   // update icon
   Perform(CM_ICONCHANGED, 0, 0);
   //DebugLn('TCustomForm.CreateWnd END ',ClassName);
@@ -2431,10 +2391,8 @@ end;
 procedure TCustomForm.BeginFormUpdate;
 begin
   inc(FFormUpdateCount);
-  {$IFNDEF OldAutoSize}
   if FFormUpdateCount=1 then
     DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.BeginFormUpdate'){$ENDIF};
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -2467,7 +2425,6 @@ begin
   {$IFDEF CHECK_POSITION}
   DebugLn('[TCustomForm.UpdateShowing] END  ',Name,':',Classname,' Pos=',DbgS(Left),',',DbgS(Top));
   {$ENDIF}
-  {$IFNDEF OldAutoSize}
   // activate focus if visible
   if Showing and (not (csDestroying in ComponentState)) then begin
     if (ActiveControl = nil) and (not (csDesigning in ComponentState))
@@ -2489,7 +2446,6 @@ begin
     end;
     UpdateShowInTaskBar;
   end;
-  {$ENDIF}
 end;
 
 procedure TCustomForm.DoFirstShow;

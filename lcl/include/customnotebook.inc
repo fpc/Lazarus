@@ -590,10 +590,8 @@ end;
 
 procedure TCustomNoteBook.AddRemovePageHandle(APage: TCustomPage);
 begin
-  {$IFNDEF OldAutoSize}
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomNoteBook.AddRemovePageHandle'){$ENDIF};
   try
-  {$ENDIF}
     if (not (csDestroying in APage.ComponentState))
     and (APage.TabVisible or (csDesigning in ComponentState)) then begin
       {$IFDEF NOTEBOOK_DEBUG}
@@ -603,11 +601,7 @@ begin
       Include(APage.FFlags,pfAdding);
       TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, APage.VisibleIndex);
       APage.FFlags:=APage.FFlags+[pfAdded]-[pfAdding];
-      {$IFDEF OldAutoSize}
-      APage.ResizeDelayedAutoSizeChildren
-      {$ELSE}
       APage.AdjustSize;
-      {$ENDIF}
     end else begin
       {$IFDEF NOTEBOOK_DEBUG}
       DebugLn(['TCustomNoteBook.AddRemovePageHandle REMOVE ',DbgSName(APage),' pfAdded=',pfAdded in APage.FFlags]);
@@ -620,11 +614,9 @@ begin
         APage.DestroyHandle;
       Exclude(APage.FFlags, pfRemoving);
     end;
-  {$IFNDEF OldAutoSize}
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomNoteBook.AddRemovePageHandle'){$ENDIF};
   end;
-  {$ENDIF}
 end;
 
 procedure TCustomNotebook.RemovePage(Index: Integer);

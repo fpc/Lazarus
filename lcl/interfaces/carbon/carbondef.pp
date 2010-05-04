@@ -462,9 +462,7 @@ procedure TCarbonWidget.UpdateLCLClientRect;
 var
   R: TRect;
 begin
-  if not Resizing
-  {$IFDEF OldAutoSize} and not (csAlignmentNeeded in LCLObject.ControlState){$ENDIF}
-  then begin
+  if not Resizing then begin
     GetBounds(R);
     LCLObject.InvalidateClientRectCache(False);
     LCLSendSizeMsg(LCLObject, R.Right - R.Left, R.Bottom - R.Top, Size_SourceIsInterface);

@@ -410,9 +410,6 @@ var
   MenuWidget: PGtkWidget;      // the popup menu (hbox containing a pixmap and
                                // a label)
   MenuLabelWidget: PGtkWidget; // the label in the popup menu item
-  {$IFDEF OldAutoSize}
-  allocation: TGtkAllocation;
-  {$ENDIF}
 begin
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn(['TGtkWSCustomNotebook.AddPage ',dbgsName(ANoteBook),' ',ANotebook.HandleAllocated,' AChild=',dbgsName(AChild),' ',AChild.HandleAllocated,' Child.TabVisible=',AChild.TabVisible]);
@@ -472,15 +469,8 @@ begin
   
   // init the size of the page widget
   //DebugLn(['TGtkWSCustomNotebook.AddPage ',DbgSName(ANoteBook),' ',dbgs(ANoteBook.BoundsRect)]);
-  {$IFDEF OldAutoSize}
-  allocation.x := ANoteBook.Left;
-  allocation.y := ANoteBook.Top;
-  allocation.width := ANoteBook.Width;
-  allocation.height := ANoteBook.Height;
-  gtk_widget_size_allocate(NotebookWidget, @allocation);// Beware: this triggers callbacks
   {$IFDEF VerboseSizeMsg}
   DebugLn(['TGtkWSCustomNotebook.AddPage PageWidget^.allocation=',dbgs(PageWidget^.allocation),' NotebookWidget=',dbgs(NotebookWidget^.allocation)]);
-  {$ENDIF}
   {$ENDIF}
 end;
 

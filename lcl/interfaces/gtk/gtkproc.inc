@@ -6633,10 +6633,8 @@ var
   GtkLeft, GtkTop, GtkWidth, GtkHeight: integer;
   TopLeftChanged, WidthHeightChanged, IsTopLevelWidget: boolean;
   MessageDelivered: boolean;
-  { $IFDEF OldAutoSize}
   SizeMsg: TLMSize;
   MoveMsg: TLMMove;
-  { $ENDIF}
   PosMsg : TLMWindowPosChanged;
   MainWidget: PGtkWidget;
   FixedWidget: PGtkWidget;
@@ -6672,7 +6670,7 @@ begin
   FWidgetsResized.Remove(MainWidget);
   FFixWidgetsResized.Remove(FixedWidget);
 
-  {$IF defined(Gtk1) or defined(OldAutoSize)}
+  {$IF defined(Gtk1)}
   if not GTK_WIDGET_REALIZED(aWidget) then begin
     // the widget is not yet realized, so this GTK resize was not a user change.
     // => ignore
@@ -6747,9 +6745,7 @@ begin
         cx := GtkWidth;
         cy := GtkHeight;
         flags:=0;
-        {$IFNDEF OldAutoSize}
-       // flags := SWP_SourceIsInterface;
-        {$ENDIF}
+        // flags := SWP_SourceIsInterface;
       end;
       MessageDelivered := DeliverMessage(LCLControl, PosMsg) = 0;
     finally
@@ -6761,7 +6757,6 @@ begin
     UpdateLCLSize;
   end;
 
-  { $IFDEF OldAutoSize}
   // then send a LM_SIZE message
   if WidthHeightChanged then begin
     {$IFDEF VerboseSizeMsg}
@@ -6815,7 +6810,6 @@ begin
     MessageDelivered := (DeliverMessage(LCLControl,  MoveMsg) = 0);
     if not MessageDelivered then exit;
   end;
-  { $ENDIF}
 
   {$ifndef gtk1}
   if GtkWidgetIsA(aWidget, GTKAPIWidget_Type) and

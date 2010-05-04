@@ -282,7 +282,7 @@ begin
       if not FormEditingHook.GetDefaultComponentPosition(TypeClass,ParentCI,X,Y)
       then exit;
       //debugln('TComponentPalette.ComponentBtnDblClick ',dbgsName(Sender),' ',dbgs(X),',',dbgs(Y));
-      DisableAutoSize:={$IFDEF OldAutoSize}false{$ELSE}true{$ENDIF};
+      DisableAutoSize:=true;
       CompIntf:=FormEditingHook.CreateComponent(ParentCI,TypeClass,'',X,Y,0,0,
         DisableAutoSize);
       if CompIntf<>nil then begin

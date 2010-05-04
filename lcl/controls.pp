@@ -231,10 +231,6 @@ type
     csClicked,
     csPalette,
     csReadingState,
-    {$IFDEF OldAutoSize}
-    // deprecated
-    csAlignmentNeeded,
-    {$ENDIF}
     csFocusing,
     csCreating, // not used, exists for Delphi compatibility
     csPaintCopy,
@@ -794,7 +790,6 @@ type
 
   { TControl }
 
-  {$IFNDEF OldAutoSize}
   TControlAutoSizePhase = (
     caspNone,
     caspChangingProperties,
@@ -804,7 +799,6 @@ type
     caspShowing          // make handles visible
     );
   TControlAutoSizePhases = set of TControlAutoSizePhase;
-  {$ENDIF}
 
   TTabOrder = -1..32767;
 
@@ -813,12 +807,7 @@ type
                                  var Handled: Boolean) of object;
 
   TControlFlag = (
-    {$IFDEF OldAutoSize}
-    // obsolete
-    cfRequestAlignNeeded,
-    {$ELSE}
     cfLoading, // set by TControl.ReadState, unset by TControl.Loaded when all on form finished loading
-    {$ENDIF}
     cfAutoSizeNeeded,
     cfLeftLoaded,  // cfLeftLoaded is set, when 'Left' is set during loading.
     cfTopLoaded,
@@ -830,9 +819,6 @@ type
     cfBaseBoundsValid,
     cfPreferredSizeValid,
     cfPreferredMinSizeValid,
-    {$IFDEF OldAutoSize}
-    cfOnResizeNeeded,
-    {$ENDIF}
     cfOnChangeBoundsNeeded
     );
   TControlFlags = set of TControlFlag;
@@ -896,10 +882,6 @@ type
     FHelpType: THelpType;
     FHint: TTranslateString;
     FHostDockSite: TWinControl;
-    {$IFDEF OldAutoSize}
-    fLastAlignedBounds: TRect;
-    fLastAlignedBoundsTried: integer;
-    {$ENDIF}
     FLastChangebounds: TRect;
     FLastDoChangeBounds: TRect;
     FLastDoChangeClientSize: TPoint;
@@ -957,18 +939,14 @@ type
     FParentFont: Boolean;
     FParentShowHint: Boolean;
     FAutoSize: Boolean;
-    {$IFNDEF OldAutoSize}
     FAutoSizingAll: boolean;
-    {$ENDIF}
     FAutoSizingSelf: Boolean;
     FEnabled: Boolean;
     FMouseEntered: boolean;
     FVisible: Boolean;
     function CaptureMouseButtonsIsStored: boolean;
     procedure DoActionChange(Sender: TObject);
-    {$IFNDEF OldAutoSize}
     function GetAutoSizingAll: Boolean;
-    {$ENDIF}
     function GetAnchorSide(Kind: TAnchorKind): TAnchorSide;
     function GetAnchorSideIndex(Index: integer): TAnchorSide;
     function GetAnchoredControls(Index: integer): TControl;
@@ -1032,14 +1010,9 @@ type
   protected
     // sizing/aligning
     procedure DoAutoSize; virtual;
-    {$IFNDEF OldAutoSize}
     procedure DoAllAutoSize; virtual; // while autosize needed call DoAutoSize, used by AdjustSize and EnableAutoSizing
-    {$ENDIF}
     procedure BeginAutoSizing; // set AutoSizing=true, can be used to prevent circles
     procedure EndAutoSizing;   // set AutoSizing=false
-    {$IFDEF OldAutoSize}
-    function AutoSizeCanStart: boolean; virtual;
-    {$ENDIF}
     procedure AnchorSideChanged(TheAnchorSide: TAnchorSide); virtual;
     procedure ForeignAnchorSideChanged(TheAnchorSide: TAnchorSide;
                                        Operation: TAnchorSideChangeOperation); virtual;
@@ -1064,16 +1037,11 @@ type
     procedure Resize; virtual;// checks for changes and calls DoOnResize
     procedure RequestAlign; virtual;// smart calling Parent.AlignControls
     procedure UpdateAnchorRules;
-    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer
-                     {$IFNDEF OldAutoSize}; KeepBase: boolean{$ENDIF}); virtual;
+    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer; KeepBase: boolean); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
     procedure ChangeScale(Multiplier, Divider: Integer); virtual;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; virtual;
-    {$IFDEF OldAutoSize}
-    procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
-    {$ELSE}
     procedure UpdateAlignIndex;
-    {$ENDIF}
     procedure SetBiDiMode(AValue: TBiDiMode); virtual;
     procedure SetParentBiDiMode(AValue: Boolean); virtual;
     function IsAParentAligning: boolean;
@@ -1089,9 +1057,7 @@ type
     function HeightIsAnchored: boolean;
 
     property AutoSizing: Boolean read FAutoSizingSelf;// see Begin/EndAutoSizing
-    {$IFNDEF OldAutoSize}
     property AutoSizingAll: Boolean read GetAutoSizingAll;// set in DoAllAutoSize
-    {$ENDIF}
     property AutoSizingLockCount: Integer read FAutoSizingLockCount;
   protected
     // protected messages
@@ -1280,9 +1246,7 @@ type
   public
     // size
     procedure AdjustSize; virtual;// smart calling DoAutoSize
-    {$IFNDEF OldAutoSize}
     function AutoSizePhases: TControlAutoSizePhases; virtual;
-    {$ENDIF}
     function AutoSizeDelayed: boolean; virtual;
     function AutoSizeCheckParent: Boolean; virtual;
     procedure AnchorToNeighbour(Side: TAnchorKind; Space: integer;
@@ -1302,7 +1266,7 @@ type
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer
-                                {$IFDEF OldAutoSize}; Lock: boolean = true{$ENDIF}); virtual; // if you use this, disable the LCL autosizing for this control
+            ); virtual; // if you use this, disable the LCL autosizing for this control
     procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
                                Raw: boolean = false;
                                WithThemeSpace: boolean = true); virtual;
@@ -1319,10 +1283,6 @@ type
     {$ENDIF}
     procedure UpdateBaseBounds(StoreBounds, StoreParentClientSize,
                                UseLoadedValues: boolean); virtual;
-    {$IFDEF OldAutoSize}
-    procedure LockBaseBounds;
-    procedure UnlockBaseBounds;
-    {$ENDIF}
     property BaseBounds: TRect read FBaseBounds;
     property ReadBounds: TRect read FReadBounds;
     procedure WriteLayoutDebugReport(const Prefix: string); virtual;
@@ -1617,11 +1577,7 @@ type
     wcfClientRectNeedsUpdate,
     wcfColorChanged,
     wcfFontChanged,          // Set if font was changed before handle creation
-    {$IFDEF OldAutoSize}
-    wcfReAlignNeeded,
-    {$ELSE}
     wcfAllAutoSizing,
-    {$ENDIF}
     wcfAligningControls,
     wcfEraseBackground,
     wcfCreatingHandle,       // Set while constructing the handle of this control
@@ -1693,9 +1649,6 @@ type
     FTabOrder: integer;
     FTabList: TFPList;
     // keep small variables together to save some bytes
-    {$IFDEF OldAutoSize}
-    FAlignLevel: Word;
-    {$ENDIF}
     FTabStop: Boolean;
     FShowing: Boolean;
     FDoubleBuffered: Boolean;
@@ -1741,9 +1694,6 @@ type
     function DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
                      AControlList: TFPList; var ARect: TRect): Boolean; virtual;
     procedure DoChildSizingChange(Sender: TObject); virtual;
-    {$IFDEF OldAutoSize}
-    procedure ResizeDelayedAutoSizeChildren; virtual;
-    {$ENDIF}
     procedure InvalidatePreferredChildSizes;
     function CanTab: Boolean; override;
     function IsClientHeightStored: boolean; override;
@@ -1757,10 +1707,8 @@ type
     procedure DoConstraintsChange(Sender: TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DoAutoSize; override;
-    {$IFNDEF OldAutoSize}
     procedure DoAllAutoSize; override;
     procedure AllAutoSized; virtual; // called by DoAllAutoSize after all bounds are computed, see TCustomForm.AllAutoSized
-    {$ENDIF}
     procedure CalculatePreferredSize(var PreferredWidth,
                                      PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
@@ -1928,9 +1876,7 @@ type
     property VisibleDockClientCount: Integer read GetVisibleDockClientCount;
   public
     // size, position, bounds
-    {$IFNDEF OldAutoSize}
     function AutoSizePhases: TControlAutoSizePhases; override;
-    {$ENDIF}
     function AutoSizeDelayed: boolean; override;
     function AutoSizeCheckParent: Boolean; override;
     procedure BeginUpdateBounds; // disable SetBounds
@@ -2351,7 +2297,6 @@ const
     'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom');
   AnchorNames: array[TAnchorKind] of string = (
     'akTop', 'akLeft', 'akRight', 'akBottom');
-  {$IFNDEF OldAutoSize}
   AutoSizePhaseNames: array[TControlAutoSizePhase] of string = (
     'caspNone',
     'caspChangingProperties',
@@ -2360,7 +2305,6 @@ const
     'caspRealizingBounds',
     'caspShowing'
     );
-  {$ENDIF}
 
 function FindDragTarget(const Position: TPoint; AllowDisabled: Boolean): TControl;
 function FindControlAtPosition(const Position: TPoint; AllowDisabled: Boolean): TControl;
@@ -2415,10 +2359,8 @@ function DbgS(a: TAnchorKind): string; overload;
 function DbgS(Anchors: TAnchors): string; overload;
 function DbgS(a: TAlign): string; overload;
 function DbgS(a: TAnchorKind; Side: TAnchorSideReference): string; overload;
-{$IFNDEF OldAutoSize}
 function DbgS(p: TControlAutoSizePhase): string; overload;
 function DbgS(Phases: TControlAutoSizePhases): string; overload;
-{$ENDIF}
 
 operator := (AVariant: Variant): TCaption;
 
@@ -2605,7 +2547,6 @@ begin
   end;
 end;
 
-{$IFNDEF OldAutoSize}
 function DbgS(p: TControlAutoSizePhase): string; overload;
 begin
   Result:=AutoSizePhaseNames[p];
@@ -2624,7 +2565,6 @@ begin
   end;
   Result:='['+Result+']';
 end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
  RecreateWnd

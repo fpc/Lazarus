@@ -6021,9 +6021,7 @@ begin
   ReleaseEditor(Edit);
   Edit.UpdateNoteBook(DestWin, DestWin.NoteBookPage[NewPageIndex]);
   DestWin.AcceptEditor(Edit);
-  {$IfNDef OldAutoSize}
   DestWin.NotebookPage[NewPageIndex].ReAlign;
-  {$EndIf}
 
   NoteBookDeletePage(OldPageIndex);
   UpdatePageNames;
@@ -6448,10 +6446,8 @@ Begin
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] A ');
   {$ENDIF}
-  {$IFNDEF OldAutoSize}
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
   try
-  {$ENDIF}
     Visible:=true;
     Result := NewSE(-1, -1, AShareEditor);
     {$IFDEF IDE_DEBUG}
@@ -6464,11 +6460,9 @@ Begin
     Result.PageName:= Manager.FindUniquePageName(NewShortName, Result);
     UpdatePageNames;
     UpdateProjectFiles;
-  {$IFNDEF OldAutoSize}
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
   end;
-  {$ENDIF}
   if FocusIt then FocusEditor;
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] end');
@@ -6486,10 +6480,8 @@ begin
   TempEditor:=FindSourceEditorWithPageIndex(APageIndex);
   if TempEditor=nil then exit;
   //debugln(['TSourceNotebook.CloseFile ',TempEditor.FileName,' ',TempEditor.APageIndex]);
-  {$IFNDEF OldAutoSize}
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.CloseFile'){$ENDIF};
   try
-  {$ENDIF}
     Visible:=true;
     EndIncrementalFind;
     TempEditor.Close;
@@ -6512,11 +6504,9 @@ begin
       if not FIsClosing then
         Close;
     end;
-  {$IFNDEF OldAutoSize}
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.CloseFile'){$ENDIF};
   end;
-  {$ENDIF}
   if (TempEditor <> nil) then
     TempEditor.EditorComponent.SetFocus;
   {$IFDEF IDE_DEBUG}

@@ -1001,6 +1001,7 @@ function ParseFPCVerbose(List: TStrings; out UnitPaths: TStrings;
     SymbolName, SymbolValue, UpLine, NewPath: string;
     i, len, curpos: integer;
   begin
+    DebugLn(['ProcessOutputLine ',Line]);
     len := length(Line);
     if len <= 6 then Exit; // shortest match
 

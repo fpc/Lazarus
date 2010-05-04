@@ -1309,20 +1309,16 @@ begin
   HiddenWindowsOnRun:=TList.Create;
 
   // menu
-  {$IFNDEF OldAutoSize}
   MainIDEBar.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Create'){$ENDIF};
   try
-  {$ENDIF}
     SetupStandardIDEMenuItems;
     SetupMainMenu;
     SetupSpeedButtons;
     SetupComponentNoteBook;
     ConnectMainBarEvents;
-  {$IFNDEF OldAutoSize}
   finally
     MainIDEBar.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Create'){$ENDIF};
   end;
-  {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create MENU');{$ENDIF}
 
   // create main IDE register items
@@ -1791,9 +1787,7 @@ procedure TMainIDE.SetupSpeedButtons;
     Result.Name := AName;
     Result.Parent := MainIDEBar.pnlSpeedButtons;
     Result.Images := IDEImages.Images_16;
-    {$IFNDEF OldAutoSize}
     Result.AutoSize := true;
-    {$ENDIF}
   end;
 
 begin
@@ -1805,9 +1799,7 @@ begin
     Align := alLeft;
     Caption := '';
     BevelOuter := bvNone;
-    {$IFNDEF OldAutoSize}
     AutoSize := true;
-    {$ENDIF}
     Visible := EnvironmentOptions.IDESpeedButtonsVisible;
   end;
 
@@ -6121,7 +6113,7 @@ begin
         if NewUnitName='' then
           NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
         // ToDo: create AncestorBinStream(s) via hook, not via parameters
-        DisableAutoSize:={$IFDEF OldAutoSize}false{$ELSE}true{$ENDIF};
+        DisableAutoSize:=true;
         NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream,
                    AncestorType,copy(NewUnitName,1,255),true,true,DisableAutoSize,AnUnitInfo);
         if (NewComponent is TControl) then begin
@@ -7907,7 +7899,7 @@ begin
       end else begin
         // create a designer form for a form/datamodule/frame
         //DebugLn(['TMainIDE.DoNewFile Name=',NewFileDescriptor.Name,' Class=',NewFileDescriptor.ClassName]);
-        DisableAutoSize:={$IFDEF OldAutoSize}false{$ELSE}true{$ENDIF};
+        DisableAutoSize:=true;
         Result := CreateNewForm(NewUnitInfo, AncestorType, nil,
                                 NewFileDescriptor.UseCreateFormStatements,
                                 DisableAutoSize);

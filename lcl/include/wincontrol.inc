@@ -2207,17 +2207,10 @@ begin
       OldBounds:=CurControl.BoundsRect;
       if not CompareRect(@NewBounds,@OldBounds) then begin
         Result:=true;
-        {$IFDEF OldAutoSize}
-        CurControl.SetAlignedBounds(NewBounds.Left,
-                                    NewBounds.Top,
-                                    NewBounds.Right-NewBounds.Left,
-                                    NewBounds.Bottom-NewBounds.Top);
-        {$ELSE}
         CurControl.SetBoundsKeepBase(NewBounds.Left,
                                      NewBounds.Top,
                                      NewBounds.Right-NewBounds.Left,
                                      NewBounds.Bottom-NewBounds.Top);
-        {$ENDIF}
       end;
     end;
   end;
@@ -2310,7 +2303,6 @@ begin
     ReallocMem(Childs[o],0);
 end;
 
-{$IFNDEF OldAutoSize}
 {------------------------------------------------------------------------------
   function TWinControl.AutoSizePhases: TControlAutoSizePhases;
 ------------------------------------------------------------------------------}
@@ -2332,23 +2324,13 @@ begin
       Include(Result,caspChangingProperties);
   end;
 end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
   function TWinControl.AutoSizeDelayed: boolean;
 ------------------------------------------------------------------------------}
 function TWinControl.AutoSizeDelayed: boolean;
 begin
-  Result:={$IFDEF OldAutoSize}
-          // no handle means not visible
-          (not HandleAllocated)
-          // obsolete
-            or ((not FShowing) and (not (csDesigning in ComponentState)))
-            // during handle creation no autosize
-            or (wcfCreatingChildHandles in FWinControlFlags)
-          {$ELSE}
-          (csDestroyingHandle in ControlState)
-          {$ENDIF}
+  Result:=(csDestroyingHandle in ControlState)
           or (inherited AutoSizeDelayed);
   //if Result then debugln('TWinControl.AutoSizeDelayed A ',DbgSName(Self),' wcfCreatingChildHandles=',dbgs(wcfCreatingChildHandles in FWinControlFlags),' csLoading=',dbgs(csLoading in ComponentState));
   {$IFDEF VerboseCanAutoSize}
@@ -2946,11 +2928,7 @@ var
       // lock the base bounds, so that the new automatic bounds do not override
       // the user settings
       OldBounds:=Control.BoundsRect;
-      {$IFDEF OldAutoSize}
-      Control.SetAlignedBounds(NewLeft, NewTop, NewWidth, NewHeight);
-      {$ELSE}
       Control.SetBoundsKeepBase(NewLeft, NewTop, NewWidth, NewHeight);
-      {$ENDIF}
       //DebugLn(['DoPosition ',DbgSName(Control),' ',cfAutoSizeNeeded in Control.FControlFlags]);
       NewBounds:=Control.BoundsRect;
       BoundsMutated:=not CompareRect(@OldBounds,@NewBounds);
@@ -3093,9 +3071,6 @@ var
   
 var
   i: Integer;
-  {$IFDEF OldAutoSize}
-  ChildControl: TControl;
-  {$ENDIF}
   OldRemainingClientRect: TRect;
   OldRemainingBorderSpace: TRect;
   MaxTries: LongInt;
@@ -3104,30 +3079,6 @@ begin
   if wcfAligningControls in FWinControlFlags then exit;
   Include(FWinControlFlags,wcfAligningControls);
   try
-    {$IFDEF OldAutoSize}
-    // obsolete
-
-    // call delayed autosize
-    for i:=ControlCount-1 downto 0 do begin
-      ChildControl:=Controls[i];
-      if cfAutoSizeNeeded in ChildControl.FControlFlags then begin
-        //DebugLn(['TWinControl.AlignControls ',DbgSName(Self),' autosize needed for child ',DbgSName(ChildControl)]);
-        ChildControl.AdjustSize;
-      end;
-    end;
-    {$ENDIF}
-
-    {$IFDEF OldAutoSize}
-    // obsolete
-
-    // unset all align needed flags
-    Exclude(FWinControlFlags,wcfReAlignNeeded);
-    for i:=ControlCount-1 downto 0 do begin
-      ChildControl:=Controls[i];
-      Exclude(ChildControl.FControlFlags,cfRequestAlignNeeded);
-    end;
-    {$ENDIF}
-
     //if csDesigning in ComponentState then begin
       //DebugLn('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' AlignWork=',NeedAlignWork,' ControlCount=',ControlCount);
       //if AControl<>nil then DebugLn('  AControl=',AControl.Name,':',AControl.ClassName);
@@ -3187,18 +3138,6 @@ begin
   finally
     Exclude(FWinControlFlags,wcfAligningControls);
   end;
-  {$IFDEF OldAutoSize}
-  // obsolete
-
-  // let childs autosize themselves
-  for i:=0 to ControlCount-1 do begin
-    ChildControl:=Controls[i];
-    if cfAutoSizeNeeded in ChildControl.FControlFlags then begin
-      //DebugLn(['TWinControl.AlignControls AdjustSize: ',DbgSName(ChildControl),' ',(not ChildControl.AutoSizeCanStart),' ',ChildControl.AutoSizeDelayed]);
-      ChildControl.AdjustSize;
-    end;
-  end;
-  {$ENDIF}
 end;
 
 function TWinControl.CustomAlignInsertBefore(AControl1, AControl2: TControl): Boolean;
@@ -3214,8 +3153,6 @@ begin
   then FOnAlignPosition(Self, AControl, ANewLeft, ANewTop, ANewWidth, ANewHeight, AlignRect, AlignInfo);
 end;
 
-
-
 function TWinControl.DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
   AControlList: TFPList; var ARect: TRect): Boolean;
 begin
@@ -3229,46 +3166,6 @@ begin
   InvalidatePreferredSize;
   ReAlign;
 end;
-
-{$IFDEF OldAutoSize}
-procedure TWinControl.ResizeDelayedAutoSizeChildren;
-var
-  i: Integer;
-  Child: TControl;
-  AWinControl: TWinControl;
-begin
-  if ControlCount=0 then exit;
-  //DebugLn(['TWinControl.ResizeDelayedAutoSizeChildren START ',DbgSName(Self),' Visible=',Visible]);
-  if AutoSizeDelayed then exit;
-  //DebugLn(['TWinControl.ResizeDelayedAutoSizeChildren RUN ',DbgSName(Self)]);
-  DisableAlign;
-  try
-    for i:=0 to ControlCount-1 do begin
-      Child:=Controls[i];
-      if Child.AutoSizeDelayed then begin
-        //DebugLn(['TWinControl.ResizeDelayedAutoSizeChildren Child.AutoSizeDelayed Child=',dbgsName(Child)]);
-        continue;
-      end;
-
-      //DebugLn(['TWinControl.ResizeDelayedAutoSizeChildren ',dbgsName(Child),' AutoSize=',Child.AutoSize,' cfAutoSizeNeeded=',cfAutoSizeNeeded in Child.FControlFlags]);
-      if cfRequestAlignNeeded in Child.FControlFlags then
-        Child.RequestAlign;
-      if (cfAutoSizeNeeded in Child.FControlFlags)
-      or (Child.AutoSize and (not (cfPreferredSizeValid in Child.FControlFlags))) then
-        Child.AdjustSize;
-
-      if Child is TWinControl then begin
-        AWinControl:=TWinControl(Child);
-        AWinControl.ResizeDelayedAutoSizeChildren;
-        if wcfReAlignNeeded in AWinControl.FWinControlFlags then
-          AWinControl.ReAlign;
-      end;
-    end;
-  finally
-    EnableAlign;
-  end;
-end;
-{$ENDIF}
 
 procedure TWinControl.InvalidatePreferredChildSizes;
 var
@@ -3339,18 +3236,6 @@ var
   NewChildBounds: TRect;
   OldChildBounds: TRect;
 begin
-  {$IFDEF OldAutoSize}
-    {$IFDEF VerboseAutoSize}
-    debugln('TWinControl.DoAutoSize ',DbgSName(Self));
-    {$ENDIF}
-    if (not AutoSizeCanStart) or AutoSizeDelayed then begin
-      {$IFDEF VerboseAutoSize}
-      DebugLn(['TWinControl.DoAutoSize DELAYED AutoSizeCanStart=',AutoSizeCanStart,' AutoSizeDelayed=',AutoSizeDelayed]);
-      {$ENDIF}
-      Include(FControlFlags,cfAutoSizeNeeded);
-      exit;
-    end;
-  {$ELSE}
   {$IFDEF VerboseAllAutoSize}
   debugln('TWinControl.DoAutoSize ',DbgSName(Self));
   {$ENDIF}
@@ -3361,13 +3246,8 @@ begin
     Include(FControlFlags,cfAutoSizeNeeded);
     exit;
   end;
-  {$ENDIF}
 
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.DoAutoSize'){$ENDIF};
-  {$IFDEF OldAutoSize}
-  // obsolete
-  DisableAlign;
-  {$ENDIF}
   try
     // test if resizing is possible
     HasVisibleChilds:=false;
@@ -3454,23 +3334,14 @@ begin
         inc(NewTop,Height-PreferredHeight);
       //if CompareText(Name,'NewUnitOkButton')=0 then
         //debugln(['DoAutoSize Resize ',DbgSName(Self),' Old=',dbgs(BoundsRect),' New=',dbgs(Bounds(NewLeft,NewTop,PreferredWidth,PreferredHeight)),' WidthIsFixed=',WidthIsFixed,' HeightIsFixed=',HeightIsFixed,' Align=',dbgs(Align),' Anchors=',dbgs(Anchors)]);
-      {$IFDEF OldAutoSize}
-      SetAlignedBounds(NewLeft,NewTop,PreferredWidth,PreferredHeight);
-      {$ELSE}
       SetBoundsKeepBase(NewLeft,NewTop,PreferredWidth,PreferredHeight);
-      {$ENDIF}
     end;
   finally
     Exclude(FControlFlags,cfAutoSizeNeeded);
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.DoAutoSize'){$ENDIF};
-    {$IFDEF OldAutoSize}
-    // obsolete
-    EnableAlign;
-    {$ENDIF}
   end;
 end;
 
-{$IFNDEF OldAutoSize}
 procedure TWinControl.DoAllAutoSize;
 
   function CheckHandleAllocated(AWinControl: TWinControl): boolean;
@@ -3595,7 +3466,6 @@ procedure TWinControl.AllAutoSized;
 begin
   // see TCustomForm.AllAutoSized
 end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
   TWinControl BroadCast
@@ -3668,12 +3538,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.DisableAlign;
 begin
-  {$IFDEF OldAutoSize}
-  Inc(FAlignLevel);
-  //DebugLn(['TWinControl.DisableAlign ',dbgsName(Self),' ',FAlignLevel]);
-  {$ELSE}
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.DisableAlign'){$ENDIF};
-  {$ENDIF}
 end;
 
 {-------------------------------------------------------------------------------
@@ -3687,7 +3552,7 @@ var
   R: TRect;
 begin
   if InvalidateRect then
-    InvalidateClientRectCache({$IFDEF OldAutoSize}True{$ELSE}False{$ENDIF});
+    InvalidateClientRectCache(False);
   R := GetClientRect;
   AdjustClientRect(R);
   //DebugLn(['TWinControl.DoAdjustClientRectChange ',DbgSName(Self),' ',r.Right,',',r.Bottom,' ',CompareRect(@r,@FAdjustClientRectRealized)]);
@@ -3700,9 +3565,6 @@ begin
       ' New=',DbgS(r.Right),'x',DbgS(r.Bottom));
     {$ENDIF}
     FAdjustClientRectRealized := R;
-    {$IFDEF OldAutoSize}
-    ReAlign;
-    {$ENDIF}
     AdjustSize;
     Resize;
   end;
@@ -3802,10 +3664,6 @@ var
   OldHeight: LongInt;
 begin
   //DbgOut('[TWinControl.DoSetBounds] ',Name,':',ClassName,' OldHeight=',DbgS(FHeight),' NewHeight=',DbgS(AHeight));
-  {$IFDEF OldAutoSize}
-  InvalidateClientRectCache(False);
-  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
-  {$ELSE}
   OldWidth:=Width;
   OldHeight:=Height;
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
@@ -3814,7 +3672,6 @@ begin
   if FClientWidth<0 then FClientWidth:=0;
   inc(FClientHeight,Height-OldHeight);
   if FClientHeight<0 then FClientHeight:=0;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -3822,17 +3679,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.EnableAlign;
 begin
-  {$IFDEF OldAutoSize}
-  Dec(FAlignLevel);
-  //DebugLn(['TWinControl.EnableAlign ',dbgsName(Self),' ',FAlignLevel]);
-  if FAlignLevel = 0 then begin
-    if (csAlignmentNeeded in ControlState)
-    or (wcfReAlignNeeded in FWinControlFlags) then
-      ReAlign;
-  end;
-  {$ELSE}
   EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.DisableAlign'){$ENDIF};
-  {$ENDIF}
 end;
 
 procedure TWinControl.WriteLayoutDebugReport(const Prefix: string);
@@ -3957,9 +3804,6 @@ function TWinControl.GetClientRect: TRect;
   procedure StoreClientRect(NewClientRect: TRect);
   var
     ClientSizeChanged: boolean;
-    {$IFDEF OldAutoSize}
-    i: Integer;
-    {$ENDIF}
   begin
     if wcfClientRectNeedsUpdate in FWinControlFlags then begin
       ClientSizeChanged:=(FClientWidth<>NewClientRect.Right)
@@ -3976,12 +3820,7 @@ function TWinControl.GetClientRect: TRect;
         {$IFDEF VerboseClientRectBugFix}
         DebugLn(['StoreClientRect ',DbgSName(Self),' ',FClientWidth,',',FClientHeight,' HandleAllocated=',HandleAllocated,' wcfBoundsRealized=',wcfBoundsRealized in FWinControlFlags]);
         {$ENDIF}
-        {$IFDEF OldAutoSize}
-        for i:=0 to ControlCount-1 do
-          Controls[i].fLastAlignedBoundsTried:=0;
-        {$ELSE}
         FAdjustClientRectRealized:=Rect(0,0,0,0);
-        {$ENDIF}
       end;
       Exclude(FWinControlFlags,wcfClientRectNeedsUpdate);
     end;
@@ -4340,35 +4179,6 @@ var
 begin
   bShow := HandleObjectShouldBeVisible;
 
-  {$IFDEF OldAutoSize}
-  if bShow then begin
-    if not HandleAllocated then CreateHandle;
-    if FControls <> nil
-    then begin
-      for n := 0 to FControls.Count - 1 do
-        if TObject(FControls[n]) is TWinControl then
-          TWinControl(FControls[n]).UpdateShowing;
-    end;
-  end;
-  if not HandleAllocated then Exit;
-
-  if FShowing = bShow then Exit;
-
-  ChangeShowing(bShow);
-
-  //DebugLn(['TWinControl.UpdateShowing ',DbgSName(Self),' FShowing=',FShowing,' AutoSizeDelayed=',AutoSizeDelayed]);
-
-  if FShowing then
-  begin
-    DisableAlign;
-    try
-      ResizeDelayedAutoSizeChildren;
-      AdjustSize;
-    finally
-      EnableAlign;
-    end;
-  end;
-  {$ELSE}
   if bShow then begin
     if not HandleAllocated then CreateHandle;
     if FControls <> nil
@@ -4394,7 +4204,6 @@ begin
     end;
   end;
   ChangeShowing(bShow);
-  {$ENDIF}
 end;
 
 procedure TWinControl.Update;
@@ -5998,14 +5807,12 @@ begin
   end;
 
   AControl.FParent := Self;
-  {$IFNDEF OldAutoSize}
   if AControl.FAutoSizingLockCount>0 then
   begin
     // the AControl has disabled autosizing => disable it for the parent=self too
     //DebugLn([Space(FAutoSizingLockCount*2+2),'TWinControl.Insert ',DbgSName(Self),' Control=',DbgSName(AControl),' disable Parent']);
     DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.DisableAutoSizing'){$ENDIF};
   end;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -6015,24 +5822,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.ReAlign;
 begin
-  {$IFDEF OldAutoSize}
-  if (csDestroying in ComponentState) then exit;
-  if (csLoading in ComponentState) or (not HandleAllocated) then begin
-    Include(FWinControlFlags,wcfReAlignNeeded);
-    exit;
-  end;
-  Exclude(FWinControlFlags,wcfReAlignNeeded);// avoid calling after rekursive EnableAlign
-  {$IFDEF VerboseAutoSize}
-  DebugLn('TWinControl.ReAlign A',Name,':',ClassName,' ', Dbgs(BoundsRect));
-  {$ENDIF}
-  AlignControl(nil);
-  {$IFDEF VerboseAutoSize}
-  DebugLn('TWinControl.ReAlign B',Name,':',ClassName,' ', Dbgs(BoundsRect));
-  {$ENDIF}
-  Exclude(FWinControlFlags,wcfReAlignNeeded);// done
-  {$ELSE}
   AdjustSize;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -6048,7 +5838,6 @@ begin
     ListRemove(FControls, AControl);
     ListRemove(FAlignOrder, AControl);
     AControl.FParent := nil;
-    {$IFNDEF OldAutoSize}
     if AControl.FAutoSizingLockCount>0 then
     begin
       // AControl has disabled autosizing and thus for its parent=Self too
@@ -6056,7 +5845,6 @@ begin
       //DebugLn([Space(FAutoSizingLockCount*2),'TWinControl.Remove ',DbgSName(Self),' Control=',DbgSName(AControl),' enable Parent']);
       EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.DisableAutoSizing'){$ENDIF};
     end;
-    {$ENDIF}
   end;
 end;
 
@@ -6136,31 +5924,11 @@ end;
     TWinControl.CMVisibleChanged
 ------------------------------------------------------------------------------}
 procedure TWinControl.UpdateControlState;
-{$IFDEF OldAutoSize}
-var
-  AWinControl: TWinControl;
-{$ENDIF}
 begin
-  {$IFDEF OldAutoSize}
-  AWinControl:= Self;
-  { If any of the parent is not visible, exit }
-  while AWinControl.Parent <> nil do
-  begin
-    AWinControl:= AWinControl.Parent;
-    if (not AWinControl.Showing) or (not AWinControl.HandleAllocated) then Exit;
-  end;
-
-  if ((AWinControl is TCustomForm) and (AWinControl.Parent=nil))
-  or (AWinControl.FParentWindow <> 0) then
-  begin
-    UpdateShowing;
-  end;
-  {$ELSE}
   if HandleObjectShouldBeVisible then
     AdjustSize // this will trigger DoAllAutoSize, which calls UpdateShowing
   else
     UpdateShowing; // hide immediately
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -6173,10 +5941,8 @@ end;
 
 procedure TWinControl.InsertControl(AControl: TControl; Index: integer);
 begin
-  {$IFNDEF OldAutoSize}
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.InsertControl'){$ENDIF};
   try
-  {$ENDIF}
     AControl.ValidateContainer(Self);
     Perform(CM_CONTROLLISTCHANGE, WParam(AControl), LParam(True));
     Insert(AControl,Index);
@@ -6194,22 +5960,11 @@ begin
         AControl.Invalidate;
       //DebugLn('TWinControl.InsertControl ',Name,':',ClassName);
     end;
-    {$IFDEF OldAutoSize}
-    if not (csDestroying in ComponentState) then
-    begin
-      if not (csLoading in ComponentState) then
-        AControl.UpdateAnchorRules;
-      AControl.RequestAlign;
-    end;
-    {$ELSE}
     AdjustSize;
-    {$ENDIF}
     Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(True));
-  {$IFNDEF OldAutoSize}
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.InsertControl'){$ENDIF};
   end;
-  {$ENDIF}
   //debugln(['TWinControl.InsertControl ',DbgSName(Self),' ',csDesigning in ComponentState,' ',DbgSName(AControl),' ',csDesigning in AControl.ComponentState]);
 end;
 
@@ -6220,10 +5975,8 @@ procedure TWinControl.RemoveControl(AControl: TControl);
 var
   AWinControl: TWinControl;
 begin
-  {$IFNDEF OldAutoSize}
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.RemoveControl'){$ENDIF};
   try
-  {$ENDIF}
     Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(False));
     if AControl is TWinControl then
     begin
@@ -6239,23 +5992,12 @@ begin
     Perform(CM_CONTROLLISTCHANGE, WParam(AControl), LParam(False));
     if not (csDestroying in ComponentState) then
     begin
-      {$IFDEF OldAutoSize}
-      if AutoSize then
-      begin
-        InvalidatePreferredSize;
-        AdjustSize;
-      end;
-      Realign;
-      {$ELSE}
       InvalidatePreferredSize;
       AdjustSize;
-      {$ENDIF}
     end;
-  {$IFNDEF OldAutoSize}
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.RemoveControl'){$ENDIF};
   end;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -6265,10 +6007,6 @@ procedure TWinControl.AlignControl(AControl: TControl);
 var
   ARect: TRect;
   NewRect: TRect;
-  {$IFDEF OldAutoSize}
-  i: Integer;
-  ChildControl: TControl;
-  {$ENDIF}
 begin
   //if csDesigning in ComponentState then begin
   //  DbgOut('TWinControl.AlignControl ',Name,':',ClassName);
@@ -6276,47 +6014,8 @@ begin
   //end;
   if csDestroying in ComponentState then exit;
 
-  {$IFDEF OldAutoSize}
-  if FAlignLevel <> 0 then begin
-    Include(FControlState, csAlignmentNeeded);
-    exit;
-  end;
-
-  // check if all childs have finished loading
-  for i:=0 to ControlCount-1 do begin
-    ChildControl:=Controls[i];
-    if csLoading in ChildControl.ComponentState then begin
-      // child is loading
-      // -> mark the child, that itself and its brothers needs realigning
-      // (it will do this, when it has finished loading)
-      Include(ChildControl.FControlFlags,cfRequestAlignNeeded);
-      exit;
-    end;
-  end;
-  {$ELSE}
   // only called by DoAllAutoSize, so no check needed
-  {$ENDIF}
 
-  {$IFDEF OldAutoSize}
-  DisableAlign;
-  try
-    ARect:= GetLogicalClientRect;
-    AlignControls(AControl, ARect);
-    // some widgetsets updates their clientrect when the first child was moved
-    // do a second pass if ClientRect changed
-    NewRect:=GetLogicalClientRect;
-    if not CompareRect(@ARect,@NewRect) then
-      AlignControls(AControl, NewRect);
-  finally
-    Exclude(FControlState, csAlignmentNeeded);
-    EnableAlign;
-    if (FAlignLevel=0) and (not IsAParentAligning) and (FControls<>nil) then
-      for i:=0 to FControls.Count-1 do
-        if TObject(FControls[i]) is TWinControl then
-          TWinControl(FControls[i]).RealizeBoundsRecursive;
-  end;
-
-  {$ELSE}
   DisableAlign;
   try
     ARect:= GetLogicalClientRect;
@@ -6329,7 +6028,6 @@ begin
   finally
     EnableAlign;
   end;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -6804,7 +6502,6 @@ begin
     if HandleAllocated and (not IsIconic(Handle)) then
       GetWindowSize(Handle, NewWidth, NewHeight);
     FBoundsRealized := Bounds(Message.XPos, Message.YPos, NewWidth, NewHeight);
-    {$IFNDEF OldAutoSize}
     if ([caspCreatingHandles,caspComputingBounds]*AutoSizePhases<>[])
     then begin
       // while the LCL is creating handles the widgetset may send default bounds
@@ -6817,16 +6514,11 @@ begin
       //DebugLn(['TWinControl.WMSize from intf ignored, because phases=',dbgs(AutoSizePhases),' boundsrealized=',wcfBoundsRealized in FWinControlFlags]);
       exit;
     end;
-    {$ENDIF}
   end;
-  {$IFDEF OldAutoSize}
-  SetBoundsKeepBase(Message.XPos, Message.YPos, NewWidth, NewHeight, Parent <> nil);
-  {$ELSE}
   if Parent<>nil then
     SetBoundsKeepBase(Message.XPos, Message.YPos, NewWidth, NewHeight)
   else
     SetBounds(Message.XPos, Message.YPos, NewWidth, NewHeight);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -6887,7 +6579,6 @@ begin
     {$ENDIF}
 
     FBoundsRealized := NewBoundsRealized;
-    {$IFNDEF OldAutoSize}
     //DebugLn(['TWinControl.WMSize ',DbgSName(Self),' phases=',dbgs(AutoSizePhases)]);
     if ([caspCreatingHandles,caspComputingBounds]*AutoSizePhases<>[])
     then begin
@@ -6901,22 +6592,11 @@ begin
       //DebugLn(['TWinControl.WMSize from intf ignored, because phases=',dbgs(AutoSizePhases),' boundsrealized=',wcfBoundsRealized in FWinControlFlags]);
       exit;
     end;
-    {$ENDIF}
 
-    {$IFNDEF OldAutoSize}
     if Parent<>nil then
-    {$ENDIF}
       InvalidatePreferredSize;
   end;
 
-  {$IFDEF OldAutoSize}
-  SetBoundsKeepBase(NewLeft, NewTop, Message.Width, Message.Height, Parent <> nil);
-  if ClientRectNeedsInterfaceUpdate then
-    DoAdjustClientRectChange;
-  if ((Message.SizeType and Size_SourceIsInterface) > 0) and
-     (Parent <> nil) and Parent.AutoSize then
-    Parent.AdjustSize;
-  {$ELSE}
   if Parent<>nil then
     SetBoundsKeepBase(NewLeft, NewTop, Message.Width, Message.Height)
   else
@@ -6924,7 +6604,6 @@ begin
   if ((Message.SizeType and Size_SourceIsInterface) > 0)
   and ClientRectNeedsInterfaceUpdate then
     DoAdjustClientRectChange;
-  {$ENDIF}
   {$IFDEF VerboseClientRectBugFix}
   //if Name=CheckClientRectName then
   if ((Message.SizeType and Size_SourceIsInterface) > 0) then
@@ -6993,7 +6672,6 @@ begin
     ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
   { $ENDIF}
   FBoundsRealized := NewBoundsRealized;
-  {$IFNDEF OldAutoSize}
   //DebugLn(['TWinControl.WMSize ',DbgSName(Self),' phases=',dbgs(AutoSizePhases)]);
   if ([caspCreatingHandles,caspComputingBounds]*AutoSizePhases<>[])
   or (not (wcfBoundsRealized in FWinControlFlags))
@@ -7011,9 +6689,7 @@ begin
 
   if Parent<>nil then
     InvalidatePreferredSize;
-  {$ENDIF}
 
-  {$IFNDEF OldAutoSize}
   if Parent<>nil then
     SetBoundsKeepBase(NewLeft, NewTop, NewWidth, NewHeight)
   else
@@ -7021,7 +6697,6 @@ begin
   if ((Message.WindowPos^.flags and SWP_SourceIsInterface) > 0)
   and ClientRectNeedsInterfaceUpdate then
     DoAdjustClientRectChange;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -7306,36 +6981,28 @@ begin
   if (csDestroying in ComponentState)
   or (Parent<>nil) and (csDestroying in Parent.ComponentState) then begin
     DebugLn('[TWinControl.CreateWnd] NOTE: csDestroying ',DbgSName(Self));
-    {$IFNDEF OldAutoSize}
     RaiseGDBException('');
-    {$ENDIF}
     exit;
   end;
 
   if wcfInitializing in FWinControlFlags
   then begin
     DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self), ' while initializing');
-    {$IFNDEF OldAutoSize}
     RaiseGDBException('');
-    {$ENDIF}
     Exit;
   end;
 
   if wcfCreatingHandle in FWinControlFlags
   then begin
     DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self), ' while creating handle');
-    {$IFNDEF OldAutoSize}
     RaiseGDBException('');
-    {$ENDIF}
     Exit;
   end;
 
   if wcfCreatingChildHandles in FWinControlFlags
   then begin
     DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self), ' while creating children');
-    {$IFNDEF OldAutoSize}
     RaiseGDBException('');
-    {$ENDIF}
     Exit;
   end;
   
@@ -7348,13 +7015,8 @@ begin
   FBoundsRealized:=Rect(0,0,0,0);
   Exclude(FWinControlFlags,wcfBoundsRealized);
 
-  {$IFDEF OldAutoSize}
-  // obsolete
-  DisableAlign;
-  {$ENDIF}
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.CreateWnd'){$ENDIF};
   try
-    {$IFNDEF OldAutoSize}
     if (Parent<>nil) and (not Parent.HandleAllocated) then
     begin
       // first create the parent handle
@@ -7362,7 +7024,6 @@ begin
       if HandleAllocated then exit;
       DebugLn(['WARNING: TWinControl.CreateWnd: parent created handles, but not ours']);
     end;
-    {$ENDIF}
     // Control is not visible at this moment. It will be shown in UpdateShowing
     FShowing := False;
     Exclude(FWinControlFlags, wcfHandleVisible);
@@ -7426,22 +7087,11 @@ begin
       Exclude(FWinControlFlags, wcfCreatingChildHandles);
     end;
 
-    {$IFDEF OldAutoSize}
-    // size this control
-    UpdateShowing;
-    AdjustSize;
-    if FControls<>nil then
-      for i:=0 to FControls.Count-1 do
-        TControl(FControls[i]).AdjustSize;
-    // realign childs
-    ReAlign;
-    {$ELSE}
     if FControls<>nil then
       for i:=0 to FControls.Count-1 do
         TControl(FControls[i]).InvalidatePreferredSize;
     // size this control
     AdjustSize;
-    {$ENDIF}
   finally
     //DebugLn(['TWinControl.CreateWnd created ',DbgSName(Self),' enable autosizing ...']);
     (* If an error occured and FHandle was not created,
@@ -7451,10 +7101,6 @@ begin
        As a side effect the current control will be left in autosize-disabled *)
     if FHandle <> 0 then
       EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.CreateWnd'){$ENDIF};
-    {$IFDEF OldAutoSize}
-    // obsolete
-    EnableAlign;
-    {$ENDIF}
   end;
 
   //DebugLn('[TWinControl.CreateWnd] END ',Name,':',Classname);
@@ -7480,9 +7126,6 @@ begin
 
   // First set the WinControl property some interfaces depends on it
   SetProp(Handle,'WinControl',TWinControl(Self));
-  {$IFDEF OldAutoSize}
-  DisableAlign;
-  {$ENDIF}
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.InitializeWnd'){$ENDIF};
   try
     {$IFDEF CHECK_POSITION}
@@ -7490,11 +7133,6 @@ begin
       DebugLn('[TWinControl.InitializeWnd] A ',DbgSName(Self),
       ' OldRelBounds=',dbgs(FBoundsRealized),
       ' -> NewBounds=',dbgs(BoundsRect));
-    {$ENDIF}
-    {$IFDEF OldAutoSize}
-    // obsolete
-    if (Width>0) and (Height>0) then
-      DoSendBoundsToInterface;
     {$ENDIF}
 
     if wcfColorChanged in FWinControlFlags then
@@ -7526,9 +7164,6 @@ begin
     else TWSWinControlClass(WidgetSetClass).SetCursor(Self, Screen.Cursors[Cursor]);
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.InitializeWnd'){$ENDIF};
-    {$IFDEF OldAutoSize}
-    EnableAlign;
-    {$ENDIF}
   end;
   // send pending OnResize
   Resize;
@@ -7611,12 +7246,7 @@ var
   LoadedClientSize: TPoint;
   CurControl: TWinControl;
 begin
-  {$IFDEF OldAutoSize}
-  // obsolete
-  DisableAlign;
-  {$ELSE}
   //DebugLn(['TWinControl.Loaded START ',DbgSName(Self),' cfWidthLoaded=',cfWidthLoaded in FControlFlags,' cfHeightLoaded=',cfHeightLoaded in FControlFlags,' ']);
-  {$ENDIF}
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.Loaded'){$ENDIF};
   try
     //DebugLn(['TWinControl.Loaded ',DbgSName(Self),' cfWidthLoaded=',cfWidthLoaded in FControlFlags,' cfHeightLoaded=',cfHeightLoaded in FControlFlags,' ']);
@@ -7675,23 +7305,10 @@ begin
 
     FixupTabList;
 
-    {$IFDEF OldAutoSize}
-    // obsolete
-    RealizeBounds;
-    if HandleAllocated and ([csDestroying]*ComponentState=[]) then
-      DoSendShowHideToInterface;
-    {$ENDIF}
   finally
-    {$IFNDEF OldAutoSize}
     //DebugLn(['TWinControl.Loaded enableautosizing ',DbgSName(Self),' ',dbgs(BoundsRect)]);
-    {$ENDIF}
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.Loaded'){$ENDIF};
-    {$IFDEF OldAutoSize}
-    // obsolete
-    EnableAlign;
-    {$ELSE}
     //DebugLn(['TWinControl.Loaded END ',DbgSName(Self),' ',dbgs(BoundsRect)]);
-    {$ENDIF}
   end;
 end;
 
@@ -7718,10 +7335,8 @@ begin
   if HandleAllocated then
   begin
     //DebugLn(['TWinControl.DestroyWnd ',DbgSName(Self)]);
-    {$IFNDEF OldAutoSize}
     DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.DestroyWnd'){$ENDIF};
     try
-    {$ENDIF}
       FinalizeWnd;
 
       if FControls <> nil then
@@ -7735,11 +7350,9 @@ begin
       // again. To propely initialize control after we need to restore color
       // and font. Request update.
       FWinControlFlags := FWinControlFlags + [wcfColorChanged, wcfFontChanged];
-    {$IFNDEF OldAutoSize}
     finally
       EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.DestroyWnd'){$ENDIF};
     end;
-    {$ENDIF}
   end;
 end;
 
@@ -7824,9 +7437,7 @@ begin
     RaiseGDBException('UnlockRealizeBounds');
   dec(FRealizeBoundsLockCount);
   if (FRealizeBoundsLockCount=0)
-  {$IFNDEF OldAutoSize}
   and (not AutoSizeDelayed) and (caspRealizingBounds in AutoSizePhases)
-  {$ENDIF}
   then
     RealizeBounds;
 end;
@@ -7989,11 +7600,7 @@ begin
     if [csDesigning,csDestroying,csLoading]*ComponentState=[csDesigning] then
       CheckDesignBounds;
     // LCL bounds are not up2date -> process new bounds
-    {$IFDEF OldAutoSize}
-    LockRealizeBounds;
-    {$ELSE}
     DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.SetBounds'){$ENDIF};
-    {$ENDIF}
     try
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
@@ -8005,11 +7612,7 @@ begin
       inherited SetBounds(ALeft, ATop, AWidth, AHeight);
       //DebugLn(['TWinControl.SetBounds ',DbgSName(Self),' FUseDockManager=',FUseDockManager,' ',DbgSName(DockManager)]);
     finally
-      {$IFDEF OldAutoSize}
-      UnlockRealizeBounds;
-      {$ELSE}
       EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.SetBounds'){$ENDIF};
-      {$ENDIF}
     end;
   end;
 end;
@@ -8250,7 +7853,6 @@ var
   OldBounds: TRect;
   {$ENDIF}
 begin
-  {$IFNDEF OldAutoSize}
   if (Parent=nil) and (not HandleObjectShouldBeVisible) then begin
     { do not move invisible forms
        Reason: It is common to do this:
@@ -8262,7 +7864,6 @@ begin
        Only send the last bounds. }
     exit;
   end;
-  {$ENDIF}
   NewBounds:=Bounds(Left, Top, Width, Height);
   {$IF defined(VerboseResizeFlicker)}
   if HandleAllocated then begin
@@ -8307,26 +7908,21 @@ begin
   end;
   {$ENDIF}
   FBoundsRealized:=NewBounds;
-  {$IFNDEF OldAutoSize}
   OldClientRect:=ClientRect;
-  {$ENDIF}
   Include(FWinControlFlags,wcfBoundsRealized); // Note: set before calling widgetset, because used in WMSize
   //if Parent=nil then DebugLn(['TWinControl.DoSendBoundsToInterface ',DbgSName(Self),' ',dbgs(BoundsRect)]);
   // this can trigger WMSize messages
   TWSWinControlClass(WidgetSetClass).SetBounds(Self, Left, Top, Width, Height);
-  {$IFNDEF OldAutoSize}
   NewClientRect:=ClientRect;
   if not CompareRect(@OldClientRect,@NewClientRect) then begin
     // the widgetset has changed the clientrect
     //DebugLn(['TWinControl.DoSendBoundsToInterface ',DbgSName(Self),' Bounds=',dbgs(BoundsRect),' OldClientRect=',dbgs(OldClientRect),' NewClientRect=',dbgs(NewClientRect)]);
     AdjustSize;
   end;
-  {$ENDIF}
 end;
 
 procedure TWinControl.RealizeBounds;
 
-  {$IFNDEF OldAutoSize}
   procedure Check;
   var
     c: TWinControl;
@@ -8342,7 +7938,6 @@ procedure TWinControl.RealizeBounds;
     end;
     RaiseGDBException('');
   end;
-  {$ENDIF}
 
 var
   NewBounds: TRect;
@@ -8352,9 +7947,6 @@ begin
   and ([csLoading,csDestroying]*ComponentState=[])
   and (not (csDestroyingHandle in ControlState))
   and (not CompareRect(@NewBounds,@FBoundsRealized))
-  {$IFDEF OldAutoSize}
-  and (not IsAParentAligning)
-  {$ENDIF}
   then begin
     // the new bounds were not yet sent to the InterfaceObject -> send them
     {$IFDEF CHECK_POSITION}
@@ -8383,9 +7975,7 @@ begin
       if (CompareRect(@NewBounds,@FBoundsRealized)) then debugln('bounds not changed');
     end;
     {$ENDIF}
-    {$IFNDEF OldAutoSize}
     if not HandleAllocated then Check;
-    {$ENDIF}
   end;
 end;
 

@@ -45,9 +45,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TSizeConstraints.UpdateInterfaceConstraints;
 begin
-  {$IFNDEF OldAutoSize}
   if (Control is TWinControl) and TWinControl(Control).HandleAllocated then
-  {$ENDIF}
     TWSControlClass(Control.WidgetSetClass).GetConstraints(Control, Self);
 end;
 

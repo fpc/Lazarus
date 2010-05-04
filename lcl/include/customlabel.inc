@@ -102,44 +102,9 @@ begin
 end;
 
 procedure TCustomLabel.DoAutoSize;
-{$IFDEF OldAutoSize}
-var
-  NewWidth, NewHeight: integer;
-  CurAnchors: TAnchors;
-{$ENDIF}
 begin
   inherited DoAutoSize;
   //debugln('TCustomLabel.DoAutoSize ',DbgSName(Self),' AutoSizing=',dbgs(AutoSizing),' AutoSize=',dbgs(AutoSize),' Parent=',DbgSName(Parent),' csLoading=',dbgs(csLoading in ComponentState),' Parnet.HandleAllocated=',dbgs((Parent<>nil) and (Parent.HandleAllocated)));
-  {$IFDEF OldAutoSize}
-  if OptimalFill and (not AutoSize) then
-  begin
-    AdjustFontForOptimalFill;
-    Exit;
-  end;
-
-  if AutoSizeDelayed then
-    Exit;
-
-  GetPreferredSize(NewWidth, NewHeight);
-  //debugln('TCustomLabel.DoAutoSize ',dbgsName(Self),' Nice ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h=',dbgs(NewHeight),' Caption="',dbgstr(Caption),'"');
-  CurAnchors := [];
-  if Align in [alLeft, alRight, alBottom, alTop, alClient] then
-    CurAnchors := AnchorAlign[Align];
-  CurAnchors := Anchors + CurAnchors;
-  if (CurAnchors * [akLeft, akRight] = [akLeft, akRight]) or
-     (WordWrap and (NewWidth < Width)) then
-    NewWidth := Width;
-  if CurAnchors * [akTop, akBottom] = [akTop, akBottom] then
-    NewHeight := Height;
-
-  //debugln('TCustomLabel.DoAutoSize ',dbgsName(Self),' Anchored ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h=',dbgs(NewHeight));
-  FInternalSetBounds := True;
-  try
-    SetBoundsKeepBase(Left, Top, NewWidth, NewHeight);
-  finally
-    FInternalSetBounds := False;
-  end;
-  {$ENDIF}
 end;
 
 procedure TCustomLabel.SetAlignment(Value : TAlignment);
@@ -323,9 +288,7 @@ end;
 procedure TCustomLabel.Loaded;
 begin
   inherited Loaded;
-  {$IFNDEF OldAutoSize}
   AdjustSize;
-  {$ENDIF}
 end;
 
 procedure TCustomLabel.UpdateSize;
@@ -333,10 +296,6 @@ begin
   InvalidatePreferredSize;
   if OptimalFill and (not AutoSize) then
     AdjustFontForOptimalFill;
-  {$IFDEF OldAutoSize}
-  if (Parent <> nil) and Parent.AutoSize then
-    Parent.AdjustSize;
-  {$ENDIF}
   AdjustSize;
 end;
 

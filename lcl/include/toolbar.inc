@@ -327,11 +327,7 @@ begin
     TControl(FButtons[i]).InvalidatePreferredSize;
     TControl(FButtons[i]).AdjustSize;
   end;
-  {$IFDEF OldAutoSize}
-  ReAlign;
-  {$ELSE}
   AdjustSize;
-  {$ENDIF}
   Invalidate;
   Exclude(FToolBarFlags,tbfUpdateVisibleBarNeeded);
 end;
@@ -453,73 +449,21 @@ begin
 end;
 
 procedure TToolBar.DoAutoSize;
-{$IFDEF OldAutoSize}
-var
-  NewWidth: Integer;
-  NewHeight: Integer;
-  ModifyWidth, ModifyHeight : Boolean;
-{$ENDIF}
 begin
-  {$IFDEF OldAutoSize}
-  if AutoSizing then Exit;    // we shouldn't come here in the first place
-  BeginAutoSizing;
-  try
-    NewWidth:=Width;
-    NewHeight:=Height;
-    GetPreferredSize(NewWidth,NewHeight);
-    ModifyWidth := [akLeft, akRight] * (Anchors+AnchorAlign[Align]) <> [akLeft, akRight];
-    ModifyHeight := [akTop, akBottom] * (Anchors+AnchorAlign[Align]) <> [akTop, akBottom];
-
-    if not ModifyWidth then NewWidth := Width;
-    if not ModifyHeight then NewHeight := Height;
-
-    //DebugLn(['TToolBar.DoAutoSize ',DbgSName(Self),' ',Width,',',Height,' ',NewWidth,',',NewHeight]);
-    if (NewWidth <> Width) or (NewHeight <> Height) then
-      SetBounds(Left, Top, NewWidth, NewHeight);
-  finally
-    EndAutoSizing;
-  end;
-  {$ELSE}
   // childs are moved in ControlsAligned independent of AutoSize=true
-  {$ENDIF}
 end;
 
 procedure TToolBar.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 var
-  {$IFDEF OldAutoSize}
-  ARect, Adjusted: TRect;
-  ACount: Integer;
-  {$ENDIF}
   NewWidth: Integer;
   NewHeight: Integer;
   FixedWidth: Boolean;
 begin
   NewWidth:=0;
   NewHeight:=0;
-  {$IFDEF OldAutoSize}
-  ARect := ClientRect;
-  Adjusted := ARect;
-  AdjustClientRect(Adjusted);
-  ACount := ButtonCount;
 
-
-  if IsVertical then
-    PreferredWidth := ButtonWidth
-  else
-    PreferredWidth := ButtonWidth * ACount;
-  inc(PreferredWidth, (Adjusted.Left - ARect.Left) + (ARect.Right - Adjusted.Right));
-
-  if IsVertical then
-    PreferredWidth := ButtonHeight * ACount
-  else
-    PreferredHeight := ButtonHeight;
-  inc(PreferredHeight, (Adjusted.Top - ARect.Top) + (ARect.Bottom - Adjusted.Bottom));
-  {$ENDIF}
-
-  {$IFNDEF OldAutoSize}
   FixedWidth:=false;
-  {$ENDIF}
   if [akLeft,akRight]*Anchors=[akLeft,akRight] then begin
     // the width depends on the parent or siblings
     // use a simpe heuristic to find out if the width is fixed
@@ -528,22 +472,18 @@ begin
     and (Parent.AutoSize=false)
     then begin
       // the width is fixed
-      {$IFNDEF OldAutoSize}
       FixedWidth:=true;
-      {$ENDIF}
       WrapButtons(Width, NewWidth, NewHeight, True);
       PreferredWidth := NewWidth;
       PreferredHeight := NewHeight;
       //DebugLn(['TToolBar.CalculatePreferredSize fixed width: ',PreferredWidth,'x',PreferredHeight]);
     end;
   end;
-  {$IFNDEF OldAutoSize}
   if not FixedWidth then begin
     WrapButtons(Screen.Width,NewWidth,NewHeight,true);
     PreferredWidth := NewWidth;
     PreferredHeight := NewHeight;
   end;
-  {$ENDIF}
   //DebugLn(['TToolBar.CalculatePreferredSize ',DbgSName(Self),' ',PreferredWidth,'x',PreferredHeight,' Count=',ControlCount]);
 end;
 

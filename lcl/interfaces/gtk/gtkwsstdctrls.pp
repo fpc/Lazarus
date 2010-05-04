@@ -1503,11 +1503,7 @@ begin
   gtk_frame_set_shadow_type(PGtkFrame(Result), StaticBorderShadowMap[AStaticText.BorderStyle]);
 
   EventBox := gtk_event_box_new;  // our area
-  {$IFDEF OldAutoSize}
-  LblWidget := gtk_label_new(nil); // our text widget
-  {$ELSE}
   LblWidget := gtk_label_new(PChar(TCustomStaticText(AWinControl).Caption)); // our text widget
-  {$ENDIF}
   gtk_container_add(PGtkContainer(EventBox), LblWidget);
   SetLabelAlignment(PGtkLabel(LblWidget), AStaticText.Alignment);
   gtk_widget_show(LblWidget);

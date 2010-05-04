@@ -2016,21 +2016,7 @@ begin
     SaveSizeNotification(Widget);
   end;
   {$ELSE}
-    {$IFDEF OldAutoSize}
-    if GTK_WIDGET_REALIZED(Widget) then begin
-      { The gtk sends the size messages after the resizing. Therefore the parent
-        widget is already resized, but the parent resize message will be emitted
-        after all its childs. So, the gtk resizes in top-bottom order, just like the
-        LCL. But it sends size messages in bottom-top order, which can result in
-        many resizes in the LCL.
-      }
-      // The resize messages of the inner widget of a Control is cached.
-      // This is the resize of an outer widget and sent to the LCL immediately.
-      SendSizeNotificationToLCL(Widget);
-    end;
-    {$ELSE}
     SendSizeNotificationToLCL(Widget);
-    {$ENDIF}
   {$ENDIF}
 end;
 
@@ -2588,11 +2574,7 @@ begin
 
   if (AWidgetInfo^.LCLObject is TScrollingWinControl) then
   begin
-    {$ifdef OldAutoSize}
-    MaxValue := ARange^.adjustment^.upper - ARange^.adjustment^.page_size;
-    {$else}
     MaxValue := ARange^.adjustment^.upper;
-    {$endif}
     if (AValue > MaxValue) or (AValue < ARange^.adjustment^.lower) then
     begin
       Result := not Result;

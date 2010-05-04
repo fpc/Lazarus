@@ -1579,9 +1579,6 @@ type
     function DialogChar(var Message: TLMKey): boolean; override;
     procedure SetAutoSize(Value: Boolean); override;
     procedure RealSetText(const AValue: TCaption); override;
-    {$IFDEF OldAutoSize}
-    procedure DoAutoSize; override;
-    {$ENDIF}
   public
     constructor Create(TheOwner: TComponent); override;
     function CheckMenuDropdown: Boolean; virtual;
