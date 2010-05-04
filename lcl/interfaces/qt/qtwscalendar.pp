@@ -69,20 +69,9 @@ end;
 class function TQtWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 var
   QtCalendar: TQtCalendar;
-  ADate: QDateH;
 begin
   QtCalendar := TQtCalendar(ACalendar.Handle);
-  ADate := QDate_create;
-
-  try
-    QCalendarWidget_selectedDate(QCalendarWidgetH(QtCalendar.Widget), ADate);
-    QtCalendar.AYear := QDate_year(ADate);
-    QtCalendar.AMonth := QDate_month(ADate);
-    QtCalendar.ADay := QDate_day(ADate);
-    Result := EncodeDate(QtCalendar.AYear, QtCalendar.AMonth, QtCalendar.ADay);
-  finally
-    QDate_destroy(ADate);
-  end;
+  Result := QtCalendar.DateTime;
 end;
 
 class function TQtWSCustomCalendar.HitTest(const ACalendar: TCustomCalendar;
@@ -97,55 +86,44 @@ begin
   Result := TCalendarPart(QtCalendar.HitTest(APoint))
 end;
 
-class procedure TQtWSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
+class procedure TQtWSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar;
+  const ADateTime: TDateTime);
 var
   QtCalendar: TQtCalendar;
-  ADate: QDateH;
 begin
   QtCalendar := TQtCalendar(ACalendar.Handle);
-  DecodeDate(ADateTime, QtCalendar.AYear, QtCalendar.AMonth, QtCalendar.ADay);
-  ADate := QDate_create(QtCalendar.AYear, QtCalendar.AMonth, QtCalendar.ADay);
-
-  try
-    QCalendarWidget_setCurrentPage(QCalendarWidgetH(QtCalendar.Widget), QtCalendar.AYear, QtCalendar.AMonth);
-    QCalendarWidget_setSelectedDate(QCalendarWidgetH(QtCalendar.Widget), ADate);
-    { TODO: implement
-    if (dsNoMonthChange in ADisplaySettings) then
-    begin
-       QCalendarWidget_setMinimumDate();
-       QCalendarWidget_setMaximumDate();
-    end;
-    }
-  finally
-    QDate_destroy(ADate);
-  end;
+  QtCalendar.BeginUpdate;
+  QtCalendar.DateTime := ADateTime;
+  QtCalendar.EndUpdate;
 end;
 
 class procedure TQtWSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar;
  const ADisplaySettings: TDisplaySettings);
 var
   QtCalendar: TQtCalendar;
+  HHdrFmt: QCalendarWidgetHorizontalHeaderFormat;
+  VHdrFmt: QCalendarWidgetVerticalHeaderFormat;
+  SelMode: QCalendarWidgetSelectionMode;
 begin
   QtCalendar := TQtCalendar(ACalendar.Handle);
 
+  SelMode := QCalendarWidgetSingleSelection;
+
   if dsShowDayNames in ADisplaySettings then
-    QCalendarWidget_setHorizontalHeaderFormat(QCalendarWidgetH(QtCalendar.Widget), QCalendarWidgetShortDayNames)
+    HHdrFmt := QCalendarWidgetShortDayNames
   else
-    QCalendarWidget_setHorizontalHeaderFormat(QCalendarWidgetH(QtCalendar.Widget), QCalendarWidgetNoHorizontalHeader);
-  
-  QCalendarWidget_setNavigationBarVisible(QCalendarWidgetH(QtCalendar.Widget), (dsShowHeadings in ADisplaySettings));
+    HHdrFmt := QCalendarWidgetNoHorizontalHeader;
 
   if dsShowWeekNumbers in ADisplaySettings then
-    QCalendarWidget_setVerticalHeaderFormat(QCalendarWidgetH(QtCalendar.Widget), QCalendarWidgetISOWeekNumbers)
+    VHdrFmt := QCalendarWidgetISOWeekNumbers
   else
-    QCalendarWidget_setVerticalHeaderFormat(QCalendarWidgetH(QtCalendar.Widget), QCalendarWidgetNoVerticalHeader);
-  
-  QCalendarWidget_setGridVisible(QCalendarWidgetH(QtCalendar.Widget), dsShowWeekNumbers in ADisplaySettings);
+    VHdrFmt := QCalendarWidgetNoVerticalHeader;
 
-  if dsStartMonday in ADisplaySettings then
-    QCalendarWidget_setFirstDayOfWeek(QCalendarWidgetH(QtCalendar.Widget), QtMonday)
-  else
-    QCalendarWidget_setFirstDayOfWeek(QCalendarWidgetH(QtCalendar.Widget), QtSunday);
+  QtCalendar.BeginUpdate;
+  QtCalendar.SetDisplaySettings(HHdrFmt, VHdrFmt, SelMode,
+   dsShowHeadings in ADisplaySettings, dsShowWeekNumbers in ADisplaySettings,
+   dsStartMonday in ADisplaySettings);
+  QtCalendar.EndUpdate;
 end;
 
 end.

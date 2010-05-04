@@ -1402,6 +1402,9 @@ type
     FActivatedHook: QCalendarWidget_hookH;
     FSelectionChangedHook: QCalendarWidget_hookH;
     FCurrentPageChangedHook: QCalendarWidget_hookH;
+    function GetDateTime: TDateTime;
+    procedure SetDateTime(const AValue: TDateTime);
+    procedure SetSelectedDate(const AValue: QDateH);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -1410,11 +1413,18 @@ type
     procedure DetachEvents; override;
     function calViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function HitTest(const APoint: TPoint): byte;
-
+    procedure SetDisplaySettings(
+      const AHHdrFmt: QCalendarWidgetHorizontalHeaderFormat;
+      const AVHdrFmt: QCalendarWidgetVerticalHeaderFormat;
+      const ASelMode: QCalendarWidgetSelectionMode;
+      const ANavBarVisible: Boolean; const AGridVisible: Boolean;
+      const AStartMonday: Boolean
+      );
     procedure SignalActivated(ADate: QDateH); cdecl;
     procedure SignalClicked(ADate: QDateH); cdecl;
     procedure SignalSelectionChanged; cdecl;
     procedure SignalCurrentPageChanged(p1, p2: Integer); cdecl;
+    property DateTime: TDateTime read GetDateTime write SetDateTime;
   end;
   
   // for page control / notebook
@@ -10803,6 +10813,36 @@ end;
 
   { TQtCalendar }
 
+function TQtCalendar.GetDateTime: TDateTime;
+var
+  Date: QDateH;
+begin
+  Date := QDate_create();
+  QCalendarWidget_selectedDate(QCalendarWidgetH(Widget), Date);
+  AYear := QDate_year(Date);
+  AMonth := QDate_month(Date);
+  ADay := QDate_day(Date);
+  QDate_destroy(Date);
+  Result := EncodeDate(AYear, AMonth, ADay);
+end;
+
+procedure TQtCalendar.SetDateTime(const AValue: TDateTime);
+var
+  Date: QDateH;
+begin
+  DecodeDate(AValue, AYear, AMonth, ADay);
+  Date := QDate_create(AYear, AMonth, ADay);
+  QCalendarWidget_setCurrentPage(QCalendarWidgetH(Widget),
+    AYear, AMonth);
+  SetSelectedDate(Date);
+  QDate_destroy(Date);
+end;
+
+procedure TQtCalendar.SetSelectedDate(const AValue: QDateH);
+begin
+  QCalendarWidget_setSelectedDate(QCalendarWidgetH(Widget), AValue);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtCalendar.CreateWidget
   Params:  None
@@ -10935,6 +10975,24 @@ begin
   end;
 end;
 
+procedure TQtCalendar.SetDisplaySettings(
+      const AHHdrFmt: QCalendarWidgetHorizontalHeaderFormat;
+      const AVHdrFmt: QCalendarWidgetVerticalHeaderFormat;
+      const ASelMode: QCalendarWidgetSelectionMode;
+      const ANavBarVisible: Boolean; const AGridVisible: Boolean;
+      const AStartMonday: Boolean);
+begin
+  QCalendarWidget_setHorizontalHeaderFormat(QCalendarWidgetH(Widget), AHHdrFmt);
+  QCalendarWidget_setNavigationBarVisible(QCalendarWidgetH(Widget), ANavBarVisible);
+  QCalendarWidget_setVerticalHeaderFormat(QCalendarWidgetH(Widget), AVHdrFmt);
+  QCalendarWidget_setGridVisible(QCalendarWidgetH(Widget), AGridVisible);
+  if AStartMonday then
+    QCalendarWidget_setFirstDayOfWeek(QCalendarWidgetH(Widget), QtMonday)
+  else
+    QCalendarWidget_setFirstDayOfWeek(QCalendarWidgetH(Widget), QtSunday);
+  QCalendarWidget_setSelectionMode(QCalendarWidgetH(Widget), ASelMode);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtCalendar.SignalActivated
   Params:  None
@@ -11054,6 +11112,8 @@ begin
   {$IFDEF VerboseQt}
   writeln('TQtCalendar.SignalSelectionChanged');
   {$ENDIF}
+  if InUpdate then
+    exit;
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_SELCHANGE;
   DeliverMessage(Msg);
@@ -11075,6 +11135,8 @@ begin
   {$IFDEF VerboseQt}
   writeln('TQtCalendar.SignalCurrentPageChanged p1=',p1,' p2=',p2);
   {$ENDIF}
+  if InUpdate then
+    exit;
   FillChar(Msg, SizeOf(Msg), #0);
   if AYear <> p1 then
   begin
