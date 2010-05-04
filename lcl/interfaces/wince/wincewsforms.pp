@@ -130,7 +130,7 @@ var
   Params: TCreateWindowExParams;
 begin
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin
@@ -268,8 +268,8 @@ begin
   WriteLn('TWinCEWSCustomForm.CreateHandle');
   {$endif}
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
-  
+  PrepareCreateWindow(AWinControl, AParams, Params);
+
   // customization of Params
   with Params do
   begin

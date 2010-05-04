@@ -287,7 +287,7 @@ begin
   init.dwICC := ICC_BAR_CLASSES;
   InitCommonControlsEx(@init);
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
 
   // customization of Params
   with Params do
@@ -375,7 +375,7 @@ begin
   init.dwICC := ICC_PROGRESS_CLASS;
   InitCommonControlsEx(@init);
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin
@@ -437,7 +437,7 @@ begin
   init.dwICC := ICC_BAR_CLASSES;
   InitCommonControlsEx(@init);
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin

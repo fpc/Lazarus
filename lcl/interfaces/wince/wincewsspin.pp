@@ -145,7 +145,7 @@ var
   Params: TCreateWindowExParams;
 begin
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   Params.SubClassWndProc := @SpinWindowProc;
   with Params do

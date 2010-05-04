@@ -133,7 +133,8 @@ type
 
  // TODO: better names?
 
-procedure PrepareCreateWindow(const AWinControl: TWinControl; out Params: TCreateWindowExParams);
+procedure PrepareCreateWindow(const AWinControl: TWinControl;
+  const CreateParams: TCreateParams; out Params: TCreateWindowExParams);
 procedure FinishCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams;
   const AlternateCreateWindow: boolean);
 procedure WindowCreateInitBuddy(const AWinControl: TWinControl;
@@ -144,7 +145,8 @@ implementation
 
 { Global helper routines }
 
-procedure PrepareCreateWindow(const AWinControl: TWinControl; out Params: TCreateWindowExParams);
+procedure PrepareCreateWindow(const AWinControl: TWinControl;
+  const CreateParams: TCreateParams; out Params: TCreateWindowExParams);
 begin
   Fillchar(Params,Sizeof(Params),0);
   with Params do
@@ -156,7 +158,11 @@ begin
 
     Flags := CreateParams.Style;
     FlagsEx := CreateParams.ExStyle;
+
+    // Never set the parent of a window to AppHandle,
+    // otherwise wince will really try to make it a child
     Parent := CreateParams.WndParent;
+
     StrCaption := CreateParams.Caption;
 
     Left := CreateParams.X;
@@ -277,7 +283,7 @@ begin
   writeln(' TWinCEWSWinControl.CreateHandle ');
   {$endif}
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin

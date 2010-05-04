@@ -344,7 +344,7 @@ var
   Params: TCreateWindowExParams;
 begin
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin
@@ -409,7 +409,7 @@ var
   Params: TCreateWindowExParams;
 begin
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin
@@ -455,7 +455,7 @@ var
   Params: TCreateWindowExParams;
 begin
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin
@@ -671,7 +671,7 @@ var
   Params: TCreateWindowExParams;
 begin
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin
@@ -891,7 +891,7 @@ var
   Params: TCreateWindowExParams;
 begin
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin
@@ -1040,7 +1040,7 @@ var
   ACustomMemo: TCustomMemo;
 begin
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   ACustomMemo := TCustomMemo(AWinControl);
   with Params do
@@ -1166,7 +1166,7 @@ var
   Params: TCreateWindowExParams;
 begin
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin
@@ -1245,7 +1245,7 @@ begin
   {$endif}
 
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
 
   // customization of Params
   with Params do
@@ -1285,7 +1285,7 @@ begin
   WriteLn('TWinCEWSCustomCheckBox.CreateHandle');
   {$endif}
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin
@@ -1358,7 +1358,7 @@ var
   Params: TCreateWindowExParams;
 begin
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin
@@ -1383,7 +1383,7 @@ begin
   {$endif}
 
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin
