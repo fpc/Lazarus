@@ -5915,7 +5915,7 @@ end;
 procedure TWinControl.CreateParams(var Params : TCreateParams);
 begin
   FillChar(Params, SizeOf(Params),0);
-  Params.Caption := PChar(Caption);
+  Params.Caption := PChar(FCaption);
   Params.Style := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
   Params.ExStyle := 0;
   if csAcceptsControls in ControlStyle then
