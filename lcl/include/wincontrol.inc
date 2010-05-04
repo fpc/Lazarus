@@ -92,7 +92,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure SetControl(AControl: TControl);
-    procedure ApplyChildsizingBorders(ChildSizing: TControlChildSizing);
+    procedure ApplyChildSizingBorders(ChildSizing: TControlChildSizing);
 
     // for rows and columns
     procedure AllocateChildsArray(Orientation: TAutoSizeBoxOrientation;
@@ -100,9 +100,9 @@ type
     procedure InitSums;
     procedure SumLine(Orientation: TAutoSizeBoxOrientation;
                       DoInit: boolean);
-    procedure ResizeChilds(ChildSizing: TControlChildSizing;
-                           Orientation: TAutoSizeBoxOrientation;
-                           TargetSize: integer);
+    procedure ResizeChildren(ChildSizing: TControlChildSizing;
+                             Orientation: TAutoSizeBoxOrientation;
+                             TargetSize: integer);
     procedure ComputeLeftTops(Orientation: TAutoSizeBoxOrientation);
 
     // for tables
@@ -166,11 +166,11 @@ type
   TAutoSizeCtrlData = class
   private
     FChilds: TAvgLvlTree;// tree of TAutoSizeCtrlData
-    function GetChilds(AControl: TControl): TAutoSizeCtrlData;
-    procedure DoMoveNonAlignedChilds(Side: TAnchorKind;
+    function GetChildren(AControl: TControl): TAutoSizeCtrlData;
+    procedure DoMoveNonAlignedChildren(Side: TAnchorKind;
                                    var MoveDiff: integer; FindMinimum: boolean);
-    procedure SetupNonAlignedChilds(MoveNonAlignedChilds: boolean);
-    procedure AlignChilds;
+    procedure SetupNonAlignedChildren(MoveNonAlignedChildren: boolean);
+    procedure AlignChildren;
     procedure SetupSpace;
     function ComputePositions: boolean;// false if recomputation is needed (a property changed)
   public
@@ -192,7 +192,7 @@ type
     procedure ClearSides;
     procedure SetFixedLeftTop(ChildData: TAutoSizeCtrlData; Side: TAnchorKind;
                               NewLeftTop: integer);
-    property Childs[AControl: TControl]: TAutoSizeCtrlData read GetChilds; default;
+    property Children[AControl: TControl]: TAutoSizeCtrlData read GetChildren; default;
     procedure WriteDebugReport(const Title, Prefix: string; OnlyVisible: boolean = true);
   end;
 
@@ -245,7 +245,7 @@ end;
 
 { TAutoSizeCtrlData }
 
-function TAutoSizeCtrlData.GetChilds(AControl: TControl): TAutoSizeCtrlData;
+function TAutoSizeCtrlData.GetChildren(AControl: TControl): TAutoSizeCtrlData;
 var
   AVLNode: TAvgLvlTreeNode;
 begin
@@ -262,7 +262,7 @@ begin
   end;
 end;
 
-procedure TAutoSizeCtrlData.AlignChilds;
+procedure TAutoSizeCtrlData.AlignChildren;
 var
   AlignList: TFPList;
   AlignBoundaryControls: array[TAnchorKind] of TAutoSizeCtrlData;
@@ -274,28 +274,30 @@ var
     ChildData: TAutoSizeCtrlData;
     a: TAnchorKind;
   begin
-    WinControl.CreateControlAlignList(TheAlign,AlignList,nil);
-    for i := 0 to AlignList.Count - 1 do begin
-      Child:=TControl(AlignList[i]);
-      ChildData:=Childs[Child];
+    WinControl.CreateControlAlignList(TheAlign, AlignList, nil);
+    for i := 0 to AlignList.Count - 1 do
+    begin
+      Child := TControl(AlignList[i]);
+      ChildData := Children[Child];
       //DebugLn('DoAlign ',DbgSName(Child),' ',dbgs(Child.Align));
 
-      for a:=Low(TAnchorKind) to High(TAnchorKind) do
-        if a in AnchorAlign[TheAlign] then begin
-          ChildData.Sides[a].CtrlData:=AlignBoundaryControls[a];
-          if (a in [akLeft,akTop]) = (ChildData.Sides[a].CtrlData=Self) then
-            ChildData.Sides[a].Side:=asrLeft
+      for a := Low(TAnchorKind) to High(TAnchorKind) do
+        if a in AnchorAlign[TheAlign] then
+        begin
+          ChildData.Sides[a].CtrlData := AlignBoundaryControls[a];
+          if (a in [akLeft, akTop]) = (ChildData.Sides[a].CtrlData = Self) then
+            ChildData.Sides[a].Side := asrLeft
           else
-            ChildData.Sides[a].Side:=asrRight;
+            ChildData.Sides[a].Side := asrRight;
           //DebugLn('DoAlign ',DbgSName(Child),' ',dbgs(a),' ',dbgs(a,ChildData.Sides[a].Side));
         end;
 
       case TheAlign of
-      alTop: AlignBoundaryControls[akTop]:=ChildData;
-      alBottom: AlignBoundaryControls[akBottom]:=ChildData;
-      alLeft: AlignBoundaryControls[akLeft]:=ChildData;
-      alRight: AlignBoundaryControls[akRight]:=ChildData;
-      alClient: ; // Delphi compatibility: multiple alClient controls overlap
+        alTop: AlignBoundaryControls[akTop] := ChildData;
+        alBottom: AlignBoundaryControls[akBottom] := ChildData;
+        alLeft: AlignBoundaryControls[akLeft] := ChildData;
+        alRight: AlignBoundaryControls[akRight] := ChildData;
+        alClient: ; // Delphi compatibility: multiple alClient controls overlap
       end;
       {DebugLn(['DoAlign AlignBoundaryControls:',
         ' Left=',DbgSName(AlignBoundaryControls[akLeft].Control),
@@ -308,12 +310,12 @@ var
 var
   a: TAnchorKind;
 begin
-  if ChildCount=0 then exit;
+  if ChildCount = 0 then exit;
   AlignList := TFPList.Create;
   try
     // align and anchor child controls
-    for a:=Low(TAnchorKind) to High(TAnchorKind) do
-      AlignBoundaryControls[a]:=Self;
+    for a := Low(TAnchorKind) to High(TAnchorKind) do
+      AlignBoundaryControls[a] := Self;
     DoAlign(alTop);
     DoAlign(alBottom);
     DoAlign(alLeft);
@@ -335,7 +337,7 @@ var
 begin
   for i:=0 to ChildCount-1 do begin
     Child:=WinControl.Controls[i];
-    ChildData:=Childs[Child];
+    ChildData:=Children[Child];
     for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
       if ChildData.Sides[a].CtrlData=Self then begin
         // aligned or anchored to parent
@@ -727,7 +729,7 @@ begin
   // for every side try to find a good distance to the client area
   for i:=0 to ChildCount-1 do begin
     Child:=WinControl.Controls[i];
-    ChildData:=Childs[Child];
+    ChildData:=Children[Child];
     if not ChildData.Visible then continue;
     for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
       if ComputePosition(ChildData,a,assddLeftTop)<>crSuccess then begin
@@ -797,7 +799,7 @@ begin
     FChilds.FreeAndClear;
 end;
 
-procedure TAutoSizeCtrlData.DoMoveNonAlignedChilds(Side: TAnchorKind;
+procedure TAutoSizeCtrlData.DoMoveNonAlignedChildren(Side: TAnchorKind;
   var MoveDiff: integer; FindMinimum: boolean);
 var
   i: Integer;
@@ -810,7 +812,7 @@ begin
   MoveDiffValid:=false;
   for i:=0 to ChildCount-1 do begin
     Child:=WinControl.Controls[i];
-    ChildData:=Childs[Child];
+    ChildData:=Children[Child];
     if not ChildData.Visible then continue;
     if IsNotAligned(Child) then begin
       // this is a non aligned control
@@ -844,7 +846,7 @@ begin
   end;
 end;
 
-procedure TAutoSizeCtrlData.SetupNonAlignedChilds(MoveNonAlignedChilds: boolean);
+procedure TAutoSizeCtrlData.SetupNonAlignedChildren(MoveNonAlignedChildren: boolean);
 var
   ChildSizing: TControlChildSizing;
   Box: TAutoSizeBox;
@@ -865,15 +867,15 @@ begin
     // move the non-aligned controls (i.e. not aligned or fixed anchored)
     // Find the leftmost and topmost of those controls
     MoveDiff:=0;
-    DoMoveNonAlignedChilds(akLeft,MoveDiff,true);
+    DoMoveNonAlignedChildren(akLeft,MoveDiff,true);
     //DebugLn(['TAutoSizeCtrlData.ComputePreferredClientArea akLeft MoveDiff=',MoveDiff]);
-    if not MoveNonAlignedChilds then MoveDiff:=0;
-    DoMoveNonAlignedChilds(akLeft,MoveDiff,false);
+    if not MoveNonAlignedChildren then MoveDiff:=0;
+    DoMoveNonAlignedChildren(akLeft,MoveDiff,false);
     MoveDiff:=0;
-    DoMoveNonAlignedChilds(akTop,MoveDiff,true);
+    DoMoveNonAlignedChildren(akTop,MoveDiff,true);
     //DebugLn(['TAutoSizeCtrlData.ComputePreferredClientArea akTop MoveDiff=',MoveDiff]);
-    if not MoveNonAlignedChilds then MoveDiff:=0;
-    DoMoveNonAlignedChilds(akTop,MoveDiff,false);
+    if not MoveNonAlignedChildren then MoveDiff:=0;
+    DoMoveNonAlignedChildren(akTop,MoveDiff,false);
   end else begin
     // there is an automatic layout for non aligned childs
     // use the layout engine, but with static values
@@ -910,7 +912,7 @@ begin
           if Child=nil then continue;
           NewBounds:=ControlBox.NewControlBounds;
           //DebugLn(['TAutoSizeCtrlData.SetupNonAlignedChilds ',DbgSName(Child),' ',dbgs(NewBounds)]);
-          ChildData:=Childs[Child];
+          ChildData:=Children[Child];
           // set left
           SetFixedLeftTop(ChildData,akLeft,NewBounds.Left);
           // set width
@@ -978,7 +980,7 @@ procedure TAutoSizeCtrlData.ComputePreferredClientArea(
   begin
     for i:=0 to ChildCount-1 do begin
       Child:=WinControl.Controls[i];
-      ChildData:=Childs[Child];
+      ChildData:=Children[Child];
       if ChildData.Visible then begin
         CurAnchors:=Child.Anchors;
         if Child.Align in [alLeft,alRight,alTop,alBottom,alClient] then
@@ -1039,7 +1041,7 @@ procedure TAutoSizeCtrlData.ComputePreferredClientArea(
     if ReferenceControl=Control then
       ChildData.Sides[a].CtrlData:=Self
     else if (ReferenceControl<>nil) and (ReferenceControl.Parent=Control) then
-      ChildData.Sides[a].CtrlData:=Childs[ReferenceControl];
+      ChildData.Sides[a].CtrlData:=Children[ReferenceControl];
     ChildData.Sides[a].Side:=ReferenceSide;
     //if ChildData.Sides[a].CtrlData<>nil then DebugLn(['GetSideAnchor AAA1 Child=',DbgSName(Child),', a=',dbgs(a),' ReferenceControl=',DbgSName(ChildData.Sides[a].CtrlData.Control),' ReferenceSide=',dbgs(a,ChildData.Sides[a].Side)]);
   end;
@@ -1065,7 +1067,7 @@ begin
   for i:=0 to ChildCount-1 do begin
     Child:=WinControl.Controls[i];
     FixControlProperties(Child);
-    ChildData:=Childs[Child];
+    ChildData:=Children[Child];
     if ChildData.Visible then
       inc(VisibleCount);
   end;
@@ -1081,7 +1083,7 @@ begin
     // init dependencies
     for i:=0 to ChildCount-1 do begin
       Child:=WinControl.Controls[i];
-      ChildData:=Childs[Child];
+      ChildData:=Children[Child];
       ChildData.ClearSides;
       if not ChildData.Visible then continue;
       for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
@@ -1100,10 +1102,10 @@ begin
     end;
     //WriteDebugReport('anchored','');
 
-    SetupNonAlignedChilds(MoveNonAlignedChilds);
+    SetupNonAlignedChildren(MoveNonAlignedChilds);
     //WriteDebugReport('nonaligned','');
     // setup the dependencies for Aligned controls
-    AlignChilds;
+    AlignChildren;
     //WriteDebugReport('aligned','');
 
     // setup space for dependencies
@@ -1122,7 +1124,7 @@ begin
   // compute needed clientwidth/clientheight
   for i:=0 to ChildCount-1 do begin
     Child:=WinControl.Controls[i];
-    ChildData:=Childs[Child];
+    ChildData:=Children[Child];
     if not ChildData.Visible then continue;
     for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
       if (ChildData.Sides[a].DistanceState[assddLeftTop]=assdfValid)
@@ -1149,7 +1151,7 @@ begin
     for i:=0 to ChildCount-1 do
     begin
       Child:=WinControl.Controls[i];
-      ChildData:=Childs[Child];
+      ChildData:=Children[Child];
       if not ChildData.Visible then continue;
       if (Child.Align<>alNone) then continue;
       if (akLeft in Child.Anchors) and (Child.AnchorSide[akLeft].Control=nil)
@@ -1322,7 +1324,7 @@ begin
   end;
   for i:=0 to ChildCount-1 do
     if WinControl.Controls[i].Visible or (not OnlyVisible) then
-      Childs[WinControl.Controls[i]].WriteDebugReport('',Prefix+dbgs(i)+': ');
+      Children[WinControl.Controls[i]].WriteDebugReport('',Prefix+dbgs(i)+': ');
 end;
 
 { TAutoSizeBox }
@@ -1506,8 +1508,7 @@ begin
   end;
 end;
 
-procedure TAutoSizeBox.ApplyChildsizingBorders(ChildSizing: TControlChildSizing
-  );
+procedure TAutoSizeBox.ApplyChildSizingBorders(ChildSizing: TControlChildSizing);
 var
   MinBorder: LongInt;
 begin
@@ -1678,7 +1679,7 @@ begin
   end;
 end;
 
-procedure TAutoSizeBox.ResizeChilds(ChildSizing: TControlChildSizing;
+procedure TAutoSizeBox.ResizeChildren(ChildSizing: TControlChildSizing;
   Orientation: TAutoSizeBoxOrientation; TargetSize: integer);
 type
   TResizeFactor = record
@@ -2061,9 +2062,9 @@ procedure TAutoSizeBox.ResizeTable(ChildSizing: TControlChildSizing;
   TargetWidth, TargetHeight: integer);
 begin
   // resize rows and columns
-  ResizeChilds(ChildSizing,asboHorizontal,TargetWidth);
+  ResizeChildren(ChildSizing,asboHorizontal,TargetWidth);
   ComputeLeftTops(asboHorizontal);
-  ResizeChilds(ChildSizing,asboVertical,TargetHeight);
+  ResizeChildren(ChildSizing,asboVertical,TargetHeight);
   ComputeLeftTops(asboVertical);
 end;
 
@@ -2424,11 +2425,8 @@ begin
   AlignList.Clear;
 
   // first add the current control
-  if (StartControl <> nil)
-    and (StartControl.Align = TheAlign)
-    and ((TheAlign = alNone)
-      or StartControl.IsControlVisible)
-  then
+  if (StartControl <> nil) and (StartControl.Align = TheAlign) and
+     ((TheAlign = alNone) or StartControl.IsControlVisible) then
     AlignList.Add(StartControl);
 
   // then add all other
@@ -2441,8 +2439,8 @@ begin
       if Control = StartControl then Continue;
 
       X := 0;
-      while (X < AlignList.Count)
-      and not InsertBefore(Control, TControl(AlignList[X]), TheAlign) do
+      while (X < AlignList.Count) and
+            not InsertBefore(Control, TControl(AlignList[X]), TheAlign) do
         Inc(X);
       AlignList.Insert(X, Control);
     end;
@@ -3040,10 +3038,12 @@ var
     CreateControlAlignList(AAlign,AlignList,AControl);
     {$IFDEF CHECK_POSITION}
     if CheckPosition(Self) then
-      if AlignList.Count>0 then begin
+      if AlignList.Count>0 then
+      begin
         DbgOut('[TWinControl.AlignControls.DoAlign] Self=',DbgSName(Self),' Control=',dbgsName(AControl),
           ' current align=',AlignNames[AAlign],' AlignList=[');
-        for i:=0 to AlignList.Count-1 do begin
+        for i:=0 to AlignList.Count-1 do
+        begin
           if i>0 then DbgOut(',');
           DbgOut(DbgSName(TObject(AlignList[i])));
         end;
@@ -3052,12 +3052,13 @@ var
     {$ENDIF}
 
     // let override handle them
-    if DoAlignChildControls(AAlign,AControl,AlignList,RemainingClientRect) then
+    if DoAlignChildControls(AAlign, AControl, AlignList, RemainingClientRect) then
       exit;
     // remove controls that are positioned by other means
-    if (AAlign=alNone) and (AutoSize or (ChildSizing.Layout<>cclNone)) then
-      for I := AlignList.Count - 1 downto 0 do begin
-        Control:=TControl(AlignList[I]);
+    if (AAlign = alNone) and (AutoSize or (ChildSizing.Layout <> cclNone)) then
+      for I := AlignList.Count - 1 downto 0 do
+      begin
+        Control := TControl(AlignList[I]);
         if IsNotAligned(Control) then AlignList.Delete(I);
       end;
     // anchor/align control
@@ -3072,21 +3073,22 @@ var
     Control: TControl;
   begin
     // check if ChildSizing aligning is enabled
-    if (ChildSizing.Layout=cclNone) then
+    if (ChildSizing.Layout = cclNone) then
       exit;
 
     /// collect all 'not aligned' controls
     AlignList.Clear;
-    for i:=0 to ControlCount-1 do begin
+    for i := 0 to ControlCount - 1 do
+    begin
       Control := Controls[i];
       if IsNotAligned(Control) and Control.IsControlVisible then
         AlignList.Add(Control);
     end;
     //debugln('DoAlignNotAligned ',DbgSName(Self),' AlignList.Count=',dbgs(AlignList.Count));
-    if AlignList.Count=0 then exit;
+    if AlignList.Count = 0 then exit;
 
-    LastBoundsMutated:=nil;
-    AlignNonAlignedControls(AlignList,BoundsMutated);
+    LastBoundsMutated := nil;
+    AlignNonAlignedControls(AlignList, BoundsMutated);
   end;
   
 var
