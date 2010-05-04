@@ -1874,6 +1874,7 @@ begin
 {$endif}
       if Assigned(WindowInfo) and Assigned(WindowInfo^.ParentMsgHandler) then
       begin
+        LMNotify.Result := 0;
         if WindowInfo^.ParentMsgHandler(WindowInfo^.WinControl,
           Window, WM_NOTIFY, WParam, LParam, LMNotify.Result, WinProcess) then Exit(LMNotify.Result);
       end;
