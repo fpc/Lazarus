@@ -266,11 +266,10 @@ procedure CloseDebugOutput;
 
 // some string manipulation functions
 function StripLN(const ALine: String): String;
-function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String; overload;
-function GetPart(const ASkipTo, AnEnd: String; var ASource: String; const AnIgnoreCase: Boolean): String; overload;
-function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String): String; overload;
-function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase: Boolean): String; overload;
-function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase, AnUpdateSource: Boolean): String; overload;
+function GetPart(const ASkipTo, AnEnd: String; var ASource: String;
+  const AnIgnoreCase: Boolean = False; const AnUpdateSource: Boolean = True): String;
+function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String;
+  const AnIgnoreCase: Boolean = False; const AnUpdateSource: Boolean = True): String;
 function TextToSingleLine(const AText: string): string;
 
 // case..of utility functions
@@ -2906,27 +2905,14 @@ begin
   SetLength(Result, idx - 1);
 end;
 
-function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String;
+function GetPart(const ASkipTo, AnEnd: String; var ASource: String;
+  const AnIgnoreCase, AnUpdateSource: Boolean): String;
 begin
-  Result := GetPart([ASkipTo], [AnEnd], ASource, False, True);
+  Result := GetPart([ASkipTo], [AnEnd], ASource, AnIgnoreCase, AnUpdateSource);
 end;
 
-function GetPart(const ASkipTo, AnEnd: String; var ASource: String; const AnIgnoreCase: Boolean): String; overload;
-begin
-  Result := GetPart([ASkipTo], [AnEnd], ASource, AnIgnoreCase, True);
-end;
-
-function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String): String; overload;
-begin
-  Result := GetPart(ASkipTo, AnEnd, ASource, False, True);
-end;
-
-function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase: Boolean): String; overload;
-begin
-  Result := GetPart(ASkipTo, AnEnd, ASource, AnIgnoreCase, True);
-end;
-
-function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; const AnIgnoreCase, AnUpdateSource: Boolean): String; overload;
+function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String;
+  const AnIgnoreCase: Boolean = False; const AnUpdateSource: Boolean = True): String;
 var
   n, i, idx: Integer;
   S, Source, Match: String;
