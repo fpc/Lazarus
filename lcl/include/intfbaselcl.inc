@@ -569,8 +569,10 @@ function TWidgetSet.MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;
 var
   P : TPoint;
 Begin
-  GetWindowOrgEx(dc, @P);
-  Result:=SetWindowOrgEx(dc, P.x-dX, P.y-dY, @P);
+  if GetWindowOrgEx(dc, @P) <> 0 then
+    Result:=SetWindowOrgEx(dc, P.x-dX, P.y-dY, @P)
+  else
+    Result := False;
 end;
 
 function TWidgetSet.PromptUser(const DialogCaption, DialogMessage : String;

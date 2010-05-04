@@ -1473,11 +1473,12 @@ begin
   if not Result then exit;
   OriginDiff.X := DCOrg.X - winOrg.X - ORect.Left;
   OriginDiff.Y := DCOrg.Y - winOrg.Y - ORect.Top;
-//  Result := Windows.GetWindowOrgEx(PaintDC, winOrg);
-  Result := true;
-  winOrg.X := 0;
-  winOrg.Y := 0;
-  if not Result then exit;
+  Result := Self.GetWindowOrgEx(PaintDC, @winOrg) <> 0;
+  if not Result then
+  begin
+    winOrg.X := 0;
+    winOrg.Y := 0;
+  end;
   dec(OriginDiff.X, winOrg.X);
   dec(OriginDiff.Y, winOrg.Y);
 end;
@@ -1926,13 +1927,16 @@ end;
   Retrieves the x-coordinates and y-coordinates of the window origin for the
   specified device context.
  ------------------------------------------------------------------------------}
-{
-//roozbeh:not in wince?//not even getviewportorgex?!
 function TWinCEWidgetSet.GetWindowOrgEx(DC: HDC; P: PPoint): Integer;
 begin
-  Result := Integer(Windows.GetWindowOrgEx(DC, LPPoint(P)));
+  {$ifdef Win32}
+    Result := Integer(Windows.GetWindowOrgEx(DC, P));
+  {$else}
+//  Result := 0;
+  Result := Integer(WinExt.GetWindowOrgEx(DC, P));
+  {$endif}
 end;
-}
+
 {------------------------------------------------------------------------------
   Method:  GetWindowRect
   Params:  Handle - handle of window
@@ -2918,8 +2922,11 @@ end;
 function TWinCEWidgetSet.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer;
   OldPoint: PPoint): Boolean;
 begin
+  {$ifdef Win32}
+    Result:= Windows.SetWindowOrgEx(dc, NewX, NewY, OldPoint);
+  {$else}
 //  if GetWinCEVersion >= wince_5 then
-//    Result:= WinExt.SetWindowOrgEx(dc, NewX, NewY, OldPoint)
+    Result:= WinExt.SetWindowOrgEx(dc, NewX, NewY, OldPoint)
 //    Result := False
 //  else
     // Using SetViewPortOrgEx causes the following bugs:
@@ -2928,7 +2935,8 @@ begin
     // * Label x position inside group box is too small
     // * Windows control y position inside group box is too highe
     // See: http://wiki.lazarus.freepascal.org/Windows_CE_Development_Notes#Regressions
-    Result := Boolean(Windows.SetViewPortOrgEx(DC, -NewX, -NewY, LPPoint(OldPoint)));
+//    Result := Boolean(Windows.SetViewPortOrgEx(DC, -NewX, -NewY, LPPoint(OldPoint)));
+{$endif}
 end;
 
 {------------------------------------------------------------------------------

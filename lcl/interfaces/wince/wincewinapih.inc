@@ -142,7 +142,7 @@ function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
 function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;
 function GetWindowRect(Handle : hwnd; var Rect: TRect): Integer; override;
-//function GetWindowOrgEx(dc : hdc; P: PPoint): Integer;  override;
+function GetWindowOrgEx(dc : hdc; P: PPoint): Integer;  override;
 function GetWindowRelativePosition(Handle : hwnd; var Left, Top: integer): boolean; override;
 function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
 {

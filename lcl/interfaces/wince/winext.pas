@@ -243,13 +243,17 @@ type
      TOPENFILENAME = OPENFILENAME;
      POPENFILENAME = ^OPENFILENAME;
 
+{$ifndef win32}
 // See: http://msdn.microsoft.com/en-us/library/aa453954.aspx
 // Available in Windows CE 5.0+
 function SetWindowOrgEx(
-  _hdc:HDC;
-  _x:longint;
-  _y:longint;
-  _lpoint:LPPOINT):WINBOOL; external KernelDLL name 'SetWindowOrgEx';
+  dc:HDC;
+  x:longint;
+  y:longint;
+  point:LPPOINT):WINBOOL; cdecl; external KernelDLL name 'SetWindowOrgEx';
+function GetWindowOrgEx(DC: HDC; Point: LPPoint): BOOL; cdecl;
+  external KernelDLL name 'GetWindowOrgEx';
+{$endif}
 
 Implementation
 
