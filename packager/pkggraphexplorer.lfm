@@ -10,7 +10,7 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
   KeyPreview = True
   OnShow = PkgGraphExplorerShow
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object InfoMemo: TMemo
     Left = 0
     Height = 144
@@ -44,7 +44,7 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
     TabOrder = 1
     object PkgListLabel: TLabel
       Left = 6
-      Height = 13
+      Height = 17
       Top = 6
       Width = 217
       Align = alTop
@@ -54,8 +54,8 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
     end
     object PkgListBox: TListBox
       Left = 0
-      Height = 239
-      Top = 25
+      Height = 235
+      Top = 29
       Width = 229
       Align = alClient
       ClickOnSelChange = False
@@ -64,7 +64,6 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
       OnDblClick = PkgListBoxDblClick
       OnKeyDown = InfoMemoKeyDown
       TabOrder = 0
-      TopIndex = -1
     end
   end
   object HorizontalSplitter: TSplitter
@@ -87,7 +86,7 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
     TabOrder = 2
     object PkgTreeLabel: TLabel
       Left = 6
-      Height = 13
+      Height = 17
       Top = 6
       Width = 217
       Align = alTop
@@ -97,11 +96,11 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
     end
     object PkgTreeView: TTreeView
       Left = 0
-      Height = 239
-      Top = 25
+      Height = 235
+      Top = 29
       Width = 229
       Align = alClient
-      DefaultItemHeight = 19
+      DefaultItemHeight = 18
       PopupMenu = PkgPopupMenu
       ReadOnly = True
       RightClickSelect = True
@@ -110,7 +109,7 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
       OnExpanding = PkgTreeViewExpanding
       OnKeyDown = InfoMemoKeyDown
       OnSelectionChanged = PkgTreeViewSelectionChanged
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
   end
   object PkgPopupMenu: TPopupMenu
