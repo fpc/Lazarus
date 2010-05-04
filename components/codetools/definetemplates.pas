@@ -692,8 +692,8 @@ function CreateDefinesInDirectories(const SourcePaths, FlagName: string
 
 function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string;
                      const OnProgress: TDefinePoolProgress): TStringList;
-function CompressFileList(Files: TStringList): TStringList;
-function UncompressFileList(Files: TStringList): TStringList;
+function Compress1FileList(Files: TStringList): TStringList;
+function Uncompress1FileList(Files: TStringList): TStringList;
 function RunTool(const Filename, Params: string;
                  WorkingDirectory: string = ''): TStringList;
 function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
@@ -820,7 +820,7 @@ begin
   if Abort then FreeAndNil(Result);
 end;
 
-function CompressFileList(Files: TStringList): TStringList;
+function Compress1FileList(Files: TStringList): TStringList;
 var
   i: Integer;
   Filename: string;
@@ -840,7 +840,7 @@ begin
   end;
 end;
 
-function UncompressFileList(Files: TStringList): TStringList;
+function Uncompress1FileList(Files: TStringList): TStringList;
 var
   LastFilename: String;
   i: Integer;
@@ -6220,27 +6220,123 @@ end;
 
 procedure TFPCTargetConfigCacheItem.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
+var
+  Cnt: integer;
+  SubPath: String;
+  DefineName, DefineValue: String;
+  s: String;
+  i: Integer;
 begin
   Clear;
-  TargetOS:=XMLConfig.GetValue('TargetOS','');
-  TargetCPU:=XMLConfig.GetValue('TargetCPU','');
-  Compiler:=XMLConfig.GetValue('Compiler','');
-  CompilerDate:=XMLConfig.GetValue('CompilerDate',0);
-  TargetFPCCfg:=XMLConfig.GetValue('FPCCfg','');
-  TargetFPCCfgDate:=XMLConfig.GetValue('FPCCfgDate',0);
-  // ToDo Defines, undefines, units
+  TargetOS:=XMLConfig.GetValue(Path+'TargetOS','');
+  TargetCPU:=XMLConfig.GetValue(Path+'TargetCPU','');
+  Compiler:=XMLConfig.GetValue(Path+'Compiler','');
+  CompilerDate:=XMLConfig.GetValue(Path+'CompilerDate',0);
+  TargetFPCCfg:=XMLConfig.GetValue(Path+'FPCCfg','');
+  TargetFPCCfgDate:=XMLConfig.GetValue(Path+'FPCCfgDate',0);
+
+  // defines
+  Cnt:=XMLConfig.GetValue(Path+'/DefineCount',0);
+  for i:=1 to Cnt do begin
+    SubPath:='Define'+IntToStr(Cnt)+'/';
+    DefineName:=UpperCaseStr(XMLConfig.GetValue(SubPath+'/Name',''));
+    if (DefineName='') or (not IsValidIdent(DefineName)) then continue;
+    DefineValue:=XMLConfig.GetValue(SubPath+'/Value','');
+    if Defines=nil then
+      Defines:=TStringToStringTree.Create(true);
+    Defines[DefineName]:=DefineValue;
+  end;
+
+  // undefines
+  s:=XMLConfig.GetValue(Path+'Undefines/Values','');
+  if s<>'' then begin
+
+  end;
+
+  // units
+
 end;
 
 procedure TFPCTargetConfigCacheItem.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
+var
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+  Cnt: Integer;
+  SubPath: String;
+  UnitList: TStringList;
+  Unit_Name: String;
+  Filename: String;
+  List: TStringList;
+  s: String;
 begin
-  XMLConfig.SetDeleteValue('TargetOS',TargetOS,'');
-  XMLConfig.SetDeleteValue('TargetCPU',TargetCPU,'');
-  XMLConfig.SetDeleteValue('Compiler',Compiler,'');
-  XMLConfig.SetDeleteValue('CompilerDate',CompilerDate,0);
-  XMLConfig.SetDeleteValue('FPCCfg',TargetFPCCfg,'');
-  XMLConfig.SetDeleteValue('FPCCfgDate',TargetFPCCfgDate,0);
-  // ToDo Defines, undefines, units
+  XMLConfig.SetDeleteValue(Path+'TargetOS',TargetOS,'');
+  XMLConfig.SetDeleteValue(Path+'TargetCPU',TargetCPU,'');
+  XMLConfig.SetDeleteValue(Path+'Compiler',Compiler,'');
+  XMLConfig.SetDeleteValue(Path+'CompilerDate',CompilerDate,0);
+  XMLConfig.SetDeleteValue(Path+'FPCCfg',TargetFPCCfg,'');
+  XMLConfig.SetDeleteValue(Path+'FPCCfgDate',TargetFPCCfgDate,0);
+
+  // defines: write as Define<Number>/Name,Value
+  Cnt:=0;
+  if Defines<>nil then begin
+    Node:=Defines.Tree.FindLowest;
+    while Node<>nil do begin
+      Item:=PStringToStringTreeItem(Node.Data);
+      if (Item^.Name<>'') and IsValidIdent(Item^.Name) then begin
+        inc(Cnt);
+        SubPath:='Define'+IntToStr(Cnt)+'/';
+        XMLConfig.SetDeleteValue(SubPath+'/Name',Item^.Name,'');
+        XMLConfig.SetDeleteValue(SubPath+'/Value',Item^.Value,'');
+      end;
+      Node:=Defines.Tree.FindSuccessor(Node);
+    end;
+  end;
+  XMLConfig.SetDeleteValue(Path+'/DefineCount',Cnt,0);
+
+  // undefines: write as Undefines/Value and comma separated list of names
+  Cnt:=0;
+  if Undefines<>nil then begin
+    Node:=Undefines.Tree.FindLowest;
+    s:='';
+    while Node<>nil do begin
+      Item:=PStringToStringTreeItem(Node.Data);
+      inc(Cnt);
+      if s<>'' then s:=s+',';
+      s:=s+Item^.Name;
+      Node:=Undefines.Tree.FindSuccessor(Node);
+    end;
+    XMLConfig.SetDeleteValue(Path+'Undefines/Values',s,'');
+  end;
+
+  // units: Units/Values semicolon separated list of compressed filename=unitname
+  // Units contains thousands of file names. This needs compression.
+  List:=nil;
+  UnitList:=TStringList.Create;
+  try
+    if Units<>nil then begin
+      // Create a string list of filename=unitname.
+      Node:=Units.Tree.FindLowest;
+      while Node<>nil do begin
+        Item:=PStringToStringTreeItem(Node.Data);
+        Unit_Name:=Item^.Name;
+        Filename:=Item^.Value;
+        UnitList.Add(Filename+'='+Unit_Name);
+        Node:=Units.Tree.FindSuccessor(Node);
+      end;
+      // Sort the strings.
+      UnitList.CaseSensitive:=true;
+      UnitList.Sort;
+      // Compress the file names
+      List:=Compress1FileList(UnitList);
+      // and write the semicolon separated list
+      List.Delimiter:=';';
+      XMLConfig.SetDeleteValue(Path+'Units/Values',List.DelimitedText,'');
+    end;
+  finally
+    List.Free;
+    UnitList.Free;
+  end;
 end;
 
 function TFPCTargetConfigCacheItem.NeedsUpdate: boolean;
