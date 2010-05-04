@@ -290,7 +290,7 @@ begin
         s:='enum';
       end;
       
-    ctnUnit:
+    ctnUnit, ctnUseUnit:
       begin
         AColor:=clBlack;
         s:='unit';
