@@ -349,27 +349,32 @@ var
 begin
   QtTrackBar := TQtTrackBar(ATrackBar.Handle);
 
-  QtTrackBar.setRange(ATrackBar.Min, ATrackBar.Max);
+  QtTrackBar.BeginUpdate;
+  try
+    QtTrackBar.setRange(ATrackBar.Min, ATrackBar.Max);
 
-  if ATrackBar.TickStyle = tsNone then
-    QtTrackBar.SetTickPosition(QSliderNoTicks)
-  else
-    QtTrackBar.SetTickPosition(TickMarkToQtSliderTickPositionMap[ATrackBar.TickMarks]);
+    if ATrackBar.TickStyle = tsNone then
+      QtTrackBar.SetTickPosition(QSliderNoTicks)
+    else
+      QtTrackBar.SetTickPosition(TickMarkToQtSliderTickPositionMap[ATrackBar.TickMarks]);
 
-  if QtTrackBar.getPageStep <> ATrackBar.PageSize then
-    QtTrackBar.setPageStep(ATrackBar.PageSize);
-  if QtTrackBar.getTickInterval <> ATrackBar.Frequency then
-    QtTrackBar.setTickInterval(ATrackBar.Frequency);
-  if QtTrackBar.getSliderPosition <> ATrackBar.Position then
-    QtTrackBar.setSliderPosition(ATrackBar.Position);
+    if QtTrackBar.getPageStep <> ATrackBar.PageSize then
+      QtTrackBar.setPageStep(ATrackBar.PageSize);
+    if QtTrackBar.getTickInterval <> ATrackBar.Frequency then
+      QtTrackBar.setTickInterval(ATrackBar.Frequency);
+    if QtTrackBar.getSliderPosition <> ATrackBar.Position then
+      QtTrackBar.setSliderPosition(ATrackBar.Position);
 
-  if QtTrackBar.getOrientation <> TrackBarOrientationToQtOrientationMap[ATrackBar.Orientation] then
-  begin
-    QtTrackBar.Hide;
-    QtTrackBar.setOrientation(TrackBarOrientationToQtOrientationMap[ATrackBar.Orientation]);
-    QtTrackBar.setInvertedAppereance(False);
-    QtTrackBar.setInvertedControls(False);
-    QtTrackBar.Show;
+    if QtTrackBar.getOrientation <> TrackBarOrientationToQtOrientationMap[ATrackBar.Orientation] then
+    begin
+      QtTrackBar.Hide;
+      QtTrackBar.setOrientation(TrackBarOrientationToQtOrientationMap[ATrackBar.Orientation]);
+      QtTrackBar.setInvertedAppereance(False);
+      QtTrackBar.setInvertedControls(False);
+      QtTrackBar.Show;
+    end;
+  finally
+    QtTrackBar.EndUpdate;
   end;
 end;
 
@@ -386,7 +391,12 @@ var
   QtTrackBar: TQtTrackBar;
 begin
   QtTrackBar := TQtTrackBar(ATrackBar.Handle);
-  QtTrackBar.setSliderPosition(NewPosition);
+  QtTrackBar.BeginUpdate;
+  try
+    QtTrackBar.setSliderPosition(NewPosition);
+  finally
+    QtTrackBar.EndUpdate;
+  end;
 end;
 
 { TQtWSProgressBar }

@@ -5742,9 +5742,9 @@ var
   Msg: TLMessage;
 begin
  {$ifdef VerboseQt}
-  writeln('TQtTrackBar.SlotSliderMoved()');
+  writeln('TQtTrackBar.SlotSliderMoved() p1=',p1);
  {$endif}
-  if (TTrackBar(LCLObject).Position <> p1) and not InUpdate then
+  if SliderPressed and not InUpdate then
   begin
     FillChar(Msg, SizeOf(Msg), #0);
     Msg.Msg := LM_CHANGED;
@@ -5757,10 +5757,10 @@ var
   Msg: TLMessage;
 begin
  {$ifdef VerboseQt}
-  writeln('TQtTrackBar.SlotValueChanged()');
+  writeln('TQtTrackBar.SlotValueChanged() p1=',p1);
  {$endif}
 
-  if not SliderPressed  and (TTrackBar(LCLObject).Position <> p1) and not InUpdate then
+  if not SliderPressed and not InUpdate then
   begin
     FillChar(Msg, SizeOf(Msg), #0);
     Msg.Msg := LM_CHANGED;
