@@ -1182,6 +1182,22 @@ const
     CurrentIdentifierList.Add(NewItem);
   end;
 
+  procedure AddSystemUnit(const AnUnitName: PChar);
+  var
+    NewItem: TIdentifierListItem;
+  begin
+    NewItem:=TIdentifierListItem.Create(
+        icompUnknown,
+        false,
+        CompilerFuncHistoryIndex,
+        AnUnitName,
+        CompilerFuncLevel,
+        nil,
+        nil,
+        ctnUseUnit);
+    CurrentIdentifierList.Add(NewItem);
+  end;
+
 var
   NewItem: TIdentifierListItem;
   ProcNode: TCodeTreeNode;
@@ -1269,6 +1285,7 @@ begin
     end;
   end;
 
+  // system types
   AddBaseType('Char');
   AddBaseType('WideChar');
   AddBaseType('Real');
@@ -1302,6 +1319,19 @@ begin
   AddBaseConstant('Nil');
   AddBaseConstant('True');
   AddBaseConstant('False');
+
+  // system units
+  AddSystemUnit('System');
+  if (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
+  and (Scanner.PascalCompiler=pcFPC) then
+    AddSystemUnit('ObjPas');
+  if (Scanner.CompilerMode=cmMacPas)
+  and (Scanner.PascalCompiler=pcFPC) then
+    AddSystemUnit('MacPas');
+  if (Scanner.CompilerModeSwitch=cmsObjectiveC1) then begin
+    AddSystemUnit('ObjC');
+    AddSystemUnit('ObjCBase');
+  end;
 end;
 
 procedure TIdentCompletionTool.GatherUsefulIdentifiers(CleanPos: integer;
