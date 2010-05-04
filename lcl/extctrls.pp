@@ -694,6 +694,7 @@ type
     procedure SetShape(AShape: TBevelShape);
   protected
     class procedure WSRegisterClass; override;
+    class function GetControlClassDefaultSize: TPoint; override;
     procedure Paint; override;
   public
     constructor Create(AOwner:TComponent); override;

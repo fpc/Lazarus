@@ -20,7 +20,8 @@ begin
   FStyle := bsLowered;
   FShape := bsBox;
 
-  SetBounds(0, 0, 50, 50);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, x, y);
 end;
 
 destructor TBevel.Destroy;
@@ -60,6 +61,11 @@ class procedure TBevel.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterBevel;
+end;
+
+class function TBevel.GetControlClassDefaultSize: TPoint;
+begin
+  Result := inherited GetControlClassDefaultSize;
 end;
 
 procedure TBevel.Paint;

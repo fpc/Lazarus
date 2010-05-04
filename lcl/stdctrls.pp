@@ -91,6 +91,7 @@ type
     procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
   protected
     class procedure WSRegisterClass; override;
+    class function GetControlClassDefaultSize: TPoint; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure Change; virtual;

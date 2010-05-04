@@ -26,9 +26,8 @@ constructor TCustomScrollBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csScrollBar;
-  Width := 121;
-  Height := GetSystemMetrics(SM_CYHSCROLL);
-  SetBounds(0,0,width,height);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, x, y);
   TabStop := True;
   ControlStyle := ControlStyle + [csFramed, csDoubleClicks, csOpaque]
                                - [csAcceptsControls, csDoubleClicks,
@@ -254,6 +253,12 @@ class procedure TCustomScrollBar.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterCustomScrollBar;
+end;
+
+class function TCustomScrollBar.GetControlClassDefaultSize: TPoint;
+begin
+  Result.x := 121;
+  Result.y := GetSystemMetrics(SM_CYHSCROLL);
 end;
 
 // included by stdctrls.pp
