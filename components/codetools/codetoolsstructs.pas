@@ -503,8 +503,8 @@ var
 begin
   Node:=FindNode(Name);
   if Node<>nil then begin
-    FTree.Delete(Node);
     Item:=PStringToStringTreeItem(Node.Data);
+    FTree.Delete(Node);
     Dispose(Item);
   end;
 end;
