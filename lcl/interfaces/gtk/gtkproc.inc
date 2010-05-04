@@ -5953,6 +5953,9 @@ begin
 
   ATop := (Widget^.Allocation.Height - IconHeight) div 2;
 
+  if gtk_widget_get_direction(Widget) = GTK_TEXT_DIR_RTL then
+    ALeft := Widget^.Allocation.width - IconWidth - ALeft; //not sure it is the correct Width
+
   // draw icon
   AImageList := LCLMenuItem.GetImageList;
   if AImageList = nil then
@@ -6056,6 +6059,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
   MenuItemWidget: PGtkWidget; NewShortCut: TShortCut);
+const
+  WidgetDirection : array[boolean] of longint = (GTK_TEXT_DIR_LTR, GTK_TEXT_DIR_RTL);
+  function UseRTL: Boolean;
+  begin
+    Result := LCLMenuItem.GetIsRightToLeft;
+  end;
 var
   HBoxWidget: PGtkWidget;
 
@@ -6068,6 +6077,7 @@ var
       Exit;
     LabelWidget := gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
     GtkWidgetset.SetLabelCaption(LabelWidget, LCLMenuItem.Caption);
+    gtk_widget_set_direction(PGtkWidget(LabelWidget), WidgetDirection[UseRTL]);
   end;
   
   procedure UpdateShortCutLabel;
@@ -6099,13 +6109,12 @@ var
     if NeedShortCut then
     begin
       ShortCutToKey(NewShortCut, Key, Shift);
-      s := '    ' + GetAcceleratorString(Key, Shift);
+      s := GetAcceleratorString(Key, Shift);
       //  ShortCutToText(NewShortCut);
       if LabelWidget = nil then
       begin
         // create a label for the ShortCut
         LabelWidget := PGtkLabel(gtk_label_new(PChar(Pointer(s))));
-        gtk_misc_set_alignment(GTK_MISC(LabelWidget), 1.0, 0.5);
         gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLShortCutLabel', LabelWidget);
         gtk_container_add(GTK_CONTAINER(HBoxWidget), PGtkWidget(LabelWidget));
         gtk_widget_show(PGtkWidget(LabelWidget));
@@ -6114,6 +6123,11 @@ var
       begin
         gtk_label_set_text(LabelWidget, PChar(Pointer(s)));
       end;
+      gtk_widget_set_direction(PGtkWidget(LabelWidget), GTK_TEXT_DIR_LTR); //Shortcut always LTR
+      if UseRTL then
+        gtk_misc_set_alignment(GTK_MISC(LabelWidget), 0.0, 0.5)
+      else
+        gtk_misc_set_alignment(GTK_MISC (LabelWidget), 1.0, 0.5);
     end else
     if LabelWidget <> nil then
       gtk_widget_destroy(PGtkWidget(LabelWidget));
@@ -6191,7 +6205,8 @@ begin
       // a separator is an empty gtkmenuitem
       exit;
     end;
-    HBoxWidget := gtk_hbox_new(false,0);
+    HBoxWidget := gtk_hbox_new(false, 20);
+    gtk_widget_set_direction(PGtkWidget(HBoxWidget), WidgetDirection[UseRTL]);
     gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLHBox', HBoxWidget);
     CreateIcon;
     CreateLabel;
@@ -6209,6 +6224,7 @@ begin
     end else
     begin
       // just update the content
+      gtk_widget_set_direction(PGtkWidget(HBoxWidget), WidgetDirection[UseRTL]);
       SetMenuItemLabelText(LCLMenuItem, MenuItemWidget);
       UpdateShortCutLabel;
     end;

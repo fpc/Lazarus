@@ -350,6 +350,11 @@ begin
     Box := PGTKBin(ParentForm.Handle)^.Child;
     gtk_box_pack_start(Box, Widget, False, False, 0);
   end;
+
+  {$ifdef GTK_2_8}
+  gtk_menu_bar_set_pack_direction(PGtkMenuBar(Widget), MenuDirection[AMenu.UseRightToLeftAlignment]);
+  {$endif}
+
   gtk_widget_show(Widget);
 
   {$IFDEF DebugLCLComponents}
@@ -386,7 +391,7 @@ begin
 
     // get actual alignment
     Alignment := TPopupMenu(WidgetInfo^.LCLObject).Alignment;
-    if TPopupMenu(WidgetInfo^.LCLObject).IsRightToLeft then
+    if TPopupMenu(WidgetInfo^.LCLObject).UseRightToLeftAlignment then
     begin
       if Alignment = paLeft then
         Alignment := paRight

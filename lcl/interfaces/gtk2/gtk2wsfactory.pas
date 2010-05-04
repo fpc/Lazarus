@@ -586,8 +586,8 @@ end;
 
 function RegisterMenu: Boolean; alias : 'WSRegisterMenu';
 begin
-  RegisterWSComponent(TMenu, TGtkWSMenu); { GTK1 }
-//  RegisterWSComponent(TMenu, TGtk2WSMenu);
+  //RegisterWSComponent(TMenu, TGtkWSMenu); { GTK1 }
+  RegisterWSComponent(TMenu, TGtk2WSMenu);
   Result := True;
 end;
 

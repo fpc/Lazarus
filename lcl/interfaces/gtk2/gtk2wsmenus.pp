@@ -28,7 +28,7 @@ interface
 
 uses
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
-  GtkInt, GtkProc, GtkGlobals, GtkDef, GtkExtra,
+  GtkInt, GtkProc, GtkGlobals, GtkDef, GtkExtra, GtkWSMenus,
   Classes, InterfaceBase, Types, LCLProc, LCLType, WSMenus, WSLCLClasses,
   LMessages, Graphics, Menus, Forms, LCLIntf;
 
@@ -55,7 +55,7 @@ type
 
   { TGtk2WSMenu }
 
-  TGtk2WSMenu = class(TWSMenu)
+  TGtk2WSMenu = class(TGtkWSMenu)
   published
     class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); override;
   end;
@@ -492,25 +492,33 @@ end;
 
 class procedure TGtk2WSMenu.SetBiDiMode(const AMenu : TMenu;
   UseRightToLeftAlign, UseRightToLeftReading : Boolean);
+const
+  WidgetDirection : array[boolean] of longint = (GTK_TEXT_DIR_LTR, GTK_TEXT_DIR_RTL);
 {$ifdef GTK_2_8}
 const
   MenuDirection : array[Boolean] of Longint = (
     GTK_PACK_DIRECTION_LTR,
     GTK_PACK_DIRECTION_RTL);
 {$endif}
-begin
-{$ifdef GTK_2_8}
-  gtk_menu_bar_set_pack_direction(PGtkMenuBar(AMenu.Handle), MenuDirection[UseRightToLeftAlign]);
-{$endif}
-
-  if UseRightToLeftReading then
+  procedure Switch(AMenuItem: TMenuItem; Flip: Boolean);
+  var
+    i: Integer;
   begin
-    // ?
-  end
-  else
-  begin
-    // ?
+    if Flip then
+    begin
+      gtk_widget_set_direction(PGtkWidget(AMenuItem.Handle), WidgetDirection[UseRightToLeftAlign]);
+      UpdateInnerMenuItem(AMenuItem, PGtkWidget(AMenuItem.Handle));
+    end;
+    for i := 0 to AMenuItem.Count -1 do
+      Switch(AMenuItem[i], True);
   end;
+begin
+  {$ifdef GTK_2_8}
+    gtk_menu_bar_set_pack_direction(PGtkMenuBar(AMenu.Handle), MenuDirection[UseRightToLeftAlign]);
+    gtk_menu_bar_set_child_pack_direction(PGtkMenuBar(AMenu.Handle), MenuDirection[UseRightToLeftAlign]);
+  {$endif}
+  //gtk_widget_set_direction(PGtkWidget(AMenu.Handle), WidgetDirection[UseRightToLeftAlign]);
+  Switch(AMenu.Items, False);
 end;
 
 end.
