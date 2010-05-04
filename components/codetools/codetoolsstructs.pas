@@ -128,6 +128,8 @@ type
     property CaseSensitive: boolean read FCaseSensitive;
     property Tree: TAVLTree read FTree;
     function AsText: string;
+    function IsEqual(OtherTree: TStringToStringTree): boolean;
+    procedure Assign(Source: TStringToStringTree);
     procedure WriteDebugReport;
     function CalcMemSize: PtrUint;
     property CompareItemsFunc: TListSortCompare read GetCompareItemsFunc;
@@ -518,6 +520,45 @@ begin
     Item:=PStringToStringTreeItem(Node.Data);
     Result:=Result+Item^.Name+'='+Item^.Value+LineEnding;
     Node:=Tree.FindSuccessor(Node);
+  end;
+end;
+
+function TStringToStringTree.IsEqual(OtherTree: TStringToStringTree): boolean;
+var
+  Node: TAVLTreeNode;
+  OtherNode: TAVLTreeNode;
+  OtherItem: PStringToStringTreeItem;
+  Item: PStringToStringTreeItem;
+begin
+  Result:=false;
+  if OtherTree=nil then exit;
+  if Tree.Count<>OtherTree.Tree.Count then exit;
+  Node:=Tree.FindLowest;
+  OtherNode:=OtherTree.Tree.FindLowest;
+  while Node<>nil do begin
+    if OtherNode=nil then exit;
+    Item:=PStringToStringTreeItem(Node.Data);
+    OtherItem:=PStringToStringTreeItem(OtherNode.Data);
+    if (Item^.Name<>OtherItem^.Name)
+    or (Item^.Value<>OtherItem^.Value) then exit;
+    OtherNode:=OtherTree.Tree.FindSuccessor(OtherNode);
+    Node:=Tree.FindSuccessor(Node);
+  end;
+  if OtherNode<>nil then exit;
+  Result:=true;
+end;
+
+procedure TStringToStringTree.Assign(Source: TStringToStringTree);
+var
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+begin
+  Clear;
+  Node:=Source.Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToStringTreeItem(Node.Data);
+    Strings[Item^.Name]:=Item^.Value;
+    Node:=Source.Tree.FindSuccessor(Node);
   end;
 end;
 

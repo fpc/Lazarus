@@ -630,13 +630,17 @@ type
     Units: TStringToStringTree; // lowercase unit name to file name
     ErrorMsg: string;
     ErrorTranslatedMsg: string;
-    constructor Create(aTargetOS, aTargetCPU, aCompiler: string);
+    constructor Create(aCompiler, aTargetOS, aTargetCPU: string);
     destructor Destroy; override;
-    procedure Clear;
+    procedure Clear; // values, not keys
+    function IsEqual(Item: TFPCTargetConfigCacheItem;
+                     CompareKey: boolean = true): boolean;
+    procedure Assign(Item: TFPCTargetConfigCacheItem);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function NeedsUpdate: boolean;
-    function Update: boolean;
+    function Update(TestFilename: string; ExtraOptions: string = '';
+                    const OnProgress: TDefinePoolProgress = nil): boolean;
   end;
 
   { TFPCTargetConfigCache }
@@ -692,8 +696,8 @@ function CreateDefinesInDirectories(const SourcePaths, FlagName: string
 
 function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string;
                      const OnProgress: TDefinePoolProgress): TStringList;
-function Compress1FileList(Files: TStringList): TStringList;
-function Uncompress1FileList(Files: TStringList): TStringList;
+function Compress1FileList(Files: TStrings): TStringList;
+function Decompress1FileList(Files: TStrings): TStringList;
 function RunTool(const Filename, Params: string;
                  WorkingDirectory: string = ''): TStringList;
 function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
@@ -820,7 +824,7 @@ begin
   if Abort then FreeAndNil(Result);
 end;
 
-function Compress1FileList(Files: TStringList): TStringList;
+function Compress1FileList(Files: TStrings): TStringList;
 var
   i: Integer;
   Filename: string;
@@ -840,7 +844,7 @@ begin
   end;
 end;
 
-function Uncompress1FileList(Files: TStringList): TStringList;
+function Decompress1FileList(Files: TStrings): TStringList;
 var
   LastFilename: String;
   i: Integer;
@@ -980,14 +984,14 @@ function ParseFPCVerbose(List: TStrings; out UnitPaths: TStrings;
 
   procedure UndefineSymbol(const UpperName: string);
   begin
-    //DebugLn(['UndefineSymbol ',UpperName]);
+    DebugLn(['UndefineSymbol ',UpperName]);
     Defines.Remove(UpperName);
     Undefines[UpperName]:='';
   end;
 
   procedure DefineSymbol(const UpperName, Value: string);
   begin
-    //DebugLn(['DefineSymbol ',UpperName]);
+    DebugLn(['DefineSymbol ',UpperName]);
     Undefines.Remove(UpperName);
     Defines[UpperName]:=Value;
   end;
@@ -1001,7 +1005,7 @@ function ParseFPCVerbose(List: TStrings; out UnitPaths: TStrings;
     if len <= 6 then Exit; // shortest match
 
     CurPos := 1;
-    // strip timestamp e.g. [0.306]
+    // skip timestamp e.g. [0.306]
     if Line[CurPos] = '[' then begin
       repeat
         inc(CurPos);
@@ -6190,12 +6194,12 @@ end;
 
 { TFPCTargetConfigCacheItem }
 
-constructor TFPCTargetConfigCacheItem.Create(aTargetOS, aTargetCPU,
-  aCompiler: string);
+constructor TFPCTargetConfigCacheItem.Create(aCompiler, aTargetOS,
+  aTargetCPU: string);
 begin
+  Compiler:=aCompiler;
   TargetOS:=aTargetOS;
   TargetCPU:=aTargetCPU;
-  Compiler:=aCompiler;
 end;
 
 destructor TFPCTargetConfigCacheItem.Destroy;
@@ -6218,6 +6222,78 @@ begin
   FreeAndNil(Units);
 end;
 
+function TFPCTargetConfigCacheItem.IsEqual(Item: TFPCTargetConfigCacheItem;
+  CompareKey: boolean): boolean;
+begin
+  if CompareKey then begin
+    Result:=(TargetOS=Item.TargetOS)
+      and (TargetCPU=Item.TargetCPU)
+      and (Compiler=Item.Compiler);
+    if not Result then exit;
+  end;
+  Result:=(CompilerDate=Item.CompilerDate)
+      and (TargetCompiler=Item.TargetCompiler)
+      and (TargetCompilerDate=Item.TargetCompilerDate)
+      and (TargetFPCCfg=Item.TargetFPCCfg)
+      and (TargetFPCCfgDate=Item.TargetFPCCfgDate);
+  if not Result then exit;
+  Result:=false;
+  if ((UnitPaths<>nil) and (Item.UnitPaths<>nil) and (UnitPaths.Text<>Item.UnitPaths.Text))
+  or ((UnitPaths<>nil)<>(Item.UnitPaths<>nil)) then
+    exit;
+  if ((Defines<>nil)<>(Item.Defines<>nil))
+  or ((Defines<>nil) and Defines.IsEqual(Item.Defines)) then
+    exit;
+  if ((Undefines<>nil)<>(Item.Undefines<>nil))
+  or ((Undefines<>nil) and Undefines.IsEqual(Item.Undefines)) then
+    exit;
+  if ((Units<>nil)<>(Item.Units<>nil))
+  or ((Units<>nil) and Units.IsEqual(Item.Undefines)) then
+    exit;
+  Result:=true;
+end;
+
+procedure TFPCTargetConfigCacheItem.Assign(Item: TFPCTargetConfigCacheItem);
+begin
+  // keys
+  TargetOS:=Item.TargetOS;
+  TargetCPU:=Item.TargetCPU;
+  Compiler:=Item.Compiler;
+  // values
+  CompilerDate:=Item.CompilerDate;
+  TargetCompiler:=Item.TargetCompiler;
+  TargetCompilerDate:=Item.TargetCompilerDate;
+  TargetFPCCfg:=Item.TargetFPCCfg;
+  TargetFPCCfgDate:=Item.TargetFPCCfgDate;
+  if Item.UnitPaths<>nil then begin
+    if UnitPaths=nil then UnitPaths:=TStringList.Create;
+    UnitPaths.Assign(Item.UnitPaths);
+  end else begin
+    FreeAndNil(UnitPaths);
+  end;
+  if Item.Defines<>nil then begin
+    if Defines=nil then Defines:=TStringToStringTree.Create(true);
+    Defines.Assign(Item.Defines);
+  end else begin
+    FreeAndNil(Defines);
+  end;
+  if Item.Undefines<>nil then begin
+    if Undefines=nil then Undefines:=TStringToStringTree.Create(true);
+    Undefines.Assign(Item.Undefines);
+  end else begin
+    FreeAndNil(Undefines);
+  end;
+  if Item.Units<>nil then begin
+    if Units=nil then Units:=TStringToStringTree.Create(true);
+    Units.Assign(Item.Units);
+  end else begin
+    FreeAndNil(Units);
+  end;
+
+  ErrorMsg:=Item.ErrorMsg;
+  ErrorTranslatedMsg:=Item.ErrorTranslatedMsg;
+end;
+
 procedure TFPCTargetConfigCacheItem.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
@@ -6226,6 +6302,12 @@ var
   DefineName, DefineValue: String;
   s: String;
   i: Integer;
+  p: Integer;
+  StartPos: Integer;
+  List: TStringList;
+  UnitList: TStringList;
+  Unit_Name: String;
+  Filename: String;
 begin
   Clear;
   TargetOS:=XMLConfig.GetValue(Path+'TargetOS','');
@@ -6235,7 +6317,20 @@ begin
   TargetFPCCfg:=XMLConfig.GetValue(Path+'FPCCfg','');
   TargetFPCCfgDate:=XMLConfig.GetValue(Path+'FPCCfgDate',0);
 
-  // defines
+  // UnitPaths: write as semicolon separated compressed list
+  List:=TStringList.Create;
+  try
+    s:=XMLConfig.GetValue(Path+'UnitPaths/Value','');
+    List.Delimiter:=';';
+    List.StrictDelimiter:=true;
+    List.DelimitedText:=s;
+    UnitPaths:=Decompress1FileList(List);
+    // do not sort, order is important (e.g. for httpd.ppu)
+  finally
+    List.Free;
+  end;
+
+  // defines: write as Define<Number>/Name,Value
   Cnt:=XMLConfig.GetValue(Path+'/DefineCount',0);
   for i:=1 to Cnt do begin
     SubPath:='Define'+IntToStr(Cnt)+'/';
@@ -6247,14 +6342,47 @@ begin
     Defines[DefineName]:=DefineValue;
   end;
 
-  // undefines
+  // undefines: write as Undefines/Value and comma separated list of names
   s:=XMLConfig.GetValue(Path+'Undefines/Values','');
   if s<>'' then begin
-
+    p:=1;
+    while (p<=length(s)) do begin
+      StartPos:=1;
+      while (p<=length(s)) and (s[p]<>';') do inc(p);
+      DefineName:=copy(s,StartPos,p-StartPos);
+      if (DefineName<>'') and IsValidIdent(DefineName) then begin
+        if Undefines=nil then
+          Undefines:=TStringToStringTree.Create(true);
+        Undefines[DefineName]:='';
+      end;
+      inc(p);
+    end;
   end;
 
-  // units
-
+  // units: Units/Values semicolon separated list of compressed filename=unitname
+  List:=TStringList.Create;
+  UnitList:=TStringList.Create;
+  try
+    s:=XMLConfig.GetValue(Path+'Units/Value','');
+    List.Delimiter:=';';
+    List.StrictDelimiter:=true;
+    List.DelimitedText:=s;
+    UnitList:=Decompress1FileList(List);
+    for i:=0 to UnitList.Count-1 do begin
+      s:=UnitList[i];
+      p:=System.Pos('=',s);
+      if p<1 then continue;
+      Unit_Name:=lowercase(copy(s,p+1,length(s)));
+      if (Unit_Name='') or not IsValidIdent(Unit_Name) then continue;
+      Filename:=TrimFilename(copy(s,1,p-1));
+      if Units=nil then
+        Units:=TStringToStringTree.Create(true);
+      Units[Unit_Name]:=Filename;
+    end;
+  finally
+    List.Free;
+    UnitList.Free;
+  end;
 end;
 
 procedure TFPCTargetConfigCacheItem.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -6277,7 +6405,19 @@ begin
   XMLConfig.SetDeleteValue(Path+'FPCCfg',TargetFPCCfg,'');
   XMLConfig.SetDeleteValue(Path+'FPCCfgDate',TargetFPCCfgDate,0);
 
-  // defines: write as Define<Number>/Name,Value
+  // UnitPaths: write as semicolon separated compressed list
+  List:=TStringList.Create;
+  try
+    List:=Compress1FileList(UnitPaths);
+    // do not sort, order is important (e.g. for httpd.ppu)
+    List.Delimiter:=';';
+    List.StrictDelimiter:=true;
+    XMLConfig.SetDeleteValue(Path+'UnitPaths/Value',List.DelimitedText,'');
+  finally
+    List.Free;
+  end;
+
+  // Defines: write as Define<Number>/Name,Value
   Cnt:=0;
   if Defines<>nil then begin
     Node:=Defines.Tree.FindLowest;
@@ -6294,7 +6434,7 @@ begin
   end;
   XMLConfig.SetDeleteValue(Path+'/DefineCount',Cnt,0);
 
-  // undefines: write as Undefines/Value and comma separated list of names
+  // Undefines: write as Undefines/Value and comma separated list of names
   Cnt:=0;
   if Undefines<>nil then begin
     Node:=Undefines.Tree.FindLowest;
@@ -6309,7 +6449,7 @@ begin
     XMLConfig.SetDeleteValue(Path+'Undefines/Values',s,'');
   end;
 
-  // units: Units/Values semicolon separated list of compressed filename=unitname
+  // Units: Units/Values semicolon separated list of compressed filename=unitname
   // Units contains thousands of file names. This needs compression.
   List:=nil;
   UnitList:=TStringList.Create;
@@ -6331,7 +6471,8 @@ begin
       List:=Compress1FileList(UnitList);
       // and write the semicolon separated list
       List.Delimiter:=';';
-      XMLConfig.SetDeleteValue(Path+'Units/Values',List.DelimitedText,'');
+      List.StrictDelimiter:=true;
+      XMLConfig.SetDeleteValue(Path+'Units/Value',List.DelimitedText,'');
     end;
   finally
     List.Free;
@@ -6359,12 +6500,18 @@ begin
   Result:=false;
 end;
 
-function TFPCTargetConfigCacheItem.Update: boolean;
+function TFPCTargetConfigCacheItem.Update(TestFilename,
+  ExtraOptions: string; const OnProgress: TDefinePoolProgress): boolean;
 begin
   ErrorMsg:='';
   ErrorTranslatedMsg:='';
-  // ToDo
-  Result:=false;
+  Clear;
+  if ExtraOptions<>'' then ExtraOptions:=' '+ExtraOptions;
+  ExtraOptions:='-T'+TargetOS+' -P'+TargetCPU;
+  RunFPCVerbose(Compiler,TestFilename,UnitPaths,Defines,Undefines,ExtraOptions);
+  if UnitPaths<>nil then
+    Units:=GatherUnitsInSearchPaths(UnitPaths,OnProgress);
+  Result:=true;
 end;
 
 { TFPCTargetConfigCache }
@@ -6431,11 +6578,18 @@ var
   Node: TAVLTreeNode;
   Cmp: TFPCTargetConfigCacheItem;
 begin
-  Cmp:=TFPCTargetConfigCacheItem.Create(TargetOS,TargetCPU,CompilerFilename);
+  Cmp:=TFPCTargetConfigCacheItem.Create(CompilerFilename,TargetOS,TargetCPU);
   try
     Node:=fItems.Find(cmp);
-    if Node=nil then exit(nil);
-    Result:=TFPCTargetConfigCacheItem(Node.Data);
+    if Node<>nil then begin
+      Result:=TFPCTargetConfigCacheItem(Node.Data);
+    end else if CreateIfNotExists then begin
+      Result:=cmp;
+      cmp:=nil;
+      fItems.Add(Result);
+    end else begin
+      Result:=nil;
+    end;
   finally
     Cmp.Free;
   end;
