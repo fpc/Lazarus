@@ -1811,8 +1811,8 @@ begin
     Visible := EnvironmentOptions.IDESpeedButtonsVisible;
   end;
 
-  MainIDEBar.tbStandard := CreateToolBar('tbStandard');
   MainIDEBar.tbViewDebug := CreateToolBar('tbViewDebug');
+  MainIDEBar.tbStandard := CreateToolBar('tbStandard');
 
   MainIDEBar.NewUnitSpeedBtn     := CreateButton(MainIDEBar.tbStandard , 'NewUnitSpeedBtn'    , 'item_unit'                 , @mnuNewUnitClicked, lisMenuNewUnit);
   MainIDEBar.tbDivider1          := CreateDivider(MainIDEBar.tbStandard);
