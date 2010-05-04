@@ -1576,8 +1576,7 @@ begin
             GetWindowOrgEx(DC, @DCOrigin);
             R := QtRgn.getBoundingRect;
             Clip := CreateRectRGN(0, 0, R.Right - R.Left, R.Bottom - R.Top);
-            if (DCOrigin.X <> 0) or (DCOrigin.Y <> 0) then
-              QRegion_translate(TQtRegion(Clip).Widget, -DCOrigin.X, -DCOrigin.Y);
+            TQtRegion(Clip).translate(DCOrigin.X, DCOrigin.Y);
           end;
 
           // create target clip
