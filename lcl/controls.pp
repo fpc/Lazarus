@@ -2407,6 +2407,7 @@ procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
 function IsColorDefault(AControl: TControl): Boolean;
 
 function BidiFlipAlignment(Alignment: TAlignment; Flip: Boolean = True): TAlignment;
+function BidiFlipAnchors(Control: TControl; Flip: Boolean): TAnchors;
 function BidiFlipRect(const Rect: TRect; const ParentRect: TRect; const Flip: Boolean): TRect;
 procedure ChangeBiDiModeAlignment(var Alignment: TAlignment);
 
@@ -2533,6 +2534,20 @@ const
   );
 begin
   Result := BidiAlignment[Flip, Alignment];
+end;
+
+function BidiFlipAnchors(Control: TControl; Flip: Boolean): TAnchors;
+begin
+  Result := Control.Anchors;
+  if Flip then
+  begin
+    if (akLeft in Result) and (Control.AnchorSide[akLeft].Control=nil)
+    and not (akRight in Result) then
+      Result := Result - [akLeft] + [akRight]
+    else if (akRight in Result) and (Control.AnchorSide[akRight].Control=nil)
+    and not (akLeft in Result) then
+      Result := Result - [akRight] + [akLeft];
+  end;
 end;
 
 function BidiFlipRect(const Rect: TRect; const ParentRect: TRect; const Flip: Boolean): TRect;

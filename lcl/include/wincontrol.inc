@@ -6559,10 +6559,13 @@ var
   AWidth: Integer;
 begin
   AWidth:=GetLogicalClientRect.Right;
+  DisableAlign;
   for i:=0 to ControlCount-1 do begin
     CurControl:=Controls[i];
     CurControl.Left:=AWidth-CurControl.Left-CurControl.Width;
+    CurControl.Anchors := BidiFlipAnchors(CurControl, True);
   end;
+  EnableAlign;
 end;
 
 {------------------------------------------------------------------------------
