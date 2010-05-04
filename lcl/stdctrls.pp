@@ -1509,6 +1509,36 @@ begin
   RegisterComponents('Additional',[TStaticText]);
 end;
 
+procedure InternalDrawItem(Control:TControl; Canvas: TCanvas; ARect:TRect; const Text: string);
+var
+  OldBrushStyle: TBrushStyle;
+  OldTextStyle: TTextStyle;
+  NewTextStyle: TTextStyle;
+begin
+  OldBrushStyle := Canvas.Brush.Style;
+  Canvas.Brush.Style := bsClear;
+
+  OldTextStyle := Canvas.TextStyle;
+  NewTextStyle := OldTextStyle;
+  NewTextStyle.Layout := tlCenter;
+  NewTextStyle.RightToLeft := Control.UseRightToLeftReading;
+  if Control.UseRightToLeftAlignment then
+  begin
+    NewTextStyle.Alignment := taRightJustify;
+    ARect.Right := ARect.Right - 2;
+  end
+  else
+  begin
+    NewTextStyle.Alignment := taLeftJustify;
+    ARect.Left := ARect.Left + 2;
+  end;
+
+  Canvas.TextStyle := NewTextStyle;
+
+  Canvas.TextRect(ARect, ARect.Left, ARect.Top, Text);
+  Canvas.Brush.Style := OldBrushStyle;
+  Canvas.TextStyle := OldTextStyle;
+end;
 
 {$I customgroupbox.inc}
 {$I customcombobox.inc}

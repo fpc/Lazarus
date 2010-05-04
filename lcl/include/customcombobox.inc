@@ -100,7 +100,7 @@ begin
   else if not (odPainted in State) then
   begin
     FCanvas.FillRect(ARect);
-    FCanvas.TextOut(ARect.Left + 2, ARect.Top, Items[Index]);
+    InternalDrawItem(Self, FCanvas, ARect, Items[Index])
   end;
 end;
 
