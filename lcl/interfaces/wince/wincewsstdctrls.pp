@@ -56,8 +56,6 @@ type
   published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure AdaptBounds(const AWinControl: TWinControl;
-          var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
   end;
 
   { TWinCEWSGroupBox }
@@ -426,26 +424,9 @@ begin
 //  if TWinCEWidgetSet(WidgetSet).ThemesActive
 //      and not Params.WindowInfo^.hasTabParent then
 //  Params.WindowInfo^.isGroupBox := true;
-  AWinControl.InvalidateClientRectCache(true);
+//  AWinControl.InvalidateClientRectCache(true);
   Result := Params.Window;
 end;
-
-class procedure TWinCEWSCustomGroupBox.AdaptBounds(const AWinControl: TWinControl;
-  var Left, Top, Width, Height: integer; var SuppressMove: boolean);
-var
-  WinHandle, BuddyHandle: HWND;
-begin
-  WinHandle := AWinControl.Handle;
-  // check if we have a ``container'', if so, move that
-  BuddyHandle := GetWindowInfo(WinHandle)^.ParentPanel;
-  if BuddyHandle <> 0 then
-  begin
-    MoveWindow(BuddyHandle, Left, Top, Width, Height, false);
-    Left := 0;
-    Top := 0;
-  end;
-end;
-
 
 { TWinCEWSCustomListBox }
 
