@@ -1840,6 +1840,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure ApplyChanges;
+    procedure Changed; virtual;
     procedure DoChange(var msg); message LM_CHANGED;
     procedure FixParams(var APosition, AMin, AMax: Integer);
     class function GetControlClassDefaultSize: TPoint; override;

@@ -466,9 +466,8 @@ begin
     // only fire event if reason is not some other window hide/showing etc.
     if Message.Status = 0 then
     begin
-      if Message.Show then begin
+      if Message.Show then
         DoShowWindow;
-      end;
     end;
   finally
     Exclude(FFormState, fsShowing);

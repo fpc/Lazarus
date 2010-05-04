@@ -174,6 +174,7 @@ begin
     FPosition := Value;
     if HandleAllocated then
       TWSTrackBarClass(WidgetSetClass).SetPosition(Self, FPosition);
+    Changed;
   end;
 end;
 
@@ -311,6 +312,12 @@ begin
     TWSTrackBarClass(WidgetSetClass).ApplyChanges(Self);
 end;
 
+procedure TCustomTrackBar.Changed;
+begin
+  if Assigned (FOnChange) then
+    FOnChange(Self);
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomTrackBar.DoChange
   Params:  Msg  (longint = LM_CHANGE)
@@ -325,8 +332,7 @@ begin
   if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then
     Exit;
   EditingDone;
-  if Assigned (FOnChange) then
-    FOnChange(Self);
+  Changed;
 end;
 
 procedure TCustomTrackBar.FixParams(var APosition, AMin, AMax: Integer);

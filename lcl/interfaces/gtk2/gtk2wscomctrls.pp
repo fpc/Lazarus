@@ -247,13 +247,22 @@ end;
 
 {$I gtk2wscustomlistview.inc}
 
+procedure GtkWSTrackBar_Changed(AWidget: PGtkWidget; AInfo: PWidgetInfo); cdecl;
+var
+  Msg: TLMessage;
+begin
+  if AInfo^.ChangeLock > 0 then Exit;
+  Msg.Msg := LM_CHANGED;
+  DeliverMessage(AInfo^.LCLObject, Msg);
+end;
+
 { TGtk2WSTrackBar }
 
 class procedure TGtk2WSTrackBar.SetCallbacks(const AWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
   TGtk2WSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
-  TGtk2Widgetset(WidgetSet).SetCallback(LM_CHANGED, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+  SignalConnect(AWidget, 'value_changed', @GtkWSTrackBar_Changed, AWidgetInfo);
 end;
 
 class function TGtk2WSTrackBar.CreateHandle(const AWinControl: TWinControl;
@@ -348,11 +357,17 @@ class procedure TGtk2WSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar;
   const NewPosition: integer);
 var
   Range: PGtkRange;
+  WidgetInfo: PWidgetInfo;
 begin
   if not WSCheckHandleAllocated(ATrackBar, 'SetPosition') then
     Exit;
   Range := PGtkRange(ATrackBar.Handle);
+  WidgetInfo := GetWidgetInfo(Range);
+  // lock Range, so that no OnChange event is not fired
+  Inc(WidgetInfo^.ChangeLock);
   gtk_range_set_value(Range, NewPosition);
+  // unlock Range
+  Dec(WidgetInfo^.ChangeLock);
 end;
 
 { TGtk2WSProgressBar }

@@ -2283,7 +2283,6 @@ var
 begin
   Result := CallBackDefaultReturn;
   EventTrace('Value changed', data);
-  if (Widget=nil) then ;
   Mess.msg := LM_CHANGED;
   DeliverMessage(Data, Mess);
 end;
