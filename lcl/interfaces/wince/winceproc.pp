@@ -50,6 +50,10 @@ type
       );
   end;
 
+  TWinCEVersion = (wince_1, wince_2, wince_3, wince_4,
+   wince_5, wince_6, wince_6_1, wince_6_5, wince_7,
+   wince_other);
+
 function WM_To_String(WM_Message: Integer): string;
 function WindowPosFlagsToString(Flags: UINT): string;
 procedure EventTrace(Message: String; Data: TObject);
@@ -101,6 +105,7 @@ function WideStrCmp(W1, W2: PWideChar): Integer;
 
 { Automatic detection of platform }
 function GetWinCEPlatform: TApplicationType;
+function GetWinCEVersion: TWinCEVersion;
 
 var
   DefaultWindowInfo: TWindowInfo;
@@ -1356,6 +1361,38 @@ begin
     Result := atKeyPadDevice
   else
     Result := atPDA;
+end;
+{$endif}
+
+function GetWinCEVersion: TWinCEVersion;
+{$ifdef Win32}
+begin
+  Result := wince_other;
+end;
+{$else}
+var
+  versionInfo: OSVERSIONINFO;
+begin
+  Result := wince_other;
+
+  System.FillChar(versionInfo, sizeof(OSVERSIONINFO), #0);
+  versionInfo.dwOSVersionInfoSize := sizeof(OSVERSIONINFO);
+
+  if GetVersionEx(@versionInfo) then
+  begin
+    case versionInfo.dwMajorVersion of
+    1: Result := wince_1;
+    2: Result := Wince_2;
+    3: Result := Wince_3;
+    4: Result := Wince_4;
+    5:
+    begin
+      if versionInfo.dwMinorVersion = 2 then Result := Wince_6
+      else Result := Wince_5;
+    end;
+    6: Result := Wince_6;
+    end;
+  end;
 end;
 {$endif}
 

@@ -2918,9 +2918,17 @@ end;
 function TWinCEWidgetSet.SetWindowOrgEx(DC: HDC; NewX, NewY: Integer;
   OldPoint: PPoint): Boolean;
 begin
- { roozbeh:does this always work?it is heavily used in labels and some other drawing controls}
-  Result := Boolean(Windows.SetViewPortOrgEx(DC, -NewX, -NewY, LPPoint(OldPoint)));
-//  Result:=inherited SetWindowOrgEx(dc, NewX, NewY, OldPoint);
+//  if GetWinCEVersion >= wince_5 then
+//    Result:= WinExt.SetWindowOrgEx(dc, NewX, NewY, OldPoint)
+//    Result := False
+//  else
+    // Using SetViewPortOrgEx causes the following bugs:
+    // http://bugs.freepascal.org/view.php?id=15654
+    // * Group Box caption doesn't show
+    // * Label x position inside group box is too small
+    // * Windows control y position inside group box is too highe
+    // See: http://wiki.lazarus.freepascal.org/Windows_CE_Development_Notes#Regressions
+    Result := Boolean(Windows.SetViewPortOrgEx(DC, -NewX, -NewY, LPPoint(OldPoint)));
 end;
 
 {------------------------------------------------------------------------------
