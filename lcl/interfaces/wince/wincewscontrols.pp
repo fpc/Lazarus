@@ -133,7 +133,7 @@ type
 
  // TODO: better names?
 
-procedure PrepareCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams);
+procedure PrepareCreateWindow(const AWinControl: TWinControl; out Params: TCreateWindowExParams);
 procedure FinishCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams;
   const AlternateCreateWindow: boolean);
 procedure WindowCreateInitBuddy(const AWinControl: TWinControl;
@@ -144,55 +144,34 @@ implementation
 
 { Global helper routines }
 
-procedure PrepareCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams);
+procedure PrepareCreateWindow(const AWinControl: TWinControl; out Params: TCreateWindowExParams);
 begin
   Fillchar(Params,Sizeof(Params),0);
   with Params do
   begin
-    Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
-    FlagsEx := 0;
-    Assert(False, 'Trace:Setting flags');
-    Window := HWND(Nil);
-    Buddy := HWND(Nil);
-    Assert(False, 'Trace:Setting window');
-
-    if AWinControl.Parent <> nil then
-      Parent := AWinControl.Parent.Handle
-    else
-      // Never set the parent of a window to AppHandle,
-      // otherwise wince will really try to make it a child
-      Parent := 0;
-
-    SubClassWndProc := @WindowProc;
-    StrCaption := AWinControl.Caption;
+    Window := HWND(nil);
+    Buddy := HWND(nil);
     WindowTitle := '';
-    Height := AWinControl.Height;
-    Left := AWinControl.Left;
-    //Parent := AWinControl.Parent;
-    Top := AWinControl.Top;
-    Width := AWinControl.Width;
-    if AWinControl.Visible then
-      Flags := Flags or WS_VISIBLE;
-    if csAcceptsControls in AWinControl.ControlStyle then
-      FlagsEx := FlagsEx or WS_EX_CONTROLPARENT;
-    if AWinControl.TabStop then
-      Flags := Flags or WS_TABSTOP;
-    Assert(False, 'Trace:Setting dimentions');
+    SubClassWndProc := @WindowProc;
+
+    Flags := CreateParams.Style;
+    FlagsEx := CreateParams.ExStyle;
+    Parent := CreateParams.WndParent;
+    StrCaption := CreateParams.Caption;
+
+    Left := CreateParams.X;
+    Top := CreateParams.Y;
+    Width := CreateParams.Width;
+    Height := CreateParams.Height;
+
     LCLBoundsToWin32Bounds(AWinControl, Left, Top, Width, Height);
     if AWinControl is TCustomControl then
       if TCustomControl(AWinControl).BorderStyle = bsSingle then
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+
     {$IFDEF VerboseSizeMsg}
     writeln('PrepareCreateWindow ',AWinControl.Name,':',AWinControl.ClassName,' ',Left,',',Top,',',Width,',',Height);
     {$ENDIF}
-//    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-//      'PrepareCreateWindow Name: ' + AWinControl.Name +
-//      Format(' PrevTopLeft: %d, %d, NewTopLeft: %d, %d',
-//       [AWinControl.Top, AWinControl.Left, Top, Left])
-//    );
-
-    //Assert(False, Format('Trace:PrepareCreateWindow - Creating component %S with the caption of %S', [AWinControl.ClassName, AWinControl.Caption]));
-    //Assert(False, Format('Trace:PrepareCreateWindow - Left: %D, Top: %D, Width: %D, Height: %D, Parent handle: 0x%X, instance handle: 0x%X', [Left, Top, Width, Height, Parent, HInstance]));
   end;
 end;
 
