@@ -2387,12 +2387,12 @@ procedure TWinControl.CreateControlAlignList(TheAlign: TAlign;
       alTop: begin
         Result := (Control1.Top < Control2.Top)
                or ( (Control1.Top = Control2.Top)
-                and (Control1.FBaseBounds.Top<Control2.FBaseBounds.Top));
+                and (Control1.FBaseBounds.Top < Control2.FBaseBounds.Top));
       end;
       alLeft: begin
         Result := (Control1.Left < Control2.Left)
                or ( (Control1.Left = Control2.Left)
-                and (Control1.FBaseBounds.Left<Control2.FBaseBounds.Left));
+                and (Control1.FBaseBounds.Left < Control2.FBaseBounds.Left));
       end;
       // contrary to VCL, LCL uses > for alBottom, alRight
       // Maybe it is a bug in the VCL.
@@ -3479,22 +3479,21 @@ procedure TWinControl.DoAllAutoSize;
     i: Integer;
     ChildWinControl: TWinControl;
   begin
-    if AWinControl.HandleObjectShouldBeVisible
-    and (not AWinControl.HandleAllocated) then
+    if AWinControl.HandleObjectShouldBeVisible and (not AWinControl.HandleAllocated) then
     begin
       {$IFDEF VerboseAllAutoSize}
       DebugLn(['TWinControl.DoAllAutoSize CREATE HANDLE ',DbgSName(AWinControl)]);
       {$ENDIF}
       AWinControl.HandleNeeded;
-      exit(true);
+      Exit(True);
     end;
-    for i:=0 to AWinControl.ControlCount-1 do begin
-      ChildWinControl:=TWinControl(AWinControl.Controls[i]);
-      if (ChildWinControl is TWinControl)
-      and CheckHandleAllocated(ChildWinControl) then
-        exit(true);
+    for i := 0 to AWinControl.ControlCount - 1 do
+    begin
+      ChildWinControl := TWinControl(AWinControl.Controls[i]);
+      if (ChildWinControl is TWinControl) and CheckHandleAllocated(ChildWinControl) then
+        Exit(True);
     end;
-    Result:=false;
+    Result := False;
   end;
 
   procedure ClearRequests(AControl: TControl);
@@ -3518,8 +3517,7 @@ procedure TWinControl.DoAllAutoSize;
         if TObject(AWinControl.FControls[i]) is TWinControl then
           UpdateShowingRecursive(TWinControl(AWinControl.FControls[i]),false);
     // then make the control visible
-    if (not OnlyChilds) and AWinControl.HandleObjectShouldBeVisible
-    and (not AWinControl.Showing) then
+    if not OnlyChilds and AWinControl.HandleObjectShouldBeVisible and not AWinControl.Showing then
       AWinControl.UpdateShowing;
   end;
 
@@ -3546,7 +3544,8 @@ begin
 
   Include(FWinControlFlags,wcfAllAutoSizing);
   try
-    while (not AutoSizeDelayed) do begin
+    while (not AutoSizeDelayed) do
+    begin
       // compute all sizes for LCL objects without touching the widgetset
       {$IFDEF VerboseAllAutoSize}
       DebugLn(['TWinControl.DoAllAutoSize COMPUTE BOUNDS ',DbgSName(Self),' old=',dbgs(BoundsRect)]);
@@ -3584,11 +3583,11 @@ begin
   {$IFDEF VerboseAllAutoSize}
   DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
   {$ENDIF}
-  Include(FWinControlFlags,wcfUpdateShowing);
+  Include(FWinControlFlags, wcfUpdateShowing);
   try
-    UpdateShowingRecursive(Self,false);
+    UpdateShowingRecursive(Self, False);
   finally
-    Exclude(FWinControlFlags,wcfUpdateShowing);
+    Exclude(FWinControlFlags, wcfUpdateShowing);
   end;
 end;
 

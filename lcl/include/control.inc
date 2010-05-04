@@ -62,7 +62,7 @@ begin
     end;
   end;
   {$ENDIF}
-  Include(FControlFlags,cfAutoSizeNeeded);
+  Include(FControlFlags, cfAutoSizeNeeded);
   if IsControlVisible then
   begin
     if Parent <> nil then
