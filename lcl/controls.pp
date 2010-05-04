@@ -1071,6 +1071,8 @@ type
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; virtual;
     {$IFDEF OldAutoSize}
     procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
+    {$ELSE}
+    procedure UpdateAlignIndex;
     {$ENDIF}
     procedure SetBiDiMode(AValue: TBiDiMode); virtual;
     procedure SetParentBiDiMode(AValue: Boolean); virtual;
@@ -1658,6 +1660,7 @@ type
 
   TWinControl = class(TControl)
   private
+    FAlignOrder: TFPList; // list of TControl. Last moved (SetBounds) comes first. Used by AlignControls.
     FBorderWidth: TBorderWidth;
     FBoundsLockCount: integer;
     FBoundsRealized: TRect;

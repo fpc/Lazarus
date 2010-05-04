@@ -2430,9 +2430,9 @@ begin
     AlignList.Add(StartControl);
 
   // then add all other
-  for I := 0 to ControlCount - 1 do
+  for I := 0 to FAlignOrder.Count - 1 do
   begin
-    Control := Controls[I];
+    Control := TControl(FAlignOrder[I]);
 
     if (Control.Align = TheAlign) and Control.IsControlVisible then
     begin
@@ -6046,6 +6046,7 @@ begin
     if AControl is TWinControl then
       ListRemove(FTabList, AControl);
     ListRemove(FControls, AControl);
+    ListRemove(FAlignOrder, AControl);
     AControl.FParent := nil;
     {$IFNDEF OldAutoSize}
     if AControl.FAutoSizingLockCount>0 then
@@ -6179,6 +6180,7 @@ begin
     AControl.ValidateContainer(Self);
     Perform(CM_CONTROLLISTCHANGE, WParam(AControl), LParam(True));
     Insert(AControl,Index);
+    AControl.UpdateAlignIndex;
     if not (csReading in AControl.ComponentState) then
     begin
       AControl.Perform(CM_PARENTCOLORCHANGED, 0, 0);
@@ -6506,6 +6508,7 @@ begin
     Control.HostDockSite:=nil;
   end;
 
+  FreeAndNil(FAlignOrder);
   FreeThenNil(FBrush);
   FreeThenNil(FChildSizing);
   if (FDockManager<>nil) then

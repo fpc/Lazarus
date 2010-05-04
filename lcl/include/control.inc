@@ -361,6 +361,7 @@ begin
     ' KeepBase=',KeepBase]);
   //if (Parent=nil) and (Left>0) and (ALeft=0) then DumpStack; // This can happen if the interface has not yet moved the window and for some reason something applies the interface coords back to the LCL
   {$ENDIF}
+  if not KeepBase then UpdateAlignIndex;
 
   // constraint the size
   DoConstrainedResize(ALeft, ATop, AWidth, AHeight);
@@ -1276,6 +1277,25 @@ end;
 function TControl.CanAutoSize(Var NewWidth, NewHeight : Integer): Boolean;
 begin
   Result := True;
+end;
+
+{------------------------------------------------------------------------------
+       TControl UpdateAlignIndex
+
+  Move this control to position 0 of Parent.FAlignOrder
+------------------------------------------------------------------------------}
+procedure TControl.UpdateAlignIndex;
+var
+  i: Integer;
+begin
+  if Parent=nil then exit;
+  if Parent.FAlignOrder=nil then
+    Parent.FAlignOrder:=TFPList.Create;
+  i:=Parent.FAlignOrder.IndexOf(Self);
+  if i<0 then
+    Parent.FAlignOrder.Insert(0,Self)
+  else
+    Parent.FAlignOrder.Move(i,0);
 end;
 
 {------------------------------------------------------------------------------
