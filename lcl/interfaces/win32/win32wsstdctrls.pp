@@ -47,7 +47,7 @@ type
 
   TWin32WSScrollBar = class(TWSScrollBar)
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
   end;
@@ -385,6 +385,21 @@ begin
   Result := WindowProc(Window, Msg, WParam, LParam);
 end;
 
+function ScrollBarWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+begin
+  case Msg of
+    WM_PAINT,
+    WM_PRINTCLIENT,
+    WM_ERASEBKGND:
+      begin
+        Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+        Exit;
+      end;
+  end;
+  Result := WindowProc(Window, Msg, WParam, LParam);
+end;
+
 { TWin32WSScrollBar }
 
 class function TWin32WSScrollBar.CreateHandle(const AWinControl: TWinControl;
@@ -396,7 +411,10 @@ begin
   PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
+  begin
     pClassName := 'SCROLLBAR';
+    SubClassWndProc := @ScrollBarWindowProc;
+  end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
