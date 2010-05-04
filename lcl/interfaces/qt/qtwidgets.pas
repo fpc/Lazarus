@@ -10133,7 +10133,8 @@ var
 begin
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_CHANGED;
-  DeliverMessage(Msg);
+  if not InUpdate then
+    DeliverMessage(Msg);
 end;
 
 procedure TQtProgressBar.reset;

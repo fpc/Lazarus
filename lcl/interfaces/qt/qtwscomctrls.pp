@@ -461,12 +461,16 @@ begin
   SetRangeStyle(QtProgressBar, AProgressBar.Style,
     AProgressBar.Min, AProgressBar.Max,
     csDesigning in AProgressBar.ComponentState);
+  QtProgressBar.BeginUpdate;
   QtProgressBar.setValue(AProgressBar.Position);
+  QtProgressBar.EndUpdate;
 end;
 
 class procedure TQtWSProgressBar.SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer);
 begin
+  TQtProgressBar(AProgressBar.Handle).BeginUpdate;
   TQtProgressBar(AProgressBar.Handle).setValue(NewPosition);
+  TQtProgressBar(AProgressBar.Handle).EndUpdate;
 end;
 
 class procedure TQtWSProgressBar.SetStyle(
