@@ -321,27 +321,41 @@ var
 begin
   QtScrollBar := TQtScrollBar(AScrollBar.Handle);	
 
-  QtScrollBar.setPageStep(AScrollBar.PageSize);
-  QtScrollBar.setSingleStep((AScrollBar.PageSize div 6) + 1);
-  QtScrollBar.setRange(AScrollBar.Min, AScrollBar.Max);
-
   QtScrollBar.BeginUpdate;
-  QtScrollBar.setValue(AScrollBar.Position);
-  QtScrollbar.EndUpdate;
-  
-  case AScrollBar.Kind of
-    sbHorizontal:
+  try
+    if (QtScrollBar.getMin <> AScrollBar.Min) or
+      (QtScrollBar.getMax <> AScrollbar.Max) then
+      QtScrollBar.setRange(AScrollBar.Min, AScrollBar.Max);
+    if QtScrollBar.getPageStep <> AScrollBar.PageSize then
     begin
-      QtScrollBar.SetOrientation(QtHorizontal);
-      QtScrollBar.setInvertedAppereance(False);
-      QtScrollBar.setInvertedControls(False);
+      QtScrollBar.setPageStep(AScrollBar.PageSize);
+      QtScrollBar.setSingleStep((AScrollBar.PageSize div 6) + 1);
     end;
-    sbVertical:
-    begin
-      QtScrollBar.SetOrientation(QtVertical);
-      QtScrollBar.setInvertedAppereance(False);
-      QtScrollBar.setInvertedControls(True);
+    if QtScrollbar.getValue <> AScrollBar.Position then
+      QtScrollBar.setValue(AScrollBar.Position);
+
+    case AScrollBar.Kind of
+      sbHorizontal:
+      begin
+        if QtScrollBar.getOrientation <> QtHorizontal then
+          QtScrollBar.SetOrientation(QtHorizontal);
+        if QtScrollBar.getInvertedAppereance then
+          QtScrollBar.setInvertedAppereance(False);
+        if QtScrollbar.getInvertedControls then
+          QtScrollBar.setInvertedControls(False);
+      end;
+      sbVertical:
+      begin
+        if QtScrollBar.getOrientation <> QtVertical then
+          QtScrollBar.SetOrientation(QtVertical);
+        if QtScrollBar.getInvertedAppereance then
+          QtScrollBar.setInvertedAppereance(False);
+        if not QtScrollbar.getInvertedControls then
+          QtScrollBar.setInvertedControls(True);
+      end;
     end;
+  finally
+    QtScrollbar.EndUpdate;
   end;
 end;
 

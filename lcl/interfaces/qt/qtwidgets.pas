@@ -294,6 +294,8 @@ type
     procedure SlotSliderPressed; cdecl;
     procedure SlotSliderReleased; cdecl; virtual;
   public
+    function getInvertedAppereance: Boolean;
+    function getInvertedControls: Boolean;
     function getOrientation: QtOrientation;
     function getValue: Integer;
     function getPageStep: Integer;
@@ -5456,6 +5458,16 @@ begin
   {$endif}
   FSliderPressed := False;
   FSliderReleased := True;
+end;
+
+function TQtAbstractSlider.getInvertedAppereance: Boolean;
+begin
+  Result := QAbstractSlider_invertedAppearance(QAbstractSliderH(Widget));
+end;
+
+function TQtAbstractSlider.getInvertedControls: Boolean;
+begin
+  Result := QAbstractSlider_invertedControls(QAbstractSliderH(Widget));
 end;
 
 function TQtAbstractSlider.getOrientation: QtOrientation;
