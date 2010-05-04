@@ -635,6 +635,16 @@ begin
   if AddChar<>'' then
     Result:=Result+AddChar;
 
+  if CanAddComma
+  and (ilcfNeedsEndComma in IdentList.ContextFlags) then
+  begin
+    Result:=Result+',';
+  end;
+
+  if IdentItem.GetDesc=ctnUseUnit then begin
+    Result:=Result+'.';
+  end;
+
   // add semicolon for statement ends
   if CanAddSemicolon
   and (not (ilcfNoEndSemicolon in IdentList.ContextFlags))
@@ -653,16 +663,6 @@ begin
         inc(CursorToLeft);
       end;
     end;
-  end;
-
-  if CanAddComma
-  and (ilcfNeedsEndComma in IdentList.ContextFlags) then
-  begin
-    Result:=Result+',';
-  end;
-
-  if IdentItem.GetDesc=ctnUseUnit then begin
-    Result:=Result+'.';
   end;
 
   //DebugLn(['GetIdentCompletionValue END Result="',Result,'"']);
