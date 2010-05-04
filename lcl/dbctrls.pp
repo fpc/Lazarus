@@ -561,6 +561,7 @@ Type
     property OnStartDrag;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property TabOrder;
+    property TabStop;
     property Values: TStrings read FValues write SetValues;
     property Visible;
   end;
