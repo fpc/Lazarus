@@ -105,6 +105,7 @@ function FilenameIsFormText(const Filename: string): boolean;
 function SwitchPathDelims(const Filename: string; Switch: TPathDelimSwitch): string;
 function SwitchPathDelims(const Filename: string; Switch: boolean): string;
 function CheckPathDelim(const OldPathDelim: string; out Changed: boolean): TPathDelimSwitch;
+function IsCurrentPathDelim(Switch: TPathDelimSwitch): boolean;
 function ChompEndNumber(const s: string): string;
 
 // file stats
@@ -856,6 +857,13 @@ begin
   end else begin
     Result:=pdsNone;
   end;
+end;
+
+function IsCurrentPathDelim(Switch: TPathDelimSwitch): boolean;
+begin
+  Result:=(Switch in [pdsNone,pdsSystem])
+     or ((Switch=pdsUnix) and (PathDelim='/'))
+     or ((Switch=pdsWindows) and (PathDelim='\'));
 end;
 
 function ChompEndNumber(const s: string): string;

@@ -3998,7 +3998,7 @@ var
   
 begin
   if AFileName='' then exit;
-  //debugln('TProject.OnLoadSaveFilename A "',AFilename,'"');
+  //debugln(['TProject.OnLoadSaveFilename A "',AFilename,'" fPathDelimChanged=',fPathDelimChanged,' Load=',Load]);
   if (not fPathDelimChanged) or (not Load) then begin
     FileWasAbsolute:=FilenameIsAbsolute(AFileName);
   end else begin
@@ -4027,8 +4027,17 @@ begin
     end;
   end;
 
-  if (not Load) then
+  if (not Load) then begin
+    if (not IsCurrentPathDelim(fCurStorePathDelim))
+    and (FilenameIsAbsolute(AFileName))
+    and (ProjectPath<>'') then begin
+      // the lpi file is saved with different pathdelims
+      // this will destroy absolute paths
+      // => force it relative
+      AFileName:=ExtractRelativepath(ProjectPath,AFilename);
+    end;
     AFilename:=SwitchPathDelims(AFileName,fCurStorePathDelim);
+  end;
   //debugln('TProject.OnLoadSaveFilename END "',AFilename,'" FileWasAbsolute=',dbgs(FileWasAbsolute));
 end;
 
