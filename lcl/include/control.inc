@@ -65,9 +65,10 @@ begin
   Include(FControlFlags,cfAutoSizeNeeded);
   if IsControlVisible then
   begin
-    if Parent<>nil then
+    if Parent <> nil then
       Parent.AdjustSize
-    else if not AutoSizeDelayed then
+    else
+    if not AutoSizeDelayed then
       DoAllAutoSize;
   end;
   {$ENDIF}
@@ -1498,10 +1499,10 @@ end;
 {$IFNDEF OldAutoSize}
 function TControl.GetAutoSizingAll: Boolean;
 begin
-  if Parent<>nil then
-    Result:=Parent.AutoSizingAll
+  if Parent <> nil then
+    Result := Parent.AutoSizingAll
   else
-    Result:=fAutoSizingAll;
+    Result := FAutoSizingAll;
 end;
 {$ENDIF}
 
@@ -2460,19 +2461,19 @@ procedure TControl.DoAllAutoSize;
     if not (cfAutoSizeNeeded in AControl.FControlFlags) then exit;
 
     //DebugLn(['TControl.DoAllAutoSize.AutoSizeControl ',DbgSName(AControl),' AutoSize=',AControl.AutoSize,' IsControlVisible=',AControl.IsControlVisible]);
-    Exclude(AControl.FControlFlags,cfAutoSizeNeeded);
+    Exclude(AControl.FControlFlags, cfAutoSizeNeeded);
     if not AControl.IsControlVisible then exit;
 
-    if AControl.AutoSize
-    and (not ((AControl.Parent=nil) and (csDesigning in AControl.ComponentState)))
-    then
+    if AControl.AutoSize and
+       (not ((AControl.Parent = nil) and (csDesigning in AControl.ComponentState))) then
       AControl.DoAutoSize;
-    if AControl is TWinControl then begin
+    if AControl is TWinControl then
+    begin
       // recursive
-      AWinControl:=TWinControl(AControl);
+      AWinControl := TWinControl(AControl);
       //DebugLn(['AutoSizeControl ',DbgSName(AWinControl)]);
       AWinControl.AlignControl(nil);
-      for i:=0 to AWinControl.ControlCount-1 do
+      for i := 0 to AWinControl.ControlCount - 1 do
         AutoSizeControl(AWinControl.Controls[i]);
     end;
   end;
@@ -2483,33 +2484,35 @@ procedure TControl.DoAllAutoSize;
     AWinControl: TWinControl;
     i: Integer;
   begin
-    if AControl=nil then exit(true);
-    Result:=false;
-    if cfAutoSizeNeeded in FControlFlags then begin
+    if AControl = nil then Exit(True);
+    Result := False;
+    if cfAutoSizeNeeded in FControlFlags then
+    begin
       // something has changed => the autosizing must restart
       exit;
     end;
-    if AControl is TWinControl then begin
-      AWinControl:=TWinControl(AControl);
-      for i:=0 to AWinControl.ControlCount-1 do
-        if not CallAllOnResize(AWinControl.Controls[i]) then exit;
+    if AControl is TWinControl then
+    begin
+      AWinControl := TWinControl(AControl);
+      for i := 0 to AWinControl.ControlCount - 1 do
+        if not CallAllOnResize(AWinControl.Controls[i]) then Exit;
     end;
     AControl.Resize;
-    Result:=true;
+    Result := True;
   end;
 
 begin
-  if Parent<>nil then raise Exception.Create('TControl.DoAllAutoSize Parent<>nil');
+  if Parent <> nil then raise Exception.Create('TControl.DoAllAutoSize Parent<>nil');
   if AutoSizingAll then exit;
-  fAutoSizingAll:=true;
+  FAutoSizingAll := True;
   if not (Self is TWinControl) then exit;
   {$IFDEF VerboseAllAutoSize}
   DebugLn(['TControl.DoAllAutoSize START ',DbgSName(Self)]);
   {$ENDIF}
   //writeln(GetStackTrace(true));
   try
-    while (not AutoSizeDelayed)
-    and (cfAutoSizeNeeded in FControlFlags) do begin
+    while not AutoSizeDelayed and (cfAutoSizeNeeded in FControlFlags) do
+    begin
       {$IFDEF VerboseAllAutoSize}
       DebugLn(['TControl.DoAllAutoSize LOOP ',DbgSName(Self),' ',dbgs(BoundsRect)]);
       {$ENDIF}
@@ -2518,7 +2521,7 @@ begin
         CallAllOnResize(Self);
     end;
   finally
-    fAutoSizingAll:=false;
+    FAutoSizingAll := False;
   end;
   {$IFDEF VerboseAllAutoSize}
   DebugLn(['TControl.DoAllAutoSize END ',DbgSName(Self),' ',dbgs(BoundsRect)]);
@@ -3350,15 +3353,15 @@ var
 begin
   if FAlign = Value then exit;
   //DebugLn(['TControl.SetAlign ',DbgSName(Self),' Old=',AlignNames[FAlign],' New=',AlignNames[Value],' ',Anchors<>AnchorAlign[FAlign]]);
-  OldAlign:=FAlign;
+  OldAlign := FAlign;
   FAlign := Value;
   {$IFDEF OldAutoSize}
   fLastAlignedBoundsTried:=0;
   {$ENDIF}
   // if anchors were on default then change them to new default
   // This is done for Delphi compatibility.
-  if (Anchors=AnchorAlign[OldAlign]) and (Anchors<>AnchorAlign[FAlign]) then
-    Anchors:=AnchorAlign[FAlign]
+  if (Anchors = AnchorAlign[OldAlign]) and (Anchors <> AnchorAlign[FAlign]) then
+    Anchors := AnchorAlign[FAlign]
   else
     RequestAlign;
 end;
@@ -3368,8 +3371,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetAnchors(const AValue: TAnchors);
 begin
-  if Anchors=AValue then exit;
-  FAnchors:=AValue;
+  if Anchors = AValue then Exit;
+  FAnchors := AValue;
   {$IFDEF OldAutoSize}
   fLastAlignedBoundsTried:=0;
   RequestAlign;

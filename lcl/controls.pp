@@ -958,7 +958,7 @@ type
     FParentShowHint: Boolean;
     FAutoSize: Boolean;
     {$IFNDEF OldAutoSize}
-    fAutoSizingAll: boolean;
+    FAutoSizingAll: boolean;
     {$ENDIF}
     FAutoSizingSelf: Boolean;
     FEnabled: Boolean;
