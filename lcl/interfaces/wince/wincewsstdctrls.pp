@@ -321,6 +321,21 @@ const
 {$I wincememostrings.inc}
 
 
+function ScrollBarWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+begin
+  case Msg of
+    WM_PAINT,
+    WM_PRINTCLIENT,
+    WM_ERASEBKGND:
+      begin
+        Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+        Exit;
+      end;
+  end;
+  Result := WindowProc(Window, Msg, WParam, LParam);
+end;
+
 { TWinCEWSScrollBar }
 
 class function TWinCEWSScrollBar.CreateHandle(const AWinControl: TWinControl;
@@ -333,13 +348,8 @@ begin
   // customization of Params
   with Params do
   begin
-    case TScrollBar(AWinControl).Kind of
-      sbHorizontal:
-        Flags := Flags or SBS_HORZ;
-      sbVertical:
-        Flags := Flags or SBS_VERT;
-    end;
     pClassName := @ScrollBarClsName;
+    SubClassWndProc := @ScrollBarWindowProc;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
