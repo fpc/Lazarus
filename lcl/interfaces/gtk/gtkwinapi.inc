@@ -2792,6 +2792,8 @@ const
   TabString = '        ';
 var
   DevCtx: TGtkDeviceContext absolute DC;
+  pIndex: Longint;
+  AStr: String;
 
   TM: TTextmetric;
   theRect: TRect;
@@ -2800,6 +2802,7 @@ var
   TempDC: HDC;
   TempPen: HPEN;
   TempBrush: HBRUSH;
+  l: LongInt;
 
   function LeftOffset: Longint;
   begin
@@ -2854,7 +2857,7 @@ var
     if (Flags and DT_SINGLELINE) > 0 then
     begin
       // ignore word and line breaks
-      TextExtentPoint(Str, Count, AP);
+      TextExtentPoint(PChar(AStr), length(AStr), AP);
       theRect.Bottom := theRect.Top + TM.tmHeight;
       if (Flags and DT_CALCRECT)<>0 then
         theRect.Right := theRect.Left +  AP.cX
@@ -2882,10 +2885,10 @@ var
       if (Flags and DT_WORDBREAK) = 0 then
       begin
         // do not break at word boundaries
-        TextExtentPoint(Str, Count, AP);
+        TextExtentPoint(PChar(AStr), length(AStr), AP);
         MaxWidth := AP.cX;
       end;
-      Self.WordWrap(DC, Str, MaxWidth, Lines, NumLines);
+      Self.WordWrap(DC, PChar(AStr), MaxWidth, Lines, NumLines);
 
       if (Flags and DT_CALCRECT)<>0 then
       begin
@@ -2947,31 +2950,13 @@ var
   var
     Points: array[0..1] of TSize;
     LogP: TLogPen;
-    pIndex: Longint;
-    AStr: String;
     LeftPos: Longint;
   begin
-    AStr := Copy(String(theLine), 1, LineLength);
-
-    if (Flags and DT_EXPANDTABS) <> 0 then
-      AStr := StringReplace(AStr, #9, TabString, [rfReplaceAll]);
-
-    if (Flags and DT_NOPREFIX) <> DT_NOPREFIX then
-    begin
-      pIndex := DeleteAmpersands(AStr);
-      if Length(AStr) = 0 then
-        Exit; // String consists of '&' only
-      if pIndex > Length(AStr) then
-        pIndex := -1; // String ended in '&', which was deleted
-    end
-    else
-      pIndex := -1;
-
     if TempBrush = HBRUSH(-1) then
       TempBrush := SelectObject(DC, GetStockObject(NULL_BRUSH));
 
     if LeftOffset <> DT_Left then
-      GetTextExtentPoint(DC, PChar(AStr), Length(AStr), Points[0]);
+      GetTextExtentPoint(DC, theLine, LineLength, Points[0]);
 
     case LeftOffset of
       DT_LEFT:
@@ -2984,10 +2969,10 @@ var
     end;
 
     // Draw line of Text
-    TextUtf8Out(DC, LeftPos, TopPos, PChar(AStr), Length(AStr));
+    TextUtf8Out(DC, LeftPos, TopPos, theLine, LineLength);
 
     // Draw Prefix
-    if pIndex > 0 then
+    if (pIndex > 0) and (pIndex<=LineLength) then
     begin
       // Create & select pen of font color
       if TempPen = HPEN(-1) then
@@ -2999,7 +2984,7 @@ var
       end;
 
       {Get prefix line position}
-      GetTextExtentPoint(DC, PChar(aStr), pIndex - 1, Points[0]);
+      GetTextExtentPoint(DC, theLine, pIndex - 1, Points[0]);
       Points[0].cX := LeftPos + Points[0].cX;
       Points[0].cY := TopPos + tm.tmHeight - TM.tmDescent + 1;
 
@@ -3041,6 +3026,22 @@ begin
       Exit;
     end;
 
+    SetLength(AStr,Count);
+    if Count>0 then
+      System.Move(Str^,AStr[1],Count);
+
+    if (Flags and DT_EXPANDTABS) <> 0 then
+      AStr := StringReplace(AStr, #9, TabString, [rfReplaceAll]);
+
+    if (Flags and DT_NOPREFIX) <> DT_NOPREFIX then
+    begin
+      pIndex := DeleteAmpersands(AStr);
+      if pIndex > Length(AStr) then
+        pIndex := -1; // String ended in '&', which was deleted
+    end
+    else
+      pIndex := -1;
+
     GetTextMetrics(DC, TM);
     DoCalcRect;
     Result := theRect.Bottom - theRect.Top;
@@ -3066,7 +3067,7 @@ begin
     if (Flags and DT_SINGLELINE) = DT_SINGLELINE
     then begin
       //DebugLn(['TGtkWidgetSet.DrawText Draw single line']);
-      DrawLine(Str, Count, theRect.Top);
+      DrawLine(PChar(AStr), length(AStr), theRect.Top);
       Exit; //we're ready
     end;
     
@@ -3084,9 +3085,11 @@ begin
       and (tm.tmHeight > (theRect.Bottom - theRect.Top))
       then Break;
 
-      if Lines[i] <> nil then
-        DrawLine(Lines[i], StrLen(Lines[i]), theRect.Top);
-
+      if Lines[i] <> nil then begin
+        l:=StrLen(Lines[i]);
+        DrawLine(Lines[i], l, theRect.Top);
+        dec(pIndex,l+length(LineEnding));
+      end;
       Inc(theRect.Top, TM.tmDescent + TM.tmHeight);// space between lines
     end;
 
