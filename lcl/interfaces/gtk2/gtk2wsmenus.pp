@@ -506,8 +506,10 @@ const
   begin
     if Flip then
     begin
-      gtk_widget_set_direction(PGtkWidget(AMenuItem.Handle), WidgetDirection[UseRightToLeftAlign]);
-      UpdateInnerMenuItem(AMenuItem, PGtkWidget(AMenuItem.Handle));
+      if AMenuItem.HandleAllocated then begin
+        gtk_widget_set_direction(PGtkWidget(AMenuItem.Handle), WidgetDirection[UseRightToLeftAlign]);
+        UpdateInnerMenuItem(AMenuItem, PGtkWidget(AMenuItem.Handle));
+      end;
     end;
     for i := 0 to AMenuItem.Count -1 do
       Switch(AMenuItem[i], True);
