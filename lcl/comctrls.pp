@@ -2220,7 +2220,6 @@ type
     FTopLvlCount: integer;
     FTopLvlItems: TTreeNodeArray; // root and root siblings
     FUpdateCount: Integer;
-    procedure AddedNode(AValue: TTreeNode);
     procedure ClearCache;
     function GetHandle: THandle;
     function GetNodeFromIndex(Index: Integer): TTreeNode;
@@ -2383,6 +2382,7 @@ type
     FMaxRight: integer; // maximum text width of all nodes (needed for horizontal scrolling)
     fMouseDownX: integer;
     fMouseDownY: integer;
+    FOnAddition: TTVExpandedEvent;
     FOnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent;
     FOnAdvancedCustomDrawItem: TTVAdvancedCustomDrawItemEvent;
     FOnChange: TTVChangedEvent;
@@ -2485,6 +2485,7 @@ type
     FEditor: TEdit;
     class procedure WSRegisterClass; override;
     class function GetControlClassDefaultSize: TPoint; override;
+    procedure Added(Node: TTreeNode); virtual;
     procedure EditorEditingDone(Sender: TObject); virtual;
     procedure EditorKeyDown(Sender: TObject; var Key : Word; Shift : TShiftState); virtual;
     procedure BeginAutoDrag; override;
@@ -2563,6 +2564,7 @@ type
     property Images: TCustomImageList read FImages write SetImages;
     property Indent: Integer read FIndent write SetIndent default 15;
     property Items: TTreeNodes read FTreeNodes write SetTreeNodes;
+    property OnAddition: TTVExpandedEvent read FOnAddition write FOnAddition;
     property OnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent
       read FOnAdvancedCustomDraw write FOnAdvancedCustomDraw;
     property OnAdvancedCustomDrawItem: TTVAdvancedCustomDrawItemEvent
@@ -2708,6 +2710,7 @@ type
     property Tag;
     property ToolTips;
     property Visible;
+    property OnAddition;
     property OnAdvancedCustomDraw;
     property OnAdvancedCustomDrawItem;
     property OnChange;

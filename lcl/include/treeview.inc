@@ -1627,6 +1627,7 @@ var
   NewExpanded: boolean;
   OldInfo: TOldTreeNodeInfo;
   Info: TTreeNodeInfo;
+  Node: TTreeNode;
 begin
   if Owner<>nil then Owner.ClearCache;
   if StreamVersion=TTreeNodeWithPointerStreamVersion then
@@ -1657,8 +1658,11 @@ begin
   if FText<>'' then
     Stream.Read(FText[1],length(FText));
   if Owner<>nil then begin
-    for I := 0 to ItemCount - 1 do
-      Owner.AddChild(Self, '').ReadData(Stream, StreamVersion);
+    for I := 0 to ItemCount - 1 do begin
+      Node:=Owner.AddChild(Self, '');
+      Node.ReadData(Stream, StreamVersion);
+      Owner.Owner.Added(Node);
+    end;
   end;
   Expanded := NewExpanded;
 end;
@@ -1975,14 +1979,6 @@ begin
   Result := InternalAddObject(ParentNode, S, Data, taAdd);
 end;
 
-procedure TTreeNodes.AddedNode(AValue: TTreeNode);
-begin
-  if AValue <> nil then begin
-    AValue.HasChildren := True;
-    Repaint(AValue);
-  end;
-end;
-
 function TTreeNodes.Insert(NextNode: TTreeNode; const S: string): TTreeNode;
 begin
   Result := InsertObject(NextNode, S, nil);
@@ -2047,6 +2043,8 @@ begin
     Result.InternalMove(Node,AddMode);
     if (Owner<>nil) and Owner.AutoExpand and (Result.Parent<>nil) then
       Result.Parent.Expanded:=true;
+    if (Owner<>nil) and (not (csReading in Owner.ComponentState)) then
+      Owner.Added(Result);
     if (FUpdateCount=0) and (Owner<>nil) then
       Owner.Invalidate;
     ok:=true;
@@ -5104,6 +5102,11 @@ end;
 class function TCustomTreeView.GetControlClassDefaultSize: TPoint;
 begin
   Result := Point(121, 97);
+end;
+
+procedure TCustomTreeView.Added(Node: TTreeNode);
+begin
+  if Assigned(OnAddition) then OnAddition(Self,Node);
 end;
 
 { CustomDraw support }

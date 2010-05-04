@@ -984,14 +984,14 @@ function ParseFPCVerbose(List: TStrings; out UnitPaths: TStrings;
 
   procedure UndefineSymbol(const UpperName: string);
   begin
-    DebugLn(['UndefineSymbol ',UpperName]);
+    //DebugLn(['UndefineSymbol ',UpperName]);
     Defines.Remove(UpperName);
     Undefines[UpperName]:='';
   end;
 
   procedure DefineSymbol(const UpperName, Value: string);
   begin
-    DebugLn(['DefineSymbol ',UpperName]);
+    //DebugLn(['DefineSymbol ',UpperName]);
     Undefines.Remove(UpperName);
     Defines[UpperName]:=Value;
   end;
