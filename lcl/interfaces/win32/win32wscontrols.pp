@@ -131,7 +131,7 @@ type
 // TODO: better names?
 
 procedure PrepareCreateWindow(const AWinControl: TWinControl;
-  const CreateParams: TCreateParams; var Params: TCreateWindowExParams);
+  const CreateParams: TCreateParams; out Params: TCreateWindowExParams);
 procedure FinishCreateWindow(const AWinControl: TWinControl; var Params: TCreateWindowExParams;
   const AlternateCreateWindow: boolean; SubClass: Boolean = False);
 procedure WindowCreateInitBuddy(const AWinControl: TWinControl;
@@ -148,7 +148,7 @@ uses
 { Global helper routines }
 
 procedure PrepareCreateWindow(const AWinControl: TWinControl;
-  const CreateParams: TCreateParams; var Params: TCreateWindowExParams);
+  const CreateParams: TCreateParams; out Params: TCreateWindowExParams);
 begin
   with Params do
   begin
