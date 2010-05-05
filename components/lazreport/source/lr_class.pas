@@ -9392,7 +9392,7 @@ begin
         frGetDataSetAndField(lrGetUnBrackedStr(p1), DataSet, Field);
     end;
       
-    if (DataSet <> nil) and AggrBand.Visible then
+    if (DataSet <> nil) and (Field <> nil) and AggrBand.Visible then
     begin
       min := 1e200; max := -1e200; sum := 0; count := 0; avg := 0;
       BM:=DataSet.GetBookMark;
@@ -9434,7 +9434,7 @@ begin
       end;
       val := d;
     end
-    else if DataSet = nil then
+    else if (DataSet = nil) or (Field = nil) then
     begin
       s1 := Trim(string(p2));
       if s1 = '' then
