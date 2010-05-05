@@ -3424,13 +3424,17 @@ begin
        if ALCLObject is TCustomMemo then
          ConnectSenderSignal(gCore, 'changed', @gtkchanged_editbox)
        else if ALCLObject is TCustomCheckbox then
+       begin
          ConnectSenderSignal(gObject, 'toggled', @gtktoggledCB)
      {$IFDEF GTK2}
        // in gtk2 callback signal of SpinEdit is 'value-changed' (in gtk1- 'changed')
-       else if ALCLObject is TCustomFloatSpinEdit then
-         ConnectSenderSignal(gObject, 'value-changed', @gtkchanged_editbox)
+       end else
+       if ALCLObject is TCustomFloatSpinEdit then
+       begin
+         ConnectSenderSignalAfter(gObject, 'changed', @gtkchanged_spinbox);
+         ConnectSenderSignal(gObject, 'value-changed', @gtkchanged_editbox);
      {$ENDIF}
-       else
+       end else
        begin
          {$IFDEF VerboseTWinControlRealText}
          ConnectSenderSignalAfter(gObject, 'changed', @gtkchanged_editbox);

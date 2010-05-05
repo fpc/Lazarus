@@ -492,6 +492,14 @@ begin
 end;
 
 {$IFDEF GTK2}
+function gtkchanged_spinbox(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+begin
+  Result := CallBackDefaultReturn;
+  if LockOnChange(PgtkObject(Widget),0) > 0 then exit;
+  if GTK_IS_SPIN_BUTTON(Widget) then
+    gtk_spin_button_update(PGtkSpinButton(Widget));
+end;
+
 function gtkchanged_editbox_backspace(widget: PGtkWidget;
   data: gPointer): GBoolean; cdecl;
 var
