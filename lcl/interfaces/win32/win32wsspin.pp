@@ -80,7 +80,7 @@ uses
   SysUtils;
 { TWin32WSCustomFloatSpinEdit }
 
-function GetBuddyWindow(AHandle: HWND): HWND;
+function GetBuddyWindow(AHandle: HWND): HWND; inline;
 begin
   Result := SendMessage(AHandle, UDM_GETBUDDY, 0, 0)
 end;
@@ -92,6 +92,8 @@ var
 begin
   // before generic window proc
   case Msg of
+    UDM_GETBUDDY:
+      Exit(CallDefaultWindowProc(Window, Msg, WParam, LParam));
     WM_DESTROY:
     begin
       BuddyWindow := GetBuddyWindow(Window);
@@ -271,7 +273,7 @@ begin
   // reattach
   Windows.SendMessage(WinHandle, UDM_SETBUDDY, BuddyHandle, 0);
 }
-  BuddyHandle := Windows.SendMessage(WinHandle, UDM_GETBUDDY, 0, 0);
+  BuddyHandle := GetBuddyWindow(WinHandle);
 
   GetWindowRect(WinHandle, @R);
   WindowWidth := R.Right - R.Left;
