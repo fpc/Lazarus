@@ -125,6 +125,7 @@ var
   var
     ClientBoundRect: TRect;
     PaintMsg: TLMPaint absolute Message;
+    Point: TPoint;
   begin
     // the LCL creates paint messages, with a DC origin set to the client
     // origin of the emitting control. The paint handler of win32 expects the
@@ -133,13 +134,23 @@ var
     ClientBoundRect:= Classes.Rect(0,0,0,0);
     if Sender is TWinControl then
       if not GetClientBounds(Handle,ClientBoundRect) then exit;
-    MoveWindowOrgEx(PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top);
+
+    {$ifdef DEBUG_WINDOW_ORG}
+    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+      Format(':> [TWinCEWidgetSet.CallDefaultWndHandler] Sender=%s DC=%d DX=%d DY=%d',
+      [TControl(Sender).Name, PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top]));
+    {$endif}
+
+    GetWindowOrgEx(PaintMsg.DC, @Point);
+    SetWindowOrgEx(PaintMsg.DC, 0, 0, nil);
+//    MoveWindowOrgEx(PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top);
     try
       // call wince paint handler
       CallDefaultWindowProc(Handle, WM_PAINT, PaintMsg.DC, 0);
     finally
       // restore DC origin
-      MoveWindowOrgEx(PaintMsg.DC, ClientBoundRect.Left, ClientBoundRect.Top);
+//      MoveWindowOrgEx(PaintMsg.DC, ClientBoundRect.Left, ClientBoundRect.Top);
+      SetWindowOrgEx(PaintMsg.DC, Point.X, Point.Y, nil);
     end;
   end;
 
@@ -1120,7 +1131,7 @@ end;}
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.ExcludeClipRect(dc: hdc;  Left, Top, Right, Bottom: Integer): Integer;
 begin
-  Result := Windows.ExcludeClipRect(dc, Left, Top, Right, Bottom);
+//  Result := Windows.ExcludeClipRect(dc, Left, Top, Right, Bottom);
 end;
 
 {------------------------------------------------------------------------------
@@ -1371,7 +1382,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
 begin
-  Result := Windows.GetClipBox(DC, Windows.LPRECT(lpRect));
+//  Result := Windows.GetClipBox(DC, Windows.LPRECT(lpRect));
 end;
 
 {------------------------------------------------------------------------------
@@ -1391,7 +1402,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN) : Integer;
 begin
-  Result := Windows.GetClipRGN(DC, RGN);
+//  Result := Windows.GetClipRGN(DC, RGN);
 end;
 
 {function TWinCEWidgetSet.GetCmdLineParamDescForInterface: string;
@@ -1416,11 +1427,20 @@ end;
 function TWinCEWidgetSet.GetDC(HWnd: HWND): HDC;
 var
   ORect: TRect;
+  {$ifdef DEBUG_WINDOW_ORG}
+  lControl: TControl;
+  {$endif}
 begin
   Assert(False, Format('Trace:> [TWinCEWidgetSet.GetDC] HWND: 0x%x', [HWnd]));
   Result := Windows.GetDC(HWnd);
-  if (Result<>0) and (HWnd<>0)
-  and GetLCLClientBoundsOffset(HWnd, ORect) then begin
+  if (Result<>0) and (HWnd<>0) and GetLCLClientBoundsOffset(HWnd, ORect) then
+  begin
+    {$ifdef DEBUG_WINDOW_ORG}
+    lControl := TControl(LCLIntf.GetLCLOwnerObject(HWnd));
+    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+      Format(':> [TWinCEWidgetSet.GetDC] Name=%s DC=%d', [lControl.Name, Result]));
+    {$endif}
+
     MoveWindowOrgEx(Result, ORect.Left, ORect.Top);
   end;
   Assert(False, Format('Trace:< [TWinCEWidgetSet.GetDC] Got 0x%x', [Result]));
@@ -2188,7 +2208,7 @@ end;
 function TWinCEWidgetSet.IntersectClipRect(dc: hdc;
   Left, Top, Right, Bottom: Integer): Integer;
 begin
-  Result := Windows.IntersectClipRect(DC, Left, Top, Right, Bottom);
+//  Result := Windows.IntersectClipRect(DC, Left, Top, Right, Bottom);
 end;
 
 {------------------------------------------------------------------------------
@@ -2299,12 +2319,7 @@ begin
   Assert(False, Format('Trace:< [TWinCEWidgetSet.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
 
-{function TWinCEWidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
-begin
-  Result:=inherited MoveWindowOrgEx(DC, dX, dY);
-end;
-
-function TWinCEWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
+{function TWinCEWidgetSet.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled, Continuous: boolean): boolean;
 begin
   Result:=inherited PolyBezier(DC, Points, NumPts, Filled, Continuous);
@@ -2610,7 +2625,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
 begin
-  Result := Windows.SelectClipRGN(DC, RGN);
+//  Result := Windows.SelectClipRGN(DC, RGN);
 end;
 
 {------------------------------------------------------------------------------

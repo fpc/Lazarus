@@ -567,12 +567,20 @@ end;
 
 function TWidgetSet.MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;
 var
-  P : TPoint;
+  P: TPoint;
+  lResult: Integer;
 Begin
-  if GetWindowOrgEx(dc, @P) <> 0 then
+  lResult := GetWindowOrgEx(dc, @P);
+  if lResult <> 0 then
     Result:=SetWindowOrgEx(dc, P.x-dX, P.y-dY, @P)
   else
     Result := False;
+
+  {$ifdef DEBUG_WINDOW_ORG}
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+    Format(':> [TWidgetSet.MoveWindowOrgEx] DC=%d P.x=%d P.y=%d dx=%d dy=%d lResult=%d Result=%d',
+    [DC, P.x, P.y, dx, dy, lResult, Integer(Result)]));
+  {$endif}
 end;
 
 function TWidgetSet.PromptUser(const DialogCaption, DialogMessage : String;

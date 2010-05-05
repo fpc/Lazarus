@@ -130,7 +130,7 @@ type
     UserData: PtrInt;
     OnEvent: TWaitHandleEvent;
   end;
-  
+
   TSocketEvent = function(ASocket: THandle; Flags: dword): Integer of object;
 
   { WinCE interface-object class }
@@ -250,7 +250,6 @@ function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 
 var
   WinCEWidgetSet: TWinCEWidgetSet;
-
 
 Implementation
 

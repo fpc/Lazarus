@@ -4656,6 +4656,13 @@ begin
             if csPaintCopy in Self.ControlState then
               Include(FControlState, csPaintCopy);
             SaveIndex := SaveDC(DC);
+
+            {$ifdef DEBUG_WINDOW_ORG}
+            DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+              Format(':> [TWinControl.PaintControls] Control=%s Left=%d Top=%d Width=%d Height=%d',
+              [Self.Name, Left, Top, Width, Height]));
+            {$endif}
+
             MoveWindowOrg(DC, Left, Top);
             {$IFDEF VerboseControlDCOrigin}
             DebugLn('TWinControl.PaintControls B Self=',DbgSName(Self),' Control=',DbgSName(TempControl),' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));

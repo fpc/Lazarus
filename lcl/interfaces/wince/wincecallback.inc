@@ -465,6 +465,13 @@ Var
 {$endif}
         // tabpage parent and got a dc to draw in, divert paint to parent
         DCIndex := Windows.SaveDC(PaintMsg.DC);
+
+        {$ifdef DEBUG_WINDOW_ORG}
+        DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+          Format(':> [SendPaintMessage 1] Control=%s DC=%d DX=%d DY=%d',
+          [lWinControl.Name, PaintMsg.DC, -parLeft, -parTop]));
+        {$endif}
+
         MoveWindowOrgEx(PaintMsg.DC, -parLeft, -parTop);
         Windows.SendMessageW(ParentPaintWindow, WM_PAINT, Windows.WParam(PaintMsg.DC), 0);
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
@@ -472,6 +479,13 @@ Var
       if (ControlDC = 0) or not needParentPaint then
       begin
         DCIndex := Windows.SaveDC(PaintMsg.DC);
+
+        {$ifdef DEBUG_WINDOW_ORG}
+        DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+          Format(':> [SendPaintMessage 2] Control=%s DC=%d DX=%d DY=%d',
+          [lWinControl.Name, PaintMsg.DC, ORect.Left, ORect.Top]));
+        {$endif}
+
         MoveWindowOrgEx(PaintMsg.DC, ORect.Left, ORect.Top);
 {$ifdef DEBUG_DOUBLEBUFFER}
         Windows.GetClipBox(PaintMsg.DC, ClipBox);
@@ -515,6 +529,13 @@ Var
   procedure SendParentPaintMessage(Window, Parent: HWND; ControlDC: HDC);
   begin
     GetWin32ControlPos(Window, Parent, P.X, P.Y);
+
+    {$ifdef DEBUG_WINDOW_ORG}
+    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+      Format(':> [SendParentPaintMessage] DC=%d DX=%d DY=%d',
+      [ControlDC, P.X, P.Y]));
+    {$endif}
+
     MoveWindowOrgEx(ControlDC, -P.X, -P.Y);
     SendPaintMessage(ControlDC);
     MoveWindowOrgEx(ControlDC, P.X, P.Y);
@@ -970,17 +991,6 @@ begin
   Assert(False, 'Trace:WindowProc - Getting Object with Callback Procedure');
   WindowInfo := GetWindowInfo(Window);
 
-//----------------------------------------
-//roozbeh added for testing paint messages
-//----------------------------------------
-
-  if WindowInfo^.myButton<> 0 then
-  begin
-  if Msg = WM_PAINT then
-  begin
-   //    CallDefaultWindowProc(Window, Msg, WParam, LParam);
-  end;
-  end;
 //----------------------------------------
 //roozbeh added for testing paint messages
 //----------------------------------------

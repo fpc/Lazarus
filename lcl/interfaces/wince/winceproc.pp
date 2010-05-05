@@ -955,9 +955,9 @@ begin
   Result:=false;
   if (Sender = nil) or (not (Sender is TWinControl)) then exit;
   TheWinControl:=TWinControl(Sender);
+  FillChar(ORect, SizeOf(ORect), 0);
   if not TheWinControl.HandleAllocated then exit;
   Handle := TheWinControl.Handle;
-  FillChar(ORect, SizeOf(ORect), 0);
   if TheWinControl is TScrollingWinControl then
     with TScrollingWinControl(TheWinControl) do
     begin
@@ -992,6 +992,7 @@ begin
       have fallback to GetSystemMetrics if it doesn't work.
       Also careful that SM_CYSMCAPTION returns 0 on the emulator }
     if ORect.Top = 0 then ORect.Top := GetSystemMetrics(SM_CYCAPTION);
+    if ORect.Top = 0 then ORect.Top := 2;
     // add the left, right and bottom frame borders
     ORect.Left := 2;
     ORect.Right := -2;
@@ -999,13 +1000,19 @@ begin
   end else
   if TheWinControl is TCustomNoteBook then
   begin
-    // Can't use complete client rect in win32 interface, top part contains the tabs
+    // Can't use complete client rect in wince interface, bottom part contains the tabs
     Windows.GetClientRect(Handle, @ARect);
     ORect := ARect;
     Windows.SendMessage(Handle, TCM_AdjustRect, 0, LPARAM(@ORect));
     Dec(ORect.Right, ARect.Right);
     Dec(ORect.Bottom, ARect.Bottom);
   end;
+
+  {$ifdef DEBUG_WINDOW_ORG}
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+    Format('GetLCLClientBoundsOffset Name=%s OLeft=%d OTop=%d ORight=%d OBottom=%d ORight=%d OBottom=%d',
+     [TheWinControl.Name, ORect.Left, ORect.Top, ORect.Right, ORect.Bottom, ARect.Right, ARect.Bottom]));
+  {$endif}
 
   Result := True;
 end;
