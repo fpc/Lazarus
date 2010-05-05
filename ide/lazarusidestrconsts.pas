@@ -1322,7 +1322,7 @@ resourcestring
   dlgMouseOptBtnAdd  = 'Add';
   dlgMouseOptBtnImport = 'Import';
   dlgMouseOptBtnExport = 'Export';
-  dlgMouseOptBtnOk  = 'Ok';
+  dlgMouseOptBtnOk  = 'OK';
   lisDoNotShowThisMessageAgain = 'Do not show this message again';
   dlgMouseOptBtnCancel  = 'Cancel';
   dlgMouseOptBtnModDef = 'Make Fallback';
