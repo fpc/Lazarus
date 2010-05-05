@@ -1567,7 +1567,7 @@ begin
   FillByte(Indent,SizeOf(Indent),0);
 
   CleanPos:=FindStartOfAtom(Source,CleanPos);
-  DebugLn(['TFullyAutomaticBeautifier.GetIndent ']);
+  //DebugLn(['TFullyAutomaticBeautifier.GetIndent ']);
   if CleanPos<1 then exit;
 
   if UseLineStart and (InsertText='') then begin
