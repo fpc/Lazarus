@@ -126,7 +126,6 @@ var
   Features: QStyleOptionButtonButtonFeatures;
   Position: QStyleOptionHeaderSectionPosition;
   Palette: QPaletteH;
-  AColor: TQColor;
   ABrush: QBrushH;
   Widget: QWidgetH;
   AViewportPaint: Boolean;
