@@ -13,6 +13,7 @@ unit fEditBook;
 
 { TODO : figure out what's wrong with the mru list - with multiple windows }
 {$DEFINE mru} //problems with MRU list???
+{$DEFINE DockSite}
 
 interface
 
@@ -51,6 +52,9 @@ type
 *)
 {$IFDEF dockSite}
   TEditBook = class(TCustomDockSite)
+{$ELSE}
+  TEditBook = class(TForm)
+{$ENDIF}
   protected
     FEdit: TEditPages;
   public
@@ -59,19 +63,8 @@ type
     function  AddFile(const AName: string): boolean; //virtual;
     procedure LoadFromStream(strm: TStream); override;
     procedure SaveToStream(strm: TStream); override;
+    property Pages: TEditPages read FEdit;
   end;
-{$ELSE}
-  TEditBook = class(TForm)
-  protected
-    FEdit: TEditPages;
-  public
-    constructor Create(TheOwner: TComponent); override;
-    function  OpenFile(const AName: string): boolean; //virtual;
-    function  AddFile(const AName: string): boolean; //virtual;
-    procedure LoadFromStream(strm: TStream); //override;
-    procedure SaveToStream(strm: TStream); //override;
-  end;
-{$ENDIF}
 
 const
   EditBookID = CustomDockSiteID + 1;
@@ -96,6 +89,7 @@ begin
   FEdit.Visible := True;
   FEdit.DragMode := dmManual; //disallow undocking
   FEdit.StayDocked := True;
+//problem: what happens with additional dock clients, when the last page is closed?
   DockMaster.AddElasticSites(self, [alLeft, alRight, alBottom]);
 end;
 

@@ -7,7 +7,6 @@ inherited EasyDockBook: TEasyDockBook
   ClientHeight = 300
   ClientWidth = 400
   DockSite = True
-  DragKind = dkDock
   OnClose = FormClose
   OnCreate = FormCreate
   OnDockDrop = FormDockDrop

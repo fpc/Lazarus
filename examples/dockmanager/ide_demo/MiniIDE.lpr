@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, LResources, fminiide, EasyDockMgr, fclientform, fEditBook
+  Forms, fminiide, EasyDockMgr, fclientform, fEditBook
   { you can add units after this };
 
 {$IFDEF WINDOWS}{.$R MiniIDE.rc}{$ENDIF}

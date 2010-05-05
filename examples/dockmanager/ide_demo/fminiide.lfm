@@ -1,10 +1,10 @@
 object MainBar: TMainBar
-  Left = 248
+  Left = 252
   Height = 66
-  Top = 113
+  Top = 121
   Width = 400
   Caption = 'MainBar'
-  ClientHeight = 47
+  ClientHeight = 46
   ClientWidth = 400
   Menu = MainMenu1
   OnCreate = FormCreate

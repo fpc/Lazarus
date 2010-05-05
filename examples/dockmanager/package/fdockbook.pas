@@ -98,9 +98,9 @@ type
     Tabs: TTabs;
     CurTab: TTabButton;
   protected
-    function GetFloatingDockSiteClass: TWinControlClass; override;
-    function GetDefaultDockCaption: string; override;
-    function GetControlTab(AControl: TControl): TTabButton;
+    function  GetFloatingDockSiteClass: TWinControlClass; override;
+    function  GetDefaultDockCaption: string; override;
+    function  GetControlTab(AControl: TControl): TTabButton;
     procedure AfterUndock(tabidx: integer); virtual;
   public
   {$IFDEF undockFix}
@@ -109,6 +109,8 @@ type
   {$IFDEF closeFix}
     destructor Destroy; override;
   {$ENDIF}
+    procedure LoadFromStream(strm: TStream); override;
+    procedure SaveToStream(strm: TStream); override;
   end;
 
 //procedure Register;
@@ -204,7 +206,10 @@ end;
 procedure TEasyDockBook.FormCreate(Sender: TObject);
 begin
   Tabs := TTabs.Create(self);
-  Visible := True;
+//also this?
+  DragKind := dkDock;
+  DragMode := dmAutomatic;
+  Visible := True; //immediately?
 end;
 
 procedure TEasyDockBook.FormDockDrop(Sender: TObject; Source: TDragDockObject;
@@ -241,7 +246,7 @@ procedure TEasyDockBook.FormGetSiteInfo(Sender: TObject; DockClient: TControl;
 begin
 //override TCustomForm behaviour!
   CanDock := True;
-  InfluenceRect := ScreenRect(pnlDock);
+  InfluenceRect := ScreenRect(pnlDock); //exclude eventual elastic sites
 end;
 
 procedure TEasyDockBook.FormUnDock(Sender: TObject; Client: TControl;
@@ -319,12 +324,16 @@ We can be either:
     Caption := GetDefaultDockCaption;
   end else if not StayDocked then begin
   //last tab removed - close ONLY if we are docked or floating
-    if (Parent = nil) then begin
+  //and if we have no other controls (elastic sites!) - detect how?
+    if (Parent = nil) and (DragKind = dkDock)
+    //and (ControlCount <= 1)
+    then begin
     //we are floating
       Release;
       exit;
     end else if (HostDockSite <> nil) then begin //may be cleared already???
-      ManualDock(nil);  //undock before closing
+      Visible := False;
+      ManualDock(nil);  //undock before closing?
       Release;
       exit;
     end;
@@ -379,23 +388,38 @@ begin
     Result:= TFloatingSite;
 end;
 
-{$IFDEF new}
 procedure TEasyDockBook.LoadFromStream(strm: TStream);
+var
+  i, n: integer;
+  ctl: TControl;
+  cn: string;
 begin
-(*
-*)
-  inherited LoadFromStream(strm);
+  if False then inherited LoadFromStream(strm);
+  n := strm.ReadByte;
+  for i := 1 to n do begin
+    cn := strm.ReadAnsiString;
+    ctl := DockLoader.ReloadControl(cn, self);
+    if ctl <> nil then
+      ctl.ManualDock(self); //orientation???
+    //make visible?
+  end;
 end;
 
 procedure TEasyDockBook.SaveToStream(strm: TStream);
+var
+  i, n: integer;
+  ctl: TControl;
+  s: string;
 begin
-(* Save docked pages, residing in?
-*)
-  if false then inherited SaveToStream(strm);
-  ...
+  if False then inherited SaveToStream(strm);
+  n := DockClientCount;
+  strm.WriteByte(n);
+  for i := 0 to n-1 do begin
+    ctl := DockClients[i];
+    s := DockLoader.SaveControl(ctl, self);
+    strm.WriteAnsiString(s);
+  end;
 end;
-{$ELSE}
-{$ENDIF}
 
 procedure TEasyDockBook.ToolButton1Click(Sender: TObject);
 var

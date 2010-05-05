@@ -402,7 +402,7 @@ var
       host.BoundsRect := SiteRec.Bounds;
       Result.BoundsRect := SiteRec.Extent;
       Result.AutoExpand := SiteRec.AutoExpand;
-      Result.EnableAlign;
+      //Result.EnableAlign; ???
       Result.Visible := True;
       exit;
     end;

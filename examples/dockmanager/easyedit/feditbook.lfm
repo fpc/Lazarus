@@ -1,7 +1,8 @@
 inherited EditBook: TEditBook
-  Left = 670
-  Top = 115
+  Left = 464
+  Top = 175
   Caption = 'EditBook'
+  DragKind = dkDock
   OnActivate = FormActivate
   OnClose = FormClose
 end

@@ -212,6 +212,7 @@ type
   protected //added
     function  FindControlZone(zone: TEasyZone; Control: TControl): TEasyZone;
     procedure RemoveZone(Zone: TEasyZone);
+    procedure MakeVisible(ctl: TControl);
   //Lazarus extension
   private
     FHeader: TEasyDockHeader;
@@ -1165,8 +1166,10 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
   begin
     Stream.Read(ZoneRec, SizeOf(ZoneRec));
     Result := ZoneRec.Level;
-    if Result > 0 then
+    if Result > 0 then begin
       ZoneName := Stream.ReadAnsiString;
+      DockLoader.IdToRec(ZoneName);
+    end;
   //debug
     if Result > 0 then
       DebugLn('reload %s @%d [%d,%d]', [ZoneName, Result, ZoneRec.BottomRight.x, ZoneRec.BottomRight.y])
@@ -1209,15 +1212,15 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
         if NewCtl = nil then begin
         //debug: create some control
           NewCtl := TPanel.Create(DockSite);
-          TryRename(NewCtl, ZoneName);
+          TryRename(NewCtl, DockLoader.ControlDescriptor.Name);   // ZoneName);
         end;
         if NewCtl <> nil then begin
-          NewCtl.Visible := True;
           NewZone.ChildControl := NewCtl;
           SetReplacingControl(NewCtl); //prevent DockManager actions
           NewCtl.ManualDock(DockSite);
           NewCtl.Width := ZoneRec.BottomRight.x;
           NewCtl.Height := ZoneRec.BottomRight.y;
+          NewCtl.Visible := True;
         end;
       {$IFDEF oldOrient}
       {$ELSE}
@@ -1252,6 +1255,8 @@ begin
 //remove all leafs without a child control?
 //refresh the site
   ResetBounds(True);
+//assure everything is visible
+  MakeVisible(FDockSite);
 end;
 
 function TEasyTree.ReloadDockedControl(const AName: string): TControl;
@@ -1533,6 +1538,14 @@ begin
 //update zone, here simply the whole dock site
   FSplitter.Hide;
   DockSite.Invalidate;
+end;
+
+procedure TEasyTree.MakeVisible(ctl: TControl);
+begin
+  while assigned(ctl) do begin
+    ctl.Visible := True;
+    ctl := ctl.Parent;
+  end;
 end;
 
 { TEasyZone }

@@ -22,6 +22,8 @@ uses
 
 type
   TEditPage = class(TSynEdit)
+  protected
+    function  GetFloatingDockSiteClass: TWinControlClass; override;
   public
     FileName: string;
     procedure LoadFile(const AName: string);
@@ -52,7 +54,7 @@ uses
 constructor TEditBook.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  DockMaster.AddElasticSites(self, [alLeft, alRight, alBottom]);
+  //DockMaster.AddElasticSites(self, [alLeft, alRight, alBottom]);
 end;
 
 procedure TEditBook.FormActivate(Sender: TObject);
@@ -106,6 +108,12 @@ begin
 end;
 
 { TEditPage }
+
+function TEditPage.GetFloatingDockSiteClass: TWinControlClass;
+begin
+  //Result:=inherited GetFloatingDockSiteClass;
+  Result := TEditBook; //try auto-wrap
+end;
 
 procedure TEditPage.LoadFile(const AName: string);
 begin
