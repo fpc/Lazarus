@@ -426,6 +426,7 @@ class procedure TWinCEWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
   const AChild: TCustomPage; const AIndex: integer);
 var
   TCI: TC_ITEM;
+  WideStr: widestring;
 begin
   with ANotebook do
   begin
@@ -436,13 +437,13 @@ begin
       // store object as extra, so we can verify we got the right page later
       TCI.lParam := PtrUInt(AChild);
       TCI.iImage := ANotebook.GetImageIndex(NotebookPageRealToLCLIndex(ANotebook, AIndex));
+      WideStr := UTF8Decode(AChild.Caption);
       {$ifdef Win32}
-      TCI.pszText := PChar(PWideChar(UTF8Decode((AChild.Caption))));
+      TCI.pszText := PChar(PWideChar(WideStr));
       {$else}
-      TCI.pszText := PWideChar(UTF8Decode(AChild.Caption));
+      TCI.pszText := PWideChar(WideStr);
       {$endif}
       Windows.SendMessageW(Handle, TCM_INSERTITEMW, AIndex, LPARAM(@TCI));
-      FreeMem(TCI.pszText);
     end;
     // clientrect possible changed, adding first tab, or deleting last
     // windows should send a WM_SIZE message because of this, but it doesn't
