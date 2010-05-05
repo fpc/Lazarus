@@ -3777,33 +3777,7 @@ dmFindTarget: find child control under the mouse
         <short/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TControl">
-        <short>
-          <var>TControl</var> - the main ancestor class for visual controls.</short>
-        <descr>
-          <p>
-            <var>TControl</var>
-
- is the main ancestor class for all visual controls.</p>
-          <p>The definition includes a large number of constants, types and methods that are inherited by derived classes and types.</p>
-          <p>These include devices for defining and controlling: </p>
-          <ul>
-            <li>the state and position of the object (including alignment and anchoring),</li>
-            <li>the state of the mouse, </li>
-            <li>whether dragging or docked, </li>
-            <li>the size and type of border,</li>
-            <li>the way child components should behave, </li>
-            <li>the actions to be taken in response to various events, </li>
-            <li>and the way the Control should be drawn.</li>
-          </ul>
-          <p>Properties defined here can be overridden by descendant classes.</p>
-        </descr>
-        <seealso>
-          <link id="#lcl.lclClasses.TLCLComponent"/>
-          <link id="#rtl.Classes.TComponent"/>
-          <link id="TWinControl"/>
-        </seealso>
-      </element>
+      <element name="TControl"/>
       <!-- variable Visibility: private -->
       <element name="TControl.FActionLink">
         <short/>
@@ -8234,11 +8208,7 @@ Reads message from flag area, or stores a message
         </descr>
       </element>
       <!-- property Visibility: published -->
-      <element name="TControl.Top">
-        <short>
-          <var>Top</var>
- - the coordinates of the top edge of the control</short>
-      </element>
+      <element name="TControl.Top"/>
       <!-- property Visibility: published -->
       <element name="TControl.Width">
         <short>
@@ -11771,7 +11741,7 @@ WinControls are found before Controls (if overlapping).</descr>
         <short/>
       </element>
       <!-- procedure Visibility: public -->
-      <element link="#LCL.Controls.TControl.Invalidate" name="TWinControl.Invalidate">
+      <element name="TWinControl.Invalidate">
         <short/>
         <descr/>
         <errors/>

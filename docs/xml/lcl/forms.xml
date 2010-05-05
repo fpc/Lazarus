@@ -3864,20 +3864,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- object Visibility: default -->
       <element name="TForm">
-        <short>
-          <var>Form</var> - the fundamental visual object that appears in every application with a Graphical User Interface.</short>
-        <descr>
-          <p>Form - the fundamental visual object that appears in every GUI application.</p>
-          <p>Most of the properties are inherited from the ancestors</p>
-        </descr>
         <errors/>
-        <seealso>
-          <link id="TCustomForm"/>
-          <link id="TScrollingWinControl"/>
-          <link id="#lcl.Controls.TCustomControl">TCustomControl</link>
-          <link id="#lcl.Controls.TWinControl"/>
-          <link id="#lcl.Controls.TControl"/>
-        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TForm.FClientHandle">

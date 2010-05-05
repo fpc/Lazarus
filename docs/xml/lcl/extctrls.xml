@@ -5826,22 +5826,9 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TPanel">
-        <short>
-          <var>TPanel</var>: A defined rectangular area of the form into which other components can be placed</short>
-        <descr>
-          <p>
-            <var>TPanel</var>: A defined rectangular area of the form into which other components can be placed to group them functionally and geographically</p>
-          <p>Most of the properties are defined in ancestor classes including <link id="#lcl.ExtCtrls.TCustomPanel">TCustomPanel</link>, <link id="#lcl.Controls.TCustomControl">TCustomControl</link> and <link id="#lcl.Controls.TWinControl">TWinControl</link>
-          </p>
-          <p>Any controls such as buttons or check boxes that are placed inside the panel become its children, and inherit many of its properties. If the Panel is moved, the child controls move with it. Any part of a child control that falls outside the panel becomes invisible.</p>
-        </descr>
-        <seealso>
-          <link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
-        </seealso>
-      </element>
+      <element name="TPanel"/>
       <!-- property Visibility: published -->
-      <element name="TPanel.Align" link="#lcl.Controls.TControl.Align">
+      <element name="TPanel.Align">
         <short/>
         <descr/>
         <seealso/>
@@ -5901,7 +5888,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TPanel.Caption" link="#lcl.Controls.TControl.Caption">
+      <element name="TPanel.Caption">
         <short/>
         <descr/>
         <seealso/>

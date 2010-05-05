@@ -104,18 +104,7 @@
 - Exception handler for error in Menu access</short>
       </element>
       <!-- object Visibility: default -->
-      <element name="TMenuItem">
-        <short>
-          <var>TMenuItem</var> - An item of a <var>TMainMenu</var> or <var>TPopupMenu.</var>
-        </short>
-        <descr>
-          <p>
-            <var>TMenuItem</var> - An item of a <var>TMainMenu</var> or <var>TPopupMenu.</var>
-          </p>
-        </descr>
-        <errors>no errors
-</errors>
-      </element>
+      <element name="TMenuItem"/>
       <!-- procedure type Visibility: default -->
       <element name="TMenuChangeEvent">
         <short>
