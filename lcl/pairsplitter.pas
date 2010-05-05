@@ -35,7 +35,7 @@ unit PairSplitter;
 interface
 
 uses
-  Classes, SysUtils,
+  Types, Classes, SysUtils,
   LCLType, LCLProc, LMessages, Graphics, GraphType, LCLIntf, Controls, ExtCtrls;
   
 type
@@ -103,7 +103,7 @@ type
     class procedure WSRegisterClass; override;
     function GetCursor: TCursor; override;
     procedure SetCursor(Value: TCursor); override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -346,10 +346,10 @@ begin
     inherited SetCursor(Value);
 end;
 
-class function TCustomPairSplitter.GetControlClassDefaultSize: TPoint;
+class function TCustomPairSplitter.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=90;
-  Result.Y:=90;
+  Result.CX := 90;
+  Result.CY := 90;
 end;
 
 constructor TCustomPairSplitter.Create(TheOwner: TComponent);
@@ -359,7 +359,8 @@ begin
   ControlStyle := ControlStyle - [csAcceptsControls];
   FSplitterType := pstHorizontal;
   Cursor := crHSplit;
-  SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
   FPosition:=45;
   CreateSides;
 end;

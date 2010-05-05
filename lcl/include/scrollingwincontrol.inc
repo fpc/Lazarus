@@ -90,10 +90,10 @@ begin
   end;
 end;
 
-class function TScrollingWinControl.GetControlClassDefaultSize: TPoint;
+class function TScrollingWinControl.GetControlClassDefaultSize: TSize;
 begin
-  Result.X := 150;
-  Result.Y := 150;
+  Result.CX := 150;
+  Result.CY := 150;
 end;
 
 procedure TScrollingWinControl.SetHorzScrollBar(Value: TControlScrollBar);
@@ -242,7 +242,8 @@ begin
 
   ControlStyle := [csAcceptsControls, csClickEvents, csDoubleClicks];
 
-  SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
 end;
 
 destructor TScrollingWinControl.Destroy;

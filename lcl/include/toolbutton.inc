@@ -60,7 +60,8 @@ begin
   FImageIndex := -1;
   FStyle := tbsButton;
   ControlStyle := [csCaptureMouse, csSetCaption, csDesignNoSmoothResize];
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
 end;
 
 procedure TToolButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -917,7 +918,7 @@ var
   TextSize: TSize;
   TextPos: TPoint;
   IconPos: TPoint;
-  DefSize: TPoint;
+  DefSize: TSize;
   ImgList: TCustomImageList;
   ImgIndex: integer;
 begin
@@ -981,8 +982,8 @@ begin
       inc(PreferredWidth, 4);
       inc(PreferredHeight, 4);
       DefSize := GetControlClassDefaultSize;
-      PreferredWidth := Max(PreferredWidth, DefSize.x);
-      PreferredHeight := Max(PreferredHeight, DefSize.y);
+      PreferredWidth := Max(PreferredWidth, DefSize.CX);
+      PreferredHeight := Max(PreferredHeight, DefSize.CY);
       if Style = tbsDropDown then
         inc(PreferredWidth, FToolBar.FDropDownWidth);
     end
@@ -996,10 +997,10 @@ begin
   //DebugLn(['TToolButton.CalculatePreferredSize ',DbgSName(Self),' ',PreferredWidth,',',PreferredHeight,' Caption=',Caption]);
 end;
 
-class function TToolButton.GetControlClassDefaultSize: TPoint;
+class function TToolButton.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=23;
-  Result.Y:=22;
+  Result.CX := 23;
+  Result.CY := 22;
 end;
 
 

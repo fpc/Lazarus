@@ -20,10 +20,10 @@ begin
   RegisterCustomGroupBox;
 end;
 
-class function TCustomGroupBox.GetControlClassDefaultSize: TPoint;
+class function TCustomGroupBox.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=185;
-  Result.Y:=105;
+  Result.CX := 185;
+  Result.CY := 105;
 end;
 
 {------------------------------------------------------------------------------
@@ -34,7 +34,8 @@ begin
   inherited Create(AOwner);
   fCompStyle := csGroupBox;
   ControlStyle := ControlStyle + [csAcceptsControls];
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
 end;
 
 // included by stdctrls.pp

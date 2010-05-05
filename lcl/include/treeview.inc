@@ -5099,9 +5099,10 @@ begin
   RegisterCustomTreeView;
 end;
 
-class function TCustomTreeView.GetControlClassDefaultSize: TPoint;
+class function TCustomTreeView.GetControlClassDefaultSize: TSize;
 begin
-  Result := Point(121, 97);
+  Result.CX := 121;
+  Result.CY := 97;
 end;
 
 procedure TCustomTreeView.Added(Node: TTreeNode);

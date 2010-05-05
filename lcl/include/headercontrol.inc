@@ -86,7 +86,8 @@ begin
   FSections := CreateSections;
   ControlStyle := ControlStyle + [csCaptureMouse, csClickEvents, csNoFocus, csOpaque] -
     [csSetCaption];
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
 end;
 
 destructor TCustomHeaderControl.Destroy;
@@ -325,10 +326,10 @@ begin
       Sections[i].State := MaxState;
 end;
 
-class function TCustomHeaderControl.GetControlClassDefaultSize: TPoint;
+class function TCustomHeaderControl.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=170;
-  Result.Y:=30;
+  Result.CX := 170;
+  Result.CY := 30;
 end;
 
 procedure TCustomHeaderControl.Paint;

@@ -263,10 +263,10 @@ begin
   AdjustSize;
 end;
 
-class function TCustomBitBtn.GetControlClassDefaultSize: TPoint;
+class function TCustomBitBtn.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=75;
-  Result.Y:=30;
+  Result.CX := 75;
+  Result.CY := 30;
 end;
 
 procedure TCustomBitBtn.CMAppShowBtnGlyphChanged(var Message: TLMessage);

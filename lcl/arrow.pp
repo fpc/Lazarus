@@ -33,7 +33,7 @@ unit Arrow;
 interface
 
 uses
-  SysUtils, Classes, LCLType, Controls;
+  Types, SysUtils, Classes, LCLType, Controls;
   
 type
 
@@ -54,7 +54,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure Paint; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Loaded; override;
@@ -98,7 +98,8 @@ begin
   fCompStyle := csArrow;
   fArrowType := atLeft;
   fShadowType := stEtchedIn;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
 end;
 
 procedure TArrow.Loaded;
@@ -113,10 +114,10 @@ begin
   inherited Paint;
 end;
 
-class function TArrow.GetControlClassDefaultSize: TPoint;
+class function TArrow.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=10;
-  Result.Y:=10;
+  Result.CX := 10;
+  Result.CY := 10;
 end;
 
 procedure TArrow.InitializeWnd;

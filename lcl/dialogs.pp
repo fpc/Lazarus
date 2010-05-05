@@ -274,7 +274,7 @@ type
       AState: TButtonState; ATransparent: Boolean; BiDiFlags: Longint): TRect; override;
     function GetDisabledPattern: TBitmap; virtual;
     function GetGlyphSize(PaintRect: TRect): TSize; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure ShowColorDialog; virtual;
   public
     constructor Create(AnOwner: TComponent); override;

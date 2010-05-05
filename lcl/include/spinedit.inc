@@ -116,10 +116,10 @@ begin
   inherited KeyPress(Key);
 end;
 
-class function TCustomFloatSpinEdit.GetControlClassDefaultSize: TPoint;
+class function TCustomFloatSpinEdit.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=50;
-  Result.Y:=23;
+  Result.CX := 50;
+  Result.CY := 23;
 end;
 
 procedure TCustomFloatSpinEdit.SetValue(const AValue: Double);
@@ -164,7 +164,8 @@ begin
   FUpdatePending := True;
   FValueChanged := True;
 
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
 end;
 
 function TCustomFloatSpinEdit.GetLimitedValue(const AValue: Double): Double;

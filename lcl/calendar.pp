@@ -36,7 +36,7 @@ interface
 
 uses
   {$IFDEF VerboseCalenderSetDate}LCLProc,{$ENDIF}
-  SysUtils, Classes, LCLType, LCLStrConsts, lMessages, Controls, LResources;
+  Types, SysUtils, Classes, LCLType, LCLStrConsts, lMessages, Controls, LResources;
 
 type
   TDisplaySetting = (
@@ -89,7 +89,7 @@ type
     procedure LMMonthChanged(var Message: TLMessage); message LM_MONTHCHANGED;
     procedure LMYearChanged(var Message: TLMessage); message LM_YEARCHANGED;
     procedure LMDayChanged(var Message: TLMessage); message LM_DAYCHANGED;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure Loaded; override;
     procedure InitializeWnd; override;
     procedure DestroyWnd; override;
@@ -163,7 +163,8 @@ constructor TCustomCalendar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csCalendar;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
   FDisplaySettings := DefaultDisplaySettings;
   ControlStyle:=ControlStyle-[csTripleClicks,csQuadClicks,csAcceptsControls,csCaptureMouse];
   DateTime := Now;
@@ -312,10 +313,10 @@ begin
   if Assigned(OnChange) then OnChange(self);
 end;
 
-class function TCustomCalendar.GetControlClassDefaultSize: TPoint;
+class function TCustomCalendar.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=220;
-  Result.Y:=190;
+  Result.CX := 220;
+  Result.CY := 190;
 end;
 
 procedure TCustomCalendar.LMMonthChanged(var Message: TLMessage);

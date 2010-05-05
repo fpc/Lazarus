@@ -97,7 +97,8 @@ begin
   end;
   FHoverTime := -1;
   TabStop := true;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
   ParentColor := False;
   Color := clWindow;  
   FCanvas := TControlCanvas.Create;
@@ -421,9 +422,10 @@ begin
   RegisterCustomListView;
 end;
 
-class function TCustomListView.GetControlClassDefaultSize: TPoint;
+class function TCustomListView.GetControlClassDefaultSize: TSize;
 begin
-  Result := Point(250, 150);
+  Result.CX := 250;
+  Result.CY := 150;
 end;
 
 {------------------------------------------------------------------------------}

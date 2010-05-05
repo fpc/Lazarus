@@ -264,10 +264,10 @@ begin
   end;
 end;
 
-class function TCustomMemo.GetControlClassDefaultSize: TPoint;
+class function TCustomMemo.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=150;
-  Result.Y:=90;
+  Result.CX := 150;
+  Result.CY := 90;
 end;
 
 procedure TCustomMemo.SetWantTabs(const NewWantTabs: boolean);

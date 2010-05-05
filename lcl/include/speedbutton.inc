@@ -47,7 +47,8 @@ begin
   FGlyph.SetTransparentMode(gtmTransparent);
   FGlyph.OnChange := @GlyphChanged;
 
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
   ControlStyle := ControlStyle + [csCaptureMouse]-[csSetCaption, csClickEvents, csOpaque];
 
   FLayout := blGlyphLeft;
@@ -398,10 +399,10 @@ begin
   Result := TSpeedButtonActionLink;
 end;
 
-class function TCustomSpeedButton.GetControlClassDefaultSize: TPoint;
+class function TCustomSpeedButton.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=23;
-  Result.Y:=22;
+  Result.CX := 23;
+  Result.CY := 22;
 end;
 
 {------------------------------------------------------------------------------

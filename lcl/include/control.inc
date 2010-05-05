@@ -4605,11 +4605,12 @@ end;
 function TControl.GetDefaultWidth: integer;
 begin
   if cfBaseBoundsValid in FControlFlags then
-    Result:=FBaseBounds.Right-FBaseBounds.Left
-  else if cfWidthLoaded in FControlFlags then
-    Result:=FReadBounds.Right-FReadBounds.Left
+    Result := FBaseBounds.Right - FBaseBounds.Left
   else
-    Result:=GetControlClassDefaultSize.X;
+  if cfWidthLoaded in FControlFlags then
+    Result := FReadBounds.Right - FReadBounds.Left
+  else
+    Result := GetControlClassDefaultSize.CX;
 end;
 
 {------------------------------------------------------------------------------
@@ -4621,11 +4622,12 @@ end;
 function TControl.GetDefaultHeight: integer;
 begin
   if cfBaseBoundsValid in FControlFlags then
-    Result:=BaseBounds.Bottom-BaseBounds.Top
-  else if cfHeightLoaded in FControlFlags then
-    Result:=FReadBounds.Bottom-FReadBounds.Top
+    Result := BaseBounds.Bottom - BaseBounds.Top
   else
-    Result:=GetControlClassDefaultSize.Y;
+  if cfHeightLoaded in FControlFlags then
+    Result := FReadBounds.Bottom - FReadBounds.Top
+  else
+    Result := GetControlClassDefaultSize.CY;
 end;
 
 {------------------------------------------------------------------------------
@@ -4634,10 +4636,10 @@ end;
   The default size of this type of controls.
   Used by GetDefaultWidth and GetDefaultHeight.
  ------------------------------------------------------------------------------}
-class function TControl.GetControlClassDefaultSize: TPoint;
+class function TControl.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=75;
-  Result.Y:=50;
+  Result.CX := 75;
+  Result.CY := 50;
 end;
 
 {------------------------------------------------------------------------------
@@ -4648,10 +4650,10 @@ end;
 function TControl.GetSidePosition(Side: TAnchorKind): integer;
 begin
   case Side of
-  akLeft: Result:=Left;
-  akTop: Result:=Top;
-  akRight: Result:=Left+Width;
-  akBottom: Result:=Top+Height;
+    akLeft: Result := Left;
+    akTop: Result := Top;
+    akRight: Result := Left + Width;
+    akBottom: Result := Top + Height;
   end;
 end;
 

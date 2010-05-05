@@ -511,7 +511,7 @@ type
     procedure UpdateTabImages;
     procedure ImageListChange(Sender: TObject);
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure Paint; override;
     procedure AdjustDisplayRectWithBorder(var ARect: TRect); virtual;
     procedure AdjustClientRect(var ARect: TRect); override;
@@ -1085,7 +1085,7 @@ type
 
   protected
     class procedure WSRegisterClass; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
 
@@ -1308,7 +1308,7 @@ type
     procedure ApplyChanges;
     procedure InitializeWnd; override;
     procedure Loaded; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure StepIt;
@@ -1415,7 +1415,7 @@ type
     procedure AssociateKeyDown(Sender: TObject; var Key: Word; ShiftState : TShiftState);
     procedure OnAssociateChangeBounds(Sender: TObject);
     procedure DoOnResize; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     function CanChange: Boolean; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Click(Button: TUDBtnType); virtual; overload;
@@ -1567,7 +1567,7 @@ type
     procedure CalculatePreferredSize(
                          var PreferredWidth, PreferredHeight: integer;
                          WithThemeSpace: Boolean); override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure Loaded; override;
     procedure RefreshControl; virtual;
     procedure SetToolBar(NewToolBar: TToolBar);
@@ -1703,7 +1703,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure AdjustClientRect(var ARect: TRect); override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure DoAutoSize; override;
     procedure CalculatePreferredSize(var PreferredWidth,
                     PreferredHeight: integer; WithThemeSpace: Boolean); override;
@@ -1840,7 +1840,7 @@ type
     procedure Changed; virtual;
     procedure DoChange(var msg); message LM_CHANGED;
     procedure FixParams(var APosition, AMin, AMax: Integer);
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure InitializeWnd; override;
     procedure Loaded; override;
   public
@@ -2484,7 +2484,7 @@ type
     FChangeTimer: TTimer;
     FEditor: TEdit;
     class procedure WSRegisterClass; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure Added(Node: TTreeNode); virtual;
     procedure EditorEditingDone(Sender: TObject); virtual;
     procedure EditorKeyDown(Sender: TObject; var Key : Word; Shift : TShiftState); virtual;
@@ -2916,7 +2916,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure UpdateState;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
   public
     property SectionFromOriginalIndex[OriginalIndex: Integer]: THeaderSection read GetSectionFromOriginalIndex;
 

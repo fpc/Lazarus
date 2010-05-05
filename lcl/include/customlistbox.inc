@@ -155,10 +155,10 @@ begin
   UnlockSelectionChange;
 end;
 
-class function TCustomListBox.GetControlClassDefaultSize: TPoint;
+class function TCustomListBox.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=100;
-  Result.Y:=80;
+  Result.CX := 100;
+  Result.CY := 80;
 end;
 
 {------------------------------------------------------------------------------
@@ -516,7 +516,8 @@ begin
   TControlCanvas(FCanvas).Control := Self;
   ParentColor := false;
   TabStop := true;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
   UnlockSelectionChange;
 end;
 

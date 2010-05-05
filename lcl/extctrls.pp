@@ -194,7 +194,7 @@ type
     procedure ShowControl(APage: TControl); override;
     procedure UpdateTabProperties; virtual;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     property ActivePageComponent: TCustomPage read GetActivePageComponent
                                               write SetActivePageComponent;
@@ -405,7 +405,7 @@ type
     procedure SetShape(Value: TShapeType);
   protected
     class procedure WSRegisterClass; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -547,7 +547,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure Paint; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
   public
     constructor Create(AOwner: TComponent); override;
     property Canvas;
@@ -615,7 +615,7 @@ type
     procedure CalculatePreferredSize(var PreferredWidth,
                                      PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -694,7 +694,7 @@ type
     procedure SetShape(AShape: TBevelShape);
   protected
     class procedure WSRegisterClass; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure Paint; override;
   public
     constructor Create(AOwner:TComponent); override;
@@ -1065,7 +1065,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure AdjustClientRect(var aRect: TRect); override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
     function GetDefaultDockCaption: String; override;
     procedure Loaded; override;

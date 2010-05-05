@@ -160,7 +160,7 @@ type
     procedure GlyphChanged(Sender: TObject);
     procedure InitializeWnd; override;
     procedure TextChanged; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure CMAppShowBtnGlyphChanged(var Message: TLMessage); message CM_APPSHOWBTNGLYPHCHANGED;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -311,7 +311,7 @@ type
     property MouseInControl: Boolean read FMouseInControl;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure Loaded; override;
   protected
     function GetGlyphSize(PaintRect: TRect): TSize; virtual;

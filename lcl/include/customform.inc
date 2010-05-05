@@ -1400,10 +1400,10 @@ begin
     BeginDrag(False);
 end;
 
-class function TCustomForm.GetControlClassDefaultSize: TPoint;
+class function TCustomForm.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=320;
-  Result.Y:=240;
+  Result.CX := 320;
+  Result.CY := 240;
 end;
 
 procedure TCustomForm.DoDock(NewDockSite: TWinControl; var ARect: TRect);
@@ -1863,11 +1863,12 @@ begin
   Visible := False;
   fCompStyle:= csForm;
 
-  FMenu:= nil;
+  FMenu := nil;
 
   ControlStyle := ControlStyle + [csAcceptsControls, csCaptureMouse,
                                   csClickEvents, csSetCaption, csDoubleClicks];
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
   ParentColor := False;
   ParentFont := False;
   FWindowState := wsNormal;

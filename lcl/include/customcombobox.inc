@@ -104,10 +104,10 @@ begin
   end;
 end;
 
-class function TCustomComboBox.GetControlClassDefaultSize: TPoint;
+class function TCustomComboBox.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=100;
-  Result.Y:=25;
+  Result.CX := 100;
+  Result.CY := 25;
 end;
 
 procedure TCustomComboBox.DoEnter;
@@ -764,7 +764,8 @@ begin
 
   fCompStyle := csComboBox;
   ControlStyle := ControlStyle - [csCaptureMouse];
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
   FItems := TStringlist.Create;
   FItemIndex := -1;
   FItemWidth := 0;

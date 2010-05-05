@@ -1187,7 +1187,7 @@ type
     procedure DoCallNotifyHandler(HandlerType: TControlHandlerType);
     procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); virtual;
     procedure SetZOrder(TopMost: Boolean); virtual;
-    class function GetControlClassDefaultSize: TPoint; virtual;
+    class function GetControlClassDefaultSize: TSize; virtual;
     function ColorIsStored: boolean; virtual;
   protected
     // actions

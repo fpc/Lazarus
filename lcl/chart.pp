@@ -29,7 +29,7 @@ unit Chart;
 interface
 
 uses
-  SysUtils, Classes, LCLProc, LCLIntf, LCLType, Controls, ExtCtrls, Graphics,
+  Types, SysUtils, Classes, LCLProc, LCLIntf, LCLType, Controls, ExtCtrls, Graphics,
   Dialogs;
 
 type
@@ -82,7 +82,7 @@ type
     procedure SetLabelPosition(const AValue: TPosLabel);
   protected
     procedure Paint; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     function RealGetText: TCaption; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -162,7 +162,8 @@ begin
   FBars:=TBarChartItems.Create(Self);
   FDepth:=5;
   FLabelPosition:=plLeft;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
 end;
 
 destructor TCustomBarChart.Destroy;
@@ -387,10 +388,10 @@ begin
     Result := inherited RealGetText;
 end;
 
-class function TCustomBarChart.GetControlClassDefaultSize: TPoint;
+class function TCustomBarChart.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=150;
-  Result.Y:=120;
+  Result.CX := 150;
+  Result.CY := 120;
 end;
 
 procedure TCustomBarChart.Clear;

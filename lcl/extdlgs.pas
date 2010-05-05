@@ -27,7 +27,7 @@ unit ExtDlgs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, LCLType, LCLStrConsts, FileUtil,
+  Types, Classes, SysUtils, LCLProc, LResources, LCLType, LCLStrConsts, FileUtil,
   Controls, Dialogs, GraphType, Graphics, ExtCtrls, StdCtrls, Forms,
   Calendar, Buttons, Masks;
 
@@ -43,7 +43,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure SetPreviewFileDialog(const AValue: TPreviewFileDialog);
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
   public
     constructor Create(TheOwner: TComponent); override;
     property PreviewFileDialog: TPreviewFileDialog read FPreviewFileDialog
@@ -258,17 +258,18 @@ begin
   FPreviewFileDialog:=AValue;
 end;
 
-class function TPreviewFileControl.GetControlClassDefaultSize: TPoint;
+class function TPreviewFileControl.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=200;
-  Result.Y:=200;
+  Result.CX := 200;
+  Result.CY := 200;
 end;
 
 constructor TPreviewFileControl.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FCompStyle:=csPreviewFileControl;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
 end;
 
 { TPreviewFileDialog }

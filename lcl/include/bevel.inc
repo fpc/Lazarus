@@ -21,7 +21,7 @@ begin
   FShape := bsBox;
 
   with GetControlClassDefaultSize do
-    SetInitialBounds(0, 0, x, y);
+    SetInitialBounds(0, 0, CX, CY);
 end;
 
 destructor TBevel.Destroy;
@@ -63,9 +63,10 @@ begin
   RegisterBevel;
 end;
 
-class function TBevel.GetControlClassDefaultSize: TPoint;
+class function TBevel.GetControlClassDefaultSize: TSize;
 begin
-  Result := inherited GetControlClassDefaultSize;
+  Result.CX := 50;
+  Result.CY := 50;
 end;
 
 procedure TBevel.Paint;

@@ -91,7 +91,7 @@ type
     procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
   protected
     class procedure WSRegisterClass; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure Change; virtual;
@@ -162,7 +162,7 @@ type
   TCustomGroupBox = class (TWinControl)
   protected
     class procedure WSRegisterClass; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
   public
     constructor Create(AOwner: TComponent); Override;
   end;
@@ -308,7 +308,7 @@ type
     procedure DrawItem(Index: Integer; ARect: TRect;
                        State: TOwnerDrawState); virtual;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure LMChanged(var Msg); message LM_CHANGED;
     procedure Change; virtual;
     procedure Select; virtual;
@@ -516,7 +516,7 @@ type
     procedure Loaded; override;
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure CheckIndex(const AIndex: Integer);
     function GetItemHeight: Integer;
     function GetItemIndex: integer; virtual;
@@ -722,7 +722,7 @@ type
     procedure SetSelStart(Val: integer); virtual;
     procedure SetSelText(const Val: string); virtual;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
@@ -810,7 +810,7 @@ type
     procedure Loaded; override;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure CNChar(var Message: TLMKeyUp); message CN_CHAR;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -971,7 +971,7 @@ type
     procedure SetFocusControl(Val: TWinControl); virtual;
     procedure SetShowAccelChar(Val: boolean); virtual;
     function DialogChar(var Message: TLMKey): boolean; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
   public
     constructor Create(AOwner: TComponent); override;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
@@ -1088,7 +1088,7 @@ type
     procedure ControlKeyUp(var Key: Word; Shift: TShiftState); override;
     function DialogChar(var Message: TLMKey): boolean; override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     property ParentColor default false;
     procedure WSSetDefault;
     procedure WSSetText(const AText: String); override;
@@ -1189,7 +1189,7 @@ type
     procedure SetChecked(Value: Boolean); override;
     procedure RealSetText(const Value: TCaption); override;
     procedure ApplyChanges; virtual;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure Loaded; override;
     procedure WSSetText(const AText: String); override;
     procedure TextChanged; override;
@@ -1394,7 +1394,7 @@ type
     procedure TextChanged; override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure FontChanged(Sender: TObject); override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
 
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;

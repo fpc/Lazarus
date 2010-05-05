@@ -27,7 +27,7 @@ begin
   inherited Create(AOwner);
   fCompStyle := csScrollBar;
   with GetControlClassDefaultSize do
-    SetInitialBounds(0, 0, x, y);
+    SetInitialBounds(0, 0, CX, CY);
   TabStop := True;
   ControlStyle := ControlStyle + [csFramed, csDoubleClicks, csOpaque]
                                - [csAcceptsControls, csDoubleClicks,
@@ -255,10 +255,10 @@ begin
   RegisterCustomScrollBar;
 end;
 
-class function TCustomScrollBar.GetControlClassDefaultSize: TPoint;
+class function TCustomScrollBar.GetControlClassDefaultSize: TSize;
 begin
-  Result.x := 121;
-  Result.y := GetSystemMetrics(SM_CYHSCROLL);
+  Result.CX := 121;
+  Result.CY := GetSystemMetrics(SM_CYHSCROLL);
 end;
 
 // included by stdctrls.pp

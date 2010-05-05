@@ -73,7 +73,8 @@ begin
   FSelEnd := 0;
   FShowSelRange := True;
   TabStop := True;
-  SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
 end;
 
 {------------------------------------------------------------------------------
@@ -342,10 +343,10 @@ begin
   if APosition > AMax then APosition := AMax;
 end;
 
-class function TCustomTrackBar.GetControlClassDefaultSize: TPoint;
+class function TCustomTrackBar.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=100;
-  Result.Y:=25;
+  Result.CX := 100;
+  Result.CY := 25;
 end;
 
 {------------------------------------------------------------------------------

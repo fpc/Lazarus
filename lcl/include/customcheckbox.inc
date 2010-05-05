@@ -102,7 +102,8 @@ begin
   FState := cbUnchecked;
   FAllowGrayed := false;
   TabStop := true;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
   AutoSize := true;
 end;
 
@@ -195,10 +196,10 @@ begin
   end;
 end;
 
-class function TCustomCheckBox.GetControlClassDefaultSize: TPoint;
+class function TCustomCheckBox.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=90;
-  Result.Y:=23;
+  Result.CX := 90;
+  Result.CY := 23;
 end;
 
 procedure TCustomCheckBox.Loaded;

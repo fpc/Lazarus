@@ -41,7 +41,8 @@ begin
   FAlignment := taCenter;
   FFullRepaint := True;
   Color := clBtnFace;
-  SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
   ParentColor := True;
   UseDockManager := True;
 end;
@@ -145,10 +146,10 @@ begin
   InflateRect(aRect, -BevelSize, -BevelSize);
 end;
 
-class function TCustomPanel.GetControlClassDefaultSize: TPoint;
+class function TCustomPanel.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=170;
-  Result.Y:=50;
+  Result.CX := 170;
+  Result.CY := 50;
 end;
 
 procedure TCustomPanel.Loaded;

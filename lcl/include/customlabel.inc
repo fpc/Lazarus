@@ -87,10 +87,10 @@ begin
   UpdateSize;
 end;
 
-class function TCustomLabel.GetControlClassDefaultSize: TPoint;
+class function TCustomLabel.GetControlClassDefaultSize: TSize;
 begin
-  Result.X := 65;
-  Result.Y := 17;
+  Result.CX := 65;
+  Result.CY := 17;
 end;
 
 function TCustomLabel.HasMultiLine: boolean;
@@ -206,7 +206,8 @@ constructor TCustomLabel.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   ControlStyle := [csSetCaption, csClickEvents, csDoubleClicks, csReplicatable];
-  SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
   FShowAccelChar := True;
   FInternalSetBounds := False;
   Color := clNone;

@@ -178,7 +178,7 @@ type
     destructor Destroy; override;
     procedure UpdateScrollbars;
     function HasVisibleScrollbars: boolean; virtual;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure ScrollBy(DeltaX, DeltaY: Integer);
   published
     property HorzScrollBar: TControlScrollBar
@@ -272,7 +272,7 @@ type
     procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
   end;
 
   TCustomFrameClass = class of TCustomFrame;
@@ -563,7 +563,7 @@ type
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
 
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
 
     function BigIconHandle: HICON;
     procedure Close;
@@ -819,7 +819,7 @@ type
                           AData: Pointer): TRect; virtual;
     procedure ReleaseHandle;
     procedure Paint; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
   public
     property Alignment: TAlignment read FAlignment write FAlignment;
     property AutoHide: Boolean read FAutoHide write SetAutoHide;

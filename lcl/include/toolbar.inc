@@ -78,7 +78,8 @@ begin
   FHotImageChangeLink := TChangeLink.Create;
   FHotImageChangeLink.OnChange := @HotImageListChange;
   EdgeBorders := [ebTop];
-  SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
   Align := alTop;
 end;
 
@@ -727,10 +728,10 @@ begin
   inc(ARect.Left, Indent);
 end;
 
-class function TToolBar.GetControlClassDefaultSize: TPoint;
+class function TToolBar.GetControlClassDefaultSize: TSize;
 begin
-  Result.X := 150;
-  Result.Y := 26;
+  Result.CX := 150;
+  Result.CY := 26;
 end;
 
 function TToolBar.FindButtonFromAccel(Accel: Word): TToolButton;

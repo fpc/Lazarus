@@ -38,7 +38,8 @@ begin
   FAlignment := taLeftJustify;
   BorderStyle := bsNone;
   Caption := 'THintWindow';
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
   FHideInterval := 3000;
   TheTimer := TCustomTimer.Create(self);
   FAutoHideTimer := TheTimer;
@@ -143,10 +144,10 @@ begin
     Length(Caption), ARect, GetDrawTextFlags);
 end;
 
-class function THintWindow.GetControlClassDefaultSize: TPoint;
+class function THintWindow.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=25;
-  Result.Y:=25;
+  Result.CX := 25;
+  Result.CY := 25;
 end;
 
 procedure THintWindow.ActivateHint(ARect: TRect; const AHint: String);

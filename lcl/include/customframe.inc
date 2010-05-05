@@ -132,10 +132,10 @@ begin
     UpdateActionLists(Self,opInsert);
 end;
 
-class function TCustomFrame.GetControlClassDefaultSize: TPoint;
+class function TCustomFrame.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=320;
-  Result.Y:=240;
+  Result.CX := 320;
+  Result.CY := 240;
 end;
 
 procedure TCustomFrame.DefineProperties(Filer: TFiler);
@@ -161,8 +161,10 @@ begin
   begin
     if not InitInheritedComponent(Self, TFrame) then
       raise EResNotFound.CreateFmt(rsResourceNotFound, [ClassName]);
-  end else
-    SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
+  end
+  else
+    with GetControlClassDefaultSize do
+      SetInitialBounds(0, 0, CX, CY);
 end;
 
 { TFrame }

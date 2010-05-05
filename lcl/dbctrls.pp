@@ -36,7 +36,7 @@ unit DbCtrls;
 interface          
 
 uses
-  Classes, SysUtils, DB,
+  Types, Classes, SysUtils, DB,
   LCLStrConsts, LCLProc, LMessages, LCLType, LResources, GraphType,
   Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls,
   Calendar, Chart, Variants;
@@ -1158,7 +1158,7 @@ type
     procedure HintsChanged(Sender: TObject); virtual;
     procedure ButtonClickHandler(Sender: TObject); virtual;
     procedure DoOnResize; override;
-    class function GetControlClassDefaultSize: TPoint; override;
+    class function GetControlClassDefaultSize: TSize; override;
     procedure BeginUpdateButtons; virtual;
     procedure EndUpdateButtons; virtual;
     procedure SetEnabled(Value: Boolean); override;

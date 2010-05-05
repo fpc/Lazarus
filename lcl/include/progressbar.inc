@@ -53,8 +53,9 @@ begin
   FBarShowText := False;
   FBarTextFormat := '%v from [%l-%u] (=%p%%)';
   FStyle := pbstNormal;
-  SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
-end;   
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
+end;
 
 {------------------------------------------------------------------------------
   Method: TCustomProgressBar.InitializeWnd
@@ -76,10 +77,10 @@ begin
   ApplyChanges;
 end;
 
-class function TCustomProgressBar.GetControlClassDefaultSize: TPoint;
+class function TCustomProgressBar.GetControlClassDefaultSize: TSize;
 begin
-  Result.X := 100;
-  Result.Y := 20;
+  Result.CX := 100;
+  Result.CY := 20;
 end;
 
 {------------------------------------------------------------------------------

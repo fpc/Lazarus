@@ -28,7 +28,8 @@ begin
   FPicture := TPicture.Create;
   FPicture.OnChange := @PictureChanged;
   FUseAncestorCanvas := False;
-  SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
 end;
 
 destructor TCustomImage.Destroy;
@@ -168,10 +169,10 @@ begin
   PreferredHeight := Picture.Height;
 end;
 
-class function TCustomImage.GetControlClassDefaultSize: TPoint;
+class function TCustomImage.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=90;
-  Result.Y:=90;
+  Result.CX := 90;
+  Result.CY := 90;
 end;
 
 procedure TCustomImage.Paint;

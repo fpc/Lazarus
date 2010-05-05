@@ -35,7 +35,8 @@ begin
   // set default alignment
   Align := alNone;
   // setup default sizes
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
 end;
 
 {------------------------------------------------------------------------------
@@ -245,10 +246,10 @@ begin
   Result:=false;
 end;
 
-class function TCustomButton.GetControlClassDefaultSize: TPoint;
+class function TCustomButton.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=75;
-  Result.Y:=25;
+  Result.CX := 75;
+  Result.CY := 25;
 end;
 
 function TCustomButton.UseRightToLeftAlignment: Boolean;

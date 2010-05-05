@@ -322,10 +322,10 @@ begin
     UpdateButtons;
 end;
 
-class function TDBCustomNavigator.GetControlClassDefaultSize: TPoint;
+class function TDBCustomNavigator.GetControlClassDefaultSize: TSize;
 begin
-  Result.X:=241;
-  Result.Y:=25;
+  Result.CX := 241;
+  Result.CY := 25;
 end;
 
 procedure TDBCustomNavigator.BeginUpdateButtons;
@@ -368,7 +368,8 @@ begin
   BevelOuter:=bvNone;
   BevelInner:=bvNone;
   FConfirmDelete:=True;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  with GetControlClassDefaultSize do
+    SetInitialBounds(0, 0, CX, CY);
   UpdateButtons;
   EndUpdateButtons;
   UpdateHints;
