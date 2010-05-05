@@ -695,13 +695,22 @@ type
                   CreateIfNotExists: boolean): TFPCTargetConfigCacheItem;
   end;
 
-  {TFPCSourceCacheItem = class
+  { TFPCSourceCacheItem }
+
+  TFPCSourceCacheItem = class
+  private
+    FChangeStamp: integer;
   public
     Directory: string;
     Files: TStrings;
+    constructor Create;
     destructor Destroy; override;
+    procedure Clear;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure Update(const OnProgress: TDefinePoolProgress = nil);
+    procedure IncreaseChangeStamp;
+    property ChangeStamp: integer read FChangeStamp;
   end;
 
   TFPCSourceCache = class
@@ -713,8 +722,9 @@ type
     procedure Clear;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    function Find(const Directory; CreateIfNotExists: boolean): TFPCSourceCacheItem;
-  end;}
+    function Find(const Directory: string;
+                  CreateIfNotExists: boolean): TFPCSourceCacheItem;
+  end;
 
 function DefineActionNameToAction(const s: string): TDefineAction;
 function DefineTemplateFlagsToString(Flags: TDefineTemplateFlags): string;
@@ -771,6 +781,8 @@ procedure ParseMakefileFPC(const Filename, SrcOS: string;
 
 function CompareFPCSourceRulesViaFilenameStart(Rule1, Rule2: Pointer): integer;
 function CompareFPCTargetConfigCacheItems(CacheItem1, CacheItem2: Pointer): integer;
+function CompareFPCSourceCacheItems(CacheItem1, CacheItem2: Pointer): integer;
+function CompareDirectoryWithFPCSourceCacheItem(AString, CacheItem: Pointer): integer;
 
 
 implementation
@@ -1607,6 +1619,22 @@ begin
   Result:=CompareStr(Item1.TargetCPU,Item2.TargetCPU);
   if Result<>0 then exit;
   Result:=CompareFilenames(Item1.Compiler,Item2.Compiler);
+end;
+
+function CompareFPCSourceCacheItems(CacheItem1, CacheItem2: Pointer): integer;
+var
+  Src1: TFPCSourceCacheItem absolute CacheItem1;
+  Src2: TFPCSourceCacheItem absolute CacheItem2;
+begin
+  Result:=CompareStr(Src1.Directory,Src2.Directory);
+end;
+
+function CompareDirectoryWithFPCSourceCacheItem(AString, CacheItem: Pointer
+  ): integer;
+var
+  Src: TFPCSourceCacheItem absolute CacheItem;
+begin
+  Result:=CompareStr(AnsiString(AString),Src.Directory);
 end;
 
 function DefineActionNameToAction(const s: string): TDefineAction;
@@ -6838,6 +6866,164 @@ begin
   XMLConfig.SetDeleteValue(Path+'Filename',Filename,'');
   XMLConfig.SetDeleteValue(Path+'Exists',FileExists,false);
   XMLConfig.SetDeleteValue(Path+'Date',FileDate,0);
+end;
+
+{ TFPCSourceCacheItem }
+
+constructor TFPCSourceCacheItem.Create;
+begin
+  Files:=TStringList.Create;
+end;
+
+destructor TFPCSourceCacheItem.Destroy;
+begin
+  FreeAndNil(Files);
+  inherited Destroy;
+end;
+
+procedure TFPCSourceCacheItem.Clear;
+begin
+  FreeAndNil(Files);
+end;
+
+procedure TFPCSourceCacheItem.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  List: TStringList;
+begin
+  Clear;
+  List:=nil;
+  try
+    Directory:=XMLConfig.GetValue(Path+'Directory','');
+    List:=TStringList.Create;
+    List.StrictDelimiter:=true;
+    List.Delimiter:=';';
+    List.DelimitedText:=XMLConfig.GetValue(Path+'Files','');
+    FreeAndNil(Files);
+    Files:=Decompress1FileList(List);
+  finally
+    if Files=nil then Files:=TStringList.Create;
+    List.Free;
+  end;
+end;
+
+procedure TFPCSourceCacheItem.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  List: TStringList;
+  s: String;
+begin
+  List:=nil;
+  try
+    XMLConfig.SetDeleteValue(Path+'Directory',Directory,'');
+    if Files<>nil then begin
+      List:=Compress1FileList(Files);
+      List.StrictDelimiter:=true;
+      List.Delimiter:=';';
+      s:=List.DelimitedText;
+    end else
+      s:='';
+    XMLConfig.SetDeleteValue(Path+'Files',s,'');
+  finally
+    List.Free;
+  end;
+end;
+
+procedure TFPCSourceCacheItem.Update(const OnProgress: TDefinePoolProgress);
+var
+  OldFiles: TStrings;
+begin
+  OldFiles:=Files;
+  Files:=nil;
+  try
+    if (Directory<>'') then begin
+      Files:=GatherFiles(Directory,'{.svn,CVS}',
+                              '{*.pas,*.pp,*.p,*.inc,Makefile.fpc}',OnProgress);
+    end;
+    // ToDo: sort and check for changes
+  finally
+    OldFiles.Free;
+  end;
+end;
+
+procedure TFPCSourceCacheItem.IncreaseChangeStamp;
+begin
+
+end;
+
+{ TFPCSourceCache }
+
+constructor TFPCSourceCache.Create;
+begin
+  fItems:=TAVLTree.Create(@CompareFPCSourceCacheItems);
+end;
+
+destructor TFPCSourceCache.Destroy;
+begin
+  Clear;
+  FreeAndNil(fItems);
+  inherited Destroy;
+end;
+
+procedure TFPCSourceCache.Clear;
+begin
+  fItems.FreeAndClear;
+end;
+
+procedure TFPCSourceCache.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  Cnt: integer;
+  i: Integer;
+  Item: TFPCSourceCacheItem;
+begin
+  Clear;
+  Cnt:=XMLConfig.GetValue(Path+'Count',0);
+  for i:=1 to Cnt do begin
+    Item:=TFPCSourceCacheItem.Create;
+    Item.LoadFromXMLConfig(XMLConfig,Path+'Item'+IntToStr(i)+'/');
+    if (Item.Directory='') or (fItems.Find(Item)<>nil) then
+      Item.Free
+    else
+      fItems.Add(Item);
+  end;
+end;
+
+procedure TFPCSourceCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  Node: TAVLTreeNode;
+  Item: TFPCSourceCacheItem;
+  Cnt: Integer;
+begin
+  Cnt:=0;
+  Node:=fItems.FindLowest;
+  while Node<>nil do begin
+    Item:=TFPCSourceCacheItem(Node.Data);
+    if Item.Directory<>'' then begin
+      inc(Cnt);
+      Item.SaveToXMLConfig(XMLConfig,Path+'Item'+IntToStr(Cnt)+'/');
+    end;
+    Node:=fItems.FindSuccessor(Node);
+  end;
+  XMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
+end;
+
+function TFPCSourceCache.Find(const Directory: string;
+  CreateIfNotExists: boolean): TFPCSourceCacheItem;
+var
+  Node: TAVLTreeNode;
+begin
+  Node:=fItems.FindKey(PChar(Directory),@CompareDirectoryWithFPCSourceCacheItem);
+  if Node<>nil then begin
+    Result:=TFPCSourceCacheItem(Node.Data);
+  end else if CreateIfNotExists then begin
+    Result:=TFPCSourceCacheItem.Create;
+    Result.Directory:=Directory;
+    fItems.Add(Result);
+  end else begin
+    Result:=nil;
+  end;
 end;
 
 initialization
