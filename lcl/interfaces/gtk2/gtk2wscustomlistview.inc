@@ -164,6 +164,11 @@ begin
     //debugln(' Gtk2_ItemSelectionChanged  ItemCache=nil ',tComponent(widgetInfo^.lclObject).name);
     Exit;
   end;
+
+  // LCL sent selection !
+  if wwiInvalidEvent in Widgets^.WidgetInfo^.Flags then
+    exit;
+
   for i := 0 to Widgets^.ItemCache.Count -1 do
   begin
     FillChar(NM, SizeOf(NM), 0);
@@ -1061,66 +1066,74 @@ begin
   then Exit;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
-
-  with Widgets^ do
-  begin
-    if GetViewModel(MainView) = nil then
-      Exit; // we are in the midst of a begin update end update pair and the following will fail and cause gtk debug messages
-    case AState of
-      lisCut,
-      lisDropTarget:
-      begin
-        //TODO: do something with the rowcolor ?
-      end;
-
-      lisFocused:
-      begin
-        //gtk2 iter has no focus??
-        Path := gtk_tree_path_new_from_string(PChar(IntToStr(AIndex)));
-
-        if GTK_IS_TREE_VIEW(MainView) then
+  // wwiInvalidEvent flag save us from infinite loop !
+  // when this flag is included TreeSelection 'changed' won't
+  // trigger - and it shouldn't LCL setted up selection.
+  // fixes #16399
+  Include(Widgets^.WidgetInfo^.Flags, wwiInvalidEvent);
+  try
+    with Widgets^ do
+    begin
+      if GetViewModel(MainView) = nil then
+        Exit; // we are in the midst of a begin update end update pair and the following will fail and cause gtk debug messages
+      case AState of
+        lisCut,
+        lisDropTarget:
         begin
-          if AIsSet then
-            gtk_tree_view_set_cursor(PGtkTreeView(MainView), Path, nil, False)
-          else
-            gtk_tree_view_set_cursor(PGtkTreeView(MainView), nil, nil, False);
-        end
-      {$IFDEF GTK_2_8}
-        else
-        if GTK_IS_ICON_VIEW(MainView) then
-        begin
-          if AIsSet then
-            gtk_icon_view_set_cursor(PGtkIconView(MainView), Path, nil, False)
-          else
-            gtk_icon_view_set_cursor(PGtkIconView(MainView), nil, nil, False);
-        end
-      {$ENDIF};
-        gtk_tree_path_free(Path);
-      end;
-
-      lisSelected:
-      begin
-        Path := gtk_tree_path_new_from_string(PChar(IntToStr(AIndex)));
-        if GTK_IS_TREE_VIEW(MainView) then
-        begin
-          if AIsSet and not gtk_tree_selection_path_is_selected(TreeSelection, Path) then
-            gtk_tree_selection_select_path(TreeSelection, Path)
-          else
-          if not AIsSet and gtk_tree_selection_path_is_selected(TreeSelection, Path) then
-            gtk_tree_selection_unselect_path(TreeSelection, Path);
-        end
-        else
-        if GTK_IS_ICON_VIEW(MainView) then
-        begin
-          if AIsSet and not gtk_icon_view_path_is_selected(PGtkIconView(MainView), Path) then
-            gtk_icon_view_select_path(PGtkIconView(MainView), Path)
-          else
-          if not AIsSet and gtk_icon_view_path_is_selected(PGtkIconView(MainView), Path) then
-            gtk_icon_view_unselect_path(PGtkIconView(MainView), Path);
+          //TODO: do something with the rowcolor ?
         end;
-        gtk_tree_path_free(Path);
+
+        lisFocused:
+        begin
+          //gtk2 iter has no focus??
+          Path := gtk_tree_path_new_from_string(PChar(IntToStr(AIndex)));
+
+          if GTK_IS_TREE_VIEW(MainView) then
+          begin
+            if AIsSet then
+              gtk_tree_view_set_cursor(PGtkTreeView(MainView), Path, nil, False)
+            else
+              gtk_tree_view_set_cursor(PGtkTreeView(MainView), nil, nil, False);
+          end
+        {$IFDEF GTK_2_8}
+          else
+          if GTK_IS_ICON_VIEW(MainView) then
+          begin
+            if AIsSet then
+              gtk_icon_view_set_cursor(PGtkIconView(MainView), Path, nil, False)
+            else
+              gtk_icon_view_set_cursor(PGtkIconView(MainView), nil, nil, False);
+          end
+        {$ENDIF};
+          gtk_tree_path_free(Path);
+        end;
+
+        lisSelected:
+        begin
+          Path := gtk_tree_path_new_from_string(PChar(IntToStr(AIndex)));
+          if GTK_IS_TREE_VIEW(MainView) then
+          begin
+            if AIsSet and not gtk_tree_selection_path_is_selected(TreeSelection, Path) then
+              gtk_tree_selection_select_path(TreeSelection, Path)
+            else
+            if not AIsSet and gtk_tree_selection_path_is_selected(TreeSelection, Path) then
+              gtk_tree_selection_unselect_path(TreeSelection, Path);
+          end
+          else
+          if GTK_IS_ICON_VIEW(MainView) then
+          begin
+            if AIsSet and not gtk_icon_view_path_is_selected(PGtkIconView(MainView), Path) then
+              gtk_icon_view_select_path(PGtkIconView(MainView), Path)
+            else
+            if not AIsSet and gtk_icon_view_path_is_selected(PGtkIconView(MainView), Path) then
+              gtk_icon_view_unselect_path(PGtkIconView(MainView), Path);
+          end;
+          gtk_tree_path_free(Path);
+        end;
       end;
     end;
+  finally
+    Exclude(Widgets^.WidgetInfo^.Flags, wwiInvalidEvent);
   end;
 end;
 
