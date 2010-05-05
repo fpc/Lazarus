@@ -1114,7 +1114,7 @@ begin
   if Info = nil then // this widget is already destroyed
     Exit;
 
-  if (Info^.LCLObject <> TObject(Data)) then // this LCLObject does not use this widget anymore
+  if (Data = nil) or (Info^.LCLObject <> TObject(Data)) then // this LCLObject does not use this widget anymore
     Exit;
 
   if (TObject(Data) is TWinControl) then
