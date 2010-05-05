@@ -713,6 +713,8 @@ type
     property ChangeStamp: integer read FChangeStamp;
   end;
 
+  { TFPCSourceCache }
+
   TFPCSourceCache = class
   private
     fItems: TAVLTree; // tree of TFPCSourceCacheItem
@@ -822,8 +824,22 @@ function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string;
    IncludeFileMask: check FilenameIsMatching vs the short file name of a file
 }
 var
+  Files: TAVLTree; // tree of ansistring
   FileCount: integer;
   Abort: boolean;
+
+  procedure Add(Filename: string);
+  var
+    s: String;
+  begin
+    if Filename='' then exit;
+    // increase refcount
+    s:=Filename;
+    // add
+    Files.Add(PChar(s));
+    // keep refcount
+    Pointer(s):=nil;
+  end;
 
   procedure Search(CurDir: string);
   var
@@ -859,7 +875,7 @@ var
           if (IncludeFileMask='')
           or FilenameIsMatching(IncludeFileMask,ShortFilename,true) then begin
             //DebugLn(['Search ADD ',Filename]);
-            GatherFiles.Add(Filename);
+            Add(Filename);
           end else begin
             //DebugLn(['Search MISMATCH ',Filename]);
           end;
@@ -869,13 +885,29 @@ var
     FindCloseUTF8(FileInfo);
   end;
 
+var
+  Node: TAVLTreeNode;
+  s: String;
 begin
-  Result:=TStringList.Create;
-  FileCount:=0;
+  Result:=nil;
+  Files:=TAVLTree.Create(@CompareAnsiStringFilenames);
   Abort:=false;
-  Directory:=CleanAndExpandDirectory(Directory);
-  Search('');
-  if Abort then FreeAndNil(Result);
+  try
+    FileCount:=0;
+    Directory:=CleanAndExpandDirectory(Directory);
+    Search('');
+  finally
+    if not Abort then
+      Result:=TStringList.Create;
+    Node:=Files.FindLowest;
+    while Node<>nil do begin
+      Pointer(s):=Node.Data;
+      if Result<>nil then Result.Add(s);
+      s:='';
+      Node:=Files.FindSuccessor(Node);
+    end;
+    FreeAndNil(Files);
+  end;
 end;
 
 function Compress1FileList(Files: TStrings): TStringList;
@@ -6940,7 +6972,9 @@ begin
       Files:=GatherFiles(Directory,'{.svn,CVS}',
                               '{*.pas,*.pp,*.p,*.inc,Makefile.fpc}',OnProgress);
     end;
-    // ToDo: sort and check for changes
+    if ((Files=nil)<>(OldFiles=nil))
+    or ((Files<>nil) and (Files.Text<>OldFiles.Text)) then
+      IncreaseChangeStamp;
   finally
     OldFiles.Free;
   end;
