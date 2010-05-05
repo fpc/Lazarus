@@ -134,6 +134,7 @@ type
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     function GetFrame(Index: Integer): ControlRef; override;
+    function GetForceEmbedInScrollView: Boolean; override;
   public
     class function GetValidEvents: TCarbonControlEvents; override;
     procedure Draw; override;
@@ -715,7 +716,7 @@ procedure TCarbonCustomControl.CreateWidget(const AParams: TCreateParams);
 begin
   Widget := CreateCustomHIView(ParamsToHIRect(AParams), LCLObject.ControlStyle);
   if Widget = nil then RaiseCreateWidgetError(LCLObject);
-  
+
   FScrollView := EmbedInScrollView(AParams);
   FScrollSize := Classes.Point(0, 0);
   FScrollMin := Classes.Point(0, 0);
@@ -725,7 +726,7 @@ begin
   FMulY := 1;
 
   if LCLObject.ClassNameIs('TSynEdit') then
-     FTextFractional := False
+    FTextFractional := False
   else
     FTextFractional := True;
     
@@ -752,6 +753,11 @@ end;
 function TCarbonCustomControl.GetFrame(Index: Integer): ControlRef;
 begin
   Result := FScrollView;
+end;
+
+function TCarbonCustomControl.GetForceEmbedInScrollView:Boolean;
+begin
+  Result:=True;
 end;
 
 {------------------------------------------------------------------------------
