@@ -2460,18 +2460,6 @@ begin
   Result := Boolean(Windows.RectVisible(DC, LPRECT(@ARect)^));
 end;
 
-{------------------------------------------------------------------------------
-  Function: RemoveProp
-  Params: Handle: Handle of the object
-          Str: Name of the property to remove
-  Returns: The handle of the property (0=failure)
-
- ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.RemoveProp(Handle: hwnd; Str: PChar): THandle;
-begin
-  Result:=inherited RemoveProp(Handle, Str);
-end;}
-
 {function TWinCEWidgetSet.RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer
   ): Boolean;
 begin
@@ -2504,6 +2492,25 @@ begin
   Assert(False, Format('Trace:> [TWinCEWidgetSet.ReleaseDC] DC:0x%x', [DC]));
   Result := Windows.ReleaseDC(Window, DC);
   Assert(False, Format('Trace:< [TWinCEWidgetSet.ReleaseDC] DC:0x%x', [DC]));
+end;
+
+{------------------------------------------------------------------------------
+  Function: RemoveProp
+  Params: Handle: Handle of the object
+          Str: Name of the property to remove
+  Returns: The handle of the property (0=failure)
+
+ ------------------------------------------------------------------------------}
+function TWinCEWidgetSet.RemoveProp(Handle: hwnd; Str: PChar): THandle;
+var
+  WideStr: widestring;
+begin
+  WideStr := UTF8Decode(String(str));
+  {$ifdef win32}
+  Result := THandle(Windows.RemovePropW(Handle, PWideChar(WideStr)));
+  {$else}
+  Result := THandle(Windows.RemoveProp(Handle, PWideChar(WideStr)));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------

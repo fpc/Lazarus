@@ -184,7 +184,7 @@ function RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UIN
 {function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; override;}
 function ReleaseCapture : Boolean; override;
 function ReleaseDC(Window: HWND; DC: HDC): Integer; override;
-//function RemoveProp(Handle: hwnd; Str: PChar): THandle; override;
+function RemoveProp(Handle: hwnd; Str: PChar): THandle; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
 function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;  override;
 
