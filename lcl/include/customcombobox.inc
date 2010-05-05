@@ -990,8 +990,9 @@ var
 begin
   with TheMessage.MeasureItemStruct^ do
   begin
-    if Self.ItemHeight <> 0 then
-      AHeight := Self.ItemHeight
+    // don't call ItemHeight since this cause recursieve message sending on windows
+    if FItemHeight <> 0 then
+      AHeight := FItemHeight
     else
       AHeight := ItemHeight;
     if FStyle = csOwnerDrawVariable then
