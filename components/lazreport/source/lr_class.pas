@@ -1511,7 +1511,7 @@ begin
 end;
 
 // locale neutral StrToFloatDef
-function StringToFloatDef(S:String; const ADefault:Double): Double;
+function StringToFloatDef(const S:String; const ADefault:Double): Double;
 var
   Code: Integer;
 begin
@@ -2420,11 +2420,7 @@ begin
     if Length(s) > 0 then
     begin
       GetData(s);
-      // WORKAROUND: FPC BUG, setting Memo1.Text=char doesn't work
-      if (Length(s)=1)and(Length(Memo1.Text)=0) then
-        Memo1.Add(s)
-      else
-        Memo1.Text := Memo1.Text + s;
+      Memo1.Add(s)
     end
     else
       Memo1.Add('');
