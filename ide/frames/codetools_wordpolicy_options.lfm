@@ -1,21 +1,24 @@
 inherited CodetoolsWordPolicyOptionsFrame: TCodetoolsWordPolicyOptionsFrame
-  Height = 229
+  Height = 270
   Width = 483
-  ClientHeight = 229
+  ClientHeight = 270
   ClientWidth = 483
   TabOrder = 0
   Visible = False
-  DesignLeft = 397
-  DesignTop = 132
+  DesignLeft = 340
+  DesignTop = 308
   object KeyWordPolicyRadioGroup: TRadioGroup[0]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
+    Left = 0
     Height = 100
+    Top = 0
     Width = 483
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
+    AutoSize = True
     Caption = 'KeyWordPolicyRadioGroup'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -25,6 +28,7 @@ inherited CodetoolsWordPolicyOptionsFrame: TCodetoolsWordPolicyOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
+    Constraints.MinHeight = 100
     TabOrder = 0
   end
   object IdentifierPolicyRadioGroup: TRadioGroup[1]
@@ -33,11 +37,13 @@ inherited CodetoolsWordPolicyOptionsFrame: TCodetoolsWordPolicyOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
+    Left = 0
     Height = 100
     Top = 106
     Width = 483
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
+    AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'IdentifierPolicyRadioGroup'
     ChildSizing.LeftRightSpacing = 6
@@ -48,6 +54,7 @@ inherited CodetoolsWordPolicyOptionsFrame: TCodetoolsWordPolicyOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
+    Constraints.MinHeight = 100
     TabOrder = 1
   end
 end

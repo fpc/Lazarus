@@ -50,56 +50,25 @@ procedure TCodetoolsAtomCheckboxesOptionsFrame.CreateAtomCheckBoxes(
   ParentGroupBox: TGroupBox; AtomTypes: TAtomTypes; Columns: integer;
   AOnClick: TNotifyEvent);
 var
-  Count, i, yi, MaxYCount: integer;
   a: TAtomType;
-  X, Y, CurX, CurY, XStep, YStep: integer;
   NewCheckBox: TCheckBox;
+  i: Integer;
 begin
-  if Columns < 1 then
-    Columns := 1;
-  Count := 0;
-  for a := Low(TAtomTypes) to High(TAtomTypes) do
-    if a in AtomTypes then
-      inc(Count);
-  if Count = 0 then
-    Exit;
-
-  MaxYCount := (Count + Columns - 1) div Columns;
-  X := 6;
-  Y := 1;
-  XStep := (ParentGroupBox.ClientWidth - 10) div Columns;
-  YStep := (ParentGroupBox.ClientHeight - 20) div MaxYCount;
-  CurX := X;
-  CurY := Y;
-  i := 0;
-  yi := 0;
-
+  i:=0;
   for a := Low(TAtomTypes) to High(TAtomTypes) do
   begin
     if a in AtomTypes then
     begin
       inc(i);
-      inc(yi);
       NewCheckBox := TCheckBox.Create(ParentGroupBox);
       with NewCheckBox do
       begin
         Name := ParentGroupBox.Name + 'CheckBox' + IntToStr(i + 1);
         Parent := ParentGroupBox;
-        SetBounds(CurX, CurY, XStep - 10, Height);
         Caption := GetTranslatedAtomTypes(a);
         OnClick := AOnClick;
         Tag := ord(a);
-        Visible := true;
       end;
-      if yi >= MaxYCount then
-      begin
-        inc(X, XStep);
-        CurX := X;
-        CurY := Y;
-        yi := 0;
-      end
-      else
-        inc(CurY,YStep);
     end;
   end;
 end;

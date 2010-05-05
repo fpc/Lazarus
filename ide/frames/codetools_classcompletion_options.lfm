@@ -14,8 +14,9 @@ inherited CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptions
     Left = 0
     Height = 100
     Top = 0
-    Width = 254
+    Width = 200
     AutoFill = True
+    AutoSize = True
     Caption = 'ClassPartInsertPolicyRadioGroup'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
@@ -25,6 +26,8 @@ inherited CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptions
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
+    Constraints.MinHeight = 100
+    Constraints.MinWidth = 200
     TabOrder = 0
   end
   object MethodInsertPolicyRadioGroup: TRadioGroup[1]
@@ -33,12 +36,13 @@ inherited CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptions
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 260
+    Left = 206
     Height = 100
     Top = 0
-    Width = 312
+    Width = 366
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
+    AutoSize = True
     BorderSpacing.Left = 6
     Caption = 'MethodInsertPolicyRadioGroup'
     ChildSizing.LeftRightSpacing = 6
@@ -49,6 +53,7 @@ inherited CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptions
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
+    Constraints.MinHeight = 100
     TabOrder = 1
   end
   object MixMethodsAndPropertiesCheckBox: TCheckBox[2]
@@ -83,7 +88,7 @@ inherited CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptions
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 193
+    Height = 194
     Top = 190
     Width = 572
     Anchors = [akTop, akLeft, akRight]
@@ -91,7 +96,7 @@ inherited CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptions
     BorderSpacing.Top = 6
     Caption = 'PropertyCompletionGroupBox'
     ClientHeight = 175
-    ClientWidth = 570
+    ClientWidth = 568
     TabOrder = 4
     object PropertyCompletionCheckBox: TCheckBox
       AnchorSideLeft.Control = PropertyCompletionGroupBox
@@ -113,7 +118,7 @@ inherited CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptions
       Left = 6
       Height = 135
       Top = 34
-      Width = 558
+      Width = 556
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Around = 6
@@ -121,7 +126,7 @@ inherited CodetoolsClassCompletionOptionsFrame: TCodetoolsClassCompletionOptions
       ChildSizing.Layout = cclTopToBottomThenLeftToRight
       ChildSizing.ControlsPerLine = 5
       ClientHeight = 135
-      ClientWidth = 558
+      ClientWidth = 556
       TabOrder = 1
       object SetPropertyVariablenameLabel: TLabel
         AnchorSideTop.Side = asrCenter
