@@ -742,11 +742,14 @@ function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
 function RunFPCInfo(const CompilerFilename: string;
                    InfoTypes: TFPCInfoTypes; const Options: string =''): string;
 function ParseFPCVerbose(List: TStrings; // fpc -va output
-                         out ConfigFiles, // Praefix '-' for file not found, '+' for found and read
-                             UnitPaths: TStrings; // unit search paths
+                         out ConfigFiles: TStrings; // prefix '-' for file not found, '+' for found and read
+                         out CompilerFilename: string; // what compiler is used by fpc
+                         out UnitPaths: TStrings; // unit search paths
                          out Defines, Undefines: TStringToStringTree): boolean;
 function RunFPCVerbose(const CompilerFilename, TestFilename: string;
-                       out ConfigFiles, UnitPaths: TStrings;
+                       out ConfigFiles: TStrings;
+                       out TargetCompilerFilename: string;
+                       out UnitPaths: TStrings;
                        out Defines, Undefines: TStringToStringTree;
                        const Options: string = ''): boolean;
 function GatherUnitsInSearchPaths(SearchPaths: TStrings;
@@ -1018,7 +1021,8 @@ begin
   end;
 end;
 
-function ParseFPCVerbose(List: TStrings; out ConfigFiles, UnitPaths: TStrings;
+function ParseFPCVerbose(List: TStrings; out ConfigFiles: TSTrings;
+  out CompilerFilename: string; out UnitPaths: TStrings;
   out Defines, Undefines: TStringToStringTree): boolean;
 
   procedure UndefineSymbol(const UpperName: string);
@@ -1109,6 +1113,10 @@ function ParseFPCVerbose(List: TStrings; out ConfigFiles, UnitPaths: TStrings;
         Inc(CurPos, 19);
         Filename:=copy(Line,CurPos,length(Line));
         ConfigFiles.Add('-'+Filename);
+      end else if StrLComp(@UpLine[CurPos], 'COMPILER: ', 10) = 0 then begin
+        // skip keywords
+        Inc(CurPos, 10);
+        CompilerFilename:=copy(Line,CurPos,length(Line));
       end;
     'R':
       if StrLComp(@UpLine[CurPos], 'READING OPTIONS FROM FILE ', 26) = 0 then
@@ -1129,6 +1137,7 @@ var
 begin
   Result:=false;
   ConfigFiles:=TStringList.Create;
+  CompilerFilename:='';
   UnitPaths:=TStringList.Create;
   Defines:=TStringToStringTree.Create(true);
   Undefines:=TStringToStringTree.Create(true);
@@ -1147,8 +1156,8 @@ begin
 end;
 
 function RunFPCVerbose(const CompilerFilename, TestFilename: string;
-  out ConfigFiles, UnitPaths: TStrings;
-  out Defines, Undefines: TStringToStringTree;
+  out ConfigFiles: TStrings; out TargetCompilerFilename: string;
+  out UnitPaths: TStrings; out Defines, Undefines: TStringToStringTree;
   const Options: string): boolean;
 var
   Params: String;
@@ -1158,6 +1167,8 @@ var
   fs: TFileStream;
 begin
   Result:=false;
+  ConfigFiles:=nil;
+  TargetCompilerFilename:='';
   UnitPaths:=nil;
   Defines:=nil;
   Undefines:=nil;
@@ -1181,7 +1192,8 @@ begin
     //DebugLn(['RunFPCVerbose ',CompilerFilename,' ',Params,' ',WorkDir]);
     List:=RunTool(CompilerFilename,Params,WorkDir);
     if (List=nil) or (List.Count=0) then exit;
-    Result:=ParseFPCVerbose(List,ConfigFiles,UnitPaths,Defines,Undefines);
+    Result:=ParseFPCVerbose(List,ConfigFiles,TargetCompilerFilename,
+                            UnitPaths,Defines,Undefines);
   finally
     List.Free;
   end;
@@ -6593,13 +6605,15 @@ begin
     // run fpc and parse output
     if ExtraOptions<>'' then ExtraOptions:=' '+ExtraOptions;
     ExtraOptions:='-T'+TargetOS+' -P'+TargetCPU;
-    RunFPCVerbose(Compiler,TestFilename,CfgFiles,UnitPaths,
+    RunFPCVerbose(Compiler,TestFilename,CfgFiles,TargetCompiler,UnitPaths,
                   Defines,Undefines,ExtraOptions);
+    // store the used target compiler
+    if (TargetCompiler<>'') and FileExistsCached(TargetCompiler) then
+      TargetCompilerDate:=FileAgeCached(TargetCompiler);
     // store the list of tried and read cfg files
     if CfgFiles<>nil then begin
       for i:=0 to CfgFiles.Count-1 do begin
         Filename:=CfgFiles[i];
-        DebugLn(['TFPCTargetConfigCacheItem.Update ',Filename]);
         if Filename='' then continue;
         CfgFileExists:=Filename[1]='+';
         Filename:=copy(Filename,2,length(Filename));
