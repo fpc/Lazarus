@@ -462,6 +462,7 @@ var
     UpdateFileProperties(OpenFileName);
   end;
 begin
+  Result := 0;
   if uMsg = WM_INITDIALOG then
   begin
     // Windows asks us to initialize dialog. At this moment controls are not
@@ -500,10 +501,10 @@ begin
       end;
     end;
   end;
-  Result := 0;
 end;
 
 function CreateFileDialogHandle(AOpenDialog: TOpenDialog): THandle;
+
   function GetFlagsFromOptions(Options: TOpenOptions): DWord;
   begin
     Result := OFN_ENABLEHOOK;
@@ -529,11 +530,12 @@ function CreateFileDialogHandle(AOpenDialog: TOpenDialog): THandle;
   end;
 
   procedure ReplacePipe(var AFilter:string);
-  var i:integer;
+  var
+    i: integer;
   begin
-    for i := 1 to length(AFilter) do
-      if AFilter[i] = '|' then AFilter[i]:=#0;
-    AFilter:=AFilter + #0;
+    for i := 1 to Length(AFilter) do
+      if AFilter[i] = '|' then AFilter[i] := #0;
+    AFilter := AFilter + #0;
   end;
 
   function GetDefaultExt: String;
@@ -558,11 +560,11 @@ var
 begin
   FileName := AOpenDialog.FileName;
   InitialDir := AOpenDialog.InitialDir;
-  if (FileName<>'') and (FileName[length(FileName)]=PathDelim) then
+  if (FileName <> '') and (FileName[length(FileName)] = PathDelim) then
   begin
     // if the filename contains a directory, set the initial directory
     // and clear the filename
-    InitialDir := Copy(FileName,1, Length(FileName)-1);
+    InitialDir := Copy(FileName, 1, Length(FileName) - 1);
     FileName := '';
   end;
 
@@ -579,7 +581,7 @@ begin
       else
         FileNameBufferSize := Length(FileNameWide);
 
-      Move(PChar(FileNameWide)^, FileNameWideBuffer^, FileNameBufferSize * 2);
+      Move(PWideChar(FileNameWide)^, FileNameWideBuffer^, FileNameBufferSize * 2);
     end
     else begin
       FileNameBuffer := AllocMem(FileNameBufferLen + 1);
@@ -596,7 +598,7 @@ begin
     ReplacePipe(Filter);
   end
   else
-    Filter:='All File Types(*.*)'+#0+'*.*'+#0; // Default -> avoid empty combobox
+    Filter := 'All File Types(*.*)'+#0+'*.*'+#0; // Default -> avoid empty combobox
 
   OpenFile := AllocMem(SizeOf(OpenFileName));
   with OpenFile^ do
@@ -611,18 +613,18 @@ begin
     if UnicodeEnabledOS then
     begin
       lpStrFile := PChar(FileNameWideBuffer);
-      lpstrFilter:=PChar(UTF8StringToPWideChar(Filter));
-      lpstrTitle:=PChar(UTF8StringToPWideChar(AOpenDialog.Title));
-      lpstrInitialDir:=PChar(UTF8StringToPWideChar(InitialDir));
-      lpstrDefExt:=PChar(UTF8StringToPWideChar(DefaultExt))
+      lpstrFilter := PChar(UTF8StringToPWideChar(Filter));
+      lpstrTitle := PChar(UTF8StringToPWideChar(AOpenDialog.Title));
+      lpstrInitialDir := PChar(UTF8StringToPWideChar(InitialDir));
+      lpstrDefExt := PChar(UTF8StringToPWideChar(DefaultExt))
     end
     else
     begin
       lpStrFile := FileNameBuffer;
-      lpstrFilter:=UTF8StringToPAnsiChar(Filter);
-      lpstrTitle:=UTF8StringToPAnsiChar(AOpenDialog.Title);
-      lpstrInitialDir:=UTF8StringToPAnsiChar(InitialDir);
-      lpstrDefExt:=UTF8StringToPAnsiChar(DefaultExt);
+      lpstrFilter := UTF8StringToPAnsiChar(Filter);
+      lpstrTitle := UTF8StringToPAnsiChar(AOpenDialog.Title);
+      lpstrInitialDir := UTF8StringToPAnsiChar(InitialDir);
+      lpstrDefExt := UTF8StringToPAnsiChar(DefaultExt);
     end;
   {$else}
     lpStrFile := FileNameBuffer;
@@ -639,7 +641,6 @@ begin
     lpstrDefExt := GetMem(Length(DefaultExt)+1);
     StrPCopy(lpstrDefExt, DefaultExt);
   {$endif}
-
 
     nMaxFile := FileNameBufferLen + 1; // Size in TCHARs
     lpfnHook := @OpenFileDialogCallBack;
