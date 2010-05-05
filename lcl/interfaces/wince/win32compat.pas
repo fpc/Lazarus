@@ -7,6 +7,8 @@ interface
 uses
   Classes, SysUtils, Windows;
 
+{$ifdef Win32}
+
 { From System.pas }
 
 function SysAllocStringLen(psz:pointer;len:dword):pointer;stdcall;
@@ -72,12 +74,16 @@ const
 { From Windows.pas (adapted for win32) }
 const
   SYS_COLOR_INDEX_FLAG = 0;
-  
+
+{$endif}
+
 implementation
 
 initialization
 
+{$ifdef Win32}
   Pointer(InitCommonControlsEx) := GetProcAddress(GetModuleHandle(comctl32), 'InitCommonControlsEx');
+{$endif}
 
 end.
 

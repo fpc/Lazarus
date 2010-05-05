@@ -1902,6 +1902,41 @@ begin
   Assert(False, Format('Trace:< TODO FINISH[TWinCEWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
 end;
 
+function TWinCEWidgetSet.GetViewPortExtEx(DC: HDC; Size: PSize): Integer;
+begin
+  {$ifdef Win32}
+    Result := Integer(Windows.GetViewPortExtEx(DC, LPSize(Size)));
+  {$else}
+    Result := 0;
+  {$endif}
+end;
+
+{ This routine isn't used directly by the LCL
+  We implent it with SetViewPortOrgEx because GetViewPortOrgEx is
+  only available in Windows Mobile 5.0 +
+}
+function TWinCEWidgetSet.GetViewPortOrgEx(DC: HDC; P: PPoint): Integer;
+begin
+  {$ifdef Win32}
+    Result := Integer(Windows.GetViewPortOrgEx(DC, LPPoint(P)));
+  {$else}
+    Result := 0;
+    if P = nil then Exit;
+    Result := Integer(SetViewPortOrgEx(DC, 0, 0, P));
+    SetViewPortOrgEx(DC, P^.x, P^.y, nil);
+  {$endif}
+end;
+
+function TWinCEWidgetSet.GetWindowExtEx(DC: HDC; Size: PSize): Integer;
+begin
+  {$ifdef Win32}
+    Result := Integer(Windows.GetWindowExtEx(DC, LPSize(Size)));
+  {$else}
+    Result := 0;
+  {$endif}
+end;
+
+
 {------------------------------------------------------------------------------
   Method:  GetWindowLong
   Params:  Handle - handle of window
@@ -2887,6 +2922,7 @@ begin
   Assert(False, Format('Trace:< [TWinCEWidgetSet.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 end;
 
+{ This routine isn't used directly by the LCL }
 function TWinCEWidgetSet.SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean;
 begin
   Result := Boolean(Windows.SetViewPortOrgEx(DC, NewX, NewY, LPPoint(OldPoint)));

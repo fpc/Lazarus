@@ -65,9 +65,9 @@ function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;
 function DestroyCaret(Handle: HWND): Boolean; override;
 function DestroyCursor(Handle: HCURSOR): Boolean; override;
 function DestroyIcon(Handle: HICON): Boolean; override;
+function DrawEdge(DC: HDC; var Rect: TRect; Edge: Cardinal; GrfFlags: Cardinal): Boolean; override;
 function DrawFrameControl(DC: HDC; const Rect: TRect; UType, UState: Cardinal): Boolean; override;
 function DrawFocusRect(DC: HDC; const Rect: TRect): boolean; override;
-function DrawEdge(DC: HDC; var Rect: TRect; Edge: Cardinal; GrfFlags: Cardinal): Boolean; override;
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
 
 function Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
@@ -90,6 +90,7 @@ function Frame3D(DC: HDC; var Rect: TRect; Const FrameWidth: Integer; Const Styl
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH) : integer; override;
 
 function GetActiveWindow: HWND; override;
+function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; override;
 function GetCapture: HWND; override;
 function GetCaretPos(Var LPPoint: TPoint): Boolean; override;
 function GetCharABCWidths(DC: HDC; P2, P3: UINT; Const ABCStructs): Boolean; override;
@@ -99,11 +100,10 @@ function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
 function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
 function GetCursorPos(var LPPoint: TPoint): Boolean; override;
 function GetDC(HWnd: HWND): HDC; override;
+function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override;
 function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; override;
-function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; override;
-function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; override;
 function GetDoubleClickTime: UINT; override;
 function GetFocus: HWND; override;
 function GetForegroundWindow: HWND; override;

@@ -26,14 +26,11 @@ unit WinCEWSArrow;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-  Windows, Arrow, Graphics,
-////////////////////////////////////////////////////
+  // Libs
+  Windows,
+  // LCL
+  Arrow, Graphics, win32compat,
+  // Widgetset
   WSArrow, WSLCLClasses;
 
 type

@@ -43,8 +43,8 @@
 function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc;override;
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
 
-//function CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer; override;
 procedure CallDefaultWndHandler(Sender: TObject; var Message);override;
+//function CallNextHookEx(hHk: HHOOK; ncode : Integer; wParam: WParam; lParam : LParam) : Integer; override;
 function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam: WParam; lParam : lParam) : Integer; override;
 function ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;override;
 
@@ -59,9 +59,10 @@ function ClipboardRegisterFormat(const AMimeType: String): TClipboardFormat; ove
 function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;  override;
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
-function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean; override;
+function CreateCaret(Handle: HWND; Bitmap: hBitmap; width, Height: Integer) : Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
 function CreateCompatibleDC(DC: HDC): HDC; override;
+// win32 doesn't implement CreateDIBitmap
 function CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHeader;dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;  wUsage: UINT): HBITMAP; override;
 function CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
   var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP; override;
@@ -78,13 +79,15 @@ procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
 function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean;  override;
 function DestroyCaret(Handle : HWND): Boolean; override;
-function DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean; override;
 function DestroyCursor(Handle: hCursor): Boolean; override;
 function DestroyIcon(Handle: HICON): Boolean; override;
 function DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal; grfFlags: Cardinal): Boolean; override;
+//function DrawFocusRect(DC: HDC; const Rect: TRect): boolean; override;
+function DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean; override;
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
 
 function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean; override;
+//function EmptyClipBoard: Boolean;
 {function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;}
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
 function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
@@ -93,6 +96,7 @@ function EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumPro
 {function EnumFontFamilies(DC: HDC; Family: Pchar; EnumFontFamProc: FontEnumProc; LParam:Lparam):longint; override;
 function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint; override;}
 function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
+//function ExtCreatePen(dwPenStyle, dwWidth: DWord; const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN; override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  override;
 function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;
 
@@ -103,20 +107,16 @@ function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
 
 function GetActiveWindow : HWND; override;
 //function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; override;
-
 function GetCapture: HWND; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
-{function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;
-function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean; override;}
+//function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean; override;
 function GetClientBounds(handle : HWND; var Rect : TRect) : Boolean; override;
 function GetClientRect(handle : HWND; var Rect : TRect) : Boolean; override;
 function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
 function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
-{function GetCmdLineParamDescForInterface: string; override;}
 function GetCursorPos(var lpPoint: TPoint): Boolean; override;
 function GetDC(hWnd: HWND): HDC;  override;
 function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
-{function GetDesignerDC(WindowHandle: HWND): HDC; override;}
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; override;
 //function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; override;
 function GetDoubleClickTime: UINT; override;
@@ -140,14 +140,16 @@ function GetSystemMetrics(nIndex: Integer): Integer;  override;
 function GetTextColor(DC: HDC) : TColorRef; override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
+function GetViewPortExtEx(DC: HDC; Size: PSize): Integer; override;
+function GetViewPortOrgEx(DC: HDC; P: PPoint): Integer; override;
+function GetWindowExtEx(DC: HDC; Size: PSize): Integer; override;
 function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;
-function GetWindowRect(Handle : hwnd; var Rect: TRect): Integer; override;
 function GetWindowOrgEx(dc : hdc; P: PPoint): Integer;  override;
+function GetWindowRect(Handle : hwnd; var Rect: TRect): Integer; override;
 function GetWindowRelativePosition(Handle : hwnd; var Left, Top: integer): boolean; override;
 function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
-{
-function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
-  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; override;}
+//function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
+//  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; override;
 
 function HideCaret(hWnd: HWND): Boolean; override;
 
@@ -166,7 +168,7 @@ function MonitorFromPoint(ptScreenCoords: TPoint; dwFlags: DWord): HMONITOR; ove
 function MonitorFromRect(lprcScreenCoords: PRect; dwFlags: DWord): HMONITOR; override;
 function MonitorFromWindow(hWnd: HWND; dwFlags: DWord): HMONITOR; override;
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
-{function MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean; override;}
+
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; override;
 //function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: boolean): boolean; override;
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean; override;
