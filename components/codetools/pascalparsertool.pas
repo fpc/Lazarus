@@ -602,6 +602,12 @@ begin
       ReadNextAtom;
     if UpAtomIs('UNIMPLEMENTED') then
       ReadNextAtom;
+    if UpAtomIs('LIBRARY') then
+      ReadNextAtom;
+    if UpAtomIs('EXPERIMENTAL') then
+      ReadNextAtom;
+    if UpAtomIs('DEPRECATED') then
+      ReadNextAtom;
     if (CurPos.Flag<>cafSemicolon) then
       RaiseCharExpectedButAtomFound(';');
     if CurSection=ctnUnit then begin
