@@ -293,6 +293,17 @@ begin
     $00CC: Result := 'EM_SETPASSWORDCHAR';
     $00CF: Result := 'EM_SETREADONLY';
     // edit control messages end
+    // scrollbar control messages start
+    $00E0: Result := 'SBM_SETPOS';
+    $00E1: Result := 'SBM_GETPOS';
+    $00E2: Result := 'SBM_SETRANGE';
+    $00E3: Result := 'SBM_GETRANGE';
+    $00E4: Result := 'SBM_ENABLE_ARROWS';
+    $00E6: Result := 'SBM_SETRANGEREDRAW';
+    $00E9: Result := 'SBM_SETSCROLLINFO';
+    $00EA: Result := 'SBM_GETSCROLLINFO';
+    $00EB: Result := 'SBM_GETSCROLLBARINFO';
+    // scrollbar control messages end
     // button control messages start
     $00F0: Result := 'BM_GETCHECK';
     $00F1: Result := 'BM_SETCHECK';
