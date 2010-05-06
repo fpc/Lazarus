@@ -1,13 +1,13 @@
 Welcome to Lazarus
 ==================
 
-Lazarus is a Rapid Application Development Tool for FreePascal.
+Lazarus is a Rapid Application Development Tool for Free Pascal.
 It comes with the LCL - Lazarus component library, which contains platform
 independent visual components like buttons, windows, checkbox, treeview and
 many, many more. The LCL is platform independent, so you can write an
 application once and then compile for various platforms without changing code.
 
-FreePascal at www.freepascal.org is a fast object pascal compiler (and more),
+Free Pascal at www.freepascal.org is a fast object pascal compiler (and more),
 that runs on more than 20 platforms (linux, windows, BSD, OS/2, DOS, PowerPC,
 and many more).
 
@@ -44,7 +44,7 @@ The official site is www.lazarus.freepascal.org. There you can find the FAQ -
 the frequently asked questions.
 Documents about specific topics can be found at lazarus-ccr.sourceforge.net.
 Examples, how to use the LCL can be found in the 'examples' directory.
-Help, documents and files about FreePascal are at www.freepascal.org.
+Help, documents and files about Free Pascal are at www.freepascal.org.
 
 
 --------------------------------------------------------------------------------
