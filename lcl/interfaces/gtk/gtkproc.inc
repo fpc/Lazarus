@@ -7099,7 +7099,7 @@ procedure SetWindowSizeAndPosition(Window: PGtkWindow;
 var
   Width, Height: integer;
   {$IFDEF Gtk2}
-  allocation: TGdkRectangle;
+  allocation: TGtkAllocation;
   {$ENDIF}
   //Info: PGtkWindowGeometryInfo;
 begin
