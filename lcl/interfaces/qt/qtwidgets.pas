@@ -10617,8 +10617,8 @@ begin
    we must release mouse grab. }
   if QEvent_type(Event) = QEventApplicationDeactivate then
   begin
-    if QWidget_mouseGrabber() = Widget then
-      releaseMouse;
+    if HWND(Self) = GetCapture then
+      ReleaseCapture;
     Result := inherited EventFilter(Sender, Event);
   end else
   {$ENDIF}
