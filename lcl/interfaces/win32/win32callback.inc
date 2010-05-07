@@ -1401,44 +1401,7 @@ begin
              PDrawItemStruct(LParam)^.rcItem,
              PDrawItemStruct(LParam)^.itemAction,
              PDrawItemStruct(LParam)^.itemState);
-        end
-      end;
-
-      // TODO: this could crash for a MenuItem.
-      WindowInfo := GetWin32WindowInfo(PDrawItemStruct(LParam)^.hwndItem);
-      if WindowInfo^.WinControl<>nil then
-        lWinControl := WindowInfo^.WinControl;
-      {$IFDEF MSG_DEBUG}
-      with PDrawItemStruct(LParam)^ do
-        debugln(format('Received WM_DRAWITEM type %d handle %x', [ctlType, integer(hwndItem)]));
-      {$ENDIF}
-
-      if (lWinControl<>nil) and
-         (((lWinControl is TCustomListbox) and
-            (TCustomListBox(lWinControl).Style <> lbStandard)) or
-         ((lWinControl is TCustomCombobox) and
-            ((TCustomCombobox(lWinControl).Style = csOwnerDrawFixed) or
-            (TCustomCombobox(lWinControl).Style = csOwnerDrawVariable)))) then
-      begin
-        if PDrawItemStruct(LParam)^.itemID <> dword(-1) then
-        begin
-          LMessage.Msg := LM_DRAWLISTITEM;
-          TLMDrawListItem(LMessage).DrawListItemStruct := @DrawListItemStruct;
-          with DrawListItemStruct do begin
-            ItemID := PDrawItemStruct(LParam)^.itemID;
-            Area := PDrawItemStruct(LParam)^.rcItem;
-            ItemState := TOwnerDrawState(PDrawItemStruct(LParam)^.itemState);
-            DC := PDrawItemStruct(LParam)^._hDC;
-          end;
-          if WindowInfo <> @DefaultWindowInfo then
-          begin
-            WindowInfo^.DrawItemIndex := PDrawItemStruct(LParam)^.itemID;
-            WindowInfo^.DrawItemSelected := (PDrawItemStruct(LParam)^.itemState
-              and ODS_SELECTED) = ODS_SELECTED;
-          end;
-          WinProcess := false;
         end;
-      end else begin
         with TLMDrawItems(LMessage) do
         begin
           Msg := LM_DRAWITEM;
@@ -1446,6 +1409,53 @@ begin
           DrawItemStruct := PDrawItemStruct(LParam);
         end;
         WinProcess := false;
+      end
+      else
+      begin
+        WindowInfo := GetWin32WindowInfo(PDrawItemStruct(LParam)^.hwndItem);
+        if WindowInfo^.WinControl<>nil then
+          lWinControl := WindowInfo^.WinControl;
+        {$IFDEF MSG_DEBUG}
+        with PDrawItemStruct(LParam)^ do
+          debugln(format('Received WM_DRAWITEM type %d handle %x', [ctlType, integer(hwndItem)]));
+        {$ENDIF}
+
+        if (lWinControl<>nil) and
+           (((lWinControl is TCustomListbox) and
+              (TCustomListBox(lWinControl).Style <> lbStandard)) or
+           ((lWinControl is TCustomCombobox) and
+              ((TCustomCombobox(lWinControl).Style = csOwnerDrawFixed) or
+              (TCustomCombobox(lWinControl).Style = csOwnerDrawVariable)))) then
+        begin
+          if PDrawItemStruct(LParam)^.itemID <> dword(-1) then
+          begin
+            LMessage.Msg := LM_DRAWLISTITEM;
+            TLMDrawListItem(LMessage).DrawListItemStruct := @DrawListItemStruct;
+            with DrawListItemStruct do
+            begin
+              ItemID := PDrawItemStruct(LParam)^.itemID;
+              Area := PDrawItemStruct(LParam)^.rcItem;
+              ItemState := TOwnerDrawState(PDrawItemStruct(LParam)^.itemState);
+              DC := PDrawItemStruct(LParam)^._hDC;
+            end;
+            if WindowInfo <> @DefaultWindowInfo then
+            begin
+              WindowInfo^.DrawItemIndex := PDrawItemStruct(LParam)^.itemID;
+              WindowInfo^.DrawItemSelected := (PDrawItemStruct(LParam)^.itemState
+                and ODS_SELECTED) = ODS_SELECTED;
+            end;
+            WinProcess := false;
+          end;
+        end else
+        begin
+          with TLMDrawItems(LMessage) do
+          begin
+            Msg := LM_DRAWITEM;
+            Ctl := 0;
+            DrawItemStruct := PDrawItemStruct(LParam);
+          end;
+          WinProcess := false;
+        end;
       end;
     end;
     WM_ENABLE:
