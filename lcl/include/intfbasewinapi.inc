@@ -1246,6 +1246,11 @@ begin
   Result := False;
 end;
 
+function TWidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
+begin
+  Result := False;
+end;
+
 function TWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
   uType : Cardinal): integer;
 begin

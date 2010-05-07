@@ -1055,6 +1055,11 @@ begin
   Result := Windows.DestroyIcon(Handle);
 end;
 
+function TWin32WidgetSet.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
+begin
+  Result := Windows.DPtoLP(DC, Points, Count);
+end;
+
 {------------------------------------------------------------------------------
   Method:  DrawFrameControl
   Params: DC     - handle to device context
@@ -2419,6 +2424,11 @@ begin
   Assert(False, Format('Trace:> [TWin32WidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := Boolean(Windows.LineTo(DC, X, Y));
   Assert(False, Format('Trace:< [TWin32WidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+end;
+
+function TWin32WidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
+begin
+  Result := Windows.LPtoDP(DC, Points, Count);
 end;
 
 {------------------------------------------------------------------------------

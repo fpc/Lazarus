@@ -1149,9 +1149,8 @@ begin
 
   Result := False;
 
-  if not IsValidDC(DC)
-  then
-    exit;
+  if not IsValidDC(DC) then
+    Exit;
 
   QtDC := TQtDeviceContext(DC);
 
@@ -3940,6 +3939,37 @@ begin
     LastPos := TQtDeviceContext(DC).GetLineLastPixelPos(PenPos, LastPos);
   TQtDeviceContext(DC).drawLine(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y);
   MoveToEx(DC, X, Y, nil);
+
+  Result := True;
+end;
+
+function TQtWidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
+var
+  P: PPoint;
+  QtPoint: TQtPoint;
+  Matrix: QTransformH;
+  QtDC: TQtDeviceContext;
+  Inverted: Boolean;
+begin
+  Result := False;
+
+  if not IsValidDC(DC) then
+    Exit;
+
+  QtDC := TQtDeviceContext(DC);
+
+  Matrix := QPainter_transform(QtDC.Widget);
+  P := @Points;
+  while Count > 0 do
+  begin
+    Dec(Count);
+    QtPoint.X := P^.X;
+    QtPoint.Y := P^.Y;
+    QTransform_map(Matrix, PQtPoint(@QtPoint), PQtPoint(@QtPoint));
+    P^.X := QtPoint.X;
+    P^.Y := QtPoint.Y;
+    Inc(P);
+  end;
 
   Result := True;
 end;

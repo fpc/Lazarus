@@ -652,6 +652,11 @@ begin
   Result := WidgetSet.LineTo(DC, X, Y);
 end;
 
+function LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
+begin
+  Result := WidgetSet.LPtoDP(DC, Points, Count);
+end;
+
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean;
 begin
   Result := WidgetSet.MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask);
