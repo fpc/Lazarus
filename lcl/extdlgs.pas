@@ -42,8 +42,9 @@ type
     FPreviewFileDialog: TPreviewFileDialog;
   protected
     class procedure WSRegisterClass; override;
-    procedure SetPreviewFileDialog(const AValue: TPreviewFileDialog);
     class function GetControlClassDefaultSize: TSize; override;
+    procedure SetPreviewFileDialog(const AValue: TPreviewFileDialog);
+    procedure CreateParams(var Params: TCreateParams); override;
   public
     constructor Create(TheOwner: TComponent); override;
     property PreviewFileDialog: TPreviewFileDialog read FPreviewFileDialog
@@ -256,6 +257,13 @@ procedure TPreviewFileControl.SetPreviewFileDialog(
 begin
   if FPreviewFileDialog=AValue then exit;
   FPreviewFileDialog:=AValue;
+end;
+
+procedure TPreviewFileControl.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  if Params.WndParent = 0 then
+    Params.Style := Params.Style and not WS_CHILD;
 end;
 
 class function TPreviewFileControl.GetControlClassDefaultSize: TSize;
