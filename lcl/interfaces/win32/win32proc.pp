@@ -45,7 +45,8 @@ Type
   TWin32WindowInfo = record
     AccelGroup: HACCEL;
     Accel: HACCEL;
-    Overlay: HWND;            // overlay, transparent window on top, used by designer
+    Overlay: HWND;           // overlay, transparent window on top, used by designer
+    UpDown: HWND;
     PopupMenu: TPopupMenu;
     DefWndProc: WNDPROC;
     ParentMsgHandler: TParentMsgHandlerProc;
@@ -59,7 +60,6 @@ Type
     isComboEdit: boolean;     // is buddy of combobox, the edit control
     isChildEdit: boolean;     // is buddy edit of a control
     isGroupBox: boolean;      // is groupbox, and does not have themed tabpage as parent
-    askBuddyCoords: boolean;  // ask buddy window about position and size
     ThemedCustomDraw: boolean;// controls needs themed drawing in wm_notify/nm_customdraw
     MaxLength: integer;
     DrawItemIndex: integer;   // in case of listbox, when handling WM_DRAWITEM
@@ -753,21 +753,18 @@ end;
 function LCLControlSizeNeedsUpdate(Sender: TWinControl;
   SendSizeMsgOnDiff: boolean): boolean;
 var
-  Window:HWND;
   LMessage: TLMSize;
   IntfWidth, IntfHeight: integer;
 begin
-  Result:=false;
-  Window:= Sender.Handle;
-  LCLIntf.GetWindowSize(Window, IntfWidth, IntfHeight);
-  if (Sender.Width = IntfWidth)
-  and (Sender.Height = IntfHeight)
-  and (not Sender.ClientRectNeedsInterfaceUpdate) then
-    exit;
-  Result:=true;
-  if SendSizeMsgOnDiff then begin
+  Result := False;
+  LCLIntf.GetWindowSize(Sender.Handle, IntfWidth, IntfHeight);
+  if (Sender.Width = IntfWidth) and (Sender.Height = IntfHeight) and (not Sender.ClientRectNeedsInterfaceUpdate) then
+    Exit;
+  Result := True;
+  if SendSizeMsgOnDiff then
+  begin
     //writeln('LCLBoundsNeedsUpdate B ',TheWinControl.Name,':',TheWinControl.ClassName,' Sending WM_SIZE');
-    Sender.InvalidateClientRectCache(true);
+    Sender.InvalidateClientRectCache(True);
     // send message directly to LCL, some controls not subclassed -> message
     // never reaches LCL
     with LMessage do

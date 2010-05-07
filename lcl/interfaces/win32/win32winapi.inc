@@ -2147,12 +2147,8 @@ var
   R: TRect;
   WindowPlacement: TWINDOWPLACEMENT;
   ParentHandle: THandle;
-  WindowInfo: PWin32WindowInfo;
 begin
   Result := False;
-  WindowInfo := GetWin32WindowInfo(Handle);
-  if WindowInfo^.askBuddyCoords then
-    Handle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
 
   if IsIconic(Handle) and GetWindowPlacement(Handle, @WindowPlacement) then
     R := WindowPlacement.rcNormalPosition
@@ -2193,14 +2189,12 @@ var
   WindowInfo: PWin32WindowInfo;
   Info: tagWINDOWINFO;
 
-  procedure AdjustForBuddySize;
+  procedure AdjustUpDownSize;
   var
-    BuddyHandle: HWND;
-    BuddyWP: WINDOWPLACEMENT;
+    UpDownWP: WINDOWPLACEMENT;
   begin
-    BuddyHandle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
-    if (BuddyHandle<>HWND(nil)) and Windows.GetWindowPlacement(BuddyHandle, BuddyWP) then
-      Width := WP.rcNormalPosition.Right - BuddyWP.rcNormalPosition.Left;
+    if Windows.GetWindowPlacement(WindowInfo^.UpDown, UpDownWP) then
+      Width := UpDownWP.rcNormalPosition.Right - WP.rcNormalPosition.Left;
   end;
 
   procedure ExcludeCaption; inline;
@@ -2282,8 +2276,8 @@ begin
 
   ExcludeCaption;
 
-  if WindowInfo^.askBuddyCoords then
-    AdjustForBuddySize;
+  if WindowInfo^.UpDown <> 0 then
+    AdjustUpDownSize;
 end;
 
 function TWin32WidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex;
