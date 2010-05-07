@@ -2193,6 +2193,7 @@ var
   var
     UpDownWP: WINDOWPLACEMENT;
   begin
+    UpDownWP.length := SizeOf(UpDownWP);
     if Windows.GetWindowPlacement(WindowInfo^.UpDown, UpDownWP) then
       Width := UpDownWP.rcNormalPosition.Right - WP.rcNormalPosition.Left;
   end;
