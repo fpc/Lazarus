@@ -784,6 +784,7 @@ resourcestring
   lisChooseLazarusSourceDirectory = 'Choose Lazarus Directory';
   lisChooseCompilerPath = 'Choose compiler filename (%s)';
   lisChooseFPCSourceDir = 'Choose FPC source directory';
+  lisChooseCompilerMessages = 'Choose compiler messages file';
   lisChooseMakePath = 'Choose make path';
   lisChooseDebuggerPath = 'Choose debugger filename';
   lisChooseTestBuildDir = 'Choose the directory for tests';
@@ -1068,6 +1069,7 @@ resourcestring
   dlgFpcPath = 'Compiler path (e.g. %s)';
   dlgFpcSrcPath = 'FPC source directory';
   dlgMakePath = 'Make path';
+  dlgCompilerMessages = 'Compiler messages language file';
   dlgDebugType = 'Debugger type and path';
   dlgTestPrjDir = 'Directory for building test projects';
   dlgQShowGrid = 'Show grid';

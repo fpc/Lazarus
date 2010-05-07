@@ -215,6 +215,9 @@ type
     FFPCSourceDirHistory: TStringList;
     FMakeFileName: string;
     FMakeFileHistory: TStringList;
+    FCompilerMessagesFilename: string;
+    FCompilerMessagesFileHistory: TStringList;
+
    // TODO: store per debuggerclass options
     // Maybe these should go to a new TDebuggerOptions class
     FDebuggerSearchPath: string;
@@ -449,6 +452,10 @@ type
     property DebuggerEventLogShowOutput: Boolean read FDebuggerEventLogShowOutput write FDebuggerEventLogShowOutput;
     property DebuggerEventLogShowWindow: Boolean read FDebuggerEventLogShowWindow write FDebuggerEventLogShowWindow;
     property DebuggerEventLogShowDebugger: Boolean read FDebuggerEventLogShowDebugger write FDebuggerEventLogShowDebugger;
+    property CompilerMessagesFilename: string read FCompilerMessagesFilename
+                                              write FCompilerMessagesFilename;
+    property CompilerMessagesFileHistory: TStringList read FCompilerMessagesFileHistory
+                                                     write FCompilerMessagesFileHistory;
 
     // recent files and directories
     property RecentOpenFiles: TStringList read FRecentOpenFiles
@@ -734,6 +741,8 @@ begin
   FDebuggerSearchPath:='';
   TestBuildDirectory:=GetDefaultTestBuildDirectory;
   FTestBuildDirHistory:=TStringList.Create;
+  CompilerMessagesFilename:='';
+  FCompilerMessagesFileHistory:=TStringList.Create;
 
   // recent files and directories
   FRecentOpenFiles:=TStringList.Create;
@@ -784,6 +793,7 @@ begin
   FreeAndNil(FMakeFileHistory);
   FreeAndNil(FDebuggerFileHistory);
   FreeAndNil(FTestBuildDirHistory);
+  FreeAndNil(FCompilerMessagesFileHistory);
   if IDEWindowIntf.IDEDialogLayoutList=FIDEDialogLayoutList then
     IDEWindowIntf.IDEDialogLayoutList:=nil;
   FreeAndNil(FIDEDialogLayoutList);
@@ -1028,6 +1038,10 @@ begin
          Path+'TestBuildDirectory/History/');
       if FTestBuildDirHistory.Count=0 then
         GetDefaultTestBuildDirs(FTestBuildDirHistory);
+      CompilerMessagesFilename:=XMLConfig.GetValue(
+         Path+'CompilerMessagesFilename/Value',FCompilerMessagesFilename);
+      LoadRecentList(XMLConfig, FCompilerMessagesFileHistory,
+         Path+'CompilerMessagesFilename/History/');
 
       // backup
       LoadBackupInfo(FBackupInfoProjectFiles
@@ -1305,6 +1319,10 @@ begin
          Path+'TestBuildDirectory/Value',FTestBuildDirectory);
       SaveRecentList(XMLConfig,FTestBuildDirHistory,
          Path+'TestBuildDirectory/History/');
+      XMLConfig.SetValue(
+         Path+'CompilerMessagesFilename/Value',FCompilerMessagesFilename);
+      SaveRecentList(XMLConfig,FCompilerMessagesFileHistory,
+         Path+'CompilerMessagesFilename/History/');
 
       // backup
       SaveBackupInfo(FBackupInfoProjectFiles

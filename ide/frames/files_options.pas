@@ -35,16 +35,19 @@ type
 
   TFilesOptionsFrame = class(TAbstractIDEOptionsEditor)
     AutoCloseCompileDialogCheckBox: TCheckBox;
+    CompilerMessagesButton:TButton;
     CompilerPathButton:TButton;
     CompilerPathComboBox:TComboBox;
     FPCSourceDirButton:TButton;
     FPCSourceDirComboBox:TComboBox;
     CompilerPathLabel:TLabel;
     FPCSourceDirLabel:TLabel;
+    CompilerMessagesLabel:TLabel;
     MakePathButton:TButton;
     MakePathComboBox:TComboBox;
     TestBuildDirButton:TButton;
     TestBuildDirComboBox:TComboBox;
+    CompilerMessagesComboBox:TComboBox;
     TestBuildDirLabel:TLabel;
     MakePathLabel:TLabel;
     LazarusDirButton:TButton;
@@ -56,6 +59,7 @@ type
     MaxRecentProjectFilesLabel: TLabel;
     OpenLastProjectAtStartCheckBox: TCheckBox;
     ShowCompileDialogCheckBox: TCheckBox;
+    procedure CompilerMessagesButtonClick(Sender:TObject);
     procedure FilesButtonClick(Sender: TObject);
     procedure DirectoriesButtonClick(Sender: TObject);
     procedure ShowCompileDialogCheckBoxChange(Sender: TObject);
@@ -117,6 +121,27 @@ begin
           lisEnvOptDlgInvalidMakeFilename,
           lisEnvOptDlgInvalidMakeFilenameMsg);
       end;
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
+procedure TFilesOptionsFrame.CompilerMessagesButtonClick(Sender:TObject);
+var
+  OpenDialog: TOpenDialog;
+  AFilename: string;
+begin
+  OpenDialog:=TOpenDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
+    OpenDialog.Title:=lisChooseCompilerMessages;
+    OpenDialog.Filter:='FPC message file (*.msg)|*.msg|Any file|'+AllFilesMask;
+    if OpenDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+      SetComboBoxText(CompilerMessagesComboBox,AFilename);
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
@@ -211,6 +236,7 @@ begin
     Add('c:/windows/temp');
     EndUpdate;
   end;
+  CompilerMessagesLabel.Caption:=dlgCompilerMessages;
 end;
 
 function TFilesOptionsFrame.GetTitle: String;
@@ -269,6 +295,8 @@ begin
     TestBuildDirComboBox.Items.Assign(TestBuildDirHistory);
     FOldTestDir:=TestBuildDirectory;
     SetComboBoxText(TestBuildDirComboBox,TestBuildDirectory,MaxComboBoxCount);
+    CompilerMessagesComboBox.Items.Assign(CompilerMessagesFileHistory);
+    SetComboBoxText(CompilerMessagesComboBox,CompilerMessagesFilename,MaxComboBoxCount);
 
     // recent files and directories
     SetComboBoxText(MaxRecentOpenFilesComboBox,IntToStr(MaxRecentOpenFiles));
@@ -294,6 +322,8 @@ begin
     MakeFileHistory.Assign(MakePathComboBox.Items);
     TestBuildDirHistory.Assign(TestBuildDirComboBox.Items);
     TestBuildDirectory:=TestBuildDirComboBox.Text;
+    CompilerMessagesFileHistory.Assign(CompilerMessagesComboBox.Items);
+    CompilerMessagesFilename:=CompilerMessagesComboBox.Text;
 
     // recent files and directories
     MaxRecentOpenFiles:=StrToIntDef(
