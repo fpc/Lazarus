@@ -51,24 +51,25 @@ uses
 const
   FORMAT_MENU_NAME     = 'jcfJEDICodeFormat';
   FORMAT_CURRENT_NAME  = 'jcfCurrentEditorWindow';
-  FORMAT_PROJECT_NAME  = 'jcfAllFilesinProject';
-  FORMAT_OPEN_NAME     = 'jcfAllOpenWindows';
+  FORMAT_PROJECT_MENU_NAME  = 'jcfAllFilesinProject';
+  FORMAT_OPEN_MENU_NAME     = 'jcfAllOpenWindows';
   FORMAT_REG_SETTINGS_MENU_NAME = 'jcfRegistrySettings';
   FORMAT_SETTINGS_MENU_NAME = 'jcfFormatSettings';
   FORMAT_ABOUT_MENU_NAME = 'jcfAbout';
-  FORMAT_CATEGORY_NAME = 'jcfFormat';
+  FORMAT_CATEGORY_IDECMD_NAME = 'jcfFormat';
   FORMAT_MENU_SECTION1 = 'jcfSection1';
   FORMAT_MENU_SECTION2 = 'jcfSection2';
 
 resourcestring
   FORMAT_MENU     = 'JEDI Code &Format';
-  FORMAT_CURRENT  = '&Current Editor Window';
-  FORMAT_PROJECT  = '&All Files in Project';
-  FORMAT_OPEN     = 'All &Open Windows';
+  FORMAT_CURRENT_MENU  = '&Current Editor Window';
+  FORMAT_CURRENT_IDECMD  = 'Format code in current editor window';
+  FORMAT_PROJECT_MENU  = '&All Files in Project';
+  FORMAT_OPEN_MENU     = 'All &Open Windows';
   FORMAT_REG_SETTINGS_MENU = '&Registry Settings';
   FORMAT_SETTINGS_MENU = '&Format Settings';
   FORMAT_ABOUT_MENU = '&About';
-  FORMAT_CATEGORY = 'JEDI Code Format';
+  FORMAT_CATEGORY_IDECMD = 'JEDI Code Format';
 
 const
   DefaultJCFOptsFile = 'jcfsettings.cfg';
@@ -115,22 +116,22 @@ begin
   SetLazarusDefaultFileName;
   GetDefaultSettingsFileName := IDEGetDefaultSettingsFileName;
 
-  Cat := IDECommandList.CreateCategory(nil, FORMAT_CATEGORY_NAME,
-    FORMAT_CATEGORY, IDECmdScopeSrcEditOnly);
+  Cat := IDECommandList.CreateCategory(nil, FORMAT_CATEGORY_IDECMD_NAME,
+    FORMAT_CATEGORY_IDECMD, IDECmdScopeSrcEditOnly);
   // Ctrl + D ?
   Key := IDEShortCut(VK_D, [SSctrl], VK_UNKNOWN, []);
-  CmdFormatFile := RegisterIDECommand(Cat, FORMAT_CURRENT_NAME, FORMAT_CURRENT, Key,
+  CmdFormatFile := RegisterIDECommand(Cat, FORMAT_CURRENT_NAME, FORMAT_CURRENT_IDECMD, Key,
     lcJCFIDE.DoFormatCurrentIDEWindow);
 
   fcMainMenu := RegisterIDESubMenu(itmSecondaryTools, FORMAT_MENU_NAME, FORMAT_MENU);
 
-  RegisterIDEMenuCommand(fcMainMenu, FORMAT_CURRENT_NAME, FORMAT_CURRENT,
+  RegisterIDEMenuCommand(fcMainMenu, FORMAT_CURRENT_NAME, FORMAT_CURRENT_MENU,
     lcJCFIDE.DoFormatCurrentIDEWindow, nil, CmdFormatFile);
 
-  RegisterIDEMenuCommand(fcMainMenu, FORMAT_PROJECT_NAME, FORMAT_PROJECT,
+  RegisterIDEMenuCommand(fcMainMenu, FORMAT_PROJECT_MENU_NAME, FORMAT_PROJECT_MENU,
     lcJCFIDE.DoFormatProject);
 
-  RegisterIDEMenuCommand(fcMainMenu, FORMAT_OPEN_NAME, FORMAT_OPEN,
+  RegisterIDEMenuCommand(fcMainMenu, FORMAT_OPEN_MENU_NAME, FORMAT_OPEN_MENU,
     lcJCFIDE.DoFormatOpen);
 
   // settings

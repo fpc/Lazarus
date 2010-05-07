@@ -13,11 +13,17 @@ msgstr ""
 msgid "&About"
 msgstr "&Sobre"
 
-#: jcfideregister.format_category
+#: jcfideregister.format_category_idecmd
+msgctxt "jcfideregister.format_category_idecmd"
 msgid "JEDI Code Format"
 msgstr "Formatador de Código \"JEDI\""
 
-#: jcfideregister.format_current
+#: jcfideregister.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr ""
+
+#: jcfideregister.format_current_menu
+msgctxt "jcfideregister.format_current_menu"
 msgid "&Current Editor Window"
 msgstr "&Janela do Editor Atual"
 
@@ -25,11 +31,13 @@ msgstr "&Janela do Editor Atual"
 msgid "JEDI Code &Format"
 msgstr "&Formatador de Código \"JEDI\""
 
-#: jcfideregister.format_open
+#: jcfideregister.format_open_menu
+msgctxt "jcfideregister.format_open_menu"
 msgid "All &Open Windows"
 msgstr "T&odas as Janelas Abertas"
 
-#: jcfideregister.format_project
+#: jcfideregister.format_project_menu
+msgctxt "jcfideregister.format_project_menu"
 msgid "&All Files in Project"
 msgstr "Todos os &Arquivos no Projeto"
 
