@@ -977,11 +977,7 @@ begin
   oCallbackStatus:=kATSULayoutOperationCallbackStatusHandled;
 
   if Assigned(Buffer) then
-  begin
-    Handled := false;
     Buffer.DoJustify(iLineRef, Handled);
-    if Handled then oCallbackStatus:=kATSULayoutOperationCallbackStatusHandled;
-  end;
 end;
 
 procedure TCarbonTextLayoutBuffer.DoJustify(iLineRef: ATSULineRef; var Handled: Boolean);
@@ -997,7 +993,6 @@ type
   TATSLayoutRecordArray = array [Word] of ATSLayoutRecord1;
   PATSLayoutRecordArray = ^TATSLayoutRecordArray;
 var
-  Count   : ItemCount;
   i, ofs  : Integer;
   Layouts   : PATSLayoutRecordArray;
   LayCount  : ItemCount;
@@ -1009,7 +1004,7 @@ begin
   if Assigned(Layouts) and (Laycount>0) then
   begin
     ofs:=0;
-    for i:=0 to Min(FDXCount, Min(LayCount, Count))-1 do
+    for i:=0 to Min(FDXCount, LayCount)-1 do
     begin
       Layouts^[i].realPos:=Long2Fix(ofs);
       inc(ofs, FDX[i]);

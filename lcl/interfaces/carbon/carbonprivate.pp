@@ -1414,18 +1414,13 @@ begin
         if (I = AIndex) or (AIndex = -1) then // update panel attrs
         begin
           Panel.Width := StatusBar.Panels[I].Width;
+          if I = StatusBar.Panels.Count - 1 then
+            Panel.Align:=alClient
+          else
+            Panel.Align:=alLeft;
           Panel.Caption := StatusBar.Panels[I].Text;
           Panel.Alignment := StatusBar.Panels[I].Alignment;
           Panel.BevelOuter := TPanelBevel(StatusBar.Panels[I].Bevel);
-        end;
-        
-        // fit last panel
-        if I < StatusBar.Panels.Count - 1 then
-          Panel.Anchors := [akLeft, akTop, akBottom]
-        else
-        begin
-          Panel.Width := StatusBar.Width - X;
-          Panel.Anchors := [akLeft, akRight, akTop, akBottom];
         end;
       end;
       Panel.Show;
