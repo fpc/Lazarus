@@ -2464,8 +2464,12 @@ var SrcStart: integer;
             Result:=not (StopAtDirectives
                          and (P>=SrcStart) and (Source[P+1]='$'));
             dec(P,2);
-          end else
-            Result:=true;
+          end else begin
+            // normal bracket
+            // => position behind code
+            inc(p);
+            Result:=false;
+          end;
         end;
     else
       Result:=true;
@@ -2477,6 +2481,7 @@ var
   TestPos: integer;
   LineStartPos: LongInt;
   IsEmpty: Boolean;
+  LineEndPos: Integer;
 begin
   SrcStart:=MinPosition;
   if SrcStart<1 then SrcStart:=1;
@@ -2499,6 +2504,7 @@ begin
           if (Result>SrcStart) and (Source[Result-1] in [#10,#13])
           and (Source[Result]<>Source[Result-1]) then
             dec(Result);
+          LineEndPos:=Result+1;
           // test if in a // comment
           LineStartPos:=Result;
           IsEmpty:=true;
@@ -2512,6 +2518,7 @@ begin
           end;
           if IsEmpty then begin
             // the line is empty
+            Result:=LineEndPos;
             exit;
           end;
           TestPos:=LineStartPos;

@@ -4748,6 +4748,7 @@ begin
       // -> delete whole line
       FromPos:=FindLineEndOrCodeInFrontOfPosition(VarNode.StartPos);
       ToPos:=FindLineEndOrCodeAfterPosition(VarNode.EndPos);
+      //debugln(['TStandardCodeTool.RemovePublishedVariable ',dbgstr(copy(Src,FromPos,ToPos-FromPos))]);
     end else begin
       // variable definition has the form  'VarName, NextVarName: VarType;'
       // -> delete only 'VarName, '
