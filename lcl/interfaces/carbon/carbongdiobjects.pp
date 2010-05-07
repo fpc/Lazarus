@@ -1479,25 +1479,9 @@ begin
     AImage);
 end;
 
-procedure DrawMaskPattern(info: UnivPtr; c: CGContextRef); MWPascal;
-var
-  ABrush: TCarbonBrush absolute info;
-  AImage: CGImageRef;
-  RGBA: array[0..3] of Single;
-  ARect: CGRect;
-begin
-  AImage := ABrush.FBitmap.CGImage;
-  ARect := GetCGRect(0, 0, CGImageGetWidth(AImage), CGImageGetHeight(AImage));
-  CGContextClipToMask(c, ARect, AImage);
-
-  ABrush.GetRGBA(R2_COPYPEN, RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
-  CGContextSetRGBFillColor(c, RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
-  CGContextFillRect(c, ARect);
-end;
-
 procedure TCarbonBrush.SetHatchStyle(AHatch: PtrInt);
 const
-  HATCH_DATA: array[HS_HORIZONTAL..HS_DIAGCROSS] of array[0..7] of Word =
+  HATCH_DATA: array[HS_HORIZONTAL..HS_DIAGCROSS] of array[0..7] of Byte =
  (
  { HS_HORIZONTAL } ($FF, $FF, $FF, $00, $FF, $FF, $FF, $FF),
  { HS_VERTICAL   } ($F7, $F7, $F7, $F7, $F7, $F7, $F7, $F7),
@@ -1512,8 +1496,8 @@ begin
   if AHatch in [HS_HORIZONTAL..HS_DIAGCROSS] then
   begin
     FillChar(ACallBacks, SizeOf(ACallBacks), 0);
-    ACallBacks.drawPattern := @DrawMaskPattern;
-    FBitmap := TCarbonBitmap.Create(8, 8, 1, 1, cbaWord, cbtMask, @HATCH_DATA[AHatch]);
+    ACallBacks.drawPattern := @DrawBitmapPattern;
+    FBitmap := TCarbonBitmap.Create(8, 8, 1, 1, cbaByte, cbtMask, @HATCH_DATA[AHatch]);
     FColored := False;
     FCGPattern := CGPatternCreate(Self, GetCGRect(0, 0, 8, 8),
       CGAffineTransformIdentity, 8, 8, kCGPatternTilingConstantSpacing,
