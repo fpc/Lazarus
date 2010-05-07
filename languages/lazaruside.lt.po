@@ -675,6 +675,10 @@ msgstr "Perkelti aukštyn"
 msgid "Compiler Messages"
 msgstr "Kompiliatoriaus pranešimai"
 
+#: lazarusidestrconsts.dlgcompilermessages
+msgid "Compiler messages language file"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcompileroptions
 msgctxt "lazarusidestrconsts.dlgcompileroptions"
 msgid "Compiler Options"
@@ -1885,8 +1889,10 @@ msgid "Make Fallback"
 msgstr "Kurti surogatą"
 
 #: lazarusidestrconsts.dlgmouseoptbtnok
+#, fuzzy
+#| msgid "Ok"
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnok"
-msgid "Ok"
+msgid "OK"
 msgstr "Tinka"
 
 #: lazarusidestrconsts.dlgmouseoptbtnright
@@ -4218,6 +4224,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
+msgstr ""
+
+#: lazarusidestrconsts.lischoosecompilermessages
+msgid "Choose compiler messages file"
 msgstr ""
 
 #: lazarusidestrconsts.lischoosecompilerpath

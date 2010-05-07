@@ -684,6 +684,10 @@ msgstr ""
 msgid "Compiler Messages"
 msgstr "Komunikaty kompilatora"
 
+#: lazarusidestrconsts.dlgcompilermessages
+msgid "Compiler messages language file"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcompileroptions
 msgctxt "lazarusidestrconsts.dlgcompileroptions"
 msgid "Compiler Options"
@@ -1899,8 +1903,10 @@ msgid "Make Fallback"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptbtnok
+#, fuzzy
+#| msgid "Ok"
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnok"
-msgid "Ok"
+msgid "OK"
 msgstr "Ok"
 
 #: lazarusidestrconsts.dlgmouseoptbtnright
@@ -4223,6 +4229,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
+msgstr ""
+
+#: lazarusidestrconsts.lischoosecompilermessages
+msgid "Choose compiler messages file"
 msgstr ""
 
 #: lazarusidestrconsts.lischoosecompilerpath

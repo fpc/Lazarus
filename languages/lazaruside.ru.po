@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-02 02:06+0300\n"
+"PO-Revision-Date: 2010-05-08 03:03+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -684,6 +684,10 @@ msgstr "Переместить вверх"
 #: lazarusidestrconsts.dlgcompilermessage
 msgid "Compiler Messages"
 msgstr "Сообщения компилятора"
+
+#: lazarusidestrconsts.dlgcompilermessages
+msgid "Compiler messages language file"
+msgstr "Языковой файл сообщений компилятора"
 
 #: lazarusidestrconsts.dlgcompileroptions
 msgctxt "lazarusidestrconsts.dlgcompileroptions"
@@ -1903,8 +1907,9 @@ msgid "Make Fallback"
 msgstr "Сброс"
 
 #: lazarusidestrconsts.dlgmouseoptbtnok
+#| msgid "Ok"
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnok"
-msgid "Ok"
+msgid "OK"
 msgstr "ОК"
 
 #: lazarusidestrconsts.dlgmouseoptbtnright
@@ -4228,6 +4233,10 @@ msgstr "Выберите имя нового компонента"
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
 msgstr "Выберите файл Паскаля для получения образцов отступов"
+
+#: lazarusidestrconsts.lischoosecompilermessages
+msgid "Choose compiler messages file"
+msgstr "Выберите файл сообщений компилятора"
 
 #: lazarusidestrconsts.lischoosecompilerpath
 msgid "Choose compiler filename (%s)"

@@ -671,6 +671,10 @@ msgstr "上に移動"
 msgid "Compiler Messages"
 msgstr "コンパイラメッセージ"
 
+#: lazarusidestrconsts.dlgcompilermessages
+msgid "Compiler messages language file"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcompileroptions
 msgctxt "lazarusidestrconsts.dlgcompileroptions"
 msgid "Compiler Options"
@@ -1883,7 +1887,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptbtnok
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnok"
-msgid "Ok"
+msgid "OK"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptbtnright
@@ -4219,6 +4223,10 @@ msgstr "新しいコンポーネント名を選択してください"
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
 msgstr "インデント例に対するパスカルファイルを選択してください"
+
+#: lazarusidestrconsts.lischoosecompilermessages
+msgid "Choose compiler messages file"
+msgstr ""
 
 #: lazarusidestrconsts.lischoosecompilerpath
 msgid "Choose compiler filename (%s)"

@@ -676,6 +676,10 @@ msgstr "Nach oben bewegen"
 msgid "Compiler Messages"
 msgstr "Compiler-Meldungen"
 
+#: lazarusidestrconsts.dlgcompilermessages
+msgid "Compiler messages language file"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcompileroptions
 msgctxt "lazarusidestrconsts.dlgcompileroptions"
 msgid "Compiler Options"
@@ -1899,8 +1903,10 @@ msgid "Make Fallback"
 msgstr "Fallback anlegen"
 
 #: lazarusidestrconsts.dlgmouseoptbtnok
+#, fuzzy
+#| msgid "Ok"
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnok"
-msgid "Ok"
+msgid "OK"
 msgstr "OK"
 
 #: lazarusidestrconsts.dlgmouseoptbtnright
@@ -4236,6 +4242,10 @@ msgstr "Geben Sie den Namen der neuen Komponente an"
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
 msgstr "Geben Sie eine Pascal-Datei für die Einrückungsbeispiele an"
+
+#: lazarusidestrconsts.lischoosecompilermessages
+msgid "Choose compiler messages file"
+msgstr ""
 
 #: lazarusidestrconsts.lischoosecompilerpath
 msgid "Choose compiler filename (%s)"
