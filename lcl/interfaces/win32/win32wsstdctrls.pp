@@ -1064,7 +1064,6 @@ begin
       if TCustomEdit(AWinControl).BorderStyle=bsSingle then
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
       Flags := Flags or AlignmentToEditFlags[TCustomEdit(AWinControl).Alignment];
-      Flags := Flags or WS_CLIPCHILDREN;
       if not TCustomEdit(AWinControl).HideSelection then
         Flags := Flags or ES_NOHIDESEL;
     end;
