@@ -757,7 +757,7 @@ function TQtWidgetSet.CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
 var
   QtRegion: TQtRegion;
 begin
-  QtRegion := TQtRegion.Create(True, X1,Y1,X2,Y2);
+  QtRegion := TQtRegion.Create(True, X1, Y1, X2, Y2);
   Result := HRGN(QtRegion);
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace: [WinAPI CreateRectRgn] Result: ', dbghex(Result),
@@ -3949,7 +3949,6 @@ var
   QtPoint: TQtPoint;
   Matrix: QTransformH;
   QtDC: TQtDeviceContext;
-  Inverted: Boolean;
 begin
   Result := False;
 

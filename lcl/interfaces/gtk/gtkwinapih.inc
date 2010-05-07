@@ -65,6 +65,7 @@ function DeleteObject(GDIObject: HGDIOBJ): Boolean;  override;
 function DestroyCaret(Handle : HWND): Boolean; override;
 function DestroyCursor(Handle: HCURSOR): Boolean; override;
 function DestroyIcon(Handle: HICON): Boolean; override;
+function DPtoLP(DC: HDC; var Points; Count: Integer): BOOL; override;
 function DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean; override;
 function DrawFocusRect(DC: HDC; const Rect: TRect): boolean; override;
 function DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal; grfFlags: Cardinal): Boolean; override;
@@ -150,6 +151,7 @@ function IsZoomed(handle: HWND): boolean; override;
 
 procedure LeaveCriticalSection(var CritSection: TCriticalSection); override;
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
+function LPtoDP(DC: HDC; var Points; Count: Integer): BOOL; override;
 
 function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; override;
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;

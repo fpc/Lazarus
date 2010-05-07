@@ -1273,6 +1273,28 @@ begin
     gdk_pixbuf_unref(PGdkPixbuf(Handle));
 end;
 
+function TGTKWidgetSet.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
+var
+  DevCtx: TGtkDeviceContext absolute DC;
+  P: PPoint;
+begin
+  Result := False;
+
+  if not IsValidDC(DC) then Exit(False);
+
+  if not DevCtx.HasTransf then Exit(True);
+
+  P := @Points;
+  while Count > 0 do
+  begin
+    Dec(Count);
+    DevCtx.InvTransfPoint(P^.X, P^.Y);
+    Inc(P);
+  end;
+
+  Result := True;
+end;
+
 {------------------------------------------------------------------------------
   Function: CreateFontIndirect
   Params:  const LogFont: TLogFont
@@ -6907,6 +6929,28 @@ begin
   Result := True;
   
   Assert(False, Format('trace:< [TGtkWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
+end;
+
+function TGTKWidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
+var
+  DevCtx: TGtkDeviceContext absolute DC;
+  P: PPoint;
+begin
+  Result := False;
+
+  if not IsValidDC(DC) then Exit(False);
+
+  if not DevCtx.HasTransf then Exit(True);
+
+  P := @Points;
+  while Count > 0 do
+  begin
+    Dec(Count);
+    DevCtx.TransfPoint(P^.X, P^.Y);
+    Inc(P);
+  end;
+
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
