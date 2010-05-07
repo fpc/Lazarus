@@ -48,7 +48,7 @@ type
   published
     class procedure AdaptBounds(const AWinControl: TWinControl;
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure DefaultWndHandler(const AWinControl: TWinControl;
                        var AMessage); override;
@@ -184,14 +184,14 @@ begin
       Window := CreateWindowEx(FlagsEx, @EditClsName[0],
                   PChar(Utf8ToAnsi(StrCaption)), Flags,
                   Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
-      UpDown := CreateWindowExW(0, UPDOWN_CLASSA, nil,
+      UpDown := CreateWindowEx(0, UPDOWN_CLASSA, nil,
         WS_CHILD or WS_VISIBLE or UDS_ALIGNRIGHT or UDS_ARROWKEYS or UpDownHotStyle[HotTracking],
         0, 0, 8, Height, Parent, HMENU(nil), HInstance, nil);
     end;
     {$ELSE}
     Window := CreateWindowEx(FlagsEx, @EditClsName[0], PChar(StrCaption),
       Flags, Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
-    UpDown := CreateWindowExW(0, UPDOWN_CLASSW, nil,
+    UpDown := CreateWindowEx(0, UPDOWN_CLASSW, nil,
       WS_CHILD or WS_VISIBLE or UDS_ALIGNRIGHT or UDS_ARROWKEYS or UpDownHotStyle[HotTracking],
       0, 0, 8, Height, Parent, HMENU(nil), HInstance, nil);
     {$ENDIF}
