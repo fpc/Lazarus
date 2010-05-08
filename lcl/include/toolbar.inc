@@ -460,25 +460,24 @@ var
   NewWidth: Integer;
   NewHeight: Integer;
   FixedWidth: Boolean;
+  CurAnchors: TAnchors;
 begin
   NewWidth:=0;
   NewHeight:=0;
 
   FixedWidth:=false;
-  if [akLeft,akRight]*Anchors=[akLeft,akRight] then begin
-    // the width depends on the parent or siblings
-    // use a simpe heuristic to find out if the width is fixed
-    if (AnchorSide[akLeft].Control=nil)
-    and (AnchorSide[akRight].Control=nil)
-    and (Parent.AutoSize=false)
-    then begin
-      // the width is fixed
-      FixedWidth:=true;
-      WrapButtons(Width, NewWidth, NewHeight, True);
-      PreferredWidth := NewWidth;
-      PreferredHeight := NewHeight;
-      //DebugLn(['TToolBar.CalculatePreferredSize fixed width: ',PreferredWidth,'x',PreferredHeight]);
-    end;
+  CurAnchors:=Anchors+AnchorAlign[Align];
+  if (Parent<>nil)
+  and (not Parent.AutoSize)
+  and AnchorSideLeft.AnchoredToParent(akLeft)
+  and AnchorSideRight.AnchoredToParent(akRight) then begin
+    // the width depends on the parent
+    // the width is fixed
+    FixedWidth:=true;
+    WrapButtons(Width, NewWidth, NewHeight, True);
+    PreferredWidth := NewWidth;
+    PreferredHeight := NewHeight;
+    //DebugLn(['TToolBar.CalculatePreferredSize fixed width: ',PreferredWidth,'x',PreferredHeight]);
   end;
   if not FixedWidth then begin
     WrapButtons(Screen.Width,NewWidth,NewHeight,true);
