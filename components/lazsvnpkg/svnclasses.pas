@@ -62,6 +62,7 @@ resourcestring
   rsRevision = 'Revision';
   rsSave = 'Save';
   rsSettings = 'Settings';
+  rsSVNSettings = 'SVN settings';
   rsShowDiff = 'Show diff';
   rsShowDiffCountRev = 'Show last X commits';
   rsShowLog = 'Show log';

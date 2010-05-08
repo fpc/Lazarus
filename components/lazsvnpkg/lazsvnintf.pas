@@ -62,11 +62,11 @@ begin
     cat:=nil;
   {$endif}
 
-  CmdSVNLog:=RegisterIDECommand(Cat, 'SVNLog', 'SVN log', Key, nil, @ProcSVNLog);
-  CmdSVNCommit:=RegisterIDECommand(Cat, 'SVNCommit', 'SVN commit', Key, nil, @ProcSVNCommit);
-  CmdSVNUpdate:=RegisterIDECommand(Cat, 'SVNUpdate', 'SVN update', Key, nil, @ProcSVNUpdate);
-  CmdSVNDiff:=RegisterIDECommand(Cat, 'SVNDiff', 'SVN diff', Key, nil, @ProcSVNDiff);
-  CmdSVNSettings:=RegisterIDECommand(Cat, 'SVNSettings', 'SVN settings', Key, nil, @ProcSVNSettings);
+  CmdSVNLog:=RegisterIDECommand(Cat, 'SVNLog', rsShowLog, Key, nil, @ProcSVNLog);
+  CmdSVNCommit:=RegisterIDECommand(Cat, 'SVNCommit', rsCommit, Key, nil, @ProcSVNCommit);
+  CmdSVNUpdate:=RegisterIDECommand(Cat, 'SVNUpdate', rsUpdate, Key, nil, @ProcSVNUpdate);
+  CmdSVNDiff:=RegisterIDECommand(Cat, 'SVNDiff', rsShowDiff, Key, nil, @ProcSVNDiff);
+  CmdSVNSettings:=RegisterIDECommand(Cat, 'SVNSettings', rsSVNSettings, Key, nil, @ProcSVNSettings);
 
   {$note add menu_svn bitmap in the main menu}
   mnuSVNMain := RegisterIDEMenuSection(itmCustomTools, 'SVN');

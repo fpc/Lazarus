@@ -161,6 +161,10 @@ msgstr "Показать журнал"
 msgid "Source file does not belong to the project. Please add first."
 msgstr "Файл исходного кода не включён в проект. Добавьте его сначала."
 
+#: svnclasses.rssvnsettings
+msgid "SVN settings"
+msgstr "Параметры SVN"
+
 #: svnclasses.rssvntools
 msgid "SVN tools"
 msgstr "Средства SVN"
