@@ -648,7 +648,7 @@ type
     // methods for 'new unit'
     function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
         NewOwner: TObject; NewFilename: string; var NewCodeBuffer: TCodeBuffer;
-        var NewUnitName: string; AskForFilename: boolean): TModalResult;
+        var NewUnitName: string): TModalResult;
     function CreateNewForm(NewUnitInfo: TUnitInfo;
         AncestorType: TPersistentClass; ResourceCode: TCodeBuffer;
         UseCreateFormStatements, DisableAutoSize: Boolean): TModalResult;
@@ -4622,17 +4622,12 @@ end;
 
 function TMainIDE.CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
   NewOwner: TObject; NewFilename: string;
-  var NewCodeBuffer: TCodeBuffer; var NewUnitName: string;
-  AskForFilename: boolean): TModalResult;
+  var NewCodeBuffer: TCodeBuffer; var NewUnitName: string): TModalResult;
 var
   NewShortFilename: String;
   NewFileExt: String;
   SearchFlags: TSearchIDEFileFlags;
-  ResourceCode: TCodeBuffer;
-  CanAbort: Boolean;
 begin
-  CanAbort:=false;
-
   //debugln('TMainIDE.CreateNewCodeBuffer START NewFilename=',NewFilename,' ',Descriptor.DefaultFilename,' ',Descriptor.ClassName);
   NewUnitName:='';
   if NewFilename='' then begin
@@ -4673,17 +4668,11 @@ begin
                    +lowercase(ExtractFileName(NewFilename));
   end;
 
-  if AskForFilename then begin
-    ResourceCode:=nil;
-    Result:=DoShowSaveFileAsDialog(NewFilename,nil,ResourceCode,CanAbort);
-    if Result<>mrOk then exit;
-  end;
-
   NewCodeBuffer:=CodeToolBoss.CreateFile(NewFilename);
-  if NewCodeBuffer<>nil then
-    Result:=mrOk
-  else
-    Result:=mrCancel;
+  if NewCodeBuffer=nil then
+    exit(mrCancel);
+
+  Result:=mrOk;
 end;
 
 function TMainIDE.CreateNewForm(NewUnitInfo: TUnitInfo;
@@ -4877,7 +4866,7 @@ var
   OldUnitName: String;
   IsPascal: Boolean;
 begin
-  if AnUnitInfo<>nil then
+  if (AnUnitInfo<>nil) and (AnUnitInfo.OpenEditorInfoCount>0) then
     SrcEdit := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent)
   else
     SrcEdit:=nil;
@@ -7799,7 +7788,7 @@ begin
 
   // create new codebuffer and apply naming conventions
   Result:=CreateNewCodeBuffer(NewFileDescriptor,NewOwner,NewFilename,NewBuffer,
-                              NewUnitName,nfAskForFilename in NewFlags);
+                              NewUnitName);
   if Result<>mrOk then exit;
 
   NewFilename:=NewBuffer.Filename;
@@ -7815,6 +7804,7 @@ begin
     NewUnitInfo.Source:=NewBuffer;
   end else
     NewUnitInfo:=TUnitInfo.Create(NewBuffer);
+  //debugln(['TMainIDE.DoNewFile ',NewUnitInfo.Filename,' ',NewFilename]);
   NewUnitInfo.ImproveUnitNameCache(NewUnitName);
   NewUnitInfo.BuildFileIfActive:=NewFileDescriptor.BuildFileIfActive;
   NewUnitInfo.RunFileIfActive:=NewFileDescriptor.RunFileIfActive;
@@ -7917,17 +7907,8 @@ begin
     end else begin
       FDisplayState:= dsSource;
     end;
-
-    if nfSave in NewFlags then begin
-      NewUnitInfo.Modified:=true;
-      Result:=DoSaveEditorFile(NewSrcEdit,[sfCheckAmbiguousFiles]);
-      if Result<>mrOk then exit;
-    end;
   end else begin
     // do not open in editor
-    if nfSave in NewFlags then begin
-      NewBuffer.Save;
-    end;
   end;
 
   // Update HasResources property (if the .lfm file was created separately)
@@ -7946,8 +7927,25 @@ begin
     end;
   end;
 
+  if (nfAskForFilename in NewFlags) then begin
+    // save and ask for filename
+    NewUnitInfo.Modified:=true;
+    Result:=DoSaveEditorFile(NewSrcEdit,[sfCheckAmbiguousFiles,sfSaveAs]);
+    if Result<>mrOk then exit;
+  end else if nfSave in NewFlags then begin
+    if (nfOpenInEditor in NewFlags) or NewBuffer.IsVirtual then begin
+      // save and ask for filename if needed
+      NewUnitInfo.Modified:=true;
+      Result:=DoSaveEditorFile(NewSrcEdit,[sfCheckAmbiguousFiles]);
+      if Result<>mrOk then exit;
+    end else begin
+      // save quiet
+      NewBuffer.Save;
+    end;
+  end;
+
   Result:=mrOk;
-  DebugLn('TMainIDE.DoNewEditorFile END ',NewUnitInfo.Filename);
+  //DebugLn('TMainIDE.DoNewEditorFile END ',NewUnitInfo.Filename);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoNewUnit end');{$ENDIF}
 end;
 
