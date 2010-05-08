@@ -2210,7 +2210,7 @@ begin
       while not FLastFocusedControl.ContainsControl(Control) do
       begin
         LastState := SaveFocusState;
-        SendMessage(FLastFocusedControl.Handle, CM_EXIT, 0, 0);
+        FLastFocusedControl.Perform(CM_EXIT, 0, 0);
         if SaveFocusState <> LastState then
           Exit;
         FLastFocusedControl := FLastFocusedControl.Parent;
@@ -2220,7 +2220,7 @@ begin
       begin
         FLastFocusedControl := NextChildControl(FLastFocusedControl, Control);
         LastState := SaveFocusState;
-        SendMessage(FLastFocusedControl.Handle, CM_ENTER, 0, 0);
+        FLastFocusedControl.Perform(CM_ENTER, 0, 0);
         if SaveFocusState <> LastState then
           Exit;
       end;
