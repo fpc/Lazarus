@@ -161,9 +161,9 @@ begin
 end;
 
 procedure TDBEdit.KeyPress(var Key: char);
-  function CanAcceptKey: boolean;
+  function CanAcceptKey(AKey: char): boolean;
   begin
-    Result := (Field<>nil) and Field.IsValidChar(Key) and
+    Result := (Field<>nil) and Field.IsValidChar(AKey) and
               (Field.DataType<>ftAutoInc);
   end;
 var
@@ -183,7 +183,7 @@ begin
           Key:=#0;
 
       #32..#255: //standard keys
-        if not IsReadOnly and CanAcceptKey then
+        if not IsReadOnly and CanAcceptKey(Key) then
           FDatalink.Edit
         else
           Key:=#0;
@@ -196,7 +196,7 @@ begin
         if not IsReadOnly then
           FDatalink.Edit;
       #32..#255: //standard keys
-        if not IsReadOnly and CanAcceptKey then
+        if not IsReadOnly and CanAcceptKey(SavedKey) then
           FDatalink.Edit;
     end;//case
   end;
