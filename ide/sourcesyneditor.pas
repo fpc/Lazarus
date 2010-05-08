@@ -235,6 +235,10 @@ begin
       FDebugMarkInfo.IncRefCount;
   end;
 
+  if ALastLinePos >= FDebugMarkInfo.Count then begin
+    debugln(['Request to set debug-mark out of range: max-count=',FDebugMarkInfo.Count,' Marks=',AFirstLinePos,' to=',ALastLinePos]);
+    ALastLinePos := FDebugMarkInfo.Count  -1;
+  end;
   for i := AFirstLinePos - 1 to ALastLinePos - 1 do
     FDebugMarkInfo[i] := i + 1;
   TSynEdit(SynEdit).InvalidateGutter;
