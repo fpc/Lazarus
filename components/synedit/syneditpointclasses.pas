@@ -167,7 +167,7 @@ type
   TSynEditCaret = class(TSynEditPointBase)
   private
     FAllowPastEOL: Boolean;
-    FAutoMoveOnEdit: Boolean;
+    FAutoMoveOnEdit: Integer;
     FForcePastEOL: Integer;
     FForceAdjustToNextChar: Integer;
     FKeepCaretX: Boolean;
@@ -215,6 +215,8 @@ type
     procedure DecForcePastEOL;
     procedure IncForceAdjustToNextChar;
     procedure DecForceAdjustToNextChar;
+    procedure IncAutoMoveOnEdit;
+    procedure DecAutoMoveOnEdit;
     procedure ChangeOnTouch;
     function IsAtLineChar(aPoint: TPoint): Boolean;
     function IsAtLineByte(aPoint: TPoint): Boolean;
@@ -239,7 +241,6 @@ type
     property AllowPastEOL: Boolean read FAllowPastEOL write SetAllowPastEOL;
     property KeepCaretX: Boolean read FKeepCaretX write SetKeepCaretX;
     property MaxLeftChar: PInteger write FMaxLeftChar;
-    property AutoMoveOnEdit: Boolean read FAutoMoveOnEdit write FAutoMoveOnEdit;
   end;
 
 implementation
@@ -315,6 +316,7 @@ begin
   fCharPos:= 1;
   FAllowPastEOL := True;
   FForcePastEOL := 0;
+  FAutoMoveOnEdit := 0;
   if FLines <> nil then
     FLines.AddEditHandler(@DoLinesEdited);
 end;
@@ -358,6 +360,16 @@ end;
 procedure TSynEditCaret.DecForceAdjustToNextChar;
 begin
   Dec(FForceAdjustToNextChar);
+end;
+
+procedure TSynEditCaret.IncAutoMoveOnEdit;
+begin
+  inc(FAutoMoveOnEdit);
+end;
+
+procedure TSynEditCaret.DecAutoMoveOnEdit;
+begin
+  dec(FAutoMoveOnEdit);
 end;
 
 procedure TSynEditCaret.ChangeOnTouch;
@@ -619,7 +631,7 @@ procedure TSynEditCaret.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePo
   end;
 
 begin
-  if FAutoMoveOnEdit then begin
+  if FAutoMoveOnEdit > 0 then begin
     IncForcePastEOL;
     LineBytePos := AdjustPoint(LineBytePos);
     DecForcePastEOL;

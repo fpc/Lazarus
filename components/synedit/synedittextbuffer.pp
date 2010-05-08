@@ -157,9 +157,6 @@ type
     procedure SetIsRedoing(const AValue: Boolean); override;
     function  GetIsRedoing: Boolean; override;
     procedure UndoRedoAdded(Sender: TObject);
-    procedure SendNotification(AReason: TSynEditNotifyReason;
-                ASender: TSynEditStrings; aIndex, aCount: Integer;
-                aBytePos: Integer = -1; aLen: Integer = 0; aTxt: String = ''); override;
     procedure IgnoreSendNotification(AReason: TSynEditNotifyReason;
                                      IncIgnore: Boolean); override;
 
@@ -199,6 +196,11 @@ type
                 AHandler: TMethod); override;
     procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); override;
+    procedure SendNotification(AReason: TSynEditNotifyReason;
+                ASender: TSynEditStrings; aIndex, aCount: Integer;
+                aBytePos: Integer = -1; aLen: Integer = 0; aTxt: String = ''); override;
+    procedure SendNotification(AReason: TSynEditNotifyReason;
+                ASender: TObject); override;
    function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
     // For Textbuffersharing
     procedure AttachSynEdit(AEdit: TSynEditBase);
@@ -422,15 +424,15 @@ begin
   FIsRedoing := False;
   FModified := False;
 
-  FNotifyLists[senrLineCount]        := TLineRangeNotificationList.Create;
-  FNotifyLists[senrLineChange]       := TLineRangeNotificationList.Create;
-  FNotifyLists[senrHighlightChanged] := TLineRangeNotificationList.Create;
-  FNotifyLists[senrEditAction]       := TLineEditNotificationList.Create;
-  FNotifyLists[senrBeginUpdate]      := TSynMethodList.Create;
-  FNotifyLists[senrEndUpdate]        := TSynMethodList.Create;
-  FNotifyLists[senrCleared]          := TSynMethodList.Create;
-  FNotifyLists[senrUndoRedoAdded]    := TSynMethodList.Create;
-  FNotifyLists[senrModifiedChanged]  := TSynMethodList.Create;
+  for r := low(TSynEditNotifyReason) to high(TSynEditNotifyReason)
+  do case r of
+    senrLineCount, senrLineChange, senrHighlightChanged:
+      FNotifyLists[r] := TLineRangeNotificationList.Create;
+    senrEditAction:
+      FNotifyLists[r] := TLineEditNotificationList.Create;
+    else
+      FNotifyLists[r] := TSynMethodList.Create;
+  end;
 
   for r := low(TSynEditNotifyReason) to high(TSynEditNotifyReason) do
     FIgnoreSendNotification[r] := 0;
@@ -1082,9 +1084,17 @@ begin
         .CallRangeNotifyEvents(ASender, aIndex, aCount);
     senrEditAction:
         // aindex is mis-named (linepos) for edit action
-        TLineEditNotificationList(FNotifyLists[senrEditAction])
+        TLineEditNotificationList(FNotifyLists[AReason])
           .CallRangeNotifyEvents(ASender, aIndex, aBytePos, aLen, aCount, aTxt);
+    else
+      raise Exception.Create('Invalid');
   end;
+end;
+
+procedure TSynEditStringList.SendNotification(AReason: TSynEditNotifyReason;
+  ASender: TObject);
+begin
+  FNotifyLists[AReason].CallNotifyEvents(ASender);
 end;
 
 procedure TSynEditStringList.IgnoreSendNotification(AReason: TSynEditNotifyReason;

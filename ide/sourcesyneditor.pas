@@ -39,7 +39,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, Graphics, SynEdit, SynEditMiscClasses, SynGutter,
   SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
-  SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase;
+  SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase,
+  SynPluginTemplateEdit, SynPluginSyncroEdit;
 
 type
 
@@ -49,15 +50,20 @@ type
 
   TIDESynEditor = class(TSynEdit)
   private
+    FSyncroEdit: TSynPluginSyncroEdit;
+    FTemplateEdit: TSynPluginTemplateEdit;
     function GetIDEGutterMarks: TIDESynGutterMarks;
   protected
     function CreateGutter(AOwner : TSynEditBase; AFoldedLinesView: TSynEditFoldedView;
                           ATextDrawer: TheTextDrawer): TSynGutter; override;
   public
+    constructor Create(AOwner: TComponent); override;
     function TextIndexToViewPos(aTextIndex : Integer) : Integer;
     property IDEGutterMarks: TIDESynGutterMarks read GetIDEGutterMarks;
     property TopView;
     property TextBuffer;
+    property TemplateEdit: TSynPluginTemplateEdit read FTemplateEdit;
+    property SyncroEdit: TSynPluginSyncroEdit read FSyncroEdit;
   end;
 
   { TIDESynGutter }
@@ -118,6 +124,13 @@ function TIDESynEditor.CreateGutter(AOwner: TSynEditBase;
   AFoldedLinesView: TSynEditFoldedView; ATextDrawer: TheTextDrawer): TSynGutter;
 begin
   Result := TIDESynGutter.Create(AOwner, AFoldedLinesView, ATextDrawer);
+end;
+
+constructor TIDESynEditor.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FTemplateEdit:=TSynPluginTemplateEdit.Create(Self);
+  FSyncroEdit := TSynPluginSyncroEdit.Create(Self);
 end;
 
 function TIDESynEditor.TextIndexToViewPos(aTextIndex: Integer): Integer;

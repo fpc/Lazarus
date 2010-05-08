@@ -215,7 +215,7 @@ type
     procedure DoSelectionChanged(Sender: TObject);
     procedure DoScanSelection(Data: PtrInt);
     procedure DoOnDeactivate; override;
-    procedure DoBeforeEdit(aX, aY: Integer; aUndoRedo: Boolean); override;
+    procedure DoBeforeEdit(aX, aY, aCount, aLineBrkCnt: Integer; aUndoRedo: Boolean); override;
 
     function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
                          HandleActionProc: TSynEditMouseActionHandler): Boolean;
@@ -1212,7 +1212,7 @@ begin
   inherited DoOnDeactivate;
 end;
 
-procedure TSynPluginSyncroEdit.DoBeforeEdit(aX, aY: Integer; aUndoRedo: Boolean);
+procedure TSynPluginSyncroEdit.DoBeforeEdit(aX, aY, aCount, aLineBrkCnt: Integer; aUndoRedo: Boolean);
 begin
   if (FMode = spseSelecting) then begin
     FWordIndex.Clear;
@@ -1220,7 +1220,7 @@ begin
     FMode := spseInvalid;
   end
   else
-    inherited DoBeforeEdit(aX, aY, aUndoRedo);
+    inherited DoBeforeEdit(aX, aY, aCount, aLineBrkCnt, aUndoRedo);
 end;
 
 function TSynPluginSyncroEdit.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;

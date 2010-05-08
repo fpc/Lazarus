@@ -47,7 +47,14 @@ type
                            senrBeginUpdate, senrEndUpdate,
                            senrCleared,
                            senrUndoRedoAdded,
-                           senrModifiedChanged   // The modified flag was changed
+                           senrModifiedChanged,  // The modified flag was changed
+                           // Paintlocks are managed by SynEdit, but need distribution to shared edits
+                           senrIncOwnedPaintLock, // Inform other SynEdits (ForeignPaintLock)
+                           senrDecOwnedPaintLock,
+                           senrIncPaintLock,      // Actual PaintLock
+                           senrDecPaintLock,
+                           senrAfterIncPaintLock, // For plugins, etc...
+                           senrBeforeDecPaintLock
                           );
 
   TPhysicalCharWidths = Array of Shortint;
@@ -148,10 +155,6 @@ type
     function  GetIsUndoing: Boolean; virtual; abstract;
     procedure SetIsRedoing(const AValue: Boolean); virtual; abstract;
     function  GetIsRedoing: Boolean; virtual; abstract;
-    procedure SendNotification(AReason: TSynEditNotifyReason;
-                ASender: TSynEditStrings; aIndex, aCount: Integer;
-                aBytePos: Integer = -1; aLen: Integer = 0;
-                aTxt: String = ''); virtual; abstract;
     procedure IgnoreSendNotification(AReason: TSynEditNotifyReason;
                                      ReEnable: Boolean); virtual; abstract;
   public
@@ -181,6 +184,12 @@ type
     procedure AddEditHandler(AHandler: TStringListLineEditEvent);
     procedure RemoveEditHandler(AHandler: TStringListLineEditEvent);
     procedure SendHighlightChanged(aIndex, aCount: Integer); override;
+    procedure SendNotification(AReason: TSynEditNotifyReason;
+                ASender: TSynEditStrings; aIndex, aCount: Integer;
+                aBytePos: Integer = -1; aLen: Integer = 0;
+                aTxt: String = ''); virtual; abstract;
+    procedure SendNotification(AReason: TSynEditNotifyReason;
+                ASender: TObject); virtual; abstract;
   public
     function GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
     function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; virtual; abstract;
@@ -230,10 +239,6 @@ type
     function GetExpandedString(Index: integer): string; override;
     function GetLengthOfLongestLine: integer; override;
 
-    procedure SendNotification(AReason: TSynEditNotifyReason;
-                ASender: TSynEditStrings; aIndex, aCount: Integer;
-                aBytePos: Integer = -1; aLen: Integer = 0;
-                aTxt: String = ''); override;
     procedure IgnoreSendNotification(AReason: TSynEditNotifyReason;
                                      IncIgnore: Boolean); override;
     function GetUndoList: TSynEditUndoList; override;
@@ -273,6 +278,12 @@ type
                 AHandler: TMethod); override;
     procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); override;
+    procedure SendNotification(AReason: TSynEditNotifyReason;
+                ASender: TSynEditStrings; aIndex, aCount: Integer;
+                aBytePos: Integer = -1; aLen: Integer = 0;
+                aTxt: String = ''); override;
+    procedure SendNotification(AReason: TSynEditNotifyReason;
+                ASender: TObject); override;
 
     function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
     property NextLines: TSynEditStrings read fSynStrings write fSynStrings;
@@ -810,6 +821,12 @@ begin
   fSynStrings.SendNotification(AReason, ASender, aIndex, aCount, aBytePos, aLen, aTxt);
 end;
 
+procedure TSynEditStringsLinked.SendNotification(AReason: TSynEditNotifyReason;
+  ASender: TObject);
+begin
+  fSynStrings.SendNotification(AReason, ASender);
+end;
+
 procedure TSynEditStringsLinked.IgnoreSendNotification(AReason: TSynEditNotifyReason;
   IncIgnore: Boolean);
 begin
@@ -1215,6 +1232,7 @@ end;
 
 function TSynEditStorageMem.GetItemPointer(Index: Integer): Pointer;
 begin
+  //if (Index >= FCount) or (FCount > FCapacity) then raise Exception.Create('Bad Index');
   Result := Pointer(FMem + Index * ItemSize);
 end;
 

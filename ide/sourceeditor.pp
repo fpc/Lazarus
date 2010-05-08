@@ -2093,34 +2093,41 @@ begin
   if SrcLogEntry<>nil then begin
     SynEditor.BeginUpdate;
     SynEditor.BeginUndoBlock;
-    case SrcLogEntry.Operation of
-      sleoInsert:
-        begin
-          Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
-          if StartPos.Y>=1 then
-            SynEditor.TextBetweenPointsEx[StartPos, StartPos, scamAdjust] := SrcLogEntry.Txt;
-        end;
-      sleoDelete:
-        begin
-          Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
-          Sender.AbsoluteToLineCol(SrcLogEntry.Position+SrcLogEntry.Len,
-            EndPos.Y,EndPos.X);
-          if (StartPos.Y>=1) and (EndPos.Y>=1) then
-            SynEditor.TextBetweenPointsEx[StartPos, EndPos, scamAdjust] := '';
-        end;
-      sleoMove:
-        begin
-          Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
-          Sender.AbsoluteToLineCol(SrcLogEntry.Position+SrcLogEntry.Len,
-            EndPos.Y,EndPos.X);
-          Sender.AbsoluteToLineCol(SrcLogEntry.MoveTo,MoveToPos.Y,MoveToPos.X);
-          if (StartPos.Y>=1) and (EndPos.Y>=1) and (MoveToPos.Y>=1) then
-            MoveTxt(StartPos, EndPos, MoveToPos,
-              SrcLogEntry.Position<SrcLogEntry.MoveTo);
-        end;
+    SynEditor.TemplateEdit.IncExternalEditLock;
+    SynEditor.SyncroEdit.IncExternalEditLock;
+    try
+      case SrcLogEntry.Operation of
+        sleoInsert:
+          begin
+            Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
+            if StartPos.Y>=1 then
+              SynEditor.TextBetweenPointsEx[StartPos, StartPos, scamAdjust] := SrcLogEntry.Txt;
+          end;
+        sleoDelete:
+          begin
+            Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
+            Sender.AbsoluteToLineCol(SrcLogEntry.Position+SrcLogEntry.Len,
+              EndPos.Y,EndPos.X);
+            if (StartPos.Y>=1) and (EndPos.Y>=1) then
+              SynEditor.TextBetweenPointsEx[StartPos, EndPos, scamAdjust] := '';
+          end;
+        sleoMove:
+          begin
+            Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
+            Sender.AbsoluteToLineCol(SrcLogEntry.Position+SrcLogEntry.Len,
+              EndPos.Y,EndPos.X);
+            Sender.AbsoluteToLineCol(SrcLogEntry.MoveTo,MoveToPos.Y,MoveToPos.X);
+            if (StartPos.Y>=1) and (EndPos.Y>=1) and (MoveToPos.Y>=1) then
+              MoveTxt(StartPos, EndPos, MoveToPos,
+                SrcLogEntry.Position<SrcLogEntry.MoveTo);
+          end;
+      end;
+    finally
+      SynEditor.SyncroEdit.DecExternalEditLock;
+      SynEditor.TemplateEdit.DecExternalEditLock;
+      SynEditor.EndUndoBlock;
+      SynEditor.EndUpdate;
     end;
-    SynEditor.EndUndoBlock;
-    SynEditor.EndUpdate;
   end else begin
     {$IFDEF VerboseSrcEditBufClean}
     debugln(['TSourceEditor.OnCodeBufferChanged clean up ',TCodeBuffer(Sender).FileName,' ',Sender=CodeBuffer,' ',Filename]);
@@ -2219,10 +2226,13 @@ begin
   //DebugLn(['TSourceEditor.UpdateCodeBuffer ',FCodeBuffer.FileName]);
   IncreaseIgnoreCodeBufferLock;
   SynEditor.BeginUpdate;
-  FCodeBuffer.Assign(SynEditor.Lines);
-  FEditorStampCommitedToCodetools:=(SynEditor.Lines as TSynEditLines).TextChangeStamp;
-  SynEditor.EndUpdate;
-  DecreaseIgnoreCodeBufferLock;
+  try
+    FCodeBuffer.Assign(SynEditor.Lines);
+    FEditorStampCommitedToCodetools:=(SynEditor.Lines as TSynEditLines).TextChangeStamp;
+  finally
+    SynEditor.EndUpdate;
+    DecreaseIgnoreCodeBufferLock;
+  end;
 end;
 
 constructor TSourceEditorSharedValues.Create;
@@ -3738,8 +3748,6 @@ var
   NewName: string;
   i: integer;
   bmp: TCustomBitmap;
-  TemplateEdit: TSynPluginTemplateEdit;
-  SyncroEdit: TSynPluginSyncroEdit;
 Begin
   {$IFDEF IDE_DEBUG}
   writeln('TSourceEditor.CreateEditor  A ');
@@ -3786,15 +3794,14 @@ Begin
     end;
     Manager.CodeTemplateModul.AddEditor(FEditor);
     Manager.NewEditorCreated(self);
-    TemplateEdit:=TSynPluginTemplateEdit.Create(FEditor);
-    TemplateEdit.OnActivate := @EditorActivateSyncro;
-    TemplateEdit.OnDeactivate := @EditorDeactivateSyncro;
-    SyncroEdit := TSynPluginSyncroEdit.Create(FEditor);
+    FEditor.TemplateEdit.OnActivate := @EditorActivateSyncro;
+    FEditor.TemplateEdit.OnDeactivate := @EditorDeactivateSyncro;
     bmp := CreateBitmapFromLazarusResource('tsynsyncroedit');
-    SyncroEdit.GutterGlyph.Assign(bmp);
+    FEditor.SyncroEdit.GutterGlyph.Assign(bmp);
     bmp.Free;
-    SyncroEdit.OnActivate := @EditorActivateSyncro;
-    SyncroEdit.OnDeactivate := @EditorDeactivateSyncro;
+    FEditor.SyncroEdit.OnActivate := @EditorActivateSyncro;
+    FEditor.SyncroEdit.OnDeactivate := @EditorDeactivateSyncro;
+
     RefreshEditorSettings;
     FEditor.EndUpdate;
   end else begin
