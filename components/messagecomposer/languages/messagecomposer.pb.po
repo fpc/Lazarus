@@ -14,31 +14,101 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #: messagecomposer.rsok
-msgid "Ok"
+#, fuzzy
+#| msgid "Ok"
+msgid "OK"
 msgstr "Ok"
 
 #: messagecomposer.rstest
 msgid "Test"
 msgstr "Testar"
 
+#: messagecomposer.sadd
+msgid "Add"
+msgstr ""
+
+#: messagecomposer.sbuttonsarrayofconst
+msgid "Buttons (array of const)"
+msgstr ""
+
+#: messagecomposer.sbuttonstmsgdlgbuttons
+msgid "Buttons (TMsgDlgButtons)"
+msgstr ""
+
+#: messagecomposer.scaseresult
+msgid "\"Case\" result"
+msgstr ""
+
+#: messagecomposer.sdefault
+msgid "Default"
+msgstr ""
+
+#: messagecomposer.sdelete
+msgid "Delete"
+msgstr ""
+
+#: messagecomposer.sdlgcaption
+msgid "Dialog caption"
+msgstr ""
+
+#: messagecomposer.sdlgtype
+msgid "Dialog type"
+msgstr ""
+
+#: messagecomposer.shelpcontext
+msgid "Help context"
+msgstr ""
+
+#: messagecomposer.shelpfilename
+msgid "Help filename"
+msgstr ""
+
+#: messagecomposer.shelpkeyword
+msgid "Help keyword"
+msgstr ""
+
+#: messagecomposer.sifresult
+msgid "\"If\" result"
+msgstr ""
+
 #: messagecomposer.skindofmessage
-msgid "KIND OF MESSAGE"
+#, fuzzy
+#| msgid "KIND OF MESSAGE"
+msgid "Kind of message"
 msgstr "NATUREZA DA MENSAGEM"
 
 #: messagecomposer.smaskinput
-msgid "Mask Input"
+#, fuzzy
+#| msgid "Mask Input"
+msgid "Mask input"
 msgstr "Entrar máscara"
 
 #: messagecomposer.smessagecomposercaption
+#, fuzzy
+#| msgid "Message Composer ..."
+msgctxt "messagecomposer.smessagecomposercaption"
+msgid "Message Composer"
+msgstr "Compositor Mensagens ..."
+
+#: messagecomposer.smessagecomposermenucaption
+#, fuzzy
+#| msgid "Message Composer ..."
+msgctxt "messagecomposer.smessagecomposermenucaption"
 msgid "Message Composer ..."
 msgstr "Compositor Mensagens ..."
+
+#: messagecomposer.smodalresult
+msgid "Modal result"
+msgstr ""
 
 #: messagecomposer.smsgcaption
 msgid "The message to be shown"
 msgstr "A mensagem à ser mostrada"
 
 #: messagecomposer.snotimplementedyet
-msgid "Not Implemented Yet"
+#, fuzzy
+#| msgid "Not Implemented Yet"
+msgid "Not implemented yet"
 msgstr "Não Implementado Ainda"
 
 #: messagecomposer.spromptcaption
@@ -47,6 +117,11 @@ msgstr "Texto solicitando digitação do usuário"
 
 #: messagecomposer.ssourcewrapper
 #, fuzzy
-msgid "SOURCE WRAPPER"
+#| msgid "SOURCE WRAPPER"
+msgid "Source wrapper"
 msgstr "INVÓLUCRO FONTE"
+
+#: messagecomposer.svaluevar
+msgid "Value (var)"
+msgstr ""
 

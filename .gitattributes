@@ -1564,7 +1564,6 @@ components/messagecomposer/languages/messagecomposer.po svneol=native#text/plain
 components/messagecomposer/languages/messagecomposer.ru.po svneol=native#text/plain
 components/messagecomposer/languages/messagecomposer.zh_CN.po svneol=native#text/plain
 components/messagecomposer/messagecomposer.lfm svneol=native#text/plain
-components/messagecomposer/messagecomposer.lrs svneol=native#text/pascal
 components/messagecomposer/messagecomposer.pas svneol=native#text/plain
 components/messagecomposer/messagecomposerpkg.lpk svneol=native#text/plain
 components/messagecomposer/messagecomposerpkg.pas svneol=native#text/plain

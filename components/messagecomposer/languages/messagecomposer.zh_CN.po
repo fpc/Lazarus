@@ -17,31 +17,99 @@ msgid "Cancel"
 msgstr "取消"
 
 #: messagecomposer.rsok
-msgid "Ok"
+#, fuzzy
+#| msgid "Ok"
+msgid "OK"
 msgstr "确定"
 
 #: messagecomposer.rstest
 msgid "Test"
 msgstr "测试"
 
+#: messagecomposer.sadd
+msgid "Add"
+msgstr ""
+
+#: messagecomposer.sbuttonsarrayofconst
+msgid "Buttons (array of const)"
+msgstr ""
+
+#: messagecomposer.sbuttonstmsgdlgbuttons
+msgid "Buttons (TMsgDlgButtons)"
+msgstr ""
+
+#: messagecomposer.scaseresult
+msgid "\"Case\" result"
+msgstr ""
+
+#: messagecomposer.sdefault
+msgid "Default"
+msgstr ""
+
+#: messagecomposer.sdelete
+msgid "Delete"
+msgstr ""
+
+#: messagecomposer.sdlgcaption
+msgid "Dialog caption"
+msgstr ""
+
+#: messagecomposer.sdlgtype
+msgid "Dialog type"
+msgstr ""
+
+#: messagecomposer.shelpcontext
+msgid "Help context"
+msgstr ""
+
+#: messagecomposer.shelpfilename
+msgid "Help filename"
+msgstr ""
+
+#: messagecomposer.shelpkeyword
+msgid "Help keyword"
+msgstr ""
+
+#: messagecomposer.sifresult
+msgid "\"If\" result"
+msgstr ""
+
 #: messagecomposer.skindofmessage
-msgid "KIND OF MESSAGE"
+#, fuzzy
+#| msgid "KIND OF MESSAGE"
+msgid "Kind of message"
 msgstr "信息类型"
 
 #: messagecomposer.smaskinput
-msgid "Mask Input"
+msgid "Mask input"
 msgstr ""
 
 #: messagecomposer.smessagecomposercaption
+#, fuzzy
+#| msgid "Message Composer ..."
+msgctxt "messagecomposer.smessagecomposercaption"
+msgid "Message Composer"
+msgstr "信息控制 ..."
+
+#: messagecomposer.smessagecomposermenucaption
+#, fuzzy
+#| msgid "Message Composer ..."
+msgctxt "messagecomposer.smessagecomposermenucaption"
 msgid "Message Composer ..."
 msgstr "信息控制 ..."
+
+#: messagecomposer.smodalresult
+msgid "Modal result"
+msgstr ""
 
 #: messagecomposer.smsgcaption
 msgid "The message to be shown"
 msgstr "显示信息"
 
 #: messagecomposer.snotimplementedyet
-msgid "Not Implemented Yet"
+#, fuzzy
+#| msgid "Not Implemented Yet"
+msgid "Not implemented yet"
 msgstr "未实现"
 
 #: messagecomposer.spromptcaption
@@ -49,6 +117,10 @@ msgid "Text asking the user for input"
 msgstr "询问用户输入文本"
 
 #: messagecomposer.ssourcewrapper
-msgid "SOURCE WRAPPER"
+msgid "Source wrapper"
+msgstr ""
+
+#: messagecomposer.svaluevar
+msgid "Value (var)"
 msgstr ""
 

@@ -117,21 +117,38 @@ var
 
 implementation
 
+{$R *.lfm}
+
 const
   cMessageComposer = 'Message Composer';
   DoubleSpace = '  ';
 
 resourcestring
-  SMessageComposerCaption = 'Message Composer ...';
+  SMessageComposerMenuCaption = 'Message Composer ...';
+  SMessageComposerCaption = 'Message Composer';
   SMsgCaption = 'The message to be shown';
+  SDlgCaption = 'Dialog caption';
+  SDlgType = 'Dialog type';
   SPromptCaption = 'Text asking the user for input';
-  SMaskInput = 'Mask Input';
-  SSourceWrapper = 'SOURCE WRAPPER';
-  SKindofMessage = 'KIND OF MESSAGE';
-  SNotImplementedYet = 'Not Implemented Yet';
+  SMaskInput = 'Mask input';
+  SSourceWrapper = 'Source wrapper';
+  SKindofMessage = 'Kind of message';
+  SNotImplementedYet = 'Not implemented yet';
   rsTest = 'Test';
-  rsOk = 'Ok';
+  rsOk = 'OK';
   rsCancel = 'Cancel';
+  SHelpContext = 'Help context';
+  SHelpKeyword = 'Help keyword';
+  SHelpFilename = 'Help filename';
+  SValueVar = 'Value (var)';
+  SDefault = 'Default';
+  SButtonsTMsgDlgButtons = 'Buttons (TMsgDlgButtons)';
+  SAdd = 'Add';
+  SDelete = 'Delete';
+  SButtonsArrayOfConst = 'Buttons (array of const)';
+  SModalResult = 'Modal result';
+  SIfResult = '"If" result';
+  SCaseResult = '"Case" result';
 
 var
   CmdMessageComposer: TIDECommand;
@@ -565,8 +582,8 @@ begin
       GetParamsFmt.Execute;
     end;
     else begin
-      ButtonsStringGrid.Cells[0, 0] := 'BUTTONS (array of const)';
-      ButtonsStringGrid.Cells[1, 0] := 'Modal Result';
+      ButtonsStringGrid.Cells[0, 0] := SButtonsArrayOfConst;
+      ButtonsStringGrid.Cells[1, 0] := SModalResult;
       ButtonsStringGrid.FixedCols := 0;
       Panel2.Visible := true;
     end;
@@ -721,23 +738,36 @@ end;
 procedure TFormMessagesComposer.MessagesInitExecute(Sender: TObject);
 begin
   XSpinEdit.MaxValue := Screen.Width;
-  XLabel.Caption := 'X'+IntToStr(Screen.Width);
+  XLabel.Caption := 'X ('+IntToStr(Screen.Width)+')';
   YSpinEdit.MaxValue := Screen.Height;
-  YLabel.Caption := 'Y'+IntToStr(Screen.Height);
+  YLabel.Caption := 'Y ('+IntToStr(Screen.Height)+')';
   HelpContextSpinEdit.Width := 80;
   XSpinEdit.Width := 60;
   YSpinEdit.Width := 60;
 
   Caption := SMessageComposerCaption;
+  CaptionLabel.Caption := SDlgCaption;
+  DlgTypeLabel.Caption := SDlgType;
   MsgLabel.Caption := SMsgCaption;
+  ButtonsCheckGroup.Caption := SButtonsTMsgDlgButtons;
+  ButtonsStringGrid.Cells[0,0] := SButtonsArrayOfConst;
+  ButtonsStringGrid.Cells[1,0] := SModalResult;
+  BitBtn1.Caption := SAdd;
+  BitBtn2.Caption := SDelete;
   PromptLabel.Caption := SPromptCaption;
   MaskInputCheckBox.Caption := SMaskInput;
+  ValueLabel.Caption := SValueVar;
+  DefaultValue.Caption := SDefault;
   SourceWrapperGroupBox.Caption := SSourceWrapper;
   KindMessageLabel.Caption := SKindofMessage;
+  Label1.Caption := SIfResult;
+  CaseResultCheckGroup.Caption := SCaseResult;
   TestButton.Caption:=rsTest;
   OkButton.Caption:=rsOk;
   CancelButton.Caption:=rsCancel;
-
+  HelpContextLabel.Caption := SHelpContext;
+  HelpKeyWordLabel.Caption := SHelpKeyword;
+  HelpFileNameLabel.Caption := SHelpFilename;
   MessageSetup.Execute;
 end;
 
@@ -856,13 +886,9 @@ begin
                                           @ExecuteMessagesComposer);
 
   RegisterIDEMenuCommand(itmEditMenuCodeTools, cMessageComposer,
-                         SMessageComposerCaption,
+                         SMessageComposerMenuCaption,
                          nil, nil, CmdMessageComposer);
 end;
-
-
-initialization
-  {$I messagecomposer.lrs}
 
 end.
 

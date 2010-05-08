@@ -4,7 +4,6 @@ object FormMessagesComposer: TFormMessagesComposer
   Height = 552
   Top = 195
   Width = 822
-  ActiveControl = CaptionEdit
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Messages Composer'
@@ -12,12 +11,12 @@ object FormMessagesComposer: TFormMessagesComposer
   ClientWidth = 822
   OnCreate = MessagesInitExecute
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object CaptionLabel: TLabel
     Left = 6
-    Height = 18
+    Height = 14
     Top = 70
-    Width = 84
+    Width = 63
     Caption = 'CaptionLabel'
     ParentColor = False
   end
@@ -25,18 +24,18 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Control = CaptionEdit
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 18
-    Top = 130
-    Width = 61
+    Height = 14
+    Top = 120
+    Width = 45
     BorderSpacing.Top = 12
     Caption = 'MsgLabel'
     ParentColor = False
   end
   object DlgTypeLabel: TLabel
     Left = 154
-    Height = 18
+    Height = 14
     Top = 70
-    Width = 50
+    Width = 40
     Caption = 'DlgType'
     ParentColor = False
   end
@@ -44,9 +43,9 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Control = HelpCtxBevel
     AnchorSideTop.Side = asrBottom
     Left = 8
-    Height = 18
-    Top = 308
-    Width = 84
+    Height = 14
+    Top = 294
+    Width = 64
     Caption = 'Help Context'
     ParentColor = False
   end
@@ -54,9 +53,9 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Control = HelpContextLabel
     AnchorSideTop.Side = asrCenter
     Left = 103
-    Height = 18
-    Top = 308
-    Width = 87
+    Height = 14
+    Top = 294
+    Width = 69
     Caption = 'Help KeyWord'
     ParentColor = False
   end
@@ -64,9 +63,9 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Control = XSpinEdit
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 18
-    Top = 270
-    Width = 9
+    Height = 14
+    Top = 258
+    Width = 7
     Caption = 'X'
     ParentColor = False
   end
@@ -75,10 +74,10 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = YSpinEdit
     AnchorSideTop.Side = asrCenter
-    Left = 93
-    Height = 18
-    Top = 270
-    Width = 8
+    Left = 91
+    Height = 14
+    Top = 258
+    Width = 7
     BorderSpacing.Left = 8
     Caption = 'Y'
     ParentColor = False
@@ -87,34 +86,34 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Control = HelpContextSpinEdit
     AnchorSideTop.Side = asrBottom
     Left = 8
-    Height = 18
-    Top = 362
-    Width = 93
+    Height = 14
+    Top = 344
+    Width = 68
     BorderSpacing.Top = 6
     Caption = 'Help FileName'
     ParentColor = False
   end
   object PromptLabel: TLabel
     Left = 16
-    Height = 18
+    Height = 14
     Top = 425
-    Width = 82
+    Width = 60
     Caption = 'PromptLabel'
     ParentColor = False
   end
   object ValueLabel: TLabel
     Left = 16
-    Height = 18
+    Height = 14
     Top = 478
-    Width = 70
+    Width = 54
     Caption = 'Value (var)'
     ParentColor = False
   end
   object DefaultValue: TLabel
     Left = 138
-    Height = 18
+    Height = 14
     Top = 478
-    Width = 47
+    Width = 36
     Caption = 'Default'
     ParentColor = False
   end
@@ -123,7 +122,7 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Side = asrBottom
     Left = 5
     Height = 9
-    Top = 251
+    Top = 237
     Width = 269
     BorderSpacing.Top = 6
     Shape = bsTopLine
@@ -140,13 +139,13 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Side = asrBottom
     Left = 8
     Height = 9
-    Top = 299
+    Top = 285
     Width = 266
     Shape = bsTopLine
   end
   object KindMessageLabel: TLabel
     Left = 6
-    Height = 18
+    Height = 14
     Top = 6
     Width = 810
     Align = alTop
@@ -160,8 +159,8 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Control = CaptionLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 27
-    Top = 91
+    Height = 21
+    Top = 87
     Width = 136
     BorderSpacing.Top = 3
     TabOrder = 0
@@ -171,11 +170,11 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Control = DlgTypeLabel
     AnchorSideTop.Side = asrBottom
     Left = 154
-    Height = 31
-    Top = 91
+    Height = 21
+    Top = 87
     Width = 120
     BorderSpacing.Top = 3
-    ItemHeight = 0
+    ItemHeight = 13
     ItemIndex = 0
     Items.Strings = (
       'mtWarning'
@@ -229,7 +228,7 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Side = asrBottom
     Left = 8
     Height = 27
-    Top = 329
+    Top = 311
     Width = 61
     BorderSpacing.Top = 3
     MaxValue = 9999
@@ -239,8 +238,8 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Control = HelpKeyWordLabel
     AnchorSideTop.Side = asrBottom
     Left = 103
-    Height = 27
-    Top = 329
+    Height = 21
+    Top = 311
     Width = 171
     BorderSpacing.Top = 3
     TabOrder = 4
@@ -337,9 +336,9 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = PositionBevel
     AnchorSideTop.Side = asrBottom
-    Left = 19
+    Left = 17
     Height = 27
-    Top = 266
+    Top = 252
     Width = 66
     BorderSpacing.Left = 4
     BorderSpacing.Top = 6
@@ -351,9 +350,9 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = XSpinEdit
     AnchorSideTop.Side = asrCenter
-    Left = 105
+    Left = 102
     Height = 27
-    Top = 266
+    Top = 252
     Width = 66
     BorderSpacing.Left = 4
     TabOrder = 7
@@ -362,8 +361,8 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Control = HelpFileNameLabel
     AnchorSideTop.Side = asrBottom
     Left = 8
-    Height = 27
-    Top = 383
+    Height = 21
+    Top = 361
     Width = 244
     DialogOptions = []
     FilterIndex = 0
@@ -371,14 +370,15 @@ object FormMessagesComposer: TFormMessagesComposer
     ButtonWidth = 23
     NumGlyphs = 1
     BorderSpacing.Top = 3
+    MaxLength = 0
     TabOrder = 8
   end
   object PromptEdit: TEdit
     AnchorSideTop.Control = PromptLabel
     AnchorSideTop.Side = asrBottom
     Left = 16
-    Height = 27
-    Top = 446
+    Height = 21
+    Top = 442
     Width = 164
     BorderSpacing.Top = 3
     TabOrder = 9
@@ -388,9 +388,9 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Control = PromptEdit
     AnchorSideTop.Side = asrCenter
     Left = 191
-    Height = 22
-    Top = 448
-    Width = 89
+    Height = 17
+    Top = 444
+    Width = 68
     Caption = 'MaskInput'
     TabOrder = 10
   end
@@ -398,8 +398,8 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Control = ValueLabel
     AnchorSideTop.Side = asrBottom
     Left = 16
-    Height = 27
-    Top = 499
+    Height = 21
+    Top = 495
     Width = 112
     BorderSpacing.Top = 3
     TabOrder = 11
@@ -409,8 +409,8 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Control = DefaultValue
     AnchorSideTop.Side = asrBottom
     Left = 138
-    Height = 27
-    Top = 499
+    Height = 21
+    Top = 495
     Width = 136
     BorderSpacing.Top = 3
     TabOrder = 12
@@ -463,32 +463,32 @@ object FormMessagesComposer: TFormMessagesComposer
     Top = 264
     Width = 509
     Caption = 'SourceWrapperGroupBox'
-    ClientHeight = 202
+    ClientHeight = 203
     ClientWidth = 505
     TabOrder = 16
     object Label1: TLabel
       Left = 7
-      Height = 18
+      Height = 14
       Top = 6
-      Width = 69
+      Width = 55
       Caption = '"if" RESULT'
       ParentColor = False
     end
     object StringResultLabel: TLabel
       AnchorSideTop.Side = asrBottom
       Left = 9
-      Height = 18
+      Height = 14
       Top = 145
-      Width = 90
+      Width = 69
       BorderSpacing.Top = 8
       Caption = 'String RESULT'
       ParentColor = False
     end
     object IfThenRadioButton: TRadioButton
       Left = 7
-      Height = 22
+      Height = 17
       Top = 72
-      Width = 83
+      Width = 70
       Caption = 'if...then...'
       Checked = True
       OnClick = SetIfOrCaseExecute
@@ -499,9 +499,9 @@ object FormMessagesComposer: TFormMessagesComposer
       AnchorSideTop.Control = IfThenRadioButton
       AnchorSideTop.Side = asrBottom
       Left = 7
-      Height = 22
-      Top = 96
-      Width = 125
+      Height = 17
+      Top = 91
+      Width = 104
       BorderSpacing.Top = 2
       Caption = 'if...then...else ...'
       OnClick = SetIfOrCaseExecute
@@ -510,9 +510,9 @@ object FormMessagesComposer: TFormMessagesComposer
     end
     object CaseOfEndRadioButton: TRadioButton
       Left = 199
-      Height = 22
+      Height = 17
       Top = 143
-      Width = 134
+      Width = 108
       Caption = 'case ... of ... end;'
       OnClick = SetIfOrCaseExecute
       TabOrder = 2
@@ -522,9 +522,9 @@ object FormMessagesComposer: TFormMessagesComposer
       AnchorSideTop.Control = CaseOfEndRadioButton
       AnchorSideTop.Side = asrBottom
       Left = 199
-      Height = 22
-      Top = 167
-      Width = 148
+      Height = 17
+      Top = 162
+      Width = 120
       BorderSpacing.Top = 2
       Caption = 'case ... of ... else ...'
       OnClick = SetIfOrCaseExecute
@@ -533,9 +533,9 @@ object FormMessagesComposer: TFormMessagesComposer
     end
     object BeginEndCheckBox: TCheckBox
       Left = 385
-      Height = 22
+      Height = 17
       Top = 152
-      Width = 103
+      Width = 80
       Caption = 'begin ... end'
       TabOrder = 4
     end
@@ -543,11 +543,11 @@ object FormMessagesComposer: TFormMessagesComposer
       AnchorSideTop.Control = Label1
       AnchorSideTop.Side = asrBottom
       Left = 7
-      Height = 31
-      Top = 27
+      Height = 21
+      Top = 23
       Width = 175
       BorderSpacing.Top = 3
-      ItemHeight = 0
+      ItemHeight = 13
       ItemIndex = 0
       Items.Strings = (
         'mbOK'
@@ -589,8 +589,8 @@ object FormMessagesComposer: TFormMessagesComposer
       AnchorSideTop.Control = StringResultLabel
       AnchorSideTop.Side = asrBottom
       Left = 9
-      Height = 27
-      Top = 166
+      Height = 21
+      Top = 162
       Width = 173
       BorderSpacing.Top = 3
       TabOrder = 7
@@ -599,14 +599,14 @@ object FormMessagesComposer: TFormMessagesComposer
   end
   object KindMessageComboBox: TComboBox
     Left = 6
-    Height = 31
-    Top = 28
+    Height = 21
+    Top = 24
     Width = 810
     Align = alTop
     BorderSpacing.Left = 6
     BorderSpacing.Top = 4
     BorderSpacing.Right = 6
-    ItemHeight = 0
+    ItemHeight = 13
     ItemIndex = 0
     Items.Strings = (
       'MessageDlg[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx]'
@@ -634,7 +634,7 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 94
-    Top = 151
+    Top = 137
     Width = 268
     BorderSpacing.Top = 3
     Lines.Strings = (

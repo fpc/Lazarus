@@ -3,18 +3,15 @@
   <Package Version="3">
     <Name Value="messagecomposerpkg"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="3">
+    <Files Count="2">
       <Item1>
         <Filename Value="messagecomposer.pas"/>
         <HasRegisterProc Value="True"/>
@@ -24,10 +21,6 @@
         <Filename Value="messagecomposer.lfm"/>
         <Type Value="LFM"/>
       </Item2>
-      <Item3>
-        <Filename Value="messagecomposer.lrs"/>
-        <Type Value="LRS"/>
-      </Item3>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

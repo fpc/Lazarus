@@ -15,31 +15,101 @@ msgid "Cancel"
 msgstr "Atsisakyti"
 
 #: messagecomposer.rsok
-msgid "Ok"
+#, fuzzy
+#| msgid "Ok"
+msgid "OK"
 msgstr "Tinka"
 
 #: messagecomposer.rstest
 msgid "Test"
 msgstr "Testas"
 
+#: messagecomposer.sadd
+msgid "Add"
+msgstr ""
+
+#: messagecomposer.sbuttonsarrayofconst
+msgid "Buttons (array of const)"
+msgstr ""
+
+#: messagecomposer.sbuttonstmsgdlgbuttons
+msgid "Buttons (TMsgDlgButtons)"
+msgstr ""
+
+#: messagecomposer.scaseresult
+msgid "\"Case\" result"
+msgstr ""
+
+#: messagecomposer.sdefault
+msgid "Default"
+msgstr ""
+
+#: messagecomposer.sdelete
+msgid "Delete"
+msgstr ""
+
+#: messagecomposer.sdlgcaption
+msgid "Dialog caption"
+msgstr ""
+
+#: messagecomposer.sdlgtype
+msgid "Dialog type"
+msgstr ""
+
+#: messagecomposer.shelpcontext
+msgid "Help context"
+msgstr ""
+
+#: messagecomposer.shelpfilename
+msgid "Help filename"
+msgstr ""
+
+#: messagecomposer.shelpkeyword
+msgid "Help keyword"
+msgstr ""
+
+#: messagecomposer.sifresult
+msgid "\"If\" result"
+msgstr ""
+
 #: messagecomposer.skindofmessage
-msgid "KIND OF MESSAGE"
+#, fuzzy
+#| msgid "KIND OF MESSAGE"
+msgid "Kind of message"
 msgstr "Pranešimo tipas"
 
 #: messagecomposer.smaskinput
-msgid "Mask Input"
+#, fuzzy
+#| msgid "Mask Input"
+msgid "Mask input"
 msgstr "Įvestis pagal kaukę"
 
 #: messagecomposer.smessagecomposercaption
+#, fuzzy
+#| msgid "Message Composer ..."
+msgctxt "messagecomposer.smessagecomposercaption"
+msgid "Message Composer"
+msgstr "Pranešimų rengyklė ..."
+
+#: messagecomposer.smessagecomposermenucaption
+#, fuzzy
+#| msgid "Message Composer ..."
+msgctxt "messagecomposer.smessagecomposermenucaption"
 msgid "Message Composer ..."
 msgstr "Pranešimų rengyklė ..."
+
+#: messagecomposer.smodalresult
+msgid "Modal result"
+msgstr ""
 
 #: messagecomposer.smsgcaption
 msgid "The message to be shown"
 msgstr "Rodomas pranešimas"
 
 #: messagecomposer.snotimplementedyet
-msgid "Not Implemented Yet"
+#, fuzzy
+#| msgid "Not Implemented Yet"
+msgid "Not implemented yet"
 msgstr "Dar neįgyvendinta"
 
 #: messagecomposer.spromptcaption
@@ -47,6 +117,12 @@ msgid "Text asking the user for input"
 msgstr "Tekstas, kviečiantis įvesti"
 
 #: messagecomposer.ssourcewrapper
-msgid "SOURCE WRAPPER"
+#, fuzzy
+#| msgid "SOURCE WRAPPER"
+msgid "Source wrapper"
 msgstr "Pirminio kodo formuotojas"
+
+#: messagecomposer.svaluevar
+msgid "Value (var)"
+msgstr ""
 
