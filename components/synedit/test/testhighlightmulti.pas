@@ -246,6 +246,7 @@ begin
   TestIndex('AtEnd 4',   4,  0, True ,   3);
   TestIndex('After 4',   4,  1, False,  -1);
   TestIndex('After 4',   4,  1, True ,   4);
+  sl.Free;
   {%endregion}
 
   {%region IndexOfFirstSectionAtVirtualIdx}
