@@ -105,10 +105,6 @@ tools\updatepofiles %TP_IPro_RST% components\turbopower_ipro\languages\ipconst.p
 @set TP_IPro_RST=components\turbopower_ipro\units\%ArchOS%\iputils.rst
 tools\updatepofiles %TP_IPro_RST% components\turbopower_ipro\languages\iputils.po
 
-@REM MessageComposer
-@set MessageComposer_RST=components\messagecomposer\lib\%ArchOS%\messagecomposer.rst
-tools\updatepofiles %MessageComposer_RST% components\messagecomposer\languages\messagecomposer.po
-
 @REM LazDataDesktop
 @set LazDataDesktop_RST=tools\lazdatadesktop\lib\%ArchOS%\lazdatadeskstr.rst
 tools\updatepofiles %LazDataDesktop_RST% tools\lazdatadesktop\languages\lazdatadesktop.po

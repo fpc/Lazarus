@@ -40,7 +40,6 @@ RSTFILES=(
   "components/cgi cgimodules"
   "components/lazreport/samples/editor maincalleditor calleditorwithpkg"
   "components/memds frmselectdataset"
-  "components/messagecomposer messagecomposer"  
   "components/printers/design ideprinting"
   "components/projecttemplates projecttemplates"
   "components/projecttemplates frmtemplatevariables"
