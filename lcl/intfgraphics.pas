@@ -152,6 +152,7 @@ type
     procedure GetColor_RGBA_NoPalette(x, y: integer; out Value: TFPColor);
     procedure GetColor_RGB_NoPalette(x, y: integer; out Value: TFPColor);
     procedure GetColor_Gray_NoPalette(x, y: integer; out Value: TFPColor);
+    procedure GetColor_GrayAlpha_NoPalette(x, y: integer; out Value: TFPColor);
     procedure GetColor_NULL(x, y: integer; out Value: TFPColor);
     // 32 bpp alpha
     procedure GetColor_BPP32_A8R8G8B8_BIO_TTB(x, y: integer; out Value: TFPColor);
@@ -194,6 +195,7 @@ type
     procedure SetColor_RGBA_NoPalette(x, y: integer; const Value: TFPColor);
     procedure SetColor_RGB_NoPalette(x, y: integer; const Value: TFPColor);
     procedure SetColor_Gray_NoPalette(x, y: integer; const Value: TFPColor);
+    procedure SetColor_GrayAlpha_NoPalette(x, y: integer; const Value: TFPColor);
     procedure SetColor_NULL(x, y: integer; const Value: TFPColor);
     // 32 bpp alpha
     procedure SetColor_BPP32_A8R8G8B8_BIO_TTB(x, y: integer; const Value: TFPColor);
@@ -1762,8 +1764,16 @@ begin
                             ByteOrder,
                             BitOrder,
                             FReadRawImageBits, FWriteRawImageBits);
-          FGetInternalColorProc := @GetColor_Gray_NoPalette;
-          FSetInternalColorProc := @SetColor_Gray_NoPalette;
+
+          if AlphaPrec = 0
+          then begin
+            FGetInternalColorProc := @GetColor_Gray_NoPalette;
+            FSetInternalColorProc := @SetColor_Gray_NoPalette;
+          end
+          else begin
+            FGetInternalColorProc := @GetColor_GrayAlpha_NoPalette;
+            FSetInternalColorProc := @SetColor_GrayAlpha_NoPalette;
+          end;
         end;
       end;
     end
@@ -1876,6 +1886,20 @@ begin
   Value.Blue := Value.Red;
   // no alpha -> set opaque
   Value.Alpha:=high(Value.Alpha);
+end;
+
+procedure TLazIntfImage.GetColor_GrayAlpha_NoPalette(x, y: integer; out Value: TFPColor);
+var
+  Position: TRawImagePosition;
+begin
+  GetXYDataPosition(x,y,Position);
+  with FRawImage.Description do
+  begin
+    FReadRawImageBits(FRawImage.Data, Position, RedPrec, RedShift, Value.Red);
+    FReadRawImageBits(FRawImage.Data, Position, AlphaPrec, AlphaShift, Value.Alpha);
+  end;
+  Value.Green := Value.Red;
+  Value.Blue := Value.Red;
 end;
 
 procedure TLazIntfImage.GetColor_BPP32_A8B8G8R8_BIO_TTB(x, y: integer; out Value: TFPColor);
@@ -2510,6 +2534,19 @@ begin
   with FRawImage.Description do
     FWriteRawImageBits(FRawImage.Data, Position, RedPrec, RedShift, Value.Red);
 end;
+
+procedure TLazIntfImage.SetColor_GrayAlpha_NoPalette(x, y: integer; const Value: TFPColor);
+var
+  Position: TRawImagePosition;
+begin
+  GetXYDataPosition(x,y,Position);
+  with FRawImage.Description do
+  begin
+    FWriteRawImageBits(FRawImage.Data, Position, RedPrec, RedShift, Value.Red);
+    FWriteRawImageBits(FRawImage.Data, Position, AlphaPrec, AlphaShift, Value.Alpha)
+  end;
+end;
+
 
 procedure TLazIntfImage.SetColor_NULL(x, y: integer; const Value: TFPColor);
 begin
@@ -5615,17 +5652,29 @@ begin
     else begin
       // no palette, adjust description
       if IsGray
-      then Desc.Depth := Header.BitDepth
-      else if IsAlpha
-      then Desc.Depth := 4 * Header.BitDepth
-      else Desc.Depth := 3 * Header.BitDepth;
+      then begin
+        Desc.RedPrec := Header.BitDepth;
+        Desc.RedShift := 0;
+        if IsAlpha
+        then begin
+          Desc.BitsPerPixel := 2 * Header.BitDepth;
+          Desc.AlphaPrec := Header.BitDepth;
+          Desc.AlphaShift := Header.BitDepth;
+        end
+        else begin
+          Desc.BitsPerPixel := Header.BitDepth;
+        end;
+        Desc.Depth := Desc.BitsPerPixel;
+      end
+      else begin
+        if IsAlpha
+        then Desc.Depth := 4 * Header.BitDepth
+        else Desc.Depth := 3 * Header.BitDepth
+      end;
 
       case Header.BitDepth of
         1,2,4: begin
           // only gray
-          Desc.BitsPerPixel := Header.BitDepth;
-          Desc.RedPrec := Header.BitDepth;
-          Desc.RedShift := 0;
         end;
         8: begin
           // no change
@@ -5761,16 +5810,18 @@ begin
     // no palette, adjust description
     if IsGray
     then begin
+      Desc.RedPrec := FirstImg.GrayBits;
+      Desc.RedShift := 0;
       if IsAlpha
       then begin
         Desc.Depth := FirstImg.GrayBits + FirstImg.AlphaBits;
+        Desc.AlphaPrec := FirstImg.AlphaBits;
+        Desc.AlphaShift := FirstImg.GrayBits;
       end
       else begin
         Desc.Depth := FirstImg.GrayBits;
         Desc.BitsPerPixel := FirstImg.GrayBits;
       end;
-      Desc.RedPrec := FirstImg.GrayBits;
-      Desc.RedShift := 0;
     end
     else begin
       Desc.Depth := FirstImg.RedBits + FirstImg.GreenBits + FirstImg.BlueBits + FirstImg.AlphaBits;
