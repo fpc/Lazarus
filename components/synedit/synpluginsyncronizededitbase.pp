@@ -1142,11 +1142,9 @@ begin
     c2 := Cells.IndexOf(aX - aCount, aY, True)
   else
     c2 := c1;
-debugln(['----- c1=',c1,' c2=',c2,'  ay=',ay,' ax=',ax,'  aLineBrkCnt=',aLineBrkCnt,' aCount=',aCount,'  FExternalEditLock=',FExternalEditLock,'  FPaintLock=', FPaintLock,' FOwnPaintLock=',FOwnPaintLock]);
   // allow edit outside cell? (only if not partly cell / part cell updates are not allowed at all)
   // Todo, could be just on the edge of a cell !
   if (c1 = c2) and (FExternalEditLock > 0) then begin
-debugln(['exit for external']);
     exit;
   end;
   // shared editor, outside cells
@@ -1154,11 +1152,9 @@ debugln(['exit for external']);
     if (c1 < 0) and (c2 < 0) then
       exit;
     c1 := -1; // shared Eitor in cell => deactivate
-debugln(['deactivate for shared']);
   end;
 
   if (CurrentCell < 0) or (c1 < 0) or (c2 <> c1) then begin
-debugln(['deactivate']);
     Clear;
     Active := False;
   end;
