@@ -1183,7 +1183,6 @@ procedure TSynPluginCustomSyncroEdit.UpdateCurrentCell;
 var
   i: Integer;
 begin
-debugln(['update current cell  pl=',FPaintLock]);
   i := Cells.IndexOf(CaretObj.BytePos, CaretObj.LinePos, True);
   if (i <> CurrentCell) and (CurrentCell >= 0) then
     FLastCell := CurrentCell;
