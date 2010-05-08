@@ -5024,7 +5024,7 @@ begin
         and (not (csDestroyingHandle in ControlState))
         and (not (csDestroying in ComponentState))
         then begin
-          if (Form <> nil) and not Form.SetFocusedControl(Self) then Exit;
+          if not Form.SetFocusedControl(Self) then Exit;
           Message.Result := 0;
         end;
       end;
@@ -5306,7 +5306,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.SetFocus;
 var
-  Form : TCustomForm;
+  Form: TCustomForm;
 begin
   {$IFDEF VerboseFocus}
   DebugLn('[TWinControl.SetFocus] ',Name,':',ClassName,' Visible=',dbgs(Visible),' HandleAllocated=',dbgs(HandleAllocated));
