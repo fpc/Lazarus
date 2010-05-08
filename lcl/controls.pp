@@ -1725,7 +1725,9 @@ type
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED; // called by TWinControl.UpdateShowing
     procedure CMShowHintChanged(var Message: TLMessage); message CM_SHOWHINTCHANGED;
-    procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
+    procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
+    procedure CMEnter(var Message: TLMessage); message CM_ENTER;
+    procedure CMExit(var Message: TLMessage); message CM_EXIT;
     procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMNotify(var Message: TLMNotify); message LM_NOTIFY;
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;

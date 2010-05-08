@@ -422,6 +422,7 @@ type
     FKeyPreview: Boolean;
     FMenu: TMainMenu;
     FModalResult: TModalResult;
+    FLastFocusedControl: TWinControl;
     FOldBorderStyle: TFormBorderStyle;
     FOnActivate: TNotifyEvent;
     FOnClose: TCloseEvent;
@@ -1635,9 +1636,9 @@ uses
   WSForms; // Widgetset uses circle is allowed
 
 var
-  FocusCount: Integer=0;
-  HandlingException: boolean=False;
-  HaltingProgram: boolean=False;
+  HandlingException: Boolean = False;
+  HaltingProgram: Boolean = False;
+  LastFocusedControl: TWinControl = nil;
 
 procedure Register;
 begin
@@ -1684,27 +1685,15 @@ begin
   Application.DoBeforeFinalization;
 end;
 
-//------------------------------------------------------------------------------
-// The focus state is just the focus count for now. To save having to allocate
-// anything, I just map the Integer to the TFocusState.
 function SaveFocusState: TFocusState;
 begin
-  Result := TFocusState(PtrInt(FocusCount));
+  Result := LastFocusedControl;
 end;
 
 procedure RestoreFocusState(FocusState: TFocusState);
 begin
-  FocusCount := integer(PtrUInt(FocusState));
+  LastFocusedControl := TWinControl(FocusState);
 end;
-
-{function SendFocusMessage(Window: HWnd; Msg: Word): Boolean;
-var
-  Count: Integer;
-begin
-  Count := FocusCount;
-  SendMessage(Window, Msg, 0, 0);
-  Result := (FocusCount = Count);
-end;}
 
 //------------------------------------------------------------------------------
 function KeysToShiftState(Keys: PtrUInt): TShiftState;

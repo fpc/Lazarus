@@ -6330,10 +6330,6 @@ end;
 procedure TWinControl.WMSetFocus(var Message: TLMSetFocus);
 begin
   //DebugLn('TWinControl.WMSetFocus A ',Name,':',ClassName);
-  Assert(False, Format('Trace: %s', [ClassName]));
-  if [csLoading,csDestroying,csDesigning]*ComponentState=[] then begin
-    DoEnter;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -6351,23 +6347,9 @@ begin
   Assert(False, Format('Trace: %s', [ClassName]));
   if [csLoading,csDestroying,csDesigning]*ComponentState=[] then
   begin
-    if Self is TCustomForm then
-    begin
-      if TCustomForm(Self).Active then
-      begin
-        EditingDone;
-        DoExit;
-      end;
-    end else
-    begin
-      ParentForm := GetParentForm(Self);
-      if Assigned(ParentForm) and
-        ParentForm.Active then
-      begin
-        EditingDone;
-        DoExit;
-      end;
-    end;
+    ParentForm := GetParentForm(Self);
+    if Assigned(ParentForm) and ParentForm.Active then
+      EditingDone;
   end;
 end;
 
@@ -7815,15 +7797,23 @@ end;
 
   Performs actions when visibility has changed
  ------------------------------------------------------------------------------}
-procedure TWinControl.CMVisibleChanged(var TheMessage : TLMessage);
+procedure TWinControl.CMVisibleChanged(var Message : TLMessage);
 begin
-  if not FVisible and (Parent <> nil)
-  then RemoveFocus(False);
+  if not FVisible and (Parent <> nil) then
+    RemoveFocus(False);
 
-  if not (csDesigning in ComponentState)
-  or (csNoDesignVisible in ControlStyle)
-  then
+  if not (csDesigning in ComponentState) or (csNoDesignVisible in ControlStyle) then
     UpdateControlState;
+end;
+
+procedure TWinControl.CMEnter(var Message: TLMessage);
+begin
+  DoEnter;
+end;
+
+procedure TWinControl.CMExit(var Message: TLMessage);
+begin
+  DoExit;
 end;
 
 procedure TWinControl.DoSendShowHideToInterface;

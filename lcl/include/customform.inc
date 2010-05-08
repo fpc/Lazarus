@@ -1846,6 +1846,7 @@ begin
   Include(FFormState,fsFirstShow);
   //DebugLn('[TCustomForm.CreateNew] Class=',Classname);
   BeginFormUpdate;
+  FLastFocusedControl := Self;
   FBorderIcons := [biSystemMenu, biMinimize, biMaximize];
   FDefaultMonitor := dmActiveForm;
   FPopupMode := pmNone;
@@ -2130,10 +2131,20 @@ end;
   Switch focus.
 ------------------------------------------------------------------------------}
 function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
+
+  function NextChildControl(CurParent, Target: TWinControl): TWinControl; inline;
+  begin
+    while Target.Parent <> CurParent do
+      Target := Target.Parent;
+    Result := Target;
+  end;
+
 var
   ParentForm: TCustomForm;
   CurControl: TWinControl;
+  LastState: TFocusState;
 begin
+  LastFocusedControl := Control;
   Result := False;
   if (Control <> nil) and (csDestroying in Control.ComponentState) then Exit;
   if (csDestroying in ComponentState) or (csDestroyingHandle in ControlState) then
@@ -2180,17 +2191,42 @@ begin
   if (Control <> nil) and (not (csFocusing in Control.ControlState)) then
   begin
     Control.ControlState := Control.ControlState + [csFocusing];
-    Screen.FFocusedForm := Self;
-    // prevent looping
-    // update ActiveControls of all parent forms
-    CurControl := Control.Parent;
-    while CurControl <> nil do
-    begin
-      if CurControl is TCustomForm then
-        TCustomForm(CurControl).FActiveControl := Control;
-      CurControl := CurControl.Parent;
+    try
+      Screen.FFocusedForm := Self;
+      // update ActiveControls of all parent forms
+      CurControl := Control.Parent;
+      while CurControl <> nil do
+      begin
+        if CurControl is TCustomForm then
+          TCustomForm(CurControl).FActiveControl := Control;
+        CurControl := CurControl.Parent;
+      end;
+
+      // send cm_exit, cm_enter messages
+      // cm_exit must be sent to all controls from lastfocusedcontrol to the first parent which contains control
+      // cm_enter must be sent from the control we stoped up to control
+      // if during this loop something happens with focus (another control or form has aquired it) we need to stop it
+
+      while not FLastFocusedControl.ContainsControl(Control) do
+      begin
+        LastState := SaveFocusState;
+        SendMessage(FLastFocusedControl.Handle, CM_EXIT, 0, 0);
+        if SaveFocusState <> LastState then
+          Exit;
+        FLastFocusedControl := FLastFocusedControl.Parent;
+      end;
+
+      while FLastFocusedControl <> Control do
+      begin
+        FLastFocusedControl := NextChildControl(FLastFocusedControl, Control);
+        LastState := SaveFocusState;
+        SendMessage(FLastFocusedControl.Handle, CM_ENTER, 0, 0);
+        if SaveFocusState <> LastState then
+          Exit;
+      end;
+    finally
+      Control.ControlState := Control.ControlState - [csFocusing];
     end;
-    Control.ControlState := Control.ControlState - [csFocusing];
     Result := True;
   end;
 end;
