@@ -43,6 +43,7 @@ begin
   begin
     BorderStyle := bsDialog;
     Caption := InputCaption;
+    Position := poScreenCenter;
     Prompt := TLabel.Create(Form);
     with Prompt do
     begin
@@ -51,11 +52,11 @@ begin
       Align := alTop;
       AutoSize := True;
     end;
-    Position := poScreenCenter;
     Edit := TEdit.Create(Form);
     with Edit do
     begin
       Parent := Form;
+      Top := Prompt.Height;
       Align := alTop;
       BorderSpacing.Top := 3;
       AMonitor := ActiveMonitor;
@@ -79,6 +80,7 @@ begin
 
     with TButtonPanel.Create(Form) do
     begin
+      Top := Edit.Top + Edit.Height;
       Parent := Form;
       ShowBevel := False;
       ShowButtons := [pbOK, pbCancel];
