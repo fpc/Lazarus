@@ -1485,8 +1485,8 @@ const
  (
  { HS_HORIZONTAL } ($FF, $FF, $FF, $00, $FF, $FF, $FF, $FF),
  { HS_VERTICAL   } ($F7, $F7, $F7, $F7, $F7, $F7, $F7, $F7),
- { HS_FDIAGONAL  } ($FE, $FD, $FB, $F7, $EF, $DF, $BF, $7F),
- { HS_BDIAGONAL  } ($7F, $BF, $DF, $EF, $F7, $FB, $FD, $FE),
+ { HS_FDIAGONAL  } ($7F, $BF, $DF, $EF, $F7, $FB, $FD, $FE),
+ { HS_BDIAGONAL  } ($FE, $FD, $FB, $F7, $EF, $DF, $BF, $7F),
  { HS_CROSS      } ($F7, $F7, $F7, $00, $F7, $F7, $F7, $F7),
  { HS_DIAGCROSS  } ($7E, $BD, $DB, $E7, $E7, $DB, $BD, $7E)
   );
