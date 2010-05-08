@@ -1476,12 +1476,21 @@ begin
 
   if GTK_IS_TREE_VIEW(Widgets^.MainView) then
   begin
-    // convert X, Y to bin window coords
-    x := x + Round(PGtkTreeView(Widgets^.MainView)^.priv^.hadjustment^.value);
-    if GTK_TREE_VIEW_FLAG_SET(PGtkTreeView(Widgets^.MainView), GTK_TREE_VIEW_HEADERS_VISIBLE) then
+    // gtk2 >= 2.19 changed treeview api
+    if gtk_minor_version >= 19 then
     begin
-      gdk_window_get_size(PGtkTreeView(Widgets^.MainView)^.priv^.header_window, @cx, @cy);
-      y := y - cy;
+      gdk_window_get_position(gtk_tree_view_get_bin_window(PGtkTreeView(Widgets^.MainView)), @cx, @cy);
+      Dec(x, cx);
+      Dec(y, cy);
+    end else
+    begin
+      // convert X, Y to bin window coords
+      x := x + Round(PGtkTreeView(Widgets^.MainView)^.priv^.hadjustment^.value);
+      if GTK_TREE_VIEW_FLAG_SET(PGtkTreeView(Widgets^.MainView), GTK_TREE_VIEW_HEADERS_VISIBLE) then
+      begin
+        gdk_window_get_size(PGtkTreeView(Widgets^.MainView)^.priv^.header_window, @cx, @cy);
+        y := y - cy;
+      end;
     end;
     if gtk_tree_view_get_path_at_pos(PGtkTreeView(Widgets^.MainView), x, y, ItemPath, Column, nil, nil) then
     begin
