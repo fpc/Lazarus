@@ -42,12 +42,7 @@ unit SynEditMiscProcs;
 interface
 
 uses
-  {$IFDEF SYN_LAZARUS}
-  LCLIntf, LCLType,
-  {$ELSE}
-  Windows,
-  {$ENDIF}
-  Classes, SynEditTypes, Graphics;
+  LCLIntf, LCLType, Classes, SynEditTypes, Graphics;
 
 type
   PIntArray = ^TIntArray;
@@ -62,12 +57,8 @@ function MinMax(x, mi, ma: integer): integer;{$IFDEF HasInline}inline;{$ENDIF}
 procedure SwapInt(var l, r: integer);{$IFDEF HasInline}inline;{$ENDIF}
 function maxPoint(P1, P2: TPoint): TPoint;
 function minPoint(P1, P2: TPoint): TPoint;
-{$IFDEF SYN_LAZARUS}
 function eqPoint(P1, P2: TPoint): Boolean;
 procedure SwapPoint(var P1, P2: TPoint);
-{$ENDIF}
-
-function GetIntArray(Count: Cardinal; InitialValue: integer): PIntArray;
 
 procedure InternalFillRect(dc: HDC; const rcPaint: TRect);
 
@@ -77,18 +68,7 @@ function StrScanForCharInSet(const Line: string; Start: integer;
 
 function GetEOL(Line: PChar): PChar;
 
-{begin}                                                                         //gp 2000-06-24
-// Remove all '/' characters from string by changing them into '\.'.
-// Change all '\' characters into '\\' to allow for unique decoding.
-function EncodeString(s: string): string;
-{$IFDEF SYN_LAZARUS}
-function EncodeStringLength(s: string): integer;
 function CompareCarets(const FirstCaret, SecondCaret: TPoint): integer;
-{$ENDIF}
-
-// Decodes string, encoded with EncodeString.
-function DecodeString(s: string): string;
-{end}                                                                           //gp 2000-06-24
 
 function fsNot (s : TFontStyles) : TFontStyles; inline;
 function fsXor (s1,s2 : TFontStyles) : TFontStyles; inline;
@@ -160,7 +140,6 @@ begin
     Result := P2;
 end;
 
-{$IFDEF SYN_LAZARUS}
 function eqPoint(P1, P2: TPoint): Boolean;
 begin
   Result := (P2.y = P1.y) and (P2.x = P1.x);
@@ -173,24 +152,6 @@ begin
   tmp := P1;
   P1 := P2;
   P2 := tmp;
-end;
-{$ENDIF}
-
-{***}
-
-function GetIntArray(Count: Cardinal; InitialValue: integer): PIntArray;
-var
-  p: PInteger;
-begin
-  Result := AllocMem(Count * SizeOf(integer));
-  if Assigned(Result) and (InitialValue <> 0) then begin
-    p := PInteger(Result);
-    while (Count > 0) do begin
-      p^ := InitialValue;
-      Inc(p);
-      Dec(Count);
-    end;
-  end;
 end;
 
 procedure InternalFillRect(dc: HDC; const rcPaint: TRect);
@@ -229,59 +190,6 @@ begin
       Inc(Result);
 end;
 
-{begin}                                                                         //gp 2000-06-24
-{$IFOPT R+}{$DEFINE RestoreRangeChecking}{$ELSE}{$UNDEF RestoreRangeChecking}{$ENDIF}
-{$R-}
-function EncodeString(s: string): string;
-var
-  i, j: integer;
-begin
-  {$IFDEF SYN_LAZARUS}
-  SetLength(Result, EncodeStringLength(s));
-  {$ELSE}
-  SetLength(Result, 2 * Length(s)); // worst case
-  {$ENDIF}
-  j := 0;
-  for i := 1 to Length(s) do begin
-    Inc(j);
-    if s[i] = '\' then begin
-      Result[j] := '\';
-      {$IFDEF SYN_LAZARUS}
-      Inc(j);
-      Result[j] := '\';
-      {$ELSE}
-      Result[j + 1] := '\';
-      Inc(j);
-      {$ENDIF}
-    end else if s[i] = '/' then begin
-      Result[j] := '\';
-      {$IFDEF SYN_LAZARUS}
-      Inc(j);
-      Result[j] := '.';
-      {$ELSE}
-      Result[j + 1] := '.';
-      Inc(j);
-      {$ENDIF}
-    end else
-      Result[j] := s[i];
-  end; //for
-  {$IFNDEF SYN_LAZARUS}
-  SetLength(Result, j);
-  {$ENDIF}
-end; { EncodeString }
-
-{$IFDEF SYN_LAZARUS}
-function EncodeStringLength(s: string): integer;
-var
-  i, len: integer;
-begin
-  len:=length(s);
-  Result := len;
-  for i := 1 to len do
-    if (s[i] in ['\','/']) then
-      Inc(Result);
-end;
-
 function CompareCarets(const FirstCaret, SecondCaret: TPoint): integer;
 begin
   if (FirstCaret.Y<SecondCaret.Y) then
@@ -295,32 +203,6 @@ begin
   else
     Result:=0;
 end;
-
-{$ENDIF}
-
-function DecodeString(s: string): string;
-var
-  i, j: integer;
-begin
-  SetLength(Result, Length(s)); // worst case
-  j := 0;
-  i := 1;
-  while i <= Length(s) do begin
-    Inc(j);
-    if s[i] = '\' then begin
-      Inc(i);
-      if s[i] = '\' then
-        Result[j] := '\'
-      else
-        Result[j] := '/';
-    end else
-      Result[j] := s[i];
-    Inc(i);
-  end; //for
-  SetLength(Result,j);
-end; { DecodeString }
-{$IFDEF RestoreRangeChecking}{$R+}{$ENDIF}
-{end}                                                                           //gp 2000-06-24
 
 function CreateTabsAndSpaces(StartPos, SpaceLen, TabWidth: integer;
   UseTabs: boolean): string;
