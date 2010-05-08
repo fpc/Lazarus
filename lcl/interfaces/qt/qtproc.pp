@@ -32,9 +32,26 @@ interface
 {$I qtdefines.inc}
 
 uses
+  InterfaceBase,
   qt4,
   GraphType,
   LCLProc;
+
+const
+  EVE_IO_READ  = 1;
+  EVE_IO_WRITE = 4;
+  EVE_IO_ERROR = 8;
+
+type
+  PWaitHandleEventHandler = ^TWaitHandleEventHandler;
+  TWaitHandleEventHandler = record
+    qsn: array[QSocketNotifierRead..QSocketNotifierException] of QSocketNotifierH; // the notifiers for events
+    qsn_hook: array[QSocketNotifierRead..QSocketNotifierException] of QSocketNotifier_hookH; // the hooks
+    user_callback: TWaitHandleEvent;
+    udata: PtrInt; // the userdata
+    socket: Integer; // for mapping
+  end;
+
 
 procedure FillStandardDescription(var Desc: TRawImageDescription);
 function GetPixelsPerInch: Integer;

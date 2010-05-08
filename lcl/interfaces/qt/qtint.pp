@@ -61,6 +61,7 @@ type
     SavedDCList: TFPList;
     CriticalSection: TRTLCriticalSection;
     SavedHandlesList: TMap;
+    FSocketEventMap: TMap;
     // global hooks
     FAppEvenFilterHook: QObject_hookH;
     FAppFocusChangedHook: QApplication_hookH;

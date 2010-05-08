@@ -30,6 +30,9 @@
 
 //##apiwiz##sps##   // Do not remove
 
+procedure SocketNotifierRead_cb(aSocket: Integer); cdecl; // internal callback, don't use!
+procedure SocketNotifierWrite_cb(aSocket: Integer); cdecl; // internal callback, don't use!
+procedure SocketNotifierError_cb(aSocket: Integer); cdecl; // internal callback, don't use!
 function AddEventHandler(AHandle: THandle; AFlags: dword;
   AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler; override;
 function AddPipeEventHandler(AHandle: THandle;
@@ -72,6 +75,8 @@ function ReleaseDesignerDC(Window: HWND; DC: HDC): Integer; override;
 procedure RemoveEventHandler(var AHandler: PEventHandler); override;
 procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;
 procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); override;
+
+procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); override;
 
 function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;
 

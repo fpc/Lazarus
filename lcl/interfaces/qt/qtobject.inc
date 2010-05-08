@@ -37,6 +37,7 @@ begin
   FDragImageLock := False;
   System.InitCriticalSection(CriticalSection);
   SavedHandlesList := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TObject));
+  FSocketEventMap := TMap.Create(TMapIdType(its4), SizeOf(Pointer));
 end;
 
 {------------------------------------------------------------------------------
@@ -70,6 +71,7 @@ begin
     SavedHandlesList.Free;
     SavedHandlesList := nil;
   end;
+  FSocketEventMap.Free;
 
   System.DoneCriticalsection(CriticalSection);
 

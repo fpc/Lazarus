@@ -30,11 +30,95 @@
 
 //##apiwiz##sps##   // Do not remove
 
+{
+  This is the common cdecl callback function used for Qt4
+  QSocketNotifier activated.
+}
+procedure TQtWidgetSet.SocketNotifierRead_cb(aSocket: Integer); cdecl;
+var
+  wheh: PWaitHandleEventHandler;
+begin
+  if FSocketEventMap.GetData(aSocket, wheh) then
+    wheh^.user_callback(wheh^.udata, EVE_IO_READ);
+end;
+
+procedure TQtWidgetSet.SocketNotifierWrite_cb(aSocket: Integer); cdecl;
+var
+  wheh: PWaitHandleEventHandler;
+begin
+  if FSocketEventMap.GetData(aSocket, wheh) then
+    wheh^.user_callback(wheh^.udata, EVE_IO_WRITE);
+end;
+
+procedure TQtWidgetSet.SocketNotifierError_cb(aSocket: Integer); cdecl;
+var
+  wheh: PWaitHandleEventHandler;
+begin
+  if FSocketEventMap.GetData(aSocket, wheh) then
+    wheh^.user_callback(wheh^.udata, EVE_IO_ERROR);
+end;
+
 function TQtWidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword;
   AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler;
+{
+  QSocketNotifier requires 1 notifier per event type
+  and doesn't provide userdata in the callback. We need to
+  make a map of socket -> userdata to store userdata
+  and also create 3 notifiers for each event. We also need to
+  use our own constants for the event types in the userland callback.
+  For simplicity same as GTK G_IO values are used here and
+  their ORs will be emulated. The callback will always only get
+  1 event tho.
+}
+
+  function CreateQt4NotifierRec(aNR: PWaitHandleEventHandler;
+           const aType: QSocketNotifierType; aCallback: QSocketNotifier_activated_Event): PWaitHandleEventHandler;
+  var
+    qsn: QSocketNotifierH;
+    qsn_hook: QSocketNotifier_hookH;
+    i: QSocketNotifierType;
+  begin
+    if aNR = nil then begin
+      Result := new(PWaitHandleEventHandler);
+      for i := QSocketNotifierRead to QSocketNotifierException do begin
+        Result^.qsn[i] := nil; // nil them so removeeventhandler can find out what to free
+        Result^.qsn_hook[i] := nil;
+      end;
+    end else
+      Result := aNR;
+
+    qsn := QSocketNotifier_create(aHandle, aType);
+    qsn_hook := QSocketNotifier_hook_create(qsn);
+    QSocketNotifier_hook_hook_activated(qsn_hook, aCallback); // todo: !!
+
+    Result^.qsn[aType] := qsn;
+    Result^.qsn_hook[aType] := qsn_hook;
+  end;
+
 begin
-  // todo
   Result := nil;
+
+  if AFlags and (EVE_IO_READ or EVE_IO_WRITE or EVE_IO_ERROR) = 0 then
+    Exit; // no flag set, no dice
+
+  if AFlags and EVE_IO_READ = EVE_IO_READ then
+    Result := CreateQt4NotifierRec(Result, QSocketNotifierRead, @SocketNotifierRead_cb);
+
+  if AFlags and EVE_IO_WRITE = EVE_IO_WRITE then
+    Result := CreateQt4NotifierRec(Result, QSocketNotifierWrite, @SocketNotifierWrite_cb);
+
+  if AFlags and EVE_IO_ERROR = EVE_IO_ERROR then
+    Result := CreateQt4NotifierRec(Result, QSocketNotifierException, @SocketNotifierError_cb);
+
+  PWaitHandleEventHandler(Result)^.user_callback := AEventHandler;
+  PWaitHandleEventHandler(Result)^.udata := aData;
+  PWaitHandleEventHandler(Result)^.socket := AHandle;
+
+  if FSocketEventMap.HasId(aHandle) then begin // if we encounter this (shouldn't happen)
+    Debugln('TQtWidgetSet.AddEventHandler Duplicate handle: ' + IntToStr(aHandle));
+    FSocketEventMap.Delete(aHandle); // delete the previous one, potentially losing it..
+  end;
+  FSocketEventMap.Add(AHandle, Result);
 end;
 
 function TQtWidgetSet.AddPipeEventHandler(AHandle: THandle;
@@ -659,8 +743,20 @@ begin
 end;
 
 procedure TQtWidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
+var
+  wheh: PWaitHandleEventHandler;
+  i: QSocketNotifierType;
 begin
-  // todo
+  wheh := PWaitHandleEventHandler(aHandler);
+  FSocketEventMap.Delete(wheh^.socket); // delete from the map
+
+  for i := QSocketNotifierRead to QSocketNotifierException do
+    if Assigned(wheh^.qsn[i]) then begin
+      QSocketNotifier_destroy(wheh^.qsn[i]);
+      QSocketNotifier_hook_destroy(wheh^.qsn_hook[i]);
+    end;
+  dispose(wheh);
+  aHandler := nil;
 end;
 
 procedure TQtWidgetSet.RemovePipeEventHandler(var AHandler: PPipeEventHandler);
@@ -671,6 +767,25 @@ end;
 procedure TQtWidgetSet.RemoveProcessEventHandler(var AHandler: PProcessEventHandler);
 begin
   // todo
+end;
+
+procedure TQtWidgetSet.SetEventHandlerFlags(AHandler: PEventHandler;
+  NewFlags: dword);
+var
+  wheh: PWaitHandleEventHandler;
+  do_read: boolean;
+  do_write: boolean;
+  do_error: boolean;
+begin
+  wheh := PWaitHandleEventHandler(aHandler);
+
+  do_read := NewFlags and EVE_IO_READ = EVE_IO_READ;
+  do_write := NewFlags and EVE_IO_WRITE = EVE_IO_WRITE;
+  do_error := NewFlags and EVE_IO_ERROR = EVE_IO_ERROR;
+
+  QSocketNotifier_setEnabled(wheh^.qsn[QSocketNotifierRead], do_read);
+  QSocketNotifier_setEnabled(wheh^.qsn[QSocketNotifierWrite], do_write);
+  QSocketNotifier_setEnabled(wheh^.qsn[QSocketNotifierException], do_error);
 end;
 
 function TQtWidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean;
