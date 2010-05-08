@@ -1466,6 +1466,11 @@ end;
 }
 procedure TFieldDataLink.DataSetChanged;
 begin
+  //workaround to fpc bug 16428 (LayoutChanged not being called)
+  //in some situations (e.g. creating fields at design time) the
+  //FField can point to an invalid reference leading to a crash
+  //todo: remove ValidateField after fpc bug 16428 is fixed
+  ValidateField;
   reset;
 end;
 
