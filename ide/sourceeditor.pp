@@ -209,6 +209,8 @@ type
     FIsNewSharedEditor: Boolean;
     FSharedValues: TSourceEditorSharedValues;
     FEditor: TIDESynEditor;
+    FTempCaret: TPoint;
+    FTempTopLine: Integer;
     FEditPlugin: TSynEditPlugin1;  // used to get the LinesInserted and
                                    //   LinesDeleted messages
     FSyncroLockCount: Integer;
@@ -310,6 +312,8 @@ type
     function Manager: TSourceEditorManager;
     property Visible: Boolean read FVisible write SetVisible default False;
     function IsSharedWith(AnOtherEditor: TSourceEditor): Boolean;
+    procedure BeforeCodeBufferReplace;
+    procedure AfterCodeBufferReplace;
   public
     constructor Create(AOwner: TComponent; AParent: TWinControl; ASharedEditor: TSourceEditor = nil);
     destructor Destroy; override;
@@ -2084,6 +2088,7 @@ procedure TSourceEditorSharedValues.OnCodeBufferChanged(Sender: TSourceLog;
 var
   StartPos, EndPos, MoveToPos: TPoint;
   CodeToolsInSync: Boolean;
+  i: Integer;
 begin
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceEditor.OnCodeBufferChanged] A ',FIgnoreCodeBufferLock,' ',SrcLogEntry<>nil);
@@ -2134,7 +2139,11 @@ begin
     DumpStack;
     {$ENDIF}
     SynEditor.BeginUpdate;
+    for i := 0 to SharedEditorCount-1 do
+      SharedEditors[i].BeforeCodeBufferReplace;
     Sender.AssignTo(SynEditor.Lines,false);
+    for i := 0 to SharedEditorCount-1 do
+      SharedEditors[i].AfterCodeBufferReplace;
     SynEditor.EndUpdate;
   end;
   if CodeToolsInSync then begin
@@ -2675,6 +2684,21 @@ function TSourceEditor.IsSharedWith(AnOtherEditor: TSourceEditor): Boolean;
 begin
   Result := (AnOtherEditor <> nil) and
             (AnOtherEditor.FSharedValues = FSharedValues);
+end;
+
+procedure TSourceEditor.BeforeCodeBufferReplace;
+begin
+  FTempTopLine := FEditor.TopLine;
+  FTempCaret := FEditor.CaretXY;
+end;
+
+procedure TSourceEditor.AfterCodeBufferReplace;
+begin
+  if (FTempTopLine > FEditor.Lines.Count) or(FTempCaret.Y > FEditor.Lines.Count)
+  then
+    exit;
+  FEditor.TopLine := FTempTopLine;
+  FEditor.CaretXY := FTempCaret;
 end;
 
 Procedure TSourceEditor.ProcessCommand(Sender: TObject;
