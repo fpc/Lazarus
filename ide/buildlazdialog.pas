@@ -1548,7 +1548,7 @@ begin
   end;
 
   XMLConfig.SetDeleteValue(Path+'Advanced/Value',FAdvanced,false);
-  XMLConfig.SetDeleteValue(Path+'CleanAll/Value',FCleanAll,true);
+  XMLConfig.SetDeleteValue(Path+'CleanAll/Value',FCleanAll,false);
   XMLConfig.SetDeleteValue(Path+'ExtraOptions/Value',FExtraOptions,'');
   XMLConfig.SetDeleteValue(Path+'TargetOS/Value',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'TargetCPU/Value',TargetCPU,'');
