@@ -3,24 +3,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Ido Kanner <idokan@gmail.com>\n"
-"PO-Revision-Date: 2008-10-31 18:08+0200\n"
+"Last-Translator: ezik shulamy <shulamy@regba.org.il>\n"
+"PO-Revision-Date: 2010-05-09 17:40+0200\n"
 "Project-Id-Version: lazaruside\n"
-"Language-Team:  <he@li.org>\n"
+"Language-Team: hebrew <he@li.org>\n"
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
-"Last-Translator: Ido Kanner <kannerido@013.net>\n"
+"POT-Creation-Date: 2010-05-08 09:28+0200\n"
+"X-Poedit-Language: Herero\n"
+"X-Poedit-Country: ISRAEL\n"
 
 #: lazarusidestrconsts.dlfmouseresetall
 msgid "Reset all settings"
-msgstr ""
+msgstr "אתחל את כל ההגדרות"
 
 #: lazarusidestrconsts.dlfmouseresetgutter
 msgid "Reset all gutter settings"
-msgstr ""
+msgstr "אתחל את כל הגדרות קווי העזר"
 
 #: lazarusidestrconsts.dlfmouseresettext
 msgid "Reset all text settings"
-msgstr ""
+msgstr "אתחל את כל ההגדרות הטקסט"
 
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
@@ -29,20 +32,20 @@ msgstr ""
 #: lazarusidestrconsts.dlfmousesimplegenericsect
 msgctxt "lazarusidestrconsts.dlfmousesimplegenericsect"
 msgid "General"
-msgstr ""
+msgstr "כללי"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
 msgid "Standard, All actions (breakpoint, fold) on Mouse down"
-msgstr ""
+msgstr "סטנדרטי, כל הפעולות (נקודת עצירה, איגוד) כשלחצן העכבר לחוץ"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftup
 msgid "Extended, Actions (breakpoint, fold) on Mouse up. Selection on Mouse down and move"
-msgstr ""
+msgstr "מורחב, כל הפעולות (נקודת עצירה, איגוד) כשלחצן העכבר למעלה.בחירה כשלחצן העכבר לחוץ והעכבר זז"
 
 #: lazarusidestrconsts.dlfmousesimpleguttersect
 msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
 msgid "Gutter"
-msgstr ""
+msgstr "קו עזר"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
 msgid "Right mouse includes caret move"
@@ -51,59 +54,59 @@ msgstr ""
 #: lazarusidestrconsts.dlfmousesimpletextsect
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsect"
 msgid "Text"
-msgstr ""
+msgstr "טקסט"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectalt
 msgid "Alt-Key sets column mode"
-msgstr ""
+msgstr "לחצן Alt קובע את מצב העמוד"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftlabel
 msgid "Ctrl Left Button"
-msgstr ""
+msgstr "לחצן שמאלי + Ctrl"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjump"
 msgid "jumps to implementation"
-msgstr ""
+msgstr "קופץ אל המימוש"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrjumporblock
 msgid "jumps to implementation/other block end"
-msgstr ""
+msgstr "קופץ אל המימוש/סיום של בלוק אחר"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectctrlleftrnone"
 msgid "nothing"
-msgstr ""
+msgstr "כלום"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdoubleselline
 msgid "Double Click selects line"
-msgstr ""
+msgstr "לחיצה כפולה בוחרת שורה"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdrag
 msgid "Drag Selection (copy/paste)"
-msgstr ""
+msgstr "גרור לבחירה (העתק/הדבק)"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidgoto
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidgoto"
 msgid "jumps to implementation"
-msgstr ""
+msgstr "קופץ אל המימוש"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidlabel
 msgid "Middle Button"
-msgstr ""
+msgstr "לחצן אמצעי"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidnone
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectmidnone"
 msgid "nothing"
-msgstr ""
+msgstr "כלום"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectmidpaste
 msgid "paste selection"
-msgstr ""
+msgstr "הדבק בחירה"
 
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
-msgstr ""
+msgstr "יש לך שינוייםלא שמורים. שימוש בעמוד זה יבטל את השינויים שנעשו בדף הבא"
 
 #: lazarusidestrconsts.dlfreadonlycolor
 msgctxt "lazarusidestrconsts.dlfreadonlycolor"
@@ -112,7 +115,7 @@ msgstr "קריאה בלבד"
 
 #: lazarusidestrconsts.dlg1up2low
 msgid "Lowercase, first letter up"
-msgstr ""
+msgstr "אותיות קטנות, אות ראשונה למעלה"
 
 #: lazarusidestrconsts.dlgaddassignmentoperator
 msgid "Add assignment operator :="
@@ -120,7 +123,7 @@ msgstr "הוסף אופרטור הזנה :="
 
 #: lazarusidestrconsts.dlgaddhiattrbracketmatch
 msgid "Brackets highlight"
-msgstr ""
+msgstr "סוגריים מודגשים"
 
 #: lazarusidestrconsts.dlgaddhiattrcodefoldingtree
 msgid "Code folding tree"
@@ -128,50 +131,50 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
-msgstr ""
+msgstr "בטל נקודת עצירה"
 
 #: lazarusidestrconsts.dlgaddhiattrenabledbreakpoint
 msgid "Enabled breakpoint"
-msgstr ""
+msgstr "הפעל נקודת עצירה"
 
 #: lazarusidestrconsts.dlgaddhiattrerrorline
 msgid "Error line"
-msgstr ""
+msgstr "שורת שגיאה"
 
 #: lazarusidestrconsts.dlgaddhiattrexecutionpoint
 msgid "Execution point"
-msgstr ""
+msgstr "נקודת הביצוע"
 
 #: lazarusidestrconsts.dlgaddhiattrfoldedcode
 msgid "Folded code marker"
-msgstr ""
+msgstr "סמן של קוד מאוגד"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupgutter
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
 msgid "Gutter"
-msgstr ""
+msgstr "קו עזר"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupline
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupline"
 msgid "Line"
-msgstr ""
+msgstr "שורה"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupsyncroedit
 msgid "Syncron Edit"
-msgstr ""
+msgstr "עריכה מתוזמנת"
 
 #: lazarusidestrconsts.dlgaddhiattrgrouptemplateedit
 msgid "Template Edit"
-msgstr ""
+msgstr "עריכת תבנית"
 
 #: lazarusidestrconsts.dlgaddhiattrgrouptext
 msgctxt "lazarusidestrconsts.dlgaddhiattrgrouptext"
 msgid "Text"
-msgstr ""
+msgstr "טקסט"
 
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
-msgstr ""
+msgstr "קו עזר מפריד"
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightall
 msgid "Incremental others"
@@ -179,27 +182,27 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrhighlightword
 msgid "Highlight current word"
-msgstr ""
+msgstr "הדגש שורה נוכחית"
 
 #: lazarusidestrconsts.dlgaddhiattrincrementalsearch
 msgid "Incremental search"
-msgstr ""
+msgstr "חיפוש יחסי"
 
 #: lazarusidestrconsts.dlgaddhiattrinvalidbreakpoint
 msgid "Invalid breakpoint"
-msgstr ""
+msgstr "נקודת עצירה בלתי אפשרית"
 
 #: lazarusidestrconsts.dlgaddhiattrlinehighlight
 msgid "Current line highlight"
-msgstr ""
+msgstr "שורה נוכחית מודגשת"
 
 #: lazarusidestrconsts.dlgaddhiattrlinenumber
 msgid "Line number"
-msgstr ""
+msgstr "מספר שורה"
 
 #: lazarusidestrconsts.dlgaddhiattrmodifiedline
 msgid "Modified line"
-msgstr ""
+msgstr "שורה ששונתה"
 
 #: lazarusidestrconsts.dlgaddhiattrmouselink
 msgid "Mouse link"
@@ -207,45 +210,45 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditarea
 msgid "Selected Area"
-msgstr ""
+msgstr "אזור שנבחר"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditcur
 msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditcur"
 msgid "Active Cell"
-msgstr ""
+msgstr "התא הפעיל"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditother
 msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditother"
 msgid "Other Cells"
-msgstr ""
+msgstr "תאים אחרים"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditsync
 msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditsync"
 msgid "Syncronized Cells"
-msgstr ""
+msgstr "תאים מתוזמנים"
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditcur
 msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditcur"
 msgid "Active Cell"
-msgstr ""
+msgstr "התא הפעיל"
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditother
 msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditother"
 msgid "Other Cells"
-msgstr ""
+msgstr "תאים אחרים"
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditsync
 msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditsync"
 msgid "Syncronized Cells"
-msgstr ""
+msgstr "תאים מתוזמנים"
 
 #: lazarusidestrconsts.dlgaddhiattrtextblock
 msgid "Text block"
-msgstr ""
+msgstr "בלוק של טקסט"
 
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint
 msgid "Unknown breakpoint"
-msgstr ""
+msgstr "נקודת עצירה לא ידועה"
 
 #: lazarusidestrconsts.dlgaddhiattrwordgroup
 msgid "Word-Brackets"
@@ -269,7 +272,7 @@ msgstr "כל הקבצים"
 
 #: lazarusidestrconsts.dlgalphabetically
 msgid "Alphabetically"
-msgstr "א' ב'"
+msgstr "לפי סדר א' ב'"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always visible cursor"
@@ -294,11 +297,11 @@ msgstr "ברירת מחדל"
 
 #: lazarusidestrconsts.dlgassertcode
 msgid "Include Assertion Code"
-msgstr ""
+msgstr "כלול קוד הפרה"
 
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
-msgstr ""
+msgstr "צור טפסים אוטומטית"
 
 #: lazarusidestrconsts.dlgautocreatenewforms
 msgid "When creating new forms, add them to auto-created forms"
@@ -306,15 +309,15 @@ msgstr "הוסף אותם לטפסים הנוצרים אוטומטית בזמן 
 
 #: lazarusidestrconsts.dlgautodel
 msgid "Auto delete file"
-msgstr ""
+msgstr "מחק קובץ אוטומטית"
 
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
-msgstr ""
+msgstr "הסתר סמן עכבר בזמן הקלדה"
 
 #: lazarusidestrconsts.dlgautoindent
 msgid "Auto indent"
-msgstr ""
+msgstr "זיהוי אוטומטי"
 
 #: lazarusidestrconsts.dlgautoindentlink
 msgid "(Setup smart indent)"
@@ -322,23 +325,23 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
-msgstr ""
+msgstr "הסר אוטומטית מתודות ריקות"
 
 #: lazarusidestrconsts.dlgautoren
 msgid "Auto rename file lowercase"
-msgstr ""
+msgstr "שנה אוטומטית שם קובץ לאותיות קטנות"
 
 #: lazarusidestrconsts.dlgautosave
 msgid "Auto save"
-msgstr ""
+msgstr "שמור אוטומטית"
 
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
-msgstr ""
+msgstr "טפסים שמישים"
 
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
-msgstr ""
+msgstr "רקע"
 
 #: lazarusidestrconsts.dlgbaknosubdirectory
 msgid "(no subdirectory)"
@@ -346,7 +349,7 @@ msgstr "(ללא תת ספרייה)"
 
 #: lazarusidestrconsts.dlgbckupsubdir
 msgid "Same name (in subdirectory)"
-msgstr ""
+msgstr "שם זהה (בתיקיית משנה)"
 
 #: lazarusidestrconsts.dlgbehindmethods
 msgid "Behind methods"
@@ -354,7 +357,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgblockgroupoptions
 msgid "Selection:"
-msgstr ""
+msgstr "בחירה:"
 
 #: lazarusidestrconsts.dlgblockindent
 msgid "Block indent"
@@ -366,15 +369,15 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgblockindenttypecopy
 msgid "Space/tab as prev Line"
-msgstr ""
+msgstr "רווח/טאב כשורה קודמת"
 
 #: lazarusidestrconsts.dlgblockindenttypepos
 msgid "Position only"
-msgstr ""
+msgstr "מיקום בלבד"
 
 #: lazarusidestrconsts.dlgblockindenttypespace
 msgid "Spaces"
-msgstr ""
+msgstr "רווחים"
 
 #: lazarusidestrconsts.dlgbp7cptb
 msgid "TP/BP 7.0 Compatible"
@@ -382,7 +385,7 @@ msgstr "תואם TP/BP 7.0"
 
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
-msgstr ""
+msgstr "סוגריים מודגשים"
 
 #: lazarusidestrconsts.dlgbrowsemsgfilter
 msgid "Free Pascal Compiler messages file (*.msg)|*.msg|Any Files (*.*)|*.*"
@@ -390,7 +393,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgbutapply
 msgid "Apply"
-msgstr "החל"
+msgstr "יישם"
 
 #: lazarusidestrconsts.dlgcancel
 msgctxt "lazarusidestrconsts.dlgcancel"
@@ -404,7 +407,7 @@ msgstr "תלוי ברישיות (&C)"
 
 #: lazarusidestrconsts.dlgccocaption
 msgid "Checking compiler options"
-msgstr "בדוק את אפשרויות המהדר"
+msgstr "בודק את אפשרויות המהדר"
 
 #: lazarusidestrconsts.dlgccoresults
 msgid "Results"
@@ -481,7 +484,7 @@ msgstr "מקדם משתנה"
 
 #: lazarusidestrconsts.dlgcdtwriteprefix
 msgid "Write prefix"
-msgstr "כתוב מקדם"
+msgstr "כתוב הקדמה"
 
 #: lazarusidestrconsts.dlgcentercursorline
 msgid "Center Cursor Line"
@@ -575,7 +578,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcodebugging
 msgid "Debugging:"
-msgstr "מנה שגיאות:"
+msgstr "מנפה שגיאות:"
 
 #: lazarusidestrconsts.dlgcodebugpath
 msgid "Debugger path addition (none):"
@@ -633,7 +636,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcolinking
 msgid "Linking"
-msgstr "מקשר"
+msgstr "קישור"
 
 #: lazarusidestrconsts.dlgcoloadsave
 msgid "Load/Save"
@@ -940,11 +943,10 @@ msgid "Code templates"
 msgstr ""
 
 #: lazarusidestrconsts.dlgedcolor
-#, fuzzy
 #| msgid "Syntax highlight"
 msgctxt "lazarusidestrconsts.dlgedcolor"
 msgid "Colors"
-msgstr "צבע"
+msgstr "צבעים"
 
 #: lazarusidestrconsts.dlgedcompleteblocks
 msgid "Add close statement for pascal blocks"
@@ -1456,7 +1458,7 @@ msgstr ""
 #: lazarusidestrconsts.dlggutter
 msgctxt "lazarusidestrconsts.dlggutter"
 msgid "Gutter"
-msgstr ""
+msgstr "קו עזר"
 
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
@@ -2046,7 +2048,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
 msgid "Gutter"
-msgstr ""
+msgstr "קו עזר"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterfold
 msgid "Fold Tree"
@@ -2067,7 +2069,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgmouseoptnodemain
 msgctxt "lazarusidestrconsts.dlgmouseoptnodemain"
 msgid "Text"
-msgstr ""
+msgstr "טקסט"
 
 #: lazarusidestrconsts.dlgmouseoptnodeselect
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
@@ -3640,7 +3642,7 @@ msgstr "תמיד בנה לפני ריצה"
 #: lazarusidestrconsts.lisbfbuild
 msgctxt "lazarusidestrconsts.lisbfbuild"
 msgid "Build"
-msgstr "בנה"
+msgstr ""
 
 #: lazarusidestrconsts.lisbfbuildcommand
 msgid "Build Command"
@@ -4400,7 +4402,7 @@ msgstr ""
 #: lazarusidestrconsts.liscocallonbuild
 msgctxt "lazarusidestrconsts.liscocallonbuild"
 msgid "Build"
-msgstr "בנה"
+msgstr ""
 
 #: lazarusidestrconsts.liscocalloncompile
 msgctxt "lazarusidestrconsts.liscocalloncompile"
@@ -4410,7 +4412,7 @@ msgstr "הדר"
 #: lazarusidestrconsts.liscocallonrun
 msgctxt "lazarusidestrconsts.liscocallonrun"
 msgid "Run"
-msgstr "הרץ"
+msgstr ""
 
 #: lazarusidestrconsts.liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
@@ -5741,6 +5743,7 @@ msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr ""
 
 #: lazarusidestrconsts.lisdeletebuildmode
+msgctxt "lazarusidestrconsts.lisdeletebuildmode"
 msgid "Delete build mode"
 msgstr ""
 
@@ -5749,6 +5752,7 @@ msgid "Delete build mode?"
 msgstr ""
 
 #: lazarusidestrconsts.lisdeletebuildmode3
+msgctxt "lazarusidestrconsts.lisdeletebuildmode3"
 msgid "Delete build mode %s%s%s?"
 msgstr ""
 
@@ -6930,7 +6934,7 @@ msgstr ""
 #: lazarusidestrconsts.lishintrun
 msgctxt "lazarusidestrconsts.lishintrun"
 msgid "Run"
-msgstr "הרץ"
+msgstr ""
 
 #: lazarusidestrconsts.lishintsave
 msgctxt "lazarusidestrconsts.lishintsave"
@@ -8044,7 +8048,7 @@ msgstr "אפשרויות בניה מתקדמות"
 #: lazarusidestrconsts.lislazbuildbuild
 msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
-msgstr "בנה"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
@@ -8817,7 +8821,7 @@ msgstr "תאריך ושעה נוכחיים"
 #: lazarusidestrconsts.lismenuinsertgeneral
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
 msgid "General"
-msgstr ""
+msgstr "כללי"
 
 #: lazarusidestrconsts.lismenuinsertgplnotice
 msgid "GPL notice"
@@ -10606,7 +10610,7 @@ msgstr ""
 #: lazarusidestrconsts.lispkgfiletypetext
 msgctxt "lazarusidestrconsts.lispkgfiletypetext"
 msgid "Text"
-msgstr ""
+msgstr "טקסט"
 
 #: lazarusidestrconsts.lispkgfiletypeunit
 msgctxt "lazarusidestrconsts.lispkgfiletypeunit"
@@ -12819,7 +12823,7 @@ msgstr "רענן את משימות ה todo"
 #: lazarusidestrconsts.listodolline
 msgctxt "lazarusidestrconsts.listodolline"
 msgid "Line"
-msgstr ""
+msgstr "שורה"
 
 #: lazarusidestrconsts.listodolowner
 msgid "Owner"
@@ -14188,7 +14192,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecevaluate
 msgid "evaluate/modify"
-msgstr ""
+msgstr "חשב/שנה"
 
 #: lazarusidestrconsts.srkmecextractproc
 msgid "Extract procedure"
@@ -14196,31 +14200,31 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecexttool
 msgid "External tool %d"
-msgstr ""
+msgstr "כלי חיצוני d%"
 
 #: lazarusidestrconsts.srkmecexttoolsettings
 msgid "External tools settings"
-msgstr ""
+msgstr "הגדרת כלים חצוניים"
 
 #: lazarusidestrconsts.srkmecfind
 msgid "Find text"
-msgstr ""
+msgstr "מצא את הבא"
 
 #: lazarusidestrconsts.srkmecfindblockotherend
 msgid "Find block other end"
-msgstr ""
+msgstr "מצא את הקצה השני של הבלוק"
 
 #: lazarusidestrconsts.srkmecfindblockstart
 msgid "Find block start"
-msgstr ""
+msgstr "מצא את התחלת הבלוק"
 
 #: lazarusidestrconsts.srkmecfinddeclaration
 msgid "Find declaration"
-msgstr ""
+msgstr "מצא הצהרה"
 
 #: lazarusidestrconsts.srkmecfindidentifierrefs
 msgid "Find identifier references"
-msgstr ""
+msgstr "מצא את מזהה ההעדפות"
 
 #: lazarusidestrconsts.srkmecfindinfiles
 msgid "Find in files"
@@ -14228,43 +14232,43 @@ msgstr "מצא בקבצים"
 
 #: lazarusidestrconsts.srkmecfindnext
 msgid "Find next"
-msgstr ""
+msgstr "מצא את הבא"
 
 #: lazarusidestrconsts.srkmecfindnextwordoccurrence
 msgid "Find next word occurrence"
-msgstr ""
+msgstr "מצא את ההופעה הבאה של המילה"
 
 #: lazarusidestrconsts.srkmecfindoverloads
 msgid "Find overloads"
-msgstr ""
+msgstr "מצא העמסות"
 
 #: lazarusidestrconsts.srkmecfindprevious
 msgid "Find previous"
-msgstr ""
+msgstr "מצא את הקודם"
 
 #: lazarusidestrconsts.srkmecfindprevwordoccurrence
 msgid "Find previous word occurrence"
-msgstr ""
+msgstr "מצא את ההופעה הקודמת של המילה"
 
 #: lazarusidestrconsts.srkmecfindproceduredefinition
 msgid "Find procedure definiton"
-msgstr ""
+msgstr "מצא את הגדרת הפרוצדורה"
 
 #: lazarusidestrconsts.srkmecfindproceduremethod
 msgid "Find procedure method"
-msgstr ""
+msgstr "מצא את מתודת הפרוצדורה"
 
 #: lazarusidestrconsts.srkmecfoldcurrent
 msgid "Fold at Cursor"
-msgstr ""
+msgstr "אגד במיקום הסמן"
 
 #: lazarusidestrconsts.srkmecfoldlevel
 msgid "Fold to Level %d"
-msgstr ""
+msgstr "אגד לרמה d%"
 
 #: lazarusidestrconsts.srkmecgotoeditor
 msgid "Go to editor %d"
-msgstr ""
+msgstr "לך לעורך d%"
 
 #: lazarusidestrconsts.srkmecgotoincludedirective
 msgid "Go to to include directive of current include file"
@@ -14272,19 +14276,19 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecgotolinenumber
 msgid "Go to line number"
-msgstr ""
+msgstr "לך לשורה מספר"
 
 #: lazarusidestrconsts.srkmecgotomarker
 msgid "Go to Marker %d"
-msgstr ""
+msgstr "לך לסמן d%"
 
 #: lazarusidestrconsts.srkmecgotoxy
 msgid "Goto XY"
-msgstr ""
+msgstr "לך לקואורדינטה XY"
 
 #: lazarusidestrconsts.srkmecguessmisplacedifdef
 msgid "Guess misplaced $IFDEF"
-msgstr ""
+msgstr "נחש IFDEF$ שלא במקומו"
 
 #: lazarusidestrconsts.srkmecimestr
 msgid "Ime Str"
@@ -14296,47 +14300,47 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertcharacter
 msgid "Insert from Charactermap"
-msgstr ""
+msgstr "הכנס ממפת תווים"
 
 #: lazarusidestrconsts.srkmecinsertcvsauthor
 msgid "Insert CVS keyword Author"
-msgstr ""
+msgstr "הכנס מחבר מלת קוד של CVS"
 
 #: lazarusidestrconsts.srkmecinsertcvsdate
 msgid "Insert CVS keyword Date"
-msgstr ""
+msgstr "הכנס תאריך מלת קוד של CVS"
 
 #: lazarusidestrconsts.srkmecinsertcvsheader
 msgid "Insert CVS keyword Header"
-msgstr ""
+msgstr "הכנס כותרת מלת קוד של CVS"
 
 #: lazarusidestrconsts.srkmecinsertcvsid
 msgid "Insert CVS keyword ID"
-msgstr ""
+msgstr "הכנס זיהוי מלת קוד של CVS"
 
 #: lazarusidestrconsts.srkmecinsertcvslog
 msgid "Insert CVS keyword Log"
-msgstr ""
+msgstr "הכנס לוג מלת קוד של CVS"
 
 #: lazarusidestrconsts.srkmecinsertcvsname
 msgid "Insert CVS keyword Name"
-msgstr ""
+msgstr "הכנס שם מלת קוד של CVS"
 
 #: lazarusidestrconsts.srkmecinsertcvsrevision
 msgid "Insert CVS keyword Revision"
-msgstr ""
+msgstr "הכנס מלת קוד מתוקנת של CVS"
 
 #: lazarusidestrconsts.srkmecinsertcvssource
 msgid "Insert CVS keyword Source"
-msgstr ""
+msgstr "הכנס מקור מלת קוד של CVS"
 
 #: lazarusidestrconsts.srkmecinsertdatetime
 msgid "Insert current date and time"
-msgstr ""
+msgstr "הכנס תאריך וזמן עכשווים"
 
 #: lazarusidestrconsts.srkmecinsertgplnotice
 msgid "Insert GPL notice"
-msgstr ""
+msgstr "הכנס הערת GPL "
 
 #: lazarusidestrconsts.srkmecinsertguid
 msgid "Insert a GUID"
@@ -14344,23 +14348,23 @@ msgstr "הוסף GUID"
 
 #: lazarusidestrconsts.srkmecinsertlgplnotice
 msgid "Insert LGPL notice"
-msgstr ""
+msgstr "הכנס הערת LGPL "
 
 #: lazarusidestrconsts.srkmecinsertline
 msgid "Break line, leave cursor"
-msgstr ""
+msgstr "פצל שורה , עזוב את הסמן"
 
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
-msgstr ""
+msgstr "מצב הכנסה"
 
 #: lazarusidestrconsts.srkmecinsertmodifiedlgplnotice
 msgid "Insert modified LGPL notice"
-msgstr ""
+msgstr "הכגס הערת LGPL ששונתה"
 
 #: lazarusidestrconsts.srkmecinsertusername
 msgid "Insert current username"
-msgstr ""
+msgstr "הכנס שם משתמש נוכחי"
 
 #: lazarusidestrconsts.srkmecinspect
 msgid "inspect"
@@ -14372,11 +14376,11 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmeclinebreak
 msgid "Break line and move cursor"
-msgstr ""
+msgstr "פצל את השורה והזז את הסמן"
 
 #: lazarusidestrconsts.srkmeclineend
 msgid "Move cursor to line end"
-msgstr ""
+msgstr "הזז את הסמן לסוף השורה"
 
 #: lazarusidestrconsts.srkmeclineselect
 msgid "Line selection mode"
@@ -14384,7 +14388,7 @@ msgstr "מצב בחירת שורה"
 
 #: lazarusidestrconsts.srkmeclinestart
 msgid "Move cursor to line start"
-msgstr ""
+msgstr "הזז את הסמן להתחלת השורה"
 
 #: lazarusidestrconsts.srkmeclinetextstart
 msgid "Move cursor to text start in line"
@@ -14396,19 +14400,19 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecmakeresourcestring
 msgid "Make resource string"
-msgstr ""
+msgstr "צור מחרוזת מקורות"
 
 #: lazarusidestrconsts.srkmecmatchbracket
 msgid "Go to matching bracket"
-msgstr ""
+msgstr "לך לסוגריים המתאימים"
 
 #: lazarusidestrconsts.srkmecmoveeditorleft
 msgid "Move editor left"
-msgstr ""
+msgstr "הזז את העורך שמאלה"
 
 #: lazarusidestrconsts.srkmecmoveeditorleftmost
 msgid "Move editor leftmost"
-msgstr ""
+msgstr "הצמד את העורך שמאלה"
 
 #: lazarusidestrconsts.srkmecmoveeditornewwindow
 msgid "Move editor to new window"
@@ -14424,11 +14428,11 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecmoveeditorright
 msgid "Move editor right"
-msgstr ""
+msgstr "הזז את העורך ימינה"
 
 #: lazarusidestrconsts.srkmecmoveeditorrightmost
 msgid "Move editor rightmost"
-msgstr ""
+msgstr "הצמד את העורך ימינה"
 
 #: lazarusidestrconsts.srkmecnextbookmark
 msgid "Next Bookmark"
@@ -14436,7 +14440,7 @@ msgstr "הסמנייה הבאה"
 
 #: lazarusidestrconsts.srkmecnexteditor
 msgid "Go to next editor"
-msgstr ""
+msgstr "לך לעורך הבא"
 
 #: lazarusidestrconsts.srkmecnextsharededitor
 msgid "Go to next editor with same Source"
@@ -14460,27 +14464,27 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecpagebottom
 msgid "Move cursor to bottom of page"
-msgstr ""
+msgstr "הזז את הסמן לתחתית הדף"
 
 #: lazarusidestrconsts.srkmecpagedown
 msgid "Move cursor down one page"
-msgstr ""
+msgstr "הזז את הסמן דף אחד למטה"
 
 #: lazarusidestrconsts.srkmecpageleft
 msgid "Move cursor left one page"
-msgstr ""
+msgstr "הזז את הסמן דף אחד שמאלה"
 
 #: lazarusidestrconsts.srkmecpageright
 msgid "Move cursor right one page"
-msgstr ""
+msgstr "הזז את הסמן דף אחד ימינה"
 
 #: lazarusidestrconsts.srkmecpagetop
 msgid "Move cursor to top of page"
-msgstr ""
+msgstr "הזז את הסמן לראש הדף"
 
 #: lazarusidestrconsts.srkmecpageup
 msgid "Move cursor up one page"
-msgstr ""
+msgstr "הזז את הסמן דף אחד למעלה"
 
 #: lazarusidestrconsts.srkmecpaste
 msgid "Paste clipboard to current position"
@@ -14496,7 +14500,7 @@ msgstr "סמנייה קודמת"
 
 #: lazarusidestrconsts.srkmecpreveditor
 msgid "Go to prior editor"
-msgstr ""
+msgstr "לך לעורך קודם"
 
 #: lazarusidestrconsts.srkmecprevsharededitor
 msgid "Go to prior editor with same Source"
@@ -14512,23 +14516,23 @@ msgstr "רשימת פרוצדורות"
 
 #: lazarusidestrconsts.srkmecquickcompile
 msgid "quick compile, no linking"
-msgstr ""
+msgstr "הידור מהיר ללא קישור"
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
 msgid "remove break point"
-msgstr ""
+msgstr "הסר נקודת עצירה"
 
 #: lazarusidestrconsts.srkmecremoveemptymethods
 msgid "Remove empty methods"
-msgstr ""
+msgstr "הסר מתודות ריקות"
 
 #: lazarusidestrconsts.srkmecremoveunusedunits
 msgid "Remove unused units"
-msgstr ""
+msgstr "הסר יחידות שאינן בשימוש"
 
 #: lazarusidestrconsts.srkmecrenameidentifier
 msgid "Rename identifier"
-msgstr ""
+msgstr "שנה שם המזהה"
 
 #: lazarusidestrconsts.srkmecreplace
 msgid "Replace text"
@@ -14536,7 +14540,7 @@ msgstr "החלף טקסט"
 
 #: lazarusidestrconsts.srkmecresetdebugger
 msgid "reset debugger"
-msgstr ""
+msgstr "אתחל את מנפה השגיאות"
 
 #: lazarusidestrconsts.srkmecrun
 msgid "run program"
@@ -14552,23 +14556,23 @@ msgstr "הרץ פרמטרים"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
-msgstr ""
+msgstr "גלול שורה אחת למטה"
 
 #: lazarusidestrconsts.srkmecscrollleft
 msgid "Scroll left one char"
-msgstr ""
+msgstr "גלול תו אחד שמאלה"
 
 #: lazarusidestrconsts.srkmecscrollright
 msgid "Scroll right one char"
-msgstr ""
+msgstr "גלול תו אחד ימינה"
 
 #: lazarusidestrconsts.srkmecscrollup
 msgid "Scroll up one line"
-msgstr ""
+msgstr "גלול שורה אחת למעלה"
 
 #: lazarusidestrconsts.srkmecseldown
 msgid "Select Down"
-msgstr ""
+msgstr "בחר למטה"
 
 #: lazarusidestrconsts.srkmecselectall
 msgctxt "lazarusidestrconsts.srkmecselectall"
@@ -14581,27 +14585,27 @@ msgstr "המר Tabs לרווחים בבחירה"
 
 #: lazarusidestrconsts.srkmecseleditorbottom
 msgid "Select to absolute end"
-msgstr ""
+msgstr "בחר בסוף בהחלט"
 
 #: lazarusidestrconsts.srkmecseleditortop
 msgid "Select to absolute beginning"
-msgstr ""
+msgstr "בחר בהתחלה בהחלט"
 
 #: lazarusidestrconsts.srkmecselgotoxy
 msgid "Select Goto XY"
-msgstr ""
+msgstr "בחר לך לקואורדינטוץ XY"
 
 #: lazarusidestrconsts.srkmecselleft
 msgid "SelLeft"
-msgstr ""
+msgstr "בחר שמאלה"
 
 #: lazarusidestrconsts.srkmecsellineend
 msgid "Select Line End"
-msgstr ""
+msgstr "בחר בסוף שורה"
 
 #: lazarusidestrconsts.srkmecsellinestart
 msgid "Select Line Start"
-msgstr ""
+msgstr "בחר בהתחלת שורה"
 
 #: lazarusidestrconsts.srkmecsellinetextstart
 msgid "Select to text start in line"
@@ -14609,27 +14613,27 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecselpagebottom
 msgid "Select Page Bottom"
-msgstr ""
+msgstr "בחר בתחתית הדף"
 
 #: lazarusidestrconsts.srkmecselpagedown
 msgid "Select Page Down"
-msgstr ""
+msgstr "בחר דף למטה"
 
 #: lazarusidestrconsts.srkmecselpageleft
 msgid "Select Page Left"
-msgstr ""
+msgstr "בחר דף שמאלה"
 
 #: lazarusidestrconsts.srkmecselpageright
 msgid "Select Page Right"
-msgstr ""
+msgstr "בחר דף ימינה"
 
 #: lazarusidestrconsts.srkmecselpagetop
 msgid "Select Page Top"
-msgstr ""
+msgstr "בחר דף עליון"
 
 #: lazarusidestrconsts.srkmecselpageup
 msgid "Select Page Up"
-msgstr ""
+msgstr "בחר דף למעלה"
 
 #: lazarusidestrconsts.srkmecselright
 msgid "SelRight"
@@ -14637,36 +14641,36 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecselup
 msgid "Select Up"
-msgstr ""
+msgstr "בחר עליון"
 
 #: lazarusidestrconsts.srkmecselwordleft
 msgid "Select Word Left"
-msgstr ""
+msgstr "בחר מילה אחת שמאלה"
 
 #: lazarusidestrconsts.srkmecselwordright
 msgid "Select Word Right"
-msgstr ""
+msgstr "בחר מילה אחת ימינה"
 
 #: lazarusidestrconsts.srkmecsetfreebookmark
 msgctxt "lazarusidestrconsts.srkmecsetfreebookmark"
 msgid "Set a free Bookmark"
-msgstr ""
+msgstr "קבע סימניה חופשית"
 
 #: lazarusidestrconsts.srkmecsetmarker
 msgid "Set Marker %d"
-msgstr ""
+msgstr "קבע סמן d%"
 
 #: lazarusidestrconsts.srkmecshifttab
 msgid "Shift Tab"
-msgstr ""
+msgstr "הזז טאב"
 
 #: lazarusidestrconsts.srkmecshowabstractmethods
 msgid "Show abstract methods"
-msgstr ""
+msgstr "הראה מתודות מופשטות"
 
 #: lazarusidestrconsts.srkmecshowcodecontext
 msgid "Show code context"
-msgstr ""
+msgstr "הראה את הקשר הקוד"
 
 #: lazarusidestrconsts.srkmecshowexecutionpoint
 msgid "show execution point"
@@ -14674,105 +14678,105 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"
-msgstr ""
+msgstr "עצור תכנית"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedcellend
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellend"
 msgid "Goto last pos in cell"
-msgstr ""
+msgstr "לך למקום האחרון בתא"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedcellhome
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellhome"
 msgid "Goto first pos in cell"
-msgstr ""
+msgstr "לך למקום הראשון בתא"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedcellselect
 msgid "Select Cell"
-msgstr ""
+msgstr "בחר תא"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedescape
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedescape"
 msgid "Escape"
-msgstr ""
+msgstr "צא"
 
 #: lazarusidestrconsts.srkmecsynpsyncroednextcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcell"
 msgid "Next Cell"
-msgstr ""
+msgstr "התא הבא"
 
 #: lazarusidestrconsts.srkmecsynpsyncroednextcellsel
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextcellsel"
 msgid "Next Cell (all selected)"
-msgstr ""
+msgstr "התא הבא ( הכל נבחר)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedprevcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcell"
 msgid "Previous Cell"
-msgstr ""
+msgstr "התא קודם"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedprevcellsel
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcellsel"
 msgid "Previous Cell (all selected)"
-msgstr ""
+msgstr "התא קודם (הכל נבחר)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedstart
 msgid "Start Syncro edit"
-msgstr ""
+msgstr "התחל עריכה מתוזמנת"
 
 #: lazarusidestrconsts.srkmecsynptmpledcellend
 msgctxt "lazarusidestrconsts.srkmecsynptmpledcellend"
 msgid "Goto last pos in cell"
-msgstr ""
+msgstr "לך למקום האחרון בתא"
 
 #: lazarusidestrconsts.srkmecsynptmpledcellhome
 msgctxt "lazarusidestrconsts.srkmecsynptmpledcellhome"
 msgid "Goto first pos in cell"
-msgstr ""
+msgstr "לך למקום הראשון בתא"
 
 #: lazarusidestrconsts.srkmecsynptmpledcellselect
 msgid "Select cell"
-msgstr ""
+msgstr "בחר תא"
 
 #: lazarusidestrconsts.srkmecsynptmpledescape
 msgctxt "lazarusidestrconsts.srkmecsynptmpledescape"
 msgid "Escape"
-msgstr ""
+msgstr "צא"
 
 #: lazarusidestrconsts.srkmecsynptmpledfinish
 msgid "Finish"
-msgstr ""
+msgstr "סיום"
 
 #: lazarusidestrconsts.srkmecsynptmplednextcell
 msgctxt "lazarusidestrconsts.srkmecsynptmplednextcell"
 msgid "Next Cell"
-msgstr ""
+msgstr "התא הבא"
 
 #: lazarusidestrconsts.srkmecsynptmplednextcellrotate
 msgid "Next Cell (rotate)"
-msgstr ""
+msgstr "התא הבא (סובב)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextcellsel
 msgctxt "lazarusidestrconsts.srkmecsynptmplednextcellsel"
 msgid "Next Cell (all selected)"
-msgstr ""
+msgstr "התא הבא ( הכל נבחר)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextcellselrotate
 msgid "Next Cell (rotate / all selected)"
-msgstr ""
+msgstr "התא הבא (סובב / הכל נבחר)"
 
 #: lazarusidestrconsts.srkmecsynptmpledprevcell
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
 msgid "Previous Cell"
-msgstr ""
+msgstr "התא קודם"
 
 #: lazarusidestrconsts.srkmecsynptmpledprevcellsel
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcellsel"
 msgid "Previous Cell (all selected)"
-msgstr ""
+msgstr "התא קודם (הכל נבחר)"
 
 #: lazarusidestrconsts.srkmecsyntaxcheck
 msgid "Syntax check"
-msgstr ""
+msgstr "בדיקת תחביר"
 
 #: lazarusidestrconsts.srkmectoggleassembler
 msgid "View assembler"
@@ -14780,7 +14784,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmectogglebreakpoint
 msgid "toggle break point"
-msgstr ""
+msgstr "החלף נקודת עצירה"
 
 #: lazarusidestrconsts.srkmectogglebreakpoints
 msgid "View breakpoints"
@@ -14808,7 +14812,7 @@ msgstr "צפה בפלט מנפה השגיאות"
 
 #: lazarusidestrconsts.srkmectoggleformunit
 msgid "Switch between form and unit"
-msgstr ""
+msgstr "החלף בין טופס ליחידה"
 
 #: lazarusidestrconsts.srkmectogglefpdoceditor
 msgid "View Documentation Editor"
@@ -14825,11 +14829,11 @@ msgstr "צפה במשתנים מקומיים"
 
 #: lazarusidestrconsts.srkmectogglemarker
 msgid "Toggle Marker %d"
-msgstr ""
+msgstr "החלף סמן d%"
 
 #: lazarusidestrconsts.srkmectogglemarkupword
 msgid "Toggle Current-Word highlight"
-msgstr ""
+msgstr "שנה הדגשת מילה נוכחית"
 
 #: lazarusidestrconsts.srkmectogglemessages
 msgid "View messages"
@@ -14837,7 +14841,7 @@ msgstr "צפה בהודעות"
 
 #: lazarusidestrconsts.srkmectogglemode
 msgid "Toggle Mode"
-msgstr ""
+msgstr "שנה אופן"
 
 #: lazarusidestrconsts.srkmectoggleobjectinsp
 msgid "View Object Inspector"
@@ -14861,7 +14865,7 @@ msgstr "צפה בעורך קוד המקור"
 
 #: lazarusidestrconsts.srkmectogglewatches
 msgid "View watches"
-msgstr ""
+msgstr "הראה משגוחים"
 
 #: lazarusidestrconsts.srkmecunfoldall
 msgid "Unfold all"
@@ -14873,11 +14877,11 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecunknown
 msgid "unknown editor command"
-msgstr ""
+msgstr "פקודת עורך לא ידועה"
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"
-msgstr ""
+msgstr "קודם המשתמש"
 
 #: lazarusidestrconsts.srkmecviewanchoreditor
 msgid "View anchor editor"
@@ -14913,19 +14917,19 @@ msgstr "השלמת מילים"
 
 #: lazarusidestrconsts.srkmecwordleft
 msgid "Move cursor word left"
-msgstr ""
+msgstr "הזז את הסמן מילה אחת שמאלה"
 
 #: lazarusidestrconsts.srkmecwordright
 msgid "Move cursor word right"
-msgstr ""
+msgstr "הזז את הסמן מילה אחת ימינה"
 
 #: lazarusidestrconsts.srkmeditforcmd
 msgid "Edit keys of command"
-msgstr ""
+msgstr "ערוך מפתחות של פקודה"
 
 #: lazarusidestrconsts.srkmeditkeys
 msgid "Edit Keys"
-msgstr ""
+msgstr "ערוך מפתח"
 
 #: lazarusidestrconsts.srkmgrabkey
 msgid "Grab key"
@@ -14937,7 +14941,7 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmkey
 msgid "Key (or 2 keys combination)"
-msgstr ""
+msgstr "מפתח (או צרוף של שני מפתחות)"
 
 #: lazarusidestrconsts.srkmpresskey
 msgid "Please press a key ..."
@@ -14945,11 +14949,11 @@ msgstr "לחץ על כל מקש ..."
 
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
-msgstr ""
+msgstr "הקובץ לקריאה בלבד"
 
 #: lazarusidestrconsts.uefilerotext1
 msgid "The file \""
-msgstr ""
+msgstr "הקובץ \""
 
 #: lazarusidestrconsts.uefilerotext2
 msgid "\" is not writable."
@@ -14965,11 +14969,11 @@ msgstr "הוסף צפייה (&W) מהסמן"
 
 #: lazarusidestrconsts.uembookmarkn
 msgid "Bookmark"
-msgstr ""
+msgstr "סימניה"
 
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"
-msgstr ""
+msgstr "סגור את כל הדפים האחרים"
 
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"
@@ -15024,7 +15028,7 @@ msgstr ""
 
 #: lazarusidestrconsts.uemencoding
 msgid "Encoding"
-msgstr ""
+msgstr "קידוד"
 
 #: lazarusidestrconsts.uemevaluatemodify
 msgid "&Evaluate/Modify..."
@@ -15037,23 +15041,23 @@ msgstr ""
 
 #: lazarusidestrconsts.uemfinddeclaration
 msgid "&Find Declaration"
-msgstr ""
+msgstr "מצא הצהרה"
 
 #: lazarusidestrconsts.uemfindidentifierreferences
 msgid "Find Identifier References"
-msgstr ""
+msgstr "מצא מקור המזהה"
 
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
-msgstr ""
+msgstr "לך לסימניה"
 
 #: lazarusidestrconsts.uemhighlighter
 msgid "Highlighter"
-msgstr ""
+msgstr "מדגש"
 
 #: lazarusidestrconsts.ueminserttodo
 msgid "Insert Todo"
-msgstr ""
+msgstr "הכנס TODO"
 
 #: lazarusidestrconsts.ueminspect
 msgid "&Inspect..."
@@ -15073,19 +15077,19 @@ msgstr ""
 
 #: lazarusidestrconsts.uemmovepageleft
 msgid "Move page left"
-msgstr ""
+msgstr "הזז את הדף שמאלה"
 
 #: lazarusidestrconsts.uemmovepageleftmost
 msgid "Move page leftmost"
-msgstr ""
+msgstr "הצמד את הדף לשמאל"
 
 #: lazarusidestrconsts.uemmovepageright
 msgid "Move page right"
-msgstr ""
+msgstr "הזז את הדף ימינה"
 
 #: lazarusidestrconsts.uemmovepagerightmost
 msgid "Move page rightmost"
-msgstr ""
+msgstr "הצמד את הדף לימין"
 
 #: lazarusidestrconsts.uemmovetonewwindow
 msgid "Move to new Window"
@@ -15102,11 +15106,11 @@ msgstr ""
 
 #: lazarusidestrconsts.uemnextbookmark
 msgid "Goto next Bookmark"
-msgstr ""
+msgstr "לך לסימניה הבאה"
 
 #: lazarusidestrconsts.uemodified
 msgid "Modified"
-msgstr ""
+msgstr "שונה"
 
 #: lazarusidestrconsts.uemopenfileatcursor
 msgid "&Open file at cursor"
@@ -15119,7 +15123,7 @@ msgstr "הדבק"
 
 #: lazarusidestrconsts.uemprevbookmark
 msgid "Goto previous Bookmark"
-msgstr ""
+msgstr "לך לסימניה קודמת"
 
 #: lazarusidestrconsts.uemprocedurejump
 msgid "Procedure Jump"
@@ -15132,11 +15136,11 @@ msgstr "קריאה בלבד"
 
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
-msgstr ""
+msgstr "יצור מחדש"
 
 #: lazarusidestrconsts.uemrenameidentifier
 msgid "Rename Identifier"
-msgstr ""
+msgstr "שנה את שם המזהה"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"
@@ -15144,28 +15148,28 @@ msgstr "רוץ עד לסמן (&R)"
 
 #: lazarusidestrconsts.uemsetbookmark
 msgid "&Set Bookmark"
-msgstr ""
+msgstr "קבע סימניה"
 
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
 msgid "Set a free Bookmark"
-msgstr ""
+msgstr "קבע סימניה חופשית"
 
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
-msgstr ""
+msgstr "הראה מספרי שורה"
 
 #: lazarusidestrconsts.uemshowunitinfo
 msgid "Unit Info"
-msgstr ""
+msgstr "מידע על היחידה"
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"
-msgstr ""
+msgstr "החלף סימניה"
 
 #: lazarusidestrconsts.uemtogglebreakpoint
 msgid "&Toggle Breakpoint"
-msgstr ""
+msgstr "החלף נקודת עצירה"
 
 #: lazarusidestrconsts.uemviewcallstack
 msgid "View Call Stack"
@@ -15177,19 +15181,19 @@ msgstr "לא ממומש עדיין"
 
 #: lazarusidestrconsts.uenotimplcapagain
 msgid "I told You: Not implemented yet"
-msgstr ""
+msgstr "אמרתי לך: לא ממומש עדיין"
 
 #: lazarusidestrconsts.uenotimpltext
 msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr ""
+msgstr "אם אתה יכול לעזור לנו במימוש תכונה זאת שלח דואר ל lazarus@miraclec.com"
 
 #: lazarusidestrconsts.uepins
 msgid "INS"
-msgstr ""
+msgstr "הכנס"
 
 #: lazarusidestrconsts.uepovr
 msgid "OVR"
-msgstr ""
+msgstr "OVR"
 
 #: lazarusidestrconsts.uepreadonly
 msgid "Readonly"
