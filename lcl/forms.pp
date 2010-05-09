@@ -488,6 +488,8 @@ type
     procedure CMAppShowMenuGlyphChanged(var Message: TLMessage); message CM_APPSHOWMENUGLYPHCHANGED;
     procedure CMIconChanged(var Message: TLMessage); message CM_ICONCHANGED;
     procedure CMRelease(var Message: TLMessage); message CM_RELEASE;
+    procedure CMActivate(var Message: TLMessage); message CM_ACTIVATE;
+    procedure CMDeactivate(var Message: TLMessage); message CM_DEACTIVATE;
     procedure AddHandler(HandlerType: TFormHandlerType;
                          const Handler: TMethod; AsLast: Boolean);
     procedure RemoveHandler(HandlerType: TFormHandlerType;
@@ -941,6 +943,7 @@ type
     function GetWidth : Integer;
     procedure AddForm(AForm: TCustomForm);
     procedure RemoveForm(AForm: TCustomForm);
+    function SetFocusedForm(AForm: TCustomForm): Boolean;
     procedure SetCursor(const AValue: TCursor);
     procedure SetCursors(AIndex: Integer; const AValue: HCURSOR);
     procedure SetHintFont(const AValue: TFont);

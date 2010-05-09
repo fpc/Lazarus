@@ -763,6 +763,34 @@ begin
   Application.UpdateVisible;
 end;
 
+function TScreen.SetFocusedForm(AForm: TCustomForm): Boolean;
+var
+  LastState: TFocusState;
+begin
+  // result determins if focused state has changed during Activate/Deactivate events
+  // if so we should return False (since activate/deactivate failed)
+  Result := True;
+  if FFocusedForm <> AForm then
+  begin
+    // send deactivate to the previosly focused form
+    LastState := SaveFocusState;
+    if FFocusedForm <> nil then
+      FFocusedForm.Perform(CM_DEACTIVATE, 0, 0);
+    if SaveFocusState <> LastState then
+    begin
+      FFocusedForm := nil;
+      Exit(False);
+    end;
+    // send activate to the newly focused form
+    FFocusedForm := AForm;
+    LastState := SaveFocusState;
+    if FFocusedForm <> nil then
+      FFocusedForm.Perform(CM_ACTIVATE, 0, 0);
+    if SaveFocusState <> LastState then
+      Exit(False);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   procedure TScreen.SetCursor(const AValue: TCursor);
  ------------------------------------------------------------------------------}

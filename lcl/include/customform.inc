@@ -483,8 +483,8 @@ begin
   if (FormStyle <> fsMDIForm) or (csDesigning in ComponentState) then
     SetActive(Message.Active);
 
-  Activate;
-  if Application <> nil then Application.Activate;
+  if Application <> nil then
+    Application.Activate;
   // The button reappears in some situations (e.g. when the window gets the
   //"urgency" flag) so we hide it again here.
   // This is the most important place to invoke UpdateShowInTaskBar, since
@@ -507,12 +507,11 @@ procedure TCustomForm.WMDeactivate(var Message : TLMActivate);
 begin
   FActive:=false;
   {$IFDEF EnableAsyncDeactivate}
-  Deactivate;
   if Application<>nil then
     Application.QueueAsyncCall(@Application.Deactivate,0);
   {$ELSE}
-  if Application<>nil then Application.Deactivate;
-  Deactivate;
+  if Application<>nil then
+    Application.Deactivate;
   {$ENDIF}
 end;
 
@@ -739,6 +738,16 @@ end;
 procedure TCustomForm.CMRelease(var Message: TLMessage);
 begin
   Free;
+end;
+
+procedure TCustomForm.CMActivate(var Message: TLMessage);
+begin
+  Activate;
+end;
+
+procedure TCustomForm.CMDeactivate(var Message: TLMessage);
+begin
+  Deactivate;
 end;
 
 procedure TCustomForm.AddHandler(HandlerType: TFormHandlerType;
@@ -2132,17 +2141,46 @@ end;
 ------------------------------------------------------------------------------}
 function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
 
-  function NextChildControl(CurParent, Target: TWinControl): TWinControl; inline;
+  function SendEnterExitLoop: Boolean;
+
+    function NextChildControl(CurParent, Target: TWinControl): TWinControl; inline;
+    begin
+      while Target.Parent <> CurParent do
+        Target := Target.Parent;
+      Result := Target;
+    end;
+
+  var
+    LastState: TFocusState;
   begin
-    while Target.Parent <> CurParent do
-      Target := Target.Parent;
-    Result := Target;
+    // send cm_exit, cm_enter messages
+    // cm_exit must be sent to all controls from lastfocusedcontrol to the first parent which contains control
+    // cm_enter must be sent from the control we stoped up to control
+    // if during this loop something happens with focus (another control or form has aquired it) we need to stop it
+
+    while not FLastFocusedControl.ContainsControl(Control) do
+    begin
+      LastState := SaveFocusState;
+      FLastFocusedControl.Perform(CM_EXIT, 0, 0);
+      if SaveFocusState <> LastState then
+        Exit(False);
+      FLastFocusedControl := FLastFocusedControl.Parent;
+    end;
+
+    while FLastFocusedControl <> Control do
+    begin
+      FLastFocusedControl := NextChildControl(FLastFocusedControl, Control);
+      LastState := SaveFocusState;
+      FLastFocusedControl.Perform(CM_ENTER, 0, 0);
+      if SaveFocusState <> LastState then
+        Exit(False);
+    end;
+    Result := True;
   end;
 
 var
   ParentForm: TCustomForm;
   CurControl: TWinControl;
-  LastState: TFocusState;
 begin
   LastFocusedControl := Control;
   Result := False;
@@ -2192,7 +2230,8 @@ begin
   begin
     Control.ControlState := Control.ControlState + [csFocusing];
     try
-      Screen.FFocusedForm := Self;
+      if not Screen.SetFocusedForm(Self) then
+        Exit;
       // update ActiveControls of all parent forms
       CurControl := Control.Parent;
       while CurControl <> nil do
@@ -2201,33 +2240,10 @@ begin
           TCustomForm(CurControl).FActiveControl := Control;
         CurControl := CurControl.Parent;
       end;
-
-      // send cm_exit, cm_enter messages
-      // cm_exit must be sent to all controls from lastfocusedcontrol to the first parent which contains control
-      // cm_enter must be sent from the control we stoped up to control
-      // if during this loop something happens with focus (another control or form has aquired it) we need to stop it
-
-      while not FLastFocusedControl.ContainsControl(Control) do
-      begin
-        LastState := SaveFocusState;
-        FLastFocusedControl.Perform(CM_EXIT, 0, 0);
-        if SaveFocusState <> LastState then
-          Exit;
-        FLastFocusedControl := FLastFocusedControl.Parent;
-      end;
-
-      while FLastFocusedControl <> Control do
-      begin
-        FLastFocusedControl := NextChildControl(FLastFocusedControl, Control);
-        LastState := SaveFocusState;
-        FLastFocusedControl.Perform(CM_ENTER, 0, 0);
-        if SaveFocusState <> LastState then
-          Exit;
-      end;
+      Result := SendEnterExitLoop;
     finally
       Control.ControlState := Control.ControlState - [csFocusing];
     end;
-    Result := True;
   end;
 end;
 
