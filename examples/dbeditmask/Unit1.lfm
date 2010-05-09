@@ -1,0 +1,147 @@
+object Form1: TForm1
+  Left = 363
+  Height = 443
+  Top = 307
+  Width = 513
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'Test DBEdit with mask'
+  ClientHeight = 443
+  ClientWidth = 513
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object Label3: TLabel
+    Left = 8
+    Height = 14
+    Top = 16
+    Width = 164
+    Caption = 'ADate Field - Mask: !99/99/00;1;_'
+    ParentColor = False
+  end
+  object DBGrid1: TDBGrid
+    Left = 8
+    Height = 273
+    Top = 112
+    Width = 497
+    Columns = <    
+      item
+        Width = 180
+        FieldName = 'ADATE'
+      end    
+      item
+        Width = 100
+        FieldName = 'ASTR'
+      end    
+      item
+        Width = 100
+        FieldName = 'AINT'
+      end>
+    DataSource = DataSource1
+    TabOrder = 0
+    TitleFont.Height = -11
+    TitleFont.Name = 'MS Sans Serif'
+  end
+  object DBNavigator1: TDBNavigator
+    Left = 8
+    Height = 42
+    Top = 392
+    Width = 497
+    BevelOuter = bvNone
+    ClientHeight = 42
+    ClientWidth = 497
+    DataSource = DataSource1
+    TabOrder = 1
+  end
+  object DBEdit1: TDBEdit
+    Left = 8
+    Height = 21
+    Top = 32
+    Width = 246
+    DataField = 'ADate'
+    DataSource = DataSource1
+    CharCase = ecNormal
+    EditMask = '!99/99/00;1;_'
+    MaxLength = 0
+    TabOrder = 2
+  end
+  object ShowLongDateCheckBox: TCheckBox
+    Left = 270
+    Height = 17
+    Top = 34
+    Width = 90
+    Caption = 'Show Full Date'
+    OnChange = ShowLongDateCheckBoxChange
+    TabOrder = 3
+  end
+  object DBEdit2: TDBEdit
+    Left = 8
+    Height = 21
+    Top = 80
+    Width = 246
+    DataField = 'AINT'
+    DataSource = DataSource1
+    CharCase = ecNormal
+    EditMask = '!99;1;_'
+    MaxLength = 0
+    TabOrder = 4
+  end
+  object Label1: TLabel
+    Left = 8
+    Height = 14
+    Top = 64
+    Width = 45
+    Caption = 'AInt Field'
+    ParentColor = False
+  end
+  object DataSource1: TDatasource
+    DataSet = Dbf1
+    left = 400
+    top = 288
+  end
+  object Dbf1: TDbf
+    FilePath = 'D:\repositories\lazarus\examples\dbeditmask\'
+    IndexDefs = <>
+    TableName = 'test.db'
+    TableLevel = 4
+    Active = True
+    FilterOptions = []
+    left = 312
+    top = 288
+    object Dbf1ASTR: TStringField
+      DisplayWidth = 50
+      FieldKind = fkData
+      FieldName = 'ASTR'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 50
+    end
+    object Dbf1ADATE: TDateField
+      DisplayWidth = 10
+      FieldKind = fkData
+      FieldName = 'ADATE'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      OnSetText = Dbf1ADATESetText
+    end
+    object Dbf1AINT: TLargeintField
+      DisplayWidth = 10
+      FieldKind = fkData
+      FieldName = 'AINT'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      OnGetText = Dbf1AINTGetText
+    end
+  end
+end
