@@ -1232,12 +1232,18 @@ end;
 
 function TSynEditStorageMem.GetItemPointer(Index: Integer): Pointer;
 begin
-  //if (Index >= FCount) or (FCount > FCapacity) then raise Exception.Create('Bad Index');
+  {$IFDEF AssertSynMemIndex}
+  if (Index < 0) or (Index >= FCapacity) or (FCount > FCapacity) then
+    raise Exception.Create('Bad Index');
+  {$ENDIF}
   Result := Pointer(FMem + Index * ItemSize);
 end;
 
 procedure TSynEditStorageMem.SetCapacity(const AValue: Integer);
 begin
+  {$IFDEF AssertSynMemIndex}
+  if (AValue < 0) or (AValue < FCount) then raise Exception.Create('Bad Capacity');
+  {$ENDIF}
   if FCapacity = AValue then exit;
   FMem := ReallocMem(FMem, AValue * ItemSize);
   if AValue > FCapacity then
@@ -1247,6 +1253,9 @@ end;
 
 procedure TSynEditStorageMem.SetCount(const AValue: Integer);
 begin
+  {$IFDEF AssertSynMemIndex}
+  if (AValue < 0) or (AValue > FCapacity) then raise Exception.Create('Bad Count');
+  {$ENDIF}
   FCount := AValue;
 end;
 
@@ -1292,6 +1301,12 @@ procedure TSynEditStorageMem.Move(AFrom, ATo, ALen: Integer);
 var
   len: Integer;
 begin
+  {$IFDEF AssertSynMemIndex}
+  if (FCount > FCapacity) or (aTo=AFrom) or
+     (AFrom < 0) or (AFrom >= FCapacity) or
+     (ATo < 0) or (ATo >= FCapacity) then
+    raise Exception.Create('Bad Move');
+  {$ENDIF}
   if ATo < AFrom then begin
     Len := Min(ALen, AFrom-ATo);
     System.Move((FMem+AFrom*ItemSize)^, (FMem+ATo*ItemSize)^, Alen*ItemSize);
