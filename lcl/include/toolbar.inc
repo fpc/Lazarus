@@ -460,17 +460,15 @@ var
   NewWidth: Integer;
   NewHeight: Integer;
   FixedWidth: Boolean;
-  CurAnchors: TAnchors;
 begin
   NewWidth:=0;
   NewHeight:=0;
 
   FixedWidth:=false;
-  CurAnchors:=Anchors+AnchorAlign[Align];
   if (Parent<>nil)
   and (not Parent.AutoSize)
-  and AnchorSideLeft.AnchoredToParent(akLeft)
-  and AnchorSideRight.AnchoredToParent(akRight) then begin
+  and AnchorSideLeft.IsAnchoredToParent(akLeft)
+  and AnchorSideRight.IsAnchoredToParent(akRight) then begin
     // the width depends on the parent
     // the width is fixed
     FixedWidth:=true;

@@ -753,7 +753,7 @@ type
     procedure GetSidePosition(out ReferenceControl: TControl;
                 out ReferenceSide: TAnchorSideReference; out Position: Integer);
     procedure Assign(Source: TPersistent); override;
-    function AnchoredToParent(ParentSide: TAnchorKind): boolean;
+    function IsAnchoredToParent(ParentSide: TAnchorKind): boolean;
   public
     property Owner: TControl read FOwner;
     property Kind: TAnchorKind read FKind;
@@ -3641,23 +3641,23 @@ begin
     inherited Assign(Source);
 end;
 
-function TAnchorSide.AnchoredToParent(ParentSide: TAnchorKind): boolean;
+function TAnchorSide.IsAnchoredToParent(ParentSide: TAnchorKind): boolean;
 var
   ReferenceControl: TControl;
   ReferenceSide: TAnchorSideReference;
   p: Integer;
 begin
-  if (Control.Align in [alClient,alLeft,alRight,alTop,alBottom])
-  and (Kind in AnchorAlign[Control.Align]) then
+  if (Owner.Align in [alClient,alLeft,alRight,alTop,alBottom])
+  and (Kind in AnchorAlign[Owner.Align]) then
     exit(true); // aligned
-  if not (Kind in Control.Anchors) then
+  if not (Kind in Owner.Anchors) then
     exit(false); // not anchored
   GetSidePosition(ReferenceControl,ReferenceSide,p);
   if ReferenceControl=nil then
     exit(true); // default anchored to parent
-  if Control.Parent=nil then
+  if Owner.Parent=nil then
     exit(false); // no parent
-  if (ReferenceControl=Control.Parent) and (Kind=ParentSide) then
+  if (ReferenceControl=Owner.Parent) and (Kind=ParentSide) then
     exit(true);
   Result:=false;
 end;
