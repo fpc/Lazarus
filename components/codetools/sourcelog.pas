@@ -468,11 +468,16 @@ procedure TSourceLog.SetSource(const NewSrc: string);
 begin
   //DebugLn('TSourceLog.SetSource A ',length(NewSrc),' LineCount=',fLineCount,' SrcLen=',fSrcLen);
   if NewSrc<>FSource then begin
-    Clear;
-    FSource:=NewSrc;
-    FSrcLen:=length(FSource);
-    FLineCount:=-1;
-    FReadOnly:=false;
+    inc(FChangeHookLock);
+    try
+      Clear;
+      FSource:=NewSrc;
+      FSrcLen:=length(FSource);
+      FLineCount:=-1;
+      FReadOnly:=false;
+    finally
+      dec(FChangeHookLock);
+    end;
     NotifyHooks(nil);
   end;
 end;
