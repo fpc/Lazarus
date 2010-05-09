@@ -1413,21 +1413,24 @@ end;
 {
   Several functions seem to need to test the validity of
   the field/fieldname, so lets put it into its own function.
-  I do not really know what all to put here so just check for a
-  non empty FieldName and a non-nil Field, and if a valid name, but
-  not a valid Field, try and re-call SetFieldName.
+  This function checks if FField is assigned and if matches with current field
+  instance of the linked dataset. If not, try to set the field name.
+  Returns true if FField is set.
 }
 function TFieldDataLink.ValidateField : Boolean;
 var
   RealFieldName : String;
 begin
-  RealFieldName := FFieldName;
-  If (RealFieldName <> '') and not Assigned(FField) then begin
-    FFieldName := '';
-    SetFieldName(RealFieldName);
-  end;
+  Result := (FField <> nil) and (DataSet.FindField(FFieldName) = FField);
+  if not Result then begin
+    RealFieldName := FFieldName;
+    if (RealFieldName <> '') then begin
+      FFieldName := '';
+      SetFieldName(RealFieldName);
+    end;
 
-  result := (RealFieldName <> '') and Assigned(FField);
+    Result := (RealFieldName <> '') and Assigned(FField);
+  end;
 end;
 
 
