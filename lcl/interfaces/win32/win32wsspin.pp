@@ -112,9 +112,6 @@ function SpinUpDownWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 begin
   case Msg of
     WM_PAINT,
-    WM_NCHITTEST,
-    WM_NCPAINT,
-    WM_NCCALCSIZE,
     WM_PRINTCLIENT,
     WM_ERASEBKGND:
       begin
@@ -157,6 +154,7 @@ var
   HotTracking: BOOL;
   UpDown: HWND;
   Info: PWin32WindowInfo;
+  UpDownFlags: DWord;
 begin
   // general initialization of Params
   PrepareCreateWindow(AWinControl, AParams, Params);
@@ -169,30 +167,29 @@ begin
     Flags := Flags or ES_AUTOHSCROLL;
     HotTracking := False;
     SystemParametersInfo(SPI_GETHOTTRACKING, 0, @HotTracking, 0);
+    UpDownFlags := WS_CHILD or UDS_ALIGNRIGHT or UDS_ARROWKEYS or
+      UpDownHotStyle[HotTracking] or ((WS_VISIBLE or WS_DISABLED) and Flags);
     {$IFDEF WindowsUnicodeSupport}
     if UnicodeEnabledOS then
     begin
       Window := CreateWindowExW(FlagsEx, PWideChar(WideString(EditClsName)),
                   PWideChar(UTF8ToUTF16(StrCaption)), Flags,
                   Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
-      UpDown := CreateWindowExW(0, UPDOWN_CLASSW, nil,
-        WS_CHILD or WS_VISIBLE or UDS_ALIGNRIGHT or UDS_ARROWKEYS or UpDownHotStyle[HotTracking],
-        CW_USEDEFAULT, CW_USEDEFAULT, 8, Height, Parent, HMENU(nil), HInstance, nil);
+      UpDown := CreateWindowExW(0, UPDOWN_CLASSW, nil, UpDownFlags,
+        0, 0, 8, Height, Parent, HMENU(nil), HInstance, nil);
     end
     else
     begin
       Window := CreateWindowEx(FlagsEx, @EditClsName[0],
                   PChar(Utf8ToAnsi(StrCaption)), Flags,
                   Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
-      UpDown := CreateWindowEx(0, UPDOWN_CLASSA, nil,
-        WS_CHILD or WS_VISIBLE or UDS_ALIGNRIGHT or UDS_ARROWKEYS or UpDownHotStyle[HotTracking],
+      UpDown := CreateWindowEx(0, UPDOWN_CLASSA, nil, UpDownFlags,
         0, 0, 8, Height, Parent, HMENU(nil), HInstance, nil);
     end;
     {$ELSE}
     Window := CreateWindowEx(FlagsEx, @EditClsName[0], PChar(StrCaption),
       Flags, Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
-    UpDown := CreateWindowEx(0, UPDOWN_CLASSW, nil,
-      WS_CHILD or WS_VISIBLE or UDS_ALIGNRIGHT or UDS_ARROWKEYS or UpDownHotStyle[HotTracking],
+    UpDown := CreateWindowEx(0, UPDOWN_CLASSW, nil, UpDownFlags,
       0, 0, 8, Height, Parent, HMENU(nil), HInstance, nil);
     {$ENDIF}
     Windows.SendMessage(UpDown, UDM_SETBUDDY, WPARAM(Window), 0);
