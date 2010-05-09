@@ -304,6 +304,13 @@ initialization
   if (Win32MajorVersion = 4) and (Win32MinorVersion = 0)
   then MMenuItemInfoSize := W95_MENUITEMINFO_SIZE
   else MMenuItemInfoSize := sizeof(MENUITEMINFO);
+  
+  // Vista with classic theme is buggy with Windows.SetPixel() 
+  // http://bugs.freepascal.org/view.php?id=15822
+  if WindowsVersion=wvVista then
+    IntSetPixel:=@VistaSetPixel
+  else
+    IntSetPixel:=@Windows.SetPixel;
 
 finalization
   if CurDoubleBuffer.Bitmap <> 0 then

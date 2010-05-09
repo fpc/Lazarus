@@ -730,9 +730,32 @@ end;
 
   Set the color of the specified pixel on the canvas
  ------------------------------------------------------------------------------}
+var
+  IntSetPixel : function (DC:HDC; X, Y:longint; cl:Windows.COLORREF):Windows.COLORREF; stdcall = nil;
+
+function VistaSetPixel(DC:HDC; X,Y:longint; cl:Windows.COLORREF):Windows.COLORREF; stdcall;
+var
+  pen, oldpen: HPEN;
+  p : Windows.TPOINT;
+begin
+  if x and $100=0 then
+    Result:=Windows.SetPixel(DC,X,Y,cl)
+  else
+  begin
+    pen := Windows.CreatePen(PS_SOLID, 1, Windows.ColorRef(ColorToRGB(cl)));
+    oldpen := Windows.SelectObject(DC, pen);
+    Windows.MoveToEx(DC, X, Y, @p);
+    Windows.LineTo(DC, X, Y + 1);
+    Windows.SelectObject(DC, oldpen);
+    Windows.DeleteObject(pen);
+    Windows.MoveToEx(DC, P.X, P.Y, nil);
+    Result:=cl;
+  end;
+end;
+
 procedure TWin32WidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
 begin
-  Windows.SetPixel(CanvasHandle, X, Y, Windows.ColorRef(ColorToRGB(AColor)));
+  IntSetPixel(CanvasHandle, X, Y, Windows.ColorRef(ColorToRGB(AColor)));
 end;
 
 {------------------------------------------------------------------------------
