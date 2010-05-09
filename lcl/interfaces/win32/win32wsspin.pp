@@ -257,13 +257,11 @@ class procedure TWin32WSCustomFloatSpinEdit.GetPreferredSize(
   const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
 begin
-  {if MeasureTextForWnd(AWinControl.Handle, 'Fj', PreferredWidth, PreferredHeight) then
+  if MeasureTextForWnd(AWinControl.Handle, 'Fj', PreferredWidth, PreferredHeight) then
   begin
     PreferredWidth := 0;
     Inc(PreferredHeight, 8);
-  end;}
-  PreferredHeight := 0;
-  PreferredWidth := 0;
+  end;
 end;
 
 class procedure TWin32WSCustomFloatSpinEdit.AdaptBounds(const AWinControl: TWinControl;
