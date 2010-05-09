@@ -1219,6 +1219,7 @@ resourcestring
   dlgBlockGroupOptions = 'Selection:';
   dlgAlwaysVisibleCursor = 'Always visible cursor';
   dlgAutoIndent = 'Auto indent';
+  dlgAutoIndentLink = '(Setup smart indent)';
   dlgAutoHideCursor  = 'Hide mouse when typing';
   dlgGroupUndo = 'Group Undo';
   dlgHalfPageScroll = 'Half page scroll';
@@ -1402,7 +1403,7 @@ resourcestring
   dlgEdOff = 'Off';
   dlgEdInvert = 'Invert';
   dlgEdIdComlet = 'Identifier completion';
-  dlgEdCompleteBlocks = 'Complete blocks';
+  dlgEdCompleteBlocks = 'Add close statement for pascal blocks';
   lisShowValueHintsWhileDebugging = 'Show value hints while debugging';
   dlgTooltipEval = 'Tooltip expression evaluation';
   dlgTooltipTools = 'Tooltip symbol Tools';

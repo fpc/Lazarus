@@ -25,9 +25,9 @@ unit editor_general_options;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType,
-  StdCtrls, SynEdit, Controls, ExtCtrls,
-  EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf, SynBeautifier;
+  Classes, SysUtils, LCLProc, LCLType, StdCtrls, Controls, ExtCtrls, Graphics,
+  EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf,
+  SynEdit, SynBeautifier, codetools_general_options;
 
 type
   TPreviewEditor = TSynEdit;
@@ -53,6 +53,7 @@ type
     CursorSkipsTabCheckBox: TCheckBox;
     EndKeyJumpsToNearestStartCheckBox: TCheckBox;
     KeepCursorXCheckBox: TCheckBox;
+    AutoIndentLink: TLabel;
     OverwriteBlockCheckBox: TCheckBox;
     PersistentCursorCheckBox: TCheckBox;
     AlwaysVisibleCursorCheckBox: TCheckBox;
@@ -78,6 +79,9 @@ type
     UndoLimitLabel: TLabel;
     procedure AlwaysVisibleCursorCheckBoxChange(Sender: TObject);
     procedure AutoIndentCheckBoxChange(Sender: TObject);
+    procedure AutoIndentLinkClick(Sender: TObject);
+    procedure AutoIndentLinkMouseEnter(Sender: TObject);
+    procedure AutoIndentLinkMouseLeave(Sender: TObject);
     procedure ComboboxOnChange(Sender: TObject);
     procedure ComboboxOnKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -100,6 +104,7 @@ type
     procedure TabsToSpacesCheckBoxChange(Sender: TObject);
   private
     FDefaultBookmarkImages: TImageList;
+    FDialog: TAbstractOptionsEditorDialog;
     function DefaultBookmarkImages: TImageList;
   public
     PreviewEdits: array of TPreviewEditor;
@@ -128,6 +133,8 @@ end;
 
 procedure TEditorGeneralOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
+  FDialog := ADialog;
+
   BlockIndentLabel.Caption := dlgBlockIndent;
   BlockIndentTypeLabel.Caption := dlgBlockIndent;
   BlockIndentTypeComboBox.Items.Add(dlgBlockIndentTypeSpace);
@@ -154,6 +161,7 @@ begin
   TabIndentBlocksCheckBox.Caption := dlgTabIndent;
   SmartTabsCheckBox.Caption := dlgSmartTabs;
   TabsToSpacesCheckBox.Caption := dlgTabsToSpaces;
+  AutoIndentLink.Caption := dlgAutoIndentLink;
 
   // caret + key navigation
   CursorGroupLabel.Caption := dlgCursorGroupOptions;
@@ -336,6 +344,23 @@ end;
 procedure TEditorGeneralOptionsFrame.AutoIndentCheckBoxChange(Sender: TObject);
 begin
   SetPreviewOption(AutoIndentCheckBox.Checked, eoAutoIndent);
+end;
+
+procedure TEditorGeneralOptionsFrame.AutoIndentLinkClick(Sender: TObject);
+begin
+  FDialog.OpenEditor(TCodetoolsGeneralOptionsFrame);
+end;
+
+procedure TEditorGeneralOptionsFrame.AutoIndentLinkMouseEnter(Sender: TObject);
+begin
+  (Sender as TLabel).Font.Underline := True;
+  (Sender as TLabel).Font.Color := clRed;
+end;
+
+procedure TEditorGeneralOptionsFrame.AutoIndentLinkMouseLeave(Sender: TObject);
+begin
+  (Sender as TLabel).Font.Underline := False;
+  (Sender as TLabel).Font.Color := clBlue;
 end;
 
 procedure TEditorGeneralOptionsFrame.AlwaysVisibleCursorCheckBoxChange(
