@@ -34,12 +34,11 @@ begin
     //if the field is currently modifiable
     if Focused and FDataLink.CanModify then begin
       //display the real text since we can modify it
-      //Text := FDataLink.Field.DisplayText//this is wrong, but Text seems Broken
-      Text := FDatalink.Field.Text;
+      RestoreMask(FDatalink.Field.Text);
       SelectAll;
     end else
       //otherwise display the pretified/formated text since we can't
-      EditText := FDataLink.Field.DisplayText;
+      DisableMask(FDataLink.Field.DisplayText);
     if (FDataLink.Field.DataType = ftString) and (MaxLength = 0) then
       MaxLength := FDatalink.Field.Size;
   end
@@ -260,17 +259,26 @@ end;
 procedure TDBEdit.WMSetFocus(var Message: TLMSetFocus);
 begin
   inherited WMSetFocus(Message);
-  if not FDatalink.Editing then
-    FDatalink.Reset;
+  FDataLink.Reset;
 end;
 
 procedure TDBEdit.WMKillFocus(var Message: TLMKillFocus);
 begin
   inherited WMKillFocus(Message);
-  if not FDatalink.Editing then
-    FDatalink.Reset
-  else
+  if FDatalink.Editing then
+  begin
     FDatalink.UpdateRecord;
+    //check for Focused before disabling the mask since SetFocus can be called
+    //inside events propagated by WMKillFocus or UpdateRecord
+    if not Focused then
+    begin
+      DisableMask(FDataLink.Field.DisplayText);
+      //reset the modified flag that is changed after setting the text
+      FDataLink.IsModified := False;
+    end;
+  end
+  else
+    FDatalink.Reset;
 end;
 
 procedure TDBEdit.LMPasteFromClip(var Message: TLMessage);
