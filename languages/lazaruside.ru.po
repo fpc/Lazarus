@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-08 03:03+0300\n"
+"PO-Revision-Date: 2010-05-09 19:41+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -329,6 +329,10 @@ msgstr "Скрывать курсор мыши во время набора те
 #: lazarusidestrconsts.dlgautoindent
 msgid "Auto indent"
 msgstr "Автоматический отступ"
+
+#: lazarusidestrconsts.dlgautoindentlink
+msgid "(Setup smart indent)"
+msgstr "(Настроить)"
 
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
@@ -957,8 +961,9 @@ msgid "Colors"
 msgstr "Цвет"
 
 #: lazarusidestrconsts.dlgedcompleteblocks
-msgid "Complete blocks"
-msgstr "Завершать блоки"
+#| msgid "Complete blocks"
+msgid "Add close statement for pascal blocks"
+msgstr "Добавлять к блокам Паскаля завершающий оператор"
 
 #: lazarusidestrconsts.dlgedcustomext
 msgid "User defined extension"

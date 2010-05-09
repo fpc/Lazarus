@@ -320,6 +320,10 @@ msgstr "Rašymo metu slėpti pelės žymeklį"
 msgid "Auto indent"
 msgstr "Automatinė lygiuotė"
 
+#: lazarusidestrconsts.dlgautoindentlink
+msgid "(Setup smart indent)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
 msgstr "Tuščius metodus šalinti automatiškai"
@@ -948,7 +952,9 @@ msgid "Colors"
 msgstr "Spalvos"
 
 #: lazarusidestrconsts.dlgedcompleteblocks
-msgid "Complete blocks"
+#, fuzzy
+#| msgid "Complete blocks"
+msgid "Add close statement for pascal blocks"
 msgstr "Užbaigti blokai"
 
 #: lazarusidestrconsts.dlgedcustomext

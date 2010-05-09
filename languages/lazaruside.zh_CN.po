@@ -318,6 +318,10 @@ msgstr ""
 msgid "Auto indent"
 msgstr "自动缩进"
 
+#: lazarusidestrconsts.dlgautoindentlink
+msgid "(Setup smart indent)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
 msgstr "自动移除空方法"
@@ -947,7 +951,7 @@ msgid "Colors"
 msgstr "颜色"
 
 #: lazarusidestrconsts.dlgedcompleteblocks
-msgid "Complete blocks"
+msgid "Add close statement for pascal blocks"
 msgstr ""
 
 #: lazarusidestrconsts.dlgedcustomext

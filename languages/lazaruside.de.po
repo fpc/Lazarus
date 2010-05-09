@@ -320,6 +320,10 @@ msgstr "Maus beim Tippen verbergen"
 msgid "Auto indent"
 msgstr "Automat. Einrückung"
 
+#: lazarusidestrconsts.dlgautoindentlink
+msgid "(Setup smart indent)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
 msgstr "Leere Methoden automatisch entfernen"
@@ -950,7 +954,9 @@ msgid "Colors"
 msgstr "Syntax-Hervorhebung"
 
 #: lazarusidestrconsts.dlgedcompleteblocks
-msgid "Complete blocks"
+#, fuzzy
+#| msgid "Complete blocks"
+msgid "Add close statement for pascal blocks"
 msgstr "Blöcke vervollständigen"
 
 #: lazarusidestrconsts.dlgedcustomext

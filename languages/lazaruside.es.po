@@ -317,6 +317,10 @@ msgstr "Ocultar el cursor del ratón al escribir"
 msgid "Auto indent"
 msgstr "Sangrar Automáticamente"
 
+#: lazarusidestrconsts.dlgautoindentlink
+msgid "(Setup smart indent)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
 msgstr "Remover métodos vacios automáticamente"
@@ -945,7 +949,9 @@ msgid "Colors"
 msgstr "Color"
 
 #: lazarusidestrconsts.dlgedcompleteblocks
-msgid "Complete blocks"
+#, fuzzy
+#| msgid "Complete blocks"
+msgid "Add close statement for pascal blocks"
 msgstr "Completa"
 
 #: lazarusidestrconsts.dlgedcustomext
