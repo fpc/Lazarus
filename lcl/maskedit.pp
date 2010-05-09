@@ -301,6 +301,7 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnEditingDone;
     property OnEndDock;
     property OnEndDrag;
     property OnEnter;
