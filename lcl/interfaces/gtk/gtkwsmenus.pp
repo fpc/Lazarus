@@ -337,6 +337,12 @@ var
   WidgetInfo: PWidgetInfo;
   Box: Pointer;
   ParentForm: TCustomForm;
+{$ifdef GTK2}
+const
+  MenuDirection : array[Boolean] of Longint = (
+    GTK_PACK_DIRECTION_LTR,
+    GTK_PACK_DIRECTION_RTL);
+{$endif}
 begin
   Widget := gtk_menu_bar_new();
   // get the VBox, the form has one child, a VBox
@@ -351,7 +357,7 @@ begin
     gtk_box_pack_start(Box, Widget, False, False, 0);
   end;
 
-  {$ifdef GTK_2_8}
+  {$ifdef GTK2}
   gtk_menu_bar_set_pack_direction(PGtkMenuBar(Widget), MenuDirection[AMenu.UseRightToLeftAlignment]);
   {$endif}
 

@@ -5946,15 +5946,15 @@ begin
            gtk_widget_get_xthickness(gtk_widget_get_style(Widget)) +
            HorizPadding +
            ((PGtkMenuItem(MenuItem)^.toggle_size-ToggleSpacing-IconWidth) div 2);
+
+  if gtk_widget_get_direction(Widget) = GTK_TEXT_DIR_RTL then
+    ALeft := Widget^.Allocation.width - IconWidth - ALeft; //not sure it is the correct Width
   {$ELSE}
   ALeft := (BorderWidth + gtk_widget_get_xthickness(gtk_widget_get_style(Widget)) + 2)
            +((PGtkMenuItem(MenuItem)^.toggle_size-IconWidth) div 2);
   {$ENDIF}
 
   ATop := (Widget^.Allocation.Height - IconHeight) div 2;
-
-  if gtk_widget_get_direction(Widget) = GTK_TEXT_DIR_RTL then
-    ALeft := Widget^.Allocation.width - IconWidth - ALeft; //not sure it is the correct Width
 
   // draw icon
   AImageList := LCLMenuItem.GetImageList;
@@ -6059,8 +6059,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
   MenuItemWidget: PGtkWidget; NewShortCut: TShortCut);
+{$ifdef GTK2}
 const
   WidgetDirection : array[boolean] of longint = (GTK_TEXT_DIR_LTR, GTK_TEXT_DIR_RTL);
+  {$endif}
   function UseRTL: Boolean;
   begin
     Result := LCLMenuItem.GetIsRightToLeft;
@@ -6077,7 +6079,9 @@ var
       Exit;
     LabelWidget := gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
     GtkWidgetset.SetLabelCaption(LabelWidget, LCLMenuItem.Caption);
+    {$ifdef GTK2}
     gtk_widget_set_direction(PGtkWidget(LabelWidget), WidgetDirection[UseRTL]);
+    {$endif}
   end;
   
   procedure UpdateShortCutLabel;
@@ -6123,7 +6127,9 @@ var
       begin
         gtk_label_set_text(LabelWidget, PChar(Pointer(s)));
       end;
+      {$ifdef GTK2}
       gtk_widget_set_direction(PGtkWidget(LabelWidget), GTK_TEXT_DIR_LTR); //Shortcut always LTR
+      {$endif}
       if UseRTL then
         gtk_misc_set_alignment(GTK_MISC(LabelWidget), 0.0, 0.5)
       else
@@ -6206,7 +6212,9 @@ begin
       exit;
     end;
     HBoxWidget := gtk_hbox_new(false, 20);
+    {$ifdef GTK2}
     gtk_widget_set_direction(PGtkWidget(HBoxWidget), WidgetDirection[UseRTL]);
+    {$endif}
     gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLHBox', HBoxWidget);
     CreateIcon;
     CreateLabel;
@@ -6224,7 +6232,9 @@ begin
     end else
     begin
       // just update the content
+      {$ifdef GTK2}
       gtk_widget_set_direction(PGtkWidget(HBoxWidget), WidgetDirection[UseRTL]);
+      {$endif}
       SetMenuItemLabelText(LCLMenuItem, MenuItemWidget);
       UpdateShortCutLabel;
     end;
