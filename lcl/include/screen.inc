@@ -763,7 +763,7 @@ begin
   Application.UpdateVisible;
 end;
 
-function TScreen.SetFocusedForm(AForm: TCustomForm; AModal: Boolean): Boolean;
+function TScreen.SetFocusedForm(AForm: TCustomForm): Boolean;
 var
   LastState: TFocusState;
 begin

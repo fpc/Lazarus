@@ -2216,7 +2216,7 @@ begin
   begin
     Control.ControlState := Control.ControlState + [csFocusing];
     try
-      if not Screen.SetFocusedForm(Self, False) then
+      if not Screen.SetFocusedForm(Self) then
         Exit;
       // update ActiveControls of all parent forms
       CurControl := Control.Parent;
