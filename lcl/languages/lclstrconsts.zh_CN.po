@@ -89,10 +89,12 @@ msgid "Delete"
 msgstr "删除"
 
 #: lclstrconsts.ifsvk_down
+msgctxt "lclstrconsts.ifsvk_down"
 msgid "Down"
 msgstr ""
 
 #: lclstrconsts.ifsvk_end
+msgctxt "lclstrconsts.ifsvk_end"
 msgid "End"
 msgstr ""
 
@@ -117,6 +119,7 @@ msgid "Help"
 msgstr "帮助"
 
 #: lclstrconsts.ifsvk_home
+msgctxt "lclstrconsts.ifsvk_home"
 msgid "Home"
 msgstr ""
 
@@ -138,6 +141,7 @@ msgid "Mouse Button Left"
 msgstr "鼠标左键"
 
 #: lclstrconsts.ifsvk_left
+msgctxt "lclstrconsts.ifsvk_left"
 msgid "Left"
 msgstr "左"
 
@@ -197,6 +201,7 @@ msgid "Return"
 msgstr "返回"
 
 #: lclstrconsts.ifsvk_right
+msgctxt "lclstrconsts.ifsvk_right"
 msgid "Right"
 msgstr "右"
 
@@ -225,6 +230,7 @@ msgid "Space key"
 msgstr "空格键"
 
 #: lclstrconsts.ifsvk_tab
+msgctxt "lclstrconsts.ifsvk_tab"
 msgid "Tab"
 msgstr ""
 
@@ -233,6 +239,7 @@ msgid "Unknown"
 msgstr "未知"
 
 #: lclstrconsts.ifsvk_up
+msgctxt "lclstrconsts.ifsvk_up"
 msgid "Up"
 msgstr "上"
 
@@ -1194,6 +1201,89 @@ msgstr "MenuItem 为 nil"
 #: lclstrconsts.smenunotfound
 msgid "Sub-menu is not in menu"
 msgstr "子菜单不在菜单中"
+
+#: lclstrconsts.smkcalt
+msgid "Alt+"
+msgstr ""
+
+#: lclstrconsts.smkcbksp
+msgid "BkSp"
+msgstr ""
+
+#: lclstrconsts.smkcctrl
+msgid "Ctrl+"
+msgstr ""
+
+#: lclstrconsts.smkcdel
+msgid "Del"
+msgstr ""
+
+#: lclstrconsts.smkcdown
+msgctxt "lclstrconsts.smkcdown"
+msgid "Down"
+msgstr ""
+
+#: lclstrconsts.smkcend
+msgctxt "lclstrconsts.smkcend"
+msgid "End"
+msgstr ""
+
+#: lclstrconsts.smkcenter
+msgid "Enter"
+msgstr ""
+
+#: lclstrconsts.smkcesc
+msgid "Esc"
+msgstr ""
+
+#: lclstrconsts.smkchome
+msgctxt "lclstrconsts.smkchome"
+msgid "Home"
+msgstr ""
+
+#: lclstrconsts.smkcins
+msgid "Ins"
+msgstr ""
+
+#: lclstrconsts.smkcleft
+msgctxt "lclstrconsts.smkcleft"
+msgid "Left"
+msgstr "左"
+
+#: lclstrconsts.smkcmeta
+msgid "Meta+"
+msgstr ""
+
+#: lclstrconsts.smkcpgdn
+msgid "PgDn"
+msgstr ""
+
+#: lclstrconsts.smkcpgup
+msgid "PgUp"
+msgstr ""
+
+#: lclstrconsts.smkcright
+msgctxt "lclstrconsts.smkcright"
+msgid "Right"
+msgstr "右"
+
+#: lclstrconsts.smkcshift
+msgid "Shift+"
+msgstr ""
+
+#: lclstrconsts.smkcspace
+msgid "Space"
+msgstr ""
+
+#: lclstrconsts.smkctab
+msgctxt "lclstrconsts.smkctab"
+msgid "Tab"
+msgstr ""
+
+#: lclstrconsts.smkcup
+msgctxt "lclstrconsts.smkcup"
+msgid "Up"
+msgstr "上"
 
 #: lclstrconsts.snomdiform
 msgid "No MDI form present."

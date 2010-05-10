@@ -85,10 +85,12 @@ msgid "Delete"
 msgstr "Elimina"
 
 #: lclstrconsts.ifsvk_down
+msgctxt "lclstrconsts.ifsvk_down"
 msgid "Down"
 msgstr "Giù"
 
 #: lclstrconsts.ifsvk_end
+msgctxt "lclstrconsts.ifsvk_end"
 msgid "End"
 msgstr "Fine"
 
@@ -113,6 +115,7 @@ msgid "Help"
 msgstr "Aiuto"
 
 #: lclstrconsts.ifsvk_home
+msgctxt "lclstrconsts.ifsvk_home"
 msgid "Home"
 msgstr "Home"
 
@@ -134,6 +137,7 @@ msgid "Mouse Button Left"
 msgstr "Tasto sinistro del mouse"
 
 #: lclstrconsts.ifsvk_left
+msgctxt "lclstrconsts.ifsvk_left"
 msgid "Left"
 msgstr "Sinistra"
 
@@ -193,6 +197,7 @@ msgid "Return"
 msgstr "Invio"
 
 #: lclstrconsts.ifsvk_right
+msgctxt "lclstrconsts.ifsvk_right"
 msgid "Right"
 msgstr "Destra"
 
@@ -221,6 +226,7 @@ msgid "Space key"
 msgstr "Tasto di spaziatura"
 
 #: lclstrconsts.ifsvk_tab
+msgctxt "lclstrconsts.ifsvk_tab"
 msgid "Tab"
 msgstr "Tab"
 
@@ -229,6 +235,7 @@ msgid "Unknown"
 msgstr "Sconosciuto"
 
 #: lclstrconsts.ifsvk_up
+msgctxt "lclstrconsts.ifsvk_up"
 msgid "Up"
 msgstr "Su"
 
@@ -1192,6 +1199,89 @@ msgstr "La voce menu è nulla"
 #: lclstrconsts.smenunotfound
 msgid "Sub-menu is not in menu"
 msgstr "Il sottomenu non è nel menu"
+
+#: lclstrconsts.smkcalt
+msgid "Alt+"
+msgstr ""
+
+#: lclstrconsts.smkcbksp
+msgid "BkSp"
+msgstr ""
+
+#: lclstrconsts.smkcctrl
+msgid "Ctrl+"
+msgstr ""
+
+#: lclstrconsts.smkcdel
+msgid "Del"
+msgstr ""
+
+#: lclstrconsts.smkcdown
+msgctxt "lclstrconsts.smkcdown"
+msgid "Down"
+msgstr "Giù"
+
+#: lclstrconsts.smkcend
+msgctxt "lclstrconsts.smkcend"
+msgid "End"
+msgstr "Fine"
+
+#: lclstrconsts.smkcenter
+msgid "Enter"
+msgstr ""
+
+#: lclstrconsts.smkcesc
+msgid "Esc"
+msgstr ""
+
+#: lclstrconsts.smkchome
+msgctxt "lclstrconsts.smkchome"
+msgid "Home"
+msgstr "Home"
+
+#: lclstrconsts.smkcins
+msgid "Ins"
+msgstr ""
+
+#: lclstrconsts.smkcleft
+msgctxt "lclstrconsts.smkcleft"
+msgid "Left"
+msgstr "Sinistra"
+
+#: lclstrconsts.smkcmeta
+msgid "Meta+"
+msgstr ""
+
+#: lclstrconsts.smkcpgdn
+msgid "PgDn"
+msgstr ""
+
+#: lclstrconsts.smkcpgup
+msgid "PgUp"
+msgstr ""
+
+#: lclstrconsts.smkcright
+msgctxt "lclstrconsts.smkcright"
+msgid "Right"
+msgstr "Destra"
+
+#: lclstrconsts.smkcshift
+msgid "Shift+"
+msgstr ""
+
+#: lclstrconsts.smkcspace
+msgid "Space"
+msgstr ""
+
+#: lclstrconsts.smkctab
+msgctxt "lclstrconsts.smkctab"
+msgid "Tab"
+msgstr "Tab"
+
+#: lclstrconsts.smkcup
+msgctxt "lclstrconsts.smkcup"
+msgid "Up"
+msgstr "Su"
 
 #: lclstrconsts.snomdiform
 msgid "No MDI form present."

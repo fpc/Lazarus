@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-17 20:44+0300\n"
+"PO-Revision-Date: 2010-05-10 19:43+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -1644,7 +1644,7 @@ msgstr "Super"
 
 #: objinspstrconsts.srvk_tab
 msgid "Tab"
-msgstr "ТАБ"
+msgstr "Таб"
 
 #: objinspstrconsts.srvk_unknown
 msgctxt "objinspstrconsts.srvk_unknown"
