@@ -498,6 +498,7 @@ type
     procedure setMenuBar(AMenuBar: QMenuBarH);
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function IsMdiChild: Boolean;
+    function MdiChildCount: integer;
     procedure OffsetMousePos(APoint: PQtPoint); override;
     procedure setAcceptDropFiles(AValue: Boolean);
     procedure SlotActivateWindow(vActivate: Boolean); cdecl;
@@ -4631,6 +4632,23 @@ begin
   Result := (LCLObject <> nil) and not
     (csDesigning in LCLObject.ComponentState) and
     (TCustomForm(LCLObject).FormStyle = fsMDIChild);
+end;
+
+function TQtMainWindow.MdiChildCount: integer;
+var
+  Arr: TPtrIntArray;
+  Area: QMdiAreaH;
+begin
+  Result := 0;
+  if IsMdiChild then
+    Area := QMdiSubWindow_mdiArea(QMdiSubWindowH(Widget))
+  else
+    Area := MDIAreaHandle;
+  if Area <> nil then
+  begin
+    QMdiArea_subWindowList(Area, @Arr);
+    Result := High(Arr);
+  end;
 end;
 
 procedure TQtMainWindow.OffsetMousePos(APoint: PQtPoint);

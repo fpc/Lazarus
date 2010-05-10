@@ -202,18 +202,23 @@ begin
       if not (csDesigning in AWinControl.ComponentState) then
       begin
         QWidget_contentsRect(Widget.Widget, @R);
-        
-        TForm(AWinControl).Width := TForm(AWinControl).Width + R.Left;
-        TForm(AWinControl).Height := TForm(AWinControl).Height + R.Top;
-        TForm(AWinControl).Left := TForm(AWinControl).Left - R.Left;
-        TForm(AWinControl).Top := TForm(AWinControl).Top - R.Top;
-        
-        TForm(AWinControl).ReAlign;
+        R.Right := TForm(AWinControl).Width + R.Left;
+        R.Bottom := TForm(AWinControl).Height + R.Top;
+        R.Left := TQtMainWindow(Widget).MdiChildCount * 10;
+        R.Top := TQtMainWindow(Widget).MdiChildCount * 10;
+        Widget.move(R.Left, R.Top);
+        Widget.resize(R.Right, R.Bottom);
       end;
     end;
 
     if TForm(AWinControl).FormStyle <> fsMDIChild then
-      TQtMainWindow(Widget).setWindowState(LCLToQtWindowState[TCustomForm(AWinControl).WindowState]);
+    begin
+      if (csDesigning in AWinControl.ComponentState) and
+        (TCustomForm(AWinControl).WindowState = wsMaximized) then
+        TQtMainWindow(Widget).setWindowState(LCLToQtWindowState[wsNormal])
+      else
+        TQtMainWindow(Widget).setWindowState(LCLToQtWindowState[TCustomForm(AWinControl).WindowState]);
+    end;
   end;
 
   Widget.BeginUpdate;
