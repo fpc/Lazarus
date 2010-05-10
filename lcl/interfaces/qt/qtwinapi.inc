@@ -4699,23 +4699,13 @@ end;
 
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetFocus(hWnd: HWND): HWND;
-var
-  QtEdit: IQtEdit;
 begin
   if hwnd<>0 then
   begin
     {$ifdef VerboseFocus}
     WriteLn('*********  TQtWidgetSet.SetFocus INIT focusing ', TQtWidget(hwnd).lclobject.name);
     {$endif}
-    result := GetFocus;
-
-    if (Result <> 0) and (Result <> hWnd) and not
-      ((TQtWidget(Hwnd) is TQtMainWindow) or
-      (TQtWidget(Result) is TQtMainWindow)) and
-      Supports(TQtWidget(Result), IQtEdit, QtEdit)
-    then
-      QWidget_clearFocus(TQtWidget(Result).Widget);
-
+    Result := GetFocus;
     TQtWidget(hWnd).setFocus;
     {$ifdef VerboseFocus}
     DebugLn('********* TQtWidgetSet.SetFocus END was %x now is %x',[result,hwnd]);
