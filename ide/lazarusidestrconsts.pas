@@ -1891,8 +1891,8 @@ resourcestring
 
   // custom messages
   dlgBrowseMsgFilter = 'Free Pascal Compiler messages file (*.msg)|*.msg|Any Files (*.*)|*.*';
-  dlgCompilerMessage = 'Compiler Messages';
-  dlgUseMsgFile = 'Use messages file';
+  dlgCompilerMessage = 'Compiler Messages'; 
+  dlgUseMsgFile = 'Use messages file'; //deprecated
 
   // project options dialog
   dlgProjectOptions = 'Project Options';

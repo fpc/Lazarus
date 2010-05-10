@@ -5,29 +5,30 @@ unit compiler_messages_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, StdCtrls, CheckLst,
+  Classes, SysUtils, FileUtil, Forms, StdCtrls, CheckLst, LCLProc,
   Dialogs,
   IDEOptionsIntf, Project,
   LazarusIDEStrConsts,
-  CompilerOptions, IDEMsgIntf;
+  EnvironmentOpts, CompilerOptions, IDEMsgIntf;
 
 type
 
   { TCompilerMessagesOptionsFrame }
 
   TCompilerMessagesOptionsFrame = class(TAbstractIDEOptionsEditor)
-    btnBrowseMsg: TButton;
     chklistCompMsg: TCheckListBox;
-    chkUseMsgFile: TCheckBox;
-    editMsgFileName: TEdit;
+    editMsgFilter: TEdit;
     grpCompilerMessages: TGroupBox;
+    lblFilter: TLabel;
     procedure btnBrowseMsgClick(Sender: TObject);
     procedure chklistCompMsgClick(Sender: TObject);
     procedure chkUseMsgFileChange(Sender: TObject);
+    procedure editMsgFilterChange(Sender: TObject);
   private
     { private declarations }
     TempMessages: TCompilerMessagesList;
     procedure UpdateMessages;
+    procedure UpdateFilter;
   public
     { public declarations }
     constructor Create(TheOwner: TComponent); override;
@@ -51,6 +52,11 @@ begin
   UpdateMessages;
 end;
 
+procedure TCompilerMessagesOptionsFrame.editMsgFilterChange(Sender: TObject);
+begin
+  UpdateFilter;
+end;
+
 procedure TCompilerMessagesOptionsFrame.chklistCompMsgClick(Sender: TObject);
 var
   i : Integer;
@@ -67,7 +73,7 @@ begin
   try
     dlg.Filter := dlgBrowseMsgFilter;
     if not dlg.Execute then Exit;
-    editMsgFileName.Caption := dlg.FileName;
+    editMsgFilter.Caption := dlg.FileName;
     UpdateMessages;
   finally
     dlg.Free
@@ -78,23 +84,18 @@ procedure TCompilerMessagesOptionsFrame.UpdateMessages;
 const
   MaxIndexLen = 5;
 var
-  i : Integer;
-  j : Integer;
-  topidx  : Integer;
-  m : TCompilerMessageConfig;
-
-const
-  //todo: should be translated
-  MsgTypeStr : array [TFPCErrorType] of String = ('-','H','N','W','E','F','P');
-
+  i         : Integer;
+  j         : Integer;
+  topidx    : Integer;
+  m         : TCompilerMessageConfig;
 begin
   topidx := chklistCompMsg.TopIndex;
   chklistCompMsg.Items.BeginUpdate;
   try
-    if chkUseMsgFile.Checked and FileExistsUTF8(editMsgFileName.Caption) and (editMsgFileName.Caption <> '') then begin
+    if FileExistsUTF8(EnvironmentOptions.CompilerMessagesFilename) then begin
       try
         // FPC messages file is expected to be UTF8 encoded, no matter for the current code page is
-        TempMessages.LoadMsgFile(editMsgFileName.Caption);
+        TempMessages.LoadMsgFile(EnvironmentOptions.CompilerMessagesFilename);
       except
         TempMessages.SetDefault;
       end;
@@ -103,19 +104,46 @@ begin
 
     chklistCompMsg.Clear;
     chklistCompMsg.Items.Clear;
-    for i := 0 to TempMessages.Count - 1 do
-    begin
-      m := TempMessages.Msg[i];
-      if m.MsgType in [etNote, etHint, etWarning] then
-      begin
-        j := chklistCompMsg.Items.AddObject( Format('(%s) %s', [MsgTypeStr[m.MsgType], m.GetUserText]), m);
-        chklistCompMsg.Checked[j] := not m.Ignored;
-      end;
-    end;
+    
+    UpdateFilter;
 
   finally
     chklistCompMsg.Items.EndUpdate;
     chkListCompMsg.TopIndex := topidx;
+  end;
+end;
+
+procedure TCompilerMessagesOptionsFrame.UpdateFilter; 
+var
+  i     : Integer;
+  j     : Integer;
+  m     : TCompilerMessageConfig;
+  add   : Boolean;
+  srch  : AnsiString;
+const
+  //todo: should be translated
+  MsgTypeStr : array [TFPCErrorType] of String = ('-','H','N','W','E','F','P');
+begin
+  chklistCompMsg.Items.BeginUpdate;
+  try
+    chklistCompMsg.Clear;
+    srch:=UTF8UpperCase(editMsgFilter.Text);
+    for i := 0 to TempMessages.Count - 1 do
+    begin
+      m := TempMessages.Msg[i];
+      add:=m.MsgType in [etNote, etHint, etWarning];
+      
+      if add and (srch<>'') then 
+        add:=UTF8Pos(srch, UTF8UpperCase(m.GetUserText))>0;
+        
+      if add then
+      begin
+        j := chklistCompMsg.Items.AddObject( Format('(%s) %s', [MsgTypeStr[m.MsgType], m.GetUserText([])]), m);
+        chklistCompMsg.Checked[j] := not m.Ignored;
+      end;
+    end;
+  finally            
+    chklistCompMsg.Items.EndUpdate;
   end;
 end;
 
@@ -138,24 +166,17 @@ end;
 
 procedure TCompilerMessagesOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  grpCompilerMessages.Caption := dlgCompilerMessage;
-  chkUseMsgFile.Caption := dlgUseMsgFile;
-  editMsgFileName.Caption := '';
+  editMsgFilter.Caption := '';
+  grpCompilerMessages.Caption:=dlgCompilerMessage;
+  lblFilter.Caption:=lisFilter;
 end;
 
 procedure TCompilerMessagesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  chkUseMsgFile.OnChange := nil;
-  try
-    with AOptions as TBaseCompilerOptions do 
-    begin
-      chkUseMsgFile.Checked := UseMsgFile;
-      editMsgFileName.Caption := MsgFileName;
-      TempMessages.Assign(CompilerMessages);
-      UpdateMessages;
-    end;
-  finally
-    chkUseMsgFile.OnChange := @chkUseMsgFileChange;
+  with AOptions as TBaseCompilerOptions do 
+  begin
+    TempMessages.Assign(CompilerMessages);
+    UpdateMessages;
   end;
 end;
 
@@ -163,8 +184,8 @@ procedure TCompilerMessagesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOpti
 begin
   with AOptions as TBaseCompilerOptions do
   begin
-    UseMsgFile := chkUseMsgFile.Checked;
-    MsgFileName := editMsgFileName.Caption;
+    UseMsgFile:=True;
+    MsgFileName:=EnvironmentOptions.CompilerMessagesFilename;
     CompilerMessages.Assign(TempMessages);
   end;
 end;
