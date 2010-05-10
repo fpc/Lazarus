@@ -702,11 +702,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.CMVisibleChanged(var Message : TLMessage);
 begin
-  if (not (csDesigning in ComponentState)
-    or (csNoDesignVisible in ControlStyle))
-  and (not (csLoading in ComponentState)) then begin
-    InvalidateControl(true, FVisible and (csOpaque in ControlStyle),true);
-  end;
+  if (not (csDesigning in ComponentState) or (csNoDesignVisible in ControlStyle)) and
+     (not (csLoading in ComponentState)) then
+    InvalidateControl(True, FVisible and (csOpaque in ControlStyle), True);
 end;
 
 procedure TControl.CMTextChanged(var Message: TLMessage);
