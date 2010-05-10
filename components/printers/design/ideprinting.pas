@@ -35,7 +35,8 @@ uses
 
 resourcestring
   SDescrFormatting  = 'Formatting';
-  SDescrPFSelection = 'Print...';
+  SDescrPFSelection = 'Print ...';
+  SPFSelectionCmd   = 'Print';
   SPrintSources     = 'Print sources';
   SPrintWhat        = 'What would you like to print ?';
   SPrintFile        = 'Complete file';
@@ -61,7 +62,7 @@ begin
 {$endif}
   CmdFormatSelection:=RegisterIDECommand(Cat,
                                          'PrintSelection',
-                                         SDescrPFSelection, 
+                                         SPFSelectionCmd,
                                          Key,nil,@PrintFile);
 
   //file main menu item

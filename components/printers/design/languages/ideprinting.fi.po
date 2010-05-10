@@ -9,8 +9,14 @@ msgid "Formatting"
 msgstr ""
 
 #: ideprinting.sdescrpfselection
-msgid "Print..."
+#, fuzzy
+#| msgid "Print..."
+msgid "Print ..."
 msgstr "Tulosta..."
+
+#: ideprinting.spfselectioncmd
+msgid "Print"
+msgstr ""
 
 #: ideprinting.sprintfile
 msgid "Complete file"

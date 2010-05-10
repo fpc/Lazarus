@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-11 02:03+0300\n"
+"PO-Revision-Date: 2010-05-11 01:13+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -14,8 +14,13 @@ msgid "Formatting"
 msgstr "Форматирование"
 
 #: ideprinting.sdescrpfselection
-msgid "Print..."
-msgstr "Печать..."
+#| msgid "Print..."
+msgid "Print ..."
+msgstr "Печать ..."
+
+#: ideprinting.spfselectioncmd
+msgid "Print"
+msgstr "Печать"
 
 #: ideprinting.sprintfile
 msgid "Complete file"

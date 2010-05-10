@@ -14,7 +14,11 @@ msgid "Formatting"
 msgstr ""
 
 #: ideprinting.sdescrpfselection
-msgid "Print..."
+msgid "Print ..."
+msgstr ""
+
+#: ideprinting.spfselectioncmd
+msgid "Print"
 msgstr ""
 
 #: ideprinting.sprintfile
