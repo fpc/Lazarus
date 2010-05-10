@@ -505,7 +505,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMDeactivate(var Message : TLMActivate);
 begin
-  FActive:=false;
+  SetActive(False);
   {$IFDEF EnableAsyncDeactivate}
   if Application<>nil then
     Application.QueueAsyncCall(@Application.Deactivate,0);
@@ -577,21 +577,6 @@ procedure TCustomForm.Deactivate;
 begin
   if Assigned(FOnDeactivate) then FOnDeactivate(Self);
 end;
-
-{------------------------------------------------------------------------------
-  Method: TCustomForm.WMPaint
-  Params:   Msg: The paint message
-  Returns:  nothing
-
-  Paint event handler.
- ------------------------------------------------------------------------------}
-procedure TCustomForm.WMPaint(var Message: TLMPaint);
-begin
-  //DebugLn('[TCustomForm.WMPaint] ',Name,':',ClassName);
-  inherited WMPaint(Message);
-  //DebugLn('[TCustomForm.WMPaint] END ',Name,':',ClassName);
-end;
-
 
 {------------------------------------------------------------------------------
   Method: TCustomForm.WMSize
@@ -818,7 +803,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DefocusControl(Control: TWinControl; Removing: Boolean);
 begin
-  if Control.ContainsControl(FActiveControl) then begin
+  if Control.ContainsControl(ActiveControl) then
+  begin
     {$IFDEF VerboseFocus}
     debugln('TCustomForm.DefocusControl Control=',DbgSName(Control),' FActiveControl=',DbgSName(FActiveControl));
     {$ENDIF}
