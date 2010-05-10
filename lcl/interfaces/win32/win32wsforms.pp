@@ -579,7 +579,6 @@ end;
 
 class procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
-  ShowWindow(ACustomForm.Handle, SW_SHOW);
   BringWindowToTop(ACustomForm.Handle);
 end;
 
