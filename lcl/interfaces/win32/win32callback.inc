@@ -832,32 +832,6 @@ var
     Result := WindowInfo^.isComboEdit and (ComboBoxHandleSizeWindow = Windows.GetParent(Window));
   end;
 
-  procedure SetMinMaxInfo(var MinMaxInfo: TMINMAXINFO);
-    procedure SetWin32SizePoint(AWidth, AHeight: integer; var pt: TPoint);
-    var
-      IntfWidth, IntfHeight: integer;
-    begin
-      // 0 means no constraint
-      if (AWidth=0) and (AHeight=0) then exit;
-
-      IntfWidth := AWidth;
-      IntfHeight := AHeight;
-      LCLFormSizeToWin32Size(TCustomForm(lWinControl), IntfWidth, IntfHeight);
-
-      if AWidth>0 then
-        pt.X:= IntfWidth;
-      if AHeight>0 then
-        pt.Y := IntfHeight;
-    end;
-  begin
-    if (lWinControl=nil) or not (lWinControl is TCustomForm) then exit;
-    with lWinControl.Constraints do
-    begin
-      SetWin32SizePoint(MinWidth, MinHeight, MinMaxInfo.ptMinTrackSize);
-      SetWin32SizePoint(MaxWidth, MaxHeight, MinMaxInfo.ptMaxTrackSize);
-    end;
-  end;
-
   procedure HandleBitBtnCustomDraw(ABitBtn: TCustomBitBtn);
   var
     DrawInfo: PNMCustomDraw absolute NMHdr;
@@ -1534,8 +1508,6 @@ begin
       LMessage.Result := DLGC_WANTALLKEYS;
       WinProcess := false;
     end;
-    WM_GETMINMAXINFO:
-      SetMinMaxInfo(PMINMAXINFO(LParam)^);
     WM_HELP:
       if Window = Win32WidgetSet.AppHandle then
         Application.HelpCommand(0, LParam);

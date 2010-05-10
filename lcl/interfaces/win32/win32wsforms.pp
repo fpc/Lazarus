@@ -292,6 +292,68 @@ begin
       BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
 end;
 
+function CustomFormWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam): LResult; stdcall;
+
+  procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer);
+  var
+    SizeRect: Windows.RECT;
+    BorderStyle: TFormBorderStyle;
+  begin
+    with SizeRect do
+    begin
+      Left := 0;
+      Top := 0;
+      Right := AWidth;
+      Bottom := AHeight;
+    end;
+    BorderStyle := GetDesigningBorderStyle(Form);
+    Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
+        BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
+    AWidth := SizeRect.Right - SizeRect.Left;
+    AHeight := SizeRect.Bottom - SizeRect.Top;
+  end;
+
+  procedure SetMinMaxInfo(WinControl: TWinControl; var MinMaxInfo: TMINMAXINFO);
+    procedure SetWin32SizePoint(AWidth, AHeight: integer; var pt: TPoint);
+    var
+      IntfWidth, IntfHeight: integer;
+    begin
+      // 0 means no constraint
+      if (AWidth=0) and (AHeight=0) then exit;
+
+      IntfWidth := AWidth;
+      IntfHeight := AHeight;
+      LCLFormSizeToWin32Size(TCustomForm(WinControl), IntfWidth, IntfHeight);
+
+      if AWidth>0 then
+        pt.X:= IntfWidth;
+      if AHeight>0 then
+        pt.Y := IntfHeight;
+    end;
+  begin
+    with WinControl.Constraints do
+    begin
+      SetWin32SizePoint(MinWidth, MinHeight, MinMaxInfo.ptMinTrackSize);
+      SetWin32SizePoint(MaxWidth, MaxHeight, MinMaxInfo.ptMaxTrackSize);
+    end;
+  end;
+
+var
+  Info: PWin32WindowInfo;
+  WinControl: TWinControl;
+begin
+  Info := GetWin32WindowInfo(Window);
+  WinControl := Info^.WinControl;
+  case Msg of
+    WM_GETMINMAXINFO:
+      begin
+        SetMinMaxInfo(WinControl, PMINMAXINFO(LParam)^);
+        Exit(CallDefaultWindowProc(Window, Msg, WParam, LParam));
+      end;
+  end;
+  Result := WindowProc(Window, Msg, WParam, LParam);
+end;
+
 class function TWin32WSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -328,7 +390,7 @@ begin
       Width := Bounds.Right - Bounds.Left;
       Height := Bounds.Bottom - Bounds.Top;
     end;
-    SubClassWndProc := nil;
+    SubClassWndProc := @CustomFormWndProc;
     if ((Application = nil) or (Application.MainForm <> lForm))  and
        ( not (csDesigning in lForm.ComponentState) and
         (lForm.ShowInTaskBar = stAlways)) then
@@ -565,7 +627,7 @@ begin
     Top := LongInt(CW_USEDEFAULT);
     Width := LongInt(CW_USEDEFAULT);
     Height := LongInt(CW_USEDEFAULT);
-    SubClassWndProc := nil;
+    SubClassWndProc := @CustomFormWndProc;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);

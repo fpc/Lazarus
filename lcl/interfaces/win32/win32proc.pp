@@ -98,7 +98,6 @@ function GetLCLClientBoundsOffset(Sender: TObject; var ORect: TRect): boolean;
 function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
 procedure LCLBoundsToWin32Bounds(Sender: TObject;
   var Left, Top, Width, Height: Integer);
-procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer);
 procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 
@@ -964,26 +963,6 @@ begin
   if not GetLCLClientBoundsOffset(TWinControl(Sender).Parent, ORect) then exit;
   inc(Left, ORect.Left);
   inc(Top, ORect.Top);
-end;
-
-procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer);
-{$NOTE Should be moved to WSWin32Forms, if the windowproc is splitted}
-var
-  SizeRect: Windows.RECT;
-  BorderStyle: TFormBorderStyle;
-begin
-  with SizeRect do
-  begin
-    Left := 0;
-    Top := 0;
-    Right := AWidth;
-    Bottom := AHeight;
-  end;
-  BorderStyle := GetDesigningBorderStyle(Form);
-  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
-      BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
-  AWidth := SizeRect.Right - SizeRect.Left;
-  AHeight := SizeRect.Bottom - SizeRect.Top;
 end;
 
 procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
