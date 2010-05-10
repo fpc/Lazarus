@@ -2504,6 +2504,19 @@ function TCustomForm.ShowModal: Integer;
     raise EInvalidOperation.Create('TCustomForm.ShowModal impossible ');
   end;
 
+  procedure RestoreFocusedForm;
+  begin
+    // needs to be called only in ShowModal
+    Perform(CM_DEACTIVATE, 0, 0);
+    if Screen.FSaveFocusedList.Count > 0 then
+    begin
+      Screen.FFocusedForm := TCustomForm(Screen.FSaveFocusedList.First);
+      Screen.FSaveFocusedList.Remove(Screen.FFocusedForm);
+    end
+    else
+      Screen.FFocusedForm := nil;
+  end;
+
 var
   DisabledList: TList;
   SavedFocusState: TFocusState;
@@ -2530,6 +2543,8 @@ begin
     Include(FFormState, fsModal);
     ActiveWindow := GetActiveWindow;
     SavedFocusState := SaveFocusState;
+    Screen.FSaveFocusedList.Insert(0, Screen.FFocusedForm);
+    Screen.FFocusedForm := Self;
     Screen.MoveFormToFocusFront(Self);
     Screen.MoveFormToZFront(Self);
     ModalResult := 0;
@@ -2542,7 +2557,7 @@ begin
       Show;
       try
         // activate must happen after show
-        Screen.SetFocusedForm(Self, True);
+        Perform(CM_ACTIVATE, 0, 0);
         TWSCustomFormClass(WidgetSetClass).ShowModal(Self);
         repeat
           { Delphi calls Application.HandleMessage
@@ -2571,7 +2586,7 @@ begin
         Result := ModalResult;
         if HandleAllocated and (GetActiveWindow <> Handle) then
           ActiveWindow := 0;
-        Screen.RestoreFocusedForm;
+        RestoreFocusedForm;
       finally
         Screen.EnableForms(DisabledList);
         { guarantee execution of widgetset CloseModal }

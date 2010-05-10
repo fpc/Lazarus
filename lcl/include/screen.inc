@@ -772,20 +772,15 @@ begin
   Result := True;
   if FFocusedForm <> AForm then
   begin
-    if not AModal then
+    // send deactivate to the previosly focused form
+    LastState := SaveFocusState;
+    if FFocusedForm <> nil then
+      FFocusedForm.Perform(CM_DEACTIVATE, 0, 0);
+    if SaveFocusState <> LastState then
     begin
-      // send deactivate to the previosly focused form
-      LastState := SaveFocusState;
-      if FFocusedForm <> nil then
-        FFocusedForm.Perform(CM_DEACTIVATE, 0, 0);
-      if SaveFocusState <> LastState then
-      begin
-        FFocusedForm := nil;
-        Exit(False);
-      end;
-    end
-    else
-      FSaveFocusedList.Insert(0, FFocusedForm);
+      FFocusedForm := nil;
+      Exit(False);
+    end;
     // send activate to the newly focused form
     FFocusedForm := AForm;
     LastState := SaveFocusState;
@@ -794,20 +789,6 @@ begin
     if SaveFocusState <> LastState then
       Exit(False);
   end;
-end;
-
-procedure TScreen.RestoreFocusedForm;
-begin
-  // needs to be called with sync with SetFocusedForm only in ShowModal
-  if FFocusedForm <> nil then
-    FFocusedForm.Perform(CM_DEACTIVATE, 0, 0);
-  if FSaveFocusedList.Count > 0 then
-  begin
-    FFocusedForm := TCustomForm(FSaveFocusedList.First);
-    FSaveFocusedList.Remove(Screen.FFocusedForm);
-  end
-  else
-    FFocusedForm := nil;
 end;
 
 {------------------------------------------------------------------------------
