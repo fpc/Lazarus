@@ -943,6 +943,7 @@ type
     procedure AddForm(AForm: TCustomForm);
     procedure RemoveForm(AForm: TCustomForm);
     function SetFocusedForm(AForm: TCustomForm): Boolean;
+    procedure RestoreFocusedForm;
     procedure SetCursor(const AValue: TCursor);
     procedure SetCursors(AIndex: Integer; const AValue: HCURSOR);
     procedure SetHintFont(const AValue: TFont);
