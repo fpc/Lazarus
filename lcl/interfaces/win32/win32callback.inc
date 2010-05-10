@@ -217,7 +217,7 @@ var
   lWinControl, ChildWinControl: TWinControl;
   ChildWindowInfo: PWin32WindowInfo;
   TargetObject: TObject;
-  WinProcess: Boolean;
+  WinProcess, WmSysCommandProcess: Boolean;
   NotifyUserInput: Boolean;
   OverlayWindow: HWND;
   TargetWindow: HWND;
@@ -2078,6 +2078,8 @@ begin
       LMessage.Msg := Msg;
       LMessage.WParam := WParam;
       LMessage.LParam := LParam;
+      WmSysCommandProcess := WinProcess;
+      WinProcess := False;
     end;
     WM_SYSKEYDOWN:
     begin
@@ -2410,6 +2412,10 @@ begin
     begin
       if PLMsg^.Result = 0 then
         WinProcess := true;
+    end;
+    WM_SYSCOMMAND:
+    begin
+      WinProcess := WmSysCommandProcess;
     end;
 
     CN_CHAR, CN_SYSCHAR:
