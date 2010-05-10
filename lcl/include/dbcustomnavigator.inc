@@ -224,6 +224,7 @@ begin
     exit;
   end;
 
+  DisableAlign;
   FUpdateButtonsNeeded:=false;
   ButtonCount:=VisibleButtonCount;
   if Direction=nbdHorizontal then
@@ -263,6 +264,9 @@ begin
         CurButton.NavStyle:=CurButton.NavStyle+[nsAllowTimer];
       CurButton.LoadGlyphFromLazarusResource(DBNavButtonResourceName[CurButtonType]);
       CurButton.NumGlyphs:=1;
+      CurButton.Parent:=Self;
+      CurButton.OnClick:=@ButtonClickHandler;
+      CurButton.ControlStyle := CurButton.ControlStyle + [csNoDesignSelectable];
     end else
       CurButton:=Buttons[CurButtonType];
 
@@ -271,15 +275,13 @@ begin
     CurButton.Index:=CurButtonType;
     CurButton.SetBounds(X,Y,W,H);
     CurButton.Visible:=CurButtonType in FVisibleButtons;
-    CurButton.OnClick:=@ButtonClickHandler;
-    CurButton.Parent:=Self;
-    CurButton.ControlStyle := CurButton.ControlStyle + [csNoDesignSelectable];
     if CurButton.Visible then
     begin
       inc(ButtonNumber);
       ButtonStartPos:=ButtonEndPos;
     end;
   end;
+  EnableAlign;
   ActiveChanged;
 end;
 
