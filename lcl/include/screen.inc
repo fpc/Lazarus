@@ -772,7 +772,7 @@ begin
   Result := True;
   if FFocusedForm <> AForm then
   begin
-    if AModal then
+    if not AModal then
     begin
       // send deactivate to the previosly focused form
       LastState := SaveFocusState;
