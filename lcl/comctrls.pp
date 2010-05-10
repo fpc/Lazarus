@@ -1021,6 +1021,7 @@ type
     FViewOriginCache: TPoint; // scrolled originwhile handle is not created
     FSelected: TListItem;     // temp copy of the selected item
     FFocused: TListItem;      // temp copy of the focused item
+    FSelectedIdx: Integer;    // Index of Selected item, used if OwnerData = True;
     FHoverTime: Integer;      // temp copy of the hover time (the time a mouse must be over a item to auto select)
     // MWE: not used: see updateScrollbars
     // FLastHorzScrollInfo: TScrollInfo;

@@ -240,6 +240,7 @@ begin
         if Item=FSelected then
           InvalidateSelected;
       end else begin
+        // owner data
         Change(Item, nm^.uChanged);
         if (nm^.uChanged = LVIF_STATE)
         then begin
@@ -262,13 +263,18 @@ begin
             // select state changed
             if (nm^.uNewState and LVIS_SELECTED) = 0
             then begin
-              if FSelected = Item then
+              if not OwnerData and (FSelected = Item) then
+                InvalidateSelected
+              else if OwnerData and (nm^.iItem=FSelectedIdx) then begin
+                FSelectedIdx:=-1;
                 InvalidateSelected;
+              end;
               DoSelectItem(Item, False);
             end
             else begin
               FSelected := Item;
               Include(FFlags,lffSelectedValid);
+              if OwnerData then FSelectedIdx:=nm^.iItem;
               //DebugLn('TCustomListView.CNNotify FSelected=',dbgs(FSelected));
               DoSelectItem(Item, True);
             end;
@@ -752,9 +758,11 @@ end;
 function TCustomListView.GetItemIndex: Integer;
 begin
   Result := -1;
-  if Selected = nil then
-    Exit;
-  Result := Selected.Index;
+  if Selected = nil then Exit;
+  if not OwnerData then
+    Result := Selected.Index
+  else
+    Result := FSelectedIdx;
 end;
 
 function TCustomListView.GetHitTestInfoAt(X, Y: Integer): THitTests;
@@ -981,6 +989,7 @@ procedure TCustomListView.SetOwnerData(const AValue: Boolean);
 begin
   if FOwnerData=AValue then exit;
   FOwnerData:=AValue;
+  if AValue then FSelectedIdx:=-1;
   if HandleAllocated then 
     TWSCustomListViewClass(WidgetSetClass).SetOwnerData(Self, AValue);
 end;
