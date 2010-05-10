@@ -294,6 +294,27 @@ resourceString
   ifsVK_NUMLOCK    = 'Numlock';
   ifsVK_SCROLL     = 'Scroll';
 
+  // menu key captions
+  SmkcBkSp = 'BkSp';
+  SmkcTab = 'Tab';
+  SmkcEsc = 'Esc';
+  SmkcEnter = 'Enter';
+  SmkcSpace = 'Space';
+  SmkcPgUp = 'PgUp';
+  SmkcPgDn = 'PgDn';
+  SmkcEnd = 'End';
+  SmkcHome = 'Home';
+  SmkcLeft = 'Left';
+  SmkcUp = 'Up';
+  SmkcRight = 'Right';
+  SmkcDown = 'Down';
+  SmkcIns = 'Ins';
+  SmkcDel = 'Del';
+  SmkcShift = 'Shift+';
+  SmkcCtrl = 'Ctrl+';
+  SmkcAlt = 'Alt+';
+  SmkcMeta = 'Meta+';
+
   // docking
   rsDocking = 'Docking';
 

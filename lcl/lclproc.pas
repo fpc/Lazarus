@@ -1094,31 +1094,36 @@ type
     mkcPgDn, mkcEnd, mkcHome, mkcLeft, mkcUp, mkcRight, mkcDown, mkcIns,
     mkcDel, mkcShift, mkcCtrl, mkcAlt, mkcMeta);
 
-const
-  SmkcBkSp = 'BkSp';
-  SmkcTab = 'Tab';
-  SmkcEsc = 'Esc';
-  SmkcEnter = 'Enter';
-  SmkcSpace = 'Space';
-  SmkcPgUp = 'PgUp';
-  SmkcPgDn = 'PgDn';
-  SmkcEnd = 'End';
-  SmkcHome = 'Home';
-  SmkcLeft = 'Left';
-  SmkcUp = 'Up';
-  SmkcRight = 'Right';
-  SmkcDown = 'Down';
-  SmkcIns = 'Ins';
-  SmkcDel = 'Del';
-  SmkcShift = 'Shift+';
-  SmkcCtrl = 'Ctrl+';
-  SmkcAlt = 'Alt+';
-  SmkcMeta = 'Meta+';
+var
+  MenuKeyCaps: array[TMenuKeyCap] of string;
+  MenuKeyCapsInited: boolean = false;
 
-  MenuKeyCaps: array[TMenuKeyCap] of string = (
-    SmkcBkSp, SmkcTab, SmkcEsc, SmkcEnter, SmkcSpace, SmkcPgUp,
-    SmkcPgDn, SmkcEnd, SmkcHome, SmkcLeft, SmkcUp, SmkcRight,
-    SmkcDown, SmkcIns, SmkcDel, SmkcShift, SmkcCtrl, SmkcAlt, SmkcMeta);
+procedure InitializeMenuKeyCaps;
+begin
+  if MenuKeyCapsInited=false then
+  begin
+    MenuKeyCaps[mkcBkSp]:=SmkcBkSp;
+    MenuKeyCaps[mkcTab]:=SmkcTab;
+    MenuKeyCaps[mkcEsc]:=SmkcEsc;
+    MenuKeyCaps[mkcEnter]:=SmkcEnter;
+    MenuKeyCaps[mkcSpace]:=SmkcSpace;
+    MenuKeyCaps[mkcPgUp]:=SmkcPgUp;
+    MenuKeyCaps[mkcPgDn]:=SmkcPgDn;
+    MenuKeyCaps[mkcEnd]:=SmkcEnd;
+    MenuKeyCaps[mkcHome]:=SmkcHome;
+    MenuKeyCaps[mkcLeft]:=SmkcLeft;
+    MenuKeyCaps[mkcUp]:=SmkcUp;
+    MenuKeyCaps[mkcRight]:=SmkcRight;
+    MenuKeyCaps[mkcDown]:=SmkcDown;
+    MenuKeyCaps[mkcIns]:=SmkcIns;
+    MenuKeyCaps[mkcDel]:=SmkcDel;
+    MenuKeyCaps[mkcShift]:=SmkcShift;
+    MenuKeyCaps[mkcCtrl]:=SmkcCtrl;
+    MenuKeyCaps[mkcAlt]:=SmkcAlt;
+    MenuKeyCaps[mkcMeta]:=SmkcMeta;
+    MenuKeyCapsInited:=true;
+  end;
+end;
 
 function GetSpecialShortCutName(ShortCut: TShortCut): string;
 begin
@@ -1161,6 +1166,7 @@ var
   Name: string;
   Key: Byte;
 begin
+  InitializeMenuKeyCaps;
   Key := ShortCut and $FF;
   case Key of
     $08, $09:
@@ -1212,6 +1218,7 @@ begin
   Result := 0;
   Shift := 0;
   StartPos:=1;
+  InitializeMenuKeyCaps;
   while True do
   begin
     if CompareFront(StartPos, MenuKeyCaps[mkcShift]) then
