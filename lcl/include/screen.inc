@@ -763,7 +763,7 @@ begin
   Application.UpdateVisible;
 end;
 
-function TScreen.SetFocusedForm(AForm: TCustomForm): Boolean;
+function TScreen.SetFocusedForm(AForm: TCustomForm; AModal: Boolean): Boolean;
 var
   LastState: TFocusState;
 begin
@@ -772,7 +772,7 @@ begin
   Result := True;
   if FFocusedForm <> AForm then
   begin
-    if not (fsModal in AForm.FormState) then
+    if AModal then
     begin
       // send deactivate to the previosly focused form
       LastState := SaveFocusState;

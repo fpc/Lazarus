@@ -2216,7 +2216,7 @@ begin
   begin
     Control.ControlState := Control.ControlState + [csFocusing];
     try
-      if not Screen.SetFocusedForm(Self) then
+      if not Screen.SetFocusedForm(Self, False) then
         Exit;
       // update ActiveControls of all parent forms
       CurControl := Control.Parent;
@@ -2542,7 +2542,7 @@ begin
       Show;
       try
         // activate must happen after show
-        Screen.SetFocusedForm(Self);
+        Screen.SetFocusedForm(Self, True);
         TWSCustomFormClass(WidgetSetClass).ShowModal(Self);
         repeat
           { Delphi calls Application.HandleMessage
