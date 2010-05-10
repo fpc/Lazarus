@@ -3482,6 +3482,8 @@ end;
 
 procedure TQtWidget.setEnabled(p1: Boolean);
 begin
+  if not p1 and (HWND(Self) = GetCapture) then
+    ReleaseCapture;
   QWidget_setEnabled(Widget, p1);
 end;
 
