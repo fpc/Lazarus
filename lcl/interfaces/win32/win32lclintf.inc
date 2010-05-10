@@ -349,7 +349,7 @@ begin
     y := R.Top;
     while y <= R.Bottom do
     begin
-      SetPixel(DC, X, Y, ALogPen.lopnColor);
+      DCSetPixel(DC, X, Y, ALogPen.lopnColor);
       Inc(y, DY);
     end;
     Inc(x, DX);
