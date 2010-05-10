@@ -8961,6 +8961,11 @@ msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
 msgstr "Rus"
 
+#: lazarusidestrconsts.lismenuprocedurelist
+msgctxt "lazarusidestrconsts.lismenuprocedurelist"
+msgid "Procedure List ..."
+msgstr "Prosedure Lys ..."
+
 #: lazarusidestrconsts.lismenuproject
 msgid "&Project"
 msgstr "&Projek"
@@ -14478,12 +14483,12 @@ msgstr ""
 msgid "Go to prior window"
 msgstr ""
 
-#: lazarusidestrconsts.srkmecprocedurelist
-msgid "Procedure List ..."
-msgstr "Prosedure Lys ..."
-
 #: lazarusidestrconsts.srkmecquickcompile
 msgid "quick compile, no linking"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecquit
+msgid "Quit"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
@@ -14506,6 +14511,10 @@ msgstr ""
 msgid "Replace text"
 msgstr "Vervang teks"
 
+#: lazarusidestrconsts.srkmecreportingbug
+msgid "Reporting a bug"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecresetdebugger
 msgid "reset debugger"
 msgstr ""
@@ -14520,6 +14529,11 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsave
+msgctxt "lazarusidestrconsts.srkmecsave"
+msgid "Save"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecscrolldown

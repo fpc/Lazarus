@@ -9002,6 +9002,11 @@ msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
 msgstr "一時停止"
 
+#: lazarusidestrconsts.lismenuprocedurelist
+msgctxt "lazarusidestrconsts.lismenuprocedurelist"
+msgid "Procedure List ..."
+msgstr "手続き一覧 ..."
+
 #: lazarusidestrconsts.lismenuproject
 msgid "&Project"
 msgstr "プロジェクト(&P)"
@@ -14544,13 +14549,13 @@ msgstr ""
 msgid "Go to prior window"
 msgstr ""
 
-#: lazarusidestrconsts.srkmecprocedurelist
-msgid "Procedure List ..."
-msgstr "手続き一覧 ..."
-
 #: lazarusidestrconsts.srkmecquickcompile
 msgid "quick compile, no linking"
 msgstr "高速コンパイル、リンクなし"
+
+#: lazarusidestrconsts.srkmecquit
+msgid "Quit"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
 msgid "remove break point"
@@ -14572,6 +14577,10 @@ msgstr "識別子名を変更"
 msgid "Replace text"
 msgstr "テキストを置換"
 
+#: lazarusidestrconsts.srkmecreportingbug
+msgid "Reporting a bug"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecresetdebugger
 msgid "reset debugger"
 msgstr "デバッガをリセット"
@@ -14587,6 +14596,11 @@ msgstr "ファイルを実行"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "実行パラメータ"
+
+#: lazarusidestrconsts.srkmecsave
+msgctxt "lazarusidestrconsts.srkmecsave"
+msgid "Save"
+msgstr "保存"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

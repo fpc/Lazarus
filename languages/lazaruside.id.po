@@ -8999,6 +8999,11 @@ msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
 msgstr "Istirahat"
 
+#: lazarusidestrconsts.lismenuprocedurelist
+msgctxt "lazarusidestrconsts.lismenuprocedurelist"
+msgid "Procedure List ..."
+msgstr " ..."
+
 #: lazarusidestrconsts.lismenuproject
 msgid "&Project"
 msgstr "&Proyek"
@@ -14541,13 +14546,13 @@ msgstr ""
 msgid "Go to prior window"
 msgstr ""
 
-#: lazarusidestrconsts.srkmecprocedurelist
-msgid "Procedure List ..."
-msgstr " ..."
-
 #: lazarusidestrconsts.srkmecquickcompile
 msgid "quick compile, no linking"
 msgstr "kompilasi cepat, tanpa linking"
+
+#: lazarusidestrconsts.srkmecquit
+msgid "Quit"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
 msgid "remove break point"
@@ -14569,6 +14574,10 @@ msgstr "Ganti nama pengenal"
 msgid "Replace text"
 msgstr "Ganti teks"
 
+#: lazarusidestrconsts.srkmecreportingbug
+msgid "Reporting a bug"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecresetdebugger
 msgid "reset debugger"
 msgstr "reset debugger"
@@ -14584,6 +14593,11 @@ msgstr "jalankan file"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "parameter menjalankan"
+
+#: lazarusidestrconsts.srkmecsave
+msgctxt "lazarusidestrconsts.srkmecsave"
+msgid "Save"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

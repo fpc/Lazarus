@@ -9004,6 +9004,11 @@ msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
 msgstr "Prerušiť"
 
+#: lazarusidestrconsts.lismenuprocedurelist
+msgctxt "lazarusidestrconsts.lismenuprocedurelist"
+msgid "Procedure List ..."
+msgstr "Zoznam procedúr ..."
+
 #: lazarusidestrconsts.lismenuproject
 msgid "&Project"
 msgstr "&Projekt"
@@ -14550,13 +14555,13 @@ msgstr ""
 msgid "Go to prior window"
 msgstr ""
 
-#: lazarusidestrconsts.srkmecprocedurelist
-msgid "Procedure List ..."
-msgstr "Zoznam procedúr ..."
-
 #: lazarusidestrconsts.srkmecquickcompile
 msgid "quick compile, no linking"
 msgstr "rýchly preklad, nelinkuje"
+
+#: lazarusidestrconsts.srkmecquit
+msgid "Quit"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
 msgid "remove break point"
@@ -14578,6 +14583,10 @@ msgstr "Premenovať identifikátor"
 msgid "Replace text"
 msgstr "Nahradiť text"
 
+#: lazarusidestrconsts.srkmecreportingbug
+msgid "Reporting a bug"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecresetdebugger
 msgid "reset debugger"
 msgstr "reštartovať debuger"
@@ -14593,6 +14602,11 @@ msgstr "spustiť súbor"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "parametre spustenia"
+
+#: lazarusidestrconsts.srkmecsave
+msgctxt "lazarusidestrconsts.srkmecsave"
+msgid "Save"
+msgstr "Uložiť"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

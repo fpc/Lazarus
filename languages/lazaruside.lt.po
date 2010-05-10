@@ -9004,6 +9004,11 @@ msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
 msgstr "Pauzė"
 
+#: lazarusidestrconsts.lismenuprocedurelist
+msgctxt "lazarusidestrconsts.lismenuprocedurelist"
+msgid "Procedure List ..."
+msgstr "Procedūrų sąrašas…"
+
 #: lazarusidestrconsts.lismenuproject
 msgid "&Project"
 msgstr "Pr&ojektas"
@@ -14553,13 +14558,13 @@ msgstr ""
 msgid "Go to prior window"
 msgstr ""
 
-#: lazarusidestrconsts.srkmecprocedurelist
-msgid "Procedure List ..."
-msgstr "Procedūrų sąrašas…"
-
 #: lazarusidestrconsts.srkmecquickcompile
 msgid "quick compile, no linking"
 msgstr "kompiliuoti greitai, nesaistyti"
+
+#: lazarusidestrconsts.srkmecquit
+msgid "Quit"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
 msgid "remove break point"
@@ -14581,6 +14586,10 @@ msgstr "Pervadinti identifikatorių"
 msgid "Replace text"
 msgstr "Pakeisti tekstą"
 
+#: lazarusidestrconsts.srkmecreportingbug
+msgid "Reporting a bug"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecresetdebugger
 msgid "reset debugger"
 msgstr "atstatyti derintuvę"
@@ -14596,6 +14605,11 @@ msgstr "startuoti failą"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "starto parametrai"
+
+#: lazarusidestrconsts.srkmecsave
+msgctxt "lazarusidestrconsts.srkmecsave"
+msgid "Save"
+msgstr "Įrašyti"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

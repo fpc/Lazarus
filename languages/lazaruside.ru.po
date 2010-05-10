@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-10 19:39+0300\n"
+"PO-Revision-Date: 2010-05-11 00:57+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -9004,6 +9004,11 @@ msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
 msgstr "Приостановить"
 
+#: lazarusidestrconsts.lismenuprocedurelist
+msgctxt "lazarusidestrconsts.lismenuprocedurelist"
+msgid "Procedure List ..."
+msgstr "Список процедур ..."
+
 #: lazarusidestrconsts.lismenuproject
 msgid "&Project"
 msgstr "Про&ект"
@@ -14540,13 +14545,13 @@ msgstr "Перейти к предыдущему редактору с тем ж
 msgid "Go to prior window"
 msgstr "Перейти к предыдущему окну"
 
-#: lazarusidestrconsts.srkmecprocedurelist
-msgid "Procedure List ..."
-msgstr "Список процедур ..."
-
 #: lazarusidestrconsts.srkmecquickcompile
 msgid "quick compile, no linking"
 msgstr "Быстрая компиляция, без компоновки"
+
+#: lazarusidestrconsts.srkmecquit
+msgid "Quit"
+msgstr "Выход"
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
 msgid "remove break point"
@@ -14568,6 +14573,10 @@ msgstr "Переименовать идентификатор"
 msgid "Replace text"
 msgstr "Заменить текст"
 
+#: lazarusidestrconsts.srkmecreportingbug
+msgid "Reporting a bug"
+msgstr "Сообщить об ошибке"
+
 #: lazarusidestrconsts.srkmecresetdebugger
 msgid "reset debugger"
 msgstr "Сбросить отладчик"
@@ -14583,6 +14592,11 @@ msgstr "Запустить файл"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "Параметры запуска"
+
+#: lazarusidestrconsts.srkmecsave
+msgctxt "lazarusidestrconsts.srkmecsave"
+msgid "Save"
+msgstr "Сохранить"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

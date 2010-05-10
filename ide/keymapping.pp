@@ -1999,14 +1999,14 @@ begin
     ecNewForm                 : Result:= lisMenuNewForm;
     ecOpen                    : Result:= lisMenuOpen;
     ecRevert                  : Result:= lisMenuRevert;
-    ecSave                    : Result:= lisMenuSave;
+    ecSave                    : Result:= srkmecSave;
     ecSaveAs                  : Result:= lisMenuSaveAs;
     ecSaveAll                 : Result:= lisMenuSaveAll;
     ecClose                   : Result:= lisMenuClose;
     ecCloseAll                : Result:= lisMenuCloseAll;
     ecCleanDirectory          : Result:= lisMenuCleanDirectory;
     ecRestart                 : Result:= lisMenuRestart;
-    ecQuit                    : Result:= lisMenuQuit;
+    ecQuit                    : Result:= srkmecQuit;
 
     // edit menu
     ecSelectionUpperCase      : Result:= lismenuuppercaseselection;
@@ -2062,7 +2062,7 @@ begin
     ecJumpToPrevError         : Result:= lisMenuJumpToPrevError;
     ecGotoIncludeDirective    : Result:= srkmecGotoIncludeDirective;
     ecOpenFileAtCursor        : Result:= srkmecOpenFileAtCursor;
-    ecProcedureList           : Result:= srkmecProcedureList;
+    ecProcedureList           : Result:= lisPListProcedureList;
 
     // view menu
     ecToggleFormUnit          : Result:= srkmecToggleFormUnit;
@@ -2183,7 +2183,7 @@ begin
     ecOnlineHelp              : Result:= lisMenuOnlineHelp;
     ecContextHelp             : Result:= lisMenuContextHelp;
     ecEditContextHelp         : Result:= lisMenuEditContextHelp;
-    ecReportingBug            : Result:= lisMenuReportingBug;
+    ecReportingBug            : Result:= srkmecReportingBug;
 
     // desginer
     ecDesignerCopy            : Result:= lisDsgCopyComponents;
@@ -2567,7 +2567,7 @@ begin
     ecJumpToPrevError);
   AddDefault(C, 'Open file at cursor', srkmecOpenFileAtCursor,
     ecOpenFileAtCursor);
-  AddDefault(C,'Procedure List ...',srkmecProcedureList,ecProcedureList);
+  AddDefault(C,'Procedure List ...',lisPListProcedureList,ecProcedureList);
 
   // folding
   C:=Categories[AddCategory('Folding',srkmCatFold,IDECmdScopeSrcEditOnly)];
@@ -2761,14 +2761,14 @@ begin
   AddDefault(C, 'NewForm', lisMenuNewForm, ecNewForm);
   AddDefault(C, 'Open', lisHintOpen, ecOpen);
   AddDefault(C, 'Revert', lisMenuRevert, ecRevert);
-  AddDefault(C, 'Save', lisMenuSave, ecSave);
+  AddDefault(C, 'Save', srkmecSave, ecSave);
   AddDefault(C, 'SaveAs', lisKMSaveAs, ecSaveAs);
   AddDefault(C, 'SaveAll', lisKMSaveAll, ecSaveAll);
   AddDefault(C, 'Close', lisMenuClose, ecClose);
   AddDefault(C, 'CloseAll', lisKMCloseAll, ecCloseAll);
   AddDefault(C, 'Clean Directory', lisClDirCleanDirectory, ecCleanDirectory);
   AddDefault(C, 'Restart', lisMenuRestart, ecRestart);
-  AddDefault(C, 'Quit', lisMenuQuit, ecQuit);
+  AddDefault(C, 'Quit', srkmecQuit, ecQuit);
 
   // view menu
   C:=Categories[AddCategory('ViewMenu',srkmCatViewMenu,nil)];
@@ -2915,7 +2915,7 @@ begin
     ecContextHelp);
   AddDefault(C, 'Edit context sensitive help', lisKMEditContextSensitiveHelp,
     ecEditContextHelp);
-  AddDefault(C, 'Reporting a bug', lisMenuReportingBug, ecReportingBug);
+  AddDefault(C, 'Reporting a bug', srkmecReportingBug, ecReportingBug);
 
   // designer  - without menu items in the IDE bar (at least not directly)
   C:=Categories[AddCategory('Designer',lisKeyCatDesigner,IDECmdScopeDesignerOnly)];

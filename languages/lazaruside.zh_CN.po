@@ -9006,6 +9006,11 @@ msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
 msgstr "暂停"
 
+#: lazarusidestrconsts.lismenuprocedurelist
+msgctxt "lazarusidestrconsts.lismenuprocedurelist"
+msgid "Procedure List ..."
+msgstr "过程列表 ..."
+
 #: lazarusidestrconsts.lismenuproject
 msgid "&Project"
 msgstr "工程(&P)"
@@ -14550,13 +14555,13 @@ msgstr ""
 msgid "Go to prior window"
 msgstr ""
 
-#: lazarusidestrconsts.srkmecprocedurelist
-msgid "Procedure List ..."
-msgstr "过程列表 ..."
-
 #: lazarusidestrconsts.srkmecquickcompile
 msgid "quick compile, no linking"
 msgstr "快速编译(不连接)"
+
+#: lazarusidestrconsts.srkmecquit
+msgid "Quit"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
 msgid "remove break point"
@@ -14578,6 +14583,10 @@ msgstr "重命名标识符"
 msgid "Replace text"
 msgstr "替换文本"
 
+#: lazarusidestrconsts.srkmecreportingbug
+msgid "Reporting a bug"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecresetdebugger
 msgid "reset debugger"
 msgstr "重置编译器"
@@ -14593,6 +14602,11 @@ msgstr "运行文件"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "运行带命令行参数的程序"
+
+#: lazarusidestrconsts.srkmecsave
+msgctxt "lazarusidestrconsts.srkmecsave"
+msgid "Save"
+msgstr "保存"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

@@ -263,6 +263,7 @@ resourcestring
   lisMenuSetFreeBookmark = 'Set a free bookmark';
   lisMenuJumpToNextBookmark = 'Jump to next bookmark';
   lisMenuJumpToPrevBookmark = 'Jump to previous bookmark';
+  lisMenuProcedureList = 'Procedure List ...';
 
   lisMenuViewObjectInspector = 'Object Inspector';
   lisMenuViewSourceEditor = 'Source Editor';
@@ -2295,6 +2296,9 @@ resourcestring
   srkmecBlockIndent           = 'Indent block';
   srkmecBlockUnindent         = 'Unindent block';
 
+  srkmecSave                  = 'Save';
+  srkmecQuit                  = 'Quit';
+
   srkmecBlockSetBegin   = 'Set block begin';
   srkmecBlockSetEnd     = 'Set block end';
   srkmecBlockToggleHide = 'Toggle block';
@@ -2307,7 +2311,7 @@ resourcestring
   srkmecBlockGotoEnd    = 'Goto Block end';
 
   srkmecShiftTab              = 'Shift Tab';
-  lisTab = 'Tab';
+  lisTab                      = 'Tab';
   srkmecMatchBracket          = 'Go to matching bracket';
   srkmecNormalSelect          = 'Normal selection mode';
   srkmecColumnSelect          = 'Column selection mode';
@@ -2423,10 +2427,9 @@ resourcestring
   srkmecFindNextWordOccurrence    = 'Find next word occurrence';
   srkmecFindPrevWordOccurrence    = 'Find previous word occurrence';
   srkmecAddJumpPoint              = 'Add jump point';
-  lisKMViewJumpHistory = 'View jump history';
+  lisKMViewJumpHistory            = 'View jump history';
   srkmecOpenFileAtCursor          = 'Open file at cursor';
   srkmecGotoIncludeDirective      = 'Go to to include directive of current include file';
-  srkmecProcedureList             = 'Procedure List ...';
   
   // view menu
   srkmecToggleFormUnit            = 'Switch between form and unit';
@@ -2543,6 +2546,7 @@ resourcestring
   
   // help menu
   srkmecunknown                   = 'unknown editor command';
+  srkmecReportingBug              = 'Reporting a bug';
    
   // Category
   srkmCatCursorMoving   = 'Cursor moving commands';

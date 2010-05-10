@@ -8982,6 +8982,11 @@ msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
 msgstr ""
 
+#: lazarusidestrconsts.lismenuprocedurelist
+msgctxt "lazarusidestrconsts.lismenuprocedurelist"
+msgid "Procedure List ..."
+msgstr "Aliohjelmien ja funktioiden luettelo ..."
+
 #: lazarusidestrconsts.lismenuproject
 msgid "&Project"
 msgstr "&Projekti"
@@ -14516,12 +14521,12 @@ msgstr ""
 msgid "Go to prior window"
 msgstr ""
 
-#: lazarusidestrconsts.srkmecprocedurelist
-msgid "Procedure List ..."
-msgstr "Aliohjelmien ja funktioiden luettelo ..."
-
 #: lazarusidestrconsts.srkmecquickcompile
 msgid "quick compile, no linking"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecquit
+msgid "Quit"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
@@ -14544,6 +14549,10 @@ msgstr "Vaihda tunnisteiden nimiä"
 msgid "Replace text"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecreportingbug
+msgid "Reporting a bug"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecresetdebugger
 msgid "reset debugger"
 msgstr ""
@@ -14558,6 +14567,11 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsave
+msgctxt "lazarusidestrconsts.srkmecsave"
+msgid "Save"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecscrolldown

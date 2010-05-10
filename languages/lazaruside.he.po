@@ -8974,6 +8974,11 @@ msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
 msgstr "השהה"
 
+#: lazarusidestrconsts.lismenuprocedurelist
+msgctxt "lazarusidestrconsts.lismenuprocedurelist"
+msgid "Procedure List ..."
+msgstr "רשימת פרוצדורות"
+
 #: lazarusidestrconsts.lismenuproject
 msgid "&Project"
 msgstr "פרויקט (&P)"
@@ -14510,13 +14515,13 @@ msgstr ""
 msgid "Go to prior window"
 msgstr ""
 
-#: lazarusidestrconsts.srkmecprocedurelist
-msgid "Procedure List ..."
-msgstr "רשימת פרוצדורות"
-
 #: lazarusidestrconsts.srkmecquickcompile
 msgid "quick compile, no linking"
 msgstr "הידור מהיר ללא קישור"
+
+#: lazarusidestrconsts.srkmecquit
+msgid "Quit"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
 msgid "remove break point"
@@ -14538,6 +14543,10 @@ msgstr "שנה שם המזהה"
 msgid "Replace text"
 msgstr "החלף טקסט"
 
+#: lazarusidestrconsts.srkmecreportingbug
+msgid "Reporting a bug"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecresetdebugger
 msgid "reset debugger"
 msgstr "אתחל את מנפה השגיאות"
@@ -14553,6 +14562,11 @@ msgstr "הרץ קובץ"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "הרץ פרמטרים"
+
+#: lazarusidestrconsts.srkmecsave
+msgctxt "lazarusidestrconsts.srkmecsave"
+msgid "Save"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

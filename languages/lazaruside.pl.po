@@ -9007,6 +9007,11 @@ msgctxt "lazarusidestrconsts.lismenupause"
 msgid "Pause"
 msgstr "Wstrzymaj"
 
+#: lazarusidestrconsts.lismenuprocedurelist
+msgctxt "lazarusidestrconsts.lismenuprocedurelist"
+msgid "Procedure List ..."
+msgstr "Lista procedur"
+
 #: lazarusidestrconsts.lismenuproject
 msgid "&Project"
 msgstr "P&rojekt"
@@ -14546,13 +14551,13 @@ msgstr ""
 msgid "Go to prior window"
 msgstr ""
 
-#: lazarusidestrconsts.srkmecprocedurelist
-msgid "Procedure List ..."
-msgstr "Lista procedur"
-
 #: lazarusidestrconsts.srkmecquickcompile
 msgid "quick compile, no linking"
 msgstr "szybka kompilacja, bez łączenia"
+
+#: lazarusidestrconsts.srkmecquit
+msgid "Quit"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
 msgid "remove break point"
@@ -14574,6 +14579,10 @@ msgstr "Zmień nazwę identyfikatora"
 msgid "Replace text"
 msgstr "Zastąp tekst"
 
+#: lazarusidestrconsts.srkmecreportingbug
+msgid "Reporting a bug"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecresetdebugger
 msgid "reset debugger"
 msgstr "zresetuj odpluskwiacz"
@@ -14589,6 +14598,11 @@ msgstr "uruchom plik"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "parametry uruchomienia"
+
+#: lazarusidestrconsts.srkmecsave
+msgctxt "lazarusidestrconsts.srkmecsave"
+msgid "Save"
+msgstr "Zapisz"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
