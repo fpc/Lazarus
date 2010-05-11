@@ -1103,18 +1103,6 @@ const
  { nbCancel  } 'DBNavCancel',
  { nbRefresh } 'DBNavRefresh'
     );
-  DBNavButtonDefaultHint: array[TDBNavButtonType] of string = (
- { nbFirst   } rsFirstRecordHint,
- { nbPrior   } rsPriorRecordHint,
- { nbNext    } rsNextRecordHint,
- { nbLast    } rsLastRecordHint,
- { nbInsert  } rsInsertRecordHint,
- { nbDelete  } rsDeleteRecordHint,
- { nbEdit    } rsEditRecordHint,
- { nbPost    } rsPostRecordHint,
- { nbCancel  } rsCancelRecordHint,
- { nbRefresh } rsRefreshRecordsHint
-  );
 
 type
 

@@ -288,10 +288,27 @@ end;
 procedure TDBCustomNavigator.UpdateHints;
 var
   CurButton: TDBNavButtonType;
+  DBNavButtonDefaultHint: array[TDBNavButtonType] of string;
+
+  procedure AssignHintsCaptions;
+  begin
+    DBNavButtonDefaultHint[nbFirst] := rsFirstRecordHint;
+    DBNavButtonDefaultHint[nbPrior] := rsPriorRecordHint;
+    DBNavButtonDefaultHint[nbNext] := rsNextRecordHint;
+    DBNavButtonDefaultHint[nbLast] := rsLastRecordHint;
+    DBNavButtonDefaultHint[nbInsert] := rsInsertRecordHint;
+    DBNavButtonDefaultHint[nbDelete] := rsDeleteRecordHint;
+    DBNavButtonDefaultHint[nbEdit] := rsEditRecordHint;
+    DBNavButtonDefaultHint[nbPost] := rsPostRecordHint;
+    DBNavButtonDefaultHint[nbCancel] := rsCancelRecordHint;
+    DBNavButtonDefaultHint[nbRefresh] := rsRefreshRecordsHint;
+  end;
+
 begin
   if (FDefaultHints.Count = 0) then
   begin
     TStringList(FDefaultHints).OnChange := nil;
+    AssignHintsCaptions;
     for CurButton := Low(Buttons) to High(Buttons) do
       FDefaultHints.Add(DBNavButtonDefaultHint[CurButton]);
     FOriginalHints := FDefaultHints.Text;
