@@ -4417,13 +4417,9 @@ begin
     begin
       Result := TQtRegion(Rgn).GetRegionType;
       // RGN is in Device coordinates. Qt expects logical coordinates
-      // so we need to convert RGN coords,
-      // but only if our painter clips already, otherwise we have a mess !
-      if QtDC.getClipping then
-      begin
-        GetWindowOrgEx(DC, @P);
-        TQtRegion(Rgn).translate(P.X, P.Y);
-      end;
+      // so we need to convert RGN coords.
+      GetWindowOrgEx(DC, @P);
+      TQtRegion(Rgn).translate(P.X, P.Y);
       QtDC.setClipRegion(TQtRegion(Rgn).Widget);
     end else
     begin
