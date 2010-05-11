@@ -4319,13 +4319,14 @@ begin
       ShowScrollBar(Handle, SB_Horz, sfHorizScrollbarVisible in fStateFlags);
       RecalcCharsAndLinesInWin(True);
     end;
-    if sfHorizScrollbarVisible in fStateFlags then begin
-      ScrollInfo.nPage := CharsInWindow;
-      ScrollInfo.nPos := LeftChar;
-      SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
-      //DebugLn('[TCustomSynEdit.UpdateScrollbars] nMin=',ScrollInfo.nMin,' nMax=',ScrollInfo.nMax,
-      //' nPage=',ScrollInfo.nPage,' nPos=',ScrollInfo.nPos,' ClientW=',ClientWidth);
-    end;
+    ScrollInfo.nPage := CharsInWindow;
+    ScrollInfo.nPos := LeftChar;
+    SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
+    {$IFnDEF SynScrollBarWorkaround}
+      ShowScrollBar(Handle, SB_Horz, sfHorizScrollbarVisible in fStateFlags);
+    {$ENDIF}
+    //DebugLn('[TCustomSynEdit.UpdateScrollbars] nMin=',ScrollInfo.nMin,' nMax=',ScrollInfo.nMax,
+    //' nPage=',ScrollInfo.nPage,' nPos=',ScrollInfo.nPos,' ClientW=',ClientWidth);
 
     // Vertical
     ScrollInfo.nMax := FFoldedLinesView.Count+1;
@@ -4343,11 +4344,12 @@ begin
       ShowScrollBar(Handle, SB_Vert, sfVertScrollbarVisible in fStateFlags);
       RecalcCharsAndLinesInWin(True);
     end;
-    if sfVertScrollbarVisible in fStateFlags then begin
-      ScrollInfo.nPage := LinesInWindow;
-      ScrollInfo.nPos := FFoldedLinesView.TextIndexToViewPos(TopLine-1);
-      SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
-    end;
+    ScrollInfo.nPage := LinesInWindow;
+    ScrollInfo.nPos := FFoldedLinesView.TextIndexToViewPos(TopLine-1);
+    SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
+    {$IFnDEF SynScrollBarWorkaround}
+    ShowScrollBar(Handle, SB_Vert, sfVertScrollbarVisible in fStateFlags);
+    {$ENDIF}
   end;
 end;
 
