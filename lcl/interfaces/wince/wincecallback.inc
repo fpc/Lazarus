@@ -2066,10 +2066,9 @@ begin
         begin
           {$IFDEF VerboseSizeMsg}
           GetClientRect(Window,R);
-          DebugLn('WinCECallback: WM_SIZE '+ dbgsName(lWinControl)+
-            ' NewSize=', dbgs(Width)+','+dbgs(Height)+
-            ' HasVScroll='+dbgs((GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0)+
-            ' HasHScroll='+dbgs((GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0)+
+          DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+            'WinCECallback: WM_SIZE '+ dbgsName(lWinControl)+
+            ' NewSize='+ dbgs(Width)+','+dbgs(Height)+
             ' OldClientSize='+dbgs(lWinControl.CachedClientWidth)+','+dbgs(lWinControl.CachedClientHeight)+
             ' NewClientSize='+dbgs(R.Right)+','+dbgs(R.Bottom));
           {$ENDIF}
