@@ -5572,24 +5572,25 @@ begin
   Result := True;
 
   // let each parent form with keypreview handle the key
-  AParent:=Parent;
-  while (AParent<>nil) do begin
-    if (AParent is TCustomForm) then begin
+  AParent := Parent;
+  while (AParent <> nil) do
+  begin
+    if (AParent is TCustomForm) then
+    begin
       F := TCustomForm(AParent);
-      if  (F.KeyPreview)
-      and (F.DoKeyPress(Message)) then Exit;
+      if F.KeyPreview and F.DoKeyPress(Message) then Exit;
     end;
-    AParent:=AParent.Parent;
+    AParent := AParent.Parent;
   end;
 
-  if not (csNoStdEvents in ControlStyle)
-  then with Message do
-  begin
-    C := Char(CharCode);
-    KeyPress(C);
-    CharCode := Ord(C);
-    if Char(CharCode) = #0 then Exit;
-  end;
+  if not (csNoStdEvents in ControlStyle) then
+    with Message do
+    begin
+      C := Char(CharCode);
+      KeyPress(C);
+      CharCode := Ord(C);
+      if Char(CharCode) = #0 then Exit;
+    end;
 
   Result := False;
 end;
