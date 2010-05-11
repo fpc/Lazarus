@@ -2138,6 +2138,7 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
 
   var
     LastState: TFocusState;
+    Tmp: TWinControl;
   begin
     // send cm_exit, cm_enter messages
     // cm_exit must be sent to all controls from lastfocusedcontrol to the first parent which contains control
@@ -2147,10 +2148,13 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
     while not FLastFocusedControl.ContainsControl(Control) do
     begin
       LastState := SaveFocusState;
-      FLastFocusedControl.Perform(CM_EXIT, 0, 0);
+      // calling of CM_EXIT can cause other focus changes - so FLastFocusedControl can change after the call
+      // therefore we need to change it before the call
+      Tmp := FLastFocusedControl;
+      FLastFocusedControl := Tmp.Parent;
+      Tmp.Perform(CM_EXIT, 0, 0);
       if SaveFocusState <> LastState then
         Exit(False);
-      FLastFocusedControl := FLastFocusedControl.Parent;
     end;
 
     while FLastFocusedControl <> Control do
