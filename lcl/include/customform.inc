@@ -796,7 +796,8 @@ end;
 {------------------------------------------------------------------------------
   Method: TCustomForm.DefocusControl
   Params:   Control: the control which is to be defocused
-            Removing: is it to be defocused because it is being removed?
+            Removing: is it to be defocused because it is being removed
+            (destructed or changed parent).
   Returns:  nothing
 
   Updates ActiveControl if it is to be defocused
@@ -1229,8 +1230,9 @@ procedure TCustomForm.WndProc(var TheMessage : TLMessage);
   end;
 
 var
-  FocusHandle : HWND;
-  MenuItem : TMenuItem;
+  NewActiveControl: TWinControl;
+  NewFocus: HWND;
+  MenuItem: TMenuItem;
 begin
   //debugln(['TCustomForm.WndProc ',dbgsname(Self)]);
   with TheMessage do
@@ -1240,16 +1242,19 @@ begin
         if (Msg = LM_SETFOCUS) and not (csDesigning in ComponentState) then
         begin
           //DebugLn(['TCustomForm.WndProc ',DbgSName(Self),' FActiveControl=',DbgSName(FActiveControl)]);
-          FocusHandle := 0;
+          NewActiveControl := nil;
+          NewFocus := 0;
 
-          if (ActiveControl = nil) and (not (csDesigning in ComponentState))
-          and (Parent=nil) then begin
+          if (ActiveControl = nil) and (not (csDesigning in ComponentState)) and (Parent=nil) then
+          begin
             // automatically choose a control to focus
             {$IFDEF VerboseFocus}
             DebugLn('TCustomForm.WndProc ',DbgSName(Self),' Set ActiveControl := ',DbgSName(FindDefaultForActiveControl));
             {$ENDIF}
-            ActiveControl := FindDefaultForActiveControl;
-          end;
+            NewActiveControl := FindDefaultForActiveControl;
+          end
+          else
+            NewActiveControl := ActiveControl;
 
           if FormStyle = fsMDIFORM then
           begin
@@ -1257,25 +1262,25 @@ begin
           end
           else
           begin
-            if (FActiveControl <> nil) and (FActiveControl <> Self)
-            and FActiveControl.IsVisible and FActiveControl.Enabled
-            and ([csLoading,csDestroying]*ComponentState=[])
-            and not FActiveControl.ParentDestroyingHandle
-            then begin
+            if (NewActiveControl <> nil) and (NewActiveControl <> Self) and
+               NewActiveControl.IsVisible and NewActiveControl.Enabled and
+               ([csLoading,csDestroying]*NewActiveControl.ComponentState=[]) and
+               not NewActiveControl.ParentDestroyingHandle then
+            begin
               // get or create handle of FActiveControl
-              FocusHandle := FActiveControl.Handle;
+              NewFocus := NewActiveControl.Handle;
               //debugln('TCustomForm.WndProc A ',DbgSName(Self),' FActiveControl=',DbgSName(FActiveControl),' FocusHandle=',dbgs(FocusHandle));
             end;
           end;
 
-          TheMessage.Result:=0;
-          if FocusHandle <> 0
-          then begin
+          TheMessage.Result := 0;
+          if NewFocus <> 0 then
+          begin
             // redirect focus to child
             {$IFDEF VerboseFocus}
             DebugLn('[TCustomForm.WndProc] ',Name,':',ClassName,' FActiveControl=',DbgSName(FActiveControl));
             {$ENDIF}
-            LCLIntf.SetFocus(FocusHandle);
+            LCLIntf.SetFocus(NewFocus);
             if not ContainsForm(Self) then exit;
           end;
         end;
