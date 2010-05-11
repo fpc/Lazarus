@@ -173,7 +173,7 @@ type
     procedure SlotWhatsThis(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotLCLMessage(Sender: QObjectH; Event: QEventH); cdecl;
   public
-    procedure Activate;
+    procedure Activate; virtual;
     procedure BringToFront;
     procedure clearMask;
     procedure OffsetMousePos(APoint: PQtPoint); virtual;
@@ -491,6 +491,7 @@ type
     MenuBar: TQtMenuBar;
     ToolBar: TQtToolBar;
     destructor Destroy; override;
+    procedure Activate; override;
     function getAcceptDropFiles: Boolean; override;
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
@@ -3059,14 +3060,6 @@ end;
 procedure TQtWidget.Activate;
 begin
   QWidget_activateWindow(Widget);
-  {$IFDEF LINUX}
-  // qt X11 bug ?  activates window but it's not in
-  // front of others.
-  {$note TQtWidget.Activate: Check this with next qt version (>4.3.4)}
-  if QWidget_isWindow(Widget)
-  and not QWidget_isModal(Widget) then
-    QWidget_raise(Widget);
-  {$ENDIF}
 end;
 
 procedure TQtWidget.BringToFront;
@@ -4409,6 +4402,8 @@ begin
         QMdiArea_setBackground(MdiAreaHandle, QPalette_background(P));
       QWidget_setParent(MdiAreaHandle, FCentralWidget);
       QMdiArea_setActivationOrder(MdiAreaHandle, QMdiAreaActivationHistoryOrder);
+      QMdiArea_setOption(MdiAreaHandle,
+        QMdiAreaDontMaximizeSubWindowOnActivation, True);
     end
     else
     begin
@@ -4532,6 +4527,22 @@ begin
   end;
 
   inherited Destroy;
+end;
+
+procedure TQtMainWindow.Activate;
+begin
+  if IsMDIChild then
+    QMdiArea_setActiveSubWindow(QMdiSubWindow_mdiArea(QMdiSubWindowH(Widget)),
+      QMdiSubWindowH(Widget))
+  else
+    inherited Activate;
+  {$IFDEF LINUX}
+  // qt X11 bug ?  activates window but it's not in
+  // front of others.
+  {$note TQtWidget.Activate: Check this with next qt version (>4.3.4)}
+  if not QWidget_isModal(Widget) then
+    QWidget_raise(Widget);
+  {$ENDIF}
 end;
 
 function TQtMainWindow.getAcceptDropFiles: Boolean;

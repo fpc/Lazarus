@@ -199,7 +199,8 @@ begin
     if TForm(AWinControl).FormStyle = fsMDIChild then
     begin
       {MDI windows have to be resized , since titlebar is included into widget geometry !}
-      if not (csDesigning in AWinControl.ComponentState) then
+      if not (csDesigning in AWinControl.ComponentState)
+        and not Widget.isMaximized then
       begin
         QWidget_contentsRect(Widget.Widget, @R);
         R.Right := TForm(AWinControl).Width + R.Left;
