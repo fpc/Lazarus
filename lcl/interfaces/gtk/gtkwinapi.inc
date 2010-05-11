@@ -8775,14 +8775,14 @@ begin
     // grab the focus to the parent window
     NewTopLevelWidget := gtk_widget_get_toplevel(NewFocusWidget);
     NewTopLevelObject := GetNearestLCLObject(NewTopLevelWidget);
-    if (Screen<>nil)
-    and (Screen.GetCurrentModalForm<>nil)
-    and (NewTopLevelObject <>Screen.GetCurrentModalForm)
-    then begin
+    if (Screen<>nil) and (Screen.GetCurrentModalForm<>nil) and (NewTopLevelObject <>Screen.GetCurrentModalForm) then
+    begin
       {$IFDEF VerboseFocus}
       DebugLn('[TGtkWidgetSet.SetFocus] there is a modal form -> not grabbing');
       {$ENDIF}
-    end else begin
+    end
+    else
+    begin
       {$IfDef VerboseFocus}
       DebugLn('  J Grabbing focus ',GetWidgetDebugReport(NewFocusWidget));
       {$EndIf}
@@ -8792,7 +8792,14 @@ begin
         if (Info <> nil) and not (wwiActivating in  Info^.Flags) then
           SetForegroundWindow(TCustomForm(NewTopLevelObject).Handle);
       end;
-      gtk_widget_grab_focus(NewFocusWidget);
+      if GTK_WIDGET_CAN_FOCUS(NewFocusWidget) then
+        gtk_widget_grab_focus(NewFocusWidget)
+      else
+      begin
+        gtk_window_set_focus(PGtkWindow(NewTopLevelWidget), nil);
+        // emulate wm_setfocus
+        GTKFocusCBAfter(NewFocusWidget, nil, GetNearestLCLObject(NewFocusWidget));
+      end;
     end;
   end;
 
