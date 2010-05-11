@@ -110,6 +110,10 @@ type
 
 implementation
 
+{off $Define SynTrimUndoDebug}
+{off $Define SynTrimDebug}
+{$IFDEF SynUndoDebug}{$Define SynTrimUndoDebug}{$ENDIF}
+
 type
 
   { TSynEditUndoTrimMoveTo }
@@ -185,17 +189,20 @@ constructor TSynEditUndoTrimMoveTo.Create(APosY, ALen: Integer);
 begin
   FPosY := APosY;
   FLen :=  ALen;
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTrimMoveTo.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringTrimmingList;
-  if Result then
+  if Result then begin
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
     with TSynEditStringTrimmingList(Caller) do begin
       EditMoveFromTrim(FPosY, FLen);
       SendNotification(senrLineChange, TSynEditStringTrimmingList(Caller),
                        FPosY - 1, 1);
     end;
+  end;
 end;
 
 { TSynEditUndoTrimMoveFrom }
@@ -209,17 +216,20 @@ constructor TSynEditUndoTrimMoveFrom.Create(APosY, ALen: Integer);
 begin
   FPosY := APosY;
   FLen :=  ALen;
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTrimMoveFrom.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringTrimmingList;
-  if Result then
+  if Result then begin
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
     with TSynEditStringTrimmingList(Caller) do begin
       EditMoveToTrim(FPosY, FLen);
       SendNotification(senrLineChange, TSynEditStringTrimmingList(Caller),
                        FPosY - 1, 1);
     end;
+  end;
 end;
 
 { TSynEditUndoTrimInsert }
@@ -234,12 +244,14 @@ begin
   FPosX := APosX;
   FPosY := APosY;
   FLen :=  ALen;
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTrimInsert.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringTrimmingList;
-  if Result then
+  if Result then begin
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
     with TSynEditStringTrimmingList(Caller) do begin
       EditDeleteTrim(FPosX, FPosY, FLen);
       SendNotification(senrLineChange, TSynEditStringTrimmingList(Caller),
@@ -247,6 +259,7 @@ begin
       SendNotification(senrEditAction, TSynEditStringTrimmingList(Caller),
                        FPosY, 0, length(fSynStrings[FPosY-1]) + FPosX - 1, -FLen, '');
     end;
+  end;
 end;
 
 { TSynEditUndoTrimDelete }
@@ -261,12 +274,14 @@ begin
   FPosX := APosX;
   FPosY := APosY;
   FText :=  AText;
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTrimDelete.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringTrimmingList;
-  if Result then
+  if Result then begin
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
     with TSynEditStringTrimmingList(Caller) do begin
       EditInsertTrim(FPosX, FPosY, FText);
       SendNotification(senrLineChange, TSynEditStringTrimmingList(Caller),
@@ -274,6 +289,7 @@ begin
       SendNotification(senrEditAction, TSynEditStringTrimmingList(Caller),
                        FPosY, 0, length(fSynStrings[FPosY-1]) + FPosX - 1, length(FText), FText);
     end;
+  end;
 end;
 
 { TSynEditUndoTrimForget }
@@ -287,12 +303,14 @@ constructor TSynEditUndoTrimForget.Create(APosY: Integer; AText: String);
 begin
   FPosY := APosY;
   FText :=  AText;
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTrimForget.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringTrimmingList;
-  if Result then
+  if Result then begin
+  {$IFDEF SynTrimUndoDebug}debugln(['--- Trimmer Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
     with TSynEditStringTrimmingList(Caller) do begin
       CurUndoList.Lock;
       EditInsertTrim(1, FPosY, FText);
@@ -302,6 +320,7 @@ begin
       SendNotification(senrEditAction, TSynEditStringTrimmingList(Caller),
                        FPosY, 0, length(fSynStrings[FPosY-1]), length(FText), FText);
     end;
+  end;
 end;
 
 
@@ -355,6 +374,7 @@ begin
          ((FTrimType in [settEditLine]) and not FLineEdited) ))
   then begin
     if (fLineIndex <> TSynEditCaret(Sender).LinePos - 1) then begin
+    {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- CarteChnaged - Clearing 1 ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), 'newCaretYPos=',TSynEditCaret(Sender).LinePos]);{$ENDIF}
       fLineIndex := TSynEditCaret(Sender).LinePos - 1;
       fSpaces := '';
     end;
@@ -366,6 +386,7 @@ begin
   if (fLineIndex <> TSynEditCaret(Sender).LinePos - 1) or
      (FTrimType = settIgnoreAll) then
   begin
+    {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- CarteChnaged - Trimming,clear 1 ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), 'newCaretYPos=',TSynEditCaret(Sender).LinePos]);{$ENDIF}
     CurUndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(FLineIndex+1, FSpaces));
     i := length(FSpaces);
     fSpaces := '';
@@ -380,6 +401,7 @@ begin
     else
       j := i - length(s) - 1;
     s := copy(FSpaces, j + 1, MaxInt);
+    {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- CarteChnaged - Trimming,part to ',length(s),' ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), 'newCaretYPos=',TSynEditCaret(Sender).LinePos]);{$ENDIF}
     FSpaces := copy(FSpaces, 1, j);
     i := length(s);
     CurUndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(FLineIndex+1, s));
@@ -393,6 +415,7 @@ end;
 
 procedure TSynEditStringTrimmingList.ListCleared(Sender: TObject);
 begin
+    {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- LIST CLEARED ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces) ]);{$ENDIF}
   fLockList.Clear;
   fLineIndex:= -1;
   fSpaces := '';
@@ -420,6 +443,7 @@ var
 begin
   if (not fEnabled) then exit;
   if  fLockCount > 0 then begin
+    {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- Lines Changed (ins/del)  locked ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces) ]);{$ENDIF}
     for i := fLockList.Count-1 downto 0 do begin
       j := Integer(Pointer(fLockList.Objects[i]));
       if (j >= Index) and (j < Index - N) then
@@ -428,6 +452,7 @@ begin
         fLockList.Objects[i] := TObject(Pointer(j + N));
     end;
   end else begin
+    {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- Lines Changed (ins/del) not locked ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces) ]);{$ENDIF}
     if (fLineIndex >= Index) and (fLineIndex < Index - N) then
       fLineIndex:=-1
     else if fLineIndex > Index then
@@ -464,6 +489,7 @@ var
   temp: String;
 begin
   if (not fEnabled) then exit(s);
+    {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- TrimLine ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  RealUndo=', RealUndo ]);{$ENDIF}
   if RealUndo then begin
     temp := fSynStrings.Strings[Index];
     l := length(temp);
@@ -489,6 +515,7 @@ procedure TSynEditStringTrimmingList.StoreSpacesForLine(const Index: Integer; co
 var
   i: LongInt;
 begin
+  {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- StoreSpacesforLine ', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  Index=', Index, ' Spacestr=',length(SpaceStr), ' LineStr=',length(LineStr),  '  fLockCount=',fLockCount]);{$ENDIF}
   if fLockCount > 0 then begin
     i := fLockList.IndexOfObject(TObject(pointer(Index)));
     if i < 0 then
@@ -513,6 +540,7 @@ begin
       result := ''
     else
       result := fLockList[i];
+  //{$IFDEF SynTrimDebug}debugln(['--- Trimmer -- Spaces (for line / locked)', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  Index=', Index, ' Result=',length(Result)]);{$ENDIF}
     exit;
   end;
   if Index <> fLineIndex then exit('');
@@ -522,6 +550,7 @@ begin
     fLineText:='';
   end;
   Result:= fSpaces;
+  {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- Spaces (for line / not locked)', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  Index=', Index, ' Result=',length(Result)]);{$ENDIF}
 end;
 
 procedure TSynEditStringTrimmingList.Lock;
@@ -546,6 +575,7 @@ var
 begin
   if (not fEnabled) then exit;
   FIsTrimming := True;
+  {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- TrimAfterLock', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  Index=', Index, ' LockList=',fLockList.CommaText]);{$ENDIF}
   i := fLockList.IndexOfObject(TObject(Pointer(fLineIndex)));
   if i >= 0 then begin
     fSpaces:= fLockList[i];
@@ -695,6 +725,7 @@ var
 begin
   if (AText = '') or (FTrimType = settIgnoreAll) then
     exit;
+  {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- EditInsertTrim', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  X=', LogX, ' Y=',LogY, ' text=',length(AText)]);{$ENDIF}
   s := Spaces(LogY - 1);
   StoreSpacesForLine(LogY - 1,
                      copy(s,1, LogX - 1) + AText + copy(s, LogX, length(s)),
@@ -709,6 +740,7 @@ var
 begin
   if (ByteLen <= 0) or (FTrimType = settIgnoreAll) then
     exit('');
+  {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- EditDeleteTrim()', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), '  X=', LogX, ' Y=',LogY, ' ByteLen=',ByteLen]);{$ENDIF}
   s := Spaces(LogY - 1);
   Result := copy(s, LogX, ByteLen);
   StoreSpacesForLine(LogY - 1,
@@ -724,6 +756,7 @@ var
 begin
   if Len <= 0 then
     exit;
+  {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- EditMoveToTrim()', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), ' Y=',LogY, '  len=',Len]);{$ENDIF}
   t := fSynStrings[LogY - 1];
   s := copy(t, 1 + length(t) - Len, Len) + Spaces(LogY - 1);
   t := copy(t, 1, length(t) - Len);
@@ -738,6 +771,7 @@ var
 begin
   if Len <= 0 then
     exit;
+  {$IFDEF SynTrimDebug}debugln(['--- Trimmer -- EditMoveFromTrim()', ' fLineIndex=', fLineIndex, ' fSpaces=',length(fSpaces), ' Y=',LogY, '  len=',Len]);{$ENDIF}
   s := Spaces(LogY - 1);
   t := fSynStrings[LogY - 1] + copy(s, 1, Len);
   s := copy(s, 1 + Len, Len);

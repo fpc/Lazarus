@@ -254,6 +254,8 @@ type
   TSynEditUndoTxtInsert = class(TSynEditUndoItem)
   private
     FPosX, FPosY, FLen: Integer;
+  protected
+    function DebugString: String; override;
   public
     constructor Create(APosX, APosY, ALen: Integer);
     function PerformUndo(Caller: TObject): Boolean; override;
@@ -265,6 +267,8 @@ type
   private
     FPosX, FPosY: Integer;
     FText: String;
+  protected
+    function DebugString: String; override;
   public
     constructor Create(APosX, APosY: Integer; AText: String);
     function PerformUndo(Caller: TObject): Boolean; override;
@@ -275,6 +279,8 @@ type
   TSynEditUndoTxtLineBreak = class(TSynEditUndoItem)
   private
     FPosY: Integer;
+  protected
+    function DebugString: String; override;
   public
     constructor Create(APosY: Integer);
     function PerformUndo(Caller: TObject): Boolean; override;
@@ -285,6 +291,8 @@ type
   TSynEditUndoTxtLineJoin = class(TSynEditUndoItem)
   private
     FPosX, FPosY: Integer;
+  protected
+    function DebugString: String; override;
   public
     constructor Create(APosX, APosY: Integer);
     function PerformUndo(Caller: TObject): Boolean; override;
@@ -295,6 +303,8 @@ type
   TSynEditUndoTxtLinesIns = class(TSynEditUndoItem)
   private
     FPosY, FCount: Integer;
+  protected
+    function DebugString: String; override;
   public
     constructor Create(ALine, ACount: Integer);
     function PerformUndo(Caller: TObject): Boolean; override;
@@ -305,98 +315,136 @@ type
   TSynEditUndoTxtLinesDel = class(TSynEditUndoItem)
   private
     FPosY, FCount: Integer;
+  protected
+    function DebugString: String; override;
   public
     constructor Create(ALine, ACount: Integer);
     function PerformUndo(Caller: TObject): Boolean; override;
   end;
 
 { TSynEditUndoTxtInsert }
+ function TSynEditUndoTxtInsert.DebugString: String;
+begin
+  Result := 'X='+dbgs(FPosX) + ' Y='+ dbgs(FPosY) + ' len=' + dbgs(FLen);
+end;
 
 constructor TSynEditUndoTxtInsert.Create(APosX, APosY, ALen: Integer);
 begin
   FPosX := APosX;
   FPosY := APosY;
   FLen  := ALen;
+  {$IFDEF SynUndoDebug}debugln(['---  Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTxtInsert.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringList;
+  {$IFDEF SynUndoDebug}if Result then debugln(['---  Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
   if Result then
     TSynEditStringList(Caller).EditDelete(FPosX, FPosY, FLen);
 end;
 
 { TSynEditUndoTxtDelete }
+ function TSynEditUndoTxtDelete.DebugString: String;
+begin
+  Result := 'X='+dbgs(FPosX) + ' Y='+ dbgs(FPosY) + ' text=' + FText;
+end;
 
 constructor TSynEditUndoTxtDelete.Create(APosX, APosY: Integer; AText: String);
 begin
   FPosX := APosX;
   FPosY := APosY;
   FText := AText;
+  {$IFDEF SynUndoDebug}debugln(['---  Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTxtDelete.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringList;
+  {$IFDEF SynUndoDebug}if Result then debugln(['---  Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
   if Result then
     TSynEditStringList(Caller).EditInsert(FPosX, FPosY, FText);
 end;
 
 { TSynEditUndoTxtLineBreak }
+ function TSynEditUndoTxtLineBreak.DebugString: String;
+begin
+  Result := ' Y='+ dbgs(FPosY);
+end;
 
 constructor TSynEditUndoTxtLineBreak.Create(APosY: Integer);
 begin
   FPosY := APosY;
+  {$IFDEF SynUndoDebug}debugln(['---  Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTxtLineBreak.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringList;
+  {$IFDEF SynUndoDebug}if Result then debugln(['---  Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
   if Result then
     TSynEditStringList(Caller).EditLineJoin(FPosY)
 end;
 
 { TSynEditUndoTxtLineJoin }
+ function TSynEditUndoTxtLineJoin.DebugString: String;
+begin
+  Result := 'X='+dbgs(FPosX) + ' Y='+ dbgs(FPosY);
+end;
 
 constructor TSynEditUndoTxtLineJoin.Create(APosX, APosY: Integer);
 begin
   FPosX := APosX;
   FPosY := APosY;
+  {$IFDEF SynUndoDebug}debugln(['---  Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTxtLineJoin.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringList;
+  {$IFDEF SynUndoDebug}if Result then debugln(['---  Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
   if Result then
     TSynEditStringList(Caller).EditLineBreak(FPosX, FPosY)
 end;
 
 { TSynEditUndoTxtLinesIns }
+ function TSynEditUndoTxtLinesIns.DebugString: String;
+begin
+  Result := 'Y='+dbgs(FPosY) + ' Cnt='+ dbgs(FCount);
+end;
 
 constructor TSynEditUndoTxtLinesIns.Create(ALine, ACount: Integer);
 begin
   FPosY  := ALine;
   FCount := ACount;
+  {$IFDEF SynUndoDebug}debugln(['---  Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTxtLinesIns.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringList;
+  {$IFDEF SynUndoDebug}if Result then debugln(['---  Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
   if Result then
     TSynEditStringList(Caller).UndoEditLinesDelete(FPosY, FCount)
 end;
 
 { TSynEditUndoTxtLinesDel }
+ function TSynEditUndoTxtLinesDel.DebugString: String;
+begin
+  Result := 'Y='+dbgs(FPosY) + ' Cnt='+ dbgs(FCount);
+end;
 
 constructor TSynEditUndoTxtLinesDel.Create(ALine, ACount: Integer);
 begin
   FPosY  := ALine;
   FCount := ACount;
+  {$IFDEF SynUndoDebug}debugln(['---  Undo Insert ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
 end;
 
 function TSynEditUndoTxtLinesDel.PerformUndo(Caller: TObject): Boolean;
 begin
   Result := Caller is TSynEditStringList;
+  {$IFDEF SynUndoDebug}if Result then debugln(['---  Undo Perform ',DbgSName(self),dbgs(Self), ' - ', DebugString]);{$ENDIF}
   if Result then
     TSynEditStringList(Caller).EditLinesInsert(FPosY, FCount)
 end;
