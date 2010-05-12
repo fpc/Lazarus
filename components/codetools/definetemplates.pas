@@ -619,7 +619,7 @@ type
     FileDate: longint;
     constructor Create(const aFilename: string;
                        aFileExists: boolean; aFileDate: longint);
-    function Equals(Other: TFPCConfigFileState; CheckDate: boolean): boolean;
+    function Equals(Other: TFPCConfigFileState; CheckDate: boolean): boolean; reintroduce;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   end;
@@ -635,7 +635,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure Assign(List: TFPCConfigFileStateList);
-    function Equals(List: TFPCConfigFileStateList; CheckDates: boolean): boolean;
+    function Equals(List: TFPCConfigFileStateList; CheckDates: boolean): boolean; reintroduce;
     function Add(aFilename: string; aFileExists: boolean;
                  aFileDate: longint): TFPCConfigFileState;
     function Count: integer;
@@ -669,7 +669,7 @@ type
     destructor Destroy; override;
     procedure Clear; // values, not keys
     function Equals(Item: TFPCTargetConfigCache;
-                    CompareKey: boolean = true): boolean;
+                    CompareKey: boolean = true): boolean; reintroduce;
     procedure Assign(Item: TFPCTargetConfigCache);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -711,7 +711,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure Assign(Cache: TFPCSourceCache);
-    function Equals(Cache: TFPCSourceCache): boolean;
+    function Equals(Cache: TFPCSourceCache): boolean; reintroduce;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure LoadFromFile(Filename: string);
