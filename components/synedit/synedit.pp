@@ -1810,13 +1810,14 @@ begin
         UpdateCaret;
       //if sfScrollbarChanged in fStateFlags then
       //  UpdateScrollbars;
-      if fStatusChanges <> [] then
-        DoOnStatusChange(fStatusChanges);
       fMarkupHighCaret.CheckState; // Todo: need a global lock, including the markup
                                    // Todo: Markup can do invalidation, should be before ScrollAfterTopLineChanged;
     end;
-    if (FPaintLock = 0) then
+    if (FPaintLock = 0) then begin
       FBlockSelection.AutoExtend := False;
+      if fStatusChanges <> [] then
+        DoOnStatusChange(fStatusChanges);
+    end;
   finally
     FIsInDecPaintLock := False;
   end;
@@ -6348,7 +6349,7 @@ begin
    // must be last => May call MoveCaretToVisibleArea, which must only happen
    // after unfold
   DecPaintLock;
-  aList.EndBlock;
+  aList.EndBlock; // Todo: Doing this after DecPaintLock, can cause duplicate calls to StatusChanged(scModified)
 end;
 {end}                                                                           //sbs 2000-11-19
 
