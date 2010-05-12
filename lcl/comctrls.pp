@@ -224,14 +224,13 @@ type
     function GetPageControl: TPageControl;
     function GetTabIndex: Integer;
     procedure SetPageControl(APageControl: TPageControl);
-    procedure SetTabIndex(const AValue: Integer);
   protected
     class procedure WSRegisterClass; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     property PageControl: TPageControl read GetPageControl write SetPageControl;
-    property TabIndex: Integer read GetTabIndex write SetTabIndex;
+    property TabIndex: Integer read GetTabIndex;
   published
     property Caption;
     property ChildSizing;

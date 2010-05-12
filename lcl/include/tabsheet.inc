@@ -23,27 +23,32 @@
 { TTabSheet }
 
 function TTabSheet.GetTabIndex: Integer;
+var
+  i: Integer;
 begin
-  Result:=PageIndex;
+  if not TabVisible then
+    Result := -1
+  else
+  begin
+    Result := 0;
+    for i := 0 to PageIndex - 1 do
+      if PageControl.Pages[i].TabVisible then
+        inc(Result);
+  end;
 end;
 
 function TTabSheet.GetPageControl: TPageControl;
 begin
   if (Parent is TPageControl) then
-    Result:=TPageControl(Parent)
+    Result := TPageControl(Parent)
   else
-    Result:=nil;
+    Result := nil;
 end;
 
 procedure TTabSheet.SetPageControl(APageControl: TPageControl);
 begin
   if PageControl=APageControl then exit;
   Parent:=APageControl;
-end;
-
-procedure TTabSheet.SetTabIndex(const AValue: Integer);
-begin
-  PageIndex:=AValue;
 end;
 
 class procedure TTabSheet.WSRegisterClass;
