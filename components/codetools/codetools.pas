@@ -1,4 +1,4 @@
-{ This file was automatically created by Lazarus. do not edit!
+{ This file was automatically created by Lazarus. Do not edit!
   This source is only used to compile and install the package.
  }
 
@@ -17,8 +17,8 @@ uses
   Laz_XMLStreaming, Laz_XMLWrite, LFMTrees, LinkScanner, MethodJumpTool, 
   MultiKeyWordListTool, NonPascalCodeTools, PascalParserTool, 
   PascalReaderTool, PPUCodeTools, PPUGraph, PPUParser, ResourceCodeTool, 
-  SourceChanger, SourceLog, StdCodeTools, OtherIdentifierTree, 
-  LazarusPackageIntf;
+  SourceChanger, SourceLog, StdCodeTools, OtherIdentifierTree, laz2_xmlutils, 
+  laz2_DOM, laz2_XMLWrite, laz2_XMLRead, LazarusPackageIntf;
 
 implementation
 

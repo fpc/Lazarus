@@ -1,12 +1,7 @@
 {
-  BEWARE !!!
-  This is a TEMPORARY file.
-  As soon as it is moved to the fcl, it will be removed.
-}
-
-{
     $Id$
-    This file is part of the Free Component Library
+    This file was part of the Free Component Library and was adapted to use UTF8
+    strings instead of widestrings.
 
     Implementation of TXMLConfig class
     Copyright (c) 1999 - 2001 by Sebastian Guenther, sg@freepascal.org
@@ -34,9 +29,16 @@ interface
 
 {off $DEFINE MEM_CHECK}
 
+
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
-  Classes, Laz_DOM, Laz_XMLRead, Laz_XMLWrite, FileProcs;
+  Classes, sysutils,
+  {$IFDEF NewXMLCfg}
+  Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
+  {$ELSE}
+  Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
+  {$ENDIF}
+  FileProcs;
 
 type
 
@@ -50,6 +52,9 @@ type
   TXMLConfig = class(TComponent)
   private
     FFilename: String;
+    {$IFDEF NewXMLCfg}
+    FReadFlags: TXMLReaderFlags;
+    {$ENDIF}
     procedure SetFilename(const AFilename: String);
   protected
     doc: TXMLDocument;
@@ -93,6 +98,9 @@ type
   published
     property Filename: String read FFilename write SetFilename;
     property Document: TXMLDocument read doc;
+    {$IFDEF NewXMLCfg}
+    property ReadFlags: TXMLReaderFlags read FReadFlags write FReadFlags;
+    {$ENDIF}
   end;
 
 
@@ -100,12 +108,12 @@ type
 
 implementation
 
-uses SysUtils;
-
-
 constructor TXMLConfig.Create(const AFilename: String);
 begin
   //DebugLn(['TXMLConfig.Create ',AFilename]);
+  {$IFDEF NewXMLCfg}
+  FReadFlags:=[xrfAllowLowerThanInAttributeValue,xrfAllowSpecialCharsInAttributeValue];
+  {$ENDIF}
   inherited Create(nil);
   SetFilename(AFilename);
 end;
@@ -113,6 +121,9 @@ end;
 constructor TXMLConfig.CreateClean(const AFilename: String);
 begin
   //DebugLn(['TXMLConfig.CreateClean ',AFilename]);
+  {$IFDEF NewXMLCfg}
+  FReadFlags:=[xrfAllowLowerThanInAttributeValue,xrfAllowSpecialCharsInAttributeValue];
+  {$ENDIF}
   inherited Create(nil);
   fDoNotLoadFromFile:=true;
   SetFilename(AFilename);
@@ -167,14 +178,22 @@ end;
 procedure TXMLConfig.ReadFromStream(s: TStream);
 begin
   FreeDoc;
+  {$IFDEF NewXMLCfg}
+  Laz2_XMLRead.ReadXMLFile(Doc,s,ReadFlags);
+  {$ELSE}
   Laz_XMLRead.ReadXMLFile(Doc,s);
+  {$ENDIF}
   if Doc=nil then
     Clear;
 end;
 
 procedure TXMLConfig.WriteToStream(s: TStream);
 begin
+  {$IFDEF NewXMLCfg}
+  Laz2_XMLWrite.WriteXMLFile(Doc,s);
+  {$ELSE}
   Laz_XMLWrite.WriteXMLFile(Doc,s);
+  {$ENDIF}
 end;
 
 function TXMLConfig.GetValue(const APath, ADefault: String): String;
@@ -445,12 +464,20 @@ end;
 procedure TXMLConfig.ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String
   );
 begin
+  {$IFDEF NewXMLCfg}
+  Laz2_XMLRead.ReadXMLFile(ADoc,AFilename,ReadFlags);
+  {$ELSE}
   Laz_XMLRead.ReadXMLFile(ADoc,AFilename);
+  {$ENDIF}
 end;
 
 procedure TXMLConfig.WriteXMLFile(ADoc: TXMLDocument; const AFileName: String);
 begin
+  {$IFDEF NewXMLCfg}
+  Laz2_XMLWrite.WriteXMLFile(ADoc,AFileName);
+  {$ELSE}
   Laz_XMLWrite.WriteXMLFile(ADoc,AFileName);
+  {$ENDIF}
 end;
 
 procedure TXMLConfig.FreeDoc;
@@ -484,7 +511,11 @@ begin
     try
       ms.Write(fAutoLoadFromSource[1],length(fAutoLoadFromSource));
       ms.Position:=0;
+      {$IFDEF NewXMLCfg}
+      Laz2_XMLRead.ReadXMLFile(doc,ms,ReadFlags);
+      {$ELSE}
       Laz_XMLRead.ReadXMLFile(doc,ms);
+      {$ENDIF}
     finally
       ms.Free;
     end;

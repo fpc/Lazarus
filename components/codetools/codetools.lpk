@@ -26,7 +26,7 @@
     <License Value="GPL-2
 "/>
     <Version Major="1" Release="1"/>
-    <Files Count="57">
+    <Files Count="61">
       <Item1>
         <Filename Value="Makefile"/>
         <Type Value="Text"/>
@@ -256,6 +256,22 @@
         <Filename Value="fpcsrcrules.inc"/>
         <Type Value="Include"/>
       </Item57>
+      <Item58>
+        <Filename Value="laz2_xmlutils.pas"/>
+        <UnitName Value="laz2_xmlutils"/>
+      </Item58>
+      <Item59>
+        <Filename Value="laz2_dom.pas"/>
+        <UnitName Value="laz2_DOM"/>
+      </Item59>
+      <Item60>
+        <Filename Value="laz2_xmlwrite.pas"/>
+        <UnitName Value="laz2_XMLWrite"/>
+      </Item60>
+      <Item61>
+        <Filename Value="laz2_xmlread.pas"/>
+        <UnitName Value="laz2_XMLRead"/>
+      </Item61>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
