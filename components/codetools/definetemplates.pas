@@ -786,6 +786,10 @@ procedure CheckPPUSources(PPUFiles,  // lowercase unitname to filename
                           UnitToSource, // lowercase unitname to file name
                           UnitToDuplicates: TStringToStringTree; // lowercase unitname to semicolon separated list of files
                           var Duplicates, Missing: TStringToStringTree);
+procedure LoadFPCCacheFromFile(Filename: string;
+            var Configs: TFPCTargetConfigCaches; var Sources: TFPCSourceCaches);
+procedure SaveFPCCacheToFile(Filename: string;
+                    Configs: TFPCTargetConfigCaches; Sources: TFPCSourceCaches);
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 procedure ParseMakefileFPC(const Filename, SrcOS: string;
@@ -1509,6 +1513,37 @@ begin
       end;
     end;
     Node:=PPUFiles.Tree.FindSuccessor(Node);
+  end;
+end;
+
+procedure LoadFPCCacheFromFile(Filename: string;
+  var Configs: TFPCTargetConfigCaches; var Sources: TFPCSourceCaches);
+var
+  XMLConfig: TXMLConfig;
+begin
+  if Configs=nil then Configs:=TFPCTargetConfigCaches.Create;
+  if Sources=nil then Sources:=TFPCSourceCaches.Create;
+  if not FileExistsUTF8(Filename) then exit;
+  XMLConfig:=TXMLConfig.Create(Filename);
+  try
+    Configs.LoadFromXMLConfig(XMLConfig,'FPCConfigs/');
+    Sources.LoadFromXMLConfig(XMLConfig,'FPCSourceDirectories/');
+  finally
+    XMLConfig.Free;
+  end;
+end;
+
+procedure SaveFPCCacheToFile(Filename: string; Configs: TFPCTargetConfigCaches;
+  Sources: TFPCSourceCaches);
+var
+  XMLConfig: TXMLConfig;
+begin
+  XMLConfig:=TXMLConfig.CreateClean(Filename);
+  try
+    Configs.SaveToXMLConfig(XMLConfig,'FPCConfigs/');
+    Sources.SaveToXMLConfig(XMLConfig,'FPCSourceDirectories/');
+  finally
+    XMLConfig.Free;
   end;
 end;
 
@@ -6502,7 +6537,6 @@ begin
 
   // undefines: format: Undefines/Value and comma separated list of names
   s:=XMLConfig.GetValue(Path+'Undefines/Values','');
-  DebugLn(['TFPCTargetConfigCache.LoadFromXMLConfig undefines=',s]);
   if s<>'' then begin
     p:=1;
     while (p<=length(s)) do begin
