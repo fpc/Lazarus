@@ -619,7 +619,7 @@ type
     FileDate: longint;
     constructor Create(const aFilename: string;
                        aFileExists: boolean; aFileDate: longint);
-    function IsEqual(Other: TFPCConfigFileState; CheckDate: boolean): boolean;
+    function Equals(Other: TFPCConfigFileState; CheckDate: boolean): boolean;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   end;
@@ -635,7 +635,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure Assign(List: TFPCConfigFileStateList);
-    function IsEqual(List: TFPCConfigFileStateList; CheckDates: boolean): boolean;
+    function Equals(List: TFPCConfigFileStateList; CheckDates: boolean): boolean;
     function Add(aFilename: string; aFileExists: boolean;
                  aFileDate: longint): TFPCConfigFileState;
     function Count: integer;
@@ -644,9 +644,9 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   end;
 
-  { TFPCTargetConfigCacheItem }
+  { TFPCTargetConfigCache }
 
-  TFPCTargetConfigCacheItem = class
+  TFPCTargetConfigCache = class
   private
     FChangeStamp: integer;
   public
@@ -668,9 +668,9 @@ type
     constructor Create(aCompiler, aTargetOS, aTargetCPU: string);
     destructor Destroy; override;
     procedure Clear; // values, not keys
-    function IsEqual(Item: TFPCTargetConfigCacheItem;
-                     CompareKey: boolean = true): boolean;
-    procedure Assign(Item: TFPCTargetConfigCacheItem);
+    function Equals(Item: TFPCTargetConfigCache;
+                    CompareKey: boolean = true): boolean;
+    procedure Assign(Item: TFPCTargetConfigCache);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function NeedsUpdate: boolean;
@@ -680,9 +680,9 @@ type
     property ChangeStamp: integer read FChangeStamp;
   end;
 
-  { TFPCTargetConfigCache }
+  { TFPCTargetConfigCaches }
 
-  TFPCTargetConfigCache = class
+  TFPCTargetConfigCaches = class
   private
     fItems: TAVLTree; // tree of TFPCTargetConfigCacheItem
   public
@@ -691,13 +691,15 @@ type
     procedure Clear;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromFile(Filename: string);
+    procedure SaveToFile(Filename: string);
     function Find(const CompilerFilename, TargetOS, TargetCPU: string;
-                  CreateIfNotExists: boolean): TFPCTargetConfigCacheItem;
+                  CreateIfNotExists: boolean): TFPCTargetConfigCache;
   end;
 
-  { TFPCSourceCacheItem }
+  { TFPCSourceCache }
 
-  TFPCSourceCacheItem = class
+  TFPCSourceCache = class
   private
     FChangeStamp: integer;
   public
@@ -713,9 +715,9 @@ type
     property ChangeStamp: integer read FChangeStamp;
   end;
 
-  { TFPCSourceCache }
+  { TFPCSourceCaches }
 
-  TFPCSourceCache = class
+  TFPCSourceCaches = class
   private
     fItems: TAVLTree; // tree of TFPCSourceCacheItem
   public
@@ -725,7 +727,7 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function Find(const Directory: string;
-                  CreateIfNotExists: boolean): TFPCSourceCacheItem;
+                  CreateIfNotExists: boolean): TFPCSourceCache;
   end;
 
 function DefineActionNameToAction(const s: string): TDefineAction;
@@ -1145,6 +1147,7 @@ function ParseFPCVerbose(List: TStrings; out ConfigFiles: TSTrings;
         NewPath:=copy(Line,CurPos,len);
         if not FilenameIsAbsolute(NewPath) then
           NewPath:=ExpandFileNameUTF8(AnsiToUtf8(NewPath));
+        NewPath:=ChompPathDelim(TrimFilename(NewPath));
         {$IFDEF VerboseFPCSrcScan}
         DebugLn('Using unit path: "',NewPath,'"');
         {$ENDIF}
@@ -1643,8 +1646,8 @@ end;
 
 function CompareFPCTargetConfigCacheItems(CacheItem1, CacheItem2: Pointer): integer;
 var
-  Item1: TFPCTargetConfigCacheItem absolute CacheItem1;
-  Item2: TFPCTargetConfigCacheItem absolute CacheItem2;
+  Item1: TFPCTargetConfigCache absolute CacheItem1;
+  Item2: TFPCTargetConfigCache absolute CacheItem2;
 begin
   Result:=CompareStr(Item1.TargetOS,Item2.TargetOS);
   if Result<>0 then exit;
@@ -1655,8 +1658,8 @@ end;
 
 function CompareFPCSourceCacheItems(CacheItem1, CacheItem2: Pointer): integer;
 var
-  Src1: TFPCSourceCacheItem absolute CacheItem1;
-  Src2: TFPCSourceCacheItem absolute CacheItem2;
+  Src1: TFPCSourceCache absolute CacheItem1;
+  Src2: TFPCSourceCache absolute CacheItem2;
 begin
   Result:=CompareStr(Src1.Directory,Src2.Directory);
 end;
@@ -1664,7 +1667,7 @@ end;
 function CompareDirectoryWithFPCSourceCacheItem(AString, CacheItem: Pointer
   ): integer;
 var
-  Src: TFPCSourceCacheItem absolute CacheItem;
+  Src: TFPCSourceCache absolute CacheItem;
 begin
   Result:=CompareStr(AnsiString(AString),Src.Directory);
 end;
@@ -6329,7 +6332,7 @@ end;
 
 { TFPCTargetConfigCacheItem }
 
-constructor TFPCTargetConfigCacheItem.Create(aCompiler, aTargetOS,
+constructor TFPCTargetConfigCache.Create(aCompiler, aTargetOS,
   aTargetCPU: string);
 begin
   Compiler:=aCompiler;
@@ -6338,14 +6341,14 @@ begin
   ConfigFiles:=TFPCConfigFileStateList.Create;
 end;
 
-destructor TFPCTargetConfigCacheItem.Destroy;
+destructor TFPCTargetConfigCache.Destroy;
 begin
   Clear;
   FreeAndNil(ConfigFiles);
   inherited Destroy;
 end;
 
-procedure TFPCTargetConfigCacheItem.Clear;
+procedure TFPCTargetConfigCache.Clear;
 begin
   CompilerDate:=0;
   TargetCompiler:='';
@@ -6358,8 +6361,35 @@ begin
   FreeAndNil(Units);
 end;
 
-function TFPCTargetConfigCacheItem.IsEqual(Item: TFPCTargetConfigCacheItem;
+function TFPCTargetConfigCache.Equals(Item: TFPCTargetConfigCache;
   CompareKey: boolean): boolean;
+
+  function CompareStrings(List1, List2: TStrings): boolean;
+  var
+    List1Empty: Boolean;
+    List2Empty: Boolean;
+  begin
+    Result:=false;
+    List1Empty:=(List1=nil) or (List1.Count=0);
+    List2Empty:=(List2=nil) or (List2.Count=0);
+    if (List1Empty<>List2Empty) then exit;
+    if (not List1Empty) and (not List1.Equals(List2)) then exit;
+    Result:=true;
+  end;
+
+  function CompareStringTrees(Tree1, Tree2: TStringToStringTree): boolean;
+  var
+    Tree1Empty: Boolean;
+    Tree2Empty: Boolean;
+  begin
+    Result:=false;
+    Tree1Empty:=(Tree1=nil) or (Tree1.Tree.Count=0);
+    Tree2Empty:=(Tree2=nil) or (Tree2.Tree.Count=0);
+    if (Tree1Empty<>Tree2Empty) then exit;
+    if (not Tree1Empty) and (not Tree1.Equals(Tree2)) then exit;
+    Result:=true;
+  end;
+
 begin
   Result:=false;
   if CompareKey then begin
@@ -6372,25 +6402,17 @@ begin
   if (CompilerDate<>Item.CompilerDate)
     or (TargetCompiler<>Item.TargetCompiler)
     or (TargetCompilerDate<>Item.TargetCompilerDate)
-    or (not ConfigFiles.IsEqual(Item.ConfigFiles,false))
+    or (not ConfigFiles.Equals(Item.ConfigFiles,true))
   then
     exit;
-  if ((UnitPaths<>nil) and (Item.UnitPaths<>nil) and (UnitPaths.Text<>Item.UnitPaths.Text))
-  or ((UnitPaths<>nil)<>(Item.UnitPaths<>nil)) then
-    exit;
-  if ((Defines<>nil)<>(Item.Defines<>nil))
-  or ((Defines<>nil) and Defines.IsEqual(Item.Defines)) then
-    exit;
-  if ((Undefines<>nil)<>(Item.Undefines<>nil))
-  or ((Undefines<>nil) and Undefines.IsEqual(Item.Undefines)) then
-    exit;
-  if ((Units<>nil)<>(Item.Units<>nil))
-  or ((Units<>nil) and Units.IsEqual(Item.Undefines)) then
-    exit;
+  if not CompareStringTrees(Defines,Item.Defines) then exit;
+  if not CompareStringTrees(Undefines,Item.Undefines) then exit;
+  if not CompareStrings(UnitPaths,Item.UnitPaths) then exit;
+  if not CompareStringTrees(Units,Item.Units) then exit;
   Result:=true;
 end;
 
-procedure TFPCTargetConfigCacheItem.Assign(Item: TFPCTargetConfigCacheItem);
+procedure TFPCTargetConfigCache.Assign(Item: TFPCTargetConfigCache);
 begin
   // keys
   TargetOS:=Item.TargetOS;
@@ -6401,12 +6423,6 @@ begin
   TargetCompiler:=Item.TargetCompiler;
   TargetCompilerDate:=Item.TargetCompilerDate;
   ConfigFiles.Assign(Item.ConfigFiles);
-  if Item.UnitPaths<>nil then begin
-    if UnitPaths=nil then UnitPaths:=TStringList.Create;
-    UnitPaths.Assign(Item.UnitPaths);
-  end else begin
-    FreeAndNil(UnitPaths);
-  end;
   if Item.Defines<>nil then begin
     if Defines=nil then Defines:=TStringToStringTree.Create(true);
     Defines.Assign(Item.Defines);
@@ -6419,6 +6435,12 @@ begin
   end else begin
     FreeAndNil(Undefines);
   end;
+  if Item.UnitPaths<>nil then begin
+    if UnitPaths=nil then UnitPaths:=TStringList.Create;
+    UnitPaths.Assign(Item.UnitPaths);
+  end else begin
+    FreeAndNil(UnitPaths);
+  end;
   if Item.Units<>nil then begin
     if Units=nil then Units:=TStringToStringTree.Create(true);
     Units.Assign(Item.Units);
@@ -6430,7 +6452,7 @@ begin
   ErrorTranslatedMsg:=Item.ErrorTranslatedMsg;
 end;
 
-procedure TFPCTargetConfigCacheItem.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+procedure TFPCTargetConfigCache.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   Cnt: integer;
@@ -6446,39 +6468,33 @@ var
   Filename: String;
 begin
   Clear;
+
   TargetOS:=XMLConfig.GetValue(Path+'TargetOS','');
   TargetCPU:=XMLConfig.GetValue(Path+'TargetCPU','');
   Compiler:=XMLConfig.GetValue(Path+'Compiler','');
   CompilerDate:=XMLConfig.GetValue(Path+'CompilerDate',0);
+  TargetCompiler:=XMLConfig.GetValue(Path+'TargetCompiler','');
+  TargetCompilerDate:=XMLConfig.GetValue(Path+'TargetCompilerDate',0);
   ConfigFiles.LoadFromXMLConfig(XMLConfig,Path+'Configs/');
 
-  // UnitPaths: write as semicolon separated compressed list
-  List:=TStringList.Create;
-  try
-    s:=XMLConfig.GetValue(Path+'UnitPaths/Value','');
-    List.Delimiter:=';';
-    List.StrictDelimiter:=true;
-    List.DelimitedText:=s;
-    UnitPaths:=Decompress1FileList(List);
-    // do not sort, order is important (e.g. for httpd.ppu)
-  finally
-    List.Free;
-  end;
-
-  // defines: write as Define<Number>/Name,Value
-  Cnt:=XMLConfig.GetValue(Path+'/DefineCount',0);
+  // defines: format: Define<Number>/Name,Value
+  Cnt:=XMLConfig.GetValue(Path+'Defines/Count',0);
   for i:=1 to Cnt do begin
-    SubPath:='Define'+IntToStr(Cnt)+'/';
-    DefineName:=UpperCaseStr(XMLConfig.GetValue(SubPath+'/Name',''));
-    if (DefineName='') or (not IsValidIdent(DefineName)) then continue;
-    DefineValue:=XMLConfig.GetValue(SubPath+'/Value','');
+    SubPath:=Path+'Defines/Macro'+IntToStr(i)+'/';
+    DefineName:=UpperCaseStr(XMLConfig.GetValue(SubPath+'Name',''));
+    if (DefineName='') or (not IsValidIdent(DefineName)) then begin
+      DebugLn(['TFPCTargetConfigCache.LoadFromXMLConfig invalid define name ',DefineName]);
+      continue;
+    end;
+    DefineValue:=XMLConfig.GetValue(SubPath+'Value','');
     if Defines=nil then
       Defines:=TStringToStringTree.Create(true);
     Defines[DefineName]:=DefineValue;
   end;
 
-  // undefines: write as Undefines/Value and comma separated list of names
+  // undefines: format: Undefines/Value and comma separated list of names
   s:=XMLConfig.GetValue(Path+'Undefines/Values','');
+  DebugLn(['TFPCTargetConfigCache.LoadFromXMLConfig undefines=',s]);
   if s<>'' then begin
     p:=1;
     while (p<=length(s)) do begin
@@ -6494,7 +6510,20 @@ begin
     end;
   end;
 
-  // units: Units/Values semicolon separated list of compressed filename=unitname
+  // UnitPaths: format: semicolon separated compressed list
+  List:=TStringList.Create;
+  try
+    s:=XMLConfig.GetValue(Path+'UnitPaths/Value','');
+    List.Delimiter:=';';
+    List.StrictDelimiter:=true;
+    List.DelimitedText:=s;
+    UnitPaths:=Decompress1FileList(List);
+    // do not sort, order is important (e.g. for httpd.ppu)
+  finally
+    List.Free;
+  end;
+
+  // units: format: Units/Values semicolon separated list of compressed filename
   List:=TStringList.Create;
   UnitList:=TStringList.Create;
   try
@@ -6504,12 +6533,12 @@ begin
     List.DelimitedText:=s;
     UnitList:=Decompress1FileList(List);
     for i:=0 to UnitList.Count-1 do begin
-      s:=UnitList[i];
-      p:=System.Pos('=',s);
-      if p<1 then continue;
-      Unit_Name:=lowercase(copy(s,p+1,length(s)));
-      if (Unit_Name='') or not IsValidIdent(Unit_Name) then continue;
-      Filename:=TrimFilename(copy(s,1,p-1));
+      Filename:=TrimFilename(UnitList[i]);
+      Unit_Name:=ExtractFileNameOnly(Filename);
+      if (Unit_Name='') or not IsValidIdent(Unit_Name) then begin
+        DebugLn(['TFPCTargetConfigCache.LoadFromXMLConfig invalid unitname: ',s]);
+        continue;
+      end;
       if Units=nil then
         Units:=TStringToStringTree.Create(true);
       Units[Unit_Name]:=Filename;
@@ -6520,7 +6549,7 @@ begin
   end;
 end;
 
-procedure TFPCTargetConfigCacheItem.SaveToXMLConfig(XMLConfig: TXMLConfig;
+procedure TFPCTargetConfigCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   Node: TAVLTreeNode;
@@ -6528,7 +6557,6 @@ var
   Cnt: Integer;
   SubPath: String;
   UnitList: TStringList;
-  Unit_Name: String;
   Filename: String;
   List: TStringList;
   s: String;
@@ -6537,19 +6565,9 @@ begin
   XMLConfig.SetDeleteValue(Path+'TargetCPU',TargetCPU,'');
   XMLConfig.SetDeleteValue(Path+'Compiler',Compiler,'');
   XMLConfig.SetDeleteValue(Path+'CompilerDate',CompilerDate,0);
+  XMLConfig.SetDeleteValue(Path+'TargetCompiler',TargetCompiler,'');
+  XMLConfig.SetDeleteValue(Path+'TargetCompilerDate',TargetCompilerDate,0);
   ConfigFiles.SaveToXMLConfig(XMLConfig,Path+'Configs/');
-
-  // UnitPaths: write as semicolon separated compressed list
-  List:=TStringList.Create;
-  try
-    List:=Compress1FileList(UnitPaths);
-    // do not sort, order is important (e.g. for httpd.ppu)
-    List.Delimiter:=';';
-    List.StrictDelimiter:=true;
-    XMLConfig.SetDeleteValue(Path+'UnitPaths/Value',List.DelimitedText,'');
-  finally
-    List.Free;
-  end;
 
   // Defines: write as Define<Number>/Name,Value
   Cnt:=0;
@@ -6559,14 +6577,14 @@ begin
       Item:=PStringToStringTreeItem(Node.Data);
       if (Item^.Name<>'') and IsValidIdent(Item^.Name) then begin
         inc(Cnt);
-        SubPath:='Define'+IntToStr(Cnt)+'/';
-        XMLConfig.SetDeleteValue(SubPath+'/Name',Item^.Name,'');
-        XMLConfig.SetDeleteValue(SubPath+'/Value',Item^.Value,'');
+        SubPath:=Path+'Defines/Macro'+IntToStr(Cnt)+'/';
+        XMLConfig.SetDeleteValue(SubPath+'Name',Item^.Name,'');
+        XMLConfig.SetDeleteValue(SubPath+'Value',Item^.Value,'');
       end;
       Node:=Defines.Tree.FindSuccessor(Node);
     end;
   end;
-  XMLConfig.SetDeleteValue(Path+'/DefineCount',Cnt,0);
+  XMLConfig.SetDeleteValue(Path+'Defines/Count',Cnt,0);
 
   // Undefines: write as Undefines/Value and comma separated list of names
   Cnt:=0;
@@ -6583,19 +6601,30 @@ begin
     XMLConfig.SetDeleteValue(Path+'Undefines/Values',s,'');
   end;
 
-  // Units: Units/Values semicolon separated list of compressed filename=unitname
+  // UnitPaths: write as semicolon separated compressed list
+  List:=TStringList.Create;
+  try
+    List:=Compress1FileList(UnitPaths);
+    // do not sort, order is important (e.g. for httpd.ppu)
+    List.Delimiter:=';';
+    List.StrictDelimiter:=true;
+    XMLConfig.SetDeleteValue(Path+'UnitPaths/Value',List.DelimitedText,'');
+  finally
+    List.Free;
+  end;
+
+  // Units: Units/Values semicolon separated list of compressed filenames
   // Units contains thousands of file names. This needs compression.
   List:=nil;
   UnitList:=TStringList.Create;
   try
     if Units<>nil then begin
-      // Create a string list of filename=unitname.
+      // Create a string list of filenames
       Node:=Units.Tree.FindLowest;
       while Node<>nil do begin
         Item:=PStringToStringTreeItem(Node.Data);
-        Unit_Name:=Item^.Name;
         Filename:=Item^.Value;
-        UnitList.Add(Filename+'='+Unit_Name);
+        UnitList.Add(Filename);
         Node:=Units.Tree.FindSuccessor(Node);
       end;
       // Sort the strings.
@@ -6614,7 +6643,7 @@ begin
   end;
 end;
 
-function TFPCTargetConfigCacheItem.NeedsUpdate: boolean;
+function TFPCTargetConfigCache.NeedsUpdate: boolean;
 var
   i: Integer;
   Cfg: TFPCConfigFileState;
@@ -6638,7 +6667,7 @@ begin
   Result:=false;
 end;
 
-procedure TFPCTargetConfigCacheItem.IncreaseChangeStamp;
+procedure TFPCTargetConfigCache.IncreaseChangeStamp;
 begin
   if FChangeStamp<High(FChangeStamp) then
     inc(FChangeStamp)
@@ -6646,17 +6675,17 @@ begin
     FChangeStamp:=low(FChangeStamp);
 end;
 
-function TFPCTargetConfigCacheItem.Update(TestFilename: string;
+function TFPCTargetConfigCache.Update(TestFilename: string;
   ExtraOptions: string; const OnProgress: TDefinePoolProgress): boolean;
 var
-  OldOptions: TFPCTargetConfigCacheItem;
+  OldOptions: TFPCTargetConfigCache;
   CfgFiles: TStrings;
   i: Integer;
   Filename: string;
   CfgFileExists: Boolean;
   CfgFileDate: Integer;
 begin
-  OldOptions:=TFPCTargetConfigCacheItem.Create('','','');
+  OldOptions:=TFPCTargetConfigCache.Create('','','');
   CfgFiles:=nil;
   try
     // remember old state to find out if something changed
@@ -6687,7 +6716,7 @@ begin
     if UnitPaths<>nil then
       Units:=GatherUnitsInSearchPaths(UnitPaths,OnProgress);
     // check for changes
-    if not IsEqual(OldOptions) then
+    if not Equals(OldOptions) then
       IncreaseChangeStamp;
     Result:=true;
   finally
@@ -6698,34 +6727,34 @@ end;
 
 { TFPCTargetConfigCache }
 
-constructor TFPCTargetConfigCache.Create;
+constructor TFPCTargetConfigCaches.Create;
 begin
   fItems:=TAVLTree.Create(@CompareFPCTargetConfigCacheItems);
 end;
 
-destructor TFPCTargetConfigCache.Destroy;
+destructor TFPCTargetConfigCaches.Destroy;
 begin
   Clear;
   FreeAndNil(fItems);
   inherited Destroy;
 end;
 
-procedure TFPCTargetConfigCache.Clear;
+procedure TFPCTargetConfigCaches.Clear;
 begin
   fItems.FreeAndClear;
 end;
 
-procedure TFPCTargetConfigCache.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+procedure TFPCTargetConfigCaches.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   Cnt: integer;
   i: Integer;
-  Item: TFPCTargetConfigCacheItem;
+  Item: TFPCTargetConfigCache;
 begin
   Clear;
   Cnt:=XMLConfig.GetValue(Path+'Count',0);
   for i:=1 to Cnt do begin
-    Item:=TFPCTargetConfigCacheItem.Create('','','');
+    Item:=TFPCTargetConfigCache.Create('','','');
     Item.LoadFromXMLConfig(XMLConfig,Path+'Item'+IntToStr(i)+'/');
     if (Item.TargetOS<>'')
     and (Item.TargetCPU<>'')
@@ -6736,17 +6765,17 @@ begin
   end;
 end;
 
-procedure TFPCTargetConfigCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
+procedure TFPCTargetConfigCaches.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   Node: TAVLTreeNode;
-  Item: TFPCTargetConfigCacheItem;
+  Item: TFPCTargetConfigCache;
   i: Integer;
 begin
   Node:=fItems.FindLowest;
   i:=0;
   while Node<>nil do begin
-    Item:=TFPCTargetConfigCacheItem(Node.Data);
+    Item:=TFPCTargetConfigCache(Node.Data);
     inc(i);
     Item.SaveToXMLConfig(XMLConfig,Path+'Item'+IntToStr(i)+'/');
     Node:=fItems.FindSuccessor(Node);
@@ -6754,17 +6783,41 @@ begin
   XMLConfig.SetDeleteValue(Path+'Count',i,0);
 end;
 
-function TFPCTargetConfigCache.Find(const CompilerFilename, TargetOS,
-  TargetCPU: string; CreateIfNotExists: boolean): TFPCTargetConfigCacheItem;
+procedure TFPCTargetConfigCaches.LoadFromFile(Filename: string);
+var
+  XMLConfig: TXMLConfig;
+begin
+  XMLConfig:=TXMLConfig.Create(Filename);
+  try
+    LoadFromXMLConfig(XMLConfig,'FPCConfigs/');
+  finally
+    XMLConfig.Free;
+  end;
+end;
+
+procedure TFPCTargetConfigCaches.SaveToFile(Filename: string);
+var
+  XMLConfig: TXMLConfig;
+begin
+  XMLConfig:=TXMLConfig.CreateClean(Filename);
+  try
+    SaveToXMLConfig(XMLConfig,'FPCConfigs/');
+  finally
+    XMLConfig.Free;
+  end;
+end;
+
+function TFPCTargetConfigCaches.Find(const CompilerFilename, TargetOS,
+  TargetCPU: string; CreateIfNotExists: boolean): TFPCTargetConfigCache;
 var
   Node: TAVLTreeNode;
-  Cmp: TFPCTargetConfigCacheItem;
+  Cmp: TFPCTargetConfigCache;
 begin
-  Cmp:=TFPCTargetConfigCacheItem.Create(CompilerFilename,TargetOS,TargetCPU);
+  Cmp:=TFPCTargetConfigCache.Create(CompilerFilename,TargetOS,TargetCPU);
   try
     Node:=fItems.Find(cmp);
     if Node<>nil then begin
-      Result:=TFPCTargetConfigCacheItem(Node.Data);
+      Result:=TFPCTargetConfigCache(Node.Data);
     end else if CreateIfNotExists then begin
       Result:=cmp;
       cmp:=nil;
@@ -6802,6 +6855,7 @@ var
 begin
   for i:=0 to fItems.Count-1 do
     TObject(fItems[i]).Free;
+  fItems.Clear;
 end;
 
 procedure TFPCConfigFileStateList.Assign(List: TFPCConfigFileStateList);
@@ -6816,7 +6870,7 @@ begin
   end;
 end;
 
-function TFPCConfigFileStateList.IsEqual(List: TFPCConfigFileStateList;
+function TFPCConfigFileStateList.Equals(List: TFPCConfigFileStateList;
   CheckDates: boolean): boolean;
 var
   i: Integer;
@@ -6824,7 +6878,7 @@ begin
   Result:=false;
   if Count<>List.Count then exit;
   for i:=0 to Count-1 do
-    if not Items[i].IsEqual(List[i],CheckDates) then exit;
+    if not Items[i].Equals(List[i],CheckDates) then exit;
   Result:=true;
 end;
 
@@ -6861,7 +6915,7 @@ var
   i: Integer;
 begin
   for i:=1 to Count do
-    Items[i].SaveToXMLConfig(XMLConfig,Path+'Item'+IntToStr(i)+'/');
+    Items[i-1].SaveToXMLConfig(XMLConfig,Path+'Item'+IntToStr(i)+'/');
   XMLConfig.SetDeleteValue(Path+'Count',Count,0);
 end;
 
@@ -6875,7 +6929,7 @@ begin
   FileDate:=aFileDate;
 end;
 
-function TFPCConfigFileState.IsEqual(Other: TFPCConfigFileState;
+function TFPCConfigFileState.Equals(Other: TFPCConfigFileState;
   CheckDate: boolean): boolean;
 begin
   Result:=false;
@@ -6902,23 +6956,23 @@ end;
 
 { TFPCSourceCacheItem }
 
-constructor TFPCSourceCacheItem.Create;
+constructor TFPCSourceCache.Create;
 begin
   Files:=TStringList.Create;
 end;
 
-destructor TFPCSourceCacheItem.Destroy;
+destructor TFPCSourceCache.Destroy;
 begin
   FreeAndNil(Files);
   inherited Destroy;
 end;
 
-procedure TFPCSourceCacheItem.Clear;
+procedure TFPCSourceCache.Clear;
 begin
   FreeAndNil(Files);
 end;
 
-procedure TFPCSourceCacheItem.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+procedure TFPCSourceCache.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   List: TStringList;
@@ -6939,7 +6993,7 @@ begin
   end;
 end;
 
-procedure TFPCSourceCacheItem.SaveToXMLConfig(XMLConfig: TXMLConfig;
+procedure TFPCSourceCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   List: TStringList;
@@ -6961,7 +7015,7 @@ begin
   end;
 end;
 
-procedure TFPCSourceCacheItem.Update(const OnProgress: TDefinePoolProgress);
+procedure TFPCSourceCache.Update(const OnProgress: TDefinePoolProgress);
 var
   OldFiles: TStrings;
 begin
@@ -6980,41 +7034,44 @@ begin
   end;
 end;
 
-procedure TFPCSourceCacheItem.IncreaseChangeStamp;
+procedure TFPCSourceCache.IncreaseChangeStamp;
 begin
-
+  if FChangeStamp<High(FChangeStamp) then
+    inc(FChangeStamp)
+  else
+    FChangeStamp:=Low(FChangeStamp);
 end;
 
 { TFPCSourceCache }
 
-constructor TFPCSourceCache.Create;
+constructor TFPCSourceCaches.Create;
 begin
   fItems:=TAVLTree.Create(@CompareFPCSourceCacheItems);
 end;
 
-destructor TFPCSourceCache.Destroy;
+destructor TFPCSourceCaches.Destroy;
 begin
   Clear;
   FreeAndNil(fItems);
   inherited Destroy;
 end;
 
-procedure TFPCSourceCache.Clear;
+procedure TFPCSourceCaches.Clear;
 begin
   fItems.FreeAndClear;
 end;
 
-procedure TFPCSourceCache.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+procedure TFPCSourceCaches.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   Cnt: integer;
   i: Integer;
-  Item: TFPCSourceCacheItem;
+  Item: TFPCSourceCache;
 begin
   Clear;
   Cnt:=XMLConfig.GetValue(Path+'Count',0);
   for i:=1 to Cnt do begin
-    Item:=TFPCSourceCacheItem.Create;
+    Item:=TFPCSourceCache.Create;
     Item.LoadFromXMLConfig(XMLConfig,Path+'Item'+IntToStr(i)+'/');
     if (Item.Directory='') or (fItems.Find(Item)<>nil) then
       Item.Free
@@ -7023,17 +7080,17 @@ begin
   end;
 end;
 
-procedure TFPCSourceCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
+procedure TFPCSourceCaches.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   Node: TAVLTreeNode;
-  Item: TFPCSourceCacheItem;
+  Item: TFPCSourceCache;
   Cnt: Integer;
 begin
   Cnt:=0;
   Node:=fItems.FindLowest;
   while Node<>nil do begin
-    Item:=TFPCSourceCacheItem(Node.Data);
+    Item:=TFPCSourceCache(Node.Data);
     if Item.Directory<>'' then begin
       inc(Cnt);
       Item.SaveToXMLConfig(XMLConfig,Path+'Item'+IntToStr(Cnt)+'/');
@@ -7043,16 +7100,16 @@ begin
   XMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
 end;
 
-function TFPCSourceCache.Find(const Directory: string;
-  CreateIfNotExists: boolean): TFPCSourceCacheItem;
+function TFPCSourceCaches.Find(const Directory: string;
+  CreateIfNotExists: boolean): TFPCSourceCache;
 var
   Node: TAVLTreeNode;
 begin
   Node:=fItems.FindKey(PChar(Directory),@CompareDirectoryWithFPCSourceCacheItem);
   if Node<>nil then begin
-    Result:=TFPCSourceCacheItem(Node.Data);
+    Result:=TFPCSourceCache(Node.Data);
   end else if CreateIfNotExists then begin
-    Result:=TFPCSourceCacheItem.Create;
+    Result:=TFPCSourceCache.Create;
     Result.Directory:=Directory;
     fItems.Add(Result);
   end else begin
