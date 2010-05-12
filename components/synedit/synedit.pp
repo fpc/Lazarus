@@ -182,7 +182,7 @@ type
 
   TSynStateFlag = (sfCaretVisible, sfCaretChanged, sfHideCursor,
     sfEnsureCursorPos, sfEnsureCursorPosAtResize,
-    sfIgnoreNextChar, sfPainting, sfHasScrolled, sfLinesChanging,
+    sfIgnoreNextChar, sfPainting, sfHasScrolled,
     sfScrollbarChanged, sfHorizScrollbarVisible, sfVertScrollbarVisible,
     // Mouse-states
     sfDblClicked, sfGutterClick, sfTripleClicked, sfQuadClicked,
@@ -385,6 +385,7 @@ type
 
     FPaintLock: Integer;
     FPaintLockOwnerCnt: Integer;
+    FIsInDecPaintLock: Boolean;
     fReadOnly: Boolean;
     fRightEdge: Integer;
     fRightEdgeColor: TColor;
@@ -419,7 +420,6 @@ type
     FGutter: TSynGutter;
     fTabWidth: integer;
     fTextDrawer: TheTextDrawer;
-    fInvalidateRect: TRect;
     fStateFlags: TSynStateFlags;
     fOptions: TSynEditorOptions;
     fOptions2: TSynEditorOptions2;
@@ -630,8 +630,6 @@ type
     Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     Procedure LineTextChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     procedure DoHighlightChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
-    procedure LinesChanging(Sender: TObject);
-    procedure LinesChanged(Sender: TObject);
     procedure ListCleared(Sender: TObject);
     {$IFDEF SYN_LAZARUS}
     procedure FoldChanged(Index: integer);
@@ -1553,8 +1551,6 @@ begin
     AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
     AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineTextChanged);
     AddChangeHandler(senrHighlightChanged, {$IFDEF FPC}@{$ENDIF}DoHighlightChanged);
-    AddNotifyHandler(senrBeginUpdate, {$IFDEF FPC}@{$ENDIF}LinesChanging);
-    AddNotifyHandler(senrEndUpdate, {$IFDEF FPC}@{$ENDIF}LinesChanged);
     AddNotifyHandler(senrCleared, {$IFDEF FPC}@{$ENDIF}ListCleared);
     AddNotifyHandler(senrUndoRedoAdded, {$IFDEF FPC}@{$ENDIF}Self.UndoRedoAdded);
     AddNotifyHandler(senrModifiedChanged, {$IFDEF FPC}@{$ENDIF}ModifiedChanged);
@@ -1733,23 +1729,21 @@ end;
 
 procedure TCustomSynEdit.IncPaintLock;
 begin
+  if FIsInDecPaintLock then exit;
   if (PaintLockOwner = nil) then begin
     PaintLockOwner := Self;
     FLines.SendNotification(senrIncOwnedPaintLock, Self);  // DoIncForeignPaintLock
   end;
   inc(FPaintLockOwnerCnt);
-  if FPaintLockOwnerCnt = 1 then begin
-    FLines.SendNotification(senrIncPaintLock, Self);       // DoIncPaintLock
-    FLines.SendNotification(senrAfterIncPaintLock, Self);
-  end;
+  if FPaintLockOwnerCnt = 1 then
+    FLines.BeginUpdate(Self);
 end;
 
 procedure TCustomSynEdit.DecPaintLock;
 begin
-  if FPaintLockOwnerCnt = 1 then begin
-    FLines.SendNotification(senrBeforeDecPaintLock, Self);
-    FLines.SendNotification(senrDecPaintLock, Self);       // DoDecPaintLock
-  end;
+  if FIsInDecPaintLock then exit;
+  if FPaintLockOwnerCnt = 1 then
+    FLines.EndUpdate(Self);
   dec(FPaintLockOwnerCnt);
   if (PaintLockOwner = Self) and (FPaintLockOwnerCnt = 0) then begin
     FLines.SendNotification(senrDecOwnedPaintLock, Self);  // DoDecForeignPaintLock
@@ -1773,6 +1767,7 @@ end;
 
 procedure TCustomSynEdit.DoIncPaintLock(Sender: TObject);
 begin
+  if FIsInDecPaintLock then exit;
   if FPaintLock = 0 then begin
     FOldTopLine := FTopLine;
     FOldTopView := TopView;
@@ -1785,39 +1780,46 @@ end;
 
 procedure TCustomSynEdit.DoDecPaintLock(Sender: TObject);
 begin
-  if (FPaintLock=1) and HandleAllocated then begin
-    ScanRanges;
-    if FChangedLinesStart > 0 then begin
-      InvalidateLines(FChangedLinesStart, FChangedLinesEnd);
-      InvalidateGutterLines(FChangedLinesStart, FChangedLinesEnd);
+  if FIsInDecPaintLock then exit;
+  FIsInDecPaintLock := True;
+  try
+    if (FPaintLock=1) and HandleAllocated then begin
+      ScanRanges;
+      if FChangedLinesStart > 0 then begin
+        InvalidateLines(FChangedLinesStart, FChangedLinesEnd);
+        InvalidateGutterLines(FChangedLinesStart, FChangedLinesEnd);
+      end;
+      FChangedLinesStart:=0;
+      FChangedLinesEnd:=0;
+      FGutter.AutoSizeDigitCount(FTheLinesView.Count); // Todo: Make the LineNumberGutterPart an observer
     end;
-    FChangedLinesStart:=0;
-    FChangedLinesEnd:=0;
+    FCaret.Unlock;            // Maybe after FFoldedLinesView
+    FTrimmedLinesView.UnLock; // Must be unlocked after caret // May Change lines
+    FFoldedLinesView.UnLock;  // after ScanFrom, but before UpdateCaret
+    Dec(FPaintLock);
+    if (FPaintLock = 0) and HandleAllocated then begin
+      ScrollAfterTopLineChanged;
+      if sfScrollbarChanged in fStateFlags then
+        UpdateScrollbars;
+      // must be past UpdateScrollbars; but before UpdateCaret (for ScrollBar-Auto-show)
+      if sfEnsureCursorPos in fStateFlags then
+        EnsureCursorPosVisible;              // TODO: This may call SetTopLine, change order
+                                             // This does Paintlock, should be before final decrease
+      // Must be after EnsureCursorPosVisible (as it does MoveCaretToVisibleArea)
+      if sfCaretChanged in fStateFlags then
+        UpdateCaret;
+      //if sfScrollbarChanged in fStateFlags then
+      //  UpdateScrollbars;
+      if fStatusChanges <> [] then
+        DoOnStatusChange(fStatusChanges);
+      fMarkupHighCaret.CheckState; // Todo: need a global lock, including the markup
+                                   // Todo: Markup can do invalidation, should be before ScrollAfterTopLineChanged;
+    end;
+    if (FPaintLock = 0) then
+      FBlockSelection.AutoExtend := False;
+  finally
+    FIsInDecPaintLock := False;
   end;
-  FCaret.Unlock;            // Maybe after FFoldedLinesView
-  FTrimmedLinesView.UnLock; // Must be unlocked after caret
-  FFoldedLinesView.UnLock;  // after ScanFrom, but before UpdateCaret
-  Dec(FPaintLock);
-  if (FPaintLock = 0) and HandleAllocated then begin
-    ScrollAfterTopLineChanged;
-    if sfScrollbarChanged in fStateFlags then
-      UpdateScrollbars;
-    // must be past UpdateScrollbars; but before UpdateCaret (for ScrollBar-Auto-show)
-    if sfEnsureCursorPos in fStateFlags then
-      EnsureCursorPosVisible;              // TODO: This may call SetTopLine, change order
-                                           // This does Paintlock, should be before final decrease
-    // Must be after EnsureCursorPosVisible (as it does MoveCaretToVisibleArea)
-    if sfCaretChanged in fStateFlags then
-      UpdateCaret;
-    //if sfScrollbarChanged in fStateFlags then
-    //  UpdateScrollbars;
-    if fStatusChanges <> [] then
-      DoOnStatusChange(fStatusChanges);
-    fMarkupHighCaret.CheckState; // Todo: need a global lock, including the markup
-                                 // Todo: Markup can do invalidation, should be before ScrollAfterTopLineChanged;
-  end;
-  if (FPaintLock = 0) then
-    FBlockSelection.AutoExtend := False;
 end;
 
 destructor TCustomSynEdit.Destroy;
@@ -2136,14 +2138,10 @@ begin
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
       rcInval := Rect(0, 0, fGutterWidth, ClientHeight - ScrollBarWidth);
-      if sfLinesChanging in fStateFlags then
-        UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
-      else begin
-        {$IFDEF VerboseSynEditInvalidate}
-        DebugLn(['TCustomSynEdit.InvalidateGutterLines ALL ',dbgs(rcInval)]);
-        {$ENDIF}
-        InvalidateRect(Handle, @rcInval, FALSE);
-      end;
+      {$IFDEF VerboseSynEditInvalidate}
+      DebugLn(['TCustomSynEdit.InvalidateGutterLines ALL ',dbgs(rcInval)]);
+      {$ENDIF}
+      InvalidateRect(Handle, @rcInval, FALSE);
     end else begin
       // pretend we haven't scrolled
       TopFoldLine := FFoldedLinesView.TopLine;
@@ -2164,14 +2162,10 @@ begin
       if (LastLine >= FirstLine) then begin
         rcInval := Rect(0, fTextHeight * FirstLine,
           fGutterWidth, fTextHeight * LastLine);
-        if sfLinesChanging in fStateFlags then
-          UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
-        else begin
-          {$IFDEF VerboseSynEditInvalidate}
-          DebugLn(['TCustomSynEdit.InvalidateGutterLines PART ',dbgs(rcInval)]);
-          {$ENDIF}
-          InvalidateRect(Handle, @rcInval, FALSE);
-        end;
+        {$IFDEF VerboseSynEditInvalidate}
+        DebugLn(['TCustomSynEdit.InvalidateGutterLines PART ',dbgs(rcInval)]);
+        {$ENDIF}
+        InvalidateRect(Handle, @rcInval, FALSE);
       end;
 
       FFoldedLinesView.TopLine := TopFoldLine;
@@ -2189,14 +2183,10 @@ begin
     if (FirstLine = -1) and (LastLine = -1) then begin
       rcInval := ClientRect;
       rcInval.Left := fGutterWidth;
-      if sfLinesChanging in fStateFlags then
-        UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
-      else begin
-        {$IFDEF VerboseSynEditInvalidate}
-        DebugLn(['TCustomSynEdit.InvalidateLines ALL ',dbgs(rcInval)]);
-        {$ENDIF}
-        InvalidateRect(Handle, @rcInval, FALSE);
-      end;
+      {$IFDEF VerboseSynEditInvalidate}
+      DebugLn(['TCustomSynEdit.InvalidateLines ALL ',dbgs(rcInval)]);
+      {$ENDIF}
+      InvalidateRect(Handle, @rcInval, FALSE);
     end else begin
       // pretend we haven't scrolled
       TopFoldLine := FFoldedLinesView.TopLine;
@@ -2217,14 +2207,10 @@ begin
       if (l >= f) then begin
         rcInval := Rect(fGutterWidth, fTextHeight * f,
           ClientWidth-ScrollBarWidth, fTextHeight * l);
-        if sfLinesChanging in fStateFlags then
-          UnionRect(fInvalidateRect, fInvalidateRect, rcInval)
-        else begin
-          {$IFDEF VerboseSynEditInvalidate}
-          DebugLn(['TCustomSynEdit.InvalidateLines PART ',dbgs(rcInval)]);
-          {$ENDIF}
-          InvalidateRect(Handle, @rcInval, FALSE);
-        end;
+        {$IFDEF VerboseSynEditInvalidate}
+        DebugLn(['TCustomSynEdit.InvalidateLines PART ',dbgs(rcInval)]);
+        {$ENDIF}
+        InvalidateRect(Handle, @rcInval, FALSE);
       end;
 
       FFoldedLinesView.TopLine := TopFoldLine;
@@ -2353,26 +2339,6 @@ begin
     Exclude(fStateFlags, sfIgnoreNextChar);
     // Key was handled anyway, so eat it!
     Key:=#0;
-  end;
-end;
-
-procedure TCustomSynEdit.LinesChanging(Sender: TObject);
-begin
-  Include(fStateFlags, sfLinesChanging);
-end;
-
-procedure TCustomSynEdit.LinesChanged(Sender: TObject);
-begin
-  Exclude(fStateFlags, sfLinesChanging);
-  if HandleAllocated then begin
-    UpdateScrollBars;
-    {$IFDEF VerboseSynEditInvalidate}
-    DebugLn(['TCustomSynEdit.LinesChanged ',dbgs(fInvalidateRect)]);
-    {$ENDIF}
-    InvalidateRect(Handle, @fInvalidateRect, False);
-    FillChar(fInvalidateRect, SizeOf(TRect), 0);
-    FGutter.AutoSizeDigitCount(FTheLinesView.Count); // Todo: Make the LineNumberGutterPart an observer
-    TopLine := TopLine;
   end;
 end;
 
@@ -4616,18 +4582,15 @@ begin
   end;
 
   if PaintLock>0 then begin
-    if (FChangedLinesStart<1)
-    or (FChangedLinesStart>AIndex+1) then
+    // FChangedLinesStart is also given to Markup.TextChanged; but it is not used there
+    if (FChangedLinesStart<1) or (FChangedLinesStart>AIndex+1) then
       FChangedLinesStart:=AIndex+1;
-    if (FChangedLinesEnd<1)
-    or (FChangedLinesEnd<AIndex+1) then
-      FChangedLinesEnd:=AIndex + 1 + MaX(ACount, 0)
-    else
-      FChangedLinesEnd := FChangedLinesEnd + MaX(ACount, 0);
-  end else
+    FChangedLinesEnd := MaxInt; // Invalidate the rest of lines
+  end else begin
     ScanRanges;
-  InvalidateLines(AIndex + 1, -1);
-  InvalidateGutterLines(AIndex + 1, -1);
+    InvalidateLines(AIndex + 1, -1);
+    InvalidateGutterLines(AIndex + 1, -1);
+  end;
   if TopLine > AIndex + 1 then
     TopLine := TopLine + ACount;
 end;
@@ -4642,11 +4605,9 @@ begin
     FBeautifyEndLineIdx := AIndex + ACount - 1;
 
   if PaintLock>0 then begin
-    if (FChangedLinesStart<1)
-    or (FChangedLinesStart>AIndex+1) then
+    if (FChangedLinesStart<1) or (FChangedLinesStart>AIndex+1) then
       FChangedLinesStart:=AIndex+1;
-    if (FChangedLinesEnd<1)
-    or (FChangedLinesEnd<AIndex+1) then
+    if (FChangedLinesEnd<1) or (FChangedLinesEnd<AIndex+1) then
       FChangedLinesEnd:=AIndex + 1 + MaX(ACount, 0);
   end else begin
     ScanRanges;
@@ -4667,7 +4628,6 @@ procedure TCustomSynEdit.ListCleared(Sender: TObject);
 begin
   ClearUndo;
   // invalidate the *whole* client area
-  FillChar(fInvalidateRect, SizeOf(TRect), 0);
   Invalidate;
   // set caret and selected block to start of text
   SetBlockBegin(Point(1, 1));
@@ -5467,24 +5427,24 @@ begin
       Value.AttachToLines(FLines);
     end;
     fHighlighter := Value;
-    // Ensure to free all copies in SynEit.Notification too
-    fMarkupHighCaret.Highlighter := Value;
-    fMarkupWordGroup.Highlighter := Value;
-    FFoldedLinesView.Highlighter := Value;
-    FWordBreaker.Reset;
-    if fHighlighter<>nil then begin
-      fTSearch.IdentChars := fHighlighter.IdentChars;
-      FWordBreaker.IdentChars     := fHighlighter.IdentChars;
-      FWordBreaker.WordBreakChars := fHighlighter.WordBreakChars;
-    end else begin
-      fTSearch.ResetIdentChars;
-    end;
-    RecalcCharExtent;
-    FTheLinesView.BeginUpdate;
+    IncPaintLock;
     try
+      // Ensure to free all copies in SynEit.Notification too
+      fMarkupHighCaret.Highlighter := Value;
+      fMarkupWordGroup.Highlighter := Value;
+      FFoldedLinesView.Highlighter := Value;
+      FWordBreaker.Reset;
+      if fHighlighter<>nil then begin
+        fTSearch.IdentChars := fHighlighter.IdentChars;
+        FWordBreaker.IdentChars     := fHighlighter.IdentChars;
+        FWordBreaker.WordBreakChars := fHighlighter.WordBreakChars;
+      end else begin
+        fTSearch.ResetIdentChars;
+      end;
+      RecalcCharExtent;
       ScanRanges;
     finally
-      FTheLinesView.EndUpdate;
+      DecPaintLock;
     end;
     SizeOrFontChanged(TRUE);
   end;

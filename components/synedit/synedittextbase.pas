@@ -44,7 +44,6 @@ type
                            // TStringListLineEditEvent
                            senrEditAction,       // EditInsert, EditDelete, EditLineBreak, ...
                            // TNotifyEvent
-                           senrBeginUpdate, senrEndUpdate,
                            senrCleared,
                            senrUndoRedoAdded,
                            senrModifiedChanged,  // The modified flag was changed
@@ -137,6 +136,8 @@ type
   { TSynEditStrings }
 
   TSynEditStrings = class(TSynEditStringsBase)
+  private
+    FSenderUpdateCount: Integer;
   protected
     FIsUtf8: Boolean;
     function  GetIsUtf8 : Boolean; virtual;
@@ -157,8 +158,13 @@ type
     function  GetIsRedoing: Boolean; virtual; abstract;
     procedure IgnoreSendNotification(AReason: TSynEditNotifyReason;
                                      ReEnable: Boolean); virtual; abstract;
+
+    procedure SetUpdateState(Updating: Boolean); override;
+    procedure SetUpdateState(Updating: Boolean; Sender: TObject); virtual; abstract;
   public
     constructor Create;
+    procedure BeginUpdate(Sender: TObject); overload;
+    procedure EndUpdate(Sender: TObject); overload;
     procedure DeleteLines(Index, NumLines: integer); virtual; abstract;
     procedure InsertLines(Index, NumLines: integer); virtual; abstract;
     procedure InsertStrings(Index: integer; NewStrings: TStrings); virtual; abstract;
@@ -259,7 +265,7 @@ type
     procedure Put(Index: integer; const S: string); override;
     procedure PutObject(Index: integer; AObject: TObject); override;
 
-    procedure SetUpdateState(Updating: Boolean); override;
+    procedure SetUpdateState(Updating: Boolean; Sender: TObject); override;
   public
     constructor Create(ASynStringSource: TSynEditStrings);
 
@@ -427,6 +433,20 @@ begin
   IsUtf8 := True;
 end;
 
+procedure TSynEditStrings.BeginUpdate(Sender: TObject);
+begin
+  if FSenderUpdateCount= 0 then SetUpdateState(true, Sender);
+    inc(FSenderUpdateCount);
+end;
+
+procedure TSynEditStrings.EndUpdate(Sender: TObject);
+begin
+  If FSenderUpdateCount>0 then
+    Dec(FSenderUpdateCount);
+  if FSenderUpdateCount=0 then
+    SetUpdateState(False, Sender);
+end;
+
 procedure TSynEditStrings.AddChangeHandler(AReason: TSynEditNotifyReason;
   AHandler: TStringListLineCountEvent);
 begin
@@ -525,6 +545,11 @@ begin
     sl.Free;
     EndUpdate;
   end;
+end;
+
+procedure TSynEditStrings.SetUpdateState(Updating: Boolean);
+begin
+  SetUpdateState(Updating, nil);
 end;
 
 function TSynEditStrings.LogicalToPhysicalPos(const p : TPoint) : TPoint;
@@ -765,12 +790,9 @@ begin
   Result := fSynStrings.GetPhysicalCharWidths(Line, Index);
 end;
 
-procedure TSynEditStringsLinked.SetUpdateState(Updating: Boolean);
+procedure TSynEditStringsLinked.SetUpdateState(Updating: Boolean; Sender: TObject);
 begin
-  if Updating then
-    fSynStrings.BeginUpdate
-  else
-   fSynStrings.EndUpdate;
+  fSynStrings.SetUpdateState(Updating, Sender);
 end;
 
 procedure TSynEditStringsLinked.EditInsert(LogX, LogY: Integer; AText: String);
@@ -1234,7 +1256,7 @@ function TSynEditStorageMem.GetItemPointer(Index: Integer): Pointer;
 begin
   {$IFDEF AssertSynMemIndex}
   if (Index < 0) or (Index >= FCapacity) or (FCount > FCapacity) then
-    raise Exception.Create('Bad Index');
+    raise Exception.Create(Format('Bad Index cnt= %d cap= %d idx= %d',[FCount, FCapacity, Index]));
   {$ENDIF}
   Result := Pointer(FMem + Index * ItemSize);
 end;

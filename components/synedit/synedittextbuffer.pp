@@ -133,6 +133,7 @@ type
     FRedoList: TSynEditUndoList;
     FUndoList: TSynEditUndoList;
     FIsUndoing, FIsRedoing: Boolean;
+    FIsInDecPaintLock: Boolean;
 
     FModified: Boolean;
     FTextChangeStamp: int64;
@@ -174,7 +175,7 @@ type
     procedure PutObject(Index: integer; AObject: TObject); override;
     procedure SetCapacity(NewCapacity: integer);
       {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}                             //mh 2000-10-18
-    procedure SetUpdateState(Updating: Boolean); override;
+    procedure SetUpdateState(Updating: Boolean; Sender: TObject); override;
 
     procedure UndoEditLinesDelete(LogY, ACount: Integer);
     procedure IncreaseTextChangeStamp;
@@ -1007,12 +1008,20 @@ begin
   fList.SetCapacity(NewCapacity);
 end;
 
-procedure TSynEditStringList.SetUpdateState(Updating: Boolean);
+procedure TSynEditStringList.SetUpdateState(Updating: Boolean; Sender: TObject);
 begin
+  if FIsInDecPaintLock then exit;
   if Updating then begin
-    FNotifyLists[senrBeginUpdate].CallNotifyEvents(Self);
+    SendNotification(senrIncPaintLock, Sender);       // DoIncPaintLock
+    SendNotification(senrAfterIncPaintLock, Sender);
   end else begin
-    FNotifyLists[senrEndUpdate].CallNotifyEvents(Self);
+    FIsInDecPaintLock := True;
+    try
+      SendNotification(senrBeforeDecPaintLock, Sender);
+      SendNotification(senrDecPaintLock, Sender);       // DoDecPaintLock
+    finally
+      FIsInDecPaintLock := False;
+    end;
   end;
 end;
 

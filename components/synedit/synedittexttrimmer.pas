@@ -585,16 +585,21 @@ begin
     DoCaretChanged(fCaret);
   end;
   FIsTrimming := True;
-  for i := 0 to fLockList.Count-1 do begin
-    index := Integer(Pointer(fLockList.Objects[i]));
-    slen := length(fLockList[i]);
-    if (slen > 0) and (index >= 0) and (index < fSynStrings.Count) then begin
-      ltext := fSynStrings[index];
-      fSynStrings[index] := ltext;                                            // trigger OnPutted, so the line gets repainted
-      CurUndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(Index+1, fLockList[i]));
+  BeginUpdate;
+  try
+    for i := 0 to fLockList.Count-1 do begin
+      index := Integer(Pointer(fLockList.Objects[i]));
+      slen := length(fLockList[i]);
+      if (slen > 0) and (index >= 0) and (index < fSynStrings.Count) then begin
+        ltext := fSynStrings[index];
+        fSynStrings[index] := ltext;                                            // trigger OnPutted, so the line gets repainted
+        CurUndoList.AppendToLastChange(TSynEditUndoTrimForget.Create(Index+1, fLockList[i]));
+      end;
     end;
+  finally
+    EndUpdate;
+    FIsTrimming := False;
   end;
-  FIsTrimming := False;
   FLineEdited := False;
   fLockList.Clear;
 end;

@@ -1171,7 +1171,7 @@ var
 
 begin
   FIsSettingText := True;
-  FLines.BeginUpdate;
+  FLines.BeginUpdate; // Todo: can we get here, without paintlock?
   try
     // BB is lower than BE
     BB := FirstLineBytePos;
