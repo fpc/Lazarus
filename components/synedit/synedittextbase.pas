@@ -435,8 +435,9 @@ end;
 
 procedure TSynEditStrings.BeginUpdate(Sender: TObject);
 begin
-  if FSenderUpdateCount= 0 then SetUpdateState(true, Sender);
-    inc(FSenderUpdateCount);
+  if FSenderUpdateCount = 0 then
+    SetUpdateState(true, Sender);
+  inc(FSenderUpdateCount);
 end;
 
 procedure TSynEditStrings.EndUpdate(Sender: TObject);
@@ -549,7 +550,11 @@ end;
 
 procedure TSynEditStrings.SetUpdateState(Updating: Boolean);
 begin
-  SetUpdateState(Updating, nil);
+  // Update/check "FSenderUpdateCount", to avoid extra locking/unlocking
+  if Updating then
+    BeginUpdate(nil)
+  else
+    EndUpdate(nil);
 end;
 
 function TSynEditStrings.LogicalToPhysicalPos(const p : TPoint) : TPoint;
@@ -792,7 +797,11 @@ end;
 
 procedure TSynEditStringsLinked.SetUpdateState(Updating: Boolean; Sender: TObject);
 begin
-  fSynStrings.SetUpdateState(Updating, Sender);
+  // Update/check "FSenderUpdateCount" in linked lists too (avoid extra locking/unlocking)
+  if Updating then
+    fSynStrings.BeginUpdate(Sender)
+  else
+    fSynStrings.EndUpdate(Sender);
 end;
 
 procedure TSynEditStringsLinked.EditInsert(LogX, LogY: Integer; AText: String);
