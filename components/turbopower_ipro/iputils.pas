@@ -2760,7 +2760,7 @@ begin
     try
       Reg := TRegistry.Create;
       Reg.RootKey := HKEY_CLASSES_ROOT;
-      if Reg.OpenKey(Ext, False) then
+      if Reg.OpenKeyReadOnly(Ext) then
         Result := Reg.ReadString('Content Type');
     finally
       Reg.CloseKey;
