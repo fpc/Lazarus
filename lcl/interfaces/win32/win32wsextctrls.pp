@@ -668,29 +668,27 @@ end;
 
 class procedure TWin32WSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);
 var
-  Handle: HWND;
-  PageHandle: HWND;
-  OldIndex, OldRealIndex, NewRealIndex: Integer;
+  NotebookHandle, OldPageHandle, NewPageHandle: HWND;
+  NewRealIndex: Integer;
 begin
-  Handle := ANotebook.Handle;
-  OldRealIndex := SendMessage(Handle, TCM_GETCURSEL, 0, 0);
-  OldIndex := NotebookPageRealToLCLIndex(ANotebook, OldRealIndex);
+  NotebookHandle := ANotebook.Handle;
+  OldPageHandle := GetTopWindow(NotebookHandle);
+  NewPageHandle := 0;
   NewRealIndex := GetPageRealIndex(ANotebook, AIndex);
-  SendMessage(Handle, TCM_SETCURSEL, Windows.WParam(NewRealIndex), 0);
+
+  SendMessage(NotebookHandle, TCM_SETCURSEL, Windows.WParam(NewRealIndex), 0);
   if not (csDestroying in ANotebook.ComponentState) then
   begin
     // create handle if not already done, need to show!
     if (AIndex >= 0) and (AIndex < ANotebook.PageCount) then
     begin
-      PageHandle := ANotebook.CustomPage(AIndex).Handle;
-      SetWindowPos(PageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
-      SendSelChangeMessage(ANotebook, Handle, AIndex);
+      NewPageHandle := ANotebook.Page[AIndex].Handle;
+      Windows.SetWindowPos(NewPageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW or SWP_NOACTIVATE);
+      SendSelChangeMessage(ANotebook, NotebookHandle, AIndex);
       NotebookFocusNewControl(ANotebook, AIndex);
     end;
-    if (OldIndex >= 0) and (OldIndex <> AIndex) and
-       (OldIndex < ANotebook.PageCount) and
-       (ANotebook.CustomPage(OldIndex).HandleAllocated) then
-      ShowWindow(ANotebook.CustomPage(OldIndex).Handle, SW_HIDE);
+    if (OldPageHandle <> 0) and (OldPageHandle <> NewPageHandle) then
+      Windows.SetWindowPos(OldPageHandle, 0, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOZORDER or SWP_HIDEWINDOW or SWP_NOACTIVATE);
   end;
 end;
 
