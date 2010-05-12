@@ -627,7 +627,7 @@ begin
     Result.Top := Result.Top - Orect.Top;
     Result.Bottom := Result.Bottom - Orect.Top;
     Result.Left := Result.Left - Orect.Left;
-    Result.Right := Result.Right - Orect.Right;
+    Result.Right := Result.Right - Orect.Left;
   end
   else
     Result := inherited GetTabRect(ANotebook, AIndex);
