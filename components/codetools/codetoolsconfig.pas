@@ -407,8 +407,8 @@ begin
         ms.Position:=0;
         {$IFDEF NewXMLCfg}
         Laz2_XMLRead.ReadXMLFile(ADoc, ms);
-        Laz_XMLRead.ReadXMLFile(ADoc, ms);
         {$ELSE}
+        Laz_XMLRead.ReadXMLFile(ADoc, ms);
         {$ENDIF}
         exit; // success
       finally

@@ -128,7 +128,7 @@ type
     property CaseSensitive: boolean read FCaseSensitive;
     property Tree: TAVLTree read FTree;
     function AsText: string;
-    function Equals(OtherTree: TStringToStringTree): boolean;
+    function Equals(OtherTree: TStringToStringTree): boolean; reintroduce;
     procedure Assign(Source: TStringToStringTree);
     procedure WriteDebugReport;
     function CalcMemSize: PtrUint;
