@@ -63,7 +63,6 @@ begin
 
   if Parent.HandleAllocated then
   begin
-    TCustomNotebook(Parent).AddRemovePageHandle(Self);
     if FTabVisible then
     begin
       // check if there was no visible tab
@@ -73,6 +72,7 @@ begin
     else
       // Check if the page is active and set a new pageindex
       TCustomNotebook(Parent).PageRemoved(PageIndex);
+    TCustomNotebook(Parent).AddRemovePageHandle(Self);
   end;
 end;
 
@@ -259,11 +259,6 @@ end;
 function TCustomPage.CanTab: boolean;
 begin
   Result := False;
-end;
-
-function TCustomPage.AutoSizeDelayed: boolean;
-begin
-  Result := (not (pfAdded in FFlags)) or (inherited AutoSizeDelayed);
 end;
 
 // included by extctrls.pp

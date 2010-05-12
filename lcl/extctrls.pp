@@ -75,7 +75,6 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     function CanTab: boolean; override;
-    function AutoSizeDelayed: boolean; override;
     function IsControlVisible: Boolean; override;
     function HandleObjectShouldBeVisible: boolean; override;
     function VisibleIndex: integer;
