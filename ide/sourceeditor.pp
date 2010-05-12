@@ -7562,25 +7562,20 @@ end;
 procedure TSourceDragableNotebook.PaintWindow(DC: HDC);
 var
   Points: Array [0..3] of TPoint;
-  h, x: Integer;
+  h: Integer;
 begin
   inherited PaintWindow(DC);
+  if not (TabPosition in [tpTop, tpBottom]) then exit;
   if FDragOverIndex < 0 then exit;
 
-  x := 0;
-  h := (Abs(FDragOverTabRect.Bottom - FDragOverTabRect.Top) - 4) div 2;
+  h := Min( (Abs(FDragOverTabRect.Bottom - FDragOverTabRect.Top) - 4) div 2,
+            (Abs(FDragOverTabRect.Left - FDragOverTabRect.Right) - 4) div 2 );
   if FDragToRightSide then begin
-    if (FDragNextToTabRect.Left < FDragOverTabRect.Right) and
-       (FDragOverIndex < PageCount - 1)
-    then
-      x := FDragOverTabRect.Right - FDragNextToTabRect.Left
-    else
-      x := 8;
-    Points[0].X := FDragOverTabRect.Right - 2 - h - x;
+    Points[0].X := FDragOverTabRect.Right - 2 - h;
     Points[0].y := FDragOverTabRect.Top + 2;
-    Points[1].X := FDragOverTabRect.Right - 2 - h - x;
+    Points[1].X := FDragOverTabRect.Right - 2 - h;
     Points[1].y := FDragOverTabRect.Bottom - 2;
-    Points[2].X := FDragOverTabRect.Right - 2 - x;
+    Points[2].X := FDragOverTabRect.Right - 2;
     Points[2].y := FDragOverTabRect.Top + 2 + h;
     Points[3] := Points[0];
     Polygon(DC, @Points, 4, False);
@@ -7596,12 +7591,6 @@ begin
       Polygon(DC, @Points, 4, False);
     end;
   end else begin
-    if (FDragNextToTabRect.Right < FDragOverTabRect.Left) and
-       (FDragOverIndex > 1)
-    then
-      x := FDragOverTabRect.Left - FDragNextToTabRect.Right
-    else
-      x := 8;
     Points[0].X := FDragOverTabRect.Left + 2 + h;
     Points[0].y := FDragOverTabRect.Top + 2;
     Points[1].X := FDragOverTabRect.Left + 2 + h;
@@ -7612,11 +7601,11 @@ begin
     Polygon(DC, @Points, 4, True);
 
     if (FDragOverIndex > 0) then begin
-      Points[0].X := FDragNextToTabRect.Right - 2 - h - x;
+      Points[0].X := FDragNextToTabRect.Right - 2 - h;
       Points[0].y := FDragNextToTabRect.Top + 2;
-      Points[1].X := FDragNextToTabRect.Right - 2 - h - x;
+      Points[1].X := FDragNextToTabRect.Right - 2 - h;
       Points[1].y := FDragNextToTabRect.Bottom - 2;
-      Points[2].X := FDragNextToTabRect.Right - 2 - x;
+      Points[2].X := FDragNextToTabRect.Right - 2;
       Points[2].y := FDragNextToTabRect.Top + 2 + h;
       Points[3] := Points[0];
       Polygon(DC, @Points, 4, False);
