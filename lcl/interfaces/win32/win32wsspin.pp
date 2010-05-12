@@ -202,7 +202,12 @@ begin
   // init updown control
   Info := AllocWindowInfo(UpDown);
   Info^.AWinControl := AWinControl;
-  Info^.DefWndProc := Windows.WNDPROC(SetWindowLong(UpDown, GWL_WNDPROC, PtrInt(@SpinUpDownWndProc)));
+  {$IFDEF WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    Info^.DefWndProc := Windows.WNDPROC(SetWindowLongPtrW(UpDown, GWL_WNDPROC, PtrInt(@SpinUpDownWndProc)))
+  else
+  {$ENDIF}
+  Info^.DefWndProc := Windows.WNDPROC(SetWindowLongPtr(UpDown, GWL_WNDPROC, PtrInt(@SpinUpDownWndProc)));
   SetProp(UpDown, 'WinControl', PtrUInt(AWinControl));
   Result := Params.Window;
 end;

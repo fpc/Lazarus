@@ -210,7 +210,8 @@ function SetTextCharacterExtra(_HDC: HDC; NCharExtra: Integer): Integer; overrid
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetViewPortExtEx(DC: HDC; XExtent, YExtent : Integer; OldSize: PSize): Boolean; override;
 function SetViewPortOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean; override;
-function SetWindowExtEx(DC: HDC; XExtent, YExtent: Integer; OldSize: PSize): Boolean; override;function SetWindowLong(Handle: HWND; Idx: Integer; NewLong: PtrInt): PtrInt; override;
+function SetWindowExtEx(DC: HDC; XExtent, YExtent: Integer; OldSize: PSize): Boolean; override;
+function SetWindowLong(Handle: HWND; Idx: Integer; NewLong: PtrInt): PtrInt; override;
 function SetWindowOrgEx(DC: HDC; NewX, NewY: Integer; OldPoint: PPoint): Boolean; override;
 function SetWindowPos(HWnd: HWND; HWndInsertAfter: HWND; X, Y, CX, CY: Integer; UFlags: UINT): Boolean; override;
 function SetWindowRgn(hWnd: HWND; hRgn: HRGN; bRedraw: Boolean):longint; override;
