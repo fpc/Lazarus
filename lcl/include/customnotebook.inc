@@ -406,12 +406,12 @@ procedure TCustomNotebook.SetActivePage(const Value: String);
 var
   i: Integer;
 begin
-  for i := 0 to fPageList.Count - 1 do
+  for i := 0 to FPageList.Count - 1 do
   begin
-    if TCustomPage(fPageList[i]).Caption = Value then
+    if TCustomPage(FPageList[i]).Caption = Value then
     begin
       SetPageIndex(i);
-      Break;
+      Exit;
     end;
   end;
 end;
@@ -457,9 +457,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.SetPageIndex(AValue: Integer);
 begin
-  if (csLoading in ComponentState) then FLoadedPageIndex:=AValue;
+  if (csLoading in ComponentState) then FLoadedPageIndex := AValue;
   //debugln('TCustomNotebook.SetPageIndex A ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated),' ',dbgs(ComponentState));
-  if (AValue < 0) or (AValue >= PageCount) then exit;
+  if (AValue < -1) or (AValue >= PageCount) then Exit;
   if FPageIndex = AValue then exit;
   if not CanChangePageIndex then exit;
   //debugln('TCustomNotebook.SetPageIndex B ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
@@ -809,7 +809,8 @@ end;
 procedure TCustomNotebook.Loaded;
 begin
   inherited Loaded;
-  if FLoadedPageIndex >= 0 then PageIndex := FLoadedPageIndex;
+  if FLoadedPageIndex >= -1 then
+    PageIndex := FLoadedPageIndex;
   FLoadedPageIndex := -1;
   //DebugLn(['TCustomNotebook.Loaded ',DbgSName(Self),' fPageIndex=',fPageIndex]);
   FPageIndexOnLastChange := PageIndex;
