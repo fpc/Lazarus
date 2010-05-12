@@ -7502,7 +7502,13 @@ begin
     LastNRect := FDragNextToTabRect;
     FDragOverIndex := TabIndex;
     FDragOverTabRect := TabRect(TabIndex);
-    FDragToRightSide := X > (FDragOverTabRect.Left + FDragOverTabRect.Right) div 2;
+
+    if (TabPosition in [tpLeft, tpRight]) then
+      // Drag-To-Bottom/Lower
+      FDragToRightSide := Y > (FDragOverTabRect.Top + FDragOverTabRect.Bottom) div 2
+    else
+      FDragToRightSide := X > (FDragOverTabRect.Left + FDragOverTabRect.Right) div 2;
+
     if (Source = Self) and (TabIndex = FMouseDownTabIndex - 1) then
       FDragToRightSide := False;
     if (Source = Self) and (TabIndex = FMouseDownTabIndex + 1) then
@@ -7562,56 +7568,95 @@ end;
 procedure TSourceDragableNotebook.PaintWindow(DC: HDC);
 var
   Points: Array [0..3] of TPoint;
-  h: Integer;
-begin
-  inherited PaintWindow(DC);
-  if not (TabPosition in [tpTop, tpBottom]) then exit;
-  if FDragOverIndex < 0 then exit;
 
-  h := Min( (Abs(FDragOverTabRect.Bottom - FDragOverTabRect.Top) - 4) div 2,
-            (Abs(FDragOverTabRect.Left - FDragOverTabRect.Right) - 4) div 2 );
-  if FDragToRightSide then begin
-    Points[0].X := FDragOverTabRect.Right - 2 - h;
-    Points[0].y := FDragOverTabRect.Top + 2;
-    Points[1].X := FDragOverTabRect.Right - 2 - h;
-    Points[1].y := FDragOverTabRect.Bottom - 2;
-    Points[2].X := FDragOverTabRect.Right - 2;
-    Points[2].y := FDragOverTabRect.Top + 2 + h;
+  procedure DrawLeftArrow(ARect: TRect);
+  var y, h: Integer;
+  begin
+    h := Min( (Abs(ARect.Bottom - ARect.Top) - 4) div 2,
+              (Abs(ARect.Left - ARect.Right) - 4) div 2 );
+    y := (ARect.Top + ARect.Bottom) div 2;
+    Points[0].X := ARect.Left + 2 + h;
+    Points[0].y := y - h;
+    Points[1].X := ARect.Left + 2 + h;
+    Points[1].y := y + h;
+    Points[2].X := ARect.Left + 2;
+    Points[2].y := y;
     Points[3] := Points[0];
     Polygon(DC, @Points, 4, False);
-
-    if (FDragOverIndex < PageCount - 1) then begin
-      Points[0].X := FDragNextToTabRect.Left + 2 + h;
-      Points[0].y := FDragNextToTabRect.Top + 2;
-      Points[1].X := FDragNextToTabRect.Left + 2 + h;
-      Points[1].y := FDragNextToTabRect.Bottom - 2;
-      Points[2].X := FDragNextToTabRect.Left + 2;
-      Points[2].y := FDragNextToTabRect.Top + 2 + h;
-      Points[3] := Points[0];
-      Polygon(DC, @Points, 4, False);
-    end;
-  end else begin
-    Points[0].X := FDragOverTabRect.Left + 2 + h;
-    Points[0].y := FDragOverTabRect.Top + 2;
-    Points[1].X := FDragOverTabRect.Left + 2 + h;
-    Points[1].y := FDragOverTabRect.Bottom - 2;
-    Points[2].X := FDragOverTabRect.Left + 2;
-    Points[2].y := FDragOverTabRect.Top + 2 + h;
+  end;
+  procedure DrawRightArrow(ARect: TRect);
+  var y, h: Integer;
+  begin
+    h := Min( (Abs(ARect.Bottom - ARect.Top) - 4) div 2,
+              (Abs(ARect.Left - ARect.Right) - 4) div 2 );
+    y := (ARect.Top + ARect.Bottom) div 2;
+    Points[0].X := ARect.Right - 2 - h;
+    Points[0].y := y - h;
+    Points[1].X := ARect.Right - 2 - h;
+    Points[1].y := y + h;
+    Points[2].X := ARect.Right - 2;
+    Points[2].y := y;
     Points[3] := Points[0];
-    Polygon(DC, @Points, 4, True);
-
-    if (FDragOverIndex > 0) then begin
-      Points[0].X := FDragNextToTabRect.Right - 2 - h;
-      Points[0].y := FDragNextToTabRect.Top + 2;
-      Points[1].X := FDragNextToTabRect.Right - 2 - h;
-      Points[1].y := FDragNextToTabRect.Bottom - 2;
-      Points[2].X := FDragNextToTabRect.Right - 2;
-      Points[2].y := FDragNextToTabRect.Top + 2 + h;
-      Points[3] := Points[0];
-      Polygon(DC, @Points, 4, False);
-    end;
+    Polygon(DC, @Points, 4, False);
+  end;
+  procedure DrawTopArrow(ARect: TRect);
+  var x, h: Integer;
+  begin
+    h := Min( (Abs(ARect.Bottom - ARect.Top) - 4) div 2,
+              (Abs(ARect.Left - ARect.Right) - 4) div 2 );
+    x := (ARect.Left + ARect.Right) div 2;
+    Points[0].Y := ARect.Top + 2 + h;
+    Points[0].X := x - h;
+    Points[1].Y := ARect.Top + 2 + h;
+    Points[1].X := x + h;
+    Points[2].Y	 := ARect.Top + 2;
+    Points[2].X := x;
+    Points[3] := Points[0];
+    Polygon(DC, @Points, 4, False);
+  end;
+  procedure DrawBottomArrow(ARect: TRect);
+  var x, h: Integer;
+  begin
+    h := Min( (Abs(ARect.Bottom - ARect.Top) - 4) div 2,
+              (Abs(ARect.Left - ARect.Right) - 4) div 2 );
+    x := (ARect.Left + ARect.Right) div 2;
+    Points[0].Y := ARect.Bottom - 2 - h;
+    Points[0].X := X - h;
+    Points[1].Y := ARect.Bottom - 2 - h;
+    Points[1].X := X + h;
+    Points[2].Y := ARect.Bottom - 2;
+    Points[2].X := X;
+    Points[3] := Points[0];
+    Polygon(DC, @Points, 4, False);
   end;
 
+begin
+  inherited PaintWindow(DC);
+  if FDragOverIndex < 0 then exit;
+
+  if (TabPosition in [tpLeft, tpRight]) then begin
+    if FDragToRightSide then begin
+      DrawBottomArrow(FDragOverTabRect);
+      if (FDragOverIndex < PageCount - 1) then
+        DrawTopArrow(FDragNextToTabRect);
+    end else begin
+      DrawTopArrow(FDragOverTabRect);
+      if (FDragOverIndex > 0) then
+        DrawBottomArrow(FDragNextToTabRect);
+    end;
+  end
+  else
+  begin
+    if FDragToRightSide then begin
+      DrawRightArrow(FDragOverTabRect);
+      if (FDragOverIndex < PageCount - 1) then
+        DrawLeftArrow(FDragNextToTabRect);
+    end else begin
+      DrawLeftArrow(FDragOverTabRect);
+      if (FDragOverIndex > 0) then
+        DrawRightArrow(FDragNextToTabRect);
+    end;
+  end;
 end;
 
 procedure TSourceDragableNotebook.InitDrag;
