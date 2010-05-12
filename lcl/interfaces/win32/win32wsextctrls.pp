@@ -405,6 +405,13 @@ end;
 
 class function TWin32WSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
+const
+  TabPositionFlags: array[TTabPosition] of DWord = (
+ { tpTop    } 0,
+ { tpBottom } TCS_BOTTOM,
+ { tpLeft   } TCS_VERTICAL or TCS_MULTILINE,
+ { tpRight  } TCS_VERTICAL or TCS_RIGHT or TCS_MULTILINE
+  );
 var
   Params: TCreateWindowExParams;
 begin
@@ -413,16 +420,7 @@ begin
   // customization of Params
   with Params do
   begin
-    case TCustomNoteBook(AWinControl).TabPosition of
-      tpTop:
-        Flags := Flags and not(TCS_VERTICAL or TCS_MULTILINE or TCS_BOTTOM);
-      tpBottom:
-        Flags := (Flags or TCS_BOTTOM) and not (TCS_VERTICAL or TCS_MULTILINE);
-      tpLeft:
-        Flags := (Flags or TCS_VERTICAL or TCS_MULTILINE) and not TCS_RIGHT;
-      tpRight:
-        Flags := Flags or (TCS_VERTICAL or TCS_RIGHT or TCS_MULTILINE);
-    end;
+    Flags := Flags or TabPositionFlags[TCustomNoteBook(AWinControl).TabPosition];
     if nboMultiLine in TCustomNotebook(AWinControl).Options then
       Flags := Flags or TCS_MULTILINE;
     pClassName := WC_TABCONTROL;
@@ -553,8 +551,6 @@ begin
   WinHandle := ANotebook.Handle;
   // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
   TWin32WidgetSet(WidgetSet).GetClientRect(WinHandle, R);
-  R.Right := R.Right - R.Left;
-  R.Bottom := R.Bottom - R.Top;
   for I := 0 to ANotebook.PageCount - 1 do
   begin
     lPage := ANotebook.Page[I];

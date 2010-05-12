@@ -890,9 +890,9 @@ var
   TheWinControl: TWinControl;
   ARect: TRect;
 begin
-  Result:=false;
+  Result := False;
   if (Sender = nil) or (not (Sender is TWinControl)) then exit;
-  TheWinControl:=TWinControl(Sender);
+  TheWinControl := TWinControl(Sender);
   if not TheWinControl.HandleAllocated then exit;
   Handle := TheWinControl.Handle;
   FillChar(ORect, SizeOf(ORect), 0);
@@ -943,7 +943,7 @@ begin
     Dec(TopOffset, Windows.GetSystemMetrics(SM_CYEDGE));
   end;
 }
-  Result:=true;
+  Result := True;
 end;
 
 function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
@@ -951,7 +951,7 @@ var
   OwnerObject: TObject;
 begin
   OwnerObject := GetWin32WindowInfo(Handle)^.WinControl;
-  Result:=GetLCLClientBoundsOffset(OwnerObject, Rect);
+  Result := GetLCLClientBoundsOffset(OwnerObject, Rect);
 end;
 
 procedure LCLBoundsToWin32Bounds(Sender: TObject;
