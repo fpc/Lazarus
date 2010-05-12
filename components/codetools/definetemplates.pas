@@ -673,6 +673,8 @@ type
     procedure Assign(Item: TFPCTargetConfigCache);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromFile(Filename: string);
+    procedure SaveToFile(Filename: string);
     function NeedsUpdate: boolean;
     function Update(TestFilename: string; ExtraOptions: string = '';
                     const OnProgress: TDefinePoolProgress = nil): boolean;
@@ -708,8 +710,12 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure Assign(Cache: TFPCSourceCache);
+    function Equals(Cache: TFPCSourceCache): boolean;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromFile(Filename: string);
+    procedure SaveToFile(Filename: string);
     procedure Update(const OnProgress: TDefinePoolProgress = nil);
     procedure IncreaseChangeStamp;
     property ChangeStamp: integer read FChangeStamp;
@@ -726,6 +732,8 @@ type
     procedure Clear;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromFile(Filename: string);
+    procedure SaveToFile(Filename: string);
     function Find(const Directory: string;
                   CreateIfNotExists: boolean): TFPCSourceCache;
   end;
@@ -6643,6 +6651,30 @@ begin
   end;
 end;
 
+procedure TFPCTargetConfigCache.LoadFromFile(Filename: string);
+var
+  XMLConfig: TXMLConfig;
+begin
+  XMLConfig:=TXMLConfig.Create(Filename);
+  try
+    LoadFromXMLConfig(XMLConfig,'FPCConfig/');
+  finally
+    XMLConfig.Free;
+  end;
+end;
+
+procedure TFPCTargetConfigCache.SaveToFile(Filename: string);
+var
+  XMLConfig: TXMLConfig;
+begin
+  XMLConfig:=TXMLConfig.CreateClean(Filename);
+  try
+    SaveToXMLConfig(XMLConfig,'FPCConfig/');
+  finally
+    XMLConfig.Free;
+  end;
+end;
+
 function TFPCTargetConfigCache.NeedsUpdate: boolean;
 var
   i: Integer;
@@ -6972,6 +7004,20 @@ begin
   FreeAndNil(Files);
 end;
 
+procedure TFPCSourceCache.Assign(Cache: TFPCSourceCache);
+begin
+  Directory:=Cache.Directory;
+  Files.Assign(Cache.Files);
+end;
+
+function TFPCSourceCache.Equals(Cache: TFPCSourceCache): boolean;
+begin
+  Result:=false;
+  if Directory<>Cache.Directory then exit;
+  if not Files.Equals(Cache.Files) then exit;
+  Result:=true;
+end;
+
 procedure TFPCSourceCache.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
@@ -7012,6 +7058,30 @@ begin
     XMLConfig.SetDeleteValue(Path+'Files',s,'');
   finally
     List.Free;
+  end;
+end;
+
+procedure TFPCSourceCache.LoadFromFile(Filename: string);
+var
+  XMLConfig: TXMLConfig;
+begin
+  XMLConfig:=TXMLConfig.Create(Filename);
+  try
+    LoadFromXMLConfig(XMLConfig,'FPCSourceDirectory/');
+  finally
+    XMLConfig.Free;
+  end;
+end;
+
+procedure TFPCSourceCache.SaveToFile(Filename: string);
+var
+  XMLConfig: TXMLConfig;
+begin
+  XMLConfig:=TXMLConfig.CreateClean(Filename);
+  try
+    SaveToXMLConfig(XMLConfig,'FPCSourceDirectory/');
+  finally
+    XMLConfig.Free;
   end;
 end;
 
@@ -7098,6 +7168,30 @@ begin
     Node:=fItems.FindSuccessor(Node);
   end;
   XMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
+end;
+
+procedure TFPCSourceCaches.LoadFromFile(Filename: string);
+var
+  XMLConfig: TXMLConfig;
+begin
+  XMLConfig:=TXMLConfig.Create(Filename);
+  try
+    LoadFromXMLConfig(XMLConfig,'FPCSourceDirectories/');
+  finally
+    XMLConfig.Free;
+  end;
+end;
+
+procedure TFPCSourceCaches.SaveToFile(Filename: string);
+var
+  XMLConfig: TXMLConfig;
+begin
+  XMLConfig:=TXMLConfig.CreateClean(Filename);
+  try
+    SaveToXMLConfig(XMLConfig,'FPCSourceDirectories/');
+  finally
+    XMLConfig.Free;
+  end;
 end;
 
 function TFPCSourceCaches.Find(const Directory: string;
