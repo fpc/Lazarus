@@ -463,7 +463,9 @@ Notebooks?
   //adjust host form
     if site.DockManager = nil then
       TAppDockManager.Create(site);
+    site.DisableAutoSizing;
     site.DockManager.LoadFromStream(Stream);
+    site.EnableAutoSizing;
     site.Show;
   end;
 end;
@@ -739,6 +741,7 @@ const
     hds: boolean;
     Site: TWinControl;
     j: integer;
+    r: TRect;
   begin
     ctl := ASite;
     s := Format('Site=%s (%d,%d)[%d,%d]', [SiteName(ctl),
@@ -747,8 +750,13 @@ const
       hds := ctl.HostDockSite <> nil;
       if hds then begin
         Site := ctl.HostDockSite;
-        if Site <> nil then
+        if Site <> nil then begin
           n := ' in ' + SiteName(Site) + '@' + OrientString[ctl.DockOrientation];
+          if assigned(Site.DockManager) then begin
+            Site.DockManager.GetControlBounds(ctl, r);
+            n := n + Format(' in [%d,%d]', [r.Right, r.Bottom]);
+          end;
+        end;
       end else begin
         Site := ctl.Parent;
         if Site <> nil then
@@ -767,6 +775,12 @@ const
       s := OrientString[ctl.DockOrientation];
       DebugLn('  %s.Client=%s.%s@%s (%d,%d)[%d,%d]', [SiteName(ASite), ctl.Owner.Name, SiteName(ctl), s,
         ctl.Left, ctl.Top, ctl.Width, ctl.Height]);
+      if assigned(Site.DockManager) then begin
+        Site.DockManager.GetControlBounds(ctl, r);
+        //n := Format(' in [%d,%d]', [r.Right, r.Bottom]);
+        //DebugLn(n);
+        DebugLn(' in ', DbgS(r));
+      end;
       //if ctl is TFloatingSite then
       if (ctl is TWinControl) and wc.DockSite then
         DumpSite(wc);
@@ -778,6 +792,8 @@ var
   cmp: TComponent;
   wc: TWinControl absolute cmp;
   ctl: TControl absolute cmp;
+  //zone: TEasyZone;
+  r: TRect;
 begin
 (* Dump registered docking sites.
   Elastic panels have no name.
@@ -795,8 +811,10 @@ begin
     if (cmp is TWinControl) and wc.DockSite then
       DumpSite(wc)
     else if ctl is TControl then begin
-      DebugLn('Client=%s in %s (%d,%d)[%d,%d]', [SiteName(ctl), SiteName(ctl.HostDockSite),
-        ctl.Left, ctl.Top, ctl.Width, ctl.Height]);
+      wc.DockManager.GetControlBounds(ctl, r);
+      DebugLn('Client=%s in %s (%d,%d)[%d,%d] in [%d,%d]', [SiteName(ctl), SiteName(ctl.HostDockSite),
+        ctl.Left, ctl.Top, ctl.Width, ctl.Height,
+        r.Right, r.Bottom]);
     end;
   end;
   DebugLn('--- dump forms ---');

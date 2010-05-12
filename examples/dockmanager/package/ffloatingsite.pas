@@ -147,6 +147,7 @@ Fix: disallow TControls to become floating.
 *)
 //try to distinguish between TControl and TWinControl (TCustomForm?)
   Allow := (NewTarget <> nil) or (Client is TWinControl); //seems to be safe
+  DebugLn('TFloatingSite undodock, allow ', DbgS(Allow));
   if not Allow then
     exit; //all done
 

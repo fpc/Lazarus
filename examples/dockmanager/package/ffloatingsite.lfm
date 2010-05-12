@@ -3,6 +3,8 @@ object FloatingSite: TFloatingSite
   Height = 265
   Top = 498
   Width = 377
+  HorzScrollBar.Visible = False
+  VertScrollBar.Visible = False
   Caption = 'FloatingSite'
   DockSite = True
   OnClose = FormClose

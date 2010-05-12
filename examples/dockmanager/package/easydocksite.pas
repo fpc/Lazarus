@@ -123,7 +123,8 @@ type
     FTree: TEasyTree;
     FFirstChild,
     FNextSibling, FPrevSibling, FParent: TEasyZone;
-    FOrientation: TDockOrientation;
+    FZoneOrientation, //true orientation
+    FOrientation: TDockOrientation; //Delphi compatible (doNone when containing a control)
     procedure SetControl(Control: TControl);
     procedure SetOrientation(NewOrientation: TDockOrientation);
     function GetLeft: Integer;
@@ -139,8 +140,10 @@ type
     procedure SetBounds(TLBR: TRect);
 
     function  GetHandle: HWND;
+  {$IFDEF visibility}  //to be redesigned
     function  GetVisible: boolean;
     function  GetVisibleControl: TControl;
+  {$ENDIF}
     function  GetPartRect(APart: TEasyZonePart): TRect;
     function  GetStyle: TEasyHeaderStyle;
   public
@@ -163,7 +166,7 @@ type
     property Parent: TEasyZone read FParent write SetParent;
     property Orientation: TDockOrientation read FOrientation write SetOrientation;
     property Style: TEasyHeaderStyle read GetStyle;
-    property Visible: boolean read GetVisible;
+    //property Visible: boolean read GetVisible;
 
     property Bottom: integer read BR.Y;
     property Left: integer read GetLeft;
@@ -982,10 +985,18 @@ begin
             Control.Visible := False;
           DockSite.Invalidate;
         {$ELSE}
-          Control.ManualDock(nil, nil, alNone); //do float
+        (* Definitely close a form, but other controls???
+        *)
+          if Control is TCustomForm then begin
+            TCustomForm(Control).Close;
+            Control.ManualDock(nil, nil, alNone); //do float
+            TWinControlAccess(Control).DoEndDock(nil, Control.Left, Control.Top);
+          end else begin
         { TODO -cLCL : OnEndDock not called by ManualDock? }
-          //TWinControlAccess(Control).DoEndDock(nil, Control.Left, Control.Top);
-          Control.Visible := False;
+            Control.ManualDock(nil, nil, alNone); //do float
+            TWinControlAccess(Control).DoEndDock(nil, Control.Left, Control.Top);
+            Control.Visible := False;
+          end;
         {$ENDIF}
         end;
       end;
@@ -1196,6 +1207,7 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
     PrevZone, NewZone: TEasyZone;
     PrevLvl, NewLvl: byte;
     NewCtl: TControl;
+    r: TRect;
   begin
     PrevZone := FTopZone;
     PrevLvl := 1;
@@ -1218,9 +1230,13 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
           NewZone.ChildControl := NewCtl;
           SetReplacingControl(NewCtl); //prevent DockManager actions
           NewCtl.ManualDock(DockSite);
-          NewCtl.Width := ZoneRec.BottomRight.x;
-          NewCtl.Height := ZoneRec.BottomRight.y;
+          //NewCtl.DisableAutoSizing; //forever?
+          r := NewZone.GetPartRect(zpClient);
+          NewCtl.BoundsRect := r;
+          DebugLn('?NewCtl w=%d=%d h=%d=%d', [NewCtl.Width, ZoneRec.BottomRight.x,NewCtl.Height, ZoneRec.BottomRight.y]);
           NewCtl.Visible := True;
+          //NewCtl.EnableAutoSizing;
+          DebugLn('!NewCtl w=%d=%d h=%d=%d', [NewCtl.Width, ZoneRec.BottomRight.x,NewCtl.Height, ZoneRec.BottomRight.y]);
         end;
       {$IFDEF oldOrient}
       {$ELSE}
@@ -1243,19 +1259,23 @@ procedure TEasyTree.LoadFromStream(Stream: TStream);
   end;
 
 begin
+(* Problem: what if site doesn't match zone extent?
+*)
 //remove all docked controls
   ClearSite;
 //read record
   if GetRec > 0 then begin
+    FSiteRect.BottomRight := ZoneRec.BottomRight; //stored extent, not current one!
     FTopZone.BR := ZoneRec.BottomRight;
     FTopZone.Orientation := ZoneRec.Orientation;
     MakeZones;
+  //now make the zone fit the current extent, and position all child controls
+    //DebugLn('fit zone ', DbgS(FTopZone.BR), ' into site ', DbgS(FDockSite.ClientRect.BottomRight));
+    ResetBounds(True);  //always position controls!
+  //finish?
+  //remove all leafs without a child control?
   end;
-//finish?
-//remove all leafs without a child control?
-//refresh the site
-  ResetBounds(True);
-//assure everything is visible
+//assure everything is visible (recursive, until topmost parent)
   MakeVisible(FDockSite);
 end;
 
@@ -1574,6 +1594,8 @@ begin
   Result := FTree.FDockSite;
 end;
 
+
+{$IFDEF visibility}
 function TEasyZone.GetVisible: boolean;
 begin
   Result := GetVisibleControl <> nil;
@@ -1598,6 +1620,7 @@ begin
     zone := zone.NextSibling;
   end;
 end;
+{$ENDIF}
 
 function TEasyZone.GetPartRect(APart: TEasyZonePart): TRect;
 begin
@@ -1810,6 +1833,7 @@ end;
 
 procedure TEasyZone.SetOrientation(NewOrientation: TDockOrientation);
 begin
+  FZoneOrientation := NewOrientation; //independent from ChildControl
   if ChildControl = nil then
     FOrientation := NewOrientation
   else
@@ -1830,7 +1854,12 @@ begin
     if (fTop = (zone.Parent.Orientation = doVertical)) then begin
       prev := zone.PrevSibling;
       while prev <> nil do begin
-        if prev.Visible then begin
+      {$IFDEF visibility}
+        if prev.Visible then
+      {$ELSE}
+        //zones are always visible
+      {$ENDIF}
+        begin
           if fTop then
             Result := prev.Bottom
           else

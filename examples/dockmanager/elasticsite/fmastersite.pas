@@ -55,8 +55,10 @@ end;
 
 procedure TMasterSite.buRestoreClick(Sender: TObject);
 begin
-  if ms <> nil then
+  if ms <> nil then begin
+    ms.Position := 0; //rewind
     DockMaster.LoadFromStream(ms);
+  end;
 end;
 
 procedure TMasterSite.buSaveClick(Sender: TObject);
