@@ -254,15 +254,16 @@ begin
   {$ENDIF}
   DisableAlign;
   try
-    fAddingPages:=true;
-    for i := 0 to FPageList.Count -1 do begin
+    FAddingPages := True;
+    for i := 0 to FPageList.Count -1 do
+    begin
       {$IFDEF NOTEBOOK_DEBUG}
       DebugLn(['TCustomNotebook.DoCreateWnd ',dbgsName(Self),' Page.Caption=',Page[i].Caption,' pfAdded=',pfAdded in Page[i].Flags]);
       {$ENDIF}
       lPage := Page[i];
       AddRemovePageHandle(lPage);
     end;
-    fAddingPages:=false;
+    FAddingPages := False;
 
     DoSendShowTabs;
     DoSendPageIndex;
@@ -483,23 +484,23 @@ procedure TCustomNotebook.InsertPage(APage: TCustomPage; Index: Integer);
 var
   NewZPosition: integer;
 begin
-  if FPageList.IndexOf(APage)>=0 then exit;
+  if FPageList.IndexOf(APage) >= 0 then Exit;
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn(['TCustomNotebook.InsertPage A ',dbgsName(Self),' Index=',Index,' Name=',
     APage.Name,' Caption=',APage.Caption]);
   {$ENDIF}
   APage.DisableAlign;
   try
-    if Index<FPageList.Count then
-      NewZPosition:=GetControlIndex(TCustomPage(fPageList[Index]))
+    if Index < FPageList.Count then
+      NewZPosition := GetControlIndex(TCustomPage(fPageList[Index]))
     else
-      NewZPosition:=-1;
-    Include(APage.FFlags,pfInserting);
-    FPageList.Insert(Index,APage);
-    Exclude(APage.FFlags,pfInserting);
+      NewZPosition := -1;
+    Include(APage.FFlags, pfInserting);
+    FPageList.Insert(Index, APage);
+    Exclude(APage.FFlags, pfInserting);
     APage.Parent := Self;
-    if NewZPosition>=0 then
-      SetControlIndex(APage,NewZPosition);
+    if NewZPosition >= 0 then
+      SetControlIndex(APage, NewZPosition);
     if PageIndex = -1 then
       FPageIndex := Index;
 
