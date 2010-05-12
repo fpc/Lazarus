@@ -84,10 +84,7 @@ procedure TCompilerMessagesOptionsFrame.UpdateMessages;
 const
   MaxIndexLen = 5;
 var
-  i         : Integer;
-  j         : Integer;
   topidx    : Integer;
-  m         : TCompilerMessageConfig;
 begin
   topidx := chklistCompMsg.TopIndex;
   chklistCompMsg.Items.BeginUpdate;
