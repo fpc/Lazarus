@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Dialogs, Controls, LazConf, GDBMIDebugger, DebugUtils,
-  BaseDebugManager, Debugger, PropEdits, Graphics, LCLProc;
+  BaseDebugManager, Debugger, PropEdits, Graphics, LCLProc, LazarusIDEStrConsts;
   
 type
   TSSHGDBMIDebugger = class(TGDBMIDebugger)
@@ -82,12 +82,8 @@ end;
 
 function TSSHGDBMINotePropertyEditor.GetValue: ansistring;
 begin
-  Result := 'The GNU debugger through ssh allows to remote debug via a ssh'
-          + ' connection. See docs/RemoteDebugging.txt for details. The path'
-          + ' must contain the ssh client filename, the hostname with an optional'
-          + ' username and the filename of gdb on the remote computer.'
-          + ' For example: "/usr/bin/ssh username@hostname gdb"'
-          + ' or: "/usr/bin/setsid /usr/bin/ssh username@hostname gdb"';
+  Result := Format(lisTheGNUDebuggerThroughSshAllowsToRemoteDebugViaASsh, ['"',
+    '"', '"', '"']);
 end;
 
 procedure TSSHGDBMINotePropertyEditor.PropMeasureHeight(const NewValue: ansistring; ACanvas: TCanvas; var AHeight: Integer);
@@ -168,8 +164,8 @@ begin
   end;
   
   if  (ExtraText <> '')
-  and (MessageDlg('Debugger',
-        'Response: ' + LineEnding + ExtraText + LineEnding + 'Continue ?',
+  and (MessageDlg(dlgGroupDebugger,
+        Format(lisResponseContinue, [LineEnding + ExtraText + LineEnding]),
         mtConfirmation, [mbYes, mbNo], 0) <> mrYes)
   then begin
 //    DebugProcess.Terminate(0);
@@ -180,8 +176,9 @@ begin
   then Result := inherited ParseInitialization
   else begin
     // We got an unexpected result
-    MessageDlg('Debugger',
-      'Unexpected result:' + LineEnding + Line + LineEnding + 'The debugger will terminate',
+    MessageDlg(dlgGroupDebugger,
+      Format(lisUnexpectedResultTheDebuggerWillTerminate, [LineEnding + Line +
+        LineEnding]),
       mtInformation, [mbOK], 0);
     Exit;
 //    DebugProcess.Terminate(0);

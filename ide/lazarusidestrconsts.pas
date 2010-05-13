@@ -927,6 +927,9 @@ resourcestring
   dlgGroupCodetools = 'Codetools';
   dlgGroupCodeExplorer = 'Code Explorer';
   dlgGroupDebugger = 'Debugger';
+  lisUnexpectedResultTheDebuggerWillTerminate = 'Unexpected result:%sThe '
+    +'debugger will terminate';
+  lisResponseContinue = 'Response: %sContinue ?';
   dlgGroupHelp = 'Help';
 
   // Options dialog
@@ -4758,6 +4761,13 @@ resourcestring
   lisJHJumpHistory = 'Jump History';
   lisHintDoubleClickOnTheCommandYouWantToEdit = 'Hint: double click on the '
     +'command you want to edit';
+  lisTheGNUDebuggerThroughSshAllowsToRemoteDebugViaASsh =
+      'The GNU debugger '
+    +'through ssh allows to remote debug via a ssh connection. See docs/'
+    +'RemoteDebugging.txt for details. The path must contain the ssh client '
+    +'filename, the hostname with an optional username and the filename of '
+    +'gdb on the remote computer. For example: %s/usr/bin/ssh username@'
+    +'hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s';
 
 implementation
 
