@@ -1813,7 +1813,8 @@ procedure TCustomForm.SetLastFocusedControl(AControl: TWinControl);
 begin
   if FLastFocusedControl=AControl then exit;
   FLastFocusedControl:=AControl;
-  FLastFocusedControl.FreeNotification(Self);
+  if FLastFocusedControl<>nil then
+    FLastFocusedControl.FreeNotification(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -2163,14 +2164,15 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
     while not FLastFocusedControl.ContainsControl(Control) do
     begin
       LastState := SaveFocusState;
+      if FLastFocusedControl=nil then exit(false);
       // calling of CM_EXIT can cause other focus changes - so FLastFocusedControl can change after the call
       // therefore we need to change it before the call
       Tmp := FLastFocusedControl;
       SetLastFocusedControl(Tmp.Parent);
-      if FLastFocusedControl=nil then exit(false);
       Tmp.Perform(CM_EXIT, 0, 0);
       if SaveFocusState <> LastState then
         Exit(False);
+      if FLastFocusedControl=nil then exit(false);
     end;
 
     while FLastFocusedControl <> Control do
