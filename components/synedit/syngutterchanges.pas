@@ -112,6 +112,7 @@ begin
 
   Canvas.Pen.Width := Width;
   Canvas.Pen.EndCap:= pecFlat;
+  Canvas.AntialiasingMode:=amOff;
 
   rcLine := AClip;
   rcLine.Left := rcLine.Left + Width div 2;
