@@ -4744,10 +4744,13 @@ end;
 function TQtWidgetSet.SetParent(hWndChild: HWND; hWndParent: HWND): HWND;
 var
   OldVisible: Boolean;
+  Flags: QtWindowFlags;
 begin
   Result := GetParent(hWndChild);
   OldVisible := TQtWidget(hWndChild).getVisible;
+  Flags := TQtWidget(hWndChild).windowFlags;
   TQtWidget(hWndChild).setParent(TQtWidget(hWndParent).GetContainerWidget);
+  TQtWidget(hWndChild).setWindowFlags(Flags);
   TQtWidget(hWndChild).setVisible(OldVisible);
 end;
 

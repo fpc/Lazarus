@@ -304,7 +304,11 @@ begin
     Child := TQtWidget(TWinControl(AControl).Handle);
     Parent := TQtWidget(AControl.Parent.Handle);
     if Child.getParent <> Parent.GetContainerWidget then
+    begin
+      Child.BeginUpdate;
       Child.setParent(Parent.GetContainerWidget);
+      Child.EndUpdate;
+    end;
   end;
 end;
 

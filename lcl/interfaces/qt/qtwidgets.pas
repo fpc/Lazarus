@@ -486,6 +486,8 @@ type
     procedure ChangeParent(NewParent: QWidgetH);
     procedure UpdateParent;
   public
+    QtFormBorderStyle: Integer;
+    QtFormStyle: Integer;
     IsMainForm: Boolean;
     MDIAreaHandle: QMDIAreaH;
     MenuBar: TQtMenuBar;
@@ -4366,6 +4368,8 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtMainWindow.CreateWidget Name: ', LCLObject.Name);
   {$endif}
+  QtFormBorderStyle := Ord(bsSizeable);
+  QtFormStyle := Ord(fsNormal);
   FHasPaint := True;
   FPopupMode := pmNone;
   FPopupParent := nil;

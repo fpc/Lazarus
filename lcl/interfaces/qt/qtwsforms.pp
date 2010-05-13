@@ -151,6 +151,8 @@ begin
     QtMainWindow := TQtMainWindow.Create(AWinControl, AParams);
   
   // Set´s initial properties
+  QtMainWindow.QtFormBorderStyle := Ord(TCustomForm(AWinControl).BorderStyle);
+  QtMainWindow.QtFormStyle := Ord(TCustomForm(AWinControl).FormStyle);
 
   Str := GetUtf8String(AWinControl.Caption);
 
@@ -241,14 +243,33 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
+var
+  QtWin: TQtMainWindow;
 begin
-  UpdateWindowFlags(TQtMainWindow(AForm.Handle), AFormBorderStyle, AForm.BorderIcons, AForm.FormStyle);
+  QtWin := TQtMainWindow(AForm.Handle);
+  if (AForm.Parent <> nil) and (QtWin.QtFormBorderStyle <> Ord(AFormBorderStyle)) then
+    RecreateWnd(AForm)
+  else
+  begin
+    QtWin.QtFormBorderStyle := Ord(AFormBorderStyle);
+    UpdateWindowFlags(QtWin, AFormBorderStyle,
+      AForm.BorderIcons, AForm.FormStyle);
+  end;
 end;
 
 class procedure TQtWSCustomForm.SetFormStyle(const AForm: TCustomform;
   const AFormStyle: TFormStyle);
+var
+  QtWin: TQtMainWindow;
 begin
-  UpdateWindowFlags(TQtMainWindow(AForm.Handle), AForm.BorderStyle, AForm.BorderIcons, AFormStyle);
+  QtWin := TQtMainWindow(AForm.Handle);
+  if (AForm.Parent <> nil) and (QtWin.QtFormStyle <> Ord(AFormStyle)) then
+    RecreateWnd(AForm)
+  else
+  begin
+    QtWin.QtFormStyle := Ord(AFormStyle);
+    UpdateWindowFlags(QtWin, AForm.BorderStyle, AForm.BorderIcons, AFormStyle);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -406,6 +427,7 @@ var
   Flags: QtWindowFlags;
   AVisible: Boolean;
 begin
+  AWidget.BeginUpdate;
   AVisible := AWidget.getVisible;
   Flags := GetQtBorderStyle(ABorderStyle) or GetQtFormStyle(AFormStyle) or GetQtBorderIcons(ABorderStyle, ABorderIcons);
   if (Flags and QtFramelessWindowHint) = 0 then
@@ -415,6 +437,7 @@ begin
   if not (csDesigning in AWidget.LCLObject.ComponentState) then
     AWidget.setWindowFlags(Flags);
   AWidget.setVisible(AVisible);
+  AWidget.EndUpdate;
 end;
 
 { TQtWSHintWindow }
