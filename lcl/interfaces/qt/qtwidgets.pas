@@ -6788,7 +6788,7 @@ begin
 
   Hdr.hwndFrom := LCLObject.Handle;
   Hdr.Code := TCN_SELCHANGING;
-  Hdr.idFrom := GetLCLPageIndex(Index);
+  Hdr.idFrom := PtrUInt(GetLCLPageIndex(Index));
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
   DeliverMessage(Msg);
