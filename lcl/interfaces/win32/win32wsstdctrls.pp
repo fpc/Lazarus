@@ -1249,6 +1249,8 @@ begin
       Flags := Flags or ES_AUTOHSCROLL;
     if ACustomMemo.BorderStyle = bsSingle then
       FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
+    if not ACustomMemo.HideSelection then
+      Flags := Flags or ES_NOHIDESEL;
     pClassName := @EditClsName[0];
     WindowTitle := StrCaption;
   end;
