@@ -13866,7 +13866,10 @@ end;
 // PtrInt Array Access from c-code
 function GetPtrIntArrayAddr(PArr : PPtrIntArray): PPtrInt; cdecl; export;
 begin
-  Result := @PArr^[0];
+  if PArr^ = nil then
+    Result := nil
+  else
+    Result := @PArr^[0];
 end;
 
 function GetPtrIntArrayLength(PArr: PPtrIntArray): Integer; cdecl; export;
@@ -13882,7 +13885,10 @@ end;
 // QReal Array Access from c-code
 function GetQRealArrayAddr(PArr : PQRealArray): PPtrInt; cdecl; export;
 begin
-  Result := @PArr^[0];
+  if PArr^ = nil then
+    Result := nil
+  else
+    Result := @PArr^[0];
 end;
 
 function GetQRealArrayLength(PArr: PQRealArray): Integer; cdecl; export;
