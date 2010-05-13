@@ -5084,7 +5084,6 @@ var
       begin
         inc(SBUpdatesCount);
         ScrollBar.setPageStep(ScrollInfo.nPage);
-        ScrollBar.setSingleStep((ScrollBar.getPageStep div 6) + 1);
       end;
     end;
 
