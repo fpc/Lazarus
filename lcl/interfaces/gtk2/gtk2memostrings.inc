@@ -8,6 +8,8 @@ type
   private
     FGtkText : PGtkTextView;
     FGtkBuf: PGtkTextBuffer;
+    FTimerMove: guint;
+    FTimerSel: guint;
     FOwner: TWinControl;
     FQueueCursorMove: Integer;
     FQueueSelLength: Integer;
@@ -143,10 +145,14 @@ begin
     'TGtk2MemoStrings.Create Unspecified owner');
   FOwner:=TheOwner;
   FQueueSelLength := -1;
+  FTimerMove := 0;
+  FTimerSel := 0;
 end;
 
 destructor TGtk2MemoStrings.Destroy;
 begin
+  gtk_timeout_remove(FTimerSel);
+  gtk_timeout_remove(FTimerMove);
   // don't destroy the widgets
   inherited Destroy;
 end;
@@ -240,7 +246,7 @@ begin
   // needed because there is a callback that updates the GtkBuffer
   // internally so that it actually knows where the cursor is
   if FQueueCursorMove = 0 then
-    gtk_timeout_add(0,TGSourceFunc(@UpdateMemoCursorCB), Pointer(Self));
+    FTimerMove := gtk_timeout_add(0,TGSourceFunc(@UpdateMemoCursorCB), Pointer(Self));
   FQueueCursorMove := APosition;
 end;
 
@@ -249,7 +255,7 @@ begin
   // needed because there is a callback that updates the GtkBuffer
   // internally so that it actually knows where the cursor is
   if FQueueSelLength = -1 then
-    gtk_timeout_add(0,TGSourceFunc(@UpdateMemoSelLengthCB), Pointer(Self));
+    FTimerSel := gtk_timeout_add(0,TGSourceFunc(@UpdateMemoSelLengthCB), Pointer(Self));
   FQueueSelLength := ALength;
 end;
 
