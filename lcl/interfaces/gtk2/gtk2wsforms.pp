@@ -77,6 +77,8 @@ type
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm;
        const AlphaBlend: Boolean; const Alpha: Byte); override;
+    class procedure SetFormBorderStyle(const AForm: TCustomForm;
+                             const AFormBorderStyle: TFormBorderStyle); override;
 {    class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;
@@ -205,6 +207,7 @@ begin
   end;
 
   WidgetInfo := CreateWidgetInfo(P, AWinControl, AParams);
+  WidgetInfo^.FormBorderStyle := Ord(ABorderStyle);
 
   Box := CreateFormContents(ACustomForm, P, WidgetInfo);
   gtk_container_add(PGtkContainer(P), Box);
@@ -267,6 +270,38 @@ begin
       gtk_window_set_opacity(PGtkWindow(ACustomForm.Handle), Alpha / 255)
     else
       gtk_window_set_opacity(PGtkWindow(ACustomForm.Handle), 1);
+end;
+
+class procedure TGtk2WSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
+  const AFormBorderStyle: TFormBorderStyle);
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  // WindowType: TGtkWindowType;
+  Resizable: gint;
+begin
+  if not WSCheckHandleAllocated(AForm, 'SetFormBorderStyle') then
+    exit;
+  if (csDesigning in AForm.ComponentState) then
+    exit;
+
+  Widget := PGtkWidget(AForm.Handle);
+  WidgetInfo := GetWidgetInfo(Widget);
+
+  if (WidgetInfo^.FormBorderStyle <> Ord(AFormBorderStyle)) then
+  begin
+    if (AForm.Parent <> nil) or (AFormBorderStyle <> bsNone) then
+      RecreateWnd(AForm)
+    else
+    begin
+      // TODO: set window hint WindowType := FormStyleMap[AFormBorderStyle];
+      Resizable := FormResizableMap[AFormBorderStyle];
+      if (AFormBorderStyle = bsNone) then
+        gtk_window_set_decorated(PGtkWindow(Widget), False);
+      gtk_window_set_resizable(GTK_WINDOW(Widget), gboolean(Resizable));
+      WidgetInfo^.FormBorderStyle := Ord(AFormBorderStyle);
+    end;
+  end;
 end;
 
 {class function TGtk2WSCustomForm.GetDefaultClientRect(
