@@ -27,7 +27,7 @@ unit laz2_XMLWrite;
 
 interface
 
-uses Classes, laz2_DOM;
+uses Classes, laz2_DOM, SysUtils, laz2_xmlutils;
 
 procedure WriteXMLFile(doc: TXMLDocument; const AFileName: String); overload;
 procedure WriteXMLFile(doc: TXMLDocument; var AFile: Text); overload;
@@ -41,8 +41,6 @@ procedure WriteXML(Element: TDOMNode; AStream: TStream); overload;
 // ===================================================================
 
 implementation
-
-uses SysUtils, xmlutils;
 
 type
   TXMLWriter = class;
