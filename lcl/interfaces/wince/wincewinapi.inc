@@ -2062,6 +2062,10 @@ var
   WindowInfo: PWindowInfo;
   Style, ExStyle: longint;
 
+  // This is for TCustomFloatSpinEdit
+  // and the Buddy is the Edit component
+  // the main component is the Spin
+  // The total Width is from Buddy(=Edit) Left to Main(=Spin) Right
   procedure AdjustForBuddySize;
   {$IFDEF WinCE}
   var
@@ -2071,7 +2075,7 @@ var
     BuddyHandle := Windows.SendMessage(Handle, UDM_GETBUDDY, 0, 0);
     if (BuddyHandle<>HWND(nil)) then
       if Windows.GetWindowRect(BuddyHandle, BuddyR) then
-        Width := BuddyR.Right - BuddyR.Left;
+        Width := R.Right - BuddyR.Left;
   end;
   {$ELSE}
   var
@@ -2097,63 +2101,64 @@ begin
   Width := R.Right - R.Left;
   Height := R.Bottom - R.Top;
 
+  WindowInfo := winceproc.GetWindowInfo(Handle);
+
+  if WindowInfo <> nil then
+  begin
+    // convert top level lcl window coordinaties to win32 coord
+    Style := Windows.GetWindowLongW(Handle, GWL_STYLE);
+    ExStyle := Windows.GetWindowLongW(Handle, GWL_EXSTYLE);
+
+    // Windows CE doesn't reliably return the styles, so
+    // it returns form related styles for comboboxes for example
+    // This extra check avoids problems with that
+    if (WindowInfo^.WinControl is TCustomForm) then
+    begin
+      // The borders are not given by the same constants in Win32 and WinCE
+      // Bug http://bugs.freepascal.org/view.php?id=11456
+      //
+      // SM_CXSIZEFRAME returns 3 in my tests, but the real border
+      // is only 1 pixel wide, like SM_CXBORDER
+      {$IFDEF WinCE}
+        if (Style and WS_BORDER) <> 0 then
+        begin
+          // thin, non-sizing border
+          Dec(Width, 2*Windows.GetSystemMetrics(SM_CXBORDER));
+          Dec(Height, 2*Windows.GetSystemMetrics(SM_CYBORDER));
+        end;
+      {$ELSE}
+        if (Style and WS_THICKFRAME) <> 0 then
+        begin
+          // thick, sizing border
+          // add twice, top+bottom border
+          Dec(Width, 2*Windows.GetSystemMetrics(SM_CXSIZEFRAME));
+          Dec(Height, 2*Windows.GetSystemMetrics(SM_CYSIZEFRAME));
+        end else
+        if (Style and WS_BORDER) <> 0 then
+        begin
+          // thin, non-sizing border
+          Dec(Width, 2*Windows.GetSystemMetrics(SM_CXFIXEDFRAME));
+          Dec(Height, 2*Windows.GetSystemMetrics(SM_CYFIXEDFRAME));
+        end;
+      {$ENDIF}
+
+      // ExcludeCaption
+      if ((Style and WS_CAPTION) <> 0) then
+        if (ExStyle and WS_EX_TOOLWINDOW) <> 0 then
+          Dec(Height, Windows.GetSystemMetrics(SM_CYSMCAPTION))
+        else
+          Dec(Height, Windows.GetSystemMetrics(SM_CYCAPTION));
+    end;
+
+    if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
+      AdjustForBuddySize;
+  end;
+
   {$IFDEF VerboseSizeMsg}
   DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
     Format('[TWinCEWidgetSet.GetWindowSize]: %d:%d',
     [Width, Height]));
   {$ENDIF}
-
-  WindowInfo := winceproc.GetWindowInfo(Handle);
-
-  if WindowInfo = nil then Exit;
-
-  // convert top level lcl window coordinaties to win32 coord
-  Style := Windows.GetWindowLongW(Handle, GWL_STYLE);
-  ExStyle := Windows.GetWindowLongW(Handle, GWL_EXSTYLE);
-
-  // Windows CE doesn't reliably return the styles, so
-  // it returns form related styles for comboboxes for example
-  // This extra check avoids problems with that
-  if (WindowInfo^.WinControl is TCustomForm) then
-  begin
-    // The borders are not given by the same constants in Win32 and WinCE
-    // Bug http://bugs.freepascal.org/view.php?id=11456
-    //
-    // SM_CXSIZEFRAME returns 3 in my tests, but the real border
-    // is only 1 pixel wide, like SM_CXBORDER
-    {$IFDEF WinCE}
-      if (Style and WS_BORDER) <> 0 then
-      begin
-        // thin, non-sizing border
-        Dec(Width, 2*Windows.GetSystemMetrics(SM_CXBORDER));
-        Dec(Height, 2*Windows.GetSystemMetrics(SM_CYBORDER));
-      end;
-    {$ELSE}
-      if (Style and WS_THICKFRAME) <> 0 then
-      begin
-        // thick, sizing border
-        // add twice, top+bottom border
-        Dec(Width, 2*Windows.GetSystemMetrics(SM_CXSIZEFRAME));
-        Dec(Height, 2*Windows.GetSystemMetrics(SM_CYSIZEFRAME));
-      end else
-      if (Style and WS_BORDER) <> 0 then
-      begin
-        // thin, non-sizing border
-        Dec(Width, 2*Windows.GetSystemMetrics(SM_CXFIXEDFRAME));
-        Dec(Height, 2*Windows.GetSystemMetrics(SM_CYFIXEDFRAME));
-      end;
-    {$ENDIF}
-
-    // ExcludeCaption
-    if ((Style and WS_CAPTION) <> 0) then
-      if (ExStyle and WS_EX_TOOLWINDOW) <> 0 then
-        Dec(Height, Windows.GetSystemMetrics(SM_CYSMCAPTION))
-      else
-        Dec(Height, Windows.GetSystemMetrics(SM_CYCAPTION));
-  end;
-
-  if (WindowInfo^.WinControl is TCustomFloatSpinEdit) then
-    AdjustForBuddySize;
 end;
 
 {
