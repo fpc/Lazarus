@@ -167,15 +167,7 @@ begin
       end;
     opRemove:
       begin
-        if (FActionLists <> nil) and (AComponent is TCustomActionList) then
-          DoRemoveActionList(TCustomActionList(AComponent))
-        else
-        if AComponent = Menu then
-          Menu := nil
-        else
-        if AComponent = PopupParent then
-          PopupParent := nil;
-
+        // first clean up references
         if FActiveControl=AComponent then
         begin
           {$IFDEF VerboseFocus}
@@ -187,6 +179,17 @@ begin
           FDefaultControl := nil;
         if AComponent = FCancelControl then
           FCancelControl := nil;
+        if AComponent=FLastFocusedControl then
+          FLastFocusedControl:=nil;
+        // then do stuff which can trigger things
+        if (FActionLists <> nil) and (AComponent is TCustomActionList) then
+          DoRemoveActionList(TCustomActionList(AComponent))
+        else
+        if AComponent = Menu then
+          Menu := nil
+        else
+        if AComponent = PopupParent then
+          PopupParent := nil;
       end;
   end;
   if FDesigner <> nil then
@@ -1806,6 +1809,13 @@ begin
   UpdateShowInTaskBar;
 end;
 
+procedure TCustomForm.SetLastFocusedControl(AControl: TWinControl);
+begin
+  if FLastFocusedControl=AControl then exit;
+  FLastFocusedControl:=AControl;
+  FLastFocusedControl.FreeNotification(Self);
+end;
+
 {------------------------------------------------------------------------------
        TCustomForm Constructor
 ------------------------------------------------------------------------------}
@@ -2156,7 +2166,7 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
       // calling of CM_EXIT can cause other focus changes - so FLastFocusedControl can change after the call
       // therefore we need to change it before the call
       Tmp := FLastFocusedControl;
-      FLastFocusedControl := Tmp.Parent;
+      SetLastFocusedControl(Tmp.Parent);
       Tmp.Perform(CM_EXIT, 0, 0);
       if SaveFocusState <> LastState then
         Exit(False);
@@ -2164,7 +2174,8 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
 
     while FLastFocusedControl <> Control do
     begin
-      FLastFocusedControl := NextChildControl(FLastFocusedControl, Control);
+      SetLastFocusedControl(NextChildControl(FLastFocusedControl, Control));
+      if FLastFocusedControl=nil then break;
       LastState := SaveFocusState;
       FLastFocusedControl.Perform(CM_ENTER, 0, 0);
       if SaveFocusState <> LastState then

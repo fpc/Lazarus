@@ -473,6 +473,7 @@ type
     procedure SetPopupParent(const AValue: TCustomForm);
     procedure SetPosition(Value : TPosition);
     procedure SetShowInTaskbar(Value: TShowInTaskbar);
+    procedure SetLastFocusedControl(AControl: TWinControl);
     procedure SetWindowFocus;
     procedure SetWindowState(Value : TWindowState);
     procedure WMActivate(var Message : TLMActivate); message LM_ACTIVATE;
