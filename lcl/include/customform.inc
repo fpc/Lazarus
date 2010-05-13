@@ -2167,6 +2167,7 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
       // therefore we need to change it before the call
       Tmp := FLastFocusedControl;
       SetLastFocusedControl(Tmp.Parent);
+      if FLastFocusedControl=nil then exit(false);
       Tmp.Perform(CM_EXIT, 0, 0);
       if SaveFocusState <> LastState then
         Exit(False);
@@ -2175,7 +2176,7 @@ function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
     while FLastFocusedControl <> Control do
     begin
       SetLastFocusedControl(NextChildControl(FLastFocusedControl, Control));
-      if FLastFocusedControl=nil then break;
+      if FLastFocusedControl=nil then exit(false);
       LastState := SaveFocusState;
       FLastFocusedControl.Perform(CM_ENTER, 0, 0);
       if SaveFocusState <> LastState then
