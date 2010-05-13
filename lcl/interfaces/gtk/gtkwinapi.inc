@@ -8792,14 +8792,7 @@ begin
         if (Info <> nil) and not (wwiActivating in  Info^.Flags) then
           SetForegroundWindow(TCustomForm(NewTopLevelObject).Handle);
       end;
-      if GTK_WIDGET_CAN_FOCUS(NewFocusWidget) then
-        gtk_widget_grab_focus(NewFocusWidget)
-      else
-      begin
-        gtk_window_set_focus(PGtkWindow(NewTopLevelWidget), nil);
-        // emulate wm_setfocus
-        GTKFocusCBAfter(NewFocusWidget, nil, GetNearestLCLObject(NewFocusWidget));
-      end;
+      gtk_widget_grab_focus(NewFocusWidget);
     end;
   end;
 
