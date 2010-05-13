@@ -159,7 +159,7 @@ type
   PCachedItemData = ^TCachedItemData;
   TCachedItemData = record
     State: TCheckBoxState;
-    Enabled: Boolean;
+    Disabled: Boolean;
   end;
 
 { TCustomCheckListBox }
@@ -169,6 +169,7 @@ procedure TCustomCheckListBox.AssignCacheToItemData(const AIndex: Integer;
 begin
   inherited AssignCacheToItemData(AIndex, AData);
   SendItemState(AIndex, PCachedItemData(AData + FItemDataOffset)^.State);
+  SendItemEnabled(AIndex, not PCachedItemData(AData + FItemDataOffset)^.Disabled);
 end;
 
 procedure TCustomCheckListBox.AssignItemDataToCache(const AIndex: Integer;
@@ -176,7 +177,7 @@ procedure TCustomCheckListBox.AssignItemDataToCache(const AIndex: Integer;
 begin
   inherited AssignItemDataToCache(AIndex, AData);
   PCachedItemData(AData + FItemDataOffset)^.State := State[AIndex];
-  PCachedItemData(AData + FItemDataOffset)^.Enabled := ItemEnabled[AIndex];
+  PCachedItemData(AData + FItemDataOffset)^.Disabled := not ItemEnabled[AIndex];
 end;
 
 constructor TCustomCheckListBox.Create(AOwner: TComponent);
@@ -236,7 +237,7 @@ begin
   if HandleAllocated then
     Result := TWSCustomCheckListBoxClass(WidgetSetClass).GetItemEnabled(Self, AIndex)
   else
-    Result := PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^.Enabled;
+    Result := not PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^.Disabled;
 end;
 
 function TCustomCheckListBox.GetState(AIndex: Integer): TCheckBoxState;
@@ -267,11 +268,10 @@ procedure TCustomCheckListBox.SetItemEnabled(AIndex: Integer;
   const AValue: Boolean);
 begin
   CheckIndex(AIndex);
-
   if HandleAllocated then
     SendItemEnabled(AIndex, AValue)
   else
-    PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^.Enabled := AValue;
+    PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^.Disabled := not AValue;
 end;
 
 procedure TCustomCheckListBox.SetState(AIndex: Integer;
