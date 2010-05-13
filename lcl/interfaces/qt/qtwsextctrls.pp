@@ -383,9 +383,19 @@ class function TQtWSCustomNotebook.GetTabIndexAtPos(
   const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer;
 var
   TabWidget: TQtTabWidget;
+  NewPos: TPoint;
+  R: TRect;
 begin
   TabWidget := TQtTabWidget(ANotebook.Handle);
-  Result := TabWidget.tabAt(AClientPos);
+  NewPos := AClientPos;
+  R := TabWidget.TabBar.getGeometry;
+  case ANoteBook.TabPosition of
+    tpTop: if NewPos.Y < 0 then NewPos.Y := R.Bottom + NewPos.Y;
+    tpLeft: if NewPos.X < 0 then NewPos.X := R.Left + NewPos.X;
+    tpRight: NewPos.X := R.Right - NewPos.X;
+    tpBottom: NewPos.Y := R.Bottom - NewPos.Y;
+  end;
+  Result := TabWidget.tabAt(NewPos);
 end;
 
 class function TQtWSCustomNotebook.GetTabRect(const ANotebook: TCustomNotebook;
@@ -398,6 +408,12 @@ begin
     Exit;
   TabWidget := TQtTabWidget(ANotebook.Handle);
   Result := TabWidget.TabBar.GetTabRect(AIndex);
+  case ANoteBook.TabPosition of
+    tpTop: OffsetRect(Result, 0, -Result.Bottom);
+    tpLeft: OffsetRect(Result, -Result.Right, 0);
+    tpRight: OffsetRect(Result, Result.Left, 0);
+    tpBottom: OffsetRect(Result, Result.Top, 0);
+  end;
 end;
 
 class procedure TQtWSCustomNotebook.SetPageIndex(

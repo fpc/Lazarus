@@ -2877,7 +2877,7 @@ begin
 
     with PaintData do
     begin
-      PaintWidget := Widget;
+      PaintWidget := QWidgetH(Sender);
       ClipRegion := QPaintEvent_Region(QPaintEventH(Event));
       if ClipRect = nil then
         New(ClipRect);
@@ -2889,9 +2889,6 @@ begin
     
     Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
     Msg.PaintStruct^.hdc := FContext;
-
-    if LCLObject is THintWindow then
-      Msg.DC := Msg.DC;
 
     P := getClientOffset;
     inc(P.X, FScrollX);
@@ -6392,6 +6389,10 @@ var
   NewIndex, CurIndex: Integer;
   Msg: TLMNotify;
   Hdr: TNmHdr;
+  NewEvent: QMouseEventH;
+  R: TRect;
+  R1: TRect;
+  BaseHeight: Integer;
 begin
   Result := False;
 
@@ -6421,10 +6422,53 @@ begin
       Exit;
     end;
   end;
-  SlotMouse(Sender, Event);
+
+  if Assigned(FOwner) then
+  begin
+    R := TQtTabWidget(FOwner).getGeometry;
+    R1 := getGeometry;
+    BaseHeight := QStyle_pixelMetric(QApplication_style(),
+      QStylePM_TabBarBaseHeight);
+
+    case TQtTabWidget(FOwner).getTabPosition of
+      QTabWidgetNorth:
+        begin
+          MousePos.Y := R.Top - (R1.Bottom - MousePos.Y);
+          MousePos.X := MousePos.X - BaseHeight;
+        end;
+      QTabWidgetWest:
+        begin
+          MousePos.x := R.Left - (R1.Right - MousePos.X);
+          MousePos.y := MousePos.Y - BaseHeight;
+        end;
+      QTabWidgetEast:
+        begin
+          MousePos.X := R1.Left + MousePos.X - BaseHeight;
+          MousePos.y := MousePos.Y - BaseHeight;
+        end;
+      QTabWidgetSouth:
+        begin
+          MousePos.Y := R1.Top + MousePos.Y - BaseHeight;
+          MousePos.X := MousePos.X - BaseHeight;
+        end;
+    end;
+    NewEvent := QMouseEvent_create(QEvent_type(Event), @MousePos,
+        QMouseEvent_globalPos(QMouseEventH(Event)),
+        QMouseEvent_button(QMouseEventH(Event)),
+        QMouseEvent_buttons(QMouseEventH(Event)),
+        QInputEvent_modifiers(QInputEventH(Event))
+      );
+    SlotMouse(Sender, NewEvent);
+    QMouseEvent_destroy(NewEvent);
+  end else
+    SlotMouse(Sender, Event);
 end;
 
 function TQtTabBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+{$IFDEF QT_ENABLE_LCL_PAINT_TABS}
+var
+  R: TRect;
+{$ENDIF}
 begin
   Result := False;
   QEvent_accept(Event);
@@ -6432,6 +6476,18 @@ begin
     exit;
   BeginEventProcessing;
   case QEvent_type(Event) of
+    {$IFDEF QT_ENABLE_LCL_PAINT_TABS}
+    QEventPaint:
+      begin
+        QPaintEvent_rect(QPaintEventH(Event), @R);
+        // qt paints tab
+        QObject_event(Sender, Event);
+        // LCL can do whatever now
+        SlotPaint(Sender, Event);
+        Result := True;
+        QEvent_ignore(Event);
+      end;
+    {$ENDIF}
     QEventKeyPress,
     QEventKeyRelease: SlotKey(Sender, Event);
     QEventMouseButtonPress,
@@ -6456,6 +6512,9 @@ begin
     {$note TQtTabWidget.getTabBar: we can remove QLCLTabWidget, and get it like StackWidget,
      objectName is qt_tabwidget_tabbar.}
     FTabBar := TQtTabBar.CreateFrom(LCLObject, QLCLTabWidget_tabBarHandle(QTabWidgetH(Widget)));
+    {$IFDEF QT_ENABLE_LCL_PAINT_TABS}
+    FTabBar.HasPaint := True;
+    {$ENDIF}
     FTabBar.FOwner := Self;
     FTabBar.AttachEvents;
   end;
@@ -6586,6 +6645,12 @@ end;
 
 function TQtTabWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
+{$IFDEF QT_ENABLE_LCL_PAINT_TABS}
+var
+  R: TRect;
+  TabGeom: TRect;
+  Pt: TPoint;
+{$ENDIF}
 begin
 
   Result := False;
@@ -6607,6 +6672,22 @@ begin
 
   BeginEventProcessing;
   case QEvent_type(Event) of
+    {$IFDEF QT_ENABLE_LCL_PAINT_TABS}
+    QEventPaint:
+      begin
+        {this paint event comes after tabbar paint event,
+         so we have to exclude our tabs from painting}
+        QPaintEvent_rect(QPaintEventH(Event), @R);
+        QWidget_geometry(TabBar.Widget, @TabGeom);
+        Pt.X := R.Left;
+        Pt.Y := R.Top;
+        Result := PtInRect(TabGeom, Pt) and
+          (R.Bottom - R.Top = TabGeom.Bottom - TabGeom.Top) and
+          (TabAt(Pt) >= 0);
+        if Result then
+          QEvent_ignore(Event);
+      end;
+    {$ENDIF}
     QEventKeyPress,
     QEventKeyRelease: QEvent_ignore(Event);
     else
