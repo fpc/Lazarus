@@ -182,7 +182,9 @@ type
     Borders: array[TAnchorKind] of integer;
     AdjustedClientBorders: array[TAnchorKind] of integer;// the borderspace created by WinControl.AdjustClientRect
     Sides: array[TAnchorKind] of TAutoSizeSideData;
-    constructor Create(AControl: TControl);
+    BaseBounds: TRect;
+    BaseParentClientSize: TSize;
+    constructor Create(AControl: TControl; IsParent: boolean = true);
     destructor Destroy; override;
     procedure Clear;
     procedure ComputePreferredClientArea(MoveNonAlignedChilds: boolean;
@@ -257,7 +259,7 @@ begin
   if AVLNode<>nil then
     Result:=TAutoSizeCtrlData(AVLNode.Data)
   else begin
-    Result:=TAutoSizeCtrlData.Create(AControl);
+    Result:=TAutoSizeCtrlData.Create(AControl,false);
     FChilds.Add(Result);
   end;
 end;
@@ -379,13 +381,27 @@ begin
             NewSpace:=0;
           ChildData.Sides[a].Space:=NewSpace;
         end;
-      end else begin
-        // dangling side
+      end else if a in Child.Anchors then begin
+        // anchored to parent via BaseBounds
         if a in [akLeft,akTop] then begin
           ChildData.Sides[a].Side:=asrRight;
         end else begin
           ChildData.Sides[a].Side:=asrLeft;
         end;
+        case a of
+        akTop: ChildData.Sides[a].Space:=ChildData.BaseBounds.Top;
+        akLeft: ChildData.Sides[a].Space:=ChildData.BaseBounds.Left;
+        akRight: ChildData.Sides[a].Space:=
+                   ChildData.BaseParentClientSize.cx-ChildData.BaseBounds.Right;
+        akBottom: ChildData.Sides[a].Space:=
+                  ChildData.BaseParentClientSize.cy-ChildData.BaseBounds.Bottom;
+        end;
+      end else begin
+        // not anchored => use borderspacing
+        if a in [akLeft,akTop] then
+          ChildData.Sides[a].Side:=asrRight
+        else
+          ChildData.Sides[a].Side:=asrLeft;
         if a in [akLeft,akRight] then begin
           ChildData.Sides[a].Space:=
             Max(WinControl.ChildSizing.LeftRightSpacing,
@@ -444,7 +460,7 @@ type
     // try to find good distances to the client area for this side
     Child:=ChildData.Control;
     CurAnchors:=Child.Anchors;
-    if Child.Align in [alLeft,alTop,alRight,alBottom] then
+    if Child.Align in [alLeft,alTop,alRight,alBottom,alClient] then
       CurAnchors:=CurAnchors+AnchorAlign[Child.Align];
     if (Side in CurAnchors) then begin
       // this side is anchored
@@ -750,13 +766,14 @@ begin
   Result:=true;
 end;
 
-constructor TAutoSizeCtrlData.Create(AControl: TControl);
+constructor TAutoSizeCtrlData.Create(AControl: TControl; IsParent: boolean);
 const
   BigInteger = High(Integer) div 4;
 var
   CurBorders: TRect;
   a: TAnchorKind;
   AdjustedClientRect: TRect;
+  r: TRect;
 begin
   //DebugLn(['TAutoSizeCtrlData.Create ',DbgSName(AControl)]);
   Control:=AControl;
@@ -771,8 +788,13 @@ begin
   Borders[akTop]:=CurBorders.Top;
   Borders[akRight]:=CurBorders.Right;
   Borders[akBottom]:=CurBorders.Bottom;
-  
-  if WinControl<>nil then begin
+  BaseBounds:=Control.BaseBounds;
+  if (BaseBounds.Left=BaseBounds.Right)
+  and (BaseBounds.Top=BaseBounds.Bottom) then
+    BaseBounds:=Control.BoundsRect;
+  BaseParentClientSize:=Control.BaseParentClientSize;
+
+  if (WinControl<>nil) and IsParent then begin
     AdjustedClientRect:=Rect(0,0,BigInteger,BigInteger);
     WinControl.AdjustClientRect(AdjustedClientRect);
     AdjustedClientBorders[akLeft]:=AdjustedClientRect.Left;
@@ -782,6 +804,11 @@ begin
   end else begin
     for a:=low(TAnchorKind) to high(TAnchorKind) do
       AdjustedClientBorders[a]:=0;
+    if (BaseParentClientSize.cx=0) and (BaseParentClientSize.cy=0) then begin
+      r:=Control.Parent.GetLogicalClientRect;
+      BaseParentClientSize.cx:=r.Right;
+      BaseParentClientSize.cy:=r.Bottom;
+    end;
   end;
 end;
 
@@ -1152,8 +1179,7 @@ begin
     begin
       Child:=WinControl.Controls[i];
       ChildData:=Children[Child];
-      if not ChildData.Visible then continue;
-      if (Child.Align<>alNone) then continue;
+      if not Child.IsControlVisible then continue;
       if not IsNotAligned(Child) then continue;
       if (ChildData.Sides[akLeft].DistanceState[assddLeftTop]=assdfValid) then
         MoveNonAlignedToLeft:=Max(MoveNonAlignedToLeft,
@@ -2437,6 +2463,8 @@ var
   BoundsMutated: boolean;
   LastBoundsMutated: TControl;
   LastBoundsMutatedOld: TRect;
+  ParentClientWidth: integer;
+  ParentClientHeight: integer;
   RemainingBorderSpace: TRect; // borderspace around RemainingClientRect
                                // e.g. Right=3 means borderspace of 3
 
@@ -2475,9 +2503,7 @@ var
   procedure DoPosition(Control: TControl; AAlign: TAlign; AControlIndex: Integer);
   var
     NewLeft, NewTop, NewWidth, NewHeight: Integer;
-    ParentBaseClientSize: TPoint;
-    ParentClientWidth: integer;
-    ParentClientHeight: integer;
+    ParentBaseClientSize: TSize;
     CurBaseBounds: TRect;
     NewRight: Integer;// temp variable, not always valid, use with care !
     NewBottom: Integer;// temp variable, not always valid, use with care !
@@ -2496,7 +2522,6 @@ var
     CurAlignAnchors: TAnchors;
     OldBounds: TRect;
     NewBounds: TRect;
-    r: TRect;
 
     AlignInfo: TAlignInfo; // alCustom
     PrefWidth: integer;
@@ -2618,9 +2643,6 @@ var
       ConstraintWidth(NewLeft,NewWidth);
       ConstraintHeight(NewTop,NewHeight);
     end;
-    r:=Control.Parent.GetLogicalClientRect;
-    ParentClientWidth:=r.Right;
-    ParentClientHeight:=r.Bottom;
 
     InitAnchorSideCache;
     
@@ -2655,9 +2677,9 @@ var
 
       // get base size of parents client area
       ParentBaseClientSize:=Control.FBaseParentClientSize;
-      if (ParentBaseClientSize.X=0)
-      and (ParentBaseClientSize.Y=0) then
-        ParentBaseClientSize:=Point(ParentClientWidth,ParentClientHeight);
+      if (ParentBaseClientSize.cx=0)
+      and (ParentBaseClientSize.cy=0) then
+        ParentBaseClientSize:=Size(ParentClientWidth,ParentClientHeight);
 
       // get base bounds of Control
       CurBaseBounds:=Control.FBaseBounds;
@@ -2684,7 +2706,7 @@ var
           // keep distance to right side of parent or another sibling
           // -> change the width
           NewRight:=ParentClientWidth
-                    -(ParentBaseClientSize.X-CurBaseBounds.Right);
+                    -(ParentBaseClientSize.cx-CurBaseBounds.Right);
           if (not (akRight in CurAlignAnchors))
           and (akRight in Control.Anchors) then
             NewRight:=GetAnchorSidePosition(akRight,NewRight);
@@ -2699,7 +2721,7 @@ var
           // keep distance to right side of parent
           // and keep new width
           NewRight:=ParentClientWidth
-                    -(ParentBaseClientSize.X-CurBaseBounds.Right);
+                    -(ParentBaseClientSize.cy-CurBaseBounds.Right);
           if (not (akRight in CurAlignAnchors))
           and (akRight in Control.Anchors) then
             NewRight:=GetAnchorSidePosition(akRight,NewRight);
@@ -2709,7 +2731,7 @@ var
           // -> keep new width and scale center position.
           NewLeft:=MulDiv(ParentClientWidth,
                           (CurBaseBounds.Left+CurBaseBounds.Right) div 2,
-                          ParentBaseClientSize.X)
+                          ParentBaseClientSize.cx)
                    -(NewWidth div 2);
         end;
       end;
@@ -2721,7 +2743,7 @@ var
           // keep distance to bottom side of parent
           // -> change the height
           NewBottom:=ParentClientHeight
-                    -(ParentBaseClientSize.Y-CurBaseBounds.Bottom);
+                    -(ParentBaseClientSize.cy-CurBaseBounds.Bottom);
           if (not (akBottom in CurAlignAnchors))
           and (akBottom in Control.Anchors) then
             NewBottom:=GetAnchorSidePosition(akBottom,NewBottom);
@@ -2736,7 +2758,7 @@ var
           // keep distance to bottom side of parent
           // and keep new height
           NewBottom:=ParentClientHeight
-                    -(ParentBaseClientSize.Y-CurBaseBounds.Bottom);
+                    -(ParentBaseClientSize.cy-CurBaseBounds.Bottom);
           if (not (akBottom in CurAlignAnchors))
           and (akBottom in Control.Anchors) then
             NewBottom:=GetAnchorSidePosition(akBottom,NewBottom);
@@ -2746,7 +2768,7 @@ var
           // -> keep new height and scale center position.
           NewTop:=MulDiv(ParentClientHeight,
                          (CurBaseBounds.Top+CurBaseBounds.Bottom) div 2,
-                         ParentBaseClientSize.Y)
+                         ParentBaseClientSize.cy)
                   -(NewHeight div 2);
         end;
       end;
@@ -3069,6 +3091,7 @@ var
   OldRemainingClientRect: TRect;
   OldRemainingBorderSpace: TRect;
   MaxTries: LongInt;
+  r: TRect;
 begin
   //DebugLn(['TWinControl.AlignControls ',DbgSName(Self),' ',not (wcfAligningControls in FWinControlFlags)]);
   if wcfAligningControls in FWinControlFlags then exit;
@@ -3083,6 +3106,9 @@ begin
       DockManager.ResetBounds(false);
     AdjustClientRect(RemainingClientRect);
     FAdjustClientRectRealized:=RemainingClientRect;
+    r:=GetLogicalClientRect;
+    ParentClientWidth:=r.Right;
+    ParentClientHeight:=r.Bottom;
 
     if NeedAlignWork then
     begin
@@ -3860,9 +3886,9 @@ begin
       Result:=inherited GetClientRect;
       if csLoading in ComponentState then begin
         if cfClientWidthLoaded in FControlFlags then
-          Result.Right:=FLoadedClientSize.X;
+          Result.Right:=FLoadedClientSize.cx;
         if cfClientHeightLoaded in FControlFlags then
-          Result.Bottom:=FLoadedClientSize.Y;
+          Result.Bottom:=FLoadedClientSize.cy;
       end;
     end;
     Result.Right:=Max(Result.Left,Result.Right);
@@ -6021,7 +6047,7 @@ begin
 
   DisableAlign;
   try
-    ARect:= GetLogicalClientRect;
+    ARect:=GetLogicalClientRect;
     AlignControls(AControl, ARect);
     // some widgetsets updates their clientrect when the first child was moved
     // do a second pass if ClientRect changed
@@ -7228,7 +7254,7 @@ var
   CachedText: string;
   i: Integer;
   AChild: TControl;
-  LoadedClientSize: TPoint;
+  LoadedClientSize: TSize;
   CurControl: TWinControl;
 begin
   //DebugLn(['TWinControl.Loaded START ',DbgSName(Self),' cfWidthLoaded=',cfWidthLoaded in FControlFlags,' cfHeightLoaded=',cfHeightLoaded in FControlFlags,' ']);
@@ -7236,26 +7262,26 @@ begin
   try
     //DebugLn(['TWinControl.Loaded ',DbgSName(Self),' cfWidthLoaded=',cfWidthLoaded in FControlFlags,' cfHeightLoaded=',cfHeightLoaded in FControlFlags,' ']);
     if cfClientWidthLoaded in FControlFlags then
-      LoadedClientSize.X:=FLoadedClientSize.X
+      LoadedClientSize.cx:=FLoadedClientSize.cx
     else begin
       CurControl:=Self;
       while CurControl<>nil do begin
-        LoadedClientSize.X:=CurControl.ClientWidth;
-        if LoadedClientSize.X>0 then break;
-        LoadedClientSize.X:=CurControl.Width;
-        if LoadedClientSize.X>0 then break;
+        LoadedClientSize.cx:=CurControl.ClientWidth;
+        if LoadedClientSize.cx>0 then break;
+        LoadedClientSize.cx:=CurControl.Width;
+        if LoadedClientSize.cx>0 then break;
         CurControl:=CurControl.Parent;
       end;
     end;
     if cfClientHeightLoaded in FControlFlags then
-      LoadedClientSize.Y:=FLoadedClientSize.Y
+      LoadedClientSize.cy:=FLoadedClientSize.cy
     else begin
       CurControl:=Self;
       while CurControl<>nil do begin
-        LoadedClientSize.Y:=CurControl.ClientHeight;
-        if LoadedClientSize.Y>0 then break;
-        LoadedClientSize.Y:=CurControl.Height;
-        if LoadedClientSize.Y>0 then break;
+        LoadedClientSize.cy:=CurControl.ClientHeight;
+        if LoadedClientSize.cy>0 then break;
+        LoadedClientSize.cy:=CurControl.Height;
+        if LoadedClientSize.cy>0 then break;
         CurControl:=CurControl.Parent;
       end;
     end;

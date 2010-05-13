@@ -2548,7 +2548,7 @@ end;
 procedure TControl.SetClientHeight(Value: Integer);
 begin
   if csLoading in ComponentState then begin
-    FLoadedClientSize.Y:=Value;
+    FLoadedClientSize.cy:=Value;
     Include(FControlFlags,cfClientHeightLoaded);
   end else begin
     // during loading the ClientHeight is not used to set the Height of the
@@ -2576,7 +2576,7 @@ end;
 procedure TControl.SetClientWidth(Value: Integer);
 begin
   if csLoading in ComponentState then begin
-    FLoadedClientSize.X:=Value;
+    FLoadedClientSize.cx:=Value;
     Include(FControlFlags,cfClientWidthLoaded);
   end else begin
     // during loading the ClientWidth is not used to set the Width of the
@@ -3069,10 +3069,10 @@ begin
     //DebugLn(['TControl.Loaded ',DbgSName(Self),' Note: Width and/or Height were not set during loading, using ClientWidth/ClientHeight']);
     NewWidth:=Width;
     if UseClientWidthForWidth then
-      NewWidth:=FLoadedClientSize.X;
+      NewWidth:=FLoadedClientSize.cx;
     NewHeight:=Height;
     if UseClientHeightForHeight then
-      NewHeight:=FLoadedClientSize.Y;
+      NewHeight:=FLoadedClientSize.cy;
     SetBoundsKeepBase(Left,Top,NewWidth,NewHeight);
   end;
     
@@ -3227,7 +3227,7 @@ procedure TControl.UpdateBaseBounds(StoreBounds,
   StoreParentClientSize, UseLoadedValues: boolean);
 var
   NewBaseBounds: TRect;
-  NewBaseParentClientSize: TPoint;
+  NewBaseParentClientSize: TSize;
 begin
   if (csLoading in ComponentState) or (fBaseBoundsLock>0) then exit;
   if StoreBounds then
@@ -3236,20 +3236,20 @@ begin
     NewBaseBounds:=FBaseBounds;
   if StoreParentClientSize then begin
     if Parent<>nil then begin
-      NewBaseParentClientSize:=Point(Parent.ClientWidth,Parent.ClientHeight);
+      NewBaseParentClientSize:=Size(Parent.ClientWidth,Parent.ClientHeight);
       if UseLoadedValues then begin
         if cfClientWidthLoaded in Parent.FControlFlags then
-          NewBaseParentClientSize.X:=Parent.FLoadedClientSize.X;
+          NewBaseParentClientSize.cx:=Parent.FLoadedClientSize.cx;
         if cfClientHeightLoaded in Parent.FControlFlags then
-          NewBaseParentClientSize.Y:=Parent.FLoadedClientSize.Y;
+          NewBaseParentClientSize.cy:=Parent.FLoadedClientSize.cy;
       end;
     end else
-      NewBaseParentClientSize:=Point(0,0);
+      NewBaseParentClientSize:=Size(0,0);
   end else
     NewBaseParentClientSize:=FBaseParentClientSize;
   if CompareRect(@NewBaseBounds,@FBaseBounds)
-  and (NewBaseParentClientSize.X=FBaseParentClientSize.X)
-  and (NewBaseParentClientSize.Y=FBaseParentClientSize.Y)
+  and (NewBaseParentClientSize.cx=FBaseParentClientSize.cx)
+  and (NewBaseParentClientSize.cy=FBaseParentClientSize.cy)
   then exit;
   //if csDesigning in ComponentState then
   {$IFDEF CHECK_POSITION}

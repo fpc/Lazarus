@@ -860,7 +860,7 @@ type
     {$ENDIF}
     FBaseBounds: TRect;
     FBaseBoundsLock: integer;
-    FBaseParentClientSize: TPoint;
+    FBaseParentClientSize: TSize;
     FBiDiMode: TBiDiMode;
     FBorderSpacing: TControlBorderSpacing;
     FBoundsRectForNewParent: TRect;
@@ -891,7 +891,7 @@ type
     FLastResizeHeight: integer;
     FLastResizeWidth: integer;
     FLeft: Integer;
-    FLoadedClientSize: TPoint;
+    FLoadedClientSize: TSize;
     FLRDockWidth: Integer;
     FOnChangeBounds: TNotifyEvent;
     FOnClick: TNotifyEvent;
@@ -1286,6 +1286,7 @@ type
                                UseLoadedValues: boolean); virtual;
     property BaseBounds: TRect read FBaseBounds;
     property ReadBounds: TRect read FReadBounds;
+    property BaseParentClientSize: TSize read FBaseParentClientSize;
     procedure WriteLayoutDebugReport(const Prefix: string); virtual;
   public
     constructor Create(TheOwner: TComponent);override;
