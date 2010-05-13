@@ -6762,6 +6762,7 @@ begin
     ExtraOptions:='-T'+TargetOS+' -P'+TargetCPU;
     RunFPCVerbose(Compiler,TestFilename,CfgFiles,TargetCompiler,UnitPaths,
                   Defines,Undefines,ExtraOptions);
+    CompilerDate:=FileAgeCached(Compiler);
     // store the used target compiler
     if (TargetCompiler<>'') and FileExistsCached(TargetCompiler) then
       TargetCompilerDate:=FileAgeCached(TargetCompiler);
