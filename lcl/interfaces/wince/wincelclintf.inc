@@ -489,19 +489,25 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.GetControlConstraints(Constraints: TObject): boolean;
 var
-  SizeConstraints: TSizeConstraints;
+  SizeConstraints: TSizeConstraints absolute Constraints;
   SizeRect: TRect;
   Height, Width: Integer;
   FixedHeight, FixedWidth: boolean;
 begin
-  Result:=true;
-  if Constraints is TSizeConstraints then begin
-    SizeConstraints:=TSizeConstraints(Constraints);
-
-    if (SizeConstraints.Control=nil) then exit;
+  Result := True;
+  if Constraints is TSizeConstraints then
+  begin
+    if (SizeConstraints.Control=nil) then Exit;
 
     FixedHeight := false;
     FixedWidth := false;
+
+    if SizeConstraints.Control is TCustomComboBox then
+    begin
+      // wince combo (but not csSimple) has fixed height
+      FixedHeight := TCustomComboBox(SizeConstraints.Control).Style <> csSimple;
+    end;
+
     {if SizeConstraints.Control is TCustomCalendar then
     begin
       FixedHeight := true;
@@ -512,6 +518,7 @@ begin
       and TWinControl(SizeConstraints.Control).HandleAllocated then 
     begin
       Windows.GetWindowRect(TWinControl(SizeConstraints.Control).Handle, @SizeRect);
+
       if FixedHeight then
         Height := SizeRect.Bottom - SizeRect.Top
       else
@@ -520,6 +527,7 @@ begin
         Width := SizeRect.Right - SizeRect.Left
       else
         Width := 0;
+
       SizeConstraints.SetInterfaceConstraints(Width, Height, Width, Height);
     end;
   end;
