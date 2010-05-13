@@ -90,13 +90,13 @@ type
     FTextChangedHook : QTextEdit_hookH;
     FTextChanged: Boolean; // StringList and QtTextEdit out of sync
     FStringList: TStringList; // Holds the lines to show
-    FQtTextEdit: QTextEditH;  // Qt Widget
     FOwner: TWinControl;      // Lazarus Control Owning MemoStrings
     FUpdating: Boolean;       // We're changing Qt Widget
     procedure InternalUpdate;
     procedure ExternalUpdate(var Astr: WideString; AClear: Boolean = True);
     procedure IsChanged; // OnChange triggered by program action
   protected
+    function getTextEdit: QTextEditH; // QtWidget handle
     function GetTextStr: string; override;
     function GetCount: integer; override;
     function Get(Index : Integer) : string; override;
@@ -128,8 +128,11 @@ implementation
 procedure TQtMemoStrings.InternalUpdate;
 var
   W: WideString;
+  TextEdit: QTextEditH;
 begin
-  QTextEdit_toPlainText(FQtTextEdit,@W); // get the memo content
+  TextEdit := getTextEdit;
+  if TextEdit <> nil then
+    QTextEdit_toPlainText(TextEdit, @W); // get the memo content
   FStringList.Text := UTF16ToUTF8(W);
   FTextChanged := False;
 end;
@@ -144,19 +147,24 @@ end;
 procedure TQtMemoStrings.ExternalUpdate(var Astr: WideString; AClear: Boolean = True);
 var
   W: WideString;
+  TextEdit: QTextEditH;
 begin
   FUpdating := True;
   W := GetUtf8String(AStr);
-  if AClear then
+  TextEdit := getTextEdit;
+  if TextEdit <> nil then
   begin
-    QTextEdit_clear(FQtTextEdit);
-    QTextEdit_setPlainText(FQtTextEdit,@W);
-  end
-  else
-    QTextEdit_append(FQtTextEdit,@W);
+    if AClear then
+    begin
+      QTextEdit_clear(TextEdit);
+      QTextEdit_setPlainText(TextEdit,@W);
+    end
+    else
+      QTextEdit_append(TextEdit,@W);
 
-  if QTextEdit_alignment(FQtTextEdit) <> AlignmentMap[TCustomMemo(FOwner).Alignment] then
-    QTextEdit_setAlignment(FQtTextEdit, AlignmentMap[TCustomMemo(FOwner).Alignment]);
+    if QTextEdit_alignment(TextEdit) <> AlignmentMap[TCustomMemo(FOwner).Alignment] then
+      QTextEdit_setAlignment(TextEdit, AlignmentMap[TCustomMemo(FOwner).Alignment]);
+  end;
     
   FUpdating := False;
   IsChanged;
@@ -177,6 +185,13 @@ begin
     (FOwner as TCustomMemo).Modified := False;
     (FOwner as TCustomMemo).OnChange(self);
   end;
+end;
+
+function TQtMemoStrings.getTextEdit: QTextEditH;
+begin
+  Result := nil;
+  if FOwner.HandleAllocated then
+    Result := QTextEditH(TQtTextEdit(FOwner.Handle).Widget);
 end;
 
 {------------------------------------------------------------------------------
@@ -247,13 +262,11 @@ begin
   {$endif}
 
   FStringList := TStringList.Create;
-  FQtTextEdit := TextEdit;
-  QTextEdit_clear(FQtTextEdit);
+  QTextEdit_clear(TextEdit);
   FOwner:=TheOwner;
-
   // Callback Event
   {Method := MemoChanged;   }
-  FTextChangedHook := QTextEdit_hook_create(FQtTextEdit);
+  FTextChangedHook := QTextEdit_hook_create(TextEdit);
   QTextEdit_hook_hook_textChanged(FTextChangedHook, @TextChangedHandler);
 end;
 
@@ -328,13 +341,16 @@ end;
   Clears all.
  ------------------------------------------------------------------------------}
 procedure TQtMemoStrings.Clear;
+var
+  TextEdit: QTextEditH;
 begin
   FUpdating := True;
   FStringList.Clear;
-  
+  TextEdit := getTextEdit;
   if not (csDestroying in FOwner.ComponentState)
-  and not (csFreeNotification in FOwner.ComponentState) then
-    QTextEdit_clear(FQtTextEdit);
+  and not (csFreeNotification in FOwner.ComponentState)
+  and (TextEdit <> nil) then
+    QTextEdit_clear(TextEdit);
     
   FTextChanged := False;
   FUpdating := False;
