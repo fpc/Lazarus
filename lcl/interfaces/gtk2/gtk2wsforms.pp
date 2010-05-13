@@ -290,9 +290,15 @@ begin
 
   if (WidgetInfo^.FormBorderStyle <> Ord(AFormBorderStyle)) then
   begin
-    if (AForm.Parent <> nil) or (AFormBorderStyle <> bsNone) then
-      RecreateWnd(AForm)
-    else
+    if (AForm.Parent<>nil) then
+    begin
+      // a nested form
+      // at the moment the gtk interface does not support any border for this
+    end else if (AFormBorderStyle <> bsNone) then
+    begin
+      // the borderstyle can be only set on creation
+      RecreateWnd(AForm);
+    end else
     begin
       // TODO: set window hint WindowType := FormStyleMap[AFormBorderStyle];
       Resizable := FormResizableMap[AFormBorderStyle];
