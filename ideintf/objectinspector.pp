@@ -1151,7 +1151,6 @@ var
 begin
   if ASelection=nil then exit;
   if (not ASelection.ForceUpdate) and FSelection.IsEqual(ASelection) then exit;
-  ASelection.WriteDebugReport;
 
   OldSelectedRowPath:=PropertyPath(ItemIndex);
   ItemIndex:=-1;
@@ -2810,6 +2809,7 @@ begin
   IncreaseChangeStep;
   // reverse order to make sure child rows are freed before parent rows
   for i:=FRows.Count-1 downto 0 do begin
+    //debugln(['TOICustomPropertyGrid.ClearRows ',i,' ',FRows.Count,' ',dbgs(frows[i])]);
     Rows[i].Free;
     FRows[i]:=nil;
   end;
@@ -3228,6 +3228,7 @@ end;
 
 destructor TOIPropertyGridRow.Destroy;
 begin
+  //debugln(['TOIPropertyGridRow.Destroy ',fname,' ',dbgs(Pointer(Self))]);
   if FPriorBrother<>nil then FPriorBrother.FNextBrother:=FNextBrother;
   if FNextBrother<>nil then FNextBrother.FPriorBrother:=FPriorBrother;
   if FParent<>nil then begin
