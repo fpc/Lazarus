@@ -486,7 +486,7 @@ type
     property PropertyEditorHook: TPropertyEditorHook read FPropertyEditorHook
                                                     write SetPropertyEditorHook;
     property RowCount: integer read GetRowCount;
-    property Rows[Index: integer]:TOIPropertyGridRow read GetRow;
+    property Rows[Index: integer]: TOIPropertyGridRow read GetRow;
     property RowSpacing: integer read FRowSpacing write SetRowSpacing;
     property Selection: TPersistentSelectionList read FSelection
                                                  write SetSelection;
@@ -1149,6 +1149,10 @@ var
   CurRow:TOIPropertyGridRow;
   OldSelectedRowPath:string;
 begin
+  if ASelection=nil then exit;
+  if (not ASelection.ForceUpdate) and FSelection.IsEqual(ASelection) then exit;
+  ASelection.WriteDebugReport;
+
   OldSelectedRowPath:=PropertyPath(ItemIndex);
   ItemIndex:=-1;
   ClearRows;
@@ -2801,12 +2805,13 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.ClearRows;
-var a:integer;
+var i:integer;
 begin
   IncreaseChangeStep;
   // reverse order to make sure child rows are freed before parent rows
-  for a:=FRows.Count-1 downto 0 do begin
-    Rows[a].Free;
+  for i:=FRows.Count-1 downto 0 do begin
+    Rows[i].Free;
+    FRows[i]:=nil;
   end;
   FRows.Clear;
 end;
@@ -4148,8 +4153,12 @@ end;
 
 procedure TObjectInspectorDlg.SetSelection(const ASelection: TPersistentSelectionList);
 begin
-  if not Assigned(ASelection) or FInSelection or (not ASelection.ForceUpdate and FSelection.IsEqual(ASelection)) then
-    Exit;
+  if (not Assigned(ASelection)) then
+    exit;
+  if FInSelection and FSelection.IsEqual(ASelection) then
+    exit; // prevent endless loops
+  if (not ASelection.ForceUpdate) and FSelection.IsEqual(ASelection) then
+    exit; // nothing changed
   FInSelection := True;
   try
     FSelection.Assign(ASelection);
