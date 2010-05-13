@@ -92,7 +92,7 @@ implementation
 resourcestring
   sFPCUnTestApp = 'FPCUnit Test Application';
   sFPCUnTestAppDesc = 'FPCUnit Test Application%sAn application to run '
-    +'fpcunit test cases.%sThe program file is automatically maintained by '
+    +'FPCUnit test cases.%sThe application source is automatically maintained by '
     +'Lazarus.';
   sFPCUnTestCase = 'FPCUnit Test Case';
   sFPCUnTestCaseDesc = 'FPCUnit Test Case%sA unit containing a FPCUnit Test '
@@ -100,7 +100,7 @@ resourcestring
   sWriteYourOwnTest = 'Write your own test';
   sFPCUnConsoleTestApp = 'FPCUnit Console Test Application';
   sFPCUnConsoleTestDesc = 'FPCUnit Console Test Application%sAn application '
-    +'to run fpcunit test cases in console mode.%sThe program file is '
+    +'to run FPCUnit test cases in console mode.%sThe application source is '
     +'automatically maintained by Lazarus.';
 
 procedure Register;

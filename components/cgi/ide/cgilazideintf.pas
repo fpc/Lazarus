@@ -69,7 +69,7 @@ implementation
 
 resourcestring
   lisdescription = 'Simple CGI Application%sA CGI (Common Gateway Interface) '
-    +'program in Free Pascal.%sThe program file is automatically maintained '
+    +'program in Free Pascal.%sThe application source is automatically maintained '
     +'by Lazarus.%sThis kind of application is deprecated, for CGI programs '
     +'or Apache modules, please use the LazWeb package instead.';
   lisdescrmod = 'Simple CGI Module%sA datamodule for CGI applications.%sThis '

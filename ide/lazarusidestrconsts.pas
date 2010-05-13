@@ -1903,8 +1903,8 @@ resourcestring
   dlgProjectOptionsFor = 'Options for Project: %s';
   dlgPOApplication = 'Application';
   lisApplicationAGraphicalLclFreepascalProgramTheProgra = 'Application%sA '
-    +'graphical lcl/freepascal program. The program file is automatically '
-    +'maintained by lazarus.';
+    +'graphical LCL/Free Pascal program. The program source is automatically '
+    +'maintained by Lazarus.';
   dlgPOFroms = 'Forms';
   dlgPOMisc = 'Miscellaneous';
   dlgPOI18n = 'i18n';
@@ -3106,19 +3106,19 @@ resourcestring
   lisNewDlgCreateANewPascalUnit = 'Create a new pascal unit.';
   lisNewDlgCreateANewUnitWithALCLForm = 'Create a new unit with a LCL form.';
   lisNewDlgCreateANewUnitWithADataModule = 'Create a new unit with a datamodule.';
-  lisNewDlgCreateANewUnitWithAFrame = 'Create a new unit with a frame';
+  lisNewDlgCreateANewUnitWithAFrame = 'Create a new unit with a frame.';
   lisNewDlgCreateANewEmptyTextFile = 'Create a new empty text file.';
   lisNewDlgInheritAnExistingComponent = 'Inherit from an existing component.';
   lisASimplePascalProgramFileThisCanBeUsedForQuickAndDi = 'A simple Pascal '
     +'Program file.%sThis can be used for quick and dirty testing.%sBetter '
     +'create a new project.';
   lisNewDlgCreateANewGraphicalApplication = 'Create a new '
-    +'graphical application.%sThe program file is maintained by Lazarus.';
+    +'graphical application.%sThe application source is maintained by Lazarus.';
   lisNewDlgCreateANewProgram = 'Create a new '
-    +'program.%sThe program file is maintained by Lazarus.';
+    +'program.%sThe program source is maintained by Lazarus.';
   lisNewDlgCreateANewCustomProgram = 'Create a new program.';
   lisNewCreateANewCgiApplicationTheProgramFileIsMaintained = 'Create a new '
-    +'cgi application.%sThe program file is maintained by Lazarus.';
+    +'CGI application.%sThe application source is maintained by Lazarus.';
   lisNewDlgCreateANewStandardPackageAPackageIsACollectionOfUn = 'Create a new '
     +'standard package.%sA package is a collection of units and components.';
 
@@ -4094,16 +4094,16 @@ resourcestring
   lisProgram = 'Program';
   lisConsoleApplication = 'Console application';
   lisFreepascalProgramUsingTCustomApplicationToEasilyCh =
-      'freepascal program '
+      'Free Pascal program '
     +'using TCustomApplication to easily check command line options, handling '
-    +'exceptions, etc. The program file is automatically maintained by lazarus.';
+    +'exceptions, etc. The program source is automatically maintained by Lazarus.';
   lisProgramAFreepascalProgramTheProgramFileIsAutomatic = 'Program%sA '
-    +'freepascal program. The program file is automatically maintained by '
-    +'lazarus.';
-  lisCustomProgramAFreepascalProgram = 'Custom Program%sA freepascal program.';
+    +'Free Pascal program. The program source is automatically maintained by '
+    +'Lazarus.';
+  lisCustomProgramAFreepascalProgram = 'Custom Program%sA Free Pascal program.';
   lisLibraryAFreepascalLibraryDllUnderWindowsSoUnderLin = 'Library%sA '
-    +'freepascal library (.dll under windows, .so under linux, .dylib under '
-    +'macosx). The library source file is automatically maintained by Lazarus.';
+    +'Free Pascal library (.dll under Windows, .so under Linux, .dylib under '
+    +'MacOS X). The library source is automatically maintained by Lazarus.';
   lisNPSelectAProjectType = 'Select a project type';
   lisNPCreateANewProject = 'Create a new project';
   lisNPCreate = 'Create';

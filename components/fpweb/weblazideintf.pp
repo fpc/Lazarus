@@ -190,7 +190,7 @@ end;
 function TCGIApplicationDescriptor.GetLocalizedDescription: string;
 begin
   Result:='CGI Application'#13#13'A CGI (Common Gateway Interface) program '
-          +'in Free Pascal using webmodules. The program file is '
+          +'in Free Pascal using webmodules. The program source is '
           +'automatically maintained by Lazarus.';
 end;
 
@@ -259,7 +259,7 @@ end;
 function TCustomCGIApplicationDescriptor.GetLocalizedDescription: string;
 begin
   Result:='Custom CGI Application'#13#13'A CGI (Common Gateway Interface) program '
-          +'in Free Pascal. The program file is '
+          +'in Free Pascal. The program source is '
           +'automatically maintained by Lazarus.';
 end;
 
@@ -500,7 +500,7 @@ end;
 function TCustomFCGIApplicationDescriptor.GetLocalizedDescription: string;
 begin
   Result:='Custom FastCGI Application'#13#13'A FastCGI (Common Gateway Interface) program '
-          +'in Free Pascal. The program file is '
+          +'in Free Pascal. The program source is '
           +'automatically maintained by Lazarus.';
 end;
 
@@ -582,7 +582,7 @@ end;
 function TFCGIApplicationDescriptor.GetLocalizedDescription: string;
 begin
   Result:='FastCGI Application'#13#13'A FastCGI (Common Gateway Interface) program '
-          +'in Free Pascal using webmodules. The program file is '
+          +'in Free Pascal using webmodules. The program source is '
           +'automatically maintained by Lazarus.';
 end;
 
