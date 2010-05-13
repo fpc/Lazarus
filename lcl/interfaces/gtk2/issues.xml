@@ -14,5 +14,9 @@
 			<short>The format of generated file is system dependant</short>
 			<descr>The content of file created by using this property depends of the printer backend used, for example when using CUPS (mainly under Unix type systems) it will be postscript while under Windows it will be in a printer unspecified format</descr>
 		</issue>
+        <issue name="TForm.BorderStyle">
+        	<short>Not supported for nested Forms</short>
+        	<descr>If you put a form onto another it will have no window borders or title</descr>
+        </issue>
 	</widgetset>
 </package>
