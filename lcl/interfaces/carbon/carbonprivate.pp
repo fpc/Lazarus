@@ -170,7 +170,6 @@ type
 
     fPrevMenuEnabled  : Boolean; // was menu enabled before showing modal
 
-    procedure BoundsChanged; override;
 
     procedure RegisterWindowEvents; virtual;
     procedure CreateWindow(const AParams: TCreateParams); virtual;
@@ -181,6 +180,8 @@ type
     procedure DestroyWidget; override;
   public
     function GetPreferredSize: TPoint; override;
+
+    procedure BoundsChanged; override;
 
     procedure AddToWidget(AParent: TCarbonWidget); override;
     function GetWindowRelativePos(winX, winY: Integer): TPoint; override;
@@ -275,7 +276,9 @@ type
 
   TCarbonStatusBar = class(TCarbonControl)
   private
+    {$ifdef CarbonOldStatusBar}
     FPanels: TObjectList;
+    {$endif}
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
@@ -1095,7 +1098,6 @@ end;
 
 function TCarbonScrollingWinControl.GetWindowRelativePos(winX, winY: Integer): TPoint;
 var
-  r : TRect;
   sz : HISize;
   org : HIPoint;
 begin
@@ -1266,6 +1268,90 @@ end;
 
 { TCarbonStatusBar }
 
+type
+  TStatusItemData = record
+    Text  : AnsiString;
+    Width : Integer;
+    Align : TAlignment;
+  end;
+
+  TItemDrawEvent = procedure (ItemIndex: Integer; const r: TRect; const ItemData: TStatusItemData) of object;
+
+const
+  StatusHeight = 15;
+
+procedure DrawSection(Ctx: CGContextRef; const r: TRect; data: TStatusItemData);
+var
+  cr    : CGRect;
+  cf    : CFStringRef;
+  info  : HIThemeButtonDrawInfo;
+  txtinfo : HIThemeTextInfo;
+const
+  txtHorzFlush : array [TAlignment] of Integer =
+    (kHIThemeTextHorizontalFlushLeft,kHIThemeTextHorizontalFlushRight,kHIThemeTextHorizontalFlushCenter);
+begin
+  cr:=RectToCGRect(r);
+  FillChar(info, sizeof(info), 0);
+  info.kind:=kThemeListHeaderButton;
+  info.state:=kThemeStateActive;
+  HIThemeDrawButton( cr, info, ctx, 0, nil);
+
+  cr.origin.x:=cr.origin.x+2;
+  cr.origin.y:=cr.origin.y+1;
+  cr.size.width:=cr.size.width-6;
+  if data.Text<>'' then
+  begin
+    CreateCFString(data.Text, cf);
+    if Assigned(cf) then
+    begin
+      FillChar(txtinfo, sizeof(txtinfo), 0);
+      txtinfo.version:=1;
+      //txtinfo.fontID:=kThemeMiniSystemFont;
+      txtinfo.horizontalFlushness:=txtHorzFlush[data.align];
+      txtinfo.fontID:=kThemeSmallSystemFont;
+      txtinfo.state:=kThemeStateActive;
+      HIThemeSetTextFill(kThemeTextColorListView, nil, ctx, 0);
+      HIThemeDrawTextBox(cf, cr, txtinfo, ctx, 0);
+    end;
+    CFRelease(cf);
+  end;
+end;
+
+procedure DrawCarbonStatusBar(Ctx: CGContextRef; const bnd: TRect; Items: array of TStatusItemData; OnItemDraw: TItemDrawEvent);
+var
+  i   : Integer;
+  x   : Integer;
+  xn  : Integer;
+  r   : TRect;
+const
+  dummy : TStatusItemData = (Text:''; Width:0; align: taLeftJustify);
+  ExtraWidth=2;
+begin
+  if length(Items)>0 then
+  begin
+    x:=bnd.Left;
+    for i:=0 to length(Items)-2 do
+    begin
+      xn:=x+Items[i].Width;
+      r:=Types.Rect(x, bnd.Top, xn+ExtraWidth, bnd.Bottom);
+      DrawSection(Ctx, r, Items[i]);
+      dec(r.Right, ExtraWidth);
+      if Assigned(OnItemDraw) then OnItemDraw(i, r, Items[i]);
+      x:=xn;
+    end;
+
+    i:=length(Items)-1;
+    r:=Types.Rect(x, bnd.Top, bnd.Right, bnd.Bottom);
+    DrawSection(Ctx, r, Items[i]);
+    if Assigned(OnItemDraw) then OnItemDraw(i, r, Items[i]);
+  end
+  else
+  begin
+    DrawSection(Ctx, bnd, dummy);
+    if Assigned(OnItemDraw) then OnItemDraw(-1, bnd, dummy);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonStatusBar.CreateWidget
   Params:  AParams - Creation parameters
@@ -1276,16 +1362,21 @@ procedure TCarbonStatusBar.CreateWidget(const AParams: TCreateParams);
 var
   Control: ControlRef;
 begin
+  {$ifdef CarbonOldStatusBar}
   if OSError(
     CreatePlacardControl(GetTopParentWindow, ParamsToCarbonRect(AParams), Control),
     Self, SCreateWidget, 'CreatePlacardControl') then RaiseCreateWidgetError(LCLObject);
-
   Widget := Control;
+  {$else}
+  Widget := CreateCustomHIView(ParamsToHIRect(AParams), LCLObject.ControlStyle);
+  {$endif}
 
   inherited;
-  
+
+  {$ifdef CarbonOldStatusBar}
   FPanels := TObjectList.Create(True);
   UpdatePanel; // add panels
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -1295,8 +1386,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonStatusBar.DestroyWidget;
 begin
+  {$ifdef CarbonOldStatusBar}
   FPanels.Free;
-
+  {$endif}
   inherited DestroyWidget;
 end;
 
@@ -1316,11 +1408,15 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonStatusBar.Draw;
 var
-  StatusBar: TStatusBar;
-  R: TRect;
+  StatusBar : TStatusBar;
+  R         : TRect;
+  {$ifndef CarbonOldStatusBar}
+  items     : array of TStatusItemData;
+  i         : Integer;
+  {$endif}
 begin
   StatusBar := LCLObject as TStatusBar;
-  
+  {$ifdef CarbonOldStatusBar}
   if StatusBar.SimplePanel and (StatusBar.SimpleText <> '') then
   begin
     GetClientRect(R);
@@ -1328,6 +1424,23 @@ begin
     (Context as TCarbonDeviceContext).ExtTextOut(R.Top, R.Left, 0, nil,
       PChar(StatusBar.SimpleText), Length(StatusBar.SimpleText), nil);
   end;
+  {$else}
+  StatusBar := LCLObject as TStatusBar;
+  GetClientRect(r);
+  if StatusBar.SimplePanel then
+    DrawCarbonStatusBar( TCarbonContext(Context).CGContext, r, [], nil)
+  else
+  begin
+    SetLength(items, StatusBar.Panels.Count);
+    for i:=0 to length(items)-1 do
+    begin
+      items[i].Width:=StatusBar.Panels[i].Width;
+      items[i].Text:=StatusBar.Panels[i].Text;
+      items[i].Align:=StatusBar.Panels[i].Alignment;
+    end;
+    DrawCarbonStatusBar( TCarbonContext(Context).CGContext, r, items, nil)
+  end;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -1335,8 +1448,13 @@ end;
   Returns: The preffered size of status bar for autosizing or (0, 0)
  ------------------------------------------------------------------------------}
 function TCarbonStatusBar.GetPreferredSize: TPoint;
+{$ifdef CarbonOldStatusBar}
 const
   CarbonStatusBarHeight = 20; // should statusbar height be evaluated of the default font's height?
+{$else}
+const
+  CarbonStatusBarHeight = StatusHeight; // should statusbar height be evaluated of the default font's height?
+{$endif}
 begin
   Result := inherited GetPreferredSize;
   
@@ -1344,7 +1462,7 @@ begin
   if LCLObject.Parent <> nil then
   begin
     Result.X := LCLObject.Parent.ClientWidth;
-    REsult.Y := CarbonStatusBarHeight;
+    Result.Y := CarbonStatusBarHeight;
   end;
 end;
 
@@ -1377,11 +1495,14 @@ end;
   Updates properties of the specified panel(s) of status bar
  ------------------------------------------------------------------------------}
 procedure TCarbonStatusBar.UpdatePanel(AIndex: Integer);
+{$ifdef CarbonOldStatusBar}
 var
   StatusBar: TStatusBar;
   I, X: Integer;
   Panel: TPanel;
+{$endif}
 begin
+{$ifdef CarbonOldStatusBar}
   StatusBar := LCLObject as TStatusBar;
   
   if StatusBar.SimplePanel then
@@ -1432,7 +1553,7 @@ begin
     for I := FPanels.Count - 1 downto StatusBar.Panels.Count do
       FPanels.Delete(I);
   end;
-  
+{$endif}
   Invalidate;
 end;
 
