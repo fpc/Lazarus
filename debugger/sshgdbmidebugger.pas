@@ -62,6 +62,8 @@ implementation
 
 type
 
+  { TSSHGDBMINotePropertyEditor }
+
   TSSHGDBMINotePropertyEditor = class(TStringPropertyEditor)
   private
   protected
@@ -71,6 +73,8 @@ type
     procedure SetValue(const NewValue: ansistring); override;
     procedure PropMeasureHeight(const NewValue: ansistring;  ACanvas:TCanvas;
                                 var AHeight:Integer); override;
+    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+                  AState: TPropEditDrawState); override;
   end;
 
 { TSSHGDBMINotePropertyEditor }
@@ -89,6 +93,26 @@ end;
 procedure TSSHGDBMINotePropertyEditor.PropMeasureHeight(const NewValue: ansistring; ACanvas: TCanvas; var AHeight: Integer);
 begin
   AHeight := 100;
+end;
+
+procedure TSSHGDBMINotePropertyEditor.PropDrawValue(ACanvas: TCanvas;
+  const ARect: TRect; AState: TPropEditDrawState);
+var
+  Style : TTextStyle;
+begin
+  FillChar(Style,SizeOf(Style),0);
+  With Style do begin
+    Alignment := taLeftJustify;
+    Layout := tlTop;
+    Opaque := False;
+    Clipping := True;
+    ShowPrefix := True;
+    WordBreak := True;
+    SingleLine := False;
+    ExpandTabs := True;
+    SystemFont := False;
+  end;
+  ACanvas.TextRect(ARect,ARect.Left+3,ARect.Top,GetVisualValue, Style);
 end;
 
 procedure TSSHGDBMINotePropertyEditor.SetValue (const NewValue: ansistring);
