@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-11 00:57+0300\n"
+"PO-Revision-Date: 2010-05-14 01:56+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3557,8 +3557,9 @@ msgid "Append short description to long description"
 msgstr "Добавить краткое описание к подробному"
 
 #: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
-msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
-msgstr "Приложение%sГрафическая программа на LCL/FreePascal. Файл программы автоматически поддерживается Lazarus."
+#| msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
+msgid "Application%sA graphical LCL/Free Pascal program. The program source is automatically maintained by Lazarus."
+msgstr "Приложение%sГрафическая программа на LCL/Free Pascal. Исходный код программы автоматически поддерживается Lazarus."
 
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
@@ -5553,8 +5554,9 @@ msgid "Custom Program"
 msgstr "Программа пользователя"
 
 #: lazarusidestrconsts.liscustomprogramafreepascalprogram
-msgid "Custom Program%sA freepascal program."
-msgstr "Программа пользователя%sПрограмма на языке FreePascal"
+#| msgid "Custom Program%sA freepascal program."
+msgid "Custom Program%sA Free Pascal program."
+msgstr "Программа пользователя%sПрограмма на языке Free Pascal."
 
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
@@ -6820,8 +6822,9 @@ msgid "Free Pascal Compiler not found"
 msgstr "Компилятор FreePascal не найден"
 
 #: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
-msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
-msgstr "Программа FreePascal, использующая TCustomApplication для лёгкой проверки параметров командной строки, обработки исключений и т. д. Файл программы автоматически поддерживается Lazarus."
+#| msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
+msgid "Free Pascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program source is automatically maintained by Lazarus."
+msgstr "Программа Free Pascal, использующая TCustomApplication для лёгкой проверки параметров командной строки, обработки исключений и т. д. Исходный код программы автоматически поддерживается Lazarus."
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 msgid "Freepascal source directory"
@@ -8301,8 +8304,9 @@ msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis libr
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
-msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
-msgstr "Библиотека%sБиблиотека FreePascal (.dll в Windows, .so в Linux, .dylib в MacOS X). Файл исходного кода библиотеки автоматически поддерживается Lazarus."
+#| msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
+msgid "Library%sA Free Pascal library (.dll under Windows, .so under Linux, .dylib under MacOS X). The library source is automatically maintained by Lazarus."
+msgstr "Библиотека%sБиблиотека Free Pascal (.dll в Windows, .so в Linux, .dylib в MacOS X). Исходный код библиотеки автоматически поддерживается Lazarus."
 
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
@@ -9571,8 +9575,9 @@ msgid "New console application"
 msgstr "Новое консольное приложение"
 
 #: lazarusidestrconsts.lisnewcreateanewcgiapplicationtheprogramfileismaintained
-msgid "Create a new cgi application.%sThe program file is maintained by Lazarus."
-msgstr "Создать новое приложение cgi.%sФайл программы поддерживается Lazarus."
+#| msgid "Create a new cgi application.%sThe program file is maintained by Lazarus."
+msgid "Create a new CGI application.%sThe application source is maintained by Lazarus."
+msgstr "Создать новое приложение CGI.%sИсходный код приложения поддерживается Lazarus."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewcustomprogram
 msgid "Create a new program."
@@ -9587,16 +9592,18 @@ msgid "Create a new empty text file."
 msgstr "Создать новый пустой текстовый файл."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewgraphicalapplication
-msgid "Create a new graphical application.%sThe program file is maintained by Lazarus."
-msgstr "Создать новое графическое приложение.%sЭта программа поддерживается Lazarus."
+#| msgid "Create a new graphical application.%sThe program file is maintained by Lazarus."
+msgid "Create a new graphical application.%sThe application source is maintained by Lazarus."
+msgstr "Создать новое графическое приложение.%sИсходный код приложения поддерживается Lazarus."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewpascalunit
 msgid "Create a new pascal unit."
 msgstr "Создать модуль Паскаля."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprogram
-msgid "Create a new program.%sThe program file is maintained by Lazarus."
-msgstr "Создать программу.%sФайл программы поддерживается Lazarus."
+#| msgid "Create a new program.%sThe program file is maintained by Lazarus."
+msgid "Create a new program.%sThe program source is maintained by Lazarus."
+msgstr "Создать новую программу.%sИсходный код программы поддерживается Lazarus."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprojectchooseatype
 msgid "Create a new project.%sChoose a type."
@@ -9611,8 +9618,9 @@ msgid "Create a new unit with a datamodule."
 msgstr "Создать модуль с модулем данных."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithaframe
-msgid "Create a new unit with a frame"
-msgstr "Создать новый модуль с фреймом"
+#| msgid "Create a new unit with a frame"
+msgid "Create a new unit with a frame."
+msgstr "Создать новый модуль с фреймом."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithalclform
 msgid "Create a new unit with a LCL form."
@@ -11344,8 +11352,9 @@ msgid "Program"
 msgstr "Программа"
 
 #: lazarusidestrconsts.lisprogramafreepascalprogramtheprogramfileisautomatic
-msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
-msgstr "Программа%sПрограмма FreePascal. Файл программы автоматически поддерживается Lazarus."
+#| msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
+msgid "Program%sA Free Pascal program. The program source is automatically maintained by Lazarus."
+msgstr "Программа%sПрограмма Free Pascal. Исходный код программы автоматически поддерживается Lazarus."
 
 #: lazarusidestrconsts.lisprogramdetected
 msgid "Program detected"
@@ -11803,6 +11812,10 @@ msgstr "Ошибка сохранения ресурса"
 #: lazarusidestrconsts.lisresourcetypeofnewfiles
 msgid "Resource type of project:"
 msgstr "Тип ресурсов проекта:"
+
+#: lazarusidestrconsts.lisresponsecontinue
+msgid "Response: %sContinue ?"
+msgstr "Ответ: %sПродолжить?"
 
 #: lazarusidestrconsts.lisresult
 msgid "Result :="
@@ -12541,6 +12554,10 @@ msgstr "Компилятор FreePascal (имя файла: %s) не найде�
 #: lazarusidestrconsts.listhefreepascalsourcedirectorywasnotfoundsomecodefun
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
 msgstr "Каталог исходного кода FreePascal не найден.%sОтдельные действия с кодом не будут работать.%sРекомендуется установить его и установить путь%sОкружение -> Параметры окружения -> Файлы"
+
+#: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
+msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
+msgstr "Отладчик GNU через SSH позволяет проводить отладку удалённо через соединение SSH. Обратитесь к файлу docs/RemoteDebugging.txt за подробностями. Путь должен содержать имя файла клиента SSH, имя удалённой машины с (необязательным) именем пользователя и имя файла GDB на удалённой машине. Например: %s/usr/bin/ssh username@hostname gdb%s или: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
@@ -13326,6 +13343,10 @@ msgstr "Невозможно записать в файл %s%s%s."
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "Невозможно записать поток XML в %s%sОшибка: %s"
 
+#: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
+msgid "Unexpected result:%sThe debugger will terminate"
+msgstr "Неожиданный результат:%sОтладчик прервёт работу."
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr "Удаление невозможно"
@@ -13732,6 +13753,10 @@ msgstr "Каталанский"
 #: lazarusidestrconsts.rslanguagechinese
 msgid "Chinese"
 msgstr "Китайский"
+
+#: lazarusidestrconsts.rslanguageczech
+msgid "Czech"
+msgstr "Чешский"
 
 #: lazarusidestrconsts.rslanguagedutch
 msgid "Dutch"

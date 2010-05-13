@@ -3516,7 +3516,9 @@ msgid "Append short description to long description"
 msgstr ""
 
 #: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
-msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
+#, fuzzy
+#| msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
+msgid "Application%sA graphical LCL/Free Pascal program. The program source is automatically maintained by Lazarus."
 msgstr "Aplikace%sGrafický program LCL/FreePascal. Soubor programu je automaticky spravován Lazarusem."
 
 #: lazarusidestrconsts.lisapplicationclassname
@@ -5512,7 +5514,9 @@ msgid "Custom Program"
 msgstr "Vlastní program"
 
 #: lazarusidestrconsts.liscustomprogramafreepascalprogram
-msgid "Custom Program%sA freepascal program."
+#, fuzzy
+#| msgid "Custom Program%sA freepascal program."
+msgid "Custom Program%sA Free Pascal program."
 msgstr "Vlastní program%sFreepascal program."
 
 #: lazarusidestrconsts.lisdatamodule
@@ -6778,7 +6782,7 @@ msgid "Free Pascal Compiler not found"
 msgstr "Nenalezen Free Pascal Compiler"
 
 #: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
-msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
+msgid "Free Pascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program source is automatically maintained by Lazarus."
 msgstr ""
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
@@ -8257,7 +8261,7 @@ msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis libr
 msgstr ""
 
 #: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
-msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
+msgid "Library%sA Free Pascal library (.dll under Windows, .so under Linux, .dylib under MacOS X). The library source is automatically maintained by Lazarus."
 msgstr ""
 
 #: lazarusidestrconsts.lislibrarypath
@@ -9510,7 +9514,9 @@ msgid "New console application"
 msgstr "Nová konzolová aplikace"
 
 #: lazarusidestrconsts.lisnewcreateanewcgiapplicationtheprogramfileismaintained
-msgid "Create a new cgi application.%sThe program file is maintained by Lazarus."
+#, fuzzy
+#| msgid "Create a new cgi application.%sThe program file is maintained by Lazarus."
+msgid "Create a new CGI application.%sThe application source is maintained by Lazarus."
 msgstr "Vytvořit novou cgi aplikaci.%sProgramový soubor je spravován Lazarusem."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewcustomprogram
@@ -9526,7 +9532,9 @@ msgid "Create a new empty text file."
 msgstr "Vytvořit prázdný textový soubor."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewgraphicalapplication
-msgid "Create a new graphical application.%sThe program file is maintained by Lazarus."
+#, fuzzy
+#| msgid "Create a new graphical application.%sThe program file is maintained by Lazarus."
+msgid "Create a new graphical application.%sThe application source is maintained by Lazarus."
 msgstr "Vytvořit novou grafickou aplikaci.%sSoubor programu je spravován Lazarusem."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewpascalunit
@@ -9534,7 +9542,9 @@ msgid "Create a new pascal unit."
 msgstr "Vytvořit novou pascalovskou jednotku."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprogram
-msgid "Create a new program.%sThe program file is maintained by Lazarus."
+#, fuzzy
+#| msgid "Create a new program.%sThe program file is maintained by Lazarus."
+msgid "Create a new program.%sThe program source is maintained by Lazarus."
 msgstr "Vytvořit nový program.%sSoubor programu je spravován Lazarusem."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprojectchooseatype
@@ -9550,7 +9560,9 @@ msgid "Create a new unit with a datamodule."
 msgstr "Vytvořit novou jednotku s datovým modulem."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithaframe
-msgid "Create a new unit with a frame"
+#, fuzzy
+#| msgid "Create a new unit with a frame"
+msgid "Create a new unit with a frame."
 msgstr "Vytvořit novou jednotku s rámcem"
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithalclform
@@ -11282,7 +11294,9 @@ msgid "Program"
 msgstr "Program"
 
 #: lazarusidestrconsts.lisprogramafreepascalprogramtheprogramfileisautomatic
-msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
+#, fuzzy
+#| msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
+msgid "Program%sA Free Pascal program. The program source is automatically maintained by Lazarus."
 msgstr "Program%sProgram Free Pascalu. Programový soubor je automaticky spravován Lazarusem."
 
 #: lazarusidestrconsts.lisprogramdetected
@@ -11739,6 +11753,10 @@ msgstr "Chyba uložení zdroje"
 #: lazarusidestrconsts.lisresourcetypeofnewfiles
 msgid "Resource type of project:"
 msgstr "Typ zdroje projektu:"
+
+#: lazarusidestrconsts.lisresponsecontinue
+msgid "Response: %sContinue ?"
+msgstr ""
 
 #: lazarusidestrconsts.lisresult
 msgid "Result :="
@@ -12473,6 +12491,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhefreepascalsourcedirectorywasnotfoundsomecodefun
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
+msgstr ""
+
+#: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
+msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
 msgstr ""
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
@@ -13257,6 +13279,10 @@ msgstr "Nelze zapsat do souboru %s%s%s."
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "Nelze zapsat xml proud do %s%sChyba: %s"
 
+#: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
+msgid "Unexpected result:%sThe debugger will terminate"
+msgstr ""
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr "Odinstalování není možné"
@@ -13659,6 +13685,10 @@ msgstr "Katalánky"
 #: lazarusidestrconsts.rslanguagechinese
 msgid "Chinese"
 msgstr "Čínsky"
+
+#: lazarusidestrconsts.rslanguageczech
+msgid "Czech"
+msgstr ""
 
 #: lazarusidestrconsts.rslanguagedutch
 msgid "Dutch"
@@ -15167,106 +15197,70 @@ msgstr "PŘE"
 msgid "Readonly"
 msgstr "Pouze pro čtení"
 
-#: lazarusidestrconsts.versioninfotitle
-msgid "Version Info"
-msgstr "Informace o verzi"
-
 #~ msgid "Auto create form when opening unit"
 #~ msgstr "Automaticky vytvořit formulář při otevření jednotky"
-
 #~ msgid "Use Default"
 #~ msgstr "Použít výchozí"
-
 #~ msgid "\" does not exist."
 #~ msgstr "\" neexistuje."
-
 #~ msgid "Drop files"
 #~ msgstr "Umístit soubory"
-
 #~ msgid "Complete blocks"
 #~ msgstr "Celé bloky"
-
 #~ msgid "Show Always"
 #~ msgstr "Ukázat vždy"
-
 #~ msgid "Show Never"
 #~ msgstr "Ukázat nikdy"
-
 #~ msgid "Use System Defaults"
 #~ msgstr "Použít systémové výchozí"
-
 #~ msgid "color for left, top"
 #~ msgstr "barva pro levý horní"
-
 #~ msgid "Only if shorter than"
 #~ msgstr "Pouze pokud kratší než"
-
 #~ msgid "Trim Spaces"
 #~ msgstr "Ořezat mezery"
-
 #~ msgid "Minimize all on minimize main"
 #~ msgstr "Minimalizovat všechno při minimalizování hlavního"
-
 #~ msgid "color for right, bottom"
 #~ msgstr "barva pro pravý, dolní"
-
 #~ msgid "Creation"
 #~ msgstr "Vytvoření"
-
 #~ msgid "Additional Information"
 #~ msgstr "Doplňující informace"
-
 #~ msgid "spaces"
 #~ msgstr "mezery"
-
 #~ msgid "Comments:"
 #~ msgstr "Komentáře:"
-
 #~ msgid "Company:"
 #~ msgstr "Společnost:"
-
 #~ msgid "Interface"
 #~ msgstr "Rozhraní"
-
 #~ msgid "Execution stopped%s"
 #~ msgstr "Vykonání zastaveno%s"
-
 #~ msgid "Internal Name:"
 #~ msgstr "Vnitřní název:"
-
 #~ msgid "%s beta"
 #~ msgstr "%s beta"
-
 #~ msgid "Legal Trademarks:"
 #~ msgstr "Obchodní značky:"
-
 #~ msgid "LFM file not found"
 #~ msgstr "Soubor LFM nenalezen"
-
 #~ msgid "Debugger Options ..."
 #~ msgstr "Nastavení ladícího nástroje..."
-
 #~ msgid "CodeTools Options ..."
 #~ msgstr "Nastavení CodeTools..."
-
 #~ msgid "Editor options ..."
 #~ msgstr "Nastavení editoru ..."
-
 #~ msgid "&Ok"
 #~ msgstr "&Ok"
-
 #~ msgid "Original File Name:"
 #~ msgstr "Původní jméno souboru:"
-
 #~ msgid "Product Name:"
 #~ msgstr "Jméno výrobku:"
-
 #~ msgid "Product Version:"
 #~ msgstr "Verze výrobku:"
-
 #~ msgid "This is an automatically generated lazarus resource file"
 #~ msgstr "Toto je automaticky generovaný zdrojový soubor lazarusu"
-
 #~ msgid ""
 #~ "The following units were not found:%s%s%s%s1) Either these units are not "
 #~ "in the unit path, then you can abort now, fix the unit path and try again."
@@ -15274,42 +15268,33 @@ msgstr "Informace o verzi"
 #~ msgstr ""
 #~ "Následující jednotky nebyly nalezeny:%s%s%s%s1) Buď nejsou tyto jednotky "
 #~ "v cestě jednotek, potom můžete"
-
 #~ msgid "This will happen:%s%s%sContinue?"
 #~ msgstr "Toto se stane:%s%s%sPokračovat?"
-
 #~ msgid "%s/ReadOnly"
 #~ msgstr "%s/Pouze pro čtení"
-
 #~ msgid "Unable to write file %s%s%s"
 #~ msgstr "Nelze zapsat soubor %s%s%s"
-
 #~ msgid "Unable to write file %s%s%s."
 #~ msgstr "Nelze zapsat soubor %s%s%s."
-
 #~ msgid "Unable to write to file %s%s%s!"
 #~ msgstr "Nelze zapsat do souboru %s%s%s!"
-
 #~ msgid "Unit: %s%sLFM file: %s"
 #~ msgstr "Jednotka: %s%ssoubor LFM: %s"
-
 #~ msgid "Additional info"
 #~ msgstr "Doplňující informace"
-
 #~ msgid "Copyright:"
 #~ msgstr "Kopírovací práva:"
-
 #~ msgid "Version:"
 #~ msgstr "Verze:"
-
 #~ msgid "Move Editor Left"
 #~ msgstr "Přesunout editor vlevo"
-
 #~ msgid "Move Editor Leftmost"
 #~ msgstr "Přesunout editor nejvíce vlevo"
-
 #~ msgid "Move Editor Right"
 #~ msgstr "Přesunout editor vpravo"
-
 #~ msgid "Move Editor Rightmost"
 #~ msgstr "Přesunout editor nejvíce vpravo"
+#: lazarusidestrconsts.versioninfotitle
+msgid "Version Info"
+msgstr "Informace o verzi"
+

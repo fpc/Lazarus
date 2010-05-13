@@ -3550,7 +3550,9 @@ msgid "Append short description to long description"
 msgstr ""
 
 #: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
-msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
+#, fuzzy
+#| msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
+msgid "Application%sA graphical LCL/Free Pascal program. The program source is automatically maintained by Lazarus."
 msgstr "Aplkácia%sGrafický lcl/freepascal program. Súbor programu je automaticky spravovaný Lazarom."
 
 #: lazarusidestrconsts.lisapplicationclassname
@@ -5550,7 +5552,9 @@ msgid "Custom Program"
 msgstr "Vlastný program"
 
 #: lazarusidestrconsts.liscustomprogramafreepascalprogram
-msgid "Custom Program%sA freepascal program."
+#, fuzzy
+#| msgid "Custom Program%sA freepascal program."
+msgid "Custom Program%sA Free Pascal program."
 msgstr "Vlastný program%sProgram FreePascal."
 
 #: lazarusidestrconsts.lisdatamodule
@@ -6818,7 +6822,9 @@ msgid "Free Pascal Compiler not found"
 msgstr "Nenájdený prekladač Free Pascal"
 
 #: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
-msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
+#, fuzzy
+#| msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
+msgid "Free Pascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program source is automatically maintained by Lazarus."
 msgstr "Program FreePascal používajúci TCustomApplication pre ľahšie zisťovanie volieb príkazového riadka, obsluhu výnimiek, atď. Súbor programu je automaticky spravovaný Lazarom."
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
@@ -8297,7 +8303,9 @@ msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis libr
 msgstr "<popis>%sCopyright (C) <rok> <meno autora> <kontakt>%sToto je slobodný program;môžete ho distribuovať a/alebo upravovať za podmienok GNU Library General Public License, tak ako ju zverejnila Free Software Foundation; buď verzie 2 Licencie alebo (podľa Vašej voľby) akejkoľvek novšej verzie. %sTento program je distribuovaný v nádeji, že bude užitočný, ale BEZ AKEJKOĽVEK ZÁRUKY; dokonca aj bbez záruky MERCHANTABILITY alebo FITNESS FOR A PARTICULAR PURPOSE. Ďalšie podrobnosti hľadajte v GNU Library General Public License. %sKópi GNU Library General Public License máte získať spolu s touto knižnicou, ak nie napíšte Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
-msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
+#, fuzzy
+#| msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
+msgid "Library%sA Free Pascal library (.dll under Windows, .so under Linux, .dylib under MacOS X). The library source is automatically maintained by Lazarus."
 msgstr "Knižnica%sKnižnica Free Pascal (.dll vo Windows, .so v Linuxe, .dylib v MacOS X). Súbor zdrojového kódu knižnice je automaticky spravovaný Lazarom."
 
 #: lazarusidestrconsts.lislibrarypath
@@ -9576,7 +9584,7 @@ msgid "New console application"
 msgstr "Nová konzolová aplikácia"
 
 #: lazarusidestrconsts.lisnewcreateanewcgiapplicationtheprogramfileismaintained
-msgid "Create a new cgi application.%sThe program file is maintained by Lazarus."
+msgid "Create a new CGI application.%sThe application source is maintained by Lazarus."
 msgstr ""
 
 #: lazarusidestrconsts.lisnewdlgcreateanewcustomprogram
@@ -9592,7 +9600,9 @@ msgid "Create a new empty text file."
 msgstr "Vytvoriť nový prázdny textový súbor."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewgraphicalapplication
-msgid "Create a new graphical application.%sThe program file is maintained by Lazarus."
+#, fuzzy
+#| msgid "Create a new graphical application.%sThe program file is maintained by Lazarus."
+msgid "Create a new graphical application.%sThe application source is maintained by Lazarus."
 msgstr "vytvára novú grafickú aplikáciu.%sSúbor programu je spravovaný Lazarom."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewpascalunit
@@ -9600,7 +9610,9 @@ msgid "Create a new pascal unit."
 msgstr "Vytvoriť novú jednotku Pascalu."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprogram
-msgid "Create a new program.%sThe program file is maintained by Lazarus."
+#, fuzzy
+#| msgid "Create a new program.%sThe program file is maintained by Lazarus."
+msgid "Create a new program.%sThe program source is maintained by Lazarus."
 msgstr "Vyztvoriť nový program.%sSúbor programu je spravovaný Lazarom."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprojectchooseatype
@@ -9616,7 +9628,9 @@ msgid "Create a new unit with a datamodule."
 msgstr "Vytvoriť novú jednotku s dátovým modulom."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithaframe
-msgid "Create a new unit with a frame"
+#, fuzzy
+#| msgid "Create a new unit with a frame"
+msgid "Create a new unit with a frame."
 msgstr "Vytvoriť novú jednotku s rámcom"
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithalclform
@@ -11350,7 +11364,9 @@ msgid "Program"
 msgstr "Program"
 
 #: lazarusidestrconsts.lisprogramafreepascalprogramtheprogramfileisautomatic
-msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
+#, fuzzy
+#| msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
+msgid "Program%sA Free Pascal program. The program source is automatically maintained by Lazarus."
 msgstr "Program%sFreePascal program. Súbor programu je automaticky spravovaný Lazarom."
 
 #: lazarusidestrconsts.lisprogramdetected
@@ -11810,6 +11826,10 @@ msgstr "Chyba uloženia resource"
 
 #: lazarusidestrconsts.lisresourcetypeofnewfiles
 msgid "Resource type of project:"
+msgstr ""
+
+#: lazarusidestrconsts.lisresponsecontinue
+msgid "Response: %sContinue ?"
 msgstr ""
 
 #: lazarusidestrconsts.lisresult
@@ -12546,6 +12566,10 @@ msgstr "Prekladač FreePascal (meno súboru: %s) nebol nájdený.%sDoporučujeme
 #: lazarusidestrconsts.listhefreepascalsourcedirectorywasnotfoundsomecodefun
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
 msgstr "Adresár·zdrojových kódov Free Pascal nebol nájdený.%sNiektoré funkcie kódu nebudú pracovať.%sDoporučujeme ich nainštalovať a nastaviť cestu v %sProstredie->Voľby prostredia->Súbory"
+
+#: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
+msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
+msgstr ""
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
@@ -13333,6 +13357,10 @@ msgstr "Nemožno zapisovať do súboru %s%s%s!"
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "Nemožno zapísať xml stream do %s%sChyba: %s"
 
+#: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
+msgid "Unexpected result:%sThe debugger will terminate"
+msgstr ""
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr ""
@@ -13743,6 +13771,10 @@ msgstr "Katalánsky"
 #: lazarusidestrconsts.rslanguagechinese
 msgid "Chinese"
 msgstr "Čínsky"
+
+#: lazarusidestrconsts.rslanguageczech
+msgid "Czech"
+msgstr ""
 
 #: lazarusidestrconsts.rslanguagedutch
 msgid "Dutch"

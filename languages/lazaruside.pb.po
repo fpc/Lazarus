@@ -3555,7 +3555,9 @@ msgid "Append short description to long description"
 msgstr "Anexar descrição curta à descrição longa"
 
 #: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
-msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
+#, fuzzy
+#| msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
+msgid "Application%sA graphical LCL/Free Pascal program. The program source is automatically maintained by Lazarus."
 msgstr "Aplicação%sUm programa LCL/Free Pascal gráfico. O arquivo do programa é automaticamente mantido pelo Lazarus."
 
 #: lazarusidestrconsts.lisapplicationclassname
@@ -5553,7 +5555,9 @@ msgid "Custom Program"
 msgstr "Programa personalizado"
 
 #: lazarusidestrconsts.liscustomprogramafreepascalprogram
-msgid "Custom Program%sA freepascal program."
+#, fuzzy
+#| msgid "Custom Program%sA freepascal program."
+msgid "Custom Program%sA Free Pascal program."
 msgstr "Programa personalizado%sUm programa Free Pascal"
 
 #: lazarusidestrconsts.lisdatamodule
@@ -6821,7 +6825,9 @@ msgid "Free Pascal Compiler not found"
 msgstr "Compilador Free Pascal não encontrado"
 
 #: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
-msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
+#, fuzzy
+#| msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
+msgid "Free Pascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program source is automatically maintained by Lazarus."
 msgstr "programa freepascal usando \"TCustomApplication\" para verificar de forma fácil as opções de linha de comando, tratamento de exceções, etc. O arquivo do programa  é mantido automaticamente pelo Lazarus."
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
@@ -8300,7 +8306,9 @@ msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis libr
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la sob os termos da GNU Library General Public License como publicada pela Free Software Foundation; ou a versão 2 da Licença, ou (a sua escolha) qualquer versão posterior. %sEste programa é distribuido na esperanca de que seja útil, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE ou ADEQUAÇÃO A UMA FINALIDADE PARTICULAR. Veja a licença GNU General Public License para maiores detalhes.%sVocê deve ter recebido uma cópia da licença GNU Library General Public License juntamente com esta biblioteca; senão, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
-msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
+#, fuzzy
+#| msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
+msgid "Library%sA Free Pascal library (.dll under Windows, .so under Linux, .dylib under MacOS X). The library source is automatically maintained by Lazarus."
 msgstr "Biblioteca%sUma biblioteca Free Pascal (.dll sobre windows, .so sobre linux, .dylib sobre macosx). O arquivo fonte da biblioteca é automaticamente mantido pelo Lazarus."
 
 #: lazarusidestrconsts.lislibrarypath
@@ -9567,7 +9575,9 @@ msgid "New console application"
 msgstr "Nova aplicação \"console\""
 
 #: lazarusidestrconsts.lisnewcreateanewcgiapplicationtheprogramfileismaintained
-msgid "Create a new cgi application.%sThe program file is maintained by Lazarus."
+#, fuzzy
+#| msgid "Create a new cgi application.%sThe program file is maintained by Lazarus."
+msgid "Create a new CGI application.%sThe application source is maintained by Lazarus."
 msgstr "Criar uma nova aplicação \"CGI\".%sO arquivo de programa é mantido pelo Lazarus."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewcustomprogram
@@ -9583,7 +9593,9 @@ msgid "Create a new empty text file."
 msgstr "Criar um novo arquivo de texto vazio."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewgraphicalapplication
-msgid "Create a new graphical application.%sThe program file is maintained by Lazarus."
+#, fuzzy
+#| msgid "Create a new graphical application.%sThe program file is maintained by Lazarus."
+msgid "Create a new graphical application.%sThe application source is maintained by Lazarus."
 msgstr "Criar uma nova aplicação gráfica.%sO arquivo do programa é mantido pelo Lazarus."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewpascalunit
@@ -9591,7 +9603,9 @@ msgid "Create a new pascal unit."
 msgstr "Criar uma nova unidade Pascal."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprogram
-msgid "Create a new program.%sThe program file is maintained by Lazarus."
+#, fuzzy
+#| msgid "Create a new program.%sThe program file is maintained by Lazarus."
+msgid "Create a new program.%sThe program source is maintained by Lazarus."
 msgstr "Criar um novo programa.%sO arquivo de programa é mantido pelo Lazarus."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprojectchooseatype
@@ -9607,7 +9621,9 @@ msgid "Create a new unit with a datamodule."
 msgstr "Criar uma nova unidade com um \"datamodule\"."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithaframe
-msgid "Create a new unit with a frame"
+#, fuzzy
+#| msgid "Create a new unit with a frame"
+msgid "Create a new unit with a frame."
 msgstr "Criar uma nova unidade com bordas"
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithalclform
@@ -11340,7 +11356,9 @@ msgid "Program"
 msgstr "Programa"
 
 #: lazarusidestrconsts.lisprogramafreepascalprogramtheprogramfileisautomatic
-msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
+#, fuzzy
+#| msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
+msgid "Program%sA Free Pascal program. The program source is automatically maintained by Lazarus."
 msgstr "Programa%sUm programa Free Pascal. O programa é automaticamente mantido pelo Lazarus."
 
 #: lazarusidestrconsts.lisprogramdetected
@@ -11799,6 +11817,10 @@ msgstr "Erro ao salvar recurso"
 #: lazarusidestrconsts.lisresourcetypeofnewfiles
 msgid "Resource type of project:"
 msgstr "Tipo recurso do projeto:"
+
+#: lazarusidestrconsts.lisresponsecontinue
+msgid "Response: %sContinue ?"
+msgstr ""
 
 #: lazarusidestrconsts.lisresult
 msgid "Result :="
@@ -12541,6 +12563,10 @@ msgstr "O compilador Free Pascal (nome do arquivo: %s) não foi encontrado.%sRec
 #: lazarusidestrconsts.listhefreepascalsourcedirectorywasnotfoundsomecodefun
 msgid "The Free Pascal source directory was not found.%sSome code functions will not work.%sIt is recommended that you install it and set the path%sEnvironment -> Environment Options -> Files"
 msgstr "O diretório do fonte Free Pascal não foi encontrado.%sAlgumas funções não funcionarão.%sRecomenda-se que você os instale e ajuste o caminho%sAmbiente -> Opções de Ambiente -> Arquivos"
+
+#: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
+msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
+msgstr ""
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
@@ -13326,6 +13352,10 @@ msgstr "Impossível gravar para arquivo %s%s%s!"
 msgid "Unable to write xml stream to %s%sError: %s"
 msgstr "Impossível escrever fluxo xml para %s%sErro: %s"
 
+#: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
+msgid "Unexpected result:%sThe debugger will terminate"
+msgstr ""
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr "Impossível desinstalar"
@@ -13731,6 +13761,10 @@ msgstr "Catalão"
 #: lazarusidestrconsts.rslanguagechinese
 msgid "Chinese"
 msgstr "Chinês"
+
+#: lazarusidestrconsts.rslanguageczech
+msgid "Czech"
+msgstr ""
 
 #: lazarusidestrconsts.rslanguagedutch
 msgid "Dutch"
