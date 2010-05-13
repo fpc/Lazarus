@@ -3595,7 +3595,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
           <p>Use borderstyle to get or set the appearance of the form's border. </p>
           <p>By default it is a sizeable window, but it could, for example, be a dialog form or a tool window, or could be non-sizeable</p>
           <p>This property is slightly different (has a differert base type) from the <var>TCustomControl.BorderStyle</var>
-          </p>
+When the form is put into another control the window borders depend on the widgetset. There are no borders under gtk.
+</p>
         </descr>
         <seealso/>
       </element>
