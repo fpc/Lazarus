@@ -99,6 +99,7 @@ var
   i, iLine: integer;
   LineHeight: Integer;
   rcLine: TRect;
+  AliasMode: TAntialiasingMode;
 begin
   if not Visible then exit;
 
@@ -112,6 +113,7 @@ begin
 
   Canvas.Pen.Width := Width;
   Canvas.Pen.EndCap:= pecFlat;
+  AliasMode := Canvas.AntialiasingMode;
   Canvas.AntialiasingMode:=amOff;
 
   rcLine := AClip;
@@ -138,6 +140,7 @@ begin
         end;
     end;
   end;
+  Canvas.AntialiasingMode := AliasMode;
 end;
 
 end.
