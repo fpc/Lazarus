@@ -176,7 +176,8 @@ begin
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
 
     {$IFDEF VerboseSizeMsg}
-    writeln('PrepareCreateWindow ',AWinControl.Name,':',AWinControl.ClassName,' ',Left,',',Top,',',Width,',',Height);
+    Debugln('PrepareCreateWindow ',AWinControl.Name,':',AWinControl.ClassName,
+      ' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));
     {$ENDIF}
   end;
 end;
@@ -395,9 +396,9 @@ begin
   IntfWidth := AWidth; IntfHeight := AHeight;
   LCLBoundsToWin32Bounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight);
   {$IFDEF VerboseSizeMsg}
-  writeln('TWinCEWSWinControl.ResizeWindow A ',AWinControl.Name,':',AWinControl.ClassName,
-    ' LCL=',ALeft,',',ATop,',',AWidth,',',AHeight,
-    ' Win32=',IntfLeft,',',IntfTop,',',IntfWidth,',',IntfHeight,
+  Debugln('TWinCEWSWinControl.ResizeWindow A ',AWinControl.Name,':',AWinControl.ClassName,
+    ' LCL=',dbgs(ALeft),',',dbgs(ATop),',',dbgs(AWidth)+','+dbgs(AHeight),
+    ' Win32=',dbgs(IntfLeft)+','+dbgs(IntfTop)+','+dbgs(IntfWidth),',',dbgs(IntfHeight),
     '');
   {$ENDIF}
   suppressMove := false;

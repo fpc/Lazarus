@@ -261,6 +261,7 @@ procedure DebuglnThreadLog(Args: array of const); overload;
 procedure DebuglnThreadLog; overload;
 procedure DbgSaveData(FileName: String; AData: PChar; ADataSize: PtrUInt);
 procedure DbgAppendToFile(FileName, S: String);
+procedure DbgAppendToFileWithoutLn(FileName, S: String);
 
 procedure CloseDebugOutput;
 
@@ -2133,8 +2134,12 @@ end;
 
 procedure DebugLn(const s: string);
 begin
+  {$ifdef WinCE}
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log', s);
+  {$else}
   if not Assigned(DebugText) then exit;
   writeln(DebugText^, ConvertLineEndings(s));
+  {$endif}
 end;
 
 procedure DebugLn(const s1, s2: string);
@@ -2251,8 +2256,12 @@ end;
 
 procedure DBGOut(const s: string);
 begin
+  {$ifdef WinCE}
+  DbgAppendToFileWithoutLn(ExtractFilePath(ParamStr(0)) + '1.log', s);
+  {$else}
   if Assigned(DebugText) then
     write(DebugText^, s);
+  {$endif}
 end;
 
 procedure DBGOut(const s1, s2: string);
@@ -2890,6 +2899,20 @@ begin
     Rewrite(F);
   {$I+}
   WriteLn(F, S);
+  CloseFile(F);
+end;
+
+procedure DbgAppendToFileWithoutLn(FileName, S: String);
+var
+  F: TextFile;
+begin
+  AssignFile(F, FileName);
+  {$I-}
+  Append(F);
+  if IOResult <> 0 then
+    Rewrite(F);
+  {$I+}
+  Write(F, S);
   CloseFile(F);
 end;
 

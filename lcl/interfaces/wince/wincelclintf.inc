@@ -505,7 +505,7 @@ begin
     if SizeConstraints.Control is TCustomComboBox then
     begin
       // wince combo (but not csSimple) has fixed height
-      FixedHeight := TCustomComboBox(SizeConstraints.Control).Style <> csSimple;
+//      FixedHeight := TCustomComboBox(SizeConstraints.Control).Style <> csSimple;
     end;
 
     {if SizeConstraints.Control is TCustomCalendar then

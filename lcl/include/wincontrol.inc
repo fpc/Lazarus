@@ -7847,7 +7847,7 @@ var
   NewBounds: TRect;
   OldClientRect: TRect;
   NewClientRect: TRect;
-  {$IF defined(VerboseResizeFlicker)}
+  {$IF defined(VerboseResizeFlicker) or defined(VerboseSizeMsg)}
   OldBounds: TRect;
   {$ENDIF}
 begin
@@ -7863,7 +7863,7 @@ begin
     exit;
   end;
   NewBounds:=Bounds(Left, Top, Width, Height);
-  {$IF defined(VerboseResizeFlicker)}
+  {$IF defined(VerboseResizeFlicker) or defined(VerboseSizeMsg)}
   if HandleAllocated then begin
     GetWindowRelativePosition(Handle,OldBounds.Left,OldBounds.Top);
     GetWindowSize(Handle,OldBounds.Right,OldBounds.Bottom);
