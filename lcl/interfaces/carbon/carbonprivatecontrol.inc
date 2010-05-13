@@ -1072,7 +1072,6 @@ function TCarbonControl.GetPreferredSize: TPoint;
 var
   R: MacOSAll.Rect;
   S: SmallInt;
-  b: HIRect;
 begin
   Result.X := 0;
   Result.Y := 0;

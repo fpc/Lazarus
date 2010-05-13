@@ -182,8 +182,8 @@ type
     function GetCreationOptions: TXNFrameOptions; virtual;
     function GetTXNSelection(var iStart, iEnd: Integer): Boolean;
     function SetTXNSelection(iStart, iEnd: Integer): Boolean;
-    procedure AllowMenuProcess(MenuHotKey: AnsiChar; State: TShiftState; var AllowMenu: Boolean); override;
   public
+    procedure AllowMenuProcess(MenuHotKey: AnsiChar; State: TShiftState; var AllowMenu: Boolean); override;
     procedure TextDidChange; override;
     function GetTextObject: TXNObject;
     function FilterKeyPress(SysKey: Boolean; const Char: TUTF8Char): Boolean; override;

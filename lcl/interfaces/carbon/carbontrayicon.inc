@@ -134,7 +134,7 @@ end;
 { Creates a NSMenu structure representing a TPopUpMenu }
 function TPrivateCocoaCarbonTrayIcon.CreateMenu(APopUpMenu: TPopUpMenu): NSMenu;
 var
-  i, index: Integer;
+  i: Integer;
   Item: NSMenuItem;
 begin
   Result := NSMenu.initWithTitle(EmptyMenuTitle);
@@ -423,7 +423,7 @@ class procedure TPrivateCocoaCarbonTrayIcon.HandleMenuWillOpen(_self: lobjc.id;
   _cmd: SEL; sender: lobjc.id); cdecl; //static;
 var
   AMenu: NSMenu;
-  LCLMenu: TPopUpMenu;
+  //LCLMenu: TPopUpMenu;
 begin
   AMenu := NSMenu.CreateWithHandle(sender);
 //  LCLMenu := TPopUpMenu(PtrInt(AMenu.menuRepresentation()));
@@ -434,7 +434,7 @@ class procedure TPrivateCocoaCarbonTrayIcon.HandleMenuDidClose(_self: lobjc.id;
   _cmd: SEL; sender: lobjc.id); cdecl; //static;
 var
   AMenu: NSMenu;
-  LCLMenu: TPopUpMenu;
+  //LCLMenu: TPopUpMenu;
 begin
   AMenu := NSMenu.CreateWithHandle(sender);
 //  LCLMenu := TPopUpMenu(PtrInt(AMenu.menuRepresentation()));

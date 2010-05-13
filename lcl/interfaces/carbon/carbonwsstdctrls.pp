@@ -1064,8 +1064,6 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomCheckBox.RetrieveState(
   const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
-var
-  st  : Integer;
 begin
   Result := cbUnchecked;
   

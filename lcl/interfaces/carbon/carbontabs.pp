@@ -89,13 +89,13 @@ type
     function GetControlTabIndex: Integer; // visible index, without hidden or scrolled tabs
     function GetTabIndex(APageIndex: Integer): Integer;
     function TabIndexToPageIndex(AIndex: Integer): Integer;
-    function SetText(const S: String): Boolean; override;
   public
     class function GetValidEvents: TCarbonControlEvents; override;
     procedure ValueChanged; override;
     procedure DisableChangeEvent;
     procedure EnableChangeEvent;
   public
+    function SetText(const S: String): Boolean; override;
     function GetClientRect(var ARect: TRect): Boolean; override;
     function SetBounds(const ARect: TRect): Boolean; override;
 
