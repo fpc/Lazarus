@@ -37,7 +37,7 @@ const CheckClientRectName = 'LCLInterfaceRadioGroup';
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxTPage';
-const CheckPostionName = 'LCLInterfaceRadioGroup';
+const CheckPostionName = 'Button2';
 const CheckPostionParentName = 'xxxEnvVarsPage';
 
 function CheckPosition(AControl: TControl): boolean;
@@ -2599,9 +2599,9 @@ var
         //DebugLn(['GetAnchorSidePosition ',DbgSName(Control),' ReferenceControl=',DbgSName(ReferenceControl)]);
         Result:=Position;
       end;
-      //if CheckPosition(Control) and (Kind=akLeft) then begin
-        //debugln('GetAnchorSidePosition B Self=',DbgSName(Self),' Control=',DbgSName(Control),' Result=',dbgs(Result),' ReferenceControl=',dbgsName(ReferenceControl));
-        //if ReferenceControl<>nil then DebugLn(['GetAnchorSidePosition ReferenceControl.BoundsRect=',dbgs(ReferenceControl.BoundsRect)]);
+      //if CheckPosition(Control) and (Kind=akRight) then begin
+      //  debugln('GetAnchorSidePosition B Self=',DbgSName(Self),' Control=',DbgSName(Control),' Result=',dbgs(Result),' ReferenceControl=',dbgsName(ReferenceControl));
+      //  if ReferenceControl<>nil then DebugLn(['GetAnchorSidePosition ReferenceControl.BoundsRect=',dbgs(ReferenceControl.BoundsRect)]);
       //end;
       AnchorSideCacheValid[Kind]:=true;
       AnchorSideCache[Kind]:=Result;
@@ -2693,7 +2693,7 @@ var
        DebugLn('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
         ' Self='+DbgSName(Self),' Control='+DbgSName(Control),
         ' CurBaseBounds='+dbgs(CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Top)+','+dbgs(CurBaseBounds.Right-CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Bottom-CurBaseBounds.Top),
-        ' ParentBaseClientSize='+dbgs(ParentBaseClientSize.X)+','+dbgs(ParentBaseClientSize.Y),
+        ' ParentBaseClientSize='+dbgs(ParentBaseClientSize.cx)+','+dbgs(ParentBaseClientSize.cy),
         ' ControlParent.Client='+dbgs(ParentClientWidth)+','+dbgs(ParentClientHeight),
         ' NewBounds='+dbgs(NewLeft)+','+dbgs(NewTop)+','+dbgs(NewWidth)+','+dbgs(NewHeight),
         '');
@@ -2721,7 +2721,7 @@ var
           // keep distance to right side of parent
           // and keep new width
           NewRight:=ParentClientWidth
-                    -(ParentBaseClientSize.cy-CurBaseBounds.Right);
+                    -(ParentBaseClientSize.cx-CurBaseBounds.Right);
           if (not (akRight in CurAlignAnchors))
           and (akRight in Control.Anchors) then
             NewRight:=GetAnchorSidePosition(akRight,NewRight);
