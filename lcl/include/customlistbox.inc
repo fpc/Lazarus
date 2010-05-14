@@ -92,9 +92,6 @@ var
 begin
   LockSelectionChange;
   inherited InitializeWnd;
-  // create
-  TWSCustomListBoxClass(WidgetSetClass).SetBorder(Self);
-
   // fetch the interface item list
   NewStrings := TWSCustomListBoxClass(WidgetSetClass).GetStrings(Self);
   // copy the items (text+objects)
