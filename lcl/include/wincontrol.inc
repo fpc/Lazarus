@@ -4183,6 +4183,9 @@ procedure TWinControl.UpdateShowing;
     if FShowing = bShow then Exit;
     FShowing := bShow;
     try
+      {$IFDEF VerboseShowing}
+      DebugLn(['ChangeShowing ',DbgSName(Self),' new FShowing=',FShowing]);
+      {$ENDIF}
       Perform(CM_SHOWINGCHANGED, 0, 0); // see TWinControl.CMShowingChanged
     finally
       if FShowing<>(wcfHandleVisible in FWinControlFlags) then
@@ -4208,7 +4211,12 @@ begin
           TWinControl(FControls[n]).UpdateShowing;
     end;
   end;
-  if not HandleAllocated then Exit;
+  if not HandleAllocated then begin
+    {$IFDEF VerboseShowing}
+    DebugLn(['TWinControl.UpdateShowing ',DbgSName(Self),' handle not allocated']);
+    {$ENDIF}
+    Exit;
+  end;
 
   if FShowing = bShow then Exit;
   //DebugLn('TWinControl.UpdateShowing A ',dbgsName(Self),' FShowing=',dbgs(FShowing),' bShow=',dbgs(bShow));
@@ -4218,8 +4226,10 @@ begin
     // delay this until all other autosizing has been processed
     if AutoSizeDelayed or (not (caspShowing in AutoSizePhases)) then
     begin
-      //if AutoSizeDelayed then DebugLn(['TWinControl.UpdateShowing SKIPPING because AutoSizeDelayed']);
-      //if (not (caspShowing in AutoSizePhases)) then DebugLn(['TWinControl.UpdateShowing SKIPPING because wrong phase']);
+      {$IFDEF VerboseShowing}
+      if AutoSizeDelayed then DebugLn(['TWinControl.UpdateShowing ',DbgSName(Self),' SKIPPING because AutoSizeDelayed']);
+      if (not (caspShowing in AutoSizePhases)) then DebugLn(['TWinControl.UpdateShowing ',DbgSName(Self),' SKIPPING because wrong phase']);
+      {$ENDIF}
       exit;
     end;
   end;
@@ -6495,7 +6505,8 @@ var
   NewWidth, NewHeight: Integer;
 begin
   {$IF defined (VerboseSizeMsg) or defined(VerboseBug16184)}
-  DebugLn(['TWinControl.WMMove A ',DbgSName(Self),' Message=',Message.XPos,',',Message.YPos,
+  if (Message.MoveType and Move_SourceIsInterface)>0 then
+   DebugLn(['TWinControl.WMMove A ',DbgSName(Self),' Message=',Message.XPos,',',Message.YPos,
     ' BoundsRealized=',FBoundsRealized.Left,',',FBoundsRealized.Top,
     ' FromIntf=',Message.MoveType=Move_SourceIsInterface,
     ',',FBoundsRealized.Right-FBoundsRealized.Left,
@@ -6552,8 +6563,12 @@ begin
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
   {$ENDIF}
-  DebugLn(['TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
-    ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0,' ClientRectInvalid=',ClientRectNeedsInterfaceUpdate]);
+   if (Message.SizeType and Size_SourceIsInterface)>0 then
+    DebugLn(['TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
+      ' BoundsRealized=',dbgs(FBoundsRealized),
+      ' WChg=',FBoundsRealized.Right-FBoundsRealized.Left<>Message.Width,
+      ' HChg=',FBoundsRealized.Bottom-FBoundsRealized.Top<>Message.Height,
+      ' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0,' ClientRectInvalid=',ClientRectNeedsInterfaceUpdate]);
   {$ENDIF}
 
   NewLeft:=Left;
@@ -7849,10 +7864,7 @@ begin
       Include(FWinControlFlags,wcfHandleVisible)
     else
       Exclude(FWinControlFlags,wcfHandleVisible);
-    {$IFDEF VerboseNewAutoSize}
-    DebugLn(['TWinControl.DoSendShowHideToInterface ',DbgSName(Self),' FBoundsRealized=',dbgs(FBoundsRealized),' New=',HandleObjectShouldBeVisible]);
-    {$ENDIF}
-    {$IFDEF VerboseBug16184}
+    {$IF defined(VerboseNewAutoSize) or defined(VerboseBug16184) or defined(VerboseShowing)}
     DebugLn(['TWinControl.DoSendShowHideToInterface ',DbgSName(Self),' FBoundsRealized=',dbgs(FBoundsRealized),' New=',HandleObjectShouldBeVisible]);
     {$ENDIF}
     TWSWinControlClass(WidgetSetClass).ShowHide(Self);
@@ -7921,7 +7933,7 @@ begin
   {$ENDIF}
 
   {$IFDEF VerboseBug16184}
-  if (Parent=nil) and (Visible) then begin
+  if (Visible) then begin
     DebugLn('[TWinControl.DoSendBoundsToInterface] A ',DbgSName(Self),
     ' OldRelBounds=',dbgs(FBoundsRealized),
     ' -> NewBounds=',dbgs(NewBounds));
@@ -8033,7 +8045,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CMShowingChanged(var Message: TLMessage);
 begin
-  //DebugLn(['TWinControl.CMShowingChanged ',DbgSName(Self)]);
+  {$IFDEF VerboseShowing}
+  DebugLn(['TWinControl.CMShowingChanged ',DbgSName(Self),' HandleAllocated=',HandleAllocated,' ',dbgs(ComponentState)]);
+  {$ENDIF}
   if HandleAllocated and ([csDestroying,csLoading]*ComponentState=[]) then
     DoSendShowHideToInterface
   else
