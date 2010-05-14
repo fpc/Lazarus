@@ -32,7 +32,7 @@ uses
   // widgetset
   WSMenus, WSLCLClasses, LCLType, fpguiobjects, fpguiwsprivate,
   // interface
-  fpg_main, fpg_menu;
+  fpg_base, fpg_main, fpg_menu;
 
 type
 
@@ -41,7 +41,7 @@ type
   TFpGuiWSMenuItem = class(TWSMenuItem)
   private
   protected
-  public
+  published
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
@@ -60,7 +60,7 @@ type
   TFpGuiWSMenu = class(TWSMenu)
   private
   protected
-  public
+  published
     class function  CreateHandle(const AMenu: TMenu): HMENU; override;
 //    class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); override;
   end;
@@ -78,12 +78,15 @@ type
   TFpGuiWSPopupMenu = class(TWSPopupMenu)
   private
   protected
-  public
+  published
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;
 
 
 implementation
+
+uses
+  LCLMessageGlue;
 
 { TFpGuiWSMenuItem }
 
@@ -102,7 +105,8 @@ end;
 class function TFpGuiWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
 var
   Menu: TFPGUIPrivateMenuItem;
-  AMenuName, hotkeydef: string;
+  AMenuName: string;
+//  hotkeydef: string;
   { Possible parents }
   ParentPrivateItem: TFPGUIPrivateMenuItem;
   ParentMenuBar: TfpgMenuBar;
@@ -141,25 +145,26 @@ begin
    because TMainMenu uses the special Handle TfpgMenuBar
    ------------------------------------------------------------------------------}
   else
-  if ((not AMenuItem.Parent.HasParent) and (AMenuItem.GetParentMenu is TMainMenu)) then
-  begin
+  if AMenuItem.Parent.HasParent then begin
+    {------------------------------------------------------------------------------
+      If the parent has a parent, then that item's Handle is necessarely a TFPGUIPrivateMenuItem
+     ------------------------------------------------------------------------------}
+    Menu := TFPGUIPrivateMenuItem.Create;
+    Menu.LCLMenuItem := AMenuItem;
+    ParentPrivateItem := TFPGUIPrivateMenuItem(AMenuItem.Parent.Handle);
+    Menu.MenuItem := ParentPrivateItem.MenuItem.SubMenu.AddMenuItem(AMenuName, '', Menu.HandleOnClick);
+    Result := HMENU(Menu);
+  end else if (AMenuItem.GetParentMenu is TMainMenu) then begin
     Menu := TFPGUIPrivateMenuItem.Create;
     Menu.LCLMenuItem := AMenuItem;
     ParentMenuBar := TfpgMenuBar(AMenuItem.GetParentMenu.Handle);
     Menu.MenuItem := ParentMenuBar.AddMenuItem(AMenuName, Menu.HandleOnClick);
     Result := HMENU(Menu);
-  end
-{      ParentPrivatePopUp := TFPGUIPrivatePopUpMenu(LCLMenuItem.Parent.Handle);
-      MenuItem := ParentPrivatePopUp.PopUpMenu.AddMenuItem(AMenuName, hotkeydef, nil);}
-  {------------------------------------------------------------------------------
-    If the parent has a parent, then that item's Handle is necessarely a TFPGUIPrivateMenuItem
-   ------------------------------------------------------------------------------}
-  else
-  begin
+  end else begin
     Menu := TFPGUIPrivateMenuItem.Create;
     Menu.LCLMenuItem := AMenuItem;
-    ParentPrivateItem := TFPGUIPrivateMenuItem(AMenuItem.Parent.Handle);
-    Menu.MenuItem := ParentPrivateItem.MenuItem.SubMenu.AddMenuItem(AMenuName, '', Menu.HandleOnClick);
+    ParentPrivatePopUp := TFPGUIPrivatePopUpMenu(AMenuItem.GetParentMenu.Handle);
+    Menu.MenuItem := ParentPrivatePopUp.PopUpMenu.AddMenuItem(AMenuName,'',Menu.HandleOnClick);
     Result := HMENU(Menu);
   end;
 
@@ -179,30 +184,37 @@ end;
 class procedure TFpGuiWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 begin
   TFPGUIPrivateMenuItem(AMenuItem.Handle).Free;
+  AMenuItem.Handle:=0;
 end;
 
 class procedure TFpGuiWSMenuItem.SetCaption(const AMenuItem: TMenuItem;
   const ACaption: string);
+var
+  APrivate: TfpgMenuItem;
 begin
-
+  APrivate:=TfpgMenuItem(AMenuItem.Handle);
+  APrivate.Text:=ACaption;
 end;
 
 class procedure TFpGuiWSMenuItem.SetVisible(const AMenuItem: TMenuItem;
   const Visible: boolean);
+var
+  APrivate: TfpgMenuItem;
 begin
-
+  APrivate:=TfpgMenuItem(AMenuItem.Handle);
+  APrivate.Visible:=Visible;
 end;
 
 class function TFpGuiWSMenuItem.SetCheck(const AMenuItem: TMenuItem;
   const Checked: boolean): boolean;
 begin
-
+  Result:=false; //Default by now
 end;
 
 class function TFpGuiWSMenuItem.SetEnable(const AMenuItem: TMenuItem;
   const Enabled: boolean): boolean;
 begin
-
+  Result:=false; //Default by now
 end;
 
 { TFpGuiWSMenu }
@@ -211,6 +223,7 @@ class function TFpGuiWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 var
   MenuBar: TfpgMenuBar;
   Menu: TFPGUIPrivatePopUpMenu;
+  msg: TfpgMessageParams;
 begin
   {------------------------------------------------------------------------------
     If the menu is a main menu, there is no need to create a handle for it.
@@ -223,6 +236,9 @@ begin
     MenuBar.Align := alTop;
     
     Result := HMENU(MenuBar);
+    //Notify LCL to repaint because MainMenu changes NCBorders
+    msg.rect:=MenuBar.Parent.GetBoundsRect;
+    fpgSendMessage(MenuBar,MenuBar.Parent,FPGM_RESIZE,msg);
   end
   {------------------------------------------------------------------------------
     The menu is a popup menu

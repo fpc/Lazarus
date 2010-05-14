@@ -121,7 +121,8 @@ end;
 
 function RegisterControl: Boolean; alias : 'WSRegisterControl';
 begin
-  Result := False;
+  RegisterWSComponent(TControl, TFpGuiWSControl);
+  Result := True;
 end;
 
 function RegisterWinControl: Boolean; alias : 'WSRegisterWinControl';
@@ -132,7 +133,7 @@ end;
 
 function RegisterGraphicControl: Boolean; alias : 'WSRegisterGraphicControl';
 begin
-  Result := False;
+  Result := false;
 end;
 
 function RegisterCustomControl: Boolean; alias : 'WSRegisterCustomControl';
@@ -251,7 +252,8 @@ end;
 
 function RegisterCustomGroupBox: Boolean; alias : 'WSRegisterCustomGroupBox';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomGroupBox, TFpGuiWSCustomGroupBox);
+  Result := True;
 end;
 
 function RegisterCustomComboBox: Boolean; alias : 'WSRegisterCustomComboBox';
@@ -262,7 +264,8 @@ end;
 
 function RegisterCustomListBox: Boolean; alias : 'WSRegisterCustomListBox';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomListBox, TFpGuiWSCustomListBox);
+  Result := True;
 end;
 
 function RegisterCustomEdit: Boolean; alias : 'WSRegisterCustomEdit';
@@ -273,7 +276,8 @@ end;
 
 function RegisterCustomMemo: Boolean; alias : 'WSRegisterCustomMemo';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomMemo, TFpGuiWSCustomMemo);
+  Result := True;
 end;
 
 function RegisterButtonControl: Boolean; alias : 'WSRegisterButtonControl';
@@ -311,7 +315,7 @@ end;
 
 function RegisterCustomLabel: Boolean; alias : 'WSRegisterCustomLabel';
 begin
-  Result := False;
+  Result := false;
 end;
 
 // extctrls
@@ -368,6 +372,7 @@ end;
 
 function RegisterCustomPanel: Boolean; alias : 'WSRegisterCustomPanel';
 begin
+  RegisterWSComponent(TCustomPanel, TFpGuiWSCustomPanel);
   Result := False;
 end;
 

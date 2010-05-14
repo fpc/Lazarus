@@ -46,7 +46,7 @@ type
   TFpGuiWSCommonDialog = class(TWSCommonDialog)
   private
   protected
-  public
+  published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
@@ -57,7 +57,7 @@ type
   TFpGuiWSFileDialog = class(TWSFileDialog)
   private
   protected
-  public
+  published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
@@ -66,7 +66,7 @@ type
   TFpGuiWSOpenDialog = class(TWSOpenDialog)
   private
   protected
-  public
+  published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
@@ -75,7 +75,7 @@ type
   TFpGuiWSSaveDialog = class(TWSSaveDialog)
   private
   protected
-  public
+  published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 
@@ -108,7 +108,7 @@ type
   TFpGuiWSFontDialog = class(TWSFontDialog)
   private
   protected
-  public
+  published
     class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
 

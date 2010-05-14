@@ -28,11 +28,11 @@ interface
 
 uses
   // FCL
-  Classes,
+  Classes, sysutils,
   // Bindings
   fpguiwsprivate,
   // LCL
-  Controls, LCLType,
+  Controls, LCLType,  Graphics,
   // Widgetset
   fpguiproc, WSControls, WSLCLClasses;
 
@@ -59,33 +59,33 @@ type
   TFpGuiWSWinControl = class(TWSWinControl)
   private
   protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
-    class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
-    class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
-  public
+    class function  GetClientRect(const AWincontrol: TWinControl;
+                             var ARect: TRect): Boolean; override;
+    class function  GetDefaultClientRect(const AWinControl: TWinControl;
+                             const aLeft, aTop, aWidth, aHeight: integer;
+                             var aClientRect: TRect): Boolean; override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                            var PreferredWidth, PreferredHeight: integer;
+                            WithThemeSpace: Boolean); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
     class procedure SetColor(const AWinControl: TWinControl); override;
-    class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
-
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
 {    class procedure AddControl(const AControl: TControl); override;
-    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;}
 
-    class procedure SetChildZPosition(const AWinControl, AChild: TWinControl;
-                                      const AOldPos, ANewPos: Integer;
-                                      const AChildren: TFPList); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
 
-    class procedure ConstraintsChange(const AWinControl: TWinControl); override;}
+{    class procedure ConstraintsChange(const AWinControl: TWinControl); override;}
   end;
 
   { TFpGuiWSGraphicControl }
@@ -116,7 +116,7 @@ type
 implementation
 
 uses
-  fpg_widget;
+  fpg_widget, fpg_base;
 
 { TFpGuiWSWinControl }
 
@@ -128,8 +128,8 @@ uses
 class function TFpGuiWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 begin
-  {$ifdef VerboseFPGUI}
-    WriteLn('TFpGuiWSWinControl.CreateHandle for ',AWinControl.Name);
+  {$ifdef VerboseFPGUIIntf}
+    WriteLn(Self.ClassName,'.CreateHandle ',AWinControl.Name);
   {$endif}
 
   Result := TLCLIntfHandle(TFPGUIPrivateWidget.Create(AWinControl, AParams));
@@ -157,35 +157,35 @@ var
   FPWidget: TfpgWidget;
 begin
   FPWidget := TFPGUIPrivateWidget(AWinControl.Handle).Widget;
-  FPWIdget.Invalidate;
-end;
-
-class function TFpGuiWSWinControl.GetClientBounds(
-  const AWincontrol: TWinControl; var ARect: TRect): Boolean;
-var
-  Widget: TFPGWidget;
-begin
-  Widget := TFPGUIPrivateWidget(AWincontrol.Handle).Widget;
-
-  if Widget = nil then
-    Exit;
-
-  with Widget do ARect :=Rect(Left, Top, Width, Height);
-  REsult := True;
+  FPWidget.Invalidate;
 end;
 
 class function TFpGuiWSWinControl.GetClientRect(const AWincontrol: TWinControl;
   var ARect: TRect): Boolean;
-var
-  Widget: TFPGWidget;
 begin
-  Widget := TFPGUIPrivateWidget(AWincontrol.Handle).Widget;
+  TFPGUIPrivateWidget(AWincontrol.Handle).GetClientRect(ARect);
+  Result:=true;
+end;
 
-  if Widget = nil then
-    Exit;
+class function TFpGuiWSWinControl.GetDefaultClientRect(
+  const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;
+  var aClientRect: TRect): Boolean;
+begin
+  if AWincontrol.HandleAllocated then begin
+    TFPGUIPrivateWidget(AWincontrol.Handle).GetDefaultClientRect(aClientRect);
+    Result:=true;
+  end else begin
+    Result:=false;
+  end;
+end;
 
-  with Widget do ARect :=Rect(Left, Top, Width, Height);
-  Result := True;
+class procedure TFpGuiWSWinControl.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  //fpgui widgets does not have a default size (maybe later).
+  PreferredHeight:=0;
+  PreferredWidth:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -199,11 +199,9 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TFpGuiWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
-var
-  FPWidget: TfpgWidget;
 begin
-  FPWidget := TFPGUIPrivateWidget(AWinControl.Handle).Widget;
-  FPWIdget.SetPosition(ALeft, ATop, AWidth, AHeight);
+  TFPGUIPrivateWidget(AWinControl.Handle).SetPosition(ALeft,ATop);
+  TFPGUIPrivateWidget(AWinControl.Handle).SetSize(AWidth,AHeight);
 end;
 
 {------------------------------------------------------------------------------
@@ -216,11 +214,8 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TFpGuiWSWinControl.SetPos(const AWinControl: TWinControl;
   const ALeft, ATop: Integer);
-var
-  FPWidget: TfpgWidget;
 begin
-  with TFPGUIPrivateWidget(AWinControl.Handle).Widget
-  do SetPosition(ALeft, ATop, AWinControl.Width, AWinControl.Height);
+  TFPGUIPrivateWidget(AWinControl.Handle).SetPosition(ALeft,ATop);
 end;
 
 {------------------------------------------------------------------------------
@@ -233,11 +228,8 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TFpGuiWSWinControl.SetSize(const AWinControl: TWinControl;
   const AWidth, AHeight: Integer);
-var
-  FPWidget: TfpgWidget;
 begin
-  FPWidget := TFPGUIPrivateWidget(AWinControl.Handle).Widget;
-  FPWIdget.SetPosition(AWinControl.Left, AWinControl.Top, AWidth, AHeight);
+  TFPGUIPrivateWidget(AWinControl.Handle).SetSize(AWidth,AHeight);
 end;
 
 {------------------------------------------------------------------------------
@@ -252,7 +244,7 @@ var
   FPWidget: TfpgWidget;
 begin
   FPWidget := TFPGUIPrivateWidget(AWinControl.Handle).Widget;
-  FPWidget.Visible := not FPWidget.Visible;
+  FPWidget.Visible := AWinControl.Visible;
 end;
 
 class procedure TFpGuiWSWinControl.SetColor(const AWinControl: TWinControl);
@@ -261,19 +253,6 @@ var
 begin
   FPWidget := TFPGUIPrivateWidget(AWinControl.Handle).Widget;
   FPWidget.BackgroundColor := TColorToTfpgColor(AWinControl.Color);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TFpGuiWSWinControl.SetCursor
-  Params:  AWinControl     - the calling object
-  Returns: Nothing
-
-  Sets the cursor of the widget.
- ------------------------------------------------------------------------------}
-class procedure TFpGuiWSWinControl.SetCursor(const AWinControl: TWinControl;
-  const ACursor: HCursor);
-begin
-
 end;
 
 class function TFpGuiWSWinControl.GetText(const AWinControl: TWinControl;
@@ -293,6 +272,15 @@ var
 begin
   FPPrivateWidget := TFPGUIPrivateWidget(AWinControl.Handle);
   FPPrivateWidget.SetText(AText);
+end;
+
+class procedure TFpGuiWSWinControl.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+var
+  FPPrivateWidget: TFPGUIPrivateWindow;
+begin
+  FPPrivateWidget := TFPGUIPrivateWindow(AWinControl.Handle);
+  FPPrivateWidget.Font:=AFont;
 end;
 
 end.

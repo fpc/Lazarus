@@ -50,7 +50,7 @@ type
   TFpGuiWSCustomNotebook = class(TWSCustomNotebook)
   private
   protected
-  public
+  published
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
@@ -181,7 +181,10 @@ type
   TFpGuiWSCustomPanel = class(TWSCustomPanel)
   private
   protected
-  public
+  published
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
   { TFpGuiWSPanel }
@@ -195,7 +198,7 @@ type
   { TFpGuiWSCustomTrayIcon }
 
   TFpGuiWSCustomTrayIcon = class(TWSCustomTrayIcon)
-  public
+  published
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
@@ -249,6 +252,21 @@ class function TFpGuiWSCustomTrayIcon.GetPosition(
   const ATrayIcon: TCustomTrayIcon): TPoint;
 begin
   Result:=inherited GetPosition(ATrayIcon);
+end;
+
+{ TFpGuiWSCustomPanel }
+
+class function TFpGuiWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+begin
+  Result := TLCLIntfHandle(TFPGUIPrivateCustomPanel.Create(AWinControl, AParams));
+end;
+
+class procedure TFpGuiWSCustomPanel.DestroyHandle(const AWinControl: TWinControl
+  );
+begin
+  TFPGUIPrivateCustomPanel(AWinControl.Handle).Free;
+  AWinControl.Handle := 0;
 end;
 
 end.

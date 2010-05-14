@@ -21,7 +21,7 @@ type
 
     TFPGUITimer = class
   private
-    FLCLTimer: TTimer;
+    //FLCLTimer: TTimer;
     FTimer: TfpgTimer;
     FCallback: TWSTimerProc;
   protected
@@ -149,7 +149,8 @@ begin
   if Assigned(Application.MainForm) then
   begin
     vMainForm := TFPGUIPrivateWindow(Application.MainForm.Handle).Form;
-    vMainForm.Show;
+    if Application.MainForm.Visible then
+      vMainForm.Show;
   end;
   // GFApplication.EventFilter can maybe be used on X11 for aloop but it is X only
   fpgApplication.Run;
@@ -272,9 +273,14 @@ begin
   
   aObject := TObject(GDIObject);
 
-  if aObject is TObject then
-  begin
-//    Result := (aObject is TFpGuiFont) or (aObject is TFpGuiBrush) or (aObject is TFpGuiImage);
+  try
+    if aObject is TObject then
+    begin
+      Result:= (aObject is TFPGUIWinAPIObject);
+    end;
+  except
+    //Eat exceptions. If Exception happends it is not a TObject after all and
+    //of course it is not a fpgui GDI object.
   end;
 end;
 

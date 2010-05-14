@@ -41,7 +41,7 @@ uses
   Controls, ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf,
   GraphType,
   // Bindings
-  fpg_main, fpg_form,
+  fpg_main, fpg_form, fpguiproc, fpg_base,
   // Widgetset
   FPGUIWSPrivate, fpguiobjects;
 

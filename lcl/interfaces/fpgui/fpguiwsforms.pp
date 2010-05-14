@@ -28,9 +28,9 @@ interface
 
 uses
   // Bindings
-  fpg_base, fpg_main, fpguiwsprivate,
+  fpg_base, fpg_main, fpg_form, fpguiwsprivate,
   // LCL
-  Classes, Forms, LCLType, Controls,
+  Classes, Forms, LCLType, Controls, Graphics,
   // Widgetset
   WSForms, WSLCLClasses;
 
@@ -73,7 +73,7 @@ type
   TFpGuiWSCustomForm = class(TWSCustomForm)
   private
   protected
-  public
+  published
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -83,6 +83,8 @@ type
 
     class procedure SetFormBorderStyle(const AForm: Forms.TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
+    class procedure SetFont(const AWinControl: TWinControl;
+                           const AFont: TFont); override;
   end;
 
   { TFpGuiWSForm }
@@ -135,10 +137,14 @@ var
   FPForm: TFPGUIPrivateWindow;
 begin
   {$ifdef VerboseFPGUIIntf}
-    WriteLn('TFpGuiWSCustomForm.CreateHandle');
+    WriteLn(Self.ClassName,'.CreateHandle ',AWinControl.Name);
   {$endif}
 
   FPForm := TFPGUIPrivateWindow.Create(AWinControl, AParams);
+  FPForm.SetFormBorderStyle(TForm(AWinControl).BorderStyle);
+  if AWinControl.Visible then begin
+    TfpgForm(FPForm.Widget).Show;
+  end;
   Result := TLCLIntfHandle(FPForm);
 end;
 
@@ -150,11 +156,10 @@ end;
 class procedure TFpGuiWSCustomForm.DestroyHandle(const AWinControl: TWinControl);
 begin
   {$ifdef VerboseFPGUIIntf}
-    WriteLn('TFpGuiWSCustomForm.DestroyHandle');
+    WriteLn(Self.ClassName,'.DestroyHandle ',AWinControl.Name);
   {$endif}
 
   TFPGUIPrivateWindow(AWinControl.Handle).Free;
-
   AWinControl.Handle := 0;
 end;
 
@@ -180,11 +185,20 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TFpGuiWSCustomForm.SetFormBorderStyle(const AForm: Forms.TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
-//var
-//  FPForm: TFPGUIPrivateWindow;
+var
+  FPForm: TFPGUIPrivateWindow;
 begin
-//  FPForm := TFPGUIPrivateWindow(AForm.Handle);
+  FPForm := TFPGUIPrivateWindow(AForm.Handle);
+  FPForm.SetFormBorderStyle(AFormBorderStyle);
+end;
 
+class procedure TFpGuiWSCustomForm.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+var
+  FPForm: TFPGUIPrivateWindow;
+begin
+  FPForm := TFPGUIPrivateWindow(AWinControl.Handle);
+  FPForm.Font:=AFont;
 end;
 
 {------------------------------------------------------------------------------
