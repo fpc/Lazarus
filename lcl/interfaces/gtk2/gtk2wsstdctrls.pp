@@ -633,8 +633,12 @@ begin
   GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
   gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
                                  GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-  gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(p),
-    BorderStyleShadowMap[TCustomListBox(AWinControl).BorderStyle]);
+  //Set BorderStyle according to the provided Params
+  if (AParams.ExStyle and WS_EX_CLIENTEDGE) > 0 then
+    gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(p), GTK_SHADOW_ETCHED_IN)
+  else
+    gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(p), GTK_SHADOW_NONE);
+
   gtk_widget_show(p);
 
   liststore := gtk_list_store_new (2, [G_TYPE_STRING, G_TYPE_POINTER, nil]);
