@@ -883,7 +883,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TCustomNotebook.DoSendPageIndex
+  procedure TCustomNotebook.ShowCurrentPage
 
   Makes sure Visible = true for page which has index FPageIndex
  ------------------------------------------------------------------------------}
