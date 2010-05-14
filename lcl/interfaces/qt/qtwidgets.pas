@@ -52,7 +52,9 @@ type
   TChildOfComplexWidget = (ccwNone,
                           ccwComboBox,
                           ccwTreeWidget,
-                          ccwAbstractScrollArea);
+                          ccwAbstractScrollArea,
+                          ccwScrollingWinControl);
+
   TQtGroupBoxType = (tgbtNormal,
                    tgbtCheckGroup,
                    tgbtRadioGroup);
@@ -10412,25 +10414,21 @@ end;
 function TQtViewPort.CanPaintBackground: Boolean;
 begin
   Result := CanSendLCLMessage and getEnabled and
-    (LCLObject is TScrollingWinControl) and
+    (FChildOfComplexWidget = ccwScrollingWinControl) and
     (LCLObject.Color <> clBtnFace) and (LCLObject.Color <> clBackground);
 end;
 
 function TQtViewPort.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
+  Result := False;
   case QEvent_type(Event) of
-    QEventWheel: Result := False;
     QEventResize:
     begin
-      Result := False;
       // immediate update clientRect !
       LCLObject.DoAdjustClientRectChange;
     end;
-    QEventLayoutRequest:
-    begin
-      {TODO: something here  (maybe) }
-       Result := False;
-    end;
+    QEventLayoutRequest,
+    QEventWheel: ; // nothing to do here
   else
     Result := inherited EventFilter(Sender, Event);
   end;
@@ -10641,7 +10639,7 @@ var
 begin
   // Creates the widget
   {$ifdef VerboseQt}
-    WriteLn('TQtCustomControl.Create');
+    WriteLn('TQtCustomControl.CreateWidget');
   {$endif}
   FHasPaint := True;
   FViewPortWidget := nil;
@@ -10655,10 +10653,12 @@ begin
   FFrameOnlyAroundContents := QStyle_styleHint(QApplication_style(),
     QStyleSH_ScrollView_FrameOnlyAroundContents) > 0;
 
-  if not (csDesigning in LCLObject.ComponentState) and
-    (LCLObject is TScrollingWinControl) then
-      QWidget_setAutoFillBackground(Result, True)
-  else
+  if (LCLObject is TScrollingWinControl) then
+  begin
+    if not (csDesigning in LCLObject.ComponentState) then
+      QWidget_setAutoFillBackground(Result, True);
+    FChildOfComplexWidget := ccwScrollingWinControl;
+  end else
     QWidget_setAutoFillBackground(Result, False);
 
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
@@ -10673,7 +10673,7 @@ end;
 destructor TQtCustomControl.Destroy;
 begin
   {$ifdef VerboseQt}
-    WriteLn('TQAbstractScrollArea.Destroy');
+    WriteLn('TQtCustomControl.Destroy');
   {$endif}
   viewportDelete;
   inherited Destroy;
@@ -10755,7 +10755,12 @@ begin
       retval^ := True;
       if FResizing and (QEvent_type(Event) = QEventResize) then
         FResizing := False;
-      Viewport.EventFilter(ViewPort.Widget, Event);
+
+      if (QEvent_type(Event) = QEventResize) and
+        (FChildOfComplexWidget = ccwScrollingWinControl) then
+        //do nothing for TScrollingWinControl otherwise we are hanging.
+      else
+        Viewport.EventFilter(ViewPort.Widget, Event);
       // do not allow qt to call notifications on user input events (mouse)
       // otherwise we can crash since our object maybe does not exist
       // after mouse clicks
@@ -10907,6 +10912,7 @@ begin
   FViewPortWidget.setBackgroundRole(QPaletteNoRole);
   FViewPortWidget.setAutoFillBackground(False);
   FViewPortWidget.FOwner := Self;
+  FViewPortWidget.FChildOfComplexWidget := FChildOfComplexWidget;
 
   // some events will be redirected to scroll area
   FViewPortWidget.AttachEvents;
