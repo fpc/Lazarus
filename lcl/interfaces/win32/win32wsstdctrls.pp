@@ -451,20 +451,6 @@ end;
 
 { TWin32WSCustomGroupBox }
 
-function GroupBoxPanelWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; stdcall;
-begin
-  // handle paint messages for theming
-  case Msg of
-    WM_ERASEBKGND, WM_NCPAINT, WM_PAINT, WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
-    begin
-      Result := WindowProc(Window, Msg, WParam, LParam);
-    end;
-  else
-    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
-  end;
-end;
-
 function GroupBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 begin
