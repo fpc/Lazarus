@@ -1984,18 +1984,11 @@ begin
           Result := QEvent_spontaneous(Event);
           if Result then
             Result := SlotKey(Sender, Event) or (LCLObject is TCustomControl);
-          if not QtWidgetSet.IsValidHandle(HWND(Self)) then
-            exit;
         end;
 
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
-      QEventMouseButtonDblClick:
-        begin
-          Result := SlotMouse(Sender, Event);
-          if not QtWidgetSet.IsValidHandle(HWND(Self)) then
-            exit;
-        end;
+      QEventMouseButtonDblClick: Result := SlotMouse(Sender, Event);
       QEventMouseMove:
         begin
           SlotMouseMove(Event);
@@ -2493,7 +2486,6 @@ var
   MousePos: TQtPoint;
   MButton: QTMouseButton;
   Modifiers: QtKeyboardModifiers;
-  OldDeleteLater: Boolean;
 
   function CheckMouseButtonDown(AButton: Integer): Cardinal;
 
@@ -2612,16 +2604,8 @@ begin
         QtMidButton: Msg.Msg := LM_MBUTTONUP;
       end;
 
-      OldDeleteLater := FDeleteLater;
-      FDeleteLater := True;
-
       NotifyApplicationUserInput(Msg.Msg);
       DeliverMessage(Msg);
-
-      if not QtWidgetSet.IsValidHandle(HWND(Self)) then
-        exit
-      else
-        FDeleteLater := OldDeleteLater;
 
       { Clicking on buttons operates differently, because QEventMouseButtonRelease
         is sent if you click a control, drag the mouse out of it and release, but
@@ -10747,7 +10731,6 @@ end;
 
 procedure TQtCustomControl.ViewPortEventFilter(event: QEventH; retval: PBoolean); cdecl;
 var
-  VPortPtr: TQtViewPort; // needed for pointer guard
   MouseEventTyp: Boolean;
 begin
   {$ifdef VerboseViewPortEventFilter}
@@ -10770,11 +10753,11 @@ begin
       retval^ := True;
       if FResizing and (QEvent_type(Event) = QEventResize) then
         FResizing := False;
-      VPortPtr := ViewPort;
-      VPortPtr.EventFilter(VPortPtr.Widget, Event);
-      if MouseEventTyp and not QtWidgetSet.IsValidHandle(HWND(VPortPtr)) then
-        QCoreApplication_processEvents()
-      else
+      Viewport.EventFilter(ViewPort.Widget, Event);
+      // do not allow qt to call notifications on user input events (mouse)
+      // otherwise we can crash since our object maybe does not exist
+      // after mouse clicks
+      if not MouseEventTyp then
         QEvent_ignore(Event);
     end;
   else
