@@ -3400,7 +3400,8 @@ var
   AGrabWidget: QWidgetH;
 begin
   // capture widget can be one of childs of Widget if Widget is complex control
-  // so better to look for current Capture widget to release it instead of pass Widget as argument
+  // so better to look for current Capture widget to release it
+  // instead of pass Widget as argument
   AGrabWidget := QWidget_mouseGrabber();
   //DebugLn(['releasing current grab: ', dbgs(AGrabWidget)]);
   if AGrabWidget <> nil then
@@ -4463,7 +4464,8 @@ begin
     QBoxLayout_setSpacing(LayoutWidget, 0);
     QLayout_setContentsMargins(LayoutWidget, 0, 0, 0, 0);
 
-    {we must fix mouse events in QMDISubWindow by adding FCentralWidget as it''s widget }
+    // we must fix mouse events in QMDISubWindow by
+    // adding FCentralWidget as it''s widget
     if IsMdiChild then
       QMdiSubWindow_setWidget(QMdiSubWindowH(Result), FCentralWidget);
       
@@ -4539,7 +4541,7 @@ begin
   {$IFDEF LINUX}
   // qt X11 bug ?  activates window but it's not in
   // front of others.
-  {$note TQtWidget.Activate: Check this with next qt version (>4.3.4)}
+  {$note TQtWidget.Activate: Check this with next qt version (>=4.7)}
   if not QWidget_isModal(Widget) then
     QWidget_raise(Widget);
   {$ENDIF}
