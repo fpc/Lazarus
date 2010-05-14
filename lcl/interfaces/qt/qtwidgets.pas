@@ -1984,12 +1984,18 @@ begin
           Result := QEvent_spontaneous(Event);
           if Result then
             Result := SlotKey(Sender, Event) or (LCLObject is TCustomControl);
+          if not QtWidgetSet.IsValidHandle(HWND(Self)) then
+            exit;
         end;
 
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick:
+        begin
           Result := SlotMouse(Sender, Event);
+          if not QtWidgetSet.IsValidHandle(HWND(Self)) then
+            exit;
+        end;
       QEventMouseMove:
         begin
           SlotMouseMove(Event);
@@ -2070,7 +2076,6 @@ begin
     Result := True;
     BeginEventProcessing;
   end;
-
   EndEventProcessing;
 end;
 
@@ -2488,6 +2493,7 @@ var
   MousePos: TQtPoint;
   MButton: QTMouseButton;
   Modifiers: QtKeyboardModifiers;
+  OldDeleteLater: Boolean;
 
   function CheckMouseButtonDown(AButton: Integer): Cardinal;
 
@@ -2606,8 +2612,17 @@ begin
         QtMidButton: Msg.Msg := LM_MBUTTONUP;
       end;
 
+      OldDeleteLater := FDeleteLater;
+      FDeleteLater := True;
+
       NotifyApplicationUserInput(Msg.Msg);
       DeliverMessage(Msg);
+
+      if not QtWidgetSet.IsValidHandle(HWND(Self)) then
+        exit
+      else
+        FDeleteLater := OldDeleteLater;
+
       { Clicking on buttons operates differently, because QEventMouseButtonRelease
         is sent if you click a control, drag the mouse out of it and release, but
         buttons should not be clicked on this case. }
@@ -10731,6 +10746,9 @@ begin
 end;
 
 procedure TQtCustomControl.ViewPortEventFilter(event: QEventH; retval: PBoolean); cdecl;
+var
+  VPortPtr: TQtViewPort; // needed for pointer guard
+  MouseEventTyp: Boolean;
 begin
   {$ifdef VerboseViewPortEventFilter}
     WriteLn('ViewPortEventFilter ',QEvent_type(Event));
@@ -10745,11 +10763,19 @@ begin
     QEventMouseButtonDblClick,
     QEventPaint:
     begin
+      MouseEventTyp := (QEvent_type(Event) = QEventMouseButtonPress) or
+        (QEvent_type(Event) = QEventMouseButtonRelease) or
+        (QEvent_type(Event) = QEventMouseButtonDblClick);
+
       retval^ := True;
       if FResizing and (QEvent_type(Event) = QEventResize) then
         FResizing := False;
-      viewport.EventFilter(viewport.Widget, Event);
-      QEvent_ignore(Event);
+      VPortPtr := ViewPort;
+      VPortPtr.EventFilter(VPortPtr.Widget, Event);
+      if MouseEventTyp and not QtWidgetSet.IsValidHandle(HWND(VPortPtr)) then
+        QCoreApplication_processEvents()
+      else
+        QEvent_ignore(Event);
     end;
   else
     retval^ := QLCLAbstractScrollArea_InheritedViewportEvent(QLCLAbstractScrollAreaH(Widget), event);
