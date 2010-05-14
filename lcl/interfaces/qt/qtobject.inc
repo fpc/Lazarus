@@ -216,15 +216,54 @@ begin
 end;
 
 procedure TQtWidgetSet.AppMinimize;
+{$IFDEF LINUX}
+var
+  i: Integer;
+  AForm: TCustomForm;
+{$ENDIF}
 begin
   if (Application.MainForm <> nil) and (Application.MainForm.HandleAllocated) then
+  begin
+    {$IFDEF LINUX}
+    for i := 0 to Screen.CustomFormZOrderCount-1 do
+    begin
+      AForm := Screen.CustomFormsZOrdered[i];
+      if (AForm.Parent=nil) and AForm.HandleAllocated and AForm.Visible and
+        not (AForm.FormStyle in [fsMDIChild, fsSplash]) and
+        not (AForm.BorderStyle in [bsNone])
+      then
+        TQtMainWindow(AForm.Handle).ShowMinimized;
+    end;
+    {$ELSE}
     TQtMainWindow(Application.MainForm.Handle).ShowMinimized;
+    {$ENDIF}
+  end;
 end;
 
 procedure TQtWidgetSet.AppRestore;
+{$IFDEF LINUX}
+var
+  i: Integer;
+  AForm: TCustomForm;
+{$ENDIF}
 begin
   if (Application.MainForm <> nil) and (Application.MainForm.HandleAllocated) then
+  begin
+    {$IFDEF LINUX}
+    if Screen = nil then exit;
+    for i := Screen.CustomFormZOrderCount-1 downto 0 do
+    begin
+      AForm := Screen.CustomFormsZOrdered[i];
+      if (AForm.Parent=nil) and AForm.HandleAllocated and AForm.Visible and
+        not (AForm.FormStyle in [fsMDIChild, fsSplash]) and
+        not (AForm.BorderStyle in [bsNone])
+      then
+        TQtMainWindow(AForm.Handle).ShowNormal;
+    end;
+    {$ELSE}
     TQtMainWindow(Application.MainForm.Handle).ShowNormal;
+    {$ENDIF}
+  end;
 end;
 
 procedure TQtWidgetSet.AppBringToFront;
@@ -367,6 +406,8 @@ begin
     lcCanDrawOutsideOnPaint: Result := LCL_CAPABILITY_NO;
     lcDragDockStartOnTitleClick: Result :=
      {$ifdef MSWINDOWS} LCL_CAPABILITY_YES {$else} LCL_CAPABILITY_NO {$endif};
+     lcNeedMininimizeAppWithMainForm: Result :=
+     {$ifdef LINUX} LCL_CAPABILITY_YES {$else} LCL_CAPABILITY_NO {$endif};
   else
     Result := inherited GetLCLCapability(ACapability);
   end;

@@ -629,6 +629,11 @@ begin
     end;
     if OldState <> FWindowState then
     begin
+      if (OldState = wsMinimized) and (Application.MainForm = Self)
+        and (WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) <> LCL_CAPABILITY_NO) then
+      begin
+        Application.Restore;
+      end;
       if Assigned(OnWindowStateChange) then
         OnWindowStateChange(Self);
     end;

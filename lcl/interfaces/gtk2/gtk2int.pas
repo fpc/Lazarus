@@ -64,6 +64,8 @@ type
     function LCLPlatform: TLCLPlatform; override;
 
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
+    procedure AppMinimize; override;
+    procedure AppRestore; override;
     function AppHandle: THandle; override;
 
     procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: Boolean);override;

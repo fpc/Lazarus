@@ -4,7 +4,6 @@ inherited MessagesView: TMessagesView
   Top = 640
   Width = 722
   ActiveControl = MessageTreeView
-  BorderStyle = bsSizeToolWin
   Caption = 'MessagesView'
   ClientHeight = 79
   ClientWidth = 722
