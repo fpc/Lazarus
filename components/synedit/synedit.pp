@@ -431,6 +431,7 @@ type
     fScrollTimer: TTimer;
     fScrollDeltaX, fScrollDeltaY: Integer;
     FInMouseClickEvent: Boolean;
+    FMouseClickDoPopUp: Boolean;
     // event handlers
     FOnCutCopy: TSynCopyPasteEvent;
     FOnPaste: TSynCopyPasteEvent;
@@ -2373,7 +2374,18 @@ begin
     // Therefore if a non persistent block is given, it shall ignore the caret move.
     if (ACommand = emcContextMenu) and FBlockSelection.SelAvail and
        not FBlockSelection.Persistent then
-      AnInfo.CaretDone := True; // Not allowed to modify AnAction
+    begin
+      case AnAction.Option of
+        emcoSelectionCaretMoveOutside:
+          AnInfo.CaretDone :=
+            (CompareCarets(AnInfo.NewCaret.LineBytePos, FBlockSelection.FirstLineBytePos) <= 0) and
+            (CompareCarets(AnInfo.NewCaret.LineBytePos, FBlockSelection.LastLineBytePos) >= 0);
+        emcoSelectionCaretMoveAlways:
+          AnInfo.CaretDone := False;
+        else
+          AnInfo.CaretDone := True;
+      end;
+    end;
 
     // Plugins/External
     Result := FMouseActionExecHandlerList.CallExecHandlers(AnAction, AnInfo);
@@ -2480,11 +2492,11 @@ begin
           Handled := False;
           if AnAction.MoveCaret and (not CaretDone) then begin
             MoveCaret;
-            UpdateCaret(True);
           end;
           inherited DoContextPopup(Point(AnInfo.MouseX, AnInfo.MouseY), Handled);
-          if (PopupMenu <> nil) and not Handled then
-            PopupMenu.PopUp;
+          // Open PopUpMenu after DecPaintlock
+          if not Handled then
+            FMouseClickDoPopUp := True;
         end;
       emcSynEditCommand:
         begin
@@ -2582,6 +2594,7 @@ begin
   else
     CType := ccSingle;
 
+  FMouseClickDoPopUp := False;
   IncPaintLock;
   try
     if (X < fGutterWidth) then begin
@@ -2592,6 +2605,8 @@ begin
   finally
     DecPaintLock;
   end;
+  if FMouseClickDoPopUp and (PopupMenu <> nil) then
+    PopupMenu.PopUp;
 
   inherited MouseDown(Button, Shift, X, Y);
   LCLIntf.SetFocus(Handle);
@@ -2824,6 +2839,7 @@ begin
 
   if wasDragging or wasSelecting or ignoreUp then exit;
 
+  FMouseClickDoPopUp := False;
   IncPaintLock;
   try
     if (sfGutterClick in fStateFlags) then begin
@@ -2834,6 +2850,8 @@ begin
   finally
     DecPaintLock;
   end;
+  if FMouseClickDoPopUp and (PopupMenu <> nil) then
+    PopupMenu.PopUp;
   //DebugLn('TCustomSynEdit.MouseUp END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 end;
 
@@ -6990,7 +7008,7 @@ begin
     if (eoRightMouseMovesCursor in ChangedOptions) then begin
       for i := FMouseActions.Count-1 downto 0 do
         if FMouseActions[i].Button = mbRight then
-          FMouseActions[i].MoveCaret := (eoDragDropEditing in fOptions);
+          FMouseActions[i].MoveCaret := (eoRightMouseMovesCursor in fOptions);
     end;
     // eoDoubleClickSelectsLine
     if (eoDoubleClickSelectsLine in ChangedOptions) then begin

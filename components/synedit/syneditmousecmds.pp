@@ -84,6 +84,11 @@ const
   emcoCodeFoldExpandOne       = 0;
   emcoCodeFoldExpandAll       = 1;
 
+  // menu, and caret move
+  emcoSelectionCaretMoveNever     = 0;
+  emcoSelectionCaretMoveOutside   = 1; // click is outside selected area
+  emcoSelectionCaretMoveAlways    = 2;
+
 // Plugins don't know of other plugins, so they need to map the codes
 // Plugins all start at ecPluginFirst (overlapping)
 // If ask by SynEdit they add an offset
@@ -285,6 +290,7 @@ begin
     emcMouseLink:   Result := SYNS_emcMouseLink_opt;
     emcCodeFoldCollaps: Result := SYNS_emcCodeFoldCollaps_opt;
     emcCodeFoldExpand:  Result := SYNS_emcCodeFoldExpand_opt;
+    emcContextMenu:  Result := SYNS_emcContextMenuCaretMove_opt;
     else Result := ''
   end;
 end;
@@ -663,7 +669,7 @@ begin
   AddCommand(emcStartSelections, True, mbLeft, ccSingle, cdDown, [ssShift], [ssShift, ssAlt], emcoSelectionContinue);
   AddCommand(emcStartColumnSelections, True,    mbLeft, ccSingle, cdDown, [ssAlt],          [ssShift, ssAlt], emcoSelectionStart);
   AddCommand(emcStartColumnSelections, True, mbLeft, ccSingle, cdDown, [ssShift, ssAlt], [ssShift, ssAlt], emcoSelectionContinue);
-  AddCommand(emcContextMenu, False, mbRight, ccSingle, cdUp, [], []);
+  AddCommand(emcContextMenu, False, mbRight, ccSingle, cdUp, [], [], emcoSelectionCaretMoveNever);
 
   AddCommand(emcSelectWord, True, mbLeft, ccDouble, cdDown, [], []);
   AddCommand(emcSelectLine, True, mbLeft, ccTriple, cdDown, [], []);

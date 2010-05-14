@@ -411,6 +411,7 @@ resourcestring
   SYNS_emcCodeFoldExpand_opt       = 'Nodes,One,All';
   SYNS_emcCodeFoldContextMenu      = 'Fold Menu';
   SYNS_emcSynEditCommand           = 'IDE Command';
+  SYNS_emcContextMenuCaretMove_opt = '"Move caret, when selection exists", Never, "Click outside", Always';
 
 implementation
 
