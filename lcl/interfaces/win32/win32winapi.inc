@@ -136,22 +136,29 @@ var
   procedure CallWin32PaintHandler;
   var
     ClientBoundRect: TRect;
+    Moved: Boolean;
     PaintMsg: TLMPaint absolute Message;
   begin
     // the LCL creates paint messages, with a DC origin set to the client
     // origin of the emitting control. The paint handler of win32 expects the
     // DC origin at the origin of the control.
     // -> move the windoworigin
-    ClientBoundRect:=Rect(0,0,0,0);
-    if Sender is TWinControl then
-      if not GetClientBounds(Handle,ClientBoundRect) then exit;
-    MoveWindowOrgEx(PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top);
+    if PaintMsg.DC <> 0 then
+    begin
+      ClientBoundRect := Rect(0, 0, 0, 0);
+      if Sender is TWinControl then
+        if not GetClientBounds(Handle, ClientBoundRect) then Exit;
+      Moved := MoveWindowOrgEx(PaintMsg.DC, -ClientBoundRect.Left, -ClientBoundRect.Top);
+    end
+    else
+      Moved := False;
     try
       // call win32 paint handler
       CallDefaultWindowProc(Handle, WM_PAINT, WPARAM(PaintMsg.DC), 0);
     finally
       // restore DC origin
-      MoveWindowOrgEx(PaintMsg.DC, ClientBoundRect.Left, ClientBoundRect.Top);
+      if Moved then
+        MoveWindowOrgEx(PaintMsg.DC, ClientBoundRect.Left, ClientBoundRect.Top);
     end;
   end;
 
@@ -234,11 +241,10 @@ begin
       // provide default wheel scrolling functionality
       CallMouseWheelHandler;
     end;
-
+    LM_ERASEBKGND,
     LM_GETDLGCODE:
-    begin
-      TLMessage(Message).Result := CallDefaultWindowProc(Handle, WM_GETDLGCODE, 0, 0);
-    end;
+      with TLMessage(Message) do
+        Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
   else
     if TLMessage(Message).Msg >= WM_USER then
       with TLMessage(Message) do

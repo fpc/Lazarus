@@ -387,14 +387,25 @@ end;
 
 function ScrollBarWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
+var
+  LMessage: TLMessage;
+  Control: TWinControl;
 begin
   case Msg of
+    WM_PRINTCLIENT: Exit(CallDefaultWindowProc(Window, Msg, WParam, LParam));
     WM_PAINT,
-    WM_PRINTCLIENT,
     WM_ERASEBKGND:
       begin
-        Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
-        Exit;
+        Control := GetWin32WindowInfo(Window)^.WinControl;
+        if not Control.DoubleBuffered then
+        begin
+          LMessage.msg := Msg;
+          LMessage.wParam := WParam;
+          LMessage.lParam := LParam;
+          LMessage.Result := 0;
+          Result := DeliverMessage(Control, LMessage);
+          Exit;
+        end;
       end;
   end;
   Result := WindowProc(Window, Msg, WParam, LParam);

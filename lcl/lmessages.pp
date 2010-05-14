@@ -70,7 +70,6 @@ const
   LM_KILLWORD       = LM_LCL + 24;
   LM_KILLLINE       = LM_LCL + 25;
   LM_CONFIGUREEVENT = LM_LCL + 31; // GTK internal. Should be removed later.
-  LM_PAINT          = LM_LCL + 32;
   LM_EXIT           = LM_LCL + 60;
   LM_CLOSEQUERY     = LM_LCL + 62;
   LM_DRAGSTART      = LM_LCL + 63;
@@ -149,6 +148,7 @@ const
   LM_KILLFOCUS         = $0008;
   LM_ENABLE            = $000A;
   LM_GETTEXTLENGTH     = $000E;
+  LM_PAINT             = $000F;
   LM_ERASEBKGND        = $0014;
 
   LM_SHOWWINDOW        = $0018;

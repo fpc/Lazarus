@@ -35,7 +35,7 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   Windows, CommCtrl, Classes, Buttons, Graphics, GraphType, Controls,
-  LCLType, LCLProc, Themes,
+  LCLType, LCLProc, LCLMessageGlue, LMessages, Themes,
 ////////////////////////////////////////////////////
   WSProc, WSButtons, Win32WSControls, Win32WSImgList,
   Win32UxTheme, Win32Themes;
@@ -484,6 +484,7 @@ var
   Control: TWinControl;
   ButtonImageList: BUTTON_IMAGELIST;
   ImageList: HIMAGELIST;
+  LMessage: TLMessage;
 begin
   Info := GetWin32WindowInfo(Window);
   if (Info = nil) or (Info^.WinControl = nil) then
@@ -520,6 +521,22 @@ begin
         Result := WindowProc(Window, Msg, WParam, LParam);
         DrawBitBtnImage(TBitBtn(Control), TBitBtn(Control).Caption);
       end;
+    WM_PAINT,
+    WM_ERASEBKGND:
+      begin
+        if not Control.DoubleBuffered then
+        begin
+          LMessage.msg := Msg;
+          LMessage.wParam := WParam;
+          LMessage.lParam := LParam;
+          LMessage.Result := 0;
+          Result := DeliverMessage(Control, LMessage);
+        end
+        else
+          Result := WindowProc(Window, Msg, WParam, LParam);
+      end;
+    WM_PRINTCLIENT:
+      Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
     else
       Result := WindowProc(Window, Msg, WParam, LParam);
   end;

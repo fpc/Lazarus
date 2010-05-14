@@ -6407,7 +6407,7 @@ begin
   {$ENDIF}
 
   Assert(False, Format('Trace:> [TWinControl.WMPaint] %s Msg.DC: 0x%x', [ClassName, Msg.DC]));
-  if (Msg.DC <> 0) then
+  if (Msg.DC <> 0) or not DoubleBuffered then
   begin
     if not (csCustomPaint in ControlState) and (ControlCount = 0) then
       begin
