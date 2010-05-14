@@ -4179,18 +4179,17 @@ end;
 procedure TWinControl.UpdateShowing;
 
   procedure ChangeShowing(bShow: Boolean);
-  var
-    ok: Boolean;
   begin
     if FShowing = bShow then Exit;
     FShowing := bShow;
-    ok := false;
     try
       Perform(CM_SHOWINGCHANGED, 0, 0); // see TWinControl.CMShowingChanged
-      ok := true;
     finally
-      if not ok then
-        FShowing := not bShow;
+      if FShowing<>(wcfHandleVisible in FWinControlFlags) then
+      begin
+        FShowing := wcfHandleVisible in FWinControlFlags;
+        DebugLn(['TWinControl.UpdateShowing.ChangeShowing failed for ',DbgSName(Self),', Showing reset to ',FShowing]);
+      end;
     end;
   end;
 
@@ -8036,7 +8035,9 @@ procedure TWinControl.CMShowingChanged(var Message: TLMessage);
 begin
   //DebugLn(['TWinControl.CMShowingChanged ',DbgSName(Self)]);
   if HandleAllocated and ([csDestroying,csLoading]*ComponentState=[]) then
-    DoSendShowHideToInterface;
+    DoSendShowHideToInterface
+  else
+    Exclude(FWinControlFlags,wcfHandleVisible);
 end;
 
 {------------------------------------------------------------------------------
