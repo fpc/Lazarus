@@ -1860,6 +1860,11 @@ begin
   SetScrollBars(ssAutoVertical);
   SetSelectionMode((LCLObject as TCustomListBox).ExtendedSelect,
     (LCLObject as TCustomListBox).MultiSelect);
+  //Set BorderStyle according to the provided Params
+  if (AParams.ExStyle and WS_EX_CLIENTEDGE) > 0 then
+    SetBorderStyle(bsSingle)
+  else
+    SetBorderStyle(bsNone);
 end;
 
 function TCarbonListBox.GetItemCaption(AIndex, ASubIndex: Integer): String;
