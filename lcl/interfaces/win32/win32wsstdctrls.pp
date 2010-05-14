@@ -242,7 +242,7 @@ type
 
   TWin32WSButton = class(TWSButton)
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
     class procedure SetShortCut(const AButton: TCustomButton; const OldKey, NewKey: word); override;
@@ -1487,10 +1487,6 @@ begin
   // customization of Params
   with Params do
   begin
-    if TCustomButton(AWinControl).Default Then
-      Flags := Flags or BS_DEFPUSHBUTTON
-    else
-      Flags := Flags or BS_PUSHBUTTON;
     pClassName := @ButtonClsName[0];
     WindowTitle := StrCaption;
   end;

@@ -1231,10 +1231,6 @@ begin
   // customization of Params
   with Params do
   begin
-   // if TCustomButton(AWinControl).Default Then
-   //   Flags := Flags or BS_DEFPUSHBUTTON
-   // else
-   //   Flags := Flags or BS_PUSHBUTTON;
     Flags := WS_CHILD or WS_VISIBLE;
     pClassName := @ButtonClsName;
     WindowTitle := StrCaption;

@@ -1084,6 +1084,7 @@ type
     class procedure WSRegisterClass; override;
     procedure Click; override;
     procedure CreateWnd; override;
+    procedure CreateParams(var Params: TCreateParams); override;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure ControlKeyUp(var Key: Word; Shift: TShiftState); override;
     function DialogChar(var Message: TLMKey): boolean; override;

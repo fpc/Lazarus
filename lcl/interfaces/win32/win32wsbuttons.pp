@@ -46,7 +46,7 @@ type
 
   TWin32WSBitBtn = class(TWSBitBtn)
   published
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
           var PreferredWidth, PreferredHeight: integer;
@@ -537,10 +537,6 @@ begin
   with Params do
   begin
     pClassName := @ButtonClsName[0];
-    if TCustomBitBtn(AWinControl).Default Then
-      Flags := Flags or BS_DEFPUSHBUTTON
-    else
-      Flags := Flags or BS_PUSHBUTTON;
     Flags := Flags or BS_BITMAP;
     WindowTitle := '';
     SubClassWndProc := @BitBtnWndProc;

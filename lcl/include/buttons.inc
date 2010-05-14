@@ -54,6 +54,15 @@ begin
   UpdateDefaultCancel;
 end;
 
+procedure TCustomButton.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  if Default then
+    Params.Style := Params.Style or BS_DEFPUSHBUTTON
+  else
+    Params.Style := Params.Style or BS_PUSHBUTTON;
+end;
+
 procedure TCustomButton.ControlKeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited ControlKeyDown(Key, Shift);

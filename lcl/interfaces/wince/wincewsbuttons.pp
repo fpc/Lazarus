@@ -247,10 +247,6 @@ begin
   with Params do
   begin
     pClassName := @ButtonClsName;
-    if TCustomBitBtn(AWinControl).Default then
-      Flags := Flags or BS_DEFPUSHBUTTON
-    else
-      Flags := Flags or BS_PUSHBUTTON;
     Flags := Flags or BS_OWNERDRAW; // Draw bitmap on WM_DRAWITEM
     WindowTitle := '';
   end;

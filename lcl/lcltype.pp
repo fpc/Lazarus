@@ -904,7 +904,9 @@ const
   WS_EX_PALETTEWINDOW = (WS_EX_WINDOWEDGE or WS_EX_TOOLWINDOW or WS_EX_TOPMOST);
 
   { Button styles }
-  BS_OWNERDRAW = $000B;
+  BS_PUSHBUTTON    = $00000000;
+  BS_DEFPUSHBUTTON = $00000001;
+  BS_OWNERDRAW     = $0000000B;
 
 const
 //==============================================
