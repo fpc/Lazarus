@@ -402,6 +402,12 @@ begin
 
   QtListWidget.setSelectionMode(SelMode);
 
+  //Set BorderStyle according to the provided Params
+  if (AParams.ExStyle and WS_EX_CLIENTEDGE) > 0 then
+    QtListWidget.setFrameShape(QFrameStyledPanel)
+  else
+    QtListWidget.setFrameShape(QFrameNoFrame);
+
   QtListWidget.AttachEvents;
   
   // create our FList helper
