@@ -5759,6 +5759,8 @@ begin
   Params.ExStyle := 0;
   if csAcceptsControls in ControlStyle then
     Params.ExStyle := Params.ExStyle or WS_EX_CONTROLPARENT;
+  if BorderStyle = bsSingle then
+    Params.ExStyle := Params.ExStyle or WS_EX_CLIENTEDGE;
   if TabStop then
     Params.Style := Params.Style or WS_TABSTOP;
 

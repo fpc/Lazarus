@@ -569,9 +569,6 @@ begin
           lbOwnerDrawFixed: Flags := Flags or LBS_OWNERDRAWFIXED;
           lbOwnerDrawVariable: Flags := Flags or LBS_OWNERDRAWVARIABLE;
         end;
-
-      if BorderStyle = bsSingle then
-        FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     end;
     pClassName := 'LISTBOX';
     Flags := Flags or (WS_HSCROLL or WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS or
@@ -1061,8 +1058,6 @@ begin
   begin
     if (AWinControl is TCustomEdit) then
     begin
-      if TCustomEdit(AWinControl).BorderStyle=bsSingle then
-        FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
       Flags := Flags or AlignmentToEditFlags[TCustomEdit(AWinControl).Alignment];
       if not TCustomEdit(AWinControl).HideSelection then
         Flags := Flags or ES_NOHIDESEL;
@@ -1247,8 +1242,6 @@ begin
       Flags := Flags and not WS_HSCROLL
     else
       Flags := Flags or ES_AUTOHSCROLL;
-    if ACustomMemo.BorderStyle = bsSingle then
-      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     if not ACustomMemo.HideSelection then
       Flags := Flags or ES_NOHIDESEL;
     pClassName := @EditClsName[0];

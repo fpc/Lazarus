@@ -170,9 +170,6 @@ begin
     Height := CreateParams.Height;
 
     LCLBoundsToWin32Bounds(AWinControl, Left, Top, Width, Height);
-    if AWinControl is TCustomControl then
-      if TCustomControl(AWinControl).BorderStyle = bsSingle then
-        FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     SetStdBiDiModeParams(AWinControl, Params);
 
     {$IFDEF VerboseSizeMsg}
