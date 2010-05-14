@@ -204,11 +204,17 @@ begin
           OutputFilter.Options:=[ofoSearchForFPCMessages,ofoExceptionOnError];
           OutputFilter.CompilerOptions:=AProject.CompilerOptions;
           {$IFDEF WithAsyncCompile}
-          if aFinishedCallback <> nil then begin
+          if aFinishedCallback <> nil then
+          begin
             OutputFilter.ExecuteAsyncron(TheProcess, @CompilationFinished, Self);
-          end else
+          end
+          else
           {$ENDIF}
-            OutputFilter.Execute(TheProcess,Self);
+            if not OutputFilter.Execute(TheProcess,Self) then
+              if OutputFilter.Aborted then
+                Result := mrAbort
+              else
+                Result := mrCancel;
         end else begin
           TheProcess.Execute;
         end;
@@ -244,17 +250,22 @@ end;
 {$IFDEF WithAsyncCompile}
 procedure TCompiler.CompilationFinished(Sender: TObject);
 begin
-  FASyncResult:= mrOK;
-  if TheProcess.Running then begin
+  if OutputFilter.Aborted then
+    FASyncrResult := mrAbort
+  else
+    FASyncResult := mrOK;
+  if TheProcess.Running then
+  begin
     TheProcess.WaitOnExit;
-    if not (TheProcess.ExitStatus in [0,1]) then  begin
-      WriteError(Format(listCompilerInternalError,[TheProcess.ExitStatus]));
-      FASyncResult:=mrCancel;
+    if (FASyncResult = mrOk) and not (TheProcess.ExitStatus in [0,1]) then
+    begin
+      WriteError(Format(listCompilerInternalError, [TheProcess.ExitStatus]));
+      FASyncResult := mrCancel;
     end;
   end;
   DebugLn('[TCompiler.Compile] Async end');
 
-  if assigned(FFinishedCallback) then
+  if Assigned(FFinishedCallback) then
     FFinishedCallback(Self);
 end;
 {$ENDIF}
@@ -262,9 +273,8 @@ end;
 procedure TCompiler.WriteError(const Msg: string);
 begin
   DebugLn('TCompiler.WriteError ',Msg);
-  if OutputFilter<>nil then begin
-    OutputFilter.ReadConstLine(Msg,true);
-  end;
+  if OutputFilter <> nil then
+    OutputFilter.ReadConstLine(Msg, True);
 end;
 
 
