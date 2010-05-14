@@ -7447,7 +7447,9 @@ begin
   if not FTabDragged then begin
     // no drag => check for normal click and activate page
     MouseUpTabIndex := TabIndexAtClientPos(Point(X,Y));
-    if (Button = mbLeft) and (FMouseDownTabIndex = MouseUpTabIndex) then
+    if (Button = mbLeft) and (FMouseDownTabIndex = MouseUpTabIndex) and
+       (FMouseDownTabIndex >= 0)
+    then
       PageIndex:=MouseUpTabIndex;
   end;
 end;
