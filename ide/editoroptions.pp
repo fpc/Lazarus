@@ -2522,7 +2522,7 @@ begin
         AddCommand(emcMouseLink, False, mbMiddle, ccSingle, cdDown, [], []);
     end;
 
-    AddCommand(emcContextMenu, FTextRightMoveCaret, mbRight, ccSingle, cdUp, [], []);
+    AddCommand(emcContextMenu, FTextRightMoveCaret, mbRight, ccSingle, cdUp, [], [], emcoSelectionCaretMoveNever);
 
     case FTextCtrlLeftClick of
       moTCLJump:
