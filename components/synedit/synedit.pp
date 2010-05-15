@@ -94,23 +94,12 @@ const
   ALPHA_LC = ['a'..'z'];
 
   ScrollBarWidth=0;
-  {$UNDEF SynDefaultFont}
-  {$IFDEF LCLgtk}
-  SynDefaultFontName = '-adobe-courier-medium-r-normal-*-*-140-*-*-*-*-iso10646-1';
-  SynDefaultFontHeight = 14;
-  {$DEFINE SynDefaultFont}
-  {$ENDIF}
-  {$IFDEF LCLcarbon}
-  SynDefaultFontName = 'Monaco'; // Note: carbon is case sensitive
-  SynDefaultFontHeight = 12;
-  {$DEFINE SynDefaultFont}
-  {$ENDIF}
-  {$IFNDEF SynDefaultFont}
-  SynDefaultFontName = 'Courier New';
-  SynDefaultFontHeight = -13;
-  {$ENDIF}
-  SynDefaultFontPitch = fpFixed;
-  SynDefaultFontQuality = fqNonAntialiased;
+
+  // SynDefaultFont is determined in InitSynDefaultFont()
+  SynDefaultFontName:    String       = '';
+  SynDefaultFontHeight:  Integer      = 13;
+  SynDefaultFontPitch:   TFontPitch   = fpFixed;
+  SynDefaultFontQuality: TFontQuality = fqNonAntialiased;
 
   {$IFNDEF SYN_COMPILER_3_UP}
    // not defined in all Delphi versions
@@ -1297,6 +1286,33 @@ begin
     Result := (Code = TMethod(AEvent).Code) and (Data = TMethod(AEvent).Data);
 end;
 
+procedure InitSynDefaultFont;
+begin
+  if SynDefaultFontName <> '' then exit;
+  Screen.Fonts;
+  {$UNDEF SynDefaultFont}
+  {$IFDEF LCLgtk}
+    SynDefaultFontName   := '-adobe-courier-medium-r-normal-*-*-140-*-*-*-*-iso10646-1';
+    SynDefaultFontHeight := 14;
+    {$DEFINE SynDefaultFont}
+  {$ENDIF}
+  {$IFDEF LCLcarbon}
+    SynDefaultFontName   := 'Monaco'; // Note: carbon is case sensitive
+    SynDefaultFontHeight := 12;
+    {$DEFINE SynDefaultFont}
+  {$ENDIF}
+  {$IFnDEF SynDefaultFont}
+    SynDefaultFontName   := 'Courier New';
+    SynDefaultFontHeight := -13;
+  {$ENDIF}
+  if Screen.Fonts.IndexOf(SynDefaultFontName) >= 0 then
+    exit;
+  if Screen.Fonts.IndexOf('DejaVu Sans Mono') >= 0 then begin
+    SynDefaultFontName   := 'DejaVu Sans Mono';
+    SynDefaultFontHeight := 13;
+  end;
+end;
+
 { TCustomSynEdit }
 
 procedure TCustomSynEdit.AquirePrimarySelection;
@@ -1511,6 +1527,7 @@ end;
 
 constructor TCustomSynEdit.Create(AOwner: TComponent);
 begin
+  InitSynDefaultFont;
   inherited Create(AOwner);
   SetInline(True);
   ControlStyle:=ControlStyle+[csOwnedChildrenNotSelectable];
