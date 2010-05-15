@@ -427,7 +427,7 @@ end;
 class function TGtk2WSCustomListBox.GetTopIndex(
   const ACustomListBox: TCustomListBox): integer;
 begin
-  Result := GetIndexAtXY(ACustomListBox, 0, 0);
+  Result := GetIndexAtXY(ACustomListBox, 0, 1);
 end;
 
 class procedure TGtk2WSCustomListBox.SelectItem(
