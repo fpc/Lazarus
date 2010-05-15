@@ -4020,6 +4020,7 @@ msgid "Follow cursor"
 msgstr "Nasledovať kurzor"
 
 #: lazarusidestrconsts.liscein
+msgctxt "lazarusidestrconsts.liscein"
 msgid "%s in %s"
 msgstr ""
 
@@ -10141,9 +10142,9 @@ msgstr "Použiť zmeny"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Volá procedúru %sRegister%s zvolenej jednotky"
 
-#: lazarusidestrconsts.lispckeditcleardependencydefaultfilename
-msgid "Clear dependency filename"
-msgstr "Zmazať meno súboru závislosti"
+#: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
+msgid "Clear default/preferred filename of dependency"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditcompile
 msgctxt "lazarusidestrconsts.lispckeditcompile"
@@ -10171,6 +10172,10 @@ msgstr "Voľby prekladača"
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
 msgid "Create Makefile"
 msgstr "Vytvoriť Makefile"
+
+#: lazarusidestrconsts.lispckeditdefault
+msgid "%s, default: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditdependencyproperties
 msgid "Dependency Properties"
@@ -10333,9 +10338,13 @@ msgstr "Uložiť zmeny?"
 msgid "Save package"
 msgstr "Uložiť balíček"
 
-#: lazarusidestrconsts.lispckeditsetdependencydefaultfilename
-msgid "Store dependency filename"
-msgstr "Uchovať meno súboru závislosti"
+#: lazarusidestrconsts.lispckeditstorefilenameasdefaultforthisdependency
+msgid "Store file name as default for this dependency"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditstorefilenameaspreferredforthisdependency
+msgid "Store file name as preferred for this dependency"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
 msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
@@ -12156,6 +12165,10 @@ msgstr "Súrodenec"
 #: lazarusidestrconsts.lissimplesyntax
 msgid "Simple Syntax"
 msgstr "Jednoduchá syntax"
+
+#: lazarusidestrconsts.lisskipfile
+msgid "Skip file"
+msgstr ""
 
 #: lazarusidestrconsts.lisskipfileandcontinueloading
 msgid "Skip file and continue loading"

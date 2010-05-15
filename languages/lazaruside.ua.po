@@ -4010,6 +4010,7 @@ msgid "Follow cursor"
 msgstr "Слідувати за курсором"
 
 #: lazarusidestrconsts.liscein
+msgctxt "lazarusidestrconsts.liscein"
 msgid "%s in %s"
 msgstr ""
 
@@ -10123,9 +10124,9 @@ msgstr "Застосувати зміни"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Викликати процедуру %sRegister%s вибраного модуля"
 
-#: lazarusidestrconsts.lispckeditcleardependencydefaultfilename
-msgid "Clear dependency filename"
-msgstr "Очистити залежності до газви файла"
+#: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
+msgid "Clear default/preferred filename of dependency"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditcompile
 msgctxt "lazarusidestrconsts.lispckeditcompile"
@@ -10153,6 +10154,10 @@ msgstr "Параметри компілятора"
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
 msgid "Create Makefile"
 msgstr "Створити Makefile"
+
+#: lazarusidestrconsts.lispckeditdefault
+msgid "%s, default: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditdependencyproperties
 msgid "Dependency Properties"
@@ -10315,9 +10320,13 @@ msgstr "Зберегти зміни?"
 msgid "Save package"
 msgstr "Зберегти пакунок"
 
-#: lazarusidestrconsts.lispckeditsetdependencydefaultfilename
-msgid "Store dependency filename"
-msgstr "Зберегти залежність файлу"
+#: lazarusidestrconsts.lispckeditstorefilenameasdefaultforthisdependency
+msgid "Store file name as default for this dependency"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditstorefilenameaspreferredforthisdependency
+msgid "Store file name as preferred for this dependency"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
 msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
@@ -12138,6 +12147,10 @@ msgstr "Рівень"
 #: lazarusidestrconsts.lissimplesyntax
 msgid "Simple Syntax"
 msgstr "Простий синтаксис"
+
+#: lazarusidestrconsts.lisskipfile
+msgid "Skip file"
+msgstr ""
 
 #: lazarusidestrconsts.lisskipfileandcontinueloading
 msgid "Skip file and continue loading"

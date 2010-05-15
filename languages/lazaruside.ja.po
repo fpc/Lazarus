@@ -4018,6 +4018,7 @@ msgid "Follow cursor"
 msgstr "カーソルを追跡"
 
 #: lazarusidestrconsts.liscein
+msgctxt "lazarusidestrconsts.liscein"
 msgid "%s in %s"
 msgstr ""
 
@@ -10139,9 +10140,9 @@ msgstr "変更を適用"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "選択されたユニットの%Register%s手続きを呼び出す"
 
-#: lazarusidestrconsts.lispckeditcleardependencydefaultfilename
-msgid "Clear dependency filename"
-msgstr "依存関係ファイル名を消去"
+#: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
+msgid "Clear default/preferred filename of dependency"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditcompile
 msgctxt "lazarusidestrconsts.lispckeditcompile"
@@ -10169,6 +10170,10 @@ msgstr "コンパイラオプション"
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
 msgid "Create Makefile"
 msgstr "Makefileを作成"
+
+#: lazarusidestrconsts.lispckeditdefault
+msgid "%s, default: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditdependencyproperties
 msgid "Dependency Properties"
@@ -10331,9 +10336,13 @@ msgstr "変更を保存しますか？"
 msgid "Save package"
 msgstr "パッケージを保存"
 
-#: lazarusidestrconsts.lispckeditsetdependencydefaultfilename
-msgid "Store dependency filename"
-msgstr "依存関係ファイル名を保存"
+#: lazarusidestrconsts.lispckeditstorefilenameasdefaultforthisdependency
+msgid "Store file name as default for this dependency"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditstorefilenameaspreferredforthisdependency
+msgid "Store file name as preferred for this dependency"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
 msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
@@ -12154,6 +12163,10 @@ msgstr "兄弟"
 #: lazarusidestrconsts.lissimplesyntax
 msgid "Simple Syntax"
 msgstr "簡単な表記法"
+
+#: lazarusidestrconsts.lisskipfile
+msgid "Skip file"
+msgstr ""
 
 #: lazarusidestrconsts.lisskipfileandcontinueloading
 msgid "Skip file and continue loading"

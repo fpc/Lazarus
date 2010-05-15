@@ -3986,6 +3986,7 @@ msgid "Follow cursor"
 msgstr "Následovat kurzor"
 
 #: lazarusidestrconsts.liscein
+msgctxt "lazarusidestrconsts.liscein"
 msgid "%s in %s"
 msgstr "%s v %s"
 
@@ -10071,9 +10072,9 @@ msgstr "Použít změny"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Volání %sRegistr%s procedura vybrané jednotky"
 
-#: lazarusidestrconsts.lispckeditcleardependencydefaultfilename
-msgid "Clear dependency filename"
-msgstr "Smazat jméno závislého souboru"
+#: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
+msgid "Clear default/preferred filename of dependency"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditcompile
 msgctxt "lazarusidestrconsts.lispckeditcompile"
@@ -10101,6 +10102,10 @@ msgstr "Volby překladače"
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
 msgid "Create Makefile"
 msgstr "Vytvořit Makefile"
+
+#: lazarusidestrconsts.lispckeditdefault
+msgid "%s, default: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditdependencyproperties
 msgid "Dependency Properties"
@@ -10263,9 +10268,13 @@ msgstr "Uložit změny?"
 msgid "Save package"
 msgstr "Uložit balíček"
 
-#: lazarusidestrconsts.lispckeditsetdependencydefaultfilename
-msgid "Store dependency filename"
-msgstr "Uložit jméno souboru závislosti"
+#: lazarusidestrconsts.lispckeditstorefilenameasdefaultforthisdependency
+msgid "Store file name as default for this dependency"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditstorefilenameaspreferredforthisdependency
+msgid "Store file name as preferred for this dependency"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
 msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
@@ -12082,6 +12091,10 @@ msgstr "Sourozenec"
 #: lazarusidestrconsts.lissimplesyntax
 msgid "Simple Syntax"
 msgstr "Jednoduchá syntaxe"
+
+#: lazarusidestrconsts.lisskipfile
+msgid "Skip file"
+msgstr ""
 
 #: lazarusidestrconsts.lisskipfileandcontinueloading
 msgid "Skip file and continue loading"
@@ -15169,30 +15182,6 @@ msgstr "&Přepnout záložku"
 msgid "&Toggle Breakpoint"
 msgstr "&Přepnout záložku"
 
-#: lazarusidestrconsts.uemviewcallstack
-msgid "View Call Stack"
-msgstr "Zobrazit volací zásobník"
-
-#: lazarusidestrconsts.uenotimplcap
-msgid "Not implemented yet"
-msgstr "Doposud neimplementováno"
-
-#: lazarusidestrconsts.uenotimplcapagain
-msgid "I told You: Not implemented yet"
-msgstr "Říkal jsem ti: Ještě není implementovano"
-
-#: lazarusidestrconsts.uenotimpltext
-msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr "Pošlete e-mail na lazarus@miraclec.com, pokud nám můžete pomoci implementovat tuto vlastnost."
-
-#: lazarusidestrconsts.uepins
-msgid "INS"
-msgstr "VLO"
-
-#: lazarusidestrconsts.uepovr
-msgid "OVR"
-msgstr "PŘE"
-
 #~ msgid "Auto create form when opening unit"
 #~ msgstr "Automaticky vytvořit formulář při otevření jednotky"
 #~ msgid "Use Default"
@@ -15290,6 +15279,30 @@ msgstr "PŘE"
 #~ msgstr "Přesunout editor vpravo"
 #~ msgid "Move Editor Rightmost"
 #~ msgstr "Přesunout editor nejvíce vpravo"
+#: lazarusidestrconsts.uemviewcallstack
+msgid "View Call Stack"
+msgstr "Zobrazit volací zásobník"
+
+#: lazarusidestrconsts.uenotimplcap
+msgid "Not implemented yet"
+msgstr "Doposud neimplementováno"
+
+#: lazarusidestrconsts.uenotimplcapagain
+msgid "I told You: Not implemented yet"
+msgstr "Říkal jsem ti: Ještě není implementovano"
+
+#: lazarusidestrconsts.uenotimpltext
+msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
+msgstr "Pošlete e-mail na lazarus@miraclec.com, pokud nám můžete pomoci implementovat tuto vlastnost."
+
+#: lazarusidestrconsts.uepins
+msgid "INS"
+msgstr "VLO"
+
+#: lazarusidestrconsts.uepovr
+msgid "OVR"
+msgstr "PŘE"
+
 #: lazarusidestrconsts.uepreadonly
 msgid "Readonly"
 msgstr "Pouze pro čtení"

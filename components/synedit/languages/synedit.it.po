@@ -32,6 +32,10 @@ msgstr ""
 msgid "Brackets"
 msgstr ""
 
+#: syneditstrconst.syns_attrcaselabel
+msgid "Case label"
+msgstr ""
+
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
 msgstr ""

@@ -4025,6 +4025,7 @@ msgid "Follow cursor"
 msgstr "Seguir cursor"
 
 #: lazarusidestrconsts.liscein
+msgctxt "lazarusidestrconsts.liscein"
 msgid "%s in %s"
 msgstr "%s no %s"
 
@@ -10133,9 +10134,9 @@ msgstr "Aplicar alterações"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Chamar procedimento de %sRegistro%s da unidade selecionada"
 
-#: lazarusidestrconsts.lispckeditcleardependencydefaultfilename
-msgid "Clear dependency filename"
-msgstr "Limpar nome de arquivo de dependência"
+#: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
+msgid "Clear default/preferred filename of dependency"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditcompile
 msgctxt "lazarusidestrconsts.lispckeditcompile"
@@ -10163,6 +10164,10 @@ msgstr "Opções do Compilador"
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
 msgid "Create Makefile"
 msgstr "Criar \"Makefile\""
+
+#: lazarusidestrconsts.lispckeditdefault
+msgid "%s, default: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditdependencyproperties
 msgid "Dependency Properties"
@@ -10325,9 +10330,13 @@ msgstr "Salvar Alterações?"
 msgid "Save package"
 msgstr "Salvar pacote"
 
-#: lazarusidestrconsts.lispckeditsetdependencydefaultfilename
-msgid "Store dependency filename"
-msgstr "Armazenar nome de arquivo dependência"
+#: lazarusidestrconsts.lispckeditstorefilenameasdefaultforthisdependency
+msgid "Store file name as default for this dependency"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditstorefilenameaspreferredforthisdependency
+msgid "Store file name as preferred for this dependency"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
 msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
@@ -12150,6 +12159,10 @@ msgstr "Irmão"
 #: lazarusidestrconsts.lissimplesyntax
 msgid "Simple Syntax"
 msgstr "Sintaxe Simples"
+
+#: lazarusidestrconsts.lisskipfile
+msgid "Skip file"
+msgstr ""
 
 #: lazarusidestrconsts.lisskipfileandcontinueloading
 msgid "Skip file and continue loading"

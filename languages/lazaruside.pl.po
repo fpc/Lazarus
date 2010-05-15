@@ -4023,6 +4023,7 @@ msgid "Follow cursor"
 msgstr ""
 
 #: lazarusidestrconsts.liscein
+msgctxt "lazarusidestrconsts.liscein"
 msgid "%s in %s"
 msgstr ""
 
@@ -10131,8 +10132,8 @@ msgstr "Zastosuj zmiany"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Wywołaj procedurę %sRegister%s bieżącego modułu"
 
-#: lazarusidestrconsts.lispckeditcleardependencydefaultfilename
-msgid "Clear dependency filename"
+#: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
+msgid "Clear default/preferred filename of dependency"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditcompile
@@ -10161,6 +10162,10 @@ msgstr "Opcje kompilatora"
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
 msgid "Create Makefile"
 msgstr "Utwórz Makefile"
+
+#: lazarusidestrconsts.lispckeditdefault
+msgid "%s, default: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditdependencyproperties
 msgid "Dependency Properties"
@@ -10323,8 +10328,12 @@ msgstr "Chcesz zapisać zmiany?"
 msgid "Save package"
 msgstr "Zapisz pakiet"
 
-#: lazarusidestrconsts.lispckeditsetdependencydefaultfilename
-msgid "Store dependency filename"
+#: lazarusidestrconsts.lispckeditstorefilenameasdefaultforthisdependency
+msgid "Store file name as default for this dependency"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditstorefilenameaspreferredforthisdependency
+msgid "Store file name as preferred for this dependency"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
@@ -12143,6 +12152,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lissimplesyntax
 msgid "Simple Syntax"
+msgstr ""
+
+#: lazarusidestrconsts.lisskipfile
+msgid "Skip file"
 msgstr ""
 
 #: lazarusidestrconsts.lisskipfileandcontinueloading

@@ -37,6 +37,10 @@ msgstr "Blok"
 msgid "Brackets"
 msgstr "Nawiasy"
 
+#: syneditstrconst.syns_attrcaselabel
+msgid "Case label"
+msgstr ""
+
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
 msgstr ""

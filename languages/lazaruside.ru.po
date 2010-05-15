@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-14 01:56+0300\n"
+"PO-Revision-Date: 2010-05-16 00:01+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3293,7 +3293,7 @@ msgstr "Прервать все"
 
 #: lazarusidestrconsts.lisabortallloading
 msgid "Abort all loading"
-msgstr "Прервать все загрузки"
+msgstr "Прервать всю загрузку"
 
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
@@ -4026,6 +4026,7 @@ msgid "Follow cursor"
 msgstr "Следовать за курсором"
 
 #: lazarusidestrconsts.liscein
+msgctxt "lazarusidestrconsts.liscein"
 msgid "%s in %s"
 msgstr "%s в %s"
 
@@ -10129,9 +10130,9 @@ msgstr "Применить"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Вызвать процедуру %sRegister%s выбранного модуля"
 
-#: lazarusidestrconsts.lispckeditcleardependencydefaultfilename
-msgid "Clear dependency filename"
-msgstr "Очистить имя файла зависимости"
+#: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
+msgid "Clear default/preferred filename of dependency"
+msgstr "Очистить выбранное имя файла зависимости"
 
 #: lazarusidestrconsts.lispckeditcompile
 msgctxt "lazarusidestrconsts.lispckeditcompile"
@@ -10159,6 +10160,10 @@ msgstr "Параметры компилятора"
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
 msgid "Create Makefile"
 msgstr "Создать Makefile"
+
+#: lazarusidestrconsts.lispckeditdefault
+msgid "%s, default: %s"
+msgstr "%s, по умолчанию: %s"
 
 #: lazarusidestrconsts.lispckeditdependencyproperties
 msgid "Dependency Properties"
@@ -10321,9 +10326,13 @@ msgstr "Сохранить изменения?"
 msgid "Save package"
 msgstr "Сохранить пакет"
 
-#: lazarusidestrconsts.lispckeditsetdependencydefaultfilename
-msgid "Store dependency filename"
-msgstr "Записать имя файла зависимости"
+#: lazarusidestrconsts.lispckeditstorefilenameasdefaultforthisdependency
+msgid "Store file name as default for this dependency"
+msgstr "Сохранить как имя файла по умолчанию для этой зависимости"
+
+#: lazarusidestrconsts.lispckeditstorefilenameaspreferredforthisdependency
+msgid "Store file name as preferred for this dependency"
+msgstr "Сохранить как предпочтительное имя файла для этой зависимости"
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
 msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
@@ -12141,6 +12150,10 @@ msgstr "Сосед"
 #: lazarusidestrconsts.lissimplesyntax
 msgid "Simple Syntax"
 msgstr "Простой синтаксис"
+
+#: lazarusidestrconsts.lisskipfile
+msgid "Skip file"
+msgstr "Пропустить файл"
 
 #: lazarusidestrconsts.lisskipfileandcontinueloading
 msgid "Skip file and continue loading"
