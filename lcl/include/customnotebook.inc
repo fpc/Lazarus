@@ -395,9 +395,9 @@ end;
 function TCustomNotebook.GetActivePageComponent: TCustomPage;
 begin
   if (FPageIndex >= 0) and (FPageIndex < PageCount) then
-    Result:=Page[FPageIndex]
+    Result := Page[FPageIndex]
   else
-    Result:=nil;
+    Result := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -937,6 +937,7 @@ begin
   //DebugLn('[TCustomNotebook.DoSendPageIndex] B ',dbgsName(Self),' PageIndex=',dbgs(fPageIndex));
   {$ENDIF}
   ShowCurrentPage;
+  FPageIndexOnLastChange := FPageIndex;
   TWSCustomNotebookClass(WidgetSetClass).SetPageIndex(Self, FPageIndex);
   {$IFDEF NOTEBOOK_DEBUG}
   //DebugLn('[TCustomNotebook.DoSendPageIndex] END ',dbgs(FPageIndex));
