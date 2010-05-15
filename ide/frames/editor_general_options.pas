@@ -54,6 +54,7 @@ type
     EndKeyJumpsToNearestStartCheckBox: TCheckBox;
     KeepCursorXCheckBox: TCheckBox;
     AutoIndentLink: TLabel;
+    CenterLabel:TLabel;
     OverwriteBlockCheckBox: TCheckBox;
     PersistentCursorCheckBox: TCheckBox;
     AlwaysVisibleCursorCheckBox: TCheckBox;
