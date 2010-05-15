@@ -320,7 +320,7 @@ end;
 {$IFDEF DARWIN}
 begin
   Result := True;
-  Shell('Open ' + APath);
+  Shell('open ' + APath);
 end;
 {$ELSE}
 var
