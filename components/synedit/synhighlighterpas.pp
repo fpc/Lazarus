@@ -2053,8 +2053,8 @@ begin
   fSymbolAttri := TSynHighlighterAttributes.Create(SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   AddAttribute(fSymbolAttri);
   FCaseLabelAttri := TSynHighlighterAttributes.Create(SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
-  AddAttribute(FCaseLabelAttri);
   FCaseLabelAttri.Features := FCaseLabelAttri.Features + [hafStyleMask];
+  AddAttribute(FCaseLabelAttri);
   FCurCaseLabelAttri := TSynHighlighterAttributes.Create(SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
   {$IFDEF SYN_LAZARUS}
   fDirectiveAttri := TSynHighlighterAttributes.Create(SYNS_AttrDirective, SYNS_XML_AttrDirective);

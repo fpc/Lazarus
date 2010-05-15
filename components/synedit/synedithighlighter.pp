@@ -92,7 +92,6 @@ type
   private
     fBackground: TColor;
     fBackgroundDefault: TColor;                                                 //mh 2000-10-08
-    FFeature: TSynHighlighterAttrFeatures;
     FFeatures: TSynHighlighterAttrFeatures;
     fForeground: TColor;
     fForegroundDefault: TColor;                                                 //mh 2000-10-08
@@ -144,7 +143,7 @@ type
     property Name: string read fName;
     property StoredName: string read FStoredName write FStoredName;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
-    property Features: TSynHighlighterAttrFeatures read FFeatures write FFeature;
+    property Features: TSynHighlighterAttrFeatures read FFeatures write FFeatures;
   published
     property Background: TColor read fBackground write SetBackground
       stored GetBackgroundColorStored;                                          //mh 2000-10-08
@@ -520,6 +519,7 @@ begin
       bChanged := TRUE;
     end;
     {$ENDIF}
+    FFeatures := src.FFeatures;
     if bChanged then
       Changed;
   end else
