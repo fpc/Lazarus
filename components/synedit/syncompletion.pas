@@ -522,9 +522,9 @@ begin
       for i := 1 to NbLinesInWindow do
         SelectNext;
     VK_END:
-      if ssCtrl in Shift then Position := ItemList.count - 1;
+      Position := ItemList.count - 1;
     VK_HOME:
-      if ssCtrl in Shift then Position := 0;
+      Position := 0;
     VK_UP:
       if ssCtrl in Shift then
         Position := 0
