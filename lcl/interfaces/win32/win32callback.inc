@@ -246,7 +246,7 @@ var
 
   function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
   const
-    ShowFlags: array[Boolean] of DWord = (SWP_HIDEWINDOW, SWP_SHOWWINDOW);
+    ShowFlags: array[Boolean] of DWord = (SWP_HIDEWINDOW or SWP_NOZORDER, SWP_SHOWWINDOW);
   var
     NoteBook: TCustomNotebook;
     PageIndex: Integer;
@@ -257,7 +257,7 @@ var
     PageIndex := NotebookPageRealToLCLIndex(Notebook, PageIndex);
     if PageIndex = -1 then exit;
     PageHandle := Notebook.CustomPage(PageIndex).Handle;
-    Windows.SetWindowPos(PageHandle, 0, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOZORDER or SWP_NOACTIVATE or ShowFlags[Showing]);
+    Windows.SetWindowPos(PageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or ShowFlags[Showing]);
     Windows.RedrawWindow(PageHandle, nil, 0, RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_ERASE);
     Result := PageIndex;
   end;
