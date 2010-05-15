@@ -4456,7 +4456,7 @@ var
 begin
   LinesInWin := EditorComponent.LinesInWindow;
   CurTopLine := EditorComponent.TopView;
-  Y := EditorComponent.TextIndexToViewPos(EditorComponent.CaretY);
+  Y := EditorComponent.TextIndexToViewPos(ACaret.Y);
   if UsesoftCenter then begin
     MinLines := Min(
       Min( Max(LinesInWin div SoftCenterFactor, SoftCenterMinimum),
