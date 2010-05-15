@@ -113,8 +113,8 @@ begin
 
   Canvas.Pen.Width := Width;
   Canvas.Pen.EndCap:= pecFlat;
-  //AliasMode := Canvas.AntialiasingMode;
-  //Canvas.AntialiasingMode:=amOff;
+  AliasMode := Canvas.AntialiasingMode;
+  Canvas.AntialiasingMode:=amOff;
 
   rcLine := AClip;
   rcLine.Left := rcLine.Left + Width div 2;
@@ -140,7 +140,7 @@ begin
         end;
     end;
   end;
-  //Canvas.AntialiasingMode := AliasMode;
+  Canvas.AntialiasingMode := AliasMode;
 end;
 
 end.
