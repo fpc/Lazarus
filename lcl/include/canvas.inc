@@ -168,14 +168,13 @@ procedure TCanvas.RealizeAntialiasing;
 begin
   if HandleAllocated then
   begin
-    Changing;
+    // do not call Changed, the content has not changed
     case FAntialiasingMode of
       amOn: WidgetSet.DCSetAntialiasing(FHandle, True);
       amOff: WidgetSet.DCSetAntialiasing(FHandle, False);
     else
       WidgetSet.DCSetAntialiasing(FHandle, Boolean(WidgetSet.GetLCLCapability(lcAntialiasingEnabledByDefault)) )
     end;
-    Changed;
   end;
 end;
 
