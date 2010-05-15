@@ -245,9 +245,11 @@ var
   OrgCharCode: word; // used in WM_CHAR handling
 
   function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
+  const
+    ShowFlags: array[Boolean] of DWord = (SWP_HIDEWINDOW, SWP_SHOWWINDOW);
   var
     NoteBook: TCustomNotebook;
-    PageIndex, Flags: Integer;
+    PageIndex: Integer;
     PageHandle: HWND;
   begin
     Notebook := GetWin32WindowInfo(NotebookHandle)^.WinControl as TCustomNotebook;
@@ -255,11 +257,7 @@ var
     PageIndex := NotebookPageRealToLCLIndex(Notebook, PageIndex);
     if PageIndex = -1 then exit;
     PageHandle := Notebook.CustomPage(PageIndex).Handle;
-    if Showing then
-      Flags := SW_SHOW
-    else
-      Flags := SW_HIDE;
-    Windows.ShowWindow(PageHandle, Flags);
+    Windows.SetWindowPos(PageHandle, 0, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOZORDER or SWP_NOACTIVATE or ShowFlags[Showing]);
     Windows.RedrawWindow(PageHandle, nil, 0, RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_ERASE);
     Result := PageIndex;
   end;
