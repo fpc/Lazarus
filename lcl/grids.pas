@@ -796,7 +796,7 @@ type
     procedure CalcFocusRect(var ARect: TRect);
     function  CanEditShow: Boolean; virtual;
     function  CanGridAcceptKey(Key: Word; Shift: TShiftState): Boolean; virtual;
-    procedure CellClick(const aCol,aRow: Integer); virtual;
+    procedure CellClick(const aCol,aRow: Integer; const Button:TMouseButton); virtual;
     procedure CheckLimits(var aCol,aRow: Integer);
     procedure CheckLimitsWithError(const aCol, aRow: Integer);
     procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
@@ -1113,7 +1113,7 @@ type
   protected
     FGrid: TVirtualGrid;
     procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); virtual;
-    procedure CellClick(const aCol,aRow: Integer); override;
+    procedure CellClick(const aCol,aRow: Integer; const Button:TMouseButton); override;
     procedure ColRowDeleted(IsColumn: Boolean; index: Integer); override;
     procedure ColRowExchanged(IsColumn: Boolean; index,WithIndex: Integer); override;
     procedure ColRowInserted(IsColumn: boolean; index: integer); override;
@@ -5469,14 +5469,14 @@ begin
 
     gsNormal:
       if not FixedGrid then
-        CellClick(cur.x, cur.y);
+        CellClick(cur.x, cur.y, Button);
 
     gsSelecting:
       begin
         if SelectActive then
           MoveExtend(False, Cur.x, Cur.y)
         else
-          CellClick(cur.x, cur.y);
+          CellClick(cur.x, cur.y, Button);
       end;
 
     gsColMoving:
@@ -6329,7 +6329,7 @@ begin
   }
 end;
 
-procedure TCustomGrid.CellClick(const aCol, aRow: Integer);
+procedure TCustomGrid.CellClick(const aCol, aRow: Integer; const Button:TMouseButton);
 begin
 end;
 
@@ -8408,9 +8408,9 @@ begin
   //
 end;
 
-procedure TCustomDrawGrid.CellClick(const ACol, ARow: Integer);
+procedure TCustomDrawGrid.CellClick(const ACol, ARow: Integer; const Button:TMouseButton);
 begin
-  if CellNeedsCheckboxBitmaps(ACol, ARow) then
+  if (Button=mbLeft) and CellNeedsCheckboxBitmaps(ACol, ARow) then
     ToggleCheckbox;
 end;
 

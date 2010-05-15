@@ -362,7 +362,7 @@ type
     procedure AddAutomaticColumns;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
     procedure BeginLayout;
-    procedure CellClick(const aCol,aRow: Integer); override;
+    procedure CellClick(const aCol,aRow: Integer; const Button:TMouseButton); override;
     procedure InvalidateSizes;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); override;
     function  ColumnEditorStyle(aCol: Integer; F: TField): TColumnButtonStyle;
@@ -2262,8 +2262,12 @@ begin
   {$ifdef dbgDBGrid}DebugLn('DBGrid.EditorDoGetValue FIN');{$endif}
 end;
 
-procedure TCustomDBGrid.CellClick(const aCol, aRow: Integer);
+procedure TCustomDBGrid.CellClick(const aCol, aRow: Integer; const Button:TMouseButton);
 begin
+
+  if Button<>mbLeft then
+    exit;
+
   if (aCol>=FirstGridColumn)and(aRow>=FixedRows) then
   begin
     if ColumnEditorStyle(ACol, SelectedField) = cbsCheckboxColumn then begin
