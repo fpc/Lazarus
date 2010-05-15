@@ -265,6 +265,7 @@ type
     FMaxVersion: TPkgVersion;
     FMinVersion: TPkgVersion;
     FPackageName: string;
+    FPreferDefaultFilename: boolean;
     FRemoved: boolean;
     FRequiredPackage: TLazPackage;
     procedure SetFlags(const AValue: TPkgDependencyFlags);
@@ -310,6 +311,7 @@ type
     procedure MoveDownInList(var FirstDependency: TPkgDependency;
       ListType: TPkgDependencyList);
     function MakeFilenameRelativeToOwner(const AFilename: string): string;
+    function FindDefaultFilename: string;
   public
     property PackageName: string read FPackageName write SetPackageName;
     property Flags: TPkgDependencyFlags read FFlags write SetFlags;
@@ -322,6 +324,7 @@ type
     property HoldPackage: boolean read FHoldPackage write SetHoldPackage;
     property MarkerFlags: TPKgMarkerFlags read FMarkerFlags write FMarkerFlags;
     property DefaultFilename: string read FDefaultFilename write FDefaultFilename;
+    property PreferDefaultFilename: boolean read FPreferDefaultFilename write FPreferDefaultFilename;
   end;
   PPkgDependency = ^TPkgDependency;
   
@@ -718,6 +721,7 @@ type
     procedure AddUsedByDependency(Dependency: TPkgDependency);
     procedure RemoveUsedByDependency(Dependency: TPkgDependency);
     function UsedByDepByIndex(Index: integer): TPkgDependency;
+    function FindUsedByDepPrefer(Ignore: TPkgDependency): TPkgDependency;
     // provides
     function ProvidesPackage(const AName: string): boolean;
     // ID
@@ -1745,6 +1749,8 @@ begin
   FFlags:=[];
   FMaxVersion.Clear;
   FMinVersion.Clear;
+  FDefaultFilename:='';
+  FPreferDefaultFilename:=false;
 end;
 
 procedure TPkgDependency.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -1774,6 +1780,7 @@ begin
   if XMLConfig.GetValue(Path+'MinVersion/Valid',false) then
     Include(FFlags,pdfMinVersion);
   FDefaultFilename:=LoadFilename('DefaultFilename/Value');
+  PreferDefaultFilename:=XMLConfig.GetValue(Path+'DefaultFilename/Prefer',false);
 end;
 
 procedure TPkgDependency.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -1799,6 +1806,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'MaxVersion/Valid',pdfMaxVersion in FFlags,false);
   XMLConfig.SetDeleteValue(Path+'MinVersion/Valid',pdfMinVersion in FFlags,false);
   SaveFilename('DefaultFilename/Value',FDefaultFilename);
+  XMLConfig.SetDeleteValue(Path+'DefaultFilename/Prefer',PreferDefaultFilename,false);
 end;
 
 function TPkgDependency.MakeSense: boolean;
@@ -1982,6 +1990,28 @@ begin
     if BaseDir<>'' then
       Result:=CreateRelativePath(Result,BaseDir);
   end;
+end;
+
+function TPkgDependency.FindDefaultFilename: string;
+var
+  AFilename: String;
+  CurDir: String;
+begin
+  Result:='';
+  AFilename:=TrimFilename(DefaultFilename);
+  if (CompareFileExt(AFilename,'lpk')<>0)
+  or (SysUtils.CompareText(ExtractFileNameOnly(AFilename),PackageName)<>0)
+  then
+    exit;
+  if not FilenameIsAbsolute(AFilename) then begin
+    CurDir:=GetDependencyOwnerDirectory(Self);
+    if (CurDir<>'') then
+      AFilename:=AppendPathDelim(CurDir)+AFilename;
+  end;
+  if not FilenameIsAbsolute(AFilename) then exit;
+  AFilename:=FindDiskFileCaseInsensitive(AFilename);
+  if not FileExistsCached(AFilename) then exit;
+  Result:=AFilename;
 end;
 
 { TLazPackage }
@@ -2887,6 +2917,18 @@ end;
 function TLazPackage.UsedByDepByIndex(Index: integer): TPkgDependency;
 begin
   Result:=GetDependencyWithIndex(FFirstUsedByDependency,pdlUsedBy,Index);
+end;
+
+function TLazPackage.FindUsedByDepPrefer(Ignore: TPkgDependency
+  ): TPkgDependency;
+begin
+  Result:=FFirstUsedByDependency;
+  while (Result<>nil) do begin
+    if Result.PreferDefaultFilename
+    and (Result<>Ignore) then
+      exit;
+    Result:=Result.NextUsedByDependency;
+  end;
 end;
 
 function TLazPackage.ProvidesPackage(const AName: string): boolean;

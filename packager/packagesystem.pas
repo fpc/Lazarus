@@ -447,6 +447,7 @@ var
   NewPackage: TLazPackage;
   XMLConfig: TXMLConfig;
   Code: TCodeBuffer;
+  OldPackage: TLazPackage;
 begin
   NewPackage:=nil;
   XMLConfig:=nil;
@@ -483,7 +484,13 @@ begin
     if SysUtils.CompareText(PkgLink.Name,NewPackage.Name)<>0 then exit;
     // ok
     Result:=mrOk;
-    AddPackage(NewPackage);
+    Dependency.RequiredPackage:=NewPackage;
+    Dependency.LoadPackageResult:=lprSuccess;
+    OldPackage:=FindAPackageWithName(NewPackage.Name,NewPackage);
+    if OldPackage=nil then
+      AddPackage(NewPackage)
+    else
+      ReplacePackage(OldPackage,NewPackage);
   finally
     if Result<>mrOk then
       NewPackage.Free;
@@ -740,7 +747,7 @@ begin
   while Result<>nil do begin
     PriorNode:=FTree.FindPrecessor(Result);
     if (PriorNode=nil)
-    or (AnsiCompareText(PkgName,TLazPackage(PriorNode.Data).Name)<>0) then
+    or (SysUtils.CompareText(PkgName,TLazPackage(PriorNode.Data).Name)<>0) then
       break;
     Result:=PriorNode;
   end;
@@ -754,7 +761,7 @@ begin
   if ANode=nil then exit;
   NextNode:=FTree.FindSuccessor(ANode);
   if (NextNode=nil)
-  or (AnsiCompareText(TLazPackage(ANode.Data).Name,
+  or (SysUtils.CompareText(TLazPackage(ANode.Data).Name,
                       TLazPackage(NextNode.Data).Name)<>0)
   then exit;
   Result:=NextNode;
@@ -2376,7 +2383,7 @@ var
           exit;
         end;
         // check if a unit of Pkg1 has the same name as Pkg2
-        if AnsiCompareText(PkgFile1.Unit_Name,Pkg2.Name)=0 then begin
+        if SysUtils.CompareText(PkgFile1.Unit_Name,Pkg2.Name)=0 then begin
           File1:=PkgFile1;
           ConflictPkg:=Pkg2;
           Result:=true;
@@ -2603,7 +2610,7 @@ var
   OldPkgName: String;
 begin
   OldPkgName:=APackage.Name;
-  if (AnsiCompareText(OldPkgName,NewName)=0)
+  if (SysUtils.CompareText(OldPkgName,NewName)=0)
   and (APackage.Version.Compare(NewVersion)=0) then begin
     // ID does not change
     // -> just rename
@@ -3749,7 +3756,7 @@ end;
 function TLazPackageGraph.PackageCanBeReplaced(
   OldPackage, NewPackage: TLazPackage): boolean;
 begin
-  if AnsiCompareText(OldPackage.Name,NewPackage.Name)<>0 then
+  if SysUtils.CompareText(OldPackage.Name,NewPackage.Name)<>0 then
     RaiseException('TLazPackageGraph.PackageCanBeReplaced');
 
   Result:=true;
@@ -3879,79 +3886,97 @@ end;
 
 function TLazPackageGraph.OpenDependency(Dependency: TPkgDependency;
   ShowAbort: boolean): TLoadPackageResult;
+
+  procedure OpenFile(AFilename: string);
+  var
+    PkgLink: TPackageLink;
+  begin
+    PkgLink:=PkgLinks.AddUserLink(AFilename,Dependency.PackageName);
+    if (PkgLink<>nil) then begin
+      PkgLink.Reference;
+      if OpenDependencyWithPackageLink(Dependency,PkgLink,false)<>mrOk then
+        PkgLinks.RemoveLink(PkgLink);
+      PkgLink.Release;
+    end;
+  end;
+
 var
   ANode: TAVLTreeNode;
-  PkgLink: TPackageLink;
   CurDir: String;
   AFilename: String;
   MsgResult: TModalResult;
+  APackage: TLazPackage;
+  PreferredFilename: string;
+  PkgLink: TPackageLink;
 begin
   if Dependency.LoadPackageResult=lprUndefined then begin
+    //debugln(['TLazPackageGraph.OpenDependency ',Dependency.PackageName,' ',Dependency.DefaultFilename,' Prefer=',Dependency.PreferDefaultFilename]);
     BeginUpdate(false);
     // search compatible package in opened packages
     ANode:=FindNodeOfDependency(Dependency,fpfSearchEverywhere);
     if (ANode<>nil) then begin
-      Dependency.RequiredPackage:=TLazPackage(ANode.Data);
+      // there is already a package that fits name and version
+      APackage:=TLazPackage(ANode.Data);
+      Dependency.RequiredPackage:=APackage;
       Dependency.LoadPackageResult:=lprSuccess;
+    end;
+    // load preferred package
+    if (Dependency.DefaultFilename<>'') and Dependency.PreferDefaultFilename
+    then begin
+      PreferredFilename:=Dependency.FindDefaultFilename;
+      //debugln(['TLazPackageGraph.OpenDependency checking preferred Prefer=',PreferredFilename]);
+      if (PreferredFilename<>'')
+      and ((Dependency.RequiredPackage=nil)
+        or ((Dependency.RequiredPackage.FindUsedByDepPrefer(Dependency)=nil)
+            and (CompareFilenames(PreferredFilename,Dependency.RequiredPackage.Filename)<>0)))
+      then begin
+        OpenFile(PreferredFilename);
+      end;
     end;
     if Dependency.LoadPackageResult=lprUndefined then begin
       // no compatible package yet open
       Dependency.RequiredPackage:=nil;
       Dependency.LoadPackageResult:=lprNotFound;
-      if FindAPackageWithName(Dependency.PackageName,nil)=nil then begin
+      APackage:=FindAPackageWithName(Dependency.PackageName,nil);
+      if APackage=nil then begin
         // no package with same name open
         // -> try package links
         repeat
           PkgLink:=PkgLinks.FindLinkWithDependency(Dependency);
           if (PkgLink=nil) then break;
-          MsgResult:=OpenDependencyWithPackageLink(Dependency,PkgLink,ShowAbort);
-          if MsgResult=mrOk then break;
-          PkgLinks.RemoveLink(PkgLink,true);
+          PkgLink.Reference;
+          try
+            MsgResult:=OpenDependencyWithPackageLink(Dependency,PkgLink,ShowAbort);
+            if MsgResult=mrOk then break;
+            PkgLinks.RemoveLink(PkgLink);
+          finally
+            PkgLink.Release;
+          end;
         until MsgResult=mrAbort;
+        // try defaultfilename
         if (Dependency.LoadPackageResult=lprNotFound)
         and (Dependency.DefaultFilename<>'') then begin
-          // try defaultfilename
-          AFilename:=Dependency.DefaultFilename;
-          if (CompareFileExt(AFilename,'lpk')=0)
-          and (SysUtils.CompareText(
-                       ExtractFileNameOnly(AFilename),Dependency.PackageName)=0)
-          then begin
-            if not FilenameIsAbsolute(AFilename) then begin
-              CurDir:=GetDependencyOwnerDirectory(Dependency);
-              if (CurDir<>'') then
-                AFilename:=AppendPathDelim(CurDir)+AFilename;
-            end;
-            if FilenameIsAbsolute(AFilename) then begin
-              AFilename:=FindDiskFileCaseInsensitive(AFilename);
-              if FileExistsCached(AFilename) then begin
-                PkgLink:=PkgLinks.AddUserLink(AFilename,Dependency.PackageName);
-                if (PkgLink<>nil) then begin
-                  if OpenDependencyWithPackageLink(Dependency,PkgLink,false)<>mrOk then
-                    PkgLinks.RemoveLink(PkgLink,true);
-                end;
-              end;
-            end;
+          AFilename:=Dependency.FindDefaultFilename;
+          if AFilename<>'' then begin
+            OpenFile(AFilename);
           end;
         end;
+        // try in owner directory (some projects put all their packages into
+        //   one directory)
         if Dependency.LoadPackageResult=lprNotFound then begin
-          // try in owner directory (some projects put all their packages into
-          //   one directory)
           CurDir:=GetDependencyOwnerDirectory(Dependency);
           if (CurDir<>'') then begin
             AFilename:=FindDiskFileCaseInsensitive(
                          AppendPathDelim(CurDir)+Dependency.PackageName+'.lpk');
             if FileExistsCached(AFilename) then begin
-              PkgLink:=PkgLinks.AddUserLink(AFilename,Dependency.PackageName);
-              if (PkgLink<>nil) then begin
-                if OpenDependencyWithPackageLink(Dependency,PkgLink,false)<>mrOk then
-                  PkgLinks.RemoveLink(PkgLink,true);
-              end;
+              OpenFile(AFilename);
             end;
           end;
         end;
       end else begin
         // there is already a package with this name, but wrong version open
         // -> unable to load this dependency due to conflict
+        debugln(['TLazPackageGraph.OpenDependency another package with wrong version is already open: Dependency=',Dependency.AsString,' Pkg=',APackage.IDAsString]);
         Dependency.LoadPackageResult:=lprLoadError;
       end;
     end;

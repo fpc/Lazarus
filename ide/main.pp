@@ -9777,9 +9777,9 @@ begin
     if Result=mrAbort then exit;
   end;
   if not FileReadable then begin
-    Result:=QuestionDlg('Unable to read file',
-      'Unable to read file "'+AFilename+'".',
-      mtError,[mrCancel,'Skip file',mrAbort,'Abort all loading'],0);
+    Result:=QuestionDlg(lisUnableToReadFile,
+      Format(lisUnableToReadFilename, ['"', AFilename, '"']),
+      mtError, [mrCancel, lisSkipFile, mrAbort, lisAbortAllLoading], 0);
     exit;
   end;
 

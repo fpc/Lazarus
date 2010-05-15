@@ -508,6 +508,7 @@ resourcestring
   lisContinueWithoutLoadingForm = 'Continue without loading form';
   lisCancelLoadingUnit = 'Cancel loading unit';
   lisAbortAllLoading = 'Abort all loading';
+  lisSkipFile = 'Skip file';
   lisUnableToTransformBinaryComponentStreamOfTIntoText = 'Unable to transform '
     +'binary component stream of %s:T%s into text.';
   lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject = 'The file %s%s%s%'
@@ -3750,9 +3751,13 @@ resourcestring
   lisPckEditRemoveDependency = 'Remove dependency';
   lisPckEditMoveDependencyUp = 'Move dependency up';
   lisPckEditMoveDependencyDown = 'Move dependency down';
+  lisPckEditStoreFileNameAsDefaultForThisDependency = 'Store file name as '
+    +'default for this dependency';
+  lisPckEditStoreFileNameAsPreferredForThisDependency = 'Store file name as '
+    +'preferred for this dependency';
+  lisPckEditClearDefaultPreferredFilenameOfDependency = 'Clear default/'
+    +'preferred filename of dependency';
   lisPckEditReAddDependency = 'Re-Add dependency';
-  lisPckEditSetDependencyDefaultFilename = 'Store dependency filename';
-  lisPckEditClearDependencyDefaultFilename = 'Clear dependency filename';
   lisPckEditCompile = 'Compile';
   lisPckEditRecompileClean = 'Recompile clean';
   lisPckEditRecompileAllRequired = 'Recompile all required';
@@ -3812,6 +3817,7 @@ resourcestring
     +'these entries are not saved to the lpk file)';
   lisPckEditRemovedRequiredPackagesTheseEntriesAreNotSaved = 'Removed '
     +'required packages (these entries are not saved to the lpk file)';
+  lisPckEditDefault = '%s, default: %s';
   lisPckEditDependencyProperties = 'Dependency Properties';
   lisPckEditpackageNotSaved = 'package %s not saved';
   lisPckEditReadOnly = 'Read Only: %s';

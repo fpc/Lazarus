@@ -85,6 +85,7 @@ type
     FLastCheckValid: boolean;
     FNotFoundCount: integer;
     FOrigin: TPkgLinkOrigin;
+    fReferenceCount: integer;
     procedure SetFilename(const AValue: string);
     procedure SetOrigin(const AValue: TPkgLinkOrigin);
   public
@@ -92,6 +93,8 @@ type
     destructor Destroy; override;
     function MakeSense: boolean;
     function GetEffectiveFilename: string;
+    procedure Reference;
+    procedure Release;
   public
     property Origin: TPkgLinkOrigin read FOrigin write SetOrigin;
     property Filename: string read FFilename write SetFilename;
@@ -162,7 +165,7 @@ type
                               Origins: TPkgLinkOrigins = AllPkgLinkOrigins);
     function AddUserLink(APackage: TLazPackage): TPackageLink;
     function AddUserLink(const PkgFilename, PkgName: string): TPackageLink;
-    procedure RemoveLink(APackageID: TLazPackageID; FreeID: boolean);
+    procedure RemoveLink(APackageID: TLazPackageID);
   public
     property Modified: boolean read FModified write SetModified;
     property DependencyOwnerGetPkgFilename: TDependencyOwnerGetPkgFilename
@@ -269,7 +272,7 @@ end;
 
 destructor TPackageLink.Destroy;
 begin
-  //debugln('TPackageLink.Destroy ',IDAsString);
+  //debugln('TPackageLink.Destroy ',IDAsString,' ',dbgs(Pointer(Self)));
   //if Origin=ploGlobal then RaiseException('');
   inherited Destroy;
 end;
@@ -287,6 +290,18 @@ begin
   if (not FilenameIsAbsolute(Result))
   and (EnvironmentOptions.LazarusDirectory<>'') then
     Result:=TrimFilename(EnvironmentOptions.LazarusDirectory+PathDelim+Result);
+end;
+
+procedure TPackageLink.Reference;
+begin
+  inc(fReferenceCount);
+end;
+
+procedure TPackageLink.Release;
+begin
+  if fReferenceCount<=0 then RaiseGDBException('');
+  dec(fReferenceCount);
+  if fReferenceCount=0 then Free;
 end;
 
 { TPackageLinks }
@@ -437,6 +452,7 @@ begin
       if NewFilename='' then continue;
       
       NewPkgLink:=TPackageLink.Create;
+      NewPkgLink.Reference;
       NewPkgLink.Origin:=ploGlobal;
       NewPkgLink.Name:=NewPkgName;
       NewPkgLink.Version.Assign(PkgVersion);
@@ -453,7 +469,7 @@ begin
       if NewPkgLink.MakeSense then
         FGlobalLinks.Add(NewPkgLink)
       else
-        NewPkgLink.Free;
+        NewPkgLink.Release;
       
     until FindNextUTF8(FileInfo)<>0;
     //WriteLinkTree(FGlobalLinks);
@@ -501,6 +517,7 @@ begin
     for i:=1 to LinkCount do begin
       ItemPath:=Path+'Item'+IntToStr(i)+'/';
       NewPkgLink:=TPackageLink.Create;
+      NewPkgLink.Reference;
       NewPkgLink.Origin:=ploUser;
       NewPkgLink.Name:=XMLConfig.GetValue(ItemPath+'Name/Value','');
       PkgVersionLoadFromXMLConfig(NewPkgLink.Version,XMLConfig,ItemPath+'Version/',
@@ -532,7 +549,7 @@ begin
         FUserLinksSortID.Add(NewPkgLink);
         FUserLinksSortFile.Add(NewPkgLink);
       end else
-        NewPkgLink.Free;
+        NewPkgLink.Release;
     end;
     XMLConfig.Modified:=false;
     XMLConfig.Free;
@@ -574,11 +591,12 @@ begin
       NewPkgLink.GetEffectiveFilename)=0
     then begin
       // 2 links to the same file -> delete the older
-      //debugln('TPackageLinks.RemoveOldUserLinks Newer=',NewPkgLink.IDAsString,
-      // ' Older=',OldPkgLink.IDAsString);
-      FUserLinksSortID.Remove(OldPkgLink);
-      FUserLinksSortFile.Remove(OldPkgLink);
-      OldPkgLink.Free;
+      debugln('TPackageLinks.RemoveOldUserLinks',
+       ' Newer=',NewPkgLink.IDAsString,'=',dbgs(Pointer(NewPkgLink)),
+       ' Older=',OldPkgLink.IDAsString,'=',dbgs(Pointer(OldPkgLink)));
+      FUserLinksSortID.RemovePointer(OldPkgLink);
+      FUserLinksSortFile.RemovePointer(OldPkgLink);
+      OldPkgLink.Release;
     end;
     ANode:=NextNode;
   end;
@@ -630,6 +648,7 @@ begin
       ItemPath:=Path+'Item'+IntToStr(i)+'/';
       CurPkgLink:=TPackageLink(ANode.Data);
       XMLConfig.SetDeleteValue(ItemPath+'Name/Value',CurPkgLink.Name,'');
+      //debugln(['TPackageLinks.SaveUserLinks ',CurPkgLink.Name,' ',dbgs(Pointer(CurPkgLink))]);
       PkgVersionSaveToXMLConfig(CurPkgLink.Version,XMLConfig,ItemPath+'Version/');
 
       // save package files in lazarus directory relative
@@ -822,10 +841,11 @@ begin
       Result:=OldLink;
       exit;
     end;
-    RemoveLink(APackage,false);
+    RemoveLink(APackage);
   end;
   // add user link
   NewLink:=TPackageLink.Create;
+  NewLink.Reference;
   NewLink.AssignID(APackage);
   NewLink.Filename:=APackage.Filename;
   if NewLink.MakeSense then begin
@@ -833,7 +853,7 @@ begin
     FUserLinksSortFile.Add(NewLink);
     Modified:=true;
   end else begin
-    NewLink.Free;
+    NewLink.Release;
     NewLink:=nil;
   end;
   EndUpdate;
@@ -858,6 +878,7 @@ begin
   end;
   // add user link
   NewLink:=TPackageLink.Create;
+  NewLink.Reference;
   NewLink.Name:=PkgName;
   NewLink.Filename:=PkgFilename;
   if NewLink.MakeSense then begin
@@ -865,14 +886,14 @@ begin
     FUserLinksSortFile.Add(NewLink);
     Modified:=true;
   end else begin
-    NewLink.Free;
+    NewLink.Release;
     NewLink:=nil;
   end;
   EndUpdate;
   Result:=NewLink;
 end;
 
-procedure TPackageLinks.RemoveLink(APackageID: TLazPackageID; FreeID: boolean);
+procedure TPackageLinks.RemoveLink(APackageID: TLazPackageID);
 var
   ANode: TAVLTreeNode;
   OldLink: TPackageLink;
@@ -883,9 +904,8 @@ begin
   if ANode<>nil then begin
     OldLink:=TPackageLink(ANode.Data);
     FUserLinksSortID.Delete(ANode);
-    FUserLinksSortFile.Remove(OldLink);
-    if APackageID <> OldLink then
-      OldLink.Free;
+    FUserLinksSortFile.RemovePointer(OldLink);
+    OldLink.Release;
     Modified:=true;
   end;
   // remove from global links
@@ -893,12 +913,9 @@ begin
   if ANode<>nil then begin
     OldLink:=TPackageLink(ANode.Data);
     FGlobalLinks.Delete(ANode);
-    if APackageID <> OldLink then
-      OldLink.Free;
+    OldLink.Release;
     Modified:=true;
   end;
-  if FreeID then
-    APackageID.Free;
   EndUpdate;
 end;
 

@@ -158,7 +158,8 @@ type
     procedure MoveDependencyUpClick(Sender: TObject);
     procedure MoveFileDownMenuItemClick(Sender: TObject);
     procedure MoveFileUpMenuItemClick(Sender: TObject);
-    procedure SetDependencyFilenameMenuItemClick(Sender: TObject);
+    procedure SetDependencyDefaultFilenameMenuItemClick(Sender: TObject);
+    procedure SetDependencyPreferredFilenameMenuItemClick(Sender: TObject);
     procedure ClearDependencyFilenameMenuItemClick(Sender: TObject);
     procedure OpenFileMenuItemClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
@@ -188,6 +189,7 @@ type
     RemovedRequiredNode: TTreeNode;
     FPlugins: TStringList;
     FNeedUpdateAll: boolean;
+    procedure SetDependencyDefaultFilename(AsPreferred: boolean);
     procedure SetupComponents;
     procedure UpdateTitle;
     procedure UpdateButtons;
@@ -514,10 +516,13 @@ begin
       AddPopupMenuItem(lisPckEditMoveDependencyDown, @MoveDependencyDownClick,
                        (CurDependency.NextRequiresDependency<>nil)
                        and Writable);
-      AddPopupMenuItem(lisPckEditSetDependencyDefaultFilename,
-                       @SetDependencyFilenameMenuItemClick,
+      AddPopupMenuItem(lisPckEditStoreFileNameAsDefaultForThisDependency,
+                       @SetDependencyDefaultFilenameMenuItemClick,
                        Writable and (CurDependency.RequiredPackage<>nil));
-      AddPopupMenuItem(lisPckEditClearDependencyDefaultFilename,
+      AddPopupMenuItem(lisPckEditStoreFileNameAsPreferredForThisDependency,
+                       @SetDependencyPreferredFilenameMenuItemClick,
+                       Writable and (CurDependency.RequiredPackage<>nil));
+      AddPopupMenuItem(lisPckEditClearDefaultPreferredFilenameOfDependency,
                        @ClearDependencyFilenameMenuItemClick,
                        Writable and (CurDependency.DefaultFilename<>''));
     end else begin
@@ -640,23 +645,16 @@ begin
   DoMoveCurrentFile(-1);
 end;
 
-procedure TPackageEditorForm.SetDependencyFilenameMenuItemClick(Sender: TObject
-  );
-var
-  Removed: boolean;
-  CurDependency: TPkgDependency;
-  NewFilename: String;
+procedure TPackageEditorForm.SetDependencyDefaultFilenameMenuItemClick(
+  Sender: TObject);
 begin
-  CurDependency:=GetCurrentDependency(Removed);
-  if (CurDependency=nil) or Removed then exit;
-  if LazPackage.ReadOnly then exit;
-  if CurDependency.RequiredPackage=nil then exit;
-  NewFilename:=CurDependency.RequiredPackage.Filename;
-  if NewFilename=CurDependency.DefaultFilename then exit;
-  CurDependency.DefaultFilename:=NewFilename;
-  LazPackage.Modified:=true;
-  UpdateRequiredPkgs;
-  UpdateButtons;
+  SetDependencyDefaultFilename(false);
+end;
+
+procedure TPackageEditorForm.SetDependencyPreferredFilenameMenuItemClick(
+  Sender: TObject);
+begin
+  SetDependencyDefaultFilename(true);
 end;
 
 procedure TPackageEditorForm.ClearDependencyFilenameMenuItemClick(
@@ -671,6 +669,7 @@ begin
   if CurDependency.RequiredPackage=nil then exit;
   if CurDependency.DefaultFilename='' then exit;
   CurDependency.DefaultFilename:='';
+  CurDependency.PreferDefaultFilename:=false;
   LazPackage.Modified:=true;
   UpdateRequiredPkgs;
   UpdateButtons;
@@ -1464,6 +1463,27 @@ begin
   FilesTreeView.AnchorToNeighbour(akBottom,0,FilePropsGroupBox);
 end;
 
+procedure TPackageEditorForm.SetDependencyDefaultFilename(AsPreferred: boolean);
+var
+  NewFilename: String;
+  CurDependency: TPkgDependency;
+  Removed: boolean;
+begin
+  CurDependency:=GetCurrentDependency(Removed);
+  if (CurDependency=nil) or Removed then exit;
+  if LazPackage.ReadOnly then exit;
+  if CurDependency.RequiredPackage=nil then exit;
+  NewFilename:=CurDependency.RequiredPackage.Filename;
+  if (NewFilename=CurDependency.DefaultFilename)
+  and (CurDependency.PreferDefaultFilename=AsPreferred) then
+    exit;
+  CurDependency.DefaultFilename:=NewFilename;
+  CurDependency.PreferDefaultFilename:=AsPreferred;
+  LazPackage.Modified:=true;
+  UpdateRequiredPkgs;
+  UpdateButtons;
+end;
+
 procedure TPackageEditorForm.UpdateAll(Immediately: boolean);
 begin
   if LazPackage=nil then exit;
@@ -1608,7 +1628,7 @@ var
   CurNode: TTreeNode;
   CurDependency: TPkgDependency;
   NextNode: TTreeNode;
-  CurNodeText: String;
+  CurNodeText, aFilename: String;
 begin
   if LazPackage=nil then exit;
   FilesTreeView.BeginUpdate;
@@ -1620,10 +1640,14 @@ begin
     if CurNode=nil then
       CurNode:=FilesTreeView.Items.AddChild(RequiredPackagesNode,'');
     CurNodeText:=CurDependency.AsString;
-    if CurDependency.DefaultFilename<>'' then
-      CurNodeText:=CurNodeText+' in '
-                   +CurDependency.MakeFilenameRelativeToOwner(
+    if CurDependency.DefaultFilename<>'' then begin
+      aFilename:=CurDependency.MakeFilenameRelativeToOwner(
                                                  CurDependency.DefaultFilename);
+      if CurDependency.PreferDefaultFilename then
+        CurNodeText:=CurNodeText+' in '+aFilename // like the 'in' keyword the uses section
+      else
+        CurNodeText:=Format(lisPckEditDefault, [CurNodeText, aFilename]);
+    end;
     CurNode.Text:=CurNodeText;
     if CurDependency.LoadPackageResult=lprSuccess then
       CurNode.ImageIndex:=ImageIndexRequired
