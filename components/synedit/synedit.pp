@@ -1301,8 +1301,8 @@ begin
     SynDefaultFontHeight := -13;
     if Screen.Fonts.IndexOf(SynDefaultFontName) >= 0 then
       exit;
-    SynDefaultFontName   := '-adobe-courier-medium-r-normal-*-*-140-*-*-*-*-iso10646-1';
-    SynDefaultFontHeight := 12;
+    SynDefaultFontName   := '-misc-dejavu sans mono-medium-r-normal-*-*-90-*-*-*-*-iso10646-1';
+    SynDefaultFontHeight := 9;
     {$DEFINE SynDefaultFont}
   {$ENDIF}
   {$IFDEF LCLcarbon}
