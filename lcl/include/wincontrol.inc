@@ -4560,7 +4560,7 @@ procedure TWinControl.SetColor(Value: TColor);
 begin
   if Value=Color then exit;
   inherited SetColor(Value);
-  if FBrush <> nil then
+  if BrushCreated then
     FBrush.Color := Color;
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
@@ -4741,9 +4741,9 @@ end;
 
 procedure TWinControl.CreateBrush;
 begin
-  if FBrush<>nil then exit;
-  FBrush:=TBrush.Create;
-  FBrush.Color:=Color;
+  if BrushCreated then exit;
+  FBrush := TBrush.Create;
+  FBrush.Color := Color;
   // ToDo: ParentColor
 end;
 
@@ -6096,8 +6096,9 @@ end;
 ------------------------------------------------------------------------------}
 function TWinControl.GetBrush: TBrush;
 begin
-  if FBrush=nil then CreateBrush;
-  Result:=FBrush;
+  if not BrushCreated then
+    CreateBrush;
+  Result := FBrush;
 end;
 
 {------------------------------------------------------------------------------
@@ -6882,8 +6883,13 @@ procedure TWinControl.WMEraseBkgnd(var Message: TLMEraseBkgnd);
 begin
   if (Message.DC <> 0) and (wcfEraseBackground in FWinControlFlags) then
   begin
-    EraseBackground(Message.DC);
-    Message.Result := 1;
+    if Color = clDefault then
+      DefaultHandler(Message)
+    else
+    begin
+      EraseBackground(Message.DC);
+      Message.Result := 1;
+    end;
   end;
 end;
 
@@ -7415,7 +7421,7 @@ end;
 
 function TWinControl.BrushCreated: Boolean;
 begin
-  Result:=FBrush<>nil;
+  Result := FBrush <> nil;
 end;
 
 {------------------------------------------------------------------------------
