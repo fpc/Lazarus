@@ -558,6 +558,7 @@ class procedure TQtWSWinControl.SetColor(const AWinControl: TWinControl);
 var
   QColor: TQColor;
   Color: TColor;
+  IsDefault: Boolean;
   QtWidget: TQtWidget;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetColor') then
@@ -566,16 +567,27 @@ begin
   if AWinControl.Color = CLR_INVALID then exit;
 
   // Get the color numeric value (system colors are mapped to numeric colors depending on the widget style)
-  Color := ColorToRGB(AWinControl.Color);
-  
-  // Fill QColor
-  QColor_fromRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+  IsDefault := AWinControl.Color = clDefault;
+  if IsDefault then
+  begin
+    QtWidget := TQtWidget(AWinControl.Handle);
+    QtWidget.BeginUpdate;
+    QtWidget.SetDefaultColor;
+    QtWidget.EndUpdate;
+  end
+  else
+  begin
+    Color := ColorToRGB(AWinControl.Color);
 
-  // Set color of the widget to QColor
-  QtWidget := TQtWidget(AWinControl.Handle);
-  QtWidget.BeginUpdate;
-  QtWidget.SetColor(@QColor);
-  QtWidget.EndUpdate;
+    // Fill QColor
+    QColor_fromRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+
+    // Set color of the widget to QColor
+    QtWidget := TQtWidget(AWinControl.Handle);
+    QtWidget.BeginUpdate;
+    QtWidget.SetColor(@QColor);
+    QtWidget.EndUpdate;
+  end;
 end;
 
 {------------------------------------------------------------------------------

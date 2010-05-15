@@ -225,6 +225,7 @@ type
     procedure setAutoFillBackground(const AValue: Boolean);
     procedure setAttribute(const Attr: QtWidgetAttribute; const TurnOn: Boolean = True);
     procedure setBackgroundRole(const ARole: QPaletteColorRole);
+    procedure setDefaultColor; virtual;
     procedure setColor(const Value: PQColor); virtual;
     function getContextMenuPolicy: QtContextMenuPolicy; virtual;
     procedure setContextMenuPolicy(const AValue: QtContextMenuPolicy); virtual;
@@ -3432,6 +3433,11 @@ end;
 procedure TQtWidget.setBackgroundRole(const ARole: QPaletteColorRole);
 begin
   QWidget_setBackgroundRole(Widget, ARole);
+end;
+
+procedure TQtWidget.setDefaultColor;
+begin
+  setColor(@Palette.DefaultColor);
 end;
 
 procedure TQtWidget.setEnabled(p1: Boolean);
