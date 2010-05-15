@@ -1,146 +1,137 @@
 object LazConverterForm: TLazConverterForm
+  Left = 286
+  Height = 463
+  Top = 118
+  Width = 578
+  HorzScrollBar.Page = 577
+  VertScrollBar.Page = 462
   Caption = 'Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6'
   ClientHeight = 463
   ClientWidth = 578
   Constraints.MinHeight = 463
   Constraints.MinWidth = 578
   OnShow = Form1Show
-  PixelsPerInch = 96
   Position = poScreenCenter
-  HorzScrollBar.Page = 577
-  VertScrollBar.Page = 462
-  Left = 286
-  Height = 463
-  Top = 118
-  Width = 578
+  LCLVersion = '0.9.29'
   object Panel1: TPanel
+    Left = 0
+    Height = 200
+    Top = 0
+    Width = 578
     Align = alTop
-    BorderSpacing.OnChange = nil
     ClientHeight = 200
     ClientWidth = 578
     FullRepaint = False
     TabOrder = 0
-    Height = 200
-    Width = 578
     object Label1: TLabel
-      BorderSpacing.OnChange = nil
-      Caption = 'Path to your project:'
-      Color = clNone
       Left = 8
-      Height = 19
+      Height = 14
       Top = 16
-      Width = 168
+      Width = 102
+      Caption = 'Path to your project:'
+      ParentColor = False
     end
     object Label2: TLabel
-      BorderSpacing.OnChange = nil
-      Caption = 'Convert From:'
-      Color = clNone
       Left = 8
-      Height = 15
+      Height = 14
       Top = 64
-      Width = 159
+      Width = 71
+      Caption = 'Convert From:'
+      ParentColor = False
     end
     object Label3: TLabel
-      BorderSpacing.OnChange = nil
-      Caption = 'Convert To:'
-      Color = clNone
       Left = 216
-      Height = 15
+      Height = 14
       Top = 64
-      Width = 123
+      Width = 59
+      Caption = 'Convert To:'
+      ParentColor = False
     end
     object Label6: TLabel
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.OnChange = nil
-      Caption = 'Ready...'
-      Color = clNone
       Left = 8
-      Height = 17
+      Height = 14
       Top = 149
       Width = 559
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'Ready...'
+      ParentColor = False
     end
     object Edit1: TEdit
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.OnChange = nil
-      TabOrder = 0
       Left = 8
-      Height = 23
+      Height = 21
       Top = 32
       Width = 479
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 0
     end
     object Button1: TButton
-      Anchors = [akTop, akRight]
-      BorderSpacing.OnChange = nil
-      Caption = 'Path'
-      OnClick = Button1Click
-      TabOrder = 1
       Left = 496
       Height = 23
       Top = 32
       Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'Path'
+      OnClick = Button1Click
+      TabOrder = 1
     end
     object ComboBox1: TComboBox
-      BorderSpacing.OnChange = nil
-      MaxLength = 0
-      TabOrder = 2
       Left = 8
       Height = 21
       Top = 80
       Width = 200
+      ItemHeight = 13
+      TabOrder = 2
     end
     object ComboBox2: TComboBox
-      BorderSpacing.OnChange = nil
-      MaxLength = 0
-      TabOrder = 5
       Left = 216
       Height = 21
       Top = 80
       Width = 200
+      ItemHeight = 13
+      TabOrder = 5
     end
     object Button2: TButton
-      BorderSpacing.OnChange = nil
-      Caption = 'Search'
-      OnClick = Button2Click
-      TabOrder = 3
       Left = 8
       Height = 25
       Top = 112
       Width = 75
+      Caption = 'Search'
+      OnClick = Button2Click
+      TabOrder = 3
     end
     object Button3: TButton
-      BorderSpacing.OnChange = nil
-      Caption = 'Convert'
-      OnClick = Button3Click
-      TabOrder = 4
       Left = 88
       Height = 25
       Top = 112
       Width = 123
+      Caption = 'Convert'
+      OnClick = Button3Click
+      TabOrder = 4
     end
     object ProgressBar1: TProgressBar
-      Align = alBottom
-      BorderSpacing.OnChange = nil
-      Max = 100
-      TabOrder = 6
-      TabStop = True
       Left = 1
       Height = 17
       Top = 182
       Width = 576
+      Align = alBottom
+      TabOrder = 6
+      TabStop = True
     end
   end
   object FileListBox1: TFileListBox
-    Align = alClient
-    PopupMenu = PopupMenu1
-    TabOrder = 1
+    Left = 0
     Height = 263
     Top = 200
     Width = 578
+    Align = alClient
+    Directory = 'i:\FPC\Lazarus\examples\codepageconverter'
+    ItemHeight = 13
+    PopupMenu = PopupMenu1
+    TabOrder = 1
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
     Title = 'Select Directory'
     FilterIndex = 0
-    Title = 'Select Directory'
     left = 8
     top = 480
   end

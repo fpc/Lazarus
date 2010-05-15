@@ -22,10 +22,6 @@ msgstr "Ieškoti"
 msgid "Convert"
 msgstr "Konvertuoti"
 
-#: TLAZCONVERTERFORM.CAPTION
-msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
-msgstr "Koduotės konverteris LazConverter (PAS, LFM, LRS ir INC failams) v0.0.6"
-
 #: TLAZCONVERTERFORM.LABEL1.CAPTION
 msgid "Path to your project:"
 msgstr "Kelias iki jūsų projekto:"
@@ -41,6 +37,11 @@ msgstr "Konvertuoti į:"
 #: TLAZCONVERTERFORM.LABEL6.CAPTION
 msgid "Ready..."
 msgstr "Parengtyje..."
+
+#: TLAZCONVERTERFORM.LAZCONVERTERFORM.CAPTION
+msgctxt "TLAZCONVERTERFORM.LAZCONVERTERFORM.CAPTION"
+msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
+msgstr "Koduotės konverteris LazConverter (PAS, LFM, LRS ir INC failams) v0.0.6"
 
 #: TLAZCONVERTERFORM.MENUITEM1.CAPTION
 msgid "Remove from conversion"

@@ -2770,7 +2770,6 @@ examples/codepageconverter/languages/lazconverter.ru.po svneol=native#text/plain
 examples/codepageconverter/lazconverter.lpi svneol=native#text/plain
 examples/codepageconverter/lazconverter.lpr svneol=native#text/pascal
 examples/codepageconverter/mainunit.lfm svneol=native#text/plain
-examples/codepageconverter/mainunit.lrs svneol=native#text/pascal
 examples/codepageconverter/mainunit.lrt svneol=native#text/plain
 examples/codepageconverter/mainunit.pas svneol=native#text/pascal
 examples/codetools/jumptoimplementation/codetoolsexample1.pas svneol=native#text/plain

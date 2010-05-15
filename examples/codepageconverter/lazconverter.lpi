@@ -2,21 +2,26 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="6"/>
+    <Version Value="7"/>
     <General>
       <Flags>
         <SaveClosedFiles Value="False"/>
         <SaveOnlyProjectUnits Value="True"/>
+        <LRSInOutputDirectory Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
       <TargetFileExt Value=""/>
       <Title Value="lazconverter"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ResourceType Value="res"/>
+      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
+    <VersionInfo>
+      <StringTable Comments="" CompanyName="" FileDescription="" FileVersion="0.0.0.0" InternalName="" LegalCopyright="" LegalTrademarks="" OriginalFilename="" ProductName="" ProductVersion="0.0.0.0"/>
+    </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
       <DestinationDirectory Value="\home\barko\tempo\out\"/>
@@ -43,23 +48,25 @@
         <Filename Value="lazconverter.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="lazconverter"/>
-        <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
         <UsageCount Value="37"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit0>
       <Unit1>
         <Filename Value="mainunit.pas"/>
-        <ComponentName Value="LazConverterForm"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="LazConverterForm"/>
         <ResourceBaseClass Value="Form"/>
-        <ResourceFilename Value="mainunit.lrs"/>
         <UnitName Value="mainunit"/>
-        <CursorPos X="21" Y="42"/>
-        <TopLine Value="19"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="243"/>
+        <CursorPos X="57" Y="277"/>
         <UsageCount Value="37"/>
         <Loaded Value="True"/>
-        <SyntaxHighlighter Value="Delphi"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit1>
     </Units>
   </ProjectOptions>
@@ -86,6 +93,9 @@
       </Options>
     </Linking>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

@@ -13,10 +13,6 @@ msgstr ""
 msgid "Convert"
 msgstr ""
 
-#: TLAZCONVERTERFORM.CAPTION
-msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
-msgstr ""
-
 #: TLAZCONVERTERFORM.LABEL1.CAPTION
 msgid "Path to your project:"
 msgstr ""
@@ -31,6 +27,11 @@ msgstr ""
 
 #: TLAZCONVERTERFORM.LABEL6.CAPTION
 msgid "Ready..."
+msgstr ""
+
+#: TLAZCONVERTERFORM.LAZCONVERTERFORM.CAPTION
+msgctxt "TLAZCONVERTERFORM.LAZCONVERTERFORM.CAPTION"
+msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
 msgstr ""
 
 #: TLAZCONVERTERFORM.MENUITEM1.CAPTION

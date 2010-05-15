@@ -70,6 +70,7 @@ const msgdone = 'Searching done... press CONVERT button! Files: ';
 
 implementation
 
+{$R *.lfm}
 
 function replace (source: string; src, rep: string):string;
 begin
@@ -284,11 +285,6 @@ begin
  except end;
  CountFiles;
 end;
-
-initialization
-  {$I mainunit.lrs}
-
-finalization
 
 end.
 
