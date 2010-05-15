@@ -77,7 +77,9 @@ type
     lcApplicationWindow,        // Application has a special root window
     lcFormIcon,                 // Forms have icon
     lcModalWindow,              // native modal windows support
-    lcDragDockStartOnTitleClick // ability to start drag/dock events on title bar click
+    lcDragDockStartOnTitleClick,// ability to start drag/dock events on title bar click
+    lcAntialiasingEnabledByDefault
+                                // is amDontCare = amOn for the widgetset
   );
 
 type
