@@ -89,6 +89,7 @@ function GetTickStep: DWord;
 
 function FindDefaultBrowser(out ABrowser, AParams: String): Boolean;
 function OpenURL(AURL: String): Boolean;
+function OpenDocument(APath: String): Boolean;
 
 implementation
 
@@ -239,8 +240,8 @@ begin
   Result := ABrowser <> '';
 end;
 
-{$IFDEF Windows}
 function OpenURL(AURL: String): Boolean;
+{$IFDEF Windows}
 var
 {$IFDEF WinCE}
   Info: SHELLEXECUTEINFO;
@@ -274,7 +275,6 @@ begin
 end;
 {$ELSE}
 {$IFDEF DARWIN}
-function OpenURL(AURL: string): Boolean;
 var
   cf: CFStringRef;
   url: CFURLRef;
@@ -290,7 +290,6 @@ begin
   CFRelease(cf);
 end;
 {$ELSE}
-function OpenURL(AURL: String): Boolean;
 var
   ABrowser, AParams: String;
   BrowserProcess: TProcessUTF8;
@@ -307,6 +306,36 @@ begin
   finally
     BrowserProcess.Free;
   end;
+end;
+{$ENDIF}
+{$ENDIF}
+
+function OpenDocument(APath: String): Boolean;
+{$IFDEF Windows}
+begin
+  Result := OpenURL(APath);
+end;
+{$ELSE}
+{$IFDEF DARWIN}
+begin
+  Result := True;
+  Shell('Open ' + APath);
+end;
+{$ELSE}
+var
+  lApp: string;
+begin
+  Result := True;
+
+  if shell('which xdg-open') = 0 then       // Portland OSDL/FreeDesktop standard on Linux
+    lApp := 'xdg-open '
+  else if shell('which kfmclient') = 0 then // KDE command
+    lApp := 'kfmclient exec '
+  else if shell('which gnome-open') = 0 then// GNOME command
+    lApp := 'gnome-open '
+  else Exit(False);
+
+  shell(lApp + APath);
 end;
 {$ENDIF}
 {$ENDIF}
