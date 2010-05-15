@@ -5056,7 +5056,7 @@ procedure TLRTGrubber.Grub(Sender: TObject; const Instance: TPersistent;
   PropInfo: PPropInfo; var Content: string);
 var
   LRSWriter: TLRSObjectWriter;
-  Path: String;
+  Path, WriterRootPath: String;
 begin
   if not Assigned(Instance) then exit;
   if not Assigned(PropInfo) then exit;
@@ -5064,7 +5064,8 @@ begin
   Path:='';
   if Writer.Driver is TLRSObjectWriter then begin
     LRSWriter:=TLRSObjectWriter(Writer.Driver);
-    Path:=LRSWriter.GetStackPath(Writer.Root);
+    WriterRootPath:=LRSWriter.GetStackPath(Writer.Root);
+    Path:=Copy(WriterRootPath, 1, Pos('.',WriterRootPath))+Instance.GetNamePath+'.'+PropInfo^.Name;
   end else begin
     Path:=Instance.ClassName+'.'+PropInfo^.Name;
   end;
