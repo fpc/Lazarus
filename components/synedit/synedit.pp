@@ -365,7 +365,7 @@ type
     fLastMouseCaret: TPoint;  // Char; physical (screen)
     FLastMousePoint: TPoint;  // Pixel
     FChangedLinesStart: integer; // 1 based, 0 means invalid
-    FChangedLinesEnd: integer; // 1 based, 0 means invalid
+    FChangedLinesEnd: integer; // 1 based, 0 means invalid, -1 means rest of screen
     FBeautifier: TSynCustomBeautifier;
     FBeautifyStartLineIdx, FBeautifyEndLineIdx: Integer;
 
@@ -4604,7 +4604,7 @@ begin
     // FChangedLinesStart is also given to Markup.TextChanged; but it is not used there
     if (FChangedLinesStart<1) or (FChangedLinesStart>AIndex+1) then
       FChangedLinesStart:=AIndex+1;
-    FChangedLinesEnd := MaxInt; // Invalidate the rest of lines
+    FChangedLinesEnd := -1; // Invalidate the rest of lines
   end else begin
     ScanRanges;
     InvalidateLines(AIndex + 1, -1);
@@ -4626,7 +4626,7 @@ begin
   if PaintLock>0 then begin
     if (FChangedLinesStart<1) or (FChangedLinesStart>AIndex+1) then
       FChangedLinesStart:=AIndex+1;
-    if (FChangedLinesEnd<1) or (FChangedLinesEnd<AIndex+1) then
+    if (FChangedLinesEnd >= 0) and (FChangedLinesEnd<AIndex+1) then
       FChangedLinesEnd:=AIndex + 1 + MaX(ACount, 0);
   end else begin
     ScanRanges;
