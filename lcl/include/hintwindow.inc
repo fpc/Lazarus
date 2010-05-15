@@ -127,7 +127,7 @@ var
   Details: TThemedElementDetails;
 begin
   ARect := ClientRect;
-  if Color = clInfoBk then // draw using themes
+  if (Color = clInfoBk) or (Color = clDefault) then // draw using themes
   begin
     Details := ThemeServices.GetElementDetails(tttStandardLink);
     ThemeServices.DrawElement(Canvas.Handle, Details, ARect);
