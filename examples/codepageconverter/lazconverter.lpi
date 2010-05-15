@@ -9,11 +9,11 @@
         <SaveOnlyProjectUnits Value="True"/>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <TargetFileExt Value=""/>
       <Title Value="lazconverter"/>
       <ResourceType Value="res"/>
-      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <i18n>
       <EnableI18N Value="True"/>
@@ -48,10 +48,6 @@
         <Filename Value="lazconverter.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="lazconverter"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="37"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit0>
       <Unit1>
         <Filename Value="mainunit.pas"/>
@@ -59,14 +55,6 @@
         <ComponentName Value="LazConverterForm"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="mainunit"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="0"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="243"/>
-        <CursorPos X="57" Y="277"/>
-        <UsageCount Value="37"/>
-        <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit1>
     </Units>
   </ProjectOptions>
