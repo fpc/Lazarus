@@ -3436,6 +3436,7 @@ var
     SubTokenByteLen, SubCharLen, TokenCharLen : Integer;
     NextPhysPos : Integer;
     MarkupInfo : TSynSelectedColor;
+    CurTokenFrameStart, CurTokenFrameEnd: Integer;
   begin
     if CurPhysPos > LastCol then exit;
 
@@ -3464,6 +3465,8 @@ var
       nTokenByteLen := CharToByteLen(TokenCharLen);
     end;
 
+    CurTokenFrameStart := -1;
+    CurTokenFrameEnd := -1;
     if Assigned(attr) then
     begin
       DefaultFGCol := attr.Foreground;
@@ -3472,6 +3475,18 @@ var
       DefaultStyle := attr.Style;
       if DefaultBGCol = clNone then DefaultBGCol := colEditorBG;
       if DefaultFGCol = clNone then DefaultFGCol := Font.Color;
+      if attr.FrameColor <> clNone then begin
+        CurTokenFrameStart := PhysicalStartPos;
+        CurTokenFrameEnd := PhysicalStartPos + TokenCharLen - 1;
+        // force Paint
+        PaintHighlightToken(FALSE);
+        TokenAccu.Len := 0;
+        // Set Frame Boundaries
+        LastFSX := CurTokenFrameStart;
+        LastFEX := CurTokenFrameEnd;
+        FTextDrawer.FrameStartX := ScreenColumnToXValue(LastFSX);
+        FTextDrawer.FrameEndX := ScreenColumnToXValue(LastFEX+1);
+      end;
     end else
     begin
       DefaultFGCol := Font.Color;
@@ -3483,7 +3498,8 @@ var
     {TODO: cache NextPhysPos, and MarkupInfo between 2 calls }
     while (nTokenByteLen > 0) do begin
       // Calculate Token Sublen for current Markup
-      NextPhysPos := fMarkupManager.GetNextMarkupColAfterRowCol(FFoldedLinesView.TextIndex[CurLine]+1, PhysicalStartPos);
+      NextPhysPos := fMarkupManager.GetNextMarkupColAfterRowCol
+                       (FFoldedLinesView.TextIndex[CurLine]+1, PhysicalStartPos);
       if NextPhysPos < 1
       then SubCharLen := TokenCharLen
       else SubCharLen := NextPhysPos - PhysicalStartPos;
@@ -3512,18 +3528,37 @@ var
         else FG := DefaultBGCol;
       end;
 
-      if assigned(MarkupInfo) and
-         ((MarkupInfo.StartX <> LastFSX) or (MarkupInfo.EndX <> LastFEX)) and
-         ((TokenAccu.FC <> clNone) or (FC <> clNone))
+      if not assigned(MarkupInfo) then begin
+        if (CurTokenFrameEnd > 0) then begin
+          LastFEX := CurTokenFrameEnd;
+          FC := DefaultFCCol;
+        end;
+        FTextDrawer.FrameEndX := ScreenColumnToXValue(LastFEX+1);
+      end
+      else if ((MarkupInfo.StartX <> LastFSX) or (MarkupInfo.EndX <> LastFEX)) and
+              ((TokenAccu.FC <> clNone) or (FC <> clNone))
       then begin
         // force Paint
         PaintHighlightToken(FALSE);
         TokenAccu.Len := 0;
         // Set Frame Boundaries
         LastFSX := MarkupInfo.StartX;
+        if (CurTokenFrameStart = PhysicalStartPos) and (LastFSX < 1) then begin
+          LastFSX := CurTokenFrameStart;
+          FC := DefaultFCCol;
+        end;
         LastFEX := MarkupInfo.EndX;
-        FTextDrawer.FrameStartX := ScreenColumnToXValue(MarkupInfo.StartX);
-        FTextDrawer.FrameEndX := ScreenColumnToXValue(MarkupInfo.EndX+1);
+        if (CurTokenFrameEnd > 0) and (LastFEX < 1) then begin
+          LastFEX := CurTokenFrameEnd;
+          FC := DefaultFCCol;
+        end;
+        FTextDrawer.FrameStartX := ScreenColumnToXValue(LastFSX);
+        FTextDrawer.FrameEndX := ScreenColumnToXValue(LastFEX+1);
+      end;
+      if LastFEX + 1 = PhysicalStartPos then begin
+        // force Paint
+        PaintHighlightToken(FALSE);
+        TokenAccu.Len := 0;
       end;
 
       // Add to TokenAccu
