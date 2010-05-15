@@ -537,7 +537,7 @@ begin
         AFilename:=Dependency.MakeFilenameRelativeToOwner(
                                                     Dependency.DefaultFilename);
         if Dependency.PreferDefaultFilename then
-          NodeText:=NodeText+' in '+AFilename  // like the 'in' keyword the uses section
+          NodeText:=Format(lisCEIn, [NodeText,AFilename])  // like the 'in' keyword in the uses section
         else
           NodeText:=Format(lisPckEditDefault, [NodeText, AFilename]);
       end;
