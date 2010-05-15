@@ -121,8 +121,6 @@ var
 begin
   WakeMainThread := @OnWakeMainThread;
 
-  FOldFocusWidget := nil;
-
   {
     check whether this hook crashes on linux & darwin and why it is so
     we need this hook to catch release messages
@@ -220,6 +218,7 @@ procedure TQtWidgetSet.AppMinimize;
 var
   i: Integer;
   AForm: TCustomForm;
+  States: QtWindowStates;
 {$ENDIF}
 begin
   if (Application.MainForm <> nil) and (Application.MainForm.HandleAllocated) then
@@ -236,9 +235,11 @@ begin
         )
         and
         not (AForm.FormStyle in [fsMDIChild, fsSplash]) and
-        not (AForm.BorderStyle in [bsNone])
-      then
-        TQtMainWindow(AForm.Handle).ShowMinimized;
+        not (AForm.BorderStyle in [bsNone]) then
+      begin
+        States := TQtMainWindow(AForm.Handle).getWindowState;
+        TQtMainWindow(AForm.Handle).setWindowState(States or QtWindowMinimized);
+      end;
     end;
     {$ELSE}
     TQtMainWindow(Application.MainForm.Handle).ShowMinimized;
@@ -251,6 +252,7 @@ procedure TQtWidgetSet.AppRestore;
 var
   i: Integer;
   AForm: TCustomForm;
+  States: QtWindowStates;
 {$ENDIF}
 begin
   if (Application.MainForm <> nil) and (Application.MainForm.HandleAllocated) then
@@ -268,9 +270,11 @@ begin
         )
         and
         not (AForm.FormStyle in [fsMDIChild, fsSplash]) and
-        not (AForm.BorderStyle in [bsNone])
-      then
-        TQtMainWindow(AForm.Handle).ShowNormal;
+        not (AForm.BorderStyle in [bsNone]) then
+      begin
+        States := TQtMainWindow(AForm.Handle).getWindowState;
+        TQtMainWindow(AForm.Handle).setWindowState(States and not QtWindowMinimized);
+      end;
     end;
     {$ELSE}
     TQtMainWindow(Application.MainForm.Handle).ShowNormal;

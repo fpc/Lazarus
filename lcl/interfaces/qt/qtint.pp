@@ -65,8 +65,7 @@ type
     // global hooks
     FAppEvenFilterHook: QObject_hookH;
     FAppFocusChangedHook: QApplication_hookH;
-    
-    FOldFocusWidget: QWidgetH;
+
     FDockImage: QRubberBandH;
     FDragImageList: QWidgetH;
     FDragHotSpot: TPoint;
