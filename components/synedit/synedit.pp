@@ -1296,6 +1296,15 @@ begin
     SynDefaultFontHeight := 14;
     {$DEFINE SynDefaultFont}
   {$ENDIF}
+  {$IFDEF LCLgtk2}
+    SynDefaultFontName   := 'Courier New';
+    SynDefaultFontHeight := -13;
+    if Screen.Fonts.IndexOf(SynDefaultFontName) >= 0 then
+      exit;
+    SynDefaultFontName   := '-adobe-courier-medium-r-normal-*-*-140-*-*-*-*-iso10646-1';
+    SynDefaultFontHeight := 12;
+    {$DEFINE SynDefaultFont}
+  {$ENDIF}
   {$IFDEF LCLcarbon}
     SynDefaultFontName   := 'Monaco'; // Note: carbon is case sensitive
     SynDefaultFontHeight := 12;
@@ -1527,7 +1536,6 @@ end;
 
 constructor TCustomSynEdit.Create(AOwner: TComponent);
 begin
-  InitSynDefaultFont;
   inherited Create(AOwner);
   SetInline(True);
   ControlStyle:=ControlStyle+[csOwnedChildrenNotSelectable];
@@ -8593,6 +8601,7 @@ begin
 end;
 
 initialization
+  InitSynDefaultFont;
   SynDefaultBeautifier := TSynBeautifier.Create(Application);
   Register;
 
