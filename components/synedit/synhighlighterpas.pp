@@ -83,7 +83,8 @@ type
     // Detect if class/object is ended by ";" or "end;"
     rsAtClass,
     rsAfterClass,
-    rsAtClosingBracket // ')'
+    rsAtClosingBracket, // ')'
+    rsAtCaseLabel
   );
   TRangeStates = set of TRangeState;
 
@@ -254,6 +255,7 @@ type
     fIdentFuncTable: array[0..191] of TIdentFuncTableFunc;
     fTokenPos: Integer;// start of current token in fLine
     FTokenID: TtkTokenKind;
+    FTokenIsCaseLabel: Boolean;
     fStringAttri: TSynHighlighterAttributes;
     fNumberAttri: TSynHighlighterAttributes;
     fKeyAttri: TSynHighlighterAttributes;
@@ -262,6 +264,8 @@ type
     fCommentAttri: TSynHighlighterAttributes;
     fIdentifierAttri: TSynHighlighterAttributes;
     fSpaceAttri: TSynHighlighterAttributes;
+    FCaseLabelAttri: TSynHighlighterAttributes;
+    FCurCaseLabelAttri: TSynHighlighterAttributes;
     {$IFDEF SYN_LAZARUS}
     fDirectiveAttri: TSynHighlighterAttributes;
     FCompilerMode: TPascalCompilerMode;
@@ -504,6 +508,8 @@ type
       write fStringAttri;
     property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
       write fSymbolAttri;
+    property CaseLabelAttri: TSynHighlighterAttributes read FCaseLabelAttri
+      write FCaseLabelAttri;
     {$IFDEF SYN_LAZARUS}
     property DirectiveAttri: TSynHighlighterAttributes read fDirectiveAttri
       write fDirectiveAttri;
@@ -894,12 +900,17 @@ begin
       // Accidental start of block // End at next semicolon (usually same line)
       CodeFoldRange.Pop(false); // avoid minlevel
       CodeFoldRange.Add(Pointer(PtrInt(cfbtUses)), false);
-    end;
+    end
+    else
+    if (TopPascalCodeFoldBlockType = cfbtCase) then
+      fRange := fRange + [rsAtCaseLabel];
   end
   else Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func23: TtkTokenKind;
+var
+  tfb: TPascalCodeFoldBlockType;
 begin
   if KeyComp('End') then begin
     if ((fToIdent<2) or (fLine[fToIdent-1]<>'@'))
@@ -909,30 +920,34 @@ begin
         PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
       {$IFDEF SYN_LAZARUS}
       // there may be more than on block ending here
-      if TopPascalCodeFoldBlockType = cfbtRecord then begin
+      tfb := TopPascalCodeFoldBlockType;
+      if tfb = cfbtRecord then begin
         EndPascalCodeFoldBlock;
-      end else if TopPascalCodeFoldBlockType = cfbtUnit then begin
+      end else if tfb = cfbtUnit then begin
         EndPascalCodeFoldBlock;
-      end else if TopPascalCodeFoldBlockType = cfbtExcept then begin
+      end else if tfb = cfbtExcept then begin
         EndPascalCodeFoldBlock;
         if TopPascalCodeFoldBlockType = cfbtTry then
           EndPascalCodeFoldBlock;
-      end else if TopPascalCodeFoldBlockType = cfbtTry then begin
+      end else if tfb = cfbtTry then begin
           EndPascalCodeFoldBlock;
-      end else if TopPascalCodeFoldBlockType in [cfbtTopBeginEnd, cfbtAsm] then begin
+      end else if tfb in [cfbtTopBeginEnd, cfbtAsm] then begin
         EndPascalCodeFoldBlock;
         if TopPascalCodeFoldBlockType in [cfbtProcedure] then
           EndPascalCodeFoldBlock;
         if TopPascalCodeFoldBlockType = cfbtProgram then
           EndPascalCodeFoldBlock;
-      end else if TopPascalCodeFoldBlockType in [cfbtBeginEnd, cfbtCase] then begin
+      end else if tfb in [cfbtCase] then begin
         EndPascalCodeFoldBlock;
-      end else if TopPascalCodeFoldBlockType = cfbtUnitSection then begin
+        fRange := fRange - [rsAtCaseLabel];
+      end else if tfb in [cfbtBeginEnd] then begin
+        EndPascalCodeFoldBlock;
+      end else if tfb = cfbtUnitSection then begin
         EndPascalCodeFoldBlockLastLine;
         if TopPascalCodeFoldBlockType = cfbtUnit then // "Unit".."end."
           EndPascalCodeFoldBlock;
       end else begin
-        if TopPascalCodeFoldBlockType = cfbtClassSection then
+        if tfb = cfbtClassSection then
           EndPascalCodeFoldBlockLastLine;
         if TopPascalCodeFoldBlockType = cfbtClass then
           EndPascalCodeFoldBlock;
@@ -2037,6 +2052,10 @@ begin
   AddAttribute(fStringAttri);
   fSymbolAttri := TSynHighlighterAttributes.Create(SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   AddAttribute(fSymbolAttri);
+  FCaseLabelAttri := TSynHighlighterAttributes.Create(SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
+  AddAttribute(FCaseLabelAttri);
+  FCaseLabelAttri.Features := FCaseLabelAttri.Features + [hafStyleMask];
+  FCurCaseLabelAttri := TSynHighlighterAttributes.Create(SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
   {$IFDEF SYN_LAZARUS}
   fDirectiveAttri := TSynHighlighterAttributes.Create(SYNS_AttrDirective, SYNS_XML_AttrDirective);
   fDirectiveAttri.Style:= [fsItalic];
@@ -2056,6 +2075,7 @@ end; { Create }
 destructor TSynPasSyn.Destroy;
 begin
   DestroyDividerDrawConfig;
+  FreeAndNil(FCurCaseLabelAttri);
   inherited Destroy;
 end;
 
@@ -2307,6 +2327,7 @@ begin
   fTokenID := tkSymbol;
   inc(Run);
   if fLine[Run] = '=' then inc(Run);
+  fRange := fRange - [rsAtCaseLabel];
 end;
 
 procedure TSynPasSyn.CRProc;
@@ -2318,11 +2339,7 @@ end;
 
 procedure TSynPasSyn.IdentProc;
 begin
-  {$IFDEF SYN_LAZARUS}
   fTokenID := IdentKind(Run);
-  {$ELSE}
-  fTokenID := IdentKind((fLine + Run));
-  {$ENDIF}
   inc(Run, fStringLen);
   while Identifiers[fLine[Run]] do inc(Run);
 end;
@@ -2521,13 +2538,18 @@ begin
 end;
 
 procedure TSynPasSyn.SemicolonProc;
+var
+  tfb: TPascalCodeFoldBlockType;
 begin
   Inc(Run);
   fTokenID := tkSymbol;
-  if TopPascalCodeFoldBlockType = cfbtUses then
+  tfb := TopPascalCodeFoldBlockType;
+  if tfb = cfbtUses then
     EndPascalCodeFoldBlock;
-  if (TopPascalCodeFoldBlockType = cfbtClass) and (rsAfterClass in fRange) then
+  if (tfb = cfbtClass) and (rsAfterClass in fRange) then
     EndPascalCodeFoldBlock(True);
+  if (tfb = cfbtCase) then
+    fRange := fRange + [rsAtCaseLabel];
   if (rsProperty in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     fRange := fRange - [rsProperty];
 end;
@@ -2597,9 +2619,12 @@ begin
 end;
 
 procedure TSynPasSyn.Next;
+var
+  IsAtCaseLabel: Boolean;
 begin
   fAsmStart := False;
   fTokenPos := Run;
+    FTokenIsCaseLabel := False;
   {$IFDEF SYN_LAZARUS}
   if Run>=fLineLen then begin
     fTokenID := tkNull;
@@ -2625,7 +2650,13 @@ begin
         else
         if rsAtClass in fRange then
           fRange := fRange + [rsAfterClass] - [rsAtClass];
+        IsAtCaseLabel := rsAtCaseLabel in fRange;
         fProcTable[fLine[Run]];
+        if (IsAtCaseLabel) and (rsAtCaseLabel in fRange) then begin
+          FTokenIsCaseLabel := True;
+          if (FTokenID = tkKey) then
+            fRange := fRange - [rsAtCaseLabel];
+        end;
         if not (FTokenID in [tkSpace, tkComment, tkDirective]) then begin
           if (PasCodeFoldRange.BracketNestLevel = 0) and
              not(rsAtClosingBracket in fRange) then
@@ -2700,6 +2731,8 @@ begin
 end;
 
 function TSynPasSyn.GetTokenAttribute: TSynHighlighterAttributes;
+var
+  sMask: TFontStyles;
 begin
   case GetTokenID of
     tkAsm: Result := fAsmAttri;
@@ -2716,6 +2749,18 @@ begin
     tkUnknown: Result := fSymbolAttri;
   else
     Result := nil;
+  end;
+  if FTokenIsCaseLabel and
+     (GetTokenID in [tkIdentifier, tkKey, tkNumber, tkString])
+  then begin
+    FCurCaseLabelAttri.Assign(Result);
+    Result := FCurCaseLabelAttri;
+    if FCaseLabelAttri.Background <> clNone then Result.Background := FCaseLabelAttri.Background;
+    if FCaseLabelAttri.Foreground <> clNone then Result.Foreground := FCaseLabelAttri.Foreground;
+    if FCaseLabelAttri.FrameColor <> clNone then Result.FrameColor := FCaseLabelAttri.FrameColor;
+    sMask := FCaseLabelAttri.StyleMask + (fsNot(FCaseLabelAttri.StyleMask) * FCaseLabelAttri.Style); // Styles to be taken from FCaseLabelAttri
+    Result.Style:= (Result.Style * fsNot(sMask)) + (FCaseLabelAttri.Style * sMask);
+    Result.StyleMask:= (Result.StyleMask * fsNot(sMask)) + (FCaseLabelAttri.StyleMask * sMask);
   end;
 end;
 

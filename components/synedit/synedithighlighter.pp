@@ -84,12 +84,16 @@ type
     property NeedsReScanEndIndex: Integer read FNeedsReScanEndIndex;
   end;
 
+  TSynHighlighterAttrFeature = (hafStyleMask);
+  TSynHighlighterAttrFeatures = set of TSynHighlighterAttrFeature;
   { TSynHighlighterAttributes }
 
   TSynHighlighterAttributes = class(TPersistent)
   private
     fBackground: TColor;
     fBackgroundDefault: TColor;                                                 //mh 2000-10-08
+    FFeature: TSynHighlighterAttrFeatures;
+    FFeatures: TSynHighlighterAttrFeatures;
     fForeground: TColor;
     fForegroundDefault: TColor;                                                 //mh 2000-10-08
     FFrameColor: TColor;
@@ -140,6 +144,7 @@ type
     property Name: string read fName;
     property StoredName: string read FStoredName write FStoredName;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
+    property Features: TSynHighlighterAttrFeatures read FFeatures write FFeature;
   published
     property Background: TColor read fBackground write SetBackground
       stored GetBackgroundColorStored;                                          //mh 2000-10-08

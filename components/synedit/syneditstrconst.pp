@@ -133,6 +133,7 @@ resourcestring
   SYNS_AttrSQLPlus              =  'SQL*Plus command';
   SYNS_AttrString               =  'String';
   SYNS_AttrSymbol               =  'Symbol';
+  SYNS_AttrCaseLabel            =  'Case label';
   SYNS_AttrSyntaxError          =  'SyntaxError';
   SYNS_AttrSystem               =  'System functions and variables';
   SYNS_AttrSystemValue          =  'System value';
@@ -240,6 +241,7 @@ const
   SYNS_XML_AttrSQLPlus              :String = SYNS_AttrSQLPlus;              // 'SQL*Plus command';
   SYNS_XML_AttrString               :String = SYNS_AttrString;               // 'String';
   SYNS_XML_AttrSymbol               :String = SYNS_AttrSymbol;               // 'Symbol';
+  SYNS_XML_AttrCaseLabel            :String = SYNS_AttrCaseLabel;            // 'Case label';
   SYNS_XML_AttrSyntaxError          :String = SYNS_AttrSyntaxError;          // 'SyntaxError';
   SYNS_XML_AttrSystem               :String = SYNS_AttrSystem;               // 'System functions and variables';
   SYNS_XML_AttrSystemValue          :String = SYNS_AttrSystemValue;          // 'System value';
