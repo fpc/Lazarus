@@ -1,6 +1,6 @@
 unit DefaultTranslator;
 
-{ Copyright (C) 2004 V.I.Volchenko and Lazarus Developers Team
+{ Copyright (C) 2004-2010 V.I.Volchenko and Lazarus Developers Team
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Library General Public License as published by
@@ -214,7 +214,7 @@ begin
   FMOFile.Free;
   //If someone will use this class incorrectly, it can be destroyed
   //before Reader destroying. It is a very bad thing, but in THIS situation
-  //in this case is impossible. May be, in future we can overcome this difficulty
+  //in this case is impossible. Maybe, in future we can overcome this difficulty
   inherited Destroy;
 end;
 
@@ -243,26 +243,26 @@ begin
   if (csDesigning in Component.ComponentState) then
     exit;
 
-  s := FMOFile.Translate(Content);
-  if s = '' then
-  begin
-    if not (Sender is TReader) then
-      Exit;
-    if Component = TReader(Sender).Root then
-      Section := UpperCase(Component.ClassName)
-    else
+  if not (Sender is TReader) then
+    exit;
+  if Component = TReader(Sender).Root then
+    Section := Component.ClassName
+  else
     if Component.Owner = TReader(Sender).Root then
-      Section := UpperCase(Component.Owner.ClassName + '.' + Instance.GetNamePath)
+      Section := Component.Owner.ClassName
     else
-      Exit;
-    Section := Section + '.' + UpperCase(PropInfo^.Name);
-    s := FMoFile.Translate(Section + #4 + Content);
-  end;
+      exit;
+  Section := UpperCase(Section + '.' + Instance.GetNamePath + '.' + PropInfo^.Name);
+  s := FMoFile.Translate(Section + #4 + Content);
+
+  if s = '' then
+    s := FMOFile.Translate(Content);
+
   if s <> '' then
     Content := s;
 end;
 
-{ TDefaultTranslator }
+{ TPOTranslator }
 
 constructor TPOTranslator.Create(POFileName: string);
 begin
@@ -304,21 +304,18 @@ begin
   if (csDesigning in Component.ComponentState) then
     exit;
 
-  s := FPOFile.Translate(Content, Content);
-  if s = '' then
-  begin
-    if not (Sender is TReader) then
-      Exit;
-    if Component = TReader(Sender).Root then
-      Section := UpperCase(Component.ClassName)
+  if not (Sender is TReader) then
+    exit;
+  if Component = TReader(Sender).Root then
+    Section := Component.ClassName
     else
-    if Component.Owner = TReader(Sender).Root then
-      Section := UpperCase(Component.Owner.ClassName + '.' + Instance.GetNamePath)
-    else
-      Exit;
-    Section := Section + '.' + UpperCase(PropInfo^.Name);
-    s := FPOFile.Translate(Section + #4 + Content, Section + #4 + Content);
-  end;
+      if Component.Owner = TReader(Sender).Root then
+        Section := Component.Owner.ClassName
+      else
+        exit;
+  Section := UpperCase(Section + '.' + Instance.GetNamePath + '.' + PropInfo^.Name);
+  s := FPOFile.Translate(Section, Content);
+
   if s <> '' then
     Content := s;
 end;
@@ -382,7 +379,3 @@ finalization
   LocalTranslator.Free;
 
 end.
-{
-No revision (not in LOG)
- 2004/10/09 Sent as is to Lazarus Team - VVI
-}
