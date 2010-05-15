@@ -839,7 +839,8 @@ begin
     CurHighlightElementIsExtra := False;
 
     if CurHighlightElement <> nil then
-      CurHighlightElementIsExtra := IsAhaElement(NewName, CurExtraElement);
+      CurHighlightElementIsExtra := IsAhaElement(NewName, CurExtraElement)
+                                 or (hafStyleMask in CurHighlightElement.Features);
     ShowCurAttribute;
   end;
 end;
