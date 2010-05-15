@@ -431,6 +431,10 @@ msgstr ""
 msgid "Popup Menu"
 msgstr ""
 
+#: syneditstrconst.syns_emccontextmenucaretmove_opt
+msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
+msgstr ""
+
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
 msgstr ""

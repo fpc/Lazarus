@@ -11,8 +11,8 @@ msgstr ""
 
 #: cgilazideintf.lisdescription
 #, fuzzy
-#| msgid "Simple CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal.%sThe program file is automatically maintained by Lazarus.%sThis kind of application is deprecated, for CGI programs or Apache modules, please use the LazWeb package instead"
-msgid "Simple CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal.%sThe program file is automatically maintained by Lazarus.%sThis kind of application is deprecated, for CGI programs or Apache modules, please use the LazWeb package instead."
+#| msgid "Simple CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal.%sThe program file is automatically maintained by Lazarus.%sThis kind of application is deprecated, for CGI programs or Apache modules, please use the LazWeb package instead."
+msgid "Simple CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal.%sThe application source is automatically maintained by Lazarus.%sThis kind of application is deprecated, for CGI programs or Apache modules, please use the LazWeb package instead."
 msgstr "Aplicação CGI Simples%sUm programa CGI (Common Gateway Interface) em Free Pascal.%sO arquivo do programa é mantido automaticamente pelo Lazarus.%sEste tipo de aplicação está depreciada, para programas CGI ou módulos Apache, favor usar o pacote LazWeb."
 
 #: cgilazideintf.lisdescrmod

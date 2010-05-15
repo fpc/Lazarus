@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-15 02:11+0300\n"
+"PO-Revision-Date: 2010-05-15 18:33+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -429,6 +429,10 @@ msgstr "Узлы,Один,Все"
 #: syneditstrconst.syns_emccontextmenu
 msgid "Popup Menu"
 msgstr "Всплывающее меню"
+
+#: syneditstrconst.syns_emccontextmenucaretmove_opt
+msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
+msgstr "\"Перемещать курсор, если имеется выделение\", Никогда, \"При щелчке вне области выделения\", Всегда"
 
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"

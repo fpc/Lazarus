@@ -432,6 +432,10 @@ msgstr "Mazgai,Vienas,Visi"
 msgid "Popup Menu"
 msgstr "Iškylantis meniu"
 
+#: syneditstrconst.syns_emccontextmenucaretmove_opt
+msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
+msgstr ""
+
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
 msgstr "Pirminis saitas"

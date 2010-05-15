@@ -15193,10 +15193,6 @@ msgstr "VLO"
 msgid "OVR"
 msgstr "PŘE"
 
-#: lazarusidestrconsts.uepreadonly
-msgid "Readonly"
-msgstr "Pouze pro čtení"
-
 #~ msgid "Auto create form when opening unit"
 #~ msgstr "Automaticky vytvořit formulář při otevření jednotky"
 #~ msgid "Use Default"
@@ -15294,6 +15290,10 @@ msgstr "Pouze pro čtení"
 #~ msgstr "Přesunout editor vpravo"
 #~ msgid "Move Editor Rightmost"
 #~ msgstr "Přesunout editor nejvíce vpravo"
+#: lazarusidestrconsts.uepreadonly
+msgid "Readonly"
+msgstr "Pouze pro čtení"
+
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informace o verzi"
