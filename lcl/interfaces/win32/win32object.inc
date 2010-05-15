@@ -627,7 +627,7 @@ begin
       if hIcon = 0 then
        hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
       hCursor := Windows.LoadCursor(0, IDC_ARROW);
-      hbrBackground := 0; {GetSysColorBrush(Color_BtnFace);}
+      hbrBackground := GetSysColorBrush(COLOR_BTNFACE);
       LPSzMenuName := nil;
       LPSzClassName := @ClsNameW;
     end;
@@ -640,6 +640,7 @@ begin
         if WindowsVersion >= wvXP then
           style := style or CS_DROPSHADOW;
         hIcon := 0;
+        hbrBackground := GetSysColorBrush(COLOR_INFOBK);
         LPSzClassName := @ClsHintNameW;
       end;
       Result := Windows.RegisterClassW(@WindowClassW) <> 0;
@@ -657,7 +658,7 @@ begin
       if hIcon = 0 then
        hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
       hCursor := Windows.LoadCursor(0, IDC_ARROW);
-      hbrBackground := 0; {GetSysColorBrush(Color_BtnFace);}
+      hbrBackground := GetSysColorBrush(COLOR_BTNFACE);
       LPSzMenuName := nil;
       LPSzClassName := @ClsName; 
     end;
@@ -670,6 +671,7 @@ begin
         if WindowsVersion >= wvXP then
           style := style or CS_DROPSHADOW;
         hIcon := 0;
+        hbrBackground := GetSysColorBrush(COLOR_INFOBK);
         LPSzClassName := @ClsHintName;
       end;
       Result := Windows.RegisterClass(@WindowClass) <> 0;
