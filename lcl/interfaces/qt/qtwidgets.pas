@@ -4629,7 +4629,7 @@ begin
         else
         if (AOldState and QtWindowMinimized <> 0) or
           (AOldState and QtWindowMaximized <> 0) or
-          (AOldState and qt4.QtWindowFullScreen <> 0) then
+          (AOldState and QtWindowFullScreen <> 0) then
           Application.IntfAppRestore;
       end;
       SlotWindowStateChange;
