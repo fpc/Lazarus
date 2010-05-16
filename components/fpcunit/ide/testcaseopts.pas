@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons;
+  ExtCtrls, Buttons, strtestcaseopts;
 
 type
 
@@ -22,6 +22,7 @@ type
     Label1: TLabel;
     Panel1: TPanel;
     procedure btnAcceptClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { private declarations }
   public
@@ -38,6 +39,18 @@ implementation
 procedure TTestCaseOptionsForm.btnAcceptClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TTestCaseOptionsForm.FormCreate(Sender: TObject);
+begin
+  //
+  Caption := sfrmTest;
+  gbNames.Caption:= sgrpNames;
+  gbFixture.Caption:= sgrpFixture;
+  label1.Caption:= slblDefault;
+  cbSetup.Caption:= schkSetup;
+  cbTeardown.Caption:= schkTear;
+  btnAccept.Caption:= sbtnCreate;
 end;
 
 end.

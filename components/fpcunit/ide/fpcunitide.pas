@@ -1,21 +1,21 @@
-{ This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+{ Este arquivo foi automaticamente criado pelo Lazarus. Não edite!
+  Este fonte é usado apenas para compilar e instalar o pacote.
  }
 
-unit fpcunitide;
+unit fpcunitide; 
 
 interface
 
 uses
-  FPCUnitLazIDEIntf, LazarusPackageIntf;
+  FPCUnitLazIDEIntf, strtestcaseopts, LazarusPackageIntf;
 
 implementation
 
-procedure Register;
+procedure Register; 
 begin
-  RegisterUnit('FPCUnitLazIDEIntf',@FPCUnitLazIDEIntf.Register);
-end;
+  RegisterUnit('FPCUnitLazIDEIntf', @FPCUnitLazIDEIntf.Register); 
+end; 
 
 initialization
-  RegisterPackage('fpcunitide',@Register);
+  RegisterPackage('fpcunitide', @Register); 
 end.

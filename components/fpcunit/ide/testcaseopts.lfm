@@ -1,93 +1,92 @@
 object TestCaseOptionsForm: TTestCaseOptionsForm
-  BorderStyle = bsDialog
-  Caption = 'TestCase Options'
-  ClientHeight = 248
-  ClientWidth = 266
-  PixelsPerInch = 95
-  Position = poScreenCenter
+  Left = 1218
+  Height = 243
+  Top = 523
+  Width = 266
   HorzScrollBar.Page = 265
   VertScrollBar.Page = 247
-  Left = 464
-  Height = 248
-  Top = 464
-  Width = 266
+  BorderStyle = bsDialog
+  Caption = 'TestCase Options'
+  ClientHeight = 243
+  ClientWidth = 266
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
   object gbNames: TGroupBox
-    Align = alTop
-    BorderSpacing.OnChange = nil
-    Caption = 'Names'
-    ClientHeight = 72
-    ClientWidth = 262
-    ParentColor = True
-    TabOrder = 0
+    Left = 0
     Height = 89
+    Top = 0
     Width = 266
+    Align = alTop
+    Caption = 'Names'
+    ClientHeight = 67
+    ClientWidth = 262
+    TabOrder = 0
     object Label1: TLabel
-      BorderSpacing.OnChange = nil
-      Caption = 'Default Test Name'
-      Color = clNone
-      FocusControl = edDefaultName
       Left = 16
-      Height = 12
+      Height = 18
       Top = 9
-      Width = 102
+      Width = 113
+      Caption = 'Default Test Name'
+      FocusControl = edDefaultName
+      ParentColor = False
     end
     object edDefaultName: TEdit
-      BorderSpacing.OnChange = nil
+      Left = 16
+      Height = 25
+      Top = 25
+      Width = 232
       MaxLength = 30
       TabOrder = 0
       Text = 'TTestCase1'
-      Left = 16
-      Height = 23
-      Top = 25
-      Width = 232
     end
   end
   object Panel1: TPanel
+    Left = 0
+    Height = 42
+    Top = 201
+    Width = 266
     Align = alBottom
-    BorderSpacing.OnChange = nil
     BevelOuter = bvNone
     ClientHeight = 42
     ClientWidth = 266
     FullRepaint = False
     TabOrder = 1
-    Height = 42
-    Top = 206
-    Width = 266
     object btnAccept: TButton
-      Caption = 'Create unit'
-      OnClick = btnAcceptClick
-      TabOrder = 0
       Left = 64
       Height = 25
       Top = 10
       Width = 120
+      Caption = 'Create unit'
+      OnClick = btnAcceptClick
+      TabOrder = 0
     end
   end
   object gbFixture: TGroupBox
-    Align = alClient
-    Caption = 'Fixture'
-    ClientHeight = 100
-    ClientWidth = 262
-    ParentColor = True
-    TabOrder = 2
-    Height = 117
+    Left = 0
+    Height = 112
     Top = 89
     Width = 266
+    Align = alClient
+    Caption = 'Fixture'
+    ClientHeight = 90
+    ClientWidth = 262
+    TabOrder = 2
     object cbSetup: TCheckBox
+      Left = 22
+      Height = 21
+      Top = 11
+      Width = 152
       Caption = 'Create Setup Method'
       TabOrder = 0
-      Left = 22
-      Height = 23
-      Top = 11
-      Width = 216
     end
     object cbTeardown: TCheckBox
+      Left = 22
+      Height = 21
+      Top = 59
+      Width = 181
       Caption = 'Create TearDown method'
       TabOrder = 1
-      Left = 22
-      Height = 23
-      Top = 59
-      Width = 216
     end
   end
 end

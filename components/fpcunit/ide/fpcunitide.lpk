@@ -16,7 +16,7 @@
       </Other>
     </CompilerOptions>
     <Version Minor="1"/>
-    <Files Count="2">
+    <Files Count="3">
       <Item1>
         <Filename Value="fpcunitlazideintf.pas"/>
         <HasRegisterProc Value="True"/>
@@ -26,6 +26,10 @@
         <Filename Value="fpcunitproject1.inc"/>
         <Type Value="Include"/>
       </Item2>
+      <Item3>
+        <Filename Value="strtestcaseopts.pas"/>
+        <UnitName Value="strtestcaseopts"/>
+      </Item3>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

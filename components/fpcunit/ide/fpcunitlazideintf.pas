@@ -32,7 +32,7 @@ unit FPCUnitLazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, LazIDEIntf, ProjectIntf, Controls, Forms,testcaseopts;
+  Classes, SysUtils, LazIDEIntf, ProjectIntf, Controls, Forms, testcaseopts;
 
 type
   { TFPCUnitApplicationDescriptor }
@@ -298,7 +298,7 @@ begin
                    +'end;'+le;
   Result:='procedure '+TestCaseName+'.TestHookUp;'+le
     +'begin'+le
-    +'  Fail('+sWriteYourOwnTest+');'+le
+    +'  Fail('+QuotedStr(sWriteYourOwnTest)+');'+le
     +'end;'+le
     +le
     +setupMethod
