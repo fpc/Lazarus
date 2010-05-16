@@ -4546,7 +4546,7 @@ begin
       QMdiSubWindowH(Widget))
   else
     inherited Activate;
-  {$IFDEF LINUX}
+  {$IFDEF HASX11}
   // qt X11 bug ?  activates window but it's not in
   // front of others.
   {$note TQtWidget.Activate: Check this with next qt version (>=4.7)}
@@ -5015,12 +5015,10 @@ var
   TopMargin: Integer;
   RightMargin: Integer;
   BottomMargin: Integer;
-  {$IFDEF LINUX}
-  {$IFNDEF QTOPIA}
+  {$IFDEF HASX11}
   Font: QFontH;
   FontMetrics: QFontMetricsH;
   FontHeight: Integer;
-  {$ENDIF}
   {$ENDIF}
 begin
   if ALayout = nil then
@@ -5031,9 +5029,7 @@ begin
   {if contentsMargins TopMargin is huge then we must rethink about TopMargin
    size (eg.oxygen theme have 32 top margin while plastique have 19
    with same font height) }
-  {$IFDEF LINUX}
-  {$IFNDEF QTOPIA}
-
+  {$IFDEF HASX11}
   Font := QWidget_font(AWidget);
   FontMetrics := QFontMetrics_create(Font);
   try
@@ -5048,9 +5044,8 @@ begin
     TopMargin := TopMargin - BottomMargin - 3;
     BottomMargin := 0;
   end;
+  {$ENDIF}
 
-  {$ENDIF}
-  {$ENDIF}
   QLayout_setContentsMargins(ALayout, LeftMargin, TopMargin, RightMargin, BottomMargin);
   QLayout_invalidate(ALayout);
 

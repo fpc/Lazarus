@@ -214,7 +214,7 @@ begin
 end;
 
 procedure TQtWidgetSet.AppMinimize;
-{$IFDEF LINUX}
+{$IFDEF HASX11}
 var
   i: Integer;
   AForm: TCustomForm;
@@ -223,7 +223,7 @@ var
 begin
   if (Application.MainForm <> nil) and (Application.MainForm.HandleAllocated) then
   begin
-    {$IFDEF LINUX}
+    {$IFDEF HASX11}
     for i := 0 to Screen.CustomFormZOrderCount-1 do
     begin
       AForm := Screen.CustomFormsZOrdered[i];
@@ -248,7 +248,7 @@ begin
 end;
 
 procedure TQtWidgetSet.AppRestore;
-{$IFDEF LINUX}
+{$IFDEF HASX11}
 var
   i: Integer;
   AForm: TCustomForm;
@@ -257,7 +257,7 @@ var
 begin
   if (Application.MainForm <> nil) and (Application.MainForm.HandleAllocated) then
   begin
-    {$IFDEF LINUX}
+    {$IFDEF HASX11}
     if Screen = nil then exit;
     for i := Screen.CustomFormZOrderCount-1 downto 0 do
     begin
@@ -423,7 +423,7 @@ begin
     lcDragDockStartOnTitleClick: Result :=
      {$ifdef MSWINDOWS} LCL_CAPABILITY_YES {$else} LCL_CAPABILITY_NO {$endif};
      lcNeedMininimizeAppWithMainForm: Result :=
-     {$ifdef LINUX} LCL_CAPABILITY_YES {$else} LCL_CAPABILITY_NO {$endif};
+     {$ifdef HASX11} LCL_CAPABILITY_YES {$else} LCL_CAPABILITY_NO {$endif};
   else
     Result := inherited GetLCLCapability(ACapability);
   end;

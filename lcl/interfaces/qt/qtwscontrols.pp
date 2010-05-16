@@ -185,7 +185,7 @@ begin
   begin
     if fsModal in TForm(AWinControl).FormState then
     begin
-      {$ifdef linux}
+      {$ifdef HASX11}
       QWidget_setParent(Widget.Widget, QApplication_activeWindow());
       QWidget_setWindowFlags(Widget.Widget, QtDialog);
       {$endif}

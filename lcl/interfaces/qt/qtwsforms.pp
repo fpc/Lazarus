@@ -171,7 +171,7 @@ begin
      (Application.MainForm <> AWinControl) then
   begin
     if (TCustomForm(AWinControl).ShowInTaskBar in [stDefault, stNever])
-       {$ifdef linux}
+       {$ifdef HASX11}
        {QtTool have not minimize button !}
        and not (TCustomForm(AWinControl).BorderStyle in [bsSizeToolWin, bsToolWindow])
        {$endif} then
