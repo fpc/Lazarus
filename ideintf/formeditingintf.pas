@@ -69,23 +69,6 @@ type
   end;
 
 
-  { TIFormInterface }
-
-  TIFormInterface = class
-  public
-    function Filename            : AnsiString; virtual; abstract;
-    function FormModified        : Boolean; virtual; abstract;
-    function MarkModified        : Boolean; virtual; abstract;
-    function GetFormComponent    : TIComponentInterface; virtual; abstract;
-    function FindComponent       : TIComponentInterface; virtual; abstract;
-    function GetComponentfromHandle(ComponentHandle:Pointer): TIComponentInterface; virtual; abstract;
-
-    function GetSelCount: Integer; virtual; abstract;
-    function GetSelComponent(Index : Integer): TIComponentInterface; virtual; abstract;
-    function CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
-                             X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
-  end;
-
   TDMCompAtPosFlag = (
     dmcapfOnlyVisible,
     dmcapfOnlySelectable
