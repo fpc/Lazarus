@@ -1,13 +1,13 @@
-{ This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+{ Este arquivo foi automaticamente criado pelo Lazarus. Não edite!
+  Este fonte é usado apenas para compilar e instalar o pacote.
  }
 
-unit FPCUnitTestRunner; 
+unit fpcunittestrunner; 
 
 interface
 
 uses
-  GuiTestRunner; 
+  GuiTestRunner;
 
 implementation
 

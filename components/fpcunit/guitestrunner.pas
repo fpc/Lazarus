@@ -31,8 +31,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, Buttons, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls,
   testdecorator, xmltestreport,
-  fpcunit, testregistry, SynEdit, SynHighlighterXML;
-
+  fpcunit, testregistry, SynEdit, SynHighlighterXML, gettext, Translations;
 
 type
 
@@ -135,6 +134,37 @@ type
 var
   TestRunner: TGUITestRunner;
 
+resourcestring
+  rsAllTests = 'All Tests';
+  rsRun = 'Run ';
+  rsRuns = 'Runs: %s/%s';
+  rsErrors = '%s    Errors: %s';
+  rsFailures = '%s     Failures: %s';
+  rsMessage = 'Message: %s';
+  rsException = 'Exception: %s';
+  rsExceptionMes = 'Exception message: %s';
+  rsExceptionCla = 'Exception class: %s';
+  rsUnitName = 'Unit name: %s';
+  rsMethodName = 'Method name: %s';
+  rsLineNumber = 'Line number: %s';
+  rsRunning = 'Running %s';
+  rsNumberOfExec = 'Number of executed tests: %s  Time elapsed: %s';
+  // Visual components captions
+  sfrmGUITest = 'FPCUnit - run unit test';
+  sbtnRun = 'Run';
+  sbtnRunH = 'Run highlighted test';
+  sbtnClose = 'Close';
+  stshTree = 'Testcase tree';
+  stshResults = 'Results XML';
+  sactRunAction = '&Run';
+  sactRunActionH = 'Run all checked test(s)';
+  sactCloseForm = 'Quit';
+  sactCloseFormH = 'Quit Testting';
+  sactCheckCurrentSuite = 'Check the Current Suite';
+  sactUncheckCurrentSuite = 'Uncheck the Current Suite';
+  sactCheckAll = 'Check all Tests';
+  sactUncheckAll = 'Uncheck all tests';
+  sactRunHighlightedTest = 'Run highlighted test';
 
 implementation
 
@@ -167,8 +197,26 @@ procedure TGUITestRunner.GUITestRunnerCreate(Sender: TObject);
 begin
   barColor := clGreen;
   TestTree.Items.Clear;
-  BuildTree(TestTree.Items.AddObject(nil, 'All Tests', GetTestRegistry), GetTestRegistry);
+  BuildTree(TestTree.Items.AddObject(nil, rsAllTests, GetTestRegistry),
+    GetTestRegistry);
   PageControl1.ActivePage := tsTestTree;
+  //
+  BtnRun.Caption:= sbtnRun;
+  btnRunHighlighted.Caption := sbtnRunH;
+  BtnClose.Caption:= sbtnClose;
+  tsTestTree.Caption:= stshTree;
+  tsResultsXML.Caption:= stshResults;
+  //
+  TestRunner.Caption:= sfrmGUITest;
+  RunAction.Caption:= sactRunAction;
+  RunAction.Hint:= sactRunActionH;
+  ActCloseForm.Caption:= sactCloseForm;
+  ActCloseForm.Hint:= sactCloseFormH;
+  ActCheckCurrentSuite.Caption:= sactCheckCurrentSuite;
+  ActUncheckCurrentSuite.Caption:= sactUncheckCurrentSuite;
+  ActCheckAll.Caption:= sactCheckAll;
+  ActUncheckAll.Caption:= sactUncheckAll;
+  ActRunHighlightedTest.Caption:= sactRunHighlightedTest;
 end;
 
 procedure TGUITestRunner.RunExecute(Sender: TObject);
@@ -301,7 +349,7 @@ begin
     Assigned((Sender as TTreeview).Selected.Data)  then
   begin
     btnRunHighlighted.Visible := true;
-    btnRunHighlighted.Caption := 'Run ' + (Sender as TTreeview).Selected.Text;
+    btnRunHighlighted.Caption := rsRun + (Sender as TTreeview).Selected.Text;
   end
   else
     begin
@@ -344,9 +392,10 @@ begin
       if TestsCounter <> 0 then
       begin
         Canvas.Rectangle(0, 0, round(TestsCounter / (alltests - skipsCounter) * Width), Height);
-        msg := 'Runs: ' + IntToStr(TestsCounter) + '/' + IntToStr(alltests - skipsCounter);
-        msg := msg + '    Errors: ' + IntToStr(ErrorCounter);
-        msg := msg + '     Failures: ' + IntToStr(FailureCounter);
+        msg := Format(rsRuns, [IntToStr(TestsCounter), IntToStr(alltests -
+          skipsCounter)]);
+        msg := Format(rsErrors, [msg, IntToStr(ErrorCounter)]);
+        msg := Format(rsFailures, [msg, IntToStr(FailureCounter)]);
         Canvas.Textout(10, 10,  msg)
       end;
     end;
@@ -511,10 +560,12 @@ begin
   FailureNode := FindNode(ATest);
   if Assigned(FailureNode) then
   begin
-    node := TestTree.Items.AddChild(FailureNode, 'Message: ' + AFailure.ExceptionMessage);
+    node := TestTree.Items.AddChild(FailureNode, Format(rsMessage, [
+      AFailure.ExceptionMessage]));
     node.ImageIndex := 4;
     node.SelectedIndex := 4;
-    node := TestTree.Items.AddChild(FailureNode, 'Exception: ' + AFailure.ExceptionClassName);
+    node := TestTree.Items.AddChild(FailureNode, Format(rsException, [
+      AFailure.ExceptionClassName]));
     node.ImageIndex := 4;
     node.SelectedIndex := 4;
     PaintNodeFailure(FailureNode);
@@ -532,24 +583,28 @@ begin
   ErrorNode := FindNode(ATest);
   if Assigned(ErrorNode) then
   begin
-    node := TestTree.Items.AddChild(ErrorNode, 'Exception message: ' + AError.ExceptionMessage);
+    node := TestTree.Items.AddChild(ErrorNode, Format(rsExceptionMes, [
+      AError.ExceptionMessage]));
     node.ImageIndex := 4;
     node.SelectedIndex := 4;
-    node := TestTree.Items.AddChild(ErrorNode, 'Exception class: ' + AError.ExceptionClassName);
+    node := TestTree.Items.AddChild(ErrorNode, Format(rsExceptionCla, [
+      AError.ExceptionClassName]));
     node.ImageIndex := 4;
     node.SelectedIndex := 4;
     if (AError.SourceUnitName <> '') and
       (AError.FailedMethodName <> '')
     then
     begin
-      node := TestTree.Items.AddChild(ErrorNode, 'Unit name: ' + AError.SourceUnitName);
+      node := TestTree.Items.AddChild(ErrorNode, Format(rsUnitName, [
+        AError.SourceUnitName]));
       node.ImageIndex := 11;
       node.SelectedIndex := 11;
-      node := TestTree.Items.AddChild(ErrorNode, 'Method name: ' +
-      AError.FailedMethodName);
+      node := TestTree.Items.AddChild(ErrorNode, Format(rsMethodName, [
+        AError.FailedMethodName]));
       node.ImageIndex := 11;
       node.SelectedIndex := 11;
-      node := TestTree.Items.AddChild(ErrorNode, 'Line number: ' + IntToStr(AError.LineNumber));
+      node := TestTree.Items.AddChild(ErrorNode, Format(rsLineNumber, [IntToStr(
+        AError.LineNumber)]));
       node.ImageIndex := 11;
       node.SelectedIndex := 11;
     end;
@@ -622,14 +677,13 @@ begin
     w.FileName := 'null'; // prevents output to the console
     testResult.AddListener(w);
 
-    MemoLog('Running ' + TestTree.Selected.Text);
+    MemoLog(Format(rsRunning, [TestTree.Selected.Text]));
     FStartCrono := Now;
     aTest.Run(testResult);
     FStopCrono := Now;
     // In the next fpc (post 2.0.4) we can pull the time from the TestResult
-    MemoLog('Number of executed tests: ' + IntToStr(testResult.RunTests)
-      + '  Time elapsed: '
-      + FormatDateTime('hh:nn:ss.zzz', FStopCrono - FStartCrono));
+    MemoLog(Format(rsNumberOfExec, [IntToStr(testResult.RunTests),
+      FormatDateTime('hh:nn:ss.zzz', FStopCrono - FStartCrono)]));
 
     w.WriteResult(testResult);
     m := TMemoryStream.Create;
@@ -656,6 +710,21 @@ procedure TGUITestRunner.EndTestSuite(ATestSuite: TTestSuite);
 begin
   // do nothing
 end;
+
+procedure TranslateResStrings;
+var
+  Lang, FallbackLang, S: String;
+
+begin
+  GetLanguageIDs(Lang,FallbackLang); // in unit gettext
+  S:=AppendPathDelim(AppendPathDelim(ExtractFileDir(ParamStr(0))) + 'languages');
+  if FallbackLang = 'pt' then
+     Lang := 'pb';
+  TranslateUnitResourceStrings('guitestrunner',S+'guitestrunner.%s.po', Lang,FallbackLang);
+end;
+
+initialization
+  TranslateResStrings;
 
 end.
 

@@ -1,19 +1,16 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <PathDelim Value="\"/>
     <Name Value="FPCUnitTestRunner"/>
     <Author Value="Vincent Snijders"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="8"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <OtherUnitFiles Value="$(LazarusDir)\components\synedit\units\$(TargetCPU)-$(TargetOS)\"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
         <CreateMakefileOnBuild Value="True"/>
@@ -22,7 +19,7 @@
     <Description Value="FPCUnit gui test runner form"/>
     <License Value="LGPL"/>
     <Version Minor="1"/>
-    <Files Count="4">
+    <Files Count="3">
       <Item1>
         <Filename Value="guitestrunner.pas"/>
         <UnitName Value="GuiTestRunner"/>
@@ -35,11 +32,11 @@
         <Filename Value="guitestrunner.lfm"/>
         <Type Value="LFM"/>
       </Item3>
-      <Item4>
-        <Filename Value="guitestrunner.lrs"/>
-        <Type Value="LRS"/>
-      </Item4>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="SynEdit"/>
