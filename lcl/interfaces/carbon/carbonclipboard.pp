@@ -78,6 +78,64 @@ implementation
 
 uses CarbonProc, CarbonDbgConsts;
 
+function WriteSteamData( info: UnivPtr; buffer: {const} UnivPtr; count: size_t ): size_t; mwpascal;
+begin
+  try
+    if Assigned(info) then
+      Result:=TStream(info).write(Buffer^, count)
+    else
+      Result:=0;
+  except
+    Result:=0;
+  end;
+end;
+
+procedure FinishStreamData( info: UnivPtr ); mwpascal;
+begin
+  //do nothing;
+end;
+
+function AllocStreamConsumer(str: TStream): CGDataConsumerRef;
+var
+  callbacks: CGDataConsumerCallbacks;
+begin
+  callbacks.putBytes:=@WriteSteamData;
+  callbacks.releaseConsumer:=@FinishStreamData;
+  Result:=CGDataConsumerCreate(str, callbacks);
+end;
+
+function CarbonImageToStream(img: CGImageRef; dst: TStream; CarbonImageType: CFStringRef): Boolean;
+var
+  idst  : CGImageDestinationRef;
+  cg    : CGDataConsumerRef;
+begin
+  Result := Assigned(img) and Assigned(dst);
+  if not Result then Exit;
+  cg := AllocStreamConsumer(dst);
+  idst := CGImageDestinationCreateWithDataConsumer(cg, CarbonImageType, 1, nil);
+  Result := Assigned(idst);
+  if Result then
+  begin
+    CGImageDestinationAddImage(idst, img, nil);
+    CGImageDestinationFinalize(idst);
+    CFRelease(idst);
+  end;
+  CFRelease(cg);
+end;
+
+function GetImageFromPasteboard(Pasteboard: PasteboardRef; ID: PasteboardItemID; UTI: CFStringRef): CGImageRef;
+var
+  data  : CGImageRef;
+  prov  : CGImageSourceRef;
+begin
+  PasteboardCopyItemFlavorData(PasteBoard, ID, UTI, Data);
+  prov := CGImageSourceCreateWithData(Data, nil);
+  Result:=CGImageSourceCreateImageAtIndex(prov, 0, nil);
+  CFRelease(prov);
+  CFRelease(data);
+end;
+
+
 { TCarbonClipboard }
 
 {------------------------------------------------------------------------------
@@ -126,6 +184,7 @@ begin
   FFormats.Add(kUTTypeUTF16PlainText);
   
   RegisterFormat(PredefinedClipboardMimeTypes[pcfText]);
+
 end;
 
 {------------------------------------------------------------------------------
@@ -205,6 +264,8 @@ begin
     S := UTTypeCopyPreferredTagWithClass(CFStringRef(FFormats[FormatID]), kUTTagClassMIMEType);
     try
       Result := CFStringToStr(S);
+      if (Result='') and (CFStringToStr(CFStringRef(FFormats[FormatID]))='com.microsoft.bmp') then
+        Result:='image/bmp';
     finally
       FreeCFString(S);
     end;
@@ -233,6 +294,10 @@ var
   Count: ItemCount;
   ID: PasteboardItemID;
   S: String;
+
+  Image:CGImageRef;
+  ImageUTI: CFStringRef;
+  ImageConfort: Boolean;
 const
   SName = 'GetData';
   
@@ -243,7 +308,6 @@ const
   begin
     Result := False;
     FlavorCount := CFArrayGetCount(Flavors);
-    
     for J := 0 to FlavorCount - 1 do
       if UTTypeEqual(Format, CFArrayGetValueAtIndex(Flavors, J)) then
       begin
@@ -252,9 +316,28 @@ const
         Break;
       end;
   end;
+
+  function HasConfortingFormat(ConfortTo: CFStringRef; var UTIFormat: CFStringRef): Boolean;
+  var
+    J : Integer;
+    FlavorCount: CFIndex;
+  begin
+    Result := False;
+    UTIFormat := nil;
+    FlavorCount := CFArrayGetCount(Flavors);
+    for J := 0 to FlavorCount - 1 do
+      if UTTypeConformsTo(CFArrayGetValueAtIndex(Flavors, J), ConfortTo) then
+      begin
+        //DebugLn('Has UTI ' + CFStringToStr(Format));
+        UTIFormat := CFArrayGetValueAtIndex(Flavors, J);
+        Result := True;
+        Break;
+      end;
+  end;
   
 begin
   Result := False;
+  ImageConfort:=False;
   
   if not ((FormatID > 0) and (FormatID < TClipboardFormat(FFormats.Count))) then
   begin
@@ -286,7 +369,15 @@ begin
           if not HasFormat(UTI) then Exit;               // check plain text
     end
     else
-      if not HasFormat(UTI) then Exit;
+      if not HasFormat(UTI) then
+      begin
+        // System built-in images can be converted to a necessary format.
+        // ImageUTI - is the necessary format.
+        ImageUTI:=UTI;
+        // UTI - is not conforming format available in pasteboard
+        ImageConfort:=UTTypeConformsTo(ImageUTI, kUTTypeImage) and HasConfortingFormat(kUTTypeImage, UTI);
+        if not ImageConfort then Exit;
+      end;
 
     //DebugLn('TCarbonClipboard.GetData Paste FlavorType: ' + CFStringToStr(UTI));
 
@@ -315,10 +406,19 @@ begin
           Stream.Write(S[1], Length(S));
         finally
           FreeCFString(CFString);
-        end;
+        end
       end
       else
-        Stream.Write(CFDataGetBytePtr(FlavorData)^, CFDataGetLength(FlavorData));
+      begin
+        if ImageConfort then
+        begin
+          Image:=GetImageFromPasteboard(Pasteboard, ID, UTI);
+          CarbonImageToStream(Image, Stream, ImageUTI);
+          CGImageRelease(Image);
+        end
+        else
+          Stream.Write(CFDataGetBytePtr(FlavorData)^, CFDataGetLength(FlavorData));
+      end;
     finally
       CFRelease(FlavorData);
     end;
@@ -500,6 +600,14 @@ begin
   Result := True;
 end;
 
+function GetLCLPredefinedUTI(const LCLMimeType: String): CFStringRef;
+begin
+  if (LCLMimeType='image/bmp') or (LCLMimeType='image/delphi.bitmap') then
+    Result:=kUTTypeBMP
+  else
+    Result:=nil;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonClipboard.RegisterFormat
   Params:  AMimeType - A string (usually a MIME type) identifying a new format
@@ -512,7 +620,9 @@ var
 begin
   CreateCFString(AMimeType, M);
   try
-    UTI := UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, M, nil);
+    UTI := GetLCLPredefinedUTI(AMimeType);
+    if not Assigned(UTI) then
+      UTI := UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, M, nil);
   finally
     FreeCFString(M);
   end;
