@@ -28,6 +28,7 @@
 {off $DEFINE VerboseAutoSizeCtrlData}
 {off $DEFINE VerboseMouseBugfix}
 {off $DEFINE VerboseCanAutoSize}
+{off $DEFINE VerboseIntfSizing}
 {off $DEFINE VerboseClientRectBugFix}
 {$IFDEF VerboseClientRectBugFix}
 const CheckClientRectName = 'LCLInterfaceRadioGroup';
@@ -3580,7 +3581,7 @@ begin
   if not CompareRect(@R, @FAdjustClientRectRealized) then
   begin
     // client rect changed since last AlignControl
-    {$IF defined(VerboseAllAutoSize) or defined(VerboseClientRectBugFix)}
+    {$IF defined(VerboseAllAutoSize) or defined(VerboseClientRectBugFix) or defined(VerboseIntfSizing)}
     DebugLn('TWinControl.DoAdjustClientRectChange ClientRect changed ',Name,':',ClassName,
       ' Old=',Dbgs(FAdjustClientRectRealized.Right),'x',DbgS(FAdjustClientRectRealized.Bottom),
       ' New=',DbgS(r.Right),'x',DbgS(r.Bottom));
@@ -6505,7 +6506,7 @@ procedure TWinControl.WMMove(var Message: TLMMove);
 var
   NewWidth, NewHeight: Integer;
 begin
-  {$IF defined (VerboseSizeMsg) or defined(VerboseBug16184)}
+  {$IF defined (VerboseSizeMsg) or defined(VerboseIntfSizing)}
   if (Message.MoveType and Move_SourceIsInterface)>0 then
    DebugLn(['TWinControl.WMMove A ',DbgSName(Self),' Message=',Message.XPos,',',Message.YPos,
     ' BoundsRealized=',FBoundsRealized.Left,',',FBoundsRealized.Top,
@@ -6560,7 +6561,7 @@ var
   NewLeft, NewTop: integer;
   NewBoundsRealized: TRect;
 begin
-  {$IF defined(VerboseSizeMsg) or defined(CHECK_POSITION) or defined(VerboseBug16184)}
+  {$IF defined(VerboseSizeMsg) or defined(CHECK_POSITION) or defined(VerboseIntfSizing)}
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
   {$ENDIF}
@@ -6667,7 +6668,7 @@ begin
   NewWidth := Message.WindowPos^.cx;
   NewHeight := Message.WindowPos^.cy;
 
-  {$IF defined(VerboseSizeMsg) or defined(CHECK_POSITION) or defined(VerboseBug16184)}
+  {$IF defined(VerboseSizeMsg) or defined(CHECK_POSITION) or defined(VerboseIntfSizing)}
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
   {$ENDIF}
@@ -7870,7 +7871,7 @@ begin
       Include(FWinControlFlags,wcfHandleVisible)
     else
       Exclude(FWinControlFlags,wcfHandleVisible);
-    {$IF defined(VerboseNewAutoSize) or defined(VerboseBug16184) or defined(VerboseShowing)}
+    {$IF defined(VerboseNewAutoSize) or defined(VerboseIntfSizing) or defined(VerboseShowing)}
     DebugLn(['TWinControl.DoSendShowHideToInterface ',DbgSName(Self),' FBoundsRealized=',dbgs(FBoundsRealized),' New=',HandleObjectShouldBeVisible]);
     {$ENDIF}
     TWSWinControlClass(WidgetSetClass).ShowHide(Self);
@@ -7938,7 +7939,7 @@ begin
   );
   {$ENDIF}
 
-  {$IFDEF VerboseBug16184}
+  {$IFDEF VerboseIntfSizing}
   if (Visible) then begin
     DebugLn('[TWinControl.DoSendBoundsToInterface] A ',DbgSName(Self),
     ' OldRelBounds=',dbgs(FBoundsRealized),
