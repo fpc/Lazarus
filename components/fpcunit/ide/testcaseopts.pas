@@ -17,10 +17,9 @@ type
     cbSetup: TCheckBox;
     cbTeardown: TCheckBox;
     edDefaultName: TEdit;
-    gbNames: TGroupBox;
     gbFixture: TGroupBox;
+    gbNames: TGroupBox;
     Label1: TLabel;
-    Panel1: TPanel;
     procedure btnAcceptClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -43,7 +42,6 @@ end;
 
 procedure TTestCaseOptionsForm.FormCreate(Sender: TObject);
 begin
-  //
   Caption := sfrmTest;
   gbNames.Caption:= sgrpNames;
   gbFixture.Caption:= sgrpFixture;
