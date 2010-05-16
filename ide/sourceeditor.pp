@@ -3749,15 +3749,24 @@ begin
   // use the token left of the caret
   x2 := Min(x2, aTextPos.x);
   WordToken := copy(Line, x1, x2-x1);
-  if (Category in [acoSpace]) and (SysUtils.CompareText(WordToken,'IF')=0) then
-  begin
+  if (Category in [acoSpace])
+  and ((SysUtils.CompareText(WordToken,'if')=0)
+    or (SysUtils.CompareText(WordToken,'while')=0)
+    or (SysUtils.CompareText(WordToken,'for')=0)
+    or (SysUtils.CompareText(WordToken,'foreach')=0)
+    )
+  then begin
     p:=x2;
     ReadRawNextPascalAtom(Line,p,StartPos);
     if SysUtils.CompareText(copy(Line,StartPos,p-StartPos),'begin')=0 then begin
-      // 'if begin'
-      // => insert 'then'
+      // 'if begin' => insert 'then'
+      // 'while begin' => insert 'do'
       Result:=true;
-      s:=' '+CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('then');
+      if (SysUtils.CompareText(WordToken,'if')=0) then
+        s:='then'
+      else
+        s:='do';
+      s:=' '+CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord(s);
       if not (Line[x2] in [' ',#9]) then
         s:=s+' ';
       FEditor.BeginUndoBlock;
