@@ -57,59 +57,6 @@ const
   LRSStreamChunkSize = 4096; // allocating mem in 4k chunks helps many mem managers
 
 type
-{
-TComponentInterface is derived from TIComponentInterface.  It gives access to
-each control that's dropped onto the form
-}
-
-  TCustomFormEditor = class; //forward declaration
-
-
-  TComponentInterface = class(TIComponentInterface)
-  private
-    FComponentEditor: TBaseComponentEditor;
-    FDesigner: TComponentEditorDesigner;
-    FFormEditor : TCustomFormEditor;  //used to call it's functions
-    Function FSetProp(PRI : PPropInfo; const Value) : Boolean;
-    Function FGetProp(PRI : PPropInfo; var Value) : Boolean;
-    function GetDesigner: TComponentEditorDesigner;
-  protected
-    Function GetPPropInfoByIndex(Index : Integer) : PPropInfo;
-    Function GetPPropInfoByName(Name : ShortString) : PPropInfo;
-  public
-    constructor Create(AComponent: TComponent);
-    destructor Destroy; override;
-
-    Function GetComponentType: ShortString; override;
-    Function GetComponentHandle: LongInt; override;
-    Function GetParent: TIComponentInterface; override;
-    Function IsTControl: Boolean; override;
-    Function GetPropCount: Integer; override;
-    Function GetPropType(Index: Integer): TTypeKind; override;
-    Function GetPropTypeInfo(Index: Integer): PTypeInfo;
-    Function GetPropName(Index: Integer): ShortString; override;
-    Function GetPropTypeName(Index: Integer): ShortString; override;
-    Function GetPropTypebyName(Name: ShortString): TTypeKind; override;
-
-    Function GetPropValue(Index : Integer; var Value) : Boolean; override;
-    Function GetPropValuebyName(Name: ShortString; var Value) : Boolean; override;
-    Function SetProp(Index : Integer; const Value) : Boolean; override;
-    Function SetPropbyName(Name : ShortString; const Value) : Boolean; override;
-
-    Function GetControlCount: Integer; override;
-    Function GetControl(Index : Integer): TIComponentInterface; override;
-
-    Function GetComponentCount: Integer; override;
-    Function GetComponent(Index : Integer): TIComponentInterface; override;
-
-    Function Select: Boolean; override;
-    Function Focus: Boolean; override;
-    Function Delete: Boolean; override;
-    
-    function GetComponentEditor: TBaseComponentEditor;
-    property Designer: TComponentEditorDesigner read GetDesigner write FDesigner;
-  end;
-
   TSelectFrameEvent = procedure(Sender: TObject; var AComponentClass: TComponentClass) of Object;
 
   { TCustomFormEditor }
@@ -117,8 +64,6 @@ each control that's dropped onto the form
   TCustomFormEditor = class(TAbstractFormEditor)
   private
     FOnSelectFrame: TSelectFrameEvent;
-    FComponentInterfaces: TAVLTree; // tree of TComponentInterface sorted for
-                                    // component
     FSelection: TPersistentSelectionList;
     FObj_Inspector: TObjectInspectorDlg;
     FDefineProperties: TAVLTree;// tree of TDefinePropertiesCacheItem
@@ -165,9 +110,7 @@ each control that's dropped onto the form
     // selection
     function AddSelected(Value: TComponent) : Integer;
     procedure DeleteComponent(AComponent: TComponent; FreeComponent: boolean);
-    function FindComponentByName(const Name: ShortString
-                                 ): TIComponentInterface; override;
-    function FindComponent(AComponent: TComponent): TIComponentInterface; override;
+    function FindComponentByName(const Name: ShortString): TComponent; override;
     function SaveSelectionToStream(s: TStream): Boolean; override;
     function InsertFromStream(s: TStream; Parent: TWinControl;
                               Flags: TComponentPasteSelectionFlags): Boolean; override;
@@ -243,26 +186,23 @@ each control that's dropped onto the form
     function CreateUniqueComponentName(AComponent: TComponent): string; override;
     function CreateUniqueComponentName(const AClassName: string;
                                        OwnerComponent: TComponent): string; override;
-    function CreateComponentInterface(AComponent: TComponent;
-                                WithOwnedChilds: Boolean): TIComponentInterface;
-    procedure CreateChildComponentInterfaces(AComponent: TComponent);
     function GetDefaultComponentParent(TypeClass: TComponentClass
-                                       ): TIComponentInterface; override;
+                                       ): TComponent; override;
     function GetDefaultComponentPosition(TypeClass: TComponentClass;
-                                         ParentCI: TIComponentInterface;
+                                         ParentComponent: TComponent;
                                          var X,Y: integer): boolean; override;
-    function CreateComponent(ParentCI: TIComponentInterface;
+    function CreateComponent(ParentComponent: TComponent;
                              TypeClass: TComponentClass;
                              const AUnitName: shortstring;
                              NewLeft,NewTop,NewWidth,NewHeight: Integer;
-                             DisableAutoSize: boolean): TIComponentInterface; override;
+                             DisableAutoSize: boolean): TComponent; override;
     function CreateComponentFromStream(BinStream: TStream;
                       AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
                       Interactive: boolean;
                       Visible: boolean = true;
                       DisableAutoSize: boolean = false;
-                      ContextObj: TObject = nil): TIComponentInterface; override;
+                      ContextObj: TObject = nil): TComponent; override;
     function CreateRawComponentFromStream(BinStream: TStream;
                       AncestorType: TComponentClass;
                       const NewUnitName: ShortString;
@@ -272,12 +212,12 @@ each control that's dropped onto the form
                       ContextObj: TObject = nil): TComponent;
     function CreateChildComponentFromStream(BinStream: TStream;
                        ComponentClass: TComponentClass; Root: TComponent;
-                       ParentControl: TWinControl): TIComponentInterface; override;
+                       ParentControl: TWinControl): TComponent; override;
     function FixupReferences(AComponent: TComponent): TModalResult;
     procedure WriterFindAncestor(Writer: TWriter; Component: TComponent;
                                  const Name: string;
                                  var Ancestor, RootAncestor: TComponent);
-    procedure SetComponentNameAndClass(CI: TIComponentInterface;
+    procedure SetComponentNameAndClass(AComponent: TComponent;
                                        const NewName, NewClassName: shortstring);
     function ClassDependsOnComponent(AClass: TComponentClass;
                                      AComponent: TComponent): Boolean;
@@ -356,8 +296,6 @@ const
   );
   
   
-function CompareComponentInterfaces(Data1, Data2: Pointer): integer;
-function CompareComponentAndInterface(Key, Data: Pointer): integer;
 function CompareDefPropCacheItems(Item1, Item2: TDefinePropertiesCacheItem): integer;
 function ComparePersClassNameAndDefPropCacheItem(Key: Pointer;
                                      Item: TDefinePropertiesCacheItem): integer;
@@ -371,26 +309,6 @@ var
 
 implementation
 
-
-function CompareComponentInterfaces(Data1, Data2: Pointer): integer;
-var
-  CompIntf1: TComponentInterface;
-  CompIntf2: TComponentInterface;
-begin
-  CompIntf1:=TComponentInterface(Data1);
-  CompIntf2:=TComponentInterface(Data2);
-  Result:=PtrInt(CompIntf1.Component)-PtrInt(CompIntf2.Component);
-end;
-
-function CompareComponentAndInterface(Key, Data: Pointer): integer;
-var
-  AComponent: TComponent;
-  CompIntf: TComponentInterface;
-begin
-  AComponent:=TComponent(Key);
-  CompIntf:=TComponentInterface(Data);
-  Result:=PtrInt(AComponent)-PtrInt(CompIntf.Component);
-end;
 
 function CompareDefPropCacheItems(Item1, Item2: TDefinePropertiesCacheItem
   ): integer;
@@ -452,380 +370,7 @@ Begin
   AComponent := nil;
 end;
 
-{ TComponentInterface }
-
-constructor TComponentInterface.Create(AComponent: TComponent);
-begin
-  inherited Create;
-  FComponent:=AComponent;
-end;
-
-destructor TComponentInterface.Destroy;
-begin
-  FreeAndNil(FComponentEditor);
-  inherited Destroy;
-end;
-
-Function TComponentInterface.FSetProp(PRI : PPropInfo;
-const Value) : Boolean;
-Begin
-//writeln('Index = '+inttostr(PRI^.index));
-  case PRI^.PropType^.Kind of
-  tkBool: Begin
-             //Writeln('Boolean....');
-             SetOrdProp(FComponent,PRI,longint(Value));
-             Result := True;
-             end;
-  tkSString,
-  tkLString,
-  tkAString,
-  tkWString : Begin
-              //Writeln('String...');
-              SetStrProp(FComponent,PRI,ShortString(Value));
-              Result := True;
-             end;
-  tkInteger,
-  tkInt64   : Begin
-              //Writeln('Int64...');
-              SetInt64Prop(FComponent,PRI,Int64(Value));
-              Result := True;
-             end;
-  tkFloat  : Begin
-              //Writeln('Float...');
-              SetFloatProp(FComponent,PRI,Extended(Value));
-              Result := True;
-             end;
-  {$IFDEF HasVariant}
-  tkVariant  : Begin
-              //Writeln('Variant...');
-              SetVariantProp(FComponent,PRI,Variant(Value));
-              Result := True;
-             end;
-  {$ENDIF}
-  tkMethod  : Begin
-              //Writeln('Method...');
-              SetMethodProp(FComponent,PRI,TMethod(value));
-              Result := True;
-             end;
-  else
-    Result := False;
-  end;//case
-end;
-
-Function TComponentInterface.FGetProp(PRI : PPropInfo; var Value) : Boolean;
-Begin
-Result := True;
-       case PRI^.PropType^.Kind of
-       tkBool    : Longint(Value) := GetOrdProp(FComponent,PRI);
-       tkSString,
-       tkLString,
-       tkAString,
-       tkWString : Begin
-                    //Writeln('Get String...');
-                    ShortString(Value) := GetStrProp(FComponent,PRI);
-                    DebugLn('The string returned is '+String(value));
-                    DebugLn('*Get String...');
-                   end;
-       tkInteger,
-       tkInt64   : Begin
-                    //Writeln('Get Int64...');
-                    Int64(Value) := GetInt64Prop(FComponent,PRI);
-                   end;
-       tkFloat  : Begin
-                    //Writeln('Get Float...');
-                    Extended(Value) := GetFloatProp(FComponent,PRI);
-                   end;
-       tkVariant  : Begin
-                    //Writeln('Get Variant...');
-                    Variant(Value) := GetVariantProp(FComponent,PRI);
-                   end;
-       tkMethod  : Begin
-                    //Writeln('Get Method...');
-                    TMethod(Value) := GetMethodProp(FComponent,PRI);
-                   end;
-         else
-          Result := False;
-       end;//case
-end;
-
-function TComponentInterface.GetDesigner: TComponentEditorDesigner;
-var
-  DesignerForm: TCustomForm;
-begin
-  if FDesigner=nil then begin
-    DesignerForm:=GetDesignerForm(Component);
-    if DesignerForm=nil then begin
-      raise Exception.Create('TComponentInterface.GetDesigner: '
-        +Component.Name+' DesignerForm=nil');
-    end;
-    FDesigner:=TComponentEditorDesigner(DesignerForm.Designer);
-    if FDesigner=nil then begin
-      raise Exception.Create('TComponentInterface.GetDesigner: '
-        +Component.Name+' Designer=nil');
-    end;
-    if not (FDesigner is TComponentEditorDesigner) then begin
-      raise Exception.Create('TComponentInterface.GetDesigner: '
-         +Component.Name+' Designer='+FDesigner.ClassName);
-    end;
-  end;
-  Result:=FDesigner;
-end;
-
-Function TComponentInterface.GetPPropInfoByIndex(Index:Integer): PPropInfo;
-var
-  PT : PTypeData;
-  PP : PPropList;
-  PI : PTypeInfo;
-Begin
-  PI := FComponent.ClassInfo;
-  PT:=GetTypeData(PI);
-  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
-  GetPropInfos(PI,PP);
-  if Index < PT^.PropCount then
-    Result:=PP^[index]
-    else
-    Result := nil;
-
-   Freemem(PP);
-end;
-
-Function TComponentInterface.GetPPropInfoByName(Name:ShortString): PPropInfo;
-var
-  PT : PTypeData;
-  PP : PPropList;
-  PI : PTypeInfo;
-  I  : Longint;
-Begin
-  Name := Uppercase(name);
-  PI := FComponent.ClassInfo;
-  PT:=GetTypeData(PI);
-  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
-  GetPropInfos(PI,PP);
-  I := -1;
-  repeat
-    inc(i);
-  until (PP^[i]^.Name = Name) or (i = PT^.PropCount-1);
-
-  if PP^[i]^.Name = Name then
-    Result:=PP^[i]
-  else
-    Result := nil;
-
-   Freemem(PP);
-end;
-
-Function TComponentInterface.GetComponentType    : ShortString;
-Begin
-  Result:=FComponent.ClassName;
-end;
-
-Function TComponentInterface.GetComponentHandle  : LongInt;
-Begin
-//return the TWinControl handle?
-  if (Component is TWinControl) then
-  Result := TWinControl(Component).Handle;
-end;
-
-Function TComponentInterface.GetParent : TIComponentInterface;
-Begin
-  result := nil;
-  if (FComponent is TControl) then
-  if TControl(FComponent).Parent <> nil then
-  begin
-     Result := FFormEditor.FindComponent(TControl(FComponent).Parent);
-  end;
-end;
-
-Function TComponentInterface.IsTControl : Boolean;
-Begin
-  Result := (FComponent is TControl);
-end;
-
-Function TComponentInterface.GetPropCount : Integer;
-var
-  PT : PTypeData;
-Begin
-  PT:=GetTypeData(FComponent.ClassInfo);
-  Result := PT^.PropCount;
-end;
-
-Function TComponentInterface.GetPropType(Index : Integer) : TTypeKind;
-var
-PT : PTypeData;
-PP : PPropList;
-PI : PTypeInfo;
-Begin
-  PI:=FComponent.ClassInfo;
-  PT:=GetTypeData(PI);
-  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
-  GetPropInfos(PI,PP);
-  if Index < PT^.PropCount then
-      Result := PP^[Index]^.PropType^.Kind
-      else
-      Result := tkUnknown;
-
-  freemem(PP);
-end;
-
-Function TComponentInterface.GetPropTypeInfo(Index : Integer) : PTypeInfo;
-var
-PT : PTypeData;
-PP : PPropList;
-PI : PTypeInfo;
-Begin
-  PI:=FComponent.ClassInfo;
-  PT:=GetTypeData(PI);
-  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
-  GetPropInfos(PI,PP);
-  if Index < PT^.PropCount then
-      Result := PP^[Index]^.PropType
-      else
-      Result := nil;
-  freemem(PP);
-end;
-
-
-{This returns "Integer" or "Boolean"}
-Function TComponentInterface.GetPropTypeName(Index : Integer) : ShortString;
-var
-  PT : PTypeData;
-  PP : PPropList;
-  PI : PTypeInfo;
-Begin
-  PI:=FComponent.ClassInfo;
-  PT:=GetTypeData(PI);
-  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
-  GetPropInfos(PI,PP);
-  if Index < PT^.PropCount then
-      Result := PP^[Index]^.PropType^.Name
-      else
-      Result := '';
-  freemem(PP);
-end;
-
-
-{This returns "Left" "Align" "Visible"}
-Function TComponentInterface.GetPropName(Index : Integer) : ShortString;
-var
-PT : PTypeData;
-PP : PPropList;
-PI : PTypeInfo;
-Begin
-  PI:=FComponent.ClassInfo;
-  PT:=GetTypeData(PI);
-  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
-  GetPropInfos(PI,PP);
-  if Index < PT^.PropCount then
-//      Result := PP^[Index]^.PropType^.Name
-      Result := PP^[Index]^.Name
-      else
-      Result := '';
-  freemem(PP);
-end;
-
-Function TComponentInterface.GetPropTypebyName(Name : ShortString) : TTypeKind;
-var
-  PT  : PTypeData;
-  PP  : PPropList;
-  PI  : PTypeInfo;
-  I   : Longint;
-Begin
-  PI:=FComponent.ClassInfo;
-  PT:=GetTypeData(PI);
-  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
-  GetPropInfos(PI,PP);
-
-  Result := tkUnknown;
-  For I:=0 to PT^.PropCount-1 do
-  If PP^[i]<>Nil then
-  begin
-    if PP^[i]^.Name = Name then
-    begin
-      Result := PP^[i]^.PropType^.Kind;
-      Break;
-    end;
-  end;
-
-  freemem(PP);
-end;
-
-Function TComponentInterface.GetPropValue(Index : Integer; var Value) : Boolean;
-var
-  PP : PPropInfo;
-Begin
-  PP := GetPPropInfoByIndex(Index);
-  Result := FGetProp(PP,Value);
-end;
-
-Function TComponentInterface.GetPropValuebyName(Name: ShortString; var Value) : Boolean;
-var
-  PRI : PPropInfo;
-Begin
-  Result := False;
-  PRI := GetPPropInfoByName(Name);
-
-  if PRI <> nil then
-    Result := FGetProp(PRI,Value);
-end;
-
-Function TComponentInterface.SetProp(Index : Integer; const Value) : Boolean;
-var
-PRI : PPropInfo;
-Begin
-  Result := False;
-  PRI := GetPPropInfoByIndex(Index);
-  if PRI <> nil then
-      Begin
-        Result := FSetProp(PRI,Value);
-      end;
-end;
-
-
-Function TComponentInterface.SetPropbyName(Name : ShortString; const Value) : Boolean;
-var
-  PRI : PPropInfo;
-Begin
-  //Writeln('SetPropByName Name='''+Name+'''');
-  Result := False;
-
-  PRI := GetPropInfo(FComponent.ClassInfo,Name);
-  if PRI <> nil then
-  Begin
-    Result :=FSetProp(PRI,Value);
-  end;
-end;
-
-Function TComponentInterface.GetControlCount: Integer;
-Begin
-  // XXX Todo:
-  Result := -1;
-end;
-
-Function TComponentInterface.GetControl(Index : Integer): TIComponentInterface;
-Begin
-  // XXX Todo:
-  Result := nil;
-end;
-
-Function TComponentInterface.GetComponentCount: Integer;
-Begin
-  // XXX Todo:
-   Result := -1;
-end;
-
-Function TComponentInterface.GetComponent(Index : Integer): TIComponentInterface;
-Begin
-  // XXX Todo:
-  Result := nil;
-end;
-
-Function TComponentInterface.Select : Boolean;
-Begin
-  // XXX Todo:
-  Result := False;
-end;
-
-function TComponentInterface.Focus : Boolean;
+{function TComponentInterface.Focus : Boolean;
 begin
   Result := False;
   if (FComponent is TWinControl) and (TWinControl(FComponent).CanFocus) then
@@ -837,13 +382,7 @@ end;
 
 function TComponentInterface.Delete: Boolean;
 begin
-  {$IFDEF VerboseFormEditor}
-  writeln('TComponentInterface.Delete A ',Component.Name,':',Component.ClassName);
-  {$ENDIF}
   Result:=TryFreeComponent(FComponent);
-  {$IFDEF VerboseFormEditor}
-  writeln('TComponentInterface.Delete B ');
-  {$ENDIF}
   Free;
 end;
 
@@ -854,7 +393,7 @@ begin
   end;
   Result:=FComponentEditor;
 end;
-
+}
 
 { TCustomFormEditor }
 
@@ -874,7 +413,6 @@ var
   l: Integer;
 begin
   inherited Create;
-  FComponentInterfaces := TAVLTree.Create(@CompareComponentInterfaces);
   FNonFormForms := TAVLTree.Create(@CompareNonFormDesignerForms);
   FSelection := TPersistentSelectionList.Create;
   FDesignerBaseClasses:=TFPList.Create;
@@ -905,7 +443,6 @@ begin
   FreeAndNil(JITNonFormList);
   FreeAndNil(FDesignerMediatorClasses);
   FreeAndNil(FDesignerBaseClasses);
-  FreeAndNil(FComponentInterfaces);
   FreeAndNil(FSelection);
   FreeAndNil(FNonFormForms);
   inherited Destroy;
@@ -940,16 +477,11 @@ end;
 Procedure TCustomFormEditor.DeleteComponent(AComponent: TComponent;
   FreeComponent: boolean);
 var
-  CompIntf : TComponentInterface;
   i: integer;
   AForm: TCustomForm;
   AWinControl: TWinControl;
   IsJIT: Boolean;
 Begin
-  CompIntf := TComponentInterface(FindComponent(AComponent));
-  if CompIntf <> nil then
-    FComponentInterfaces.Remove(CompIntf);
-
   {$IFDEF IDE_DEBUG}
   DebugLn(['TCustomFormEditor.DeleteComponent ',DbgSName(AComponent),' IsJITComponent=',IsJITComponent(AComponent),' FreeComponent=',FreeComponent]);
   {$ENDIF}
@@ -988,14 +520,6 @@ Begin
         JITNonFormList.DestroyJITComponent(AComponent);
     end else
       RaiseException('TCustomFormEditor.DeleteComponent '+AComponent.ClassName);
-    CompIntf.Free;
-  end
-  else if CompIntf<>nil then begin
-    // value is a normal child component
-    if FreeComponent then
-      CompIntf.Delete
-    else
-      CompIntf.Free;
   end else if FreeComponent then begin
     if (AComponent.Owner=nil) then
       DebugLn(['WARNING: TCustomFormEditor.DeleteComponent freeing orphaned component ',DbgSName(AComponent)]);
@@ -1012,32 +536,26 @@ Begin
   end;
 end;
 
-Function TCustomFormEditor.FindComponentByName(
-  const Name: ShortString) : TIComponentInterface;
-Var
-  ANode: TAVLTreeNode;
+Function TCustomFormEditor.FindComponentByName(const Name: ShortString
+  ): TComponent;
+var
+  i: longint;
 Begin
-  ANode:=FComponentInterfaces.FindLowest;
-  while ANode<>nil do begin
-    Result := TIComponentInterface(ANode.Data);
-    if CompareText(TComponentInterface(Result).Component.Name,Name)=0 then
+  if JITFormList<>nil then begin
+    i:=JITFormList.FindComponentByName(Name);
+    if i>=0 then begin
+      Result:=JITFormList[i];
       exit;
-    ANode:=FComponentInterfaces.FindSuccessor(ANode);
+    end;
+  end;
+  if JITNonFormList<>nil then begin
+    i:=JITNonFormList.FindComponentByName(Name);
+    if i>=0 then begin
+      Result:=JITNonFormList[i];
+      exit;
+    end;
   end;
   Result:=nil;
-end;
-
-Function TCustomFormEditor.FindComponent(AComponent: TComponent
-  ): TIComponentInterface;
-Var
-  ANode: TAVLTreeNode;
-Begin
-  ANode:=FComponentInterfaces.FindKey(Pointer(AComponent),
-                                      @CompareComponentAndInterface);
-  if ANode<>nil then
-    Result:=TIComponentInterface(ANode.Data)
-  else
-    Result:=nil;
 end;
 
 function TCustomFormEditor.SaveSelectionToStream(s: TStream): boolean;
@@ -1571,29 +1089,28 @@ end;
 function TCustomFormEditor.GetComponentEditor(AComponent: TComponent
   ): TBaseComponentEditor;
 var
-  ACompIntf: TComponentInterface;
+  ADesigner: TIDesigner;
 begin
   Result:=nil;
   if AComponent=nil then exit;
-  ACompIntf:=TComponentInterface(FindComponent(AComponent));
-  if ACompIntf=nil then exit;
-  Result:=ACompIntf.GetComponentEditor;
+  ADesigner:=GetDesignerByComponent(AComponent);
+  if ADesigner is TComponentEditorDesigner then
+    Result:=ComponentEditors.GetComponentEditor(AComponent,
+                                           TComponentEditorDesigner(ADesigner));
 end;
 
-function TCustomFormEditor.CreateComponent(ParentCI: TIComponentInterface;
+function TCustomFormEditor.CreateComponent(ParentComponent: TComponent;
   TypeClass: TComponentClass; const AUnitName: shortstring;
   NewLeft, NewTop, NewWidth, NewHeight: Integer;
-  DisableAutoSize: boolean): TIComponentInterface;
+  DisableAutoSize: boolean): TComponent;
 const
   PreferredDistanceMin = 30;
   PreferredDistanceMax = 250;
 var
-  Temp: TComponentInterface;
   NewJITIndex: Integer;
   CompLeft, CompTop, CompWidth, CompHeight: integer;
   NewComponent: TComponent;
   OwnerComponent: TComponent;
-  ParentComponent: TComponent;
   JITList: TJITComponentList;
   AControl: TControl;
   AParent: TWinControl;
@@ -1619,8 +1136,6 @@ var
 
 begin
   Result:=nil;
-  Temp:=nil;
-  ParentComponent:=nil;
   AParent:=nil;
   NewComponent:=nil;
   Mediator:=nil;
@@ -1630,10 +1145,9 @@ begin
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent A');{$ENDIF}
 
     OwnerComponent:=nil;
-    if Assigned(ParentCI) then
+    if Assigned(ParentComponent) then
     begin
       // add as child component
-      ParentComponent := TComponentInterface(ParentCI).Component;
       Mediator:=GetDesignerMediatorByComponent(ParentComponent);
       OwnerComponent := ParentComponent;
       if OwnerComponent.Owner <> nil then
@@ -1677,9 +1191,6 @@ begin
         JITList.ReadInlineJITChildComponent(NewComponent);
       end;
 
-      // create component interface
-      Temp:=TComponentInterface(CreateComponentInterface(NewComponent,false));
-
       // calc parent
       AParent:=nil;
       if ParentComponent is TControl then begin
@@ -1710,7 +1221,6 @@ begin
         exit;
       // create component interface
       NewComponent:=JITList[NewJITIndex];
-      Temp := TComponentInterface(CreateComponentInterface(NewComponent,false))
     end;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent D ');{$ENDIF}
     try
@@ -1832,15 +1342,9 @@ begin
     end;
 
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent F ');{$ENDIF}
-    // add to component list
     //DebugLn(['TCustomFormEditor.CreateComponent ',dbgsName(NewComponent),' ',FindComponent(NewComponent)<>nil]);
-    if FindComponent(NewComponent)=nil then
-      FComponentInterfaces.Add(Temp);
 
-    if NewComponent.Owner<>nil then
-      CreateChildComponentInterfaces(NewComponent.Owner);
-
-    Result := Temp;
+    Result := NewComponent;
   finally
     // clean up carefully
     if FreeMediator and (Mediator<>nil) then begin
@@ -1858,26 +1362,20 @@ begin
       end;
     end;
     if Result=nil then begin
-      if Temp=nil then begin
-        if NewComponent<>nil then begin
-          try
-            NewComponent.Free;
-            NewComponent:=nil;
-          except
-            on E: Exception do begin
-              s:='Error destroying component of type '+TypeClass.ClassName
-                +' of unit '+AUnitName+':'#13
-                +E.Message;
-              DebugLn(['TCustomFormEditor.CreateComponent ',s]);
-              DumpExceptionBackTrace;
-              MessageDlg('Error destroying component',s,mtError,[mbCancel],0);
-            end;
+      if NewComponent<>nil then begin
+        try
+          NewComponent.Free;
+          NewComponent:=nil;
+        except
+          on E: Exception do begin
+            s:='Error destroying component of type '+TypeClass.ClassName
+              +' of unit '+AUnitName+':'#13
+              +E.Message;
+            DebugLn(['TCustomFormEditor.CreateComponent ',s]);
+            DumpExceptionBackTrace;
+            MessageDlg('Error destroying component',s,mtError,[mbCancel],0);
           end;
         end;
-      end;
-      if (Result<>Temp) then begin
-        Temp.Free;
-        Temp:=nil;
       end;
     end;
   end;
@@ -1888,13 +1386,10 @@ function TCustomFormEditor.CreateComponentFromStream(
   AncestorType: TComponentClass;
   const NewUnitName: ShortString;
   Interactive: boolean; Visible: boolean; DisableAutoSize: boolean;
-  ContextObj: TObject): TIComponentInterface;
-var
-  NewComponent: TComponent;
+  ContextObj: TObject): TComponent;
 begin
-  NewComponent:=CreateRawComponentFromStream(BinStream,
+  Result:=CreateRawComponentFromStream(BinStream,
        AncestorType,NewUnitName,Interactive,Visible,DisableAutoSize,ContextObj);
-  Result:=CreateComponentInterface(NewComponent,true);
 end;
 
 function TCustomFormEditor.CreateRawComponentFromStream(BinStream: TStream;
@@ -1923,9 +1418,8 @@ end;
 
 function TCustomFormEditor.CreateChildComponentFromStream(BinStream: TStream;
   ComponentClass: TComponentClass; Root: TComponent;
-  ParentControl: TWinControl): TIComponentInterface;
+  ParentControl: TWinControl): TComponent;
 var
-  NewComponent: TComponent;
   JITList: TJITComponentList;
 begin
   Result:=nil;
@@ -1935,11 +1429,8 @@ begin
     RaiseException('TCustomFormEditor.CreateChildComponentFromStream ClassName='+
                    Root.ClassName);
 
-  NewComponent:=JITList.AddJITChildComponentFromStream(
+  Result:=JITList.AddJITChildComponentFromStream(
                                    Root,BinStream,ComponentClass,ParentControl);
-                                                 
-  // create component interface(s) for the new child component(s)
-  Result:=CreateComponentInterface(NewComponent,true);
 end;
 
 function TCustomFormEditor.FixupReferences(AComponent: TComponent): TModalResult;
@@ -1977,13 +1468,12 @@ begin
   end;
 end;
 
-procedure TCustomFormEditor.SetComponentNameAndClass(CI: TIComponentInterface;
+procedure TCustomFormEditor.SetComponentNameAndClass(
+  AComponent: TComponent;
   const NewName, NewClassName: shortstring);
 var
-  AComponent: TComponent;
   JITList: TJITComponentList;
 begin
-  AComponent:=TComponentInterface(CI).Component;
   JITList:=GetJITListOfType(TComponentClass(AComponent.ClassType));
   JITList.RenameComponentClass(AComponent,NewClassName);
   AComponent.Name:=NewName;
@@ -2628,35 +2118,8 @@ begin
   Result:=EditorOpts.KeyMap.TranslateKey(Key,Shift,TDesignerIDECommandForm);
 end;
 
-function TCustomFormEditor.CreateComponentInterface(
-  AComponent: TComponent; WithOwnedChilds: Boolean): TIComponentInterface;
-begin
-  Result := FindComponent(AComponent);
-  if Result = nil then 
-  begin
-    Result := TComponentInterface.Create(AComponent);
-    FComponentInterfaces.Add(Result);
-  end;
-  if WithOwnedChilds then
-    CreateChildComponentInterfaces(AComponent);
-end;
-
-procedure TCustomFormEditor.CreateChildComponentInterfaces(AComponent: TComponent);
-var
-  i: Integer;
-  ChildComponent: TComponent;
-begin
-  // create a component interface for each component owned by the new component
-  for i := 0 to AComponent.ComponentCount - 1 do 
-  begin
-    ChildComponent := AComponent.Components[i];
-    CreateComponentInterface(ChildComponent,
-                             csInline in ChildComponent.ComponentState);
-  end;
-end;
-
 function TCustomFormEditor.GetDefaultComponentParent(TypeClass: TComponentClass
-  ): TIComponentInterface;
+  ): TComponent;
 var
   NewParent: TComponent;
   Root: TPersistent;
@@ -2698,15 +2161,13 @@ begin
       end;
     end;
   end;
-  if NewParent<>nil then
-    Result:=FindComponent(NewParent);
+  Result:=NewParent;
 end;
 
 function TCustomFormEditor.GetDefaultComponentPosition(
-  TypeClass: TComponentClass; ParentCI: TIComponentInterface; var X, Y: integer
+  TypeClass: TComponentClass; ParentComponent: TComponent; var X, Y: integer
   ): boolean;
 var
-  ParentComponent: TComponent;
   i: Integer;
   CurComponent: TComponent;
   P: TPoint;
@@ -2719,13 +2180,12 @@ begin
   Result:=true;
   X:=10;
   Y:=10;
-  if ParentCI=nil then
-    ParentCI:=GetDefaultComponentParent(TypeClass);
-  if (ParentCI=nil) or (ParentCI.Component=nil) or (TypeClass=nil) then exit;
+  if ParentComponent=nil then
+    ParentComponent:=GetDefaultComponentParent(TypeClass);
+  if (ParentComponent=nil) or (TypeClass=nil) then exit;
   if (TypeClass.InheritsFrom(TControl)) then exit;
   // a non visual component
   // put it somewhere right or below the other non visual components
-  ParentComponent:=ParentCI.Component;
   MinX:=-1;
   MinY:=-1;
   if (ParentComponent is TWinControl) then

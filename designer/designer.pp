@@ -1406,6 +1406,13 @@ begin
         mtError,[mbOk],0);
     end;
   end;
+  try
+    CompEditor.Free;
+  except
+    on E: Exception do begin
+      DebugLn('TDesigner.InvokeComponentEditor ERROR freeing component editor: ',E.Message);
+    end;
+  end;
 end;
 
 procedure TDesigner.DoProcessCommand(Sender: TObject; var Command: word;
@@ -1853,7 +1860,6 @@ end;
 procedure TDesigner.MouseUpOnControl(Sender : TControl;
   var TheMessage:TLMMouse);
 var
-  ParentCI, NewCI: TComponentInterface;
   NewLeft, NewTop, NewWidth, NewHeight: Integer;
   Button: TMouseButton;
   Shift: TShiftState;
@@ -1908,9 +1914,7 @@ var
       end;
       NewParent := NewParentControl;
     end;
-
-    ParentCI:=TComponentInterface(TheFormEditor.FindComponent(NewParent));
-    if not Assigned(ParentCI) then exit;
+    if not Assigned(NewParent) then exit;
 
     if not PropertyEditorHook.BeforeAddPersistent(Self,
                                      SelectedCompClass.ComponentClass,NewParent)
@@ -1960,11 +1964,10 @@ var
     // create component and component interface
     DebugLn(['AddComponent ',DbgSName(NewComponentClass),' Parent=',DbgSName(NewParent),' ',NewLeft,',',NewTop,',',NewWidth,',',NewHeight]);
     DisableAutoSize:={$IFDEF OldAutoSize}false{$ELSE}true{$ENDIF};
-    NewCI := TComponentInterface(TheFormEditor.CreateComponent(
-       ParentCI,NewComponentClass,'',
-       NewLeft,NewTop,NewWidth,NewHeight,DisableAutoSize));
-    if NewCI=nil then exit;
-    NewComponent:=NewCI.Component;
+    NewComponent := TheFormEditor.CreateComponent(
+       NewParent,NewComponentClass,'',
+       NewLeft,NewTop,NewWidth,NewHeight,DisableAutoSize);
+    if NewComponent=nil then exit;
     if DisableAutoSize and (NewComponent is TControl) then
       TControl(NewComponent).EnableAutoSizing;
     TheFormEditor.FixupReferences(NewComponent); // e.g. frame references a datamodule
@@ -2510,39 +2513,44 @@ procedure TDesigner.DoDeletePersistent(APersistent: TPersistent;
   FreeIt: boolean);
 var
   Hook: TPropertyEditorHook;
+  AComponent: TComponent;
+  AForm: TCustomForm;
 begin
   if APersistent=nil then exit;
-  //debugln(['TDesigner.DoDeletePersistent A ',dbgsName(APersistent),' FreeIt=',FreeIt]);
-  PopupMenuComponentEditor:=nil;
-  // unselect component
-  ControlSelection.Remove(APersistent);
-  if (APersistent is TComponent)
-  and (TheFormEditor.FindComponent(TComponent(APersistent))=nil) then begin
-    // this component is currently in the process of deletion or the component
-    // was not properly created
-    // -> do not call handlers and simply get rid of the rubbish
-    if FreeIt then begin
-      //debugln('TDesigner.DoDeletePersistent UNKNOWN in formeditor: ',dbgsName(APersistent));
-      APersistent.Free;
+  try
+    //debugln(['TDesigner.DoDeletePersistent A ',dbgsName(APersistent),' FreeIt=',FreeIt]);
+    PopupMenuComponentEditor:=nil;
+    // unselect component
+    ControlSelection.Remove(APersistent);
+    if (APersistent is TComponent) then begin
+      AComponent:=TComponent(APersistent);
+      if csDestroying in AComponent.ComponentState then
+        FreeIt:=false;
     end;
+    AForm:=GetDesignerForm(APersistent);
+    if AForm=nil then begin
+      // has no designer
+      // -> do not call handlers and simply get rid of the rubbish
+      if FreeIt then begin
+        //debugln('TDesigner.DoDeletePersistent UNKNOWN in formeditor: ',dbgsName(APersistent));
+        APersistent.Free;
+      end;
+      exit;
+    end;
+    // call component deleting handlers
+    Hook:=GetPropertyEditorHook;
+    if Hook<>nil then
+      Hook.PersistentDeleting(APersistent);
+    // delete component
+    if APersistent is TComponent then
+      TheFormEditor.DeleteComponent(TComponent(APersistent),FreeIt)
+    else if FreeIt then
+      APersistent.Free;
+  finally
     // unmark component
     DeletingPersistent.Remove(APersistent);
     IgnoreDeletingPersistent.Remove(APersistent);
-    exit;
   end;
-  // call component deleting handlers
-  Hook:=GetPropertyEditorHook;
-  if Hook<>nil then
-    Hook.PersistentDeleting(APersistent);
-  // delete component
-  if APersistent is TComponent then
-    TheFormEditor.DeleteComponent(TComponent(APersistent),FreeIt)
-  else
-  if FreeIt then
-    APersistent.Free;
-  // unmark component
-  DeletingPersistent.Remove(APersistent);
-  IgnoreDeletingPersistent.Remove(APersistent);
   // call ComponentDeleted handler
   if Assigned(FOnPersistentDeleted) then
     FOnPersistentDeleted(Self,APersistent);
@@ -2671,9 +2679,6 @@ begin
       // a component has auto created a new component during deletion
       // -> ignore the new component
       IgnoreDeletingPersistent.Add(AComponent);
-    end else begin
-      if (TheFormEditor<>nil) then
-        TheFormEditor.CreateComponentInterface(AComponent,false);
     end;
   end
   else

@@ -278,13 +278,14 @@ begin
   end;
 end;
 
-procedure TComponentListForm.AddSelectedComponent(AComponent: TRegisteredComponent) ;
-//Add the DblClicked component to the current designed form
+procedure TComponentListForm.AddSelectedComponent(AComponent: TRegisteredComponent);
+// Add the DblClicked component to the current designed form
 var
-  CompIntf, ParentCI: TIComponentInterface;
   TypeClass: TComponentClass;
   X, Y: integer;
   DisableAutoSize: Boolean;
+  ParentComponent: TComponent;
+  NewComponent: TComponent;
 begin
   if not Assigned(AComponent)
   then Exit;
@@ -293,22 +294,21 @@ begin
   //TComponentPalette(IDEComponentPalette).Selected := AComponent;
 
   TypeClass:=AComponent.ComponentClass;
-  ParentCI:=FormEditingHook.GetDefaultComponentParent(TypeClass);
-  if ParentCI=nil
-  then exit;
+  ParentComponent:=FormEditingHook.GetDefaultComponentParent(TypeClass);
+  if ParentComponent=nil then exit;
 
   //Would be lovely if it would only select the component as if it was
-  //clicked in the pallette bar so you can drop it on your own position.
-  if not FormEditingHook.GetDefaultComponentPosition(TypeClass,ParentCI,X,Y)
+  //clicked in the palette bar so you can drop it on your own position.
+  if not FormEditingHook.GetDefaultComponentPosition(TypeClass,ParentComponent,X,Y)
   then exit;
 
   DisableAutoSize:=true;
-  CompIntf:=FormEditingHook.CreateComponent(ParentCI,TypeClass,'',X,Y,0,0,
-                                            DisableAutoSize);
-  if Assigned(CompIntf) then begin
-    if DisableAutoSize and (CompIntf.Component is TControl) then
-      TControl(CompIntf.Component).EnableAutoSizing;
-    GlobalDesignHook.PersistentAdded(CompIntf.Component,true);
+  NewComponent:=FormEditingHook.CreateComponent(ParentComponent,TypeClass,'',
+                                                       X,Y,0,0,DisableAutoSize);
+  if Assigned(NewComponent) then begin
+    if DisableAutoSize and (NewComponent is TControl) then
+      TControl(NewComponent).EnableAutoSizing;
+    GlobalDesignHook.PersistentAdded(NewComponent,true);
   end;
 end;
 

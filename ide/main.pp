@@ -4679,7 +4679,6 @@ function TMainIDE.CreateNewForm(NewUnitInfo: TUnitInfo;
   AncestorType: TPersistentClass; ResourceCode: TCodeBuffer;
   UseCreateFormStatements, DisableAutoSize: Boolean): TModalResult;
 var
-  CInterface: TComponentInterface;
   NewComponent: TComponent;
   new_x, new_y: integer;
 begin
@@ -4708,16 +4707,14 @@ begin
   if screen.height-new_y>=MainIDEBar.top then inc(new_y, 80) else new_y:=24;
 
   // create jit component
-  CInterface := TComponentInterface(
-    FormEditor1.CreateComponent(nil,TComponentClass(AncestorType),
-      NewUnitInfo.CreateUnitName, new_x, new_y, 0,0,DisableAutoSize));
-  if CInterface=nil then begin
+  NewComponent := FormEditor1.CreateComponent(nil,TComponentClass(AncestorType),
+      NewUnitInfo.CreateUnitName, new_x, new_y, 0,0,DisableAutoSize);
+  if NewComponent=nil then begin
     DebugLn(['TMainIDE.CreateNewForm FormEditor1.CreateComponent failed ',dbgsName(TComponentClass(AncestorType))]);
     exit(mrCancel);
   end;
-  FormEditor1.SetComponentNameAndClass(CInterface,
+  FormEditor1.SetComponentNameAndClass(NewComponent,
     NewUnitInfo.ComponentName,'T'+NewUnitInfo.ComponentName);
-  NewComponent:=CInterface.Component;
   if NewComponent is TCustomForm then
     TControl(NewComponent).Visible := False;
   if (NewComponent is TControl)
@@ -6163,7 +6160,6 @@ begin
   // create the designer (if not already done)
   if ([ofProjectLoading,ofLoadHiddenResource]*OpenFlags=[]) then
     FormEditor1.ClearSelection;
-  FormEditor1.CreateComponentInterface(NewComponent,true);
   {$IFDEF IDE_DEBUG}
   DebugLn('SUCCESS: streaming lfm="',LFMBuf.Filename,'"');
   {$ENDIF}
@@ -12990,7 +12986,6 @@ var
   NewClassName: String;
   ARegComp: TRegisteredComponent;
   BinCompStream: TMemoryStream;
-  CInterface: TComponentInterface;
 begin
   DebugLn('TMainIDE.OnDesignerPasteComponent A');
   NewComponent:=nil;
@@ -13035,14 +13030,12 @@ begin
     BinCompStream.Position:=0;
 
     // create the component
-    CInterface := TComponentInterface(
-                     FormEditor1.CreateChildComponentFromStream(BinCompStream,
-                     ARegComp.ComponentClass,LookupRoot,ParentControl));
-    if CInterface=nil then begin
+    NewComponent := FormEditor1.CreateChildComponentFromStream(BinCompStream,
+                     ARegComp.ComponentClass,LookupRoot,ParentControl);
+    if NewComponent=nil then begin
       DebugLn('TMainIDE.OnDesignerPasteComponent FAILED');
       exit;
     end;
-    NewComponent:=CInterface.Component;
 
   finally
     BinCompStream.Free;
@@ -16483,9 +16476,6 @@ begin
     if AComponent.Name='' then
       AComponent.Name:=FormEditor1.CreateUniqueComponentName(AComponent);
     //writeln('TMainIDE.OnPropHookPersistentAdded B ',AComponent.Name,':',AComponent.ClassName);
-    // create component interface
-    if FormEditor1.FindComponent(AComponent)=nil then
-      FormEditor1.CreateComponentInterface(AComponent,false);
     // set component into design mode
     SetDesigning(AComponent,true);
     //writeln('TMainIDE.OnPropHookPersistentAdded C ',AComponent.Name,':',AComponent.ClassName);

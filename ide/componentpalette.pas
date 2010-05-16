@@ -263,9 +263,9 @@ end;
 procedure TComponentPalette.ComponentBtnDblClick(Sender: TObject);
 var
   TypeClass: TComponentClass;
-  ParentCI: TIComponentInterface;
+  ParentComp: TComponent;
   X, Y: integer;
-  CompIntf: TIComponentInterface;
+  AComponent: TComponent;
   DisableAutoSize: Boolean;
 begin
   //debugln('TComponentPalette.ComponentBtnDblClick ',TComponent(Sender).Name);
@@ -277,18 +277,18 @@ begin
         if TypeClass=nil then exit;
       end else
         TypeClass:=FSelected.ComponentClass;
-      ParentCI:=FormEditingHook.GetDefaultComponentParent(TypeClass);
-      if ParentCI=nil then exit;
-      if not FormEditingHook.GetDefaultComponentPosition(TypeClass,ParentCI,X,Y)
+      ParentComp:=FormEditingHook.GetDefaultComponentParent(TypeClass);
+      if ParentComp=nil then exit;
+      if not FormEditingHook.GetDefaultComponentPosition(TypeClass,ParentComp,X,Y)
       then exit;
       //debugln('TComponentPalette.ComponentBtnDblClick ',dbgsName(Sender),' ',dbgs(X),',',dbgs(Y));
       DisableAutoSize:=true;
-      CompIntf:=FormEditingHook.CreateComponent(ParentCI,TypeClass,'',X,Y,0,0,
+      AComponent:=FormEditingHook.CreateComponent(ParentComp,TypeClass,'',X,Y,0,0,
         DisableAutoSize);
-      if CompIntf<>nil then begin
-        if DisableAutoSize and (CompIntf.Component is TControl) then
-          TControl(CompIntf.Component).EnableAutoSizing;
-        GlobalDesignHook.PersistentAdded(CompIntf.Component,true);
+      if AComponent<>nil then begin
+        if DisableAutoSize and (AComponent is TControl) then
+          TControl(AComponent).EnableAutoSizing;
+        GlobalDesignHook.PersistentAdded(AComponent,true);
       end;
     end;
   end;
