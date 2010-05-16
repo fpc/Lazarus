@@ -3106,7 +3106,6 @@ begin
     if DockSite and UseDockManager and (DockManager<>nil) then
       DockManager.ResetBounds(false);
     AdjustClientRect(RemainingClientRect);
-    FAdjustClientRectRealized:=RemainingClientRect;
     r:=GetLogicalClientRect;
     ParentClientWidth:=r.Right;
     ParentClientHeight:=r.Bottom;
