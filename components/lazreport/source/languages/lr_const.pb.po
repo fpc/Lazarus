@@ -450,11 +450,11 @@ msgstr "S&hape"
 
 #: lr_const.sdesoptionsformshowband
 msgid "Show band &titles"
-msgstr "Mostrar &títulos banda"
+msgstr "Exibir &títulos banda"
 
 #: lr_const.sdesoptionsformshowgrd
 msgid "&Show grid"
-msgstr "&Mostrar grade"
+msgstr "&Exibir grade"
 
 #: lr_const.sdesoptionsformunits
 msgid "Report units"
@@ -795,7 +795,7 @@ msgstr "Alinhamento"
 
 #: lr_const.sfrdesignerformalignbottoms
 msgid "Align bottoms"
-msgstr "Alinhar abaixo"
+msgstr "Alinhar bases"
 
 #: lr_const.sfrdesignerformalignetop
 msgid "Align tops"
@@ -835,11 +835,11 @@ msgstr "Negrito"
 
 #: lr_const.sfrdesignerformbottomalign
 msgid "Bottom align"
-msgstr "Alinhar abaixo"
+msgstr "Alinhar base"
 
 #: lr_const.sfrdesignerformbottomframe
 msgid "Bottom frame line"
-msgstr "Borda inferior"
+msgstr "Linha base da borda"
 
 #: lr_const.sfrdesignerformbring
 msgid "Bring to front"
@@ -1912,7 +1912,7 @@ msgstr "Página"
 
 #: lr_const.spgoptformbottom
 msgid "&Bottom, mm"
-msgstr "&Rodapé, mm"
+msgstr "&Base, mm"
 
 #: lr_const.spgoptformbycolumns
 msgid "By Colum&ns"
@@ -2052,7 +2052,7 @@ msgstr "Localizar texto"
 
 #: lr_const.spreviewformhelp
 msgid "Show help"
-msgstr "Mostrar ajuda"
+msgstr "Exibir ajuda"
 
 #: lr_const.spreviewformopen
 msgctxt "lr_const.spreviewformopen"
@@ -2132,7 +2132,7 @@ msgstr "Remover esta página?"
 
 #: lr_const.srepeatheader
 msgid "Show on all pages"
-msgstr "Mostrar em todas as páginas"
+msgstr "Exibir em todas as páginas"
 
 #: lr_const.srepfile
 msgid "Report file"

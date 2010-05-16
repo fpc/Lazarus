@@ -290,7 +290,7 @@ msgstr "Cursor sempre visível"
 
 #: lazarusidestrconsts.dlgambigfileact
 msgid "Ambiguous file action:"
-msgstr "Ação ambígua de arquivos:"
+msgstr "Ação ambígua de arquivos"
 
 #: lazarusidestrconsts.dlgambigwarn
 msgid "Warn on compile"
@@ -331,7 +331,7 @@ msgstr "Recuo automático"
 
 #: lazarusidestrconsts.dlgautoindentlink
 msgid "(Setup smart indent)"
-msgstr ""
+msgstr "(Identação inteligente)"
 
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
@@ -363,7 +363,7 @@ msgstr "Mesmo nome (no subdiretório)"
 
 #: lazarusidestrconsts.dlgbehindmethods
 msgid "Behind methods"
-msgstr "Por trás dos métodos"
+msgstr "Atrás dos métodos"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
 msgid "Selection:"
@@ -522,7 +522,7 @@ msgstr "Política de inserção de parte da Classe"
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
-msgstr "Mostrar botões de fechar no \"notebook\""
+msgstr "Exibir botões de fechar no \"notebook\""
 
 #: lazarusidestrconsts.dlgclrscheme
 msgid "Color Scheme"
@@ -690,7 +690,7 @@ msgstr "Mensagens do compilador"
 
 #: lazarusidestrconsts.dlgcompilermessages
 msgid "Compiler messages language file"
-msgstr ""
+msgstr "Arquivo de idioma das mensagens do compilador"
 
 #: lazarusidestrconsts.dlgcompileroptions
 msgctxt "lazarusidestrconsts.dlgcompileroptions"
@@ -740,12 +740,12 @@ msgstr "Faixa"
 
 #: lazarusidestrconsts.dlgcoshowerr
 msgid "Show Errors"
-msgstr "Mostrar Erros"
+msgstr "Exibir Erros"
 
 #: lazarusidestrconsts.dlgcoshowoptions
 #| msgid "Show Options"
 msgid "&Show Options"
-msgstr "Mostrar Opções"
+msgstr "E&xibir Opções"
 
 #: lazarusidestrconsts.dlgcosmaller
 msgid "Smaller Code"
@@ -961,10 +961,9 @@ msgid "Colors"
 msgstr "Cores"
 
 #: lazarusidestrconsts.dlgedcompleteblocks
-#, fuzzy
 #| msgid "Complete blocks"
 msgid "Add close statement for pascal blocks"
-msgstr "Blocos completos"
+msgstr "Adicionar instrução para fechar blocos pascal"
 
 #: lazarusidestrconsts.dlgedcustomext
 msgid "User defined extension"
@@ -972,7 +971,7 @@ msgstr "Extensão definida pelo usuário"
 
 #: lazarusidestrconsts.dlgeddelay
 msgid "Delay"
-msgstr "Espera"
+msgstr "Atraso"
 
 #: lazarusidestrconsts.dlgeddelete
 msgctxt "lazarusidestrconsts.dlgeddelete"
@@ -1001,10 +1000,9 @@ msgid "Invert"
 msgstr "Inverter"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionignlockedoldedit
-#, fuzzy
 #| msgid "Ignore Locks, longest unused editor"
 msgid "Ignore Locks, use longest unused editor"
-msgstr "Ignorar Bloqueios, editor não usado por mais tempo"
+msgstr "Ignorar Bloqueios, usar editor em desuso por mais tempo"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionignlockedonlyactedit
 msgid "Ignore Locks, if editor is current"
@@ -1039,10 +1037,9 @@ msgid "New tab in existing window"
 msgstr "Nova aba em janela existente"
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedoldedit
-#, fuzzy
 #| msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. The determination of the longest unused editor does not look at the order in which the windows were focused, even if this is set by the setting for \"same criteria order\"This option will always succeed, further options are never tested."
 msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. The determination of the longest unused editor does not look at the order in which the windows were focused, even if this is set by the setting for \"same criteria order\". This option will always succeed, further options are never tested."
-msgstr "Esta opção usará o editor não usado por mais tempo para o arquivo, mesmo se estiver bloqueado e/ou precise de deslocamento. Isto sempre olha para o editor, nunca a janela, para encontrar o não usado por mais tempo. Esta opção será sempre bem-sucedida, demais opções nunca serão testadas."
+msgstr "Esta opção usará o editor em desuso por mais tempo para o arquivo, mesmo se estiver bloqueado e/ou precise de deslocamento. A determinação do editor em desuso por mais tempo não observa a ordem na qual as janelas foram focadas, mesmo que tenha sido configurada pela opção \"mesmo critério ordem\". Esta opção sempre será bem sucedida, demais opções nunca serão testadas."
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedonlyactedit
 msgid "This option will check if the current active editor has the target file and if it is, it will use the current editor, even if it is locked and/or needs scrolling."
@@ -1062,23 +1059,21 @@ msgstr "Esta opção irá usar qualquer Editor não bloqueado."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedinsoftview
 msgid "This option will use a not locked Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)."
-msgstr "Esta opção irá usar um Editor não bloqueado, que não precise se deslocar a fim de mostrar o ponto de salto alvo (ponto de salto alvo já está na área visível da tela, excluindo 2-5 linhas no topo/fundo)."
+msgstr "Esta opção irá usar um Editor não bloqueado, que não precise se deslocar a fim de mostrar o ponto de salto alvo (ponto de salto alvo já está na área visível da tela, excluindo 2-5 linhas no topo/base)."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinanywin
 msgid "This option will open a new Tab in an existing or new Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
 msgstr "Esta opção irá abrir uma nova Aba em uma Janela existente ou nova, se nenhuma aba bloqueada for encontrada. Esta opção será sempre bem-sucedida, demais opções nunca serão testadas."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinnewwin
-#, fuzzy
 #| msgid "If no unlocked tab is found, then this option will open a new Tab in a new  Window (even if other existing windows could be used for the new tab). This option will always succeed, further options are never tested."
 msgid "If no unlocked tab is found, then this option will open a new Tab in a new Window (even if other existing windows could be used for the new tab). This option will always succeed, further options are never tested."
-msgstr "Esta opção irá abrir uma nova Aba em uma nova (e sempre em uma nova) Janela, se nenhuma aba bloqueada for encontrada. Esta opção será sempre bem-sucedida, demais opções nunca serão testadas."
+msgstr "Se nenhuma aba desbloqueada for encontrada, esta opção irá abrir uma nova Aba em uma nova Janela (mesmo que outra janela existnte possa ser usada para a nova aba). Esta opção será sempre bem-sucedida, demais opções nunca serão testadas."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinoldwin
-#, fuzzy
 #| msgid "This option will open a new Tab in an existing (and only in an existing) Window, if no unlocked tab is found. A tab is only opened if a window exists, that has not yet an editor for the target file."
 msgid "If no unlocked tab is found, then this option will open a new Tab in an existing (and only in an existing) Window. A tab is only opened if a window exists, that has not yet an editor for the target file."
-msgstr "Esta opção irá abrir uma nova Aba em uma Janela existente (e somente em uma existente), se nenhuma aba bloqueada for encontrada. Uma aba é aberta somente se a janela existir, que ainda não tenha um editor para o arquivo alvo."
+msgstr "Se nenhuma aba desbloqueada for encontrada, então esta opção irá abrir uma nova Aba em uma Janela existente (e somente em uma existente). Uma aba é aberta somente se a janela existir, e que ainda não tenha um editor para o arquivo alvo."
 
 #: lazarusidestrconsts.dlgedital
 msgid "Italic"
@@ -1475,7 +1470,7 @@ msgstr "Desfazer Grupo"
 
 #: lazarusidestrconsts.dlgguidelines
 msgid "Show Guide Lines"
-msgstr "Mostrar Guias de Alinhamento"
+msgstr "Exibir Guias de Alinhamento"
 
 #: lazarusidestrconsts.dlggutter
 msgctxt "lazarusidestrconsts.dlggutter"
@@ -1540,11 +1535,11 @@ msgstr "Direita do Cursos"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
 msgid "Show Hints for parameter \"Sender\" not used"
-msgstr "Mostrar dica parâmetro \"Sender\" não usado"
+msgstr "Exibir dica parâmetro \"Sender\" não usado"
 
 #: lazarusidestrconsts.dlghintsunused
 msgid "Show Hints for unused units in main source"
-msgstr "Mostrar dicas unidades não utilizadas"
+msgstr "Exibir dicas unidades não utilizadas"
 
 #: lazarusidestrconsts.dlghomekeyjumpstoneareststart
 msgid "Home key jumps to nearest start"
@@ -1683,7 +1678,7 @@ msgstr "Vínculo inteligente"
 
 #: lazarusidestrconsts.dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
-msgstr "Mostrar número de linhas nos erros de Tempo de Execução ao rastreá-los"
+msgstr "Exibir número de linhas nos erros de Tempo de Execução ao rastreá-los"
 
 #: lazarusidestrconsts.dlgloaddfile
 msgid "Load desktop settings from file"
@@ -1911,11 +1906,10 @@ msgid "Make Fallback"
 msgstr "Retroceder"
 
 #: lazarusidestrconsts.dlgmouseoptbtnok
-#, fuzzy
 #| msgid "Ok"
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnok"
 msgid "OK"
-msgstr "Ok"
+msgstr "OK"
 
 #: lazarusidestrconsts.dlgmouseoptbtnright
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnright"
@@ -2173,7 +2167,7 @@ msgstr "Posição abas \"notebook\" fonte"
 #: lazarusidestrconsts.dlgnotebooktabposbottom
 msgctxt "lazarusidestrconsts.dlgnotebooktabposbottom"
 msgid "Bottom"
-msgstr "Fundo"
+msgstr "Base"
 
 #: lazarusidestrconsts.dlgnotebooktabposleft
 msgctxt "lazarusidestrconsts.dlgnotebooktabposleft"
@@ -2373,15 +2367,15 @@ msgstr "Abrir o último projeto ao iniciar"
 
 #: lazarusidestrconsts.dlgqshowborderspacing
 msgid "Show border spacing"
-msgstr "Mostrar espaçamento da borda"
+msgstr "Exibir espaçamento da borda"
 
 #: lazarusidestrconsts.dlgqshowcompiledialog
 msgid "Show compile dialog"
-msgstr "Mostrar diálogo compilação"
+msgstr "Exibir diálogo compilação"
 
 #: lazarusidestrconsts.dlgqshowgrid
 msgid "Show grid"
-msgstr "Mostrar grade"
+msgstr "Exibir grade"
 
 #: lazarusidestrconsts.dlgqsnaptogrid
 msgid "Snap to grid"
@@ -2410,7 +2404,7 @@ msgstr "Relatório"
 #: lazarusidestrconsts.dlgrightbottomclr
 #| msgid "color for right, bottom"
 msgid "Guide lines Right,Bottom"
-msgstr "Linhas guia direita, inferior"
+msgstr "Linhas guia direita, base"
 
 #: lazarusidestrconsts.dlgrightclickselects
 msgid "Right Click selects"
@@ -2548,97 +2542,97 @@ msgstr "Variável da propriedade"
 
 #: lazarusidestrconsts.dlgshowcaps
 msgid "Show component captions"
-msgstr "Mostrar rótulo componentes"
+msgstr "Exibir legendas componentes"
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
 msgid "Show compiled procedures"
-msgstr "Mostrar procedimentos compilados"
+msgstr "Exibir procedimentos compilados"
 
 #: lazarusidestrconsts.dlgshowcompileroptions
 msgid "Show compiler options"
-msgstr "Mostrar opções do compilador"
+msgstr "Exibir opções do compilador"
 
 #: lazarusidestrconsts.dlgshowcompilinglinenumbers
 msgctxt "lazarusidestrconsts.dlgshowcompilinglinenumbers"
 msgid "Show line numbers"
-msgstr "Mostrar números de linha"
+msgstr "Exibir números de linha"
 
 #: lazarusidestrconsts.dlgshowconditionals
 msgid "Show conditionals"
-msgstr "Mostrar condicionais"
+msgstr "Exibir condicionais"
 
 #: lazarusidestrconsts.dlgshowdebuginfo
 msgid "Show debug info"
-msgstr "Mostrar Informações de depuração"
+msgstr "Exibir informações de depuração"
 
 #: lazarusidestrconsts.dlgshowdefinedmacros
 msgid "Show defined macros"
-msgstr "Mostrar macros definidas"
+msgstr "Exibir macros definidas"
 
 #: lazarusidestrconsts.dlgshowedrhints
 msgid "Show editor hints"
-msgstr "Mostrar dicas do editor"
+msgstr "Exibir dicas do editor"
 
 #: lazarusidestrconsts.dlgshoweverything
 msgid "Show everything"
-msgstr "Mostrar tudo"
+msgstr "Exibir tudo"
 
 #: lazarusidestrconsts.dlgshowexecutableinfo
 msgid "Show executable info (Win32 only)"
-msgstr "Mostrar info. executável (só Win32)"
+msgstr "Exibir info. executável (só Win32)"
 
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"
-msgstr "Mostrar informações gerais"
+msgstr "Exibir informações gerais"
 
 #: lazarusidestrconsts.dlgshowgutterhints
 msgid "Show gutter hints"
-msgstr "Mostrar dicas medianiz"
+msgstr "Exibir dicas medianiz"
 
 #: lazarusidestrconsts.dlgshowhint
 msgid "Show Hints"
-msgstr "Mostrar Dicas"
+msgstr "Exibir Dicas"
 
 #: lazarusidestrconsts.dlgshowlinenumbers
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
 msgid "Show line numbers"
-msgstr "Mostrar número de linhas"
+msgstr "Exibir número de linhas"
 
 #: lazarusidestrconsts.dlgshownotes
 msgid "Show Notes"
-msgstr "Mostrar Notas"
+msgstr "Exibir Notas"
 
 #: lazarusidestrconsts.dlgshownothing
 msgid "Show nothing (only errors)"
-msgstr "Não mostrar nada (somente erros)"
+msgstr "Não exibir nada (somente erros)"
 
 #: lazarusidestrconsts.dlgshowprocserror
 msgid "Show all procs on error"
-msgstr "Mostrar todos \"procs\" no erro"
+msgstr "Exibir todos \"procs\" no erro"
 
 #: lazarusidestrconsts.dlgshowscrollhint
 msgid "Show scroll hint"
-msgstr "Mostrar dicas de deslizamento"
+msgstr "Exibir dicas de deslizamento"
 
 #: lazarusidestrconsts.dlgshowsummary
 msgid "Show summary"
-msgstr "Mostrar sumário"
+msgstr "Exibir sumário"
 
 #: lazarusidestrconsts.dlgshowtriedfiles
 msgid "Show tried files"
-msgstr "Mostrar arquivos provados"
+msgstr "Exibir arquivos provados"
 
 #: lazarusidestrconsts.dlgshowusedfiles
 msgid "Show used files"
-msgstr "Mostrar arquivos usados"
+msgstr "Exibir arquivos usados"
 
 #: lazarusidestrconsts.dlgshowwarnings
 msgid "Show Warnings"
-msgstr "Mostrar Avisos"
+msgstr "Exibir Avisos"
 
 #: lazarusidestrconsts.dlgsingletaskbarbutton
 msgid "Show single button in TaskBar"
-msgstr "Mostrar um único botão na Barra de Tarefas"
+msgstr "Exibir um único botão na Barra de Tarefas"
 
 #: lazarusidestrconsts.dlgskipforwarddeclarations
 msgid "Skip forward declarations"
@@ -2704,7 +2698,7 @@ msgstr "Tabulações recuam blocos"
 
 #: lazarusidestrconsts.dlgtabnumbersnotebook
 msgid "Show tab numbers in notebook"
-msgstr "Mostrar números abas no \"notebook\""
+msgstr "Exibir números abas no \"notebook\""
 
 #: lazarusidestrconsts.dlgtabstospaces
 msgid "Tabs to spaces"
@@ -3164,7 +3158,7 @@ msgstr "Encolher ou expandir nome de arquivo"
 
 #: lazarusidestrconsts.lisa2pshowall
 msgid "Show all"
-msgstr "Mostrar tudo"
+msgstr "Exibir tudo"
 
 #: lazarusidestrconsts.lisa2pswitchpaths
 msgid "Switch Paths"
@@ -3435,7 +3429,7 @@ msgstr "Pacote %s%s%s não encontrado."
 
 #: lazarusidestrconsts.lisaf2pshowall
 msgid "Show All"
-msgstr "Mostrar tudo"
+msgstr "Exibir tudo"
 
 #: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
 msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
@@ -3532,7 +3526,7 @@ msgstr "Âncora dos controles selecionados"
 
 #: lazarusidestrconsts.lisanchortobottomsidekeepborderspace
 msgid "Anchor to bottom side of sibling, keep border space"
-msgstr "Âncora no lado inferior do irmão, manter espaço da borda"
+msgstr "Âncora no lado base do irmão, manter espaço da borda"
 
 #: lazarusidestrconsts.lisanchortoleftsidekeepborderspace
 msgid "Anchor to left side of sibling, keep border space"
@@ -3555,10 +3549,9 @@ msgid "Append short description to long description"
 msgstr "Anexar descrição curta à descrição longa"
 
 #: lazarusidestrconsts.lisapplicationagraphicallclfreepascalprogramtheprogra
-#, fuzzy
 #| msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
 msgid "Application%sA graphical LCL/Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "Aplicação%sUm programa LCL/Free Pascal gráfico. O arquivo do programa é automaticamente mantido pelo Lazarus."
+msgstr "Aplicação%sUm programa LCL/Free Pascal gráfico. O fonte do programa é automaticamente mantido pelo Lazarus."
 
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
@@ -3642,7 +3635,7 @@ msgstr "Características autom."
 
 #: lazarusidestrconsts.lisautoshowobjectinspector
 msgid "Auto show"
-msgstr "Mostrar automaticamente"
+msgstr "Exibir automaticamente"
 
 #: lazarusidestrconsts.lisavailablepackages
 msgid "Available packages"
@@ -3721,27 +3714,27 @@ msgstr "Espaço da Borda"
 #: lazarusidestrconsts.lisbottom
 msgctxt "lazarusidestrconsts.lisbottom"
 msgid "Bottom"
-msgstr "Fundo"
+msgstr "Base"
 
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
-msgstr "Espaço da Borda Inferior. Este valor será adicionado para espaço da borda base e usado para o espaço inferior do controle."
+msgstr "Espaço da Borda Base. Este valor será adicionado para espaço da borda base e usado para o espaço inferior do controle."
 
 #: lazarusidestrconsts.lisbottomgroupboxcaption
 msgid "Bottom anchoring"
-msgstr "Ancoragem Inferior"
+msgstr "Ancoragem Base"
 
 #: lazarusidestrconsts.lisbottoms
 msgid "Bottoms"
-msgstr "Inferiores"
+msgstr "Bases"
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
 msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
-msgstr "Este é o controle irmão ao qual o lado inferior está ancorado. Deixar vazio para o controle-pai."
+msgstr "Este é o controle irmão ao qual o lado base está ancorado. Deixar vazio para o controle-pai."
 
 #: lazarusidestrconsts.lisbottomspaceequally
 msgid "Bottom space equally"
-msgstr "Justificar espaço inferior"
+msgstr "Justificar espaço base"
 
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
@@ -4025,7 +4018,6 @@ msgid "Follow cursor"
 msgstr "Seguir cursor"
 
 #: lazarusidestrconsts.liscein
-msgctxt "lazarusidestrconsts.liscein"
 msgid "%s in %s"
 msgstr "%s no %s"
 
@@ -4055,11 +4047,11 @@ msgstr "Muitos parâmetros"
 
 #: lazarusidestrconsts.liscemodeshowcategories
 msgid "Show Categories"
-msgstr "Mostrar Categorias"
+msgstr "Exibir Categorias"
 
 #: lazarusidestrconsts.liscemodeshowsourcenodes
 msgid "Show Source Nodes"
-msgstr "Mostrar Ramificações Fonte"
+msgstr "Exibir Ramificações Fonte"
 
 #: lazarusidestrconsts.liscenestedproccount
 msgid "Nested procedures count treating as \"many\""
@@ -4142,7 +4134,7 @@ msgstr "Propriedades publicadas sem padrão"
 
 #: lazarusidestrconsts.lisceshowcodeobserver
 msgid "Show observerations about"
-msgstr "Mostrar observações sobre"
+msgstr "Exibir observações sobre"
 
 #: lazarusidestrconsts.liscestylegroup
 msgctxt "lazarusidestrconsts.liscestylegroup"
@@ -4241,7 +4233,7 @@ msgstr "Escolha um arquivo pascal para exemplos recuo"
 
 #: lazarusidestrconsts.lischoosecompilermessages
 msgid "Choose compiler messages file"
-msgstr ""
+msgstr "Escolha o arquivo de mensagens do compilador"
 
 #: lazarusidestrconsts.lischoosecompilerpath
 msgid "Choose compiler filename (%s)"
@@ -4599,11 +4591,11 @@ msgstr "Curto"
 
 #: lazarusidestrconsts.liscodehelpshowemptymethods
 msgid "Show empty methods"
-msgstr "Mostrar métodos vazios"
+msgstr "Exibir métodos vazios"
 
 #: lazarusidestrconsts.liscodehelpshowunusedunits
 msgid "Show unused units"
-msgstr "Mostrar unidades não usadas"
+msgstr "Exibir unidades não usadas"
 
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
@@ -5405,7 +5397,7 @@ msgstr "Localizar mensagens Make"
 
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
-msgstr "Mostrar todas as mensagens"
+msgstr "Exibir todas as mensagens"
 
 #: lazarusidestrconsts.liscoskipcallingcompiler
 msgid "Skip calling Compiler"
@@ -5556,10 +5548,9 @@ msgid "Custom Program"
 msgstr "Programa personalizado"
 
 #: lazarusidestrconsts.liscustomprogramafreepascalprogram
-#, fuzzy
 #| msgid "Custom Program%sA freepascal program."
 msgid "Custom Program%sA Free Pascal program."
-msgstr "Programa personalizado%sUm programa Free Pascal"
+msgstr "Programa personalizado%sUm programa Free Pascal."
 
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
@@ -5707,7 +5698,7 @@ msgstr "Retomar não Manipulados"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmshowmessageonstop
 msgid "Show message on stop"
-msgstr "Mostrar mensagem na parada"
+msgstr "Exibir mensagem na parada"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmsignals
 msgid "Signals"
@@ -5740,7 +5731,7 @@ msgstr "Valor padrão"
 
 #: lazarusidestrconsts.lisdelayforhintsandcompletionbox
 msgid "Delay for hints and completion box"
-msgstr ""
+msgstr "Atraso para dicas e caixa de conclusão"
 
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
@@ -5996,11 +5987,11 @@ msgstr "não compilar dependências"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
-msgstr "Não mostrar a tela de início"
+msgstr "Não exibir a tela de início"
 
 #: lazarusidestrconsts.lisdonotshowthismessageagain
 msgid "Do not show this message again"
-msgstr "Não mostrar esta mensagem novamente"
+msgstr "Não exibir esta mensagem novamente"
 
 #: lazarusidestrconsts.lisdrawgridlinesobjectinspector
 msgid "Draw grid lines"
@@ -6272,7 +6263,7 @@ msgstr "Entre com o idioma de tradução"
 
 #: lazarusidestrconsts.lisenvdoubleclickonmessagesjumpsotherwisesingleclick
 msgid "Double click on messages jumps (otherwise: single click)"
-msgstr "Clique duplo em salto de mensagens (Caso contrario: clique único)"
+msgstr "Clique duplo em salto de mensagens (Caso contrário: clique único)"
 
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
@@ -6303,10 +6294,9 @@ msgid "The debugger file \"%s\" is not an executable."
 msgstr "O arquivo do depurador \"%s\" não é um executável."
 
 #: lazarusidestrconsts.lisenvoptdlginvalidfpcsrcdir
-#, fuzzy
 #| msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl, packages, compiler, ... ."
 msgid "The FPC source directory \"%s\" does not look correct. Normally it contains directories like rtl/inc, packages/fcl-base, ... ."
-msgstr "O diretório do fonte FPC \"%s\" não parece correto. Normalmente ele contém diretórios tais como: rtl, packages, compiler, ... ."
+msgstr "O diretório do fonte FPC \"%s\" não parece correto. Normalmente ele contém diretórios tais como: rtl/inc, packages/fcl-base, ... ."
 
 #: lazarusidestrconsts.lisenvoptdlginvalidlazarusdir
 msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."
@@ -6826,10 +6816,9 @@ msgid "Free Pascal Compiler not found"
 msgstr "Compilador Free Pascal não encontrado"
 
 #: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
-#, fuzzy
 #| msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
 msgid "Free Pascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program source is automatically maintained by Lazarus."
-msgstr "programa freepascal usando \"TCustomApplication\" para verificar de forma fácil as opções de linha de comando, tratamento de exceções, etc. O arquivo do programa  é mantido automaticamente pelo Lazarus."
+msgstr "Programa Free Pascal usando \"TCustomApplication\" para verificar de forma fácil as opções de linha de comando, tratamento de exceções, etc. O fonte do programa é mantido automaticamente pelo Lazarus."
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 msgid "Freepascal source directory"
@@ -7078,7 +7067,7 @@ msgstr "Opções da IDE:"
 
 #: lazarusidestrconsts.lisideprojectdirinidetitle
 msgid "Show project directory in IDE title"
-msgstr "Mostrar diretório do projeto no título da IDE"
+msgstr "Exibir diretório do projeto no título da IDE"
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"
@@ -7804,7 +7793,7 @@ msgstr "Selecionar início linha"
 
 #: lazarusidestrconsts.liskmselectpagebottom
 msgid "Select page bottom"
-msgstr "Selecionar fundo da página"
+msgstr "Selecionar base da página"
 
 #: lazarusidestrconsts.liskmselectpagetop
 msgid "Select page top"
@@ -8307,10 +8296,9 @@ msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis libr
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sEsta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la sob os termos da GNU Library General Public License como publicada pela Free Software Foundation; ou a versão 2 da Licença, ou (a sua escolha) qualquer versão posterior. %sEste programa é distribuido na esperanca de que seja útil, mas SEM QUALQUER GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE ou ADEQUAÇÃO A UMA FINALIDADE PARTICULAR. Veja a licença GNU General Public License para maiores detalhes.%sVocê deve ter recebido uma cópia da licença GNU Library General Public License juntamente com esta biblioteca; senão, escreva a Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
-#, fuzzy
 #| msgid "Library%sA freepascal library (.dll under windows, .so under linux, .dylib under macosx). The library source file is automatically maintained by Lazarus."
 msgid "Library%sA Free Pascal library (.dll under Windows, .so under Linux, .dylib under MacOS X). The library source is automatically maintained by Lazarus."
-msgstr "Biblioteca%sUma biblioteca Free Pascal (.dll sobre windows, .so sobre linux, .dylib sobre macosx). O arquivo fonte da biblioteca é automaticamente mantido pelo Lazarus."
+msgstr "Biblioteca%sUma biblioteca Free Pascal (.dll sobre Windows, .so sobre Linux, .dylib sobre MacOS X). O fonte da biblioteca é automaticamente mantido pelo Lazarus."
 
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
@@ -8992,7 +8980,7 @@ msgstr "Abrir Projeto Recente ..."
 
 #: lazarusidestrconsts.lismenupackage
 msgid "&Package"
-msgstr "&Pacotes"
+msgstr "Pa&cotes"
 
 #: lazarusidestrconsts.lismenupackagegraph
 msgid "Package Graph ..."
@@ -9099,7 +9087,7 @@ msgstr "Reverter"
 
 #: lazarusidestrconsts.lismenurun
 msgid "&Run"
-msgstr "&Executar"
+msgstr "Executa&r"
 
 #: lazarusidestrconsts.lismenurunfile
 msgid "Run File"
@@ -9174,7 +9162,7 @@ msgstr "Ajustar um marcador livre"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
 msgid "Show execution point"
-msgstr "Mostrar ponto execução"
+msgstr "Exibir ponto execução"
 
 #: lazarusidestrconsts.lismenusortselection
 msgid "Sort selection ..."
@@ -9334,7 +9322,7 @@ msgstr "Seleção em maiúsculas"
 
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
-msgstr "&Exibir"
+msgstr "E&xibir"
 
 #: lazarusidestrconsts.lismenuviewanchoreditor
 #| msgid "View Anchor Editor"
@@ -9424,7 +9412,7 @@ msgstr "Resultados da busca"
 
 #: lazarusidestrconsts.lismenuviewsource
 msgid "&View Source"
-msgstr "&Exibir Fonte"
+msgstr "E&xibir Fonte"
 
 #: lazarusidestrconsts.lismenuviewsourceeditor
 msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
@@ -9487,7 +9475,6 @@ msgid "Your choices are:"
 msgstr "Suas opções são:"
 
 #: lazarusidestrconsts.lismissingunitscomment
-#, fuzzy
 msgid "Comment Out"
 msgstr "Comentar"
 
@@ -9576,10 +9563,9 @@ msgid "New console application"
 msgstr "Nova aplicação \"console\""
 
 #: lazarusidestrconsts.lisnewcreateanewcgiapplicationtheprogramfileismaintained
-#, fuzzy
 #| msgid "Create a new cgi application.%sThe program file is maintained by Lazarus."
 msgid "Create a new CGI application.%sThe application source is maintained by Lazarus."
-msgstr "Criar uma nova aplicação \"CGI\".%sO arquivo de programa é mantido pelo Lazarus."
+msgstr "Criar uma nova aplicação \"CGI\".%sO fonte do programa é mantido pelo Lazarus."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewcustomprogram
 msgid "Create a new program."
@@ -9594,20 +9580,18 @@ msgid "Create a new empty text file."
 msgstr "Criar um novo arquivo de texto vazio."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewgraphicalapplication
-#, fuzzy
 #| msgid "Create a new graphical application.%sThe program file is maintained by Lazarus."
 msgid "Create a new graphical application.%sThe application source is maintained by Lazarus."
-msgstr "Criar uma nova aplicação gráfica.%sO arquivo do programa é mantido pelo Lazarus."
+msgstr "Criar uma nova aplicação gráfica.%sO fonte da aplicação é mantido pelo Lazarus."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewpascalunit
 msgid "Create a new pascal unit."
 msgstr "Criar uma nova unidade Pascal."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprogram
-#, fuzzy
 #| msgid "Create a new program.%sThe program file is maintained by Lazarus."
 msgid "Create a new program.%sThe program source is maintained by Lazarus."
-msgstr "Criar um novo programa.%sO arquivo de programa é mantido pelo Lazarus."
+msgstr "Criar um novo programa.%sO fonte do programa é mantido pelo Lazarus."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewprojectchooseatype
 msgid "Create a new project.%sChoose a type."
@@ -9622,10 +9606,9 @@ msgid "Create a new unit with a datamodule."
 msgstr "Criar uma nova unidade com um \"datamodule\"."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithaframe
-#, fuzzy
 #| msgid "Create a new unit with a frame"
 msgid "Create a new unit with a frame."
-msgstr "Criar uma nova unidade com bordas"
+msgstr "Criar uma nova unidade com uma borda."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithalclform
 msgid "Create a new unit with a LCL form."
@@ -11227,11 +11210,11 @@ msgstr "Vínculos Pacote"
 
 #: lazarusidestrconsts.lispldshowgloballinks
 msgid "Show global links"
-msgstr "Mostrar vínculos globais"
+msgstr "Exibir vínculos globais"
 
 #: lazarusidestrconsts.lispldshowuserlinks
 msgid "Show user links"
-msgstr "Mostrar vínculos usuário"
+msgstr "Exibir vínculos usuário"
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -11365,10 +11348,9 @@ msgid "Program"
 msgstr "Programa"
 
 #: lazarusidestrconsts.lisprogramafreepascalprogramtheprogramfileisautomatic
-#, fuzzy
 #| msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
 msgid "Program%sA Free Pascal program. The program source is automatically maintained by Lazarus."
-msgstr "Programa%sUm programa Free Pascal. O programa é automaticamente mantido pelo Lazarus."
+msgstr "Programa%sUm programa Free Pascal. O fonte do programa é automaticamente mantido pelo Lazarus."
 
 #: lazarusidestrconsts.lisprogramdetected
 msgid "Program detected"
@@ -11829,7 +11811,7 @@ msgstr "Tipo recurso do projeto:"
 
 #: lazarusidestrconsts.lisresponsecontinue
 msgid "Response: %sContinue ?"
-msgstr ""
+msgstr "Resposta: %sContinuar ?"
 
 #: lazarusidestrconsts.lisresult
 msgid "Result :="
@@ -11938,7 +11920,7 @@ msgstr "Este método não pode ser sobreposto porque está definido na classe at
 
 #: lazarusidestrconsts.lissamunabletoshowabstractmethodsofthecurrentclassbecaus
 msgid "Unable to show abstract methods of the current class, because"
-msgstr "Impossível mostrar métodos abstratos da classe atual, porque"
+msgstr "Impossível exibir métodos abstratos da classe atual, porque"
 
 #: lazarusidestrconsts.lissave
 msgid "Save ..."
@@ -12041,22 +12023,18 @@ msgid "Selected"
 msgstr "Selecionado"
 
 #: lazarusidestrconsts.lisselectedbottomneighbour
-#, fuzzy
 msgid "(selected bottom neighbour)"
-msgstr "(vizinho dos fundos selecionado)"
+msgstr "(vizinho da base selecionado)"
 
 #: lazarusidestrconsts.lisselectedleftneighbour
-#, fuzzy
 msgid "(selected left neighbour)"
 msgstr "(vizinho da esquerda selecionado)"
 
 #: lazarusidestrconsts.lisselectedrightneighbour
-#, fuzzy
 msgid "(selected right neighbour)"
 msgstr "(vizinho da direita selecionado)"
 
 #: lazarusidestrconsts.lisselectedtopneighbour
-#, fuzzy
 msgid "(selected top neighbour)"
 msgstr "(vizinho do topo selecionado)"
 
@@ -12090,63 +12068,63 @@ msgstr "Curto:"
 
 #: lazarusidestrconsts.lisshow
 msgid "Show"
-msgstr "Mostrar"
+msgstr "Exibir"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
-msgstr ""
+msgstr "Exibir dicas declarações"
 
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
-msgstr "Mostrar unidades/pacotes vazios"
+msgstr "Exibir unidades/pacotes vazios"
 
 #: lazarusidestrconsts.lisshowglyphsfor
 msgid "Show Glyphs for:"
-msgstr "Mostrar \"Glyphs\" para:"
+msgstr "Exibir Glifos para"
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
-msgstr "Mostrar medianiz"
+msgstr "Exibir medianiz"
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
 msgid "Show hints"
-msgstr "Mostrar dicas no Inspetor de Objetos"
+msgstr "Exibir dicas no Inspetor de Objetos"
 
 #: lazarusidestrconsts.lisshowidentifiers
 msgid "Show identifiers"
-msgstr "Mostrar identificadores"
+msgstr "Exibir identificadores"
 
 #: lazarusidestrconsts.lisshowinfoboxinobjectinspector
 msgid "Show information box"
-msgstr "Mostrar caixa de informação"
+msgstr "Exibir caixa de informação"
 
 #: lazarusidestrconsts.lisshowoldtaborder
 msgid "Show old tab order"
-msgstr "Mostrar ordem de tabulação antiga"
+msgstr "Exibir ordem de tabulação antiga"
 
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
-msgstr "Mostrar pacotes"
+msgstr "Exibir pacotes"
 
 #: lazarusidestrconsts.lisshowspecialcharacters
 msgid "Show special characters"
-msgstr "Mostrar caracteres especiais"
+msgstr "Exibir caracteres especiais"
 
 #: lazarusidestrconsts.lisshowstatusbarinobjectinspector
 msgid "Show status bar"
-msgstr "Mostrar barra de estado"
+msgstr "Exibir barra de estado"
 
 #: lazarusidestrconsts.lisshowunits
 msgid "Show units"
-msgstr "Mostrar unidades"
+msgstr "Exibir unidades"
 
 #: lazarusidestrconsts.lisshowvaluehintswhiledebugging
 msgid "Show value hints while debugging"
-msgstr ""
+msgstr "Exibir dicas de valores durante a depuração"
 
 #: lazarusidestrconsts.lisshowversionandexit
 msgid "show version and exit"
-msgstr "mostrar versão e sair"
+msgstr "Exibir versão e sair"
 
 #: lazarusidestrconsts.lisshrinktosmal
 msgid "Shrink to smallest"
@@ -12579,7 +12557,7 @@ msgstr "O diretório do fonte Free Pascal não foi encontrado.%sAlgumas funçõe
 
 #: lazarusidestrconsts.listhegnudebuggerthroughsshallowstoremotedebugviaassh
 msgid "The GNU debugger through ssh allows to remote debug via a ssh connection. See docs/RemoteDebugging.txt for details. The path must contain the ssh client filename, the hostname with an optional username and the filename of gdb on the remote computer. For example: %s/usr/bin/ssh username@hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s"
-msgstr ""
+msgstr "O depurador GNU através do \"ssh\" permite depuração remota via conexão \"ssh\". Veja docs/RemoteDebugging.txt para detalhes. O caminho deve conter o nome do arquivo cliente \"ssh\", o servidor com um nome de usuário opcional e o nome do arquivo do \"gdb\" no computador remoto. Por exemplo: %s/usr/bin/ssh nomeusuario@servidor gdb%s ou: %s/usr/bin/setsid /usr/bin/ssh nomeusuario@servidor gdb%s"
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
@@ -12909,7 +12887,7 @@ msgstr "Caminho:"
 
 #: lazarusidestrconsts.listoggleshowingfilenameswithfullpathorwithrelativepa
 msgid "Toggle showing filenames with full path or with relative path"
-msgstr "Alterar mostrar nomes de arquivo com caminho completo ou relativo"
+msgstr "Alterar exibição nomes de arquivo com caminho completo ou relativo"
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
@@ -12951,7 +12929,7 @@ msgstr "Turbo Pascal"
 
 #: lazarusidestrconsts.lisuedonotsho
 msgid "Do not show this message again."
-msgstr "Não mostrar esta mensagem novamente."
+msgstr "Não exibir esta mensagem novamente."
 
 #: lazarusidestrconsts.lisueerrorinregularexpression
 msgid "Error in regular expression"
@@ -13056,7 +13034,7 @@ msgstr "sim"
 
 #: lazarusidestrconsts.lisuishowcodetoolsvalues
 msgid "Show CodeTools Values"
-msgstr "Mostrar Valores de Ferramentas de Código"
+msgstr "Exibir Valores de Ferramentas de Código"
 
 #: lazarusidestrconsts.lisunableconvertbinarystreamtotext
 msgid "Unable convert binary stream to text"
@@ -13310,7 +13288,7 @@ msgstr "Impossível ajustar lado ancoragem do controle."
 
 #: lazarusidestrconsts.lisunabletoshowmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to show method. Please fix the error shown in the message window."
-msgstr "Impossível mostrar método. Favor corrigir o erro mostrado na janela de mensagens."
+msgstr "Impossível exibir método. Favor corrigir o erro mostrado na janela de mensagens."
 
 #: lazarusidestrconsts.lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"
@@ -13367,7 +13345,7 @@ msgstr "Impossível escrever fluxo xml para %s%sErro: %s"
 
 #: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
 msgid "Unexpected result:%sThe debugger will terminate"
-msgstr ""
+msgstr "Resultado inexperado:%sO depurador irá encerrar"
 
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
@@ -13777,7 +13755,7 @@ msgstr "Chinês"
 
 #: lazarusidestrconsts.rslanguageczech
 msgid "Czech"
-msgstr ""
+msgstr "Tcheco"
 
 #: lazarusidestrconsts.rslanguagedutch
 msgid "Dutch"
@@ -14083,7 +14061,7 @@ msgstr "Ajustar final bloco"
 
 #: lazarusidestrconsts.srkmecblockshow
 msgid "Show Block"
-msgstr "Mostrar Bloco"
+msgstr "Exibir Bloco"
 
 #: lazarusidestrconsts.srkmecblocktogglehide
 msgid "Toggle block"
@@ -14155,7 +14133,7 @@ msgstr "Seleção Coluna para início do texto na linha"
 
 #: lazarusidestrconsts.srkmeccolselpagebottom
 msgid "Column Select Page Bottom"
-msgstr "Selecionar fundo página coluna"
+msgstr "Selecionar base página coluna"
 
 #: lazarusidestrconsts.srkmeccolselpagedown
 msgid "Column Select Page Down"
@@ -14544,7 +14522,7 @@ msgstr "Modo Sobrescrever"
 
 #: lazarusidestrconsts.srkmecpagebottom
 msgid "Move cursor to bottom of page"
-msgstr "Mover o cursor para rodapé da página"
+msgstr "Mover o cursor para base da página"
 
 #: lazarusidestrconsts.srkmecpagedown
 msgid "Move cursor down one page"
@@ -14596,7 +14574,7 @@ msgstr "compilação rápida, sem vinculação"
 
 #: lazarusidestrconsts.srkmecquit
 msgid "Quit"
-msgstr ""
+msgstr "Sair"
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
 msgid "remove break point"
@@ -14620,7 +14598,7 @@ msgstr "Substituir texto"
 
 #: lazarusidestrconsts.srkmecreportingbug
 msgid "Reporting a bug"
-msgstr ""
+msgstr "Reportando um erro"
 
 #: lazarusidestrconsts.srkmecresetdebugger
 msgid "reset debugger"
@@ -14702,7 +14680,7 @@ msgstr "Selecionar para ínicio do texto na linha"
 
 #: lazarusidestrconsts.srkmecselpagebottom
 msgid "Select Page Bottom"
-msgstr "Selecionar rodapé da página"
+msgstr "Selecionar base da página"
 
 #: lazarusidestrconsts.srkmecselpagedown
 msgid "Select Page Down"
@@ -14755,15 +14733,15 @@ msgstr "Shift Tab"
 
 #: lazarusidestrconsts.srkmecshowabstractmethods
 msgid "Show abstract methods"
-msgstr "Mostrar métodos abstratos"
+msgstr "Exibir métodos abstratos"
 
 #: lazarusidestrconsts.srkmecshowcodecontext
 msgid "Show code context"
-msgstr "Mostrar contexto código"
+msgstr "Exibir contexto código"
 
 #: lazarusidestrconsts.srkmecshowexecutionpoint
 msgid "show execution point"
-msgstr "mostrar ponto execução"
+msgstr "exibir ponto execução"
 
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"
@@ -15234,7 +15212,7 @@ msgstr "Renomear Identificador"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"
-msgstr "&Executar até o Cursor"
+msgstr "Executa&r até o Cursor"
 
 #: lazarusidestrconsts.uemsetbookmark
 msgid "&Set Bookmark"
@@ -15247,7 +15225,7 @@ msgstr "Ajustar um Marcador livre"
 
 #: lazarusidestrconsts.uemshowlinenumbers
 msgid "Show Line Numbers"
-msgstr "Mostrar Número de Linhas"
+msgstr "Exibir Número de Linhas"
 
 #: lazarusidestrconsts.uemshowunitinfo
 msgid "Unit Info"

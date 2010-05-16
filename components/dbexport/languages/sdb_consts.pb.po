@@ -43,7 +43,7 @@ msgstr "Formatação"
 
 #: sdb_consts.sdb_moveselectedfielddown
 msgid "Move selected field down"
-msgstr "Move campo selecionado abaixo"
+msgstr "Mover campo selecionado abaixo"
 
 #: sdb_consts.sdb_moveselectedfieldup
 msgid "Move selected field up"

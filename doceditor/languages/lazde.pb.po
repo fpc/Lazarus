@@ -273,7 +273,7 @@ msgstr "Editar"
 
 #: lazdemsg.shmenuextraoptions
 msgid "Show options dialog"
-msgstr "Mostrar diálogo de opções"
+msgstr "Exibir diálogo de opções"
 
 #: lazdemsg.shmenuhelpabout
 msgid "About this program"
@@ -555,7 +555,7 @@ msgstr "Re-abrir último arquivo ao iniciar"
 
 #: lazdemsg.soptdlgshowhints
 msgid "Show hints"
-msgstr "Mostrar dicas"
+msgstr "Exibir dicas"
 
 #: lazdemsg.soptdlgskipemptynodes
 msgid "&Skip empty nodes when saving"
@@ -625,7 +625,7 @@ msgstr "Curto"
 
 #: lazdemsg.sshowprivatemethods
 msgid "Show p&rivate methods"
-msgstr "Mostrar métodos p&rivados"
+msgstr "Exibir métodos p&rivados"
 
 #: lazdemsg.sskelerrorwithfile
 msgid "makeskel reported an error (%d). Try to load produced file anyway ?"

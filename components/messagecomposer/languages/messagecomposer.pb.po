@@ -14,10 +14,9 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #: messagecomposer.rsok
-#, fuzzy
 #| msgid "Ok"
 msgid "OK"
-msgstr "Ok"
+msgstr "OK"
 
 #: messagecomposer.rstest
 msgid "Test"
@@ -25,73 +24,69 @@ msgstr "Testar"
 
 #: messagecomposer.sadd
 msgid "Add"
-msgstr ""
+msgstr "Adicionar"
 
 #: messagecomposer.sbuttonsarrayofconst
 msgid "Buttons (array of const)"
-msgstr ""
+msgstr "Botões (matriz de const.)"
 
 #: messagecomposer.sbuttonstmsgdlgbuttons
 msgid "Buttons (TMsgDlgButtons)"
-msgstr ""
+msgstr "Botões (TMsgDlgButtons)"
 
 #: messagecomposer.scaseresult
 msgid "\"Case\" result"
-msgstr ""
+msgstr "resultado \"Case\""
 
 #: messagecomposer.sdefault
 msgid "Default"
-msgstr ""
+msgstr "Padrão"
 
 #: messagecomposer.sdelete
 msgid "Delete"
-msgstr ""
+msgstr "Excluir"
 
 #: messagecomposer.sdlgcaption
 msgid "Dialog caption"
-msgstr ""
+msgstr "Título do diálogo"
 
 #: messagecomposer.sdlgtype
 msgid "Dialog type"
-msgstr ""
+msgstr "Tipo do diálogo"
 
 #: messagecomposer.shelpcontext
 msgid "Help context"
-msgstr ""
+msgstr "Contexto ajuda"
 
 #: messagecomposer.shelpfilename
 msgid "Help filename"
-msgstr ""
+msgstr "Nome arquivo ajuda"
 
 #: messagecomposer.shelpkeyword
 msgid "Help keyword"
-msgstr ""
+msgstr "Palavra-chave ajuda"
 
 #: messagecomposer.sifresult
 msgid "\"If\" result"
-msgstr ""
+msgstr "resultado \"If\""
 
 #: messagecomposer.skindofmessage
-#, fuzzy
 #| msgid "KIND OF MESSAGE"
 msgid "Kind of message"
-msgstr "NATUREZA DA MENSAGEM"
+msgstr "Tipo de mensagem"
 
 #: messagecomposer.smaskinput
-#, fuzzy
 #| msgid "Mask Input"
 msgid "Mask input"
-msgstr "Entrar máscara"
+msgstr "Máscara de entrada"
 
 #: messagecomposer.smessagecomposercaption
-#, fuzzy
 #| msgid "Message Composer ..."
 msgctxt "messagecomposer.smessagecomposercaption"
 msgid "Message Composer"
 msgstr "Compositor Mensagens ..."
 
 #: messagecomposer.smessagecomposermenucaption
-#, fuzzy
 #| msgid "Message Composer ..."
 msgctxt "messagecomposer.smessagecomposermenucaption"
 msgid "Message Composer ..."
@@ -99,17 +94,16 @@ msgstr "Compositor Mensagens ..."
 
 #: messagecomposer.smodalresult
 msgid "Modal result"
-msgstr ""
+msgstr "resultado Modal"
 
 #: messagecomposer.smsgcaption
 msgid "The message to be shown"
 msgstr "A mensagem à ser mostrada"
 
 #: messagecomposer.snotimplementedyet
-#, fuzzy
 #| msgid "Not Implemented Yet"
 msgid "Not implemented yet"
-msgstr "Não Implementado Ainda"
+msgstr "Ainda não implementado"
 
 #: messagecomposer.spromptcaption
 msgid "Text asking the user for input"
@@ -123,5 +117,5 @@ msgstr "INVÓLUCRO FONTE"
 
 #: messagecomposer.svaluevar
 msgid "Value (var)"
-msgstr ""
+msgstr "Valor (var)"
 

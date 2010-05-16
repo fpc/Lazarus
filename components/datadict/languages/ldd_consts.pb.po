@@ -107,7 +107,7 @@ msgstr "Ajustar projeto Dicionário Dados"
 
 #: ldd_consts.ldd_showgeneratedcode
 msgid "Show generated code"
-msgstr "Mostrar código gerado"
+msgstr "Exibir código gerado"
 
 #: ldd_consts.ldd_usedatadictionary
 msgid "&Use Data dictionary for this project"

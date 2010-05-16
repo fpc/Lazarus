@@ -1495,6 +1495,7 @@ components/lazsvnpkg/images/menu_svn_diff.png -text
 components/lazsvnpkg/images/menu_svn_log.png -text
 components/lazsvnpkg/images/menu_svn_update.png -text
 components/lazsvnpkg/languages/svnclasses.de.po svneol=native#text/plain
+components/lazsvnpkg/languages/svnclasses.pb.po svneol=native#text/plain
 components/lazsvnpkg/languages/svnclasses.po svneol=native#text/plain
 components/lazsvnpkg/languages/svnclasses.ru.po svneol=native#text/plain
 components/lazsvnpkg/lazsvnintf.pas svneol=native#text/plain
@@ -3055,6 +3056,7 @@ examples/lazintfimage/fadein1.lpr svneol=native#text/pascal
 examples/lazintfimage/mainunit1.lfm svneol=native#text/plain
 examples/lazintfimage/mainunit1.lrs svneol=native#text/pascal
 examples/lazintfimage/mainunit1.pas svneol=native#text/pascal
+examples/lazresexplorer/languages/resexplorer.pb.po svneol=native#text/plain
 examples/lazresexplorer/languages/resexplorer.po svneol=native#text/plain
 examples/lazresexplorer/languages/resexplorer.ru.po svneol=native#text/plain
 examples/lazresexplorer/reaboutunit.lfm svneol=native#text/plain

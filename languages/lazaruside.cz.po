@@ -15178,10 +15178,6 @@ msgstr "Informace o jednotce"
 msgid "&Toggle Bookmark"
 msgstr "&Přepnout záložku"
 
-#: lazarusidestrconsts.uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
-msgstr "&Přepnout záložku"
-
 #~ msgid "Auto create form when opening unit"
 #~ msgstr "Automaticky vytvořit formulář při otevření jednotky"
 #~ msgid "Use Default"
@@ -15279,6 +15275,10 @@ msgstr "&Přepnout záložku"
 #~ msgstr "Přesunout editor vpravo"
 #~ msgid "Move Editor Rightmost"
 #~ msgstr "Přesunout editor nejvíce vpravo"
+#: lazarusidestrconsts.uemtogglebreakpoint
+msgid "&Toggle Breakpoint"
+msgstr "&Přepnout záložku"
+
 #: lazarusidestrconsts.uemviewcallstack
 msgid "View Call Stack"
 msgstr "Zobrazit volací zásobník"

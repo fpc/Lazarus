@@ -252,7 +252,7 @@ msgstr "Mover página a direita"
 
 #: objinspstrconsts.nbcesshowpage
 msgid "Show page ..."
-msgstr "Mostrar página ..."
+msgstr "Exibir página ..."
 
 #: objinspstrconsts.oicoleditadd
 msgctxt "objinspstrconsts.oicoleditadd"
@@ -676,11 +676,11 @@ msgstr "Ajustar para valor padrão"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
-msgstr "Mostrar árvore componentes"
+msgstr "Exibir árvore componentes"
 
 #: objinspstrconsts.oisshowhints
 msgid "Show Hints"
-msgstr "Mostrar Dicas"
+msgstr "Exibir Dicas"
 
 #: objinspstrconsts.oissort
 msgid "Sort"
@@ -1033,7 +1033,7 @@ msgstr "Variante"
 
 #: objinspstrconsts.oisviewrestrictedproperties
 msgid "View restricted properties"
-msgstr "Mostrar propriedades restritas"
+msgstr "Exibir propriedades restritas"
 
 #: objinspstrconsts.oiswidgetsetrestrictions
 msgid "General widget set restrictions: "

@@ -1,0 +1,103 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: reconstsunit.sabout
+msgid "About..."
+msgstr "Sobre..."
+
+#: reconstsunit.sbuilddate
+msgid "Build date : "
+msgstr "Data Construção:"
+
+#: reconstsunit.scarbonwidgetset
+msgid "Carbon widget set"
+msgstr "Conjunto \"widget\" Carbon"
+
+#: reconstsunit.sexit
+msgid "Exit"
+msgstr "Sair"
+
+#: reconstsunit.sfile
+msgid "File"
+msgstr "Arquivo"
+
+#: reconstsunit.sfpcversion
+msgid "FPC version : "
+msgstr "Versão FPC :"
+
+#: reconstsunit.sfpguiwidgetset
+msgid "FpGUI widget set"
+msgstr "Conjunto \"widget\" FpGUI"
+
+#: reconstsunit.sgtk2widgetset
+msgid "GTK 2 widget set"
+msgstr "Conjunto \"widget\" GTK2"
+
+#: reconstsunit.sgtkwidgetset
+msgid "GTK widget set"
+msgstr "Conjunto \"widget\" GTK"
+
+#: reconstsunit.shelp
+msgid "Help"
+msgstr "Ajuda"
+
+#: reconstsunit.simage
+msgid "Image"
+msgstr "Imagem"
+
+#: reconstsunit.slclversion
+msgid "LCL Version: "
+msgstr "Versão LCL:"
+
+#: reconstsunit.slicense
+msgid "This program is free software under GNU GPL 2 license, see COPYING file"
+msgstr "Este programa é \"software\" livre sob a licença GNU GPL 2, veja arquivo \"COPYING\""
+
+#: reconstsunit.sopen
+msgid "Open..."
+msgstr "Abrir..."
+
+#: reconstsunit.sotherguiwidgetset
+msgid "Other gui"
+msgstr "Outro \"gui\""
+
+#: reconstsunit.sqtwidgetset
+msgid "QT widget set"
+msgstr "Conjunto \"widget\" QT"
+
+#: reconstsunit.sresourceexplorer
+msgid "Resource explorer"
+msgstr "Explorador Recursos"
+
+#: reconstsunit.ssaveresource
+msgid "Save resource..."
+msgstr "Salvar recurso..."
+
+#: reconstsunit.sstrings
+msgid "Strings"
+msgstr "Strings"
+
+#: reconstsunit.stargetcpu
+msgid "Target CPU : "
+msgstr "CPU Alvo :"
+
+#: reconstsunit.stargetos
+msgid "Target OS : "
+msgstr "SO Alvo :"
+
+#: reconstsunit.swin32_64widgetset
+msgid "Win32/Win64 widget set"
+msgstr "Conjunto \"widget\" Win32/Win64"
+
+#: reconstsunit.swincewidgetset
+msgid "WinCE widget set"
+msgstr "Conjunto \"widget\" WinCE"
+

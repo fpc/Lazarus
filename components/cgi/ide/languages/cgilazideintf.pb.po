@@ -10,13 +10,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: cgilazideintf.lisdescription
-#, fuzzy
 #| msgid "Simple CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal.%sThe program file is automatically maintained by Lazarus.%sThis kind of application is deprecated, for CGI programs or Apache modules, please use the LazWeb package instead."
 msgid "Simple CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal.%sThe application source is automatically maintained by Lazarus.%sThis kind of application is deprecated, for CGI programs or Apache modules, please use the LazWeb package instead."
-msgstr "Aplicação CGI Simples%sUm programa CGI (Common Gateway Interface) em Free Pascal.%sO arquivo do programa é mantido automaticamente pelo Lazarus.%sEste tipo de aplicação está depreciada, para programas CGI ou módulos Apache, favor usar o pacote LazWeb."
+msgstr "Aplicação CGI Simples%sUm programa CGI (Common Gateway Interface) em Free Pascal.%sO fonte do programa é mantido automaticamente pelo Lazarus.%sEste tipo de aplicação está depreciada, para programas CGI ou módulos Apache, favor usar o pacote LazWeb."
 
 #: cgilazideintf.lisdescrmod
-#, fuzzy
 #| msgid "Simple CGI Module%sA datamodule for CGI applications.This module is deprecated, please use the CGI module support of the lazweb package instead"
 msgid "Simple CGI Module%sA datamodule for CGI applications.%sThis module is deprecated, please use the CGI module support of the LazWeb package instead."
 msgstr "Módulo CGI Simples%sUm \"datamodule\" para aplicações CGI.%sEste módulo está depreciado, favor usar o suporte a módulos CGI do pacote LazWeb."

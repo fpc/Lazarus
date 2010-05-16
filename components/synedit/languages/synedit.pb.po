@@ -154,9 +154,8 @@ msgid "Illegal char"
 msgstr "Caractere ilegal"
 
 #: syneditstrconst.syns_attrinclude
-#, fuzzy
 msgid "Include"
-msgstr "Incluem"
+msgstr "Inclusão"
 
 #: syneditstrconst.syns_attrindirect
 msgid "Indirect"
@@ -279,7 +278,6 @@ msgid "Reserved word"
 msgstr "Palavra reservada"
 
 #: syneditstrconst.syns_attrroundbracket
-#, fuzzy
 msgid "Round Bracket"
 msgstr "Parênteses"
 
@@ -292,7 +290,6 @@ msgid "Rpl comment"
 msgstr "Comentário Rpl"
 
 #: syneditstrconst.syns_attrrplkey
-#, fuzzy
 msgid "Rpl key"
 msgstr "Chave Rpl"
 
@@ -305,7 +302,6 @@ msgid "SASM Comment"
 msgstr "Comentário SASM"
 
 #: syneditstrconst.syns_attrsasmkey
-#, fuzzy
 msgid "SASM Key"
 msgstr "Chave SASM"
 
@@ -334,7 +330,6 @@ msgid "SQL*Plus command"
 msgstr "Comando SQL*Plus"
 
 #: syneditstrconst.syns_attrsquarebracket
-#, fuzzy
 msgid "Square Bracket"
 msgstr "Colchetes"
 
@@ -419,7 +414,6 @@ msgid "Fold Code"
 msgstr "Retrair Código"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
-#, fuzzy
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
 msgstr "Ramificações,Uma,Todas,\"Na Marca\",\"Ramificação Atual\""
 
@@ -441,7 +435,7 @@ msgstr "Menu Popup"
 
 #: syneditstrconst.syns_emccontextmenucaretmove_opt
 msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
-msgstr ""
+msgstr "\"Mover marca, quando existir seleção\", Nunca, \"Clicar fora\", Sempre"
 
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
