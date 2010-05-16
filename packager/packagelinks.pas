@@ -590,10 +590,10 @@ begin
     if CompareFilenames(OldPkgLink.GetEffectiveFilename,
       NewPkgLink.GetEffectiveFilename)=0
     then begin
-      // 2 links to the same file -> delete the older
-      debugln('TPackageLinks.RemoveOldUserLinks',
-       ' Newer=',NewPkgLink.IDAsString,'=',dbgs(Pointer(NewPkgLink)),
-       ' Older=',OldPkgLink.IDAsString,'=',dbgs(Pointer(OldPkgLink)));
+      // two links to the same file -> delete the older
+      //debugln('TPackageLinks.RemoveOldUserLinks',
+      // ' Newer=',NewPkgLink.IDAsString,'=',dbgs(Pointer(NewPkgLink)),
+      // ' Older=',OldPkgLink.IDAsString,'=',dbgs(Pointer(OldPkgLink)));
       FUserLinksSortID.RemovePointer(OldPkgLink);
       FUserLinksSortFile.RemovePointer(OldPkgLink);
       OldPkgLink.Release;
