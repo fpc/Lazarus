@@ -278,7 +278,7 @@ const
       { phaNumber       } (BG: clDefault;  FG: clNavy;     FC: clNone; Styles: [];       StylesMask: []),
       { phaString       } (BG: clDefault;  FG: clBlue;     FC: clNone; Styles: [];       StylesMask: []),
       { phaSymbol       } (BG: clDefault;  FG: clRed;      FC: clNone; Styles: [];       StylesMask: []),
-      { phaCaseLabel    } (BG: clDefault;  FG: clDefault;  FC: clNone; Styles: [fsUnderline]; StylesMask: [])
+      { phaCaseLabel    } (BG: clDefault;  FG: clDefault;  FC: clNone; Styles: [fsItalic]; StylesMask: [])
     );
     Additional: (
       { ahaNone               } (BG: clWhite;     FG: clBlack;    FC: clNone; Styles: []; StylesMask: []),
@@ -324,7 +324,7 @@ const
       { phaNumber       } (BG: clDefault;  FG: clFuchsia; FC: clNone; Styles: [];       StylesMask: []),
       { phaString       } (BG: clDefault;  FG: clYellow;  FC: clNone; Styles: [];       StylesMask: []),
       { phaSymbol       } (BG: clDefault;  FG: clAqua;    FC: clNone; Styles: [];       StylesMask: []),
-      { phaCaseLabel    } (BG: clDefault;  FG: clDefault;  FC: clNone; Styles: [fsUnderline]; StylesMask: [])
+      { phaCaseLabel    } (BG: clDefault;  FG: clDefault;  FC: clNone; Styles: [fsItalic]; StylesMask: [])
     );
     Additional: (
       { ahaNone               } (BG: clDefault;   FG: clDefault;  FC: clNone; Styles: []; StylesMask: []),
@@ -370,7 +370,7 @@ const
       { phaNumber       } (BG: clDefault;  FG: clYellow;  FC: clNone; Styles: []; StylesMask: []),
       { phaString       } (BG: clDefault;  FG: clYellow;  FC: clNone; Styles: []; StylesMask: []),
       { phaSymbol       } (BG: clDefault;  FG: clYellow;  FC: clNone; Styles: []; StylesMask: []),
-      { phaCaseLabel    } (BG: clDefault;  FG: clDefault;  FC: clNone; Styles: [fsUnderline]; StylesMask: [])
+      { phaCaseLabel    } (BG: clDefault;  FG: clDefault;  FC: clNone; Styles: [fsItalic]; StylesMask: [])
     );
     Additional: (
       { ahaNone               } (BG: clDefault;   FG: clDefault;  FC: clNone; Styles: []; StylesMask: []),
@@ -416,7 +416,7 @@ const
       { phaNumber       } (BG: clDefault;  FG: clFuchsia; FC: clNone; Styles: [];       StylesMask: []),
       { phaString       } (BG: clDefault;  FG: clYellow;  FC: clNone; Styles: [];       StylesMask: []),
       { phaSymbol       } (BG: clDefault;  FG: clAqua;    FC: clNone; Styles: [];       StylesMask: []),
-      { phaCaseLabel    } (BG: clDefault;  FG: clDefault;  FC: clNone; Styles: [fsUnderline]; StylesMask: [])
+      { phaCaseLabel    } (BG: clDefault;  FG: clDefault;  FC: clNone; Styles: [fsItalic]; StylesMask: [])
     );
     Additional: (
       { ahaNone               } (BG: clDefault;   FG: clDefault;  FC: clNone; Styles: []; StylesMask: []),
@@ -462,7 +462,7 @@ const
       { phaNumber       } (BG: clDefault;  FG: clBlue;       FC: clNone; Styles: [];         StylesMask: []),
       { phaString       } (BG: clDefault;  FG: clBlue;       FC: clNone; Styles: [];         StylesMask: []),
       { phaSymbol       } (BG: clDefault;  FG: clDefault;    FC: clNone; Styles: [];         StylesMask: []),
-      { phaCaseLabel    } (BG: clDefault;  FG: clDefault;  FC: clNone; Styles: [fsUnderline]; StylesMask: [])
+      { phaCaseLabel    } (BG: clDefault;  FG: clDefault;  FC: clNone; Styles: [fsItalic]; StylesMask: [])
     );
     Additional: (
       { ahaNone               } (BG: clDefault;   FG: clDefault;   FC: clNone;  Styles: []; StylesMask: []),
