@@ -38,6 +38,9 @@ begin
   System.InitCriticalSection(CriticalSection);
   SavedHandlesList := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TObject));
   FSocketEventMap := TMap.Create(TMapIdType(its4), SizeOf(Pointer));
+  {$IFDEF HASX11}
+  FLastMinimizeEvent := 0;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

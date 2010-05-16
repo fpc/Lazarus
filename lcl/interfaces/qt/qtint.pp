@@ -135,6 +135,9 @@ type
     function DragImageList_DragMove(X, Y: Integer): Boolean;
     function DragImageList_SetVisible(NewVisible: Boolean): Boolean;
   public
+    {$IFDEF HASX11}
+    FLastMinimizeEvent: DWord; // track mainform minimize events -> TQtMainWindow.EventFilter
+    {$ENDIF}
     function CreateDefaultFont: HFONT; virtual;
     function GetQtDefaultDC: HDC; virtual;
     procedure DeleteDefaultDC; virtual;
