@@ -282,6 +282,8 @@ type
     procedure ccAddMessage(Texts: String);
     function AutoCompleteChar(Char: TUTF8Char; var AddChar: boolean;
        Category: TAutoCompleteOption): boolean;
+    function AutoBlockCompleteChar(Char: TUTF8Char; var AddChar: boolean;
+       Category: TAutoCompleteOption; aTextPos: TPoint; Line: string): boolean;
     procedure AutoCompleteBlock;
 
     procedure FocusEditor;// called by TSourceNotebook when the Notebook page
@@ -3683,6 +3685,7 @@ End;
 
 function TSourceEditor.AutoCompleteChar(Char: TUTF8Char; var AddChar: boolean;
   Category: TAutoCompleteOption): boolean;
+// returns true if handled
 var
   AToken: String;
   i, x1, x2: Integer;
@@ -3700,7 +3703,7 @@ begin
   CatName:=AutoCompleteOptionNames[Category];
 
   FEditor.GetWordBoundsAtRowCol(p, x1, x2);
-  // A new word-break char is going to be inserted, so end the word here
+  // use the token left of the caret
   x2 := Min(x2, p.x);
   WordToken := copy(Line, x1, x2-x1);
   IdChars := FEditor.IdentChars;
@@ -3721,6 +3724,46 @@ begin
       AddChar:=not Manager.CodeTemplateModul.CompletionAttributes[i].IndexOfName(
                                      AutoCompleteOptionNames[acoRemoveChar])>=0;
       exit;
+    end;
+  end;
+
+  if EditorOpts.AutoBlockCompletion
+  and (SyntaxHighlighterType in [lshFreePascal,lshDelphi]) then
+    Result:=AutoBlockCompleteChar(Char,AddChar,Category,p,Line);
+end;
+
+function TSourceEditor.AutoBlockCompleteChar(Char: TUTF8Char;
+  var AddChar: boolean; Category: TAutoCompleteOption; aTextPos: TPoint;
+  Line: string): boolean;
+// returns true if handled
+var
+  x1: integer;
+  x2: integer;
+  WordToken: String;
+  p: LongInt;
+  StartPos: integer;
+  s: String;
+begin
+  Result:=false;
+  FEditor.GetWordBoundsAtRowCol(aTextPos, x1, x2);
+  // use the token left of the caret
+  x2 := Min(x2, aTextPos.x);
+  WordToken := copy(Line, x1, x2-x1);
+  if (Category in [acoSpace]) and (SysUtils.CompareText(WordToken,'IF')=0) then
+  begin
+    p:=x2;
+    ReadRawNextPascalAtom(Line,p,StartPos);
+    if SysUtils.CompareText(copy(Line,StartPos,p-StartPos),'begin')=0 then begin
+      // 'if begin'
+      // => insert 'then'
+      Result:=true;
+      s:=' '+CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('then');
+      if not (Line[x2] in [' ',#9]) then
+        s:=s+' ';
+      FEditor.BeginUndoBlock;
+      FEditor.InsertTextAtCaret(s);
+      FEditor.LogicalCaretXY:=aTextPos;
+      FEditor.EndUndoBlock;
     end;
   end;
 end;
