@@ -9001,6 +9001,7 @@ begin
   {$IFDEF CheckNodeTool}CheckNodeTool(CursorNode);{$ENDIF}
   Result:='';
   if IsTermEdgedBracket(TermPos,EdgedBracketsStartPos) then begin
+    // check for constant sets: [enum]
     MoveCursorToCleanPos(EdgedBracketsStartPos);
     ReadNextAtom;
     ReadNextAtom;
@@ -9740,6 +9741,11 @@ begin
             Result:=FindContext.Tool.GetAtom;
           end;
 
+        ctnIdentifier:
+          begin
+            Result:=GetIdentifier(
+                              @FindContext.Tool.Src[FindContext.Node.StartPos]);
+          end;
         end;
 
         if Result='' then begin
@@ -9832,7 +9838,7 @@ begin
       Result:=ExpressionTypeDescNames[xtExtended];
     xtConstSet:
       begin
-
+        // eventually try to find the 'set of ' type
         RaiseTermNotSimple;
       end;
     xtConstBoolean:
