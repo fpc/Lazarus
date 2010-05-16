@@ -6179,7 +6179,6 @@ begin
   FBrush := nil; // Brush will be created on demand. Only few controls need it.
   FTabOrder := -1;
   FTabStop := False;
-  FAdjustClientRectRealized := Rect(0,0,0,0);
   InvalidateClientRectCache(false);
 end;
 

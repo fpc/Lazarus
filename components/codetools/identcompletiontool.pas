@@ -2383,7 +2383,7 @@ begin
 
     Params:=TFindDeclarationParams.Create;
     Params.ContextNode:=CursorNode;
-    Params.Flags:=fdfGlobals+fdfDefaultForExpressions;
+    Params.Flags:=fdfGlobals+fdfDefaultForExpressions+[fdfFunctionResult];
     ExprType:=FindExpressionTypeOfTerm(CaseAtom.EndPos,EndPos,Params,true);
     //DebugLn(['TIdentCompletionTool.GetValuesOfCaseVariable Type=',ExprTypeToString(ExprType)]);
 
