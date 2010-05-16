@@ -4061,7 +4061,7 @@ begin
   if FUpdatingAvailComboBox then exit;
   FUpdatingAvailComboBox:=true;
   if ComponentTree<>nil then
-    ComponentTree.Selection:=FSelection;
+    ComponentTree.RebuildComponentNodes;
   NewList:=TStringList.Create;
   try
     if (FPropertyEditorHook<>nil)

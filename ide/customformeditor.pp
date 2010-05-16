@@ -300,7 +300,7 @@ function CompareDefPropCacheItems(Item1, Item2: TDefinePropertiesCacheItem): int
 function ComparePersClassNameAndDefPropCacheItem(Key: Pointer;
                                      Item: TDefinePropertiesCacheItem): integer;
 
-function TryFreeComponent(var obj): boolean;
+function TryFreeComponent(var AComponent: TComponent): boolean;
 
 procedure RegisterStandardClasses;
 
@@ -327,18 +327,19 @@ begin
   RegisterClasses([TStringList]);
 end;
 
-function TryFreeComponent(var obj): boolean;
+function TryFreeComponent(var AComponent: TComponent): boolean;
 var
   OldName, OldClassName: string;
-  AComponent: TComponent absolute obj;
 Begin
   Result := False;
+  //debugln(['TryFreeComponent ',DbgSName(AComponent)]);
   {$IFNDEF NoCompCatch}
   try
   {$ENDIF}
     OldName := AComponent.Name;
     OldClassName := AComponent.ClassName;
     AComponent.Free;
+    //debugln(['TryFreeComponent ',OldName,':',OldClassName,' success']);
     Result := True;
   {$IFNDEF NoCompCatch}
   except
@@ -369,31 +370,6 @@ Begin
   end;
   AComponent := nil;
 end;
-
-{function TComponentInterface.Focus : Boolean;
-begin
-  Result := False;
-  if (FComponent is TWinControl) and (TWinControl(FComponent).CanFocus) then
-  Begin
-    TWinControl(FComponent).SetFocus;
-    Result := True;
-  end;
-end;
-
-function TComponentInterface.Delete: Boolean;
-begin
-  Result:=TryFreeComponent(FComponent);
-  Free;
-end;
-
-function TComponentInterface.GetComponentEditor: TBaseComponentEditor;
-begin
-  if FComponentEditor=nil then begin
-    FComponentEditor:=ComponentEditors.GetComponentEditor(Component,Designer);
-  end;
-  Result:=FComponentEditor;
-end;
-}
 
 { TCustomFormEditor }
 
@@ -477,7 +453,6 @@ end;
 Procedure TCustomFormEditor.DeleteComponent(AComponent: TComponent;
   FreeComponent: boolean);
 var
-  i: integer;
   AForm: TCustomForm;
   AWinControl: TWinControl;
   IsJIT: Boolean;
@@ -488,16 +463,7 @@ Begin
   if PropertyEditorHook.LookupRoot=AComponent then
     PropertyEditorHook.LookupRoot:=nil;
   IsJIT:=IsJITComponent(AComponent);
-  if IsJIT or (csInline in AComponent.ComponentState) then begin
-    i:=AComponent.ComponentCount-1;
-    while i>=0 do begin
-      DeleteComponent(AComponent.Components[i],FreeComponent);
-      dec(i);
-      if i>AComponent.ComponentCount-1 then
-        i:=AComponent.ComponentCount-1;
-    end;
-  end;
-  if IsJITComponent(AComponent) then begin
+  if IsJIT then begin
     // value is a top level component
     if JITFormList.IsJITForm(AComponent) then begin
       // free/unbind a form component

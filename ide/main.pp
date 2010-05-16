@@ -13049,12 +13049,12 @@ end;
 
 procedure TMainIDE.OnDesignerPersistentDeleted(Sender: TObject;
   APersistent: TPersistent);
+// important: APersistent was freed, do not access it
 var
   CurDesigner: TDesigner;
 begin
   CurDesigner := TDesigner(Sender);
   if dfDestroyingForm in CurDesigner.Flags then exit;
-  OnControlSelectionChanged(Sender, True);
   ObjectInspector1.FillPersistentComboBox;
 end;
 

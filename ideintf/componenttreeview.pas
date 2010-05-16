@@ -155,6 +155,7 @@ var
   AVLNode: TAvgLvlTreeNode;
   Root: TComponent;
 begin
+  if csDestroying in AComponent.ComponentState then exit;
   if GetLookupRootForComponent(AComponent) <> FRootComponent then Exit;
 
   AVLNode := FCandidates.FindKey(AComponent, TListSortCompare(@ComparePersistentWithComponentCandidate));
@@ -222,7 +223,8 @@ begin
     FComponentList.Clear;
   end
   else
-  if not NewSelection.ForceUpdate and FComponentList.IsEqual(PropertyEditorHook.LookupRoot, NewSelection) then
+  if not NewSelection.ForceUpdate
+    and FComponentList.IsEqual(PropertyEditorHook.LookupRoot, NewSelection) then
   begin
     // nodes ok, but maybe node values need update
     UpdateComponentNodesValues;
@@ -566,6 +568,8 @@ var
     walker: TComponentWalker;
     Root: TComponent;
   begin
+    if csDestroying in AComponent.ComponentState then exit;
+    //debugln(['AddChildren ',DbgSName(AComponent),' ',AComponent.ComponentCount]);
     walker := TComponentWalker.Create(Self, Candidates, RootComponent, ANode);
     try
       // add inline components children
@@ -585,7 +589,9 @@ var
     Candidate: TComponentCandidate;
     i: Integer;
   begin
+    //debugln(['AddCandidates OwnerComponent=',DbgSName(OwnerComponent)]);
     if OwnerComponent = nil then Exit;
+    if csDestroying in OwnerComponent.ComponentState then exit;
     for i := 0 to OwnerComponent.ComponentCount - 1 do
     begin
       AComponent := OwnerComponent.Components[i];
@@ -615,7 +621,12 @@ begin
   OldExpanded:=TTreeNodeExpandedState.Create(Self);
   Items.Clear;
 
-  RootObject := PropertyEditorHook.LookupRoot;
+  RootObject := nil;
+  if PropertyEditorHook<>nil then
+    RootObject := PropertyEditorHook.LookupRoot;
+  if (RootObject is TComponent)
+  and (csDestroying in TComponent(RootObject).ComponentState) then
+    RootObject:=nil;
   if RootObject <> nil then
   begin
     Candidates:=TAvgLvlTree.Create(TListSortCompare(@CompareComponentCandidates));
