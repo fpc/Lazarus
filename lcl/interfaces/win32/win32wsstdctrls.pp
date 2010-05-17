@@ -498,7 +498,6 @@ begin
     SubClassWndProc := @GroupBoxWindowProc;
     pClassName := @ButtonClsName[0];
     WindowTitle := StrCaption;
-    Flags := Flags or BS_GROUPBOX;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, False);
@@ -1570,7 +1569,6 @@ begin
   begin
     pClassName := @ButtonClsName[0];
     WindowTitle := StrCaption;
-    Flags := Flags or BS_3STATE;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -1652,7 +1650,6 @@ begin
   begin
     pClassName := @ButtonClsName[0];
     WindowTitle := StrCaption;
-    Flags := Flags or BS_AUTOCHECKBOX or BS_PUSHLIKE;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -1674,9 +1671,6 @@ begin
   begin
     pClassName := @ButtonClsName[0];
     WindowTitle := StrCaption;
-    // BS_AUTORADIOBUTTON may hang the application,
-    // if the radiobuttons are not consecutive controls.
-    Flags := Flags or BS_RADIOBUTTON;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);

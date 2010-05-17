@@ -26,6 +26,12 @@ begin
   Result.CY := 105;
 end;
 
+procedure TCustomGroupBox.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.Style := Params.Style or BS_GROUPBOX;
+end;
+
 {------------------------------------------------------------------------------
   function TCustomGroupBox.Create
 ------------------------------------------------------------------------------}

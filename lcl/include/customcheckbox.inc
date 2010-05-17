@@ -242,6 +242,12 @@ begin
   inherited TextChanged;
 end;
 
+procedure TCustomCheckBox.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.Style := Params.Style or BS_3STATE;
+end;
+
 function TCustomCheckBox.DialogChar(var Message: TLMKey): boolean;
 begin
   if IsAccel(Message.CharCode, Caption) and CanFocus then

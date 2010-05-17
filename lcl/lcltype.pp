@@ -906,7 +906,12 @@ const
   { Button styles }
   BS_PUSHBUTTON    = $00000000;
   BS_DEFPUSHBUTTON = $00000001;
+  BS_AUTOCHECKBOX  = $00000003;
+  BS_RADIOBUTTON   = $00000004;
+  BS_3STATE        = $00000005;
+  BS_GROUPBOX      = $00000007;
   BS_OWNERDRAW     = $0000000B;
+  BS_PUSHLIKE      = $00001000;
 
 const
 //==============================================

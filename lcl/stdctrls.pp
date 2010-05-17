@@ -163,6 +163,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     class function GetControlClassDefaultSize: TSize; override;
+    procedure CreateParams(var Params: TCreateParams); override;
   public
     constructor Create(AOwner: TComponent); Override;
   end;
@@ -1194,6 +1195,7 @@ type
     procedure Loaded; override;
     procedure WSSetText(const AText: String); override;
     procedure TextChanged; override;
+    procedure CreateParams(var Params: TCreateParams); override;
   public
     constructor Create(TheOwner: TComponent); override;
   public
@@ -1263,9 +1265,9 @@ type
   { TToggleBox }
 
   TToggleBox = class(TCustomCheckBox)
-  private
   protected
     class procedure WSRegisterClass; override;
+    procedure CreateParams(var Params: TCreateParams); override;
   public
     constructor Create(TheOwner: TComponent); override;
   published
@@ -1315,6 +1317,7 @@ type
     procedure SetChecked(Value: Boolean); override;
     procedure DoChange(var Msg); message LM_CHANGED;
     procedure DoApplyChanges;
+    procedure CreateParams(var Params: TCreateParams); override;
   public
     constructor Create(TheOwner: TComponent); override;
   published

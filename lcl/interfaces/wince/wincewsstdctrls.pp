@@ -413,18 +413,10 @@ begin
   begin
     pClassName := @ButtonClsName;
     WindowTitle := StrCaption;
-    Flags := Flags Or BS_GROUPBOX;
   end;
   // create window
   Params.SubClassWndProc := @GroupBoxPanelWindowProc;
   FinishCreateWindow(AWinControl, Params, false);
-  // handle winxp panel hack
-  // if themed but does not have tabpage as parent
-  // remember we are a groupbox in need of erasebackground hack
-//  if TWinCEWidgetSet(WidgetSet).ThemesActive
-//      and not Params.WindowInfo^.hasTabParent then
-//  Params.WindowInfo^.isGroupBox := true;
-//  AWinControl.InvalidateClientRectCache(true);
   Result := Params.Window;
 end;
 
@@ -1268,7 +1260,6 @@ begin
   begin
     pClassName := @ButtonClsName;
     WindowTitle := StrCaption;
-    Flags := Flags or BS_3STATE;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -1341,7 +1332,6 @@ begin
   begin
     pClassName := @ButtonClsName;
     WindowTitle := StrCaption;
-    Flags := Flags or BS_AUTOCHECKBOX or BS_PUSHLIKE;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -1366,9 +1356,6 @@ begin
   begin
     pClassName := @ButtonClsName;
     WindowTitle := StrCaption;
-    // BS_AUTORADIOBUTTON may hang the application,
-    // if the radiobuttons are not consecutive controls.//roozbeh:is it so in wince?
-    Flags := Flags or BS_RADIOBUTTON;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);

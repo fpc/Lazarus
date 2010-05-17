@@ -22,11 +22,17 @@ begin
   RegisterToggleBox;
 end;
 
+procedure TToggleBox.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.Style := (Params.Style and not BS_3STATE) or BS_AUTOCHECKBOX or BS_PUSHLIKE;
+end;
+
 constructor TToggleBox.Create(TheOwner : TComponent);
 begin
   inherited Create(TheOwner);
   fCompStyle := csToggleBox;
-  AutoSize:=false;
+  AutoSize := False;
 end;
 
 {------------------------------------------------------------------------------}

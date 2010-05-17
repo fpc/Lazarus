@@ -105,6 +105,14 @@ begin
   end;
 end;
 
+procedure TRadioButton.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  // BS_AUTORADIOBUTTON may hang the application,
+  // if the radiobuttons are not consecutive controls.
+  Params.Style := (Params.Style and not BS_3STATE) or BS_RADIOBUTTON;
+end;
+
 class procedure TRadioButton.WSRegisterClass;
 begin
   inherited WSRegisterClass;
