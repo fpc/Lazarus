@@ -1801,9 +1801,18 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomForm.SetPosition(Value : TPosition);
 begin
-  if Value <> FPosition then begin
+  if Value <> FPosition then
+  begin
     FPosition := Value;
     UpdateControlState;
+
+    // we must update form TPosition if it's changed during runtime.
+    if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
+
+    if HandleAllocated and Showing
+    and not (fsShowing in FFormState)
+    and not (fsFirstShow in FFormState) then
+      MoveToDefaultPosition;
   end;
 end;
 
