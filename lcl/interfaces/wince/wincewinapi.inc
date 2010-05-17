@@ -2061,6 +2061,9 @@ var
   R: TRect;
   WindowInfo: PWindowInfo;
   Style, ExStyle: longint;
+  {$IFDEF VerboseSizeMsg}
+  lName: string;
+  {$ENDIF}
 
   // This is for TCustomFloatSpinEdit
   // and the Buddy is the Edit component
@@ -2155,9 +2158,12 @@ begin
   end;
 
   {$IFDEF VerboseSizeMsg}
+  if (WindowInfo <> nil) and (WindowInfo^.WinControl <> nil) then
+   lName := WindowInfo^.WinControl.Name
+  else lName := 'NIL';
   DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-    Format('[TWinCEWidgetSet.GetWindowSize]: %d:%d',
-    [Width, Height]));
+    Format('[TWinCEWidgetSet.GetWindowSize]: Name:%s %d:%d',
+    [lName, Width, Height]));
   {$ENDIF}
 end;
 
@@ -3034,6 +3040,9 @@ var
   Style, ExStyle: Integer;
   OldRect, OldClientRect: Windows.RECT;
   WindowInfo: PWindowInfo;
+  {$IFDEF VerboseSizeMsg}
+  lName: string;
+  {$ENDIF}
 begin
   //debugln('[TWinCEWidgetSet.SetWindowPos] Top=',HWndInsertAfter=HWND_TOP);
   Style := Windows.GetWindowLong(HWnd, GWL_STYLE);
@@ -3059,6 +3068,15 @@ begin
   end;
 
   Result := Boolean(Windows.SetWindowPos(HWnd, HWndInsertAfter, X, Y, CX, CY, UFlags));
+
+  {$IFDEF VerboseSizeMsg}
+  if Assigned(WindowInfo) and (WindowInfo^.AWinControl <> nil) then
+   lName := WindowInfo^.AWinControl.Name
+  else lName := 'NIL';
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+    Format('[TWinCEWidgetSet.SetWindowPos]: Name:%s HWnd:%d Pos x:%d y:%d w:%d h:%d',
+    [lName, HWnd, X, Y, CX, CY]));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

@@ -28,7 +28,7 @@ interface
 
 uses
   // RTL, FCL, LCL
-  Windows,
+  Windows, LCLProc,
   SysUtils, Controls, LCLType, Forms, InterfaceBase,
   // Widgetset
   winceproc, wincewscontrols,
@@ -344,13 +344,19 @@ begin
       CalculateDialogPosition(Params, Bounds, lForm);
     end;
   end;
-  
+
+  // Update the position of the window for the LCL
+  AWinControl.Left := Params.Left;
+  AWinControl.Top := Params.Top;
+  AWinControl.Width := Params.Width;
+  AWinControl.Height := Params.Height;
+
   // create window
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
 
-  {$ifdef VerboseWinCE}
-  WriteLn('Window Handle = ' + IntToStr(Result));
+  {$if defined(VerboseWinCE) or defined(VerboseSizeMsg)}
+  DebugLn('Window Handle = ' + IntToStr(Result));
   {$endif}
 end;
 
@@ -412,6 +418,15 @@ begin
   // rect adjusted, pass to inherited to do real work
   TWinCEWSWinControl.SetBounds(AWinControl, SizeRect.Left, SizeRect.Top,
     SizeRect.Right - SizeRect.Left, SizeRect.Bottom - SizeRect.Top);
+
+  {$IFDEF VerboseSizeMsg}
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+    Format('[TWinCEWSCustomForm.SetBounds]: Name:%s Request x:%d y:%d w:%d h:%d'
+    + ' SizeRect x:%d y:%d w:%d h:%d',
+    [AWinControl.Name, ALeft, ATop, AWidth, AHeight,
+    SizeRect.Left, SizeRect.Top,
+    SizeRect.Right - SizeRect.Left, SizeRect.Bottom - SizeRect.Top]));
+  {$ENDIF}
 end;
 
 class procedure TWinCEWSCustomForm.SetIcon(const AForm: TCustomForm; const Small, Big: HICON);

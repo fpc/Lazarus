@@ -564,7 +564,8 @@ begin
       Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER);
     end else begin
       Flags := SW_SHOW;
-      if TControl(Sender) is TCustomForm then
+      if (TControl(Sender) is TCustomForm) and
+        (Application.ApplicationType = atDesktop) then
         case TCustomForm(Sender).WindowState of
           wsMaximized: Flags := SW_SHOWMAXIMIZED;
           wsMinimized: Flags := SW_SHOWMINIMIZED;
