@@ -100,7 +100,7 @@ begin
     finally
       Dispose(AStruct);
     end;
-    if AWidget.HasCaret then DrawCaret;
+    if AWidget.HasCaret then DrawCaret(AWidget);
     
     // resetting clip region for the next paint
     TCarbonControlContext(AWidget.Context).SetClipRegion(nil, 0);
@@ -373,7 +373,6 @@ function CarbonCommon_SetFocusPart(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  CurrentFocus,
   FocusPart: ControlPartCode;
 const
   SName = 'CarbonCommon_SetFocusPart';
@@ -387,39 +386,14 @@ begin
   AWidget.BeginEventProc;
   try
     if not (AWidget is TCarbonCustomControl) or (AWidget is TCarbonWindow) then
-      Result := CallNextEventHandler(ANextHandler, AEvent);
+      Result := CallNextEventHandler(ANextHandler, AEvent)
+    else
+      Result := noErr;
 
     if OSError(
       GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
         SizeOf(ControlPartCode), nil, @FocusPart), SName,
       SGetEvent, SControlPart) then Exit;
-
-    {$IFDEF VerboseCommonEvent}
-      DebugLn('CarbonCommon_SetFocusPart: ', DbgSName(AWidget.LCLObject), ' ' +
-        IntToStr(Integer(FocusPart)));
-    {$ENDIF}
-
-    if (AWidget is TCarbonCustomControl) and not (AWidget is TCarbonWindow) then
-    begin
-      OSError(HIViewGetFocusPart(AWidget.Content, CurrentFocus),
-        SName, 'HIViewGetFocusPart');
-
-      case FocusPart of
-        kControlFocusPrevPart,
-        kControlFocusNextPart:
-          if CurrentFocus = kControlNoPart then FocusPart := kControlEditTextPart
-          else FocusPart := kControlEditTextPart;
-        kControlEditTextPart:;
-        else
-          FocusPart := kControlNoPart;
-      end;
-
-      OSError(
-        SetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode,
-          SizeOf(ControlPartCode), @FocusPart), SName, SSetEvent, SControlPart);
-
-      Result := noErr;
-    end;
 
     if FocusPart <> kControlFocusNoPart then
     begin

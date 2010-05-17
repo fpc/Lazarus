@@ -1359,8 +1359,10 @@ end;
   Creates Carbon status bar
  ------------------------------------------------------------------------------}
 procedure TCarbonStatusBar.CreateWidget(const AParams: TCreateParams);
+{$ifdef CarbonOldStatusBar}
 var
   Control: ControlRef;
+{$endif}
 begin
   {$ifdef CarbonOldStatusBar}
   if OSError(
