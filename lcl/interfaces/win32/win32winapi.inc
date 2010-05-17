@@ -232,15 +232,10 @@ var
 begin
   Handle := ObjectToHwnd(Sender);
   case TLMessage(Message).Msg of
-
     LM_PAINT:
       CallWin32PaintHandler;
-
-    LM_MOUSEWHEEL:
-    begin
-      // provide default wheel scrolling functionality
+    LM_MOUSEWHEEL: // provide default wheel scrolling functionality
       CallMouseWheelHandler;
-    end;
     LM_ERASEBKGND,
     LM_GETDLGCODE:
       with TLMessage(Message) do
