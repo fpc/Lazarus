@@ -1040,8 +1040,8 @@ resourcestring
 
   lisCheckChangesOnDiskWithLoading = 'Check changes on disk with loading';
 
-  lisEnvDoubleClickOnMessagesJumpsOtherwiseSingleClick = 'Double click on '
-    +'messages jumps (otherwise: single click)';
+  lisEnvJumpFromMessageToSrcOnDblClickOtherwiseSingleClick = 'Jump from '
+    +'message to source line on double click (otherwise: single click)';
   dlgWinPos = 'Window Positions';
   lisTitleInTaskbarShowsForExampleProject1LpiLazarus = 'Title in taskbar '
     +'shows for example: project1.lpi - Lazarus';

@@ -153,7 +153,7 @@ begin
 
   // messages view + misc
   lblMisc.Caption := dlgDesktopMisc;
-  MsgViewDblClickJumpsCheckBox.Caption:=lisEnvDoubleClickOnMessagesJumpsOtherwiseSingleClick;
+  MsgViewDblClickJumpsCheckBox.Caption:=lisEnvJumpFromMessageToSrcOnDblClickOtherwiseSingleClick;
   MsgViewFocusCheckBox.Caption:=dlgEOFocusMessagesAfterCompilation;
   CheckDiskChangesWithLoadingCheckBox.Caption := lisCheckChangesOnDiskWithLoading;
 end;
