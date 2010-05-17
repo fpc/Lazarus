@@ -237,7 +237,10 @@ begin
             exit(True);
           with GtkWidgetSet do
           begin
-            LastFocusOut := PGtkWidget(ACtl.Handle);
+            if ACtl.HandleAllocated then
+              LastFocusOut := PGtkWidget(ACtl.Handle)
+            else
+              LastFocusOut := Widget;
             if LastFocusOut = LastFocusIn then
               StartFocusTimer;
           end;
@@ -245,7 +248,10 @@ begin
         begin
           with GtkWidgetSet do
           begin
-            LastFocusIn := PGtkWidget(ACtl.Handle);
+            if ACtl.HandleAllocated then
+              LastFocusIn := PGtkWidget(ACtl.Handle)
+            else
+              LastFocusIn := Widget;
             if not AppActive then
               AppActive := True;
           end;
