@@ -161,6 +161,10 @@ msgstr "Exibir log"
 msgid "Source file does not belong to the project. Please add first."
 msgstr "Arquivo fonte não pertence ao projeto. Favor adicionar primeiro."
 
+#: svnclasses.rssvnsettings
+msgid "SVN settings"
+msgstr ""
+
 #: svnclasses.rssvntools
 msgid "SVN tools"
 msgstr "Ferramentas SVN"

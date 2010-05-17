@@ -15170,10 +15170,6 @@ msgstr "Nastavit volnou Záložku"
 msgid "Show Line Numbers"
 msgstr "Zobrazovat čísla řádků"
 
-#: lazarusidestrconsts.uemshowunitinfo
-msgid "Unit Info"
-msgstr "Informace o jednotce"
-
 #~ msgid "Auto create form when opening unit"
 #~ msgstr "Automaticky vytvořit formulář při otevření jednotky"
 #~ msgid "Use Default"
@@ -15271,6 +15267,10 @@ msgstr "Informace o jednotce"
 #~ msgstr "Přesunout editor vpravo"
 #~ msgid "Move Editor Rightmost"
 #~ msgstr "Přesunout editor nejvíce vpravo"
+#: lazarusidestrconsts.uemshowunitinfo
+msgid "Unit Info"
+msgstr "Informace o jednotce"
+
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"
 msgstr "&Přepnout záložku"

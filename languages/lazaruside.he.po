@@ -4,7 +4,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Ido Kanner <idokan@gmail.com>\n"
 "Last-Translator: ezik shulamy <shulamy@regba.org.il>\n"
-"PO-Revision-Date: 2010-05-16 21:31+0200\n"
+"PO-Revision-Date: 2010-05-17 22:39+0200\n"
 "Project-Id-Version: lazaruside\n"
 "Language-Team: hebrew <he@li.org>\n"
 "X-Generator: KBabel 1.11.4\n"
@@ -767,7 +767,7 @@ msgstr "השתמש באפשרויות מהדר אלו כברירת מחדל לפ
 
 #: lazarusidestrconsts.dlgcovalgrind
 msgid "Generate code for valgrind"
-msgstr ""
+msgstr "צור קוד עבור valgrind"
 
 #: lazarusidestrconsts.dlgcoverbosity
 msgid "Verbosity"
@@ -943,13 +943,13 @@ msgstr "תת תיקייה"
 msgid "Code templates"
 msgstr "תבניות קוד"
 
+# msgstr "בלוקים שלמים"
 #: lazarusidestrconsts.dlgedcolor
 #| msgid "Syntax highlight"
 msgctxt "lazarusidestrconsts.dlgedcolor"
 msgid "Colors"
 msgstr "צבעים"
 
-# msgstr "בלוקים שלמים"
 #: lazarusidestrconsts.dlgedcompleteblocks
 #| msgid "Complete blocks"
 msgid "Add close statement for pascal blocks"
@@ -1197,7 +1197,7 @@ msgstr "מצא טקסט במוקום הסמן"
 
 #: lazarusidestrconsts.dlgfolddiffchunk
 msgid "Chunk"
-msgstr ""
+msgstr "חלק"
 
 #: lazarusidestrconsts.dlgfolddiffchunksect
 msgid "Chunk section"
@@ -3609,11 +3609,11 @@ msgstr "אל תוסיף תו"
 
 #: lazarusidestrconsts.lisautomaticfeatures
 msgid "Automatic features"
-msgstr ""
+msgstr "תכונות אוטומטיות"
 
 #: lazarusidestrconsts.lisautoshowobjectinspector
 msgid "Auto show"
-msgstr ""
+msgstr "הצגה אוטומטית"
 
 #: lazarusidestrconsts.lisavailablepackages
 msgid "Available packages"
@@ -3637,7 +3637,7 @@ msgstr "מתחיל"
 
 #: lazarusidestrconsts.lisbehindrelated
 msgid "Behind related"
-msgstr ""
+msgstr "מאחורי הקשורים"
 
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
@@ -3654,11 +3654,11 @@ msgstr "פקודת בנייה"
 
 #: lazarusidestrconsts.lisbfonbuildprojectexecutethebuildfilecommandinstead
 msgid "On build project execute the Build File command instead"
-msgstr ""
+msgstr "בצע בניית קובץ במקום בניית פרוייקט"
 
 #: lazarusidestrconsts.lisbfonrunprojectexecutetherunfilecommandinstead
 msgid "On run project execute the Run File command instead"
-msgstr ""
+msgstr "בצע הרצת קובץ במקום הרצת פרוייקט"
 
 #: lazarusidestrconsts.lisbfrun
 msgctxt "lazarusidestrconsts.lisbfrun"
@@ -3683,7 +3683,7 @@ msgstr "ספריית עבודה (השאר ריק לנתיב הקובץ)"
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
-msgstr ""
+msgstr "הדגש (bold) ערכים שאינם ברירת מחדל"
 
 #: lazarusidestrconsts.lisborderspace
 msgid "BorderSpace"
@@ -3696,19 +3696,19 @@ msgstr "תחתית"
 
 #: lazarusidestrconsts.lisbottomborderspacespinedithint
 msgid "Bottom borderspace. This value is added to base borderspace and used for the space below the control."
-msgstr ""
+msgstr "רווח תחתון. רווח זה מתווסף לרווח הבסיסי של הפקד."
 
 #: lazarusidestrconsts.lisbottomgroupboxcaption
 msgid "Bottom anchoring"
-msgstr ""
+msgstr "הצמדה לתחתית"
 
 #: lazarusidestrconsts.lisbottoms
 msgid "Bottoms"
-msgstr ""
+msgstr "תחתיות"
 
 #: lazarusidestrconsts.lisbottomsiblingcomboboxhint
 msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
-msgstr ""
+msgstr "זהו פקד \"אח\" אליו מוצמד הצד התחתון. השאר ריק בשביל הורה."
 
 #: lazarusidestrconsts.lisbottomspaceequally
 msgid "Bottom space equally"
@@ -3721,11 +3721,11 @@ msgstr "שבור"
 
 #: lazarusidestrconsts.lisbreakpointproperties
 msgid "Breakpoint Properties"
-msgstr ""
+msgstr "תכונות נקודת עצירה"
 
 #: lazarusidestrconsts.lisbrowseforcompiler
 msgid "Browse for Compiler (%s)"
-msgstr ""
+msgstr "דפדף לחיפוש מהדר)s%)"
 
 #: lazarusidestrconsts.lisbtnbreak
 msgctxt "lazarusidestrconsts.lisbtnbreak"
@@ -3739,15 +3739,15 @@ msgstr "המשך"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
-msgstr ""
+msgstr "חפש"
 
 #: lazarusidestrconsts.lisbtnreplace
 msgid "&Replace"
-msgstr ""
+msgstr "החלף"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
-msgstr ""
+msgstr "בנה את כל הקבצים של פרוייקט/חבילה/IDE"
 
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
@@ -3755,11 +3755,11 @@ msgstr "בנה את ה IDE עם חבילות"
 
 #: lazarusidestrconsts.lisbuildinglazarusfailed
 msgid "Building Lazarus failed"
-msgstr ""
+msgstr "בניית לזארוס נכשלה"
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
-msgstr ""
+msgstr "מוד בנייה"
 
 #: lazarusidestrconsts.lisbuildnewproject
 msgid "Build new project"
@@ -3767,15 +3767,15 @@ msgstr "בנה פרויקט חדש"
 
 #: lazarusidestrconsts.lisbuildnumber
 msgid "Build Number"
-msgstr ""
+msgstr "מספר הבניה"
 
 #: lazarusidestrconsts.lisbuildvariables
 msgid "Build variables"
-msgstr ""
+msgstr "משתני הבניה"
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
-msgstr ""
+msgstr "קריאת s% ליצירת makefile מ s% נכשלה."
 
 #: lazarusidestrconsts.liscancel
 msgctxt "lazarusidestrconsts.liscancel"
@@ -3796,19 +3796,19 @@ msgstr "בטל את שינוי השם"
 
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
-msgstr ""
+msgstr "לא יכול להעתיק רכיב של הרמה העליונה."
 
 #: lazarusidestrconsts.liscannotcreatefile
 msgid "Can not create file %s%s%s"
-msgstr ""
+msgstr "לא יכול לצור את הקובץ s%s%s%"
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 msgid "Cannot find lazarus starter:%s%s"
-msgstr ""
+msgstr "לא יכול למצוא את מאתחל לזארוס: s%s%"
 
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
-msgstr ""
+msgstr "יכול רק לשנות את המחלקה של TCcomponent.."
 
 #: lazarusidestrconsts.lisccdchangeclassof
 msgid "Change Class of %s"
@@ -3840,11 +3840,11 @@ msgstr "העתק פלט ללוח הגזירים"
 
 #: lazarusidestrconsts.lisccodatesdiffer
 msgid "The dates of the .ppu files of FPC differ more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
-msgstr ""
+msgstr "הזמנים של קבצי ppu. של FPC שונים ביותר משעה. יכול להיות שזה אומר שהם שייכים לשתי התקנות שונות. קובץ 1:s%s% קובץ 2 s%"
 
 #: lazarusidestrconsts.lisccoenglishmessagefilemissing
 msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
-msgstr ""
+msgstr "הודעות באנגלית עבור fpc חסרות: הודעת שגיאה של רכיבים/כלי קוד/fpc"
 
 #: lazarusidestrconsts.lisccoerrorcaption
 msgctxt "lazarusidestrconsts.lisccoerrorcaption"
@@ -3857,11 +3857,11 @@ msgstr "שגיאה:"
 
 #: lazarusidestrconsts.lisccofpcunitpathhassource
 msgid "FPC unit path contains a source: "
-msgstr ""
+msgstr "נתיב יחידה של FPC מכיל מקור:"
 
 #: lazarusidestrconsts.lisccohasnewline
 msgid "new line symbols"
-msgstr ""
+msgstr "סמלי שורה חדשים"
 
 #: lazarusidestrconsts.lisccohintmsg
 msgid "HINT: "
@@ -3889,7 +3889,7 @@ msgstr "לא נמצאה היחידה המהודרת של FPC: %s.ppu"
 
 #: lazarusidestrconsts.lisccomultiplecfgfound
 msgid "multiple compiler configs found: "
-msgstr ""
+msgstr "נמצאו מספר קבצי הגדרה למהדר"
 
 #: lazarusidestrconsts.liscconocfgfound
 msgid "no fpc.cfg found"
@@ -3905,19 +3905,19 @@ msgstr "קובץ ה ppu קיים פעמיים: %s, %s"
 
 #: lazarusidestrconsts.lisccoppunotfounddetailed
 msgid "The compiled FPC unit %s.ppu was not found.%sThis typically means your fpc.cfg has a bug. Or your FPC installation is broken."
-msgstr ""
+msgstr "היחידה s%.ppu המהודרת של FPC לא נמצאה. בדרך כלל זה אומר שיש באג בקובץ fpc.cfg, או שההתקנה של FPC שבורה."
 
 #: lazarusidestrconsts.lisccoppuolderthancompiler
 msgid "There is a .ppu file older than the compiler itself:%s%s"
-msgstr ""
+msgstr "יש קובץ ppu. ישן יותר מהמהדר עצמו:s%s%"
 
 #: lazarusidestrconsts.lisccorelunitpathfoundincfg
 msgid "relative unit path found in fpc cfg: %s"
-msgstr ""
+msgstr "הנתיב היחסי של היחידה נמצא ב fpc.cfg: %s"
 
 #: lazarusidestrconsts.lisccoseveralcompilers
 msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
-msgstr ""
+msgstr "יש כמה מהדרי fpc בנתיב שלך.s%s%s% אולי שכחת למחוק מהדר ישן?"
 
 #: lazarusidestrconsts.lisccoskip
 msgid "Skip"
@@ -4005,7 +4005,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treating as \"many\""
-msgstr ""
+msgstr "מספר הפרמטרים מטופל כ many"
 
 #: lazarusidestrconsts.liscelongprocedures
 msgid "Long procedures"
@@ -4013,7 +4013,7 @@ msgstr "פרוצדורות ארוכות"
 
 #: lazarusidestrconsts.liscelongproclinecount
 msgid "Line count of procedure treated as \"long\""
-msgstr ""
+msgstr "מספר שורות הפרוצדורה מטופל כ long"
 
 #: lazarusidestrconsts.liscemanynestedprocedures
 msgid "Many nested procedures"
@@ -4033,7 +4033,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscenestedproccount
 msgid "Nested procedures count treating as \"many\""
-msgstr ""
+msgstr "מספר הפרוצדורות המקוננות מטופל כ many"
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
 msgid "Center control horizontally relative to the given sibling"
@@ -4112,7 +4112,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisceshowcodeobserver
 msgid "Show observerations about"
-msgstr ""
+msgstr "הראה תצפית על"
 
 #: lazarusidestrconsts.liscestylegroup
 msgctxt "lazarusidestrconsts.liscestylegroup"
@@ -4183,7 +4183,7 @@ msgstr "בדוק שינויים על הדיסק בזמן הטעינה"
 
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "check if the next token in source is an end and if not returns lineend + end; + lineend"
-msgstr ""
+msgstr "בדוק אם הסימן הבא בקוד הוא הוא :סוף\" ואם לא החזר linend +end; "
 
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
@@ -4203,15 +4203,15 @@ msgstr "בחר מקשר ..."
 
 #: lazarusidestrconsts.lischooseanameforthenewcomponent
 msgid "Choose a name for the new component"
-msgstr ""
+msgstr "בחר שם לרכיב החדש"
 
 #: lazarusidestrconsts.lischooseapascalfileforindentationexamples
 msgid "Choose a pascal file for indentation examples"
-msgstr ""
+msgstr "בחר קובץ פסקל עבור דוגמאות זיהוי"
 
 #: lazarusidestrconsts.lischoosecompilermessages
 msgid "Choose compiler messages file"
-msgstr ""
+msgstr "בחר קובץ להודעות מהדר"
 
 #: lazarusidestrconsts.lischoosecompilerpath
 msgid "Choose compiler filename (%s)"
@@ -4223,11 +4223,11 @@ msgstr "בחר בשם הקובץ של מנפה השגיאות"
 
 #: lazarusidestrconsts.lischoosedelphipackage
 msgid "Choose Delphi package (*.dpk)"
-msgstr ""
+msgstr "בחר חבילת דלפי (dpk.*)"
 
 #: lazarusidestrconsts.lischoosedelphiproject
 msgid "Choose Delphi project (*.dpr)"
-msgstr ""
+msgstr "בחר פרוייקט דלפי חדש (*.dpr)"
 
 #: lazarusidestrconsts.lischoosedelphiunit
 msgid "Choose Delphi unit (*.pas)"
@@ -4454,7 +4454,7 @@ msgstr "הוסף נתיב"
 #: lazarusidestrconsts.liscodehelpbrowseexamplebutton
 msgctxt "lazarusidestrconsts.liscodehelpbrowseexamplebutton"
 msgid "Browse"
-msgstr ""
+msgstr "דפדף"
 
 #: lazarusidestrconsts.liscodehelpconfirmreplace
 msgid "Confirm replace"
@@ -4548,51 +4548,51 @@ msgstr ""
 #: lazarusidestrconsts.liscodehelpreplacebutton
 msgctxt "lazarusidestrconsts.liscodehelpreplacebutton"
 msgid "Replace"
-msgstr ""
+msgstr "החלף"
 
 #: lazarusidestrconsts.liscodehelpsavebutton
 msgctxt "lazarusidestrconsts.liscodehelpsavebutton"
 msgid "Save"
-msgstr ""
+msgstr "שמור"
 
 #: lazarusidestrconsts.liscodehelpseealsotag
 msgid "See also"
-msgstr ""
+msgstr "ראה גם"
 
 #: lazarusidestrconsts.liscodehelpshortdescriptionof
 msgid "Short description of"
-msgstr ""
+msgstr "תאור קצר של"
 
 #: lazarusidestrconsts.liscodehelpshorttag
 msgid "Short"
-msgstr ""
+msgstr "קצר"
 
 #: lazarusidestrconsts.liscodehelpshowemptymethods
 msgid "Show empty methods"
-msgstr ""
+msgstr "הראה מתודות ריקות"
 
 #: lazarusidestrconsts.liscodehelpshowunusedunits
 msgid "Show unused units"
-msgstr ""
+msgstr "הראה מתודות שלא השתמשת בהן"
 
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
 msgid "Ignore constants in next functions"
-msgstr ""
+msgstr "התעלם מקבועים בפונקציה הבאה"
 
 #: lazarusidestrconsts.liscodeobscharconst
 msgctxt "lazarusidestrconsts.liscodeobscharconst"
 msgid "Search for unnamed char constants"
-msgstr ""
+msgstr "חפש קבועים מסוג תו שאין להם שם"
 
 #: lazarusidestrconsts.liscodeobserver
 msgid "Code Observer"
-msgstr ""
+msgstr "צופה הקוד"
 
 #: lazarusidestrconsts.liscodeobsignoreeconstants
 msgctxt "lazarusidestrconsts.liscodeobsignoreeconstants"
 msgid "Ignore next unnamed constants"
-msgstr ""
+msgstr "התעלם מהקבועים חסרי השם הבאים"
 
 #: lazarusidestrconsts.liscodetempladd
 msgctxt "lazarusidestrconsts.liscodetempladd"
@@ -4605,11 +4605,11 @@ msgstr "הוסף תבנית קוד"
 
 #: lazarusidestrconsts.liscodetemplatokenalreadyexists
 msgid " A token %s%s%s already exists! "
-msgstr ""
+msgstr "סמל s%s%s% כבר קיים!"
 
 #: lazarusidestrconsts.liscodetemplautocompleteon
 msgid "Auto complete on ..."
-msgstr ""
+msgstr "השלמה אוטומטית ב"
 
 #: lazarusidestrconsts.liscodetemplchange
 msgctxt "lazarusidestrconsts.liscodetemplchange"
@@ -4622,7 +4622,7 @@ msgstr "הערה"
 
 #: lazarusidestrconsts.liscodetempleditcodetemplate
 msgid "Edit code template"
-msgstr ""
+msgstr "ערוך תבנית קוד"
 
 #: lazarusidestrconsts.liscodetemplerror
 msgctxt "lazarusidestrconsts.liscodetemplerror"
@@ -4631,11 +4631,11 @@ msgstr "שגיאה"
 
 #: lazarusidestrconsts.liscodetempltoken
 msgid "Token:"
-msgstr ""
+msgstr "סמל:"
 
 #: lazarusidestrconsts.liscodetools
 msgid "CodeTools"
-msgstr ""
+msgstr "כלי קוד"
 
 #: lazarusidestrconsts.liscodetoolsdefsaction
 msgid "Action: %s"
@@ -4643,7 +4643,7 @@ msgstr "פעולה: %s"
 
 #: lazarusidestrconsts.liscodetoolsdefsautocreatednodesreadonly
 msgid "Auto created nodes can not be edited,%snor can they have non auto created child nodes."
-msgstr ""
+msgstr "אי אםשר לערוך צמתים שנוצרו אוטומטית, ולא יכול להיות שיש להן צמתים בנות, שלא נוצרו אוטומטית."
 
 #: lazarusidestrconsts.liscodetoolsdefsautogenerated
 msgid "%s, auto generated"
@@ -4651,19 +4651,19 @@ msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsautogeneratednodescannotbeedited
 msgid "Auto generated nodes can not be edited."
-msgstr ""
+msgstr "אי אםשר לערוך צמתים שנוצרו אוטומטית,"
 
 #: lazarusidestrconsts.liscodetoolsdefsblock
 msgid "Block"
-msgstr ""
+msgstr "בלוק"
 
 #: lazarusidestrconsts.liscodetoolsdefscodetoolsdefineseditor
 msgid "CodeTools Defines Editor"
-msgstr ""
+msgstr "כלי קוד להגדרת עורכים  "
 
 #: lazarusidestrconsts.liscodetoolsdefscodetoolsdefinespreview
 msgid "CodeTools Defines Preview"
-msgstr ""
+msgstr "כלי קוד להגדרת צצוגה מקדימה"
 
 #: lazarusidestrconsts.liscodetoolsdefscompilerpath
 msgid "compiler path"
@@ -4675,27 +4675,27 @@ msgstr "המר צומת"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
-msgstr ""
+msgstr "צור מגדירים לתקיית s%"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforfreepascalcompiler
 msgid "Create Defines for Free Pascal Compiler"
-msgstr ""
+msgstr "צור מגדירים למהדר fpc"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforfreepascalsvnsources
 msgid "Create Defines for Free Pascal SVN Sources"
-msgstr ""
+msgstr "צור מגדירים למקורות SVN של מהדר fpc"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforlazarusdir
 msgid "Create Defines for Lazarus Directory"
-msgstr ""
+msgstr "צור מגדירים לתיקיית לזארוס"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforproject
 msgid "Create Defines for %s Project"
-msgstr ""
+msgstr "צור מגדירים לפרוייקט s%"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatefpcmacrosandpathsforafpcprojectdirectory
 msgid "Create FPC Macros and paths for a fpc project directory"
-msgstr ""
+msgstr "צור מאקרו ונתיבים של fpc עבור תקיית פרוייקט fpc"
 
 #: lazarusidestrconsts.liscodetoolsdefsdefine
 msgid "Define"
@@ -4703,19 +4703,19 @@ msgstr "הגדר"
 
 #: lazarusidestrconsts.liscodetoolsdefsdefinerecurse
 msgid "Define Recurse"
-msgstr ""
+msgstr "הגדר משאב"
 
 #: lazarusidestrconsts.liscodetoolsdefsdeletenode
 msgid "Delete node"
-msgstr ""
+msgstr "מחק צומת"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectorydesc
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: C:/Programme/Borland/Delphi%s"
-msgstr ""
+msgstr "התיקייה הראשית s% שבה הותקנו כל קבצי הקוד של בורלנד. למשל: C:/Programme/Borland/Delphi%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsdelphimaindirectoryforproject
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
-msgstr ""
+msgstr "התיקייה הראשית s% שבה הותקנו כל קבצי הקוד של בורלנד, אשר בשמוש בפרוייקט זה. למשל: C:/Programme/Borland/Delphi%s"
 
 #: lazarusidestrconsts.liscodetoolsdefsdescription
 msgid "Description:"
@@ -4732,181 +4732,181 @@ msgstr "עריכה"
 
 #: lazarusidestrconsts.liscodetoolsdefselse
 msgid "Else"
-msgstr ""
+msgstr "אחרת"
 
 #: lazarusidestrconsts.liscodetoolsdefselseif
 msgid "ElseIf"
-msgstr ""
+msgstr "אחרת אם"
 
 #: lazarusidestrconsts.liscodetoolsdefserrorreading
 msgid "Error reading %s%s%s%s%s"
-msgstr ""
+msgstr "שגיאה בקריאת s%s%s%s%s%"
 
 #: lazarusidestrconsts.liscodetoolsdefserrorreadingprojectinfofile
 msgid "Error reading project info file %s%s%s%s%s"
-msgstr ""
+msgstr "שגיאה בקריאת קובץ מידע הפרוייקט s%s%s%s%s%"
 
 #: lazarusidestrconsts.liscodetoolsdefserrorwhilewriting
 msgid "Error while writing %s%s%s%s%s"
-msgstr ""
+msgstr "שגיאה בכתיבת s%s%s%s%s%"
 
 #: lazarusidestrconsts.liscodetoolsdefserrorwhilewritingprojectinfofile
 msgid "Error while writing project info file %s%s%s%s%s"
-msgstr ""
+msgstr "שגיאה בכתיבת קובץ מידע הפרוייקט s%s%s%s%s%"
 
 #: lazarusidestrconsts.liscodetoolsdefsexit
 msgctxt "lazarusidestrconsts.liscodetoolsdefsexit"
 msgid "Exit"
-msgstr ""
+msgstr "יציאה"
 
 #: lazarusidestrconsts.liscodetoolsdefsexitwithoutsave
 msgid "Exit without Save"
-msgstr ""
+msgstr "צא בלי לשמור"
 
 #: lazarusidestrconsts.liscodetoolsdefsfpcsvnsourcedirectory
 msgid "FPC SVN source directory"
-msgstr ""
+msgstr "תיקיית הקוד של FPC SVN"
 
 #: lazarusidestrconsts.liscodetoolsdefsif
 msgid "If"
-msgstr ""
+msgstr "אם "
 
 #: lazarusidestrconsts.liscodetoolsdefsifdef
 msgid "IfDef"
-msgstr ""
+msgstr "אם מוגדר"
 
 #: lazarusidestrconsts.liscodetoolsdefsifndef
 msgid "IfNDef"
-msgstr ""
+msgstr "אם לא מוגדר"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertbehinddirectory
 msgid "Directory"
-msgstr ""
+msgstr "תיקייה"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertdelphi5compilertemp
 msgid "Insert Delphi 5 Compiler Template"
-msgstr ""
+msgstr "הכנס תבנית של המהדר דלפי 5"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertdelphi5directorytem
 msgid "Insert Delphi 5 Directory Template"
-msgstr ""
+msgstr "הכנס תבנית של תיקיית דלפי 5"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertdelphi5projecttempl
 msgid "Insert Delphi 5 Project Template"
-msgstr ""
+msgstr "הכנס תבנית של פרוייקט דלפי 5"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertdelphi6compilertemp
 msgid "Insert Delphi 6 Compiler Template"
-msgstr ""
+msgstr "הכנס תבנית של המהדר דלפי 6"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertdelphi6directorytem
 msgid "Insert Delphi 6 Directory Template"
-msgstr ""
+msgstr "הכנס תבנית של תיקיית דלפי 6"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertdelphi6projecttempl
 msgid "Insert Delphi 6 Project Template"
-msgstr ""
+msgstr "הכנס תבנית של פרוייקט דלפי 6"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertdelphi7compilertemp
 msgid "Insert Delphi 7 Compiler Template"
-msgstr ""
+msgstr "הכנס תבנית של המהדר דלפי 7"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertdelphi7directorytem
 msgid "Insert Delphi 7 Directory Template"
-msgstr ""
+msgstr "הכנס תבנית של תיקיית דלפי 7"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertdelphi7projecttempl
 msgid "Insert Delphi 7 Project Template"
-msgstr ""
+msgstr "הכנס תבנית של פרוייקט דלפי 7"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalcompilert
 msgid "Insert Free Pascal Compiler Template"
-msgstr ""
+msgstr "הכנס תבנית של המהדר fpc"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalprojectte
 msgid "Insert Free Pascal Project Template"
-msgstr ""
+msgstr "הכנס תבנית של פרוייקט fpc"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalsvnsource
 msgid "Insert Free Pascal SVN Source Template"
-msgstr ""
+msgstr "הכנס תבנית קוד של FPC SVN"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertkylix3compilertemp
 msgid "Insert Kylix 3 Compiler Template"
-msgstr ""
+msgstr "הכנס תבנית של המהדר Kylix"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertkylix3directorytem
 msgid "Insert Kylix 3 Directory Template"
-msgstr ""
+msgstr "הכנס תבנית של תיקיית Kylix"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertkylix3projecttempl
 msgid "Insert Kylix 3 Project Template"
-msgstr ""
+msgstr "הכנס תבנית של פרוייקט Kylix"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertlazarusdirectorytem
 msgid "Insert Lazarus Directory Template"
-msgstr ""
+msgstr "הכנס תבנית של תיקיית לזארוס"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertnodeaschild
 msgid "Insert node as child"
-msgstr ""
+msgstr "הכנס צומת כצומת בת"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertnodebelow
 msgid "Insert node below"
-msgstr ""
+msgstr "הכנס צומת מתחת"
 
 #: lazarusidestrconsts.liscodetoolsdefsinserttemplate
 msgid "Insert Template"
-msgstr ""
+msgstr "הכנס תבנית"
 
 #: lazarusidestrconsts.liscodetoolsdefsinvalidparent
 msgid "Invalid parent"
-msgstr ""
+msgstr "הורה פגום"
 
 #: lazarusidestrconsts.liscodetoolsdefsinvalidparentnode
 msgid "Invalid parent node"
-msgstr ""
+msgstr "צומת הורה פגומה"
 
 #: lazarusidestrconsts.liscodetoolsdefsinvalidpreviousnode
 msgid "Invalid previous node"
-msgstr ""
+msgstr "צומת קודמת פגומה"
 
 #: lazarusidestrconsts.liscodetoolsdefskylixmaindirectorydesc
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: /home/user/kylix%s"
-msgstr ""
+msgstr "התיקייה הראשית s% שבה הותקנו כל קבצי הקוד של בורלנד. למשל: home/user/kylix%s/"
 
 #: lazarusidestrconsts.liscodetoolsdefskylixmaindirectoryforproject
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: /home/user/kylix%s"
-msgstr ""
+msgstr "התיקייה הראשית s% שבה הותקנו כל קבצי הקוד של בורלנד, אשר בשמוש בפרוייקט זה. למשל: home/user/kylix%s/"
 
 #: lazarusidestrconsts.liscodetoolsdefslazarusdirectory
 msgid "Lazarus Directory"
-msgstr ""
+msgstr "תיקיית לזארוס"
 
 #: lazarusidestrconsts.liscodetoolsdefsmovenodedown
 msgid "Move node down"
-msgstr ""
+msgstr "הזז צומת למטה"
 
 #: lazarusidestrconsts.liscodetoolsdefsmovenodeoneleveldown
 msgid "Move node one level down"
-msgstr ""
+msgstr "הזז צומת רמה אחת למטה"
 
 #: lazarusidestrconsts.liscodetoolsdefsmovenodeonelevelup
 msgid "Move node one level up"
-msgstr ""
+msgstr "הזז צומת רמה אחת למעלה"
 
 #: lazarusidestrconsts.liscodetoolsdefsmovenodeup
 msgid "Move node up"
-msgstr ""
+msgstr "הזז צומת למעלה"
 
 #: lazarusidestrconsts.liscodetoolsdefsname
 msgctxt "lazarusidestrconsts.liscodetoolsdefsname"
 msgid "Name:"
-msgstr ""
+msgstr "שם:"
 
 #: lazarusidestrconsts.liscodetoolsdefsnewnode
 msgid "NewNode"
-msgstr ""
+msgstr "צומת חדשה"
 
 #: lazarusidestrconsts.liscodetoolsdefsnodeanditschildrenareonly
 msgid "Node and its children are only valid for this project"
@@ -4922,7 +4922,7 @@ msgstr "ללא בחירה"
 
 #: lazarusidestrconsts.liscodetoolsdefsparentnodecannotcontainch
 msgid "Parent node can not contain child nodes."
-msgstr ""
+msgstr " צומת אם לא יכולה להכיל צמתי בנות"
 
 #: lazarusidestrconsts.liscodetoolsdefspreviousnodecannotcontainchildnodes
 msgid "Previous node can not contain child nodes."
@@ -4931,19 +4931,19 @@ msgstr "הצומת הקודמת אינה יכולה להכיל צמתים בתו
 #: lazarusidestrconsts.liscodetoolsdefsprojectdirectory
 msgctxt "lazarusidestrconsts.liscodetoolsdefsprojectdirectory"
 msgid "Project directory"
-msgstr ""
+msgstr "תיקיית הפרוייקט"
 
 #: lazarusidestrconsts.liscodetoolsdefsprojectdirectory2
 msgid "%s project directory"
-msgstr ""
+msgstr "תיקיית הפרוייקט s%"
 
 #: lazarusidestrconsts.liscodetoolsdefsprojectspecific
 msgid "%s, project specific"
-msgstr ""
+msgstr "מיוחד לפרוייקט s%,"
 
 #: lazarusidestrconsts.liscodetoolsdefsreaderror
 msgid "Read error"
-msgstr ""
+msgstr "שגיאת קריאה"
 
 #: lazarusidestrconsts.liscodetoolsdefssaveandexit
 msgid "Save and Exit"
@@ -4951,51 +4951,51 @@ msgstr "שמור וצא"
 
 #: lazarusidestrconsts.liscodetoolsdefsselectednode
 msgid "Selected Node:"
-msgstr ""
+msgstr "צומת נבחרת:"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
 msgid "The Free Pascal SVN source directory. Not required. This will improve find declarationand debugging."
-msgstr ""
+msgstr "תיקיית קוד המקור של FPC SVN. לא נדרשת. זה ישפר את ניפוי השגיאות של ההצהרות."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalprojectdirectory
 msgid "The Free Pascal project directory."
-msgstr ""
+msgstr "תיקיית הפרוייקטים של fpc."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalsvnsourcedir
 msgid "The Free Pascal SVN source directory."
-msgstr ""
+msgstr "תיקיית קוד המקור של FPC SVN."
 
 #: lazarusidestrconsts.liscodetoolsdefsthelazarusmaindirectory
 msgid "The Lazarus main directory."
-msgstr ""
+msgstr "התיקייה הראשית של לאזרוס."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
 msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
-msgstr ""
+msgstr "הנתיב למהדר fpc. למשל/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s/."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
 msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
-msgstr ""
+msgstr "הנתיב למהדר fpc עבור פרוייקט זה. דרוש רק עם הגדרת את קבצי קוד המקור של FPC SVN שלהלן. משמש ליצירה אוטומטית של מאקרו."
 
 #: lazarusidestrconsts.liscodetoolsdefstheprojectdirectory
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
-msgstr ""
+msgstr "תיקיית הפרוייקט s%, שמכילה את קבצי dpr .dpk."
 
 #: lazarusidestrconsts.liscodetoolsdefsundefine
 msgid "Undefine"
-msgstr ""
+msgstr "בטל הגדרה"
 
 #: lazarusidestrconsts.liscodetoolsdefsundefineall
 msgid "Undefine All"
-msgstr ""
+msgstr "בטל את כל ההגדרות"
 
 #: lazarusidestrconsts.liscodetoolsdefsundefinerecurse
 msgid "Undefine Recurse"
-msgstr ""
+msgstr "בטל הגדרת משאב"
 
 #: lazarusidestrconsts.liscodetoolsdefsvalueasfilepaths
 msgid "Value as File Paths"
-msgstr ""
+msgstr "ערך כנתיבי קובץ"
 
 #: lazarusidestrconsts.liscodetoolsdefsvalueastext
 msgid "Value as Text"
@@ -5163,7 +5163,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscomppalfindcomponent
 msgid "Find component"
-msgstr ""
+msgstr "מצא רכיב"
 
 #: lazarusidestrconsts.liscomppalopenpackage
 msgid "Open package"
@@ -5176,7 +5176,7 @@ msgstr "פתח יחידה"
 #: lazarusidestrconsts.liscomptest
 msgctxt "lazarusidestrconsts.liscomptest"
 msgid "&Test"
-msgstr ""
+msgstr "בדוק"
 
 #: lazarusidestrconsts.liscondition
 msgid "Condition"
@@ -5184,7 +5184,7 @@ msgstr "מצב"
 
 #: lazarusidestrconsts.lisconfigdirectory
 msgid "Lazarus config directory"
-msgstr ""
+msgstr "ספריית הגדרות לזרוס"
 
 #: lazarusidestrconsts.lisconfigurebuild
 msgid "Configure Build %s"
@@ -5200,11 +5200,11 @@ msgstr "אשר שינויים"
 
 #: lazarusidestrconsts.lisconfirmdelete
 msgid "Confirm delete"
-msgstr ""
+msgstr "חוודא מחיקה"
 
 #: lazarusidestrconsts.lisconfirmlazarusrebuild
 msgid "Do you want to rebuild Lazarus?"
-msgstr ""
+msgstr "האם ברצונך לבנות מחדש את לזרוס?"
 
 #: lazarusidestrconsts.lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
@@ -5282,7 +5282,7 @@ msgstr "המר פרויקט או חבילה"
 
 #: lazarusidestrconsts.lisconverttarget1
 msgid "Lazarus/LCL"
-msgstr ""
+msgstr "Lazarus/LCL"
 
 #: lazarusidestrconsts.lisconverttarget2
 msgid "Lazarus/LCL for Windows only"
@@ -6942,7 +6942,7 @@ msgstr "ריצה"
 #: lazarusidestrconsts.lishintsave
 msgctxt "lazarusidestrconsts.lishintsave"
 msgid "Save"
-msgstr ""
+msgstr "שמור"
 
 #: lazarusidestrconsts.lishintsaveall
 msgid "Save all"
@@ -9212,7 +9212,7 @@ msgstr "עריכה"
 #: lazarusidestrconsts.lismenutemplateexit
 msgctxt "lazarusidestrconsts.lismenutemplateexit"
 msgid "Exit"
-msgstr ""
+msgstr "יציאה"
 
 #: lazarusidestrconsts.lismenutemplatefile
 msgctxt "lazarusidestrconsts.lismenutemplatefile"
@@ -9332,10 +9332,9 @@ msgid "Code Explorer"
 msgstr "סייר קוד"
 
 #: lazarusidestrconsts.lismenuviewcomponentpalette
-#, fuzzy
 #| msgid "View Component Palette"
 msgid "Component Palette"
-msgstr "צפה בפלטת הרכיבים"
+msgstr "פלטת הרכיבים"
 
 #: lazarusidestrconsts.lismenuviewcomponents
 msgid "&Components"
@@ -10059,7 +10058,7 @@ msgstr "נתיב"
 #: lazarusidestrconsts.lispatheditbrowse
 msgctxt "lazarusidestrconsts.lispatheditbrowse"
 msgid "Browse"
-msgstr ""
+msgstr "דפדף"
 
 #: lazarusidestrconsts.lispatheditmovepathdown
 msgid "Move path down"
@@ -12984,7 +12983,7 @@ msgstr "שורות:"
 #: lazarusidestrconsts.lisuidname
 msgctxt "lazarusidestrconsts.lisuidname"
 msgid "Name:"
-msgstr ""
+msgstr "שם:"
 
 #: lazarusidestrconsts.lisuidno
 msgid "no"
@@ -14605,7 +14604,7 @@ msgstr "הרץ פרמטרים"
 #: lazarusidestrconsts.srkmecsave
 msgctxt "lazarusidestrconsts.srkmecsave"
 msgid "Save"
-msgstr ""
+msgstr "שמור"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
