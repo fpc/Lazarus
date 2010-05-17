@@ -471,20 +471,25 @@ end;
 procedure TCustomEdit.TextChanged;
 var
   Temp : String;
+  CPos: TPoint;
+  SStart, SLen: Integer;
 begin
   //debugln('TCustomEdit.TextChanged ',DbgSName(Self));
-  
-  //check to see if the charcase should affect the text.
-  if FCharCase = ecUppercase then
-  begin
-    Temp := UTF8UpperCase(Text);
-    if Temp <> Text then Text := Temp;
-  end
-  else
-  if FCharCase = ecLowercase then
-  begin
-    Temp := UTF8LowerCase(Text);
-    if Temp <> Text then Text := Temp;
+  if FCharCase in [ecUppercase, ecLowercase] then begin
+    //check to see if the charcase should affect the text.
+    if FCharCase = ecUppercase then
+      Temp := UTF8UpperCase(Text)
+    else
+      Temp := UTF8LowerCase(Text);
+    if (Temp <> Text) then begin
+      CPos := CaretPos;
+      SStart := SelStart;
+      SLen := SelLength;
+      Text := Temp;
+      SelStart  := SStart;
+      SelLength := SLen;
+      CaretPos  := CPos;
+    end;
   end;
 
   if not (wcfCreatingHandle in FWinControlFlags) then
