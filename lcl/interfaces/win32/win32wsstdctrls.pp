@@ -501,10 +501,6 @@ begin
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, False);
-  // if themed but does not have tabpage as parent
-  // remember we are a groupbox in need of erasebackground hack
-  if ThemeServices.ThemesEnabled and not Params.WindowInfo^.needParentPaint then
-    Params.WindowInfo^.isGroupBox := True;
   Result := Params.Window;
 end;
 

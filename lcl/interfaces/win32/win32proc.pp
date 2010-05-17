@@ -59,7 +59,6 @@ Type
     isTabPage: boolean;       // is window of tabpage
     isComboEdit: boolean;     // is buddy of combobox, the edit control
     isChildEdit: boolean;     // is buddy edit of a control
-    isGroupBox: boolean;      // is groupbox, and does not have themed tabpage as parent
     ThemedCustomDraw: boolean;// controls needs themed drawing in wm_notify/nm_customdraw
     MaxLength: integer;
     DrawItemIndex: integer;   // in case of listbox, when handling WM_DRAWITEM

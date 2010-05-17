@@ -159,7 +159,7 @@ type
 
   { TCustomGroupBox }
 
-  TCustomGroupBox = class (TWinControl)
+  TCustomGroupBox = class(TWinControl)
   protected
     class procedure WSRegisterClass; override;
     class function GetControlClassDefaultSize: TSize; override;
