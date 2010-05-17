@@ -913,6 +913,17 @@ const
   BS_OWNERDRAW     = $0000000B;
   BS_PUSHLIKE      = $00001000;
 
+  { Edit styles }
+  ES_LEFT          = $0000;
+  ES_CENTER        = $0001;
+  ES_RIGHT         = $0002;
+  ES_MULTILINE     = $0004;
+  ES_AUTOVSCROLL   = $0040;
+  ES_AUTOHSCROLL   = $0080;
+  ES_NOHIDESEL     = $0100;
+  ES_READONLY      = $0800;
+  ES_WANTRETURN    = $1000;
+
 const
 //==============================================
 // SetWindowPos Flags

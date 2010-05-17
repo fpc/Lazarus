@@ -1048,15 +1048,8 @@ begin
   // customization of Params
   with Params do
   begin
-    if (AWinControl is TCustomEdit) then
-    begin
-      Flags := Flags or AlignmentToEditFlags[TCustomEdit(AWinControl).Alignment];
-      if not TCustomEdit(AWinControl).HideSelection then
-        Flags := Flags or ES_NOHIDESEL;
-    end;
     pClassName := @EditClsName[0];
     WindowTitle := StrCaption;
-    Flags := Flags or ES_AUTOHSCROLL;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -1065,8 +1058,7 @@ begin
   Result := Params.Window;
 end;
 
-class function TWin32WSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit
-  ): Boolean;
+class function TWin32WSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit): Boolean;
 begin
   Result := False;
   if not WSCheckHandleAllocated(ACustomEdit, 'GetCanUndo') then
@@ -1210,32 +1202,12 @@ class function TWin32WSCustomMemo.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
-  ACustomMemo: TCustomMemo;
 begin
   // general initialization of Params
   PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
-  ACustomMemo := TCustomMemo(AWinControl);
   with Params do
   begin
-    Flags := Flags or ES_AUTOVSCROLL or ES_MULTILINE or ES_WANTRETURN;
-    if ACustomMemo.ReadOnly then
-      Flags := Flags or ES_READONLY;
-    Flags := Flags or AlignmentToEditFlags[ACustomMemo.Alignment];
-    case ACustomMemo.ScrollBars of
-      ssHorizontal, ssAutoHorizontal:
-        Flags := Flags or WS_HSCROLL;
-      ssVertical, ssAutoVertical:
-        Flags := Flags or WS_VSCROLL;
-      ssBoth, ssAutoBoth:
-        Flags := Flags or WS_HSCROLL or WS_VSCROLL;
-    end;
-    if ACustomMemo.WordWrap then
-      Flags := Flags and not WS_HSCROLL
-    else
-      Flags := Flags or ES_AUTOHSCROLL;
-    if not ACustomMemo.HideSelection then
-      Flags := Flags or ES_NOHIDESEL;
     pClassName := @EditClsName[0];
     WindowTitle := StrCaption;
   end;

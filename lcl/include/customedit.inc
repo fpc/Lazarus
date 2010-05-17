@@ -40,6 +40,22 @@ begin
   TWSCustomEditClass(WidgetSetClass).SetSelLength(Self, FSelLength);
 end;
 
+procedure TCustomEdit.CreateParams(var Params: TCreateParams);
+const
+  AlignmentStyle: array[TAlignment] of DWord = (
+{ taLeftJustify  } ES_LEFT,
+{ taRightJustify } ES_RIGHT,
+{ taCenter       } ES_CENTER
+  );
+begin
+  inherited CreateParams(Params);
+  Params.Style := Params.Style or ES_AUTOHSCROLL or AlignmentStyle[Alignment];
+  if ReadOnly then
+    Params.Style := Params.Style or ES_READONLY;
+  if not HideSelection then
+    Params.Style := Params.Style or ES_NOHIDESEL;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.Create
   Params:  none

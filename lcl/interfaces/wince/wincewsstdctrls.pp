@@ -868,17 +868,8 @@ begin
   // customization of Params
   with Params do
   begin
-    if (AWinControl is TCustomEdit) then
-    begin
-      if TCustomEdit(AWinControl).BorderStyle=bsSingle then
-        FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
-      Flags := Flags or AlignmentToEditFlags[TCustomEdit(AWinControl).Alignment];
-      if not TCustomEdit(AWinControl).HideSelection then
-        Flags := Flags or ES_NOHIDESEL;
-    end;
     pClassName := @EditClsName;
     WindowTitle := StrCaption;
-    Flags := Flags or ES_AUTOHSCROLL;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -1010,32 +1001,12 @@ class function TWinCEWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
-  ACustomMemo: TCustomMemo;
 begin
   // general initialization of Params
   PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
-  ACustomMemo := TCustomMemo(AWinControl);
   with Params do
   begin
-    Flags := Flags or ES_AUTOVSCROLL or ES_MULTILINE or ES_WANTRETURN;
-    if TCustomMemo(AWinControl).ReadOnly then
-      Flags := Flags or ES_READONLY;
-    Flags := Flags or AlignmentToEditFlags[ACustomMemo.Alignment];
-    case TCustomMemo(AWinControl).ScrollBars of
-      ssHorizontal, ssAutoHorizontal:
-        Flags := Flags or WS_HSCROLL;
-      ssVertical, ssAutoVertical:
-        Flags := Flags or WS_VSCROLL;
-      ssBoth, ssAutoBoth:
-        Flags := Flags or WS_HSCROLL or WS_VSCROLL;
-    end;
-    if TCustomMemo(AWinControl).WordWrap then
-      Flags := Flags and not WS_HSCROLL
-    else
-      Flags := Flags or ES_AUTOHSCROLL;
-    if ACustomMemo.BorderStyle=bsSingle then
-      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     pClassName := @EditClsName;
     WindowTitle := StrCaption;
   end;

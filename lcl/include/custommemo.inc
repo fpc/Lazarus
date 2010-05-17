@@ -109,6 +109,25 @@ begin
   RegisterCustomMemo;
 end;
 
+procedure TCustomMemo.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.Style := (Params.Style and not ES_AUTOHSCROLL) or ES_AUTOVSCROLL or
+    ES_MULTILINE or ES_WANTRETURN;
+  case ScrollBars of
+    ssHorizontal, ssAutoHorizontal:
+      Params.Style := Params.Style or WS_HSCROLL;
+    ssVertical, ssAutoVertical:
+      Params.Style := Params.Style or WS_VSCROLL;
+    ssBoth, ssAutoBoth:
+      Params.Style := Params.Style or WS_HSCROLL or WS_VSCROLL;
+  end;
+  if WordWrap then
+    Params.Style := Params.Style and not WS_HSCROLL
+  else
+    Params.Style := Params.Style or ES_AUTOHSCROLL;
+end;
+
 procedure TCustomMemo.InitializeWnd;
 var
   NewStrings : TStrings;

@@ -707,6 +707,7 @@ type
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
     procedure CreateWnd; override;
+    procedure CreateParams(var Params: TCreateParams); override;
     procedure TextChanged; override;
     procedure Change; virtual;
     procedure DoEnter; override;
@@ -795,6 +796,7 @@ type
     procedure SetVertScrollBar(const AValue: TMemoScrollBar);
   protected
     class procedure WSRegisterClass; override;
+    procedure CreateParams(var Params: TCreateParams); override;
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;
     function  RealGetText: TCaption; override;
