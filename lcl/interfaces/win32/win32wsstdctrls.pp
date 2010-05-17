@@ -1488,6 +1488,35 @@ end;
 
 { TWin32WSButton }
 
+function ButtonWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+var
+  Control: TWinControl;
+  LMessage: TLMessage;
+begin
+  case Msg of
+    WM_PAINT,
+    WM_ERASEBKGND:
+      begin
+        Control := GetWin32WindowInfo(Window)^.WinControl;
+        if not Control.DoubleBuffered then
+        begin
+          LMessage.msg := Msg;
+          LMessage.wParam := WParam;
+          LMessage.lParam := LParam;
+          LMessage.Result := 0;
+          Result := DeliverMessage(Control, LMessage);
+        end
+        else
+          Result := WindowProc(Window, Msg, WParam, LParam);
+      end;
+    WM_PRINTCLIENT:
+      Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+    else
+      Result := WindowProc(Window, Msg, WParam, LParam);
+  end;
+end;
+
 class function TWin32WSButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -1499,6 +1528,7 @@ begin
   with Params do
   begin
     pClassName := @ButtonClsName[0];
+    SubClassWndProc := @ButtonWndProc;
     WindowTitle := StrCaption;
   end;
   // create window
