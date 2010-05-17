@@ -4,12 +4,11 @@ object ProjectInspectorForm: TProjectInspectorForm
   Top = 399
   Width = 433
   ActiveControl = ItemsTreeView
-  BorderIcons = [biSystemMenu]
   Caption = 'ProjectInspectorForm'
   ClientHeight = 309
   ClientWidth = 433
   OnShow = ProjectInspectorFormShow
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object OpenBitBtn: TSpeedButton
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -74,7 +73,7 @@ object ProjectInspectorForm: TProjectInspectorForm
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 2
-    DefaultItemHeight = 15
+    DefaultItemHeight = 19
     PopupMenu = ItemsPopupMenu
     ReadOnly = True
     RightClickSelect = True
