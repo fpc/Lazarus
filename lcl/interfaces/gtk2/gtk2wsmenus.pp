@@ -99,7 +99,7 @@ begin
   end;
 end;
 
-function Gtk2MenuItemActivate(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function Gtk2MenuItemActivate(widget: PGtkMenuItem; data: gPointer) : GBoolean; cdecl;
 var
   Mess: TLMActivate;
   LCLMenuItem: TMenuItem;
@@ -108,6 +108,9 @@ begin
   {$IFDEF EventTrace}
   EventTrace('activate', data);
   {$ENDIF}
+
+  if not ((Widget^.flag0 = GDK_BUTTON_RELEASE) and (Widget^.timer = 0)) and (Widget^.submenu <> nil) then
+    exit(False);
 
   ResetDefaultIMContext;
 
@@ -118,7 +121,7 @@ begin
   // the gtk fires activate for radio buttons when unchecking them
   // the LCL expects only uncheck
   if LCLMenuItem.RadioItem
-  and GtkWidgetIsA(Widget, GTK_TYPE_CHECK_MENU_ITEM)
+  and GtkWidgetIsA(PGtkWidget(Widget), GTK_TYPE_CHECK_MENU_ITEM)
   and (not gtk_check_menu_item_get_active(PGTKCheckMenuItem(Widget))) then Exit;
 
   FillChar(Mess,SizeOf(Mess),#0);
@@ -177,9 +180,9 @@ begin
   end;
 end;
 
-function Gtk2MenuItemSelect(item: Pointer; AMenuItem: TMenuItem): GBoolean; cdecl;
+function Gtk2MenuItemSelect(item: PGtkMenuItem; AMenuItem: gPointer): GBoolean; cdecl;
 begin
-  AMenuItem.IntfDoSelect;
+  TMenuItem(AMenuItem).IntfDoSelect;
   Result := CallBackDefaultReturn;
 end;
 
