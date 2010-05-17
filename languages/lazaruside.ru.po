@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-16 00:01+0300\n"
+"PO-Revision-Date: 2010-05-18 03:33+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6268,13 +6268,13 @@ msgstr "Кодировка файла %s%s%s%sна диске - %s. Новой �
 msgid "Enter translation language"
 msgstr "Введите язык перевода"
 
-#: lazarusidestrconsts.lisenvdoubleclickonmessagesjumpsotherwisesingleclick
-msgid "Double click on messages jumps (otherwise: single click)"
-msgstr "Переходить по сообщениям по двойному щелчку (иначе - по одинарному)"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "Переменная окружения, имя как параметр"
+
+#: lazarusidestrconsts.lisenvjumpfrommessagetosrcondblclickotherwisesingleclick
+msgid "Jump from message to source line on double click (otherwise: single click)"
+msgstr "Переходить с сообщения на строку кода по двойному щелчку (а не по одинарному)"
 
 #: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"

@@ -6283,13 +6283,13 @@ msgstr "Kodierung der Datei %s%s%s%saus der Platte ist %s. Die neue Kodierung is
 msgid "Enter translation language"
 msgstr "Übersetzungssprache angeben"
 
-#: lazarusidestrconsts.lisenvdoubleclickonmessagesjumpsotherwisesingleclick
-msgid "Double click on messages jumps (otherwise: single click)"
-msgstr "Doppelklick auf Meldungen springt zum Quelltext (sonst Einfachklick)"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "Umgebungsvariable, Name als Parameter"
+
+#: lazarusidestrconsts.lisenvjumpfrommessagetosrcondblclickotherwisesingleclick
+msgid "Jump from message to source line on double click (otherwise: single click)"
+msgstr ""
 
 #: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"

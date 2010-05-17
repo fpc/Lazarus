@@ -6266,13 +6266,13 @@ msgstr "Failo diske %s%s%s%skoduotė yra %s. Naujoji koduotė yra %s."
 msgid "Enter translation language"
 msgstr "Įveskite vertimo kalbą"
 
-#: lazarusidestrconsts.lisenvdoubleclickonmessagesjumpsotherwisesingleclick
-msgid "Double click on messages jumps (otherwise: single click)"
-msgstr "Spustelėjus dukart ant pranešimo peršoks į pranešamą vietą (kitaip - vienąkart)"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "Aplinkos kintamasis, pavadinimas – tai jo parametras"
+
+#: lazarusidestrconsts.lisenvjumpfrommessagetosrcondblclickotherwisesingleclick
+msgid "Jump from message to source line on double click (otherwise: single click)"
+msgstr ""
 
 #: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"

@@ -6271,12 +6271,12 @@ msgstr "Codifica del file su disco %s%s%s% è %s. La nuova codifica è %s"
 msgid "Enter translation language"
 msgstr "Inserire la lingua"
 
-#: lazarusidestrconsts.lisenvdoubleclickonmessagesjumpsotherwisesingleclick
-msgid "Double click on messages jumps (otherwise: single click)"
-msgstr "Doppio clic sul messaggio salta (altrimenti: clic singolo)"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
+msgstr ""
+
+#: lazarusidestrconsts.lisenvjumpfrommessagetosrcondblclickotherwisesingleclick
+msgid "Jump from message to source line on double click (otherwise: single click)"
 msgstr ""
 
 #: lazarusidestrconsts.lisenvoptdlgdirectorynotfound

@@ -6265,13 +6265,13 @@ msgstr "ディスクのファイル%s%s%s%sのエンコーディングは%sで�
 msgid "Enter translation language"
 msgstr "翻訳言語を入力してください"
 
-#: lazarusidestrconsts.lisenvdoubleclickonmessagesjumpsotherwisesingleclick
-msgid "Double click on messages jumps (otherwise: single click)"
-msgstr "メッセージのダブルクリックでジャンプ(そうでないときはシングルクリック)"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "環境変数、引数としての名前"
+
+#: lazarusidestrconsts.lisenvjumpfrommessagetosrcondblclickotherwisesingleclick
+msgid "Jump from message to source line on double click (otherwise: single click)"
+msgstr ""
 
 #: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"

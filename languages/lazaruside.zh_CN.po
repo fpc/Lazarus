@@ -6269,12 +6269,12 @@ msgstr "编码文件%s%s%s%在磁盘上是%s，新的编码是%s."
 msgid "Enter translation language"
 msgstr "输入翻译的语言"
 
-#: lazarusidestrconsts.lisenvdoubleclickonmessagesjumpsotherwisesingleclick
-msgid "Double click on messages jumps (otherwise: single click)"
-msgstr "双击消息跳转 (否则单击)"
-
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
+msgstr ""
+
+#: lazarusidestrconsts.lisenvjumpfrommessagetosrcondblclickotherwisesingleclick
+msgid "Jump from message to source line on double click (otherwise: single click)"
 msgstr ""
 
 #: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
