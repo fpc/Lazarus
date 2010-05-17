@@ -941,6 +941,11 @@ components/h2pas/languages/h2passtrconsts.pl.po svneol=native#text/plain
 components/h2pas/languages/h2passtrconsts.po svneol=native#text/plain
 components/h2pas/languages/h2passtrconsts.ru.po svneol=native#text/plain
 components/h2pas/languages/h2passtrconsts.zh_CN.po svneol=native#text/plain
+components/ideextensions/ideextensions.lpk svneol=native#text/xml
+components/ideextensions/ideextensions.pas svneol=native#text/pascal
+components/ideextensions/idegroupbox.pas svneol=native#text/pascal
+components/ideextensions/idegroupbox.rc svneol=native#text/plain
+components/ideextensions/images/tidegroupbox.png -text
 components/images/examples/README.txt svneol=native#text/plain
 components/images/examples/imagesexample.lpi svneol=native#text/plain
 components/images/examples/imagesexample.lpr svneol=native#text/pascal
