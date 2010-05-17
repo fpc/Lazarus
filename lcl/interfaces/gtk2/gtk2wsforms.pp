@@ -120,6 +120,7 @@ implementation
 function Gtk2FormEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
 var
   ACtl: TWinControl;
+  Mess : TLMessage;
   {$IFDEF HASX}
   XDisplay: PDisplay;
   Window: TWindow;
@@ -127,8 +128,20 @@ var
   {$ENDIF}
 
 begin
-  Result := False;
+  Result := CallBackDefaultReturn;
   case event^._type of
+    GDK_ENTER_NOTIFY:
+      begin
+        FillChar(Mess, SizeOf(Mess), #0);
+        Mess.msg := CM_MOUSEENTER;
+        DeliverMessage(Data, Mess);
+      end;
+    GDK_LEAVE_NOTIFY:
+      begin
+        FillChar(Mess, SizeOf(Mess), #0);
+        Mess.msg := CM_MOUSELEAVE;
+        DeliverMessage(Data, Mess);
+      end;
     GDK_FOCUS_CHANGE:
       begin
         ACtl := TWinControl(Data);
