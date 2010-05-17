@@ -4349,7 +4349,9 @@ var
   Decor, Func : Longint;
   AWindow: PGdkWindow;
   ACustomForm: TCustomForm;
+  {$IFDEF GTK2}
   CurWindowState: TWindowState;
+  {$ENDIF}
 begin
   if not (Sender is TWinControl) then
     RaiseWrongClass;
