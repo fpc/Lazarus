@@ -211,6 +211,49 @@ end;
 { TGtkWSCustomForm }
 
 {$IFDEF GTK1}
+
+function GtkFormEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
+var
+  ACtl: TWinControl;
+  XDisplay: PDisplay;
+  Window: TWindow;
+  RevertStatus: Integer;
+
+begin
+  Result := False;
+  case event^.thetype of
+    GDK_FOCUS_CHANGE:
+      begin
+        ACtl := TWinControl(Data);
+        if PGdkEventFocus(event)^.thein = 0 then
+        begin
+
+          XDisplay := gdk_display;
+          XGetInputFocus(XDisplay, @Window, @RevertStatus);
+          // Window - 1 is our frame  !
+
+          if (RevertStatus = RevertToParent) and
+            (GDK_WINDOW_XWINDOW(PGdkWindowPrivate(Widget^.Window)) = Window - 1) then
+            exit(True);
+          with GtkWidgetSet do
+          begin
+            LastFocusOut := PGtkWidget(ACtl.Handle);
+            if LastFocusOut = LastFocusIn then
+              StartFocusTimer;
+          end;
+        end else
+        begin
+          with GtkWidgetSet do
+          begin
+            LastFocusIn := PGtkWidget(ACtl.Handle);
+            if not AppActive then
+              AppActive := True;
+          end;
+        end;
+      end;
+  end;
+end;
+
 function GtkWSFormMapEvent(Widget: PGtkWidget; Event: PGdkEvent;
   WidgetInfo: PWidgetInfo): gboolean; cdecl;
 var
@@ -279,7 +322,7 @@ begin
       SetCallback(LM_HSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
       SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
     end;
-
+  gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'event', TGtkSignalFunc(@GtkFormEvent), AWidgetInfo);
   gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'map-event', TGtkSignalFunc(@GtkWSFormMapEvent), AWidgetInfo);
   gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'unmap-event', TGtkSignalFunc(@GtkWSFormUnMapEvent), AWidgetInfo);
 {$ENDIF}

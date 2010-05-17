@@ -83,6 +83,12 @@ type
   TGTKWidgetSet = class(TWidgetSet)
   private
     FMultiThreadingEnabled: boolean;
+    FocusTimer: cardinal;
+    FAppActive: Boolean;
+    FLastFocusIn: PGtkWidget;
+    FLastFocusOut: PGtkWidget;
+    function GetAppActive: Boolean;
+    procedure SetAppActive(const AValue: Boolean);
   protected
     FKeyStateList_: TFPList; // Keeps track of which keys are pressed
     FDeviceContexts: TDynHashArray;// hasharray of HDC
@@ -303,6 +309,13 @@ type
     {$I gtklclintfh.inc}
 
   public
+
+    // special methods and properties to track app activation / deactivation
+    procedure StartFocusTimer;
+    property AppActive: Boolean read GetAppActive write SetAppActive;
+    property LastFocusIn: PGtkWidget read FLastFocusIn write FLastFocusIn;
+    property LastFocusOut: PGtkWidget read FLastFocusOut write FLastFocusOut;
+
     property RCFilename: string read FRCFilename write SetRCFilename;
     property MultiThreadingEnabled: boolean read FMultiThreadingEnabled;
   end;

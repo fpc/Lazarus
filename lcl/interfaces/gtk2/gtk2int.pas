@@ -64,6 +64,7 @@ type
     function LCLPlatform: TLCLPlatform; override;
 
     procedure AppInit(var ScreenInfo: TScreenInfo); override;
+    procedure AppBringToFront; override;
     procedure AppMinimize; override;
     procedure AppRestore; override;
     function AppHandle: THandle; override;
@@ -74,7 +75,6 @@ type
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
       MultiSelect, ExtendedSelect: Boolean); override;
     procedure SetWidgetFont(const AWidget: PGtkWidget; const AFont: TFont); override;
-
     {$I gtk2winapih.inc}
     {$I gtk2lclintfh.inc}
   end;

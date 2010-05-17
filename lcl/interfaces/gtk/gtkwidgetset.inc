@@ -176,6 +176,10 @@ begin
 
   inherited Create;
 
+  FAppActive := False;
+  FLastFocusIn := nil;
+  FLastFocusOut := nil;
+
   LastWFPMousePos := Point(MaxInt, MaxInt);
 
   {$IFDEF EnabledGtkThreading}
@@ -1377,6 +1381,41 @@ begin
   FreeAllStyles;
   // MG: using gtk_main_quit is not a clean way to close
   //gtk_main_quit;
+end;
+
+function TGTKWidgetSet.GetAppActive: Boolean;
+begin
+  Result := FAppActive;
+end;
+
+procedure TGTKWidgetSet.SetAppActive(const AValue: Boolean);
+begin
+  if AValue <> FAppActive then
+  begin
+    FAppActive := AValue;
+    if FAppActive then
+      Application.IntfAppActivate
+    else
+      Application.IntfAppDeactivate;
+  end;
+end;
+
+function gtkAppFocusTimer(Data: gPointer):gBoolean; cdecl;
+// needed by app activate/deactivate
+begin
+  Result := CallBackDefaultReturn;
+  if TGtkWidgetSet(WidgetSet).LastFocusIn = nil then
+    TGtkWidgetSet(WidgetSet).AppActive := False;
+  gtk_timeout_remove(TGtkWidgetSet(WidgetSet).FocusTimer);
+  TGtkWidgetSet(WidgetSet).FocusTimer := 0;
+end;
+
+procedure TGTKWidgetSet.StartFocusTimer;
+begin
+  FLastFocusIn := nil;
+  if FocusTimer <> 0 then
+    gtk_timeout_remove(TGtkWidgetSet(WidgetSet).FocusTimer);
+  FocusTimer := gtk_timeout_add(50, TGtkFunction(@gtkAppFocusTimer), nil);
 end;
 
 function TGTKWidgetSet.CreateThemeServices: TThemeServices;

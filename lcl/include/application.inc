@@ -1372,8 +1372,10 @@ procedure TApplication.Deactivate(Force: Boolean = False);
 begin
   if (AppDestroying in FFlags) or (not (AppActive in FFlags)) then Exit;
 
-  // widgetset has passed deactivate or no control of this application has got the focus
-  if Force or not Assigned(FindControl(GetFocus)) then
+  // widgetset has passed deactivate or no control
+  // of this application has got the focus.
+  // Force=True means that IntfAppDeactivate called us
+  if Force then //TODO: or not Assigned(FindControl(GetFocus)) then
   begin
     Exclude(FFlags, AppActive);
     NotifyDeactivateHandler;

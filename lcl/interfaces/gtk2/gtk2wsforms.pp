@@ -23,12 +23,15 @@
 unit Gtk2WSForms;
 
 {$mode objfpc}{$H+}
-
+{$I gtkdefines.inc}
 interface
 
 uses
   // Bindings
   Gtk2, Glib2, Gdk2, Gdk2Pixbuf,
+  {$IFDEF HASX}
+  Gdk2x, X, XLib, ctypes,
+  {$ENDIF}
   // RTL, FCL, LCL
   SysUtils, Classes, LCLProc, LCLType, Controls, LMessages, InterfaceBase,
   Graphics, Dialogs,Forms, Math,
@@ -114,6 +117,50 @@ implementation
 
 { TGtk2WSCustomForm }
 
+function Gtk2FormEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
+var
+  ACtl: TWinControl;
+  {$IFDEF HASX}
+  XDisplay: PDisplay;
+  Window: TWindow;
+  RevertStatus: Integer;
+  {$ENDIF}
+
+begin
+  Result := False;
+  case event^._type of
+    GDK_FOCUS_CHANGE:
+      begin
+        ACtl := TWinControl(Data);
+        if PGdkEventFocus(event)^._in = 0 then
+        begin
+          {$IFDEF HASX}
+          XDisplay := gdk_display;
+          XGetInputFocus(XDisplay, @Window, @RevertStatus);
+          // Window - 1 is our frame  !
+          if (RevertStatus = RevertToParent) and
+            (GDK_WINDOW_XID(Widget^.Window) = Window - 1) then
+            exit(True);
+          {$ENDIF}
+          with Gtk2WidgetSet do
+          begin
+            LastFocusOut := PGtkWidget(ACtl.Handle);
+            if LastFocusOut = LastFocusIn then
+              StartFocusTimer;
+          end;
+        end else
+        begin
+          with Gtk2WidgetSet do
+          begin
+            LastFocusIn := PGtkWidget(ACtl.Handle);
+            if not AppActive then
+              AppActive := True;
+          end;
+        end;
+      end;
+  end;
+end;
+
 class procedure TGtk2WSCustomForm.SetCallbacks(const AWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
@@ -130,6 +177,9 @@ begin
         SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
       end;
     end;
+
+  g_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget), 'event',
+    gtk_signal_func(@Gtk2FormEvent), AWidgetInfo^.LCLObject);
 
   g_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget), gtkevent_window_state_event,
     gtk_signal_func(@GTKWindowStateEventCB), AWidgetInfo^.LCLObject);
