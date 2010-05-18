@@ -155,6 +155,7 @@ type
     function GetSupportedPapers: TStrings;
     procedure SetPaperName(const AName: string);
     function PaperRectOfName(const AName: string) : TPaperRect;
+    procedure CheckSupportedPapers;
   private
     fInternalPapers    : array of TPaperItem;
     fDefaultPapers     : boolean;
@@ -885,6 +886,8 @@ end;
 
 function TPaperSize.GetDefaultPaperName: string;
 begin
+  CheckSupportedPapers;
+
   if fDefaultPapers then
     Result := FSupportedPapers[0]
   else
@@ -924,6 +927,8 @@ end;
 
 function TPaperSize.GetPaperName: string;
 begin
+  CheckSupportedPapers;
+
   if fDefaultPapers then
     Result := SupportedPapers[FDefaultPaperIndex]
   else
@@ -945,21 +950,8 @@ end;
 
 function TPaperSize.GetSupportedPapers: TStrings;
 begin
-  if (fSupportedPapers.Count=0) or
-     (fLastPrinterIndex<>fOwnedPrinter.PrinterIndex) then
-  begin
-    fOwnedPrinter.SelectCurrentPrinterOrDefault;
-    
-    fSupportedPapers.Clear;
-    fDefaultPapers := false;
-    //DebugLn(['TPaperSize.GetSupportedPapers ',dbgsName(fOwnedPrinter),' ',dbgsName(Printer),' ',fOwnedPrinter=Printer]);
-    fOwnedPrinter.DoEnumPapers(fSupportedPapers);
+  CheckSupportedPapers;
 
-    if fSupportedPapers.Count=0 then
-      FillDefaultPapers;
-
-    fLastPrinterIndex:=fOwnedPrinter.PrinterIndex;
-  end;
   Result:=fSupportedPapers;
 end;
 
@@ -1014,6 +1006,25 @@ begin
 
   end
   else raise EPrinter.Create(Format('Paper "%s" not supported !',[aName]));
+end;
+
+procedure TPaperSize.CheckSupportedPapers;
+begin
+  if (fSupportedPapers.Count=0) or
+     (fLastPrinterIndex<>fOwnedPrinter.PrinterIndex) then
+  begin
+    fOwnedPrinter.SelectCurrentPrinterOrDefault;
+
+    fSupportedPapers.Clear;
+    fDefaultPapers := false;
+    //DebugLn(['TPaperSize.GetSupportedPapers ',dbgsName(fOwnedPrinter),' ',dbgsName(Printer),' ',fOwnedPrinter=Printer]);
+    fOwnedPrinter.DoEnumPapers(fSupportedPapers);
+
+    if fSupportedPapers.Count=0 then
+      FillDefaultPapers;
+
+    fLastPrinterIndex:=fOwnedPrinter.PrinterIndex;
+  end;
 end;
 
 constructor TPaperSize.Create(aOwner: TPrinter);
