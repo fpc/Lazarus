@@ -8935,16 +8935,31 @@ end;
 procedure TCustomStringGrid.CopyCellRectToClipboard(const R: TRect);
 var
   SelStr: String;
-  i: LongInt;
-  j: LongInt;
+  i,j,k: LongInt;
 begin
   SelStr := '';
   for i:=R.Top to R.Bottom do begin
+
     for j:=R.Left to R.Right do begin
-      SelStr := SelStr + Cells[j,i];
+
+      if Columns.Enabled and (j>=FirstGridColumn) then begin
+
+        k := ColumnIndexFromGridColumn(j);
+        if not Columns[k].Visible then
+          continue;
+
+        if (i=0) then
+          SelStr := SelStr + Columns[k].Title.Caption
+        else
+          SelStr := SelStr + Cells[j,i];
+
+      end else
+        SelStr := SelStr + Cells[j,i];
+
       if j<>R.Right then
         SelStr := SelStr + #9;
     end;
+
     SelStr := SelStr + #13#10;
   end;
   Clipboard.AsText := SelStr;
