@@ -131,11 +131,10 @@ type
     cbsButton
   );
 
-
   TTitleStyle = (tsLazarus, tsStandard, tsNative);
 
   TGridFlagsOption = (gfEditorUpdateLock, gfNeedsSelectActive, gfEditorTab,
-    gfRevEditorTab, gfVisualChange, gfDefRowHeightChanged);
+    gfRevEditorTab, gfVisualChange, gfDefRowHeightChanged, gfColumnsLocked);
   TGridFlags = set of TGridFlagsOption;
 
   TSortOrder = (soAscending, soDescending);
@@ -427,7 +426,6 @@ type
     FPickList: TStrings;
     FMinSize, FMaxSize, FSizePriority: ^Integer;
     FValueChecked,FValueUnchecked: PChar;
-    FSettingIndex: boolean;
 
     procedure FontChanged(Sender: TObject);
     function GetAlignment: TAlignment;
@@ -2998,9 +2996,6 @@ end;
 
 procedure TCustomGrid.ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer);
 begin
-  if IsColumn and Columns.Enabled then
-    Columns.MoveColumn(ColumnIndexFromGridColumn(FromIndex),
-      ColumnIndexFromGridColumn(ToIndex));
 end;
 
 procedure TCustomGrid.ColRowExchanged(isColumn: Boolean; index, WithIndex: Integer);
@@ -5163,11 +5158,19 @@ begin
   CheckIndex(IsColumn, FromIndex);
   CheckIndex(IsColumn, ToIndex);
 
+  // move custom columns if they are not locked
+  if IsColumn and Columns.Enabled and (not(gfColumnsLocked in FGridFlags)) then begin
+    Columns.MoveColumn(ColumnIndexFromGridColumn(FromIndex),
+      ColumnIndexFromGridColumn(ToIndex));
+    // done
+    exit;
+  end;
+
+  // move grids content
   if IsColumn then
     FCols.Move(FromIndex, ToIndex)
   else
     FRows.Move(FromIndex, ToIndex);
-
   ColRowMoved(IsColumn, FromIndex, ToIndex);
 
   if not IsColumn or not Columns.Enabled then
@@ -5191,6 +5194,7 @@ begin
     else
       AdjustEditorBounds(FCol, ColRow);
   end;
+
 end;
 
 procedure TCustomGrid.DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
@@ -10038,16 +10042,17 @@ var
   CurCol,DstCol: Integer;
 begin
   AGrid := Grid;
-  if (not FSettingIndex) and (AGrid<>nil) then begin
+  if (Value<>Index) and (AGrid<>nil) then begin
+    // move grid content
     CurCol := Grid.GridColumnFromColumnIndex(Index);
     DstCol := Grid.GridColumnFromColumnIndex(Value);
     if (CurCol>=0) and (DstCol>=0) then begin
-      FSettingIndex := true;
-      Grid.DoOPMoveColRow(true, CurCol, DstCol);
-      FSettingIndex := false;
-      exit;
+      AGrid.GridFlags:=AGrid.GridFlags + [gfColumnsLocked];
+      AGrid.DoOPMoveColRow(true, CurCol, DstCol);
+      AGrid.GridFlags:=AGrid.GridFlags - [gfColumnsLocked];
     end;
   end;
+  // move column item index
   inherited SetIndex(Value);
 end;
 
