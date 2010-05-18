@@ -419,6 +419,8 @@ resourceString
   rsMenuHighlightColorCaption = 'Menu Highlight';
   rsMenuBarColorCaption = 'Menu Bar';
   rsFormColorCaption = 'Form';
+  lisProgramFileNotFound = 'program file not found %s';
+  lisCanNotExecute = 'can not execute %s';
 
 implementation
 

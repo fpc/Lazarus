@@ -101,7 +101,7 @@ type
       every variable has
       - a list of possible values
       - and has a default value, or an expression to define the default
-        the expression can use other build variables }
+      the expression can use other build variables }
 
   TIDEBuildVariables = class(TLazBuildVariables)
   private
@@ -159,8 +159,7 @@ type
   { TBuildMode
     - defined by the project
     - project specific (saved to lpi) OR user+project specific (saved to project sesssion)
-    - has a list of flags OR a list of modes to activate, but not both
-    - one mode is selected by the graph, and activates it  }
+  }
 
   TBuildMode = class(TPersistent)
   private
@@ -1859,7 +1858,6 @@ var
   p: TCompilerOptionsParseType;
 begin
   if (fInheritedOptParseStamps<>CompilerParseStamp)
-  //QWE or (fInheritedOptGraphStamps<>CompilerGraphStamp)
   then begin
     // update inherited options
     ClearInheritedOptions;
@@ -1873,7 +1871,6 @@ begin
       OptionsList.Free;
     end;
     fInheritedOptParseStamps:=CompilerParseStamp;
-    //QWE fInheritedOptGraphStamps:=CompilerGraphStamp;
   end;
   Result:=fInheritedOptions[Parsed][Option];
   if RelativeToBaseDir then begin

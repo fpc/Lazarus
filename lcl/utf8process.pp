@@ -28,7 +28,7 @@ unit UTF8Process;
 interface
 
 uses
-  Classes, SysUtils, Process, FileUtil;
+  Classes, SysUtils, Process, FileUtil, LCLStrConsts;
 
 type
   { TProcessUTF8 }
@@ -59,6 +59,9 @@ type
     property Desktop: string read FDesktopUTF8 write SetDesktopUTF8;
     property Environment: TStrings read FEnvironmentUTF8 write SetEnvironmentUTF8;
   end;
+
+procedure RunCmdFromPath(ProgramFilename, CmdLineParameters: string);
+function FindFilenameOfCmd(ProgramFilename: string): string;
 
 procedure Register;
 
@@ -139,6 +142,48 @@ procedure TProcessUTF8.Execute;
 begin
   UpdateEnvironment;
   inherited Execute;
+end;
+
+function FindFilenameOfCmd(ProgramFilename: string): string;
+begin
+  Result:=TrimFilename(ProgramFilename);
+  if not FilenameIsAbsolute(Result) then begin
+    if Pos(PathDelim,Result)>0 then begin
+      // with sub directory => relative to current directory
+      Result:=CleanAndExpandFilename(Result);
+    end else begin
+      // search in PATH
+      Result:=FindDefaultExecutablePath(Result);
+    end;
+  end;
+  if (Result<>'') and not FileExistsUTF8(Result) then
+    Result:='';
+end;
+
+procedure RunCmdFromPath(ProgramFilename, CmdLineParameters: string);
+var
+  OldProgramFilename: String;
+  BrowserProcess: TProcessUTF8;
+begin
+  OldProgramFilename:=ProgramFilename;
+  ProgramFilename:=FindFilenameOfCmd(ProgramFilename);
+  if ProgramFilename='' then
+    raise EFOpenError.Create(Format(lisProgramFileNotFound, [OldProgramFilename]
+      ));
+  if not FileIsExecutable(ProgramFilename) then
+    raise EFOpenError.Create(Format(lisCanNotExecute, [ProgramFilename]));
+  // run
+  BrowserProcess := TProcessUTF8.Create(nil);
+  try
+    if Pos(' ',ProgramFilename)>0 then
+      ProgramFilename:='"'+ProgramFilename+'"';
+    BrowserProcess.CommandLine := ProgramFilename;
+    if CmdLineParameters<>'' then
+      BrowserProcess.CommandLine := BrowserProcess.CommandLine + ' ' + CmdLineParameters;
+    BrowserProcess.Execute;
+  finally
+    BrowserProcess.Free;
+  end;
 end;
 
 procedure Register;

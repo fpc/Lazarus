@@ -293,20 +293,11 @@ end;
 {$ELSE}
 var
   ABrowser, AParams: String;
-  BrowserProcess: TProcessUTF8;
 begin
   Result := FindDefaultBrowser(ABrowser, AParams) and FileExistsUTF8(ABrowser) and FileIsExecutable(ABrowser);
   if not Result then
     Exit;
-
-  // run
-  BrowserProcess := TProcessUTF8.Create(nil);
-  try
-    BrowserProcess.CommandLine := ABrowser + ' ' + Format(AParams, [AURL]);
-    BrowserProcess.Execute;
-  finally
-    BrowserProcess.Free;
-  end;
+  RunCmdFromPath(ABrowser,Format(AParams, [AURL]));
 end;
 {$ENDIF}
 {$ENDIF}
@@ -320,7 +311,7 @@ end;
 {$IFDEF DARWIN}
 begin
   Result := True;
-  Shell('open ' + APath);
+  RunCmdFromPath('open',APath);
 end;
 {$ELSE}
 var
@@ -328,15 +319,15 @@ var
 begin
   Result := True;
 
-  if shell('which xdg-open') = 0 then       // Portland OSDL/FreeDesktop standard on Linux
-    lApp := 'xdg-open '
-  else if shell('which kfmclient') = 0 then // KDE command
-    lApp := 'kfmclient exec '
-  else if shell('which gnome-open') = 0 then// GNOME command
-    lApp := 'gnome-open '
-  else Exit(False);
+  lApp:=FindFilenameOfCmd('xdg-open'); // Portland OSDL/FreeDesktop standard on Linux
+  if lApp='' then
+    lApp:=FindFilenameOfCmd('kfmclient'); // KDE command
+  if lApp='' then
+    lApp:=FindFilenameOfCmd('gnome-open'); // GNOME command
+  if lApp='' then
+    Exit(False);
 
-  shell(lApp + APath);
+  RunCmdFromPath(lApp,APath);
 end;
 {$ENDIF}
 {$ENDIF}
