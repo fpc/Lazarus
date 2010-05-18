@@ -55,6 +55,15 @@ type
     procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
   end;
   
+  { TQuickFixUnitNotFound_Remove }
+
+  TQuickFixUnitNotFound_Remove = class(TIDEMsgQuickFixItem)
+  public
+    constructor Create;
+    function IsApplicable(Line: TIDEMessageLine): boolean; override;
+    procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
+  end;
+
   { TQuickFixLinkerUndefinedReference }
 
   TQuickFixLinkerUndefinedReference = class(TIDEMsgQuickFixItem)
@@ -168,6 +177,7 @@ begin
     nil,@QuickFixUnitNotUsed);
     
   RegisterIDEMsgQuickFix(TQuickFixUnitNotFoundPosition.Create);
+  RegisterIDEMsgQuickFix(TQuickFixUnitNotFound_Remove.Create);
   RegisterIDEMsgQuickFix(TQuickFixLinkerUndefinedReference.Create);
   RegisterIDEMsgQuickFix(TQuickFixClassWithAbstractMethods.Create);
   RegisterIDEMsgQuickFix(TQuickFixIdentifierNotFoundAddLocal.Create);
@@ -553,6 +563,74 @@ begin
     if not CodeToolBoss.CreateVariableForIdentifier(CodeBuf,Caret.X,Caret.Y,-1,
                NewCode,NewX,NewY,NewTopLine)
     then begin
+      LazarusIDE.DoJumpToCodeToolBossError;
+      exit;
+    end;
+
+    // message fixed -> clean
+    Msg.Msg:='';
+  end;
+end;
+
+{ TQuickFixUnitNotFound_Remove }
+
+constructor TQuickFixUnitNotFound_Remove.Create;
+begin
+  Name:='Search unit: Error: Can''t find unit Name';
+  Caption:='Remove unit from uses section';
+  Steps:=[imqfoMenuItem];
+end;
+
+function TQuickFixUnitNotFound_Remove.IsApplicable(Line: TIDEMessageLine
+  ): boolean;
+const
+  SearchStr = ') Fatal: Can''t find unit ';
+var
+  Msg: String;
+  p: integer;
+begin
+  Result:=false;
+  if (Line.Parts=nil) then exit;
+  Msg:=Line.Msg;
+  p:=System.Pos(SearchStr,Msg);
+  if p<1 then exit;
+  Result:=true;
+end;
+
+procedure TQuickFixUnitNotFound_Remove.Execute(const Msg: TIDEMessageLine;
+  Step: TIMQuickFixStep);
+var
+  CodeBuf: TCodeBuffer;
+  Filename: string;
+  Caret: TPoint;
+  AnUnitName: String;
+begin
+  if Step=imqfoMenuItem then begin
+    DebugLn(['TQuickFixUnitNotFound_Remove.Execute ']);
+    // get source position
+    if not GetMsgLineFilename(Msg,CodeBuf) then exit;
+    Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
+    if not LazarusIDE.BeginCodeTools then begin
+      DebugLn(['TQuickFixUnitNotFound_Remove.Execute failed because IDE busy']);
+      exit;
+    end;
+
+    // get unitname
+    if not REMatches(Msg.Msg,'Fatal: Can''t find unit ([a-z_0-9]+) ','I') then begin
+      DebugLn('TQuickFixUnitNotFound_Remove invalid message ',Msg.Msg);
+      exit;
+    end;
+    AnUnitName:=REVar(1);
+    DebugLn(['TQuickFixUnitNotFound_Remove.Execute Unit=',AnUnitName]);
+
+    if (AnUnitName='') or (not IsValidIdent(AnUnitName)) then begin
+      DebugLn(['TQuickFixUnitNotFound_Remove.Execute not an identifier "',dbgstr(AnUnitName),'"']);
+      exit;
+    end;
+
+    if not CodeToolBoss.RemoveUnitFromAllUsesSections(CodeBuf,AnUnitName) then
+    begin
+      DebugLn(['TQuickFixUnitNotFound_Remove.Execute RemoveUnitFromAllUsesSections failed']);
       LazarusIDE.DoJumpToCodeToolBossError;
       exit;
     end;
