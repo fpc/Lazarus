@@ -160,6 +160,11 @@ begin
     Result:='';
 end;
 
+// Runs a short command which should point to an executable in
+// the environment PATH
+// For example: ProgramFilename=ls CmdLineParameters=-l /home
+// Will locate and execute the file /bin/ls
+// If the command isn't found, an exception will be raised
 procedure RunCmdFromPath(ProgramFilename, CmdLineParameters: string);
 var
   OldProgramFilename: String;
@@ -167,16 +172,20 @@ var
 begin
   OldProgramFilename:=ProgramFilename;
   ProgramFilename:=FindFilenameOfCmd(ProgramFilename);
+
   if ProgramFilename='' then
     raise EFOpenError.Create(Format(lisProgramFileNotFound, [OldProgramFilename]
       ));
   if not FileIsExecutable(ProgramFilename) then
     raise EFOpenError.Create(Format(lisCanNotExecute, [ProgramFilename]));
+
   // run
   BrowserProcess := TProcessUTF8.Create(nil);
   try
+    // Encloses the executable with "" if it's name has spaces
     if Pos(' ',ProgramFilename)>0 then
       ProgramFilename:='"'+ProgramFilename+'"';
+
     BrowserProcess.CommandLine := ProgramFilename;
     if CmdLineParameters<>'' then
       BrowserProcess.CommandLine := BrowserProcess.CommandLine + ' ' + CmdLineParameters;
