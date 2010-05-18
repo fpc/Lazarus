@@ -66,8 +66,6 @@ function ExtractCommentContent(const ASource: string; CommentStart: integer;
 function FindMainUnitHint(const ASource: string; out Filename: string): boolean;
 
 // indent
-procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
-    var LineStart,LineEnd:integer);
 function GetLineIndent(const Source: string; Position: integer): integer;
 function GetLineIndentWithTabs(const Source: string; Position: integer;
                                TabWidth: integer): integer;
@@ -93,6 +91,9 @@ function IsValidIdentPair(const NamePair: string;
     out First, Second: string): boolean;
 
 // line/code ends
+procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
+    var LineStart,LineEnd:integer);
+function GetLineStartPosition(const Source:string; Position:integer): integer;
 function LineEndCount(const Txt: string): integer; inline;
 function LineEndCount(const Txt: string; out LengthOfLastLine:integer): integer; inline;
 function LineEndCount(const Txt: string; StartPos, EndPos: integer;
@@ -108,7 +109,8 @@ function FindLineEndOrCodeInFrontOfPosition(const Source: string;
     StopAtDirectives: boolean = true; SkipSemicolonComma: boolean = true): integer;
 function FindLineEndOrCodeAfterPosition(const Source: string;
     Position, MaxPosition: integer; NestedComments: boolean;
-    StopAtDirectives: boolean = true; SkipEmptyLines: boolean = false): integer;
+    StopAtDirectives: boolean = true; SkipEmptyLines: boolean = false;
+    IncludeLineEnd: boolean = false): integer;
 function FindFirstLineEndInFrontOfInCode(const Source: string;
     Position, MinPosition: integer; NestedComments: boolean): integer;
 function FindFirstLineEndAfterInCode(const Source: string;
@@ -1332,9 +1334,8 @@ procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
    var LineStart,LineEnd:integer);
 begin
   LineStart:=Position;
-  while (LineStart>0) and (not (Source[LineStart] in [#10,#13])) do
+  while (LineStart>1) and (not (Source[LineStart-1] in [#10,#13])) do
     dec(LineStart);
-  inc(LineStart);
   LineEnd:=Position;
   while (LineEnd<=length(Source)) and (not (Source[LineEnd] in [#10,#13])) do
     inc(LineEnd);
@@ -2248,10 +2249,10 @@ begin
   if (Result>length(Source)) then Result:=length(Source);
   if Result=0 then exit;
   // search beginning of line
-  while (Result>1) and (not (Source[Result] in [#10,#13])) do
+  while (Result>1) and (not (Source[Result-1] in [#10,#13])) do
     dec(Result);
   // search
-  while (Result<length(Source)) and (Source[Result]<' ') do inc(Result);
+  while (Result<=length(Source)) and (Source[Result] in [' ',#9]) do inc(Result);
 end;
 
 function GetLineIndent(const Source: string; Position: integer): integer;
@@ -2273,7 +2274,8 @@ end;
 
 function FindLineEndOrCodeAfterPosition(const Source: string;
    Position, MaxPosition: integer; NestedComments: boolean;
-   StopAtDirectives: boolean; SkipEmptyLines: boolean): integer;
+   StopAtDirectives: boolean; SkipEmptyLines: boolean;
+   IncludeLineEnd: boolean): integer;
 { search forward for a line end or code
   ignore line ends in comments
   Result is Position of Start of Line End
@@ -2284,6 +2286,10 @@ function FindLineEndOrCodeAfterPosition(const Source: string;
   
   1. var i: integer;|#
      var j: integer;
+
+     If IncludeLineEnd then
+            var i: integer;|
+          #  var j: integer;
      
   2. var i: integer;| (*
      *) #var j: integer;
@@ -2293,6 +2299,8 @@ function FindLineEndOrCodeAfterPosition(const Source: string;
      #
      // comment
      var j: integer;
+
+     if IncludeLineEnd then the # will be one line below
      
   4. SkipEmptyLines=true
      var i: integer;|
@@ -2386,6 +2394,13 @@ begin
       #10,#13:
         begin
           if SkipEmptyLines then DoSkipEmptyLines(Result);
+          if IncludeLineEnd and (Result<=SrcLen) and (Source[Result] in [#10,#13])
+          then begin
+            inc(Result);
+            if (Result<=SrcLen) and (Source[Result] in [#10,#13])
+            and (Source[Result-1]<>Source[Result]) then
+              inc(Result);
+          end;
           exit;
         end;
       #9,' ',';':
@@ -3953,6 +3968,13 @@ begin
     SetLength(NewSource,NewSrcLen);
     UnindentTxt(true);
   end;
+end;
+
+function GetLineStartPosition(const Source: string; Position: integer): integer;
+begin
+  Result:=Position;
+  while (Result>1) and (not (Source[Result-1] in [#10,#13])) do
+    dec(Result);
 end;
 
 function LineEndCount(const Txt: string): integer;

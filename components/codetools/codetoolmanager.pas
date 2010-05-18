@@ -419,7 +419,7 @@ type
     function GatherOverloads(Code: TCodeBuffer; X,Y: integer;
           out Graph: TDeclarationOverloadsGraph): boolean;
 
-    // rename identifier
+    // rename, remove identifier
     function FindReferences(IdentifierCode: TCodeBuffer;
           X, Y: integer; TargetCode: TCodeBuffer; SkipComments: boolean;
           var ListOfPCodeXYPosition: TFPList): boolean;
@@ -429,6 +429,8 @@ type
           const OldIdentifier, NewIdentifier: string): boolean;
     function ReplaceWord(Code: TCodeBuffer; const OldWord, NewWord: string;
           ChangeStrings: boolean): boolean;
+    function RemoveIdentifierDefinition(Code: TCodeBuffer; X, Y: integer
+          ): boolean; // e.g. remove the variable definition at X,Y
 
     // resourcestring sections
     function GatherResourceStringSections(
@@ -2318,6 +2320,26 @@ begin
   try
     Result:=FCurCodeTool.ReplaceWord(OldWord, NewWord, ChangeStrings,
                        SourceChangeCache);
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.RemoveIdentifierDefinition(Code: TCodeBuffer; X,
+  Y: integer): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.RemoveIdentifierDefinition A ',Code.Filename,' X=',X,' Y=',Y);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.RemoveIdentifierDefinition(CursorPos,SourceChangeCache);
   except
     on e: Exception do HandleException(e);
   end;

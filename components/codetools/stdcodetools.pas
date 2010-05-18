@@ -195,6 +195,10 @@ type
           SearchInAncestors: boolean;
           out ListOfPInstancePropInfo: TFPList): boolean;
 
+    // variables, constants, types
+    function RemoveIdentifierDefinition(const CursorPos: TCodeXYPosition;
+          SourceChangeCache: TSourceChangeCache): boolean;
+
     // blocks (e.g. begin..end)
     function FindBlockCounterPart(const CursorPos: TCodeXYPosition;
           out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
@@ -5072,6 +5076,109 @@ begin
       CheckMethodsInComponent(RootComponent.Components[i]);
   finally
     NodeExtMemManager.DisposeAVLTree(PublishedMethods);
+  end;
+end;
+
+function TStandardCodeTool.RemoveIdentifierDefinition(
+  const CursorPos: TCodeXYPosition; SourceChangeCache: TSourceChangeCache
+  ): boolean;
+var
+  CleanCursorPos: integer;
+  Node: TCodeTreeNode;
+  PrevSibling: TCodeTreeNode;
+  NextSibling: TCodeTreeNode;
+  DeleteStartPos: LongInt;
+  DeleteEndPos: LongInt;
+  DeleteFirstTokenOfLine: Boolean;
+begin
+  Result:=false;
+  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  Node:=BuildSubTreeAndFindDeepestNodeAtPos(CleanCursorPos,true);
+  if Node.Desc in AllIdentifierDefinitions then begin
+    // Examples:
+    //   var i, X: integer;     ->  var i[, X]: integer;
+    //   var i, X, j: integer;  ->  var i, [X, ]j: integer;
+    //   var X, i: integer;     ->  var [X, ]i: integer;
+    //   type X = integer;
+    //   const X = 0;
+    //   const X : integer = 0;
+    PrevSibling:=nil;
+    NextSibling:=nil;
+    if (Node.PriorBrother<>nil) and (Node.PriorBrother.FirstChild=nil) then
+      PrevSibling:=Node.PriorBrother;
+    if (Node.FirstChild=nil) and (Node.NextBrother<>nil) then
+      NextSibling:=Node.NextBrother;
+    DeleteStartPos:=Node.StartPos;
+    DeleteEndPos:=Node.StartPos+GetIdentLen(@Src[Node.StartPos]);
+    if NextSibling<>nil then begin
+      //   var i, X, j: integer;  ->  var i, [X, ]j: integer;
+      //   var X, i: integer;     ->  var [X, ]i: integer;
+      MoveCursorToCleanPos(Node.StartPos);
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+      if not ReadNextAtomIsChar(',') then RaiseCharExpectedButAtomFound(',');
+      DeleteEndPos:=CurPos.EndPos;
+    end else if PrevSibling<>nil then begin
+      // var i, X: integer;     ->  var i[, X]: integer;
+      MoveCursorToCleanPos(PrevSibling.StartPos);
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+      if not ReadNextAtomIsChar(',') then RaiseCharExpectedButAtomFound(',');
+      DeleteStartPos:=CurPos.StartPos;
+    end else begin
+      // delete whole declaration
+      if (Node.Parent.Desc in AllDefinitionSections)
+      and (Node.PriorBrother=nil) and (Node.NextBrother=nil) then begin
+        // delete whole section
+        DeleteStartPos:=Node.Parent.StartPos;
+        DeleteEndPos:=Node.Parent.EndPos;
+      end else if Node.Parent.Desc=ctnParameterList then begin
+        // delete whole parameter including modifier, type and default value
+        if Node.PriorBrother<>nil then begin
+          // ... var i: integer; var X: ... -> ... var i: integer[; var X: ...
+          MoveCursorToCleanPos(Node.PriorBrother.EndPos);
+          repeat
+            ReadNextAtom;
+            if CurPos.Flag=cafSemicolon then begin
+              DeleteStartPos:=CurPos.EndPos;
+              break;
+            end;
+          until CurPos.StartPos>=Node.StartPos;
+        end else begin
+          // (var X: ... -> ([; X: ...
+          MoveCursorToCleanPos(Node.Parent.StartPos);
+          ReadNextAtom;
+          if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
+            DeleteStartPos:=CurPos.EndPos;
+        end;
+        if Node.NextBrother<>nil then begin
+          // ... var X: integer; var i: ... -> .. var X: integer;] var i: ...
+          DeleteEndPos:=Node.PriorBrother.EndPos;
+        end else begin
+          // ... var X: integer) -> .. var X: integer])
+          DeleteEndPos:=Node.EndPos;
+        end;
+      end else begin
+        // keep section, delete whole declaration
+        DeleteEndPos:=Node.EndPos;
+      end;
+    end;
+    // include corresponding comments
+    DeleteFirstTokenOfLine:=FindFirstNonSpaceCharInLine(Src,DeleteStartPos)=DeleteStartPos;
+    //DebugLn(['TStandardCodeTool.RemoveIdentifierDefinition ',dbgstr(copy(Src,FindFirstNonSpaceCharInLine(Src,DeleteStartPos),10))]);
+    DeleteEndPos:=FindLineEndOrCodeAfterPosition(DeleteEndPos,true,DeleteFirstTokenOfLine);
+    if DeleteFirstTokenOfLine and (Src[DeleteEndPos-1] in [#10,#13]) then begin
+      // delete first and last token of line
+      // => remove the entire line
+      DeleteStartPos:=GetLineStartPosition(Src,DeleteStartPos);
+    end;
+    //DebugLn(['TStandardCodeTool.RemoveIdentifierDefinition "',dbgstr(copy(Src,DeleteStartPos,DeleteEndPos-DeleteStartPos)),'" IncludeLineEnd=',DeleteFirstTokenOfLine]);
+
+    // delete
+    SourceChangeCache.MainScanner:=Scanner;
+    if not SourceChangeCache.Replace(gtNone,gtNone,DeleteStartPos,DeleteEndPos,'')
+    then exit;
+    Result:=SourceChangeCache.Apply;
   end;
 end;
 

@@ -211,7 +211,7 @@ type
     procedure GetLineInfo(ACleanPos: integer;
         out ALineStart, ALineEnd, AFirstAtomStart, ALastAtomEnd: integer);
     function FindLineEndOrCodeAfterPosition(StartPos: integer;
-        SkipEmptyLines: boolean = false): integer;
+        SkipEmptyLines: boolean = false; IncludeLineEnd: boolean = false): integer;
     function FindLineEndOrCodeInFrontOfPosition(StartPos: integer): integer;
     function FindLineEndOrCodeInFrontOfPosition(StartPos: integer;
         StopAtDirectives: boolean): integer;
@@ -2431,7 +2431,7 @@ begin
 end;
 
 function TCustomCodeTool.FindLineEndOrCodeAfterPosition(StartPos: integer;
-  SkipEmptyLines: boolean): integer;
+  SkipEmptyLines: boolean; IncludeLineEnd: boolean): integer;
 { Searches a nice position in the cleaned source after StartPos.
   It will skip any space or comments (not directives) till next
   line end or compiler directive or code or include file end.
@@ -2443,7 +2443,8 @@ begin
   LinkEnd:=Scanner.LinkCleanedEndPos(LinkIndex);
   if LinkEnd>StartPos then
     Result:=BasicCodeTools.FindLineEndOrCodeAfterPosition(Src,
-                  StartPos,LinkEnd-1,Scanner.NestedComments,true,SkipEmptyLines)
+                  StartPos,LinkEnd-1,Scanner.NestedComments,true,SkipEmptyLines,
+                  IncludeLineEnd)
   else
     Result:=StartPos;
 end;

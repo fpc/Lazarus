@@ -83,6 +83,15 @@ type
     procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
   end;
 
+  { TQuickFixLocalVariableNotUsed_Remove }
+
+  TQuickFixLocalVariableNotUsed_Remove = class(TIDEMsgQuickFixItem)
+  public
+    constructor Create;
+    function IsApplicable(Line: TIDEMessageLine): boolean; override;
+    procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
+  end;
+
 procedure QuickFixParameterNotUsed(Sender: TObject; Step: TIMQuickFixStep;
                                    Msg: TIDEMessageLine);
 procedure QuickFixUnitNotUsed(Sender: TObject; Step: TIMQuickFixStep;
@@ -95,6 +104,37 @@ procedure InitStandardIDEQuickFixItems;
 procedure FreeStandardIDEQuickFixItems;
 
 implementation
+
+procedure ShowError(Msg: string);
+begin
+  MessageDlg('QuickFix error',Msg,mtError,[mbCancel],0);
+end;
+
+function IsIdentifierInCode(Code: TCodeBuffer; X,Y: integer;
+  Identifier, ErrorMsg: string): boolean;
+var
+  p: integer;
+  IdentStart: integer;
+  IdentEnd: integer;
+begin
+  Result:=false;
+  if Code=nil then begin
+    ShowError(ErrorMsg+' (Code=nil)');
+    exit;
+  end;
+  Code.LineColToPosition(Y,X,p);
+  if p<1 then begin
+    ShowError(ErrorMsg+' (position outside of source');
+    exit;
+  end;
+  GetIdentStartEndAtPosition(Code.Source,p,IdentStart,IdentEnd);
+  if SysUtils.CompareText(Identifier,copy(Code.Source,IdentStart,IdentEnd-IdentStart))<>0
+  then begin
+    ShowError(ErrorMsg);
+    exit;
+  end;
+  Result:=true;
+end;
 
 procedure QuickFixParameterNotUsed(Sender: TObject; Step: TIMQuickFixStep;
   Msg: TIDEMessageLine);
@@ -114,6 +154,7 @@ begin
   
   if not REMatches(Msg.Msg,'Unit "([a-z_0-9]+)" not used','I') then begin
     DebugLn('QuickFixUnitNotUsed invalid message ',Msg.Msg);
+    ShowError('QuickFix: UnitNotUsed invalid message '+Msg.Msg);
     exit;
   end;
   UnneededUnitname:=REVar(1);
@@ -181,6 +222,7 @@ begin
   RegisterIDEMsgQuickFix(TQuickFixLinkerUndefinedReference.Create);
   RegisterIDEMsgQuickFix(TQuickFixClassWithAbstractMethods.Create);
   RegisterIDEMsgQuickFix(TQuickFixIdentifierNotFoundAddLocal.Create);
+  RegisterIDEMsgQuickFix(TQuickFixLocalVariableNotUsed_Remove.Create);
 end;
 
 procedure FreeStandardIDEQuickFixItems;
@@ -219,6 +261,7 @@ begin
 
   if not REMatches(Msg.Msg,'Can''t find unit ([a-z_0-9]+)','I') then begin
     DebugLn('QuickFixUnitNotFoundPosition invalid message ',Msg.Msg);
+    ShowError('QuickFix: UnitNotFoundPosition invalid message '+Msg.Msg);
     exit;
   end;
   MissingUnitname:=REVar(1);
@@ -230,11 +273,13 @@ begin
       NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit);
       if NewFilename='' then begin
         DebugLn('QuickFixUnitNotFoundPosition unit not found: ',UsedByUnit);
+        ShowError('QuickFix: UnitNotFoundPosition unit not found: '+UsedByUnit);
         exit;
       end;
       CodeBuf:=CodeToolBoss.LoadFile(NewFilename,false,false);
       if CodeBuf=nil then begin
         DebugLn('QuickFixUnitNotFoundPosition unable to load unit: ',NewFilename);
+        ShowError('QuickFix: UnitNotFoundPosition unable to load unit: '+NewFilename);
         exit;
       end;
     end;
@@ -244,6 +289,7 @@ begin
     NamePos,InPos)
   then begin
     DebugLn('QuickFixUnitNotFoundPosition failed due to syntax errors or '+MissingUnitname+' is not used in '+CodeBuf.Filename);
+    LazarusIDE.DoJumpToCodeToolBossError;
     exit;
   end;
   if InPos=0 then ;
@@ -276,13 +322,6 @@ procedure TQuickFixLinkerUndefinedReference.Execute(const Msg: TIDEMessageLine;
   unit1.pas:37: undefined reference to `DoesNotExist'
   unit1.o(.text+0x3a):unit1.pas:48: undefined reference to `DoesNotExist'
 }
-
-  procedure Error(const Msg: string);
-  begin
-    DebugLn('TQuickFixLinkerUndefinedReference.Execute ',Msg);
-    MessageDlg('TQuickFixLinkerUndefinedReference.Execute',
-               Msg,mtError,[mbCancel],0);
-  end;
 
   procedure JumpTo(Line1, Line2: TIDEMessageLine);
   var
@@ -343,26 +382,22 @@ procedure TQuickFixLinkerUndefinedReference.Execute(const Msg: TIDEMessageLine;
     DebugLn(['TQuickFixLinkerUndefinedReference.JumpTo Filename="',Filename,'" MangledFunction="',MangledFunction,'" Identifier="',Identifier,'" SourceFilename="',SourceFilename,'" SourceLine=',SourceLine]);
     CurProject:=LazarusIDE.ActiveProject;
     if CurProject=nil then begin
-      Error('no project');
+      ShowError('QuickFix: LinkerUndefinedReference no project');
       exit;
     end;
     if (CurProject.MainFile=nil) then begin
-      Error('no main file in project');
-      exit;
-    end;
-    if (CurProject.MainFile=nil) then begin
-      Error('no main file in project');
+      ShowError('QuickFix: LinkerUndefinedReference no main file in project');
       exit;
     end;
     CodeBuf:=CodeToolBoss.LoadFile(CurProject.MainFile.Filename,true,false);
     if (CodeBuf=nil) then begin
-      Error('project main file has no source');
+      ShowError('QuickFix: LinkerUndefinedReference project main file has no source');
       exit;
     end;
     AnUnitName:=ExtractFilenameOnly(Filename);
     CodeBuf:=CodeToolBoss.FindUnitSource(CodeBuf,AnUnitName,'');
     if (CodeBuf=nil) then begin
-      Error('unit not found: '+AnUnitName);
+      ShowError('QuickFix: LinkerUndefinedReference unit not found: '+AnUnitName);
       exit;
     end;
     if not CodeToolBoss.JumpToLinkerIdentifier(CodeBuf,
@@ -372,7 +407,7 @@ procedure TQuickFixLinkerUndefinedReference.Execute(const Msg: TIDEMessageLine;
       if CodeToolBoss.ErrorCode<>nil then
         LazarusIDE.DoJumpToCodeToolBossError
       else
-        Error('function not found: '+MangledFunction+' Identifier='+Identifier);
+        ShowError('QuickFix: LinkerUndefinedReference function not found: '+MangledFunction+' Identifier='+Identifier);
       exit;
     end;
     LazarusIDE.DoOpenFileAndJumpToPos(NewCode.Filename,Point(NewX,NewY),
@@ -438,10 +473,11 @@ begin
     // get class name
     if not REMatches(Msg.Msg,'Warning: Constructing a class "([a-z_0-9]+)"','I') then begin
       DebugLn('QuickFixClassWithAbstractMethods invalid message ',Msg.Msg);
+      ShowError('QuickFix: ClassWithAbstractMethods invalid message '+Msg.Msg);
       exit;
     end;
     CurClassName:=REVar(1);
-    DebugLn(['TQuickFixClassWithAbstractMethods.Execute Class=',CurClassName]);
+    //DebugLn(['TQuickFixClassWithAbstractMethods.Execute Class=',CurClassName]);
 
     // find the class
 
@@ -449,6 +485,7 @@ begin
     CodeToolBoss.Explore(CodeBuf,Tool,false,true);
     if Tool=nil then begin
       DebugLn(['TQuickFixClassWithAbstractMethods.Execute no tool for ',CodeBuf.Filename]);
+      ShowError('QuickFix: ClassWithAbstractMethods no tool for '+CodeBuf.Filename);
       exit;
     end;
 
@@ -465,12 +502,13 @@ begin
       end;
       exit;
     end;
-    DebugLn(['TQuickFixClassWithAbstractMethods.Execute Declaration at ',NewCode.Filename,' ',NewX,',',NewY]);
+    //DebugLn(['TQuickFixClassWithAbstractMethods.Execute Declaration at ',NewCode.Filename,' ',NewX,',',NewY]);
 
     if LazarusIDE.DoOpenFileAndJumpToPos(NewCode.Filename,
       Point(NewX,NewY),NewTopLine,-1,-1,[])<>mrOk
     then begin
       DebugLn(['TQuickFixClassWithAbstractMethods.Execute failed opening ',NewCode.Filename]);
+      ShowError('QuickFix: ClassWithAbstractMethods failed opening '+NewCode.Filename);
       exit;
     end;
 
@@ -555,10 +593,17 @@ begin
     // get identifier
     if not REMatches(Msg.Msg,'Error: Identifier not found "([a-z_0-9]+)"','I') then begin
       DebugLn('TQuickFixIdentifierNotFoundAddLocal invalid message ',Msg.Msg);
+      ShowError('QuickFix: IdentifierNotFoundAddLocal invalid message '+Msg.Msg);
       exit;
     end;
     Identifier:=REVar(1);
-    DebugLn(['TQuickFixIdentifierNotFoundAddLocal.Execute Identifier=',Identifier]);
+    //DebugLn(['TQuickFixIdentifierNotFoundAddLocal.Execute Identifier=',Identifier]);
+
+    if not IsIdentifierInCode(CodeBuf,Caret.X,Caret.Y,Identifier,
+      Identifier+' not found in '+CodeBuf.Filename
+         +' at line '+IntToStr(Caret.Y)+', column '+IntToStr(Caret.X)+'.'#13
+         +'Maybe the message is outdated.')
+    then exit;
 
     if not CodeToolBoss.CreateVariableForIdentifier(CodeBuf,Caret.X,Caret.Y,-1,
                NewCode,NewX,NewY,NewTopLine)
@@ -577,7 +622,7 @@ end;
 constructor TQuickFixUnitNotFound_Remove.Create;
 begin
   Name:='Search unit: Error: Can''t find unit Name';
-  Caption:='Remove unit from uses section';
+  Caption:=lisRemoveUnitFromUsesSection;
   Steps:=[imqfoMenuItem];
 end;
 
@@ -618,6 +663,7 @@ begin
     // get unitname
     if not REMatches(Msg.Msg,'Fatal: Can''t find unit ([a-z_0-9]+) ','I') then begin
       DebugLn('TQuickFixUnitNotFound_Remove invalid message ',Msg.Msg);
+      ShowError('QuickFix: UnitNotFound_Remove invalid message '+Msg.Msg);
       exit;
     end;
     AnUnitName:=REVar(1);
@@ -625,12 +671,96 @@ begin
 
     if (AnUnitName='') or (not IsValidIdent(AnUnitName)) then begin
       DebugLn(['TQuickFixUnitNotFound_Remove.Execute not an identifier "',dbgstr(AnUnitName),'"']);
+      ShowError('QuickFix: UnitNotFound_Remove not an identifier "'+dbgstr(AnUnitName)+'"');
       exit;
     end;
 
     if not CodeToolBoss.RemoveUnitFromAllUsesSections(CodeBuf,AnUnitName) then
     begin
       DebugLn(['TQuickFixUnitNotFound_Remove.Execute RemoveUnitFromAllUsesSections failed']);
+      LazarusIDE.DoJumpToCodeToolBossError;
+      exit;
+    end;
+
+    // message fixed -> clean
+    Msg.Msg:='';
+  end;
+end;
+
+{ TQuickFixLocalVariableNotUsed_Remove }
+
+constructor TQuickFixLocalVariableNotUsed_Remove.Create;
+begin
+  Name:='Remove local variable: Note: Local variable "x" not used';
+  Caption:='Remove local variable';
+  Steps:=[imqfoMenuItem];
+end;
+
+function TQuickFixLocalVariableNotUsed_Remove.IsApplicable(Line: TIDEMessageLine
+  ): boolean;
+const
+  SearchStr1 = ') Note: Local variable "';
+  SearchStr2 = '" not used';
+var
+  Msg: String;
+  StartPos: integer;
+  p: LongInt;
+  Variable: String;
+begin
+  Result:=false;
+  if (Line.Parts=nil) then exit;
+  Msg:=Line.Msg;
+  //DebugLn(['TQuickFixLocalVariableNotUsed_Remove.IsApplicable Msg="',Msg,'" ',System.Pos(SearchStr1,Msg),' ',System.Pos(SearchStr2,Msg)]);
+  StartPos:=System.Pos(SearchStr1,Msg);
+  if StartPos<1 then exit;
+  inc(StartPos,length(SearchStr1));
+  p:=StartPos;
+  while (p<=length(Msg)) and (Msg[p]<>'"') do inc(p);
+  if copy(Msg,p,length(SearchStr2))<>SearchStr2 then exit;
+  Variable:=copy(Msg,StartPos,p-StartPos);
+  if (Variable='') or not IsValidIdent(Variable) then exit;
+  Caption:=Format(lisRemoveLocalVariable, [Variable]);
+  Result:=true;
+end;
+
+procedure TQuickFixLocalVariableNotUsed_Remove.Execute(
+  const Msg: TIDEMessageLine; Step: TIMQuickFixStep);
+var
+  CodeBuf: TCodeBuffer;
+  Filename: string;
+  Caret: TPoint;
+  Variable: String;
+begin
+  if Step=imqfoMenuItem then begin
+    DebugLn(['TQuickFixLocalVariableNotUsed_Remove.Execute ']);
+    // get source position
+    if not GetMsgLineFilename(Msg,CodeBuf) then exit;
+    Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
+    if not LazarusIDE.BeginCodeTools then begin
+      DebugLn(['TQuickFixLocalVariableNotUsed_Remove.Execute failed because IDE busy']);
+      exit;
+    end;
+
+    // get variables name
+    if not REMatches(Msg.Msg,'Note: Local variable "([a-z_0-9]+)" not used','I')
+    then begin
+      DebugLn('TQuickFixLocalVariableNotUsed_Remove invalid message ',Msg.Msg);
+      ShowError('QuickFix: LocalVariableNotUsed_Remove invalid message '+Msg.Msg);
+      exit;
+    end;
+    Variable:=REVar(1);
+    //DebugLn(['TQuickFixLocalVariableNotUsed_Remove.Execute Variable=',Variable]);
+
+    // check if the variable is at that position
+    if not IsIdentifierInCode(CodeBuf,Caret.X,Caret.Y,Variable,
+      Variable+' not found in '+CodeBuf.Filename
+         +' at line '+IntToStr(Caret.Y)+', column '+IntToStr(Caret.X)+'.'#13
+         +'Maybe the message is outdated.')
+    then exit;
+
+    if not CodeToolBoss.RemoveIdentifierDefinition(CodeBuf,Caret.X,Caret.Y) then
+    begin
+      DebugLn(['TQuickFixLocalVariableNotUsed_Remove.Execute remove failed']);
       LazarusIDE.DoJumpToCodeToolBossError;
       exit;
     end;

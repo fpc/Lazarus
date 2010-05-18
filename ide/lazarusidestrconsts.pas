@@ -4774,6 +4774,8 @@ resourcestring
     +'filename, the hostname with an optional username and the filename of '
     +'gdb on the remote computer. For example: %s/usr/bin/ssh username@'
     +'hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s';
+  lisRemoveUnitFromUsesSection = 'Remove unit from uses section';
+  lisRemoveLocalVariable = 'Remove local variable %s';
 
 implementation
 
