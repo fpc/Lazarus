@@ -2,6 +2,7 @@ tsynanysyn.png
 tsynautocomplete.png
 tsyncppsyn.png
 tsyncsssyn.png
+tsyndiffsyn.png
 tsynedit.png
 tsynexporterhtml.png
 tsynfreepascalsyn.png
