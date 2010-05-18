@@ -1522,6 +1522,16 @@ begin
   end;
 end;
 
+procedure DumpAddr(Addr: Pointer);
+begin
+  // preventing another exception, while dumping stack trace
+  try
+    DebugLn(BackTraceStrFunc(Addr));
+  except
+    DebugLn(SysBackTraceStr(Addr));
+  end;
+end;
+
 procedure DumpExceptionBackTrace;
 var
   FrameCount: integer;
@@ -1529,11 +1539,11 @@ var
   FrameNumber:Integer;
 begin
   DebugLn('  Stack trace:');
-  DebugLn(BackTraceStrFunc(ExceptAddr));
+  DumpAddr(ExceptAddr);
   FrameCount:=ExceptFrameCount;
   Frames:=ExceptFrames;
   for FrameNumber := 0 to FrameCount-1 do
-    DebugLn(BackTraceStrFunc(Frames[FrameNumber]));
+    DumpAddr(Frames[FrameNumber]);
 end;
 
 procedure DumpStack;
