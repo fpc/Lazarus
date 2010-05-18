@@ -4588,6 +4588,9 @@ begin
   //DebugLn('[TWinControl.PaintHandler] ',Name,':',ClassName,'  DC=',DbgS(TheMessage.DC,8));
   if (csDestroying in ComponentState) or (not HandleAllocated) then exit;
 
+  {$IFDEF VerboseResizeFlicker}
+  DebugLn('TWinControl.PaintHandler A ',Name,':',ClassName);
+  {$ENDIF}
   {$IFDEF VerboseDsgnPaintMsg}
   if csDesigning in ComponentState then
     DebugLn('TWinControl.PaintHandler A ',Name,':',ClassName);
@@ -4653,6 +4656,11 @@ var
   P: TPoint;
   {$ENDIF}
 begin
+  {$ifdef DEBUG_WINDOW_ORG}
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+    ':> [TWinControl.PaintControls] A');
+  {$endif}
+
   //DebugLn('[TWinControl.PaintControls] ',Name,':',ClassName,'  DC=',DbgS(DC,8));
   if (csDestroying in ComponentState)
   or ((DC=0) and (not HandleAllocated)) then
@@ -4667,6 +4675,10 @@ begin
   // they are repainted as part of the parent:
   if FControls <> nil then
   begin
+    {$ifdef DEBUG_WINDOW_ORG}
+    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+      ':> [TWinControl.PaintControls] B');
+    {$endif}
     I := 0;
     if First <> nil then
     begin
@@ -4677,6 +4689,11 @@ begin
     while I < Count do
     begin
       TempControl := TControl(FControls.Items[I]);
+      {$ifdef DEBUG_WINDOW_ORG}
+      DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+        Format(':> [TWinControl.PaintControls] C  DC=%d TempControl=%s Left=%d Top=%d Width=%d Height=%d',
+        [DC, TempControl.Name, TempControl.Left, TempControl.Top, TempControl.Width, TempControl.Height]));
+      {$endif}
       if not (TempControl is TWinControl) then begin
         //DebugLn('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',TempControl.Name,':',TempControl.ClassName,' ',TempControl.Left,',',TempControl.Top,',',TempControl.Width,',',TempControl.Height);
         with TempControl do

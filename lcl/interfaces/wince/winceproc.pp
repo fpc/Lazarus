@@ -1010,7 +1010,7 @@ begin
 
   {$ifdef DEBUG_WINDOW_ORG}
   DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-    Format('GetLCLClientBoundsOffset Name=%s OLeft=%d OTop=%d ORight=%d OBottom=%d ORight=%d OBottom=%d',
+    Format('GetLCLClientBoundsOffset Name=%s OLeft=%d OTop=%d ORight=%d OBottom=%d ARight=%d ABottom=%d',
      [TheWinControl.Name, ORect.Left, ORect.Top, ORect.Right, ORect.Bottom, ARect.Right, ARect.Bottom]));
   {$endif}
 

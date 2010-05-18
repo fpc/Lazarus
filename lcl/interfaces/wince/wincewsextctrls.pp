@@ -68,10 +68,14 @@ type
 
     class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
     class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
+    class function GetTabRect(const ANotebook: TCustomNotebook; const AIndex: Integer): TRect; override;
+    class function GetCapabilities: TNoteBookCapabilities;override;
+    class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
     class procedure SetImageList(const ANotebook: TCustomNotebook; const AImageList: TCustomImageList); override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
+    class procedure UpdateProperties(const ANotebook: TCustomNotebook); override;
   end;
 
   { TWinCEWSPage }
@@ -295,7 +299,7 @@ begin
   with Params do
   begin
     pClassName := @ClsName;
-    Flags := Flags and not WS_VISIBLE;
+//    Flags := Flags and not WS_VISIBLE;
     SubClassWndProc := nil;
   end;
   // create window
@@ -552,9 +556,9 @@ var
   X: Integer;
 begin
   Result := AIndex;
-  for X := 0 to AIndex-1 do begin
+
+  for X := 0 to AIndex - 1 do
     if ANotebook.Page[X].TabVisible = False then Dec(Result);
-  end;
 end;
 
 procedure SendSelChangeMessage(const ANotebook: TCustomNotebook; const AHandle: HWND;
@@ -581,6 +585,34 @@ begin
   hittestInfo.pt.X := AClientPos.X;
   hittestInfo.pt.Y := AClientPos.Y;
   Result := Windows.SendMessage(ANotebook.Handle, TCM_HITTEST, 0, LPARAM(@hittestInfo));
+end;
+
+class function TWinCEWSCustomNotebook.GetTabRect(
+  const ANotebook: TCustomNotebook; const AIndex: Integer): TRect;
+var
+  Orect: TRect;
+begin
+  GetLCLClientBoundsOffset(ANotebook, ORect);
+  if Windows.SendMessage(ANotebook.Handle, TCM_GETITEMRECT, WPARAM(AIndex), LPARAM(@Result)) <> 0
+  then begin
+    Result.Top := Result.Top - Orect.Top;
+    Result.Bottom := Result.Bottom - Orect.Top;
+    Result.Left := Result.Left - Orect.Left;
+    Result.Right := Result.Right - Orect.Left;
+  end
+  else
+    Result := inherited GetTabRect(ANotebook, AIndex);
+end;
+
+class function TWinCEWSCustomNotebook.GetCapabilities: TNoteBookCapabilities;
+begin
+  Result:=[];
+end;
+
+class function TWinCEWSCustomNotebook.GetDesignInteractive(
+  const AWinControl: TWinControl; AClientPos: TPoint): Boolean;
+begin
+  Result:=inherited GetDesignInteractive(AWinControl, AClientPos);
 end;
 
 class procedure TWinCEWSCustomNotebook.SetImageList(
@@ -635,6 +667,12 @@ begin
     AddAllNBPages(ANotebook)
   else
     RemoveAllNBPages(ANotebook);
+end;
+
+class procedure TWinCEWSCustomNotebook.UpdateProperties(
+  const ANotebook: TCustomNotebook);
+begin
+  inherited UpdateProperties(ANotebook);
 end;
 
 { TWinCEWSCustomPanel }

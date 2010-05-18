@@ -1014,8 +1014,11 @@ var
   s: AnsiString;
   w: WideString;
 begin
-  Assert(False, Format('trace:> [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+  {$IFDEF DEBUG_WINCE_LABELS}
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+    Format('trace:> [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+  {$ENDIF}
 
   // use temp buffer, if count is set, there might be no null terminator
   if count = -1 then
@@ -1438,7 +1441,8 @@ begin
     {$ifdef DEBUG_WINDOW_ORG}
     lControl := TControl(LCLIntf.GetLCLOwnerObject(HWnd));
     DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-      Format(':> [TWinCEWidgetSet.GetDC] Name=%s DC=%d', [lControl.Name, Result]));
+      Format(':> [TWinCEWidgetSet.GetDC] Name=%s DC=%s',
+      [lControl.Name, IntToHex(Result, 8)]));
     {$endif}
 
     MoveWindowOrgEx(Result, ORect.Left, ORect.Top);
@@ -2497,6 +2501,11 @@ end;
 function TWinCEWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 begin
   Result := Boolean(Windows.RectVisible(DC, LPRECT(@ARect)^));
+  {$ifdef DEBUG_WINDOW_ORG}
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+    Format(':> [TWinCEWidgetSet.RectVisible] Result=%d',
+    [Integer(Result)]));
+  {$endif}
 end;
 
 {function TWinCEWidgetSet.RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer

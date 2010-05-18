@@ -326,6 +326,12 @@ Var
       if lWinControl = nil then exit;
     end;
 
+    {$IFDEF DEBUG_WINCE_LABELS}
+    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+      Format('[SendPaintMessage]: Control:%s',
+      [lWinControl.Name]));
+    {$ENDIF}
+
     // create a paint message
     isNativeControl := GetIsNativeControl(Window);
     ParentPaintWindow := 0;
@@ -1781,6 +1787,9 @@ begin
     end;
     WM_PAINT:
     begin
+      {$IFDEF DEBUG_WINCE_LABELS}
+      DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log', '[WM_PAINT]');
+      {$ENDIF}
       SendPaintMessage(HDC(WParam));
       // SendPaintMessage sets winprocess to false
     end;
