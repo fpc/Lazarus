@@ -317,6 +317,14 @@ begin
   FillChar(WidgetInfo^.FormWindowState, SizeOf(WidgetInfo^.FormWindowState), #0);
   WidgetInfo^.FormWindowState.new_window_state := GDK_WINDOW_STATE_WITHDRAWN;
 
+  // FormRootOrigin is used only to save and restore LCL's Left & Top
+  // in case when form is hidden and then shown again !
+  with WidgetInfo^.FormSavedPos do
+  begin
+    X := -10000;
+    Y := -10000;
+  end;
+
   Box := CreateFormContents(ACustomForm, P, WidgetInfo);
   gtk_container_add(PGtkContainer(P), Box);
 

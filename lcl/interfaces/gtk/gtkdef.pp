@@ -481,6 +481,8 @@ type
     UserData: Pointer;
     FormBorderStyle: Integer;         // used only by forms
     FormWindowState: TGdkEventWindowState; // used only by forms to stop infinite loops eg. issue #16505
+    FormSavedPos: TPoint;            // used only by forms - saved LCL Left & Top if form hidden eg. issue #15417
+                                     // so later when we call show, it's restored to it's original position
   end;
   
   //TODO: remove

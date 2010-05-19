@@ -1976,6 +1976,7 @@ function gtksize_allocateCB(widget: PGtkWidget; size: pGtkAllocation;
 var
   w, h: Gint;
 {$ENDIF}
+
 begin
   Result := CallBackDefaultReturn;
 
@@ -1992,6 +1993,18 @@ begin
     RaiseGDBException('');
     exit;
   end;
+  {$IFDEF Gtk2}
+  // do not send msg to LCL if we are shown after hide, setVisible will
+  // do that.
+  if TObject(Data) is TForm then
+  begin
+    with GetWidgetInfo(Widget)^.FormSavedPos do
+    begin
+      if (X <> -10000) and (Y <> -10000) then
+        exit;
+    end;
+  end;
+  {$ENDIF}
 
   {$IFDEF VerboseSizeMsg}
   w:=0; h:=0;
@@ -2037,7 +2050,8 @@ begin
   Result := CallBackDefaultReturn;
 
   if (Widget=nil) or (Size=nil) then ;
-  if (TObject(Data) is TWinControl) then begin
+  if (TObject(Data) is TWinControl) then
+  begin
     {$IFDEF VerboseSizeMsg}
     DebugLn('gtksize_allocate_client: ',
       TControl(Data).Name,':',TControl(Data).ClassName,
