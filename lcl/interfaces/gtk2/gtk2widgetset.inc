@@ -623,21 +623,22 @@ procedure TGtk2WidgetSet.AppMinimize;
 var
   i: Integer;
   AForm: TCustomForm;
+  WInfo: PWidgetInfo;
 begin
   if Screen=nil then exit;
   for i:= 0 to Screen.CustomFormZOrderCount-1 do
   begin
     AForm := Screen.CustomFormsZOrdered[i];
-    if (AForm.Parent=nil) and AForm.HandleAllocated
-      and
-        (
-        AForm.Visible or ((csDesigning in AForm.ComponentState) and
-          GTK_WIDGET_VISIBLE(PGtkWidget(AForm.Handle)))
-        )
-      and
+    if (AForm.Parent=nil) and AForm.HandleAllocated and
+      GTK_WIDGET_VISIBLE(PGtkWidget(AForm.Handle)) and
       not (AForm.FormStyle in [fsMDIChild, fsSplash]) and
       not (AForm.BorderStyle in [bsNone]) then
-        gtk_window_iconify(PGtkWindow(AForm.Handle));
+      begin
+        WInfo := GetWidgetInfo(PGtkWidget(AForm.Handle));
+        // prevent recursion in gtk2wsforms GDK_WINDOW_STATE event
+        if WInfo^.FormWindowState.new_window_state <> GDK_WINDOW_STATE_ICONIFIED then
+          gtk_window_iconify(PGtkWindow(AForm.Handle));
+      end;
   end;
 end;
 
@@ -650,13 +651,8 @@ begin
   for i:= Screen.CustomFormZOrderCount-1 downto 0 do
   begin
     AForm:=Screen.CustomFormsZOrdered[i];
-    if (AForm.Parent=nil) and AForm.HandleAllocated
-      and
-        (
-        AForm.Visible or ((csDesigning in AForm.ComponentState) and
-          GTK_WIDGET_VISIBLE(PGtkWidget(AForm.Handle)))
-        )
-      and
+    if (AForm.Parent=nil) and AForm.HandleAllocated and
+      GTK_WIDGET_VISIBLE(PGtkWidget(AForm.Handle)) and
       not (AForm.FormStyle in [fsMDIChild, fsSplash]) and
       not (AForm.BorderStyle in [bsNone]) then
         gtk_window_deiconify(PGtkWindow(AForm.Handle));

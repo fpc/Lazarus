@@ -479,7 +479,8 @@ type
     PaintDepth: integer;              // increased/decreased by Begin/EndPaint
     DataOwner: Boolean;               // Set if the UserData should be freed when the info is freed
     UserData: Pointer;
-    FormBorderStyle: Integer;         // used only for forms
+    FormBorderStyle: Integer;         // used only by forms
+    FormWindowState: TGdkEventWindowState; // used only by forms to stop infinite loops eg. issue #16505
   end;
   
   //TODO: remove

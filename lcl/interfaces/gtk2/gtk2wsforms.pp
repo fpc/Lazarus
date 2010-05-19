@@ -117,10 +117,26 @@ implementation
 
 { TGtk2WSCustomForm }
 
+function gtk2WSDelayedWindowStateChange(Data: Pointer): gboolean; cdecl;
+var
+  AnForm: TCustomForm absolute data;
+  AEvent: TGdkEventWindowState;
+begin
+  Result := False;
+  AEvent := GetWidgetInfo(PGtkWidget(AnForm.Handle))^.FormWindowState;
+  GTKWindowStateEventCB(PGtkWidget(AnForm.Handle), @AEvent, Data);
+  // remove idle handler, because in fast switching hide/show there could
+  // be dozen of added idle handlers, only one should be here.
+  // also reset our internal flag on send_event.
+  GetWidgetInfo(PGtkWidget(AnForm.Handle))^.FormWindowState.send_event := 0;
+  g_idle_remove_by_data(Data);
+end;
+
 function Gtk2FormEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
 var
   ACtl: TWinControl;
   Mess : TLMessage;
+  WInfo: PWidgetInfo;
   {$IFDEF HASX}
   XDisplay: PDisplay;
   Window: TWindow;
@@ -130,6 +146,35 @@ var
 begin
   Result := CallBackDefaultReturn;
   case event^._type of
+    GDK_WINDOW_STATE:
+      begin
+        if (GDK_WINDOW_STATE_WITHDRAWN and event^.window_state.changed_mask) = 1 then
+          exit;
+        WInfo := GetWidgetInfo(Widget);
+        if (WInfo <> nil) then
+        begin
+          if (WInfo^.FormWindowState.new_window_state <> event^.window_state.new_window_state)
+           and (WInfo^.FormWindowState.send_event <> 2) then
+          begin
+            WInfo^.FormWindowState := Event^.window_state;
+            // needed to lock recursions, normally send_event can be 0 or 1
+            // we add 2 to know if recursion occured.
+            WInfo^.FormWindowState.send_event := 2;
+            g_idle_add(@gtk2WSDelayedWindowStateChange, Data);
+          end else
+          begin
+            // our send_event flag is 2, mean recursion occured
+            // so we have to normalize things first.
+            while WInfo^.FormWindowState.send_event = 2 do
+            begin
+             Application.Idle(True);
+             Application.ProcessMessages;
+            end;
+            WInfo^.FormWindowState.send_event := 0;
+            Result := GTKWindowStateEventCB(Widget, @event^.window_state, Data);
+          end;
+        end;
+      end;
     GDK_ENTER_NOTIFY:
       begin
         FillChar(Mess, SizeOf(Mess), #0);
@@ -183,7 +228,7 @@ begin
     begin
       SetCallback(LM_CONFIGUREEVENT, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
       SetCallback(LM_CLOSEQUERY, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
-      SetCallBack(LM_Activate, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+      SetCallBack(LM_ACTIVATE, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
       if (gtk_major_version = 2) and (gtk_minor_version <= 8) then
       begin
         SetCallback(LM_HSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
@@ -193,9 +238,6 @@ begin
 
   g_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget), 'event',
     gtk_signal_func(@Gtk2FormEvent), AWidgetInfo^.LCLObject);
-
-  g_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget), gtkevent_window_state_event,
-    gtk_signal_func(@GTKWindowStateEventCB), AWidgetInfo^.LCLObject);
 end;
 
 class function TGtk2WSCustomForm.CreateHandle(const AWinControl: TWinControl;
@@ -271,6 +313,9 @@ begin
 
   WidgetInfo := CreateWidgetInfo(P, AWinControl, AParams);
   WidgetInfo^.FormBorderStyle := Ord(ABorderStyle);
+
+  FillChar(WidgetInfo^.FormWindowState, SizeOf(WidgetInfo^.FormWindowState), #0);
+  WidgetInfo^.FormWindowState.new_window_state := GDK_WINDOW_STATE_WITHDRAWN;
 
   Box := CreateFormContents(ACustomForm, P, WidgetInfo);
   gtk_container_add(PGtkContainer(P), Box);
