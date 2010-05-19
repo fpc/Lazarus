@@ -230,13 +230,8 @@ begin
     for i := 0 to Screen.CustomFormZOrderCount-1 do
     begin
       AForm := Screen.CustomFormsZOrdered[i];
-      if (AForm.Parent=nil) and AForm.HandleAllocated
-        and
-        (
-        AForm.Visible or ((csDesigning in AForm.ComponentState) and
-          TQtWidget(AForm.Handle).getVisible)
-        )
-        and
+      if (AForm.Parent=nil) and AForm.HandleAllocated and
+        TQtWidget(AForm.Handle).getVisible and
         not (AForm.FormStyle in [fsMDIChild, fsSplash]) and
         not (AForm.BorderStyle in [bsNone]) then
       begin
@@ -265,13 +260,8 @@ begin
     for i := Screen.CustomFormZOrderCount-1 downto 0 do
     begin
       AForm := Screen.CustomFormsZOrdered[i];
-      if (AForm.Parent=nil) and AForm.HandleAllocated
-        and
-        (
-        AForm.Visible or ((csDesigning in AForm.ComponentState) and
-          TQtWidget(AForm.Handle).getVisible)
-        )
-        and
+      if (AForm.Parent=nil) and AForm.HandleAllocated and
+        TQtWidget(AForm.Handle).getVisible and
         not (AForm.FormStyle in [fsMDIChild, fsSplash]) and
         not (AForm.BorderStyle in [bsNone]) then
       begin
