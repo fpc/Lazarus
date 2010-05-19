@@ -1405,8 +1405,7 @@ end;
 
 function TFileDescPascalUnitWithResource.GetInterfaceUsesSection: string;
 begin
-  Result:=inherited GetInterfaceUsesSection;
-  Result:=Result+', FileUtil';
+  Result := inherited GetInterfaceUsesSection + ', FileUtil';
   if GetResourceType = rtLRS then
     Result := Result +', LResources';
 end;

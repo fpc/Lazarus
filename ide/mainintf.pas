@@ -423,7 +423,7 @@ end;
 
 function TFileDescPascalUnitWithForm.GetInterfaceUsesSection: string;
 begin
-  Result:='Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs';
+  Result := inherited GetInterfaceUsesSection + ', Forms, Controls, Graphics, Dialogs';
 end;
 
 function TFileDescPascalUnitWithForm.GetLocalizedName: string;
