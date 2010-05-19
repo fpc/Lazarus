@@ -11763,6 +11763,10 @@ msgstr "Pašalinti iš projekto"
 msgid "Remove from search path"
 msgstr ""
 
+#: lazarusidestrconsts.lisremovelocalvariable
+msgid "Remove local variable %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr "Pašalinti pažymėtus modulius"
@@ -11770,6 +11774,10 @@ msgstr "Pašalinti pažymėtus modulius"
 #: lazarusidestrconsts.lisremovethem
 msgid "Remove them"
 msgstr "Pašalinti elementą"
+
+#: lazarusidestrconsts.lisremoveunitfromusessection
+msgid "Remove unit from uses section"
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"

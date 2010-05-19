@@ -11695,6 +11695,10 @@ msgstr "Odstranit z projektu"
 msgid "Remove from search path"
 msgstr "Odstranit z vyhledávací cesty"
 
+#: lazarusidestrconsts.lisremovelocalvariable
+msgid "Remove local variable %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr "Odstranit vybrané jednotky"
@@ -11702,6 +11706,10 @@ msgstr "Odstranit vybrané jednotky"
 #: lazarusidestrconsts.lisremovethem
 msgid "Remove them"
 msgstr "Odstranit je"
+
+#: lazarusidestrconsts.lisremoveunitfromusessection
+msgid "Remove unit from uses section"
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -15157,10 +15165,6 @@ msgstr "Přejmenovat identifikátor"
 msgid "&Run to Cursor"
 msgstr "&Spustit po kurzor"
 
-#: lazarusidestrconsts.uemsetbookmark
-msgid "&Set Bookmark"
-msgstr "&Nastavit značku"
-
 #~ msgid "Auto create form when opening unit"
 #~ msgstr "Automaticky vytvořit formulář při otevření jednotky"
 #~ msgid "Use Default"
@@ -15258,6 +15262,10 @@ msgstr "&Nastavit značku"
 #~ msgstr "Přesunout editor vpravo"
 #~ msgid "Move Editor Rightmost"
 #~ msgstr "Přesunout editor nejvíce vpravo"
+#: lazarusidestrconsts.uemsetbookmark
+msgid "&Set Bookmark"
+msgstr "&Nastavit značku"
+
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
 msgid "Set a free Bookmark"

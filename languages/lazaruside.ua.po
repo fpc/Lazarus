@@ -11751,6 +11751,10 @@ msgstr "Видалити з проекту"
 msgid "Remove from search path"
 msgstr ""
 
+#: lazarusidestrconsts.lisremovelocalvariable
+msgid "Remove local variable %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr ""
@@ -11758,6 +11762,10 @@ msgstr ""
 #: lazarusidestrconsts.lisremovethem
 msgid "Remove them"
 msgstr "Видалити їх"
+
+#: lazarusidestrconsts.lisremoveunitfromusessection
+msgid "Remove unit from uses section"
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"

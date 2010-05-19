@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-18 03:33+0300\n"
+"PO-Revision-Date: 2010-05-19 23:32+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -11754,6 +11754,10 @@ msgstr "Удалить из проекта"
 msgid "Remove from search path"
 msgstr "Удалить из путей поиска"
 
+#: lazarusidestrconsts.lisremovelocalvariable
+msgid "Remove local variable %s"
+msgstr "Удалить локальную переменную %s"
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr "Удалить выбранные модули"
@@ -11761,6 +11765,10 @@ msgstr "Удалить выбранные модули"
 #: lazarusidestrconsts.lisremovethem
 msgid "Remove them"
 msgstr "Удалить их"
+
+#: lazarusidestrconsts.lisremoveunitfromusessection
+msgid "Remove unit from uses section"
+msgstr "Удалить модуль из выражения Uses"
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"

@@ -11767,6 +11767,10 @@ msgstr "プロジェクトから削除"
 msgid "Remove from search path"
 msgstr "サーチパスから削除"
 
+#: lazarusidestrconsts.lisremovelocalvariable
+msgid "Remove local variable %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr "選択されたユニットを削除"
@@ -11774,6 +11778,10 @@ msgstr "選択されたユニットを削除"
 #: lazarusidestrconsts.lisremovethem
 msgid "Remove them"
 msgstr "それらを削除"
+
+#: lazarusidestrconsts.lisremoveunitfromusessection
+msgid "Remove unit from uses section"
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"

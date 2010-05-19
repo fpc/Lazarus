@@ -931,11 +931,11 @@ msgstr "הוסף ..."
 msgid "Back"
 msgstr "אחורה"
 
+# msgstr "בלוקים שלמים"
 #: lazarusidestrconsts.dlgedbold
 msgid "Bold"
 msgstr "מודגש"
 
-# msgstr "בלוקים שלמים"
 #: lazarusidestrconsts.dlgedbsubdir
 msgid "Sub directory"
 msgstr "תת תיקייה"
@@ -11732,6 +11732,10 @@ msgstr ""
 msgid "Remove from search path"
 msgstr ""
 
+#: lazarusidestrconsts.lisremovelocalvariable
+msgid "Remove local variable %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr ""
@@ -11739,6 +11743,10 @@ msgstr ""
 #: lazarusidestrconsts.lisremovethem
 msgid "Remove them"
 msgstr "הסר אותם"
+
+#: lazarusidestrconsts.lisremoveunitfromusessection
+msgid "Remove unit from uses section"
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"

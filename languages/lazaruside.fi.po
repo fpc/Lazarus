@@ -11735,6 +11735,10 @@ msgstr "Valitse projektista poistettava käännösyksikkö"
 msgid "Remove from search path"
 msgstr ""
 
+#: lazarusidestrconsts.lisremovelocalvariable
+msgid "Remove local variable %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr "Poista valitut käännösyksiköt"
@@ -11742,6 +11746,10 @@ msgstr "Poista valitut käännösyksiköt"
 #: lazarusidestrconsts.lisremovethem
 msgid "Remove them"
 msgstr "Poista ne"
+
+#: lazarusidestrconsts.lisremoveunitfromusessection
+msgid "Remove unit from uses section"
+msgstr ""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
