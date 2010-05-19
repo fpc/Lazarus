@@ -53,13 +53,14 @@ LCL TODO:
 
 {$DEFINE ctlType} //save <name>:<classname>=<caption>
 {$DEFINE RootDock} //allow docking into the root zone?
+{.$DEFINE freeImages} //free dockheader images on finalization? (can cause exception)
 //{$DEFINE newSplitter} //exclude splitter from remaining zone
 {.$DEFINE handle_existing} //dock controls existing in the dock site?
 {.$DEFINE splitter_color} //use colored splitter, for debugging?
 {.$DEFINE visibility} //handling of invisible clients deserves dock manager notification!
 {.$DEFINE restore} //restore button?
   //looks useless: how to restore a hidden zone?
-{.$DEFINE singleTab} //allow to create notebooks with 1 tab (in the topzone)?
+{$DEFINE singleTab} //allow to create notebooks with 1 tab (in the topzone)?
   //doesn't look nice, with both a header AND a button list
 
 //depending on widgetset or patched LCL
@@ -726,11 +727,12 @@ begin
       {$ENDIF}
         NoteBook.Show;
       end; //else use existing control
+      DebugLn('DM:add to existing notebook ', DbgSName(NoteBook));
       NoteBookAdd(NoteBook, Control);
       FDockSite.Invalidate; //update notebook caption
       exit;
   {$IFDEF singleTab}
-    end else if SingleTab and not (DropCtl is TEasyBook)  then begin
+    end else if SingleTab and not (DropCtl is TEasyDockBook)  then begin
     //empty root zone, create new notebook
       NoteBook := NoteBookCreate;
       NoteBook.ManualDock(FDockSite, nil, alClient);

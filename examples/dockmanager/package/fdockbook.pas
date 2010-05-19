@@ -98,6 +98,7 @@ type
     Tabs: TTabs;
     CurTab: TTabButton;
   protected
+    procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
     function  GetFloatingDockSiteClass: TWinControlClass; override;
     function  GetDefaultDockCaption: string; override;
     function  GetControlTab(AControl: TControl): TTabButton;
@@ -109,6 +110,7 @@ type
   {$IFDEF closeFix}
     destructor Destroy; override;
   {$ENDIF}
+    procedure Clear; virtual;
     procedure LoadFromStream(strm: TStream); override;
     procedure SaveToStream(strm: TStream); override;
   end;
@@ -160,12 +162,24 @@ end;
 
 {$IFDEF closeFix}
 destructor TEasyDockBook.Destroy;
+begin
+(* Close docked forms, make all docked controls visible - or hidden?
+*)
+  Clear; //allow for override
+  inherited Destroy;
+end;
+{$ELSE}
+  //pure option
+{$ENDIF}
+
+procedure TEasyDockBook.Clear;
 var
   i: integer;
   ctl: TControl;
   frm: TCustomForm absolute ctl;
 begin
-(* Close docked forms, make all docked controls visible - or hidden?
+(* Remove all docked clients.
+  By default the clients are made visible (debug feature)
 *)
   for i := DockClientCount - 1 downto 0 do begin
     ctl := DockClients[i];
@@ -174,19 +188,15 @@ begin
       ctl.Visible := True; //make hidden notebook pages visible
       if ctl is TCustomForm then
         if frm.CloseQuery then
-          frm.Close
-        else
-          ctl.Visible := True; //make hidden notebook pages visible
+          frm.Close;
+        //else ctl.Visible := True; //make hidden notebook pages visible
     {$ELSE}
-      ctl.Visible := False; //hide notebook page
+      ctl.Visible := True; //show notebook page
     {$ENDIF}
     end;
   end;
-  inherited Destroy;
 end;
-{$ELSE}
-  //pure option
-{$ENDIF}
+
 
 procedure TEasyDockBook.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
@@ -212,12 +222,19 @@ begin
   Visible := True; //immediately?
 end;
 
+procedure TEasyDockBook.DoAddDockClient(Client: TControl; const ARect: TRect);
+begin
+  if False then inherited DoAddDockClient(Client, ARect);
+  Client.Parent := pnlDock;
+end;
+
 procedure TEasyDockBook.FormDockDrop(Sender: TObject; Source: TDragDockObject;
   X, Y: Integer);
 var
   btn: TTabButton;
 begin
-  Source.Control.Parent := pnlDock; //overwrite DoAddDockClient behaviour
+  { TODO : set Parent in DoAddDockClient }
+  //Source.Control.Parent := pnlDock; //overwrite DoAddDockClient behaviour???
 
   btn := TTabButton.Create(Tabs);
   btn.Control := Source.Control;

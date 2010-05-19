@@ -135,6 +135,7 @@ begin
   //Client.FloatingDockSiteClass := TFloatingSite;
   Site := TFloatingSite.Create(Application);
   Client.ManualDock(Site, nil, alClient);
+  Site.Show;
   Result := Client;
 end;
 

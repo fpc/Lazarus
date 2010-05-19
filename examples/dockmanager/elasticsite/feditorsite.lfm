@@ -1,11 +1,9 @@
-inherited EditorSite: TEditorSite
+object EditorSite: TEditorSite
   Left = 354
   Height = 300
   Top = 156
   Width = 400
   Caption = 'EditorSite'
-  ClientHeight = 281
-  ClientWidth = 400
   Menu = MainMenu1
   OnActivate = FormActivate
   OnCreate = FormCreate
@@ -13,7 +11,8 @@ inherited EditorSite: TEditorSite
   OnHide = FormHide
   OnResize = FormResize
   OnWindowStateChange = FormWindowStateChange
-  object MainMenu1: TMainMenu[7]
+  LCLVersion = '0.9.29'
+  object MainMenu1: TMainMenu
     left = 240
     top = 48
     object mnFile: TMenuItem
@@ -96,7 +95,7 @@ inherited EditorSite: TEditorSite
       end
     end
   end
-  object OpenDialog1: TOpenDialog[8]
+  object OpenDialog1: TOpenDialog
     Filter = '*.pas|*.pas|All Files|*.*'
     left = 309
     top = 48
