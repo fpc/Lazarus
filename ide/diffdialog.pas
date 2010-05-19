@@ -280,7 +280,7 @@ begin
   dlgOpen.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
                  +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
                  +'|'+lisLazarusProject+' (*.lpi)|*.lpi'
-                 +'|'+lisLazarusForm+' (*.lfm)|*.lfm'
+                 +'|'+lisLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm'
                  +'|'+lisLazarusPackage+' (*.lpk)|*.lpk'
                  +'|'+lisLazarusProjectSource+' (*.lpr)|*.lpr';
   dlgSave.Title:=lisSaveFileAs;

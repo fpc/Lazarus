@@ -329,7 +329,7 @@ begin
     OpenDialog.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
                  +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
                  +'|'+lisLazarusInclude+' (*.inc)|*.inc'
-                 +'|'+lisLazarusForm+' (*.lfm)|*.lfm';
+                 +'|'+lisLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm';
     if OpenDialog.Execute then begin
       for i:=0 to OpenDialog.Files.Count-1 do begin
         AFilename:=CleanAndExpandFilename(OpenDialog.Files[i]);

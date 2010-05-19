@@ -2692,10 +2692,11 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
-    OpenDialog.Filter := lisLazarusFile + ' (*.lpi;*.lpr;*.lpk;*.pas;*.pp;*.inc;*.lfm)|*.lpi;*.lpr;*.lpk;*.pas;*.pp;*.inc;*.lfm'
+    OpenDialog.Filter := lisLazarusFile + ' (*.lpi;*.lpr;*.lpk;*.pas;*.pp;*.inc;*.lfm;*.dfm)|' +
+                                            '*.lpi;*.lpr;*.lpk;*.pas;*.pp;*.inc;*.lfm;*.dfm'
                  + '|' + lisLazarusUnit + ' (*.pas;*.pp)|*.pas;*.pp'
                  + '|' + lisLazarusProject + ' (*.lpi)|*.lpi'
-                 + '|' + lisLazarusForm + ' (*.lfm)|*.lfm'
+                 + '|' + lisLazarusForm + ' (*.lfm;*.dfm)|*.lfm;*.dfm'
                  + '|' + lisLazarusPackage + ' (*.lpk)|*.lpk'
                  + '|' + lisLazarusProjectSource + ' (*.lpr)|*.lpr'
                  + '|' + dlgAllFiles + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
@@ -4777,6 +4778,8 @@ begin
     // then load the lfm file (without parsing)
     if (not AnUnitInfo.IsVirtual) and (AnUnitInfo.Component<>nil) then begin
       LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
+      if not FileExistsUTF8(LFMFilename) then
+        LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.dfm');
       if (FileExistsUTF8(LFMFilename)) then begin
         Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],ShowAbort);
         if not (Result in [mrOk,mrIgnore]) then exit;
@@ -4809,6 +4812,8 @@ begin
   end;
 
   LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
+  if not FileExistsInIDE(LFMFilename,[]) then
+    LFMFilename:=ChangeFileExt(UnitFilename,'.dfm');
   if not FileExistsInIDE(LFMFilename,[]) then begin
     DebugLn(['TMainIDE.DoOpenComponent file not found ',LFMFilename]);
     exit(mrCancel);
@@ -5454,6 +5459,8 @@ begin
     OldFilename:=AnUnitInfo.Filename;
     OldFilePath:=ExtractFilePath(OldFilename);
     OldLFMFilename:=ChangeFileExt(OldFilename,'.lfm');
+    if not FileExistsUTF8(OldLFMFilename) then
+      OldLFMFilename:=ChangeFileExt(OldFilename,'.dfm');
     if NewUnitName='' then
       NewUnitName:=AnUnitInfo.Unit_Name;
     debugln(['TMainIDE.DoRenameUnit ',AnUnitInfo.Filename,' NewUnitName=',NewUnitName,' OldUnitName=',AnUnitInfo.Unit_Name,' ResourceCode=',ResourceCode<>nil,' NewFilename="',NewFilename,'"']);
@@ -5906,6 +5913,8 @@ begin
 
   // Note: think about virtual and normal .lfm files.
   LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
+  if not FileExistsInIDE(LFMFilename,[pfsfOnlyEditorFiles]) then
+    LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.dfm');
   LFMBuf:=nil;
   if not FileExistsInIDE(LFMFilename,[pfsfOnlyEditorFiles]) then begin
     // there is no LFM file -> ok
@@ -6309,6 +6318,8 @@ var
     for i:=0 to UnitFilenames.Count-1 do begin
       UnitFilename:=UnitFilenames[i];
       LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
+      if not FileExistsCached(LFMFilename) then
+        LFMFilename:=ChangeFileExt(UnitFilename,'.dfm');
       if FileExistsCached(LFMFilename) then begin
         // load the lfm file
         ModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],true);
@@ -6372,6 +6383,8 @@ var
       exit(mrCancel);
     end;
     LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
+    if not FileExistsUTF8(LFMFilename) then
+      LFMFilename:=ChangeFileExt(UnitFilename,'.dfm');
     ModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],false);
     if ModalResult<>mrOk then begin
       debugln('TMainIDE.DoFixupComponentReferences Failed loading ',LFMFilename);
@@ -6709,6 +6722,8 @@ var
 
     if not TryWithoutLFM then begin
       LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
+      if not FileExistsUTF8(LFMFilename) then
+        LFMFilename:=ChangeFileExt(UnitFilename,'.dfm');
       if FileExistsUTF8(LFMFilename) then begin
         // load the lfm file
         TheModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],true);
@@ -10271,11 +10286,9 @@ begin
     and (not AnUnitInfo.IsVirtual) and FilenameIsPascalUnit(AnUnitInfo.Filename)
     then begin
       LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
-      if FileExistsUTF8(LFMFilename) then begin
-        AnUnitInfo.HasResources:=true;
-      end else begin
-        AnUnitInfo.HasResources:=false;
-      end;
+      if not FileExistsUTF8(LFMFilename) then
+        LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.dfm');
+      AnUnitInfo.HasResources:=FileExistsUTF8(LFMFilename);
     end;
     AnUnitInfo:=AnUnitInfo.NextPartOfProject;
   end;
@@ -11532,8 +11545,10 @@ var
 begin
   // check, if a .lfm file is opened in the source editor
   GetCurrentUnit(LFMSrcEdit,LFMUnitInfo);
-  if (LFMUnitInfo=nil)
-  or (CompareFileExt(LFMUnitInfo.Filename,'.lfm',false)<>0) then begin
+  if (LFMUnitInfo=nil) or
+    ((CompareFileExt(LFMUnitInfo.Filename,'.lfm',false)<>0) and
+     (CompareFileExt(LFMUnitInfo.Filename,'.dfm',false)<>0)) then
+  begin
     if not Quiet then
     begin
       MessageDlg(lisNoLFMFile,
@@ -15462,6 +15477,7 @@ var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
   EditorInfo: TUnitEditorInfo;
+  LFMFilename: String;
 begin
   ADesigner:=TDesigner(Sender);
   GetDesignerUnit(ADesigner,ASrcEdit,AnUnitInfo);
@@ -15471,8 +15487,10 @@ begin
     EditorInfo := AnUnitInfo.OpenEditorInfo[0]
   else
     EditorInfo := AnUnitInfo.EditorInfo[0];
-  DoOpenEditorFile(ChangeFileExt(AnUnitInfo.Filename, '.lfm'),
-                   EditorInfo.PageIndex+1, EditorInfo.WindowIndex, []);
+  LFMFilename:=ChangeFileExt(AnUnitInfo.Filename, '.lfm');
+  if not FileExistsUTF8(LFMFilename) then
+    LFMFilename:=ChangeFileExt(AnUnitInfo.Filename, '.dfm');
+  DoOpenEditorFile(LFMFilename, EditorInfo.PageIndex+1, EditorInfo.WindowIndex, []);
 end;
 
 procedure TMainIDE.OnDesignerSaveAsXML(Sender: TObject);

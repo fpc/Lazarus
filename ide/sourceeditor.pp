@@ -601,6 +601,7 @@ type
     procedure OnPopupMenuOpenPPFile(Sender: TObject);
     procedure OnPopupMenuOpenPFile(Sender: TObject);
     procedure OnPopupMenuOpenLFMFile(Sender: TObject);
+    procedure OnPopupMenuOpenDFMFile(Sender: TObject);
     procedure OnPopupMenuOpenLRSFile(Sender: TObject);
     procedure OnPopupMenuOpenSFile(Sender: TObject);
     procedure OnPopupMenuOpenFile(Sender: TObject);
@@ -5060,6 +5061,16 @@ end;
 
 procedure TSourceNotebook.SrcPopUpMenuPopup(Sender: TObject);
 var
+  CurFilename, FileName: String;
+
+  procedure MaybeAddPopup(const ASuffix: String; const ANewOnClick: TNotifyEvent);
+  begin
+    if FileExistsUTF8(ChangeFileExt(CurFilename,ASuffix)) then
+      AddContextPopupMenuItem(Format(lisOpenLfm,
+          [ChangeFileExt(FileName,ASuffix)]),true,ANewOnClick);
+  end;
+
+var
   ASrcEdit: TSourceEditor;
   BookMarkID, BookMarkX, BookMarkY: integer;
   MarkSrcEdit: TSourceEditor;
@@ -5074,7 +5085,6 @@ var
   EditorPopupPoint, EditorCaret: TPoint;
   SelAvail: Boolean;
   SelAvailAndWritable: Boolean;
-  CurFilename: String;
   CurWordAtCursor: String;
   AtIdentifier: Boolean;
 begin
@@ -5183,40 +5193,23 @@ begin
 
     // add context specific menu items
     CurFilename:=ASrcEdit.FileName;
+    FileName:=ExtractFileName(CurFilename);
     if (FilenameIsAbsolute(CurFilename)) then begin
       if FilenameIsPascalUnit(CurFilename) then begin
-        if FileExistsUTF8(ChangeFileExt(CurFilename,'.lfm')) then
-          AddContextPopupMenuItem(Format(lisOpenLfm,
-            [ChangeFileExt(ExtractFileName(CurFilename),'.lfm')]),
-            true,@OnPopupMenuOpenLFMFile);
-        if FileExistsUTF8(ChangeFileExt(CurFilename,'.lrs')) then
-          AddContextPopupMenuItem(Format(lisOpenLfm,
-            [ChangeFileExt(ExtractFileName(CurFilename),'.lrs')]),
-            true,@OnPopupMenuOpenLRSFile);
-        if FileExistsUTF8(ChangeFileExt(CurFilename,'.s')) then
-          AddContextPopupMenuItem(Format(lisOpenLfm,
-            [ChangeFileExt(ExtractFileName(CurFilename),'.s')]),
-            true,@OnPopupMenuOpenSFile);
+        MaybeAddPopup('.lfm', @OnPopupMenuOpenLFMFile);
+        MaybeAddPopup('.dfm', @OnPopupMenuOpenDFMFile);
+        MaybeAddPopup('.lrs', @OnPopupMenuOpenLRSFile);
+        MaybeAddPopup('.s', @OnPopupMenuOpenSFile);
       end;
-      if (CompareFileExt(CurFilename,'.lfm',true)=0) then begin
-        if FileExistsUTF8(ChangeFileExt(CurFilename,'.pas')) then
-          AddContextPopupMenuItem(Format(lisOpenLfm,
-            [ChangeFileExt(ExtractFileName(CurFilename),'.pas')]),
-            true,@OnPopupMenuOpenPasFile);
-        if FileExistsUTF8(ChangeFileExt(CurFilename,'.pp')) then
-          AddContextPopupMenuItem(Format(lisOpenLfm,
-            [ChangeFileExt(ExtractFileName(CurFilename),'.pp')]),
-            true,@OnPopupMenuOpenPPFile);
-        if FileExistsUTF8(ChangeFileExt(CurFilename,'.p')) then
-          AddContextPopupMenuItem(Format(lisOpenLfm,
-            [ChangeFileExt(ExtractFileName(CurFilename),'.p')]),
-            true,@OnPopupMenuOpenPFile);
+      if (CompareFileExt(CurFilename,'.lfm',true)=0)
+      or (CompareFileExt(CurFilename,'.dfm',true)=0) then begin
+        MaybeAddPopup('.pas', @OnPopupMenuOpenPasFile);
+        MaybeAddPopup('.pp', @OnPopupMenuOpenPPFile);
+        MaybeAddPopup('.p', @OnPopupMenuOpenPFile);
       end;
       if (CompareFileExt(CurFilename,'.lpi',true)=0)
-      or (CompareFileExt(CurFilename,'.lpk',true)=0) then begin
-        AddContextPopupMenuItem(Format(lisOpenLfm,
-          [ExtractFileName(CurFilename)]),true,@OnPopupMenuOpenFile);
-      end;
+      or (CompareFileExt(CurFilename,'.lpk',true)=0) then
+        AddContextPopupMenuItem(Format(lisOpenLfm,[FileName]),true,@OnPopupMenuOpenFile);
     end;
 
     {$IFnDEF SingleSrcWindow}
@@ -6238,6 +6231,13 @@ end;
 procedure TSourceNotebook.OnPopupMenuOpenLFMFile(Sender: TObject);
 begin
   MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.lfm'),
+    PageIndex+1, Manager.IndexOfSourceWindow(self),
+    [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
+end;
+
+procedure TSourceNotebook.OnPopupMenuOpenDFMFile(Sender: TObject);
+begin
+  MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.dfm'),
     PageIndex+1, Manager.IndexOfSourceWindow(self),
     [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
 end;
