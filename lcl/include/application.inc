@@ -85,15 +85,6 @@ end;
        TApplication Constructor
 ------------------------------------------------------------------------------}
 constructor TApplication.Create(AOwner: TComponent);
-const
-  BidiModeMap: array[Boolean] of TBiDiMode = (bdLeftToRight, bdRightToLeft);
-
-  function IsRTLLang(ALang: String): Boolean;
-  begin
-    Result := (ALang = 'ar') or
-              (ALang = 'he');
-  end;
-
 var
   LangDefault, LangFallback: String;
 begin
@@ -128,9 +119,9 @@ begin
   {$ifndef wince}// remove ifdef when gettext is fixed
   LCLGetLanguageIDs(LangDefault, LangFallback);
   if LangDefault <> '' then
-    FBidiMode := BidiModeMap[IsRTLLang(LangDefault)]
+    FBidiMode := Direction(LangDefault)
   else
-    FBidiMode := BidiModeMap[IsRTLLang(LangFallback)];
+    FBidiMode := Direction(LangFallback);
   {$else}
     FBidiMode := bdLeftToRight;
   {$endif}
@@ -2228,3 +2219,17 @@ begin
   Result := False;
   if Assigned(FOnActionUpdate) then FOnActionUpdate(TheAction, Result);
 end;
+
+function TApplication.IsRTLLang(ALang: String): Boolean;
+begin
+  Result := (LowerCase(ALang) = 'ar') or
+            (LowerCase(ALang) = 'he');
+end;
+
+function TApplication.Direction(ALang: String): TBiDiMode;
+const
+  BidiModeMap: array[Boolean] of TBiDiMode = (bdLeftToRight, bdRightToLeft);
+begin
+  Result := BidiModeMap[IsRTLLang(ALang)];
+end;
+

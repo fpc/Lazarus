@@ -1375,6 +1375,9 @@ type
     procedure IntfAppRestore;
     procedure IntfDropFiles(const FileNames: Array of String);
     procedure IntfThemeOptionChange(AThemeServices: TThemeServices; AOption: TThemeOption);
+
+    function IsRTLLang(ALang: String): Boolean;
+    function Direction(ALang: String): TBiDiMode;
   public
     procedure DoArrowKey(AControl: TWinControl; var Key: Word;
       Shift: TShiftState);

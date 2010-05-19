@@ -1905,6 +1905,10 @@ begin
   FloatingDockSiteClass := TWinControlClass(ClassType);
   Screen.AddForm(Self);
   FAllowDropFiles := False;
+
+  if ParentBiDiMode then
+    BiDiMode := Application.BidiMode;
+
   // the EndFormUpdate is done in AfterConstruction
 end;
 
