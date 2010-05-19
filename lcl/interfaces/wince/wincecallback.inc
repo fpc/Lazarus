@@ -2287,7 +2287,7 @@ begin
     if (PLMsg^.Result <> 0) then
     begin
 {$ifdef MSG_DEBUG}
-      writeln(MessageStackDepth, ' *ignore next character');
+      DebugLn(MessageStackDepth, ' *ignore next character');
 {$endif}
       IgnoreNextCharWindow := Window;
     end else begin
@@ -2295,7 +2295,7 @@ begin
       // assume WM_CHAR is always preceded by WM_KEYDOWN
 {$ifdef MSG_DEBUG}
       if IgnoreNextCharWindow <> 0 then
-        writeln(MessageStackDepth, ' *stop ignoring next character');
+        DebugLn(MessageStackDepth, ' *stop ignoring next character');
 {$endif}
       IgnoreNextCharWindow := 0;
     end;
@@ -2353,7 +2353,7 @@ var
   PLMsg: PLMessage;
 begin
   {$ifdef VerboseWinCE}
-  WriteLn('WindowProc: Msg = ' + IntToStr(Msg));
+  DebugLn('WindowProc: Msg = ' + IntToStr(Msg));
   {$endif}
 
   Result := 0;

@@ -265,7 +265,7 @@ var
   Bounds: TRect;
 begin
   {$ifdef VerboseWinCE}
-  WriteLn('TWinCEWSCustomForm.CreateHandle');
+  DebugLn('TWinCEWSCustomForm.CreateHandle');
   {$endif}
   // general initialization of Params
   PrepareCreateWindow(AWinControl, AParams, Params);

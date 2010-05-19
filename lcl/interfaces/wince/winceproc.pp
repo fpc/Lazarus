@@ -418,7 +418,7 @@ Begin
       Case IsConsole Of
         True:
         Begin
-          WriteLn(rsWin32Warning, Message);
+          DebugLn(rsWin32Warning, Message);
         End;
         False:
         Begin
@@ -431,7 +431,7 @@ Begin
       Case IsConsole Of
         True:
         Begin
-          WriteLn(rsWin32Error, Message);
+          DebugLn(rsWin32Error, Message);
         End;
         False:
         Begin

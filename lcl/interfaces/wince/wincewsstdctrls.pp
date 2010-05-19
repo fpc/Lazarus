@@ -1185,7 +1185,7 @@ var
   Params: TCreateWindowExParams;
 begin
   {$ifdef VerboseWinCE}
-  WriteLn('TWinCEWSButton.CreateHandle');
+  DebugLn('TWinCEWSButton.CreateHandle');
   {$endif}
 
   // general initialization of Params
@@ -1205,7 +1205,7 @@ begin
   Result := Params.Window;
 
   {$ifdef VerboseWinCE}
-  WriteLn('End Create Button. Handle = ' + IntToStr(Result) +
+  DebugLn('End Create Button. Handle = ' + IntToStr(Result) +
    ' Left ' + IntToStr(AWinControl.Left) +
    ' Top ' + IntToStr(AWinControl.Top) +
    ' Width ' + IntToStr(AWinControl.Width) +
@@ -1222,7 +1222,7 @@ var
   Params: TCreateWindowExParams;
 begin
   {$ifdef VerboseWinCE}
-  WriteLn('TWinCEWSCustomCheckBox.CreateHandle');
+  DebugLn('TWinCEWSCustomCheckBox.CreateHandle');
   {$endif}
   // general initialization of Params
   PrepareCreateWindow(AWinControl, AParams, Params);
@@ -1317,7 +1317,7 @@ var
   Params: TCreateWindowExParams;
 begin
   {$ifdef VerboseWinCE}
-  WriteLn('TWinCEWSRadioButton.CreateHandle');
+  DebugLn('TWinCEWSRadioButton.CreateHandle');
   {$endif}
 
   // general initialization of Params

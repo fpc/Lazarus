@@ -2501,6 +2501,7 @@ end;
 function TWinCEWidgetSet.RectVisible(dc : hdc; const ARect: TRect) : Boolean;
 begin
   Result := Boolean(Windows.RectVisible(DC, LPRECT(@ARect)^));
+//  Result := True;
   {$ifdef DEBUG_WINDOW_ORG}
   DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
     Format(':> [TWinCEWidgetSet.RectVisible] Result=%d',

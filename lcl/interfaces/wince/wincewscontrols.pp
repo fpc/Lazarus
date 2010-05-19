@@ -281,7 +281,7 @@ var
   Params: TCreateWindowExParams;
 begin
   {$ifdef VerboseWinCE}
-  writeln(' TWinCEWSWinControl.CreateHandle ');
+  DebugLn(' TWinCEWSWinControl.CreateHandle ');
   {$endif}
   // general initialization of Params
   PrepareCreateWindow(AWinControl, AParams, Params);

@@ -152,7 +152,7 @@ begin
   LCLDialog := ALCLDialog;
 
   {$ifdef VerboseWinCE}
-    WriteLn(':>TWinCEFileDialogForm.Create Width=', Width,
+    DebugLn(':>TWinCEFileDialogForm.Create Width=', Width,
      ' Height=', Height);
   {$endif}
 

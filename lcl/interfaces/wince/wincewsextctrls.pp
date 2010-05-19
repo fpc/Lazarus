@@ -299,8 +299,10 @@ begin
   with Params do
   begin
     pClassName := @ClsName;
-//    Flags := Flags and not WS_VISIBLE;
     SubClassWndProc := nil;
+//    Params.Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
+//    Flags := Flags and not WS_VISIBLE;
+//    Params.FlagsEx := WS_EX_CONTROLPARENT;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);

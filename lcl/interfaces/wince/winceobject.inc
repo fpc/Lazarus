@@ -121,12 +121,12 @@ var
 //  Flags : integer;
 begin
   {$ifdef VerboseWinCE}
-  WriteLn('TWinCEWidgetSet.AppInit');
+  DebugLn('TWinCEWidgetSet.AppInit');
   {$endif}
   
   if not WinRegister then
   begin
-    WriteLn('TWinCEWidgetSet.AppInit failed.');
+    DebugLn('TWinCEWidgetSet.AppInit failed.');
     Exit;
   end;
   
