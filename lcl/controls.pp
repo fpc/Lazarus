@@ -3587,7 +3587,7 @@ begin
           if Kind in [akLeft,akRight] then begin
             // center horizontally
             if ReferenceControl=OwnerParent then
-              Position:=GetParentSidePos(akRight)-GetParentSidePos(akLeft)
+              Position:=(GetParentSidePos(akRight)+GetParentSidePos(akLeft)) div 2
             else
               Position:=ReferenceControl.Left+(ReferenceControl.Width div 2);
             if Kind=akLeft then
