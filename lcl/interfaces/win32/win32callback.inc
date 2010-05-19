@@ -1437,12 +1437,12 @@ begin
       if Window = TWin32WidgetSet(WidgetSet).FAppHandle then
         if WParam = 0 then
         begin
-          RemoveStayOnTopFlags(Window);
+//          RemoveStayOnTopFlags(Window);
           DisabledForms := Screen.DisableForms(nil, DisabledForms);
         end
         else
         begin
-          RestoreStayOnTopFlags(Window);
+//          RestoreStayOnTopFlags(Window);
           Screen.EnableForms(DisabledForms);
         end;
         
@@ -2178,14 +2178,14 @@ begin
         if WParam <> 0 then // activated
         begin
           //WriteLn('Restore');
-          RestoreStayOnTopFlags(Window);
+//          RestoreStayOnTopFlags(Window);
           if assigned(Application) then
              Application.IntfAppActivate;
         end
         else
         begin // deactivated
           //WriteLn('Remove');
-          RemoveStayOnTopFlags(Window);
+//          RemoveStayOnTopFlags(Window);
           if assigned(Application) then
              Application.IntfAppDeactivate;
         end;
