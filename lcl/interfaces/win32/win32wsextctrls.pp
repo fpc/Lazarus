@@ -706,16 +706,22 @@ begin
     RemoveAllNBPages(ANotebook);
 end;
 
-class procedure TWin32WSCustomNotebook.UpdateProperties(
-  const ANotebook: TCustomNotebook);
+class procedure TWin32WSCustomNotebook.UpdateProperties(const ANotebook: TCustomNotebook);
 var
-  currentStyle: cardinal;
+  CurrentStyle, NewStyle: cardinal;
 begin
-  currentStyle := GetWindowLong(ANotebook.Handle, GWL_STYLE);
-  if nboMultiLine in ANotebook.Options then
-    SetWindowLong(ANotebook.Handle, GWL_STYLE, currentStyle or TCS_MULTILINE)
+  CurrentStyle := GetWindowLong(ANotebook.Handle, GWL_STYLE);
+  if (nboMultiLine in ANotebook.Options) or (ANotebook.TabPosition in [tpLeft, tpRight]) then
+    NewStyle := CurrentStyle or TCS_MULTILINE
   else
-    SetWindowLong(ANotebook.Handle, GWL_STYLE, currentStyle and not TCS_MULTILINE)
+    NewStyle := CurrentStyle and not TCS_MULTILINE;
+  if NewStyle <> CurrentStyle then
+  begin
+    SetWindowLong(ANotebook.Handle, GWL_STYLE, NewStyle);
+    ANotebook.InvalidateClientRectCache(False);
+    SetWindowPos(ANoteBook.Handle, 0, 0, 0, 0, 0, SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_DRAWFRAME);
+    InvalidateRect(ANoteBook.Handle, nil, True);
+  end;
 end;
 
 {$include win32trayicon.inc}
