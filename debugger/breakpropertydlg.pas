@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, Buttons, DebuggerDlg, Debugger, ButtonPanel, EditBtn,
-  BaseDebugManager, IDEContextHelpEdit, LazarusIDEStrConsts;
+  BaseDebugManager, IDEContextHelpEdit, LazarusIDEStrConsts, InputHistory;
 
 type
 
@@ -21,12 +21,12 @@ type
     chkLogMessage: TCheckBox;
     chkActionBreak: TCheckBox;
     cmbGroup: TComboBox;
+    edtCondition: TComboBox;
     edtEvalExpression: TEdit;
     edtLogMessage: TEdit;
     edtEnableGroups: TEditButton;
     edtDisableGroups: TEditButton;
     edtAutocontinueMS: TEdit;
-    edtCondition: TEdit;
     edtCounter: TEdit;
     edtFilename: TEdit;
     edtLine: TEdit;
@@ -105,6 +105,8 @@ begin
 //  if chkEvalExpression.Checked then Include(Actions, bpaEValExpression);
 //  if chkLogMessage.Checked then Include(Actions, bpaLogMessage);
   FBreakpoint.Actions := Actions;
+
+  InputHistories.HistoryLists.GetList('BreakPointExpression', True).Add(edtCondition.Text);
 end;
 
 procedure TBreakPropertyDlg.DoEndUpdate;
@@ -162,6 +164,7 @@ begin
   chkDisableGroups.Caption := lisDisableGroup;
   chkEvalExpression.Caption := lisEvalExpression;
   chkLogMessage.Caption := lisLogMessage;
+  edtCondition.Items.Assign(InputHistories.HistoryLists.GetList('BreakPointExpression', True));
 
   FBreakpoint := ABreakPoint;
   FBreakpointsNotification := TIDEBreakPointsNotification.Create;

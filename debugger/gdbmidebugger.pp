@@ -153,6 +153,7 @@ type
     function  GDBSourceAdress(const ASource: String; ALine, AColumn: Integer; out AAddr: TDbgPtr): Boolean;
 
     procedure CallStackSetCurrent(AIndex: Integer);
+    function  ConvertPascalExpression(var AExpression: String): Boolean;
     // ---
     procedure ClearSourceInfo;
     procedure GDBStopCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
@@ -285,6 +286,7 @@ type
   TGDBMIBreakPoint = class(TDBGBreakPoint)
   private
     FBreakID: Integer;
+    FParsedExpression: String;
     procedure SetBreakPointCallback(const AResult: TGDBMIExecResult; const ATag: PtrInt);
     procedure SetBreakPoint;
     procedure ReleaseBreakPoint;
@@ -2683,127 +2685,6 @@ begin
 end;
 
 function TGDBMIDebugger.GDBModify(const AExpression, ANewValue: String): Boolean;
-  function ConvertString(var AValue: String): Boolean;
-  var
-    R: String;
-    P: PChar;
-    InString, EndString, EndVal: Boolean;
-    CharVal: Byte;
-    n: Integer;
-    ValMode: Char;
-  begin
-    R := '"';
-    Instring := False;
-    EndString := False;
-    EndVal := False;
-    ValMode := #0;
-    CharVal := 0;
-    P := @AValue[1];
-    for n := 1 to Length(AVAlue) do
-    begin
-      if InString
-      then begin
-        case P^ of
-          '''': begin
-            InString := False;
-            EndString := True;
-          end;
-          #0..#31,
-          '"',
-          #128..#255: begin
-            R := R + '\' + OctStr(Ord(P^), 3);
-          end;
-        else
-          R := R + P^;
-        end;
-        Inc(P);
-        Continue;
-      end;
-
-
-      case P^ of
-        '''': begin
-          if EndString
-          then R := R + '\' + OctStr(Ord(''''), 3);
-          EndVal := True;
-          InString := True;
-        end;
-        '#': begin
-          if ValMode <> #0
-          then begin
-            if not (ValMode in ['h', 'd', 'o', 'b']) then Exit(False);
-            R := R + '\' + OctStr(CharVal, 3);
-          end;
-          CharVal := 0;
-          ValMode := 'D';
-        end;
-        '$', '&', '%': begin
-          if ValMode <> 'D' then Exit(False);
-          ValMode := P^;
-        end;
-      else
-        case ValMode of
-          'D', 'd': begin
-            case P^ of
-              '0'..'9': CharVal := CharVal * 10 + Ord(P^) - Ord('0');
-            else
-              Exit(False);
-            end;
-            ValMode := 'd';
-          end;
-          '$', 'h': begin
-            case P^ of
-              '0'..'9': CharVal := CharVal * 16 + Ord(P^) - Ord('0');
-              'a'..'f': CharVal := CharVal * 16 + Ord(P^) - Ord('a');
-              'A'..'F': CharVal := CharVal * 16 + Ord(P^) - Ord('A');
-            else
-              Exit(False);
-            end;
-            ValMode := 'h';
-          end;
-          '&', 'o': begin
-            case P^ of
-              '0'..'7': CharVal := CharVal * 8 + Ord(P^) - Ord('0');
-            else
-              Exit(False);
-            end;
-            ValMode := 'o';
-          end;
-          '%', 'b': begin
-            case P^ of
-              '0': CharVal := CharVal shl 1;
-              '1': CharVal := CharVal shl 1 or 1;
-            else
-              Exit(False);
-            end;
-            ValMode := 'o';
-          end;
-        else
-          Exit(False);
-        end;
-      end;
-
-      if EndVal
-      then begin
-        case Valmode of
-          #0:;
-          'h', 'd', 'o', 'b': begin
-            R := R + '\' + OctStr(CharVal, 3);
-            ValMode := #0;
-          end;
-        else
-          Exit(False);
-        end;
-        EndVal := False;
-      end;
-
-      EndString := False;
-      Inc(p);
-    end;
-    AValue := R + '"';
-    Result := True;
-  end;
-
 var
   R: TGDBMIExecResult;
   S: String;
@@ -2811,7 +2692,7 @@ begin
   S := Trim(ANewValue);
   if (S <> '') and (S[1] in ['''', '#'])
   then begin
-    if not ConvertString(S) then Exit(False);
+    if not ConvertPascalExpression(S) then Exit(False);
   end;
 
   Result := ExecuteCommand('-gdb-set var %s := %s', [AExpression, S], [cfIgnoreError, cfExternal], R)
@@ -4028,6 +3909,157 @@ begin
   FSourceNames.Clear;
 end;
 
+function TGDBMIDebugger.ConvertPascalExpression(var AExpression: String): Boolean;
+var
+  R: String;
+  P: PChar;
+  InString, WasString, IsText, ValIsChar: Boolean;
+  n: Integer;
+  ValMode: Char;
+  Value: QWord;
+
+  function AppendValue: Boolean;
+  var
+    S: String;
+  begin
+    if ValMode = #0 then Exit(True);
+    if not (ValMode in ['h', 'd', 'o', 'b']) then Exit(False);
+
+    if ValIsChar
+    then begin
+      if not IsText
+      then begin
+        R := R + '"';
+        IsText := True;
+      end;
+      R := R + '\' + OctStr(Value, 3);
+      ValIsChar := False;
+    end
+    else begin
+      if IsText
+      then begin
+        R := R + '"';
+        IsText := False;
+      end;
+      Str(Value, S);
+      R := R + S;
+    end;
+    Result := True;
+    ValMode := #0;
+  end;
+
+begin
+  R := '';
+  Instring := False;
+  WasString := False;
+  IsText := False;
+  ValIsChar := False;
+  ValMode := #0;
+  Value := 0;
+
+  P := @AExpression[1];
+  for n := 1 to Length(AExpression) do
+  begin
+    if InString
+    then begin
+      case P^ of
+        '''': begin
+          InString := False;
+          // delay setting terminating ", more characters defined through # may follow
+          WasString := True;
+        end;
+        #0..#31,
+        '"', '\',
+        #128..#255: begin
+          R := R + '\' + OctStr(Ord(P^), 3);
+        end;
+      else
+        R := R + P^;
+      end;
+      Inc(P);
+      Continue;
+    end;
+
+    case P^ of
+      '''': begin
+        if WasString
+        then begin
+          R := R + '\' + OctStr(Ord(''''), 3)
+        end
+        else begin
+          if not AppendValue then Exit(False);
+          if not IsText
+          then R := R + '"';
+        end;
+        IsText := True;
+        InString := True;
+      end;
+      '#': begin
+        if not AppendValue then Exit(False);
+        Value := 0;
+        ValMode := 'D';
+        ValIsChar := True;
+      end;
+      '$', '&', '%': begin
+        if not (ValMode in [#0, 'D']) then Exit(False);
+        ValMode := P^;
+      end;
+    else
+      case ValMode of
+        'D', 'd': begin
+          case P^ of
+            '0'..'9': Value := Value * 10 + Ord(P^) - Ord('0');
+          else
+            Exit(False);
+          end;
+          ValMode := 'd';
+        end;
+        '$', 'h': begin
+          case P^ of
+            '0'..'9': Value := Value * 16 + Ord(P^) - Ord('0');
+            'a'..'f': Value := Value * 16 + Ord(P^) - Ord('a');
+            'A'..'F': Value := Value * 16 + Ord(P^) - Ord('A');
+          else
+            Exit(False);
+          end;
+          ValMode := 'h';
+        end;
+        '&', 'o': begin
+          case P^ of
+            '0'..'7': Value := Value * 8 + Ord(P^) - Ord('0');
+          else
+            Exit(False);
+          end;
+          ValMode := 'o';
+        end;
+        '%', 'b': begin
+          case P^ of
+            '0': Value := Value shl 1;
+            '1': Value := Value shl 1 or 1;
+          else
+            Exit(False);
+          end;
+          ValMode := 'b';
+        end;
+      else
+        if IsText
+        then begin
+          R := R + '"';
+          IsText := False;
+        end;
+        R := R + P^;
+      end;
+    end;
+    WasString := False;
+    Inc(p);
+  end;
+
+  if not AppendValue then Exit(False);
+  if IsText then R := R + '"';
+  AExpression := R;
+  Result := True;
+end;
+
 procedure TGDBMIDebugger.SelectStackFrame(AIndex: Integer);
 begin
   ExecuteCommand('-stack-select-frame %d', [AIndex], [cfIgnoreError]);
@@ -4427,7 +4459,13 @@ begin
 end;
 
 procedure TGDBMIBreakPoint.DoExpressionChange;
+var
+  S: String;
 begin
+  S := Expression;
+  if TGDBMIDebugger(Debugger).ConvertPascalExpression(S)
+  then FParsedExpression := S
+  else FParsedExpression := Expression;
   UpdateExpression;
   inherited;
 end;
@@ -4474,14 +4512,18 @@ begin
     ResultList := TGDBMINameValueList.Create(AResult, ['bkpt']);
     FBreakID := StrToIntDef(ResultList.Values['number'], 0);
     SetHitCount(StrToIntDef(ResultList.Values['times'], 0));
-    if FBreakID <> 0
-    then SetValid(vsValid)
-    else SetValid(vsInvalid);
-    UpdateExpression;
+    if FBreakID = 0
+    then begin
+      ResultList.Free;
+      SetValid(vsInvalid);
+      Exit;
+    end;
+
+    SetValid(vsValid);
+    if FParsedExpression <> '' then UpdateExpression;
     UpdateEnable;
 
-    if (FBreakID <> 0)
-    and Enabled
+    if Enabled
     and (TGDBMIDebugger(Debugger).FBreakAtMain = nil)
     then begin
       // Check if this BP is at the same location as the temp break
@@ -4521,19 +4563,24 @@ const
   // Use shortstring as fix for fpc 1.9.5 [2004/07/15]
   CMD: array[Boolean] of ShortString = ('disable', 'enable');
 begin
-  if (FBreakID = 0)
-  or (Debugger = nil)
-  then Exit;
+  if FBreakID = 0 then Exit;
+  if Debugger = nil then Exit;
 
   if Debugger.State = dsRun
   then TGDBMIDebugger(Debugger).GDBPause(True);
-  //writeln('TGDBMIBreakPoint.UpdateEnable Line=',Line,' Enabled=',Enabled,' InitialEnabled=',InitialEnabled);
-  TGDBMIDebugger(Debugger).ExecuteCommand('-break-%s %d',
-                                          [CMD[Enabled], FBreakID], []);
+
+  TGDBMIDebugger(Debugger).ExecuteCommand('-break-%s %d', [CMD[Enabled], FBreakID], []);
 end;
 
 procedure TGDBMIBreakPoint.UpdateExpression;
 begin
+  if FBreakID = 0 then Exit;
+  if Debugger = nil then Exit;
+
+  if Debugger.State = dsRun
+  then TGDBMIDebugger(Debugger).GDBPause(True);
+
+  TGDBMIDebugger(Debugger).ExecuteCommand('-break-condition %d %s', [FBreakID, FParsedExpression], [cfIgnoreError, cfExternal]);
 end;
 
 { =========================================================================== }
