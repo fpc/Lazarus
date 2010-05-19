@@ -1588,7 +1588,8 @@ type
     wcfRealizingBounds,
     wcfBoundsRealized,       // bounds were sent to the interface
     wcfUpdateShowing,
-    wcfHandleVisible
+    wcfHandleVisible,
+    wcfAdjustedLogicalClientRectValid
     );
   TWinControlFlags = set of TWinControlFlag;
 
@@ -1625,6 +1626,7 @@ type
     FBorderStyle: TBorderStyle;
     FBrush: TBrush;
     FAdjustClientRectRealized: TRect;
+    FAdjustClientRect: TRect; // valid if wcfAdjustClientRectValid
     FChildSizing: TControlChildSizing;
     FControls: TFPList;    // the child controls
     FOnGetDockCaption: TGetDockCaptionEvent;
@@ -1685,6 +1687,7 @@ type
     FWinControlFlags: TWinControlFlags;
     class procedure WSRegisterClass; override;
     procedure AdjustClientRect(var ARect: TRect); virtual;
+    procedure GetAdjustedLogicalClientRect(out ARect: TRect);
     procedure CreateControlAlignList(TheAlign: TAlign;
                                     AlignList: TFPList; StartControl: TControl);
     procedure AlignControls(AControl: TControl;
@@ -3399,6 +3402,9 @@ end;
 
 procedure TAnchorSide.GetSidePosition(out ReferenceControl: TControl;
   out ReferenceSide: TAnchorSideReference; out Position: Integer);
+var
+  ParentRect: TRect;
+  ParentRectValid: boolean;
 
   procedure RaiseInvalidSide;
   begin
@@ -3415,6 +3421,20 @@ procedure TAnchorSide.GetSidePosition(out ReferenceControl: TControl;
       NextReferenceSide:=ReferenceControl.AnchorSide[Side];
     end else
       Result:=false;
+  end;
+
+  function GetParentSidePos(Side: TAnchorKind): integer;
+  begin
+    if not ParentRectValid then begin
+      FOwner.Parent.GetAdjustedLogicalClientRect(ParentRect);
+      ParentRectValid:=true;
+    end;
+    case Side of
+    akTop: Result:=ParentRect.Top;
+    akLeft: Result:=ParentRect.Left;
+    akRight: Result:=ParentRect.Right;
+    akBottom: Result:=ParentRect.Bottom;
+    end;
   end;
 
 var
@@ -3436,6 +3456,7 @@ begin
     //if CheckPosition(Owner) then DebugLn(['TAnchorSide.GetSidePosition OwnerParent=nil']);
     exit;
   end;
+  ParentRectValid:=false;
   ChainLength:=0;
   MaxChainLength:=OwnerParent.ControlCount;
   Found:=false;
@@ -3480,7 +3501,7 @@ begin
           if Kind in [akLeft,akRight] then begin
             // anchor to left side of ReferenceControl
             if ReferenceControl=OwnerParent then
-              Position:=0
+              Position:=GetParentSidePos(akLeft)
             else
               Position:=ReferenceControl.Left;
             if ReferenceControl=OwnerParent then
@@ -3500,7 +3521,7 @@ begin
           end else begin
             // anchor to top side of ReferenceControl
             if ReferenceControl=OwnerParent then
-              Position:=0
+              Position:=GetParentSidePos(akTop)
             else
               Position:=ReferenceControl.Top;
             if ReferenceControl=OwnerParent then
@@ -3523,7 +3544,7 @@ begin
           if Kind in [akLeft,akRight] then begin
             // anchor to right side of ReferenceControl
             if ReferenceControl=OwnerParent then
-              Position:=OwnerParent.GetLogicalClientRect.Right
+              Position:=GetParentSidePos(akRight)
             else
               Position:=ReferenceControl.Left+ReferenceControl.Width;
             if ReferenceControl=OwnerParent then
@@ -3543,7 +3564,7 @@ begin
           end else begin
             // anchor to bottom side of ReferenceControl
             if ReferenceControl=OwnerParent then
-              Position:=OwnerParent.GetLogicalClientRect.Bottom
+              Position:=GetParentSidePos(akBottom)
             else
               Position:=ReferenceControl.Top+ReferenceControl.Height;
             if ReferenceControl=OwnerParent then
@@ -3566,7 +3587,7 @@ begin
           if Kind in [akLeft,akRight] then begin
             // center horizontally
             if ReferenceControl=OwnerParent then
-              Position:=OwnerParent.ClientWidth div 2
+              Position:=GetParentSidePos(akRight)-GetParentSidePos(akLeft)
             else
               Position:=ReferenceControl.Left+(ReferenceControl.Width div 2);
             if Kind=akLeft then

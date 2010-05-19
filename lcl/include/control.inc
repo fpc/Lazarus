@@ -4679,6 +4679,8 @@ begin
   while AControl<>nil do begin
     Exclude(AControl.FControlFlags,cfPreferredSizeValid);
     Exclude(AControl.FControlFlags,cfPreferredMinSizeValid);
+    if AControl is TWinControl then
+      Exclude(TWinControl(AControl).FWinControlFlags,wcfAdjustedLogicalClientRectValid);
     if not AControl.IsControlVisible then break;
     AControl:=AControl.Parent;
   end;

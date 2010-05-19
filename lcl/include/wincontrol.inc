@@ -2377,6 +2377,16 @@ begin
   // It's called often, so don't put expensive code here, or cache the result
 end;
 
+procedure TWinControl.GetAdjustedLogicalClientRect(out ARect: TRect);
+begin
+  if not (wcfAdjustedLogicalClientRectValid in FWinControlFlags) then begin
+    FAdjustClientRect:=GetLogicalClientRect;
+    AdjustClientRect(FAdjustClientRect);
+    Include(FWinControlFlags,wcfAdjustedLogicalClientRectValid);
+  end;
+  ARect:=FAdjustClientRect;
+end;
+
 {------------------------------------------------------------------------------
   TWinControl CreateControlAlignList
   
@@ -3198,6 +3208,8 @@ begin
     Exclude(AControl.FControlFlags,cfPreferredSizeValid);
     Exclude(AControl.FControlFlags,cfPreferredMinSizeValid);
     if AControl is TWinControl then
+      Exclude(TWinControl(AControl).FWinControlFlags,wcfAdjustedLogicalClientRectValid);
+    if AControl is TWinControl then
       TWinControl(AControl).InvalidatePreferredChildSizes;
   end;
 end;
@@ -3621,6 +3633,7 @@ begin
     //DumpStack;
   end;
   {$ENDIF}
+  Exclude(FWinControlFlags,wcfAdjustedLogicalClientRectValid);
   Include(FWinControlFlags,wcfClientRectNeedsUpdate);
 
   if WithChildControls then begin
@@ -3842,6 +3855,7 @@ function TWinControl.GetClientRect: TRect;
         DebugLn(['StoreClientRect ',DbgSName(Self),' ',FClientWidth,',',FClientHeight,' HandleAllocated=',HandleAllocated,' wcfBoundsRealized=',wcfBoundsRealized in FWinControlFlags]);
         {$ENDIF}
         FAdjustClientRectRealized:=Rect(0,0,0,0);
+        Exclude(FWinControlFlags,wcfAdjustedLogicalClientRectValid);
       end;
       Exclude(FWinControlFlags,wcfClientRectNeedsUpdate);
     end;
