@@ -718,9 +718,8 @@ begin
   if NewStyle <> CurrentStyle then
   begin
     SetWindowLong(ANotebook.Handle, GWL_STYLE, NewStyle);
-    ANotebook.InvalidateClientRectCache(False);
     SetWindowPos(ANoteBook.Handle, 0, 0, 0, 0, 0, SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_DRAWFRAME);
-    InvalidateRect(ANoteBook.Handle, nil, True);
+    LCLControlSizeNeedsUpdate(ANotebook, True);
   end;
 end;
 
