@@ -1799,17 +1799,15 @@ begin
   if (Result<>'') and FilenameIsAbsolute(Result) then begin
     // fully specified target filename
   end else if Result<>'' then begin
-    // TargetFilename is relative to main source file
-    Result:=AppendPathDelim(ExtractFilePath(MainSourceFileName))+Result;
+    // TargetFilename is relative to BaseDirectory
+    Result:=AppendPathDelim(BaseDirectory)+Result;
   end else begin
+    // no target given => put into unit output directory
     // calculate output directory
     UnitOutDir:=GetUnitOutPath(false);
     if UnitOutDir='' then
-      UnitOutDir:=ExtractFilePath(MainSourceFileName);
-    if Result<>'' then
-      OutFilename:=Result
-    else
-      OutFilename:=ExtractFileNameOnly(MainSourceFileName);
+      UnitOutDir:=BaseDirectory;
+    OutFilename:=ExtractFileNameOnly(MainSourceFileName);
     //debugln('TBaseCompilerOptions.CreateTargetFilename MainSourceFileName=',MainSourceFileName,' OutFilename=',OutFilename,' TargetFilename=',TargetFilename);
 
     Result:=AppendPathDelim(UnitOutDir)+OutFilename;
@@ -2712,9 +2710,12 @@ begin
     t := GetIgnoredMsgsIndexes(CompilerMessages, ',');
     if t <> '' then
       switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
-    if fUseMsgFile and FileExistsUTF8(MsgFileName)then
-     switches := switches + ' ' + PrepareCmdLineOption('-Fr'+MsgFileName);
-  except 
+    if fUseMsgFile and FileExistsCached(MsgFileName)then
+      switches := switches + ' ' + PrepareCmdLineOption('-Fr'+MsgFileName);
+  except
+    on E: Exception do begin
+      DebugLn(['TBaseCompilerOptions.MakeOptionsString Error: ',E.Message]);
+    end;
   end; 
 
 
