@@ -404,7 +404,7 @@ msgstr "בטל"
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
 msgid "&Case Sensitive"
-msgstr "תלוי ברישיות (&C)"
+msgstr "תלוי ברי&שיות"
 
 #: lazarusidestrconsts.dlgccocaption
 msgid "Checking compiler options"
@@ -1051,11 +1051,11 @@ msgstr "אפשרות זאת תשתמש בעורך לא נעול, אשר אינו
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinanywin
 msgid "This option will open a new Tab in an existing or new Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
-msgstr "אפשרות זאת תפתח לשונית חדשה בחלון חדש או קיים, אם נמצא טאב לא נעול. אפשרות זאת תעבוד תמיד,אםשרויות נוספות עדיין לא נוסו."
+msgstr "אפשרות זאת תפתח לשונית חדשה בחלון חדש או קיים, אם נמצא טאב לא נעול. אפשרות זאת תעבוד תמיד,אפשרויות נוספות עדיין לא נוסו."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinnewwin
 msgid "If no unlocked tab is found, then this option will open a new Tab in a new Window (even if other existing windows could be used for the new tab). This option will always succeed, further options are never tested."
-msgstr "אם לא נמצאה לשונית לא נעולה, אז אפשרות זאת תפתח לשונית חדשה בחלון חדש (אפילו אם אפשר להשתמש בחלון קיים אחר עבור הלשונית החדשה). אפשרות זאת תעבוד תמיד,אםשרויות נוספות עדיין לא נוסו."
+msgstr "אם לא נמצאה לשונית לא נעולה, אז אפשרות זאת תפתח לשונית חדשה בחלון חדש (אפילו אם אפשר להשתמש בחלון קיים אחר עבור הלשונית החדשה). אפשרות זאת תעבוד תמיד,אפשרויות נוספות עדיין לא נוסו."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinoldwin
 msgid "If no unlocked tab is found, then this option will open a new Tab in an existing (and only in an existing) Window. A tab is only opened if a window exists, that has not yet an editor for the target file."
@@ -1112,7 +1112,7 @@ msgstr "מקש end קופץ לקצה הקרוב ביותר"
 
 #: lazarusidestrconsts.dlgentirescope
 msgid "&Entire Scope"
-msgstr "הוסף מתחם (&E)"
+msgstr "הוס&ף מתחם"
 
 #: lazarusidestrconsts.dlgenvask
 msgid "Ask"
@@ -1546,7 +1546,7 @@ msgstr "מדיניות מזהים"
 
 #: lazarusidestrconsts.dlgideoptions
 msgid "IDE Options"
-msgstr "אםשרויות IDE"
+msgstr "אפשרויות IDE"
 
 #: lazarusidestrconsts.dlgignoreverb
 msgid "Ignore"
@@ -2332,7 +2332,7 @@ msgstr "קבצי הפרויקט"
 
 #: lazarusidestrconsts.dlgpromptonreplace
 msgid "&Prompt On Replace"
-msgstr "שאל על החלפה (&P)"
+msgstr "שאל על הח&לפה"
 
 #: lazarusidestrconsts.dlgpropertycompletion
 msgid "Property completion"
@@ -2376,11 +2376,11 @@ msgstr "ביטוי רגולרי"
 
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
-msgstr "החלף הכל (&A)"
+msgstr "החלף הכל"
 
 #: lazarusidestrconsts.dlgreplacewith
 msgid "&Replace With"
-msgstr "החלף עם (&R)"
+msgstr "&החלף עם"
 
 #: lazarusidestrconsts.dlgreport
 msgid "Report"
@@ -2511,7 +2511,7 @@ msgstr "נתיבים"
 
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected Text"
-msgstr "הטקסט שנבחר (&S)"
+msgstr "ה&טקסט שנבחר"
 
 #: lazarusidestrconsts.dlgsetallelementdefault
 msgid "Set all elements to default"
@@ -2856,7 +2856,7 @@ msgstr "שוליים ימניים גלויים"
 
 #: lazarusidestrconsts.dlgwholewordsonly
 msgid "&Whole Words Only"
-msgstr "מילים שלמות בלבד (&W)"
+msgstr "&מילים שלמות בלבד"
 
 #: lazarusidestrconsts.dlgwidthpos
 msgid "Width:"
@@ -3533,7 +3533,7 @@ msgstr "יישום גרפי של lcl/freepascal  %s. התכנית מתוחזקת
 
 #: lazarusidestrconsts.lisapplicationclassname
 msgid "&Application class name"
-msgstr "שם המחלה של התוכנה (&A)"
+msgstr "שם המחלה של התוכ&נה"
 
 #: lazarusidestrconsts.lisapplybuildflagsbtodependenciestoo
 msgid "apply build flags (-B) to dependencies too"
@@ -4351,7 +4351,7 @@ msgstr "לחץ כאן בשביל לצפות בקובץ"
 
 #: lazarusidestrconsts.lisclose
 msgid "&Close"
-msgstr "סגור (&C)"
+msgstr "ס&גור"
 
 #: lazarusidestrconsts.lisclosealltabsclose
 msgid "Close files"
@@ -4363,11 +4363,11 @@ msgstr "הסתר חלון"
 
 #: lazarusidestrconsts.lisclosealltabsquestion
 msgid "Closing a Source Editor Window. Do you want close all files or hide the window?"
-msgstr ""
+msgstr "סוגר את חלון עורך הקוד. האם אתה מעוניין לסגור את כל הקבצים או להחביא את החלון ?"
 
 #: lazarusidestrconsts.lisclosealltabstitle
 msgid "Close Source Editor Window"
-msgstr ""
+msgstr "סגור את חלון קוד"
 
 #: lazarusidestrconsts.liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -5711,7 +5711,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
-msgstr "מחק הכל (&D)"
+msgstr "מחק& הכל"
 
 #: lazarusidestrconsts.lisdeleteallbreakpoints
 msgid "Delete all breakpoints?"
@@ -6652,11 +6652,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfindfilecasesensitive
 msgid "&Case sensitive"
-msgstr "תלוי ברישיות (&C)"
+msgstr "תלוי בריש&יות"
 
 #: lazarusidestrconsts.lisfindfiledirectoryoptions
 msgid "Directory options"
-msgstr ""
+msgstr "אפשרויות ספרייה"
 
 #: lazarusidestrconsts.lisfindfilefilemaskbak
 msgid "File mask (*;*.*;*.bak?)"
@@ -6676,47 +6676,47 @@ msgstr "רק קבצי טקסט"
 
 #: lazarusidestrconsts.lisfindfileregularexpressions
 msgid "&Regular expressions"
-msgstr ""
+msgstr "ביטויים רגו&לריים"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
-msgstr ""
+msgstr "חפש את כל הקבצים בפרוי&יקט"
 
 #: lazarusidestrconsts.lisfindfilesearchallopenfiles
 msgid "search all &open files"
-msgstr ""
+msgstr "חפש את כל הקבצים הפתוחים&"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
 msgid "search in &directories"
-msgstr "חפש בספריות (&d)"
+msgstr "חפש בס&פריות"
 
 #: lazarusidestrconsts.lisfindfiletexttofind
 msgid "Text to find:"
-msgstr ""
+msgstr "טקסט לחיפוש:"
 
 #: lazarusidestrconsts.lisfindfilewhere
 msgid "Where"
-msgstr ""
+msgstr "מיקום"
 
 #: lazarusidestrconsts.lisfindfilewholewordsonly
 msgid "&Whole words only"
-msgstr "מילים שלמות בלבד (&W)"
+msgstr "מילים שלמו&ת בלבד"
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"
-msgstr ""
+msgstr "חפש צירופי מקשים"
 
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
-msgstr ""
+msgstr "חפש יחידות חסרות"
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
-msgstr ""
+msgstr "ראשון"
 
 #: lazarusidestrconsts.lisfixlfmfile
 msgid "Fix LFM file"
-msgstr ""
+msgstr "תקן קובץ LFM"
 
 #: lazarusidestrconsts.lisfloatingpoin
 msgid "Floating Point"
@@ -6724,7 +6724,7 @@ msgstr "נקודה צפה"
 
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
-msgstr ""
+msgstr "כפה שינוי שם"
 
 #: lazarusidestrconsts.lisform
 msgid "Form"
@@ -6786,11 +6786,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfreepascal
 msgid "Free Pascal"
-msgstr ""
+msgstr "Free Pascal"
 
 #: lazarusidestrconsts.lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
-msgstr ""
+msgstr "מהדר Free Pascal לא נמצא"
 
 #: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "Free Pascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program source is automatically maintained by Lazarus."
@@ -8624,7 +8624,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"
-msgstr "עריכה (&E)"
+msgstr "ע&ריכה"
 
 #: lazarusidestrconsts.lismenueditcodetemplates
 msgid "Code Templates ..."
@@ -8713,19 +8713,19 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuenvironent
 msgid "E&nvironment"
-msgstr "סביבה (&n)"
+msgstr "ס&ביבה"
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "Evaluate/Modify ..."
-msgstr ""
+msgstr "הערכה/שינוי ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract procedure ..."
-msgstr ""
+msgstr "הוצא פרוצדורה ..."
 
 #: lazarusidestrconsts.lismenufile
 msgid "&File"
-msgstr "קובץ (&F)"
+msgstr "קובץ&"
 
 #: lazarusidestrconsts.lismenufind
 msgctxt "lazarusidestrconsts.lismenufind"
@@ -8734,7 +8734,7 @@ msgstr "מצא"
 
 #: lazarusidestrconsts.lismenufind2
 msgid "&Find ..."
-msgstr "מצא ... (&F)"
+msgstr "מצא& ..."
 
 #: lazarusidestrconsts.lismenufindblockotherendofcodeblock
 msgid "Find other end of code block"
@@ -8791,7 +8791,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuhelp
 msgid "&Help"
-msgstr "עזרה (&H)"
+msgstr "עזרה&"
 
 #: lazarusidestrconsts.lismenuideinternals
 msgid "IDE internals"
@@ -8957,7 +8957,7 @@ msgstr "פתח פרויקטים אחרונים ..."
 
 #: lazarusidestrconsts.lismenupackage
 msgid "&Package"
-msgstr "חבילה (P&)"
+msgstr "ח&בילה"
 
 #: lazarusidestrconsts.lismenupackagegraph
 msgid "Package Graph ..."
@@ -8984,11 +8984,11 @@ msgstr "רשימת פרוצדורות"
 
 #: lazarusidestrconsts.lismenuproject
 msgid "&Project"
-msgstr "פרויקט (&P)"
+msgstr "פרויקט&"
 
 #: lazarusidestrconsts.lismenuprojectinspector
 msgid "Project Inspector"
-msgstr ""
+msgstr "מנהל פרוייקט"
 
 #: lazarusidestrconsts.lismenuprojectoptions
 msgid "Project Options ..."
@@ -9041,11 +9041,11 @@ msgstr "החלף"
 
 #: lazarusidestrconsts.lismenureplace2
 msgid "&Replace ..."
-msgstr "החלף (&R)"
+msgstr "החלף&"
 
 #: lazarusidestrconsts.lismenureportingbug
 msgid "Reporting a bug..."
-msgstr ""
+msgstr "דיווח באגים ..."
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
 msgid "Rescan FPC source directory"
@@ -9065,7 +9065,7 @@ msgstr "שחזר"
 
 #: lazarusidestrconsts.lismenurun
 msgid "&Run"
-msgstr "הרץ (&R)"
+msgstr "ה&רץ"
 
 #: lazarusidestrconsts.lismenurunfile
 msgid "Run File"
@@ -9080,7 +9080,6 @@ msgid "Run to cursor"
 msgstr "רוץ עד לסמן"
 
 #: lazarusidestrconsts.lismenusave
-#, fuzzy
 #| msgid "Save"
 msgctxt "lazarusidestrconsts.lismenusave"
 msgid "&Save"
@@ -9091,26 +9090,25 @@ msgid "Save All"
 msgstr "שמור הכל"
 
 #: lazarusidestrconsts.lismenusaveas
-#, fuzzy
 #| msgid "Save As ..."
 msgid "Save &As ..."
 msgstr "שמור כ ..."
 
 #: lazarusidestrconsts.lismenusaveproject
 msgid "Save Project"
-msgstr ""
+msgstr "שמור פרוייקט"
 
 #: lazarusidestrconsts.lismenusaveprojectas
 msgid "Save Project As ..."
-msgstr ""
+msgstr "שמור פרוייקט כ ..."
 
 #: lazarusidestrconsts.lismenusearch
 msgid "&Search"
-msgstr "חפש (&E)"
+msgstr "חפש&"
 
 #: lazarusidestrconsts.lismenuselect
 msgid "Select"
-msgstr ""
+msgstr "בחר"
 
 #: lazarusidestrconsts.lismenuselectall
 msgid "Select all"
@@ -9281,7 +9279,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenutools
 msgid "&Tools"
-msgstr "כלים (&T)"
+msgstr "כלים&"
 
 #: lazarusidestrconsts.lismenuuncommentselection
 msgid "Uncomment selection"
@@ -9290,7 +9288,7 @@ msgstr ""
 #: lazarusidestrconsts.lismenuundo
 msgctxt "lazarusidestrconsts.lismenuundo"
 msgid "Undo"
-msgstr ""
+msgstr "בטל"
 
 #: lazarusidestrconsts.lismenuunindentselection
 msgid "Unindent selection"
@@ -9302,17 +9300,16 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuview
 msgid "&View"
-msgstr "צפייה (&V)"
+msgstr "צפייה&"
 
 #: lazarusidestrconsts.lismenuviewanchoreditor
-#, fuzzy
 #| msgid "View Anchor Editor"
 msgid "Anchor Editor"
-msgstr "צפה בעורך המעגנים"
+msgstr "עורך המעגנים"
 
 #: lazarusidestrconsts.lismenuviewassembler
 msgid "Assembler"
-msgstr ""
+msgstr "Assembler"
 
 #: lazarusidestrconsts.lismenuviewbreakpoints
 msgid "BreakPoints"
@@ -9338,7 +9335,7 @@ msgstr "פלטת הרכיבים"
 
 #: lazarusidestrconsts.lismenuviewcomponents
 msgid "&Components"
-msgstr "רכיבים (&C)"
+msgstr "ר&כיבים"
 
 #: lazarusidestrconsts.lismenuviewdebugevents
 msgctxt "lazarusidestrconsts.lismenuviewdebugevents"
@@ -9395,7 +9392,7 @@ msgstr "תוצאות חיפוש"
 
 #: lazarusidestrconsts.lismenuviewsource
 msgid "&View Source"
-msgstr "צפה בקוד (&V)"
+msgstr "צפה בקוד&"
 
 #: lazarusidestrconsts.lismenuviewsourceeditor
 msgctxt "lazarusidestrconsts.lismenuviewsourceeditor"
@@ -9418,7 +9415,6 @@ msgid "Unit Dependencies"
 msgstr "צפה בתלויות היחידה"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
-#, fuzzy
 #| msgid "View Unit Information"
 msgid "Unit Information"
 msgstr "צפה במידע על היחידה"
@@ -9433,7 +9429,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
-msgstr "חלון (&W)"
+msgstr "חל&ון"
 
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
@@ -9847,7 +9843,7 @@ msgstr "קריאה בלבד"
 
 #: lazarusidestrconsts.lisoipstate
 msgid "State"
-msgstr ""
+msgstr "מצב"
 
 #: lazarusidestrconsts.lisoipthispackageisinstalledbutthelpkfilewasnotfound
 msgid "%sThis package is installed, but the lpk file was not found"
@@ -9858,10 +9854,9 @@ msgid "%sThis package was automatically created"
 msgstr ""
 
 #: lazarusidestrconsts.lisok
-#, fuzzy
 #| msgid "&Ok"
 msgid "&OK"
-msgstr "אשר (&O)"
+msgstr "א&שר"
 
 #: lazarusidestrconsts.lisold
 msgid "old"
@@ -11258,11 +11253,11 @@ msgstr "<ללא>"
 
 #: lazarusidestrconsts.lisplistobjects
 msgid "&Objects"
-msgstr "אובייקטים (&O)"
+msgstr "אוב&ייקטים"
 
 #: lazarusidestrconsts.lisplistprocedurelist
 msgid "Procedure List"
-msgstr ""
+msgstr "רשימת פרוצדורות"
 
 #: lazarusidestrconsts.lisplisttype
 msgctxt "lazarusidestrconsts.lisplisttype"
@@ -12177,7 +12172,7 @@ msgstr "בטל"
 #: lazarusidestrconsts.lissortselcasesensitive
 msgctxt "lazarusidestrconsts.lissortselcasesensitive"
 msgid "&Case Sensitive"
-msgstr "תלוי ברישיות (&C)"
+msgstr "תלוי ברישיות&"
 
 #: lazarusidestrconsts.lissortseldescending
 msgid "Descending"
@@ -12781,7 +12776,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
-msgstr "כותרת (&T)"
+msgstr "כותרת&"
 
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
 msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
@@ -13539,23 +13534,23 @@ msgstr "עם החבילות הנידרשות"
 
 #: lazarusidestrconsts.liswladd
 msgid "&Add"
-msgstr "הוסף (&A)"
+msgstr "הו&סף"
 
 #: lazarusidestrconsts.liswldelete
 msgid "&Delete"
-msgstr "מחק (&D)"
+msgstr "מחק&"
 
 #: lazarusidestrconsts.liswldeleteall
 msgid "De&lete All"
-msgstr "מחק הכל (&l)"
+msgstr "מח&ק הכל"
 
 #: lazarusidestrconsts.liswldisableall
 msgid "D&isable All"
-msgstr ""
+msgstr "ב&טל הכל"
 
 #: lazarusidestrconsts.liswlenableall
 msgid "E&nable All"
-msgstr ""
+msgstr "א&פשר הכל"
 
 #: lazarusidestrconsts.liswlenabled
 msgid "&Enabled"
@@ -13567,7 +13562,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liswlproperties
 msgid "&Properties"
-msgstr "תכונות (&P)"
+msgstr "תכונות&"
 
 #: lazarusidestrconsts.liswlwatchlist
 msgid "Watch list"
@@ -13848,7 +13843,7 @@ msgstr "ספריית הפלט של קבצי PO"
 
 #: lazarusidestrconsts.rsremove
 msgid "&Remove"
-msgstr "הסר (&R)"
+msgstr "הס&ר"
 
 #: lazarusidestrconsts.rsresetfilter
 msgid "Reset filter"
@@ -15025,7 +15020,7 @@ msgstr ""
 
 #: lazarusidestrconsts.uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
-msgstr "הוסף צפייה (&W) מהסמן"
+msgstr "הוסף &צפייה מהסמן"
 
 #: lazarusidestrconsts.uembookmarkn
 msgid "Bookmark"
@@ -15037,7 +15032,7 @@ msgstr "סגור את כל הדפים האחרים"
 
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"
-msgstr "סגור את הדף (&C)"
+msgstr "ס&גור את הדף"
 
 #: lazarusidestrconsts.uemcompletecode
 msgctxt "lazarusidestrconsts.uemcompletecode"
@@ -15174,7 +15169,7 @@ msgstr "שונה"
 
 #: lazarusidestrconsts.uemopenfileatcursor
 msgid "&Open file at cursor"
-msgstr "פתח קובץ במיקום הסמן (&O)"
+msgstr "פתח &קובץ במיקום הסמן"
 
 #: lazarusidestrconsts.uempaste
 msgctxt "lazarusidestrconsts.uempaste"
@@ -15196,7 +15191,7 @@ msgstr "קריאה בלבד"
 
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
-msgstr "יצור מחדש"
+msgstr "סידור מחדש"
 
 #: lazarusidestrconsts.uemrenameidentifier
 msgid "Rename Identifier"
@@ -15204,7 +15199,7 @@ msgstr "שנה את שם המזהה"
 
 #: lazarusidestrconsts.uemruntocursor
 msgid "&Run to Cursor"
-msgstr "רוץ עד לסמן (&R)"
+msgstr "רוץ &עד לסמן"
 
 #: lazarusidestrconsts.uemsetbookmark
 msgid "&Set Bookmark"

@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazarus\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-13 14:11+0100\n"
-"Last-Translator: Chronos <robie@centrum.cz>\n"
+"PO-Revision-Date: 2010-05-19 23:43+0300\n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15165,6 +15165,63 @@ msgstr "Přejmenovat identifikátor"
 msgid "&Run to Cursor"
 msgstr "&Spustit po kurzor"
 
+#: lazarusidestrconsts.uemsetbookmark
+msgid "&Set Bookmark"
+msgstr "&Nastavit značku"
+
+#: lazarusidestrconsts.uemsetfreebookmark
+msgctxt "lazarusidestrconsts.uemsetfreebookmark"
+msgid "Set a free Bookmark"
+msgstr "Nastavit volnou Záložku"
+
+#: lazarusidestrconsts.uemshowlinenumbers
+msgid "Show Line Numbers"
+msgstr "Zobrazovat čísla řádků"
+
+#: lazarusidestrconsts.uemshowunitinfo
+msgid "Unit Info"
+msgstr "Informace o jednotce"
+
+#: lazarusidestrconsts.uemtogglebookmark
+msgid "&Toggle Bookmark"
+msgstr "&Přepnout záložku"
+
+#: lazarusidestrconsts.uemtogglebreakpoint
+msgid "&Toggle Breakpoint"
+msgstr "&Přepnout záložku"
+
+#: lazarusidestrconsts.uemviewcallstack
+msgid "View Call Stack"
+msgstr "Zobrazit volací zásobník"
+
+#: lazarusidestrconsts.uenotimplcap
+msgid "Not implemented yet"
+msgstr "Doposud neimplementováno"
+
+#: lazarusidestrconsts.uenotimplcapagain
+msgid "I told You: Not implemented yet"
+msgstr "Říkal jsem ti: Ještě není implementovano"
+
+#: lazarusidestrconsts.uenotimpltext
+msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
+msgstr "Pošlete e-mail na lazarus@miraclec.com, pokud nám můžete pomoci implementovat tuto vlastnost."
+
+#: lazarusidestrconsts.uepins
+msgid "INS"
+msgstr "VLO"
+
+#: lazarusidestrconsts.uepovr
+msgid "OVR"
+msgstr "PŘE"
+
+#: lazarusidestrconsts.uepreadonly
+msgid "Readonly"
+msgstr "Pouze pro čtení"
+
+#: lazarusidestrconsts.versioninfotitle
+msgid "Version Info"
+msgstr "Informace o verzi"
+
 #~ msgid "Auto create form when opening unit"
 #~ msgstr "Automaticky vytvořit formulář při otevření jednotky"
 #~ msgid "Use Default"
@@ -15262,60 +15319,4 @@ msgstr "&Spustit po kurzor"
 #~ msgstr "Přesunout editor vpravo"
 #~ msgid "Move Editor Rightmost"
 #~ msgstr "Přesunout editor nejvíce vpravo"
-#: lazarusidestrconsts.uemsetbookmark
-msgid "&Set Bookmark"
-msgstr "&Nastavit značku"
-
-#: lazarusidestrconsts.uemsetfreebookmark
-msgctxt "lazarusidestrconsts.uemsetfreebookmark"
-msgid "Set a free Bookmark"
-msgstr "Nastavit volnou Záložku"
-
-#: lazarusidestrconsts.uemshowlinenumbers
-msgid "Show Line Numbers"
-msgstr "Zobrazovat čísla řádků"
-
-#: lazarusidestrconsts.uemshowunitinfo
-msgid "Unit Info"
-msgstr "Informace o jednotce"
-
-#: lazarusidestrconsts.uemtogglebookmark
-msgid "&Toggle Bookmark"
-msgstr "&Přepnout záložku"
-
-#: lazarusidestrconsts.uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
-msgstr "&Přepnout záložku"
-
-#: lazarusidestrconsts.uemviewcallstack
-msgid "View Call Stack"
-msgstr "Zobrazit volací zásobník"
-
-#: lazarusidestrconsts.uenotimplcap
-msgid "Not implemented yet"
-msgstr "Doposud neimplementováno"
-
-#: lazarusidestrconsts.uenotimplcapagain
-msgid "I told You: Not implemented yet"
-msgstr "Říkal jsem ti: Ještě není implementovano"
-
-#: lazarusidestrconsts.uenotimpltext
-msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
-msgstr "Pošlete e-mail na lazarus@miraclec.com, pokud nám můžete pomoci implementovat tuto vlastnost."
-
-#: lazarusidestrconsts.uepins
-msgid "INS"
-msgstr "VLO"
-
-#: lazarusidestrconsts.uepovr
-msgid "OVR"
-msgstr "PŘE"
-
-#: lazarusidestrconsts.uepreadonly
-msgid "Readonly"
-msgstr "Pouze pro čtení"
-
-#: lazarusidestrconsts.versioninfotitle
-msgid "Version Info"
-msgstr "Informace o verzi"
 
