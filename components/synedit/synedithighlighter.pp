@@ -36,13 +36,7 @@ uses
 {$IFDEF SYN_CLX}
   kTextDrawer, Types, QGraphics,
 {$ELSE}
-  Graphics,
-  {$IFDEF SYN_LAZARUS}
-  FileUtil, LCLProc, LCLIntf, LCLType,
-  {$ELSE}
-  Windows,
-  {$ENDIF}
-  Registry, IniFiles,
+  Graphics, FileUtil, LCLProc, LCLIntf, LCLType, Registry, IniFiles,
 {$ENDIF}
   SynEditTypes, SynEditMiscClasses, SynEditTextBase, SynEditTextBuffer;
 
@@ -84,35 +78,33 @@ type
     property NeedsReScanEndIndex: Integer read FNeedsReScanEndIndex;
   end;
 
-  TSynHighlighterAttrFeature = (hafStyleMask);
+  TSynHighlighterAttrFeature = (hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask);
   TSynHighlighterAttrFeatures = set of TSynHighlighterAttrFeature;
   { TSynHighlighterAttributes }
 
   TSynHighlighterAttributes = class(TPersistent)
   private
-    fBackground: TColor;
-    fBackgroundDefault: TColor;                                                 //mh 2000-10-08
-    FFeatures: TSynHighlighterAttrFeatures;
-    fForeground: TColor;
-    fForegroundDefault: TColor;                                                 //mh 2000-10-08
+    FBackground: TColor;
+    FBackgroundDefault: TColor;
+    FForeground: TColor;
+    FForegroundDefault: TColor;
     FFrameColor: TColor;
     FFrameColorDefault: TColor;
+    FStyle: TFontStyles;
+    FStyleDefault: TFontStyles;
+    FStyleMask: TFontStyles;
+    FStyleMaskDefault: TFontStyles;
+    FFeatures: TSynHighlighterAttrFeatures;
     FStoredName: string;
-    fName: string;
-    fStyle: TFontStyles;
-    fStyleDefault: TFontStyles;                                                 //mh 2000-10-08
-    {$IFDEF SYN_LAZARUS}
-    fStyleMask: TFontStyles;
-    fStyleMaskDefault: TFontStyles;                                                 //mh 2000-10-08
-    {$ENDIF}
-    fOnChange: TNotifyEvent;
+    FName: string;
+    FOnChange: TNotifyEvent;
+    FChangeLock: Integer;
+    FIsChanged: Boolean;
     procedure Changed; virtual;
-{begin}                                                                         //mh 2000-10-08
     function GetBackgroundColorStored: boolean;
     function GetFontStyleMaskStored : boolean;
     function GetForegroundColorStored: boolean;
     function GetFrameColorStored: boolean;
-{end}                                                                           //mh 2000-10-08
     procedure SetBackground(Value: TColor);
     procedure SetForeground(Value: TColor);
     procedure SetFrameColor(const AValue: TColor);
@@ -120,43 +112,37 @@ type
     function GetStyleFromInt: integer;
     procedure SetStyleFromInt(const Value: integer);
     function GetFontStyleStored: boolean;
-    {$IFDEF SYN_LAZARUS}
     procedure SetStyleMask(const AValue : TFontStyles);
     function GetStyleMaskFromInt : integer;
     procedure SetStyleMaskFromInt(const Value : integer);
-    {$ENDIF}
   public
-    procedure Assign(Source: TPersistent); override;
     constructor Create(attribName: string; aStoredName: String = '');
-    procedure InternalSaveDefaultValues;                                        //mh 2000-10-08
-    function LoadFromBorlandRegistry(rootKey: HKEY; attrKey, attrName: string;
-      oldStyle: boolean): boolean; virtual;
-    function LoadFromRegistry(Reg: TBetterRegistry): boolean;
-    function SaveToRegistry(Reg: TBetterRegistry): boolean;
-    function LoadFromFile(Ini : TIniFile): boolean;                             //DDH 10/16/01
-    function SaveToFile(Ini : TIniFile): boolean;                               //DDH 10/16/01
+    procedure Assign(Source: TPersistent); override;
+    procedure InternalSaveDefaultValues;
+    function  LoadFromBorlandRegistry(rootKey: HKEY; attrKey, attrName: string;
+                                      oldStyle: boolean): boolean; virtual;
+    function  LoadFromRegistry(Reg: TBetterRegistry): boolean;
+    function  SaveToRegistry(Reg: TBetterRegistry): boolean;
+    function  LoadFromFile(Ini : TIniFile): boolean;
+    function  SaveToFile(Ini : TIniFile): boolean;
   public
     property IntegerStyle: integer read GetStyleFromInt write SetStyleFromInt;
-    {$IFDEF SYN_LAZARUS}
     property IntegerStyleMask: integer read GetStyleMaskFromInt write SetStyleMaskFromInt;
-    {$ENDIF}
     property Name: string read fName;
     property StoredName: string read FStoredName write FStoredName;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
     property Features: TSynHighlighterAttrFeatures read FFeatures write FFeatures;
   published
     property Background: TColor read fBackground write SetBackground
-      stored GetBackgroundColorStored;                                          //mh 2000-10-08
+             stored GetBackgroundColorStored;
     property Foreground: TColor read fForeground write SetForeground
-      stored GetForegroundColorStored;                                          //mh 2000-10-08
+             stored GetForegroundColorStored;
     property FrameColor: TColor read FFrameColor write SetFrameColor
-      stored GetFrameColorStored;
+             stored GetFrameColorStored;
     property Style: TFontStyles read fStyle write SetStyle //default [];
-      stored GetFontStyleStored;                                                //mh 2000-10-08
-    {$IFDEF SYN_LAZARUS}
+             stored GetFontStyleStored;
     property StyleMask: TFontStyles read fStyleMask write SetStyleMask //default [];
-      stored GetFontStyleMaskStored;                                                //mh 2000-10-08
-    {$ENDIF}
+             stored GetFontStyleMaskStored;
   end;
 
   TSynHighlighterCapability = (
@@ -491,45 +477,36 @@ end;
 procedure TSynHighlighterAttributes.Assign(Source: TPersistent);
 var
   src: TSynHighlighterAttributes;
-  bChanged: boolean;
 begin
   if Source is TSynHighlighterAttributes then begin
-    bChanged := FALSE;
-    src := Source as TSynHighlighterAttributes;
-    fName := src.fName;
-    if fBackground <> src.fBackground then begin
-      fBackground := src.fBackground;
-      bChanged := TRUE;
+    inc(FChangeLock);
+    try
+      src := Source as TSynHighlighterAttributes;
+      FName      := src.FName;
+      Background := src.FBackground;
+      Foreground := src.fForeground;
+      FrameColor := src.FFrameColor;
+      Style      := src.fStyle;
+      StyleMask  := src.fStyleMask;
+      FFeatures  := src.FFeatures;
+    finally
+      dec(FChangeLock);
+      if FIsChanged then
+        Changed;
     end;
-    if fForeground <> src.fForeground then begin
-      fForeground := src.fForeground;
-      bChanged := TRUE;
-    end;
-    if FFrameColor <> src.FFrameColor then begin
-      FFrameColor := src.FFrameColor;
-      bChanged := True;
-    end;
-    if fStyle <> src.fStyle then begin
-      fStyle := src.fStyle;
-      bChanged := TRUE;
-    end;
-    {$IFDEF SYN_LAZARUS}
-    if fStyleMask <> src.fStyleMask then begin
-      fStyleMask := src.fStyleMask;
-      bChanged := TRUE;
-    end;
-    {$ENDIF}
-    FFeatures := src.FFeatures;
-    if bChanged then
-      Changed;
   end else
     inherited Assign(Source);
 end;
 
 procedure TSynHighlighterAttributes.Changed;
 begin
+  if FChangeLock > 0 then begin
+    FIsChanged := True;
+    exit;
+  end;
   if Assigned(fOnChange) then
     fOnChange(Self);
+  FIsChanged := False;
 end;
 
 constructor TSynHighlighterAttributes.Create(attribName: string; aStoredName: String = '');
@@ -538,6 +515,7 @@ begin
   Background := clNone;
   Foreground := clNone;
   FFrameColor := clNone;
+  FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle];
   fName := attribName;
   if aStoredName = '' then
     FStoredName := attribName
@@ -575,10 +553,8 @@ begin
   fForegroundDefault := fForeground;
   fBackgroundDefault := fBackground;
   FFrameColorDefault := FFrameColor;
-  fStyleDefault := fStyle;
-  {$IFDEF SYN_LAZARUS}
-  fStyleMaskDefault := fStyleMask;
-  {$ENDIF}
+  fStyleDefault      := fStyle;
+  fStyleMaskDefault  := fStyleMask;
 end;
 
 function TSynHighlighterAttributes.LoadFromBorlandRegistry(rootKey: HKEY;
@@ -804,6 +780,8 @@ begin
       Foreground := Reg.ReadInteger('Foreground');
     if Reg.ValueExists('Style') then
       IntegerStyle := Reg.ReadInteger('Style');
+    if Reg.ValueExists('StyleMask') then
+      IntegerStyle := Reg.ReadInteger('StyleMask');
     reg.OpenKeyReadOnly('\' + key);
     Result := true;
   end else
@@ -822,9 +800,7 @@ begin
     Reg.WriteInteger('Background', Background);
     Reg.WriteInteger('Foreground', Foreground);
     Reg.WriteInteger('Style', IntegerStyle);
-    {$IFDEF SYN_LAZARUS}
     Reg.WriteInteger('StyleMask', IntegerStyleMask);
-    {$ENDIF}
     reg.OpenKey('\' + key, false);
     Result := true;
   end else
@@ -846,10 +822,8 @@ begin
         Foreground := Ini.ReadInteger(StoredName, 'Foreground', clWindowText);
       if S.IndexOf('Style') <> -1 then
         IntegerStyle := Ini.ReadInteger(StoredName, 'Style', 0);
-      {$IFDEF SYN_LAZARUS}
       if S.IndexOf('StyleMask') <> -1 then
         IntegerStyleMask := Ini.ReadInteger(StoredName, 'StyleMask', 0);
-      {$ENDIF}
       Result := true;
     end else Result := false;
   finally
@@ -862,9 +836,7 @@ begin
   Ini.WriteInteger(StoredName, 'Background', Background);
   Ini.WriteInteger(StoredName, 'Foreground', Foreground);
   Ini.WriteInteger(StoredName, 'Style', IntegerStyle);
-  {$IFDEF SYN_LAZARUS}
   Ini.WriteInteger(StoredName, 'StyleMask', IntegerStyleMask);
-  {$ENDIF}
   Result := true;
 end;
 
@@ -884,7 +856,6 @@ begin
   if Value and $8 <> 0 then Style:= Style + [fsStrikeout];
 end;
 
-{$IFDEF SYN_LAZARUS}
 procedure TSynHighlighterAttributes.SetStyleMask(const AValue : TFontStyles);
 begin
   if fStyleMask <> AValue then begin
@@ -908,7 +879,6 @@ begin
   if Value and $4 <> 0 then StyleMask:= StyleMask + [fsUnderline];
   if Value and $8 <> 0 then StyleMask:= StyleMask + [fsStrikeout];
 end;
-{$ENDIF}
 
 { TSynEditLinesList }
 
