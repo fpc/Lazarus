@@ -1211,6 +1211,8 @@ begin
       EnvironmentOptions.Lazarusdirectory:= Application.GetOptionValue('lazarusdir');
     end;
 
+    Application.BidiMode := Application.Direction(EnvironmentOptions.LanguageID);
+
     TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
                              EnvironmentOptions.LanguageID);
 
