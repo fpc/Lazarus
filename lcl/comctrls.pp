@@ -315,7 +315,7 @@ type
     property Font;
     //property HotTrack;
     property Images;
-    //property MultiLine;
+    property MultiLine;
     //property OwnerDraw;
     //property ParentBiDiMode;
     property ParentFont;

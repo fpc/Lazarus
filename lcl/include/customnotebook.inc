@@ -400,6 +400,11 @@ begin
     Result := nil;
 end;
 
+function TCustomNotebook.GetMultiLine: Boolean;
+begin
+  Result := nboMultiLine in Options;
+end;
+
 {------------------------------------------------------------------------------
   TCustomNotebook SetActivePage
  ------------------------------------------------------------------------------}
@@ -531,6 +536,14 @@ begin
   end
   else ; //raise exception?
   Change;
+end;
+
+procedure TCustomNotebook.SetMultiLine(const AValue: Boolean);
+begin
+  if AValue then
+    Options := Options + [nboMultiLine]
+  else
+    Options := Options - [nboMultiLine];
 end;
 
 {------------------------------------------------------------------------------

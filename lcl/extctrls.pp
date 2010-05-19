@@ -158,6 +158,7 @@ type
     procedure DoImageListChange(Sender: TObject);
     function GetActivePage: String;
     function GetActivePageComponent: TCustomPage;
+    function GetMultiLine: Boolean;
     function GetPage(AIndex: Integer): TCustomPage;
     function GetPageCount : integer;
     function GetPageIndex: Integer;
@@ -166,6 +167,7 @@ type
     function IsStoredActivePage: boolean;
     procedure AddRemovePageHandle(APage: TCustomPage);
     procedure MoveTab(Sender: TObject; NewIndex: Integer);
+    procedure SetMultiLine(const AValue: Boolean);
     procedure WSMovePage(APage: TCustomPage; NewIndex: Integer);
     procedure PageRemoved(Index: Integer);
     procedure RemovePage(Index: Integer);
@@ -212,9 +214,9 @@ type
     function GetMinimumTabHeight: integer; virtual;
     function GetCapabilities: TNoteBookCapabilities; virtual;
   public
-    //property MultiLine: boolean read fMultiLine write SetMultiLine default false;
     procedure DoCloseTabClicked(APage: TCustomPage); virtual;
     property Images: TImageList read FImages write SetImages;
+    property MultiLine: Boolean read GetMultiLine write SetMultiLine default False;
     property OnChanging: TTabChangingEvent read FOnChanging write FOnChanging;
     property OnCloseTabClicked: TNotifyEvent read FOnCloseTabClicked
                                              write FOnCloseTabClicked;
