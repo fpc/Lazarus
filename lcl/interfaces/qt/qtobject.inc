@@ -314,18 +314,14 @@ end;
 
 function TQtWidgetSet.AppRemoveStayOnTopFlags: Boolean;
 begin
-  Result := False;
-  {$note uncomment implementation when LCL side reworked}
-  // Result := True;
-  // QtRemoveStayOnTop;
+  Result := True;
+  QtRemoveStayOnTop;
 end;
 
 function TQtWidgetSet.AppRestoreStayOnTopFlags: Boolean;
 begin
-  Result := False;
-  {$note uncomment implementation when LCL side reworked}
-  // Result := True;
-  // QtRestoreStayOnTop;
+  Result := True;
+  QtRestoreStayOnTop;
 end;
 
 procedure TQtWidgetSet.SetOverrideCursor(const AValue: TObject);
@@ -357,7 +353,7 @@ begin
     begin
       W := TQtMainWindow(AForm.Handle);
       if (AForm.Parent = nil) and
-        (AForm.FormStyle in [fsStayOnTop, fsSplash]) and W.GetVisible and
+        (AForm.FormStyle in fsAllNonSystemStayOnTop) and W.GetVisible and
          not W.IsMdiChild and not W.IsModal and not w.isMinimized then
       begin
         Flags := W.windowFlags;
@@ -393,7 +389,7 @@ begin
     begin
       W := TQtMainWindow(AForm.Handle);
       if (AForm.Parent = nil) and
-        (AForm.FormStyle in [fsStayOnTop, fsSplash]) and W.GetVisible and
+        (AForm.FormStyle in fsAllNonSystemStayOnTop) and W.GetVisible and
         not W.IsMdiChild and not W.IsModal and not W.isMinimized then
       begin
         if StayOnTopList.HasId(W) then
