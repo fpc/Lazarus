@@ -643,8 +643,6 @@ type
     function FindExpressionTypeOfTerm(StartPos, EndPos: integer;
       Params: TFindDeclarationParams; WithAsOperator: boolean): TExpressionType;
     function FindEndOfExpression(StartPos: integer): integer;
-    function ConvertNodeToExpressionType(Node: TCodeTreeNode;
-      Params: TFindDeclarationParams): TExpressionType;
     function ReadOperandTypeAtCursor(
       Params: TFindDeclarationParams; MaxEndPos: integer = -1): TExpressionType;
     function FindExpressionTypeOfPredefinedIdentifier(StartPos: integer;
@@ -801,6 +799,8 @@ type
     function BaseTypeOfNodeHasSubIdents(ANode: TCodeTreeNode): boolean;
     function FindBaseTypeOfNode(Params: TFindDeclarationParams;
       Node: TCodeTreeNode): TFindContext;
+    function ConvertNodeToExpressionType(Node: TCodeTreeNode;
+      Params: TFindDeclarationParams): TExpressionType;
 
     function FindDeclarationAndOverload(const CursorPos: TCodeXYPosition;
       out ListOfPCodeXYPosition: TFPList;

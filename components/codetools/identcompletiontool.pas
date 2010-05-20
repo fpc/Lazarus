@@ -1760,6 +1760,7 @@ begin
   else
     exit;
   end;
+  //DebugLn(['TIdentCompletionTool.CollectAllContexts add ',FoundContext.Node.DescAsString]);
   AddCollectionContext(FoundContext.Tool,FoundContext.Node);
 end;
 
@@ -2208,7 +2209,7 @@ var
     if not StartInSubContext then
       Include(Params.Flags,fdfSearchInParentNodes);
     CurrentIdentifierList.Context:=GatherContext;
-    //DebugLn('CheckContextIsParameter searching procedure ...');
+    //DebugLn('CheckContextIsParameter searching procedures, properties and variables ...');
     GatherContext.Tool.FindIdentifierInContext(Params);
     //DebugLn('CheckContextIsParameter END');
     Ok:=true;

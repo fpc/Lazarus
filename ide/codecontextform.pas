@@ -105,6 +105,7 @@ begin
     if CodeContextFrm = nil then
       CodeContextFrm := TCodeContextFrm.Create(nil);
     CodeContextFrm.SetCodeContexts(CodeContexts);
+
     CodeContextFrm.Visible := True;
     Result := True;
   finally
@@ -294,24 +295,33 @@ procedure TCodeContextFrm.CreateHints(const CodeContexts: TCodeContextInfo);
   function FindBaseType(Tool: TFindDeclarationTool; Node: TCodeTreeNode;
     var s: string): boolean;
   var
-    Context: TFindContext;
+    Expr: TExpressionType;
     Params: TFindDeclarationParams;
   begin
     Result:=false;
     Params:=TFindDeclarationParams.Create;
     try
       try
-        Context:=Tool.FindBaseTypeOfNode(Params,Node);
-        if Context.Node=nil then exit;
-        case Context.Node.Desc of
-        ctnProcedureType:
-          begin
-            s:=s+Context.Tool.ExtractProcHead(Context.Node,
-               [phpWithVarModifiers,phpWithParameterNames,phpWithDefaultValues,
-               phpWithResultType]);
-            Result:=true;
+        Expr:=Tool.ConvertNodeToExpressionType(Node,Params);
+        if (Expr.Desc=xtContext) and (Expr.Context.Node<>nil) then begin
+          case Expr.Context.Node.Desc of
+          ctnProcedureType:
+            begin
+              s:=s+Expr.Context.Tool.ExtractProcHead(Expr.Context.Node,
+                 [phpWithVarModifiers,phpWithParameterNames,phpWithDefaultValues,
+                 phpWithResultType]);
+              Result:=true;
+            end;
           end;
-        end;
+        end else if Expr.Desc in (xtAllStringTypes+xtAllWideStringTypes-[xtShortString])
+        then begin
+          s:=s+'[1..high(PtrUInt)]';
+          Result:=true;
+        end else if Expr.Desc=xtShortString then begin
+          s:=s+'[0..255]';
+          Result:=true;
+        end else
+          debugln(['FindBaseType ',ExprTypeToString(Expr)]);
       except
       end;
     finally
