@@ -77,7 +77,7 @@ type
     FPerformer: TDragDockCommon;
     FStartPosition: TPoint;//mouse position at start of drag or dock
     FThresholdValue: Integer;//treshold before the drag becomes activated
-    FWaitForTreshold: boolean;//are we waiting on the treshold activation
+    FWaitForTreshold: boolean;//are we waiting on the treshold activation?
     FInDragStop: Boolean; // semaphore to prevent second execution of dragStop
   protected
     //Support input capture
