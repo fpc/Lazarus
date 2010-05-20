@@ -511,7 +511,7 @@ end;
 
 function TWin32WidgetSet.AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean;
 begin
-  RemoveStayOnTopFlags(AppHandle);
+  RemoveStayOnTopFlags(AppHandle, ASystemTopAlso);
   Result := True;
 end;
 

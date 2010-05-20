@@ -109,7 +109,7 @@ function AllocWindowInfo(Window: HWND): PWin32WindowInfo;
 function DisposeWindowInfo(Window: HWND): boolean;
 function GetWin32WindowInfo(Window: HWND): PWin32WindowInfo;
 
-procedure RemoveStayOnTopFlags(Window: HWND);
+procedure RemoveStayOnTopFlags(Window: HWND; ASystemTopAlso: Boolean = False);
 procedure RestoreStayOnTopFlags(Window: HWND);
 
 procedure AddToChangedMenus(Window: HWnd);
@@ -142,6 +142,7 @@ type
   PStayOnTopWindowsInfo = ^TStayOnTopWindowsInfo;
   TStayOnTopWindowsInfo = record
     AppWindow: HWND;
+    SystemTopAlso: Boolean;
     StayOnTopList: TList;
   end;
   
@@ -1079,14 +1080,17 @@ begin
   AStyle := GetWindowLong(Handle, GWL_EXSTYLE);
   if (AStyle and WS_EX_TOPMOST) <> 0 then // if stay on top then
   begin
-    // Don't remove system-wide stay on top
-    lWindowInfo := GetWin32WindowInfo(Handle);
-    if (lWindowInfo <> nil) then
+    // Don't remove system-wide stay on top, unless desired
+    if not StayOnTopWindowsInfo^.SystemTopAlso then
     begin
-      lWinControl := lWindowInfo^.WinControl;
-      if (lWinControl <> nil) and (lWinControl is TCustomForm)
-      and (TCustomForm(lWinControl).FormStyle = fsSystemStayOnTop) then
-      Exit;
+      lWindowInfo := GetWin32WindowInfo(Handle);
+      if (lWindowInfo <> nil) then
+      begin
+        lWinControl := lWindowInfo^.WinControl;
+        if (lWinControl <> nil) and (lWinControl is TCustomForm)
+        and (TCustomForm(lWinControl).FormStyle = fsSystemStayOnTop) then
+        Exit;
+      end;
     end;
 
     StayOnTopWindowsInfo^.StayOnTopList.Add(Pointer(Handle));
@@ -1095,7 +1099,7 @@ begin
   end;
 end;
 
-procedure RemoveStayOnTopFlags(Window: HWND);
+procedure RemoveStayOnTopFlags(Window: HWND; ASystemTopAlso: Boolean = False);
 var
   StayOnTopWindowsInfo: PStayOnTopWindowsInfo;
   WindowInfo: PWin32WindowInfo;
@@ -1105,6 +1109,7 @@ begin
   begin
     New(StayOnTopWindowsInfo);
     StayOnTopWindowsInfo^.AppWindow := Window;
+    StayOnTopWindowsInfo^.SystemTopAlso := ASystemTopAlso;
     StayOnTopWindowsInfo^.StayOnTopList := TList.Create;
     WindowInfo := GetWin32WindowInfo(Window);
     WindowInfo^.StayOnTopList := StayOnTopWindowsInfo^.StayOnTopList;
