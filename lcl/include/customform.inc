@@ -2013,19 +2013,30 @@ end;
        TCustomForm Method CloseQuery
 ------------------------------------------------------------------------------}
 function TCustomForm.CloseQuery: boolean;
-var
-  i: Integer;
+
+  function Check(AControl: TWinControl): boolean;
+  var
+    i: Integer;
+    Child: TControl;
+  begin
+    for i:=0 to AControl.ControlCount-1 do begin
+      Child:=AControl.Controls[i];
+      if Child is TWinControl then begin
+        if Child is TCustomForm then begin
+          if not TCustomForm(Child).CloseQuery then exit(false);
+        end else begin
+          if not Check(TWinControl(Child)) then exit(false);
+        end;
+      end;
+    end;
+    Result:=true;
+  end;
+
 begin
   if FormStyle = fsMDIForm then
   begin
     // Query children forms whether we can close
-    i:=0;
-    while i<DockClientCount do begin
-      if (DockClients[i] is TCustomForm)
-      and not (TCustomForm(DockClients[i]).CloseQuery) then
-        exit(false);
-      inc(i);
-    end;
+    if not Check(Self) then exit;
     // TODO: mdi logic
   end;
   Result := True;
