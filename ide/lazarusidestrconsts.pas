@@ -4776,6 +4776,7 @@ resourcestring
     +'hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s';
   lisRemoveUnitFromUsesSection = 'Remove unit from uses section';
   lisRemoveLocalVariable = 'Remove local variable %s';
+  lisNoHints = 'no hints';
 
 implementation
 

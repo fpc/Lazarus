@@ -43,7 +43,7 @@ uses
   BasicCodeTools, KeywordFuncLists, LinkScanner, CodeCache, FindDeclarationTool,
   IdentCompletionTool, CodeTree, CodeAtom, PascalParserTool, CodeToolManager,
   SrcEditorIntf,
-  IDEProcs;
+  IDEProcs, LazarusIDEStrConsts;
 
 type
 
@@ -315,13 +315,14 @@ procedure TCodeContextFrm.CreateHints(const CodeContexts: TCodeContextInfo);
           end;
         end else if Expr.Desc in (xtAllStringTypes+xtAllWideStringTypes-[xtShortString])
         then begin
-          s:=s+'[1..high(PtrUInt)]';
+          s:=s+'[position: 1..high(PtrUInt)]';
           Result:=true;
         end else if Expr.Desc=xtShortString then begin
-          s:=s+'[0..255]';
+          s:=s+'[position: 0..255]';
           Result:=true;
-        end else
+        end else begin
           debugln(['FindBaseType ',ExprTypeToString(Expr)]);
+        end;
       except
       end;
     finally
@@ -392,6 +393,8 @@ begin
         System.Insert('\',s,p+1);
     FHints.Add(Trim(s));
   end;
+  if FHints.Count=0 then
+    FHints.Add(lisNoHints);
   MarkCurrentParameterInHints(CodeContexts.ParameterIndex-1);
   //DebugLn('TCodeContextFrm.UpdateHints ',FHints.Text);
 end;
@@ -458,9 +461,9 @@ procedure TCodeContextFrm.MarkCurrentParameterInHints(ParameterIndex: integer);
     while (p<=length(Result)) do begin
       //DebugLn('MarkCurrentParameterInHint p=',dbgs(p),' "',Result[p],'" BracketLevel=',dbgs(BracketLevel),' CurParameterIndex=',dbgs(CurParameterIndex),' ReadingType=',dbgs(ReadingType),' SearchingType=',dbgs(SearchingType));
       case Result[p] of
-      '(','{':
+      '(','{','[':
         inc(BracketLevel);
-      ')','}':
+      ')','}',']':
         begin
           if (BracketLevel=1) then begin
             if CurrentMark<>'*' then
