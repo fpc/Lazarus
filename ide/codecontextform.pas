@@ -312,17 +312,22 @@ procedure TCodeContextFrm.CreateHints(const CodeContexts: TCodeContextInfo);
                  phpWithResultType]);
               Result:=true;
             end;
+          ctnOpenArrayType:
+            begin
+              s:=s+'[Index: PtrUInt]';
+              Result:=true;
+            end;
           end;
         end else if Expr.Desc in (xtAllStringTypes+xtAllWideStringTypes-[xtShortString])
         then begin
-          s:=s+'[position: 1..high(PtrUInt)]';
+          s:=s+'[Index: 1..high(PtrUInt)]';
           Result:=true;
         end else if Expr.Desc=xtShortString then begin
-          s:=s+'[position: 0..255]';
+          s:=s+'[Index: 0..255]';
           Result:=true;
-        end else begin
-          debugln(['FindBaseType ',ExprTypeToString(Expr)]);
         end;
+        if not Result then
+          debugln(['TCodeContextFrm.CreateHints.FindBaseType: not yet supported: ',ExprTypeToString(Expr)]);
       except
       end;
     finally
