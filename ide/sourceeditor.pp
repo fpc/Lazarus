@@ -40,9 +40,9 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, Math, Controls, LCLProc, LCLType, LResources, LCLIntf,
-  FileUtil, Forms, ComCtrls, Dialogs, StdCtrls, Graphics,
-  Translations, ClipBrd, types, Extctrls, Menus, HelpIntfs, LConvEncoding, LDockCtrl,
+  Classes, SysUtils, Math, Controls, LCLProc, LCLType, LResources,
+  LCLIntf, FileUtil, Forms, ComCtrls, Dialogs, StdCtrls, Graphics, Translations,
+  ClipBrd, types, Extctrls, Menus, HelpIntfs, LConvEncoding, LDockCtrl,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   // synedit
@@ -284,6 +284,7 @@ type
        Category: TAutoCompleteOption): boolean;
     function AutoBlockCompleteChar(Char: TUTF8Char; var AddChar: boolean;
        Category: TAutoCompleteOption; aTextPos: TPoint; Line: string): boolean;
+    function AutoBlockCompleteChar(Char: TUTF8Char): boolean;
     procedure AutoCompleteBlock;
 
     procedure FocusEditor;// called by TSourceNotebook when the Notebook page
@@ -3015,6 +3016,12 @@ begin
 
   ecNone: ;
 
+  ecChar:
+    begin
+      if AutoBlockCompleteChar(AChar) then
+        Handled:=true;
+    end;
+
   else
     begin
       Handled:=false;
@@ -3775,6 +3782,36 @@ begin
       FEditor.LogicalCaretXY:=aTextPos;
       FEditor.EndUndoBlock;
     end;
+  end;
+end;
+
+function TSourceEditor.AutoBlockCompleteChar(Char: TUTF8Char): boolean;
+var
+  p: TPoint;
+  x1: integer;
+  x2: integer;
+  Line: String;
+  WordToken: String;
+begin
+  Result:=false;
+  if (not EditorOpts.AutoBlockCompletion)
+  or (not (SyntaxHighlighterType in [lshFreePascal,lshDelphi])) then
+    exit;
+  if (Char='n') or (Char='N') then begin
+    p:=GetCursorTextXY;
+    FEditor.GetWordBoundsAtRowCol(p, x1, x2);
+    Line:=GetLineText;
+    WordToken := copy(Line, x1, x2-x1);
+    if SysUtils.CompareText(WordToken,'begin')<>0 then exit;
+    debugln(['TSourceEditor.AutoBlockCompleteChar ']);
+    // user typed 'begin'
+    if not LazarusIDE.SaveSourceEditorChangesToCodeCache(self) then exit;
+    {FEditor.BeginUndoBlock;
+    try
+      if not CodeToolBoss.CompleteBlock(CodeBuffer,p.X,p.Y) then exit;
+    finally
+      FEditor.EndUndoBlock;
+    end;}
   end;
 end;
 

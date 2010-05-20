@@ -5598,7 +5598,7 @@ var
     Indent: Integer;
     CursorBlockInnerIndent, CursorBlockOuterIndent: LongInt;
     CursorBlock: TBlock;
-    BehindCursorBlock: Boolean; // atom behind cursor block
+    BehindCursorBlock: Boolean; // atom is behind cursor block
     InCursorBlock: Boolean;
     NeedCompletion: Boolean;
     InsertPos: LongInt;
@@ -5857,7 +5857,6 @@ var
       InCursorBlock:=(CursorBlockLvl>=0) and (CursorBlockLvl=Stack.Top)
                      and (not BehindCursorBlock);
       if LineStart and InCursorBlock then begin
-        Indent:=GetLineIndent(Src,CurPos.StartPos);
         // atom is in same block as cursor (not sub block)
         // and first atom of a line
         // => check indent
