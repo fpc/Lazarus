@@ -61,12 +61,12 @@ procedure TWidgetSet.AppSetVisible(const AVisible: Boolean);
 begin
 end;
 
-function TWidgetSet.AppRemoveStayOnTopFlags: Boolean;
+function TWidgetSet.AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean;
 begin
   Result := False;
 end;
 
-function TWidgetSet.AppRestoreStayOnTopFlags: Boolean;
+function TWidgetSet.AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean;
 begin
   Result := False;
 end;

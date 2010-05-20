@@ -312,16 +312,16 @@ begin
   QCoreApplication_setApplicationName(@W);
 end;
 
-function TQtWidgetSet.AppRemoveStayOnTopFlags: Boolean;
+function TQtWidgetSet.AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean;
 begin
   Result := True;
-  QtRemoveStayOnTop;
+  QtRemoveStayOnTop(ASystemTopAlso);
 end;
 
-function TQtWidgetSet.AppRestoreStayOnTopFlags: Boolean;
+function TQtWidgetSet.AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean;
 begin
   Result := True;
-  QtRestoreStayOnTop;
+  QtRestoreStayOnTop(ASystemTopAlso);
 end;
 
 procedure TQtWidgetSet.SetOverrideCursor(const AValue: TObject);
@@ -336,7 +336,7 @@ begin
   FOverrideCursor := AValue;
 end;
 
-procedure TQtWidgetSet.QtRemoveStayOnTop;
+procedure TQtWidgetSet.QtRemoveStayOnTop(const ASystemTopAlso: Boolean = False);
 var
   i: Integer;
   AForm: TCustomForm;
@@ -372,7 +372,7 @@ begin
   end;
 end;
 
-procedure TQtWidgetSet.QtRestoreStayOnTop;
+procedure TQtWidgetSet.QtRestoreStayOnTop(const ASystemTopAlso: Boolean = False);
 var
   i: Integer;
   AForm: TCustomForm;

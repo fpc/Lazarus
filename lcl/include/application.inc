@@ -1175,7 +1175,7 @@ begin
   // a message can be shown
   if GetCapture <> 0 then SendMessage(GetCapture, LM_CANCELMODE, 0, 0);
   if not Skip then
-    RemoveStayOnTop;
+    RemoveStayOnTop(True);
   // handle the exception
   if ExceptObject is Exception then
   begin
@@ -1196,7 +1196,7 @@ begin
   else
     SysUtils.ShowException(ExceptObject, ExceptAddr);
   if not Skip then
-    RestoreStayOnTop;
+    RestoreStayOnTop(True);
   Exclude(FFlags, AppHandlingException);
 end;
 
@@ -1257,12 +1257,12 @@ end;
 {------------------------------------------------------------------------------
   procedure TApplication.RemoveStayOnTop;
 ------------------------------------------------------------------------------}
-procedure TApplication.RemoveStayOnTop;
+procedure TApplication.RemoveStayOnTop(const ASystemTopAlso: Boolean = False);
 var
   i: Integer;
   AForm: TCustomForm;
 begin
-  if WidgetSet.AppRemoveStayOnTopFlags then
+  if WidgetSet.AppRemoveStayOnTopFlags(ASystemTopAlso) then
     Exit;
   if Screen = nil then
     Exit;
@@ -1282,11 +1282,11 @@ begin
   end;
 end;
 
-procedure TApplication.RestoreStayOnTop;
+procedure TApplication.RestoreStayOnTop(const ASystemTopAlso: Boolean = False);
 var
   i: integer;
 begin
-  if WidgetSet.AppRestoreStayOnTopFlags then
+  if WidgetSet.AppRestoreStayOnTopFlags(ASystemTopAlso) then
     Exit;
   if FRestoreStayOnTop <> nil then
     for i := FRestoreStayOnTop.Count - 1 downto 0 do

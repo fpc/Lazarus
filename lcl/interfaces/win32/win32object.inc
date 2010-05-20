@@ -509,13 +509,13 @@ begin
     Windows.ShowWindow(FAppHandle, SW_HIDE);
 end;
 
-function TWin32WidgetSet.AppRemoveStayOnTopFlags: Boolean;
+function TWin32WidgetSet.AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean;
 begin
   RemoveStayOnTopFlags(AppHandle);
   Result := True;
 end;
 
-function TWin32WidgetSet.AppRestoreStayOnTopFlags: Boolean;
+function TWin32WidgetSet.AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean;
 begin
   RestoreStayOnTopFlags(AppHandle);
   Result := True;

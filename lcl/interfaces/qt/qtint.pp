@@ -75,8 +75,8 @@ type
     FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
     procedure ClearCachedColors;
     procedure SetOverrideCursor(const AValue: TObject);
-    procedure QtRemoveStayOnTop;
-    procedure QtRestoreStayOnTop;
+    procedure QtRemoveStayOnTop(const ASystemTopAlso: Boolean = False);
+    procedure QtRestoreStayOnTop(const ASystemTopAlso: Boolean = False);
   protected
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
@@ -109,8 +109,8 @@ type
     procedure AppBringToFront; override;
     procedure AppSetIcon(const Small, Big: HICON); override;
     procedure AppSetTitle(const ATitle: string); override;
-    function AppRemoveStayOnTopFlags: Boolean; override;
-    function AppRestoreStayOnTopFlags: Boolean; override;
+    function AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
+    function AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
   public
     constructor Create; override;
     destructor Destroy; override;

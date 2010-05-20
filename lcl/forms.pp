@@ -1299,8 +1299,8 @@ type
                          const Keyword: String): Boolean;
     function HelpKeyword(const Keyword: String): Boolean;
     procedure ShowHelpForObject(Sender: TObject);
-    procedure RemoveStayOnTop;
-    procedure RestoreStayOnTop;
+    procedure RemoveStayOnTop(const ASystemTopAlso: Boolean = False);
+    procedure RestoreStayOnTop(const ASystemTopAlso: Boolean = False);
     function IsWaiting: boolean;
     procedure CancelHint;
     procedure HideHint;

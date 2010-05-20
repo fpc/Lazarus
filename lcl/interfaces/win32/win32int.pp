@@ -175,8 +175,8 @@ type
     procedure AppSetIcon(const Small, Big: HICON); override;
     procedure AppSetTitle(const ATitle: string); override;
     procedure AppSetVisible(const AVisible: Boolean); override;
-    function AppRemoveStayOnTopFlags: Boolean; override;
-    function AppRestoreStayOnTopFlags: Boolean; override;
+    function AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
+    function AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
 
     function  InitStockFont(AFont: TObject; AStockFont: TStockFont): Boolean; override;
 
