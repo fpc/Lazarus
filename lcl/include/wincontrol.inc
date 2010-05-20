@@ -3706,6 +3706,7 @@ begin
   if FClientWidth<0 then FClientWidth:=0;
   inc(FClientHeight,Height-OldHeight);
   if FClientHeight<0 then FClientHeight:=0;
+  Exclude(FWinControlFlags,wcfAdjustedLogicalClientRectValid);
 end;
 
 {------------------------------------------------------------------------------
@@ -3842,9 +3843,9 @@ function TWinControl.GetClientRect: TRect;
     if wcfClientRectNeedsUpdate in FWinControlFlags then begin
       ClientSizeChanged:=(FClientWidth<>NewClientRect.Right)
                       or (FClientHeight<>NewClientRect.Bottom);
-      FClientWidth:=NewClientRect.Right;
-      FClientHeight:=NewClientRect.Bottom;
       if ClientSizeChanged then begin
+        FClientWidth:=NewClientRect.Right;
+        FClientHeight:=NewClientRect.Bottom;
         {$IF defined(VerboseNewAutoSize) or defined(CHECK_POSITION)}
         {$IFDEF CHECK_POSITION}
         if CheckPosition(Self) then
