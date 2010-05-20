@@ -297,6 +297,8 @@ procedure TCodeContextFrm.CreateHints(const CodeContexts: TCodeContextInfo);
   var
     Expr: TExpressionType;
     Params: TFindDeclarationParams;
+    ExprTool: TFindDeclarationTool;
+    ExprNode: TCodeTreeNode;
   begin
     Result:=false;
     Params:=TFindDeclarationParams.Create;
@@ -304,10 +306,12 @@ procedure TCodeContextFrm.CreateHints(const CodeContexts: TCodeContextInfo);
       try
         Expr:=Tool.ConvertNodeToExpressionType(Node,Params);
         if (Expr.Desc=xtContext) and (Expr.Context.Node<>nil) then begin
-          case Expr.Context.Node.Desc of
+          ExprTool:=Expr.Context.Tool;
+          ExprNode:=Expr.Context.Node;
+          case ExprNode.Desc of
           ctnProcedureType:
             begin
-              s:=s+Expr.Context.Tool.ExtractProcHead(Expr.Context.Node,
+              s:=s+ExprTool.ExtractProcHead(ExprNode,
                  [phpWithVarModifiers,phpWithParameterNames,phpWithDefaultValues,
                  phpWithResultType]);
               Result:=true;
@@ -315,6 +319,11 @@ procedure TCodeContextFrm.CreateHints(const CodeContexts: TCodeContextInfo);
           ctnOpenArrayType:
             begin
               s:=s+'[Index: PtrUInt]';
+              Result:=true;
+            end;
+          ctnRangedArrayType:
+            begin
+              s:=s+ExprTool.ExtractArrayRange(ExprNode,[]);
               Result:=true;
             end;
           end;

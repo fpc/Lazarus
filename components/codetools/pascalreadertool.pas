@@ -58,6 +58,8 @@ type
         Attr: TProcHeadAttributes): string;
     function ExtractCode(StartPos, EndPos: integer;
         Attr: TProcHeadAttributes): string;
+    function ExtractBrackets(BracketStartPos: integer;
+        Attr: TProcHeadAttributes): string;
     function ExtractIdentCharsFromStringConstant(
         StartPos, MinPos, MaxPos, MaxLen: integer): string;
     function ReadStringConstantValue(StartPos: integer): string;
@@ -163,6 +165,10 @@ type
                                             ): boolean;
     function FindEndOfWithVar(WithVarNode: TCodeTreeNode): integer;
     function NodeIsIdentifierInInterface(Node: TCodeTreeNode): boolean;
+
+    // arrays
+    function ExtractArrayRange(ArrayNode: TCodeTreeNode;
+        Attr: TProcHeadAttributes): string;
 
     // sections
     function GetSourceName(DoBuildTree: boolean = true): string;
@@ -993,6 +999,49 @@ begin
   Result:=GetExtraction(phpInUpperCase in Attr);
 end;
 
+function TPascalReaderTool.ExtractBrackets(BracketStartPos: integer;
+  Attr: TProcHeadAttributes): string;
+
+  function ExtractTilBracketClose(ExtractBrackets: boolean): boolean;
+  var
+    CloseBracket: TCommonAtomFlag;
+    First: Boolean;
+  begin
+    Result:=true;
+    case CurPos.Flag of
+    cafRoundBracketOpen: CloseBracket:=cafRoundBracketClose;
+    cafEdgedBracketOpen: CloseBracket:=cafEdgedBracketClose;
+    else exit;
+    end;
+    First:=true;
+    repeat
+      if First then
+        ExtractNextAtom(ExtractBrackets,Attr)
+      else
+        ExtractNextAtom(true,Attr);
+      if CurPos.StartPos>SrcLen then exit;
+      if CurPos.Flag=CloseBracket then exit(true);
+      if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
+        if not ExtractTilBracketClose(true) then exit;
+      end;
+    until false;
+  end;
+
+begin
+  Result:='';
+  ExtractProcHeadPos:=phepNone;
+  if (BracketStartPos<1) or (BracketStartPos>SrcLen) then exit;
+  InitExtraction;
+  // reparse the clean source
+  MoveCursorToCleanPos(BracketStartPos);
+  ReadNextAtom;
+  if not ExtractTilBracketClose(not (phpWithoutBrackets in Attr)) then exit;
+  if not (phpWithoutBrackets in Attr) then
+    ExtractNextAtom(true,Attr);
+  // copy memorystream to Result string
+  Result:=GetExtraction(phpInUpperCase in Attr);
+end;
+
 function TPascalReaderTool.ExtractPropName(PropNode: TCodeTreeNode;
   InUpperCase: boolean): string;
 begin
@@ -1813,6 +1862,17 @@ begin
         and (Node.Parent.Parent.Desc=ctnInterface);
   end;
   Result:=false;
+end;
+
+function TPascalReaderTool.ExtractArrayRange(ArrayNode: TCodeTreeNode;
+  Attr: TProcHeadAttributes): string;
+begin
+  Result:='';
+  if (ArrayNode=nil) or (ArrayNode.Desc<>ctnRangedArrayType) then exit;
+  MoveCursorToNodeStart(ArrayNode);
+  if not ReadNextUpAtomIs('ARRAY') then exit;
+  if not ReadNextAtomIsChar('[') then exit;
+  Result:=ExtractBrackets(CurPos.StartPos,Attr);
 end;
 
 function TPascalReaderTool.GetSourceName(DoBuildTree: boolean): string;
