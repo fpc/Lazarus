@@ -4356,10 +4356,6 @@ var
   AWindow: PGdkWindow;
   ACustomForm: TCustomForm;
   {$IFDEF GTK2}
-  {$IFDEF VerboseFormPositioning}
-  X1, Y1: gint; // current gdk_window_root_origin
-  {$ENDIF}
-  SavedOrigin: TPoint;
   CurWindowState: TWindowState;
   {$ENDIF}
 begin
@@ -4441,39 +4437,6 @@ begin
     if gtk_widget_visible(SenderWidget) then
       exit;
 
-    {$IFDEF GTK2}
-    // we must restore Left & Top coords here to prevent flickering
-    if (ACustomForm <> nil) and
-       (ACustomForm.Parent = nil) and
-       (ACustomForm.ParentWindow = 0) and
-       (ACustomForm is TForm) and // be sure that we are not THintWindow !
-       (ACustomForm.BorderStyle <> bsNone) and
-       not (ACustomForm.FormStyle in [fsMDIChild, fsSplash]) then
-    begin
-      if (ACustomForm.WindowState <> wsMinimized) then
-      begin
-        SavedOrigin := GetWidgetInfo(SenderWidget)^.FormSavedPos;
-        if (SavedOrigin.X <> -10000) and (SavedOrigin.Y <> -10000) then
-        begin
-          {$IFDEF VerboseFormPositioning}
-          gdk_window_get_root_origin(SenderWidget^.window, @X1, @Y1);
-          DebugLn('VFP [TGtkWidgetSet.ShowHide] B ',
-             LCLControl.Name,':',LCLControl.ClassName,
-            ' Window=',dbgs(GetControlWindow(SenderWidget)<>nil),
-          ' RESTORE FORMSAVEDPOS CURRENT X=',dbgs(X1),' Y=',dbgs(Y1),
-          ' SAVED X=',dbgs(SavedOrigin.X),' Y=',dbgs(SavedOrigin.Y));
-          {$ENDIF}
-          with SavedOrigin do
-            gtk_window_move(PGtkWindow(SenderWidget), X, Y);
-          SavedOrigin.X := -10000;
-          SavedOrigin.Y := -10000;
-          GetWidgetInfo(SenderWidget)^.FormSavedPos := SavedOrigin;
-        end;
-      end;
-
-    end;
-    {$ENDIF}
-
     gtk_widget_show(SenderWidget);
 
     {$IFDEF GTK2}
@@ -4511,13 +4474,7 @@ begin
       if (ACustomForm is TForm) and
         not (ACustomForm.FormStyle in [fsMDIChild, fsSplash])
         and (ACustomForm.BorderStyle <> bsNone) then
-      begin
-        with GetWidgetInfo(SenderWidget)^.FormSavedPos do
-        begin
-          X := ACustomForm.Left;
-          Y := ACustomForm.Top;
-        end;
-      end;
+        SetResizeRequest(SenderWidget);
     end;
     {$ENDIF}
 
