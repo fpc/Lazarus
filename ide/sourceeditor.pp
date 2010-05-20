@@ -2094,7 +2094,7 @@ var
   i: Integer;
 begin
   {$IFDEF IDE_DEBUG}
-  writeln('[TSourceEditor.OnCodeBufferChanged] A ',FIgnoreCodeBufferLock,' ',SrcLogEntry<>nil);
+  debugln(['[TSourceEditor.OnCodeBufferChanged] A ',FIgnoreCodeBufferLock,' ',SrcLogEntry<>nil]);
   {$ENDIF}
   if FIgnoreCodeBufferLock>0 then exit;
   CodeToolsInSync:=not NeedsUpdateCodeBuffer;

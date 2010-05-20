@@ -212,9 +212,8 @@ type
         out ALineStart, ALineEnd, AFirstAtomStart, ALastAtomEnd: integer);
     function FindLineEndOrCodeAfterPosition(StartPos: integer;
         SkipEmptyLines: boolean = false; IncludeLineEnd: boolean = false): integer;
-    function FindLineEndOrCodeInFrontOfPosition(StartPos: integer): integer;
     function FindLineEndOrCodeInFrontOfPosition(StartPos: integer;
-        StopAtDirectives: boolean): integer;
+        StopAtDirectives: boolean = true): integer;
 
     function UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
     procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); virtual;
@@ -2447,12 +2446,6 @@ begin
                   IncludeLineEnd)
   else
     Result:=StartPos;
-end;
-
-function TCustomCodeTool.FindLineEndOrCodeInFrontOfPosition(StartPos: integer
-  ): integer;
-begin
-  Result:=FindLineEndOrCodeInFrontOfPosition(StartPos,true);
 end;
 
 function TCustomCodeTool.FindLineEndOrCodeInFrontOfPosition(StartPos: integer;

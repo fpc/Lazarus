@@ -2519,7 +2519,7 @@ begin
           if (Result>SrcStart) and (Source[Result-1] in [#10,#13])
           and (Source[Result]<>Source[Result-1]) then
             dec(Result);
-          LineEndPos:=Result+1;
+          LineEndPos:=Result; // start of line end
           // test if in a // comment
           LineStartPos:=Result;
           IsEmpty:=true;
@@ -2532,7 +2532,7 @@ begin
             dec(LineStartPos);
           end;
           if IsEmpty then begin
-            // the line is empty
+            // the line is empty => return start of line end
             Result:=LineEndPos;
             exit;
           end;
