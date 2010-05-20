@@ -1000,6 +1000,7 @@ begin
     exit;
   end;
   FEditModeQueued := False;
+  if FWordIndex.MultiWordCount = 0 then exit;
 
   FMode :=  spseEditing;
   AreaMarkupEnabled := True;
@@ -1339,6 +1340,7 @@ begin
   if Handled or AfterProcessing or not Active then exit;
 
   if FMode = spseSelecting then begin
+    // todo: finish word-hash calculations / check if any cells exist
     Cmd := ConvertCommandToBaseSel(Command);
     Handled := True;
     case Cmd of
