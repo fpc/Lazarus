@@ -504,8 +504,9 @@ type
     procedure GetControlBounds(Control: TControl;
                                out AControlBounds: TRect); virtual; abstract;
     function GetDockEdge(ADockObject: TDragDockObject): boolean; virtual;
+    procedure InsertControl(ADockObject: TDragDockObject); virtual; overload;
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
-                            DropCtl: TControl); virtual; abstract;
+                            DropCtl: TControl); virtual; abstract; overload;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
     procedure PaintSite(DC: HDC); virtual; abstract;
     procedure MessageHandler(Sender: TControl; var Message: TLMessage); virtual; abstract;
@@ -3775,6 +3776,12 @@ begin
   Return True if ADockObject.DropAlign has been determined.
 *)
   Result := False; //not implemented
+end;
+
+procedure TDockManager.InsertControl(ADockObject: TDragDockObject);
+begin
+  InsertControl(ADockObject.Control,ADockObject.DropAlign,
+                ADockObject.DropOnControl);
 end;
 
 initialization

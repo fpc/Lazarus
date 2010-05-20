@@ -7597,8 +7597,7 @@ begin
     try
       DragDockObject.Control.Dock(Self, DestRect);
       if FUseDockManager and (DockManager <> nil) then
-        DockManager.InsertControl(DragDockObject.Control,
-          DragDockObject.DropAlign, DragDockObject.DropOnControl);
+        DockManager.InsertControl(DragDockObject);
     finally
       EnableAlign;
     end;
