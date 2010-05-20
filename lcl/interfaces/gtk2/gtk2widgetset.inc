@@ -599,24 +599,9 @@ begin
 end;
 
 procedure TGtk2WidgetSet.AppBringToFront;
-var
-  i: Integer;
-  AForm: TCustomForm;
 begin
-  if Screen=nil then exit;
-
   if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
     gdk_window_raise(PGtkWidget(Application.MainForm.Handle)^.window);
-
-  for i:= Screen.CustomFormZOrderCount-1 downto 0 do
-  begin
-    AForm:=Screen.CustomFormsZOrdered[i];
-    if (AForm <> Application.MainForm) and
-     (AForm.Parent=nil) and AForm.HandleAllocated and AForm.Visible and
-      not (AForm.FormStyle in [fsMDIChild, fsSplash]) and
-      not (AForm.BorderStyle in [bsNone]) then
-        gdk_window_raise(PGtkWidget(AForm.Handle)^.window);
-  end;
 end;
 
 procedure TGtk2WidgetSet.AppMinimize;
