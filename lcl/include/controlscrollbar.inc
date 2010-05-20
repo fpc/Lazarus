@@ -498,7 +498,7 @@ end;
 function TControlScrollBar.IsScrollBarVisible: Boolean;
 begin
   Result := (FControl <> nil) and FControl.HandleAllocated and
-            FControl.IsControlVisible and Visible;
+            FControl.IsControlVisible;
 end;
 
 function TControlScrollBar.ScrollPos: Integer;
