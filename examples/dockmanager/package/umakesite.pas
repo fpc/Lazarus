@@ -30,7 +30,7 @@ Default floating sites are owned by Application,
 interface
 
 uses
-  Classes, SysUtils, Controls, Forms, ExtCtrls, EasyDockSite,
+  Classes, SysUtils, Controls, Forms, ExtCtrls, EasyDockSite, Graphics,
   fFloatingSite;
 
 type
@@ -111,6 +111,29 @@ uses
 type
   TWinControlAccess = class(TWinControl) end;
   TControlAccess = class(TControl) end;
+
+  { TExampleForm }
+
+  TExampleForm = class(TForm)
+  public
+    procedure Paint; override;
+  end;
+
+{ TExampleForm }
+
+procedure TExampleForm.Paint;
+begin
+  inherited Paint;
+  with Canvas do begin
+    Pen.Color:=clRed;
+    MoveTo(0,0);
+    LineTo(ClientWidth-1,0);
+    LineTo(ClientWidth-1,ClientHeight-1);
+    LineTo(0,ClientHeight-1);
+    LineTo(0,0);
+    LineTo(ClientWidth-1,ClientHeight-1);
+  end;
+end;
 
 { TDockMaster }
 
@@ -639,7 +662,7 @@ begin
 //search/create ourselves
   fo := Owner; //our owner also owns the forms
   if AName = '' then begin
-    Result := TForm.Create(fo); //named Form1, Form2... - not now???
+    Result := TExampleForm.Create(fo); //named Form1, Form2... - not now???
   end else begin
   //create new instance
     //DebugLn('!!! create new: ', AName);
