@@ -1793,7 +1793,7 @@ Begin
   if OldFormStyle = fsSplash then
     BorderStyle := bsSizeable;
   if HandleAllocated then
-    TWSCustomFormClass(WidgetSetClass).SetFormStyle(Self, Value);
+    TWSCustomFormClass(WidgetSetClass).SetFormStyle(Self, Value, OldFormStyle);
 end;
 
 {------------------------------------------------------------------------------

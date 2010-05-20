@@ -83,7 +83,7 @@ type
           AWidth, AHeight: Integer); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
-    class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle: TFormStyle); override;
+    class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle, AOldFormStyle: TFormStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
     class procedure SetPopupParent(const ACustomForm: TCustomForm;
@@ -440,9 +440,18 @@ begin
 end;
 
 class procedure TWin32WSCustomForm.SetFormStyle(const AForm: TCustomform;
-  const AFormStyle: TFormStyle);
+  const AFormStyle, AOldFormStyle: TFormStyle);
 begin
-  RecreateWnd(AForm);
+  // Some changes don't require RecreateWnd
+
+  // From normal to StayOnTop
+  if (AOldFormStyle = fsNormal) and (AFormStyle in fsAllStayOnTop) then
+    SetWindowPos(AForm.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
+  // From StayOnTop to normal
+  else if (AOldFormStyle in fsAllStayOnTop) and (AFormStyle = fsNormal) then
+    SetWindowPos(AForm.Handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
+  else
+    RecreateWnd(AForm);
 end;
                             
 class procedure TWin32WSCustomForm.SetBounds(const AWinControl: TWinControl;

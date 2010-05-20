@@ -127,7 +127,7 @@ type
   TCaption = TTranslateString;
   TCursor = -32768..32767;
 
-  TFormStyle = (fsNormal, fsMDIChild, fsMDIForm, fsStayOnTop, fsSplash);
+  TFormStyle = (fsNormal, fsMDIChild, fsMDIForm, fsStayOnTop, fsSplash, fsSystemStayOnTop);
   TFormBorderStyle = (bsNone, bsSingle, bsSizeable, bsDialog, bsToolWindow,
                       bsSizeToolWin);
   TBorderStyle = bsNone..bsSingle;
@@ -144,7 +144,8 @@ type
   TMouseButton = (mbLeft, mbRight, mbMiddle, mbExtra1, mbExtra2);
 
 const
-  fsAllStayOnTop = [fsStayOnTop, fsSplash];
+  fsAllStayOnTop = [fsStayOnTop, fsSplash, fsSystemStayOnTop];
+  fsAllNonSystemStayOnTop = [fsStayOnTop, fsSplash];
 
   // Cursor constants
   crHigh        = TCursor(0);

@@ -83,7 +83,7 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
-    class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle: TFormStyle); override;
+    class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle, AOldFormStyle: TFormStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure SetPopupParent(const ACustomForm: TCustomForm;
        const APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
@@ -258,7 +258,7 @@ begin
 end;
 
 class procedure TQtWSCustomForm.SetFormStyle(const AForm: TCustomform;
-  const AFormStyle: TFormStyle);
+  const AFormStyle, AOldFormStyle: TFormStyle);
 var
   QtWin: TQtMainWindow;
 begin

@@ -1437,12 +1437,12 @@ begin
       if Window = TWin32WidgetSet(WidgetSet).FAppHandle then
         if WParam = 0 then
         begin
-//          RemoveStayOnTopFlags(Window);
+          RemoveStayOnTopFlags(Window);
           DisabledForms := Screen.DisableForms(nil, DisabledForms);
         end
         else
         begin
-//          RestoreStayOnTopFlags(Window);
+          RestoreStayOnTopFlags(Window);
           Screen.EnableForms(DisabledForms);
         end;
         
@@ -1509,6 +1509,13 @@ begin
     WM_HELP:
       if Window = Win32WidgetSet.AppHandle then
         Application.HelpCommand(0, LParam);
+    WM_HOTKEY:
+    begin
+      LMessage.Msg := WM_HOTKEY;
+      LMessage.WParam := WParam;
+      LMessage.LParam := LParam;
+      WinProcess := false;
+    end;
     WM_HSCROLL,
     WM_VSCROLL:
     begin
@@ -2178,14 +2185,14 @@ begin
         if WParam <> 0 then // activated
         begin
           //WriteLn('Restore');
-//          RestoreStayOnTopFlags(Window);
+          RestoreStayOnTopFlags(Window);
           if assigned(Application) then
              Application.IntfAppActivate;
         end
         else
         begin // deactivated
           //WriteLn('Remove');
-//          RemoveStayOnTopFlags(Window);
+          RemoveStayOnTopFlags(Window);
           if assigned(Application) then
              Application.IntfAppDeactivate;
         end;

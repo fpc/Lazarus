@@ -1072,11 +1072,23 @@ function EnumStayOnTopRemove(Handle: HWND; Param: LPARAM): WINBOOL; stdcall;
 var
   AStyle: DWord;
   StayOnTopWindowsInfo: PStayOnTopWindowsInfo absolute Param;
+  lWindowInfo: PWin32WindowInfo;
+  lWinControl: TWinControl;
 begin
   Result := True;
   AStyle := GetWindowLong(Handle, GWL_EXSTYLE);
   if (AStyle and WS_EX_TOPMOST) <> 0 then // if stay on top then
   begin
+    // Don't remove system-wide stay on top
+    lWindowInfo := GetWin32WindowInfo(Handle);
+    if (lWindowInfo <> nil) then
+    begin
+      lWinControl := lWindowInfo^.WinControl;
+      if (lWinControl <> nil) and (lWinControl is TCustomForm)
+      and (TCustomForm(lWinControl).FormStyle = fsSystemStayOnTop) then
+      Exit;
+    end;
+
     StayOnTopWindowsInfo^.StayOnTopList.Add(Pointer(Handle));
     SetWindowPos(Handle, HWND_NOTOPMOST, 0, 0, 0, 0,
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSENDCHANGING);

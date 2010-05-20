@@ -1271,7 +1271,7 @@ begin
     AForm := Screen.CustomForms[i];
     if (AForm.Parent <> nil) or not AForm.Visible then
       Continue;
-    if (AForm.FormStyle in fsAllStayOnTop) then
+    if (AForm.FormStyle in fsAllNonSystemStayOnTop) then
     begin
       AForm.FormStyle := fsNormal;
       if FRestoreStayOnTop = nil then

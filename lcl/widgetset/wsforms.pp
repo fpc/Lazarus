@@ -88,7 +88,7 @@ type
         const ABorderIcons: TBorderIcons); virtual;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); virtual;
-    class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle: TFormStyle); virtual;
+    class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle, AOldFormStyle: TFormStyle); virtual;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); virtual;
     class procedure ShowModal(const ACustomForm: TCustomForm); virtual;
     class procedure SetPopupParent(const ACustomForm: TCustomForm;
@@ -162,7 +162,7 @@ begin
 end;
 
 class procedure TWSCustomForm.SetFormStyle(const AForm: TCustomform;
-  const AFormStyle: TFormStyle);
+  const AFormStyle, AOldFormStyle: TFormStyle);
 begin
 end;
     
