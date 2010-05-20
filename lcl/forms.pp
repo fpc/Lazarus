@@ -141,8 +141,8 @@ type
     property Increment: TScrollBarInc read GetIncrement write SetIncrement default 8;
     property Page: TScrollBarInc read GetPage write SetPage default 80;
     property Smooth: Boolean read GetSmooth write SetSmooth default False;
-    property Position: Integer read GetPosition write SetPosition default 0;
-    property Range: Integer read GetRange write SetRange stored IsRangeStored default 0;
+    property Position: Integer read GetPosition write SetPosition default 0; // 0..Range-Page
+    property Range: Integer read GetRange write SetRange stored IsRangeStored default 0; // >=Page
     property Tracking: Boolean read FTracking write SetTracking default False;
     property Visible: Boolean read GetVisible write SetVisible default True;
   end;

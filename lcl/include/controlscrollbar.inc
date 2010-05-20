@@ -245,9 +245,13 @@ procedure TControlScrollBar.AutoCalcRange;
     PreferredWidth: Integer;
     PreferredHeight: Integer;
   begin
-    GetPreferredClientRect(PreferredWidth,PreferredHeight);
-    TmpRange := PreferredHeight;
-    if not FControl.AutoSize then begin
+    if FControl.AutoSize then
+    begin
+      GetPreferredClientRect(PreferredWidth,PreferredHeight);
+      TmpRange := PreferredHeight;
+    end
+    else begin
+      TmpRange := 0;
       for I := 0 to FControl.ControlCount - 1 do
       begin
         c:=FControl.Controls[I];
@@ -269,9 +273,13 @@ procedure TControlScrollBar.AutoCalcRange;
     PreferredWidth: Integer;
     PreferredHeight: Integer;
   begin
-    GetPreferredClientRect(PreferredWidth,PreferredHeight);
-    TmpRange := PreferredWidth;
-    if not FControl.AutoSize then begin
+    if FControl.AutoSize then
+    begin
+      GetPreferredClientRect(PreferredWidth,PreferredHeight);
+      TmpRange := PreferredWidth;
+    end
+    else begin
+      TmpRange := 0;
       for i := 0 to FControl.ControlCount - 1 do
       begin
         c:=FControl.Controls[I];
