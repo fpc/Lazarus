@@ -336,6 +336,12 @@ begin
   FOverrideCursor := AValue;
 end;
 
+type
+  TQtTempFormStyleSet = Set of TFormStyle;
+const
+  TQtTopForms: Array[Boolean] of TQtTempFormStyleSet = (fsAllNonSystemStayOnTop,
+    fsAllStayOnTop);
+
 procedure TQtWidgetSet.QtRemoveStayOnTop(const ASystemTopAlso: Boolean = False);
 var
   i: Integer;
@@ -345,7 +351,6 @@ var
 begin
   if StayOnTopList = nil then
     StayOnTopList := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TObject));
-
   for i := 0 to Screen.CustomFormZOrderCount - 1 do
   begin
     AForm := Screen.CustomFormsZOrdered[i];
@@ -353,7 +358,7 @@ begin
     begin
       W := TQtMainWindow(AForm.Handle);
       if (AForm.Parent = nil) and
-        (AForm.FormStyle in fsAllNonSystemStayOnTop) and W.GetVisible and
+        (AForm.FormStyle in TQtTopForms[ASystemTopAlso]) and W.GetVisible and
          not W.IsMdiChild and not W.IsModal and not w.isMinimized then
       begin
         Flags := W.windowFlags;
@@ -383,13 +388,12 @@ begin
     exit;
   for i := Screen.CustomFormZOrderCount - 1 downto 0 do
   begin
-    // AForm := StayOnTopList.Items[i];
     AForm := Screen.CustomFormsZOrdered[i];
     if AForm.HandleAllocated then
     begin
       W := TQtMainWindow(AForm.Handle);
       if (AForm.Parent = nil) and
-        (AForm.FormStyle in fsAllNonSystemStayOnTop) and W.GetVisible and
+        (AForm.FormStyle in TQtTopForms[ASystemTopAlso]) and W.GetVisible and
         not W.IsMdiChild and not W.IsModal and not W.isMinimized then
       begin
         if StayOnTopList.HasId(W) then
@@ -397,8 +401,8 @@ begin
           W.BeginUpdate;
           Flags := W.windowFlags;
           W.setWindowFlags(Flags or QtWindowStaysOnTopHint);
-          W.Show;
           W.setAttribute(QtWA_ShowWithoutActivating, False);
+          W.Show;
           W.EndUpdate;
         end;
       end;
@@ -421,11 +425,17 @@ begin
   case QEvent_type(Event) of
     QEventApplicationActivate:
       if Assigned(Application) then
+      begin
         Application.IntfAppActivate;
+        QtRestoreStayOnTop;
+      end;
 
     QEventApplicationDeactivate:
       if Assigned(Application) then
+      begin
         Application.IntfAppDeactivate;
+        QtRemoveStayOnTop;
+      end;
 
     QEventApplicationPaletteChange:
       begin
