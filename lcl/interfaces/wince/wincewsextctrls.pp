@@ -288,7 +288,7 @@ end;
 function PageWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; {$ifdef win32}stdcall{$else}cdecl{$endif};
 begin
-//  Result := WindowProc(Window, Msg, WParam, LParam);
+  Result := WindowProc(Window, Msg, WParam, LParam);
 end;
 
 class function TWinCEWSCustomPage.CreateHandle(const AWinControl: TWinControl;
@@ -307,10 +307,8 @@ begin
   with Params do
   begin
     pClassName := @ClsName;
-    SubClassWndProc := nil;//@PageWindowProc;
-//    Params.Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
-//    Flags := Flags and not WS_VISIBLE;
-//    Params.FlagsEx := WS_EX_CONTROLPARENT;
+    SubClassWndProc := @PageWindowProc;
+    Flags := Flags and not WS_VISIBLE;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);

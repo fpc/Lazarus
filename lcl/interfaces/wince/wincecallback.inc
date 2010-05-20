@@ -65,14 +65,18 @@ function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 var
   PrevWndProc: Windows.WNDPROC;
   setComboWindow: boolean;
+  WindowInfo: PWindowInfo;
 begin
   {$ifdef MSG_DEBUG}
     DebugLn('Trace:CallDefaultWindowProc - Start');
   {$endif}
 
-  PrevWndProc := GetWindowInfo(Window)^.DefWndProc;
+  WindowInfo := GetWindowInfo(Window);
+  PrevWndProc := WindowInfo^.DefWndProc;
+
   if (PrevWndProc = nil) or (PrevWndProc = @WindowProc) // <- prevent recursion
-  then begin
+    or ((WindowInfo^.WinControl <> nil) and (WindowInfo^.WinControl is TTabSheet)) then
+  begin
     {$ifdef MSG_DEBUG}
       DebugLn('Trace:CallDefaultWindowProc - A');
     {$endif}
