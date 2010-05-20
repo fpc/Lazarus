@@ -3432,22 +3432,19 @@ begin
   {$IFDEF VerboseAllAutoSize}
   DebugLn(['TWinControl.DoAllAutoSize START ',DbgSName(Self),' ',dbgs(BoundsRect)]);
   {$ENDIF}
-  // create needed handles
-  if HandleObjectShouldBeVisible then begin
-    if CheckHandleAllocated(Self) then begin
-      // creating the handle called DisableAutoSizing/EnableAutoSizing
-      // so after handle creation the autosizing was done
-      // => exit
-      exit;
-    end;
-  end else begin
-    // no autosize possible => remove needed flags
-    ClearRequests(Self);
-    exit;
-  end;
-
   Include(FWinControlFlags,wcfAllAutoSizing);
   try
+    // create needed handles
+    if HandleObjectShouldBeVisible then begin
+      if CheckHandleAllocated(Self) then begin
+        // a new handle was created
+      end;
+    end else begin
+      // no autosize possible => remove needed flags
+      ClearRequests(Self);
+      exit;
+    end;
+
     while (not AutoSizeDelayed) do
     begin
       // compute all sizes for LCL objects without touching the widgetset
@@ -3483,7 +3480,7 @@ begin
     Exclude(FWinControlFlags,wcfAllAutoSizing);
   end;
   // make handle visible => this can trigger events like Form.OnShow where
-  // application do arbitrary stuff
+  // application does arbitrary stuff
   {$IFDEF VerboseAllAutoSize}
   DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
   {$ENDIF}
