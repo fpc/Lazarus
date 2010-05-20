@@ -424,9 +424,10 @@ Var
         DCIndex := Windows.SaveDC(PaintMsg.DC);
 
         {$ifdef DEBUG_WINDOW_ORG}
+        GetWindowOrgEx(PaintMsg.DC, @WindowOrg);
         DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-          Format(':> [SendPaintMessage 1] Control=%s DC=%d DX=%d DY=%d',
-          [lWinControl.Name, PaintMsg.DC, -parLeft, -parTop]));
+          Format(':> [SendPaintMessage 1] Control=%s DC=%d Moving WindowOrg from %d,%d by DX=%d DY=%d',
+          [lWinControl.Name, PaintMsg.DC, WindowOrg.X, WindowOrg.Y, -parLeft, -parTop]));
         {$endif}
 
         MoveWindowOrgEx(PaintMsg.DC, -parLeft, -parTop);
@@ -438,14 +439,22 @@ Var
         DCIndex := Windows.SaveDC(PaintMsg.DC);
 
         {$ifdef DEBUG_WINDOW_ORG}
+        GetWindowOrgEx(PaintMsg.DC, @WindowOrg);
         DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-          Format(':> [SendPaintMessage 2] Control=%s DC=%d DX=%d DY=%d',
-          [lWinControl.Name, PaintMsg.DC, ORect.Left, ORect.Top]));
+          Format(':> [SendPaintMessage 2] Control=%s DC=%d Moving WindowOrg from %d,%d by DX=%d DY=%d',
+          [lWinControl.Name, PaintMsg.DC, WindowOrg.X, WindowOrg.Y, -parLeft, -parTop]));
         {$endif}
 
         MoveWindowOrgEx(PaintMsg.DC, ORect.Left, ORect.Top);
         DeliverMessage(lWinControl, PaintMsg);
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
+
+        {$ifdef DEBUG_WINDOW_ORG}
+        GetWindowOrgEx(PaintMsg.DC, @WindowOrg);
+        DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+          Format(':> [SendPaintMessage 3] Control=%s DC=%d WindowOrg=%d,%d',
+          [lWinControl.Name, PaintMsg.DC, WindowOrg.X, WindowOrg.Y]));
+        {$endif}
       end;
       if useDoubleBuffer then
         Windows.BitBlt(DC, 0, 0, WindowWidth, WindowHeight, CurDoubleBuffer.DC, 0, 0, SRCCOPY);
@@ -465,21 +474,36 @@ Var
         end;
       end;
     end;
+    {$ifdef DEBUG_WINDOW_ORG}
+    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+      ':< [SendPaintMessage] Finish');
+    {$endif}
   end;
 
   procedure SendParentPaintMessage(Window, Parent: HWND; ControlDC: HDC);
+  {$ifdef DEBUG_WINDOW_ORG}
+  var
+    Point: TPoint;
+  {$endif}
   begin
     GetWin32ControlPos(Window, Parent, P.X, P.Y);
 
     {$ifdef DEBUG_WINDOW_ORG}
+    GetWindowOrgEx(ControlDC, @Point);
     DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-      Format(':> [SendParentPaintMessage] DC=%d DX=%d DY=%d',
-      [ControlDC, P.X, P.Y]));
+      Format(':> [SendParentPaintMessage] DC=%d Moving WindowsOrg From %d,%d By DX=%d DY=%d',
+      [ControlDC, Point.X, Point.Y, P.X, P.Y]));
     {$endif}
 
     MoveWindowOrgEx(ControlDC, -P.X, -P.Y);
     SendPaintMessage(ControlDC);
     MoveWindowOrgEx(ControlDC, P.X, P.Y);
+
+    {$ifdef DEBUG_WINDOW_ORG}
+    GetWindowOrgEx(ControlDC, @Point);
+    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+      ':< [SendParentPaintMessage] Finish');
+    {$endif}
   end;
 
   procedure CheckListBoxLButtonDown;

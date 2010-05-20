@@ -141,10 +141,21 @@ var
       [TControl(Sender).Name, PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top]));
     {$endif}
 
+    // Using MoveWindowOrgEx here causes the following bugs:
+    // http://bugs.freepascal.org/view.php?id=15654
+    // * Group Box caption doesn't show
+    // * Label x position inside group box is too small
+    // * Windows control y position inside group box is too highe
+    // See: http://wiki.lazarus.freepascal.org/Windows_CE_Development_Notes#Regressions
+
     GetWindowOrgEx(PaintMsg.DC, @Point);
     SetWindowOrgEx(PaintMsg.DC, 0, 0, nil);
 //    MoveWindowOrgEx(PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top);
     try
+      {$IFDEF DEBUG_WINCE_LABELS}
+      DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+        'Before CallDefaultWindowProc WindowOrg Temporarely set to 0,0');
+      {$ENDIF}
       // call wince paint handler
       CallDefaultWindowProc(Handle, WM_PAINT, PaintMsg.DC, 0);
     finally
@@ -152,6 +163,11 @@ var
 //      MoveWindowOrgEx(PaintMsg.DC, ClientBoundRect.Left, ClientBoundRect.Top);
       SetWindowOrgEx(PaintMsg.DC, Point.X, Point.Y, nil);
     end;
+    {$IFDEF DEBUG_WINCE_LABELS}
+    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+      Format('After CallDefaultWindowProc WindowOrg: %d,%d',
+      [Point.X, Point.Y]));
+    {$ENDIF}
   end;
 
   procedure DrawCheckListBoxItem(CheckListBox: TCheckListBox; Data: PDrawItemStruct);
@@ -1013,11 +1029,17 @@ function TWinCEWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect:
 var
   s: AnsiString;
   w: WideString;
+  {$IFDEF DEBUG_WINCE_LABELS}
+  Point: TPoint;
+  {$ENDIF}
 begin
   {$IFDEF DEBUG_WINCE_LABELS}
+  GetWindowOrgEx(DC, @Point);
   DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-    Format('trace:> [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
-    [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+    Format('trace:> [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'','
+    + 'Count: %d, Rect = %d,%d,%d,%d, Flags:%d WindowOrg: %d:%d',
+    [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags,
+    Point.X, Point.Y]));
   {$ENDIF}
 
   // use temp buffer, if count is set, there might be no null terminator
@@ -1033,9 +1055,13 @@ begin
   // TODO: use the real number of chars (and not the lenght)
   W := Utf8Decode(S);
   Result := Windows.DrawTextW(DC, PWideChar(W), Length(W), @Rect, Flags);
-//  Result := Windows.DrawTextW(DC, WideStr, Count, @Rect, Flags);
-  Assert(False, Format('trace:> [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+
+  {$IFDEF DEBUG_WINCE_LABELS}
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+    Format('trace:< [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'','
+    + 'Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1432,6 +1458,7 @@ var
   ORect: TRect;
   {$ifdef DEBUG_WINDOW_ORG}
   lControl: TControl;
+  Point: TPoint;
   {$endif}
 begin
   Assert(False, Format('Trace:> [TWinCEWidgetSet.GetDC] HWND: 0x%x', [HWnd]));
@@ -1440,9 +1467,10 @@ begin
   begin
     {$ifdef DEBUG_WINDOW_ORG}
     lControl := TControl(LCLIntf.GetLCLOwnerObject(HWnd));
+    GetWindowOrgEx(Result, @Point);
     DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-      Format(':> [TWinCEWidgetSet.GetDC] Name=%s DC=%s',
-      [lControl.Name, IntToHex(Result, 8)]));
+      Format(':> [TWinCEWidgetSet.GetDC] Name=%s DC=%s Moving WindowOrg From %d,%d By %d,%d',
+      [lControl.Name, IntToHex(Result, 8), Point.X, Point.Y, ORect.Left, ORect.Top]));
     {$endif}
 
     MoveWindowOrgEx(Result, ORect.Left, ORect.Top);
@@ -3017,18 +3045,11 @@ begin
   {$ifdef Win32}
     Result:= Windows.SetWindowOrgEx(dc, NewX, NewY, OldPoint);
   {$else}
-//  if GetWinCEVersion >= wince_5 then
-    Result:= WinExt.SetWindowOrgEx(dc, NewX, NewY, OldPoint)
-//    Result := False
-//  else
-    // Using SetViewPortOrgEx causes the following bugs:
-    // http://bugs.freepascal.org/view.php?id=15654
-    // * Group Box caption doesn't show
-    // * Label x position inside group box is too small
-    // * Windows control y position inside group box is too highe
-    // See: http://wiki.lazarus.freepascal.org/Windows_CE_Development_Notes#Regressions
-//    Result := Boolean(Windows.SetViewPortOrgEx(DC, -NewX, -NewY, LPPoint(OldPoint)));
-{$endif}
+    if GetWinCEVersion >= wince_5 then
+      Result:= WinExt.SetWindowOrgEx(dc, NewX, NewY, OldPoint)
+    else
+      Result := False;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
