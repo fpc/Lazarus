@@ -1512,7 +1512,7 @@ begin
         CGContextTranslateCTM(LayerContext, 0, -SrcHeight);
 
         SetCGFillping(LayerContext, Width, Height);
-        if SubMask then CGContextClipToMask(LayerContext, ImgRect, MskImage);
+        if Assigned(MskImage) then CGContextClipToMask(LayerContext, ImgRect, MskImage);
         CGContextDrawImage(LayerContext, ImgRect, Image);
 
         CGContextDrawLayerInRect(CGContext, DstRect, Layer);
