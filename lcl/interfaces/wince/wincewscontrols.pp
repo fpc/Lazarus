@@ -242,6 +242,11 @@ begin
       if SubClassWndProc <> nil then
         WindowInfo^.DefWndProc := Windows.WNDPROC(Windows.SetWindowLongW(
           Window, GWL_WNDPROC, LongInt(SubClassWndProc)));
+      {$ifdef MSG_DEBUG}
+        DebugLn('Trace:FinishCreateWindow - ', AWinControl.Name,
+          ' SubClassWndProc: ', IntToHex(PtrInt(SubClassWndProc), 8),
+          ' DefWndProc: ', IntToHex(PtrInt(WindowInfo^.DefWndProc), 8));
+      {$endif}
       if AWinControl.Font.IsDefault then
         lhFont := WinCEWidgetset.MessageFont
       else

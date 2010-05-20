@@ -4,7 +4,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -64,40 +64,30 @@ function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   LParam: Windows.LParam): LResult;
 var
   PrevWndProc: Windows.WNDPROC;
-{$ifdef MSG_DEBUG}
-  depthLen: integer;
-{$endif}
   setComboWindow: boolean;
 begin
-{$ifdef MSG_DEBUG}
-  depthLen := Length(MessageStackDepth);
-  if depthLen > 0 then
-    MessageStackDepth[depthLen] := '#';
-{$endif}
+  {$ifdef MSG_DEBUG}
+    DebugLn('Trace:CallDefaultWindowProc - Start');
+  {$endif}
+
   PrevWndProc := GetWindowInfo(Window)^.DefWndProc;
   if (PrevWndProc = nil) or (PrevWndProc = @WindowProc) // <- prevent recursion
   then begin
+    {$ifdef MSG_DEBUG}
+      DebugLn('Trace:CallDefaultWindowProc - A');
+    {$endif}
     Result := Windows.DefWindowProcW(Window, Msg, WParam, LParam)
   end
   else begin
+    {$ifdef MSG_DEBUG}
+      DebugLn('Trace:CallDefaultWindowProc - B ' + IntToHex(PtrInt(PrevWndProc), 8));
+    {$endif}
     // combobox child edit weirdness: combobox handling WM_SIZE will compare text
     // to list of strings, and if appears in there, will set the text, and select it
     // WM_GETTEXTLENGTH, WM_GETTEXT, WM_SETTEXT, EM_SETSEL
     // combobox sends WM_SIZE to itself indirectly, check recursion
-
-    //there is no gettopwindow and what is purpose of this?
-//    setComboWindow := (Msg = WM_SIZE) and (ComboBoxHandleSizeWindow = 0)
-//        and GetWindowInfo(Windows.GetTopWindow(Window))^.isComboEdit;
-//    if setComboWindow then
-//      ComboBoxHandleSizeWindow := Window;
     Result := Windows.CallWindowProc(PrevWndProc, Window, Msg, WParam, LParam);
-//    if setComboWindow then
-//      ComboBoxHandleSizeWindow := 0;
   end;
-{$ifdef MSG_DEBUG}
-  if depthLen > 0 then
-    MessageStackDepth[depthLen] := ' ';
-{$endif}
 end;
 
 type
@@ -121,15 +111,6 @@ end;
 
 procedure PushEraseBkgndCommand(Command: TEraseBkgndCommand);
 begin
-{$ifdef MSG_DEBUG}
-  case Command of
-    ecDiscard: DebugLn(MessageStackDepth,
-      ' *forcing next WM_ERASEBKGND to discard message');
-    ecDiscardNoRemove: DebugLn(MessageStackDepth,
-      ' *forcing next WM_ERASEBKGND to discard message, no remove');
-  end;
-  DebugLn(MessageStackDepth, ' *erasebkgndstack: ', EraseBkgndStackToString);
-{$endif}
   EraseBkgndStack := (EraseBkgndStack shl EraseBkgndStackShift) or dword(Ord(Command));
 end;
 
@@ -304,9 +285,6 @@ Var
     PaintMsg: TLMPaint;
     ORect: TRect;
     WindowOrg: Windows.POINT;
-{$ifdef DEBUG_DOUBLEBUFFER}
-    ClipBox: Windows.RECT;
-{$endif}
     ParentPaintWindow: HWND;
     WindowWidth, WindowHeight: Integer;
     DCIndex: integer;
@@ -360,13 +338,6 @@ Var
 
     // check if double buffering is requested
     useDoubleBuffer := (ControlDC = 0) and (lWinControl.DoubleBuffered);
-{$ifdef MSG_DEBUG}
-    if useDoubleBuffer and (DoubleBufferDC <> 0) then
-    begin
-      DebugLn('ERROR: RECURSIVE PROBLEM! DOUBLEBUFFERED PAINT');
-      useDoubleBuffer := false;
-    end;
-{$endif}
     if useDoubleBuffer then
     begin
       if CurDoubleBuffer.DC <> 0 then
@@ -395,13 +366,6 @@ Var
       PaintMsg.DC := CurDoubleBuffer.DC;
     end;
 
-{$ifdef MSG_DEBUG}
-    if useDoubleBuffer then
-      DebugLn(MessageStackDepth, ' *double buffering on DC: ', IntToHex(DoubleBufferDC, 8))
-    else
-      DebugLn(MessageStackDepth, ' *painting, but not double buffering');
-{$endif}
-
     WinProcess := false;
     try
       if ControlDC = 0 then
@@ -410,13 +374,6 @@ Var
         DC := Windows.BeginPaint(Window, @PS);
         if useDoubleBuffer then
         begin
-{$ifdef DEBUG_DOUBLEBUFFER}
-          ORect.Left := 0;
-          ORect.Top := 0;
-          ORect.Right := DoubleBufferBitmapWidth;
-          ORect.Bottom := DoubleBufferBitmapHeight;
-          Windows.FillRect(DoubleBufferDC, ORect, GetSysColorBrush(COLOR_DESKTOP or SYS_COLOR_INDEX_FLAG));
-{$endif}
           PaintRegion := CreateRectRgn(0, 0, 1, 1);
      {     if GetRandomRgn(DC, PaintRegion, SYSRGN) = 1 then
           begin
@@ -431,12 +388,6 @@ Var
             end;
             Windows.SelectClipRgn(DoubleBufferDC, PaintRegion);
           end;}
-{$ifdef DEBUG_DOUBLEBUFFER}
-          Windows.GetClipBox(DoubleBufferDC, ClipBox);
-          DebugLn('Double buffering in DC ', IntToHex(DoubleBufferDC, 8), ' with clipping rect (',
-            IntToStr(ClipBox.Left), ',', IntToStr(ClipBox.Top), ';',
-            IntToStr(ClipBox.Right), ',', IntToStr(ClipBox.Bottom), ')');
-{$endif}
           // a copy of the region is selected into the DC, so we
           // can free our region immediately
           Windows.DeleteObject(PaintRegion);
@@ -465,10 +416,6 @@ Var
       end;
       if ParentPaintWindow <> 0 then
       begin
-{$ifdef MSG_DEBUG}
-        DebugLn(MessageStackDepth, ' *painting background by sending paint message to parent window ',
-          IntToHex(ParentPaintWindow, 8));
-{$endif}
         // tabpage parent and got a dc to draw in, divert paint to parent
         DCIndex := Windows.SaveDC(PaintMsg.DC);
 
@@ -493,12 +440,6 @@ Var
         {$endif}
 
         MoveWindowOrgEx(PaintMsg.DC, ORect.Left, ORect.Top);
-{$ifdef DEBUG_DOUBLEBUFFER}
-        Windows.GetClipBox(PaintMsg.DC, ClipBox);
-        DebugLn('LCL Drawing in DC ', IntToHex(PaintMsg.DC, 8), ' with clipping rect (',
-          IntToStr(ClipBox.Left), ',', IntToStr(ClipBox.Top), ';',
-          IntToStr(ClipBox.Right), ',', IntToStr(ClipBox.Bottom), ')');
-{$endif}
         DeliverMessage(lWinControl, PaintMsg);
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
@@ -518,16 +459,6 @@ Var
             DeleteObject(CurDoubleBuffer.Bitmap);
           CurDoubleBuffer := BackupBuffer;
         end;
-{$ifdef DEBUG_DOUBLEBUFFER}
-        if CopyBitmapToClipboard then
-        begin
-//          Windows.OpenClipboard(0);
-//          Windows.EmptyClipboard;
-//          Windows.SetClipboardData(CF_BITMAP, DoubleBufferBitmap);
-//          Windows.CloseClipboard;
-          CopyBitmapToClipboard := false;
-        end;
-{$endif}
       end;
     end;
   end;
@@ -1035,26 +966,22 @@ begin
     lWinControl := WindowInfo^.WinControl;
   end;
 {$ifdef MSG_DEBUG}
-  DebugLn('lWinControl: ',DbgSName(lWinControl));
+  DebugLn('WindowProc lWinControl: ',DbgSName(lWinControl));
 {$endif}
   if (IgnoreNextCharWindow <> 0) and ((Msg = WM_CHAR) or (Msg = WM_SYSCHAR)) then
   begin
     if IgnoreNextCharWindow = Window then
     begin
       IgnoreNextCharWindow := 0;
-{$ifdef MSG_DEBUG}
-      DebugLn(MessageStackDepth, ' *ignoring this character');
-{$endif}
       Result := 1;
       exit;
     end;
     IgnoreNextCharWindow := 0;
   end;
 
-  Assert(False, 'Trace:WindowProc - Getting Callback Object');
-
-  Assert(False, 'Trace:WindowProc - Checking Proc');
-//  Assert(False, Format('Trace:WindowProc - Window Value: $%S-%d; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), Window, WM_To_String(Msg), IntToHex(WParam, 4), IntToHex(LParam, 4)]));
+  {$ifdef MSG_DEBUG}
+    DebugLn('Trace:WindowProc - Case Msg of');
+  {$endif}
 
   case Msg Of
     WM_NULL:
@@ -1414,14 +1341,6 @@ begin
     WM_ERASEBKGND:
     begin
       eraseBkgndCommand := TEraseBkgndCommand(EraseBkgndStack and EraseBkgndStackMask);
-{$ifdef MSG_DEBUG}
-      case eraseBkgndCommand of
-        ecDefault: DebugLn(MessageStackDepth, ' *command: default');
-        ecDiscardNoRemove, ecDiscard: DebugLn(MessageStackDepth, ' *command: completely ignore');
-        ecDoubleBufferNoRemove: DebugLn(MessageStackDepth, ' *command: use double buffer');
-      end;
-      DebugLn(MessageStackDepth, ' *erasebkgndstack: ', EraseBkgndStackToString);
-{$endif}
       if eraseBkgndCommand = ecDoubleBufferNoRemove then
       begin
         if CurDoubleBuffer.DC <> 0 then
@@ -1749,9 +1668,6 @@ begin
     begin
       WindowInfo := GetWindowInfo(PNMHdr(LParam)^.hwndFrom);
 
-{$ifdef MSG_DEBUG}
-      DebugLn([MessageStackDepth, 'Notify code: ', PNMHdr(LParam)^.code]);
-{$endif}
       case PNMHdr(LParam)^.code of
         0 :;
         MCN_SELCHANGE:
@@ -2013,10 +1929,20 @@ begin
     end;
   end;
 
+  {$ifdef MSG_DEBUG}
+    DebugLn('Trace:WindowProc - End Case Msg of');
+  {$endif}
+
   if WinProcess Then
   begin
+    {$ifdef MSG_DEBUG}
+      DebugLn('Trace:WindowProc - if WinProcess Then');
+    {$endif}
     PLMsg^.Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
     WinProcess := false;
+    {$ifdef MSG_DEBUG}
+      DebugLn('Trace:WindowProc - End if WinProcess Then');
+    {$endif}
   end;
 
   case Msg of
@@ -2286,17 +2212,10 @@ begin
   begin
     if (PLMsg^.Result <> 0) then
     begin
-{$ifdef MSG_DEBUG}
-      DebugLn(MessageStackDepth, ' *ignore next character');
-{$endif}
       IgnoreNextCharWindow := Window;
     end else begin
       // stop ignoring if KEYUP has come by (not all keys generate CHAR)
       // assume WM_CHAR is always preceded by WM_KEYDOWN
-{$ifdef MSG_DEBUG}
-      if IgnoreNextCharWindow <> 0 then
-        DebugLn(MessageStackDepth, ' *stop ignoring next character');
-{$endif}
       IgnoreNextCharWindow := 0;
     end;
   end;
@@ -2319,64 +2238,15 @@ end;
 {$ifdef MSG_DEBUG}
 
 function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; stdcall;
+    LParam: Windows.LParam): LResult; {$ifdef Wince}cdecl;{$else}stdcall;{$endif}
 begin
-  DebugLn(MessageStackDepth, 'WindowProc called for window=', IntToHex(Window, 8),' msg=',
+  DebugLn('WindowProc called for window=', IntToHex(Window, 8),' msg=',
     WM_To_String(msg),' wparam=', IntToHex(WParam, 8), ' lparam=', IntToHex(lparam, 8));
-  MessageStackDepth := MessageStackDepth + ' ';
 
   Result := RealWindowProc(Window, Msg, WParam, LParam);
 
-  setlength(MessageStackDepth, length(MessageStackDepth)-1);
+  DebugLn('Finished WindowProc');
 end;
-
-
-{$else}
-//here was everything previously on this source file
-
-{------------------------------------------------------------------------------
- Function: WindowProc
- Params: Window - The window that receives a message
-         Msg    - The message received
-         WParam - Word parameter
-         LParam - Long-integer parameter
-  Returns: 0 if Msg is handled; non-zero long-integer result otherwise
-
-  Handles the messages sent to the specified window, in parameter Window, by
-  Windows or other applications
- ------------------------------------------------------------------------------}
-(*
-function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; stdcall;
-var
-  LMessage: TLMessage;
-  PLMsg: PLMessage;
-begin
-  {$ifdef VerboseWinCE}
-  DebugLn('WindowProc: Msg = ' + IntToStr(Msg));
-  {$endif}
-
-  Result := 0;
-
-  LMessage.Result := 0;
-  LMessage.Msg := LM_NULL;
-
-  case Msg of
-
-    WM_CLOSE:
-    begin
-      DestroyWindow(Window);
-    end;
-
-    WM_DESTROY :
-    begin
-      PostQuitMessage(0);
-    end;
-  else
-    Result := DefWindowProc(Window, Msg, wParam, lParam);
-  end;
-end;
-*)
 {$endif}
 
 {------------------------------------------------------------------------------

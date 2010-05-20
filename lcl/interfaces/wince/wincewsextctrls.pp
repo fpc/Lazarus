@@ -33,6 +33,7 @@ uses
   {$ifdef Win32}win32compat,{$endif}
   // LCL
   ExtCtrls, Classes, Controls, ImgList, Forms, LCLType, LCLIntf, LCLMessageGlue,
+  LCLProc,
   // widgetset
   WSControls, WSExtCtrls, WSLCLClasses, WinCEInt, WinCEProc, InterfaceBase,
   WinCEWSControls, WSProc;
@@ -284,12 +285,19 @@ end;
 
 { TWinCEWSCustomPage }
 
+function PageWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; {$ifdef win32}stdcall{$else}cdecl{$endif};
+begin
+//  Result := WindowProc(Window, Msg, WParam, LParam);
+end;
+
 class function TWinCEWSCustomPage.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
   init : TINITCOMMONCONTROLSEX;
 begin
+  DebugLn('Creating CustomPage A');
   init.dwSize := Sizeof(TINITCOMMONCONTROLSEX);
   init.dwICC := ICC_TAB_CLASSES;
   InitCommonControlsEx(@init);
@@ -299,7 +307,7 @@ begin
   with Params do
   begin
     pClassName := @ClsName;
-    SubClassWndProc := nil;
+    SubClassWndProc := nil;//@PageWindowProc;
 //    Params.Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
 //    Flags := Flags and not WS_VISIBLE;
 //    Params.FlagsEx := WS_EX_CONTROLPARENT;
@@ -310,6 +318,7 @@ begin
   Result := Params.Window;
   //Params.WindowInfo^.needParentPaint := True;
   //Params.WindowInfo^.isTabPage := True;
+  DebugLn('Creating CustomPage B');
 end;
 
 class procedure TWinCEWSCustomPage.DestroyHandle(const AWinControl: TWinControl);
