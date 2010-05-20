@@ -565,6 +565,7 @@ end;
 constructor TGtk2WidgetSet.Create;
 begin
   inherited Create;
+  StayOnTopList := nil;
   im_context:=gtk_im_multicontext_new;
   g_signal_connect (G_OBJECT (im_context), 'commit',
     G_CALLBACK (@gtk_commit_cb), nil);
@@ -575,6 +576,11 @@ begin
   g_object_unref(im_context);
   im_context:=nil;
   im_context_widget:=nil;
+  if StayOnTopList <> nil then
+  begin
+    StayOnTopList.Free;
+    StayOnTopList := nil;
+  end;
   inherited Destroy;
 end;
 
@@ -651,6 +657,77 @@ begin
   {$else}
   Result := inherited AppHandle;
   {$endif}
+end;
+
+type
+  TGtk2TempFormStyleSet = Set of TFormStyle;
+const
+  TGtk2TopForms: Array[Boolean] of TGtk2TempFormStyleSet = (fsAllNonSystemStayOnTop,
+    fsAllStayOnTop);
+
+function TGtk2WidgetSet.AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean
+  ): Boolean;
+var
+  i: Integer;
+  AForm: TCustomForm;
+  W: PGtkWidget;
+  Flags: TGdkWindowState;
+begin
+  Result := True;
+  if StayOnTopList = nil then
+    StayOnTopList := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TGtkWidget));
+  for i := 0 to Screen.CustomFormZOrderCount - 1 do
+  begin
+    AForm := Screen.CustomFormsZOrdered[i];
+    if AForm.HandleAllocated then
+    begin
+      W := PGtkWidget(AForm.Handle);
+      Flags := gdk_window_get_state(W^.Window);
+      if (AForm.Parent = nil) and
+        (AForm.FormStyle in TGtk2TopForms[ASystemTopAlso]) and
+         GTK_WIDGET_VISIBLE(W) and
+         not gtk_window_get_modal(PGtkWindow(W)) and
+         (Flags and GDK_WINDOW_STATE_ICONIFIED = 0) then
+      begin
+        gdk_window_set_keep_above(W^.Window, False);
+        if not StayOnTopList.HasId(W) then
+          StayOnTopList.Add(W, W);
+      end;
+    end;
+  end;
+end;
+
+function TGtk2WidgetSet.AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean
+  ): Boolean;
+var
+  i: Integer;
+  AForm: TCustomForm;
+  W: PGtkWidget;
+  Flags: TGdkWindowState;
+begin
+  Result := True;
+  if StayOnTopList = nil then
+    exit;
+  for i := Screen.CustomFormZOrderCount - 1 downto 0 do
+  begin
+    AForm := Screen.CustomFormsZOrdered[i];
+    if AForm.HandleAllocated then
+    begin
+      W := PGtkWidget(AForm.Handle);
+      Flags := gdk_window_get_state(W^.Window);
+      if (AForm.Parent = nil) and
+        (AForm.FormStyle in TGtk2TopForms[ASystemTopAlso]) and
+         GTK_WIDGET_VISIBLE(W) and
+         not gtk_window_get_modal(PGtkWindow(W)) and
+         (Flags and GDK_WINDOW_STATE_ICONIFIED = 0) then
+      begin
+        if StayOnTopList.HasId(W) then
+          gdk_window_set_keep_above(W^.Window, True);
+      end;
+    end;
+  end;
+  StayOnTopList.Free;
+  StayOnTopList := nil;
 end;
 
 {$IFDEF ASSERT_IS_ON}

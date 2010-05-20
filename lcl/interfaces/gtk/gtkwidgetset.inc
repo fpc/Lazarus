@@ -1394,9 +1394,14 @@ begin
   begin
     FAppActive := AValue;
     if FAppActive then
-      Application.IntfAppActivate
-    else
+    begin
+      Application.IntfAppActivate;
+      AppRestoreStayOnTopFlags(False);
+    end else
+    begin
       Application.IntfAppDeactivate;
+      AppRemoveStayOnTopFlags(False);
+    end;
   end;
 end;
 

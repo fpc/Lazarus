@@ -34,7 +34,7 @@ interface
 {$I gtkdefines.inc}
 
 uses
-  Types, Classes, SysUtils, Math,
+  Types, Classes, SysUtils, Math, maps,
   {$IfNDef GTK2_2}
     {$IfDef HasX}
      XLib, X, //XUtil,
@@ -52,6 +52,8 @@ type
   { TGtk2WidgetSet }
 
   TGtk2WidgetSet = class(TGtkWidgetSet)
+  private
+    StayOnTopList: TMap;
   protected
     procedure AppendText(Sender: TObject; Str: PChar);
     function GetText(Sender: TComponent; var Text: String): Boolean;
@@ -68,6 +70,8 @@ type
     procedure AppMinimize; override;
     procedure AppRestore; override;
     function AppHandle: THandle; override;
+    function AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
+    function AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
 
     procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: Boolean);override;
     procedure SetCommonCallbacks(const AGTKObject: PGTKObject; const ALCLObject: TObject); override;
