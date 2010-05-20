@@ -3391,13 +3391,13 @@ procedure TWinControl.DoAllAutoSize;
       AWinControl.HandleNeeded;
       Exit(True);
     end;
+    Result := False;
     for i := 0 to AWinControl.ControlCount - 1 do
     begin
       ChildWinControl := TWinControl(AWinControl.Controls[i]);
       if (ChildWinControl is TWinControl) and CheckHandleAllocated(ChildWinControl) then
-        Exit(True);
+        Result:=true;
     end;
-    Result := False;
   end;
 
   procedure ClearRequests(AControl: TControl);
