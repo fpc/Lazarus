@@ -608,9 +608,12 @@ const
   DIST_FUNCS: array [TReticuleMode] of TPointDistFunc = (
     nil, @PointDistX, @PointDistY, @PointDist);
 var
-  i, pointIndex, bestSeries: Integer;
-  value: TDoublePoint;
-  newRetPos, bestRetPos: TPoint;
+  cur, best: record
+    pointIndex: Integer;
+    retPos: TPoint;
+    value: TDoublePoint;
+  end;
+  i, bestSeries: Integer;
   d, minDist: Double;
   df: TPointDistFunc;
 begin
@@ -620,20 +623,21 @@ begin
   df := DIST_FUNCS[FChart.ReticuleMode];
   for i := 0 to FChart.SeriesCount - 1 do
     if
-      FChart.Series[i].GetNearestPoint(df, APoint, pointIndex, newRetPos, value) and
-      PtInRect(FChart.ClipRect, newRetPos)
+      FChart.Series[i].GetNearestPoint(
+        df, APoint, cur.pointIndex, cur.retPos, cur.value) and
+      PtInRect(FChart.ClipRect, cur.retPos)
     then begin
-       d := df(APoint, newRetPos);
+       d := df(APoint, cur.retPos);
        if d < minDist then begin
-         bestRetPos := newRetPos;
          bestSeries := i;
+         best := cur;
          minDist := d;
        end;
     end;
-  if (minDist < Infinity) and (bestRetPos <> FChart.ReticulePos) then begin
-    FChart.ReticulePos := bestRetPos;
+  if (minDist < Infinity) and (best.retPos <> FChart.ReticulePos) then begin
+    FChart.ReticulePos := best.retPos;
     if Assigned(FChart.OnDrawReticule) then
-      FChart.OnDrawReticule(FChart, bestSeries, pointIndex, value);
+      FChart.OnDrawReticule(FChart, bestSeries, best.pointIndex, best.value);
   end;
   {$ifdef OverflowChecking}{$Q+}{$endif}{$ifdef RangeChecking}{$R+}{$endif}
 end;
