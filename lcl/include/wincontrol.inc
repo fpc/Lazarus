@@ -4225,7 +4225,8 @@ begin
   end;
   if not HandleAllocated then begin
     {$IFDEF VerboseShowing}
-    DebugLn(['TWinControl.UpdateShowing ',DbgSName(Self),' handle not allocated']);
+    if bShow then
+      DebugLn(['TWinControl.UpdateShowing ',DbgSName(Self),' handle not allocated']);
     {$ENDIF}
     Exit;
   end;
