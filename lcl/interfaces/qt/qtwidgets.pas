@@ -504,6 +504,7 @@ type
     procedure setMenuBar(AMenuBar: QMenuBarH);
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function IsMdiChild: Boolean;
+    function IsModal: Boolean;
     function MdiChildCount: integer;
     procedure OffsetMousePos(APoint: PQtPoint); override;
     procedure setAcceptDropFiles(AValue: Boolean);
@@ -4692,6 +4693,11 @@ begin
   Result := (LCLObject <> nil) and not
     (csDesigning in LCLObject.ComponentState) and
     (TCustomForm(LCLObject).FormStyle = fsMDIChild);
+end;
+
+function TQtMainWindow.IsModal: Boolean;
+begin
+  Result := QWidget_isModal(Widget);
 end;
 
 function TQtMainWindow.MdiChildCount: integer;

@@ -62,6 +62,7 @@ type
     CriticalSection: TRTLCriticalSection;
     SavedHandlesList: TMap;
     FSocketEventMap: TMap;
+    StayOnTopList: TMap;
     // global hooks
     FAppEvenFilterHook: QObject_hookH;
     FAppFocusChangedHook: QApplication_hookH;
@@ -74,6 +75,8 @@ type
     FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
     procedure ClearCachedColors;
     procedure SetOverrideCursor(const AValue: TObject);
+    procedure QtRemoveStayOnTop;
+    procedure QtRestoreStayOnTop;
   protected
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
@@ -106,6 +109,8 @@ type
     procedure AppBringToFront; override;
     procedure AppSetIcon(const Small, Big: HICON); override;
     procedure AppSetTitle(const ATitle: string); override;
+    function AppRemoveStayOnTopFlags: Boolean; override;
+    function AppRestoreStayOnTopFlags: Boolean; override;
   public
     constructor Create; override;
     destructor Destroy; override;

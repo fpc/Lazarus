@@ -38,6 +38,7 @@ begin
   System.InitCriticalSection(CriticalSection);
   SavedHandlesList := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TObject));
   FSocketEventMap := TMap.Create(TMapIdType(its4), SizeOf(Pointer));
+  StayOnTopList := nil;
   {$IFDEF HASX11}
   FLastMinimizeEvent := 0;
   {$ENDIF}
@@ -68,6 +69,12 @@ begin
   QtScreenContext.Free;
 
   ClearCachedColors;
+
+  if StayOnTopList <> nil then
+  begin
+    StayOnTopList.Free;
+    StayOnTopList := nil;
+  end;
 
   if SavedHandlesList <> nil then
   begin
@@ -305,6 +312,22 @@ begin
   QCoreApplication_setApplicationName(@W);
 end;
 
+function TQtWidgetSet.AppRemoveStayOnTopFlags: Boolean;
+begin
+  Result := False;
+  {$note uncomment implementation when LCL side reworked}
+  // Result := True;
+  // QtRemoveStayOnTop;
+end;
+
+function TQtWidgetSet.AppRestoreStayOnTopFlags: Boolean;
+begin
+  Result := False;
+  {$note uncomment implementation when LCL side reworked}
+  // Result := True;
+  // QtRestoreStayOnTop;
+end;
+
 procedure TQtWidgetSet.SetOverrideCursor(const AValue: TObject);
 begin
   if AValue = nil then
@@ -315,6 +338,78 @@ begin
   else
     QApplication_changeOverrideCursor(TQtCursor(AValue).Handle);
   FOverrideCursor := AValue;
+end;
+
+procedure TQtWidgetSet.QtRemoveStayOnTop;
+var
+  i: Integer;
+  AForm: TCustomForm;
+  W: TQtMainWindow;
+  Flags: QtWindowFlags;
+begin
+  if StayOnTopList = nil then
+    StayOnTopList := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TObject));
+
+  for i := 0 to Screen.CustomFormZOrderCount - 1 do
+  begin
+    AForm := Screen.CustomFormsZOrdered[i];
+    if AForm.HandleAllocated then
+    begin
+      W := TQtMainWindow(AForm.Handle);
+      if (AForm.Parent = nil) and
+        (AForm.FormStyle in [fsStayOnTop, fsSplash]) and W.GetVisible and
+         not W.IsMdiChild and not W.IsModal and not w.isMinimized then
+      begin
+        Flags := W.windowFlags;
+        if (Flags and QtWindowStaysOnTopHint) <> 0 then
+        begin
+          W.BeginUpdate;
+          W.setAttribute(QtWA_ShowWithoutActivating, True);
+          W.setWindowFlags(Flags and not QtWindowStaysOnTopHint);
+          W.Show;
+          W.EndUpdate;
+          if not StayOnTopList.HasId(W) then
+            StayOnTopList.Add(W, W);
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TQtWidgetSet.QtRestoreStayOnTop;
+var
+  i: Integer;
+  AForm: TCustomForm;
+  W: TQtMainWindow;
+  Flags: QtWindowFlags;
+begin
+  if StayOnTopList = nil then
+    exit;
+  for i := Screen.CustomFormZOrderCount - 1 downto 0 do
+  begin
+    // AForm := StayOnTopList.Items[i];
+    AForm := Screen.CustomFormsZOrdered[i];
+    if AForm.HandleAllocated then
+    begin
+      W := TQtMainWindow(AForm.Handle);
+      if (AForm.Parent = nil) and
+        (AForm.FormStyle in [fsStayOnTop, fsSplash]) and W.GetVisible and
+        not W.IsMdiChild and not W.IsModal and not W.isMinimized then
+      begin
+        if StayOnTopList.HasId(W) then
+        begin
+          W.BeginUpdate;
+          Flags := W.windowFlags;
+          W.setWindowFlags(Flags or QtWindowStaysOnTopHint);
+          W.Show;
+          W.setAttribute(QtWA_ShowWithoutActivating, False);
+          W.EndUpdate;
+        end;
+      end;
+    end;
+  end;
+  StayOnTopList.Free;
+  StayOnTopList := nil;
 end;
 
 function TQtWidgetSet.CreateThemeServices: TThemeServices;
