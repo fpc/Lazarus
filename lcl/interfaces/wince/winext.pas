@@ -244,15 +244,20 @@ type
      POPENFILENAME = ^OPENFILENAME;
 
 {$ifndef win32}
-// See: http://msdn.microsoft.com/en-us/library/aa453954.aspx
-// Available in Windows CE 5.0+
-function SetWindowOrgEx(
-  dc:HDC;
-  x:longint;
-  y:longint;
-  point:LPPOINT):WINBOOL; cdecl; external KernelDLL name 'SetWindowOrgEx';
-function GetWindowOrgEx(DC: HDC; Point: LPPoint): BOOL; cdecl;
-  external KernelDLL name 'GetWindowOrgEx';
+type
+  // See: http://msdn.microsoft.com/en-us/library/aa453954.aspx
+  // Available in Windows CE 5.0+
+  TSetWindowOrgEx = function(
+    dc:HDC;
+    x:longint;
+    y:longint;
+    point:LPPOINT):WINBOOL; cdecl;
+  TGetWindowOrgEx = function(DC: HDC; Point: LPPoint): BOOL; cdecl;
+
+var
+  SetWindowOrgEx: TSetWindowOrgEx;
+  GetWindowOrgEx: TGetWindowOrgEx;
+  lModule: HINST;
 {$endif}
 
 Implementation
@@ -368,6 +373,12 @@ function GET_Y_LPARAM(lp : Windows.LParam) : longint;
 Initialization
 
 TmpStr := StrNew('');
+
+{$ifndef Win32}
+  lModule := LoadLibrary(KernelDLL);
+  GetWindowOrgEx := TGetWindowOrgEx(GetProcAddress(lModule, 'GetWindowOrgEx'));
+  SetWindowOrgEx := TSetWindowOrgEx(GetProcAddress(lModule, 'SetWindowOrgEx'));
+{$endif}
 
 Finalization
 

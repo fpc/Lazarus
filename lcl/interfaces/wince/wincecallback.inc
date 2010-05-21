@@ -424,7 +424,7 @@ Var
         DCIndex := Windows.SaveDC(PaintMsg.DC);
 
         {$ifdef DEBUG_WINDOW_ORG}
-        GetWindowOrgEx(PaintMsg.DC, @WindowOrg);
+        LCLIntf.GetWindowOrgEx(PaintMsg.DC, @WindowOrg);
         DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
           Format(':> [SendPaintMessage 1] Control=%s DC=%d Moving WindowOrg from %d,%d by DX=%d DY=%d',
           [lWinControl.Name, PaintMsg.DC, WindowOrg.X, WindowOrg.Y, -parLeft, -parTop]));
@@ -439,7 +439,7 @@ Var
         DCIndex := Windows.SaveDC(PaintMsg.DC);
 
         {$ifdef DEBUG_WINDOW_ORG}
-        GetWindowOrgEx(PaintMsg.DC, @WindowOrg);
+        LCLIntf.GetWindowOrgEx(PaintMsg.DC, @WindowOrg);
         DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
           Format(':> [SendPaintMessage 2] Control=%s DC=%d Moving WindowOrg from %d,%d by DX=%d DY=%d',
           [lWinControl.Name, PaintMsg.DC, WindowOrg.X, WindowOrg.Y, -parLeft, -parTop]));
@@ -450,7 +450,7 @@ Var
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
 
         {$ifdef DEBUG_WINDOW_ORG}
-        GetWindowOrgEx(PaintMsg.DC, @WindowOrg);
+        LCLIntf.GetWindowOrgEx(PaintMsg.DC, @WindowOrg);
         DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
           Format(':> [SendPaintMessage 3] Control=%s DC=%d WindowOrg=%d,%d',
           [lWinControl.Name, PaintMsg.DC, WindowOrg.X, WindowOrg.Y]));
@@ -489,7 +489,7 @@ Var
     GetWin32ControlPos(Window, Parent, P.X, P.Y);
 
     {$ifdef DEBUG_WINDOW_ORG}
-    GetWindowOrgEx(ControlDC, @Point);
+    LCLIntf.GetWindowOrgEx(ControlDC, @Point);
     DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
       Format(':> [SendParentPaintMessage] DC=%d Moving WindowsOrg From %d,%d By DX=%d DY=%d',
       [ControlDC, Point.X, Point.Y, P.X, P.Y]));
@@ -500,7 +500,7 @@ Var
     MoveWindowOrgEx(ControlDC, P.X, P.Y);
 
     {$ifdef DEBUG_WINDOW_ORG}
-    GetWindowOrgEx(ControlDC, @Point);
+    LCLIntf.GetWindowOrgEx(ControlDC, @Point);
     DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
       ':< [SendParentPaintMessage] Finish');
     {$endif}

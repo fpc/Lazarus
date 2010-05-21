@@ -148,8 +148,8 @@ var
     // * Windows control y position inside group box is too highe
     // See: http://wiki.lazarus.freepascal.org/Windows_CE_Development_Notes#Regressions
 
-    GetWindowOrgEx(PaintMsg.DC, @Point);
-    SetWindowOrgEx(PaintMsg.DC, 0, 0, nil);
+    LCLIntf.GetWindowOrgEx(PaintMsg.DC, @Point);
+    LCLIntf.SetWindowOrgEx(PaintMsg.DC, 0, 0, nil);
 //    MoveWindowOrgEx(PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top);
     try
       {$IFDEF DEBUG_WINCE_LABELS}
@@ -161,7 +161,7 @@ var
     finally
       // restore DC origin
 //      MoveWindowOrgEx(PaintMsg.DC, ClientBoundRect.Left, ClientBoundRect.Top);
-      SetWindowOrgEx(PaintMsg.DC, Point.X, Point.Y, nil);
+      LCLIntf.SetWindowOrgEx(PaintMsg.DC, Point.X, Point.Y, nil);
     end;
     {$IFDEF DEBUG_WINCE_LABELS}
     DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
@@ -1034,7 +1034,7 @@ var
   {$ENDIF}
 begin
   {$IFDEF DEBUG_WINCE_LABELS}
-  GetWindowOrgEx(DC, @Point);
+  LCLIntf.GetWindowOrgEx(DC, @Point);
   DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
     Format('trace:> [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'','
     + 'Count: %d, Rect = %d,%d,%d,%d, Flags:%d WindowOrg: %d:%d',
@@ -1467,7 +1467,7 @@ begin
   begin
     {$ifdef DEBUG_WINDOW_ORG}
     lControl := TControl(LCLIntf.GetLCLOwnerObject(HWnd));
-    GetWindowOrgEx(Result, @Point);
+    LCLIntf.GetWindowOrgEx(Result, @Point);
     DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
       Format(':> [TWinCEWidgetSet.GetDC] Name=%s DC=%s Moving WindowOrg From %d,%d By %d,%d',
       [lControl.Name, IntToHex(Result, 8), Point.X, Point.Y, ORect.Left, ORect.Top]));
@@ -1525,7 +1525,7 @@ begin
   if not Result then exit;
   OriginDiff.X := DCOrg.X - winOrg.X - ORect.Left;
   OriginDiff.Y := DCOrg.Y - winOrg.Y - ORect.Top;
-  Result := Self.GetWindowOrgEx(PaintDC, @winOrg) <> 0;
+  Result := LCLIntf.GetWindowOrgEx(PaintDC, @winOrg) <> 0;
   if not Result then
   begin
     winOrg.X := 0;
@@ -2019,8 +2019,10 @@ begin
   {$ifdef Win32}
     Result := Integer(Windows.GetWindowOrgEx(DC, P));
   {$else}
-//  Result := 0;
-  Result := Integer(WinExt.GetWindowOrgEx(DC, P));
+  if WinExt.GetWindowOrgEx <> nil then
+    Result := Integer(WinExt.GetWindowOrgEx(DC, P))
+  else
+    Result := 0;
   {$endif}
 end;
 
@@ -3045,7 +3047,7 @@ begin
   {$ifdef Win32}
     Result:= Windows.SetWindowOrgEx(dc, NewX, NewY, OldPoint);
   {$else}
-    if GetWinCEVersion >= wince_5 then
+    if WinExt.SetWindowOrgEx <> nil then
       Result:= WinExt.SetWindowOrgEx(dc, NewX, NewY, OldPoint)
     else
       Result := False;
