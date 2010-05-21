@@ -101,7 +101,6 @@ type
     property ModeRows[Index: integer]: TBuildModeGridRow read GetModeRows;
     property GroupModeCount: integer read FGroupModeCount; // number of modes that are group of modes
     property SelectedModeRow: TBuildModeGridRow read GetSelectedModeRow;
-    property ShowGroupGrid: boolean read FShowGroupGrid write SetShowGroupGrid;
   end;
 
   { TBuildModesEditorFrame }
@@ -239,41 +238,27 @@ begin
         // set new mode name
         NewValue:=Graph.FixModeName(NewValue,CurModeRow.Mode);
         CurModeRow.Mode.Name:=NewValue;
-        if CurModeRow.Mode.ShowIncludes then begin
-          // this is a group mode => update column caption
-          Columns[ColToBuildGroup(aCol)].Title.Caption:=CurModeRow.Mode.Name;
-        end;
       end else begin
         // this is a sub flag => should be empty
         NewValue:='';
       end;
     end else if ACol=TypeCol then begin
-      if CurModeRow.Mode.ShowIncludes then begin
-        // this is a group mode => no flags allowed
-        NewValue:='';
-      end else begin
-        NewValue:=SpecialCharsToSpaces(NewValue,true);
-        if (CurModeRow.Flag=nil) then begin
-          // create flag
-          CurModeRow.FFlag:=CurModeRow.Mode.AddFlag('','');
-        end;
-        // set variable name
-        CurModeRow.Flag.Variable:=NewValue;
-        UpdateValuePickList;
+      NewValue:=SpecialCharsToSpaces(NewValue,true);
+      if (CurModeRow.Flag=nil) then begin
+        // create flag
+        CurModeRow.FFlag:=CurModeRow.Mode.AddFlag('','');
       end;
+      // set variable name
+      CurModeRow.Flag.Variable:=NewValue;
+      UpdateValuePickList;
     end else if ACol=ValueCol then begin
-      if CurModeRow.Mode.ShowIncludes then begin
-        // this is a group mode => no flags allowed
-        NewValue:='';
-      end else begin
-        NewValue:=SpecialCharsToSpaces(NewValue,true);
-        if (CurModeRow.Flag=nil) then
-          // no flag => no value
-          NewValue:=''
-        else
-          // set new value
-          CurModeRow.Flag.Value:=NewValue;
-      end;
+      NewValue:=SpecialCharsToSpaces(NewValue,true);
+      if (CurModeRow.Flag=nil) then
+        // no flag => no value
+        NewValue:=''
+      else
+        // set new value
+        CurModeRow.Flag.Value:=NewValue;
     end;
   end;
 end;
@@ -486,9 +471,7 @@ procedure TBuildModesGrid.SetCheckboxState(const aCol, aRow: Integer;
 var
   CurModeRow: TBuildModeGridRow;
   GrpID: LongInt;
-  GrpMode: TBuildMode;
   NewState: TCheckBoxState;
-  dummystate: TCheckboxState;
 begin
   //DebugLn(['TBuildModesGrid.SetCheckboxState Col=',acol,' Row=',arow,' State=',ord(aState)]);
   NewState:=cbUnchecked;
@@ -497,33 +480,7 @@ begin
     CurModeRow:=ModeRows[aRow-1];
     GrpID:=ColToBuildGroup(aCol);
     if (GrpID>=0) and (GrpID<GroupModeCount) then begin
-      if ShowGroupGrid or (not CurModeRow.Mode.ShowIncludes) then begin
-        GrpMode:=ModeRows[GrpID].Mode;
-        if CurModeRow.Mode=GrpMode then begin
-          // invalid circle
-          DebugLn(['TBuildModesGrid.SetCheckboxState invalid circle']);
-        end else if CurModeRow.Mode.IsIncludedBy(GrpMode)<>(aState=cbChecked) then
-        begin
-          // state changed
-          //DebugLn(['TBuildModesGrid.SetCheckboxState INCLUDE CHANGE check=',aState=cbChecked,' GrpMode=',GrpMode.Name,' ClickedMode=',CurModeRow.Mode.Name]);
-          if aState=cbChecked then begin
-            GrpMode.Include(CurModeRow.Mode);
-            NewState:=cbChecked;
-          end else begin
-            GrpMode.Exclude(CurModeRow.Mode);
-          end;
-          InvalidateCol(1); // update selected
-          GetCheckBoxState(aCol,aRow,dummystate);
-        end else begin
-          // state kept
-          //DebugLn(['TBuildModesGrid.SetCheckboxState STATE KEPT']);
-          if CurModeRow.Mode.IsIncludedBy(GrpMode) then
-            NewState:=cbChecked;
-        end;
-      end else begin
-        // group grid is hidden => keep state
-        DebugLn(['TBuildModesGrid.SetCheckboxState group grid is hidden']);
-      end;
+
     end else if (aCol=1) and (CurModeRow.IndexInGroup=0) then begin
       if Graph.SelectedMode=CurModeRow.Mode then
         Graph.SelectedMode:=nil
@@ -586,12 +543,6 @@ const
 var
   CurModeRow: TBuildModeGridRow;
   TypeCol: Integer;
-  GrpID: LongInt;
-  x: Integer;
-  y: Integer;
-  RowGrpID: Integer;
-  BezierPoints: PPoint;
-  r: Integer;
 begin
   if (aRow>=1) and (aRow<=ModeRowCount) then begin
     TypeCol:=GetTypeCol;
@@ -605,54 +556,6 @@ begin
       DrawGrid(aCol=TypeCol-1,
                CurModeRow.IndexInGroup=CurModeRow.Mode.FlagCount-1);
       exit;
-    end else if CurModeRow.Mode.ShowIncludes then begin
-      GrpID:=ColToBuildGroup(aCol);
-      if aCol>=TypeCol then begin
-        // groups have no type/value
-        PrepareCanvas(aCol, aRow, aState);
-        Canvas.FillRect(aRect);
-        if aRow=GroupModeCount then
-          DrawGrid(false,true);
-        exit;
-      end else if (GrpID>=0) and (GrpID<GroupModeCount) then begin
-        // draw paths from mode row to mode column
-        PrepareCanvas(aCol, aRow, aState);
-        Canvas.FillRect(aRect);
-        Canvas.Brush.Style := bsSolid;
-        Canvas.Brush.Color := clBtnFace;
-        Canvas.Pen.Style := psClear;
-        x:=(aRect.Left+aRect.Right) div 2;
-        y:=(aRect.Top+aRect.Bottom) div 2;
-        r:=Min(aRect.Right-aRect.Left,aRect.Bottom-aRect.Top) div 2;
-        RowGrpID:=aRow-1;
-        if GrpID=RowGrpID then begin
-          // draw curve left to bottom
-          GetMem(BezierPoints,SizeOf(TPoint)*10);
-          BezierPoints[0]:=Point(x-r,y-w); // middle,left
-            BezierPoints[1]:=Point(x-r+10,y-w); // to the right
-            BezierPoints[2]:=Point(x+w,y+r-10); // downwards
-          BezierPoints[3]:=Point(x+w,y+r); // bottom, middle
-            BezierPoints[4]:=Point(x+w-10,y+r); // to the left
-            BezierPoints[5]:=Point(x-w-10,y+r); // to the left
-          BezierPoints[6]:=Point(x-w,y+r); // bottom, middle
-            BezierPoints[7]:=Point(x-w,y+r-10); // upwards
-            BezierPoints[8]:=Point(x-r-10,y+w); // to the left
-          BezierPoints[9]:=Point(x-r,y+w); // middle,left
-          Canvas.PolyBezier(BezierPoints,10,true,true);
-          Freemem(BezierPoints);
-          Canvas.FillRect(aRect.Left,y-w,x-r,y+w+1);
-          Canvas.FillRect(x-w,y+r,x+w+1,aRect.Bottom);
-        end else if GrpID>RowGrpID then begin
-          // draw left to right
-          Canvas.FillRect(aRect.Left,y-w,aRect.Right,y+w+1);
-        end else begin
-          // draw top to bottom
-          Canvas.FillRect(x-w,aRect.Top,x+w+1,aRect.Bottom);
-        end;
-        if aRow=GroupModeCount then
-          DrawGrid(false,true);
-        exit;
-      end;
     end;
   end;
   //DebugLn(['TBuildModesGrid.DrawCell draw default ',aCol,' ',aRow]);
@@ -697,7 +600,6 @@ begin
     Result:=Graph.AddMode(Graph.GetUniqueModeName(nil,nil));
     if Group then
     begin
-      Result.ShowIncludes:=true;
       CurFlag:=nil;
       InsertPos:=GroupModeCount;
       InsertCol:=BuildGroupToCol(GroupModeCount-1);
@@ -733,14 +635,6 @@ begin
   end;
   //DebugLn(['TBuildModesGrid.InsertNewBuildFlagBehind ',Row]);
   CurModeRow:=ModeRows[Row-1];
-  if CurModeRow.Mode.ShowIncludes then
-  begin
-    MessageDlg(lisUnableToAddSetting,
-      Format(lisIsAGroupASettingCanOnlyBeAddedToNormalBuildModes, [
-        CurModeRow.Mode.Name]),
-      mtError, [mbCancel], 0);
-    exit;
-  end;
   Result:=CurModeRow.Mode.InsertFlag(CurModeRow.IndexInGroup+1,'','');
   InsertPos:=Row+1;
   GridRow:=TBuildModeGridRow.Create(CurModeRow.Mode,Result);
@@ -754,7 +648,6 @@ end;
 procedure TBuildModesGrid.DeleteSelectedModeRow;
 var
   CurModeRow: TBuildModeGridRow;
-  GroupCol: LongInt;
 begin
   if (Row<1) or (Row>ModeRowCount) then
   begin
@@ -763,7 +656,7 @@ begin
     exit;
   end;
   CurModeRow:=ModeRows[Row-1];
-  if (not CurModeRow.Mode.ShowIncludes) and (CurModeRow.Mode.FlagCount>1) then
+  if (CurModeRow.Mode.FlagCount>1) then
   begin
     // delete flag
     if (CurModeRow.Flag.Value<>'') or (CurModeRow.Flag.Variable<>'') then
@@ -783,12 +676,6 @@ begin
       mtConfirmation,[mbYes,mbNo],0)<>mrYes
     then
       exit;
-    if CurModeRow.Mode.ShowIncludes then begin
-      // delete a group build mode
-      GroupCol:=Row;
-      DeleteColRow(true,GroupCol);
-      dec(FGroupModeCount);
-    end;
     // delete a normal build mode
     FModeRows.Remove(CurModeRow);
     DeleteColRow(false,Row);
@@ -808,19 +695,8 @@ begin
 end;
 
 function TBuildModesGrid.CellToInclude(aCol, aRow: integer): boolean;
-var
-  GrpID: LongInt;
-  CurMode: TBuildModeGridRow;
 begin
   //DebugLn(['TBuildModesGrid.CellToInclude Col=',aCol,' aRow=',aRow,' GroupModeCount=',GroupModeCount]);
-  if (aRow>=1) and (ARow<=ModeRowCount) then begin
-    CurMode:=ModeRows[aRow-1];
-    GrpID:=ColToBuildGroup(aCol);
-    if (GrpID>=0) and (GrpID<GroupModeCount) then begin
-      if CurMode.Mode.IsIncludedBy(ModeRows[GrpID].Mode) then
-        exit(true);
-    end;
-  end;
   Result:=false;
 end;
 
@@ -835,19 +711,12 @@ begin
 end;
 
 procedure TBuildModesGrid.RebuildGrid;
-var
-  GroupInsertPos: Integer;
 
   procedure AddRow(CurMode: TBuildMode; NewRow: TBuildModeGridRow);
   var
     InsertPos: LongInt;
   begin
-    if CurMode.ShowIncludes then begin
-      InsertPos:=GroupInsertPos;
-      inc(GroupInsertPos);
-    end else begin
-      InsertPos:=FModeRows.Count;
-    end;
+    InsertPos:=FModeRows.Count;
     if (InsertPos=0) or (ModeRows[InsertPos-1].Mode<>CurMode) then
       NewRow.IndexInGroup:=0
     else
@@ -868,11 +737,9 @@ begin
   FRebuilding:=true;
   try
     ClearModeRows;
-    GroupInsertPos:=0;
     // create rows
     for i:=0 to Graph.ModeCount-1 do begin
       CurMode:=Graph.Modes[i];
-      if CurMode.ShowIncludes then inc(FGroupModeCount);
       if (CurMode.FlagCount=0) then begin
         // no flags => create an empty one
         NewRow:=TBuildModeGridRow.Create(CurMode,nil);
@@ -944,9 +811,9 @@ var
   Mode: TBuildModeGridRow;
 begin
   Mode:=Grid.SelectedModeRow;
-  NewBuildFlagSpeedButton.Enabled:=(Mode<>nil) and (not Mode.Mode.ShowIncludes);
+  NewBuildFlagSpeedButton.Enabled:=(Mode<>nil);
   DeleteBMRowSpeedButton.Enabled:=(Mode<>nil);
-  if (Mode<>nil) and (not Mode.Mode.ShowIncludes) and (Mode.Mode.FlagCount>1)
+  if (Mode<>nil) and (Mode.Mode.FlagCount>1)
   then
     DeleteBMRowSpeedButton.Hint:=lisDeleteSetting
   else

@@ -149,28 +149,16 @@ type
     FActive: boolean;
     FFlags: TFPList; // lost TBuildModeFlag
     FGraph: TBuildModeGraph;
-    FIncludes: TFPList;// list of TBuildMode
-    FIncludedBy: TFPList;// list of TBuildMode
     FName: string;
-    FShowIncludes: boolean;
     FStoredInSession: boolean;
     function GetFlagCount: integer;
     function GetFlags(Index: integer): TBuildModeFlag;
-    function GetIncludeCount: integer;
-    function GetIncludedBy(Index: integer): TBuildMode;
-    function GetIncludedByCount: integer;
-    function GetIncludes(Index: integer): TBuildMode;
     procedure SetName(const AValue: string);
     procedure SetStoredInSession(const AValue: boolean);
   public
     constructor Create(aGraph: TBuildModeGraph; const aName: string);
     destructor Destroy; override;
     procedure ClearFlags;
-    procedure ClearIncludes;
-    procedure ClearIncludedBys;
-    procedure Include(aMode: TBuildMode);
-    procedure Exclude(aMode: TBuildMode);
-    function IsIncludedBy(aMode: TBuildMode): boolean;
     function AddFlag(Value: string; Variable: string = ''): TBuildModeFlag;
     function InsertFlag(InsertPos: integer;
                         Value: string; Variable: string = ''): TBuildModeFlag;
@@ -185,12 +173,7 @@ type
     property Name: string read FName write SetName;
     property Graph: TBuildModeGraph read FGraph;
     property StoredInSession: boolean read FStoredInSession write SetStoredInSession;
-    property IncludeCount: integer read GetIncludeCount;
-    property Includes[Index: integer]: TBuildMode read GetIncludes;
-    property IncludedByCount: integer read GetIncludedByCount;
-    property IncludedBy[Index: integer]: TBuildMode read GetIncludedBy;
     property Active: boolean read FActive;
-    property ShowIncludes: boolean read FShowIncludes write FShowIncludes;
     property FlagCount: integer read GetFlagCount;
     property Flags[Index: integer]: TBuildModeFlag read GetFlags;
   end;
@@ -3688,14 +3671,10 @@ end;
 procedure TBuildModeGraph.UpdateActiveModes;
 
   procedure Add(aMode: TBuildMode);
-  var
-    i: Integer;
   begin
     if (aMode=nil) or (FActiveModes.IndexOf(aMode)>=0) then exit;
     FActiveModes.Add(aMode);
     aMode.FActive:=true;
-    for i:=0 to aMode.IncludeCount-1 do
-      Add(aMode.Includes[i]);
   end;
 
 var
@@ -4924,16 +4903,6 @@ end;
 
 { TBuildMode }
 
-function TBuildMode.GetIncludedBy(Index: integer): TBuildMode;
-begin
-  Result:=TBuildMode(FIncludedBy[Index]);
-end;
-
-function TBuildMode.GetIncludeCount: integer;
-begin
-  Result:=FIncludes.Count;
-end;
-
 function TBuildMode.GetFlagCount: integer;
 begin
   Result:=FFlags.Count;
@@ -4942,16 +4911,6 @@ end;
 function TBuildMode.GetFlags(Index: integer): TBuildModeFlag;
 begin
   Result:=TBuildModeFlag(FFlags[Index]);
-end;
-
-function TBuildMode.GetIncludedByCount: integer;
-begin
-  Result:=FIncludedBy.Count;
-end;
-
-function TBuildMode.GetIncludes(Index: integer): TBuildMode;
-begin
-  Result:=TBuildMode(FIncludes[Index]);
 end;
 
 procedure TBuildMode.SetName(const AValue: string);
@@ -4970,19 +4929,13 @@ constructor TBuildMode.Create(aGraph: TBuildModeGraph; const aName: string);
 begin
   FGraph:=aGraph;
   FName:=aName;
-  FIncludes:=TFPList.Create;
-  FIncludedBy:=TFPList.Create;
   FFlags:=TFPList.Create;
 end;
 
 destructor TBuildMode.Destroy;
 begin
   ClearFlags;
-  ClearIncludes;
-  ClearIncludedBys;
   FreeAndNil(FFlags);
-  FreeAndNil(FIncludes);
-  FreeAndNil(FIncludedBy);
   inherited Destroy;
 end;
 
@@ -4993,54 +4946,6 @@ begin
   for i:=0 to FFlags.Count-1 do
     TObject(FFlags[i]).Free;
   FFlags.Clear;
-end;
-
-procedure TBuildMode.ClearIncludes;
-var
-  i: Integer;
-begin
-  for i:=0 to FIncludes.Count-1 do
-    Includes[i].FIncludedBy.Remove(Self);
-  FIncludes.Clear;
-end;
-
-procedure TBuildMode.ClearIncludedBys;
-var
-  i: Integer;
-begin
-  for i:=0 to FIncludedBy.Count-1 do
-    IncludedBy[i].FIncludes.Remove(Self);
-  FIncludedBy.Clear;
-end;
-
-procedure TBuildMode.Include(aMode: TBuildMode);
-begin
-  if aMode=nil then exit;
-  if FIncludes.IndexOf(aMode)>=0 then exit;
-  if aMode.FIncludedBy.IndexOf(Self)>=0 then
-    RaiseException('');
-  FIncludes.Add(aMode);
-  aMode.FIncludedBy.Add(Self);
-  if Active or aMode.Active then
-    Graph.UpdateActiveModes;
-end;
-
-procedure TBuildMode.Exclude(aMode: TBuildMode);
-begin
-  if FIncludes.IndexOf(aMode)<0 then exit;
-  FIncludes.Remove(aMode);
-  aMode.FIncludedBy.Remove(Self);
-  if Active or aMode.Active then
-    Graph.UpdateActiveModes;
-end;
-
-function TBuildMode.IsIncludedBy(aMode: TBuildMode): boolean;
-var
-  i: Integer;
-begin
-  for i:=0 to IncludedByCount-1 do
-    if IncludedBy[i]=aMode then exit(true);
-  Result:=false;
 end;
 
 function TBuildMode.AddFlag(Value: string; Variable: string): TBuildModeFlag;
@@ -5074,10 +4979,6 @@ begin
     Src:=TBuildMode(Source);
     // name is not copied
     FStoredInSession:=Src.FStoredInSession;
-    // copy includes
-    FIncludes.Clear;
-    for i:=0 to Src.IncludeCount-1 do
-      Include(Graph.FindModeWithName(Src.Includes[i].Name));
     // copy flags
     ClearFlags;
     for i:=0 to Src.FlagCount-1 do begin
@@ -5096,11 +4997,6 @@ begin
   Result:=false;
   if StoredInSession<>aMode.StoredInSession then exit;
   if Name<>aMode.Name then exit;
-  if IncludeCount<>aMode.IncludeCount then exit;
-  for i:=0 to IncludeCount-1 do
-    if SysUtils.CompareText(Includes[i].Name,aMode.Includes[i].Name)<>0 then
-      exit;
-  // Note: do not compare includedby
   if FlagCount<>aMode.FlagCount then exit;
   for i:=0 to FlagCount-1 do
     if not Flags[i].IsEqual(aMode.Flags[i]) then
@@ -5115,9 +5011,7 @@ var
   NewCnt: LongInt;
   i: Integer;
   Flag: TBuildModeFlag;
-  ModeName: String;
 begin
-  ClearIncludes;
   ClearFlags;
   FName:=XMLConfig.GetValue(Path+'Name/Value','');
 
@@ -5127,14 +5021,6 @@ begin
     FFlags.Add(Flag);
     Flag.LoadFromXMLConfig(XMLConfig,Path+'Flags/Item'+IntToStr(i)+'/',
                            DoSwitchPathDelims);
-  end;
-
-  FShowIncludes:=XMLConfig.GetValue(Path+'Includes/Show',false);
-  NewCnt:=XMLConfig.GetValue(Path+'Includes/Count',0);
-  for i:=0 to NewCnt-1 do begin
-    ModeName:=XMLConfig.GetValue(Path+'Includes/Mode'+IntToStr(i)+'/Name','');
-    if ModeName='' then continue;
-    Include(Graph.FindModeWithName(ModeName));
   end;
 end;
 
@@ -5148,11 +5034,6 @@ begin
   for i:=0 to FlagCount-1 do
     Flags[i].SaveToXMLConfig(XMLConfig,Path+'Flags/Item'+IntToStr(i)+'/',
                              UsePathDelim);
-  XMLConfig.SetDeleteValue(Path+'Includes/Show',ShowIncludes,false);
-  XMLConfig.SetDeleteValue(Path+'Includes/Count',IncludeCount,0);
-  for i:=0 to IncludeCount-1 do
-    XMLConfig.SetDeleteValue(Path+'Includes/Mode'+IntToStr(i)+'/Name',
-                             Includes[i].Name,'');
 end;
 
 { TBuildModeFlag }
