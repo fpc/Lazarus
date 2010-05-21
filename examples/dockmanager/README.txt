@@ -1,10 +1,6 @@
 The examples/dockmanager directory contains several projects,
 provided by DoDi <DrDiettrich1@aol.com>
 
-!!!BEWARE!!!
-As long as new autosizing doesn't work properly,
-you'll have to use -dOldAutoSize.
-
 
 patches/
 ========
@@ -23,11 +19,6 @@ easyedit/easyeditor
 ===================
 demonstrates an multi-window editor with dockable pages (files).
 
-elasticsite/project1
-====================
-demonstrates elastic dock sites, which become visible only after a control
-has been docked into them.
-
 elasticsite/SiteTest
 ====================
 demonstrates elastic panels and dockable forms.
@@ -41,11 +32,20 @@ ide_demo/MiniIDE
 ================
 A Lazarus-like IDE with:
 - dockable windows
+- elastic docksites
 - multiple editor forms
 - persistent layouts with special form handling
 
-Loading a layout should not affect files in the editors, because these are project specific. This can result in empty editor windows, for now.
-More features to come...
+ide_demo2/MiniIDE2
+==================
+A Lazarus-like IDE with:
+- dockable windows, including editor forms
+- persistent layouts with special form handling
+
+In contrast to MiniIDE this project only uses dockable forms,
+floating in a hostsite that allows to dock multiple forms together.
+An editor form only is one of such forms, special only in the save/reload of its content.
+An elastic site is created only for the MainBar, to allow for monolithic (single-form) layouts.
 
 
 toolbar/test1
