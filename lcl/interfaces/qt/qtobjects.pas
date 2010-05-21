@@ -2328,9 +2328,6 @@ end;
   To get a correct behavior we need to sum the text's height to the Y coordinate.
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawText(x: Integer; y: Integer; s: PWideString);
-var
-  ARect: TRect;
-  dy: Integer;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawText TargetX: ', X, ' TargetY: ', Y);
@@ -2342,16 +2339,6 @@ begin
   begin
     Translate(x, y);
     Rotate(-0.1 * Font.Angle);
-  end;
-
-  // manual check for clipping
-  if getClipping then
-  begin
-    dy := Font.Metrics.height;
-    ARect := getClipRegion.getBoundingRect;
-    if (y + dy < ARect.Top) or (y > ARect.Bottom) or
-       (x > ARect.Right) then
-      Exit;
   end;
 
   // what about Font.Metrics.descent and Font.Metrics.leading ?
