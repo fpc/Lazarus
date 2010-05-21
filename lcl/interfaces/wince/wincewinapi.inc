@@ -995,8 +995,32 @@ end;
 
   Draws a frame control of the specified type and style.
  ------------------------------------------------------------------------------}
-function TWinCEWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,uState: Cardinal): Boolean;
+function TWinCEWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType, uState: Cardinal): Boolean;
+var
+  OldBrush, OldPen: HGDIOBJ;
 begin
+  // Some WinCE elements have a very bad looking native look,
+  // which causes trouble with controls which are painted
+  // using this routine, such as TSpeedButton
+  // So here we override some native frames
+  if (uType = DFC_BUTTON) then
+  begin
+    if (uState = DFCS_BUTTONPUSH or DFCS_PUSHED) then
+    begin
+      // We draw the pushed button as a gray background and a black frame
+      // The native look is a black background, which is ugly and doesn't
+      // allow the text to be seen.
+      OldBrush := Windows.SelectObject(DC, Windows.GetStockObject(GRAY_BRUSH));
+      OldPen := Windows.SelectObject(DC, Windows.GetStockObject(BLACK_PEN));
+      Windows.Rectangle(DC, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom);
+      Windows.SelectObject(DC, OldBrush);
+      Windows.SelectObject(DC, OldPen);
+      Exit(True);
+    end;
+    // implement DFCS_INACTIVE too?
+  end;
+
+  // Default native look for other cases
   Result := Boolean(Windows.DrawFrameControl(DC, @Rect, UType, UState));
 end;
 
