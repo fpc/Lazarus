@@ -151,7 +151,6 @@ type
                             const AMethod: TMethod);
   protected
     fOwningComponent: TComponent;
-    FDockingManager: TLazDockingManager;
 
     function GetActiveProject: TLazProject; virtual; abstract;
     procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType);
@@ -168,7 +167,6 @@ type
     // the main window with the IDE menu
     function GetMainBar: TComponent; virtual; abstract;
     property MainBarSubTitle: string read FMainBarSubTitle write SetMainBarSubTitle;
-    property DockingManager: TLazDockingManager read FDockingManager;
 
     // find file
     function FindUnitFile(const AFilename: string): string; virtual; abstract;

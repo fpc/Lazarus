@@ -33,12 +33,12 @@ type
     procedure DoFloatMsg(ADockSource: TDragDockObject); override;//CM_FLOAT
     function  GetDefaultDockCaption: string; override;
     function  GetPrev: TEditPage;
-    procedure SetFocus; override;
   public
     FileName: string;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure LoadFile(const AName: string);
+    procedure SetFocus; override;
   end;
 
 (* EditPages is a notebook with special notification of its parent.
@@ -144,6 +144,7 @@ begin
   se := TEditPage.Create(Owner);
   se.LoadFile(AName);
   se.ManualDock(FEdit);
+  Result:=true;
 end;
 
 procedure TEditBook.LoadFromStream(strm: TStream);

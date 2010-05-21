@@ -40,7 +40,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, LCLProc, StdCtrls, Forms, Controls, Buttons, Menus,
-  ComCtrls, ExtCtrls, Dialogs, LDockCtrl,
+  ComCtrls, ExtCtrls, Dialogs,
   // IDEIntf
   ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf,
   EnvironmentOpts, LazarusIDEStrConsts;
@@ -345,7 +345,6 @@ type
     procedure NewUFDefaultClick(Sender: TObject);
     procedure NewUnitFormPopupMenuPopup(Sender: TObject);
   public
-    ControlDocker: TLazControlDocker;
     constructor Create(TheOwner: TComponent); override;
     procedure HideIDE;
     procedure UnhideIDE;
@@ -427,12 +426,6 @@ end;
 constructor TMainIDEBar.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-
-  ControlDocker:=TLazControlDocker.Create(Self);
-  ControlDocker.Name:='MainIDEBar';
-  {$IFDEF EnableIDEDocking}
-  ControlDocker.Manager:=LazarusIDE.DockingManager;
-  {$ENDIF}
 end;
 
 procedure TMainIDEBar.HideIDE;

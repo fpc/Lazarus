@@ -42,7 +42,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, Math, Controls, LCLProc, LCLType, LResources,
   LCLIntf, FileUtil, Forms, ComCtrls, Dialogs, StdCtrls, Graphics, Translations,
-  ClipBrd, types, Extctrls, Menus, HelpIntfs, LConvEncoding, LDockCtrl,
+  ClipBrd, types, Extctrls, Menus, HelpIntfs, LConvEncoding,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   // synedit
@@ -593,7 +593,6 @@ type
     procedure MoveEditorRightClicked(Sender: TObject);
     procedure MoveEditorFirstClicked(Sender: TObject);
     procedure MoveEditorLastClicked(Sender: TObject);
-    procedure DockingClicked(Sender: TObject);
     procedure NotebookPageChanged(Sender: TObject);
     procedure NotebookShowTabHint(Sender: TObject; HintInfo: PHintInfo);
     procedure OpenAtCursorClicked(Sender: TObject);
@@ -783,8 +782,6 @@ type
     procedure CheckFont;
 
   public
-    ControlDocker: TLazControlDocker;
-
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -1177,7 +1174,6 @@ var
   SrcEditMenuMoveEditorRight: TIDEMenuCommand;
   SrcEditMenuMoveEditorFirst: TIDEMenuCommand;
   SrcEditMenuMoveEditorLast: TIDEMenuCommand;
-  SrcEditMenuDocking: TIDEMenuCommand;
   SrcEditMenuReadOnly: TIDEMenuCommand;
   SrcEditMenuShowLineNumbers: TIDEMenuCommand;
   SrcEditMenuShowUnitInfo: TIDEMenuCommand;
@@ -1427,11 +1423,6 @@ begin
 
   SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
            'EditorProperties', dlgFROpts, nil, nil, nil, 'menu_environment_options');
-  SrcEditMenuDocking:=RegisterIDEMenuCommand(SourceEditorMenuRoot, 'Docking',
-           lisMVDocking);
-  {$IFNDEF EnableIDEDocking}
-  SrcEditMenuDocking.Visible:=false;
-  {$ENDIF}
 end;
 
 
@@ -4823,11 +4814,6 @@ begin
     EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(self.Name).Clear;
   end;
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, self.Name);
-  ControlDocker:=TLazControlDocker.Create(Self);
-  ControlDocker.Name:='SourceEditor';
-  {$IFDEF EnableIDEDocking}
-  ControlDocker.Manager:=LazarusIDE.DockingManager;
-  {$ENDIF}
 
   FSourceEditorList := TList.Create;
 
@@ -5377,7 +5363,6 @@ begin
   SrcEditMenuMoveEditorFirst.OnClick:=@MoveEditorFirstClicked;
   SrcEditMenuMoveEditorLast.OnClick:=@MoveEditorLastClicked;
   SrcEditMenuMoveEditorLast.OnClick:=@MoveEditorLastClicked;
-  SrcEditMenuDocking.OnClick:=@DockingClicked;
 
   SrcEditMenuInsertTodo.OnClick:=@InsertTodoClicked;
 
@@ -6433,11 +6418,6 @@ end;
 procedure TSourceNotebook.MoveEditorLastClicked(Sender: TObject);
 begin
   MoveActivePageLast;
-end;
-
-procedure TSourceNotebook.DockingClicked(Sender: TObject);
-begin
-  ControlDocker.ShowDockingEditor;
 end;
 
 procedure TSourceNotebook.StatusBarDblClick(Sender: TObject);

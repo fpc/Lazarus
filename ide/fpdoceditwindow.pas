@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, StrUtils,
   // LCL
   LCLProc, LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
-  LDockCtrl, ExtCtrls, Forms, Graphics, LCLType,
+  ExtCtrls, Forms, Graphics, LCLType,
   // Synedit
   SynEdit,
   // codetools
@@ -72,7 +72,6 @@ type
     TopicListBox: TListBox;
     NewTopicNameEdit: TEdit;
     NewTopicButton: TButton;
-    ControlDocker: TLazControlDocker;
     CopyFromInheritedButton: TButton;
     CreateButton: TButton;
     DescrMemo: TMemo;
@@ -279,11 +278,6 @@ begin
   
   Name := NonModalIDEWindowNames[nmiwFPDocEditorName];
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
-  ControlDocker:=TLazControlDocker.Create(Self);
-  ControlDocker.Name:='FPDocEditor';
-  {$IFDEF EnableIDEDocking}
-  ControlDocker.Manager:=LazarusIDE.DockingManager;
-  {$ENDIF}
 
   BoldFormatButton.LoadGlyphFromLazarusResource('formatbold');
   UnderlineFormatButton.LoadGlyphFromLazarusResource('formatunderline');

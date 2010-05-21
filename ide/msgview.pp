@@ -41,7 +41,7 @@ interface
 uses
   Classes, SysUtils, AVL_Tree,
   LCLProc, LCLType, ClipBrd, Controls, Dialogs, FileUtil, Forms,
-  Menus, ExtCtrls, StdCtrls, ComCtrls, LDockCtrl, Graphics,
+  Menus, ExtCtrls, StdCtrls, ComCtrls, Graphics,
   CodeToolManager,
   IDEImagesIntf, IDEExternToolIntf, IDECommands, MenuIntf, IDEMsgIntf, LazIDEIntf,
   DialogProcs, EnvironmentOpts,
@@ -82,7 +82,6 @@ type
     procedure CopyAllMenuItemClick(Sender: TObject);
     procedure CopyAllAndHiddenMenuItemClick(Sender: TObject);
     procedure CopyMenuItemClick(Sender: TObject);
-    procedure DockMenuItemClick(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure HelpMenuItemClick(Sender: TObject);
     procedure ClearMenuItemClick(Sender: TObject);
@@ -133,7 +132,6 @@ type
     procedure Changed;
     procedure SetTVNodeImage(TVNode: TTreeNode; Msg: TLazMessageLine);
   public
-    ControlDocker: TLazControlDocker;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure BeginUpdateNotification(Sender: TObject);
@@ -340,17 +338,8 @@ begin
   MsgCopyAllIDEMenuCommand.OnClick := @CopyAllMenuItemClick;
   MsgCopyAllAndHiddenIDEMenuCommand.OnClick := @CopyAllAndHiddenMenuItemClick;
   MsgSaveAllToFileIDEMenuCommand.OnClick := @SaveAllToFileMenuItemClick;
-  MsgDockIDEMenuCommand.OnClick :=@DockMenuItemClick;
-  {$IFNDEF EnableIDEDocking}
-  MsgDockIDEMenuCommand.Visible:=false;
-  {$ENDIF}
 
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
-  ControlDocker:=TLazControlDocker.Create(Self);
-  ControlDocker.Name:='Messages';
-  {$IFDEF EnableIDEDocking}
-  ControlDocker.Manager:=LazarusIDE.DockingManager;
-  {$ENDIF}
 end;
 
 destructor TMessagesView.Destroy;
@@ -930,11 +919,6 @@ procedure TMessagesView.CopyMenuItemClick(Sender: TObject);
 begin
   if MessageTreeView.GetFirstMultiSelected=nil then exit;
   Clipboard.AsText := GetSelectedMessagesAsText;
-end;
-
-procedure TMessagesView.DockMenuItemClick(Sender: TObject);
-begin
-  ControlDocker.ShowDockingEditor;
 end;
 
 procedure TMessagesView.FormDeactivate(Sender: TObject);

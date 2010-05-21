@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls;
+  StdCtrls, ExtCtrls, fEditBook2;
 
 type
   TViewWindow = class(TForm)

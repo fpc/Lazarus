@@ -76,11 +76,12 @@
       <Filename Value="MiniIDE2"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="lib\i386-win32\"/>
-      <OtherUnitFiles Value="D:\SourceForge\lazarus\examples\dockmanager\easyedit\;D:\SourceForge\lazarus\examples\dockmanager\lib\i386-win32\;D:\SourceForge\lazarus\ideintf\units\i386-win32\;D:\SourceForge\lazarus\lcl\units\i386-win32\;D:\SourceForge\lazarus\lcl\units\i386-win32\win32\;D:\SourceForge\lazarus\packager\units\i386-win32\"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

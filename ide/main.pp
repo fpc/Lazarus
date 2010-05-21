@@ -63,7 +63,7 @@ uses
   // lcl
   LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages, ComCtrls,
   FileUtil, LResources, StdCtrls, Forms, Buttons, Menus, Controls, GraphType,
-  HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, LDockCtrl, UTF8Process,
+  HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, UTF8Process,
   // codetools
   FileProcs, CodeBeautifier, FindDeclarationTool, LinkScanner, BasicCodeTools,
   Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
@@ -1263,7 +1263,6 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create INHERITED');{$ENDIF}
 
   FWaitForClose := False;
-  FDockingManager:=TLazDockingManager.Create(Self);
 
   SetupDialogs;
   RunExternalTool:=@OnRunExternalTool;
@@ -1451,7 +1450,6 @@ begin
   DebugLn('[TMainIDE.Destroy] B  -> inherited Destroy... ',ClassName);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
   FreeThenNil(MainBuildBoss);
-  FreeThenNil(FDockingManager);
   inherited Destroy;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy C ');{$ENDIF}
 
@@ -1696,15 +1694,11 @@ procedure TMainIDE.MainIDEFormCloseQuery(Sender: TObject;
   var CanClose: boolean);
 var
   MsgResult: integer;
-{$IFDEF EnableIDEDocking}
 const IsClosing: Boolean = False;
-{$ENDIF}
 begin
-  {$IFDEF EnableIDEDocking}
   CanClose := True;
   if IsClosing then Exit;
   IsClosing := True;
-  {$ENDIF}
   CanClose := False;
   FCheckingFilesOnDisk := True;
   try
@@ -1742,9 +1736,7 @@ begin
 
     CanClose:=(DoCloseProject <> mrAbort);
   finally
-    {$IFDEF EnableIDEDocking}
     IsClosing := False;
-    {$ENDIF}
     FCheckingFilesOnDisk:=false;
     if not CanClose then
       DoCheckFilesOnDisk(false);
@@ -1890,8 +1882,6 @@ begin
 end;
 
 procedure TMainIDE.SetupObjectInspector;
-var
-  OIControlDocker: TLazControlDocker;
 begin
   ObjectInspector1 := TObjectInspectorDlg.Create(OwningComponent);
   ObjectInspector1.BorderStyle:=bsSizeable;
@@ -1911,11 +1901,6 @@ begin
   ObjectInspector1.OnPropertyHint:=@OIOnPropertyHint;
   ObjectInspector1.OnDestroy:=@OIOnDestroy;
 
-  OIControlDocker:=TLazControlDocker.Create(ObjectInspector1);
-  OIControlDocker.Name:='ObjectInspector';
-  {$IFDEF EnableIDEDocking}
-  OIControlDocker.Manager:=LazarusIDE.DockingManager;
-  {$ENDIF}
   IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspectorDlg);
 
   GlobalDesignHook:=TPropertyEditorHook.Create;

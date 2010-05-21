@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, AvgLvlTree, Forms, Controls, Buttons,
-  LDockCtrl, ComCtrls, StdCtrls, Menus, Dialogs, Graphics, FileUtil,
+  ComCtrls, StdCtrls, Menus, Dialogs, Graphics, FileUtil,
   LazIDEIntf, IDECommands,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
   Project, AddToProjectDlg, PackageSystem, PackageDefs;
@@ -68,7 +68,6 @@ type
     OpenBitBtn: TSpeedButton;
     ItemsTreeView: TTreeView;
     ItemsPopupMenu: TPopupMenu;
-    ControlDocker: TLazControlDocker;
     OptionsBitBtn: TSpeedButton;
     RemoveBitBtn: TSpeedButton;
     procedure AddBitBtnClick(Sender: TObject);
@@ -733,11 +732,6 @@ begin
   KeyPreview:=true;
 
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
-  ControlDocker:=TLazControlDocker.Create(Self);
-  ControlDocker.Name:='ProjectInspector';
-  {$IFDEF EnableIDEDocking}
-  ControlDocker.Manager:=LazarusIDE.DockingManager;
-  {$ENDIF}
 
   SetupComponents;
   KeyPreview:=true;

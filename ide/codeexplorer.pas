@@ -40,7 +40,7 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Graphics,
-  Dialogs, Buttons, ComCtrls, Menus, LDockCtrl, AvgLvlTree, StdCtrls, ExtCtrls,
+  Dialogs, Buttons, ComCtrls, Menus, AvgLvlTree, StdCtrls, ExtCtrls,
   // CodeTools
   BasicCodeTools, CustomCodeTool, CodeToolManager, CodeAtom, CodeCache,
   CodeTree, KeywordFuncLists, FindDeclarationTool, DirectivesTree,
@@ -134,7 +134,6 @@ type
     RefreshSpeedButton: TSpeedButton;
     ModeSpeedButton: TSpeedButton;
     TreePopupmenu: TPopupMenu;
-    ControlDocker: TLazControlDocker;
     procedure CodeExplorerViewClose(Sender: TObject;
                                     var CloseAction: TCloseAction);
     procedure CodeExplorerViewCreate(Sender: TObject);
@@ -149,7 +148,6 @@ type
     procedure DirectivesTreeViewDeletion(Sender: TObject; Node: TTreeNode);
     procedure DirectivesTreeViewKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure DockingMenuItemClick(Sender: TObject);
     procedure IdleTimer1Timer(Sender: TObject);
     procedure JumpToMenuitemClick(Sender: TObject);
     procedure MainNotebookPageChanged(Sender: TObject);
@@ -360,11 +358,6 @@ begin
   Name:=NonModalIDEWindowNames[nmiwCodeExplorerName];
   Caption := lisMenuViewCodeExplorer;
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
-  ControlDocker:=TLazControlDocker.Create(Self);
-  ControlDocker.Name:='CodeExplorer';
-  {$IFDEF EnableIDEDocking}
-  ControlDocker.Manager:=LazarusIDE.DockingManager;
-  {$ENDIF}
 
   MainNotebook.ActivePageComponent:=CodePage;
 
@@ -404,11 +397,6 @@ begin
 
   CEJumpToIDEMenuCommand.OnClick:=@JumpToMenuitemCLICK;
   CERefreshIDEMenuCommand.OnClick:=@RefreshMenuitemCLICK;
-  CEDockingIDEMenuCommand.OnClick:=@DockingMenuItemClick;
-  CERenameIDEMenuCommand.OnClick:=@RenameMenuItemClick;
-  {$IFNDEF EnableIDEDocking}
-  CEDockingIDEMenuCommand.Visible:=false;
-  {$ENDIF}
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewDestroy(Sender: TObject);
@@ -464,11 +452,6 @@ procedure TCodeExplorerView.DirectivesTreeViewKeyUp(Sender: TObject;
 begin
   if (Key=VK_RETURN) and (Shift=[]) then
     JumpToSelection;
-end;
-
-procedure TCodeExplorerView.DockingMenuItemClick(Sender: TObject);
-begin
-  ControlDocker.ShowDockingEditor;
 end;
 
 procedure TCodeExplorerView.IdleTimer1Timer(Sender: TObject);
