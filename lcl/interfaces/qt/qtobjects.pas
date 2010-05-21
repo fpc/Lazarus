@@ -2049,6 +2049,9 @@ procedure TQtDeviceContext.qDrawPlainRect(x, y, w, h: integer; AColor: PQColor =
 begin
   if AColor = nil then
     AColor := BackgroundBrush.getColor;
+  // stop asserts from qtlib
+  if (w < x) or (h < y) then
+    exit;
   q_DrawPlainRect(Widget, x, y, w, h, AColor, lineWidth, FillBrush);
 end;
 

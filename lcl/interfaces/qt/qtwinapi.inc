@@ -1282,7 +1282,7 @@ begin
   end;
 
   with ARect do
-    QtDC.DrawText(left, Top, Right-Left, Bottom-Top, F, @WideStr);
+    QtDC.DrawText(Left, Top, Right-Left, Bottom-Top, F, @WideStr);
 end;
 
 {------------------------------------------------------------------------------
