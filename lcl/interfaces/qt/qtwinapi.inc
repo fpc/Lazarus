@@ -1199,6 +1199,48 @@ var
   R: TRect;
   QtDC: TQtDeviceContext;
   F: Integer;
+
+  procedure CalculateOffsetWithAngle(const AFontAngle: Integer;
+    var TextLeft,TextTop: Integer);
+  var
+    OffsX, OffsY: integer;
+    Angle: Integer;
+    Size: TSize;
+  begin
+    OffsX := R.Right - R.Left;
+    OffsY := R.Bottom - R.Top;
+    Size.cX := OffsX;
+    Size.cy := OffsY;
+    Angle := AFontAngle div 10;
+    if Angle < 0 then
+      Angle := 360 + Angle;
+
+    if Angle <= 90 then
+    begin
+      OffsX := 0;
+      OffsY := Trunc(Size.cx * sin(Angle * Pi / 180));
+    end else
+    if Angle <= 180 then
+    begin
+      OffsX := Trunc(Size.cx * -cos(Angle * Pi / 180));
+      OffsY := Trunc(Size.cx * sin(Angle * Pi / 180) +
+         Size.cy * cos((180 - Angle) * Pi / 180));
+    end else
+    if Angle <= 270 then
+    begin
+      OffsX := Trunc(Size.cx * -cos(Angle * Pi / 180) +
+        Size.cy * sin((Angle - 180) * Pi / 180));
+      OffsY := Trunc(Size.cy * sin((270 - Angle) * Pi / 180));
+    end else
+    if Angle <= 360 then
+    begin
+      OffsX := Trunc(Size.cy * sin((360 - Angle) * Pi / 180));
+      OffsY := 0;
+    end;
+    TextTop := TextTop + OffsY;
+    TextLeft := TextLeft + OffsX;
+  end;
+
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI DrawText] DC: ', dbghex(DC), ' Str: ', string(Str),
@@ -1221,6 +1263,10 @@ begin
 
   QtDC.font.Metrics.BoundingRect(@R, @ARect, F, @WideStr);
 
+  // if our Font.Orientation <> 0 we must recalculate new Left & Top
+  // for returning rect
+  if QtDC.Font.Angle <> 0 then
+    CalculateOffsetWithAngle(QtDC.font.Angle, ARect.Left, ARect.Top);
 
   //TODO: result should be different when DT_VCENTER or DT_BOTTOM is set
   Result := R.Bottom - R.Top;
