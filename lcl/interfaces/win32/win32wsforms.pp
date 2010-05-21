@@ -446,10 +446,12 @@ begin
 
   // From normal to StayOnTop
   if (AOldFormStyle = fsNormal) and (AFormStyle in fsAllStayOnTop) then
-    SetWindowPos(AForm.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
+    if not (csDesigning in AForm.ComponentState) then
+      SetWindowPos(AForm.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
   // From StayOnTop to normal
   else if (AOldFormStyle in fsAllStayOnTop) and (AFormStyle = fsNormal) then
-    SetWindowPos(AForm.Handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
+    if not (csDesigning in AForm.ComponentState) then
+      SetWindowPos(AForm.Handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
   else
     RecreateWnd(AForm);
 end;
