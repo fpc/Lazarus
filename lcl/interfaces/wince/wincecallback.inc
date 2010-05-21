@@ -217,12 +217,17 @@ Var
     NoteBook: TCustomNotebook;
     PageIndex, Flags: Integer;
     PageHandle: HWND;
+    WindowInfo: PWindowInfo;
   begin
     Notebook := GetWindowInfo(NotebookHandle)^.WinControl as TCustomNotebook;
     PageIndex := Windows.SendMessageW(NotebookHandle, TCM_GETCURSEL, 0, 0);
     PageIndex := NotebookPageRealToLCLIndex(Notebook, PageIndex);
     if PageIndex = -1 then exit;
-    PageHandle := Notebook.CustomPage(PageIndex).Handle;
+
+    //    PageHandle := Notebook.CustomPage(PageIndex).Handle;
+    WindowInfo := GetWindowInfo(Notebook.CustomPage(PageIndex).Handle);
+    PageHandle := WindowInfo^.ParentPanel;
+
     if Showing then
       Flags := SW_SHOW
     else
@@ -309,9 +314,7 @@ Var
     end;
 
     {$IFDEF DEBUG_WINCE_LABELS}
-    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-      Format('[SendPaintMessage]: Control:%s',
-      [lWinControl.Name]));
+    DebugLn(Format('[SendPaintMessage]: Control:%s', [lWinControl.Name]));
     {$ENDIF}
 
     // create a paint message
@@ -321,7 +324,7 @@ Var
     // if needParentPaint and not isTabPage then background will be drawn in
     // WM_ERASEBKGND and WM_CTLCOLORSTATIC for native controls
     // sent by default paint handler
-    if WindowInfo^.isTabPage or (needParentPaint
+    if {WindowInfo^.isTabPage or} (needParentPaint
       and (not isNativeControl or (ControlDC <> 0))) then
     begin
       ParentPaintWindow := Window;
@@ -329,16 +332,16 @@ Var
       while (ParentPaintWindow <> 0) and not lNotebookFound do
       begin
         // notebook is parent of window that has istabpage
-        if GetWindowInfo(ParentPaintWindow)^.isTabPage then
-          lNotebookFound := true;
+{        if GetWindowInfo(ParentPaintWindow)^.isTabPage then
+          lNotebookFound := true;}
         ParentPaintWindow := Windows.GetParent(ParentPaintWindow);
       end;
     end;
 
     // if painting background of some control for tabpage, don't handle erase background
     // in parent of tabpage
-    if WindowInfo^.isTabPage then
-      PushEraseBkgndCommand(ecDiscard);
+{    if WindowInfo^.isTabPage then
+      PushEraseBkgndCommand(ecDiscard);}
 
     // check if double buffering is requested
     useDoubleBuffer := (ControlDC = 0) and (lWinControl.DoubleBuffered);
@@ -425,7 +428,7 @@ Var
 
         {$ifdef DEBUG_WINDOW_ORG}
         LCLIntf.GetWindowOrgEx(PaintMsg.DC, @WindowOrg);
-        DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+        DebugLn(
           Format(':> [SendPaintMessage 1] Control=%s DC=%d Moving WindowOrg from %d,%d by DX=%d DY=%d',
           [lWinControl.Name, PaintMsg.DC, WindowOrg.X, WindowOrg.Y, -parLeft, -parTop]));
         {$endif}
@@ -440,7 +443,7 @@ Var
 
         {$ifdef DEBUG_WINDOW_ORG}
         LCLIntf.GetWindowOrgEx(PaintMsg.DC, @WindowOrg);
-        DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+        DebugLn(
           Format(':> [SendPaintMessage 2] Control=%s DC=%d Moving WindowOrg from %d,%d by DX=%d DY=%d',
           [lWinControl.Name, PaintMsg.DC, WindowOrg.X, WindowOrg.Y, -parLeft, -parTop]));
         {$endif}
@@ -451,7 +454,7 @@ Var
 
         {$ifdef DEBUG_WINDOW_ORG}
         LCLIntf.GetWindowOrgEx(PaintMsg.DC, @WindowOrg);
-        DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+        DebugLn(
           Format(':> [SendPaintMessage 3] Control=%s DC=%d WindowOrg=%d,%d',
           [lWinControl.Name, PaintMsg.DC, WindowOrg.X, WindowOrg.Y]));
         {$endif}
@@ -475,8 +478,7 @@ Var
       end;
     end;
     {$ifdef DEBUG_WINDOW_ORG}
-    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-      ':< [SendPaintMessage] Finish');
+    DebugLn(':< [SendPaintMessage] Finish');
     {$endif}
   end;
 
@@ -490,7 +492,7 @@ Var
 
     {$ifdef DEBUG_WINDOW_ORG}
     LCLIntf.GetWindowOrgEx(ControlDC, @Point);
-    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+    DebugLn(
       Format(':> [SendParentPaintMessage] DC=%d Moving WindowsOrg From %d,%d By DX=%d DY=%d',
       [ControlDC, Point.X, Point.Y, P.X, P.Y]));
     {$endif}
@@ -500,9 +502,7 @@ Var
     MoveWindowOrgEx(ControlDC, P.X, P.Y);
 
     {$ifdef DEBUG_WINDOW_ORG}
-    LCLIntf.GetWindowOrgEx(ControlDC, @Point);
-    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-      ':< [SendParentPaintMessage] Finish');
+    DebugLn(':< [SendParentPaintMessage] Finish');
     {$endif}
   end;
 
@@ -1373,9 +1373,9 @@ begin
       begin
         if CurDoubleBuffer.DC <> 0 then
           WParam := Windows.WParam(CurDoubleBuffer.DC);
-        if WindowInfo^.isTabPage then
+{        if WindowInfo^.isTabPage then
           EraseBkgndStack := (EraseBkgndStack and not ((1 shl EraseBkgndStackShift)-1))
-            or dword(ecDiscardNoRemove);
+            or dword(ecDiscardNoRemove);}
       end
       else
       if eraseBkgndCommand <> ecDiscardNoRemove then
@@ -1732,7 +1732,7 @@ begin
     WM_PAINT:
     begin
       {$IFDEF DEBUG_WINCE_LABELS}
-      DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log', '[WM_PAINT]');
+      DebugLn('[WM_PAINT]');
       {$ENDIF}
       SendPaintMessage(HDC(WParam));
       // SendPaintMessage sets winprocess to false
@@ -2029,8 +2029,7 @@ begin
         begin
           {$IFDEF VerboseSizeMsg}
           GetClientRect(Window,R);
-          DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-            'WinCECallback: WM_SIZE '+ dbgsName(lWinControl)+
+          DebugLn('WinCECallback: WM_SIZE '+ dbgsName(lWinControl)+
             ' NewSize='+ dbgs(Width)+','+dbgs(Height)+
             ' OldClientSize='+dbgs(lWinControl.CachedClientWidth)+','+dbgs(lWinControl.CachedClientHeight)+
             ' NewClientSize='+dbgs(R.Right)+','+dbgs(R.Bottom));

@@ -420,7 +420,7 @@ begin
     SizeRect.Right - SizeRect.Left, SizeRect.Bottom - SizeRect.Top);
 
   {$IFDEF VerboseSizeMsg}
-  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+  DebugLn(
     Format('[TWinCEWSCustomForm.SetBounds]: Name:%s Request x:%d y:%d w:%d h:%d'
     + ' SizeRect x:%d y:%d w:%d h:%d',
     [AWinControl.Name, ALeft, ATop, AWidth, AHeight,

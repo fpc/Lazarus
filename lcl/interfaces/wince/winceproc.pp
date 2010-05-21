@@ -27,20 +27,19 @@ type
     Overlay: HWND;            // overlay, transparent window on top, used by designer
     PopupMenu: TPopupMenu;
     DefWndProc: WNDPROC;
-    ParentPanel: HWND;        // if non-zero, winxp groupbox parent window hack
+    ParentPanel: HWND;        // if non-zero, is the tabsheet window, for the pagecontrol hack
     WinControl: TWinControl;
     PWinControl: TWinControl; // control to paint for
     AWinControl: TWinControl; // control associated with (for buddy controls)
     List: TStrings;
     needParentPaint: boolean; // has a tabpage as parent, and is winxp themed
-    isTabPage: boolean;       // is window of tabpage
+//    isTabPage: boolean;       // is window of tabpage
     isComboEdit: boolean;     // is buddy of combobox, the edit control
     isChildEdit: boolean;     // is buddy edit of a control
     isGroupBox: boolean;      // is groupbox, and does not have themed tabpage as parent
     MaxLength: dword;
     DrawItemIndex: integer;   // in case of listbox, when handling WM_DRAWITEM
     DrawItemSelected: boolean;// whether this item is selected LB_GETSEL not uptodate yet
-    myButton : HWND;
     MouseX, MouseY: word; // noticing spurious WM_MOUSEMOVE messages
     case integer of
       0: (spinValue: Double);
@@ -1009,7 +1008,7 @@ begin
   end;
 
   {$ifdef DEBUG_WINDOW_ORG}
-  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+  DebugLn(
     Format('GetLCLClientBoundsOffset Name=%s OLeft=%d OTop=%d ORight=%d OBottom=%d',
      [TheWinControl.Name, ORect.Left, ORect.Top, ORect.Right, ORect.Bottom]));
   {$endif}

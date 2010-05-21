@@ -234,7 +234,6 @@ begin
     begin
       // some controls (combobox) immediately send a message upon setting font
       WindowInfo := AllocWindowInfo(Window);
-      WindowInfo^.myButton := Window;
       if GetWindowInfo(Parent)^.needParentPaint then
         WindowInfo^.needParentPaint := true;
       WindowInfo^.WinControl := AWinControl;

@@ -294,13 +294,18 @@ end;
 class function TWinCEWSCustomPage.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
-  Params: TCreateWindowExParams;
+  Params, PanelParams: TCreateWindowExParams;
   init : TINITCOMMONCONTROLSEX;
+  lPanel: TPanel;
+  WindowInfo: PWindowInfo;
 begin
-  DebugLn('Creating CustomPage A');
+//  DebugLn('Creating CustomPage A');
   init.dwSize := Sizeof(TINITCOMMONCONTROLSEX);
   init.dwICC := ICC_TAB_CLASSES;
   InitCommonControlsEx(@init);
+
+  // First create the TabSheet
+
   // general initialization of Params
   PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
@@ -312,11 +317,32 @@ begin
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
+
   // return window handle
   Result := Params.Window;
-  //Params.WindowInfo^.needParentPaint := True;
-  //Params.WindowInfo^.isTabPage := True;
-  DebugLn('Creating CustomPage B');
+  Params.WindowInfo^.ParentPanel := Params.Window;
+
+{  // The standard control created to show a tabsheet is unable to
+  // show non-windowed controls inside it, no matter what is done.
+  // The found solution was to add a panel to it and place all child
+  // controls inside the panel instead.
+  lPanel := TPanel.Create(nil);
+  lPanel.BevelOuter := bvNone;
+  lPanel.Left := 0;
+  lPanel.Top := 0;
+  lPanel.Width := Params.Width;
+  lPanel.Height := Params.Height;
+  lPanel.Align := alClient;
+  lPanel.ParentWindow := Params.Window;
+  lPanel.HandleNeeded;
+  WindowInfo := GetWindowInfo(lPanel.Handle);
+
+  // return window handle
+  Result := lPanel.Handle;
+  WindowInfo^.ParentPanel := Params.Window;}
+
+//  DebugLn(Format('Creating CustomPage B Panel: %s Page: %s',
+//    [IntToHex(PanelParams.Window, 8), IntToHex(Params.Window, 8)]));
 end;
 
 class procedure TWinCEWSCustomPage.DestroyHandle(const AWinControl: TWinControl);
@@ -641,6 +667,7 @@ var
   Handle: HWND;
   PageHandle: HWND;
   OldIndex, OldRealIndex, NewRealIndex: Integer;
+  WindowInfo: PWindowInfo;
 begin
   Handle := ANotebook.Handle;
   OldRealIndex := SendMessage(Handle, TCM_GETCURSEL, 0, 0);
@@ -652,7 +679,10 @@ begin
     // create handle if not already done, need to show!
     if (AIndex >= 0) and (AIndex < ANotebook.PageCount) then
     begin
-      PageHandle := ANotebook.CustomPage(AIndex).Handle;
+//      PageHandle := ANotebook.CustomPage(AIndex).Handle;
+      WindowInfo := GetWindowInfo(ANotebook.CustomPage(AIndex).Handle);
+      PageHandle := WindowInfo^.ParentPanel;
+
       SetWindowPos(PageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
       SendSelChangeMessage(ANotebook, Handle, AIndex);
       NotebookFocusNewControl(ANotebook, AIndex);
@@ -698,6 +728,7 @@ begin
   begin
     pClassName := @ClsName;
     SubClassWndProc := nil;
+//    DebugLn(Format('CustomPanel.Create Flags: %d FlagsEx: %d', [Flags, FlagsEx]));
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);

@@ -136,7 +136,7 @@ var
       if not GetClientBounds(Handle,ClientBoundRect) then exit;
 
     {$ifdef DEBUG_WINDOW_ORG}
-    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+    DebugLn(
       Format(':> [TWinCEWidgetSet.CallDefaultWndHandler] Sender=%s DC=%d DX=%d DY=%d',
       [TControl(Sender).Name, PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top]));
     {$endif}
@@ -153,8 +153,7 @@ var
 //    MoveWindowOrgEx(PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top);
     try
       {$IFDEF DEBUG_WINCE_LABELS}
-      DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-        'Before CallDefaultWindowProc WindowOrg Temporarely set to 0,0');
+      DebugLn('Before CallDefaultWindowProc WindowOrg Temporarely set to 0,0');
       {$ENDIF}
       // call wince paint handler
       CallDefaultWindowProc(Handle, WM_PAINT, PaintMsg.DC, 0);
@@ -164,8 +163,7 @@ var
       LCLIntf.SetWindowOrgEx(PaintMsg.DC, Point.X, Point.Y, nil);
     end;
     {$IFDEF DEBUG_WINCE_LABELS}
-    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-      Format('After CallDefaultWindowProc WindowOrg: %d,%d',
+    DebugLn(Format('After CallDefaultWindowProc WindowOrg: %d,%d',
       [Point.X, Point.Y]));
     {$ENDIF}
   end;
@@ -1059,7 +1057,7 @@ var
 begin
   {$IFDEF DEBUG_WINCE_LABELS}
   LCLIntf.GetWindowOrgEx(DC, @Point);
-  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+  DebugLn(
     Format('trace:> [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'','
     + 'Count: %d, Rect = %d,%d,%d,%d, Flags:%d WindowOrg: %d:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags,
@@ -1081,7 +1079,7 @@ begin
   Result := Windows.DrawTextW(DC, PWideChar(W), Length(W), @Rect, Flags);
 
   {$IFDEF DEBUG_WINCE_LABELS}
-  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+  DebugLn(
     Format('trace:< [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'','
     + 'Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
@@ -1492,7 +1490,7 @@ begin
     {$ifdef DEBUG_WINDOW_ORG}
     lControl := TControl(LCLIntf.GetLCLOwnerObject(HWnd));
     LCLIntf.GetWindowOrgEx(Result, @Point);
-    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+    DebugLn(
       Format(':> [TWinCEWidgetSet.GetDC] Name=%s DC=%s Moving WindowOrg From %d,%d By %d,%d',
       [lControl.Name, IntToHex(Result, 8), Point.X, Point.Y, ORect.Left, ORect.Top]));
     {$endif}
@@ -2219,8 +2217,7 @@ begin
   if (WindowInfo <> nil) and (WindowInfo^.WinControl <> nil) then
    lName := WindowInfo^.WinControl.Name
   else lName := 'NIL';
-  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-    Format('[TWinCEWidgetSet.GetWindowSize]: Name:%s %d:%d',
+  DebugLn(Format('[TWinCEWidgetSet.GetWindowSize]: Name:%s %d:%d',
     [lName, Width, Height]));
   {$ENDIF}
 end;
@@ -2557,7 +2554,7 @@ begin
   Result := Boolean(Windows.RectVisible(DC, LPRECT(@ARect)^));
 //  Result := True;
   {$ifdef DEBUG_WINDOW_ORG}
-  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+  DebugLn(
     Format(':> [TWinCEWidgetSet.RectVisible] Result=%d',
     [Integer(Result)]));
   {$endif}
@@ -3130,7 +3127,7 @@ begin
   if Assigned(WindowInfo) and (WindowInfo^.AWinControl <> nil) then
    lName := WindowInfo^.AWinControl.Name
   else lName := 'NIL';
-  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+  DebugLn(
     Format('[TWinCEWidgetSet.SetWindowPos]: Name:%s HWnd:%d Pos x:%d y:%d w:%d h:%d',
     [lName, HWnd, X, Y, CX, CY]));
   {$ENDIF}
