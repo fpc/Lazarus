@@ -1199,6 +1199,7 @@ var
   R: TRect;
   QtDC: TQtDeviceContext;
   F: Integer;
+  Pt: TPoint;
 
   procedure CalculateOffsetWithAngle(const AFontAngle: Integer;
     var TextLeft,TextTop: Integer);
@@ -1263,11 +1264,6 @@ begin
 
   QtDC.font.Metrics.BoundingRect(@R, @ARect, F, @WideStr);
 
-  // if our Font.Orientation <> 0 we must recalculate new Left & Top
-  // for returning rect
-  if QtDC.Font.Angle <> 0 then
-    CalculateOffsetWithAngle(QtDC.font.Angle, ARect.Left, ARect.Top);
-
   //TODO: result should be different when DT_VCENTER or DT_BOTTOM is set
   Result := R.Bottom - R.Top;
 
@@ -1281,8 +1277,20 @@ begin
     Exit;
   end;
 
+  // if our Font.Orientation <> 0 we must recalculate X,Y offset
+  // also it works only with DT_TOP DT_LEFT. Qt can handle multiline
+  // text in this case too.
+  Pt := Point(0, 0);
+  if (QtDC.Font.Angle <> 0) and
+    (Flags and DT_VCENTER = 0) and (Flags and DT_CENTER = 0) and
+    (Flags and DT_RIGHT = 0) and (Flags and  DT_BOTTOM = 0) then
+  begin
+    Pt := Point(ARect.Left, ARect.Top);
+    CalculateOffsetWithAngle(QtDC.font.Angle, Pt.X, Pt.Y);
+  end;
+
   with ARect do
-    QtDC.DrawText(Left, Top, Right-Left, Bottom-Top, F, @WideStr);
+    QtDC.DrawText(Left + Pt.X, Top + Pt.Y, Right-Left, Bottom-Top, F, @WideStr);
 end;
 
 {------------------------------------------------------------------------------
