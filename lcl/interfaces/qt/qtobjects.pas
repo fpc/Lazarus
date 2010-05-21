@@ -2314,7 +2314,7 @@ end;
 
 procedure TQtDeviceContext.drawRoundRect(x, y, w, h, rx, ry: Integer);
 begin
-  QPainter_drawRoundRect(Widget, x, y, w, h, rx, ry);
+  QPainter_drawRoundedRect(Widget, x, y, w, h, rx, ry);
 end;
 
 {------------------------------------------------------------------------------

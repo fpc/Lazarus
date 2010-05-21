@@ -4329,12 +4329,7 @@ begin
     {$Endif}
     Exit;
   end;
-
-  R := NormalizeRect(Rect(X1, Y1, X2, Y2));
-  if IsRectEmpty(R) then Exit(True);
-
-  TQtDeviceContext(Dc).drawRoundRect(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1, RX, RY);
-  Result := True;
+  Result := inherited RoundRect(DC, X1, Y1, X2, Y2, RX, RY);
 end;
 {------------------------------------------------------------------------------
   Function: SaveDC: save DC state information to a stack
