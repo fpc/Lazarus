@@ -44,14 +44,14 @@ type
   TNotifierXButton = class(TCustomControl)
   private
     FState: TNotifierXButtonButtonState;
-    procedure HandleMouseDown(Sender: TOBject; Button: TMouseButton;
+    procedure HandleMouseDown(Sender: TObject; Button: TMouseButton;
      Shift: TShiftState; X, Y: Integer);
-    procedure HandleMouseUp(Sender: TOBject; Button: TMouseButton;
+    procedure HandleMouseUp(Sender: TObject; Button: TMouseButton;
      Shift: TShiftState; X, Y: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure paint; override;
+    procedure Paint; override;
   end;
 
   { TNotifierForm }
@@ -161,30 +161,25 @@ begin
   inherited Destroy;
 end;
 
-procedure TNotifierXButton.paint;
+procedure TNotifierXButton.Paint;
 begin
-  Canvas.Brush.Color := Color;
-  Canvas.FillRect(0, 0, Width, Height);
-
-  Canvas.Pen.Color := clBlack;
+  Canvas.Pen.Color := cl3DDKShadow;
   Canvas.Pen.Width := 1;
-  
-  {*******************************************************************
-  *  Show a different background color when the button is down
-  *******************************************************************}
-  if FState = nbsUp then Canvas.Brush.Color := Color
-  else Canvas.Brush.Color := clYellow;
-  
-  Canvas.RoundRect(0, 0, Width, Height, 10, 10);
+  if FState = nbsUp then
+    Canvas.Brush.Color := clBtnFace
+  else
+    Canvas.Brush.Color := clHotLight;
+  Canvas.FillRect(2, 2, Width - 2, Height - 2);
+  Canvas.RoundRect(0, 0, Width, Height, 4, 4);
+  Canvas.Pen.Width := 3;
+  Canvas.Brush.Color := Color;
+  Canvas.MoveTo(6, 6);
+  Canvas.LineTo(Width - 6, Height - 6);
 
-  Canvas.Brush.Color := clBlack;
-  Canvas.MoveTo(5, 5);
-  Canvas.LineTo(Width - 5, Height - 5);
+  Canvas.MoveTo(Width - 6, 6);
+  Canvas.LineTo(6, Height - 6);
 
-  Canvas.MoveTo(Width - 5, 5);
-  Canvas.LineTo(5, Height - 5);
-
-  inherited paint;
+  inherited Paint;
 end;
 
 { TNotifierForm }
