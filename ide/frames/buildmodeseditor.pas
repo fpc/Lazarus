@@ -131,36 +131,9 @@ type
     property Grid: TBuildModesGrid read FGrid;
   end;
 
-function BuildModeFlagTypeCaptions(f: TBuildModeFlagType): string;
-function CaptionToBuildModeFlagType(s: string): TBuildModeFlagType;
-
 implementation
 
 {$R *.lfm}
-
-function BuildModeFlagTypeCaptions(f: TBuildModeFlagType): string;
-begin
-  case f of
-  bmftAddUnitPath: Result:='+UnitPath';
-  bmftAddIncludePath: Result:='+IncludePath';
-  bmftAddLinkerPath: Result:='+LinkerPath';
-  bmftAddObjectPath: Result:='+ObjectPath';
-  bmftAddLinkerOption: Result:='+LinkerOptions';
-  bmftAddCustomOption: Result:='+CustomOptions';
-  else Result:='';
-  end;
-end;
-
-function CaptionToBuildModeFlagType(s: string): TBuildModeFlagType;
-begin
-  if s='' then exit(bmftNone);
-  for Result:=low(Result) to high(Result) do
-    if SysUtils.CompareText(s,BuildModeFlagTypeCaptions(Result))=0 then exit;
-  if IsValidIdent(s) then
-    Result:=bmftSetVariable
-  else
-    Result:=bmftNone;
-end;
 
 { TBuildModesGrid }
 
@@ -223,12 +196,8 @@ begin
     TypeStr:='';
     ValueStr:='';
     if CurFlag<>nil then begin
-      if CurFlag.FlagType=bmftSetVariable then
-      begin
-        TypeStr:=CurFlag.Variable;
-        ValueStr:=CurFlag.Value;
-      end else
-        TypeStr:=BuildModeFlagTypeCaptions(CurFlag.FlagType);
+      TypeStr:=CurFlag.Variable;
+      ValueStr:=CurFlag.Value;
     end;
     Cells[TypeCol,i]:=TypeStr;
     Cells[ValueCol,i]:=ValueStr;
@@ -257,7 +226,6 @@ var
   CurModeRow: TBuildModeGridRow;
   TypeCol: Integer;
   ValueCol: Integer;
-  FlagType: TBuildModeFlagType;
 begin
   Result:=true;
   if (aRow>=1) and (aRow<=ModeRowCount) then begin
@@ -285,19 +253,12 @@ begin
         NewValue:='';
       end else begin
         NewValue:=SpecialCharsToSpaces(NewValue,true);
-        FlagType:=CaptionToBuildModeFlagType(NewValue);
-        if (CurModeRow.Flag=nil) and (FlagType<>bmftNone) then begin
+        if (CurModeRow.Flag=nil) then begin
           // create flag
-          CurModeRow.FFlag:=CurModeRow.Mode.AddFlag(FlagType,'','');
-        end else if CurModeRow.Flag<>nil then
-          // set new FlagType
-          CurModeRow.Flag.FlagType:=FlagType;
-        if FlagType=bmftSetVariable then
-          // set variable name
-          CurModeRow.Flag.Variable:=NewValue
-        else
-          // clean up variable name
-          CurModeRow.Flag.Variable:='';
+          CurModeRow.FFlag:=CurModeRow.Mode.AddFlag('','');
+        end;
+        // set variable name
+        CurModeRow.Flag.Variable:=NewValue;
         UpdateValuePickList;
       end;
     end else if ACol=ValueCol then begin
@@ -306,7 +267,7 @@ begin
         NewValue:='';
       end else begin
         NewValue:=SpecialCharsToSpaces(NewValue,true);
-        if (CurModeRow.Flag=nil) or (CurModeRow.Flag.FlagType=bmftNone) then
+        if (CurModeRow.Flag=nil) then
           // no flag => no value
           NewValue:=''
         else
@@ -359,8 +320,6 @@ var
   TypeCol: Integer;
   i: Integer;
   Node: TAvgLvlTreeNode;
-  t: TBuildModeFlagType;
-  s: String;
   sl: TStringList;
 begin
   //DebugLn(['TBuildModesGrid.UpdateTypePickList ']);
@@ -369,14 +328,6 @@ begin
   Identifiers:=TStringToStringTree.Create(false);
   sl:=nil;
   try
-    // add types
-    for t:=low(TBuildModeFlagType) to high(TBuildModeFlagType) do
-    begin
-      s:=BuildModeFlagTypeCaptions(t);
-      if s<>'' then
-        Identifiers[s]:='';
-    end;
-
     // add standard variable names
     Identifiers['TargetOS']:='';
     Identifiers['TargetCPU']:='';
@@ -417,26 +368,23 @@ begin
   sl:=TStringList.Create;
   try
     if (CurModeRow<>nil) and (CurModeRow.Flag<>nil) then begin
-      if CurModeRow.Flag.FlagType=bmftSetVariable then begin
-        Identifier:=CurModeRow.Flag.Variable;
-        // check standard variables
-        if SysUtils.CompareText(Identifier,'TargetOS')=0 then begin
-          for i:=low(FPCOperatingSystemNames) to high(FPCOperatingSystemNames) do
-            sl.Add(FPCOperatingSystemNames[i]);
-        end
-        else if SysUtils.CompareText(Identifier,'TargetCPU')=0 then begin
-          for i:=low(FPCProcessorNames) to high(FPCProcessorNames) do
-            sl.Add(FPCProcessorNames[i]);
-        end
-        else begin
-          // search build variable
-          FindBuildVariable(Identifier,Vars,aVariable);
-          if aVariable<>nil then
-            sl.Assign(aVariable.Values);
-        end;
-        Columns[ValueCol].ButtonStyle:=cbsPickList;
-      end else if CurModeRow.Flag.FlagType in BuildModeFlagPaths then
-        Columns[ValueCol].ButtonStyle:=cbsEllipsis;
+      Identifier:=CurModeRow.Flag.Variable;
+      // check standard variables
+      if SysUtils.CompareText(Identifier,'TargetOS')=0 then begin
+        for i:=low(FPCOperatingSystemNames) to high(FPCOperatingSystemNames) do
+          sl.Add(FPCOperatingSystemNames[i]);
+      end
+      else if SysUtils.CompareText(Identifier,'TargetCPU')=0 then begin
+        for i:=low(FPCProcessorNames) to high(FPCProcessorNames) do
+          sl.Add(FPCProcessorNames[i]);
+      end
+      else begin
+        // search build variable
+        FindBuildVariable(Identifier,Vars,aVariable);
+        if aVariable<>nil then
+          sl.Assign(aVariable.Values);
+      end;
+      Columns[ValueCol].ButtonStyle:=cbsPickList;
     end;
     sl.Sort;
     Columns[ValueCol].PickList:=sl;
@@ -499,27 +447,10 @@ end;
 procedure TBuildModesGrid.BuildModesGridEditButtonClick(Sender: TObject);
 var
   CurModeRow: TBuildModeGridRow;
-  CurPathEditor: TPathEditorDialog;
-  ValueCol: Integer;
 begin
   CurModeRow:=SelectedModeRow;
   if CurModeRow=nil then exit;
   if CurModeRow.Flag=nil then exit;
-  ValueCol:=GetTypeCol+1;
-  if CurModeRow.Flag.FlagType in BuildModeFlagPaths then begin
-    CurPathEditor:=TPathEditorDialog.Create(nil);
-    try
-      CurPathEditor.BaseDirectory:=Project1.ProjectDirectory;
-      CurPathEditor.Path:=CurModeRow.Flag.Value;
-      CurPathEditor.Templates:='';
-      if CurPathEditor.ShowModal=mrOk then begin
-        CurModeRow.Flag.Value:=CurPathEditor.Path;
-        Cells[ValueCol,Row]:=CurModeRow.Flag.Value;
-      end;
-    finally
-      CurPathEditor.Free;
-    end;
-  end;
 end;
 
 procedure TBuildModesGrid.GetCheckBoxState(const aCol, aRow: Integer;
@@ -775,7 +706,7 @@ begin
       Columns[InsertCol].ButtonStyle:=cbsCheckboxColumn;
       inc(FGroupModeCount);
     end else begin
-      CurFlag:=Result.AddFlag(bmftNone,'');
+      CurFlag:=Result.AddFlag('');
       InsertPos:=ModeRowCount;
     end;
     InsertRow:=InsertPos+1;
@@ -810,7 +741,7 @@ begin
       mtError, [mbCancel], 0);
     exit;
   end;
-  Result:=CurModeRow.Mode.InsertFlag(CurModeRow.IndexInGroup+1,bmftNone,'','');
+  Result:=CurModeRow.Mode.InsertFlag(CurModeRow.IndexInGroup+1,'','');
   InsertPos:=Row+1;
   GridRow:=TBuildModeGridRow.Create(CurModeRow.Mode,Result);
   FModeRows.Insert(InsertPos-1,GridRow);
@@ -838,8 +769,7 @@ begin
     if (CurModeRow.Flag.Value<>'') or (CurModeRow.Flag.Variable<>'') then
     begin
       if MessageDlg(lisDeleteSetting2,
-        Format(lisDeleteSetting3, ['"', BuildModeFlagTypeCaptions(
-          CurModeRow.Flag.FlagType), '"']),
+        'Delete '+CurModeRow.Flag.Variable+'='+CurModeRow.Flag.Value,
         mtConfirmation,[mbYes,mbNo],0)<>mrYes
       then
         exit;

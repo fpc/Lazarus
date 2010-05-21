@@ -145,8 +145,7 @@ type
   end;
 
   { TLazCompOptConditionals
-    - conditional compiler options
-    - additions dependending  }
+    - conditional compiler options  }
 
   TLazCompOptConditionals = class
   private
@@ -159,7 +158,13 @@ type
     property Root: TCompOptCondNode read FRoot write FRoot;
   end;
 
-  { TLazBuildVariable }
+  { TLazBuildVariable
+    Build variables are like macros. Every package/project can define build
+    variables. A variable has a name, a description, a list of possible values
+    and a default value. The default value can be an expression using other
+    build variables.
+    The IDE defines various variables like TargetOS and TargetCPU.
+    The LCL package defines the variable LCLWidgetType. }
 
   TLazBuildVariable = class
   protected
@@ -182,7 +187,9 @@ type
     property DefaultValue: TLazCompOptConditionals read FDefaultValue;
   end;
 
-  { TLazBuildVariables }
+  { TLazBuildVariables
+    The list of build variables of a package/project.
+    They are stored in the compiler options. }
 
   TLazBuildVariables = class
   private

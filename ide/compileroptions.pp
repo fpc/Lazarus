@@ -79,21 +79,6 @@ type
   end;
 
 type
-  TBuildModeFlagType = (
-    bmftNone,
-    bmftAddUnitPath,
-    bmftAddIncludePath,
-    bmftAddLinkerPath,
-    bmftAddObjectPath,
-    bmftAddLinkerOption,
-    bmftAddCustomOption,
-    bmftSetVariable
-    );
-  TBuildModeFlagTypes = set of TBuildModeFlagType;
-const
-  BuildModeFlagPaths = [bmftAddUnitPath,bmftAddIncludePath,bmftAddLinkerPath,bmftAddObjectPath];
-
-type
   TBuildModeGraph = class;
 
   { TIDEBuildVariables
@@ -138,7 +123,6 @@ type
 
   TBuildModeFlag = class(TPersistent)
   private
-    FFlagType: TBuildModeFlagType;
     FValue: string;
     FVariable: string;
   public
@@ -151,7 +135,6 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                               UsePathDelim: TPathDelimSwitch);
   public
-    property FlagType: TBuildModeFlagType read FFlagType write FFlagType;
     property Value: string read FValue write FValue;
     property Variable: string read FVariable write FVariable;
   end;
@@ -188,10 +171,9 @@ type
     procedure Include(aMode: TBuildMode);
     procedure Exclude(aMode: TBuildMode);
     function IsIncludedBy(aMode: TBuildMode): boolean;
-    function AddFlag(FlagType: TBuildModeFlagType; Value: string;
-                     Variable: string = ''): TBuildModeFlag;
-    function InsertFlag(InsertPos: integer; FlagType: TBuildModeFlagType;
-                     Value: string; Variable: string = ''): TBuildModeFlag;
+    function AddFlag(Value: string; Variable: string = ''): TBuildModeFlag;
+    function InsertFlag(InsertPos: integer;
+                        Value: string; Variable: string = ''): TBuildModeFlag;
     procedure DeleteFlag(Index: integer);
     procedure Assign(Source: TPersistent); override; // copy without Name
     function IsEqual(aMode: TBuildMode): boolean;
@@ -834,18 +816,6 @@ const
   symItem   = '$Item';
   symLineNo = '$LineNum';
 
-const
-  BuildModeFlagTypeNames: array[TBuildModeFlagType] of string = (
-    'None',
-    'AddUnitPath',
-    'AddIncludePath',
-    'AddLinkerPath',
-    'AddObjectPath',
-    'AddLinkerOption',
-    'AddCustomOption',
-    'SetVariable'
-    );
-function StrToBuildModeFlagType(const s: string): TBuildModeFlagType;
 var
   TestCompilerOptions: TNotifyEvent = nil;
 
@@ -1108,13 +1078,6 @@ begin
   AConfig.SetDeleteValue(APath+'Compile', crCompile in AFlags, crCompile in DefaultFlags);
   AConfig.SetDeleteValue(APath+'Build', crBuild in AFlags, crBuild in DefaultFlags);
   AConfig.SetDeleteValue(APath+'Run', crRun in AFlags, crRun in DefaultFlags);
-end;
-
-function StrToBuildModeFlagType(const s: string): TBuildModeFlagType;
-begin
-  for Result:=Low(TBuildModeFlagType) to high(TBuildModeFlagType) do
-    if SysUtils.CompareText(s,BuildModeFlagTypeNames[Result])=0 then exit;
-  Result:=bmftNone;
 end;
 
 
@@ -5080,20 +5043,17 @@ begin
   Result:=false;
 end;
 
-function TBuildMode.AddFlag(FlagType: TBuildModeFlagType; Value: string;
-  Variable: string): TBuildModeFlag;
+function TBuildMode.AddFlag(Value: string; Variable: string): TBuildModeFlag;
 begin
-  Result:=InsertFlag(FlagCount,FlagType,Value,Variable);
+  Result:=InsertFlag(FlagCount,Value,Variable);
 end;
 
-function TBuildMode.InsertFlag(InsertPos: integer;
-  FlagType: TBuildModeFlagType; Value: string; Variable: string
-  ): TBuildModeFlag;
+function TBuildMode.InsertFlag(InsertPos: integer; Value: string;
+  Variable: string): TBuildModeFlag;
 begin
   if (InsertPos<0) or (InsertPos>FlagCount) then
     RaiseGDBException('');
   Result:=TBuildModeFlag.Create;
-  Result.FlagType:=FlagType;
   Result.Value:=Value;
   Result.Variable:=Variable;
   FFlags.Insert(InsertPos,Result);
@@ -5213,7 +5173,6 @@ var
 begin
   if Source is TBuildModeFlag then begin
     Src:=TBuildModeFlag(Source);
-    FFlagType:=Src.FFlagType;
     FValue:=Src.FValue;
     FVariable:=Src.FVariable;
   end else
@@ -5223,7 +5182,6 @@ end;
 function TBuildModeFlag.IsEqual(aFlag: TBuildModeFlag): boolean;
 begin
   Result:=false;
-  if FFlagType<>aFlag.FFlagType then exit;
   if FValue<>aFlag.FValue then exit;
   if FVariable<>aFlag.FVariable then exit;
   Result:=true;
@@ -5232,25 +5190,14 @@ end;
 procedure TBuildModeFlag.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; DoSwitchPathDelims: boolean);
 begin
-  FFlagType:=StrToBuildModeFlagType(XMLConfig.GetValue(Path+'Type',
-                                  BuildModeFlagTypeNames[bmftAddCustomOption]));
   FValue:=XMLConfig.GetValue(Path+'Value','');
-  if FFlagType in BuildModeFlagPaths then
-    FValue:=SwitchPathDelims(FValue,DoSwitchPathDelims);
   FVariable:=XMLConfig.GetValue(Path+'Variable','');
 end;
 
 procedure TBuildModeFlag.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; UsePathDelim: TPathDelimSwitch);
-var
-  s: String;
 begin
-  XMLConfig.SetDeleteValue(Path+'Type',BuildModeFlagTypeNames[FFlagType],
-                           BuildModeFlagTypeNames[bmftAddCustomOption]);
-  s:=FValue;
-  if FFlagType in BuildModeFlagPaths then
-    SwitchPathDelims(FValue,UsePathDelim);
-  XMLConfig.SetDeleteValue(Path+'Value',s,'');
+  XMLConfig.SetDeleteValue(Path+'Value',FValue,'');
   XMLConfig.SetDeleteValue(Path+'Variable',FVariable,'');
 end;
 

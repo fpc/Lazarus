@@ -27,7 +27,8 @@
   Author: Mattias Gaertner
 
   Abstract:
-    - compiler options depending on build modes and environment
+    This unit contains the implementation of the conditional compiler options
+    that depend on build variables/modes and environment.
 }
 unit CompOptsModes;
 
