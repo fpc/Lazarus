@@ -874,6 +874,7 @@ begin
       if Width < w then begin
       //enlarge docksite
         Parent.DisableAlign; //form(?)
+        //w := Source.Control.Width;
         Width := w;
         if Align = alRight then begin
           if AutoExpand then begin
@@ -900,6 +901,9 @@ begin
         Height := w;
         if Align = alBottom then begin
           if AutoExpand then begin
+            //w := Source.Control.Height;
+            w := Source.DockRect.Bottom - Source.DockRect.Top;
+            Height := w;
             r := Parent.BoundsRect;
             inc(r.Bottom, w);
             Parent.BoundsRect := r;
@@ -943,6 +947,7 @@ var
 
 var
   dw, dh: integer;
+  ctl: TControl;
 const
   d = 2; //shift mousepos slightly outside container
 begin
@@ -976,7 +981,9 @@ begin
     alBottom:
       begin
         AutoExpand := Source.DragPos.y + d > r.Top;
-        if AutoExpand then Adjust(0, dh) else Adjust(0, -dh);
+      { TODO : for all modes... }
+        //if AutoExpand then Adjust(0, dh) else Adjust(0, -dh);
+        if AutoExpand then Adjust(0, Source.Control.TBDockHeight) else Adjust(0, -dh);
       end
     else
       exit;

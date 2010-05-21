@@ -17,6 +17,7 @@ type
   TViewWindow = class(TForm)
     Label1: TLabel;
     procedure FormEndDock(Sender, Target: TObject; X, Y: Integer);
+    procedure FormStartDock(Sender: TObject; var DragObject: TDragDockObject);
     procedure Image1MouseMove(Sender: TObject; Shift: TShiftState;
       X, Y: Integer);
   private
@@ -49,6 +50,15 @@ begin
   end else begin
     //DebugLn('--- in ' + HostDockSite.Name);
   end;
+end;
+
+procedure TViewWindow.FormStartDock(Sender: TObject;
+  var DragObject: TDragDockObject);
+begin
+(* remember current size, for DockRect
+*)
+  UndockHeight := Height;
+  UndockWidth := Width;
 end;
 
 procedure TViewWindow.Image1MouseMove(Sender: TObject; Shift: TShiftState;

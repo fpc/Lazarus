@@ -9,6 +9,7 @@ object ViewWindow: TViewWindow
   DragKind = dkDock
   DragMode = dmAutomatic
   OnEndDock = FormEndDock
+  OnStartDock = FormStartDock
   LCLVersion = '0.9.29'
   Visible = True
   object Label1: TLabel
