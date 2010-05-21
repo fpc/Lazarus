@@ -9690,6 +9690,10 @@ msgstr "コードが選択されていません。"
 msgid "No compiler options inherited."
 msgstr "コンパイラオプションが継承されていません。"
 
+#: lazarusidestrconsts.lisnohints
+msgid "no hints"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoidewindowselected
 msgid "No IDE window selected"
 msgstr "IDEウィンドウが選択されていません"

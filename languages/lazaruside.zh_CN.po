@@ -9690,6 +9690,10 @@ msgstr "没有节点选择"
 msgid "No compiler options inherited."
 msgstr "没有任何编译选项继承"
 
+#: lazarusidestrconsts.lisnohints
+msgid "no hints"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoidewindowselected
 msgid "No IDE window selected"
 msgstr "没有IDE窗口被选中"

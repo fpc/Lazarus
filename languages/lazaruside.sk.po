@@ -9690,6 +9690,10 @@ msgstr "Nie je vybratý kód"
 msgid "No compiler options inherited."
 msgstr "Žiadne zdedené voľby prekladača"
 
+#: lazarusidestrconsts.lisnohints
+msgid "no hints"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoidewindowselected
 msgid "No IDE window selected"
 msgstr "6iadne vybrané okno IDE"

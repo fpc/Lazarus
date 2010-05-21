@@ -927,11 +927,11 @@ msgstr "למטה"
 msgid "Add..."
 msgstr "הוסף ..."
 
+# msgstr "בלוקים שלמים"
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
 msgstr "אחורה"
 
-# msgstr "בלוקים שלמים"
 #: lazarusidestrconsts.dlgedbold
 msgid "Bold"
 msgstr "מודגש"
@@ -9648,6 +9648,10 @@ msgstr "לא נבחר קוד"
 #: lazarusidestrconsts.lisnocompileroptionsinherited
 msgid "No compiler options inherited."
 msgstr "אין ירושה לאפשרויות המהדר."
+
+#: lazarusidestrconsts.lisnohints
+msgid "no hints"
+msgstr ""
 
 #: lazarusidestrconsts.lisnoidewindowselected
 msgid "No IDE window selected"

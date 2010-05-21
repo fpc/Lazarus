@@ -9708,6 +9708,10 @@ msgstr "Kein Code ausgewählt"
 msgid "No compiler options inherited."
 msgstr "Keine abgeleiteten Compilereinstellungen"
 
+#: lazarusidestrconsts.lisnohints
+msgid "no hints"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoidewindowselected
 msgid "No IDE window selected"
 msgstr "Kein IDE-Fenster ausgewählt"

@@ -9622,6 +9622,10 @@ msgstr "Nevybraný žádný kód"
 msgid "No compiler options inherited."
 msgstr "Nezděděny žádné volby překladače "
 
+#: lazarusidestrconsts.lisnohints
+msgid "no hints"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoidewindowselected
 msgid "No IDE window selected"
 msgstr "Nevybráno žádné okno IDE"
@@ -15218,10 +15222,6 @@ msgstr "PŘE"
 msgid "Readonly"
 msgstr "Pouze pro čtení"
 
-#: lazarusidestrconsts.versioninfotitle
-msgid "Version Info"
-msgstr "Informace o verzi"
-
 #~ msgid "Auto create form when opening unit"
 #~ msgstr "Automaticky vytvořit formulář při otevření jednotky"
 #~ msgid "Use Default"
@@ -15319,4 +15319,7 @@ msgstr "Informace o verzi"
 #~ msgstr "Přesunout editor vpravo"
 #~ msgid "Move Editor Rightmost"
 #~ msgstr "Přesunout editor nejvíce vpravo"
+#: lazarusidestrconsts.versioninfotitle
+msgid "Version Info"
+msgstr "Informace o verzi"
 

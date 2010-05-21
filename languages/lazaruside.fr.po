@@ -9671,6 +9671,10 @@ msgstr "Aucun code sélectionné"
 msgid "No compiler options inherited."
 msgstr "Aucune option de compilateur héritée"
 
+#: lazarusidestrconsts.lisnohints
+msgid "no hints"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoidewindowselected
 msgid "No IDE window selected"
 msgstr "Pas de fenêtre iDE sélectionné"

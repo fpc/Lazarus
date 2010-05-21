@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-19 23:32+0300\n"
+"PO-Revision-Date: 2010-05-21 23:17+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -9678,6 +9678,10 @@ msgstr "Не выбрано кода"
 #: lazarusidestrconsts.lisnocompileroptionsinherited
 msgid "No compiler options inherited."
 msgstr "Не унаследовано параметров компилятора."
+
+#: lazarusidestrconsts.lisnohints
+msgid "no hints"
+msgstr "подсказок нет"
 
 #: lazarusidestrconsts.lisnoidewindowselected
 msgid "No IDE window selected"

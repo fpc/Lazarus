@@ -9683,6 +9683,10 @@ msgstr "Tidak ada kode dipilih"
 msgid "No compiler options inherited."
 msgstr "Tidak ada opsi kompilator diturunkan."
 
+#: lazarusidestrconsts.lisnohints
+msgid "no hints"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoidewindowselected
 msgid "No IDE window selected"
 msgstr ""

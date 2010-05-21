@@ -9684,6 +9684,10 @@ msgstr "Kodas nepažymėtas"
 msgid "No compiler options inherited."
 msgstr "Nėra paveldėtų kompiliatoriaus parinkčių."
 
+#: lazarusidestrconsts.lisnohints
+msgid "no hints"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoidewindowselected
 msgid "No IDE window selected"
 msgstr "IKA langas nepažymėtas"
