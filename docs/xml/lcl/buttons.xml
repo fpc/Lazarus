@@ -1512,7 +1512,15 @@ is done automatically by the streaming system.
         <seealso/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TSpeedButton"/>
+      <element name="TSpeedButton">
+        <short>A Button used to represent states (checked or not, etc)</short>
+        <descr>The Speed Button is designed to automate a process when it is selected.  An user pushes a button to start an action or set a mode. <br/>
+
+When a user clicks on a SpeedButton focus is not shifted; a Speed Button never gets focus. The button may carry an descriptive glyph, and has a state (checked or not, etc)</descr>
+        <seealso>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+        </seealso>
+      </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Action" link="#LCL.Controls.TControl.Action">
         <descr>
@@ -1580,7 +1588,13 @@ introduced. These functions interface with the LCLInterface. </p>
         <descr/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TSpeedButton.Enabled"/>
+      <element name="TSpeedButton.Enabled" link="#LCL.Controls.TControl.Enabled">
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
+          <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
+        </descr>
+      </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Flat" link="#LCL.Buttons.TCustomSpeedButton.Flat">
         <short/>
