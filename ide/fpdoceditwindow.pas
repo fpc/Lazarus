@@ -49,6 +49,7 @@ uses
 
 type
   TFPDocEditorFlag = (
+    fpdefReading,
     fpdefWriting,
     fpdefCodeCacheNeedsUpdate,
     fpdefChainNeedsUpdate,
@@ -402,7 +403,9 @@ end;
 
 procedure TFPDocEditor.LinkEditChange(Sender: TObject);
 begin
-  SaveButton.Enabled:=LinkEdit.Text<>FOldVisualValues[fpdiElementLink];
+  if fpdefReading in FFlags then exit;
+  if LinkEdit.Text<>FOldVisualValues[fpdiElementLink] then
+    SaveButton.Enabled:=true;
 end;
 
 procedure TFPDocEditor.ApplicationIdle(Sender: TObject; var Done: Boolean);
@@ -519,23 +522,28 @@ end;
 
 procedure TFPDocEditor.SeeAlsoMemoChange(Sender: TObject);
 begin
-  SaveButton.Enabled:=SeeAlsoMemo.Text<>FOldVisualValues[fpdiSeeAlso];
+  if fpdefReading in FFlags then exit;
+  if SeeAlsoMemo.Text<>FOldVisualValues[fpdiSeeAlso] then
+    SaveButton.Enabled:=true;
 end;
 
 procedure TFPDocEditor.SeeAlsoMemoEditingDone(Sender: TObject);
 begin
+  if fpdefReading in FFlags then exit;
   if SeeAlsoMemo.Text<>FOldVisualValues[fpdiSeeAlso] then
     Modified:=true;
 end;
 
 procedure TFPDocEditor.ShortEditChange(Sender: TObject);
 begin
+  if fpdefReading in FFlags then exit;
   SaveButton.Enabled:=ShortEdit.Text<>FOldVisualValues[fpdiShort];
   ShortEdit2.Text := ShortEdit.Text;
 end;
 
 procedure TFPDocEditor.ShortEditEditingDone(Sender: TObject);
 begin
+  if fpdefReading in FFlags then exit;
   if ShortEdit.Text<>FOldVisualValues[fpdiShort] then
     Modified:=true;
 end;
@@ -547,9 +555,9 @@ end;
 
 procedure TFPDocEditor.TopicDescrChange(Sender: TObject);
 begin
+  if fpdefReading in FFlags then exit;
   if FInTopicSetup then exit;
   Modified := True;
-  SaveButton.Enabled := True;
 end;
 
 procedure TFPDocEditor.TopicListBoxClick(Sender: TObject);
@@ -783,49 +791,57 @@ var
   EnabledState: Boolean;
   OldModified: Boolean;
 begin
+  if fpdefReading in FFlags then exit;
   OldModified:=FModified;
-  
-  EnabledState := (Element<>nil) and (Element.ElementNode<>nil);
-  
-  CreateButton.Enabled := (Element<>nil) and (Element.ElementNode=nil)
-                          and (Element.ElementName<>'');
 
-  if EnabledState then
-  begin
-    FOldValues:=Element.FPDocFile.GetValuesFromNode(Element.ElementNode);
-    FOldVisualValues[fpdiShort]:=ReplaceLineEndings(FOldValues[fpdiShort],'');
-    FOldVisualValues[fpdiElementLink]:=ConvertLineEndings(FOldValues[fpdiElementLink]);
-    FOldVisualValues[fpdiDescription]:=ConvertLineEndings(FOldValues[fpdiDescription]);
-    FOldVisualValues[fpdiErrors]:=ConvertLineEndings(FOldValues[fpdiErrors]);
-    FOldVisualValues[fpdiSeeAlso]:=ConvertLineEndings(FOldValues[fpdiSeeAlso]);
-    FOldVisualValues[fpdiExample]:=ConvertLineEndings(FOldValues[fpdiExample]);
-    DebugLn(['TFPDocEditor.LoadGUIValues Short="',dbgstr(FOldValues[fpdiShort]),'"']);
-  end
-  else
-  begin
-    FOldVisualValues[fpdiShort]:=lisCodeHelpNoDocumentation;
-    FOldVisualValues[fpdiElementLink]:=lisCodeHelpNoDocumentation;
-    FOldVisualValues[fpdiDescription]:=lisCodeHelpNoDocumentation;
-    FOldVisualValues[fpdiErrors]:=lisCodeHelpNoDocumentation;
-    FOldVisualValues[fpdiSeeAlso]:=lisCodeHelpNoDocumentation;
-    FOldVisualValues[fpdiExample]:=lisCodeHelpNoDocumentation;
+  Include(FFlags,fpdefReading);
+  try
+    EnabledState := (Element<>nil) and (Element.ElementNode<>nil);
+
+    CreateButton.Enabled := (Element<>nil) and (Element.ElementNode=nil)
+                            and (Element.ElementName<>'');
+
+    if EnabledState then
+    begin
+      FOldValues:=Element.FPDocFile.GetValuesFromNode(Element.ElementNode);
+      FOldVisualValues[fpdiShort]:=ReplaceLineEndings(FOldValues[fpdiShort],'');
+      FOldVisualValues[fpdiElementLink]:=ConvertLineEndings(FOldValues[fpdiElementLink]);
+      FOldVisualValues[fpdiDescription]:=ConvertLineEndings(FOldValues[fpdiDescription]);
+      FOldVisualValues[fpdiErrors]:=ConvertLineEndings(FOldValues[fpdiErrors]);
+      FOldVisualValues[fpdiSeeAlso]:=ConvertLineEndings(FOldValues[fpdiSeeAlso]);
+      FOldVisualValues[fpdiExample]:=ConvertLineEndings(FOldValues[fpdiExample]);
+      //DebugLn(['TFPDocEditor.LoadGUIValues Short="',dbgstr(FOldValues[fpdiShort]),'"']);
+    end
+    else
+    begin
+      FOldVisualValues[fpdiShort]:='';
+      FOldVisualValues[fpdiElementLink]:='';
+      FOldVisualValues[fpdiDescription]:='';
+      FOldVisualValues[fpdiErrors]:='';
+      FOldVisualValues[fpdiSeeAlso]:='';
+      FOldVisualValues[fpdiExample]:='';
+    end;
+    ShortEdit.Text := FOldVisualValues[fpdiShort];
+    LinkEdit.Text := FOldVisualValues[fpdiElementLink];
+    DescrMemo.Lines.Text := FOldVisualValues[fpdiDescription];
+    SeeAlsoMemo.Text := FOldVisualValues[fpdiSeeAlso];
+    ErrorsMemo.Lines.Text := FOldVisualValues[fpdiErrors];
+    ExampleEdit.Text := FOldVisualValues[fpdiExample];
+
+    ShortEdit.Enabled := EnabledState;
+    LinkEdit.Enabled := EnabledState;
+    DescrMemo.Enabled := EnabledState;
+    SeeAlsoMemo.Enabled := EnabledState;
+    ErrorsMemo.Enabled := EnabledState;
+    ExampleEdit.Enabled := EnabledState;
+    BrowseExampleButton.Enabled := EnabledState;
+
+    FModified:=OldModified;
+    SaveButton.Enabled:=false;
+
+  finally
+    Exclude(FFlags,fpdefReading);
   end;
-  ShortEdit.Text := FOldVisualValues[fpdiShort];
-  LinkEdit.Text := FOldVisualValues[fpdiElementLink];
-  DescrMemo.Lines.Text := FOldVisualValues[fpdiDescription];
-  SeeAlsoMemo.Text := FOldVisualValues[fpdiSeeAlso];
-  ErrorsMemo.Lines.Text := FOldVisualValues[fpdiErrors];
-  ExampleEdit.Text := FOldVisualValues[fpdiExample];
-
-  ShortEdit.Enabled := EnabledState;
-  LinkEdit.Enabled := EnabledState;
-  DescrMemo.Enabled := EnabledState;
-  SeeAlsoMemo.Enabled := EnabledState;
-  ErrorsMemo.Enabled := EnabledState;
-  ExampleEdit.Enabled := EnabledState;
-  BrowseExampleButton.Enabled := EnabledState;
-
-  FModified:=OldModified;
 end;
 
 procedure TFPDocEditor.MoveToInherited(Element: TCodeHelpElement);
@@ -947,12 +963,27 @@ end;
 
 function TFPDocEditor.GUIModified: boolean;
 begin
+  if fpdefReading in FFlags then exit;
   Result:=(ShortEdit.Text<>FOldVisualValues[fpdiShort])
     or (LinkEdit.Text<>FOldVisualValues[fpdiElementLink])
     or (DescrMemo.Text<>FOldVisualValues[fpdiDescription])
     or (SeeAlsoMemo.Text<>FOldVisualValues[fpdiSeeAlso])
     or (ErrorsMemo.Text<>FOldVisualValues[fpdiErrors])
     or (ExampleEdit.Text<>FOldVisualValues[fpdiExample]);
+  if Result then begin
+    if (ShortEdit.Text<>FOldVisualValues[fpdiShort]) then
+      debugln(['TFPDocEditor.GUIModified Short ',dbgstr(ShortEdit.Text),' <> ',dbgstr(FOldVisualValues[fpdiShort])]);
+    if (LinkEdit.Text<>FOldVisualValues[fpdiElementLink]) then
+      debugln(['TFPDocEditor.GUIModified link ',dbgstr(LinkEdit.Text),' <> ',dbgstr(FOldVisualValues[fpdiElementLink])]);
+    if (DescrMemo.Text<>FOldVisualValues[fpdiDescription]) then
+      debugln(['TFPDocEditor.GUIModified Descr ',dbgstr(DescrMemo.Text),' <> ',dbgstr(FOldVisualValues[fpdiDescription])]);
+    if (SeeAlsoMemo.Text<>FOldVisualValues[fpdiSeeAlso]) then
+      debugln(['TFPDocEditor.GUIModified SeeAlso ',dbgstr(SeeAlsoMemo.Text),' <> ',dbgstr(FOldVisualValues[fpdiSeeAlso])]);
+    if (ErrorsMemo.Text<>FOldVisualValues[fpdiErrors]) then
+      debugln(['TFPDocEditor.GUIModified Errors ',dbgstr(ErrorsMemo.Text),' <> ',dbgstr(FOldVisualValues[fpdiErrors])]);
+    if (ExampleEdit.Text<>FOldVisualValues[fpdiExample]) then
+      debugln(['TFPDocEditor.GUIModified Example ',dbgstr(ExampleEdit.Text),' <> ',dbgstr(FOldVisualValues[fpdiExample])]);
+  end;
 end;
 
 procedure TFPDocEditor.DoEditorUpdate(Sender: TObject);
@@ -1005,19 +1036,29 @@ begin
 end;
 
 procedure TFPDocEditor.Reset;
+var
+  i: TFPDocItem;
 begin
   FreeAndNil(fChain);
+  if fpdefReading in FFlags then exit;
+  Include(FFlags,fpdefReading);
+  try
+    // clear all element editors/viewers
+    ShortEdit.Clear;
+    LinkEdit.Clear;
+    DescrMemo.Clear;
+    SeeAlsoMemo.Clear;
+    ErrorsMemo.Clear;
+    ExampleEdit.Clear;
+    for i:=Low(TFPDocItem) to high(TFPDocItem) do
+      FOldVisualValues[i]:='';
 
-  // clear all element editors/viewers
-  ShortEdit.Clear;
-  LinkEdit.Clear;
-  DescrMemo.Clear;
-  SeeAlsoMemo.Clear;
-  ErrorsMemo.Clear;
-  ExampleEdit.Clear;
+    Modified := False;
+    CreateButton.Enabled:=false;
 
-  Modified := False;
-  CreateButton.Enabled:=false;
+  finally
+    Exclude(FFlags,fpdefReading);
+  end;
 end;
 
 procedure TFPDocEditor.InvalidateChain;
@@ -1084,11 +1125,14 @@ var
   Node: TDOMNode;
 begin
   //DebugLn(['TFPDocEditor.Save FModified=',FModified]);
+  if fpdefReading in FFlags then exit;
+
   if (not FModified)
   and ((not CheckGUI) or (not GUIModified)) then begin
     SaveButton.Enabled:=false;
     Exit; // nothing changed => exit
   end;
+  DebugLn(['TFPDocEditor.Save FModified=',FModified,' CheckGUI=',CheckGUI,' GUIModified=',GUIModified]);
   FModified:=false;
   SaveButton.Enabled:=false;
 
@@ -1138,7 +1182,7 @@ begin
   Result[fpdiExample]:=ExampleEdit.Text;
   Result[fpdiElementLink]:=LinkEdit.Text;
   for i:=Low(TFPDocItem) to High(TFPDocItem) do
-    if Trim(Result[i])=lisCodeHelpNoDocumentation then
+    if Trim(Result[i])='' then
       Result[i]:='';
 end;
 
@@ -1254,22 +1298,26 @@ end;
 
 procedure TFPDocEditor.ErrorsMemoChange(Sender: TObject);
 begin
+  if fpdefReading in FFlags then exit;
   SaveButton.Enabled:=ErrorsMemo.Text<>FOldVisualValues[fpdiErrors];
 end;
 
 procedure TFPDocEditor.ErrorsMemoEditingDone(Sender: TObject);
 begin
+  if fpdefReading in FFlags then exit;
   if ErrorsMemo.Text<>FOldVisualValues[fpdiErrors] then
     Modified:=true;
 end;
 
 procedure TFPDocEditor.ExampleEditChange(Sender: TObject);
 begin
+  if fpdefReading in FFlags then exit;
   SaveButton.Enabled:=ExampleEdit.Text<>FOldVisualValues[fpdiExample];
 end;
 
 procedure TFPDocEditor.ExampleEditEditingDone(Sender: TObject);
 begin
+  if fpdefReading in FFlags then exit;
   if ExampleEdit.Text<>FOldVisualValues[fpdiExample] then
     Modified:=true;
 end;
@@ -1296,6 +1344,7 @@ end;
 
 procedure TFPDocEditor.LinkEditEditingDone(Sender: TObject);
 begin
+  if fpdefReading in FFlags then exit;
   if LinkEdit.Text<>FOldVisualValues[fpdiElementLink] then
     Modified:=true;
 end;
@@ -1361,11 +1410,13 @@ end;
 
 procedure TFPDocEditor.DescrMemoChange(Sender: TObject);
 begin
+  if fpdefReading in FFlags then exit;
   SaveButton.Enabled:=DescrMemo.Text<>FOldVisualValues[fpdiDescription];
 end;
 
 procedure TFPDocEditor.DescrMemoEditingDone(Sender: TObject);
 begin
+  if fpdefReading in FFlags then exit;
   if DescrMemo.Text<>FOldVisualValues[fpdiDescription] then
     Modified:=true;
 end;

@@ -4283,7 +4283,7 @@ When the form is put into another control the window borders depend on the widge
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TForm.Visible" link="#LCL.Controls.TControl.Visible">
+      <element name="TForm.Visible">
         <short/>
         <descr/>
         <seealso/>

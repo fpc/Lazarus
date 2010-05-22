@@ -1996,7 +1996,7 @@ begin
     exit;
   end;
   if (CurTool.NodeIsForwardDeclaration(Node)) then begin
-    DebugLn(['TCodeHelpManager.GetElementChain ignoring forward']);
+    //DebugLn(['TCodeHelpManager.GetElementChain ignoring forward']);
     exit;
   end;
   
