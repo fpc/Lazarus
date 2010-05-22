@@ -2006,7 +2006,7 @@ begin
       QEventContentsRectChange: LCLObject.DoAdjustClientRectChange(False);
       QEventPaint:
         begin
-          if canPaintBackground then
+          if canPaintBackground and (LCLObject.Color <> clDefault) then
             SlotPaintBg(Sender, Event);
           if FHasPaint then
             SlotPaint(Sender, Event);
