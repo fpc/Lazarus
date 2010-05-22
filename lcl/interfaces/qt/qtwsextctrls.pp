@@ -310,12 +310,17 @@ end;
 
 class procedure TQtWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
   const AChild: TCustomPage; const AIndex: integer);
+var
+  QtTabWidget: TQtTabWidget;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWSCustomNotebook.AddPage');
   {$endif}
-  TQtTabWidget(ANotebook.Handle).insertTab(AIndex, TQtPage(AChild.Handle).Widget,
+  QtTabWidget := TQtTabWidget(ANotebook.Handle);
+  QtTabWidget.setUpdatesEnabled(False);
+  QtTabWidget.insertTab(AIndex, TQtPage(AChild.Handle).Widget,
     GetUtf8String(AChild.Caption));
+  QtTabWidget.setUpdatesEnabled(True);
   TQtWsCustomPage.UpdateProperties(AChild);
 end;
 
