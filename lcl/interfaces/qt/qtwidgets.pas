@@ -2842,7 +2842,10 @@ var
   Color: TQColor;
   R: TRect;
 begin
-  ColorRefToTQColor(ColorToRGB(LCLObject.Color), Color);
+  if LCLObject.Color = clDefault then
+    Color := Palette.DefaultColor
+  else
+    ColorRefToTQColor(ColorToRGB(LCLObject.Color), Color);
   Painter := QPainter_create(QWidget_to_QPaintDevice(Widget));
   Brush := QBrush_create(@Color, QtSolidPattern);
   try
