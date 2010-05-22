@@ -2301,6 +2301,7 @@ begin
   FOptions:=AValue;
   UpdateSelectionRange;
   if goAlwaysShowEditor in Options then begin
+    SelectEditor;
     EditorShow(true);
   end else begin
     EditorHide;
@@ -3994,10 +3995,7 @@ begin
       DebugLn('ExternalWindow');
   end;
   {$endif}
-  if EditorMode and Editor.CanFocus then
-    Editor.SetFocus
-  else
-    inherited WMSetFocus(Message);
+  inherited WMSetFocus(Message);
 end;
 
 procedure TCustomGrid.WMChar(var message: TLMChar);
@@ -5307,7 +5305,7 @@ begin
   FIgnoreClick := True;
 
   {$IFDEF dbgGrid}
-  DbgOut('Mouse was in ', dbgs(FGCache.HotGridZone));
+  DebugLn('Mouse was in ', dbgs(FGCache.HotGridZone));
   {$ENDIF}
 
   FGCache.ClickMouse := Point(X,Y);
@@ -5675,9 +5673,6 @@ procedure TCustomGrid.DoEditorHide;
 begin
   {$ifdef dbgGrid}DebugLn('grid.DoEditorHide [',Editor.ClassName,'] INIT');{$endif}
   Editor.Visible:=False;
-  if HandleAllocated
-  and ([csLoading,csDesigning,csDestroying]*ComponentState=[]) then
-    LCLIntf.SetFocus(Handle);
   {$ifdef dbgGrid}DebugLn('grid.DoEditorHide [',Editor.ClassName,'] END');{$endif}
 end;
 procedure TCustomGrid.DoEditorShow;
@@ -5689,7 +5684,7 @@ begin
   EditorSetValue;
   Editor.Parent:=Self;
   Editor.Visible:=True;
-  if Editor.CanFocus then
+  if Focused and Editor.CanFocus then
     Editor.SetFocus;
   InvalidateCell(FCol,FRow,True);
   {$ifdef dbgGrid}DebugLn('grid.DoEditorShow [',Editor.ClassName,'] END');{$endif}
@@ -5783,6 +5778,7 @@ begin
     {$IfDef dbgGrid}DebugLn('DoExit - Ext');{$Endif}
     if not EditorAlwaysShown then
       InvalidateFocused;
+    ResetEditor;
     if FgridState=gsSelecting then begin
       if SelectActive then
         FSelectActive := False;

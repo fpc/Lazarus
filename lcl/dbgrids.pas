@@ -2334,13 +2334,11 @@ end;
 procedure TCustomDBGrid.DoExit;
 begin
   {$ifdef dbgDBGrid}DebugLn('DBGrid.DoExit INIT');{$Endif}
-  if not EditorShowing then begin
-    if ValidDataSet and (dgCancelOnExit in Options) and
-      InsertCancelable then
-    begin
-      FDataLink.DataSet.Cancel;
-      EditorCancelEditing;
-    end;
+  if ValidDataSet and (dgCancelOnExit in Options) and
+    InsertCancelable then
+  begin
+    FDataLink.DataSet.Cancel;
+    EditingColumn(FEditingColumn, False);
   end;
   inherited DoExit;
   {$ifdef dbgDBGrid}DebugLn('DBGrid.DoExit FIN');{$Endif}
