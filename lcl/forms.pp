@@ -137,6 +137,8 @@ type
     property Kind: TScrollBarKind read FKind;
     function GetOtherScrollBar: TControlScrollBar;
     property Size: integer read GetSize write SetSize stored False;
+    function ClientSizeWithBar: integer; // return for vertical scrollbar the clientwidth with the bar, even if Visible=false
+    function ClientSizeWithoutBar: integer; // return for vertical scrollbar the clientwidth without the bar, even if Visible=true
   published
     property Increment: TScrollBarInc read GetIncrement write SetIncrement default 8;
     property Page: TScrollBarInc read GetPage write SetPage default 80;
@@ -172,7 +174,7 @@ type
                                OldPosition: Integer); virtual;
     procedure SetAutoScroll(Value: Boolean); virtual;
     procedure Loaded; override;
-    property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default False;
+    property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default False;// auto show/hide scrollbars
   public
     constructor Create(TheOwner : TComponent); override;
     destructor Destroy; override;

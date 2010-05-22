@@ -57,9 +57,11 @@ begin
   {if (FHorzScrollBar.Range>Result.Right)
   or (FVertScrollBar.Range>Result.Bottom) then
     DebugLn(['TScrollingWinControl.GetLogicalClientRect Client=',ClientWidth,'x',ClientHeight,' Ranges=',FHorzScrollBar.Range,'x',FVertScrollBar.Range]);}
-  if Assigned(FHorzScrollBar) and (FHorzScrollBar.Range > Result.Right) then
+  if Assigned(FHorzScrollBar) and FHorzScrollBar.Visible
+  and (FHorzScrollBar.Range > Result.Right) then
     Result.Right := FHorzScrollBar.Range;
-  if Assigned(FVertScrollBar) and (FVertScrollBar.Range > Result.Bottom) then
+  if Assigned(FVertScrollBar) and FVertScrollBar.Visible
+  and (FVertScrollBar.Range > Result.Bottom) then
     Result.Bottom := FVertScrollBar.Range;
 end;
 

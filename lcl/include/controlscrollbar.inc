@@ -231,8 +231,6 @@ procedure TControlScrollBar.AutoCalcRange;
     PreferredHeight:=0;
     FControl.GetPreferredSize(PreferredWidth,PreferredHeight,true);
     //DebugLn(['GetPreferredClientRect ',DbgSName(FControl),' Pref=',PreferredWidth,'x',PreferredHeight]);
-    dec(PreferredWidth,FControl.Width-FControl.ClientWidth);
-    dec(PreferredHeight,FControl.Height-FControl.ClientHeight);
     if PreferredWidth<0 then PreferredWidth:=0;
     if PreferredHeight<0 then PreferredHeight:=0;
   end;
@@ -245,7 +243,8 @@ procedure TControlScrollBar.AutoCalcRange;
     PreferredWidth: Integer;
     PreferredHeight: Integer;
   begin
-    if FControl.AutoSize then
+    if FControl.AutoSize
+    or ((FControl.Parent<>nil) and (FControl.Parent.ChildSizing.Layout<>cclNone)) then
     begin
       GetPreferredClientRect(PreferredWidth,PreferredHeight);
       TmpRange := PreferredHeight;
@@ -261,7 +260,7 @@ procedure TControlScrollBar.AutoCalcRange;
         TmpRange := Max(TmpRange, c.Top + c.Height);
       end;
     end;
-    //DebugLn(['AutoCalcVRange ',DbgSName(FControl),' Bounds=',dbgs(FControl.BoundsRect),' Client=',dbgs(FControl.ClientRect),' TmpRange=',TmpRange,' pref=',PreferredWidth,'x',PreferredHeight]);
+    //DebugLn(['AutoCalcVRange ',DbgSName(FControl),' AutoSize=',FControl.AutoSize,' Bounds=',dbgs(FControl.BoundsRect),' Client=',dbgs(FControl.ClientRect),' TmpRange=',TmpRange,' pref=',PreferredWidth,'x',PreferredHeight]);
     InternalSetRange(TmpRange);
   end;
 
@@ -273,7 +272,8 @@ procedure TControlScrollBar.AutoCalcRange;
     PreferredWidth: Integer;
     PreferredHeight: Integer;
   begin
-    if FControl.AutoSize then
+    if FControl.AutoSize
+    or ((FControl.Parent<>nil) and (FControl.Parent.ChildSizing.Layout<>cclNone)) then
     begin
       GetPreferredClientRect(PreferredWidth,PreferredHeight);
       TmpRange := PreferredWidth;
@@ -523,6 +523,26 @@ begin
     Result := GetHorzScrollBar
   else
     Result := GetVertSCrollbar;
+end;
+
+function TControlScrollBar.ClientSizeWithBar: integer;
+begin
+  if Kind = sbVertical then
+    Result:=FControl.ClientWidth
+  else
+    Result:=FControl.ClientHeight;
+  if not Visible then
+    dec(Result,GetSize);
+end;
+
+function TControlScrollBar.ClientSizeWithoutBar: integer;
+begin
+  if Kind = sbVertical then
+    Result:=FControl.ClientWidth
+  else
+    Result:=FControl.ClientHeight;
+  if Visible then
+    inc(Result,GetSize);
 end;
 
 function TControlScrollBar.GetHorzScrollBar: TControlScrollBar;
