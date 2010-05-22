@@ -72,7 +72,7 @@ const
 
 procedure TJumpHistoryViewWin.FormCreate(Sender : TObject);
 var
-  ALayout: TIDEWindowLayout;
+  ALayout: TSimpleWindowLayout;
 begin
   Caption := lisJHJumpHistory;
   Name := NonModalIDEWindowNames[nmiwJumpHistory];

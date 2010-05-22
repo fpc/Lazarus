@@ -261,7 +261,8 @@ Options (to come or to be removed)
   //Result.Invalidate; - doesn't help
 end;
 
-function TDockMaster.MakeDockable(AForm: TWinControl; fWrap, fVisible: boolean): TForm;
+function TDockMaster.MakeDockable(AForm: TWinControl; fWrap: boolean;
+  fVisible: boolean): TForm;
 var
   Site: TFloatingSite absolute Result;
   Res: TWinControlAccess absolute AForm;

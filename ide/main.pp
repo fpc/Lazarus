@@ -71,7 +71,7 @@ uses
   SynEditKeyCmds, SynBeautifier, SynEditMarks,
   // IDE interface
   AllIDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, PropEditUtils,
-  MacroIntf, IDECommands,
+  MacroIntf, IDECommands, IDEWindowIntf,
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
   PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs,
   IDEOptionsIntf, IDEImagesIntf,
@@ -599,7 +599,7 @@ type
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
 
-    procedure OnApplyWindowLayout(ALayout: TIDEWindowLayout);
+    procedure OnApplyWindowLayout(ALayout: TSimpleWindowLayout);
     procedure AddRecentProjectFileToEnvironment(const AFilename: string);
 
     // methods for start
@@ -1256,7 +1256,7 @@ end;
 
 constructor TMainIDE.Create(TheOwner: TComponent);
 var
-  Layout: TIDEWindowLayout;
+  Layout: TSimpleWindowLayout;
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create START');{$ENDIF}
   inherited Create(TheOwner);
@@ -1347,6 +1347,7 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create IDE COMPONENTS');{$ENDIF}
 
   // Main IDE bar created and setup completed -> Show it
+  MakeIDEWindowDockSite(MainIDEBar);
   MainIDEBar.Show;
 
   // load installed packages
@@ -1900,6 +1901,7 @@ begin
   ObjectInspector1.OnSelectionChange:=@OIOnSelectionChange;
   ObjectInspector1.OnPropertyHint:=@OIOnPropertyHint;
   ObjectInspector1.OnDestroy:=@OIOnDestroy;
+  MakeIDEWindowDockable(ObjectInspector1);
 
   IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspectorDlg);
 
@@ -2173,7 +2175,7 @@ end;
 procedure TMainIDE.ReOpenIDEWindows;
 var
   i: Integer;
-  ALayout: TIDEWindowLayout;
+  ALayout: TSimpleWindowLayout;
   FormEnum: TNonModalIDEWindow;
 begin
   for i:=0 to EnvironmentOptions.IDEWindowLayoutList.Count-1 do begin
@@ -8877,7 +8879,7 @@ end;
 procedure TMainIDE.DoViewUnitDependencies;
 var
   WasVisible: boolean;
-  ALayout: TIDEWindowLayout;
+  ALayout: TSimpleWindowLayout;
 begin
   if UnitDependenciesView=nil then begin
     UnitDependenciesView:=TUnitDependenciesView.Create(OwningComponent);
@@ -12620,7 +12622,7 @@ end;
 procedure TMainIDE.DoShowMessagesView;
 var
   WasVisible: boolean;
-  ALayout: TIDEWindowLayout;
+  ALayout: TSimpleWindowLayout;
 begin
   //debugln('TMainIDE.DoShowMessagesView');
   if EnvironmentOptions.HideMessagesIcons then
@@ -12650,7 +12652,7 @@ end;
 procedure TMainIDE.DoShowSearchResultsView;
 var
   WasVisible: boolean;
-  ALayout: TIDEWindowLayout;
+  ALayout: TSimpleWindowLayout;
 begin
   WasVisible := SearchResultsView.Visible;
   SearchResultsView.Visible:=true;
@@ -17022,31 +17024,32 @@ begin
   Result:=mrOk;
 end;
 
-procedure TMainIDE.OnApplyWindowLayout(ALayout: TIDEWindowLayout);
+procedure TMainIDE.OnApplyWindowLayout(ALayout: TSimpleWindowLayout);
 var
   WindowType: TNonModalIDEWindow;
   BarBottom: Integer;
-  DockingAllowed: Boolean;
   NewHeight: Integer;
   NewBounds: TRect;
   SrcNoteBook: TSourceNotebook;
   SubIndex: Integer;
+  AForm: TCustomForm;
 begin
   if (ALayout=nil) or (ALayout.Form=nil) then exit;
   // debugln('TMainIDE.OnApplyWindowLayout ',ALayout.Form.Name,' ',ALayout.Form.Classname,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' ',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,' ',ALayout.Top,' ',ALayout.Width,' ',ALayout.Height);
-  DockingAllowed:={$IFDEF IDEDocking}true{$ELSE}false{$ENDIF};
-  if DockingAllowed then begin
-    ALayout.Form.Constraints.MaxHeight:=0;
-  end;
+  ALayout.Form.Constraints.MaxHeight:=0;
+  if ALayout.Form<>MainIDEBar then
+    MakeIDEWindowDockable(ALayout.Form);
 
   WindowType:=NonModalIDEFormIDToEnum(ALayout.FormID);
   SubIndex := -1;
   if WindowType = nmiwNone then begin
     WindowType:=NonModalIDEFormIDToEnum(ALayout.FormBaseID(SubIndex));
   end;
-  if DockingAllowed then begin
-    if WindowType in [nmiwSourceNoteBookName] then
-      ALayout.WindowPlacement:=iwpDocked;
+
+  AForm:=ALayout.Form;
+  if AForm.Parent<>nil then begin
+    // form is docked
+
   end;
 
   case ALayout.WindowPlacement of
@@ -17054,8 +17057,8 @@ begin
     begin
       //DebugLn(['TMainIDE.OnApplyWindowLayout ',IDEWindowStateNames[ALayout.WindowState]]);
       case ALayout.WindowState of
-      iwsMinimized: ALayout.Form.WindowState:=wsMinimized;
-      iwsMaximized: ALayout.Form.WindowState:=wsMaximized;
+      iwsMinimized: AForm.WindowState:=wsMinimized;
+      iwsMaximized: AForm.WindowState:=wsMaximized;
       end;
 
       if (ALayout.CustomCoordinatesAreValid) then begin
@@ -17076,7 +17079,7 @@ begin
         if NewBounds.Top>Screen.DesktopHeight-20 then
           OffsetRect(NewBounds,NewBounds.Top-(Screen.DesktopHeight-20),0);
         // set bounds (do not use SetRestoredBounds - that flickers with the current LCL implementation)
-        ALayout.Form.SetBounds(
+        AForm.SetBounds(
           NewBounds.Left,NewBounds.Top,
           NewBounds.Right-NewBounds.Left,NewBounds.Bottom-NewBounds.Top);
         exit;
@@ -17102,50 +17105,43 @@ begin
       and (MainIDEBar.ComponentNotebook.ActivePageComponent<>nil) then begin
         dec(NewHeight,MainIDEBar.ComponentNotebook.ActivePageComponent.ClientHeight-25);
       end;
-      ALayout.Form.SetBounds(0,0,Screen.Width-10,NewHeight);
-      if DockingAllowed then begin
-        ALayout.Form.Align:=alTop;
-      end;
+      AForm.SetBounds(0,0,Screen.Width-10,NewHeight);
     end;
   nmiwSourceNoteBookName:
     begin
       if SubIndex < 0 then SubIndex := 0;
       SubIndex := SubIndex * 30;
-      ALayout.Form.SetBounds(250 + SubIndex, BarBottom + 30 + SubIndex,
+      AForm.SetBounds(250 + SubIndex, BarBottom + 30 + SubIndex,
         Max(50,Screen.Width-300-SubIndex), Max(50,Screen.Height-200-BarBottom-SubIndex));
-      if DockingAllowed then begin
-        debugln('TMainIDE.OnApplyWindowLayout ',dbgsName(ALayout.Form));
-        ALayout.Form.ManualDock(MainIDEBar,nil,alBottom,false);
-      end;
     end;
   nmiwUnitDependenciesName:
-    ALayout.Form.SetBounds(200,200,400,300);
+    AForm.SetBounds(200,200,400,300);
   nmiwCodeExplorerName:
     begin
-      ALayout.Form.SetBounds(Screen.Width-200,130,170,Max(50,Screen.Height-230));
+      AForm.SetBounds(Screen.Width-200,130,170,Max(50,Screen.Height-230));
     end;
   nmiwCodeBrowser:
     begin
-      ALayout.Form.SetBounds(200,100,650,500);
+      AForm.SetBounds(200,100,650,500);
     end;
   nmiwClipbrdHistoryName:
-    ALayout.Form.SetBounds(250,Screen.Height-400,400,300);
+    AForm.SetBounds(250,Screen.Height-400,400,300);
   nmiwPkgGraphExplorer:
-    ALayout.Form.SetBounds(250,150,500,350);
+    AForm.SetBounds(250,150,500,350);
   nmiwProjectInspector:
-    ALayout.Form.SetBounds(200,150,400,300);
+    AForm.SetBounds(200,150,400,300);
   nmiwMessagesViewName:
     begin
       if SourceEditorManager.SourceWindowCount > 0 then begin
         SrcNoteBook := SourceEditorManager.SourceWindows[0];
-        ALayout.Form.SetBounds(250,SrcNoteBook.Top+SrcNoteBook.Height+30,
+        AForm.SetBounds(250,SrcNoteBook.Top+SrcNoteBook.Height+30,
           Max(50,Screen.Width-300),80);
       end else
-        ALayout.Form.SetBounds(250,Screen.Height - 110, Max(50,Screen.Width-300),80);
+        AForm.SetBounds(250,Screen.Height - 110, Max(50,Screen.Width-300),80);
     end;
   else
     if ALayout.FormID=DefaultObjectInspectorName then begin
-      ALayout.Form.SetBounds(
+      AForm.SetBounds(
         MainIDEBar.Left,BarBottom+30,230,Max(Screen.Height-BarBottom-120,50));
     end;
   end;

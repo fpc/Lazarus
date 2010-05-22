@@ -267,7 +267,7 @@ end;
 
 procedure TSearchResultsView.Form1Create(Sender: TObject);
 var
-  ALayout: TIDEWindowLayout;
+  ALayout: TSimpleWindowLayout;
 begin
   FMaxItems:=50000;
   

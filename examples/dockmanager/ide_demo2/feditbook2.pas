@@ -64,6 +64,8 @@ type
     {$IFDEF new}
     function GetFloatingDockSiteClass: TWinControlClass; override;
     {$ENDIF}
+    procedure DoStartDrag(var DragObject: TDragObject); override;
+    procedure DoStartDock(var DragObject: TDragObject); override;
   public
     constructor Create(TheOwner: TComponent); override;
     function  OpenFile(const AName: string): boolean; //virtual;
@@ -107,6 +109,18 @@ end;
 procedure TEditBook.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   CloseAction := caFree;
+end;
+
+procedure TEditBook.DoStartDrag(var DragObject: TDragObject);
+begin
+  inherited DoStartDrag(DragObject);
+end;
+
+procedure TEditBook.DoStartDock(var DragObject: TDragObject);
+begin
+  inherited DoStartDock(DragObject);
+  UndockWidth:=Width;
+  UndockHeight:=Height;
 end;
 
 constructor TEditBook.Create(TheOwner: TComponent);

@@ -167,14 +167,14 @@ type
   TIDEWindowState = (iwsNormal, iwsMaximized, iwsMinimized, iwsHidden);
   TIDEWindowStates = set of TIDEWindowState;
   
-  TIDEWindowLayout = class;
-  TOnGetDefaultIDEWindowPos = procedure(Sender: TIDEWindowLayout;
+  TSimpleWindowLayout = class;
+  TOnGetDefaultIDEWindowPos = procedure(Sender: TSimpleWindowLayout;
                                         var Bounds: TRect) of object;
-  TOnApplyIDEWindowLayout = procedure(Layout: TIDEWindowLayout) of object;
+  TOnApplySimpleWindowLayout = procedure(Layout: TSimpleWindowLayout) of object;
                                         
-  { TIDEWindowLayout }
+  { TSimpleWindowLayout }
 
-  TIDEWindowLayout = class
+  TSimpleWindowLayout = class
   private
     FFormCaption: string;
     FVisible: boolean;
@@ -193,7 +193,7 @@ type
     fDockModesAllowed: TIDEWindowDockModes;
     fFormID: string;
     fOnGetDefaultIDEWindowPos: TOnGetDefaultIDEWindowPos;
-    fOnApply: TOnApplyIDEWindowLayout;
+    fOnApply: TOnApplySimpleWindowLayout;
     fDefaultWindowPlacement: TIDEWindowPlacement;
     function GetFormID: string;
     function GetXMLFormID: string;
@@ -218,7 +218,7 @@ type
     procedure Clear;
     procedure Apply;
     procedure GetCurrentPosition;
-    procedure Assign(Layout: TIDEWindowLayout);
+    procedure Assign(Layout: TSimpleWindowLayout);
     procedure ReadCurrentCoordinates;
     procedure ReadCurrentState;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -253,32 +253,32 @@ type
     property Visible: boolean read FVisible write SetVisible;
     property OnGetDefaultIDEWindowPos: TOnGetDefaultIDEWindowPos
       read fOnGetDefaultIDEWindowPos write SetOnGetDefaultIDEWindowPos;
-    property OnApply: TOnApplyIDEWindowLayout read fOnApply write fOnApply;
+    property OnApply: TOnApplySimpleWindowLayout read fOnApply write fOnApply;
   end;
 
-  { TIDEWindowLayoutList }
+  { TSimpleWindowLayoutList }
 
-  TIDEWindowLayoutList = class(TList)
+  TSimpleWindowLayoutList = class(TList)
   private
-    function GetItems(Index: Integer): TIDEWindowLayout;
-    procedure SetItems(Index: Integer; const AValue: TIDEWindowLayout);
+    function GetItems(Index: Integer): TSimpleWindowLayout;
+    procedure SetItems(Index: Integer; const AValue: TSimpleWindowLayout);
   public
     procedure Clear; override;
     procedure Delete(Index: Integer);
     procedure ApplyAll;
     procedure Apply(AForm: TCustomForm; const ID: string);
     procedure StoreWindowPositions;
-    procedure Assign(SrcList: TIDEWindowLayoutList);
+    procedure Assign(SrcList: TSimpleWindowLayoutList);
     function IndexOf(const FormID: string): integer;
-    function ItemByForm(AForm: TCustomForm): TIDEWindowLayout;
-    function ItemByFormID(const FormID: string): TIDEWindowLayout;
-    function ItemByFormCaption(const aFormCaption: string): TIDEWindowLayout;
-    function ItemByEnum(ID: TNonModalIDEWindow): TIDEWindowLayout;
+    function ItemByForm(AForm: TCustomForm): TSimpleWindowLayout;
+    function ItemByFormID(const FormID: string): TSimpleWindowLayout;
+    function ItemByFormCaption(const aFormCaption: string): TSimpleWindowLayout;
+    function ItemByEnum(ID: TNonModalIDEWindow): TSimpleWindowLayout;
     procedure CloseForm(AForm: TCustomForm);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   public
-    property Items[Index: Integer]: TIDEWindowLayout
+    property Items[Index: Integer]: TSimpleWindowLayout
       read GetItems write SetItems; default;
   end;
   
@@ -414,9 +414,9 @@ begin
   Result:=TXMLOptionsStorage.Create(ConfigFilename,LoadFromDisk);
 end;
 
-{ TIDEWindowLayout }
+{ TSimpleWindowLayout }
 
-constructor TIDEWindowLayout.Create;
+constructor TSimpleWindowLayout.Create;
 begin
   inherited Create;
   fDockChilds:=TStringList.Create;
@@ -428,7 +428,7 @@ begin
   fDockModesAllowed:=[Low(TIDEWindowDockMode)..High(TIDEWindowDockMode)];
 end;
 
-procedure TIDEWindowLayout.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+procedure TSimpleWindowLayout.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   P, DockChild: string;
@@ -467,7 +467,7 @@ begin
   FVisible:=XMLConfig.GetValue(P+'Visible/Value',false);
 end;
 
-procedure TIDEWindowLayout.SaveToXMLConfig(XMLConfig: TXMLConfig;
+procedure TSimpleWindowLayout.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   P: string;
@@ -499,49 +499,49 @@ begin
   XMLConfig.SetDeleteValue(P+'Visible/Value',FVisible,false);
 end;
 
-procedure TIDEWindowLayout.SetWindowPlacement(
+procedure TSimpleWindowLayout.SetWindowPlacement(
   const AValue: TIDEWindowPlacement);
 begin
   fWindowPlacement:=AValue;
 end;
 
-procedure TIDEWindowLayout.SetHeight(const AValue: integer);
+procedure TSimpleWindowLayout.SetHeight(const AValue: integer);
 begin
   fHeight:=AValue;
 end;
 
-procedure TIDEWindowLayout.SetLeft(const AValue: integer);
+procedure TSimpleWindowLayout.SetLeft(const AValue: integer);
 begin
   fLeft:=AValue;
 end;
 
-procedure TIDEWindowLayout.SetTop(const AValue: integer);
+procedure TSimpleWindowLayout.SetTop(const AValue: integer);
 begin
   fTop:=AValue;
 end;
 
-procedure TIDEWindowLayout.SetWidth(const AValue: integer);
+procedure TSimpleWindowLayout.SetWidth(const AValue: integer);
 begin
   fWidth:=AValue;
 end;
 
-procedure TIDEWindowLayout.SetWindowState(const AValue: TIDEWindowState);
+procedure TSimpleWindowLayout.SetWindowState(const AValue: TIDEWindowState);
 begin
   fWindowState:=AValue;
 end;
 
-function TIDEWindowLayout.CustomCoordinatesAreValid: boolean;
+function TSimpleWindowLayout.CustomCoordinatesAreValid: boolean;
 begin
   Result:=(Width>0) and (Height>0) and (Left>10-Width) and (Top>10-Height);
 end;
 
-procedure TIDEWindowLayout.CloseForm;
+procedure TSimpleWindowLayout.CloseForm;
 begin
   GetCurrentPosition;
   Form:=nil;
 end;
 
-function TIDEWindowLayout.FormBaseID(out SubIndex: Integer): String;
+function TSimpleWindowLayout.FormBaseID(out SubIndex: Integer): String;
 var
   i: Integer;
 begin
@@ -556,7 +556,7 @@ begin
   Result := copy(Result, 1, i);
 end;
 
-procedure TIDEWindowLayout.SetForm(const AValue: TCustomForm);
+procedure TSimpleWindowLayout.SetForm(const AValue: TCustomForm);
 begin
   if fForm=AValue then exit;
   fForm:=AValue;
@@ -566,7 +566,7 @@ begin
   end;
 end;
 
-function TIDEWindowLayout.GetFormID: string;
+function TSimpleWindowLayout.GetFormID: string;
 begin
   if FForm=nil then
     Result:=fFormID
@@ -574,7 +574,7 @@ begin
     Result:=FForm.Name;
 end;
 
-function TIDEWindowLayout.GetXMLFormID: string;
+function TSimpleWindowLayout.GetXMLFormID: string;
 var
   i: integer;
 begin
@@ -586,53 +586,53 @@ begin
       Result[i]:='_';
 end;
 
-procedure TIDEWindowLayout.SetDockParent(const AValue: string);
+procedure TSimpleWindowLayout.SetDockParent(const AValue: string);
 begin
   fDockParent:=AValue;
 end;
 
-destructor TIDEWindowLayout.Destroy;
+destructor TSimpleWindowLayout.Destroy;
 begin
   fDockChilds.Free;
   inherited Destroy;
 end;
 
-procedure TIDEWindowLayout.SetDockMode(const AValue: TIDEWindowDockMode);
+procedure TSimpleWindowLayout.SetDockMode(const AValue: TIDEWindowDockMode);
 begin
   fDockMode:=AValue;
 end;
 
-procedure TIDEWindowLayout.SetWindowStatesAllowed(
+procedure TSimpleWindowLayout.SetWindowStatesAllowed(
   const AValue: TIDEWindowStates);
 begin
   fWindowStatesAllowed:=AValue;
 end;
 
-procedure TIDEWindowLayout.SetWindowPlacementsAllowed(
+procedure TSimpleWindowLayout.SetWindowPlacementsAllowed(
   const AValue: TIDEWindowPlacements);
 begin
   fWindowPlacementsAllowed:=AValue;
 end;
 
-procedure TIDEWindowLayout.SetDockModesAllowed(
+procedure TSimpleWindowLayout.SetDockModesAllowed(
   const AValue: TIDEWindowDockModes);
 begin
   fDockModesAllowed:=AValue;
 end;
 
-procedure TIDEWindowLayout.SetVisible(const AValue: boolean);
+procedure TSimpleWindowLayout.SetVisible(const AValue: boolean);
 begin
   if FVisible=AValue then exit;
   FVisible:=AValue;
 end;
 
-procedure TIDEWindowLayout.SetOnGetDefaultIDEWindowPos(
+procedure TSimpleWindowLayout.SetOnGetDefaultIDEWindowPos(
   const AValue: TOnGetDefaultIDEWindowPos);
 begin
   fOnGetDefaultIDEWindowPos:=AValue;
 end;
 
-procedure TIDEWindowLayout.Clear;
+procedure TSimpleWindowLayout.Clear;
 begin
   fWindowPlacement:=fDefaultWindowPlacement;
   fLeft:=0;
@@ -645,18 +645,18 @@ begin
   fDockMode:=iwdmDefault;
 end;
 
-procedure TIDEWindowLayout.SetFormID(const AValue: string);
+procedure TSimpleWindowLayout.SetFormID(const AValue: string);
 begin
   if Form=nil then
     fFormID:=AValue;
 end;
 
-procedure TIDEWindowLayout.Apply;
+procedure TSimpleWindowLayout.Apply;
 begin
   if Assigned(OnApply) then OnApply(Self);
 end;
 
-procedure TIDEWindowLayout.ReadCurrentCoordinates;
+procedure TSimpleWindowLayout.ReadCurrentCoordinates;
 begin
   if (Form<>nil) and (Form.WindowState=wsNormal) then begin
     Left:=Form.Left;
@@ -666,7 +666,7 @@ begin
   end;
 end;
 
-procedure TIDEWindowLayout.ReadCurrentState;
+procedure TSimpleWindowLayout.ReadCurrentState;
 begin
   Visible:=(Form<>nil) and Form.Visible;
   if Form<>nil then begin
@@ -679,7 +679,7 @@ begin
   end;
 end;
 
-procedure TIDEWindowLayout.Assign(Layout: TIDEWindowLayout);
+procedure TSimpleWindowLayout.Assign(Layout: TSimpleWindowLayout);
 begin
   Clear;
   fWindowPlacement:=Layout.fWindowPlacement;
@@ -701,51 +701,51 @@ begin
   fDefaultWindowPlacement:=Layout.fDefaultWindowPlacement;
 end;
 
-procedure TIDEWindowLayout.GetCurrentPosition;
+procedure TSimpleWindowLayout.GetCurrentPosition;
 begin
-  //debugln('TIDEWindowLayout.GetCurrentPosition ',DbgSName(Self),' ',FormID,' ',IDEWindowPlacementNames[WindowPlacement]);
+  //debugln('TSimpleWindowLayout.GetCurrentPosition ',DbgSName(Self),' ',FormID,' ',IDEWindowPlacementNames[WindowPlacement]);
   case WindowPlacement of
   iwpRestoreWindowGeometry, iwpRestoreWindowSize:
     ReadCurrentCoordinates;
 
   end;
   ReadCurrentState;
-  //debugln('TIDEWindowLayout.GetCurrentPosition ',DbgSName(Self),' ',FormID,' Width=',dbgs(Width));
+  //debugln('TSimpleWindowLayout.GetCurrentPosition ',DbgSName(Self),' ',FormID,' Width=',dbgs(Width));
 end;
 
-{ TIDEWindowLayoutList }
+{ TSimpleWindowLayoutList }
 
-procedure TIDEWindowLayoutList.Clear;
+procedure TSimpleWindowLayoutList.Clear;
 var i: integer;
 begin
   for i:=0 to Count-1 do Items[i].Free;
   inherited Clear;
 end;
 
-procedure TIDEWindowLayoutList.Delete(Index: Integer);
+procedure TSimpleWindowLayoutList.Delete(Index: Integer);
 begin
   Items[Index].Free;
   inherited Delete(Index);
 end;
 
-function TIDEWindowLayoutList.GetItems(Index: Integer): TIDEWindowLayout;
+function TSimpleWindowLayoutList.GetItems(Index: Integer): TSimpleWindowLayout;
 begin
-  Result:=TIDEWindowLayout(inherited Items[Index]);
+  Result:=TSimpleWindowLayout(inherited Items[Index]);
 end;
 
-procedure TIDEWindowLayoutList.SetItems(Index: Integer;
-  const AValue: TIDEWindowLayout);
+procedure TSimpleWindowLayoutList.SetItems(Index: Integer;
+  const AValue: TSimpleWindowLayout);
 begin
   Items[Index]:=AValue;
 end;
 
-function TIDEWindowLayoutList.IndexOf(const FormID: string): integer;
+function TSimpleWindowLayoutList.IndexOf(const FormID: string): integer;
 begin
   Result:=Count-1;
   while (Result>=0) and (FormID<>Items[Result].GetFormID) do dec(Result);
 end;
 
-procedure TIDEWindowLayoutList.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+procedure TSimpleWindowLayoutList.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var i: integer;
 begin
@@ -753,7 +753,7 @@ begin
     Items[i].LoadFromXMLConfig(XMLConfig,Path);
 end;
 
-procedure TIDEWindowLayoutList.SaveToXMLConfig(XMLConfig: TXMLConfig;
+procedure TSimpleWindowLayoutList.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var i: integer;
 begin
@@ -764,7 +764,7 @@ begin
   end
 end;
 
-function TIDEWindowLayoutList.ItemByForm(AForm: TCustomForm): TIDEWindowLayout;
+function TSimpleWindowLayoutList.ItemByForm(AForm: TCustomForm): TSimpleWindowLayout;
 var i: integer;
 begin
   i:=Count-1;
@@ -776,8 +776,8 @@ begin
   Result:=nil;
 end;
 
-function TIDEWindowLayoutList.ItemByFormID(const FormID: string
-  ): TIDEWindowLayout;
+function TSimpleWindowLayoutList.ItemByFormID(const FormID: string
+  ): TSimpleWindowLayout;
 var i: integer;
 begin
   i:=IndexOf(FormID);
@@ -787,8 +787,8 @@ begin
     Result:=nil;
 end;
 
-function TIDEWindowLayoutList.ItemByFormCaption(const aFormCaption: string
-  ): TIDEWindowLayout;
+function TSimpleWindowLayoutList.ItemByFormCaption(const aFormCaption: string
+  ): TSimpleWindowLayout;
 var i: integer;
 begin
   i := Count - 1;
@@ -801,30 +801,30 @@ begin
   Result:=nil;
 end;
 
-function TIDEWindowLayoutList.ItemByEnum(ID: TNonModalIDEWindow
-  ): TIDEWindowLayout;
+function TSimpleWindowLayoutList.ItemByEnum(ID: TNonModalIDEWindow
+  ): TSimpleWindowLayout;
 begin
   Result:=ItemByFormID(NonModalIDEWindowNames[ID]);
 end;
 
-procedure TIDEWindowLayoutList.CloseForm(AForm: TCustomForm);
+procedure TSimpleWindowLayoutList.CloseForm(AForm: TCustomForm);
 var
-  ALayout: TIDEWindowLayout;
+  ALayout: TSimpleWindowLayout;
 begin
   ALayout:=ItemByForm(AForm);
   if ALayout<>nil then
     ALayout.CloseForm;
 end;
 
-procedure TIDEWindowLayoutList.ApplyAll;
+procedure TSimpleWindowLayoutList.ApplyAll;
 var i: integer;
 begin
   for i:=0 to Count-1 do
     Items[i].Apply;
 end;
 
-procedure TIDEWindowLayoutList.Apply(AForm: TCustomForm; const ID: string);
-var ALayout: TIDEWindowLayout;
+procedure TSimpleWindowLayoutList.Apply(AForm: TCustomForm; const ID: string);
+var ALayout: TSimpleWindowLayout;
 begin
   ALayout:=ItemByFormID(ID);
   if ALayout=nil then
@@ -833,21 +833,21 @@ begin
   ALayout.Apply;
 end;
 
-procedure TIDEWindowLayoutList.StoreWindowPositions;
+procedure TSimpleWindowLayoutList.StoreWindowPositions;
 var i: integer;
 begin
   for i:=0 to Count-1 do
     Items[i].GetCurrentPosition;
 end;
 
-procedure TIDEWindowLayoutList.Assign(SrcList: TIDEWindowLayoutList);
+procedure TSimpleWindowLayoutList.Assign(SrcList: TSimpleWindowLayoutList);
 var i: integer;
-  NewLayout: TIDEWindowLayout;
+  NewLayout: TSimpleWindowLayout;
 begin
   Clear;
   if SrcList=nil then exit;
   for i:=0 to SrcList.Count-1 do begin
-    NewLayout:=TIDEWindowLayout.Create;
+    NewLayout:=TSimpleWindowLayout.Create;
     NewLayout.Assign(SrcList[i]);
     Add(NewLayout);
   end;

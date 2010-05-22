@@ -85,7 +85,7 @@ end;
 *)
 procedure TDebuggerDlg.DoClose(var CloseAction: TCloseAction);
 var
-  Layout: TIDEWindowLayout;
+  Layout: TSimpleWindowLayout;
 begin
   CloseAction := caFree; // we default to free
   inherited DoClose(CloseAction);

@@ -380,7 +380,7 @@ end;
 
 constructor TPkgGraphExplorerDlg.Create(TheOwner: TComponent);
 var
-  ALayout: TIDEWindowLayout;
+  ALayout: TSimpleWindowLayout;
 begin
   inherited Create(TheOwner);
   FUpdateLock:=PackageGraph.UpdateLock;

@@ -53,7 +53,7 @@ uses
   SynPluginSyncronizedEditBase, SourceSynEditor,
   // Intf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
-  ProjectIntf,
+  IDEWindowIntf, ProjectIntf,
   // IDE units
   IDEDialogs, LazarusIDEStrConsts, IDECommands, EditorOptions,
   WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
@@ -2646,14 +2646,20 @@ end;
 Procedure TSourceEditor.FocusEditor;
 Begin
   {$IFDEF VerboseFocus}
-  writeln('TSourceEditor.FocusEditor A ',PageName,' ',FEditor.Name);
+  debugln('TSourceEditor.FocusEditor A ',PageName,' ',FEditor.Name);
   {$ENDIF}
   if SourceNotebook<>nil then SourceNotebook.Visible:=true;
-  FEditor.SetFocus;
-  FSharedValues.SetActiveSharedEditor(Self);
+  if SourceNotebook.IsVisible then begin
+    FEditor.SetFocus;
+    FSharedValues.SetActiveSharedEditor(Self);
+  end else begin
+    {$IFDEF VerboseFocus}
+    debugln('TSourceEditor.FocusEditor not IsVisible: ',PageName,' ',FEditor.Name);
+    {$ENDIF}
+  end;
   //DebugLn('TSourceEditor.FocusEditor ',dbgsName(FindOwnerControl(GetFocus)),' ',dbgs(GetFocus));
   {$IFDEF VerboseFocus}
-  writeln('TSourceEditor.FocusEditor END ',PageName,' ',FEditor.Name);
+  debugln('TSourceEditor.FocusEditor END ',PageName,' ',FEditor.Name);
   {$ENDIF}
 end;
 
@@ -4849,6 +4855,8 @@ begin
   FUpdateTabAndPageTimer.OnTimer := @UpdateTabsAndPageTimeReached;
 
   CreateNotebook;
+
+  MakeIDEWindowDockable(Self);
   Application.AddOnUserInputHandler(@OnApplicationUserInput,true);
 end;
 

@@ -150,7 +150,7 @@ type
     FXMLCfg: TXMLConfig;
     FConfigStore: TXMLOptionsStorage;
 
-    FOnApplyWindowLayout: TOnApplyIDEWindowLayout;
+    FOnApplyWindowLayout: TOnApplySimpleWindowLayout;
 
     // auto save
     FAutoSaveEditorFiles: boolean;
@@ -159,7 +159,7 @@ type
     FLastSavedProjectFile: string;
     
     // window layout
-    FIDEWindowLayoutList: TIDEWindowLayoutList;
+    FIDEWindowLayoutList: TSimpleWindowLayoutList;
     FIDEDialogLayoutList: TIDEDialogLayoutList;
     FSingleTaskBarButton: boolean;
     FHideIDEOnRun: boolean;
@@ -279,10 +279,10 @@ type
     procedure SetDebuggerFilename(const AValue: string);
     procedure SetFPCSourceDirectory(const AValue: string);
     procedure SetLazarusDirectory(const AValue: string);
-    procedure SetOnApplyWindowLayout(const AValue: TOnApplyIDEWindowLayout);
+    procedure SetOnApplyWindowLayout(const AValue: TOnApplySimpleWindowLayout);
 
     procedure InitLayoutList;
-    procedure InternOnApplyWindowLayout(ALayout: TIDEWindowLayout);
+    procedure InternOnApplyWindowLayout(ALayout: TSimpleWindowLayout);
     procedure SetFileName(const NewFilename: string);
     function FileHasChangedOnDisk: boolean;
     function GetXMLCfg(CleanConfig: boolean): TXMLConfig;
@@ -325,7 +325,7 @@ type
                               var Abort: boolean): string;
 
     // event
-    property OnApplyWindowLayout: TOnApplyIDEWindowLayout
+    property OnApplyWindowLayout: TOnApplySimpleWindowLayout
                          read FOnApplyWindowLayout write SetOnApplyWindowLayout;
 
     // auto save
@@ -337,7 +337,7 @@ type
                                              write FAutoSaveIntervalInSecs;
        
     // window layouts
-    property IDEWindowLayoutList: TIDEWindowLayoutList
+    property IDEWindowLayoutList: TSimpleWindowLayoutList
                            read FIDEWindowLayoutList write FIDEWindowLayoutList;
     property IDEDialogLayoutList: TIDEDialogLayoutList
                            read FIDEDialogLayoutList write FIDEDialogLayoutList;
@@ -1459,7 +1459,7 @@ procedure TEnvironmentOptions.InitLayoutList;
 var
   l: TNonModalIDEWindow;
 begin
-  fIDEWindowLayoutList:=TIDEWindowLayoutList.Create;
+  fIDEWindowLayoutList:=TSimpleWindowLayoutList.Create;
 
   for l:=Low(TNonModalIDEWindow) to High(TNonModalIDEWindow) do
     if l<>nmiwNone then
@@ -1468,20 +1468,20 @@ begin
 end;
 
 procedure TEnvironmentOptions.InternOnApplyWindowLayout(
-  ALayout: TIDEWindowLayout);
+  ALayout: TSimpleWindowLayout);
 begin
   if Assigned(OnApplyWindowLayout) then OnApplyWindowLayout(ALayout);
 end;
 
 procedure TEnvironmentOptions.CreateWindowLayout(const TheFormID: string);
 var
-  NewLayout: TIDEWindowLayout;
+  NewLayout: TSimpleWindowLayout;
 begin
   if TheFormID='' then
     RaiseException('TEnvironmentOptions.CreateWindowLayout TheFormID empty');
   if IDEWindowLayoutList.ItemByFormID(TheFormID)<>nil then
     RaiseException('TEnvironmentOptions.CreateWindowLayout TheFormID exists');
-  NewLayout:=TIDEWindowLayout.Create;
+  NewLayout:=TSimpleWindowLayout.Create;
   with NewLayout do begin
     FormID:=TheFormID;
     WindowPlacementsAllowed:=[iwpRestoreWindowGeometry,iwpDefault,
@@ -1625,7 +1625,7 @@ begin
 end;
 
 procedure TEnvironmentOptions.SetOnApplyWindowLayout(
-  const AValue: TOnApplyIDEWindowLayout);
+  const AValue: TOnApplySimpleWindowLayout);
 begin
   FOnApplyWindowLayout:=AValue;
 end;

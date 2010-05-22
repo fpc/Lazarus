@@ -62,14 +62,14 @@ type
     procedure GetWindowPositionButtonClick(Sender: TObject);
     procedure WindowPositionsListBoxSelectionChange(Sender: TObject; User: boolean);
   private
-    FLayouts: TIDEWindowLayoutList;
-    FLayout: TIDEWindowLayout;
+    FLayouts: TSimpleWindowLayoutList;
+    FLayout: TSimpleWindowLayout;
     function GetPlacementRadioButtons(APlacement: TIDEWindowPlacement): TRadioButton;
-    procedure SetLayout(const AValue: TIDEWindowLayout);
+    procedure SetLayout(const AValue: TSimpleWindowLayout);
     procedure SetWindowPositionsItem(Index: integer);
     procedure SaveLayout;
     function GetCaptionFor(AWindow: TNonModalIDEWindow): String;
-    property Layout: TIDEWindowLayout read FLayout write SetLayout;
+    property Layout: TSimpleWindowLayout read FLayout write SetLayout;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -179,7 +179,7 @@ begin
   end;
 end;
 
-procedure TWindowOptionsFrame.SetLayout(const AValue: TIDEWindowLayout);
+procedure TWindowOptionsFrame.SetLayout(const AValue: TSimpleWindowLayout);
 var
   APlacement: TIDEWindowPlacement;
   RadioButton: TRadioButton;
