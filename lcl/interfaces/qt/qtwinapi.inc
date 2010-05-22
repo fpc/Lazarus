@@ -2077,6 +2077,40 @@ begin
   end;
 end;
 
+function TQtWidgetSet.GetCmdLineParamDescForInterface: string;
+  function b(const s: string): string;
+  begin
+    Result:=BreakString(s,75,22)+LineEnding+LineEnding;
+  end;
+begin
+  Result:=
+     b(rsqtOptionNoGrab)
+    +b(rsqtOptionDoGrab)
+    +b(rsqtOptionSync)
+    +b(rsqtOptionStyle)
+    +b(rsqtOptionStyleSheet)
+    +b(rsqtOptionGraphicsStyle)
+    +b(rsqtOptionSession)
+    +b(rsqtOptionWidgetCount)
+    +b(rsqtOptionReverse)
+    {$IFDEF HASX11}
+    +b(rsqtOptionX11Display)
+    +b(rsqtOptionX11Geometry)
+    +b(rsqtOptionX11Font)
+    +b(rsqtOptionX11BgColor)
+    +b(rsqtOptionX11FgColor)
+    +b(rsqtOptionX11BtnColor)
+    +b(rsqtOptionX11Name)
+    +b(rsqtOptionX11Title)
+    +b(rsqtOptionX11Visual)
+    +b(rsqtOptionX11NCols)
+    +b(rsqtOptionX11CMap)
+    +b(rsqtOptionX11IM)
+    +b(rsqtOptionX11InputStyle)
+    {$ENDIF}
+    ;
+end;
+
 {------------------------------------------------------------------------------
   Function: GetCursorPos
   Params:  lpPoint: The cursorposition
