@@ -51,7 +51,7 @@ uses
 
 const
   LCLPlatformDisplayNames: array[TLCLPlatform] of string = (
-      'gtk',
+      'gtk (deprecated)',
       'gtk 2 (beta)',
       'win32/win64',
       'wince (beta)',
