@@ -2584,11 +2584,14 @@ begin
 
   if (AWidgetInfo^.LCLObject is TScrollingWinControl) then
   begin
-    MaxValue := ARange^.adjustment^.upper;
+    if ARange^.adjustment^.page_size > 0 then
+      MaxValue := ARange^.adjustment^.upper - ARange^.adjustment^.page_size
+    else
+      MaxValue := ARange^.adjustment^.upper;
     if (AValue > MaxValue) or (AValue < ARange^.adjustment^.lower) then
     begin
       Result := not Result;
-      exit;
+      AValue := MaxValue;
     end;
   end;
 
