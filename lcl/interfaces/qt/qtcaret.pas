@@ -46,10 +46,12 @@ type
 
   TEmulatedCaret = class(TComponent)
   private
+    FCaretDirty: Boolean;
     FTimer: TTimer;
     FOldRect: TRect;
     FWidget: TQtWidget;
     FPixmap: QPixmapH;
+    FLastValidWidth, FLastValidHeight: Integer;
     FWidth, FHeight: Integer;
     FPos: TQtPoint;
     FVisible: Boolean;
@@ -78,6 +80,7 @@ type
     function Show(AWidget: TQtWidget): Boolean;
     function Hide: Boolean;
 
+    property CaretDirty: Boolean read FCaretDirty;
     property Timer: TTimer read FTimer;
     property Pos: TQtPoint read FPos write SetPos;
     property RespondToFocus: Boolean read FRespondToFocus write FRespondToFocus;
@@ -94,9 +97,12 @@ procedure SetQtCaretRespondToFocus(Value: Boolean);
 function DestroyCaret: Boolean;
 procedure DrawCaret;
 procedure DestroyGlobalCaret;
+function GlobalCaretDirty: Boolean;
 
 implementation
-
+{$IFDEF VerboseQtCaret}
+uses LCLProc;
+{$ENDIF}
 var
   GlobalCaret: TEmulatedCaret = nil;
   
@@ -104,6 +110,13 @@ procedure GlobalCaretNeeded;
 begin
   if GlobalCaret = nil then
     GlobalCaret := TEmulatedCaret.Create(nil);
+end;
+
+function GlobalCaretDirty: Boolean;
+begin
+  Result := False;
+  if GlobalCaret <> nil then
+    Result := GlobalCaret.CaretDirty;
 end;
 
 procedure DrawCaret;
@@ -255,9 +268,15 @@ end;
 
 constructor TEmulatedCaret.Create(AOwner: TComponent);
 begin
+  {$IFDEF VerboseQtCaret}
+  writeln('TEmulatedCaret.Create()');
+  {$ENDIF}
   inherited Create(AOwner);
   InitializeCriticalSection(FCritSect);
 
+  FLastValidWidth := 0;
+  FLastValidHeight := 0;
+  FCaretDirty := False;
   FOldRect := Rect(0, 0, 1, 1);
   FPos := QtPoint(0, 0);
   
@@ -271,6 +290,9 @@ end;
 
 destructor TEmulatedCaret.Destroy;
 begin
+  {$IFDEF VerboseQtCaret}
+  writeln('TEmulatedCaret.Destroy()');
+  {$ENDIF}
   DestroyCaret;
   DeleteCriticalSection(FCritSect);
   inherited Destroy;
@@ -283,10 +305,21 @@ begin
   SetWidget(AWidget);
   FWidth := Width;
   FHeight := Height;
+  if FWidth > 0 then
+    FLastValidWidth := FWidth;
+  if FHeight > 0 then
+    FLastValidHeight := FHeight;
+
   if PtrUInt(Pixmap) > $FFFF then
     FPixmap := QPixmap_create(Pixmap)
   else
     FPixmap := CreateColorPixmap(PtrUInt(Pixmap));
+
+  {$IFDEF VerboseQtCaret}
+  writeln('TEmulatedCaret.CreateCaret IsValid=',IsValid,' FVis=',FVisible,
+    ' FVisState=',FVisibleState,' FPixmap=',dbghex(PtrUInt(FPixmap)),
+    ' FWidth=',FWidth,' FHeight=',FHeight,' FWidget=',dbghex(PtrUInt(FWidget)));
+  {$ENDIF}
 
   Result := IsValid;
   FTimer.Enabled := True;
@@ -294,6 +327,11 @@ end;
 
 function TEmulatedCaret.DestroyCaret: Boolean;
 begin
+  {$IFDEF VerboseQtCaret}
+  writeln('TEmulatedCaret.DestroyCaret IsValid=',IsValid,' FVis=',FVisible,
+    ' FVisState=',FVisibleState,' FPixmap=',dbghex(PtrUInt(FPixmap)),
+    ' FWidth=',FWidth,' FHeight=',FHeight,' FWidget=',dbghex(PtrUInt(FWidget)));
+  {$ENDIF}
   FTimer.Enabled := False;
   Hide;
   if Assigned(FPixmap) then
@@ -309,8 +347,14 @@ procedure TEmulatedCaret.DrawCaret;
 var
   R: TRect;
 begin
+  {$IFDEF VerboseQtCaret}
+  writeln('TEmulatedCaret.DrawCaret IsValid=',IsValid,' FVis=',FVisible,
+    ' FVisState=',FVisibleState,' FPixmap=',dbghex(PtrUInt(FPixmap)),
+    ' FWidth=',FWidth,' FHeight=',FHeight,' FWidget=',dbghex(PtrUInt(FWidget)));
+  {$ENDIF}
   if IsValid and FVisible and FVisibleState then
   begin
+    FCaretDirty := False;
     R := Rect(0, 0, QPixmap_width(FPixmap), QPixmap_height(FPixmap));
     TQtDeviceContext(FWidget.Context).save;
     TQtDeviceContext(FWidget.Context).setCompositionMode(QPainterRasterOp_NotSourceXorDestination);
@@ -320,19 +364,31 @@ begin
 end;
 
 function TEmulatedCaret.Show(AWidget: TQtWidget): Boolean;
+var
+  Pt: TQtPoint;
 begin
+  {$IFDEF VerboseQtCaret}
+  writeln('TEmulatedCaret.Show AWidget=',dbghex(PtrUInt(AWidget)));
+  {$ENDIF}
   if FWidget <> AWidget then
   begin
     Hide;
     SetWidget(AWidget);
+    if FCaretDirty and (AWidget <> nil) then
+    begin
+      CreateCaret(FWidget, nil, FLastValidWidth, FLastValidHeight);
+      SetPos(FPos);
+    end;
   end;
   Result := IsValid;
-  if Result then
-    FVisible := True;
+  FVisible := Result;
 end;
 
 function TEmulatedCaret.Hide: Boolean;
 begin
+  {$IFDEF VerboseQtCaret}
+  writeln('TEmulatedCaret.Hide IsValid=',IsValid,' FVisible=',FVisible);
+  {$ENDIF}
   Result := IsValid;
   if Result and FVisible then
   begin
@@ -343,20 +399,33 @@ end;
 
 procedure TEmulatedCaret.SetPos(const Value: TQtPoint);
 begin
+  {$IFDEF VerboseQtCaret}
+  writeln('TEmulatedCaret.SetPos FWidget=',dbghex(PtrUInt(FWidget)),' X=',Value.X,
+  ' Y=',Value.Y,' OldX=',FPos.X,' OldY=',FPos.Y);
+  {$ENDIF}
+
   if (FWidget = nil) or (FWidget.Widget = nil) then
   begin
-    FPos.X := 0;
-    FPos.Y := 0;
+    // oops, our caret is dirty here.
+    FCaretDirty := True;
+    FPos := Value;
     exit;
   end;
   
-  if ((FPos.x <> Value.x) or (FPos.y <> Value.y)) then
+  if ((FPos.x <> Value.x) or (FPos.y <> Value.y)) or FCaretDirty then
   begin
     FPos := Value;
     FTimer.Enabled := False;
     FVisibleState := FWidget.Context = 0;
-    if RespondToFocus then
+    if RespondToFocus and not FCaretDirty then
       UpdateCaret(True);
+    if FCaretDirty then
+    begin
+      FVisible := True;
+      if FWidget.Context <> 0 then
+        DoTimer(FTimer);
+      FTimer.Enabled := True;
+    end;
   end else
   begin
     if FWidget.Context = 0 then
@@ -400,6 +469,10 @@ var
   QC: TQColor;
   AColor: TColor;
 begin
+  {$IFDEF VerboseQtCaret}
+  writeln('TEmulatedCaret.CreateColorPixmap FWidget=',dbghex(PtrUInt(FWidget)),' Width=',FWidth,
+    ' FHeight=',FHeight);
+  {$ENDIF}
   if (FWidth <= 0) or (FHeight <= 0) then
     Result := nil
   else

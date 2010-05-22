@@ -2909,7 +2909,11 @@ begin
       try
         LCLObject.WindowProc(TLMessage(Msg));
         if HasCaret then
+        begin
+          if GlobalCaretDirty then
+            QtCaret.ShowCaret(Self);
           QtCaret.DrawCaret;
+        end;
       finally
         Dispose(PaintData.ClipRect);
         Fillchar(FPaintData, SizeOf(FPaintData), 0);
