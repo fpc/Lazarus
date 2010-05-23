@@ -149,32 +149,32 @@ resourceString
 
   // qt interface
   rsqtOptionNoGrab = '-nograb, tells Qt that it must never grab '
-    +'the mouse or the keyboard.Need QT_DEBUG.';
+    +'the mouse or the keyboard. Need QT_DEBUG.';
   rsqtOptionDoGrab = '-dograb (only under X11), running under a debugger can '
-    +'cause an implicit -nograb, use -dograb to override.Need QT_DEBUG.';
+    +'cause an implicit -nograb, use -dograb to override. Need QT_DEBUG.';
   rsqtOptionSync = '-sync (only under X11), switches to synchronous mode '
     +'for debugging.';
   rsqtOptionStyle = '-style style or -style=style, sets the application GUI '
-    +'style.Possible values are motif, windows, and platinum. If you compiled '
+    +'style. Possible values are motif, windows, and platinum. If you compiled '
     +'Qt with additional styles or have additional styles as plugins these '
     +'will be available to the -style  command line option. NOTE: Not all '
     +'styles are available on all platforms. If style param does not exist '
     +'Qt will start an application with default common style (windows).';
   rsqtOptionStyleSheet = '-stylesheet stylesheet or -stylesheet=stylesheet, '
-    +'sets the application styleSheet. '
+    +'sets the application Style Sheet. '
     +'The value must be a path to a file that contains the Style Sheet. '
     +'Note: Relative URLs in the Style Sheet file are relative '
     +'to the Style Sheet file''s path.';
   rsqtOptionGraphicsStyle = '-graphicssystem param, sets the backend to be '
-   +'used for on-screen widgets and QPixmaps.'
-   +'Available options are native,raster and opengl.OpenGL is still unstable.';
+   +'used for on-screen widgets and QPixmaps. '
+   +'Available options are native, raster and opengl. OpenGL is still unstable.';
   rsqtOptionSession = '-session session, restores the application from an '
     +'earlier session.';
   rsqtOptionWidgetCount = '-widgetcount, prints debug message at the end about '
     +'number of widgets left undestroyed and maximum number of widgets existed '
     +'at the same time.';
   rsqtOptionReverse = '-reverse, sets the application''s layout direction '
-    +'to Qt::RightToLeft';
+    +'to Qt::RightToLeft.';
   // qt X11 options
   rsqtOptionX11Display = '-display display, sets the X display '
     +'(default is $DISPLAY).';
@@ -202,9 +202,9 @@ resourceString
   rsqtOptionX11CMap = '-cmap, causes the application to install a private '
     +'color map on an 8-bit display.';
   rsqtOptionX11IM = '-im, sets the input method server (equivalent to setting '
-    +'the XMODIFIERS environment variable)';
+    +'the XMODIFIERS environment variable).';
   rsqtOptionX11InputStyle = '-inputstyle, defines how the input is inserted '
-    +'into the given widget, e.g., onTheSpot makes the input appear directly '
+    +'into the given widget, e.g. onTheSpot makes the input appear directly '
     +'in the widget, while overTheSpot makes the input appear in a box '
     +'floating over the widget and is not inserted until the editing is done.';
 
