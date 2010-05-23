@@ -134,7 +134,8 @@ type
   TTitleStyle = (tsLazarus, tsStandard, tsNative);
 
   TGridFlagsOption = (gfEditorUpdateLock, gfNeedsSelectActive, gfEditorTab,
-    gfRevEditorTab, gfVisualChange, gfDefRowHeightChanged, gfColumnsLocked);
+    gfRevEditorTab, gfVisualChange, gfDefRowHeightChanged, gfColumnsLocked,
+    gfEditingDone);
   TGridFlags = set of TGridFlagsOption;
 
   TSortOrder = (soAscending, soDescending);
@@ -5670,8 +5671,14 @@ begin
 end;
 
 procedure TCustomGrid.DoEditorHide;
+var
+  ParentForm: TCustomForm;
 begin
   {$ifdef dbgGrid}DebugLn('grid.DoEditorHide [',Editor.ClassName,'] INIT');{$endif}
+  if gfEditingDone in FGridFlags then begin
+    ParentForm := GetParentForm(Self);
+    ParentForm.ActiveControl := self;
+  end;
   Editor.Visible:=False;
   {$ifdef dbgGrid}DebugLn('grid.DoEditorHide [',Editor.ClassName,'] END');{$endif}
 end;
@@ -5850,8 +5857,10 @@ var
     FGCache.TLColOff:=0;
     FGCache.TLRowOff:=0;
     SelectActive:=Sh;
+    Include(FGridFlags, gfEditingDone);
     if MoveNextSelectable(Rel, aCol, aRow) then
       Click;
+    Exclude(FGridFlags, gfEditingDone);
     Key := 0; { Flag key as handled, even if selected cell did not move }
   end;
 const
@@ -6780,8 +6789,10 @@ begin
     VK_RETURN:
       begin
         Key := 0;
+        Include(FGridFlags, gfEditingDone);
         if not MoveNextAuto(ssShift in Shift) then
           ResetEditor;
+        Exclude(FGridFlags, gfEditingDone);
       end;
   end;
   FEditorKey:=False;
