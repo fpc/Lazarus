@@ -2237,7 +2237,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- property Visibility: public -->
       <element name="TDragDockObject.DockRect">
-        <short>The rectangle signaling a possible drop location.</short>
+        <short>Screen coordinates of a possible drop location.</short>
         <descr/>
         <seealso/>
       </element>
@@ -2266,19 +2266,7 @@ dmFindTarget: find child control under the mouse
         <seealso/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TDockManager">
-        <short>Abstract base class for managing the layout of docksites.</short>
-        <descr>
-          <p>
-            <remark>The declaration is somewhat incompatible with the Delphi declaration, where IDockManager is an interface, not a class.</remark>
-          </p>
-          <p>[entire review DoDi 2010-02-16]</p>
-        </descr>
-        <seealso>
-          <link id="TDockTree"/>
-          <link id="TDockManager"/>
-        </seealso>
-      </element>
+      <element name="TDockManager"/>
       <!-- procedure Visibility: default -->
       <element name="TDockManager.BeginUpdate">
         <short>Start updating the DockSite layout.</short>
@@ -2319,6 +2307,7 @@ dmFindTarget: find child control under the mouse
           <p>
             <remark>When SetReplacingControl has been called with a non-Nil Control before, the dropped control only should replace that control.</remark>
           </p>
+          <p>An overloaded version passes the DragDockObject to the dockmanager, allowing to pass more information about the drop. It allows to implement other than tree-style docksites.</p>
         </descr>
         <errors/>
         <seealso>
@@ -2411,7 +2400,7 @@ dmFindTarget: find child control under the mouse
         <descr>
           <p>This method typically notifies the DockManager of a Resize of the docksite.</p>
           <p>When the extent of the docksite really has changed, the DockManager should reposition and resize all docked controls accordingly.</p>
-          <p>The layout always should be refreshed when <var>Force</var> is True.</p>
+          <p>The layout always should be refreshed when <var>Force</var> is True. This is required when e.g. the visibility of docked controls has changed, but not the size of the docksite.</p>
         </descr>
         <errors/>
         <seealso/>
@@ -5624,7 +5613,8 @@ Without a DockManager both extents are required, because no (valid) alignment in
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetFloating">
-        <short>Find out (true or false) whether the control is floating (as opposed to fixed)</short>
+        <short>Guess whether the control is floating.</short>
+        <descr>Floating state is assumed when the control has a HostDockSite of FloatingDockSiteClass, and is the only docked client.</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.GetFloating.Result">
@@ -6895,7 +6885,7 @@ On dmDragDrop: invokes DragDrop or, if docking, the target.DockDrop. Returns not
         <short>Move the control into a new docksite.</short>
         <descr>
           <p>Removes the control from the DockClients of the old docksite, and adds it to the DockClients of the new docksite. Adjusts the position and extent for the new docksite, then calls the DoAdd/RemoveDockClient methods of the old and new docksite.</p>
-          <p>Performs checks that there is already a valid host control to which the present control is to be docked, removes old controls from the list of docked controls and adds the new control to the list, then calls <link id="TControl.DoDock">DoDock</link> to perform the actual docking process</p>
+          <p>Performs checks that there is already a valid host control to which the present control is to be docked, removes old controls from the list of docked controls and adds the new control to the list, then calls <link id="TControl.DoDock">DoDock</link> to position the control.</p>
         </descr>
         <errors>An exception is raised if there is already a docking process in progress for this control</errors>
       </element>
@@ -8043,16 +8033,7 @@ Keep in mind that ClientWidth and ClientHeight can change even when Width, Heigh
         </seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TControl.Parent">
-        <short>The container control of which this control is a child.</short>
-        <descr>
-          <p>Parent is a TWinControl, which contains the control. The control is shown inside the client area of its Parent. Its origin (Top,Left) is expressed in client coordinates, i.e. relative to the client area of its Parent. When the Parent is changed, the visual control moves into the client area of its new Parent.</p>
-          <p>Parent can be Nil only for TWinControls, which can exist outside a container control. A simple TControl without a parent is invisible. Forms with a Parent loose some of their attributes and functionality, and behave more like ordinary client controls.</p>
-        </descr>
-        <seealso>
-          <link id="#lcl.Controls.TWinControl"/>
-        </seealso>
-      </element>
+      <element name="TControl.Parent"/>
       <!-- property Visibility: public -->
       <element name="TControl.PopupMenu">
         <short>
@@ -8111,9 +8092,7 @@ Reads message from flag area, or stores a message
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Floating">
-        <short>Whether the control is <var>Floating</var> (as opposed to Docked)</short>
         <descr/>
-        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.FloatingDockSiteClass">
@@ -10182,7 +10161,11 @@ The InfluenceRect is the slightly inflated WindowRect of the dock site, adjustab
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ReloadDockedControl">
-        <short>[!]  <var>ReloadDockedControl</var> - load the docked control again (it may have become misaligned during other processes)</short>
+        <short>Returns the docked control of the specified name.</short>
+        <descr>
+          <p>The control is searched in the controls owned by the owner of this control.</p>
+          <p>Override to search other places, or to create a control of the requested name.</p>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.ReloadDockedControl.AControlName">
@@ -10194,9 +10177,8 @@ The InfluenceRect is the slightly inflated WindowRect of the dock site, adjustab
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.CreateDockManager">
-        <short>
-          <var>CreateDockManager</var> - returns a new Dock Manager</short>
-        <descr/>
+        <short>Returns the DockManager for this control.</short>
+        <descr>If DockManager is nil, and UseDockManager is True, a new default DockManager is created.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -15019,7 +15001,11 @@ The origin always is (0,0), regardless of an ScrollOffset.</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoFloatMsg">
-        <short>Sends a message to the operating system about the floating status of ADockSource</short>
+        <short>Handler called when the control starts floating.</short>
+        <descr>
+          <p>Since TControls cannot float for themselves, a FloatHost site is created and the control is docked into it.</p>
+          <p>When the control already has a Parent (FloatHost site), the Parent's position and extent is adjusted to fit the DockRect as its ClientRect</p>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.DoFloatMsg.ADockSource">
@@ -15051,8 +15037,7 @@ The origin always is (0,0), regardless of an ScrollOffset.</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetDefaultDockCaption">
-        <short>
-          <var>GetDefaultDockCaption</var> - returns the default string for dock caption</short>
+        <short>Returns the default string for the dock caption, control's Name.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -15861,18 +15846,12 @@ capfHasScrollOffset: crap, ScrollOffset is taken into account only for the first
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.DoDockClientMsg">
-        <short>
-          <var>DoDockClientMsg</var> - handles dmDragDock message for a specified                                                   
-          
-          <var>DragDockObject</var> at a given position; returns True if successful</short>
+        <short>Handles dmDragDock message, when a control has been docked to this site.</short>
         <descr>
-          <p>Called when a control is dropped for docking.
-</p>
+          <p>Called when a control is dropped for docking.</p>
           <p>Asks the dropped control to Dock itself into this control (adjust HostDockSite etc.).<br/>
-Calls an installed DockManager to adjust the coordinates of the docked control.
-</p>
-          <p>The Result is always True (unless overridden).
-</p>
+Calls an installed DockManager to adjust the coordinates of the docked control.</p>
+          <p>The Result is always True (unless overridden).</p>
         </descr>
       </element>
       <!-- function result Visibility: default -->
@@ -15960,8 +15939,11 @@ Calls an installed DockManager to adjust the coordinates of the docked control.
       </element>
       <!-- procedure Visibility: protected -->
       <element link="#LCL.Controls.TControl.DoFloatMsg" name="TWinControl.DoFloatMsg">
-        <short/>
-        <descr/>
+        <short>Handler called when the control starts floating.</short>
+        <descr>TWinControls can float for themselves, unless they request a special FloatingDockSiteClass.
+
+[Bug: when no FloatingDockSiteClass was assigned, a default floating site is created?]
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -15971,8 +15953,7 @@ Calls an installed DockManager to adjust the coordinates of the docked control.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.DoGetDockCaption">
-        <short>
-          <var>DoGetDockCaption</var> - find the caption for the docked control</short>
+        <short>Calls an OnGetDockCaption handler, to adjust the dock-caption for the docked control.</short>
         <descr/>
         <errors/>
         <seealso/>
