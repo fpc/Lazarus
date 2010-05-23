@@ -2023,8 +2023,12 @@ begin
           begin
             OldColor := Palette.CurrentColor;
             // now set our fpalette color from LCL
-            Color := ColorToRGB(LCLObject.Color);
-            QColor_fromRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+            if LCLObject.Color <> clDefault then
+            begin
+              Color := ColorToRGB(LCLObject.Color);
+              QColor_fromRgb(@QColor,Red(Color),Green(Color),Blue(Color));
+            end else
+              QColor := Palette.DefaultColor;
             if not EqualTQColor(OldColor, QColor) then
             begin
               Palette.ReloadPaletteBegin;
