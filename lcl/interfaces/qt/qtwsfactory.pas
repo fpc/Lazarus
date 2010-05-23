@@ -5,7 +5,8 @@ unit QtWSFactory;
 interface
 uses
   Classes, Controls, ComCtrls, Calendar, StdCtrls, Arrow, Spin,
-  Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, RubberBand, WSLCLClasses;
+  Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, RubberBand, PairSplitter,
+  WSLCLClasses;
 
 // imglist
 function RegisterCustomImageList: Boolean;
@@ -107,9 +108,10 @@ uses
  QtWSExtCtrls,
  QtWSForms,
  QtWSMenus,
+ QtWSPairSplitter,
  QtWSSpin,
  QtWSStdCtrls,
- QtWsDesigner;
+ QtWSDesigner;
 
 // imglist
 function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
@@ -535,7 +537,8 @@ end;
 
 function RegisterPairSplitterSide: Boolean; alias : 'WSRegisterPairSplitterSide';
 begin
-  Result := False;
+  RegisterWSComponent(TPairSplitterSide, TQtWSPairSplitterSide);
+  Result := True;
 end;
 
 function RegisterCustomPairSplitter: Boolean; alias : 'WSRegisterCustomPairSplitter';

@@ -35,6 +35,8 @@ uses
 ////////////////////////////////////////////////////
 //  PairSplitter,
 ////////////////////////////////////////////////////
+  qt4, qtwidgets,
+  Controls, LCLType, LCLProc,
   WSPairSplitter, WSLCLClasses;
 
 type
@@ -43,6 +45,8 @@ type
 
   TQtWSPairSplitterSide = class(TWSPairSplitterSide)
   published
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TQtWSCustomPairSplitter }
@@ -52,5 +56,28 @@ type
   end;
 
 implementation
+
+{ TQtWSPairSplitterSide }
+
+class function TQtWSPairSplitterSide.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams
+  ): TLCLIntfHandle;
+var
+  QtWidget: TQtWidget;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('> TQtWSPairSplitterSide.CreateHandle for ',dbgsname(AWinControl));
+  {$endif}
+  QtWidget := TQtWidget.Create(AWinControl, AParams);
+  QtWidget.setAttribute(QtWA_NoMousePropagation, True);
+
+  QtWidget.AttachEvents;
+
+  Result := TLCLIntfHandle(QtWidget);
+
+  {$ifdef VerboseQt}
+    WriteLn('< TQtWSPairSplitterSide.CreateHandle for ',dbgsname(AWinControl),' Result: ', dbgHex(Result));
+  {$endif}
+end;
 
 end.
