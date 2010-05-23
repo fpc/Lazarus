@@ -318,6 +318,7 @@ var
   lApp: string;
 begin
   Result := True;
+  if not FileExistsUTF8(APath) then exit(false);
 
   lApp:=FindFilenameOfCmd('xdg-open'); // Portland OSDL/FreeDesktop standard on Linux
   if lApp='' then
@@ -327,6 +328,8 @@ begin
   if lApp='' then
     Exit(False);
 
+  if (APath<>'') and (APath[1]<>'"') then
+    APath:=QuotedStr(APath);
   RunCmdFromPath(lApp,APath);
 end;
 {$ENDIF}
