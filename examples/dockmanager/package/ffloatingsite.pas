@@ -138,10 +138,10 @@ begin
 (* Check for undock last client, if allowed kill empty docksite.
   Refresh caption after undock.
 
-Shit: in both cases the docking management does the opposite of what it should do :-(
-
-When the last control is dragged away, it's hosted in a *new* site.
-When a second control is dragged away, the entire site is moved.
+Shit: in both cases the docking management does the opposite of what it should do:
+  When the last control is dragged away, it's hosted in a *new* site.
+  When a second control is dragged away, the entire site is moved.
+:-(
 
 Fix: disallow TControls to become floating.
 *)

@@ -224,7 +224,10 @@ end;
 
 procedure TEasyDockBook.DoAddDockClient(Client: TControl; const ARect: TRect);
 begin
-  if False then inherited DoAddDockClient(Client, ARect);
+(* Make the docked client visible in our dedicated panel.
+  It seemed to be necessary to separate this from the OnDockDrop handler?
+*)
+  //if False then inherited DoAddDockClient(Client, ARect);
   Client.Parent := pnlDock;
 end;
 
@@ -233,7 +236,6 @@ procedure TEasyDockBook.FormDockDrop(Sender: TObject; Source: TDragDockObject;
 var
   btn: TTabButton;
 begin
-  { TODO : set Parent in DoAddDockClient }
   //Source.Control.Parent := pnlDock; //overwrite DoAddDockClient behaviour???
 
   btn := TTabButton.Create(Tabs);

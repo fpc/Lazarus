@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="EasyDockMgr">
+    <module name="uMakeSite">
+      <element name="TDockMaster">
+        <short>A DockMaster with extended capabilities, ready for use in any application.</short>
+        <descr>
+          <p>This DockMaster allows to make forms dockable, and to add elastic docksites to forms. It defines the event handlers, installed in such controls.</p>
+        </descr>
+      </element>
+      <element name="TDockMaster.FormEndDock">
+        <short>OnEndDock handler for dockable forms.</short>
+        <descr>
+          <p>This handler immediately wraps a floating form into a floathost site, to keep it dockable on all platforms.</p>
+        </descr>
+      </element>
+      <element name="TDockMaster.ReloadForm">
+        <short>Reload a dockable form from an layout descriptor.</short>
+        <descr>
+          <p>When a form of the given name already exists on the Screen, all other parameters are ignored and this form is returned.</p>
+          <p>Otherwise the Factory is asked to provide the requested form.</p>
+          <p>When no form has been retrieved so far, AName is assumed to contain an standard form name, from which the form can be created. An eventually existing instance number is stripped from AName, and the result is prefixed by an 'T' for the classname of the form. This ClassName must have been registered, otherwise no form can be created. The new form is named as AName.</p>
+          <p>When AName is the empty string, a default form is created (for demonstration/debugging purposes).</p>
+          <p>When fVisible is True, the new form is made visible immediately.</p>
+        </descr>
+      </element>
+      <element name="TDockMaster.Factory">
+        <short>The default owner of all dockable forms.</short>
+        <descr>
+          <p>When not Nil, the Factory is asked to reload a form.</p>
+        </descr>
+      </element>
+      <element name="TDockMaster.ForIDE">
+        <short>An experimental switch, intended to make the DockMaster work for the Lazarus IDE.</short>
+      </element>
+      <element name="TDockMaster.WrapDockable">
+        <short>Internal function to wrap a floating form into a floathost site.</short>
+      </element>
+      <element name="TDockMaster.Create">
+        <short>This constructor installs the DockMaster singleton.</short>
+      </element>
+      <element name="DockMaster">
+        <short>The enhanced DockMaster singleton, otherwise same as DockLoader (retyped).</short>
+      </element>
+      <element name="TDockMaster.AddElasticSites">
+        <short>Adds elastic docksites to a form.</short>
+        <descr>
+          <p>Elastic docksites are normally invisible panels, that enlarge as soon as someting is docked into them. The user can make the form grow accordingly, so that the docked control looks like attached to the form - depending on where exactly the control is docked.</p>
+          <p>Elastic docksites are persistent, i.e. are saved and restored together with a screen layout.</p>
+          <p>Sides is the set of form sides, on which elastic sites shall be added.</p>
+          <p>Elastic sites should not be added to dockable forms, else docking into docked forms may cause trouble.</p>
+        </descr>
+      </element>
+      <element name="TDockMaster.CreateDockable">
+        <short>Creates a dockable form from its name.</short>
+        <descr>The form is created by <link id="TDockMaster.ReloadForm">ReloadForm</link>, then made dockable by <link id="TDockMaster.MakeDockable">MakeDockable</link>
+        </descr>
+      </element>
+      <element name="TDockMaster.MakeDockable">
+        <short>Make a control dockable.</short>
+        <descr>
+          <p>The control (typically a form) is made dockable on all platforms.</p>
+          <p>fWrap indicates that the control shall have a floathost site (required on most platforms).</p>
+          <p>fVisible indicates whether the control shall be made visible. Leave False when otherwise flicker will occur.</p>
+        </descr>
+      </element>
+      <element name="TDockMaster.DumpSites">
+        <short>Debug feature for console applications.</short>
+      </element>
+      <element name="TDockMaster.LoadFromStream">
+        <short>Reloads a layout from a stream.</short>
+      </element>
+      <element name="TDockMaster.SaveToStream">
+        <short>Saves the current screen layout to a stream.</short>
+      </element>
+      <element name="TDockMaster.ReloadDockedControl">
+        <short>Reloads a docked control from its descriptor string.</short>
+        <descr>
+          <p>First a form of the given name is searched on Screen, before <link id="easydocksite.TCustomDockMaster.ReloadControl">ReloadControl</link> is tried.</p>
+          <p>When nothing has been reloaded, and TryCreateControls is True, then a form is created by <link id="TDockMaster.ReloadForm">ReloadForm</link>.</p>
+        </descr>
+      </element>
+      <element name="TDockMaster.LoadFromFile">
+        <short>Restores a screen layout from a file.</short>
+      </element>
+      <element name="TDockMaster.SaveToFile">
+        <short>Saves the current screen layout as an file.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

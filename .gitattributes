@@ -2854,6 +2854,10 @@ examples/docking/unit1.lfm svneol=native#text/plain
 examples/docking/unit1.lrs svneol=native#text/pascal
 examples/docking/unit1.pas svneol=native#text/pascal
 examples/dockmanager/README.txt svneol=native#text/plain
+examples/dockmanager/docs/easydocksite.xml svneol=LF#text/xml eol=lf
+examples/dockmanager/docs/fdockbook.xml svneol=LF#text/xml eol=lf
+examples/dockmanager/docs/ffloatingsite.xml svneol=LF#text/xml eol=lf
+examples/dockmanager/docs/umakesite.xml svneol=LF#text/xml eol=lf
 examples/dockmanager/easyedit/easyeditor.lpi svneol=native#text/plain
 examples/dockmanager/easyedit/easyeditor.lpr svneol=native#text/plain
 examples/dockmanager/easyedit/easyeditor.lrs svneol=native#text/plain

@@ -25,7 +25,8 @@ Default floating sites are owned by Application,
 
 {$DEFINE ownPanels} //elastic panels owned by DockMaster?
 {.$DEFINE appDockMgr} //using special AppDockManager?
-{.$DEFINE NeedHost}  //request float host?
+{.$DEFINE NeedHost}   //request float host?
+{.$DEFINE TestForm}   //enable special debug form
 
 interface
 
@@ -112,6 +113,7 @@ type
   TWinControlAccess = class(TWinControl) end;
   TControlAccess = class(TControl) end;
 
+{$IFDEF TestForm}
   { TExampleForm }
 
   TExampleForm = class(TForm)
@@ -134,6 +136,10 @@ begin
     LineTo(ClientWidth-1,ClientHeight-1);
   end;
 end;
+{$ELSE}
+type
+  TExampleForm = TForm;
+{$ENDIF}
 
 { TDockMaster }
 

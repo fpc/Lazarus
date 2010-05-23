@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="EasyDockMgr">
+    <module name="fDockBook">
+      <element name="TEasyDockBook">
+        <short>The default docking notebook.</short>
+      </element>
+      <element name="TEasyDockBook.Clear">
+        <short>Handle removal of all docked clients, on destruction.</short>
+        <descr>When the notebook is destroyed, the remaining docked clients are made visible.</descr>
+      </element>
+      <element name="TEasyDockBook.LoadFromStream">
+        <short>Reloads all docked pages.</short>
+      </element>
+      <element name="TEasyDockBook.SaveToStream">
+        <short>Saves the current layout.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

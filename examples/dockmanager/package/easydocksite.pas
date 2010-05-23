@@ -273,7 +273,7 @@ type
   TOnReloadControl = function(const CtrlName: string; ASite: TWinControl): TControl of object;
   TOnSaveControl = function(ACtrl: TControl): string of object;
 
-(* TDockMaster base class, contains function for layout save/load controls.
+(* TDockMaster base class, contains functions for layout save/load controls.
   The default implementation is for use by both a DockManager and a (unmanaged) DockSite.
   Unless overridden, it handles in this sequence:
   1) TCustomDockSite (notebooks...)
@@ -284,8 +284,7 @@ type
 
   Customization is provided by OnSave/Restore handlers.
   Further customization is feasable using the AppLoadStore variable (below).
-  At the time of an call, DockLoader contains the full control description
-  (ControlDescriptor)
+  At the time of an call, ControlDescriptor holds the full control description.
 
   The DockLoader variable is initialized to a default TCustomDockMaster instance,
   owned by Application. It can be overridden by the application.
