@@ -119,6 +119,26 @@ msgstr "Запустить выделенный тест"
 msgid "FPCUnit - run unit test"
 msgstr "FPCUnit - модульное тестирование"
 
+#: guitestrunner.smicopy
+msgid "&Copy"
+msgstr "&Копировать"
+
+#: guitestrunner.smicopyclipbrd
+msgid "Copy to clipboard"
+msgstr "Копировать в буфер обмена"
+
+#: guitestrunner.smicut
+msgid "C&ut"
+msgstr "&Вырезать"
+
+#: guitestrunner.smiruntest
+msgid "  &Run all selected (checked) tests"
+msgstr " Запустить все выбранные (&отмеченные) тесты"
+
+#: guitestrunner.smishowfail
+msgid "Copy message to clipboard"
+msgstr "Копировать сообщение в буфер обмена"
+
 #: guitestrunner.stshresults
 msgid "Results XML"
 msgstr "Результаты в виде XML"

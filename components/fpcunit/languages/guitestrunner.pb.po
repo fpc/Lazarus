@@ -127,7 +127,27 @@ msgstr "Executar teste selecionado"
 
 #: guitestrunner.sfrmguitest
 msgid "FPCUnit - run unit test"
-msgstr ""
+msgstr "FPCUnit - testes unitários"
+
+#: guitestrunner.smicopy
+msgid "&Copy"
+msgstr "&Copiar"
+
+#: guitestrunner.smicopyclipbrd
+msgid "Copy to clipboard"
+msgstr "Copiar para Área Transf."
+
+#: guitestrunner.smicut
+msgid "C&ut"
+msgstr "Rec&ortar"
+
+#: guitestrunner.smiruntest
+msgid "  &Run all selected (checked) tests"
+msgstr "  &Executar todos os testes selecionados"
+
+#: guitestrunner.smishowfail
+msgid "Copy message to clipboard"
+msgstr "Copiar mensagem para Área Transf."
 
 #: guitestrunner.stshresults
 msgctxt "guitestrunner.stshresults"

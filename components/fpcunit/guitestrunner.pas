@@ -165,6 +165,11 @@ resourcestring
   sactCheckAll = 'Check all Tests';
   sactUncheckAll = 'Uncheck all tests';
   sactRunHighlightedTest = 'Run highlighted test';
+  smiRunTest = '  &Run all selected (checked) tests';
+  smiShowfail= 'Copy message to clipboard';
+  smiCopy = '&Copy';
+  smiCut = 'C&ut';
+  smiCopyClipbrd = 'Copy to clipboard';
 
 implementation
 
@@ -207,7 +212,7 @@ begin
   tsTestTree.Caption:= stshTree;
   tsResultsXML.Caption:= stshResults;
   //
-  TestRunner.Caption:= sfrmGUITest;
+  Caption:= sfrmGUITest;
   RunAction.Caption:= sactRunAction;
   RunAction.Hint:= sactRunActionH;
   ActCloseForm.Caption:= sactCloseForm;
@@ -217,6 +222,11 @@ begin
   ActCheckAll.Caption:= sactCheckAll;
   ActUncheckAll.Caption:= sactUncheckAll;
   ActRunHighlightedTest.Caption:= sactRunHighlightedTest;
+  miRunTest.Caption:= smiRunTest;
+  miShowfailureMsg.Caption:= smiShowfail;
+  MenuItem1.Caption:= smiCopy;
+  MenuItem2.Caption:= smiCut;
+  MenuItem3.Caption:= smiCopyClipbrd;
 end;
 
 procedure TGUITestRunner.RunExecute(Sender: TObject);

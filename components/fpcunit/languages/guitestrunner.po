@@ -111,6 +111,26 @@ msgstr ""
 msgid "FPCUnit - run unit test"
 msgstr ""
 
+#: guitestrunner.smicopy
+msgid "&Copy"
+msgstr ""
+
+#: guitestrunner.smicopyclipbrd
+msgid "Copy to clipboard"
+msgstr ""
+
+#: guitestrunner.smicut
+msgid "C&ut"
+msgstr ""
+
+#: guitestrunner.smiruntest
+msgid "  &Run all selected (checked) tests"
+msgstr ""
+
+#: guitestrunner.smishowfail
+msgid "Copy message to clipboard"
+msgstr ""
+
 #: guitestrunner.stshresults
 msgid "Results XML"
 msgstr ""
