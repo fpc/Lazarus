@@ -150,8 +150,6 @@ type
     FXMLCfg: TXMLConfig;
     FConfigStore: TXMLOptionsStorage;
 
-    FOnApplyWindowLayout: TOnApplySimpleWindowLayout;
-
     // auto save
     FAutoSaveEditorFiles: boolean;
     FAutoSaveProject: boolean;
@@ -279,10 +277,8 @@ type
     procedure SetDebuggerFilename(const AValue: string);
     procedure SetFPCSourceDirectory(const AValue: string);
     procedure SetLazarusDirectory(const AValue: string);
-    procedure SetOnApplyWindowLayout(const AValue: TOnApplySimpleWindowLayout);
 
     procedure InitLayoutList;
-    procedure InternOnApplyWindowLayout(ALayout: TSimpleWindowLayout);
     procedure SetFileName(const NewFilename: string);
     function FileHasChangedOnDisk: boolean;
     function GetXMLCfg(CleanConfig: boolean): TXMLConfig;
@@ -323,10 +319,6 @@ type
                               var Abort: boolean): string;
     function MacroFuncConfDir(const s:string; const Data: PtrInt;
                               var Abort: boolean): string;
-
-    // event
-    property OnApplyWindowLayout: TOnApplySimpleWindowLayout
-                         read FOnApplyWindowLayout write SetOnApplyWindowLayout;
 
     // auto save
     property AutoSaveEditorFiles: boolean read FAutoSaveEditorFiles
@@ -1467,12 +1459,6 @@ begin
   CreateWindowLayout(DefaultObjectInspectorName);
 end;
 
-procedure TEnvironmentOptions.InternOnApplyWindowLayout(
-  ALayout: TSimpleWindowLayout);
-begin
-  if Assigned(OnApplyWindowLayout) then OnApplyWindowLayout(ALayout);
-end;
-
 procedure TEnvironmentOptions.CreateWindowLayout(const TheFormID: string);
 var
   NewLayout: TSimpleWindowLayout;
@@ -1486,7 +1472,6 @@ begin
     FormID:=TheFormID;
     WindowPlacementsAllowed:=[iwpRestoreWindowGeometry,iwpDefault,
        iwpCustomPosition,iwpUseWindowManagerSetting];
-    OnApply:=@Self.InternOnApplyWindowLayout;
     DefaultWindowPlacement:=iwpRestoreWindowGeometry;
   end;
   IDEWindowLayoutList.Add(NewLayout);
@@ -1621,12 +1606,6 @@ procedure TEnvironmentOptions.SetTestBuildDirectory(const AValue: string);
 begin
   if FTestBuildDirectory=AValue then exit;
   FTestBuildDirectory:=AppendPathDelim(TrimFilename(AValue));
-end;
-
-procedure TEnvironmentOptions.SetOnApplyWindowLayout(
-  const AValue: TOnApplySimpleWindowLayout);
-begin
-  FOnApplyWindowLayout:=AValue;
 end;
 
 procedure TEnvironmentOptions.SetLazarusDirectory(const AValue: string);

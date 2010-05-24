@@ -600,7 +600,6 @@ type
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
 
-    procedure OnApplyWindowLayout(ALayout: TSimpleWindowLayout);
     procedure AddRecentProjectFileToEnvironment(const AFilename: string);
 
     // methods for start
@@ -1002,7 +1001,7 @@ type
     function DoJumpToCompilerMessage(Index:integer;
                                      FocusEditor: boolean): boolean; override;
     procedure DoJumpToNextError(DirectionDown: boolean); override;
-    procedure DoShowMessagesView; override;
+    procedure DoShowMessagesView(BringToFront: boolean = true); override;
     procedure DoArrangeSourceEditorAndMessageView(PutOnTop: boolean);
 
     // methods for debugging, compiling and external tools
@@ -1222,11 +1221,10 @@ begin
 
     ExternalTools.OnNeedsOutputFilter := @OnExtToolNeedsOutputFilter;
     ExternalTools.OnFreeOutputFilter := @OnExtToolFreeOutputFilter;
-    OnApplyWindowLayout := @Self.OnApplyWindowLayout;
     Application.ShowButtonGlyphs := ShowButtonGlyphs;
     Application.ShowMenuGlyphs := ShowMenuGlyphs;
   end;
-  IDEWindowCreators.OnShowForm:=@EnvironmentOptions.IDEWindowLayoutList.NewApplyAndShow;
+  IDEWindowCreators.OnShowForm:=@EnvironmentOptions.IDEWindowLayoutList.ApplyAndShow;
   UpdateDefaultPascalFileExtensions;
 
   EditorOpts := TEditorOptions.Create;
@@ -1314,7 +1312,7 @@ begin
   Layout:=EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwMainIDEName);
   if not (Layout.WindowState in [iwsNormal,iwsMaximized]) then
     Layout.WindowState:=iwsNormal;
-  IDEWindowCreators.ShowForm(MainIDEBar);
+  IDEWindowCreators.ShowForm(MainIDEBar,true);
 
   HiddenWindowsOnRun:=TList.Create;
 
@@ -1945,7 +1943,6 @@ begin
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
   IDEWindowCreators.Add(ObjectInspector1.Name,nil,'0','150','230','50%',
                         NonModalIDEWindowNames[nmiwSourceNoteBookName],alLeft);
-  MakeIDEWindowDockable(ObjectInspector1);
 
   EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
 
@@ -2239,7 +2236,7 @@ begin
     if not ALayout.Visible then continue;
     AForm:=IDEWindowCreators.GetForm(ALayout.FormID,true);
     if AForm=nil then continue;
-    IDEWindowCreators.ShowForm(AForm);
+    IDEWindowCreators.ShowForm(AForm,false);
   end;
 end;
 
@@ -3059,7 +3056,7 @@ begin
     DoShowComponentList(true);
 
   ecToggleFPDocEditor:
-    DoShowFPDocEditor(true);
+    DoShowFPDocEditor(true,true);
 
   ecViewUnits:
     DoViewUnitsAndForms(false);
@@ -3407,7 +3404,7 @@ begin
   if AnchorDesigner=nil then
     AnchorDesigner:=TAnchorDesigner.Create(OwningComponent);
   if Show then
-    IDEWindowCreators.ShowForm(AnchorDesigner);
+    IDEWindowCreators.ShowForm(AnchorDesigner,true);
 end;
 
 procedure TMainIDE.DoToggleViewComponentPalette;
@@ -3607,7 +3604,7 @@ end;
 
 Procedure TMainIDE.mnuViewSearchResultsClick(Sender: TObject);
 Begin
-  ShowSearchResultView;
+  ShowSearchResultView(true);
 End;
 
 Procedure TMainIDE.mnuNewProjectClicked(Sender: TObject);
@@ -4058,7 +4055,7 @@ end;
 
 procedure TMainIDE.mnuViewFPDocEditorClicked(Sender: TObject);
 begin
-  DoShowFPDocEditor(true);
+  DoShowFPDocEditor(true,true);
 end;
 
 procedure TMainIDE.mnuToolConvertDFMtoLFMClicked(Sender: TObject);
@@ -8921,7 +8918,7 @@ begin
   end;
 
   if Show then
-    IDEWindowCreators.ShowForm(UnitDependenciesView);
+    IDEWindowCreators.ShowForm(UnitDependenciesView,true);
 end;
 
 procedure TMainIDE.DoViewJumpHistory(Show: boolean);
@@ -8933,7 +8930,7 @@ begin
     end;
   end;
   if Show then
-    IDEWindowCreators.ShowForm(JumpHistoryViewWin);
+    IDEWindowCreators.ShowForm(JumpHistoryViewWin,true);
 end;
 
 procedure TMainIDE.DoViewUnitInfo;
@@ -8978,7 +8975,7 @@ begin
 
   if Show then
   begin
-    IDEWindowCreators.ShowForm(CodeExplorerView);
+    IDEWindowCreators.ShowForm(CodeExplorerView,true);
     CodeExplorerView.Refresh(true);
   end;
 end;
@@ -8987,7 +8984,7 @@ procedure TMainIDE.DoShowCodeBrowser(Show: boolean);
 begin
   CreateCodeBrowser;
   if Show then
-    IDEWindowCreators.ShowForm(CodeBrowserView);
+    IDEWindowCreators.ShowForm(CodeBrowserView,true);
 end;
 
 procedure TMainIDE.DoShowRestrictionBrowser(Show: boolean;
@@ -8998,7 +8995,7 @@ begin
 
   RestrictionBrowserView.SetIssueName(RestrictedName);
   if Show then
-    IDEWindowCreators.ShowForm(RestrictionBrowserView);
+    IDEWindowCreators.ShowForm(RestrictionBrowserView,true);
 end;
 
 procedure TMainIDE.DoShowComponentList(Show: boolean);
@@ -9035,7 +9032,7 @@ begin
   end
   else if ItIs(NonModalIDEWindowNames[nmiwFPDocEditorName]) then
   begin
-    DoShowFPDocEditor(false);
+    DoShowFPDocEditor(false,false);
     AForm:=FPDocEditor;
   end
   // ToDo: nmiwClipbrdHistoryName:
@@ -10103,7 +10100,7 @@ begin
     ProjInspector.LazProject:=Project1;
   end;
   if Show then
-    IDEWindowCreators.ShowForm(ProjInspector);
+    IDEWindowCreators.ShowForm(ProjInspector,true);
 end;
 
 function TMainIDE.DoCreateProjectForProgram(
@@ -12368,10 +12365,13 @@ procedure TMainIDE.DoBringToFrontFormOrInspector(ForceInspector: boolean);
   procedure ShowInspector;
   begin
     if ObjectInspector1=nil then exit;
-    IDEWindowCreators.ShowForm(ObjectInspector1);
-    ObjectInspector1.FocusGrid;
-    if FDisplayState <> high(TDisplayState) then
-      FDisplayState:= Succ(FDisplayState);
+    IDEWindowCreators.ShowForm(ObjectInspector1,true);
+    if ObjectInspector1.IsVisible then
+    begin
+      ObjectInspector1.FocusGrid;
+      if FDisplayState <> high(TDisplayState) then
+        FDisplayState:= Succ(FDisplayState);
+    end;
   end;
 
 begin
@@ -12709,7 +12709,7 @@ begin
 end;
 
 
-procedure TMainIDE.DoShowMessagesView;
+procedure TMainIDE.DoShowMessagesView(BringToFront: boolean);
 begin
   //debugln('TMainIDE.DoShowMessagesView');
   if EnvironmentOptions.HideMessagesIcons then
@@ -12719,7 +12719,7 @@ begin
 
   if not MessagesView.IsVisible then begin
     // don't move the messagesview, if it was already visible.
-    IDEWindowCreators.ShowForm(MessagesView);
+    IDEWindowCreators.ShowForm(MessagesView,true);
     if IDEDockMaster=nil then
       // the sourcenotebook is more interesting than the messages
       SourceEditorManager.ShowActiveWindowOnTop(False);
@@ -12734,7 +12734,7 @@ begin
 
   if Show and (not SearchResultsView.IsVisible) then
   begin
-    IDEWindowCreators.ShowForm(SearchResultsView);
+    IDEWindowCreators.ShowForm(SearchResultsView,true);
     if IDEDockMaster=nil then
       // the sourcenotebook is more interesting than the messages
       SourceEditorManager.ShowActiveWindowOnTop(False);
@@ -17089,132 +17089,6 @@ begin
   end;
   //PkgBoss.GetOwnersOfUnit(NewFilename);
   Result:=mrOk;
-end;
-
-procedure TMainIDE.OnApplyWindowLayout(ALayout: TSimpleWindowLayout);
-var
-  WindowType: TNonModalIDEWindow;
-  BarBottom: Integer;
-  NewHeight: Integer;
-  NewBounds: TRect;
-  SrcNoteBook: TSourceNotebook;
-  SubIndex: Integer;
-  AForm: TCustomForm;
-begin
-  if (ALayout=nil) or (ALayout.Form=nil) then exit;
-  // debugln('TMainIDE.OnApplyWindowLayout ',ALayout.Form.Name,' ',ALayout.Form.Classname,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' ',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,' ',ALayout.Top,' ',ALayout.Width,' ',ALayout.Height);
-  if ALayout.Form<>MainIDEBar then
-    MakeIDEWindowDockable(ALayout.Form);
-
-  WindowType:=NonModalIDEFormIDToEnum(ALayout.FormID);
-  SubIndex := -1;
-  if WindowType = nmiwNone then begin
-    WindowType:=NonModalIDEFormIDToEnum(ALayout.FormBaseID(SubIndex));
-  end;
-
-  AForm:=ALayout.Form;
-  if AForm.Parent<>nil then begin
-    // form is docked
-
-  end;
-
-  case ALayout.WindowPlacement of
-  iwpCustomPosition,iwpRestoreWindowGeometry:
-    begin
-      //DebugLn(['TMainIDE.OnApplyWindowLayout ',IDEWindowStateNames[ALayout.WindowState]]);
-      case ALayout.WindowState of
-      iwsMinimized: AForm.WindowState:=wsMinimized;
-      iwsMaximized: AForm.WindowState:=wsMaximized;
-      end;
-
-      if (ALayout.CustomCoordinatesAreValid) then begin
-        // explicit position
-        NewBounds:=Bounds(ALayout.Left,ALayout.Top,ALayout.Width,ALayout.Height);
-        // set minimum size
-        if NewBounds.Right-NewBounds.Left<20 then
-          NewBounds.Right:=NewBounds.Left+20;
-        if NewBounds.Bottom-NewBounds.Top<20 then
-          NewBounds.Bottom:=NewBounds.Top+20;
-        // move to visible area
-        if NewBounds.Right<20 then
-          OffsetRect(NewBounds,20-NewBounds.Right,0);
-        if NewBounds.Bottom<20 then
-          OffsetRect(NewBounds,0,20-NewBounds.Bottom);
-        if NewBounds.Left>Screen.DesktopWidth-20 then
-          OffsetRect(NewBounds,NewBounds.Left-(Screen.DesktopWidth-20),0);
-        if NewBounds.Top>Screen.DesktopHeight-20 then
-          OffsetRect(NewBounds,NewBounds.Top-(Screen.DesktopHeight-20),0);
-        // set bounds (do not use SetRestoredBounds - that flickers with the current LCL implementation)
-        AForm.SetBounds(
-          NewBounds.Left,NewBounds.Top,
-          NewBounds.Right-NewBounds.Left,NewBounds.Bottom-NewBounds.Top);
-        exit;
-      end;
-
-      if ALayout.WindowState in [iwsMinimized, iwsMaximized] then
-        exit;
-    end;
-
-  iwpUseWindowManagerSetting:
-    begin
-      exit;
-    end;
-  end;
-
-  // no layout found => use default
-
-
-
-  BarBottom:=MainIDEBar.Top+MainIDEBar.Height;
-  // default window positions
-  case WindowType of
-  nmiwMainIDEName:
-    begin
-      NewHeight:=95;
-      if (MainIDEBar.ComponentNotebook<>nil)
-      and (MainIDEBar.ComponentNotebook.ActivePageComponent<>nil) then begin
-        dec(NewHeight,MainIDEBar.ComponentNotebook.ActivePageComponent.ClientHeight-25);
-      end;
-      AForm.SetBounds(0,0,Screen.Width-10,NewHeight);
-    end;
-  nmiwSourceNoteBookName:
-    begin
-      if SubIndex < 0 then SubIndex := 0;
-      SubIndex := SubIndex * 30;
-      AForm.SetBounds(250 + SubIndex, BarBottom + 30 + SubIndex,
-        Max(50,Screen.Width-300-SubIndex), Max(50,Screen.Height-200-BarBottom-SubIndex));
-    end;
-  nmiwUnitDependenciesName:
-    AForm.SetBounds(200,200,400,300);
-  nmiwCodeExplorerName:
-    begin
-      AForm.SetBounds(Screen.Width-200,130,170,Max(50,Screen.Height-230));
-    end;
-  nmiwCodeBrowser:
-    begin
-      AForm.SetBounds(200,100,650,500);
-    end;
-  nmiwClipbrdHistoryName:
-    AForm.SetBounds(250,Screen.Height-400,400,300);
-  nmiwPkgGraphExplorer:
-    AForm.SetBounds(250,150,500,350);
-  nmiwProjectInspector:
-    AForm.SetBounds(200,150,400,300);
-  nmiwMessagesViewName:
-    begin
-      if SourceEditorManager.SourceWindowCount > 0 then begin
-        SrcNoteBook := SourceEditorManager.SourceWindows[0];
-        AForm.SetBounds(250,SrcNoteBook.Top+SrcNoteBook.Height+30,
-          Max(50,Screen.Width-300),80);
-      end else
-        AForm.SetBounds(250,Screen.Height - 110, Max(50,Screen.Width-300),80);
-    end;
-  else
-    if ALayout.FormID=DefaultObjectInspectorName then begin
-      AForm.SetBounds(
-        MainIDEBar.Left,BarBottom+30,230,Max(Screen.Height-BarBottom-120,50));
-    end;
-  end;
 end;
 
 procedure TMainIDE.AddRecentProjectFileToEnvironment(const AFilename: string);

@@ -190,7 +190,7 @@ type
     function IndexOfName(FormName: string): integer;
     function FindWithName(FormName: string): TIDEWindowCreator;
     function GetForm(aFormName: string; AutoCreate: boolean): TCustomForm;
-    procedure ShowForm(AForm: TCustomForm; BringToFront: boolean = true);
+    procedure ShowForm(AForm: TCustomForm; BringToFront: boolean);
     property OnShowForm: TShowIDEWindowEvent read FOnShowForm write FOnShowForm;
   end;
 
@@ -207,7 +207,7 @@ type
     procedure MakeIDEWindowDockable(AControl: TWinControl); virtual; abstract;
     procedure MakeIDEWindowDockSite(AForm: TCustomForm); virtual; abstract;
     procedure LoadDefaultLayout; virtual; abstract; // called before opening the first project
-    procedure ShowForm(AForm: TCustomForm; BringToFront: boolean = true); virtual; abstract;
+    procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); virtual; abstract;
   end;
 
 var

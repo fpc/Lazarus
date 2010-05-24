@@ -211,7 +211,7 @@ type
 
 function SearchResultsView: TSearchResultsView;
 
-procedure ShowSearchResultView;
+procedure ShowSearchResultView(BringToFront: boolean);
 
 var
   OnSearchResultsViewSelectionChanged: TNotifyEvent = nil;
@@ -267,9 +267,9 @@ begin
   Result := SearchResultsViewSingleton;
 end;
 
-procedure ShowSearchResultView;
+procedure ShowSearchResultView(BringToFront: boolean);
 begin
-  IDEWindowCreators.ShowForm(SearchResultsView);
+  IDEWindowCreators.ShowForm(SearchResultsView,BringToFront);
 end;
 
 procedure TSearchResultsView.Form1Create(Sender: TObject);

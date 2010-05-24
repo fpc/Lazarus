@@ -200,7 +200,7 @@ type
 var
   FPDocEditor: TFPDocEditor = nil;
 
-procedure DoShowFPDocEditor(Show: boolean);
+procedure DoShowFPDocEditor(Show, BringToFront: boolean);
 
 implementation
 
@@ -208,7 +208,7 @@ implementation
 
 { TFPDocEditor }
 
-procedure DoShowFPDocEditor(Show: boolean);
+procedure DoShowFPDocEditor(Show, BringToFront: boolean);
 begin
   if FPDocEditor = Nil then
     Application.CreateForm(TFPDocEditor, FPDocEditor);
@@ -217,7 +217,7 @@ begin
   begin
     FPDocEditor.DoEditorUpdate(SourceEditorManagerIntf.ActiveEditor);
     FPDocEditor.UpdateButtons;
-    IDEWindowCreators.ShowForm(FPDocEditor);
+    IDEWindowCreators.ShowForm(FPDocEditor,BringToFront);
   end;
 end;
 

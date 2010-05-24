@@ -2652,7 +2652,8 @@ Begin
   {$IFDEF VerboseFocus}
   debugln('TSourceEditor.FocusEditor A ',PageName,' ',FEditor.Name);
   {$ENDIF}
-  if SourceNotebook<>nil then SourceNotebook.Visible:=true;
+  if SourceNotebook<>nil then
+    IDEWindowCreators.ShowForm(SourceNotebook,true);
   if SourceNotebook.IsVisible then begin
     FEditor.SetFocus;
     FSharedValues.SetActiveSharedEditor(Self);
@@ -4823,7 +4824,6 @@ begin
     EnvironmentOptions.CreateWindowLayout(self.name);
     EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(self.Name).Clear;
   end;
-  EnvironmentOptions.IDEWindowLayoutList.ApplyOld(Self, self.Name);
 
   FSourceEditorList := TList.Create;
 
@@ -4860,7 +4860,6 @@ begin
 
   CreateNotebook;
 
-  MakeIDEWindowDockable(Self);
   Application.AddOnUserInputHandler(@OnApplicationUserInput,true);
 end;
 
@@ -5838,7 +5837,7 @@ begin
   if FNotebook.Visible then
     NotebookPages.Insert(Index, S)
   else begin
-    Show;
+    IDEWindowCreators.ShowForm(Self,false);
     FNotebook.Visible := True;
     NotebookPages[Index] := S;
   end;
@@ -6562,7 +6561,7 @@ Begin
   {$ENDIF}
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
   try
-    Visible:=true;
+    IDEWindowCreators.ShowForm(Self,false);
     Result := NewSE(-1, -1, AShareEditor);
     {$IFDEF IDE_DEBUG}
     writeln('[TSourceNotebook.NewFile] B ');
@@ -6596,7 +6595,6 @@ begin
   //debugln(['TSourceNotebook.CloseFile ',TempEditor.FileName,' ',TempEditor.APageIndex]);
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.CloseFile'){$ENDIF};
   try
-    Visible:=true;
     EndIncrementalFind;
     TempEditor.Close;
     TempEditor.Free;
@@ -6635,7 +6633,7 @@ begin
   if (fAutoFocusLock>0) then exit;
   SrcEdit:=GetActiveSE;
   if SrcEdit=nil then exit;
-  Show;
+  IDEWindowCreators.ShowForm(Self,true);
   SrcEdit.FocusEditor;
 end;
 
@@ -8249,9 +8247,9 @@ begin
     if Focus then
       FShowWindowOnTopFocus := True;
     exit;
-  end;;
-  ActiveSourceWindow.ShowOnTop;
-  if Focus then
+  end;
+  IDEWindowCreators.ShowForm(ActiveSourceWindow,true);
+  if Focus and ActiveSourceWindow.IsVisible then
     TSourceNotebook(ActiveSourceWindow).FocusEditor;
 end;
 
@@ -8339,9 +8337,9 @@ var
 begin
   i:=StrToIntDef(
        copy(aFormName,length(NonModalIDEWindowNames[nmiwSourceNoteBookName])+1,
-            length(aFormName)),-1);
+            length(aFormName)),0);
   debugln(['TSourceEditorManager.GetDefaultLayout ',aFormName,' i=',i]);
-  aBounds:=Bounds(250+30*i,130+30*i,
+  aBounds:=Bounds(250+30*i,160+30*i,
                     Min(1000,(Screen.Width*7) div 10),(Screen.Height*7) div 10);
 end;
 

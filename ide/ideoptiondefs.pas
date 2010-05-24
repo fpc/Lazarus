@@ -186,7 +186,6 @@ type
     fForm: TCustomForm;
     fFormID: string;
     fOnGetDefaultIDEWindowPos: TOnGetDefaultIDEWindowPos;
-    fOnApply: TOnApplySimpleWindowLayout;
     fDefaultWindowPlacement: TIDEWindowPlacement;
     function GetFormID: string;
     function GetXMLFormID: string;
@@ -206,7 +205,6 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure ApplyOld;
     procedure GetCurrentPosition;
     procedure Assign(Layout: TSimpleWindowLayout);
     procedure ReadCurrentCoordinates;
@@ -237,7 +235,6 @@ type
     property Visible: boolean read FVisible write SetVisible;
     property OnGetDefaultIDEWindowPos: TOnGetDefaultIDEWindowPos
       read fOnGetDefaultIDEWindowPos write SetOnGetDefaultIDEWindowPos;
-    property OnApply: TOnApplySimpleWindowLayout read fOnApply write fOnApply;
   end;
 
   { TSimpleWindowLayoutList }
@@ -249,8 +246,7 @@ type
   public
     procedure Clear; override;
     procedure Delete(Index: Integer);
-    procedure ApplyOld(AForm: TCustomForm; const ID: string);
-    procedure NewApplyAndShow(Sender: TObject; AForm: TCustomForm;
+    procedure ApplyAndShow(Sender: TObject; AForm: TCustomForm;
                               BringToFront: boolean);
     procedure StoreWindowPositions;
     procedure Assign(SrcList: TSimpleWindowLayoutList);
@@ -582,11 +578,6 @@ begin
     fFormID:=AValue;
 end;
 
-procedure TSimpleWindowLayout.ApplyOld;
-begin
-  if Assigned(OnApply) then OnApply(Self);
-end;
-
 procedure TSimpleWindowLayout.ReadCurrentCoordinates;
 begin
   if (Form<>nil) and (Form.WindowState=wsNormal) then begin
@@ -624,7 +615,6 @@ begin
   fForm:=Layout.fForm;
   fFormID:=Layout.fFormID;
   fOnGetDefaultIDEWindowPos:=Layout.fOnGetDefaultIDEWindowPos;
-  fOnApply:=Layout.fOnApply;
   fDefaultWindowPlacement:=Layout.fDefaultWindowPlacement;
 end;
 
@@ -743,17 +733,7 @@ begin
     ALayout.CloseForm;
 end;
 
-procedure TSimpleWindowLayoutList.ApplyOld(AForm: TCustomForm; const ID: string);
-var ALayout: TSimpleWindowLayout;
-begin
-  ALayout:=ItemByFormID(ID);
-  if ALayout=nil then
-    RaiseGDBException(ID);
-  ALayout.Form:=AForm;
-  ALayout.ApplyOld;
-end;
-
-procedure TSimpleWindowLayoutList.NewApplyAndShow(Sender: TObject;
+procedure TSimpleWindowLayoutList.ApplyAndShow(Sender: TObject;
   AForm: TCustomForm; BringToFront: boolean);
 var
   ALayout: TSimpleWindowLayout;
@@ -767,7 +747,7 @@ var
   DockSiblingBounds: TRect;
   Offset: TPoint;
 begin
-  debugln(['TSimpleWindowLayoutList.NewApplyAndShow Form=',DbgSName(AForm)]);
+  debugln(['TSimpleWindowLayoutList.ApplyAndShow Form=',DbgSName(AForm)]);
   try
     ALayout:=ItemByFormID(AForm.Name);
     if ALayout<>nil then
@@ -829,7 +809,7 @@ begin
     Creator:=IDEWindowCreators.FindWithName(AForm.Name);
     if Creator<>nil then
     begin
-      debugln(['TSimpleWindowLayoutList.NewApplyAndShow creator found: Left=',Creator.Left,' Top=',Creator.Top,' Width=',Creator.Width,' Height=',Creator.Height,' DockSibling=',Creator.DockSibling,' DockAlign=',dbgs(Creator.DockAlign)]);
+      debugln(['TSimpleWindowLayoutList.ApplyAndShow creator found: Left=',Creator.Left,' Top=',Creator.Top,' Width=',Creator.Width,' Height=',Creator.Height,' DockSibling=',Creator.DockSibling,' DockAlign=',dbgs(Creator.DockAlign)]);
       if Creator.OnGetLayout<>nil then
         Creator.OnGetLayout(Self,AForm.Name,NewBounds,DockSiblingName,DockAlign)
       else begin
@@ -878,7 +858,7 @@ begin
           end;
         end;
       end;
-      debugln(['TSimpleWindowLayoutList.NewApplyAndShow NewBounds=',dbgs(NewBounds)]);
+      debugln(['TSimpleWindowLayoutList.ApplyAndShow NewBounds=',dbgs(NewBounds)]);
       NewBounds.Left:=Min(10000,Max(-10000,NewBounds.Left));
       NewBounds.Top:=Min(10000,Max(-10000,NewBounds.Top));
       NewBounds.Right:=Max(NewBounds.Left+100,NewBounds.Right);

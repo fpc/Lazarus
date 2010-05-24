@@ -264,7 +264,7 @@ type
     function DoJumpToCompilerMessage(Index:integer;
                               FocusEditor: boolean): boolean; virtual; abstract;
     procedure DoJumpToNextError(DirectionDown: boolean); virtual; abstract;
-    procedure DoShowMessagesView; virtual; abstract;
+    procedure DoShowMessagesView(BringToFront: boolean = true); virtual; abstract;
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; virtual; abstract;
     procedure AbortBuild; virtual; abstract;
 

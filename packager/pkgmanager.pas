@@ -2645,7 +2645,7 @@ begin
     PackageGraphExplorer.OnUninstallPackage:=@PackageGraphExplorerUninstallPackage;
   end;
   if Show then
-    IDEWindowCreators.ShowForm(PackageGraphExplorer);
+    IDEWindowCreators.ShowForm(PackageGraphExplorer,true);
 end;
 
 function TPkgManager.DoCloseAllPackageEditors: TModalResult;
