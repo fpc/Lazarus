@@ -243,7 +243,8 @@ begin
         not (AForm.BorderStyle in [bsNone]) then
       begin
         States := TQtMainWindow(AForm.Handle).getWindowState;
-        TQtMainWindow(AForm.Handle).setWindowState(States or QtWindowMinimized);
+        if not TQtMainWindow(AForm.Handle).isMinimized then
+          TQtMainWindow(AForm.Handle).setWindowState(States or QtWindowMinimized);
       end;
     end;
     {$ELSE}
@@ -273,7 +274,8 @@ begin
         not (AForm.BorderStyle in [bsNone]) then
       begin
         States := TQtMainWindow(AForm.Handle).getWindowState;
-        TQtMainWindow(AForm.Handle).setWindowState(States and not QtWindowMinimized);
+        if TQtMainWindow(AForm.Handle).isMinimized then
+          TQtMainWindow(AForm.Handle).setWindowState(States and not QtWindowMinimized);
       end;
     end;
     {$ELSE}
