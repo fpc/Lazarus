@@ -1075,7 +1075,7 @@ begin
   // save the current changes to documentation
   Save(true);
   // check if visible
-  if not Visible then exit;
+  if not IsVisible then exit;
   
   NewSrcFilename:=CleanAndExpandFilename(SrcFilename);
   if (NewSrcFilename=SourceFilename) and (CompareCaret(Caret,CaretXY)=0)
@@ -1148,14 +1148,14 @@ begin
   if (fChain=nil) or (fChain.Count=0) then begin
     if (FCurrentTopic <> '') and (DFile <> nil) then
       CodeHelpBoss.SaveFPDocFile(DFile)
-    else if Visible then
+    else if IsVisible then
       DebugLn(['TFPDocEditor.Save failed: no chain']);
     exit;
   end;
   if not fChain.IsValid then begin
     if (FCurrentTopic <> '') and (DFile <> nil) then
       CodeHelpBoss.SaveFPDocFile(DFile)
-    else if Visible then
+    else if IsVisible then
       DebugLn(['TFPDocEditor.Save failed: chain not valid']);
     exit;
   end;
