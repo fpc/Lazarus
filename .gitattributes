@@ -2859,6 +2859,9 @@ examples/docking/unit1.lfm svneol=native#text/plain
 examples/docking/unit1.lrs svneol=native#text/pascal
 examples/docking/unit1.pas svneol=native#text/pascal
 examples/dockmanager/README.txt svneol=native#text/plain
+examples/dockmanager/design/easydockmgrdsgn.lpk svneol=native#text/plain
+examples/dockmanager/design/easydockmgrdsgn.pas svneol=native#text/plain
+examples/dockmanager/design/registereasydockmgr.pas svneol=native#text/plain
 examples/dockmanager/docs/easydocksite.xml svneol=LF#text/xml eol=lf
 examples/dockmanager/docs/fdockbook.xml svneol=LF#text/xml eol=lf
 examples/dockmanager/docs/ffloatingsite.xml svneol=LF#text/xml eol=lf
@@ -5094,6 +5097,7 @@ packager/globallinks/dbflaz-0.1.1.lpl svneol=native#text/plain
 packager/globallinks/demopackagewithhelp-0.lpl svneol=native#text/plain
 packager/globallinks/designbaseclassdemopkg-0.lpl svneol=native#text/plain
 packager/globallinks/easydockmgr-0.lpl svneol=native#text/plain
+packager/globallinks/easydockmgrdsgn-0.lpl svneol=native#text/plain
 packager/globallinks/editortoolbar-0.lpl svneol=native#text/plain
 packager/globallinks/exploreidemenu-0.lpl svneol=native#text/plain
 packager/globallinks/externhelp-1.lpl svneol=native#text/plain

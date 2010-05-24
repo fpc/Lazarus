@@ -1312,6 +1312,8 @@ begin
   Layout:=EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwMainIDEName);
   if not (Layout.WindowState in [iwsNormal,iwsMaximized]) then
     Layout.WindowState:=iwsNormal;
+  if IDEDockMaster<>nil then
+    IDEDockMaster.MakeIDEWindowDockSite(MainIDEBar);
   IDEWindowCreators.ShowForm(MainIDEBar,true);
 
   HiddenWindowsOnRun:=TList.Create;
