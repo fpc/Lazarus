@@ -689,6 +689,7 @@ type
     procedure DoZOrderItemClick(Sender: TObject);
   private
     FInSelection: Boolean;
+    FOnAutoShow: TNotifyEvent;
   protected
     function PersistentToString(APersistent: TPersistent): string;
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
@@ -771,6 +772,7 @@ type
     property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
     property OnFindDeclarationOfProperty: TNotifyEvent
            read FOnFindDeclarationOfProperty write FOnFindDeclarationOfProperty;
+    property OnAutoShow: TNotifyEvent read FOnAutoShow write FOnAutoShow;
   end;
 
 const
@@ -4190,7 +4192,10 @@ begin
       GridControl[Page].Selection := FSelection;
   RefreshComponentTreeSelection;
   if (not Visible) and AutoShow and (FSelection.Count > 0) then
-    Visible := True;
+    if Assigned(OnAutoShow) then
+      OnAutoShow(Self)
+    else
+      Visible := True;
 end;
 
 procedure TObjectInspectorDlg.RefreshComponentTreeSelection;

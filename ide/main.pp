@@ -427,6 +427,7 @@ type
     procedure OIOnShowOptions(Sender: TObject);
     procedure OIOnViewRestricted(Sender: TObject);
     procedure OIOnDestroy(Sender: TObject);
+    procedure OIOnAutoShow(Sender: TObject);
     procedure OIRemainingKeyDown(Sender: TObject; var Key: Word;
        Shift: TShiftState);
     procedure OIOnAddToFavourites(Sender: TObject);
@@ -1529,6 +1530,11 @@ begin
     ObjectInspector1:=nil;
 end;
 
+procedure TMainIDE.OIOnAutoShow(Sender: TObject);
+begin
+  IDEWindowCreators.ShowForm(Sender as TObjectInspectorDlg,false);
+end;
+
 procedure TMainIDE.OIRemainingKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -1935,8 +1941,9 @@ begin
   ObjectInspector1.OnSelectionChange:=@OIOnSelectionChange;
   ObjectInspector1.OnPropertyHint:=@OIOnPropertyHint;
   ObjectInspector1.OnDestroy:=@OIOnDestroy;
+  ObjectInspector1.OnAutoShow:=@OIOnAutoShow;
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
-  IDEWindowCreators.Add(ObjectInspector1.Name,nil,'0','125','230','80%',
+  IDEWindowCreators.Add(ObjectInspector1.Name,nil,'0','150','230','50%',
                         NonModalIDEWindowNames[nmiwSourceNoteBookName],alLeft);
   MakeIDEWindowDockable(ObjectInspector1);
 
@@ -2188,21 +2195,21 @@ procedure TMainIDE.SetupIDEWindowsLayout;
 begin
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwCodeExplorerName],
     @CreateIDEWindow,
-    '72%','130','170','70%',NonModalIDEWindowNames[nmiwSourceNoteBookName],alRight);
+    '72%','130','170','60%',NonModalIDEWindowNames[nmiwSourceNoteBookName],alRight);
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwMessagesViewName],
     @CreateIDEWindow,
-    '230','75%','70%','100',NonModalIDEWindowNames[nmiwSourceNoteBookName],alBottom);
+    '230','65%','70%','100',NonModalIDEWindowNames[nmiwSourceNoteBookName],alBottom);
 
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwUnitDependenciesName],
     @CreateIDEWindow,'200','200','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwFPDocEditorName],
-    @CreateIDEWindow,'250','75%','70%','120');
+    @CreateIDEWindow,'250','75%','60%','120');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwClipbrdHistoryName],
     @CreateIDEWindow,'250','200','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwProjectInspector],
     @CreateIDEWindow,'200','150','300','400');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSearchResultsViewName],
-    @CreateIDEWindow,'250','250','70%','300');
+    @CreateIDEWindow,'250','250','60%','300');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwAnchorEditor],
     @CreateIDEWindow,'250','250','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwCodeBrowser],
