@@ -3037,7 +3037,7 @@ begin
 
   ecToggleMessages:
     // user used shortcut/menu item to show the window, so focusing is ok.
-    MessagesView.EnsureVisible;
+    DoShowMessagesView;
 
   ecToggleCodeExpl:
     DoShowCodeExplorer(true);
@@ -10652,10 +10652,7 @@ begin
   end;
 
   // show messages
-  if EnvironmentOptions.MsgViewFocus then
-    MessagesView.EnsureVisible
-  else
-    MessagesView.Visible:=true;
+  IDEWindowCreators.ShowForm(MessagesView,EnvironmentOptions.MsgViewFocus);
   MessagesView.BeginBlock;
 
   try
@@ -10882,10 +10879,7 @@ begin
 
     MessagesView.EndBlock;
   end;
-  if EnvironmentOptions.MsgViewFocus then
-    MessagesView.EnsureVisible
-  else
-    MessagesView.Visible:=true;
+  IDEWindowCreators.ShowForm(MessagesView,EnvironmentOptions.MsgViewFocus);
   Result:=mrOk;
 end;
 

@@ -925,25 +925,25 @@ begin
             begin
               NewBounds.Top:=DockSiblingBounds.Top;
               NewBounds.Bottom:=DockSiblingBounds.Bottom;
-              OffsetRect(NewBounds,DockSiblingBounds.Left-NewBounds.Right,0);
+              OffsetRect(NewBounds,DockSiblingBounds.Left-6-NewBounds.Right,0);
             end;
           alRight:
             begin
               NewBounds.Top:=DockSiblingBounds.Top;
               NewBounds.Bottom:=DockSiblingBounds.Bottom;
-              OffsetRect(NewBounds,DockSiblingBounds.Right-NewBounds.Left,0);
+              OffsetRect(NewBounds,DockSiblingBounds.Right+6-NewBounds.Left,0);
             end;
           alTop:
             begin
               NewBounds.Left:=DockSiblingBounds.Left;
               NewBounds.Right:=DockSiblingBounds.Right;
-              OffsetRect(NewBounds,0,DockSiblingBounds.Top-NewBounds.Bottom);
+              OffsetRect(NewBounds,0,DockSiblingBounds.Top-25-NewBounds.Bottom);
             end;
           alBottom:
             begin
               NewBounds.Left:=DockSiblingBounds.Left;
               NewBounds.Right:=DockSiblingBounds.Right;
-              OffsetRect(NewBounds,0,DockSiblingBounds.Bottom-NewBounds.Top);
+              OffsetRect(NewBounds,0,DockSiblingBounds.Bottom+25-NewBounds.Top);
             end;
           alClient:
             NewBounds:=DockSibling.BoundsRect;
