@@ -73,15 +73,12 @@ type
   The default component editor for TMenu. }
   TMainMenuComponentEditor = class(TComponentEditor)
   private
-    FMenu: TMainMenu;
     FDesigner: TComponentEditorDesigner;
   protected
   public
     constructor Create(AComponent: TComponent;
                        ADesigner: TComponentEditorDesigner); override;
-    destructor Destroy; override;
     procedure Edit; override;
-    property Menu: TMainMenu read FMenu write FMenu;
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
     procedure ExecuteVerb(Index: Integer); override;
@@ -175,13 +172,15 @@ begin
     if FindRootDesigner(AComponent) <> FDesigner then Exit;
     i := List_menus.Items.IndexOf(AComponent.Name);
     if i >= 0 then List_menus.Items.Delete(i);
+    
+    if AComponent = FMenu then SetMenu(nil);
   end;
 end;
 
 procedure TMainMenuEditorForm.OnPersistentAdded(APersistent: TPersistent;
   Select: boolean);
 begin
-  debugln('TMainMenuEditorForm.OnPersistentAdded ',dbgsName(APersistent));
+  //debugln('TMainMenuEditorForm.OnPersistentAdded ',dbgsName(APersistent));
   if APersistent is TMenu then
     UpdateListOfMenus;
 end;
@@ -256,15 +255,6 @@ constructor TMainMenuComponentEditor.Create(AComponent: TComponent;
 begin
   inherited Create(AComponent, ADesigner);
   FDesigner := ADesigner;
-end;
-
-destructor TMainMenuComponentEditor.Destroy;
-begin
-  if (MainMenuEditorForm <> nil) and (MainMenuEditorForm.DesignerMainMenu <> nil)
-      and (MainMenuEditorForm.DesignerMainMenu.Menu=Component) then 
-    FreeThenNil(MainMenuEditorForm);
-
-  inherited Destroy;
 end;
 
 procedure TMainMenuComponentEditor.Edit;
