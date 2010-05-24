@@ -3303,7 +3303,9 @@ msgid "About Lazarus"
 msgstr "Acerca de Lazarus"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
-msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
+#, fuzzy
+#| msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
+msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
 msgstr "Licencia: GPL/LGPL%sLazarus es un IDE para crear aplicaciones (gráficas y de consola) con Free Pascal. Free Pascal es un compilador Pascal y Object Pascal bajo licencia (L)GPL que corre en Windows, Linux Mac OS X, FreeBSD y otros.%sLazarus es la parte del puzzle que faltaba que le permitirá desarrollar programas para todas las plataformas anteriores en un entorno parecido a Delphi. El IDE es una herramienta RAD que incluye un diseñador de formularios. Como Lazarus está creciendo, necesitamos más desarrolladores."
 
 #: lazarusidestrconsts.lisaboutnocontributors

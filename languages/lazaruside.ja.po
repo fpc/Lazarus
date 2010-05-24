@@ -3303,7 +3303,9 @@ msgid "About Lazarus"
 msgstr "Lazarusについて"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
-msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
+#, fuzzy
+#| msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
+msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
 msgstr "ライセンス: GPL/LGPL%sLazarusは(グラフィカルもしくはコンソール)アプリケーションをFree Pascalで作成する統合開発環境(IDE)です。. Free Pascalは(L)GPL化されたPascalおよびObject PascalコンパイラでWindows, Linux, Mac OS X, FreeBSDその他で実行できます。%sLazarusはそれらのプラットフォームでDelphiのような環境でプログラムを開発できるようにする、'パズルの欠けた箇所を埋める部分'です。IDEはフォームデザイナを含むRADツールです。%sLazarusが成熟するにつれ、より多くの開発者を必要としています。"
 
 #: lazarusidestrconsts.lisaboutnocontributors
