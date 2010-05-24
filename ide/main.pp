@@ -1225,6 +1225,7 @@ begin
     Application.ShowButtonGlyphs := ShowButtonGlyphs;
     Application.ShowMenuGlyphs := ShowMenuGlyphs;
   end;
+  IDEWindowCreators.OnShowForm:=@EnvironmentOptions.IDEWindowLayoutList.NewApplyAndShow;
   UpdateDefaultPascalFileExtensions;
 
   EditorOpts := TEditorOptions.Create;
@@ -1312,7 +1313,7 @@ begin
   Layout:=EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwMainIDEName);
   if not (Layout.WindowState in [iwsNormal,iwsMaximized]) then
     Layout.WindowState:=iwsNormal;
-  EnvironmentOptions.IDEWindowLayoutList.Apply(MainIDEBar,MainIDEBar.Name);
+  IDEWindowCreators.ShowForm(MainIDEBar);
 
   HiddenWindowsOnRun:=TList.Create;
 
@@ -1450,6 +1451,7 @@ begin
   FreeThenNil(CodeExplorerOptions);
   FreeThenNil(MiscellaneousOptions);
   FreeThenNil(EditorOpts);
+  IDEWindowCreators.OnShowForm:=nil;
   FreeThenNil(EnvironmentOptions);
   FreeThenNil(IDECommandScopes);
 
@@ -1470,6 +1472,8 @@ end;
 procedure TMainIDE.CreateOftenUsedForms;
 begin
   MessagesView:=TMessagesView.Create(nil);
+  MessagesView.OnSelectionChanged := @MessagesViewSelectionChanged;
+
   LazFindReplaceDialog:=TLazFindReplaceDialog.Create(nil);
 end;
 
@@ -1936,11 +1940,7 @@ begin
                         NonModalIDEWindowNames[nmiwSourceNoteBookName],alLeft);
   MakeIDEWindowDockable(ObjectInspector1);
 
-  EnvironmentOptions.IDEWindowLayoutList.Apply(ObjectInspector1,
-                                               DefaultObjectInspectorName);
-  with EnvironmentOptions do begin
-    ObjectInspectorOptions.AssignTo(ObjectInspector1);
-  end;
+  EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
 
   ShowAnchorDesigner:=@mnuViewAnchorEditorClicked;
 end;
@@ -2219,7 +2219,6 @@ procedure TMainIDE.RestoreIDEWindows;
 var
   i: Integer;
   ALayout: TSimpleWindowLayout;
-  Creator: TIDEWindowCreator;
   AForm: TCustomForm;
 begin
   if IDEDockMaster<>nil then
@@ -2231,27 +2230,9 @@ begin
   for i:=0 to EnvironmentOptions.IDEWindowLayoutList.Count-1 do begin
     ALayout:=EnvironmentOptions.IDEWindowLayoutList[i];
     if not ALayout.Visible then continue;
-    AForm:=Screen.FindForm(ALayout.FormID);
-    if AForm=nil then begin
-      Creator:=IDEWindowCreators.FindWithName(ALayout.FormID);
-      if (Creator=nil) then begin
-        debugln(['TMainIDE.RestoreIDEWindows no creator found for ',ALayout.FormID]);
-        continue;
-      end;
-      if not Assigned(Creator.OnCreateForm) then begin
-        debugln(['TMainIDE.RestoreIDEWindows no OnCreateForm for ',ALayout.FormID]);
-        continue;
-      end;
-      AForm:=nil;
-      Creator.OnCreateForm(Self,ALayout.FormID,AForm);
-      if AForm=nil then begin
-        debugln(['TMainIDE.RestoreIDEWindows failed to create ',ALayout.FormID]);
-        continue;
-      end;
-    end;
-    EnvironmentOptions.IDEWindowLayoutList.Apply(AForm,AForm.Name);
-
-    AForm.Show;
+    AForm:=IDEWindowCreators.GetForm(ALayout.FormID,true);
+    if AForm=nil then continue;
+    IDEWindowCreators.ShowForm(AForm);
   end;
 end;
 
@@ -3419,7 +3400,7 @@ begin
   if AnchorDesigner=nil then
     AnchorDesigner:=TAnchorDesigner.Create(OwningComponent);
   if Show then
-    AnchorDesigner.EnsureVisible(true);
+    IDEWindowCreators.ShowForm(AnchorDesigner);
 end;
 
 procedure TMainIDE.DoToggleViewComponentPalette;
@@ -3614,12 +3595,12 @@ end;
 Procedure TMainIDE.mnuViewMessagesClick(Sender: TObject);
 begin
   // it was already visible, but user does not see it, try to move in view
-  MessagesView.EnsureVisible;
+  DoShowMessagesView;
 end;
 
 Procedure TMainIDE.mnuViewSearchResultsClick(Sender: TObject);
 Begin
-  SearchResultsView.ShowOnTop;
+  ShowSearchResultView;
 End;
 
 Procedure TMainIDE.mnuNewProjectClicked(Sender: TObject);
@@ -8912,8 +8893,6 @@ begin
 end;
 
 procedure TMainIDE.DoViewUnitDependencies(Show: boolean);
-var
-  WasVisible: boolean;
 begin
   if UnitDependenciesView=nil then begin
     UnitDependenciesView:=TUnitDependenciesView.Create(OwningComponent);
@@ -8922,9 +8901,7 @@ begin
     UnitDependenciesView.OnGetProjectMainFilename:=
       @UnitDependenciesViewGetProjectMainFilename;
     UnitDependenciesView.OnOpenFile:=@UnitDependenciesViewOpenFile;
-    WasVisible:=false;
-  end else
-    WasVisible:=UnitDependenciesView.Visible;
+  end;
 
   if not UnitDependenciesView.RootValid then begin
     if Project1.MainUnitID>=0 then begin
@@ -8937,12 +8914,7 @@ begin
   end;
 
   if Show then
-  begin
-    EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwUnitDependenciesName).Apply;
-    UnitDependenciesView.Show;
-    if (not WasVisible) then
-      UnitDependenciesView.ShowOnTop;
-  end;
+    IDEWindowCreators.ShowForm(UnitDependenciesView);
 end;
 
 procedure TMainIDE.DoViewJumpHistory(Show: boolean);
@@ -8954,7 +8926,7 @@ begin
     end;
   end;
   if Show then
-    JumpHistoryViewWin.ShowOnTop;
+    IDEWindowCreators.ShowForm(JumpHistoryViewWin);
 end;
 
 procedure TMainIDE.DoViewUnitInfo;
@@ -8999,8 +8971,7 @@ begin
 
   if Show then
   begin
-    EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwCodeExplorerName).Apply;
-    CodeExplorerView.ShowOnTop;
+    IDEWindowCreators.ShowForm(CodeExplorerView);
     CodeExplorerView.Refresh(true);
   end;
 end;
@@ -9009,7 +8980,7 @@ procedure TMainIDE.DoShowCodeBrowser(Show: boolean);
 begin
   CreateCodeBrowser;
   if Show then
-    CodeBrowserView.ShowOnTop;
+    IDEWindowCreators.ShowForm(CodeBrowserView);
 end;
 
 procedure TMainIDE.DoShowRestrictionBrowser(Show: boolean;
@@ -9020,7 +8991,7 @@ begin
 
   RestrictionBrowserView.SetIssueName(RestrictedName);
   if Show then
-    RestrictionBrowserView.ShowOnTop;
+    IDEWindowCreators.ShowForm(RestrictionBrowserView);
 end;
 
 procedure TMainIDE.DoShowComponentList(Show: boolean);
@@ -10125,7 +10096,7 @@ begin
     ProjInspector.LazProject:=Project1;
   end;
   if Show then
-    ProjInspector.ShowOnTop;
+    IDEWindowCreators.ShowForm(ProjInspector);
 end;
 
 function TMainIDE.DoCreateProjectForProgram(
@@ -12396,7 +12367,7 @@ procedure TMainIDE.DoBringToFrontFormOrInspector(ForceInspector: boolean);
   procedure ShowInspector;
   begin
     if ObjectInspector1=nil then exit;
-    ObjectInspector1.ShowOnTop;
+    IDEWindowCreators.ShowForm(ObjectInspector1);
     ObjectInspector1.FocusGrid;
     if FDisplayState <> high(TDisplayState) then
       FDisplayState:= Succ(FDisplayState);
@@ -12738,9 +12709,6 @@ end;
 
 
 procedure TMainIDE.DoShowMessagesView;
-var
-  WasVisible: boolean;
-  ALayout: TSimpleWindowLayout;
 begin
   //debugln('TMainIDE.DoShowMessagesView');
   if EnvironmentOptions.HideMessagesIcons then
@@ -12748,43 +12716,28 @@ begin
   else
     MessagesView.MessageTreeView.Images := IDEImages.Images_12;
 
-
-  WasVisible:=MessagesView.Visible;
-  MessagesView.Visible:=true;
-  if not WasVisible then begin
+  if not MessagesView.IsVisible then begin
     // don't move the messagesview, if it was already visible.
-    ALayout:=EnvironmentOptions.IDEWindowLayoutList.
-                                               ItemByEnum(nmiwMessagesViewName);
-    ALayout.Apply;
-
-    // the sourcenotebook is more interesting than the messages
-    // TODO: don't do this when messages content intersect the editor content
-    SourceEditorManager.ShowActiveWindowOnTop(False);
-  end;
-
-  //set the event here for the selectionchanged event
-  if not assigned(MessagesView.OnSelectionChanged) then
-    MessagesView.OnSelectionChanged := @MessagesViewSelectionChanged;
-end;
-
-procedure TMainIDE.DoShowSearchResultsView(Show: boolean);
-var
-  WasVisible: boolean;
-begin
-  WasVisible := SearchResultsView.Visible;
-  if Show then
-  begin
-    SearchResultsView.Visible:=true;
-    EnvironmentOptions.IDEWindowLayoutList.
-      ItemByEnum(nmiwSearchResultsViewName).Apply;
-    if not WasVisible then
+    IDEWindowCreators.ShowForm(MessagesView);
+    if IDEDockMaster=nil then
       // the sourcenotebook is more interesting than the messages
       SourceEditorManager.ShowActiveWindowOnTop(False);
   end;
+end;
 
+procedure TMainIDE.DoShowSearchResultsView(Show: boolean);
+begin
   //set the event here for the selectionchanged event
   if not assigned(SearchresultsView.OnSelectionChanged) then
     SearchresultsView.OnSelectionChanged := @SearchresultsViewSelectionChanged;
+
+  if Show and (not SearchResultsView.IsVisible) then
+  begin
+    IDEWindowCreators.ShowForm(SearchResultsView);
+    if IDEDockMaster=nil then
+      // the sourcenotebook is more interesting than the messages
+      SourceEditorManager.ShowActiveWindowOnTop(False);
+  end;
 end;
 
 procedure TMainIDE.DoArrangeSourceEditorAndMessageView(PutOnTop: boolean);
@@ -15848,7 +15801,7 @@ end;
 
 Procedure TMainIDE.OnSrcNotebookViewJumpHistory(Sender: TObject);
 begin
-  DoViewUnitDependencies(true);
+  DoViewJumpHistory(true);
 end;
 
 procedure TMainIDE.OnSrcNoteBookPopupMenu(

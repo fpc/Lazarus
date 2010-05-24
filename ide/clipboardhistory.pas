@@ -98,7 +98,6 @@ begin
   
   Name:=NonModalIDEWindowNames[nmiwClipbrdHistoryName];
   Caption := 'Clipboard History';
-  EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
 
   CopyToIDEBitBtn:=TBitBtn.Create(Self);
   with CopyToIDEBitBtn do begin

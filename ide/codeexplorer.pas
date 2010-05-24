@@ -357,7 +357,6 @@ begin
 
   Name:=NonModalIDEWindowNames[nmiwCodeExplorerName];
   Caption := lisMenuViewCodeExplorer;
-  EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
 
   MainNotebook.ActivePageComponent:=CodePage;
 

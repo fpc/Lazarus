@@ -33,9 +33,9 @@ unit IDEOptionDefs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, LCLProc, FileUtil,
+  Classes, SysUtils, types, Laz_XMLCfg, LCLProc, FileUtil,
   Forms, Controls, StdCtrls, Buttons, BaseIDEIntf, LazConfigStorage,
-  LazConf, LazarusIDEStrConsts;
+  IDEWindowIntf, LazConf, LazarusIDEStrConsts;
 
 type
   { TXMLOptionsStorage }
@@ -156,7 +156,6 @@ type
     iwpDefault,                 // set window to the default position
     iwpRestoreWindowGeometry,   // save window geometry at end and restore it
                                 //   at start
-    iwpDocked,                  // dock into other IDE window
     iwpCustomPosition,          // set window to custom position
     iwpRestoreWindowSize        // save window size at end and restore it
                                 //   at start
@@ -216,7 +215,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure Apply;
+    procedure ApplyOld;
     procedure GetCurrentPosition;
     procedure Assign(Layout: TSimpleWindowLayout);
     procedure ReadCurrentCoordinates;
@@ -265,8 +264,9 @@ type
   public
     procedure Clear; override;
     procedure Delete(Index: Integer);
-    procedure ApplyAll;
-    procedure Apply(AForm: TCustomForm; const ID: string);
+    procedure ApplyOld(AForm: TCustomForm; const ID: string);
+    procedure NewApplyAndShow(Sender: TObject; AForm: TCustomForm;
+                              BringToFront: boolean);
     procedure StoreWindowPositions;
     procedure Assign(SrcList: TSimpleWindowLayoutList);
     function IndexOf(const FormID: string): integer;
@@ -290,7 +290,6 @@ const
       'UseWindowManagerSetting',
       'Default',
       'RestoreWindowGeometry',
-      'Docked',
       'CustomPosition',
       'RestoreWindowSize'
     );
@@ -651,7 +650,7 @@ begin
     fFormID:=AValue;
 end;
 
-procedure TSimpleWindowLayout.Apply;
+procedure TSimpleWindowLayout.ApplyOld;
 begin
   if Assigned(OnApply) then OnApply(Self);
 end;
@@ -816,21 +815,147 @@ begin
     ALayout.CloseForm;
 end;
 
-procedure TSimpleWindowLayoutList.ApplyAll;
-var i: integer;
-begin
-  for i:=0 to Count-1 do
-    Items[i].Apply;
-end;
-
-procedure TSimpleWindowLayoutList.Apply(AForm: TCustomForm; const ID: string);
+procedure TSimpleWindowLayoutList.ApplyOld(AForm: TCustomForm; const ID: string);
 var ALayout: TSimpleWindowLayout;
 begin
   ALayout:=ItemByFormID(ID);
   if ALayout=nil then
     RaiseGDBException(ID);
   ALayout.Form:=AForm;
-  ALayout.Apply;
+  ALayout.ApplyOld;
+end;
+
+procedure TSimpleWindowLayoutList.NewApplyAndShow(Sender: TObject;
+  AForm: TCustomForm; BringToFront: boolean);
+var
+  ALayout: TSimpleWindowLayout;
+  SubIndex: Integer;
+  WindowType: TNonModalIDEWindow;
+  NewBounds: TRect;
+  Creator: TIDEWindowCreator;
+  DockSiblingName: string;
+  DockAlign: TAlign;
+  DockSibling: TCustomForm;
+  DockSiblingBounds: TRect;
+  Offset: TPoint;
+begin
+  try
+    ALayout:=ItemByFormID(AForm.Name);
+    if ALayout<>nil then
+    begin
+      ALayout.Form:=AForm;
+
+      WindowType:=NonModalIDEFormIDToEnum(ALayout.FormID);
+      SubIndex := -1;
+      if WindowType = nmiwNone then begin
+        WindowType:=NonModalIDEFormIDToEnum(ALayout.FormBaseID(SubIndex));
+      end;
+
+      case ALayout.WindowPlacement of
+      iwpCustomPosition,iwpRestoreWindowGeometry:
+        begin
+          //DebugLn(['TMainIDE.OnApplyWindowLayout ',IDEWindowStateNames[ALayout.WindowState]]);
+          case ALayout.WindowState of
+          iwsMinimized: AForm.WindowState:=wsMinimized;
+          iwsMaximized: AForm.WindowState:=wsMaximized;
+          end;
+
+          if (ALayout.CustomCoordinatesAreValid) then begin
+            // explicit position
+            NewBounds:=Bounds(ALayout.Left,ALayout.Top,ALayout.Width,ALayout.Height);
+            // set minimum size
+            if NewBounds.Right-NewBounds.Left<20 then
+              NewBounds.Right:=NewBounds.Left+20;
+            if NewBounds.Bottom-NewBounds.Top<20 then
+              NewBounds.Bottom:=NewBounds.Top+20;
+            // move to visible area
+            if NewBounds.Right<20 then
+              OffsetRect(NewBounds,20-NewBounds.Right,0);
+            if NewBounds.Bottom<20 then
+              OffsetRect(NewBounds,0,20-NewBounds.Bottom);
+            if NewBounds.Left>Screen.DesktopWidth-20 then
+              OffsetRect(NewBounds,NewBounds.Left-(Screen.DesktopWidth-20),0);
+            if NewBounds.Top>Screen.DesktopHeight-20 then
+              OffsetRect(NewBounds,NewBounds.Top-(Screen.DesktopHeight-20),0);
+            // set bounds (do not use SetRestoredBounds - that flickers with the current LCL implementation)
+            AForm.SetBounds(
+              NewBounds.Left,NewBounds.Top,
+              NewBounds.Right-NewBounds.Left,NewBounds.Bottom-NewBounds.Top);
+            exit;
+          end;
+
+          if ALayout.WindowState in [iwsMinimized, iwsMaximized] then
+            exit;
+        end;
+
+      iwpUseWindowManagerSetting:
+        begin
+          exit;
+        end;
+      end;
+
+    end;
+
+    // no layout found => use default
+    Creator:=IDEWindowCreators.FindWithName(AForm.Name);
+    if Creator<>nil then
+    begin
+      if Creator.OnGetLayout<>nil then
+        Creator.OnGetLayout(Self,AForm.Name,NewBounds,DockSiblingName,DockAlign)
+      else begin
+        Creator.GetDefaultBounds(AForm,NewBounds);
+        DockSiblingName:=Creator.DockSibling;
+        DockAlign:=Creator.DockAlign;
+      end;
+      if DockSiblingName<>'' then
+      begin
+        DockSibling:=Screen.FindForm(DockSiblingName);
+        if DockSibling<>nil then
+        begin
+          DockSiblingBounds:=DockSibling.BoundsRect;
+          if DockSibling.Parent<>nil then
+          begin
+            Offset:=DockSibling.ClientToScreen(Point(0,0));
+            OffsetRect(DockSiblingBounds,Offset.X,Offset.Y);
+          end;
+          case DockAlign of
+          alLeft:
+            begin
+              NewBounds.Top:=DockSiblingBounds.Top;
+              NewBounds.Bottom:=DockSiblingBounds.Bottom;
+              OffsetRect(NewBounds,DockSiblingBounds.Left-NewBounds.Right,0);
+            end;
+          alRight:
+            begin
+              NewBounds.Top:=DockSiblingBounds.Top;
+              NewBounds.Bottom:=DockSiblingBounds.Bottom;
+              OffsetRect(NewBounds,DockSiblingBounds.Right-NewBounds.Left,0);
+            end;
+          alTop:
+            begin
+              NewBounds.Left:=DockSiblingBounds.Left;
+              NewBounds.Right:=DockSiblingBounds.Right;
+              OffsetRect(NewBounds,0,DockSiblingBounds.Top-NewBounds.Bottom);
+            end;
+          alBottom:
+            begin
+              NewBounds.Left:=DockSiblingBounds.Left;
+              NewBounds.Right:=DockSiblingBounds.Right;
+              OffsetRect(NewBounds,0,DockSiblingBounds.Bottom-NewBounds.Top);
+            end;
+          alClient:
+            NewBounds:=DockSibling.BoundsRect;
+          end;
+        end;
+      end;
+      AForm.BoundsRect:=NewBounds;
+    end;
+  finally
+    if (AForm.WindowState in [wsNormal,wsMaximized]) and BringToFront then
+      AForm.ShowOnTop
+    else
+      AForm.Show;
+  end;
 end;
 
 procedure TSimpleWindowLayoutList.StoreWindowPositions;

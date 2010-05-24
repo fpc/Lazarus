@@ -23,7 +23,7 @@ unit IDEWindowIntf;
 interface
 
 uses
-  Classes, SysUtils, LazConfigStorage, Forms, Controls;
+  Classes, SysUtils, LCLProc, LazConfigStorage, Forms, Controls;
 
   //----------------------------------------------------------------------------
   // layout settings of modal forms (dialogs) in the IDE
@@ -115,6 +115,8 @@ type
                                     var AForm: TCustomForm) of object;
   TGetDefaultIDEWindowLayoutEvent = procedure(Sender: TObject; aFormName: string;
    out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign) of object;
+  TShowIDEWindowEvent = procedure(Sender: TObject; AForm: TCustomForm;
+                                  BringToFront: boolean) of object;
 
   { TIDEWindowCreator }
 
@@ -157,6 +159,7 @@ type
     property OnGetLayout: TGetDefaultIDEWindowLayoutEvent read FOnGetLayout
                                                           write FOnGetLayout;
     procedure CheckBoundValue(s: string);
+    procedure GetDefaultBounds(AForm: TCustomForm; out DefBounds: TRect);
   end;
 
   { TIDEWindowCreatorList }
@@ -164,6 +167,7 @@ type
   TIDEWindowCreatorList = class
   private
     fItems: TFPList; // list of TIDEWindowCreator
+    FOnShowForm: TShowIDEWindowEvent;
     function GetItems(Index: integer): TIDEWindowCreator;
     procedure ErrorIfFormExists(FormName: string);
   public
@@ -185,6 +189,9 @@ type
     procedure Delete(Index: integer);
     function IndexOfName(FormName: string): integer;
     function FindWithName(FormName: string): TIDEWindowCreator;
+    function GetForm(aFormName: string; AutoCreate: boolean): TCustomForm;
+    procedure ShowForm(AForm: TCustomForm; BringToFront: boolean = true);
+    property OnShowForm: TShowIDEWindowEvent read FOnShowForm write FOnShowForm;
   end;
 
 var
@@ -200,6 +207,7 @@ type
     procedure MakeIDEWindowDockable(AControl: TWinControl); virtual; abstract;
     procedure MakeIDEWindowDockSite(AForm: TCustomForm); virtual; abstract;
     procedure LoadDefaultLayout; virtual; abstract; // called before opening the first project
+    procedure ShowForm(AForm: TCustomForm; BringToFront: boolean = true); virtual; abstract;
   end;
 
 var
@@ -508,6 +516,44 @@ begin
     raise Exception.Create('TIDEWindowDefaultLayout.CheckBoundValue: expected number, but '+s+' found');
 end;
 
+procedure TIDEWindowCreator.GetDefaultBounds(AForm: TCustomForm; out
+  DefBounds: TRect);
+var
+  aWidth: LongInt;
+  aHeight: LongInt;
+begin
+  // left
+  if Left='' then
+    DefBounds.Left:=AForm.Left
+  else if Left[length(Left)]='%' then
+    DefBounds.Left:=Screen.Width*StrToIntDef(copy(Left,1,length(Left)-1),0) div 100
+  else
+    DefBounds.Left:=Screen.Width*StrToIntDef(Left,0);
+  // top
+  if Top='' then
+    DefBounds.Top:=AForm.Top
+  else if Top[length(Top)]='%' then
+    DefBounds.Top:=Screen.Height*StrToIntDef(copy(Top,1,length(Top)-1),0) div 100
+  else
+    DefBounds.Top:=Screen.Height*StrToIntDef(Top,0);
+  // width
+  if Width='' then
+    aWidth:=AForm.Width
+  else if Width[length(Width)]='%' then
+    aWidth:=Screen.Width*StrToIntDef(copy(Width,1,length(Width)-1),0) div 100
+  else
+    aWidth:=Screen.Width*StrToIntDef(Width,0);
+  DefBounds.Right:=DefBounds.Left+aWidth;
+  // height
+  if Height='' then
+    aHeight:=AForm.Height
+  else if Height[length(Height)]='%' then
+    aHeight:=Screen.Height*StrToIntDef(copy(Height,1,length(Height)-1),0) div 100
+  else
+    aHeight:=Screen.Height*StrToIntDef(Height,0);
+  DefBounds.Bottom:=DefBounds.Top+aHeight;
+end;
+
 constructor TIDEWindowCreator.Create(aFormName: string);
 begin
   FFormName:=aFormName;
@@ -626,6 +672,50 @@ begin
     Result:=Items[i]
   else
     Result:=nil;
+end;
+
+function TIDEWindowCreatorList.GetForm(aFormName: string; AutoCreate: boolean
+  ): TCustomForm;
+var
+  Item: TIDEWindowCreator;
+begin
+  Result:=Screen.FindForm(aFormName);
+  if Result<>nil then exit;
+  if AutoCreate then begin
+    Item:=FindWithName(aFormName);
+    if Item=nil then begin
+      debugln(['TIDEWindowCreatorList.GetForm no creator for ',aFormName]);
+      exit;
+    end;
+    if Item.OnCreateForm=nil then begin
+      debugln(['TIDEWindowCreatorList.GetForm no OnCreateForm for ',aFormName]);
+      exit;
+    end;
+    Item.OnCreateForm(Self,aFormName,Result);
+    if Result=nil then begin
+      debugln(['TIDEWindowCreatorList.GetForm create failed for ',aFormName]);
+      exit;
+    end;
+  end;
+end;
+
+procedure TIDEWindowCreatorList.ShowForm(AForm: TCustomForm;
+  BringToFront: boolean);
+begin
+  if AForm.IsVisible then
+  begin
+    if BringToFront then
+      AForm.ShowOnTop;
+    exit;
+  end;
+  if IDEDockMaster<>nil then
+    IDEDockMaster.ShowForm(AForm,BringToFront)
+  else if Assigned(OnShowForm) then
+    OnShowForm(Self,AForm,BringToFront)
+  else if BringToFront then
+    AForm.ShowOnTop
+  else
+    AForm.Show;
 end;
 
 initialization

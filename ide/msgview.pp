@@ -338,8 +338,6 @@ begin
   MsgCopyAllIDEMenuCommand.OnClick := @CopyAllMenuItemClick;
   MsgCopyAllAndHiddenIDEMenuCommand.OnClick := @CopyAllAndHiddenMenuItemClick;
   MsgSaveAllToFileIDEMenuCommand.OnClick := @SaveAllToFileMenuItemClick;
-
-  EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
 end;
 
 destructor TMessagesView.Destroy;

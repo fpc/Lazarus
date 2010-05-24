@@ -71,19 +71,11 @@ const
 { TJumpHistoryViewWin }
 
 procedure TJumpHistoryViewWin.FormCreate(Sender : TObject);
-var
-  ALayout: TSimpleWindowLayout;
 begin
   Caption := lisJHJumpHistory;
   Name := NonModalIDEWindowNames[nmiwJumpHistory];
-  ALayout:=EnvironmentOptions.IDEWindowLayoutList.
-                                          ItemByEnum(nmiwJumpHistory);
-  ALayout.Form:=TForm(Self);
-  ALayout.Apply;
-  
-  Application.AddOnIdleHandler(@OnIdle);
-
   InitDisplay;
+  Application.AddOnIdleHandler(@OnIdle);
 end;
 procedure TJumpHistoryViewWin.listHistoryClick(Sender : TObject);
 begin

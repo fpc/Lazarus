@@ -275,7 +275,6 @@ end;
 
 procedure TAnchorDesigner.AnchorDesignerShow(Sender: TObject);
 begin
-  EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
   Refresh(true);
 end;
 

@@ -38,7 +38,6 @@ type
     Bevel2: TBevel;
     CustomPositionRadioButton: TRadioButton;
     DefaultRadioButton: TRadioButton;
-    DockedRadioButton: TRadioButton;
     GetWindowPositionButton: TButton;
     HeightEdit: TSpinEdit;
     HeightLabel: TLabel;
@@ -132,7 +131,6 @@ begin
   UseWindowManagerSettingRadioButton.Caption := rsiwpUseWindowManagerSetting;
   DefaultRadioButton.Caption := rsiwpDefault;
   RestoreWindowGeometryRadioButton.Caption := rsiwpRestoreWindowGeometry;
-  DockedRadioButton.Caption := rsiwpDocked;
   CustomPositionRadioButton.Caption := rsiwpCustomPosition;
 end;
 
@@ -173,7 +171,6 @@ begin
     iwpDefault:                 Result := DefaultRadioButton;
     iwpCustomPosition:          Result := CustomPositionRadioButton;
     iwpUseWindowManagerSetting: Result := UseWindowManagerSettingRadioButton;
-    iwpDocked:                  Result := DockedRadioButton;
   else
     Result := nil;
   end;
@@ -241,7 +238,7 @@ end;
 procedure TWindowOptionsFrame.ApplyButtonClick(Sender: TObject);
 begin
   SaveLayout;
-  Layout.Apply;
+  Layout.ApplyOld;
 end;
 
 procedure TWindowOptionsFrame.GetWindowPositionButtonClick(Sender: TObject);

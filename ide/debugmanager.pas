@@ -1781,11 +1781,7 @@ begin
   end;
   if Show then
   begin
-    EnvironmentOptions.IDEWindowLayoutList.Apply(CurDialog,CurDialog.Name);
-    if BringToFront then
-      FDialogs[ADialogType].ShowOnTop
-    else
-      FDialogs[ADialogType].Show;
+    IDEWindowCreators.ShowForm(CurDialog,BringToFront);
   end;
 end;
 

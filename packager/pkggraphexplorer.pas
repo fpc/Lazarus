@@ -379,8 +379,6 @@ begin
 end;
 
 constructor TPkgGraphExplorerDlg.Create(TheOwner: TComponent);
-var
-  ALayout: TSimpleWindowLayout;
 begin
   inherited Create(TheOwner);
   FUpdateLock:=PackageGraph.UpdateLock;
@@ -388,10 +386,6 @@ begin
   Name:=NonModalIDEWindowNames[nmiwPkgGraphExplorer];
   Caption:=dlgPackageGraph;
 
-  ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
-  ALayout.Form:=TForm(Self);
-  ALayout.Apply;
-  
   SetupComponents;
 end;
 

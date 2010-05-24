@@ -427,7 +427,6 @@ begin
 
   Name:=NonModalIDEWindowNames[nmiwUnitDependenciesName];
   Caption := dlgUnitDepCaption;
-  EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
 
   RefreshHistoryList;
 

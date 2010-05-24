@@ -731,8 +731,6 @@ begin
   Caption:=lisMenuProjectInspector;
   KeyPreview:=true;
 
-  EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
-
   SetupComponents;
   KeyPreview:=true;
 end;

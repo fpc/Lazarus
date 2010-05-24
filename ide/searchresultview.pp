@@ -39,8 +39,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType, LCLIntf, Menus,
-  IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
-  IDEProcs, Project, MainIntf, Clipbrd;
+  IDEWindowIntf, IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts,
+  InputHistory, IDEProcs, Project, MainIntf, Clipbrd;
 
 type
   { TLazSearchMatchPos }
@@ -211,6 +211,8 @@ type
 
 function SearchResultsView: TSearchResultsView;
 
+procedure ShowSearchResultView;
+
 var
   OnSearchResultsViewSelectionChanged: TNotifyEvent = nil;
   OnSearchAgainClicked: TNotifyEvent = nil;
@@ -265,9 +267,12 @@ begin
   Result := SearchResultsViewSingleton;
 end;
 
+procedure ShowSearchResultView;
+begin
+  IDEWindowCreators.ShowForm(SearchResultsView);
+end;
+
 procedure TSearchResultsView.Form1Create(Sender: TObject);
-var
-  ALayout: TSimpleWindowLayout;
 begin
   FMaxItems:=50000;
   
@@ -284,10 +289,6 @@ begin
   SearchInListEdit.Hint:=rsEnterOneOrMorePhrasesThatYouWantToSearchOrFilterIn;
 
   Name := NonModalIDEWindowNames[nmiwSearchResultsViewName];
-  ALayout:=EnvironmentOptions.IDEWindowLayoutList.
-                                          ItemByEnum(nmiwSearchResultsViewName);
-  ALayout.Form:=TForm(Self);
-  ALayout.Apply;
   fOnSelectionChanged:= nil;
   ShowHint:= True;
   fMouseOverIndex:= -1;

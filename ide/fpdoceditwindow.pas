@@ -41,7 +41,7 @@ uses
   BasicCodeTools, FileProcs, CodeAtom, CodeCache, CodeToolManager,
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
   // IDEIntf
-  ProjectIntf, LazIDEIntf, IDEHelpIntf, LazHelpIntf, Menus,
+  IDEWindowIntf, ProjectIntf, LazIDEIntf, IDEHelpIntf, LazHelpIntf, Menus,
   SrcEditorIntf,
   // IDE
   IDEOptionDefs, EnvironmentOpts, PackageSystem, IDEProcs, LazarusIDEStrConsts,
@@ -215,11 +215,9 @@ begin
 
   if Show then
   begin
-    EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwFPDocEditorName).Apply;
     FPDocEditor.DoEditorUpdate(SourceEditorManagerIntf.ActiveEditor);
     FPDocEditor.UpdateButtons;
-    FPDocEditor.Show;
-    FPDocEditor.MakeFullyVisible;
+    IDEWindowCreators.ShowForm(FPDocEditor);
   end;
 end;
 
@@ -279,7 +277,6 @@ begin
   Application.AddOnIdleHandler(@ApplicationIdle);
   
   Name := NonModalIDEWindowNames[nmiwFPDocEditorName];
-  EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
 
   BoldFormatButton.LoadGlyphFromLazarusResource('formatbold');
   UnderlineFormatButton.LoadGlyphFromLazarusResource('formatunderline');

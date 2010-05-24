@@ -4823,7 +4823,7 @@ begin
     EnvironmentOptions.CreateWindowLayout(self.name);
     EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(self.Name).Clear;
   end;
-  EnvironmentOptions.IDEWindowLayoutList.Apply(Self, self.Name);
+  EnvironmentOptions.IDEWindowLayoutList.ApplyOld(Self, self.Name);
 
   FSourceEditorList := TList.Create;
 

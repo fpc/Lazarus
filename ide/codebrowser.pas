@@ -432,8 +432,7 @@ begin
 
   Name:=NonModalIDEWindowNames[nmiwCodeBrowser];
   Caption := lisCodeBrowser;
-  EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
-  
+
   ScopeGroupBox.Caption:=dlgScope;
   ScopeWithRequiredPackagesCheckBox.Caption:=lisWithRequiredPackages;
   RescanButton.Caption:=lisRescan;
