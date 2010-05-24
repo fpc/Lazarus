@@ -38,7 +38,9 @@ msgid "Stay on top"
 msgstr "Permanecer no topo"
 
 #: heaptrcview.sfrmcap
-msgid "HeapTrcViewForm"
+#, fuzzy
+#| msgid "HeapTrcViewForm"
+msgid "LeakView - HeapTrc output viewer"
 msgstr "Exibição Rastreamento Pilha"
 
 #: heaptrcview.slbltrace

@@ -30,7 +30,7 @@ msgid "Stay on top"
 msgstr ""
 
 #: heaptrcview.sfrmcap
-msgid "HeapTrcViewForm"
+msgid "LeakView - HeapTrc output viewer"
 msgstr ""
 
 #: heaptrcview.slbltrace

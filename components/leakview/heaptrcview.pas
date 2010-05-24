@@ -75,7 +75,7 @@ resourcestring
   sbtnClipBrd = 'Paste Clipboard';
   schkRaw = 'Raw leak data';
   schkTop = 'Stay on top';
-  sfrmCap = 'HeapTrcViewForm';
+  sfrmCap = 'LeakView - HeapTrc output viewer';
 
 var
   HeapTrcViewForm: THeapTrcViewForm = nil;
