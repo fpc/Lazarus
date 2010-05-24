@@ -1467,12 +1467,15 @@ begin
   StopAfterErrCount := XMLConfigFile.GetValue(p+'ConfigFile/StopAfterErrCount/Value', 1);
 
   if fCompilerMessages.Count = 0 then fCompilerMessages.SetDefault; 
+  UseMsgFile := XMLConfigFile.GetValue(p+'CompilerMessages/UseMsgFile/Value', False);
+  MsgFileName := XMLConfigFile.GetValue(p+'CompilerMessages/MsgFileName/Value', '');
+  if UseMsgFile and FileExists(MsgFileName) then
+    fCompilerMessages.LoadMsgFile(MsgFileName);
+
   for i := 0 to fCompilerMessages.Count - 1 do begin
     with fCompilerMessages.Msg[i] do 
       Ignored := XMLConfigFile.GetValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), false);
   end; 
-  UseMsgFile := XMLConfigFile.GetValue(p+'CompilerMessages/UseMsgFile/Value', False);
-  MsgFileName := XMLConfigFile.GetValue(p+'CompilerMessages/MsgFileName/Value', '');
 
   if UseMsgFile then 
     with XMLConfigFile do begin
