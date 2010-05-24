@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="MiniIDE2">
+    <module name="fMiniIde2">
+      <element name="TMainBar.FormCreate">
+        <short>Sample application startup code.</short>
+        <descr>A DockMaster is created, OnSave and OnRestore handlers are added to it, and an elastic docksite is added to the main form.</descr>
+      </element>
+      <element name="TMainBar">
+        <short>This sample application main form demonstrates the instrumentation of an application for persistent docked layouts.</short>
+      </element>
+      <element name="TMainBar.OnReloadControl">
+        <short>OnRestore handler for the DockMaster.</short>
+        <descr>
+          <p>This handler serves two purposes: it creates multiple instances of (dummy) forms of the same class type, and reopens the files stored in a notebook.</p>
+        </descr>
+      </element>
+      <element name="TMainBar.OnSaveControl">
+        <short>OnSave handler for the DockMaster.</short>
+        <descr>
+          <p>For all TViewWindows a special descriptor string is created, that is recognized and handled in the OnRestore handler.</p>
+          <p>EditBooks do their own streaming of the open files, here their SaveToStream method is called with a StringStream.</p>
+        </descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

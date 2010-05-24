@@ -2862,6 +2862,7 @@ examples/dockmanager/README.txt svneol=native#text/plain
 examples/dockmanager/docs/easydocksite.xml svneol=LF#text/xml eol=lf
 examples/dockmanager/docs/fdockbook.xml svneol=LF#text/xml eol=lf
 examples/dockmanager/docs/ffloatingsite.xml svneol=LF#text/xml eol=lf
+examples/dockmanager/docs/fminiide2.xml svneol=LF#text/xml eol=lf
 examples/dockmanager/docs/umakesite.xml svneol=LF#text/xml eol=lf
 examples/dockmanager/easyedit/easyeditor.lpi svneol=native#text/plain
 examples/dockmanager/easyedit/easyeditor.lpr svneol=native#text/plain

@@ -11,6 +11,7 @@
       <Title Value="MiniIDE2"/>
       <UseXPManifest Value="True"/>
     </General>
+    <LazDoc Paths="..\docs"/>
     <VersionInfo>
       <StringTable Comments="" CompanyName="" FileDescription="" FileVersion="0.0.0.0" InternalName="" LegalCopyright="" LegalTrademarks="" OriginalFilename="" ProductName="" ProductVersion=""/>
     </VersionInfo>
