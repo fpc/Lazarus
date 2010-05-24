@@ -175,8 +175,10 @@ type
   function DTFlagsToQtFlags(const Flags: Cardinal): Integer;
   function GetQtVersion: String;
   function QtVersionCheck(const AMajor, AMinor, AMicro: Integer): Boolean;
+  {$IFDEF HASX11}
   function IsCurrentDesktop(AWidget: QWidgetH): Boolean;
   function GetWindowManager: String;
+  {$ENDIF}
 
 const
    QtVersionMajor: Integer = 0;
