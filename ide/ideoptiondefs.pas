@@ -579,10 +579,16 @@ begin
 end;
 
 procedure TSimpleWindowLayout.ReadCurrentCoordinates;
+var
+  p: TPoint;
 begin
   if (Form<>nil) and (Form.WindowState=wsNormal) then begin
-    Left:=Form.Left;
-    Top:=Form.Top;
+    if Form.Parent<>nil then
+      p:=Form.ClientOrigin
+    else
+      p:=Point(0,0);
+    Left:=Form.Left+p.X;
+    Top:=Form.Top+p.Y;
     Width:=Form.Width;
     Height:=Form.Height;
   end;
@@ -590,7 +596,7 @@ end;
 
 procedure TSimpleWindowLayout.ReadCurrentState;
 begin
-  Visible:=(Form<>nil) and Form.Visible;
+  Visible:=(Form<>nil) and Form.IsVisible;
   if Form<>nil then begin
     case Form.WindowState of
     wsMinimized: fWindowState:=iwsMinimized;
