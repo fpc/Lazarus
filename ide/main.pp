@@ -2219,7 +2219,8 @@ procedure TMainIDE.RestoreIDEWindows;
 var
   i: Integer;
   ALayout: TSimpleWindowLayout;
-  FormEnum: TNonModalIDEWindow;
+  Creator: TIDEWindowCreator;
+  AForm: TCustomForm;
 begin
   if IDEDockMaster<>nil then
   begin
@@ -2230,44 +2231,27 @@ begin
   for i:=0 to EnvironmentOptions.IDEWindowLayoutList.Count-1 do begin
     ALayout:=EnvironmentOptions.IDEWindowLayoutList[i];
     if not ALayout.Visible then continue;
-    FormEnum:=NonModalIDEFormIDToEnum(ALayout.FormID);
-    if FormEnum in NonModalIDEWindowManualOpen then continue;
-    case FormEnum of
-    nmiwUnitDependenciesName:
-      DoViewUnitDependencies(true);
-    nmiwProjectInspector:
-      DoShowProjectInspector(true);
-    nmiwCodeBrowser:
-      DoShowCodeBrowser(true);
-    nmiwCodeExplorerName:
-      DoShowCodeExplorer(true);
-    nmiwFPDocEditorName:
-      DoShowFPDocEditor(true);
-    nmiwAnchorEditor:
-      DoViewAnchorEditor(true);
-    nmiwMessagesViewName:
-      DoShowMessagesView;
-    nmiwDbgOutput:
-      DebugBoss.ViewDebugDialog(ddtOutput, False);
-    nmiwDbgEvents:
-      DebugBoss.ViewDebugDialog(ddtEvents, False);
-    nmiwBreakPoints:
-      DebugBoss.ViewDebugDialog(ddtBreakpoints, False);
-    nmiwWatches:
-      DebugBoss.ViewDebugDialog(ddtWatches, False);
-    nmiwLocals:
-      DebugBoss.ViewDebugDialog(ddtLocals, False);
-    nmiwEvaluate:
-      DebugBoss.ViewDebugDialog(ddtEvaluate, False);
-    nmiwRegisters:
-      DebugBoss.ViewDebugDialog(ddtRegisters, False);
-    nmiwCallStack:
-      DebugBoss.ViewDebugDialog(ddtCallStack, False);
-    nmiwAssembler:
-      DebugBoss.ViewDebugDialog(ddtAssembler, False);
-    nmiwInspect:
-      DebugBoss.ViewDebugDialog(ddtInspect, False);
+    AForm:=Screen.FindForm(ALayout.FormID);
+    if AForm=nil then begin
+      Creator:=IDEWindowCreators.FindWithName(ALayout.FormID);
+      if (Creator=nil) then begin
+        debugln(['TMainIDE.RestoreIDEWindows no creator found for ',ALayout.FormID]);
+        continue;
+      end;
+      if not Assigned(Creator.OnCreateForm) then begin
+        debugln(['TMainIDE.RestoreIDEWindows no OnCreateForm for ',ALayout.FormID]);
+        continue;
+      end;
+      AForm:=nil;
+      Creator.OnCreateForm(Self,ALayout.FormID,AForm);
+      if AForm=nil then begin
+        debugln(['TMainIDE.RestoreIDEWindows failed to create ',ALayout.FormID]);
+        continue;
+      end;
     end;
+    EnvironmentOptions.IDEWindowLayoutList.Apply(AForm,AForm.Name);
+
+    AForm.Show;
   end;
 end;
 
