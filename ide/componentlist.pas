@@ -45,6 +45,9 @@ uses
   ComponentPalette, ComponentReg, PackageDefs, ExtDlgs, FormEditor, PropEdits,
   LCLType, Menus, ButtonPanel, IDEWindowIntf;
 
+
+const
+  ComponentListFormName = 'ComponentList';
 type
   { TComponentListForm }
 

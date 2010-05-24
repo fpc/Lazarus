@@ -200,7 +200,7 @@ type
 var
   FPDocEditor: TFPDocEditor = nil;
 
-procedure DoShowFPDocEditor;
+procedure DoShowFPDocEditor(Show: boolean);
 
 implementation
 
@@ -208,18 +208,19 @@ implementation
 
 { TFPDocEditor }
 
-procedure DoShowFPDocEditor;
+procedure DoShowFPDocEditor(Show: boolean);
 begin
-  if FPDocEditor = Nil then begin
+  if FPDocEditor = Nil then
     Application.CreateForm(TFPDocEditor, FPDocEditor);
-    EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwFPDocEditorName).Apply;
-  end;
 
-  if not FPDocEditor.Visible then
+  if Show then
+  begin
+    EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwFPDocEditorName).Apply;
+    FPDocEditor.DoEditorUpdate(SourceEditorManagerIntf.ActiveEditor);
     FPDocEditor.UpdateButtons;
-  FPDocEditor.DoEditorUpdate(SourceEditorManagerIntf.ActiveEditor);
-  FPDocEditor.Show;
-  FPDocEditor.MakeFullyVisible;
+    FPDocEditor.Show;
+    FPDocEditor.MakeFullyVisible;
+  end;
 end;
 
 function TFPDocEditor.GetFirstElement: TDOMNode;

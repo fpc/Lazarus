@@ -159,7 +159,7 @@ type
     function DoOpenMacroFile(Sender: TObject;
         const AFilename: string): TModalResult; virtual; abstract;
 
-    function DoShowProjectInspector: TModalResult; virtual; abstract;
+    procedure DoShowProjectInspector(Show: boolean); virtual; abstract;
     function DoImExportCompilerOptions(Sender: TObject; out ImportExportResult: TImportExportOptionsResult): TModalResult; virtual; abstract;
 
     function PrepareForCompile: TModalResult; virtual; abstract; // stop things that interfere with compilation, like debugging

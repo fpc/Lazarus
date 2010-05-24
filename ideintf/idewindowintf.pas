@@ -104,23 +104,31 @@ var
   IDEDialogLayoutList: TIDEDialogLayoutList = nil;// set by the IDE
 
 type
-  TIWDLState = (
-    iwdlsHidden,
-    iwdlsIconified,
-    iwdlsNormal,
-    iwdlsDocked
+  TIWCState = (
+    iwcsHidden,
+    iwcsIconified,
+    iwcsNormal,
+    iwcsDocked
     );
 
-  { TIDEWindowDefaultLayout }
+  TCreateIDEWindowEvent = procedure(Sender: TObject; aFormName: string;
+                                    var AForm: TCustomForm) of object;
+  TGetDefaultIDEWindowLayoutEvent = procedure(Sender: TObject; aFormName: string;
+   out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign) of object;
 
-  TIDEWindowDefaultLayout = class
+  { TIDEWindowCreator }
+
+  TIDEWindowCreator = class
   private
+    FCreateForm: TCreateIDEWindowEvent;
     FDockAlign: TAlign;
     FDockSibling: string;
     FFormName: string;
     FHeight: string;
     FLeft: string;
-    FState: TIWDLState;
+    FMulti: boolean;
+    FOnGetLayout: TGetDefaultIDEWindowLayoutEvent;
+    FState: TIWCState;
     FTop: string;
     FWidth: string;
     procedure SetHeight(const AValue: string);
@@ -128,38 +136,59 @@ type
     procedure SetTop(const AValue: string);
     procedure SetWidth(const AValue: string);
   public
-    property FormName: string read FFormName;
-    property State: TIWDLState read FState write FState;
+    constructor Create(aFormName: string); overload;
+    constructor Create(aFormName: string;
+                       CreateFormEvent: TCreateIDEWindowEvent;
+                       aLeft, aTop, aWidth, aHeight: string;
+                       aDockSibling : string = '';
+                       aDockAlign: TAlign = alNone;
+                       aMulti: boolean = false;
+               GetLayoutEvent: TGetDefaultIDEWindowLayoutEvent = nil); overload;
+    property FormName: string read FFormName; // prefix for all forms
+    property Multi: boolean read FMulti; // there can be more than one of this form, e.g. the source editors and the package editors
+    property State: TIWCState read FState write FState;
     property Left: string read FLeft write SetLeft; // '12' for 12 pixel, '10%' for 10 percent of screen.width
     property Top: string read FTop write SetTop; // '12' for 12 pixel, '10%' for 10 percent of screen.height
     property Width: string read FWidth write SetWidth; // '12' for 12 pixel, '10%' for 10 percent of screen.width
     property Height: string read FHeight write SetHeight; // '12' for 12 pixel, '10%' for 10 percent of screen.height
     property DockSibling: string read FDockSibling write FDockSibling; // another form name
     property DockAlign: TAlign read FDockAlign write FDockAlign;
+    property OnCreateForm: TCreateIDEWindowEvent read FCreateForm write FCreateForm;
+    property OnGetLayout: TGetDefaultIDEWindowLayoutEvent read FOnGetLayout
+                                                          write FOnGetLayout;
     procedure CheckBoundValue(s: string);
-    constructor Create(aFormName: string); overload;
-    constructor Create(aFormName: string; aLeft, aTop, aWidth, aHeight: integer;
-                       aUnit: string = ''; aDockSibling : string = '';
-                       aDockAlign: TAlign = alNone); overload;
   end;
 
-  { TIDEWindowDefaultLayoutList }
+  { TIDEWindowCreatorList }
 
-  TIDEWindowDefaultLayoutList = class
+  TIDEWindowCreatorList = class
   private
-    fItems: TFPList; // list of TIDEWindowDefaultLayout
-    function GetItems(Index: integer): TIDEWindowDefaultLayout;
+    fItems: TFPList; // list of TIDEWindowCreator
+    function GetItems(Index: integer): TIDEWindowCreator;
+    procedure ErrorIfFormExists(FormName: string);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
     function Count: integer;
-    property Items[Index: integer]: TIDEWindowDefaultLayout read GetItems;
-    function Add(aLayout: TIDEWindowDefaultLayout): integer;
+    property Items[Index: integer]: TIDEWindowCreator read GetItems;
+    function Add(aLayout: TIDEWindowCreator): integer; overload;
+    function Add(aFormName: string): TIDEWindowCreator; overload;
+    function Add(aFormName: string;
+                 CreateFormEvent: TCreateIDEWindowEvent;
+                 aLeft, aTop, aWidth, aHeight: string;
+                 aDockSibling : string = '';
+                 aDockAlign: TAlign = alNone;
+                 aMulti: boolean = false;
+                 GetLayoutEvent: TGetDefaultIDEWindowLayoutEvent = nil
+                 ): TIDEWindowCreator; overload;
     procedure Delete(Index: integer);
     function IndexOfName(FormName: string): integer;
-    function FindLayoutWithName(FormName: string): TIDEWindowDefaultLayout;
+    function FindWithName(FormName: string): TIDEWindowCreator;
   end;
+
+var
+  IDEWindowCreators: TIDEWindowCreatorList = nil; // set by the IDE
 
 type
 
@@ -167,8 +196,10 @@ type
 
   TIDEDockMaster = class
   public
+    // ToDo: save/restore layout
     procedure MakeIDEWindowDockable(AControl: TWinControl); virtual; abstract;
     procedure MakeIDEWindowDockSite(AForm: TCustomForm); virtual; abstract;
+    procedure LoadDefaultLayout; virtual; abstract; // called before opening the first project
   end;
 
 var
@@ -432,37 +463,37 @@ begin
   inherited Destroy;
 end;
 
-{ TIDEWindowDefaultLayout }
+{ TIDEWindowCreator }
 
-procedure TIDEWindowDefaultLayout.SetHeight(const AValue: string);
+procedure TIDEWindowCreator.SetHeight(const AValue: string);
 begin
   CheckBoundValue(AValue);
   if FHeight=AValue then exit;
   FHeight:=AValue;
 end;
 
-procedure TIDEWindowDefaultLayout.SetLeft(const AValue: string);
+procedure TIDEWindowCreator.SetLeft(const AValue: string);
 begin
   CheckBoundValue(AValue);
   if FLeft=AValue then exit;
   FLeft:=AValue;
 end;
 
-procedure TIDEWindowDefaultLayout.SetTop(const AValue: string);
+procedure TIDEWindowCreator.SetTop(const AValue: string);
 begin
   CheckBoundValue(AValue);
   if FTop=AValue then exit;
   FTop:=AValue;
 end;
 
-procedure TIDEWindowDefaultLayout.SetWidth(const AValue: string);
+procedure TIDEWindowCreator.SetWidth(const AValue: string);
 begin
   CheckBoundValue(AValue);
   if FWidth=AValue then exit;
   FWidth:=AValue;
 end;
 
-procedure TIDEWindowDefaultLayout.CheckBoundValue(s: string);
+procedure TIDEWindowCreator.CheckBoundValue(s: string);
 var
   p: Integer;
 begin
@@ -477,45 +508,55 @@ begin
     raise Exception.Create('TIDEWindowDefaultLayout.CheckBoundValue: expected number, but '+s+' found');
 end;
 
-constructor TIDEWindowDefaultLayout.Create(aFormName: string);
+constructor TIDEWindowCreator.Create(aFormName: string);
 begin
   FFormName:=aFormName;
 end;
 
-constructor TIDEWindowDefaultLayout.Create(aFormName: string; aLeft, aTop,
-  aWidth, aHeight: integer; aUnit: string; aDockSibling: string;
-  aDockAlign: TAlign);
+constructor TIDEWindowCreator.Create(aFormName: string;
+  CreateFormEvent: TCreateIDEWindowEvent; aLeft, aTop, aWidth, aHeight: string;
+  aDockSibling: string; aDockAlign: TAlign;
+  aMulti: boolean; GetLayoutEvent: TGetDefaultIDEWindowLayoutEvent);
 begin
   Create(aFormName);
-  Left:=IntToStr(aLeft)+aUnit;
-  Top:=IntToStr(aTop)+aUnit;
-  Width:=IntToStr(aWidth)+aUnit;
-  Height:=IntToStr(aHeight)+aUnit;
+  FMulti:=aMulti;
+  Left:=aLeft;
+  Top:=aTop;
+  Width:=aWidth;
+  Height:=aHeight;
   DockSibling:=aDockSibling;
   DockAlign:=aDockAlign;
+  OnCreateForm:=CreateFormEvent;
+  OnGetLayout:=GetLayoutEvent;
 end;
 
-{ TIDEWindowDefaultLayoutList }
+{ TIDEWindowCreatorList }
 
-function TIDEWindowDefaultLayoutList.GetItems(Index: integer
-  ): TIDEWindowDefaultLayout;
+function TIDEWindowCreatorList.GetItems(Index: integer
+  ): TIDEWindowCreator;
 begin
-  Result:=TIDEWindowDefaultLayout(fItems[Index]);
+  Result:=TIDEWindowCreator(fItems[Index]);
 end;
 
-constructor TIDEWindowDefaultLayoutList.Create;
+procedure TIDEWindowCreatorList.ErrorIfFormExists(FormName: string);
+begin
+  if IndexOfName(FormName)>=0 then
+    raise Exception.Create('TIDEWindowDefaultLayoutList.Add: form name '+FormName+' already exists');
+end;
+
+constructor TIDEWindowCreatorList.Create;
 begin
   fItems:=TFPList.Create;
 end;
 
-destructor TIDEWindowDefaultLayoutList.Destroy;
+destructor TIDEWindowCreatorList.Destroy;
 begin
   Clear;
   FreeAndNil(fItems);
   inherited Destroy;
 end;
 
-procedure TIDEWindowDefaultLayoutList.Clear;
+procedure TIDEWindowCreatorList.Clear;
 var
   i: Integer;
 begin
@@ -523,34 +564,60 @@ begin
     TObject(fItems[i]).Free;
 end;
 
-function TIDEWindowDefaultLayoutList.Count: integer;
+function TIDEWindowCreatorList.Count: integer;
 begin
   Result:=fItems.Count;
 end;
 
-function TIDEWindowDefaultLayoutList.Add(aLayout: TIDEWindowDefaultLayout
+function TIDEWindowCreatorList.Add(aLayout: TIDEWindowCreator
   ): integer;
 begin
-  if IndexOfName(aLayout.FormName)>=0 then
-    raise Exception.Create('TIDEWindowDefaultLayoutList.Add: form name already exists');
+  ErrorIfFormExists(aLayout.FormName);
   Result:=fItems.Add(aLayout);
 end;
 
-procedure TIDEWindowDefaultLayoutList.Delete(Index: integer);
+function TIDEWindowCreatorList.Add(aFormName: string
+  ): TIDEWindowCreator;
+begin
+  ErrorIfFormExists(aFormName);
+  Result:=TIDEWindowCreator.Create(aFormName);
+  Add(Result);
+end;
+
+function TIDEWindowCreatorList.Add(aFormName: string;
+  CreateFormEvent: TCreateIDEWindowEvent; aLeft, aTop, aWidth, aHeight: string;
+  aDockSibling: string; aDockAlign: TAlign;
+  aMulti: boolean;
+  GetLayoutEvent: TGetDefaultIDEWindowLayoutEvent): TIDEWindowCreator;
+begin
+  ErrorIfFormExists(aFormName);
+  Result:=TIDEWindowCreator.Create(aFormName,CreateFormEvent,
+       aLeft,aTop,aWidth,aHeight,aDockSibling,aDockAlign,aMulti,GetLayoutEvent);
+  Add(Result);
+end;
+
+procedure TIDEWindowCreatorList.Delete(Index: integer);
 begin
   TObject(fItems[Index]).Free;
   fItems.Delete(Index);
 end;
 
-function TIDEWindowDefaultLayoutList.IndexOfName(FormName: string): integer;
+function TIDEWindowCreatorList.IndexOfName(FormName: string): integer;
+var
+  Item: TIDEWindowCreator;
 begin
   Result:=Count-1;
-  while (Result>=0) and (SysUtils.CompareText(FormName,Items[Result].FormName)<>0) do
+  while (Result>=0) do begin
+    Item:=Items[Result];
+    if (SysUtils.CompareText(copy(FormName,1,length(Item.FormName)),Item.FormName)=0)
+    then
+      exit;
     dec(Result);
+  end;
 end;
 
-function TIDEWindowDefaultLayoutList.FindLayoutWithName(FormName: string
-  ): TIDEWindowDefaultLayout;
+function TIDEWindowCreatorList.FindWithName(FormName: string
+  ): TIDEWindowCreator;
 var
   i: LongInt;
 begin
@@ -560,6 +627,11 @@ begin
   else
     Result:=nil;
 end;
+
+initialization
+  IDEWindowCreators:=TIDEWindowCreatorList.Create;
+finalization
+  FreeAndNil(IDEWindowCreators);
 
 end.
 

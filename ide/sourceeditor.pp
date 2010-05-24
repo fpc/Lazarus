@@ -945,6 +945,10 @@ type
               read GetActiveSourceNotebook write SetActiveSourceNotebook;       // reintroduce
     function  ActiveOrNewSourceWindow: TSourceNotebook;
     function  NewSourceWindow: TSourceNotebook;
+    procedure CreateSourceWindow(Sender: TObject; aFormName: string;
+                                 var AForm: TCustomForm);
+    procedure GetDefaultLayout(Sender: TObject; aFormName: string;
+             out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
     function  SourceWindowWithPage(const APage: TPage): TSourceNotebook;
     property  SourceWindowByLastFocused[Index: Integer]: TSourceNotebook
               read GetSourceNbByLastFocused;
@@ -8319,6 +8323,28 @@ begin
   ActiveSourceWindow := Result;
 end;
 
+procedure TSourceEditorManager.CreateSourceWindow(Sender: TObject;
+  aFormName: string; var AForm: TCustomForm);
+begin
+  debugln(['TSourceEditorManager.CreateSourceWindow Sender=',DbgSName(Sender),' FormName="',aFormName,'"']);
+  AForm := CreateNewWindow(false);
+  AForm.Name:=aFormName;
+end;
+
+procedure TSourceEditorManager.GetDefaultLayout(Sender: TObject;
+  aFormName: string; out aBounds: TRect; out DockSibling: string; out
+  DockAlign: TAlign);
+var
+  i: LongInt;
+begin
+  i:=StrToIntDef(
+       copy(aFormName,length(NonModalIDEWindowNames[nmiwSourceNoteBookName])+1,
+            length(aFormName)),-1);
+  debugln(['TSourceEditorManager.GetDefaultLayout ',aFormName,' i=',i]);
+  aBounds:=Bounds(250+30*i,130+30*i,
+                    Min(1000,(Screen.Width*7) div 10),(Screen.Height*7) div 10);
+end;
+
 function TSourceEditorManager.SourceWindowWithPage(const APage: TPage
   ): TSourceNotebook;
 var
@@ -8974,6 +9000,11 @@ begin
     EndOfTokenChr:=' ()[]{},.;:"+-*^@$\<>=''';
   end;
 
+  // layout
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSourceNoteBookName],
+    @CreateSourceWindow,'250','100','70%','70%',
+    NonModalIDEWindowNames[nmiwMainIDEName],alBottom,
+    true,@GetDefaultLayout);
 end;
 
 destructor TSourceEditorManager.Destroy;

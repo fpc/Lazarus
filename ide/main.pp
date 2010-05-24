@@ -638,7 +638,8 @@ type
     procedure SetupIDEMsgQuickFixItems;
     procedure SetupStartProject;
     procedure SetupRemoteControl;
-    procedure ReOpenIDEWindows;
+    procedure SetupIDEWindowsLayout;
+    procedure RestoreIDEWindows;
     procedure CloseIDEWindows;
     procedure FreeIDEWindows;
     function CloseQueryIDEWindows: boolean;
@@ -798,13 +799,15 @@ type
     function DoRevertMainUnit: TModalResult;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
     function DoSelectFrame: TComponentClass;
-    procedure DoViewUnitDependencies;
+    procedure DoViewUnitDependencies(Show: boolean);
+    procedure DoViewJumpHistory(Show: boolean);
     procedure DoViewUnitInfo;
-    procedure DoShowCodeExplorer;
-    procedure DoShowCodeBrowser;
-    procedure DoShowRestrictionBrowser(const RestrictedName: String = '');
-    procedure DoShowComponentList;
-    procedure DoShowFPDocEditor;
+    procedure DoShowCodeExplorer(Show: boolean);
+    procedure DoShowCodeBrowser(Show: boolean);
+    procedure DoShowRestrictionBrowser(Show: boolean; const RestrictedName: String = '');
+    procedure DoShowComponentList(Show: boolean);
+    procedure CreateIDEWindow(Sender: TObject; aFormName: string;
+                              var AForm: TCustomForm);
     function CreateNewUniqueFilename(const Prefix, Ext: string;
        NewOwner: TObject; Flags: TSearchIDEFileFlags; TryWithoutNumber: boolean
        ): string; override;
@@ -823,7 +826,7 @@ type
     function DoPublishProject(Flags: TSaveFlags;
                               ShowDialog: boolean): TModalResult; override;
     function DoImExportCompilerOptions(Sender: TObject; out ImportExportResult: TImportExportOptionsResult): TModalResult; override;
-    function DoShowProjectInspector: TModalResult; override;
+    procedure DoShowProjectInspector(Show: boolean); override;
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
     function DoWarnAmbiguousFiles: TModalResult;
@@ -1012,7 +1015,7 @@ type
 
     // search results
     function DoJumpToSearchResult(FocusEditor: boolean): boolean;
-    procedure DoShowSearchResultsView;
+    procedure DoShowSearchResultsView(Show: boolean);
 
     // form editor and designer
     procedure DoBringToFrontFormOrUnit;
@@ -1025,7 +1028,7 @@ type
     procedure InvalidateAllDesignerForms;
     procedure UpdateIDEComponentPalette;
     procedure ShowDesignerForm(AForm: TCustomForm);
-    procedure DoViewAnchorEditor;
+    procedure DoViewAnchorEditor(Show: boolean);
     procedure DoToggleViewComponentPalette;
     procedure DoToggleViewIDESpeedButtons;
 
@@ -1257,6 +1260,7 @@ end;
 constructor TMainIDE.Create(TheOwner: TComponent);
 var
   Layout: TSimpleWindowLayout;
+  FormCreator: TIDEWindowCreator;
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create START');{$ENDIF}
   inherited Create(TheOwner);
@@ -1299,14 +1303,17 @@ begin
   // build and position the MainIDE form
   Application.CreateForm(TMainIDEBar,MainIDEBar);
   MainIDEBar.OnDestroy:=@OnMainBarDestroy;
-  {$IFNDEF IDEDocking}
+
   MainIDEBar.Constraints.MaxHeight:=110;
-  {$ENDIF}
   MainIDEBar.Name := NonModalIDEWindowNames[nmiwMainIDEName];
+  FormCreator:=IDEWindowCreators.Add(MainIDEBar.Name);
+  FormCreator.Width:='100%';
+  FormCreator.Height:='90';
   Layout:=EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwMainIDEName);
   if not (Layout.WindowState in [iwsNormal,iwsMaximized]) then
     Layout.WindowState:=iwsNormal;
   EnvironmentOptions.IDEWindowLayoutList.Apply(MainIDEBar,MainIDEBar.Name);
+
   HiddenWindowsOnRun:=TList.Create;
 
   // menu
@@ -1373,11 +1380,13 @@ begin
   Screen.AddHandlerRemoveForm(@OnScreenRemoveForm);
   SetupHints;
 
+  SetupIDEWindowsLayout;
+  RestoreIDEWindows;
+
   // Now load a project
   SetupStartProject;
 
   // reopen extra windows
-  ReOpenIDEWindows;
   DoShowMessagesView;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE END');{$ENDIF}
 end;
@@ -1497,16 +1506,16 @@ begin
   if ObjectInspector1.GetActivePropertyRow = nil then
   begin
     if C <> nil then
-      DoShowRestrictionBrowser(C.ClassName)
+      DoShowRestrictionBrowser(true,C.ClassName)
     else
-      DoShowRestrictionBrowser;
+      DoShowRestrictionBrowser(true);
   end
   else
   begin
     if C <> nil then
-      DoShowRestrictionBrowser(C.ClassName + '.' + ObjectInspector1.GetActivePropertyRow.Name)
+      DoShowRestrictionBrowser(true,C.ClassName + '.' + ObjectInspector1.GetActivePropertyRow.Name)
     else
-      DoShowRestrictionBrowser;
+      DoShowRestrictionBrowser(true);
   end;
 end;
 
@@ -1884,27 +1893,6 @@ end;
 
 procedure TMainIDE.SetupObjectInspector;
 begin
-  ObjectInspector1 := TObjectInspectorDlg.Create(OwningComponent);
-  ObjectInspector1.BorderStyle:=bsSizeable;
-  ObjectInspector1.ShowFavorites:=True;
-  ObjectInspector1.ShowRestricted:=True;
-  ObjectInspector1.Favourites:=LoadOIFavouriteProperties;
-  ObjectInspector1.FindDeclarationPopupmenuItem.Visible:=true;
-  ObjectInspector1.OnAddToFavourites:=@OIOnAddToFavourites;
-  ObjectInspector1.OnFindDeclarationOfProperty:=@OIOnFindDeclarationOfProperty;
-  ObjectInspector1.OnUpdateRestricted := @OIOnUpdateRestricted;
-  ObjectInspector1.OnRemainingKeyDown:=@OIRemainingKeyDown;
-  ObjectInspector1.OnRemoveFromFavourites:=@OIOnRemoveFromFavourites;
-  ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
-  ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
-  ObjectInspector1.OnViewRestricted:=@OIOnViewRestricted;
-  ObjectInspector1.OnSelectionChange:=@OIOnSelectionChange;
-  ObjectInspector1.OnPropertyHint:=@OIOnPropertyHint;
-  ObjectInspector1.OnDestroy:=@OIOnDestroy;
-  MakeIDEWindowDockable(ObjectInspector1);
-
-  IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspectorDlg);
-
   GlobalDesignHook:=TPropertyEditorHook.Create;
   GlobalDesignHook.GetPrivateDirectory:=AppendPathDelim(GetPrimaryConfigPath);
   GlobalDesignHook.AddHandlerGetMethodName(@OnPropHookGetMethodName);
@@ -1923,7 +1911,31 @@ begin
   GlobalDesignHook.AddHandlerGetComponentNames(@OnPropHookGetComponentNames);
   GlobalDesignHook.AddHandlerGetComponent(@OnPropHookGetComponent);
 
+  IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspectorDlg);
+
+  ObjectInspector1 := TObjectInspectorDlg.Create(OwningComponent);
+  ObjectInspector1.Name:=DefaultObjectInspectorName;
+  ObjectInspector1.BorderStyle:=bsSizeable;
+  ObjectInspector1.ShowFavorites:=True;
+  ObjectInspector1.ShowRestricted:=True;
+  ObjectInspector1.Favourites:=LoadOIFavouriteProperties;
+  ObjectInspector1.FindDeclarationPopupmenuItem.Visible:=true;
+  ObjectInspector1.OnAddToFavourites:=@OIOnAddToFavourites;
+  ObjectInspector1.OnFindDeclarationOfProperty:=@OIOnFindDeclarationOfProperty;
+  ObjectInspector1.OnUpdateRestricted := @OIOnUpdateRestricted;
+  ObjectInspector1.OnRemainingKeyDown:=@OIRemainingKeyDown;
+  ObjectInspector1.OnRemoveFromFavourites:=@OIOnRemoveFromFavourites;
+  ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
+  ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
+  ObjectInspector1.OnViewRestricted:=@OIOnViewRestricted;
+  ObjectInspector1.OnSelectionChange:=@OIOnSelectionChange;
+  ObjectInspector1.OnPropertyHint:=@OIOnPropertyHint;
+  ObjectInspector1.OnDestroy:=@OIOnDestroy;
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
+  IDEWindowCreators.Add(ObjectInspector1.Name,nil,'0','125','230','80%',
+                        NonModalIDEWindowNames[nmiwSourceNoteBookName],alLeft);
+  MakeIDEWindowDockable(ObjectInspector1);
+
   EnvironmentOptions.IDEWindowLayoutList.Apply(ObjectInspector1,
                                                DefaultObjectInspectorName);
   with EnvironmentOptions do begin
@@ -2172,12 +2184,49 @@ begin
   FRemoteControlTimer.Enabled:=true;
 end;
 
-procedure TMainIDE.ReOpenIDEWindows;
+procedure TMainIDE.SetupIDEWindowsLayout;
+begin
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwCodeExplorerName],
+    @CreateIDEWindow,
+    '72%','130','170','70%',NonModalIDEWindowNames[nmiwSourceNoteBookName],alRight);
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwMessagesViewName],
+    @CreateIDEWindow,
+    '230','75%','70%','100',NonModalIDEWindowNames[nmiwSourceNoteBookName],alBottom);
+
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwUnitDependenciesName],
+    @CreateIDEWindow,'200','200','','');
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwFPDocEditorName],
+    @CreateIDEWindow,'250','75%','70%','120');
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwClipbrdHistoryName],
+    @CreateIDEWindow,'250','200','','');
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwProjectInspector],
+    @CreateIDEWindow,'200','150','300','400');
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSearchResultsViewName],
+    @CreateIDEWindow,'250','250','70%','300');
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwAnchorEditor],
+    @CreateIDEWindow,'250','250','','');
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwCodeBrowser],
+    @CreateIDEWindow,'200','200','650','500');
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwIssueBrowser],
+    @CreateIDEWindow,'250','250','','');
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwJumpHistory],
+    @CreateIDEWindow,'250','250','','');
+  IDEWindowCreators.Add(ComponentListFormName,
+    @CreateIDEWindow,'250','250','','');
+end;
+
+procedure TMainIDE.RestoreIDEWindows;
 var
   i: Integer;
   ALayout: TSimpleWindowLayout;
   FormEnum: TNonModalIDEWindow;
 begin
+  if IDEDockMaster<>nil then
+  begin
+    IDEDockMaster.LoadDefaultLayout;
+    exit;
+  end;
+
   for i:=0 to EnvironmentOptions.IDEWindowLayoutList.Count-1 do begin
     ALayout:=EnvironmentOptions.IDEWindowLayoutList[i];
     if not ALayout.Visible then continue;
@@ -2185,17 +2234,17 @@ begin
     if FormEnum in NonModalIDEWindowManualOpen then continue;
     case FormEnum of
     nmiwUnitDependenciesName:
-      DoViewUnitDependencies;
+      DoViewUnitDependencies(true);
     nmiwProjectInspector:
-      DoShowProjectInspector;
+      DoShowProjectInspector(true);
     nmiwCodeBrowser:
-      DoShowCodeBrowser;
+      DoShowCodeBrowser(true);
     nmiwCodeExplorerName:
-      DoShowCodeExplorer;
+      DoShowCodeExplorer(true);
     nmiwFPDocEditorName:
-      DoShowFPDocEditor;
+      DoShowFPDocEditor(true);
     nmiwAnchorEditor:
-      DoViewAnchorEditor;
+      DoViewAnchorEditor(true);
     nmiwMessagesViewName:
       DoShowMessagesView;
     nmiwDbgOutput:
@@ -2573,7 +2622,7 @@ end;
 
 procedure TMainIDE.mnuViewAnchorEditorClicked(Sender: TObject);
 begin
-  DoViewAnchorEditor;
+  DoViewAnchorEditor(true);
 end;
 
 procedure TMainIDE.mnuViewComponentPaletteClicked(Sender: TObject);
@@ -3026,19 +3075,19 @@ begin
     MessagesView.EnsureVisible;
 
   ecToggleCodeExpl:
-    DoShowCodeExplorer;
+    DoShowCodeExplorer(true);
 
   ecToggleCodeBrowser:
-    DoShowCodeBrowser;
+    DoShowCodeBrowser(true);
 
   ecToggleRestrictionBrowser:
-    DoShowRestrictionBrowser;
+    DoShowRestrictionBrowser(true);
 
   ecViewComponents:
-    DoShowComponentList;
+    DoShowComponentList(true);
 
   ecToggleFPDocEditor:
-    DoShowFPDocEditor;
+    DoShowFPDocEditor(true);
 
   ecViewUnits:
     DoViewUnitsAndForms(false);
@@ -3047,7 +3096,7 @@ begin
     DoViewUnitsAndForms(true);
 
   ecProjectInspector:
-    DoShowProjectInspector;
+    DoShowProjectInspector(true);
 
   ecConfigCustomComps:
     PkgBoss.ShowConfigureCustomComponents;
@@ -3381,11 +3430,12 @@ begin
   LCLIntf.ShowWindow(AForm.Handle,SW_SHOWNORMAL);
 end;
 
-procedure TMainIDE.DoViewAnchorEditor;
+procedure TMainIDE.DoViewAnchorEditor(Show: boolean);
 begin
   if AnchorDesigner=nil then
     AnchorDesigner:=TAnchorDesigner.Create(OwningComponent);
-  AnchorDesigner.EnsureVisible(true);
+  if Show then
+    AnchorDesigner.EnsureVisible(true);
 end;
 
 procedure TMainIDE.DoToggleViewComponentPalette;
@@ -3549,7 +3599,7 @@ end;
 
 Procedure TMainIDE.mnuViewUnitDependenciesClicked(Sender: TObject);
 begin
-  DoViewUnitDependencies;
+  DoViewUnitDependencies(true);
 end;
 
 procedure TMainIDE.mnuViewUnitInfoClicked(Sender: TObject);
@@ -3559,22 +3609,22 @@ end;
 
 Procedure TMainIDE.mnuViewCodeExplorerClick(Sender: TObject);
 begin
-  DoShowCodeExplorer;
+  DoShowCodeExplorer(true);
 end;
 
 Procedure TMainIDE.mnuViewCodeBrowserClick(Sender: TObject);
 begin
-  DoShowCodeBrowser;
+  DoShowCodeBrowser(true);
 end;
 
 Procedure TMainIDE.mnuViewComponentsClick(Sender: TObject);
 begin
-  DoShowComponentList;
+  DoShowComponentList(true);
 end;
 
 procedure TMainIDE.mnuViewRestrictionBrowserClick(Sender: TObject);
 begin
-  DoShowRestrictionBrowser;
+  DoShowRestrictionBrowser(true);
 end;
 
 Procedure TMainIDE.mnuViewMessagesClick(Sender: TObject);
@@ -3783,7 +3833,7 @@ end;
 
 procedure TMainIDE.mnuProjectInspectorClicked(Sender: TObject);
 begin
-  DoShowProjectInspector;
+  DoShowProjectInspector(true);
 end;
 
 procedure TMainIDE.mnuAddToProjectClicked(Sender: TObject);
@@ -4036,7 +4086,7 @@ end;
 
 procedure TMainIDE.mnuViewFPDocEditorClicked(Sender: TObject);
 begin
-  DoShowFPDocEditor;
+  DoShowFPDocEditor(true);
 end;
 
 procedure TMainIDE.mnuToolConvertDFMtoLFMClicked(Sender: TObject);
@@ -8355,6 +8405,7 @@ function TMainIDE.DoOpenEditorFile(AFileName: string; PageIndex,
 begin
   Result := DoOpenEditorFile(AFileName, PageIndex, WindowIndex, nil, Flags);
 end;
+
 function TMainIDE.DoOpenEditorFile(AFileName: string; PageIndex,
   WindowIndex: integer; AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags
   ): TModalResult;
@@ -8876,10 +8927,9 @@ begin
   Result := mrOk;
 end;
 
-procedure TMainIDE.DoViewUnitDependencies;
+procedure TMainIDE.DoViewUnitDependencies(Show: boolean);
 var
   WasVisible: boolean;
-  ALayout: TSimpleWindowLayout;
 begin
   if UnitDependenciesView=nil then begin
     UnitDependenciesView:=TUnitDependenciesView.Create(OwningComponent);
@@ -8902,12 +8952,25 @@ begin
     end;
   end;
 
-  UnitDependenciesView.Show;
-  ALayout:=EnvironmentOptions.IDEWindowLayoutList.
-    ItemByEnum(nmiwUnitDependenciesName);
-  ALayout.Apply;
-  if not WasVisible then
-    UnitDependenciesView.ShowOnTop;
+  if Show then
+  begin
+    EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwUnitDependenciesName).Apply;
+    UnitDependenciesView.Show;
+    if (not WasVisible) then
+      UnitDependenciesView.ShowOnTop;
+  end;
+end;
+
+procedure TMainIDE.DoViewJumpHistory(Show: boolean);
+begin
+  if JumpHistoryViewWin=nil then begin
+    JumpHistoryViewWin:=TJumpHistoryViewWin.Create(OwningComponent);
+    with JumpHistoryViewWin do begin
+      OnSelectionChanged := @JumpHistoryViewSelectionChanged;
+    end;
+  end;
+  if Show then
+    JumpHistoryViewWin.ShowOnTop;
 end;
 
 procedure TMainIDE.DoViewUnitInfo;
@@ -8939,7 +9002,7 @@ begin
     DoGotoIncludeDirective;
 end;
 
-procedure TMainIDE.DoShowCodeExplorer;
+procedure TMainIDE.DoShowCodeExplorer(Show: boolean);
 begin
   if CodeExplorerView=nil then 
   begin
@@ -8950,36 +9013,107 @@ begin
     CodeExplorerView.OnShowOptions:=@OnCodeExplorerShowOptions;
   end;
 
-  EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwCodeExplorerName).Apply;
-  CodeExplorerView.ShowOnTop;
-  CodeExplorerView.Refresh(true);
+  if Show then
+  begin
+    EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwCodeExplorerName).Apply;
+    CodeExplorerView.ShowOnTop;
+    CodeExplorerView.Refresh(true);
+  end;
 end;
 
-procedure TMainIDE.DoShowCodeBrowser;
+procedure TMainIDE.DoShowCodeBrowser(Show: boolean);
 begin
   CreateCodeBrowser;
-  CodeBrowserView.ShowOnTop;
+  if Show then
+    CodeBrowserView.ShowOnTop;
 end;
 
-procedure TMainIDE.DoShowRestrictionBrowser(const RestrictedName: String);
+procedure TMainIDE.DoShowRestrictionBrowser(Show: boolean;
+  const RestrictedName: String);
 begin
   if RestrictionBrowserView = nil then
     RestrictionBrowserView := TRestrictionBrowserView.Create(OwningComponent);
 
   RestrictionBrowserView.SetIssueName(RestrictedName);
-  RestrictionBrowserView.ShowOnTop;
+  if Show then
+    RestrictionBrowserView.ShowOnTop;
 end;
 
-procedure TMainIDE.DoShowComponentList;
+procedure TMainIDE.DoShowComponentList(Show: boolean);
 begin
-  if not Assigned(ComponentListForm)
-  then ComponentListForm := TComponentListForm.Create(OwningComponent);
-  ComponentListForm.Show;
+  if not Assigned(ComponentListForm) then
+  begin
+    ComponentListForm := TComponentListForm.Create(OwningComponent);
+    ComponentListForm.Name:=ComponentListFormName;
+  end;
+  if Show then
+    ComponentListForm.Show;
 end;
 
-procedure TMainIDE.DoShowFPDocEditor;
+procedure TMainIDE.CreateIDEWindow(Sender: TObject; aFormName: string; var
+  AForm: TCustomForm);
+
+  function ItIs(Prefix: string): boolean;
+  begin
+    Result:=SysUtils.CompareText(copy(aFormName,1,length(Prefix)),Prefix)=0;
+  end;
+
 begin
-  FPDocEditWindow.DoShowFPDocEditor;
+  if ItIs(NonModalIDEWindowNames[nmiwMessagesViewName]) then
+    AForm:=MessagesView
+  else if ItIs(NonModalIDEWindowNames[nmiwUnitDependenciesName]) then
+  begin
+    DoViewUnitDependencies(false);
+    AForm:=UnitDependenciesView;
+  end
+  else if ItIs(NonModalIDEWindowNames[nmiwCodeExplorerName]) then
+  begin
+    DoShowCodeExplorer(false);
+    AForm:=CodeExplorerView;
+  end
+  else if ItIs(NonModalIDEWindowNames[nmiwFPDocEditorName]) then
+  begin
+    DoShowFPDocEditor(false);
+    AForm:=FPDocEditor;
+  end
+  // ToDo: nmiwClipbrdHistoryName:
+  else if ItIs(NonModalIDEWindowNames[nmiwProjectInspector]) then
+  begin
+    DoShowProjectInspector(false);
+    AForm:=ProjInspector;
+  end
+  else if ItIs(NonModalIDEWindowNames[nmiwSearchResultsViewName]) then
+  begin
+    DoShowSearchResultsView(false);
+    AForm:=SearchResultsView;
+  end
+  else if ItIs(NonModalIDEWindowNames[nmiwAnchorEditor]) then
+  begin
+    DoViewAnchorEditor(false);
+    AForm:=AnchorDesigner;
+  end
+  else if ItIs(NonModalIDEWindowNames[nmiwCodeBrowser]) then
+  begin
+    DoShowCodeBrowser(false);
+    AForm:=CodeBrowserView;
+  end
+  else if ItIs(NonModalIDEWindowNames[nmiwIssueBrowser]) then
+  begin
+    DoShowRestrictionBrowser(false);
+    AForm:=RestrictionBrowserView;
+  end
+  else if ItIs(NonModalIDEWindowNames[nmiwJumpHistory]) then
+  begin
+    DoViewJumpHistory(false);
+    AForm:=JumpHistoryViewWin;
+  end
+  else if ItIs(ComponentListFormName) then
+  begin
+    DoShowComponentList(false);
+    AForm:=ComponentListForm;
+  end
+  else
+    raise Exception.Create('TMainIDE.CreateIDEWindow invalid formname: '+aFormName);
 end;
 
 function TMainIDE.CreateNewUniqueFilename(const Prefix, Ext: string;
@@ -9990,7 +10124,7 @@ begin
   end;
 end;
 
-function TMainIDE.DoShowProjectInspector: TModalResult;
+procedure TMainIDE.DoShowProjectInspector(Show: boolean);
 begin
   if ProjInspector=nil then begin
     ProjInspector:=TProjectInspectorForm.Create(OwningComponent);
@@ -10006,8 +10140,8 @@ begin
 
     ProjInspector.LazProject:=Project1;
   end;
-  ProjInspector.ShowOnTop;
-  Result:=mrOk;
+  if Show then
+    ProjInspector.ShowOnTop;
 end;
 
 function TMainIDE.DoCreateProjectForProgram(
@@ -12649,19 +12783,20 @@ begin
     MessagesView.OnSelectionChanged := @MessagesViewSelectionChanged;
 end;
 
-procedure TMainIDE.DoShowSearchResultsView;
+procedure TMainIDE.DoShowSearchResultsView(Show: boolean);
 var
   WasVisible: boolean;
-  ALayout: TSimpleWindowLayout;
 begin
   WasVisible := SearchResultsView.Visible;
-  SearchResultsView.Visible:=true;
-  ALayout:=EnvironmentOptions.IDEWindowLayoutList.
-    ItemByEnum(nmiwSearchResultsViewName);
-  ALayout.Apply;
-  if not WasVisible then
-    // the sourcenotebook is more interesting than the messages
-    SourceEditorManager.ShowActiveWindowOnTop(False);
+  if Show then
+  begin
+    SearchResultsView.Visible:=true;
+    EnvironmentOptions.IDEWindowLayoutList.
+      ItemByEnum(nmiwSearchResultsViewName).Apply;
+    if not WasVisible then
+      // the sourcenotebook is more interesting than the messages
+      SourceEditorManager.ShowActiveWindowOnTop(False);
+  end;
 
   //set the event here for the selectionchanged event
   if not assigned(SearchresultsView.OnSelectionChanged) then
@@ -15729,13 +15864,7 @@ end;
 
 Procedure TMainIDE.OnSrcNotebookViewJumpHistory(Sender: TObject);
 begin
-  if JumpHistoryViewWin=nil then begin
-    JumpHistoryViewWin:=TJumpHistoryViewWin.Create(OwningComponent);
-    with JumpHistoryViewWin do begin
-      OnSelectionChanged := @JumpHistoryViewSelectionChanged;
-    end;
-  end;
-  JumpHistoryViewWin.ShowOnTop;
+  DoViewUnitDependencies(true);
 end;
 
 procedure TMainIDE.OnSrcNoteBookPopupMenu(
@@ -17036,7 +17165,6 @@ var
 begin
   if (ALayout=nil) or (ALayout.Form=nil) then exit;
   // debugln('TMainIDE.OnApplyWindowLayout ',ALayout.Form.Name,' ',ALayout.Form.Classname,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' ',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,' ',ALayout.Top,' ',ALayout.Width,' ',ALayout.Height);
-  ALayout.Form.Constraints.MaxHeight:=0;
   if ALayout.Form<>MainIDEBar then
     MakeIDEWindowDockable(ALayout.Form);
 
@@ -17094,7 +17222,11 @@ begin
       exit;
     end;
   end;
+
   // no layout found => use default
+
+
+
   BarBottom:=MainIDEBar.Top+MainIDEBar.Height;
   // default window positions
   case WindowType of

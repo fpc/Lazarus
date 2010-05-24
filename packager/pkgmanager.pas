@@ -50,18 +50,18 @@ uses
   CodeToolsConfig, CodeToolManager, CodeCache, NonPascalCodeTools,
   BasicCodeTools, DefineTemplates, FileProcs, AVL_Tree, Laz_XMLCfg,
   // IDE Interface
-  SrcEditorIntf, IDEExternToolIntf, NewItemIntf, ProjectIntf, PackageIntf, MenuIntf,
-  PropEdits, IDEMsgIntf, MacroIntf, LazIDEIntf,
+  SrcEditorIntf, IDEExternToolIntf, NewItemIntf, ProjectIntf, PackageIntf,
+  MenuIntf, IDEWindowIntf, PropEdits, IDEMsgIntf, MacroIntf, LazIDEIntf,
   // IDE
   LazConf, LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, IDECommands,
-  EnvironmentOpts, MiscOptions, InputHistory, ProjectDefs, Project,
-  ComponentReg, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
-  PackageLinks, PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer,
-  BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg, IDETranslations,
-  TransferMacros, MsgView, BuildLazDialog, NewDialog, IDEDialogs, TodoList,
-  ProjectInspector, ComponentPalette, SourceEditor, AddFileToAPackageDlg,
-  LazarusPackageIntf, PublishProjectDlg, PkgLinksDlg, InstallPkgSetDlg,
-  ConfirmPkgListDlg,
+  IDEOptionDefs, EnvironmentOpts, MiscOptions, InputHistory, ProjectDefs,
+  Project, ComponentReg, UComponentManMain, PackageEditor, AddToPackageDlg,
+  PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
+  PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg,
+  IDETranslations, TransferMacros, MsgView, BuildLazDialog, NewDialog,
+  IDEDialogs, TodoList, ProjectInspector, ComponentPalette, SourceEditor,
+  AddFileToAPackageDlg, LazarusPackageIntf, PublishProjectDlg, PkgLinksDlg,
+  InstallPkgSetDlg, ConfirmPkgListDlg,
   // bosses
   BaseBuildManager, BasePkgManager,
   MainBar, MainIntf, MainBase;
@@ -158,6 +158,8 @@ type
     procedure OnCheckInstallPackageList(PkgIDList: TFPList; var Ok: boolean);
     function LoadDependencyList(FirstDependency: TPkgDependency): TModalResult;
     procedure OnOpenPackageForCurrentSrcEditFile(Sender: TObject);
+    procedure CreateIDEWindow(Sender: TObject; aFormName: string;
+                              var AForm: TCustomForm);
   private
     // helper functions
     FLastLazarusSrcDir: string;
@@ -228,7 +230,7 @@ type
 
     // package graph
     function AddPackageToGraph(APackage: TLazPackage; Replace: boolean): TModalResult;
-    function DoShowPackageGraph: TModalResult;
+    procedure DoShowPackageGraph(Show: boolean);
     procedure DoShowPackageGraphPathList(PathList: TFPList); override;
     function ShowBrokenDependenciesReport(Dependencies: TFPList): TModalResult;
     procedure RebuildDefineTemplates; override;
@@ -397,7 +399,7 @@ end;
 
 procedure TPkgManager.MainIDEitmPkgPkgGraphClick(Sender: TObject);
 begin
-  DoShowPackageGraph;
+  DoShowPackageGraph(true);
 end;
 
 procedure TPkgManager.MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
@@ -714,6 +716,16 @@ begin
     DoOpenPackage(PkgFile.LazPackage,[],false);
 end;
 
+procedure TPkgManager.CreateIDEWindow(Sender: TObject; aFormName: string; var
+  AForm: TCustomForm);
+begin
+  if SysUtils.CompareText(aFormName,NonModalIDEWindowNames[nmiwPkgGraphExplorer])=0
+  then begin
+    DoShowPackageGraph(false);
+    AForm:=PackageGraphExplorer;
+  end;
+end;
+
 procedure TPkgManager.MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
 begin
   DoAddActiveUnitToAPackage;
@@ -955,7 +967,8 @@ function TPkgManager.PackageGraphExplorerOpenProject(Sender: TObject;
   AProject: TProject): TModalResult;
 begin
   if AProject<>Project1 then exit(mrCancel);
-  Result:=MainIDE.DoShowProjectInspector;
+  MainIDE.DoShowProjectInspector(true);
+  Result:=mrOk;
 end;
 
 procedure TPkgManager.PackageGraphAddPackage(Pkg: TLazPackage);
@@ -1526,7 +1539,7 @@ begin
         if Dependency is TPkgDependency then begin
           // check if project
           if Dependency.Owner is TProject then begin
-            MainIDE.DoShowProjectInspector;
+            MainIDE.DoShowProjectInspector(true);
             Result:=IDEMessageDialog(lisPkgMangBrokenDependency,
               Format(lisPkgMangTheProjectRequiresThePackageButItWasNotFound, [
                 '"', Dependency.AsString, '"', #13]),
@@ -1863,6 +1876,9 @@ begin
   end;
   
   SetRecentPackagesMenu;
+
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwPkgGraphExplorer],
+                        @CreateIDEWindow,'250','200','400','300');
 end;
 
 procedure TPkgManager.ConnectSourceNotebookEvents;
@@ -2620,7 +2636,7 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.DoShowPackageGraph: TModalResult;
+procedure TPkgManager.DoShowPackageGraph(Show: boolean);
 begin
   if PackageGraphExplorer=nil then begin
     PackageGraphExplorer:=TPkgGraphExplorerDlg.Create(Application);
@@ -2628,8 +2644,8 @@ begin
     PackageGraphExplorer.OnOpenProject:=@PackageGraphExplorerOpenProject;
     PackageGraphExplorer.OnUninstallPackage:=@PackageGraphExplorerUninstallPackage;
   end;
-  PackageGraphExplorer.ShowOnTop;
-  Result:=mrOk;
+  if Show then
+    PackageGraphExplorer.ShowOnTop;
 end;
 
 function TPkgManager.DoCloseAllPackageEditors: TModalResult;
@@ -2646,7 +2662,7 @@ end;
 
 procedure TPkgManager.DoShowPackageGraphPathList(PathList: TFPList);
 begin
-  if DoShowPackageGraph<>mrOk then exit;
+  DoShowPackageGraph(true);
   PackageGraphExplorer.ShowPath(PathList);
 end;
 
@@ -2674,7 +2690,7 @@ begin
   if (ADependency.Owner is TProject) then begin
     // broken dependency used by project -> show project inspector
     if ADependency.Owner=Project1 then begin
-      Result:=MainIDE.DoShowProjectInspector;
+      MainIDE.DoShowProjectInspector(true);
       Msg:=Format(lisSeeProjectProjectInspector, [Msg]);
     end;
   end;

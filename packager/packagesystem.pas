@@ -1649,7 +1649,6 @@ begin
     AddFile('newitemintf.pas','NewItemIntf',pftUnit,[],cpBase);
     AddFile('macrointf.pas','MacroIntf',pftUnit,[],cpBase);
     AddFile('menuintf.pas','MenuIntf',pftUnit,[],cpBase);
-    AddFile('newintf.pas','NewIntf',pftUnit,[],cpBase);
     AddFile('objectinspector.pp','ObjectInspector',pftUnit,[],cpBase);
     AddFile('objinspstrconsts.pas','ObjInspStrConsts',pftUnit,[],cpBase);
     AddFile('packageintf.pas','PackageIntf',pftUnit,[],cpBase);
