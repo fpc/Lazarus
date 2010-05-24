@@ -37,19 +37,21 @@ interface
 {off $define VerboseDebugger}
 
 uses
-{$IFDEF IDE_MEM_CHECK}
+  {$IFDEF IDE_MEM_CHECK}
   MemCheck,
-{$ENDIF}
+  {$ENDIF}
+  // LCL
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, ExtCtrls, FileUtil, LCLProc,
-  Laz_XMLCfg,
-  { for Get/SetForegroundWindow }
   LCLType, LCLIntf,
-  SynEdit, CodeCache, CodeToolManager,
-  SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, ProjectIntf, IDEDialogs,
-  LazConf,
-  CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, SourceEditor,
-  ProjectDefs, Project, IDEProcs, InputHistory, Debugger, CmdLineDebugger,
-  IDEOptionDefs, LazarusIDEStrConsts,
+  // SynEdit, codetools
+  Laz_XMLCfg, SynEdit, CodeCache, CodeToolManager,
+  // IDEIntf
+  IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
+  IDEDialogs,
+  // IDE
+  LazConf, CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping,
+  SourceEditor, ProjectDefs, Project, IDEProcs, InputHistory, Debugger,
+  CmdLineDebugger, IDEOptionDefs, LazarusIDEStrConsts,
   MainBar, MainIntf, MainBase, BaseBuildManager,
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
@@ -113,6 +115,8 @@ type
                                            var ASrcEdit: TSourceEditor);
 
     // Dialog routines
+    procedure CreateDebugDialog(Sender: TObject; aFormName: string;
+                                var AForm: TCustomForm);
     procedure DestroyDebugDialog(const ADialogType: TDebugDialogType);
     procedure InitDebugOutputDlg;
     procedure InitDebugEventsDlg;
@@ -183,7 +187,7 @@ type
     function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; override;
     function ShowWatchProperties(const AWatch: TIDEWatch; AWatchExpression: String = ''): TModalresult; override;
 
-    procedure ViewDebugDialog(const ADialogType: TDebugDialogType; BringToFront: Boolean = true); override;
+    procedure ViewDebugDialog(const ADialogType: TDebugDialogType; BringToFront: Boolean = true; Show: Boolean = true); override;
   end;
 
 
@@ -1737,7 +1741,7 @@ begin
 end;
 
 procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType;
-  BringToFront: Boolean);
+  BringToFront: Boolean; Show: Boolean);
 const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
     TDbgOutputForm, TDbgEventsForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg,
@@ -1754,7 +1758,6 @@ begin
     CurDialog.Name:=NonModalIDEWindowNames[DebugDlgIDEWindow[ADialogType]];
     CurDialog.Tag := Integer(ADialogType);
     CurDialog.OnDestroy := @DebugDialogDestroy;
-    EnvironmentOptions.IDEWindowLayoutList.Apply(CurDialog,CurDialog.Name);
     case ADialogType of
       ddtOutput:      InitDebugOutputDlg;
       ddtEvents:      InitDebugEventsDlg;
@@ -1776,10 +1779,14 @@ begin
         TBreakPointsDlg(CurDialog).BaseDirectory:=Project1.ProjectDirectory;
     end;
   end;
-  if BringToFront then
-    FDialogs[ADialogType].ShowOnTop
-  else
-    FDialogs[ADialogType].Show;
+  if Show then
+  begin
+    EnvironmentOptions.IDEWindowLayoutList.Apply(CurDialog,CurDialog.Name);
+    if BringToFront then
+      FDialogs[ADialogType].ShowOnTop
+    else
+      FDialogs[ADialogType].Show;
+  end;
 end;
 
 procedure TDebugManager.DestroyDebugDialog(const ADialogType: TDebugDialogType);
@@ -1956,6 +1963,8 @@ begin
 end;
 
 procedure TDebugManager.ConnectMainBarEvents;
+var
+  DlgType: TDebugDialogType;
 begin
   with MainIDEBar do begin
     itmViewWatches.OnClick := @mnuViewDebugDialogClick;
@@ -1986,6 +1995,10 @@ begin
     itmRunMenuAddWatch.OnClick := @mnuAddWatchClicked;
 //    itmRunMenuAddBpSource.OnClick := @;
   end;
+
+  for DlgType:=Low(TDebugDialogType) to High(TDebugDialogType) do
+    IDEWindowCreators.Add(NonModalIDEWindowNames[DebugDlgIDEWindow[DlgType]],
+      @CreateDebugDialog,'','','','');
 end;
 
 procedure TDebugManager.ConnectSourceNotebookEvents;
@@ -2180,6 +2193,27 @@ begin
     ASrcEdit:=SourceEditorManager.SourceEditorIntfWithFilename(ABreakpoint.Source)
   else
     ASrcEdit:=nil;
+end;
+
+procedure TDebugManager.CreateDebugDialog(Sender: TObject; aFormName: string;
+  var AForm: TCustomForm);
+
+  function ItIs(Prefix: string): boolean;
+  begin
+    Result:=SysUtils.CompareText(copy(aFormName,1,length(Prefix)),Prefix)=0;
+  end;
+
+var
+  DlgType: TDebugDialogType;
+begin
+  for DlgType:=Low(TDebugDialogType) to High(TDebugDialogType) do
+    if ItIs(NonModalIDEWindowNames[DebugDlgIDEWindow[DlgType]]) then
+    begin
+      ViewDebugDialog(DlgType,false,false);
+      AForm:=FDialogs[DlgType];
+      exit;
+    end;
+  raise Exception.Create('TDebugManager.CreateDebugDialog invalid FormName "'+aFormName+'"');
 end;
 
 procedure TDebugManager.ClearDebugOutputLog;
