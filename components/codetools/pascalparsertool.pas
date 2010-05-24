@@ -3953,15 +3953,6 @@ begin
       CurNode.Desc:=ctnIdentifier;
       CurNode.EndPos:=CurPos.StartPos;
     end;
-    if UpAtomIs('PLATFORM') or UpAtomIs('UNIMPLEMENTED') or
-       UpAtomIs('EXPERIMENTAL') or UpAtomIs('LIBRARY')
-    then
-      ReadNextAtom;
-    if UpAtomIs('DEPRECATED') then begin
-      ReadNextAtom;
-      if AtomIsStringConstant then
-        ReadConstant(true,false,[]);
-    end;
   end else begin
     // enum or subrange
     ReadTillTypeEnd;
@@ -3999,6 +3990,15 @@ begin
       end else
         SaveRaiseException(ctsInvalidType);
     end;
+  end;
+  if UpAtomIs('PLATFORM') or UpAtomIs('UNIMPLEMENTED') or
+     UpAtomIs('EXPERIMENTAL') or UpAtomIs('LIBRARY')
+  then
+    ReadNextAtom;
+  if UpAtomIs('DEPRECATED') then begin
+    ReadNextAtom;
+    if AtomIsStringConstant then
+      ReadConstant(true,false,[]);
   end;
   EndChildNode;
   Result:=true;
