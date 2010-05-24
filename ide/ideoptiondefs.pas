@@ -161,8 +161,6 @@ type
                                 //   at start
     );
   TIDEWindowPlacements = set of TIDEWindowPlacement;
-  TIDEWindowDockMode = (iwdmDefault, iwdmLeft, iwdmRight, iwdmTop, iwdmBottom);
-  TIDEWindowDockModes = set of TIDEWindowDockMode;
   TIDEWindowState = (iwsNormal, iwsMaximized, iwsMinimized, iwsHidden);
   TIDEWindowStates = set of TIDEWindowState;
   
@@ -186,10 +184,6 @@ type
     fWindowState: TIDEWindowState;
     fWindowStatesAllowed: TIDEWindowStates;
     fForm: TCustomForm;
-    fDockParent: string;
-    fDockChilds: TStringList;
-    fDockMode: TIDEWindowDockMode;
-    fDockModesAllowed: TIDEWindowDockModes;
     fFormID: string;
     fOnGetDefaultIDEWindowPos: TOnGetDefaultIDEWindowPos;
     fOnApply: TOnApplySimpleWindowLayout;
@@ -198,12 +192,9 @@ type
     function GetXMLFormID: string;
     procedure SetFormID(const AValue: string);
     procedure SetOnGetDefaultIDEWindowPos(const AValue: TOnGetDefaultIDEWindowPos);
-    procedure SetDockModesAllowed(const AValue: TIDEWindowDockModes);
     procedure SetVisible(const AValue: boolean);
     procedure SetWindowPlacementsAllowed(const AValue: TIDEWindowPlacements);
     procedure SetWindowStatesAllowed(const AValue: TIDEWindowStates);
-    procedure SetDockMode(const AValue: TIDEWindowDockMode);
-    procedure SetDockParent(const AValue: string);
     procedure SetForm(const AValue: TCustomForm);
     procedure SetWindowState(const AValue: TIDEWindowState);
     procedure SetLeft(const AValue: integer);
@@ -243,12 +234,6 @@ type
     property WindowStatesAllowed: TIDEWindowStates
       read fWindowStatesAllowed write SetWindowStatesAllowed;
     property Form: TCustomForm read fForm write SetForm;
-    property DockParent: string
-      read fDockParent write SetDockParent; // for format see GetFormId
-    property DockMode: TIDEWindowDockMode read fDockMode write SetDockMode;
-    property DockModesAllowed: TIDEWindowDockModes
-      read fDockModesAllowed write SetDockModesAllowed;
-    property DockChilds: TStringList read fDockChilds; // list of FormIDs
     property Visible: boolean read FVisible write SetVisible;
     property OnGetDefaultIDEWindowPos: TOnGetDefaultIDEWindowPos
       read fOnGetDefaultIDEWindowPos write SetOnGetDefaultIDEWindowPos;
@@ -283,9 +268,6 @@ type
   end;
   
 const
-  IDEWindowDockModeNames: array[TIDEWindowDockMode] of string = (
-      'Default', 'Left', 'Right', 'Top', 'Bottom'
-    );
   IDEWindowPlacementNames: array[TIDEWindowPlacement] of string = (
       'UseWindowManagerSetting',
       'Default',
@@ -297,7 +279,6 @@ const
       'Normal', 'Maximized', 'Minimized', 'Hidden'
     );
 
-function StrToIDEWindowDockMode(const s: string): TIDEWindowDockMode;
 function StrToIDEWindowPlacement(const s: string): TIDEWindowPlacement;
 function StrToIDEWindowState(const s: string): TIDEWindowState;
 
@@ -309,13 +290,6 @@ function GetLazIDEConfigStorage(const Filename: string; LoadFromDisk: Boolean
 
 implementation
 
-
-function StrToIDEWindowDockMode(const s: string): TIDEWindowDockMode;
-begin
-  for Result:=Low(TIDEWindowDockMode) to High(TIDEWindowDockMode) do
-    if AnsiCompareText(s,IDEWindowDockModeNames[Result])=0 then exit;
-  Result:=iwdmDefault;
-end;
 
 function StrToIDEWindowPlacement(const s: string): TIDEWindowPlacement;
 begin
@@ -418,20 +392,17 @@ end;
 constructor TSimpleWindowLayout.Create;
 begin
   inherited Create;
-  fDockChilds:=TStringList.Create;
   fDefaultWindowPlacement:=iwpDefault;
   Clear;
   fWindowPlacementsAllowed:=
     [Low(TIDEWindowPlacement)..High(TIDEWindowPlacement)];
   fWindowStatesAllowed:=[Low(TIDEWindowState)..High(TIDEWindowState)];
-  fDockModesAllowed:=[Low(TIDEWindowDockMode)..High(TIDEWindowDockMode)];
 end;
 
 procedure TSimpleWindowLayout.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
-  P, DockChild: string;
-  DockChildCount, i: integer;
+  P: string;
 begin
   // set all values to default
   Clear;
@@ -452,17 +423,6 @@ begin
   // state
   fWindowState:=StrToIDEWindowState(XMLConfig.GetValue(
     P+'WindowState/Value',IDEWindowStateNames[fWindowState]));
-  // docking
-  fDockParent:=XMLConfig.GetValue(P+'Docking/Parent','');
-  DockChildCount:=XMLConfig.GetValue(P+'Docking/ChildCount',0);
-  for i:=0 to DockChildCount-1 do begin
-    DockChild:=XMLConfig.GetValue(P+'Docking/Child'+IntToStr(i),'');
-    if DockChild<>'' then begin
-      fDockChilds.Add(DockChild);
-    end;
-  end;
-  fDockMode:=StrToIDEWindowDockMode(XMLConfig.GetValue(
-    P+'DockMode/Value',IDEWindowDockModeNames[fDockMode]));
   FVisible:=XMLConfig.GetValue(P+'Visible/Value',false);
 end;
 
@@ -470,7 +430,6 @@ procedure TSimpleWindowLayout.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   P: string;
-  i: integer;
 begin
   // build path
   P:=GetXMLFormID;
@@ -488,13 +447,6 @@ begin
   XMLConfig.SetDeleteValue(P+'CustomPosition/Height',fHeight,0);
   // state
   XMLConfig.SetValue(P+'WindowState/Value',IDEWindowStateNames[fWindowState]);
-  // docking
-  XMLConfig.SetDeleteValue(P+'Docking/Parent',fDockParent,'');
-  XMLConfig.SetDeleteValue(P+'Docking/ChildCount',fDockChilds.Count,0);
-  for i:=0 to fDockChilds.Count-1 do begin
-    XMLConfig.SetDeleteValue(P+'Docking/Child'+IntToStr(i),fDockChilds[i],'');
-  end;
-  XMLConfig.SetValue(P+'DockMode/Value',IDEWindowDockModeNames[fDockMode]);
   XMLConfig.SetDeleteValue(P+'Visible/Value',FVisible,false);
 end;
 
@@ -585,20 +537,9 @@ begin
       Result[i]:='_';
 end;
 
-procedure TSimpleWindowLayout.SetDockParent(const AValue: string);
-begin
-  fDockParent:=AValue;
-end;
-
 destructor TSimpleWindowLayout.Destroy;
 begin
-  fDockChilds.Free;
   inherited Destroy;
-end;
-
-procedure TSimpleWindowLayout.SetDockMode(const AValue: TIDEWindowDockMode);
-begin
-  fDockMode:=AValue;
 end;
 
 procedure TSimpleWindowLayout.SetWindowStatesAllowed(
@@ -611,12 +552,6 @@ procedure TSimpleWindowLayout.SetWindowPlacementsAllowed(
   const AValue: TIDEWindowPlacements);
 begin
   fWindowPlacementsAllowed:=AValue;
-end;
-
-procedure TSimpleWindowLayout.SetDockModesAllowed(
-  const AValue: TIDEWindowDockModes);
-begin
-  fDockModesAllowed:=AValue;
 end;
 
 procedure TSimpleWindowLayout.SetVisible(const AValue: boolean);
@@ -639,9 +574,6 @@ begin
   fWidth:=0;
   fHeight:=0;
   fWindowState:=iwsNormal;
-  fDockParent:='';
-  fDockChilds.Clear;
-  fDockMode:=iwdmDefault;
 end;
 
 procedure TSimpleWindowLayout.SetFormID(const AValue: string);
@@ -690,10 +622,6 @@ begin
   fWindowState:=Layout.fWindowState;
   fWindowStatesAllowed:=Layout.fWindowStatesAllowed;
   fForm:=Layout.fForm;
-  fDockParent:=Layout.fDockParent;
-  fDockChilds.Assign(Layout.fDockChilds);
-  fDockMode:=Layout.fDockMode;
-  fDockModesAllowed:=Layout.fDockModesAllowed;
   fFormID:=Layout.fFormID;
   fOnGetDefaultIDEWindowPos:=Layout.fOnGetDefaultIDEWindowPos;
   fOnApply:=Layout.fOnApply;
