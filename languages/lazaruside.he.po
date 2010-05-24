@@ -4,7 +4,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Ido Kanner <idokan@gmail.com>\n"
 "Last-Translator: ezik shulamy <shulamy@regba.org.il>\n"
-"PO-Revision-Date: 2010-05-17 22:39+0200\n"
+"PO-Revision-Date: 2010-05-23 22:43+0200\n"
 "Project-Id-Version: lazaruside\n"
 "Language-Team: hebrew <he@li.org>\n"
 "X-Generator: KBabel 1.11.4\n"
@@ -923,11 +923,11 @@ msgctxt "lazarusidestrconsts.dlgdownword"
 msgid "Down"
 msgstr "למטה"
 
+# msgstr "בלוקים שלמים"
 #: lazarusidestrconsts.dlgedadd
 msgid "Add..."
 msgstr "הוסף ..."
 
-# msgstr "בלוקים שלמים"
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
 msgstr "אחורה"
@@ -3712,7 +3712,7 @@ msgstr "זהו פקד \"אח\" אליו מוצמד הצד התחתון. השאר
 
 #: lazarusidestrconsts.lisbottomspaceequally
 msgid "Bottom space equally"
-msgstr ""
+msgstr "רווח שווה בתחתית"
 
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
@@ -3828,7 +3828,7 @@ msgstr "אנא בדוק את ספריית הבדיקות תחת %sEnvironment ->
 
 #: lazarusidestrconsts.lisccocompilernotanexe
 msgid "The compiler \"%s\" is not an executable file.%sDetails: %s"
-msgstr ""
+msgstr "המהדר s% אינו קובץ ריצה. s% פרטים: s%"
 
 #: lazarusidestrconsts.lisccocontains
 msgid "contains "
@@ -4001,7 +4001,7 @@ msgstr "%s ב %s"
 
 #: lazarusidestrconsts.lisceisarootcontrol
 msgid "Is a root control"
-msgstr ""
+msgstr "הוא בשליטה של ה root"
 
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treating as \"many\""
@@ -4029,7 +4029,7 @@ msgstr "הצג קטגוריות"
 
 #: lazarusidestrconsts.liscemodeshowsourcenodes
 msgid "Show Source Nodes"
-msgstr ""
+msgstr "הראה צמתי קוד המקור"
 
 #: lazarusidestrconsts.liscenestedproccount
 msgid "Nested procedures count treating as \"many\""
@@ -4045,7 +4045,7 @@ msgstr "מרכז את הפקד בצורה מאונכת יחסית לאח שנב�
 
 #: lazarusidestrconsts.liscenterform
 msgid "Center form"
-msgstr ""
+msgstr "מרכז טופס"
 
 #: lazarusidestrconsts.liscenterinwindow
 msgid "Center in window"
@@ -4275,11 +4275,11 @@ msgstr "בחר בקוד המקור של התוכנה (*.pp,*.pas,*.lpr)"
 
 #: lazarusidestrconsts.lischoosestructuretoencloseselection
 msgid "Choose structure to enclose selection"
-msgstr ""
+msgstr "בחר מבנה נתונים לעטיפת הבחירה"
 
 #: lazarusidestrconsts.lischoosetestbuilddir
 msgid "Choose the directory for tests"
-msgstr ""
+msgstr "בחר את התיקיה עעבור בדיקות"
 
 #: lazarusidestrconsts.lisclasscompletion
 msgid "Class Completion"
@@ -4287,15 +4287,15 @@ msgstr "השלמת מחלקה"
 
 #: lazarusidestrconsts.lisclassconflictswithlfmfiletheunitusestheunitwhic
 msgid "Class conflicts with .lfm file:%sThe unit %s%suses the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
-msgstr ""
+msgstr "המחלקה מתנגשת עם קובץ ifm. היחידה s%s% משתמשת ביחידה s%s% אשר מכילה את המחלקה s%, אבל קובץ ה ifm. מכיל כבר מחלקה אחרת. יכולה להיות רק מחלקת עיצוב אחת ליחידה.הזז את s% ליחידה אחרת."
 
 #: lazarusidestrconsts.lisclassesandpropertiesexistvalueswerenotchecked
 msgid "Classes and properties exist. Values were not checked."
-msgstr ""
+msgstr "המחלקה והתכונות קיימות. הערכים לא בדוקים."
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
-msgstr ""
+msgstr "המחלקה s%s%s% אינה מחלקה רשומה. לא מצליח להדביק."
 
 #: lazarusidestrconsts.lisclassnotfound
 msgid "Class not found"
@@ -4303,7 +4303,7 @@ msgstr "המחלקה לא נמצאה"
 
 #: lazarusidestrconsts.lisclassofmethodnotfound
 msgid "Class %s%s%s of method %s%s%s not found."
-msgstr ""
+msgstr "המחלקה s%s%s% של מתודה s%s%s% לא נמצאה."
 
 #: lazarusidestrconsts.liscldircleandirectory
 msgid "Clean Directory"
@@ -4319,11 +4319,11 @@ msgstr "החזק את כל קבצי הטקסט"
 
 #: lazarusidestrconsts.liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
-msgstr ""
+msgstr "שמור קבצים המתאימים למסנן"
 
 #: lazarusidestrconsts.liscldirremovefilesmatchingfilter
 msgid "Remove files matching filter"
-msgstr ""
+msgstr "מחק קבצים המתאימים למסנן"
 
 #: lazarusidestrconsts.liscldirsimplesyntaxeginsteadof
 msgid "Simple Syntax (e.g. * instead of .*)"
@@ -4392,7 +4392,7 @@ msgstr "רשימה"
 
 #: lazarusidestrconsts.liscmplstpalette
 msgid "Palette"
-msgstr ""
+msgstr "לוח"
 
 #: lazarusidestrconsts.liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
@@ -4400,7 +4400,7 @@ msgstr "קובץ הגדרות המהדר שנוסף אינו חד משמעי"
 
 #: lazarusidestrconsts.liscocallon
 msgid "Call on:"
-msgstr ""
+msgstr "קרא ל:"
 
 #: lazarusidestrconsts.liscocallonbuild
 msgctxt "lazarusidestrconsts.liscocallonbuild"
@@ -4419,7 +4419,7 @@ msgstr "ריצה"
 
 #: lazarusidestrconsts.liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
-msgstr ""
+msgstr "לחץ על OK אם אתה בטוח שברצונך לעשות זאת."
 
 #: lazarusidestrconsts.liscocommand
 msgctxt "lazarusidestrconsts.liscocommand"
@@ -4441,7 +4441,7 @@ msgstr "ברירת מחדל (%s)"
 
 #: lazarusidestrconsts.liscodegenerationoptions
 msgid "Code generation options"
-msgstr ""
+msgstr "אפשרויות יצירת קוד"
 
 #: lazarusidestrconsts.liscodehelpaddlinkbutton
 msgid "Add link"
@@ -4462,7 +4462,7 @@ msgstr "אשר החלפה"
 
 #: lazarusidestrconsts.liscodehelpcreatebutton
 msgid "Create help item"
-msgstr ""
+msgstr "צור פריט עזרה"
 
 #: lazarusidestrconsts.liscodehelpdeletelinkbutton
 msgid "Delete link"
@@ -4488,27 +4488,27 @@ msgstr "דוגמה"
 
 #: lazarusidestrconsts.liscodehelphintboldformat
 msgid "Insert bold formatting tag"
-msgstr ""
+msgstr "הכנס תגית של טקסט מודגש"
 
 #: lazarusidestrconsts.liscodehelphintinsertcodetag
 msgid "Insert code formatting tag"
-msgstr ""
+msgstr "הכנס תגית של קוד"
 
 #: lazarusidestrconsts.liscodehelphintitalicformat
 msgid "Insert italic formatting tag"
-msgstr ""
+msgstr "הכנס תגית של טקסט נטוי"
 
 #: lazarusidestrconsts.liscodehelphintremarktag
 msgid "Insert remark formatting tag"
-msgstr ""
+msgstr "הכנס תגית של הערה"
 
 #: lazarusidestrconsts.liscodehelphintunderlineformat
 msgid "Insert underline formatting tag"
-msgstr ""
+msgstr "הכנס תגית של טקסט עם קו תחתון"
 
 #: lazarusidestrconsts.liscodehelphintvartag
 msgid "Insert var formatting tag"
-msgstr ""
+msgstr "הכנס תגית של משתנה"
 
 #: lazarusidestrconsts.liscodehelpinherited
 msgctxt "lazarusidestrconsts.liscodehelpinherited"
@@ -4521,11 +4521,11 @@ msgstr "הוסף קישור ..."
 
 #: lazarusidestrconsts.liscodehelpinsertparagraphformattingtag
 msgid "Insert paragraph formatting tag"
-msgstr ""
+msgstr "הכנס תגית של סעיף"
 
 #: lazarusidestrconsts.liscodehelpmainformcaption
 msgid "FPDoc editor"
-msgstr ""
+msgstr "עורך FPDoc"
 
 #: lazarusidestrconsts.liscodehelpnodocumentation
 msgctxt "lazarusidestrconsts.liscodehelpnodocumentation"
@@ -4543,7 +4543,7 @@ msgstr "<ללא>"
 #: lazarusidestrconsts.liscodehelppathsgroupbox
 msgctxt "lazarusidestrconsts.liscodehelppathsgroupbox"
 msgid "FPDoc files path"
-msgstr ""
+msgstr "נתיב של קבצי FPDoc"
 
 #: lazarusidestrconsts.liscodehelpreplacebutton
 msgctxt "lazarusidestrconsts.liscodehelpreplacebutton"
@@ -4647,7 +4647,7 @@ msgstr "אי אםשר לערוך צמתים שנוצרו אוטומטית, ול�
 
 #: lazarusidestrconsts.liscodetoolsdefsautogenerated
 msgid "%s, auto generated"
-msgstr ""
+msgstr "נוצר אוטומטית"
 
 #: lazarusidestrconsts.liscodetoolsdefsautogeneratednodescannotbeedited
 msgid "Auto generated nodes can not be edited."
@@ -5015,7 +5015,7 @@ msgstr "ב"
 
 #: lazarusidestrconsts.liscodetoolsoptsbracket
 msgid "Bracket"
-msgstr ""
+msgstr "סוגרים"
 
 #: lazarusidestrconsts.liscodetoolsoptscolon
 msgid "Colon"
@@ -5032,7 +5032,7 @@ msgstr "מזהה"
 
 #: lazarusidestrconsts.liscodetoolsoptskeyword
 msgid "Keyword"
-msgstr ""
+msgstr "מלת מפתח"
 
 #: lazarusidestrconsts.liscodetoolsoptsnewline
 msgid "Newline"
@@ -5058,7 +5058,7 @@ msgstr "נקודה"
 
 #: lazarusidestrconsts.liscodetoolsoptssemicolon
 msgid "Semicolon"
-msgstr ""
+msgstr "פסיק"
 
 #: lazarusidestrconsts.liscodetoolsoptsspace
 msgctxt "lazarusidestrconsts.liscodetoolsoptsspace"
@@ -5067,43 +5067,43 @@ msgstr "רווח"
 
 #: lazarusidestrconsts.liscodetoolsoptsstringconst
 msgid "String constant"
-msgstr ""
+msgstr "קבוע מסוג מחרוזת"
 
 #: lazarusidestrconsts.liscodetoolsoptssymbol
 msgid "Symbol"
-msgstr ""
+msgstr "סמל"
 
 #: lazarusidestrconsts.liscoexecuteafter
 msgid "Execute after"
-msgstr ""
+msgstr "בצע אחרי"
 
 #: lazarusidestrconsts.liscoexecutebefore
 msgid "Execute before"
-msgstr ""
+msgstr "בצע לפני"
 
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
-msgstr ""
+msgstr "צמצם את כל המחלקות"
 
 #: lazarusidestrconsts.liscollapseallpackages
 msgid "Collapse all packages"
-msgstr ""
+msgstr "צמצם את כל החבילות"
 
 #: lazarusidestrconsts.liscollapseallunits
 msgid "Collapse all units"
-msgstr ""
+msgstr "צמצם את כל היחידות"
 
 #: lazarusidestrconsts.liscommandafter
 msgid "Command after"
-msgstr ""
+msgstr "פקודה אחרי"
 
 #: lazarusidestrconsts.liscommandafterinvalid
 msgid "Command after invalid"
-msgstr ""
+msgstr "פקודה שאחרי לא חוקית"
 
 #: lazarusidestrconsts.liscommandafterpublishingmodule
 msgid "Command after publishing module"
-msgstr ""
+msgstr "פקודה אחרי פרסום מודול"
 
 #: lazarusidestrconsts.liscommandlineparamsofprogram
 msgid "Command line parameters of program"
@@ -5123,7 +5123,7 @@ msgstr "שגיאת מהדר"
 
 #: lazarusidestrconsts.liscompilererrorinvalidcompiler
 msgid "Error: invalid compiler: %s"
-msgstr ""
+msgstr "שגיאה: מהדר s% לא חוקי"
 
 #: lazarusidestrconsts.liscompilerfilename
 msgid "Compiler filename"
@@ -5131,15 +5131,15 @@ msgstr "שם הקובץ של המהדר"
 
 #: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
 msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
-msgstr ""
+msgstr "טיפ: אתה יכול להגדיר את נתיב המהדר ב Environment->Environment options->Files->Compiler Path"
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
-msgstr ""
+msgstr "הערה: קובץ ההגדרה של כלי הקוד לא נמצא - משתמש בברירת המחדל"
 
 #: lazarusidestrconsts.liscompilernoteloadingoldcodetoolsoptionsfile
 msgid "NOTE: loading old codetools options file: "
-msgstr ""
+msgstr "הערה: טוען את קובץ אפשרויות כלי הקוד הישן"
 
 #: lazarusidestrconsts.liscompileroptionsforproject
 msgid "Compiler Options for Project: %s"
@@ -5155,11 +5155,11 @@ msgstr "רכיב"
 
 #: lazarusidestrconsts.liscomponentnameiskeyword
 msgid "Component name %s%s%s is keyword"
-msgstr ""
+msgstr "שם הרכיב s%s%s% הוא מלת מפתח"
 
 #: lazarusidestrconsts.liscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
-msgstr ""
+msgstr "שם הרכיב s%s%s% אינו מזהה חוקי"
 
 #: lazarusidestrconsts.liscomppalfindcomponent
 msgid "Find component"
@@ -5192,7 +5192,7 @@ msgstr "מגדיר את הבנייה של %s"
 
 #: lazarusidestrconsts.lisconfigurebuildlazarus
 msgid "Configure %sBuild Lazarus%s"
-msgstr ""
+msgstr "הגדר ובנה את לזארוס"
 
 #: lazarusidestrconsts.lisconfirmchanges
 msgid "Confirm changes"
@@ -5217,11 +5217,11 @@ msgstr "פעולה"
 
 #: lazarusidestrconsts.lisconfirmpackagenewpackageset
 msgid "New package set"
-msgstr ""
+msgstr "קבוצת חבילות חדשה"
 
 #: lazarusidestrconsts.lisconfirmpackageoldpackageset
 msgid "Old package set"
-msgstr ""
+msgstr "קבוצת חבילות ושנה"
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -5237,7 +5237,7 @@ msgstr "מכיל"
 
 #: lazarusidestrconsts.liscontextsensitive
 msgid "Context sensitive"
-msgstr ""
+msgstr "תלוי בהקשר"
 
 #: lazarusidestrconsts.liscontinue
 msgctxt "lazarusidestrconsts.liscontinue"
@@ -5258,7 +5258,7 @@ msgstr "הפקד חייב הורה"
 
 #: lazarusidestrconsts.lisconvautoremoveproperties
 msgid "Automatic removal of unknown properties"
-msgstr ""
+msgstr "הסרה אוטומטית של תכונות לא ידועות"
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -5286,31 +5286,31 @@ msgstr "Lazarus/LCL"
 
 #: lazarusidestrconsts.lisconverttarget2
 msgid "Lazarus/LCL for Windows only"
-msgstr ""
+msgstr "לזאדוס/LCL עבור חלונות בלבד"
 
 #: lazarusidestrconsts.lisconverttarget3
 msgid "Both Lazarus/LCL and Delphi"
-msgstr ""
+msgstr "גם לזארוס/LCL ודלפי"
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
-msgstr ""
+msgstr "החלפת סוג משתנה"
 
 #: lazarusidestrconsts.lisconvtypestoreplace
 msgid "Types to replace"
-msgstr ""
+msgstr "סוג משתנה להחלפה"
 
 #: lazarusidestrconsts.lisconvunitreplacements
 msgid "Unit Replacements"
-msgstr ""
+msgstr "החלפת יחידות"
 
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
-msgstr ""
+msgstr "יחידות להחלפה"
 
 #: lazarusidestrconsts.lisconvunitstypesproperties
 msgid "Units, Types and Properties"
-msgstr ""
+msgstr "יחידות סוגי משתנים ותכונות"
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -5318,11 +5318,11 @@ msgstr "העתק הכל"
 
 #: lazarusidestrconsts.liscopyallandhiddenmessagestoclipboard
 msgid "Copy all and hidden messages to clipboard"
-msgstr ""
+msgstr "העתק את כל ההודעות המוסתרות ללוח הזמני"
 
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy all items to clipboard"
-msgstr ""
+msgstr "העתק את כל הפריטים ללוח הזמני"
 
 #: lazarusidestrconsts.liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
@@ -5330,11 +5330,11 @@ msgstr "העתק את כל ההודעות ללוח הגזירים"
 
 #: lazarusidestrconsts.liscopyalloutputclipboard
 msgid "Copy all output to clipboard"
-msgstr ""
+msgstr "העתק את כל הפלט ללוח הזמני"
 
 #: lazarusidestrconsts.liscopydescription
 msgid "Copy description to clipboard"
-msgstr ""
+msgstr "העתק תיאור ללוח הזמני"
 
 #: lazarusidestrconsts.liscopyerror
 msgid "Copy Error"
@@ -5346,7 +5346,7 @@ msgstr "שגיאת העתקה"
 
 #: lazarusidestrconsts.liscopyidentifier
 msgid "Copy %s%s%s to clipboard"
-msgstr ""
+msgstr "העתק את s%s%s% ללוח הזמני"
 
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
 msgid "Copying a whole form is not implemented."
@@ -5354,11 +5354,11 @@ msgstr "העתקת טופס שלם אינה נתמכת"
 
 #: lazarusidestrconsts.liscopyitemtoclipboard
 msgid "Copy item to clipboard"
-msgstr ""
+msgstr "העתק פריט ללוח הזמני"
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy selected items to clipboard"
-msgstr ""
+msgstr "העתק את הפריטים שנבחרו ללוח הזמני"
 
 #: lazarusidestrconsts.liscopyselectedmessagestoclipboard
 msgid "Copy selected messages to clipboard"
@@ -5366,11 +5366,11 @@ msgstr "העתק את ההודעות הנבחרות ללוח הגזירים"
 
 #: lazarusidestrconsts.liscoscanforfpcmessages
 msgid "Scan for FPC messages"
-msgstr ""
+msgstr "סרוק הודעות של FPC"
 
 #: lazarusidestrconsts.liscoscanformakemessages
 msgid "Scan for Make messages"
-msgstr ""
+msgstr "סרוק הודעות של Make"
 
 #: lazarusidestrconsts.liscoshowallmessages
 msgid "Show all messages"
@@ -5378,35 +5378,35 @@ msgstr "הצג את כל ההודעות"
 
 #: lazarusidestrconsts.liscoskipcallingcompiler
 msgid "Skip calling Compiler"
-msgstr ""
+msgstr "דלג על קריאה למהדר"
 
 #: lazarusidestrconsts.liscotargetosspecificoptions
 msgid "Target OS specific options"
-msgstr ""
+msgstr "אפשרויות תלויות במערכת ההפעלה המיועדת"
 
 #: lazarusidestrconsts.liscouldnotadditomainsource
 msgid "Could not add %s{$I %s%s} to main source!"
-msgstr ""
+msgstr "לא יכול להוסיף את  %s{$I %s%s} לקובץ הקוד הראשי!"
 
 #: lazarusidestrconsts.liscouldnotaddrtomainsource
 msgid "Could not add %s{$R %s%s} to main source!"
-msgstr ""
+msgstr "לא יכול להוסיף את  %s{$R %s%s} לקובץ הקוד הראשי!"
 
 #: lazarusidestrconsts.liscouldnotaddtomainsource
 msgid "Could not add %s%s%s to main source!"
-msgstr ""
+msgstr "לא יכול להוסיף את %s%s%s לקובץ הקוד הראשי!"
 
 #: lazarusidestrconsts.liscouldnotremovefrommainsource
 msgid "Could not remove %s%s%s from main source!"
-msgstr ""
+msgstr "לא יכול להסיר את %s%s%s מקובץ הקוד הראשי!"
 
 #: lazarusidestrconsts.liscouldnotremoveifrommainsource
 msgid "Could not remove %s{$I %s%s} from main source!"
-msgstr ""
+msgstr "לא יכול להסיר את  %s{$I %s%s} מקובץ הקוד הראשי!"
 
 #: lazarusidestrconsts.liscouldnotremoverfrommainsource
 msgid "Could not remove %s{$R %s%s} from main source!"
-msgstr ""
+msgstr "לא יכול להסיר את  %s{$R %s%s} מקובץ הקוד הראשי!"
 
 #: lazarusidestrconsts.liscovarious
 msgid "%s (various)"
@@ -5434,23 +5434,23 @@ msgstr "ליצור ספרייה?"
 
 #: lazarusidestrconsts.liscreatefunction
 msgid "Create function"
-msgstr ""
+msgstr "צור פונקציה"
 
 #: lazarusidestrconsts.liscreatehelpnode
 msgid "Create Help node"
-msgstr ""
+msgstr "צור צומת עזרה"
 
 #: lazarusidestrconsts.liscreateit
 msgid "Create it"
-msgstr ""
+msgstr "צור זאת"
 
 #: lazarusidestrconsts.liscreatenewproject
 msgid "Create new project"
-msgstr ""
+msgstr "צור פרוייקט חדש"
 
 #: lazarusidestrconsts.liscreateproject
 msgid "Create project"
-msgstr ""
+msgstr "צור פרוייקט"
 
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
@@ -5458,11 +5458,11 @@ msgstr "בחר ספרייה"
 
 #: lazarusidestrconsts.lisctdefcodetoolsdirectoryvalues
 msgid "CodeTools Directory Values"
-msgstr ""
+msgstr "ערכי תיקיית כלי הקוד"
 
 #: lazarusidestrconsts.lisctdefdefinetemplates
 msgid "Define templates"
-msgstr ""
+msgstr "הגדר תבניות"
 
 #: lazarusidestrconsts.lisctdefnovariableselected
 msgid "<no variable selected>"
@@ -5486,11 +5486,11 @@ msgstr "שם משתנה"
 
 #: lazarusidestrconsts.lisctdtemplates
 msgid "Templates"
-msgstr ""
+msgstr "תבניות"
 
 #: lazarusidestrconsts.lisctinsertmacro
 msgid "Insert Macro"
-msgstr ""
+msgstr "הכנס מאקרו"
 
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
@@ -5498,7 +5498,7 @@ msgstr "אנא בחר במקרו"
 
 #: lazarusidestrconsts.lisctselectcodemacro
 msgid "Select Code Macro"
-msgstr ""
+msgstr "בחר תבנית קוד"
 
 #: lazarusidestrconsts.liscurrent
 msgid "Current"
@@ -10411,7 +10411,7 @@ msgstr ""
 #: lazarusidestrconsts.lispckoptslazdoclazarusdocumentation
 msgctxt "lazarusidestrconsts.lispckoptslazdoclazarusdocumentation"
 msgid "FPDoc files path"
-msgstr ""
+msgstr "נתיב של קבצי FPDoc"
 
 #: lazarusidestrconsts.lispckoptslibrary
 msgid "Library"
