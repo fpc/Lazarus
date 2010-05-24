@@ -28,7 +28,6 @@ type
     procedure btnUpdateClick(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
     procedure chkStayOnTopChange(Sender: TObject);
-    procedure chkStayOnTopClick(Sender: TObject);
     procedure chkUseRawChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -57,6 +56,27 @@ type
 
   end;
 
+resourcestring
+  StackTraceFormat         = 'Leak: %d bytes x %d times'; // number of bytes leaked, leaks count
+  StackTraceFormatSingle   = 'Leak: %d bytes';            // number of bytes leaked
+  StackLineFormatWithFile  = '%s file: %s : %d; ';        // stack addr, filename (no path), line number
+  StackLineFormat          = '%s';                        // stack addr
+
+  strTotalMemAlloc      = 'Total Mem alloced: %d';
+  strLeakingMemSize     = 'Leaking Mem Size: %d';
+  strLeakingBlocksCount = 'Leaking Blocks Count: %d';
+  //
+  rsErrorParse = 'Error while parsing trace file';
+  rsDTimes = ' (%d times)';
+  rsLeakView = 'Leak View';
+  //
+  slblTrace = '.trc file';
+  sbtnUpdate = 'Update';
+  sbtnClipBrd = 'Paste Clipboard';
+  schkRaw = 'Raw leak data';
+  schkTop = 'Stay on top';
+  sfrmCap = 'HeapTrcViewForm';
+
 var
   HeapTrcViewForm: THeapTrcViewForm = nil;
 
@@ -68,16 +88,7 @@ procedure Register;
 
 implementation
 
-const // resorucestring ?
-  StackTraceFormat         = 'Leak: %d bytes x %d times'; // number of bytes leaked, leaks count
-  StackTraceFormatSingle   = 'Leak: %d bytes';            // number of bytes leaked
-  StackLineFormatWithFile  = '%s file: %s : %d; ';        // stack addr, filename (no path), line number
-  StackLineFormat          = '%s';                        // stack addr
-
-  strTotalMemAlloc      = 'Total Mem alloced: %d';
-  strLeakingMemSize     = 'Leaking Mem Size: %d';
-  strLeakingBlocksCount = 'Leaking Blocks Count: %d';
-
+{$R *.lfm}
 
 procedure ShowHeapTrcViewForm(JumpProc: TJumpProc);
 begin
@@ -120,10 +131,6 @@ begin
   else Self.formStyle := fsNormal;
 end;
 
-procedure THeapTrcViewForm.chkStayOnTopClick(Sender: TObject);
-begin
-end;
-
 procedure THeapTrcViewForm.chkUseRawChange(Sender: TObject);
 begin
   ChangeTreeText;
@@ -132,6 +139,14 @@ end;
 
 procedure THeapTrcViewForm.FormCreate(Sender: TObject);
 begin
+  //
+  Caption := sfrmCap;
+  lblTrcFile.Caption:= slblTrace;
+  btnUpdate.Caption:= sbtnUpdate;
+  btnClipboard.Caption:= sbtnClipBrd;
+  chkUseRaw.Caption:= schkRaw;
+  chkStayOnTop.Caption:= schkTop;
+  //
   fItems := TList.Create;
   chkStayOnTop.Checked := FormStyle = fsStayOnTop;
 end;
@@ -247,7 +262,7 @@ begin
 
     try
       if info.GetLeakInfo(data, fItems) then ItemsToTree
-      else trvTraceInfo.Items.Add(nil, 'Error while parsing trace file');
+      else trvTraceInfo.Items.Add(nil, rsErrorParse);
 
       memoSummary.Clear;
       with memoSummary.Lines do begin
@@ -318,7 +333,8 @@ function THeapTrcViewForm.GetStackTraceText(trace: TStackTrace; useRaw: boolean)
 begin
   if useRaw then begin
     Result := trace.RawStackData;
-    if (Result <> '') and (trace.LeakCount > 1) then Result := Result + Format(' (%d times)', [trace.LeakCount]);
+    if (Result <> '') and (trace.LeakCount > 1) then Result := Result + Format(
+      rsDTimes, [trace.LeakCount]);
   end;
 
   if not useRaw or (Result = '') then begin
@@ -358,12 +374,9 @@ end;
 
 procedure Register;
 begin
-  RegisterIDEMenuCommand(itmSecondaryTools, 'mnuLeakView', 'Leak View', nil, @IDEMenuClicked);
+  RegisterIDEMenuCommand(itmSecondaryTools, 'mnuLeakView', rsLeakView, nil,
+    @IDEMenuClicked);
 end;
-
-
-initialization
-  {$I heaptrcview.lrs}
 
 finalization
   HeapTrcViewForm.Free;

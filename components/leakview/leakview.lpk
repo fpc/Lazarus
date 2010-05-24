@@ -23,24 +23,25 @@
     </CompilerOptions>
     <Description Value="Leak View. allows fast navigation trough HeapTrc (and other?) leaks."/>
     <Version Major="1"/>
-    <Files Count="4">
+    <Files Count="3">
       <Item1>
         <Filename Value="heaptrcview.lfm"/>
         <Type Value="LFM"/>
       </Item1>
       <Item2>
-        <Filename Value="heaptrcview.lrs"/>
-        <Type Value="LRS"/>
-      </Item2>
-      <Item3>
         <Filename Value="heaptrcview.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="HeapTrcView"/>
-      </Item3>
-      <Item4>
+      </Item2>
+      <Item3>
         <Filename Value="leakinfo.pas"/>
-      </Item4>
+        <UnitName Value="leakinfo"/>
+      </Item3>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>

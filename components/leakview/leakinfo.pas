@@ -98,6 +98,11 @@ type
 function AllocHeapTraceInfo(const TrcFile: string): TLeakInfo;
 function AllocHeapTraceInfoFromText(const TrcText: string): TLeakInfo;
 
+resourcestring
+  CallTracePrefix = 'Call trace for block ';
+  RawTracePrefix = 'Stack trace:';
+  rsStackTrace = 'Stack trace';
+
 implementation
 
 function AllocHeapTraceInfo(const TrcFile: string): TLeakInfo;
@@ -111,11 +116,6 @@ begin
 end;
 
 // heap trace parsing implementation
-
-const
-  CallTracePrefix = 'Call trace for block ';
-  RawTracePrefix = 'Stack trace:';
-
 
 procedure ClearTraceInfo(var TraceInfo: THeapTraceInfo);
 begin
@@ -365,7 +365,7 @@ begin
     Val(hex, trace.Addr, err);
     GetNumberAfter(Trc[TrcIndex], trace.BlockSize, 'size ');
   end else begin
-    trace.RawStackData := 'Stack trace';
+    trace.RawStackData := rsStackTrace;
     trace.Addr := 0;
     trace.BlockSize := 0;
   end;

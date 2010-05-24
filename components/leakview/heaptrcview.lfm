@@ -1,55 +1,53 @@
 object HeapTrcViewForm: THeapTrcViewForm
-  Left = 399
-  Height = 402
-  Top = 139
-  Width = 447
-  ActiveControl = btnBrowse
+  Left = 470
+  Height = 424
+  Top = 325
+  Width = 672
   Caption = 'HeapTrcViewForm'
-  ClientHeight = 402
-  ClientWidth = 447
+  ClientHeight = 424
+  ClientWidth = 672
   FormStyle = fsStayOnTop
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '0.9.29'
   object lblTrcFile: TLabel
     Left = 16
-    Height = 16
+    Height = 14
     Top = 16
-    Width = 37
+    Width = 35
     Caption = '.trc file'
     ParentColor = False
   end
   object edtTrcFileName: TEdit
-    Left = 72
-    Height = 23
+    Left = 88
+    Height = 21
     Top = 16
-    Width = 311
+    Width = 520
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 0
   end
   object btnUpdate: TButton
     Left = 16
-    Height = 25
+    Height = 23
     Top = 54
-    Width = 64
+    Width = 61
     AutoSize = True
     Caption = 'Update'
     OnClick = btnUpdateClick
     TabOrder = 1
   end
   object chkStayOnTop: TCheckBox
-    Left = 347
-    Height = 19
+    Left = 534
+    Height = 17
     Top = 56
-    Width = 80
+    Width = 74
     Anchors = [akTop, akRight]
     Caption = 'Stay on top'
     OnChange = chkStayOnTopChange
-    OnClick = chkStayOnTopClick
     TabOrder = 2
   end
   object btnBrowse: TButton
-    Left = 399
+    Left = 624
     Height = 20
     Top = 14
     Width = 32
@@ -59,10 +57,10 @@ object HeapTrcViewForm: THeapTrcViewForm
     TabOrder = 3
   end
   object chkUseRaw: TCheckBox
-    Left = 240
-    Height = 19
+    Left = 264
+    Height = 17
     Top = 56
-    Width = 92
+    Width = 86
     Caption = 'Raw leak data'
     Checked = True
     OnChange = chkUseRawChange
@@ -71,21 +69,21 @@ object HeapTrcViewForm: THeapTrcViewForm
   end
   object ctrlPanel: TPanel
     Left = 16
-    Height = 283
+    Height = 305
     Top = 96
-    Width = 415
+    Width = 640
     Anchors = [akTop, akLeft, akRight, akBottom]
     BevelOuter = bvNone
-    ClientHeight = 283
-    ClientWidth = 415
+    ClientHeight = 305
+    ClientWidth = 640
     TabOrder = 5
     object trvTraceInfo: TTreeView
       Left = 0
-      Height = 197
+      Height = 219
       Top = 0
-      Width = 415
+      Width = 640
       Align = alClient
-      DefaultItemHeight = 17
+      DefaultItemHeight = 15
       ReadOnly = True
       TabOrder = 0
       OnDblClick = trvTraceInfoDblClick
@@ -94,8 +92,8 @@ object HeapTrcViewForm: THeapTrcViewForm
     object memoSummary: TMemo
       Left = 0
       Height = 81
-      Top = 202
-      Width = 415
+      Top = 224
+      Width = 640
       Align = alBottom
       ReadOnly = True
       ScrollBars = ssVertical
@@ -105,17 +103,17 @@ object HeapTrcViewForm: THeapTrcViewForm
       Cursor = crVSplit
       Left = 0
       Height = 5
-      Top = 197
-      Width = 415
+      Top = 219
+      Width = 640
       Align = alBottom
       ResizeAnchor = akBottom
     end
   end
   object btnClipboard: TButton
     Left = 104
-    Height = 25
+    Height = 23
     Top = 54
-    Width = 109
+    Width = 101
     AutoSize = True
     Caption = 'Paste Clipboard'
     OnClick = btnClipboardClick
