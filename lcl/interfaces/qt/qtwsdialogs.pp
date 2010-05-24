@@ -110,7 +110,7 @@ type
 
 
 implementation
-
+uses qtint;
 const
   QtDialogCodeToModalResultMap: array[QDialogDialogCode] of TModalResult =
   (
@@ -124,6 +124,9 @@ class function TQtWSCommonDialog.GetDialogParent(const ACommonDialog: TCommonDia
 begin
   if ACommonDialog.Owner is TWinControl then
     Result := TQtWidget(TWinControl(ACommonDialog.Owner).Handle).Widget
+  else
+  if (QtWidgetSet.GetActiveWindow <> 0) then
+    Result := TQtWidget(QtWidgetSet.GetActiveWindow).Widget
   else
   if Assigned(Application.MainForm) and Application.MainForm.Visible then
     Result := TQtWidget(Application.MainForm.Handle).Widget
@@ -350,6 +353,7 @@ var
   selectedFilter, saveFileName, saveFilter, saveTitle: WideString;
   Flags: Cardinal;
   {$endif}
+  ActiveWin: HWND;
 begin
   {------------------------------------------------------------------------------
     Initialization of variables
@@ -373,6 +377,7 @@ begin
   if ACommonDialog is TSelectDirectoryDialog then
     QtFileDialog.setFileMode(QFileDialogDirectoryOnly);
 
+  ActiveWin := QtWidgetSet.GetActiveWindow;
   if ACommonDialog is TSaveDialog then
   begin
     {$ifdef QT_NATIVE_DIALOGS}
@@ -481,6 +486,11 @@ begin
       QStringList_destroy(ReturnList);
     end;
     {$endif}
+  end;
+  if ActiveWin <> 0 then
+  begin
+    if QtWidgetSet.IsValidHandle(ActiveWin) then
+      QtWidgetSet.SetActiveWindow(ActiveWin);
   end;
 end;
 
