@@ -150,7 +150,6 @@ type
   private
     FActionList: TActionList;
     FDesigner: TComponentEditorDesigner;
-    FComponentEditor: TActionListComponentEditor;
     procedure ResultStdActProc(const Category: string; ActionClass: TBasicActionClass;
                             ActionProperty: TActStdPropItem; LastItem: Boolean);
   public
@@ -160,7 +159,6 @@ type
     procedure FillCategories;
     procedure FillActionByCategory(iIndex: Integer);
     property Designer:TComponentEditorDesigner read FDesigner write FDesigner;
-    property ComponentEditor: TActionListComponentEditor write FComponentEditor;
   end; 
 
   { TActionListComponentEditor }
@@ -169,8 +167,6 @@ type
   private
     FActionList: TActionList;
     FDesigner: TComponentEditorDesigner;
-    FActionListEditorForm: TActionListEditor;
-    fWindowClosed: Boolean;
   protected
   public
     constructor Create(AComponent: TComponent;
@@ -181,7 +177,6 @@ type
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
     procedure ExecuteVerb(Index: Integer); override;
-    procedure EditorWindowClose;
   end;
 
   { Action Registration }
@@ -259,6 +254,49 @@ function CreateAction(TheOwner: TComponent;
 
 
 implementation
+
+var
+  EditorForms : TList = nil;
+  
+procedure InitFormsList;
+begin
+  EditorForms:=TList.Create;
+end;
+
+procedure ReleaseFormsList;
+begin
+  EditorForms.Free;
+  EditorForms:=nil;
+end;
+
+procedure AddActionEditor(Editor: TActionListEditor);
+begin
+  if Assigned(EditorForms) and (EditorForms.IndexOf(Editor)<0) then 
+    EditorForms.Add(Editor);
+end;
+
+procedure ReleaseActionEditor(Editor: TActionListEditor);
+var
+  i : Integer;
+begin
+  if not Assigned(EditorForms) then Exit;
+  i:=EditorForms.IndexOf(Editor);
+  if i>=0 then EditorForms.Delete(i);
+end;
+  
+function FindActionEditor(AList: TActionList): TActionListEditor;
+var
+  i : Integer;
+begin
+  for i:=0 to EditorForms.Count-1 do begin
+    if TActionListEditor(EditorForms[i]).FActionList=AList then begin
+      Result:=TActionListEditor(EditorForms[i]);
+      Exit;
+    end;
+  end;
+  Result:=nil
+end;
+
 
 {$R *.lfm}
 
@@ -853,13 +891,17 @@ begin
   GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
   GlobalDesignHook.AddHandlerSetSelection(@OnComponentSelection);
   GlobalDesignHook.AddHandlerRefreshPropertyValues(@OnRefreshPropertyValues);
+
+  AddActionEditor(Self);
 end;
 
 destructor TActionListEditor.Destroy;
 begin
   if Assigned(GlobalDesignHook)
   then GlobalDesignHook.RemoveAllHandlersForObject(Self);
-  FComponentEditor.EditorWindowClose;
+
+  ReleaseActionEditor(Self);
+  
   inherited Destroy;
 end;
 
@@ -982,44 +1024,36 @@ end;
 
 { TActionListComponentEditor }
 
-procedure TActionListComponentEditor.EditorWindowClose;
-begin
-  fWindowClosed := True;
-end;
-
 constructor TActionListComponentEditor.Create(AComponent: TComponent;
   ADesigner: TComponentEditorDesigner);
 begin
   inherited Create(AComponent, ADesigner);
   FDesigner := ADesigner;
-  fWindowClosed := True;
 end;
 
 destructor TActionListComponentEditor.Destroy;
 begin
-  if not fWindowClosed
-  then FreeThenNil(FActionListEditorForm);
   inherited Destroy;
 end;
 
 procedure TActionListComponentEditor.Edit;
 var
   AActionList: TActionList;
+  AEditor: TActionListEditor;
 begin
   AActionList := GetComponent as TActionList;
   if AActionList = nil
   then raise Exception.Create('TActionListComponentEditor.Edit AActionList=nil');
-  if fWindowClosed then begin
-    FActionListEditorForm := TActionListEditor.Create(Application);
-    fWindowClosed := False;
+  AEditor:=FindActionEditor(AActionList);
+  if not Assigned(AEditor) then begin
+    AEditor:=TActionListEditor.Create(Application);
+    with AEditor do begin
+      lstActionName.ItemIndex := -1;
+      Designer := Self.FDesigner;
+      SetActionList(AActionList);
+    end;
   end;
-  with FActionListEditorForm do begin
-    lstActionName.ItemIndex := -1;
-    Designer := Self.FDesigner;
-    SetActionList(AActionList);
-    ComponentEditor := Self;
-    ShowOnTop;
-  end;
+  AEditor.ShowOnTop;
 end;
 
 function TActionListComponentEditor.GetVerbCount: Integer;
@@ -1334,8 +1368,10 @@ initialization
   RegisterComponentEditor(TActionList,TActionListComponentEditor);
   RegisterStandardActions;
   RegisterPropertyEditor(TypeInfo(string), TContainedAction, 'Category', TActionCategoryProperty);
+  InitFormsList;
 
 finalization
+  ReleaseFormsList;
   RegisteredActions.Free;
   RegisteredActions := nil;
 end.
