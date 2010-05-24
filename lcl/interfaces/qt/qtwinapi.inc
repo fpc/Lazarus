@@ -4352,8 +4352,6 @@ begin
 end;
 
 function TQtWidgetSet.RoundRect(DC: hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
-var
-  R: TRect;
 begin
   Result := False;
   if not IsValidDC(DC) then

@@ -7,8 +7,8 @@ var
 
   typeReturned: TAtom;
   formatReturned: Integer;
-  nitemsReturned: LongWord;
-  unused: LongWord;
+  nitemsReturned: PtrInt;
+  unused: PtrInt;
   WidgetIndex, DesktopIndex: Pointer;
   WidgetWin: TWindow;
 begin
