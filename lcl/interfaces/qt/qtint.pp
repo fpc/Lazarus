@@ -175,6 +175,8 @@ type
   function DTFlagsToQtFlags(const Flags: Cardinal): Integer;
   function GetQtVersion: String;
   function QtVersionCheck(const AMajor, AMinor, AMicro: Integer): Boolean;
+  function IsCurrentDesktop(AWidget: QWidgetH): Boolean;
+  function GetWindowManager: String;
 
 const
    QtVersionMajor: Integer = 0;
@@ -198,6 +200,9 @@ uses
 // To get as little as possible circles,
 // uncomment only those units with implementation
 ////////////////////////////////////////////////////
+ {$IFDEF HASX11}
+ XAtom, X, XLib,
+ {$ENDIF}
  QtWSFactory,
  QtCaret,
  QtThemes,
@@ -413,6 +418,7 @@ begin
     Result := AMicro = QtVersionMicro;
 end;
 
+{$I qtx11.inc}
 {$I qtobject.inc}
 {$I qtwinapi.inc}
 {$I qtlclintf.inc}

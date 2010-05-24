@@ -4853,6 +4853,7 @@ lcl/interfaces/qt/qtwsmenus.pp svneol=native#text/pascal
 lcl/interfaces/qt/qtwspairsplitter.pp svneol=native#text/pascal
 lcl/interfaces/qt/qtwsspin.pp svneol=native#text/pascal
 lcl/interfaces/qt/qtwsstdctrls.pp svneol=native#text/pascal
+lcl/interfaces/qt/qtx11.inc svneol=native#text/plain
 lcl/interfaces/win32/README.txt svneol=native#text/plain
 lcl/interfaces/win32/interfaces.pp svneol=native#text/pascal
 lcl/interfaces/win32/issues.xml svneol=native#text/xml

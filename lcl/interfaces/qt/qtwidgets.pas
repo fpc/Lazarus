@@ -4606,21 +4606,9 @@ var
   AStateEvent: QWindowStateChangeEventH;
   AState: QtWindowStates;
   AOldState: QtWindowStates;
+  CanSendEvent: Boolean;
   {$IFDEF HASX11}
-  CurrTickCount: DWord;
   IsMinimizeEvent: Boolean;
-
-  function CanAppMinimize: Boolean;
-  begin
-    Result := (CurrTickCount - QtWidgetSet.FLastMinimizeEvent) = 0;
-    if not Result then
-    begin
-      // we can call it from LCL so it's allowed.
-      // but in any case reset FLastMinimizeEvent
-      Result := not QEvent_spontaneous(Event);
-      QtWidgetSet.FLastMinimizeEvent := 0;
-    end;
-  end;
   {$ENDIF}
 begin
   Result := False;
@@ -4644,21 +4632,18 @@ begin
         end;
       end;
     end;
+
     QEventWindowStateChange:
     begin
+      CanSendEvent := True;
       {$IFDEF HASX11}
       // for X11 we must ask state of each modified window.
       AState := getWindowState;
       IsMinimizeEvent := AState and QtWindowMinimized <> 0;
       if IsMinimizeEvent then
-      begin
-        CurrTickCount := GetTickCount;
-        if (QtWidgetSet.FLastMinimizeEvent + 100 < CurrTickCount) or
-          (QtWidgetSet.FLastMinimizeEvent = 0) then
-          QtWidgetSet.FLastMinimizeEvent := CurrTickCount;
-      end;
+        CanSendEvent := IsCurrentDesktop(Widget);
       {$ENDIF}
-      if IsMainForm then
+      if IsMainForm and CanSendEvent then
       begin
         {$IFNDEF HASX11}
         AState := getWindowState;
@@ -4672,17 +4657,8 @@ begin
           (AOldState and QtWindowMaximized <> 0) or
           (AOldState and QtWindowFullScreen <> 0) then
           Application.IntfAppRestore;
-
-        {FLastMinimizeEvent fixes problem when we switch virtual
-         desktops under X11.
-         X11 pager minimizes all windows, so we shouldn't do that again,
-         otherwise when restoring app (again back to our virtual desktop)
-         we'll see ugly restoring of last active control)}
-        {$IFDEF HASX11}
-        if not IsMinimizeEvent or (IsMinimizeEvent and CanAppMinimize) then
-        {$ENDIF}
-          SlotWindowStateChange;
-      end else
+      end;
+      if CanSendEvent then
         SlotWindowStateChange;
     end;
     QEventDrop,
