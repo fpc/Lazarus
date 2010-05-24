@@ -33,7 +33,7 @@ unit IDEOptionDefs;
 interface
 
 uses
-  Classes, SysUtils, types, Laz_XMLCfg, LCLProc, FileUtil,
+  Math, Classes, SysUtils, types, Laz_XMLCfg, LCLProc, FileUtil,
   Forms, Controls, StdCtrls, Buttons, BaseIDEIntf, LazConfigStorage,
   IDEWindowIntf, LazConf, LazarusIDEStrConsts;
 
@@ -839,6 +839,7 @@ var
   DockSiblingBounds: TRect;
   Offset: TPoint;
 begin
+  debugln(['TSimpleWindowLayoutList.NewApplyAndShow Form=',DbgSName(AForm)]);
   try
     ALayout:=ItemByFormID(AForm.Name);
     if ALayout<>nil then
@@ -900,6 +901,7 @@ begin
     Creator:=IDEWindowCreators.FindWithName(AForm.Name);
     if Creator<>nil then
     begin
+      debugln(['TSimpleWindowLayoutList.NewApplyAndShow creator found: Left=',Creator.Left,' Top=',Creator.Top,' Width=',Creator.Width,' Height=',Creator.Height,' DockSibling=',Creator.DockSibling,' DockAlign=',dbgs(Creator.DockAlign)]);
       if Creator.OnGetLayout<>nil then
         Creator.OnGetLayout(Self,AForm.Name,NewBounds,DockSiblingName,DockAlign)
       else begin
@@ -948,6 +950,11 @@ begin
           end;
         end;
       end;
+      debugln(['TSimpleWindowLayoutList.NewApplyAndShow NewBounds=',dbgs(NewBounds)]);
+      NewBounds.Left:=Min(10000,Max(-10000,NewBounds.Left));
+      NewBounds.Top:=Min(10000,Max(-10000,NewBounds.Top));
+      NewBounds.Right:=Max(NewBounds.Left+100,NewBounds.Right);
+      NewBounds.Bottom:=Max(NewBounds.Top+100,NewBounds.Bottom);
       AForm.BoundsRect:=NewBounds;
     end;
   finally

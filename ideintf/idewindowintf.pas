@@ -528,21 +528,21 @@ begin
   else if Left[length(Left)]='%' then
     DefBounds.Left:=Screen.Width*StrToIntDef(copy(Left,1,length(Left)-1),0) div 100
   else
-    DefBounds.Left:=Screen.Width*StrToIntDef(Left,0);
+    DefBounds.Left:=StrToIntDef(Left,0);
   // top
   if Top='' then
     DefBounds.Top:=AForm.Top
   else if Top[length(Top)]='%' then
     DefBounds.Top:=Screen.Height*StrToIntDef(copy(Top,1,length(Top)-1),0) div 100
   else
-    DefBounds.Top:=Screen.Height*StrToIntDef(Top,0);
+    DefBounds.Top:=StrToIntDef(Top,0);
   // width
   if Width='' then
     aWidth:=AForm.Width
   else if Width[length(Width)]='%' then
     aWidth:=Screen.Width*StrToIntDef(copy(Width,1,length(Width)-1),0) div 100
   else
-    aWidth:=Screen.Width*StrToIntDef(Width,0);
+    aWidth:=StrToIntDef(Width,0);
   DefBounds.Right:=DefBounds.Left+aWidth;
   // height
   if Height='' then
@@ -550,7 +550,7 @@ begin
   else if Height[length(Height)]='%' then
     aHeight:=Screen.Height*StrToIntDef(copy(Height,1,length(Height)-1),0) div 100
   else
-    aHeight:=Screen.Height*StrToIntDef(Height,0);
+    aHeight:=StrToIntDef(Height,0);
   DefBounds.Bottom:=DefBounds.Top+aHeight;
 end;
 
