@@ -810,10 +810,10 @@ resourcestring
   lisSVNRevision = 'SVN Revision: ';
   lisClose = '&Close';
   lisAboutLazarusMsg =
-       'License: GPL/LGPL'
+       'License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.'
       +'%s'
-      +'Lazarus is an IDE to create (graphical and console) applications '
-      +'with Free Pascal. Free Pascal is a (L)GPL''ed Pascal and Object Pascal '
+      +'Lazarus is an IDE to create graphical and console applications '
+      +'with Free Pascal. Free Pascal is Pascal and Object Pascal '
       +'compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.'
       +'%s'
       +'Lazarus is the missing part of the puzzle that will allow you to '
