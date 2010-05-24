@@ -6267,7 +6267,7 @@ msgstr "Variável ambiente, nome como parâmetro"
 
 #: lazarusidestrconsts.lisenvjumpfrommessagetosrcondblclickotherwisesingleclick
 msgid "Jump from message to source line on double click (otherwise: single click)"
-msgstr ""
+msgstr "Saltar da mensagem para linha do fonte no clique duplo (senão: clique único)"
 
 #: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
@@ -9668,7 +9668,7 @@ msgstr "Nenhuma opção de compilador herdada."
 
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
-msgstr ""
+msgstr "nenhuma dica"
 
 #: lazarusidestrconsts.lisnoidewindowselected
 msgid "No IDE window selected"
@@ -10123,7 +10123,7 @@ msgstr "Chamar procedimento de %sRegistro%s da unidade selecionada"
 
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
-msgstr ""
+msgstr "Limpar nome arquivo padrão/preferencial da dependência"
 
 #: lazarusidestrconsts.lispckeditcompile
 msgctxt "lazarusidestrconsts.lispckeditcompile"
@@ -10154,7 +10154,7 @@ msgstr "Criar \"Makefile\""
 
 #: lazarusidestrconsts.lispckeditdefault
 msgid "%s, default: %s"
-msgstr ""
+msgstr "%s, padrão: %s"
 
 #: lazarusidestrconsts.lispckeditdependencyproperties
 msgid "Dependency Properties"
@@ -10319,11 +10319,11 @@ msgstr "Salvar pacote"
 
 #: lazarusidestrconsts.lispckeditstorefilenameasdefaultforthisdependency
 msgid "Store file name as default for this dependency"
-msgstr ""
+msgstr "Armazenar nome arquivo como padrão para esta dependência"
 
 #: lazarusidestrconsts.lispckeditstorefilenameaspreferredforthisdependency
 msgid "Store file name as preferred for this dependency"
-msgstr ""
+msgstr "Armazenar nome arquivo como preferencial para esta dependência"
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
 msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
@@ -11747,7 +11747,7 @@ msgstr "Remover do caminho de busca"
 
 #: lazarusidestrconsts.lisremovelocalvariable
 msgid "Remove local variable %s"
-msgstr ""
+msgstr "Remover variável local %s"
 
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
@@ -11759,7 +11759,7 @@ msgstr "Removê-los"
 
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
-msgstr ""
+msgstr "Remover unidade da seção \"uses\""
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -12152,7 +12152,7 @@ msgstr "Sintaxe Simples"
 
 #: lazarusidestrconsts.lisskipfile
 msgid "Skip file"
-msgstr ""
+msgstr "Saltar arquivo"
 
 #: lazarusidestrconsts.lisskipfileandcontinueloading
 msgid "Skip file and continue loading"

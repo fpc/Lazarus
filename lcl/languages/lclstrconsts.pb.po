@@ -241,7 +241,7 @@ msgstr "Acima"
 
 #: lclstrconsts.liscannotexecute
 msgid "can not execute %s"
-msgstr ""
+msgstr "impossível executar %s"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
@@ -250,7 +250,7 @@ msgstr "Recurso %s não encontrado"
 
 #: lclstrconsts.lisprogramfilenotfound
 msgid "program file not found %s"
-msgstr ""
+msgstr "arquivo programa não encontrado %s"
 
 #: lclstrconsts.rs3ddkshadowcolorcaption
 msgid "3D Dark Shadow"
