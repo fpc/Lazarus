@@ -1154,11 +1154,9 @@ function UserSchemeDirectory(CreateIfNotExists: Boolean = False): String;
 
 procedure InitLocale;
 
-  {$R editoroptions.rc}
-
 implementation
 
-
+{$R editoroptions.res}
 
 const
   ValidAttribChars = ['a'..'z', 'A'..'Z', '_', '0'..'9'];
