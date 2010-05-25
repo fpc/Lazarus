@@ -4338,6 +4338,15 @@ begin
       AttributeAtPos[i].LoadFromXml(aXMLConfig, TmpPath, Def, FormatVersion);
   end;
   FreeAndNil(EmptyDef);
+
+  // Version 5 and before stored the global background on the Whitespace attribute.
+  // If a whiespace Attribute was loaded (UseSchemeGlobals=false) then copy it
+  if (FormatVersion <= 5) and (DefaultAttribute <> nil) and
+      (FHighlighter <> nil) and (FHighlighter.WhitespaceAttribute <> nil) and
+      (Attribute[Highlighter.WhitespaceAttribute.Name] <> nil) and
+      (not Attribute[Highlighter.WhitespaceAttribute.Name].UseSchemeGlobals)
+  then
+    DefaultAttribute.Background := Attribute[Highlighter.WhitespaceAttribute.Name].Background;
 end;
 
 procedure TColorSchemeLanguage.SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String;
