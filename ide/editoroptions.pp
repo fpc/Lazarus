@@ -4037,41 +4037,48 @@ begin
   if (Version < 5) and (AttriName <> '') then begin
     // Read Version 2-4, 4 if exist, or keep values
     Path := aPath + StrToValidXMLName(AttriName) + '/';
-    if Defaults <> nil then
-      self.Assign(Defaults);
-    // needed for ReadObject
-    Defaults := Self;
 
-    BackGround := aXMLConfig.GetValue(Path + 'BackgroundColor/Value', Defaults.Background);
-    ForeGround := aXMLConfig.GetValue(Path + 'ForegroundColor/Value', Defaults.Foreground);
-    FrameColor := aXMLConfig.GetValue(Path + 'FrameColor/Value',      Defaults.FrameColor);
-    fs   := [];
-    if aXMLConfig.GetValue(Path + 'Style/Bold', fsBold in Defaults.Style) then
-      Include(fs, fsBold);
-    if aXMLConfig.GetValue(Path + 'Style/Italic', fsItalic in Defaults.Style) then
-      Include(fs, fsItalic);
-    if aXMLConfig.GetValue(Path + 'Style/Underline', fsUnderline in Defaults.Style) then
-      Include(fs, fsUnderline);
-    Style := fs;
-    fs   := [];
-    if aXMLConfig.GetValue(Path + 'StyleMask/Bold', fsBold in Defaults.StyleMask) then
-      Include(fs, fsBold);
-    if aXMLConfig.GetValue(Path + 'StyleMask/Italic', fsItalic in Defaults.StyleMask) then
-      Include(fs, fsItalic);
-    if aXMLConfig.GetValue(Path + 'StyleMask/Underline', fsUnderline in Defaults.StyleMask) then
-      Include(fs, fsUnderline);
-    StyleMask := fs;
+    if (aXMLConfig.FindNode(Path, False) <> nil) and
+        aXMLConfig.FindNode(Path, False).HasChildNodes
+    then begin
+      if (Defaults <> nil) then
+        self.Assign(Defaults);
+      Defaults := Self;
+
+      BackGround := aXMLConfig.GetValue(Path + 'BackgroundColor/Value', Defaults.Background);
+      ForeGround := aXMLConfig.GetValue(Path + 'ForegroundColor/Value', Defaults.Foreground);
+      FrameColor := aXMLConfig.GetValue(Path + 'FrameColor/Value',      Defaults.FrameColor);
+      fs   := [];
+      if aXMLConfig.GetValue(Path + 'Style/Bold', fsBold in Defaults.Style) then
+        Include(fs, fsBold);
+      if aXMLConfig.GetValue(Path + 'Style/Italic', fsItalic in Defaults.Style) then
+        Include(fs, fsItalic);
+      if aXMLConfig.GetValue(Path + 'Style/Underline', fsUnderline in Defaults.Style) then
+        Include(fs, fsUnderline);
+      Style := fs;
+      fs   := [];
+      if aXMLConfig.GetValue(Path + 'StyleMask/Bold', fsBold in Defaults.StyleMask) then
+        Include(fs, fsBold);
+      if aXMLConfig.GetValue(Path + 'StyleMask/Italic', fsItalic in Defaults.StyleMask) then
+        Include(fs, fsItalic);
+      if aXMLConfig.GetValue(Path + 'StyleMask/Underline', fsUnderline in Defaults.StyleMask) then
+        Include(fs, fsUnderline);
+      StyleMask := fs;
+    end;
   end;
 
   // Read the Version >= 5 if exist, or keep values
-  if StoredName = '' then
-    exit;
+  if StoredName = '' then exit;
   Path := aPath + StrToValidXMLName(StoredName) + '/';
-  if (Version = 5) and (Defaults = nil) then
+
+  if (Version <= 5) and (Defaults = nil) then
     Defaults := GetSchemeGlobal;
   aXMLConfig.ReadObject(Path, Self, Defaults);
 
-  if ((Version = 5) and (aXMLConfig.FindNode(Path, False) <> nil)) or (Version < 5) then
+  if (Version <= 5) and
+     ((aXMLConfig.FindNode(Path, False) <> nil) or    // Data was loaded via ReadObject
+      (Defaults = Self))                              // Data was loaded above (Vers < 5)
+  then
     UseSchemeGlobals := False;
 end;
 
@@ -4273,18 +4280,23 @@ procedure TColorSchemeLanguage.LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: St
   Defaults: TColorSchemeLanguage; aOldPath: String);
 var
   Def: TColorSchemeAttribute;
-  FormatVersion: longint;
+  FormatVersion, FormatVersion2: longint;
   TmpPath: String;
   i: Integer;
   EmptyDef: TColorSchemeAttribute;
 begin
 //  Path := 'EditorOptions/Color/'
 
+  FormatVersion := aXMLConfig.GetValue(aPath + 'Version', 0);
   if not FIsSchemeDefault then
     TmpPath := aPath + 'Lang' + StrToValidXMLName(FLanguageName) + '/'
   else
     TmpPath := aPath;
-  FormatVersion := aXMLConfig.GetValue(TmpPath + 'Version', 0);
+  FormatVersion2 := aXMLConfig.GetValue(TmpPath + 'Version', 0);
+  if FormatVersion2 < FormatVersion then
+    FormatVersion := FormatVersion2;
+  if FIsSchemeDefault and (FormatVersion < 6) then
+    FormatVersion := 6;
   TmpPath := TmpPath + 'Scheme' + StrToValidXMLName(Name) + '/';
 
   if (aOldPath <> '') and (FormatVersion > 1) then begin
@@ -4599,6 +4611,7 @@ begin
         Def := nil;
       ColorScheme[i].SaveToXml(aXMLConfig, aPath, Def);
     end;
+  aXMLConfig.SetValue(aPath + 'Version', EditorOptsFormatVersion);
 end;
 
 { TColorSchemeFactory }
