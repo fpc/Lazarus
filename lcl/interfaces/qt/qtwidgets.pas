@@ -1787,7 +1787,7 @@ begin
   Result := False;
 end;
 
-{$IFDEF VerboseQt}
+{$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents)}
 function EventTypeToStr(Event:QEventH):string;
 // Qt 3 events
 const
@@ -1947,10 +1947,10 @@ begin
 
   QEvent_accept(Event);
 
-  {$ifdef VerboseQt}
+  {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents)}
   WriteLn('TQtWidget.EventFilter: Sender=', IntToHex(ptrint(Sender),8),
     ' LCLObject=', dbgsName(LCLObject),
-    ' Event=', EventTypeToStr(Event));
+    ' Event=', EventTypeToStr(Event),' inUpdate=',InUpdate);
   {$endif}
 
   if LCLObject <> nil then
@@ -4614,6 +4614,16 @@ begin
   if LCLObject = nil then
     exit;
 
+  {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents)}
+  if (QEvent_type(Event)=QEventWindowActivate) or
+    (QEvent_type(Event)=QEventWindowDeactivate) or
+    (QEvent_type(Event)=QEventShowToParent) or
+    (QEvent_type(Event)=QEventWindowStateChange) then
+      WriteLn('TQtMainWindow.EventFilter: Sender=', IntToHex(ptrint(Sender),8),
+      ' LCLObject=', dbgsName(LCLObject),
+      ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
+  {$endif}
+
   BeginEventProcessing;
   case QEvent_type(Event) of
     QEventWindowActivate: SlotActivateWindow(True);
@@ -6511,6 +6521,12 @@ begin
   QEvent_accept(Event);
   if LCLObject = nil then
     exit;
+  {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents)}
+  WriteLn('TQtTabBar.EventFilter: Sender=', IntToHex(ptrint(Sender),8),
+    ' LCLObject=', dbgsName(LCLObject),
+    ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
+  {$endif}
+
   BeginEventProcessing;
   case QEvent_type(Event) of
     {$IFDEF QT_ENABLE_LCL_PAINT_TABS}
@@ -6697,6 +6713,11 @@ begin
 
   if (Sender = FStackWidget) then
   begin
+    {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents)}
+    WriteLn('TQtTabWidget.EventFilter: STACKWIDGET Sender=', IntToHex(ptrint(Sender),8),
+      ' LCLObject=', dbgsName(LCLObject),
+      ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
+    {$endif}
     case QEvent_type(Event) of
       QEventResize:
         if LCLObject.ClientRectNeedsInterfaceUpdate then
@@ -10451,6 +10472,14 @@ end;
 function TQtViewPort.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
   Result := False;
+  {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents)}
+  if (QEvent_type(Event) = QEventResize) or
+    (QEvent_type(Event) = QEventLayoutRequest) or
+    (QEvent_type(Event) = QEventWheel) then
+    WriteLn('TQtViewPort.EventFilter: Sender=', IntToHex(ptrint(Sender),8),
+      ' LCLObject=', dbgsName(LCLObject),
+      ' Event=', EventTypeToStr(Event),' inUpdate=',inUpdate);
+  {$endif}
   case QEvent_type(Event) of
     QEventResize:
     begin
