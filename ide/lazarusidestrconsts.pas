@@ -1397,7 +1397,7 @@ resourcestring
   dlgSetAllElementDefault = 'Set all elements to default';
   dlgColorExportButton = 'Export';
   dlgUseSchemeDefaults = 'Use global scheme settings';
-  dlgWarnEditSchemeDefaults = 'Editing global  for all languages';
+  dlgWarnEditSchemeDefaults = 'Editing global for all languages';
   dlgColor = 'Color';
   dlgForecolor = 'Foreground';
   dlgFrameColor = 'Frame color';
