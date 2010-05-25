@@ -3759,7 +3759,7 @@ begin
   SchemeGrp := UserColorSchemeGroup.ColorSchemeGroup[SynColorScheme];
   Scheme := SchemeGrp.ColorSchemeBySynClass[aSynEd.Highlighter.ClassType];
 
-  Scheme.ApplyTo(aSynEd);
+  if Assigned(Scheme) then Scheme.ApplyTo(aSynEd);
 
 end;
 
