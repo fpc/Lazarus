@@ -46,8 +46,8 @@ type
     BackGroundUseDefaultCheckBox: TCheckBox;
     FrameColorUseDefaultCheckBox: TCheckBox;
     ForegroundColorBox: TColorBox;
-    ExportSaveDialog: TSaveDialog;
     lblDefaultEditWarn: TLabel;
+    ExportSaveDialog: TSaveDialog;
     TextBoldCheckBox: TCheckBox;
     TextBoldRadioInvert: TRadioButton;
     TextBoldRadioOff: TRadioButton;
