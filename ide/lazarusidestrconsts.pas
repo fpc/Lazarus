@@ -1387,6 +1387,7 @@ resourcestring
   dlgCheckConsistency = 'Check consistency';
   lisEdOptsChooseScheme = 'Choose Scheme';
   dlgLang = 'Language';
+  dlgEditSchemDefaults = 'Scheme globals';
   lis0No1DrawDividerLinesOnlyForTopLevel2DrawLinesForFi = '0 = no, 1 = draw '
     +'divider lines only for top level, 2 = draw lines for first two '
     +'levels, ...';
@@ -1394,6 +1395,9 @@ resourcestring
   dlgFileExts = 'File extensions';
   dlgSetElementDefault = 'Set element to default';
   dlgSetAllElementDefault = 'Set all elements to default';
+  dlgColorExportButton = 'Export';
+  dlgUseSchemeDefaults = 'Use global scheme settings';
+  dlgWarnEditSchemeDefaults = 'Editing global  for all languages';
   dlgColor = 'Color';
   dlgForecolor = 'Foreground';
   dlgFrameColor = 'Frame color';
@@ -1512,6 +1516,7 @@ resourcestring
   dlgMouseFoldModifierCtrl  = 'Ctrl';
   dlgMouseFoldModifierAlt   = 'Alt';
 
+  dlgAddHiAttrDefault             = 'Default Text';
   dlgAddHiAttrTextBlock           = 'Text block';
   dlgAddHiAttrExecutionPoint      = 'Execution point';
   dlgAddHiAttrEnabledBreakpoint   = 'Enabled breakpoint';
@@ -1539,6 +1544,7 @@ resourcestring
   dlgAddHiAttrSyncroEditArea      = 'Selected Area';
   dlgAddHiAttrGutterSeparator     = 'Gutter Separator';
 
+  dlgAddHiAttrGroupDefault  = 'Global';
   dlgAddHiAttrGroupText     = 'Text';
   dlgAddHiAttrGroupLine     = 'Line';
   dlgAddHiAttrGroupGutter   = 'Gutter';
@@ -1645,6 +1651,8 @@ resourcestring
   dlgWRDPreview = 'Preview';
   dlgAddSemicolon = 'Add semicolon';
   dlgAddAssignmentOperator = 'Add assignment operator :=';
+
+  dlgUserSchemeError = 'Failed to load user-scheme file %s';
 
   // source editor
   locwndSrcEditor = 'Source Editor';

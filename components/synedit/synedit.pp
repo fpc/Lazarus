@@ -3713,15 +3713,8 @@ begin
   FillChar(TokenAccu,SizeOf(TokenAccu),0);
   //DebugLn('TCustomSynEdit.PaintTextLines ',DbgSName(Self),' TopLine=',dbgs(TopLine),' AClip=',dbgs(AClip));
   colEditorBG := Color;
-  if Assigned(fHighlighter) then begin
+  if Assigned(fHighlighter) then
     fHighlighter.CurrentLines := FTheLinesView;
-    if Assigned(Highlighter.WhitespaceAttribute) then
-    begin
-      colBG := Highlighter.WhitespaceAttribute.Background;
-      if colBG <> clNone then
-        colEditorBG := colBG;
-    end;
-  end;
   // If the right edge is visible and in the invalid area, prepare to paint it.
   // Do this first to realize the pen when getting the dc variable.
   bDoRightEdge := FALSE;

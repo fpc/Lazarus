@@ -1440,7 +1440,6 @@ var
   Prefix: String;
   I: Integer;
   NewStr: String;
-  fst, fstm : TFontStyles;
 Begin
   {$IFDEF VerboseIDECompletionBox}
   debugln(['TSourceEditCompletion.ccExecute START']);
@@ -1448,8 +1447,8 @@ Begin
   TheForm.Font := Editor.Font;
   FActiveEditDefaultFGColor := Editor.Font.Color;
   FActiveEditDefaultBGColor := Editor.Color;
-  EditorOpts.GetLineColors(Editor.Highlighter, ahaTextBlock, {TODO: MFR use AEditor.SelectedColor which includes styles / or have a copy}
-    FActiveEditSelectedFGColor, FActiveEditSelectedBGColor, fst ,fstm);
+  FActiveEditSelectedFGColor := TSynEdit(Editor).SelectedColor.Foreground;
+  FActiveEditSelectedBGColor := TSynEdit(Editor).SelectedColor.Background;
 
   if Editor.Highlighter<>nil
   then begin
@@ -7404,7 +7403,7 @@ end;
 procedure TSourceNotebook.UpdateActiveEditColors(AEditor: TSynEdit);
 begin
   if AEditor=nil then exit;
-  EditorOpts.SetMarkupColors(AEditor.Highlighter, AEditor);
+  EditorOpts.SetMarkupColors(AEditor);
   AEditor.UseIncrementalColor:= snIncrementalFind in States;
 end;
 

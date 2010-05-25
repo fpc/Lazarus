@@ -1,0 +1,196 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Lazarus>
+    <ColorSchemes>
+      <Names Count="1">
+        <Item1 Value="Pascal_Classic"/>
+      </Names>
+      <Globals Version="6">
+        <SchemePascal_Classic>
+          <ahaDefault Background="clNavy" Foreground="clYellow"/>
+          <ahaTextBlock Background="clBlue" Foreground="clWhite"/>
+          <ahaExecutionPoint Background="clAqua" Foreground="clBlack"/>
+          <ahaEnabledBreakpoint Background="clRed" Foreground="clWhite"/>
+          <ahaDisabledBreakpoint Background="clLime" Foreground="clRed"/>
+          <ahaInvalidBreakpoint Background="clOlive" Foreground="clLime"/>
+          <ahaErrorLine Background="clMaroon" Foreground="clWhite"/>
+          <ahaIncrementalSearch Background="3199088" Foreground="clWhite"/>
+          <ahaHighlightAll Background="clYellow"/>
+          <ahaBracketMatch Style="fsBold"/>
+          <ahaMouseLink Foreground="clBlue"/>
+          <ahaModifiedLine Foreground="clGreen" FrameColor="59900"/>
+          <ahaCodeFoldingTree Foreground="clSilver"/>
+          <ahaHighlightWord FrameColor="clSilver"/>
+          <ahaFoldedCode Foreground="clSilver" FrameColor="clSilver"/>
+          <ahaWordGroup FrameColor="clRed"/>
+          <ahaTemplateEditCur FrameColor="clAqua"/>
+          <ahaTemplateEditSync FrameColor="clFuchsia"/>
+          <ahaTemplateEditOther FrameColor="clMaroon"/>
+          <ahaSyncroEditCur FrameColor="clFuchsia"/>
+          <ahaSyncroEditSync FrameColor="clRed"/>
+          <ahaSyncroEditOther FrameColor="9744532"/>
+          <ahaSyncroEditArea Background="clMoneyGreen"/>
+          <ahaGutterSeparator Background="clWhite" Foreground="clGray"/>
+          <ahaGutter Background="clBtnFace"/>
+          <ahaRightMargin Foreground="clSilver"/>
+        </SchemePascal_Classic>
+      </Globals>
+      <LangObjectPascal Version="6">
+        <SchemePascal_Classic>
+          <Assembler Foreground="clLime"/>
+          <Comment Foreground="clSilver"/>
+          <Directive Foreground="clSilver"/>
+          <Number Foreground="clYellow"/>
+          <Reserved_word Foreground="clWhite"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clYellow"/>
+        </SchemePascal_Classic>
+      </LangObjectPascal>
+      <LangLazarus_Form_definition Version="6">
+        <SchemePascal_Classic>
+          <Comment Foreground="clSilver"/>
+          <Key Style="fsBold"/>
+          <Number Foreground="clYellow"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clYellow"/>
+        </SchemePascal_Classic>
+      </LangLazarus_Form_definition>
+      <LangXML_document Version="6">
+        <SchemePascal_Classic>
+          <Attribute_Name Foreground="clMaroon"/>
+          <Attribute_Value Foreground="clNavy" Style="fsBold"/>
+          <CDATA_Section Foreground="clOlive" Style="fsItalic"/>
+          <Comment Foreground="clSilver"/>
+          <DOCTYPE_Section Foreground="clBlue" Style="fsItalic"/>
+          <Element_Name Foreground="clMaroon" Style="fsBold"/>
+          <Entity_Reference Foreground="clBlue" Style="fsBold"/>
+          <Namespace_Attribute_Name Foreground="clRed"/>
+          <Namespace_Attribute_Value Foreground="clRed" Style="fsBold"/>
+          <Processing_Instruction Foreground="clBlue"/>
+          <Symbol Foreground="clYellow"/>
+          <Text Foreground="clBlack" Style="fsBold"/>
+        </SchemePascal_Classic>
+      </LangXML_document>
+      <LangHTML_document Version="6">
+        <SchemePascal_Classic>
+          <Asp Background="clYellow" Foreground="clBlack"/>
+          <Comment Foreground="clSilver"/>
+          <Escape_ampersand Foreground="clLime" Style="fsBold"/>
+          <Identifier Style="fsBold"/>
+          <Reserved_word Foreground="clWhite"/>
+          <Symbol Foreground="clYellow"/>
+          <Unknown_word Foreground="clRed" Style="fsBold"/>
+          <Value Foreground="16744448"/>
+        </SchemePascal_Classic>
+      </LangHTML_document>
+      <LangC__ Version="6">
+        <SchemePascal_Classic>
+          <Assembler Foreground="clLime"/>
+          <Comment Foreground="clSilver"/>
+          <Number Foreground="clYellow"/>
+          <Preprocessor Foreground="clSilver"/>
+          <Reserved_word Foreground="clWhite"/>
+          <Space Foreground="clWindow"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clYellow"/>
+        </SchemePascal_Classic>
+      </LangC__>
+      <LangPerl Version="6">
+        <SchemePascal_Classic>
+          <Comment Foreground="clSilver"/>
+          <Number Foreground="clYellow"/>
+          <Pragma Style="fsBold"/>
+          <Reserved_word Foreground="clWhite"/>
+          <Space Foreground="clWindow"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clYellow"/>
+          <Variable Style="fsBold"/>
+        </SchemePascal_Classic>
+      </LangPerl>
+      <LangJava Version="6">
+        <SchemePascal_Classic>
+          <Comment Foreground="clSilver"/>
+          <Documentation Foreground="clSilver"/>
+          <Number Foreground="clYellow"/>
+          <Reserved_word Foreground="clWhite"/>
+          <Space Foreground="clWindow"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clYellow"/>
+        </SchemePascal_Classic>
+      </LangJava>
+      <LangUNIX_Shell_Script Version="6">
+        <SchemePascal_Classic>
+          <Comment Foreground="clSilver"/>
+          <Number Foreground="clYellow"/>
+          <Reserved_word Foreground="clWhite"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clYellow"/>
+          <Variable Foreground="clPurple"/>
+        </SchemePascal_Classic>
+      </LangUNIX_Shell_Script>
+      <LangPython Version="6">
+        <SchemePascal_Classic>
+          <Comment Foreground="clSilver"/>
+          <Documentation Foreground="clSilver"/>
+          <Float Foreground="clBlue"/>
+          <Hexadecimal Foreground="clBlue"/>
+          <Non_reserved_keyword Foreground="clNavy" Style="fsBold"/>
+          <Number Foreground="clYellow"/>
+          <Octal Foreground="clBlue"/>
+          <Reserved_word Foreground="clWhite"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clYellow"/>
+          <SyntaxError Foreground="clRed"/>
+          <System_functions_and_variables Style="fsBold"/>
+        </SchemePascal_Classic>
+      </LangPython>
+      <LangPHP Version="6">
+        <SchemePascal_Classic>
+          <Comment Foreground="clSilver"/>
+          <Number Foreground="clYellow"/>
+          <Reserved_word Foreground="clWhite"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clYellow"/>
+        </SchemePascal_Classic>
+      </LangPHP>
+      <LangSQL Version="6">
+        <SchemePascal_Classic>
+          <Comment Foreground="clSilver"/>
+          <Data_type Style="fsBold"/>
+          <Default_packages Style="fsBold"/>
+          <Exception Style="fsItalic"/>
+          <Function Style="fsBold"/>
+          <Number Foreground="clYellow"/>
+          <Reserved_word Foreground="clWhite"/>
+          <Reserved_word__PL_SQL_ Style="fsBold"/>
+          <SQL_Plus_command Style="fsBold"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clYellow"/>
+        </SchemePascal_Classic>
+      </LangSQL>
+      <LangJavascript Version="6">
+        <SchemePascal_Classic>
+          <Comment Foreground="clSilver"/>
+          <Number Foreground="clYellow"/>
+          <Reserved_word Foreground="clWhite"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clYellow"/>
+        </SchemePascal_Classic>
+      </LangJavascript>
+      <LangDiff_File Version="6">
+        <SchemePascal_Classic>
+          <Diff_Added_line Foreground="clGreen"/>
+          <Diff_Changed_Line Foreground="clPurple"/>
+          <Diff_Chunk_Line_Counts Foreground="clPurple" Style="fsBold"/>
+          <Diff_Chunk_Marker Style="fsBold"/>
+          <Diff_Chunk_New_Line_Count Foreground="clGreen" Style="fsBold"/>
+          <Diff_Chunk_Original_Line_Count Foreground="clRed" Style="fsBold"/>
+          <Diff_New_File Background="clGreen" Style="fsBold"/>
+          <Diff_Original_File Background="clRed" Style="fsBold"/>
+          <Diff_Removed_Line Foreground="clRed"/>
+          <Unknown_word Style="fsItalic"/>
+        </SchemePascal_Classic>
+      </LangDiff_File>
+    </ColorSchemes>
+  </Lazarus>
+</CONFIG>

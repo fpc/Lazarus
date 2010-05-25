@@ -1,0 +1,5 @@
+ColorSchemeDefault RCDATA "ColorDefault.xml"
+ColorSchemeDelphi  RCDATA "ColorDelphi.xml"
+ColorSchemeOcean RCDATA "ColorOcean.xml"
+ColorSchemePascalClassic RCDATA "ColorPascalClassic.xml"
+ColorSchemeTwilight RCDATA "ColorTwilight.xml"

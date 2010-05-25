@@ -125,6 +125,8 @@ type
     function  SaveToRegistry(Reg: TBetterRegistry): boolean;
     function  LoadFromFile(Ini : TIniFile): boolean;
     function  SaveToFile(Ini : TIniFile): boolean;
+    procedure IncChangeLock;
+    procedure DecChangeLock;
   public
     property IntegerStyle: integer read GetStyleFromInt write SetStyleFromInt;
     property IntegerStyleMask: integer read GetStyleMaskFromInt write SetStyleMaskFromInt;
@@ -139,9 +141,9 @@ type
              stored GetForegroundColorStored;
     property FrameColor: TColor read FFrameColor write SetFrameColor
              stored GetFrameColorStored;
-    property Style: TFontStyles read fStyle write SetStyle //default [];
+    property Style: TFontStyles read fStyle write SetStyle
              stored GetFontStyleStored;
-    property StyleMask: TFontStyles read fStyleMask write SetStyleMask //default [];
+    property StyleMask: TFontStyles read fStyleMask write SetStyleMask
              stored GetFontStyleMaskStored;
   end;
 
@@ -479,10 +481,11 @@ var
   src: TSynHighlighterAttributes;
 begin
   if Source is TSynHighlighterAttributes then begin
-    inc(FChangeLock);
+    IncChangeLock;
     try
       src := Source as TSynHighlighterAttributes;
       FName      := src.FName;
+      FStoredName:= src.FStoredName;
       Background := src.FBackground;
       Foreground := src.fForeground;
       FrameColor := src.FFrameColor;
@@ -490,9 +493,7 @@ begin
       StyleMask  := src.fStyleMask;
       FFeatures  := src.FFeatures;
     finally
-      dec(FChangeLock);
-      if FIsChanged then
-        Changed;
+      DecChangeLock;
     end;
   end else
     inherited Assign(Source);
@@ -515,6 +516,9 @@ begin
   Background := clNone;
   Foreground := clNone;
   FFrameColor := clNone;
+  FBackgroundDefault := clNone;
+  FForegroundDefault := clNone;
+  FFrameColorDefault := clNone;
   FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle];
   fName := attribName;
   if aStoredName = '' then
@@ -549,6 +553,8 @@ begin
 end;
 
 procedure TSynHighlighterAttributes.InternalSaveDefaultValues;
+(* Called once from TSynCustomHighlighter.Create (and only from there),
+   after all Attributes where created  *)
 begin
   fForegroundDefault := fForeground;
   fBackgroundDefault := fBackground;
@@ -838,6 +844,18 @@ begin
   Ini.WriteInteger(StoredName, 'Style', IntegerStyle);
   Ini.WriteInteger(StoredName, 'StyleMask', IntegerStyleMask);
   Result := true;
+end;
+
+procedure TSynHighlighterAttributes.IncChangeLock;
+begin
+  inc(FChangeLock);
+end;
+
+procedure TSynHighlighterAttributes.DecChangeLock;
+begin
+  dec(FChangeLock);
+  if (FChangeLock = 0) and FIsChanged then
+    Changed;
 end;
 
 function TSynHighlighterAttributes.GetStyleFromInt: integer;
@@ -1197,6 +1215,8 @@ begin
 end;
 
 procedure TSynCustomHighlighter.SetAttributesOnChange(AEvent: TNotifyEvent);
+(* Called once from TSynCustomHighlighter.Create (and only from there),
+   after all Attributes where created  *)
 var
   i: integer;
   Attri: TSynHighlighterAttributes;

@@ -1,0 +1,186 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Lazarus>
+    <ColorSchemes>
+      <Names Count="1">
+        <Item1 Value="Delphi"/>
+      </Names>
+      <Globals Version="6">
+        <SchemeDelphi>
+          <ahaTextBlock Background="10841427" Foreground="clWhite"/>
+          <ahaExecutionPoint Background="10066380" Foreground="clBlack"/>
+          <ahaEnabledBreakpoint Background="16762823" Foreground="clBlack"/>
+          <ahaDisabledBreakpoint Background="16762823" Foreground="clGray"/>
+          <ahaInvalidBreakpoint Background="clGreen" Foreground="clWhite"/>
+          <ahaUnknownBreakpoint Background="16762823" Foreground="clBlack"/>
+          <ahaErrorLine Background="clRed" Foreground="clWhite"/>
+          <ahaIncrementalSearch Background="clBlack" Foreground="16580045"/>
+          <ahaHighlightAll Background="clYellow"/>
+          <ahaBracketMatch Background="clAqua" FrameColor="13421782"/>
+          <ahaMouseLink Foreground="clBlue"/>
+          <ahaLineNumber Background="16053492" Foreground="13408665"/>
+          <ahaLineHighlight Background="15138810"/>
+          <ahaModifiedLine Background="16053492" Foreground="clLime" FrameColor="clYellow"/>
+          <ahaCodeFoldingTree Background="16053492" Foreground="13408665"/>
+          <ahaHighlightWord FrameColor="13421782"/>
+          <ahaFoldedCode Foreground="13408665" FrameColor="13408665"/>
+          <ahaWordGroup FrameColor="clRed"/>
+          <ahaTemplateEditCur FrameColor="clAqua"/>
+          <ahaTemplateEditSync FrameColor="clFuchsia"/>
+          <ahaTemplateEditOther FrameColor="clMaroon"/>
+          <ahaSyncroEditCur FrameColor="clFuchsia"/>
+          <ahaSyncroEditSync FrameColor="clRed"/>
+          <ahaSyncroEditOther FrameColor="clBlue"/>
+          <ahaSyncroEditArea Background="16449510"/>
+          <ahaGutterSeparator Background="clWhite" Foreground="clGray"/>
+          <ahaGutter Background="clBtnFace"/>
+          <ahaRightMargin Foreground="clSilver"/>
+        </SchemeDelphi>
+      </Globals>
+      <LangObjectPascal Version="6">
+        <SchemeDelphi>
+          <Assembler Foreground="clBlack"/>
+          <Comment Foreground="clGreen" Style="fsItalic"/>
+          <Directive Foreground="clTeal"/>
+          <Number Foreground="clBlue"/>
+          <Reserved_word Foreground="clNavy" Style="fsBold"/>
+          <String Foreground="clBlue"/>
+        </SchemeDelphi>
+      </LangObjectPascal>
+      <LangLazarus_Form_definition Version="6">
+        <SchemeDelphi>
+          <Comment Foreground="clGreen" Style="fsItalic"/>
+          <Key Style="fsBold"/>
+          <Number Foreground="clBlue"/>
+          <String Foreground="clBlue"/>
+        </SchemeDelphi>
+      </LangLazarus_Form_definition>
+      <LangXML_document Version="6">
+        <SchemeDelphi>
+          <Attribute_Name Foreground="clMaroon"/>
+          <Attribute_Value Foreground="clNavy" Style="fsBold"/>
+          <CDATA_Section Foreground="clOlive" Style="fsItalic"/>
+          <Comment Foreground="clGreen" Style="fsItalic"/>
+          <DOCTYPE_Section Foreground="clBlue" Style="fsItalic"/>
+          <Element_Name Foreground="clMaroon" Style="fsBold"/>
+          <Entity_Reference Foreground="clBlue" Style="fsBold"/>
+          <Namespace_Attribute_Name Foreground="clRed"/>
+          <Namespace_Attribute_Value Foreground="clRed" Style="fsBold"/>
+          <Processing_Instruction Foreground="clBlue"/>
+          <Text Foreground="clBlack" Style="fsBold"/>
+        </SchemeDelphi>
+      </LangXML_document>
+      <LangHTML_document Version="6">
+        <SchemeDelphi>
+          <Asp Background="clYellow" Foreground="clBlack"/>
+          <Comment Foreground="clGreen" Style="fsItalic"/>
+          <Escape_ampersand Foreground="clLime" Style="fsBold"/>
+          <Identifier Style="fsBold"/>
+          <Reserved_word Foreground="clNavy" Style="fsBold"/>
+          <Unknown_word Foreground="clRed" Style="fsBold"/>
+          <Value Foreground="16744448"/>
+        </SchemeDelphi>
+      </LangHTML_document>
+      <LangC__ Version="6">
+        <SchemeDelphi>
+          <Assembler Foreground="clBlack"/>
+          <Comment Foreground="clGreen" Style="fsItalic"/>
+          <Number Foreground="clBlue"/>
+          <Preprocessor Foreground="clGreen" Style="fsItalic"/>
+          <Reserved_word Foreground="clNavy" Style="fsBold"/>
+          <Space Foreground="clWindow"/>
+          <String Foreground="clBlue"/>
+        </SchemeDelphi>
+      </LangC__>
+      <LangPerl Version="6">
+        <SchemeDelphi>
+          <Comment Foreground="clGreen" Style="fsItalic"/>
+          <Number Foreground="clBlue"/>
+          <Pragma Style="fsBold"/>
+          <Reserved_word Foreground="clNavy" Style="fsBold"/>
+          <Space Foreground="clWindow"/>
+          <String Foreground="clBlue"/>
+          <Variable Style="fsBold"/>
+        </SchemeDelphi>
+      </LangPerl>
+      <LangJava Version="6">
+        <SchemeDelphi>
+          <Comment Foreground="clGreen" Style="fsItalic"/>
+          <Documentation Foreground="clGreen" Style="fsItalic"/>
+          <Number Foreground="clBlue"/>
+          <Reserved_word Foreground="clNavy" Style="fsBold"/>
+          <Space Foreground="clWindow"/>
+          <String Foreground="clBlue"/>
+        </SchemeDelphi>
+      </LangJava>
+      <LangUNIX_Shell_Script Version="6">
+        <SchemeDelphi>
+          <Comment Foreground="clGreen" Style="fsItalic"/>
+          <Number Foreground="clBlue"/>
+          <Reserved_word Foreground="clNavy" Style="fsBold"/>
+          <String Foreground="clBlue"/>
+          <Variable Foreground="clPurple"/>
+        </SchemeDelphi>
+      </LangUNIX_Shell_Script>
+      <LangPython Version="6">
+        <SchemeDelphi>
+          <Comment Foreground="clGreen" Style="fsItalic"/>
+          <Documentation Foreground="clGreen" Style="fsItalic"/>
+          <Float Foreground="clBlue"/>
+          <Hexadecimal Foreground="clBlue"/>
+          <Non_reserved_keyword Foreground="clNavy" Style="fsBold"/>
+          <Number Foreground="clBlue"/>
+          <Octal Foreground="clBlue"/>
+          <Reserved_word Foreground="clNavy" Style="fsBold"/>
+          <String Foreground="clBlue"/>
+          <SyntaxError Foreground="clRed"/>
+          <System_functions_and_variables Style="fsBold"/>
+        </SchemeDelphi>
+      </LangPython>
+      <LangPHP Version="6">
+        <SchemeDelphi>
+          <Comment Foreground="clGreen" Style="fsItalic"/>
+          <Number Foreground="clBlue"/>
+          <Reserved_word Foreground="clNavy" Style="fsBold"/>
+          <String Foreground="clBlue"/>
+        </SchemeDelphi>
+      </LangPHP>
+      <LangSQL Version="6">
+        <SchemeDelphi>
+          <Comment Foreground="clGreen" Style="fsItalic"/>
+          <Data_type Style="fsBold"/>
+          <Default_packages Style="fsBold"/>
+          <Exception Style="fsItalic"/>
+          <Function Style="fsBold"/>
+          <Number Foreground="clBlue"/>
+          <Reserved_word Foreground="clNavy" Style="fsBold"/>
+          <Reserved_word__PL_SQL_ Style="fsBold"/>
+          <SQL_Plus_command Style="fsBold"/>
+          <String Foreground="clBlue"/>
+        </SchemeDelphi>
+      </LangSQL>
+      <LangJavascript Version="6">
+        <SchemeDelphi>
+          <Comment Foreground="clGreen" Style="fsItalic"/>
+          <Number Foreground="clBlue"/>
+          <Reserved_word Foreground="clNavy" Style="fsBold"/>
+          <String Foreground="clBlue"/>
+        </SchemeDelphi>
+      </LangJavascript>
+      <LangDiff_File Version="6">
+        <SchemeDelphi>
+          <Diff_Added_line Foreground="clGreen"/>
+          <Diff_Changed_Line Foreground="clPurple"/>
+          <Diff_Chunk_Line_Counts Foreground="clPurple" Style="fsBold"/>
+          <Diff_Chunk_Marker Style="fsBold"/>
+          <Diff_Chunk_New_Line_Count Foreground="clGreen" Style="fsBold"/>
+          <Diff_Chunk_Original_Line_Count Foreground="clRed" Style="fsBold"/>
+          <Diff_New_File Background="clGreen" Style="fsBold"/>
+          <Diff_Original_File Background="clRed" Style="fsBold"/>
+          <Diff_Removed_Line Foreground="clRed"/>
+          <Unknown_word Style="fsItalic"/>
+        </SchemeDelphi>
+      </LangDiff_File>
+    </ColorSchemes>
+  </Lazarus>
+</CONFIG>

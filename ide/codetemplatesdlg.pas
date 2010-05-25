@@ -955,12 +955,12 @@ begin
 
   // init synedit
   ColorScheme:=EditorOpts.ReadColorScheme(ASynPasSyn.GetLanguageName);
-  EditorOpts.AddSpecialHilightAttribsToHighlighter(ASynPasSyn);
   EditorOpts.ReadHighlighterSettings(ASynPasSyn,ColorScheme);
   if EditorOpts.UseSyntaxHighlight then
     TemplateSynEdit.Highlighter:=ASynPasSyn
   else
     TemplateSynEdit.Highlighter:=nil;
+  EditorOpts.SetMarkupColors(TemplateSynEdit);
   EditorOpts.GetSynEditSettings(TemplateSynEdit);
   EditorOpts.KeyMap.AssignTo(TemplateSynEdit.KeyStrokes,
                              TSourceEditorWindowInterface);

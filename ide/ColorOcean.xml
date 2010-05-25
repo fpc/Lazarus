@@ -1,0 +1,197 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Lazarus>
+    <ColorSchemes>
+      <Names Count="1">
+        <Item1 Value="Ocean"/>
+      </Names>
+      <Globals Version="6">
+        <SchemeOcean>
+          <ahaDefault Background="clNavy" Foreground="clYellow"/>
+          <ahaTextBlock Background="clWhite" Foreground="clBlack"/>
+          <ahaExecutionPoint Background="clBlue" Foreground="clWhite"/>
+          <ahaEnabledBreakpoint Background="clRed" Foreground="clWhite"/>
+          <ahaDisabledBreakpoint Background="clLime" Foreground="clRed"/>
+          <ahaInvalidBreakpoint Background="clOlive" Foreground="clGreen"/>
+          <ahaUnknownBreakpoint Background="clRed" Foreground="clBlack"/>
+          <ahaErrorLine Background="5284095" Foreground="clBlack"/>
+          <ahaIncrementalSearch Background="3199088" Foreground="clWhite"/>
+          <ahaHighlightAll Background="clYellow"/>
+          <ahaBracketMatch Style="fsBold"/>
+          <ahaMouseLink Foreground="clBlue"/>
+          <ahaModifiedLine Foreground="clGreen" FrameColor="59900"/>
+          <ahaCodeFoldingTree Foreground="clSilver"/>
+          <ahaHighlightWord FrameColor="clSilver"/>
+          <ahaFoldedCode Foreground="clSilver" FrameColor="clSilver"/>
+          <ahaWordGroup FrameColor="clRed"/>
+          <ahaTemplateEditCur FrameColor="clAqua"/>
+          <ahaTemplateEditSync FrameColor="clFuchsia"/>
+          <ahaTemplateEditOther FrameColor="clMaroon"/>
+          <ahaSyncroEditCur FrameColor="clFuchsia"/>
+          <ahaSyncroEditSync FrameColor="clRed"/>
+          <ahaSyncroEditOther FrameColor="9744532"/>
+          <ahaSyncroEditArea Background="clMoneyGreen"/>
+          <ahaGutterSeparator Background="clWhite" Foreground="clGray"/>
+          <ahaGutter Background="clBtnFace"/>
+          <ahaRightMargin Foreground="clSilver"/>
+        </SchemeOcean>
+      </Globals>
+      <LangObjectPascal Version="6">
+        <SchemeOcean>
+          <Assembler Foreground="clLime"/>
+          <Comment Foreground="clGray"/>
+          <Directive Foreground="clRed"/>
+          <Number Foreground="clFuchsia"/>
+          <Reserved_word Foreground="clAqua" Style="fsBold"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clAqua"/>
+        </SchemeOcean>
+      </LangObjectPascal>
+      <LangLazarus_Form_definition Version="6">
+        <SchemeOcean>
+          <Comment Foreground="clGray"/>
+          <Key Style="fsBold"/>
+          <Number Foreground="clFuchsia"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clAqua"/>
+        </SchemeOcean>
+      </LangLazarus_Form_definition>
+      <LangXML_document Version="6">
+        <SchemeOcean>
+          <Attribute_Name Foreground="clMaroon"/>
+          <Attribute_Value Foreground="clNavy" Style="fsBold"/>
+          <CDATA_Section Foreground="clOlive" Style="fsItalic"/>
+          <Comment Foreground="clGray"/>
+          <DOCTYPE_Section Foreground="clBlue" Style="fsItalic"/>
+          <Element_Name Foreground="clMaroon" Style="fsBold"/>
+          <Entity_Reference Foreground="clBlue" Style="fsBold"/>
+          <Namespace_Attribute_Name Foreground="clRed"/>
+          <Namespace_Attribute_Value Foreground="clRed" Style="fsBold"/>
+          <Processing_Instruction Foreground="clBlue"/>
+          <Symbol Foreground="clAqua"/>
+          <Text Foreground="clBlack" Style="fsBold"/>
+        </SchemeOcean>
+      </LangXML_document>
+      <LangHTML_document Version="6">
+        <SchemeOcean>
+          <Asp Background="clYellow" Foreground="clBlack"/>
+          <Comment Foreground="clGray"/>
+          <Escape_ampersand Foreground="clLime" Style="fsBold"/>
+          <Identifier Style="fsBold"/>
+          <Reserved_word Foreground="clAqua" Style="fsBold"/>
+          <Symbol Foreground="clAqua"/>
+          <Unknown_word Foreground="clRed" Style="fsBold"/>
+          <Value Foreground="16744448"/>
+        </SchemeOcean>
+      </LangHTML_document>
+      <LangC__ Version="6">
+        <SchemeOcean>
+          <Assembler Foreground="clLime"/>
+          <Comment Foreground="clGray"/>
+          <Number Foreground="clFuchsia"/>
+          <Preprocessor Foreground="clGray"/>
+          <Reserved_word Foreground="clAqua" Style="fsBold"/>
+          <Space Foreground="clWindow"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clAqua"/>
+        </SchemeOcean>
+      </LangC__>
+      <LangPerl Version="6">
+        <SchemeOcean>
+          <Comment Foreground="clGray"/>
+          <Number Foreground="clFuchsia"/>
+          <Pragma Style="fsBold"/>
+          <Reserved_word Foreground="clAqua" Style="fsBold"/>
+          <Space Foreground="clWindow"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clAqua"/>
+          <Variable Style="fsBold"/>
+        </SchemeOcean>
+      </LangPerl>
+      <LangJava Version="6">
+        <SchemeOcean>
+          <Comment Foreground="clGray"/>
+          <Documentation Foreground="clGray"/>
+          <Number Foreground="clFuchsia"/>
+          <Reserved_word Foreground="clAqua" Style="fsBold"/>
+          <Space Foreground="clWindow"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clAqua"/>
+        </SchemeOcean>
+      </LangJava>
+      <LangUNIX_Shell_Script Version="6">
+        <SchemeOcean>
+          <Comment Foreground="clGray"/>
+          <Number Foreground="clFuchsia"/>
+          <Reserved_word Foreground="clAqua" Style="fsBold"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clAqua"/>
+          <Variable Foreground="clPurple"/>
+        </SchemeOcean>
+      </LangUNIX_Shell_Script>
+      <LangPython Version="6">
+        <SchemeOcean>
+          <Comment Foreground="clGray"/>
+          <Documentation Foreground="clGray"/>
+          <Float Foreground="clBlue"/>
+          <Hexadecimal Foreground="clBlue"/>
+          <Non_reserved_keyword Foreground="clNavy" Style="fsBold"/>
+          <Number Foreground="clFuchsia"/>
+          <Octal Foreground="clBlue"/>
+          <Reserved_word Foreground="clAqua" Style="fsBold"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clAqua"/>
+          <SyntaxError Foreground="clRed"/>
+          <System_functions_and_variables Style="fsBold"/>
+        </SchemeOcean>
+      </LangPython>
+      <LangPHP Version="6">
+        <SchemeOcean>
+          <Comment Foreground="clGray"/>
+          <Number Foreground="clFuchsia"/>
+          <Reserved_word Foreground="clAqua" Style="fsBold"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clAqua"/>
+        </SchemeOcean>
+      </LangPHP>
+      <LangSQL Version="6">
+        <SchemeOcean>
+          <Comment Foreground="clGray"/>
+          <Data_type Style="fsBold"/>
+          <Default_packages Style="fsBold"/>
+          <Exception Style="fsItalic"/>
+          <Function Style="fsBold"/>
+          <Number Foreground="clFuchsia"/>
+          <Reserved_word Foreground="clAqua" Style="fsBold"/>
+          <Reserved_word__PL_SQL_ Style="fsBold"/>
+          <SQL_Plus_command Style="fsBold"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clAqua"/>
+        </SchemeOcean>
+      </LangSQL>
+      <LangJavascript Version="6">
+        <SchemeOcean>
+          <Comment Foreground="clGray"/>
+          <Number Foreground="clFuchsia"/>
+          <Reserved_word Foreground="clAqua" Style="fsBold"/>
+          <String Foreground="clYellow"/>
+          <Symbol Foreground="clAqua"/>
+        </SchemeOcean>
+      </LangJavascript>
+      <LangDiff_File Version="6">
+        <SchemeOcean>
+          <Diff_Added_line Foreground="clGreen"/>
+          <Diff_Changed_Line Foreground="clPurple"/>
+          <Diff_Chunk_Line_Counts Foreground="clPurple" Style="fsBold"/>
+          <Diff_Chunk_Marker Style="fsBold"/>
+          <Diff_Chunk_New_Line_Count Foreground="clGreen" Style="fsBold"/>
+          <Diff_Chunk_Original_Line_Count Foreground="clRed" Style="fsBold"/>
+          <Diff_New_File Background="clGreen" Style="fsBold"/>
+          <Diff_Original_File Background="clRed" Style="fsBold"/>
+          <Diff_Removed_Line Foreground="clRed"/>
+          <Unknown_word Style="fsItalic"/>
+        </SchemeOcean>
+      </LangDiff_File>
+    </ColorSchemes>
+  </Lazarus>
+</CONFIG>

@@ -122,7 +122,6 @@ begin
   if FHighlighter = nil then
   begin
     FHighlighter := TPreviewPasSyn.Create(Self);
-    Options.AddSpecialHilightAttribsToHighlighter(FHighlighter);
     Options.ReadHighlighterSettings(FHighlighter, '');
   end;
   Result := FHighlighter;
