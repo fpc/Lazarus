@@ -517,7 +517,8 @@ type
 
   TSourceNotebookState = (
     snIncrementalFind,
-    snWarnedFont
+    snWarnedFont,
+    snUpdateStatusBarNeeded
     );
   TSourceNotebookStates = set of TSourceNotebookState;
 
@@ -685,6 +686,7 @@ type
     procedure ReleaseEditor(AnEditor: TSourceEditor);
     procedure EditorChanged(Sender: TObject);
     procedure DoClose(var CloseAction: TCloseAction); override;
+    procedure DoShow; override;
 
   protected
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
@@ -2054,10 +2056,12 @@ begin
   OldModified := Modified; // Include SynEdit
   FModified := AValue;
   if not FModified then
+  begin
     SynEditor.Modified := False; // All shared SynEdits share this value
     FEditorStampCommitedToCodetools := TSynEditLines(SynEditor.Lines).TextChangeStamp;
     for i := 0 to FSharedEditorList.Count - 1 do
       SharedEditors[i].FEditor.MarkTextAsSaved; // Todo: centralize in SynEdit
+  end;
   if OldModified <> Modified then
     for i := 0 to FSharedEditorList.Count - 1 do begin
       SharedEditors[i].UpdatePageName;
@@ -2651,8 +2655,7 @@ Begin
   {$IFDEF VerboseFocus}
   debugln('TSourceEditor.FocusEditor A ',PageName,' ',FEditor.Name);
   {$ENDIF}
-  if SourceNotebook<>nil then
-    IDEWindowCreators.ShowForm(SourceNotebook,true);
+  IDEWindowCreators.ShowForm(SourceNotebook,true);
   if SourceNotebook.IsVisible then begin
     FEditor.SetFocus;
     FSharedValues.SetActiveSharedEditor(Self);
@@ -5448,6 +5451,7 @@ begin
     if Assigned(Manager) and (FNotebook.PageIndex = FPageIndex) then
       Manager.DoActiveEditorChanged;
     FNotebook.PageIndex := FPageIndex;
+    NotebookPageChanged(Self);
   end;
 end;
 
@@ -5660,6 +5664,14 @@ begin
     end;
   end;
   {$ENDIF}
+end;
+
+procedure TSourceNotebook.DoShow;
+begin
+  inherited DoShow;
+  // statusbar was not updated when visible=false, update now
+  if snUpdateStatusBarNeeded in States then
+    UpdateStatusBar;
 end;
 
 function TSourceNotebook.IndexOfEditorInShareWith(AnOtherEditor: TSourceEditor
@@ -6572,6 +6584,7 @@ Begin
     Result.PageName:= Manager.FindUniquePageName(NewShortName, Result);
     UpdatePageNames;
     UpdateProjectFiles;
+    UpdateStatusBar;
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
   end;
@@ -6585,12 +6598,14 @@ end;
 procedure TSourceNotebook.CloseFile(APageIndex:integer);
 var
   TempEditor: TSourceEditor;
+  WasSelected: Boolean;
 begin
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.CloseFile A  APageIndex=',APageIndex);
   {$ENDIF}
   TempEditor:=FindSourceEditorWithPageIndex(APageIndex);
   if TempEditor=nil then exit;
+  WasSelected:=PageIndex=APageIndex;
   //debugln(['TSourceNotebook.CloseFile ',TempEditor.FileName,' ',TempEditor.APageIndex]);
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.CloseFile'){$ENDIF};
   try
@@ -6603,8 +6618,9 @@ begin
     NoteBookDeletePage(APageIndex);
     //writeln('TSourceNotebook.CloseFile C  APageIndex=',APageIndex,' PageCount=',PageCount,' NoteBook.APageIndex=',Notebook.APageIndex);
     UpdateProjectFiles;
-    UpdateStatusBar;
     UpdatePageNames;
+    if WasSelected then
+      UpdateStatusBar;
     // set focus to new editor
     TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
     if PageCount = 0 then begin
@@ -6632,7 +6648,6 @@ begin
   if (fAutoFocusLock>0) then exit;
   SrcEdit:=GetActiveSE;
   if SrcEdit=nil then exit;
-  IDEWindowCreators.ShowForm(Self,true);
   SrcEdit.FocusEditor;
 end;
 
@@ -6750,10 +6765,16 @@ var
   PanelFileMode: string;
   CurEditor: TSynEdit;
 begin
-  if not Visible then exit;
+  if not IsVisible then
+  begin
+    Include(States,snUpdateStatusBarNeeded);
+    exit;
+  end;
+  Exclude(States,snUpdateStatusBarNeeded);
   TempEditor := GetActiveSE;
   if TempEditor = nil then Exit;
   CurEditor:=TempEditor.EditorComponent;
+  //debugln(['TSourceNotebook.UpdateStatusBar ',tempEditor.FileName,' ',PageIndex]);
 
   if (snIncrementalFind in States)
   and (CompareCaret(CurEditor.LogicalCaretXY,FIncrementalSearchPos)<>0) then
@@ -6768,7 +6789,6 @@ begin
   if (CurEditor.CaretY<>TempEditor.ErrorLine)
   or (CurEditor.CaretX<>TempEditor.fErrorColumn) then
     TempEditor.ErrorLine:=-1;
-
   Statusbar.BeginUpdate;
 
   if snIncrementalFind in States then begin

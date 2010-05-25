@@ -45,6 +45,8 @@ type
   public
     procedure MakeIDEWindowDockSite(AForm: TCustomForm); override;
     procedure MakeIDEWindowDockable(AControl: TWinControl); override;
+    function IsDockSite(AForm: TCustomForm): boolean;
+    function IsDockable(AForm: TCustomForm): boolean;
     procedure LoadDefaultLayout; override;
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); override;
   end;
@@ -70,9 +72,26 @@ begin
   DockMaster.MakeDockable(AControl);
 end;
 
+function TIDEEasyDockMaster.IsDockSite(AForm: TCustomForm): boolean;
+begin
+  Result:=false;
+  if AForm=nil then exit;
+  if AForm.Parent<>nil then exit;
+  for i:=0 to AForm.ControlCount-1 do
+    if AForm.Controls[i] is TDockPanel then exit(true);
+end;
+
+function TIDEEasyDockMaster.IsDockable(AForm: TCustomForm): boolean;
+begin
+  Result:=false;
+  if AForm=nil then exit;
+  if AForm.Parent=nil then exit;
+  Result:=true;
+end;
+
 procedure TIDEEasyDockMaster.LoadDefaultLayout;
 begin
-
+  // ToDo: load the users default layout
 end;
 
 procedure TIDEEasyDockMaster.ShowForm(AForm: TCustomForm; BringToFront: boolean
@@ -85,10 +104,12 @@ var
   DockAlign: TAlign;
   DockSibling: TCustomForm;
 begin
+  debugln(['TIDEEasyDockMaster.ShowForm ',DbgSName(AForm),' BringToFront=',BringToFront,' IsDockSite=',IsDockSite(AForm),' IsDockable=',IsDockable(AForm)]);
   try
-    if not AForm.IsVisible then
+    if not (IsDockSite(AForm) or IsDockable(AForm)) then
     begin
-      // no layout found => use default
+      // this form was not yet docked
+      // place it at a default position and make it dockable
       Creator:=IDEWindowCreators.FindWithName(AForm.Name);
       if Creator<>nil then
       begin
