@@ -2073,10 +2073,8 @@ begin
      (QEvent_type(Event) = QEventHoverMove) or
      (QEvent_type(Event) = QEventKeyPress) or
      (QEvent_type(Event) = QEventKeyRelease)) then
-  begin
     Result := True;
-    BeginEventProcessing;
-  end;
+
   EndEventProcessing;
 end;
 
@@ -4718,7 +4716,6 @@ end;
 procedure TQtMainWindow.SlotActivateWindow(vActivate: Boolean); cdecl;
 var
   Msg: TLMActivate;
-  ParentForm: TCustomForm;
   FIsActivated: Boolean;
 begin
   {$ifdef VerboseQt}
