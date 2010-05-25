@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-24 04:38+0100\n"
+"PO-Revision-Date: 2010-05-25 21:39+0100\n"
 "Last-Translator: paul <lesudiste11@gmail.com>\n"
 "Language-Team: français\n"
 "MIME-Version: 1.0\n"
@@ -129,9 +129,12 @@ msgid "Brackets highlight"
 msgstr "Parenthèses"
 
 #: lazarusidestrconsts.dlgaddhiattrcodefoldingtree
-#, fuzzy
 msgid "Code folding tree"
-msgstr "Commandes pliage de texte"
+msgstr "Arbre de pliage de code"
+
+#: lazarusidestrconsts.dlgaddhiattrdefault
+msgid "Default Text"
+msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
@@ -150,9 +153,13 @@ msgid "Execution point"
 msgstr "point d'exécution"
 
 #: lazarusidestrconsts.dlgaddhiattrfoldedcode
-#, fuzzy
 msgid "Folded code marker"
-msgstr "Aller au marqueur 0"
+msgstr "marqueur de code pliée"
+
+#: lazarusidestrconsts.dlgaddhiattrgroupdefault
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupdefault"
+msgid "Global"
+msgstr "Global"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupgutter
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
@@ -209,9 +216,8 @@ msgid "Line number"
 msgstr "Numéro de la ligne"
 
 #: lazarusidestrconsts.dlgaddhiattrmodifiedline
-#, fuzzy
 msgid "Modified line"
-msgstr "Numéro de la ligne"
+msgstr "Lligne modifiée"
 
 #: lazarusidestrconsts.dlgaddhiattrmouselink
 #, fuzzy
@@ -219,9 +225,8 @@ msgid "Mouse link"
 msgstr "Style de lien :"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditarea
-#, fuzzy
 msgid "Selected Area"
-msgstr "&Texte sélectionné"
+msgstr "Aire sélectionnée"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditcur
 msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditcur"
@@ -234,10 +239,9 @@ msgid "Other Cells"
 msgstr "Autres cellules"
 
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditsync
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgaddhiattrsyncroeditsync"
 msgid "Syncronized Cells"
-msgstr "Autres cellules"
+msgstr "Cellules synchronisées"
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditcur
 msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditcur"
@@ -250,20 +254,17 @@ msgid "Other Cells"
 msgstr "Autres cellules"
 
 #: lazarusidestrconsts.dlgaddhiattrtemplateeditsync
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgaddhiattrtemplateeditsync"
 msgid "Syncronized Cells"
-msgstr "Autres cellules"
+msgstr "Cellules synchronisées"
 
 #: lazarusidestrconsts.dlgaddhiattrtextblock
-#, fuzzy
 msgid "Text block"
-msgstr "Indentation de bloc"
+msgstr "bloc de texte"
 
 #: lazarusidestrconsts.dlgaddhiattrunknownbreakpoint
-#, fuzzy
 msgid "Unknown breakpoint"
-msgstr "Désactiver le point d'arrêt"
+msgstr "Point d'arrêt inconnu"
 
 #: lazarusidestrconsts.dlgaddhiattrwordgroup
 #, fuzzy
@@ -342,7 +343,7 @@ msgstr "Indenter jusqu'à"
 
 #: lazarusidestrconsts.dlgautoremoveemptymethods
 msgid "Auto remove empty methods"
-msgstr ""
+msgstr "Supprimer automatiquement les méthodes vides"
 
 #: lazarusidestrconsts.dlgautoren
 msgid "Auto rename file lowercase"
@@ -575,9 +576,8 @@ msgid "C Style Operators (*=, +=, /= and -=)"
 msgstr "Opérateurs de style C (*=, +=, /= et -=)"
 
 #: lazarusidestrconsts.dlgcocreatechildnode
-#, fuzzy
 msgid "Create child node"
-msgstr "Créer un item d'aide"
+msgstr "Créer un nœud fils"
 
 #: lazarusidestrconsts.dlgcocreatemakefile
 msgctxt "lazarusidestrconsts.dlgcocreatemakefile"
@@ -585,14 +585,12 @@ msgid "Create Makefile"
 msgstr "Créer le Makefile"
 
 #: lazarusidestrconsts.dlgcocreatenodeabove
-#, fuzzy
 msgid "Create node above"
-msgstr "Créer un item d'aide"
+msgstr "Créer un noeud au-dessus"
 
 #: lazarusidestrconsts.dlgcocreatenodebelow
-#, fuzzy
 msgid "Create node below"
-msgstr "Insérer un noeud ci-dessous"
+msgstr "Créer un noeud au-dessous"
 
 #: lazarusidestrconsts.dlgcodbx
 msgid "Generate Debugging Info For DBX (Slows Compiling)"
@@ -668,6 +666,11 @@ msgstr "Charger/Enregistrer"
 msgid "Color"
 msgstr "Couleur"
 
+#: lazarusidestrconsts.dlgcolorexportbutton
+msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
+msgid "Export"
+msgstr "Exporter"
+
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(Modifie la couleur)"
@@ -685,14 +688,12 @@ msgid "Move down"
 msgstr "Descendre"
 
 #: lazarusidestrconsts.dlgcomoveleveldown
-#, fuzzy
 msgid "Move level down"
-msgstr "Déplacer le noeud d'un niveau vers le bas"
+msgstr "Déplacer d'un niveau vers le bas"
 
 #: lazarusidestrconsts.dlgcomovelevelup
-#, fuzzy
 msgid "Move level up"
-msgstr "Déplacer le noeud d'un niveau vers le haut"
+msgstr "Déplacer d'un niveau vers le haut"
 
 #: lazarusidestrconsts.dlgcomoveup
 msgid "Move up"
@@ -890,7 +891,7 @@ msgstr "Désactiver l'anti-crénelage"
 
 #: lazarusidestrconsts.dlgdividercolordefault
 msgid "Use right margin color"
-msgstr ""
+msgstr "Utilisez la couleur de la marge de droite"
 
 #: lazarusidestrconsts.dlgdividerdrawdepth
 #, fuzzy
@@ -908,9 +909,8 @@ msgid "Draw divider"
 msgstr "Dessin des séparateurs"
 
 #: lazarusidestrconsts.dlgdividertopcolor
-#, fuzzy
 msgid "Line color"
-msgstr "Choisir une couleur"
+msgstr "Couleur de ligne"
 
 #: lazarusidestrconsts.dlgdivpasbeginendname
 msgid "Begin/End"
@@ -1045,7 +1045,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinanywin
 msgid "New tab, existing or new window"
-msgstr ""
+msgstr "Nouvel onglet,nouvelle fenêtre ou existante"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinnewwin
 #, fuzzy
@@ -1054,7 +1054,7 @@ msgstr "Cloner vers une nouvelle fenêtre"
 
 #: lazarusidestrconsts.dlgeditaccesscaptionunlockedopennewinoldwin
 msgid "New tab in existing window"
-msgstr ""
+msgstr "Nouvel onglet dans la fenêtre existante"
 
 #: lazarusidestrconsts.dlgeditaccessdescignlockedoldedit
 msgid "This option will use the longest unused editor for the file, even if it is locked and/or needs scrolling. The determination of the longest unused editor does not look at the order in which the windows were focused, even if this is set by the setting for \"same criteria order\". This option will always succeed, further options are never tested."
@@ -1074,7 +1074,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgeditaccessdescunlocked
 msgid "This option will use any not locked Editor."
-msgstr ""
+msgstr "Cette option utilisera n'importe quel éditeur non vérouillé."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedinsoftview
 msgid "This option will use a not locked Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)."
@@ -1108,6 +1108,10 @@ msgstr "Hauteur de la police de l'éditeur"
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
 msgid "Editor options"
 msgstr "Options de l'éditeur"
+
+#: lazarusidestrconsts.dlgeditschemdefaults
+msgid "Scheme globals"
+msgstr ""
 
 #: lazarusidestrconsts.dlgedmisc
 msgid "Misc"
@@ -1379,7 +1383,7 @@ msgstr "Noeud"
 
 #: lazarusidestrconsts.dlgfoldxmlprocess
 msgid "Processing Instruction"
-msgstr ""
+msgstr "Instruction de traitement"
 
 #: lazarusidestrconsts.dlgforecolor
 msgid "Foreground"
@@ -1420,7 +1424,7 @@ msgstr "Options"
 
 #: lazarusidestrconsts.dlggeneratedwarf
 msgid "Generate dwarf debug information"
-msgstr ""
+msgstr "Génère de l'information minimale de débogage"
 
 #: lazarusidestrconsts.dlggetposition
 msgid "Get position"
@@ -1747,12 +1751,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match word boundaries for words up to this length:"
-msgstr ""
+msgstr "trouver les limites de mot pour les mots jusqu'à cette longueur:"
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
-#, fuzzy
 msgid "Ignore Keywords"
-msgstr "Ignorer tout"
+msgstr "Ignore les mots clefs"
 
 #: lazarusidestrconsts.dlgmarkupwordnotimer
 msgid "Disable Timer for Markup Current Word"
@@ -1808,19 +1811,19 @@ msgstr "Droite"
 
 #: lazarusidestrconsts.dlgmousefoldcolfoldall
 msgid "Fold All (Some Colapsed)"
-msgstr ""
+msgstr "Plie tout (quelques-uns réduits)"
 
 #: lazarusidestrconsts.dlgmousefoldcolfoldone
 msgid "Fold One (Some Colapsed)"
-msgstr ""
+msgstr "En plie un (quelques-uns réduits)"
 
 #: lazarusidestrconsts.dlgmousefoldcolunfoldall
 msgid "Unfold All (Some Colapsed)"
-msgstr ""
+msgstr "Déplie tout(quelques-uns réduits)"
 
 #: lazarusidestrconsts.dlgmousefoldcolunfoldone
 msgid "Unfold One (Some Colapsed)"
-msgstr ""
+msgstr "En déplie un (quelques-uns réduits)"
 
 #: lazarusidestrconsts.dlgmousefoldenabled
 msgctxt "lazarusidestrconsts.dlgmousefoldenabled"
@@ -1828,13 +1831,12 @@ msgid "Enabled"
 msgstr "Permis "
 
 #: lazarusidestrconsts.dlgmousefoldexpfoldall
-#, fuzzy
 msgid "Fold All (All Expanded)"
-msgstr "Non pour tout"
+msgstr "Plie tout (tout développé)"
 
 #: lazarusidestrconsts.dlgmousefoldexpfoldone
 msgid "Fold One (All Expanded)"
-msgstr ""
+msgstr "En plie un(tout développé)"
 
 #: lazarusidestrconsts.dlgmousefoldgroup1
 msgid "Setting 1"
@@ -2107,11 +2109,11 @@ msgstr "Arbre de pliage"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterfoldcol
 msgid "Collapsed [+]"
-msgstr ""
+msgstr "Réduit [+]"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterfoldexp
 msgid "Expanded [-]"
-msgstr ""
+msgstr "Développé [-]"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlines
 msgid "Line Numbers"
@@ -2518,9 +2520,8 @@ msgid "Save desktop settings to file"
 msgstr "Enregistrer les paramètres du bureau"
 
 #: lazarusidestrconsts.dlgsavedlinecolor
-#, fuzzy
 msgid "Saved line"
-msgstr "Numéro de la ligne"
+msgstr "Lgne enregistrée"
 
 #: lazarusidestrconsts.dlgsaveeditorinfo
 msgid "Save editor info for closed files"
@@ -2677,7 +2678,7 @@ msgstr "Afficher les avertissements"
 
 #: lazarusidestrconsts.dlgsingletaskbarbutton
 msgid "Show single button in TaskBar"
-msgstr ""
+msgstr "Affiche un seul bouton dans la barre des tâches"
 
 #: lazarusidestrconsts.dlgskipforwarddeclarations
 #, fuzzy
@@ -2864,9 +2865,8 @@ msgid "Unit output directory (-FU):"
 msgstr "Répertoire de sortie pour les unités (-FU):"
 
 #: lazarusidestrconsts.dlgunsavedlinecolor
-#, fuzzy
 msgid "Unsaved line"
-msgstr "Numéro de la ligne"
+msgstr "ligne non enregistrée"
 
 #: lazarusidestrconsts.dlgupword
 msgctxt "lazarusidestrconsts.dlgupword"
@@ -2899,6 +2899,14 @@ msgstr "Utiliser une application de démarrage"
 msgid "Use messages file"
 msgstr "Sauver les messages dans un fichier (*.txt)"
 
+#: lazarusidestrconsts.dlguserschemeerror
+msgid "Failed to load user-scheme file %s"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseschemedefaults
+msgid "Use global scheme settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
 msgstr "Utiliser la coloration syntaxique"
@@ -2919,6 +2927,10 @@ msgstr "Gouttière visible"
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
 msgstr "Marge droite visible"
+
+#: lazarusidestrconsts.dlgwarneditschemedefaults
+msgid "Editing global  for all languages"
+msgstr ""
 
 #: lazarusidestrconsts.dlgwholewordsonly
 msgid "&Whole Words Only"
@@ -3407,9 +3419,8 @@ msgid "Additional compiler options inherited from packages"
 msgstr "Options de compilation additionnelles héritées des paquets"
 
 #: lazarusidestrconsts.lisaddnewset
-#, fuzzy
 msgid "Add new set"
-msgstr "Variable d'affectation"
+msgstr "Ajouter un nouveau jeux"
 
 #: lazarusidestrconsts.lisaddpackagerequirement
 #, fuzzy
@@ -3521,9 +3532,8 @@ msgid "All Files"
 msgstr "Tous les fichiers"
 
 #: lazarusidestrconsts.lisallinheritedoptions
-#, fuzzy
 msgid "All inherited options"
-msgstr "Aucune option de compilateur héritée"
+msgstr "Toutes les options héritées"
 
 #: lazarusidestrconsts.lisallowfunctio
 msgid "Allow Function Calls"
@@ -3652,24 +3662,20 @@ msgid "Ask name on create"
 msgstr "Demande le nom de fichier pendant la création"
 
 #: lazarusidestrconsts.lisautocompletionoff
-#, fuzzy
 msgid "Auto completion: off"
-msgstr "Modèle d'achèvement de code"
+msgstr "complétion automatique: off"
 
 #: lazarusidestrconsts.lisautocompletionon
-#, fuzzy
 msgid "Auto completion: on"
-msgstr "Auto compléter sur ..."
+msgstr "Auto complétion: on"
 
 #: lazarusidestrconsts.lisautocontinue
-#, fuzzy
 msgid "Auto Continue"
-msgstr "Indentation automatique"
+msgstr "Continue automatiquement"
 
 #: lazarusidestrconsts.lisautocontinueafter
-#, fuzzy
 msgid "Auto continue after:"
-msgstr "Insérer un espace après"
+msgstr "Continue automatiquement après:"
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
@@ -3722,7 +3728,7 @@ msgstr "Le changement du nom ou de la version d'un paquet brise les dépendances
 
 #: lazarusidestrconsts.lisbegins
 msgid "begins"
-msgstr "begins"
+msgstr "commence"
 
 #: lazarusidestrconsts.lisbehindrelated
 #, fuzzy
@@ -4059,16 +4065,15 @@ msgstr "Catégories"
 
 #: lazarusidestrconsts.liscecomplexitygroup
 msgid "Complexity"
-msgstr ""
+msgstr "Complexité"
 
 #: lazarusidestrconsts.lisceconstants
 msgid "Constants"
 msgstr "Constantes"
 
 #: lazarusidestrconsts.lisceemptyblocks
-#, fuzzy
 msgid "Empty blocks"
-msgstr "Tabulation indente les blocs"
+msgstr "blocs vides"
 
 #: lazarusidestrconsts.lisceemptyclasssections
 #, fuzzy
@@ -4232,11 +4237,11 @@ msgstr "Types"
 
 #: lazarusidestrconsts.lisceunnamedconstants
 msgid "Unnamed constants"
-msgstr ""
+msgstr "constantes sans nom"
 
 #: lazarusidestrconsts.lisceunsortedmembers
 msgid "Unsorted members"
-msgstr ""
+msgstr "membres non triés"
 
 #: lazarusidestrconsts.lisceunsortedvisibility
 msgid "Unsorted visibility"
@@ -4397,7 +4402,7 @@ msgstr "Conflits de classe avec le fichier .lfm : %s L'unité %s%s utilise l'uni
 
 #: lazarusidestrconsts.lisclassesandpropertiesexistvalueswerenotchecked
 msgid "Classes and properties exist. Values were not checked."
-msgstr ""
+msgstr "Les classes et les propriétés existent. Les valeurs n'ont pas été vérifiées."
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
@@ -4473,9 +4478,8 @@ msgid "Closing a Source Editor Window. Do you want close all files or hide the w
 msgstr ""
 
 #: lazarusidestrconsts.lisclosealltabstitle
-#, fuzzy
 msgid "Close Source Editor Window"
-msgstr "Aller à éditeur de source 1"
+msgstr "Fermer la fenêtre d'édition source"
 
 #: lazarusidestrconsts.liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -4691,17 +4695,16 @@ msgstr ""
 #: lazarusidestrconsts.liscodeobscharconst
 msgctxt "lazarusidestrconsts.liscodeobscharconst"
 msgid "Search for unnamed char constants"
-msgstr ""
+msgstr "Rechercher des constantes de type char sans nom "
 
 #: lazarusidestrconsts.liscodeobserver
-#, fuzzy
 msgid "Code Observer"
-msgstr "Création de code"
+msgstr "Observateur de code"
 
 #: lazarusidestrconsts.liscodeobsignoreeconstants
 msgctxt "lazarusidestrconsts.liscodeobsignoreeconstants"
 msgid "Ignore next unnamed constants"
-msgstr ""
+msgstr "Ignorer les prochaines constantes sans nom"
 
 #: lazarusidestrconsts.liscodetempladd
 msgctxt "lazarusidestrconsts.liscodetempladd"
@@ -5346,9 +5349,8 @@ msgid "contains"
 msgstr "contient"
 
 #: lazarusidestrconsts.liscontextsensitive
-#, fuzzy
 msgid "Context sensitive"
-msgstr "Aide contextuelle"
+msgstr "Sensible au contexte"
 
 #: lazarusidestrconsts.liscontinue
 msgctxt "lazarusidestrconsts.liscontinue"
@@ -5401,7 +5403,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconverttarget3
 msgid "Both Lazarus/LCL and Delphi"
-msgstr ""
+msgstr "A la fois  Lazarus/LCL et Delphi"
 
 #: lazarusidestrconsts.lisconvtypereplacements
 #, fuzzy
@@ -5419,14 +5421,12 @@ msgid "Unit Replacements"
 msgstr "Style de l'unité"
 
 #: lazarusidestrconsts.lisconvunitstoreplace
-#, fuzzy
 msgid "Units to replace"
-msgstr "&Confirmer les remplacements"
+msgstr "Unités à remplacer"
 
 #: lazarusidestrconsts.lisconvunitstypesproperties
-#, fuzzy
 msgid "Units, Types and Properties"
-msgstr "Mélanger méthodes et propriétés"
+msgstr "Unités, types et propriétés"
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -5437,18 +5437,16 @@ msgid "Copy all and hidden messages to clipboard"
 msgstr "Copier tous les messages cachés dans le presse-papier"
 
 #: lazarusidestrconsts.liscopyallitemstoclipboard
-#, fuzzy
 msgid "Copy all items to clipboard"
-msgstr "Copier tous les messages vers le presse-papier"
+msgstr "Copier tous les éléments vers le presse-papier"
 
 #: lazarusidestrconsts.liscopyallmessagestoclipboard
 msgid "Copy all messages to clipboard"
 msgstr "Copier tous les messages vers le presse-papier"
 
 #: lazarusidestrconsts.liscopyalloutputclipboard
-#, fuzzy
 msgid "Copy all output to clipboard"
-msgstr "Copier tous les messages vers le presse-papier"
+msgstr "Copier toutes les sorties vers le presse-papier"
 
 #: lazarusidestrconsts.liscopydescription
 msgid "Copy description to clipboard"
@@ -5471,14 +5469,12 @@ msgid "Copying a whole form is not implemented."
 msgstr "La copie d'une fiche complète n'est pas encore implémentée."
 
 #: lazarusidestrconsts.liscopyitemtoclipboard
-#, fuzzy
 msgid "Copy item to clipboard"
-msgstr "Copier la sortie vers le presse-papier"
+msgstr "Copier l'élément vers le presse-papier"
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
-#, fuzzy
 msgid "Copy selected items to clipboard"
-msgstr "Copier les messages sélectionnés dans le presse-papier"
+msgstr "Copier les éléments sélectionnés vers le presse-papier"
 
 #: lazarusidestrconsts.liscopyselectedmessagestoclipboard
 msgid "Copy selected messages to clipboard"
@@ -5506,15 +5502,15 @@ msgstr "Options spécifiques à l'OS de destination"
 
 #: lazarusidestrconsts.liscouldnotadditomainsource
 msgid "Could not add %s{$I %s%s} to main source!"
-msgstr ""
+msgstr "N'a pas pu ajouter %s{$I %s%s} à la source principale!"
 
 #: lazarusidestrconsts.liscouldnotaddrtomainsource
 msgid "Could not add %s{$R %s%s} to main source!"
-msgstr ""
+msgstr "N'a pas pu ajouter %s{$R %s%s} à la source principale!"
 
 #: lazarusidestrconsts.liscouldnotaddtomainsource
 msgid "Could not add %s%s%s to main source!"
-msgstr ""
+msgstr "N'a pas pu ajouter %s%s%s à la source principale!!"
 
 #: lazarusidestrconsts.liscouldnotremovefrommainsource
 msgid "Could not remove %s%s%s from main source!"
@@ -5522,11 +5518,11 @@ msgstr "Impossible de supprimer %s%s%s de la source principale !"
 
 #: lazarusidestrconsts.liscouldnotremoveifrommainsource
 msgid "Could not remove %s{$I %s%s} from main source!"
-msgstr ""
+msgstr "N'a pas pu enlever %s{$I %s%s} de la source principale!"
 
 #: lazarusidestrconsts.liscouldnotremoverfrommainsource
 msgid "Could not remove %s{$R %s%s} from main source!"
-msgstr ""
+msgstr "N'a pas pu enlever %s{$R %s%s} de la source principale!"
 
 #: lazarusidestrconsts.liscovarious
 msgid "%s (various)"
@@ -5645,10 +5641,9 @@ msgid "Custom Program"
 msgstr "Programme personnalisé"
 
 #: lazarusidestrconsts.liscustomprogramafreepascalprogram
-#, fuzzy
 #| msgid "Custom Program%sA freepascal program."
 msgid "Custom Program%sA Free Pascal program."
-msgstr "Programme personnalisé%sUn programme FreePascal"
+msgstr "Programmeen usage%sUn programme FreePascal"
 
 #: lazarusidestrconsts.lisdatamodule
 #, fuzzy
@@ -6019,9 +6014,8 @@ msgid "Directory %s%s%s not found."
 msgstr "Répertoire %s%s%s non trouvé."
 
 #: lazarusidestrconsts.lisdirectorynotwritable
-#, fuzzy
 msgid "Directory not writable"
-msgstr "\" est protégé en écriture."
+msgstr "répertoire protégé en écriture."
 
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
@@ -7060,7 +7054,7 @@ msgstr "Suggestion : Vérifier si deux paquets contiennent une unité du même n
 
 #: lazarusidestrconsts.lishintdoubleclickonthecommandyouwanttoedit
 msgid "Hint: double click on the command you want to edit"
-msgstr ""
+msgstr "Astuce: double-cliquez sur la commande que vous souhaitez modifier"
 
 #: lazarusidestrconsts.lishintopen
 msgctxt "lazarusidestrconsts.lishintopen"
@@ -7092,7 +7086,7 @@ msgstr "Pas à pas approfondi"
 
 #: lazarusidestrconsts.lishintstepout
 msgid "Run until function returns"
-msgstr ""
+msgstr "Execute jusqu'au retour de fonction"
 
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
@@ -7164,9 +7158,8 @@ msgid "IDE Interface"
 msgstr "Interface EDI"
 
 #: lazarusidestrconsts.lisidentifier
-#, fuzzy
 msgid "identifier"
-msgstr "Identifiant"
+msgstr "Identificateur"
 
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
@@ -7182,11 +7175,11 @@ msgstr "Options de l'EDI :"
 
 #: lazarusidestrconsts.lisideprojectdirinidetitle
 msgid "Show project directory in IDE title"
-msgstr ""
+msgstr "Voir le répertoire du projet dans le titre de l'IDE"
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"
-msgstr ""
+msgstr "Le titre de l'IDE débute avec le nom du projet"
 
 #: lazarusidestrconsts.lisiecoerroraccessingxml
 msgid "Error accessing xml"
@@ -7270,9 +7263,8 @@ msgid "Imitate indentation of current unit, project or package"
 msgstr ""
 
 #: lazarusidestrconsts.lisimplementationcommentforclass
-#, fuzzy
 msgid "Implementation comment for class"
-msgstr "Commentaire d'en-tête pour la classe"
+msgstr "Commentaire d'implémentation pour la classe"
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -7391,16 +7383,15 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinsertdateoptionalformatstring
 msgid "Insert date. Optional: format string"
-msgstr ""
+msgstr "Insérer la date. Facultatif:  format chaîne de caractère"
 
 #: lazarusidestrconsts.lisinsertendifneeded
 msgid "insert end if needed"
 msgstr "Insère end si nécessaire"
 
 #: lazarusidestrconsts.lisinsertnameofcurrentprocedure
-#, fuzzy
 msgid "Insert name of current procedure"
-msgstr "Insérer le mot-clé CVS Name"
+msgstr "Insére le nom de la procédure courante"
 
 #: lazarusidestrconsts.lisinsertprintshorttag
 #, fuzzy
@@ -8450,7 +8441,7 @@ msgstr "Lier la cible"
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
-msgstr ""
+msgstr " liste de toutes les valeurs de cas"
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -9478,10 +9469,9 @@ msgid "Code Explorer"
 msgstr "Explorateur de code"
 
 #: lazarusidestrconsts.lismenuviewcomponentpalette
-#, fuzzy
 #| msgid "View Component Palette"
 msgid "Component Palette"
-msgstr "Rechercher la palette des composants"
+msgstr "Palette de composants"
 
 #: lazarusidestrconsts.lismenuviewcomponents
 msgid "&Components"
@@ -9630,9 +9620,8 @@ msgid "3) Abort now, install packages or fix paths and try again."
 msgstr ""
 
 #: lazarusidestrconsts.lismissingunitssearch
-#, fuzzy
 msgid "Search Unit Path"
-msgstr "Ajouter l'unité au chemin de recherche?"
+msgstr "Recherche de chemin de l'unité"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -9777,7 +9766,7 @@ msgstr "Nouveau paramètre"
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections:"
-msgstr ""
+msgstr "De nouvelles unités sont ajoutées aux sections uses:"
 
 #: lazarusidestrconsts.lisno
 msgid "No"
@@ -9910,7 +9899,7 @@ msgstr "Chemin du code objet"
 
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
 msgid "Switch to Object Inspector Favorites tab"
-msgstr ""
+msgstr "Basculer vers l'onglet des favoris de l'inspecteur d'objet"
 
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestabafterasking
 msgid "Switch to Object Inspector Favorites tab after asking for component name"
@@ -10261,7 +10250,7 @@ msgstr "Appel de la procédure %sRegister%s de l'unité sélectionnée"
 
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
-msgstr ""
+msgstr "Effacer le nom de fichier de dépendance par défaut/préféré"
 
 #: lazarusidestrconsts.lispckeditcompile
 msgctxt "lazarusidestrconsts.lispckeditcompile"
@@ -11339,6 +11328,7 @@ msgid "Exists"
 msgstr "Existe"
 
 #: lazarusidestrconsts.lispldglobal
+msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr "Global"
 
@@ -11667,7 +11657,7 @@ msgstr "Le projet %s à levé une exception de class '%s'."
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclassswithmessagess
 msgid "Project %s raised exception class '%s' with message:%s%s"
-msgstr ""
+msgstr "Le projet %s à levé une classe d'exception '%s' avec le message:%s%s"
 
 #: lazarusidestrconsts.lisprojectsrcpath
 msgid "Project Src Path"
@@ -12234,7 +12224,7 @@ msgstr " Montre les conseils de déclaration"
 
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
-msgstr ""
+msgstr "Montre les unités/paquets vides"
 
 #: lazarusidestrconsts.lisshowglyphsfor
 #, fuzzy
@@ -12279,7 +12269,7 @@ msgstr "Afficher les unités"
 
 #: lazarusidestrconsts.lisshowvaluehintswhiledebugging
 msgid "Show value hints while debugging"
-msgstr ""
+msgstr "Montrez les conseils de valeur pendant de debogage"
 
 #: lazarusidestrconsts.lisshowversionandexit
 msgid "show version and exit"
@@ -12662,7 +12652,7 @@ msgstr "Le fichier %s%s%s"
 
 #: lazarusidestrconsts.listhefiledoesnotlooklikealpifile
 msgid "The file %s does not look like a lpi file."
-msgstr ""
+msgstr "Le fichier %s ne resemble pas à un fichier lpi"
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
@@ -12678,7 +12668,7 @@ msgstr "Le fichier %s%s%s n'est pas une unité Delphi."
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 msgid "The file %s%s%s is not a lazarus project.%sCreate a new project for this %s?"
-msgstr ""
+msgstr "Le fichier%s%s%s n'est pas un projet Lazarus.%sCreer un nouveau projet pour ce %s?"
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
@@ -12718,7 +12708,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listheidentifierisaunitpleaseusethefilesaveasfunction
 msgid "The identifier is a unit. Please use the File - Save as function to rename a unit."
-msgstr ""
+msgstr "L'identificateur est une unité. S'il vous plaît utilisez la commande Fichier - Enregistrer afin de renommer une unité."
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
 msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
@@ -12795,7 +12785,7 @@ msgstr "Le programme %smake%s est introuvable.%sCet outil est nécessaire pour c
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
-msgstr ""
+msgstr "Le projet n'utilise pas les interfaces de l'unité LCL, mais il semble qu'il en a besoin.%sVous obtiendrez des erreurs étranges avec l'éditeur de liens si vous utilisez les fiches LCL sans interfaces"
 
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
@@ -12803,7 +12793,7 @@ msgstr "Le fichier d'information projet %s%s%s%sest identique au fichier princip
 
 #: lazarusidestrconsts.listheprojectinformationfilehaschangedondisk
 msgid "The project information file %s%s%s%shas changed on disk."
-msgstr ""
+msgstr "Le fichier d'information du projet  %s%s%s%a changé sur le disque."
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
@@ -12868,11 +12858,11 @@ msgstr "Le composant racine ne peut être supprimé."
 
 #: lazarusidestrconsts.listhesesettingsarestoredwiththeproject
 msgid "These settings are stored with the project."
-msgstr ""
+msgstr "Ces paramètres sont enregistrés avec le projet."
 
 #: lazarusidestrconsts.listheseunitswerenotfound
 msgid "These units were not found:"
-msgstr ""
+msgstr "Ces unités n'ont pas été trouvés:"
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
@@ -12917,7 +12907,7 @@ msgstr "Le  répertoire de travail %s%s%s n'existe pas.%sVeuillez vérifier le r
 
 #: lazarusidestrconsts.listhisfunctionneedsanopenlfmfileinthesourceeditor
 msgid "This function needs an open .lfm file in the source editor."
-msgstr ""
+msgstr "Cette fonction nécessite une ouverture du fichier. lfm dans l'éditeur de source."
 
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
@@ -12949,7 +12939,7 @@ msgstr "&Titre"
 
 #: lazarusidestrconsts.listitleintaskbarshowsforexampleproject1lpilazarus
 msgid "Title in taskbar shows for example: project1.lpi - Lazarus"
-msgstr ""
+msgstr "Le titre de la barre des tâches montre par exemple: project1.lpi - Lazarus"
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
@@ -13339,7 +13329,7 @@ msgstr "Impossible de trouver la méthode. Veuillez corriger l'erreur affichée 
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
 msgid "Unable to find pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
-msgstr ""
+msgstr "Incapable de trouver l'unité en pascal  (.pas,.pp) du fichier .lfm %s%s%s%s"
 
 #: lazarusidestrconsts.lisunabletofindtheunitofcomponentclass
 msgid "Unable to find the unit of component class %s%s%s."
@@ -13510,7 +13500,7 @@ msgstr "Impossible d'écrire le flux xml vers %s%sErreur : %s"
 
 #: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
 msgid "Unexpected result:%sThe debugger will terminate"
-msgstr ""
+msgstr "Résultat inattendu:%sLe débogueur va s'arrêter"
 
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
@@ -13584,7 +13574,7 @@ msgstr "chaîne en majuscule"
 
 #: lazarusidestrconsts.lisuppercasestringgivenasparameter
 msgid "Uppercase string given as parameter"
-msgstr ""
+msgstr "chaîne de caractère en majuscules donnée en paramètre"
 
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
@@ -14370,15 +14360,15 @@ msgstr "Copier la sélection vers le presse-papier"
 
 #: lazarusidestrconsts.srkmeccopyeditornewwindow
 msgid "Copy editor to new window"
-msgstr ""
+msgstr "Copie l'éditeur vers une nouvelle fenêtre"
 
 #: lazarusidestrconsts.srkmeccopyeditornextwindow
 msgid "Copy editor to next free window"
-msgstr ""
+msgstr "Copie l'éditeur vers la fenêtre suivante libre"
 
 #: lazarusidestrconsts.srkmeccopyeditorprevwindow
 msgid "Copy editor to prior free window"
-msgstr ""
+msgstr "Copie l'éditeur vers la précédente fenêtre libre"
 
 #: lazarusidestrconsts.srkmeccustomtool
 msgid "Custom tool %d"
@@ -14637,7 +14627,7 @@ msgstr "Déplacer le curseur en début de ligne"
 
 #: lazarusidestrconsts.srkmeclinetextstart
 msgid "Move cursor to text start in line"
-msgstr ""
+msgstr "Déplacer le curseur au début du texte de la ligne"
 
 #: lazarusidestrconsts.srkmeclockeditor
 #, fuzzy
@@ -14662,15 +14652,15 @@ msgstr "Déplacer l'editeur tout à gauche"
 
 #: lazarusidestrconsts.srkmecmoveeditornewwindow
 msgid "Move editor to new window"
-msgstr ""
+msgstr "Déplace l'éditeur vers une nouvelle fenêtre"
 
 #: lazarusidestrconsts.srkmecmoveeditornextwindow
 msgid "Move editor to next free window"
-msgstr ""
+msgstr "Déplacer l'éditeur vers la fenêtre suivante libre"
 
 #: lazarusidestrconsts.srkmecmoveeditorprevwindow
 msgid "Move editor to prior free window"
-msgstr ""
+msgstr "Déplace l'éditeur vers la première fenêtre libre"
 
 #: lazarusidestrconsts.srkmecmoveeditorright
 msgid "Move editor right"
@@ -14690,7 +14680,7 @@ msgstr "Aller à l'éditeur suivant"
 
 #: lazarusidestrconsts.srkmecnextsharededitor
 msgid "Go to next editor with same Source"
-msgstr ""
+msgstr "Aller vers l'éditeur suivant avec la même source"
 
 #: lazarusidestrconsts.srkmecnextwindow
 msgid "Go to next window"
@@ -14750,7 +14740,7 @@ msgstr "Aller à l'éditeur précédent"
 
 #: lazarusidestrconsts.srkmecprevsharededitor
 msgid "Go to prior editor with same Source"
-msgstr ""
+msgstr "Aller au précédent éditeur avec la même source"
 
 #: lazarusidestrconsts.srkmecprevwindow
 msgid "Go to prior window"
@@ -14940,12 +14930,12 @@ msgstr "Arrêter le programme"
 #: lazarusidestrconsts.srkmecsynpsyncroedcellend
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellend"
 msgid "Goto last pos in cell"
-msgstr ""
+msgstr "Aller à la dernière position dans la cellule"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedcellhome
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedcellhome"
 msgid "Goto first pos in cell"
-msgstr ""
+msgstr "Aller à la première position dans la cellule"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedcellselect
 msgid "Select Cell"
@@ -14985,12 +14975,12 @@ msgstr "Curseur ou Edition"
 #: lazarusidestrconsts.srkmecsynptmpledcellend
 msgctxt "lazarusidestrconsts.srkmecsynptmpledcellend"
 msgid "Goto last pos in cell"
-msgstr ""
+msgstr "Aller à la dernière position dans la cellule"
 
 #: lazarusidestrconsts.srkmecsynptmpledcellhome
 msgctxt "lazarusidestrconsts.srkmecsynptmpledcellhome"
 msgid "Goto first pos in cell"
-msgstr ""
+msgstr "Aller à la première position dans la cellule"
 
 #: lazarusidestrconsts.srkmecsynptmpledcellselect
 msgid "Select cell"
