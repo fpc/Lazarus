@@ -93,6 +93,8 @@ type
     procedure ComboBoxOnChange(Sender: TObject);
     procedure ComboBoxOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
+    FTempColorSchemeSettings: TColorSchemeFactory;
+
     FDialog: TAbstractOptionsEditorDialog;
     FCurHighlightElement: TColorSchemeAttribute;
 
@@ -126,6 +128,7 @@ type
     function DoSynEditMouse(var AnInfo: TSynEditMouseActionInfo;
                          HandleActionProc: TSynEditMouseActionHandler): Boolean;
   public
+    constructor Create(TheOwner : TComponent); override;
     destructor Destroy; override;
 
     function GetTitle: String; override;
@@ -317,7 +320,7 @@ begin
     XMLConfig.SetValue('Lazarus/ColorSchemes/Names/Item1/Value', NewName);
 
     NewScheme := TColorScheme.Create(NewName);
-    NewScheme.Assign(EditorOpts.UserColorSchemeGroup.ColorSchemeGroup[ColorSchemeComboBox.Text]);
+    NewScheme.Assign(FTempColorSchemeSettings.ColorSchemeGroup[ColorSchemeComboBox.Text]);
     NewScheme.SaveToXml(XMLConfig, 'Lazarus/ColorSchemes/',nil);
     NewScheme.Free;
 
@@ -934,7 +937,7 @@ var
   NewColorScheme: TColorSchemeLanguage;
 begin
   // Modfiy directly => will be re-read form XML if canceled
-  SchemeGrp := EditorOpts.UserColorSchemeGroup.ColorSchemeGroup[ColorScheme];
+  SchemeGrp := FTempColorSchemeSettings.ColorSchemeGroup[ColorScheme];
   if SchemeGrp = nil then
     exit;
 
@@ -1022,8 +1025,15 @@ begin
   Result := True;
 end;
 
+constructor TEditorColorOptionsFrame.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FTempColorSchemeSettings := TColorSchemeFactory.Create;
+end;
+
 destructor TEditorColorOptionsFrame.Destroy;
 begin
+  FreeAndNil(FTempColorSchemeSettings);
   FFileExtensions.Free;
   FColorSchemes.Free;
   inherited Destroy;
@@ -1101,6 +1111,7 @@ begin
 
   with AOptions as TEditorOptions do
   begin
+    FTempColorSchemeSettings.Assign(UserColorSchemeGroup);
     UseSyntaxHighlightCheckBox.Checked := UseSyntaxHighlight;
 
     with LanguageComboBox do
@@ -1153,7 +1164,7 @@ begin
                           FColorSchemes.Values[FColorSchemes.Names[i]]);
 
     // Write from userFactory
-    WriteHighlighterSettings;
+    UserColorSchemeGroup.Assign(FTempColorSchemeSettings);
   end;
 end;
 

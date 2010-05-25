@@ -985,7 +985,6 @@ type
     procedure WriteColorScheme(const LanguageName, SynColorScheme: String);
     procedure ReadHighlighterSettings(Syn: TSrcIDEHighlighter;
                                       SynColorScheme: String);
-    procedure WriteHighlighterSettings;
 
     procedure ReadHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
     procedure ReadDefaultsForHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
@@ -3137,6 +3136,8 @@ begin
     end;
 
     FMultiWinEditAccessOrder.LoadFromXMLConfig(XMLConfig, 'EditorOptions/MultiWin/');
+    UserColorSchemeGroup.LoadFromXml(XMLConfig, 'EditorOptions/Color/',
+      ColorSchemeFactory, 'EditorOptions/Display/');
 
   except
     on E: Exception do
@@ -3349,6 +3350,7 @@ begin
     end;
 
     FMultiWinEditAccessOrder.SaveToXMLConfig(XMLConfig, 'EditorOptions/MultiWin/');
+    UserColorSchemeGroup.SaveToXml(XMLConfig, 'EditorOptions/Color/', ColorSchemeFactory);
 
     InvalidateFileStateCache;
     XMLConfig.Flush;
@@ -3545,10 +3547,6 @@ begin
   if (SynColorScheme = '') or (Syn.LanguageName = '') then
     exit;
 
-  // reset all to defaults
-  UserColorSchemeGroup.LoadFromXml(XMLConfig, 'EditorOptions/Color/',
-    ColorSchemeFactory, 'EditorOptions/Display/');
-
   Scheme := UserColorSchemeGroup.ColorSchemeGroup[SynColorScheme];
   if Scheme = nil then
     exit;
@@ -3557,11 +3555,6 @@ begin
     exit;
 
   LangScheme.ApplyTo(Syn);
-end;
-
-procedure TEditorOptions.WriteHighlighterSettings;
-begin
-  UserColorSchemeGroup.SaveToXml(XMLConfig, 'EditorOptions/Color/', ColorSchemeFactory);
 end;
 
 procedure TEditorOptions.ReadHighlighterFoldSettings(Syn: TSrcIDEHighlighter);
@@ -3807,8 +3800,6 @@ var
   i: Integer;
   j: Integer;
 begin
-  UserColorSchemeGroup.LoadFromXml(XMLConfig, 'EditorOptions/Color/',
-    ColorSchemeFactory, 'EditorOptions/Display/');
   // general options
   ASynEdit.Options := fSynEditOptions;
   ASynEdit.Options2 := fSynEditOptions2;
