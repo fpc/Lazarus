@@ -8345,7 +8345,9 @@ end;
 procedure TSourceEditorManager.CreateSourceWindow(Sender: TObject;
   aFormName: string; var AForm: TCustomForm);
 begin
+  {$IFDEF VerboseIDEDocking}
   debugln(['TSourceEditorManager.CreateSourceWindow Sender=',DbgSName(Sender),' FormName="',aFormName,'"']);
+  {$ENDIF}
   AForm := CreateNewWindow(false);
   AForm.Name:=aFormName;
 end;
@@ -8359,7 +8361,9 @@ begin
   i:=StrToIntDef(
        copy(aFormName,length(NonModalIDEWindowNames[nmiwSourceNoteBookName])+1,
             length(aFormName)),0);
+  {$IFDEF VerboseIDEDocking}
   debugln(['TSourceEditorManager.GetDefaultLayout ',aFormName,' i=',i]);
+  {$ENDIF}
   aBounds:=Bounds(250+30*i,160+30*i,
                     Min(1000,(Screen.Width*7) div 10),(Screen.Height*7) div 10);
 end;

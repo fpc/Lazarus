@@ -753,7 +753,9 @@ var
   DockSiblingBounds: TRect;
   Offset: TPoint;
 begin
+  {$IFDEF VerboseIDEDocking}
   debugln(['TSimpleWindowLayoutList.ApplyAndShow Form=',DbgSName(AForm)]);
+  {$ENDIF}
   try
     ALayout:=ItemByFormID(AForm.Name);
     if ALayout<>nil then
