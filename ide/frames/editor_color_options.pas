@@ -522,9 +522,9 @@ begin
     if hafStyleMask in AttrToEdit.Features then
       TextStyleRadioOnChange(Sender)
     else
-    if TextBoldCheckBox.Checked xor (fsItalic in AttrToEdit.Style) then
+    if TextItalicCheckBox.Checked xor (fsItalic in AttrToEdit.Style) then
     begin
-      if TextBoldCheckBox.Checked then
+      if TextItalicCheckBox.Checked then
         AttrToEdit.Style := AttrToEdit.Style + [fsItalic]
       else
         AttrToEdit.Style := AttrToEdit.Style - [fsItalic];
@@ -536,9 +536,9 @@ begin
     if hafStyleMask in AttrToEdit.Features then
       TextStyleRadioOnChange(Sender)
     else
-    if TextBoldCheckBox.Checked xor (fsUnderline in AttrToEdit.Style) then
+    if TextUnderlineCheckBox.Checked xor (fsUnderline in AttrToEdit.Style) then
     begin
-      if TextBoldCheckBox.Checked then
+      if TextUnderlineCheckBox.Checked then
         AttrToEdit.Style := AttrToEdit.Style + [fsUnderline]
       else
         AttrToEdit.Style := AttrToEdit.Style - [fsUnderline];

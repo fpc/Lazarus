@@ -4163,7 +4163,7 @@ begin
     FLanguageName := FHighlighter.LanguageName;
   end;
   FDefaultAttribute := TColorSchemeAttribute.Create(Self, dlgAddHiAttrDefault, 'ahaDefault');
-  FDefaultAttribute.Features := [hafBackColor, hafForeColor, hafFrameColor, hafStyle];
+  FDefaultAttribute.Features := [hafBackColor, hafForeColor];
   FDefaultAttribute.Group := agnDefault;
   FAttributes.AddObject(FDefaultAttribute.StoredName, FDefaultAttribute);
 end;
@@ -4183,6 +4183,7 @@ begin
       csa := TColorSchemeAttribute.Create(Self, FHighlighter.Attribute[i].Name,
                                           FHighlighter.Attribute[i].StoredName
                                          );
+      csa.Assign(FHighlighter.Attribute[i]);
       csa.Group := agnLanguage;
       FAttributes.AddObject(UpperCase(csa.StoredName), csa);
     end;
