@@ -105,6 +105,7 @@ type
     procedure DeleteValue(const APath: string);
     function FindNode(const APath: String; PathHasValue: boolean): TDomNode;
     function HasPath(const APath: string; PathHasValue: boolean): boolean; // checks if the path has values, set PathHasValue=true to skip the last part
+    function HasChildPaths(const APath: string): boolean;
     property Modified: Boolean read FModified write FModified;
     procedure InvalidatePathCache;
   published
@@ -380,6 +381,14 @@ function TXMLConfig.HasPath(const APath: string; PathHasValue: boolean
   ): boolean;
 begin
   Result:=FindNode(APath,PathHasValue)<>nil;
+end;
+
+function TXMLConfig.HasChildPaths(const APath: string): boolean;
+var
+  Node: TDOMNode;
+begin
+  Node:=FindNode(APath,false);
+  Result:=(Node<>nil) and Node.HasChildNodes;
 end;
 
 procedure TXMLConfig.InvalidatePathCache;
