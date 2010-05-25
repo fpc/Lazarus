@@ -1882,7 +1882,9 @@ var
   TheDialog: TEvaluateDlg;
 begin
   TheDialog := TEvaluateDlg(FDialogs[ddtEvaluate]);
-  if SourceEditorManager.GetActiveSE.SelectionAvailable then
+  if (SourceEditorManager.GetActiveSE <> nil) and
+     SourceEditorManager.GetActiveSE.SelectionAvailable
+  then
     TheDialog.FindText := SourceEditorManager.GetActiveSE.Selection
   else
     TheDialog.FindText := SourceEditorManager.GetActiveSE.GetOperandAtCurrentCaret;
