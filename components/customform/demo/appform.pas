@@ -84,7 +84,7 @@ end;
 
 procedure TAppForm.Activate;
 begin
-  if (InitAt=ifaShow) then
+  if (InitAt=ifaActivate) then
     InitForm;
   inherited Activate;
 end;
