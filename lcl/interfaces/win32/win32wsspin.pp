@@ -52,6 +52,8 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure DefaultWndHandler(const AWinControl: TWinControl;
                        var AMessage); override;
+    class function GetConstraints(const AControl: TControl;
+       const AConstraints: TObject): Boolean; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
           var PreferredWidth, PreferredHeight: integer;
           WithThemeSpace: Boolean); override;
@@ -253,6 +255,21 @@ begin
     end;
   end;
   inherited DefaultWndHandler(AWinControl, AMessage);
+end;
+
+class function TWin32WSCustomFloatSpinEdit.GetConstraints(
+  const AControl: TControl; const AConstraints: TObject): Boolean;
+var
+  SizeConstraints: TSizeConstraints absolute AConstraints;
+  SizeRect: TRect;
+begin
+  Result := True;
+
+  if (AConstraints is TSizeConstraints) and TWinControl(AControl).HandleAllocated then
+  begin
+    Windows.GetWindowRect(GetWin32WindowInfo(TWinControl(AControl).Handle)^.UpDown, @SizeRect);
+    SizeConstraints.SetInterfaceConstraints(SizeRect.Right - SizeRect.Left, 0, 0, 0);
+  end;
 end;
 
 class procedure TWin32WSCustomFloatSpinEdit.GetPreferredSize(
