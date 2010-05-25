@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Lazarus>
-    <ColorSchemes>
+    <ColorSchemes Version="6">
       <Names Count="1">
         <Item1 Value="Delphi"/>
       </Names>
