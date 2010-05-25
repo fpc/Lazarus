@@ -144,12 +144,14 @@ begin
   {$endif}
 
   // Creates the window
-
+  {$IFDEF HASX11}
+  QCoreApplication_setAttribute(QtAA_ImmediateWidgetCreation, True);
+  {$ENDIF}
   if csDesigning in AWinControl.ComponentState then
     QtMainWindow := TQtDesignWidget.Create(AWinControl, AParams)
   else
     QtMainWindow := TQtMainWindow.Create(AWinControl, AParams);
-  
+
   // Set´s initial properties
   QtMainWindow.QtFormBorderStyle := Ord(TCustomForm(AWinControl).BorderStyle);
   QtMainWindow.QtFormStyle := Ord(TCustomForm(AWinControl).FormStyle);
@@ -183,6 +185,10 @@ begin
       PopupParent := nil;
     QtMainWindow.setPopupParent(TCustomForm(AWinControl).PopupMode, PopupParent);
   end;
+
+  {$IFDEF HASX11}
+  QCoreApplication_setAttribute(QtAA_ImmediateWidgetCreation, False);
+  {$ENDIF}
 
   // Sets Various Events
   QtMainWindow.AttachEvents;
