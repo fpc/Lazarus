@@ -420,7 +420,9 @@ begin
     Result := AMicro = QtVersionMicro;
 end;
 
+{$IFDEF HASX11}
 {$I qtx11.inc}
+{$ENDIF}
 {$I qtobject.inc}
 {$I qtwinapi.inc}
 {$I qtlclintf.inc}
