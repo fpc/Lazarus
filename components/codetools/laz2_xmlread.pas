@@ -41,6 +41,8 @@ type
     );
   TXMLReaderFlags = set of TXMLReaderFlag;
 
+  { EXMLReadError }
+
   EXMLReadError = class(Exception)
   private
     FSeverity: TErrorSeverity;
@@ -52,6 +54,7 @@ type
     property ErrorMessage: string read FErrorMessage;
     property Line: Integer read FLine;
     property LinePos: Integer read FLinePos;
+    function LineCol: TPoint;
   end;
 
 procedure ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String; Flags: TXMLReaderFlags = []); overload;
@@ -4116,6 +4119,14 @@ begin
   finally
     Stream.Free;
   end;
+end;
+
+{ EXMLReadError }
+
+function EXMLReadError.LineCol: TPoint;
+begin
+  Result.Y:=Line;
+  Result.X:=LinePos;
 end;
 
 end.

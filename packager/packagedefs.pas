@@ -47,7 +47,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Graphics, Forms, FileUtil,
   AvgLvlTree, AVL_Tree, LazConfigStorage,
-  DefineTemplates, CodeToolManager, Laz_XMLWrite, Laz_XMLCfg, CodeCache,
+  DefineTemplates, CodeToolManager, Laz_XMLCfg, CodeCache,
   PropEdits, LazIDEIntf, MacroIntf, PackageIntf,
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs,
   LazarusIDEStrConsts, IDEProcs, ComponentReg,
@@ -2690,7 +2690,7 @@ begin
   try
     XMLConfig.Clear;
     SaveToXMLConfig(XMLConfig,'Package/');
-    WriteXMLFile(XMLConfig.Document,ms);
+    XMLConfig.WriteToStream(ms);
     ms.Position:=0;
     SetLength(s,ms.Size);
     if s<>'' then

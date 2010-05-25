@@ -44,6 +44,8 @@ unit CodeToolsConfig;
 
 {$mode objfpc}{$H+}
 
+{$I codetools.inc}
+
 interface
 
 uses

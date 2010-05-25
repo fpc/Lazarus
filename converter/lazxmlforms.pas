@@ -36,7 +36,13 @@ unit LazXMLForms;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Laz_XMLStreaming, Laz_DOM, Laz_XMLCfg;
+  Classes, SysUtils, LCLProc,
+  {$IFDEF NewXMLCfg}
+  laz2_DOM,
+  {$ELSE}
+  Laz_DOM,
+  {$ENDIF}
+  Laz_XMLCfg, Laz_XMLStreaming;
 
 function CreateXMLWriter(ADoc: TDOMDocument; const Path: string;
   Append: Boolean; var DestroyDriver: boolean): TWriter;

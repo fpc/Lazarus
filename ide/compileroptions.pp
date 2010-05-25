@@ -2601,9 +2601,9 @@ begin
     switches := switches + ' -n';
 
   { Use Custom Config File     @ = yes and path }
-  if (CustomConfigFile) and (ConfigFilePath<>'') then
+  if (CustomConfigFile) and (ConfigFilePath<>'') then begin
     switches := switches + ' ' + PrepareCmdLineOption('@' + ConfigFilePath);
-
+  end;
 
   { ------------- Search Paths ---------------- }
   

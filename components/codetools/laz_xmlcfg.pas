@@ -25,6 +25,8 @@
 
 unit Laz_XMLCfg;
 
+{$I codetools.inc}
+
 interface
 
 {off $DEFINE MEM_CHECK}
@@ -94,6 +96,7 @@ type
     procedure DeletePath(const APath: string);
     procedure DeleteValue(const APath: string);
     function FindNode(const APath: String; PathHasValue: boolean): TDomNode;
+    function HasPath(const APath: string; PathHasValue: boolean): boolean;
     property Modified: Boolean read FModified write FModified;
   published
     property Filename: String read FFilename write SetFilename;
@@ -430,6 +433,12 @@ begin
     if StartPos>PathLen then exit;
   end;
   Result:=nil;
+end;
+
+function TXMLConfig.HasPath(const APath: string; PathHasValue: boolean
+  ): boolean;
+begin
+  Result:=FindNode(APath,PathHasValue)<>nil;
 end;
 
 function TXMLConfig.ExtendedToStr(const e: extended): string;

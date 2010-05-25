@@ -38,7 +38,6 @@ uses
   Classes, SysUtils, resource,
   // LCL
   Controls, ExtCtrls, Graphics, LCLProc, FileUtil, LResources, Forms, Dialogs,
-  Laz_DOM,
   // Synedit
   SynEdit, SynEditAutoComplete, SynEditKeyCmds, SynEditStrConst,
   SynEditMiscClasses, SynBeautifier, SynEditTextTrimmer, SynEditMouseCmds,
@@ -53,6 +52,11 @@ uses
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
   SynHighlighterJScript, SynHighlighterDiff,
   // codetools
+  {$IFDEF NewXMLCfg}
+  laz2_DOM,
+  {$ELSE}
+  Laz_DOM,
+  {$ENDIF}
   LinkScanner, CodeToolManager, Laz_XMLCfg,
   // IDEIntf
   IDECommands, SrcEditorIntf, IDEOptionsIntf,

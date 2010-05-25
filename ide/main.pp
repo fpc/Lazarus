@@ -12710,7 +12710,6 @@ begin
   end;//if
 end;
 
-
 procedure TMainIDE.DoShowMessagesView(BringToFront: boolean);
 begin
   //debugln('TMainIDE.DoShowMessagesView');

@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, Types, RtlConsts, FileUtil,
-  FPCAdds, TypInfo, DynQueue, LCLType, LCLProc, LCLStrConsts, LazConfigStorage;
+  FPCAdds, TypInfo, DynQueue, LCLProc, LCLStrConsts, LazConfigStorage;
 
 {$DEFINE UseLRS}
 {$ifndef ver2_2}

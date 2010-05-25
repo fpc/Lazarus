@@ -33,7 +33,12 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, ExtCtrls, AvgLvlTree,
   // codetools
-  Laz_Dom, AVL_Tree, CodeTree, CodeAtom, CodeCache, CodeToolManager,
+  {$IFDEF NewXMLCfg}
+  laz2_DOM,
+  {$ELSE}
+  Laz_DOM,
+  {$ENDIF}
+  AVL_Tree, CodeTree, CodeAtom, CodeCache, CodeToolManager,
   // IDE
   LazarusIDEStrConsts, IDEProcs, IDEWindowIntf, MiscOptions, DialogProcs,
   InputHistory, SearchResultView, CodeHelp, ButtonPanel;

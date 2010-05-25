@@ -22,6 +22,8 @@ unit Laz_XMLStreaming;
 {$MODE objfpc}
 {$H+}
 
+{$I codetools.inc}
+
 {$DEFINE HasReadWriteBuf}
 {$IF defined(VER2_2_0)}
 {$UNDEF HasReadWriteBuf}
@@ -33,7 +35,13 @@ unit Laz_XMLStreaming;
 
 interface
 
-uses SysUtils, Classes, TypInfo, FileProcs, Laz_DOM, Laz_XMLWrite;
+uses
+  SysUtils, Classes, TypInfo, FileProcs,
+  {$IFDEF NewXMLCfg}
+  Laz2_DOM, Laz2_XMLWrite
+  {$ELSE}
+  Laz_DOM, Laz_XMLWrite
+  {$ENDIF};
 
 type
 

@@ -43,7 +43,11 @@ uses
   // codetools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
   CodeCache, CacheCodeTools, FileProcs,
+  {$IFDEF NewXMLCfg}
+  Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
+  {$ELSE}
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
+  {$ENDIF}
   // IDEIntf
   IDEMsgIntf, MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf, IDEDialogs,
   LazIDEIntf,
