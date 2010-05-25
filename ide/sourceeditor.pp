@@ -5443,15 +5443,17 @@ begin
     Result := -1
 end;
 
-procedure TSourceNotebook.SetPageIndex(const AValue: Integer); {$hint set a breakpoint here => this gets called a zillion times // from EditorEnter / Activate}
+procedure TSourceNotebook.SetPageIndex(const AValue: Integer);
 begin
   FPageIndex := AValue;
   if FUpdateLock = 0 then begin
     FPageIndex := Max(0, Min(FPageIndex, FNotebook.PageCount-1));
     if Assigned(Manager) and (FNotebook.PageIndex = FPageIndex) then
       Manager.DoActiveEditorChanged;
+    // make sure the statusbar is updated
+    if FPageIndex = FNotebook.PageIndex then
+      NotebookPageChanged(nil);
     FNotebook.PageIndex := FPageIndex;
-    NotebookPageChanged(Self);
   end;
 end;
 
@@ -6765,7 +6767,7 @@ var
   PanelFileMode: string;
   CurEditor: TSynEdit;
 begin
-  if not IsVisible then
+  if (not IsVisible) or (FUpdateLock > 0) then
   begin
     Include(States,snUpdateStatusBarNeeded);
     exit;
@@ -6940,7 +6942,7 @@ end;
 Procedure TSourceNotebook.NotebookPageChanged(Sender: TObject);
 var TempEditor:TSourceEditor;
 Begin
-  if not assigned(Manager) Then exit;
+  if (not assigned(Manager)) or (FUpdateLock > 0) Then exit;
   TempEditor:=GetActiveSE;
 
   //writeln('TSourceNotebook.NotebookPageChanged ',Pageindex,' ',TempEditor <> nil,' fAutoFocusLock=',fAutoFocusLock);
