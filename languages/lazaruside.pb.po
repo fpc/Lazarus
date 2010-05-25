@@ -128,6 +128,10 @@ msgstr "Realçar parênteses"
 msgid "Code folding tree"
 msgstr "Árvore código retrátil"
 
+#: lazarusidestrconsts.dlgaddhiattrdefault
+msgid "Default Text"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr "Ponto de parada desabilitado"
@@ -148,6 +152,11 @@ msgstr "Ponto execução"
 #| msgid "Folded code"
 msgid "Folded code marker"
 msgstr "Marcador código retraído"
+
+#: lazarusidestrconsts.dlgaddhiattrgroupdefault
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupdefault"
+msgid "Global"
+msgstr "Global"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupgutter
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
@@ -656,6 +665,11 @@ msgstr "Carregar/Salvar"
 msgid "Color"
 msgstr "Cor"
 
+#: lazarusidestrconsts.dlgcolorexportbutton
+msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
+msgid "Export"
+msgstr "Exportar"
+
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(Editar Cor)"
@@ -1091,6 +1105,10 @@ msgstr "Altura da fonte do Editor"
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
 msgid "Editor options"
 msgstr "Opções do editor"
+
+#: lazarusidestrconsts.dlgeditschemdefaults
+msgid "Scheme globals"
+msgstr ""
 
 #: lazarusidestrconsts.dlgedmisc
 msgid "Misc"
@@ -2848,6 +2866,14 @@ msgstr "Usar inicialização de aplicação"
 msgid "Use messages file"
 msgstr "Usar arquivo mensagens"
 
+#: lazarusidestrconsts.dlguserschemeerror
+msgid "Failed to load user-scheme file %s"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseschemedefaults
+msgid "Use global scheme settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
 msgstr "Usar realce de sintaxe"
@@ -2868,6 +2894,10 @@ msgstr "Medianiz visível"
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
 msgstr "Margem direita visível"
+
+#: lazarusidestrconsts.dlgwarneditschemedefaults
+msgid "Editing global for all languages"
+msgstr ""
 
 #: lazarusidestrconsts.dlgwholewordsonly
 msgid "&Whole Words Only"
@@ -11203,6 +11233,7 @@ msgid "Exists"
 msgstr "Existe"
 
 #: lazarusidestrconsts.lispldglobal
+msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr "Global"
 

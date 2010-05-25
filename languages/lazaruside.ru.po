@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-25 02:39+0300\n"
+"PO-Revision-Date: 2010-05-26 00:30+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -129,6 +129,10 @@ msgstr "Подсветка скобок"
 msgid "Code folding tree"
 msgstr "Дерево сворачиваний кода"
 
+#: lazarusidestrconsts.dlgaddhiattrdefault
+msgid "Default Text"
+msgstr "Текст по умолчанию"
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr "Отключённая точка останова"
@@ -149,6 +153,11 @@ msgstr "Точка исполнения"
 #| msgid "Folded code"
 msgid "Folded code marker"
 msgstr "Знак свёрнутого кода"
+
+#: lazarusidestrconsts.dlgaddhiattrgroupdefault
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupdefault"
+msgid "Global"
+msgstr "Глобальные"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupgutter
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
@@ -657,6 +666,11 @@ msgstr "Загрузка/сохранение"
 msgid "Color"
 msgstr "Цвет"
 
+#: lazarusidestrconsts.dlgcolorexportbutton
+msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
+msgid "Export"
+msgstr "Экспорт"
+
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(Изменить цвет)"
@@ -1096,6 +1110,10 @@ msgstr "Высота шрифта"
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
 msgid "Editor options"
 msgstr "Параметры редактора"
+
+#: lazarusidestrconsts.dlgeditschemdefaults
+msgid "Scheme globals"
+msgstr "Глобальная схема"
 
 #: lazarusidestrconsts.dlgedmisc
 msgid "Misc"
@@ -2857,6 +2875,14 @@ msgstr "Использовать приложение для запуска"
 msgid "Use messages file"
 msgstr "Использовать файл сообщений"
 
+#: lazarusidestrconsts.dlguserschemeerror
+msgid "Failed to load user-scheme file %s"
+msgstr "Не удалось загрузить файл пользовательской схемы %s"
+
+#: lazarusidestrconsts.dlguseschemedefaults
+msgid "Use global scheme settings"
+msgstr "Применять глобальную схему"
+
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
 msgstr "Подсветка синтаксиса"
@@ -2877,6 +2903,11 @@ msgstr "Видимое поле (лев)"
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
 msgstr "Правая видимая граница"
+
+#: lazarusidestrconsts.dlgwarneditschemedefaults
+#| msgid "Editing global  for all languages"
+msgid "Editing global for all languages"
+msgstr "Глобальный для всех языков"
 
 #: lazarusidestrconsts.dlgwholewordsonly
 msgid "&Whole Words Only"
@@ -11215,6 +11246,7 @@ msgid "Exists"
 msgstr "Имеется"
 
 #: lazarusidestrconsts.lispldglobal
+msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr "Глобальные"
 

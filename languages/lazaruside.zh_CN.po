@@ -128,6 +128,10 @@ msgstr ""
 msgid "Code folding tree"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrdefault
+msgid "Default Text"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr ""
@@ -147,6 +151,11 @@ msgstr ""
 #: lazarusidestrconsts.dlgaddhiattrfoldedcode
 msgid "Folded code marker"
 msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroupdefault
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupdefault"
+msgid "Global"
+msgstr "全局"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupgutter
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
@@ -645,6 +654,11 @@ msgstr "装载/保存"
 msgid "Color"
 msgstr "颜色"
 
+#: lazarusidestrconsts.dlgcolorexportbutton
+msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
+msgid "Export"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr ""
@@ -1076,6 +1090,10 @@ msgstr "编辑器字体高度"
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
 msgid "Editor options"
 msgstr "编辑器选项"
+
+#: lazarusidestrconsts.dlgeditschemdefaults
+msgid "Scheme globals"
+msgstr ""
 
 #: lazarusidestrconsts.dlgedmisc
 msgid "Misc"
@@ -2842,6 +2860,14 @@ msgstr "使用运行的应用程序"
 msgid "Use messages file"
 msgstr "使用信息文件"
 
+#: lazarusidestrconsts.dlguserschemeerror
+msgid "Failed to load user-scheme file %s"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseschemedefaults
+msgid "Use global scheme settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
 msgstr "使用语法高亮"
@@ -2862,6 +2888,10 @@ msgstr "边缝可视"
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
 msgstr "右边界可视"
+
+#: lazarusidestrconsts.dlgwarneditschemedefaults
+msgid "Editing global for all languages"
+msgstr ""
 
 #: lazarusidestrconsts.dlgwholewordsonly
 msgid "&Whole Words Only"
@@ -11228,6 +11258,7 @@ msgid "Exists"
 msgstr "存在"
 
 #: lazarusidestrconsts.lispldglobal
+msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr "全局"
 

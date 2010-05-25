@@ -125,6 +125,10 @@ msgstr ""
 msgid "Code folding tree"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrdefault
+msgid "Default Text"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr ""
@@ -143,6 +147,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrfoldedcode
 msgid "Folded code marker"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroupdefault
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupdefault"
+msgid "Global"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrgroupgutter
@@ -642,6 +651,11 @@ msgstr "Carrega/Desa"
 msgid "Color"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolorexportbutton
+msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
+msgid "Export"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr ""
@@ -1072,6 +1086,10 @@ msgstr "Alçada fonts editor"
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
 msgid "Editor options"
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditschemdefaults
+msgid "Scheme globals"
 msgstr ""
 
 #: lazarusidestrconsts.dlgedmisc
@@ -2835,6 +2853,14 @@ msgstr "Utilitza l'aplicació llançadora"
 msgid "Use messages file"
 msgstr ""
 
+#: lazarusidestrconsts.dlguserschemeerror
+msgid "Failed to load user-scheme file %s"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseschemedefaults
+msgid "Use global scheme settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
 msgstr "Utilitza el ressaltat de sintaxi"
@@ -2855,6 +2881,10 @@ msgstr "Canal visible"
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
 msgstr "Marge dret visible"
+
+#: lazarusidestrconsts.dlgwarneditschemedefaults
+msgid "Editing global for all languages"
+msgstr ""
 
 #: lazarusidestrconsts.dlgwholewordsonly
 msgid "&Whole Words Only"
@@ -11209,6 +11239,7 @@ msgid "Exists"
 msgstr ""
 
 #: lazarusidestrconsts.lispldglobal
+msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr ""
 

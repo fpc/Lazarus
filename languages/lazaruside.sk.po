@@ -130,6 +130,10 @@ msgstr ""
 msgid "Code folding tree"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrdefault
+msgid "Default Text"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr ""
@@ -149,6 +153,11 @@ msgstr ""
 #: lazarusidestrconsts.dlgaddhiattrfoldedcode
 msgid "Folded code marker"
 msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroupdefault
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupdefault"
+msgid "Global"
+msgstr "Globálne"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupgutter
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
@@ -647,6 +656,11 @@ msgstr "Otvoriť/Uložiť"
 msgid "Color"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolorexportbutton
+msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
+msgid "Export"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr ""
@@ -1078,6 +1092,10 @@ msgstr "Výška fontu editora"
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
 msgid "Editor options"
 msgstr "Voľby editora"
+
+#: lazarusidestrconsts.dlgeditschemdefaults
+msgid "Scheme globals"
+msgstr ""
 
 #: lazarusidestrconsts.dlgedmisc
 msgid "Misc"
@@ -2840,6 +2858,14 @@ msgstr "Použiť spúšťaciu aplikáciu"
 msgid "Use messages file"
 msgstr ""
 
+#: lazarusidestrconsts.dlguserschemeerror
+msgid "Failed to load user-scheme file %s"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseschemedefaults
+msgid "Use global scheme settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
 msgstr "Použiť zvýrazňovanie syntaxe"
@@ -2860,6 +2886,10 @@ msgstr "Viditeľný gutter"
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
 msgstr "Viditeľný pravý okraj"
+
+#: lazarusidestrconsts.dlgwarneditschemedefaults
+msgid "Editing global for all languages"
+msgstr ""
 
 #: lazarusidestrconsts.dlgwholewordsonly
 msgid "&Whole Words Only"
@@ -11228,6 +11258,7 @@ msgid "Exists"
 msgstr "Existuje"
 
 #: lazarusidestrconsts.lispldglobal
+msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr "Globálne"
 

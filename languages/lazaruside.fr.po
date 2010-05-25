@@ -2929,7 +2929,7 @@ msgid "Visible right margin"
 msgstr "Marge droite visible"
 
 #: lazarusidestrconsts.dlgwarneditschemedefaults
-msgid "Editing global  for all languages"
+msgid "Editing global for all languages"
 msgstr ""
 
 #: lazarusidestrconsts.dlgwholewordsonly

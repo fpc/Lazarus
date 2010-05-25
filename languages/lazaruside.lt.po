@@ -130,6 +130,10 @@ msgstr "Skliaustelių paryškinimas"
 msgid "Code folding tree"
 msgstr "Kodo lankstymo medis"
 
+#: lazarusidestrconsts.dlgaddhiattrdefault
+msgid "Default Text"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr "Neveiksnus stabdos taškas"
@@ -149,6 +153,11 @@ msgstr "Vykdymo taškas"
 #: lazarusidestrconsts.dlgaddhiattrfoldedcode
 msgid "Folded code marker"
 msgstr "Sulankstyto kodo žymuo"
+
+#: lazarusidestrconsts.dlgaddhiattrgroupdefault
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupdefault"
+msgid "Global"
+msgstr "Globalus"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupgutter
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
@@ -647,6 +656,11 @@ msgstr "Įkelti/Įrašyti"
 msgid "Color"
 msgstr "Spalva"
 
+#: lazarusidestrconsts.dlgcolorexportbutton
+msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
+msgid "Export"
+msgstr "Eksportuoti"
+
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "(Keisti spalvą)"
@@ -1079,6 +1093,10 @@ msgstr "Rengyklės šrifto dydis"
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
 msgid "Editor options"
 msgstr "Rengyklės parinktys"
+
+#: lazarusidestrconsts.dlgeditschemdefaults
+msgid "Scheme globals"
+msgstr ""
 
 #: lazarusidestrconsts.dlgedmisc
 msgid "Misc"
@@ -2844,6 +2862,14 @@ msgstr "Naudoti paleidžiančiąją programą"
 msgid "Use messages file"
 msgstr "Naudoti pranešimų failą"
 
+#: lazarusidestrconsts.dlguserschemeerror
+msgid "Failed to load user-scheme file %s"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseschemedefaults
+msgid "Use global scheme settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
 msgstr "Paryškinti sintaksę"
@@ -2864,6 +2890,10 @@ msgstr "Kairioji paraštė matoma"
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
 msgstr "Dešinioji paraštė matoma"
+
+#: lazarusidestrconsts.dlgwarneditschemedefaults
+msgid "Editing global for all languages"
+msgstr ""
 
 #: lazarusidestrconsts.dlgwholewordsonly
 msgid "&Whole Words Only"
@@ -11222,6 +11252,7 @@ msgid "Exists"
 msgstr "Egzistuoja"
 
 #: lazarusidestrconsts.lispldglobal
+msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr "Globalus"
 

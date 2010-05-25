@@ -126,6 +126,10 @@ msgstr "カッコの強調"
 msgid "Code folding tree"
 msgstr "コード折りたたみツリー"
 
+#: lazarusidestrconsts.dlgaddhiattrdefault
+msgid "Default Text"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr "無効化されたブレークポイント"
@@ -145,6 +149,11 @@ msgstr "実行位置"
 #: lazarusidestrconsts.dlgaddhiattrfoldedcode
 msgid "Folded code marker"
 msgstr "折り畳まれたコードマーカ"
+
+#: lazarusidestrconsts.dlgaddhiattrgroupdefault
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupdefault"
+msgid "Global"
+msgstr "グローバル"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupgutter
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
@@ -643,6 +652,11 @@ msgstr "読み込み/保存"
 msgid "Color"
 msgstr "色"
 
+#: lazarusidestrconsts.dlgcolorexportbutton
+msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
+msgid "Export"
+msgstr "エクスポート"
+
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr "（編集色）"
@@ -1078,6 +1092,10 @@ msgstr "エディタのフォントの大きさ"
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
 msgid "Editor options"
 msgstr "エディタ オプション"
+
+#: lazarusidestrconsts.dlgeditschemdefaults
+msgid "Scheme globals"
+msgstr ""
 
 #: lazarusidestrconsts.dlgedmisc
 msgid "Misc"
@@ -2838,6 +2856,14 @@ msgstr "アプリケーション起動を使用"
 msgid "Use messages file"
 msgstr "メッセージファイルを使用"
 
+#: lazarusidestrconsts.dlguserschemeerror
+msgid "Failed to load user-scheme file %s"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseschemedefaults
+msgid "Use global scheme settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
 msgstr "構文強調表示を使用"
@@ -2858,6 +2884,10 @@ msgstr "可視ガター"
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
 msgstr "右マージンを表示"
+
+#: lazarusidestrconsts.dlgwarneditschemedefaults
+msgid "Editing global for all languages"
+msgstr ""
 
 #: lazarusidestrconsts.dlgwholewordsonly
 msgid "&Whole Words Only"
@@ -11226,6 +11256,7 @@ msgid "Exists"
 msgstr "存在"
 
 #: lazarusidestrconsts.lispldglobal
+msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr "グローバル"
 

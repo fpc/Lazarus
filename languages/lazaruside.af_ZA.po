@@ -127,6 +127,10 @@ msgstr ""
 msgid "Code folding tree"
 msgstr ""
 
+#: lazarusidestrconsts.dlgaddhiattrdefault
+msgid "Default Text"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
 msgstr ""
@@ -145,6 +149,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrfoldedcode
 msgid "Folded code marker"
+msgstr ""
+
+#: lazarusidestrconsts.dlgaddhiattrgroupdefault
+msgctxt "lazarusidestrconsts.dlgaddhiattrgroupdefault"
+msgid "Global"
 msgstr ""
 
 #: lazarusidestrconsts.dlgaddhiattrgroupgutter
@@ -644,6 +653,11 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolorexportbutton
+msgctxt "lazarusidestrconsts.dlgcolorexportbutton"
+msgid "Export"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcolorlink
 msgid "(Edit Color)"
 msgstr ""
@@ -1072,6 +1086,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgeditoroptions
 msgctxt "lazarusidestrconsts.dlgeditoroptions"
 msgid "Editor options"
+msgstr ""
+
+#: lazarusidestrconsts.dlgeditschemdefaults
+msgid "Scheme globals"
 msgstr ""
 
 #: lazarusidestrconsts.dlgedmisc
@@ -2821,6 +2839,14 @@ msgstr ""
 msgid "Use messages file"
 msgstr ""
 
+#: lazarusidestrconsts.dlguserschemeerror
+msgid "Failed to load user-scheme file %s"
+msgstr ""
+
+#: lazarusidestrconsts.dlguseschemedefaults
+msgid "Use global scheme settings"
+msgstr ""
+
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
 msgstr ""
@@ -2840,6 +2866,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
+msgstr ""
+
+#: lazarusidestrconsts.dlgwarneditschemedefaults
+msgid "Editing global for all languages"
 msgstr ""
 
 #: lazarusidestrconsts.dlgwholewordsonly
@@ -11154,6 +11184,7 @@ msgid "Exists"
 msgstr ""
 
 #: lazarusidestrconsts.lispldglobal
+msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr ""
 
