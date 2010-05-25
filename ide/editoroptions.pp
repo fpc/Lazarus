@@ -4518,7 +4518,7 @@ var
   i: TLazSyntaxHighlighter;
 begin
   for i := low(TLazSyntaxHighlighter) to high(TLazSyntaxHighlighter) do
-    if LazSyntaxHighlighterClasses[CompatibleLazSyntaxHilighter[i]] = Index then
+    if LazSyntaxHighlighterClasses[i] = Index then
       exit(FColorSchemes[CompatibleLazSyntaxHilighter[i]]);
   Result := nil;
 end;
