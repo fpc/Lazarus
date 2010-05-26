@@ -1408,6 +1408,7 @@ end;
 
 destructor TSynPluginSyncroEdit.Destroy;
 begin
+  Application.RemoveAsyncCalls(Self);
   inherited Destroy;
   FreeAndNil(FWordIndex);
   FreeAndNil(FLowerLines);
