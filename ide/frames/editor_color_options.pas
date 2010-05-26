@@ -761,9 +761,19 @@ begin
   BackGroundColorBox.Enabled           := hafBackColor in AttrToShow.Features;
   BackGroundUseDefaultCheckBox.Enabled := (hafBackColor in AttrToShow.Features) and
                                           not(AttrToShow.Group = agnDefault);
+  if AttrToShow.Group = agnDefault then
+    BackGroundColorBox.Style := BackGroundColorBox.Style - [cbIncludeDefault]
+  else
+    BackGroundColorBox.Style := BackGroundColorBox.Style + [cbIncludeDefault];
+
   ForegroundColorBox.Enabled           := hafForeColor in AttrToShow.Features;
   ForeGroundUseDefaultCheckBox.Enabled := (hafForeColor in AttrToShow.Features) and
                                           not(AttrToShow.Group = agnDefault);
+  if AttrToShow.Group = agnDefault then
+    ForegroundColorBox.Style := ForegroundColorBox.Style - [cbIncludeDefault]
+  else
+    ForegroundColorBox.Style := ForegroundColorBox.Style + [cbIncludeDefault];
+
   FrameColorBox.Enabled                := hafFrameColor in AttrToShow.Features;
   FrameColorUseDefaultCheckBox.Enabled := hafFrameColor in AttrToShow.Features;
 
