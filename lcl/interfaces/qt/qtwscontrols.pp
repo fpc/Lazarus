@@ -110,7 +110,6 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
   end;
 
   { TQtWSImageList }
@@ -155,76 +154,6 @@ begin
   {$ifdef VerboseQt}
     WriteLn('< TQtWSCustomControl.CreateHandle for ',dbgsname(AWinControl),' Result: ', dbgHex(Result));
   {$endif}
-end;
-
-{------------------------------------------------------------------------------
-  Method: TQtWSCustomControl.ShowHide
-  Params:  AWinControl     - the calling object
-
-  Returns: Nothing
-
-  Shows or hides a widget.
- ------------------------------------------------------------------------------}
-class procedure TQtWSCustomControl.ShowHide(const AWinControl: TWinControl);
-const
-  LCLToQtWindowState: array[TWindowState] of QtWindowState = (
- { wsNormal    } QtWindowNoState,
- { wsMinimized } QtWindowMinimized,
- { wsMaximized } QtWindowMaximized
-  );
-var
-  Widget: TQtWidget;
-  R: TRect;
-begin
-  if not WSCheckHandleAllocated(AWinControl, 'ShowHide') then
-    Exit;
-
-  Widget := TQtWidget(AWinControl.Handle);
-  
-  if AWinControl.HandleObjectShouldBeVisible and (Widget is TQtMainWindow) then
-  begin
-    if fsModal in TForm(AWinControl).FormState then
-    begin
-      {$ifdef HASX11}
-      QWidget_setParent(Widget.Widget, QApplication_activeWindow());
-      QWidget_setWindowFlags(Widget.Widget, QtDialog);
-      {$endif}
-      {$ifdef darwin}
-      QWidget_setWindowFlags(Widget.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint 
-        or QtWindowTitleHint or QtWindowCloseButtonHint);
-      {$endif}
-      Widget.setWindowModality(QtApplicationModal);
-    end;
-
-    if TForm(AWinControl).FormStyle = fsMDIChild then
-    begin
-      {MDI windows have to be resized , since titlebar is included into widget geometry !}
-      if not (csDesigning in AWinControl.ComponentState)
-        and not Widget.isMaximized then
-      begin
-        QWidget_contentsRect(Widget.Widget, @R);
-        R.Right := TForm(AWinControl).Width + R.Left;
-        R.Bottom := TForm(AWinControl).Height + R.Top;
-        R.Left := TQtMainWindow(Widget).MdiChildCount * 10;
-        R.Top := TQtMainWindow(Widget).MdiChildCount * 10;
-        Widget.move(R.Left, R.Top);
-        Widget.resize(R.Right, R.Bottom);
-      end;
-    end;
-
-    if TForm(AWinControl).FormStyle <> fsMDIChild then
-    begin
-      if (csDesigning in AWinControl.ComponentState) and
-        (TCustomForm(AWinControl).WindowState = wsMaximized) then
-        TQtMainWindow(Widget).setWindowState(LCLToQtWindowState[wsNormal])
-      else
-        TQtMainWindow(Widget).setWindowState(LCLToQtWindowState[TCustomForm(AWinControl).WindowState]);
-    end;
-  end;
-
-  Widget.BeginUpdate;
-  Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
-  Widget.EndUpdate;
 end;
 
 {------------------------------------------------------------------------------

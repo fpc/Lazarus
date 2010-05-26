@@ -88,6 +88,7 @@ type
     class procedure SetPopupParent(const ACustomForm: TCustomForm;
        const APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
     class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm;
@@ -324,6 +325,72 @@ begin
      (Application.MainForm <> AForm) then
     Enable := false;
   TQtMainWindow(AForm.Handle).setShowInTaskBar(Enable);
+end;
+
+class procedure TQtWSCustomForm.ShowHide(const AWinControl: TWinControl);
+const
+  LCLToQtWindowState: array[TWindowState] of QtWindowState = (
+ { wsNormal    } QtWindowNoState,
+ { wsMinimized } QtWindowMinimized,
+ { wsMaximized } QtWindowMaximized
+  );
+var
+  Widget: TQtMainWindow;
+  R: TRect;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'ShowHide') then
+    Exit;
+
+  Widget := TQtMainWindow(AWinControl.Handle);
+
+  if AWinControl.HandleObjectShouldBeVisible then
+  begin
+    if fsModal in TForm(AWinControl).FormState then
+    begin
+      {$ifdef HASX11}
+      QWidget_setParent(Widget.Widget, QApplication_activeWindow());
+      QWidget_setWindowFlags(Widget.Widget, QtDialog);
+      {$endif}
+      {$ifdef darwin}
+      QWidget_setWindowFlags(Widget.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint
+        or QtWindowTitleHint or QtWindowCloseButtonHint);
+      {$endif}
+      Widget.setWindowModality(QtApplicationModal);
+    end;
+
+    if TForm(AWinControl).FormStyle = fsMDIChild then
+    begin
+      {MDI windows have to be resized , since titlebar is included into widget geometry !}
+      if not (csDesigning in AWinControl.ComponentState)
+        and not Widget.isMaximized then
+      begin
+        QWidget_contentsRect(Widget.Widget, @R);
+        R.Right := TForm(AWinControl).Width + R.Left;
+        R.Bottom := TForm(AWinControl).Height + R.Top;
+        R.Left := Widget.MdiChildCount * 10;
+        R.Top := Widget.MdiChildCount * 10;
+        Widget.move(R.Left, R.Top);
+        Widget.resize(R.Right, R.Bottom);
+      end;
+    end;
+
+    if TForm(AWinControl).FormStyle <> fsMDIChild then
+    begin
+      if (csDesigning in AWinControl.ComponentState) and
+        (TCustomForm(AWinControl).WindowState = wsMaximized) then
+        Widget.setWindowState(LCLToQtWindowState[wsNormal])
+      else
+        Widget.setWindowState(LCLToQtWindowState[TCustomForm(AWinControl).WindowState]);
+    end;
+  end;
+
+  Widget.BeginUpdate;
+  Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
+  Widget.EndUpdate;
+  {$IFDEF HASX11}
+  if TForm(AWinControl).FormStyle <> fsMDIChild then
+    QApplication_syncX();
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
