@@ -385,20 +385,12 @@ end;
 
 { TWinCEWSCustomGroupBox }
 
-//roozbeh:there are still some issues with group box!
-
+// Don't choose too much which messages to send to WindowProc or else
+// events on controls inside the panel will stop working, see bug 16530
 function GroupBoxPanelWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; {$ifdef win32}stdcall{$else}cdecl{$endif};
 begin
-  // handle paint messages for theming
-  case Msg of
-    WM_ERASEBKGND, WM_NCPAINT, WM_PAINT, WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
-    begin
-      Result := WindowProc(Window, Msg, WParam, LParam);
-    end;
-  else
-    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
-  end;
+  Result := WindowProc(Window, Msg, WParam, LParam);
 end;
 
 class function TWinCEWSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
