@@ -289,6 +289,7 @@ var
   WinHandle, UpDown: HWND;
   R: TRect;
   UpDownWidth: Integer;
+  DWP: HDWP;
 begin
   WinHandle := AWinControl.Handle;
   UpDown := GetWin32WindowInfo(WinHandle)^.UpDown;
@@ -300,14 +301,13 @@ begin
   // reattach
   Windows.SendMessage(UpDown, UDM_SETBUDDY, WParam(WinHandle), 0);
 }
-
   GetWindowRect(UpDown, @R);
   UpDownWidth := R.Right - R.Left;
 
-  Windows.SetWindowPos(WinHandle, 0, Left, Top, Width - UpDownWidth + 2, Height,
-    SWP_NOZORDER or SWP_NOACTIVATE);
-  Windows.SetWindowPos(UpDown, 0, Left + Width - UpDownWidth, Top, UpDownWidth, Height,
-    SWP_NOZORDER or SWP_NOACTIVATE);
+  DWP := BeginDeferWindowPos(2);
+  DeferWindowPos(DWP, WinHandle, 0, Left, Top, Width - UpDownWidth + 2, Height, SWP_NOZORDER or SWP_NOACTIVATE);
+  DeferWindowPos(DWP, UpDown, 0, Left + Width - UpDownWidth, Top, UpDownWidth, Height, SWP_NOZORDER or SWP_NOACTIVATE);
+  EndDeferWindowPos(DWP);
 
   SuppressMove := True;
 end;
