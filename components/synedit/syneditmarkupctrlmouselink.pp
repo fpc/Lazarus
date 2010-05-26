@@ -47,7 +47,8 @@ type
     function GetIsMouseOverLink: Boolean;
     procedure SetLastMouseCaret(const AValue: TPoint);
     Procedure LinesChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
-    function  IsCtrlMouseShiftState(AShift: TShiftState): Boolean;
+    function  IsCtrlMouseShiftState(AShift: TShiftState; OnlyShowLink: Boolean): Boolean;
+    procedure InternalUpdateCtrlMouse;
   protected
     procedure SetLines(const AValue : TSynEditStrings); override;
   public
@@ -83,7 +84,17 @@ begin
 end;
 
 function TSynEditMarkupCtrlMouseLink.GetIsMouseOverLink: Boolean;
+var
+  NewCtrlIsPressed: Boolean;
 begin
+  // Normal checks only take Ctrl-State for ShowLink into account (since the cursor needs updates)
+  // Here we need to check for Hiden-Links too
+  NewCtrlIsPressed := IsCtrlMouseShiftState(GetKeyShiftState, False);
+  if FLastControlIsPressed <> NewCtrlIsPressed then begin
+    FLastControlIsPressed := NewCtrlIsPressed;
+    InternalUpdateCtrlMouse;
+  end;
+
   Result := FCtrlLinkable and (FCtrlMouseLine >= 0);
 end;
 
@@ -96,12 +107,23 @@ begin
 end;
 
 procedure TSynEditMarkupCtrlMouseLink.UpdateCtrlState(aShift: TShiftState);
+var
+  NewCtrlIsPressed: Boolean;
 begin
-  if FLastControlIsPressed <> IsCtrlMouseShiftState(aShift) then
-    UpdateCtrlMouse;
+  NewCtrlIsPressed := IsCtrlMouseShiftState(aShift, True);
+  if FLastControlIsPressed <> NewCtrlIsPressed then begin
+    FLastControlIsPressed := NewCtrlIsPressed;
+    InternalUpdateCtrlMouse;
+  end;
 end;
 
 procedure TSynEditMarkupCtrlMouseLink.UpdateCtrlMouse;
+begin
+  FLastControlIsPressed := IsCtrlMouseShiftState(GetKeyShiftState, True);
+  InternalUpdateCtrlMouse;
+end;
+
+procedure TSynEditMarkupCtrlMouseLink.InternalUpdateCtrlMouse;
 
   procedure doNotShowLink;
   begin
@@ -115,7 +137,6 @@ procedure TSynEditMarkupCtrlMouseLink.UpdateCtrlMouse;
 var
   NewY, NewX1, NewX2: Integer;
 begin
-  FLastControlIsPressed := IsCtrlMouseShiftState(GetKeyShiftState);
   if FLastControlIsPressed and (LastMouseCaret.X>0) and (LastMouseCaret.Y>0) then begin
     // show link
     NewY := LastMouseCaret.Y;
@@ -138,7 +159,8 @@ begin
     doNotShowLink;
 end;
 
-function TSynEditMarkupCtrlMouseLink.IsCtrlMouseShiftState(AShift: TShiftState): Boolean;
+function TSynEditMarkupCtrlMouseLink.IsCtrlMouseShiftState(AShift: TShiftState;
+  OnlyShowLink: Boolean): Boolean;
 var
   act: TSynEditMouseAction;
   i: Integer;
@@ -147,7 +169,8 @@ begin
   // todo: check FMouseSelActions if over selection?
   for i := 0 to TSynEdit(SynEdit).MouseActions.Count - 1 do begin
     act := TSynEdit(SynEdit).MouseActions.Items[i];
-    if (act.Command = emcMouseLink) and (act.Option = emcoMouseLinkShow) and
+    if (act.Command = emcMouseLink) and
+       ( (act.Option = emcoMouseLinkShow) or (not OnlyShowLink) ) and
        act.IsMatchingShiftState(AShift)
     then
       exit(True);
