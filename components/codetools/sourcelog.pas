@@ -84,7 +84,7 @@ type
     destructor Destroy; override;
   end;
 
-  TLineRange = record
+  TLineRange = packed record
     StartPos, EndPos: integer;
   end;
   PLineRange = ^TLineRange;
@@ -629,41 +629,45 @@ end;
 
 procedure TSourceLog.BuildLineRanges;
 var
-  p,line:integer;
+  line:integer;
   Cap: Integer;
+  SrcEnd: PChar;
+  SrcStart: PChar;
+  p: PChar;
 begin
   {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
   {$R-}
-  //DebugLn('[TSourceLog.BuildLineRanges] A Self=',DbgS(Self),',LineCount=',FLineCount,' Len=',SourceLength);
+  //DebugLn(['[TSourceLog.BuildLineRanges] A Self=',DbgS(Self),',LineCount=',FLineCount,' Len=',SourceLength]);
   if FLineCount>=0 then exit;
-  if FLineRanges<>nil then begin
-    FreeMem(FLineRanges);
-    FLineRanges:=nil;
-  end;
   // build line range list
   FLineCount:=0;
-  if FSource='' then exit;
-  Cap:=100;
-  GetMem(FLineRanges,Cap*SizeOf(TLineRange));
-  p:=1;
+  if FSource='' then begin
+    ReAllocMem(FLineRanges,0);
+    exit;
+  end;
+  Cap:=length(FSource) div 20+100;
+  ReAllocMem(FLineRanges,Cap*SizeOf(TLineRange));
   line:=0;
   FLineRanges[line].StartPos:=1;
-  while (p<=fSrcLen) do begin
-    if (not (FSource[p] in [#10,#13])) then begin
+  SrcStart:=PChar(FSource);
+  SrcEnd:=SrcStart+FSrcLen;
+  p:=SrcStart;
+  while (p<SrcEnd) do begin
+    if (not (p^ in [#10,#13])) then begin
       inc(p);
     end else begin
       // new line
-      FLineRanges[line].EndPos:=p;
+      FLineRanges[line].EndPos:=p-SrcStart+1;
       inc(line);
       if line>=Cap then begin
         Cap:=Cap*2;
         ReAllocMem(FLineRanges,Cap*SizeOf(TLineRange));
       end;
-      inc(p);
-      if (p<=fSrcLen) and (FSource[p] in [#10,#13])
-      and (FSource[p]<>FSource[p-1]) then
+      if (p[1] in [#10,#13]) and (p^<>p[1]) then
+        inc(p,2)
+      else
         inc(p);
-      FLineRanges[line].StartPos:=p;
+      FLineRanges[line].StartPos:=p-SrcStart+1;
     end;
   end;
   FLineRanges[line].EndPos:=fSrcLen+1;
