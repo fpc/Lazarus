@@ -2657,7 +2657,7 @@ Begin
   debugln('TSourceEditor.FocusEditor A ',PageName,' ',FEditor.Name);
   {$ENDIF}
   IDEWindowCreators.ShowForm(SourceNotebook,true);
-  if SourceNotebook.IsVisible then begin
+  if FEditor.IsVisible then begin
     FEditor.SetFocus;
     FSharedValues.SetActiveSharedEditor(Self);
   end else begin
