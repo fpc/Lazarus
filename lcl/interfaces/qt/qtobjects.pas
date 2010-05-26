@@ -516,7 +516,7 @@ type
     {$ENDIF}
     FClipChanged: Boolean;
     FClipBoardFormats: TStringList;
-    FOnClipBoardRequest: TClipboardRequestEvent;
+    FOnClipBoardRequest: Array[TClipBoardType] of TClipboardRequestEvent;
     function IsClipboardChanged: Boolean;
   public
     constructor Create; override;
@@ -3262,10 +3262,13 @@ end;
 { TQtClipboard }
 
 constructor TQtClipboard.Create;
+var
+  ClipboardType: TClipboardType;
 begin
   inherited Create;
   FLockClip := False;
-  FOnClipBoardRequest := nil;
+  for ClipboardType := Low(TClipBoardType) to High(TClipBoardType) do
+    FOnClipBoardRequest[ClipBoardType] := nil;
   FClipBoardFormats := TStringList.Create;
   FClipBoardFormats.Add('foo'); // 0 is reserved
   TheObject := QApplication_clipBoard;
@@ -3301,10 +3304,30 @@ end;
 
 {$IFDEF HASX11}
 procedure TQtClipboard.signalSelectionChanged; cdecl;
+var
+  TempMimeData: QMimeDataH;
+  WStr: WideString;
+  MimeType: WideString;
+  Clip: TClipBoard;
 begin
   {$IFDEF VERBOSE_QT_CLIPBOARD}
-  writeln('signalSelectionChanged()');
+  writeln('signalSelectionChanged() OWNER?=', QClipboard_ownsSelection(Self.clipboard),
+  ' FOnClipBoardRequest ? ',FOnClipBoardRequest[ctPrimarySelection] <> nil);
   {$ENDIF}
+  TempMimeData := getMimeData(QClipboardSelection);
+  if (TempMimeData <> nil) and
+  (QMimeData_hasText(TempMimeData) or QMimeData_hasHtml(TempMimeData) or
+    QMimeData_hasURLS(TempMimeData)) then
+  begin
+    QMimeData_text(TempMimeData, @WStr);
+    WStr := UTF16ToUTF8(WStr);
+    // TODO: We don't get any data when copying to clip
+    // so must set it like this , so at least copying from
+    // another app here works correct.Later signalSelectionChanged
+    // can be removed
+    // if QClipboard_ownsSelection(Self.Clipboard) then
+    ClipBrd.PrimarySelection.AsText := WStr;
+  end;
 end;
 {$ENDIF}
 
@@ -3466,20 +3489,18 @@ function TQtClipboard.GetOwnerShip(ClipboardType: TClipboardType;
   begin
     MimeData := QMimeData_create();
     DataStream := TMemoryStream.Create;
-    
     for I := 0 to FormatCount - 1 do
     begin
       DataStream.Size := 0;
       DataStream.Position := 0;
       MimeType := FormatToMimeType(Formats[I]);
-      FOnClipBoardRequest(Formats[I], DataStream);
+      FOnClipBoardRequest[ClipboardType](Formats[I], DataStream);
       Data := QByteArray_create(PAnsiChar(DataStream.Memory), DataStream.Size);
       if (QByteArray_length(Data) > 1) and QByteArray_endsWith(Data, #0) then
         QByteArray_chop(Data, 1);
       QMimeData_setData(MimeData, @MimeType, Data);
       QByteArray_destroy(Data);
     end;
-
     DataStream.Free;
     setMimeData(MimeData, ClipbBoardTypeToQtClipboard[ClipBoardType]);
     // do not destroy MimeData!!!
@@ -3490,7 +3511,7 @@ begin
   begin
   { The LCL indicates it doesn't have the clipboard data anymore
     and the interface can't use the OnRequestProc anymore.}
-    FOnClipBoardRequest := nil;
+    FOnClipBoardRequest[ClipboardType] := nil;
     Result := True;
   end else
   begin
@@ -3501,8 +3522,8 @@ begin
     try
       { clear OnClipBoardRequest to prevent destroying the LCL clipboard,
         when emptying the clipboard}
-      FOnClipBoardRequest := nil;
-      FOnClipBoardRequest := OnRequestProc;
+      FOnClipBoardRequest[ClipBoardType] := nil;
+      FOnClipBoardRequest[ClipBoardType] := OnRequestProc;
       PutOnClipBoard;
       Result := True;
     finally
