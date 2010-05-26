@@ -1288,6 +1288,7 @@ type
     procedure CreateForm(InstanceClass: TComponentClass; out Reference);
     procedure UpdateMainForm(AForm: TForm);
     procedure QueueAsyncCall(const AMethod: TDataEvent; Data: PtrInt);
+    procedure RemoveAsyncCalls(const AnObject: TObject);
     procedure ReleaseComponent(AComponent: TComponent);
     function ExecuteAction(ExeAction: TBasicAction): Boolean; override;
     function UpdateAction(TheAction: TBasicAction): Boolean; override;

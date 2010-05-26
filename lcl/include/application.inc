@@ -2131,6 +2131,42 @@ begin
   end;
 end;
 
+procedure TApplication.RemoveAsyncCalls(const AnObject: TObject);
+
+  procedure DoRemoveAsyncCalls(var AQueue: TAsyncCallQueue);
+  var
+    lItem, lItem2: PAsyncCallQueueItem;
+  begin
+    lItem := AQueue.Last;
+    while lItem <> nil do begin
+      if TMethod(lItem^.Method).Data = Pointer(AnObject) then begin
+        if lItem^.NextItem <> nil then
+          lItem^.NextItem^.PrevItem := lItem^.PrevItem;
+        if lItem^.PrevItem <> nil then
+          lItem^.PrevItem^.NextItem := lItem^.NextItem;
+
+        if lItem = AQueue.Last then
+          AQueue.Last := lItem^.PrevItem;
+        if lItem = AQueue.Top then
+          AQueue.Top := lItem^.NextItem;
+
+        lItem2 := lItem;
+        lItem := lItem^.PrevItem;
+        Dispose(lItem2);
+      end
+      else
+        lItem := lItem^.PrevItem;
+    end;
+  end;
+
+begin
+  if AppDoNotCallAsyncQueue in FFlags then
+    raise Exception.Create('TApplication.QueueAsyncCall already shut down');
+
+  DoRemoveAsyncCalls(FAsyncCall.Cur);
+  DoRemoveAsyncCalls(FAsyncCall.Next);
+end;
+
 procedure TApplication.FreeComponent(Data: PtrInt);
 begin
   if Data<>0 then
