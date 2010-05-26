@@ -430,8 +430,7 @@ begin
     ' HndAlloc=',dbgs(NewFocusControl.HandleAllocated));
   {$ENDIF}
   if (not NewFocusControl.HandleAllocated)
-  or (not NewFocusControl.IsVisible)
-  or (not NewFocusControl.Enabled) then
+  or (not NewFocusControl.CanFocus) then
     exit;
   //DebugLn(['TCustomForm.SetWindowFocus ',DbgSName(Self),' NewFocusControl',DbgSName(NewFocusControl)]);
   LCLIntf.SetFocus(NewFocusControl.Handle);
@@ -1691,8 +1690,10 @@ procedure TCustomForm.SetActiveControl(AWinControl: TWinControl);
 begin
   if FActiveControl <> AWinControl then
   begin
-    if (AWinControl<>nil) then 
+    if (AWinControl<>nil) and IsVisible then
     begin
+      // this form can focus => do some sanity checks and raise an exception to
+      // to help programmers to understand why a control is not focused
       if (AWinControl = Self) or 
          (GetParentForm(AWinControl) <> Self) or 
          not ((csLoading in ComponentState) or AWinControl.CanFocus) then 
