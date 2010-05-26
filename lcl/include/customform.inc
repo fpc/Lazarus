@@ -141,7 +141,7 @@ var
 begin
   WasActive := FActive;
   SetActiveControl(WinControl);
-  if not WasActive then
+  if (not WasActive) and IsVisible then
     SetFocus;
 end;
 
