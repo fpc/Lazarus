@@ -899,7 +899,6 @@ end;
 
     {%region Edit just before/after cell, while caret in cell (selection outside cell / replace, delete) }
       name := 'Delete/Selection: caret in cell, text out of cell';
-if not DoUndo then begin
       InitTestText(1,2, 1,4);
       TestKeyAtSel('Delete-Sel, after cell', 9,2, 8,2, VK_DELETE, [],
         ['abc foo',
@@ -971,7 +970,6 @@ if not DoUndo then begin
          '',
          'foo',
          ''], FALSE);
-end;
     {%endregion}
 
 
