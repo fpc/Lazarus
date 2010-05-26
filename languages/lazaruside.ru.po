@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-26 00:30+0300\n"
+"PO-Revision-Date: 2010-05-27 01:18+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6646,7 +6646,7 @@ msgstr "Файл не имеет проекта"
 
 #: lazarusidestrconsts.lisfileisnotwritable
 msgid "File is not writable"
-msgstr "В файл нельзя писать"
+msgstr "Файл недоступен для записи"
 
 #: lazarusidestrconsts.lisfileissymlink
 msgid "File is symlink"
@@ -12463,7 +12463,7 @@ msgstr "Каталог проб"
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
-msgstr "Класс %s%s%s - элемент управления (TControl), его нельзя вставить на что-то другое.%sНе могу вставить."
+msgstr "Класс %s%s%s имеет тип TControl, и может быть вставлен только в управляющий элемент.%sНевозможно вставить."
 
 #: lazarusidestrconsts.listhecodetoolsfoundanerror
 msgid "The codetools found an error:%s%s%s"

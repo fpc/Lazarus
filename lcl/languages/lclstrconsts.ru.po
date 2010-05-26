@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-24 01:59+0300\n"
+"PO-Revision-Date: 2010-05-27 01:23+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1256,27 +1256,27 @@ msgstr "Жёлтый"
 
 #: lclstrconsts.scannotfocus
 msgid "Cannot focus a disabled or invisible window"
-msgstr "Нельзя дать фокус отключённому или невидимому окну"
+msgstr "Невозможно перевести фокус в отключённое или невидимое окно"
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
-msgstr "Повторяющиеся меню"
+msgstr "Дублирующиеся меню"
 
 #: lclstrconsts.sinvalidactioncreation
 msgid "Invalid action creation"
-msgstr "Неправильное создание действия"
+msgstr "Неверное создание действия"
 
 #: lclstrconsts.sinvalidactionenumeration
 msgid "Invalid action enumeration"
-msgstr "Неправильное перечисление действий"
+msgstr "Неверное перечисление действий"
 
 #: lclstrconsts.sinvalidactionregistration
 msgid "Invalid action registration"
-msgstr "Неправильная регистрация действия"
+msgstr "Неверная регистрация действия"
 
 #: lclstrconsts.sinvalidactionunregistration
 msgid "Invalid action unregistration"
-msgstr "Неправильная разрегистрация действия"
+msgstr "Неверная разрегистрация действия"
 
 #: lclstrconsts.sinvalidcharset
 msgid "The char set in mask \"%s\" is not valid!"
@@ -1284,11 +1284,11 @@ msgstr "Набор символов в маске \"%s\" неверен!"
 
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
-msgstr "Неправильный размер рисунка"
+msgstr "Неверный размер рисунка"
 
 #: lclstrconsts.sinvalidindex
 msgid "Invalid ImageList Index"
-msgstr "Неправильный индекс ImageList"
+msgstr "Неверный индекс ImageList"
 
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
