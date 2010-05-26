@@ -2517,7 +2517,10 @@ begin
         AddCommand(emcPasteSelection, True, mbMiddle, ccSingle, cdDown, [], []);
       moTMIgnore: {nothing} ;
       moTMDeclarationJump:
-        AddCommand(emcMouseLink, False, mbMiddle, ccSingle, cdDown, [], []);
+        begin
+          AddCommand(emcMouseLink, False, mbMiddle, ccSingle, cdDown, [ssCtrl], [ssCtrl], emcoMouseLinkShow);
+          AddCommand(emcMouseLink, False, mbMiddle, ccSingle, cdDown, [], [], emcoMouseLinkHide);
+        end;
     end;
 
     AddCommand(emcContextMenu, FTextRightMoveCaret, mbRight, ccSingle, cdUp, [], [], emcoSelectionCaretMoveNever);
