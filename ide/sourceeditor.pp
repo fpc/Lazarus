@@ -6574,8 +6574,8 @@ Begin
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] A ');
   {$ENDIF}
-  //DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
-  //try
+  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
+  try
     IDEWindowCreators.ShowForm(Self,false);
     Result := NewSE(-1, -1, AShareEditor);
     {$IFDEF IDE_DEBUG}
@@ -6589,9 +6589,9 @@ Begin
     UpdatePageNames;
     UpdateProjectFiles;
     UpdateStatusBar;
-  //finally
-  //  EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
-  //end;
+  finally
+    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
+  end;
   if FocusIt then FocusEditor;
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] end');
