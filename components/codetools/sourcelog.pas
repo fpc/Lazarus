@@ -645,7 +645,7 @@ begin
     ReAllocMem(FLineRanges,0);
     exit;
   end;
-  Cap:=length(FSource) div 20+100;
+  Cap:=FSrcLen div 20+100;
   ReAllocMem(FLineRanges,Cap*SizeOf(TLineRange));
   line:=0;
   FLineRanges[line].StartPos:=1;
