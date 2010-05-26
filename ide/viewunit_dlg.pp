@@ -41,7 +41,7 @@ interface
 uses
   SysUtils, Classes, Math, Controls, Forms, Dialogs, Buttons, StdCtrls,
   LazarusIdeStrConsts, LCLType, LCLIntf, LMessages, IDEWindowIntf, IDEContextHelpEdit,
-  ExtCtrls, ButtonPanel;
+  ExtCtrls, ButtonPanel, Menus, StrUtils;
 
 type
   TViewUnitsEntry = class
@@ -58,11 +58,14 @@ type
     ButtonPanel: TButtonPanel;
     Edit: TEdit;
     ListBox: TListBox;
-    MultiSelectCheckBox: TCheckBox;
+    mniMultiSelect: TMenuItem;
+    mniSort: TMenuItem;
+    popListBox: TPopupMenu;
     procedure EditChange(Sender: TObject);
     procedure EditEnter(Sender: TObject);
     procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure HelpButtonClick(Sender: TObject);
+    procedure mniSortClick(Sender: TObject);
     Procedure OKButtonClick(Sender :TObject);
     Procedure CancelButtonClick(Sender :TObject);
     procedure ListboxClick(Sender: TObject);
@@ -93,9 +96,9 @@ begin
   ViewUnitDialog:=TViewUnitDialog.Create(nil);
   try
     ViewUnitDialog.Caption:=Caption;
-    ViewUnitDialog.MultiselectCheckBox.Enabled := AllowMultiSelect;
-    ViewUnitDialog.MultiselectCheckBox.Checked := CheckMultiSelect;
-    ViewUnitDialog.ListBox.MultiSelect:=ViewUnitDialog.MultiselectCheckBox.Checked;
+    ViewUnitDialog.mniMultiselect.Enabled := AllowMultiSelect;
+    ViewUnitDialog.mniMultiselect.Checked := CheckMultiSelect;
+    ViewUnitDialog.ListBox.MultiSelect := ViewUnitDialog.mniMultiselect.Enabled;
     with ViewUnitDialog.ListBox.Items do begin
       BeginUpdate;
       Clear;
@@ -110,7 +113,7 @@ begin
       for i:=0 to Entries.Count-1 do begin
         TViewUnitsEntry(Entries.Objects[i]).Selected:=ViewUnitDialog.ListBox.Selected[i];
       end;
-      CheckMultiSelect := ViewUnitDialog.MultiselectCheckBox.Checked;
+      CheckMultiSelect := ViewUnitDialog.mniMultiselect.Checked;
     end;
   finally
     ViewUnitDialog.Free;
@@ -123,9 +126,9 @@ var
 begin
   // Items can be unsorted => use simple traverse
   Result := -1;
-  Text := LowerCase(Text);
+  Text := AnsiLowerCase(Text);
   for i := StartIndex +1 to Items.Count - 1 do
-    if Pos(Text, LowerCase(Items[i])) >= 1 then
+    if AnsiContainsText(Items[i], Text) then
     begin
       Result := i;
       break;
@@ -149,7 +152,7 @@ constructor TViewUnitDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   IDEDialogLayoutList.ApplyLayout(Self,450,300);
-  MultiSelectCheckBox.Caption := dlgMultiSelect;
+  mniMultiSelect.Caption := dlgMultiSelect;
 
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
@@ -165,6 +168,44 @@ End;
 procedure TViewUnitDialog.HelpButtonClick(Sender: TObject);
 begin
   ShowContextHelpForIDE(Self);
+end;
+
+procedure TViewUnitDialog.mniSortClick(Sender: TObject);
+var
+  TmpList: TStringList;
+  i: Integer;
+  SelName: String;
+begin
+  TmpList := TStringList.Create;
+  try
+    TmpList.Assign(ListBox.Items);
+    if ListBox.MultiSelect then
+    begin
+      for i := 0 to ListBox.Count -1 do
+        if ListBox.Selected[i] then
+          TmpList.Objects[i] := TObject(-1);
+    end;
+    TmpList.Sort;
+    if ListBox.ItemIndex >= 0 then
+      SelName := ListBox.Items[ListBox.ItemIndex]
+    else
+      SelName := '';
+    ListBox.Items := TmpList;
+    if SelName <> '' then
+    begin
+      ListBox.ItemIndex := TmpList.IndexOf(SelName);
+      ListBox.MakeCurrentVisible;
+    end;
+    if ListBox.MultiSelect then
+    begin
+      ListBox.ClearSelection;
+      for i := 0 to TmpList.Count -1 do
+        if TmpList.Objects[i] <> nil then
+          ListBox.Selected[i] := True;
+    end;
+  finally
+    TmpList.Free;
+  end;
 end;
 
 procedure TViewUnitDialog.EditKeyDown(Sender: TObject; var Key: Word;
@@ -190,7 +231,12 @@ procedure TViewUnitDialog.EditKeyDown(Sender: TObject; var Key: Word;
 begin
   case Key of
     VK_UP: MoveItemIndex(-1);
-    VK_DOWN: MoveItemIndex(1);
+    VK_DOWN:
+      begin
+        MoveItemIndex(1);
+        // Avoid switching to next control in TabOrder in gtk2
+        Key := 0;
+      end;
     VK_NEXT: MoveItemIndex(PageCount);
     VK_PRIOR: MoveItemIndex(-PageCount);
     VK_RETURN: OKButtonClick(nil);
@@ -237,7 +283,7 @@ end;
 
 procedure TViewUnitDialog.MultiselectCheckBoxClick(Sender :TObject);
 begin
-  ListBox.Multiselect := MultiselectCheckBox.Checked;
+  ListBox.Multiselect := mniMultiSelect.Checked;
 end;
 
 procedure TViewUnitDialog.FocusEdit;
