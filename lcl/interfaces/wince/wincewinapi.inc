@@ -1182,7 +1182,7 @@ end;}
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.ExcludeClipRect(dc: hdc;  Left, Top, Right, Bottom: Integer): Integer;
 begin
-//  Result := Windows.ExcludeClipRect(dc, Left, Top, Right, Bottom);
+  Result := Windows.ExcludeClipRect(dc, Left, Top, Right, Bottom);
 end;
 
 {------------------------------------------------------------------------------
@@ -1433,7 +1433,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
 begin
-//  Result := Windows.GetClipBox(DC, Windows.LPRECT(lpRect));
+  Result := Windows.GetClipBox(DC, Windows.LPRECT(lpRect));
 end;
 
 {------------------------------------------------------------------------------
@@ -1453,7 +1453,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN) : Integer;
 begin
-//  Result := Windows.GetClipRGN(DC, RGN);
+  Result := Windows.GetClipRGN(DC, RGN);
 end;
 
 {function TWinCEWidgetSet.GetCmdLineParamDescForInterface: string;
@@ -2710,7 +2710,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
 begin
-//  Result := Windows.SelectClipRGN(DC, RGN);
+  Result := Windows.SelectClipRGN(DC, RGN);
 end;
 
 {------------------------------------------------------------------------------
