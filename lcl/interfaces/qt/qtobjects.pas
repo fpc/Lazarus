@@ -511,6 +511,9 @@ type
   private
     FLockClip: Boolean;
     FClipDataChangedHook: QClipboard_hookH;
+    {$IFDEF HASX11}
+    FClipSelectionChangedHook: QClipboard_hookH;
+    {$ENDIF}
     FClipChanged: Boolean;
     FClipBoardFormats: TStringList;
     FOnClipBoardRequest: TClipboardRequestEvent;
@@ -537,6 +540,9 @@ type
       FormatCount: integer; Formats: PClipboardFormat): boolean;
       
     procedure signalDataChanged; cdecl;
+    {$IFDEF HASX11}
+    procedure signalSelectionChanged; cdecl;
+    {$ENDIF}
   end;
 
   { TQtPrinter }
@@ -3278,6 +3284,11 @@ begin
   inherited AttachEvents;
   FClipDataChangedHook := QClipboard_hook_create(TheObject);
   QClipboard_hook_hook_dataChanged(FClipDataChangedHook, @signalDataChanged);
+  {$IFDEF HASX11}
+  FClipSelectionChangedHook := QClipboard_hook_create(TheObject);
+  QClipboard_hook_hook_selectionChanged(FClipSelectionChangedHook,
+    @signalSelectionChanged);
+  {$ENDIF}
 end;
 
 procedure TQtClipboard.signalDataChanged; cdecl;
@@ -3287,6 +3298,15 @@ begin
   {$ENDIF}
   FClipChanged := IsClipboardChanged;
 end;
+
+{$IFDEF HASX11}
+procedure TQtClipboard.signalSelectionChanged; cdecl;
+begin
+  {$IFDEF VERBOSE_QT_CLIPBOARD}
+  writeln('signalSelectionChanged()');
+  {$ENDIF}
+end;
+{$ENDIF}
 
 function TQtClipboard.IsClipboardChanged: Boolean;
 var
