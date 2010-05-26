@@ -518,7 +518,8 @@ type
   TSourceNotebookState = (
     snIncrementalFind,
     snWarnedFont,
-    snUpdateStatusBarNeeded
+    snUpdateStatusBarNeeded,
+    snNotbookPageChangedNeeded
     );
   TSourceNotebookStates = set of TSourceNotebookState;
 
@@ -5451,9 +5452,10 @@ begin
     if Assigned(Manager) and (FNotebook.PageIndex = FPageIndex) then
       Manager.DoActiveEditorChanged;
     // make sure the statusbar is updated
-    if FPageIndex = FNotebook.PageIndex then
-      NotebookPageChanged(nil);
+    Include(States, snNotbookPageChangedNeeded);
     FNotebook.PageIndex := FPageIndex;
+    if snNotbookPageChangedNeeded in States then
+      NotebookPageChanged(nil);
   end;
 end;
 
@@ -6572,8 +6574,8 @@ Begin
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] A ');
   {$ENDIF}
-  DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
-  try
+  //DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
+  //try
     IDEWindowCreators.ShowForm(Self,false);
     Result := NewSE(-1, -1, AShareEditor);
     {$IFDEF IDE_DEBUG}
@@ -6587,9 +6589,9 @@ Begin
     UpdatePageNames;
     UpdateProjectFiles;
     UpdateStatusBar;
-  finally
-    EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
-  end;
+  //finally
+  //  EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.NewFile'){$ENDIF};
+  //end;
   if FocusIt then FocusEditor;
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] end');
@@ -6942,7 +6944,11 @@ end;
 Procedure TSourceNotebook.NotebookPageChanged(Sender: TObject);
 var TempEditor:TSourceEditor;
 Begin
-  if (not assigned(Manager)) or (FUpdateLock > 0) Then exit;
+  if (not assigned(Manager)) or (FUpdateLock > 0) Then begin
+    Include(States, snNotbookPageChangedNeeded);
+    exit;
+  end;
+  Exclude(States, snNotbookPageChangedNeeded);
   TempEditor:=GetActiveSE;
 
   //writeln('TSourceNotebook.NotebookPageChanged ',Pageindex,' ',TempEditor <> nil,' fAutoFocusLock=',fAutoFocusLock);
