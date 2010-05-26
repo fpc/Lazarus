@@ -1005,7 +1005,10 @@ end;
 
 procedure TSynEditStringList.SetCapacity(NewCapacity: integer);
 begin
+  if NewCapacity < Count then
+    fList.Count := NewCapacity;
   fList.SetCapacity(NewCapacity);
+  IncreaseTextChangeStamp;
 end;
 
 procedure TSynEditStringList.SetUpdateState(Updating: Boolean; Sender: TObject);
