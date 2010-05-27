@@ -275,7 +275,7 @@ type
     function Equals(Other: TColorSchemeLanguage): Boolean; reintroduce;
     function IndexOfAttr(AnAttr: TColorSchemeAttribute): Integer;
     procedure LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String; Defaults: TColorSchemeLanguage;
-              aOldPath: String = '');
+              ColorVersion: Integer; aOldPath: String = '');
     procedure SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String; Defaults: TColorSchemeLanguage);
     procedure ApplyTo(ASynEdit: TSynEdit); // Write markup, etc
     procedure ApplyTo(AHLighter: TSynCustomHighlighter);
@@ -4191,6 +4191,7 @@ var
   csa: TColorSchemeAttribute;
   i: Integer;
   aha: TAdditionalHilightAttribute;
+  FormatVersion: longint;
 begin
   Create(AGroup, ALang, IsSchemeDefault);   // don't call inherited Create
 
@@ -4217,7 +4218,8 @@ begin
   end;
 
   FAttributes.Sorted := true;
-  LoadFromXml(aXMLConfig, aPath, nil);
+  FormatVersion := aXMLConfig.GetValue(aPath + 'Version', 0);
+  LoadFromXml(aXMLConfig, aPath, nil, FormatVersion);
 end;
 
 destructor TColorSchemeLanguage.Destroy;
@@ -4292,24 +4294,23 @@ begin
 end;
 
 procedure TColorSchemeLanguage.LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String;
-  Defaults: TColorSchemeLanguage; aOldPath: String);
+  Defaults: TColorSchemeLanguage; ColorVersion: Integer; aOldPath: String);
 var
   Def: TColorSchemeAttribute;
-  FormatVersion, FormatVersion2: longint;
+  FormatVersion: longint;
   TmpPath: String;
   i: Integer;
   EmptyDef: TColorSchemeAttribute;
 begin
 //  Path := 'EditorOptions/Color/'
 
-  FormatVersion := aXMLConfig.GetValue(aPath + 'Version', 0);
   if not FIsSchemeDefault then
     TmpPath := aPath + 'Lang' + StrToValidXMLName(FLanguageName) + '/'
   else
     TmpPath := aPath;
-  FormatVersion2 := aXMLConfig.GetValue(TmpPath + 'Version', 0);
-  if FormatVersion2 < FormatVersion then
-    FormatVersion := FormatVersion2;
+  FormatVersion := aXMLConfig.GetValue(TmpPath + 'Version', 0);
+  if FormatVersion > ColorVersion then
+    FormatVersion := ColorVersion;
   if FIsSchemeDefault and (FormatVersion < 6) then
     FormatVersion := 6;
   TmpPath := TmpPath + 'Scheme' + StrToValidXMLName(Name) + '/';
@@ -4594,19 +4595,21 @@ procedure TColorScheme.LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String;
 var
   i: TLazSyntaxHighlighter;
   Def: TColorSchemeLanguage;
+  FormatVersion: longint;
 begin
+  FormatVersion := aXMLConfig.GetValue(aPath + 'Version', 0);
   if Defaults <> nil then
     Def := Defaults.DefaultColors
   else
     Def := nil;
-  FDefaultColors.LoadFromXml(aXMLConfig, aPath + 'Globals/', Def);
+  FDefaultColors.LoadFromXml(aXMLConfig, aPath + 'Globals/', Def, FormatVersion);
   for i := low(TLazSyntaxHighlighter) to high(TLazSyntaxHighlighter) do
     if ColorScheme[i] <> nil then begin
       if Defaults <> nil then
         Def := Defaults.ColorScheme[i]
       else
         Def := nil;
-      ColorScheme[i].LoadFromXml(aXMLConfig, aPath, Def, aOldPath);
+      ColorScheme[i].LoadFromXml(aXMLConfig, aPath, Def, FormatVersion, aOldPath);
     end;
 end;
 
