@@ -4045,6 +4045,7 @@ var
   fs: TFontStyles;
 begin
   // FormatVersion >= 2
+  (* Note: This is currently always called with a default, so the nil handling isn't needed*)
   AttriName := OldAdditionalAttributeName(StoredName);
   if (Version < 5) and (AttriName <> '') then begin
     // Read Version 2-4, 4 if exist, or keep values
@@ -4080,16 +4081,26 @@ begin
   // Read the Version >= 5 if exist, or keep values
   if StoredName = '' then exit;
   Path := aPath + StrToValidXMLName(StoredName) + '/';
-
   if (Version <= 5) and (Defaults = nil) then
     Defaults := GetSchemeGlobal;
-  aXMLConfig.ReadObject(Path, Self, Defaults);
 
-  if (Version <= 5) and
-     ( aXMLConfig.HasPath(Path, False) or  // Data was loaded via ReadObject
-       (Defaults = Self) )                 // Data was loaded above (Vers < 5)
-  then
-    UseSchemeGlobals := False;
+  if aXMLConfig.HasPath(Path, False) then begin
+    aXMLConfig.ReadObject(Path, Self, Defaults);
+    if (Version <= 5) then
+      UseSchemeGlobals := False;
+  end
+  else begin
+    if (Defaults <> Self) and (Defaults <> nil) then begin
+      // dont copy (Stored)Name or Features ...
+      Background := Defaults.Background;
+      Foreground := Defaults.Foreground;
+      FrameColor := Defaults.FrameColor;
+      Style      := Defaults.Style;
+      StyleMask  := Defaults.StyleMask;
+    end;
+    if (Version <= 5) and (Defaults = Self) then     // Data was loaded above (Vers < 5)
+      UseSchemeGlobals := False;
+  end;
 end;
 
 procedure TColorSchemeAttribute.LoadFromXmlV1(aXMLConfig: TRttiXMLConfig; aPath: String;
