@@ -280,9 +280,9 @@ resourcestring
   lisMenuViewToggleFormUnit = 'Toggle form/unit view';
   lisMenuViewMessages = 'Messages';
   lisCopySelectedMessagesToClipboard = 'Copy selected messages to clipboard';
-  lisCopyAllMessagesToClipboard = 'Copy all messages to clipboard';
-  lisCopyAllAndHiddenMessagesToClipboard = 'Copy all and hidden messages '
-                                           +'to clipboard';
+  lisCopyAllShownMessagesToClipboard = 'Copy all shown messages to clipboard';
+  lisCopyAllShownAndHiddenMessagesToClipboard = 'Copy all shown and hidden'
+                                               +' messages to clipboard';
   lisCopyItemToClipboard = 'Copy item to clipboard';
   lisCopySelectedItemToClipboard = 'Copy selected items to clipboard';
   lisCopyAllItemsToClipboard = 'Copy all items to clipboard';

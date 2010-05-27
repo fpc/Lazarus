@@ -256,10 +256,10 @@ begin
   MsgCopyIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Copy selected',
     lisCopySelectedMessagesToClipboard);
   MsgCopyAllIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Copy all',
-    lisCopyAllMessagesToClipboard);
+    lisCopyAllShownMessagesToClipboard);
   MsgCopyAllAndHiddenIDEMenuCommand := RegisterIDEMenuCommand(Path,
     'Copy all, including hidden messages',
-    lisCopyAllAndHiddenMessagesToClipboard);
+    lisCopyAllShownAndHiddenMessagesToClipboard);
   MsgHelpIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Help',
     lisPckEditHelp);
   MsgSaveAllToFileIDEMenuCommand :=
