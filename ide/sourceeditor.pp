@@ -5068,7 +5068,7 @@ begin
             exit;
           end;
           SrcEdit.EditorComponent.BeginUpdate;
-          SrcEdit.CodeBuffer.AssignTo(SrcEdit.EditorComponent.Lines,true);
+          SrcEdit.CodeBuffer.AssignTo(SrcEdit.EditorComponent.Lines,False);
           SrcEdit.EditorComponent.EndUpdate;
         end;
       end;
