@@ -4169,6 +4169,7 @@ begin
   FDefaultAttribute.Features := [hafBackColor, hafForeColor];
   FDefaultAttribute.Group := agnDefault;
   FAttributes.AddObject(FDefaultAttribute.StoredName, FDefaultAttribute);
+  FAttributes.Sorted := true;
 end;
 
 constructor TColorSchemeLanguage.CreateFromXml(const AGroup: TColorScheme;
@@ -4181,6 +4182,7 @@ var
 begin
   Create(AGroup, ALang, IsSchemeDefault);   // don't call inherited Create
 
+  FAttributes.Sorted := False;
   if FHighlighter <> nil then begin
     for i := 0 to FHighlighter.AttrCount - 1 do begin
       csa := TColorSchemeAttribute.Create(Self, FHighlighter.Attribute[i].Name,
@@ -4202,6 +4204,7 @@ begin
     FAttributes.AddObject(UpperCase(csa.StoredName), csa);
   end;
 
+  FAttributes.Sorted := true;
   LoadFromXml(aXMLConfig, aPath, nil);
 end;
 
@@ -4252,6 +4255,7 @@ begin
   Clear;
   FreeAndNil(FAttributes);
   FAttributes := NewList;
+  FAttributes.Sorted := true;
 end;
 
 function TColorSchemeLanguage.Equals(Other: TColorSchemeLanguage): Boolean;
@@ -4644,6 +4648,7 @@ constructor TColorSchemeFactory.Create;
 begin
   inherited Create;
   FMappings := TStringList.Create;
+  FMappings.Sorted := true;
 end;
 
 destructor TColorSchemeFactory.Destroy;
@@ -4670,12 +4675,14 @@ var
   lMapping: TColorScheme;
   i: Integer;
 begin
+  FMappings.Sorted := False;
   Clear;
   for i := 0 to Src.FMappings.Count - 1 do begin
     lMapping := TColorScheme.Create(Src.ColorSchemeGroupAtPos[i].Name);
     lMapping.Assign(Src.ColorSchemeGroupAtPos[i]);
     FMappings.AddObject(UpperCase(lMapping.Name), lMapping);
   end;
+  FMappings.Sorted := true;
 end;
 
 procedure TColorSchemeFactory.LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String;
