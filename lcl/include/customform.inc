@@ -134,6 +134,8 @@ end;
   Method: TCustomForm.FocusControl
   Params:  None
   Returns: Nothing
+
+  Focus the control. If needed, bring form to front and focus it.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.FocusControl(WinControl : TWinControl);
 var
