@@ -41,6 +41,8 @@ uses
   Classes, SysUtils, SourceLog, LinkScanner, FileProcs,
   Avl_Tree, Laz_XMLCfg;
 
+const
+  IncludeLinksFileVersion = 1;
 type
   TCodeCache = class;
   
@@ -706,6 +708,7 @@ begin
     CurTime:=Now;
     ExpirationTime:=TDateTime(FExpirationTimeInDays);
     UpdateIncludeLinks;
+    XMLConfig.SetValue(XMLPath+'IncludeLinks/Version',IncludeLinksFileVersion);
     XMLConfig.SetDeleteValue(XMLPath+'IncludeLinks/ExpirationTimeInDays',
         FExpirationTimeInDays,0);
     Index:=0;
@@ -724,30 +727,40 @@ var LinkCnt, i: integer;
   IncludeFilename, IncludedByFile, APath: string;
   NewLink: TIncludedByLink;
   CurrDateStr: String;
+  FileVersion: longint;
 begin
   try
     FIncludeLinks.FreeAndClear;
+    FileVersion:=XMLConfig.GetValue(XMLPath+'IncludeLinks/Version',0);
     FExpirationTimeInDays:=XMLConfig.GetValue(
         XMLPath+'IncludeLinks/ExpirationTimeInDays',
         FExpirationTimeInDays);
-    LinkCnt:=XMLConfig.GetValue(XMLPath+'IncludeLinks/Count',0);
+    //debugln(['TCodeCache.LoadIncludeLinksFromXML FExpirationTimeInDays=',FExpirationTimeInDays]);
     CurrDate:=Date;
-    CurrDateStr:=DateToStr(CurrDate);
-    for i:=0 to LinkCnt-1 do begin
-      APath:=XMLPath+'IncludeLinks/Link'+IntToStr(i)+'/';
-      if not CfgStrToDate(XMLConfig.GetValue(APath+'LastTimeUsed/Value',
-           CurrDateStr),LastTimeUsed)
-      then
-        LastTimeUsed:=CurrDate;
+    CurrDateStr:=DateToCfgStr(CurrDate);
+    if FileVersion<=1 then begin
+      LinkCnt:=XMLConfig.GetValue(XMLPath+'IncludeLinks/Count',0);
+      for i:=0 to LinkCnt-1 do begin
+        APath:=XMLPath+'IncludeLinks/Link'+IntToStr(i)+'/';
+        if not CfgStrToDate(XMLConfig.GetValue(APath+'LastTimeUsed/Value',
+             CurrDateStr),LastTimeUsed)
+        then begin
+          debugln(['TCodeCache.LoadIncludeLinksFromXML invalid date: ',XMLConfig.GetValue(APath+'LastTimeUsed/Value','')]);
+          LastTimeUsed:=CurrDate;
+        end;
+        // ToDo: check if link has expired
 
-      // ToDo: check if link has expired
-      
-      IncludeFilename:=XMLConfig.GetValue(APath+'IncludeFilename/Value','');
-      if IncludeFilename='' then continue;
-      IncludedByFile:=XMLConfig.GetValue(APath+'IncludedByFilename/Value','');
-      NewLink:=TIncludedByLink.Create(IncludeFilename,IncludedByFile,
-                  LastTimeUsed);
-      FIncludeLinks.Add(NewLink);
+        IncludeFilename:=XMLConfig.GetValue(APath+'IncludeFilename/Value','');
+        //debugln(['TCodeCache.LoadIncludeLinksFromXML CurrDate=',DateToStr(CurrDate),' xml=',XMLConfig.GetValue(APath+'LastTimeUsed/Value',''),' Days=',CurrDate-LastTimeUsed,' ',IncludeFilename]);
+        if IncludeFilename='' then continue;
+        IncludedByFile:=XMLConfig.GetValue(APath+'IncludedByFilename/Value','');
+        if (FExpirationTimeInDays<=0)
+        or (CurrDate-LastTimeUsed<=FExpirationTimeInDays) then begin
+          NewLink:=TIncludedByLink.Create(IncludeFilename,IncludedByFile,
+                                          LastTimeUsed);
+          FIncludeLinks.Add(NewLink);
+        end;
+      end;
     end;
     Result:=true;
   except
