@@ -444,6 +444,7 @@ begin
   {$ELSE}
   Laz_XMLWrite.WriteXMLFile(ADoc,AFileName);
   {$ENDIF}
+  InvalidateFileStateCache(AFileName);
 end;
 
 procedure TXMLConfig.FreeDoc;
@@ -570,8 +571,8 @@ begin
   end;
 
   doc:=nil;
-  if (not fDoNotLoadFromFile) and FileExistsCached(AFilename) then
-    ReadXMLFile(doc,AFilename)
+  if (not fDoNotLoadFromFile) and FileExistsCached(Filename) then
+    ReadXMLFile(doc,Filename)
   else if fAutoLoadFromSource<>'' then begin
     ms:=TMemoryStream.Create;
     try

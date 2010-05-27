@@ -38,11 +38,11 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, SourceLog, LinkScanner, FileProcs,
+  Math, Classes, SysUtils, SourceLog, LinkScanner, FileProcs,
   Avl_Tree, Laz_XMLCfg;
 
 const
-  IncludeLinksFileVersion = 1;
+  IncludeLinksFileVersion = 2;
 type
   TCodeCache = class;
   
@@ -177,11 +177,13 @@ type
     function LastIncludedByFile(const IncludeFilename: string): string;
     function LoadFile(const AFilename: string): TCodeBuffer;
     procedure RemoveCodeBuffer(Buffer: TCodeBuffer);
+    procedure LoadIncludeLinksDataFromList(List: TStrings);
     function LoadIncludeLinksFromFile(const AFilename: string): boolean;
     function LoadIncludeLinksFromXML(XMLConfig: TXMLConfig;
                                      const XMLPath: string): boolean;
     function SaveBufferAs(OldBuffer: TCodeBuffer; const AFilename: string;
                           out NewBuffer: TCodeBuffer): boolean;
+    procedure SaveIncludeLinksDataToList(List: TStrings);
     function SaveIncludeLinksToFile(const AFilename: string;
                                     OnlyIfChanged: boolean): boolean;
     function SaveIncludeLinksToXML(XMLConfig: TXMLConfig;
@@ -358,6 +360,96 @@ begin
     FItems.Remove(Buffer);
 end;
 
+procedure TCodeCache.LoadIncludeLinksDataFromList(List: TStrings);
+{ First line is the base date as DateToCfgStr
+
+  The following lines are compressed. Each line starting with a number of
+  characters to use from the previous line. Then a colon and the rest of the
+  line.
+  Each include link has two lines, the first is the IncludeFilename, the
+  second the the IncludedByFile plus semicolon and the age in days.
+}
+var
+  BaseDate: TDateTime;
+  LastLine: string;
+  Index: integer;
+
+  function NextLine: string;
+  begin
+    // skip empty lines
+    repeat
+      if Index>=List.Count then begin
+        Result:='';
+        exit;
+      end;
+      Result:=List[Index];
+      inc(Index);
+    until Result<>'';
+  end;
+
+  function NextUncompressedLine: string;
+  var
+    p: Integer;
+    Same: Integer;
+  begin
+    Result:=NextLine;
+    p:=1;
+    Same:=0;
+    while (p<=length(Result)) and (Result[p] in ['0'..'9']) do begin
+      Same:=Same*10+ord(Result[p])-ord('0');
+      inc(p);
+    end;
+    inc(p);
+    Result:=copy(LastLine,1,Same)+copy(Result,p,length(Result));
+    LastLine:=Result;
+  end;
+
+var
+  IncludeFilename: String;
+  IncludedByFile: String;
+  p: Longint;
+  Days: LongInt;
+  Link: TIncludedByLink;
+  LastTimeUsed: TDateTime;
+  CurrDate: TDateTime;
+begin
+  FIncludeLinks.FreeAndClear;
+  Index:=0;
+  CurrDate:=Date;
+  LastLine:='';
+  if not CfgStrToDate(NextLine,BaseDate) then BaseDate:=Date;
+  repeat
+    IncludeFilename:=NextUncompressedLine;
+    if IncludeFilename='' then exit;
+    IncludedByFile:=NextUncompressedLine;
+    if IncludedByFile='' then begin
+      debugln(['TCodeCache.LoadIncludeLinksDataFromList missing IncludedByFile: IncludeFilename=',IncludeFilename,' line=',Index]);
+      exit;
+    end;
+    p:=System.Pos(';',IncludedByFile);
+    if p<1 then begin
+      debugln(['TCodeCache.LoadIncludeLinksDataFromList missing age in IncludedByFile line: ',IncludedByFile,' line=',Index]);
+      exit;
+    end;
+    Days:=StrToIntDef(copy(IncludedByFile,p+1,length(IncludedByFile)),0);
+    IncludedByFile:=copy(IncludedByFile,1,p-1);
+    LastTimeUsed:=BaseDate-Days;
+    //debugln(['TCodeCache.LoadIncludeLinksDataFromList ',IncludeFilename,' ',IncludedByFile,' ',LastTimeUsed]);
+    if (FExpirationTimeInDays<=0)
+    or (CurrDate-LastTimeUsed<=FExpirationTimeInDays) then begin
+      Link:=FindIncludeLinkNode(IncludeFilename);
+      if Link=nil then begin
+        Link:=TIncludedByLink.Create(IncludeFilename,IncludedByFile,
+                                     BaseDate-Days);
+        FIncludeLinks.Add(Link);
+      end else if Link.LastTimeUsed<=LastTimeUsed then begin
+        Link.IncludedByFile:=IncludedByFile;
+        Link.LastTimeUsed:=LastTimeUsed;
+      end;
+    end;
+  until false;
+end;
+
 function TCodeCache.CreateFile(const AFilename: string): TCodeBuffer;
 begin
   Result:=FindFile(AFileName);
@@ -418,6 +510,58 @@ begin
     OldBuffer.IsDeleted:=true;
     OldBuffer.Source:='';
   end;
+end;
+
+procedure TCodeCache.SaveIncludeLinksDataToList(List: TStrings);
+{ First line is the base date as DateToCfgStr
+
+  The following lines are compressed. Each line starting with a number of
+  characters to use from the previous line. Then a colon and the rest of the
+  line.
+  Each include link has two lines, the first is the IncludeFilename, the
+  second the the IncludedByFile plus semicolon and the age in days.
+}
+var
+  LastLine: String;
+  CurrDate: TDateTime;
+  ExpirationTime: TDateTime;
+
+  procedure AddLine(Line: string);
+  var
+    p: Integer;
+  begin
+    p:=1;
+    while (p<=length(Line)) and (p<=length(LastLine))
+    and (Line[p]=LastLine[p]) do
+      inc(p);
+    List.Add(IntToStr(p-1)+':'+copy(Line,p,length(Line)));
+    LastLine:=Line;
+  end;
+
+  procedure SaveLinkTree(ANode: TAVLTreeNode);
+  var
+    ALink: TIncludedByLink;
+    DiffTime: TDateTime;
+  begin
+    if ANode=nil then exit;
+    SaveLinkTree(ANode.Left);
+    ALink:=TIncludedByLink(ANode.Data);
+    DiffTime:=CurrDate-ALink.LastTimeUsed;
+    if (FExpirationTimeInDays<=0) or (DiffTime<ExpirationTime) then begin
+      AddLine(ALink.IncludeFilename);
+      AddLine(ALink.IncludedByFile+';'+IntToStr(round(CurrDate-ALink.LastTimeUsed)));
+    end;
+    SaveLinkTree(ANode.Right);
+  end;
+
+begin
+  UpdateIncludeLinks;
+  if FIncludeLinks.Count=0 then exit;
+  ExpirationTime:=TDateTime(FExpirationTimeInDays);
+  LastLine:='';
+  CurrDate:=Date;
+  List.Add(DateToCfgStr(CurrDate));
+  SaveLinkTree(FIncludeLinks.Root);
 end;
 
 function TCodeCache.LastIncludedByFile(const IncludeFilename: string): string;
@@ -547,8 +691,7 @@ begin
   ANode:=FIncludeLinks.Root;
   while ANode<>nil do begin
     Result:=TIncludedByLink(ANode.Data);
-    cmp:=CompareFilenames(
-            IncludeFilename,Result.IncludeFilename);
+    cmp:=CompareFilenames(IncludeFilename,Result.IncludeFilename);
     if cmp<0 then ANode:=ANode.Left
     else if cmp>0 then ANode:=ANode.Right
     else begin
@@ -562,7 +705,7 @@ function TCodeCache.FindIncludeLinkAVLNode(const IncludeFilename: string
   ): TAVLTreeNode;
 begin
   Result:=FIncludeLinks.FindKey(@IncludeFilename,
-                               @ComparePAnsiStringWithIncludedByLink);
+                                @ComparePAnsiStringWithIncludedByLink);
 end;
 
 function TCodeCache.FindIncludeLink(const IncludeFilename: string): string;
@@ -631,6 +774,7 @@ begin
     and FileExistsCached(AFilename)
     and (FileAgeCached(AFilename)=fLastIncludeLinkFileAge)
     then begin
+      //debugln(['TCodeCache.SaveIncludeLinksToFile file valid']);
       exit;
     end;
     XMLConfig:=TXMLConfig.CreateClean(AFilename);
@@ -672,46 +816,20 @@ end;
 function TCodeCache.SaveIncludeLinksToXML(XMLConfig: TXMLConfig;
   const XMLPath: string): boolean;
 var
-  Index: integer;
-  CurrDate: TDateTime;
-  ExpirationTime: TDateTime;
-  
-  procedure SaveLinkTree(ANode: TAVLTreeNode);
-  var ALink: TIncludedByLink;
-    APath: string;
-    DiffTime: TDateTime;
-  begin
-    if ANode=nil then exit;
-    SaveLinkTree(ANode.Left);
-    ALink:=TIncludedByLink(ANode.Data);
-    DiffTime:=CurrDate-ALink.LastTimeUsed;
-    if (FExpirationTimeInDays<=0) or (DiffTime<ExpirationTime) then begin
-      APath:=XMLPath+'IncludeLinks/Link'+IntToStr(Index)+'/';
-      XMLConfig.SetValue(APath+'IncludeFilename/Value',ALink.IncludeFilename);
-      XMLConfig.SetValue(APath+'IncludedByFilename/Value',ALink.IncludedByFile);
-      XMLConfig.SetValue(APath+'LastTimeUsed/Value',
-                                   DateToCfgStr(ALink.LastTimeUsed));
-      inc(Index);
-    end;
-    SaveLinkTree(ANode.Right);
-  end;
-
+  List: TStringList;
 begin
+  UpdateIncludeLinks;
+  XMLConfig.SetValue(XMLPath+'IncludeLinks/Version',IncludeLinksFileVersion);
+  XMLConfig.SetDeleteValue(XMLPath+'IncludeLinks/ExpirationTimeInDays',
+      FExpirationTimeInDays,0);
+  List:=TStringList.Create;
   try
-    CurrDate:=Date;
-    ExpirationTime:=TDateTime(FExpirationTimeInDays);
-    UpdateIncludeLinks;
-    XMLConfig.SetValue(XMLPath+'IncludeLinks/Version',IncludeLinksFileVersion);
-    XMLConfig.SetDeleteValue(XMLPath+'IncludeLinks/ExpirationTimeInDays',
-        FExpirationTimeInDays,0);
-    XMLConfig.SetValue(XMLPath+'IncludeLinks/BaseDate',DateToCfgStr(CurrDate));
-    Index:=0;
-    SaveLinkTree(FIncludeLinks.Root);
-    XMLConfig.SetDeleteValue(XMLPath+'IncludeLinks/Count',Index,0);
-    Result:=true;
-  except
-    Result:=false;
+    SaveIncludeLinksDataToList(List);
+    XMLConfig.SetDeleteValue(XMLPath+'IncludeLinks/Data',List.Text,'');
+  finally
+    List.Free;
   end;
+  Result:=true;
 end;
 
 function TCodeCache.LoadIncludeLinksFromXML(XMLConfig: TXMLConfig;
@@ -722,44 +840,49 @@ var LinkCnt, i: integer;
   NewLink: TIncludedByLink;
   CurrDateStr: String;
   FileVersion: longint;
+  List: TStringList;
 begin
-  try
-    FIncludeLinks.FreeAndClear;
-    FileVersion:=XMLConfig.GetValue(XMLPath+'IncludeLinks/Version',0);
-    FExpirationTimeInDays:=XMLConfig.GetValue(
-        XMLPath+'IncludeLinks/ExpirationTimeInDays',
-        FExpirationTimeInDays);
-    //debugln(['TCodeCache.LoadIncludeLinksFromXML FExpirationTimeInDays=',FExpirationTimeInDays]);
+  FIncludeLinks.FreeAndClear;
+
+  FileVersion:=XMLConfig.GetValue(XMLPath+'IncludeLinks/Version',0);
+  FExpirationTimeInDays:=XMLConfig.GetValue(
+      XMLPath+'IncludeLinks/ExpirationTimeInDays',
+      FExpirationTimeInDays);
+  if FileVersion=2 then begin
+    List:=TStringList.Create;
+    try
+      List.Text:=XMLConfig.GetValue(XMLPath+'IncludeLinks/Data','');
+      LoadIncludeLinksDataFromList(List);
+    finally
+      List.Free;
+    end;
+  end else if FileVersion<=1 then begin
     CurrDate:=Date;
     CurrDateStr:=DateToCfgStr(CurrDate);
-    if FileVersion<=1 then begin
-      LinkCnt:=XMLConfig.GetValue(XMLPath+'IncludeLinks/Count',0);
-      for i:=0 to LinkCnt-1 do begin
-        APath:=XMLPath+'IncludeLinks/Link'+IntToStr(i)+'/';
-        if not CfgStrToDate(XMLConfig.GetValue(APath+'LastTimeUsed/Value',
-             CurrDateStr),LastTimeUsed)
-        then begin
-          debugln(['TCodeCache.LoadIncludeLinksFromXML invalid date: ',XMLConfig.GetValue(APath+'LastTimeUsed/Value','')]);
-          LastTimeUsed:=CurrDate;
-        end;
-        // ToDo: check if link has expired
+    LinkCnt:=XMLConfig.GetValue(XMLPath+'IncludeLinks/Count',0);
+    for i:=0 to LinkCnt-1 do begin
+      APath:=XMLPath+'IncludeLinks/Link'+IntToStr(i)+'/';
+      if not CfgStrToDate(XMLConfig.GetValue(APath+'LastTimeUsed/Value',
+           CurrDateStr),LastTimeUsed)
+      then begin
+        debugln(['TCodeCache.LoadIncludeLinksFromXML invalid date: ',XMLConfig.GetValue(APath+'LastTimeUsed/Value','')]);
+        LastTimeUsed:=CurrDate;
+      end;
+      // ToDo: check if link has expired
 
-        IncludeFilename:=XMLConfig.GetValue(APath+'IncludeFilename/Value','');
-        //debugln(['TCodeCache.LoadIncludeLinksFromXML CurrDate=',DateToStr(CurrDate),' xml=',XMLConfig.GetValue(APath+'LastTimeUsed/Value',''),' Days=',CurrDate-LastTimeUsed,' ',IncludeFilename]);
-        if IncludeFilename='' then continue;
-        IncludedByFile:=XMLConfig.GetValue(APath+'IncludedByFilename/Value','');
-        if (FExpirationTimeInDays<=0)
-        or (CurrDate-LastTimeUsed<=FExpirationTimeInDays) then begin
-          NewLink:=TIncludedByLink.Create(IncludeFilename,IncludedByFile,
-                                          LastTimeUsed);
-          FIncludeLinks.Add(NewLink);
-        end;
+      IncludeFilename:=XMLConfig.GetValue(APath+'IncludeFilename/Value','');
+      //debugln(['TCodeCache.LoadIncludeLinksFromXML CurrDate=',DateToStr(CurrDate),' xml=',XMLConfig.GetValue(APath+'LastTimeUsed/Value',''),' Days=',CurrDate-LastTimeUsed,' ',IncludeFilename]);
+      if IncludeFilename='' then continue;
+      IncludedByFile:=XMLConfig.GetValue(APath+'IncludedByFilename/Value','');
+      if (FExpirationTimeInDays<=0)
+      or (CurrDate-LastTimeUsed<=FExpirationTimeInDays) then begin
+        NewLink:=TIncludedByLink.Create(IncludeFilename,IncludedByFile,
+                                        LastTimeUsed);
+        FIncludeLinks.Add(NewLink);
       end;
     end;
-    Result:=true;
-  except
-    Result:=false;
   end;
+  Result:=true;
 end;
 
 procedure TCodeCache.ConsistencyCheck;
