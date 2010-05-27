@@ -43,6 +43,9 @@ type
   { TIDEEasyDockMaster }
 
   TIDEEasyDockMaster = class(TIDEDockMaster)
+  private
+    procedure GetDefaultBounds(AForm: TCustomForm; out Creator: TIDEWindowCreator;
+      out NewBounds: TRect; out DockSiblingName: string; out DockAlign: TAlign);
   public
     procedure MakeIDEWindowDockSite(AForm: TCustomForm); override;
     procedure MakeIDEWindowDockable(AControl: TWinControl); override;
@@ -63,16 +66,50 @@ end;
 
 { TIDEEasyDockMaster }
 
-procedure TIDEEasyDockMaster.MakeIDEWindowDockSite(AForm: TCustomForm);
+procedure TIDEEasyDockMaster.GetDefaultBounds(AForm: TCustomForm; out
+  Creator: TIDEWindowCreator; out NewBounds: TRect; out DockSiblingName: string;
+  out DockAlign: TAlign);
 begin
+  NewBounds:=Rect(0,0,0,0);
+  DockSiblingName:='';
+  DockAlign:=alNone;
+  Creator:=IDEWindowCreators.FindWithName(AForm.Name);
+  if Creator=nil then exit;
+  if Creator.OnGetLayout<>nil then
+    Creator.OnGetLayout(Self,AForm.Name,NewBounds,DockSiblingName,DockAlign)
+  else begin
+    Creator.GetDefaultBounds(AForm,NewBounds);
+    DockSiblingName:=Creator.DockSibling;
+    DockAlign:=Creator.DockAlign;
+  end;
+  NewBounds.Left:=Min(10000,Max(-10000,NewBounds.Left));
+  NewBounds.Top:=Min(10000,Max(-10000,NewBounds.Top));
+  NewBounds.Right:=Max(NewBounds.Left+100,NewBounds.Right);
+  NewBounds.Bottom:=Max(NewBounds.Top+100,NewBounds.Bottom);
+end;
+
+procedure TIDEEasyDockMaster.MakeIDEWindowDockSite(AForm: TCustomForm);
+var
+  Creator: TIDEWindowCreator;
+  NewBounds: TRect;
+  DockSiblingName: string;
+  DockAlign: TAlign;
+begin
+  debugln(['TIDEEasyDockMaster.MakeIDEWindowDockSite BEFORE ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect)]);
+  GetDefaultBounds(AForm,Creator,NewBounds,DockSiblingName,DockAlign);
+  if Creator<>nil then
+    AForm.BoundsRect:=NewBounds;
   DockMaster.AddElasticSites(AForm, [alBottom]);
+  debugln(['TIDEEasyDockMaster.MakeIDEWindowDockSite AFTER ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect)]);
 end;
 
 procedure TIDEEasyDockMaster.MakeIDEWindowDockable(AControl: TWinControl);
 begin
+  debugln(['TIDEEasyDockMaster.MakeIDEWindowDockable BEFORE ',DbgSName(AControl),' ',dbgs(AControl.BoundsRect)]);
   AControl.UndockWidth:=AControl.Width;
   AControl.UndockHeight:=AControl.Height;
   DockMaster.MakeDockable(AControl);
+  debugln(['TIDEEasyDockMaster.MakeIDEWindowDockable AFTERE ',DbgSName(AControl),' ',dbgs(AControl.BoundsRect)]);
 end;
 
 function TIDEEasyDockMaster.IsDockSite(AForm: TCustomForm): boolean;
@@ -115,18 +152,11 @@ begin
     begin
       // this form was not yet docked
       // place it at a default position and make it dockable
-      Creator:=IDEWindowCreators.FindWithName(AForm.Name);
+      GetDefaultBounds(AForm,Creator,NewBounds,DockSiblingName,DockAlign);
       if Creator<>nil then
       begin
         // this window should become dockable
         debugln(['TIDEEasyDockMaster.ShowForm creator for ',DbgSName(AForm),' found: Left=',Creator.Left,' Top=',Creator.Top,' Width=',Creator.Width,' Height=',Creator.Height,' DockSibling=',Creator.DockSibling,' DockAlign=',dbgs(Creator.DockAlign)]);
-        if Creator.OnGetLayout<>nil then
-          Creator.OnGetLayout(Self,AForm.Name,NewBounds,DockSiblingName,DockAlign)
-        else begin
-          Creator.GetDefaultBounds(AForm,NewBounds);
-          DockSiblingName:=Creator.DockSibling;
-          DockAlign:=Creator.DockAlign;
-        end;
         if DockSiblingName<>'' then
         begin
           DockSibling:=Screen.FindForm(DockSiblingName);

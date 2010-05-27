@@ -1356,7 +1356,6 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create IDE COMPONENTS');{$ENDIF}
 
   // Main IDE bar created and setup completed -> Show it
-  MakeIDEWindowDockSite(MainIDEBar);
   MainIDEBar.Show;
 
   // load installed packages
