@@ -3704,8 +3704,6 @@ var
 
 { end local procedures }
 
-var
-  ColBG : TColor;
 begin
   if (AClip.Right < fGutterWidth) then exit;
   //DebugLn(['TCustomSynEdit.PaintTextLines ',dbgs(AClip)]);
