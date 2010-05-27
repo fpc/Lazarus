@@ -5144,6 +5144,8 @@ var
   var
     iReCountMax: Integer;
     SBUpdatesCount: Integer;
+    i: Integer;
+    WheelLines: Integer;
   begin
     Result := 0;
     SBUpdatesCount := 0;
@@ -5168,6 +5170,12 @@ var
       begin
         inc(SBUpdatesCount);
         ScrollBar.setPageStep(ScrollInfo.nPage);
+        WheelLines := QApplication_wheelScrollLines();
+        with Scrollbar do
+        begin
+          i := Max(1, floor((GetPageStep / WheelLines) / 6));
+          setSingleStep(i);
+        end;
       end;
     end;
 
