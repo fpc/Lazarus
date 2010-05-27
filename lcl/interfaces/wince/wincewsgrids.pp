@@ -52,8 +52,8 @@ implementation
 // which don't do anything useful under WinCE. The behavior changes
 // according to platform and is somewhat bad. Probably substitute with
 // adding a TScrollBar. See here:
-//
-//
+// http://bugs.freepascal.org/view.php?id=16576
+// http://social.msdn.microsoft.com/forums/en-US/vssmartdevicesnative/thread/af5813e7-236e-4a06-bda9-945d6f88e3c4/
 class function TWinCEWSCustomGrid.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
