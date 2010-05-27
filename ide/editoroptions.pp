@@ -4050,9 +4050,7 @@ begin
     // Read Version 2-4, 4 if exist, or keep values
     Path := aPath + StrToValidXMLName(AttriName) + '/';
 
-    if (aXMLConfig.FindNode(Path, False) <> nil) and
-        aXMLConfig.FindNode(Path, False).HasChildNodes
-    then begin
+    if aXMLConfig.HasChildPaths(Path) then begin
       if (Defaults <> nil) then
         self.Assign(Defaults);
       Defaults := Self;
@@ -4088,8 +4086,8 @@ begin
   aXMLConfig.ReadObject(Path, Self, Defaults);
 
   if (Version <= 5) and
-     ((aXMLConfig.FindNode(Path, False) <> nil) or    // Data was loaded via ReadObject
-      (Defaults = Self))                              // Data was loaded above (Vers < 5)
+     ( aXMLConfig.HasPath(Path, False) or  // Data was loaded via ReadObject
+       (Defaults = Self) )                 // Data was loaded above (Vers < 5)
   then
     UseSchemeGlobals := False;
 end;
@@ -4372,7 +4370,6 @@ var
   Def: TColorSchemeAttribute;
   i: Integer;
   EmptyDef: TColorSchemeAttribute;
-  XmlNode: TDOMNode;
 begin
   if (FLanguageName = '') and (not FIsSchemeDefault) then
     exit;
@@ -4381,8 +4378,7 @@ begin
   if (Defaults <> nil) and Self.Equals(Defaults) then begin
     aXMLConfig.DeletePath(aPath + 'Scheme' + StrToValidXMLName(Name));
     if not FIsSchemeDefault then begin
-      XmlNode := aXMLConfig.FindNode(aPath, False);
-      if (XmlNode <> nil) and not XmlNode.HasChildNodes then
+      if not aXMLConfig.HasChildPaths(aPath) then
         aXMLConfig.DeletePath(aPath);
     end;
     exit;
@@ -4619,15 +4615,13 @@ procedure TColorScheme.SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String;
 var
   i: TLazSyntaxHighlighter;
   Def: TColorSchemeLanguage;
-  XmlNode: TDOMNode;
 begin
   if Defaults <> nil then
     Def := Defaults.DefaultColors
   else
     Def := nil;
   FDefaultColors.SaveToXml(aXMLConfig, aPath + 'Globals/', Def);
-  XmlNode := aXMLConfig.FindNode(aPath + 'Globals', False);
-  if (XmlNode <> nil) and not XmlNode.HasChildNodes then
+  if not aXMLConfig.HasChildPaths(aPath + 'Globals') then
     aXMLConfig.DeletePath(aPath + 'Globals');
   for i := low(TLazSyntaxHighlighter) to high(TLazSyntaxHighlighter) do
     if ColorScheme[i] <> nil then begin
