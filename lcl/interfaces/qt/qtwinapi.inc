@@ -4061,13 +4061,13 @@ begin
   Result := True;
 end;
 
-
 function TQtWidgetSet.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer;
 var
   Str: WideString;
   TitleStr: WideString;
   OkStr: WideString;
 begin
+  //TODO: Finish full implementation of MessageBox
   Str := GetUtf8String('TQtWidgetSet.MessageBox - not implemented');
   TitleStr := GetUtf8String(lpCaption);
   OkStr := GetUtf8String('Ok');
