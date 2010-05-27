@@ -132,6 +132,8 @@ type
     bbtMainBegin,
     bbtFreeBegin, // begin without need (e.g. without if-then)
     bbtRepeat,
+    bbtFor,
+    bbtForDo,     // child of bbtFor
     bbtCase,
     bbtCaseOf,    // child of bbtCase
     bbtCaseColon, // child of bbtCase
@@ -157,7 +159,7 @@ const
   bbtAllCodeSections = [bbtInterface,bbtImplementation,bbtInitialization,
                         bbtFinalization];
   bbtAllStatementParents = [bbtMainBegin,bbtFreeBegin,bbtProcedureBegin,
-                        bbtRepeat,
+                        bbtRepeat,bbtForDo,
                         bbtCaseColon,bbtCaseBegin,bbtCaseElse,
                         bbtTry,bbtFinally,bbtExcept,
                         bbtIfThen,bbtIfElse,bbtIfBegin];
@@ -165,6 +167,8 @@ const
                       bbtStatement,bbtStatementRoundBracket,bbtStatementEdgedBracket];
   bbtAllBrackets = [bbtTypeRoundBracket,bbtTypeEdgedBracket,
                     bbtStatementRoundBracket,bbtStatementEdgedBracket];
+  bbtAllAutoEnd = [bbtStatement,bbtIf,bbtIfThen,bbtIfElse,bbtFor,bbtForDo];
+
 const
   FABBlockTypeNames: array[TFABBlockType] of string = (
     'bbtNone',
@@ -198,6 +202,8 @@ const
     'bbtMainBegin',
     'bbtFreeBegin',
     'bbtRepeat',
+    'bbtFor',
+    'bbtForDo',
     'bbtCase',
     'bbtCaseOf',
     'bbtCaseColon',
@@ -789,14 +795,22 @@ begin
           StartProcedure(bbtProcedure);
       end;
     'D':
-      if CompareIdentifiers('DESTRUCTOR',r)=0 then
+      if CompareIdentifiers('DO',r)=0 then begin
+        if Stack.TopType=bbtFor then
+          BeginBlock(bbtForDo);
+      end else if CompareIdentifiers('DESTRUCTOR',r)=0 then
         StartProcedure(bbtProcedure);
     'E':
       case UpChars[r[1]] of
       'L': // EL
         if CompareIdentifiers('ELSE',r)=0 then begin
+          // common syntax error: open brackets in if expression => ignore
+          while Stack.TopType in bbtAllBrackets do
+            EndBlock;
+
           if Stack.TopType=bbtStatement then
             EndBlock;
+          while Stack.TopType in [bbtFor,bbtForDo] do EndBlock;
           case Stack.TopType of
           bbtCaseOf,bbtCaseColon:
             begin
@@ -812,10 +826,13 @@ begin
         end;
       'N': // EN
         if CompareIdentifiers('END',r)=0 then begin
-          // if statements can be closed by end without semicolon
-          if Stack.TopType=bbtStatement then
+          // common syntax error: open brackets in statements => ignore
+          while Stack.TopType in bbtAllBrackets do
             EndBlock;
-          while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse] do EndBlock;
+          // statements can be closed by end without semicolon
+          while Stack.TopType in bbtAllAutoEnd do
+            EndBlock;
+
           if Stack.TopType=bbtProcedureModifiers then
             EndBlock;
           if Stack.TopType=bbtProcedureHead then
@@ -845,6 +862,9 @@ begin
           bbtInterface,bbtImplementation,bbtInitialization,bbtFinalization:
             EndBlock;
           end;
+
+          while Stack.TopType in bbtAllAutoEnd do
+            EndBlock;
         end;
       'X': // EX
         if CompareIdentifiers('EXCEPT',r)=0 then begin
@@ -869,7 +889,10 @@ begin
           end;
         end;
       'O': // FO
-        if CompareIdentifiers('FORWARD',r)=0 then begin
+        if CompareIdentifiers('FOR',r)=0 then begin
+          if Stack.TopType in bbtAllStatements then
+            BeginBlock(bbtFor)
+        end else if CompareIdentifiers('FORWARD',r)=0 then begin
           if Stack.TopType=bbtProcedureModifiers then
             EndBlock;
           if Stack.TopType=bbtProcedureHead then
@@ -979,6 +1002,9 @@ begin
       case UpChars[r[1]] of
       'H': // TH
         if CompareIdentifiers('THEN',r)=0 then begin
+          // common syntax error: open brackets in if expression => ignore
+          while Stack.TopType in bbtAllBrackets do
+            EndBlock;
           if Stack.TopType=bbtIf then
             BeginBlock(bbtIfThen);
         end;
@@ -1010,25 +1036,30 @@ begin
         StartIdentifierSection(bbtVarSection);
       end;
     ';':
-      case Stack.TopType of
-      bbtUsesSection,bbtDefinition:
-        EndBlock;
-      bbtCaseColon:
-        begin
+      begin
+        // common syntax error: unclosed bracket => ignore it
+        while Stack.TopType in [bbtStatementRoundBracket,bbtStatementEdgedBracket] do
           EndBlock;
-          BeginBlock(bbtCaseOf);
+        case Stack.TopType of
+        bbtUsesSection,bbtDefinition:
+          EndBlock;
+        bbtCaseColon:
+          begin
+            EndBlock;
+            BeginBlock(bbtCaseOf);
+          end;
+        bbtIfThen,bbtIfElse,bbtStatement,bbtFor,bbtForDo:
+          while Stack.TopType in bbtAllAutoEnd do
+            EndBlock;
+        bbtProcedureHead:
+          if CheckProcedureModifiers then
+            BeginBlock(bbtProcedureModifiers)
+          else
+            EndProcedureHead;
+        bbtProcedureModifiers:
+          if not CheckProcedureModifiers then
+            EndProcedureHead;
         end;
-      bbtIfThen,bbtIfElse,bbtStatement:
-        while Stack.TopType in [bbtIf,bbtIfThen,bbtIfElse,bbtStatement] do
-          EndBlock;
-      bbtProcedureHead:
-        if CheckProcedureModifiers then
-          BeginBlock(bbtProcedureModifiers)
-        else
-          EndProcedureHead;
-      bbtProcedureModifiers:
-        if not CheckProcedureModifiers then
-          EndProcedureHead;
       end;
     ':':
       if p-AtomStart=1 then begin
@@ -1367,8 +1398,11 @@ begin
       end;
     'N': // EN
       if CompareIdentifiers('END',r)=0 then begin
-        // if statements can be closed by end without semicolon
-        while StackTopType in [bbtIf,bbtIfThen,bbtIfElse] do
+        // common syntax error: open brackets in statements => ignore
+        while Stack.TopType in bbtAllBrackets do
+          EndBlock;
+        // statements can be closed by end without semicolon
+        while Stack.TopType in bbtAllAutoEnd do
           EndBlock;
         if IsMethodDeclaration then
           EndBlock;
@@ -1582,6 +1616,8 @@ begin
     if ContextLearn then
       Policies:=TFABPolicies.Create;
     {$IFDEF ShowCodeBeautifierLearn}
+    if Policies=nil then
+      Policies:=TFABPolicies.Create;
     Policies.Code:=TCodeBuffer.Create;
     Policies.Code.Source:=Source;
     {$ENDIF}
@@ -1713,12 +1749,12 @@ begin
   // parse examples
   Policies:=FindPolicyInExamples(nil,Block.Typ,SubType);
   {$IFDEF VerboseIndenter}
-  DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed examples']);
+  DebugLn(['TFullyAutomaticBeautifier.GetIndent parsed examples : context=',FABBlockTypeNames[Block.Typ],'/',FABBlockTypeNames[SubType],' indent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
   {$ENDIF}
   if CheckPolicies(Policies,Result) then exit;
 
   {$IFDEF VerboseIndenter}
-  DebugLn(['TFullyAutomaticBeautifier.GetIndent no examples found']);
+  DebugLn(['TFullyAutomaticBeautifier.GetIndent no example found : context=',FABBlockTypeNames[Block.Typ],'/',FABBlockTypeNames[SubType],' indent=',GetLineIndentWithTabs(Source,Block.StartPos,DefaultTabWidth)]);
   {$ENDIF}
   if SubTypeValid then
     GetDefaultIndentPolicy(Block.Typ,SubType,Indent)
@@ -1971,6 +2007,7 @@ begin
   bbtMainBegin,
   bbtFreeBegin,
   bbtRepeat,
+  bbtForDo,
   bbtProcedureBegin,
   bbtCaseColon,
   bbtCaseBegin,
