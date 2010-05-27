@@ -126,6 +126,9 @@ type
 
     FAttachedSynEditList: TFPList;
     FNotifyLists: Array [TSynEditNotifyReason] of TSynMethodList;
+    FCachedNotify: Boolean;
+    FCachedNotifyStart, FCachedNotifyCount: Integer;
+    FCachedNotifySender: TSynEditStrings;
 
     FIgnoreSendNotification: array [TSynEditNotifyReason] of Integer;
     fDosFileFormat: boolean;
@@ -146,6 +149,7 @@ type
     Procedure SetAttributeSize(NewSize: Integer);
     procedure SetFlags(Index: Integer; const AValue: TSynEditStringFlags);
     procedure SetModified(const AValue: Boolean);
+    procedure SendCachedNotify;
   protected
     function GetExpandedString(Index: integer): string; override;
     function GetLengthOfLongestLine: integer; override;
@@ -558,7 +562,7 @@ begin
     BeginUpdate;
     SetCount(0);
     SetCapacity(0);
-    FNotifyLists[senrCleared].CallNotifyEvents(Self);
+    SendNotification(senrCleared, Self);
     SendNotification(senrLineCount, self, 0, -c);
     EndUpdate;
   end;
@@ -711,7 +715,7 @@ begin
   else
     Modified := fUndoList.CanUndo or fUndoList.FullUndoImpossible;
 
-  FNotifyLists[senrUndoRedoAdded].CallNotifyEvents(Sender);
+  SendNotification(senrUndoRedoAdded, Sender);
 end;
 
 // Maps the Physical Width (ScreenCells) to each character
@@ -956,7 +960,14 @@ begin
     FUndoList.MarkTopAsUnmodified;
     FRedoList.MarkTopAsUnmodified;
   end;
-  FNotifyLists[senrModifiedChanged].CallNotifyEvents(Self);
+  SendNotification(senrModifiedChanged, Self);
+end;
+
+procedure TSynEditStringList.SendCachedNotify;
+begin
+  TLineRangeNotificationList(FNotifyLists[senrLineCount])
+    .CallRangeNotifyEvents(FCachedNotifySender, FCachedNotifyStart, FCachedNotifyCount);
+  FCachedNotify := False;
 end;
 
 procedure TSynEditStringList.MarkModified(AFirst, ALast: Integer);
@@ -1017,7 +1028,10 @@ begin
   if Updating then begin
     SendNotification(senrIncPaintLock, Sender);       // DoIncPaintLock
     SendNotification(senrAfterIncPaintLock, Sender);
+    FCachedNotify := False;
   end else begin
+    if FCachedNotify then
+      SendCachedNotify;
     FIsInDecPaintLock := True;
     try
       SendNotification(senrBeforeDecPaintLock, Sender);
@@ -1138,6 +1152,37 @@ procedure TSynEditStringList.SendNotification(AReason: TSynEditNotifyReason;
   aBytePos: Integer = -1; aLen: Integer = 0; aTxt: String = '');
 begin
   if FIgnoreSendNotification[AReason] > 0 then exit;
+
+  if UpdateCount > 0 then begin;
+    if AReason = senrLineCount then begin
+      // maybe cache and combine
+      if not FCachedNotify then begin
+        FCachedNotify       := True;
+        FCachedNotifySender := ASender;
+        FCachedNotifyStart  := aIndex;
+        FCachedNotifyCount  := aCount;
+        exit;
+      end
+      else
+      if (FCachedNotifySender = ASender) and (aIndex >= FCachedNotifyStart) and
+         (aIndex <= FCachedNotifyStart + FCachedNotifyCount) and
+         ((aCount > 0) or (aIndex - aCount < FCachedNotifyStart + FCachedNotifyCount))
+      then begin
+        FCachedNotifyCount := FCachedNotifyCount + aCount;
+        exit;
+      end;
+    end;
+    if FCachedNotify and (AReason = senrLineChange) and
+       (ASender = FCachedNotifySender) and (FCachedNotifyCount > 0) and
+       (aIndex >= FCachedNotifyStart) and
+       (aIndex + aCount {- 1} <= FCachedNotifyStart + FCachedNotifyCount {- 1})
+    then
+      exit; // Will send senrLineCount instead
+
+    if FCachedNotify then
+      SendCachedNotify;
+  end;
+
   case AReason of
     senrLineChange, senrLineCount, senrHighlightChanged:
       TLineRangeNotificationList(FNotifyLists[AReason])
@@ -1154,6 +1199,10 @@ end;
 procedure TSynEditStringList.SendNotification(AReason: TSynEditNotifyReason;
   ASender: TObject);
 begin
+  if FCachedNotify then
+    SendCachedNotify;
+  if AReason in [senrLineChange, senrLineCount, senrHighlightChanged, senrEditAction] then
+    raise Exception.Create('Invalid');
   FNotifyLists[AReason].CallNotifyEvents(ASender);
 end;
 
