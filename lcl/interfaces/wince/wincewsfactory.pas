@@ -5,7 +5,7 @@ unit WinCEWSFactory;
 interface
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Arrow, Spin,
-  Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus,
+  Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, Grids,
   WSLCLClasses;
 
 // imglist
@@ -110,7 +110,8 @@ uses
  WinCEWSImgList,
  WinCEWSMenus,
  WinCEWSSpin,
- WinCEWSStdCtrls;
+ WinCEWSStdCtrls,
+ WinCEWSGrids;
 
 // imglist
 function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
@@ -492,7 +493,8 @@ end;
 // Grids
 function RegisterCustomGrid: Boolean; alias : 'WSRegisterCustomGrid';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomGrid, TWinCEWSCustomGrid);
+  Result := True;
 end;
 
 // Menus

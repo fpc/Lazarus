@@ -320,7 +320,7 @@ const
 
 
 function ScrollBarWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; stdcall;
+    LParam: Windows.LParam): LResult; {$ifdef Win32}stdcall;{$else}cdecl;{$endif}
 begin
   case Msg of
     WM_PAINT,
