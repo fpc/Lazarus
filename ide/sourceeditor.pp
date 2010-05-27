@@ -2025,7 +2025,7 @@ begin
         if assigned(SharedEditors[i].FEditPlugin) then
           SharedEditors[i].FEditPlugin.Enabled := False;
       SynEditor.BeginUpdate;
-      FCodeBuffer.AssignTo(SynEditor.Lines, True);
+      FCodeBuffer.AssignTo(SynEditor.Lines, false);
       FEditorStampCommitedToCodetools:=(SynEditor.Lines as TSynEditLines).TextChangeStamp;
       SynEditor.EndUpdate;
       for i := 0 to FSharedEditorList.Count - 1 do

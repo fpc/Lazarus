@@ -2196,7 +2196,7 @@ begin
     '72%','130','170','60%',NonModalIDEWindowNames[nmiwSourceNoteBookName],alRight);
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwMessagesViewName],
     @CreateIDEWindow,
-    '230','65%','70%','100',NonModalIDEWindowNames[nmiwSourceNoteBookName],alBottom);
+    '230','75%','70%','100',NonModalIDEWindowNames[nmiwSourceNoteBookName],alBottom);
 
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwUnitDependenciesName],
     @CreateIDEWindow,'200','200','','');
