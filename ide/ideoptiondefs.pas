@@ -754,7 +754,7 @@ var
   Offset: TPoint;
 begin
   {$IFDEF VerboseIDEDocking}
-  debugln(['TSimpleWindowLayoutList.ApplyAndShow Form=',DbgSName(AForm)]);
+  debugln(['TSimpleWindowLayoutList.ApplyAndShow Form=',DbgSName(AForm),' ',BringToFront]);
   {$ENDIF}
   try
     ALayout:=ItemByFormID(AForm.Name);

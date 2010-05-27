@@ -6954,7 +6954,8 @@ Begin
   //writeln('TSourceNotebook.NotebookPageChanged ',Pageindex,' ',TempEditor <> nil,' fAutoFocusLock=',fAutoFocusLock);
   if TempEditor <> nil then
   begin
-    if fAutoFocusLock=0 then begin
+    if (fAutoFocusLock=0) and (Screen.ActiveCustomForm=GetParentForm(Self)) then
+    begin
       {$IFDEF VerboseFocus}
       writeln('TSourceNotebook.NotebookPageChanged BEFORE SetFocus ',
         TempEditor.EditorComponent.Name,' ',
