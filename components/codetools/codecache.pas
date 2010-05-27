@@ -673,7 +673,7 @@ function TCodeCache.SaveIncludeLinksToXML(XMLConfig: TXMLConfig;
   const XMLPath: string): boolean;
 var
   Index: integer;
-  CurTime: TDateTime;
+  CurrDate: TDateTime;
   ExpirationTime: TDateTime;
   
   procedure SaveLinkTree(ANode: TAVLTreeNode);
@@ -684,15 +684,8 @@ var
     if ANode=nil then exit;
     SaveLinkTree(ANode.Left);
     ALink:=TIncludedByLink(ANode.Data);
-    DiffTime:=CurTime-ALink.LastTimeUsed;
+    DiffTime:=CurrDate-ALink.LastTimeUsed;
     if (FExpirationTimeInDays<=0) or (DiffTime<ExpirationTime) then begin
-      {if Index<50 then
-        DebugLn('TCodeCache.SaveIncludeLinksToXML ',
-          Index,' ',ALink.IncludeFilename,
-          ' LastTimeUsed=',FormatDateTime('ddddd', ALink.LastTimeUsed),
-          ' CurTime=',DateToNormalStr('ddddd',CurTime),
-          ' DiffTime=',DiffTime,
-          ' ExpirationTime=',ExpirationTime);}
       APath:=XMLPath+'IncludeLinks/Link'+IntToStr(Index)+'/';
       XMLConfig.SetValue(APath+'IncludeFilename/Value',ALink.IncludeFilename);
       XMLConfig.SetValue(APath+'IncludedByFilename/Value',ALink.IncludedByFile);
@@ -705,12 +698,13 @@ var
 
 begin
   try
-    CurTime:=Now;
+    CurrDate:=Date;
     ExpirationTime:=TDateTime(FExpirationTimeInDays);
     UpdateIncludeLinks;
     XMLConfig.SetValue(XMLPath+'IncludeLinks/Version',IncludeLinksFileVersion);
     XMLConfig.SetDeleteValue(XMLPath+'IncludeLinks/ExpirationTimeInDays',
         FExpirationTimeInDays,0);
+    XMLConfig.SetValue(XMLPath+'IncludeLinks/BaseDate',DateToCfgStr(CurrDate));
     Index:=0;
     SaveLinkTree(FIncludeLinks.Root);
     XMLConfig.SetDeleteValue(XMLPath+'IncludeLinks/Count',Index,0);
