@@ -1193,6 +1193,9 @@ const
     lshDiff
     );
 
+var
+  DefaultColorSchemeName: String;
+
 { TSynEditMouseActionKeyCmdHelper }
 
 function TSynEditMouseActionKeyCmdHelper.GetOptionKeyCmd: TSynEditorCommand;
@@ -1362,6 +1365,7 @@ begin
     AddFromResource('ColorSchemePascalClassic', 'Pascal Classic');
     AddFromResource('ColorSchemeOcean', 'Ocean');
     AddFromResource('ColorSchemeDelphi', 'Delphi');
+    DefaultColorSchemeName := 'Default';
 
     if DirectoryExistsUTF8(UserSchemeDirectory(False)) then begin
       FileList := FindAllFiles(UserSchemeDirectory(False), '*.xml', False);
@@ -3532,8 +3536,12 @@ begin
       TPreviewPasSyn.GetLanguageName) + '/ColorScheme/Value', '')
   else
     Result := XMLConfig.GetValue('EditorOptions/Color/ColorScheme', '');
-  if Result = '' then
-    Result := ColorSchemeFactory.ColorSchemeGroupAtPos[0].Name;
+  if (Result = '') then begin
+    if DefaultColorSchemeName <> '' then
+      Result := DefaultColorSchemeName
+    else
+      Result := ColorSchemeFactory.ColorSchemeGroupAtPos[0].Name;
+  end;
 end;
 
 procedure TEditorOptions.WriteColorScheme(const LanguageName, SynColorScheme: String);
