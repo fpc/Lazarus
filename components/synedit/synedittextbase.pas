@@ -165,6 +165,7 @@ type
     constructor Create;
     procedure BeginUpdate(Sender: TObject); overload;
     procedure EndUpdate(Sender: TObject); overload;
+    function  IsUpdating: Boolean;
     procedure DeleteLines(Index, NumLines: integer); virtual; abstract;
     procedure InsertLines(Index, NumLines: integer); virtual; abstract;
     procedure InsertStrings(Index: integer; NewStrings: TStrings); virtual; abstract;
@@ -448,6 +449,11 @@ begin
     Dec(FSenderUpdateCount);
   if FSenderUpdateCount=0 then
     SetUpdateState(False, Sender);
+end;
+
+function TSynEditStrings.IsUpdating: Boolean;
+begin
+  Result := (FSenderUpdateCount > 0) or (UpdateCount > 0);
 end;
 
 procedure TSynEditStrings.AddChangeHandler(AReason: TSynEditNotifyReason;

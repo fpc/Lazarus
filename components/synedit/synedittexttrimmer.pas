@@ -804,6 +804,7 @@ begin
     exit;
   end;
 
+  FlushNotificationCache;
   IgnoreSendNotification(senrEditAction, True);
   SaveText := AText;
   SaveLogX := LogX;
@@ -865,6 +866,7 @@ begin
     exit;
   end;
 
+  FlushNotificationCache;
   SaveByteLen := ByteLen;
   Result := '';
   t := fSynStrings[LogY - 1];
@@ -904,17 +906,20 @@ begin
     exit;
   end;
 
+  FlushNotificationCache;
   IgnoreSendNotification(senrEditAction, True);
   s := Spaces(LogY - 1);
   t := fSynStrings[LogY - 1];
   if LogX > length(t) then begin
     fSynStrings.EditLineBreak(1 + length(t), LogY);
+    FlushNotificationCache; // senrEditaction is ignored, so we need to flush by hand
     if s <> '' then
       s := EditDeleteTrim(LogX - length(t), LogY, length(s) - (LogX - 1 - length(t)));
   end
   else begin
     s := EditDeleteTrim(1, LogY, length(s));
     fSynStrings.EditLineBreak(LogX, LogY);
+    FlushNotificationCache; // senrEditaction is ignored, so we need to flush by hand
   end;
   UpdateLineText(LogY + 1);
   EditInsertTrim(1, LogY + 1, s);
@@ -937,11 +942,13 @@ begin
     exit;
   end;
 
+  FlushNotificationCache;
   EditMoveFromTrim(LogY, length(Spaces(LogY - 1)));
 
   s := EditDeleteTrim(1, LogY + 1, length(Spaces(LogY))); // next line
   //Todo: if FillText isSpacesOnly AND NextLineIsSpacesOnly => add direct to trailing
   fSynStrings.EditLineJoin(LogY, FillText);
+  FlushNotificationCache; // senrEditaction is ignored, so we need to flush by hand
   UpdateLineText(LogY);
   EditInsertTrim(1, LogY, s);
 
@@ -955,6 +962,7 @@ procedure TSynEditStringTrimmingList.EditLinesInsert(LogY, ACount: Integer;
 var
   s: string;
 begin
+  FlushNotificationCache;
   fSynStrings.EditLinesInsert(LogY, ACount, AText);
   s := fSynStrings[LogY - 1];
   EditMoveToTrim(LogY, length(s) - LastNoneSpacePos(s));
@@ -964,6 +972,7 @@ procedure TSynEditStringTrimmingList.EditLinesDelete(LogY, ACount: Integer);
 var
   i: Integer;
 begin
+  FlushNotificationCache;
   for i := LogY to LogY + ACount - 1 do
     EditMoveFromTrim(i, length(Spaces(i - 1)));
   fSynStrings.EditLinesDelete(LogY, ACount);

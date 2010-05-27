@@ -966,7 +966,7 @@ end;
 
 procedure TSynEditStringList.SendCachedNotify;
 begin
-//debugln(['--- send canched notify  ', FCachedNotifyStart,' / ',FCachedNotifyCount]);
+//debugln(['--- send cached notify  ', FCachedNotifyStart,' / ',FCachedNotifyCount]);
   if FCachedNotifyCount <> 0 then;
     TLineRangeNotificationList(FNotifyLists[senrLineCount])
       .CallRangeNotifyEvents(FCachedNotifySender, FCachedNotifyStart, FCachedNotifyCount);
@@ -1156,7 +1156,7 @@ procedure TSynEditStringList.SendNotification(AReason: TSynEditNotifyReason;
 begin
   if FIgnoreSendNotification[AReason] > 0 then exit;
 
-  if UpdateCount > 0 then begin;
+  if IsUpdating then begin;
     if AReason = senrLineCount then begin
       // maybe cache and combine
       if not FCachedNotify then begin
