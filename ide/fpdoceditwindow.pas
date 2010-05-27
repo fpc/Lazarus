@@ -303,8 +303,10 @@ begin
   if assigned(CodeHelpBoss) then
     CodeHelpBoss.RemoveAllHandlersOfObject(Self);
   Application.RemoveAllHandlersOfObject(Self);
-  SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorActivate, @DoEditorUpdate);
-  SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorStatus, @DoEditorUpdate);
+  if SourceEditorManagerIntf<>nil then begin
+    SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorActivate, @DoEditorUpdate);
+    SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorStatus, @DoEditorUpdate);
+  end;
 end;
 
 procedure TFPDocEditor.FormKeyDown(Sender: TObject; var Key: Word;
