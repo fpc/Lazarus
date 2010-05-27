@@ -628,6 +628,11 @@ begin
   Result := Assigned(Parent) and Parent.FormIsUpdating;
 end;
 
+function TControl.IsProcessingPaintMsg: boolean;
+begin
+  Result:=cfProcessingWMPaint in FControlFlags;
+end;
+
 {------------------------------------------------------------------------------
        TControl.LMCaptureChanged
 ------------------------------------------------------------------------------}
@@ -1612,7 +1617,16 @@ begin
         end;
     end;
   end;
-  Dispatch(TheMessage);
+
+  if TheMessage.Msg=LM_PAINT then begin
+    Include(FControlFlags,cfProcessingWMPaint);
+    try
+      Dispatch(TheMessage);
+    finally
+      Exclude(FControlFlags,cfProcessingWMPaint);
+    end;
+  end else
+    Dispatch(TheMessage);
 end;
 
 {------------------------------------------------------------------------------

@@ -258,6 +258,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure FreeHandle;override;
+    function ControlIsPainting: boolean;
     property Control: TControl read FControl write SetControl;
   end;
 
@@ -822,7 +823,8 @@ type
     cfBaseBoundsValid,
     cfPreferredSizeValid,
     cfPreferredMinSizeValid,
-    cfOnChangeBoundsNeeded
+    cfOnChangeBoundsNeeded,
+    cfProcessingWMPaint
     );
   TControlFlags = set of TControlFlag;
 
@@ -1305,6 +1307,7 @@ type
     function IsVisible: Boolean; virtual;// checks parents too
     function IsControlVisible: Boolean; virtual;// does not check parents
     function FormIsUpdating: boolean; virtual;
+    function IsProcessingPaintMsg: boolean;
     procedure Hide;
     procedure Refresh;
     procedure Repaint; virtual;

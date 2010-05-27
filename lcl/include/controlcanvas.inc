@@ -83,6 +83,8 @@ begin
   if FControl = nil then
     inherited CreateHandle
   else begin
+    if ControlIsPainting then
+      debugln(['TControlCanvas.CreateHandle WARNING: accessing the canvas of '+DbgSName(FControl)+' is not supported outside of paint message']);
     if FDeviceContext = 0 then
     begin
       // store the handle locally since  we need it to check (and dont
@@ -108,4 +110,9 @@ begin
     ReleaseDC(FWindowHandle, FDeviceContext);
     FDeviceContext := 0;
   end;
+end;
+
+function TControlCanvas.ControlIsPainting: boolean;
+begin
+  Result:=(FControl<>nil) and FControl.IsProcessingPaintMsg;
 end;
