@@ -136,6 +136,7 @@ end;
   Returns: Nothing
 
   Focus the control. If needed, bring form to front and focus it.
+  If Form is not visible or disabled raise an exception.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.FocusControl(WinControl : TWinControl);
 var
@@ -143,8 +144,8 @@ var
 begin
   WasActive := FActive;
   SetActiveControl(WinControl);
-  if (not WasActive) and IsVisible then
-    SetFocus;
+  if (not WasActive) then
+    SetFocus; // if not CanFocus then this will raise an exception
 end;
 
 {------------------------------------------------------------------------------
