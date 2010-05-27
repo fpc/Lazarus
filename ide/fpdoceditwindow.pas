@@ -415,12 +415,17 @@ begin
 end;
 
 procedure TFPDocEditor.ApplicationIdle(Sender: TObject; var Done: Boolean);
+var
+  ActiveForm: TCustomForm;
 begin
-  if fUpdateLock>0 then
+  if (fUpdateLock>0) then
   begin
     DebugLn(['WARNING: TFPDocEditor.ApplicationIdle fUpdateLock>0']);
     exit;
   end;
+  if not IsVisible then exit;
+  ActiveForm:=Screen.ActiveCustomForm;
+  if (ActiveForm<>nil) and (fsModal in ActiveForm.FormState) then exit;
   Done:=false;
   if fpdefCodeCacheNeedsUpdate in FFlags then
     UpdateCodeCache
