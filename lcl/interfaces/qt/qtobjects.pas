@@ -40,6 +40,7 @@ type
   TQActions = Array of QActionH;
   TQtImage = class;
   TQtFontMetrics = class;
+  TQtTimer = class;
   TRop2OrCompositionSupport = (rocNotSupported, rocSupported, rocUndefined);
 
   { TQtObject }
@@ -513,6 +514,8 @@ type
     FClipDataChangedHook: QClipboard_hookH;
     {$IFDEF HASX11}
     FClipSelectionChangedHook: QClipboard_hookH;
+    FSelTimer: TQtTimer; // timer for keyboard X11 selection
+    FSelFmtCount: Integer;
     {$ENDIF}
     FClipChanged: Boolean;
     FClipBoardFormats: TStringList;
@@ -542,6 +545,7 @@ type
     procedure signalDataChanged; cdecl;
     {$IFDEF HASX11}
     procedure signalSelectionChanged; cdecl;
+    procedure selectionTimer;
     {$ENDIF}
   end;
 
@@ -642,12 +646,16 @@ type
     FCallbackFunc: TWSTimerProc;
     FId: Integer;
     FAppObject: QObjectH;
+    function getTimerEnabled: Boolean;
+    procedure setTimerEnabled(const AValue: Boolean);
   public
     constructor CreateTimer(Interval: integer; const TimerFunc: TWSTimerProc; App: QObjectH); virtual;
     destructor Destroy; override;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     procedure signalTimeout; cdecl;
+    property TimerEnabled: Boolean read getTimerEnabled write setTimerEnabled;
+    property TimerID: Integer read FId;
   public
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   end;
@@ -729,7 +737,7 @@ implementation
 
 uses
   Controls, qtproc;
-  
+
 const
   ClipbBoardTypeToQtClipboard: array[TClipboardType] of QClipboardMode =
   (
@@ -744,6 +752,11 @@ const
 
 const
   SQTWSPrefix = 'TQTWidgetSet.';
+
+{$IFDEF HASX11}
+  // defined here to reduce includes (qtint)
+  LCLQt_ClipboardPrimarySelection = QEventType(Ord(QEventUser) + $1004);
+{$ENDIF}
 
 var
   FClipboard: TQtClipboard = nil;
@@ -3272,12 +3285,19 @@ begin
   FClipBoardFormats := TStringList.Create;
   FClipBoardFormats.Add('foo'); // 0 is reserved
   TheObject := QApplication_clipBoard;
+  {$IFDEF HASX11}
+  FSelTimer := TQtTimer.CreateTimer(10, @selectionTimer, TheObject);
+  {$ENDIF}
   AttachEvents;
 end;
 
 destructor TQtClipboard.Destroy;
 begin
   DetachEvents;
+  {$IFDEF HASX11}
+  if FSelTimer <> nil then
+    FSelTimer.Free;
+  {$ENDIF}
   FClipBoardFormats.Free;
   inherited Destroy;
 end;
@@ -3307,7 +3327,6 @@ procedure TQtClipboard.signalSelectionChanged; cdecl;
 var
   TempMimeData: QMimeDataH;
   WStr: WideString;
-  MimeType: WideString;
   Clip: TClipBoard;
 begin
   {$IFDEF VERBOSE_QT_CLIPBOARD}
@@ -3321,14 +3340,40 @@ begin
   begin
     QMimeData_text(TempMimeData, @WStr);
     WStr := UTF16ToUTF8(WStr);
-    // TODO: We don't get any data when copying to clip
-    // so must set it like this , so at least copying from
-    // another app here works correct.Later signalSelectionChanged
-    // can be removed
-    // if not QClipboard_ownsSelection(Self.Clipboard) then
-    //  ClipBrd.PrimarySelection.AsText := WStr;
+    // do not touch LCL's selection if shift is down
+    // since in that case event is tracked via FSelTimer
+    // until shift depressed.
+    if QApplication_keyboardModifiers() and QtShiftModifier <> 0 then
+      exit;
+    // do complete primaryselection cleanup at LCL side
+    // so it asks for clip from qt (no matter is it owner or not).
+    BeginUpdate;
+    Clip := Clipbrd.Clipboard(ctPrimarySelection);
+    Clip.OnRequest := nil;
+    FOnClipBoardRequest[ctPrimarySelection] := nil;
+    Clip.AsText := WStr;
+    EndUpdate;
   end;
 end;
+
+procedure TQtClipboard.selectionTimer;
+var
+  RptEvent: QLCLMessageEventH;
+begin
+  if FOnClipBoardRequest[ctPrimarySelection] = nil then
+  begin
+    FSelTimer.TimerEnabled := False;
+    exit;
+  end;
+  if QApplication_keyboardModifiers() and QtShiftModifier = 0 then
+  begin
+    FSelTimer.TimerEnabled := False;
+    RptEvent :=  QLCLMessageEvent_create(LCLQt_ClipboardPrimarySelection,
+       Ord(ctPrimarySelection), FSelFmtCount, 0, 0);
+    QCoreApplication_postEvent(ClipBoard, RptEvent);
+  end;
+end;
+
 {$ENDIF}
 
 function TQtClipboard.IsClipboardChanged: Boolean;
@@ -3340,7 +3385,7 @@ begin
   Result := not FLockClip;
   if FLockClip then
     exit;
-  {FLockClip: here we know that our clipboard is not changed by LCL Clipboard}
+  // FLockClip: here we know that our clipboard is not changed by LCL Clipboard
   FLockClip := True;
   try
     TempMimeData := getMimeData(QClipboardClipboard);
@@ -3363,9 +3408,71 @@ begin
 end;
 
 function TQtClipboard.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+{$IFDEF HASX11}
+var
+  ClipboardType: TClipboardType;
+  FormatCount: PtrUint;
+  Modifiers: QtKeyboardModifiers;
+
+  procedure PutSelectionOnClipBoard;
+  var
+    MimeType: WideString;
+    MimeData: QMimeDataH;
+    Data: QByteArrayH;
+    DataStream: TMemoryStream;
+    I: Integer;
+    Clip: TClipboard;
+  begin
+    // We must track this event if shift is down, since
+    // we are doing keyboard selection.
+    // When shift is depressed, selectionTimer will trigger
+    // another event which will pass this point
+    // and assign selection to qt selection clipboard.
+    if Modifiers and QtShiftModifier <> 0 then
+    begin
+      if not FSelTimer.TimerEnabled then
+        FSelTimer.TimerEnabled := True;
+      exit;
+    end;
+    if FSelTimer.TimerEnabled then
+      FSelTimer.TimerEnabled := False;
+
+    Clip := Clipbrd.Clipboard(ClipboardType);
+    MimeData := QMimeData_create();
+    DataStream := TMemoryStream.Create;
+    for I := 0 to FormatCount - 1 do
+    begin
+      DataStream.Size := 0;
+      DataStream.Position := 0;
+      MimeType := FormatToMimeType(Clip.Formats[I]);
+      FOnClipBoardRequest[ClipboardType](Clip.Formats[I], DataStream);
+      Data := QByteArray_create(PAnsiChar(DataStream.Memory), DataStream.Size);
+      if (QByteArray_length(Data) > 1) and QByteArray_endsWith(Data, #0) then
+        QByteArray_chop(Data, 1);
+      QMimeData_setData(MimeData, @MimeType, Data);
+      QByteArray_destroy(Data);
+    end;
+    DataStream.Free;
+    setMimeData(MimeData, ClipbBoardTypeToQtClipboard[ClipBoardType]);
+    // do not destroy MimeData!!!
+  end;
+{$ENDIF}
 begin
   BeginEventProcessing;
   Result := False;
+
+  {$IFDEF HASX11}
+  if QEvent_type(Event) = LCLQt_ClipboardPrimarySelection then
+  begin
+    ClipboardType := TClipBoardType(QLCLMessageEvent_getMsg(QLCLMessageEventH(Event)));
+    FormatCount := QLCLMessageEvent_getWParam(QLCLMessageEventH(Event));
+    Modifiers := QtKeyboardModifiers(QLCLMessageEvent_getLParam(QLCLMessageEventH(Event)));
+    if FOnClipBoardRequest[ClipboardType] <> nil then
+      PutSelectionOnClipboard;
+    Result := True;
+    QEvent_accept(Event);
+  end;
+  {$ENDIF}
 
   if QEvent_type(Event) = QEventClipboard then
   begin
@@ -3486,7 +3593,22 @@ function TQtClipboard.GetOwnerShip(ClipboardType: TClipboardType;
     Data: QByteArrayH;
     DataStream: TMemoryStream;
     I: Integer;
+    {$IFDEF HASX11}
+    Event: QLCLMessageEventH;
+    {$ENDIF}
   begin
+    {$IFDEF HASX11}
+    // we must delay assigning selection to qt clipboard
+    // so generate our private event
+    if ClipboardType <> ctClipboard then
+    begin
+      FSelFmtCount := FormatCount;
+      Event :=  QLCLMessageEvent_create(LCLQt_ClipboardPrimarySelection,
+         Ord(ClipboardType), FormatCount, PtrUInt(QApplication_keyboardModifiers()), 0);
+      QCoreApplication_postEvent(ClipBoard, Event);
+      exit;
+    end;
+    {$ENDIF}
     MimeData := QMimeData_create();
     DataStream := TMemoryStream.Create;
     for I := 0 to FormatCount - 1 do
@@ -3523,6 +3645,15 @@ begin
       { clear OnClipBoardRequest to prevent destroying the LCL clipboard,
         when emptying the clipboard}
       FOnClipBoardRequest[ClipBoardType] := nil;
+      {$IFDEF HASX11}
+      // if we are InUpdate , then change is asked
+      // from selectionChanged trigger, so don't do anything
+      if (ClipboardType <> ctClipBoard) and InUpdate then
+      begin
+        Result := True;
+        exit;
+      end;
+      {$ENDIF}
       FOnClipBoardRequest[ClipBoardType] := OnRequestProc;
       PutOnClipBoard;
       Result := True;
@@ -3904,6 +4035,25 @@ procedure TQtTimer.signalTimeout; cdecl;
 begin
   if Assigned(FCallbackFunc) then
     FCallbackFunc;
+end;
+
+function TQtTimer.getTimerEnabled: Boolean;
+begin
+  if TheObject <> nil then
+    Result := QTimer_isActive(QTimerH(TheObject))
+  else
+    Result := False;
+end;
+
+procedure TQtTimer.setTimerEnabled(const AValue: Boolean);
+begin
+  if (TheObject <> nil) and (getTimerEnabled <> AValue) then
+  begin
+    if AValue then
+      QTimer_start(QTimerH(TheObject))
+    else
+      QTimer_stop(QTimerH(TheObject));
+  end;
 end;
 
 {------------------------------------------------------------------------------
