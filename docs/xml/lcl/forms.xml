@@ -3337,9 +3337,10 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.FocusControl">
         <short>
-          <var>FocusControl</var> - method for giving focus to specified control</short>
+          <var>FocusControl</var> - giving focus to specified control, automatically bringing form to front</short>
         <descr/>
-        <errors/>
+        <errors>If the control or one of its parents is not visible or disabled an exception will be raised.
+</errors>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
