@@ -997,10 +997,13 @@ begin
     begin
       if Cur.Last<>nil then
       begin
+        assert(Cur.Top <> nil, 'TApplication.ProcessAsyncCallQueue: Last entry found, while Top not assigned');
         Cur.Last^.NextItem:=Next.Top;
         Next.Top^.PrevItem:=Cur.Last;
-      end else
+      end else begin
+        assert(Cur.Top = nil, 'TApplication.ProcessAsyncCallQueue: Last entry found, while Top not assigned');
         Cur.Top:=Next.Top;
+      end;
       Cur.Last:=Next.Last;
       Next.Top:=nil;
       Next.Last:=nil;
@@ -1010,14 +1013,14 @@ begin
     // this can create new items, which are added to the next queue
     // or it can call ProcessAsyncCallQueue, for example via calling
     // Application.ProcesssMessages
-    while Cur.Last <> nil do
+    while Cur.Top <> nil do
     begin
-      lItem:=Cur.Last;
-      Cur.Last:=lItem^.PrevItem;
-      if Cur.Last=nil then
-        Cur.Top:=nil
+      lItem:=Cur.Top;
+      Cur.Top := lItem^.NextItem;
+      if Cur.Top = nil then
+        Cur.Last := nil
       else
-        Cur.Last^.NextItem:=nil;
+        Cur.Top^.PrevItem := nil;
       Event:=lItem^.Method;
       Data:=lItem^.Data;
       Dispose(lItem);
@@ -2123,10 +2126,13 @@ begin
   lItem^.NextItem := nil;
   with FAsyncCall.Next do begin
     lItem^.PrevItem := Last;
-    if Last<>nil then
+    if Last<>nil then begin
+      assert(Top <> nil, 'TApplication.QueueAsyncCall: Top entry missing (but last is assigned)');
       Last^.NextItem := lItem
-    else
+    end else begin
+      assert(Last = nil, 'TApplication.QueueAsyncCall: Last entry found, while Top not assigned');
       Top := lItem;
+    end;
     Last := lItem;
   end;
 end;
