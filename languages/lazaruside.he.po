@@ -5347,21 +5347,21 @@ msgstr "יחידות סוגי משתנים ותכונות"
 msgid "Copy All"
 msgstr "העתק הכל"
 
-#: lazarusidestrconsts.liscopyallandhiddenmessagestoclipboard
-msgid "Copy all and hidden messages to clipboard"
-msgstr "העתק את כל ההודעות המוסתרות ללוח הזמני"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy all items to clipboard"
 msgstr "העתק את כל הפריטים ללוח הזמני"
 
-#: lazarusidestrconsts.liscopyallmessagestoclipboard
-msgid "Copy all messages to clipboard"
-msgstr "העתק את כל ההודעות ללוח הגזירים"
-
 #: lazarusidestrconsts.liscopyalloutputclipboard
 msgid "Copy all output to clipboard"
 msgstr "העתק את כל הפלט ללוח הזמני"
+
+#: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
+msgid "Copy all shown and hidden messages to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopyallshownmessagestoclipboard
+msgid "Copy all shown messages to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopydescription
 msgid "Copy description to clipboard"
@@ -7187,6 +7187,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
+msgstr ""
+
+#: lazarusidestrconsts.lisindentationforpascalsources
+msgid "Indentation for pascal sources"
 msgstr ""
 
 #: lazarusidestrconsts.lisindex
@@ -12086,6 +12090,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
+msgstr ""
+
+#: lazarusidestrconsts.lissetupdefaultindentation
+msgid "(Setup default indentation)"
 msgstr ""
 
 #: lazarusidestrconsts.lissetvalue

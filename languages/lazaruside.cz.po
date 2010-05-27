@@ -5336,21 +5336,21 @@ msgstr "Jednotky, Typy a Vlastnosti"
 msgid "Copy All"
 msgstr "Kopírovat vše"
 
-#: lazarusidestrconsts.liscopyallandhiddenmessagestoclipboard
-msgid "Copy all and hidden messages to clipboard"
-msgstr "Zkopírovat všechny a skryté zprávy do schránky"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy all items to clipboard"
 msgstr "Zkopírovat všechny položky do schránky"
 
-#: lazarusidestrconsts.liscopyallmessagestoclipboard
-msgid "Copy all messages to clipboard"
-msgstr "Zkopírovat všechny zprávy do schránky"
-
 #: lazarusidestrconsts.liscopyalloutputclipboard
 msgid "Copy all output to clipboard"
 msgstr "Zkopírovat celý výstup do schránky"
+
+#: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
+msgid "Copy all shown and hidden messages to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopyallshownmessagestoclipboard
+msgid "Copy all shown messages to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopydescription
 msgid "Copy description to clipboard"
@@ -7177,6 +7177,10 @@ msgstr "Cesty pro začleněné soubory"
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
 msgstr "Odsazení"
+
+#: lazarusidestrconsts.lisindentationforpascalsources
+msgid "Indentation for pascal sources"
+msgstr ""
 
 #: lazarusidestrconsts.lisindex
 msgid "Index"
@@ -12054,6 +12058,10 @@ msgstr "Vybrat aktivní režim sestavení"
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Nastavit výchozí"
+
+#: lazarusidestrconsts.lissetupdefaultindentation
+msgid "(Setup default indentation)"
+msgstr ""
 
 #: lazarusidestrconsts.lissetvalue
 msgid "Set value"

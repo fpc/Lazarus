@@ -5392,21 +5392,21 @@ msgstr "Units, Typdeklarationen und Eigenschaften"
 msgid "Copy All"
 msgstr "Alle &kopieren"
 
-#: lazarusidestrconsts.liscopyallandhiddenmessagestoclipboard
-msgid "Copy all and hidden messages to clipboard"
-msgstr "Alle und versteckte Meldungen in die Zwischenablage kopieren"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy all items to clipboard"
 msgstr "Alle Einträge in die Zwischenablage kopieren"
 
-#: lazarusidestrconsts.liscopyallmessagestoclipboard
-msgid "Copy all messages to clipboard"
-msgstr "Kopiere alle Meldungen in die Zwischenablage"
-
 #: lazarusidestrconsts.liscopyalloutputclipboard
 msgid "Copy all output to clipboard"
 msgstr "Alle Ausgaben in die Zwischenablage kopieren"
+
+#: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
+msgid "Copy all shown and hidden messages to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopyallshownmessagestoclipboard
+msgid "Copy all shown messages to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopydescription
 msgid "Copy description to clipboard"
@@ -7237,6 +7237,10 @@ msgstr "Include-Pfade"
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
 msgstr "Einrückung"
+
+#: lazarusidestrconsts.lisindentationforpascalsources
+msgid "Indentation for pascal sources"
+msgstr ""
 
 #: lazarusidestrconsts.lisindex
 msgid "Index"
@@ -12149,6 +12153,10 @@ msgstr "Aktiven Kompiliermodus wählen"
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Voreinstellungens setzen"
+
+#: lazarusidestrconsts.lissetupdefaultindentation
+msgid "(Setup default indentation)"
+msgstr ""
 
 #: lazarusidestrconsts.lissetvalue
 msgid "Set value"

@@ -5335,20 +5335,20 @@ msgstr ""
 msgid "Copy All"
 msgstr ""
 
-#: lazarusidestrconsts.liscopyallandhiddenmessagestoclipboard
-msgid "Copy all and hidden messages to clipboard"
-msgstr "Gizliler dahil tüm iletileri panoya kopyala"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy all items to clipboard"
 msgstr ""
 
-#: lazarusidestrconsts.liscopyallmessagestoclipboard
-msgid "Copy all messages to clipboard"
-msgstr "Tüm iletileri panoya kopyala"
-
 #: lazarusidestrconsts.liscopyalloutputclipboard
 msgid "Copy all output to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
+msgid "Copy all shown and hidden messages to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopyallshownmessagestoclipboard
+msgid "Copy all shown messages to clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.liscopydescription
@@ -7173,6 +7173,10 @@ msgstr "Kapsama(include) yolları"
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
+msgstr ""
+
+#: lazarusidestrconsts.lisindentationforpascalsources
+msgid "Indentation for pascal sources"
 msgstr ""
 
 #: lazarusidestrconsts.lisindex
@@ -12070,6 +12074,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
+msgstr ""
+
+#: lazarusidestrconsts.lissetupdefaultindentation
+msgid "(Setup default indentation)"
 msgstr ""
 
 #: lazarusidestrconsts.lissetvalue

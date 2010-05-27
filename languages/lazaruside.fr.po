@@ -5434,21 +5434,21 @@ msgstr "Unités, types et propriétés"
 msgid "Copy All"
 msgstr "Copier tout"
 
-#: lazarusidestrconsts.liscopyallandhiddenmessagestoclipboard
-msgid "Copy all and hidden messages to clipboard"
-msgstr "Copier tous les messages cachés dans le presse-papier"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy all items to clipboard"
 msgstr "Copier tous les éléments vers le presse-papier"
 
-#: lazarusidestrconsts.liscopyallmessagestoclipboard
-msgid "Copy all messages to clipboard"
-msgstr "Copier tous les messages vers le presse-papier"
-
 #: lazarusidestrconsts.liscopyalloutputclipboard
 msgid "Copy all output to clipboard"
 msgstr "Copier toutes les sorties vers le presse-papier"
+
+#: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
+msgid "Copy all shown and hidden messages to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopyallshownmessagestoclipboard
+msgid "Copy all shown messages to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopydescription
 msgid "Copy description to clipboard"
@@ -7290,6 +7290,10 @@ msgstr "Inclure les chemins"
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
+msgstr ""
+
+#: lazarusidestrconsts.lisindentationforpascalsources
+msgid "Indentation for pascal sources"
 msgstr ""
 
 #: lazarusidestrconsts.lisindex
@@ -12201,6 +12205,10 @@ msgstr "S'il vous plaît sélectionnez un mode build en premier"
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Valeur par défaut"
+
+#: lazarusidestrconsts.lissetupdefaultindentation
+msgid "(Setup default indentation)"
+msgstr ""
 
 #: lazarusidestrconsts.lissetvalue
 msgid "Set value"

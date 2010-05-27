@@ -5374,21 +5374,21 @@ msgstr ""
 msgid "Copy All"
 msgstr "すべてコピー"
 
-#: lazarusidestrconsts.liscopyallandhiddenmessagestoclipboard
-msgid "Copy all and hidden messages to clipboard"
-msgstr "全てのメッセージ（隠しメッセージも）をクリップボードへコピー"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy all items to clipboard"
 msgstr ""
 
-#: lazarusidestrconsts.liscopyallmessagestoclipboard
-msgid "Copy all messages to clipboard"
-msgstr "全てのメッセージをクリップボードへコピー"
-
 #: lazarusidestrconsts.liscopyalloutputclipboard
 msgid "Copy all output to clipboard"
 msgstr "すべての出力をクリップボードにコピー"
+
+#: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
+msgid "Copy all shown and hidden messages to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopyallshownmessagestoclipboard
+msgid "Copy all shown messages to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopydescription
 msgid "Copy description to clipboard"
@@ -7219,6 +7219,10 @@ msgstr "インクルードパス"
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
 msgstr "インデント"
+
+#: lazarusidestrconsts.lisindentationforpascalsources
+msgid "Indentation for pascal sources"
+msgstr ""
 
 #: lazarusidestrconsts.lisindex
 msgid "Index"
@@ -12128,6 +12132,10 @@ msgstr ""
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "デフォルトにセット"
+
+#: lazarusidestrconsts.lissetupdefaultindentation
+msgid "(Setup default indentation)"
+msgstr ""
 
 #: lazarusidestrconsts.lissetvalue
 msgid "Set value"

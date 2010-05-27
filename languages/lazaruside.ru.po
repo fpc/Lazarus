@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-27 01:18+0300\n"
+"PO-Revision-Date: 2010-05-28 00:21+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5378,21 +5378,21 @@ msgstr "Модули, типы и свойства"
 msgid "Copy All"
 msgstr "Копировать все"
 
-#: lazarusidestrconsts.liscopyallandhiddenmessagestoclipboard
-msgid "Copy all and hidden messages to clipboard"
-msgstr "Копировать все (и скрытые тоже) сообщения в буфер обмена"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy all items to clipboard"
 msgstr "Копировать все строки в буфер обмена"
 
-#: lazarusidestrconsts.liscopyallmessagestoclipboard
-msgid "Copy all messages to clipboard"
-msgstr "Копировать все сообщения в буфер обмена"
-
 #: lazarusidestrconsts.liscopyalloutputclipboard
 msgid "Copy all output to clipboard"
 msgstr "Копировать весь вывод в буфер обмена"
+
+#: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
+msgid "Copy all shown and hidden messages to clipboard"
+msgstr "Копировать все показанные и скрытые сообщения в буфер обмена"
+
+#: lazarusidestrconsts.liscopyallshownmessagestoclipboard
+msgid "Copy all shown messages to clipboard"
+msgstr "Копировать все показанные сообщения в буфер обмена"
 
 #: lazarusidestrconsts.liscopydescription
 msgid "Copy description to clipboard"
@@ -7220,6 +7220,10 @@ msgstr "Пути включаемых"
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
 msgstr "Отступы"
+
+#: lazarusidestrconsts.lisindentationforpascalsources
+msgid "Indentation for pascal sources"
+msgstr "Отступы исходного кода на Паскале"
 
 #: lazarusidestrconsts.lisindex
 msgid "Index"
@@ -12115,6 +12119,10 @@ msgstr "Выбрать текущий режим сборки"
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Установить по умолчанию"
+
+#: lazarusidestrconsts.lissetupdefaultindentation
+msgid "(Setup default indentation)"
+msgstr "(Настроить отступ по умолчанию)"
 
 #: lazarusidestrconsts.lissetvalue
 msgid "Set value"

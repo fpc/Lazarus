@@ -5375,21 +5375,21 @@ msgstr ""
 msgid "Copy All"
 msgstr "Kopijuoti viską"
 
-#: lazarusidestrconsts.liscopyallandhiddenmessagestoclipboard
-msgid "Copy all and hidden messages to clipboard"
-msgstr "Kopijuoti visus (ir paslėptus) pranešimus į iškarpinę"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy all items to clipboard"
 msgstr ""
 
-#: lazarusidestrconsts.liscopyallmessagestoclipboard
-msgid "Copy all messages to clipboard"
-msgstr "Kopijuoti visus pranešimus į iškarpinę"
-
 #: lazarusidestrconsts.liscopyalloutputclipboard
 msgid "Copy all output to clipboard"
 msgstr "Visą išvestį kopijuoti į išvestinę"
+
+#: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
+msgid "Copy all shown and hidden messages to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts.liscopyallshownmessagestoclipboard
+msgid "Copy all shown messages to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.liscopydescription
 msgid "Copy description to clipboard"
@@ -7219,6 +7219,10 @@ msgstr "Įterpimo keliai"
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
+msgstr ""
+
+#: lazarusidestrconsts.lisindentationforpascalsources
+msgid "Indentation for pascal sources"
 msgstr ""
 
 #: lazarusidestrconsts.lisindex
@@ -12128,6 +12132,10 @@ msgstr ""
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Grąžinti numatytąjį"
+
+#: lazarusidestrconsts.lissetupdefaultindentation
+msgid "(Setup default indentation)"
+msgstr ""
 
 #: lazarusidestrconsts.lissetvalue
 msgid "Set value"
