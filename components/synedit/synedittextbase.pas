@@ -196,6 +196,7 @@ type
                 aTxt: String = ''); virtual; abstract;
     procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TObject); virtual; abstract;
+   procedure FlushNotificationCache; virtual; abstract;
   public
     function GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
     function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; virtual; abstract;
@@ -290,6 +291,7 @@ type
                 aTxt: String = ''); override;
     procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TObject); override;
+   procedure FlushNotificationCache; override;
 
     function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
     property NextLines: TSynEditStrings read fSynStrings write fSynStrings;
@@ -856,6 +858,11 @@ procedure TSynEditStringsLinked.SendNotification(AReason: TSynEditNotifyReason;
   ASender: TObject);
 begin
   fSynStrings.SendNotification(AReason, ASender);
+end;
+
+procedure TSynEditStringsLinked.FlushNotificationCache;
+begin
+  fSynStrings.FlushNotificationCache;
 end;
 
 procedure TSynEditStringsLinked.IgnoreSendNotification(AReason: TSynEditNotifyReason;

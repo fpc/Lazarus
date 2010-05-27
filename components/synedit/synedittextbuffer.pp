@@ -206,6 +206,7 @@ type
                 aBytePos: Integer = -1; aLen: Integer = 0; aTxt: String = ''); override;
     procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TObject); override;
+   procedure FlushNotificationCache; override;
    function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
     // For Textbuffersharing
     procedure AttachSynEdit(AEdit: TSynEditBase);
@@ -562,8 +563,8 @@ begin
     BeginUpdate;
     SetCount(0);
     SetCapacity(0);
-    SendNotification(senrCleared, Self);
     SendNotification(senrLineCount, self, 0, -c);
+    SendNotification(senrCleared, Self);
     EndUpdate;
   end;
   fIndexOfLongestLine := -1;
@@ -965,8 +966,10 @@ end;
 
 procedure TSynEditStringList.SendCachedNotify;
 begin
-  TLineRangeNotificationList(FNotifyLists[senrLineCount])
-    .CallRangeNotifyEvents(FCachedNotifySender, FCachedNotifyStart, FCachedNotifyCount);
+//debugln(['--- send canched notify  ', FCachedNotifyStart,' / ',FCachedNotifyCount]);
+  if FCachedNotifyCount <> 0 then;
+    TLineRangeNotificationList(FNotifyLists[senrLineCount])
+      .CallRangeNotifyEvents(FCachedNotifySender, FCachedNotifyStart, FCachedNotifyCount);
   FCachedNotify := False;
 end;
 
@@ -1165,10 +1168,13 @@ begin
       end
       else
       if (FCachedNotifySender = ASender) and (aIndex >= FCachedNotifyStart) and
+         (FCachedNotifyCount > 0) and
          (aIndex <= FCachedNotifyStart + FCachedNotifyCount) and
-         ((aCount > 0) or (aIndex - aCount < FCachedNotifyStart + FCachedNotifyCount))
+         ((aCount > 0) or (aIndex - aCount <= FCachedNotifyStart + FCachedNotifyCount))
       then begin
         FCachedNotifyCount := FCachedNotifyCount + aCount;
+        if FCachedNotifyCount = 0 then
+          FCachedNotify := False;
         exit;
       end;
     end;
@@ -1204,6 +1210,12 @@ begin
   if AReason in [senrLineChange, senrLineCount, senrHighlightChanged, senrEditAction] then
     raise Exception.Create('Invalid');
   FNotifyLists[AReason].CallNotifyEvents(ASender);
+end;
+
+procedure TSynEditStringList.FlushNotificationCache;
+begin
+  if FCachedNotify then
+    SendCachedNotify;
 end;
 
 procedure TSynEditStringList.IgnoreSendNotification(AReason: TSynEditNotifyReason;

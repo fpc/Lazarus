@@ -606,6 +606,7 @@ end;
 
 procedure TSynEditStringTrimmingList.ForceTrim;
 begin
+  FlushNotificationCache;
   DoCaretChanged(fCaret); // Caret May be locked
   TrimAfterLock;
 end;

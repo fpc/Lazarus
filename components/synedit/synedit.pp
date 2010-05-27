@@ -5753,6 +5753,7 @@ begin
         DoOnCommandProcessed(Command, AChar, Data);
 
       if assigned(FBeautifier) then begin
+        tsyneditstringlist(FLines).FlushNotificationCache;
         FBeautifier.AutoIndent := (eoAutoIndent in FOptions);
         FBeautifier.AfterCommand(self, FTheLinesView, FCaret, Command, InitialCmd,
                                  FBeautifyStartLineIdx+1, FBeautifyEndLineIdx+1);
