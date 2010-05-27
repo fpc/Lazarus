@@ -165,7 +165,7 @@ begin
   SkipForwardDeclarationsCheckBox.Caption:=dlgSkipForwardDeclarations;
 
   IndentationGroupBox.Caption:=lisIndentationForPascalSources;
-  GeneralAutoIndent.Caption:=lisSetupDefaultIdentation;
+  GeneralAutoIndent.Caption:=lisSetupDefaultIndentation;
   IndentOnLineBreakCheckBox.Caption:=lisOnBreakLineIEReturnOrEnterKey;
   IndentOnPasteCheckBox.Caption:=lisOnPasteFromClipboard;
   IndentFileLabel.Caption:=lisExampleFile;
