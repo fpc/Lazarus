@@ -817,7 +817,7 @@ begin
     Creator:=IDEWindowCreators.FindWithName(AForm.Name);
     if Creator<>nil then
     begin
-      debugln(['TSimpleWindowLayoutList.ApplyAndShow creator found: Left=',Creator.Left,' Top=',Creator.Top,' Width=',Creator.Width,' Height=',Creator.Height,' DockSibling=',Creator.DockSibling,' DockAlign=',dbgs(Creator.DockAlign)]);
+      debugln(['TSimpleWindowLayoutList.ApplyAndShow creator found for ',DbgSName(AForm),': Left=',Creator.Left,' Top=',Creator.Top,' Width=',Creator.Width,' Height=',Creator.Height,' DockSibling=',Creator.DockSibling,' DockAlign=',dbgs(Creator.DockAlign)]);
       if Creator.OnGetLayout<>nil then
         Creator.OnGetLayout(Self,AForm.Name,NewBounds,DockSiblingName,DockAlign)
       else begin
@@ -866,7 +866,7 @@ begin
           end;
         end;
       end;
-      debugln(['TSimpleWindowLayoutList.ApplyAndShow NewBounds=',dbgs(NewBounds)]);
+      debugln(['TSimpleWindowLayoutList.ApplyAndShow ',DbgSName(AForm),' NewBounds=',dbgs(NewBounds)]);
       NewBounds.Left:=Min(10000,Max(-10000,NewBounds.Left));
       NewBounds.Top:=Min(10000,Max(-10000,NewBounds.Top));
       NewBounds.Right:=Max(NewBounds.Left+100,NewBounds.Right);

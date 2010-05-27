@@ -35,7 +35,8 @@ unit RegisterEasyDockMgr;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLProc, Forms, Controls, IDEWindowIntf, uMakeSite;
+  Math, Classes, SysUtils, LCLProc, Forms, Controls, IDEWindowIntf,
+  uMakeSite;
 
 type
 
@@ -69,10 +70,14 @@ end;
 
 procedure TIDEEasyDockMaster.MakeIDEWindowDockable(AControl: TWinControl);
 begin
+  AControl.UndockWidth:=AControl.Width;
+  AControl.UndockHeight:=AControl.Height;
   DockMaster.MakeDockable(AControl);
 end;
 
 function TIDEEasyDockMaster.IsDockSite(AForm: TCustomForm): boolean;
+var
+  i: Integer;
 begin
   Result:=false;
   if AForm=nil then exit;
@@ -114,7 +119,7 @@ begin
       if Creator<>nil then
       begin
         // this window should become dockable
-        debugln(['TIDEEasyDockMaster.ShowForm creator found: Left=',Creator.Left,' Top=',Creator.Top,' Width=',Creator.Width,' Height=',Creator.Height,' DockSibling=',Creator.DockSibling,' DockAlign=',dbgs(Creator.DockAlign)]);
+        debugln(['TIDEEasyDockMaster.ShowForm creator for ',DbgSName(AForm),' found: Left=',Creator.Left,' Top=',Creator.Top,' Width=',Creator.Width,' Height=',Creator.Height,' DockSibling=',Creator.DockSibling,' DockAlign=',dbgs(Creator.DockAlign)]);
         if Creator.OnGetLayout<>nil then
           Creator.OnGetLayout(Self,AForm.Name,NewBounds,DockSiblingName,DockAlign)
         else begin
@@ -151,7 +156,7 @@ begin
             end;
           end;
         end;
-        debugln(['TSimpleWindowLayoutList.ApplyAndShow NewBounds=',dbgs(NewBounds)]);
+        debugln(['TIDEEasyDockMaster.ShowForm ',DbgSName(AForm),' NewBounds=',dbgs(NewBounds)]);
         NewBounds.Left:=Min(10000,Max(-10000,NewBounds.Left));
         NewBounds.Top:=Min(10000,Max(-10000,NewBounds.Top));
         NewBounds.Right:=Max(NewBounds.Left+100,NewBounds.Right);
@@ -171,6 +176,7 @@ begin
       else
         Parent.Show;
   end;
+  debugln(['TIDEEasyDockMaster.ShowForm END ',DbgSName(AForm)]);
 end;
 
 initialization
