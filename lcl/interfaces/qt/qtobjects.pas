@@ -3325,8 +3325,8 @@ begin
     // so must set it like this , so at least copying from
     // another app here works correct.Later signalSelectionChanged
     // can be removed
-    // if QClipboard_ownsSelection(Self.Clipboard) then
-    ClipBrd.PrimarySelection.AsText := WStr;
+    // if not QClipboard_ownsSelection(Self.Clipboard) then
+    //  ClipBrd.PrimarySelection.AsText := WStr;
   end;
 end;
 {$ENDIF}
