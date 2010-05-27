@@ -175,7 +175,8 @@ begin
     FPosition := Value;
     if HandleAllocated then
       TWSTrackBarClass(WidgetSetClass).SetPosition(Self, FPosition);
-    Changed;
+    if not (csLoading in ComponentState) then 
+      Changed;
   end;
 end;
 
