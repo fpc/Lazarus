@@ -11365,7 +11365,8 @@ var
   ScreenNumber: integer;
   W,H: integer;
 begin
-  if AVisible then
+  // must use ClassType comparision here since qt is buggy about hints.#16551
+  if AVisible and (LCLObject.ClassType = THintWindow) then
   begin
     R := getGeometry;
     W := R.Right - R.Left;
