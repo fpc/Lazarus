@@ -525,35 +525,28 @@ var
   LastLine: String;
   CurrDate: TDateTime;
   ExpirationTime: TDateTime;
+  Node: TAVLTreeNode;
 
   procedure AddLine(Line: string);
   var
-    p: Integer;
+    p1: PChar;
+    p2: PChar;
+    p: PtrUint;
   begin
-    p:=1;
-    while (p<=length(Line)) and (p<=length(LastLine))
-    and (Line[p]=LastLine[p]) do
-      inc(p);
+    p1:=PChar(Line);
+    p2:=PChar(LastLine);
+    while (p1^=p2^) and (p1^<>#0) do begin
+      inc(p1);
+      inc(p2);
+    end;
+    p:=p1-PChar(Line);
     List.Add(IntToStr(p-1)+':'+copy(Line,p,length(Line)));
     LastLine:=Line;
   end;
 
-  procedure SaveLinkTree(ANode: TAVLTreeNode);
-  var
-    ALink: TIncludedByLink;
-    DiffTime: TDateTime;
-  begin
-    if ANode=nil then exit;
-    SaveLinkTree(ANode.Left);
-    ALink:=TIncludedByLink(ANode.Data);
-    DiffTime:=CurrDate-ALink.LastTimeUsed;
-    if (FExpirationTimeInDays<=0) or (DiffTime<ExpirationTime) then begin
-      AddLine(ALink.IncludeFilename);
-      AddLine(ALink.IncludedByFile+';'+IntToStr(round(CurrDate-ALink.LastTimeUsed)));
-    end;
-    SaveLinkTree(ANode.Right);
-  end;
-
+var
+  ALink: TIncludedByLink;
+  DiffTime: TDateTime;
 begin
   UpdateIncludeLinks;
   if FIncludeLinks.Count=0 then exit;
@@ -561,7 +554,16 @@ begin
   LastLine:='';
   CurrDate:=Date;
   List.Add(DateToCfgStr(CurrDate));
-  SaveLinkTree(FIncludeLinks.Root);
+  Node:=FIncludeLinks.FindLowest;
+  while Node<>nil do begin
+    ALink:=TIncludedByLink(Node.Data);
+    DiffTime:=CurrDate-ALink.LastTimeUsed;
+    if (FExpirationTimeInDays<=0) or (DiffTime<ExpirationTime) then begin
+      AddLine(ALink.IncludeFilename);
+      AddLine(ALink.IncludedByFile+';'+IntToStr(round(CurrDate-ALink.LastTimeUsed)));
+    end;
+    Node:=FIncludeLinks.FindSuccessor(Node);
+  end;
 end;
 
 function TCodeCache.LastIncludedByFile(const IncludeFilename: string): string;
