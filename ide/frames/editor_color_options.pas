@@ -1066,6 +1066,7 @@ begin
   LanguageLabel.Caption := dlgLang;
   ColorSchemeLabel.Caption := dlgClrScheme;
 
+  ColorSchemeComboBox.Sorted := True;
   with ColorSchemeComboBox do
   begin
     ColorSchemeFactory.GetRegisteredSchemes(Items);

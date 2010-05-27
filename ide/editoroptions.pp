@@ -210,6 +210,12 @@ type
 type
   (* ***  ColorSchemes  *** *)
 
+  { TQuickStringlist }
+
+  TQuickStringlist=class(TStringlist)
+    Function DoCompareText(const s1,s2 : string) : PtrInt; override;
+  end;
+
   TColorScheme = class;
   TColorSchemeLanguage = class;
 
@@ -246,7 +252,7 @@ type
   TColorSchemeLanguage = class(TObject)
   private
     FDefaultAttribute: TColorSchemeAttribute;
-    FAttributes: TStringList; // TColorSchemeAttribute
+    FAttributes: TQuickStringlist; // TColorSchemeAttribute
     FHighlighter: TSynCustomHighlighter;
     FLanguage: TLazSyntaxHighlighter;
     FOwner: TColorScheme;
@@ -312,7 +318,7 @@ type
 
   TColorSchemeFactory = class(TObject)
   private
-    FMappings: TStringList; // TColorScheme
+    FMappings: TQuickStringlist; // TColorScheme
     function GetColorSchemeGroup(Index: String): TColorScheme;
     function GetColorSchemeGroupAtPos(Index: Integer): TColorScheme;
   public
@@ -4157,7 +4163,7 @@ constructor TColorSchemeLanguage.Create(const AGroup: TColorScheme;
 begin
   inherited Create;
   FIsSchemeDefault := IsSchemeDefault;
-  FAttributes := TStringList.Create;
+  FAttributes := TQuickStringlist.Create;
   FOwner := AGroup;
   FHighlighter := nil;
   FLanguage := ALang;
@@ -4168,7 +4174,7 @@ begin
   FDefaultAttribute := TColorSchemeAttribute.Create(Self, dlgAddHiAttrDefault, 'ahaDefault');
   FDefaultAttribute.Features := [hafBackColor, hafForeColor];
   FDefaultAttribute.Group := agnDefault;
-  FAttributes.AddObject(FDefaultAttribute.StoredName, FDefaultAttribute);
+  FAttributes.AddObject(UpperCase(FDefaultAttribute.StoredName), FDefaultAttribute);
   FAttributes.Sorted := true;
 end;
 
@@ -4230,14 +4236,14 @@ procedure TColorSchemeLanguage.Assign(Src: TColorSchemeLanguage);
 var
   i, j: Integer;
   Attr: TColorSchemeAttribute;
-  NewList: TStringList;
+  NewList: TQuickStringlist;
 begin
   // Do not clear old list => external references to Attributes may exist
   FLanguage := Src.FLanguage;
   FLanguageName := src.FLanguageName;
   //FDefaultAttribute.Assign(Src.FDefaultAttribute);
   FDefaultAttribute := nil;
-  NewList := TStringList.Create;
+  NewList := TQuickStringlist.Create;
   for i := 0 to Src.AttributeCount - 1 do begin
     j := FAttributes.IndexOf(UpperCase(Src.AttributeAtPos[i].Name));
     if j >= 0 then begin
@@ -4647,7 +4653,7 @@ end;
 constructor TColorSchemeFactory.Create;
 begin
   inherited Create;
-  FMappings := TStringList.Create;
+  FMappings := TQuickStringlist.Create;
   FMappings.Sorted := true;
 end;
 
@@ -4752,6 +4758,29 @@ begin
   finally
     AList.EndUpdate;
   end;
+end;
+
+{ TQuickStringlist }
+
+function TQuickStringlist.DoCompareText(const s1, s2: string): PtrInt;
+var
+  i, l: Integer;
+begin
+  Result := length(s1) - length(s2);
+  if Result <> 0 then
+    exit;
+  i := 1;
+  if Result < 0 then
+    l := length(s1)
+  else
+    l := length(s2);
+  while i < l do begin
+    Result := ord(s1[i]) - ord(s2[i]);
+    if Result <> 0 then
+      exit;
+    inc(i);
+  end;
+  Result := 0;
 end;
 
 initialization
