@@ -69,7 +69,6 @@ type
     FTree: TAvgLvlTree; // tree of TFPDocLinkCompletionItem
     function GetCount: integer;
     function GetItems(Index: integer): TFPDocLinkCompletionItem;
-    procedure SetSelected(const AValue: integer);
     procedure SetSorted(const AValue: Boolean);
     procedure SetTop(const AValue: integer);
   public
@@ -87,7 +86,7 @@ type
     property ItemHeight: integer read FItemHeight write FItemHeight;// pixel per item
     property VisibleItems: integer read FVisibleItems write FVisibleItems;// visible lines
     property Top: integer read FTop write SetTop;
-    property Selected: integer read FSelected write SetSelected;
+    property Selected: integer read FSelected write FSelected;
     property Prefix: string read FPrefix write FPrefix;
     property BGColor: TColor read FBGColor write FBGColor;
     property TextColor: TColor read FTextColor write FTextColor;
@@ -224,7 +223,7 @@ begin
   fItems.TextColor:=clWindowText;
   fItems.SelectedBGColor:=clHighlight;
   fItems.SelectedTextColor:=clHighlightText;
-  fItems.ItemHeight:=Canvas.TextHeight('ABCTWSMgqp')+4;
+  fItems.ItemHeight:=CompletionBox.Canvas.TextHeight('ABCTWSMgqp')+4;
   fItems.VisibleItems:=CompletionBox.ClientHeight div fItems.ItemHeight;
   fItems.Draw(CompletionBox.Canvas,
               CompletionBox.ClientWidth,CompletionBox.ClientHeight);
@@ -579,12 +578,6 @@ function TFPDocLinkCompletionList.GetItems(Index: integer
   ): TFPDocLinkCompletionItem;
 begin
   Result:=TFPDocLinkCompletionItem(FItems[Index]);
-end;
-
-procedure TFPDocLinkCompletionList.SetSelected(const AValue: integer);
-begin
-  if FSelected=AValue then exit;
-  FSelected:=AValue;
 end;
 
 procedure TFPDocLinkCompletionList.SetSorted(const AValue: Boolean);
