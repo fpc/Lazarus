@@ -530,7 +530,7 @@ begin
     if hIcon = 0 then
       hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
     hCursor := LoadCursor(0, IDC_ARROW);
-    hbrBackground := GetSysColorBrush(Color_BtnFace or SYS_COLOR_INDEX_FLAG);
+    hbrBackground := 0;
     LPSzMenuName := nil;
     LPSzClassName := @ClsName;
   end;
