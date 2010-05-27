@@ -53,11 +53,10 @@ type
     FOnSaveOptions: TOnSaveIDEOptions;
     FOptionsFilter: TAbstractIDEOptionsClass;
     PrevEditor: TAbstractIDEOptionsEditor;
-    FEditorToOpen: TAbstractIDEOptionsEditorClass;
     FEditorsCreated: Boolean;
 
     function CheckValues: boolean;
-    procedure DoOpenEditor;
+    procedure DoOpenEditor(EditorToOpen: TAbstractIDEOptionsEditorClass);
     procedure LoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure SaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure CreateEditors;
@@ -70,7 +69,10 @@ type
     function AddButton: TBitBtn; override;
     function AddControl(AControlClass: TControlClass): TControl; override;
     procedure OpenEditor(AEditor: TAbstractIDEOptionsEditorClass); override;
+    procedure OpenEditor(GroupIndex, AIndex: integer); override;
     function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; override;
+    function FindEditor(GroupIndex, AIndex: integer): TAbstractIDEOptionsEditor; override;
+    function FindEditorClass(GroupIndex, AIndex: integer): TAbstractIDEOptionsEditorClass; override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions);
     procedure WriteSettings(AOptions: TAbstractIDEOptions);
     procedure ReadAll;
@@ -94,7 +96,6 @@ constructor TIDEOptionsDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   PrevEditor := nil;
-  FEditorToOpen := nil;
   FEditorsCreated := False;
 
   IDEDialogLayoutList.ApplyLayout(Self, Width, Height);
@@ -440,14 +441,14 @@ begin
   Result := True;
 end;
 
-procedure TIDEOptionsDialog.DoOpenEditor;
+procedure TIDEOptionsDialog.DoOpenEditor(EditorToOpen: TAbstractIDEOptionsEditorClass);
 var
   Node: TTreeNode;
 begin
-  if FEditorToOpen = nil then
+  if EditorToOpen = nil then
     Node := CategoryTree.Items.GetFirstNode
   else
-    Node := SearchEditorNode(FEditorToOpen);
+    Node := SearchEditorNode(EditorToOpen);
   if Node <> nil then
     CategoryTree.Selected := Node;
 end;
@@ -457,7 +458,7 @@ begin
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TIDEOptionsDialog.ShowModal'){$ENDIF};
   try
     CreateEditors;
-    DoOpenEditor;
+    DoOpenEditor(nil);
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TIDEOptionsDialog.ShowModal'){$ENDIF};
   end;
@@ -489,9 +490,13 @@ end;
 
 procedure TIDEOptionsDialog.OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);
 begin
-  FEditorToOpen := AEditor;
-  if Visible then
-    DoOpenEditor;
+  if IsVisible then
+    DoOpenEditor(AEditor);
+end;
+
+procedure TIDEOptionsDialog.OpenEditor(GroupIndex, AIndex: integer);
+begin
+  DoOpenEditor(FindEditorClass(GroupIndex,AIndex));
 end;
 
 function TIDEOptionsDialog.FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor;
@@ -503,6 +508,37 @@ begin
     Result := TAbstractIDEOptionsEditor(Node.Data)
   else
     Result := nil;
+end;
+
+function TIDEOptionsDialog.FindEditor(GroupIndex, AIndex: integer
+  ): TAbstractIDEOptionsEditor;
+var
+  EditorClass: TAbstractIDEOptionsEditorClass;
+begin
+  EditorClass:=FindEditorClass(GroupIndex,AIndex);
+  if EditorClass<>nil then
+    Result:=FindEditor(EditorClass)
+  else
+    Result:=nil;
+end;
+
+function TIDEOptionsDialog.FindEditorClass(GroupIndex, AIndex: integer
+  ): TAbstractIDEOptionsEditorClass;
+var
+  Grp: PIDEOptionsGroupRec;
+  i: Integer;
+begin
+  Result:=nil;
+  Grp:=IDEEditorGroups.GetByIndex(GroupIndex);
+  if (Grp=nil) or (Grp^.Items=nil) then exit;
+  for i:=0 to Grp^.Items.Count-1 do
+  begin
+    if Grp^.Items[i]^.Index=AIndex then
+    begin
+      Result:=Grp^.Items[i]^.EditorClass;
+      exit;
+    end;
+  end;
 end;
 
 end.

@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, Buttons,
-  Dialogs, ExtCtrls,
+  Dialogs, ExtCtrls, Graphics,
   IDEDialogs, PathEditorDlg,
   CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
 
@@ -36,6 +36,7 @@ type
 
   TCodetoolsGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
     AdjustTopLineDueToCommentCheckBox: TCheckBox;
+    GeneralAutoIndent: TLabel;
     IndentOnPasteCheckBox: TCheckBox;
     IndentOnLineBreakCheckBox: TCheckBox;
     IndentContextSensitiveCheckBox: TCheckBox;
@@ -50,11 +51,15 @@ type
     SrcPathButton: TSpeedButton;
     SrcPathEdit: TEdit;
     SrcPathGroupBox: TGroupBox;
+    procedure GeneralAutoIndentClick(Sender: TObject);
+    procedure GeneralAutoIndentMouseEnter(Sender: TObject);
+    procedure GeneralAutoIndentMouseLeave(Sender: TObject);
     procedure IndentOnLineBreakCheckBoxChange(Sender: TObject);
     procedure IndentFileButtonClick(Sender: TObject);
     procedure IndentOnPasteCheckBoxChange(Sender: TObject);
     procedure SrcPathButtonClick(Sender: TObject);
   private
+    FDialog: TAbstractOptionsEditorDialog;
     procedure VisualizeIndentEnabled;
   public
     function GetTitle: String; override;
@@ -124,6 +129,25 @@ begin
   VisualizeIndentEnabled;
 end;
 
+procedure TCodetoolsGeneralOptionsFrame.GeneralAutoIndentClick(Sender: TObject);
+begin
+  FDialog.OpenEditor(GroupEditor,EdtOptionsGeneral);
+end;
+
+procedure TCodetoolsGeneralOptionsFrame.GeneralAutoIndentMouseEnter(
+  Sender: TObject);
+begin
+  (Sender as TLabel).Font.Underline := True;
+  (Sender as TLabel).Font.Color := clRed;
+end;
+
+procedure TCodetoolsGeneralOptionsFrame.GeneralAutoIndentMouseLeave(
+  Sender: TObject);
+begin
+  (Sender as TLabel).Font.Underline := False;
+  (Sender as TLabel).Font.Color := clBlue;
+end;
+
 function TCodetoolsGeneralOptionsFrame.GetTitle: String;
 begin
   Result := lisMenuInsertGeneral;
@@ -131,24 +155,17 @@ end;
 
 procedure TCodetoolsGeneralOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  with SrcPathGroupBox do
-    Caption:=dlgAdditionalSrcPath;
+  FDialog:=ADialog;
+  SrcPathGroupBox.Caption:=dlgAdditionalSrcPath;
 
-  with JumpingGroupBox do
-    Caption:=dlgJumpingETC;
-
-  with AdjustTopLineDueToCommentCheckBox do
-    Caption:=dlgAdjustTopLine;
-
-  with JumpCenteredCheckBox do
-    Caption:=dlgcentercursorline;
-
-  with CursorBeyondEOLCheckBox do
-    Caption:=dlgcursorbeyondeol;
-
+  JumpingGroupBox.Caption:=dlgJumpingETC;
+  AdjustTopLineDueToCommentCheckBox.Caption:=dlgAdjustTopLine;
+  JumpCenteredCheckBox.Caption:=dlgcentercursorline;
+  CursorBeyondEOLCheckBox.Caption:=dlgcursorbeyondeol;
   SkipForwardDeclarationsCheckBox.Caption:=dlgSkipForwardDeclarations;
 
-  IndentationGroupBox.Caption:=lisIndentation;
+  IndentationGroupBox.Caption:=lisIndentationForPascalSources;
+  GeneralAutoIndent.Caption:=lisSetupDefaultIdentation;
   IndentOnLineBreakCheckBox.Caption:=lisOnBreakLineIEReturnOrEnterKey;
   IndentOnPasteCheckBox.Caption:=lisOnPasteFromClipboard;
   IndentFileLabel.Caption:=lisExampleFile;

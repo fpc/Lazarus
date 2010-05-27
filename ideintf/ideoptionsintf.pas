@@ -141,7 +141,10 @@ type
     function AddButton: TBitBtn; virtual; abstract;
     function AddControl(AControlClass: TControlClass): TControl; virtual; abstract; reintroduce;
     function FindEditor(AEditor: TAbstractIDEOptionsEditorClass): TAbstractIDEOptionsEditor; virtual; abstract;
+    function FindEditor(GroupIndex, AIndex: integer): TAbstractIDEOptionsEditor; virtual; abstract;
+    function FindEditorClass(GroupIndex, AIndex: integer): TAbstractIDEOptionsEditorClass; virtual; abstract;
     procedure OpenEditor(AEditor: TAbstractIDEOptionsEditorClass); virtual; abstract;
+    procedure OpenEditor(GroupIndex, AIndex: integer); virtual; abstract;
   end;
 
 function GetFreeIDEOptionsGroupIndex(AStartIndex: Integer): Integer;

@@ -4742,6 +4742,8 @@ resourcestring
   lisAddUnitNotRecommended = 'Add unit (not recommended)';
   lisAddPackageToProject = 'Add package %s to project?';
   lisOnBreakLineIEReturnOrEnterKey = 'On break line (i.e. return or enter key)';
+  lisSetupDefaultIdentation = '(Setup default identation)';
+  lisIndentationForPascalSources = 'Indentation for pascal sources';
   lisOnPasteFromClipboard = 'On paste from clipboard';
   lisImpossible = 'Impossible';
   lisAProjectUnitCanNotBeUsedByOtherPackagesProjects = 'A project unit can '

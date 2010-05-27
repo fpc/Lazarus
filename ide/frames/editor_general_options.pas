@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLType, StdCtrls, Controls, ExtCtrls, Graphics,
   EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf,
-  SynEdit, SynBeautifier, codetools_general_options;
+  SynEdit, SynBeautifier;
 
 type
   TPreviewEditor = TSynEdit;
@@ -349,7 +349,7 @@ end;
 
 procedure TEditorGeneralOptionsFrame.AutoIndentLinkClick(Sender: TObject);
 begin
-  FDialog.OpenEditor(TCodetoolsGeneralOptionsFrame);
+  FDialog.OpenEditor(GroupCodetools,CdtOptionsGeneral);
 end;
 
 procedure TEditorGeneralOptionsFrame.AutoIndentLinkMouseEnter(Sender: TObject);
