@@ -128,6 +128,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
     procedure InsertLinkSpeedButtonClick(Sender: TObject);
     procedure LinkEditChange(Sender: TObject);
     procedure LinkEditEditingDone(Sender: TObject);
@@ -219,8 +220,6 @@ begin
 
   if Show then
   begin
-    FPDocEditor.DoEditorUpdate(SourceEditorManagerIntf.ActiveEditor);
-    FPDocEditor.UpdateButtons;
     IDEWindowCreators.ShowForm(FPDocEditor,BringToFront);
   end;
 end;
@@ -315,6 +314,11 @@ begin
     Save(true);
     Key:=VK_UNKNOWN;
   end;
+end;
+
+procedure TFPDocEditor.FormShow(Sender: TObject);
+begin
+  FPDocEditor.DoEditorUpdate(nil);
 end;
 
 procedure TFPDocEditor.FormatButtonClick(Sender: TObject);
@@ -1077,7 +1081,7 @@ var
   NewSrcFilename: String;
 begin
   // save the current changes to documentation
-  Save(true);
+  Save(IsVisible);
   // check if visible
   if not IsVisible then exit;
   

@@ -3,7 +3,7 @@ object FPDocEditor: TFPDocEditor
   Height = 156
   Top = 355
   Width = 753
-  ActiveControl = ShortPanel
+  ActiveControl = PageControl
   Caption = 'FPDoc editor'
   ClientHeight = 156
   ClientWidth = 753
@@ -11,6 +11,7 @@ object FPDocEditor: TFPDocEditor
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
+  OnShow = FormShow
   LCLVersion = '0.9.29'
   object PageControl: TPageControl
     Left = 63
@@ -179,13 +180,13 @@ object FPDocEditor: TFPDocEditor
     end
     object DescrTabSheet: TTabSheet
       Caption = 'DescrTabSheet'
-      ClientHeight = 129
-      ClientWidth = 688
+      ClientHeight = 123
+      ClientWidth = 686
       object DescrMemo: TMemo
         Left = 0
-        Height = 96
+        Height = 90
         Top = 29
-        Width = 686
+        Width = 684
         Align = alClient
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
@@ -200,21 +201,21 @@ object FPDocEditor: TFPDocEditor
         Left = 0
         Height = 29
         Top = 0
-        Width = 688
+        Width = 686
         Align = alTop
         Alignment = taLeftJustify
         AutoSize = True
         Caption = 'Short'
         ClientHeight = 29
-        ClientWidth = 688
+        ClientWidth = 686
         TabOrder = 1
         object ShortEdit2: TEdit
           AnchorSideLeft.Control = ShortPanel
           AnchorSideRight.Side = asrBottom
-          Left = 60
+          Left = 61
           Height = 27
           Top = 1
-          Width = 625
+          Width = 622
           Align = alRight
           Anchors = [akTop, akLeft, akRight, akBottom]
           AutoSelect = False
@@ -359,7 +360,6 @@ object FPDocEditor: TFPDocEditor
           OnClick = TopicListBoxClick
           OnEnter = TopicControlEnter
           TabOrder = 1
-          TopIndex = -1
         end
       end
       object Panel3: TPanel
