@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Silvio Clécio\n"
 "Language-Team: \n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
@@ -32,7 +32,7 @@ msgstr "Nenhum navegador \"HTML\" encontrado.%sFavor definir um em Ambiente -> O
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
-msgstr "O banco de dados de ajuda %s%s%s não pode encontrar o arquivo %s%s%s."
+msgstr "O banco de dados de ajuda %s%s%s não pôde encontrar o arquivo %s%s%s."
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
@@ -143,7 +143,7 @@ msgstr "Esquerda"
 
 #: lclstrconsts.ifsvk_lwin
 msgid "left windows key"
-msgstr "tecla windows esqueda"
+msgstr "tecla windows esquerda"
 
 #: lclstrconsts.ifsvk_mbutton
 msgid "Mouse Button Middle"
@@ -278,7 +278,7 @@ msgstr "Todos os arquivos (%s)|%s|%s"
 
 #: lclstrconsts.rsappworkspacecolorcaption
 msgid "Application Workspace"
-msgstr "Espaçõ de trabalho Aplicação"
+msgstr "Espaço de trabalho Aplicação"
 
 #: lclstrconsts.rsaquacolorcaption
 msgid "Aqua"
@@ -413,11 +413,11 @@ msgstr "Erro"
 
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
-msgstr "Erro criação do dispositivo de contexto para %s.%s"
+msgstr "Erro na criação do dispositivo de contexto para %s.%s"
 
 #: lclstrconsts.rserrorinlcl
 msgid "ERROR in LCL: "
-msgstr "ERRO na LCL:"
+msgstr "ERRO na LCL: "
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
@@ -433,7 +433,7 @@ msgstr "Erro ao salvar \"bitmap\"."
 
 #: lclstrconsts.rsexception
 msgid "Exception"
-msgstr "Excessão"
+msgstr "Exceção"
 
 #: lclstrconsts.rsfddirectorymustexist
 msgid "Directory must exist"
@@ -445,7 +445,7 @@ msgstr "O diretório \"%s\" não existe"
 
 #: lclstrconsts.rsfdfilealreadyexists
 msgid "The file \"%s\" already exists. Overwrite ?"
-msgstr "O arquivo \"%s\" já existe. Sobrescrever ?"
+msgstr "O arquivo \"%s\" já existe. Sobrescrever?"
 
 #: lclstrconsts.rsfdfilemustexist
 msgid "File must exist"
@@ -473,11 +473,11 @@ msgstr "Abrir arquivo existente"
 
 #: lclstrconsts.rsfdoverwritefile
 msgid "Overwrite file ?"
-msgstr "Sobrescrever arquivo ?"
+msgstr "Sobrescrever arquivo?"
 
 #: lclstrconsts.rsfdpathmustexist
 msgid "Path must exist"
-msgstr "O Caminho deve existir"
+msgstr "O caminho deve existir"
 
 #: lclstrconsts.rsfdpathnoexist
 msgid "The path \"%s\" does not exist."
@@ -493,7 +493,7 @@ msgstr "(arquivo não encontrado: \"%s\""
 
 #: lclstrconsts.rsfileinformation
 msgid "File information"
-msgstr "Informação Arquivo"
+msgstr "Informação arquivo"
 
 #: lclstrconsts.rsfind
 msgid "Find"
@@ -646,7 +646,7 @@ msgstr "Ajuda contextual %s não encontrada no banco de dados %s%s%s."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr "Banco de dados Ajuda%s%s%s não encontra visualizador para página de ajuda do tipo %s"
+msgstr "Banco de dados Ajuda %s%s%s não encontra visualizador para página de ajuda do tipo %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
@@ -654,11 +654,11 @@ msgstr "Banco de dados de ajuda %s%s%s não encontrado"
 
 #: lclstrconsts.rshelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
-msgstr "Palavra-chave Ajuda%s%s%s não encontrada"
+msgstr "Palavra-chave Ajuda %s%s%s não encontrada"
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
-msgstr "Palavra-chave Ajuda%s%s%s não encontrada no banco de dados %s%s%s."
+msgstr "Palavra-chave Ajuda %s%s%s não encontrada no banco de dados %s%s%s."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
 msgid "Help node %s%s%s has no Help Database"
@@ -756,11 +756,11 @@ msgstr "Rótulo Inativo"
 
 #: lclstrconsts.rsindexoutofbounds
 msgid "%s Index %d out of bounds 0 .. %d"
-msgstr "%s Indice %s fora dos limites 0 .. %d"
+msgstr "%s Índice %s fora dos limites 0 .. %d"
 
 #: lclstrconsts.rsindexoutofrange
 msgid "Index Out of range Cell[Col=%d Row=%d]"
-msgstr "Indice fora de faixa Célula[Col=%d Lin=%d]"
+msgstr "Índice fora de faixa Célula[Col=%d Lin=%d]"
 
 #: lclstrconsts.rsinfobkcolorcaption
 msgid "Info Background"
@@ -809,11 +809,11 @@ msgstr "Último"
 
 #: lclstrconsts.rslimecolorcaption
 msgid "Lime"
-msgstr "Lima"
+msgstr "Limão"
 
 #: lclstrconsts.rslistindexexceedsbounds
 msgid "List index exceeds bounds (%d)"
-msgstr "Indice lista excede o limite (%d)"
+msgstr "Índice lista excede o limite (%d)"
 
 #: lclstrconsts.rslistmustbeempty
 msgid "List must be empty"
@@ -829,7 +829,7 @@ msgstr "Abortar"
 
 #: lclstrconsts.rsmball
 msgid "&All"
-msgstr "&Tudo"
+msgstr "&Todos"
 
 #: lclstrconsts.rsmbcancel
 msgctxt "lclstrconsts.rsmbcancel"
@@ -1123,7 +1123,7 @@ msgstr "Substituir"
 
 #: lclstrconsts.rsreplaceall
 msgid "Replace all"
-msgstr "Substituir tudo"
+msgstr "Substituir todos"
 
 #: lclstrconsts.rsresourcenotfound
 msgctxt "lclstrconsts.rsresourcenotfound"
@@ -1140,7 +1140,7 @@ msgstr "Propriedade \"ScrollBar\" fora de faixa"
 
 #: lclstrconsts.rsselectcolortitle
 msgid "Select color"
-msgstr "Selecionar Cor"
+msgstr "Selecionar cor"
 
 #: lclstrconsts.rsselectfonttitle
 msgid "Select a font"
@@ -1192,7 +1192,7 @@ msgstr "Formato \"bitmap\" não suportado."
 
 #: lclstrconsts.rsunsupportedclipboardformat
 msgid "Unsupported clipboard format: %s"
-msgstr "Formato Aréa de Transferência não suportado: %s"
+msgstr "Formato aréa de transferência não suportado: %s"
 
 #: lclstrconsts.rswarningunreleaseddcsdump
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
@@ -1252,7 +1252,7 @@ msgstr "Não é possível focar uma janela inativa ou invísivel"
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
-msgstr "Menus Duplicados"
+msgstr "Menus duplicados"
 
 #: lclstrconsts.sinvalidactioncreation
 msgid "Invalid action creation"
