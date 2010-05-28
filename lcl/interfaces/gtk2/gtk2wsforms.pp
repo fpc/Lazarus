@@ -82,6 +82,8 @@ type
        const AlphaBlend: Boolean; const Alpha: Byte); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
+    class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle,
+                       AOldFormStyle: TFormStyle); override;
 {    class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;
@@ -416,6 +418,21 @@ begin
       WidgetInfo^.FormBorderStyle := Ord(AFormBorderStyle);
     end;
   end;
+end;
+
+class procedure TGtk2WSCustomForm.SetFormStyle(const AForm: TCustomform;
+  const AFormStyle, AOldFormStyle: TFormStyle);
+var
+  above   : gboolean;
+  Widget  : PGtkWidget;
+begin
+  if not WSCheckHandleAllocated(AForm, 'SetFormStyle') then
+    exit;
+  if (csDesigning in AForm.ComponentState) then
+    exit;
+  above := AFormStyle in fsAllStayOnTop;
+  Widget := PGtkWidget(AForm.Handle);
+  gtk_window_set_keep_above(PGtkWindow(AForm.Handle), above);
 end;
 
 {class function TGtk2WSCustomForm.GetDefaultClientRect(
