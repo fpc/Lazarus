@@ -151,6 +151,7 @@ begin
   try
     if not (IsDockSite(AForm) or IsDockable(AForm)) then
     begin
+      AForm.DisableAlign;
       // this form was not yet docked
       // place it at a default position and make it dockable
       GetDefaultBounds(AForm,Creator,NewBounds,DockSiblingName,DockAlign);
@@ -171,7 +172,11 @@ begin
           if DockSibling<>nil then
           begin
             NewDockSite:=DockSibling.HostDockSite;
-            AForm.ManualDock(NewDockSite,DockSibling,DockAlign);
+            debugln(['TIDEEasyDockMaster.ShowForm NewDockSite=',DbgSName(NewDockSite)]);
+            if NewDockSite<>nil then
+              AForm.ManualDock(NewDockSite,nil,DockAlign)
+            else
+              AForm.ManualDock(nil,DockSibling,DockAlign);
           end;
         end;
         if AForm.Parent=nil then begin
@@ -181,6 +186,7 @@ begin
           MakeIDEWindowDockable(AForm);
         end;
       end;
+      AForm.EnableAlign;
     end;
 
   finally
@@ -192,7 +198,7 @@ begin
       else
         Parent.Show;
   end;
-  debugln(['TIDEEasyDockMaster.ShowForm END ',DbgSName(AForm)]);
+  debugln(['TIDEEasyDockMaster.ShowForm END ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect)]);
 end;
 
 initialization
