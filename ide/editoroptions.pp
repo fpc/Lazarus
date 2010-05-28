@@ -4097,6 +4097,7 @@ begin
       FrameColor := Defaults.FrameColor;
       Style      := Defaults.Style;
       StyleMask  := Defaults.StyleMask;
+      UseSchemeGlobals := Defaults.UseSchemeGlobals;
     end;
     if (Version <= 5) and (Defaults = Self) then     // Data was loaded above (Vers < 5)
       UseSchemeGlobals := False;
