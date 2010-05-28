@@ -988,40 +988,58 @@ var
   c1: char;
   c2: char;
   MacroID: LongInt;
+  p: PChar;
 begin
   //DebugLn(' TLinkScanner.ReadNextToken SrcPos=',SrcPos,' SrcLen=',SrcLen,' "',copy(Src,SrcPos,5),'"');
   {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
   {$R-}
   if (SrcPos>SrcLen) and ReturnFromIncludeFileAndIsEnd then exit;
   // Skip all spaces and comments
-  c1:=Src[SrcPos];
+  p:=@Src[SrcPos];
   while true do begin
-    case c1 of
+    case p^ of
+    #0:
+      begin
+        SrcPos:=p-PChar(Src)+1;
+        if (SrcPos>SrcLen) then begin
+          if ReturnFromIncludeFileAndIsEnd then exit;
+          if (SrcPos>SrcLen) then break;
+        end;
+        p:=@Src[SrcPos];
+      end;
     '{' :
-      SkipComment;
+      begin
+        SrcPos:=p-PChar(Src)+1;
+        SkipComment;
+        p:=@Src[SrcPos];
+      end;
     '/':
-      if (SrcPos<SrcLen) and (Src[SrcPos+1]='/') then
-        SkipDelphiComment
-      else
+      if p[1]='/' then begin
+        SrcPos:=p-PChar(Src)+1;
+        SkipDelphiComment;
+        p:=@Src[SrcPos];
+      end else
         break;
     '(':
-      if (SrcPos<SrcLen) and (Src[SrcPos+1]='*') then
-        SkipOldTPComment
-      else
+      if p[1]='*' then begin
+        SrcPos:=p-PChar(Src)+1;
+        SkipOldTPComment;
+        p:=@Src[SrcPos];
+      end else
         break;
      ' ',#9,#10,#13:
         repeat
-          inc(SrcPos);
-        until (SrcPos>SrcLen) or (not (IsSpaceChar[Src[SrcPos]]));
+          inc(p);
+        until not IsSpaceChar[p^];
     else
       break;
     end;
-    if (SrcPos>SrcLen) and ReturnFromIncludeFileAndIsEnd then exit;
-    c1:=Src[SrcPos];
   end;
+  p:=@Src[SrcPos];
   TokenStart:=SrcPos;
   TokenType:=lsttNone;
   // read token
+  c1:=Src[SrcPos];
   case c1 of
     '_','A'..'Z','a'..'z':
       begin
