@@ -973,15 +973,16 @@ begin
     CurPos.StartPos:=p-PChar(Src)+1;
     CurPos.EndPos:=CurPos.StartPos;
     // read atom
-    c1:=Src[CurPos.EndPos];
+    c1:=p^;
     case c1 of
     #0: ;
     '_','A'..'Z','a'..'z':
       begin
-        inc(CurPos.EndPos);
-        while (IsIdentChar[Src[CurPos.EndPos]]) do
-          inc(CurPos.EndPos);
+        inc(p);
+        while IsIdentChar[p^] do
+          inc(p);
         CurPos.Flag:=cafWord;
+        CurPos.EndPos:=p-PChar(Src)+1;
         case c1 of
         'b','B':
           if (CurPos.EndPos-CurPos.StartPos=5)
@@ -1004,36 +1005,41 @@ begin
       end;
     '''','#':
       begin
-        while (CurPos.EndPos<=SrcLen) do begin
-          case (Src[CurPos.EndPos]) of
+        while true do begin
+          case p^ of
+          #0:
+            begin
+              CurPos.EndPos:=p-PChar(Src)+1;
+              if CurPos.EndPos>SrcLen then break;
+            end;
           '#':
             begin
-              inc(CurPos.EndPos);
-              if (CurPos.EndPos<=SrcLen) then begin
-                if (IsNumberChar[Src[CurPos.EndPos]]) then begin
-                  // decimal
-                  repeat
-                    inc(CurPos.EndPos);
-                  until (CurPos.EndPos>SrcLen)
-                        or (not IsNumberChar[Src[CurPos.EndPos]]);
-                end else if Src[CurPos.EndPos]='$' then begin
-                  // hexadecimal
-                  repeat
-                    inc(CurPos.EndPos);
-                  until (CurPos.EndPos>SrcLen)
-                        or (not IsHexNumberChar[Src[CurPos.EndPos]]);
-                end;
+              inc(p);
+              if IsNumberChar[p^] then begin
+                // decimal
+                repeat
+                  inc(p);
+                until not IsNumberChar[p^];
+              end else if p^='$' then begin
+                // hexadecimal
+                repeat
+                  inc(p);
+                until not IsHexNumberChar[p^];
               end;
             end;
           '''':
             begin
-              inc(CurPos.EndPos);
-              while (CurPos.EndPos<=SrcLen) do begin
-                case Src[CurPos.EndPos] of
-
+              inc(p);
+              while true do begin
+                case p^ of
+                #0:
+                  begin
+                    CurPos.EndPos:=p-PChar(Src)+1;
+                    if CurPos.EndPos>SrcLen then break;
+                  end;
                 '''':
                   begin
-                    inc(CurPos.EndPos);
+                    inc(p);
                     break;
                   end;
 
@@ -1041,7 +1047,7 @@ begin
                   break;
 
                 else
-                  inc(CurPos.EndPos);
+                  inc(p);
                 end;
               end;
             end;
@@ -1049,52 +1055,48 @@ begin
             break;
           end;
         end;
+        CurPos.EndPos:=p-PChar(Src)+1;
       end;
     '0'..'9':
       begin
-        inc(CurPos.EndPos);
-        while (CurPos.EndPos<=SrcLen) and (IsNumberChar[Src[CurPos.EndPos]]) do
-          inc(CurPos.EndPos);
-        if (CurPos.EndPos<SrcLen)
-        and (Src[CurPos.EndPos]='.')
-        and (IsAfterFloatPointChar[Src[CurPos.EndPos+1]])
-        then begin
+        inc(p);
+        while IsNumberChar[p^] do
+          inc(p);
+        if (p^='.') and IsAfterFloatPointChar[p[1]] then begin
           // real type number
-          inc(CurPos.EndPos);
-          while (CurPos.EndPos<=SrcLen) and (IsNumberChar[Src[CurPos.EndPos]])
-          do
-            inc(CurPos.EndPos);
+          inc(p);
+          while IsNumberChar[p^] do
+            inc(p);
         end;
-        if (CurPos.EndPos<=SrcLen) and (Src[CurPos.EndPos] in ['e','E']) then
-        begin
+        if p^ in ['e','E'] then begin
           // read exponent
-          inc(CurPos.EndPos);
-          if (CurPos.EndPos<=SrcLen) and (Src[CurPos.EndPos] in ['-','+'])
-          then inc(CurPos.EndPos);
-          while (CurPos.EndPos<=SrcLen) and (IsNumberChar[Src[CurPos.EndPos]])
-          do
-            inc(CurPos.EndPos);
+          inc(p);
+          if p^ in ['-','+'] then inc(p);
+          while IsNumberChar[p^] do
+            inc(p);
         end;
+        CurPos.EndPos:=p-PChar(Src)+1;
       end;
     '%': // binary number
       begin
-        inc(CurPos.EndPos);
-        while (CurPos.EndPos<=SrcLen) and (Src[CurPos.EndPos] in ['0'..'1']) do
-          inc(CurPos.EndPos);
+        inc(p);
+        while p^ in ['0'..'1'] do
+          inc(p);
+        CurPos.EndPos:=p-PChar(Src)+1;
       end;
     '&': // octal number
       begin
-        inc(CurPos.EndPos);
-        while (CurPos.EndPos<=SrcLen)
-        and (Src[CurPos.EndPos] in ['0'..'7']) do
-          inc(CurPos.EndPos);
+        inc(p);
+        while p^ in ['0'..'7'] do
+          inc(p);
+        CurPos.EndPos:=p-PChar(Src)+1;
       end;
     '$': // hex number
       begin
-        inc(CurPos.EndPos);
-        while (CurPos.EndPos<=SrcLen)
-        and (IsHexNumberChar[Src[CurPos.EndPos]]) do
-          inc(CurPos.EndPos);
+        inc(p);
+        while IsHexNumberChar[p^] do
+          inc(p);
+        CurPos.EndPos:=p-PChar(Src)+1;
       end;
     ';':
       begin
