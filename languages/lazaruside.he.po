@@ -4,14 +4,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Ido Kanner <idokan@gmail.com>\n"
 "Last-Translator: ezik shulamy <shulamy@regba.org.il>\n"
-"PO-Revision-Date: 2010-05-24 22:38+0200\n"
-"Project-Id-Version: lazaruside\n"
-"Language-Team: hebrew <he@li.org>\n"
-"X-Generator: KBabel 1.11.4\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
-"POT-Creation-Date: 2010-05-08 09:28+0200\n"
-"X-Poedit-Language: Herero\n"
-"X-Poedit-Country: ISRAEL\n"
 
 #: lazarusidestrconsts.dlfmouseresetall
 msgid "Reset all settings"
@@ -6913,7 +6910,7 @@ msgstr "לך אל שורה"
 
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
+msgstr "<תאור> s% זכויות יוצרים (C) <שנה> <שם המחבר> <התקשרות> s% קוד זה הוא תכנה חפשית; אתה רשאי להפיץ ו/או לשנות אותה בהתאם לתנאים של GNU GPL כמו שפורסמו ע\"י הקרן למען תכנה חפשית; לפי גרסה 2 או לפי גרסה מאוחרת יותר (לפי בחירתך)  של הרשיון. קוד זה מופץ בתקווה שיהיה שימושי, אבל ללא אחריות כלשהי; אפילו לא אחריות שיווקית או התאמה לתכלית מסוימת. ראה GNU GPL לפרטים נוספים. ניתן למצוא ברשת את הרשיון בכתובת <http://www.gnu.org/copyleft/gpl.html>.או לקבל אותו ע\"י כתיבה ל the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
@@ -7038,7 +7035,7 @@ msgstr "תצוגות"
 
 #: lazarusidestrconsts.lishofpcdochtmlpath
 msgid "FPC Doc HTML Path"
-msgstr ""
+msgstr "נתיב ל FPC Doc HTML"
 
 #: lazarusidestrconsts.lishorizontal
 msgid "Horizontal"
@@ -7046,19 +7043,19 @@ msgstr "אופקי"
 
 #: lazarusidestrconsts.liside
 msgid "IDE"
-msgstr ""
+msgstr "IDE"
 
 #: lazarusidestrconsts.lisidebuildoptions
 msgid "IDE build options"
-msgstr ""
+msgstr "אפשרויות הבניה של ה IDE "
 
 #: lazarusidestrconsts.lisideintf
 msgid "IDE Interface"
-msgstr ""
+msgstr "ממשק ה IDE "
 
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
-msgstr ""
+msgstr "מזהה"
 
 #: lazarusidestrconsts.lisidentifierbeginswith
 msgid "Identifier begins with ..."
@@ -7066,7 +7063,7 @@ msgstr "מזהה המתחיל עם ..."
 
 #: lazarusidestrconsts.lisidentifiercontains
 msgid "Identifier contains ..."
-msgstr ""
+msgstr "מזהה מכיל ..."
 
 #: lazarusidestrconsts.lisideoptions
 msgid "IDE Options:"
@@ -7074,35 +7071,35 @@ msgstr "אפשרויות IDE"
 
 #: lazarusidestrconsts.lisideprojectdirinidetitle
 msgid "Show project directory in IDE title"
-msgstr ""
+msgstr "הראה את תיקיית הפרוייקט בכותרת של ה IDE "
 
 #: lazarusidestrconsts.lisidetitlestartswithprojectname
 msgid "IDE title starts with project name"
-msgstr ""
+msgstr "הכותרת של ה IDE מתחילה בשם הפרוייקט"
 
 #: lazarusidestrconsts.lisiecoerroraccessingxml
 msgid "Error accessing xml"
-msgstr ""
+msgstr "שגיאה בגישה ל xml"
 
 #: lazarusidestrconsts.lisiecoerroraccessingxmlfile
 msgid "Error accessing xml file %s%s%s:%s%s"
-msgstr ""
+msgstr "שגיאה בגישה לקובץ xml %s%s%s:%s%s"
 
 #: lazarusidestrconsts.lisiecoerrorloadingxml
 msgid "Error loading xml"
-msgstr ""
+msgstr "שגיאה בטעינת xml"
 
 #: lazarusidestrconsts.lisiecoerrorloadingxmlfile
 msgid "Error loading xml file %s%s%s:%s%s"
-msgstr ""
+msgstr "שגיאה בטעינת קובץ xml %s%s%s:%s%s"
 
 #: lazarusidestrconsts.lisiecoexportfileexists
 msgid "Export file exists"
-msgstr ""
+msgstr "הקובץ המיוצא קיים"
 
 #: lazarusidestrconsts.lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
-msgstr ""
+msgstr "הקובץ המיוצא s%s%s%קיים. לפתוח את הקובץ ולהחליף רק את אפשרויות המהדר? ( יתר ההגדרות יישמרו.)"
 
 #: lazarusidestrconsts.lisiecoloadfromfile
 msgid "Load from file"
@@ -7147,7 +7144,7 @@ msgstr "התעלם מבינארי"
 
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
-msgstr ""
+msgstr "התעלם מסוג חריגות זה"
 
 #: lazarusidestrconsts.lisignoremissingfile
 msgid "Ignore missing file"
@@ -7155,39 +7152,39 @@ msgstr "התעלם מהקובץ החסר"
 
 #: lazarusidestrconsts.lisignoreusetformasancestor
 msgid "Ignore, use TForm as ancestor"
-msgstr ""
+msgstr "התעלם, השתמש ב TForm כמחלקה הראשונית"
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
-msgstr ""
+msgstr "העתק זיהוי של היחידה , הפרוייקט או החבילה הנוכחיים."
 
 #: lazarusidestrconsts.lisimplementationcommentforclass
 msgid "Implementation comment for class"
-msgstr ""
+msgstr "הערת מימוש של המחלקה"
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
-msgstr ""
+msgstr "יבא רשימה"
 
 #: lazarusidestrconsts.lisimpossible
 msgid "Impossible"
-msgstr ""
+msgstr "בלתי אפשרי"
 
 #: lazarusidestrconsts.lisincludefilter
 msgid "Include Filter"
-msgstr ""
+msgstr "כלול מסנן"
 
 #: lazarusidestrconsts.lisincludepath
 msgid "include path"
-msgstr ""
+msgstr "כלול נתיב"
 
 #: lazarusidestrconsts.lisincludepaths
 msgid "Include paths"
-msgstr ""
+msgstr "כלול נתיבים"
 
 #: lazarusidestrconsts.lisindentation
 msgid "Indentation"
-msgstr ""
+msgstr "זיהוי"
 
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for pascal sources"
@@ -7215,7 +7212,7 @@ msgstr "שגיאה..."
 
 #: lazarusidestrconsts.lisinfobuilderrors
 msgid "Errors:"
-msgstr ""
+msgstr "שגיאות:"
 
 #: lazarusidestrconsts.lisinfobuildhint
 msgid "Hints:"
@@ -7237,11 +7234,11 @@ msgstr "הערות:"
 
 #: lazarusidestrconsts.lisinfobuildproject
 msgid "Project:"
-msgstr ""
+msgstr "פרוייקט:"
 
 #: lazarusidestrconsts.lisinfobuildsuccess
 msgid "Success..."
-msgstr ""
+msgstr "הצלחה ..."
 
 #: lazarusidestrconsts.lisinfobuildwarning
 msgid "Warnings:"
@@ -7249,7 +7246,7 @@ msgstr "אזהרות:"
 
 #: lazarusidestrconsts.lisinformation
 msgid "Information"
-msgstr ""
+msgstr "מידע"
 
 #: lazarusidestrconsts.lisinformationaboutunit
 msgid "Information about %s"
@@ -7261,83 +7258,83 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinheritedcomponent
 msgid "Inherited Component"
-msgstr ""
+msgstr "רכיב מורש"
 
 #: lazarusidestrconsts.lisinheriteditem
 msgid "Inherited Item"
-msgstr ""
+msgstr "פריט מורש"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
-msgstr ""
+msgstr "כדי ליצור העתק נקי של הפרוייקט/חבילה, כל הקבצים בתיקייה הבאה יימחקו וכל התוכן יאבד. האם למחוק את כל הקבצים ב s%s%s%?"
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
-msgstr ""
+msgstr "הכנס תאריך"
 
 #: lazarusidestrconsts.lisinsertdateandtime
 msgid "insert date and time"
-msgstr ""
+msgstr "הכנס תאריך ושעה"
 
 #: lazarusidestrconsts.lisinsertdateandtimeoptionalformatstring
 msgid "Insert date and time. Optional: format string"
-msgstr ""
+msgstr "הכנס תאריך ושעה. אפשרי: עיצוב המחרוזת"
 
 #: lazarusidestrconsts.lisinsertdateoptionalformatstring
 msgid "Insert date. Optional: format string"
-msgstr ""
+msgstr "הכנס תאריך. אפשרי: עיצוב המחרוזת"
 
 #: lazarusidestrconsts.lisinsertendifneeded
 msgid "insert end if needed"
-msgstr ""
+msgstr "הכנס סיום אם צריך"
 
 #: lazarusidestrconsts.lisinsertnameofcurrentprocedure
 msgid "Insert name of current procedure"
-msgstr ""
+msgstr "הכנס את שם הפרוצדורה הנוכחית"
 
 #: lazarusidestrconsts.lisinsertprintshorttag
 msgid "Insert PrintShort tag"
-msgstr ""
+msgstr "הכנס תוית PrintShort"
 
 #: lazarusidestrconsts.lisinsertprintshorttag2
 msgid "Insert printshort tag"
-msgstr ""
+msgstr "הכנס תוית printshort"
 
 #: lazarusidestrconsts.lisinsertprocedurehead
 msgid "insert procedure head"
-msgstr ""
+msgstr "הכנס את כותרת הפרוצדורה"
 
 #: lazarusidestrconsts.lisinsertprocedurename
 msgid "insert procedure name"
-msgstr ""
+msgstr "הכנס את שםהפרוצדורה"
 
 #: lazarusidestrconsts.lisinserttime
 msgid "insert time"
-msgstr ""
+msgstr "הכנס שעה"
 
 #: lazarusidestrconsts.lisinserttimeoptionalformatstring
 msgid "Insert time. Optional: format string"
-msgstr ""
+msgstr "הכנס שעה. אפשרי: עיצוב המחרוזת"
 
 #: lazarusidestrconsts.lisinserturltag
 msgid "Insert url tag"
-msgstr ""
+msgstr "הכנס תוית url"
 
 #: lazarusidestrconsts.lisinspect
 msgid "&Inspect"
-msgstr ""
+msgstr "בדוק"
 
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
-msgstr ""
+msgstr "נתונים"
 
 #: lazarusidestrconsts.lisinspectdialog
 msgid "Debug Inspector"
-msgstr ""
+msgstr "צופה המהדר"
 
 #: lazarusidestrconsts.lisinspectmethods
 msgid "Methods"
-msgstr ""
+msgstr "מתודה"
 
 #: lazarusidestrconsts.lisinspectproperties
 msgctxt "lazarusidestrconsts.lisinspectproperties"
@@ -7346,19 +7343,19 @@ msgstr "תכונות"
 
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
-msgstr ""
+msgstr "ההתקנה נכשלה"
 
 #: lazarusidestrconsts.lisinstalledpackages
 msgid "Installed Packages"
-msgstr ""
+msgstr "חבילה מותקנת"
 
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
-msgstr ""
+msgstr "התקן את מה שנבחר"
 
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
-msgstr ""
+msgstr "משתנה בניה לא חוקי s%s%s%."
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -7366,75 +7363,75 @@ msgstr "עיגול לא תקין"
 
 #: lazarusidestrconsts.lisinvalidcommand
 msgid "Invalid command"
-msgstr ""
+msgstr "פקודה לא חוקית"
 
 #: lazarusidestrconsts.lisinvalidcompilerfilename
 msgid "Invalid Compiler Filename"
-msgstr ""
+msgstr "שם מהדר לא חוקי"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
-msgstr ""
+msgstr "מחיקה לא חוקית"
 
 #: lazarusidestrconsts.lisinvaliddestinationdirectory
 msgid "Invalid destination directory"
-msgstr ""
+msgstr "תיקיית יעד לא חוקית"
 
 #: lazarusidestrconsts.lisinvalidexpression
 msgid "Invalid expression:%s%s%s%s"
-msgstr ""
+msgstr "ביטוי לא חוקי: s%s%s%"
 
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
-msgstr ""
+msgstr "ביטוי לא חוקי: הפונקציה \"Make Resourcestring\" מצפה למחרוזת קבועה בקובץ יחיד. בחר את הביטוי ונסה שוב."
 
 #: lazarusidestrconsts.lisinvalidfilter
 msgid "Invalid filter"
-msgstr ""
+msgstr "מסנן לא חוקי"
 
 #: lazarusidestrconsts.lisinvalidfreepascalsourcedirectory
 msgid "Invalid Free Pascal source directory"
-msgstr ""
+msgstr "תיקיית קוד מקור לא חוקית של Free Pascal "
 
 #: lazarusidestrconsts.lisinvalidmultiselection
 msgid "Invalid multiselection"
-msgstr ""
+msgstr "בחירה מרובה לא חוקית"
 
 #: lazarusidestrconsts.lisinvalidoff
 msgid "Invalid (Off)"
-msgstr ""
+msgstr "לא חוקי (מכובה)"
 
 #: lazarusidestrconsts.lisinvalidon
 msgid "Invalid (On)"
-msgstr ""
+msgstr "לא חוקי (מופעל)"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiercap
 msgid "Invalid Pascal Identifier"
-msgstr ""
+msgstr "מזהה פסקל לא חוקי"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid pascal identifier."
-msgstr ""
+msgstr "השם s% אינו מזהה חוקי של פסקל."
 
 #: lazarusidestrconsts.lisinvalidprocname
 msgid "Invalid proc name"
-msgstr ""
+msgstr "שם פרוצדורה לא חוקי"
 
 #: lazarusidestrconsts.lisinvalidprojectfilename
 msgid "Invalid project filename"
-msgstr ""
+msgstr "שם קובץ של הפרוייקט לא חוקי"
 
 #: lazarusidestrconsts.lisinvalidpublishingdirectory
 msgid "Invalid publishing Directory"
-msgstr ""
+msgstr "תיקיית פרסום לא חוקית"
 
 #: lazarusidestrconsts.lisinvalidselection
 msgid "Invalid selection"
-msgstr ""
+msgstr "בחירה לא חוקית"
 
 #: lazarusidestrconsts.lisisagroupasettingcanonlybeaddedtonormalbuildmodes
 msgid "%s is a group. A setting can only be added to normal build modes."
-msgstr ""
+msgstr "("
 
 #: lazarusidestrconsts.lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
@@ -7450,23 +7447,23 @@ msgstr ""
 
 #: lazarusidestrconsts.lisjhjumphistory
 msgid "Jump History"
-msgstr ""
+msgstr "הסטוריית קפיצות"
 
 #: lazarusidestrconsts.lisjitform
 msgid "JIT Form"
-msgstr ""
+msgstr "טופס JIT"
 
 #: lazarusidestrconsts.liskeep
 msgid "keep"
-msgstr ""
+msgstr "שמור "
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
-msgstr ""
+msgstr "שמור שם"
 
 #: lazarusidestrconsts.liskeepthemandcontinue
 msgid "Keep them and continue"
-msgstr ""
+msgstr "שמור אותם והמשך"
 
 #: lazarusidestrconsts.liskeycatcustom
 msgid "Custom commands"
@@ -7474,15 +7471,15 @@ msgstr "פקודות מותאמות אישית"
 
 #: lazarusidestrconsts.liskeycatdesigner
 msgid "Designer commands"
-msgstr ""
+msgstr "פקודות מעצב"
 
 #: lazarusidestrconsts.liskeycatobjinspector
 msgid "Object Inspector commands"
-msgstr ""
+msgstr "פקודות צופה העצמים"
 
 #: lazarusidestrconsts.liskeyor2keysequence
 msgid "Key (or 2 key sequence)"
-msgstr ""
+msgstr "מפתח (או סדרה של שני מפתחות)"
 
 #: lazarusidestrconsts.liskmabortbuilding
 msgid "Abort building"
