@@ -445,15 +445,16 @@ begin
   // Some changes don't require RecreateWnd
 
   // From normal to StayOnTop
-  if (AOldFormStyle = fsNormal) and (AFormStyle in fsAllStayOnTop) then
+  if (AOldFormStyle = fsNormal) and (AFormStyle in fsAllStayOnTop) then begin
     if not (csDesigning in AForm.ComponentState) then
       SetWindowPos(AForm.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
   // From StayOnTop to normal
-  else if (AOldFormStyle in fsAllStayOnTop) and (AFormStyle = fsNormal) then
+  end else if (AOldFormStyle in fsAllStayOnTop) and (AFormStyle = fsNormal) then begin
     if not (csDesigning in AForm.ComponentState) then
       SetWindowPos(AForm.Handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
-  else
+  end else begin
     RecreateWnd(AForm);
+  end;
 end;
                             
 class procedure TWin32WSCustomForm.SetBounds(const AWinControl: TWinControl;
