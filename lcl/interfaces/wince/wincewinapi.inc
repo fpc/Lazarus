@@ -3144,6 +3144,7 @@ function TWinCEWidgetSet.ShowCaret(hWnd: HWND): Boolean;
 begin
   Result := Boolean(Windows.ShowCaret(HWnd));
 end;
+
 {------------------------------------------------------------------------------
   Method:   ShowScrollBar
   Params:  Handle - handle of window with scroll bar
@@ -3153,11 +3154,33 @@ end;
 
   Shows or hides the specified scroll bar.
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer;
+function TWinCEWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer;
   bShow: Boolean): Boolean;
+var
+  dwStyle: DWORD;
 begin
-  Result:=inherited ShowScrollBar(Handle, wBar, bShow);
-end;}
+  Result := True;
+  dwStyle := GetWindowLong(Handle, GWL_STYLE);
+  case wBar of
+    SB_BOTH:
+      if bShow then
+        SetWindowLong(Handle, GWL_STYLE, dwStyle or WS_VSCROLL or WS_HSCROLL)
+      else
+        SetWindowLong(Handle, GWL_STYLE, (dwStyle and not WS_VSCROLL) and not WS_HSCROLL);
+    SB_VERT:
+      if bShow then
+        SetWindowLong(Handle, GWL_STYLE, dwStyle or WS_VSCROLL)
+      else
+        SetWindowLong(Handle, GWL_STYLE, dwStyle and not WS_VSCROLL);
+    SB_HORZ:
+      if bShow then
+        SetWindowLong(Handle, GWL_STYLE, dwStyle or WS_HSCROLL)
+      else
+        SetWindowLong(Handle, GWL_STYLE, dwStyle and not WS_HSCROLL);
+  else
+    Result := False;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Method: ShowWindow
