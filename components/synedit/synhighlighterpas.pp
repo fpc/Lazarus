@@ -2156,8 +2156,11 @@ begin
     #0,#10,#13: break;
     '}':
       if TopPascalCodeFoldBlockType=cfbtNestedComment then
-        EndPascalCodeFoldBlock
-      else begin
+      begin
+        Run:=p;
+        EndPascalCodeFoldBlock;
+        p:=Run;
+      end else begin
         fRange := fRange - [rsBor];
         Inc(p);
         break;
@@ -2165,7 +2168,9 @@ begin
     '{':
       if NestedComments then begin
         fStringLen := 1;
+        Run:=p;
         StartPascalCodeFoldBlock(cfbtNestedComment);
+        p:=Run;
       end;
     end;
     Inc(p);

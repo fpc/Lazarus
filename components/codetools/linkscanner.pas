@@ -1292,20 +1292,31 @@ end;
 
 procedure TLinkScanner.SkipComment;
 // a normal pascal {} comment
+var
+  p: PChar;
 begin
   CommentStyle:=CommentTP;
   CommentStartPos:=SrcPos;
+  p:=@Src[SrcPos]+1;
   IncCommentLevel;
-  inc(SrcPos);
   CommentInnerStartPos:=SrcPos;
   { HandleSwitches can dec CommentLevel }
-  while (SrcPos<=SrcLen) and (CommentLevel>0) do begin
-    case Src[SrcPos] of
+  while true do begin
+    case p^ of
+      #0: break;
       '{' : IncCommentLevel;
-      '}' : DecCommentLevel;
+      '}' :
+        begin
+          DecCommentLevel;
+          if CommentLevel=0 then begin
+            inc(p);
+            break;
+          end;
+        end;
     end;
-    inc(SrcPos);
+    inc(p);
   end;
+  SrcPos:=p-PChar(Src)+1;
   CommentEndPos:=SrcPos;
   CommentInnerEndPos:=SrcPos-1;
   if (CommentLevel>0) then CommentEndNotFound;
