@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-16 00:03+0300\n"
+"PO-Revision-Date: 2010-05-29 01:22+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -167,7 +167,7 @@ msgstr "Внутренняя функция"
 
 #: syneditstrconst.syns_attrinvalidsymbol
 msgid "Invalid symbol"
-msgstr "Неверный языковый символ"
+msgstr "Неверный языковой символ"
 
 #: syneditstrconst.syns_attrkey
 msgid "Key"
@@ -339,7 +339,7 @@ msgstr "Строка"
 
 #: syneditstrconst.syns_attrsymbol
 msgid "Symbol"
-msgstr "Языковый символ"
+msgstr "Языковой символ"
 
 #: syneditstrconst.syns_attrsyntaxerror
 msgid "SyntaxError"
