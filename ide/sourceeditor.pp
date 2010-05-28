@@ -3884,6 +3884,7 @@ Begin
       Text:='';
       Parent := AParent;
       Align := alClient;
+      Visible := False;
       BookMarkOptions.EnableKeys := false;
       BookMarkOptions.LeftMargin:=1;
       BookMarkOptions.BookmarkImages := SourceEditorMarks.ImgList;
@@ -6954,6 +6955,7 @@ Begin
   //writeln('TSourceNotebook.NotebookPageChanged ',Pageindex,' ',TempEditor <> nil,' fAutoFocusLock=',fAutoFocusLock);
   if TempEditor <> nil then
   begin
+    TempEditor.Visible := True;
     if (fAutoFocusLock=0) and (Screen.ActiveCustomForm=GetParentForm(Self)) then
     begin
       {$IFDEF VerboseFocus}
