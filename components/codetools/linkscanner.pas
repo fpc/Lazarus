@@ -1297,14 +1297,21 @@ var
 begin
   CommentStyle:=CommentTP;
   CommentStartPos:=SrcPos;
-  p:=@Src[SrcPos]+1;
   IncCommentLevel;
+  inc(SrcPos);
+  p:=@Src[SrcPos];
   CommentInnerStartPos:=SrcPos;
   { HandleSwitches can dec CommentLevel }
   while true do begin
     case p^ of
-      #0: break;
-      '{' : IncCommentLevel;
+      #0:
+        begin
+          SrcPos:=p-PChar(Src)+1;
+          if SrcPos>SrcLen then
+            break;
+        end;
+      '{' :
+        IncCommentLevel;
       '}' :
         begin
           DecCommentLevel;
@@ -3436,7 +3443,6 @@ begin
   FNestedComments:=(PascalCompiler=pcFPC)
                    and (FCompilerMode in [cmFPC,cmOBJFPC]);
   FCompilerModeSwitch:=cmsDefault;
-  //DebugLn(['TLinkScanner.SetCompilerMode ',MainFilename,' ',PascalCompilerNames[PascalCompiler],' Mode=',CompilerModeNames[CompilerMode],' FNestedComments=',FNestedComments]);
 end;
 
 procedure TLinkScanner.SetCompilerModeSwitch(const AValue: TCompilerModeSwitch
