@@ -1034,11 +1034,9 @@ begin
       break;
     end;
   end;
-  SrcPos:=p-PChar(Src)+1;
-  TokenStart:=SrcPos;
-  TokenType:=lsttNone;
+  TokenStart:=p-PChar(Src)+1;
   // read token
-  c1:=Src[SrcPos];
+  c1:=p^;
   case c1 of
     '_','A'..'Z','a'..'z':
       begin
@@ -1103,6 +1101,7 @@ begin
       end;
     '0'..'9':
       begin
+        TokenType:=lsttNone;
         inc(p);
         while IsNumberChar[p^] do
           inc(p);
@@ -1123,6 +1122,7 @@ begin
       end;
     '%': // boolean
       begin
+        TokenType:=lsttNone;
         inc(p);
         while p^ in ['0'..'1'] do
           inc(p);
@@ -1130,6 +1130,7 @@ begin
       end;
     '$': // hex
       begin
+        TokenType:=lsttNone;
         inc(p);
         while IsHexNumberChar[p^] do
           inc(p);
@@ -1137,27 +1138,28 @@ begin
       end;
     '=':
       begin
-        inc(SrcPos);
+        SrcPos:=p-PChar(Src)+2;
         TokenType:=lsttEqual;
       end;
     '.':
       begin
-        inc(SrcPos);
+        SrcPos:=p-PChar(Src)+2;
         TokenType:=lsttPoint;
       end;
     ';':
       begin
-        inc(SrcPos);
+        SrcPos:=p-PChar(Src)+2;
         TokenType:=lsttSemicolon;
       end;
     ',':
       begin
-        inc(SrcPos);
+        SrcPos:=p-PChar(Src)+2;
         TokenType:=lsttComma;
       end;
     else
-      inc(SrcPos);
-      c2:=Src[SrcPos];
+      TokenType:=lsttNone;
+      inc(p);
+      c2:=p^;
       // test for double char operators
       //  :=, +=, -=, /=, *=, <>, <=, >=, **, ><, ..
       if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
@@ -1165,7 +1167,8 @@ begin
       or ((c1='>') and (c2='<'))
       or ((c1='.') and (c2='.'))
       or ((c1='*') and (c2='*'))
-      then inc(SrcPos);
+      then inc(p);
+      SrcPos:=p-PChar(Src)+1;
   end;
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
