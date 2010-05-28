@@ -2145,18 +2145,21 @@ begin
 end;
 
 procedure TSynPasSyn.BorProc;
+var
+  p: LongInt;
 begin
   {$IFDEF SYN_LAZARUS}
+  p:=Run;
   fTokenID := tkComment;
   repeat
-    case fLine[Run] of
-    #0: break;
+    case fLine[p] of
+    #0,#10,#13: break;
     '}':
       if TopPascalCodeFoldBlockType=cfbtNestedComment then
         EndPascalCodeFoldBlock
       else begin
         fRange := fRange - [rsBor];
-        Inc(Run);
+        Inc(p);
         break;
       end;
     '{':
@@ -2165,8 +2168,9 @@ begin
         StartPascalCodeFoldBlock(cfbtNestedComment);
       end;
     end;
-    Inc(Run);
-  until (Run>=fLineLen) or (fLine[Run] in [#0, #10, #13]);
+    Inc(p);
+  until (p>=fLineLen);
+  Run:=p;
   {$ELSE}
   case fLine[Run] of
      #0: NullProc;
