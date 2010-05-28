@@ -1035,7 +1035,7 @@ begin
       break;
     end;
   end;
-  p:=@Src[SrcPos];
+  SrcPos:=p-PChar(Src)+1;
   TokenStart:=SrcPos;
   TokenType:=lsttNone;
   // read token
@@ -1044,11 +1044,11 @@ begin
     '_','A'..'Z','a'..'z':
       begin
         // keyword or identifier
-        inc(SrcPos);
-        while (SrcPos<=SrcLen)
-        and (IsIdentChar[Src[SrcPos]]) do
-          inc(SrcPos);
+        inc(p);
+        while IsIdentChar[p^] do
+          inc(p);
         TokenType:=lsttWord;
+        SrcPos:=p-PChar(Src)+1;
         if FMacrosOn then begin
           MacroID:=IndexOfMacro(@Src[TokenStart],false);
           if MacroID>=0 then begin
@@ -1059,29 +1059,40 @@ begin
     '''','#':
       begin
         TokenType:=lsttStringConstant;
-        while (SrcPos<=SrcLen) do begin
-          case (Src[SrcPos]) of
+        while true do begin
+          case p^ of
+          #0:
+            begin
+              SrcPos:=p-PChar(Src)+1;
+              if SrcPos>SrcLen then break;
+              inc(p);
+            end;
           '#':
             begin
-              inc(SrcPos);
-              while (SrcPos<=SrcLen)
-              and (IsNumberChar[Src[SrcPos]]) do
-                inc(SrcPos);
+              inc(p);
+              while IsNumberChar[p^] do
+                inc(p);
             end;
           '''':
             begin
-              inc(SrcPos);
-              while (SrcPos<=SrcLen) do begin
-                case Src[SrcPos] of
+              inc(p);
+              while true do begin
+                case p^ of
+                #0:
+                  begin
+                    SrcPos:=p-PChar(Src)+1;
+                    if SrcPos>SrcLen then break;
+                    inc(p);
+                  end;
                 '''':
                   begin
-                    inc(SrcPos);
+                    inc(p);
                     break;
                   end;
                 #10,#13:
                   break;
                 else
-                  inc(SrcPos);
+                  inc(p);
                 end;
               end;
             end;
@@ -1089,39 +1100,41 @@ begin
             break;
           end;
         end;
+        SrcPos:=p-PChar(Src)+1;
       end;
     '0'..'9':
       begin
-        inc(SrcPos);
-        while (SrcPos<=SrcLen) and (IsNumberChar[Src[SrcPos]]) do
-          inc(SrcPos);
-        if (SrcPos<SrcLen) and (Src[SrcPos]='.') and (Src[SrcPos+1]<>'.')
-        then begin
+        inc(p);
+        while IsNumberChar[p^] do
+          inc(p);
+        if (p^='.') and (p[1]<>'.') then begin
           // real type number
-          inc(SrcPos);
-          while (SrcPos<=SrcLen) and (IsNumberChar[Src[SrcPos]]) do
-            inc(SrcPos);
-          if (SrcPos<=SrcLen) and (Src[SrcPos] in ['E','e']) then begin
+          inc(p);
+          while IsNumberChar[p^] do
+            inc(p);
+          if (p^ in ['E','e']) then begin
             // read exponent
-            inc(SrcPos);
-            if (SrcPos<=SrcLen) and (Src[SrcPos] in ['-','+']) then inc(SrcPos);
-            while (SrcPos<=SrcLen) and (IsNumberChar[Src[SrcPos]]) do
-              inc(SrcPos);
+            inc(p);
+            if (p^ in ['-','+']) then inc(p);
+            while IsNumberChar[p^] do
+              inc(p);
           end;
         end;
+        SrcPos:=p-PChar(Src)+1;
       end;
-    '%':
+    '%': // boolean
       begin
-        inc(SrcPos);
-        while (SrcPos<=SrcLen) and (Src[SrcPos] in ['0'..'1']) do
-          inc(SrcPos);
+        inc(p);
+        while p^ in ['0'..'1'] do
+          inc(p);
+        SrcPos:=p-PChar(Src)+1;
       end;
-    '$':
+    '$': // hex
       begin
-        inc(SrcPos);
-        while (SrcPos<=SrcLen)
-        and (IsHexNumberChar[Src[SrcPos]]) do
-          inc(SrcPos);
+        inc(p);
+        while IsHexNumberChar[p^] do
+          inc(p);
+        SrcPos:=p-PChar(Src)+1;
       end;
     '=':
       begin
@@ -1145,17 +1158,15 @@ begin
       end;
     else
       inc(SrcPos);
-      if SrcPos<=SrcLen then begin
-        c2:=Src[SrcPos];
-        // test for double char operators
-        //  :=, +=, -=, /=, *=, <>, <=, >=, **, ><, ..
-        if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
-        or ((c1='<') and (c2='>'))
-        or ((c1='>') and (c2='<'))
-        or ((c1='.') and (c2='.'))
-        or ((c1='*') and (c2='*'))
-        then inc(SrcPos);
-      end;
+      c2:=Src[SrcPos];
+      // test for double char operators
+      //  :=, +=, -=, /=, *=, <>, <=, >=, **, ><, ..
+      if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
+      or ((c1='<') and (c2='>'))
+      or ((c1='>') and (c2='<'))
+      or ((c1='.') and (c2='.'))
+      or ((c1='*') and (c2='*'))
+      then inc(SrcPos);
   end;
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
