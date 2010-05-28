@@ -33,7 +33,6 @@
 unit LinkScanner;
 
 {$ifdef FPC} {$mode objfpc} {$endif}{$H+}
-{$ifdef UseInline}{$inline on}{$endif}
 
 {$I codetools.inc}
 
@@ -281,9 +280,9 @@ type
     procedure SkipDelphiComment;
     procedure SkipOldTPComment;
     procedure CommentEndNotFound;
-    procedure EndComment;
-    procedure IncCommentLevel;
-    procedure DecCommentLevel;
+    procedure EndComment; {$IFDEF UseInline}inline;{$ENDIF}
+    procedure IncCommentLevel; {$IFDEF UseInline}inline;{$ENDIF}
+    procedure DecCommentLevel; {$IFDEF UseInline}inline;{$ENDIF}
     procedure HandleDirectives;
     procedure UpdateCleanedSource(SourcePos: integer);
     function ReturnFromIncludeFile: boolean;
@@ -1380,35 +1379,45 @@ end;
 
 procedure TLinkScanner.SkipOldTPComment;
 // a (* *) comment
+var
+  p: PChar;
 begin
   CommentStyle:=CommentDelphi;
   CommentStartPos:=SrcPos;
   IncCommentLevel;
   inc(SrcPos,2);
   CommentInnerStartPos:=SrcPos;
-  while (SrcPos<SrcLen) do begin
-    case Src[SrcPos] of
+  p:=@Src[SrcPos];
+  while true do begin
+    case p^ of
+    #0:
+      begin
+        SrcPos:=p-PChar(Src)+1;
+        if SrcPos>SrcLen then
+          break;
+      end;
     '*':
       begin
-        inc(SrcPos);
-        if (SrcPos<=SrcLen) and (Src[SrcPos]=')') then begin
-          inc(SrcPos);
+        inc(p);
+        if p^=')' then begin
+          inc(p);
           DecCommentLevel;
           if CommentLevel=0 then break;
         end;
       end;
     '(':
       begin
-        inc(SrcPos);
-        if FNestedComments and (SrcPos<=SrcLen) and (Src[SrcPos]='*') then begin
-          inc(SrcPos);
+        inc(p);
+        if FNestedComments and (p^='*') then begin
+          inc(p);
           IncCommentLevel;
         end;
       end;
     else
-      inc(SrcPos);
+      inc(p);
     end;
   end;
+  SrcPos:=p-PChar(Src)+1;
   CommentEndPos:=SrcPos;
   CommentInnerEndPos:=SrcPos-2;
   if (CommentLevel>0) then CommentEndNotFound;
