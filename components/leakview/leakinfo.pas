@@ -353,7 +353,7 @@ var
   hex : string;
 begin
   i := Pos(RawTracePrefix, Trc[TrcIndex]);
-  if (i < 0) and not IsTraceLine(Trc[TrcIndex]) then begin
+  if (i <= 0) and not IsTraceLine(Trc[TrcIndex]) then begin
     i := Pos(CallTracePrefix, Trc[TrcIndex]);
     if i <= 0 then Exit;
 
