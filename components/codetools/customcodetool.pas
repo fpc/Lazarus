@@ -863,8 +863,10 @@ begin
 end;
 
 procedure TCustomCodeTool.ReadNextAtom;
-var c1, c2: char;
+var
+  c1, c2: char;
   CommentLvl: integer;
+  p: PChar;
 begin
   {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
   {$R-}
@@ -876,20 +878,24 @@ begin
     if CurPos.StartPos>SrcLen then
       exit;
     // Skip all spaces and comments
+    p:=@Src[CurPos.StartPos];
     while true do begin
-      case Src[CurPos.StartPos] of
+      case p^ of
       #0:
-        if CurPos.StartPos>SrcLen then
-          break
-        else
-          inc(CurPos.StartPos);
+        begin
+          CurPos.StartPos:=p-PChar(Src)+1;
+          if CurPos.StartPos>SrcLen then
+            break
+          else
+            inc(p);
+        end;
       #1..#32:
-        inc(CurPos.StartPos);
+        inc(p);
       #$EF:
-        if (Src[CurPos.StartPos+1]=#$BB)
-        and (Src[CurPos.StartPos+2]=#$BF) then begin
+        if (p[1]=#$BB)
+        and (p[2]=#$BF) then begin
           // skip UTF BOM
-          inc(CurPos.StartPos,3);
+          inc(p,3);
         end else begin
           break;
         end;
@@ -897,11 +903,15 @@ begin
         begin
           CommentLvl:=1;
           while true do begin
-            inc(CurPos.StartPos);
-            case Src[CurPos.StartPos] of
-            #0:  if CurPos.StartPos>SrcLen then break;
-            '{': if Scanner.NestedComments then
+            inc(p);
+            case p^ of
+            #0:
               begin
+                CurPos.StartPos:=p-PChar(Src)+1;
+                if CurPos.StartPos>SrcLen then break;
+              end;
+            '{':
+              if Scanner.NestedComments then begin
                 //debugln('TCustomCodeTool.ReadNextAtom ',copy(Src,CurPos.StartPos,CurPos.StartPos-CurPos.EndPos));
                 inc(CommentLvl);
               end;
@@ -909,7 +919,7 @@ begin
               begin
                 dec(CommentLvl);
                 if CommentLvl=0 then begin
-                  inc(CurPos.StartPos);
+                  inc(p);
                   break;
                 end;
               end;
@@ -917,49 +927,50 @@ begin
           end;
         end;
       '/':  // Delphi comment
-        if (Src[CurPos.StartPos+1]<>'/') then begin
+        if p[1]<>'/' then begin
           break;
         end else begin
-          inc(CurPos.StartPos,2);
-          while (not (Src[CurPos.StartPos] in [#10,#13,#0])) do
-            inc(CurPos.StartPos);
-          inc(CurPos.StartPos);
-          if (CurPos.StartPos<=SrcLen) and (Src[CurPos.StartPos] in [#10,#13])
-          and (Src[CurPos.StartPos-1]<>Src[CurPos.StartPos]) then
-            inc(CurPos.StartPos);
+          inc(p,2);
+          while not (p^ in [#10,#13,#0]) do
+            inc(p);
         end;
       '(': // old turbo pascal comment
-        if (Src[CurPos.StartPos+1]<>'*') then begin
+        if p[1]<>'*' then begin
           break;
         end else begin
-          inc(CurPos.StartPos,2);
+          inc(p,2);
           CommentLvl:=1;
           while true do begin
-            case Src[CurPos.StartPos] of
-            #0:  if CurPos.StartPos>SrcLen then break;
-            '(': if Scanner.NestedComments and (Src[CurPos.StartPos+1]='*') then
+            case p^ of
+            #0:
               begin
+                CurPos.StartPos:=p-PChar(Src)+1;
+                if CurPos.StartPos>SrcLen then break;
+              end;
+            '(':
+              if (p[1]='*') and Scanner.NestedComments then begin
                 //debugln('TCustomCodeTool.ReadNextAtom ',copy(Src,CurPos.StartPos,CurPos.StartPos-CurPos.EndPos));
                 inc(CommentLvl);
-                inc(CurPos.StartPos);
+                inc(p);
               end;
             '*':
-              if (Src[CurPos.StartPos+1]=')') then begin
+              if p[1]=')' then begin
                 dec(CommentLvl);
                 if CommentLvl=0 then begin
-                  inc(CurPos.StartPos,2);
+                  inc(p,2);
                   break;
                 end;
-                inc(CurPos.StartPos);
+                inc(p);
               end;
             end;
-            inc(CurPos.StartPos);
+            inc(p);
           end;
         end;
       else
         break;
       end;
     end;
+    CurPos.StartPos:=p-PChar(Src)+1;
     CurPos.EndPos:=CurPos.StartPos;
     // read atom
     c1:=Src[CurPos.EndPos];
