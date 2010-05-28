@@ -59,18 +59,18 @@ type
     cafSemicolon, cafEqual, cafColon, cafComma, cafPoint,
     cafRoundBracketOpen, cafRoundBracketClose,
     cafEdgedBracketOpen, cafEdgedBracketClose,
-    cafWord, cafEnd, cafRecord, cafBegin
+    cafWord, cafEnd, cafRecord
     );
     
 const
   CleanCodeXYPosition: TCodeXYPosition = (X:0; Y:0; Code:nil);
-  AllCommonAtomWords = [cafWord, cafEnd, cafRecord, cafBegin];
+  AllCommonAtomWords = [cafWord, cafEnd, cafRecord];
   CommonAtomFlagNames: array[TCommonAtomFlag] of shortstring = (
       'None',
       'Semicolon', 'Equal', 'Colon', 'Comma', 'Point',
       'RoundBracketOpen', 'RoundBracketClose',
       'EdgedBracketOpen', 'EdgedBracketClose',
-      'Word', 'End', 'Record', 'Begin'
+      'Word', 'End', 'Record'
     );
     
 type

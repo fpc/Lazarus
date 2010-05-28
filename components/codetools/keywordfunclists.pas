@@ -149,7 +149,9 @@ var
   WordIsPredefinedFPCIdentifier,
   WordIsPredefinedDelphiIdentifier,
   UnexpectedKeyWordInBeginBlock,
-  UnexpectedKeyWordInAsmBlock: TKeyWordFunctionList;
+  UnexpectedKeyWordInAsmBlock,
+  UnexpectedKeyWordInBrackets
+    : TKeyWordFunctionList;
   UpChars: array[char] of char;
 
   IsSpaceChar,
@@ -1230,6 +1232,24 @@ begin
     Add('THREADVAR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('UNIT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('VAR',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+
+  UnexpectedKeyWordInBrackets:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(UnexpectedKeyWordInBrackets);
+  with UnexpectedKeyWordInBrackets do begin
+    Add('BEGIN',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('THEN',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TRY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WHILE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('REPEAT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('UNTIL',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FINALLY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXCEPT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DO',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TO',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DOWNTO',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('END',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
   WordIsLogicalBlockStart:=TKeyWordFunctionList.Create;

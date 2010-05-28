@@ -5768,11 +5768,11 @@ var
         while TopBlockType(Stack) in [btCaseColon,btIf,btIfElse] do begin
           if not EndBlockIsOk then exit;
         end;
-      cafBegin:
-        BeginBlock(Stack,btBegin,CurPos.StartPos);
       cafWord:
         if TopBlockType(Stack)<>btAsm then begin
-          if UpAtomIs('TRY') then
+          if UpAtomIs('BEGIN') then
+            BeginBlock(Stack,btBegin,CurPos.StartPos)
+          else if UpAtomIs('TRY') then
             BeginBlock(Stack,btTry,CurPos.StartPos)
           else if UpAtomIs('FINALLY') then begin
             if TopBlockType(Stack)=btTry then

@@ -1973,7 +1973,8 @@ begin
         if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then
         begin
           // check if LValue
-          if (CurPos.Flag in [cafSemicolon,cafBegin,cafEnd])
+          if (CurPos.Flag in [cafSemicolon,cafEnd])
+          or UpAtomIs('BEGIN')
           or UpAtomIs('TRY') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
           or UpAtomIs('FOR') or UpAtomIs('DO')
           or UpAtomIs('REPEAT') or UpAtomIs('ASM') or UpAtomIs('ELSE')
@@ -2028,7 +2029,7 @@ begin
           and (not (ilcfStartOfStatement in CurrentIdentifierList.ContextFlags))
           then begin
             // check if a semicolon is needed at the end
-            if (CurPos.Flag in [cafEnd,cafBegin])
+            if (CurPos.Flag in [cafEnd])
             or WordIsBlockKeyWord.DoItCaseInsensitive(Src,
                                   CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
             or ((CurPos.Flag=cafWord)
@@ -2101,8 +2102,9 @@ var
   begin
     MoveCursorToAtomPos(ProcNameAtom);
     ReadPriorAtom;
-    if (CurPos.Flag in [cafEnd,cafSemicolon,cafBegin,cafColon,
+    if (CurPos.Flag in [cafEnd,cafSemicolon,cafColon,
       cafRoundBracketOpen,cafEdgedBracketOpen])
+    or UpAtomIs('BEGIN')
     or UpAtomIs('TRY') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
     or UpAtomIs('REPEAT') or UpAtomIs('ASM') then begin
       // see fpc/compiler/psystem.pp

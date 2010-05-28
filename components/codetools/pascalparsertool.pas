@@ -813,7 +813,7 @@ begin
     // set CursorPos on 'begin'
     MoveCursorToNodeStart(BeginNode);
     ReadNextAtom;
-    if CurPos.Flag<>cafBEGIN then
+    if not UpAtomIs('BEGIN') then
       RaiseBeginExpected;
     if BeginNode.EndPos<SrcLen then
       Maxpos:=BeginNode.EndPos
@@ -2369,7 +2369,7 @@ begin
   Result:=true;
   TryType:=ttNone;
   Desc:=ctnNone;
-  if CurPos.Flag=cafBEGIN then begin
+  if UpAtomIs('BEGIN') then begin
     BlockType:=ebtBegin;
     Desc:=ctnBeginBlock;
   end else if UpAtomIs('REPEAT') then
@@ -2530,7 +2530,8 @@ begin
     begin
       if (CurPos.Flag=cafEND) or (UpAtomIs('UNTIL')) then begin
         ReadBackTilBlockEnd(false);
-      end else if (CurPos.Flag in [cafBEGIN,cafRECORD]) or UpAtomIs('ASM')
+      end else if UpAtomIs('BEGIN') or (CurPos.Flag in [cafRECORD])
+        or UpAtomIs('ASM')
       then begin
         if BlockType=ebtBegin then
           break
@@ -2949,10 +2950,10 @@ begin
     [ctnProcedure,ctnProgram,ctnLibrary,ctnImplementation]))
   then
     RaiseStringExpectedButAtomFound('end');
-  ChildNodeCreated:=(CurPos.Flag=cafBEGIN) or UpAtomIs('ASM');
+  ChildNodeCreated:=UpAtomIs('BEGIN') or UpAtomIs('ASM');
   if ChildNodeCreated then begin
     CreateChildNode;
-    if CurPos.Flag=cafBEGIN then
+    if UpAtomIs('BEGIN') then
       CurNode.Desc:=ctnBeginBlock
     else
       CurNode.Desc:=ctnAsmBlock;

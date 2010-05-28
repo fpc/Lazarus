@@ -984,11 +984,6 @@ begin
         CurPos.Flag:=cafWord;
         CurPos.EndPos:=p-PChar(Src)+1;
         case c1 of
-        'b','B':
-          if (CurPos.EndPos-CurPos.StartPos=5)
-          and UpAtomIs('BEGIN')
-          then
-            CurPos.Flag:=cafBegin;
         'e','E':
           if (CurPos.EndPos-CurPos.StartPos=3)
           and (Src[CurPos.StartPos+1] in ['n','N'])
@@ -1413,11 +1408,6 @@ begin
                   CurPos.Flag:=cafEnd
                 else
                   CurPos.Flag:=cafWord;
-              'B':
-                if CompareSrcIdentifiers(CurPos.StartPos,'BEGIN') then
-                  CurPos.Flag:=cafBegin
-                else
-                  CurPos.Flag:=cafWord;
               'R':
                 if CompareSrcIdentifiers(CurPos.StartPos,'RECORD') then
                   CurPos.Flag:=cafRecord
@@ -1534,9 +1524,6 @@ begin
           'E':
             if CompareSrcIdentifiers(CurPos.StartPos,'END') then
               CurPos.Flag:=cafEnd;
-          'B':
-            if CompareSrcIdentifiers(CurPos.StartPos,'BEGIN') then
-              CurPos.Flag:=cafBegin;
           'R':
             if CompareSrcIdentifiers(CurPos.StartPos,'RECORD') then
               CurPos.Flag:=cafRecord;
@@ -1672,7 +1659,11 @@ begin
     ReadPriorAtom;
     if (CurPos.Flag=OpenBracket) then break;
     if (CurPos.StartPos<1)
-    or (CurPos.Flag in [AntiOpenBracket,cafEND,cafBegin]) then begin
+    or (CurPos.Flag in [AntiOpenBracket,cafEND])
+    or ((CurPos.Flag=cafWord)
+        and UnexpectedKeyWordInBrackets.DoItCaseInsensitive(Src,
+             CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
+    then begin
       CurPos:=Start;
       if ExceptionOnNotFound then
         RaiseBracketNotFound;
