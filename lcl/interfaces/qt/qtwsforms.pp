@@ -488,7 +488,7 @@ end;
 
 class function TQtWSCustomForm.GetQtFormStyle(const AFormStyle: TFormStyle): QtWindowFlags;
 begin
-  if AFormStyle in [fsStayOnTop, fsSplash] then
+  if AFormStyle in fsAllStayOnTop then
     Result := QtWindowStaysOnTopHint
   else
     Result := 0;
