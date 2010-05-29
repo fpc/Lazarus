@@ -661,6 +661,10 @@ msgstr "エクスポート"
 msgid "(Edit Color)"
 msgstr "（編集色）"
 
+#: lazarusidestrconsts.dlgcolornotmodified
+msgid "Not modified"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr "コマンドライン引数"
@@ -1116,10 +1120,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgedunder
 msgid "Underline"
 msgstr "下線"
-
-#: lazarusidestrconsts.dlgedusedefcolor
-msgid "Use default color"
-msgstr "デフォルト色を使用"
 
 #: lazarusidestrconsts.dlgelementattributes
 msgid "Element Attributes"
@@ -2532,6 +2532,26 @@ msgstr "検索中..."
 msgid "Paths"
 msgstr "パス："
 
+#: lazarusidestrconsts.dlgselectcolorsglobal
+msgid "Select global colors"
+msgstr ""
+
+#: lazarusidestrconsts.dlgselectcolorslang
+msgid "Select colors for %s"
+msgstr ""
+
+#: lazarusidestrconsts.dlgselectcolorstomodify
+msgid "Modify colors/styles"
+msgstr ""
+
+#: lazarusidestrconsts.dlgselectcolorstomodifyglobal
+msgid "Modify global colors/styles"
+msgstr ""
+
+#: lazarusidestrconsts.dlgselectcolorstomodifylang
+msgid "Modify colors/styles for %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected Text"
 msgstr "選択されたテキスト(&S)"
@@ -2884,10 +2904,6 @@ msgstr "可視ガター"
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
 msgstr "右マージンを表示"
-
-#: lazarusidestrconsts.dlgwarneditschemedefaults
-msgid "Editing global for all languages"
-msgstr ""
 
 #: lazarusidestrconsts.dlgwholewordsonly
 msgid "&Whole Words Only"

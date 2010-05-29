@@ -660,6 +660,10 @@ msgstr ""
 msgid "(Edit Color)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolornotmodified
+msgid "Not modified"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr "Parametri dalla linea di comando"
@@ -1113,10 +1117,6 @@ msgstr "On"
 #: lazarusidestrconsts.dlgedunder
 msgid "Underline"
 msgstr "Sottolineato"
-
-#: lazarusidestrconsts.dlgedusedefcolor
-msgid "Use default color"
-msgstr "Usa colore predefinito"
 
 #: lazarusidestrconsts.dlgelementattributes
 msgid "Element Attributes"
@@ -2537,6 +2537,26 @@ msgstr "Ricerca in corso..."
 msgid "Paths"
 msgstr "Percorsi"
 
+#: lazarusidestrconsts.dlgselectcolorsglobal
+msgid "Select global colors"
+msgstr ""
+
+#: lazarusidestrconsts.dlgselectcolorslang
+msgid "Select colors for %s"
+msgstr ""
+
+#: lazarusidestrconsts.dlgselectcolorstomodify
+msgid "Modify colors/styles"
+msgstr ""
+
+#: lazarusidestrconsts.dlgselectcolorstomodifyglobal
+msgid "Modify global colors/styles"
+msgstr ""
+
+#: lazarusidestrconsts.dlgselectcolorstomodifylang
+msgid "Modify colors/styles for %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected Text"
 msgstr "Testo selezionato"
@@ -2893,10 +2913,6 @@ msgstr "Spaziatura laterale visibile"
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
 msgstr "Margine destro visibile"
-
-#: lazarusidestrconsts.dlgwarneditschemedefaults
-msgid "Editing global for all languages"
-msgstr ""
 
 #: lazarusidestrconsts.dlgwholewordsonly
 msgid "&Whole Words Only"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-28 00:21+0300\n"
+"PO-Revision-Date: 2010-05-29 23:38+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -675,6 +675,10 @@ msgstr "Экспорт"
 msgid "(Edit Color)"
 msgstr "(Изменить цвет)"
 
+#: lazarusidestrconsts.dlgcolornotmodified
+msgid "Not modified"
+msgstr "Исходный"
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr "Параметры командной строки"
@@ -1134,10 +1138,6 @@ msgstr "Вкл."
 #: lazarusidestrconsts.dlgedunder
 msgid "Underline"
 msgstr "Подчёркнутый"
-
-#: lazarusidestrconsts.dlgedusedefcolor
-msgid "Use default color"
-msgstr "Цвет по умолчанию"
 
 #: lazarusidestrconsts.dlgelementattributes
 msgid "Element Attributes"
@@ -2551,6 +2551,26 @@ msgstr "Поиск..."
 msgid "Paths"
 msgstr "Пути"
 
+#: lazarusidestrconsts.dlgselectcolorsglobal
+msgid "Select global colors"
+msgstr "Выбрать глобальные цвета"
+
+#: lazarusidestrconsts.dlgselectcolorslang
+msgid "Select colors for %s"
+msgstr "Выбрать цвета для %s"
+
+#: lazarusidestrconsts.dlgselectcolorstomodify
+msgid "Modify colors/styles"
+msgstr "Изменить цвета/стили"
+
+#: lazarusidestrconsts.dlgselectcolorstomodifyglobal
+msgid "Modify global colors/styles"
+msgstr "Изменить глобальные цвета/стили"
+
+#: lazarusidestrconsts.dlgselectcolorstomodifylang
+msgid "Modify colors/styles for %s"
+msgstr "Изменить цвета/стили для %s"
+
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected Text"
 msgstr "В вы&деленном"
@@ -2903,11 +2923,6 @@ msgstr "Видимое поле (лев)"
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
 msgstr "Правая видимая граница"
-
-#: lazarusidestrconsts.dlgwarneditschemedefaults
-#| msgid "Editing global  for all languages"
-msgid "Editing global for all languages"
-msgstr "Глобальный для всех языков"
 
 #: lazarusidestrconsts.dlgwholewordsonly
 msgid "&Whole Words Only"

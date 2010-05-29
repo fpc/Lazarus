@@ -666,6 +666,10 @@ msgstr "Export"
 msgid "(Edit Color)"
 msgstr "(Farbe ändern)"
 
+#: lazarusidestrconsts.dlgcolornotmodified
+msgid "Not modified"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr "Kommandozeilenparameter"
@@ -1127,10 +1131,6 @@ msgstr "An"
 #: lazarusidestrconsts.dlgedunder
 msgid "Underline"
 msgstr "Unterstreichen"
-
-#: lazarusidestrconsts.dlgedusedefcolor
-msgid "Use default color"
-msgstr "Voreingestellte Farbe verwenden"
 
 #: lazarusidestrconsts.dlgelementattributes
 msgid "Element Attributes"
@@ -2551,6 +2551,26 @@ msgstr "Suche ..."
 msgid "Paths"
 msgstr "Pfade"
 
+#: lazarusidestrconsts.dlgselectcolorsglobal
+msgid "Select global colors"
+msgstr ""
+
+#: lazarusidestrconsts.dlgselectcolorslang
+msgid "Select colors for %s"
+msgstr ""
+
+#: lazarusidestrconsts.dlgselectcolorstomodify
+msgid "Modify colors/styles"
+msgstr ""
+
+#: lazarusidestrconsts.dlgselectcolorstomodifyglobal
+msgid "Modify global colors/styles"
+msgstr ""
+
+#: lazarusidestrconsts.dlgselectcolorstomodifylang
+msgid "Modify colors/styles for %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected Text"
 msgstr "Au&sgewählter Text"
@@ -2905,10 +2925,6 @@ msgstr "Sichtbare Randleiste"
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
 msgstr "Sichtbarer rechter Rand"
-
-#: lazarusidestrconsts.dlgwarneditschemedefaults
-msgid "Editing global for all languages"
-msgstr ""
 
 #: lazarusidestrconsts.dlgwholewordsonly
 msgid "&Whole Words Only"

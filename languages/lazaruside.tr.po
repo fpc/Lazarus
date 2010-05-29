@@ -660,6 +660,10 @@ msgstr ""
 msgid "(Edit Color)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcolornotmodified
+msgid "Not modified"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
 msgstr ""
@@ -1106,10 +1110,6 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgedunder
 msgid "Underline"
-msgstr ""
-
-#: lazarusidestrconsts.dlgedusedefcolor
-msgid "Use default color"
 msgstr ""
 
 #: lazarusidestrconsts.dlgelementattributes
@@ -2513,6 +2513,26 @@ msgstr "Arıyor..."
 msgid "Paths"
 msgstr ""
 
+#: lazarusidestrconsts.dlgselectcolorsglobal
+msgid "Select global colors"
+msgstr ""
+
+#: lazarusidestrconsts.dlgselectcolorslang
+msgid "Select colors for %s"
+msgstr ""
+
+#: lazarusidestrconsts.dlgselectcolorstomodify
+msgid "Modify colors/styles"
+msgstr ""
+
+#: lazarusidestrconsts.dlgselectcolorstomodifyglobal
+msgid "Modify global colors/styles"
+msgstr ""
+
+#: lazarusidestrconsts.dlgselectcolorstomodifylang
+msgid "Modify colors/styles for %s"
+msgstr ""
+
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected Text"
 msgstr "&Seçilmiş Metin"
@@ -2864,10 +2884,6 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgvisiblerightmargin
 msgid "Visible right margin"
-msgstr ""
-
-#: lazarusidestrconsts.dlgwarneditschemedefaults
-msgid "Editing global for all languages"
 msgstr ""
 
 #: lazarusidestrconsts.dlgwholewordsonly
