@@ -15,8 +15,11 @@ type
   TForm1 = class(TForm)
     Chart1: TChart;
     Chart1BarSeries1: TBarSeries;
+    ChartLine2: TConstantLine;
+    ChartLine1: TConstantLine;
     Chart1FuncSeries1: TFuncSeries;
     ChartToolset1: TChartToolset;
+    ChartToolset1ConstantLineDragTool1: TConstantLineDragTool;
     ChartToolset1PanAny: TPanDragTool;
     ChartToolset1PanHor: TPanDragTool;
     ChartToolset1PanVert: TPanDragTool;
@@ -25,6 +28,7 @@ type
     ChartToolset1ZoomOut: TZoomClickTool;
     ChartToolset1ZoomIn: TZoomClickTool;
     Panel1: TPanel;
+    Panel2: TPanel;
     rgZoom: TRadioGroup;
     RandomChartSource1: TRandomChartSource;
     rgPan: TRadioGroup;

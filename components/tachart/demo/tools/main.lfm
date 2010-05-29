@@ -1,15 +1,15 @@
 object Form1: TForm1
   Left = 292
-  Height = 466
+  Height = 475
   Top = 152
   Width = 554
   Caption = 'Form1'
-  ClientHeight = 466
+  ClientHeight = 475
   ClientWidth = 554
   LCLVersion = '0.9.29'
   object Chart1: TChart
     Left = 0
-    Height = 388
+    Height = 371
     Top = 0
     Width = 554
     AxisList = <    
@@ -50,11 +50,27 @@ object Form1: TForm1
       Source = RandomChartSource1
       UseReticule = True
     end
+    object ChartLine1: TConstantLine
+      LineStyle = lsVertical
+      Pen.Color = clLime
+      Pen.Style = psDash
+      Pen.Width = 2
+      Position = -1.5
+      SeriesColor = clLime
+    end
+    object ChartLine2: TConstantLine
+      LineStyle = lsVertical
+      Pen.Color = clFuchsia
+      Pen.Style = psDash
+      Pen.Width = 2
+      Position = 1.5
+      SeriesColor = clFuchsia
+    end
   end
   object Panel1: TPanel
     Left = 0
     Height = 78
-    Top = 388
+    Top = 371
     Width = 554
     Align = alBottom
     ClientHeight = 78
@@ -114,6 +130,15 @@ object Form1: TForm1
       TabOrder = 1
     end
   end
+  object Panel2: TPanel
+    Left = 0
+    Height = 26
+    Top = 449
+    Width = 554
+    Align = alBottom
+    Caption = 'Press Ctrl to activate reticlue, Alt-drag to move vertical lines'
+    TabOrder = 2
+  end
   object ChartToolset1: TChartToolset
     left = 124
     top = 75
@@ -146,6 +171,10 @@ object Form1: TForm1
     end
     object ChartToolset1ReticuleTool1: TReticuleTool
       Shift = [ssCtrl]
+    end
+    object ChartToolset1ConstantLineDragTool1: TConstantLineDragTool
+      Shift = [ssAlt, ssLeft]
+      GrabRadius = 4
     end
   end
   object RandomChartSource1: TRandomChartSource

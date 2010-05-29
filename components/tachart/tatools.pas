@@ -163,7 +163,6 @@ type
   private
     FGrabRadius: Integer;
     FLine: TConstantLine;
-    function PointToPos(ALine: TConstantLine; APoint: TPoint): Double;
   public
     constructor Create(AOwner: TComponent); override;
     procedure MouseDown(APoint: TPoint); override;
@@ -748,24 +747,25 @@ end;
 
 procedure TConstantLineDragTool.MouseDown(APoint: TPoint);
 var
-  i: Integer;
+  i, d, bestd: Integer;
   c, bestc: TConstantLine;
-  d, bestd: Double;
 begin
-  {$R-}{$Q-}
-  bestd := Infinity;
+  bestd := MaxInt;
   bestc := nil;
   for i := 0 to FChart.SeriesCount - 1 do begin
     if not (FChart.Series[i] is TConstantLine) then continue;
     c := FChart.Series[i] as TConstantLine;
-    d := Abs(c.Position - PointToPos(c, APoint));
+    if c.LineStyle = lsVertical then
+      d := FChart.XGraphToImage(c.Position) - APoint.X
+    else
+      d := FChart.YGraphToImage(c.Position) - APoint.Y;
+    d := Abs(d);
     if d < bestd then begin
       bestd := d;
       bestc := c;
     end;
   end;
   if (bestc = nil) or (bestd > GrabRadius) then exit;
-  {$ifdef OverflowChecking}{$Q+}{$endif}{$ifdef RangeChecking}{$R+}{$endif}
   if bestc.LineStyle = lsVertical then
     ActiveCursor := crSizeWE
   else
@@ -777,24 +777,20 @@ end;
 
 procedure TConstantLineDragTool.MouseMove(APoint: TPoint);
 begin
-  FLine.Position := PointToPos(FLine, APoint);
+  if FLine = nil then exit;
+  if FLine.LineStyle = lsVertical then
+    FLine.Position := FChart.XImageToGraph(APoint.X)
+  else
+    FLine.Position := FChart.YImageToGraph(APoint.Y);
   FChart.Invalidate;
 end;
 
 procedure TConstantLineDragTool.MouseUp(APoint: TPoint);
 begin
   Unused(APoint);
+  FLine := nil;
   Deactivate;
   Handled;
-end;
-
-function TConstantLineDragTool.PointToPos(
-  ALine: TConstantLine; APoint: TPoint): Double;
-begin
-  if ALine.LineStyle = lsVertical then
-    Result := FChart.XImageToGraph(APoint.X)
-  else
-    Result := FChart.YImageToGraph(APoint.Y);
 end;
 
 initialization
