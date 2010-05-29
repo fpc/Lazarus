@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, LeakInfo, LazIDEIntf, MenuIntf, contnrs, Clipbrd;
+  StdCtrls, ComCtrls, ExtCtrls, LeakInfo, LazIDEIntf, MenuIntf, contnrs, Clipbrd,
+  XMLConf;
 
 type
   TJumpProc = procedure (Sender: TObject; const SourceName: string; Line: integer) of object;
@@ -18,7 +19,7 @@ type
     btnClipboard: TButton;
     chkUseRaw: TCheckBox;
     chkStayOnTop: TCheckBox;
-    edtTrcFileName: TEdit;
+    edtTrcFileName:TComboBox;
     lblTrcFile: TLabel;
     ctrlPanel: TPanel;
     memoSummary: TMemo;
@@ -47,6 +48,10 @@ type
     function GetStackTraceText(trace: TStackTrace; useRaw: Boolean): string;
     function GetStackLineText(const Line: TStackLine; useRaw: Boolean): string;
 
+    procedure SaveState(cfg: TXMLConfig);
+    procedure LoadState(cfg: TXMLConfig);
+
+    procedure AddFileToList(const FileName: AnsiString);
   protected
     procedure LazarusJump(Sender: TObject; const SourceFile: string; Line: Integer);
   public
@@ -92,7 +97,7 @@ implementation
 
 procedure ShowHeapTrcViewForm(JumpProc: TJumpProc);
 begin
-  if not Assigned(HeapTrcViewForm) then HeapTrcViewForm := THeapTrcViewForm.Create(nil);
+  if not Assigned(HeapTrcViewForm) then HeapTrcViewForm := THeapTrcViewForm.Create(Application);
   if not Assigned(JumpProc)
     then HeapTrcViewForm.OnJumpProc := @HeapTrcViewForm.LazarusJump
     else HeapTrcViewForm.OnJumpProc := JumpProc;
@@ -104,6 +109,7 @@ end;
 procedure THeapTrcViewForm.btnUpdateClick(Sender: TObject);
 begin
   DoUpdateLeaks;
+  AddFileToList(edtTrcFileName.Text);
 end;
 
 procedure THeapTrcViewForm.btnClipboardClick(Sender: TObject);
@@ -120,6 +126,7 @@ begin
     if not OpenDialog.Execute then Exit;
     edtTrcFileName.Text := OpenDialog.FileName;
     DoUpdateLeaks;
+    AddFileToList(edtTrcFileName.Text);
   finally
     OpenDialog.Free;
   end;
@@ -137,24 +144,55 @@ begin
   trvTraceInfo.Invalidate;
 end;
 
-procedure THeapTrcViewForm.FormCreate(Sender: TObject);
+var
+  ConfigFileName : AnsiString = '';
+function CreateXMLConfig: TXMLConfig;
 begin
-  //
-  Caption := sfrmCap;
-  lblTrcFile.Caption:= slblTrace;
-  btnUpdate.Caption:= sbtnUpdate;
-  btnClipboard.Caption:= sbtnClipBrd;
-  chkUseRaw.Caption:= schkRaw;
-  chkStayOnTop.Caption:= schkTop;
-  //
-  fItems := TList.Create;
-  chkStayOnTop.Checked := FormStyle = fsStayOnTop;
+  Result:=TXMLConfig.Create(nil);
+  Result.RootName:='config';
+  if (ConfigFileName='') and Assigned(LazarusIDE) then
+    ConfigFileName:=IncludeTrailingPathDelimiter(LazarusIDE.GetPrimaryConfigPath)+'leakview.xml';
+  Result.FileName:=ConfigFileName;
+end;
+
+procedure THeapTrcViewForm.FormCreate(Sender: TObject);
+var
+  cfg   : TXMLConfig;
+begin
+  Caption:=sfrmCap;
+  lblTrcFile.Caption:=slblTrace;
+  btnUpdate.Caption:=sbtnUpdate;
+  btnClipboard.Caption:=sbtnClipBrd;
+  chkUseRaw.Caption:=schkRaw;
+  chkStayOnTop.Caption:=schkTop;
+  fItems:=TList.Create;
+  try
+    cfg:=CreateXMLConfig;
+    try
+      LoadState(cfg);
+    finally
+      cfg.Free;
+    end;
+  except
+  end;
 end;
 
 procedure THeapTrcViewForm.FormDestroy(Sender: TObject);
+var
+  cfg : TXMLConfig;
 begin
   ClearItems;
   fItems.Free;
+  try
+    cfg:=CreateXMLConfig;
+    try
+      SaveState(cfg);
+    finally
+      cfg.Free;
+    end;
+  except
+  end;
+  HeapTrcViewForm:=nil;
 end;
 
 procedure THeapTrcViewForm.trvTraceInfoDblClick(Sender: TObject);
@@ -355,6 +393,93 @@ begin
         else Result := Format(StackLineFormat, ['$'+IntToHex(Addr, sizeof(Pointer)*2)]);
 end;
 
+procedure THeapTrcViewForm.SaveState(cfg:TXMLConfig);
+var
+  b : TRect;
+  i : Integer;
+begin
+  cfg.SetValue('isStayOnTop',FormStyle=fsStayOnTop);
+  b:=BoundsRect;
+  cfg.OpenKey('bounds');
+  cfg.SetValue('left', b.Left);
+  cfg.SetValue('top', b.Top);
+  cfg.SetValue('right', b.Right);
+  cfg.SetValue('bottom', b.Bottom);
+  cfg.CloseKey;
+  for i:=0 to edtTrcFileName.Items.Count-1 do
+    cfg.SetValue('path'+IntToStr(i), UTF8Decode(edtTrcFileName.Items[i]) );
+end;
+
+function PointInRect(p: TPoint; const r: TRect): Boolean;
+begin
+  Result:=(p.X>=r.Left) and (p.X<=r.Right) and (p.y>=r.Top) and (p.y<=r.Bottom);
+end;
+
+function inAnyMonitor(b: TRect): Boolean;
+begin
+  Result:=Assigned(Screen.MonitorFromRect(b));
+  if not Result then
+    Result:=PointInRect( Point(b.Left, b.Top), Bounds(0, 0, Screen.Width, Screen.Height));
+end;
+
+procedure THeapTrcViewForm.LoadState(cfg:TXMLConfig);
+var
+  b     : TRect;
+  isTop : Boolean;
+  st    : TStringList;
+  s     : WideString;
+  i     : Integer;
+const
+  InitFormStyle: array [Boolean] of TFormStyle = (fsNormal, fsStayOnTop);
+begin
+  isTop:=True;
+  b:=BoundsRect;
+  st:=TStringList.Create;
+  try
+    istop:=cfg.GetValue('isStayOnTop',isTop);
+    cfg.OpenKey('bounds');
+    b.Left:=cfg.GetValue('left', b.Left);
+    b.Top:=cfg.GetValue('top', b.Top);
+    b.Right:=cfg.GetValue('right', b.Right);
+    b.Bottom:=cfg.GetValue('bottom', b.Bottom);
+    cfg.CloseKey;
+
+    if b.Right-b.Left<=0 then b.Right:=b.Left+40;
+    if b.Bottom-b.Top<=0 then b.Bottom:=b.Top+40;
+
+    for i:=0 to 7 do begin
+      s:=cfg.GetValue('path'+IntToStr(i), '');
+      if s<>'' then st.Add(UTF8Encode(s));
+    end;
+
+  except
+  end;
+  if not inAnyMonitor(b) then  b:=Bounds(40,40, 200, 200);
+
+  FormStyle:=InitFormStyle[isTop];
+  BoundsRect:=b;
+  chkStayOnTop.Checked := isTop;
+  if st.Count>0 then begin
+    edtTrcFileName.Items.AddStrings(st);
+    edtTrcFileName.ItemIndex:=0;
+  end;
+
+  st.Free;
+end;
+
+procedure THeapTrcViewForm.AddFileToList(const FileName:AnsiString);
+var
+  i : Integer;
+begin
+  i:=edtTrcFileName.Items.IndexOf(FileName);
+  if (i<0) then begin
+    if edtTrcFileName.Items.Count=8 then
+      edtTrcFileName.Items.Delete(7);
+  end else
+    edtTrcFileName.Items.Delete(i);
+  edtTrcFileName.Items.Insert(0, FileName);
+end;
+
 procedure THeapTrcViewForm.LazarusJump(Sender: TObject; const SourceFile: string; Line: Integer);
 var
   nm  : string;
@@ -377,9 +502,6 @@ begin
   RegisterIDEMenuCommand(itmSecondaryTools, 'mnuLeakView', rsLeakView, nil,
     @IDEMenuClicked);
 end;
-
-finalization
-  HeapTrcViewForm.Free;
 
 end.
 
