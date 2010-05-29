@@ -39,6 +39,7 @@ begin
   SavedHandlesList := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TObject));
   FSocketEventMap := TMap.Create(TMapIdType(its4), SizeOf(Pointer));
   StayOnTopList := nil;
+  FEatNextDeactivate := False;
   {$IFDEF HASX11}
   FLastMinimizeEvent := 0;
   {$ENDIF}
@@ -403,8 +404,8 @@ begin
           W.BeginUpdate;
           Flags := W.windowFlags;
           W.setWindowFlags(Flags or QtWindowStaysOnTopHint);
-          W.setAttribute(QtWA_ShowWithoutActivating, False);
           W.Show;
+          W.setAttribute(QtWA_ShowWithoutActivating, False);
           W.EndUpdate;
         end;
       end;
@@ -422,18 +423,30 @@ end;
 function TQtWidgetSet.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   AObject: TQtObject;
+  W: TQtMainWindow;
 begin
   Result := False;
   case QEvent_type(Event) of
     QEventApplicationActivate:
-      if Assigned(Application) then
+      if Assigned(Application) and not FEatNextDeactivate then
       begin
+        // check if activated form is StayOnTop, if it's so, we must
+        // eat next appdeactivate & appactivate since we are changing form
+        // flags !
+        if (StayOnTopList <> nil) then
+        begin
+          W := TQtMainWindow(HWNDFromWidgetH(QApplication_activeWindow()));
+          FEatNextDeactivate := StayOnTopList.HasId(W);
+        end;
         Application.IntfAppActivate;
         QtRestoreStayOnTop;
-      end;
+        if (FEatNextDeactivate) and (W <> nil) then
+          W.Activate;
+      end else
+        FEatNextDeactivate := False;
 
     QEventApplicationDeactivate:
-      if Assigned(Application) then
+      if Assigned(Application) and not FEatNextDeactivate then
       begin
         Application.IntfAppDeactivate;
         QtRemoveStayOnTop;

@@ -57,6 +57,7 @@ type
   TQtWidgetSet = Class(TWidgetSet)
   private
     App: QApplicationH;
+    FEatNextDeactivate: Boolean;
     FOverrideCursor: TObject;
     SavedDCList: TFPList;
     CriticalSection: TRTLCriticalSection;
