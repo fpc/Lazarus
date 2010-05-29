@@ -1397,13 +1397,19 @@ resourcestring
   dlgSetAllElementDefault = 'Set all elements to default';
   dlgColorExportButton = 'Export';
   dlgUseSchemeDefaults = 'Use global scheme settings';
-  dlgWarnEditSchemeDefaults = 'Editing global for all languages';
   dlgColor = 'Color';
+  dlgColorNotModified = 'Not modified';
+
+  dlgSelectColorsToModify = 'Modify colors/styles';
+  dlgSelectColorsToModifyLang = 'Modify colors/styles for %s';
+  dlgSelectColorsToModifyGlobal = 'Modify global colors/styles';
+  dlgSelectColorsLang = 'Select colors for %s';
+  dlgSelectColorsGlobal = 'Select global colors';
+
   dlgForecolor = 'Foreground';
   dlgFrameColor = 'Frame color';
   dlgUnsavedLineColor = 'Unsaved line';
   dlgSavedLineColor = 'Saved line';
-  dlgEdUseDefColor = 'Use default color';
   dlgElementAttributes = 'Element Attributes';
   dlgEdBold = 'Bold';
   dlgEdItal = 'Italic';

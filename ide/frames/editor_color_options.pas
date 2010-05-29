@@ -38,16 +38,19 @@ type
 
   TEditorColorOptionsFrame = class(TAbstractIDEOptionsEditor)
     BackGroundColorBox: TColorBox;
+    Bevel1: TBevel;
+    Bevel1a: TBevel;
+    Bevel2: TBevel;
     btnExport: TButton;
     chkSchemeDefaults: TCheckBox;
-    FrameColorBox: TColorBox;
     BackGroundLabel: TLabel;
-    FrameColorLabel: TLabel;
+    FrameColorBox: TColorBox;
     BackGroundUseDefaultCheckBox: TCheckBox;
     FrameColorUseDefaultCheckBox: TCheckBox;
     ForegroundColorBox: TColorBox;
-    lblDefaultEditWarn: TLabel;
+    lblSelectModifications: TLabel;
     ExportSaveDialog: TSaveDialog;
+    lblAttributeSection: TLabel;
     TextBoldCheckBox: TCheckBox;
     TextBoldRadioInvert: TRadioButton;
     TextBoldRadioOff: TRadioButton;
@@ -76,7 +79,7 @@ type
     LanguageLabel: TLabel;
     SetAllAttributesToDefaultButton: TButton;
     SetAttributeToDefaultButton: TButton;
-    ElementAttributesGroupBox: TGroupBox;
+    pnlElementAttributes: TPanel;
     procedure btnExportClick(Sender: TObject);
     procedure ColorElementTreeAdvancedCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
       State: TCustomDrawState; Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
@@ -85,8 +88,10 @@ type
     procedure ColorPreviewMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ForegroundColorBoxChange(Sender: TObject);
+    procedure ForegroundColorBoxGetColors(Sender: TCustomColorBox; Items: TStrings);
     procedure GeneralCheckBoxOnChange(Sender: TObject);
     procedure ComboBoxOnExit(Sender: TObject);
+    procedure pnlElementAttributesResize(Sender: TObject);
     procedure SetAllAttributesToDefaultButtonClick(Sender: TObject);
     procedure SetAttributeToDefaultButtonClick(Sender: TObject);
     procedure TextStyleRadioOnChange(Sender: TObject);
@@ -423,20 +428,32 @@ begin
   if Sender = ForegroundColorBox then
   begin
     AttrToEdit.Foreground := DefaultToNone(ForeGroundColorBox.Selected);
-    ForeGroundUseDefaultCheckBox.Checked := ForeGroundColorBox.Selected = clDefault;
+    ForeGroundUseDefaultCheckBox.Checked := ForeGroundColorBox.Selected <> clDefault;
   end;
   if Sender = BackGroundColorBox then
   begin
     AttrToEdit.Background := DefaultToNone(BackGroundColorBox.Selected);
-    BackGroundUseDefaultCheckBox.Checked := BackGroundColorBox.Selected = clDefault;
+    BackGroundUseDefaultCheckBox.Checked := BackGroundColorBox.Selected <> clDefault;
   end;
   if Sender = FrameColorBox then
   begin
     AttrToEdit.FrameColor := DefaultToNone(FrameColorBox.Selected);
-    FrameColorUseDefaultCheckBox.Checked := FrameColorBox.Selected = clDefault;
+    FrameColorUseDefaultCheckBox.Checked := FrameColorBox.Selected <> clDefault;
   end;
   UpdatingColor := False;
   UpdateCurrentScheme;
+end;
+
+procedure TEditorColorOptionsFrame.ForegroundColorBoxGetColors(Sender: TCustomColorBox;
+  Items: TStrings);
+var
+  i: longint;
+begin
+  i := Items.IndexOfObject(TObject(PtrInt(clDefault)));
+  if i >= 0 then begin
+    Items[i] := dlgColorNotModified;
+    Items.Move(i, 1);
+  end;
 end;
 
 procedure TEditorColorOptionsFrame.GeneralCheckBoxOnChange(Sender: TObject);
@@ -475,11 +492,12 @@ begin
     if Sender = FrameColorUseDefaultCheckBox then TheColorBox := FrameColorBox;
     if Assigned(TheColorBox) then begin
       if TCheckBox(Sender).Checked then begin
+        TheColorBox.Selected := TheColorBox.Tag;
+      end
+      else begin
         TheColorBox.Tag := TheColorBox.Selected;
         TheColorBox.Selected := clDefault;
-      end
-      else
-        TheColorBox.Selected := TheColorBox.Tag;
+      end;
 
       if (Sender = ForeGroundUseDefaultCheckBox) and
          (DefaultToNone(ForegroundColorBox.Selected) <> AttrToEdit.Foreground)
@@ -598,6 +616,34 @@ begin
   end;
 end;
 
+procedure TEditorColorOptionsFrame.pnlElementAttributesResize(Sender: TObject);
+var
+  MinAnchor: TControl;
+  MinWidth: Integer;
+
+  procedure CheckControl(Other: TControl);
+  var w,h: Integer;
+  begin
+    if not Other.Visible then exit;
+    Other.GetPreferredSize(w,h);
+    if w <= MinWidth then exit;
+    MinAnchor := Other;
+    MinWidth := w;
+  end;
+begin
+  MinWidth := -1;
+  MinAnchor := ForeGroundLabel;
+  CheckControl(BackGroundLabel);
+  CheckControl(ForeGroundUseDefaultCheckBox);
+  CheckControl(BackGroundUseDefaultCheckBox);
+  CheckControl(FrameColorUseDefaultCheckBox);
+  CheckControl(TextUnderlineCheckBox);
+  CheckControl(TextBoldCheckBox);
+  CheckControl(TextItalicCheckBox);
+
+  ForegroundColorBox.AnchorSide[akLeft].Control := MinAnchor;
+end;
+
 procedure TEditorColorOptionsFrame.SetAllAttributesToDefaultButtonClick(
   Sender: TObject);
 begin
@@ -686,16 +732,89 @@ begin
   if (FCurHighlightElement = nil) or UpdatingColor then
     Exit;
   UpdatingColor := True;
+  DisableAlign;
+  try
 
   chkSchemeDefaults.Checked := FCurHighlightElement.IsUsingSchemeGlobals;
-  chkSchemeDefaults.Enabled := (FCurHighlightElement.GetSchemeGlobal <> nil) and
+  chkSchemeDefaults.Visible := (FCurHighlightElement.GetSchemeGlobal <> nil) and
                                not FIsEditingDefaults;
-  lblDefaultEditWarn.Visible := chkSchemeDefaults.Enabled or FIsEditingDefaults;
 
   AttrToShow := FCurHighlightElement;
   if FCurHighlightElement.IsUsingSchemeGlobals then
     AttrToShow := FCurHighlightElement.GetSchemeGlobal;
 
+  // Adjust color captions
+  if AttrToShow = FCurrentColorScheme.AttributeByEnum[ahaModifiedLine] then begin
+    ForeGroundUseDefaultCheckBox.Caption := dlgSavedLineColor;
+    FrameColorUseDefaultCheckBox.Caption := dlgUnsavedLineColor;
+  end else begin
+    ForeGroundUseDefaultCheckBox.Caption := dlgForecolor;
+    FrameColorUseDefaultCheckBox.Caption := dlgFrameColor;
+  end;
+
+  case FCurHighlightElement.Group of
+    agnLanguage:
+      lblSelectModifications.Caption := dlgSelectColorsToModify;
+    agnDefault:
+      if FCurHighlightElement.IsUsingSchemeGlobals or FIsEditingDefaults then
+        lblSelectModifications.Caption := dlgSelectColorsGlobal
+      else
+        lblSelectModifications.Caption := Format(dlgSelectColorsLang, [LanguageComboBox.Text]);
+    else
+      if FCurHighlightElement.IsUsingSchemeGlobals or FIsEditingDefaults then
+        lblSelectModifications.Caption := dlgSelectColorsToModifyGlobal
+      else
+        lblSelectModifications.Caption := Format(dlgSelectColorsToModifyLang, [LanguageComboBox.Text]);
+  end;
+
+  if AttrToShow.Group = agnDefault then begin
+    ForegroundColorBox.Style := ForegroundColorBox.Style - [cbIncludeDefault];
+    BackGroundColorBox.Style := BackGroundColorBox.Style - [cbIncludeDefault];
+  end else begin
+    ForegroundColorBox.Style := ForegroundColorBox.Style + [cbIncludeDefault];
+    BackGroundColorBox.Style := BackGroundColorBox.Style + [cbIncludeDefault];
+  end;
+
+  // Forground
+  ForeGroundLabel.Visible              := (hafForeColor in AttrToShow.Features) and
+                                          (AttrToShow.Group = agnDefault);
+  ForeGroundUseDefaultCheckBox.Visible := (hafForeColor in AttrToShow.Features) and
+                                          not(AttrToShow.Group = agnDefault);
+  ForegroundColorBox.Visible           := (hafForeColor in AttrToShow.Features);
+
+  ForegroundColorBox.Selected := NoneToDefault(AttrToShow.Foreground);
+  if ForegroundColorBox.Selected = clDefault then
+    ForegroundColorBox.Tag := ForegroundColorBox.DefaultColorColor
+  else
+    ForegroundColorBox.Tag := ForegroundColorBox.Selected;
+  ForeGroundUseDefaultCheckBox.Checked := ForegroundColorBox.Selected <> clDefault;
+
+  // BackGround
+  BackGroundLabel.Visible              := (hafBackColor in AttrToShow.Features) and
+                                          (AttrToShow.Group = agnDefault);
+  BackGroundUseDefaultCheckBox.Visible := (hafBackColor in AttrToShow.Features) and
+                                          not(AttrToShow.Group = agnDefault);
+  BackGroundColorBox.Visible           := (hafBackColor in AttrToShow.Features);
+
+  BackGroundColorBox.Selected := NoneToDefault(AttrToShow.Background);
+  if BackGroundColorBox.Selected = clDefault then
+    BackGroundColorBox.Tag := BackGroundColorBox.DefaultColorColor
+  else
+    BackGroundColorBox.Tag := BackGroundColorBox.Selected;
+  BackGroundUseDefaultCheckBox.Checked := BackGroundColorBox.Selected <> clDefault;
+
+  // Frame
+  FrameColorUseDefaultCheckBox.Visible := hafFrameColor in AttrToShow.Features;
+  FrameColorBox.Visible                := hafFrameColor in AttrToShow.Features;
+
+  FrameColorBox.Selected := NoneToDefault(AttrToShow.FrameColor);
+  if FrameColorBox.Selected = clDefault then
+    FrameColorBox.Tag := FrameColorBox.DefaultColorColor
+  else
+    FrameColorBox.Tag := FrameColorBox.Selected;
+  FrameColorUseDefaultCheckBox.Checked := FrameColorBox.Selected <> clDefault;
+
+  // Styles
   TextBoldCheckBox.Visible      := hafStyle in AttrToShow.Features;
   TextItalicCheckBox.Visible    := hafStyle in AttrToShow.Features;
   TextUnderlineCheckBox.Visible := hafStyle in AttrToShow.Features;
@@ -703,16 +822,6 @@ begin
   TextBoldRadioPanel.Visible      := hafStyleMask in AttrToShow.Features;
   TextItalicRadioPanel.Visible    := hafStyleMask in AttrToShow.Features;
   TextUnderlineRadioPanel.Visible := hafStyleMask in AttrToShow.Features;
-
-  ForeGroundLabel.Caption := dlgForecolor;
-  BackGroundLabel.Caption := dlgBackColor;
-  FrameColorLabel.Caption := dlgFrameColor;
-
-  if AttrToShow = FCurrentColorScheme.AttributeByEnum[ahaModifiedLine] then
-  begin
-    ForeGroundLabel.Caption := dlgSavedLineColor;
-    FrameColorLabel.Caption := dlgUnsavedLineColor;
-  end;
 
   if hafStyleMask in AttrToShow.Features then begin
     TextBoldCheckBox.Checked   := (fsBold in AttrToShow.Style) or
@@ -758,47 +867,11 @@ begin
     TextUnderlineCheckBox.Checked := fsUnderline in AttrToShow.Style;
   end;
 
-  BackGroundColorBox.Enabled           := hafBackColor in AttrToShow.Features;
-  BackGroundUseDefaultCheckBox.Enabled := (hafBackColor in AttrToShow.Features) and
-                                          not(AttrToShow.Group = agnDefault);
-  if AttrToShow.Group = agnDefault then
-    BackGroundColorBox.Style := BackGroundColorBox.Style - [cbIncludeDefault]
-  else
-    BackGroundColorBox.Style := BackGroundColorBox.Style + [cbIncludeDefault];
-
-  ForegroundColorBox.Enabled           := hafForeColor in AttrToShow.Features;
-  ForeGroundUseDefaultCheckBox.Enabled := (hafForeColor in AttrToShow.Features) and
-                                          not(AttrToShow.Group = agnDefault);
-  if AttrToShow.Group = agnDefault then
-    ForegroundColorBox.Style := ForegroundColorBox.Style - [cbIncludeDefault]
-  else
-    ForegroundColorBox.Style := ForegroundColorBox.Style + [cbIncludeDefault];
-
-  FrameColorBox.Enabled                := hafFrameColor in AttrToShow.Features;
-  FrameColorUseDefaultCheckBox.Enabled := hafFrameColor in AttrToShow.Features;
-
-  ForegroundColorBox.Selected := NoneToDefault(AttrToShow.Foreground);
-  if ForegroundColorBox.Selected = clDefault then
-    ForegroundColorBox.Tag := ForegroundColorBox.DefaultColorColor
-  else
-    ForegroundColorBox.Tag := ForegroundColorBox.Selected;
-  ForeGroundUseDefaultCheckBox.Checked := ForegroundColorBox.Selected = clDefault;
-
-  BackGroundColorBox.Selected := NoneToDefault(AttrToShow.Background);
-  if BackGroundColorBox.Selected = clDefault then
-    BackGroundColorBox.Tag := BackGroundColorBox.DefaultColorColor
-  else
-    BackGroundColorBox.Tag := BackGroundColorBox.Selected;
-  BackGroundUseDefaultCheckBox.Checked := BackGroundColorBox.Selected = clDefault;
-
-  FrameColorBox.Selected := NoneToDefault(AttrToShow.FrameColor);
-  if FrameColorBox.Selected = clDefault then
-    FrameColorBox.Tag := FrameColorBox.DefaultColorColor
-  else
-    FrameColorBox.Tag := FrameColorBox.Selected;
-  FrameColorUseDefaultCheckBox.Checked := FrameColorBox.Selected = clDefault;
-
   UpdatingColor := False;
+  finally
+    EnableAlign;
+  end;
+  pnlElementAttributesResize(nil);
 end;
 
 procedure TEditorColorOptionsFrame.FindCurHighlightElement;
@@ -1074,18 +1147,20 @@ begin
   end;
 
   FileExtensionsLabel.Caption := dlgFileExts;
+
   SetAttributeToDefaultButton.Caption := dlgSetElementDefault;
   SetAllAttributesToDefaultButton.Caption := dlgSetAllElementDefault;
   btnExport.Caption := dlgColorExportButton;
+
   chkSchemeDefaults.Caption := dlgUseSchemeDefaults;
-  lblDefaultEditWarn.Caption := dlgWarnEditSchemeDefaults;
+
+  lblSelectModifications.Caption := dlgSelectColorsToModify;
   ForeGroundLabel.Caption := dlgForecolor;
-  ForeGroundUseDefaultCheckBox.Caption := dlgEdUseDefColor;
   BackGroundLabel.Caption := dlgBackColor;
-  BackGroundUseDefaultCheckBox.Caption := dlgEdUseDefColor;
-  FrameColorLabel.Caption := dlgFrameColor;
-  FrameColorUseDefaultCheckBox.Caption := dlgEdUseDefColor;
-  ElementAttributesGroupBox.Caption := dlgElementAttributes;
+  ForeGroundUseDefaultCheckBox.Caption := dlgForecolor;
+  BackGroundUseDefaultCheckBox.Caption := dlgBackColor;
+  FrameColorUseDefaultCheckBox.Caption := dlgFrameColor;
+  lblAttributeSection.Caption := dlgElementAttributes;
 
   TextBoldCheckBox.Caption := dlgEdBold;
   TextBoldRadioOn.Caption := dlgEdOn;
