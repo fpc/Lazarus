@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, Controls,
-  TAGraph;
+  TAGraph, TASeries;
 
 type
 
@@ -151,6 +151,27 @@ type
     property ActiveCursor default crSizeAll;
     property Directions: TPanDirectionSet
       read FDirections write FDirections default PAN_DIRECTIONS_ALL;
+  end;
+
+const
+  DEF_GRAB_RADIUS = 4;
+
+type
+  { TConstantLineDragTool }
+
+  TConstantLineDragTool = class(TChartTool)
+  private
+    FGrabRadius: Integer;
+    FLine: TConstantLine;
+    function PointToPos(ALine: TConstantLine; APoint: TPoint): Double;
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure MouseDown(APoint: TPoint); override;
+    procedure MouseMove(APoint: TPoint); override;
+    procedure MouseUp(APoint: TPoint); override;
+  published
+    property GrabRadius: Integer
+      read FGrabRadius write FGrabRadius default DEF_GRAB_RADIUS;
   end;
 
   { TReticuleTool }
@@ -717,6 +738,65 @@ begin
   Handled;
 end;
 
+{ TConstantLineDragTool }
+
+constructor TConstantLineDragTool.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FGrabRadius := DEF_GRAB_RADIUS;
+end;
+
+procedure TConstantLineDragTool.MouseDown(APoint: TPoint);
+var
+  i: Integer;
+  c, bestc: TConstantLine;
+  d, bestd: Double;
+begin
+  {$R-}{$Q-}
+  bestd := Infinity;
+  bestc := nil;
+  for i := 0 to FChart.SeriesCount - 1 do begin
+    if not (FChart.Series[i] is TConstantLine) then continue;
+    c := FChart.Series[i] as TConstantLine;
+    d := Abs(c.Position - PointToPos(c, APoint));
+    if d < bestd then begin
+      bestd := d;
+      bestc := c;
+    end;
+  end;
+  if (bestc = nil) or (bestd > GrabRadius) then exit;
+  {$ifdef OverflowChecking}{$Q+}{$endif}{$ifdef RangeChecking}{$R+}{$endif}
+  if bestc.LineStyle = lsVertical then
+    ActiveCursor := crSizeWE
+  else
+    ActiveCursor := crSizeNS;
+  FLine := bestc;
+  Activate;
+  Handled;
+end;
+
+procedure TConstantLineDragTool.MouseMove(APoint: TPoint);
+begin
+  FLine.Position := PointToPos(FLine, APoint);
+  FChart.Invalidate;
+end;
+
+procedure TConstantLineDragTool.MouseUp(APoint: TPoint);
+begin
+  Unused(APoint);
+  Deactivate;
+  Handled;
+end;
+
+function TConstantLineDragTool.PointToPos(
+  ALine: TConstantLine; APoint: TPoint): Double;
+begin
+  if ALine.LineStyle = lsVertical then
+    Result := FChart.XImageToGraph(APoint.X)
+  else
+    Result := FChart.YImageToGraph(APoint.Y);
+end;
+
 initialization
 
   ToolsClassRegistry := TStringList.Create;
@@ -725,6 +805,7 @@ initialization
   RegisterChartToolClass(TZoomClickTool, 'Zoom click tool');
   RegisterChartToolClass(TPanDragTool, 'Panning drag tool');
   RegisterChartToolClass(TReticuleTool, 'Reticule tool');
+  RegisterChartToolClass(TConstantLineDragTool, 'Constant line drag tool');
 
 finalization
 
