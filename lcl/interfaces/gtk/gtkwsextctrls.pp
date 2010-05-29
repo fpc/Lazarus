@@ -259,7 +259,8 @@ begin
   {$ifdef gtk2}
   {we must update our icon (if exists) otherwise it will be updated only
   when our tab reach focus}
-  if not ACustomPage.TabVisible
+  if not (csDesigning in ACustomPage.ComponentState)
+    and not ACustomPage.TabVisible
     or not ACustomPage.HandleAllocated
     or not Assigned(ACustomPage.Parent)
   then
@@ -288,7 +289,14 @@ end;
 
 class procedure TGtkWSCustomPage.ShowHide(const AWinControl: TWinControl);
 begin
-  TGtkWidgetSet(WidgetSet).SetVisible(AWinControl, TCustomPage(AWinControl).TabVisible);
+  {$ifdef gtk2}
+  if (csDesigning in AWinControl.ComponentState) then
+    TGtkWidgetSet(WidgetSet).SetVisible(AWinControl,
+      AWinControl.HandleObjectShouldBeVisible)
+  else
+  {$endif}
+    TGtkWidgetSet(WidgetSet).SetVisible(AWinControl,
+      TCustomPage(AWinControl).TabVisible);
 end;
 
 { TGtkWSCustomNotebook }
