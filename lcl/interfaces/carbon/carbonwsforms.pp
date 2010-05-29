@@ -81,6 +81,7 @@ type
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
 
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean; const Alpha: Byte); override;
+    class procedure SetFormStyle(const ACustomForm: TCustomForm; const ANewFormStyle, AOldFormStyle: TFormStyle); override;
   end;
 
   { TCarbonWSForm }
@@ -228,6 +229,23 @@ begin
   if not CheckHandle(ACustomForm, Self, 'SetFormBorderStyle') then Exit;
   if not AlphaBlend then v:=1 else v:=Alpha/255;
   SetWindowAlpha( TCarbonWindow(ACustomForm.Handle).Window, v);
+end;
+
+class procedure TCarbonWSCustomForm.SetFormStyle(const ACustomForm:TCustomForm;
+  const ANewFormStyle,AOldFormStyle:TFormStyle);
+var
+  newClass : WindowClass;
+begin
+  if not CheckHandle(ACustomForm, Self, 'SetFormStyle') then Exit;
+
+  case ANewFormStyle of
+    fsStayOnTop: newClass:=kFloatingWindowClass;
+    fsSplash: newClass:=kUtilityWindowClass;
+    fsSystemStayOnTop: newClass:=kUtilityWindowClass;
+  else
+    newClass:=kDocumentWindowClass;
+  end;
+  HIWindowChangeClass( TCarbonWindow(ACustomForm.Handle).Window, newClass);
 end;
 
 { TCarbonWSHintWindow }
