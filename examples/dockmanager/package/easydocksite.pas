@@ -53,6 +53,7 @@ LCL TODO:
 
 {$DEFINE ctlType} //save <name>:<classname>=<caption>
 {$DEFINE RootDock} //allow docking into the root zone?
+{$DEFINE KeepSize}  //preserve relative sizes on dock?
 {.$DEFINE freeImages} //free dockheader images on finalization? (can cause exception)
 //{$DEFINE newSplitter} //exclude splitter from remaining zone
 {.$DEFINE handle_existing} //dock controls existing in the dock site?
@@ -1722,6 +1723,49 @@ begin
   Parent.InsertAfter(LinkAfter, NewZone);
 //resize?
   r2 := r;
+{$IFDEF KeepSize}
+{ TODO : update TControl to init the UndockWidth/Height properly }
+  case where of
+  alLeft:
+    begin
+      NewOrientation := doHorizontal;
+      if (LinkAfter <> nil) and (LinkAfter.ChildControl <> nil) then
+        r.Left := r.Left + (r.Right - r.Left) * NewZone.ChildControl.UndockWidth div (NewZone.ChildControl.UndockWidth + LinkAfter.ChildControl.UndockWidth)
+      else
+        r.Left := (r.Left+r.Right) div 2;
+      r2.Right := r.Left;
+    end;
+  alRight:
+    begin
+      NewOrientation := doHorizontal;
+      if (LinkAfter <> nil) and (LinkAfter.ChildControl <> nil) then
+        r.Right := r.Left + (r.Right - r.Left) * LinkAfter.ChildControl.UndockWidth div (NewZone.ChildControl.UndockWidth + LinkAfter.ChildControl.UndockWidth)
+      else
+        r.Right := (r.Left+r.Right) div 2;
+      r2.Left := r.Right;
+    end;
+  alTop:
+    begin
+      NewOrientation := doVertical;
+      if (LinkAfter <> nil) and (LinkAfter.ChildControl <> nil) then
+        r.Top := r.Top + (r.Bottom - r.Top) * NewZone.ChildControl.UndockHeight div (NewZone.ChildControl.UndockHeight + LinkAfter.ChildControl.UndockHeight)
+      else
+        r.Top := (r.Bottom+r.Top) div 2;
+      r2.Bottom := r.Top;
+    end;
+  alBottom:
+    begin
+      NewOrientation := doVertical;
+      if (LinkAfter <> nil) and (LinkAfter.ChildControl <> nil) then
+        r.Bottom := r.Top + (r.Bottom - r.Top) * LinkAfter.ChildControl.UndockHeight div (NewZone.ChildControl.UndockHeight + LinkAfter.ChildControl.UndockHeight)
+      else
+        r.Bottom := (r.Bottom+r.Top) div 2;
+      r2.Top := r.Bottom;
+    end;
+  else //keep compiler happy
+    NewOrientation := doNoOrient;
+  end;
+{$ELSE}
   case where of
   alLeft:
     begin
@@ -1750,6 +1794,7 @@ begin
   else //keep compiler happy
     NewOrientation := doNoOrient;
   end;
+{$ENDIF}
 //parent orientation? (if in rootzone)
   //if parent.Orientation = doNoOrient then
   if Parent <> nil then
