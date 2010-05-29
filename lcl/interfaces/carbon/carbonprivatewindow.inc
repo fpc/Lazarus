@@ -1128,6 +1128,7 @@ procedure TCarbonWindow.CreateWindow(const AParams: TCreateParams);
 var
   AWindow: WindowRef;
   NewWindowClass: Integer;
+  GroupClass: Integer;
   MinSize, MaxSize: HISize;
   Attributes: WindowAttributes;
 begin
@@ -1135,7 +1136,7 @@ begin
 
   if csDesigning in LCLObject.ComponentState then
   begin
-    NewWindowClass := kDocumentWindowClass;
+    GroupClass := kDocumentWindowClass;
     Attributes := kWindowInWindowMenuAttribute or
       GetBorderWindowAttrs(bsSizeable, [biMaximize, biMinimize, biSystemMenu]);
   end
@@ -1144,24 +1145,27 @@ begin
     Attributes := 0;
     case (LCLObject as TCustomForm).FormStyle of
     fsStayOnTop, fsSplash:
-      NewWindowClass := kFloatingWindowClass;
+      GroupClass := kFloatingWindowClass;
+    fsSystemStayOnTop:
+      GroupClass := kUtilityWindowClass;
     else
-      NewWindowClass := kDocumentWindowClass;
+      GroupClass := kDocumentWindowClass;
       Attributes := kWindowInWindowMenuAttribute;
     end;
     Attributes := Attributes or
       GetBorderWindowAttrs((LCLObject as TCustomForm).BorderStyle,
         (LCLObject as TCustomForm).BorderIcons);
-    case NewWindowClass of
+    {case NewWindowClass of
       kMovableModalWindowClass:
         Attributes := Attributes and (not kWindowInWindowMenuAttribute);
       kFloatingWindowClass:
         Attributes := Attributes and (not (kWindowInWindowMenuAttribute or kWindowCollapseBoxAttribute));
-    end;
+    end;}
   end;
 
   //DebugLn('TCarbonWindow.CreateWidget ' + DbgS(ParamsToCarbonRect(AParams)));
 
+  NewWindowClass:=kDocumentWindowClass;
   if OSError(
     CreateNewWindow(NewWindowClass,
       Attributes or kWindowCompositingAttribute or kWindowStandardHandlerAttribute
@@ -1176,6 +1180,10 @@ begin
   end;
 
   fWindowRef := AWindow;
+
+  OSError(
+    SetWindowGroup(fWindowRef, GetWindowGroupOfClass(GroupClass)), Self,
+    SCreateWidget, 'SetWindowGroup');
 
   // creating wrapped views
   if OSError(

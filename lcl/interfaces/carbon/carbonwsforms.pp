@@ -234,18 +234,19 @@ end;
 class procedure TCarbonWSCustomForm.SetFormStyle(const ACustomForm:TCustomForm;
   const ANewFormStyle,AOldFormStyle:TFormStyle);
 var
-  newClass : WindowClass;
+  newClass  : WindowClass;
 begin
   if not CheckHandle(ACustomForm, Self, 'SetFormStyle') then Exit;
 
   case ANewFormStyle of
-    fsStayOnTop: newClass:=kFloatingWindowClass;
-    fsSplash: newClass:=kUtilityWindowClass;
+    fsStayOnTop, fsSplash: newClass:=kFloatingWindowClass;
     fsSystemStayOnTop: newClass:=kUtilityWindowClass;
   else
     newClass:=kDocumentWindowClass;
   end;
-  HIWindowChangeClass( TCarbonWindow(ACustomForm.Handle).Window, newClass);
+  OSError(
+    SetWindowGroup( TCarbonWindow(ACustomForm.Handle).Window, GetWindowGroupOfClass(newClass)),
+    Self, 'SetFormStyle', 'SetWindowGroup');
 end;
 
 { TCarbonWSHintWindow }
