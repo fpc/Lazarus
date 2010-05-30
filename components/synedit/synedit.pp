@@ -3667,7 +3667,7 @@ var
       end else begin
         // draw splitter line
         DividerInfo := fHighlighter.DrawDivider[CurTextIndex];
-        if DividerInfo.Color <> clNone then
+        if (DividerInfo.Color <> clNone) and (nRightEdge > fGutterWidth-1) then
         begin
           ypos := rcToken.Bottom - 1;
           cl := DividerInfo.Color;
