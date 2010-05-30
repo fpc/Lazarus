@@ -165,19 +165,25 @@ procedure TNotifierXButton.Paint;
 begin
   Canvas.Pen.Color := cl3DDKShadow;
   Canvas.Pen.Width := 1;
+
+  Canvas.Brush.Color := Color;
+  Canvas.FillRect(0, 0, Width, Height);
+
   if FState = nbsUp then
     Canvas.Brush.Color := clBtnFace
   else
     Canvas.Brush.Color := clHotLight;
-  Canvas.FillRect(2, 2, Width - 2, Height - 2);
-  Canvas.RoundRect(0, 0, Width, Height, 4, 4);
-  Canvas.Pen.Width := 3;
-  Canvas.Brush.Color := Color;
-  Canvas.MoveTo(6, 6);
-  Canvas.LineTo(Width - 6, Height - 6);
 
-  Canvas.MoveTo(Width - 6, 6);
-  Canvas.LineTo(6, Height - 6);
+  Canvas.RoundRect(0, 0, Width, Height, 4, 4);
+
+  Canvas.Pen.EndCap:=pecSquare;
+  Canvas.Pen.Width := 2;
+
+  Canvas.MoveTo(7, 7);
+  Canvas.LineTo(Width - 7, Height - 7);
+
+  Canvas.MoveTo(Width - 7, 7);
+  Canvas.LineTo(7, Height - 7);
 
   inherited Paint;
 end;
@@ -225,7 +231,7 @@ begin
 
   BtnX := TNotifierXButton.Create(Self);
   BtnX.Parent := Self;
-  BtnX.Color :=  $DCFFFF;
+  BtnX.Color :=  Color;
   btnX.OnClick := HideForm;
 
   HandleResize(Self);
