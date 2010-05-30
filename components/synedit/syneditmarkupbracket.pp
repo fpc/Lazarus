@@ -163,7 +163,8 @@ procedure TSynEditMarkupBracket.InvalidateBracketHighlight;
 var
   NewPos, NewAntiPos, SwapPos : TPoint;
 begin
-  if Caret = nil then exit;
+  if (Caret = nil) or (not SynEdit.HandleAllocated) then
+    exit;
   NewPos.Y:=-1;
   NewAntiPos.Y:=-1;
   if eoBracketHighlight in TSynEdit(SynEdit).Options 

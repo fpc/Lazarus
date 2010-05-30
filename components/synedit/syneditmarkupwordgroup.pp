@@ -319,7 +319,8 @@ procedure TSynEditMarkupWordGroup.InvalidateCurrentHighlight;
 var
   NewPos, NewAntiPos, NewMiddlePos : TWordPoint;
 begin
-  if Caret = nil then exit;
+  if (Caret = nil) or (not SynEdit.HandleAllocated) then
+    exit;
   FindMatchingWords(Caret.LineCharPos, NewPos, NewAntiPos, NewMiddlePos);
 
   // invalidate old highlighting, if changed

@@ -202,6 +202,8 @@ type
     FOnChange: TNotifyEvent;
     // 0 or -1 start/end before/after line // 1 first char
     FStartX, FEndX: Integer;
+    FUpdateCount: Integer;
+    FWasChanged: Boolean;
     procedure SetBG(Value: TColor);
     procedure SetFG(Value: TColor);
     procedure SetFrameColor(const AValue: TColor);
@@ -218,6 +220,8 @@ type
     property StartX: Integer read FStartX write FStartX;
     property EndX: Integer read FEndX write FEndX;
     property OnChange: TNotifyEvent read fOnChange write fOnChange;
+    procedure BeginUpdate;
+    procedure EndUpdate;
   published
     property Background: TColor read FBG write SetBG default clHighLight;
     property Foreground: TColor read FFG write SetFG default clHighLightText;
@@ -408,6 +412,7 @@ begin
   fBG := clHighLight;
   fFG := clHighLightText;
   FFrameColor:= clNone;
+  FUpdateCount := 0;
 end;
 
 function TSynSelectedColor.GetModifiedStyle(aStyle : TFontStyles) : TFontStyles;
@@ -423,6 +428,18 @@ begin
   if Background <> clNone then ABackground := Background;
   if FrameColor <> clNone then AFrameColor := FrameColor;
   AStyle := GetModifiedStyle(AStyle);
+end;
+
+procedure TSynSelectedColor.BeginUpdate;
+begin
+  inc(FUpdateCount);
+end;
+
+procedure TSynSelectedColor.EndUpdate;
+begin
+  dec(FUpdateCount);
+  if (FUpdateCount = 0) and FWasChanged then
+    DoChange;
 end;
 
 procedure TSynSelectedColor.SetBG(Value: TColor);
@@ -472,8 +489,12 @@ end;
 
 procedure TSynSelectedColor.DoChange;
 begin
+  FWasChanged := True;
+  if FUpdateCount > 0 then
+    exit;
   if Assigned(FOnChange) then
     OnChange(Self);
+  FWasChanged := False;
 end;
 
 procedure TSynSelectedColor.Assign(aSource : TPersistent);
