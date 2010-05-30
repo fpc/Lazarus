@@ -386,6 +386,9 @@ type
 
 implementation
 
+const
+  IDLE_SCAN_CHUNK_SIZE = 2500;
+
 {$IFDEF _Gp_MustEnhanceRegistry}
   function IsRelative(const Value: string): Boolean;
   begin
@@ -1312,8 +1315,8 @@ begin
   EndIndex := CurrentRanges.NeedsReScanEndIndex + 1;
 
   RealEndIndex := EndIndex;
-  if EndIndex > StartIndex + 100 then
-    EndIndex := StartIndex + 100;
+  if EndIndex > StartIndex + IDLE_SCAN_CHUNK_SIZE then
+    EndIndex := StartIndex + IDLE_SCAN_CHUNK_SIZE;
   FIsScanning := True;
   try
     EndIndex :=  PerformScan(StartIndex, EndIndex, True);
