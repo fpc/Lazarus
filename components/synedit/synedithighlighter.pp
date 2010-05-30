@@ -58,6 +58,8 @@ type
     FRefCount: Integer;
     FNeedsReScanStartIndex: Integer;
     FNeedsReScanEndIndex: Integer;
+    FNeedsReScanRealStartIndex: Integer;
+    function GetNeedsReScanRealStartIndex: Integer;
     function GetRange(Index: Integer): Pointer;
     procedure SetRange(Index: Integer; const AValue: Pointer);
   protected
@@ -69,6 +71,7 @@ type
   public
     constructor Create;
     procedure ClearReScanNeeded;
+    procedure AdjustReScanStart(ANewStart: Integer);
     procedure InvalidateAll;
     procedure IncRefCount;
     procedure DecRefCount;
@@ -76,6 +79,7 @@ type
     property RefCount: Integer read FRefCount;
     property NeedsReScanStartIndex: Integer read FNeedsReScanStartIndex;
     property NeedsReScanEndIndex: Integer read FNeedsReScanEndIndex;
+    property NeedsReScanRealStartIndex: Integer read GetNeedsReScanRealStartIndex;
   end;
 
   TSynHighlighterAttrFeature = (hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask);
@@ -263,7 +267,7 @@ type
     function GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting; virtual;
     function GetDividerDrawConfig(Index: Integer): TSynDividerDrawConfig; virtual;
     function GetDividerDrawConfigCount: Integer; virtual;
-    function PerformScan(StartIndex, EndIndex: Integer): Integer; virtual;
+    function PerformScan(StartIndex, EndIndex: Integer; ForceEndIndex: Boolean = False): Integer; virtual;
     property IsScanning: Boolean read FIsScanning;
     property KnownRanges[Index: Integer]: TSynHighlighterRangeList read GetKnownRanges;
     property KnownLines: TSynEditLinesList read FKnownLines;
@@ -309,6 +313,7 @@ type
     procedure ContinueNextLine; // To be called at EOL; does not read the range
 
     procedure ScanRanges;
+    function  IdleScanRanges: Boolean; // Scan little by little during OnIdle; Return True, if more work avail
     procedure ScanAllRanges;
     procedure SetRange(Value: Pointer); virtual;
     procedure ResetRange; virtual;
@@ -1281,19 +1286,56 @@ var
   StartIndex, EndIndex: Integer;
 begin
   StartIndex := CurrentRanges.NeedsReScanStartIndex;
-  if (StartIndex < 0) or (StartIndex >= CurrentRanges.Count) then exit;
+  if (StartIndex < 0) or (StartIndex >= CurrentRanges.Count) then
+    exit;
   EndIndex := CurrentRanges.NeedsReScanEndIndex + 1;
+//debugln(['=== scan ',StartIndex,' - ',EndIndex]);
   FIsScanning := True;
   try
     EndIndex :=  PerformScan(StartIndex, EndIndex);
   finally
     FIsScanning := False;
   end;
+  StartIndex := CurrentRanges.NeedsReScanRealStartIndex; // include idle scanned
   CurrentRanges.ClearReScanNeeded;
   CurrentLines.SendHighlightChanged(StartIndex, EndIndex - StartIndex + 1);
 end;
 
-function TSynCustomHighlighter.PerformScan(StartIndex, EndIndex: Integer): Integer;
+function TSynCustomHighlighter.IdleScanRanges: Boolean;
+var
+  StartIndex, EndIndex, RealEndIndex: Integer;
+begin
+  Result := False;
+  StartIndex := CurrentRanges.NeedsReScanStartIndex;
+  if (StartIndex < 0) or (StartIndex >= CurrentRanges.Count) then
+    exit;
+  EndIndex := CurrentRanges.NeedsReScanEndIndex + 1;
+
+  RealEndIndex := EndIndex;
+  if EndIndex > StartIndex + 100 then
+    EndIndex := StartIndex + 100;
+  FIsScanning := True;
+  try
+    EndIndex :=  PerformScan(StartIndex, EndIndex, True);
+  finally
+    FIsScanning := False;
+  end;
+
+  if EndIndex >= RealEndIndex then begin
+    StartIndex := CurrentRanges.NeedsReScanRealStartIndex; // include idle scanned
+//debugln(['=== IDLE SendHighlightChanged ',StartIndex,' - ',EndIndex]);
+    CurrentRanges.ClearReScanNeeded;
+    CurrentLines.SendHighlightChanged(StartIndex, EndIndex - StartIndex + 1);
+    exit;
+  end
+  else begin
+    CurrentRanges.AdjustReScanStart(EndIndex);
+    Result := True;
+  end;
+end;
+
+function TSynCustomHighlighter.PerformScan(StartIndex, EndIndex: Integer;
+  ForceEndIndex: Boolean = False): Integer;
 var
   c: Integer;
 begin
@@ -1303,7 +1345,7 @@ begin
   NextToEol;
   while UpdateRangeInfoAtLine(Result) or (Result <= EndIndex) do begin
     inc(Result);
-    if Result = c then
+    if (Result = c) or (ForceEndIndex and (Result > EndIndex)) then
       break;
     ContinueNextLine;
     NextToEol;
@@ -1402,6 +1444,13 @@ begin
   Result := Pointer(ItemPointer[Index]^);
 end;
 
+function TSynHighlighterRangeList.GetNeedsReScanRealStartIndex: Integer;
+begin
+  Result := FNeedsReScanRealStartIndex;
+  if Result < 0 then
+    Result := FNeedsReScanStartIndex;
+end;
+
 procedure TSynHighlighterRangeList.SetRange(Index: Integer; const AValue: Pointer);
 begin
   Pointer(ItemPointer[Index]^) := AValue;
@@ -1448,6 +1497,14 @@ procedure TSynHighlighterRangeList.ClearReScanNeeded;
 begin
   FNeedsReScanStartIndex := -1;
   FNeedsReScanEndIndex := -1;
+  FNeedsReScanRealStartIndex := -1;
+end;
+
+procedure TSynHighlighterRangeList.AdjustReScanStart(ANewStart: Integer);
+begin
+  if FNeedsReScanRealStartIndex < 0 then
+    FNeedsReScanRealStartIndex := FNeedsReScanStartIndex;
+  FNeedsReScanStartIndex := ANewStart;
 end;
 
 procedure TSynHighlighterRangeList.InvalidateAll;

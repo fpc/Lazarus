@@ -512,6 +512,7 @@ type
     procedure PrimarySelectionRequest(const RequestedFormatID: TClipboardFormat;
       Data: TStream);
     procedure ScanRanges;
+    procedure IdleScanRanges(Sender: TObject; var Done: Boolean);
     procedure DoBlockSelectionChanged(Sender: TObject);
     procedure SetBlockBegin(Value: TPoint);
     procedure SetBlockEnd(Value: TPoint);
@@ -1853,6 +1854,7 @@ destructor TCustomSynEdit.Destroy;
 var
   i: integer;
 begin
+  Application.RemoveOnIdleHandler(@IdleScanRanges);
   SurrenderPrimarySelection;
   Highlighter := nil;
   {$IFDEF SYN_LAZARUS}
@@ -4102,7 +4104,9 @@ end;
 
 procedure TCustomSynEdit.CreateHandle;
 begin
+  Application.RemoveOnIdleHandler(@IdleScanRanges);
   inherited CreateHandle;
+  ScanRanges;
   UpdateScrollBars;
   //if fStateFlags * [sfEnsureCursorPos, sfEnsureCursorPosAtResize] <> [] then
   //  EnsureCursorPosVisible;
@@ -4622,6 +4626,12 @@ end;
 
 procedure TCustomSynEdit.ScanRanges;
 begin
+  if not HandleAllocated then begin
+    Application.RemoveOnIdleHandler(@IdleScanRanges); // avoid duplicate add
+    if assigned(FHighlighter) then
+      Application.AddOnIdleHandler(@IdleScanRanges, False);
+    exit;
+  end;
   if not assigned(FHighlighter) then begin
     fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd);
     Topline := TopLine;
@@ -4632,6 +4642,21 @@ begin
 
   fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd);
   Topline := TopLine;
+end;
+
+procedure TCustomSynEdit.IdleScanRanges(Sender: TObject; var Done: Boolean);
+begin
+  Application.RemoveOnIdleHandler(@IdleScanRanges);
+  if not assigned(FHighlighter) then
+    exit;
+
+  FHighlighter.CurrentLines := FLines; // Trailing spaces are not needed
+  if not FHighlighter.IdleScanRanges then
+    exit;
+
+  // Move to the end; give others a change too
+  Application.AddOnIdleHandler(@IdleScanRanges, False);
+  Done := False;
 end;
 
 procedure TCustomSynEdit.LineCountChanged(Sender: TSynEditStrings;

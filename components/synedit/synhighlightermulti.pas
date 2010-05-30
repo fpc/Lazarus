@@ -299,7 +299,7 @@ type
     procedure SchemeChanged;
     procedure DetachHighlighter(AHighlighter: TSynCustomHighlighter; AScheme: TSynHighlighterMultiScheme);
     procedure AttachHighlighter(AHighlighter: TSynCustomHighlighter; AScheme: TSynHighlighterMultiScheme);
-    function  PerformScan(StartIndex, EndIndex: Integer): Integer; override;
+    function  PerformScan(StartIndex, EndIndex: Integer; ForceEndIndex: Boolean = False): Integer; override;
     property CurrentRanges: TSynHighlighterMultiRangeList read GetCurrentRanges;
     property KnownRanges[Index: Integer]: TSynHighlighterMultiRangeList read GetKnownMultiRanges;
   public
@@ -932,7 +932,7 @@ begin
   inherited Destroy;
 end;
 
-function TSynMultiSyn.PerformScan(StartIndex, EndIndex: Integer): Integer;
+function TSynMultiSyn.PerformScan(StartIndex, EndIndex: Integer; ForceEndIndex: Boolean = False): Integer;
 var
   i, j, c: Integer;
   SearchPos, NewSearchPos, TmpSearchPos: Integer;
