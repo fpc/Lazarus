@@ -439,8 +439,34 @@ begin
   RecreateWnd(AForm);
 end;
 
+function EnumStayOnTopProc(Handle: HWND; Param: LPARAM): WINBOOL; stdcall;
+var
+  list: TList absolute Param;
+  lWindowInfo: PWin32WindowInfo;
+  lWinControl: TWinControl;
+begin
+  Result := True;
+  lWindowInfo := GetWin32WindowInfo(Handle);
+  if (lWindowInfo <> nil) then
+  begin
+    lWinControl := lWindowInfo^.WinControl;
+    if (lWinControl <> nil) and (lWinControl is TCustomForm)
+      and (TCustomForm(lWinControl).FormStyle in fsAllStayOnTop) then
+      list.Add(Pointer(Handle));
+  end;
+end;
+
+procedure EnumStayOnTop(window: THandle; dstlist: TList);
+begin
+  EnumThreadWindows(GetWindowThreadProcessId(Window, nil),
+    @EnumStayOnTopProc, LPARAM(dstlist));
+end;
+
 class procedure TWin32WSCustomForm.SetFormStyle(const AForm: TCustomform;
   const AFormStyle, AOldFormStyle: TFormStyle);
+var
+  toplist : TList;
+  i       : Integer;
 begin
   // Some changes don't require RecreateWnd
 
@@ -450,7 +476,7 @@ begin
       SetWindowPos(AForm.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
   // From StayOnTop to normal
   end else if (AOldFormStyle in fsAllStayOnTop) and (AFormStyle = fsNormal) then begin
-    RecreateWnd(AForm);
+
     // NOTE:
     // see bug report #16573
     // if a window changes from HWND_TOPMOST to HWND_NOTOPMOST
@@ -460,11 +486,30 @@ begin
     // "When a topmost window is made non-topmost, its owners and its owned windows are also made non-topmost windows"
     // Is it possible, that Application window, makes all other forms, non-top most?
     // It's also possible to make a list of "topmost forms" and re-enable their state
-    // after disabling this window (so Recreation can be avoided!')
+    // after changing the style of the window (so recreation can be avoided)
+
+    // Possible solution, using window re-creation
+    //if not (csDesigning in AForm.ComponentState) then
+    //  RecreateWnd(AForm);
+
+
+    if not (csDesigning in AForm.ComponentState) then begin
+      toplist:=TList.Create;
+      try
+        EnumStayOnTop(AForm.Handle, toplist);
+        SetWindowPos(AForm.Handle, HWND_NOTOPMOST,  0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+        for i:=0 to toplist.Count-1 do begin
+          if HWND(toplist[i])<>AForm.Handle then
+            SetWindowPos(HWND(toplist[i]), HWND_TOPMOST,  0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+        end;
+      finally
+        toplist.Free;
+      end;
+    end;
 
     // original code:
-    //if not (csDesigning in AForm.ComponentState) then
-    //  SetWindowPos(AForm.Handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
+    //  if not (csDesigning in AForm.ComponentState) then
+    //    SetWindowPos(AForm.Handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
   end else begin
     RecreateWnd(AForm);
   end;
