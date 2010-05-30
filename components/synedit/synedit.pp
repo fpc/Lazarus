@@ -4627,7 +4627,7 @@ begin
     Topline := TopLine;
     exit;
   end;
-  FHighlighter.CurrentLines := FTheLinesView;
+  FHighlighter.CurrentLines := FLines; // Trailing spaces are not needed
   FHighlighter.ScanRanges;
 
   fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd);
