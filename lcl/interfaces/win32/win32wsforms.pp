@@ -450,8 +450,21 @@ begin
       SetWindowPos(AForm.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
   // From StayOnTop to normal
   end else if (AOldFormStyle in fsAllStayOnTop) and (AFormStyle = fsNormal) then begin
-    if not (csDesigning in AForm.ComponentState) then
-      SetWindowPos(AForm.Handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
+    RecreateWnd(AForm);
+    // NOTE:
+    // see bug report #16573
+    // if a window changes from HWND_TOPMOST to HWND_NOTOPMOST
+    // other TOP most windows also change their state to Non-topmost!
+
+    // the page http://msdn.microsoft.com/en-us/library/ms633545(VS.85).aspx, says:
+    // "When a topmost window is made non-topmost, its owners and its owned windows are also made non-topmost windows"
+    // Is it possible, that Application window, makes all other forms, non-top most?
+    // It's also possible to make a list of "topmost forms" and re-enable their state
+    // after disabling this window (so Recreation can be avoided!')
+
+    // original code:
+    //if not (csDesigning in AForm.ComponentState) then
+    //  SetWindowPos(AForm.Handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
   end else begin
     RecreateWnd(AForm);
   end;
