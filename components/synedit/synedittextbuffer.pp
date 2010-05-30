@@ -92,7 +92,6 @@ type
   protected
     procedure Move(AFrom, ATo, ALen: Integer); override;
     procedure SetCount(const AValue: Integer); override;
-    function ItemSize: Integer; override;
     procedure SetCapacity(const AValue: Integer); override;
   public
     constructor Create;
@@ -1151,8 +1150,11 @@ type
   PObject = ^TObject;
 
 constructor TSynEditStringMemory.Create;
+const
+  FlagSize = ((SizeOf(TSynEditStringFlags) + 1 ) Div 2) * 2; // ensure boundary
 begin
   inherited Create;
+  ItemSize := SizeOf(String) + SizeOf(TObject) + FlagSize;
   FRangeList := TSynManagedStorageMemList.Create;
   FRangeListLock := 0;
 end;
@@ -1229,13 +1231,6 @@ begin
   (PString(ItemPointer[Index]))^ := AValue;
   if FRangeListLock = 0 then
     FRangeList.CallLineTextChanged(Index);
-end;
-
-function TSynEditStringMemory.ItemSize: Integer;
-const
-  FlagSize = ((SizeOf(TSynEditStringFlags) + 1 ) Div 2) * 2; // ensure boundary
-begin
-  Result := SizeOf(String) + SizeOf(TObject) + FlagSize;
 end;
 
 procedure TSynEditStringMemory.SetCapacity(const AValue: Integer);

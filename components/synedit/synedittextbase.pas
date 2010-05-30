@@ -68,17 +68,20 @@ type
 
   TSynEditStorageMem = class
   private
+    FItemSize: Integer;
     FMem: PByte;
     FCount, FCapacity: Integer;
     function GetItemPointer(Index: Integer): Pointer; inline;
+    procedure SetItemSize(const AValue: Integer);
   protected
     procedure SetCapacity(const AValue: Integer); virtual;
     procedure SetCount(const AValue: Integer); virtual;
-    function ItemSize: Integer; virtual; abstract;
     procedure Move(AFrom, ATo, ALen: Integer); virtual;
 
     property Mem: PByte read FMem;
     property ItemPointer[Index: Integer]: Pointer read GetItemPointer;
+    // ItemSize must be set in the constructor, and never be changed
+    property ItemSize: Integer read FItemSize write SetItemSize;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1255,6 +1258,13 @@ begin
     raise Exception.Create(Format('Bad Index cnt= %d cap= %d idx= %d',[FCount, FCapacity, Index]));
   {$ENDIF}
   Result := Pointer(FMem + Index * ItemSize);
+end;
+
+procedure TSynEditStorageMem.SetItemSize(const AValue: Integer);
+begin
+  if (FCapacity <> 0) then raise Exception.Create('Not allowe dto change ItemSize');
+  if FItemSize = AValue then exit;
+  FItemSize := AValue;
 end;
 
 procedure TSynEditStorageMem.SetCapacity(const AValue: Integer);

@@ -42,8 +42,6 @@ type
     FRefCount: Integer;
     function GetLineLen(Index: Integer): TLineLen;
     procedure SetLineLen(Index: Integer; const AValue: TLineLen);
-  protected
-    function ItemSize: Integer; override;
   public
     constructor Create;
     procedure IncRefCount;
@@ -112,14 +110,10 @@ begin
   PLineLen(ItemPointer[Index])^ := AValue;
 end;
 
-function TSynEditStringTabData.ItemSize: Integer;
-begin
-  Result := SizeOf(TLineLen);
-end;
-
 constructor TSynEditStringTabData.Create;
 begin
   inherited;
+  ItemSize := SizeOf(TLineLen);
   FRefCount := 1;
 end;
 

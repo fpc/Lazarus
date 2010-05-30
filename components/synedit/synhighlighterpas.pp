@@ -179,11 +179,11 @@ type
 
   TSynHighlighterPasRangeList = class(TSynHighlighterRangeList)
   private
+    FItemOffset: integer;
     function GetTSynPasRangeInfo(Index: Integer): TSynPasRangeInfo;
     procedure SetTSynPasRangeInfo(Index: Integer; const AValue: TSynPasRangeInfo);
-  protected
-    function ItemSize: Integer; override;
   public
+    constructor Create;
     property PasRangeInfo[Index: Integer]: TSynPasRangeInfo
       read GetTSynPasRangeInfo write SetTSynPasRangeInfo;
   end;
@@ -3817,18 +3817,20 @@ begin
     Result.EndLevelIfDef := 0;
     exit;
   end;
-  Result := TSynPasRangeInfo((ItemPointer[Index] + inherited ItemSize)^);
+  Result := TSynPasRangeInfo((ItemPointer[Index] + FItemOffset)^);
 end;
 
 procedure TSynHighlighterPasRangeList.SetTSynPasRangeInfo(Index: Integer;
   const AValue: TSynPasRangeInfo);
 begin
-  TSynPasRangeInfo((ItemPointer[Index] + inherited ItemSize)^) := AValue;
+  TSynPasRangeInfo((ItemPointer[Index] + FItemOffset)^) := AValue;
 end;
 
-function TSynHighlighterPasRangeList.ItemSize: Integer;
+constructor TSynHighlighterPasRangeList.Create;
 begin
-  Result := inherited ItemSize + SizeOf(TSynPasRangeInfo);
+  inherited;
+  FItemOffset := ItemSize;
+  ItemSize := FItemOffset + SizeOf(TSynPasRangeInfo);
 end;
 
 initialization

@@ -73,9 +73,8 @@ type
     function  GetSection(Index: Integer): TSynHLightMultiVirtualSection;
     function GetSectionPointer(Index: Integer): PSynHLightMultiVirtualSection;
     procedure SetSection(Index: Integer; const AValue: TSynHLightMultiVirtualSection);
-  protected
-    function ItemSize: Integer; override;
   public
+    constructor Create;
     procedure Insert(AnIndex: Integer; AnSection: TSynHLightMultiVirtualSection);
     procedure Delete(AnIndex: Integer);
     property Sections[Index: Integer]: TSynHLightMultiVirtualSection
@@ -367,9 +366,10 @@ begin
   PSynHLightMultiVirtualSection(ItemPointer[Index])^ := AValue;
 end;
 
-function TSynHLightMultiSectionList.ItemSize: Integer;
+constructor TSynHLightMultiSectionList.Create;
 begin
-  Result := SizeOf(TSynHLightMultiVirtualSection);
+  inherited;
+  ItemSize := SizeOf(TSynHLightMultiVirtualSection);
 end;
 
 procedure TSynHLightMultiSectionList.Insert(AnIndex: Integer;

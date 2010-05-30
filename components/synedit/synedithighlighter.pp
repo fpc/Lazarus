@@ -63,8 +63,6 @@ type
     function GetRange(Index: Integer): Pointer;
     procedure SetRange(Index: Integer; const AValue: Pointer);
   protected
-    function ItemSize: Integer; override;
-  protected
     procedure LineTextChanged(AIndex: Integer; ACount: Integer = 1); override;
     procedure InsertedLines(AIndex, ACount: Integer); override;
     procedure DeletedLines(AIndex, ACount: Integer); override;
@@ -1459,11 +1457,6 @@ begin
   Pointer(ItemPointer[Index]^) := AValue;
 end;
 
-function TSynHighlighterRangeList.ItemSize: Integer;
-begin
-  Result := SizeOf(Pointer);
-end;
-
 procedure TSynHighlighterRangeList.LineTextChanged(AIndex: Integer; ACount: Integer = 1);
 begin
   if FNeedsReScanStartIndex < 0 then begin
@@ -1519,6 +1512,7 @@ end;
 constructor TSynHighlighterRangeList.Create;
 begin
   Inherited;
+  ItemSize := SizeOf(Pointer);
   FRefCount := 1;
   ClearReScanNeeded;
 end;
