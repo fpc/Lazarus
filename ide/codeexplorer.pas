@@ -455,8 +455,11 @@ end;
 
 procedure TCodeExplorerView.IdleTimer1Timer(Sender: TObject);
 begin
-  if ((cevCheckOnIdle in FFlags) or (CodeExplorerOptions.Refresh=cerOnIdle))
-  and (not Active) and (not (fsModal in Screen.ActiveCustomForm.FormState)) then
+  if Active then exit;
+  if (Screen.ActiveCustomForm<>nil)
+  and (fsModal in Screen.ActiveCustomForm.FormState) then
+    exit;
+  if ((cevCheckOnIdle in FFlags) or (CodeExplorerOptions.Refresh=cerOnIdle)) then
     Refresh(true);
 end;
 
