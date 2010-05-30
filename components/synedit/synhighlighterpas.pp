@@ -2634,7 +2634,6 @@ begin
   fAsmStart := False;
   fTokenPos := Run;
     FTokenIsCaseLabel := False;
-  {$IFDEF SYN_LAZARUS}
   if Run>=fLineLen then begin
     fTokenID := tkNull;
     exit;
@@ -2644,15 +2643,12 @@ begin
     #10: LFProc;
     #13: CRProc;
     else
-  {$ENDIF}
       if rsAnsi in fRange then
         AnsiProc
       else if rsBor in fRange then
         BorProc
-      {$IFDEF SYN_LAZARUS}
       else if rsDirective in fRange then
         DirectiveProc
-      {$ENDIF}
       else begin
         if rsAtEqual in fRange then
           fRange := fRange + [rsAfterEqual] - [rsAtEqual]
@@ -2675,9 +2671,7 @@ begin
         else
           fRange := fRange - [rsAtClosingBracket];
       end
-  {$IFDEF SYN_LAZARUS}
   end;
-  {$ENDIF}
   if not(FTokenID in [tkSpace, tkComment]) then
     FAtLineStart := False;
   //DebugLn(['TSynPasSyn.Next Run=',Run,' fTokenPos=',fTokenPos,' fLineStr=',fLineStr,' Token=',GetToken]);
