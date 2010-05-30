@@ -908,7 +908,7 @@ function TFPDocEditor.CreateElement(Element: TCodeHelpElement): Boolean;
 var
   NewElement: TCodeHelpElement;
 begin
-  DebugLn(['TFPDocEditForm.CreateElement ']);
+  //DebugLn(['TFPDocEditForm.CreateElement ']);
   if (Element=nil) or (Element.ElementName='') then exit(false);
   NewElement:=nil;
   Include(FFlags,fpdefWriting);
@@ -1145,7 +1145,7 @@ begin
     SaveButton.Enabled:=false;
     Exit; // nothing changed => exit
   end;
-  DebugLn(['TFPDocEditor.Save FModified=',FModified,' CheckGUI=',CheckGUI,' GUIModified=',GUIModified]);
+  //DebugLn(['TFPDocEditor.Save FModified=',FModified,' CheckGUI=',CheckGUI,' GUIModified=',GUIModified]);
   FModified:=false;
   SaveButton.Enabled:=false;
 
@@ -1398,7 +1398,7 @@ var
 begin
   i:=FindInheritedIndex;
   if i<0 then exit;
-  DebugLn(['TFPDocEditForm.CopyFromInheritedButtonClick ']);
+  //DebugLn(['TFPDocEditForm.CopyFromInheritedButtonClick ']);
   if ShortEdit.Text<>'' then begin
     if QuestionDlg('Confirm replace',
       GetContextTitle(fChain[0])+' already contains the help:'+#13
