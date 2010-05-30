@@ -5,8 +5,8 @@ unit main;
 interface
 
 uses
-  Classes, ExtCtrls, SysUtils, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, TAGraph, TASeries, TASources, TATools;
+  Classes, ExtCtrls, SysUtils, FileUtil, LResources, Forms, Controls,
+  Graphics, Dialogs, TAGraph, TASeries, TASources, TATools;
 
 type
 
@@ -19,7 +19,7 @@ type
     ChartLine1: TConstantLine;
     Chart1FuncSeries1: TFuncSeries;
     ChartToolset1: TChartToolset;
-    ChartToolset1ConstantLineDragTool1: TConstantLineDragTool;
+    ChartToolset1DataPointDragTool1: TDataPointDragTool;
     ChartToolset1PanAny: TPanDragTool;
     ChartToolset1PanHor: TPanDragTool;
     ChartToolset1PanVert: TPanDragTool;

@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, Controls, Types,
-  TAGraph, TASeries;
+  TAGraph;
 
 type
 
@@ -157,20 +157,24 @@ const
   DEF_GRAB_RADIUS = 4;
 
 type
-  { TConstantLineDragTool }
+  { TDataPointDragTool }
 
-  TConstantLineDragTool = class(TChartTool)
+  TDataPointDragTool = class(TChartTool)
   private
     FAffectedSeries: String;
     FGrabRadius: Integer;
-    FLine: TConstantLine;
+    FPointIndex: Integer;
+    FSeries: TBasicChartSeries;
     function ParseAffectedSeries: TBooleanDynArray;
   public
     constructor Create(AOwner: TComponent); override;
     procedure MouseDown(APoint: TPoint); override;
     procedure MouseMove(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
+  public
+    property PointIndex: Integer read FPointIndex;
   published
+    property ActiveCursor default crSizeAll;
     property AffectedSeries: String
       read FAffectedSeries write FAffectedSeries;
     property GrabRadius: Integer
@@ -741,65 +745,59 @@ begin
   Handled;
 end;
 
-{ TConstantLineDragTool }
+{ TDataPointDragTool }
 
-constructor TConstantLineDragTool.Create(AOwner: TComponent);
+constructor TDataPointDragTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FActiveCursor := crSizeAll;
   FGrabRadius := DEF_GRAB_RADIUS;
+  FPointIndex := -1;
 end;
 
-procedure TConstantLineDragTool.MouseDown(APoint: TPoint);
+procedure TDataPointDragTool.MouseDown(APoint: TPoint);
 var
-  i, d, bestd: Integer;
-  c, bestc: TConstantLine;
+  i, d, bestd, idx: Integer;
+  s, bests: TBasicChartSeries;
   affected: TBooleanDynArray;
+  dummy: TDoublePoint;
+  nearest: TPoint;
 begin
   bestd := MaxInt;
-  bestc := nil;
+  bests := nil;
   affected := ParseAffectedSeries;
   for i := 0 to FChart.SeriesCount - 1 do begin
-    if not affected[i] or not (FChart.Series[i] is TConstantLine) then continue;
-    c := FChart.Series[i] as TConstantLine;
-    if c.LineStyle = lsVertical then
-      d := FChart.XGraphToImage(c.Position) - APoint.X
-    else
-      d := FChart.YGraphToImage(c.Position) - APoint.Y;
-    d := Abs(d);
+    if not affected[i] then continue;
+    s := FChart.Series[i];
+    if not s.GetNearestPoint(@PointDist, APoint, idx, nearest, dummy) then continue;
+    d := PointDist(APoint, nearest);
     if d < bestd then begin
       bestd := d;
-      bestc := c;
+      bests := s;
+      FPointIndex := idx;
     end;
   end;
-  if (bestc = nil) or (bestd > GrabRadius) then exit;
-  if bestc.LineStyle = lsVertical then
-    ActiveCursor := crSizeWE
-  else
-    ActiveCursor := crSizeNS;
-  FLine := bestc;
+  if (bests = nil) or (bestd > Sqr(GrabRadius)) then exit;
+  FSeries := bests;
   Activate;
   Handled;
 end;
 
-procedure TConstantLineDragTool.MouseMove(APoint: TPoint);
+procedure TDataPointDragTool.MouseMove(APoint: TPoint);
 begin
-  if FLine = nil then exit;
-  if FLine.LineStyle = lsVertical then
-    FLine.Position := FChart.XImageToGraph(APoint.X)
-  else
-    FLine.Position := FChart.YImageToGraph(APoint.Y);
-  FChart.Invalidate;
+  if FSeries <> nil then
+    FSeries.MovePoint(FPointIndex, APoint);
 end;
 
-procedure TConstantLineDragTool.MouseUp(APoint: TPoint);
+procedure TDataPointDragTool.MouseUp(APoint: TPoint);
 begin
   Unused(APoint);
-  FLine := nil;
+  FSeries := nil;
   Deactivate;
   Handled;
 end;
 
-function TConstantLineDragTool.ParseAffectedSeries: TBooleanDynArray;
+function TDataPointDragTool.ParseAffectedSeries: TBooleanDynArray;
 var
   s: TStringList;
   i, p: Integer;
@@ -831,7 +829,7 @@ initialization
   RegisterChartToolClass(TZoomClickTool, 'Zoom click tool');
   RegisterChartToolClass(TPanDragTool, 'Panning drag tool');
   RegisterChartToolClass(TReticuleTool, 'Reticule tool');
-  RegisterChartToolClass(TConstantLineDragTool, 'Constant line drag tool');
+  RegisterChartToolClass(TDataPointDragTool, 'Data point drag tool');
 
 finalization
 
