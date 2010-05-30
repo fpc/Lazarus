@@ -510,14 +510,14 @@ type
                             DropCtl: TControl); virtual; abstract; overload;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
     procedure PaintSite(DC: HDC); virtual; abstract;
-    procedure MessageHandler(Sender: TControl; var Message: TLMessage); virtual; abstract;
+    procedure MessageHandler(Sender: TControl; var Message: TLMessage); virtual;
     procedure PositionDockRect(ADockObject: TDragDockObject); virtual; overload;
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
                                var DockRect: TRect); virtual; abstract; overload;
     procedure RemoveControl(Control: TControl); virtual; abstract;
     procedure ResetBounds(Force: Boolean); virtual; abstract;
     procedure SaveToStream(Stream: TStream); virtual; abstract;
-    procedure SetReplacingControl(Control: TControl); virtual; abstract;
+    procedure SetReplacingControl(Control: TControl); virtual;
     function AutoFreeByControl: Boolean; virtual;
   end;
 
@@ -3761,6 +3761,11 @@ begin
   end;
 end;
 
+procedure TDockManager.SetReplacingControl(Control: TControl);
+begin
+
+end;
+
 function TDockManager.AutoFreeByControl: Boolean;
 begin
   Result := True;
@@ -3773,18 +3778,24 @@ end;
 
 function TDockManager.GetDockEdge(ADockObject: TDragDockObject): boolean;
 begin
-(* Determine the DropAlign.
-  ADockObject contains valid DragTarget, DragPos, DragTargetPos relative dock site,
-  and DropOnControl.
-  Return True if ADockObject.DropAlign has been determined.
-*)
-  Result := False; //not implemented
+  { Determine the DropAlign.
+    ADockObject contains valid DragTarget, DragPos, DragTargetPos relative
+    dock site, and DropOnControl.
+    Return True if ADockObject.DropAlign has been determined.
+  }
+  Result := False; // use the DockSite.GetDockEdge
 end;
 
 procedure TDockManager.InsertControl(ADockObject: TDragDockObject);
 begin
   InsertControl(ADockObject.Control,ADockObject.DropAlign,
                 ADockObject.DropOnControl);
+end;
+
+procedure TDockManager.MessageHandler(Sender: TControl; var Message: TLMessage
+  );
+begin
+
 end;
 
 initialization
