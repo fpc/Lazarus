@@ -56,14 +56,9 @@ type
     sfSaved                  // a line is modified and saved after
   );
   TSynEditStringFlags = set of TSynEditStringFlag;
+  PSynEditStringFlags = ^TSynEditStringFlags;
 
   TStringListIndexEvent = procedure(Index: Integer) of object;
-
-  TSynEditStringAttribute = record
-    Index: TClass;
-    Size: Word;
-    Pos: Integer;
-  end;
 
   { TLineRangeNotificationList }
 
@@ -84,16 +79,13 @@ type
 
   TSynEditStringMemory = class(TSynEditStorageMem)
   private
-    FAttributeSize: Integer;
     FRangeList: TSynManagedStorageMemList;
     FRangeListLock: Integer;
-    function GetAttribute(Index: Integer; Pos: Integer; Size: Word): Pointer;
-    function GetAttributeSize: Integer;
+    function GetFlags(Index: Integer): TSynEditStringFlags;
     function GetObject(Index: Integer): TObject;
     function GetRange(Index: Pointer): TSynManagedStorageMem;
     function GetString(Index: Integer): String;
-    procedure SetAttribute(Index: Integer; Pos: Integer; Size: Word; const AValue: Pointer);
-    procedure SetAttributeSize(const AValue: Integer);
+    procedure SetFlags(Index: Integer; const AValue: TSynEditStringFlags);
     procedure SetObject(Index: Integer; const AValue: TObject);
     procedure SetRange(Index: Pointer; const AValue: TSynManagedStorageMem);
     procedure SetString(Index: Integer; const AValue: String);
@@ -110,11 +102,8 @@ type
     procedure DeleteRows(AIndex, ACount: Integer); override;
     property Strings[Index: Integer]: String read GetString write SetString; default;
     property Objects[Index: Integer]: TObject read GetObject write SetObject;
-    property Attribute[Index: Integer; Pos: Integer; Size: Word]: Pointer
-      read  GetAttribute write SetAttribute;
-    property AttributeSize: Integer read  GetAttributeSize write SetAttributeSize;
-
     property RangeList[Index: Pointer]: TSynManagedStorageMem read GetRange write SetRange;
+    property Flags[Index: Integer]: TSynEditStringFlags read GetFlags write SetFlags;
   end;
 
   { TSynEditStringList }
@@ -122,7 +111,6 @@ type
   TSynEditStringList = class(TSynEditStrings)
   private
     FList: TSynEditStringMemory;
-    FAttributeList: Array of TSynEditStringAttribute;
 
     FAttachedSynEditList: TFPList;
     FNotifyLists: Array [TSynEditNotifyReason] of TSynMethodList;
@@ -145,8 +133,6 @@ type
     function GetFlags(Index: Integer): TSynEditStringFlags;
     procedure Grow;
     procedure InsertItem(Index: integer; const S: string);
-    function ClassIndexForAttribute(AttrIndex: TClass): Integer;
-    Procedure SetAttributeSize(NewSize: Integer);
     procedure SetFlags(Index: Integer; const AValue: TSynEditStringFlags);
     procedure SetModified(const AValue: Boolean);
     procedure SendCachedNotify;
@@ -167,8 +153,6 @@ type
 
     function GetRange(Index: Pointer): TSynManagedStorageMem; override;
     procedure PutRange(Index: Pointer; const ARange: TSynManagedStorageMem); override;
-    function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; override;
-    procedure SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer); override;
     function Get(Index: integer): string; override;
     function GetCapacity: integer;
       {$IFDEF SYN_COMPILER_3_UP} override; {$ENDIF}                             //mh 2000-10-18
@@ -190,7 +174,6 @@ type
     procedure AddStrings(AStrings: TStrings); override;
     procedure Clear; override;
     procedure Delete(Index: integer); override;
-    procedure RegisterAttribute(const Index: TClass; const Size: Word); override;
     procedure DeleteLines(Index, NumLines: integer); override;
     procedure Insert(Index: integer; const S: string); override;
     procedure InsertLines(Index, NumLines: integer); override;
@@ -491,8 +474,6 @@ begin
   for r := low(TSynEditNotifyReason) to high(TSynEditNotifyReason) do
     FIgnoreSendNotification[r] := 0;
   inherited Create;
-  SetAttributeSize(0);
-  RegisterAttribute(TSynEditFlagsClass, SizeOf(TSynEditStringFlag));
   fDosFileFormat := TRUE;
 {begin}                                                                         //mh 2000-10-19
   fIndexOfLongestLine := -1;
@@ -503,7 +484,6 @@ destructor TSynEditStringList.Destroy;
 var
   i: TSynEditNotifyReason;
 begin
-  fAttributeList := nil;
   inherited Destroy;
   SetCount(0);
   SetCapacity(0);
@@ -600,7 +580,7 @@ end;
 function TSynEditStringList.GetFlags(Index: Integer): TSynEditStringFlags;
 begin
   if (Index >= 0) and (Index < Count) then
-    Result := TSynEditStringFlags(Integer(PtrUInt(GetAttribute(TSynEditFlagsClass, Index))))
+    Result := FList.Flags[Index]
   else
     Result := [];
 end;
@@ -882,72 +862,9 @@ begin
   FList.RangeList[Index] := ARange;
 end;
 
-function TSynEditStringList.GetAttribute(const Owner: TClass; const Index: Integer): Pointer;
-var
-  i: Integer;
-begin
-  if (Index = 0) and (Count = 0) then
-    exit(nil);
-  if (Index < 0) or (Index >= Count) then
-    ListIndexOutOfBounds(Index);
-  i := ClassIndexForAttribute(Owner);
-  if i < 0 then
-    raise ESynEditStringList.CreateFmt('Unknown Attribute', []);
-  Result := FList.Attribute[Index, FAttributeList[i].Pos, FAttributeList[i].Size]
-end;
-
-procedure TSynEditStringList.SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer);
-var
-  i: Integer;
-begin
-  if (Index = 0) and (Count = 0) then
-    Add('');
-  if (Index < 0) or (Index >= Count) then
-    ListIndexOutOfBounds(Index);
-  i := ClassIndexForAttribute(Owner);
-  if i < 0 then
-    raise ESynEditStringList.CreateFmt('Unknown Attribute', []);
-  FList.Attribute[Index, FAttributeList[i].Pos, FAttributeList[i].Size] := AValue;
-end;
-
-procedure TSynEditStringList.RegisterAttribute(const Index: TClass; const Size: Word);
-var
-  i: Integer;
-begin
-  if ClassIndexForAttribute(Index) >= 0 then
-    raise ESynEditStringList.CreateFmt('Duplicate Attribute', []);
-  i := Length(fAttributeList);
-  SetLength(fAttributeList, i+1);
-  fAttributeList[i].Index := Index;
-  fAttributeList[i].Size := Size;
-  if i= 0 then
-    fAttributeList[i].Pos := 0
-  else
-    fAttributeList[i].Pos := fAttributeList[i-1].Pos + fAttributeList[i-1].Size;
-  SetAttributeSize(fAttributeList[i].Pos + Size);
-end;
-
-function TSynEditStringList.ClassIndexForAttribute(AttrIndex: TClass): Integer;
-var
-  i: Integer;
-begin
-  for i := 0 to high(fAttributeList) do
-    if fAttributeList[i].Index = AttrIndex then
-      exit(i);
-  result := -1;
-end;
-
-procedure TSynEditStringList.SetAttributeSize(NewSize: Integer);
-begin
-  if FList.AttributeSize = NewSize then exit;
-  if Count > 0 then
-    raise ESynEditStringList.CreateFmt('Add Attribute only allowed with zero lines', []);
-  FList.AttributeSize := NewSize;
-end;
-
 procedure TSynEditStringList.SetFlags(Index: Integer; const AValue: TSynEditStringFlags);
 begin
-  SetAttribute(TSynEditFlagsClass, Index, Pointer(PtrUInt(Integer(AValue))));
+  FList.Flags[Index] := AValue;
 end;
 
 procedure TSynEditStringList.SetModified(const AValue: Boolean);
@@ -1233,15 +1150,11 @@ end;
 type
   PObject = ^TObject;
 
-const
-  AttributeOfset = SizeOf(String) + SizeOf(TObject);
-
 constructor TSynEditStringMemory.Create;
 begin
   inherited Create;
   FRangeList := TSynManagedStorageMemList.Create;
   FRangeListLock := 0;
-  AttributeSize := 0;
 end;
 
 destructor TSynEditStringMemory.Destroy;
@@ -1301,37 +1214,28 @@ begin
   end;
 end;
 
-function TSynEditStringMemory.GetAttributeSize: Integer;
-begin
-  Result := FAttributeSize - SizeOf(String) - SizeOf(TObject)
-end;
-
-procedure TSynEditStringMemory.SetAttributeSize(const AValue: Integer);
-var
-  c: LongInt;
-begin
-  if FAttributeSize = AValue + SizeOf(String) + SizeOf(TObject) then exit;;
-  c := Capacity;
-  Capacity := 0;
-  FAttributeSize := AValue + SizeOf(String) + SizeOf(TObject);
-  Capacity := c;
-end;
-
 function TSynEditStringMemory.GetString(Index: Integer): String;
 begin
-  Result := (PString(Mem + Index * FAttributeSize))^;
+  Result := (PString(ItemPointer[Index]))^;
+end;
+
+procedure TSynEditStringMemory.SetFlags(Index: Integer; const AValue: TSynEditStringFlags);
+begin
+  (PSynEditStringFlags(ItemPointer[Index] + SizeOf(String) + SizeOf(TObject) ))^ := AValue;
 end;
 
 procedure TSynEditStringMemory.SetString(Index: Integer; const AValue: String);
 begin
-  (PString(Mem + Index * FAttributeSize))^ := AValue;
+  (PString(ItemPointer[Index]))^ := AValue;
   if FRangeListLock = 0 then
     FRangeList.CallLineTextChanged(Index);
 end;
 
 function TSynEditStringMemory.ItemSize: Integer;
+const
+  FlagSize = ((SizeOf(TSynEditStringFlags) + 1 ) Div 2) * 2; // ensure boundary
 begin
-  Result := FAttributeSize;
+  Result := SizeOf(String) + SizeOf(TObject) + FlagSize;
 end;
 
 procedure TSynEditStringMemory.SetCapacity(const AValue: Integer);
@@ -1342,7 +1246,12 @@ end;
 
 function TSynEditStringMemory.GetObject(Index: Integer): TObject;
 begin
-  Result := (PObject(Mem + Index * FAttributeSize + SizeOf(String)))^;
+  Result := (PObject(ItemPointer[Index] + SizeOf(String)))^;
+end;
+
+function TSynEditStringMemory.GetFlags(Index: Integer): TSynEditStringFlags;
+begin
+  Result := (PSynEditStringFlags(ItemPointer[Index] + SizeOf(String) + SizeOf(TObject) ))^;
 end;
 
 function TSynEditStringMemory.GetRange(Index: Pointer): TSynManagedStorageMem;
@@ -1352,7 +1261,7 @@ end;
 
 procedure TSynEditStringMemory.SetObject(Index: Integer; const AValue: TObject);
 begin
-  (PObject(Mem + Index * FAttributeSize + SizeOf(String)))^ := AValue;
+  (PObject(ItemPointer[Index] + SizeOf(String)))^ := AValue;
 end;
 
 procedure TSynEditStringMemory.SetRange(Index: Pointer; const AValue: TSynManagedStorageMem);
@@ -1362,26 +1271,6 @@ begin
   if AValue <> nil then begin
     AValue.Capacity := Capacity;
     AValue.Count := Count;
-  end;
-end;
-
-function TSynEditStringMemory.GetAttribute(Index: Integer; Pos: Integer; Size: Word): Pointer;
-begin
-  case Size of
-    1 : Result := Pointer(PtrUInt((PByte(Mem + Index * FAttributeSize + AttributeOfset + Pos))^));
-    2 : Result := Pointer(PtrUInt((PWord(Mem + Index * FAttributeSize + AttributeOfset + Pos))^));
-    4 : Result := Pointer(PtrUInt((PLongWord(Mem + Index * FAttributeSize + AttributeOfset + Pos))^));
-    8 : Result := Pointer(PtrUInt((PQWord(Mem + Index * FAttributeSize + AttributeOfset + Pos))^));
-  end;
-end;
-
-procedure TSynEditStringMemory.SetAttribute(Index: Integer; Pos: Integer; Size: Word; const AValue: Pointer);
-begin
-  case Size of
-    1 : (PByte(Mem + Index * FAttributeSize + AttributeOfset + Pos))^ := Byte(PtrUInt(AValue));
-    2 : (PWord(Mem + Index * FAttributeSize + AttributeOfset + Pos))^ := Word(PtrUInt(AValue));
-    4 : (PLongWord(Mem + Index * FAttributeSize + AttributeOfset + Pos))^ := LongWord(PtrUInt(AValue));
-    8 : (PQWord(Mem + Index * FAttributeSize + AttributeOfset + Pos))^ := QWord(PtrUInt(AValue));
   end;
 end;
 

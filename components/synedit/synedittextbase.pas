@@ -70,7 +70,7 @@ type
   private
     FMem: PByte;
     FCount, FCapacity: Integer;
-    function GetItemPointer(Index: Integer): Pointer;
+    function GetItemPointer(Index: Integer): Pointer; inline;
   protected
     procedure SetCapacity(const AValue: Integer); virtual;
     procedure SetCount(const AValue: Integer); virtual;
@@ -143,8 +143,6 @@ type
     FIsUtf8: Boolean;
     function  GetIsUtf8 : Boolean; virtual;
     procedure SetIsUtf8(const AValue : Boolean); virtual;
-    function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; virtual; abstract;
-    procedure SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer); virtual; abstract;
 
     function GetExpandedString(Index: integer): string; virtual; abstract;
     function GetLengthOfLongestLine: integer; virtual; abstract;
@@ -170,10 +168,6 @@ type
     procedure DeleteLines(Index, NumLines: integer); virtual; abstract;
     procedure InsertLines(Index, NumLines: integer); virtual; abstract;
     procedure InsertStrings(Index: integer; NewStrings: TStrings); virtual; abstract;
-
-    procedure RegisterAttribute(const Index: TClass; const Size: Word); virtual; abstract;
-    property Attribute[Owner: TClass; Index: Integer]: Pointer
-      read GetAttribute write SetAttribute;
 
     procedure AddGenericHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); virtual; abstract;
@@ -242,9 +236,6 @@ type
     function GetRange(Index: Pointer): TSynManagedStorageMem; override;
     procedure PutRange(Index: Pointer; const ARange: TSynManagedStorageMem); override;
 
-    function  GetAttribute(const Owner: TClass; const Index: Integer): Pointer; override;
-    procedure SetAttribute(const Owner: TClass; const Index: Integer; const AValue: Pointer); override;
-
     function GetExpandedString(Index: integer): string; override;
     function GetLengthOfLongestLine: integer; override;
 
@@ -281,8 +272,6 @@ type
     procedure InsertLines(Index, NumLines: integer); override;
     procedure InsertStrings(Index: integer; NewStrings: TStrings); override;
 
-    // Size: 0 = Bit (TODO); 1..8 Size In Byte "SizeOf()"
-    procedure RegisterAttribute(const Index: TClass; const Size: Word); override;
     procedure AddGenericHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); override;
     procedure RemoveGenericHandler(AReason: TSynEditNotifyReason;
@@ -712,17 +701,6 @@ begin
   fSynStrings.Ranges[Index] := ARange;
 end;
 
-function TSynEditStringsLinked.GetAttribute(const Owner: TClass; const Index: Integer): Pointer;
-begin
-  Result := fSynStrings.Attribute[Owner, Index];
-end;
-
-procedure TSynEditStringsLinked.SetAttribute(const Owner: TClass;
-                                const Index: Integer; const AValue: Pointer);
-begin
-  fSynStrings.Attribute[Owner, Index] := AValue;
-end;
-
 function TSynEditStringsLinked.GetExpandedString(Index: integer): string;
 begin
   Result:= fSynStrings.GetExpandedString(Index);
@@ -746,11 +724,6 @@ end;
 function TSynEditStringsLinked.GetCurUndoList: TSynEditUndoList;
 begin
   Result := fSynStrings.GetCurUndoList;
-end;
-
-procedure TSynEditStringsLinked.RegisterAttribute(const Index: TClass; const Size: Word);
-begin
-  fSynStrings.RegisterAttribute(Index, Size);
 end;
 
 procedure TSynEditStringsLinked.AddGenericHandler(AReason: TSynEditNotifyReason; AHandler: TMethod);
