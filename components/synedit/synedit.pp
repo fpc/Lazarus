@@ -1558,6 +1558,7 @@ begin
   FDoubleWidthChrLinesView := SynEditStringDoubleWidthChars.Create
                                                             (FTrimmedLinesView);
 
+  // ftab, currently has LengthOfLongestLine, therefore must be after DoubleWidthChar
   FTabbedLinesView := TSynEditStringTabExpander.Create(FDoubleWidthChrLinesView);
 
   FFoldedLinesView := TSynEditFoldedView.Create(FTabbedLinesView, fCaret);
@@ -5138,6 +5139,7 @@ begin
   TempPlugins.Free;
 
   RemoveHandlers(OldBuffer);
+  FLines.SendNotification(senrTextBufferChanged, OldBuffer); // Send the old buffer
 end;
 
 procedure TCustomSynEdit.ShareTextBufferFrom(AShareEditor: TCustomSynEdit);

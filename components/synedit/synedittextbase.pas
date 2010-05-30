@@ -53,7 +53,8 @@ type
                            senrIncPaintLock,      // Actual PaintLock
                            senrDecPaintLock,
                            senrAfterIncPaintLock, // For plugins, etc...
-                           senrBeforeDecPaintLock
+                           senrBeforeDecPaintLock,
+                           senrTextBufferChanged
                           );
 
   TPhysicalCharWidths = Array of Shortint;

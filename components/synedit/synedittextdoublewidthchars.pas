@@ -52,108 +52,111 @@ implementation
 function SynEditStringDoubleWidthChars.GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths;
 var
   i: Integer;
+  p: PChar;
 begin
   Result := inherited GetPhysicalCharWidths(Line, Index);
   if not IsUtf8 then
     exit;
 
+  p := Pchar(Line)-1;
   for i := 0 to length(Line) -1 do begin
+    inc(p);
     if Result[i] = 0 then continue;
-    case Line[i+1] of
+    case p[0] of
       #$e1:
-        case Line[i+2] of
+        case p[1] of
           #$84:
-            if (Line[i+3] >= #$80) then Result[i] := 2;
+            if (p[2] >= #$80) then Result[i] := 2;
           #$85:
-            if (Line[i+3] <= #$9f) then Result[i] := 2;
+            if (p[2] <= #$9f) then Result[i] := 2;
         end;
       #$e2:
-        case Line[i+2] of
+        case p[1] of
           #$8c:
-            if (Line[i+3] = #$a9) or (Line[i+3] = #$aa) then Result[i] := 2;
+            if (p[2] = #$a9) or (p[2] = #$aa) then Result[i] := 2;
           #$ba:
-            if (Line[i+3] >= #$80) then Result[i] := 2;
+            if (p[2] >= #$80) then Result[i] := 2;
           #$bb..#$ff:
             Result[i] := 2;
         end;
       #$e3:
-        case Line[i+2] of
+        case p[1] of
           #$81:
-            if (Line[i+3] >= #$81) then Result[i] := 2;
+            if (p[2] >= #$81) then Result[i] := 2;
           #$82..#$8e:
             Result[i] := 2;
           #$8f:
-            if (Line[i+3] <= #$bf) then Result[i] := 2;
+            if (p[2] <= #$bf) then Result[i] := 2;
           #$90:
-            if (Line[i+3] >= #$80) then Result[i] := 2;
+            if (p[2] >= #$80) then Result[i] := 2;
           #$91..#$FF:
             Result[i] := 2;
         end;
       #$e4:
-        case Line[i+2] of
+        case p[1] of
           #$00..#$b5:
             Result[i] := 2;
           #$b6:
-            if (Line[i+3] <= #$b5) then Result[i] := 2;
+            if (p[2] <= #$b5) then Result[i] := 2;
           #$b8:
-            if (Line[i+3] >= #$80) then Result[i] := 2;
+            if (p[2] >= #$80) then Result[i] := 2;
           #$b9..#$ff:
             Result[i] := 2;
         end;
       #$e5..#$e8:
         Result[i] := 2;
       #$e9:
-        if (Line[i+2] <= #$bf) or (Line[i+3] <= #$83) then Result[i] := 2;
+        if (p[1] <= #$bf) or (p[2] <= #$83) then Result[i] := 2;
       #$ea:
-        case Line[i+2] of
+        case p[1] of
           #$80, #$b0:
-            if (Line[i+3] >= #$80) then Result[i] := 2;
+            if (p[2] >= #$80) then Result[i] := 2;
           #$81..#$92, #$b1..#$ff:
             Result[i] := 2;
           #$93:
-            if (Line[i+3] <= #$86) then Result[i] := 2;
+            if (p[2] <= #$86) then Result[i] := 2;
         end;
       #$eb..#$ec:
         Result[i] := 2;
       #$ed:
-        if (Line[i+2] <= #$9e) or (Line[i+3] <= #$a3) then Result[i] := 2;
+        if (p[1] <= #$9e) or (p[2] <= #$a3) then Result[i] := 2;
 
       #$ef:
-        case Line[i+2] of
+        case p[1] of
           #$a4:
-            if (Line[i+3] >= #$80) then Result[i] := 2;
+            if (p[2] >= #$80) then Result[i] := 2;
           #$a5..#$aa:
             Result[i] := 2;
           #$ab:
-            if (Line[i+3] <= #$99) then Result[i] := 2;
+            if (p[2] <= #$99) then Result[i] := 2;
           #$b8:
-            if (Line[i+3] in [#$90..#$99,#$b0..#$ff]) then Result[i] := 2;
+            if (p[2] in [#$90..#$99,#$b0..#$ff]) then Result[i] := 2;
           #$b9:
-            if (Line[i+3] <= #$ab) then Result[i] := 2;
+            if (p[2] <= #$ab) then Result[i] := 2;
           #$bc:
-            if (Line[i+3] >= #$81) then Result[i] := 2;
+            if (p[2] >= #$81) then Result[i] := 2;
           #$bd:
-            if (Line[i+3] <= #$a0) then Result[i] := 2;
+            if (p[2] <= #$a0) then Result[i] := 2;
           #$bf:
-            if (Line[i+3] >= #$a0) and (Line[i+3] <= #$a6) then Result[i] := 2;
+            if (p[2] >= #$a0) and (p[2] <= #$a6) then Result[i] := 2;
         end;
       #$f0:
-        case Line[i+2] of
+        case p[1] of
           #$a0, #$b0:
-            case Line[i+3] of
+            case p[2] of
               #$80:
-                if (Line[i+4] >= #$80) then Result[i] := 2;
+                if (p[3] >= #$80) then Result[i] := 2;
               #$81..#$ff:
                 Result[i] := 2;
             end;
           #$a1..#$ae, #$b1..#$be:
             Result[i] := 2;
           #$af, #$bf:
-            case Line[i+3] of
+            case p[2] of
               #$00..#$be:
                 Result[i] := 2;
               #$bf:
-                if (Line[i+4] <= #$bd) then Result[i] := 2;
+                if (p[3] <= #$bd) then Result[i] := 2;
             end;
         end
     end;

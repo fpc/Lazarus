@@ -724,20 +724,21 @@ end;
 function TSynEditStringList.GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths;
 var
   i, j: Integer;
+  p: PChar;
 begin
   SetLength(Result, Length(Line));
-  i := 0;
   j := 0;
-  while i < length(Line) do begin
+  p := PChar(line);
+  for i := 0 to length(Line)-1 do begin
     if j > 0 then begin
       Result[i] := 0;
       dec(j);
     end else begin
       Result[i] := 1;
       if IsUtf8 then
-        j := UTF8CharacterLength(@Line[i+1]) - 1;
+        j := UTF8CharacterLength(p) - 1;
     end;
-    inc(i);
+    inc(p);
   end;
 end;
 

@@ -29,12 +29,28 @@ uses
 LCLProc,
   Classes, SysUtils, SynEditTextBase;
 
-const
-  // Offset to add to LengthOfLine, if Line has no tabs.
-  // (Length will still be valid if tab-width changes)
-  NoTabLengthOffset = MaxInt div 2;
-
 type
+
+  // lines longer than 16383 chars, will be stored as unknown
+  TLineLen = Word;
+  PLineLen = ^TLineLen;
+
+  { TSynEditStringTabData }
+
+  TSynEditStringTabData = class(TSynManagedStorageMem)
+  private
+    FRefCount: Integer;
+    function GetLineLen(Index: Integer): TLineLen;
+    procedure SetLineLen(Index: Integer; const AValue: TLineLen);
+  protected
+    function ItemSize: Integer; override;
+  public
+    constructor Create;
+    procedure IncRefCount;
+    procedure DecRefCount;
+    property RefCount: Integer read FRefCount;
+    property LineLen[Index: Integer]: TLineLen read GetLineLen write SetLineLen; default;
+  end;
 
 { TSynEditStringTabExpander }
 
@@ -42,9 +58,10 @@ type
   private
     FTabWidth: integer;
     FIndexOfLongestLine: Integer;
-    function GetLengthOfLine(Index: Integer): integer;
-    procedure SetLengthOfLine(Index: Integer; const AValue: integer);
-    Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
+    FTabData: TSynEditStringTabData;
+    FLastLineHasTab: Boolean; // Last line, parsed by GetPhysicalCharWidths
+    procedure TextBufferChanged(Sender: TObject);
+    procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     function ExpandedString(Index: integer): string;
     function ExpandedStringLength(Index: integer): Integer;
   protected
@@ -52,8 +69,6 @@ type
     procedure SetTabWidth(const AValue : integer);
     function  GetExpandedString(Index: integer): string; override;
     function  GetLengthOfLongestLine: integer; override;
-    property LengthOfLine[Index: Integer]: integer
-      read GetLengthOfLine write SetLengthOfLine;
   public
     constructor Create(ASynStringSource: TSynEditStrings);
     destructor Destroy; override;
@@ -67,6 +82,12 @@ type
 
 implementation
 
+const
+  // Offset to add to LengthOfLine, if Line has no tabs.
+  // (Length will still be valid if tab-width changes)
+  NO_TAB_IN_LINE_OFFSET = high(TLineLen) div 2;
+  LINE_LEN_UNKNOWN = high(TLineLen);
+
 function GetHasTabs(pLine: PChar): boolean;
 begin
   if Assigned(pLine) then begin
@@ -79,33 +100,68 @@ begin
     Result := FALSE;
 end;
 
+{ TSynEditStringTabData }
+
+function TSynEditStringTabData.GetLineLen(Index: Integer): TLineLen;
+begin
+  Result := PLineLen(ItemPointer[Index])^;
+end;
+
+procedure TSynEditStringTabData.SetLineLen(Index: Integer; const AValue: TLineLen);
+begin
+  PLineLen(ItemPointer[Index])^ := AValue;
+end;
+
+function TSynEditStringTabData.ItemSize: Integer;
+begin
+  Result := SizeOf(TLineLen);
+end;
+
+constructor TSynEditStringTabData.Create;
+begin
+  inherited;
+  FRefCount := 1;
+end;
+
+procedure TSynEditStringTabData.IncRefCount;
+begin
+  inc(FRefCount);
+end;
+
+procedure TSynEditStringTabData.DecRefCount;
+begin
+  dec(FRefCount);
+end;
+
 { TSynEditStringTabExpander }
 
 constructor TSynEditStringTabExpander.Create(ASynStringSource: TSynEditStrings);
 begin
   FIndexOfLongestLine := -1;
   inherited Create(ASynStringSource);
-  fSynStrings.RegisterAttribute(TSynEditStringTabExpander, SizeOf(Integer));
+  TextBufferChanged(nil);
   TabWidth := 8;
   fSynStrings.AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
   fSynStrings.AddChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
+  fSynStrings.AddNotifyHandler(senrTextBufferChanged, {$IFDEF FPC}@{$ENDIF}TextBufferChanged);
 end;
 
 destructor TSynEditStringTabExpander.Destroy;
+var
+  Data: TSynEditStringTabData;
 begin
+  Data := TSynEditStringTabData(fSynStrings.Ranges[Self]);
+  if Assigned(Data) then begin
+    Data.DecRefCount;
+    if Data.RefCount = 0 then begin
+      fSynStrings.Ranges[Self] := nil;
+      Data.Free;
+    end;
+  end;
   fSynStrings.RemoveChangeHandler(senrLineChange, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
   fSynStrings.RemoveChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
+  fSynStrings.RemoveNotifyHandler(senrTextBufferChanged, {$IFDEF FPC}@{$ENDIF}TextBufferChanged);
   inherited Destroy;
-end;
-
-function TSynEditStringTabExpander.GetLengthOfLine(Index: Integer): integer;
-begin
-  Result := Integer(PtrUInt(Attribute[TSynEditStringTabExpander, Index]));
-end;
-
-procedure TSynEditStringTabExpander.SetLengthOfLine(Index: Integer; const AValue: integer);
-begin
-   Attribute[TSynEditStringTabExpander, Index] := Pointer(PtrUInt(AValue));
 end;
 
 function TSynEditStringTabExpander.GetTabWidth: integer;
@@ -122,8 +178,38 @@ begin
   FTabWidth := AValue;
   FIndexOfLongestLine := -1;
   for i := 0 to Count - 1 do
-    if not(LengthOfLine[i] >= NoTabLengthOffset) then
-      LengthOfLine[i] := -1;
+    if not(FTabData[i] >= NO_TAB_IN_LINE_OFFSET) then
+      FTabData[i] := LINE_LEN_UNKNOWN;
+end;
+
+procedure TSynEditStringTabExpander.TextBufferChanged(Sender: TObject);
+var
+  Data: TSynEditStringTabData;
+begin
+  // Using self, instead as class, to register tab-width-data
+  // other shared edits can have different tab-width
+  if (Sender <> nil) and
+     (FTabData = TSynEditStringTabData(NextLines.Ranges[Self]))
+  then
+    exit;
+
+  if Sender <> nil then begin
+    Data := TSynEditStringTabData(TSynEditStrings(Sender).Ranges[Self]);
+    if Assigned(Data) then begin
+      Data.DecRefCount;
+      if Data.RefCount = 0 then begin
+        TSynEditStrings(Sender).Ranges[Self] := nil;
+        Data.Free;
+      end;
+    end;
+  end;
+  FTabData := TSynEditStringTabData(NextLines.Ranges[Self]);
+  if FTabData = nil then begin
+    FTabData := TSynEditStringTabData.Create;
+    NextLines.Ranges[Self] := FTabData;
+  end
+  else
+    FTabData.IncRefCount;
 end;
 
 procedure TSynEditStringTabExpander.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
@@ -132,7 +218,7 @@ var
 begin
   FIndexOfLongestLine := -1;
   for i := AIndex to AIndex + ACount - 1 do
-    LengthOfLine[i] := -1;
+    FTabData[i] := LINE_LEN_UNKNOWN;
 end;
 
 function TSynEditStringTabExpander.ExpandedString(Index: integer): string;
@@ -141,10 +227,12 @@ var
   CharWidths: TPhysicalCharWidths;
   i, j, l: Integer;
 begin
+// this is only used by trimmer.lengthOfLongestLine / which is not called, if a tab module is present
   Line := fSynStrings[Index];
   if (Line = '') or (not GetHasTabs(PChar(Line))) then begin
     Result := Line;
-    LengthOfLine[Index] := length(Result) + NoTabLengthOffset;
+    // xxx wrong double width // none latin ...
+    //FTabData[Index] := length(Result) + NO_TAB_IN_LINE_OFFSET;
   end else begin
     CharWidths := GetPhysicalCharWidths(Line, Index);
     l := 0;
@@ -164,7 +252,7 @@ begin
         end;
       end;
     end;
-    LengthOfLine[Index] := length(Result);
+    FTabData[Index] := length(Result);
   end;
 end;
 
@@ -175,23 +263,26 @@ var
   i: Integer;
 begin
   Line := fSynStrings[Index];
-  if (Line = '') or (not GetHasTabs(PChar(Line))) then begin
-    Result := Length(Line);
-    LengthOfLine[Index] := Result + NoTabLengthOffset;
+  if (Line = '') then begin
+    Result := 0;
+    FTabData[Index] := Result + NO_TAB_IN_LINE_OFFSET;
   end else begin
     CharWidths := GetPhysicalCharWidths(Line, Index);
     Result := 0;
     for i := 0 to length(CharWidths)-1 do
       Result := Result + CharWidths[i];
 
-    LengthOfLine[Index] := Result;
+    if FLastLineHasTab then // FLastLineHasTab is set by GetPhysicalCharWidths
+      FTabData[Index] := Result
+    else
+      FTabData[Index] := Result + NO_TAB_IN_LINE_OFFSET;
   end;
 end;
 
 function TSynEditStringTabExpander.GetExpandedString(Index: integer): string;
 begin
   if (Index >= 0) and (Index < Count) then begin
-    if LengthOfLine[Index] >= NoTabLengthOffset then
+    if FTabData[Index] >= NO_TAB_IN_LINE_OFFSET then
       Result := fSynStrings[Index]
     else
       Result := ExpandedString(Index);
@@ -202,43 +293,50 @@ end;
 function TSynEditStringTabExpander.GetPhysicalCharWidths(const Line: String;
   Index: Integer): TPhysicalCharWidths;
 var
-  i, p: Integer;
+  p: PChar;
+  HasTab: Boolean;
+  i, j: Integer;
 begin
   Result := inherited GetPhysicalCharWidths(Line, Index);
-  p := 0;
+  HasTab := False;
+  p := PChar(Line);
+  j := 0;
   for i := 0 to length(Line) -1 do begin
-    if Result[i] = 0 then continue;
-    if Line[i+1] = #9 then
-      Result[i] := FTabWidth - p mod FTabWidth;
-    p := p + Result[i];
-  end
+    if Result[i] <> 0 then begin
+      if p^ = #9 then begin
+        Result[i] := FTabWidth - (j mod FTabWidth);
+        HasTab := True;
+      end;
+      j := j + Result[i];
+    end;
+    inc(p);
+  end;
+  FLastLineHasTab := HasTab;
 end;
 
 function TSynEditStringTabExpander.GetLengthOfLongestLine: integer;
 var
-  i, j, MaxLen: integer;
+  i, j: integer;
 begin
-  if fIndexOfLongestLine < 0 then begin
-    MaxLen := 0;
-    if Count > 0 then begin
-      for i := 0 to Count - 1 do begin
-        j := LengthOfLine[i];
-        if j >= NoTabLengthOffset then j := j -  NoTabLengthOffset;
-        if j < 0 then
-          j := ExpandedStringLength(i);
-        if j > MaxLen then begin
-          MaxLen := j;
-          fIndexOfLongestLine := i;
-        end;
-      end;
-    end;
-    exit(MaxLen);
-  end;
   if (fIndexOfLongestLine >= 0) and (fIndexOfLongestLine < Count) then begin
-    Result := LengthOfLine[fIndexOfLongestLine];
-    if Result >= NoTabLengthOffset then Result := Result -  NoTabLengthOffset;
-  end else
-    Result := 0;
+    Result := FTabData[fIndexOfLongestLine];
+    if Result >= NO_TAB_IN_LINE_OFFSET then Result := Result -  NO_TAB_IN_LINE_OFFSET;
+    exit;
+  end;
+
+  Result := 0;
+  for i := 0 to Count - 1 do begin
+    j := FTabData[i];
+    if j = LINE_LEN_UNKNOWN then
+      j := ExpandedStringLength(i)
+    else
+    if j >= NO_TAB_IN_LINE_OFFSET then
+      j := j -  NO_TAB_IN_LINE_OFFSET;
+    if j > Result then begin
+      Result := j;
+      fIndexOfLongestLine := i;
+    end;
+  end;
 end;
 
 end.
