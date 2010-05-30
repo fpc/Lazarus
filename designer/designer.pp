@@ -1878,6 +1878,7 @@ var
     NewComponentClass: TComponentClass;
     NewName: String;
     DisableAutoSize: Boolean;
+    NewControl: TControl;
   begin
     if MouseDownComponent=nil then exit;
 
@@ -1978,9 +1979,11 @@ var
 
     // set initial properties
     if NewComponent is TControl then begin
-      TControl(NewComponent).Visible:=true;
-      if csSetCaption in TControl(NewComponent).ControlStyle then
-        TControl(NewComponent).Caption:=NewComponent.Name;
+      NewControl:=TControl(NewComponent);
+      //debugln(['AddComponent ',DbgSName(Self),' Bounds=',dbgs(NewControl.BoundsRect),' BaseBounds=',dbgs(NewControl.BaseBounds),' BaseParentClientSize=',dbgs(NewControl.BaseParentClientSize)]);
+      NewControl.Visible:=true;
+      if csSetCaption in NewControl.ControlStyle then
+        NewControl.Caption:=NewComponent.Name;
     end;
     if Assigned(FOnSetDesigning) then
       FOnSetDesigning(Self,NewComponent,True);

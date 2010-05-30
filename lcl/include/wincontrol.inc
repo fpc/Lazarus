@@ -6023,6 +6023,7 @@ begin
       AControl.Perform(CM_PARENTSHOWHINTCHANGED, 0, 0);
       AControl.Perform(CM_PARENTBIDIMODECHANGED, 0, 0);
       AControl.Perform(CM_PARENTFONTCHANGED, 0, 0);
+      AControl.UpdateBaseBounds(false,true,false);
       if AControl is TWinControl then
         TWinControl(AControl).UpdateControlState
       else
