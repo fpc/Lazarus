@@ -22,7 +22,7 @@ interface
 {$H+}
 
 uses
-  Classes, Controls,
+  Classes, Controls, Types,
   TAGraph, TASeries;
 
 type
@@ -161,14 +161,18 @@ type
 
   TConstantLineDragTool = class(TChartTool)
   private
+    FAffectedSeries: String;
     FGrabRadius: Integer;
     FLine: TConstantLine;
+    function ParseAffectedSeries: TBooleanDynArray;
   public
     constructor Create(AOwner: TComponent); override;
     procedure MouseDown(APoint: TPoint); override;
     procedure MouseMove(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
   published
+    property AffectedSeries: String
+      read FAffectedSeries write FAffectedSeries;
     property GrabRadius: Integer
       read FGrabRadius write FGrabRadius default DEF_GRAB_RADIUS;
   end;
@@ -190,7 +194,7 @@ resourcestring
 implementation
 
 uses
-  ComponentEditors, Forms, GraphMath, Math, PropEdits, SysUtils, Types,
+  ComponentEditors, Forms, GraphMath, Math, PropEdits, SysUtils,
   TAChartUtils, TASubcomponentsEditor;
 
 {$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
@@ -749,11 +753,13 @@ procedure TConstantLineDragTool.MouseDown(APoint: TPoint);
 var
   i, d, bestd: Integer;
   c, bestc: TConstantLine;
+  affected: TBooleanDynArray;
 begin
   bestd := MaxInt;
   bestc := nil;
+  affected := ParseAffectedSeries;
   for i := 0 to FChart.SeriesCount - 1 do begin
-    if not (FChart.Series[i] is TConstantLine) then continue;
+    if not affected[i] or not (FChart.Series[i] is TConstantLine) then continue;
     c := FChart.Series[i] as TConstantLine;
     if c.LineStyle = lsVertical then
       d := FChart.XGraphToImage(c.Position) - APoint.X
@@ -791,6 +797,30 @@ begin
   FLine := nil;
   Deactivate;
   Handled;
+end;
+
+function TConstantLineDragTool.ParseAffectedSeries: TBooleanDynArray;
+var
+  s: TStringList;
+  i, p: Integer;
+begin
+  SetLength(Result, FChart.SeriesCount);
+  if AffectedSeries = '' then begin
+    FillChar(Result[0], Length(Result), true);
+    exit;
+  end;
+  s := TStringList.Create;
+  try
+    s.CommaText := AffectedSeries;
+    FillChar(Result[0], Length(Result), false);
+    for i := 0 to s.Count - 1 do begin
+      p := StrToIntDef(s[i], -1);
+      if InRange(p, 0, High(Result)) then
+        Result[p] := true;
+    end;
+  finally
+    s.Free;
+  end;
 end;
 
 initialization
