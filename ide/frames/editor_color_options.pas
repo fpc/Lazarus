@@ -48,9 +48,10 @@ type
     BackGroundUseDefaultCheckBox: TCheckBox;
     FrameColorUseDefaultCheckBox: TCheckBox;
     ForegroundColorBox: TColorBox;
+    lblAttributeSection: TLabel;
     lblSelectModifications: TLabel;
     ExportSaveDialog: TSaveDialog;
-    lblAttributeSection: TLabel;
+    pnlTop: TPanel;
     TextBoldCheckBox: TCheckBox;
     TextBoldRadioInvert: TRadioButton;
     TextBoldRadioOff: TRadioButton;
@@ -70,13 +71,10 @@ type
     UseSyntaxHighlightCheckBox: TCheckBox;
     ColorPreview: TSynEdit;
     ColorSchemeComboBox: TComboBox;
-    ColorSchemeLabel: TLabel;
     FileExtensionsComboBox: TComboBox;
-    FileExtensionsLabel: TLabel;
     ForeGroundLabel: TLabel;
     ForeGroundUseDefaultCheckBox: TCheckBox;
     LanguageComboBox: TComboBox;
-    LanguageLabel: TLabel;
     SetAllAttributesToDefaultButton: TButton;
     SetAttributeToDefaultButton: TButton;
     pnlElementAttributes: TPanel;
@@ -1136,8 +1134,6 @@ begin
   FCurHighlightElement := nil;
 
   UseSyntaxHighlightCheckBox.Caption := dlgUseSyntaxHighlight;
-  LanguageLabel.Caption := dlgLang;
-  ColorSchemeLabel.Caption := dlgClrScheme;
 
   ColorSchemeComboBox.Sorted := True;
   with ColorSchemeComboBox do
@@ -1146,8 +1142,11 @@ begin
     Text := ColorSchemeFactory.ColorSchemeGroupAtPos[0].Name;
   end;
 
-  FileExtensionsLabel.Caption := dlgFileExts;
+  bevel2.Height := 1;
 
+  LanguageComboBox.Hint := dlgLang;
+  ColorSchemeComboBox.Hint := dlgClrScheme;
+  FileExtensionsComboBox.hint := dlgFileExts;
   SetAttributeToDefaultButton.Caption := dlgSetElementDefault;
   SetAllAttributesToDefaultButton.Caption := dlgSetAllElementDefault;
   btnExport.Caption := dlgColorExportButton;
