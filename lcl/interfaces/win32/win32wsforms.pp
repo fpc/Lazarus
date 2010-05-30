@@ -451,7 +451,8 @@ begin
   begin
     lWinControl := lWindowInfo^.WinControl;
     if (lWinControl <> nil) and (lWinControl is TCustomForm)
-      and (TCustomForm(lWinControl).FormStyle in fsAllStayOnTop) then
+      and (TCustomForm(lWinControl).FormStyle in fsAllStayOnTop)
+      and not (csDesigning in TCustomForm(lWinControl).ComponentState) then
       list.Add(Pointer(Handle));
   end;
 end;
