@@ -516,8 +516,6 @@ begin
   end;
 end;
 
-{$HINTS OFF}
-
 function RectIntersectsRect(
   var ARect: TDoubleRect; const AFixed: TDoubleRect): Boolean;
 
@@ -549,6 +547,7 @@ begin
   Result := ACanvas.TextHeight(TYPICAL_TEXT);
 end;
 
+{$HINTS OFF}
 procedure Unused(const A1);
 begin
 end;
