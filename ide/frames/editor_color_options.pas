@@ -40,7 +40,7 @@ type
     BackGroundColorBox: TColorBox;
     Bevel1: TBevel;
     Bevel1a: TBevel;
-    Bevel2: TBevel;
+    ColumnPosBevel: TBevel;
     btnExport: TButton;
     chkSchemeDefaults: TCheckBox;
     BackGroundLabel: TLabel;
@@ -631,6 +631,7 @@ var
 begin
   MinWidth := -1;
   MinAnchor := ForeGroundLabel;
+  CheckControl(ForeGroundLabel);
   CheckControl(BackGroundLabel);
   CheckControl(ForeGroundUseDefaultCheckBox);
   CheckControl(BackGroundUseDefaultCheckBox);
@@ -639,7 +640,7 @@ begin
   CheckControl(TextBoldCheckBox);
   CheckControl(TextItalicCheckBox);
 
-  ForegroundColorBox.AnchorSide[akLeft].Control := MinAnchor;
+  ColumnPosBevel.AnchorSide[akLeft].Control := MinAnchor;
 end;
 
 procedure TEditorColorOptionsFrame.SetAllAttributesToDefaultButtonClick(
@@ -1142,7 +1143,7 @@ begin
     Text := ColorSchemeFactory.ColorSchemeGroupAtPos[0].Name;
   end;
 
-  bevel2.Height := 1;
+  ColumnPosBevel.Height := 1;
 
   LanguageComboBox.Hint := dlgLang;
   ColorSchemeComboBox.Hint := dlgClrScheme;
