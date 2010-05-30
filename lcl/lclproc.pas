@@ -1457,7 +1457,7 @@ begin
   inc(FCount);
   ReAllocMem(FItems,FCount*SizeOf(TMethod));
   if Index<FCount then
-    System.Move(FItems[Index],FItems[Index+1],(FCount-Index)*SizeOf(TMethod));
+    System.Move(FItems[Index],FItems[Index+1],(FCount-Index-1)*SizeOf(TMethod));
   FItems[Index]:=AMethod;
 end;
 
