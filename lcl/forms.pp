@@ -493,7 +493,7 @@ type
     procedure CMActivate(var Message: TLMessage); message CM_ACTIVATE;
     procedure CMDeactivate(var Message: TLMessage); message CM_DEACTIVATE;
     procedure AddHandler(HandlerType: TFormHandlerType;
-                         const Handler: TMethod; AsLast: Boolean);
+                         const Handler: TMethod; AsFirst: Boolean);
     procedure RemoveHandler(HandlerType: TFormHandlerType;
                             const Handler: TMethod);
     function FindDefaultForActiveControl: TWinControl;
@@ -603,12 +603,12 @@ type
 
     // handlers
     procedure AddHandlerFirstShow(OnFirstShowHandler: TNotifyEvent;
-                                  AsLast: Boolean=true);
+                                  AsFirst: Boolean=true);
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure RemoveHandlerFirstShow(OnFirstShowHandler: TNotifyEvent);
-    procedure AddHandlerClose(OnCloseHandler: TCloseEvent; AsLast: Boolean=true);
+    procedure AddHandlerClose(OnCloseHandler: TCloseEvent; AsFirst: Boolean=true);
     procedure RemoveHandlerClose(OnCloseHandler: TCloseEvent);
-    procedure AddHandlerCreate(OnCreateHandler: TNotifyEvent; AsLast: Boolean=true);
+    procedure AddHandlerCreate(OnCreateHandler: TNotifyEvent; AsFirst: Boolean=true);
     procedure RemoveHandlerCreate(OnCreateHandler: TNotifyEvent);
   public
     // drag and dock
@@ -956,7 +956,7 @@ type
     procedure UpdateMonitors;
     procedure RestoreLastActive;
     procedure AddHandler(HandlerType: TScreenNotification;
-                         const Handler: TMethod; AsLast: Boolean);
+                         const Handler: TMethod; AsFirst: Boolean);
     procedure RemoveHandler(HandlerType: TScreenNotification;
                             const Handler: TMethod);
     procedure DoAddDataModule(DataModule: TDataModule);
@@ -985,21 +985,21 @@ type
     // handler
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure AddHandlerFormAdded(OnFormAdded: TScreenFormEvent;
-                                  AsLast: Boolean=true);
+                                  AsFirst: Boolean=true);
     procedure RemoveHandlerFormAdded(OnFormAdded: TScreenFormEvent);
     procedure AddHandlerRemoveForm(OnRemoveForm: TScreenFormEvent;
-                                   AsLast: Boolean=true);
+                                   AsFirst: Boolean=true);
     procedure RemoveHandlerRemoveForm(OnRemoveForm: TScreenFormEvent);
     procedure AddHandlerActiveControlChanged(
                                     OnActiveControlChanged: TScreenControlEvent;
-                                    AsLast: Boolean=true);
+                                    AsFirst: Boolean=true);
     procedure RemoveHandlerActiveControlChanged(
                                    OnActiveControlChanged: TScreenControlEvent);
     procedure AddHandlerActiveFormChanged(OnActiveFormChanged: TScreenFormEvent;
-                                          AsLast: Boolean=true);
+                                          AsFirst: Boolean=true);
     procedure RemoveHandlerActiveFormChanged(OnActiveFormChanged: TScreenFormEvent);
     procedure AddHandlerFormVisibleChanged(OnFormVisibleChanged: TScreenFormEvent;
-                                           AsLast: Boolean=true);
+                                           AsFirst: Boolean=true);
     procedure RemoveHandlerFormVisibleChanged(OnFormVisibleChanged: TScreenFormEvent);
 
     function DisableForms(SkipForm: TCustomForm; DisabledList: TList = nil): TList;
@@ -1250,7 +1250,7 @@ type
     procedure WndProc(var AMessage : TLMessage);
     function DispatchAction(Msg: Longint; Action: TBasicAction): Boolean;
     procedure AddHandler(HandlerType: TApplicationHandlerType;
-                         const Handler: TMethod; AsLast: Boolean);
+                         const Handler: TMethod; AsFirst: Boolean);
     procedure RemoveHandler(HandlerType: TApplicationHandlerType;
                             const Handler: TMethod);
     procedure RunLoop;
@@ -1329,43 +1329,43 @@ type
                                    var Key: Word; Shift: TShiftState);
     procedure ControlKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ControlKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure AddOnIdleHandler(Handler: TIdleEvent; AsLast: Boolean=true);
+    procedure AddOnIdleHandler(Handler: TIdleEvent; AsFirst: Boolean=true);
     procedure RemoveOnIdleHandler(Handler: TIdleEvent);
-    procedure AddOnIdleEndHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure AddOnIdleEndHandler(Handler: TNotifyEvent; AsFirst: Boolean=true);
     procedure RemoveOnIdleEndHandler(Handler: TNotifyEvent);
     procedure AddOnUserInputHandler(Handler: TOnUserInputEvent;
-                                    AsLast: Boolean=true);
+                                    AsFirst: Boolean=true);
     procedure RemoveOnUserInputHandler(Handler: TOnUserInputEvent);
     procedure AddOnKeyDownBeforeHandler(Handler: TKeyEvent;
-                                        AsLast: Boolean=true);
+                                        AsFirst: Boolean=true);
     procedure RemoveOnKeyDownBeforeHandler(Handler: TKeyEvent);
-    procedure AddOnKeyDownHandler(Handler: TKeyEvent; AsLast: Boolean=true);
+    procedure AddOnKeyDownHandler(Handler: TKeyEvent; AsFirst: Boolean=true);
     procedure RemoveOnKeyDownHandler(Handler: TKeyEvent);
-    procedure AddOnActivateHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure AddOnActivateHandler(Handler: TNotifyEvent; AsFirst: Boolean=true);
     procedure RemoveOnActivateHandler(Handler: TNotifyEvent);
-    procedure AddOnDeactivateHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure AddOnDeactivateHandler(Handler: TNotifyEvent; AsFirst: Boolean=true);
     procedure RemoveOnDeactivateHandler(Handler: TNotifyEvent);
-    procedure AddOnExceptionHandler(Handler: TExceptionEvent; AsLast: Boolean=true);
+    procedure AddOnExceptionHandler(Handler: TExceptionEvent; AsFirst: Boolean=true);
     procedure RemoveOnExceptionHandler(Handler: TExceptionEvent);
-    procedure AddOnEndSessionHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure AddOnEndSessionHandler(Handler: TNotifyEvent; AsFirst: Boolean=true);
     procedure RemoveOnEndSessionHandler(Handler: TNotifyEvent);
-    procedure AddOnQueryEndSessionHandler(Handler: TQueryEndSessionEvent; AsLast: Boolean=true);
+    procedure AddOnQueryEndSessionHandler(Handler: TQueryEndSessionEvent; AsFirst: Boolean=true);
     procedure RemoveOnQueryEndSessionHandler(Handler: TQueryEndSessionEvent);
-    procedure AddOnMinimizeHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure AddOnMinimizeHandler(Handler: TNotifyEvent; AsFirst: Boolean=true);
     procedure RemoveOnMinimizeHandler(Handler: TNotifyEvent);
-    procedure AddOnModalBeginHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure AddOnModalBeginHandler(Handler: TNotifyEvent; AsFirst: Boolean=true);
     procedure RemoveOnModalBeginHandler(Handler: TNotifyEvent);
-    procedure AddOnModalEndHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure AddOnModalEndHandler(Handler: TNotifyEvent; AsFirst: Boolean=true);
     procedure RemoveOnModalEndHandler(Handler: TNotifyEvent);
-    procedure AddOnRestoreHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure AddOnRestoreHandler(Handler: TNotifyEvent; AsFirst: Boolean=true);
     procedure RemoveOnRestoreHandler(Handler: TNotifyEvent);
-    procedure AddOnDropFilesHandler(Handler: TDropFilesEvent; AsLast: Boolean=true);
+    procedure AddOnDropFilesHandler(Handler: TDropFilesEvent; AsFirst: Boolean=true);
     procedure RemoveOnDropFilesHandler(Handler: TDropFilesEvent);
-    procedure AddOnHelpHandler(Handler: THelpEvent; AsLast: Boolean=true);
+    procedure AddOnHelpHandler(Handler: THelpEvent; AsFirst: Boolean=true);
     procedure RemoveOnHelpHandler(Handler: THelpEvent);
-    procedure AddOnHintHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure AddOnHintHandler(Handler: TNotifyEvent; AsFirst: Boolean=true);
     procedure RemoveOnHintHandler(Handler: TNotifyEvent);
-    procedure AddOnShowHintHandler(Handler: TShowHintEvent; AsLast: Boolean=true);
+    procedure AddOnShowHintHandler(Handler: TShowHintEvent; AsFirst: Boolean=true);
     procedure RemoveOnShowHintHandler(Handler: TShowHintEvent);
     procedure RemoveAllHandlersOfObject(AnObject: TObject); virtual;
     procedure DoBeforeMouseMessage(CurMouseControl: TControl);

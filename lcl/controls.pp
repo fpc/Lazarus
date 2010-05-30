@@ -1186,7 +1186,7 @@ type
     procedure VisibleChanging; virtual;
     procedure VisibleChanged; virtual;
     procedure AddHandler(HandlerType: TControlHandlerType;
-                         const AMethod: TMethod; AsLast: boolean = false);
+                         const AMethod: TMethod; AsFirst: boolean = false);
     procedure RemoveHandler(HandlerType: TControlHandlerType;
                             const AMethod: TMethod);
     procedure DoCallNotifyHandler(HandlerType: TControlHandlerType);
@@ -1340,19 +1340,19 @@ type
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure AddHandlerOnResize(const OnResizeEvent: TNotifyEvent;
-                                 AsLast: boolean = false);
+                                 AsFirst: boolean = false);
     procedure RemoveHandlerOnResize(const OnResizeEvent: TNotifyEvent);
     procedure AddHandlerOnChangeBounds(const OnChangeBoundsEvent: TNotifyEvent;
-                                       AsLast: boolean = false);
+                                       AsFirst: boolean = false);
     procedure RemoveHandlerOnChangeBounds(const OnChangeBoundsEvent: TNotifyEvent);
     procedure AddHandlerOnVisibleChanging(const OnVisibleChangingEvent: TNotifyEvent;
-                                          AsLast: boolean = false);
+                                          AsFirst: boolean = false);
     procedure RemoveHandlerOnVisibleChanging(const OnVisibleChangingEvent: TNotifyEvent);
     procedure AddHandlerOnVisibleChanged(const OnVisibleChangedEvent: TNotifyEvent;
-                                         AsLast: boolean = false);
+                                         AsFirst: boolean = false);
     procedure RemoveHandlerOnVisibleChanged(const OnVisibleChangedEvent: TNotifyEvent);
     procedure AddHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent;
-                                  AsLast: boolean = false);
+                                  AsFirst: boolean = false);
     procedure RemoveHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent);
   public
     // standard properties, which should be supported by all descendants

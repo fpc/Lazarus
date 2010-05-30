@@ -1338,7 +1338,7 @@ begin
 end;
 
 procedure TControl.AddHandler(HandlerType: TControlHandlerType;
-  const AMethod: TMethod; AsLast: boolean);
+  const AMethod: TMethod; AsFirst: boolean);
 begin
   if FControlHandlers[HandlerType]=nil then
     FControlHandlers[HandlerType]:=TMethodList.Create;
@@ -4005,9 +4005,9 @@ begin
 end;
 
 procedure TControl.AddHandlerOnResize(const OnResizeEvent: TNotifyEvent;
-  AsLast: boolean);
+  AsFirst: boolean);
 begin
-  AddHandler(chtOnResize,TMethod(OnResizeEvent),AsLast);
+  AddHandler(chtOnResize,TMethod(OnResizeEvent),AsFirst);
 end;
 
 procedure TControl.RemoveHandlerOnResize(const OnResizeEvent: TNotifyEvent);
@@ -4016,9 +4016,9 @@ begin
 end;
 
 procedure TControl.AddHandlerOnChangeBounds(
-  const OnChangeBoundsEvent: TNotifyEvent; AsLast: boolean);
+  const OnChangeBoundsEvent: TNotifyEvent; AsFirst: boolean);
 begin
-  AddHandler(chtOnChangeBounds,TMethod(OnChangeBoundsEvent),AsLast);
+  AddHandler(chtOnChangeBounds,TMethod(OnChangeBoundsEvent),AsFirst);
 end;
 
 procedure TControl.RemoveHandlerOnChangeBounds(
@@ -4028,9 +4028,9 @@ begin
 end;
 
 procedure TControl.AddHandlerOnVisibleChanging(
-  const OnVisibleChangingEvent: TNotifyEvent; AsLast: boolean);
+  const OnVisibleChangingEvent: TNotifyEvent; AsFirst: boolean);
 begin
-  AddHandler(chtOnVisibleChanging,TMethod(OnVisibleChangingEvent),AsLast);
+  AddHandler(chtOnVisibleChanging,TMethod(OnVisibleChangingEvent),AsFirst);
 end;
 
 procedure TControl.RemoveHandlerOnVisibleChanging(
@@ -4040,9 +4040,9 @@ begin
 end;
 
 procedure TControl.AddHandlerOnVisibleChanged(
-  const OnVisibleChangedEvent: TNotifyEvent; AsLast: boolean);
+  const OnVisibleChangedEvent: TNotifyEvent; AsFirst: boolean);
 begin
-  AddHandler(chtOnVisibleChanged,TMethod(OnVisibleChangedEvent),AsLast);
+  AddHandler(chtOnVisibleChanged,TMethod(OnVisibleChangedEvent),AsFirst);
 end;
 
 procedure TControl.RemoveHandlerOnVisibleChanged(
@@ -4052,9 +4052,9 @@ begin
 end;
 
 procedure TControl.AddHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent;
-  AsLast: boolean);
+  AsFirst: boolean);
 begin
-  AddHandler(chtOnKeyDown,TMethod(OnKeyDownEvent),AsLast);
+  AddHandler(chtOnKeyDown,TMethod(OnKeyDownEvent),AsFirst);
 end;
 
 procedure TControl.RemoveHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent);

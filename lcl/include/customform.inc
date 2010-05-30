@@ -746,12 +746,12 @@ begin
 end;
 
 procedure TCustomForm.AddHandler(HandlerType: TFormHandlerType;
-  const Handler: TMethod; AsLast: Boolean);
+  const Handler: TMethod; AsFirst: Boolean);
 begin
   if Handler.Code=nil then RaiseGDBException('TCustomForm.AddHandler');
   if FFormHandlers[HandlerType]=nil then
     FFormHandlers[HandlerType]:=TMethodList.Create;
-  FFormHandlers[HandlerType].Add(Handler,AsLast);
+  FFormHandlers[HandlerType].Add(Handler,AsFirst);
 end;
 
 procedure TCustomForm.RemoveHandler(HandlerType: TFormHandlerType;
@@ -2683,9 +2683,9 @@ begin
 end;
 
 procedure TCustomForm.AddHandlerFirstShow(OnFirstShowHandler: TNotifyEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(fhtFirstShow,TMethod(OnFirstShowHandler),AsLast);
+  AddHandler(fhtFirstShow,TMethod(OnFirstShowHandler),AsFirst);
 end;
 
 procedure TCustomForm.RemoveHandlerFirstShow(OnFirstShowHandler: TNotifyEvent);
@@ -2694,9 +2694,9 @@ begin
 end;
 
 procedure TCustomForm.AddHandlerClose(OnCloseHandler: TCloseEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(fhtClose,TMethod(OnCloseHandler),AsLast);
+  AddHandler(fhtClose,TMethod(OnCloseHandler),AsFirst);
 end;
 
 procedure TCustomForm.RemoveHandlerClose(OnCloseHandler: TCloseEvent);
@@ -2705,9 +2705,9 @@ begin
 end;
 
 procedure TCustomForm.AddHandlerCreate(OnCreateHandler: TNotifyEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(fhtCreate,TMethod(OnCreateHandler),AsLast);
+  AddHandler(fhtCreate,TMethod(OnCreateHandler),AsFirst);
 end;
 
 procedure TCustomForm.RemoveHandlerCreate(OnCreateHandler: TNotifyEvent);

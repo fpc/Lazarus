@@ -1407,12 +1407,12 @@ begin
 end;
 
 procedure TApplication.AddHandler(HandlerType: TApplicationHandlerType;
-  const Handler: TMethod; AsLast: Boolean);
+  const Handler: TMethod; AsFirst: Boolean);
 begin
   if Handler.Code=nil then RaiseGDBException('TApplication.AddHandler');
   if FApplicationHandlers[HandlerType]=nil then
     FApplicationHandlers[HandlerType]:=TMethodList.Create;
-  FApplicationHandlers[HandlerType].Add(Handler,AsLast);
+  FApplicationHandlers[HandlerType].Add(Handler,AsFirst);
 end;
 
 procedure TApplication.RemoveHandler(HandlerType: TApplicationHandlerType;
@@ -1640,9 +1640,9 @@ begin
 end;
 
 procedure TApplication.AddOnIdleHandler(Handler: TIdleEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(ahtIdle,TMethod(Handler),AsLast);
+  AddHandler(ahtIdle,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnIdleHandler(Handler: TIdleEvent);
@@ -1651,9 +1651,9 @@ begin
 end;
 
 procedure TApplication.AddOnIdleEndHandler(Handler: TNotifyEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(ahtIdleEnd,TMethod(Handler),AsLast);
+  AddHandler(ahtIdleEnd,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnIdleEndHandler(Handler: TNotifyEvent);
@@ -1662,9 +1662,9 @@ begin
 end;
 
 procedure TApplication.AddOnUserInputHandler(Handler: TOnUserInputEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(ahtUserInput,TMethod(Handler),AsLast);
+  AddHandler(ahtUserInput,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnUserInputHandler(Handler: TOnUserInputEvent);
@@ -1673,9 +1673,9 @@ begin
 end;
 
 procedure TApplication.AddOnKeyDownBeforeHandler(Handler: TKeyEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(ahtKeyDownBefore,TMethod(Handler),AsLast);
+  AddHandler(ahtKeyDownBefore,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnKeyDownBeforeHandler(Handler: TKeyEvent);
@@ -1683,9 +1683,9 @@ begin
   RemoveHandler(ahtKeyDownBefore,TMethod(Handler));
 end;
 
-procedure TApplication.AddOnKeyDownHandler(Handler: TKeyEvent; AsLast: Boolean);
+procedure TApplication.AddOnKeyDownHandler(Handler: TKeyEvent; AsFirst: Boolean);
 begin
-  AddHandler(ahtKeyDownAfter,TMethod(Handler),AsLast);
+  AddHandler(ahtKeyDownAfter,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnKeyDownHandler(Handler: TKeyEvent);
@@ -1694,9 +1694,9 @@ begin
 end;
 
 procedure TApplication.AddOnActivateHandler(Handler: TNotifyEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(ahtActivate,TMethod(Handler),AsLast);
+  AddHandler(ahtActivate,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnActivateHandler(Handler: TNotifyEvent);
@@ -1705,9 +1705,9 @@ begin
 end;
 
 procedure TApplication.AddOnDeactivateHandler(Handler: TNotifyEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(ahtDeactivate,TMethod(Handler),AsLast);
+  AddHandler(ahtDeactivate,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnDeactivateHandler(Handler: TNotifyEvent);
@@ -1716,9 +1716,9 @@ begin
 end;
 
 procedure TApplication.AddOnExceptionHandler(Handler: TExceptionEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(ahtException,TMethod(Handler),AsLast);
+  AddHandler(ahtException,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnExceptionHandler(Handler: TExceptionEvent);
@@ -1727,9 +1727,9 @@ begin
 end;
 
 procedure TApplication.AddOnEndSessionHandler(Handler: TNotifyEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(ahtEndSession,TMethod(Handler),AsLast);
+  AddHandler(ahtEndSession,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnEndSessionHandler(Handler: TNotifyEvent);
@@ -1738,9 +1738,9 @@ begin
 end;
 
 procedure TApplication.AddOnQueryEndSessionHandler(
-  Handler: TQueryEndSessionEvent; AsLast: Boolean);
+  Handler: TQueryEndSessionEvent; AsFirst: Boolean);
 begin
-  AddHandler(ahtQueryEndSession,TMethod(Handler),AsLast);
+  AddHandler(ahtQueryEndSession,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnQueryEndSessionHandler(
@@ -1750,9 +1750,9 @@ begin
 end;
 
 procedure TApplication.AddOnMinimizeHandler(Handler: TNotifyEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(ahtMinimize,TMethod(Handler),AsLast);
+  AddHandler(ahtMinimize,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnMinimizeHandler(Handler: TNotifyEvent);
@@ -1761,9 +1761,9 @@ begin
 end;
 
 procedure TApplication.AddOnModalBeginHandler(Handler: TNotifyEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(ahtModalBegin,TMethod(Handler),AsLast);
+  AddHandler(ahtModalBegin,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnModalBeginHandler(Handler: TNotifyEvent);
@@ -1772,9 +1772,9 @@ begin
 end;
 
 procedure TApplication.AddOnModalEndHandler(Handler: TNotifyEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(ahtModalEnd,TMethod(Handler),AsLast);
+  AddHandler(ahtModalEnd,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnModalEndHandler(Handler: TNotifyEvent);
@@ -1783,9 +1783,9 @@ begin
 end;
 
 procedure TApplication.AddOnRestoreHandler(Handler: TNotifyEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(ahtRestore,TMethod(Handler),AsLast);
+  AddHandler(ahtRestore,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnRestoreHandler(Handler: TNotifyEvent);
@@ -1794,9 +1794,9 @@ begin
 end;
 
 procedure TApplication.AddOnDropFilesHandler(Handler: TDropFilesEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(ahtDropFiles,TMethod(Handler),AsLast);
+  AddHandler(ahtDropFiles,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnDropFilesHandler(Handler: TDropFilesEvent);
@@ -1804,9 +1804,9 @@ begin
   RemoveHandler(ahtDropFiles,TMethod(Handler));
 end;
 
-procedure TApplication.AddOnHelpHandler(Handler: THelpEvent; AsLast: Boolean);
+procedure TApplication.AddOnHelpHandler(Handler: THelpEvent; AsFirst: Boolean);
 begin
-  AddHandler(ahtHelp,TMethod(Handler),AsLast);
+  AddHandler(ahtHelp,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnHelpHandler(Handler: THelpEvent);
@@ -1814,10 +1814,10 @@ begin
   RemoveHandler(ahtHelp,TMethod(Handler));
 end;
 
-procedure TApplication.AddOnHintHandler(Handler: TNotifyEvent; AsLast: Boolean
+procedure TApplication.AddOnHintHandler(Handler: TNotifyEvent; AsFirst: Boolean
   );
 begin
-  AddHandler(ahtHint,TMethod(Handler),AsLast);
+  AddHandler(ahtHint,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnHintHandler(Handler: TNotifyEvent);
@@ -1826,9 +1826,9 @@ begin
 end;
 
 procedure TApplication.AddOnShowHintHandler(Handler: TShowHintEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(ahtShowHint,TMethod(Handler),AsLast);
+  AddHandler(ahtShowHint,TMethod(Handler),AsFirst);
 end;
 
 procedure TApplication.RemoveOnShowHintHandler(Handler: TShowHintEvent);

@@ -260,9 +260,9 @@ begin
 end;
 
 procedure TScreen.AddHandlerFormAdded(OnFormAdded: TScreenFormEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(snFormAdded,TMethod(OnFormAdded),AsLast);
+  AddHandler(snFormAdded,TMethod(OnFormAdded),AsFirst);
 end;
 
 procedure TScreen.RemoveHandlerFormAdded(OnFormAdded: TScreenFormEvent);
@@ -271,9 +271,9 @@ begin
 end;
 
 procedure TScreen.AddHandlerRemoveForm(OnRemoveForm: TScreenFormEvent;
-  AsLast: Boolean);
+  AsFirst: Boolean);
 begin
-  AddHandler(snRemoveForm,TMethod(OnRemoveForm),AsLast);
+  AddHandler(snRemoveForm,TMethod(OnRemoveForm),AsFirst);
 end;
 
 procedure TScreen.RemoveHandlerRemoveForm(OnRemoveForm: TScreenFormEvent);
@@ -282,9 +282,9 @@ begin
 end;
 
 procedure TScreen.AddHandlerActiveControlChanged(
-  OnActiveControlChanged: TScreenControlEvent; AsLast: Boolean);
+  OnActiveControlChanged: TScreenControlEvent; AsFirst: Boolean);
 begin
-  AddHandler(snActiveControlChanged,TMethod(OnActiveControlChanged),AsLast);
+  AddHandler(snActiveControlChanged,TMethod(OnActiveControlChanged),AsFirst);
 end;
 
 procedure TScreen.RemoveHandlerActiveControlChanged(
@@ -294,9 +294,9 @@ begin
 end;
 
 procedure TScreen.AddHandlerActiveFormChanged(
-  OnActiveFormChanged: TScreenFormEvent; AsLast: Boolean);
+  OnActiveFormChanged: TScreenFormEvent; AsFirst: Boolean);
 begin
-  AddHandler(snActiveFormChanged,TMethod(OnActiveFormChanged),AsLast);
+  AddHandler(snActiveFormChanged,TMethod(OnActiveFormChanged),AsFirst);
 end;
 
 procedure TScreen.RemoveHandlerActiveFormChanged(
@@ -306,9 +306,9 @@ begin
 end;
 
 procedure TScreen.AddHandlerFormVisibleChanged(
-  OnFormVisibleChanged: TScreenFormEvent; AsLast: Boolean);
+  OnFormVisibleChanged: TScreenFormEvent; AsFirst: Boolean);
 begin
-  AddHandler(snFormVisibleChanged,TMethod(OnFormVisibleChanged),AsLast);
+  AddHandler(snFormVisibleChanged,TMethod(OnFormVisibleChanged),AsFirst);
 end;
 
 procedure TScreen.RemoveHandlerFormVisibleChanged(
@@ -919,13 +919,13 @@ end;
     const Handler: TMethod);
  ------------------------------------------------------------------------------}
 procedure TScreen.AddHandler(HandlerType: TScreenNotification;
-  const Handler: TMethod; AsLast: Boolean);
+  const Handler: TMethod; AsFirst: Boolean);
 begin
   if Handler.Code = nil then
     RaiseGDBException('TScreen.AddHandler');
   if FScreenHandlers[HandlerType] = nil then
     FScreenHandlers[HandlerType] := TMethodList.Create;
-  FScreenHandlers[HandlerType].Add(Handler, AsLast);
+  FScreenHandlers[HandlerType].Add(Handler, AsFirst);
 end;
 
 procedure TScreen.RemoveHandler(HandlerType: TScreenNotification; const Handler: TMethod);
