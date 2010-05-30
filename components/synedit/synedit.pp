@@ -4051,6 +4051,8 @@ end;
 
 function TCustomSynEdit.CurrentMaxLeftChar: Integer;
 begin
+  if not HandleAllocated then // don't know chars in window yet
+    exit(MaxInt);
   Result := FTheLinesView.LengthOfLongestLine;
   if (eoScrollPastEol in Options) and (Result < fMaxLeftChar) then
     Result := fMaxLeftChar;
@@ -4105,7 +4107,7 @@ end;
 procedure TCustomSynEdit.CreateHandle;
 begin
   Application.RemoveOnIdleHandler(@IdleScanRanges);
-  inherited CreateHandle;
+  inherited CreateHandle;   //SizeOrFontChanged will be called
   ScanRanges;
   UpdateScrollBars;
   //if fStateFlags * [sfEnsureCursorPos, sfEnsureCursorPosAtResize] <> [] then
