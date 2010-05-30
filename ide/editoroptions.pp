@@ -4008,11 +4008,13 @@ begin
   Src := Self;
   if IsUsingSchemeGlobals then
     Src := GetSchemeGlobal;
+  aDest.BeginUpdate;
   aDest.Foreground := Src.Foreground;
   aDest.Background := Src.Background;
   aDest.FrameColor := Src.FrameColor;
   aDest.Style      := Src.Style;
   aDest.StyleMask  := Src.StyleMask;
+  aDest.EndUpdate;
 end;
 
 procedure TColorSchemeAttribute.Assign(Src: TPersistent);
