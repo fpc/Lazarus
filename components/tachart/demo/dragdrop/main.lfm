@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 318
+  Left = 739
   Height = 300
-  Top = 151
+  Top = 341
   Width = 400
   Caption = 'Form1'
   ClientHeight = 300
@@ -17,13 +17,9 @@ object Form1: TForm1
       item
         Alignment = calLeft
         Title.Font.Orientation = 900
-        Transformation.Offset = 0
-        Transformation.Scale = 1
       end    
       item
         Alignment = calBottom
-        Transformation.Offset = 0
-        Transformation.Scale = 1
       end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
@@ -34,22 +30,29 @@ object Form1: TForm1
       'while holding Shift key'
     )
     Title.Visible = True
+    Toolset = ChartToolset1
     Align = alClient
     DoubleBuffered = True
     ParentColor = False
-    OnMouseDown = Chart1MouseDown
-    OnMouseMove = Chart1MouseMove
-    OnMouseUp = Chart1MouseUp
     object Chart1LineSeries1: TLineSeries
       Marks.Clipped = False
       Marks.Format = '%0:.9g'
       Marks.Style = smsValue
+      OnGetMark = Chart1LineSeries1GetMark
       Pointer.Brush.Color = clPurple
       Pointer.HorizSize = 6
       Pointer.Style = psDiamond
       Pointer.VertSize = 6
       SeriesColor = clBlack
       ShowPoints = True
+    end
+  end
+  object ChartToolset1: TChartToolset
+    left = 99
+    top = 129
+    object ChartToolset1DataPointDragTool1: TDataPointDragTool
+      Shift = [ssShift, ssLeft]
+      ActiveCursor = crHandPoint
     end
   end
 end
