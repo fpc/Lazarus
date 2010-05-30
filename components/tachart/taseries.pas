@@ -60,6 +60,7 @@ type
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
       override;
+    procedure MovePoint(AIndex: Integer; const ANewPos: TPoint); override;
   end;
 
   { TBarSeries }
@@ -226,6 +227,7 @@ type
     FUseBounds: Boolean;
 
     function GetSeriesColor: TColor;
+    procedure SavePosToCoord(var APoint: TDoublePoint);
     procedure SetLineStyle(AValue: TLineStyle);
     procedure SetPen(AValue: TPen);
     procedure SetPos(AValue: Double);
@@ -239,6 +241,11 @@ type
     destructor  Destroy; override;
 
     procedure Draw(ACanvas: TCanvas); override;
+    function GetNearestPoint(
+      ADistFunc: TPointDistFunc;
+      const APoint: TPoint; out AIndex: Integer; out AImg: TPoint;
+      out AValue: TDoublePoint): Boolean; override;
+    procedure MovePoint(AIndex: Integer; const ANewPos: TPoint); override;
 
   published
     property Active default true;
@@ -505,16 +512,8 @@ end;
 procedure TConstantLine.GetBounds(var ABounds: TDoubleRect);
 begin
   if not UseBounds then exit;
-  case LineStyle of
-    lsHorizontal: begin
-      ABounds.a.Y := FPosGraph;
-      ABounds.b.Y := FPosGraph;
-    end;
-    lsVertical: begin
-      ABounds.a.X := FPosGraph;
-      ABounds.b.X := FPosGraph;
-    end;
-  end;
+  SavePosToCoord(ABounds.a);
+  SavePosToCoord(ABounds.b);
 end;
 
 procedure TConstantLine.GetLegendItems(AItems: TChartLegendItems);
@@ -522,9 +521,45 @@ begin
   AItems.Add(TLegendItemLine.Create(Pen, Title));
 end;
 
+function TConstantLine.GetNearestPoint(ADistFunc: TPointDistFunc;
+  const APoint: TPoint; out AIndex: Integer; out AImg: TPoint; out
+  AValue: TDoublePoint): Boolean;
+begin
+  Result := true;
+  AIndex := -1;
+  AImg := APoint;
+  // Return the actual nearest point of the line.
+  if LineStyle = lsVertical then begin
+    AValue.Y := FChart.YImageToGraph(APoint.Y);
+    AImg.X := FChart.XGraphToImage(Position);
+  end
+  else begin
+    AValue.X := FChart.XImageToGraph(APoint.X);
+    AImg.Y := FChart.YGraphToImage(Position);
+  end;
+  SavePosToCoord(AValue);
+end;
+
 function TConstantLine.GetSeriesColor: TColor;
 begin
   Result := FPen.Color;
+end;
+
+procedure TConstantLine.MovePoint(AIndex: Integer; const ANewPos: TPoint);
+begin
+  Unused(AIndex);
+  if LineStyle = lsVertical then
+    Position := FChart.XImageToGraph(ANewPos.X)
+  else
+    Position := FChart.YImageToGraph(ANewPos.Y);
+end;
+
+procedure TConstantLine.SavePosToCoord(var APoint: TDoublePoint);
+begin
+  if LineStyle = lsVertical then
+    APoint.X := Position
+  else
+    APoint.Y := Position;
 end;
 
 procedure TConstantLine.SetLineStyle(AValue: TLineStyle);
@@ -631,6 +666,19 @@ begin
     AValue.X := GetXValue(i);
     AValue.Y := GetYValue(i);
   end;
+end;
+
+procedure TBasicPointSeries.MovePoint(AIndex: Integer; const ANewPos: TPoint);
+var
+  p: TDoublePoint;
+begin
+  if not InRange(AIndex, 0, Count - 1) then exit;
+  p := FChart.ImageToGraph(ANewPos);
+  with ListSource.Item[AIndex]^ do begin
+    X := p.X;
+    Y := p.Y;
+  end;
+  UpdateParentChart;
 end;
 
 procedure TBasicPointSeries.SetUseReticule(AValue: Boolean);
