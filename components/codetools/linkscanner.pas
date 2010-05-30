@@ -1030,7 +1030,7 @@ begin
      ' ',#9,#10,#13:
         repeat
           inc(p);
-        until not IsSpaceChar[p^];
+        until not (p^ in [' ',#9,#10,#13]);
     else
       break;
     end;
