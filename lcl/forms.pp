@@ -1020,7 +1020,7 @@ type
     property CustomForms[Index: Integer]: TCustomForm read GetCustomForms;
     property CustomFormZOrderCount: Integer read GetCustomFormZOrderCount;
     property CustomFormsZOrdered[Index: Integer]: TCustomForm
-                                                    read GetCustomFormsZOrdered;
+                               read GetCustomFormsZOrdered; // lower index means on top
     property DesktopHeight: Integer read GetDesktopHeight;
     property DesktopWidth: Integer read GetDesktopWidth;
     property FocusedForm: TCustomForm read FFocusedForm;

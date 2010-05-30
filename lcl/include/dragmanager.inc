@@ -352,15 +352,15 @@ procedure TDockPerformer.DragMove(APosition: TPoint);
     end;
   end;
 
-
   function FindDockSiteAtPosition: TWinControl;
-  //Replace with lookup in Application.Zorder(?)
+  //Replace with lookup in Screen.Zorder(?)
   var
     AControl: TWinControl;
     CanDock: Boolean;
     QualifyingSites: TList;
     ARect: TRect;
     I: Integer;
+    j: Integer;
   begin
     Result := nil;
     
@@ -390,9 +390,30 @@ procedure TDockPerformer.DragMove(APosition: TPoint);
 
       if QualifyingSites.Count > 0 then
       begin
-        Result := TWinControl(QualifyingSites[0]); //.GetTopSite; TODO!!!
-        //if not ValidDockTarget(Result) TODO!!!
-        //then Result := nil;            TODO!!!
+        // if a parent and a child has qualified remove the parent
+        for i:=QualifyingSites.Count-1 downto 0 do
+          for j:=i+1 to QualifyingSites.Count-1 do
+            if TWinControl(QualifyingSites[i]).IsParentOf(TWinControl(QualifyingSites[j]))
+            then begin
+              QualifyingSites.Delete(i);
+              break;
+            end;
+
+        i:=0;
+        if QualifyingSites.Count>1 then
+        begin
+          // there are multiple candidates => use the top level
+          for j:=0 to Screen.CustomFormZOrderCount-1 do begin
+            i:=QualifyingSites.Count-1;
+            while (i>=0)
+            and (GetParentForm(TWinControl(QualifyingSites[i]))<>Screen.CustomFormsZOrdered[j])
+            do
+              dec(i);
+            if i>=0 then break;
+          end;
+          if i<0 then i:=0;
+        end;
+        Result := TWinControl(QualifyingSites[i]);
       end;
     finally
       QualifyingSites.Free;
