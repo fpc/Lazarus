@@ -7587,7 +7587,7 @@ begin
 end;
 
 function TWinControl.DoDockClientMsg(DragDockObject: TDragDockObject;
-  Position: TPoint): boolean;
+  aPosition: TPoint): boolean;
 var
   DestRect: TRect;
   Form: TCustomForm;

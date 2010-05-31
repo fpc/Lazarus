@@ -1109,7 +1109,8 @@ end;
 {------------------------------------------------------------------------------
        TControl.DoDragMsg
 ------------------------------------------------------------------------------}
-function TControl.DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean): LRESULT;
+function TControl.DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint;
+  ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean): LRESULT;
 
   function GetDragObject: TObject; inline;
   begin

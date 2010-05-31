@@ -543,9 +543,11 @@ begin
         {$ENDIF}
       end;
 
+      // undock
       if not Moved then begin
         if ADockObjectCopy.Control.HostDockSite <> nil then
-          Accepted := ADockObjectCopy.Control.HostDockSite.DoUnDock(TWinControl(ADockObjectCopy.DragTarget), ADockObjectCopy.Control)
+          Accepted := ADockObjectCopy.Control.HostDockSite.DoUnDock(
+               TWinControl(ADockObjectCopy.DragTarget), ADockObjectCopy.Control)
         else
         if ADockObjectCopy.DragTarget = nil then
           Accepted := True
@@ -563,6 +565,7 @@ begin
     Accepted := Accepted and (Moved or ADockObjectCopy.Floating or SendCmDragMsg(ADockObjectCopy, dmDragLeave)) and ADropped;
     ADockObjectCopy.FDropped := Accepted;
 
+    // float
     if Accepted and (not Moved) and ADockObjectCopy.Floating then
     begin
       ParentForm := GetParentForm(ADockObjectCopy.Control);
@@ -572,7 +575,7 @@ begin
       ADockObjectCopy.Control.DoFloatMsg(ADockObjectCopy);
     end;
 
-
+    // dock
     if ADockObjectCopy.DragTarget <> nil then
     begin
       if not Accepted then
@@ -585,9 +588,11 @@ begin
       end
       else
         DragMsg := dmDragDrop;
-      SendDragMessage(ADockObjectCopy.DragTarget, DragMsg, ADockObjectCopy, ADockObjectCopy.DragTarget, ADockObjectCopy.DragPos);
+      SendDragMessage(ADockObjectCopy.DragTarget, DragMsg, ADockObjectCopy,
+                      ADockObjectCopy.DragTarget, ADockObjectCopy.DragPos);
     end;
 
+    // EndDrag
     if not Accepted then
       ADockObjectCopy.Control.DragCanceled;
     ADockObjectCopy.EndDrag(ADockObjectCopy.DragTarget,TargetPos.X,TargetPos.Y);

@@ -1766,7 +1766,7 @@ type
     function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint;
                        ADragObject: TDragObject; ATarget:
                        TControl; ADocking: Boolean): LRESULT; override;
-    function DoDockClientMsg(DragDockObject: TDragDockObject; Position: TPoint): boolean; virtual;
+    function DoDockClientMsg(DragDockObject: TDragDockObject; aPosition: TPoint): boolean; virtual;
     function DoUndockClientMsg(NewTarget, Client: TControl):boolean; virtual;
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); virtual;
     procedure DockOver(Source: TDragDockObject; X, Y: Integer;
