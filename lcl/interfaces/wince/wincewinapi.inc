@@ -1807,13 +1807,24 @@ end;}
   ): integer;
 begin
   Result:=inherited GetScrollBarSize(Handle, BarKind);
-end;
+end;}
 
 function TWinCEWidgetSet.GetScrollbarVisible(Handle: HWND; SBStyle: Integer
   ): boolean;
+var
+  dwStyle: DWORD;
 begin
-  Result:=inherited GetScrollbarVisible(Handle, SBStyle);
-end;}
+  Result := False;
+  dwStyle := GetWindowLong(Handle, GWL_STYLE);
+
+  case SBStyle of
+    SB_BOTH: Result := (dwStyle and (WS_VSCROLL or WS_HSCROLL)) <> 0;
+    SB_VERT: Result := (dwStyle and WS_VSCROLL) <> 0;
+    SB_HORZ: Result := (dwStyle and WS_HSCROLL) <> 0;
+  else
+    Result := False;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Method:  GetScrollInfo
@@ -2975,31 +2986,69 @@ end;
 function TWinCEWidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; BRedraw: Boolean): Integer;
 var
   dwStyle: DWORD;
-  oldPos, newPos: Integer;
+  newPos: Integer; // New effective Pos, not the same as the desired Pos from ScrollInfo
+  WasScrollBarVisible: Boolean;
+  WindowInfo: PWindowInfo;
 begin
+  Result := 0;
+
+  // We get some information before calling SetScrollInfo because it changes
+  // the GWL_STYLE under Windows CE
   dwStyle := GetWindowLong(Handle, GWL_STYLE);
-  oldPos := Windows.GetScrollPos(Handle, SBStyle);
+  WasScrollBarVisible := LCLIntf.GetScrollbarVisible(Handle, SBStyle);
 
-//  DebugLn(Format(
-//    'Trace:> [TWinCEWidgetSet.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, BRedraw:%d, Pos:%d',
-//    [ScrollInfo.FMask, ScrollInfo.NMin, ScrollInfo.NMax, Integer(BRedraw), ScrollInfo.NPos]));
+  //DebugLn(Format(
+  //  'Trace:> [TWinCEWidgetSet.SetScrollInfo] Mask:0x%x, ' +
+  //  'Min:%d, Max:%d, BRedraw:%d, Pos:%d WasScrollBarVisible=%d',
+  //  [ScrollInfo.FMask, ScrollInfo.NMin, ScrollInfo.NMax,
+  //  Integer(BRedraw), ScrollInfo.NPos, Integer(WasScrollBarVisible)]));
 
+  // Windows CE also shows the scrollbar if you use SetScrollInfo, and
+  // if you hide it back, it will move the position to zero.
+  //
+  // Setting Pos to a valid, non-zero value with a hidden scrollbar will
+  // show a non-working scrollbar. Hiding this scrollbar will revert the
+  // position to zero.
+  // In this case we also get mixed drawings of the new and old position,
+  // regardless if you call SetScrollInfo or if you hide the scrollbar
+  //
+  // Tested on WM 6
+  // See bug http://bugs.freepascal.org/view.php?id=14823
+  if (ScrollInfo.fMask and SIF_POS <> 0) and (ScrollInfo.nPos > 0) and
+    (not WasScrollBarVisible) then
+  begin
+    //DebugLn('A [TWinCEWidgetSet.SetScrollInfo]');
+
+    WindowInfo := GetWindowInfo(Handle);
+    case SBStyle of
+      SB_VERT: Windows.SendMessage(Handle, WM_VSCROLL, SB_THUMBPOSITION, 0);
+      SB_HORZ: Windows.SendMessage(Handle, WM_HSCROLL, SB_THUMBPOSITION, 0);
+      SB_BOTH:
+      begin
+        Windows.SendMessage(Handle, WM_VSCROLL, SB_THUMBPOSITION, 0);
+        Windows.SendMessage(Handle, WM_HSCROLL, SB_THUMBPOSITION, 0);
+      end;
+    end;
+    if WindowInfo^.WinControl <> nil then
+    begin
+      WindowInfo^.WinControl.Invalidate;
+    end;
+    Exit;
+  end;
+
+  // The actual operation
   ScrollInfo.cbSize:=sizeof(ScrollInfo);
   if (ScrollInfo.fMask and SIF_Range > 0) then
     ScrollInfo.nMax := Max(ScrollInfo.nMin, ScrollInfo.nMax - 1);
   Result := Windows.SetScrollInfo(Handle, SBStyle, @ScrollInfo, BRedraw);
 
-  // Windows CE also shows the scrollbar if you use SetScrollInfo, and
-  // if you hide it back, it will loose the position information.
-  // So we use some logic to check if the change was effectively from
-  // Pos Zero to Pos Zero and hide the bar again in this case.
-  // For other cases we can't hide the bar without moving it to Pos Zero
-  // Tested on WM 6
-  // See bug http://bugs.freepascal.org/view.php?id=14823
+  // See previous comments
   newPos := Windows.GetScrollPos(Handle, SBStyle);
-  if (oldPos = 0) and (newPos = 0) and
+  if (ScrollInfo.fMask and SIF_POS <> 0) and (newPos = 0) and
     (dwStyle <> GetWindowLong(Handle, GWL_STYLE)) then
+  begin
     SetWindowLong(Handle, GWL_STYLE, dwStyle);
+  end;
 end;
 
 {------------------------------------------------------------------------------

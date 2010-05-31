@@ -2799,7 +2799,7 @@ function TCustomGrid.ScrollBarIsVisible(Which: Integer): Boolean;
 begin
   Result:=false;
   if HandleAllocated then begin
-    {$IFNDEF WINDOWS}
+    {$IFNDEF MSWINDOWS}
     Result:= getScrollbarVisible(handle, Which);
     {$ELSE}
     // Is up to the widgetset to implement GetScrollbarvisible

@@ -1420,8 +1420,8 @@ begin
 }
     WM_GETMINMAXINFO:
       SetMinMaxInfo(PMINMAXINFO(LParam)^);
-    WM_HSCROLL:
-      HandleScrollMessage(LM_HSCROLL);
+    WM_HSCROLL, WM_VSCROLL:
+      HandleScrollMessage(Msg);
     WM_KEYDOWN:
     begin
       NotifyUserInput := True;
@@ -1902,8 +1902,6 @@ begin
       LMessage.WParam := WParam;
       LMessage.LParam := LParam;
     end;
-    WM_VSCROLL:
-      HandleScrollMessage(LM_VSCROLL);
     WM_WINDOWPOSCHANGED:
     begin
       with TLMWindowPosMsg(LMessage) Do
