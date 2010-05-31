@@ -624,6 +624,9 @@ end;
 
 class function TWinCEWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
 begin
+//  DebugLn(Format('[TWinCEWSMenuItem.CreateHandle] Name:%s Parent:%d Parent:%s Items:%d',
+//    [AMenuItem.Name, Integer(AMenuItem.Parent), AMenuItem.Parent.Name,
+//    Integer(AMenuItem.GetParentMenu.Items)]));
   Result := CreatePopupMenu;
 end;
 
@@ -636,8 +639,51 @@ begin
 end;
 
 class procedure TWinCEWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
+{$ifndef Win32}
+var
+  bi: TBBUTTONINFO;
+  w: WideString;
+  h: THandle;
+  i: Integer;
+  FormFound: Boolean;
+  AMenu: TMenu;
+{$endif}
 begin
-  UpdateCaption(AMenuItem, aCaption);
+  // The code to set top-level menus is different then ordinary items under WinCE
+  {$ifndef Win32}
+  AMenu := AMenuItem.GetParentMenu;
+//  DebugLn(Format('[TWinCEWSMenuItem.SetCaption] A AItem.Menu:%d',
+//    [PtrInt(AMenu)]));
+  if (Application.ApplicationType in [atPDA, atKeyPadDevice]) and
+    (AMenu <> nil) and (AMenu is TMainMenu) and
+    (AMenuItem.Parent = AMenu.Items) then
+  begin
+//    DebugLn('[TWinCEWSMenuItem.SetCaption] B');
+
+    // Iterate through all forms to find the parent
+    FormFound := False;
+    for i := 0 to Screen.FormCount - 1 do
+      if Screen.Forms[i].Menu = AMenu then
+      begin
+        h := SHFindMenuBar(Screen.Forms[i].Handle);
+        FormFound := True;
+        Break;
+      end;
+
+//    DebugLn('[TWinCEWSMenuItem.SetCaption] C');
+    if not FormFound then Exit;
+//    DebugLn('[TWinCEWSMenuItem.SetCaption] D');
+
+    FillChar(bi, SizeOf(TBBUTTONINFO), 0);
+    bi.cbSize := SizeOf(TBBUTTONINFO);
+    bi.dwMask := TBIF_TEXT;
+    w := UTF8Decode(ACaption);
+    bi.pszText := PWideChar(w);
+    SendMessageW(h, TB_SETBUTTONINFO, AMenuItem.Command + StartMenuItem, LPARAM(@bi));
+  end
+  else
+  {$endif}
+    UpdateCaption(AMenuItem, aCaption);
 end;
 
 class function TWinCEWSMenuItem.SetCheck(const AMenuItem: TMenuItem;
@@ -655,7 +701,7 @@ end;
 class procedure TWinCEWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const OldShortCut, NewShortCut: TShortCut);
 begin
-  UpdateCaption(AMenuItem, aMenuItem.Caption);
+  TWinCEWSMenuItem.SetCaption(AMenuItem, aMenuItem.Caption);
 end;
 
 class function TWinCEWSMenuItem.SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean;
