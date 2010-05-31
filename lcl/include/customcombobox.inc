@@ -68,21 +68,23 @@ end;
   Destroy the underlying interface-object.
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.DestroyWnd;
-var NewStrings : TStrings;
+var
+  NewStrings: TStrings;
 begin
   if not HandleAllocated then RaiseGDBException('');
   // store itemindex
-  FItemIndex:= TWSCustomComboBoxClass(WidgetSetClass).GetItemIndex(Self);
+  FItemIndex := TWSCustomComboBoxClass(WidgetSetClass).GetItemIndex(Self);
   // create an internal list for storing items internally
-  NewStrings:= TStringList.Create;
+  NewStrings := TStringList.Create;
   // copy from interface based list
-  if FItems<>nil then begin
+  if FItems <> nil then
+  begin
     NewStrings.Assign(FItems);
     // delete interface based list
     TWSCustomComboBoxClass(WidgetSetClass).FreeItems(FItems);
   end;
   // and use the internal list
-  FItems:= NewStrings;
+  FItems := NewStrings;
 
   inherited DestroyWnd;
 end;
@@ -137,8 +139,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetSorted(Val : boolean);
 begin
-  if (Val <> FSorted) then begin
-    FSorted:= Val;
+  if (Val <> FSorted) then
+  begin
+    FSorted := Val;
     UpdateSorted;
   end;
 end;
@@ -256,9 +259,9 @@ begin
   Count := Items.Count;
   if Count > DropDownCount then Count := DropDownCount;
   if Count < 1 then Count := 1;
-  MinItemsWidth:=ItemWidth;
-  MinItemsHeight:=Count*ItemHeight;
-  SetComboMinDropDownSize(Handle,MinItemsWidth,MinItemsHeight,Count);
+  MinItemsWidth := ItemWidth;
+  MinItemsHeight := Count * ItemHeight;
+  SetComboMinDropDownSize(Handle, MinItemsWidth, MinItemsHeight, Count);
 end;
 
 {------------------------------------------------------------------------------
@@ -401,7 +404,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetStyle(Val : TComboBoxStyle);
 begin
-  if Val <> FStyle then begin
+  if Val <> FStyle then
+  begin
     FStyle:= Val;
     case FStyle of
       csDropDown, csSimple: FReadOnly := false;
@@ -414,9 +418,10 @@ end;
 
 procedure TCustomComboBox.SetArrowKeysTraverseList(Value : Boolean);
 begin
-  if Value <> FArrowKeysTraverseList then begin
+  if Value <> FArrowKeysTraverseList then
+  begin
     FArrowKeysTraverseList := Value;
-    if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
+    if HandleAllocated and ([csLoading, csDestroying] * ComponentState=[]) then
       TWSCustomComboBoxClass(WidgetSetClass).SetArrowKeysTraverseList(Self, Value);
    end;
 end;
@@ -517,8 +522,9 @@ begin
      if (SelText = Text) then FAutoSelected := True;
     end;
   end
-  else if ((cbactEnabled in FAutoCompleteText) and (Style <> csDropDownList))
-  then begin
+  else
+  if ((cbactEnabled in FAutoCompleteText) and (Style <> csDropDownList)) then
+  begin
     //Only happens with alpha-numeric keys and return key and editable Style
     //DebugLn(['TCustomComboBox.KeyUp ',Key,' ',IsEditableTextKey(Key)]);
     if IsEditableTextKey(Key) then
@@ -597,17 +603,20 @@ var
   ValueChanged: boolean;
 begin
   i:=Items.IndexOf(AnItem);
-  if i>=0 then begin
-    Result:=true;
-    ValueChanged:=ItemIndex<>i;
-    ItemIndex:=i;
-    Text:=Items[i];
-    if ValueChanged then begin
+  if i>=0 then
+  begin
+    Result := True;
+    ValueChanged := ItemIndex <> i;
+    ItemIndex := i;
+    Text := Items[i];
+    if ValueChanged then
+    begin
       Click;
       Select;
     end;
-  end else
-    Result:=false;
+  end
+  else
+    Result := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -746,9 +755,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.SetItems(const Value : TStrings);
 begin
-  if (Value <> FItems) then begin
+  if (Value <> FItems) then
     FItems.Assign(Value);
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -942,16 +950,18 @@ begin
   if Val = GetItemIndex then exit;
   if (Val >= Items.Count) and (not (csLoading in ComponentState)) then exit;
 
-  FItemIndex:= Val;
+  FItemIndex := Val;
   if csLoading in ComponentState then Exit;
   
-  if HandleAllocated then begin
-    TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
-  end else begin
+  if HandleAllocated then
+    TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex)
+  else
+  begin
     // remember text, in case one reads text without creating handle
-    if Val = -1
-    then Text := ''
-    else Text := FItems.Strings[FItemIndex];
+    if Val = -1 then
+      Text := ''
+    else
+      Text := FItems.Strings[FItemIndex];
   end;
 
   //if CompareText(Name,'TextToFindComboBox')=0 then
