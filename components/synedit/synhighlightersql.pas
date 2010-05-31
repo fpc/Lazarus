@@ -937,8 +937,11 @@ begin
 end;
 
 function TSynSQLSyn.KeyHash(ToHash: PChar): Integer;
+var
+  Start: PChar;
 begin
   Result := 0;
+  Start := ToHash;
   while fIdentifiersPtr^[ToHash^] do begin
   
    {$IFDEF FPC}
@@ -953,7 +956,7 @@ begin
     inc(ToHash);
   end;
   Result := Result and $FF; // 255
-  fStringLen := ToHash - fToIdent;
+  fStringLen := ToHash - Start;
 end;
 
 function TSynSQLSyn.KeyComp(const aKey: string): Boolean;
