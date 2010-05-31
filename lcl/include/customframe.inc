@@ -153,6 +153,18 @@ begin
                        (longrec(DesignInfo).Hi<>Longrec(Temp).Hi));
 end;
 
+procedure TCustomFrame.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  if (csDesigning in ComponentState) and (Owner=nil) then begin
+    // frame is root component at designtime
+    // => keep it free resiable
+    exit;
+  end;
+  inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
+    WithThemeSpace);
+end;
+
 constructor TCustomFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);

@@ -272,6 +272,8 @@ type
       Operation: TOperation); override;
     procedure SetParent(AParent: TWinControl); override;
     procedure DefineProperties(Filer: TFiler); override;
+    procedure CalculatePreferredSize(var PreferredWidth,
+           PreferredHeight: integer; WithThemeSpace: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     class function GetControlClassDefaultSize: TSize; override;
