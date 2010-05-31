@@ -924,6 +924,16 @@ const
   ES_READONLY      = $0800;
   ES_WANTRETURN    = $1000;
 
+  { Combobox style }
+  CBS_SIMPLE            = $0001;
+  CBS_DROPDOWN          = $0002;
+  CBS_DROPDOWNLIST      = $0003;
+  CBS_OWNERDRAWFIXED    = $0010;
+  CBS_OWNERDRAWVARIABLE = $0020;
+  CBS_AUTOHSCROLL       = $0040;
+  CBS_SORT              = $0100;
+  CBS_HASSTRINGS        = $0200;
+
 const
 //==============================================
 // SetWindowPos Flags

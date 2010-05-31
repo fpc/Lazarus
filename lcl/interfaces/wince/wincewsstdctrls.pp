@@ -640,11 +640,9 @@ begin
   // customization of Params
   with Params do
   begin
-    Flags := Flags or CalcComboBoxWinFlags(TCustomComboBox(AWinControl));
-    If TComboBox(AWinControl).Sorted Then
-      Flags:= Flags or CBS_SORT;
+    // remove unsupported styles
+    Flags := Flags and not (CBS_SIMPLE or CBS_OWNERDRAWFIXED or CBS_OWNERDRAWVARIABLE);
     pClassName := @ComboboxClsName;
-    Flags := Flags or (WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS);
     SubClassWndProc := @ComboBoxWindowProc;
   end;
   // create window

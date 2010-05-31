@@ -458,6 +458,23 @@ begin
   RegisterCustomComboBox;
 end;
 
+procedure TCustomComboBox.CreateParams(var Params: TCreateParams);
+const
+  ComboBoxStyles: array[TComboBoxStyle] of dword = (
+    CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
+    CBS_OWNERDRAWFIXED, CBS_OWNERDRAWVARIABLE);
+  ComboBoxReadOnlyStyles: array[boolean] of dword = (
+    CBS_DROPDOWN, CBS_DROPDOWNLIST);
+begin
+  inherited CreateParams(Params);
+  Params.Style := Params.Style or (WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS) or
+    ComboBoxStyles[Style];
+  if Style in [csOwnerDrawFixed, csOwnerDrawVariable] then
+    Params.Style := Params.Style or ComboBoxReadOnlyStyles[ReadOnly];
+  if Sorted then
+    Params.Style := Params.Style or CBS_SORT;
+end;
+
 procedure TCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
 var
   skip : Boolean;

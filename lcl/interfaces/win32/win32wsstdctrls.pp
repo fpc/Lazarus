@@ -761,18 +761,14 @@ begin
   // customization of Params
   with Params do
   begin
-    Flags := Flags or CalcComboBoxWinFlags(TCustomComboBox(AWinControl));
-    if TComboBox(AWinControl).Sorted Then
-      Flags:= Flags or CBS_SORT;
     pClassName := ComboboxClsName;
     pSubClassName := LCLComboboxClsName;
-    Flags := Flags or (WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS);
     SubClassWndProc := @ComboBoxWindowProc;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, False, True);
 
-  Info.cbSize:= SizeOf(Info);
+  Info.cbSize := SizeOf(Info);
   Win32Extra.GetComboBoxInfo(Params.Window, @Info);
 
   // get edit window within

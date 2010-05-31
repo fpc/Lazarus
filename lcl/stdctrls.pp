@@ -302,6 +302,7 @@ type
     procedure SetCharCase(eccCharCase: TEditCharCase);
   protected
     class procedure WSRegisterClass; override;
+    procedure CreateParams(var Params: TCreateParams); override;
     procedure InitializeWnd; override;
     procedure DestroyWnd; override;
     procedure DoEnter; override;
