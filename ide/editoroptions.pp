@@ -703,6 +703,10 @@ type
     procedure Assign(Src: TEditorMouseOptions); reintroduce;
     function IsPresetEqualToMouseActions: Boolean;
     function CalcCustomSavedActions: Boolean;
+    procedure LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String; aOldPath: String = '');
+    procedure SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String);
+    procedure ImportFromXml(aXMLConfig: TRttiXMLConfig; aPath: String);
+    procedure ExportToXml(aXMLConfig: TRttiXMLConfig; aPath: String);
 
     property MainActions: TSynEditMouseActions read FMainActions;
     property SelActions: TSynEditMouseActions read FSelActions;
@@ -721,6 +725,16 @@ type
     property TextCtrlLeftClick: TMouseOptTextCtrlLeft read FTextCtrlLeftClick write FTextCtrlLeftClick;
     // the flag below is set by CalcCustomSavedActions
     property CustomSavedActions: Boolean read FCustomSavedActions write FCustomSavedActions;
+  end;
+
+  { TEditorMouseOptionPresets }
+
+  TEditorMouseOptionPresets = class
+  private
+    FPreset: TQuickStringlist;
+  public
+    constructor Create;
+    destructor Destroy; override;
   end;
 
   TEditorOptionsEditAccessInViewState =
@@ -2607,6 +2621,249 @@ begin
   FCustomSavedActions := Result;
 end;
 
+procedure TEditorMouseOptions.LoadFromXml(aXMLConfig: TRttiXMLConfig;
+  aPath: String; aOldPath: String = '');
+
+  Procedure LoadMouseAct(Path: String; MActions: TSynEditMouseActions);
+  var
+    c, i: Integer;
+    MAct: TSynEditMouseActionKeyCmdHelper;
+    //ErrShown: Boolean;
+  begin
+    //ErrShown := False;
+    MActions.Clear;
+    MAct := TSynEditMouseActionKeyCmdHelper.Create(nil);
+
+    c := aXMLConfig.GetValue(Path + 'Count', 0);
+    for i := 0 to c - 1 do begin
+      try
+        MActions.IncAssertLock;
+        try
+          // If the object would ever be extended, old configs will not have all properties.
+          Mact.Clear;
+          aXMLConfig.ReadObject(Path + 'M' + IntToStr(i) + '/', MAct);
+          MActions.Add.Assign(MAct);
+        finally
+          MActions.DecAssertLock;
+        end;
+        MActions.AssertNoConflict(MAct);
+      except
+        MActions.Delete(MActions.Count-1);
+        //if not ErrShown then
+        //  MessageDlg(dlgMouseOptErrorDup, dlgMouseOptErrorDupText, mtError, [mbOk], 0);
+        //ErrShown := True;
+      end;
+    end;
+    MAct.Free;
+  end;
+
+begin
+  Reset;
+  if aOldPath <> '' then begin
+    // Read deprecated value
+    // It is on by default, so only if a user switched it off, actions is required
+    if not aXMLConfig.GetValue(aOldPath + 'DragDropEditing', True) then
+      TextDrag := False;
+    aXMLConfig.DeleteValue(aOldPath + 'DragDropEditing');
+
+    if aXMLConfig.GetValue(aOldPath + 'AltSetsColumnMode', False) then
+      AltColumnMode := True;
+    aXMLConfig.DeleteValue(aOldPath + 'AltSetsColumnMode');
+
+    if not aXMLConfig.GetValue(aOldPath + 'CtrlMouseLinks', True) then
+      TextCtrlLeftClick := moTCLNone;
+    aXMLConfig.DeleteValue(aOldPath + 'CtrlMouseLinks');
+
+    if aXMLConfig.GetValue(aOldPath + 'DoubleClickSelectsLine', False) then
+      TextDoubleSelLine := True;
+    aXMLConfig.DeleteValue(aOldPath + 'DoubleClickSelectsLine');
+  end;
+
+  CustomSavedActions := False;
+  aXMLConfig.ReadObject(aPath + 'Default/', Self);
+  if CustomSavedActions then begin
+    // Load
+    LoadMouseAct(aPath + 'Main/',          FOptions.MouseMap);
+    LoadMouseAct(aPath + 'MainSelection/', FOptions.MouseSelMap);
+    LoadMouseAct(aPath + 'Gutter/',        FOptions.MouseGutterActions);
+    LoadMouseAct(aPath + 'GutterFold/',    FOptions.MouseGutterActionsFold);
+    LoadMouseAct(aPath + 'GutterFoldExp/', FOptions.MouseGutterActionsFoldExp);
+    LoadMouseAct(aPath + 'GutterFoldCol/', FOptions.MouseGutterActionsFoldCol);
+    LoadMouseAct(aPath + 'GutterLineNum/', FOptions.MouseGutterActionsLines);
+  end
+  else begin
+    ResetTextToDefault;
+    ResetGutterToDefault;
+    WriteBack;
+  end;
+
+end;
+
+procedure TEditorMouseOptions.SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String);
+
+  Procedure SaveMouseAct(Path: String; MActions: TSynEditMouseActions);
+  var
+    i, OldCnt: Integer;
+    MAct: TSynEditMouseActionKeyCmdHelper;
+  begin
+    MAct := TSynEditMouseActionKeyCmdHelper.Create(nil);
+    OldCnt := aXMLConfig.GetValue(Path + 'Count', 0);
+    for i := 0 to MActions.Count - 1 do begin
+      if MActions[i].Command = emcSynEditCommand then begin
+        MAct.Assign(MActions[i]);
+        aXMLConfig.WriteObject(Path + 'M' + IntToStr(i) + '/', MAct);
+      end else
+        aXMLConfig.WriteObject(Path + 'M' + IntToStr(i) + '/', MActions[i]);
+    end;
+    aXMLConfig.SetValue(Path + 'Count', MActions.Count);
+    for i := MActions.Count to OldCnt do
+      aXMLConfig.DeletePath(Path + 'M' + IntToStr(i));
+    MAct.Free;
+  end;
+
+var
+  DefMouseSettings: TEditorMouseOptions;
+begin
+  DefMouseSettings := TEditorMouseOptions.Create(FOptions);
+  CalcCustomSavedActions;
+  aXMLConfig.WriteObject('EditorOptions/Mouse/Default/', Self, DefMouseSettings);
+  DefMouseSettings.Free;
+  if CustomSavedActions then begin
+    // Save full settings / based on empty
+    SaveMouseAct('EditorOptions/Mouse/Main/',          FOptions.MouseMap);
+    SaveMouseAct('EditorOptions/Mouse/MainSelection/', FOptions.MouseSelMap);
+    SaveMouseAct('EditorOptions/Mouse/Gutter/',        FOptions.MouseGutterActions);
+    SaveMouseAct('EditorOptions/Mouse/GutterFold/',    FOptions.MouseGutterActionsFold);
+    SaveMouseAct('EditorOptions/Mouse/GutterFoldExp/', FOptions.MouseGutterActionsFoldExp);
+    SaveMouseAct('EditorOptions/Mouse/GutterFoldCol/', FOptions.MouseGutterActionsFoldCol);
+    SaveMouseAct('EditorOptions/Mouse/GutterLineNum/', FOptions.MouseGutterActionsLines);
+  end else begin
+    // clear unused entries
+    aXMLConfig.DeletePath('EditorOptions/Mouse/Main');
+    aXMLConfig.DeletePath('EditorOptions/Mouse/MainSelection');
+    aXMLConfig.DeletePath('EditorOptions/Mouse/Gutter');
+    aXMLConfig.DeletePath('EditorOptions/Mouse/GutterFold');
+    aXMLConfig.DeletePath('EditorOptions/Mouse/GutterFoldExp');
+    aXMLConfig.DeletePath('EditorOptions/Mouse/GutterFoldCol');
+    aXMLConfig.DeletePath('EditorOptions/Mouse/GutterLineNum');
+  end;
+
+end;
+
+procedure TEditorMouseOptions.ImportFromXml(aXMLConfig: TRttiXMLConfig; aPath: String);
+
+  Procedure LoadMouseAct(Path: String; MActions: TSynEditMouseActions);
+  var
+    i, c: Integer;
+    MAct: TSynEditMouseActionKeyCmdHelper;
+  begin
+    MActions.Clear;
+    MAct := TSynEditMouseActionKeyCmdHelper.Create(nil);
+    c := aXMLConfig.GetValue(Path + 'Count', 0);
+    for i := 0 to c - 1 do begin
+      try
+        MActions.IncAssertLock;
+        try
+          Mact.Clear;
+          aXMLConfig.ReadObject(Path + 'M' + IntToStr(i) + '/', MAct);
+          MActions.Add.Assign(MAct);
+        finally
+          MActions.DecAssertLock;
+        end;
+        MActions.AssertNoConflict(MAct);
+      except
+        MActions.Delete(MActions.Count-1);
+        MessageDlg(dlgMouseOptErrorDup, dlgMouseOptErrorDupText + LineEnding
+                   + Path + 'M' + IntToStr(i) + LineEnding + MAct.DisplayName,
+                   mtError, [mbOk], 0);
+      end;
+    end;
+    Mact.Free;
+  end;
+
+begin
+  LoadMouseAct(aPath + 'Main/',          MainActions);
+  LoadMouseAct(aPath + 'MainSel/',       SelActions);
+  LoadMouseAct(aPath + 'Gutter/',        GutterActions);
+  LoadMouseAct(aPath + 'GutterFold/',    GutterActionsFold);
+  LoadMouseAct(aPath + 'GutterFoldExp/', GutterActionsFoldExp);
+  LoadMouseAct(aPath + 'GutterFoldCol/', GutterActionsFoldCol);
+  LoadMouseAct(aPath + 'GutterLineNum/', GutterActionsLines);
+end;
+
+procedure TEditorMouseOptions.ExportToXml(aXMLConfig: TRttiXMLConfig; aPath: String);
+var
+  MAct: TSynEditMouseActionKeyCmdHelper;
+
+  Procedure SaveMouseAct(Path: String; MActions: TSynEditMouseActions);
+  var
+    i: Integer;
+  begin
+    for i := 0 to MActions.Count - 1 do
+      if MActions[i].Command = emcSynEditCommand then begin
+        MAct.Assign(MActions[i]);
+        aXMLConfig.WriteObject(Path + 'M' + IntToStr(i) + '/', MAct);
+      end
+      else
+        aXMLConfig.WriteObject(Path + 'M' + IntToStr(i) + '/', MActions[i]);
+    aXMLConfig.SetValue(Path + 'Count', MActions.Count);
+  end;
+
+begin
+  MAct := TSynEditMouseActionKeyCmdHelper.Create(nil);
+  SaveMouseAct(aPath + 'Main/',          MainActions);
+  SaveMouseAct(aPath + 'MainSel/',       SelActions);
+  SaveMouseAct(aPath + 'Gutter/',        GutterActions);
+  SaveMouseAct(aPath + 'GutterFold/',    GutterActionsFold);
+  SaveMouseAct(aPath + 'GutterFoldExp/', GutterActionsFoldExp);
+  SaveMouseAct(aPath + 'GutterFoldCol/', GutterActionsFoldCol);
+  SaveMouseAct(aPath + 'GutterLineNum/', GutterActionsLines);
+  MAct.Free;
+end;
+
+{ TEditorMouseOptionPresets }
+
+constructor TEditorMouseOptionPresets.Create;
+var
+  FileList: TStringList;
+  XMLConfig: TRttiXMLConfig;
+  i, j, c: Integer;
+  n: String;
+  NewMouse: TEditorMouseOptions;
+begin
+  FPreset := TQuickStringlist.Create;
+
+  if DirectoryExistsUTF8(UserSchemeDirectory(False)) then begin
+    FileList := FindAllFiles(UserSchemeDirectory(False), '*.xml', False);
+    for i := 0 to FileList.Count - 1 do begin
+      XMLConfig := nil;
+      try
+        XMLConfig := TRttiXMLConfig.Create(FileList[i]);
+        c := XMLConfig.GetValue('Lazarus/MouseSchemes/Names/Count', 0);
+        for j := 0 to c-1 do begin
+          n := XMLConfig.GetValue('Lazarus/MouseSchemes/Names/Item'+IntToStr(j+1)+'/Value', '');
+          if n <> '' then begin
+            //NewMouse := TEditorMouseOptions.Create;
+
+            //Singleton.RegisterScheme(XMLConfig, n, 'Lazarus/MouseSchemes/');
+          end;
+        end;
+      except
+        ShowMessage(Format(dlgUserSchemeError, [FileList[i]]));
+      end;
+      XMLConfig.Free;
+    end;
+    FileList.Free;
+  end;
+
+end;
+
+destructor TEditorMouseOptionPresets.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FPreset);
+end;
+
 { TEditorOptionsEditAccessOrderList }
 
 function TEditorOptionsEditAccessOrderList.GetItems(Index: Integer): TEditorOptionsEditAccessOrderEntry;
@@ -2901,39 +3158,6 @@ var
   SynEditOpt2: TSynEditorOption2;
   FileVersion: LongInt;
 
-  Procedure LoadMouseAct(Path: String; MActions: TSynEditMouseActions);
-  var
-    c, i: Integer;
-    MAct: TSynEditMouseActionKeyCmdHelper;
-    //ErrShown: Boolean;
-  begin
-    //ErrShown := False;
-    MActions.Clear;
-    MAct := TSynEditMouseActionKeyCmdHelper.Create(nil);
-
-    c := XMLConfig.GetValue(Path + 'Count', 0);
-    for i := 0 to c - 1 do begin
-      try
-        MActions.IncAssertLock;
-        try
-          // If the object would ever be extended, old configs will not have all properties.
-          Mact.Clear;
-          XMLConfig.ReadObject(Path + 'M' + IntToStr(i) + '/', MAct);
-          MActions.Add.Assign(MAct);
-        finally
-          MActions.DecAssertLock;
-        end;
-        MActions.AssertNoConflict(MAct);
-      except
-        MActions.Delete(MActions.Count-1);
-        //if not ErrShown then
-        //  MessageDlg(dlgMouseOptErrorDup, dlgMouseOptErrorDupText, mtError, [mbOk], 0);
-        //ErrShown := True;
-      end;
-    end;
-    MAct.Free;
-  end;
-
 begin
   try
     FileVersion:=XMLConfig.GetValue('EditorOptions/Version', 0);
@@ -3115,42 +3339,8 @@ begin
       XMLConfig.GetValue(
       'EditorOptions/CodeFolding/UseCodeFolding', True);
 
-    FTempMouseSettings.Reset;
-    // Read deprecated value
-    // It is on by default, so only if a user switched it off, actions is required
-    if not XMLConfig.GetValue('EditorOptions/General/Editor/DragDropEditing', True) then
-      FTempMouseSettings.TextDrag := False;
-    XMLConfig.DeleteValue('EditorOptions/General/Editor/DragDropEditing');
-
-    if XMLConfig.GetValue('EditorOptions/General/Editor/AltSetsColumnMode', False) then
-      FTempMouseSettings.AltColumnMode := True;
-    XMLConfig.DeleteValue('EditorOptions/General/Editor/AltSetsColumnMode');
-
-    if not XMLConfig.GetValue('EditorOptions/General/Editor/CtrlMouseLinks', True) then
-      FTempMouseSettings.TextCtrlLeftClick := moTCLNone;
-    XMLConfig.DeleteValue('EditorOptions/General/Editor/CtrlMouseLinks');
-
-    if XMLConfig.GetValue('EditorOptions/General/Editor/DoubleClickSelectsLine', False) then
-      FTempMouseSettings.TextDoubleSelLine := True;
-    XMLConfig.DeleteValue('EditorOptions/General/Editor/DoubleClickSelectsLine');
-
-    FTempMouseSettings.CustomSavedActions := False;
-    XMLConfig.ReadObject('EditorOptions/Mouse/Default/', FTempMouseSettings);
-    if FTempMouseSettings.CustomSavedActions then begin
-      // Load
-      LoadMouseAct('EditorOptions/Mouse/Main/', MouseMap);
-      LoadMouseAct('EditorOptions/Mouse/MainSelection/', MouseSelMap);
-      LoadMouseAct('EditorOptions/Mouse/Gutter/', MouseGutterActions);
-      LoadMouseAct('EditorOptions/Mouse/GutterFold/', MouseGutterActionsFold);
-      LoadMouseAct('EditorOptions/Mouse/GutterFoldExp/', MouseGutterActionsFoldExp);
-      LoadMouseAct('EditorOptions/Mouse/GutterFoldCol/', MouseGutterActionsFoldCol);
-      LoadMouseAct('EditorOptions/Mouse/GutterLineNum/', MouseGutterActionsLines);
-    end
-    else begin
-      FTempMouseSettings.ResetTextToDefault;
-      FTempMouseSettings.ResetGutterToDefault;
-      FTempMouseSettings.WriteBack;
-    end;
+    FTempMouseSettings.LoadFromXml(XMLConfig, 'EditorOptions/Mouse/',
+                                  'EditorOptions/General/Editor/');
 
     FMultiWinEditAccessOrder.LoadFromXMLConfig(XMLConfig, 'EditorOptions/MultiWin/');
     UserColorSchemeGroup.LoadFromXml(XMLConfig, 'EditorOptions/Color/',
@@ -3169,27 +3359,6 @@ var
   SynEditOptName: String;
   i: Integer;
   SynEditOpt2: TSynEditorOption2;
-  DefMouseSettings: TEditorMouseOptions;
-
-  Procedure SaveMouseAct(Path: String; MActions: TSynEditMouseActions);
-  var
-    i, OldCnt: Integer;
-    MAct: TSynEditMouseActionKeyCmdHelper;
-  begin
-    MAct := TSynEditMouseActionKeyCmdHelper.Create(nil);
-    OldCnt := XMLConfig.GetValue(Path + 'Count', 0);
-    for i := 0 to MActions.Count - 1 do begin
-      if MActions[i].Command = emcSynEditCommand then begin
-        MAct.Assign(MActions[i]);
-        XMLConfig.WriteObject(Path + 'M' + IntToStr(i) + '/', MAct);
-      end else
-        XMLConfig.WriteObject(Path + 'M' + IntToStr(i) + '/', MActions[i]);
-    end;
-    XMLConfig.SetValue(Path + 'Count', MActions.Count);
-    for i := MActions.Count to OldCnt do
-      XMLConfig.DeletePath(Path + 'M' + IntToStr(i));
-    MAct.Free;
-  end;
 
 begin
   try
@@ -3342,29 +3511,7 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseCodeFolding',
         FUseCodeFolding, True);
 
-    DefMouseSettings := TEditorMouseOptions.Create(self);
-    FTempMouseSettings.CalcCustomSavedActions;
-    XMLConfig.WriteObject('EditorOptions/Mouse/Default/', FTempMouseSettings, DefMouseSettings);
-    DefMouseSettings.Free;
-    if FTempMouseSettings.CustomSavedActions then begin
-      // Save full settings / based on empty
-      SaveMouseAct('EditorOptions/Mouse/Main/',          MouseMap);
-      SaveMouseAct('EditorOptions/Mouse/MainSelection/', MouseSelMap);
-      SaveMouseAct('EditorOptions/Mouse/Gutter/',        MouseGutterActions);
-      SaveMouseAct('EditorOptions/Mouse/GutterFold/',    MouseGutterActionsFold);
-      SaveMouseAct('EditorOptions/Mouse/GutterFoldExp/', MouseGutterActionsFoldExp);
-      SaveMouseAct('EditorOptions/Mouse/GutterFoldCol/', MouseGutterActionsFoldCol);
-      SaveMouseAct('EditorOptions/Mouse/GutterLineNum/', MouseGutterActionsLines);
-    end else begin
-      // clear unused entries
-      XMLConfig.DeletePath('EditorOptions/Mouse/Main');
-      XMLConfig.DeletePath('EditorOptions/Mouse/MainSelection');
-      XMLConfig.DeletePath('EditorOptions/Mouse/Gutter');
-      XMLConfig.DeletePath('EditorOptions/Mouse/GutterFold');
-      XMLConfig.DeletePath('EditorOptions/Mouse/GutterFoldExp');
-      XMLConfig.DeletePath('EditorOptions/Mouse/GutterFoldCol');
-      XMLConfig.DeletePath('EditorOptions/Mouse/GutterLineNum');
-    end;
+    FTempMouseSettings.SaveToXml(XMLConfig, 'EditorOptions/Mouse/');
 
     FMultiWinEditAccessOrder.SaveToXMLConfig(XMLConfig, 'EditorOptions/MultiWin/');
     UserColorSchemeGroup.SaveToXml(XMLConfig, 'EditorOptions/Color/', ColorSchemeFactory);

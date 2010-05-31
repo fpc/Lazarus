@@ -27,7 +27,7 @@ interface
 uses
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, sysutils,
   StdCtrls, ExtCtrls, Classes, Controls, LCLProc, Grids, ComCtrls, Dialogs,
-  SynEditMouseCmds, MouseActionDialog, math, KeyMapping, IDEImagesIntf;
+  SynEditMouseCmds, Laz_XMLCfg, MouseActionDialog, math, KeyMapping, IDEImagesIntf;
 
 type
 
@@ -531,84 +531,49 @@ end;
 procedure TEditorMouseOptionsAdvFrame.BtnExportClick(Sender: TObject);
 var
   xml: TRttiXMLConfig;
-  MAct: TSynEditMouseActionKeyCmdHelper;
-
-  Procedure SaveMouseAct(Path: String; MActions: TSynEditMouseActions);
-  var
-    i: Integer;
-  begin
-    for i := 0 to MActions.Count - 1 do
-      if MActions[i].Command = emcSynEditCommand then begin
-        MAct.Assign(MActions[i]);
-        xml.WriteObject(Path + 'M' + IntToStr(i) + '/', MAct);
-      end
-      else
-        xml.WriteObject(Path + 'M' + IntToStr(i) + '/', MActions[i]);
-    xml.SetValue(Path + 'Count', MActions.Count);
-  end;
-
+  NewName: String;
+  l: Integer;
 begin
   if SaveDialog1.Execute then begin
-    MAct := TSynEditMouseActionKeyCmdHelper.Create(nil);
     xml := TRttiXMLConfig.CreateClean(SaveDialog1.FileName);
-    SaveMouseAct('Mouse/Main/', FTempMouseSettings.MainActions);
-    SaveMouseAct('Mouse/MainSel/', FTempMouseSettings.SelActions);
-    SaveMouseAct('Mouse/Gutter/', FTempMouseSettings.GutterActions);
-    SaveMouseAct('Mouse/GutterFold/', FTempMouseSettings.GutterActionsFold);
-    SaveMouseAct('Mouse/GutterFoldExp/', FTempMouseSettings.GutterActionsFoldExp);
-    SaveMouseAct('Mouse/GutterFoldCol/', FTempMouseSettings.GutterActionsFoldCol);
-    SaveMouseAct('Mouse/GutterLineNum/', FTempMouseSettings.GutterActionsLines);
+
+    NewName := ExtractFileName(SaveDialog1.FileName);
+    l := length(ExtractFileExt(NewName));
+    if (l > 0) and (l+1 < Length(NewName)) then
+      NewName := Copy(NewName, 1, Length(NewName) - l);
+    l := UTF8CharacterLength(PChar(NewName));
+    if l > 0 then
+      NewName := UTF8UpperCase(copy(NewName, 1, l)) + copy(NewName, 1+l, length(NewName));
+
+    xml.SetValue('Lazarus/MouseSchemes/Names/Count', 1);
+    xml.SetValue('Lazarus/MouseSchemes/Names/Item1/Value', NewName);
+
+    FTempMouseSettings.ExportToXml(xml, 'Lazarus/MouseSchemes/Scheme' + NewName + '/' );
     xml.Flush;
     xml.Free;
-    MAct.Free;
   end;
 end;
 
 procedure TEditorMouseOptionsAdvFrame.BtnImportClick(Sender: TObject);
 var
   xml: TRttiXMLConfig;
-
-  Procedure LoadMouseAct(Path: String; MActions: TSynEditMouseActions);
-  var
-    i, c: Integer;
-    MAct: TSynEditMouseActionKeyCmdHelper;
-  begin
-    MActions.Clear;
-    MAct := TSynEditMouseActionKeyCmdHelper.Create(nil);
-    c := xml.GetValue(Path + 'Count', 0);
-    for i := 0 to c - 1 do begin
-      try
-        MActions.IncAssertLock;
-        try
-          Mact.Clear;
-          xml.ReadObject(Path + 'M' + IntToStr(i) + '/', MAct);
-          MActions.Add.Assign(MAct);
-        finally
-          MActions.DecAssertLock;
-        end;
-        MActions.AssertNoConflict(MAct);
-      except
-        MActions.Delete(MActions.Count-1);
-        MessageDlg(dlgMouseOptErrorDup, dlgMouseOptErrorDupText + LineEnding
-                   + Path + 'M' + IntToStr(i) + LineEnding + MAct.DisplayName,
-                   mtError, [mbOk], 0);
-      end;
-    end;
-    Mact.Free;
-  end;
-
+  c: longint;
+  n: String;
 begin
   if OpenDialog1.Execute then begin
     xml := TRttiXMLConfig.Create(OpenDialog1.FileName);
-    LoadMouseAct('Mouse/Main/', FTempMouseSettings.MainActions);
-    LoadMouseAct('Mouse/MainSel/', FTempMouseSettings.SelActions);
-    LoadMouseAct('Mouse/Gutter/', FTempMouseSettings.GutterActions);
-    LoadMouseAct('Mouse/GutterFold/', FTempMouseSettings.GutterActionsFold);
-    LoadMouseAct('Mouse/GutterFoldExp/', FTempMouseSettings.GutterActionsFoldExp);
-    LoadMouseAct('Mouse/GutterFoldCol/', FTempMouseSettings.GutterActionsFoldCol);
-    LoadMouseAct('Mouse/GutterLineNum/', FTempMouseSettings.GutterActionsLines);
+    if xml.HasChildPaths('Mouse/') then begin
+      // Load old export
+      FTempMouseSettings.ImportFromXml(xml, 'Mouse/')
+    end else begin
+      c := xml.GetValue('Lazarus/MouseSchemes/Names/Count', 0);
+      n := '';
+      if c > 0 then   // Only reading First Scheme
+        n := xml.GetValue('Lazarus/MouseSchemes/Names/Item1/Value', '');
+      if n <> '' then
+        FTempMouseSettings.ImportFromXml(xml, 'Lazarus/MouseSchemes/Scheme' + n+ '/');
+    end;
     xml.Free;
-
     ContextTree.Selected := FMainNode;
     ContextTreeChange(nil, FMainNode);
   end;
