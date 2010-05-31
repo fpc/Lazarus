@@ -123,6 +123,7 @@ procedure TCustomFrame.SetParent(AParent: TWinControl);
   end;
 
 begin
+  if Parent=AParent then exit;
   if Parent<>nil then
     UpdateActionLists(Self,opRemove);
   if (Parent=nil) and HandleAllocated then
