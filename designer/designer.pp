@@ -417,7 +417,7 @@ var
   OldRoot: TComponent;
   IsNonVisual: Boolean;
 begin
-  if Assigned(Best) and BestIsNonVisual and (BestLevel <= Level) then exit;
+  if Assigned(Best) and BestIsNonVisual and (BestLevel < Level) then exit;
   {$IFDEF VerboseDesignerSelect}
   DebugLn(['TComponentSearch.Gather ',DbgSName(Child),' ',dbgs(AtPos),' MinClass=',DbgSName(MinClass)]);
   {$ENDIF}
