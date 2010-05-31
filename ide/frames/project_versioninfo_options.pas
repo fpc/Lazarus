@@ -48,6 +48,30 @@ implementation
 
 {$R *.lfm}
 
+function LanguageCompare(List: TStringList; Index1, Index2: Integer): Integer;
+var
+  S1, S2: String;
+begin
+  S1 := List[Index1];
+  S2 := List[Index2];
+  Result := CompareStr(S1, S2);
+end;
+
+function CharsetCompare(List: TStringList; Index1, Index2: Integer): Integer;
+var
+  S1, S2: String;
+begin
+  S1 := List[Index1];
+  S2 := List[Index2];
+  if S1 = 'Unicode' then
+    Result := -1
+  else
+  if S2 = 'Unicode' then
+    Result := 1
+  else
+    Result := CompareStr(S1, S2);
+end;
+
 { TProjectVersionInfoOptionsFrame }
 
 procedure TProjectVersionInfoOptionsFrame.UseVersionInfoCheckBoxChange(Sender: TObject);
@@ -68,6 +92,8 @@ begin
 end;
 
 procedure TProjectVersionInfoOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+var
+  Items: TStringList;
 begin
   UseVersionInfoCheckBox.Caption := rsIncludeVersionInfoInExecutable;
   VersionInfoGroupBox.Caption := rsVersionNumbering;
@@ -82,6 +108,19 @@ begin
   OtherInfoGroupBox.Caption := rsOtherInfo;
   StringInfo.Cells[0, 0] := rsKey;
   StringInfo.Cells[0, 1] := rsValue;
+  // fill comboboxes
+  Items := TStringList.Create;
+  try
+    Items.Assign(MSLanguages);
+    Items.CustomSort(@LanguageCompare);
+    LanguageSelectionComboBox.Items.Assign(Items);
+
+    Items.Assign(MSCharacterSets);
+    Items.CustomSort(@CharsetCompare);
+    CharacterSetComboBox.Items.Assign(Items);
+  finally
+    Items.Free;
+  end;
 end;
 
 procedure TProjectVersionInfoOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -100,15 +139,11 @@ begin
 
   if FVersionInfo.AutoIncrementBuild then
     AutomaticallyIncreaseBuildCheckBox.Checked := True;
-  // ComboBox.sort does not change ItemIndex.[Windows]
-  LanguageSelectionComboBox.Items.Assign(MSLanguages);
-  LanguageSelectionComboBox.Sorted := True;
+
   i := MSHexLanguages.IndexOf(FVersionInfo.HexLang);
   if i >= 0 then
    i := LanguageSelectionComboBox.Items.IndexOf(MSLanguages[i]);
   LanguageSelectionComboBox.ItemIndex := i;
-  CharacterSetComboBox.Items.Assign(MSCharacterSets);
-  CharacterSetComboBox.Sorted := True;
   i := MSHexCharacterSets.IndexOf(FVersionInfo.HexCharSet);
   if i >= 0 then
     i := CharacterSetComboBox.Items.IndexOf(MSCharacterSets[i]);
