@@ -167,29 +167,19 @@ var
 
   procedure FindMinDistance(CurAlign: TAlign; CurDistance: integer);
   begin
+    if CurDistance<0 then
+      CurDistance:=-CurDistance;
     if CurDistance>=BestDistance then exit;
     Result:=CurAlign;
     BestDistance:=CurDistance;
   end;
 
 begin
-  // check if MousePos outside the control
-  if MousePos.X<=0 then
-    Result:=alLeft
-  else if MousePos.Y<=0 then
-    Result:=alTop
-  else if MousePos.X>=Width then
-    Result:=alRight
-  else if MousePos.Y>=Height then
-    Result:=alBottom
-  else begin
-    // MousePos is inside the control -> find nearest edge
-    BestDistance:=MousePos.X;
-    Result:=alLeft;
-    FindMinDistance(alRight,Width-MousePos.X);
-    FindMinDistance(alTop,MousePos.Y);
-    FindMinDistance(alBottom,Height-MousePos.Y);
-  end;
+  BestDistance:=High(Integer);
+  FindMinDistance(alLeft,MousePos.X);
+  FindMinDistance(alRight,Width-MousePos.X);
+  FindMinDistance(alTop,MousePos.Y);
+  FindMinDistance(alBottom,Height-MousePos.Y);
 end;
 
 {------------------------------------------------------------------------------

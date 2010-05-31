@@ -509,7 +509,7 @@ type
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
                             DropCtl: TControl); virtual; abstract; overload;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
-    procedure PaintSite(DC: HDC); virtual; abstract;
+    procedure PaintSite(DC: HDC); virtual;
     procedure MessageHandler(Sender: TControl; var Message: TLMessage); virtual;
     procedure PositionDockRect(ADockObject: TDragDockObject); virtual; overload;
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
@@ -3790,6 +3790,11 @@ procedure TDockManager.InsertControl(ADockObject: TDragDockObject);
 begin
   InsertControl(ADockObject.Control,ADockObject.DropAlign,
                 ADockObject.DropOnControl);
+end;
+
+procedure TDockManager.PaintSite(DC: HDC);
+begin
+
 end;
 
 procedure TDockManager.MessageHandler(Sender: TControl; var Message: TLMessage
