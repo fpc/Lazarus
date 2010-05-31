@@ -4774,12 +4774,15 @@ begin
   CursorNode := GetNodeAt(X, Y);
   LogicalX:=X;
   bStartDrag := false;
-  if ([ssDouble,ssTriple,ssQuad]*Shift)=[] then begin
-    if (Button = mbLeft) and (CursorNode<>nil) then begin
-      Exclude(fStates,tvsWaitForDragging);
-      if CursorNode.HasChildren and ShowButtons
-      and (LogicalX>=CursorNode.DisplayExpandSignLeft)
-      and (LogicalX<CursorNode.DisplayExpandSignRight) then begin
+  if ([ssDouble, ssTriple, ssQuad] * Shift) = [] then
+  begin
+    if (Button = mbLeft) and (CursorNode <> nil) then
+    begin
+      Exclude(fStates, tvsWaitForDragging);
+      if CursorNode.HasChildren and ShowButtons and
+         (LogicalX >= CursorNode.DisplayExpandSignLeft) and
+         (LogicalX < CursorNode.DisplayExpandSignRight) then
+      begin
         // mousedown occured on expand sign -> expand/collapse
         CursorNode.Expanded:=not CursorNode.Expanded;
       end else
@@ -4791,33 +4794,40 @@ begin
         DebugLn(['TCustomTreeView.MouseDown In Text ',Name,':',ClassName,' MouseCapture=',MouseCapture]);
         {$ENDIF}
         if MouseCapture then
-          Include(FStates,tvsMouseCapture);
-        if (Selected=CursorNode) then
-          Include(FStates,tvsEditOnMouseUp);
-        if not (tvoAllowMultiselect in Options) then begin
-          Selected:=CursorNode;
-        end else begin
-          if (ssShift in Shift) then begin
+          Include(FStates, tvsMouseCapture);
+        if (Selected = CursorNode) and (LogicalX >= CursorNode.DisplayTextLeft) then
+          Include(FStates, tvsEditOnMouseUp);
+        if not (tvoAllowMultiselect in Options) then
+          Selected := CursorNode
+        else
+        begin
+          if (ssShift in Shift) then
+          begin
             Exclude(FStates,tvsEditOnMouseUp);
             CursorNode.MultiSelectGroup;
-          end else if (ssCtrl in Shift) then begin
+          end
+          else
+          if (ssCtrl in Shift) then
+          begin
             Exclude(FStates,tvsEditOnMouseUp);
             CursorNode.MultiSelected:=not CursorNode.MultiSelected;
-          end else begin
-            if (Selected<>CursorNode) or Items.IsMultiSelection then begin
+          end
+          else
+          begin
+            if (Selected <> CursorNode) or Items.IsMultiSelection then
               Items.SelectOnlyThis(CursorNode);
-            end;
           end;
         end;
         bStartDrag := tvsMouseCapture in FStates;
       end;
     end;
-    if (bStartDrag) then begin
+    if (bStartDrag) then
+    begin
       {$IFDEF VerboseDrag}
       DebugLn('TCustomTreeView.MouseDown A bStartDrag ',Name,':',ClassName,' ');
       {$ENDIF}
-      FDragNode:=CursorNode;
-      Include(fStates,tvsWaitForDragging);
+      FDragNode := CursorNode;
+      Include(fStates, tvsWaitForDragging);
     end;
   end else
   if not (tvoNoDoubleClickExpand in Options) and (ssDouble in Shift)
