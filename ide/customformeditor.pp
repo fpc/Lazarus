@@ -733,6 +733,7 @@ begin
       Result := TFrameDesignerForm.Create(nil)
     else
       Result := TNonControlDesignerForm.Create(nil);
+    Result.Name:='_Designer_'+LookupRoot.Name;
     Result.LookupRoot := LookupRoot;
     FNonFormForms.Add(Result);
 
