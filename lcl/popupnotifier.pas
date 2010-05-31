@@ -56,7 +56,7 @@ type
 
   { TNotifierForm }
 
-  TNotifierForm = class(TCustomForm)
+  TNotifierForm = class(THintWindow)
   private
     lblTitle: TLabel;
     lblText: TLabel;
@@ -64,10 +64,10 @@ type
     btnX: TNotifierXButton;
     procedure HideForm(Sender: TObject);
     procedure HandleResize(Sender: TObject);
-    procedure HandlePaint(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Paint; override;
   end;
 
   { TPopupNotifier }
@@ -241,10 +241,6 @@ begin
   // Connects the methods to events
   OnClick := HideForm;
   OnShow := HandleResize;
-  
-{$ifdef Unix}
-  OnPaint := HandlePaint; // Fix for TForm.Color not working on gtk
-{$endif}
 end;
 
 {*******************************************************************
@@ -260,6 +256,16 @@ begin
   lblText.Free;
   BtnX.Free;
   inherited Destroy;
+end;
+
+procedure TNotifierForm.Paint;
+begin
+  Canvas.Brush.Style := bsSolid;
+  Canvas.Brush.Color := Color;
+  Canvas.FillRect(Rect(0,0,width,height));
+
+  { Paints the icon. We can't use a TImage because it's on ExtCtrls }
+  if Assigned(imgIcon.Bitmap) then Canvas.Draw(5, 5, imgIcon.Bitmap);
 end;
 
 {*******************************************************************
@@ -288,16 +294,6 @@ begin
     IconAdjust := INT_NOTIFIER_SPACING + imgIcon.Bitmap.Width
   else
     IconAdjust := 0;
-  
-{  if (ImgIcon.Bitmap <> nil) then
-  begin
-    ImgIcon.Left := 5;
-    ImgIcon.Top := 5;
-    
-    // Workaround for autosize not working as expected
-    ImgIcon.Width := ImgIcon.Picture.Width;
-    ImgIcon.Height := ImgIcon.Picture.Height;
-  end;}
 
   if (lblTitle <> nil) then
   begin
@@ -322,22 +318,6 @@ begin
     BtnX.Width := INT_NOTIFIER_BUTTON_SIZE;
     BtnX.Height := INT_NOTIFIER_BUTTON_SIZE;
   end;
-end;
-
-{*******************************************************************
-*  TNotifierForm.HandlePaint ()
-*
-*******************************************************************}
-procedure TNotifierForm.HandlePaint(Sender: TObject);
-begin
-  { Temporary fix for TForm.Color not working on Gtk
-    Remove when the bug is fixed! }
-  Canvas.Brush.Style := bsSolid;
-  Canvas.Brush.Color := Color;
-  Canvas.FillRect(Rect(0,0,width,height));
-  
-  { Paints the icon. We can't use a TImage because it's on ExtCtrls }
-  if Assigned(imgIcon.Bitmap) then Canvas.Draw(5, 5, imgIcon.Bitmap);
 end;
 
 { TPopupNotifier }
