@@ -432,7 +432,7 @@ begin
     exit;
   above := AFormStyle in fsAllStayOnTop;
   Widget := PGtkWidget(AForm.Handle);
-  gtk_window_set_keep_above(PGtkWindow(AForm.Handle), above);
+  gtk_window_set_keep_above(PGtkWindow(Widget), above);
 end;
 
 {class function TGtk2WSCustomForm.GetDefaultClientRect(
