@@ -80,8 +80,6 @@ type
     FRefCount: Integer;
     function GetSrcLineToMarkLine(SrcIndex: Integer): Integer;
     procedure SetSrcLineToMarkLine(SrcIndex: Integer; const AValue: Integer);
-  protected
-    function ItemSize: Integer; override;
   public
     constructor Create;
     procedure IncRefCount;
@@ -337,14 +335,10 @@ begin
   Integer(ItemPointer[SrcIndex]^) := AValue;
 end;
 
-function TIDESynDebugMarkInfo.ItemSize: Integer;
-begin
-  Result := SizeOf(Integer);
-end;
-
 constructor TIDESynDebugMarkInfo.Create;
 begin
   Inherited;
+  ItemSize := SizeOf(Integer);
   FRefCount := 1;
 end;
 
