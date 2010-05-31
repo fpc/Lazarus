@@ -40,8 +40,8 @@ type
   { SynEditTextDoubleWidthChars }
 
   SynEditStringDoubleWidthChars = class(TSynEditStringsLinked)
-  public
-    function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
+  protected
+    procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); override;
   end;
 
 
@@ -49,114 +49,116 @@ implementation
 
 { SynEditTextDoubleWidthChars }
 
-function SynEditStringDoubleWidthChars.GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths;
+procedure SynEditStringDoubleWidthChars.DoGetPhysicalCharWidths(Line: PChar;
+  LineLen, Index: Integer; PWidths: PPhysicalCharWidth);
 var
   i: Integer;
-  p: PChar;
 begin
-  Result := inherited GetPhysicalCharWidths(Line, Index);
+  inherited DoGetPhysicalCharWidths(Line, LineLen, Index, PWidths);
   if not IsUtf8 then
     exit;
 
-  p := Pchar(Line)-1;
-  for i := 0 to length(Line) -1 do begin
-    inc(p);
-    if Result[i] = 0 then continue;
-    case p[0] of
+  dec(Line);
+  dec(PWidths);
+  for i := 0 to LineLen - 1 do begin
+    inc(Line);
+    inc(PWidths);
+    if PWidths^ = 0 then continue;
+    case Line[0] of
       #$e1:
-        case p[1] of
+        case Line[1] of
           #$84:
-            if (p[2] >= #$80) then Result[i] := 2;
+            if (Line[2] >= #$80) then PWidths^ := 2;
           #$85:
-            if (p[2] <= #$9f) then Result[i] := 2;
+            if (Line[2] <= #$9f) then PWidths^ := 2;
         end;
       #$e2:
-        case p[1] of
+        case Line[1] of
           #$8c:
-            if (p[2] = #$a9) or (p[2] = #$aa) then Result[i] := 2;
+            if (Line[2] = #$a9) or (Line[2] = #$aa) then PWidths^ := 2;
           #$ba:
-            if (p[2] >= #$80) then Result[i] := 2;
+            if (Line[2] >= #$80) then PWidths^ := 2;
           #$bb..#$ff:
-            Result[i] := 2;
+            PWidths^ := 2;
         end;
       #$e3:
-        case p[1] of
+        case Line[1] of
           #$81:
-            if (p[2] >= #$81) then Result[i] := 2;
+            if (Line[2] >= #$81) then PWidths^ := 2;
           #$82..#$8e:
-            Result[i] := 2;
+            PWidths^ := 2;
           #$8f:
-            if (p[2] <= #$bf) then Result[i] := 2;
+            if (Line[2] <= #$bf) then PWidths^ := 2;
           #$90:
-            if (p[2] >= #$80) then Result[i] := 2;
+            if (Line[2] >= #$80) then PWidths^ := 2;
           #$91..#$FF:
-            Result[i] := 2;
+            PWidths^ := 2;
         end;
       #$e4:
-        case p[1] of
+        case Line[1] of
           #$00..#$b5:
-            Result[i] := 2;
+            PWidths^ := 2;
           #$b6:
-            if (p[2] <= #$b5) then Result[i] := 2;
+            if (Line[2] <= #$b5) then PWidths^ := 2;
           #$b8:
-            if (p[2] >= #$80) then Result[i] := 2;
+            if (Line[2] >= #$80) then PWidths^ := 2;
           #$b9..#$ff:
-            Result[i] := 2;
+            PWidths^ := 2;
         end;
       #$e5..#$e8:
-        Result[i] := 2;
+        PWidths^ := 2;
       #$e9:
-        if (p[1] <= #$bf) or (p[2] <= #$83) then Result[i] := 2;
+        if (Line[1] <= #$bf) or (Line[2] <= #$83) then PWidths^ := 2;
       #$ea:
-        case p[1] of
+        case Line[1] of
           #$80, #$b0:
-            if (p[2] >= #$80) then Result[i] := 2;
+            if (Line[2] >= #$80) then PWidths^ := 2;
           #$81..#$92, #$b1..#$ff:
-            Result[i] := 2;
+            PWidths^ := 2;
           #$93:
-            if (p[2] <= #$86) then Result[i] := 2;
+            if (Line[2] <= #$86) then PWidths^ := 2;
         end;
       #$eb..#$ec:
-        Result[i] := 2;
+        PWidths^ := 2;
       #$ed:
-        if (p[1] <= #$9e) or (p[2] <= #$a3) then Result[i] := 2;
+        if (Line[1] <= #$9e) or (Line[2] <= #$a3) then PWidths^ := 2;
 
       #$ef:
-        case p[1] of
+        case Line[1] of
           #$a4:
-            if (p[2] >= #$80) then Result[i] := 2;
+            if (Line[2] >= #$80) then PWidths^ := 2;
           #$a5..#$aa:
-            Result[i] := 2;
+            PWidths^ := 2;
           #$ab:
-            if (p[2] <= #$99) then Result[i] := 2;
+            if (Line[2] <= #$99) then PWidths^ := 2;
           #$b8:
-            if (p[2] in [#$90..#$99,#$b0..#$ff]) then Result[i] := 2;
+            if (Line[2] in [#$90..#$99,#$b0..#$ff]) then PWidths^ := 2;
           #$b9:
-            if (p[2] <= #$ab) then Result[i] := 2;
+            if (Line[2] <= #$ab) then PWidths^ := 2;
           #$bc:
-            if (p[2] >= #$81) then Result[i] := 2;
+            if (Line[2] >= #$81) then PWidths^ := 2;
           #$bd:
-            if (p[2] <= #$a0) then Result[i] := 2;
+            if (Line[2] <= #$a0) then PWidths^ := 2;
           #$bf:
-            if (p[2] >= #$a0) and (p[2] <= #$a6) then Result[i] := 2;
+            if (Line[2] >= #$a0) and (Line[2] <= #$a6) then PWidths^ := 2;
         end;
       #$f0:
-        case p[1] of
+        case Line[1] of
           #$a0, #$b0:
-            case p[2] of
+            case Line[2] of
               #$80:
-                if (p[3] >= #$80) then Result[i] := 2;
+                if (Line[3] >= #$80) then PWidths^ := 2;
               #$81..#$ff:
-                Result[i] := 2;
+                PWidths^ := 2;
             end;
           #$a1..#$ae, #$b1..#$be:
-            Result[i] := 2;
+            PWidths^ := 2;
           #$af, #$bf:
-            case p[2] of
+            case Line[2] of
               #$00..#$be:
-                Result[i] := 2;
+                PWidths^ := 2;
               #$bf:
-                if (p[3] <= #$bd) then Result[i] := 2;
+                if (Line[3] <= #$bd) then PWidths^ := 2;
             end;
         end
     end;

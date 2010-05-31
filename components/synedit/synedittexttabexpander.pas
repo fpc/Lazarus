@@ -26,8 +26,7 @@ unit SynEditTextTabExpander;
 interface
 
 uses
-LCLProc,
-  Classes, SysUtils, SynEditTextBase;
+  LCLProc, Classes, SysUtils, SynEditTextBase;
 
 type
 
@@ -67,10 +66,10 @@ type
     procedure SetTabWidth(const AValue : integer);
     function  GetExpandedString(Index: integer): string; override;
     function  GetLengthOfLongestLine: integer; override;
+    procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); override;
   public
     constructor Create(ASynStringSource: TSynEditStrings);
     destructor Destroy; override;
-    function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
 
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
   public
@@ -228,7 +227,7 @@ begin
     // xxx wrong double width // none latin ...
     //FTabData[Index] := length(Result) + NO_TAB_IN_LINE_OFFSET;
   end else begin
-    CharWidths := GetPhysicalCharWidths(Line, Index);
+    CharWidths := GetPhysicalCharWidths(Pchar(Line), length(Line), Index);
     l := 0;
     for i := 0 to length(CharWidths)-1 do
       l := l + CharWidths[i];
@@ -261,7 +260,9 @@ begin
     Result := 0;
     FTabData[Index] := Result + NO_TAB_IN_LINE_OFFSET;
   end else begin
-    CharWidths := GetPhysicalCharWidths(Line, Index);
+    i := length(Line);
+    SetLength(CharWidths, i);
+    DoGetPhysicalCharWidths(Pchar(Line), i, Index, @CharWidths[0]);
     Result := 0;
     for i := 0 to length(CharWidths)-1 do
       Result := Result + CharWidths[i];
@@ -284,32 +285,35 @@ begin
     Result := '';
 end;
 
-function TSynEditStringTabExpander.GetPhysicalCharWidths(const Line: String;
-  Index: Integer): TPhysicalCharWidths;
+procedure TSynEditStringTabExpander.DoGetPhysicalCharWidths(Line: PChar;
+  LineLen, Index: Integer; PWidths: PPhysicalCharWidth);
 var
-  p: PChar;
   HasTab: Boolean;
   i, j: Integer;
 begin
-  Result := inherited GetPhysicalCharWidths(Line, Index);
+  inherited DoGetPhysicalCharWidths(Line, LineLen, Index, PWidths);
   HasTab := False;
-  p := PChar(Line);
   j := 0;
-  for i := 0 to length(Line) -1 do begin
-    if Result[i] <> 0 then begin
-      if p^ = #9 then begin
-        Result[i] := FTabWidth - (j mod FTabWidth);
+  for i := 0 to LineLen - 1 do begin
+    if PWidths^ <> 0 then begin
+      if Line^ = #9 then begin
+        PWidths^ := FTabWidth - (j mod FTabWidth);
         HasTab := True;
       end;
-      j := j + Result[i];
+      j := j + PWidths^;
     end;
-    inc(p);
+    inc(Line);
+    inc(PWidths);
   end;
   FLastLineHasTab := HasTab;
 end;
 
 function TSynEditStringTabExpander.GetLengthOfLongestLine: integer;
 var
+  Line: String;
+  CharWidths: TPhysicalCharWidths;
+  n, m: Integer;
+//var
   i, j: integer;
 begin
   if (fIndexOfLongestLine >= 0) and (fIndexOfLongestLine < Count) then begin
@@ -319,10 +323,32 @@ begin
   end;
 
   Result := 0;
+  m := 0;
   for i := 0 to Count - 1 do begin
     j := FTabData[i];
-    if j = LINE_LEN_UNKNOWN then
-      j := ExpandedStringLength(i)
+    if j = LINE_LEN_UNKNOWN then begin
+      // embedd a copy of ExpandedStringLength
+      // allows to re-use CharWidths
+      Line := fSynStrings[i];
+      j := 0;
+      if (Line = '') then begin
+        FTabData[i] := j + NO_TAB_IN_LINE_OFFSET;
+      end else begin
+        n := length(Line);
+        if n > m then begin
+          SetLength(CharWidths, n);
+          m := n;
+        end;
+        DoGetPhysicalCharWidths(Pchar(Line), n, i, @CharWidths[0]);
+        for m := 0 to n-1 do
+          j := j + CharWidths[m];
+
+        if FLastLineHasTab then // FLastLineHasTab is set by GetPhysicalCharWidths
+          FTabData[i] := j
+        else
+          FTabData[i] := j + NO_TAB_IN_LINE_OFFSET;
+      end;
+    end
     else
     if j >= NO_TAB_IN_LINE_OFFSET then
       j := j -  NO_TAB_IN_LINE_OFFSET;

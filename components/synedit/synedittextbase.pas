@@ -58,6 +58,8 @@ type
                           );
 
   TPhysicalCharWidths = Array of Shortint;
+  TPhysicalCharWidth = ShortInt;
+  PPhysicalCharWidth = ^TPhysicalCharWidth;
 
   TSynEditUndoList = class;
   TSynEditUndoItem = class;
@@ -163,6 +165,8 @@ type
 
     procedure SetUpdateState(Updating: Boolean); override;
     procedure SetUpdateState(Updating: Boolean; Sender: TObject); virtual; abstract;
+
+    procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); virtual; abstract;
   public
     constructor Create;
     procedure BeginUpdate(Sender: TObject); overload;
@@ -198,7 +202,7 @@ type
    procedure FlushNotificationCache; virtual; abstract;
   public
     function GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
-    function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; virtual; abstract;
+    function GetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer): TPhysicalCharWidths;
     // Byte to Char
     function LogicalToPhysicalPos(const p: TPoint): TPoint;
     function LogicalToPhysicalCol(const Line: String;
@@ -263,6 +267,7 @@ type
     procedure PutObject(Index: integer; AObject: TObject); override;
 
     procedure SetUpdateState(Updating: Boolean; Sender: TObject); override;
+    procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); override;
   public
     constructor Create(ASynStringSource: TSynEditStrings);
 
@@ -287,7 +292,7 @@ type
                 ASender: TObject); override;
    procedure FlushNotificationCache; override;
 
-    function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
+    //function GetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer): TPhysicalCharWidths; override;
     property NextLines: TSynEditStrings read fSynStrings write fSynStrings;
   public
     // LogX, LogY are 1-based
@@ -489,8 +494,20 @@ begin
 end;
 
 function TSynEditStrings.GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
+var
+  s: string;
 begin
-  Result := GetPhysicalCharWidths(Strings[Index], Index);
+  s := Strings[Index];
+  Result := GetPhysicalCharWidths(PChar(s), length(s), Index);
+end;
+
+function TSynEditStrings.GetPhysicalCharWidths(Line: PChar; LineLen,
+  Index: Integer): TPhysicalCharWidths;
+begin
+  SetLength(Result, LineLen);
+  if LineLen = 0 then
+    exit;
+  DoGetPhysicalCharWidths(Line, LineLen, Index, @Result[0]);
 end;
 
 function TSynEditStrings.GetIsUtf8 : Boolean;
@@ -571,7 +588,7 @@ var
   i, ByteLen: integer;
   CharWidths: TPhysicalCharWidths;
 begin
-  CharWidths := GetPhysicalCharWidths(Line, Index);
+  CharWidths := GetPhysicalCharWidths(Pchar(Line), length(Line), Index);
   ByteLen := length(Line);
   dec(LogicalPos);
 
@@ -600,7 +617,7 @@ var
   ScreenPos: integer;
   CharWidths: TPhysicalCharWidths;
 begin
-  CharWidths := GetPhysicalCharWidths(Line, Index);
+  CharWidths := GetPhysicalCharWidths(PChar(Line), length(Line), Index);
   ByteLen := Length(Line);
   ScreenPos := 1;
   BytePos := 0;
@@ -775,10 +792,10 @@ begin
   fSynStrings.PutObject(Index, AObject);
 end;
 
-function TSynEditStringsLinked.GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths;
-begin
-  Result := fSynStrings.GetPhysicalCharWidths(Line, Index);
-end;
+//function TSynEditStringsLinked.GetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer): TPhysicalCharWidths;
+//begin
+//  Result := fSynStrings.GetPhysicalCharWidths(Line, LineLen, Index);
+//end;
 
 procedure TSynEditStringsLinked.SetUpdateState(Updating: Boolean; Sender: TObject);
 begin
@@ -787,6 +804,12 @@ begin
     fSynStrings.BeginUpdate(Sender)
   else
     fSynStrings.EndUpdate(Sender);
+end;
+
+procedure TSynEditStringsLinked.DoGetPhysicalCharWidths(Line: PChar;
+  LineLen, Index: Integer; PWidths: PPhysicalCharWidth);
+begin
+  fSynStrings.DoGetPhysicalCharWidths(Line, LineLen, Index, PWidths);
 end;
 
 procedure TSynEditStringsLinked.EditInsert(LogX, LogY: Integer; AText: String);

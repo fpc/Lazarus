@@ -166,6 +166,7 @@ type
 
     procedure UndoEditLinesDelete(LogY, ACount: Integer);
     procedure IncreaseTextChangeStamp;
+    procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -188,9 +189,7 @@ type
                 aBytePos: Integer = -1; aLen: Integer = 0; aTxt: String = ''); override;
     procedure SendNotification(AReason: TSynEditNotifyReason;
                 ASender: TObject); override;
-   procedure FlushNotificationCache; override;
-   function GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths; override;
-    // For Textbuffersharing
+    procedure FlushNotificationCache; override;
     procedure AttachSynEdit(AEdit: TSynEditBase);
     procedure DetachSynEdit(AEdit: TSynEditBase);
     function  AttachedSynEditCount: Integer;
@@ -700,24 +699,27 @@ end;
 
 // Maps the Physical Width (ScreenCells) to each character
 // Multibyte Chars have thw width on the first byte, and a 0 Width for all other bytes
-function TSynEditStringList.GetPhysicalCharWidths(const Line: String; Index: Integer): TPhysicalCharWidths;
+procedure TSynEditStringList.DoGetPhysicalCharWidths(Line: PChar;
+  LineLen, Index: Integer; PWidths: PPhysicalCharWidth);
 var
   i, j: Integer;
-  p: PChar;
 begin
-  SetLength(Result, Length(Line));
+  if not IsUtf8 then begin
+    for i := 0 to LineLen-1 do
+      PWidths[i] := 1;
+    exit;
+  end;
   j := 0;
-  p := PChar(line);
-  for i := 0 to length(Line)-1 do begin
+  for i := 0 to LineLen-1 do begin
     if j > 0 then begin
-      Result[i] := 0;
+      PWidths^ := 0;
       dec(j);
     end else begin
-      Result[i] := 1;
-      if IsUtf8 then
-        j := UTF8CharacterLength(p) - 1;
+      PWidths^ := 1;
+      j := UTF8CharacterLength(Line) - 1;
     end;
-    inc(p);
+    inc(Line);
+    inc(PWidths);
   end;
 end;
 

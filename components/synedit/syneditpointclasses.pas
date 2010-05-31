@@ -419,7 +419,7 @@ var
   L: String;
 begin
   L := LineText;
-  CharWidths := FLines.GetPhysicalCharWidths(L, FLinePos-1);
+  CharWidths := FLines.GetPhysicalCharWidths(Pchar(L), length(L), FLinePos-1);
   LogLen := Length(CharWidths);
   ScreenPos := 1;
   LogPos := 0;
