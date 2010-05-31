@@ -2973,16 +2973,33 @@ end;
   Sets the parameters of a scroll bar.
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; BRedraw: Boolean): Integer;
+var
+  dwStyle: DWORD;
+  oldPos, newPos: Integer;
 begin
-//  Assert(False, 'Trace:[TWinCEWidgetSet.SetScrollInfo]');
-  //with ScrollInfo do
-   // Assert(False, Format('Trace:> [TWinCEWidgetSet.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, Page:%d, Pos:%d', [FMask, NMin, NMax, NPage, NPos]));
+  dwStyle := GetWindowLong(Handle, GWL_STYLE);
+  oldPos := Windows.GetScrollPos(Handle, SBStyle);
+
+//  DebugLn(Format(
+//    'Trace:> [TWinCEWidgetSet.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, BRedraw:%d, Pos:%d',
+//    [ScrollInfo.FMask, ScrollInfo.NMin, ScrollInfo.NMax, Integer(BRedraw), ScrollInfo.NPos]));
+
   ScrollInfo.cbSize:=sizeof(ScrollInfo);
   if (ScrollInfo.fMask and SIF_Range > 0) then
     ScrollInfo.nMax := Max(ScrollInfo.nMin, ScrollInfo.nMax - 1);
   Result := Windows.SetScrollInfo(Handle, SBStyle, @ScrollInfo, BRedraw);
-  with ScrollInfo do
-    Assert(False, Format('Trace:> [TWinCEWidgetSet.SetScrollInfo] --> %d', [Result]));
+
+  // Windows CE also shows the scrollbar if you use SetScrollInfo, and
+  // if you hide it back, it will loose the position information.
+  // So we use some logic to check if the change was effectively from
+  // Pos Zero to Pos Zero and hide the bar again in this case.
+  // For other cases we can't hide the bar without moving it to Pos Zero
+  // Tested on WM 6
+  // See bug http://bugs.freepascal.org/view.php?id=14823
+  newPos := Windows.GetScrollPos(Handle, SBStyle);
+  if (oldPos = 0) and (newPos = 0) and
+    (dwStyle <> GetWindowLong(Handle, GWL_STYLE)) then
+    SetWindowLong(Handle, GWL_STYLE, dwStyle);
 end;
 
 {------------------------------------------------------------------------------
