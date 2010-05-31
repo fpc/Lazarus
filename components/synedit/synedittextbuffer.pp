@@ -997,6 +997,7 @@ procedure TSynEditStringList.EditLineBreak(LogX, LogY: Integer);
 var
   s: string;
 begin
+  if Count = 0 then Add('');
   s := Strings[LogY - 1];
   if LogX - 1 < length(s) then
     Strings[LogY - 1] := copy(s, 1, LogX - 1);

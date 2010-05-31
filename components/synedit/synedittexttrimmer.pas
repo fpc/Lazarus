@@ -804,6 +804,7 @@ begin
     exit;
   end;
 
+  if Count = 0 then fSynStrings.Add('');
   FlushNotificationCache;
   IgnoreSendNotification(senrEditAction, True);
   SaveText := AText;

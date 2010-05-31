@@ -6069,8 +6069,6 @@ begin
       ecInsertLine,
       ecLineBreak:
         if not ReadOnly then begin
-          if FTheLinesView.Count = 0 then
-            FTheLinesView.Add('');
           if SelAvail and (not FBlockSelection.Persistent) and (eoOverwriteBlock in fOptions2) then
             SetSelTextExternal('');
           Temp := LineText;
@@ -6112,7 +6110,7 @@ begin
               LogCaretXY := FCaret.LineBytePos;
               Temp := LineText;
               Len := Length(Temp);
-              if (not fInserting) and (LogCaretXY.X - 1<= Len) then begin
+              if (not fInserting) and (LogCaretXY.X - 1 < Len) then begin
                 counter := GetCharLen(Temp,LogCaretXY.X);
                 FTheLinesView.EditDelete(LogCaretXY.X, LogCaretXY.Y, counter);
                 Len := Len - counter;
@@ -6148,8 +6146,6 @@ begin
         else if not ReadOnly and (AChar = #13) then begin
           // ecLineBreak is not assigned
           // Insert a linebreak, but do not apply any other functionality (such as indent)
-          if FTheLinesView.Count = 0 then
-            FTheLinesView.Add('');
           if SelAvail and (not FBlockSelection.Persistent) and (eoOverwriteBlock in fOptions2) then
             SetSelTextExternal('');
           LogCaretXY:=PhysicalToLogicalPos(CaretXY);
