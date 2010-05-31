@@ -40,7 +40,7 @@ interface
 uses
   Types, Classes, SysUtils, Math, Maps, LCLStrConsts, LCLProc, LCLType, LCLIntf,
   FileUtil, FPCanvas, Controls, GraphType, Graphics, Forms, DynamicArray,
-  LMessages, XMLCfg, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes;
+  LMessages, XMLConf, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes;
 
 const
   //GRIDFILEVERSION = 1; // Original
@@ -9180,7 +9180,7 @@ begin
           Cfg.SetValue('grid/content/cells/cellcount',k);
           cfg.SetValue('grid/content/cells/cell'+IntToStr(k)+'/column',i);
           cfg.SetValue('grid/content/cells/cell'+IntToStr(k)+'/row',j);
-          cfg.SetValue('grid/content/cells/cell'+IntToStr(k)+'/text', c^.Text);
+          cfg.SetValue('grid/content/cells/cell'+IntToStr(k)+'/text', UTF8Decode(C^.Text));
         end;
       end;
    end;
@@ -9254,7 +9254,7 @@ begin
         i:=cfg.GetValue('grid/content/cells/cell'+IntToStr(k)+'/column', -1);
         j:=cfg.GetValue('grid/content/cells/cell'+IntTostr(k)+'/row',-1);
         if (j>=0)and(j<=rowcount-1)and(i>=0)and(i<=Colcount-1) then
-          Cells[i,j]:=cfg.GetValue('grid/content/cells/cell'+IntToStr(k)+'/text','');
+          Cells[i,j]:=UTF8Encode(cfg.GetValue('grid/content/cells/cell'+IntToStr(k)+'/text',''));
         Dec(k);
       end;
     end;
