@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, ExtCtrls, SysUtils, FileUtil, LResources, Forms, Controls,
-  Graphics, Dialogs, TAGraph, TASeries, TASources, TATools;
+  Graphics, Dialogs, Types, TAGraph, TASeries, TASources, TATools;
 
 type
 
@@ -33,6 +33,8 @@ type
     RandomChartSource1: TRandomChartSource;
     rgPan: TRadioGroup;
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
+    procedure ChartToolset1DataPointDragTool1BeforeMouseMove(ATool: TChartTool;
+      APoint: TPoint);
     procedure rgPanClick(Sender: TObject);
     procedure rgZoomClick(Sender: TObject);
   end;
@@ -49,6 +51,22 @@ implementation
 procedure TForm1.Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
 begin
   AY := Sin(AX * 10) + 0.7 * Cos(AX * 30) + 0.3 * Sin(AX * 80);
+end;
+
+procedure TForm1.ChartToolset1DataPointDragTool1BeforeMouseMove(
+  ATool: TChartTool; APoint: TPoint);
+const
+  D = 10;
+begin
+  with ATool as TDataPointDragTool do begin
+    if
+      (Series = ChartLine1) and
+        (APoint.X > Chart1.XGraphToImage(ChartLine2.Position) - D) or
+      (Series = ChartLine2) and
+        (APoint.X < Chart1.XGraphToImage(ChartLine1.Position) + D)
+    then
+      Handled;
+  end;
 end;
 
 procedure TForm1.rgPanClick(Sender: TObject);
