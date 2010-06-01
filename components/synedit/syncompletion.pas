@@ -344,9 +344,7 @@ implementation
 constructor TSynBaseCompletionForm.Create(AOwner: TComponent);
 begin
   FResizeLock := 1; // prevent DoResize (on Handle Creation) do reset LinesInWindow
-  {$IFNDEF OldAutoSize}
   BeginFormUpdate;
-  {$ENDIF}
   inherited Create(AOwner);
   FItemList := TStringList.Create;
   BorderStyle := bsNone;
@@ -376,9 +374,7 @@ begin
   FNbLinesInWindow := 6;
   FontChanged(Font);
   ShowHint := False;
-  {$IFNDEF OldAutoSize}
   EndFormUpdate;
-  {$ENDIF}
   FResizeLock := 0;
 end;
 

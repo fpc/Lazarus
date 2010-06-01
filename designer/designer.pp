@@ -1183,9 +1183,7 @@ begin
   if PasteParent=nil then PasteParent:=GetPasteParent;
   NewSelection:=TControlSelection.Create;
   try
-    {$IFNDEF OldAutoSize}
     Form.DisableAutoSizing;
-    {$ENDIF}
     try
 
       // read component stream from clipboard
@@ -1239,9 +1237,7 @@ begin
       end;
 
     finally
-      {$IFNDEF OldAutoSize}
       Form.EnableAutoSizing;
-      {$ENDIF}
     end;
   finally
     if NewSelection.Count>0 then
@@ -1964,7 +1960,7 @@ var
     
     // create component and component interface
     DebugLn(['AddComponent ',DbgSName(NewComponentClass),' Parent=',DbgSName(NewParent),' ',NewLeft,',',NewTop,',',NewWidth,',',NewHeight]);
-    DisableAutoSize:={$IFDEF OldAutoSize}false{$ELSE}true{$ENDIF};
+    DisableAutoSize:=true;
     NewComponent := TheFormEditor.CreateComponent(
        NewParent,NewComponentClass,'',
        NewLeft,NewTop,NewWidth,NewHeight,DisableAutoSize);
