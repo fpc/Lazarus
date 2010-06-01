@@ -1,13 +1,14 @@
+# Valdas Jankūnas <zmuogs@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2008-06-12 21:15+0300\n"
+"PO-Revision-Date: 2010-05-16 16:22+0300\n"
 "Project-Id-Version: idetemplateproject\n"
-"Language-Team: Lithuanian\n"
-"X-Generator: KBabel 1.11.4\n"
+"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
+"X-Generator: Lokalize 1.0\n"
 "MIME-Version: 1.0\n"
-"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: idetemplateproject.snewfromtemplate
@@ -20,5 +21,6 @@ msgstr "Projekto šablono parinktys"
 
 #: idetemplateproject.stemplatecategory
 msgid "Template projects"
-msgstr ""
+msgstr "Šablono projektai"
+
 

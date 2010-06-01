@@ -1,0 +1,30 @@
+# Valdas Jankūnas <zmuogs@gmail.com>, 2010.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2010-05-16 12:39+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.0\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: cgilazideintf.lisdescription
+msgid "Simple CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal.%sThe application source is automatically maintained by Lazarus.%sThis kind of application is deprecated, for CGI programs or Apache modules, please use the LazWeb package instead."
+msgstr "Paprasta CGI programa%sCGI (Common Gateway Interface) programa, parašyta Free Pascal kalba.%sLazarus automatiškai rūpinsis šios programos pirminiu kodu.%sCGI programoms ar Apache moduliams šio tipo programa nebenaudotina, vietoj jos naudokite paketą LazWeb."
+
+#: cgilazideintf.lisdescrmod
+msgid "Simple CGI Module%sA datamodule for CGI applications.%sThis module is deprecated, please use the CGI module support of the LazWeb package instead."
+msgstr "Paprastas CGI modulis%sCGI programų duomenų modulis.%sŠis modulis nebenaudotinas, vietoj jo naudokite LazWeb paketo CGI modulį."
+
+#: cgilazideintf.lissimplecgiapp
+msgid "Simple CGI Application"
+msgstr "Paprasta CGI programa"
+
+#: cgilazideintf.lissimplecgimod
+msgid "Simple CGI Module"
+msgstr "Paprastas CGI modulis"
+
+

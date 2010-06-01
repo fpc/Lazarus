@@ -1,11 +1,11 @@
-# Valdas Jankūnas <zmuogs@gmail.com>, 2009.
+# Valdas Jankūnas <zmuogs@gmail.com>, 2009, 2010.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2009-08-22 00:00+0300\n"
+"PO-Revision-Date: 2010-05-16 16:28+0300\n"
 "Project-Id-Version: synedit\n"
-"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
 "X-Generator: Lokalize 1.0\n"
 "MIME-Version: 1.0\n"
 "Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
@@ -37,7 +37,7 @@ msgstr "Skliaustai"
 
 #: syneditstrconst.syns_attrcaselabel
 msgid "Case label"
-msgstr ""
+msgstr "„Case“ vertė"
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
@@ -49,19 +49,19 @@ msgstr "Rašmuo"
 
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
-msgstr ""
+msgstr "Skirtumų gabalo žymeklis"
 
 #: syneditstrconst.syns_attrchunkmixed
 msgid "Diff Chunk Line Counts"
-msgstr ""
+msgstr "Eilučių kiekis skirtumų gabale"
 
 #: syneditstrconst.syns_attrchunknew
 msgid "Diff Chunk New Line Count"
-msgstr ""
+msgstr "Naujų eilučių kiekis skirtumų gabale"
 
 #: syneditstrconst.syns_attrchunkorig
 msgid "Diff Chunk Original Line Count"
-msgstr ""
+msgstr "Originalo eilučių kiekis skirtumų gabale"
 
 #: syneditstrconst.syns_attrclass
 msgid "Class"
@@ -181,19 +181,19 @@ msgstr "Etiketė"
 
 #: syneditstrconst.syns_attrlineadded
 msgid "Diff Added line"
-msgstr ""
+msgstr "Skirtumų pridėta eilutė"
 
 #: syneditstrconst.syns_attrlinechanged
 msgid "Diff Changed Line"
-msgstr ""
+msgstr "Skirtumų pakeista eilutė"
 
 #: syneditstrconst.syns_attrlinecontext
 msgid "Diff Context Line"
-msgstr ""
+msgstr "Skirtumų kontekstinė eilutė"
 
 #: syneditstrconst.syns_attrlineremoved
 msgid "Diff Removed Line"
-msgstr ""
+msgstr "Skirtumų pašalinta eilutė"
 
 #: syneditstrconst.syns_attrmacro
 msgid "Macro"
@@ -225,7 +225,7 @@ msgstr "Vardų srities atributo vertė"
 
 #: syneditstrconst.syns_attrnewfile
 msgid "Diff New File"
-msgstr ""
+msgstr "Skirtumų nauja eilutė"
 
 #: syneditstrconst.syns_attrnonreservedkeyword
 msgid "Non-reserved keyword"
@@ -249,7 +249,7 @@ msgstr "Operatorius"
 
 #: syneditstrconst.syns_attrorigfile
 msgid "Diff Original File"
-msgstr ""
+msgstr "Skirtumų originalo failas"
 
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
@@ -438,7 +438,7 @@ msgstr "Iškylantis meniu"
 
 #: syneditstrconst.syns_emccontextmenucaretmove_opt
 msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
-msgstr ""
+msgstr "„Perkelti žymeklį, kai yra žymėjimas, niekada, „spustelėti išorėje“, visados"
 
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
@@ -703,4 +703,5 @@ msgstr "<nieks>"
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
 msgstr "Bevardis"
+
 

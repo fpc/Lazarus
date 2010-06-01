@@ -1,12 +1,12 @@
 # translation of lclstrconsts.po to
-# Valdas Jankūnas <zmuogs@gmail.com>, 2008, 2009.
+# Valdas Jankūnas <zmuogs@gmail.com>, 2008, 2009, 2010.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2009-08-23 15:10+0300\n"
+"PO-Revision-Date: 2010-05-23 21:32+0300\n"
 "Project-Id-Version: lclstrconsts\n"
-"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
 "X-Generator: Lokalize 1.0\n"
 "MIME-Version: 1.0\n"
 "Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
@@ -29,10 +29,9 @@ msgid "Unable to find a HTML browser."
 msgstr "Nepavyko rasti HTML naršyklės."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
-#, fuzzy
 #| msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
 msgid "No HTML Browser found.%sPlease define one in Environment -> Options -> Help -> Help Options"
-msgstr "Nerasta HTML naršyklė.%sNurodykite kokią nors meniu „Žinynas -> Derinti žinyną -> Žiūryklės“."
+msgstr "Nerasta HTML naršyklė.%sNurodyti kokią nors galima parinkus meniu „Aplinka -> Parinktys -> Žinynas -> Žinyno parinktys“"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
@@ -243,18 +242,10 @@ msgctxt "lclstrconsts.ifsvk_up"
 msgid "Up"
 msgstr "Up"
 
-#: lclstrconsts.liscannotexecute
-msgid "can not execute %s"
-msgstr ""
-
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
 msgstr "Resursas %s nerastas"
-
-#: lclstrconsts.lisprogramfilenotfound
-msgid "program file not found %s"
-msgstr ""
 
 #: lclstrconsts.rs3ddkshadowcolorcaption
 msgid "3D Dark Shadow"
@@ -521,7 +512,7 @@ msgstr "„FixedRows“ reikšmė negali būti lygi ar didesnė nei „RowCount�
 
 #: lclstrconsts.rsformcolorcaption
 msgid "Form"
-msgstr "Nuo"
+msgstr "Forma"
 
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
@@ -620,10 +611,9 @@ msgid "--no-xshm             Disable use of the X Shared Memory Extension."
 msgstr "--no-xshm     Nenaudoti „X Shared Memory“ plėtinio."
 
 #: lclstrconsts.rsgtkoptionsync
-#, fuzzy
 #| msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
-msgstr "--sync     Kai XServer ryšys sukurtas, vykdyti „XSynchronize (display, True)“. Tai padarys lengvesnį X protokolo klaidų derinimą, nes bus išjungtas X kreipinių buferis ir X serveriui protokolo kreipinio apdorojimo metu įvykusi klaida bus gauta iškart."
+msgstr "--sync     Kai XServer ryšys sukurtas, vykdyti „XSynchronize (display, True)“. Tai padarys lengvesnį X protokolo klaidų derinimą, nes bus išjungtas X kreipinių buferis ir X serveriui apdorojant protokolo kreipinį įvykusi klaida bus gauta iškart."
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"
@@ -1014,94 +1004,6 @@ msgstr "Savybė %s neegzistuoja"
 msgid "Purple"
 msgstr "Purpurinė"
 
-#: lclstrconsts.rsqtoptiondograb
-msgid "-dograb (only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override. Need QT_DEBUG."
-msgstr ""
-
-#: lclstrconsts.rsqtoptiongraphicsstyle
-msgid "-graphicssystem param, sets the backend to be used for on-screen widgets and QPixmaps. Available options are native, raster and opengl. OpenGL is still unstable."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionnograb
-msgid "-nograb, tells Qt that it must never grab the mouse or the keyboard. Need QT_DEBUG."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionreverse
-msgid "-reverse, sets the application's layout direction to Qt::RightToLeft."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionsession
-msgid "-session session, restores the application from an earlier session."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionstyle
-msgid "-style style or -style=style, sets the application GUI style. Possible values are motif, windows, and platinum. If you compiled Qt with additional styles or have additional styles as plugins these will be available to the -style  command line option. NOTE: Not all styles are available on all platforms. If style param does not exist Qt will start an application with default common style (windows)."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionstylesheet
-msgid "-stylesheet stylesheet or -stylesheet=stylesheet, sets the application Style Sheet. The value must be a path to a file that contains the Style Sheet. Note: Relative URLs in the Style Sheet file are relative to the Style Sheet file's path."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionsync
-msgid "-sync (only under X11), switches to synchronous mode for debugging."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionwidgetcount
-msgid "-widgetcount, prints debug message at the end about number of widgets left undestroyed and maximum number of widgets existed at the same time."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionx11bgcolor
-msgid "-bg or -background color, sets the default background color and an application palette (light and dark shades are calculated)."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionx11btncolor
-msgid "-btn or -button color, sets the default button color."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionx11cmap
-msgid "-cmap, causes the application to install a private color map on an 8-bit display."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionx11display
-msgid "-display display, sets the X display (default is $DISPLAY)."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionx11fgcolor
-msgid "-fg or -foreground color, sets the default foreground color."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionx11font
-msgid "-fn or -font font, defines the application font. The font should be specified using an X logical font description."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionx11geometry
-msgid "-geometry geometry, sets the client geometry of the first window that is shown."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionx11im
-msgid "-im, sets the input method server (equivalent to setting the XMODIFIERS environment variable)."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionx11inputstyle
-msgid "-inputstyle, defines how the input is inserted into the given widget, e.g. onTheSpot makes the input appear directly in the widget, while overTheSpot makes the input appear in a box floating over the widget and is not inserted until the editing is done."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionx11name
-msgid "-name name, sets the application name."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionx11ncols
-msgid "-ncols count, limits the number of colors allocated in the color cube on an 8-bit display, if the application is using the QApplication::ManyColor color specification. If count is 216 then a 6x6x6 color cube is used (i.e. 6 levels of red, 6 of green, and 6 of blue); for other values, a cube approximately proportional to a 2x3x1 cube is used."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionx11title
-msgid "-title title, sets the application title."
-msgstr ""
-
-#: lclstrconsts.rsqtoptionx11visual
-msgid "-visual TrueColor, forces the application to use a TrueColor visual on an 8-bit display."
-msgstr ""
-
 #: lclstrconsts.rsrasterimageendupdate
 msgid "Endupdate while no update in progress"
 msgstr "„Endupdate“, tačiau niekas neatnaujinama"
@@ -1173,7 +1075,7 @@ msgstr "Tekstas"
 
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"
-msgstr ""
+msgstr "„Tagged Image File Format“"
 
 #: lclstrconsts.rsunabletoloaddefaultfont
 msgid "Unable to load default font"
@@ -1189,7 +1091,7 @@ msgstr "Nežinomas paveikslo plėtinys"
 
 #: lclstrconsts.rsunknownpictureformat
 msgid "Unknown picture format"
-msgstr ""
+msgstr "Nežinomas paveikslo formatas"
 
 #: lclstrconsts.rsunsupportedbitmapformat
 msgid "Unsupported bitmap format."
@@ -1301,76 +1203,76 @@ msgstr "Pomeniu nėra įdėtas į menių"
 
 #: lclstrconsts.smkcalt
 msgid "Alt+"
-msgstr ""
+msgstr "Alt+"
 
 #: lclstrconsts.smkcbksp
 msgid "BkSp"
-msgstr ""
+msgstr "BkSp"
 
 #: lclstrconsts.smkcctrl
 msgid "Ctrl+"
-msgstr ""
+msgstr "Vald+"
 
 #: lclstrconsts.smkcdel
 msgid "Del"
-msgstr ""
+msgstr "Šal"
 
 #: lclstrconsts.smkcdown
 msgctxt "lclstrconsts.smkcdown"
 msgid "Down"
-msgstr "Down"
+msgstr "Žemyn"
 
 #: lclstrconsts.smkcend
 msgctxt "lclstrconsts.smkcend"
 msgid "End"
-msgstr "End"
+msgstr "Pab"
 
 #: lclstrconsts.smkcenter
 msgid "Enter"
-msgstr ""
+msgstr "Įvesti"
 
 #: lclstrconsts.smkcesc
 msgid "Esc"
-msgstr ""
+msgstr "Gr"
 
 #: lclstrconsts.smkchome
 msgctxt "lclstrconsts.smkchome"
 msgid "Home"
-msgstr "Home"
+msgstr "Prad"
 
 #: lclstrconsts.smkcins
 msgid "Ins"
-msgstr ""
+msgstr "Įterpti"
 
 #: lclstrconsts.smkcleft
 msgctxt "lclstrconsts.smkcleft"
 msgid "Left"
-msgstr "Left"
+msgstr "Kairėn"
 
 #: lclstrconsts.smkcmeta
 msgid "Meta+"
-msgstr ""
+msgstr "Meta+"
 
 #: lclstrconsts.smkcpgdn
 msgid "PgDn"
-msgstr ""
+msgstr "Psl. žemyn"
 
 #: lclstrconsts.smkcpgup
 msgid "PgUp"
-msgstr ""
+msgstr "Psl. aukštyn"
 
 #: lclstrconsts.smkcright
 msgctxt "lclstrconsts.smkcright"
 msgid "Right"
-msgstr "Right"
+msgstr "Dešinėn"
 
 #: lclstrconsts.smkcshift
 msgid "Shift+"
-msgstr ""
+msgstr "Lyg2+"
 
 #: lclstrconsts.smkcspace
 msgid "Space"
-msgstr ""
+msgstr "Tarpas"
 
 #: lclstrconsts.smkctab
 msgctxt "lclstrconsts.smkctab"
@@ -1380,7 +1282,7 @@ msgstr "Tab"
 #: lclstrconsts.smkcup
 msgctxt "lclstrconsts.smkcup"
 msgid "Up"
-msgstr "Up"
+msgstr "Aukštyn"
 
 #: lclstrconsts.snomdiform
 msgid "No MDI form present."
@@ -1421,4 +1323,5 @@ msgstr "Klaidingas leksemos simbolis: tikėtasi %s, tačiau rasta %s"
 #: lclstrconsts.sparwrongtokentype
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Klaidingas leksemos tipas: tikėtasi %s, tačiau rasta %s"
+
 

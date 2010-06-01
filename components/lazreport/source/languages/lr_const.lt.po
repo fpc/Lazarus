@@ -1,10 +1,10 @@
-# Valdas Jankūnas <zmuogs@gmail.com>, 2008, 2009.
+# Valdas Jankūnas <zmuogs@gmail.com>, 2008, 2009, 2010.
 msgid ""
 msgstr ""
 "Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
-"PO-Revision-Date: 2009-08-21 22:58+0300\n"
+"PO-Revision-Date: 2010-05-16 16:06+0300\n"
 "Project-Id-Version: lr_const\n"
-"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
+"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 1.0\n"
@@ -268,7 +268,7 @@ msgstr "AVG(<Reiškinys> [,JuostosPavadinimas [,1]])/Duotai [JuostosPavadinimas]
 
 #: lr_const.sdescriptioncopy
 msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
-msgstr ""
+msgstr "COPY(<Tekstas>, <Vieta>, <Ilgis>)/Grąžina <Ilgis> simbolių iš <Tekstas>, pradedant nuo <Vieta>."
 
 #: lr_const.sdescriptioncount
 msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
@@ -292,7 +292,7 @@ msgstr "FORMATTEXT(<Kaukė>, <Tekstas>)/Grąžina pagal duotą <Kaukė> kaukę f
 
 #: lr_const.sdescriptionfrac
 msgid "FRAC(<Value>)/Returns the fractional part of floating point <Value>."
-msgstr ""
+msgstr "FRAC(<Verė>)/Grąžiną slankaus kablelio skaičiaus <Vertė> trupmeninę dalį."
 
 #: lr_const.sdescriptioninput
 msgid "INPUT(<Caption> [,Default])/Shows dialog window with headstring <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
@@ -300,7 +300,7 @@ msgstr "INPUT(<Antraštė> [,Numatyta])/Rodo dialogo langą, kuriame būna <Antr
 
 #: lr_const.sdescriptionint
 msgid "INT(<Value>)/Returns the integer part of floating point <Value>."
-msgstr ""
+msgstr "INT(<Verė>)/Grąžina slankaus kablelio skaičiaus <Vertė> sveikąją dalį."
 
 #: lr_const.sdescriptionlength
 msgid "LENGTH(<String>)/Returns length of <String>."
@@ -344,11 +344,11 @@ msgstr "POS(<Potekstis>, <Tekstas>)/Grąžina <Potekstis> poziciją duotame <Tek
 
 #: lr_const.sdescriptionround
 msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
-msgstr ""
+msgstr "ROUND(<Vertė>)/Slankiojo kablelio skaičių <Vertė> apvalina link didžiausio sveikojo skaičiaus."
 
 #: lr_const.sdescriptionstr
 msgid "STR(<Value>)/Converts the given (numeric) <Value> in string."
-msgstr ""
+msgstr "STR(<Vertė>)/Duotąjį skaičių <Vertė> keičia į tekstą."
 
 #: lr_const.sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."
@@ -530,7 +530,7 @@ msgstr "Versija"
 
 #: lr_const.sduplicatedobjectname
 msgid "An object named \"%s\" already exists"
-msgstr ""
+msgstr "Jau yra objektas tokiu pavadinimu „%s“"
 
 #: lr_const.seditorformbig
 msgid "&Big font"
@@ -551,7 +551,7 @@ msgstr "&Formatas"
 
 #: lr_const.seditorformfunction
 msgid "Function"
-msgstr ""
+msgstr "Funkcija"
 
 #: lr_const.seditorformmemo
 msgctxt "lr_const.seditorformmemo"
@@ -1395,7 +1395,7 @@ msgstr "mm"
 
 #: lr_const.snewtemplate
 msgid "New template"
-msgstr ""
+msgstr "Naujas šablonas"
 
 #: lr_const.sno
 msgid "No"
@@ -2394,4 +2394,5 @@ msgstr "Laužyti tekstą"
 #: lr_const.syes
 msgid "Yes"
 msgstr "Taip"
+
 

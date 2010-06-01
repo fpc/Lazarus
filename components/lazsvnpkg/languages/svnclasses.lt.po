@@ -1,0 +1,184 @@
+# Valdas Jankūnas <zmuogs@gmail.com>, 2010.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
+"PO-Revision-Date: 2010-05-16 16:15+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.0\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: svnclasses.rsaction
+msgid "Action"
+msgstr "Veiksmas"
+
+#: svnclasses.rsadded
+msgid "Added"
+msgstr "Pridėta"
+
+#: svnclasses.rsauthor
+msgid "Author"
+msgstr "Autorius"
+
+#: svnclasses.rscommit
+msgid "Commit"
+msgstr "Nusiųsta"
+
+#: svnclasses.rscommitrevision
+msgid "Commit revision"
+msgstr "Nusiuntimo laida"
+
+#: svnclasses.rsconflict
+msgid "Conflict"
+msgstr "Konfliktas"
+
+#: svnclasses.rscopyfrompath
+msgid "Copy from path"
+msgstr "Kopijuoti iš kelio"
+
+#: svnclasses.rsdate
+msgid "Date"
+msgstr "Data"
+
+#: svnclasses.rsdelete
+msgid "Delete"
+msgstr "Šalinti"
+
+#: svnclasses.rsdeleted
+msgid "Deleted"
+msgstr "Pašalinta"
+
+#: svnclasses.rsdiffactivefile
+msgid "Diff active file"
+msgstr "Skirtumų aktyvus failas"
+
+#: svnclasses.rsedit
+msgid "Edit"
+msgstr "Keisti"
+
+#: svnclasses.rsextension
+msgid "Extension"
+msgstr "Plėtinys"
+
+#: svnclasses.rsfilestatus
+msgid "File status"
+msgstr "Failo būsena"
+
+#: svnclasses.rsindexoutofboundsd
+msgid "Index out of bounds (%d)"
+msgstr "Indeksas peržengia rėžį (%d)"
+
+#: svnclasses.rslazarussvncommit
+msgid "LazarusSVN Commit"
+msgstr "LazarusSVN nusiuntimas"
+
+#: svnclasses.rslazarussvndiff
+msgid "%s - LazarusSVN Diff..."
+msgstr "%s - LazarusSVN skirtumai..."
+
+#: svnclasses.rslazarussvnlog
+msgid "%s - LazarusSVN Log..."
+msgstr "%s - LazarusSVN žurnalas..."
+
+#: svnclasses.rslazarussvnupdate
+msgid "%s - LazarusSVN Update..."
+msgstr "%s - LazarusSVN naujinimas..."
+
+#: svnclasses.rsmerged
+msgid "Merged"
+msgstr "Sulieta"
+
+#: svnclasses.rsmessage
+msgid "Message"
+msgstr "Pranešimas"
+
+#: svnclasses.rsnoauthor
+msgid "(no author)"
+msgstr "(autoriaus nėra)"
+
+#: svnclasses.rspath
+msgid "Path"
+msgstr "Kelias"
+
+#: svnclasses.rsprojectfilename
+msgid "Project filename"
+msgstr "Projekto failo pavadinimas"
+
+#: svnclasses.rsprojectisactive
+msgid "Project is active"
+msgstr "Projektas aktyvus"
+
+#: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
+msgid "Project is not active in SVN settings, please activate first."
+msgstr "Projektas nėra aktyvus SVN nuostatose, jį reikia suaktyvinti."
+
+#: svnclasses.rsprojectname
+msgid "Project name"
+msgstr "Projekto pavadinimas"
+
+#: svnclasses.rsprojectoptions
+msgid "Project options"
+msgstr "Projekto parinktys"
+
+#: svnclasses.rspropertystatus
+msgid "Property status"
+msgstr "Savybės būsena"
+
+#: svnclasses.rsrepositorypath
+msgid "Repository path"
+msgstr "Saugyklos kelias"
+
+#: svnclasses.rsrevert
+msgid "Revert"
+msgstr "Atstatyti"
+
+#: svnclasses.rsrevision
+msgid "Revision"
+msgstr "Poversijis"
+
+#: svnclasses.rssave
+msgid "Save"
+msgstr "Įrašyti"
+
+#: svnclasses.rssettings
+msgid "Settings"
+msgstr "Nuostatos"
+
+#: svnclasses.rsshowdiff
+msgid "Show diff"
+msgstr "Rodyti skirtumus"
+
+#: svnclasses.rsshowdiffcountrev
+msgid "Show last X commits"
+msgstr "Rodyti paskutiniuosius X nusiuntimus"
+
+#: svnclasses.rsshowlog
+msgid "Show log"
+msgstr "Rodyti žurnalą"
+
+#: svnclasses.rssourcefiledoesnotbelongtotheprojectpleaseaddfirst
+msgid "Source file does not belong to the project. Please add first."
+msgstr ""
+"Pirminio kodo failas nėra projekto dalis. Jį reikia pridėti prie projekto."
+
+#: svnclasses.rssvnsettings
+msgid "SVN settings"
+msgstr "SVN nuostatos"
+
+#: svnclasses.rssvntools
+msgid "SVN tools"
+msgstr "SVN įrankiai"
+
+#: svnclasses.rsupdate
+msgid "Update"
+msgstr "Naujinti"
+
+#: svnclasses.rsupdated
+msgid "Updated"
+msgstr "Atnaujinta"
+
+

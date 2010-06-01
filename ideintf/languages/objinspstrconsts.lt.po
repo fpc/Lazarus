@@ -1,12 +1,12 @@
-# Valdas Jankūnas <zmuogs@gmail.com>, 2008.
+# Valdas Jankūnas <zmuogs@gmail.com>, 2008, 2010.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2008-12-22 21:15+0200\n"
+"PO-Revision-Date: 2010-05-19 20:05+0300\n"
 "Project-Id-Version: objinspstrconsts\n"
-"Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
-"X-Generator: Lokalize 0.2\n"
+"Language-Team: Lietuvių <kde-i18n-lt@kde.org>\n"
+"X-Generator: Lokalize 1.0\n"
 "MIME-Version: 1.0\n"
 "Last-Translator: Valdas Jankūnas <zmuogs@gmail.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
@@ -135,10 +135,9 @@ msgid "Check dataset settings"
 msgstr "Patikrinkite duomenų aibės nustatymus"
 
 #: objinspstrconsts.fesfetitle
-#, fuzzy
 #| msgid "Edit Fields"
 msgid "Edit Fields..."
-msgstr "Keisti laukus"
+msgstr "Keisti laukus..."
 
 #: objinspstrconsts.fesfltitle
 msgid "FieldDefs"
@@ -159,79 +158,79 @@ msgstr "Pridėti"
 
 #: objinspstrconsts.liisaddvalue
 msgid "Add value"
-msgstr ""
+msgstr "Pridėti vertę"
 
 #: objinspstrconsts.liiselse
 msgid "Else"
-msgstr ""
+msgstr "Else"
 
 #: objinspstrconsts.liiselseif
 msgid "ElseIf"
-msgstr ""
+msgstr "ElseIf"
 
 #: objinspstrconsts.liisif
 msgid "If"
-msgstr ""
+msgstr "If"
 
 #: objinspstrconsts.liisifdef
 msgid "IfDef"
-msgstr ""
+msgstr "IfDef"
 
 #: objinspstrconsts.liisifndef
 msgid "IfNDef"
-msgstr ""
+msgstr "IfNDef"
 
 #: objinspstrconsts.liissetvalue
 msgid "Set value"
-msgstr ""
+msgstr "Keisti vertę"
 
 #: objinspstrconsts.lisoem1
 msgid "OEM 1"
-msgstr ""
+msgstr "OEM 1"
 
 #: objinspstrconsts.lisoem2
 msgid "OEM 2"
-msgstr ""
+msgstr "OEM 2"
 
 #: objinspstrconsts.lisoem3
 msgid "OEM 3"
-msgstr ""
+msgstr "OEM 3"
 
 #: objinspstrconsts.lisoem4
 msgid "OEM 4"
-msgstr ""
+msgstr "OEM 4"
 
 #: objinspstrconsts.lisoem5
 msgid "OEM 5"
-msgstr ""
+msgstr "OEM 5"
 
 #: objinspstrconsts.lisoem6
 msgid "OEM 6"
-msgstr ""
+msgstr "OEM 6"
 
 #: objinspstrconsts.lisoem7
 msgid "OEM 7"
-msgstr ""
+msgstr "OEM 7"
 
 #: objinspstrconsts.lisoem8
 msgid "OEM 8"
-msgstr ""
+msgstr "OEM 8"
 
 #: objinspstrconsts.lisoemcomma
 msgid "OEM comma"
-msgstr ""
+msgstr "OEM kablelis"
 
 #: objinspstrconsts.lisoemminus
 msgid "OEM minus"
-msgstr ""
+msgstr "OEM minusas"
 
 #: objinspstrconsts.lisoemperiod
 msgid "OEM period"
-msgstr ""
+msgstr "OEM taškas"
 
 #: objinspstrconsts.lisoemplus
 msgid "OEM plus"
-msgstr ""
+msgstr "OEM pliusas"
 
 #: objinspstrconsts.nbcesaddpage
 msgid "Add page"
@@ -295,25 +294,24 @@ msgstr "Veiksmas"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
 msgid "Action&List Editor..."
-msgstr ""
+msgstr "ActionList &rengyklė..."
 
 #: objinspstrconsts.oisactionlisteditor
-#, fuzzy
 #| msgid "Action List Editor"
 msgid "ActionList Editor"
 msgstr "ActionList rengyklė"
 
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
-msgstr ""
+msgstr "&Pridėti elementą"
 
 #: objinspstrconsts.oisaddfields
 msgid "&Add fields"
-msgstr ""
+msgstr "&Pridėti laukelių"
 
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
-msgstr ""
+msgstr "Laukų pridėti iš FieldDefs"
 
 #: objinspstrconsts.oisaddtofavorites
 msgid "Add to Favorites"
@@ -390,11 +388,10 @@ msgid "Confirm delete"
 msgstr "Patvirtinimas šalinant"
 
 #: objinspstrconsts.oiscopycomponents
-#, fuzzy
 #| msgid "Copy components"
 msgctxt "objinspstrconsts.oiscopycomponents"
 msgid "&Copy"
-msgstr "Kopijuoti komponentą"
+msgstr "&Kopijuoti"
 
 #: objinspstrconsts.oiscreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -406,14 +403,13 @@ msgstr "Kurti numatytą įvykį"
 
 #: objinspstrconsts.oiscreatenewfieldandadditatcurrentposition
 msgid "Create new field and add it at current position"
-msgstr ""
+msgstr "Sukurti naują laukelį ir jį įdėti į dabartinę poziciją"
 
 #: objinspstrconsts.oiscutcomponents
-#, fuzzy
 #| msgid "Cut components"
 msgctxt "objinspstrconsts.oiscutcomponents"
 msgid "Cu&t"
-msgstr "Iškirpti komponentą"
+msgstr "&Iškirpti"
 
 #: objinspstrconsts.oisdelete
 msgctxt "objinspstrconsts.oisdelete"
@@ -421,11 +417,10 @@ msgid "Delete"
 msgstr "Pašalinti"
 
 #: objinspstrconsts.oisdeletecomponents
-#, fuzzy
 #| msgid "Delete components"
 msgctxt "objinspstrconsts.oisdeletecomponents"
 msgid "&Delete"
-msgstr "Pašalinti komponentą"
+msgstr "Paša&linti"
 
 #: objinspstrconsts.oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -433,7 +428,7 @@ msgstr "Pašalinti elementą %s%s%s?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
-msgstr ""
+msgstr "Šalinti pažymėtuosius laukelius"
 
 #: objinspstrconsts.oisdlinesdchars
 msgid "%d lines, %d chars"
@@ -449,7 +444,7 @@ msgstr "Klaida"
 
 #: objinspstrconsts.oiserrordeletingaction
 msgid "Error deleting action"
-msgstr ""
+msgstr "Šalinant veiksmą, įvyko klaida"
 
 #: objinspstrconsts.oiserrorloadingimage
 msgid "Error loading image"
@@ -461,7 +456,7 @@ msgstr "Įkeliant paveikslą įvyko klaida %s%s%s:%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 msgid "Error while deleting action:%s%s"
-msgstr ""
+msgstr "Veiksmo šalinimo metu įvyko klaida: %s%s"
 
 #: objinspstrconsts.oisevents
 msgid "Events"
@@ -481,7 +476,7 @@ msgstr "Realusis skaičius"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor..."
-msgstr ""
+msgstr "I&mageList rengyklė..."
 
 #: objinspstrconsts.oisincompatibleidentifier
 msgid "Incompatible Identifier"
@@ -493,7 +488,7 @@ msgstr "Nesuderinamas metodas"
 
 #: objinspstrconsts.oisindexoutofbounds
 msgid "Index out of bounds"
-msgstr ""
+msgstr "Indeksas peržengia rėžį"
 
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
@@ -517,7 +512,7 @@ msgstr "Klaidinga savybės reikšmė"
 
 #: objinspstrconsts.oisisnotavalidmethodname
 msgid "%s%s%s is not a valid method name."
-msgstr ""
+msgstr "%s%s%s nėra tinkamas pavadinimas metodui."
 
 #: objinspstrconsts.oisitemsselected
 msgid "%u items selected"
@@ -545,15 +540,15 @@ msgstr "Metodas"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
-msgstr ""
+msgstr "Perkelti že&myn"
 
 #: objinspstrconsts.oismoveup
 msgid "Move &Up"
-msgstr ""
+msgstr "Perkelti au&kštyn"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
-msgstr ""
+msgstr "&Naujas"
 
 #: objinspstrconsts.oisnone
 msgid "(none)"
@@ -561,7 +556,7 @@ msgstr "(jokia)"
 
 #: objinspstrconsts.oisnotsupported
 msgid "not supported"
-msgstr ""
+msgstr "nepalaikoma"
 
 #: objinspstrconsts.oisobject
 msgid "Object"
@@ -589,26 +584,25 @@ msgstr "Parinktys"
 
 #: objinspstrconsts.oisorderbackone
 msgid "Back One"
-msgstr ""
+msgstr "Vienu atgal"
 
 #: objinspstrconsts.oisorderforwardone
 msgid "Forward One"
-msgstr ""
+msgstr "Vienu pirmyn"
 
 #: objinspstrconsts.oisordermovetoback
 msgid "Move to Back"
-msgstr ""
+msgstr "Perkelti į užnugarį"
 
 #: objinspstrconsts.oisordermovetofront
 msgid "Move to Front"
-msgstr ""
+msgstr "Perkelti į priešakį"
 
 #: objinspstrconsts.oispastecomponents
-#, fuzzy
 #| msgid "Paste components"
 msgctxt "objinspstrconsts.oispastecomponents"
 msgid "&Paste"
-msgstr "Įterpti komponentą"
+msgstr "Į&dėti"
 
 #: objinspstrconsts.oispeopenimagefile
 msgid "Open image file"
@@ -664,7 +658,7 @@ msgstr "Išrink failą"
 
 #: objinspstrconsts.oisselectall
 msgid "&Select all"
-msgstr ""
+msgstr "Žymėti &viską"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -1015,7 +1009,7 @@ msgstr "%s%s%s metodas nėra paskelbtas.%sPaspaudus „Atsisakyti“bus grąžin
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
-msgstr ""
+msgstr "Neina pakeisti valdiklio tėvą %s%s%s nauju tėvu %s%s%s.%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
@@ -1029,7 +1023,7 @@ msgstr "Nežinoma"
 
 #: objinspstrconsts.oisunselectall
 msgid "&Unselect all"
-msgstr ""
+msgstr "&Naikinti visą žymėjimą"
 
 #: objinspstrconsts.oisvalue
 msgid "Value:"
@@ -1053,7 +1047,7 @@ msgstr "Word tipo sveikasis skaičius"
 
 #: objinspstrconsts.oiszorder
 msgid "Z-order"
-msgstr ""
+msgstr "Tvarka pagal gylį"
 
 #: objinspstrconsts.pefilter
 msgid "Filter"
@@ -1069,43 +1063,43 @@ msgstr "Filtro pavadinimas"
 
 #: objinspstrconsts.pirscustomoptions
 msgid "Custom options"
-msgstr ""
+msgstr "Naudotojo parinktys"
 
 #: objinspstrconsts.pirsdebugsearchpath
 msgid "Debug search path"
-msgstr ""
+msgstr "Derinimo paieškos kelias"
 
 #: objinspstrconsts.pirsincludesearchpath
 msgid "Include search path"
-msgstr ""
+msgstr "Įdėjimo paieškos kelias"
 
 #: objinspstrconsts.pirslibrarysearchpath
 msgid "Library search path"
-msgstr ""
+msgstr "Bibliotekų paieškos kelias"
 
 #: objinspstrconsts.pirslinkeroptions
 msgid "Linker options"
-msgstr ""
+msgstr "Saistyklės parinktys"
 
 #: objinspstrconsts.pirsobjectsearchpath
 msgid "Object search path"
-msgstr ""
+msgstr "Objekto paieškos parinktys"
 
 #: objinspstrconsts.pirsresult
 msgid "Result"
-msgstr ""
+msgstr "Rezultatas"
 
 #: objinspstrconsts.pirsunit
 msgid "Unit"
-msgstr ""
+msgstr "Modulis"
 
 #: objinspstrconsts.pirsunitsearchpath
 msgid "Unit search path"
-msgstr ""
+msgstr "Modulio paieškos kelias"
 
 #: objinspstrconsts.pirsunitsourcesearchpath
 msgid "Unit source search path"
-msgstr ""
+msgstr "Modulio pirminio kodo paieškos kelias"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"
@@ -1248,11 +1242,10 @@ msgid "Edit Columns ..."
 msgstr "Keisti stulpelis..."
 
 #: objinspstrconsts.sccslvedt
-#, fuzzy
 #| msgid "Edit ListView Items..."
 msgctxt "objinspstrconsts.sccslvedt"
 msgid "Edit Items..."
-msgstr "Keisti ListView elementus..."
+msgstr "Keisti elementus..."
 
 #: objinspstrconsts.sccslvedtapply
 msgctxt "objinspstrconsts.sccslvedtapply"
@@ -1309,7 +1302,7 @@ msgstr "Naujas poelementis"
 
 #: objinspstrconsts.sccsmaskeditor
 msgid "Edit Mask Editor..."
-msgstr ""
+msgstr "Keitimo kaukės rengyklė..."
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
@@ -1360,11 +1353,10 @@ msgid "Save"
 msgstr "Įrašyti"
 
 #: objinspstrconsts.sccstredt
-#, fuzzy
 #| msgid "Edit TreeView Items..."
 msgctxt "objinspstrconsts.sccstredt"
 msgid "Edit Items..."
-msgstr "Keisti TreeView elementus..."
+msgstr "Keisti elementus..."
 
 #: objinspstrconsts.sccstredtapply
 msgctxt "objinspstrconsts.sccstredtapply"
@@ -1634,7 +1626,7 @@ msgstr "Scroll"
 
 #: objinspstrconsts.srvk_select
 msgid "Select"
-msgstr ""
+msgstr "Žymėti"
 
 #: objinspstrconsts.srvk_shift
 msgid "Shift"
@@ -1697,4 +1689,5 @@ msgstr "Kortelę perkelti kairėn"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Kortelę perkelti dešinėn"
+
 
