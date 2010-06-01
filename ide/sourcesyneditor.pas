@@ -234,11 +234,11 @@ begin
   end;
 
   if ALastLinePos > FDebugMarkInfo.Count then begin
-    debugln(['Request to set debug-mark out of range: max-count=',FDebugMarkInfo.Count,' Marks=',AFirstLinePos,' to=',ALastLinePos]);
+    //debugln(['Request to set debug-mark out of range: max-count=',FDebugMarkInfo.Count,' Marks=',AFirstLinePos,' to=',ALastLinePos]);
     ALastLinePos := FDebugMarkInfo.Count;
   end;
   if AFirstLinePos < 1 then begin
-    debugln(['Request to set debug-mark out of range: max-count=',FDebugMarkInfo.Count,' Marks=',AFirstLinePos,' to=',ALastLinePos]);
+    //debugln(['Request to set debug-mark out of range: max-count=',FDebugMarkInfo.Count,' Marks=',AFirstLinePos,' to=',ALastLinePos]);
     AFirstLinePos := 1;
   end;
   for i := AFirstLinePos - 1 to ALastLinePos - 1 do
