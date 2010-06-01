@@ -343,6 +343,7 @@ begin
   if (Node=nil) or (Node.ParentNode=nil) then exit;
   ParentNode:=Node.ParentNode;
   ParentNode.RemoveChild(Node);
+  InvalidatePathCache;
   InternalCleanNode(ParentNode);
 end;
 
@@ -553,6 +554,7 @@ begin
     if (Node is TDOMElement) and (not TDOMElement(Node).IsEmpty) then break;
     ParentNode:=Node.ParentNode;
     ParentNode.RemoveChild(Node);
+    InvalidatePathCache;
     Node:=ParentNode;
     FModified := True;
   end;
