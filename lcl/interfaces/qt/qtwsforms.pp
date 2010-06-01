@@ -123,7 +123,7 @@ type
 
 implementation
 
-uses QtWSControls;
+uses {$IFDEF HASX11}qtint,{$ENDIF} QtWSControls;
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomForm.CreateHandle
@@ -146,7 +146,8 @@ begin
 
   // Creates the window
   {$IFDEF HASX11}
-  QCoreApplication_setAttribute(QtAA_ImmediateWidgetCreation, True);
+  if (QtVersionMajor = 4) and (QtVersionMinor >= 6) then
+    QCoreApplication_setAttribute(QtAA_ImmediateWidgetCreation, True);
   {$ENDIF}
   if csDesigning in AWinControl.ComponentState then
     QtMainWindow := TQtDesignWidget.Create(AWinControl, AParams)
@@ -188,7 +189,8 @@ begin
   end;
 
   {$IFDEF HASX11}
-  QCoreApplication_setAttribute(QtAA_ImmediateWidgetCreation, False);
+  if (QtVersionMajor = 4) and (QtVersionMinor >= 6) then
+    QCoreApplication_setAttribute(QtAA_ImmediateWidgetCreation, False);
   {$ENDIF}
 
   // Sets Various Events
@@ -388,7 +390,8 @@ begin
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
   Widget.EndUpdate;
   {$IFDEF HASX11}
-  if TForm(AWinControl).FormStyle <> fsMDIChild then
+  if (QtVersionMajor = 4) and (QtVersionMinor >= 6)
+    and (TForm(AWinControl).FormStyle <> fsMDIChild) then
     QApplication_syncX();
   {$ENDIF}
 end;
