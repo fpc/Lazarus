@@ -711,7 +711,8 @@ procedure TEditorMouseOptionsAdvFrame.ReadSettings(
   AOptions: TAbstractIDEOptions);
 begin
   FTempMouseSettings := TEditorOptions(AOptions).TempMouseSettings;
-  FTempMouseSettings.Read;
+  FTempMouseSettings.Assign(TEditorOptions(AOptions).UserMouseSettings);
+
   with AOptions as TEditorOptions do
   begin
     FKeyMap := KeyMap;
@@ -723,7 +724,7 @@ end;
 procedure TEditorMouseOptionsAdvFrame.WriteSettings(
   AOptions: TAbstractIDEOptions);
 begin
-  FTempMouseSettings.WriteBack;
+  TEditorOptions(AOptions).UserMouseSettings.Assign(FTempMouseSettings);
 end;
 
 procedure TEditorMouseOptionsAdvFrame.RefreshSettings;

@@ -1257,6 +1257,8 @@ resourcestring
   dlgUseSyntaxHighlight = 'Use syntax highlight';
   dlgUseCodeFolding = 'Code folding';
   dlgCodeFoldingMouse = 'Mouse';
+  dlfMousePredefinedScheme = 'Use predefined scheme';
+  dlfNoPredefinedScheme = '< None >';
   dlfMouseSimpleGenericSect = 'General';
   dlfMouseSimpleGutterSect = 'Gutter';
   dlfMouseSimpleGutterLeftDown = 'Standard, All actions (breakpoint, fold) on Mouse down';
