@@ -25,10 +25,10 @@ unit editor_codetools_options;
 interface
 
 uses
-  Classes, StdCtrls, ComCtrls, Graphics,
+  Classes, StdCtrls, ComCtrls, Graphics, sysutils,
   EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, Spin, ExtCtrls,
   SynEditMarkupBracket, editor_color_options, editor_general_options,
-  SynEdit, LCLType;
+  SynEdit, SynCompletion, LCLType;
 
 type
   { TEditorCodetoolsOptionsFrame }
@@ -36,9 +36,12 @@ type
   TEditorCodetoolsOptionsFrame = class(TAbstractIDEOptionsEditor)
     AutoCompleteBlockCheckBox: TCheckBox;
     AutoDelayLabel: TLabel;
-    AutoDelayMaxLabel: TLabel;
-    AutoDelayMinLabel: TLabel;
+    CompletionDropDownHintLabel: TLabel;
+    CompletionDropDownHint: TComboBox;
+    CompletionDropDownDelayLabel: TLabel;
     AutoDelayTrackBar: TTrackBar;
+    CompletionDropDownLabel: TLabel;
+    CompletionDropDownHintTrackBar: TTrackBar;
     AutoToolTipExprEvalCheckBox: TCheckBox;
     BracketCombo: TComboBox;
     BracketLabel: TLabel;
@@ -54,13 +57,12 @@ type
     MarkupWordFullLenSpin: TSpinEdit;
     MarkupWordFullLenLabel: TLabel;
     MarkupWordNoKeyword: TCheckBox;
-    MarkupWordMaxLabel: TLabel;
-    MarkupWordMinLabel: TLabel;
     MarkupWordTrim: TCheckBox;
     MarkupWordTimeTrackBar: TTrackBar;
     AutoToolTipSymbToolsCheckBox: TCheckBox;
     AutoRemoveEmptyMethodsOnSave: TCheckBox;
     MarkupBevel: TBevel;
+    procedure AutoDelayTrackBarChange(Sender: TObject);
     procedure BracketComboChange(Sender: TObject);
     procedure BracketComboExit(Sender: TObject);
     procedure BracketComboKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -90,6 +92,15 @@ procedure TEditorCodetoolsOptionsFrame.BracketComboChange(Sender: TObject);
 begin
   if BracketCombo.Items.IndexOf(BracketCombo.Text) >= 0 then
     BracketComboExit(Sender);
+end;
+
+procedure TEditorCodetoolsOptionsFrame.AutoDelayTrackBarChange(Sender: TObject);
+begin
+  AutoDelayLabel.Caption := Format(dlgEdDelayInSec, [FormatFloat('0.00', AutoDelayTrackBar.Position/1000)]);
+  MarkupWordDelayLabel.Caption :=
+    Format(dlgEdDelayInSec, [FormatFloat('0.00', MarkupWordTimeTrackBar.Position/1000)]);
+  CompletionDropDownDelayLabel.Caption :=
+    Format(dlgEdDelayInSec, [FormatFloat('0.00', CompletionDropDownHintTrackBar.Position/1000)]);
 end;
 
 procedure TEditorCodetoolsOptionsFrame.BracketComboExit(Sender: TObject);
@@ -169,14 +180,15 @@ begin
   AutoCompleteBlockCheckBox.Caption := dlgEdCompleteBlocks;
 
   AutoHintAndCompletionDelayLabel.Caption:=lisDelayForHintsAndCompletionBox;
-  AutoDelayLabel.Caption := dlgEdDelay;
-  AutoDelayMinLabel.Caption := '0.5 ' + DlgTimeSecondUnit;
-  AutoDelayMaxLabel.Caption := '4.0 ' + dlgTimeSecondUnit;
+  CompletionDropDownLabel.Caption := lisDelayForCompletionLongLineHint;
+  CompletionDropDownHintLabel.Caption := lisCompletionLongLineHintType;
+  CompletionDropDownHint.Clear;
+  CompletionDropDownHint.Items.Add(lisCompletionLongLineHintTypeNone);
+  CompletionDropDownHint.Items.Add(lisCompletionLongLineHintTypeRightOnly);
+  CompletionDropDownHint.Items.Add(lisCompletionLongLineHintTypeLittleLeft);
+  CompletionDropDownHint.Items.Add(lisCompletionLongLineHintTypeFullLeft);
 
   MarkupWordGroupLabel.Caption := dlgMarkupGroup;
-  MarkupWordDelayLabel.Caption := dlgEdDelay;
-  MarkupWordMinLabel.Caption := '0.5 ' + DlgTimeSecondUnit;;
-  MarkupWordMaxLabel.Caption := '4.0 ' + DlgTimeSecondUnit;;
   MarkupWordFullLenLabel.Caption := dlgMarkupWordFullLen;
   MarkupWordNoKeyword.Caption := dlgMarkupWordNoKeyword;
   MarkupWordTrim.Caption := dlgMarkupWordTrim;
@@ -200,6 +212,10 @@ begin
     AutoToolTipSymbToolsCheckBox.Checked := AutoToolTipSymbTools;
     AutoDelayTrackBar.Position := AutoDelayInMSec;
     AutoRemoveEmptyMethodsOnSave.Checked := AutoRemoveEmptyMethods;
+
+    CompletionDropDownHintTrackBar.Position := CompletionLongLineHintInMSec;
+    CompletionDropDownHint.ItemIndex := ord(CompletionLongLineHintType);
+
     MarkupWordTimeTrackBar.Position := MarkupCurWordTime;
     MarkupWordFullLenSpin. Value := MarkupCurWordFullLen;
     MarkupWordNoKeyword.Checked := MarkupCurWordNoKeyword;
@@ -211,6 +227,7 @@ begin
     else
       BracketCombo.ItemIndex := 0;
   end;
+  AutoDelayTrackBarChange(nil);
 end;
 
 procedure TEditorCodetoolsOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -222,6 +239,10 @@ begin
     AutoToolTipSymbTools := AutoToolTipSymbToolsCheckBox.Checked;
     AutoDelayInMSec := AutoDelayTrackBar.Position;
     AutoRemoveEmptyMethods := AutoRemoveEmptyMethodsOnSave.Checked;
+
+    CompletionLongLineHintInMSec := CompletionDropDownHintTrackBar.Position;
+    CompletionLongLineHintType :=  TSynComletionLongHintType(CompletionDropDownHint.ItemIndex);
+
     MarkupCurWordTime := MarkupWordTimeTrackBar.Position;
     MarkupCurWordFullLen := MarkupWordFullLenSpin.Value;
     MarkupCurWordNoKeyword := MarkupWordNoKeyword.Checked;

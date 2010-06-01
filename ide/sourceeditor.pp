@@ -8082,6 +8082,8 @@ begin
   Result := FDefaultCompletionForm;
   if Result <> nil then exit;
   FDefaultCompletionForm := TSourceEditCompletion.Create(Self);
+  FDefaultCompletionForm.LongLineHintTime := EditorOpts.CompletionLongLineHintInMSec;
+  FDefaultCompletionForm.LongLineHintType := EditorOpts.CompletionLongLineHintType;
   Result := FDefaultCompletionForm;
   for i:=0 to SourceEditorCount - 1 do
     FDefaultCompletionForm.AddEditor(TSourceEditor(SourceEditors[i]).EditorComponent);
@@ -8501,6 +8503,10 @@ begin
     IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
   end;
 
+  if FDefaultCompletionForm <> nil then begin
+    FDefaultCompletionForm.LongLineHintTime := EditorOpts.CompletionLongLineHintInMSec;
+    FDefaultCompletionForm.LongLineHintType := EditorOpts.CompletionLongLineHintType;
+  end;
 end;
 
 procedure TSourceEditorManager.FindClicked(Sender: TObject);

@@ -43,7 +43,7 @@ uses
   SynEditMiscClasses, SynBeautifier, SynEditTextTrimmer, SynEditMouseCmds,
   SynPluginTemplateEdit, SynPluginSyncroEdit,
   SynGutter, SynGutterBase, SynGutterCodeFolding, SynGutterLineNumber,
-  SynGutterChanges,
+  SynGutterChanges, SynCompletion,
   SynEditMarkupBracket, SynEditMarkupHighAll, SynEditMarkupWordGroup,
   // SynEdit Highlighters
   SynEditHighlighter, SynEditHighlighterFoldBase,
@@ -925,6 +925,8 @@ type
 
   TEditorOptions = class(TAbstractIDEEnvironmentOptions)
   private
+    FCompletionLongLineHintInMSec: Integer;
+    FCompletionLongLineHintType: TSynComletionLongHintType;
     FHideSingleTabInWindow: Boolean;
     xmlconfig: TRttiXMLConfig;
 
@@ -1141,6 +1143,11 @@ type
       read fCTemplIndentToTokenStart write fCTemplIndentToTokenStart;
     property AutoRemoveEmptyMethods: Boolean read FAutoRemoveEmptyMethods
       write FAutoRemoveEmptyMethods default False;
+    property CompletionLongLineHintInMSec: Integer
+             read FCompletionLongLineHintInMSec write FCompletionLongLineHintInMSec;
+    property CompletionLongLineHintType: TSynComletionLongHintType
+             read FCompletionLongLineHintType write FCompletionLongLineHintType
+             default sclpExtendRightOnly;
 
     // Code Folding
     property UseCodeFolding: Boolean
@@ -3213,6 +3220,7 @@ begin
   FMarkupCurWordNoTimer := False;
 
   // Code Tools options
+  FCompletionLongLineHintType := sclpExtendRightOnly;
 
   // code templates (dci file)
   fCodeTemplateFileName :=
@@ -3438,6 +3446,11 @@ begin
       'EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value', False);
     fAutoRemoveEmptyMethods :=
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoRemoveEmptyMethods', False);
+    FCompletionLongLineHintInMSec :=
+      XMLConfig.GetValue('EditorOptions/CodeTools/CompletionLongLineHintInMSec', 0);
+    FCompletionLongLineHintType := sclpExtendRightOnly;
+    XMLConfig.ReadObject('EditorOptions/CodeTools/CompletionLongLineHintType',
+                         Self, Self, 'CompletionLongLineHintType');
 
     // Code Folding
     FUseCodeFolding :=
@@ -3611,6 +3624,11 @@ begin
     XMLConfig.SetDeleteValue(
       'EditorOptions/CodeTools/AutoRemoveEmptyMethods'
       , fAutoRemoveEmptyMethods, False);
+    XMLConfig.SetDeleteValue(
+      'EditorOptions/CodeTools/CompletionLongLineHintInMSec',
+      FCompletionLongLineHintInMSec, 0);
+    XMLConfig.WriteObject('EditorOptions/CodeTools/CompletionLongLineHintType',
+                         Self, nil, 'CompletionLongLineHintType');
 
     // Code Folding
     XMLConfig.SetDeleteValue('EditorOptions/CodeFolding/UseCodeFolding',

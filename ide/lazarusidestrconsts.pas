@@ -1432,7 +1432,14 @@ resourcestring
   dlgAutoRemoveEmptyMethods = 'Auto remove empty methods';
   lisShowDeclarationHints = 'Show declaration hints';
   dlgEdDelay = 'Delay';
+  dlgEdDelayInSec = '(%s sec delay)';
   lisDelayForHintsAndCompletionBox = 'Delay for hints and completion box';
+  lisDelayForCompletionLongLineHint = 'Delay for long line hints in completion box';
+  lisCompletionLongLineHintType = 'Show long line hints';
+  lisCompletionLongLineHintTypeNone = 'Never';
+  lisCompletionLongLineHintTypeRightOnly = 'Extend right only';
+  lisCompletionLongLineHintTypeLittleLeft = 'Extend some left';
+  lisCompletionLongLineHintTypeFullLeft = 'Extend far left';
   dlgTimeSecondUnit = 'sec';
   dlgEdCodeTempl = 'Code templates';
   dlgTplFName = 'Template file name';
