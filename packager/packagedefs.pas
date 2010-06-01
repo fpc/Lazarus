@@ -3879,7 +3879,7 @@ end;
 
 procedure TLazPackageDefineTemplates.UpdateSrcDirIfDef;
 var
-  NewValue: String;
+  NewVariable: String;
   Changed: Boolean;
   UnitPathDefTempl: TDefineTemplate;
   IncPathDefTempl: TDefineTemplate;
@@ -3916,9 +3916,18 @@ begin
 
     Changed:=true;
   end else begin
-    NewValue:='#PkgSrcMark'+LazPackage.IDAsWord;
-    if NewValue<>FSrcDirIfDef.Value then begin
-      FSrcDirIfDef.Value:=NewValue;
+    NewVariable:='#PkgSrcMark'+LazPackage.IDAsWord;
+    if NewVariable<>FSrcDirIfDef.Variable then begin
+      FSrcDirIfDef.Variable:=NewVariable;
+      // unit path
+      UnitPathDefTempl:=FSrcDirIfDef.FindChildByName('UnitPath');
+      if UnitPathDefTempl<>nil then
+        UnitPathDefTempl.Value:='$(#UnitPath);$PkgUnitPath('+LazPackage.IDAsString+')';
+      // include path
+      IncPathDefTempl:=FSrcDirIfDef.FindChildByName('IncPath');
+      if IncPathDefTempl<>nil then
+        IncPathDefTempl.Value:='$(#IncPath);$PkgIncPath('+LazPackage.IDAsString+')';
+
       Changed:=true;
     end;
   end;
@@ -4019,7 +4028,8 @@ begin
       
     // build source directory define templates
     fLastSourceDirectories.Assign(NewSourceDirs);
-    if (FSrcDirIfDef=nil) and (fLastSourceDirectories.Count>0) then
+    if (fLastSourceDirectories.Count>0)
+    and ((FSrcDirIfDef=nil) or IDHasChanged) then
       UpdateSrcDirIfDef;
     for i:=0 to fLastSourceDirectories.Count-1 do begin
       // create directory template
