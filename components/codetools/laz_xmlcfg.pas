@@ -335,8 +335,15 @@ begin
 end;
 
 procedure TXMLConfig.DeletePath(const APath: string);
+var
+  Node: TDOMNode;
+  ParentNode: TDOMNode;
 begin
-  InternalCleanNode(InternalFindNode(APath,length(APath)));
+  Node:=InternalFindNode(APath,length(APath));
+  if (Node=nil) or (Node.ParentNode=nil) then exit;
+  ParentNode:=Node.ParentNode;
+  ParentNode.RemoveChild(Node);
+  InternalCleanNode(ParentNode);
 end;
 
 procedure TXMLConfig.DeleteValue(const APath: string);
