@@ -474,8 +474,6 @@ type
     procedure SetAutoSnap(const AValue: boolean);
     procedure SetBeveled(const AValue: boolean);
     procedure SetMinSize(const AValue: integer);
-    procedure SetResizeAnchor(const AValue: TAnchorKind);
-    procedure SetResizeControl(const AValue: TControl);
     procedure SetResizeStyle(const AValue: TResizeStyle);
   protected
     class procedure WSRegisterClass; override;
@@ -493,6 +491,8 @@ type
     procedure Paint; override;
     procedure SetAlign(Value: TAlign); override;
     procedure SetAnchors(const AValue: TAnchors); override;
+    procedure SetResizeAnchor(const AValue: TAnchorKind); virtual;
+    procedure SetResizeControl(const AValue: TControl); virtual;
     procedure StartSplitterMove(const MouseXY: TPoint);
   public
     constructor Create(TheOwner: TComponent); override;

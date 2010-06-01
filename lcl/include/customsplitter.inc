@@ -484,9 +484,8 @@ begin
     Cursor := crHSplit
   else
     Cursor := crVSplit;
-  if not (csLoading in ComponentState) then begin
+  if not (csLoading in ComponentState) then
     Align:=alNone;
-  end;
 end;
 
 procedure TCustomSplitter.SetResizeControl(const AValue: TControl);
