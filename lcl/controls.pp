@@ -1932,7 +1932,7 @@ type
     procedure AddControl; virtual; // tell widgetset
     procedure InsertControl(AControl: TControl);
     procedure InsertControl(AControl: TControl; Index: integer); virtual;
-    procedure RemoveControl(AControl: TControl);
+    procedure RemoveControl(AControl: TControl); virtual;
     procedure Repaint; override;
     procedure Update; override;
     procedure SetFocus; virtual;
