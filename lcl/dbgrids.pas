@@ -3515,7 +3515,7 @@ var
   AGrid: TCustomDBGrid;
 begin
   AGrid := TCustomDBGrid(Grid);
-  Result := ((AGrid<>nil)and(AGrid.ReadOnly)) or ((FField<>nil)and(FField.ReadOnly))
+  Result :=  (AGrid=nil) or AGrid.ReadOnly or (FField=nil) or FField.ReadOnly;
 end;
 
 function TColumn.GetDefaultVisible: boolean;
