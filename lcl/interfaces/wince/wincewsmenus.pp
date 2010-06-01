@@ -256,8 +256,10 @@ begin
   begin
     if (Menu <> 0) and (LCLMenu <> nil) then
     begin
-      i:=0;
+      i:=0; // j = counts all top-level menu items;
+            // i = counts only visible ones;
       for j:=0 to LCLMenu.Items.Count - 1 do
+      begin
         if LCLMenu.Items.Items[j].Visible then
         begin
           if LCLMenu.Items.Items[j].Enabled then
@@ -267,47 +269,34 @@ begin
           if LCLMenu.Items.Items[j].Checked then
             tbbi.fsState:=tbbi.fsState or TBSTATE_CHECKED;
 
-          if (Application.ApplicationType = atKeyPadDevice) then
-          begin
-            // Adds a top-level item (We cant really add it, so we find
-            // and modify the existing top-level item)
-            if i = 2 then Break; // smartphones have maximum 2 top level menu items.
-            tbbi.cbSize := sizeof(tbbi);
-            tbbi.pszText := PWideChar(UTF8Decode(LCLMenu.Items.Items[j].Caption));
-//            tbbi.idCommand := FID;
-            tbbi.dwMask := TBIF_TEXT {or TBIF_COMMAND} or TBIF_STATE;
-            SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, i + 1, LPARAM(@tbbi));
+          // Adds a top-level item (We cant really add it, so we find
+          // and modify the existing top-level item)
+          if i = 2 then Break; // smartphones have maximum 2 top level menu items.
 
-            // Adds subitems to a top-level item
-            tbbi.dwMask := TBIF_LPARAM;
-            SendMessage(mbi.hwndMB, TB_GETBUTTONINFO, i + 1 {FID}, LPARAM(@tbbi));
+          if i = 0 then MenuBarRLID := MenuBarID_L
+          else MenuBarRLID := MenuBarID_R;
 
-            // Remove any present buttons, for example the one from the .rc file
-            // Careful that using TB_DELETEBUTTON doesnt work here
-            while RemoveMenu(HMENU(tbbi.lParam), 0, MF_BYPOSITION) do ;
+          tbbi.cbSize := sizeof(tbbi);
+          tbbi.pszText := PWideChar(UTF8Decode(LCLMenu.Items.Items[j].Caption));
+          tbbi.dwMask := TBIF_TEXT {or TBIF_COMMAND} or TBIF_STATE;
+          SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, MenuBarRLID, LPARAM(@tbbi));
 
-            for k := 0 to LCLMenu.Items.Items[j].Count - 1 do
-              TWinCEWSMenuItem.AttachMenuEx(
-                LCLMenu.Items.Items[j].Items[k], HMENU(tbbi.lParam));
-          end
-          else
-          begin
-{            FillChar(tb, SizeOf(tb), 0);
-            tb.iBitmap:=I_IMAGENONE;
-            tb.idCommand:=fID;
-            tb.iString:=longint(PKOLChar(Caption));
-            tb.fsState:=st;
-            if SubMenu <> 0 then
-              tb.fsStyle:=TBSTYLE_DROPDOWN or $0080 or TBSTYLE_AUTOSIZE
-            else
-              tb.fsStyle:=TBSTYLE_BUTTON or TBSTYLE_AUTOSIZE;
-            tb.dwData:=SubMenu;
-            SendMessage(mbi.hwndMB, TB_INSERTBUTTON, i, LPARAM(@tb));}
-          end;
+          // Adds subitems to a top-level item
+          tbbi.dwMask := TBIF_LPARAM;
+          SendMessage(mbi.hwndMB, TB_GETBUTTONINFO, MenuBarRLID, LPARAM(@tbbi));
+
+          // Remove any present buttons, for example the one from the .rc file
+          // Careful that using TB_DELETEBUTTON doesnt work here
+          while RemoveMenu(HMENU(tbbi.lParam), 0, MF_BYPOSITION) do ;
+
+          for k := 0 to LCLMenu.Items.Items[j].Count - 1 do
+            TWinCEWSMenuItem.AttachMenuEx(
+              LCLMenu.Items.Items[j].Items[k], HMENU(tbbi.lParam));
           Inc(i);
         end;
+      end;
 
-      if (Application.ApplicationType = atKeyPadDevice) and (i = 1) then
+      if i = 1 then
       begin
         tbbi.dwMask := TBIF_STATE;
         tbbi.fsState:=0;
@@ -318,17 +307,15 @@ begin
   else
   begin
     // Now we will add the buttons in the menu
-  //  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-  //    'Menu: ' + IntToStr(Menu) + ' LCLMenu: ' + IntToStr(PtrInt(LCLMenu)));
+  //  DebugLn('Menu: ' + IntToStr(Menu) + ' LCLMenu: ' + IntToStr(PtrInt(LCLMenu)));
     if (Menu <> 0) then
     begin
-  //    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log', 'if (Menu <> 0) and (LCLMenu <> nil) then');
+  //  DebugLn('if (Menu <> 0) and (LCLMenu <> nil) then');
       i:=0;
       while True do
       begin
         mi.cch:=SizeOf(buf);
-        if not GetMenuItemInfo(Menu, i, True, @mi) then
-          break;
+        if not GetMenuItemInfo(Menu, i, True, @mi) then Break;
         buf[mi.cch]:=#0;
         FillChar(tb, SizeOf(tb), 0);
         tb.iBitmap:=I_IMAGENONE;
@@ -347,7 +334,7 @@ begin
         SendMessage(mbi.hwndMB, TB_INSERTBUTTON, i, LPARAM(@tb));
         //MsgBox('i = ' + int2str(i),0);
 
-        if (Application.ApplicationType = atKeyPadDevice) and (i < 2) then{KeyPadDevices can have only 2 buttons!}
+{        if (Application.ApplicationType = atKeyPadDevice) and (i < 2) then{KeyPadDevices can have only 2 buttons!}
         begin
           case i of
             0: MenuBarRLID := MenuBarID_L;
@@ -360,7 +347,7 @@ begin
           tbbi.dwMask := TBIF_LPARAM;
           SendMessage(mbi.hwndMB, TB_GETBUTTONINFO, MenuBarRLID, LPARAM(@tbbi));
           CeMakeMenuesSame(mi.hSubMenu, HMENU(tbbi.lParam));
-        end;
+        end;}
 
         Inc(i);
       end;
@@ -644,7 +631,7 @@ var
   bi: TBBUTTONINFO;
   w: WideString;
   h: THandle;
-  i: Integer;
+  i, j, MenuBarRLID: Integer;
   FormFound: Boolean;
   AMenu: TMenu;
 {$endif}
@@ -654,6 +641,8 @@ begin
   AMenu := AMenuItem.GetParentMenu;
 //  DebugLn(Format('[TWinCEWSMenuItem.SetCaption] A AItem.Menu:%d',
 //    [PtrInt(AMenu)]));
+
+  // Top-Level menu items for PDA systems
   if (Application.ApplicationType in [atPDA, atKeyPadDevice]) and
     (AMenu <> nil) and (AMenu is TMainMenu) and
     (AMenuItem.Parent = AMenu.Items) then
@@ -679,7 +668,26 @@ begin
     bi.dwMask := TBIF_TEXT;
     w := UTF8Decode(ACaption);
     bi.pszText := PWideChar(w);
-    SendMessageW(h, TB_SETBUTTONINFO, AMenuItem.Command + StartMenuItem, LPARAM(@bi));
+
+    // Under Windows the Command numbering is different
+    // Here we need to find the position of the button
+    // in the list of visible buttons and use MenuBarID_L or _R
+    if (Application.ApplicationType = atKeyPadDevice) then
+    begin
+      i := 0; // Counts only really visible menus
+      for j := 0 to AMenu.Items.Count - 1 do
+      begin
+        if AMenuItem = AMenu.Items.Items[j] then Break;
+        if AMenu.Items.Items[j].Visible then Inc(i);
+      end;
+
+      if i = 0 then MenuBarRLID := MenuBarID_L
+      else MenuBarRLID := MenuBarID_R;
+
+      SendMessageW(h, TB_SETBUTTONINFO, MenuBarRLID, LPARAM(@bi));
+    end
+    else
+      SendMessageW(h, TB_SETBUTTONINFO, AMenuItem.Command + StartMenuItem, LPARAM(@bi));
   end
   else
   {$endif}
