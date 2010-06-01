@@ -42,7 +42,7 @@ interface
 
 uses
   LCLProc, LCLIntf, LCLType, SynEditMiscProcs,
-  Classes, Graphics, Forms, Controls, StdCtrls, Menus,
+  Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Menus,
   SysUtils, SynEditKeyCmds, SynEditHighlighter,
   SynEdit;
 
@@ -71,6 +71,7 @@ type
   TSynBaseCompletionHint = class(THintWindow)
   private
     FCompletionForm: TSynBaseCompletionForm;
+    FDisplayRect: TRect;
     FIndex: Integer;
   public
     constructor Create(AOwner: TComponent); override;
@@ -78,7 +79,15 @@ type
       AData: Pointer): TRect; override;
     procedure Paint; override;
     property Index: Integer read FIndex write FIndex;
+    property DisplayRect: TRect read FDisplayRect write FDisplayRect;
   end;
+
+
+  TSynComletionLongHintType = (sclpNone,
+                               sclpExtendRightOnly,
+                               sclpExtendHalfLeft,
+                               sclpExtendUnlimitedLeft
+                              );
 
   { TSynBaseCompletionForm }
 
@@ -106,6 +115,9 @@ type
     FTextColor: TColor;
     FTextSelectedColor: TColor;
     FHint: TSynBaseCompletionHint;
+    FHintTimer: TTimer;
+    FLongLineHintTime: Integer;
+    FLongLineHintType: TSynComletionLongHintType;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     procedure SetCurrentString(const Value: string);
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -133,10 +145,12 @@ type
     fCurrentEditor: TComponent;
     FOnMeasureItem: TSynBaseCompletionMeasureItem;
     FOnPositionChanged: TNotifyEvent;
+    procedure SetLongLineHintTime(const AValue: Integer);
   public
     constructor Create(AOwner: Tcomponent); override;
     destructor Destroy; override;
     procedure ShowItemHint(AIndex: Integer);
+    procedure OnHintTimer(Sender: TObject);
   published
     property CurrentString: string read FCurrentString write SetCurrentString;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
@@ -165,6 +179,10 @@ type
     property TextColor: TColor read FTextColor write FTextColor;
     property TextSelectedColor: TColor
       read FTextSelectedColor write FTextSelectedColor;
+    property LongLineHintTime: Integer read FLongLineHintTime
+             write SetLongLineHintTime default 0;
+    property LongLineHintType: TSynComletionLongHintType read FLongLineHintType
+             write FLongLineHintType default sclpExtendRightOnly;
   end;
 
   { TSynBaseCompletion }
@@ -177,6 +195,8 @@ type
     FWidth: Integer;
     function GetCaseSensitive: boolean;
     function GetClSelect: TColor;
+    function GetLongLineHintTime: Integer;
+    function GetLongLineHintType: TSynComletionLongHintType;
     function GetOnMeasureItem: TSynBaseCompletionMeasureItem;
     function GetOnPositionChanged: TNotifyEvent;
     procedure SetCaseSensitive(const AValue: boolean);
@@ -191,6 +211,8 @@ type
     function GetPosition: Integer;
     procedure SetCurrentString(const Value: string);
     procedure SetItemList(const Value: TStrings);
+    procedure SetLongLineHintTime(const AValue: Integer);
+    procedure SetLongLineHintType(const AValue: TSynComletionLongHintType);
     procedure SetNbLinesInWindow(const Value: Integer);
     procedure SetOnCancel(const Value: TNotifyEvent);
     procedure SetOnKeyPress(const Value: TKeyPressEvent);
@@ -251,6 +273,10 @@ type
     property ClSelect: TColor read GetClSelect write SetClSelect;
     property CaseSensitive: boolean read GetCaseSensitive write SetCaseSensitive;
     property Width: Integer read FWidth write SetWidth;
+    property LongLineHintTime: Integer read GetLongLineHintTime
+             write SetLongLineHintTime default 0;
+    property LongLineHintType: TSynComletionLongHintType read GetLongLineHintType
+             write SetLongLineHintType default sclpExtendRightOnly;
   end;
 
   { TSynCompletion }
@@ -367,6 +393,11 @@ begin
   Color:=clNone;
   FBackgroundColor:=clWhite;
   FHint := TSynBaseCompletionHint.Create(Self);
+  FHintTimer := TTimer.Create(nil);
+  FHintTimer.OnTimer := {$IFDEF FPC}@{$ENDIF}OnHintTimer;
+  FHintTimer.Interval := 0;
+  FLongLineHintTime := 0;
+  FLongLineHintType := sclpExtendRightOnly;
   Visible := false;
   ClSelect := clHighlight;
   TStringList(FItemList).OnChange := {$IFDEF FPC}@{$ENDIF}StringListChange;
@@ -383,6 +414,7 @@ begin
   // completion box lost focus
   // this can happen when a hint window is clicked => ToDo
   Visible := False;
+  FHintTimer.Enabled := False;
   FHint.Visible := False;
   if Assigned(OnCancel) then OnCancel(Self);
   if (FCurrentEditor<>nil) and (TCustomSynEdit(fCurrentEditor).HandleAllocated)
@@ -395,40 +427,72 @@ begin
   bitmap.free;
   Scroll.Free;
   FItemList.Free;
+  FHintTimer.Free;
   FHint.Free;
   inherited destroy;
 end;
 
 procedure TSynBaseCompletionForm.ShowItemHint(AIndex: Integer);
 var
-  P: TPoint;
   R: TRect;
+  P: TPoint;
   M: TMonitor;
+  MinLeft: Integer;
 begin
-  if Visible and (AIndex >= 0) and (AIndex < ItemList.Count) then
-  begin
-    // CalcHintRect uses the current index
-    FHint.Index := AIndex;
-    // calculate the size
-    R := FHint.CalcHintRect(Monitor.Width, ItemList[AIndex], nil);
+  FHintTimer.Enabled := False;
+  if Visible and (AIndex >= 0) and (AIndex < ItemList.Count) and
+     (FLongLineHintType <> sclpNone)
+  then begin
+    if not(FHint.IsVisible and (FHint.Index = AIndex)) then begin
+      if (FHint.Index <> AIndex) and (FLongLineHintTime > 0) then
+        FHint.Hide;
 
-    if R.Right <= ClientWidth then begin
-      FHint.Hide;
-      Exit;
+      // CalcHintRect uses the current index
+      FHint.Index := AIndex;
+      // calculate the size
+      R := FHint.CalcHintRect(Monitor.Width, ItemList[AIndex], nil);
+
+      if R.Right <= ClientWidth then begin
+        FHint.Hide;
+        Exit;
+      end;
+
+      // calculate the position
+      M := Monitor;
+      P := ClientToScreen(Point(0, (AIndex - Scroll.Position) * FFontHeight));
+      case FLongLineHintType of
+        sclpExtendHalfLeft:      MinLeft := Max(M.Left,  P.X - ClientWidth div 2);
+        sclpExtendUnlimitedLeft: MinLeft := M.Left;
+        else                     MinLeft := P.X;
+      end;
+      P.X := Max(MinLeft,
+                 Min(P.X,                              // Start at drop-down Left boundary
+                     M.Left + M.Width - R.Right - 1    // Or push left, if hitting right Monitor border
+                    )
+                );
+      P.Y := Max(M.Top, Min(P.Y, M.Top + M.Height - R.Bottom - 1));
+      // actually Width and Height
+      R.Right := Min(r.Right, M.Left + M.Width - 1 - P.X);
+      R.Bottom := Min(r.Bottom, M.Top + M.Height - 1 - P.Y);
+
+      FHint.DisplayRect := Bounds(P.X, P.Y, R.Right, R.Bottom);
+
+      if FLongLineHintTime > 0 then
+        FHintTimer.Enabled := True
+      else
+        OnHintTimer(nil);
     end;
-
-    // calculate the position
-    M := Monitor;
-    P := ClientToScreen(Point(0, (AIndex - Scroll.Position) * FFontHeight));
-    P.X := Max(M.Left, Min(P.X, M.Left + M.Width - R.Right - 1));
-    P.Y := Max(M.Top, Min(P.Y, M.Top + M.Height - R.Bottom - 1));
-    R.Right := Min(r.Right, M.Left + M.Width - 1);
-    R.Bottom := Min(r.Bottom, M.Top + M.Height - 1);
-
-    FHint.ActivateHint(Bounds(P.X, P.Y, R.Right, R.Bottom), ItemList[AIndex]);
-    FHint.Invalidate;
   end
-  else FHint.Hide;
+  else begin
+    FHint.Hide;
+  end;
+end;
+
+procedure TSynBaseCompletionForm.OnHintTimer(Sender: TObject);
+begin
+  FHintTimer.Enabled := False;
+  FHint.ActivateHint(FHint.DisplayRect, ItemList[FHint.Index]);
+  FHint.Invalidate;
 end;
 
 procedure TSynBaseCompletionForm.KeyDown(var Key: Word;
@@ -759,6 +823,13 @@ begin
   end;
 end;
 
+procedure TSynBaseCompletionForm.SetLongLineHintTime(const AValue: Integer);
+begin
+  if FLongLineHintTime = AValue then exit;
+  FLongLineHintTime := AValue;
+  FHintTimer.Interval := AValue;
+end;
+
 procedure TSynBaseCompletionForm.SetItemList(const Value: TStrings);
 begin
   FItemList.Assign(Value);
@@ -957,6 +1028,16 @@ begin
   form.ItemList := Value;
 end;
 
+procedure TSynBaseCompletion.SetLongLineHintTime(const AValue: Integer);
+begin
+  Form.LongLineHintTime := AValue;
+end;
+
+procedure TSynBaseCompletion.SetLongLineHintType(const AValue: TSynComletionLongHintType);
+begin
+  Form.LongLineHintType := AValue;
+end;
+
 procedure TSynBaseCompletion.SetNbLinesInWindow(const Value: Integer);
 begin
   form.NbLinesInWindow := Value;
@@ -1002,6 +1083,16 @@ end;
 function TSynBaseCompletion.GetClSelect: TColor;
 begin
   Result := Form.ClSelect;
+end;
+
+function TSynBaseCompletion.GetLongLineHintTime: Integer;
+begin
+  Result := Form.LongLineHintTime;
+end;
+
+function TSynBaseCompletion.GetLongLineHintType: TSynComletionLongHintType;
+begin
+  Result := Form.LongLineHintType;
 end;
 
 function TSynBaseCompletion.GetCaseSensitive: boolean;
