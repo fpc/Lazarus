@@ -445,11 +445,16 @@ var
 begin
   if length(Widget.Panels) > 0 then
   begin
+    Widget.setUpdatesEnabled(False);
     for i := High(Widget.Panels) downto 0 do
     begin
-      Widget.removeWidget(Widget.Panels[i]);
-      QLabel_destroy(Widget.Panels[i]);
+      Widget.removeWidget(Widget.Panels[i].Widget);
+      Widget.Panels[i].DetachEvents;
+      QLabel_destroy(QLabelH(Widget.Panels[i].Widget));
+      Widget.Panels[i].Widget := nil;
+      Widget.Panels[i].Free;
     end;
+    Widget.setUpdatesEnabled(True);
     SetLength(Widget.Panels, 0);
   end;
 end;
@@ -468,17 +473,23 @@ begin
   end else
   if AStatusBar.Panels.Count > 0 then
   begin
+    Widget.setUpdatesEnabled(False);
     SetLength(Widget.Panels, AStatusBar.Panels.Count);
     for i := 0 to AStatusBar.Panels.Count - 1 do
     begin
       Str := GetUtf8String(AStatusBar.Panels[i].Text);
-      Widget.Panels[i] := QLabel_create(@Str, Widget.Widget);
-      //QLabel_setTextInteractionFlags(Widget.Panels[i], QtNoTextInteraction);
-      QLabel_setAlignment(Widget.Panels[i],
+      Widget.Panels[i] := TQtStatusBarPanel.CreateFrom(AStatusBar,
+        QLabel_create(@Str, Widget.Widget));
+      Widget.Panels[i].HasPaint := AStatusBar.Panels[i].Style = psOwnerDraw;
+      Widget.Panels[i].ID := AStatusBar.Panels[i].ID;
+      QLabel_setText(QLabelH(Widget.Panels[i].Widget), @Str);
+      QLabel_setAlignment(QLabelH(Widget.Panels[i].Widget),
         AlignmentToQtAlignmentMap[AStatusBar.Panels[i].Alignment]);
-      QWidget_setMinimumWidth(Widget.Panels[i], AStatusBar.Panels[i].Width);
-      Widget.addWidget(Widget.Panels[i], ord(i = AStatusBar.Panels.Count - 1));
+      QWidget_setMinimumWidth(Widget.Panels[i].Widget, AStatusBar.Panels[i].Width);
+      Widget.Panels[i].AttachEvents;
+      Widget.addWidget(Widget.Panels[i].Widget, ord(i = AStatusBar.Panels.Count - 1));
     end;
+    Widget.setUpdatesEnabled(True);
   end;
 end;
 
@@ -501,8 +512,12 @@ begin
 end;
 
 class procedure TQtWSStatusBar.DestroyHandle(const AWinControl: TWinControl);
+var
+  QtStatusBar: TQtStatusBar;
 begin
-  TQtStatusBar(AWinControl.Handle).Release;
+  QtStatusBar := TQtStatusBar(AWinControl.Handle);
+  ClearPanels(QtStatusBar);
+  QtStatusBar.Release;
 end;
 
 class procedure TQtWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
@@ -525,9 +540,11 @@ begin
       (PanelIndex <= High(QtStatusBar.Panels)) then
     begin
       Str := GetUtf8String(AStatusBar.Panels[PanelIndex].Text);
-      QLabel_setText(QtStatusBar.Panels[PanelIndex], @Str);
-      QLabel_setAlignment(QtStatusBar.Panels[PanelIndex],
+      QLabel_setText(QLabelH(QtStatusBar.Panels[PanelIndex].Widget), @Str);
+      QLabel_setAlignment(QLabelH(QtStatusBar.Panels[PanelIndex].Widget),
         AlignmentToQtAlignmentMap[AStatusBar.Panels[PanelIndex].Alignment]);
+      QWidget_setMinimumWidth(QtStatusBar.Panels[PanelIndex].Widget,
+        AStatusBar.Panels[PanelIndex].Width);
     end;
   end;
 end;
@@ -548,7 +565,7 @@ begin
       (PanelIndex <= High(QtStatusBar.Panels)) then
     begin
       Str := GetUtf8String(AStatusBar.Panels[PanelIndex].Text);
-      QLabel_setText(QtStatusBar.Panels[PanelIndex], @Str);
+      QLabel_setText(QLabelH(QtStatusBar.Panels[PanelIndex].Widget), @Str);
     end;
   end;
 end;

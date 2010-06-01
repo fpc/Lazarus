@@ -1304,13 +1304,26 @@ type
     procedure setInvertedAppearance(invert: Boolean);
   end;
 
+  { TQtStatusBarPanel }
+
+  TQtStatusBarPanel = class(TQtFrame)
+  private
+    FId: Integer;
+    procedure DrawItem(Sender: QObjectH; Event: QEventH);
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    property ID: Integer read FId write FId;
+  end;
+
   { TQtStatusBar }
 
   TQtStatusBar = class(TQtWidget)
   protected
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
-    Panels: array of QLabelH;
+    Panels: array of TQtStatusBarPanel;
     procedure showMessage(text: PWideString; timeout: Integer = 0);
     procedure addWidget(AWidget: QWidgetH; AStretch: Integer = 0);
     procedure removeWidget(AWidget: QWidgetH);
@@ -10321,6 +10334,98 @@ end;
 procedure TQtProgressBar.reset;
 begin
   QProgressBar_reset(QProgressBarH(Widget));
+end;
+
+{ TQtStatusBarPanel }
+
+function TQtStatusBarPanel.CreateWidget(const AParams: TCreateParams
+  ): QWidgetH;
+var
+  Parent: QWidgetH;
+begin
+  // Creates the widget
+  {$ifdef VerboseQt}
+    WriteLn('TQtStatusBarPanel.Create');
+  {$endif}
+
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget
+  else
+    Parent := nil;
+  Result := QLabel_create(Parent);
+  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
+end;
+
+procedure TQtStatusBarPanel.DrawItem(Sender: QObjectH; Event: QEventH);
+var
+  Msg: TLMDrawItems;
+  AStruct: TPaintStruct;
+  ItemStruct: PDrawItemStruct;
+  P: TPoint;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtWidget.DrawItem ', dbgsName(LCLObject));
+  {$endif}
+  if CanSendLCLMessage and (LCLObject is TWinControl) then
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
+
+    Msg.Msg := LM_DRAWITEM;
+    FillChar(AStruct, SizeOf(TPaintStruct), 0);
+    FillChar(ItemStruct, SizeOf(TDrawItemStruct), 0);
+    New(ItemStruct);
+
+    with PaintData do
+    begin
+      PaintWidget := QWidgetH(Sender);
+      ClipRegion := QPaintEvent_Region(QPaintEventH(Event));
+      if ClipRect = nil then
+        New(ClipRect);
+      QPaintEvent_Rect(QPaintEventH(Event), ClipRect);
+    end;
+
+    ItemStruct^.itemID := ID;
+    ItemStruct^._hDC := BeginPaint(THandle(Self), AStruct);
+    FContext := ItemStruct^._hDC;
+    ItemStruct^.rcItem := PaintData.ClipRect^;
+    ItemStruct^.hwndItem := HWND(Self);
+    Msg.Ctl := LCLObject.Handle;
+    Msg.DrawItemStruct := ItemStruct;
+
+    P := getClientOffset;
+    inc(P.X, FScrollX);
+    inc(P.Y, FScrollY);
+    TQtDeviceContext(FContext).translate(P.X, P.Y);
+
+    // send paint message
+    try
+      try
+        LCLObject.WindowProc(TLMessage(Msg));
+      finally
+        Dispose(PaintData.ClipRect);
+        Fillchar(FPaintData, SizeOf(FPaintData), 0);
+        FContext := 0;
+        EndPaint(THandle(Self), AStruct);
+        Dispose(ItemStruct);
+      end;
+    except
+      Application.HandleException(nil);
+    end;
+  end;
+end;
+
+function TQtStatusBarPanel.EventFilter(Sender: QObjectH; Event: QEventH
+  ): Boolean; cdecl;
+begin
+  Result := False;
+  QEvent_accept(Event);
+  if LCLObject = nil then
+    exit;
+  if HasPaint and (QEvent_type(Event) = QEventPaint) then
+  begin
+    DrawItem(Sender, Event);
+    Result := True;
+  end;
 end;
 
 { TQtStatusBar }
