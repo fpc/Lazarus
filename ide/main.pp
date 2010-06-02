@@ -7680,8 +7680,11 @@ begin
     SrcNotebook := SourceEditorManager.SourceWindows[WindowIndex];
 
   // get syntax highlighter type
+  if not AnUnitInfo.CustomDefaultHighlighter then
+    AnUnitInfo.DefaultSyntaxHighlighter := FilenameToLazSyntaxHighlighter(AFilename)
+  else
   if not AnEditorInfo.CustomHighlighter then
-    AnEditorInfo.SyntaxHighlighter:=FilenameToLazSyntaxHighlighter(AFilename);
+    AnEditorInfo.SyntaxHighlighter := FilenameToLazSyntaxHighlighter(AFilename);
 
   SrcNotebook.IncUpdateLock;
   try
