@@ -120,4 +120,3 @@ msgstr "Pirminio kodo formuotojas"
 msgid "Value (var)"
 msgstr "Vertė (kintamasis)"
 
-

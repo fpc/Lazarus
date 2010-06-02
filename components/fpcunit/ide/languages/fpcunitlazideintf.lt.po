@@ -39,4 +39,3 @@ msgstr "FPCUnit testavimo atvejis%sModulis, kuriame aprašytas FPCUnit testavimo
 msgid "Write your own test"
 msgstr "Sukurkite savo testavimą"
 
-

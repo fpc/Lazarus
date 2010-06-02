@@ -40,4 +40,3 @@ msgstr "Spausdinti šaltinius"
 msgid "What would you like to print ?"
 msgstr "Ką spausdinti?"
 
-

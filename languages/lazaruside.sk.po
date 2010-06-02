@@ -14,6 +14,10 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
+#: lazarusidestrconsts.dlfmousepredefinedscheme
+msgid "Use predefined scheme"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmouseresetall
 msgid "Reset all settings"
 msgstr ""
@@ -107,6 +111,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
+msgstr ""
+
+#: lazarusidestrconsts.dlfnopredefinedscheme
+msgid "< None >"
 msgstr ""
 
 #: lazarusidestrconsts.dlfreadonlycolor
@@ -981,6 +989,10 @@ msgstr "Používateľom definovaná prípona"
 #: lazarusidestrconsts.dlgeddelay
 msgid "Delay"
 msgstr "Oneskorenie"
+
+#: lazarusidestrconsts.dlgeddelayinsec
+msgid "(%s sec delay)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgeddelete
 msgctxt "lazarusidestrconsts.dlgeddelete"
@@ -5223,6 +5235,27 @@ msgstr "Voľby prekladača pre Projekt: %s"
 msgid "%s (compiling ...)"
 msgstr "%s (prekladám ...)"
 
+#: lazarusidestrconsts.liscompletionlonglinehinttype
+msgid "Show long line hints"
+msgstr ""
+
+#: lazarusidestrconsts.liscompletionlonglinehinttypefullleft
+msgid "Extend far left"
+msgstr ""
+
+#: lazarusidestrconsts.liscompletionlonglinehinttypelittleleft
+msgid "Extend some left"
+msgstr ""
+
+#: lazarusidestrconsts.liscompletionlonglinehinttypenone
+msgctxt "lazarusidestrconsts.liscompletionlonglinehinttypenone"
+msgid "Never"
+msgstr ""
+
+#: lazarusidestrconsts.liscompletionlonglinehinttyperightonly
+msgid "Extend right only"
+msgstr ""
+
 #: lazarusidestrconsts.liscomponent
 msgid "Component"
 msgstr "Komponent"
@@ -5781,6 +5814,10 @@ msgstr "Desiatkovo"
 
 #: lazarusidestrconsts.lisdefaultvalue
 msgid "Default value"
+msgstr ""
+
+#: lazarusidestrconsts.lisdelayforcompletionlonglinehint
+msgid "Delay for long line hints in completion box"
 msgstr ""
 
 #: lazarusidestrconsts.lisdelayforhintsandcompletionbox
@@ -9613,6 +9650,7 @@ msgid "Name of new procedure"
 msgstr "Meno novej procedúry"
 
 #: lazarusidestrconsts.lisnever
+msgctxt "lazarusidestrconsts.lisnever"
 msgid "Never"
 msgstr ""
 

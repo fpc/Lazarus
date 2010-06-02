@@ -27,4 +27,3 @@ msgstr "Paprasta CGI programa"
 msgid "Simple CGI Module"
 msgstr "Paprastas CGI modulis"
 
-

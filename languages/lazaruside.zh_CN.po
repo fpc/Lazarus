@@ -12,6 +12,10 @@ msgstr ""
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: lazarusidestrconsts.dlfmousepredefinedscheme
+msgid "Use predefined scheme"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmouseresetall
 msgid "Reset all settings"
 msgstr ""
@@ -105,6 +109,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
+msgstr ""
+
+#: lazarusidestrconsts.dlfnopredefinedscheme
+msgid "< None >"
 msgstr ""
 
 #: lazarusidestrconsts.dlfreadonlycolor
@@ -979,6 +987,10 @@ msgstr "用户定义后缀"
 #: lazarusidestrconsts.dlgeddelay
 msgid "Delay"
 msgstr "延迟"
+
+#: lazarusidestrconsts.dlgeddelayinsec
+msgid "(%s sec delay)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgeddelete
 msgctxt "lazarusidestrconsts.dlgeddelete"
@@ -5225,6 +5237,27 @@ msgstr "工程编译选项: %s"
 msgid "%s (compiling ...)"
 msgstr "%s (正在编译 ...)"
 
+#: lazarusidestrconsts.liscompletionlonglinehinttype
+msgid "Show long line hints"
+msgstr ""
+
+#: lazarusidestrconsts.liscompletionlonglinehinttypefullleft
+msgid "Extend far left"
+msgstr ""
+
+#: lazarusidestrconsts.liscompletionlonglinehinttypelittleleft
+msgid "Extend some left"
+msgstr ""
+
+#: lazarusidestrconsts.liscompletionlonglinehinttypenone
+msgctxt "lazarusidestrconsts.liscompletionlonglinehinttypenone"
+msgid "Never"
+msgstr "从不"
+
+#: lazarusidestrconsts.liscompletionlonglinehinttyperightonly
+msgid "Extend right only"
+msgstr ""
+
 #: lazarusidestrconsts.liscomponent
 msgid "Component"
 msgstr "组件"
@@ -5784,6 +5817,10 @@ msgstr "小数"
 #: lazarusidestrconsts.lisdefaultvalue
 msgid "Default value"
 msgstr "默认值"
+
+#: lazarusidestrconsts.lisdelayforcompletionlonglinehint
+msgid "Delay for long line hints in completion box"
+msgstr ""
 
 #: lazarusidestrconsts.lisdelayforhintsandcompletionbox
 msgid "Delay for hints and completion box"
@@ -9611,6 +9648,7 @@ msgid "Name of new procedure"
 msgstr "过程名"
 
 #: lazarusidestrconsts.lisnever
+msgctxt "lazarusidestrconsts.lisnever"
 msgid "Never"
 msgstr "从不"
 

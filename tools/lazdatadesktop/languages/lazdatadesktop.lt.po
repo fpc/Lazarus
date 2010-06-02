@@ -9,8 +9,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 1.0\n"
 "MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || "
-"n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: lazdatadeskstr.eoaddterminator
 msgid "Add terminator"
@@ -81,7 +80,7 @@ msgid ""
 "Would you like to override the connection data ?\n"
 msgstr ""
 "Ryšys pavadinimu „%s“ jau egzistuoja.\n"
-"Ar nepaisyti ryšio duomenų?"
+"Ar nepaisyti ryšio duomenų?\n"
 
 #: lazdatadeskstr.screatecode
 msgid "Create code"
@@ -780,5 +779,4 @@ msgstr "Vertė"
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
 msgstr "Duomenų žodynas yra veikiamasis. Importuoti į šį žodyną?"
-
 

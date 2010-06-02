@@ -9,8 +9,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 1.0\n"
 "MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"(n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: reconstsunit.sabout
 msgid "About..."
@@ -62,9 +61,7 @@ msgstr "LCL laida: "
 
 #: reconstsunit.slicense
 msgid "This program is free software under GNU GPL 2 license, see COPYING file"
-msgstr ""
-"Tai laisvoji programinė įranga, kuriai taikoma GNU GPL 2 licencija "
-"(žvilgtelėkite į COPYING failą)"
+msgstr "Tai laisvoji programinė įranga, kuriai taikoma GNU GPL 2 licencija (žvilgtelėkite į COPYING failą)"
 
 #: reconstsunit.sopen
 msgid "Open..."
@@ -105,5 +102,4 @@ msgstr "Valdikliai „Win32/Win64“"
 #: reconstsunit.swincewidgetset
 msgid "WinCE widget set"
 msgstr "Valdikliai „WinCE“"
-
 

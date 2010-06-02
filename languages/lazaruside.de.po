@@ -12,6 +12,10 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Country: GERMANY\n"
 
+#: lazarusidestrconsts.dlfmousepredefinedscheme
+msgid "Use predefined scheme"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmouseresetall
 msgid "Reset all settings"
 msgstr "Alle Einstellungen zurücksetzen"
@@ -106,6 +110,10 @@ msgstr "Auswahl einfügen"
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
 msgstr "Änderungen wurden nicht gespeichert. Auf dieser Seite können Änderungen auf der fortgeschrittenen Seite zurückgenommen werden"
+
+#: lazarusidestrconsts.dlfnopredefinedscheme
+msgid "< None >"
+msgstr ""
 
 #: lazarusidestrconsts.dlfreadonlycolor
 msgctxt "lazarusidestrconsts.dlfreadonlycolor"
@@ -984,6 +992,10 @@ msgstr "Benutzerdefinierte Erweiterung"
 #: lazarusidestrconsts.dlgeddelay
 msgid "Delay"
 msgstr "Wartezeit"
+
+#: lazarusidestrconsts.dlgeddelayinsec
+msgid "(%s sec delay)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgeddelete
 msgctxt "lazarusidestrconsts.dlgeddelete"
@@ -5240,6 +5252,27 @@ msgstr "Compilereinstellungen für Projekt: %s"
 msgid "%s (compiling ...)"
 msgstr "%s (Kompilieren...)"
 
+#: lazarusidestrconsts.liscompletionlonglinehinttype
+msgid "Show long line hints"
+msgstr ""
+
+#: lazarusidestrconsts.liscompletionlonglinehinttypefullleft
+msgid "Extend far left"
+msgstr ""
+
+#: lazarusidestrconsts.liscompletionlonglinehinttypelittleleft
+msgid "Extend some left"
+msgstr ""
+
+#: lazarusidestrconsts.liscompletionlonglinehinttypenone
+msgctxt "lazarusidestrconsts.liscompletionlonglinehinttypenone"
+msgid "Never"
+msgstr "Nie"
+
+#: lazarusidestrconsts.liscompletionlonglinehinttyperightonly
+msgid "Extend right only"
+msgstr ""
+
 #: lazarusidestrconsts.liscomponent
 msgid "Component"
 msgstr "Komponente"
@@ -5798,6 +5831,10 @@ msgstr "Dezimal"
 #: lazarusidestrconsts.lisdefaultvalue
 msgid "Default value"
 msgstr "Voreinstellung"
+
+#: lazarusidestrconsts.lisdelayforcompletionlonglinehint
+msgid "Delay for long line hints in completion box"
+msgstr ""
 
 #: lazarusidestrconsts.lisdelayforhintsandcompletionbox
 msgid "Delay for hints and completion box"
@@ -9629,6 +9666,7 @@ msgid "Name of new procedure"
 msgstr "Name der neuen Prozedur"
 
 #: lazarusidestrconsts.lisnever
+msgctxt "lazarusidestrconsts.lisnever"
 msgid "Never"
 msgstr "Nie"
 

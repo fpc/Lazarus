@@ -23,4 +23,3 @@ msgstr "Projekto šablono parinktys"
 msgid "Template projects"
 msgstr "Šablono projektai"
 
-

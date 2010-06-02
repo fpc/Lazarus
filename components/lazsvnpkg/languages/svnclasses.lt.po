@@ -9,8 +9,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 1.0\n"
 "MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"(n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: svnclasses.rsaction
 msgid "Action"
@@ -162,8 +161,7 @@ msgstr "Rodyti žurnalą"
 
 #: svnclasses.rssourcefiledoesnotbelongtotheprojectpleaseaddfirst
 msgid "Source file does not belong to the project. Please add first."
-msgstr ""
-"Pirminio kodo failas nėra projekto dalis. Jį reikia pridėti prie projekto."
+msgstr "Pirminio kodo failas nėra projekto dalis. Jį reikia pridėti prie projekto."
 
 #: svnclasses.rssvnsettings
 msgid "SVN settings"
@@ -180,5 +178,4 @@ msgstr "Naujinti"
 #: svnclasses.rsupdated
 msgid "Updated"
 msgstr "Atnaujinta"
-
 

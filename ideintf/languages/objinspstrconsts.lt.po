@@ -1690,4 +1690,3 @@ msgstr "Kortelę perkelti kairėn"
 msgid "Move tab right"
 msgstr "Kortelę perkelti dešinėn"
 
-

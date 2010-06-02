@@ -9,8 +9,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 1.0\n"
 "MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"(n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: lazdemsg.saboutformcaption
 msgid "About this application"
@@ -56,9 +55,7 @@ msgstr "Pavyzdinio kodo failas"
 
 #: lazdemsg.scopyright1
 msgid "This application is (c) by  Michael Van Canneyt and the Lazarus team"
-msgstr ""
-"Šios programos autorinės teisės priklauso  Michael Van Canneyt ir Lazarus "
-"komandai"
+msgstr "Šios programos autorinės teisės priklauso  Michael Van Canneyt ir Lazarus komandai"
 
 #: lazdemsg.scopyright2
 msgid "It is released under the terms of the  GENERAL PUBLIC LICENSE:"
@@ -106,9 +103,7 @@ msgstr "Keisti aprašo failą"
 
 #: lazdemsg.serrfpdoc
 msgid "Building failed with exit code %d. Please check log."
-msgstr ""
-"Darymas nepavyko. Grąžintas klaidos kodas yra %d. Daugiau informacijos "
-"rasite žurnale."
+msgstr "Darymas nepavyko. Grąžintas klaidos kodas yra %d. Daugiau informacijos rasite žurnale."
 
 #: lazdemsg.serrnomoduleforelement
 msgid "No module found to insert element \"%s\""
@@ -136,9 +131,7 @@ msgstr "Klaidos"
 
 #: lazdemsg.serrunknowndomelement
 msgid "Unknwon DOM element as parent for selected element: \"%s\""
-msgstr ""
-"Elementas, kuris yra viršesnis parinktajam, yra nežinomas DOM elementas: "
-"„%s“"
+msgstr "Elementas, kuris yra viršesnis parinktajam, yra nežinomas DOM elementas: „%s“"
 
 #: lazdemsg.sfilemodified
 msgid "Document \"%s\" was modified, would you like to save it?"
@@ -638,9 +631,7 @@ msgstr "Rodyti &privačius metodus"
 
 #: lazdemsg.sskelerrorwithfile
 msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
-msgstr ""
-"Programa „makeskel“ pranešė apie klaidą (%d). Vis tiek bandyti įkelti "
-"sukurtąjį failą?"
+msgstr "Programa „makeskel“ pranešė apie klaidą (%d). Vis tiek bandyti įkelti sukurtąjį failą?"
 
 #: lazdemsg.sskelerrorwithoutfile
 msgid "makeskel reported an error (%d) and produced no file."
@@ -661,5 +652,4 @@ msgstr "Komanda, skirta dokumentacijos kūrimui: "
 #: lazdemsg.swarnifnodocumentationnodefound
 msgid "Warn if no documentation node found"
 msgstr "Neradus dokumentacijos mazgo, perspėti"
-
 

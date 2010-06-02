@@ -8,6 +8,10 @@ msgstr ""
 "Last-Translator: Haruyuki Fujimaki\n"
 "Language-Team: Japanese Lazarus ML\n"
 
+#: lazarusidestrconsts.dlfmousepredefinedscheme
+msgid "Use predefined scheme"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmouseresetall
 msgid "Reset all settings"
 msgstr "すべての設定をリセット"
@@ -104,6 +108,10 @@ msgstr "貼り付け選択"
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
 msgstr "保存していない変更があります。このページはこの先のページにおける変更のやり直しに使います"
+
+#: lazarusidestrconsts.dlfnopredefinedscheme
+msgid "< None >"
+msgstr ""
 
 #: lazarusidestrconsts.dlfreadonlycolor
 msgctxt "lazarusidestrconsts.dlfreadonlycolor"
@@ -981,6 +989,10 @@ msgstr "ユーザー定義拡張子"
 #: lazarusidestrconsts.dlgeddelay
 msgid "Delay"
 msgstr "遅延"
+
+#: lazarusidestrconsts.dlgeddelayinsec
+msgid "(%s sec delay)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgeddelete
 msgctxt "lazarusidestrconsts.dlgeddelete"
@@ -5221,6 +5233,27 @@ msgstr "パッケージ %s のコンパイラオプション"
 msgid "%s (compiling ...)"
 msgstr "%s (コンパイル中 ...)"
 
+#: lazarusidestrconsts.liscompletionlonglinehinttype
+msgid "Show long line hints"
+msgstr ""
+
+#: lazarusidestrconsts.liscompletionlonglinehinttypefullleft
+msgid "Extend far left"
+msgstr ""
+
+#: lazarusidestrconsts.liscompletionlonglinehinttypelittleleft
+msgid "Extend some left"
+msgstr ""
+
+#: lazarusidestrconsts.liscompletionlonglinehinttypenone
+msgctxt "lazarusidestrconsts.liscompletionlonglinehinttypenone"
+msgid "Never"
+msgstr "しない(ない)"
+
+#: lazarusidestrconsts.liscompletionlonglinehinttyperightonly
+msgid "Extend right only"
+msgstr ""
+
 #: lazarusidestrconsts.liscomponent
 msgid "Component"
 msgstr "コンピーネント"
@@ -5780,6 +5813,10 @@ msgstr "小数"
 #: lazarusidestrconsts.lisdefaultvalue
 msgid "Default value"
 msgstr "デフォルト値"
+
+#: lazarusidestrconsts.lisdelayforcompletionlonglinehint
+msgid "Delay for long line hints in completion box"
+msgstr ""
 
 #: lazarusidestrconsts.lisdelayforhintsandcompletionbox
 msgid "Delay for hints and completion box"
@@ -9611,6 +9648,7 @@ msgid "Name of new procedure"
 msgstr "新しい手続きの名前"
 
 #: lazarusidestrconsts.lisnever
+msgctxt "lazarusidestrconsts.lisnever"
 msgid "Never"
 msgstr "しない(ない)"
 

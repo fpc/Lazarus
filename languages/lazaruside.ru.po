@@ -5,9 +5,13 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-29 23:38+0300\n"
+"PO-Revision-Date: 2010-06-03 03:06+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
+
+#: lazarusidestrconsts.dlfmousepredefinedscheme
+msgid "Use predefined scheme"
+msgstr "Использовать готовую схему"
 
 #: lazarusidestrconsts.dlfmouseresetall
 #| msgid "Set all settings"
@@ -107,6 +111,10 @@ msgstr "вставлять выделенное"
 #: lazarusidestrconsts.dlfmousesimplewarning
 msgid "You have unsaved changes. Using this page will undo changes made on the advanced page"
 msgstr "Имеются несохранённые изменения. Использование этой страницы сбросит изменения на странице расширенных параметров"
+
+#: lazarusidestrconsts.dlfnopredefinedscheme
+msgid "< None >"
+msgstr "< Нет >"
 
 #: lazarusidestrconsts.dlfreadonlycolor
 msgctxt "lazarusidestrconsts.dlfreadonlycolor"
@@ -990,6 +998,10 @@ msgstr "Расширение пользователя"
 #: lazarusidestrconsts.dlgeddelay
 msgid "Delay"
 msgstr "Задержка"
+
+#: lazarusidestrconsts.dlgeddelayinsec
+msgid "(%s sec delay)"
+msgstr "(задержка %s сек)"
 
 #: lazarusidestrconsts.dlgeddelete
 msgctxt "lazarusidestrconsts.dlgeddelete"
@@ -5225,6 +5237,27 @@ msgstr "Параметры компилятора для проекта: %s"
 msgid "%s (compiling ...)"
 msgstr "%s (идёт компиляция ...)"
 
+#: lazarusidestrconsts.liscompletionlonglinehinttype
+msgid "Show long line hints"
+msgstr "Отображение длинных подсказок"
+
+#: lazarusidestrconsts.liscompletionlonglinehinttypefullleft
+msgid "Extend far left"
+msgstr "Удлинять далеко влево"
+
+#: lazarusidestrconsts.liscompletionlonglinehinttypelittleleft
+msgid "Extend some left"
+msgstr "Удлинять немного влево"
+
+#: lazarusidestrconsts.liscompletionlonglinehinttypenone
+msgctxt "lazarusidestrconsts.liscompletionlonglinehinttypenone"
+msgid "Never"
+msgstr "Никогда"
+
+#: lazarusidestrconsts.liscompletionlonglinehinttyperightonly
+msgid "Extend right only"
+msgstr "Удлинять только вправо"
+
 #: lazarusidestrconsts.liscomponent
 msgid "Component"
 msgstr "Компонент"
@@ -5235,7 +5268,7 @@ msgstr "Имя компонента %s%s%s зарезервировано"
 
 #: lazarusidestrconsts.liscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
-msgstr "Имя компонента %s%s%s - некорректный идентификатор"
+msgstr "Имя компонента %s%s%s не является корректным идентификатором"
 
 #: lazarusidestrconsts.liscomppalfindcomponent
 msgid "Find component"
@@ -5782,6 +5815,10 @@ msgstr "Десятичное"
 #: lazarusidestrconsts.lisdefaultvalue
 msgid "Default value"
 msgstr "Значение по умолчанию"
+
+#: lazarusidestrconsts.lisdelayforcompletionlonglinehint
+msgid "Delay for long line hints in completion box"
+msgstr "Задержка вывода длинных подсказок в окне автозавершения"
 
 #: lazarusidestrconsts.lisdelayforhintsandcompletionbox
 msgid "Delay for hints and completion box"
@@ -9603,6 +9640,7 @@ msgid "Name of new procedure"
 msgstr "Имя новой процедуры"
 
 #: lazarusidestrconsts.lisnever
+msgctxt "lazarusidestrconsts.lisnever"
 msgid "Never"
 msgstr "Никогда"
 
