@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, IDEProcs,
   StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, LazarusIDEStrConsts,
-  CodeToolsStructs, BaseIDEIntf, LazConfigStorage, ReplaceNamesUnit;
+  CodeToolsStructs, BaseIDEIntf, LazConfigStorage, ButtonPanel, ReplaceNamesUnit;
 
 type
 
@@ -104,21 +104,17 @@ type
 
   TConvertSettingsForm = class(TForm)
     BackupCheckBox: TCheckBox;
+    ButtonPanel: TButtonPanel;
     TypeReplacementsButton: TBitBtn;
     SameDFMCheckBox: TCheckBox;
     ProjectPathEdit: TLabeledEdit;
     TargetRadioGroup: TRadioGroup;
     UnitReplacementsButton: TBitBtn;
-    btnCancel: TBitBtn;
-    btnOK: TBitBtn;
-    BtnPanel: TPanel;
-    HelpButton: TBitBtn;
     SettingsGroupBox: TGroupBox;
     MissingStuffGroupBox: TGroupBox;
     MissingStuffLabel: TLabel;
     AutoConvertTypesCheckBox: TCheckBox;
     AutoRemovePropertiesCheckBox: TCheckBox;
-    procedure btnOKClick(Sender: TObject);
     procedure TypeReplacementsButtonClick(Sender: TObject);
     procedure UnitReplacementsButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -366,7 +362,7 @@ begin
   ProjectPathEdit.Text:='';
   ProjectPathEdit.EditLabel.Caption:=lisProjectPath;
   BackupCheckBox.Caption:=lisBackupChangedFiles;
-  btnOK.Caption:=lisStartConversion;
+  ButtonPanel.OKButton.Caption:=lisStartConversion;
   TargetRadioGroup.Items.Clear;
   TargetRadioGroup.Items.Append(lisConvertTarget1);
   TargetRadioGroup.Items.Append(lisConvertTarget2);
@@ -430,11 +426,6 @@ begin
     GridUpdater.Free;
     RNForm.Free;
   end;
-end;
-
-procedure TConvertSettingsForm.btnOKClick(Sender: TObject);
-begin
-  ModalResult:=mrOk;
 end;
 
 

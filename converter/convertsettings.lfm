@@ -1,7 +1,7 @@
 object ConvertSettingsForm: TConvertSettingsForm
-  Left = 280
+  Left = 388
   Height = 400
-  Top = 292
+  Top = 233
   Width = 611
   ActiveControl = ProjectPathEdit
   Caption = 'Convert Delphi unit, project or package '
@@ -14,14 +14,15 @@ object ConvertSettingsForm: TConvertSettingsForm
   object MissingStuffGroupBox: TGroupBox
     AnchorSideTop.Control = SettingsGroupBox
     AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel
     Left = 0
-    Height = 133
+    Height = 130
     Top = 219
     Width = 611
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     Caption = 'Units, Types and Properties'
-    ClientHeight = 114
+    ClientHeight = 111
     ClientWidth = 607
     TabOrder = 0
     object AutoConvertTypesCheckBox: TCheckBox
@@ -118,71 +119,6 @@ object ConvertSettingsForm: TConvertSettingsForm
       TabOrder = 1
     end
   end
-  object BtnPanel: TPanel
-    Left = 0
-    Height = 48
-    Top = 352
-    Width = 611
-    Align = alBottom
-    AutoSize = True
-    BevelOuter = bvNone
-    ClientHeight = 48
-    ClientWidth = 611
-    TabOrder = 2
-    object HelpButton: TBitBtn
-      AnchorSideBottom.Side = asrBottom
-      Left = 6
-      Height = 36
-      Top = 6
-      Width = 75
-      Align = alLeft
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Constraints.MinHeight = 25
-      Constraints.MinWidth = 75
-      Kind = bkHelp
-      NumGlyphs = 0
-      TabOrder = 0
-    end
-    object btnOK: TBitBtn
-      AnchorSideBottom.Side = asrBottom
-      Left = 391
-      Height = 36
-      Top = 6
-      Width = 127
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'Start Conversion'
-      Constraints.MinHeight = 25
-      Constraints.MinWidth = 75
-      Default = True
-      Kind = bkOK
-      ModalResult = 1
-      NumGlyphs = 0
-      OnClick = btnOKClick
-      TabOrder = 1
-    end
-    object btnCancel: TBitBtn
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Side = asrBottom
-      Left = 524
-      Height = 36
-      Top = 6
-      Width = 81
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Cancel = True
-      Caption = 'Cancel'
-      Constraints.MinHeight = 25
-      Constraints.MinWidth = 75
-      Kind = bkCancel
-      ModalResult = 2
-      NumGlyphs = 0
-      TabOrder = 2
-    end
-  end
   object ProjectPathEdit: TLabeledEdit
     Left = 96
     Height = 21
@@ -205,7 +141,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     LabelPosition = lpLeft
     LabelSpacing = 7
     ReadOnly = True
-    TabOrder = 3
+    TabOrder = 2
   end
   object BackupCheckBox: TCheckBox
     AnchorSideTop.Control = ProjectPathEdit
@@ -219,6 +155,14 @@ object ConvertSettingsForm: TConvertSettingsForm
     Caption = 'Make backup of changed files'
     Checked = True
     State = cbChecked
+    TabOrder = 3
+  end
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 39
+    Top = 355
+    Width = 599
     TabOrder = 4
+    ShowButtons = [pbOK, pbCancel, pbHelp]
   end
 end
