@@ -1043,15 +1043,18 @@ begin
   end;
   // backup file
   repeat
-    if not IDEProcs.BackupFile(Filename,BackupFilename) then begin
-      ACaption:=lisBackupFileFailed;
-      AText:=Format(lisUnableToBackupFileTo, ['"', Filename, '"', '"',
+    if not IDEProcs.BackupFile(Filename, BackupFilename) then
+    begin
+      ACaption := lisBackupFileFailed;
+      AText := Format(lisUnableToBackupFileTo, ['"', Filename, '"', '"',
         BackupFilename, '"']);
-      Result:=IDEMessageDialog(ACaption,AText,mterror,[mbabort,mbretry,mbignore]);
-      if Result=mrAbort then exit;
-      if Result=mrIgnore then Result:=mrOk;
-    end;
-  until Result<>mrRetry;
+      Result := IDEMessageDialog(ACaption,AText,mterror,[mbabort,mbretry,mbignore]);
+      if Result = mrAbort then exit;
+      if Result = mrIgnore then Result := mrOk;
+    end
+    else
+      Result := mrOk;
+  until Result <> mrRetry;
 end;
 
 function TBuildManager.GetResourceType(AnUnitInfo: TUnitInfo): TResourceType;
