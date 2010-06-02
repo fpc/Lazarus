@@ -102,6 +102,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
       OnChange = ColorElementTreeChange
       OnClick = ColorElementTreeClick
+      OnKeyDown = ColorElementTreeKeyDown
       Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowLines, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
     end
     object chkSchemeDefaults: TCheckBox

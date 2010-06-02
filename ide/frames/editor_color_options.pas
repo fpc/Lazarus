@@ -83,6 +83,7 @@ type
       State: TCustomDrawState; Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
     procedure ColorElementTreeChange(Sender: TObject; Node: TTreeNode);
     procedure ColorElementTreeClick(Sender: TObject);
+    procedure ColorElementTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ColorPreviewMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ForegroundColorBoxChange(Sender: TObject);
@@ -336,6 +337,23 @@ end;
 procedure TEditorColorOptionsFrame.ColorElementTreeClick(Sender: TObject);
 begin
   FindCurHighlightElement;
+end;
+
+procedure TEditorColorOptionsFrame.ColorElementTreeKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  lnode: TTreeNode;
+begin
+  lnode := ColorElementTree.Selected;
+  if (Key = VK_UP) and (lnode <> nil) then begin
+    lnode := lnode.GetPrevExpanded;
+    if (lnode <> nil) and (lnode.GetFirstChild <> nil) then
+      lnode := lnode.GetPrevExpanded;
+    if (lnode <> nil) then begin
+      Key :=VK_UNKNOWN;
+      ColorElementTree.Selected := lnode;
+    end;
+  end;
 end;
 
 procedure TEditorColorOptionsFrame.ColorPreviewMouseUp(Sender: TObject;
