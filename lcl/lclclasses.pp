@@ -44,7 +44,6 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure BeforeDestruction; override; // fixes missing call to Destroying in FPC
     class function NewInstance: TObject; override;
     procedure RemoveAllHandlersOfObject(AnObject: TObject); virtual;
     procedure IncLCLRefCount;
@@ -110,12 +109,6 @@ begin
   DebugLCLComponents.MarkDestroyed(Self);
   {$ENDIF}
   inherited Destroy;
-end;
-
-procedure TLCLComponent.BeforeDestruction;
-begin
-  inherited BeforeDestruction;
-  Destroying;
 end;
 
 class function TLCLComponent.NewInstance: TObject;
