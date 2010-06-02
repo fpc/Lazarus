@@ -6288,6 +6288,9 @@ begin
   begin
     CurStatusPanelWidget := PGtkBoxChild(
               g_list_nth_data(PGtkBox(HBox)^.children, CurPanelCount - 1))^.Widget;
+    {$IFDEF GTK2}
+    gtk_object_remove_data(PGtkObject(CurStatusPanelWidget),'lcl_statusbar_id');
+    {$ENDIF}
     DestroyConnectedWidgetCB(CurStatusPanelWidget, True);
     dec(CurPanelCount);
   end;
@@ -6319,6 +6322,71 @@ begin
     {$ENDIF}
   end;
 end;
+
+{$IFDEF GTK2}
+function gtk2PaintStatusBarWidget(Widget: PGtkWidget; Event : PGDKEventExpose;
+  Data: gPointer): GBoolean; cdecl;
+var
+  Msg: TLMDrawItems;
+  PS : TPaintStruct;
+  ItemStruct: PDrawItemStruct;
+  ItemID: Integer;
+begin
+  Result := CallBackDefaultReturn;
+  if (Event^.Count > 0) then exit;
+
+  if (csDesigning in TComponent(Data).ComponentState) then
+    exit;
+
+  if TStatusBar(Data).SimplePanel then
+    exit;
+
+  ItemId := PtrInt(gtk_object_get_data(PGtkObject(Widget), 'lcl_statusbar_id')^);
+
+  if not ((ItemId >= 0) and (ItemId < TStatusBar(Data).Panels.Count)) then
+    exit;
+
+  if TStatusBar(Data).Panels[ItemId].Style <> psOwnerDraw then
+    exit;
+
+  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(PS, SizeOf(PS), #0);
+  FillChar(ItemStruct, SizeOf(ItemStruct), #0);
+  New(ItemStruct);
+  // we must fill up complete area otherwise gtk2 will do
+  // strange paints when item is not fully exposed.
+  ItemStruct^.rcItem := Rect(Widget^.allocation.x,
+    Widget^.allocation.y,
+    Widget^.allocation.width + Widget^.allocation.x,
+    Widget^.allocation.height + Widget^.allocation.y);
+
+  OffsetRect(ItemStruct^.rcItem, -ItemStruct^.rcItem.Left, -ItemStruct^.rcItem.Top);
+
+  // take frame borders into account
+  with ItemStruct^.rcItem do
+  begin
+    Left := Left + Widget^.style^.xthickness;
+    Top := Top + Widget^.style^.ythickness;
+    Right := Right - Widget^.style^.xthickness;
+    Bottom := Bottom - Widget^.style^.ythickness;
+  end;
+
+  ItemStruct^.itemID := ItemID;
+  PS.rcPaint := ItemStruct^.rcItem;
+  ItemStruct^._hDC := BeginPaint(THandle(PtrUInt(Widget)), PS);
+  Msg.Ctl := TStatusBar(Data).Handle;
+  Msg.DrawItemStruct := ItemStruct;
+  Msg.Msg := LM_DRAWITEM;
+  try
+    DeliverMessage(TStatusBar(Data), Msg);
+    Result := not CallBackDefaultReturn;
+  finally
+    PS.hdc := ItemStruct^._hDC;
+    EndPaint(THandle(PtrUInt(TGtkDeviceContext(PS.hdc).Widget)), PS);
+    Dispose(ItemStruct);
+  end;
+end;
+{$ENDIF}
 
 procedure UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
   StatusPanelWidget: PGtkWidget);
@@ -6409,6 +6477,12 @@ begin
     //DebugLn('  CurPanel.Width="',CurPanel.Width,'"');
     gtk_widget_set_usize(StatusPanelWidget, CurPanel.Width,
       StatusPanelWidget^.allocation.height);
+    {$IFDEF GTK2}
+    gtk_object_set_data(PGtkObject(StatusPanelWidget),'lcl_statusbar_id',
+      @AStatusBar.Panels[Index].ID);
+    g_signal_connect_after(StatusPanelWidget, 'expose-event',
+      TGtkSignalFunc(@gtk2PaintStatusBarWidget), AStatusBar);
+    {$ENDIF}
   end;
 end;
 
