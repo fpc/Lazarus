@@ -2958,7 +2958,6 @@ var
   XMLConfig: TRttiXMLConfig;
   i, j, c: Integer;
   n: String;
-  NewMouse: TEditorMouseOptions;
 begin
   FPreset := TQuickStringlist.Create;
 
