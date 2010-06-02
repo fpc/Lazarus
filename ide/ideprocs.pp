@@ -1370,39 +1370,36 @@ var
   OldInfo: Stat;
   {$ENDIF}
 begin
-  Result:=false;
+  Result := False;
 
   // store file attributes
   {$IFdef MSWindows}
-  OldAttr:=FileGetAttrUTF8(Filename);
+  OldAttr := FileGetAttrUTF8(Filename);
   {$ELSE}
-  FpStat(Filename,OldInfo);
+  FpStat(Filename, OldInfo);
   {$ENDIF}
   
-  if not FileIsSymlink(Filename) then begin
-    // not a symlink
-    // rename old file, create empty new file
-  
+  if not FileIsSymlink(Filename) then
+  begin
+    // not a symlink => rename old file, create empty new file
     // rename file
-    if not RenameFileUTF8(Filename,BackupFilename) then exit;
+    if not RenameFileUTF8(Filename, BackupFilename) then exit;
     // create empty file
-    FHandle:=FileCreate(FileName);
+    FHandle := FileCreate(FileName);
     FileClose(FHandle);
-  end else begin
-    // file is a symlink
-    // -> copy file
-    if not CopyFile(Filename,BackupFilename) then exit;
-  end;
-  
+  end
+  else // file is a symlink -> copy file
+  if not CopyFile(Filename, BackupFilename) then exit;
+
   // restore file attributes
   {$IFdef MSWindows}
-  FileSetAttrUTF8(FileName,OldAttr);
+  FileSetAttrUTF8(FileName, OldAttr);
   {$ELSE}
   FpChmod(Filename, OldInfo.st_Mode and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
                            +STAT_ISUID+STAT_ISGID+STAT_ISVTX));
   {$ENDIF}
 
-  Result:=true;
+  Result := True;
 end;
 
 {-------------------------------------------------------------------------------

@@ -813,11 +813,24 @@ end;
   function FileIsSymlink(const AFilename: string): boolean;
  ------------------------------------------------------------------------------}
 function FileIsSymlink(const AFilename: string): boolean;
+{$IFDEF WINDOWS}
+var
+  FileHandle: Integer;
+  FileInfo: TBYHANDLEFILEINFORMATION;
+{$ENDIF}
 begin
   {$IFDEF WINDOWS}
-  Result:=false;
+  FileHandle := FileOpen(UTF8ToSys(AFileName), fmOpenRead or fmShareDenyNone);
+  if FileHandle >= 0 then
+  begin
+    GetFileInformationByHandle(HFile(FileHandle), FileInfo);
+    Result := FileInfo.nNumberOfLinks > 1;
+    FileClose(FileHandle);
+  end
+  else
+    Result := False;
   {$ELSE}
-  Result:=(FpReadLink(AFilename)<>'');
+  Result := FpReadLink(AFilename) <> '';
   {$ENDIF}
 end;
 
