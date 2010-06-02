@@ -480,7 +480,9 @@ type
     DataOwner: Boolean;               // Set if the UserData should be freed when the info is freed
     UserData: Pointer;
     FormBorderStyle: Integer;         // used only by forms
+    {$IFDEF GTK2}
     FormWindowState: TGdkEventWindowState; // used only by forms to stop infinite loops eg. issue #16505
+    {$ENDIF}
   end;
   
   //TODO: remove
