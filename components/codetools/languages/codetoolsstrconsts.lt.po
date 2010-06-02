@@ -837,4 +837,3 @@ msgstr "Valdiklių aplankas"
 msgid "\"%s\" not found"
 msgstr "„%s“ nerastas"
 
-
