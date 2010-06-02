@@ -437,7 +437,6 @@ var
   ANode, InheritanceNode: TCodeTreeNode;
   TypeUpdater: TStringMapUpdater;
   OldType, NewType: String;
-  HasChanged: Boolean;
 begin
   Result:=false;          //  fCodeTool.FindInheritanceNode
   with fCodeTool do begin
@@ -461,19 +460,13 @@ begin
     // Change the inheritance type to a fall-back type if needed.
     TypeUpdater:=TStringMapUpdater.Create(AReplaceTypes);
     try
-      HasChanged:=false;
+      // Find replacement maybe using regexp syntax.
       if TypeUpdater.FindReplacement(OldType, NewType) then begin
-        // change type
-        if not HasChanged then begin
-          HasChanged:=true;
-          fSrcCache.MainScanner:=Scanner;
-        end;
-        if not fSrcCache.Replace(gtNone,gtNone,
-                                 CurPos.StartPos,CurPos.EndPos, NewType) then
-          exit(false);
-      end;
-      if HasChanged then
+        fSrcCache.MainScanner:=Scanner;
+        if not fSrcCache.Replace(gtNone, gtNone,
+                      CurPos.StartPos, CurPos.EndPos, NewType) then exit;
         if not fSrcCache.Apply then exit;
+      end;
     finally
       TypeUpdater.Free;
     end;
