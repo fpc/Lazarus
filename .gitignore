@@ -2,3 +2,5 @@ gtk/*.bak
 gtk/tests/*.bak
 gtk/tests/units
 gtk/units
+gtk2/*.bak
+gtk2/units
