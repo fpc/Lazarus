@@ -15,7 +15,7 @@ uses
   CodeBeautifier, ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
   CodeCache, SourceChanger, CustomCodeTool, CodeToolsStructs, EventCodeTool,
   // Converter
-  ConvertSettings;
+  ConvertSettings, ReplaceNamesUnit;
 
 type
 
@@ -57,6 +57,7 @@ type
     function RemoveUnits: boolean;
     function RenameUnits: boolean;
     function UsesSectionsToUnitnames: TStringList;
+    function FixMainClassAncestor(AReplaceTypes: TStringToStringTree): boolean;
     function FixLFM(LFMBuf: TCodeBuffer; out LFMTree: TLFMTree): boolean;
 //      const OnFindDefineProperty: TOnFindDefinePropertyForContext;
 //      RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
@@ -71,7 +72,23 @@ type
     property UnitsToComment: TStringList read fUnitsToComment write fUnitsToComment;
   end;
 
+  // Global function
+  function FixMainClassAncestor(Code: TCodeBuffer; AReplaceTypes: TStringToStringTree): boolean;
+
+
 implementation
+
+
+function FixMainClassAncestor(Code: TCodeBuffer;
+                              AReplaceTypes: TStringToStringTree): boolean;
+var
+  ConvTool: TConvDelphiCodeTool;
+begin
+  ConvTool:=TConvDelphiCodeTool.Create(Code);
+  try     Result:=ConvTool.FixMainClassAncestor(AReplaceTypes);
+  finally ConvTool.Free;
+  end;
+end;
 
 { TConvDelphiCodeTool }
 
@@ -392,6 +409,82 @@ begin
   ImplList:=fCodeTool.UsesSectionToUnitnames(UsesNode);
   Result.AddStrings(ImplList);
   ImplList.Free;
+end;
+
+
+function TConvDelphiCodeTool.FixMainClassAncestor(AReplaceTypes: TStringToStringTree): boolean;
+// Change a type that main form inherits from to a fall-back type,
+//  if defined in AReplaceTypes.
+
+  function FindFirstClassNode: TCodeTreeNode;
+  // Search for the first class definition which is the only one for form files.
+  var
+    ANode, ClassNode: TCodeTreeNode;
+  begin
+    ANode:=fCodeTool.FindMainUsesSection;  // or fCodeTool.FindInterfaceNode;
+    if ANode<>nil then
+      ANode:=ANode.NextBrother;
+    Result:=nil;
+    while ANode<>nil do begin
+      if ANode.Desc in [ctnTypeDefinition,ctnGenericType] then begin
+        ClassNode:=fCodeTool.FindTypeNodeOfDefinition(ANode);
+        if (ClassNode<>nil) and (ClassNode.Desc in AllClassObjects) then begin
+          if (not ((ClassNode.SubDesc and ctnsForwardDeclaration)>0)) then begin
+            Result:=ClassNode;
+            exit;
+          end;
+        end;
+      end;
+      ANode:=ANode.Next;
+    end;
+  end;
+
+var
+  ANode, InheritanceNode: TCodeTreeNode;
+  TypeUpdater: TStringMapUpdater;
+  OldType, NewType: String;
+  HasChanged: Boolean;
+begin
+  Result:=false;          //  fCodeTool.FindInheritanceNode
+  with fCodeTool do begin
+    BuildTree(true);
+    if (AReplaceTypes=nil) or (AReplaceTypes.Tree.Count=0) then exit(true);
+
+    // Find the class name that the main class inherits from.
+    ANode:=FindFirstClassNode;
+    if ANode=nil then exit;
+    BuildSubTreeForClass(ANode);
+    InheritanceNode:=FindInheritanceNode(ANode);
+    if InheritanceNode=nil then exit;
+    ANode:=InheritanceNode.FirstChild;
+    if ANode=nil then exit;
+    if ANode.Desc=ctnIdentifier then begin
+      MoveCursorToNodeStart(ANode);  // cursor to the identifier
+      ReadNextAtom;
+      OldType:=GetAtom;
+    end;
+
+    // Change the inheritance type to a fall-back type if needed.
+    TypeUpdater:=TStringMapUpdater.Create(AReplaceTypes);
+    try
+      HasChanged:=false;
+      if TypeUpdater.FindReplacement(OldType, NewType) then begin
+        // change type
+        if not HasChanged then begin
+          HasChanged:=true;
+          fSrcCache.MainScanner:=Scanner;
+        end;
+        if not fSrcCache.Replace(gtNone,gtNone,
+                                 CurPos.StartPos,CurPos.EndPos, NewType) then
+          exit(false);
+      end;
+      if HasChanged then
+        if not fSrcCache.Apply then exit;
+    finally
+      TypeUpdater.Free;
+    end;
+  end;
+  Result:=true;
 end;
 
 //////////////////////////////////////
