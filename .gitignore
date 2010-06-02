@@ -1,0 +1,4 @@
+gtk/*.bak
+gtk/tests/*.bak
+gtk/tests/units
+gtk/units

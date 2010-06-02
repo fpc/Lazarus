@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package name="lcl">
+	<widgetset name="gtk">
+		<issue name="TComboBox.DropDownCount">
+			<short>Combo box DropDownCount property is not supported</short>
+		</issue>
+		<issue name="TPrinter.FileName">
+			<short>The format of generated file is system dependant</short>
+			<descr>The content of file created by using this property depends of the printer backend used, for example when using CUPS (mainly under Unix type systems) it will be postscript while under Windows it will be in a printer unspecified format</descr>
+		</issue>
+	</widgetset>
+</package>
