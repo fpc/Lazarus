@@ -23,7 +23,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Caption = 'SetAllAttributesToDefaultButton'
     Constraints.MaxWidth = 300
     OnClick = SetAllAttributesToDefaultButtonClick
-    TabOrder = 0
+    TabOrder = 3
   end
   object pnlElementAttributes: TPanel[1]
     AnchorSideLeft.Control = Owner
@@ -78,7 +78,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Constraints.MinHeight = 25
       Constraints.MinWidth = 75
       OnClick = SetAttributeToDefaultButtonClick
-      TabOrder = 0
+      TabOrder = 14
     end
     object ColorElementTree: TTreeView
       AnchorSideLeft.Control = pnlElementAttributes
@@ -98,7 +98,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       ScrollBars = ssAutoBoth
       ShowButtons = False
       ShowRoot = False
-      TabOrder = 1
+      TabOrder = 0
       OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
       OnChange = ColorElementTreeChange
       OnClick = ColorElementTreeClick
@@ -116,7 +116,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Width = 124
       Caption = 'chkSchemeDefaults'
       OnChange = GeneralCheckBoxOnChange
-      TabOrder = 2
+      TabOrder = 1
     end
     object lblSelectModifications: TLabel
       AnchorSideLeft.Control = ColorElementTree
@@ -157,7 +157,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.Left = 6
       Caption = 'ForeGroundUseDefaultCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      TabOrder = 3
+      TabOrder = 2
     end
     object ForegroundColorBox: TColorBox
       AnchorSideLeft.Control = ColumnPosBevel
@@ -177,7 +177,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Constraints.MaxWidth = 200
       ItemHeight = 16
       OnChange = ForegroundColorBoxChange
-      TabOrder = 4
+      TabOrder = 3
     end
     object BackGroundColorBox: TColorBox
       AnchorSideLeft.Control = ColumnPosBevel
@@ -211,7 +211,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       Width = 194
       Caption = 'BackGroundUseDefaultCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      TabOrder = 6
+      TabOrder = 4
     end
     object FrameColorBox: TColorBox
       AnchorSideLeft.Control = ColumnPosBevel
@@ -246,7 +246,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.Left = 6
       Caption = 'FrameColorUseDefaultCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      TabOrder = 8
+      TabOrder = 6
     end
     object TextUnderlineRadioPanel: TPanel
       AnchorSideLeft.Control = ColumnPosBevel
@@ -322,7 +322,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.Top = 3
       Caption = 'TextUnderlineCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      TabOrder = 10
+      TabOrder = 8
     end
     object TextBoldRadioPanel: TPanel
       AnchorSideLeft.Control = ColumnPosBevel
@@ -350,7 +350,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         Anchors = [akTop, akRight]
         Caption = 'Invert'
         OnChange = TextStyleRadioOnChange
-        TabOrder = 0
+        TabOrder = 2
         TabStop = False
       end
       object TextBoldRadioOn: TRadioButton
@@ -367,7 +367,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         Checked = True
         OnChange = TextStyleRadioOnChange
         State = cbChecked
-        TabOrder = 1
+        TabOrder = 0
       end
       object TextBoldRadioOff: TRadioButton
         Tag = 2
@@ -381,7 +381,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         BorderSpacing.Right = 3
         Caption = 'Off'
         OnChange = TextStyleRadioOnChange
-        TabOrder = 2
+        TabOrder = 1
         TabStop = False
       end
     end
@@ -398,7 +398,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.Top = 3
       Caption = 'TextBoldCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      TabOrder = 12
+      TabOrder = 10
     end
     object TextItalicRadioPanel: TPanel
       AnchorSideLeft.Control = ColumnPosBevel
@@ -426,7 +426,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         Anchors = [akTop, akRight]
         Caption = 'Invert'
         OnChange = TextStyleRadioOnChange
-        TabOrder = 0
+        TabOrder = 2
         TabStop = False
       end
       object TextItalicRadioOn: TRadioButton
@@ -443,7 +443,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         Checked = True
         OnChange = TextStyleRadioOnChange
         State = cbChecked
-        TabOrder = 1
+        TabOrder = 0
       end
       object TextItalicRadioOff: TRadioButton
         Tag = 2
@@ -457,7 +457,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
         BorderSpacing.Right = 3
         Caption = 'Off'
         OnChange = TextStyleRadioOnChange
-        TabOrder = 2
+        TabOrder = 1
         TabStop = False
       end
     end
@@ -474,7 +474,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
       BorderSpacing.Top = 3
       Caption = 'TextItalicCheckBox'
       OnChange = GeneralCheckBoxOnChange
-      TabOrder = 14
+      TabOrder = 12
     end
     object ColumnPosBevel: TBevel
       AnchorSideLeft.Control = ForeGroundUseDefaultCheckBox
@@ -551,7 +551,8 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Font.Quality = fqNonAntialiased
     ParentColor = False
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 4
+    TabStop = False
     OnMouseUp = ColorPreviewMouseUp
     BookMarkOptions.Xoffset = 30
     Gutter.Width = 59
@@ -1149,7 +1150,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Caption = 'btnExport'
     Constraints.MaxWidth = 300
     OnClick = btnExportClick
-    TabOrder = 3
+    TabOrder = 2
   end
   object pnlTop: TPanel[4]
     Left = 0
@@ -1169,7 +1170,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     Constraints.MaxWidth = 1000
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 4
+    TabOrder = 0
     object LanguageComboBox: TComboBox
       Left = 0
       Height = 23
