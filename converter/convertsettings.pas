@@ -30,9 +30,9 @@ unit ConvertSettings;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, CodeToolsStructs,
-  ReplaceNamesUnit, LazarusIDEStrConsts;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, IDEProcs,
+  StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, LazarusIDEStrConsts,
+  CodeToolsStructs, BaseIDEIntf, LazConfigStorage, ReplaceNamesUnit;
 
 type
 
@@ -57,6 +57,11 @@ type
     // Delphi types mapped to Lazarus types, will be replaced.
     fReplaceTypes: TStringToStringTree;
 
+{    function ReadConfigMap(ABaseName: string; AConfig: TConfigStorage;
+                           AMap: TStringToStringTree): boolean;
+    function WriteConfigMap(ABaseName: string; AConfig: TConfigStorage;
+                            AMap: TStringToStringTree): boolean;   }
+    // Getter / setter:
     function GetBackupPath: String;
     procedure SetMainFilename(const AValue: String);
   public
@@ -137,10 +142,22 @@ implementation
 { TConvertSettings }
 
 constructor TConvertSettings.Create(const ATitle: string);
+// var Config: TConfigStorage;  AString: string;
 begin
   fTitle:=ATitle;
   fMainFilename:='';
   fMainPath:='';
+{ ToDo: Read Config file
+  LoadStringToStringTree();
+  Config:=GetIDEConfigStorage('delphiconverter.xml',true);
+  try
+    AString:=Config.GetValue('Name1','');
+    ABool:=Config.GetValue('Name2',true);
+    ...
+  finally
+    Config.Free;
+  end;
+}
   // Now hard-code some values. Later move them to a config file.
   // Map Delphi units to Lazarus units.
   fReplaceUnits:=TStringToStringTree.Create(false);
@@ -175,7 +192,40 @@ begin
   fReplaceUnits.Free;
   inherited Destroy;
 end;
+{
+function GetLazIDEConfigStorage(const Filename: string; LoadFromDisk: Boolean
+  ): TConfigStorage;
+var
+  ConfigFilename: String;
+begin
+  if LoadFromDisk then begin
+    // copy template config file to users config directory
+    CopySecondaryConfigFile(Filename);
+  end;
+  // create storage
+  ConfigFilename:=AppendPathDelim(GetPrimaryConfigPath)+Filename;
+  Result:=TXMLOptionsStorage.Create(ConfigFilename,LoadFromDisk);
+end;
 
+function TConvertSettings.ReadConfigMap(ABaseName: string; AConfig: TConfigStorage;
+                                        AMap: TStringToStringTree): boolean;
+var
+  Cnt, i: integer;
+begin
+  AMap.Clear;
+  i:=AConfig.GetValue(ABaseName+'Count',-1);
+  for i := 0 to Cnt do begin
+
+  end;
+
+end;
+
+function TConvertSettings.WriteConfigMap(ABaseName: string; AConfig: TConfigStorage;
+                                         AMap: TStringToStringTree): boolean;
+begin
+
+end;
+}
 function TConvertSettings.RunForm: TModalResult;
 var
   SettingsForm: TConvertSettingsForm;

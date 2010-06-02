@@ -44,7 +44,7 @@ uses
   CustomFormEditor, LazarusIDEStrConsts, IDEProcs, OutputFilter,
   EditorOptions, CheckLFMDlg,
   // Converter
-  ConvertSettings, ReplaceNamesUnit;
+  ConvertSettings, ReplaceNamesUnit, ConvCodeTool;
 
 type
 
@@ -226,6 +226,9 @@ begin
 end;
 
 function TLFMFixer.ReplaceAndRemoveAll: TModalResult;
+// Replace or remove properties and types based on values in grid.
+// Returns mrRetry if some types were changed and a new scan is needed,
+//         mrOK if no types were changed, and mrCancel if there was an error.
 var
   CurError: TLFMError;
   TheNode: TLFMTreeNode;
@@ -260,6 +263,7 @@ begin
             StartPos:=ObjNode.TypeNamePosition;
             EndPos:=StartPos+Length(OldIdent);
             AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
+            Result:=mrRetry;
           end;
         end
         else begin
@@ -340,37 +344,83 @@ begin
     fLFMSynEdit:=FixLFMDialog.LFMSynEdit;
     fErrorsListBox:=FixLFMDialog.ErrorsListBox;
     fPropReplaceGrid:=FixLFMDialog.PropertyReplaceGrid;
-      LoadLFM;
-      if fSettings.AutoRemoveProperties and not fHasMissingObjectTypes then
-        Result:=ReplaceAndRemoveAll
-      else begin
-        // Cursor is earlier set to HourGlass. Show normal cursor while in dialog.
-        PrevCursor:=Screen.Cursor;
-        Screen.Cursor:=crDefault;
-        try
-          Result:=FixLFMDialog.ShowModal;
-        finally
-          Screen.Cursor:=PrevCursor;
-        end;
+    LoadLFM;
+    if fSettings.AutoRemoveProperties and not fHasMissingObjectTypes then
+      Result:=ReplaceAndRemoveAll
+    else begin
+      // Cursor is earlier set to HourGlass. Show normal cursor while in dialog.
+      PrevCursor:=Screen.Cursor;
+      Screen.Cursor:=crDefault;
+      try
+        Result:=FixLFMDialog.ShowModal;
+      finally
+        Screen.Cursor:=PrevCursor;
       end;
+    end;
   finally
     FixLFMDialog.Free;
   end;
 end;
 
 function TLFMFixer.Repair: TModalResult;
+var
+  CurError: TLFMError;
+  MissingObjectTypes: TStringList;
+  RegComp: TRegisteredComponent;
+  TypeName: String;
+  i, LoopCount: integer;
 begin
   Result:=mrCancel;
-  if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
-                           fRootMustBeClassInIntf,fObjectsMustExists)
-  then begin
-    Result:=mrOk;
-    exit;
+  MissingObjectTypes:=TStringList.Create;
+  try
+    // Change a type that main form inherits from to a fall-back type if needed.
+    if not FixMainClassAncestor(fPascalBuffer, fSettings.ReplaceTypes) then exit;
+    LoopCount:=0;
+    repeat
+      if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
+                               fRootMustBeClassInIntf,fObjectsMustExists)
+      or (Result=mrOK) then begin // mrOK was returned from ShowRepairLFMWizard.
+        Result:=mrOk;
+        exit;
+      end;
+      // collect all missing object types
+      CurError:=fLFMTree.FirstError;
+      while CurError<>nil do begin
+        if CurError.IsMissingObjectType then begin
+          TypeName:=(CurError.Node as TLFMObjectNode).TypeName;
+          if MissingObjectTypes.IndexOf(TypeName)<0 then
+            MissingObjectTypes.Add(TypeName);
+        end;
+        CurError:=CurError.NextError;
+      end;
+      // Missing object types in unit.
+
+      // keep all object types with a registered component class
+      TypeName:=MissingObjectTypes.Text;
+      for i:=MissingObjectTypes.Count-1 downto 0 do begin
+        RegComp:=IDEComponentPalette.FindComponent(MissingObjectTypes[i]);
+        if (RegComp=nil) or (RegComp.GetUnitName='') then
+          MissingObjectTypes.Delete(i);
+      end;
+      if MissingObjectTypes.Count>0 then begin
+        // Missing object types, but luckily found in IDE registered component classes.
+        Result:=PackageEditingInterface.AddUnitDependenciesForComponentClasses(
+             fPascalBuffer.Filename,MissingObjectTypes);
+        if Result<>mrOk then exit;
+        // check LFM again
+        if not CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
+                                   fRootMustBeClassInIntf,fObjectsMustExists) then
+          exit;
+      end;
+      // Rename / remove properties and types interactively.
+      Result:=ShowRepairLFMWizard;
+      Inc(LoopCount);
+    until (Result in [mrOK, mrCancel]) or (LoopCount=10);
+    // Show remaining errors to user.
+    WriteLFMErrors;
+  finally
+    MissingObjectTypes.Free;
   end;
-  Result:=FixMissingComponentClasses;
-  if Result in [mrAbort,mrOk] then exit;
-  WriteLFMErrors;
-  Result:=ShowRepairLFMWizard;
 end;
 
 
