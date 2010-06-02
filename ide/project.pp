@@ -3217,7 +3217,9 @@ var
   AnUnit: TUnitInfo;
 begin
   AnUnit:=ProjectFile as TUnitInfo;
-  //debugln('TProject.AddUnit A ',AnUnit.Filename,' AddToProjectFile=',dbgs(AddToProjectFile));
+  //debugln('TProject.AddFile A ',AnUnit.Filename,' AddToProjectFile=',dbgs(AddToProjectFile));
+  if UnitInfoWithFilename(AnUnit.Filename)<>nil then
+    debugln(['TProject.AddFile WARNING: file already in unit list: ',AnUnit.Filename]);
   BeginUpdate(true);
   NewIndex:=UnitCount;
   FUnitList.Add(AnUnit);
@@ -3999,9 +4001,7 @@ var
 begin
   if AFileName='' then exit;
   //debugln(['TProject.OnLoadSaveFilename A "',AFilename,'" fPathDelimChanged=',fPathDelimChanged,' Load=',Load]);
-  if (not fPathDelimChanged) or (not Load) then begin
-    FileWasAbsolute:=FilenameIsAbsolute(AFileName);
-  end else begin
+  if Load and fPathDelimChanged then begin
     {$IFDEF MSWindows}
     // PathDelim changed from '/' to '\'
     FileWasAbsolute:=FilenameIsUnixAbsolute(AFileName);
@@ -4010,6 +4010,8 @@ begin
     FileWasAbsolute:=FilenameIsWinAbsolute(AFileName);
     {$ENDIF}
     DoDirSeparators(AFilename);
+  end else begin
+    FileWasAbsolute:=FilenameIsAbsolute(AFileName);
   end;
   AFilename:=TrimFilename(AFilename);
   

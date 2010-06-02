@@ -4806,12 +4806,14 @@ var
   LFMFilename: String;
   UnitCode: TCodeBuffer;
   LFMCode: TCodeBuffer;
+  AFilename: String;
 begin
-  if not FileExistsInIDE(UnitFilename,[]) then begin
-    DebugLn(['TMainIDE.DoOpenComponent file not found ',UnitFilename]);
+  AFilename:=CleanAndExpandFilename(UnitFilename);
+  if not FileExistsInIDE(AFilename,[]) then begin
+    DebugLn(['TMainIDE.DoOpenComponent file not found ',AFilename]);
     exit(mrCancel);
   end;
-  AnUnitInfo:=Project1.UnitInfoWithFilename(UnitFilename);
+  AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename);
   if (not (ofRevert in OpenFlags))
   and (AnUnitInfo<>nil) and (AnUnitInfo.Component<>nil) then begin
     // already open
@@ -4820,18 +4822,18 @@ begin
     exit;
   end;
 
-  LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
+  LFMFilename:=ChangeFileExt(AFilename,'.lfm');
   if not FileExistsInIDE(LFMFilename,[]) then
-    LFMFilename:=ChangeFileExt(UnitFilename,'.dfm');
+    LFMFilename:=ChangeFileExt(AFilename,'.dfm');
   if not FileExistsInIDE(LFMFilename,[]) then begin
     DebugLn(['TMainIDE.DoOpenComponent file not found ',LFMFilename]);
     exit(mrCancel);
   end;
 
   // load unit source
-  Result:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText],true);
+  Result:=LoadCodeBuffer(UnitCode,AFilename,[lbfCheckIfText],true);
   if Result<>mrOk then begin
-    debugln('TMainIDE.DoOpenComponent Failed loading ',UnitFilename);
+    debugln('TMainIDE.DoOpenComponent Failed loading ',AFilename);
     exit;
   end;
 
