@@ -118,7 +118,7 @@ end;
 procedure LoadIDEWindowHelp;
 var
   Filename: String;
-  Config: TConfigStorage;
+  Config: TXMLOptionsStorage;
 begin
   if IDEWindowHelpNodes=nil then
     IDEWindowHelpNodes:=TIWHelpTree.Create;

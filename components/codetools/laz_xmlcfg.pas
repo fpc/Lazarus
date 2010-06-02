@@ -509,9 +509,10 @@ begin
   PathIndex:=0;
   Result:=GetPathNodeCache(PathIndex);
   if Result=nil then begin
-    Result := doc.DocumentElement;
+    Result := TDOMElement(doc.FindNode('CONFIG'));
     SetPathNodeCache(PathIndex,Result);
   end;
+  if PathLen=0 then exit;
   StartPos:=1;
   while (Result<>nil) do begin
     EndPos:=StartPos;
@@ -580,6 +581,7 @@ begin
   end;
 
   doc:=nil;
+  //debugln(['TXMLConfig.SetFilename ',not fDoNotLoadFromFile,' ',FileExistsCached(Filename)]);
   if (not fDoNotLoadFromFile) and FileExistsCached(Filename) then
     ReadXMLFile(doc,Filename)
   else if fAutoLoadFromSource<>'' then begin
@@ -601,6 +603,7 @@ begin
     doc := TXMLDocument.Create;
 
   cfg :=TDOMElement(doc.FindNode('CONFIG'));
+  //debugln(['TXMLConfig.SetFilename ',DbgSName(cfg)]);
   if not Assigned(cfg) then begin
     cfg := doc.CreateElement('CONFIG');
     doc.AppendChild(cfg);
