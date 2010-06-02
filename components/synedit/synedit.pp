@@ -2169,7 +2169,7 @@ begin
     if (FirstLine = -1) and (LastLine = -1) then begin
       rcInval := Rect(0, 0, fGutterWidth, ClientHeight - ScrollBarWidth);
       {$IFDEF VerboseSynEditInvalidate}
-      DebugLn(['TCustomSynEdit.InvalidateGutterLines ALL ',dbgs(rcInval)]);
+      DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' ALL ',dbgs(rcInval)]);
       {$ENDIF}
       InvalidateRect(Handle, @rcInval, FALSE);
     end else begin
@@ -2193,7 +2193,7 @@ begin
         rcInval := Rect(0, fTextHeight * FirstLine,
           fGutterWidth, fTextHeight * LastLine);
         {$IFDEF VerboseSynEditInvalidate}
-        DebugLn(['TCustomSynEdit.InvalidateGutterLines PART ',dbgs(rcInval)]);
+        DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' PART ',dbgs(rcInval)]);
         {$ENDIF}
         InvalidateRect(Handle, @rcInval, FALSE);
       end;
@@ -2214,7 +2214,7 @@ begin
       rcInval := ClientRect;
       rcInval.Left := fGutterWidth;
       {$IFDEF VerboseSynEditInvalidate}
-      DebugLn(['TCustomSynEdit.InvalidateLines ALL ',dbgs(rcInval)]);
+      DebugLn(['TCustomSynEdit.InvalidateLines ',DbgSName(self),' ALL ',dbgs(rcInval)]);
       {$ENDIF}
       InvalidateRect(Handle, @rcInval, FALSE);
     end else begin
@@ -2238,7 +2238,7 @@ begin
         rcInval := Rect(fGutterWidth, fTextHeight * f,
           ClientWidth-ScrollBarWidth, fTextHeight * l);
         {$IFDEF VerboseSynEditInvalidate}
-        DebugLn(['TCustomSynEdit.InvalidateLines PART ',dbgs(rcInval)]);
+        DebugLn(['TCustomSynEdit.InvalidateLines ',DbgSName(self),' PART ',dbgs(rcInval)]);
         {$ENDIF}
         InvalidateRect(Handle, @rcInval, FALSE);
       end;
@@ -2900,7 +2900,7 @@ begin
     {$ENDIF}
 
       {$IFDEF SYNSCROLLDEBUG}
-      debugln(['PAINT sfHasScrolled=',dbgs(sfHasScrolled in fStateFlags)]);
+      debugln(['PAINT ',DbgSName(self),' sfHasScrolled=',dbgs(sfHasScrolled in fStateFlags),' rect=',dbgs(rcClip)]);
       {$ENDIF}
 
   Include(fStateFlags,sfPainting);
@@ -2928,7 +2928,7 @@ begin
              {$ENDIF}
              );
       {$IFDEF SYNSCROLLDEBUG}
-      debugln(['PAINT rect=',dbgs(rcClip), ' L1=',nL1, '  Nl2=',nL2]);
+      debugln(['PAINT ',DbgSName(self),' rect=',dbgs(rcClip), ' L1=',nL1, '  Nl2=',nL2]);
       {$ENDIF}
   //DebugLn('TCustomSynEdit.Paint LinesInWindow=',dbgs(LinesInWindow),' nL1=',dbgs(nL1),' nL2=',dbgs(nL2));
   // Now paint everything while the caret is hidden.
