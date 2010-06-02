@@ -443,45 +443,40 @@ begin
   if Visible and (AIndex >= 0) and (AIndex < ItemList.Count) and
      (FLongLineHintType <> sclpNone)
   then begin
-    if not(FHint.IsVisible and (FHint.Index = AIndex)) then begin
-      if (FHint.Index <> AIndex) and (FLongLineHintTime > 0) then
-        FHint.Hide;
+    // CalcHintRect uses the current index
+    FHint.Index := AIndex;
+    // calculate the size
+    R := FHint.CalcHintRect(Monitor.Width, ItemList[AIndex], nil);
 
-      // CalcHintRect uses the current index
-      FHint.Index := AIndex;
-      // calculate the size
-      R := FHint.CalcHintRect(Monitor.Width, ItemList[AIndex], nil);
-
-      if R.Right <= ClientWidth then begin
-        FHint.Hide;
-        Exit;
-      end;
-
-      // calculate the position
-      M := Monitor;
-      P := ClientToScreen(Point(0, (AIndex - Scroll.Position) * FFontHeight));
-      case FLongLineHintType of
-        sclpExtendHalfLeft:      MinLeft := Max(M.Left,  P.X - ClientWidth div 2);
-        sclpExtendUnlimitedLeft: MinLeft := M.Left;
-        else                     MinLeft := P.X;
-      end;
-      P.X := Max(MinLeft,
-                 Min(P.X,                              // Start at drop-down Left boundary
-                     M.Left + M.Width - R.Right - 1    // Or push left, if hitting right Monitor border
-                    )
-                );
-      P.Y := Max(M.Top, Min(P.Y, M.Top + M.Height - R.Bottom - 1));
-      // actually Width and Height
-      R.Right := Min(r.Right, M.Left + M.Width - 1 - P.X);
-      R.Bottom := Min(r.Bottom, M.Top + M.Height - 1 - P.Y);
-
-      FHint.DisplayRect := Bounds(P.X, P.Y, R.Right, R.Bottom);
-
-      if FLongLineHintTime > 0 then
-        FHintTimer.Enabled := True
-      else
-        OnHintTimer(nil);
+    if R.Right <= ClientWidth then begin
+      FHint.Hide;
+      Exit;
     end;
+
+    // calculate the position
+    M := Monitor;
+    P := ClientToScreen(Point(0, (AIndex - Scroll.Position) * FFontHeight));
+    case FLongLineHintType of
+      sclpExtendHalfLeft:      MinLeft := Max(M.Left,  P.X - ClientWidth div 2);
+      sclpExtendUnlimitedLeft: MinLeft := M.Left;
+      else                     MinLeft := P.X;
+    end;
+    P.X := Max(MinLeft,
+               Min(P.X,                              // Start at drop-down Left boundary
+                   M.Left + M.Width - R.Right - 1    // Or push left, if hitting right Monitor border
+                  )
+              );
+    P.Y := Max(M.Top, Min(P.Y, M.Top + M.Height - R.Bottom - 1));
+    // actually Width and Height
+    R.Right := Min(r.Right, M.Left + M.Width - 1 - P.X);
+    R.Bottom := Min(r.Bottom, M.Top + M.Height - 1 - P.Y);
+
+    FHint.DisplayRect := Bounds(P.X, P.Y, R.Right, R.Bottom);
+
+    if (not FHint.IsVisible) and (FLongLineHintTime > 0) then
+      FHintTimer.Enabled := True
+    else
+      OnHintTimer(nil);
   end
   else begin
     FHint.Hide;
