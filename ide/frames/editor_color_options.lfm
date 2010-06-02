@@ -1227,6 +1227,7 @@ inherited EditorColorOptionsFrame: TEditorColorOptionsFrame
     end
   end
   object ExportSaveDialog: TSaveDialog[5]
+    DefaultExt = '.xml'
     Filter = 'xml|*.xml'
     Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
     left = 288
