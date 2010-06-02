@@ -53,7 +53,7 @@ object ConvertSettingsForm: TConvertSettingsForm
       Visible = False
     end
     object UnitReplacementsButton: TBitBtn
-      Left = 123
+      Left = 78
       Height = 30
       Top = 44
       Width = 160
@@ -62,7 +62,7 @@ object ConvertSettingsForm: TConvertSettingsForm
       TabOrder = 2
     end
     object TypeReplacementsButton: TBitBtn
-      Left = 303
+      Left = 350
       Height = 30
       Top = 44
       Width = 160
