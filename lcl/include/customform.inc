@@ -90,14 +90,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.BeforeDestruction;
 begin
+  // EndWrite will happen in the destructor
   GlobalNameSpace.BeginWrite;
   Destroying;
   Screen.FSaveFocusedList.Remove(Self);
   RemoveFixupReferences(Self, '');
-  //if FOleForm <> nil then FOleForm.OnDestroy;
   if FormStyle <> fsMDIChild then Hide;
   DoDestroy;
-  inherited BeforeDestruction;
+  // don't call the inherited method because it calls Destroying which is already called
 end;
 
 {------------------------------------------------------------------------------
@@ -112,7 +112,8 @@ var
   HandlerType: TFormHandlerType;
 begin
   //DebugLn('[TCustomForm.Destroy] A ',Name,':',ClassName);
-  if not (csDestroying in ComponentState) then GlobalNameSpace.BeginWrite;
+  if not (csDestroying in ComponentState) then
+    GlobalNameSpace.BeginWrite;
   try
     DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.Destroy'){$ENDIF};
     FreeThenNil(FIcon);
@@ -125,8 +126,8 @@ begin
     inherited Destroy;
     //DebugLn('[TCustomForm.Destroy] END ',Name,':',ClassName);
   finally
-    if not (csDestroying in ComponentState) then
-      GlobalNameSpace.EndWrite;
+    // BeginWrite has happen either in the BeforeDestrucion or here
+    GlobalNameSpace.EndWrite;
   end;
 end;
 
