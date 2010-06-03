@@ -4690,7 +4690,9 @@ begin
     InvalidateGutterLines(AIndex + 1, -1);
   end;
   if TopLine > AIndex + 1 then
-    TopLine := TopLine + ACount;
+    TopLine := TopLine + ACount // will call UpdateScrollBars
+  else
+    UpdateScrollBars;
 end;
 
 procedure TCustomSynEdit.LineTextChanged(Sender: TSynEditStrings;
@@ -4712,6 +4714,7 @@ begin
     InvalidateLines(AIndex + 1, AIndex + ACount);
     InvalidateGutterLines(AIndex + 1, AIndex + ACount);
   end;
+  UpdateScrollBars;
 end;
 
 procedure TCustomSynEdit.DoHighlightChanged(Sender: TSynEditStrings; AIndex,
