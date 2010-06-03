@@ -1362,6 +1362,24 @@ end;
   file attributes
 -------------------------------------------------------------------------------}
 function BackupFile(const Filename, BackupFilename: string): boolean;
+
+  function FileIsLocked(const FileName: String): Boolean;
+  {$ifdef Windows}
+  var
+    FHandle: THandle;
+  {$endif}
+  begin
+    {$ifdef Windows}
+    // try to open with all denies
+    FHandle := FileOpen(UTF8ToSys(FileName), fmOpenRead or fmShareDenyRead or fmShareDenyWrite);
+    Result := FHandle = feInvalidHandle;
+    if not Result then
+      FileClose(FHandle);
+    {$else}
+    Result := False;
+    {$endif}
+  end;
+
 var
   FHandle: THandle;
   {$IFdef MSWindows}
@@ -1379,16 +1397,16 @@ begin
   FpStat(Filename, OldInfo);
   {$ENDIF}
   
-  if not FileIsSymlink(Filename) then
+  // if not a symlink => rename old file, create empty new file
+  if not FileIsSymlink(Filename) and
+     not FileIsLocked(Filename) and
+     RenameFileUTF8(Filename, BackupFilename) then
   begin
-    // not a symlink => rename old file, create empty new file
-    // rename file
-    if not RenameFileUTF8(Filename, BackupFilename) then exit;
     // create empty file
-    FHandle := FileCreate(FileName);
+    FHandle := FileCreate(UTF8ToSys(FileName));
     FileClose(FHandle);
   end
-  else // file is a symlink -> copy file
+  else // file is a symlink or rename failed => copy file
   if not CopyFile(Filename, BackupFilename) then exit;
 
   // restore file attributes
