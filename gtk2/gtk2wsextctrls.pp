@@ -22,7 +22,7 @@
 }
 unit Gtk2WSExtCtrls;
 
-{$I ../gtk/gtkdefines.inc}
+{$I gtk2defines.inc}
 //{$define UseStatusIcon} // can be used only with fpc r13008
 
 

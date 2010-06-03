@@ -23,7 +23,7 @@
 unit Gtk2WSComCtrls;
 
 {$mode objfpc}{$H+}
-{$I gtkdefines.inc}
+{$I gtk2defines.inc}
 
 interface
 

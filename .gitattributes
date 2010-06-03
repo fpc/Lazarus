@@ -75,6 +75,7 @@ gtk2/TODOS.txt svneol=native#text/plain
 gtk2/gtk2callback.inc svneol=native#text/plan
 gtk2/gtk2cellrenderer.pas svneol=native#text/plain
 gtk2/gtk2def.pp svneol=native#text/pascal
+gtk2/gtk2defines.inc svneol=native#text/plain
 gtk2/gtk2devicecontext.inc svneol=native#text/pascal
 gtk2/gtk2extra.inc svneol=native#text/pascal
 gtk2/gtk2extrah.inc svneol=native#text/pascal

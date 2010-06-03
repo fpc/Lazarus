@@ -25,7 +25,7 @@ unit gtk2proc;
 
 interface
 
-{$I gtkdefines.inc}
+{$I gtk2defines.inc}
 
 uses
   {$IFDEF windows}

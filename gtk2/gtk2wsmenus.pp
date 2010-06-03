@@ -75,7 +75,7 @@ type
 
 implementation
 
-{$I gtkdefines.inc}
+{$I gtk2defines.inc}
 
 function Gtk2MenuItemButtonPress(widget: PGtkWidget; event: PGdkEventButton;
  user_data: gpointer): gboolean; cdecl;

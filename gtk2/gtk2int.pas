@@ -31,7 +31,7 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-{$I gtkdefines.inc}
+{$I gtk2defines.inc}
 
 uses
   Types, Classes, SysUtils, Math, maps,

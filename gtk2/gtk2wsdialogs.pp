@@ -114,7 +114,7 @@ procedure UpdateDetailView(OpenDialog: TOpenDialog);
 
 implementation
 
-{$I gtkdefines.inc}
+{$I gtk2defines.inc}
 
 {-------------------------------------------------------------------------------
   procedure UpdateDetailView
