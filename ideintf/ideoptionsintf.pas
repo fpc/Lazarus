@@ -102,7 +102,7 @@ type
     Index: Integer;
     Parent: Integer;
     EditorClass: TAbstractIDEOptionsEditorClass;
-    Collapsed: Boolean;
+    Collapsed, DefaultCollapsed: Boolean;
   end;
 
   { TIDEOptionsEditorList }
@@ -124,7 +124,7 @@ type
     Index: Integer;
     GroupClass: TAbstractIDEOptionsClass;
     Items: TIDEOptionsEditorList;
-    Collapsed: Boolean;
+    Collapsed, DefaultCollapsed: Boolean;
   end;
 
   { TIDEOptionsGroupList }
@@ -397,6 +397,7 @@ begin
     Result^.Index := AIndex;
     Result^.Parent := AParent;
     Result^.Collapsed := AEditorClass.DefaultCollapseChildNodes;
+    Result^.DefaultCollapsed := AEditorClass.DefaultCollapseChildNodes;
     inherited Add(Result);
   end;
 
@@ -493,6 +494,7 @@ begin
     Result^.Index := AGroupIndex;
     Result^.Items := nil;
     Result^.Collapsed := False;
+    Result^.DefaultCollapsed := False;
     inherited Add(Result);
   end;
 
