@@ -3789,6 +3789,8 @@ begin
       '/ColorScheme/Value', '')
   else
     Result := '';
+  if ColorSchemeFactory.ColorSchemeGroup[Result] = nil then
+    Result := '';
   if Result = '' then
     Result := ReadPascalColorScheme;
 end;
@@ -3805,6 +3807,8 @@ begin
       TPreviewPasSyn.GetLanguageName) + '/ColorScheme/Value', '')
   else
     Result := XMLConfig.GetValue('EditorOptions/Color/ColorScheme', '');
+  if ColorSchemeFactory.ColorSchemeGroup[Result] = nil then
+    Result := '';
   if (Result = '') then begin
     if DefaultColorSchemeName <> '' then
       Result := DefaultColorSchemeName
@@ -4040,6 +4044,8 @@ begin
   // get current colorscheme:
   SynColorScheme := ReadColorScheme(aSynEd.Highlighter.LanguageName);
   SchemeGrp := UserColorSchemeGroup.ColorSchemeGroup[SynColorScheme];
+  if SchemeGrp = nil then
+    exit;
   Scheme := SchemeGrp.ColorSchemeBySynClass[aSynEd.Highlighter.ClassType];
 
   if Assigned(Scheme) then Scheme.ApplyTo(aSynEd);
@@ -4056,6 +4062,8 @@ var
 begin
   SynColorScheme := ReadColorScheme(Syn.LanguageName);
   SchemeGrp := UserColorSchemeGroup.ColorSchemeGroup[SynColorScheme];
+  if SchemeGrp = nil then
+    exit;
   Scheme := SchemeGrp.ColorSchemeBySynClass[Syn.ClassType];
   Attrib := Scheme.AttributeByEnum[AddHilightAttr];
   if Attrib <> nil then begin
