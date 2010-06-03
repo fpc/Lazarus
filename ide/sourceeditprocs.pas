@@ -117,6 +117,7 @@ var
   BGBlue: Integer;
   TokenStart: Integer;
   BackgroundColor: TColor;
+  ForegroundColor: TColor;
 
   procedure SetFontColor(NewColor: TColor);
   
@@ -197,15 +198,15 @@ var
           System.Move(sToken^,s[1],nTokenLen);
           attr := Highlighter.GetTokenAttribute;
           CurForeground:=Attr.Foreground;
-          if CurForeground=clNone then CurForeground:=clBlack;
-          ACanvas.Font.Color:=CurForeground;
+          if CurForeground=clNone then CurForeground:=ForegroundColor;
+          SetFontColor(CurForeground);
           ACanvas.TextOut(x,y,s);
           inc(x,ACanvas.TextWidth(s));
         end;
         Highlighter.Next;
       end;
     end else begin
-      SetFontColor(clBlack);
+      SetFontColor(ForegroundColor);
       ACanvas.TextOut(x+1,y,s);
     end;
   end;
@@ -219,6 +220,7 @@ var
   ItemNode: TCodeTreeNode;
   SubNode: TCodeTreeNode;
 begin
+  ForegroundColor := ACanvas.Font.Color;
   Result.X := 0;
   Result.Y := ACanvas.TextHeight('W');
   if CurrentCompletionType=ctIdentCompletion then begin
@@ -319,7 +321,7 @@ begin
     if x>MaxX then exit;
 
     // paint the identifier
-    SetFontColor(clBlack);
+    SetFontColor(ForegroundColor);
     ACanvas.Font.Style:=ACanvas.Font.Style+[fsBold];
     s:=IdentItem.Identifier;
     if MeasureOnly then
