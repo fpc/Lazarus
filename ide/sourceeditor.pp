@@ -167,9 +167,11 @@ type
     FExecutionLine: integer;
     FMarksRequested: Boolean;
   public
+    UpdatingExecutionMark: Integer;
     procedure CreateExecutionMark;
     property ExecutionLine: Integer read FExecutionLine write FExecutionLine;
     property ExecutionMark: TSourceMark read FExecutionMark write FExecutionMark;
+    procedure SetExecutionLine(NewLine: integer);
     property MarksRequested: Boolean read FMarksRequested write FMarksRequested;
   private
     FInGlobalUpdate: Integer;
@@ -2209,6 +2211,42 @@ begin
   FExecutionMark.Priority := 1;
 end;
 
+procedure TSourceEditorSharedValues.SetExecutionLine(NewLine: integer);
+var
+  BrkMark: TSourceMark;
+begin
+  if FExecutionLine = NewLine then
+    exit;
+
+  inc(UpdatingExecutionMark);
+  try
+    if FExecutionLine >= 0 then begin
+      BrkMark := SourceEditorMarks.FindBreakPointMark(SharedEditors[0], FExecutionLine);
+      if BrkMark <> nil then
+        BrkMark.Visible := True;
+    end;
+
+    if (FExecutionMark = nil) then begin
+      if NewLine = -1 then
+        exit;
+      CreateExecutionMark;
+    end;
+
+    FExecutionLine := NewLine;
+    FExecutionMark.Visible := NewLine <> -1;
+
+    if FExecutionLine >= 0 then begin
+      BrkMark := SourceEditorMarks.FindBreakPointMark(SharedEditors[0], FExecutionLine);
+      if BrkMark <> nil then
+        BrkMark.Visible := False;
+    end;
+
+    FExecutionMark.Line := NewLine;
+  finally
+    dec(UpdatingExecutionMark);
+  end;
+end;
+
 procedure TSourceEditorSharedValues.IncreaseIgnoreCodeBufferLock;
 begin
   inc(FIgnoreCodeBufferLock);
@@ -3540,8 +3578,6 @@ begin
     BreakFound := False;
     for i := 0 to MarkCount - 1 do
     begin
-      if not Marks[i].Visible then
-        Continue;
       if Marks[i].IsBreakPoint then
       begin
         BreakFound := True;
@@ -3641,37 +3677,37 @@ procedure TSourceEditor.UpdateExecutionSourceMark;
 var
   BreakPoint: TIDEBreakPoint;
   ExecutionMark: TSourceMark;
+  BrkMark: TSourceMark;
 begin
+  if FSharedValues.UpdatingExecutionMark > 0 then exit;
   ExecutionMark := FSharedValues.ExecutionMark;
   if ExecutionMark = nil then exit;
 
-  if ExecutionMark.Visible then
-  begin
-    if SourceEditorMarks.FindBreakPointMark(Self, ExecutionLine) <> nil then
+  inc(FSharedValues.UpdatingExecutionMark);
+  try
+    if ExecutionMark.Visible then
     begin
-      BreakPoint := DebugBoss.BreakPoints.Find(Self.FileName, ExecutionLine);
-      if (BreakPoint <> nil) and (not BreakPoint.Enabled) then
-        ExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineDisabledBreakPointImg
+      BrkMark := SourceEditorMarks.FindBreakPointMark(Self, ExecutionLine);
+      if BrkMark <> nil then begin
+        BrkMark.Visible := False;
+        BreakPoint := DebugBoss.BreakPoints.Find(Self.FileName, ExecutionLine);
+        if (BreakPoint <> nil) and (not BreakPoint.Enabled) then
+          ExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineDisabledBreakPointImg
+        else
+          ExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineBreakPointImg;
+      end
       else
-        ExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineBreakPointImg;
-    end
-    else
-      ExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineImg;
+        ExecutionMark.ImageIndex := SourceEditorMarks.CurrentLineImg;
+    end;
+  finally
+    dec(FSharedValues.UpdatingExecutionMark);
   end;
 end;
 
 procedure TSourceEditor.SetExecutionLine(NewLine: integer);
 begin
   if ExecutionLine=NewLine then exit;
-  if (FSharedValues.ExecutionMark = nil) then begin
-    if NewLine = -1 then
-      exit;
-    FSharedValues.CreateExecutionMark;
-  end;
-  FSharedValues.ExecutionLine := NewLine;
-  FSharedValues.ExecutionMark.Visible := NewLine <> -1;
-  if NewLine <> -1 then
-    FSharedValues.ExecutionMark.Line := NewLine;
+  FSharedValues.SetExecutionLine(NewLine);
   UpdateExecutionSourceMark;
 end;
 
