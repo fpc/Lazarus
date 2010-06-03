@@ -815,13 +815,13 @@ end;
 function FileIsSymlink(const AFilename: string): boolean;
 {$IFDEF WINDOWS}
 var
-  FileHandle: Integer;
+  FileHandle: THandle;
   FileInfo: TBYHANDLEFILEINFORMATION;
 {$ENDIF}
 begin
   {$IFDEF WINDOWS}
   FileHandle := FileOpen(UTF8ToSys(AFileName), fmOpenRead or fmShareDenyNone);
-  if FileHandle >= 0 then
+  if FileHandle <> feInvalidHandle then
   begin
     GetFileInformationByHandle(HFile(FileHandle), FileInfo);
     Result := FileInfo.nNumberOfLinks > 1;
@@ -1452,7 +1452,7 @@ var
   DestFS: TFileStream;
 begin
   try
-    SrcFS:=TFileStream.Create(UTF8ToSys(SrcFilename), fmOpenRead or fmShareDenyWrite);
+    SrcFS := TFileStream.Create(UTF8ToSys(SrcFilename), fmOpenRead or fmShareDenyWrite);
     try
       DestFS := TFileStream.Create(UTF8ToSys(DestFilename), fmCreate);
       try
