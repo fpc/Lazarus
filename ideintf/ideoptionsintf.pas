@@ -70,6 +70,7 @@ type
   { TAbstractIDEOptionsEditor }
 
   PIDEOptionsEditorRec = ^TIDEOptionsEditorRec;
+  PIDEOptionsGroupRec = ^TIDEOptionsGroupRec;
 
   TAbstractIDEOptionsEditor = class(TFrame)
   private
@@ -77,6 +78,7 @@ type
     FOnLoadIDEOptions: TOnLoadIDEOptions;
     FOnSaveIDEOptions: TOnSaveIDEOptions;
     FRec: PIDEOptionsEditorRec;
+    FGroupRec: PIDEOptionsGroupRec;
   protected
     procedure DoOnChange;
   public
@@ -86,11 +88,13 @@ type
     procedure ReadSettings(AOptions: TAbstractIDEOptions); virtual; abstract;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); virtual; abstract;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; virtual; abstract;
+    class function DefaultCollapseChildNodes: Boolean; virtual;
 
     property OnLoadIDEOptions: TOnLoadIDEOptions read FOnLoadIDEOptions write FOnLoadIDEOptions;
     property OnSaveIDEOptions: TOnSaveIDEOptions read FOnSaveIDEOptions write FOnSaveIDEOptions;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Rec: PIDEOptionsEditorRec read FRec write FRec;
+    property GroupRec: PIDEOptionsGroupRec read FGroupRec write FGroupRec;
   end;
   TAbstractIDEOptionsEditorClass = class of TAbstractIDEOptionsEditor;
 
@@ -98,6 +102,7 @@ type
     Index: Integer;
     Parent: Integer;
     EditorClass: TAbstractIDEOptionsEditorClass;
+    Collapsed: Boolean;
   end;
 
   { TIDEOptionsEditorList }
@@ -119,8 +124,8 @@ type
     Index: Integer;
     GroupClass: TAbstractIDEOptionsClass;
     Items: TIDEOptionsEditorList;
+    Collapsed: Boolean;
   end;
-  PIDEOptionsGroupRec = ^TIDEOptionsGroupRec;
 
   { TIDEOptionsGroupList }
 
@@ -340,6 +345,11 @@ begin
   Result := True;
 end;
 
+class function TAbstractIDEOptionsEditor.DefaultCollapseChildNodes: Boolean;
+begin
+  Result := False;
+end;
+
 { TIDEOptionsEditorList }
 
 function TIDEOptionsEditorList.GetItem(AIndex: Integer): PIDEOptionsEditorRec;
@@ -386,6 +396,7 @@ begin
     New(Result);
     Result^.Index := AIndex;
     Result^.Parent := AParent;
+    Result^.Collapsed := AEditorClass.DefaultCollapseChildNodes;
     inherited Add(Result);
   end;
 
@@ -481,6 +492,7 @@ begin
     New(Result);
     Result^.Index := AGroupIndex;
     Result^.Items := nil;
+    Result^.Collapsed := False;
     inherited Add(Result);
   end;
 

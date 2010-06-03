@@ -842,8 +842,9 @@ var XMLConfig: TXMLConfig;
   OldDebuggerType: TDebuggerType;
   Path: String;
   CurPath: String;
-  i: Integer;
+  i, j: Integer;
   name: String;
+  Rec: PIDEOptionsGroupRec;
 
   procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
   var i:integer;
@@ -1159,7 +1160,19 @@ begin
     // object inspector
     FObjectInspectorOptions.Load;
     FObjectInspectorOptions.SaveBounds:=false;
-    
+
+    for i := 0 to IDEEditorGroups.Count - 1 do begin
+      Rec := IDEEditorGroups[i];
+      name := Rec^.GroupClass.ClassName;
+      Rec^.Collapsed := XMLConfig.GetValue('OptionDialog/Tree/' + name + '/Value', False);
+      if Rec^.Items <> nil then begin
+        for j := 0 to Rec^.Items.Count - 1 do begin
+        Rec^.Items[j]^.Collapsed := XMLConfig.GetValue('OptionDialog/Tree/' + name
+                + '/' + Rec^.Items[j]^.EditorClass.ClassName + '/Value', False);
+        end;
+      end;
+    end;
+
     FileUpdated;
   except
     // ToDo
@@ -1171,6 +1184,9 @@ end;
 procedure TEnvironmentOptions.Save(OnlyDesktop: boolean);
 var XMLConfig: TXMLConfig;
   Path: String;
+  i, j: Integer;
+  name: String;
+  Rec: PIDEOptionsGroupRec;
 
   procedure SaveBackupInfo(var BackupInfo: TBackupInfo; Path:string);
   var i:integer;
@@ -1415,6 +1431,20 @@ begin
     FObjectInspectorOptions.SaveBounds:=false;
     FObjectInspectorOptions.Save;
     
+    for i := 0 to IDEEditorGroups.Count - 1 do begin
+      Rec := IDEEditorGroups[i];
+      name := Rec^.GroupClass.ClassName;
+      XMLConfig.SetDeleteValue('OptionDialog/Tree/' + name + '/Value',
+                               Rec^.Collapsed, False);
+      if Rec^.Items <> nil then begin
+        for j := 0 to Rec^.Items.Count - 1 do begin
+          XMLConfig.SetDeleteValue('OptionDialog/Tree/' + name
+                                   + '/' + Rec^.Items[j]^.EditorClass.ClassName + '/Value',
+                                   Rec^.Items[j]^.Collapsed, False);
+        end;
+      end;
+    end;
+
     XMLConfig.Flush;
     FileUpdated;
   except

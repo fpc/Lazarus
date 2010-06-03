@@ -41,8 +41,9 @@ type
   TIDEOptionsDialog = class(TAbstractOptionsEditorDialog)
     ButtonPanel: TButtonPanel;
     CategoryTree: TTreeView;
-
     procedure CategoryTreeChange(Sender: TObject; Node: TTreeNode);
+    procedure CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
+    procedure CategoryTreeExpanded(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
@@ -150,6 +151,26 @@ begin
 
     PrevEditor := AEditor;
   end;
+end;
+
+procedure TIDEOptionsDialog.CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
+begin
+  if node.Deleting then exit;
+  if (Node.Data <> nil) then
+    TAbstractIDEOptionsEditor(Node.Data).Rec^.Collapsed := True
+  else
+  if (Node.GetFirstChild <> nil) and (Node.GetFirstChild.Data <> nil) then
+    TAbstractIDEOptionsEditor(Node.GetFirstChild.Data).GroupRec^.Collapsed := True;
+end;
+
+procedure TIDEOptionsDialog.CategoryTreeExpanded(Sender: TObject; Node: TTreeNode);
+begin
+  if node.Deleting then exit;
+  if (Node.Data <> nil) then
+    TAbstractIDEOptionsEditor(Node.Data).Rec^.Collapsed := False
+  else
+  if (Node.GetFirstChild <> nil) and (Node.GetFirstChild.Data <> nil) then
+    TAbstractIDEOptionsEditor(Node.GetFirstChild.Data).GroupRec^.Collapsed := False;
 end;
 
 procedure TIDEOptionsDialog.CategoryTreeKeyDown(Sender: TObject; var Key: Word;
@@ -409,11 +430,17 @@ begin
         ItemNode := CategoryTree.Items.AddChild(ItemParent, Instance.GetTitle);
         ItemNode.Data := Instance;
 
-        ItemParent.Expanded := True;
+        if ItemParent.Data <> nil then begin
+          Instance := TAbstractIDEOptionsEditor(ItemParent.Data);
+          ItemParent.Expanded := not Instance.Rec^.Collapsed;
+        end;
         if IDEEditorGroups.LastSelected = Rec^.Items[j] then
           SelectNode := ItemNode;
       end;
-      GroupNode.Expanded := True;
+      if (GroupNode.GetFirstChild <> nil) and (GroupNode.GetFirstChild.Data <> nil) then
+        TAbstractIDEOptionsEditor(GroupNode.GetFirstChild.Data).GroupRec := Rec;
+      GroupNode.Expanded := not Rec^.Collapsed;
+      //GroupNode.Data := Rec;
     end;
   end;
   if SelectNode <> nil then
