@@ -694,6 +694,8 @@ procedure TSynBaseCompletionForm.ScrollScroll(Sender: TObject; ScrollCode: TScro
 begin
   if ScrollPos > (Scroll.Max - Scroll.PageSize) + 1 then
     ScrollPos := Scroll.Max - Scroll.PageSize + 1;
+  FHint.Hide;
+  ShowItemHint(Position);
 end;
 
 procedure TSynBaseCompletionForm.SelectNext;
