@@ -141,7 +141,6 @@ type
     procedure SetBackgroundColor(const AValue: TColor);
     procedure FontChanged(Sender: TObject); override;
   private
-    Bitmap: TBitmap; // used for drawing
     fCurrentEditor: TComponent;
     FOnMeasureItem: TSynBaseCompletionMeasureItem;
     FOnPositionChanged: TNotifyEvent;
@@ -401,7 +400,6 @@ begin
   Visible := false;
   ClSelect := clHighlight;
   TStringList(FItemList).OnChange := {$IFDEF FPC}@{$ENDIF}StringListChange;
-  bitmap := TBitmap.Create;
   FNbLinesInWindow := 6;
   FontChanged(Font);
   ShowHint := False;
@@ -424,7 +422,6 @@ end;
 
 destructor TSynBaseCompletionForm.Destroy;
 begin
-  bitmap.free;
   Scroll.Free;
   FItemList.Free;
   FHintTimer.Free;
@@ -624,47 +621,42 @@ begin
     Scroll.Max := 0;
   end;
 
-  bitmap.SetSize(ClientWidth, ClientHeight);
-  with bitmap do
+  //DebugLn(['TSynBaseCompletionForm.Paint NbLinesInWindow=',NbLinesInWindow,' ItemList.Count=',ItemList.Count]);
+  for i := 0 to min(NbLinesInWindow - 1, ItemList.Count - Scroll.Position - 1) do
   begin
-    //DebugLn(['TSynBaseCompletionForm.Paint NbLinesInWindow=',NbLinesInWindow,' ItemList.Count=',ItemList.Count]);
-    for i := 0 to min(NbLinesInWindow - 1, ItemList.Count - Scroll.Position - 1) do 
+    if i + Scroll.Position = Position then
     begin
-      if i + Scroll.Position = Position then 
-      begin
-        Canvas.Brush.Color := clSelect;
-        Canvas.Pen.Color := clSelect;
-        Canvas.Rectangle(0, (FFontHeight * i), width, (FFontHeight * (i + 1))+1);
-        Canvas.Pen.Color := clBlack;
-        Canvas.Font.Color := TextSelectedColor;
-        Hint := ItemList[Position];
-      end
-      else
-      begin
-        Canvas.Brush.Color := BackgroundColor;
-        Canvas.Font.Color := TextColor;
-        Canvas.FillRect(Rect(0, (FFontHeight * i), width, (FFontHeight * (i + 1))+1));
-      end;
-
-      //DebugLn(['TSynBaseCompletionForm.Paint ',i,' ',ItemList[Scroll.Position + i]]);
-      if not Assigned(OnPaintItem) or
-         not OnPaintItem(ItemList[Scroll.Position + i], Canvas,
-          0, FFontHeight * i, i + Scroll.Position = Position,
-          i + Scroll.Position
-          ) then
-      begin
-        Canvas.TextOut(2, FFontHeight * i, ItemList[Scroll.Position + i]);
-      end;
+      Canvas.Brush.Color := clSelect;
+      Canvas.Pen.Color := clSelect;
+      Canvas.Rectangle(0, (FFontHeight * i), width, (FFontHeight * (i + 1))+1);
+      Canvas.Pen.Color := clBlack;
+      Canvas.Font.Color := TextSelectedColor;
+      Hint := ItemList[Position];
+    end
+    else
+    begin
+      Canvas.Brush.Color := BackgroundColor;
+      Canvas.Font.Color := TextColor;
+      Canvas.FillRect(Rect(0, (FFontHeight * i), width, (FFontHeight * (i + 1))+1));
     end;
-    // paint the rest of the background
-    if NbLinesInWindow > ItemList.Count - Scroll.Position then 
+
+    //DebugLn(['TSynBaseCompletionForm.Paint ',i,' ',ItemList[Scroll.Position + i]]);
+    if not Assigned(OnPaintItem) or
+       not OnPaintItem(ItemList[Scroll.Position + i], Canvas,
+        0, FFontHeight * i, i + Scroll.Position = Position,
+        i + Scroll.Position
+        ) then
     begin
-      Canvas.brush.color := color;
-      i:=(FFontHeight * ItemList.Count)+1;
-      Canvas.FillRect(Rect(0, i, Width, Height));
+      Canvas.TextOut(2, FFontHeight * i, ItemList[Scroll.Position + i]);
     end;
   end;
-  Canvas.Draw(1, 1, bitmap);
+  // paint the rest of the background
+  if NbLinesInWindow > ItemList.Count - Scroll.Position then
+  begin
+    Canvas.brush.color := color;
+    i:=(FFontHeight * ItemList.Count)+1;
+    Canvas.FillRect(Rect(0, i, Width, Height));
+  end;
   // draw a rectangle around the window
   Canvas.Pen.Color := TextColor;
   Canvas.Moveto(0, 0);
@@ -782,12 +774,8 @@ var
   OldWidth: LongInt;
 begin
   inherited DoOnResize;
-  if ([csLoading,csDestroying]*ComponentState<>[])
-  or (Bitmap=nil) or (Scroll=nil) then exit;
-  OldHeight:=Bitmap.Height+2;
-  OldWidth:=Bitmap.Width+Scroll.Width;
-  if ((OldHeight<>Height) or (OldWidth<>Width)) and
-     (fFontHeight > 0) and (FResizeLock = 0) then
+  if ([csLoading,csDestroying]*ComponentState<>[]) or (Scroll=nil) then exit;
+  if (fFontHeight > 0) and (FResizeLock = 0) then
   begin
     FNbLinesInWindow := (Height-2+(fFontHeight-1)) div fFontHeight;
     Invalidate;
@@ -841,8 +829,6 @@ begin
   try
     FNbLinesInWindow := Value;
     Height := fFontHeight * NbLinesInWindow + 2;
-    Bitmap.Width := Scroll.Left;
-    Bitmap.Height := Height - 2;
   finally
     dec(FResizeLock);
   end;
