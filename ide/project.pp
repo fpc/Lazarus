@@ -1775,6 +1775,7 @@ begin
   end;
   
   fFileName:=NewFilename;
+  UpdateDefaultHighlighter(FilenameToLazSyntaxHighlighter(FFilename));
   UpdateSourceDirectoryReference;
 end;
 
