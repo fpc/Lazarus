@@ -1164,11 +1164,13 @@ begin
     for i := 0 to IDEEditorGroups.Count - 1 do begin
       Rec := IDEEditorGroups[i];
       name := Rec^.GroupClass.ClassName;
-      Rec^.Collapsed := XMLConfig.GetValue('OptionDialog/Tree/' + name + '/Value', False);
+      Rec^.Collapsed := XMLConfig.GetValue('OptionDialog/Tree/' + name + '/Value',
+                                           Rec^.DefaultCollapsed);
       if Rec^.Items <> nil then begin
         for j := 0 to Rec^.Items.Count - 1 do begin
         Rec^.Items[j]^.Collapsed := XMLConfig.GetValue('OptionDialog/Tree/' + name
-                + '/' + Rec^.Items[j]^.EditorClass.ClassName + '/Value', False);
+                + '/' + Rec^.Items[j]^.EditorClass.ClassName + '/Value',
+                Rec^.Items[j]^.DefaultCollapsed);
         end;
       end;
     end;
@@ -1435,12 +1437,14 @@ begin
       Rec := IDEEditorGroups[i];
       name := Rec^.GroupClass.ClassName;
       XMLConfig.SetDeleteValue('OptionDialog/Tree/' + name + '/Value',
-                               Rec^.Collapsed, False);
+                               Rec^.Collapsed,
+                               Rec^.DefaultCollapsed);
       if Rec^.Items <> nil then begin
         for j := 0 to Rec^.Items.Count - 1 do begin
           XMLConfig.SetDeleteValue('OptionDialog/Tree/' + name
                                    + '/' + Rec^.Items[j]^.EditorClass.ClassName + '/Value',
-                                   Rec^.Items[j]^.Collapsed, False);
+                                   Rec^.Items[j]^.Collapsed,
+                                   Rec^.Items[j]^.DefaultCollapsed);
         end;
       end;
     end;
