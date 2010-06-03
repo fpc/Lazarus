@@ -1,4 +1,4 @@
-{%MainUnit gtkproc.pp}
+{%MainUnit gtk2proc.pp}
 
 {******************************************************************************
                         Misc Support Functs  
@@ -10136,4 +10136,4 @@ end;
   {$C-}
 {$ENDIF}
 
-// included by gtkproc.pp
+// included by gtk2proc.pp
