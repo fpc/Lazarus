@@ -1541,7 +1541,8 @@ begin
         if (fMakeDirHistory=nil) then fMakeDirHistory:=TStringList.Create;
         fMakeDirHistory.Add(fCurrentDirectory);
       end;
-      InternalSetCurrentDirectory(copy(s,i,length(s)-i));
+      // the make tool uses unix paths under windows
+      InternalSetCurrentDirectory(SetDirSeparators(copy(s,i,length(s)-i)));
       exit;
     end;
     // check for leaving directory
@@ -1565,7 +1566,7 @@ begin
       MsgStartPos:=BracketEnd+1;
       while (MsgStartPos<=length(s)) and (s[MsgStartPos]=' ') do inc(MsgStartPos);
       MakeMsg:=copy(s,MsgStartPos,length(s)-MsgStartPos+1);
-      DoAddFilteredLine(s);
+      DoAddFilteredLine(SetDirSeparators(s));
       if CompareText(copy(MakeMsg,1,5),'Error')=0 then
         if (ofoExceptionOnError in Options) then
           RaiseOutputFilterError(s);
