@@ -91,6 +91,7 @@ gtk2/gtk2privatelist.inc svneol=native#text/pascal
 gtk2/gtk2privatewidget.inc svneol=native#text/plain
 gtk2/gtk2proc.inc svneol=native#text/pascal
 gtk2/gtk2proc.pp svneol=native#text/plan
+gtk2/gtk2stdpixmaps.inc svneol=native#text/pascal
 gtk2/gtk2themes.pas svneol=native#text/pascal
 gtk2/gtk2trayicon.inc svneol=native#text/pascal
 gtk2/gtk2widgetset.inc svneol=native#text/pascal
