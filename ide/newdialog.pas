@@ -186,6 +186,7 @@ begin
       MessageDlg(lisNewDlgNoItemSelected,
         lisNewDlgPleaseSelectAnItemFirst, mtInformation, [mbOK], 0);
     FNewItem := nil;
+    ModalResult:=mrNone;
     exit;
   end;
   FNewItem := TNewIDEItemTemplate(ANode.Data);

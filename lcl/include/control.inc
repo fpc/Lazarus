@@ -113,7 +113,7 @@ procedure TControl.DoDock(NewDockSite: TWinControl; var ARect: TRect);
 begin
   if (NewDockSite = nil) then Parent := nil;
   if NewDockSite<>nil then begin
-    DebugLn('TControl.DoDock BEFORE Adjusting ',Name,' ',dbgs(ARect));
+    DebugLn('TControl.DoDock BEFORE Adjusting ',DbgSName(Self),' ',dbgs(ARect));
     // adjust new bounds, so that they at least fit into the client area of
     // its parent
     if NewDockSite.AutoSize then begin
@@ -135,14 +135,14 @@ begin
         alBottom: OffsetRect(ARect,0,NewDockSite.ClientHeight-ARect.Bottom);
       end;
     end;
-    DebugLn('TControl.DoDock AFTER Adjusting ',Name,' ',dbgs(ARect),' Align=',AlignNames[Align],' NewDockSite.ClientRect=',dbgs(NewDockSite.ClientRect));
+    DebugLn('TControl.DoDock AFTER Adjusting ',DbgSName(Self),' ',dbgs(ARect),' Align=',AlignNames[Align],' NewDockSite.ClientRect=',dbgs(NewDockSite.ClientRect));
   end;
   //debugln('TControl.DoDock BEFORE MOVE ',Name,' BoundsRect=',dbgs(BoundsRect),' NewRect=',dbgs(ARect));
   if Parent<>NewDockSite then
     BoundsRectForNewParent := ARect
   else
     BoundsRect := ARect;
-  debugln('TControl.DoDock AFTER MOVE ',Name,' BoundsRect=',dbgs(BoundsRect),' TriedRect=',dbgs(ARect));
+  debugln('TControl.DoDock AFTER MOVE ',DbgSName(Self),' BoundsRect=',dbgs(BoundsRect),' TriedRect=',dbgs(ARect));
 end;
 
 {------------------------------------------------------------------------------
