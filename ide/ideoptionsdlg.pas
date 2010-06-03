@@ -54,6 +54,8 @@ type
     FOptionsFilter: TAbstractIDEOptionsClass;
     PrevEditor: TAbstractIDEOptionsEditor;
     FEditorsCreated: Boolean;
+    SelectNode: TTreeNode;
+    NewLastSelected: PIDEOptionsEditorRec;
 
     function CheckValues: boolean;
     procedure DoOpenEditor(EditorToOpen: TAbstractIDEOptionsEditorClass);
@@ -127,6 +129,7 @@ begin
   end;
 
   AEditor := TAbstractIDEOptionsEditor(Node.Data);
+  NewLastSelected := AEditor.Rec;
   if (AEditor <> nil) and (AEditor <> PrevEditor) then
   begin
     if PrevEditor <> nil then
@@ -170,6 +173,7 @@ end;
 
 procedure TIDEOptionsDialog.OkButtonClick(Sender: TObject);
 begin
+  IDEEditorGroups.LastSelected := NewLastSelected;
   if not CheckValues then
     Exit;
   IDEDialogLayoutList.SaveLayout(Self);
@@ -367,6 +371,7 @@ begin
     Exit;
   FEditorsCreated := True;
   IDEEditorGroups.Resort;
+  SelectNode := nil;
 
   for i := 0 to IDEEditorGroups.Count - 1 do
   begin
@@ -390,6 +395,7 @@ begin
         Instance.Tag := Rec^.Items[j]^.Index;
         Instance.Visible := False;
         Instance.Parent := Self;
+        instance.Rec := Rec^.Items[j];
 
         if Rec^.Items[j]^.Parent = NoParent then
           ItemParent := GroupNode
@@ -404,10 +410,14 @@ begin
         ItemNode.Data := Instance;
 
         ItemParent.Expanded := True;
+        if IDEEditorGroups.LastSelected = Rec^.Items[j] then
+          SelectNode := ItemNode;
       end;
       GroupNode.Expanded := True;
     end;
   end;
+  if SelectNode <> nil then
+    SelectNode.Selected := True;
 end;
 
 function TIDEOptionsDialog.SearchEditorNode(AEditor: TAbstractIDEOptionsEditorClass): TTreeNode;
@@ -445,12 +455,17 @@ procedure TIDEOptionsDialog.DoOpenEditor(EditorToOpen: TAbstractIDEOptionsEditor
 var
   Node: TTreeNode;
 begin
-  if EditorToOpen = nil then
-    Node := CategoryTree.Items.GetFirstNode
+  if EditorToOpen = nil then begin
+    if SelectNode <> nil then
+      Node := SelectNode
+    else
+      Node := CategoryTree.Items.GetFirstNode
+  end
   else
     Node := SearchEditorNode(EditorToOpen);
   if Node <> nil then
     CategoryTree.Selected := Node;
+  SelectNode := nil;
 end;
 
 function TIDEOptionsDialog.ShowModal: Integer;

@@ -69,11 +69,14 @@ type
 
   { TAbstractIDEOptionsEditor }
 
+  PIDEOptionsEditorRec = ^TIDEOptionsEditorRec;
+
   TAbstractIDEOptionsEditor = class(TFrame)
   private
     FOnChange: TNotifyEvent;
     FOnLoadIDEOptions: TOnLoadIDEOptions;
     FOnSaveIDEOptions: TOnSaveIDEOptions;
+    FRec: PIDEOptionsEditorRec;
   protected
     procedure DoOnChange;
   public
@@ -87,6 +90,7 @@ type
     property OnLoadIDEOptions: TOnLoadIDEOptions read FOnLoadIDEOptions write FOnLoadIDEOptions;
     property OnSaveIDEOptions: TOnSaveIDEOptions read FOnSaveIDEOptions write FOnSaveIDEOptions;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property Rec: PIDEOptionsEditorRec read FRec write FRec;
   end;
   TAbstractIDEOptionsEditorClass = class of TAbstractIDEOptionsEditor;
 
@@ -95,7 +99,6 @@ type
     Parent: Integer;
     EditorClass: TAbstractIDEOptionsEditorClass;
   end;
-  PIDEOptionsEditorRec = ^TIDEOptionsEditorRec;
 
   { TIDEOptionsEditorList }
 
@@ -123,6 +126,7 @@ type
 
   TIDEOptionsGroupList = class(TList)
   private
+    FLastSelected: PIDEOptionsEditorRec;
     function GetItem(Position: Integer): PIDEOptionsGroupRec;
     procedure SetItem(Position: Integer; const AValue: PIDEOptionsGroupRec);
   protected
@@ -134,6 +138,7 @@ type
     function GetByGroupClass(AGroupClass: TAbstractIDEOptionsClass): PIDEOptionsGroupRec;
     function Add(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass): PIDEOptionsGroupRec; reintroduce;
     property Items[Position: Integer]: PIDEOptionsGroupRec read GetItem write SetItem; default;
+    property LastSelected: PIDEOptionsEditorRec read FLastSelected write FLastSelected;
   end;
 
   TAbstractOptionsEditorDialog = class(TForm)
