@@ -121,12 +121,10 @@ begin
   inherited Create(AStringMap);
   fGrid:=AGrid;
   GridEndInd:=1;
-  fGrid.BeginUpdate;
 end;
 
 destructor TGridUpdater.Destroy;
 begin
-  fGrid.EndUpdate;
   inherited Destroy;
 end;
 

@@ -32,7 +32,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, IDEProcs,
   StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, LazarusIDEStrConsts,
-  CodeToolsStructs, BaseIDEIntf, LazConfigStorage, ButtonPanel, ReplaceNamesUnit;
+  CodeToolsStructs, AVL_Tree, BaseIDEIntf, LazConfigStorage,
+  ButtonPanel, ReplaceNamesUnit;
 
 type
 
@@ -46,6 +47,8 @@ type
     // Unit, Project or Package top file and path.
     fMainFilename: String;
     fMainPath: String;
+    // Persistent storage in XML or some other format.
+    fConfigStorage: TConfigStorage;
     // Actual user settings.
     fBackupFiles: boolean;
     fTarget: TConvertTarget;
@@ -56,11 +59,6 @@ type
     fReplaceUnits: TStringToStringTree;
     // Delphi types mapped to Lazarus types, will be replaced.
     fReplaceTypes: TStringToStringTree;
-
-{    function ReadConfigMap(ABaseName: string; AConfig: TConfigStorage;
-                           AMap: TStringToStringTree): boolean;
-    function WriteConfigMap(ABaseName: string; AConfig: TConfigStorage;
-                            AMap: TStringToStringTree): boolean;   }
     // Getter / setter:
     function GetBackupPath: String;
     procedure SetMainFilename(const AValue: String);
@@ -137,91 +135,108 @@ implementation
 
 { TConvertSettings }
 
+procedure LoadStringToStringTree(Config: TConfigStorage; const Path: string;
+  Tree: TStringToStringTree);
+var
+  Cnt: LongInt;
+  SubPath: String;
+  CurName: String;
+  CurValue: String;
+  i: Integer;
+begin
+  Tree.Clear;
+  Cnt:=Config.GetValue(Path+'Count',0);
+  for i:=0 to Cnt-1 do begin
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    CurName:=Config.GetValue(SubPath+'Name','');
+    CurValue:=Config.GetValue(SubPath+'Value','');
+    Tree[CurName]:=CurValue;
+  end;
+end;
+
+procedure SaveStringToStringTree(Config: TConfigStorage; const Path: string;
+  Tree: TStringToStringTree);
+var
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+  i: Integer;
+  SubPath: String;
+begin
+  Config.SetDeleteValue(Path+'Count',Tree.Tree.Count,0);
+  Node:=Tree.Tree.FindLowest;
+  i:=0;
+  while Node<>nil do begin
+    Item:=PStringToStringTreeItem(Node.Data);
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    Config.SetDeleteValue(SubPath+'Name',Item^.Name,'');
+    Config.SetDeleteValue(SubPath+'Value',Item^.Value,'');
+    Node:=Tree.Tree.FindSuccessor(Node);
+    inc(i);
+  end;
+end;
+
 constructor TConvertSettings.Create(const ATitle: string);
-// var Config: TConfigStorage;  AString: string;
 begin
   fTitle:=ATitle;
   fMainFilename:='';
   fMainPath:='';
-{ ToDo: Read Config file
-  LoadStringToStringTree();
-  Config:=GetIDEConfigStorage('delphiconverter.xml',true);
-  try
-    AString:=Config.GetValue('Name1','');
-    ABool:=Config.GetValue('Name2',true);
-    ...
-  finally
-    Config.Free;
-  end;
-}
-  // Now hard-code some values. Later move them to a config file.
-  // Map Delphi units to Lazarus units.
   fReplaceUnits:=TStringToStringTree.Create(false);
-  fReplaceUnits['Windows']:='LCLIntf, LCLType, LMessages';
-  fReplaceUnits['Variants']:='';
-  fReplaceUnits['ShellApi']:='';
-  fReplaceUnits['pngImage']:='';
-  fReplaceUnits['Jpeg']:='';
-  fReplaceUnits['gifimage']:='';
-  fReplaceUnits['^Q(.+)']:='$1';      // Kylix unit names.
-  fReplaceUnits['^Tnt(.+)']:='$1';    // Tnt* third party components.
-
-  // Map Delphi types to LCL types.
   fReplaceTypes:=TStringToStringTree.Create(false);
-  fReplaceTypes['TFlowPanel']:='TPanel';
-  fReplaceTypes['TGridPanel']:='TPanel';
-  fReplaceTypes['TControlBar']:='TToolBar';
-  fReplaceTypes['TCoolBar']:='TToolBar';
-  fReplaceTypes['TComboBoxEx']:='TComboBox';
-  fReplaceTypes['TValueListEditor']:='TStringGrid';
-  fReplaceTypes['TRichEdit']:='TMemo';
-  fReplaceTypes['TDBRichEdit']:='TDBMemo';
-  fReplaceTypes['TApplicationEvents']:='TApplicationProperties';
-  fReplaceTypes['TPNGObject']:='TPortableNetworkGraphic';
-  fReplaceTypes['^TTnt(.+)']:='T$1';
+  // Load settings from ConfigStorage.
+  fConfigStorage:=GetIDEConfigStorage('delphiconverter.xml', true);
+  fBackupFiles          :=fConfigStorage.GetValue('BackupFiles', true);
+  fTarget:=TConvertTarget(fConfigStorage.GetValue('ConvertTarget', 0));
+  fSameDFMFile          :=fConfigStorage.GetValue('SameDFMFile', false);
+  fAutoRemoveProperties :=fConfigStorage.GetValue('AutoRemoveProperties', false);
+  fAutoConvertTypes     :=fConfigStorage.GetValue('AutoConvertTypes', false);
+  LoadStringToStringTree(fConfigStorage, 'ReplaceUnits', fReplaceUnits);
+  LoadStringToStringTree(fConfigStorage, 'ReplaceTypes', fReplaceTypes);
 
+  // Add default values if ConfigStorage doesn't have any.
+  if fReplaceUnits.Tree.Count=0 then begin
+    // Map Delphi units to Lazarus units.
+    fReplaceUnits['Windows']:='LCLIntf, LCLType, LMessages';
+    fReplaceUnits['Variants']:='';
+    fReplaceUnits['ShellApi']:='';
+    fReplaceUnits['pngImage']:='';
+    fReplaceUnits['Jpeg']:='';              //maskedit
+    fReplaceUnits['gifimage']:='';
+    fReplaceUnits['^Q(.+)']:='$1';      // Kylix unit names.
+    fReplaceUnits['^Tnt(.+)']:='$1';    // Tnt* third party components.
+  end;
+  if fReplaceTypes.Tree.Count=0 then begin
+    // Map Delphi types to LCL types.
+    fReplaceTypes['TFlowPanel']:='TPanel';
+    fReplaceTypes['TGridPanel']:='TPanel';
+    fReplaceTypes['TControlBar']:='TToolBar';
+    fReplaceTypes['TCoolBar']:='TToolBar';
+    fReplaceTypes['TComboBoxEx']:='TComboBox';
+    fReplaceTypes['TValueListEditor']:='TStringGrid';
+    fReplaceTypes['TRichEdit']:='TMemo';
+    fReplaceTypes['TDBRichEdit']:='TDBMemo';
+    fReplaceTypes['TApplicationEvents']:='TApplicationProperties';
+    fReplaceTypes['TPNGObject']:='TPortableNetworkGraphic';
+    fReplaceTypes['^TTnt(.+)']:='T$1';
+  end;
 end;
 
 destructor TConvertSettings.Destroy;
 begin
+  // Save possibly modified settings to ConfigStorage.
+  fConfigStorage.SetDeleteValue('BackupFiles',          fBackupFiles, true);
+  fConfigStorage.SetDeleteValue('ConvertTarget',        integer(fTarget), 0);
+  fConfigStorage.SetDeleteValue('SameDFMFile',          fSameDFMFile, false);
+  fConfigStorage.SetDeleteValue('AutoRemoveProperties', fAutoRemoveProperties, false);
+  fConfigStorage.SetDeleteValue('AutoConvertTypes',     fAutoConvertTypes, false);
+  SaveStringToStringTree(fConfigStorage, 'ReplaceUnits', fReplaceUnits);
+  SaveStringToStringTree(fConfigStorage, 'ReplaceTypes', fReplaceTypes);
+  // Free stuff
+  fConfigStorage.Free;
   fReplaceTypes.Free;
   fReplaceUnits.Free;
   inherited Destroy;
 end;
-{
-function GetLazIDEConfigStorage(const Filename: string; LoadFromDisk: Boolean
-  ): TConfigStorage;
-var
-  ConfigFilename: String;
-begin
-  if LoadFromDisk then begin
-    // copy template config file to users config directory
-    CopySecondaryConfigFile(Filename);
-  end;
-  // create storage
-  ConfigFilename:=AppendPathDelim(GetPrimaryConfigPath)+Filename;
-  Result:=TXMLOptionsStorage.Create(ConfigFilename,LoadFromDisk);
-end;
 
-function TConvertSettings.ReadConfigMap(ABaseName: string; AConfig: TConfigStorage;
-                                        AMap: TStringToStringTree): boolean;
-var
-  Cnt, i: integer;
-begin
-  AMap.Clear;
-  i:=AConfig.GetValue(ABaseName+'Count',-1);
-  for i := 0 to Cnt do begin
-
-  end;
-
-end;
-
-function TConvertSettings.WriteConfigMap(ABaseName: string; AConfig: TConfigStorage;
-                                         AMap: TStringToStringTree): boolean;
-begin
-
-end;
-}
 function TConvertSettings.RunForm: TModalResult;
 var
   SettingsForm: TConvertSettingsForm;
@@ -231,24 +246,20 @@ begin
   try
     Caption:=fTitle;
     ProjectPathEdit.Text:=fMainPath;
-{
-    // ToDo: Load from XML.
-    // Settings --> UI.
-    BackupCheckBox.Checked          :=fBackupFiles;
-    TargetRadioGroup.ItemIndex      :=integer(fTarget);
-    SameDFMCheckBox.Checked         :=fSameDFMFile;
+    // Settings --> UI. Loaded from ConfigSettings earlier.
+    BackupCheckBox.Checked               :=fBackupFiles;
+    TargetRadioGroup.ItemIndex           :=integer(fTarget);
+    SameDFMCheckBox.Checked              :=fSameDFMFile;
     AutoRemovePropertiesCheckBox.Checked :=fAutoRemoveProperties;
-    AutoConvertTypesCheckBox.Checked:=fAutoConvertTypes;
-}
-    Result:=ShowModal;
+    AutoConvertTypesCheckBox.Checked     :=fAutoConvertTypes;
+    Result:=ShowModal;         // Let the user change settings in a form.
     if Result=mrOK then begin
-      // UI --> Settings.
+      // UI --> Settings. Will be saved to ConfigSettings later.
       fBackupFiles         :=BackupCheckBox.Checked;
       fTarget              :=TConvertTarget(TargetRadioGroup.ItemIndex);
       fSameDFMFile         :=SameDFMCheckBox.Checked;
       fAutoRemoveProperties:=AutoRemovePropertiesCheckBox.Checked;
       fAutoConvertTypes    :=AutoConvertTypesCheckBox.Checked;
-      // ToDo: Save to XML.
     end;
   finally
     Free;

@@ -366,6 +366,7 @@ function TLFMFixer.Repair: TModalResult;
 var
   CurError: TLFMError;
   MissingObjectTypes: TStringList;
+  ConvTool: TConvDelphiCodeTool;
   RegComp: TRegisteredComponent;
   TypeName: String;
   i, LoopCount: integer;
@@ -373,8 +374,16 @@ begin
   Result:=mrCancel;
   MissingObjectTypes:=TStringList.Create;
   try
+    fLFMTree:=DefaultLFMTrees.GetLFMTree(fLFMBuffer, true);
+    if not fLFMTree.ParseIfNeeded then exit;
     // Change a type that main form inherits from to a fall-back type if needed.
-    if not FixMainClassAncestor(fPascalBuffer, fSettings.ReplaceTypes) then exit;
+    ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
+    try
+      if not ConvTool.FixMainClassAncestor(TLFMObjectNode(fLFMTree.Root).TypeName,
+                                           fSettings.ReplaceTypes) then exit;
+    finally
+      ConvTool.Free;
+    end;
     LoopCount:=0;
     repeat
       if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
@@ -405,7 +414,7 @@ begin
       if MissingObjectTypes.Count>0 then begin
         // Missing object types, but luckily found in IDE registered component classes.
         Result:=PackageEditingInterface.AddUnitDependenciesForComponentClasses(
-             fPascalBuffer.Filename,MissingObjectTypes);
+                                     fPascalBuffer.Filename, MissingObjectTypes);
         if Result<>mrOk then exit;
         // check LFM again
         if not CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,

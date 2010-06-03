@@ -54,7 +54,8 @@ type
     function RemoveUnits: boolean;
     function RenameUnits: boolean;
     function UsesSectionsToUnitnames: TStringList;
-    function FixMainClassAncestor(AReplaceTypes: TStringToStringTree): boolean;
+    function FixMainClassAncestor(const AClassName: string;
+                                  AReplaceTypes: TStringToStringTree): boolean;
   public
     property Ask: Boolean read fAsk write fAsk;
     property UseBothDfmAndLfm: boolean read fUseBothDfmAndLfm write fUseBothDfmAndLfm;
@@ -66,23 +67,8 @@ type
     property UnitsToComment: TStringList read fUnitsToComment write fUnitsToComment;
   end;
 
-  // Global function
-  function FixMainClassAncestor(Code: TCodeBuffer; AReplaceTypes: TStringToStringTree): boolean;
-
 
 implementation
-
-
-function FixMainClassAncestor(Code: TCodeBuffer;
-                              AReplaceTypes: TStringToStringTree): boolean;
-var
-  ConvTool: TConvDelphiCodeTool;
-begin
-  ConvTool:=TConvDelphiCodeTool.Create(Code);
-  try     Result:=ConvTool.FixMainClassAncestor(AReplaceTypes);
-  finally ConvTool.Free;
-  end;
-end;
 
 { TConvDelphiCodeTool }
 
@@ -406,33 +392,9 @@ begin
 end;
 
 
-function TConvDelphiCodeTool.FixMainClassAncestor(AReplaceTypes: TStringToStringTree): boolean;
-// Change a type that main form inherits from to a fall-back type,
-//  if defined in AReplaceTypes.
-
-  function FindFirstClassNode: TCodeTreeNode;
-  // Search for the first class definition which is the only one for form files.
-  var
-    ANode, ClassNode: TCodeTreeNode;
-  begin
-    ANode:=fCodeTool.FindMainUsesSection;  // or fCodeTool.FindInterfaceNode;
-    if ANode<>nil then
-      ANode:=ANode.NextBrother;
-    Result:=nil;
-    while ANode<>nil do begin
-      if ANode.Desc in [ctnTypeDefinition,ctnGenericType] then begin
-        ClassNode:=fCodeTool.FindTypeNodeOfDefinition(ANode);
-        if (ClassNode<>nil) and (ClassNode.Desc in AllClassObjects) then begin
-          if (not ((ClassNode.SubDesc and ctnsForwardDeclaration)>0)) then begin
-            Result:=ClassNode;
-            exit;
-          end;
-        end;
-      end;
-      ANode:=ANode.Next;
-    end;
-  end;
-
+function TConvDelphiCodeTool.FixMainClassAncestor(const AClassName: string;
+                                    AReplaceTypes: TStringToStringTree): boolean;
+// Replace the ancestor type of main form with a fall-back type if needed.
 var
   ANode, InheritanceNode: TCodeTreeNode;
   TypeUpdater: TStringMapUpdater;
@@ -441,10 +403,8 @@ begin
   Result:=false;          //  fCodeTool.FindInheritanceNode
   with fCodeTool do begin
     BuildTree(true);
-    if (AReplaceTypes=nil) or (AReplaceTypes.Tree.Count=0) then exit(true);
-
     // Find the class name that the main class inherits from.
-    ANode:=FindFirstClassNode;
+    ANode:=FindClassNodeInInterface(AClassName,true,false,false); // FindFirstClassNode;
     if ANode=nil then exit;
     BuildSubTreeForClass(ANode);
     InheritanceNode:=FindInheritanceNode(ANode);
@@ -456,7 +416,6 @@ begin
       ReadNextAtom;
       OldType:=GetAtom;
     end;
-
     // Change the inheritance type to a fall-back type if needed.
     TypeUpdater:=TStringMapUpdater.Create(AReplaceTypes);
     try
