@@ -640,8 +640,10 @@ begin
   // customization of Params
   with Params do
   begin
-    // remove unsupported styles
-    Flags := Flags and not (CBS_SIMPLE or CBS_OWNERDRAWFIXED or CBS_OWNERDRAWVARIABLE);
+    //    Flags := Flags and not (CBS_SIMPLE or CBS_OWNERDRAWFIXED or CBS_OWNERDRAWVARIABLE);
+    // The following styles are suposed to be unsupported:
+    // CBS_SIMPLE or CBS_OWNERDRAWFIXED or CBS_OWNERDRAWVARIABLE
+    // But they work anyway, at least on the WM 6 Emulator
     pClassName := @ComboboxClsName;
     SubClassWndProc := @ComboBoxWindowProc;
   end;
