@@ -144,13 +144,14 @@ var
     GreenDiff: integer;
     BlueDiff: integer;
   begin
+    NewColor := ColorToRGB(NewColor);
     FGRed:=(NewColor shr 16) and $ff;
     FGGreen:=(NewColor shr 8) and $ff;
     FGBlue:=NewColor and $ff;
     RedDiff:=Abs(FGRed-BGRed);
     GreenDiff:=Abs(FGGreen-BGGreen);
-    BlueDiff:=Abs(FGBlue-BGBlue);
-    if RedDiff*RedDiff + GreenDiff*GreenDiff + BlueDiff*BlueDiff<70000 then
+    BlueDiff:=Abs(FGBlue -BGBlue);
+    if RedDiff*RedDiff + GreenDiff*GreenDiff + BlueDiff*BlueDiff<30000 then
     begin
       NewColor:=InvertColor(NewColor);
       {IncreaseDiff(FGRed,BGRed);
@@ -220,7 +221,7 @@ var
   ItemNode: TCodeTreeNode;
   SubNode: TCodeTreeNode;
 begin
-  ForegroundColor := ACanvas.Font.Color;
+  ForegroundColor := ColorToRGB(ACanvas.Font.Color);
   Result.X := 0;
   Result.Y := ACanvas.TextHeight('W');
   if CurrentCompletionType=ctIdentCompletion then begin
@@ -231,7 +232,7 @@ begin
         ACanvas.TextOut(x+1, y, 'PaintCompletionItem: BUG in codetools');
       exit;
     end;
-    BackgroundColor:=ACanvas.Brush.Color;
+    BackgroundColor:=ColorToRGB(ACanvas.Brush.Color);
     BGRed:=(BackgroundColor shr 16) and $ff;
     BGGreen:=(BackgroundColor shr 8) and $ff;
     BGBlue:=BackgroundColor and $ff;
