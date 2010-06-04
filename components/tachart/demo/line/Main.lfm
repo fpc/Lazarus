@@ -1,21 +1,21 @@
 object Form1: TForm1
   Left = 326
-  Height = 467
+  Height = 457
   Top = 189
-  Width = 556
+  Width = 571
   Caption = 'Form1'
-  ClientHeight = 467
-  ClientWidth = 556
+  ClientHeight = 457
+  ClientWidth = 571
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object Panel1: TPanel
     Left = 0
     Height = 42
     Top = 0
-    Width = 556
+    Width = 571
     Align = alTop
     ClientHeight = 42
-    ClientWidth = 556
+    ClientWidth = 571
     TabOrder = 0
     object cbLineType: TComboBox
       Left = 8
@@ -63,12 +63,29 @@ object Form1: TForm1
       OnClick = btnAddSeriesClick
       TabOrder = 3
     end
+    object edTime: TEdit
+      Left = 468
+      Height = 21
+      Top = 8
+      Width = 76
+      Alignment = taRightJustify
+      TabOrder = 4
+    end
+    object btnRefresh: TButton
+      Left = 376
+      Height = 25
+      Top = 8
+      Width = 88
+      Caption = 'Timed refresh:'
+      OnClick = btnRefreshClick
+      TabOrder = 5
+    end
   end
   object Chart1: TChart
     Left = 0
-    Height = 425
+    Height = 415
     Top = 42
-    Width = 556
+    Width = 571
     AxisList = <    
       item
         Alignment = calLeft
