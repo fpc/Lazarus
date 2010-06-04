@@ -729,6 +729,7 @@ begin
   Series.FList.Add(ASeries);
   ASeries.FChart := Self;
   ASeries.AfterAdd;
+  Invalidate;
 end;
 
 procedure TChart.DeleteSeries(ASeries: TBasicChartSeries);
