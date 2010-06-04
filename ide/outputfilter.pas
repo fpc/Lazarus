@@ -710,7 +710,7 @@ var i, j, FilenameEndPos: integer;
       // add path to history
       if fCompilingHistory=nil then fCompilingHistory:=TStringList.Create;
       inc(p,length('Compiling '));
-      if (length(s)>=p+1) and (s[p]='.') and (s[p+1]=PathDelim) then
+      if (length(s)>=p+1) and (s[p]='.') and (s[p+1] in ['/','\']) then
         inc(p,2);
       AFilename:=TrimFilename(SetDirSeparators(copy(s,p,length(s))));
       fCompilingHistory.Add(AFilename);
