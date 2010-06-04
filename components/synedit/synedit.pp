@@ -1802,6 +1802,7 @@ begin
     FOldTopView := TopView;
   end;
   inc(FPaintLock);
+  FMarkupManager.IncPaintLock;
   FFoldedLinesView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
   FTrimmedLinesView.Lock; // Lock before caret
   FCaret.Lock;
@@ -1827,6 +1828,7 @@ begin
     FCaret.Unlock;            // Maybe after FFoldedLinesView
     FTrimmedLinesView.UnLock; // Must be unlocked after caret // May Change lines
     FFoldedLinesView.UnLock;  // after ScanFrom, but before UpdateCaret
+    FMarkupManager.DecPaintLock;
     Dec(FPaintLock);
     if (FPaintLock = 0) and HandleAllocated then begin
       ScrollAfterTopLineChanged;
@@ -4111,13 +4113,13 @@ end;
 procedure TCustomSynEdit.CreateHandle;
 begin
   Application.RemoveOnIdleHandler(@IdleScanRanges);
-  inherited CreateHandle;   //SizeOrFontChanged will be called
-  ScanRanges;
-  if sfAfterLoadFromFile in fStateFlags then
-    AfterLoadFromFile;
-  UpdateScrollBars;
-  //if fStateFlags * [sfEnsureCursorPos, sfEnsureCursorPosAtResize] <> [] then
-  //  EnsureCursorPosVisible;
+  DoIncPaintLock(nil);
+  try
+    inherited CreateHandle;   //SizeOrFontChanged will be called
+    Include(fStateFlags, sfScrollbarChanged);
+  finally
+    DoDecPaintLock(nil);
+  end;
 end;
 
 procedure TCustomSynEdit.SetScrollBars(const Value: TScrollStyle);
@@ -4648,6 +4650,7 @@ begin
   FHighlighter.CurrentLines := FLines; // Trailing spaces are not needed
   FHighlighter.ScanRanges;
 
+  // Todo: text may not have changed
   fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd);
   Topline := TopLine;
 end;
@@ -5549,7 +5552,7 @@ begin
         fTSearch.ResetIdentChars;
       end;
       RecalcCharExtent;
-      ScanRanges;
+      ScanRanges; // Todo: Skip if paintlocked
     finally
       DecPaintLock;
     end;
@@ -6484,7 +6487,6 @@ begin
   end;
   Exclude(fStateFlags, sfAfterLoadFromFile);
   if assigned(FFoldedLinesView) then begin
-    // TODO: Maybe defer until after paintlock?
     ScanRanges;
     FFoldedLinesView.UnfoldAll;
     FFoldedLinesView.CollapseDefaultFolds;

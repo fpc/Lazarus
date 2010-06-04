@@ -61,6 +61,7 @@ type
     procedure SetStyle(const AValue : TFontStyles);
 
   protected
+    FPaintLock: Integer;
     procedure MarkupChanged(AMarkup: TObject);
 
     procedure SetInvalidateLinesMethod(const AValue : TInvalidateLines); virtual;
@@ -98,6 +99,8 @@ type
     Procedure TextChanged(aFirstCodeLine, aLastCodeLine: Integer); virtual;
     Procedure TempDisable;
     Procedure TempEnable;
+    procedure IncPaintLock; virtual;
+    procedure DecPaintLock; virtual;
 
     property MarkupInfo : TSynSelectedColor read fMarkupInfo;
     property FGColor : TColor read GetFGColor;
@@ -129,7 +132,9 @@ type
   public
     constructor Create(ASynEdit : TSynEditBase);
     destructor Destroy; override;
-    
+    procedure IncPaintLock; override;
+    procedure DecPaintLock; override;
+
     Procedure AddMarkUp(aMarkUp : TSynEditMarkup; AsFirst: Boolean = False);
     Procedure RemoveMarkUp(aMarkUp : TSynEditMarkup);
     function Count: Integer;
@@ -361,6 +366,16 @@ begin
     dec(FTempEnable);
 end;
 
+procedure TSynEditMarkup.IncPaintLock;
+begin
+  inc(FPaintLock);
+end;
+
+procedure TSynEditMarkup.DecPaintLock;
+begin
+  dec(FPaintLock);
+end;
+
 procedure TSynEditMarkup.PrepareMarkupForRow(aRow : Integer);
 begin
 end;
@@ -382,6 +397,24 @@ begin
       TSynEditMarkup(fMarkUpList[i]).destroy;
   FreeAndNil(fMarkUpList);
   inherited Destroy;
+end;
+
+procedure TSynEditMarkupManager.IncPaintLock;
+var
+  i: Integer;
+begin
+  inherited IncPaintLock;
+  for i := 0 to fMarkUpList.Count-1 do
+    TSynEditMarkup(fMarkUpList[i]).IncPaintLock;
+end;
+
+procedure TSynEditMarkupManager.DecPaintLock;
+var
+  i: Integer;
+begin
+  inherited DecPaintLock;
+  for i := 0 to fMarkUpList.Count-1 do
+    TSynEditMarkup(fMarkUpList[i]).IncPaintLock;
 end;
 
 procedure TSynEditMarkupManager.AddMarkUp(aMarkUp : TSynEditMarkup; AsFirst: Boolean = False);

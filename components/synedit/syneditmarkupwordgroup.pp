@@ -45,6 +45,7 @@ type
     FHighlightPos2: TWordPoint;
     FHighlightPos3: TWordPoint;
     FHighlighter: TSynCustomHighlighter;
+    FNeedInvalidate: Boolean;
     procedure SetHighlighter(const AValue: TSynCustomHighlighter);
   protected
     procedure FindMatchingWords(PhysCaret: TPoint;
@@ -57,6 +58,7 @@ type
     procedure InvalidateCurrentHighlight;
   public
     constructor Create(ASynEdit: TSynEditBase);
+    procedure DecPaintLock; override;
 
     function GetMarkupAttributeAtRowCol(const aRow, aCol: Integer): TSynSelectedColor; override;
     function GetNextMarkupColAfterRowCol(const aRow, aCol: Integer): Integer; override;
@@ -97,6 +99,13 @@ begin
   MarkupInfo.Background := clNone;
   MarkupInfo.Style := [];
   MarkupInfo.StyleMask := [];
+end;
+
+procedure TSynEditMarkupWordGroup.DecPaintLock;
+begin
+  inherited DecPaintLock;
+  if (FPaintLock = 0) and FNeedInvalidate then
+    InvalidateCurrentHighlight;
 end;
 
 procedure TSynEditMarkupWordGroup.SetHighlighter(const AValue: TSynCustomHighlighter);
@@ -319,8 +328,11 @@ procedure TSynEditMarkupWordGroup.InvalidateCurrentHighlight;
 var
   NewPos, NewAntiPos, NewMiddlePos : TWordPoint;
 begin
-  if (Caret = nil) or (not SynEdit.HandleAllocated) then
+  FNeedInvalidate := True;
+  if (Caret = nil) or (not SynEdit.HandleAllocated) or (FPaintLock > 0) then
     exit;
+
+  FNeedInvalidate := False;
   FindMatchingWords(Caret.LineCharPos, NewPos, NewAntiPos, NewMiddlePos);
 
   // invalidate old highlighting, if changed

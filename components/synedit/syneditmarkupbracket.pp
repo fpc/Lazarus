@@ -42,6 +42,7 @@ type
     FBracketHighlightPos: TPoint;
     FBracketHighlightAntiPos: TPoint;
     FHighlightStyle: TSynEditBracketHighlightStyle;
+    FNeedInvalidate: Boolean;
     procedure SetHighlightStyle(const AValue: TSynEditBracketHighlightStyle);
   protected
     procedure FindMatchingBracketPair(PhysCaret: TPoint;
@@ -53,6 +54,7 @@ type
     procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
   public
     constructor Create(ASynEdit: TSynEditBase);
+    procedure DecPaintLock; override;
 
     function GetMarkupAttributeAtRowCol(const aRow, aCol: Integer): TSynSelectedColor; override;
     function GetNextMarkupColAfterRowCol(const aRow, aCol: Integer): Integer; override;
@@ -77,6 +79,13 @@ begin
   MarkupInfo.Background := clNone;
   MarkupInfo.Style := [fsBold];
   MarkupInfo.StyleMask := [];
+end;
+
+procedure TSynEditMarkupBracket.DecPaintLock;
+begin
+  inherited DecPaintLock;
+  if (FPaintLock = 0) and FNeedInvalidate then
+    InvalidateBracketHighlight;
 end;
 
 procedure TSynEditMarkupBracket.SetHighlightStyle(
@@ -163,8 +172,11 @@ procedure TSynEditMarkupBracket.InvalidateBracketHighlight;
 var
   NewPos, NewAntiPos, SwapPos : TPoint;
 begin
-  if (Caret = nil) or (not SynEdit.HandleAllocated) then
+  FNeedInvalidate := True;
+  if (Caret = nil) or (not SynEdit.HandleAllocated) or (FPaintLock > 0) then
     exit;
+
+  FNeedInvalidate := False;
   NewPos.Y:=-1;
   NewAntiPos.Y:=-1;
   if eoBracketHighlight in TSynEdit(SynEdit).Options 
