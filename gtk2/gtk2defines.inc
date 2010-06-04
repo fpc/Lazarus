@@ -1,4 +1,4 @@
-{%MainUnit gtkproc.pp}{%MainUnit gtkint.pp}
+{%MainUnit gtk2proc.pp}{%MainUnit gtkint.pp}
 { $Id$ }
 
 {******************************************************************************

@@ -32,7 +32,7 @@ uses
   LCLType, Controls, Buttons, Graphics, GraphType,
 ////////////////////////////////////////////////////
   WSButtons, WSLCLClasses, WSProc,
-  GtkDef, GtkDebug;
+  Gtk2Def, GtkDebug;
 
 type
   PBitBtnWidgetInfo = ^TBitBtnWidgetInfo;
@@ -78,7 +78,7 @@ type
 implementation
 
 uses
-  GtkProc, GtkInt, GtkWSStdCtrls;
+  Gtk2Proc, Gtk2Int, Gtk2WSStdCtrls;
 
 const
   GtkStateToButtonState: array[GTK_STATE_NORMAL..GTK_STATE_INSENSITIVE] of TButtonState =
@@ -244,7 +244,7 @@ begin
       gtk_widget_show(BitBtnInfo^.LabelWidget);
     end;
 
-    GtkWidgetSet.SetLabelCaption(BitBtnInfo^.LabelWidget, AText
+    Gtk2WidgetSet.SetLabelCaption(BitBtnInfo^.LabelWidget, AText
        {$IFDEF Gtk1},AWinControl,WidgetInfo^.CoreWidget, 'clicked'{$ENDIF});
   end;
 
@@ -257,7 +257,7 @@ var
 begin
   if not AWinControl.HandleAllocated then exit;
   Widget:= PGtkWidget(AWinControl.Handle);
-  GtkWidgetSet.SetWidgetColor(Widget, clNone, AWinControl.color,
+  Gtk2WidgetSet.SetWidgetColor(Widget, clNone, AWinControl.color,
      [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
 end;
 
@@ -275,10 +275,10 @@ begin
   BitBtnInfo := WidgetInfo^.UserData;
 
   if (BitBtnInfo=nil) or (BitBtnInfo^.LabelWidget = nil) then Exit;
-  GtkWidgetSet.SetWidgetColor(BitBtnInfo^.LabelWidget, AFont.Color,
+  Gtk2WidgetSet.SetWidgetColor(BitBtnInfo^.LabelWidget, AFont.Color,
     clNone,
     [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
-  GtkWidgetSet.SetWidgetFont(BitBtnInfo^.LabelWidget, AFont);
+  Gtk2WidgetSet.SetWidgetFont(BitBtnInfo^.LabelWidget, AFont);
 end;
 
 class procedure TGtk2WSBitBtn.UpdateGlyph(const ABitBtn: TCustomBitBtn;
@@ -504,7 +504,7 @@ end;
 class procedure TGtk2WSBitBtn.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
-  TGtkWSButton.SetCallbacks(AGtkWidget, AWidgetInfo);
+  TGtk2WSButton.SetCallbacks(AGtkWidget, AWidgetInfo);
 
   SignalConnect(AGtkWidget, 'state-changed', @GtkWSBitBtn_StateChanged, AWidgetInfo);
 end;

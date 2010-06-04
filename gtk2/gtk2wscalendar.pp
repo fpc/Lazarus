@@ -37,7 +37,7 @@ uses
   SysUtils, Types, Classes, Controls, Calendar, LCLType, LMessages,
   InterfaceBase, LCLProc,
   // Widgetset
-  GtkProc, GtkDef, Gtk2Int, Gtk2WsControls,
+  Gtk2Proc, Gtk2Def, Gtk2Int, Gtk2WsControls,
   WSCalendar, WSLCLClasses, WSProc;
 
 type

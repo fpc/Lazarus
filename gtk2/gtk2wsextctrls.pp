@@ -32,12 +32,12 @@ interface
 
 uses
   // libs
-  Math, GLib2, Gtk2, Gdk2, Gdk2Pixbuf, Gtk2Int, GtkProc, GtkDef, {$ifdef UseStatusIcon}Gtk2Ext, {$endif}
+  Math, GLib2, Gtk2, Gdk2, Gdk2Pixbuf, Gtk2Int, Gtk2Def, {$ifdef UseStatusIcon}Gtk2Ext, {$endif}
   // LCL
   LCLProc, ExtCtrls, Classes, Controls, SysUtils, LCLType,
   // widgetset
   WSExtCtrls, WSLCLClasses, WSProc,
-  GtkWSExtCtrls, gtk2WSPrivate;
+  GtkWSExtCtrls, gtk2WSPrivate, Gtk2Proc;
 
 type
 
@@ -187,7 +187,7 @@ uses
 {$ifdef HasX}
   x, xlib, xutil,
 {$endif}
-//  gtk2, gdk2, glib2, gtkdef, gtkproc,
+//  gtk2, gdk2, glib2, gtk2def, gtk2proc,
 {$ifdef HasGdk2X}
   gdk2x,
 {$endif}

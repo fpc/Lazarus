@@ -36,7 +36,7 @@ uses
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   // GtkWidgetset
-  GtkWSControls, GtkDef, GtkGlobals, GtkProc,
+  GtkWSControls, Gtk2Def, Gtk2Globals, Gtk2Proc,
   // Gtk2Widgetset
   Gtk2WSControls, Gtk2Int;
   
@@ -233,7 +233,7 @@ type
 
 implementation
 
-uses Gtk2CellRenderer, GtkExtra{$IFNDEF USEORIGTREEMODEL}, Gtk2ListViewTreeModel{$ENDIF};
+uses Gtk2CellRenderer, Gtk2Extra{$IFNDEF USEORIGTREEMODEL}, Gtk2ListViewTreeModel{$ENDIF};
 
 // Will be used commonly for ListViews and TreeViews
 procedure GetCommonTreeViewWidgets(ATreeViewHandle: PGtkWidget;

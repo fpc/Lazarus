@@ -12,7 +12,7 @@ uses
   // lcl
   LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema, Forms,
   // widgetset
-  GtkDef, Gtk2Int, GtkProc, GtkThemes, GtkGlobals;
+  Gtk2Def, Gtk2Int, Gtk2Proc, GtkThemes, Gtk2Globals;
   
 type
   { TGtk2ThemeServices }

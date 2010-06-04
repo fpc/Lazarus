@@ -28,7 +28,7 @@ interface
 
 uses
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
-  GtkInt, GtkProc, GtkGlobals, GtkDef, GtkExtra, GtkWSMenus,
+  GtkInt, Gtk2Proc, Gtk2Globals, Gtk2Def, Gtk2Extra, GtkWSMenus,
   Classes, InterfaceBase, Types, LCLProc, LCLType, WSMenus, WSLCLClasses,
   LMessages, Graphics, Menus, Forms, LCLIntf;
 

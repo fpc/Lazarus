@@ -28,12 +28,12 @@ interface
 
 uses
   // Bindings
-  Gtk2, Glib2, gdk2, pango, gtkextra,
+  Gtk2, Glib2, gdk2, pango, Gtk2Extra,
   // RTL, FCL and LCL
   SysUtils, Classes, Graphics, Controls, Dialogs, ExtDlgs, LCLType,
   FileUtil, LCLStrConsts, LCLProc, InterfaceBase,
   // Widgetset
-  Gtk2Int, GtkInt, GtkWSControls, GtkGlobals, GtkDef, GtkProc,
+  Gtk2Int, GtkInt, GtkWSControls, Gtk2Globals, Gtk2Def, Gtk2Proc,
   WSDialogs, WSLCLClasses;
   
 type

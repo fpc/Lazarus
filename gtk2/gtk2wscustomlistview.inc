@@ -526,8 +526,8 @@ end;
 class procedure TGtk2WSCustomListView.SetCallbacks(const AScrollWidget: PGtkWidget;
   const Widgets: PTVWidgets; const AWidgetInfo: PWidgetInfo);
 begin
-  TGtkWSBaseScrollingWinControl.SetCallbacks(AScrollWidget, AWidgetInfo);
-  TGtkWSWinControl.SetCallbacks(PGtkObject(Widgets^.MainView), TComponent(AWidgetInfo^.LCLObject));
+  TGtk2WSBaseScrollingWinControl.SetCallbacks(AScrollWidget, AWidgetInfo);
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(Widgets^.MainView), TComponent(AWidgetInfo^.LCLObject));
   
   // the callbacks for OnColumnClick are set when the column is created in ColumnInsert
 

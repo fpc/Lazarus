@@ -4493,10 +4493,10 @@ var
     ACaption: String;
   begin
     ACaption := ThePage.Caption;
-    GTKWidgetSet.SetLabelCaption(PGtkLabel(TabLabelWidget), ACaption);
+    GTK2WidgetSet.SetLabelCaption(PGtkLabel(TabLabelWidget), ACaption);
 
     if MenuLabelWidget <> nil then
-      GTKWidgetSet.SetLabelCaption(PGtkLabel(MenuLabelWidget), ACaption);
+      GTK2WidgetSet.SetLabelCaption(PGtkLabel(MenuLabelWidget), ACaption);
   end;
 
   procedure UpdateTabCloseBtn;
@@ -6078,7 +6078,7 @@ var
     if (MenuItemWidget = nil) or (LCLMenuItem = nil) then
       Exit;
     LabelWidget := gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
-    GtkWidgetset.SetLabelCaption(LabelWidget, LCLMenuItem.Caption);
+    Gtk2Widgetset.SetLabelCaption(LabelWidget, LCLMenuItem.Caption);
     {$ifdef GTK2}
     gtk_widget_set_direction(PGtkWidget(LabelWidget), WidgetDirection[UseRTL]);
     {$endif}

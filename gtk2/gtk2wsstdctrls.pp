@@ -34,9 +34,10 @@ uses
   Classes, SysUtils, Math, Controls, Graphics,
   StdCtrls, LMessages, LCLType, LCLProc,
   // Widgetset
-  WSControls, WSProc, WSStdCtrls, WSLCLClasses, GtkWSStdCtrls, Gtk2Int, GtkDef,
-  Gtk2CellRenderer, GTKWinApiWindow, GtkGlobals, GtkProc, InterfaceBase,
-  GtkWSPrivate, Gtk2WSPrivate, GtkExtra;
+  WSControls, WSProc, WSStdCtrls, WSLCLClasses, GtkWSStdCtrls, Gtk2Int, Gtk2Def,
+  Gtk2CellRenderer, Gtk2WinApiWindow, Gtk2Globals, Gtk2Proc, InterfaceBase,
+  Gtk2WSControls,
+  Gtk2WSPrivate, Gtk2Extra;
 
 type
 
@@ -79,8 +80,9 @@ type
 
   { TGtk2WSCustomGroupBox }
 
-  TGtk2WSCustomGroupBox = class(TGtkWSCustomGroupBox)
+  TGtk2WSCustomGroupBox = class(TWSCustomGroupBox)
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
     class procedure SetLabel(AFrame: PGtkFrame; AText: String);
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -96,7 +98,7 @@ type
 
   { TGtk2WSGroupBox }
 
-  TGtk2WSGroupBox = class(TGtkWSGroupBox)
+  TGtk2WSGroupBox = class(TWSGroupBox)
   published
   end;
 
@@ -104,7 +106,7 @@ type
   { !!! Both are used: TGtkComboBoxEntry (with entry) and TGtkComboBox (without entry),
            but not the old TGtkCombo !!! }
 
-  TGtk2WSCustomComboBox = class(TGtkWSCustomComboBox)
+  TGtk2WSCustomComboBox = class(TWSCustomComboBox)
   protected
     class procedure ReCreateCombo(const ACustomComboBox: TCustomComboBox; const AWithEntry: Boolean; const AWidgetInfo: PWidgetInfo); virtual;
     class procedure SetRenderer(const ACustomComboBox: TCustomComboBox; AWidget: PGtkWidget; AWidgetInfo: PWidgetInfo); virtual;
@@ -145,13 +147,13 @@ type
 
   { TGtk2WSComboBox }
 
-  TGtk2WSComboBox = class(TGtkWSComboBox)
+  TGtk2WSComboBox = class(TWSComboBox)
   published
   end;
 
   { TGtk2WSCustomListBox }
 
-  TGtk2WSCustomListBox = class(TGtkWSCustomListBox)
+  TGtk2WSCustomListBox = class(TWSCustomListBox)
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
@@ -177,22 +179,33 @@ type
 
   { TGtk2WSListBox }
 
-  TGtk2WSListBox = class(TGtkWSListBox)
+  TGtk2WSListBox = class(TWSListBox)
   published
   end;
 
   { TGtk2WSCustomEdit }
 
-  TGtk2WSCustomEdit = class(TGtkWSCustomEdit)
+  TGtk2WSCustomEdit = class(TWSCustomEdit)
   published
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+
+    class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
+    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
+
     class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
   end;
 
@@ -232,20 +245,20 @@ type
 
   { TGtk2WSEdit }
 
-  TGtk2WSEdit = class(TGtkWSEdit)
+  TGtk2WSEdit = class(TWSEdit)
   published
   end;
 
   { TGtk2WSMemo }
 
-  TGtk2WSMemo = class(TGtkWSMemo)
+  TGtk2WSMemo = class(TWSMemo)
   published
   end;
 
   { TGtk2WSCustomLabel }
 
   {
-  TGtk2WSCustomLabel = class(TGtkWSCustomLabel)
+  TGtk2WSCustomLabel = class(TWSCustomLabel)
   private
   protected
   public
@@ -254,7 +267,7 @@ type
   { TGtk2WSLabel }
 
   {
-  TGtk2WSLabel = class(TGtkWSLabel)
+  TGtk2WSLabel = class(TWSLabel)
   private
   protected
   public
@@ -263,18 +276,18 @@ type
   
   { TGtk2WSButtonControl }
 
-  TGtk2WSButtonControl = class(TGtkWSButtonControl)
+  TGtk2WSButtonControl = class(TWSButtonControl)
   published
   end;
 
   { TGtk2WSButton }
 
-  TGtk2WSButton = class(TGtkWSButton)
+  TGtk2WSButton = class(TWSButton)
   protected
     class function  GetButtonWidget(AEventBox: PGtkEventBox): PGtkButton;
     class function  GetLabelWidget(AEventBox: PGtkEventBox): PGtkLabel;
   public
-    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); override;
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
@@ -291,7 +304,9 @@ type
 
   { TGtk2WSCustomCheckBox }
 
-  TGtk2WSCustomCheckBox = class(TGtkWSCustomCheckBox)
+  TGtk2WSCustomCheckBox = class(TWSCustomCheckBox)
+  protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function  CreateHandle(const AWinControl: TWinControl;
                                  const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -309,31 +324,48 @@ type
 
   { TGtk2WSCheckBox }
 
-  TGtk2WSCheckBox = class(TGtkWSCheckBox)
+  TGtk2WSCheckBox = class(TWSCheckBox)
   published
   end;
 
   { TGtk2WSToggleBox }
 
-  TGtk2WSToggleBox = class(TGtkWSToggleBox)
+  TGtk2WSToggleBox = class(TWSToggleBox)
   published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TGtk2WSRadioButton }
 
-  TGtk2WSRadioButton = class(TGtkWSRadioButton)
+  TGtk2WSRadioButton = class(TWSRadioButton)
   published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TGtk2WSCustomStaticText }
 
-  TGtk2WSCustomStaticText = class(TGtkWSCustomStaticText)
+  TGtk2WSCustomStaticText = class(TWSCustomStaticText)
+  protected
+    class function GetLabelWidget(AFrame: PGtkFrame): PGtkLabel;
+    class function GetBoxWidget(AFrame: PGtkFrame): PGtkEventBox;
   published
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText;
+                                 const NewAlignment: TAlignment); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+    class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
+    class procedure SetStaticBorderStyle(const ACustomStaticText: TCustomStaticText; const NewBorderStyle: TStaticBorderStyle); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TGtk2WSStaticText }
 
-  TGtk2WSStaticText = class(TGtkWSStaticText)
+  TGtk2WSStaticText = class(TWSStaticText)
   published
   end;
 
@@ -341,12 +373,24 @@ type
 {$I gtk2memostrings.inc}
 {$UNDEF MEMOHEADER}
 
+function  WidgetGetSelStart(const Widget: PGtkWidget): integer;
+procedure WidgetSetSelLength(const Widget: PGtkWidget; NewLength: integer);
+
 function GetComboBoxEntry(Widget: PGtkWidget): PGtkEntry;
 
 implementation
 
 uses
-  GtkWSControls, Gtk2WSControls, LCLMessageGlue, Forms;
+  LCLMessageGlue, Forms;
+
+const
+  StaticBorderShadowMap: array[TStaticBorderStyle] of TGtkShadowType =
+  (
+    GTK_SHADOW_NONE,
+    GTK_SHADOW_ETCHED_IN,
+    GTK_SHADOW_IN
+  );
+
 
 function GetComboBoxEntry(Widget: PGtkWidget): PGtkEntry;
 begin
@@ -354,6 +398,30 @@ begin
     Result := PGtkEntry(GTK_BIN(Widget)^.child)
   else
     Result := nil;
+end;
+
+function WidgetGetSelStart(const Widget: PGtkWidget): integer;
+begin
+  if Widget <> nil then
+  begin
+    if PGtkOldEditable(Widget)^.selection_start_pos
+       < PGtkOldEditable(Widget)^.selection_end_pos
+    then
+      Result:= PGtkOldEditable(Widget)^.selection_start_pos
+    else
+      Result:= PGtkOldEditable(Widget)^.current_pos;// selection_end_pos
+  end else
+    Result:= 0;
+end;
+
+procedure WidgetSetSelLength(const Widget: PGtkWidget; NewLength: integer);
+begin
+  if Widget<>nil then
+  begin
+    gtk_editable_select_region(PGtkOldEditable(Widget),
+      gtk_editable_get_position(PGtkOldEditable(Widget)),
+      gtk_editable_get_position(PGtkOldEditable(Widget)) + NewLength);
+  end;
 end;
 
 {$I gtk2memostrings.inc}
@@ -621,7 +689,7 @@ var
   column : PGtkTreeViewColumn;
   WidgetInfo: PWidgetInfo;
 begin
-  Result := TGtkWSBaseScrollingWinControl.CreateHandle(AWinControl, AParams);
+  Result := TGtk2WSBaseScrollingWinControl.CreateHandle(AWinControl, AParams);
   p := PGtkWidget(Result);
   
   if Result = 0 then exit;
@@ -680,7 +748,7 @@ end;
 class procedure TGtk2WSCustomListBox.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
-  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
 end;
 
 class function TGtk2WSCustomListBox.GetIndexAtXY(
@@ -787,6 +855,13 @@ end;
 
 { TGtk2WSCustomCheckBox }
 
+class procedure TGtk2WSCustomCheckBox.SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+begin
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+  TGtk2Widgetset(WidgetSet).SetCallback(LM_CHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+end;
+
+
 class function TGtk2WSCustomCheckBox.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
   ): TLCLIntfHandle;
@@ -884,6 +959,90 @@ end;
 {$I gtk2wscustommemo.inc}
 
 { TGtk2WSCustomEdit }
+
+class procedure TGtk2WSCustomEdit.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+
+  with TGtk2Widgetset(Widgetset) do
+  begin
+    SetCallback(LM_CHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_ACTIVATE, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_CUT, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_COPY, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_PASTE, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+  end;
+end;
+
+class procedure TGtk2WSCustomEdit.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight,
+                          WithThemeSpace);
+  //debugln('TGtkWSCustomEdit.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
+end;
+
+class procedure TGtk2WSCustomEdit.SetColor(const AWinControl: TWinControl);
+var
+  AWidget: PGTKWidget;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then Exit;
+  AWidget := PGtkWidget(AWinControl.Handle);
+  // don't change selected state
+  Gtk2WidgetSet.SetWidgetColor(AWidget, clNone, AWinControl.Color,
+    [GTK_STATE_NORMAL, GTK_STYLE_BASE]);
+end;
+
+
+class procedure TGtk2WSCustomEdit.SetText(const AWinControl: TWinControl;
+  const AText: string);
+var
+  Widget: PGtkWidget;
+  Mess : TLMessage;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetText') then
+    Exit;
+  {$IFDEF VerboseTWinControlRealText}
+  DebugLn(['TGtkWSCustomEdit.SetText START ',DbgSName(AWinControl),' AText="',AText,'"']);
+  {$ENDIF}
+  Widget:=PGtkWidget(AWinControl.Handle);
+  // some gtk2 versions fire the change event twice
+  // lock the event and send the message afterwards
+  // see bug http://bugs.freepascal.org/view.php?id=14615
+  LockOnChange(PgtkObject(Widget), +1);
+  try
+    gtk_entry_set_text(PGtkEntry(Widget), PChar(AText));
+  finally
+    LockOnChange(PgtkObject(Widget), -1);
+  end;
+  {$IFDEF VerboseTWinControlRealText}
+  DebugLn(['TGtkWSCustomEdit.SetText SEND TEXTCHANGED message ',DbgSName(AWinControl),' New="',gtk_entry_get_text(PGtkEntry(AWinControl.Handle)),'"']);
+  {$ENDIF}
+  FillByte(Mess,SizeOf(Mess),0);
+  Mess.Msg := CM_TEXTCHANGED;
+  DeliverMessage(AWinControl, Mess);
+
+  {$IFDEF VerboseTWinControlRealText}
+  DebugLn(['TGtkWSCustomEdit.SetText END ',DbgSName(AWinControl),' New="',gtk_entry_get_text(PGtkEntry(AWinControl.Handle)),'"']);
+  {$ENDIF}
+end;
+
+class procedure TGtk2WSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit;
+  NewCase: TEditCharCase);
+begin
+  // TODO: implement me!
+end;
+
+class procedure TGtk2WSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit;
+  NewLength: integer);
+var
+  Widget: PGtkWidget;
+begin
+  Widget:=PGtkWidget(ACustomEdit.Handle);
+  if GtkWidgetIsA(Widget, GTK_TYPE_ENTRY) then
+    gtk_entry_set_max_length(GTK_ENTRY(Widget), guint16(NewLength));
+end;
 
 class function TGtk2WSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
@@ -1751,6 +1910,12 @@ end;
 
 { TGtk2WSCustomGroupBox }
 
+class procedure TGtk2WSCustomGroupBox.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+end;
+
 class procedure TGtk2WSCustomGroupBox.SetLabel(AFrame: PGtkFrame; AText: String);
 var
   Lbl: PGtkWidget;
@@ -1961,7 +2126,7 @@ end;
 class procedure TGtk2WSButton.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
-  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
   SignalConnect(AWidgetInfo^.CoreWidget, 'clicked', @Gtk2WSButton_Clicked, AWidgetInfo);
   SignalConnect(AWidgetInfo^.CoreWidget, 'size-allocate', @Gtk2WSButton_SizeAllocate, AWidgetInfo);
 end;
@@ -2111,7 +2276,7 @@ end;
 class procedure TGtk2WSScrollBar.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
-  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
   
   g_signal_connect(AGtkWidget, 'change-value', TGCallback(@Gtk2RangeScrollCB), AWidgetInfo);
 end;
@@ -2175,6 +2340,247 @@ begin
     SetParams(TCustomScrollBar(AWinControl));
   Gtk2WidgetSet.SetVisible(AWinControl,
     AWinControl.HandleObjectShouldBeVisible);
+end;
+
+{ TGtk2WSRadioButton }
+
+class function TGtk2WSRadioButton.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Widget, TempWidget: PGtkWidget;
+  LabelWidget: PGtkLabel;
+  TempInt: Integer;
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGTKAllocation;
+begin
+  with TRadioButton(AWinControl) do
+  begin
+    // Look for our parent's control and use the first radio we find for grouping
+    TempWidget := nil;
+    if (Parent <> nil) then
+    begin
+      for TempInt := 0 to Parent.ControlCount - 1 do
+      begin
+        if (Parent.Controls[TempInt] is TRadioButton) and
+           TWinControl(Parent.Controls[TempInt]).HandleAllocated then
+        begin
+          TempWidget := PGtkWidget(TWinControl(Parent.Controls[TempInt]).Handle);
+          Break;
+        end;
+      end;
+    end;
+
+    if TempWidget <> nil then
+      Widget := gtk_radio_button_new_with_label(PGtkRadioButton(TempWidget)^.group,'')
+    else
+      Widget := gtk_radio_button_new_with_label(nil, '');
+
+    LabelWidget := PGtkLabel(gtk_bin_get_child(PGtkBin(@PGTKToggleButton(Widget)^.Button)));
+    Gtk2WidgetSet.SetLabelCaption(LabelWidget, AParams.Caption);
+  end;
+
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  Result := THandle(PtrUInt(Widget));
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(Widget, @Allocation);
+
+  Set_RC_Name(AWinControl, Widget);
+  TGtk2WSCustomCheckBox.SetCallbacks(Widget, WidgetInfo);
+end;
+
+{ TGtk2WSToggleBox }
+
+class function TGtk2WSToggleBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGTKAllocation;
+begin
+  Widget := gtk_toggle_button_new_with_label(AParams.Caption);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  Result := THandle(PtrUInt(Widget));
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(Widget, @Allocation);
+
+  Set_RC_Name(AWinControl, Widget);
+  TGtk2WSCustomCheckBox.SetCallbacks(Widget, WidgetInfo);
+end;
+
+{ TGtk2WSCustomStaticText }
+
+class function TGtk2WSCustomStaticText.GetLabelWidget(AFrame: PGtkFrame): PGtkLabel;
+begin
+  Result := PGtkLabel(PGtkBin(GetBoxWidget(AFrame))^.child);
+end;
+
+class function TGtk2WSCustomStaticText.GetBoxWidget(AFrame: PGtkFrame): PGtkEventBox;
+begin
+  Result := PGtkEventBox(PGtkBin(AFrame)^.child);
+end;
+
+class function TGtk2WSCustomStaticText.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams
+  ): TLCLIntfHandle;
+var
+  AStaticText: TCustomStaticText;
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGTKAllocation;
+  EventBox, LblWidget: PGtkWidget;
+begin
+  // TStaticText control is a Text area with frame around. Both Text and Area around
+  // text can have their own color
+
+  // To implement that in gtk we need:
+  // 1. GtkLabel to handle Text
+  // 2. GtkEventBox to draw color area around GtkLabel (since GtkLabel have no window)
+  // 3. GtkFrame to draw frame around Text area
+  // GtkFrame is our main widget - it is container and it contains GtkEventBox
+  // GtkEventBox is also containter and it contains GtkLabel
+
+  AStaticText := AWinControl as TCustomStaticText;
+  Result := TLCLIntfHandle(PtrUInt(gtk_frame_new(nil))); // frame is the main container - to decorate label
+  if Result = 0 then Exit;
+
+  gtk_frame_set_shadow_type(PGtkFrame(Result), StaticBorderShadowMap[AStaticText.BorderStyle]);
+
+  EventBox := gtk_event_box_new;  // our area
+  LblWidget := gtk_label_new(PChar(TCustomStaticText(AWinControl).Caption)); // our text widget
+  gtk_container_add(PGtkContainer(EventBox), LblWidget);
+  SetLabelAlignment(PGtkLabel(LblWidget), AStaticText.Alignment);
+  gtk_widget_show(LblWidget);
+  gtk_widget_show(EventBox);
+  gtk_container_add(PGtkContainer(Result), EventBox);
+
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Pointer(Result), dbgsName(AWinControl));
+  {$ENDIF}
+
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AStaticText, AParams);
+  WidgetInfo^.CoreWidget := EventBox;
+  gtk_object_set_data(PGtkObject(EventBox), 'widgetinfo', WidgetInfo);
+
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+
+  Set_RC_Name(AWinControl, PGtkWidget(Result));
+  SetCallbacks(PGtkWidget(Result), WidgetInfo);
+end;
+
+class procedure TGtk2WSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText;
+  const NewAlignment: TAlignment);
+var
+  LblWidget: PGtkLabel;
+begin
+  if not WSCheckHandleAllocated(ACustomStaticText, 'SetAlignment')
+  then Exit;
+
+  LblWidget := GetLabelWidget(PGtkFrame(ACustomStaticText.Handle));
+  SetLabelAlignment(LblWidget, NewAlignment);
+end;
+
+class procedure TGtk2WSCustomStaticText.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  GetGTKDefaultWidgetSize(AWinControl, PreferredWidth, PreferredHeight,
+                          WithThemeSpace);
+  //debugln('TGtkWSCustomStaticText.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
+end;
+
+class function TGtk2WSCustomStaticText.GetText(const AWinControl: TWinControl;
+  var AText: String): Boolean;
+begin
+  // The text is static, so let the LCL fallback to FCaption
+  Result := False;
+end;
+
+class procedure TGtk2WSCustomStaticText.SetText(const AWinControl: TWinControl;
+  const AText: String);
+var
+  FrameWidget: PGtkFrame;
+  LblWidget: PGtkLabel;
+  DC: HDC;
+  ALabel: PChar;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetText')
+  then Exit;
+
+  FrameWidget := PGtkFrame(AWinControl.Handle);
+  LblWidget := GetLabelWidget(FrameWidget);
+
+  if TStaticText(AWinControl).ShowAccelChar then
+  begin
+    DC := Widgetset.GetDC(HWND(PtrUInt(LblWidget)));
+    ALabel := TGtk2WidgetSet(WidgetSet).ForceLineBreaks(
+                          DC, PChar(AText), TStaticText(AWinControl).Width, false);
+    Widgetset.DeleteDC(DC);
+    Gtk2WidgetSet.SetLabelCaption(LblWidget, ALabel
+       {$IFDEF Gtk1}, AWinControl, PGtkWidget(FrameWidget), 'grab_focus'{$ENDIF});
+    StrDispose(ALabel);
+  end else
+  begin
+    gtk_label_set_text(LblWidget, PChar(AText));
+    gtk_label_set_pattern(LblWidget, nil);
+  end;
+end;
+
+class procedure TGtk2WSCustomStaticText.SetStaticBorderStyle(
+  const ACustomStaticText: TCustomStaticText;
+  const NewBorderStyle: TStaticBorderStyle);
+begin
+  if not WSCheckHandleAllocated(ACustomStaticText, 'SetStaticBorderStyle')
+  then Exit;
+  gtk_frame_set_shadow_type(PGtkFrame(ACustomStaticText.Handle), StaticBorderShadowMap[NewBorderStyle]);
+end;
+
+class procedure TGtk2WSCustomStaticText.SetCallbacks(
+  const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+begin
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+
+  SignalConnect(AGtkWidget, 'grab_focus', @gtkActivateCB, AWidgetInfo);
+end;
+
+class procedure TGtk2WSCustomStaticText.SetColor(const AWinControl: TWinControl);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor') then Exit;
+
+  Gtk2WidgetSet.SetWidgetColor(PGtkWidget(GetBoxWidget(PGtkFrame(AWinControl.Handle))),
+                              clNone, AWinControl.Color,
+                              [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
+                               GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+end;
+
+class procedure TGtk2WSCustomStaticText.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+var
+  Widget: PGtkWidget;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetFont')
+  then Exit;
+
+  Widget := PGtkWidget(GetLabelWidget(PGtkFrame(AWinControl.Handle)));
+
+  Gtk2WidgetSet.SetWidgetColor(Widget, AFont.Color, clNone,
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+  Gtk2WidgetSet.SetWidgetFont(Widget, AFont);
 end;
 
 end.

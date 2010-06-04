@@ -32,7 +32,7 @@ uses
   // RTL, FCL, LCL
   Math, Controls, LCLType, LCLProc, Spin, StdCtrls,
   // Widgetset
-  GtkProc, GtkExtra, GtkDef, Gtk2Int, Gtk2WSControls, Gtk2WSStdCtrls,
+  Gtk2Extra, Gtk2Def, Gtk2Int, Gtk2WSControls, Gtk2WSStdCtrls,
   Gtk2Proc, WSLCLClasses, WSSpin;
 
 type

@@ -28,7 +28,7 @@ interface
 
 uses
 
-Gtk2, GLib2, GtkDef,
+Gtk2, GLib2, Gtk2Def,
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
 ////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ type
 implementation
 
 uses
-  GtkWSControls, GtkProc;
+  Gtk2WSControls, Gtk2Proc;
 
 const
   gtk2CLBState = 0; // byte
@@ -124,7 +124,7 @@ class procedure TGtk2WSCustomCheckListBox.SetCallbacks(const AGtkWidget: PGtkWid
 //var
 //  Selection: PGtkTreeSelection;
 begin
-  TGtkWSBaseScrollingWinControl.SetCallbacks(AGtkWidget,AWidgetInfo);
+  TGtk2WSBaseScrollingWinControl.SetCallbacks(AGtkWidget,AWidgetInfo);
 
   {Selection :=} gtk_tree_view_get_selection(PGtkTreeView(AWidgetInfo^.CoreWidget));
   //SignalConnect(PGtkWidget(Selection), 'changed', @Gtk2WS_ListBoxChange, AWidgetInfo);
@@ -141,7 +141,7 @@ var
   column : PGtkTreeViewColumn;
   WidgetInfo: PWidgetInfo;
 begin
-  Result := TGtkWSBaseScrollingWinControl.CreateHandle(AWinControl,AParams);
+  Result := TGtk2WSBaseScrollingWinControl.CreateHandle(AWinControl,AParams);
   p := PGtkWidget(Result);
 
   if Result = 0 then exit;

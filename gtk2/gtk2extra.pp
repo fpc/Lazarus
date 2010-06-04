@@ -1,6 +1,18 @@
-{%mainunit gtk2wsprivate.pp}
-
+{ $Id$ }
 {
+ ---------------------------------------------------------------------------
+ gtk2extra.pp  -  GTK(2) widgetset - additional gdk/gtk functions
+ ---------------------------------------------------------------------------
+
+ This unit contains missing gdk/gtk functions and defines for certain 
+ versions of gtk or fpc.
+
+ ---------------------------------------------------------------------------
+
+ @created(Sun Jan 28th WET 2006)
+ @lastmod($Date$)
+ @author(Marc Weustink <marc@@dommelstein.nl>)
+
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -13,38 +25,22 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
-}
+ }
 
+unit Gtk2Extra;
 
-{ TGtkPrivateList }
+{$mode objfpc}{$H+}
 
-class procedure TGtkPrivateList.SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
-begin
-end;
+interface
 
+{$I gtk2defines.inc}
 
+//todo: remove $I for gtk2extrah.inc and gtk2extra.inc
 
-procedure Gtk2WS_ListBoxChange(Selection: PGtkTreeSelection; WidgetInfo: PWidgetInfo); cdecl;
-var
-  Mess: TLMessage;
-begin
-  {$IFDEF EventTrace}
-  EventTrace('Gtk2WS_ListBoxChange', WidgetInfo^.LCLObject);
-  {$ENDIF}
-  FillChar(Mess, SizeOf(Mess), 0);
-  Mess.msg := LM_SELCHANGE;
-  DeliverMessage(WidgetInfo^.LCLObject, Mess);
-end;
+{$I gtk2extrah.inc}
 
-{ TGtk2PrivateList }
+implementation
 
-class procedure TGtk2PrivateList.SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
-var
-  Selection: PGtkTreeSelection;
-begin
-  TGtk2WSBaseScrollingWinControl.SetCallbacks(AGtkWidget, AWidgetInfo);
+{$I gtk2extra.inc}
 
-  Selection := gtk_tree_view_get_selection(PGtkTreeView(AWidgetInfo^.CoreWidget));
-  SignalConnect(PGtkWidget(Selection), 'changed', @Gtk2WS_ListBoxChange, AWidgetInfo);
-end;
-
+end.

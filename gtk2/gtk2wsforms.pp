@@ -37,7 +37,7 @@ uses
   Graphics, Dialogs,Forms, Math,
   // Widgetset
   WSDialogs, WSLCLClasses, WSControls, WSForms, WSProc,
-  Gtk2Int, GtkProc, gtk2proc, GtkDef, GtkExtra, GtkGlobals, Gtk2WSControls,
+  Gtk2Int, Gtk2Proc, Gtk2Def, Gtk2Extra, Gtk2Globals, Gtk2WSControls,
   // Gtk 1 stuff
   gtkwsforms;
 
@@ -45,7 +45,9 @@ type
 
   { TGtk2WSScrollingWinControl }
 
-  TGtk2WSScrollingWinControl = class(TGtkWSScrollingWinControl)
+  TGtk2WSScrollingWinControl = class(TWSScrollingWinControl)
+  protected
+    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetColor(const AWinControl: TWinControl); override;
@@ -54,27 +56,27 @@ type
 
   { TGtk2WSScrollBox }
 
-  TGtk2WSScrollBox = class(TGtkWSScrollBox)
+  TGtk2WSScrollBox = class(TWSScrollBox)
   published
   end;
 
   { TGtk2WSCustomFrame }
 
-  TGtk2WSCustomFrame = class(TGtkWSCustomFrame)
+  TGtk2WSCustomFrame = class(TWSCustomFrame)
   published
   end;
 
   { TGtk2WSFrame }
 
-  TGtk2WSFrame = class(TGtkWSFrame)
+  TGtk2WSFrame = class(TWSFrame)
   published
   end;
 
   { TGtk2WSCustomForm }
 
-  TGtk2WSCustomForm = class(TGtkWSCustomForm)
+  TGtk2WSCustomForm = class(TWSCustomForm)
   protected
-    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); override;
+    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
@@ -89,18 +91,29 @@ type
              ): boolean; override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
                                    const ABorderIcons: TBorderIcons); override;}
+    class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
+    class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
+    class procedure ShowModal(const AForm: TCustomForm); override;
+    class procedure SetBorderIcons(const AForm: TCustomForm;
+                                   const ABorderIcons: TBorderIcons); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetPopupParent(const ACustomForm: TCustomForm;
+       const APopupMode: TPopupMode; const APopupParent: TCustomForm); override;
   end;
 
   { TGtk2WSForm }
 
-  TGtk2WSForm = class(TGtkWSForm)
+  TGtk2WSForm = class(TWSForm)
   published
   end;
 
   { TGtk2WSHintWindow }
 
-  TGtk2WSHintWindow = class(TGtkWSHintWindow)
+  TGtk2WSHintWindow = class(TWSHintWindow)
+  protected
+    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TGtk2WSScreen }
@@ -457,7 +470,99 @@ begin
   gtk_window_get_modal();
 end;}
 
+class procedure TGtk2WSCustomForm.SetAllowDropFiles(const AForm: TCustomForm;
+  AValue: Boolean);
+begin
+  if AValue then
+    gtk_drag_dest_set(PGtkWidget(AForm.Handle), GTK_DEST_DEFAULT_ALL,
+      @FileDragTarget, 1, GDK_ACTION_COPY or GDK_ACTION_MOVE)
+  else
+    gtk_drag_dest_unset(PGtkWidget(AForm.Handle));
+end;
+
+class procedure TGtk2WSCustomForm.SetShowInTaskbar(const AForm: TCustomForm;
+  const AValue: TShowInTaskbar);
+begin
+  if not WSCheckHandleAllocated(AForm, 'SetShowInTaskbar')
+  then Exit;
+
+  SetFormShowInTaskbar(AForm,AValue);
+end;
+
+class procedure TGtk2WSCustomForm.ShowModal(const AForm: TCustomForm);
+var
+  GtkWindow: PGtkWindow;
+begin
+  if not WSCheckHandleAllocated(AForm, 'ShowModal')
+  then Exit;
+
+  if AForm.Parent <> nil then Exit;
+  ReleaseMouseCapture;
+
+  GtkWindow := PGtkWindow(AForm.Handle);
+  gtk_window_set_default_size(GtkWindow, Max(1,AForm.Width), Max(1,AForm.Height));
+  gtk_widget_set_uposition(PGtkWidget(GtkWindow), AForm.Left, AForm.Top);
+  GtkWindowShowModal(GtkWindow);
+end;
+
+class procedure TGtk2WSCustomForm.SetBorderIcons(const AForm: TCustomForm;
+  const ABorderIcons: TBorderIcons);
+begin
+  if not WSCheckHandleAllocated(AForm, 'SetBorderIcons')
+  then Exit;
+
+  inherited SetBorderIcons(AForm, ABorderIcons);
+end;
+
+class procedure TGtk2WSCustomForm.SetColor(const AWinControl: TWinControl);
+begin
+  TGtk2WSWinControl.SetColor(AWinControl);
+end;
+
+class procedure TGtk2WSCustomForm.SetPopupParent(const ACustomForm: TCustomForm;
+  const APopupMode: TPopupMode; const APopupParent: TCustomForm);
+var
+  PopupParent: TCustomForm;
+begin
+  if not WSCheckHandleAllocated(ACustomForm, 'SetPopupParent') then Exit;
+
+  case APopupMode of
+    pmNone:
+      PopupParent := nil;
+    pmAuto:
+      PopupParent := Screen.ActiveForm;
+    pmExplicit:
+      PopupParent := APopupParent;
+  end;
+  if PopupParent <> nil then
+    gtk_window_set_transient_for(PGtkWindow(ACustomForm.Handle), PGtkWindow(PopupParent.Handle))
+  else
+    gtk_window_set_transient_for(PGtkWindow(ACustomForm.Handle), nil);
+end;
+
+
 { TGtk2WSScrollingWinControl }
+
+class procedure TGtk2WSScrollingWinControl.SetCallbacks(
+  const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+var
+  UseScrollCallback: Boolean;
+begin
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+  with TGTK2WidgetSet(Widgetset) do
+  begin
+    {$ifdef gtk1}
+    UseScrollCallBack := True;
+    {$else}
+    UseScrollCallBack := (gtk_major_version = 2) and (gtk_minor_version <= 8);
+    {$endif}
+    if UseScrollCallBack then
+    begin
+      SetCallback(LM_HSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+      SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+    end;
+  end;
+end;
 
 class function TGtk2WSScrollingWinControl.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
@@ -546,4 +651,64 @@ begin
   end;
 end;
 
+{ TGtk2WSHintWindow }
+
+class procedure TGtk2WSHintWindow.SetCallbacks(const AWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+  if (TControl(AWidgetInfo^.LCLObject).Parent = nil) then
+    with TGTK2WidgetSet(Widgetset) do
+    begin
+      SetCallback(LM_CONFIGUREEVENT, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+    end;
+end;
+
+class function TGtk2WSHintWindow.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  TempWidget : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
+  p          : pointer;          // ptr to the newly created GtkWidget
+  ACustomForm: TCustomForm;
+  AWindow: PGdkWindow;
+  WidgetInfo: PWidgetInfo;
+begin
+  ACustomForm := TCustomForm(AWinControl);
+
+  p := gtk_window_new(gtk_window_popup);
+  WidgetInfo := CreateWidgetInfo(p, AWinControl, AParams);
+  gtk_window_set_policy(GTK_WINDOW(p), 0, 0, 0);
+
+  // Create the form client area
+  TempWidget := CreateFixedClientWidget;
+  gtk_container_add(p, TempWidget);
+  gtk_widget_show(TempWidget);
+  SetFixedWidget(p, TempWidget);
+  SetMainWidget(p, TempWidget);
+
+  ACustomForm.FormStyle := fsStayOnTop;
+  ACustomForm.BorderStyle := bsNone;
+  gtk_widget_realize(p);
+  AWindow := GetControlWindow(P);
+  {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+
+  gdk_window_set_decorations(AWindow, GetWindowDecorations(ACustomForm));
+
+  gdk_window_set_functions(AWindow, GetWindowFunction(ACustomForm));
+
+  {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+  gtk_widget_show_all(TempWidget);// Important: do not show the window yet, only make its content visible
+
+  {$IFNDEF NoStyle}
+  if (ACustomForm.Parent = nil) then
+    gtk_widget_set_app_paintable(P, True);
+  {$ENDIF}
+
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
+  {$ENDIF}
+  Result := TLCLIntfHandle(PtrUInt(P));
+  Set_RC_Name(AWinControl, P);
+  SetCallbacks(P, WidgetInfo);
+end;
 end.

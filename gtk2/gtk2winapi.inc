@@ -1911,7 +1911,6 @@ begin
   Result := ReleaseGDIObject(PGdiObject(GDIObject));
 end;
 
- ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.DestroyCaret(Handle: HWND): Boolean;
 var
   GTKObject: PGTKObject;
@@ -1932,7 +1931,6 @@ begin
   else Assert(False, 'Trace:WARNING: [TGtk2WidgetSet.DestroyCaret] Got null HWND');
 end;
 
- ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.DrawFrameControl(DC: HDC; const Rect : TRect;
   uType, uState : Cardinal) : Boolean;
 {const
@@ -5839,7 +5837,7 @@ begin
     ARect.BottomRight := Point(ARect.Left + Widget^.allocation.width,
                                ARect.Top + Widget^.allocation.height);
   end;
-
+end;
 {------------------------------------------------------------------------------
   Function: GetWindowRelativePosition
   Params:  Handle : hwnd;
@@ -6285,6 +6283,7 @@ begin
       //end;
     end;
   end;
+end;
 
 {------------------------------------------------------------------------------
   function TGtk2WidgetSet.IsWindowVisible(handle: HWND): boolean;
@@ -7148,12 +7147,6 @@ begin
   Result := True;
 end;
 
-  SetLayoutText(UseFont, Str, Count);
-  pango_layout_get_pixel_size(UseFont, @Size.cX, @Size.cY);
-  //DebugLn(['TGtk2WidgetSet.GetTextExtentPoint Str="',copy(Str,1,Count),' Count=',Count,' X=',Size.cx,' Y=',Size.cY]);
-
-
- ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 var
   DevCtx: TGtkDeviceContext absolute DC;
@@ -8497,6 +8490,7 @@ var
   Scroll: PGTKWidget;
   IsScrollWindow: Boolean;
   IsScrollbarVis: boolean;
+  Adjustment: PGtkAdjustment;
 begin
   Result := 0;
   if (Handle = 0) then exit;
@@ -9077,14 +9071,12 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.ShowCaret(hWnd: HWND): Boolean;
 var
-  DevCtx: TGtk2DeviceContext absolute DC;
-  DCOrigin: TPoint;
-  yOffset: integer;
+  GTKObject: PGTKObject;
 begin
-  Assert(False, Format('Trace:> [TGtk2WidgetSet.ShowCaret] HWND: 0x%x', [hWnd]));
+  Assert(False, Format('Trace:> [TGtkWidgetSet.ShowCaret] HWND: 0x%x', [hWnd]));
 
-  if DevCtx.HasTransf then
-    DevCtx.TransfPoint(X, Y);
+  GTKObject := PGTKObject(HWND);
+  Result := GTKObject <> nil;
 
   if Result
   then begin
