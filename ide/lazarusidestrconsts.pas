@@ -1412,6 +1412,7 @@ resourcestring
   dlgFrameColor = 'Frame color';
   dlgUnsavedLineColor = 'Unsaved line';
   dlgSavedLineColor = 'Saved line';
+  dlgGutterCollapsedColor = 'Collapsed';
   dlgElementAttributes = 'Element Attributes';
   dlgEdBold = 'Bold';
   dlgEdItal = 'Italic';

@@ -210,18 +210,18 @@ begin
   ColorElementTree.Canvas.FillRect(NodeRect);
   ColorElementTree.Canvas.TextOut(NodeRect.Left+FullAbcWidth, TextY, Attri.Name);
 
-  // Draw preview box
+  // Draw preview box - Background
   c := clNone;
   if (hafBackColor in  Attri.Features) then
     c := Attri.Background;
-  // Fallback color for gutter
+  // Fallback Background-color for gutter
   if ((c = clNone) or (c = clDefault)) and
      (AttriIdx in [ord(ahaModifiedLine), ord(ahaCodeFoldingTree),
                    ord(ahaLineNumber), ord(ahaGutterSeparator)]) and
      (FCurrentColorScheme.AttributeByEnum[ahaGutter] <> nil)
   then
     c := FCurrentColorScheme.AttributeByEnum[ahaGutter].Background;
-  // Fallback color for text
+  // Fallback Background-color for text
   if (c = clNone) or (c = clDefault) then
     c := FCurrentColorScheme.DefaultAttribute.Background;
   if (c = clNone) or (c = clDefault) then
@@ -241,7 +241,7 @@ begin
 
   // Draw preview Frame
   ColorElementTree.Canvas.Pen.Color := Attri.FrameColor;
-  if (hafFrameColor in Attri.Features) and
+  if (hafFrameColor in Attri.Features) and (AttriIdx <> ord(ahaCodeFoldingTree)) and
      (Attri.FrameColor <> clDefault) and (Attri.FrameColor <> clNone)
   then
     ColorElementTree.Canvas.Rectangle(NodeRect.Left+2, NodeRect.Top+2,
@@ -260,9 +260,8 @@ begin
     if AttriIdx = ord(ahaCodeFoldingTree) then begin
       // Special draw fold gutter
       TextY := NodeRect.Bottom - NodeRect.Top - 8;
-      ColorElementTree.Canvas.Brush.Color := clWhite;
-      ColorElementTree.Canvas.FillRect(NodeRect.Left+4, NodeRect.Top+4,
-                                       NodeRect.Left+4+TextY, NodeRect.Bottom-4);
+
+      // [-]
       ColorElementTree.Canvas.Pen.Color := c;
       ColorElementTree.Canvas.Rectangle(NodeRect.Left+4, NodeRect.Top+4,
                                         NodeRect.Left+4+TextY, NodeRect.Bottom-4);
@@ -270,6 +269,20 @@ begin
       ColorElementTree.Canvas.LineTo(NodeRect.Left+4+TextY-2, NodeRect.Top+4+(TextY div 2));
       ColorElementTree.Canvas.MoveTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-4);
       ColorElementTree.Canvas.LineTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-2);
+
+      // [+]
+      inc(NodeRect.Left, TextY+2);
+      ColorElementTree.Canvas.MoveTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-4);
+      ColorElementTree.Canvas.LineTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-2);
+      if (Attri.FrameColor <> clNone) and (Attri.FrameColor <> clDefault) then
+        ColorElementTree.Canvas.Pen.Color := Attri.FrameColor;
+      ColorElementTree.Canvas.Rectangle(NodeRect.Left+4, NodeRect.Top+4,
+                                        NodeRect.Left+4+TextY, NodeRect.Bottom-4);
+      ColorElementTree.Canvas.MoveTo(NodeRect.Left+6, NodeRect.Top+4+(TextY div 2));
+      ColorElementTree.Canvas.LineTo(NodeRect.Left+4+TextY-2, NodeRect.Top+4+(TextY div 2));
+      ColorElementTree.Canvas.MoveTo(NodeRect.Left+4+(TextY div 2), NodeRect.Top+6);
+      ColorElementTree.Canvas.LineTo(NodeRect.Left+4+(TextY div 2), NodeRect.Bottom-6);
+      ColorElementTree.Canvas.Brush.Style := bsSolid;
     end
     else if AttriIdx = ord(ahaGutterSeparator) then begin
       ColorElementTree.Canvas.Pen.Color := c;
@@ -761,12 +774,18 @@ begin
     AttrToShow := FCurHighlightElement.GetSchemeGlobal;
 
   // Adjust color captions
-  if AttrToShow = FCurrentColorScheme.AttributeByEnum[ahaModifiedLine] then begin
+  ForeGroundUseDefaultCheckBox.Caption := dlgForecolor;
+  FrameColorUseDefaultCheckBox.Caption := dlgFrameColor;
+  if (FCurrentColorScheme.AttributeByEnum[ahaModifiedLine] <> nil) and
+     (AttrToShow.StoredName = FCurrentColorScheme.AttributeByEnum[ahaModifiedLine].StoredName)
+  then begin
     ForeGroundUseDefaultCheckBox.Caption := dlgSavedLineColor;
     FrameColorUseDefaultCheckBox.Caption := dlgUnsavedLineColor;
-  end else begin
-    ForeGroundUseDefaultCheckBox.Caption := dlgForecolor;
-    FrameColorUseDefaultCheckBox.Caption := dlgFrameColor;
+  end else
+  if (FCurrentColorScheme.AttributeByEnum[ahaCodeFoldingTree] <> nil) and
+     (AttrToShow.StoredName = FCurrentColorScheme.AttributeByEnum[ahaCodeFoldingTree].StoredName)
+  then begin
+    FrameColorUseDefaultCheckBox.Caption := dlgGutterCollapsedColor;
   end;
 
   case FCurHighlightElement.Group of

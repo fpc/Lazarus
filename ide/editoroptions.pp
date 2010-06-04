@@ -168,7 +168,7 @@ const
     { ahaLineNumber }         [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
     { ahaLineHighlight }      [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
     { ahaModifiedLine }       [hafBackColor, hafForeColor, hafFrameColor],
-    { ahaCodeFoldingTree }    [hafBackColor, hafForeColor],
+    { ahaCodeFoldingTree }    [hafBackColor, hafForeColor, hafFrameColor],
     { ahaHighlightWord }      [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
     { ahaFoldedCode }         [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
     { ahaWordGroup }          [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafStyleMask],
