@@ -257,7 +257,6 @@ type
     procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);virtual;
 
 
-    function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
     procedure SetDesigning(AComponent: TComponent); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;

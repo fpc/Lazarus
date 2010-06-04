@@ -18,7 +18,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -29,17 +29,20 @@
 }
 
 //##apiwiz##sps##   // Do not remove
-function AddEventHandler(AHandle: THandle; AFlags: dword;
+function AddEventHandler(AHandle: THandle; AFlags: dword; 
   AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler; override;
 function AddPipeEventHandler(AHandle: THandle;
   AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler; override;
 function AddProcessEventHandler(AHandle: THandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
 
+function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
 procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); override;
 procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
+
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
-  Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
+                    Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
+
 function FontCanUTF8(Font: HFont): boolean; override;
 function FontIsMonoSpace(Font: HFont): boolean; override;
 
@@ -60,9 +63,8 @@ procedure RemoveEventHandler(var AHandler: PEventHandler); override;
 procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;
 procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); override;
 
+function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; override;
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); override;
-// override only when queried formats are different from screen description
-//function RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean; override;
-function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;
 
+function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

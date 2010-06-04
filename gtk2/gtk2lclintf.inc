@@ -1,6 +1,5 @@
 {%MainUnit gtk2int.pp}
 { $Id$ }
-
 {******************************************************************************
                  All GTK2 interface communication implementations.
                    Initial Revision  : Sat Jan 17 19:00:00 2004
@@ -18,7 +17,7 @@
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
  *                                                                           *
- *  See the file COPYING.modifiedLGPL.txt, included in this distribution,        *
+ *  See the file COPYING.modifiedLGPL.txt, included in this distribution,    *
  *  for details about the copyright.                                         *
  *                                                                           *
  *  This program is distributed in the hope that it will be useful,          *
@@ -28,123 +27,8 @@
  *****************************************************************************
 }
 
+
 //##apiwiz##sps##   // Do not remove
-
-function waithandle_iocallback(source: PGIOChannel; condition: TGIOCondition;
-  data: gpointer): gboolean; cdecl;
-var
-  lEventHandler: PWaitHandleEventHandler absolute data;
-begin
-  //debugln('waithandle_iocallback lEventHandler=',HexStr(Cardinal(lEventHandler),8));
-  lEventHandler^.OnEvent(lEventHandler^.UserData, condition);
-  Result := true;
-end;
-
-function TGtk2WidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword;
-  AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler;
-var
-  giochannel: pgiochannel;
-  lEventHandler: PWaitHandleEventHandler;
-begin
-  if AEventHandler = nil then exit;
-  New(lEventHandler);
-  giochannel := g_io_channel_unix_new(AHandle);
-  lEventHandler^.Handle := AHandle;
-  lEventHandler^.UserData := AData;
-  lEventHandler^.GIOChannel := giochannel;
-  lEventHandler^.OnEvent := AEventHandler;
-  lEventHandler^.GSourceID := g_io_add_watch(giochannel,
-    AFlags, @waithandle_iocallback, lEventHandler);
-  //debugln('TGtkWidgetSet.AddEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8),' AHandle=',dbgs(lEventHandler^.Handle));
-  lEventHandler^.PrevHandler := nil;
-  lEventHandler^.NextHandler := FWaitHandles;
-  if FWaitHandles <> nil then
-    FWaitHandles^.PrevHandler := lEventHandler;
-  FWaitHandles := lEventHandler;
-  Result := lEventHandler;
-end;
-
-procedure TGtk2WidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
-var
-  lEventHandler: PWaitHandleEventHandler absolute AHandler;
-begin
-  if AHandler = nil then exit;
-  g_source_remove(lEventHandler^.GSourceID);
-  { channel will be freed with ref count drops to 0 }
-  g_io_channel_unref(lEventHandler^.GIOChannel);
-  if lEventHandler^.PrevHandler = nil then
-    FWaitHandles := lEventHandler^.NextHandler
-  else
-    lEventHandler^.PrevHandler^.NextHandler := lEventHandler^.NextHandler;
-  if lEventHandler^.NextHandler <> nil then
-    lEventHandler^.NextHandler^.PrevHandler := lEventHandler^.PrevHandler;
-  //debugln('TGtkWidgetSet.RemoveEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8),' AHandle=',dbgs(lEventHandler^.Handle));
-  Dispose(lEventHandler);
-  AHandler := nil;
-end;
-
-type
-  PPipeEventInfo = ^TPipeEventInfo;
-  TPipeEventInfo = record
-    Handler: PEventHandler;
-    UserData: PtrInt;
-    OnEvent: TPipeEvent;
-  end;
-
-procedure TGtk2WidgetSet.SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword);
-var
-  lEventHandler: PWaitHandleEventHandler absolute AHandler;
-begin
-  if AHandler = nil then exit;
-  g_source_remove(lEventHandler^.GSourceID);
-  lEventHandler^.GSourceID := g_io_add_watch(lEventHandler^.GIOChannel,
-    NewFlags, @waithandle_iocallback, lEventHandler);
-  //debugln('TGtkWidgetSet.SetEventHandlerFlags lEventHandler=',HexStr(Cardinal(lEventHandler),8),' AHandle=',dbgs(lEventHandler^.Handle));
-end;
-
-
-function TGtk2WidgetSet.AddPipeEventHandler(AHandle: THandle;
-  AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler;
-var
-  lPipeEventInfo: PPipeEventInfo;
-begin
-  if AEventHandler = nil then exit;
-  New(lPipeEventInfo);
-  lPipeEventInfo^.UserData := AData;
-  lPipeEventInfo^.OnEvent := AEventHandler;
-  lPipeEventInfo^.Handler := AddEventHandler(AHandle, G_IO_IN or G_IO_HUP or G_IO_OUT,
-    @HandlePipeEvent, PtrUInt(lPipeEventInfo));
-  Result := lPipeEventInfo;
-end;
-
-procedure TGtk2WidgetSet.RemovePipeEventHandler(var AHandler: PPipeEventHandler);
-var
-  lPipeEventInfo: PPipeEventInfo absolute AHandler;
-begin
-  if AHandler = nil then exit;
-  RemoveEventHandler(lPipeEventInfo^.Handler);
-  Dispose(lPipeEventInfo);
-  AHandler := nil;
-end;
-
-{$ifdef UNIX}
-function TGtk2WidgetSet.AddProcessEventHandler(AHandle: THandle;
-  AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;
-var
-  lHandler: PChildSignalEventHandler;
-begin
-  if AEventHandler = nil then exit(nil);
-  New(lHandler);
-  lHandler^.PID := TPid(AHandle);
-  lHandler^.UserData := AData;
-  lHandler^.OnEvent := AEventHandler;
-  lHandler^.PrevHandler := nil;
-  lHandler^.NextHandler := FChildSignalHandlers;
-  if FChildSignalHandlers <> nil then
-    FChildSignalHandlers^.PrevHandler := lHandler;
-  FChildSignalHandlers := lHandler;
-  Result := lHandler;
-end;
 
 procedure TGtk2WidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect;
   AOperation: TDockImageOperation);
@@ -210,34 +94,6 @@ begin
   end;
 end;
 
-procedure TGtk2WidgetSet.RemoveProcessEventHandler(var AHandler: PProcessEventHandler);
-var
-  lHandler: PChildSignalEventHandler absolute AHandler;
-begin
-  if AHandler = nil then exit;
-  if lHandler^.PrevHandler = nil then
-    FChildSignalHandlers := lHandler^.NextHandler
-  else
-    lHandler^.PrevHandler^.NextHandler := lHandler^.NextHandler;
-  if lHandler^.NextHandler <> nil then
-    lHandler^.NextHandler^.PrevHandler := lHandler^.PrevHandler;
-  Dispose(lHandler);
-  AHandler := nil;
-end;
-{$else}
-{$IFDEF VerboseGtkToDos}{$warning TGtkWidgetSet.RemoveProcessEventHandler and TGtkWidgetSet.AddProcessEventHandler not implemented on this OS}{$ENDIF}
-//PChildSignalEventHandler is only defined on unix
-function TGtk2WidgetSet.AddProcessEventHandler(AHandle: THandle;
-  AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;
-begin
-  Result := nil;
-end;
-
-procedure TGtk2WidgetSet.RemoveProcessEventHandler(var AHandler: PProcessEventHandler);
-begin
-end;
-{$endif}
-
 procedure TGtk2WidgetSet.DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer);
 var
   X, Y: Integer;
@@ -266,6 +122,13 @@ begin
   end;
 end;
 
+
+{------------------------------------------------------------------------------
+  function TGtk2WidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
+    Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+
+  As ExtTextOut except that Str is treated as UTF8
+ ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin
@@ -273,47 +136,18 @@ begin
   Result:=ExtTextOut(DC,X,Y,Options,Rect,Str,Count,Dx);
 end;
 
-{------------------------------------------------------------------------------
-  Function: RawImage_QueryDescription
-  Params: AFlags:
-          ADesc:
-  Returns:
-
- ------------------------------------------------------------------------------}
-//function TGtk2WidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean;
-//begin
-//  // override only when queried formats are different from screen description
-//end;
-
-function TGtk2WidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar;
-  Count: Longint): Boolean;
+function TGtk2WidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean;
 begin
   // all fonts are UTF-8 under gtk2 => no mapping needed
   Result := TextOut(DC, X, Y, Str, Count);
 end;
 
-procedure TGtk2WidgetSet.HandlePipeEvent(AData: PtrInt; AFlags: dword);
-var
-  lPipeEventInfo: PPipeEventInfo absolute AData;
-  lReasons: TPipeReasons;
-begin
-  lReasons := [];
-  if AFlags and G_IO_IN = G_IO_IN then
-    Include(lReasons, prDataAvailable);
-  if AFlags and G_IO_OUT = G_IO_OUT then
-    Include(lReasons, prCanWrite);
-  if AFlags and G_IO_HUP = G_IO_HUP then
-    Include(lReasons, prBroken);
-
-  lPipeEventInfo^.OnEvent(lPipeEventInfo^.UserData, lReasons);
-end;
-
 {------------------------------------------------------------------------------
-  function TGTKWidgetSet.FontCanUTF8(Font: HFont): boolean;
-
+  function TGtk2WidgetSet.FontCanUTF8(Font: HFont): boolean;
+  
   True if font recognizes Unicode UTF8 encoding.
  ------------------------------------------------------------------------------}
-function TGTK2WidgetSet.FontCanUTF8(Font: HFont): boolean;
+function TGtk2WidgetSet.FontCanUTF8(Font: HFont): boolean;
 begin
   Result:=IsValidGDIObject(Font)
     {$IFDEF Gtk1}
@@ -323,11 +157,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TGTKWidgetSet.FontIsMonoSpace(Font: HFont): boolean;
+  function TGtk2WidgetSet.FontIsMonoSpace(Font: HFont): boolean;
 
   True if font characters have all the same width.
  ------------------------------------------------------------------------------}
-function TGTK2WidgetSet.FontIsMonoSpace(Font: HFont): boolean;
+function TGtk2WidgetSet.FontIsMonoSpace(Font: HFont): boolean;
 begin
   Result:=IsValidGDIObject(Font)
           and FontIsMonoSpaceFont(PGdiObject(Font)^.GDIFontObject);
@@ -361,11 +195,11 @@ type
   TFourBytes = packed record
     B0,B1,B2,B3: Byte;
   end;
-
+  
 const
                         // riboLSBFirst, riboMSBFirst
   COMPONENT_MASK: array[TRawImageByteOrder] of Byte = (0, 3);
-
+  
 var
   GdiObject: PGDIObject absolute ABitmap;
   GdiMaskObject: PGDIObject absolute AMask;
@@ -396,7 +230,7 @@ begin
 
   try
     {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage A ',
+    DebugLn('TGtk2WidgetSet.CreateBitmapFromRawImage A ',
       ' ASkipMask='+dbgs(ASkipMask),
       ' Depth='+dbgs(Desc.Depth),
       ' Width='+dbgs(Desc.Width),
@@ -517,7 +351,7 @@ begin
           GdkImage := gdk_image_new(GDK_IMAGE_FASTEST, Visual, ImgWidth, ImgHeight);
 
           {$ifdef VerboseRawImage}
-          //DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage GdkImage: ',
+          //DebugLn('TGtk2WidgetSet.CreateBitmapFromRawImage GdkImage: ',
           //  ' BytesPerLine=',dbgs(GdkImage^.bpl),
           //  ' BitsPerPixel=',dbgs(GetPGdkImageBitsPerPixel(GdkImage)),
           //  ' ByteOrder=',dbgs({$ifdef Gtk1}GdkImage^.byte_order{$else}ord(GdkImage^.byte_order){$endif}),
@@ -526,11 +360,11 @@ begin
 
           if ARawImage.Description.BitsPerPixel <> GetGdkImageBitsPerPixel(GdkImage)
           then begin
-            RaiseGDBException('TGtkWidgetSet.CreateBitmapFromRawImage Incompatible BitsPerPixel');
+            RaiseGDBException('TGtk2WidgetSet.CreateBitmapFromRawImage Incompatible BitsPerPixel');
           end;
           if ImgDataSize <> GdkImage^.bpl * ImgHeight
           then begin
-            RaiseGDBException('TGtkWidgetSet.CreateBitmapFromRawImage Incompatible DataSize');
+            RaiseGDBException('TGtk2WidgetSet.CreateBitmapFromRawImage Incompatible DataSize');
           end;
 
           System.Move(ImgData^, GdkImage^.mem^, ImgDataSize);
@@ -549,7 +383,7 @@ begin
         gdk_visual_ref(GdiObject^.Visual);
       end;
     end;
-
+    
     if ASkipMask
     then begin
       Result := True;
@@ -559,7 +393,7 @@ begin
     // create mask
 
     {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage creating mask .. ');
+    DebugLn('TGtk2WidgetSet.CreateBitmapFromRawImage creating mask .. ');
     {$ENDIF}
 
     if ARawImage.IsMasked(False)
@@ -582,7 +416,6 @@ begin
   end;
 end;
 
-
 {------------------------------------------------------------------------------
   Function: RawImage_DescriptionFromBitmap
   Params: Bitmap: HBITMAP;
@@ -597,7 +430,7 @@ begin
   Result := False;
   if not IsValidGDIObject(ABitmap)
   then begin
-    DebugLn('WARNING: [TGtkWidgetSet.GetBitmapRawImageDescription] invalid Bitmap!');
+    DebugLn('WARNING: [TGtk2WidgetSet.GetBitmapRawImageDescription] invalid Bitmap!');
     exit;
   end;
 
@@ -611,11 +444,10 @@ begin
     gbPixbuf:
       Result := RawImage_DescriptionFromPixbuf(ADesc, GdiObject^.GDIPixbufObject);
   else
-    DebugLn('WARNING: [TGtkWidgetSet.RawImage_DescriptionFromBitmap] Unknown GDIBitmapType');
+    DebugLn('WARNING: [TGtk2WidgetSet.RawImage_DescriptionFromBitmap] Unknown GDIBitmapType');
     Exit;
   end;
 end;
-
 
 {------------------------------------------------------------------------------
   function RawImage_DescriptionFromDevice
@@ -653,10 +485,9 @@ begin
   end
   else
     Drawable := nil;
-
+  
   Result := RawImage_DescriptionFromDrawable(ADesc, Drawable, UseAlpha);
 end;
-
 
 {------------------------------------------------------------------------------
   Function: RawImage_QueryDescription
@@ -671,13 +502,13 @@ var
 begin
   if riqfGrey in AFlags
   then begin
-    DebugLn('TGtkWidgetSet.RawImage_QueryDescription: riqfGrey not (yet) supported');
+    DebugLn('TGtk2WidgetSet.RawImage_QueryDescription: riqfGrey not (yet) supported');
     Exit(False);
   end;
-
+  
   if riqfPalette in AFlags
   then begin
-    DebugLn('TGtkWidgetSet.RawImage_QueryDescription: riqfPalette not (yet) supported');
+    DebugLn('TGtk2WidgetSet.RawImage_QueryDescription: riqfPalette not (yet) supported');
     Exit(False);
   end;
 
@@ -765,9 +596,8 @@ begin
 *)
 end;
 
-
 {------------------------------------------------------------------------------
-  function TGtkWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
+  function TGtk2WidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
     const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; ARect: PRect): Boolean;
@@ -779,18 +609,18 @@ var
 begin
   Result := false;
   {$IFDEF VerboseRawImage}
-  DebugLn('TGtkWidgetSet.GetRawImageFromBitmap A');
+  DebugLn('TGtk2WidgetSet.GetRawImageFromBitmap A');
   {$ENDIF}
   ARawImage.Init;
 
   if not IsValidGDIObject(ABitmap)
   then begin
-    DebugLn('WARNING: [TGtkWidgetSet.RawImage_FromBitmap] invalid Bitmap!');
+    DebugLn('WARNING: [TGtk2WidgetSet.RawImage_FromBitmap] invalid Bitmap!');
     exit;
   end;
   if (AMask <> 0) and not IsValidGDIObject(AMask)
   then begin
-    DebugLn('WARNING: [TGtkWidgetSet.RawImage_FromBitmap] invalid Mask');
+    DebugLn('WARNING: [TGtk2WidgetSet.RawImage_FromBitmap] invalid Mask');
     exit;
   end;
 
@@ -810,11 +640,11 @@ begin
         Exit;
       end;
     else
-      DebugLn('WARNING: [TGtkWidgetSet.RawImage_FromBitmap] Unknown GDIBitmapType');
+      DebugLn('WARNING: [TGtk2WidgetSet.RawImage_FromBitmap] Unknown GDIBitmapType');
       Exit;
     end;
     {$IFDEF VerboseRawImage}
-    DebugLn('TGtkWidgetSet.RawImage_FromBitmap A GdkPixmap=',DbgS(Drawable),' SrcMaskBitmap=',DbgS(Bitmap));
+    DebugLn('TGtk2WidgetSet.RawImage_FromBitmap A GdkPixmap=',DbgS(Drawable),' SrcMaskBitmap=',DbgS(Bitmap));
     {$ENDIF}
 
     //DbgDumpPixmap(Drawable, 'RawImage_FromBitmap - drawable');
@@ -825,10 +655,10 @@ begin
     then begin
       if GdiMask^.GDIBitmapType <> gbBitmap
       then begin
-        DebugLn('WARNING: [TGtkWidgetSet.RawImage_FromBitmap] Unsupported GDIBitmapType for mask');
+        DebugLn('WARNING: [TGtk2WidgetSet.RawImage_FromBitmap] Unsupported GDIBitmapType for mask');
         Exit;
       end;
-
+      
       Bitmap := GdiMask^.GDIBitmapObject;
       RawImage_AddMask(ARawImage, Bitmap, ARect);
       //DbgDumpBitmap(Bitmap, 'RawImage_FromBitmap - mask');
@@ -837,16 +667,15 @@ begin
       ARawImage.Description.MaskBitsPerPixel := 0;
 
     if not Result
-    then DebugLn('WARNING: [TGtkWidgetSet.RawImage_FromBitmap] unable to GetRawImageFromGdkWindow Image');
+    then DebugLn('WARNING: [TGtk2WidgetSet.RawImage_FromBitmap] unable to GetRawImageFromGdkWindow Image');
 
   except
     ARawImage.FreeData;
   end;
 end;
 
-
 {------------------------------------------------------------------------------
-  function TGtkWidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect;
+  function TGtk2WidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect;
     var NewRawImage: TRawImage): boolean;
 
  ------------------------------------------------------------------------------}
@@ -860,13 +689,13 @@ begin
   Result := False;
   if not IsValidDC(ADC)
   then begin
-    DebugLn('WARNING: TGtkWidgetSet.GetRawImageFromDevice invalid SrcDC');
+    DebugLn('WARNING: TGtk2WidgetSet.GetRawImageFromDevice invalid SrcDC');
     Exit(False);
   end;
 
   DCOrigin := DevCtx.Offset;
   {$IFDEF VerboseRawImage}
-  DebugLn('TGtkWidgetSet.GetRawImageFromDevice A DCOrigin=',dbgs(DCOrigin.X),',',dbgs(DCOrigin.Y),' SrcRect=',dbgs(ARect.Left),',',dbgs(ARect.Top),',',dbgs(ARect.Right),',',dbgs(ARect.Bottom));
+  DebugLn('TGtk2WidgetSet.GetRawImageFromDevice A DCOrigin=',dbgs(DCOrigin.X),',',dbgs(DCOrigin.Y),' SrcRect=',dbgs(ARect.Left),',',dbgs(ARect.Top),',',dbgs(ARect.Right),',',dbgs(ARect.Bottom));
   {$ENDIF}
   R := ARect;
   OffSetRect(R, DCOrigin.x, DCOrigin.y);
@@ -923,7 +752,7 @@ begin
         MinWidth:=Widget^.requisition.Width;
         MaxWidth:=MinWidth;
       end;
-      //DebugLn('TGtkWidgetSet.GetControlConstraints A '+dbgs(MinWidth)+','+dbgs(MinHeight),' ',dbgs(TScrollBar(SizeConstraints.Control).Kind=sbHorizontal),' ',TScrollBar(SizeConstraints.Control).Name);
+      //DebugLn('TGtk2WidgetSet.GetControlConstraints A '+dbgs(MinWidth)+','+dbgs(MinHeight),' ',dbgs(TScrollBar(SizeConstraints.Control).Kind=sbHorizontal),' ',TScrollBar(SizeConstraints.Control).Name);
     end
     else if SizeConstraints.Control is TCustomSplitter then begin
       // TCustomSplitter
@@ -955,7 +784,7 @@ begin
         Widget:=GetStyleWidget(lgsVScale);
         MinWidth:=Widget^.requisition.width;
       end;
-      //DebugLn(['TGtkWidgetSet.GetControlConstraints ',DbgSName(SizeConstraints.Control),' ',MinWidth,',',MinHeight]);
+      //DebugLn(['TGtk2WidgetSet.GetControlConstraints ',DbgSName(SizeConstraints.Control),' ',MinWidth,',',MinHeight]);
     end;
 
     SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
@@ -963,9 +792,8 @@ begin
   end;
 end;
 
-
 {------------------------------------------------------------------------------
-  function TGtkWidgetSet.GetLCLOwnerObject(Handle: HWnd): TObject;
+  function TGtk2WidgetSet.GetLCLOwnerObject(Handle: HWnd): TObject;
 
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.GetLCLOwnerObject(Handle: HWnd): TObject;
@@ -977,7 +805,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TGtkWidgetSet.IntfSendsUTF8KeyPress: boolean;
+  function TGtk2WidgetSet.IntfSendsUTF8KeyPress: boolean;
 
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.IntfSendsUTF8KeyPress: boolean;
@@ -985,5 +813,187 @@ begin
   Result:=true;
 end;
 
+function TGtk2WidgetSet.SetComboMinDropDownSize(Handle: HWND; MinItemsWidth,
+  MinItemsHeight, MinItemCount: integer): boolean;
+var
+  p: PGtkWidget;
+  Menu: PGtkWidget;
+  Requisition: TGtkRequisition;
+begin
+  Result:=True;
+  p := GetWidgetInfo(Pointer(Handle), False)^.CoreWidget;
+  
+  Menu := PGtkWidget(g_object_get_data(G_OBJECT(p), 'Menu'));
+  if Menu<>nil then begin
+    Requisition.width := MinItemsWidth;
+    Requisition.height := MinItemsHeight * MinItemCount;
+    gtk_widget_size_request(Menu, @Requisition);
+  end;
+end;
+
+
+
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
+
+
+function waithandle_iocallback(source: PGIOChannel; condition: TGIOCondition;
+  data: gpointer): gboolean; cdecl;
+var
+  lEventHandler: PWaitHandleEventHandler absolute data;
+begin
+  //debugln('waithandle_iocallback lEventHandler=',HexStr(Cardinal(lEventHandler),8));
+  lEventHandler^.OnEvent(lEventHandler^.UserData, condition);
+  Result := true;
+end;
+
+function TGtk2WidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword;
+  AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler;
+var
+  giochannel: pgiochannel;
+  lEventHandler: PWaitHandleEventHandler;
+begin
+  if AEventHandler = nil then exit;
+  New(lEventHandler);
+  giochannel := g_io_channel_unix_new(AHandle);
+  lEventHandler^.Handle := AHandle;
+  lEventHandler^.UserData := AData;
+  lEventHandler^.GIOChannel := giochannel;
+  lEventHandler^.OnEvent := AEventHandler;
+  lEventHandler^.GSourceID := g_io_add_watch(giochannel,
+    AFlags, @waithandle_iocallback, lEventHandler);
+  //debugln('TGtk2WidgetSet.AddEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8),' AHandle=',dbgs(lEventHandler^.Handle));
+  lEventHandler^.PrevHandler := nil;
+  lEventHandler^.NextHandler := FWaitHandles;
+  if FWaitHandles <> nil then
+    FWaitHandles^.PrevHandler := lEventHandler;
+  FWaitHandles := lEventHandler;
+  Result := lEventHandler;
+end;
+
+
+procedure TGtk2WidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
+var
+  lEventHandler: PWaitHandleEventHandler absolute AHandler;
+begin
+  if AHandler = nil then exit;
+  g_source_remove(lEventHandler^.GSourceID);
+  { channel will be freed with ref count drops to 0 }
+  g_io_channel_unref(lEventHandler^.GIOChannel);
+  if lEventHandler^.PrevHandler = nil then
+    FWaitHandles := lEventHandler^.NextHandler
+  else
+    lEventHandler^.PrevHandler^.NextHandler := lEventHandler^.NextHandler;
+  if lEventHandler^.NextHandler <> nil then
+    lEventHandler^.NextHandler^.PrevHandler := lEventHandler^.PrevHandler;
+  //debugln('TGtk2WidgetSet.RemoveEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8),' AHandle=',dbgs(lEventHandler^.Handle));
+  Dispose(lEventHandler);
+  AHandler := nil;
+end;
+
+procedure TGtk2WidgetSet.SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword);
+var
+  lEventHandler: PWaitHandleEventHandler absolute AHandler;
+begin
+  if AHandler = nil then exit;
+  g_source_remove(lEventHandler^.GSourceID);
+  lEventHandler^.GSourceID := g_io_add_watch(lEventHandler^.GIOChannel,
+    NewFlags, @waithandle_iocallback, lEventHandler);
+  //debugln('TGtk2WidgetSet.SetEventHandlerFlags lEventHandler=',HexStr(Cardinal(lEventHandler),8),' AHandle=',dbgs(lEventHandler^.Handle));
+end;
+
+type
+  PPipeEventInfo = ^TPipeEventInfo;
+  TPipeEventInfo = record
+    Handler: PEventHandler;
+    UserData: PtrInt;
+    OnEvent: TPipeEvent;
+  end;
+
+function TGtk2WidgetSet.AddPipeEventHandler(AHandle: THandle;
+  AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler;
+var
+  lPipeEventInfo: PPipeEventInfo;
+begin
+  if AEventHandler = nil then exit;
+  New(lPipeEventInfo);
+  lPipeEventInfo^.UserData := AData;
+  lPipeEventInfo^.OnEvent := AEventHandler;
+  lPipeEventInfo^.Handler := AddEventHandler(AHandle, G_IO_IN or G_IO_HUP or G_IO_OUT,
+    @HandlePipeEvent, PtrUInt(lPipeEventInfo));
+  Result := lPipeEventInfo;
+end;
+
+procedure TGtk2WidgetSet.HandlePipeEvent(AData: PtrInt; AFlags: dword);
+var
+  lPipeEventInfo: PPipeEventInfo absolute AData;
+  lReasons: TPipeReasons;
+begin
+  lReasons := [];
+  if AFlags and G_IO_IN = G_IO_IN then
+    Include(lReasons, prDataAvailable);
+  if AFlags and G_IO_OUT = G_IO_OUT then
+    Include(lReasons, prCanWrite);
+  if AFlags and G_IO_HUP = G_IO_HUP then
+    Include(lReasons, prBroken);
+
+  lPipeEventInfo^.OnEvent(lPipeEventInfo^.UserData, lReasons);
+end;
+
+procedure TGtk2WidgetSet.RemovePipeEventHandler(var AHandler: PPipeEventHandler);
+var
+  lPipeEventInfo: PPipeEventInfo absolute AHandler;
+begin
+  if AHandler = nil then exit;
+  RemoveEventHandler(lPipeEventInfo^.Handler);
+  Dispose(lPipeEventInfo);
+  AHandler := nil;
+end;
+
+{$ifdef UNIX}
+function TGtk2WidgetSet.AddProcessEventHandler(AHandle: THandle;
+  AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;
+var
+  lHandler: PChildSignalEventHandler;
+begin
+  if AEventHandler = nil then exit(nil);
+  New(lHandler);
+  lHandler^.PID := TPid(AHandle);
+  lHandler^.UserData := AData;
+  lHandler^.OnEvent := AEventHandler;
+  lHandler^.PrevHandler := nil;
+  lHandler^.NextHandler := FChildSignalHandlers;
+  if FChildSignalHandlers <> nil then
+    FChildSignalHandlers^.PrevHandler := lHandler;
+  FChildSignalHandlers := lHandler;
+  Result := lHandler;
+end;
+
+procedure TGtk2WidgetSet.RemoveProcessEventHandler(var AHandler: PProcessEventHandler);
+var
+  lHandler: PChildSignalEventHandler absolute AHandler;
+begin
+  if AHandler = nil then exit;
+  if lHandler^.PrevHandler = nil then
+    FChildSignalHandlers := lHandler^.NextHandler
+  else
+    lHandler^.PrevHandler^.NextHandler := lHandler^.NextHandler;
+  if lHandler^.NextHandler <> nil then
+    lHandler^.NextHandler^.PrevHandler := lHandler^.PrevHandler;
+  Dispose(lHandler);
+  AHandler := nil;
+end;
+{$else}
+{$IFDEF VerboseGtkToDos}{$warning TGtk2WidgetSet.RemoveProcessEventHandler and TGtk2WidgetSet.AddProcessEventHandler not implemented on this OS}{$ENDIF}
+//PChildSignalEventHandler is only defined on unix
+function TGtk2WidgetSet.AddProcessEventHandler(AHandle: THandle;
+  AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;
+begin
+  Result := nil;
+end;
+
+procedure TGtk2WidgetSet.RemoveProcessEventHandler(var AHandler: PProcessEventHandler);
+begin
+end;
+{$endif}
+
