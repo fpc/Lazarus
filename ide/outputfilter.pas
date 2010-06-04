@@ -712,7 +712,7 @@ var i, j, FilenameEndPos: integer;
       inc(p,length('Compiling '));
       if (length(s)>=p+1) and (s[p]='.') and (s[p+1]=PathDelim) then
         inc(p,2);
-      AFilename:=TrimFilename(copy(s,p,length(s)));
+      AFilename:=TrimFilename(SetDirSeparators(copy(s,p,length(s))));
       fCompilingHistory.Add(AFilename);
       CurrentMessageParts.Values['Stage']:='FPC';
       CurrentMessageParts.Values['Type']:='Compiling';
@@ -1180,7 +1180,7 @@ begin
       end;
       
       // make filenames absolute if wanted
-      Filename:=copy(Msg,1,FilenameEndPos);
+      Filename:=TrimFilename(SetDirSeparators(copy(Msg,1,FilenameEndPos)));
       if FilenameIsAbsolute(Filename) then begin
         AbsFilename:=Filename;
         CurrentMessageParts.Values['Filename']:=AbsFilename;
@@ -1193,12 +1193,14 @@ begin
       if (ofoMakeFilenamesAbsolute in Options) then begin
         if (AbsFilename<>'') and (AbsFilename<>Filename) then begin
           Filename:=AbsFilename;
-          Msg:=Filename+copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos);
+          Msg:=Filename+TrimFilename(SetDirSeparators(
+                        copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos)));
         end;
       end else begin
         if FileIsInPath(Filename,fCurrentDirectory) then begin
           Filename:=CreateRelativePath(Filename,fCurrentDirectory);
-          Msg:=Filename+copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos);
+          Msg:=Filename+TrimFilename(SetDirSeparators(
+                        copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos)));
         end;
       end;
       //DebugLn('TOutputFilter.ReadFPCompilerLine AbsFilename=',AbsFilename,' Filename=',Filename,' Dir=',fCurrentDirectory);
