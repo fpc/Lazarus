@@ -282,12 +282,15 @@ var
     rcNode.Top    := ptCenter.Y - (BoxSize div 2) + 1;
     rcNode.Bottom := ptCenter.Y + (BoxSize div 2);
 
-    Canvas.Brush.Color:=clWhite;
-    Canvas.Rectangle(rcNode);
+    Canvas.Brush.Style := bsClear;
 
     //draw bottom handle to paragraph line
     Canvas.MoveTo(ptCenter.X, rcNode.Bottom);
     Canvas.LineTo(ptCenter.X, rcCodeFold.Bottom);
+
+    if Collapsed and (MarkupInfo.FrameColor <> clNone) then
+      Canvas.Pen.Color := MarkupInfo.FrameColor;
+    Canvas.Rectangle(rcNode);
 
     //draw unfolded sign in node box
     Canvas.MoveTo(ptCenter.X - 2, ptCenter.Y);
@@ -300,6 +303,8 @@ var
       Canvas.LineTo(ptCenter.X, ptCenter.Y + 3);
     end;
     LineOffset := 0;
+    Canvas.Pen.Color := MarkupInfo.Foreground;
+    Canvas.Brush.Style := bsSolid;
   end;
 
   procedure DrawParagraphContinue(rcCodeFold: TRect);
