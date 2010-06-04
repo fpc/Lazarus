@@ -1152,12 +1152,7 @@ begin
   Result := GTKObject <> nil;
 
   if Result then begin
-    //DebugLn(['TGtk2WidgetSet.BeginPaint ',DbgSName(Control)]);
-    paintrect.x := PS.rcPaint.Left;
-    paintrect.y := PS.rcPaint.Top;
-    paintrect.width := PS.rcPaint.Right- PS.rcPaint.Left;
-    paintrect.height := PS.rcPaint.Bottom - PS.rcPaint.Top;
-    if (paintrect.width <= 0) or (paintrect.height <=0)
+    if gtk_type_is_a(gtk_object_type(GTKObject), GTKAPIWidget_GetType)
     then begin
       if IsValidGDIObjectType(Bitmap, gdiBitmap) then
         BMP := PGdiObject(Bitmap)^.GDIBitmapObject
@@ -1916,17 +1911,6 @@ begin
   Result := ReleaseGDIObject(PGdiObject(GDIObject));
 end;
 
-      if (aSize = 0) and (lfHeight = 0) then
-        FullString := '10' // use some default: TODO: find out the default size of the widget
-      else
-      if aSize > 0 then
-        FullString := IntToStr(aSize)
-      else
-        FullString := '';
-
-      FullString := AFamily + ' ' + aStyle + ' ' + FullString;
-      PangoDesc := pango_font_description_from_string(PChar(FullString));
-
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.DestroyCaret(Handle: HWND): Boolean;
 var
@@ -1947,10 +1931,6 @@ begin
   end
   else Assert(False, 'Trace:WARNING: [TGtk2WidgetSet.DestroyCaret] Got null HWND');
 end;
-
-      if lfItalic <> 0 then
-        pango_font_description_set_style(PangoDesc, PANGO_STYLE_ITALIC);
-
 
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.DrawFrameControl(DC: HDC; const Rect : TRect;
