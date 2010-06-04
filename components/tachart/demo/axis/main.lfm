@@ -73,10 +73,17 @@ object Form1: TForm1
           SeriesColor = clRed
           Source = rcsTSummer
         end
-        object ChartTWinter: TLineSeries
+        object ChartTWinterLine: TLineSeries
           AxisIndexY = 2
           LinePen.Color = clBlue
           LinePen.Width = 2
+          SeriesColor = clBlue
+          Source = rcsTWinter
+        end
+        object ChartTWinterBar: TBarSeries
+          AxisIndexY = 2
+          BarBrush.Color = clBlue
+          BarBrush.Style = bsDiagCross
           SeriesColor = clBlue
           Source = rcsTWinter
         end

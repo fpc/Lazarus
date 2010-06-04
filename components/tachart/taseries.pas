@@ -790,9 +790,9 @@ begin
     p := GetGraphPoint(i);
     w := CalcBarWidth(GetGraphPointX(i), i);
     if IsRotated then
-      graphBar := DoubleRect(0, p.Y - w, p.X, p.Y + w)
+      graphBar := DoubleRect(AxisToGraphX(0), p.Y - w, p.X, p.Y + w)
     else
-      graphBar := DoubleRect(p.X - w, 0, p.X + w, p.Y);
+      graphBar := DoubleRect(p.X - w, AxisToGraphY(0), p.X + w, p.Y);
     if not RectIntersectsRect(graphBar, ext2) then continue;
 
     with imageBar do begin

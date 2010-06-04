@@ -16,6 +16,7 @@ type
     ChartLog: TChart;
     cfsLog: TFuncSeries;
     cbLog: TCheckBox;
+    ChartTWinterBar: TBarSeries;
     clsLogPoints: TLineSeries;
     ChartT: TChart;
     catLog: TChartAxisTransformations;
@@ -26,7 +27,7 @@ type
     ChartCustomMarks: TChart;
     ChartCustomMarksBarSeries1: TBarSeries;
     ChartTSummer: TLineSeries;
-    ChartTWinter: TLineSeries;
+    ChartTWinterLine: TLineSeries;
     lcsMarks: TListChartSource;
     PageControl1: TPageControl;
     pnlLogControls: TPanel;
