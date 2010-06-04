@@ -370,54 +370,101 @@ begin
 end;
 
 procedure TLineSeries.Draw(ACanvas: TCanvas);
+var
+  points: array of TPoint;
+  pointCount: Integer = 0;
+  breaks: TIntegerDynArray;
+  breakCount: Integer = 0;
 
-  procedure DrawLine(AA, AB: TDoublePoint);
+  procedure CacheLine(AA, AB: TDoublePoint);
   var
     ai, bi: TPoint;
   begin
+    // This is not an optimization, but a safety check to avoid
+    // integer overflow with extreme zoom-ins.
     if not LineIntersectsRect(AA, AB, ParentChart.CurrentExtent) then exit;
     ai := ParentChart.GraphToImage(AA);
     bi := ParentChart.GraphToImage(AB);
     if ai = bi then exit;
+    if (pointCount = 0) or (points[pointCount - 1] <> ai) then begin
+      breaks[breakCount] := pointCount;
+      breakCount += 1;
+      points[pointCount] := ai;
+      pointCount += 1;
+    end;
+    points[pointCount] := bi;
+    pointCount += 1;
+  end;
+
+var
+  gp: array of TDoublePoint;
+
+  procedure DrawLines;
+  var
+    i, j: Integer;
+    orig, m: TDoublePoint;
+  begin
+    if LineType = ltNone then exit;
+    // For extremely long series (10000 points or more), the Canvas.Line
+    // call becomes a bottleneck. So represent a serie as a sequence of polylines.
+    // This achieves approximately 3x speedup for the typical case.
+    SetLength(points, 2 * Count);
+    SetLength(breaks, Count);
+    case LineType of
+      ltFromPrevious: begin
+        for i := 0 to Count - 2 do
+          CacheLine(gp[i], gp[i + 1]);
+      end;
+      ltFromOrigin: begin
+        orig := AxisToGraph(ZeroDoublePoint);
+        for i := 0 to Count - 1 do
+          CacheLine(orig, gp[i]);
+      end;
+      ltStepXY, ltStepYX: begin
+        for i := 0 to Count - 2 do begin
+          if (LineType = ltStepXY) xor IsRotated then
+            m := DoublePoint(gp[i + 1].X, gp[i].Y)
+          else
+            m := DoublePoint(gp[i].X, gp[i + 1].Y);
+          CacheLine(gp[i], m);
+          CacheLine(m, gp[i + 1]);
+        end;
+      end;
+    end;
+    breaks[breakCount] := pointCount;
+    breakCount += 1;
+    SetLength(points, pointCount);
+    SetLength(breaks, breakCount);
+
     ACanvas.Pen.Assign(LinePen);
     if Depth = 0 then
-      ACanvas.Line(ai, bi)
+      for i := 0 to High(breaks) - 1 do
+        ACanvas.Polyline(points, breaks[i], breaks[i + 1] - breaks[i])
     else begin
       ACanvas.Brush.Style := bsSolid;
-      ACanvas.Brush.Color := ACanvas.Pen.Color;
+      ACanvas.Brush.Color := LinePen.Color;
       ACanvas.Pen.Color := clBlack;
-      DrawLineDepth(ACanvas, ai, bi, Depth);
+      for i := 0 to High(breaks) - 1 do
+        for j := breaks[i] to breaks[i + 1] - 2 do
+          DrawLineDepth(ACanvas, points[j], points[j + 1], Depth);
     end;
   end;
 
 var
   i: Integer;
-  gp: array of TDoublePoint;
   ai: TPoint;
-  m: TDoublePoint;
 begin
   SetLength(gp, Count);
-  for i := 0 to Count - 1 do
-    gp[i] := GetGraphPoint(i);
-  case LineType of
-    ltNone: ;
-    ltFromPrevious:
-      for i := 0 to Count - 2 do
-        DrawLine(gp[i], gp[i + 1]);
-    ltFromOrigin:
-      for i := 0 to Count - 1 do
-        DrawLine(AxisToGraph(ZeroDoublePoint), gp[i]);
-    ltStepXY, ltStepYX:
-      for i := 0 to Count - 2 do begin
-        if (LineType = ltStepXY) xor IsRotated then
-          m := DoublePoint(gp[i + 1].X, gp[i].Y)
-        else
-          m := DoublePoint(gp[i].X, gp[i + 1].Y);
-        DrawLine(gp[i], m);
-        DrawLine(m, gp[i + 1]);
-      end;
-  end;
+  if (AxisIndexX < 0) and (AxisIndexY < 0) then
+    // Optimization: bypass transformations in the default case.
+    for i := 0 to Count - 1 do
+      with Source[i]^ do
+        gp[i] := DoublePoint(X, Y)
+  else
+    for i := 0 to Count - 1 do
+      gp[i] := GetGraphPoint(i);
 
+  DrawLines;
   DrawLabels(ACanvas);
 
   if FShowPoints then
