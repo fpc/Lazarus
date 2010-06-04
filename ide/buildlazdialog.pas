@@ -1458,7 +1458,7 @@ begin
 
   // package registration units
   FItemPkgReg:=TBuildLazarusItem.Create(
-    'PackageRegistration',lisPkgReg,'packager/registration',
+    'PackageRegistration',lisPkgReg,'packager'+PathDelim+'registration',
     mmBuild);
   FItems.Add(FItemPkgReg);
 
@@ -1469,7 +1469,7 @@ begin
 
   // SynEdit
   FItemSynEdit:=TBuildLazarusItem.Create(
-    'SynEdit',lisSynEdit,'components/synedit',mmBuild);
+    'SynEdit',lisSynEdit,'components'+PathDelim+'synedit',mmBuild);
   FItems.Add(FItemSynEdit);
 
   // IDE
