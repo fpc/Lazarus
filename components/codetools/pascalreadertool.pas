@@ -906,15 +906,14 @@ begin
     if (not UpAtomIs('PROPERTY')) then exit;
     ReadNextAtom;
   end;
-  AtomIsIdentifier(true);
+  if not AtomIsIdentifier(false) then exit;
   ReadNextAtom;
   if CurPos.Flag=cafEdgedBracketOpen then begin
     ReadTilBracketClose(true);
     ReadNextAtom;
   end;
   if CurPos.Flag in [cafSemicolon,cafEND] then exit;
-  if not (CurPos.Flag=cafColon) then
-    RaiseCharExpectedButAtomFound(':');
+  if CurPos.Flag<>cafColon then exit;
   ReadNextAtom;
   Result:=CurPos.Flag=cafWord;
 end;
