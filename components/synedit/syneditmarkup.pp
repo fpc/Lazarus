@@ -414,7 +414,7 @@ var
 begin
   inherited DecPaintLock;
   for i := 0 to fMarkUpList.Count-1 do
-    TSynEditMarkup(fMarkUpList[i]).IncPaintLock;
+    TSynEditMarkup(fMarkUpList[i]).DecPaintLock;
 end;
 
 procedure TSynEditMarkupManager.AddMarkUp(aMarkUp : TSynEditMarkup; AsFirst: Boolean = False);
