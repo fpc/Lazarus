@@ -173,6 +173,7 @@ type
     sfEnsureCursorPos, sfEnsureCursorPosAtResize,
     sfIgnoreNextChar, sfPainting, sfHasScrolled,
     sfScrollbarChanged, sfHorizScrollbarVisible, sfVertScrollbarVisible,
+    sfAfterLoadFromFile,
     // Mouse-states
     sfDblClicked, sfGutterClick, sfTripleClicked, sfQuadClicked,
     sfWaitForDragging, sfIsDragging, sfMouseSelecting, sfMouseDoneSelecting,
@@ -1813,6 +1814,8 @@ begin
   try
     if (FPaintLock=1) and HandleAllocated then begin
       ScanRanges;
+      if sfAfterLoadFromFile in fStateFlags then
+        AfterLoadFromFile;
       if FChangedLinesStart > 0 then begin
         InvalidateLines(FChangedLinesStart, FChangedLinesEnd);
         InvalidateGutterLines(FChangedLinesStart, FChangedLinesEnd);
@@ -4110,6 +4113,8 @@ begin
   Application.RemoveOnIdleHandler(@IdleScanRanges);
   inherited CreateHandle;   //SizeOrFontChanged will be called
   ScanRanges;
+  if sfAfterLoadFromFile in fStateFlags then
+    AfterLoadFromFile;
   UpdateScrollBars;
   //if fStateFlags * [sfEnsureCursorPos, sfEnsureCursorPosAtResize] <> [] then
   //  EnsureCursorPosVisible;
@@ -6471,6 +6476,13 @@ end;
 
 procedure TCustomSynEdit.AfterLoadFromFile;
 begin
+  if (not HandleAllocated) or
+     ( (FPaintLock > 0) and not((FPaintLock = 1) and FIsInDecPaintLock) )
+  then begin
+    Include(fStateFlags, sfAfterLoadFromFile);
+    exit;
+  end;
+  Exclude(fStateFlags, sfAfterLoadFromFile);
   if assigned(FFoldedLinesView) then begin
     // TODO: Maybe defer until after paintlock?
     ScanRanges;
