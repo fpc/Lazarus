@@ -1573,7 +1573,8 @@ begin
 
   SelField := SelectedField;
   TempColumn := TColumn(ColumnFromGridColumn(Col));
-  if (TempColumn<>nil) and not TempColumn.ReadOnly and FDatalink.Edit then
+  if (SelField<>nil) and (TempColumn<>nil) and not TempColumn.ReadOnly and
+     FDatalink.Edit then
   begin
     if SelField.DataType=ftBoolean then
     	SelField.AsBoolean := not SelField.AsBoolean
@@ -3515,7 +3516,7 @@ var
   AGrid: TCustomDBGrid;
 begin
   AGrid := TCustomDBGrid(Grid);
-  Result :=  (AGrid=nil) or AGrid.ReadOnly or (FField=nil) or FField.ReadOnly;
+  Result := ((AGrid<>nil)and(AGrid.ReadOnly)) or ((FField<>nil)And(FField.ReadOnly))
 end;
 
 function TColumn.GetDefaultVisible: boolean;
