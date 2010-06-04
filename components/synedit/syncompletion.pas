@@ -769,9 +769,6 @@ begin
 end;
 
 procedure TSynBaseCompletionForm.DoOnResize;
-var
-  OldHeight: Integer;
-  OldWidth: LongInt;
 begin
   inherited DoOnResize;
   if ([csLoading,csDestroying]*ComponentState<>[]) or (Scroll=nil) then exit;
