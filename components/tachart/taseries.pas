@@ -160,7 +160,7 @@ type
     ASender: TChartSeries; ACanvas: TCanvas; AIndex: Integer;
     ACenter: TPoint) of object;
 
-  TLineType = (ltNone, ltFromPrevious, ltFromOrigin);
+  TLineType = (ltNone, ltFromPrevious, ltFromOrigin, ltStepXY, ltStepYX);
 
   { TLineSeries }
 
@@ -378,6 +378,7 @@ procedure TLineSeries.Draw(ACanvas: TCanvas);
     if not LineIntersectsRect(AA, AB, ParentChart.CurrentExtent) then exit;
     ai := ParentChart.GraphToImage(AA);
     bi := ParentChart.GraphToImage(AB);
+    if ai = bi then exit;
     ACanvas.Pen.Assign(LinePen);
     if Depth = 0 then
       ACanvas.Line(ai, bi)
@@ -393,6 +394,7 @@ var
   i: Integer;
   gp: array of TDoublePoint;
   ai: TPoint;
+  m: TDoublePoint;
 begin
   SetLength(gp, Count);
   for i := 0 to Count - 1 do
@@ -405,6 +407,15 @@ begin
     ltFromOrigin:
       for i := 0 to Count - 1 do
         DrawLine(AxisToGraph(ZeroDoublePoint), gp[i]);
+    ltStepXY, ltStepYX:
+      for i := 0 to Count - 2 do begin
+        if (LineType = ltStepXY) xor IsRotated then
+          m := DoublePoint(gp[i + 1].X, gp[i].Y)
+        else
+          m := DoublePoint(gp[i].X, gp[i + 1].Y);
+        DrawLine(gp[i], m);
+        DrawLine(m, gp[i + 1]);
+      end;
   end;
 
   DrawLabels(ACanvas);
