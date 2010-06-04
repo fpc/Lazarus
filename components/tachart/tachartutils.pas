@@ -192,6 +192,7 @@ const
 
 function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 
+function DoublePoint(AX, AY: Double): TDoublePoint; inline;
 function DoubleRect(AX1, AY1, AX2, AY2: Double): TDoubleRect; inline;
 
 procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
@@ -316,6 +317,12 @@ begin
       while AStart < AMax do AStart += AStep;
     end;
   end; {case AxisScale}
+end;
+
+function DoublePoint(AX, AY: Double): TDoublePoint; inline;
+begin
+  Result.X := AX;
+  Result.Y := AY;
 end;
 
 function DoubleRect(AX1, AY1, AX2, AY2: Double): TDoubleRect; inline;
