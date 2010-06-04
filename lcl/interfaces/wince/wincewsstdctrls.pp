@@ -640,10 +640,11 @@ begin
   // customization of Params
   with Params do
   begin
-    //    Flags := Flags and not (CBS_SIMPLE or CBS_OWNERDRAWFIXED or CBS_OWNERDRAWVARIABLE);
     // The following styles are suposed to be unsupported:
     // CBS_SIMPLE or CBS_OWNERDRAWFIXED or CBS_OWNERDRAWVARIABLE
     // But they work anyway, at least on the WM 6 Emulator
+    // So don't remove them or else you will cause this bug:
+    // http://bugs.freepascal.org/view.php?id=16627
     pClassName := @ComboboxClsName;
     SubClassWndProc := @ComboBoxWindowProc;
   end;

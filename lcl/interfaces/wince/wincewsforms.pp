@@ -168,9 +168,9 @@ begin
  // roozbeh:which flags really are required?!
  if lVisible then
   {$ifdef win32}
-  ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil);
+  ScrollWindowPtr(AWinControl.Handle, -DeltaX, -DeltaY, nil, nil);
   {$else}
-  ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil,
+  ScrollWindowPtr(AWinControl.Handle, -DeltaX, -DeltaY, nil, nil,
     rgn, nil, SW_INVALIDATE or SW_ERASE or SW_SCROLLCHILDREN);
   {$endif}
 end;
