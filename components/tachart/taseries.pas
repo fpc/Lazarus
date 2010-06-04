@@ -525,6 +525,7 @@ function TConstantLine.GetNearestPoint(ADistFunc: TPointDistFunc;
   const APoint: TPoint; out AIndex: Integer; out AImg: TPoint; out
   AValue: TDoublePoint): Boolean;
 begin
+  Unused(ADistFunc);
   Result := true;
   AIndex := -1;
   AImg := APoint;
