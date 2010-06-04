@@ -57,6 +57,7 @@ type
     procedure SetIndex(AValue: Integer); override;
 
   protected
+    function AxisToGraph(const APoint: TDoublePoint): TDoublePoint;
     function AxisToGraphX(AX: Double): Double; override;
     function AxisToGraphY(AY: Double): Double; override;
     function GraphToAxisX(AX: Double): Double; override;
@@ -150,6 +151,14 @@ uses
   Math, TAChartAxis;
 
 { TCustomChartSeries }
+
+function TCustomChartSeries.AxisToGraph(
+  const APoint: TDoublePoint): TDoublePoint;
+begin
+  Result := DoublePoint(AxisToGraphX(APoint.X), AxisToGraphX(APoint.Y));
+  if IsRotated then
+    Exchange(Result.X, Result.Y);
+end;
 
 function TCustomChartSeries.AxisToGraphX(AX: Double): Double;
 begin

@@ -391,26 +391,28 @@ procedure TLineSeries.Draw(ACanvas: TCanvas);
 
 var
   i: Integer;
-  a: TDoublePoint;
+  gp: array of TDoublePoint;
   ai: TPoint;
 begin
+  SetLength(gp, Count);
+  for i := 0 to Count - 1 do
+    gp[i] := GetGraphPoint(i);
   case LineType of
     ltNone: ;
     ltFromPrevious:
       for i := 0 to Count - 2 do
-        DrawLine(GetGraphPoint(i), GetGraphPoint(i + 1));
+        DrawLine(gp[i], gp[i + 1]);
     ltFromOrigin:
       for i := 0 to Count - 1 do
-        DrawLine(ZeroDoublePoint, GetGraphPoint(i));
+        DrawLine(AxisToGraph(ZeroDoublePoint), gp[i]);
   end;
 
   DrawLabels(ACanvas);
 
   if FShowPoints then
     for i := 0 to Count - 1 do begin
-      a := GetGraphPoint(i);
-      if not ParentChart.IsPointInViewPort(a) then continue;
-      ai := ParentChart.GraphToImage(a);
+      if not ParentChart.IsPointInViewPort(gp[i]) then continue;
+      ai := ParentChart.GraphToImage(gp[i]);
       FPointer.Draw(ACanvas, ai, GetColor(i));
       if Assigned(FOnDrawPointer) then
         FOnDrawPointer(Self, ACanvas, i, ai);
