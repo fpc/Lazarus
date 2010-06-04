@@ -1973,7 +1973,7 @@ begin
         else
           CloseAction := caHide;
       end;
-      // call even handler - maybe use want to modify it
+      // call event handler and let user modify CloseAction
       DoClose(CloseAction);
       // execute action according to close action
       case CloseAction of
