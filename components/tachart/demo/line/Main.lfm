@@ -6,6 +6,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 467
   ClientWidth = 556
+  Position = poScreenCenter
   LCLVersion = '0.9.29'
   object Panel1: TPanel
     Left = 0
@@ -53,6 +54,15 @@ object Form1: TForm1
       OnChange = cbRotatedChange
       TabOrder = 2
     end
+    object btnAddSeries: TButton
+      Left = 284
+      Height = 25
+      Top = 8
+      Width = 75
+      Caption = 'More series'
+      OnClick = btnAddSeriesClick
+      TabOrder = 3
+    end
   end
   object Chart1: TChart
     Left = 0
@@ -75,6 +85,7 @@ object Form1: TForm1
       'TAChart'
     )
     Align = alClient
+    DoubleBuffered = True
     ParentColor = False
     object Chart1LineSeries1: TLineSeries
       LinePen.Color = clTeal
