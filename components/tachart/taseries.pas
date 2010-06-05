@@ -409,7 +409,7 @@ var
     // call becomes a bottleneck. So represent a serie as a sequence of polylines.
     // This achieves approximately 3x speedup for the typical case.
     SetLength(points, 2 * Count);
-    SetLength(breaks, Count);
+    SetLength(breaks, Count + 1);
     case LineType of
       ltFromPrevious: begin
         for i := 0 to Count - 2 do
