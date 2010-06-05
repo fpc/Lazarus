@@ -146,7 +146,7 @@ type
     function ShowWatchProperties(const AWatch: TIDEWatch; AWatchExpression: String = ''): TModalresult; virtual; abstract;
 
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType;
-                              BringToFront: Boolean = True; Sow: Boolean = true); virtual; abstract;
+                              BringToFront: Boolean = True; Show: Boolean = true); virtual; abstract;
   public
     property Commands: TDBGCommands read GetCommands;  // All current available commands of the debugger
     property Debuggers[const AIndex: Integer]: TDebuggerClass read GetDebuggerClass;
