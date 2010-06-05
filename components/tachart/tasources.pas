@@ -62,6 +62,7 @@ type
     class procedure CheckFormat(const AFormat: String);
     function Extent: TDoubleRect; virtual;
     function FormatItem(const AFormat: String; AIndex: Integer): String;
+    function IsSorted: Boolean; virtual;
     procedure ValuesInRange(
       AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
       out AValues: TDoubleDynArray; out ATexts: TStringDynArray); virtual;
@@ -100,6 +101,7 @@ type
     procedure Clear;
     procedure CopyForm(ASource: TCustomChartSource);
     procedure Delete(AIndex: Integer); inline;
+    function IsSorted: Boolean; override;
     function SetXValue(AIndex: Integer; AValue: Double): Integer;
     procedure SetYValue(AIndex: Integer; AValue: Double);
     procedure Sort;
@@ -153,6 +155,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  public
+    function IsSorted: Boolean; override;
   published
     property PointsNumber: Integer
       read FPointsNumber write SetPointsNumber default 0;
@@ -323,6 +327,11 @@ procedure TCustomChartSource.InvalidateCaches;
 begin
   FExtentIsValid := false;
   FValuesTotalIsValid := false;
+end;
+
+function TCustomChartSource.IsSorted: Boolean;
+begin
+  Result := false;
 end;
 
 function TCustomChartSource.IsUpdating: Boolean; inline;
@@ -555,6 +564,11 @@ begin
   Result := PChartDataItem(FData.Items[AIndex]);
 end;
 
+function TListChartSource.IsSorted: Boolean;
+begin
+  Result := Sorted;
+end;
+
 procedure TListChartSource.SetDataPoints(AValue: TStrings);
 begin
   if FDataPoints = AValue then exit;
@@ -757,6 +771,11 @@ begin
       FCurItem.Y := FRNG.Get / High(LongWord) * (YMax - YMin) + YMin;
   end;
   Result := @FCurItem;
+end;
+
+function TRandomChartSource.IsSorted: Boolean;
+begin
+  Result := not RandomX;
 end;
 
 procedure TRandomChartSource.SetPointsNumber(const AValue: Integer);
