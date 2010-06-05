@@ -61,6 +61,7 @@ type
   public
     class procedure CheckFormat(const AFormat: String);
     function Extent: TDoubleRect; virtual;
+    procedure FindBounds(AXMin, AXMax: Double; out ALB, AUB: Integer);
     function FormatItem(const AFormat: String; AIndex: Integer): String;
     function IsSorted: Boolean; virtual;
     procedure ValuesInRange(
@@ -304,6 +305,18 @@ begin
     end;
   FExtentIsValid := true;
   Result := FExtent;
+end;
+
+procedure TCustomChartSource.FindBounds(
+  AXMin, AXMax: Double; out ALB, AUB: Integer);
+begin
+  EnsureOrder(AXMin, AXMax);
+  ALB := 0;
+  while (ALB < Count) and (Item[ALB]^.X < AXMin) do
+    Inc(ALB);
+  AUB := Count - 1;
+  while (AUB > 0) and (Item[AUB]^.X < AXMax) do
+    Inc(AUB);
 end;
 
 function TCustomChartSource.FormatItem(

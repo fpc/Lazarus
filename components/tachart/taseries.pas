@@ -408,20 +408,20 @@ var
     // For extremely long series (10000 points or more), the Canvas.Line
     // call becomes a bottleneck. So represent a serie as a sequence of polylines.
     // This achieves approximately 3x speedup for the typical case.
-    SetLength(points, 2 * Count);
-    SetLength(breaks, Count + 1);
+    SetLength(points, 2 * Length(gp));
+    SetLength(breaks, Length(gp) + 1);
     case LineType of
       ltFromPrevious: begin
-        for i := 0 to Count - 2 do
+        for i := 0 to High(gp) - 1 do
           CacheLine(gp[i], gp[i + 1]);
       end;
       ltFromOrigin: begin
         orig := AxisToGraph(ZeroDoublePoint);
-        for i := 0 to Count - 1 do
+        for i := 0 to High(gp) do
           CacheLine(orig, gp[i]);
       end;
       ltStepXY, ltStepYX: begin
-        for i := 0 to Count - 2 do begin
+        for i := 0 to High(gp) - 1 do begin
           if (LineType = ltStepXY) xor IsRotated then
             m := DoublePoint(gp[i + 1].X, gp[i].Y)
           else
@@ -451,33 +451,44 @@ var
   end;
 
 var
-  i: Integer;
+  i, lb, ub: Integer;
   ai: TPoint;
   ext: TDoubleRect;
 begin
+  // Do not draw anything if the series extent does not intersect CurrentExtent.
   ext.a := AxisToGraph(Source.Extent.a);
   ext.b := AxisToGraph(Source.Extent.b);
   if LineType = ltFromOrigin then
     ExpandRect(ext, AxisToGraph(ZeroDoublePoint));
   if not RectIntersectsRect(ext, ParentChart.CurrentExtent) then exit;
 
-  SetLength(gp, Count);
+  // Find an interval of x-values intersecting the CurrentExtent.
+  // Requires monotonic (but not necessarily increasing) axis transformation.
+  lb := 0;
+  ub := Count - 1;
+  if LineType <> ltFromOrigin then begin
+    Source.FindBounds(GraphToAxisX(ext.a.X), GraphToAxisX(ext.b.X), lb, ub);
+    lb := Max(lb - 1, 0);
+    ub := Min(ub + 1, Count - 1);
+  end;
+
+  SetLength(gp, ub - lb + 1);
   if (AxisIndexX < 0) and (AxisIndexY < 0) then
     // Optimization: bypass transformations in the default case.
-    for i := 0 to Count - 1 do
+    for i := lb to ub do
       with Source[i]^ do
-        gp[i] := DoublePoint(X, Y)
+        gp[i - lb] := DoublePoint(X, Y)
   else
-    for i := 0 to Count - 1 do
-      gp[i] := GetGraphPoint(i);
+    for i := lb to ub do
+      gp[i - lb] := GetGraphPoint(i);
 
   DrawLines;
   DrawLabels(ACanvas);
 
   if FShowPoints then
-    for i := 0 to Count - 1 do begin
-      if not ParentChart.IsPointInViewPort(gp[i]) then continue;
-      ai := ParentChart.GraphToImage(gp[i]);
+    for i := lb to ub do begin
+      if not ParentChart.IsPointInViewPort(gp[i - lb]) then continue;
+      ai := ParentChart.GraphToImage(gp[i - lb]);
       FPointer.Draw(ACanvas, ai, GetColor(i));
       if Assigned(FOnDrawPointer) then
         FOnDrawPointer(Self, ACanvas, i, ai);
