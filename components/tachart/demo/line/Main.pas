@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, ExtCtrls, StdCtrls, SysUtils, FileUtil, Forms, Controls, Graphics,
-  Dialogs, TAGraph, TASeries, TASources;
+  Dialogs, TAGraph, TASeries, TASources, TATools;
 
 type
 
@@ -18,8 +18,14 @@ type
     cb3D: TCheckBox;
     cbLineType: TComboBox;
     cbRotated: TCheckBox;
+    cbSorted: TCheckBox;
     Chart1: TChart;
+    Chart1ConstantLine1: TConstantLine;
     Chart1LineSeries1: TLineSeries;
+    ChartToolset1: TChartToolset;
+    ChartToolset1DataPointDragTool1: TDataPointDragTool;
+    ChartToolset1PanDragTool1: TPanDragTool;
+    ChartToolset1ZoomDragTool1: TZoomDragTool;
     edTime: TEdit;
     Panel1: TPanel;
     RandomChartSource1: TRandomChartSource;
@@ -28,6 +34,7 @@ type
     procedure cb3DChange(Sender: TObject);
     procedure cbLineTypeChange(Sender: TObject);
     procedure cbRotatedChange(Sender: TObject);
+    procedure cbSortedChange(Sender: TObject);
   end;
 
 var
@@ -70,8 +77,9 @@ var
   i: Integer;
 begin
   for i := 0 to Chart1.SeriesCount - 1 do
-    with Chart1.Series[i] as TLineSeries do
-      Depth := 15 - Depth;
+    if Chart1.Series[i] is TLineSeries then
+      with Chart1.Series[i] as TLineSeries do
+        Depth := 15 - Depth;
 end;
 
 procedure TForm1.cbLineTypeChange(Sender: TObject);
@@ -79,7 +87,9 @@ var
   i: Integer;
 begin
   for i := 0 to Chart1.SeriesCount - 1 do
-    (Chart1.Series[i] as TLineSeries).LineType := TLineType(cbLineType.ItemIndex);
+    if Chart1.Series[i] is TLineSeries then
+      with Chart1.Series[i] as TLineSeries do
+        LineType := TLineType(cbLineType.ItemIndex);
 end;
 
 procedure TForm1.cbRotatedChange(Sender: TObject);
@@ -87,10 +97,22 @@ var
   i: Integer;
 begin
   for i := 0 to Chart1.SeriesCount - 1 do
-    with Chart1.Series[i] as TLineSeries do begin
-      AxisIndexY := Ord(cbRotated.Checked);
-      AxisIndexX := 1 - AxisIndexY;
-    end;
+    if Chart1.Series[i] is TLineSeries then
+      with Chart1.Series[i] as TLineSeries do begin
+        AxisIndexY := Ord(cbRotated.Checked);
+        AxisIndexX := 1 - AxisIndexY;
+      end;
+end;
+
+procedure TForm1.cbSortedChange(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i := 0 to Chart1.SeriesCount - 1 do
+    if Chart1.Series[i] is TLineSeries then
+      with Chart1.Series[i] as TLineSeries do
+        if Source is TListChartSource then
+          ListSource.Sorted := cbSorted.Checked;
 end;
 
 end.
