@@ -89,6 +89,7 @@ type
     procedure DeleteFullPath(const APath: string); override;
     procedure DeleteFullPathValue(const APath: string); override;
   public
+    procedure Clear; override;
     constructor Create(const Filename: string; LoadFromDisk: Boolean); override;
     constructor Create(TheXMLConfig: TXMLConfig);
     constructor Create(TheXMLConfig: TXMLConfig; const StartPath: string);
@@ -270,6 +271,11 @@ end;
 procedure TXMLConfigStorage.DeleteFullPathValue(const APath: string);
 begin
   XMLConfig.DeleteValue(APath);
+end;
+
+procedure TXMLConfigStorage.Clear;
+begin
+  FXMLConfig.Clear;
 end;
 
 constructor TXMLConfigStorage.Create(const Filename: string;
