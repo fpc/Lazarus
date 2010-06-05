@@ -372,7 +372,7 @@ type
     fLinesInWindow: Integer;// MG: fully visible lines in window
     fLeftChar: Integer;    // first visible screen column
     fMaxLeftChar: Integer; // 1024
-    FOldWitdth, FOldHeight: Integer;
+    FOldWidth, FOldHeight: Integer;
 
     FPaintLock: Integer;
     FPaintLockOwnerCnt: Integer;
@@ -1576,7 +1576,7 @@ begin
   FCaret.Lines := FTheLinesView;
   FInternalCaret.Lines := FTheLinesView;
   FFontDummy := TFont.Create;
-  FOldWitdth := -1;
+  FOldWidth := -1;
   FOldHeight := -1;
 
   with TSynEditStringList(fLines) do begin
@@ -4530,9 +4530,9 @@ end;
 procedure TCustomSynEdit.Resize;
 begin
   inherited;
-  if (not HandleAllocated) or ((Width = FOldWitdth) and (Height = FOldHeight)) then exit;
-  FOldWitdth := Width;
-  FOldHeight := Height;
+  if (not HandleAllocated) or ((ClientWidth = FOldWidth) and (ClientHeight = FOldHeight)) then exit;
+  FOldWidth := ClientWidth;
+  FOldHeight := ClientHeight;
   SizeOrFontChanged(FALSE);
   if sfEnsureCursorPosAtResize in fStateFlags then
     EnsureCursorPosVisible;
