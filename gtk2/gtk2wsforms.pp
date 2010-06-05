@@ -37,9 +37,7 @@ uses
   Graphics, Dialogs,Forms, Math,
   // Widgetset
   WSDialogs, WSLCLClasses, WSControls, WSForms, WSProc,
-  Gtk2Int, Gtk2Proc, Gtk2Def, Gtk2Extra, Gtk2Globals, Gtk2WSControls,
-  // Gtk 1 stuff
-  gtkwsforms;
+  Gtk2Int, Gtk2Proc, Gtk2Def, Gtk2Extra, Gtk2Globals, Gtk2WSControls;
 
 type
 
@@ -118,13 +116,13 @@ type
 
   { TGtk2WSScreen }
 
-  TGtk2WSScreen = class(TGtkWSScreen)
+  TGtk2WSScreen = class(TWSScreen)
   published
   end;
 
   { TGtk2WSApplicationProperties }
 
-  TGtk2WSApplicationProperties = class(TGtkWSApplicationProperties)
+  TGtk2WSApplicationProperties = class(TWSApplicationProperties)
   published
   end;
 

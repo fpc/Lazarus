@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, Math, Controls, Graphics,
   StdCtrls, LMessages, LCLType, LCLProc,
   // Widgetset
-  WSControls, WSProc, WSStdCtrls, WSLCLClasses, GtkWSStdCtrls, Gtk2Int, Gtk2Def,
+  WSControls, WSProc, WSStdCtrls, WSLCLClasses, Gtk2Int, Gtk2Def,
   Gtk2CellRenderer, Gtk2WinApiWindow, Gtk2Globals, Gtk2Proc, InterfaceBase,
   Gtk2WSControls,
   Gtk2WSPrivate, Gtk2Extra;
@@ -1046,8 +1046,23 @@ end;
 
 class function TGtk2WSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Widget: PGtkWidget; // ptr to the newly created GtkWidget
+  WidgetInfo: PWidgetInfo;
 begin
-  Result := TGtkWSCustomEdit{(ClassParent)}.CreateHandle(AWinControl, AParams);
+  Widget := gtk_entry_new();
+  gtk_editable_set_editable(PGtkEditable(Widget), not TCustomEdit(AWinControl).ReadOnly);
+  gtk_widget_show_all(Widget);
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  if Result = 0 then
+    Exit;
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  Set_RC_Name(AWinControl, Widget);
+  SetCallbacks(Widget, WidgetInfo);
+
   if Result <> 0 then
   begin
     gtk_entry_set_has_frame(PGtkEntry(Result),
