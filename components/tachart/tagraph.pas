@@ -81,7 +81,7 @@ type
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
       virtual;
-    procedure MovePoint(AIndex: Integer; const ANewPos: TPoint); virtual;
+    procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); virtual;
     function IsEmpty: Boolean; virtual; abstract;
 
     property Active: Boolean read FActive write SetActive default true;
@@ -1125,7 +1125,8 @@ begin
   Result := AY;
 end;
 
-procedure TBasicChartSeries.MovePoint(AIndex: Integer; const ANewPos: TPoint);
+procedure TBasicChartSeries.MovePoint(
+  var AIndex: Integer; const ANewPos: TPoint);
 begin
   Unused(AIndex, ANewPos)
 end;

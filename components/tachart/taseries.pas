@@ -60,7 +60,7 @@ type
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
       override;
-    procedure MovePoint(AIndex: Integer; const ANewPos: TPoint); override;
+    procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); override;
   end;
 
   { TBarSeries }
@@ -245,7 +245,7 @@ type
       ADistFunc: TPointDistFunc;
       const APoint: TPoint; out AIndex: Integer; out AImg: TPoint;
       out AValue: TDoublePoint): Boolean; override;
-    procedure MovePoint(AIndex: Integer; const ANewPos: TPoint); override;
+    procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); override;
 
   published
     property Active default true;
@@ -606,7 +606,7 @@ begin
   Result := FPen.Color;
 end;
 
-procedure TConstantLine.MovePoint(AIndex: Integer; const ANewPos: TPoint);
+procedure TConstantLine.MovePoint(var AIndex: Integer; const ANewPos: TPoint);
 begin
   Unused(AIndex);
   if LineStyle = lsVertical then
@@ -729,17 +729,17 @@ begin
   end;
 end;
 
-procedure TBasicPointSeries.MovePoint(AIndex: Integer; const ANewPos: TPoint);
+procedure TBasicPointSeries.MovePoint(
+  var AIndex: Integer; const ANewPos: TPoint);
 var
   p: TDoublePoint;
 begin
   if not InRange(AIndex, 0, Count - 1) then exit;
   p := FChart.ImageToGraph(ANewPos);
-  with ListSource.Item[AIndex]^ do begin
-    X := p.X;
-    Y := p.Y;
+  with ListSource do begin
+    AIndex := SetXValue(AIndex, p.X);
+    SetYValue(AIndex, p.Y);
   end;
-  UpdateParentChart;
 end;
 
 procedure TBasicPointSeries.SetUseReticule(AValue: Boolean);

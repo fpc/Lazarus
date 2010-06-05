@@ -78,10 +78,15 @@ type
 
   TListChartSource = class(TCustomChartSource)
   private
-    FData: TList;
+    FData: TFPList;
     FDataPoints: TStrings;
+    FSorted: Boolean;
+
+    procedure AddAt(
+      APos: Integer; AX, AY: Double; const ALabel: String; AColor: TColor);
     procedure ClearCaches;
     procedure SetDataPoints(AValue: TStrings);
+    procedure SetSorted(AValue: Boolean);
     procedure UpdateCachesAfterAdd(AX, AY: Double);
   protected
     function GetCount: Integer; override;
@@ -91,15 +96,16 @@ type
     destructor Destroy; override;
   public
     function Add(
-      AX, AY: Double; const ALabel: String; AColor: TColor;
-      AInOrder: Boolean = true): Integer;
+      AX, AY: Double; const ALabel: String; AColor: TColor): Integer;
     procedure Clear;
     procedure CopyForm(ASource: TCustomChartSource);
     procedure Delete(AIndex: Integer); inline;
-    procedure SetXValue(AIndex: Integer; AValue: Double);
+    function SetXValue(AIndex: Integer; AValue: Double): Integer;
     procedure SetYValue(AIndex: Integer; AValue: Double);
+    procedure Sort;
   published
     property DataPoints: TStrings read FDataPoints write SetDataPoints;
+    property Sorted: Boolean read FSorted write SetSorted;
   end;
 
   { TMWCRandomGenerator }
@@ -444,20 +450,10 @@ end;
 { TListChartSource }
 
 function TListChartSource.Add(
-  AX, AY: Double; const ALabel: String;
-  AColor: TColor; AInOrder: Boolean): Integer;
-var
-  pcc: PChartDataItem;
+  AX, AY: Double; const ALabel: String; AColor: TColor): Integer;
 begin
-  New(pcc);
-  pcc^.X := AX;
-  pcc^.Y := AY;
-  pcc^.Color := AColor;
-  pcc^.Text := ALabel;
-  UpdateCachesAfterAdd(AX, AY);
-
   Result := FData.Count;
-  if AInOrder then begin
+  if Sorted then
     // Keep data points ordered by X coordinate.
     // Note that this leads to O(N^2) time except
     // for the case of adding already ordered points.
@@ -465,8 +461,21 @@ begin
     // he should pre-sort them to avoid performance penalty.
     while (Result > 0) and (Item[Result - 1]^.X > AX) do
       Dec(Result);
-  end;
-  FData.Insert(Result, pcc);
+  AddAt(Result, AX, AY, ALabel, AColor);
+end;
+
+procedure TListChartSource.AddAt(APos: Integer; AX, AY: Double;
+  const ALabel: String; AColor: TColor);
+var
+  pcd: PChartDataItem;
+begin
+  New(pcd);
+  pcd^.X := AX;
+  pcd^.Y := AY;
+  pcd^.Color := AColor;
+  pcd^.Text := ALabel;
+  UpdateCachesAfterAdd(AX, AY);
+  FData.Insert(APos, pcd);
   Notify;
 end;
 
@@ -498,7 +507,8 @@ begin
     Clear;
     for i := 0 to ASource.Count - 1 do
       with ASource[i]^ do
-        Add(X, Y, Text, Color);
+        AddAt(FData.Count, X, Y, Text, Color);
+    if Sorted then Sort;
   finally
     EndUpdate;
   end;
@@ -507,7 +517,7 @@ end;
 constructor TListChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FData := TList.Create;
+  FData := TFPList.Create;
   FDataPoints := TListChartSourceStrings.Create;
   TListChartSourceStrings(FDataPoints).FSource := Self;
   ClearCaches;
@@ -551,18 +561,27 @@ begin
   BeginUpdate;
   try
     FDataPoints.Assign(AValue);
+    if Sorted then Sort;
   finally
     EndUpdate;
   end;
 end;
 
-procedure TListChartSource.SetXValue(AIndex: Integer; AValue: Double);
+procedure TListChartSource.SetSorted(AValue: Boolean);
+begin
+  if FSorted = AValue then exit;
+  FSorted := AValue;
+  if Sorted then begin
+    Sort;
+    Notify;
+  end;
+end;
+
+function TListChartSource.SetXValue(AIndex: Integer; AValue: Double): Integer;
 var
   i: Integer;
   oldX: Double;
 begin
-  // TODO: Ensure that points are sorted by X.
-
   oldX := Item[AIndex]^.X;
   Item[AIndex]^.X := AValue;
 
@@ -583,6 +602,18 @@ begin
           FExtent.a.X := Min(FExtent.a.X, Item[i]^.X);
       end;
     end;
+  end;
+
+  Result := AIndex;
+  if Sorted then begin
+    if AValue > oldX then
+      while (Result < Count - 1) and (Item[Result + 1]^.X < AValue) do
+        Inc(Result)
+    else
+      while (Result > 0) and (Item[Result - 1]^.X > AValue) do
+        Dec(Result);
+    if Result <> AIndex then
+      FData.Move(AIndex, Result);
   end;
   Notify;
 end;
@@ -616,6 +647,16 @@ begin
     end;
   end;
   Notify;
+end;
+
+function CompareDataItemX(AItem1, AItem2: Pointer): Integer;
+begin
+  Result := Sign(PChartDataItem(AItem1)^.X - PChartDataItem(AItem2)^.X);
+end;
+
+procedure TListChartSource.Sort;
+begin
+  FData.Sort(@CompareDataItemX);
 end;
 
 procedure TListChartSource.UpdateCachesAfterAdd(AX, AY: Double);
