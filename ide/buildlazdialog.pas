@@ -994,14 +994,14 @@ begin
   end;
 
   // draw description
-  ItemsListBox.Canvas.Brush.Style:=bsClear;
-  ItemsListBox.Canvas.TextOut(x+2,
-          ARect.Top+(ARect.Bottom-ARect.Top-TxtH) div 2,
+  ItemsListBox.Canvas.Brush.Style := bsClear;
+  ItemsListBox.Canvas.TextRect(Rect(x, ARect.Top, ItemsListBox.ClientWidth - 90, ARect.Bottom), x + 2,
+          ARect.Top + (ARect.Bottom - ARect.Top - TxtH) div 2,
           CurStr);
   // draw make mode text
-  x:=ItemsListBox.ClientWidth-90;
-  ItemsListBox.Canvas.TextOut(x+2,
-          ARect.Top+(ARect.Bottom-ARect.Top-TxtH) div 2,
+  x := ItemsListBox.ClientWidth - 90;
+  ItemsListBox.Canvas.TextRect(Rect(x, ARect.Top, ItemsListBox.ClientWidth, ARect.Bottom), x + 2,
+          ARect.Top + (ARect.Bottom - ARect.Top - TxtH) div 2,
           GetTranslatedMakeModes(CurItem.MakeMode));
 end;
 
