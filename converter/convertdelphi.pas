@@ -84,7 +84,7 @@ type
     fUnitsToRemove: TStringList;
     // Units to rename. Map of unit name -> real unit name.
     fUnitsToRename: TStringToStringTree;
-    // Units collected to be commented later.
+    // Units to be commented later.
     fUnitsToComment: TStringList;
 
     fSettings: TConvertSettings;
@@ -471,8 +471,8 @@ begin
   if Result<>mrOk then exit;
 
   // Copy/rename fLazUnitFilename based on fOrigUnitFilename.
-  Result:=fSettings.RenameDelphiToLazFile(fOrigUnitFilename,fLazFileExt,
-                              fLazUnitFilename,cdtlufRenameLowercase in fFlags);
+  Result:=fSettings.RenameDelphiToLazFile(fOrigUnitFilename, fLazFileExt,
+                              fLazUnitFilename, cdtlufRenameLowercase in fFlags);
   if Result<>mrOK then exit;
 
   // Read the code in.
@@ -486,7 +486,6 @@ var
   DfmFilename: string;     // Delphi .DFM file name.
   LfmFilename: string;     // Lazarus .LFM file name.
   ConvTool: TConvDelphiCodeTool;
-  DFMConverter: TDFMConverter;
 begin
   fUnitsToRemove:=TStringList.Create;
   fUnitsToRename:=TStringToStringTree.Create(false);
@@ -502,7 +501,7 @@ begin
       Result:=LazarusIDE.DoCloseEditorFile(DfmFilename,[cfSaveFirst]);
       if Result<>mrOk then exit;
     end;
-    // rename files (.pas,.dfm) lowercase. TODO: rename files in project
+    // Create a form file name based on the unit file name.
     LfmFilename:=fSettings.DelphiToLazFilename(fOrigUnitFilename, '.lfm',
                                              cdtlufRenameLowercase in fFlags);
     if DfmFilename<>'' then begin
@@ -520,12 +519,7 @@ begin
     end;
     // convert .dfm file to .lfm file (without context type checking)
     if FileExistsUTF8(LfmFilename) then begin
-      DFMConverter:=TDFMConverter.Create;
-      try
-        Result:=DFMConverter.ConvertDfmToLfm(LfmFilename);
-      finally
-        DFMConverter.Free;
-      end;
+      Result:=ConvertDfmToLfm(LfmFilename);
       if Result<>mrOk then exit;
       // Read form file code in.
       Result:=LoadCodeBuffer(fLFMBuffer,LfmFilename,
@@ -1242,8 +1236,7 @@ var
   MainUnitInfo: TUnitInfo;
 begin
   // Converter for main LPR file.
-  fMainUnitConverter:=TConvertDelphiUnit.Create(Self,fOrigPFilename,
-                                                [cdtlufRenameLowercase]);
+  fMainUnitConverter:=TConvertDelphiUnit.Create(Self,fOrigPFilename,[]);
   fMainUnitConverter.LazFileExt:=LprExt;
   fMainUnitConverter.CopyAndLoadFile;
   if LazProject.MainUnitInfo=nil then begin
@@ -1270,42 +1263,34 @@ end;
 
 function TConvertDelphiProject.FindAllUnits: TModalResult;
 var
-  FoundInUnits, MissingInUnits, NormalUnits: TStrings;
-  NotFoundUnits: String;
+  FoundUnits, MisUnits, NormalUnits: TStrings;
   i: Integer;
   CurUnitInfo: TUnitInfo;
   CurFilename: string;
-  NewSearchPath, AllPath, UselessPath: String;
+  NewSearchPath, AllPath, UselessPath: string;
   p: LongInt;
   OffendingUnit: TUnitInfo;
 begin
   Screen.Cursor:=crHourGlass;
-  FoundInUnits:=nil;
-  MissingInUnits:=nil;
+  FoundUnits:=nil;
+  MisUnits:=nil;
   NormalUnits:=nil;
   try
     IDEMessagesWindow.AddMsg('*** Find all unit files... ***','',-1);
     Application.ProcessMessages;
     if not CodeToolBoss.FindDelphiProjectUnits(fMainUnitConverter.fPascalBuffer,
-      FoundInUnits, MissingInUnits, NormalUnits) then
+                                         FoundUnits, MisUnits, NormalUnits) then
     begin
       LazarusIDE.DoJumpToCodeToolBossError;
       Result:=mrCancel;
       exit;
     end;
-    // warn about missing units
-    if (MissingInUnits<>nil) and (MissingInUnits.Count>0) then begin
-      NotFoundUnits:=MissingInUnits.Text;
-      Result:=QuestionDlg('Units not found',
-        'Some units of the delphi project are missing:'#13
-        +NotFoundUnits,mtWarning,[mrIgnore,mrAbort],0);
-      if Result<>mrIgnore then exit;
-    end;
-
+    if MisUnits<>nil then
+      raise Exception.Create('At this point there should be no missing units!');
     try
       // add all units to the project
-      for i:=0 to FoundInUnits.Count-1 do begin
-        CurFilename:=FoundInUnits[i];
+      for i:=0 to FoundUnits.Count-1 do begin
+        CurFilename:=FoundUnits[i];
         p:=System.Pos(' in ',CurFilename);
         if p>0 then
           CurFilename:=copy(CurFilename,p+4,length(CurFilename));
@@ -1321,26 +1306,23 @@ begin
         end else begin
           if FilenameIsPascalUnit(CurFilename) then begin
             // check unitname
-            OffendingUnit:=LazProject.UnitWithUnitname(
-                                                ExtractFileNameOnly(CurFilename));
+            OffendingUnit:=LazProject.UnitWithUnitname(ExtractFileNameOnly(CurFilename));
             if OffendingUnit<>nil then begin
               Result:=QuestionDlg('Unitname exists twice',
                 'There are two units with the same unitname:'#13
-                +OffendingUnit.Filename+#13
-                +CurFilename+#13,
+                +OffendingUnit.Filename+#13+CurFilename+#13,
                 mtWarning,[mrYes,'Remove first',mrNo,'Remove second',
                            mrIgnore,'Keep both',mrAbort],0);
               case Result of
-              mrYes: OffendingUnit.IsPartOfProject:=false;
-              mrNo:  continue;
-              mrIgnore: ;
+                mrYes: OffendingUnit.IsPartOfProject:=false;
+                mrNo:  continue;
+                mrIgnore: ;
               else
                 Result:=mrAbort;
                 exit;
               end;
             end;
           end;
-
           // add new unit to project
           CurUnitInfo:=TUnitInfo.Create(nil);
           CurUnitInfo.Filename:=CurFilename;
@@ -1371,12 +1353,11 @@ begin
     if Result<>mrOk then exit;
 
   finally
-    FoundInUnits.Free;
-    MissingInUnits.Free;
+    FoundUnits.Free;
+    MisUnits.Free;
     NormalUnits.Free;
     Screen.Cursor:=crDefault;
   end;
-
   Result:=mrOk;
 end;
 
@@ -1398,8 +1379,7 @@ begin
       // Main LPR file was converted earlier.
       if CurUnitInfo.IsPartOfProject and (CurUnitInfo<>LazProject.MainUnitInfo) then
       begin
-        Converter:=TConvertDelphiUnit.Create(Self, CurUnitInfo.Filename,
-                                             [cdtlufRenameLowercase]);
+        Converter:=TConvertDelphiUnit.Create(Self, CurUnitInfo.Filename,[]);
         Converter.fUnitInfo:=CurUnitInfo;
         ConvUnits.Add(Converter);
         Result:=Converter.CopyAndLoadFile;
@@ -1549,8 +1529,7 @@ begin
     Application.ProcessMessages;
     for i:=0 to LazPackage.FileCount-1 do begin
       PkgFile:=LazPackage.Files[i];
-      Converter:=TConvertDelphiUnit.Create(Self, PkgFile.Filename,
-                                           [cdtlufRenameLowercase]);
+      Converter:=TConvertDelphiUnit.Create(Self, PkgFile.Filename,[]);
       ConvUnits.Add(Converter);
       Result:=Converter.CopyAndLoadFile;
       Result:=Converter.CheckFailed(Result);

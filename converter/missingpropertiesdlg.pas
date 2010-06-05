@@ -116,15 +116,28 @@ type
   end;
 
 
+function ConvertDfmToLfm(const DfmFilename: string): TModalResult;
+
+
 implementation
 
 {$R *.lfm}
+
+function ConvertDfmToLfm(const DfmFilename: string): TModalResult;
+var
+  DFMConverter: TDFMConverter;
+begin
+  DFMConverter:=TDFMConverter.Create;
+  try     Result:=DFMConverter.ConvertDfmToLfm(DfmFilename);
+  finally DFMConverter.Free;
+  end;
+end;
 
 { TDFMConverter }
 
 constructor TDFMConverter.Create;
 begin
-
+  inherited Create;
 end;
 
 destructor TDFMConverter.Destroy;
