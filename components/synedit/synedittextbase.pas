@@ -136,6 +136,8 @@ type
     procedure PutRange(Index: Pointer; const ARange: TSynManagedStorageMem); virtual; abstract;
   public
     procedure SendHighlightChanged(aIndex, aCount: Integer); virtual; abstract;
+    function  GetPChar(ALineIndex: Integer): PChar;                                       // experimental
+    function  GetPChar(ALineIndex: Integer; out ALen: Integer): PChar; virtual; abstract; // experimental
     property Ranges[Index: Pointer]: TSynManagedStorageMem read GetRange write PutRange;
   end;
 
@@ -279,6 +281,7 @@ type
     procedure Insert(Index: integer; const S: string); override;
     procedure InsertLines(Index, NumLines: integer); override;
     procedure InsertStrings(Index: integer; NewStrings: TStrings); override;
+    function  GetPChar(ALineIndex: Integer; out ALen: Integer): PChar; override; // experimental
 
     procedure AddGenericHandler(AReason: TSynEditNotifyReason;
                 AHandler: TMethod); override;
@@ -424,6 +427,15 @@ const
 procedure ListIndexOutOfBounds(Index: integer);
 begin
   raise ESynEditStorageMem.CreateFmt(SListIndexOutOfBounds, [Index]);
+end;
+
+{ TSynEditStringsBase }
+
+function TSynEditStringsBase.GetPChar(ALineIndex: Integer): PChar;
+var
+  l: Integer;
+begin
+  Result := GetPChar(ALineIndex, l);
 end;
 
 { TSynEditStrings }
@@ -678,6 +690,11 @@ end;
 procedure TSynEditStringsLinked.InsertStrings(Index: integer; NewStrings: TStrings);
 begin
   fSynStrings.InsertStrings(Index, NewStrings);
+end;
+
+function TSynEditStringsLinked.GetPChar(ALineIndex: Integer; out ALen: Integer): PChar;
+begin
+  Result := fSynStrings.GetPChar(ALineIndex, ALen);
 end;
 
 procedure TSynEditStringsLinked.SetIsUndoing(const AValue: Boolean);

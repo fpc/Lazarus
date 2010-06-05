@@ -99,6 +99,7 @@ type
 
     procedure InsertRows(AIndex, ACount: Integer); override;
     procedure DeleteRows(AIndex, ACount: Integer); override;
+    function  GetPChar(ALineIndex: Integer; out ALen: Integer): PChar; // experimental
     property Strings[Index: Integer]: String read GetString write SetString; default;
     property Objects[Index: Integer]: TObject read GetObject write SetObject;
     property RangeList[Index: Pointer]: TSynManagedStorageMem read GetRange write SetRange;
@@ -178,6 +179,7 @@ type
     procedure Insert(Index: integer; const S: string); override;
     procedure InsertLines(Index, NumLines: integer); override;
     procedure InsertStrings(Index: integer; NewStrings: TStrings); override;
+    function  GetPChar(ALineIndex: Integer; out ALen: Integer): PChar; override; // experimental
     procedure MarkModified(AFirst, ALast: Integer);
     procedure MarkSaved;
     procedure AddGenericHandler(AReason: TSynEditNotifyReason;
@@ -709,16 +711,17 @@ begin
       PWidths[i] := 1;
     exit;
   end;
+
   j := 0;
   for i := 0 to LineLen-1 do begin
-    if j > 0 then begin
-      PWidths^ := 0;
-      dec(j);
-    end else begin
+    if j = 0 then begin
       PWidths^ := 1;
-      j := UTF8CharacterLength(Line) - 1;
+      j := UTF8CharacterLength(Line);
+      inc(Line, j);
+    end else begin
+      PWidths^ := 0;
     end;
-    inc(Line);
+    dec(j);
     inc(PWidths);
   end;
 end;
@@ -830,6 +833,12 @@ begin
     end;
   end;
 end;
+
+function TSynEditStringList.GetPChar(ALineIndex: Integer; out ALen: Integer): PChar;
+begin
+  Result := FList.GetPChar(ALineIndex, ALen);
+end;
+
 {end}                                                                           // DJLP 2000-11-01
 
 procedure TSynEditStringList.Put(Index: integer; const S: string);
@@ -1184,6 +1193,12 @@ begin
   inherited DeleteRows(AIndex, ACount);
   dec(FRangeListLock);
   FRangeList.CallDeletedLines(AIndex, ACount);
+end;
+
+function TSynEditStringMemory.GetPChar(ALineIndex: Integer; out ALen: Integer): PChar;
+begin
+  ALen   := length((PString(ItemPointer[ALineIndex]))^);
+  Result := (PPChar(ItemPointer[ALineIndex]))^;
 end;
 
 procedure TSynEditStringMemory.Move(AFrom, ATo, ALen: Integer);

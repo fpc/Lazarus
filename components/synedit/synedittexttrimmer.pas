@@ -51,6 +51,7 @@ type
     fLockCount: Integer;
     fLockList : TStringList;
     FLineEdited: Boolean;
+    FTempLineStringForPChar: String; // experimental; used by GetPChar;
     procedure DoCaretChanged(Sender : TObject);
     procedure ListCleared(Sender: TObject);
     Procedure LinesChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
@@ -74,6 +75,7 @@ type
     function  GetObject(Index: integer): TObject; override;
     procedure Put(Index: integer; const S: string); override;
     procedure PutObject(Index: integer; AObject: TObject); override;
+    function  GetPCharSpaces(ALineIndex: Integer; out ALen: Integer): PChar; // experimental
   public
     constructor Create(ASynStringSource: TSynEditStrings; ACaret: TSynEditCaret);
     destructor Destroy; override;
@@ -86,6 +88,7 @@ type
     procedure Insert(Index: integer; const S: string); override;
     procedure InsertLines(Index, NumLines: integer); override;
     procedure InsertStrings(Index: integer; NewStrings: TStrings); override;
+    function  GetPChar(ALineIndex: Integer; out ALen: Integer): PChar; override; // experimental
     procedure Exchange(Index1, Index2: integer); override;
     property LengthOfLongestLine: integer read GetLengthOfLongestLine;
   public
@@ -712,6 +715,26 @@ begin
   for i := 0 to NewStrings.Count-1 do
     NewStrings[i] := TrimLine(NewStrings[i], Index+i, True);
   fSynStrings.InsertStrings(Index, NewStrings);
+end;
+
+function TSynEditStringTrimmingList.GetPCharSpaces(ALineIndex: Integer; out
+  ALen: Integer): PChar;
+begin
+  FTempLineStringForPChar := Get(ALineIndex);
+  ALen := length(FTempLineStringForPChar);
+  Result := PChar(FTempLineStringForPChar);
+end;
+
+function TSynEditStringTrimmingList.GetPChar(ALineIndex: Integer; out ALen: Integer): PChar;
+begin
+  Result := inherited GetPChar(ALineIndex, ALen);
+
+  // check if we need to apend spaces
+  if (not fEnabled) then exit;
+  if (fLockCount = 0) and (fLineIndex <> ALineIndex) then exit;
+  if (fLockCount > 0) and (fLockList.IndexOfObject(TObject(Pointer(ALineIndex))) < 0) then exit;
+
+  Result:= GetPCharSpaces(ALineIndex, ALen);
 end;
 
 procedure TSynEditStringTrimmingList.Exchange(Index1, Index2 : integer);

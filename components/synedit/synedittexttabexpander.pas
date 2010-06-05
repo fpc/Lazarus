@@ -313,9 +313,10 @@ end;
 
 function TSynEditStringTabExpander.GetLengthOfLongestLine: integer;
 var
-  Line: String;
+  Line: PChar;
+  LineLen: Integer;
   CharWidths: PPhysicalCharWidth;
-  i, j, n, m: Integer;
+  i, j, m: Integer;
 begin
   if (fIndexOfLongestLine >= 0) and (fIndexOfLongestLine < Count) then begin
     Result := FTabData[fIndexOfLongestLine];
@@ -332,19 +333,18 @@ begin
       if j = LINE_LEN_UNKNOWN then begin
         // embedd a copy of ExpandedStringLength
         // allows to re-use CharWidths
-        Line := fSynStrings[i];
+        Line := NextLines.GetPChar(i,LineLen); // fSynStrings[i];
         j := 0;
-        if (Line = '') then begin
+        if (LineLen = 0) then begin
           FTabData[i] := j + NO_TAB_IN_LINE_OFFSET;
         end else begin
-          n := length(Line);
-          if n > m then begin
-            ReAllocMem(CharWidths, n * SizeOf(TPhysicalCharWidth));
-            m := n;
+          if LineLen > m then begin
+            ReAllocMem(CharWidths, LineLen * SizeOf(TPhysicalCharWidth));
+            m := LineLen;
           end;
-          DoGetPhysicalCharWidths(Pchar(Line), n, i, CharWidths);
-
+          DoGetPhysicalCharWidths(Line, LineLen, i, CharWidths);
           j := FLastLinePhysLen;
+
           if j > MAX_LINE_LEN_STORED then
             FTabData[i] := LINE_LEN_UNKNOWN
           else if FLastLineHasTab then // FLastLineHasTab is set by GetPhysicalCharWidths
