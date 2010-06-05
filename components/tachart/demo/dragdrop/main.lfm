@@ -1,18 +1,19 @@
 object Form1: TForm1
-  Left = 739
-  Height = 300
-  Top = 341
-  Width = 400
+  Left = 404
+  Height = 481
+  Top = 180
+  Width = 483
   Caption = 'Form1'
-  ClientHeight = 300
-  ClientWidth = 400
+  ClientHeight = 481
+  ClientWidth = 483
   OnCreate = FormCreate
+  Position = poScreenCenter
   LCLVersion = '0.9.29'
   object Chart1: TChart
     Left = 0
-    Height = 300
-    Top = 0
-    Width = 400
+    Height = 447
+    Top = 34
+    Width = 483
     AxisList = <    
       item
         Alignment = calLeft
@@ -26,8 +27,7 @@ object Form1: TForm1
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Text.Strings = (
-      'You can drag data points'
-      'while holding Shift key'
+      'Drag data points while holding Shift key'
     )
     Title.Visible = True
     Toolset = ChartToolset1
@@ -38,13 +38,31 @@ object Form1: TForm1
       Marks.Clipped = False
       Marks.Format = '%0:.9g'
       Marks.Style = smsValue
-      OnGetMark = Chart1LineSeries1GetMark
       Pointer.Brush.Color = clPurple
       Pointer.HorizSize = 6
       Pointer.Style = psDiamond
       Pointer.VertSize = 6
       SeriesColor = clBlack
       ShowPoints = True
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 34
+    Top = 0
+    Width = 483
+    Align = alTop
+    ClientHeight = 34
+    ClientWidth = 483
+    TabOrder = 1
+    object cbSorted: TCheckBox
+      Left = 12
+      Height = 17
+      Top = 8
+      Width = 52
+      Caption = 'Sorted'
+      OnChange = cbSortedChange
+      TabOrder = 0
     end
   end
   object ChartToolset1: TChartToolset

@@ -5,8 +5,8 @@ unit Main;
 interface
 
 uses
-  Classes, ExtCtrls, SysUtils, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, TAGraph, TASeries, TATools;
+  Classes, ExtCtrls, StdCtrls, SysUtils, FileUtil, LResources, Forms, Controls,
+  Graphics, Dialogs, TAGraph, TASeries, TATools;
 
 type
 
@@ -17,12 +17,12 @@ type
     Chart1LineSeries1: TLineSeries;
     ChartToolset1: TChartToolset;
     ChartToolset1DataPointDragTool1: TDataPointDragTool;
+    cbSorted: TCheckBox;
+    Panel1: TPanel;
+    procedure cbSortedChange(Sender: TObject);
     procedure Chart1LineSeries1GetMark(out AFormattedMark: String;
       AIndex: Integer);
     procedure FormCreate(Sender: TObject);
-  private
-    FDragIndex: Integer;
-    FNearestIndex: Integer;
   end;
 
 var
@@ -36,6 +36,11 @@ uses
   TAChartUtils;
 
 { TForm1 }
+
+procedure TForm1.cbSortedChange(Sender: TObject);
+begin
+  Chart1LineSeries1.ListSource.Sorted := cbSorted.Checked;
+end;
 
 procedure TForm1.Chart1LineSeries1GetMark(
   out AFormattedMark: String; AIndex: Integer);
@@ -54,8 +59,6 @@ begin
   RandSeed := 675402;
   for i := 1 to 10 do
     Chart1LineSeries1.AddXY(i, Random(20) - 10);
-  FDragIndex := -1;
-  FNearestIndex := -1;
 end;
 
 end.
