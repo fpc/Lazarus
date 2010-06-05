@@ -6663,7 +6663,6 @@ begin
     if WasSelected then
       UpdateStatusBar;
     // set focus to new editor
-    TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
     if PageCount = 0 then begin
       {$IFnDEF SingleSrcWindow}
       Manager.RemoveWindow(self);
@@ -6675,7 +6674,9 @@ begin
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TSourceNotebook.CloseFile'){$ENDIF};
   end;
-  if (TempEditor <> nil) then
+  // Move focus from Notebook-tabs to editor
+  TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
+  if Visible and (TempEditor <> nil) then
     TempEditor.EditorComponent.SetFocus;
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.CloseFile END');
