@@ -57,6 +57,7 @@ type
     FIndexOfLongestLine: Integer;
     FTabData: TSynEditStringTabData;
     FLastLineHasTab: Boolean; // Last line, parsed by GetPhysicalCharWidths
+    FLastLinePhysLen: Integer;
     procedure TextBufferChanged(Sender: TObject);
     procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     function ExpandedString(Index: integer): string;
@@ -84,6 +85,7 @@ const
   // (Length will still be valid if tab-width changes)
   NO_TAB_IN_LINE_OFFSET = high(TLineLen) div 2;
   LINE_LEN_UNKNOWN = high(TLineLen);
+  MAX_LINE_LEN_STORED = NO_TAB_IN_LINE_OFFSET - 1;
 
 function GetHasTabs(pLine: PChar): boolean;
 begin
@@ -306,6 +308,7 @@ begin
     inc(PWidths);
   end;
   FLastLineHasTab := HasTab;
+  FLastLinePhysLen := j;
 end;
 
 function TSynEditStringTabExpander.GetLengthOfLongestLine: integer;
@@ -340,10 +343,11 @@ begin
             m := n;
           end;
           DoGetPhysicalCharWidths(Pchar(Line), n, i, CharWidths);
-          for m := 0 to n-1 do
-            j := j + CharWidths[m];
 
-          if FLastLineHasTab then // FLastLineHasTab is set by GetPhysicalCharWidths
+          j := FLastLinePhysLen;
+          if j > MAX_LINE_LEN_STORED then
+            FTabData[i] := LINE_LEN_UNKNOWN
+          else if FLastLineHasTab then // FLastLineHasTab is set by GetPhysicalCharWidths
             FTabData[i] := j
           else
             FTabData[i] := j + NO_TAB_IN_LINE_OFFSET;
