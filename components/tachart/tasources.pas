@@ -309,14 +309,45 @@ end;
 
 procedure TCustomChartSource.FindBounds(
   AXMin, AXMax: Double; out ALB, AUB: Integer);
+
+  function FindLB(X: Double; L, R: Integer): Integer;
+  begin
+    while L <= R do begin
+      Result := (R - L) div 2 + L;
+      if Item[Result]^.X < X then
+        L := Result + 1
+      else
+        R := Result - 1;
+    end;
+    Result := L;
+  end;
+
+  function FindUB(X: Double; L, R: Integer): Integer;
+  begin
+    while L <= R do begin
+      Result := (R - L) div 2 + L;
+      if Item[Result]^.X <= X then
+        L := Result + 1
+      else
+        R := Result - 1;
+    end;
+    Result := R;
+  end;
+
 begin
   EnsureOrder(AXMin, AXMax);
-  ALB := 0;
-  while (ALB < Count) and (Item[ALB]^.X < AXMin) do
-    Inc(ALB);
-  AUB := Count - 1;
-  while (AUB > 0) and (Item[AUB]^.X < AXMax) do
-    Inc(AUB);
+  if IsSorted then begin
+    ALB := FindLB(AXMin, 0, Count - 1);
+    AUB := FindUB(AXMax, 0, Count - 1);
+  end
+  else begin
+    ALB := 0;
+    while (ALB < Count) and (Item[ALB]^.X < AXMin) do
+      Inc(ALB);
+    AUB := Count - 1;
+    while (AUB > 0) and (Item[AUB]^.X < AXMax) do
+      Dec(AUB);
+  end;
 end;
 
 function TCustomChartSource.FormatItem(

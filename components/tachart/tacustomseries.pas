@@ -155,7 +155,7 @@ uses
 function TCustomChartSeries.AxisToGraph(
   const APoint: TDoublePoint): TDoublePoint;
 begin
-  Result := DoublePoint(AxisToGraphX(APoint.X), AxisToGraphX(APoint.Y));
+  Result := DoublePoint(AxisToGraphX(APoint.X), AxisToGraphY(APoint.Y));
   if IsRotated then
     Exchange(Result.X, Result.Y);
 end;
