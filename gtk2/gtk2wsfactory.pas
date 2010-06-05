@@ -99,12 +99,11 @@ function RegisterCustomRubberBand: Boolean;
 
 implementation
 uses
-  GtkWSArrow,
+  Gtk2WSArrow,
   Gtk2WSButtons,
   Gtk2WSCalendar,
   Gtk2WSCheckLst,
   Gtk2WSComCtrls,
-  GtkWSControls,
   Gtk2WSControls,
   Gtk2WSDialogs,
   Gtk2WSExtCtrls,
@@ -134,8 +133,7 @@ end;
 // controls
 function RegisterDragImageList: Boolean; alias : 'WSRegisterDragImageList';
 begin
-//  RegisterWSComponent(TDragImageList, TGtk2WSDragImageList);
-  RegisterWSComponent(TDragImageList, TGtkWSDragImageList); { GTK1 }
+  RegisterWSComponent(TDragImageList, TGtk2WSDragImageList); { GTK2 }
   Result := True;
 end;
 
@@ -147,8 +145,8 @@ end;
 
 function RegisterWinControl: Boolean; alias : 'WSRegisterWinControl';
 begin
-  RegisterWSComponent(TWinControl, TGtkWSWinControl, TGtkPrivateWidget); { GTK1 }
-  RegisterWSComponent(TWinControl, TGtk2WSWinControl);
+  RegisterWSComponent(TWinControl, TGtk2WSWinControl, TGtkPrivateWidget); { GTK2 }
+  //RegisterWSComponent(TWinControl, TGtk2WSWinControl);
   Result := True;
 end;
 
@@ -525,8 +523,7 @@ end;
 // Arrow
 function RegisterArrow: Boolean; alias : 'WSRegisterArrow';
 begin
-  RegisterWSComponent(TArrow, TGtkWSArrow);  { GTK1 }
-//  RegisterWSComponent(TArrow, TGtk2WSArrow);
+  RegisterWSComponent(TArrow, TGtk2WSArrow); { GTK2 }
   Result := True;
 end;
 

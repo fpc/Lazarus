@@ -37,7 +37,7 @@ uses
   LCLProc, ExtCtrls, Classes, Controls, SysUtils, LCLType, LMessages,
   // widgetset
   WSExtCtrls, WSLCLClasses, WSProc,
-  {GtkWSExtCtrls,} Gtk2WSControls, Gtk2WSPrivate, Gtk2Proc, Gtk2Globals;
+  Gtk2WSControls, Gtk2WSPrivate, Gtk2Proc, Gtk2Globals;
 
 type
 
