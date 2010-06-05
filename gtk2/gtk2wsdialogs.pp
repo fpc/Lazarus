@@ -33,7 +33,7 @@ uses
   SysUtils, Classes, Graphics, Controls, Dialogs, ExtDlgs, LCLType,
   FileUtil, LCLStrConsts, LCLProc, InterfaceBase,
   // Widgetset
-  Gtk2Int, GtkInt, GtkWSControls, Gtk2Globals, Gtk2Def, Gtk2Proc,
+  Gtk2Int, Gtk2WSControls, Gtk2Globals, Gtk2Def, Gtk2Proc,
   WSDialogs, WSLCLClasses;
   
 type
@@ -1210,7 +1210,7 @@ class procedure TGtk2WSCommonDialog.DestroyHandle(
   const ACommonDialog: TCommonDialog);
 begin
   { TODO: cleanup }
-  TGtkWidgetSet(WidgetSet).DestroyLCLComponent(ACommonDialog);
+  TGtk2WidgetSet(WidgetSet).DestroyLCLComponent(ACommonDialog);
 end;
 
 { TGtk2WSColorDialog }

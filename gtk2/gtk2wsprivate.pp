@@ -38,7 +38,7 @@ uses
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface
-  Gtk2Def, Gtk2Proc, {GtkWSPrivate,} Gtk2WSControls;
+  Gtk2Def, Gtk2Proc, Gtk2WSControls;
 
 
 type
