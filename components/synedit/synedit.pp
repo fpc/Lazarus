@@ -173,7 +173,7 @@ type
     sfEnsureCursorPos, sfEnsureCursorPosAtResize,
     sfIgnoreNextChar, sfPainting, sfHasScrolled,
     sfScrollbarChanged, sfHorizScrollbarVisible, sfVertScrollbarVisible,
-    sfAfterLoadFromFile,
+    sfAfterLoadFromFile, sfInHandleCreation,
     // Mouse-states
     sfDblClicked, sfGutterClick, sfTripleClicked, sfQuadClicked,
     sfWaitForDragging, sfIsDragging, sfMouseSelecting, sfMouseDoneSelecting,
@@ -372,6 +372,7 @@ type
     fLinesInWindow: Integer;// MG: fully visible lines in window
     fLeftChar: Integer;    // first visible screen column
     fMaxLeftChar: Integer; // 1024
+    FOldWitdth, FOldHeight: Integer;
 
     FPaintLock: Integer;
     FPaintLockOwnerCnt: Integer;
@@ -1575,6 +1576,8 @@ begin
   FCaret.Lines := FTheLinesView;
   FInternalCaret.Lines := FTheLinesView;
   FFontDummy := TFont.Create;
+  FOldWitdth := -1;
+  FOldHeight := -1;
 
   with TSynEditStringList(fLines) do begin
     AddChangeHandler(senrLineCount, {$IFDEF FPC}@{$ENDIF}LineCountChanged);
@@ -4113,12 +4116,16 @@ end;
 procedure TCustomSynEdit.CreateHandle;
 begin
   Application.RemoveOnIdleHandler(@IdleScanRanges);
+  // A Resize will be received after CreateHandle is finished
+  // Resizes during CreateHandle may be wrong
+  include(fStateFlags, sfInHandleCreation);
   DoIncPaintLock(nil);
   try
     inherited CreateHandle;   //SizeOrFontChanged will be called
     Include(fStateFlags, sfScrollbarChanged);
   finally
     DoDecPaintLock(nil);
+    exclude(fStateFlags, sfInHandleCreation);
   end;
 end;
 
@@ -4523,6 +4530,9 @@ end;
 procedure TCustomSynEdit.Resize;
 begin
   inherited;
+  if (not HandleAllocated) or ((Width = FOldWitdth) and (Height = FOldHeight)) then exit;
+  FOldWitdth := Width;
+  FOldHeight := Height;
   SizeOrFontChanged(FALSE);
   if sfEnsureCursorPosAtResize in fStateFlags then
     EnsureCursorPosVisible;
@@ -5670,6 +5680,7 @@ begin
      (not (eoAlwaysVisibleCaret in fOptions2))
   then
     exit;
+  if (sfInHandleCreation in fStateFlags) or (not HandleAllocated) then exit;
 
   if (fPaintLock > 0) or (not HandleAllocated) or
      (FWinControlFlags * [wcfInitializing, wcfCreatingHandle] <> [])
