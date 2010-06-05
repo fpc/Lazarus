@@ -63,8 +63,9 @@ begin
   for i := 0 to LineLen - 1 do begin
     inc(Line);
     inc(PWidths);
+    if Line^ < #$e1 then continue;
     if PWidths^ = 0 then continue;
-    case Line[0] of
+    case Line^ of
       #$e1:
         case Line[1] of
           #$84:
