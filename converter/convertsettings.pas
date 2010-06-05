@@ -192,14 +192,15 @@ begin
   LoadStringToStringTree(fConfigStorage, 'ReplaceUnits', fReplaceUnits);
   LoadStringToStringTree(fConfigStorage, 'ReplaceTypes', fReplaceTypes);
 
-  // Add default values if ConfigStorage doesn't have any.
+  // Add default values for string maps if ConfigStorage doesn't have any.
   if fReplaceUnits.Tree.Count=0 then begin
     // Map Delphi units to Lazarus units.
     fReplaceUnits['Windows']:='LCLIntf, LCLType, LMessages';
+    fReplaceUnits['Mask']:='MaskEdit';
     fReplaceUnits['Variants']:='';
     fReplaceUnits['ShellApi']:='';
     fReplaceUnits['pngImage']:='';
-    fReplaceUnits['Jpeg']:='';              //maskedit
+    fReplaceUnits['Jpeg']:='';
     fReplaceUnits['gifimage']:='';
     fReplaceUnits['^Q(.+)']:='$1';      // Kylix unit names.
     fReplaceUnits['^Tnt(.+)']:='$1';    // Tnt* third party components.
