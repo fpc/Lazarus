@@ -564,7 +564,7 @@ begin
     for i := 0 to ASource.Count - 1 do
       with ASource[i]^ do
         AddAt(FData.Count, X, Y, Text, Color);
-    if Sorted then Sort;
+    if Sorted and not ASource.IsSorted then Sort;
   finally
     EndUpdate;
   end;
