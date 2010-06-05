@@ -1043,5 +1043,67 @@ begin
   ListOfFileSelFilterEntry.Free;
 end;
 
+
+procedure InternalInit;
+var
+  c: TClipboardType;
+begin
+  gtk_handler_quark := g_quark_from_static_string('gtk-signal-handlers');
+
+  MouseCaptureWidget := nil;
+  MouseCaptureType := mctGTK;
+
+  LastLeft:=EmptyLastMouseClick;
+  LastMiddle:=EmptyLastMouseClick;
+  LastRight:=EmptyLastMouseClick;
+
+  // clipboard
+  ClipboardSelectionData:=TFPList.Create;
+  for c:=Low(TClipboardType) to High(TClipboardType) do begin
+    ClipboardTypeAtoms[c]:=0;
+    ClipboardHandler[c]:=nil;
+    //ClipboardIgnoreLossCount[c]:=0;
+    ClipboardTargetEntries[c]:=nil;
+    ClipboardTargetEntryCnt[c]:=0;
+  end;
+
+  // charset encodings
+  CharSetEncodingList := TList.Create;
+  CreateDefaultCharsetEncodings;
+
+  InitDesignSignalMasks;
+end;
+
+procedure InternalFinal;
+var i: integer;
+  ced: PClipboardEventData;
+  c: TClipboardType;
+begin
+  // clipboard
+  for i:=0 to ClipboardSelectionData.Count-1 do begin
+    ced:=PClipboardEventData(ClipboardSelectionData[i]);
+    if ced^.Data.Data<>nil then FreeMem(ced^.Data.Data);
+    Dispose(ced);
+  end;
+  for c:=Low(TClipboardType) to High(TClipboardType) do
+    FreeClipboardTargetEntries(c);
+  ClipboardSelectionData.Free;
+  ClipboardSelectionData:=nil;
+
+  // charset encodings
+  if CharSetEncodingList<>nil then begin
+    ClearCharSetEncodings;
+    CharSetEncodingList.Free;
+    CharSetEncodingList:=nil;
+  end;
+end;
+
+
+initialization
+  InternalInit;
+
+finalization
+  InternalFinal;
+
 end.
 
