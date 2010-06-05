@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-06-03 03:06+0300\n"
+"PO-Revision-Date: 2010-06-06 02:20+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1511,6 +1511,10 @@ msgstr "Показывать линии позиционирования"
 msgctxt "lazarusidestrconsts.dlggutter"
 msgid "Gutter"
 msgstr "Поле (лев)"
+
+#: lazarusidestrconsts.dlgguttercollapsedcolor
+msgid "Collapsed"
+msgstr "Свёрнутый"
 
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"

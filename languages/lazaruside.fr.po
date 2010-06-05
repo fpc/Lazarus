@@ -1505,6 +1505,10 @@ msgctxt "lazarusidestrconsts.dlggutter"
 msgid "Gutter"
 msgstr "Gouttière"
 
+#: lazarusidestrconsts.dlgguttercollapsedcolor
+msgid "Collapsed"
+msgstr ""
+
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
 msgstr "Couleur de gouttière"

@@ -1492,6 +1492,10 @@ msgctxt "lazarusidestrconsts.dlggutter"
 msgid "Gutter"
 msgstr "Panel Fijo"
 
+#: lazarusidestrconsts.dlgguttercollapsedcolor
+msgid "Collapsed"
+msgstr ""
+
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
 msgstr "Color del canal"

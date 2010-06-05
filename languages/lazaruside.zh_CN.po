@@ -1492,6 +1492,10 @@ msgctxt "lazarusidestrconsts.dlggutter"
 msgid "Gutter"
 msgstr "边缝"
 
+#: lazarusidestrconsts.dlgguttercollapsedcolor
+msgid "Collapsed"
+msgstr ""
+
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
 msgstr "边缝颜色"
