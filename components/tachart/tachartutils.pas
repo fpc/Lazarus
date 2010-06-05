@@ -198,19 +198,24 @@ function DoubleRect(AX1, AY1, AX2, AY2: Double): TDoubleRect; inline;
 procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
 procedure DrawLineDepth(ACanvas: TCanvas; const AP1, AP2: TPoint; ADepth: Integer);
 
-procedure Exchange(var A, B: Integer); overload;
-procedure Exchange(var A, B: Double); overload;
-procedure Exchange(var A, B: TDoublePoint); overload;
-procedure Exchange(var A, B: String); overload;
+procedure EnsureOrder(var A, B: Integer); overload; inline;
+procedure EnsureOrder(var A, B: Double); overload; inline;
+
+procedure Exchange(var A, B: Integer); overload; inline;
+procedure Exchange(var A, B: Double); overload; inline;
+procedure Exchange(var A, B: TDoublePoint); overload; inline;
+procedure Exchange(var A, B: String); overload; inline;
 
 procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double); inline;
+procedure ExpandRect(var ARect: TDoubleRect; const APoint: TDoublePoint); inline;
 
 function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
 
 function LineIntersectsRect(
   var AA, AB: TDoublePoint; const ARect: TDoubleRect): Boolean;
 
-procedure NormalizeRect(var ARect: TRect);
+procedure NormalizeRect(var ARect: TRect); overload;
+procedure NormalizeRect(var ARect: TDoubleRect); overload;
 
 function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
@@ -347,7 +352,19 @@ begin
   ACanvas.Polygon([AP1, AP1 + d, AP2 + d, AP2]);
 end;
 
-procedure Exchange(var A, B: Integer); overload;
+procedure EnsureOrder(var A, B: Integer); overload; inline;
+begin
+  if A > B then
+    Exchange(A, B);
+end;
+
+procedure EnsureOrder(var A, B: Double); overload; inline;
+begin
+  if A > B then
+    Exchange(A, B);
+end;
+
+procedure Exchange(var A, B: Integer);
 var
   t: Integer;
 begin
@@ -356,7 +373,7 @@ begin
   B := t;
 end;
 
-procedure Exchange(var A, B: Double); overload;
+procedure Exchange(var A, B: Double);
 var
   t: Double;
 begin
@@ -374,7 +391,7 @@ begin
   B := t;
 end;
 
-procedure Exchange(var A, B: String); overload;
+procedure Exchange(var A, B: String);
 var
   t: String;
 begin
@@ -383,13 +400,20 @@ begin
   B := t;
 end;
 
-procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double); inline;
+procedure ExpandRange(var ALo, AHi: Double; ACoeff: Double);
 var
   d: Double;
 begin
   d := AHi - ALo;
   ALo -= d * ACoeff;
   AHi += d * ACoeff;
+end;
+
+procedure ExpandRect(var ARect: TDoubleRect; const APoint: TDoublePoint);
+begin
+  NormalizeRect(ARect);
+  UpdateMinMax(APoint.X, ARect.a.X, ARect.b.X);
+  UpdateMinMax(APoint.Y, ARect.a.Y, ARect.b.Y);
 end;
 
 function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
@@ -480,10 +504,16 @@ end;
 procedure NormalizeRect(var ARect: TRect);
 begin
   with ARect do begin
-    if Left > Right then
-      Exchange(Left, Right);
-    if Top > Bottom then
-      Exchange(Top, Bottom);
+    EnsureOrder(Left, Right);
+    EnsureOrder(Top, Bottom);
+  end;
+end;
+
+procedure NormalizeRect(var ARect: TDoubleRect); overload;
+begin
+  with ARect do begin
+    EnsureOrder(a.X, b.X);
+    EnsureOrder(a.Y, b.Y);
   end;
 end;
 
