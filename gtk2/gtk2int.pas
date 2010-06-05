@@ -59,8 +59,8 @@ uses
   InterfaceBase,
   Gtk2WinApiWindow,
   Gtk2Globals, Gtk2Proc,
-  Gtk2Def, GtkFontCache, Gtk2Extra,
-  GtkMsgQueue;
+  Gtk2Def, Gtk2FontCache, Gtk2Extra,
+  Gtk2MsgQueue;
 
 type
 
@@ -377,7 +377,7 @@ uses
   Gtk2WSPrivate,
   Gtk2Themes,
 ////////////////////////////////////////////////////
-  GtkDebug;
+  Gtk2Debug;
 
 {$include gtk2widgetset.inc}
 {$include gtk2winapi.inc}

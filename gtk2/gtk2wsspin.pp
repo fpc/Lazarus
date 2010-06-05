@@ -81,7 +81,7 @@ begin
   Result:=GetGtkFloatSpinEditable(PGtkSpinButton(Spin.Handle));
 end;
 
-{ TGtkWSCustomFloatSpinEdit }
+{ TGtk2WSCustomFloatSpinEdit }
 
 class procedure TGtk2WSCustomFloatSpinEdit.SetCallbacks(
   const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);

@@ -107,19 +107,14 @@ uses
   Gtk2WSControls,
   Gtk2WSDialogs,
   Gtk2WSExtCtrls,
-  GtkWSExtDlgs,
-  GtkWSForms,
+  Gtk2WSExtDlgs,
   Gtk2WSForms,
-  GtkWSGrids,
   Gtk2WSGrids,
   Gtk2WSImgList,
-  GtkWSMenus,
   Gtk2WSMenus,
   Gtk2WSSpin,
-  GtkWSStdCtrls,
   Gtk2WSStdCtrls,
-  GtkWSPairSplitter,
-  GtkWSPrivate,
+  Gtk2WSPairSplitter,
   Gtk2WSPrivate;
 
 // imglist
@@ -313,7 +308,7 @@ end;
 function RegisterCustomEdit: Boolean; alias : 'WSRegisterCustomEdit';
 begin
 //  RegisterWSComponent(TEdit, TGtk2WSEdit);
-  RegisterWSComponent(TCustomEdit, TGtkWSCustomEdit, TGtkPrivateEntry); { GTK1 }
+  RegisterWSComponent(TCustomEdit, TGtk2WSCustomEdit, TGtkPrivateEntry); { GTK1 }
   RegisterWSComponent(TCustomEdit, TGtk2WSCustomEdit);
   Result := True;
 end;
@@ -321,7 +316,7 @@ end;
 function RegisterCustomMemo: Boolean; alias : 'WSRegisterCustomMemo';
 begin
 //  RegisterWSComponent(TMemo, TGtk2WSMemo);
-  RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo, TGtkPrivateScrolling); { GTK1 }
+  RegisterWSComponent(TCustomMemo, TGtk2WSCustomMemo, TGtkPrivateScrolling); { GTK1 }
   RegisterWSComponent(TCustomMemo, TGtk2WSCustomMemo);
   Result := True;
 end;
@@ -334,7 +329,7 @@ end;
 
 function RegisterCustomButton: Boolean; alias : 'WSRegisterCustomButton';
 begin
-  RegisterWSComponent(TCustomButton, TGtkWSButton, TGtk2PrivateButton); { enabled(ifdef) in GTK1 }
+  RegisterWSComponent(TCustomButton, TGtk2WSButton, TGtk2PrivateButton); { enabled(ifdef) in GTK1 }
   RegisterWSComponent(TCustomButton, TGtk2WSButton);
   Result := True;
 end;
@@ -349,20 +344,20 @@ end;
 function RegisterToggleBox: Boolean; alias : 'WSRegisterToggleBox';
 begin
 //  RegisterWSComponent(TToggleBox, TGtk2WSToggleBox);
-  RegisterWSComponent(TToggleBox, TGtkWSToggleBox); { GTK1 }
+  RegisterWSComponent(TToggleBox, TGtk2WSToggleBox); { GTK1 }
   Result := True;
 end;
 
 function RegisterRadioButton: Boolean; alias : 'WSRegisterRadioButton';
 begin
 //  RegisterWSComponent(TRadioButton, TGtk2WSRadioButton);
-  RegisterWSComponent(TRadioButton, TGtkWSRadioButton); { GTK1 }
+  RegisterWSComponent(TRadioButton, TGtk2WSRadioButton); { GTK1 }
   Result := True;
 end;
 
 function RegisterCustomStaticText: Boolean; alias : 'WSRegisterCustomStaticText';
 begin
-  RegisterWSComponent(TCustomStaticText, TGtkWSCustomStaticText); { GTK1 }
+  RegisterWSComponent(TCustomStaticText, TGtk2WSCustomStaticText); { GTK1 }
 //  RegisterWSComponent(TStaticText, TGtk2WSStaticText);
 //  RegisterWSComponent(TCustomStaticText, TGtk2WSCustomStaticText);
   Result := True;
@@ -460,7 +455,7 @@ end;
 //ExtDlgs
 function RegisterPreviewFileControl: Boolean; alias : 'WSRegisterPreviewFileControl';
 begin
-  RegisterWSComponent(TPreviewFileControl, TGtkWSPreviewFileControl); { GTK1 }
+  RegisterWSComponent(TPreviewFileControl, TGtk2WSPreviewFileControl); { GTK1 }
 //  RegisterWSComponent(TPreviewFileControl, TGtk2WSPreviewFileControl);
   Result := True;
 end;
@@ -563,14 +558,14 @@ end;
 
 function RegisterHintWindow: Boolean; alias : 'WSRegisterHintWindow';
 begin
-  RegisterWSComponent(THintWindow, TGtkWSHintWindow); { GTK1 }
+  RegisterWSComponent(THintWindow, TGtk2WSHintWindow); { GTK1 }
 //  RegisterWSComponent(THintWindow, TGtk2WSHintWindow);
   Result := True;
 end;
 
 function RegisterCustomGrid: Boolean; alias : 'WSRegisterCustomGrid';
 begin
-  RegisterWSComponent(TCustomGrid, TGtkWSCustomGrid); { GTK1 }
+  RegisterWSComponent(TCustomGrid, TGtk2WSCustomGrid); { GTK1 }
 //  RegisterWSComponent(TCustomGrid, TGtk2WSCustomGrid);
   Result := True;
 end;
@@ -596,21 +591,21 @@ end;
 
 function RegisterPopupMenu: Boolean; alias : 'WSRegisterPopupMenu';
 begin
-  RegisterWSComponent(TPopupMenu, TGtkWSPopupMenu); { GTK1 }
+  RegisterWSComponent(TPopupMenu, TGtk2WSPopupMenu); { GTK1 }
 //  RegisterWSComponent(TPopupMenu, TGtk2WSPopupMenu);
   Result := True;
 end;
 
 function RegisterPairSplitterSide: Boolean; alias : 'WSRegisterPairSplitterSide';
 begin
-  RegisterWSComponent(TPairSplitterSide, TGtkWSPairSplitterSide); { GTK1 }
+  RegisterWSComponent(TPairSplitterSide, TGtk2WSPairSplitterSide); { GTK1 }
 //  RegisterWSComponent(TPairSplitterSide, TGtk2WSPairSplitterSide);
   Result := True;
 end;
 
 function RegisterCustomPairSplitter: Boolean; alias : 'WSRegisterCustomPairSplitter';
 begin
-  RegisterWSComponent(TCustomPairSplitter, TGtkWSCustomPairSplitter, TGtkPrivatePaned); { GTK1 }
+  RegisterWSComponent(TCustomPairSplitter, TGtk2WSCustomPairSplitter, TGtkPrivatePaned); { GTK1 }
 //  RegisterWSComponent(TCustomPairSplitter, TGtk2WSCustomPairSplitter);
   Result := True;
 end;

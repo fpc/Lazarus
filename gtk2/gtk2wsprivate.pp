@@ -418,7 +418,7 @@ function GetWidgetWithWindow(const AHandle: THandle): PGtkWidget;
 var
   Children: PGList;
 begin
-  Result := PGTKWidget(AHandle);
+  Result := PGTKWidget(PtrUInt(AHandle));
   while (Result <> nil) and GTK_WIDGET_NO_WINDOW(Result)
   and GtkWidgetIsA(Result,gtk_container_get_type) do
   begin

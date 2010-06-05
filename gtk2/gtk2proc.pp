@@ -51,7 +51,7 @@ uses
   LMessages, LCLProc, LCLStrConsts, LCLIntf, LCLType, DynHashArray, Maps, Masks,
   GraphType, GraphMath, Graphics, LResources, Controls, Forms,
   Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls, Dialogs, ExtDlgs,
-  FileUtil, ImgList, GtkFontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, GtkDebug,
+  FileUtil, ImgList, Gtk2FontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, Gtk2Debug,
   LCLMessageGlue;
 
 const

@@ -32,7 +32,7 @@ uses
   LCLType, Controls, Buttons, Graphics, GraphType,
 ////////////////////////////////////////////////////
   WSButtons, WSLCLClasses, WSProc,
-  Gtk2Def, GtkDebug;
+  Gtk2Def, Gtk2Debug;
 
 type
   PBitBtnWidgetInfo = ^TBitBtnWidgetInfo;

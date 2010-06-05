@@ -439,7 +439,7 @@ type
   TWidgetInfoFlag = (
     wwiNotOnParentsClientArea,
     wwiValidQueuedEvent,              // Mark this widgetinfo as valid queued proc
-                                      // see gtkwsmenus.pp: gtkWSPopupMenuDeactivate
+                                      // see gtk2wsmenus.pp: gtkWSPopupMenuDeactivate
     wwiDeactivating,                  // during gtk deactivate
     wwiActivating,                    // during gtk activate
     wwiNoEraseBkgnd,                  // erase background is disabled for widget
@@ -624,7 +624,7 @@ implementation
 
 uses
   // until all code is transfered to objects, these circles are needed;
-  Gtk2Int, Gtk2Proc, GtkFontCache, Gtk2WinApiWindow;
+  Gtk2Int, Gtk2Proc, Gtk2FontCache, Gtk2WinApiWindow;
 
 {$IFOpt R+}{$Define RangeChecksOn}{$Endif}
 

@@ -36,7 +36,7 @@ uses
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   // GtkWidgetset
-  GtkWSControls, Gtk2Def, Gtk2Globals, Gtk2Proc,
+  Gtk2Def, Gtk2Globals, Gtk2Proc,
   // Gtk2Widgetset
   Gtk2WSControls, Gtk2Int;
   
@@ -426,7 +426,7 @@ begin
 
   InternalSetStyle(PGtkProgressBar(Widget), TCustomProgressBar(AWinControl).Style);
 
-  TGtkWSWinControl.SetCallbacks(PGtkObject(Widget), TComponent(WidgetInfo^.LCLObject));
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(Widget), TComponent(WidgetInfo^.LCLObject));
 end;
 
 class procedure TGtk2WSProgressBar.ApplyChanges(const AProgressBar: TCustomProgressBar);

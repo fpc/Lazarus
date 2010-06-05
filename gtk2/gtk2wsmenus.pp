@@ -28,7 +28,7 @@ interface
 
 uses
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
-  GtkInt, Gtk2Proc, Gtk2Globals, Gtk2Def, Gtk2Extra, GtkWSMenus,
+  Gtk2Int, Gtk2Proc, Gtk2Globals, Gtk2Def, Gtk2Extra,
   Classes, InterfaceBase, Types, LCLProc, LCLType, WSMenus, WSLCLClasses,
   LMessages, Graphics, Menus, Forms, LCLIntf;
 
@@ -55,8 +55,9 @@ type
 
   { TGtk2WSMenu }
 
-  TGtk2WSMenu = class(TGtkWSMenu)
+  TGtk2WSMenu = class(TWSMenu)
   published
+    class function CreateHandle(const AMenu: TMenu): HMENU; override;
     class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); override;
   end;
 
@@ -294,7 +295,7 @@ begin
     end;
 
     if GtkWidgetIsA(MenuItem, GTK_TYPE_RADIO_MENU_ITEM) then
-      TGtkWidgetSet(WidgetSet).RegroupMenuItem(HMENU(PtrUInt(MenuItem)), GroupIndex);
+      TGtk2WidgetSet(WidgetSet).RegroupMenuItem(HMENU(PtrUInt(MenuItem)), GroupIndex);
   end;
   //DebugLn('TGtkWidgetSet.AttachMenu END ',AMenuItem.Name,':',AMenuItem.ClassName);
 end;
@@ -354,7 +355,7 @@ end;
 class procedure TGtk2WSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 begin
   { TODO: cleanup }
-  TGtkWidgetSet(WidgetSet).DestroyLCLComponent(AMenuItem);
+  TGtk2WidgetSet(WidgetSet).DestroyLCLComponent(AMenuItem);
 end;
 
 class procedure TGtk2WSMenuItem.SetCaption(const AMenuItem: TMenuItem;
@@ -492,6 +493,42 @@ begin
 end;
 
 { TGtk2WSMenu }
+
+class function TGtk2WSMenu.CreateHandle(const AMenu: TMenu): HMENU;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  Box: Pointer;
+  ParentForm: TCustomForm;
+const
+  MenuDirection : array[Boolean] of Longint = (
+    GTK_PACK_DIRECTION_LTR,
+    GTK_PACK_DIRECTION_RTL);
+begin
+  Widget := gtk_menu_bar_new();
+  // get the VBox, the form has one child, a VBox
+  ParentForm := TCustomForm(AMenu.Parent);
+  if (ParentForm=nil) or (not (ParentForm is TCustomForm)) then
+    RaiseGDBException('MainMenu without form');
+  if ParentForm.Menu <> AMenu then
+    RaiseGDBException('Form already has a MainMenu');
+  if ParentForm.HandleAllocated then
+  begin
+    Box := PGTKBin(ParentForm.Handle)^.Child;
+    gtk_box_pack_start(Box, Widget, False, False, 0);
+  end;
+
+  gtk_menu_bar_set_pack_direction(PGtkMenuBar(Widget), MenuDirection[AMenu.UseRightToLeftAlignment]);
+  gtk_widget_show(Widget);
+
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AMenu));
+  {$ENDIF}
+  Result := THandle(PtrUInt(Widget));
+  WidgetInfo := CreateWidgetInfo(Widget);
+  WidgetInfo^.LCLObject := AMenu;
+  // no callbacks for main menu
+end;
 
 class procedure TGtk2WSMenu.SetBiDiMode(const AMenu : TMenu;
   UseRightToLeftAlign, UseRightToLeftReading : Boolean);

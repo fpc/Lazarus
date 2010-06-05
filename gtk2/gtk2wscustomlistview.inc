@@ -1261,7 +1261,7 @@ var
   PtrType: GType;
   {$ENDIF}
 begin
-  Result := TGtkWSBaseScrollingWinControl.CreateHandle(AWinControl, AParams);
+  Result := TGtk2WSBaseScrollingWinControl.CreateHandle(AWinControl, AParams);
   if Result = 0 then Exit;
 
   ScrollWidget := PGtkScrolledWindow(Result);
