@@ -194,18 +194,21 @@ type
     FItem: TChartDataItem;
     FOnGetChartDataItem: TGetChartDataItemEvent;
     FPointsNumber: Integer;
+    FSorted: Boolean;
     procedure SetOnGetChartDataItem(const AValue: TGetChartDataItemEvent);
     procedure SetPointsNumber(const AValue: Integer);
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
   public
+    function IsSorted: Boolean; override;
     procedure Reset; inline;
   published
     property OnGetChartDataItem: TGetChartDataItemEvent
       read FOnGetChartDataItem write SetOnGetChartDataItem;
     property PointsNumber: Integer
       read FPointsNumber write SetPointsNumber default 0;
+    property Sorted: Boolean read FSorted write FSorted;
   end;
 
 procedure Register;
@@ -920,6 +923,11 @@ begin
   if Assigned(FOnGetChartDataItem) then
     FOnGetChartDataItem(Self, AIndex, FItem);
   Result := @FItem;
+end;
+
+function TUserDefinedChartSource.IsSorted: Boolean;
+begin
+  Result := Sorted;
 end;
 
 procedure TUserDefinedChartSource.Reset;
