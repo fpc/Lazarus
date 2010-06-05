@@ -659,12 +659,7 @@ begin
     ext.a := FChart.ImageToGraph(TopLeft);
     ext.b := FChart.ImageToGraph(BottomRight);
   end;
-  with ext do begin
-    if a.X > b.X then
-      Exchange(a.X, b.X);
-    if a.Y > b.Y then
-      Exchange(a.Y, b.Y);
-  end;
+  NormalizeRect(ext);
   CheckProportions;
   FChart.LogicalExtent := ext;
   Handled;

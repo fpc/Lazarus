@@ -1021,7 +1021,7 @@ procedure TChart.UpdateExtent;
           AHi += DEFAULT_WIDTH / 2;
         end
         else begin
-          if ALo > AHi then Exchange(ALo, AHi);
+          EnsureOrder(ALo, AHi);
           // Expand view slightly to avoid data points on the chart edge.
           ExpandRange(ALo, AHi, ExpandPercentage * PERCENT);
         end;

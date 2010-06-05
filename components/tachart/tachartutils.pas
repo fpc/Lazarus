@@ -558,8 +558,8 @@ function RectIntersectsRect(
 
   function RangesIntersect(L1, R1, L2, R2: Double; out L, R: Double): Boolean;
   begin
-    if L1 > R1 then Exchange(L1, R1);
-    if L2 > R2 then Exchange(L2, R2);
+    EnsureOrder(L1, R1);
+    EnsureOrder(L2, R2);
     L := Max(L1, L2);
     R := Min(R1, R2);
     Result := L <= R;

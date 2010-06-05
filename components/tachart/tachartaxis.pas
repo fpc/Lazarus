@@ -485,8 +485,7 @@ var
 begin
   AMin := GetTransform.GraphToAxis(AMin);
   AMax := GetTransform.GraphToAxis(AMax);
-  if AMin > AMax then
-    Exchange(AMin, AMax);
+  EnsureOrder(AMin, AMax);
   Marks.SourceDef.ValuesInRange(
     AMin, AMax, Marks.Format, IsVertical, FMarkValues, FMarkTexts);
   if Inverted then
