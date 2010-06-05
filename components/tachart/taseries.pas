@@ -467,7 +467,10 @@ begin
   lb := 0;
   ub := Count - 1;
   if LineType <> ltFromOrigin then begin
-    Source.FindBounds(GraphToAxisX(ext.a.X), GraphToAxisX(ext.b.X), lb, ub);
+    if IsRotated then
+      Source.FindBounds(GraphToAxisY(ext.a.Y), GraphToAxisY(ext.b.Y), lb, ub)
+    else
+      Source.FindBounds(GraphToAxisX(ext.a.X), GraphToAxisX(ext.b.X), lb, ub);
     lb := Max(lb - 1, 0);
     ub := Min(ub + 1, Count - 1);
   end;
