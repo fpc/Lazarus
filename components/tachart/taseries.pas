@@ -453,7 +453,14 @@ var
 var
   i: Integer;
   ai: TPoint;
+  ext: TDoubleRect;
 begin
+  ext.a := AxisToGraph(Source.Extent.a);
+  ext.b := AxisToGraph(Source.Extent.b);
+  if LineType = ltFromOrigin then
+    ExpandRect(ext, AxisToGraph(ZeroDoublePoint));
+  if not RectIntersectsRect(ext, ParentChart.CurrentExtent) then exit;
+
   SetLength(gp, Count);
   if (AxisIndexX < 0) and (AxisIndexY < 0) then
     // Optimization: bypass transformations in the default case.
