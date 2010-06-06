@@ -83,7 +83,9 @@ end;
 function TIDEEasyDockMaster.DockMasterRestore(const CtrlName: string;
   ASite: TWinControl): TControl;
 begin
+  debugln(['TIDEEasyDockMaster.DockMasterRestore CtrlName="',dbgstr(CtrlName),'"']);
   Result:=IDEWindowCreators.GetForm(CtrlName,true);
+  debugln(['TIDEEasyDockMaster.DockMasterRestore Result=',DbgSName(Result)]);
 end;
 
 procedure TIDEEasyDockMaster.GetDefaultBounds(AForm: TCustomForm; out
@@ -174,12 +176,14 @@ var
 begin
   // load the users default layout
   Filename:=GetDefaultLayoutFilename;
+  debugln(['TIDEEasyDockMaster.LoadDefaultLayout ',Filename,' exists=',FileExistsUTF8(Filename)]);
   if FileExistsUTF8(Filename) then
     DockMaster.LoadFromFile(Filename);
 end;
 
 procedure TIDEEasyDockMaster.SaveDefaultLayout;
 begin
+  debugln(['TIDEEasyDockMaster.SaveDefaultLayout ',GetDefaultLayoutFilename]);
   // load the users default layout
   DockMaster.SaveToFile(GetDefaultLayoutFilename);
 end;
