@@ -1928,6 +1928,10 @@ begin
   FType := AType;
   FAlignment := AAlignment;
 
+  //todo: FDepth should not be Zero. Need to find out what's causing it.
+  if (FType in [cbtMono, cbtGray]) and (FDepth=0) then
+    FDepth:=FBitsPerPixel;
+
   FBytesPerRow := ((AWidth * ABitsPerPixel) + 7) shr 3;
   M := FBytesPerRow and ALIGNBITS[AAlignment];
   if M <> 0 then Inc(FBytesPerRow, ALIGNBITS[AAlignment] + 1 - M);
