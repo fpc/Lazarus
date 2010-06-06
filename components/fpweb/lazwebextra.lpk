@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <Name Value="lazwebextra"/>
+    <AddToProjectUsesSection Value="False"/>
+    <CompilerOptions>
+      <Version Value="8"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="/home/michael/public_html/extjs/"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <Optimizations>
+          <OptimizationLevel Value="0"/>
+        </Optimizations>
+      </CodeGeneration>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Files Count="11">
+      <Item1>
+        <Filename Value="reglazwebextra.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="reglazwebextra"/>
+      </Item1>
+      <Item2>
+        <Filename Value="extjsjson.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="extjsjson"/>
+      </Item2>
+      <Item3>
+        <Filename Value="extjsxml.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="extjsxml"/>
+      </Item3>
+      <Item4>
+        <Filename Value="fpextjs.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpextjs"/>
+      </Item4>
+      <Item5>
+        <Filename Value="fpwebdata.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpwebdata"/>
+      </Item5>
+      <Item6>
+        <Filename Value="sqldbwebdata.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="sqldbwebdata"/>
+      </Item6>
+      <Item7>
+        <Filename Value="frmrpcmoduleoptions.lfm"/>
+        <Type Value="LFM"/>
+      </Item7>
+      <Item8>
+        <Filename Value="frmrpcmoduleoptions.pp"/>
+        <UnitName Value="frmrpcmoduleoptions"/>
+      </Item8>
+      <Item9>
+        <Filename Value="fpextdirect.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpextdirect"/>
+      </Item9>
+      <Item10>
+        <Filename Value="fpjsonrpc.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="fpjsonrpc"/>
+      </Item10>
+      <Item11>
+        <Filename Value="webjsonrpc.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="webjsonrpc"/>
+      </Item11>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="weblaz"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)/"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
