@@ -94,7 +94,6 @@ begin
   inherited Create(TheOwner);
 
   Caption := lisKMEvaluateModify;
-  IDEDialogLayoutList.ApplyLayout(Self, 400, 290);
   cmbExpression.Items.Assign(InputHistories.HistoryLists.GetList(ClassName, True));
 
   tbEvaluate.Caption := lisEvaluate;

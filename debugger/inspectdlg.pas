@@ -371,7 +371,6 @@ begin
   FMethodsGrid := NewGrid('MethodsGrid', MethodsPage, FMethodsGridHook);
 
   Localize;
-  IDEDialogLayoutList.ApplyLayout(Self, 260, 400);
 
   FGridData:=TStringGrid.Create(DataPage);
   DataPage.InsertControl(FGridData);

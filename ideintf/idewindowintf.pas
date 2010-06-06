@@ -31,7 +31,8 @@ type
 
   TIDEDialogLayoutList = class;
 
-  { TIDEDialogLayout }
+  { TIDEDialogLayout - for modal forms
+    For non modal forms see TIDEWindowCreator below }
 
   TIDEDialogLayout = class
   private
@@ -57,7 +58,7 @@ type
   end;
   TIDEDialogLayoutClass = class of TIDEDialogLayout;
 
-  { TIDEDialogLayoutList }
+  { TIDEDialogLayoutList - for modal forms }
 
   TIDEDialogLayoutList = class
   private
