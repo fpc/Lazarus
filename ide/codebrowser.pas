@@ -2264,7 +2264,8 @@ var
         // create tree nodes for child code nodes
         RecursiveAdd(CurNode.ChildNodes);
         // do not expand unit nodes
-        if TObject(ParentViewNode.Data) is TCodeBrowserUnit then
+        if (ParentViewNode<>nil)
+        and (TObject(ParentViewNode.Data) is TCodeBrowserUnit) then
           ExpandParent:=false;
       end;
     end;
