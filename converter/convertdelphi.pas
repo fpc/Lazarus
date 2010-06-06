@@ -1285,7 +1285,7 @@ begin
       Result:=mrCancel;
       exit;
     end;
-    if MisUnits<>nil then
+    if (MisUnits<>nil) and (MisUnits.Count>0) then
       raise Exception.Create('At this point there should be no missing units!');
     try
       // add all units to the project
