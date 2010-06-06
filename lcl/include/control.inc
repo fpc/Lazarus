@@ -3312,7 +3312,7 @@ end;
 
 function TControl.GetDefaultDockCaption: String;
 begin
-  Result := Name;
+  Result := Caption;
 end;
 
 {------------------------------------------------------------------------------
@@ -4140,6 +4140,8 @@ begin
   end;
   //if CompareText(ClassName,'TMEMO')=0 then
   //  debugln('TControl.SetText END ',DbgSName(Self),' FCaption="',FCaption,'"');
+  if HostDockSite <> nil then
+    HostDockSite.UpdateDockCaption(nil);
 end;
 
 {------------------------------------------------------------------------------

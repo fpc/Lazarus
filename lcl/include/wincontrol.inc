@@ -5344,6 +5344,13 @@ begin
   DoGetDockCaption(AControl, Result);
 end;
 
+procedure TWinControl.UpdateDockCaption(Exclude: TControl);
+begin
+ { Called when this is a hostdocksite and either the list of docked clients have
+   changed or one of their captions.
+   Exclude an currently undocking control. }
+end;
+
 procedure TWinControl.DoGetDockCaption(AControl: TControl; var ACaption: String);
 begin
   if Assigned(FOnGetDockCaption) then

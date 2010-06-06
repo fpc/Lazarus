@@ -2721,6 +2721,51 @@ begin
   inherited Dock(NewDockSite, ARect);
 end;
 
+procedure TCustomForm.UpdateDockCaption(Exclude: TControl);
+const
+  MaxCaption = 20;
+var
+  NewCaption: String;
+  i: Integer;
+  AControl: TControl;
+  CtrlCaption: String;
+  p: LongInt;
+begin
+  { Show the combined captions of all clients.
+    Exclude client to be undocked.
+    Don't change the Caption to an empty string. }
+  NewCaption := '';
+  for i := 0 to DockClientCount - 1 do
+  begin
+    AControl := DockClients[i];
+    // check if control is shown
+    if (AControl = Exclude) or (not AControl.IsControlVisible) then
+      continue;
+    // get caption
+    CtrlCaption:=GetDockCaption(AControl);
+    if CtrlCaption='' then continue;
+    // do not put garbage in the title
+    p:=FindInvalidUTF8Character(PChar(CtrlCaption),length(CtrlCaption),true);
+    if p>=0 then
+    begin
+      CtrlCaption:=copy(CtrlCaption,1,p+1);
+      if CtrlCaption='' then
+        CtrlCaption:='?';
+    end;
+    if not (AControl is TCustomForm) then
+    begin
+      // non controls like tmemo can have very long captions => cut them
+      if UTF8Length(CtrlCaption)>MaxCaption then
+        CtrlCaption:=UTF8Copy(CtrlCaption,1,MaxCaption)+'...';
+    end;
+    if NewCaption<>'' then NewCaption := NewCaption+', ';
+    NewCaption:=NewCaption+CtrlCaption;
+  end;
+  // don't change the Caption to an empty string
+  if NewCaption <> '' then
+    Caption := NewCaption;
+end;
+
 //==============================================================================
 
 { TForm }

@@ -1938,6 +1938,7 @@ type
     procedure SetFocus; virtual;
     procedure FlipChildren(AllLevels: Boolean); virtual;
     function GetDockCaption(AControl: TControl): String; virtual;
+    procedure UpdateDockCaption(Exclude: TControl = nil); virtual;
     procedure GetTabOrderList(List: TFPList);
     function HandleAllocated: Boolean;
     function ParentHandlesAllocated: boolean; override;

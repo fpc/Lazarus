@@ -615,6 +615,7 @@ type
   public
     // drag and dock
     procedure Dock(NewDockSite: TWinControl; ARect: TRect); override;
+    procedure UpdateDockCaption(Exclude: TControl); override;
   public
     property Active: Boolean read FActive;
     property ActiveControl: TWinControl read FActiveControl write SetActiveControl;
