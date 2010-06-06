@@ -3907,7 +3907,7 @@ var
   PosTree: TAVLTree; // tree of PChar positions in Src
   AVLNode: TAVLTreeNode;
   ReferencePos: TCodeXYPosition;
-  MaxPos: Integer;
+  MinPos, MaxPos: Integer;
   CursorNode: TCodeTreeNode;
   UnitStartFound, Found: Boolean;
 
@@ -4027,7 +4027,7 @@ var
     InStrConst: Boolean;
     //CommentStart: LongInt;
   begin
-    StartPos:=1;
+    StartPos:=MinPos;
     UnitStartFound:=false;
     while StartPos<=MaxPos do begin
       case Src[StartPos] of
@@ -4206,6 +4206,39 @@ var
 
     Result:=true;
   end;
+
+  procedure LimitScope;
+  var
+    Node: TCodeTreeNode;
+  begin
+    MinPos:=Tree.FindFirstPosition;
+    MaxPos:=Tree.FindLastPosition;
+    if MaxPos>SrcLen then MaxPos:=SrcLen;
+
+    if DeclarationTool<>Self then exit;
+
+    Node:=DeclarationNode;
+    while Node<>nil do begin
+      case Node.Desc of
+      ctnImplementation:
+        // only search in implementation
+        if MinPos<Node.StartPos then MinPos:=Node.StartPos;
+      ctnVarDefinition,ctnConstDefinition,ctnLabelType:
+        begin
+          // only search behind variable
+          if MinPos<Node.StartPos then MinPos:=Node.StartPos;
+          if (Node.Parent.Desc in [ctnVarSection,ctnConstSection,ctnLabelSection,ctnResStrSection])
+          and (Node.Parent.Parent.Desc=ctnProcedure) then begin
+            // only search till procedure end
+            if MaxPos>Node.Parent.Parent.EndPos then
+              MaxPos:=Node.Parent.Parent.EndPos;
+          end;
+        end;
+      end;
+      Node:=Node.Parent;
+    end;
+    //debugln(['LimitScope ',CleanPosToStr(MinPos),'..',CleanPosToStr(MaxPos),': ',dbgstr(copy(Src,MinPos,20)),'..',dbgstr(copy(Src,MaxPos-20,20))]);
+  end;
   
 begin
   Result:=false;
@@ -4223,8 +4256,8 @@ begin
     if not FindDeclarationNode then exit;
 
     // search identifiers
-    MaxPos:=Tree.FindLastPosition;
-    if MaxPos>SrcLen then MaxPos:=SrcLen;
+    LimitScope;
+
     //debugln('FindReferences StartPos=',dbgs(StartPos),' MaxPos=',dbgs(MaxPos));
     SearchIdentifiers;
 

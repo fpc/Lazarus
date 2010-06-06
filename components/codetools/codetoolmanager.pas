@@ -46,7 +46,7 @@ uses
   FindDeclarationCache, DirectoryCacher, AVL_Tree, LFMTrees, DirectivesTree,
   PascalParserTool, CodeToolsConfig, CustomCodeTool, FindDeclarationTool,
   IdentCompletionTool, StdCodeTools, ResourceCodeTool, CodeToolsStructs,
-  CodeTemplatesTool, ExtractProcTool;
+  CodeTemplatesTool, ExtractProcTool, PascalReaderTool;
 
 type
   TCodeToolManager = class;
@@ -2188,24 +2188,45 @@ function TCodeToolManager.FindReferences(IdentifierCode: TCodeBuffer;
   var ListOfPCodeXYPosition: TFPList): boolean;
 var
   CursorPos: TCodeXYPosition;
-  NewCode: TCodeBuffer;
-  NewX, NewY, NewTopLine: integer;
+  NewTool: TFindDeclarationTool;
+  NewNode: TCodeTreeNode;
+  NewPos: TCodeXYPosition;
+  NewTopLine: integer;
+  PrivateDeclaration: Boolean;
+  ImplementationNode: TCodeTreeNode;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindReferences A ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y));
   {$ENDIF}
   ListOfPCodeXYPosition:=nil;
-  if not FindMainDeclaration(IdentifierCode,X,Y,NewCode,NewX,NewY,NewTopLine)
-  then begin
-    DebugLn('TCodeToolManager.FindReferences unable to FindMainDeclaration ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y));
+  if not InitCurCodeTool(IdentifierCode) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=IdentifierCode;
+  try
+    Result:=FCurCodeTool.FindDeclaration(CursorPos,[fsfFindMainDeclaration],
+                                         NewTool,NewNode,NewPos,NewTopLine)
+  except
+    on e: Exception do HandleException(e);
+  end;
+  if not Result then begin
+    DebugLn('TCodeToolManager.FindReferences unable to FindDeclaration ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y));
     exit;
+  end;
+  // check if
+  PrivateDeclaration:=(NewTool.GetSourceType in [ctnLibrary,ctnProgram]);
+  if not PrivateDeclaration then begin
+    ImplementationNode:=NewTool.FindImplementationNode;
+    if (ImplementationNode<>nil) and (NewNode.StartPos>=ImplementationNode.StartPos)
+    then
+      PrivateDeclaration:=true;
   end;
   if NewTopLine=0 then ;
   if not InitCurCodeTool(TargetCode) then exit;
-  CursorPos.X:=NewX;
-  CursorPos.Y:=NewY;
-  CursorPos.Code:=NewCode;
+  if PrivateDeclaration and (FCurCodeTool<>NewTool) then exit(true);
+
+  CursorPos:=NewPos;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindReferences B ',dbgs(FCurCodeTool.Scanner<>nil),' x=',dbgs(CursorPos.X),' y=',dbgs(CursorPos.Y),' ',CursorPos.Code.Filename);
   {$ENDIF}
