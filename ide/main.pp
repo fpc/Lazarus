@@ -1700,6 +1700,7 @@ end;
 procedure TMainIDE.MainIDEFormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
+  DoCallNotifyHandler(lihtIDEClose);
   SaveEnvironment;
   CloseIDEWindows;
   SaveIncludeLinks;
@@ -9656,7 +9657,7 @@ begin
     Result:=mrOk;
   finally
     // call handlers
-    HandlerResult:=DoCallProjectChangedHandler(lihtOnProjectOpened,Project1);
+    HandlerResult:=DoCallProjectChangedHandler(lihtProjectOpened,Project1);
     if not (HandlerResult in [mrOk,mrCancel,mrAbort]) then
       HandlerResult:=mrCancel;
     if (Result=mrOk) then
@@ -9777,7 +9778,7 @@ begin
   end;
 
   // call handlers
-  Result:=DoCallProjectChangedHandler(lihtOnProjectClose,Project1);
+  Result:=DoCallProjectChangedHandler(lihtProjectClose,Project1);
   if Result=mrAbort then exit;
 
   // close all loaded files
@@ -10022,7 +10023,7 @@ begin
       end;
     end;
     // call handlers
-    HandlerResult:=DoCallProjectChangedHandler(lihtOnProjectOpened,Project1);
+    HandlerResult:=DoCallProjectChangedHandler(lihtProjectOpened,Project1);
     if not (HandlerResult in [mrOk,mrCancel,mrAbort]) then
       HandlerResult:=mrCancel;
     if (Result=mrOk) then
@@ -10684,7 +10685,7 @@ begin
     DoArrangeSourceEditorAndMessageView(false);
 
     // now building can start: call handler
-    Result:=DoCallModalFunctionHandler(lihtOnProjectBuilding);
+    Result:=DoCallModalFunctionHandler(lihtProjectBuilding);
     if Result<>mrOk then exit;
 
     // get main source filename
@@ -10698,7 +10699,7 @@ begin
 
     // compile required packages
     if not (pbfDoNotCompileDependencies in Flags) then begin
-      Result:=DoCallModalFunctionHandler(lihtOnProjectDependenciesCompiling);
+      Result:=DoCallModalFunctionHandler(lihtProjectDependenciesCompiling);
       if Result<>mrOk then exit;
       PkgFlags:=[pcfDoNotSaveEditorFiles];
       if pbfCompileDependenciesClean in Flags then
@@ -10709,7 +10710,7 @@ begin
         CompileProgress.Ready(lisInfoBuildError);
         exit;
       end;
-      Result:=DoCallModalFunctionHandler(lihtOnProjectDependenciesCompiled);
+      Result:=DoCallModalFunctionHandler(lihtProjectDependenciesCompiled);
       if Result<>mrOk then exit;
     end;
 
@@ -10976,7 +10977,7 @@ var
   CurResult: TModalResult;
 begin
   Result:=mrOk;
-  CurResult:=DoCallModalFunctionHandler(lihtOnSavingAll);
+  CurResult:=DoCallModalFunctionHandler(lihtSavingAll);
   if CurResult=mrAbort then exit(mrAbort);
   if CurResult<>mrOk then Result:=mrCancel;
   CurResult:=DoSaveProject(Flags);
@@ -10986,7 +10987,7 @@ begin
   InputHistories.Save;
   if CurResult=mrAbort then exit(mrAbort);
   if CurResult<>mrOk then Result:=mrCancel;
-  CurResult:=DoCallModalFunctionHandler(lihtOnSavedAll);
+  CurResult:=DoCallModalFunctionHandler(lihtSavedAll);
   if CurResult=mrAbort then exit(mrAbort);
   if CurResult<>mrOk then Result:=mrCancel;
   UpdateSaveMenuItemsAndButtons(true);

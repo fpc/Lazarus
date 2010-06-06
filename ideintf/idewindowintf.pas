@@ -204,11 +204,11 @@ type
 
   TIDEDockMaster = class
   public
-    // ToDo: save/restore layout
     procedure MakeIDEWindowDockable(AControl: TWinControl); virtual; abstract;
     procedure MakeIDEWindowDockSite(AForm: TCustomForm); virtual; abstract;
     procedure LoadDefaultLayout; virtual; abstract; // called before opening the first project
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); virtual; abstract;
+    procedure CloseAll; virtual;
   end;
 
 var
@@ -717,6 +717,23 @@ begin
     AForm.ShowOnTop
   else
     AForm.Show;
+end;
+
+{ TIDEDockMaster }
+
+procedure TIDEDockMaster.CloseAll;
+var
+  i: Integer;
+  AForm: TCustomForm;
+begin
+  i:=Screen.CustomFormCount-1;
+  while i>=0 do begin
+    AForm:=Screen.CustomForms[i];
+    if AForm<>Application.MainForm then
+      AForm.Close;
+    dec(i);
+    if i>=Screen.CustomFormCount then i:=Screen.CustomFormCount-1;
+  end;
 end;
 
 initialization

@@ -35,25 +35,39 @@ unit RegisterEasyDockMgr;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLProc, Forms, Controls, IDEWindowIntf,
+  Math, Classes, SysUtils, LCLProc, Forms, Controls, FileUtil,
+  LazIDEIntf, IDEWindowIntf,
   uMakeSite;
 
+const
+  DefaultConfigFileName = 'easydocklayout.lyt';
 type
 
   { TIDEEasyDockMaster }
 
   TIDEEasyDockMaster = class(TIDEDockMaster)
+    function DockMasterRestore(const CtrlName: string; ASite: TWinControl
+      ): TControl;
   private
     procedure GetDefaultBounds(AForm: TCustomForm; out Creator: TIDEWindowCreator;
       out NewBounds: TRect; out DockSiblingName: string; out DockAlign: TAlign);
   public
+    constructor Create;
+    destructor Destroy; override;
     procedure MakeIDEWindowDockSite(AForm: TCustomForm); override;
     procedure MakeIDEWindowDockable(AControl: TWinControl); override;
     function IsDockSite(AForm: TCustomForm): boolean;
     function IsDockable(AForm: TCustomForm): boolean;
+    function GetDefaultLayoutFilename: string;
     procedure LoadDefaultLayout; override;
+    procedure SaveDefaultLayout;
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); override;
+    procedure CloseAll; override;
+    procedure OnIDEClose(Sender: TObject);
   end;
+
+var
+  IDEEasyDockMaster: TIDEEasyDockMaster = nil;
 
 procedure Register;
 
@@ -61,10 +75,16 @@ implementation
 
 procedure Register;
 begin
-  // ToDo: register menu items, events and options
+  LazarusIDE.AddHandlerOnIDEClose(@IDEEasyDockMaster.OnIDEClose);
 end;
 
 { TIDEEasyDockMaster }
+
+function TIDEEasyDockMaster.DockMasterRestore(const CtrlName: string;
+  ASite: TWinControl): TControl;
+begin
+  Result:=IDEWindowCreators.GetForm(CtrlName,true);
+end;
 
 procedure TIDEEasyDockMaster.GetDefaultBounds(AForm: TCustomForm; out
   Creator: TIDEWindowCreator; out NewBounds: TRect; out DockSiblingName: string;
@@ -86,6 +106,18 @@ begin
   NewBounds.Top:=Min(10000,Max(-10000,NewBounds.Top));
   NewBounds.Right:=Max(NewBounds.Left+100,NewBounds.Right);
   NewBounds.Bottom:=Max(NewBounds.Top+100,NewBounds.Bottom);
+end;
+
+constructor TIDEEasyDockMaster.Create;
+begin
+  IDEEasyDockMaster:=Self;
+  DockMaster.OnRestore:=@DockMasterRestore;
+end;
+
+destructor TIDEEasyDockMaster.Destroy;
+begin
+  IDEEasyDockMaster:=nil;
+  inherited Destroy;
 end;
 
 procedure TIDEEasyDockMaster.MakeIDEWindowDockSite(AForm: TCustomForm);
@@ -131,9 +163,25 @@ begin
   Result:=true;
 end;
 
-procedure TIDEEasyDockMaster.LoadDefaultLayout;
+function TIDEEasyDockMaster.GetDefaultLayoutFilename: string;
 begin
-  // ToDo: load the users default layout
+  Result:=AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+DefaultConfigFileName;
+end;
+
+procedure TIDEEasyDockMaster.LoadDefaultLayout;
+var
+  Filename: String;
+begin
+  // load the users default layout
+  Filename:=GetDefaultLayoutFilename;
+  if FileExistsUTF8(Filename) then
+    DockMaster.LoadFromFile(Filename);
+end;
+
+procedure TIDEEasyDockMaster.SaveDefaultLayout;
+begin
+  // load the users default layout
+  DockMaster.SaveToFile(GetDefaultLayoutFilename);
 end;
 
 procedure TIDEEasyDockMaster.ShowForm(AForm: TCustomForm; BringToFront: boolean
@@ -146,12 +194,16 @@ var
   DockAlign: TAlign;
   DockSibling: TCustomForm;
   NewDockSite: TWinControl;
+  AControl: TControl;
 begin
   debugln(['TIDEEasyDockMaster.ShowForm ',DbgSName(AForm),' BringToFront=',BringToFront,' IsDockSite=',IsDockSite(AForm),' IsDockable=',IsDockable(AForm)]);
   try
-    if not (IsDockSite(AForm) or IsDockable(AForm)) then
+    AForm.DisableAlign;
+    if AForm.HostDockSite<>nil then
     begin
-      AForm.DisableAlign;
+      // already docked
+    end else if not (IsDockSite(AForm) or IsDockable(AForm)) then
+    begin
       // this form was not yet docked
       // place it at a default position and make it dockable
       GetDefaultBounds(AForm,Creator,NewBounds,DockSiblingName,DockAlign);
@@ -186,19 +238,37 @@ begin
           MakeIDEWindowDockable(AForm);
         end;
       end;
-      AForm.EnableAlign;
     end;
 
   finally
-    Parent:=GetParentForm(AForm);
-    // ToDo switch pageindex of all parent note books
-    if Parent<>nil then
-      if BringToFront then
-        Parent.ShowOnTop
+    AControl:=AForm;
+    while AControl<>nil do begin
+      // ToDo: if this is a page switch pageindex of parent
+      if AControl is TCustomForm then
+        TCustomForm(AControl).Show
       else
-        Parent.Show;
+        AControl.Visible:=true;
+      AControl:=AControl.Parent;
+    end;
+    AForm.EnableAlign;
+
+    if BringToFront then begin
+      Parent:=GetParentForm(AForm);
+      if Parent<>nil then
+        Parent.ShowOnTop;
+    end;
   end;
   debugln(['TIDEEasyDockMaster.ShowForm END ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect)]);
+end;
+
+procedure TIDEEasyDockMaster.CloseAll;
+begin
+  inherited CloseAll;
+end;
+
+procedure TIDEEasyDockMaster.OnIDEClose(Sender: TObject);
+begin
+  SaveDefaultLayout;
 end;
 
 initialization
