@@ -10,12 +10,12 @@ main=lazarus/lcl
 packages=rtl
 
 [target]
-units=interfaces2
+units=interfaces
 implicitunits=gtk2int
 
 [compiler]
-options=-gl -dgtk2 -Fi../gtk/
-unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) ../gtk .
+options=-gl -dgtk2 
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) .
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/gtk2
 includedir=.
 
