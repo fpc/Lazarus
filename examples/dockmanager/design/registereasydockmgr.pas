@@ -48,6 +48,7 @@ type
   TIDEEasyDockMaster = class(TIDEDockMaster)
     function DockMasterRestore(const CtrlName: string; ASite: TWinControl
       ): TControl;
+    function DockMasterSave(ACtrl: TControl): string;
   private
     procedure GetDefaultBounds(AForm: TCustomForm; out Creator: TIDEWindowCreator;
       out NewBounds: TRect; out DockSiblingName: string; out DockAlign: TAlign);
@@ -88,6 +89,11 @@ begin
   debugln(['TIDEEasyDockMaster.DockMasterRestore Result=',DbgSName(Result)]);
 end;
 
+function TIDEEasyDockMaster.DockMasterSave(ACtrl: TControl): string;
+begin
+  Result:=ACtrl.Name;
+end;
+
 procedure TIDEEasyDockMaster.GetDefaultBounds(AForm: TCustomForm; out
   Creator: TIDEWindowCreator; out NewBounds: TRect; out DockSiblingName: string;
   out DockAlign: TAlign);
@@ -114,6 +120,7 @@ constructor TIDEEasyDockMaster.Create;
 begin
   IDEEasyDockMaster:=Self;
   DockMaster.OnRestore:=@DockMasterRestore;
+  DockMaster.OnSave:=@DockMasterSave;
 end;
 
 destructor TIDEEasyDockMaster.Destroy;
