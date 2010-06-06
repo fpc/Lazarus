@@ -192,33 +192,50 @@ begin
   LoadStringToStringTree(fConfigStorage, 'ReplaceUnits', fReplaceUnits);
   LoadStringToStringTree(fConfigStorage, 'ReplaceTypes', fReplaceTypes);
 
-  // Add default values for string maps if ConfigStorage doesn't have any.
-  if fReplaceUnits.Tree.Count=0 then begin
-    // Map Delphi units to Lazarus units.
+  // Add default values for string maps if ConfigStorage doesn't have them.
+  // Map Delphi units to Lazarus units.
+  if not fReplaceUnits.Contains('Windows') then
     fReplaceUnits['Windows']:='LCLIntf, LCLType, LMessages';
+  if not fReplaceUnits.Contains('Mask') then
     fReplaceUnits['Mask']:='MaskEdit';
+  if not fReplaceUnits.Contains('Variants') then
     fReplaceUnits['Variants']:='';
+  if not fReplaceUnits.Contains('ShellApi') then
     fReplaceUnits['ShellApi']:='';
+  if not fReplaceUnits.Contains('pngImage') then
     fReplaceUnits['pngImage']:='';
+  if not fReplaceUnits.Contains('Jpeg') then
     fReplaceUnits['Jpeg']:='';
+  if not fReplaceUnits.Contains('gifimage') then
     fReplaceUnits['gifimage']:='';
-    fReplaceUnits['^Q(.+)']:='$1';      // Kylix unit names.
-    fReplaceUnits['^Tnt(.+)']:='$1';    // Tnt* third party components.
-  end;
-  if fReplaceTypes.Tree.Count=0 then begin
-    // Map Delphi types to LCL types.
+  if not fReplaceUnits.Contains('^Q(.+)') then
+    fReplaceUnits['^Q(.+)']:='$1';                 // Kylix unit names.
+  if not fReplaceUnits.Contains('^Tnt(.+)') then
+    fReplaceUnits['^Tnt(.+)']:='$1';               // Tnt* third party components.
+
+  // Map Delphi types to LCL types.
+  if not fReplaceTypes.Contains('TFlowPanel') then
     fReplaceTypes['TFlowPanel']:='TPanel';
+  if not fReplaceTypes.Contains('TGridPanel') then
     fReplaceTypes['TGridPanel']:='TPanel';
+  if not fReplaceTypes.Contains('TControlBar') then
     fReplaceTypes['TControlBar']:='TToolBar';
+  if not fReplaceTypes.Contains('TCoolBar') then
     fReplaceTypes['TCoolBar']:='TToolBar';
+  if not fReplaceTypes.Contains('TComboBoxEx') then
     fReplaceTypes['TComboBoxEx']:='TComboBox';
+  if not fReplaceTypes.Contains('TValueListEditor') then
     fReplaceTypes['TValueListEditor']:='TStringGrid';
+  if not fReplaceTypes.Contains('TRichEdit') then
     fReplaceTypes['TRichEdit']:='TMemo';
+  if not fReplaceTypes.Contains('TDBRichEdit') then
     fReplaceTypes['TDBRichEdit']:='TDBMemo';
+  if not fReplaceTypes.Contains('TApplicationEvents') then
     fReplaceTypes['TApplicationEvents']:='TApplicationProperties';
+  if not fReplaceTypes.Contains('TPNGObject') then
     fReplaceTypes['TPNGObject']:='TPortableNetworkGraphic';
+  if not fReplaceTypes.Contains('^TTnt(.+)') then
     fReplaceTypes['^TTnt(.+)']:='T$1';
-  end;
 end;
 
 destructor TConvertSettings.Destroy;
