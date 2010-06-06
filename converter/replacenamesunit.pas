@@ -45,10 +45,13 @@ type
     BtnPanel: TPanel;
     HelpButton: TBitBtn;
     NamePairGrid: TStringGrid;
-    procedure btnOKClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure NamePairGridEditingDone(Sender: TObject);
+    procedure NamePairGridSetEditText(Sender: TObject; ACol, ARow: Integer;
+      const Value: string);
+    procedure btnOKClick(Sender: TObject);
   private
-
+    IsLasRow: Boolean;
   public
 
   end; 
@@ -96,7 +99,7 @@ begin
     RE:=TRegExpr.Create;
     try
       for i:=0 to fMapNames.Count-1 do begin
-        Key:=fMapNames[i];       // fMapNames has extracted keys from fStringMap.
+        Key:=fMapNames[i];       // fMapNames has names extracted from fStringMap.
         // If key contains '(' assume it is a regexp.
         if Pos('(', Key)>0 then begin
           RE.Expression:=Key;
@@ -134,7 +137,7 @@ var
   List: TStringList;
   i: Integer;
 begin
-  // Collect (maybe edited) properties from StringGrid to NameReplacements.
+  // Copy properties from NameReplacements to StringGrid.
   List:=TStringList.Create;
   try
     fGrid.BeginUpdate;
@@ -142,8 +145,8 @@ begin
     for i:=0 to List.Count-1 do begin
       OldIdent:=List[i];
       NewIdent:=fStringMap[OldIdent];
-      if fGrid.RowCount<i+1 then
-        fGrid.RowCount:=i+1;
+      if fGrid.RowCount<i+2 then
+        fGrid.RowCount:=i+2;         // Leave one empty row to the end.
       fGrid.Cells[0,i]:=OldIdent;
       fGrid.Cells[1,i]:=NewIdent;
     end;
@@ -162,7 +165,7 @@ begin
   for i:=1 to fGrid.RowCount-1 do begin // Skip the fixed row.
     OldIdent:=fGrid.Cells[0,i];
     NewIdent:=fGrid.Cells[1,i];
-    if NewIdent<>'' then
+    if OldIdent<>'' then
       fStringMap[OldIdent]:=NewIdent;
   end;
 end;
@@ -190,6 +193,27 @@ end;
 procedure TReplaceNamesForm.FormCreate(Sender: TObject);
 begin
   Caption:=lisReplacementPropTypes;
+  IsLasRow:=false;
+end;
+
+// Add rows automatically to the end of the grid
+//  using OnSetEditText and OnEditingDone handlers and IsLasRow flag.
+procedure TReplaceNamesForm.NamePairGridEditingDone(Sender: TObject);
+var
+  sg: TStringGrid;
+begin
+  if IsLasRow then begin
+    sg:=Sender as TStringGrid;
+    sg.RowCount:=sg.RowCount+1;
+    IsLasRow:=false;
+  end;
+end;
+
+procedure TReplaceNamesForm.NamePairGridSetEditText(Sender: TObject; ACol,
+  ARow: Integer; const Value: string);
+begin
+  if ARow = (Sender as TStringGrid).RowCount-1 then
+    IsLasRow:=Value<>'';
 end;
 
 procedure TReplaceNamesForm.btnOKClick(Sender: TObject);

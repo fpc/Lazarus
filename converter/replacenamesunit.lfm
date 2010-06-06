@@ -30,6 +30,8 @@ object ReplaceNamesForm: TReplaceNamesForm
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
     RowCount = 2
     TabOrder = 0
+    OnEditingDone = NamePairGridEditingDone
+    OnSetEditText = NamePairGridSetEditText
     ColWidths = (
       169
       170
