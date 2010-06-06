@@ -25,14 +25,11 @@ msgstr "Tai atvirojo kodo programinė įrangą. Jai taikoma Mozilla Public Licen
 
 #: jcfuiconsts.lisaboutthisprogramisstillunderdevelopment
 msgid "This program is still under development. In spite of thorough testing and removal of reported bugs, no guarantees are given. Please make backups, or better yet use a source control system."
-msgstr ""
-"Ši programa vis dar kuriama. Nepaisant kruopštaus testavimo ir praneštų ydų taisymo, garantijos nesuteikiamos. Todėl darykite atsargines kopijas, arba naudokite geresnę pirminio kodo valdymo "
-"sistemą."
+msgstr "Ši programa vis dar kuriama. Nepaisant kruopštaus testavimo ir praneštų ydų taisymo, garantijos nesuteikiamos. Todėl darykite atsargines kopijas, arba naudokite geresnę pirminio kodo valdymo sistemą."
 
 #: jcfuiconsts.lisaboutversion
 msgid "Version $VERSION$%s$DATE$%s%sThis program attempts to standardise and make readable the layout of any Delphi Object-Pascal source code.%s%sCopyright Anthony Steele 1999-2008"
-msgstr ""
-"Laida $VERSION$%s$DATE$%s%sŠi programa siekia standartizuoti ir daryti įskaitomesniu bet kokį Delphi ar objektinio paskalio pirminį kodą.%s%sAutorinės teisės priklauso Anthony Steele 1999-2008"
+msgstr "Laida $VERSION$%s$DATE$%s%sŠi programa siekia standartizuoti ir daryti įskaitomesniu bet kokį Delphi ar objektinio paskalio pirminį kodą.%s%sAutorinės teisės priklauso Anthony Steele 1999-2008"
 
 #: jcfuiconsts.lisalignalign
 msgid "Align"
@@ -897,5 +894,4 @@ msgstr "Perspėjimai"
 #: jcfuiconsts.liswarningswarningson
 msgid "&Warnings On"
 msgstr "&Perspėjimai įgalinti"
-
 
