@@ -448,6 +448,7 @@ var
   C: ItemCount;
   ID: PasteboardItemID;
   Formats: TList;
+  isImageFormat: Boolean;
 const
   SName = 'GetFormats';
 begin
@@ -459,7 +460,8 @@ begin
   if OSError(PasteboardGetItemCount(Pasteboard, C), Self, SName,
     'PasteboardGetItemCount') then Exit;
   if C < 1 then Exit;
-  
+
+  isImageFormat:=False;
   Formats := TList.Create;
   try
     for I := 1 to C do
@@ -473,14 +475,15 @@ begin
       for J := 0 to FlavorCount - 1 do
       begin
         UTI := CFArrayGetValueAtIndex(Flavors, J);
+        isImageFormat:=isImageFormat or UTTypeConformsTo(UTI, kUTTypePICT);
         //DebugLn('TCarbonClipboard.GetFormats ' + CFStringToStr(UTI));
 
         FormatID := FindFormat(UTI);
         if FormatID = 0 then
-          FormatID := FFormats.Add(UTI);
-        if FormatID < 4 then // if it is text format, add plain text format
-          if Formats.IndexOf(Pointer(1)) = -1 then Formats.Add(Pointer(1));
-
+          FormatID := FFormats.Add(UTI)
+        else
+          // reserved text format!
+          if FormatID < 4 then FormatID:=1;
 
         if Formats.IndexOf(Pointer(FormatID)) = -1 then
         begin
@@ -490,6 +493,17 @@ begin
         end;
       end;
     end;
+
+    if isImageFormat then
+    begin
+      // there's an image format in the clipboard, it can be converted
+      // to Bitmap. Since most of the delphi software is using CF_Bitmap as
+      // a common format, it's necessary to "emulate" bitmap presence!
+      FormatID:=FindFormat(kUTTypeBMP);
+      if (FormatID>0) and (Formats.IndexOf(Pointer(FormatID))=-1) then
+        Formats.Add(Pointer(FormatID));
+    end;
+
 
     Count := Formats.Count;
     GetMem(List, Count * SizeOf(TClipboardFormat));
@@ -604,6 +618,10 @@ function GetLCLPredefinedUTI(const LCLMimeType: String): CFStringRef;
 begin
   if (LCLMimeType='image/bmp') or (LCLMimeType='image/delphi.bitmap') then
     Result:=kUTTypeBMP
+  else if (LCLMimeType='image/png') then
+    Result:=kUTTypePNG
+  else if (LCLMimeType='image/jpeg') then
+    Result:=kUTTypeJPEG
   else
     Result:=nil;
 end;
