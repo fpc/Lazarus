@@ -389,7 +389,7 @@ end;
 procedure TCustomChartSource.Notify;
 begin
   if not IsUpdating then
-    FBroadcaster.Broadcast;
+    FBroadcaster.Broadcast(Self);
 end;
 
 procedure TCustomChartSource.ValuesInRange(

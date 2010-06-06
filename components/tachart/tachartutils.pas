@@ -164,7 +164,7 @@ type
   public
     destructor Destroy; override;
   public
-    procedure Broadcast;
+    procedure Broadcast(ASender: TObject);
     procedure Subscribe(AListener: TListener);
     procedure Unsubscribe(AListener: TListener);
   end;
@@ -823,12 +823,12 @@ end;
 
 { TBroadcaster }
 
-procedure TBroadcaster.Broadcast;
+procedure TBroadcaster.Broadcast(ASender: TObject);
 var
   i: Integer;
 begin
   for i := 0 to Count - 1 do
-    TListener(Items[i]).Notify(nil);
+    TListener(Items[i]).Notify(ASender);
 end;
 
 destructor TBroadcaster.Destroy;

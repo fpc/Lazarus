@@ -280,7 +280,7 @@ end;
 procedure TAxisTransform.Changed;
 begin
   if Transformations <> nil then
-    Transformations.Broadcaster.Broadcast;
+    Transformations.Broadcaster.Broadcast(Self);
 end;
 
 constructor TAxisTransform.Create(AOwner: TComponent);
