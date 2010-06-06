@@ -41,7 +41,10 @@ const
   DEF_TITLE_DISTANCE = 4;
 
 type
-  TCustomChart = class(TCustomControl);
+  TCustomChart = class(TCustomControl)
+  public
+    procedure ZoomFull; virtual; abstract;
+  end;
 
   { TChartPen }
 

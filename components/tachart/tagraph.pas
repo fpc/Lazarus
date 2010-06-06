@@ -236,7 +236,7 @@ type
     procedure SaveToBitmapFile(const AFileName: String); inline;
     procedure SaveToFile(AClass: TRasterImageClass; const AFileName: String);
     function SaveToImage(AClass: TRasterImageClass): TRasterImage;
-    procedure ZoomFull;
+    procedure ZoomFull; override;
   public // Coordinate conversion
     function GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
     function ImageToGraph(const APoint: TPoint): TDoublePoint;

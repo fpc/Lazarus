@@ -652,8 +652,13 @@ end;
 
 procedure TChartAxis.StyleChanged(ASender: TObject);
 begin
-  Unused(ASender);
-  (Collection.Owner as TCustomChart).Invalidate;
+  with Collection.Owner as TCustomChart do begin
+    // Transformation change could have invalidated the current extent,
+    // so revert to full extent for now.
+    if ASender is TAxisTransform then
+      ZoomFull;
+    Invalidate;
+  end;
 end;
 
 const
