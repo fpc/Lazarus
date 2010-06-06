@@ -14127,11 +14127,13 @@ begin
     ActiveSrcEdit := nil;
     if AnUnitInfo <> nil then
       AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, ErrorCaret);
-    if AnEditorInfo <> nil then
-      ActiveSrcEdit := TSourceEditor(AnEditorInfo.EditorComponent)
-    else
-    if DoOpenEditorFile(ErrorFilename,-1,-1,OpenFlags)=mrOk then
-      ActiveSrcEdit:=SourceEditorManager.ActiveEditor;
+    if AnEditorInfo <> nil then begin
+      ActiveSrcEdit := TSourceEditor(AnEditorInfo.EditorComponent);
+      SourceEditorManager.ActiveEditor := ActiveSrcEdit;
+    end else begin
+      if DoOpenEditorFile(ErrorFilename,-1,-1,OpenFlags)=mrOk then
+        ActiveSrcEdit:=SourceEditorManager.ActiveEditor;
+    end;
     if ActiveSrcEdit<> nil then begin
       MessagesView.ShowOnTop;
       with ActiveSrcEdit.EditorComponent do begin
