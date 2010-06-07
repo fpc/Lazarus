@@ -1582,6 +1582,8 @@ function ShiftStateToKeys(ShiftState: TShiftState): PtrUInt;
 
 function WindowStateToStr(const State: TWindowState): string;
 function StrToWindowState(const Name: string): TWindowState;
+function dbgs(const State: TWindowState): string; overload;
+function dbgs(const Action: TCloseAction): string; overload;
 
 type
   TFocusState = Pointer;
@@ -1752,6 +1754,16 @@ function StrToWindowState(const Name: string): TWindowState;
 begin
   Result:=TWindowState(GetEnumValueDef(TypeInfo(TWindowState),Name,
                                        ord(wsNormal)));
+end;
+
+function dbgs(const State: TWindowState): string; overload;
+begin
+  Result:=GetEnumName(TypeInfo(TWindowState),ord(State));
+end;
+
+function dbgs(const Action: TCloseAction): string; overload;
+begin
+  Result:=GetEnumName(TypeInfo(TCloseAction),ord(Action));
 end;
 
 //------------------------------------------------------------------------------
