@@ -88,7 +88,9 @@ type
     iliIsDestructor,
     iliIsDestructorValid,
     iliKeyword,
-    iliResultTypeValid
+    iliResultTypeValid,
+    iliHasIndexValid,
+    iliHasIndex
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
   
@@ -143,6 +145,7 @@ type
     function CanBeAssigned: boolean;
     procedure UpdateBaseContext;
     function HasChilds: boolean;
+    function HasIndex: boolean;
     function IsFunction: boolean;
     function IsContructor: boolean;
     function IsDestructor: boolean;
@@ -2721,6 +2724,29 @@ end;
 function TIdentifierListItem.HasChilds: boolean;
 begin
   Result:=iliHasChilds in Flags;
+end;
+
+function TIdentifierListItem.HasIndex: boolean;
+// check if edged bracket can be used []
+var
+  ANode: TCodeTreeNode;
+begin
+  if not (iliHasIndexValid in Flags) then begin
+    UpdateBaseContext;
+    if BaseExprType.Desc in (xtAllStringConvertibles+xtAllWideStringConvertibles)
+    then begin
+      // strings, widestrings and PChar
+      Include(Flags,iliHasIndex);
+    end else if (BaseExprType.Desc=xtContext) and (BaseExprType.Context.Node<>nil)
+    then begin
+      //debugln(['TIdentifierListItem.HasIndex ',BaseExprType.Context.Node.DescAsString]);
+      ANode:=BaseExprType.Context.Node;
+      case ANode.Desc of
+      ctnRangedArrayType,ctnOpenArrayType: Include(Flags,iliHasIndex);
+      end;
+    end;
+  end;
+  Result:=iliHasIndex in Flags;
 end;
 
 function TIdentifierListItem.IsFunction: boolean;

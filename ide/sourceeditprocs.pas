@@ -622,6 +622,7 @@ begin
   and (ilcfStartOfStatement in IdentList.ContextFlags)
   and (ilcfEndOfLine in IdentList.ContextFlags)
   and (not IdentItem.HasChilds)
+  and (not IdentItem.HasIndex)
   and (not IdentList.StartUpAtomBehindIs(':='))
   and (not IdentList.StartUpAtomBehindIs('('))
   and (IdentItem.CanBeAssigned)
