@@ -205,6 +205,7 @@ begin
   end
   else
     FTabData.IncRefCount;
+  LineCountChanged(TSynEditStrings(Sender), 0, Count);
 end;
 
 procedure TSynEditStringTabExpander.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
