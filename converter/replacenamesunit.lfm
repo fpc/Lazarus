@@ -8,6 +8,7 @@ object ReplaceNamesForm: TReplaceNamesForm
   ClientHeight = 472
   ClientWidth = 343
   OnCreate = FormCreate
+  Position = poScreenCenter
   LCLVersion = '0.9.29'
   object NamePairGrid: TStringGrid
     Left = 0

@@ -8,6 +8,7 @@ object MissingUnitsDialog: TMissingUnitsDialog
   Caption = 'Units not Found'
   ClientHeight = 323
   ClientWidth = 641
+  Position = poScreenCenter
   LCLVersion = '0.9.29'
   object MissingUnitsInfoLabel: TLabel
     Left = 16
