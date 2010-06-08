@@ -64,7 +64,10 @@
        - close (for pages)
        - tab position (default, left, top, right, bottom)
     - fpdoc
-    - wiki page
+    - examples on wiki:
+        screenshots
+        example how to dock in code
+        step by step how to use it in applications
     - simple way to make forms dockable at designtime
     - move page index
     - move page to another pagecontrol
@@ -72,6 +75,7 @@
     - on close button: save a default layout
     - on show again: restore a default layout
     - close button for pages
+    - design time package for IDE
 }
 
 unit AnchorDocking;
