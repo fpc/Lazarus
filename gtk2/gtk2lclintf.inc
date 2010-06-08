@@ -349,7 +349,7 @@ begin
           //DebugLn('TGtk2WidgetSet.CreateBitmapFromRawImage GdkImage: ',
           //  ' BytesPerLine=',dbgs(GdkImage^.bpl),
           //  ' BitsPerPixel=',dbgs(GetPGdkImageBitsPerPixel(GdkImage)),
-          //  ' ByteOrder=',dbgs({$ifdef Gtk1}GdkImage^.byte_order{$else}ord(GdkImage^.byte_order){$endif}),
+          //  ' ByteOrder=',dbgs(ord(GdkImage^.byte_order)),
           //  '');
           {$endif}
 

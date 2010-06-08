@@ -34,12 +34,7 @@
 function gtk_widget_get_xthickness(Style : PGTKStyle) : gint;
 begin  
   If (Style <> nil) then begin
-    {$IfNDef GTK2}
-      If (Style^.klass = nil) then
-        result := 0
-      else
-    {$EndIf}
-        result := Style^.{$IfNDef GTK2}klass^.{$EndIF}xthickness
+    result := Style^.xthickness
   end else
     result := 0;
 end;
@@ -47,12 +42,7 @@ end;
 function gtk_widget_get_ythickness(Style : PGTKStyle) : gint;
 begin  
   If (Style <> nil) then begin
-    {$IfNDef GTK2}
-      If (Style^.klass = nil) then
-        result := 0
-      else
-    {$EndIf}
-        result := Style^.{$IfNDef GTK2}klass^.{$EndIF}ythickness
+    result := Style^.ythickness
   end else
     result := 0;
 end;
@@ -75,11 +65,7 @@ end;
 
 procedure gdk_event_key_get_string(Event : PGDKEventKey; var theString : Pointer);
 begin
-  {$IfDef GTK2}
   theString := Pointer(Event^._String);
-  {$Else}
-  theString := Pointer(Event^.TheString);
-  {$EndIF}
 end;
 
 procedure gdk_event_key_set_string(Event: PGDKEventKey; const NewString: PChar
@@ -87,11 +73,7 @@ procedure gdk_event_key_set_string(Event: PGDKEventKey; const NewString: PChar
 var
   OldString: PChar;
 begin
-  {$IfDef GTK2}
   OldString := Pointer(Event^._String);
-  {$Else}
-  OldString := Pointer(Event^.TheString);
-  {$EndIF}
   // MG: should we set Event^.length := 0; or is this used for mem allocation?
   if (OldString<>nil) then begin
     if (NewString<>nil) then
@@ -103,11 +85,7 @@ end;
 
 function gdk_event_get_type(Event : Pointer) : TGdkEventType;
 begin
-  {$IfDef GTK2}
   result := PGdkEvent(Event)^._type;
-  {$Else}
-  result := PGdkEvent(Event)^.TheType;
-  {$EndIF}
 end;
 
 procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey;
@@ -157,8 +135,6 @@ begin
   end;
 end;
 
-
-{$Ifdef GTK2}
 function gtk_class_get_type(aclass : Pointer) : TGtkType;
 begin
   If (aclass <> nil) then
@@ -245,7 +221,6 @@ begin
   end;
 end;
 
-{$EndIf Gtk2}
 
 procedure BeginGDKErrorTrap;
 begin
@@ -398,7 +373,6 @@ begin
   end;
 end;
 
-{$ifdef gtk2}
 function GtkScrollTypeToScrollCode(ScrollType: TGtkScrollType): LongWord;
 begin
   case ScrollType of
@@ -420,7 +394,6 @@ begin
       GTK_SCROLL_END           : Result := SB_BOTTOM;
     end;
 end;
-{$endif}
 
 {------------------------------------------------------------------------------
   function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
@@ -518,9 +491,6 @@ var
   WindowType: TGdkWindowType;
   Width: Integer;
   Height: Integer;
-  {$ifdef gtk1}
-  Visual: PGdkVisual;
-  {$endif}
   TypeAsStr: String;
 begin
   Result := DbgS(AWindow);
@@ -534,9 +504,6 @@ begin
     GDK_WINDOW_CHILD: TypeAsStr := 'Child';
     GDK_WINDOW_DIALOG: TypeAsStr := 'Dialog';
     GDK_WINDOW_TEMP: TypeAsStr := 'Temp';
-    {$ifdef gtk1}
-    GDK_WINDOW_PIXMAP: TypeAsStr := 'Pixmap';
-    {$endif gtk1}
     GDK_WINDOW_FOREIGN: TypeAsStr := 'Foreign';
   else
     TypeAsStr := 'Unknown';
@@ -562,13 +529,6 @@ begin
   gdk_window_get_size(AWindow, @Width, @Height);
   Result := Result + ' Size=' + IntToStr(Width) + 'x' + IntToStr(Height);
 
-  {$ifdef gtk1}
-  // visual
-  Visual := gdk_window_get_visual(AWindow);
-  if Visual <> nil then
-    if WindowType in [GDK_WINDOW_PIXMAP] then
-      Result := Result + ' Depth=' + IntToStr(Visual^.bits_per_rgb);
-  {$endif gtk1}
 end;
 
 function GetStyleDebugReport(AStyle: PGTKStyle): string;
@@ -593,25 +553,12 @@ begin
     Result:=Result+'nil'
   else begin
     Result:=Result+'name="'+AStyle^.name+'" ';
-{$IFDEF GTK1}
-    Result:=Result+'font_name="'+AStyle^.font_name+'" ';
-    Result:=Result+'fontset_name="'+AStyle^.fontset_name+'" ';
-    Result:=Result+'FG[N]='+GdkColorToStr(@AStyle^.fg[GTK_STATE_NORMAL])+' ';
-    Result:=Result+'BG[N]='+GdkColorToStr(@AStyle^.bg[GTK_STATE_NORMAL])+' ';
-    Result:=Result+'Base[N]='+GdkColorToStr(@AStyle^.base[GTK_STATE_NORMAL])+' ';
-    Result:=Result+'flagi='+intTostr(AStyle^.color_flags[GTK_STATE_NORMAL])+' ';
-{$ELSE GTK2}
     Result:=Result+'font_desc=['+GetPangoDescriptionReport(AStyle^.font_desc)+'] ';
-{$ENDIF GTK2}
     Result:=Result+'bg_pixmap_name[N]="'+AStyle^.bg_pixmap_name[GTK_STATE_NORMAL]+'" ';
-{$IFDEF GTK1}
-    Result:=Result+'engine='+DbgS(AStyle^.engine);
-{$ENDIF GTK1}
   end;
   Result:=Result+']';
 end;
 
-{$IFDEF Gtk2}
 function GetPangoDescriptionReport(Desc: PPangoFontDescription): string;
 begin
   if Desc=nil then begin
@@ -625,7 +572,6 @@ begin
     Result:=Result+' stretch='+IntToStr(pango_font_description_get_stretch(Desc));
   end;
 end;
-{$ENDIF}
 
 function WidgetFlagsToString(Widget: PGtkWidget): string;
 begin
@@ -647,7 +593,6 @@ begin
       Result:=Result+'St';
     if GTK_WIDGET_PARENT_SENSITIVE(Widget) then
       Result:=Result+'Pr';
-    {$IFDEF Gtk2}
     if GTK_WIDGET_NO_WINDOW(Widget) then
       Result:=Result+'Nw';
     if GTK_WIDGET_COMPOSITE_CHILD(Widget) then
@@ -656,7 +601,6 @@ begin
       Result:=Result+'Ap';
     if GTK_WIDGET_DOUBLE_BUFFERED(Widget) then
       Result:=Result+'Db';
-    {$ENDIF}
   end;
   Result:=Result+']';
 end;
@@ -688,12 +632,7 @@ begin
     Result:=Result+' rc_style=nil';
   end else begin
     Result:=Result+' rc_style=[';
-{$IFDEF GTK1}
-    Result:=Result+ARCStyle^.font_name+',';
-    Result:=Result+ARCStyle^.fontset_name+',';
-{$ELSE GTK1}
     Result:=Result+GetPangoDescriptionReport(AStyle^.font_desc);
-{$ENDIF GTK1}
     Result:=Result+']';
   end;
 end;
@@ -776,75 +715,25 @@ begin
   // The button reappears in some (still unknown) situations, but has the
   //'skip-taskbar-hint' property still set to True, so invoking the function
   //doesn't have an effect. Resetting the property makes it work.
-  {$IFNDEF GTK1}
+
   if (not Enable) and gtk_window_get_skip_taskbar_hint(PGtkWindow(Widget)) then
     gtk_window_set_skip_taskbar_hint(PGtkWindow(Widget), False);
-  {$ENDIF}
+
   SetGtkWindowShowInTaskbar(PGtkWindow(Widget), Enable);
 end;
 
 procedure SetGtkWindowShowInTaskbar(AGtkWindow: PGtkWindow; Value: boolean);
 begin
-  {$IFDEF GTK1}
-  if PgtkWidget(AGtkWindow)^.Window=nil then begin
-    // widget not yet realized
-    exit;
-  end;
-  GDK_WINDOW_SHOW_IN_TASKBAR(PGdkWindowPrivate(PGtkWidget(AGtkWindow)^.Window),
-                             Value);
-  {$ELSE}
   //DebugLn(['SetGtkWindowShowInTaskbar ',GetWidgetDebugReport(PGtkWidget(AGtkWindow)),' ',Value]);
   gtk_window_set_skip_taskbar_hint(AGtkWindow, not Value);
-  {$ENDIF}
 end;
 
 procedure SetWindowFullScreen(AForm: TCustomForm; const AValue: Boolean);
-{$IFDEF GTK1}
-var
-  XDisplay: PDisplay;
-  XScreen: PScreen;
-  XRootWindow,
-  XWindow: TWindow;
-  XEvent: TXClientMessageEvent;
-  _NET_WM_STATE: Integer;
-  //_NET_WM_STATE_MODAL: Integer;
-  //_NET_WM_STATE_ABOVE: Integer;
-  //_NET_WM_STATE_FULLSCREEN: Integer;
-  _NET_WM_STATE_ATOMS: array [0..2] of Integer;
-  I: Integer;
-{$ENDIF}
 begin
-  {$IFDEF GTK2}
   If AValue then
     GTK_Window_FullScreen(PGTKWindow(AForm.Handle))
   else
     GTK_Window_UnFullScreen(PGTKWindow(AForm.Handle));
-  {$ENDIF}
-  {$IFDEF GTK1}
-  XDisplay := gdk_display;
-  XScreen := XDefaultScreenOfDisplay(xdisplay);
-  XRootWindow := XRootWindowOfScreen(xscreen);
-  XWindow := FormToX11Window(AForm);
-
-  _NET_WM_STATE := XInternAtom(xdisplay, '_NET_WM_STATE', false);
-  //_NET_WM_STATE_MODAL := XInternAtom(xdisplay, '_NET_WM_STATE_MODAL', false);
-  //_NET_WM_STATE_ABOVE := XInternAtom(xdisplay, '_NET_WM_STATE_ABOVE', false);
-  //_NET_WM_STATE_FULLSCREEN := XInternAtom(xdisplay, '_NET_WM_STATE_FULLSCREEN', false);
-  _NET_WM_STATE_ATOMS[0] := XInternAtom(xdisplay, '_NET_WM_STATE_MODAL', false);
-  _NET_WM_STATE_ATOMS[1] := XInternAtom(xdisplay, '_NET_WM_STATE_ABOVE', false);
-  _NET_WM_STATE_ATOMS[2] := XInternAtom(xdisplay, '_NET_WM_STATE_FULLSCREEN', false);
-
-  for I := 0 to 2 do begin
-    XEvent._type := ClientMessage;
-    XEvent.window := XWindow;
-    XEvent.message_type := _NET_WM_STATE;
-    XEvent.format := 32;
-    XEvent.data.l[0] := Ord(AValue);// 0=Remove 1=Add 2=Toggle
-    XEvent.data.l[1] := _NET_WM_STATE_ATOMS[I];
-
-    XSendEvent(XDisplay, XRootWindow, False, SubstructureNotifyMask, PXEvent(@XEvent));
-  end;
-   {$ENDIF}
 end;
 
 procedure GrabKeyBoardToForm(AForm: TCustomForm);
@@ -895,11 +784,7 @@ begin
   if (AForm=nil) or (not AForm.HandleAllocated) then exit;
   Widget:=PGtkWidget(AForm.Handle);
   if Widget^.window = nil then exit;
-  {$ifdef gtk1}
-  Result := PGdkWindowPrivate(Widget^.window)^.xwindow;
-  {$else}
   Result := gdk_window_xwindow(Widget^.window);
-  {$endif}
 end;
 {$ENDIF}
 
@@ -1219,7 +1104,6 @@ begin
   // flip if needed
   if FlipHorz then
   begin
-    {$IFNDEF GTK1}
     ScaleSrc := ScaleDst;
     ScaleDst := gdk_pixbuf_flip(ScaleSrc, True);
     gdk_pixbuf_unref(ScaleSrc);
@@ -1228,14 +1112,10 @@ begin
       Warn('ScaleDst=nil');
       exit;
     end;
-    {$ELSE}
-    // TODO: implement flipping for gtk1
-    {$ENDIF}
   end;
 
   if FlipVert then
   begin
-    {$IFNDEF GTK1}
     ScaleSrc := ScaleDst;
     ScaleDst := gdk_pixbuf_flip(ScaleSrc, False);
     gdk_pixbuf_unref(ScaleSrc);
@@ -1244,9 +1124,6 @@ begin
       Warn('ScaleDst=nil');
       exit;
     end;
-    {$ELSE}
-    // TODO: implement flipping for gtk1
-    {$ENDIF}
   end;
 
 //  BeginGDKErrorTrap;
@@ -1272,9 +1149,7 @@ var
   WindowWidth, WindowHeight: integer;
   DestDC: HDC;
   Offset: TPoint;
-  {$ifdef gtk2}
   FixedWidget: PGtkWidget;
-  {$ENDIF}
 begin
   if ImgList=nil then exit;
   if (Index<0) or (Index>=ImgList.Count) then exit;
@@ -1289,14 +1164,13 @@ begin
   WindowHeight := DestWidget^.allocation.height;
 
   Offset := Point(0, 0);
-  {$ifdef gtk2}
+
   // if our widget is placed on non-window fixed then we should substract its allocation here
   // since in GetDC we will get this difference in offset
   FixedWidget := GetFixedWidget(DestWidget);
   if (FixedWidget <> nil) and GTK_WIDGET_NO_WINDOW(FixedWidget) then
     Offset := Point(FixedWidget^.allocation.x, FixedWidget^.allocation.y);
-  {$endif}
-    
+
   if CenterHorizontally then
     DestLeft := DestWidget^.allocation.x - Offset.x + ((WindowWidth-ImageWidth) div 2);
   if CenterVertically then
@@ -1415,7 +1289,7 @@ begin
     gdk_window_get_size(GdiMask^.GDIBitmapObject, @W, @H);
     Result := gdk_pixmap_new(nil, W, H, 1);
     GC := gdk_gc_new(Result);
-    gdk_gc_set_function(GC, {$ifdef gtk1}11{$else}GDK_COPY_INVERT{$endif});
+    gdk_gc_set_function(GC, GDK_COPY_INVERT);
     gdk_draw_pixmap(Result, GC, GdiMask^.GDIBitmapObject, 0, 0, 0, 0, -1, -1);
     gdk_gc_unref(GC);
 
@@ -1430,7 +1304,7 @@ begin
   // copy image mask
   gdk_draw_pixmap(Result, GC, GdiImage^.GDIPixmapObject.Mask, 0, 0, 0, 0, -1, -1);
   // and with mask
-  gdk_gc_set_function(GC, {$ifdef gtk1}6{$else}GDK_AND_INVERT{$endif});
+  gdk_gc_set_function(GC, GDK_AND_INVERT);
   gdk_draw_pixmap(Result, GC, GdiMask^.GDIBitmapObject, 0, 0, 0, 0, -1, -1);
   gdk_gc_unref(GC);
 
@@ -2130,7 +2004,7 @@ var
   procedure CharToKeyVal(C: Char; out KeyVal: guint; out Length: gint);
   begin
     Length := 1;
-    {$ifndef gtk1}
+
     if C in [#$01..#$1B] then
     begin
       KeyVal := $FF00 or Ord(C);
@@ -2138,7 +2012,6 @@ var
         Length := 0;
     end
     else
-    {$endif}
       KeyVal := Ord(C);
   end;
   
@@ -2196,7 +2069,6 @@ var
             AControl:=AForm.Parent;
           until AControl=nil;
           
-          {$IFDEF Gtk2}
           // check main menu of MainForm
           if (Application.MainForm<>nil) then begin
             AControl:=TControl(AComponent);
@@ -2209,7 +2081,7 @@ var
               if Result then exit;
             end;
           end;
-          {$ENDIF}
+
           {debugln('KeyActivatedAccelerator call TControl.DialogChar');
           if TControl(AComponent).DialogChar(Msg.CharCode) then begin
             debugln('KeyActivatedAccelerator C handled by LCL');
@@ -2230,7 +2102,7 @@ var
 
     //DebugLn(['EmulateEatenKeys TargetWidget=',dbghex(PtrInt(TargetWidget))]);
     //DebugLn(['EmulateEatenKeys ',GetWidgetDebugReport(TargetWidget),' gdk_event_get_type(AEvent)=',gdk_event_get_type(AEvent),' GDK_KEY_PRESS=',GDK_KEY_PRESS,' VKey=',VKey]);
-    {$IFDEF Gtk2}
+
     // the gtk2 gtkentry handles the return key and emits an activate signal
     // The LCL does not use that and needs the return key event
     // => emulate it
@@ -2251,13 +2123,11 @@ var
       NotifyApplicationUserInput(Msg.Msg);
       DeliverKeyMessage(TargetObj, Msg);
     end;
-    {$ENDIF}
   end;
   
   procedure CheckDeadKey;
   begin
     if ABeforeEvent then begin
-      {$IFDEF Gtk2}
       if im_context_widget<>TargetWidget then begin
         //DebugLn(['CheckDeadKey init im_context ',GetWidgetDebugReport(TargetWidget)]);
         ResetDefaultIMContext;
@@ -2268,7 +2138,6 @@ var
       // Note: gtk_im_context_filter_keypress understands keypress and keyrelease
       gtk_im_context_filter_keypress (im_context, AEvent);
       //DebugLn(['CheckDeadKey DeadKey=',DeadKey,' str="',im_context_string,'"']);
-      {$ENDIF}
     end;
   end;
   
@@ -2280,7 +2149,7 @@ begin
 
   {$IFDEF VerboseKeyboard}
   DebugLn(['[HandleGTKKeyUpDown] ',DbgSName(TControl(AData)),
-    ' ',(AEvent^.{$IFDEF GTK1}theType{$ELSE}_Type{$ENDIF}),' Widget=',GetWidgetClassName(AWidget),
+    ' ',(AEvent^. _Type),' Widget=',GetWidgetClassName(AWidget),
     ' Before=',ABeforeEvent,' Down=',AHandleDown,' HandledByLCL=',HandledByLCL]);
   {$ENDIF}
   
@@ -2338,11 +2207,7 @@ begin
   Flags := 0;
   SysKey := False;
   ShiftState := GTKEventStateToShiftState(AEvent^.state);
-  {$ifdef gtk1}
-    KeyCode := XKeysymToKeycode(gdk_display, AEvent^.keyval);
-  {$else}
-    KeyCode := AEvent^.hardware_keycode;
-  {$endif}
+  KeyCode := AEvent^.hardware_keycode;
 
   if (KeyCode = 0)
   or (KeyCode > High(MKeyCodeInfo))
@@ -2441,14 +2306,6 @@ begin
     // send the UTF8 keypress
     if ABeforeEvent then begin
       // try to get the UTF8 representation of the key
-      {$IFDEF GTK1}
-        Character := '';
-        if (AEvent^.length > 0) and (AEvent^.length <= 8) //max composed UTF8 char has lenght 8
-        then begin
-          SetLength(Character, AEvent^.length);
-          System.Move(AEvent^.thestring^, Character[1], length(Character));
-        end;
-      {$ELSE GTK2}
         if im_context_string <> '' then
         begin
           Character := UTF8Copy(im_context_string,1,1);
@@ -2462,7 +2319,6 @@ begin
           else
             Character := '';
         end;
-      {$ENDIF GTK2}
 
       {$IFDEF VerboseKeyboard}
       debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS UTF8="',DbgStr(Character),'"');
@@ -2478,10 +2334,6 @@ begin
           if Result or (Character = '')
           then StopKeyEvent
           else if (Length(Character) = 1)
-          {$IFDEF Gtk1}
-          // GTK1 only supports normal ASCII characters (Note: #127 is delete)
-          and (Character[1] in [#32..#126])
-          {$ENDIF}
           then begin
             CharToKeyVal(Character[1], AEvent^.KeyVal, AEvent^.length);
             if AEvent^.length = 1 then
@@ -2550,11 +2402,7 @@ begin
 
   EmulateEatenKeys;
 
-  {$IFDEF Gtk1}
-  Result:=true;
-  {$ELSE}
   Result:=EventStopped;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -3234,17 +3082,11 @@ const
   VK_FIRST_OEM = $92;
 
 var
-{$ifdef gtk1}
-  XKeyEvent: TXKeyEvent;
-  KeySymStart, KeySymNext: PKeySym;
-  UpKeySym, LoKeySym: TKeySym;
-  KeySyms: array of TKeySym;
-{$else}
   KeySyms: array of guint;
   KeyVals: Pguint;
   KeymapKeys: PGdkKeymapKey;
   UniChar: gunichar;
-{$endif}
+
   KeySymCount: Integer;
   KeySymChars: array[0..16] of Char;
   KeySymCharLen: Integer;
@@ -3272,48 +3114,8 @@ begin
   SetupModifiers(XDisplay, ModMap);
 {$endif}
 
-{$ifdef gtk1}
-  // Init dummy XEvent to retrieve the char corresponding to a key
-  FillChar(XKeyEvent, SizeOf(XKeyEvent), 0);
-  XKeyEvent._Type := GDK_KEY_PRESS;
-  XKeyEvent.Display := XDisplay;
-{$ifdef ver2_2}
-  XKeyEvent.Same_Screen := True;
-{$else}
-  XKeyEvent.Same_Screen := 1;
-{$endif}
-
-  // Retrieve the KeyCode bounds
-  XDisplayKeyCodes(XDisplay, @LoKey, @HiKey);
-  if LoKey < 0
-  then begin
-    DebugLn('[WARNING] Low keycode (%d) negative, adjusting to 0', [LoKey]);
-    LoKey := 0;
-  end;
-  if HiKey > 255
-  then begin
-    DebugLn('[WARNING] High keycode (%d) larget than 255, adjusting to 255', [HiKey]);
-    HiKey := 255;
-  end;
-  
-  KeySymCount := 0;
-  KeySymStart := XGetKeyboardMapping(XDisplay, LoKey, HiKey - LoKey + 1, @KeySymCount);
-  KeySymNext := KeySymStart;
-
-  if (KeySymCount = 0) or (KeySymStart = nil)
-  then begin
-    DebugLn('[WARNING] failed to retrieve keyboardmapping');
-    if KeySymStart <> nil
-    then XFree(KeySymStart);
-    Exit;
-  end;
-  if KeySymCount > Length(MVKeyInfo[0].KeySym)
-  then DebugLn('[WARNING] keysymcount=%u larger than expected=%u', [KeySymCount, Length(MVKeyInfo[0].KeySym)]);
-  SetLength(KeySyms, KeySymCount);
-{$else gtk1}
   LoKey := 0;
   HiKey := 255;
-{$endif}
 
 {$ifdef UseOwnShiftState}
   KeyStateMapIndex := 0;
@@ -3321,34 +3123,7 @@ begin
   FreeVK := VK_FIRST_OEM;
   for KeyCode := LoKey to HiKey do
   begin
-  {$ifdef gtk1}
-    Move(KeySymNext^, KeySyms[0], SizeOf(KeySyms[0]) * KeySymCount);
-    Inc(KeySymNext, KeySymCount);
 
-    HasKey := False;
-    m := 0;
-    while m < KeySymCount do
-    begin
-      // there might be only uppercase chars are in the map,
-      // so we have to add the lowercase ourselves
-      // when a group consists of one char(next =0)
-      if KeySyms[m] <> 0
-      then begin
-        HasKey := True;
-        if KeySyms[m+1] = 0
-        then begin
-          XConvertCase(KeySyms[m], @LoKeySym, @UpKeySym);
-          if LoKeySym <> UpKeySym
-          then begin
-            KeySyms[m] := LoKeySym;
-            KeySyms[m+1] := UpKeySym;
-          end;
-        end;
-      end;
-      Inc(m, 2);
-    end;
-
-  {$else}
     if not gdk_keymap_get_entries_for_keycode(nil, KeyCode, KeymapKeys, KeyVals, @KeySymCount) then Continue;
     SetLength(KeySyms, KeySymCount);
     Move(KeyVals^, KeySyms[0], SizeOf(KeySyms[0]) * KeySymCount);
@@ -3356,8 +3131,7 @@ begin
     g_free(KeyVals);
     HasKey := KeySyms[0] <> 0;
     //DebugLn(['InitKeyboardTables ',KeyCode,' ',HasKey,' ',KeySyms[0]]);
-  {$endif}
-  
+
   {$ifdef HasX}
     // Check if this keycode is in the modifiers map
     // loop through all keysyms till one found.
@@ -3437,28 +3211,11 @@ begin
       MKeyCodeInfo[KeyCode].Flags := MKeyCodeInfo[KeyCode].Flags or KEYFLAGS[m];
 
       FillByte(KeySymChars, SizeOf(KeySymChars), 0);
-    {$ifdef gtk1}
-      // Retrieve the chars for this KeySym
-      XKeyEvent.KeyCode := KeyCode;
-      case m of
-        0: XKeyEvent.State := 0;
-        1: XKeyEvent.State := MModifiers[ssShift].Mask;
-        2: XKeyEvent.State := MModifiers[ssAltGr].Mask;
-        3: XKeyEvent.State := MModifiers[ssAltGr].Mask or MModifiers[ssShift].Mask;
-      else
-        // TODO: m > 3 ??
-        Continue;
-      end;
 
-      KeySymCharLen := XLookupString(@XKeyEvent, KeySymChars, SizeOf(KeySymChars), nil, nil);
-      if (KeySymCharLen > 0) and (KeySymChars[KeySymCharLen - 1] = #0)
-      then Dec(KeySymCharLen);
-      if (KeySymCharLen <= 0) then Continue;
-    {$else gtk1}
       UniChar := gdk_keyval_to_unicode(KeySyms[m]);
       if UniChar = 0 then Continue;
       KeySymCharLen := g_unichar_to_utf8(UniChar, @KeySymChars[0]);
-    {$endif}
+
       if (KeySymCharLen > SizeOf(TVKeyUTF8Char))
       then DebugLn('[WARNING] InitKeyboardTables - Keysymstring for keycode=%u longer than %u bytes: %s', [KeyCode, SizeOf(TVKeyUTF8Char), KeySymChars]);
       Move(KeySymChars[0], MVKeyInfo[VKey].KeyChar[m], SizeOf(TVKeyUTF8Char));
@@ -3466,10 +3223,6 @@ begin
   end;
 {$ifdef UseOwnShiftState}
   SetLength(MKeyStateMap, KeyStateMapIndex);
-{$endif}
-
-{$ifdef gtk1}
-  XFree(KeySymStart);
 {$endif}
 end;
 
@@ -3607,11 +3360,6 @@ var
   i: integer;
   FileSelWidget: PGtkFileSelection;
   LCLHistoryMenu: PGTKWidget;
-  {$IFDEF Gtk1}
-  //AFilterEntry: TFileSelFilterEntry;
-  FilterList: TFPList; // list of TFileSelFilterListEntry
-  LCLFilterMenu: PGTKWidget;
-  {$ENDIF}
 begin
   if (ADialog=nil) or (not ADialog.HandleAllocated) then exit;
   DlgWindow:=PGtkWidget(ADialog.Handle);
@@ -3620,17 +3368,7 @@ begin
   {$ENDIF}
   gtk_window_set_transient_for(PGtkWindow(DlgWindow),nil);
   if ADialog is TOpenDialog then begin
-    {$IFDEF GTK2}
     FileSelWidget:=GTK_FILE_CHOOSER(DlgWindow);
-    {$ELSE}
-    FileSelWidget:=GTK_FILE_SELECTION(DlgWindow);
-    FreeWidgetInfo(FileSelWidget^.selection_entry);
-    FreeWidgetInfo(FileSelWidget^.dir_list);
-    FreeWidgetInfo(FileSelWidget^.file_list);
-    LCLFilterMenu:=PGTKWidget(gtk_object_get_data(PGtkObject(FileSelWidget),
-                                       'LCLFilterMenu'));
-    if LCLFilterMenu<>nil then FreeWidgetInfo(LCLFilterMenu);
-    {$ENDIF}
     LCLHistoryMenu:=PGTKWidget(gtk_object_get_data(PGtkObject(FileSelWidget),
                                        'LCLHistoryMenu'));
     if LCLHistoryMenu<>nil then FreeWidgetInfo(LCLHistoryMenu);
@@ -3648,18 +3386,6 @@ begin
       HistoryList.Free;
       gtk_object_set_data(PGtkObject(DlgWindow),'LCLHistoryList',nil);
     end;
-
-    {$IFDEF GTK1}
-    // free filter
-    FilterList:=TFPList(gtk_object_get_data(PGtkObject(DlgWindow),
-                                            'LCLFilterList'));
-    if FilterList<>nil then begin
-      for i:=0 to FilterList.Count-1 do
-        TObject(FilterList[i]).Free;
-      FilterList.Free;
-      gtk_object_set_data(PGtkObject(DlgWindow),'LCLFilterList',nil);
-    end;
-    {$ENDIF}
 
     // free preview handle
     if ADialog is TPreviewFileDialog then begin
@@ -3846,10 +3572,8 @@ begin
   then raise EInterfaceException.Create('SetMainWidget ChildWidget=nil');
   if ParentWidget = ChildWidget
   then raise EInterfaceException.Create('SetMainWidget ParentWidget=ChildWidget');
-  {$IFDEF Gtk2}
   if PGtkWidget(ParentWidget)^.parent=ChildWidget
   then raise EInterfaceException.Create('SetMainWidget Parent^.Parent=ChildWidget');
-  {$ENDIF}
 
   gtk_object_set_data(ChildWidget, 'Main', ParentWidget)
 end;
@@ -3965,10 +3689,8 @@ end;
 function CreateFixedClientWidget(WithWindow: Boolean = True): PGTKWidget;
 begin
   Result := gtk_fixed_new();
-  {$IFDEF GTK2}
   if WithWindow then
     gtk_fixed_set_has_window(PGtkFixed(Result), true);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -4132,10 +3854,8 @@ begin
       Result := PGTKWidget(Widget)^.Window
     else
       Result := PGtkLayout(Widget)^.bin_window;
-    {$IFDEF Gtk2}
     if (Result=nil) and (GTK_WIDGET_NO_WINDOW(Widget)) then
       Result:=gtk_widget_get_parent_window(Widget);
-    {$ENDIF}
   end else
     RaiseGDBException('GetControlWindow Widget=nil');
 end;
@@ -4330,12 +4050,6 @@ begin
   end;
 end;
 
-{$IFDef GTK1}
-var
-  NoteBookCloseBtnPixmapImg: PGdkPixmap = nil;
-  NoteBookCloseBtnPixmapMask: PGdkPixmap = nil;
-{$EndIf}
-
 {-------------------------------------------------------------------------------
   procedure RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
 
@@ -4353,27 +4067,6 @@ begin
   DummyWidget:=nil;
   SetGtkNoteBookDummyPage(NoteBookWidget,DummyWidget);
 end;
-
-{-------------------------------------------------------------------------------
-  method GetNoteBookCloseBtnImage
-  Params:
-  Result: none
-
-  Loads the image for the close button in the tabs of the TCustomNoteBook(s).
--------------------------------------------------------------------------------}
-{$IfDef GTK1}
-procedure GetNoteBookCloseBtnImage(Window: PGdkWindow;
-  var Img, Mask: PGdkPixmap);
-begin
-  if (NoteBookCloseBtnPixmapImg=nil)
-  and (Window<>nil) then begin
-    LoadXPMFromLazResource('tnotebook_close_tab',Window,
-                        NoteBookCloseBtnPixmapImg,NoteBookCloseBtnPixmapMask);
-  end;
-  Img:=NoteBookCloseBtnPixmapImg;
-  Mask:=NoteBookCloseBtnPixmapMask;
-end;
-{$EndIF}
 
 {-------------------------------------------------------------------------------
   method UpdateNotebookPageTab
@@ -4434,10 +4127,6 @@ var
         TabImageWidget := gtk_label_new(#0);
         g_signal_connect(PgtkObject(TabImageWidget), 'expose_event',
                            TGTKSignalFunc(@PageIconWidgetExposeAfter), ThePage);
-        {$IFNDEF GTK2}
-        g_signal_connect(PgtkObject(TabImageWidget), 'draw',
-                             TGTKSignalFunc(@PageIconWidgetDrawAfter), ThePage);
-        {$ENDIF}
         gtk_object_set_data(PGtkObject(TabWidget), 'TabImage', TabImageWidget);
         gtk_widget_set_usize(TabImageWidget, IconSize.X, IconSize.Y);
         gtk_widget_show(TabImageWidget);
@@ -4456,10 +4145,6 @@ var
         MenuImageWidget:=gtk_label_new(#0);
         g_signal_connect_after(PgtkObject(MenuImageWidget), 'expose_event',
                           TGTKSignalFunc(@PageIconWidgetExposeAfter), ThePage);
-        {$IFNDEF GTK2}
-        g_signal_connect_after(PgtkObject(MenuImageWidget), 'draw',
-                             TGTKSignalFunc(@PageIconWidgetDrawAfter), ThePage);
-        {$ENDIF}
         gtk_widget_set_usize(MenuImageWidget,IconSize.X,IconSize.Y);
         gtk_object_set_data(PGtkObject(MenuWidget),'TabImage',MenuImageWidget);
         gtk_widget_show(MenuImageWidget);
@@ -4501,20 +4186,10 @@ var
 
   procedure UpdateTabCloseBtn;
   var
-    {$IfDef GTK1}
-    Img: PGdkPixmap;
-    Mask: PGdkBitmap;
-    {$Else}
     style: PGtkRcStyle;
-    {$EndIf}
   begin
-    {$IfDef GTK1}
-    //debugln('UpdateTabCloseBtn ',GetWidgetDebugReport(NoteBookWidget));
-    GetNoteBookCloseBtnImage(GetControlWindow(NoteBookWidget), Img, Mask);
-    {$EndIf}
     //debugln('UpdateTabCloseBtn ',dbgs(nboShowCloseButtons in TheNotebook.Options),' ',dbgs(Img<>nil));
-    if (nboShowCloseButtons in TheNotebook.Options)
-       {$ifdef GTK1}and (Img <> nil){$ENDIF} then
+    if (nboShowCloseButtons in TheNotebook.Options) then
     begin
       // close buttons enabled
       if TabCloseBtnWidget = nil then
@@ -4523,21 +4198,16 @@ var
         // -> add one to the right side of the label in the tab
         TabCloseBtnWidget := gtk_button_new;
         gtk_button_set_relief(PGtkButton(TabCloseBtnWidget), GTK_RELIEF_NONE);
-        {$ifdef gtk2}
         gtk_button_set_focus_on_click(PGtkButton(TabCloseBtnWidget), False);
         style := gtk_widget_get_modifier_style(TabCloseBtnWidget);
         style^.xthickness := 0;
         style^.ythickness := 0;
         gtk_widget_modify_style(TabCloseBtnWidget, style);
-        {$endif}
+
         gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn',
                             TabCloseBtnWidget);
         // put a pixmap into the button
-       {$IfDef GTK1}
-        TabCloseBtnImageWidget:=gtk_pixmap_new(Img,Mask);
-       {$Else}
         TabCloseBtnImageWidget:=gtk_image_new_from_stock(GTK_STOCK_CLOSE, GTK_ICON_SIZE_MENU);
-       {$EndIf}
         gtk_object_set_data(PGtkObject(TabCloseBtnWidget),'TabCloseBtnImage',
                             TabCloseBtnImageWidget);
         gtk_widget_show(TabCloseBtnImageWidget);
@@ -4652,7 +4322,6 @@ end;
 -------------------------------------------------------------------------------}
 function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
 
-  {$IFDEF Gtk2}
   procedure GetNoteBookClientOrigin(NBWidget: PGtkNotebook);
   var
     PageIndex: LongInt;
@@ -4693,7 +4362,6 @@ function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
       GetWidgetClientOrigin.y:=Result.y+FrameBorders.Top;
     end;
   end;
-  {$ENDIF}
 
 var
   ClientWidget: PGtkWidget;
@@ -4709,26 +4377,22 @@ begin
       BeginGDKErrorTrap;
       {$ENDIF}
       gdk_window_get_origin(ClientWindow, @Result.X, @Result.Y);
-      {$Ifdef GTK2}
       if GTK_WIDGET_NO_WINDOW(ClientWidget) then
       begin
         Inc(Result.X, ClientWidget^.Allocation.X);
         Inc(Result.Y, ClientWidget^.Allocation.Y);
       end;
-      {$EndIf}
       {$IFDEF DebugGDK}
       EndGDKErrorTrap;
       {$ENDIF}
       exit;
     end;
-  {$IFDEF Gtk2}
   end
   else
   if GtkWidgetIsA(TheWidget,GTK_TYPE_NOTEBOOK) then
   begin
     GetNoteBookClientOrigin(PGtkNoteBook(TheWidget));
     Exit;
-  {$ENDIF}
   end;
   Result := GetWidgetOrigin(TheWidget);
 end;
@@ -5016,44 +4680,11 @@ end;
 function SignalConnected(const AnObject:PGTKObject; const ASignal: PChar;
   const ACallBackProc: Pointer; const ALCLObject: TObject;
   const ASFlags: TConnectSignalFlags): boolean;
-{$IFDEF Gtk1}
-var
-  Handler: PGTKHandler;
-  SignalID: guint;
-begin
-  Handler := gtk_object_get_data_by_id (AnObject, gtk_handler_quark);
-  SignalID := g_signal_lookup(ASignal, GTK_OBJECT_TYPE(AnObject));
-  if (SignalID<0) or (SignalID>$ffffff) then
-    RaiseGDBException('SignalConnected');
-
-  while (Handler <> nil) do begin
-    with Handler^ do
-    begin
-      // check if signal is already connected
-      //debugln('ConnectSignal Id=',dbgs(Id));
-      if  (Id > 0)
-      and (Signal_ID = SignalID)
-      and (Func = TGTKSignalFunc(ACallBackProc))
-      and (func_data = Pointer(ALCLObject))
-      and (((flags and bmSignalAfter)<>0)=(csfAfter in ASFlags))
-      then begin
-        // signal is already connected
-        Result:=true;
-        Exit;
-      end;
-
-      Handler := Next;
-    end;
-  end;
-  Result:=false;
-end;
-{$ELSE}
 begin
   Result:=g_signal_handler_find(AnObject,
     G_SIGNAL_MATCH_FUNC or G_SIGNAL_MATCH_DATA,
     0,0,nil,ACallBackProc,ALCLObject)<>0;
 end;
-{$ENDIF}
 
 procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
   const ACallBackProc: Pointer; const ALCLObject: TObject;
@@ -5194,18 +4825,13 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
   var
     ScrolledWindow: PGtkScrolledWindow;
     BinWidget: PGtkBin;
-    {$IFDEF Gtk2}
     ChildEntry2: PGList;
-    {$ELSE}
-    ChildEntry: PGSList;
-    {$ENDIF}
     ChildWidget: PGtkWidget;
   begin
     //if AWinControl is TListView then DebugLn('ConnectChilds A ',DbgS(TheWidget));
     if GtkWidgetIsA(TheWidget,GTK_TYPE_CONTAINER) then begin
       //if AWinControl is TListView then DebugLn('ConnectChilds B ');
       // this is a container widget -> connect all childs
-      {$IFDEF Gtk2}
       ChildEntry2:=gtk_container_get_children(PGtkContainer(TheWidget));
       while ChildEntry2<>nil do begin
         ChildWidget:=PGtkWidget(ChildEntry2^.Data);
@@ -5213,14 +4839,6 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
           ConnectSignals(ChildWidget);
         ChildEntry2:=ChildEntry2^.Next;
       end;
-      {$ELSE}
-      ChildEntry:=PGtkContainer(TheWidget)^.resize_widgets;
-      while ChildEntry<>nil do begin
-        ChildWidget:=PGtkWidget(ChildEntry^.Data);
-        ConnectSignals(ChildWidget);
-        ChildEntry:=ChildEntry^.Next;
-      end;
-      {$endif}
     end;
     if GtkWidgetIsA(TheWidget,GTK_TYPE_BIN) then begin
       //if AWinControl is TListView then DebugLn('ConnectChilds C ');
@@ -5321,12 +4939,8 @@ begin
     if GtkWidgetIsA(Widget,GTK_TYPE_MENU) then
       gtk_menu_set_accel_group(PGtkMenu(Widget), AnAccelGroup)
     else begin
-      {$IfDef GTK2}
       Assert(GtkWidgetIsA(Widget,GTK_TYPE_WINDOW));
       gtk_window_add_accel_group(GTK_WINDOW(widget), AnAccelGroup);
-      {$else}
-      gtk_accel_group_attach(AnAccelGroup, PGtkObject(Widget));
-      {$endif}
     end;
   end;
 end;
@@ -5349,21 +4963,12 @@ procedure ShareWindowAccelGroups(AWindow: PGtkWidget);
 
   procedure AttachUnique(TheWindow: PGtkWidget; TheAccelGroup: PGTKAccelGroup);
   begin
-    {$IfDef GTK2}
     if (TheWindow=nil) or (TheAccelGroup=nil)
       or (TheAccelGroup^.acceleratables=nil)
       or (g_slist_find(TheAccelGroup^.acceleratables, TheWindow)=nil)
     then
       exit;
     gtk_window_add_accel_group(GTK_WINDOW(TheWindow), TheAccelGroup);
-    {$else}
-    if (TheAccelGroup=nil)
-    or ((TheAccelGroup^.attach_objects<>nil)
-      and (g_slist_find(TheAccelGroup^.attach_objects, TheWindow)<>nil))
-    then
-      exit;
-    gtk_accel_group_attach(TheAccelGroup, PGtkObject(TheWindow));
-    {$endif}
   end;
 
 var
@@ -5419,21 +5024,12 @@ procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
 
   procedure Detach(TheWindow: PGtkWidget; TheAccelGroup: PGTKAccelGroup);
   begin
-    {$IfDef GTK2}
     if (TheWindow=nil) or (TheAccelGroup=nil)
       or (TheAccelGroup^.acceleratables=nil)
       or (g_slist_find(TheAccelGroup^.acceleratables, TheWindow)=nil)
     then
       exit;
     gtk_window_remove_accel_group(GTK_WINDOW(TheWindow), TheAccelGroup);
-    {$else}
-    if (TheAccelGroup=nil)
-    or (TheAccelGroup^.attach_objects=nil)
-    or (g_slist_find(TheAccelGroup^.attach_objects, TheWindow)=nil)
-    then
-      exit;
-    gtk_accel_group_detach(TheAccelGroup, PGtkObject(TheWindow));
-    {$endif}
   end;
 
 var
@@ -5599,11 +5195,7 @@ begin
       ' Key=',dbgs(AccelKey^.Key),' Mods=',dbgs(AccelKey^.Mods),
       '');
     {$ENDIF}
-    {$Ifdef GTK2}
-       DebugLn('ToDo: gtkproc.inc UnrealizeAccelerator');
-    {$else}
-    gtk_widget_remove_accelerators(Widget, PChar(AccelKey^.Signal), false);
-    {$EndIf}
+     DebugLn('ToDo: gtkproc.inc UnrealizeAccelerator');
   end;
   AccelKey^.Realized:=false;
 end;
@@ -5748,15 +5340,12 @@ begin
   // gtk2 fails when the colormap depth is different than the drawable depth.
   //      It wil use the correct system map when none passed.
   //      Bitmaps (depth = 1) don't need a colormap
-  {$ifdef gtk1}
-  if AColormap = nil
-  then AColorMap := gdk_colormap_get_system;
-  {$else}
+
   if  (AColorMap = nil)
   and (gdk_drawable_get_depth(ASource) > 1)
   and (gdk_drawable_get_colormap(ASource) = nil)
   then AColorMap := gdk_colormap_get_system;
-  {$endif}
+
   {$ifdef Windows}
   if gdk_drawable_get_depth(ASource) = 1 then
   begin
@@ -5896,9 +5485,7 @@ var
   AWindow: PGdkWindow;
   IconWidth, IconHeight: integer;
   IconSize: TPoint;
-  {$IFDEF Gtk2}
   HorizPadding, ToggleSpacing: Integer;
-  {$ENDIF}
 
   AEffect: TGraphicsDrawEffect;
   AImageList: TCustomImageList;
@@ -5936,7 +5523,6 @@ begin
   Container := GTK_CONTAINER (MenuItem);
   BorderWidth := Container^.flag0 and bm_TGtkContainer_border_width;
 
-  {$IFDEF Gtk2}
   gtk_widget_style_get(PGtkWidget(MenuItem),
                        'horizontal-padding', @HorizPadding,
                        'toggle-spacing', @ToggleSpacing,
@@ -5949,10 +5535,6 @@ begin
 
   if gtk_widget_get_direction(Widget) = GTK_TEXT_DIR_RTL then
     ALeft := Widget^.Allocation.width - IconWidth - ALeft; //not sure it is the correct Width
-  {$ELSE}
-  ALeft := (BorderWidth + gtk_widget_get_xthickness(gtk_widget_get_style(Widget)) + 2)
-           +((PGtkMenuItem(MenuItem)^.toggle_size-IconWidth) div 2);
-  {$ENDIF}
 
   ATop := (Widget^.Allocation.Height - IconHeight) div 2;
 
@@ -6030,17 +5612,12 @@ begin
     ListItem:=ListItem^.Next;
   end;
   //DebugLn('MenuSizeRequest A MaxToggleSize=',MaxToggleSize);
-  {$IFDEF Gtk2}
   // Gtk2ToDo
   if CheckMenuItem<>nil then begin
     GTK_MENU_ITEM(CheckMenuItem)^.toggle_size := 0;
     gtk_menu_item_toggle_size_allocate(GTK_MENU_ITEM(CheckMenuItem),MaxToggleSize);
     GTK_MENU_ITEM(CheckMenuItem)^.toggle_size := MaxToggleSize;
   end;
-  {$ELSE}
-  if CheckMenuItem<>nil then
-    MENU_ITEM_CLASS(PGtkWidget(CheckMenuItem))^.toggle_size:=MaxToggleSize;
-  {$ENDIF}
   //DebugLn('MenuSizeRequest B ',GetWidgetDebugReport(widget),' ',requisition^.width,',',requisition^.height);
   OldMenuSizeRequestProc(Widget,requisition);
   //DebugLn('MenuSizeRequest C ',GetWidgetDebugReport(widget),' ',requisition^.width,',',requisition^.height);
@@ -6059,10 +5636,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
   MenuItemWidget: PGtkWidget; NewShortCut: TShortCut);
-{$ifdef GTK2}
 const
   WidgetDirection : array[boolean] of longint = (GTK_TEXT_DIR_LTR, GTK_TEXT_DIR_RTL);
-  {$endif}
+
   function UseRTL: Boolean;
   begin
     Result := LCLMenuItem.GetIsRightToLeft;
@@ -6079,9 +5655,7 @@ var
       Exit;
     LabelWidget := gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
     Gtk2Widgetset.SetLabelCaption(LabelWidget, LCLMenuItem.Caption);
-    {$ifdef GTK2}
     gtk_widget_set_direction(PGtkWidget(LabelWidget), WidgetDirection[UseRTL]);
-    {$endif}
   end;
   
   procedure UpdateShortCutLabel;
@@ -6127,9 +5701,7 @@ var
       begin
         gtk_label_set_text(LabelWidget, PChar(Pointer(s)));
       end;
-      {$ifdef GTK2}
       gtk_widget_set_direction(PGtkWidget(LabelWidget), GTK_TEXT_DIR_LTR); //Shortcut always LTR
-      {$endif}
       if UseRTL then
         gtk_misc_set_alignment(GTK_MISC(LabelWidget), 0.0, 0.5)
       else
@@ -6141,10 +5713,6 @@ var
 
   procedure CreateIcon;
   var
-    {$IFNDEF Gtk2}
-    IconWidth, IconHeight: integer;
-    IconSize: TPoint;
-    {$ENDIF}
     MinHeightWidget: PGtkWidget;
   begin
     // the icon will be painted instead of the toggle
@@ -6152,34 +5720,14 @@ var
 
     if LCLMenuItem.HasIcon then
     begin
-      {$IFNDEF Gtk2}
-      IconSize := LCLMenuItem.GetIconSize;
-      IconWidth := IconSize.X;
-      IconHeight := IconSize.Y;
-      // set the toggle width
-      GTK_MENU_ITEM(MenuItemWidget)^.toggle_size := guint16(IconWidth);
-      {$ENDIF}
-
       GTK_MENU_ITEM(MenuItemWidget)^.flag0:=
         PGtkMenuItem(MenuItemWidget)^.flag0 or
-          {$IFDEF Gtk2}
           bm_TGtkCheckMenuItem_always_show_toggle;
-          {$ELSE}
-          bm_show_toggle_indicator;
-          {$ENDIF}
 
       // set our own draw handler
       if OldCheckMenuItemDrawProc = nil then
         OldCheckMenuItemDrawProc := CHECK_MENU_ITEM_CLASS(MenuItemWidget)^.draw_indicator;
       CHECK_MENU_ITEM_CLASS(MenuItemWidget)^.draw_indicator := @DrawMenuItemIcon;
-
-      {$IFNDEF Gtk2}
-      // add a dummy widget for the icon height
-      MinHeightWidget := gtk_label_new('');
-      gtk_widget_show(MinHeightWidget);
-      gtk_widget_set_usize(MinHeightWidget, 1, IconHeight);
-      gtk_box_pack_start(GTK_BOX(HBoxWidget), MinHeightWidget, False, False, 0);
-      {$ENDIF}
     end
     else
       MinHeightWidget := nil;
@@ -6212,9 +5760,7 @@ begin
       exit;
     end;
     HBoxWidget := gtk_hbox_new(false, 20);
-    {$ifdef GTK2}
     gtk_widget_set_direction(PGtkWidget(HBoxWidget), WidgetDirection[UseRTL]);
-    {$endif}
     gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLHBox', HBoxWidget);
     CreateIcon;
     CreateLabel;
@@ -6232,9 +5778,7 @@ begin
     end else
     begin
       // just update the content
-      {$ifdef GTK2}
       gtk_widget_set_direction(PGtkWidget(HBoxWidget), WidgetDirection[UseRTL]);
-      {$endif}
       SetMenuItemLabelText(LCLMenuItem, MenuItemWidget);
       UpdateShortCutLabel;
     end;
@@ -6258,9 +5802,7 @@ var
   ListItem: PGList;
   i: Integer;
   ExpandItem: boolean;
-{$IFNDEF GTK1}
   ShowSizeGrip: Boolean;
-{$ENDIF}
 begin
   AStatusBar := StatusBar as TStatusBar;
   HBox := PGtkWidget(StatusBarWidget);
@@ -6288,9 +5830,7 @@ begin
   begin
     CurStatusPanelWidget := PGtkBoxChild(
               g_list_nth_data(PGtkBox(HBox)^.children, CurPanelCount - 1))^.Widget;
-    {$IFDEF GTK2}
     gtk_object_remove_data(PGtkObject(CurStatusPanelWidget),'lcl_statusbar_id');
-    {$ENDIF}
     DestroyConnectedWidgetCB(CurStatusPanelWidget, True);
     dec(CurPanelCount);
   end;
@@ -6302,9 +5842,7 @@ begin
     RaiseGDBException('');
 
   // set panel properties
-  {$IFNDEF GTK1}
   ShowSizeGrip := AStatusBar.SizeGrip and AStatusBar.SizeGripEnabled;
-  {$ENDIF}
   ListItem := PGTKBox(HBox)^.children;
   i := 0;
   while ListItem <> nil do
@@ -6316,14 +5854,11 @@ begin
     UpdateStatusBarPanel(StatusBar, i, CurStatusPanelWidget);
     inc(i);
     ListItem := ListItem^.next;
-    {$IFNDEF GTK1}
     gtk_statusbar_set_has_resize_grip(PGtkStatusBar(CurStatusPanelWidget),
       (ListItem = nil) and ShowSizeGrip);
-    {$ENDIF}
   end;
 end;
 
-{$IFDEF GTK2}
 function gtk2PaintStatusBarWidget(Widget: PGtkWidget; Event : PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
 var
@@ -6386,7 +5921,6 @@ begin
     Dispose(ItemStruct);
   end;
 end;
-{$ENDIF}
 
 procedure UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
   StatusPanelWidget: PGtkWidget);
@@ -6399,9 +5933,7 @@ var
   ContextID: LongWord;
   NewShadowType: TGtkShadowType;
   NewJustification: TGtkJustification;
-  {$ifndef gtk1}
   xalign, yalign: gfloat;
-  {$endif}
 begin
   //DebugLn('UpdateStatusBarPanel ',DbgS(StatusBar),' Index=',dbgs(Index));
   AStatusBar := StatusBar as TStatusBar;
@@ -6414,12 +5946,7 @@ begin
   //  ' thelabel=',GetWidgetClassName(PGTKStatusBar(StatusPanelWidget)^.thelabel),
   // '');
   FrameWidget := PGTKStatusBar(StatusPanelWidget)^.frame;
-  LabelWidget := PGtkLabel(
-    {$ifndef gtk1}
-      PGTKStatusBar(StatusPanelWidget)^._label
-    {$else}
-      PGTKStatusBar(StatusPanelWidget)^.thelabel
-    {$endif});
+  LabelWidget := PGtkLabel(PGTKStatusBar(StatusPanelWidget)^._label);
 
   // Text
   if AStatusBar.SimplePanel then
@@ -6446,19 +5973,15 @@ begin
     NewJustification := aGtkJustification[CurPanel.Alignment];
     if GTK_IS_LABEL(LabelWidget) then
     begin
-      {$ifndef gtk1}
-        if GTK_IS_MISC(LabelWidget) then
-        begin
+      if GTK_IS_MISC(LabelWidget) then
+      begin
         {gtk_label_set_justify() has no effect on labels containing
          only a single line !}
         gtk_misc_get_alignment(GTK_MISC(LabelWidget), @xalign, @yalign);
         xalign := AlignToGtkAlign(CurPanel.Alignment);
         gtk_misc_set_alignment(GTK_MISC(LabelWidget), xalign, yalign);
-        end else
-          gtk_label_set_justify(LabelWidget, NewJustification);
-      {$else}
-      gtk_label_set_justify(LabelWidget, NewJustification);
-      {$endif}
+      end else
+        gtk_label_set_justify(LabelWidget, NewJustification);
     end;
 
     // Bevel
@@ -6477,12 +6000,12 @@ begin
     //DebugLn('  CurPanel.Width="',CurPanel.Width,'"');
     gtk_widget_set_usize(StatusPanelWidget, CurPanel.Width,
       StatusPanelWidget^.allocation.height);
-    {$IFDEF GTK2}
+
     gtk_object_set_data(PGtkObject(StatusPanelWidget),'lcl_statusbar_id',
       @AStatusBar.Panels[Index].ID);
     g_signal_connect_after(StatusPanelWidget, 'expose-event',
       TGtkSignalFunc(@gtk2PaintStatusBarWidget), AStatusBar);
-    {$ENDIF}
+
   end;
 end;
 
@@ -6668,45 +6191,26 @@ begin
   Widget := PGtkWidget(AWinControl.Handle);
   // set size to default
   //DebugLn(['GetGTKDefaultWidgetSize ',GetWidgetDebugReport(Widget)]);
-  {$IFDEF GTK1}
-  gtk_widget_set_usize(Widget, -1, -1); // deprecated in gtk2
-  {$ELSE}
   gtk_widget_set_size_request(Widget, -1, -1);
-  {$ENDIF}
   // ask default size
   gtk_widget_size_request(Widget,@Requisition);
   PreferredWidth:=Requisition.width;
   PreferredHeight:=Requisition.height;
   if WithThemeSpace then begin
-    {$IFDEF Gtk1}
-    //DebugLn(['GetGTKDefaultWidgetSize WithThemeSpace ',DbgSName(AWinControl),' ',GtkWidgetIsA(Widget,GTK_BUTTON_TYPE),' ',GetWidgetDebugReport(Widget),' ',2*gtk_widget_get_ythickness(Widget)]);
-    if gtk_class_get_type(gtk_object_get_class(Widget))=GTK_BUTTON_TYPE then
-      inc(PreferredHeight,2*gtk_widget_get_ythickness(Widget))
-    else if not GtkWidgetIsA(Widget,GTK_ENTRY_TYPE) then
-      dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
-    {$ENDIF}
+
   end else begin
     //debugLn('GetGTKDefaultWidgetSize ',DbgSName(AWinControl),' ',dbgs(gtk_widget_get_xthickness(Widget)),' ythickness=',dbgs(gtk_widget_get_ythickness(Widget)));
     //debugLn(['GetGTKDefaultWidgetSize ',GetWidgetDebugReport(Widget)]);
     //dec(PreferredWidth,gtk_widget_get_xthickness(Widget));
-    {$IFDEF Gtk1}
-    //if not GtkWidgetIsA(Widget,GTK_ENTRY_TYPE) then
-    //  dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
-    {$ELSE}
     //if gtk_class_get_type(gtk_object_get_class(Widget))=GTK_TYPE_BUTTON then
     //  dec(PreferredHeight,2*gtk_widget_get_ythickness(Widget));
-    {$ENDIF}
   end;
   {DebugLn(['GetGTKDefaultWidgetSize Allocation=',Widget^.allocation.x,',',Widget^.allocation.y,',',Widget^.allocation.width,',',Widget^.allocation.height,
    ' requisition=',Widget^.requisition.width,',',Widget^.requisition.height,
    ' PreferredWidth=',PreferredWidth,' PreferredHeight=',PreferredHeight,
    ' WithThemeSpace=',WithThemeSpace]);}
   // set new size
-  {$IFDEF GTK1}
-  gtk_widget_set_usize(Widget, AWinControl.Width, AWinControl.Height);
-  {$ELSE}
   gtk_widget_set_size_request(Widget, AWinControl.Width, AWinControl.Height);
-  {$ENDIF}
   //debugln('GetGTKDefaultSize PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
@@ -6754,21 +6258,8 @@ begin
   FWidgetsResized.Remove(MainWidget);
   FFixWidgetsResized.Remove(FixedWidget);
 
-  {$IF defined(Gtk1)}
-  if not GTK_WIDGET_REALIZED(aWidget) then begin
-    // the widget is not yet realized, so this GTK resize was not a user change.
-    // => ignore
-    {$IFDEF VerboseSizeMsg}
-    LCLControl:=TWinControl(GetLCLObject(aWidget));
-    DebugLn('SendSizeNotificationToLCL ',DbgSName(LCLControl),' aWidget=',WidgetFlagsToString(aWidget),' Ignored, because not realized ');
-    {$ENDIF}
-    exit;
-  end;
-  {$ENDIF}
-
   GetWidgetRelativePosition(MainWidget,GtkLeft,GtkTop);
 
-  {$ifdef gtk2}
   gtk_widget_get_size_request(MainWidget, @GtkWidth, @GtkHeight);
 
   if GtkWidth < 0 then
@@ -6780,10 +6271,6 @@ begin
   else
     MainWidget^.Allocation.Height:=GtkHeight;
   //DebugLn(['SendSizeNotificationToLCL ',DbgSName(LCLControl),' gtk=',GtkLeft,',',GtkTop,',',GtkWidth,'x',GtkHeight,' Allocation=',MainWidget^.Allocation.Width,'x',MainWidget^.Allocation.Height]);
-  {$else}
-  GtkWidth:=MainWidget^.Allocation.Width;
-  GtkHeight:=MainWidget^.Allocation.Height;
-  {$endif}
 
   if GtkWidth<0 then GtkWidth:=0;
   if GtkHeight<0 then GtkHeight:=0;
@@ -6850,12 +6337,6 @@ begin
     begin
       Result := 0;
       Msg := LM_SIZE;
-      {$IFDEF GTK1}
-      if GDK_WINDOW_GET_MAXIMIZED(PGdkWindowPrivate(MainWidget^.window)) then
-        SizeType := SIZEFULLSCREEN
-      else
-        SizeType := SIZENORMAL;
-      {$ELSE}
       if LCLControl is TCustomForm then begin
         // if the LCL gets an event without a State it resets it to SIZENORMAL
         // so we send it the state it already is
@@ -6867,7 +6348,6 @@ begin
       end
       else
         SizeType := 0;
-      {$ENDIF}
       SizeType := SizeType or Size_SourceIsInterface;
       Width := SmallInt(GtkWidth);
       Height := SmallInt(GtkHeight);
@@ -6895,11 +6375,9 @@ begin
     if not MessageDelivered then exit;
   end;
 
-  {$ifndef gtk1}
   if GtkWidgetIsA(aWidget, GTKAPIWidget_Type) and
      not (wwiNoEraseBkgnd in GetWidgetInfo(aWidget)^.Flags) then
     gtk_widget_queue_draw(aWidget);
-  {$endif}
 end;
 
 procedure SendCachedGtkResizeNotifications;
@@ -6997,15 +6475,12 @@ procedure ResizeHandle(LCLControl: TWinControl);
 var
   Widget: PGtkWidget;
   Later: Boolean;
-  {$IFDEF Gtk2}
   IsTopLevelWidget: Boolean;
-  {$ENDIF}
 begin
   Widget := PGtkWidget(LCLControl.Handle);
   if not WidgetSizeIsEditable(Widget) then
     Exit;
   Later := true;
-  {$IFDEF Gtk2}
   // add resize request immediately
   IsTopLevelWidget:= (LCLControl is TCustomForm) and
                      (LCLControl.Parent = nil) and
@@ -7015,7 +6490,6 @@ begin
     SetWidgetSizeAndPosition(LCLControl);
     Later := false;
   end;
-  {$ENDIF}
   if Later then
     SetResizeRequest(Widget);
 end;
@@ -7024,9 +6498,7 @@ procedure SetWidgetSizeAndPosition(LCLControl: TWinControl);
 var
   Requisition: TGtkRequisition;
   FixedWidget: PGtkWidget;
-  {$IFDEF Gtk2}
   allocation: TGtkAllocation;
-  {$ENDIF}
   LCLLeft: LongInt;
   LCLTop: LongInt;
   LCLWidth: LongInt;
@@ -7133,16 +6605,6 @@ begin
   gtk_widget_set_usize(Widget, LCLWidth, LCLHeight);
   //DebugLn(['TGtkWidgetSet.SetWidgetSizeAndPosition ',GetWidgetDebugReport(Widget),' LCLWidth=',LCLWidth,' LCLHeight=',LCLHeight]);
 
-  {$IFDEF Gtk1}
-  if GtkWidgetIsA(Widget, GTK_TYPE_COMBO) then
-  begin
-    // the combobox has an entry, which height is not resized
-    // automatically. Do it manually.
-    gtk_widget_set_usize(PGtkCombo(Widget)^.entry,
-      PGtkCombo(Widget)^.entry^.allocation.width, LCLHeight);
-  end;
-  {$ENDIF}
-
   if GtkWidgetIsA(Widget,gtk_toolbar_get_type) then begin
     FixedWidget:=GetFixedWidget(Widget);
     if (FixedWidget<>nil) and (FixedWidget<>Widget) then begin
@@ -7151,7 +6613,6 @@ begin
     end;
   end;
 
-  {$IFDEF Gtk2}
   if (Widget^.parent<>nil)
   and GtkWidgetIsA(Widget^.parent,GTK_TYPE_FIXED)
   and GTK_WIDGET_NO_WINDOW(Widget^.parent)
@@ -7168,7 +6629,6 @@ begin
   allocation.height:=LCLHeight;
   //DebugLn(['SetWidgetSizeAndPosition ',DbgSName(LCLControl),' LCL=',dbgs(LCLControl.BoundsRect),' allocation=',dbgs(allocation),' ',GetWidgetDebugReport(Widget)]);
   gtk_widget_size_allocate(Widget,@allocation);// Beware: this triggers callbacks
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -7182,9 +6642,7 @@ procedure SetWindowSizeAndPosition(Window: PGtkWindow;
   AWinControl: TWinControl);
 var
   Width, Height: integer;
-  {$IFDEF Gtk2}
   allocation: TGtkAllocation;
-  {$ENDIF}
   //Info: PGtkWindowGeometryInfo;
 begin
   Width:=AWinControl.Width;
@@ -7201,7 +6659,6 @@ begin
   //if (Info^.default_width<>Width) or (Info^.default_height<>Height) then
     gtk_window_set_default_size(Window, Width, Height);
 
-  {$IFDEF Gtk2}
   // resize
   gtk_window_resize(Window, Width, Height);
   // reposition
@@ -7219,20 +6676,6 @@ begin
     gdk_window_move_resize(PGtkWidget(Window)^.Window,AWinControl.Left,
       AWinControl.Top,Width,Height)
   end;
-  {$ELSE}
-  // resize
-  if assigned(PGtkWidget(Window)^.Window) then
-    // widget is realized, resize gdkwindow directly
-    gdk_window_move_resize(PGtkWidget(Window)^.Window,AWinControl.Left,
-      AWinControl.Top,Width,Height)
-  else begin
-    // widget is not yet realized, force resize needed for shrinking under gtk1
-    gtk_widget_set_usize(PGtkWidget(Window), -1,-1);
-  end;
-  // reposition
-  gtk_widget_set_usize(PGtkWidget(Window),Width,Height);
-  gtk_widget_set_uposition(PGtkWidget(Window),AWinControl.Left,AWinControl.Top);
-  {$ENDIF}
 
   {$IFDEF VerboseSizeMsg}
   DebugLn(['SetWindowSizeAndPosition B ',DbgSName(AWinControl),
@@ -7255,7 +6698,7 @@ var
 begin
   Left:=aWidget^.allocation.X;
   Top:=aWidget^.allocation.Y;
-  {$IFDEF Gtk2}
+
   if (aWidget^.parent<>nil)
   and (not GtkWidgetIsA(aWidget^.parent,GTK_TYPE_FIXED))
   and (not GtkWidgetIsA(aWidget^.parent,GTK_TYPE_LAYOUT))
@@ -7273,7 +6716,7 @@ begin
     Dec(Left, PGtkWidget(aWidget^.parent)^.allocation.x);
     Dec(Top, PGtkWidget(aWidget^.parent)^.allocation.y);
   end;
-  {$ENDIF}
+
   if GtkWidgetIsA(aWidget,GTK_TYPE_WINDOW) then begin
     GdkWindow:=GetControlWindow(aWidget);
     if (GdkWindow<>nil) and (GTK_WIDGET_MAPPED(aWidget)) then begin
@@ -7338,9 +6781,7 @@ var
   LCLControl: TWinControl;
 {$ENDIF}
 begin
-  {$IFDEF Gtk2}
   if not WidgetSizeIsEditable(Widget) then exit;
-  {$ENDIF}
   {$IFDEF VerboseSizeMsg}
   LCLControl:=TWinControl(GetLCLObject(Widget));
   DbgOut('SetResizeRequest Widget=',DbgS(Widget));
@@ -7586,7 +7027,7 @@ end;
   
   this is a helper function for WaitForClipboardAnswer
  ------------------------------------------------------------------------------}
-function WaitForClipbrdAnswerDummyTimer(Client: Pointer): {$IFDEF Gtk2}gboolean{$ELSE}gint{$ENDIF}; cdecl;
+function WaitForClipbrdAnswerDummyTimer(Client: Pointer): gboolean; cdecl;
 begin
   if CLient=nil then ;
   Result:=GdkTrue; // go on, make sure getting a message at least every second
@@ -7845,7 +7286,7 @@ begin
     if Adjustment <> nil then
       gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
         PGTKScrolledWindow(ScrolledWidget)^.hscrollbar);
-    {$ifdef gtk2}
+
     if (AWidgetInfo <> nil) and
       (gtk_major_version >= 2) and (gtk_minor_version > 8) then
     begin
@@ -7854,7 +7295,7 @@ begin
       g_signal_connect(PGTKScrolledWindow(ScrolledWidget)^.vscrollbar, 'change-value',
         TGCallback(@Gtk2RangeScrollCB), AWidgetInfo);
     end;
-    {$endif}
+
   end;
 end;
 
@@ -7910,7 +7351,7 @@ begin
       gtk_widget_destroy(StyleObject^.Widget);
     end;
     if StyleObject^.Style <> nil then
-      if StyleObject^.Style^.{$IFDEF Gtk2}attach_count{$ELSE}Ref_Count{$ENDIF} > 0 then
+      if StyleObject^.Style^.attach_count > 0 then
         gtk_style_unref(StyleObject^.Style);
     Dispose(StyleObject);
     StyleObject := nil;
@@ -7924,12 +7365,12 @@ var
   i: Integer;
 begin
   if Styles=nil then exit;
-  {$IFDEF Gtk2}
+
   if DefaultPangoLayout<>nil then begin
     g_object_unref(DefaultPangoLayout);
     DefaultPangoLayout:=nil;
   end;
-  {$ENDIF}
+
   for i:=Styles.Count-1 downto 0 do begin
     StyleObject:=PStyleObject(Styles.Objects[i]);
     FreeStyleObject(StyleObject);
@@ -8034,11 +7475,6 @@ var
   end;
   
   procedure ResizeWidget(CurWidget: PGTKWidget; NewWidth, NewHeight: integer);
-  {$IFDEF Gtk1}
-  begin
-    gtk_widget_set_usize(StyleObject^.Widget,NewWidth,NewHeight);
-  end;
-  {$ELSE}
   var
     allocation: TGtkAllocation;
   begin
@@ -8050,7 +7486,6 @@ var
     gtk_widget_size_allocate(CurWidget,@allocation);
     StyleObject^.FrameBordersValid:=false;
   end;
-  {$ENDIF}
 
 var
   Tp : Pointer;
@@ -8106,9 +7541,7 @@ begin
           // GTK2 does not allow to instantiate the abstract base Widget
           // so we use the "invisible" widget, which should never be defined
           // by the theme
-          GTK_WIDGET_NEW(
-            {$IFDEF Gtk2}GTK_TYPE_INVISIBLE{$ELSE}GTK_WIDGET_TYPE{$ENDIF},
-            NoName,[]);
+          GTK_WIDGET_NEW( GTK_TYPE_INVISIBLE, NoName,[]);
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsWindow])=0 then begin
@@ -8141,29 +7574,18 @@ begin
     else
       If CompareText(WName,LazGtkStyleNames[lgsMenu])=0 then begin
         lgs:=lgsMenu;
-        {$IFDEF Gtk1}
-        AddToStyleWindow:=false;
-        {$ENDIF}
         StyleObject^.Widget := gtk_menu_new;
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsMenuBar])=0 then begin
         lgs:=lgsMenuBar;
-        {$IFDEF Gtk1}
-        AddToStyleWindow:=false;
-        {$ENDIF}
         StyleObject^.Widget := gtk_menu_bar_new;
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsMenuitem])=0 then begin
         lgs:=lgsMenuitem;
-        {$IFDEF Gtk1}
-        AddToStyleWindow:=false;
-        StyleObject^.Widget := gtk_menu_item_new;
-        {$ELSE}
         // image menu item is needed to correctly return theme options
         StyleObject^.Widget := gtk_image_menu_item_new;
-        {$ENDIF}
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsStatusBar])=0 then begin
@@ -8215,16 +7637,13 @@ begin
         gtk_tooltips_force_window(Tp);
         StyleObject^.Widget := PGTKTooltips(Tp)^.Tip_Window;
         gtk_widget_ref(StyleObject^.Widget);// MG: why is this needed?
-        {$IFNDEF GTK1}
+
         g_signal_connect(StyleObject^.Widget, 'style-set',
 			 TGCallback(@tooltip_window_style_set), StyleObject);
-        {$ENDIF}
+
         WidgetName := 'gtk-tooltip-lcl';
         StyleObject^.Obj := Tp;
         Tp := nil;
-        {$IFDEF GTK1}
-        AddToStyleWindow := False;
-        {$ENDIF}
       end
     else
       If CompareText(WName,LazGtkStyleNames[lgsHScale])=0 then begin
@@ -8247,14 +7666,14 @@ begin
         gtk_container_add(PGtkContainer(StyleObject^.Widget), WindowFixedWidget);
         gtk_object_set_data(PGtkObject(StyleObject^.Widget),'fixedwidget',WindowFixedWidget);
       end
-{$ifdef gtk2}
+
     else
       If CompareText(WName,LazGtkStyleNames[lgsTreeView])=0 then begin
         lgs:=lgsTreeView;
         StyleObject^.Widget := gtk_tree_view_new;
         gtk_tree_view_append_column(PGtkTreeView(StyleObject^.Widget), gtk_tree_view_column_new);
       end
-{$endif}
+
     else
       If CompareText(WName,LazGtkStyleNames[lgsToolBar])=0 then begin
         lgs:=lgsToolBar;
@@ -8315,15 +7734,10 @@ begin
         else
         if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU_ITEM) then
         begin
-          gtk_menu_bar_append({$IFDEF Gtk1}
-                              PGtkMenuBar(GetStyleWidget(lgsMenuBar)),
-                              {$ELSE}
-                              GetStyleWidget(lgsMenuBar),
-                              {$ENDIF}
-                              StyleObject^.Widget);
+          gtk_menu_bar_append( GetStyleWidget(lgsMenuBar), StyleObject^.Widget);
         end
         else
-{$ifdef gtk2}
+
         if GtkWidgetIsA(StyleObject^.Widget, GTK_TYPE_TOOL_BUTTON) then
         begin
           //gtk_toolbar_insert();
@@ -8331,7 +7745,7 @@ begin
             StyleObject^.Widget, nil, nil);
         end
         else
-{$endif}
+
         if (lgs = lgsToolButton) or
            (lgs = lgsTooltip) then
         begin
@@ -8446,40 +7860,12 @@ end;
   If the result is not nil it MUST be GDK_FONT_UNREF'd when done.
  ------------------------------------------------------------------------------}
 function LoadDefaultFont: TGtkIntfFont;
-{$IFDEF Gtk1}
-var
-  Style : PGTKStyle;
-{$ENDIF}
 begin
-  {$IFDEF Gtk2}
   Result:=gtk_widget_create_pango_layout(GetStyleWidget(lgsdefault), nil);
-  {$ELSE Gtk1}
-  Result := nil;
-  Style := GetStyle(lgsDefault);
-  if Style = nil then
-    Style := GetStyle(lgsGTK_Default);
-  if Style <> nil then begin
-    Result := Style^.Font;
-    if Result = nil then
-      {$IFNDEF NoStyle}
-      if (Style^.RC_Style <> nil) then begin
-        if (Style^.RC_Style^.font_name <> nil) then
-          Result := gdk_font_load(Style^.RC_Style^.font_name);
-      end;
-      {$ENDIF}
-  end;
-
-  If Result = nil then
-    Result := gdk_fontset_load('-*-fixed-*-*-*-*-*-120-*-*-*-*-*-*');
-  if Result = nil then
-    Result := gdk_fontset_load('-*-*-*-*-*-*-*-*-*-*-*-*-*-*');
-  {$ENDIF}
-
   If Result <> nil then
     ReferenceGtkIntfFont(Result);
 end;
 
-{$Ifdef GTK2}
 function LoadDefaultFontDesc: PPangoFontDescription;
 var
   Style : PGTKStyle;
@@ -8507,17 +7893,11 @@ begin
   if Result = nil then
     Result := pango_font_description_from_string('12');
 end;
-{$ENDIF}
 
 function GetDefaultFontName: string;
 var
   Style: PGtkStyle;
-  {$IFDEF GTK2}
   PangoFontDesc: PPangoFontDescription;
-  {$ELSE}
-  p,t: pchar;
-  AFont: PGdkFont;
-  {$ENDIF}
 begin
   Result:='';
   Style := GetStyle(lgsDefault);
@@ -8525,48 +7905,12 @@ begin
     Style := GetStyle(lgsGTK_Default);
 
   If Style <> nil then begin
-    {$IFDEF GTK1}
-      {$IFNDEF NoStyle}
-      if (Style^.RC_Style <> nil) then
-        with style^.RC_Style^ do begin
-          if (font_name <> nil) then
-            Result := font_name;
-          if (Result='') and (fontset_name<>nil) then
-          begin
-            // fontset_name it's usually a comma separated list of font names
-            // try to get the first valid font.
-            p := fontset_name;
-            while p<>nil do begin
-              t := strscan(p, ',');
-              if t=nil then
-                result := p
-              else begin
-                result := copy(p, 1, t-p);
-                while (t<>nil) and (t^ in [',',' ',#9,#10,#13]) do
-                  inc(t);
-              end;
-              AFont := gdk_font_load(pchar(result));
-              if AFont<>nil then begin
-                gdk_font_unref(AFont);
-                {$IFDEF VerboseFonts}
-                debugln('DefaultFont found in fontset: ',result);
-                {$ENDIF}
-                break;
-              end;
-              p := t;
-            end;
-          end;
-        end;
-      {$ENDIF}
-    {$ENDIF}
-    {$IFDEF GTK2}
     If (Style <> nil) then begin
       PangoFontDesc := Style^.font_desc;
       if PangoFontDesc<>nil then begin
         Result:=pango_font_description_get_family(PangoFontDesc);
       end;
     end;
-    {$ENDIF}
   end;
   {$IFDEF VerboseFonts}
   DebugLn('GetDefaultFontName: DefaultFont=',result);
@@ -8697,11 +8041,7 @@ begin
           if GC = nil then
           begin
             Result.Fill := GDK_Solid;
-            {$IFDEF Gtk1}
-            Result.foreground := Style^.bg[GTK_STATE_PRELIGHT];
-            {$ELSE}
             Result.foreground := Style^.bg[GTK_STATE_NORMAL];
-            {$ENDIF}
           end
           else
             GDK_GC_Get_Values(GC, @Result);
@@ -8878,11 +8218,7 @@ begin
         Style := GetStyle(lgsDefault);
         if Style = nil then
           exit;
-        {$IFDEF Gtk1}
-        GC := Style^.bg_gc[GTK_STATE_PRELIGHT];
-        {$ELSE}
         GC := Style^.text_gc[GTK_STATE_SELECTED];
-        {$ENDIF}
         if GC = nil then
         begin
           Result.Fill := GDK_Solid;
@@ -9008,12 +8344,8 @@ begin
     allocation.height:=s;
     gtk_widget_size_allocate(StyleObject^.Widget,@allocation);
     FrameWidget:=pGtkFrame(StyleObject^.Widget);
-    {$IFDEF Gtk1}
-    allocation:=FrameWidget^.bin.child^.allocation;
-    {$ELSE}
     GTK_FRAME_GET_CLASS(FrameWidget)^.compute_child_allocation(
       FrameWidget,@allocation);
-    {$ENDIF}
     //DebugLn(['GetStyleGroupboxFrame BBB2 ',dbgs(allocation)]);
     f.Left:=Min(s,Max(0,allocation.x));
     f.Top:=Min(s,Max(0,allocation.y));
@@ -9056,7 +8388,6 @@ begin
   Result:=StyleObject^.FrameBorders;
 end;
 
-{$IFDEF Gtk2}
 function GetStyleFormFrameBorders(WithMenu: boolean): TRect;
 const s = 400;
 var
@@ -9103,7 +8434,6 @@ begin
   Result.Bottom:=Max(0,Min(Outer.height-f.Top,Outer.height-Inner.x-Inner.width));
   //DebugLn(['GetStyleFormFrameBorders BBB3 Inner=',dbgs(Inner),' Outer=',dbgs(Outer),' WithMenu=',WithMenu,' InnerWidget=',GetWidgetDebugReport(InnerWidget),' Result=',dbgs(Result)]);
 end;
-{$ENDIF}
 
 procedure StyleFillRectangle(drawable : PGDKDrawable; GC : PGDKGC;
   Color : TColorRef; x, y, width, height : gint);
@@ -9184,28 +8514,6 @@ var
       RCStyle:=gtk_rc_style_new;
   end;
   
-  procedure SetRCFont(FontGdiObject: PGdiObject);
-  {$IFDEF GTK1}
-  var
-    FontDesc: TGtkFontCacheDescriptor;
-  {$ENDIF}
-  begin
-    {$IFDEF GTK1}
-    CreateRCStyle;
-    FontDesc:=FontCache.FindADescriptor(FontGdiObject^.GDIFontObject);
-    if (FontDesc<>nil) and (FontDesc.xlfd<>'') then begin
-      RCStyle:=gtk_rc_style_new;
-      g_free(RCStyle^.font_name);
-      RCStyle^.font_name:=g_strdup(PChar(FontDesc.xlfd));
-      g_free(RCStyle^.fontset_name);
-      RCStyle^.fontset_name:=g_strdup(PChar(FontDesc.xlfd));
-      FreeFontName:=true;
-
-      //DebugLn('UpdateWidgetStyleOfControl.SetRCFont ',DbgSName(AWinControl),' Widget=',GetWidgetDebugReport(Widget),' Style=',GetWidgetStyleReport(Widget));
-    end;
-    {$ENDIF}
-  end;
-
 begin
   {$IFDEF NoStyle}
   exit;
@@ -9290,19 +8598,8 @@ begin
       gtk_widget_modify_style(Widget,RCStyle);
 
       if FreeFontName then begin
-        {$ifdef gtk1}
-        g_free(RCStyle^.font_name);
-        RCStyle^.font_name:=nil;
-        {$else}
         pango_font_description_free(RCStyle^.font_desc);
         RCStyle^.font_desc:=nil;
-        {$endif}
-      end;
-      if FreeFontSetName then begin
-        {$ifdef gtk1}
-        g_free(RCStyle^.fontset_name);
-        RCStyle^.fontset_name:=nil;
-        {$endif}
       end;
       //DebugLn('UpdateWidgetStyleOfControl END ',DbgSName(AWinControl),' Widget=',GetWidgetDebugReport(Widget),' Style=',GetWidgetStyleReport(Widget));
       gtk_rc_style_unref(RCStyle);
@@ -9647,17 +8944,12 @@ function FontIsDoubleByteCharsFont(TheFont: TGtkIntfFont): boolean;
 var
   SingleCharLen, DoubleCharLen: integer;
 begin
-  {$IFDEF Gtk1}
-  SingleCharLen:=gdk_text_width(TheFont, 'A', 1);
-  DoubleCharLen:=gdk_text_width(TheFont, #0'A', 2);
-  {$ELSE}
   pango_layout_set_single_paragraph_mode(TheFont, TRUE);
   pango_layout_set_width(TheFont, -1);
   pango_layout_set_text(TheFont, 'A', 1);
   pango_layout_get_pixel_size(TheFont, @SingleCharLen, nil);
   pango_layout_set_text(TheFont, #0'A', 2);
   pango_layout_get_pixel_size(TheFont, @DoubleCharLen, nil);
-  {$ENDIF}
   Result:=(SingleCharLen=0) and (DoubleCharLen>0);
 end;
 
@@ -9668,31 +8960,15 @@ end;
  ------------------------------------------------------------------------------}
 function FontIsMonoSpaceFont(TheFont: TGtkIntfFont): boolean;
 var
-  {$IFDEF Gtk1}
-  SingleCharLen: LongInt;
-  {$ENDIF}
   MWidth: LongInt;
   IWidth: LongInt;
 begin
-  {$IFDEF Gtk1}
-  SingleCharLen:=gdk_text_width(TheFont, 'A', 1);
-  if SingleCharLen=0 then begin
-    // assume a double byte character font
-    MWidth:=gdk_text_width(TheFont, '#0m', 2);
-    IWidth:=gdk_text_width(TheFont, '#0i', 2);
-  end else begin
-    // assume a single byte character font
-    MWidth:=gdk_text_width(TheFont, 'm', 1);
-    IWidth:=gdk_text_width(TheFont, 'i', 1);
-  end;
-  {$ELSE}
   pango_layout_set_single_paragraph_mode(TheFont, TRUE);
   pango_layout_set_width(TheFont, -1);
   pango_layout_set_text(TheFont, 'm', 1);
   pango_layout_get_pixel_size(TheFont, @MWidth, nil);
   pango_layout_set_text(TheFont, 'i', 1);
   pango_layout_get_pixel_size(TheFont, @IWidth, nil);
-  {$ENDIF}
   Result:=MWidth=IWidth;
 end;
 
@@ -9742,8 +9018,6 @@ begin
   else
     ABorderStyle:=bsSizeable;
 
-  {$IFDEF Gtk2}
-
   case ABorderStyle of
     bsNone: Result := 0;
 
@@ -9773,29 +9047,6 @@ begin
     if not (biSystemMenu in AForm.BorderIcons) then
       Result := Result and not GDK_DECOR_MENU;
   end;
-
-  {$ELSE}
-  case ABorderStyle of
-    bsNone : Result := 0;
-
-    bsSingle : Result := GDK_DECOR_TITLE or
-                 GDK_DECOR_MENU or GDK_DECOR_MINIMIZE or
-                 GDK_DECOR_MAXIMIZE;
-
-    bsSizeable : Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
-                 GDK_DECOR_MENU or GDK_DECOR_MINIMIZE or GDK_DECOR_MAXIMIZE
-                 or GDK_DECOR_RESIZEH;
-
-    bsDialog : Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
-                 GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
-
-    bsToolWindow : Result := GDK_DECOR_TITLE or GDK_DECOR_MENU;
-
-    bsSizeToolWin :Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
-                   GDK_DECOR_MENU or GDK_DECOR_RESIZEH;
-  end;
-  {$ENDIF}
-  
   //DebugLn('GetWindowDecorations ',DbgSName(AForm),' ',dbgs(ord(ABorderStyle)),' ',binStr(Result,8));
 end;
 
@@ -9813,7 +9064,6 @@ begin
   else
     ABorderStyle:=bsSizeable;
 
-  {$IFDEF Gtk2}
   case ABorderStyle of
     bsNone : Result := GDK_FUNC_RESIZE or GDK_FUNC_CLOSE {$ifndef windows}or GDK_FUNC_MOVE{$endif};
 
@@ -9844,80 +9094,38 @@ begin
     if not (biMaximize in AForm.BorderIcons) then
       Result:=Result and not GDK_FUNC_MAXIMIZE;
   end;
-  {$ELSE}
-  case ABorderStyle of
-    bsNone : Result := GDK_FUNC_RESIZE or GDK_FUNC_CLOSE;
-
-    bsSingle : Result := GDK_FUNC_MOVE or GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
-
-    bsSizeable : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
-                GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE or GDK_FUNC_MAXIMIZE;
-
-    bsDialog : Result := GDK_FUNC_CLOSE or GDK_FUNC_MINIMIZE
-                or GDK_FUNC_MOVE;
-
-    bsToolWindow : Result := GDK_FUNC_MOVE or GDK_FUNC_CLOSE;
-
-    bsSizeToolWin : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or GDK_FUNC_CLOSE;
-  end;
-
-  // X warns if marking a fixed size window resizeable:
-  if ((AForm.Constraints.MinWidth>0)
-  and (AForm.Constraints.MinWidth=AForm.Constraints.MaxWidth))
-  or ((AForm.Constraints.MinHeight>0)
-  and (AForm.Constraints.MinHeight=AForm.Constraints.MaxHeight)) then
-    Result:=Result-GDK_FUNC_RESIZE;
-  {$ENDIF}
-
   //DebugLn('GetWindowFunction ',DbgSName(AForm),' ',dbgs(ord(ABorderStyle)),' ',binStr(Result,8));
 end;
 
 procedure FillScreenFonts(ScreenFonts : TStrings);
 var
-  {$ifdef gtk1}
-  theFonts : PPChar;
-  {$else}
   Widget : PGTKWidget;
   Context : PPangoContext;
   families : PPPangoFontFamily;
-  {$endif}
   Tmp: AnsiString;
   I, N: Integer;
 begin
   ScreenFonts.Clear;
-  {$ifdef gtk1}
-  theFonts := XListFonts(gdk_display,PChar('-*-*-*-*-*-*-*-*-*-*-*-*-*-*'), 10000, @N);
-  debugln('FillScreenFonts N=',dbgs(N));
+  Widget := GetStyleWidget(lgsDefault);
+  if Widget = nil then begin
+    exit;//raise an error here I guess
+  end;
+  Context := gtk_widget_get_pango_context(Widget);
+  if Context = nil then begin
+    exit;//raise an error here I guess
+  end;
+  families := nil;
+  pango_context_list_families(Context, @families, @n);
+
   for I := 0 to N - 1 do
-    if theFonts[I] <> nil then begin
-      Tmp := ExtractFamilyFromXLFDName(theFonts[I]);
+    if families[I] <> nil then begin
+      Tmp := StrPas(pango_font_family_get_name(families[I]));
       if Tmp <> '' then
         if ScreenFonts.IndexOf(Tmp) < 0 then
           ScreenFonts.Append(Tmp);
-    end;
-   XFreeFontNames(theFonts);
-  {$else}
-   Widget := GetStyleWidget(lgsDefault);
-   if Widget = nil then begin
-     exit;//raise an error here I guess
    end;
-   Context := gtk_widget_get_pango_context(Widget);
-   if Context = nil then begin
-     exit;//raise an error here I guess
-   end;
-   families := nil;
-   pango_context_list_families(Context, @families, @n);
-
-   for I := 0 to N - 1 do
-     if families[I] <> nil then begin
-       Tmp := StrPas(pango_font_family_get_name(families[I]));
-       if Tmp <> '' then
-         if ScreenFonts.IndexOf(Tmp) < 0 then
-           ScreenFonts.Append(Tmp);
-    end;
-   if (families <> nil) then
-     g_free(families);
-  {$endif gtk2}
+  if (families <> nil) then
+    g_free(families);
 end;
 
 function GetTextHeight(DCTextMetric: TDevContextTextMetric): integer;
@@ -9929,84 +9137,6 @@ begin
   Result := DCTextMetric.TextMetric.tmAscent;
   {$EndIf}
 end;
-
-{$IFDEF GTK1}
-{ Compile with UseXinerama defined to use the Xinerama extension to avoid dialog
-  boxes straddling two monitors. This is only required for GTK1, as it is built
-  into GTK2. The Xinerama library is not always available, so the libraries will
-  be dynamically loaded. (A single monitor is assumed if the load fails.) On
-  some systems only a static Xinerama library is available, so define
-  StaticXinerama also. MAC OSX is in this latter category, but it crashed the
-  X server when I tried it on a real two monitor display.
-}
-{$IFDEF UseXinerama}
-{$IFDEF StaticXinerama}
-{$LINKLIB Xinerama}
-{$ENDIF}
-var
-  FirstScreenCalled: Boolean = False;
-  FirstScreenResult: Boolean = False;
-{ Copy record definition from Xinerama unit.
-  Can't use the unit itself, as it forces the executable to
-  refer to the libraray }
-type
-   TXineramaScreenInfo = record
-        screen_number : cint;
-        x_org         : cshort;
-        y_org         : cshort;
-        width         : cshort;
-        height        : cshort;
-     end;
-   PXineramaScreenInfo = ^TXineramaScreenInfo;
-
-function GetFirstScreen: Boolean;
-var
-  nMonitors: cint;
-  XineramaScreenInfo: PXineramaScreenInfo;
-  opcode, firstevent, firsterror: cint;
-  XineramaLib: TLibHandle;
-  pXineramaIsActive: function (dpy: PDisplay):TBool;cdecl;
-  pXineramaQueryScreens: function (dpy: PDisplay;
-    number: Pcint): PXineramaScreenInfo;cdecl;
-begin
-  if not FirstScreenCalled then begin
-    if XQueryExtension(gdk_display, 'XINERAMA', @opcode, @firstevent,
-      @firsterror)
-    then begin
-      XineramaLib := {$IFDEF StaticXinerama} 1 {Flag present} {$ELSE} LoadLibrary('libXinerama.so') {$ENDIF};
-      if XineramaLib <> 0 then begin
-        {$IFDEF StaticXinerama}
-          Pointer(pXineramaIsActive) := @XineramaIsActive;
-          Pointer(pXineramaQueryScreens) := @XineramaQueryScreens;
-        {$ELSE}
-          Pointer(pXineramaIsActive) :=
-                            GetProcAddress(XineramaLib, 'XineramaIsActive');
-          Pointer(pXineramaQueryScreens) :=
-                            GetProcAddress(XineramaLib, 'XineramaQueryScreens');
-        {$ENDIF}
-        if (pXineramaIsActive <> nil) and (pXineramaQueryScreens <> nil) and
-          pXineramaIsActive(gdk_display)
-        then begin
-          XineramaScreenInfo := pXineramaQueryScreens(gdk_display, @nMonitors);
-          if XineramaScreenInfo <> nil then begin
-            if (nMonitors > 0) and (nMonitors < 10) then begin
-              FirstScreen.x := XineramaScreenInfo^.width;
-              FirstScreen.y := XineramaScreenInfo^.height;
-              FirstScreenResult := True;
-            end;
-            XFree(XineramaScreenInfo);
-          end;
-        end;
-        // Do not FreeLibrary(XineramaLib) because it causes the X11 library to
-        // crash on exit
-      end;
-    end;
-    FirstScreenCalled := True;
-  end;
-  Result := FirstScreenResult;
-end;
-{$ENDIF UseXinerama}
-{$ENDIF Gtk1}
 
 {$IFDEF HasX}
 function  XGetWorkarea(var ax,ay,awidth,aheight:gint): gint;

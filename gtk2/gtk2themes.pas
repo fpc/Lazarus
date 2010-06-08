@@ -53,11 +53,9 @@ type
     GapX       : gint;
     GapWidth   : gint;
     MaxWidth   : gint;            // max area width
-{$ifdef gtk2}
     Expander   : TGtkExpanderStyle; // treeview expander
     ExpanderSize: Integer;
     Edge       : TGdkWindowEdge;
-{$endif}
     IsHot      : Boolean;
   end;
 
@@ -332,11 +330,7 @@ begin
           SP_GRIPPER:
             begin
               Result.Painter := gptResizeGrip;
-              {$IFDEF Gtk2}
               Result.Edge := GDK_WINDOW_EDGE_SOUTH_EAST;
-              {$ELSE}
-              Result.Shadow := GTK_SHADOW_IN;
-              {$ENDIF}
             end;
         end;
       end;
@@ -787,7 +781,6 @@ begin
 
       with StyleParams do
       begin
-        {$ifndef gtk1}
         if Painter = gptExpander then
         begin
           // Better to draw expander with the ExpanderSize, but sometimes it
@@ -807,7 +800,6 @@ begin
             else
               dec(Area.height);
         end;
-        {$endif}
         if (MaxWidth <> 0) then
         begin
           if Area.width > MaxWidth then
@@ -887,7 +879,7 @@ begin
               Area.x, Area.y,
               Area.Width, Area.Height,
               Orientation);
-  {$ifdef gtk2}
+
           gptExpander: gtk_paint_expander(
               Style, Window, State,
               @Area, Widget, PChar(Detail),
@@ -899,9 +891,9 @@ begin
               PChar(Detail), Edge,
               Area.x, Area.y,
               Area.Width, Area.Height);
-  {$endif}
+
           gptFocus : gtk_paint_focus(
-              Style, Window, {$ifdef gtk2}State,{$endif}
+              Style, Window, State,
               @Area, Widget, PChar(Detail),
               Area.x, Area.y,
               Area.Width, Area.Height);
@@ -971,8 +963,8 @@ begin
   StyleParams := GetGtkStyleParams(DC, Details, 0);
   if StyleParams.Style <> nil then
     InflateRect(Result,
-      -StyleParams.Style^.{$ifndef gtk2}klass^.{$endif}xthickness,
-      -StyleParams.Style^.{$ifndef gtk2}klass^.{$endif}ythickness);
+      -StyleParams.Style^.xthickness,
+      -StyleParams.Style^.ythickness);
 end;
 
 function TGtk2ThemeServices.HasTransparentParts(Details: TThemedElementDetails): Boolean;

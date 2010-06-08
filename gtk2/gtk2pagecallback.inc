@@ -54,18 +54,5 @@ begin
   DrawNotebookPageIcon(ThePage, Widget);
 end;
 
-{$IFNDEF GTK2}
-function PageIconWidgetDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
-  data: gPointer) : GBoolean; cdecl;
-var
-  ThePage: TCustomPage;
-begin
-  Result := false;
-  //DebugLn('PageIconWidgetDrawAfter ',DbgS(Widget),' ',Area^.x,',',Area^.y);
-  EventTrace('PageIconWidgetDrawAfter', Data);
-  ThePage:=TObject(Data) as TCustomPage;
-  DrawNotebookPageIcon(ThePage, Widget);
-end;
-{$ENDIF}
 
 // included by gtk2callback.inc

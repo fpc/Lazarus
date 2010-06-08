@@ -31,20 +31,14 @@ unit Gtk2Debug;
 interface 
 
 uses
-  {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2,
-  {$ELSE}
-  glib, gdk, gtk, gdkpixbuf,
-  {$ENDIF}
   sysutils;
 
 procedure DbgDumpBitmap(ABitmap: PGdkBitmap; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
 procedure DbgDumpPixmap(APixmap: PGdkPixmap; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
 procedure DbgDumpPixbuf(APixbuf: PGdkPixbuf; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
-{$ifndef gtk1}
 // dont debug images on gtk1, we cannot ref, unref them and thus we cannot rely that they will not be destroyed
 procedure DbgDumpImage(AImage: PGdkImage; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
-{$endif}
 
 implementation
 
@@ -69,7 +63,7 @@ begin
     ddtBitmap: if Info^.Bitmap <> nil then  gdk_pixmap_unref(Info^.Bitmap);
     ddtPixmap: if Info^.Pixmap <> nil then gdk_pixmap_unref(Info^.Pixmap);
     ddtPixbuf: if Info^.Pixbuf <> nil then gdk_pixbuf_unref(Info^.Pixbuf);
-    ddtImage: if Info^.Image <> nil then {$ifndef gtk1}gdk_image_unref(Info^.Image){$endif};
+    ddtImage: if Info^.Image <> nil then gdk_image_unref(Info^.Image);
   end;
   Dispose(Info);
 end;
@@ -237,9 +231,7 @@ begin
   Info^.Height := AHeight;
   Info^.DumpType := ddtImage;
   Info^.Image := AImage;
-  {$ifndef gtk1}
   gdk_image_ref(AImage);
-  {$endif}
 
   DbgCreateWindow(Info, ATitle);
 end;

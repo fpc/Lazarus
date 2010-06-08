@@ -117,9 +117,7 @@ type
     {$IFDEF VerboseGtkToDos}{$warning no declaration of FChildSignalHandlers for this OS}{$ENDIF}
     {$endif}
 
-    {$Ifdef GTK2}
     FDefaultFontDesc: PPangoFontDescription;
-    {$Endif}
     FDefaultFont: TGtkIntfFont;
     FStockSystemFont: HFONT;
     FExtUTF8OutCache: Pointer;
@@ -187,9 +185,7 @@ type
     function CreateDefaultPen: PGdiObject;virtual;
     function CreateDefaultGDIBitmap: PGdiObject;virtual;
     procedure UpdateDCTextMetric(DC: TGtkDeviceContext); virtual;
-    {$Ifdef GTK2}
     function GetDefaultFontDesc(IncreaseReferenceCount: boolean): PPangoFontDescription;
-    {$Endif}
     function GetDefaultGtkFont(IncreaseReferenceCount: boolean): TGtkIntfFont;
     function GetGtkFont(DC: TGtkDeviceContext): TGtkIntfFont;
     function CreateRegionCopy(SrcRGN: hRGN): hRGN; override;

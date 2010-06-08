@@ -420,9 +420,7 @@ procedure TGtk2WidgetSet._SetCallbackEx(const AMsg: LongInt;
 
 var
   gObject, gFixed, gCore, Adjustment: PGTKObject;
-  {$IFDEF GTK2}
   gTemp: PGTKObject;
-  {$ENDIF}
   Info: PWidgetInfo;
   gMain: PGtkObject;
   gMouse: PGtkObject;
@@ -466,10 +464,6 @@ begin
     if gMouse=nil then
       DebugLn(['TGtkWidgetSet.SetCallback WARNING: gMouseWidget=nil ',DbgSName(ALCLObject)]);
 
-    {$IFDEF GTK1}
-    if ALCLObject is TCustomListBox then
-      gMouse:=gMain;
-    {$ELSE}
     if GTK_IS_FIXED(gMouse) and GTK_WIDGET_NO_WINDOW(gMouse) then
     begin
       gTemp := PGtkObject(gtk_widget_get_parent(PGtkWidget(gMouse)));
@@ -477,7 +471,6 @@ begin
       if GTK_IS_EVENT_BOX(gTemp) then
         gMouse := gTemp;
     end;
-    {$ENDIF}
   end;
   //DebugLn(['TGtkWidgetSet.SetCallbackSmart MouseWidget=',GetWidgetDebugReport(PGtkWidget(gMouse))]);
 
@@ -503,13 +496,8 @@ begin
     begin
       if (ALCLObject is TCustomForm) and (TCustomForm(ALCLObject).Parent=nil)
       then begin
-        {$IFDEF GTK2}
         ConnectSenderSignal(gObject, 'focus-in-event', @gtkfrmactivateAfter);
         ConnectSenderSignal(gObject, 'focus-out-event', @gtkfrmdeactivateAfter);
-        {$ELSE}
-        ConnectSenderSignalAfter(gObject, 'focus-in-event', @gtkfrmactivateAfter);
-        ConnectSenderSignalAfter(gObject, 'focus-out-event', @gtkfrmdeactivateAfter);
-        {$ENDIF}
       end else if ALCLObject is TCustomMemo then
         ConnectSenderSignal(gCore, 'activate', @gtkactivateCB)
       else
@@ -535,27 +523,23 @@ begin
        else if ALCLObject is TCustomCheckbox then
        begin
          ConnectSenderSignal(gObject, 'toggled', @gtktoggledCB)
-     {$IFDEF GTK2}
        // in gtk2 callback signal of SpinEdit is 'value-changed' (in gtk1- 'changed')
        end else
        if ALCLObject is TCustomFloatSpinEdit then
        begin
          ConnectSenderSignalAfter(gObject, 'changed', @gtkchanged_spinbox);
          ConnectSenderSignal(gObject, 'value-changed', @gtkchanged_editbox);
-     {$ENDIF}
        end else
        begin
          {$IFDEF VerboseTWinControlRealText}
          ConnectSenderSignalAfter(gObject, 'changed', @gtkchanged_editbox);
          {$ELSE}
-         {$IFDEF gtk2}
          if GTK_IS_ENTRY(gObject) then
          begin
            ConnectSenderSignal(gObject,'backspace', @gtkchanged_editbox_backspace);
            if (gtk_major_version = 2) and (gtk_minor_version < 17) then
              ConnectSenderSignal(gObject,'delete-from-cursor', @gtkchanged_editbox_delete);
          end;
-         {$ENDIF}
          ConnectSenderSignal(gObject, 'changed', @gtkchanged_editbox);
          {$ENDIF}
        end;
@@ -580,53 +564,12 @@ begin
     LM_PAINT :
     begin
       //DebugLn(['TGtkWidgetSet.SetCallback ',DbgSName(ALCLObject),' ',GetWidgetDebugReport(PGtkWIdget(gfixed))]);
-      {$Ifdef GTK1}
-      //ConnectSenderSignal(gFixed, 'draw', @gtkDrawCB);
-      ConnectSenderSignalAfter(gFixed, 'draw', @gtkDrawAfterCB);
-      {$EndIf}
-      {$Ifdef GTK2}
       ConnectSenderSignal(gFixed,'expose-event', @GTKExposeEvent);
       ConnectSenderSignalAfter(gFixed,'style-set', @GTKStyleChangedAfter);
-      {$EndIf}
       ConnectSenderSignalAfter(gFixed,'expose-event', @GTKExposeEventAfter);
       ConnectSenderSignal(gFixed,'style-set', @GTKStyleChanged);
     end;
 
-    {$IFDEF GTK1}
-    LM_FOCUS :
-    begin
-      if (ALCLObject is TCustomComboBox) then begin
-        ConnectFocusEvents(PgtkObject(PgtkCombo(gObject)^.entry));
-        ConnectFocusEvents(PgtkObject(PgtkCombo(gObject)^.list));
-      end else
-      begin
-        ConnectFocusEvents(gCore);
-      end;
-    end;
-
-    LM_GRABFOCUS:
-    begin
-      ConnectSenderSignal(gObject, 'grab_focus', @gtkActivateCB);
-    end;
-
-    LM_KEYDOWN,
-    LM_CHAR,
-    LM_KEYUP,
-    LM_SYSKEYDOWN,
-    LM_SYSCHAR,
-    LM_SYSKEYUP:
-    begin
-      //debugln('TGtkWidgetSet.SetCallback A KEY ALCLObject=',DbgSName(ALCLObject),' AMsg=',dbgs(AMsg));
-      if (ALCLObject is TCustomComboBox) then begin
-        ConnectKeyPressReleaseEvents(PgtkObject(PgtkCombo(gObject)^.entry));
-      end
-      else
-      if (ALCLObject is TCustomForm) then begin
-        ConnectKeyPressReleaseEvents(gObject);
-      end;
-      ConnectKeyPressReleaseEvents(gCore);
-    end;
-    {$ENDIF}
 
     LM_MONTHCHANGED:  //calendar
     Begin
@@ -649,31 +592,10 @@ begin
 
     LM_MOUSEMOVE:
     begin
-      {$IFDEF GTK1}
-      if (ALCLObject is TCustomComboBox) then
-      begin
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
-          'motion-notify-event',
-          @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
-        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.entry),
-          'motion-notify-event',
-          @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
-
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.button),
-          'motion-notify-event',
-          @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
-        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.button),
-          'motion-notify-event',
-          @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
-      end
-      else
-      {$ENDIF}
-      begin
-        ConnectSenderSignal(gMouse, 'motion-notify-event', @GTKMotionNotify,
-                      GDK_POINTER_MOTION_MASK);
-        ConnectSenderSignalAfter(gMouse, 'motion-notify-event',
-                      @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
-      end;
+      ConnectSenderSignal(gMouse, 'motion-notify-event', @GTKMotionNotify,
+                    GDK_POINTER_MOTION_MASK);
+      ConnectSenderSignalAfter(gMouse, 'motion-notify-event',
+                    @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
     end;
 
     LM_LBUTTONDOWN,
@@ -681,68 +603,22 @@ begin
     LM_MBUTTONDOWN,
     LM_MOUSEWHEEL :
     begin
-      {$IFDEF GTK1}
-      if (ALCLObject is TCustomComboBox) then
-      begin
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
-              'button-press-event',  @gtkMouseBtnPress, GDK_BUTTON_PRESS_MASK);
-        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.entry),
-              'button-press-event',  @gtkMouseBtnPressAfter,
-              GDK_BUTTON_PRESS_MASK);
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.button) ,
-              'button-press-event', @gtkMouseBtnPress, GDK_BUTTON_PRESS_MASK);
-        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.button) ,
-              'button-press-event', @gtkMouseBtnPressAfter, GDK_BUTTON_PRESS_MASK);
-        // Connecting the list seems to cause errors. Maybe we are returning the
-        // wrong boolean in the callback func
-        // ConnectSenderSignal(PgtkObject(PgtkCOmbo(gObject)^.list),
-        //    'button-press-event',  @gtkMouseBtnPress, GDK_BUTTON_PRESS_MASK);
-      end
-      else
-      {$ENDIF}
-      begin
-        ConnectSenderSignal(gMouse, 'button-press-event', @gtkMouseBtnPress,
-                            GDK_BUTTON_PRESS_MASK);
-        ConnectSenderSignalAfter(gMouse, 'button-press-event',
-                                 @gtkMouseBtnPressAfter, GDK_BUTTON_PRESS_MASK);
-        {$IFDEF Gtk2}
-        ConnectSenderSignal(gMouse, 'scroll-event', @gtkMouseWheelCB,
-                            GDK_BUTTON_PRESS_MASK);
-        {$ENDIF}
-      end;
+      ConnectSenderSignal(gMouse, 'button-press-event', @gtkMouseBtnPress,
+                          GDK_BUTTON_PRESS_MASK);
+      ConnectSenderSignalAfter(gMouse, 'button-press-event',
+                               @gtkMouseBtnPressAfter, GDK_BUTTON_PRESS_MASK);
+      ConnectSenderSignal(gMouse, 'scroll-event', @gtkMouseWheelCB,
+                          GDK_BUTTON_PRESS_MASK);
     end;
 
     LM_LBUTTONUP,
     LM_RBUTTONUP,
     LM_MBUTTONUP:
     begin
-      {$IFDEF GTK1}
-      if (ALCLObject is TCustomComboBox) then
-      begin
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
-          'button-release-event',  @gtkMouseBtnRelease, GDK_BUTTON_RELEASE_MASK);
-        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.entry),
-          'button-release-event',  @gtkMouseBtnReleaseAfter,
-          GDK_BUTTON_RELEASE_MASK);
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.button) ,
-          'button-release-event', @gtkMouseBtnRelease, GDK_BUTTON_RELEASE_MASK);
-        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.button) ,
-          'button-release-event', @gtkMouseBtnReleaseAfter,
-          GDK_BUTTON_RELEASE_MASK);
-        // Connecting the list seems to cause errors. Maybe we are returning the
-        // wrong boolean in the callback func
-        //  ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.list),
-        //                'button-release-event',  @gtkMouseBtnRelease,
-        //                GDK_BUTTON_RELEASE_MASK);
-      end
-      else
-      {$ENDIF}
-      begin
-        ConnectSenderSignal(gMouse, 'button-release-event', @gtkMouseBtnRelease,
-                      GDK_BUTTON_RELEASE_MASK);
-        ConnectSenderSignalAfter(gMouse, 'button-release-event',
-                           @gtkMouseBtnReleaseAfter,GDK_BUTTON_RELEASE_MASK);
-      end;
+      ConnectSenderSignal(gMouse, 'button-release-event', @gtkMouseBtnRelease,
+                    GDK_BUTTON_RELEASE_MASK);
+      ConnectSenderSignalAfter(gMouse, 'button-release-event',
+                         @gtkMouseBtnReleaseAfter,GDK_BUTTON_RELEASE_MASK);
     end;
 
     LM_ENTER :
@@ -1547,11 +1423,7 @@ begin
   Gtk2Def.ReleaseGDIObject:=@ReleaseGDIObject;
   Gtk2Def.ReferenceGDIObject:=@ReferenceGDIObject;
 
-  {$Ifdef GTK2}
   FDefaultFontDesc:= nil;
-  {$Else}
-  FDefaultFont:= nil;
-  {$EndIf}
   // messages
   FMessageQueue := TGtkMessageQueue.Create;
   WaitingForMessages := false;
@@ -1741,11 +1613,7 @@ begin
   FreeSystemBrushes;
 
   if FGTKToolTips<>nil then begin
-    {$IFDEF Gtk2}
     gtk_object_sink(PGTKObject(FGTKToolTips));
-    {$ELSE}
-    gtk_object_unref(PGTKObject(FGTKToolTips));
-    {$ENDIF}
     FGTKToolTips := nil;
   end;
 
@@ -2387,99 +2255,6 @@ var
   xfg, xbg: TGdkColor;
   ChangeFGColor: Boolean;
   ChangeBGColor: Boolean;
-{$IFDEF Gtk1}
-  WindowStyle, RCStyle: PGtkStyle;
-begin
-  ChangeFGColor := (FGColor <> clNone);
-  ChangeBGColor := (BGColor <> clNone);
-  if (not ChangeFGColor) and (not ChangeBGColor) then Exit;
-
-  // the GTKAPIWidget is self drawn, so no use to change the widget style.
-  if GtkWidgetIsA(AWidget, GTKAPIWidget_GetType) then Exit;
-
-  {$IFDEF DisableWidgetColor}
-  exit;
-  {$ENDIF}
-
-  if (GTK_WIDGET_REALIZED(AWidget)) then
-    WindowStyle := gtk_style_copy(gtk_widget_get_style(AWidget))
-  else
-    WindowStyle := gtk_style_copy(gtk_rc_get_style(AWidget));
-
-  if (Windowstyle = nil) then
-    Windowstyle := gtk_style_new;
-
-  //DebugLn('TGtk2WidgetSet.SetWidgetColor ',GetWidgetDebugReport(AWidget),' ',hexstr(FGColor,8),'  ',hexstr(BGColor,8));
-  //RaiseGDBException('');
-  if ChangeFGColor then
-  begin
-    if (FGColor = clDefault) then
-    begin
-      RCStyle := gtk_rc_get_style(AWidget);
-      if RCStyle <> nil then
-        for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
-        begin
-          if i in mask then
-          begin
-            if GTK_STYLE_TEXT in mask then
-              windowStyle^.text[i] := RCStyle^.text[i]
-            else
-              windowStyle^.fg[i] := RCStyle^.fg[i];
-          end;
-        end;
-    end
-    else
-    begin
-      xfg := AllocGDKColor(colorToRGB(FGColor));
-      for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
-      begin
-        if i in mask then
-        begin
-          if GTK_STYLE_TEXT in mask then
-            windowStyle^.text[i] := xfg
-          else
-            windowStyle^.fg[i] := xfg;
-        end;
-      end;
-    end;
-  end;
-
-  if ChangeBGColor then
-  begin
-    if (BGColor = clDefault) or (BGColor = clBtnFace) then
-    begin
-      RCStyle := gtk_rc_get_style(AWidget);
-      if RCStyle <> nil then
-        for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
-        begin
-          if i in mask then
-          begin
-            if GTK_STYLE_BASE in mask then
-              windowStyle^.base[i] := RCStyle^.base[i]
-            else
-              windowStyle^.bg[i] := RCStyle^.bg[i];
-          end;
-        end;
-    end
-    else
-    begin
-      xbg := AllocGDKColor(colorToRGB(BGColor));
-      for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
-      begin
-        if i in mask then
-        begin
-          if GTK_STYLE_BASE in mask then
-            windowStyle^.base[i] := xbg
-          else
-            windowStyle^.bg[i] := xbg;
-        end;
-      end;
-    end;
-  end;
-
-  gtk_widget_set_style(aWidget, windowStyle);
-end;
-{$ELSE}
   NewColor: PGdkColor;
 begin
   ChangeFGColor := (FGColor <> clNone);
@@ -2538,7 +2313,6 @@ begin
     end;
   end;
 end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
   Method: TGtk2WidgetSet.AppProcessMessages
@@ -3128,12 +2902,8 @@ begin
     IsBitmap := False;
   end
   else begin
-    {$ifdef gtk1}
-    gdk_window_get_geometry(ADrawable, nil, nil, @Width, @Height, @Depth);
-    {$else}
     gdk_drawable_get_size(ADrawable, @Width, @Height);
     Depth := gdk_drawable_get_depth(ADrawable);
-    {$endif}
     Visual := gdk_window_get_visual(ADrawable);
     // pixmaps and bitmaps dont have a visual, but for pixmaps we need one
     if Visual = nil
@@ -3672,12 +3442,8 @@ begin
     Exit;
   end;
 
-  {$ifdef gtk1}
-  gdk_window_get_geometry(AAlpha, nil, nil, @W, @H, @D);
-  {$else}
   gdk_drawable_get_size(AAlpha, @W, @H);
   D := gdk_drawable_get_depth(AAlpha);
-  {$endif}
   if (D <> 1) and (D <> 8)
   then begin
     DebugLn('WARNING: TGtk2WidgetSet.RawImage_SetAlpha: Only a Depth of 1 or 8 is supported. (depth=%d)', [D]);
@@ -3817,7 +3583,7 @@ begin
   try
     {$IFDEF VerboseRawImage}
     DebugLn('TGtk2WidgetSet.RawImage_AddMask: A BytesPerLine=',dbgs(Image^.bpl),
-      ' theType=',dbgs({$IFDEF Gtk1}Image^.thetype{$ELSE}ord(Image^._type){$ENDIF}),
+      ' theType=',dbgs(ord(Image^._type)),
       ' depth=',dbgs(Image^.depth),' AnImage^.bpp=',dbgs(Image^.bpp));
     DebugLn('RawImage=', ARawImage.Description.AsString);
     {$ENDIF}
@@ -4505,48 +4271,13 @@ end;
   Removes Call Back Signals from the Widget
  ------------------------------------------------------------------------------}
 procedure TGtk2WidgetSet.RemoveCallbacks(Widget: PGtkWidget);
-{$IFDEF Gtk1}
-var
-  MainWidget, ClientWidget, ImplWidget: PGtkWidget;
-  WinWidgetInfo: PWinWidgetInfo;
-{$ELSE}
 var
   Info: PWinWidgetInfo;
-{$ENDIF}
 begin
   if Widget = nil then Exit;
-  {$IFDEF Gtk1}
-  MainWidget := Widget;
-  if GtkWidgetIsA(Widget, GTK_MENU_ITEM_GET_TYPE) then Exit;
-
-  ClientWidget := GetFixedWidget(MainWidget);
-  WinWidgetInfo := GetWidgetInfo(MainWidget, False);
-  if WinWidgetInfo <> nil then
-    ImplWidget := WinWidgetInfo^.CoreWidget
-  else
-    ImplWidget := nil;
-  if MainWidget = PGtkWidget(LastWFPResult) then
-    DestroyWindowFromPointCB(MainWidget, nil);
-  g_signal_handlers_destroy(PGtkObject(MainWidget));
-  if (ClientWidget <> nil) and (ClientWidget <> MainWidget) then
-  begin
-    if ClientWidget = PGtkWidget(LastWFPResult) then
-      DestroyWindowFromPointCB(ClientWidget, nil);
-    g_signal_handlers_destroy(PGtkObject(ClientWidget));
-  end;
-  if (ImplWidget <> nil) and
-     (ImplWidget <> ClientWidget) and
-     (ImplWidget <> MainWidget) then
-  begin
-    if ImplWidget = PGtkWidget(LastWFPResult) then
-      DestroyWindowFromPointCB(ImplWidget, nil);
-    g_signal_handlers_destroy(PGtkObject(ImplWidget));
-  end;
-  {$ELSE}
   Info := GetWidgetInfo(Widget, False);
   if Info <> nil then
     g_signal_handlers_disconnect_matched(Widget, G_SIGNAL_MATCH_DATA, 0, 0, nil, nil, Info);
-  {$ENDIF}
 end;
 
 {-------------------------------------------------------------------------------
@@ -4642,10 +4373,6 @@ procedure TGtk2WidgetSet.DestroyConnectedWidget(Widget: PGtkWidget;
   CheckIfDestroying: boolean);
 var
   FixWidget: PGtkWidget;
-  {$IFNDef GTK2}
-  Accelerators: PGSlist;
-  AccelEntry : PGtkAccelEntry;
-  {$Endif}
   QueueItem : TGtkMessageQueueItem;
   NextItem  : TGtkMessageQueueItem;
   MsgPtr: PMsg;
@@ -4657,18 +4384,7 @@ begin
 
   FixWidget:=GetFixedWidget(Widget);
 
-  // Remove control accelerators - has to be done due to GTK+ bug?
   //DebugLn('TGtk2WidgetSet.DestroyLCLComponent B  Widget=',GetWidgetDebugReport(Widget));
-  {$IFDef GTK1}
-  Accelerators:= gtk_accel_group_entries_from_object(PGtkObject(Widget));
-  while Accelerators <> nil do begin
-    AccelEntry:= Accelerators^.data;
-    Accelerators:= Accelerators^.next;
-    with AccelEntry^ do
-      gtk_accel_group_remove(accel_group, accelerator_key, accelerator_mods,
-                             PGtkObject(Widget));
-  end;
-  {$EndIf}
   ClearAccelKey(Widget);
 
   // untransient
@@ -4678,17 +4394,6 @@ begin
 
   // callbacks
   RemoveCallbacks(Widget);
-
-  {$ifdef Gtk1}
-  //Gtk2 uses a different combobox widget class
-  // childs
-  if GtkWidgetIsA(Widget,GTK_COMBO_GET_TYPE) then begin
-    g_signal_handlers_destroy(PGtkObject(PGtkCombo(Widget)^.Entry));
-    g_signal_handlers_destroy(PGtkObject(PGtkCombo(Widget)^.List));
-    //is really necessary to clear the text here?
-    gtk_entry_set_text(PGtkEntry(PGtkCombo(Widget)^.Entry), '');
-  end;
-  {$endif}
 
   // update mouse capturing
   if (MouseCaptureWidget=Widget) or (MouseCaptureWidget=FixWidget) then
@@ -4835,7 +4540,7 @@ var
   TempWidget: PGtkWidget;
   WinWidgetInfo: PWinWidgetInfo;
 begin
-  {$if defined(gtk1) or defined(GtkFixedWithWindow)}
+  {$ifdef GtkFixedWithWindow}
   // Fixed + GdkWindow
   Result := gtk_hbox_new(false, 0);
   TempWidget := CreateFixedClientWidget;
@@ -4853,7 +4558,7 @@ begin
     receive mouse events and so you can not switch between Page3 and Page4.}
   // MG: disabled: gtk_event_box_set_visible_window(PGtkEventBox(Result), False);
   TempWidget := CreateFixedClientWidget(False);
-  {$ifend}
+  {$endif}
 
   gtk_container_add(GTK_CONTAINER(Result), TempWidget);
   gtk_widget_show(TempWidget);
@@ -4972,9 +4677,7 @@ var
   Decor, Func : Longint;
   AWindow: PGdkWindow;
   ACustomForm: TCustomForm;
-  {$IFDEF GTK2}
   CurWindowState: TWindowState;
-  {$ENDIF}
 begin
   if not (Sender is TWinControl) then
     RaiseWrongClass;
@@ -5056,7 +4759,6 @@ begin
 
     gtk_widget_show(SenderWidget);
 
-    {$IFDEF GTK2}
     if (ACustomForm <> nil) and
        (ACustomForm.Parent = nil) and
        (ACustomForm.ParentWindow = 0) then
@@ -5074,7 +4776,6 @@ begin
         wsMinimized: gtk_window_iconify(PGtkWindow(SenderWidget));
       end;
     end;
-    {$ENDIF}
   end
   else begin
 
@@ -5084,7 +4785,6 @@ begin
     if not gtk_widget_visible(SenderWidget) then
       exit;
 
-    {$IFDEF GTK2}
     // save previous position
     if ACustomForm <> nil then
     begin
@@ -5093,7 +4793,6 @@ begin
         and (ACustomForm.BorderStyle <> bsNone) then
         SetResizeRequest(SenderWidget);
     end;
-    {$ENDIF}
 
     gtk_widget_hide(SenderWidget);
 
@@ -5330,19 +5029,9 @@ begin
   Image := gdk_drawable_get_image(DC.Drawable,X,Y,1,1);
   if Image = nil then exit;
 
-  {$ifdef Gtk1}
-  // previously gdk_image_get_colormap(image) was used, implementation
-  // was casting GdkImage to GdkWindow which is not valid and cause AVs
-  if gdk_window_get_type(PGdkWindow(DC.Drawable))= GDK_WINDOW_PIXMAP then
-    colormap := nil // pixmaps are created with null colormap, get system one instead
-  else
-    colormap := gdk_window_get_colormap(PGdkWindow(DC.Drawable));
-  {$else}
   colormap := gdk_image_get_colormap(image);
   if colormap = nil then
     colormap := gdk_drawable_get_colormap(DC.Drawable);
-  {$endif}
-
 
   if colormap = nil then
     colormap := gdk_colormap_get_system;
@@ -5913,10 +5602,6 @@ var
   UseFont : TGtkIntfFont;
   CachedFont: TGtkFontCacheItem;
   IsDefault: Boolean;
-  {$IFDEF Gtk1}
-  AvgTxtLen: Integer;
-  Width: LongInt;
-  {$ELSE}
   AWidget: PGtkWidget;
   APangoContext: PPangoContext;
   APangoLanguage: PPangoLanguage;
@@ -5924,7 +5609,6 @@ var
   APangoFontDescription: PPangoFontDescription;
   APangoMetrics: PPangoFontMetrics;
   aRect: TPangoRectangle;
-  {$ENDIF}
 begin
   with TGtkDeviceContext(DC) do begin
     if dcfTextMetricsValid in Flags then begin
@@ -5951,39 +5635,7 @@ begin
     else with DCTextMetric do begin
       IsDoubleByteChar:=FontIsDoubleByteCharsFont(UseFont);
       IsMonoSpace:=FontIsMonoSpaceFont(UseFont);
-      {$IFDEF Gtk1}
-      AvgTxtLen:=length(TestString[false]);
-      if IsDoubleByteChar then begin
-        gdk_text_extents(UseFont, PChar(TestString[IsDoubleByteChar]),
-          AvgTxtLen, @lBearing, @rBearing, @Width,
-          @TextMetric.tmAscent, @TextMetric.tmDescent);
-        //debugln('TGtk2WidgetSet.UpdateDCTextMetric A IsDoubleByteChar=',dbgs(IsDoubleByteChar),' Width=',dbgs(Width),' AvgTxtLen=',dbgs(AvgTxtLen));
-        TextMetric.tmHeight := TextMetric.tmAscent+TextMetric.tmDescent;
-                // gdk_text_height(UseFont,PChar(TestString[IsDoubleByteChar]),
-                //                 AvgTxtLen*2)
-                //       {$IfNDef Win32} + TextMetric.tmdescent div 2{$EndIf};
-      end else begin
-        gdk_text_extents(UseFont, PChar(TestString[IsDoubleByteChar]),
-          AvgTxtLen, @lBearing, @rBearing, @Width,
-          @TextMetric.tmAscent, @TextMetric.tmDescent);
-        TextMetric.tmHeight := TextMetric.tmAscent+TextMetric.tmDescent;
-                // gdk_text_height(UseFont,PChar(TestString[IsDoubleByteChar]),
-                //              AvgTxtLen)
-                //       {$IfNDef Win32} + TextMetric.tmdescent div 2{$EndIf};
-      end;
-      //if Width<AvgTxtLen then UseWidthHeuristic;
-      //TextMetric.tmAscent := TextMetric.tmHeight - TextMetric.tmDescent;
-      if IsDoubleByteChar then
-        TextMetric.tmAveCharWidth:=Width div (AvgTxtLen div 2)
-      else
-        TextMetric.tmAveCharWidth:=Width div AvgTxtLen;
-      if TextMetric.tmAveCharWidth<1 then TextMetric.tmAveCharWidth:=1;
-      TextMetric.tmMaxCharWidth :=
-        Max(gdk_char_width(UseFont, 'W'),
-            gdk_char_width(UseFont, 'M')); // temp hack
-      if TextMetric.tmMaxCharWidth<TextMetric.tmAveCharWidth then
-        TextMetric.tmMaxCharWidth:=TextMetric.tmAveCharWidth;
-      {$ELSE Gtk2}
+
       // get pango context (= association to a widget)
       AWidget:=Widget;
       if AWidget=nil then
@@ -6038,13 +5690,9 @@ begin
       TextMetric.tmMaxCharWidth := Max(TextMetric.tmMaxCharWidth,aRect.width);
 
       pango_font_metrics_unref(APangoMetrics);
-      {$ENDIF}
+
       (*debugln('TGtk2WidgetSet.UpdateDCTextMetric A IsDoubleByteChar=',dbgs(IsDoubleByteChar),
         ' lbearing=',dbgs(lBearing),' rbearing=',dbgs(rBearing),
-        {$IFDEF Gtk1}
-        ' width='+dbgs(width),
-        ' AvgTxtLen='+dbgs(AvgTxtLen),
-        {$ENDIF}
         ' tmAscent='+dbgs(TextMetric.tmAscent),
         ' tmDescent='+dbgs(TextMetric.tmdescent),
         ' tmHeight='+dbgs(TextMetric.tmHeight),
@@ -6063,7 +5711,6 @@ begin
   end;
 end;
 
-{$Ifdef GTK2}
 {------------------------------------------------------------------------------
   function TGtk2WidgetSet.GetDefaultFontDesc(IncreaseReferenceCount: boolean
     ): PPangoFontDescription;
@@ -6080,7 +5727,6 @@ begin
   if IncreaseReferenceCount then
     Result := pango_font_description_copy(Result);
 end;
-{$Endif}
 
 {------------------------------------------------------------------------------
   function TGtk2WidgetSet.GetDefaultGtkFont(IncreaseReferenceCount: boolean
@@ -6261,29 +5907,11 @@ const
   //     to clear the old target lists
   var
     SelectionLists: PGList;
-    {$ifdef gtk1}
-    CurSelList: PGList;
-    TargetSelList: PGtkTargetSelectionList;
-    {$else}
     CurClipboard: TClipboardType;
-    {$endif}
   begin
     {$IFDEF DEBUG_CLIPBOARD}
     DebugLn('  ClearTargetLists WWW START');
     {$ENDIF}
-    {$ifdef gtk1}
-    SelectionLists := gtk_object_get_data (PGtkObject(Widget),
-      gtk_selection_handler_key);
-    CurSelList := SelectionLists;
-    while (CurSelList<>nil) do
-    begin
-      TargetSelList := CurSelList^.Data;
-      gtk_target_list_unref(TargetSelList^.List);
-      g_free(TargetSelList);
-      CurSelList := CurSelList^.Next;
-    end;
-    g_list_free(SelectionLists);
-    {$else}
     // clear 3 selections
     for CurClipboard := Low(TClipboardType) to High(CurClipboard) do
       gtk_selection_clear_targets(Widget, ClipboardTypeAtoms[CurClipboard]);
@@ -6292,7 +5920,6 @@ const
       gtk_selection_handler_key);
     if SelectionLists <> nil then
       g_list_free(SelectionLists);
-    {$endif}
     gtk_object_set_data (PGtkObject(Widget), gtk_selection_handler_key, GtkNil);
     {$IFDEF DEBUG_CLIPBOARD}
     DebugLn('  ClearTargetLists WWW END');

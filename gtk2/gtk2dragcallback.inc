@@ -65,7 +65,7 @@ Begin
       Assert(False, 'Trace:1');
       gtk_selection_data_set(selection_data,selection_data^.target,
                     8,
-                    {$IFDEF Gtk2}PGUChar(StrTemp){$ELSE}StrTemp{$ENDIF},
+                    PGUChar(StrTemp),
                     length(Texts)+1);
       Assert(False, 'Trace:2');
     finally

@@ -15,22 +15,15 @@
 }
 
 function DoDeliverPaintMessage(const Target: TObject; var PaintMsg: TLMPaint): PtrInt;
-{$ifndef gtk1}
 var
   WidgetInfo: PWidgetInfo;
-{$endif}
 begin
   {
     erase backgound of custom controls
     use only for real custom controls for gtk1 - that are GTKAPIWidget
   }
 
-  if (TObject(Target) is TCustomControl)
-  {$ifdef gtk1}
-     and GtkWidgetIsA(PGtkWidget(TCustomControl(Target).Handle), GTKAPIWidget_Type)
-     and not (wwiNoEraseBkgnd in GetWidgetInfo(PGtkWidget(TCustomControl(Target).Handle))^.Flags)
-  {$endif}
-  then begin
+  if (TObject(Target) is TCustomControl) then begin
     Include(TWinControlAccess(Target).FWinControlFlags, wcfEraseBackground);
     TWinControl(Target).Perform(LM_ERASEBKGND, PaintMsg.DC, 0);
     Exclude(TWinControlAccess(Target).FWinControlFlags, wcfEraseBackground);
@@ -38,13 +31,11 @@ begin
 
   Result := DeliverMessage(Target, PaintMsg);
 
-  {$ifndef gtk1}
   if (TObject(Target) is TCustomControl) then begin
     WidgetInfo := GetWidgetInfo(PGtkWidget(TCustomControl(Target).Handle), False);
     if WidgetInfo <> nil then
       WidgetInfo^.UpdateRect := Rect(0,0,0,0);
   end;
-  {$endif}
 end;
 
 function DeliverPaintMessage(const Target: Pointer; var TheMessage): GBoolean;
@@ -88,15 +79,10 @@ end;
 
 function DeliverGtkPaintMessage(Target: Pointer; Widget: PGtkWidget;
   Area: PGDKRectangle; RepaintAll, IsAfterGtk: boolean): GBoolean;
-{$IFDEF Gtk2}
-// the gtk2 has a working double buffering and expose event area
-{$DEFINE DirectPaintMsg}
-{$ENDIF}
 var
   Msg: TLMGtkPaint;
 begin
   //DebugLn(['DeliverGtkPaintMessage ',DbgSName(TObject(Target)),' Widget=',GetWidgetDebugReport(Widget),' RepaintAll=',RepaintAll,' AfterGtk=',IsAfterGtk,' Area=',dbgs(Area)]);
-  {$IFDEF Gtk2}
   // default is, that a control receives the paint message after gtk (including the child paints)
   // In case of TCustomControl, there is no gtk painting only the
   // child paintings. Let the TCustomControl paint the background.
@@ -108,8 +94,7 @@ begin
   begin
     if not (TObject(Target) is TCustomControl) then exit(false);
   end;
-  {$ENDIF}
-  
+
   if (not RepaintAll) and ((Area^.Width<1) or (Area^.Height<1)) then exit(false);
 
   Msg.Msg := LM_GTKPAINT;
@@ -119,11 +104,8 @@ begin
   Msg.Data.Rect := Bounds(Area^.x, Area^.y, Area^.Width, Area^.Height);
   Msg.Data.RepaintAll := RepaintAll;
 
-  {$IFDEF DirectPaintMsg}
+  // the gtk2 has a working double buffering and expose event area
   Result := DeliverPaintMessage(Target, Msg);
-  {$ELSE}
-  Result := DeliverPostMessage(Target, Msg);
-  {$ENDIF}
 end;
 
 procedure EventTrace(const TheMessage : string; data : pointer);
@@ -282,9 +264,7 @@ begin
 
         NewEventMask:=gdk_window_get_events(GetControlWindow(Widget))
                       or WinWidgetInfo^.EventMask;
-        {$IFNDEF Gtk1}
         gtk_widget_add_events(Widget,NewEventMask);
-        {$ENDIF}
         gdk_window_set_events(GetControlWindow(Widget),NewEventMask);
 
         if (ClientWidget<>nil) and (GetControlWindow(ClientWidget)<>nil)
@@ -292,9 +272,7 @@ begin
           //DebugLn(['gtkRealizeAfterCB ClientWindow<>Window']);
           NewEventMask:=gdk_window_get_events(GetControlWindow(ClientWidget))
                         or WinWidgetInfo^.EventMask;
-          {$IFNDEF Gtk1}
           gtk_widget_add_events(ClientWidget,WinWidgetInfo^.EventMask);
-          {$ENDIF}
           gdk_window_set_events(GetControlWindow(ClientWidget),NewEventMask);
         end;
         //DebugLn('BBB1 ',DbgS(NewEventMask),8),' ',DbgS(Cardinal(gdk_window_get_events(Widget^.Window)));
@@ -440,11 +418,9 @@ end;
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
-  {$IFDEF GTK2}
   GStart, GEnd: gint;
   Info: PWidgetInfo;
   EntryText: PgChar;
-  {$ENDIF}
 begin
   Result := CallBackDefaultReturn;
 
@@ -456,20 +432,6 @@ begin
   if GTK_IS_ENTRY(Widget) then
   begin
     {cheat GtkEditable to update cursor pos in gtkEntry. issue #7243}
-    {$IFDEF GTK1}
-    {under gtk1 we have not text_width & backspace signal
-     so we cannot reach our goal like in gtk2 case.
-     IMHO, better to leave as bug than as partial bug
-     since pressing bkspace or delete always move
-     cursor pos to last pos (text width) or positioning
-     inside text by mouse click and then start typing
-     also makes a mess.
-    GStart := PGtkOldEditable(Widget)^.selection_start_pos;
-    GEnd := PGtkOldEditable(Widget)^.selection_end_pos;
-    if (GStart = GEnd) then
-      gtk_editable_set_position(PGtkEditable(Widget), -1);
-      }
-    {$ELSE}
     gtk_editable_get_selection_bounds(PGtkEditable(Widget), @GStart, @GEnd);
     EntryText := gtk_entry_get_text(PGtkEntry(Widget));
     if (GStart = GEnd) and
@@ -482,14 +444,12 @@ begin
       else
         gtk_editable_set_position(PGtkEditable(Widget), GStart + 1);
     end;
-    {$ENDIF}
   end;
   FillByte(Mess,SizeOf(Mess),0);
   Mess.Msg := CM_TEXTCHANGED;
   DeliverMessage(Data, Mess);
 end;
 
-{$IFDEF GTK2}
 function gtkchanged_spinbox(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 begin
   Result := CallBackDefaultReturn;
@@ -534,7 +494,6 @@ begin
   Info := GetWidgetInfo(Widget, False);
   include(Info^.Flags, wwiInvalidEvent);
 end;
-{$ENDIF}
 
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
@@ -557,15 +516,7 @@ var
   procedure ChangeCheckbox(AGrayed,AChecked: boolean);
   begin
     LockOnChange(PgtkObject(Widget),1);
-    {$IFDEF GTK1}
-    if AGrayed then
-      gtk_object_set_data(PgtkObject(Widget), 'Grayed', Widget)
-    else
-      gtk_object_set_data(PgtkObject(Widget), 'Grayed', nil);
-    {$ENDIF}
-    {$IFDEF GTK2}
     gtk_toggle_button_set_Inconsistent(PGtkToggleButton(Widget), AGrayed);
-    {$ENDIF}
     gtk_toggle_button_set_active(PGtkToggleButton(Widget), AChecked);
     LockOnChange(PgtkObject(Widget),-1);
   end;
@@ -581,22 +532,12 @@ begin
   if GtkWidgetIsA(Widget,gtk_toggle_button_get_type) then begin
 
     if TObject(Data) is TCustomCheckbox then begin
-    {$IFDEF GTK1}
-      if gtk_object_get_data(PgtkObject(Widget), 'Grayed')<>nil then
-        ChangeCheckbox(false, true)
-      else
-      if TCustomCheckbox(Data).AllowGrayed and
-         gtk_toggle_button_get_active(PGtkToggleButton(Widget)) then
-        ChangeCheckbox(true, false);
-    {$ENDIF}
-    {$IFDEF GTK2}
       if gtk_toggle_button_get_inconsistent(PGtkToggleButton(Widget)) then
         ChangeCheckbox(false, true)
       else
       if TCustomCheckbox(Data).AllowGrayed and
          gtk_toggle_button_get_active(PGtkToggleButton(Widget)) then
         ChangeCheckbox(true, false);
-    {$ENDIF}
     end;
 
   end;
@@ -606,64 +547,6 @@ begin
   DeliverMessage(Data, Mess);
   //DebugLn('gtktoggledCB END ',DbgSName(TObject(Data)));
 end;
-
-{$Ifdef GTK1}
-function gtkDrawCB(Widget: PGtkWidget; area: PGDKRectangle;
-  data: gPointer): GBoolean; cdecl;
-begin
-  Result := CallBackDefaultReturn;
-  //DebugLn(['gtkDrawCB ',GetWidgetDebugReport(Widget),' area=',dbgs(area)]);
-  {$IFDEF EventTrace}
-  EventTrace('DrawAfter', data);
-  {$ENDIF}
-end;
-
-function gtkDrawAfterCB(Widget: PGtkWidget; area: PGDKRectangle;
-  data: gPointer) : GBoolean; cdecl;
-  
-  function WidgetHasDrawAllBug: boolean;
-  {$IFDEF Gtk1}
-  var
-    WidgetStyle: PGtkStyle;
-  {$ENDIF}
-  begin
-    Result:=false;
-    {$IFDEF Gtk1}
-    WidgetStyle := gtk_widget_get_style(Widget);
-    if (WidgetStyle=nil) then exit;
-    if (WidgetStyle^.engine=nil) then exit;
-    Result:=true;
-    {$ENDIF}
-    //DebugLn(['WidgetHasDrawAllBug ',dbgs(WidgetStyle^.engine)]);
-  end;
-  
-var
-  DesignOnlySignal: boolean;
-begin
-  Result := CallBackDefaultReturn;
-  //DebugLn(['gtkDrawAfterCB ',GetWidgetDebugReport(Widget),' area=',dbgs(area)]);
-  {$IFDEF EventTrace}
-  EventTrace('DrawAfter', data);
-  {$ENDIF}
-
-  if not (csDesigning in TComponent(Data).ComponentState) then begin
-    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstDrawAfter);
-    if DesignOnlySignal then exit;
-  end else begin
-    {$IFDEF VerboseDesignerDraw}
-    DebugLn('gtkDrawAfterCB',
-      ' Widget=',DbgS(Widget),'=',GetWidgetClassName(Widget),
-      ' ',TComponent(Data).Name,
-      ' ',area^.x,',',area^.y,',',area^.width,',',area^.height,
-      '');
-    {$ENDIF}
-  end;
-  
-  // some gtk1 theme engines show a bug: they ignore the area and repaint all
-  // In this case the LCL must repaint all too.
-  DeliverGtkPaintMessage(Data,Widget,Area,WidgetHasDrawAllBug,true);
-end;
-{$ENDIF}
 
 function gtkExposeEvent(Widget: PGtkWidget; Event : PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
@@ -692,22 +575,14 @@ begin
 
   //DebugLn(['gtkExposeEvent ',GetWidgetDebugReport(Widget),' ',dbgGRect(@Event^.Area)]);
 
-  {$IFDEF Gtk1}
-  // the expose area is ok, but some gtk widgets repaint everything on expose
-  // -> maximize the area
-  DeliverGtkPaintMessage(Data, Widget, @Event^.Area, True, False);
-  {$ELSE}
   DeliverGtkPaintMessage(Data, Widget, @Event^.Area, False, False);
-  {$ENDIF}
 end;
 
 function gtkExposeEventAfter(Widget: PGtkWidget; Event : PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
 var
   DesignOnlySignal: boolean;
-  {$IFDEF GTK2}
   //children: PGList;
-  {$ENDIF}
 begin
   Result := CallBackDefaultReturn;
   {$IFDEF EventTrace}
@@ -731,11 +606,6 @@ begin
 
   //DebugLn(['gtkExposeEventAfter ',GetWidgetDebugReport(Widget),' ',dbgGRect(@Event^.Area)]);
 
-  {$IFDEF Gtk1}
-  // the expose area is ok, but some gtk widgets repaints everything on expose
-  // -> maximize the area
-  DeliverGtkPaintMessage(Data,Widget,@Event^.Area,true,true);
-  {$ELSE}
   DeliverGtkPaintMessage(Data,Widget,@Event^.Area,false,true);
 
   // Some widgets in gtk2 don't have their own exclusive "windows" so a synthetic event must be sent
@@ -754,7 +624,6 @@ begin
     end;
     g_list_free(children);
   end;}
-  {$ENDIF}
 end;
 
 function gtkfrmactivateAfter(widget: PGtkWidget; Event : PgdkEventFocus;
@@ -777,7 +646,7 @@ begin
 
   FillChar(Mess,SizeOf(Mess),#0);
   {$IFDEF VerboseFocus}
-  write('gtkfrmactivateAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^.{$ifdef gtk1}thein{$else}_in{$endif});
+  write('gtkfrmactivateAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^._in);
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -840,7 +709,7 @@ begin
   {$ENDIF}
   if (Widget=nil) or (Event=nil) then ;
   {$IFDEF VerboseFocus}
-  write('gtkfrmdeactivate Widget=',DbgS(Widget),' ',Event^.{$ifdef gtk1}thein{$else}_in{$endif},
+  write('gtkfrmdeactivate Widget=',DbgS(Widget),' ',Event^._in,
         ' GetFocus=',DbgS(Widget));
   LCLObject:=TControl(GetLCLObject(Widget));
   if LCLObject<>nil then
@@ -906,7 +775,7 @@ begin
   if (Widget=nil) or (Event=nil) then ;
   //DebugLn('GTKFocusCB ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
-  write('GTKFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^.{$ifdef gtk1}thein{$else}_in{$endif});
+  write('GTKFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^._in);
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -953,7 +822,7 @@ begin
   if (Widget=nil) or (Event=nil) then ;
   //DebugLn('GTKFocusCBAfter ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
-  write('GTKFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^.{$ifdef gtk1}thein{$else}_in{$endif});
+  write('GTKFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^._in);
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -1014,7 +883,7 @@ begin
   if (Widget=nil) or (Event=nil) then ;
   //DebugLn('GTKKillFocusCB ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
-  write('GTKillFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^.{$ifdef gtk1}thein{$else}_in{$endif});
+  write('GTKillFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^._in);
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -1064,7 +933,7 @@ begin
   {$ENDIF}
   //DebugLn('GTKKillFocusCBAfter ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
-  write('GTKillFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^.{$ifdef gtk1}thein{$else}_in{$endif});
+  write('GTKillFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^._in);
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -1338,9 +1207,7 @@ begin
   MappedXY := TranslateGdkPointToClientArea(Event^.Window,
                                Point(TruncToInt(Event^.X), TruncToInt(Event^.Y)),
                                PGtkWidget(AWinControl.Handle));
-  {$ifndef gtk1}
   MappedXY := SubtractScoll(PGtkWidget(AWinControl.Handle), MappedXY);
-  {$endif}
 
   ShiftState := GTKEventStateToShiftState(Event^.State);
   with Msg do
@@ -1414,19 +1281,6 @@ begin
     {$IFDEF VerboseMouseCapture}
     DebugLn(['gtkMotionNotify gtk capture without mouse down: ',GetWidgetDebugReport(Widget)]);
     {$ENDIF}
-    {$IFDEF Gtk1}
-    // workaround for buggy gtk1: release capture and clean up editable
-    // (happens when popupmenu of TEdit/TComboBox closes)
-    gtk_grab_remove(MouseCaptureWidget);
-    if GtkWidgetIsA(MouseCaptureWidget,GTK_TYPE_ENTRY) then begin
-      PGtkEntry(MouseCaptureWidget)^.button:=0;
-    end;
-    if GtkWidgetIsA(MouseCaptureWidget,gtk_editable_get_type) then begin
-      PGtkEditable(MouseCaptureWidget)^.flag0:=
-        PGtkEditable(MouseCaptureWidget)^.flag0 and not bm_TGtkEditable_has_selection;
-    end;
-    UpdateMouseCaptureControl;
-    {$ENDIF}
   end;
 
   if not (csDesigning in TComponent(Data).ComponentState) then
@@ -1442,10 +1296,8 @@ begin
   end;
 
   DeliverMouseMoveMessage(Widget,Event,TWinControl(Data));
-  {$IFDEF gtk2}
   if TControl(Data).FCompStyle = csWinControl then
     Result := True; // stop signal
-  {$ENDIF}
 end;
 
 {-------------------------------------------------------------------------------
@@ -1489,9 +1341,6 @@ begin
   Result:=true;
   if AControl=nil then exit;
   if GtkWidgetIsA(AWidget,gtk_toggle_button_get_type) then begin
-    {$IFDEF Gtk1}
-    Result:=false;
-    {$ENDIF}
   end;
 end;
 
@@ -1552,11 +1401,6 @@ function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
 var
   DesignOnlySignal: boolean;
   AWinControl: TWinControl;
-  {$IFDEF GTK1}
-  CaptureWidget: PGtkWidget;
-  EventXY: TPoint;
-  MappedXY: TPoint;
-  {$ENDIF}
 begin
   Result := CallBackDefaultReturn;
   MousePositionValid := False;
@@ -1592,13 +1436,6 @@ begin
 
     if Event^.button = 1 then
     begin
-      {$IFDEF Gtk1}
-      // gtk2: the LCL will capture itself if DragMode=dmAutomatic
-      CaptureWidget := PGtkWidget(AWinControl.Handle);
-      EventXY := Point(TruncToInt(Event^.X), TruncToInt(Event^.Y));
-      MappedXY := TranslateGdkPointToClientArea(Event^.Window, EventXY, CaptureWidget);
-      SetCaptureControl(AWinControl, MappedXY);
-      {$ENDIF}
       //CaptureMouseForWidget(CaptureWidget,mctGTKIntf);
     end
     else
@@ -1607,10 +1444,6 @@ begin
     if (Event^.button = 3) and
        ((AWinControl.PopupMenu <> nil) or
         (TWinControlAccess(Data).OnContextPopup <> nil)) then begin
-      {$IFDEF GTK1}
-      if (TControl(Data) is TCustomNoteBook) then
-        g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
-      {$ENDIF}
       Result := True;
     end;
   end else begin
@@ -1767,9 +1600,7 @@ begin
   ShiftState := GTKEventStateToShiftState(Event^.State);
   MappedXY := TranslateGdkPointToClientArea(Event^.Window, EventXY,
                                             PGtkWidget(AWinControl.Handle));
-  {$ifndef gtk1}
   MappedXY := SubtractScoll(PGtkWidget(AWinControl.Handle), MappedXY);
-  {$endif}
   //DebugLn('DeliverMouseDownMessage ',DbgSName(AWinControl),' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y));
 
   if event^.Button in [4, 5] then
@@ -1864,14 +1695,6 @@ function ControlGetsMouseUpBefore(AControl: TControl): boolean;
 begin
   Result:=true;
   if AControl=nil then ;
-  {$IFDEF Gtk1}
-  case AControl.fCompStyle of
-  csCheckBox,
-  csRadioButton,
-  csToggleBox:
-    Result:=false;
-  end;
-  {$ENDIF}
 end;
 
 {-------------------------------------------------------------------------------
@@ -1902,9 +1725,7 @@ begin
   MappedXY := TranslateGdkPointToClientArea(Event^.Window,
                                Point(TruncToInt(Event^.X), TruncToInt(Event^.Y)),
                                PGtkWidget(AWinControl.Handle));
-  {$ifndef gtk1}
   MappedXY := SubtractScoll(PGtkWidget(AWinControl.Handle), MappedXY);
-  {$endif}
   //DebugLn(['DeliverMouseUpMessage ',GetWidgetDebugReport(Widget),' ',dbgsName(AWinControl),' ',dbgs(MappedXY)]);
 
   case event^.Button of
@@ -2176,20 +1997,7 @@ begin
   if TControl(Data) is TCustomForm then
     DebugLn('VFP gtksize_allocateCB: ',TControl(Data).ClassName,' ',dbgs(Size^.X),',',dbgs(Size^.Y));
   {$ENDIF}
-  {$IFDEF Gtk1}
-  if GTK_WIDGET_REALIZED(Widget) then begin
-    { The gtk sends the size messages after the resizing. Therefore the parent
-      widget is already resized, but the parent resize message will be emitted
-      after all its childs. So, the gtk resizes in top-bottom order, just like the
-      LCL. But it sends size messages in bottom-top order, which can result in
-      many resizes in the LCL.
-    }
-    // All resize messages between lcl and gtk1 are cached.
-    SaveSizeNotification(Widget);
-  end;
-  {$ELSE}
-    SendSizeNotificationToLCL(Widget);
-  {$ENDIF}
+  SendSizeNotificationToLCL(Widget);
 end;
 
 function gtksize_allocate_client(widget: PGtkWidget; size: pGtkAllocation;
@@ -2383,13 +2191,10 @@ end;
 function gtkCutToClip( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
-  {$IFDEF GTK2}
   Info: PWidgetInfo;
-  {$ENDIF}
 begin
   EventTrace('Cut to clip', data);
   if (Widget=nil) then ;
-  {$IFDEF GTK2}
   if (gtk_major_version = 2) and (gtk_minor_version < 17) then
   begin
     if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
@@ -2398,7 +2203,6 @@ begin
       include(Info^.Flags, wwiInvalidEvent);
     end;
   end;
-  {$ENDIF}
   Mess.msg := LM_CUT;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2416,13 +2220,10 @@ end;
 function gtkPasteFromClip( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
-  {$IFDEF GTK2}
   Info: PWidgetInfo;
-  {$ENDIF}
 begin
   EventTrace('Paste from clip', data);
   if (Widget=nil) then ;
-  {$IFDEF GTK2}
   if (gtk_major_version = 2) and (gtk_minor_version < 17) then
   begin
     if (Widget <> nil) and (GTK_IS_ENTRY(Widget)) then
@@ -2431,7 +2232,6 @@ begin
       include(Info^.Flags, wwiInvalidEvent);
     end;
   end;
-  {$ENDIF}
   Mess.msg := LM_PASTE;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2458,7 +2258,7 @@ end;
            gtk_timeout_remove so we have to dispose data here & return 0
            (s.a. KillTimer).
  ------------------------------------------------------------------------------}
-function gtkTimerCB(Data: gPointer): {$IFDEF Gtk2}gBoolean{$ELSE}gint{$ENDIF}; cdecl;
+function gtkTimerCB(Data: gPointer): gBoolean; cdecl;
 var
   TimerInfo: PGtkITimerinfo;
 begin
@@ -2550,26 +2350,14 @@ begin
   DeliverMessage(Data, MessI);
 end;
 
-{$IFDEF gtk1}
-function gtk_range_get_update_policy(range: PGTKRange): TGtkUpdateType;
-begin
-  result := policy(Range^);
-end;
-{$ENDIF}
-
 function get_gtk_scroll_type(range: PGTKRange): TGtkScrollType;
-{$IFNDEF gtk1}
 type
   TUnOpaqueTimer=record
     timeout_id: guint;
     ScrollType: TGTkScrollType;
   end;
   PUnOpaqueTimer=^TUnopaqueTimer;
-{$ENDIF}
 begin
-{$IFDEF gtk1}
-  Result := Scroll_type(Range^);
-{$ELSE}
   if (gtk_major_version=2) and (gtk_minor_version<6) and
      (Range^.Timer<>nil) then
     { gtk2 pre gtk2.6 ONLY, tested gtk2.0.
@@ -2578,7 +2366,6 @@ begin
     Result := PUnOpaqueTimer(Range^.Timer)^.ScrollType
   else
     Result := GTK_SCROLL_NONE;
-{$ENDIF}
 end;
 
 {$IFDEF VerboseGtkScrollbars}
@@ -2592,7 +2379,6 @@ begin
     GTK_SCROLL_PAGE_BACKWARD: DbgOut('GTK_SCROLL_PAGE_BACKWARD ');
     GTK_SCROLL_PAGE_FORWARD: DbgOut('GTK_SCROLL_PAGE_FORWARD ');
     GTK_SCROLL_JUMP: DbgOut('GTK_SCROLL_JUMP ');
-    {$ifdef gtk2}
     GTK_SCROLL_STEP_UP: DbgOut('GTK_SCROLL_STEP_UP');
     GTK_SCROLL_STEP_DOWN: DbgOut('GTK_SCROLL_STEP_DOWN');
     GTK_SCROLL_PAGE_UP: DbgOut('GTK_SCROLL_PAGE_UP');
@@ -2603,7 +2389,6 @@ begin
     GTK_SCROLL_PAGE_RIGHT: DbgOut('GTK_SCROLL_PAGE_RIGHT');
     GTK_SCROLL_START: DbgOut('GTK_SCROLL_START');
     GTK_SCROLL_END: DbgOut('GTK_SCROLL_END');
-    {$endif}
     else
       DbgOut(IntToStr(Scroll), '->?');
   end;
@@ -2634,7 +2419,6 @@ begin
         Result := SB_PAGEDOWN
       else
         Result := SB_PAGERIGHT;
-    {$ifdef GTK2}
     GTK_SCROLL_STEP_UP:
       Result := SB_LINEUP;
     GTK_SCROLL_STEP_DOWN:
@@ -2661,7 +2445,6 @@ begin
         Result := SB_BOTTOM
       else
         Result := SB_RIGHT;
-    {$endif}
     else
       begin
         {$IFDEF VerboseGtkScrollbars}
@@ -2730,7 +2513,6 @@ begin
   end;
 end;
 
-{$ifdef gtk2}
 function Gtk2RangeScrollCB(ARange: PGtkRange; AScrollType: TGtkScrollType;
                   AValue: gdouble; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
 var
@@ -2771,7 +2553,6 @@ begin
   end;
   Result := DeliverMessage(AWidgetInfo^.LCLObject, Msg) <> 0;
 end;
-{$endif}
 
 {------------------------------------------------------------------------------
   Function: GTKKeySnooper
@@ -2846,12 +2627,8 @@ begin
     Exit;
   end;
 
-  {$ifdef gtk1}
-    KeyCode := XKeysymToKeycode(gdk_display, Event^.keyval);
-  {$else}
-    KeyCode := Event^.hardware_keycode;
-  {$endif}
-  //DebugLn('GTKKeySnooper: KeyCode=%u -> %s', [KeyCode, {$IFDEF GTK2} Event^._String {$ELSE} Event^.theString {$ENDIF}]);
+  KeyCode := Event^.hardware_keycode;
+  //DebugLn('GTKKeySnooper: KeyCode=%u -> %s', [KeyCode, Event^._String ]);
   
   if KeyCode > High(MKeyCodeInfo)
   then begin
@@ -2859,7 +2636,7 @@ begin
     then DebugLn('[WARNING] Key pressed with keycode (%u) larger than expected: K=0x%x S="%s"', [
       KeyCode,
       Event^.KeyVal,
-      {$IFDEF GTK2} Event^._String {$ELSE} Event^.theString {$ENDIF}
+      Event^._String
     ]);
     Exit;
   end;
@@ -2870,7 +2647,7 @@ begin
     if Pressed
     then DebugLn('[WARNING] Key pressed without VKey: K=0x%x S="%s"', [
       Event^.KeyVal,
-      {$IFDEF GTK2} Event^._String {$ELSE} Event^.theString {$ENDIF}
+      Event^._String
     ]);
     Exit;
   end;
@@ -3029,7 +2806,7 @@ begin
   DebugLn('[ClipboardSelectionReceivedHandler] A TimeID=',dbgs(TimeID),' RequestIndex=',dbgs(i),
     ' selection=',dbgs(SelectionData^.selection)+'='+GdkAtomToStr(SelectionData^.selection),
     ' target=',dbgs(SelectionData^.Target)+'='+GdkAtomToStr(SelectionData^.Target),
-    ' theType=',dbgs(SelectionData^.{$IFDEF Gtk1}theType{$ELSE}_type{$ENDIF})+'='+GdkAtomToStr(SelectionData^.{$IFDEF Gtk1}theType{$ELSE}_type{$ENDIF}),
+    ' theType=',dbgs(SelectionData^._type)+'='+GdkAtomToStr(SelectionData^._type),
     ' format=',dbgs(SelectionData^.format),
     ' len=',dbgs(SelectionData^.length)
     );
@@ -3142,7 +2919,7 @@ begin
 
               BufLength:=0;
               gdk_string_to_compound_text(P,
-                @SelectionData^.{$ifdef GTK2}_Type{$ELSE}theType{$ENDIF},
+                @SelectionData^._Type,
                 @SelectionData^.Format,ppguchar(@Buffer),@BufLength);
               StrDispose(P);
               gtk_selection_data_set(SelectionData,SelectionData^.Target,

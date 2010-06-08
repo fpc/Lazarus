@@ -124,13 +124,7 @@ function TGtk2WidgetSet.BeginPaint(Handle: hWnd; var PS : TPaintStruct) : hdc;
 var
   Widget: PGtkWidget;
   Info: PWidgetInfo;
-{$IFDEF Gtk1}
-  IsDoubleBuffered: Boolean;
-  TargetObject: TObject;
-  PaintWidget: Pointer;
-{$ELSE}
   DC: TGtkDeviceContext;
-{$ENDIF}
   paintrect : TGDKRectangle;
   Control: TWinControl;
 
@@ -139,33 +133,9 @@ begin
   Info:=GetWidgetInfo(Widget,false);
   if Info<>nil then
     Inc(Info^.PaintDepth);
-  {$IFDEF Gtk1}
-  TargetObject:=GetNearestLCLObject(Widget);
-  IsDoubleBuffered:=(TargetObject is TWinControl)
-                    and TWinControl(TargetObject).DoubleBuffered;
-  // check if Handle is the paint widget of the LCL component
-  if IsDoubleBuffered then begin
-    PaintWidget:=GetFixedWidget(PGtkWidget(TWinControl(TargetObject).Handle));
-    IsDoubleBuffered:=(PaintWidget=Widget);
-    //if not IsDoubleBuffered then begin
-    //  DebugLn('TGtk2WidgetSet.BeginPaint Not the paint widget: ',
-    //    TWinControl(TargetObject).Name,':',TWinControl(TargetObject).ClassName,
-    //    ' PaintWidget=',GetWidgetClassName(PaintWidget),
-    //    ' Widget=',GetWidgetClassName(Widget));
-    //end;
-  end;
-  {$IFNDEF UseGTKDoubleBuf}
-  IsDoubleBuffered:=false;
-  {$ENDIF}
-  if IsDoubleBuffered then
-    PS.hDC:=GetDoubleBufferedDC(Handle)
-  else
-    PS.hDC:=GetDC(Handle);
-  {$ELSE  below: not GTK1}
   PS.hDC:=GetDC(Handle);
   DC:=TGtkDeviceContext(PS.hDC);
   DC.PaintRectangle:=PS.rcPaint;
-  {$ENDIF}
 
   Result := PS.hDC;
   
@@ -351,7 +321,7 @@ var
       );}
       if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
       or (SelData.Target<>AllID)
-      or (SelData.{$IfDef GTK2}_Type{$Else}theType{$EndIf}<>gdk_atom_intern('ATOM',GdkFalse)) then begin
+      or (SelData._Type<>gdk_atom_intern('ATOM',GdkFalse)) then begin
         SupportedCnt:=0;
         exit;
       end;
@@ -448,8 +418,8 @@ begin
         // the lcl expects the return format as simple text
         // transform if necessary
         if FormatAtom=gdk_atom_intern('COMPOUND_TEXT',GdkTrue) then begin
-          CompoundTextCount:=gdk_text_property_to_text_list(SelData.{$IfDef GTK2}_Type{$Else}theType{$EndIf},
-            SelData.Format,SelData.Data,SelData.Length,{$IfDef GTK1}@{$EndIf}CompoundTextList);
+          CompoundTextCount:=gdk_text_property_to_text_list(SelData._Type,
+            SelData.Format,SelData.Data,SelData.Length,CompoundTextList);
           {$IfDef DEBUG_CLIPBOARD}
           DebugLn('[TGtk2WidgetSet.ClipboardGetData] D  CompoundTextCount=',dbgs(CompoundTextCount),' Now=',dbgs(Now));
           {$EndIf}
@@ -547,8 +517,8 @@ begin
                 ' "'+GdkAtomToStr(SelData.Selection)+'"',
       ' target: '+dbgs(SelData.Target),'=',dbgs(AllID),
                 ' "'+GdkAtomToStr(SelData.Target),'"',
-      ' theType: '+dbgs(SelData.{$IFDEF Gtk1}theType{$ELSE}_type{$ENDIF})+'='+dbgs(gdk_atom_intern('ATOM',GdkFalse))+
-                ' "'+GdkAtomToStr(SelData.{$IFDEF Gtk1}theType{$ELSE}_type{$ENDIF})+'"',
+      ' theType: '+dbgs(SelData._type)+'='+dbgs(gdk_atom_intern('ATOM',GdkFalse))+
+                ' "'+GdkAtomToStr(SelData._type)+'"',
       ' Length='+dbgs(SelData.Length),
       ' Format='+dbgs(SelData.Format),
       ' Data='+Dbgs(SelData.Data),
@@ -558,8 +528,8 @@ begin
     if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
     or (SelData.Target<>AllID)
     or (SelData.Format<=0)
-    or ((SelData.{$IfDef GTK2}_Type{$Else}TheType{$EndIf}<>gdk_atom_intern('ATOM',GdkFalse))
-         and (SelData.{$IfDef GTK2}_Type{$Else}TheType{$EndIf}<>AllID))
+    or ((SelData._Type<>gdk_atom_intern('ATOM',GdkFalse))
+         and (SelData._Type<>AllID))
     then
       exit;
     Cnt:=SelData.Length div (SelData.Format shr 3);
@@ -840,7 +810,7 @@ var
     FillBitmapInfo(Header);
     Src := nil;
     try
-      if not gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(@Header), MIN_LOADER_HEADER_SIZE {$ifdef gtk2},nil{$endif})
+      if not gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(@Header), MIN_LOADER_HEADER_SIZE,nil)
       then begin
         DebugLn('WARNING: [TGtk2WidgetSet.CreateBitmap] Error occured loading Bitmap Header!');
         Exit;
@@ -856,15 +826,15 @@ var
         BitsPtr := BitmapBits;
         while res and (Count > 0) do
         begin
-          res := gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(BitsPtr), LineSize {$ifdef gtk2},nil{$endif})
-             and gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(@ALIGNDATA), 2 {$ifdef gtk2},nil{$endif});
+          res := gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(BitsPtr), LineSize,nil)
+             and gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(@ALIGNDATA), 2,nil);
           Inc(BitsPtr, LineSize);
           Dec(Count);
         end;
       end
       else begin
         // data is DWord aligned :)
-        res := gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(BitmapBits), Header.InfoHeader.biSizeImage {$ifdef gtk2},nil{$endif});
+        res := gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(BitmapBits), Header.InfoHeader.biSizeImage,nil);
       end;
     
       if not res
@@ -881,7 +851,7 @@ var
       end;
 
     finally
-      gdk_pixbuf_loader_close(Loader {$ifdef gtk2},nil {$endif});
+      gdk_pixbuf_loader_close(Loader,nil);
     end;
 
     if GdiObject^.GDIPixmapObject.Image<>nil then
@@ -1274,13 +1244,6 @@ begin
     gdk_color_white(gdk_colormap_get_system, @CurrentBackColor.Color);
     BuildColorRefFromGDKColor(CurrentBackColor);
   end;
-
-  {$IFDEF Gtk1}
-  pNewDC.GetFont;
-  pNewDC.GetBrush;
-  pNewDC.GetPen;
-  {$ENDIF}
-
   Result := HDC(pNewDC);
 
   Assert(False,Format('trace:  [TGtk2WidgetSet.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
@@ -2448,10 +2411,6 @@ var
         if (Flags and DT_VCENTER) > 0 then
         begin
           OffsetRect(theRect, 0, ((Rect.Bottom - Rect.Top) - (theRect.Bottom - theRect.Top)) div 2);
-          {$ifdef Gtk1}
-          //gtk1 overestimate TM.tmHeight leading to wrong calculation of the center offset
-          OffsetRect(theRect, 0, 1);
-          {$endif}
         end
         else
         if (Flags and DT_BOTTOM) > 0 then
@@ -3900,11 +3859,7 @@ end;
 function TGtk2WidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 var
   Widget, ClientWidget: PGtkWidget;
-  {$IFDEF Gtk1}
-  MainOrigin: TPoint;
-  {$ELSE}
   CurGDKWindow: PGdkWindow;
-  {$ENDIF}
   ClientOrigin: TPoint;
   ClientWindow, MainWindow: PGdkWindow;
 begin
@@ -3917,31 +3872,6 @@ begin
     MainWindow:=GetControlWindow(Widget);
     if MainWindow<>ClientWindow then begin
       // widget and client are on different gdk windows
-      {$IFDEF Gtk1}
-      if MainWindow<>nil then begin
-        gdk_window_get_origin(MainWindow,@MainOrigin.X,@MainOrigin.Y);
-      end else begin
-        // widget not realized
-        MainOrigin.X:=0;
-        MainOrigin.Y:=0;
-      end;
-      // check if the main gdkwindow is the clientwindow of the parent
-      if (Widget^.Parent<>nil)
-      and (MainWindow=gtk_widget_get_parent_window(Widget)) then begin
-        // the widget is using its parent window
-        // -> adjust the coordinates
-        inc(MainOrigin.X,Widget^.Allocation.X);
-        inc(MainOrigin.Y,Widget^.Allocation.Y);
-      end;
-      if ClientWindow<>nil then begin
-        gdk_window_get_origin(ClientWindow,@ClientOrigin.X,@ClientOrigin.Y);
-      end else begin
-        // client widget not realized
-        ClientOrigin:=MainOrigin;
-      end;
-      ARect.Left:=ClientOrigin.X-MainOrigin.X;
-      ARect.Top:=ClientOrigin.Y-MainOrigin.Y;
-      {$ELSE}
       if (GTK_WIDGET_NO_WINDOW(ClientWidget)) then begin
         // ClientWidget is a sub widget
         ARect.Left:=ClientWidget^.allocation.x;
@@ -3963,7 +3893,6 @@ begin
         dec(ARect.Left,Widget^.allocation.x);
         dec(ARect.Top,Widget^.allocation.y);
       end;
-      {$ENDIF}
       ARect.Right:=ARect.Left+ClientWidget^.Allocation.Width;
       ARect.Bottom:=ARect.Top+ClientWidget^.Allocation.Height;
 
@@ -4408,16 +4337,6 @@ begin
     Exit(True);
   end;
   
-  {$ifdef gtk1}
-  if DevCtx.Widget = nil
-  then begin
-    // either empty or gtk1screen
-    p.x:=gdk_screen_width;
-    p.y:=gdk_screen_height;
-    Exit(True);
-  end;
-  {$endif}
-
   {$IFDEF RaiseExceptionOnNilPointers}
   RaiseException('TGtk2WidgetSet.GetDeviceSize Window=nil');
   {$ENDIF}
@@ -4586,9 +4505,6 @@ const
 var
   GdkModMask: TGdkModifierType;
   x, y: gint;
-{$IFDEF GTK1}
-  List: PGList;
-{$ENDIF}
 begin
   case nVirtKey of
     // remap
@@ -4617,7 +4533,6 @@ begin
   // add toggle
   Result := Result or TOGGLESTATE[FKeyStateList_.IndexOf(Pointer(
                                   PtrInt(nVirtKey or KEYMAP_TOGGLE))) >=0];
-  {$IFDEF GTK2}
   // If there are tons of new keyboard errors this is probably the cause
   GdkModMask := gtk_accelerator_get_default_mod_mask;
   if (Result and StateDown) <> 0 then
@@ -4628,22 +4543,12 @@ begin
     //  Result := Result and not StateDown;
   end;
   {$ENDIF}
-  {$ENDIF}
 
   // Mouse buttons. Toggle state is not tracked
   if nVirtKey in [VK_LBUTTON, VK_RBUTTON, VK_MBUTTON..VK_XBUTTON2] then
   begin
-    {$ifdef gtk1}
-    List := gdk_window_get_toplevels;
-    if g_list_length(List) > 0 then
-      gdk_window_get_pointer(g_list_nth_data(List, 0), @x, @y, @GdkModMask)
-    else
-      GdkModMask := 0;
-    g_list_free(List);
-    {$else}
     gdk_display_get_pointer(gdk_display_get_default, nil,
       @x, @y, @GdkModMask);
-    {$endif}
     Result := Result or KEYSTATE[GdkModMask and GDK_BUTTON_MASKS[nVirtKey] <> 0]
   end;
 
@@ -4752,12 +4657,8 @@ function TGtk2WidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointe
         gbPixmap:
           if GDIPixmapObject.Image <> nil
           then begin
-            {$ifdef gtk1}
-            gdk_window_get_geometry(GDIPixmapObject.Image, nil, nil, @biWidth, @biHeight, @ImageDepth);
-            {$else}
             gdk_drawable_get_size(GDIPixmapObject.Image, @biWidth, @biHeight);
             ImageDepth := gdk_drawable_get_depth(GDIPixmapObject.Image);
-            {$endif}
             biBitCount := ImageDepth;
           end;
         gbPixbuf:
@@ -5229,17 +5130,9 @@ var
   ax,ay,ah,aw: gint;
 {$endif}
   auw, auh: guint;
- {$ifdef GTK2}
   screen: PGdkScreen;
   ARect: TGdkRectangle;
   AValue: TGValue;
- {$else}
- {$ifdef HasX}
-   XDisplay: PDisplay;
-   XScreen: PScreen;
-   XWindow: TWindow;
- {$endif}
- {$endif}
 begin
   Assert(False, Format('Trace:> [TGtk2WidgetSet.GetSystemMetrics] %d', [nIndex]));
   Result := 0;
@@ -5267,21 +5160,9 @@ begin
     SM_CXCURSOR,
     SM_CYCURSOR:
       begin
-      {$IFDEF GTK2}
         // Width and height of a cursor, in pixels. For win32 system cannot create cursors of other sizes.
         // For gtk this should be maximal cursor sizes
         gdk_display_get_maximal_cursor_size(gdk_display_get_default, @auw, @auh);
-      {$ELSE}
-        {$IFDEF HasX}
-          // same code used in gtk2 library
-          XDisplay := gdk_display;
-          XScreen := XDefaultScreenOfDisplay(XDisplay);
-          XWindow := XRootWindowOfScreen(XScreen);
-          XQueryBestCursor(XDisplay, XWindow, 128, 128, @auw, @auh);
-        {$ELSE}
-          Result := 32; // Default windows size
-        {$ENDIF}
-      {$ENDIF}
         if nIndex = SM_CXCURSOR
         then Result := auw // return width
         else Result := auh; // return height
@@ -5344,14 +5225,10 @@ begin
         P := GetStyleWidget(lgsHorizontalScrollbar);
         if P <> nil then
         begin
-      {$ifdef gtk1}
-        _gtk_range_get_props(P, nil, nil, @Result, nil);
-      {$else}
           FillChar(AValue, SizeOf(AValue), 0);
           g_value_init(@AValue, G_TYPE_INT);
           gtk_widget_style_get_property(P, 'slider-width', @AValue);
           Result := AValue.data[0].v_int;
-      {$endif}
         end;
       end;
     SM_CXICON,
@@ -5441,18 +5318,9 @@ begin
       end;
     SM_CXSCREEN:
       begin
-        {$ifdef GTK1} { Partial fix for multi monitor systems - force use of first one }
-        {$ifdef UseXinerama}
-        if GetFirstScreen then
-          result := FirstScreen.x
-        else
-        {$endif}
-          result := gdk_Screen_Width;
-        {$else}
         screen := gdk_screen_get_default();
         gdk_screen_get_monitor_geometry(screen, 0, @ARect);
         Result := ARect.width;
-        {$endif}
       end;
     SM_CXVIRTUALSCREEN:
       begin
@@ -5460,18 +5328,9 @@ begin
       end;
     SM_CYSCREEN:
       begin
-        {$ifdef GTK1}
-        {$ifdef UseXinerama}
-        if GetFirstScreen then
-          result := FirstScreen.y
-        else
-        {$endif}
-        result := gdk_Screen_Height;
-        {$else}
         screen := gdk_screen_get_default();
         gdk_screen_get_monitor_geometry(screen, 0, @ARect);
         Result := ARect.height;
-        {$endif}
       end;
     SM_CYVIRTUALSCREEN:
       begin
@@ -5581,15 +5440,9 @@ begin
       begin
         P := GetStyleWidget(lgsScrolledWindow);
         if P <> nil then begin
-          {$IFDEF GTK2}
           result := GTK_SCROLLED_WINDOW_CLASS(gtk_widget_get_class(P))^.scrollbar_spacing;
           if result<0 then
             gtk_widget_style_get(P, 'scrollbar-spacing', @result, nil);
-          {$ELSE}
-          result := PGtkScrolledWindowClass(PGtkTypeObject(P)^.klass)^.scrollbar_spacing;
-          if result<0 then
-            result := 3;
-          {$ENDIF}
         end;
       end;
   end;
@@ -6156,9 +6009,7 @@ var
   gdkRect : TGDKRectangle;
   Widget, PaintWidget: PGtkWidget;
   LCLObject: TObject;
-  {$IfNDef GTK1}
   WidgetInfo: PWidgetInfo;
-  {$ENDIF}
   r: TRect;
 begin
   //  DebugLn(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
@@ -6199,7 +6050,6 @@ begin
   gdkRect.Width := (Rect^.Right - Rect^.Left);
   gdkRect.Height := (Rect^.Bottom - Rect^.Top);
 
-  {$IfNDef GTK1}
     if (PaintWidget<>nil) and GTK_WIDGET_NO_WINDOW(PaintWidget)
       and (not GtkWidgetIsA(PGTKWidget(PaintWidget),GTKAPIWidget_GetType))
       and (Rect<>nil)
@@ -6211,7 +6061,6 @@ begin
   WidgetInfo := GetWidgetInfo(Widget, False); // True ??
   if WidgetInfo <> nil then
     UnionRect(WidgetInfo^.UpdateRect, WidgetInfo^.UpdateRect, Rect^);
-  {$EndIf}
 
   if bErase then
     gtk_widget_queue_clear_area(PaintWidget,
@@ -6219,11 +6068,9 @@ begin
 
   gtk_widget_queue_draw_area(PaintWidget,
                              gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
-  {$IfNDef GTK1}
   //DebugLn(['TGtk2WidgetSet.InvalidateRect ',GetWidgetDebugReport(Widget),' IsAPI=',GtkWidgetIsA(PGTKWidget(Widget),GTKAPIWidget_GetType)]);
   if GtkWidgetIsA(PGTKWidget(Widget),GTKAPIWidget_GetType) then
     GTKAPIWidget_InvalidateCaret(PGTKAPIWidget(Widget));
-  {$EndIf}
 end;
 
 function TGtk2WidgetSet.IsIconic(handle: HWND): boolean;
@@ -6234,13 +6081,9 @@ begin
   if GtkWindow = nil then
     Exit;
 
-  {$ifdef gtk1}
-  Result := GDK_WINDOW_GET_MINIMIZED(PGdkWindowPrivate(PgtkWidget(GtkWindow)^.Window));
-  {$else}
   Result := (PGtkWidget(GtkWindow)^.Window<>nil)
       and (gdk_window_get_state(PGtkWidget(GtkWindow)^.Window)
            and GDK_WINDOW_STATE_ICONIFIED <> 0);
-  {$endif}
 end;
 
 function TGtk2WidgetSet.IsWindow(handle: HWND): boolean;
@@ -6302,11 +6145,7 @@ begin
   if GtkWindow = nil then
     Exit;
 
-  {$ifdef gtk1}
-  Result := GDK_WINDOW_GET_MAXIMIZED(PGdkWindowPrivate(PgtkWidget(GtkWindow)^.Window));
-  {$else}
   Result := gdk_window_get_state(PGtkWidget(GtkWindow)^.Window) and GDK_WINDOW_STATE_MAXIMIZED <> 0;
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -7031,30 +6870,6 @@ const
   GROUPIDX_DATANAME = 'GroupIndex';
 
   function GetGroup: PGSList;
-  {$IfDef GTK1}
-  var
-    Item: PGList;
-    Arg: TGTKArg;
-  begin
-    Result := nil;
-    Arg.theType := GTK_TYPE_OBJECT;
-    Arg.Name := 'parent';
-    gtk_widget_get(Pointer(hndMenu), @Arg);
-    if Arg.d.object_data = nil then Exit;
-
-    Item := gtk_container_children(PGTKContainer(Arg.d.object_data));
-    while Item <> nil do
-    begin
-      if (Item^.Data <> Pointer(hndMenu)) // exclude ourself
-      and gtk_is_radio_menu_item(Item^.Data)
-      and (PtrUInt(GroupIndex) = PtrUInt(gtk_object_get_data(Item^.Data, GROUPIDX_DATANAME)))
-      then begin
-        Result := gtk_radio_menu_item_group(PGtkRadioMenuItem(Item^.Data));
-        Exit;
-      end;
-      Item := Item^.Next;
-    end;
-  {$Else}
   var
     Item: PGList;
     parent : PGTKWidget;
@@ -7075,7 +6890,6 @@ const
       end;
       Item := Item^.Next;
     end;
-  {$EndIf}
   end;
 
 var
@@ -7590,10 +7404,6 @@ begin
       
       DevCtx.CurrentFont := GDIObject;
 
-      {$ifdef GTK1}
-      if DevCtx.GC <> nil then
-        gdk_gc_set_font(DevCtx.GC, GdiObject^.GDIFontObject);
-      {$endif}
       DevCtx.SetTextMetricsValid(False);
       DevCtx.SelectedColors := dcscCustom;
     end;
@@ -7647,10 +7457,6 @@ var
   var
     GtkPaintData: TLMGtkPaintData;
     OldGtkPaintMsg: TLMGtkPaint;
-    {$IFNDEF Gtk2}
-    PaintDC: HDC;
-    DCOrigin: TPoint;
-    {$ENDIF}
   begin
     (* MG: old trick. Not used anymore, but it might be, that someday there
            will be component, that works better with this, so it is kept.
@@ -7709,17 +7515,6 @@ var
       // convert LM_GTKPAINT to LM_PAINT
       AMessage := TLMessage(GtkPaintMessageToPaintMessage(
                                                 TLMGtkPaint(AMessage), False));
-      {$IfNDef GTK2}
-      if (GtkPaintData <> nil) and (not GtkPaintData.RepaintAll)
-      then begin
-        PaintDC := TLMPaint(AMessage).DC;
-        DCOrigin := TGtkDeviceContext(PaintDC).Offset;
-        with GtkPaintData.Rect do
-          IntersectClipRect(PaintDC,
-                            Left - DCOrigin.X, Top - DCOrigin.Y,
-                            Right - DCOrigin.X, Bottom - DCOrigin.Y);
-      end;
-      {$EndIf}
       GtkPaintData.Free;
     end;
   end;
@@ -7776,14 +7571,12 @@ function TGtk2WidgetSet.SetActiveWindow(Handle: HWND): HWND;
 begin
   // ToDo
   Result := GetActiveWindow;
-  {$ifdef gtk2}
   if (Handle <> 0) and GtkWidgetIsA(PGtkWidget(Handle),GTK_TYPE_WINDOW) then
   begin
     if GTK_WIDGET_VISIBLE(PGtkWidget(Handle)) then
       gtk_window_present(PGtkWindow(Handle));
   end else
     Result := 0; // if not active window return error
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -8211,11 +8004,6 @@ var
   {$ENDIF}
   GdkWindow: PGdkWindow;
   AForm: TCustomForm;
-  {$IFDEF GTK1}
-  FormWidget: PGtkWidget;
-  FormWindow: PGdkWindowPrivate;
-  WindowDesktop: Integer;
-  {$ENDIF}
 begin
   {$IFDEF VerboseFocus}
   DbgOut('TGtk2WidgetSet.SetForegroundWindow hWnd=',DbgS(hWnd));
@@ -8258,28 +8046,8 @@ begin
       {$IFDEF DebugGDKTraps}
       EndGDKErrorTrap;
       {$ENDIF}
-{$IFDEF GTK1}
-      FormWidget:=PGtkWidget(AForm.Handle);
-      FormWindow:=PGdkWindowPrivate(FormWidget^.window);
-      if FormWindow<>nil then begin
-        WindowDesktop := GDK_WINDOW_GET_DESKTOP(FormWindow);
-        // this prevents the window from appearing on a different desktop
-        // which could be undesirable.
-
-        // check if the window is on all desktops or is on the current desktop
-        if (WindowDesktop < 0) or (WindowDesktop = GDK_GET_CURRENT_DESKTOP) then
-        begin
-          GDK_WINDOW_ACTIVATE(FormWindow);
-        end
-        else begin
-          // TODO: Figure out how to set the focus on an inactive desktop without
-          //       bringing the window to the current desktop
-        end;
-      end;
-{$ELSE}
       // this currently will bring the window to the current desktop and focus it
       gtk_window_present(PGtkWindow(hWnd));
-{$ENDIF}
     end;
   end;
 end;
@@ -9256,25 +9024,15 @@ begin
   // disconnect old handler
   if GTK_IS_OBJECT(Pointer(LastWFPResult)) then
   begin
-    {$IFDEF gtk1}
-    gtk_signal_disconnect_by_func(GPointer(LastWFPResult),
-                     TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
-    {$ELSE}
     g_signal_handlers_disconnect_by_func(GPointer(LastWFPResult),
                      TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
-    {$ENDIF}
   end;
   LastWFPMousePos := APoint;
   LastWFPResult := Result;
   // connect handler
   if LastWFPResult <> 0 then
-    {$IFDEF gtk1}
-    gtk_signal_connect(PGtkObject(LastWFPResult), 'destroy',
-      TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
-    {$else}
     g_signal_connect(GPointer(LastWFPResult), 'destroy',
                      TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
-    {$endif}
 end;
 
 //##apiwiz##eps##   // Do not remove

@@ -321,12 +321,10 @@ end;
 
 destructor TGtkFontCacheDescriptor.Destroy;
 begin
-  {$IFDEF Gtk2}
   if PangoFontDescription<>nil then begin
     pango_font_description_free(PangoFontDescription);
     PangoFontDescription:=nil;
   end;
-  {$ENDIF}
   inherited Destroy;
 end;
 

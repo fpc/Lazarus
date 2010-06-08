@@ -99,22 +99,14 @@ function gtkHideCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkactivateCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkchangedCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-{$IFDEF GTK2}
 function gtkchanged_spinbox(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkchanged_editbox_backspace( widget: PGtkWidget;
   data: gPointer): GBoolean; cdecl;
 function gtkchanged_editbox_delete(widget: PGtkWidget;
   AType: TGtkDeleteType; APos: gint; data: gPointer): GBoolean; cdecl;
-{$ENDIF}
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtktoggledCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 
-{$Ifdef GTK1}
-function gtkDrawCB(Widget: PGtkWidget; area: PGDKRectangle;
-  data: gPointer): GBoolean; cdecl;
-function gtkDrawAfterCB(Widget: PGtkWidget; area: PGDKRectangle;
-  data: gPointer): GBoolean; cdecl;
-{$EndIf}
 function gtkExposeEvent(Widget: PGtkWidget; Event: PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
 function gtkExposeEventAfter(Widget: PGtkWidget; Event: PGDKEventExpose;
@@ -196,7 +188,7 @@ function gtkCutToClip( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkCopyToClip( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkPasteFromClip( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkValueChanged(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtkTimerCB(Data: gPointer): {$IFDEF Gtk2}gBoolean{$ELSE}gint{$ENDIF}; cdecl;
+function gtkTimerCB(Data: gPointer): gBoolean; cdecl;
 function gtkFocusInNotifyCB (widget: PGtkWidget; event: PGdkEvent;
   data: gpointer): GBoolean; cdecl;
 function gtkFocusOutNotifyCB (widget: PGtkWidget; event: PGdkEvent;
@@ -207,11 +199,9 @@ function GTKHScrollCB(Adjustment: PGTKAdjustment; data: GPointer): GBoolean; cde
 function GTKVScrollCB(Adjustment: PGTKAdjustment;
   data: GPointer): GBoolean; cdecl;
 
-{$ifdef gtk2}
 // PGtkRange cb
 function Gtk2RangeScrollCB(ARange: PGtkRange; AScrollType: TGtkScrollType;
   AValue: gdouble; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
-{$endif}
 
 function GTKCheckMenuToggeledCB(AMenuItem: PGTKCheckMenuItem;
                                 AData: gPointer): GBoolean; cdecl;
@@ -262,10 +252,6 @@ function gtkComboBoxHideAfter(widget: PGtkWidget; data: gPointer): GBoolean; cde
 // gtkpagecallbacks.inc headers
 function PageIconWidgetExposeAfter(Widget: PGtkWidget; Event: PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
-{$IfNdef GTK2}
-function PageIconWidgetDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
-  data: gPointer): GBoolean; cdecl;
-{$EndIf}
 
 // callbacks for menu items
 procedure DrawMenuItemIcon(MenuItem: PGtkCheckMenuItem; Area: PGdkRectangle); cdecl;
@@ -284,9 +270,7 @@ var
 function RectFromGdkRect(AGdkRect: TGdkRectangle): TRect;
 function GdkRectFromRect(R: TRect): TGdkRectangle;
 function AlignToGtkAlign(Align: TAlignment): gfloat;
-{$ifdef gtk2}
 function GtkScrollTypeToScrollCode(ScrollType: TGtkScrollType): LongWord;
-{$endif}
 
 // debugging
 function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
@@ -295,9 +279,7 @@ function GetWidgetDebugReport(Widget: PGtkWidget): string;
 function GetWindowDebugReport(AWindow: PGDKWindow): string;
 function GetStyleDebugReport(AStyle: PGTKStyle): string;
 function GetRCStyleDebugReport(AStyle: PGtkRcStyle): string;
-{$IFDEF Gtk2}
 function GetPangoDescriptionReport(Desc: PPangoFontDescription): string;
-{$ENDIF}
 function WidgetFlagsToString(Widget: PGtkWidget): string;
 function GdkColorToStr(Color: PGDKColor): string;
 function GetWidgetStyleReport(Widget: PGtkWidget): string;
@@ -505,9 +487,6 @@ type
     dstMousePress,
     dstMouseMotion,
     dstMouseRelease,
-{$Ifdef GTK1}
-    dstDrawAfter,
-{$EndIf}
     dstExposeAfter
     );
   TDesignSignalTypes = set of TDesignSignalType;
@@ -520,9 +499,6 @@ const
     true,  // dstMousePress
     true,  // dstMouseMotion
     true,  // dstMouseRelease
-{$Ifdef GTK1}
-    false, // dstDrawAfter
-{$Endif GTK1}
     false  // dstExposeAfter
     );
 
@@ -531,9 +507,6 @@ const
     false, // dstMousePress
     false, // dstMouseMotion
     false, // dstMouseRelease
-{$Ifdef GTK1}
-    false, // dstDrawAfter
-{$Endif GTK1}
     false  // dstExposeAfter
     );
 
@@ -542,9 +515,6 @@ const
     'button-press-event',
     'motion-notify-event',
     'button-release-event',
-{$Ifdef GTK1}
-    'draw',
-{$Endif GTK1}
     'expose-event'
     );
 
@@ -553,9 +523,6 @@ const
     @gtkMouseBtnPress,
     @gtkMotionNotify,
     @gtkMouseBtnRelease,
-{$Ifdef GTK1}
-    @gtkDrawAfterCB,
-{$Endif GTK1}
     @gtkExposeEventAfter
     );
 
@@ -734,9 +701,9 @@ function GetStyleWidget(aStyle: TLazGtkStyle): PGTKWidget;
 function GetStyleWidgetWithName(const WName: String): PGTKWidget;
 function GetStyleGroupboxFrameBorders: TRect;
 function GetStyleNotebookFrameBorders: TRect;
-{$IFDEF Gtk2}
+
 function GetStyleFormFrameBorders(WithMenu: boolean): TRect;
-{$ENDIF}
+
 procedure StyleFillRectangle(drawable: PGDKDrawable; GC: PGDKGC;
                              Color: TColorRef; x, y, width, height: gint);
 function StyleForegroundColor(Color: TColorRef; DefaultColor: PGDKColor): PGDKColor;
@@ -746,9 +713,9 @@ procedure UpdateWidgetStyleOfControl(AWinControl: TWinControl);
 function LoadDefaultFont: TGtkIntfFont;
 function FontIsDoubleByteCharsFont(TheFont: TGtkIntfFont): boolean;
 function FontIsMonoSpaceFont(TheFont: TGtkIntfFont): boolean;
-{$Ifdef GTK2}
+
 function LoadDefaultFontDesc: PPangoFontDescription;
-{$ENDIF}
+
 procedure GetTextExtentIgnoringAmpersands(TheFont: TGtkIntfFont;
   Str: PChar; StrLength: integer;
   lbearing, rbearing, width, ascent, descent: Pgint);
@@ -772,7 +739,7 @@ function gtk_widget_get_xthickness(Widget: PGTKWidget): gint; overload;
 function gtk_widget_get_ythickness(Widget: PGTKWidget): gint; overload;
 function GetGtkContainerBorderWidth(Widget: PGtkContainer): gint;
 
-{$Ifdef GTK2}
+
   function gtk_class_get_type(aclass: Pointer): TGtkType;
 
   //we wrap our own versions to handle nil tests -->
@@ -793,7 +760,7 @@ function GetGtkContainerBorderWidth(Widget: PGtkContainer): gint;
   procedure gdk_text_extents(TheFont: TGtkIntfFont;
         Str: PChar; StrLength: integer;
         lbearing, rbearing, width, ascent, descent: Pgint);
-{$EndIf}
+
 
 {$ifdef HasX}
 // X functions

@@ -471,9 +471,7 @@ type
     DataOwner: Boolean;               // Set if the UserData should be freed when the info is freed
     UserData: Pointer;
     FormBorderStyle: Integer;         // used only by forms
-    {$IFDEF GTK2}
     FormWindowState: TGdkEventWindowState; // used only by forms to stop infinite loops eg. issue #16505
-    {$ENDIF}
   end;
 
   //TODO: remove
@@ -483,8 +481,8 @@ type
 
 
 const
-  GdkTrue = {$IFDEF Gtk2}true{$ELSE}1{$ENDIF};
-  GdkFalse = {$IFDEF Gtk2}false{$ELSE}0{$ENDIF};
+  GdkTrue = true;
+  GdkFalse = false;
 
 
   GTK_STYLE_BASE = 20;// see GTK_STATE_NORMAL..GTK_STATE_INSENSITIVE,
@@ -492,18 +490,11 @@ const
 
 
 type
-  TGdkPixBufBuffer = {$IFDEF Gtk2}Pguchar{$ELSE}PChar{$ENDIF};
+  TGdkPixBufBuffer = Pguchar;
 
 
-{$IFDEF GTK2}
 const
   GDK_VOIDSYMBOL = $FFFFFF;
-{$ENDIF}
-
-// MWE: All the IFDEFs for GTK2 annoyed me so I defined all (most) constants here
-{$IFNDEF GTK2}
-  {$I gtkkeysyms.inc}
-{$ENDIF}
 
 // MWE:
 // Additional GDK_KEY_xxx definitions, not defined in GDK. Since GDK (on Linux)

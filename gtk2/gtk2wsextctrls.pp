@@ -534,21 +534,9 @@ begin
     Page:=PGtkNoteBook(NBWidget)^.cur_page;
 
   Result:=BorderWidth;
-  {$IFDEF GTK2}
   if (Page<>nil) then begin
     debugln('TGtkWSCustomNotebook.RemovePage TODO');
   end;
-  {$ELSE GTK2}
-  if (NBWidget^.thestyle<>nil) and (PGtkStyle(NBWidget^.thestyle)^.klass<>nil) then
-    inc(Result,PGtkStyle(NBWidget^.thestyle)^.klass^.ythickness);
-  if (Page<>nil) and (Page^.child<>nil) then begin
-    gtk_widget_size_request(Page^.Child, @Requisition);
-    gtk_widget_map(Page^.child);
-    debugln('TGtkWSCustomNotebook.GetNotebookMinTabHeight B ',dbgs(Page^.child^.allocation.height),
-      ' ',GetWidgetDebugReport(Page^.child),' Requisition=',dbgs(Requisition.height));
-    inc(Result,Page^.child^.allocation.height);
-  end;
-  {$ENDIF GTK2}
   debugln('TGtkWSCustomNotebook.GetNotebookMinTabHeight END ',dbgs(Result),' ',
     GetWidgetDebugReport(NBWidget));
 end;
@@ -567,25 +555,19 @@ var
   TabWidget: PGtkWidget;
   PageWidget: PGtkWidget;
   NotebookPos: TPoint;
-  {$IFDEF GTK2}
   Window: PGdkWindow;
   WindowOrg,ClientOrg: TPoint;
-  {$ENDIF}
   Count: guint;
 begin
   Result:=-1;
   NoteBookWidget:=PGtkNotebook(ANotebook.Handle);
   if (NotebookWidget=nil) then exit;
   //DebugLn(['TGtkWSCustomNotebook.GetTabIndexAtPos ',GetWidgetDebugReport(PGtkWidget(NotebookWidget))]);
-  {$IFDEF GTK2}
   Window := GetControlWindow(NoteBookWidget);
   gdk_window_get_origin(Window,@WindowOrg.X,@WindowOrg.Y);
   ClientOrg:=GetWidgetClientOrigin(PGtkWidget(NotebookWidget));
   NotebookPos.X:= AClientPos.X + (ClientOrg.X-WindowOrg.X);
   NotebookPos.Y:= AClientPos.Y + (ClientOrg.Y-WindowOrg.Y);
-  {$ELSE}
-  NotebookPos:=AClientPos;
-  {$ENDIF}
   // go through all tabs
   Count:=g_list_length(NoteBookWidget^.Children);
   for i:=0 to Count-1 do
@@ -616,10 +598,8 @@ var
   NoteBookWidget: PGtkNotebook;
   TabWidget: PGtkWidget;
   PageWidget: PGtkWidget;
-  {$IFDEF GTK2}
   Window: PGdkWindow;
   WindowOrg,ClientOrg: TPoint;
-  {$ENDIF}
   XOffset, YOffset: Integer;
   Count: guint;
 begin
@@ -627,16 +607,13 @@ begin
   NoteBookWidget:=PGtkNotebook(ANotebook.Handle);
   if (NotebookWidget=nil) then exit;
   //DebugLn(['TGtkWSCustomNotebook.GetTabIndexAtPos ',GetWidgetDebugReport(PGtkWidget(NotebookWidget))]);
-  {$IFDEF GTK2}
+
   Window := GetControlWindow(NoteBookWidget);
   gdk_window_get_origin(Window,@WindowOrg.X,@WindowOrg.Y);
   ClientOrg:=GetWidgetClientOrigin(PGtkWidget(NotebookWidget));
   XOffset := (ClientOrg.X-WindowOrg.X);
   YOffset := (ClientOrg.Y-WindowOrg.Y);
-  {$ELSE}
-  XOffset := 0;
-  YOffset := 0;
-  {$ENDIF}
+
   // go through all tabs
   Count:=g_list_length(NoteBookWidget^.Children);
   PageWidget:=gtk_notebook_get_nth_page(NoteBookWidget, AIndex);

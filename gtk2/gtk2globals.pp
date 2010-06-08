@@ -20,11 +20,7 @@ interface
 
 uses
   SysUtils, Classes, InterfaceBase,
-  {$IFDEF gtk2}
   Pango, glib2, gdk2pixbuf, gdk2, gtk2,
-  {$ELSE}
-  glib, gdk, gtk,
-  {$ENDIF}
   LMessages, LCLProc, Controls, ComCtrls, Forms, LCLIntf, LCLType,
   DynHashArray, Maps;
 
@@ -95,12 +91,10 @@ const
 var
   LastLeft, LastMiddle, LastRight: TLastMouseClick;
   
-{$IFDEF Gtk2}
 var
   im_context: PGtkIMContext = nil;
   im_context_widget: PGtkWidget = nil;
   im_context_string: string = '';
-{$ENDIF}
 
 procedure ResetDefaultIMContext;
 
@@ -111,10 +105,8 @@ var
 var
   Styles : TStrings;
   
-{$IFDEF Gtk2}
 var
   DefaultPangoLayout: PPangoLayout = nil;
-{$ENDIF}
 
 const
   KEYMAP_VKUNKNOWN = $10000;
@@ -166,7 +158,7 @@ const
   ); {end _SysColors}
 
 const
-  {$ifdef GTK2}GTK_WINDOW_DIALOG=GTK_WINDOW_TOPLEVEL;{$endif}
+  GTK_WINDOW_DIALOG=GTK_WINDOW_TOPLEVEL;
   FormStyleMap : array[TFormBorderStyle] of TGtkWindowType = (
     // GTK_WINDOW_DIALOG for stay on top forms
     GTK_WINDOW_DIALOG,  // bsNone
@@ -209,7 +201,7 @@ type
     signal_id:        guint16;
     func:             TGtkSignalFunc;
     func_data:        gpointer;
-    destroy_func:     {$ifdef GTK2}TGtkSignalFunc{$else}TGtkSignalDestroy{$endif};
+    destroy_func:     TGtkSignalFunc;
   end;
 
 const
@@ -393,7 +385,7 @@ const
                               // Used by TScrollbar, TScrollbox and TWinApiWidget
 
 const
-  CallBackDefaultReturn = {$IFDEF GTK2}false{$ELSE}true{$ENDIF};
+  CallBackDefaultReturn = false;
 
 
 // font
@@ -441,7 +433,6 @@ end;
 
 procedure ResetDefaultIMContext;
 begin
-  {$IFDEF Gtk2}
   if (im_context<>nil) then
   begin
     gtk_im_context_reset(im_context);
@@ -449,7 +440,6 @@ begin
   end;
   im_context_widget:=nil;
   im_context_string:='';
-  {$ENDIF}
 end;
 
 procedure AddCharsetEncoding(CharSet: Byte; CharSetReg, CharSetCod: CharSetStr;

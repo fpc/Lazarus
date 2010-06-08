@@ -371,12 +371,7 @@ begin
   {$IFNDEF gtk_no_set_modal}
   gtk_window_set_modal(GtkWindow, true);
   {$ENDIF}
-  {$IFDEF Gtk1}
-  gtk_widget_show(PGtkWidget(GtkWindow));
-  GDK_WINDOW_ACTIVATE(PGdkWindowPrivate(PGtkWidget(GtkWindow)^.window));
-  {$ELSE}
   gtk_window_present(GtkWindow);
-  {$ENDIF}
 
   {$IFDEF VerboseTransient}
   DebugLn('TGtkWidgetSet.ShowModal ',Sender.ClassName);
@@ -684,8 +679,8 @@ begin
   Gtk2WidgetSet.SetWidgetFont(Widget, AFont);
   Gtk2WidgetSet.SetWidgetColor(Widget, AFont.Color, clNone,
                               [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
-                               GTK_STATE_PRELIGHT,GTK_STATE_SELECTED
-                               {$IFDEF GTK2},GTK_STYLE_TEXT{$ENDIF}]);
+                               GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
+                               GTK_STYLE_TEXT]);
 end;
 
 class procedure TGtk2WSWinControl.SetPos(const AWinControl: TWinControl;

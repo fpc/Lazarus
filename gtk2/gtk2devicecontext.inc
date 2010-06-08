@@ -51,9 +51,6 @@ end;
 function TGtkDeviceContext.GetOffset: TPoint;
 var
   Fixed: Pointer;
-{$ifdef gtk1}
-  Adjustment: PGtkAdjustment;
-{$endif}
 begin
   if Self = nil
   then begin
@@ -63,7 +60,6 @@ begin
   end;
 
   Result := FOrigin;
-  {$ifndef gtk1}
   if (FWidget <> nil) then
   begin
     Fixed := GetFixedWidget(FWidget);
@@ -75,23 +71,9 @@ begin
       Inc(Result.y, FWidget^.Allocation.y);
     end;
   end;
-  {$endif}
 
   if not FSpecialOrigin then Exit;
   if FWidget = nil then Exit;
-
-  {$ifdef gtk1}
-  Fixed := GetFixedWidget(FWidget);
-  if not GtkWidgetIsA(Fixed, GTK_LAYOUT_GET_TYPE) then Exit;
-
-  Adjustment := gtk_layout_get_hadjustment(Fixed);
-  if Adjustment <> nil
-  then Dec(Result.X, Trunc(Adjustment^.Value - Adjustment^.Lower));
-
-  Adjustment := gtk_layout_get_vadjustment(Fixed);
-  if Adjustment <> nil
-  then Dec(Result.Y, Trunc(Adjustment^.Value-Adjustment^.Lower));
-  {$endif}
 end;
 
 function TGtkDeviceContext.GetOwnedGDIObjects(ID: TGDIType): PGdiObject;
@@ -499,11 +481,7 @@ begin
   if AWidget = nil
   then begin
     // screen: ToDo: multiple desktops
-    {$ifdef gtk1}
-    FDrawable := @gdk_root_parent;
-    {$else}
     FDrawable := gdk_screen_get_root_window(gdk_screen_get_default);
-    {$endif}
   end
   else begin
     if ADoubleBuffer <> nil
@@ -538,13 +516,7 @@ begin
 
       FSpecialOrigin := GtkWidgetIsA(ClientWidget, GTK_LAYOUT_GET_TYPE);
       FDrawable := AWindow;
-
-      {$IFDEF Gtk1}
-      {$IFDEF VerboseGtkToDos}{$note todo: check if this is still needed}{$ENDIF} // now gc is a property
-      GetGC;
-      {$ELSE}
       // GC is created on demand
-      {$ENDIF}
     end;
   end;
 
@@ -552,15 +524,7 @@ begin
   BuildColorRefFromGDKColor(CurrentTextColor);
   gdk_color_white(gdk_colormap_get_system, @CurrentBackColor.Color);
   BuildColorRefFromGDKColor(CurrentBackColor);
-
-
-  {$ifdef GTK1}
-  GetFont;
-  GetBrush;
-  GetPen;
-  {$else}
   // font, brush, pen are created on demand
-  {$endIf}
 end;
 
 procedure TGtkDeviceContext.Clear;
@@ -806,26 +770,11 @@ end;
 procedure TGtkDeviceContext.CreateFont;
 var
   NewFont: PGDIObject;
-{$IFDEF Gtk2}
   ClientWidget: PGtkWidget;
-{$ENDIF}
 begin
   if FCurrentFont <> nil then exit;
 
   // create font
-  {$ifdef gtk1}
-  if FGCValues.Font <> nil
-  then begin
-    NewFont := GtkWidgetset.NewGDIObject(gdiFont);
-    NewFont^.UntransfFontHeight := 0;
-    CurrentFont := NewFont;
-    FCurrentFont^.GDIFontObject := FGCValues.Font;
-    FontCache.Reference(FCurrentFont^.GDIFontObject);
-  end
-  else
-    CurrentFont := GtkWidgetset.CreateDefaultFont;
-
-  {$else}
   if FWidget <> nil
   then begin
     ClientWidget := GetFixedWidget(FWidget);
@@ -856,16 +805,10 @@ begin
   end
   else
     CurrentFont := Gtk2Widgetset.CreateDefaultFont;
-  {$endif}
   OwnedGDIObjects[gdiFont] := FCurrentFont;
 end;
 
 function TGtkDeviceContext.CreateGC: PGdkGC;
-{$IFDEF Gtk1}
-var
-  CurWidget: PGtkWidget;
-  CurWindow: PGdkWindow;
-{$ENDIF}
 begin
   // create GC
 
@@ -883,13 +826,7 @@ begin
   end
   else begin
     // create default GC
-    {$IFDEF Gtk1}
-    CurWidget := GetStyleWidget(lgsWindow);
-    CurWindow := CurWidget^.window;
-    Result := gdk_gc_new(CurWindow);
-    {$ELSE}
     Result := gdk_gc_new(gdk_screen_get_root_window(gdk_screen_get_default));
-    {$ENDIF}
   end;
   if Result = nil then Exit;
 

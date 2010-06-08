@@ -347,14 +347,9 @@ begin
   //' Owner=',DbgS(Owner),'=',Owner.ClassName,
   //' LI=',DbgS(LI),
   //' ');
-  {$ifdef GTK2}
   //DebugLn(['TGtkListStringList.ConnectItemCallbacks ',DbgSName(Owner)]);
   g_signal_connect_after(G_OBJECT(li), 'expose_event',
                          G_CALLBACK(@gtkListItemExposeEvent), li);
-  {$else}
-  gtk_signal_connect_after(PGtkObject(li), 'draw',
-                           TGTKSignalFunc(@gtkListItemDrawAfterCB),li);
-  {$endif}
   if FWithCheckBox then begin
     ChildWidget := PPointer(PGTKBox(PGtkBin(Li)^.child)^.Children^.Data)^;
     g_signal_connect_after(G_OBJECT(ChildWidget), 'toggled',
@@ -402,13 +397,9 @@ begin
   {$ENDIF}
   gtk_object_set_data(PGtkObject(AItem), GtkListItemLCLListTag, nil);
   gtk_object_set_data(PGtkObject(AItem), GtkListItemGtkListTag, nil);
-  {$ifdef GTK2}
+
   g_signal_handlers_disconnect_by_func(
     G_OBJECT(AItem), G_CALLBACK(@gtkListItemExposeEvent), AItem);
-  {$else}
-  gtk_signal_disconnect_by_func(
-    PGtkObject(AItem), TGTKSignalFunc(@gtkListItemDrawAfterCB), AItem);
-  {$endif}
   if FWithCheckBox
   then begin
     ChildWidget := PPointer(PGTKBox(PGtkBin(AItem)^.child)^.Children^.Data)^;
