@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Grids, Buttons, ExtCtrls, CodeToolsStructs, SynRegExpr, LazarusIDEStrConsts;
+  Grids, Buttons, ExtCtrls, Menus, CodeToolsStructs, SynRegExpr,
+  LazarusIDEStrConsts;
 
 type
 
@@ -44,8 +45,13 @@ type
     btnOK: TBitBtn;
     BtnPanel: TPanel;
     HelpButton: TBitBtn;
+    InsertRow1: TMenuItem;
+    DeleteRow1: TMenuItem;
     NamePairGrid: TStringGrid;
+    PopupMenu1: TPopupMenu;
     procedure FormCreate(Sender: TObject);
+    procedure InsertRow1Click(Sender: TObject);
+    procedure DeleteRow1Click(Sender: TObject);
     procedure NamePairGridEditingDone(Sender: TObject);
     procedure NamePairGridSetEditText(Sender: TObject; ACol, ARow: Integer;
       const Value: string);
@@ -161,6 +167,7 @@ var
   OldIdent, NewIdent: string;
   i: Integer;
 begin
+  fStringMap.Clear;
   // Collect (maybe edited) properties from StringGrid to NameReplacements.
   for i:=1 to fGrid.RowCount-1 do begin // Skip the fixed row.
     OldIdent:=fGrid.Cells[0,i];
@@ -194,6 +201,16 @@ procedure TReplaceNamesForm.FormCreate(Sender: TObject);
 begin
   Caption:=lisReplacementPropTypes;
   IsLasRow:=false;
+end;
+
+procedure TReplaceNamesForm.InsertRow1Click(Sender: TObject);
+begin
+  NamePairGrid.InsertColRow(False, NamePairGrid.Row);
+end;
+
+procedure TReplaceNamesForm.DeleteRow1Click(Sender: TObject);
+begin
+  NamePairGrid.DeleteColRow(False, NamePairGrid.Row);
 end;
 
 // Add rows automatically to the end of the grid

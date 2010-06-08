@@ -28,6 +28,7 @@ object ReplaceNamesForm: TReplaceNamesForm
       end>
     FixedCols = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
+    PopupMenu = PopupMenu1
     RowCount = 2
     TabOrder = 0
     OnEditingDone = NamePairGridEditingDone
@@ -98,6 +99,18 @@ object ReplaceNamesForm: TReplaceNamesForm
       ModalResult = 2
       NumGlyphs = 0
       TabOrder = 2
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    left = 131
+    top = 91
+    object InsertRow1: TMenuItem
+      Caption = 'Insert Row'
+      OnClick = InsertRow1Click
+    end
+    object DeleteRow1: TMenuItem
+      Caption = 'Delete Row'
+      OnClick = DeleteRow1Click
     end
   end
 end
