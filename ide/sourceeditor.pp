@@ -3948,6 +3948,7 @@ Begin
       OnClearBookmark := @EditorClearBookmark;
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
     end;
+    FVisible := False;
     Manager.CodeTemplateModul.AddEditor(FEditor);
     Manager.NewEditorCreated(self);
     FEditor.TemplateEdit.OnActivate := @EditorActivateSyncro;
@@ -6980,7 +6981,10 @@ begin
 end;
 
 Procedure TSourceNotebook.NotebookPageChanged(Sender: TObject);
-var TempEditor:TSourceEditor;
+var
+  TempEditor:TSourceEditor;
+  CaretXY: TPoint;
+  TopLine: Integer;
 Begin
   if (not assigned(Manager)) or (FUpdateLock > 0) Then begin
     Include(States, snNotbookPageChangedNeeded);
@@ -6992,7 +6996,18 @@ Begin
   //writeln('TSourceNotebook.NotebookPageChanged ',Pageindex,' ',TempEditor <> nil,' fAutoFocusLock=',fAutoFocusLock);
   if TempEditor <> nil then
   begin
-    TempEditor.Visible := True;
+    if not TempEditor.Visible then begin
+      // As long as SynEdit had no Handle, it had kept all those Values untouched
+      CaretXY := TempEditor.EditorComponent.CaretXY;
+      TopLine := TempEditor.EditorComponent.TopLine;
+      TempEditor.BeginUpdate;
+      TempEditor.Visible := True;
+      TempEditor.EndUpdate;
+      // Restore the intial Positions, must be after lock
+      TempEditor.EditorComponent.LeftChar := 1;
+      TempEditor.EditorComponent.CaretXY := CaretXY;
+      TempEditor.EditorComponent.TopLine := TopLine;
+    end;
     if (fAutoFocusLock=0) and (Screen.ActiveCustomForm=GetParentForm(Self)) then
     begin
       {$IFDEF VerboseFocus}
