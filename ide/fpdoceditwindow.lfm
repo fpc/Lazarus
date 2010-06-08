@@ -1,7 +1,7 @@
 object FPDocEditor: TFPDocEditor
-  Left = 284
+  Left = 327
   Height = 156
-  Top = 355
+  Top = 397
   Width = 753
   ActiveControl = PageControl
   Caption = 'FPDoc editor'
@@ -27,15 +27,15 @@ object FPDocEditor: TFPDocEditor
     OnPageChanged = PageControlChange
     object ShortTabSheet: TTabSheet
       Caption = 'ShortTabSheet'
-      ClientHeight = 129
-      ClientWidth = 688
+      ClientHeight = 123
+      ClientWidth = 686
       object LinkLabel: TLabel
         AnchorSideTop.Control = LinkEdit
         AnchorSideTop.Side = asrCenter
         Left = 6
         Height = 18
         Top = 33
-        Width = 60
+        Width = 63
         BorderSpacing.Top = 6
         Caption = 'LinkLabel'
         ParentColor = False
@@ -60,7 +60,7 @@ object FPDocEditor: TFPDocEditor
         Left = 82
         Height = 27
         Top = 0
-        Width = 604
+        Width = 602
         Anchors = [akTop, akLeft, akRight]
         AutoSelect = False
         BorderSpacing.Left = 6
@@ -74,9 +74,9 @@ object FPDocEditor: TFPDocEditor
         AnchorSideTop.Control = LinkEdit
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 29
+        Height = 27
         Top = 62
-        Width = 98
+        Width = 104
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'CreateButton'
@@ -90,10 +90,10 @@ object FPDocEditor: TFPDocEditor
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = ShortTabSheet
         AnchorSideRight.Side = asrBottom
-        Left = 72
+        Left = 75
         Height = 27
         Top = 29
-        Width = 614
+        Width = 609
         Anchors = [akTop, akLeft, akRight]
         AutoSelect = False
         BorderSpacing.Left = 6
@@ -209,7 +209,7 @@ object FPDocEditor: TFPDocEditor
         ClientHeight = 29
         ClientWidth = 686
         TabOrder = 1
-        object ShortEdit2: TEdit
+        object DescrShortEdit: TEdit
           AnchorSideLeft.Control = ShortPanel
           AnchorSideRight.Side = asrBottom
           Left = 61
@@ -225,7 +225,7 @@ object FPDocEditor: TFPDocEditor
           OnEditingDone = ShortEditEditingDone
           ReadOnly = True
           TabOrder = 0
-          Text = 'ShortEdit'
+          Text = 'DescrShortEdit'
         end
       end
     end

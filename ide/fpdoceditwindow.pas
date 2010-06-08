@@ -70,7 +70,7 @@ type
     BoldFormatButton: TSpeedButton;
     BrowseExampleButton: TButton;
     ShortPanel: TPanel;
-    ShortEdit2: TEdit;
+    DescrShortEdit: TEdit;
     TopicShort: TEdit;
     TopicDescr: TMemo;
     Panel3: TPanel;
@@ -327,9 +327,10 @@ procedure TFPDocEditor.FormatButtonClick(Sender: TObject);
 
   procedure InsertTag(const StartTag, EndTag: String);
   begin
-    if PageControl.ActivePage = ShortTabSheet then
-      ShortEdit.SelText := StartTag + ShortEdit.SelText + EndTag
-    else if PageControl.ActivePage = DescrTabSheet then
+    if PageControl.ActivePage = ShortTabSheet then begin
+      ShortEdit.SelText := StartTag + ShortEdit.SelText + EndTag;
+      DescrShortEdit.Text:=ShortEdit.Text;
+    end else if PageControl.ActivePage = DescrTabSheet then
       DescrMemo.SelText := StartTag + DescrMemo.SelText + EndTag
     else if PageControl.ActivePage = ErrorsTabSheet then
       ErrorsMemo.SelText := StartTag + ErrorsMemo.SelText + EndTag
@@ -391,8 +392,10 @@ begin
   end else begin
     LinkSrc:=LinkSrc+'>'+LinkTitle+'</link>';
   end;
-  if PageControl.ActivePage = ShortTabSheet then
+  if PageControl.ActivePage = ShortTabSheet then begin
     ShortEdit.SelText := LinkSrc;
+    DescrShortEdit.Text := ShortEdit.Text;
+  end;
   if PageControl.ActivePage = DescrTabSheet then
     DescrMemo.SelText := LinkSrc;
   if PageControl.ActivePage = SeeAlsoTabSheet then
@@ -548,17 +551,41 @@ begin
 end;
 
 procedure TFPDocEditor.ShortEditChange(Sender: TObject);
+// called by ShortEdit and DescrShortEdit
+var
+  NewShort: String;
 begin
   if fpdefReading in FFlags then exit;
-  SaveButton.Enabled:=ShortEdit.Text<>FOldVisualValues[fpdiShort];
-  ShortEdit2.Text := ShortEdit.Text;
+  //debugln(['TFPDocEditor.ShortEditChange ',DbgSName(Sender)]);
+  if Sender=DescrShortEdit then
+    NewShort:=DescrShortEdit.Text
+  else
+    NewShort:=ShortEdit.Text;
+  SaveButton.Enabled:=NewShort<>FOldVisualValues[fpdiShort];
+  // copy to the other edit
+  if Sender=DescrShortEdit then
+    ShortEdit.Text:=NewShort
+  else
+    DescrShortEdit.Text:=NewShort;
 end;
 
 procedure TFPDocEditor.ShortEditEditingDone(Sender: TObject);
+var
+  NewShort: String;
 begin
   if fpdefReading in FFlags then exit;
-  if ShortEdit.Text<>FOldVisualValues[fpdiShort] then
+  //debugln(['TFPDocEditor.ShortEditEditingDone ',DbgSName(Sender)]);
+  if Sender=DescrShortEdit then
+    NewShort:=DescrShortEdit.Text
+  else
+    NewShort:=ShortEdit.Text;
+  if NewShort<>FOldVisualValues[fpdiShort] then
     Modified:=true;
+  // copy to the other edit
+  if Sender=DescrShortEdit then
+    ShortEdit.Text:=NewShort
+  else
+    DescrShortEdit.Text:=NewShort;
 end;
 
 procedure TFPDocEditor.TopicControlEnter(Sender: TObject);
@@ -835,6 +862,8 @@ begin
       FOldVisualValues[fpdiExample]:='';
     end;
     ShortEdit.Text := FOldVisualValues[fpdiShort];
+    DescrShortEdit.Text := ShortEdit.Text;
+    //debugln(['TFPDocEditor.LoadGUIValues "',ShortEdit.Text,'" "',FOldVisualValues[fpdiShort],'"']);
     LinkEdit.Text := FOldVisualValues[fpdiElementLink];
     DescrMemo.Lines.Text := FOldVisualValues[fpdiDescription];
     SeeAlsoMemo.Text := FOldVisualValues[fpdiSeeAlso];
@@ -842,6 +871,7 @@ begin
     ExampleEdit.Text := FOldVisualValues[fpdiExample];
 
     ShortEdit.Enabled := EnabledState;
+    DescrShortEdit.Enabled := ShortEdit.Enabled;
     LinkEdit.Enabled := EnabledState;
     DescrMemo.Enabled := EnabledState;
     SeeAlsoMemo.Enabled := EnabledState;
@@ -1058,6 +1088,7 @@ begin
   try
     // clear all element editors/viewers
     ShortEdit.Clear;
+    DescrShortEdit.Clear;
     LinkEdit.Clear;
     DescrMemo.Clear;
     SeeAlsoMemo.Clear;
@@ -1124,6 +1155,7 @@ procedure TFPDocEditor.ClearEntry(DoSave: Boolean);
 begin
   Modified:=true;
   ShortEdit.Text:='';
+  DescrShortEdit.Text:=ShortEdit.Text;
   DescrMemo.Text:='';
   SeeAlsoMemo.Text:='';
   ErrorsMemo.Text:='';
