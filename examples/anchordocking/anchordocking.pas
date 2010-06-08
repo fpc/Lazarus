@@ -55,8 +55,6 @@
        - header auto, left, top, right, bottom
 
   ToDo:
-    - DoUndock
-        remove spiral splitter
     - popup menu
        - merge (for example after moving a dock page into a layout)
        - undock (needed if no place to undock on screen)
@@ -217,6 +215,7 @@ type
     function DockAnotherPage(NewControl: TControl): boolean; virtual;
     procedure AddCleanControl(AControl: TControl; TheAlign: TAlign = alNone);
     procedure RemoveControlFromLayout(AControl: TControl);
+    procedure RemoveSpiralSplitter(AControl: TControl);
     procedure Simplify;
     procedure SimplifyPages;
     procedure SimplifyOneControl;
@@ -1816,6 +1815,7 @@ var
   Splitter: TAnchorDockSplitter;
   OnlySiteLeft: TAnchorDockHostSite;
   Sibling: TControl;
+  SplitterCount: Integer;
 begin
   debugln(['TAnchorDockHostSite.RemoveControlFromLayout Self="',Caption,'" AControl=',DbgSName(AControl),'="',AControl.Caption,'"']);
   if SiteType<>adhstLayout then
@@ -1827,9 +1827,11 @@ begin
   end;
 
   // remove a splitter and fill the gap
+  SplitterCount:=0;
   for Side:=Low(TAnchorKind) to high(TAnchorKind) do begin
     Sibling:=AControl.AnchorSide[OppositeAnchor[Side]].Control;
     if Sibling is TAnchorDockSplitter then begin
+      inc(SplitterCount);
       Splitter:=TAnchorDockSplitter(Sibling);
       if Splitter.SideAnchoredControlCount(Side)=1 then begin
         // Splitter is only used by AControl at Side
@@ -1839,8 +1841,90 @@ begin
     end;
   end;
 
-  // ToDo: check for spiral splitter
-  debugln(['TAnchorDockHostSite.RemoveControlFromLayout TODO spiral splitter']);
+  if SplitterCount=4 then
+    RemoveSpiralSplitter(AControl);
+end;
+
+procedure TAnchorDockHostSite.RemoveSpiralSplitter(AControl: TControl);
+{ Merge two splitters and delete one of them.
+  Prefer the pair with shortest distance between.
+
+  For example:
+                   3            3
+     111111111111113            3
+        2+--------+3            3
+        2|AControl|3  --->  111111111
+        2+--------+3            2
+        24444444444444          2
+        2                       2
+   Everything anchored to 4 is now anchored to 1.
+   And right side of 1 is now anchored to where the right side of 4 was anchored.
+}
+var
+  Splitters: array[TAnchorKind] of TAnchorDockSplitter;
+  Side: TAnchorKind;
+  Keep: TAnchorKind;
+  DeleteSplitter: TAnchorDockSplitter;
+  i: Integer;
+  Sibling: TControl;
+  NextSide: TAnchorKind;
+  NewBounds: TRect;
+begin
+  for Side:=low(TAnchorKind) to high(TAnchorKind) do
+    Splitters[Side]:=AControl.AnchorSide[Side].Control as TAnchorDockSplitter;
+  // Prefer the pair with shortest distance between
+  if (Splitters[akRight].Left-Splitters[akLeft].Left)
+    <(Splitters[akBottom].Top-Splitters[akTop].Top)
+  then
+    Keep:=akLeft
+  else
+    Keep:=akTop;
+  DeleteSplitter:=Splitters[OppositeAnchor[Keep]];
+  // transfer anchors from the deleting splitter to the kept splitter
+  for i:=0 to ControlCount-1 do begin
+    Sibling:=Controls[i];
+    for Side:=low(TAnchorKind) to high(TAnchorKind) do begin
+      if Sibling.AnchorSide[Side].Control=DeleteSplitter then
+        Sibling.AnchorSide[Side].Control:=Splitters[Keep];
+    end;
+  end;
+  // longen kept splitter
+  NextSide:=ClockwiseAnchor[Keep];
+  if Splitters[Keep].AnchorSide[NextSide].Control<>Splitters[NextSide] then
+    NextSide:=OppositeAnchor[NextSide];
+  Splitters[Keep].AnchorSide[NextSide].Control:=
+                                    DeleteSplitter.AnchorSide[NextSide].Control;
+  case NextSide of
+  akTop: Splitters[Keep].Top:=DeleteSplitter.Top;
+  akLeft: Splitters[Keep].Left:=DeleteSplitter.Left;
+  akRight: Splitters[Keep].Width:=DeleteSplitter.Left+DeleteSplitter.Width-Splitters[Keep].Left;
+  akBottom: Splitters[Keep].Height:=DeleteSplitter.Top+DeleteSplitter.Height-Splitters[Keep].Top;
+  end;
+
+  // move splitter to the middle
+  if Keep=akLeft then
+    Splitters[Keep].Left:=(Splitters[Keep].Left+DeleteSplitter.Left) div 2
+  else
+    Splitters[Keep].Top:=(Splitters[Keep].Top+DeleteSplitter.Top) div 2;
+  // adjust all anchored controls
+  for i:=0 to ControlCount-1 do begin
+    Sibling:=Controls[i];
+    for Side:=low(TAnchorKind) to high(TAnchorKind) do begin
+      if Sibling.AnchorSide[Side].Control=Splitters[Keep] then begin
+        NewBounds:=Sibling.BoundsRect;
+        case Side of
+        akTop: NewBounds.Top:=Splitters[Keep].Top+Splitters[Keep].Height;
+        akLeft: NewBounds.Left:=Splitters[Keep].Left+Splitters[Keep].Width;
+        akRight: NewBounds.Right:=Splitters[Keep].Left;
+        akBottom: NewBounds.Bottom:=Splitters[Keep].Top;
+        end;
+        Sibling.BoundsRect:=NewBounds;
+      end;
+    end;
+  end;
+
+  // delete the splitter
+  DeleteSplitter.Free;
 end;
 
 procedure TAnchorDockHostSite.Simplify;
