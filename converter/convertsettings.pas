@@ -159,7 +159,7 @@ procedure SaveStringToStringTree(Config: TConfigStorage; const Path: string;
 var
   Node: TAVLTreeNode;
   Item: PStringToStringTreeItem;
-  i: Integer;
+  i, j: Integer;
   SubPath: String;
 begin
   Config.SetDeleteValue(Path+'Count',Tree.Tree.Count,0);
@@ -172,6 +172,10 @@ begin
     Config.SetDeleteValue(SubPath+'Value',Item^.Value,'');
     Node:=Tree.Tree.FindSuccessor(Node);
     inc(i);
+  end;
+  for j:=i to i+10 do begin
+    SubPath:=Path+'Item'+IntToStr(j)+'/';
+    Config.DeletePath(SubPath);
   end;
 end;
 
