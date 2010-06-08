@@ -4916,9 +4916,6 @@ var
   DummyWidget: PGtkWidget;
   ALabel: PGtkWidget;
   MenuLabel: PGtkWidget;
-  {$IFDEF Gtk}
-  AWidget: PGtkWidget;
-  {$ENDIF}
 begin
   if NoteBookWidget=nil then exit;
   DummyWidget:=GetGtkNoteBookDummyPage(NoteBookWidget);
@@ -4926,12 +4923,6 @@ begin
     // the notebook has no pages
     // -> add a dummy page
     DummyWidget := gtk_hbox_new(false, 0);
-    {$IFDEF Gtk}
-    AWidget := CreateFixedClientWidget{$IFNDEF GtkFixedWithWindow}(false){$ENDIF};
-    gtk_widget_show(AWidget);
-    //gtk_box_pack_start_defaults(GTK_BOX(DummyWidget),AWidget);
-    gtk_container_add(GTK_CONTAINER(DummyWidget), AWidget);
-    {$ENDIF}
     gtk_widget_show(DummyWidget);
     ALabel:=gtk_label_new('');
     gtk_widget_show(ALabel);
@@ -5748,18 +5739,8 @@ end;
 
 function TGtk2WidgetSet.GetGtkFont(DC: TGtkDeviceContext): TGtkIntfFont;
 begin
-  {$IFDEF Gtk}
-  if (DC.CurrentFont = nil) or (DC.CurrentFont^.GDIFontObject = nil)
-  then begin
-    Result := GetDefaultGtkFont(false);
-  end
-  else begin
-    Result := DC.CurrentFont^.GDIFontObject;
-  end;
-  {$ELSE}
   // create font if needed
   Result:=DC.GetFont^.GDIFontObject;
-  {$ENDIF}
 end;
 
 function TGtk2WidgetSet.CreateRegionCopy(SrcRGN: hRGN): hRGN;
