@@ -866,6 +866,7 @@ begin
     //debugln(['TFPDocEditor.LoadGUIValues "',ShortEdit.Text,'" "',FOldVisualValues[fpdiShort],'"']);
     LinkEdit.Text := FOldVisualValues[fpdiElementLink];
     DescrMemo.Lines.Text := FOldVisualValues[fpdiDescription];
+    //debugln(['TFPDocEditor.LoadGUIValues DescrMemo="',dbgstr(DescrMemo.Lines.Text),'" Descr="',dbgstr(FOldVisualValues[fpdiDescription]),'"']);
     SeeAlsoMemo.Text := FOldVisualValues[fpdiSeeAlso];
     ErrorsMemo.Lines.Text := FOldVisualValues[fpdiErrors];
     ExampleEdit.Text := FOldVisualValues[fpdiExample];
