@@ -154,6 +154,7 @@ type
     procedure SetBoundsKeepDockBounds(ALeft, ATop, AWidth, AHeight: integer);
     function SideAnchoredControlCount(Side: TAnchorKind): integer;
     procedure SaveLayout(LayoutNode: TAnchorDockLayoutTreeNode);
+    function HasOnlyOneSibling(Side: TAnchorKind; MinPos, MaxPos: integer): TControl;
   end;
 
   { TAnchorDockPage }
@@ -236,6 +237,10 @@ type
     procedure Undock;
     function CanMerge: boolean;
     procedure Merge;
+    function EnlargeSide(Side: TAnchorKind;
+                         OnlyCheckIfPossible: boolean): boolean;
+    function EnlargeSideResizeTwoSplitters(Side, SideEnlarge: TAnchorKind;
+                         OnlyCheckIfPossible: boolean): boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2267,6 +2272,127 @@ begin
   end;
 end;
 
+function TAnchorDockHostSite.EnlargeSide(Side: TAnchorKind;
+  OnlyCheckIfPossible: boolean): boolean;
+{
+ Enlarge one, shrink another
+
+ Shrink one neighbor control, enlarge Control. Two splitters are resized.
+
+     |#|         |#         |#|         |#
+     |#| Control |#         |#|         |#
+   --+#+---------+#   --> --+#| Control |#
+   ===============#       ===#|         |#
+   --------------+#       --+#|         |#
+       A         |#        A|#|         |#
+   --------------+#       --+#+---------+#
+   ==================     ===================
+
+ Enlarge one, shrink many
+
+ Move one neighbor splitter, enlarge Control, resize one splitter, rotate the other splitter.
+
+     |#|         |#|          |#|         |#|
+     |#| Control |#|          |#|         |#|
+   --+#+---------+#+--  --> --+#| Control |#+--
+   ===================      ===#|         |#===
+   --------+#+--------      --+#|         |#+--
+           |#|   B            |#|         |#|B
+           |#+--------        |#|         |#+--
+       A   |#=========       A|#|         |#===
+           |#+--------        |#|         |#+--
+           |#|   C            |#|         |#|C
+   --------+#+--------      --+#+---------+#+--
+   ===================      ===================
+}
+begin
+  Result:=false;
+  if EnlargeSideResizeTwoSplitters(Side,ClockwiseAnchor[Side],
+                                   OnlyCheckIfPossible) then exit;
+  if EnlargeSideResizeTwoSplitters(Side,OppositeAnchor[ClockwiseAnchor[Side]],
+                                   OnlyCheckIfPossible) then exit(true);
+end;
+
+function TAnchorDockHostSite.EnlargeSideResizeTwoSplitters(Side,
+  SideEnlarge: TAnchorKind; OnlyCheckIfPossible: boolean): boolean;
+{ Shrink one neighbor control, enlarge Control. Two splitters are resized.
+
+    |#|         |#         |#|         |#
+    |#| Control |#         |#|         |#
+  --+#+---------+#   --> --+#| Control |#
+  ===============#       ===#|         |#
+  --------------+#       --+#|         |#
+      A         |#        A|#|         |#
+  --------------+#       --+#+---------+#
+  ==================     ===================
+}
+var
+  Splitter: TAnchorDockSplitter;
+  EnlargeSplitter: TAnchorDockSplitter;
+  SideShrink: TAnchorKind;
+  ShrinkSplitter: TAnchorDockSplitter;
+  i: Integer;
+  Sibling: TControl;
+  ParentSite: TAnchorDockHostSite;
+begin
+  Result:=false;
+  if not (Parent is TAnchorDockHostSite) then exit;
+  ParentSite:=TAnchorDockHostSite(Parent);
+  if not OnlyCheckIfPossible then
+    ParentSite.BeginUpdateLayout;
+  try
+    Splitter:=TAnchorDockSplitter(AnchorSide[Side].Control);
+    if not (Splitter is TAnchorDockSplitter) then exit;
+    // side has a splitter
+    if (SideEnlarge<>ClockwiseAnchor[Side])
+    and (SideEnlarge<>OppositeAnchor[ClockwiseAnchor[Side]]) then
+      exit;
+    // enlarge side is not a neighbor side
+    EnlargeSplitter:=TAnchorDockSplitter(AnchorSide[SideEnlarge].Control);
+    if not (EnlargeSplitter is TAnchorDockSplitter) then exit;
+    // enlarge side has a splitter
+    SideShrink:=OppositeAnchor[SideEnlarge];
+    ShrinkSplitter:=TAnchorDockSplitter(AnchorSide[SideShrink].Control);
+    if not (ShrinkSplitter is TAnchorDockSplitter) then exit;
+    // shrink side has a splitter
+    if Splitter.AnchorSide[SideShrink].Control<>ShrinkSplitter then exit;
+    // Splitter stopps at ShrinkSplitter
+    if not OnlyCheckIfPossible then begin
+      EnlargeSplitter.AnchorSide[Side].Assign(ShrinkSplitter.AnchorSide[Side]);
+      Splitter.AnchorSide[SideShrink].Control:=EnlargeSplitter;
+    end;
+
+    for i:=0 to Parent.ControlCount-1 do begin
+      Sibling:=Controls[i];
+      if Sibling.AnchorSide[SideEnlarge].Control<>EnlargeSplitter then continue;
+      // Sibling is on the shrinking side
+      case Side of
+      akTop: if Sibling.Top>Top then continue;
+      akLeft: if Sibling.Left>Left then continue;
+      akRight: if Sibling.Left<Left then continue;
+      akBottom: if Sibling.Top<Top then continue;
+      end;
+      if OnlyCheckIfPossible then begin
+        // check if the Sibling is big enough for shrinking
+        case SideShrink of
+        akTop: if Sibling.Top>=EnlargeSplitter.Top then exit;
+        akLeft: if Sibling.Left>=EnlargeSplitter.Left then exit;
+        akRight: if Sibling.Left+Sibling.Width<=EnlargeSplitter.Left+EnlargeSplitter.Width then exit;
+        akBottom: if Sibling.Top+Sibling.Height<=EnlargeSplitter.Top+EnlargeSplitter.Height then exit;
+        end;
+      end else begin
+        // shrink Sibling
+        Sibling.AnchorSide[SideShrink].Control:=EnlargeSplitter;
+      end;
+    end;
+
+  finally
+    if not OnlyCheckIfPossible then
+      ParentSite.EndUpdateLayout;
+  end;
+  Result:=true;
+end;
+
 function TAnchorDockHostSite.CloseQuery: boolean;
 
   function Check(AControl: TWinControl): boolean;
@@ -3056,6 +3182,35 @@ begin
   else
     LayoutNode.NodeType:=adltnSplitterHorizontal;
   LayoutNode.Assign(Self);
+end;
+
+function TAnchorDockSplitter.HasOnlyOneSibling(Side: TAnchorKind; MinPos,
+  MaxPos: integer): TControl;
+var
+  i: Integer;
+  AControl: TControl;
+begin
+  Result:=nil;
+  for i:=0 to AnchoredControlCount-1 do begin
+    AControl:=AnchoredControls[i];
+    if AControl.AnchorSide[OppositeAnchor[Side]].Control<>Self then continue;
+    // AControl is anchored at Side to this splitter
+    if (Side in [akLeft,akRight]) then begin
+      if (AControl.Left>MaxPos) or (AControl.Left+AControl.Width<MinPos) then
+        continue;
+    end else begin
+      if (AControl.Top>MaxPos) or (AControl.Top+AControl.Height<MinPos) then
+        continue;
+    end;
+    // AControl is in range
+    if Result=nil then
+      Result:=AControl
+    else begin
+      // there is more than one control
+      Result:=nil;
+      exit;
+    end;
+  end;
 end;
 
 constructor TAnchorDockSplitter.Create(TheOwner: TComponent);
