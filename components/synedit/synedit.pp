@@ -573,6 +573,7 @@ type
     procedure CreateHandle; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
+    procedure SetVisible(Value: Boolean); override;
 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
       Integer); override;
@@ -5680,14 +5681,15 @@ begin
      (not (eoAlwaysVisibleCaret in fOptions2))
   then
     exit;
-  if (sfInHandleCreation in fStateFlags) or (not HandleAllocated) then exit;
 
-  if (fPaintLock > 0) or (not HandleAllocated) or
+  if (sfInHandleCreation in fStateFlags) or (not HandleAllocated) or
+     (fPaintLock > 0) or
      (FWinControlFlags * [wcfInitializing, wcfCreatingHandle] <> [])
   then begin
     include(fStateFlags, sfEnsureCursorPos);
     exit;
   end;
+
   exclude(fStateFlags, sfEnsureCursorPos);
   DoIncPaintLock(Self); // No editing is taking place
   try
@@ -7423,6 +7425,16 @@ begin
   {$IFDEF SYN_LAZARUS}
   SizeOrFontChanged(true);
   {$ENDIF}
+end;
+
+procedure TCustomSynEdit.SetVisible(Value: Boolean);
+begin
+  (* Catch and Combine the many repeated resizes.
+     Execute any sfEnsureCursorPos, even if set by a caret-move before HandleCreation
+  *)
+  DoIncPaintLock(nil);
+  inherited SetVisible(Value);
+  DoDecPaintLock(nil);
 end;
 
 procedure TCustomSynEdit.DestroyWnd;
