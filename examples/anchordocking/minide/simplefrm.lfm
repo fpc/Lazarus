@@ -1,0 +1,22 @@
+object SimpleForm: TSimpleForm
+  Left = 283
+  Height = 240
+  Top = 193
+  Width = 320
+  Caption = 'SimpleForm'
+  ClientHeight = 240
+  ClientWidth = 320
+  OnPaint = FormPaint
+  LCLVersion = '0.9.29'
+  object Memo1: TMemo
+    Left = 0
+    Height = 240
+    Top = 0
+    Width = 320
+    Align = alClient
+    Lines.Strings = (
+      'Memo1'
+    )
+    TabOrder = 0
+  end
+end
