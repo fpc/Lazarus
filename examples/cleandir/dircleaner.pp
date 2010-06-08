@@ -438,6 +438,7 @@ begin
   system.Delete(Ext,1,1);
   if Not CaseSensitive then
     Ext:=UpperCase(Ext);
+  Ext:=' '+Ext+' ';
   FileNameFits:=Pos(Ext,FWorkExt)<>0;
 end;
 
