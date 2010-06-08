@@ -69,7 +69,6 @@ implementation
 
 procedure TMainIDE.FileMenuItemClick(Sender: TObject);
 begin
-  AllAutoSized;
   close;
 end;
 
