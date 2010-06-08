@@ -158,9 +158,12 @@ begin
     begin
       QTextEdit_clear(TextEdit);
       QTextEdit_setPlainText(TextEdit,@W);
-    end
-    else
+    end else
+    begin
+      W := StringReplace(W,'<','&lt;',[rfReplaceAll]);
+      W := StringReplace(W,'>','&gt;',[rfReplaceAll]);
       QTextEdit_append(TextEdit,@W);
+    end;
 
     if QTextEdit_alignment(TextEdit) <> AlignmentMap[TCustomMemo(FOwner).Alignment] then
       QTextEdit_setAlignment(TextEdit, AlignmentMap[TCustomMemo(FOwner).Alignment]);
