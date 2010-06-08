@@ -1995,6 +1995,7 @@ end;
 function TQtWidgetSet.GetClipBox(DC: hDC; lpRect: PRect): Longint;
 var
   ARegion: QRegionH;
+  Pt: TPoint;
 begin
   Result := SIMPLEREGION;
   if lpRect <> nil then
@@ -2024,8 +2025,12 @@ begin
     begin
       ARegion := QRegion_Create;
       try
-        QPainter_ClipRegion(Widget, ARegion);
+        QPainter_clipRegion(Widget, ARegion);
+        GetWindowOrgEx(DC, @Pt);
+        QRegion_translate(ARegion, -Pt.X, -Pt.Y);
         QRegion_boundingRect(ARegion, lpRect);
+        dec(lpRect^.Right, -Pt.X);
+        dec(lpRect^.Bottom, -Pt.Y);
       finally
         QRegion_destroy(ARegion);
       end;
