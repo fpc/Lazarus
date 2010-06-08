@@ -80,14 +80,10 @@ begin
 
   // get itemindex and area
   ItemIndex:=g_list_index(GtkList^.children,Data);
-  {$IFDEF GTK1}
-  AreaRect:=Bounds(Area^.x,Area^.y,Area^.Width,Area^.Height);
-  {$ELSE}
   with Widget^.allocation do begin
     AreaRect:=Bounds(x,y,width,height);
   end;
-  {$ENDIF}
-  
+
   // collect state flags
   State:=[odPainted];
   if g_list_index(GtkList^.selection,Widget)>=0 then
@@ -813,10 +809,6 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.Delete(Index: integer);
-{$IFDEF Gtk1}
-var
-  Next: PGList;
-{$ENDIF}
 begin
   UpdateItemCache;
   RemoveItemCallbacks(Index);
@@ -844,21 +836,7 @@ begin
   end;
 
   // remove item from gtk list
-  if Count = 0 then
-    CheckForInvalidFocus
-  else begin
-    {$IFDEF Gtk1}
-    { Work round gtk bug - crashes if deleting first item in list
-      and item has focus and there are remaining items }
-    if (Index = 0) and (PGTKContainer(FGtkList)^.focus_child <> nil)
-       and (gtk_list_child_position(FGtkList,PGTKContainer(FGtkList)^.focus_child) = 0)
-    then begin
-      Next := FGtkList^.children^.next;
-      if Next <> nil then
-        gtk_widget_grab_focus(Next^.data);
-    end;
-    {$ENDIF}
-  end;
+  if Count = 0 then CheckForInvalidFocus;
   gtk_list_clear_items(FGtkList, Index, Index + 1);
   Include(FStates,glsItemCacheNeedsUpdate);
   

@@ -54,30 +54,23 @@
 {off $define UseX}
 
 {$ifdef Unix}
-  {$ifdef Gtk1}
-    {$define HasX}
-  {$else}
-    // on darwin we try to use native gtk
-    {$ifdef Darwin}
-      {$ifdef UseX} // it can be overridden
-        {$info Compiling with gtk2 for X}
-        {$define HasX}
-      {$else}
-        {$IFDEF VerboseGtkToDos}{$note On darwin the native gtk2 widgetset is used. }{$ENDIF}
-        {$IFDEF VerboseGtkToDos}{$note If you want to use gtk2 for X, define UseX }{$ENDIF}
-      {$endif}
-    {$else}
+  // on darwin we try to use native gtk
+  {$ifdef Darwin}
+    {$ifdef UseX} // it can be overridden
+      {$info Compiling with gtk2 for X}
       {$define HasX}
+    {$else}
+      {$IFDEF VerboseGtkToDos}{$note On darwin the native gtk2 widgetset is used. }{$ENDIF}
+      {$IFDEF VerboseGtkToDos}{$note If you want to use gtk2 for X, define UseX }{$ENDIF}
     {$endif}
-    {$if defined(HasX)}
-      {$define HasGdk2X}
-    {$endif}
+  {$else}
+    {$define HasX}
   {$endif}
+  {$if defined(HasX)}
+    {$define HasGdk2X}
+  {$endif}
+
 {$else}
-  {$ifdef Gtk1}
-    // not supported
-    {$fatal X is required for GTK1}
-  {$endif}
   {$define GTK_2_10}
 {$endif}
 
@@ -90,9 +83,8 @@
   {$define UseOwnShiftState}
 {$endif}
 
-{$IFDEF Gtk2}
-// see http://bugs.freepascal.org/view.php?id=12145. 
+// see http://bugs.freepascal.org/view.php?id=12145.
 // Turn it off if something happens.
 {$DEFINE EnabledGtkThreading}
 {$define GTK_2_8}
-{$ENDIF}
+

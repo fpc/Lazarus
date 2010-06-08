@@ -49,11 +49,7 @@ type
   public
     LogFont: TLogFont;
     LongFontName: string;
-    {$IFDEF Gtk1}
-    xlfd: string;
-    {$ELSE}
     PangoFontDescription: PPangoFontDescription;
-    {$ENDIF}
     destructor Destroy; override;
   end;
   
@@ -128,22 +124,14 @@ end;
 
 procedure ReferenceGtkIntfFont(AFont: TGtkIntfFont);
 begin
-  {$IFDEF Gtk1}
-  gdk_font_ref(AFont);
-  {$ELSE}
   //DebugLn(['ReferenceGtkIntfFont ',dbgs(AFont)]);
   g_object_ref(AFont);
-  {$ENDIF}
 end;
 
 procedure UnreferenceGtkIntfFont(AFont: TGtkIntfFont);
 begin
-  {$IFDEF Gtk1}
-  gdk_font_unref(AFont);
-  {$ELSE}
   //DebugLn(['UnreferenceGtkIntfFont ',dbgs(AFont)]);
   g_object_unref(AFont);
-  {$ENDIF}
 end;
 
 { TGtkFontCache }

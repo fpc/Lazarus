@@ -507,9 +507,6 @@ class function TGtk2WSCustomNotebook.GetNotebookMinTabHeight(
 var
   NBWidget: PGTKWidget;
   BorderWidth: Integer;
-  {$IFDEF Gtk1}
-  Requisition: TGtkRequisition;
-  {$ENDIF}
   Page: PGtkNotebookPage;
 begin
   Result:=inherited GetNotebookMinTabHeight(AWinControl);

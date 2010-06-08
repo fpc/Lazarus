@@ -244,8 +244,7 @@ begin
       gtk_widget_show(BitBtnInfo^.LabelWidget);
     end;
 
-    Gtk2WidgetSet.SetLabelCaption(BitBtnInfo^.LabelWidget, AText
-       {$IFDEF Gtk1},AWinControl,WidgetInfo^.CoreWidget, 'clicked'{$ENDIF});
+    Gtk2WidgetSet.SetLabelCaption(BitBtnInfo^.LabelWidget, AText);
   end;
 
   UpdateLayout(BitBtnInfo, TBitBtn(AWincontrol).Layout, TBitBtn(AWincontrol).Margin);
@@ -374,7 +373,7 @@ begin
       gtk_container_remove(AInfo^.TableWidget, AInfo^.SpaceWidget);
   end;
 
-  if ((AInfo^.LabelWidget = nil) or (PGtkLabel(AInfo^.LabelWidget)^.{$ifdef gtk1}thelabel{$else}text{$endif} = '')) and
+  if ((AInfo^.LabelWidget = nil) or (PGtkLabel(AInfo^.LabelWidget)^.text = '')) and
      (AInfo^.ImageWidget <> nil) then
   begin
     gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
@@ -458,12 +457,8 @@ begin
     if (AInfo^.SpaceWidget = nil)
     and (ALayout in [blGlyphRight, blGlyphBottom])
     then begin
-      {$IFDEF gtk1}
-      AInfo^.SpaceWidget := gtk_invisible_new;
-      {$ELSE}
       // dont use gtk_invisible_new - it cannot have parent
       AInfo^.SpaceWidget := gtk_image_new;
-      {$ENDIF}
       UpdateLayout(AInfo, ALayout, AMargin);
     end
     else begin

@@ -2546,8 +2546,7 @@ begin
     ALabel := TGtk2WidgetSet(WidgetSet).ForceLineBreaks(
                           DC, PChar(AText), TStaticText(AWinControl).Width, false);
     Widgetset.DeleteDC(DC);
-    Gtk2WidgetSet.SetLabelCaption(LblWidget, ALabel
-       {$IFDEF Gtk1}, AWinControl, PGtkWidget(FrameWidget), 'grab_focus'{$ENDIF});
+    Gtk2WidgetSet.SetLabelCaption(LblWidget, ALabel);
     StrDispose(ALabel);
   end else
   begin

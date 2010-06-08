@@ -549,11 +549,7 @@ begin
   TGtk2WSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
   with TGTK2WidgetSet(Widgetset) do
   begin
-    {$ifdef gtk1}
-    UseScrollCallBack := True;
-    {$else}
     UseScrollCallBack := (gtk_major_version = 2) and (gtk_minor_version <= 8);
-    {$endif}
     if UseScrollCallBack then
     begin
       SetCallback(LM_HSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);

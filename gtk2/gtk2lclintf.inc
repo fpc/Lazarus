@@ -59,8 +59,7 @@ begin
     gtk_widget_realize(FDockImage);
     gdk_window_set_decorations(FDockImage^.window, 0);
     gdk_window_set_functions(FDockImage^.window, GDK_FUNC_RESIZE or GDK_FUNC_CLOSE);
-    SetWidgetColor(FDockImage, clNone,
-      {$ifdef gtk1}clBlue{$else}clGradientActiveCaption{$endif}, [GTK_STATE_NORMAL]);
+    SetWidgetColor(FDockImage, clNone, clGradientActiveCaption, [GTK_STATE_NORMAL]);
     {$ifdef GTK_2_10}
     // attemp to make window semi-transparent
     Screen := gtk_widget_get_screen(FDockImage);
@@ -149,11 +148,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.FontCanUTF8(Font: HFont): boolean;
 begin
-  Result:=IsValidGDIObject(Font)
-    {$IFDEF Gtk1}
-    and FontIsDoubleByteCharsFont(PGdiObject(Font)^.GDIFontObject)
-    {$ENDIF}
-    ;
+  Result:=IsValidGDIObject(Font);
 end;
 
 {------------------------------------------------------------------------------
@@ -704,11 +699,7 @@ begin
   if Drawable = nil
   then begin
     // get screen shot
-    {$IFDEF Gtk1}
-    exit;
-    {$ELSE}
     Drawable := gdk_screen_get_root_window(gdk_screen_get_default);
-    {$ENDIF}
   end;
   Result := RawImage_FromDrawable(ARawImage, Drawable, nil, @R);
 end;

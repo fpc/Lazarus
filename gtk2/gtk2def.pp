@@ -120,11 +120,7 @@ type
 
   TGtkDeviceContext = class;
 
-  {$IFDEF Gtk1}
-  TGtkIntfFont = PGDKFont;
-  {$ELSE}
   TGtkIntfFont = PPangoLayout;
-  {$ENDIF}
 
   PGDIRGB = ^TGDIRGB;
   TGDIRGB = record

@@ -924,22 +924,15 @@ var
   procedure PaintWindow(AWindow: PGdkWindow; AOffset: TPoint);
   var
     W, H: gint;
-    {$ifndef gtk1}
     Pixbuf: PGdkPixbuf;
-    {$endif}
   begin
     gdk_window_get_size(AWindow, @W, @H);
-    {$ifdef gtk1}
-    gdk_window_copy_area(DC.Drawable, DC.GC, X, Y, AWindow,
-      AOffset.X, AOffset.Y, W, H);
-    {$else}
     // for some reason gdk_window_copy_area does not work
     Pixbuf := gdk_pixbuf_get_from_drawable(nil, AWindow, nil,
       AOffset.X, AOffset.Y, 0, 0, W, H);
     gdk_pixbuf_render_to_drawable(Pixbuf, DC.Drawable, DC.GC, 0, 0, X, Y,
       -1, -1, GDK_RGB_DITHER_NONE, 0, 0);
     gdk_pixbuf_unref(Pixbuf);
-    {$endif}
   end;
 
   procedure PaintWidget(AWidget: PGtkWidget);
