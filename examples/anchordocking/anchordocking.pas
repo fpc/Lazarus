@@ -2276,9 +2276,7 @@ end;
 function TAnchorDockHostSite.EnlargeSide(Side: TAnchorKind;
   OnlyCheckIfPossible: boolean): boolean;
 {
- Enlarge one, shrink another
-
- Shrink one neighbor control, enlarge Control. Two splitters are resized.
+ Shrink one splitter, enlarge the other splitter.
 
      |#|         |#         |#|         |#
      |#| Control |#         |#|         |#
@@ -2288,8 +2286,6 @@ function TAnchorDockHostSite.EnlargeSide(Side: TAnchorKind;
        A         |#        A|#|         |#
    --------------+#       --+#+---------+#
    ==================     ===================
-
- Enlarge one, shrink many
 
  Move one neighbor splitter, enlarge Control, resize one splitter, rotate the other splitter.
 
@@ -2312,6 +2308,7 @@ begin
                                    OnlyCheckIfPossible) then exit;
   if EnlargeSideResizeTwoSplitters(Side,OppositeAnchor[ClockwiseAnchor[Side]],
                                    OnlyCheckIfPossible) then exit(true);
+  // ToDo:
 end;
 
 function TAnchorDockHostSite.EnlargeSideResizeTwoSplitters(Side,
@@ -2344,6 +2341,7 @@ begin
     ParentSite.DisableAutoSizing;
   end;
   try
+    // ToDo: ShrinkSplitter can be Parent
     Splitter:=TAnchorDockSplitter(AnchorSide[Side].Control);
     if not (Splitter is TAnchorDockSplitter) then exit;
     // side has a splitter
@@ -2362,6 +2360,7 @@ begin
     // Splitter stopps at ShrinkSplitter
     if not OnlyCheckIfPossible then begin
       EnlargeSplitter.AnchorSide[Side].Assign(ShrinkSplitter.AnchorSide[Side]);
+      AnchorSide[Side].Assign(ShrinkSplitter.AnchorSide[Side]);
       Splitter.AnchorSide[SideShrink].Control:=EnlargeSplitter;
     end;
 
