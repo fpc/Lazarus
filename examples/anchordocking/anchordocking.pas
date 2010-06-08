@@ -2266,6 +2266,7 @@ begin
         end;
       end;
     end;
+    Parent:=nil;
     DockMaster.NeedFree(Self);
   finally
     ParentSite.EndUpdateLayout;
@@ -2338,8 +2339,10 @@ begin
   Result:=false;
   if not (Parent is TAnchorDockHostSite) then exit;
   ParentSite:=TAnchorDockHostSite(Parent);
-  if not OnlyCheckIfPossible then
+  if not OnlyCheckIfPossible then begin
     ParentSite.BeginUpdateLayout;
+    ParentSite.DisableAutoSizing;
+  end;
   try
     Splitter:=TAnchorDockSplitter(AnchorSide[Side].Control);
     if not (Splitter is TAnchorDockSplitter) then exit;
@@ -2387,8 +2390,10 @@ begin
     end;
 
   finally
-    if not OnlyCheckIfPossible then
+    if not OnlyCheckIfPossible then begin
+      ParentSite.EnableAutoSizing;
       ParentSite.EndUpdateLayout;
+    end;
   end;
   Result:=true;
 end;
