@@ -49,6 +49,17 @@ type
     adltnSplitterVertical,
     adltnPages
     );
+  TADLTreeNodeTypes = set of TADLTreeNodeType;
+
+  TADLHeaderPosition = (
+    adlhpAuto,
+    adlhpLeft,
+    adlhpTop,
+    adlhpRight,
+    adlhpBottom
+    );
+  TADLHeaderPositions = set of TADLHeaderPosition;
+
   EAnchorDockLayoutError = class(Exception);
 
   { TAnchorDockLayoutTreeNode }
@@ -57,6 +68,7 @@ type
   private
     fAnchors: array[TAnchorKind] of string;
     FBoundsRect: TRect;
+    FHeaderPosition: TADLHeaderPosition;
     FMonitor: integer;
     FName: string;
     FNodes: TFPList; // list of TAnchorDockLayoutTreeNode
@@ -74,6 +86,7 @@ type
     procedure SetAnchors(Site: TAnchorKind; const AValue: string);
     procedure SetBottom(const AValue: integer);
     procedure SetBoundsRect(const AValue: TRect);
+    procedure SetHeaderPosition(const AValue: TADLHeaderPosition);
     procedure SetHeight(const AValue: integer);
     procedure SetLeft(const AValue: integer);
     procedure SetMonitor(const AValue: integer);
@@ -122,6 +135,7 @@ type
     property Anchors[Site: TAnchorKind]: string read GetAnchors write SetAnchors; // empty means default (parent)
     property WindowState: TWindowState read FWindowState write SetWindowState;
     property Monitor: integer read FMonitor write SetMonitor;
+    property HeaderPosition: TADLHeaderPosition read FHeaderPosition write SetHeaderPosition;
     function Count: integer;
     function IsSplitter: boolean;
     function IsRootWindow: boolean;
@@ -192,8 +206,17 @@ const
     'Minimized',
     'Maximized'
     );
+  ADLHeaderPositionNames: array[TADLHeaderPosition] of string = (
+    'auto',
+    'left',
+    'top',
+    'right',
+    'bottom'
+    );
+
 function NameToADLTreeNodeType(s: string): TADLTreeNodeType;
 function NameToADLWindowState(s: string): TWindowState;
+function NameToADLHeaderPosition(s: string): TADLHeaderPosition;
 function dbgs(const NodeType: TADLTreeNodeType): string; overload;
 
 procedure WriteDebugLayout(Title: string; RootNode: TObject);
@@ -215,6 +238,13 @@ begin
   for Result:=low(TWindowState) to high(TWindowState) do
     if s=ADLWindowStateNames[Result] then exit;
   Result:=wsNormal;
+end;
+
+function NameToADLHeaderPosition(s: string): TADLHeaderPosition;
+begin
+  for Result:=low(TADLHeaderPosition) to high(TADLHeaderPosition) do
+    if s=ADLHeaderPositionNames[Result] then exit;
+  Result:=adlhpAuto;
 end;
 
 function dbgs(const NodeType: TADLTreeNodeType): string; overload;
@@ -767,6 +797,14 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TAnchorDockLayoutTreeNode.SetHeaderPosition(
+  const AValue: TADLHeaderPosition);
+begin
+  if FHeaderPosition=AValue then exit;
+  FHeaderPosition:=AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TAnchorDockLayoutTreeNode.SetHeight(const AValue: integer);
 begin
   if Height=AValue then exit;
@@ -884,6 +922,7 @@ begin
   or (NodeType<>Node.NodeType)
   or (Name<>Node.Name)
   or (WindowState<>Node.WindowState)
+  or (HeaderPosition<>Node.HeaderPosition)
   then
     exit;
   for a:=low(TAnchorKind) to high(TAnchorKind) do
@@ -903,6 +942,7 @@ begin
   NodeType:=Node.NodeType;
   BoundsRect:=Node.BoundsRect;
   WindowState:=Node.WindowState;
+  HeaderPosition:=Node.HeaderPosition;
   for a:=low(TAnchorKind) to high(TAnchorKind) do
     Anchors[a]:=Node.Anchors[a];
   while Count>Node.Count do Nodes[Count-1].Free;
@@ -956,6 +996,7 @@ begin
   Anchors[akRight]:=Config.GetValue('Anchors/Right','');
   Anchors[akBottom]:=Config.GetValue('Anchors/Bottom','');
   WindowState:=NameToADLWindowState(Config.GetValue('WindowState',ADLWindowStateNames[wsNormal]));
+  HeaderPosition:=NameToADLHeaderPosition(Config.GetValue('Header/Position',ADLHeaderPositionNames[adlhpAuto]));
   Monitor:=Config.GetValue('Monitor',0);
   NewCount:=Config.GetValue('ChildCount',0);
   for i:=1 to NewCount do begin
@@ -984,6 +1025,8 @@ begin
   Config.SetDeleteValue('Anchors/Bottom',Anchors[akBottom],'');
   Config.SetDeleteValue('WindowState',ADLWindowStateNames[WindowState],
                                       ADLWindowStateNames[wsNormal]);
+  Config.SetDeleteValue('Header/Position',ADLHeaderPositionNames[HeaderPosition],
+                                      ADLHeaderPositionNames[adlhpAuto]);
   Config.SetDeleteValue('Monitor',Monitor,0);
   Config.SetDeleteValue('ChildCount',Count,0);
   for i:=1 to Count do begin

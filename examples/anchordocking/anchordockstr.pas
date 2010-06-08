@@ -35,6 +35,12 @@ interface
 
 resourcestring
   adrsClose = 'Close';
+  adrsHeaderPosition = 'Header position';
+  adrsAutomatically = 'Automatically';
+  adrsLeft = 'Left';
+  adrsTop = 'Top';
+  adrsRight = 'Right';
+  adrsBottom = 'Bottom';
   adrsLocked = 'Locked';
   adrsRequestedButCreated = '%s requested, but %s created';
   adrsDragAndDockC = 'Drag and dock %c';

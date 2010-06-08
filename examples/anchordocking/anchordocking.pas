@@ -49,18 +49,20 @@
        - close unneeded windows,
        - automatic clean up if windows are missing,
        - reusing existing docksites to minimize flickering
+    - popup menu
+       - close site
+       - lock/unlock
+       - header auto, left, top, right, bottom
 
   ToDo:
     - DoUndock
         remove spiral splitter
     - popup menu
-       - header auto, left, top, right, bottom
        - merge (for example after moving a dock page into a layout)
        - undock (needed if no place to undock on screen)
        - enlarge side to left, top, right, bottom
        - shrink side left, top, right, bottom
        - options
-       - lock/unlock
        - close (for pages)
        - tab position (default, left, top, right, bottom)
     - fpdoc
@@ -112,8 +114,11 @@ type
   TAnchorDockHeader = class(TCustomPanel)
   private
     FCloseButton: TSpeedButton;
+    FHeaderPosition: TADLHeaderPosition;
     procedure CloseButtonClick(Sender: TObject);
     procedure ChangeLockButtonClick(Sender: TObject);
+    procedure HeaderPositionItemClick(Sender: TObject);
+    procedure SetHeaderPosition(const AValue: TADLHeaderPosition);
   protected
     procedure Paint; override;
     procedure CalculatePreferredSize(var PreferredWidth,
@@ -125,10 +130,11 @@ type
     procedure DoOnShowHint(HintInfo: PHintInfo); override;
     procedure PopupMenuPopup(Sender: TObject); virtual;
     function AddPopupMenuItem(AName, ACaption: string;
-                              const OnClickEvent: TNotifyEvent): TMenuItem;
+                    const OnClickEvent: TNotifyEvent; AParent: TMenuItem = nil): TMenuItem;
   public
     constructor Create(TheOwner: TComponent); override;
     property CloseButton: TSpeedButton read FCloseButton;
+    property HeaderPosition: TADLHeaderPosition read FHeaderPosition write SetHeaderPosition;
   end;
 
   { TAnchorDockSplitter }
@@ -656,6 +662,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
     Site.BoundsRect:=Node.BoundsRect;
     Site.Visible:=true;
     Site.Parent:=Parent;
+    Site.Header.HeaderPosition:=Node.HeaderPosition;
     if Parent=nil then begin
       Site.WindowState:=Node.WindowState;
       if (Node.Monitor>=0) and (Node.Monitor<Screen.MonitorCount) then
@@ -2286,7 +2293,7 @@ begin
 
   CanDock:=(Client is TAnchorDockHostSite)
            and not DockMaster.AutoFreedIfControlIsRemoved(Self,Client);
-  debugln(['TAnchorDockHostSite.GetSiteInfo ',DbgSName(Self),' ',dbgs(BoundsRect),' CanDock=',CanDock]);
+  //debugln(['TAnchorDockHostSite.GetSiteInfo ',DbgSName(Self),' ',dbgs(BoundsRect),' CanDock=',CanDock]);
 
   if Assigned(OnGetSiteInfo) then
     OnGetSiteInfo(Self, Client, InfluenceRect, MousePos, CanDock);
@@ -2310,19 +2317,26 @@ end;
 procedure TAnchorDockHostSite.UpdateHeaderAlign;
 begin
   if Header=nil then exit;
-  if Header.Align in [alLeft,alRight] then begin
-    if (ClientHeight>0)
-    and ((ClientWidth*100 div ClientHeight)<=DockMaster.HeaderAlignTop) then
-      Header.Align:=alTop;
-  end else begin
-    if (ClientHeight>0)
-    and ((ClientWidth*100 div ClientHeight)>=DockMaster.HeaderAlignLeft) then
-    begin
-      if Application.BidiMode=bdRightToLeft then
-        Header.Align:=alRight
-      else
-        Header.Align:=alLeft;
+  case Header.HeaderPosition of
+  adlhpAuto:
+    if Header.Align in [alLeft,alRight] then begin
+      if (ClientHeight>0)
+      and ((ClientWidth*100 div ClientHeight)<=DockMaster.HeaderAlignTop) then
+        Header.Align:=alTop;
+    end else begin
+      if (ClientHeight>0)
+      and ((ClientWidth*100 div ClientHeight)>=DockMaster.HeaderAlignLeft) then
+      begin
+        if Application.BidiMode=bdRightToLeft then
+          Header.Align:=alRight
+        else
+          Header.Align:=alLeft;
+      end;
     end;
+  adlhpLeft: Header.Align:=alLeft;
+  adlhpTop: Header.Align:=alTop;
+  adlhpRight: Header.Align:=alRight;
+  adlhpBottom: Header.Align:=alBottom;
   end;
 end;
 
@@ -2373,6 +2387,7 @@ begin
     LayoutNode.NodeType:=adltnControl;
     LayoutNode.Assign(Self);
     LayoutNode.Name:=OneControl.Name;
+    LayoutNode.HeaderPosition:=Header.HeaderPosition;
   end else if (SiteType in [adhstLayout,adhstOneControl]) then begin
     LayoutNode.NodeType:=adltnLayout;
     for i:=0 to ControlCount-1 do begin
@@ -2389,6 +2404,7 @@ begin
       end;
     end;
     LayoutNode.Assign(Self);
+    LayoutNode.HeaderPosition:=Header.HeaderPosition;
   end else if SiteType=adhstPages then begin
     LayoutNode.NodeType:=adltnPages;
     for i:=0 to Pages.PageCount-1 do begin
@@ -2399,6 +2415,7 @@ begin
       end;
     end;
     LayoutNode.Assign(Self);
+    LayoutNode.HeaderPosition:=Header.HeaderPosition;
   end else
     LayoutNode.NodeType:=adltnNone;
 end;
@@ -2437,22 +2454,39 @@ end;
 procedure TAnchorDockHeader.PopupMenuPopup(Sender: TObject);
 var
   ChangeLockItem: TMenuItem;
+  HeaderPosItem: TMenuItem;
 begin
   debugln(['TAnchorDockHeader.PopupMenuPopup START']);
-  AddPopupMenuItem('CloseMenuItem',adrsClose,@CloseButtonClick);
   ChangeLockItem:=AddPopupMenuItem('ChangeLockMenuItem', adrsLocked,@ChangeLockButtonClick);
   ChangeLockItem.Checked:=not DockMaster.AllowDragging;
   ChangeLockItem.ShowAlwaysCheckable:=true;
+
+  AddPopupMenuItem('CloseMenuItem',adrsClose,@CloseButtonClick);
+
+  HeaderPosItem:=AddPopupMenuItem('HeaderPosMenuItem', adrsHeaderPosition, nil);
+  AddPopupMenuItem('HeaderPosAutoMenuItem', adrsAutomatically, @
+                   HeaderPositionItemClick, HeaderPosItem);
+  AddPopupMenuItem('HeaderPosLeftMenuItem', adrsLeft, @HeaderPositionItemClick,
+                    HeaderPosItem);
+  AddPopupMenuItem('HeaderPosTopMenuItem', adrsTop, @HeaderPositionItemClick,
+                   HeaderPosItem);
+  AddPopupMenuItem('HeaderPosRightMenuItem', adrsRight, @HeaderPositionItemClick,
+                   HeaderPosItem);
+  AddPopupMenuItem('HeaderPosBottomMenuItem', adrsBottom, @HeaderPositionItemClick,
+                   HeaderPosItem);
 end;
 
 function TAnchorDockHeader.AddPopupMenuItem(AName, ACaption: string;
-  const OnClickEvent: TNotifyEvent): TMenuItem;
+  const OnClickEvent: TNotifyEvent; AParent: TMenuItem): TMenuItem;
 begin
   Result:=TMenuItem(FindComponent(AName));
   if Result=nil then begin
     Result:=TMenuItem.Create(Self);
     Result.Name:=AName;
-    PopupMenu.Items.Add(Result);
+    if AParent=nil then
+      PopupMenu.Items.Add(Result)
+    else
+      AParent.Add(Result);
   end;
   Result.Caption:=ACaption;
   Result.OnClick:=OnClickEvent;
@@ -2467,6 +2501,24 @@ end;
 procedure TAnchorDockHeader.ChangeLockButtonClick(Sender: TObject);
 begin
   DockMaster.AllowDragging:=not DockMaster.AllowDragging;
+end;
+
+procedure TAnchorDockHeader.HeaderPositionItemClick(Sender: TObject);
+var
+  Item: TMenuItem;
+begin
+  if not (Sender is TMenuItem) then exit;
+  Item:=TMenuItem(Sender);
+  HeaderPosition:=TADLHeaderPosition(Item.Parent.IndexOf(Item));
+end;
+
+procedure TAnchorDockHeader.SetHeaderPosition(const AValue: TADLHeaderPosition
+  );
+begin
+  if FHeaderPosition=AValue then exit;
+  FHeaderPosition:=AValue;
+  if Parent is TAnchorDockHostSite then
+    TAnchorDockHostSite(Parent).UpdateHeaderAlign;
 end;
 
 procedure TAnchorDockHeader.Paint;
@@ -2554,6 +2606,7 @@ end;
 constructor TAnchorDockHeader.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FHeaderPosition:=adlhpAuto;
   FCloseButton:=TAnchorDockCloseButton.Create(Self);
   with FCloseButton do begin
     Name:='CloseButton';
