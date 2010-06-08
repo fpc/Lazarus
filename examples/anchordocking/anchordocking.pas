@@ -54,10 +54,10 @@
        - lock/unlock
        - header auto, left, top, right, bottom
        - undock (needed if no place to undock on screen)
+       - merge (for example after moving a dock page into a layout)
 
   ToDo:
     - popup menu
-       - merge (for example after moving a dock page into a layout)
        - enlarge side to left, top, right, bottom
        - shrink side left, top, right, bottom
        - options
@@ -117,6 +117,7 @@ type
     procedure ChangeLockButtonClick(Sender: TObject);
     procedure HeaderPositionItemClick(Sender: TObject);
     procedure UndockButtonClick(Sender: TObject);
+    procedure MergeButtonClick(Sender: TObject);
     procedure SetHeaderPosition(const AValue: TADLHeaderPosition);
   protected
     procedure Paint; override;
@@ -233,6 +234,8 @@ type
     function HeaderNeedsShowing: boolean;
     procedure DoClose(var CloseAction: TCloseAction); override;
     procedure Undock;
+    function CanMerge: boolean;
+    procedure Merge;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2222,6 +2225,48 @@ begin
   EnableAutoSizing;
 end;
 
+function TAnchorDockHostSite.CanMerge: boolean;
+begin
+  Result:=(SiteType=adhstLayout)
+      and (Parent is TAnchorDockHostSite)
+      and (TAnchorDockHostSite(Parent).SiteType=adhstLayout);
+end;
+
+procedure TAnchorDockHostSite.Merge;
+{ Move all child controls to parent and delete this site
+}
+var
+  ParentSite: TAnchorDockHostSite;
+  i: Integer;
+  Child: TControl;
+  Side: TAnchorKind;
+begin
+  ParentSite:=Parent as TAnchorDockHostSite;
+  if (SiteType<>adhstLayout) or (ParentSite.SiteType<>adhstLayout) then
+    RaiseGDBException('');
+  ParentSite.BeginUpdateLayout;
+  DisableAutoSizing;
+  try
+    i:=0;
+    while i<ControlCount-1 do begin
+      Child:=Controls[i];
+      if Child.Owner=Self then
+        inc(i)
+      else begin
+        Child.Parent:=ParentSite;
+        Child.SetBounds(Child.Left+Left,Child.Top+Top,Child.Width,Child.Height);
+        for Side:=Low(TAnchorKind) to High(TAnchorKind) do begin
+          if Child.AnchorSide[Side].Control=Self then
+            Child.AnchorSide[Side].Assign(AnchorSide[Side]);
+        end;
+      end;
+    end;
+    DockMaster.NeedFree(Self);
+  finally
+    ParentSite.EndUpdateLayout;
+  end;
+end;
+
 function TAnchorDockHostSite.CloseQuery: boolean;
 
   function Check(AControl: TWinControl): boolean;
@@ -2554,6 +2599,7 @@ var
   ChangeLockItem: TMenuItem;
   HeaderPosItem: TMenuItem;
   UndockItem: TMenuItem;
+  MergeItem: TMenuItem;
 begin
   debugln(['TAnchorDockHeader.PopupMenuPopup START']);
   ChangeLockItem:=AddPopupMenuItem('ChangeLockMenuItem', adrsLocked,@ChangeLockButtonClick);
@@ -2562,8 +2608,10 @@ begin
 
   AddPopupMenuItem('CloseMenuItem',adrsClose,@CloseButtonClick);
 
-  UndockItem:=AddPopupMenuItem('UndockMenuItem','Undock',@UndockButtonClick);
+  UndockItem:=AddPopupMenuItem('UndockMenuItem',adrsUndock,@UndockButtonClick);
   UndockItem.Visible:=Parent.Parent<>nil;
+  MergeItem:=AddPopupMenuItem('MergeMenuItem', adrsMerge, @MergeButtonClick);
+  MergeItem.Visible:=TAnchorDockHostSite(Parent).CanMerge;
 
   HeaderPosItem:=AddPopupMenuItem('HeaderPosMenuItem', adrsHeaderPosition, nil);
   AddPopupMenuItem('HeaderPosAutoMenuItem', adrsAutomatically, @
@@ -2617,6 +2665,11 @@ end;
 procedure TAnchorDockHeader.UndockButtonClick(Sender: TObject);
 begin
   TAnchorDockHostSite(Parent).Undock;
+end;
+
+procedure TAnchorDockHeader.MergeButtonClick(Sender: TObject);
+begin
+  TAnchorDockHostSite(Parent).Merge;
 end;
 
 procedure TAnchorDockHeader.SetHeaderPosition(const AValue: TADLHeaderPosition

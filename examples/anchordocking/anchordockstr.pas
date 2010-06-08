@@ -35,7 +35,9 @@ interface
 
 resourcestring
   adrsClose = 'Close';
+  adrsUndock = 'Undock';
   adrsHeaderPosition = 'Header position';
+  adrsMerge = 'Merge';
   adrsAutomatically = 'Automatically';
   adrsLeft = 'Left';
   adrsTop = 'Top';
