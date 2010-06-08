@@ -1294,7 +1294,7 @@ end;
 {------------------------------------------------------------------------------
   procedure TControl.DoOnShowHint(HintInfo: Pointer);
 ------------------------------------------------------------------------------}
-procedure TControl.DoOnShowHint(HintInfo: Pointer);
+procedure TControl.DoOnShowHint(HintInfo: PHintInfo);
 begin
   if Assigned(OnShowHint) then
     OnShowHint(Self,HintInfo);

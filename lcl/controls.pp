@@ -1036,7 +1036,7 @@ type
     procedure CalculatePreferredSize(
                          var PreferredWidth, PreferredHeight: integer;
                          WithThemeSpace: Boolean); virtual;
-    procedure DoOnResize; virtual;// call OnReresize
+    procedure DoOnResize; virtual;// call OnResize
     procedure DoOnChangeBounds; virtual;// call OnChangeBounds
     procedure CheckOnChangeBounds;// checks for changes and calls DoOnChangeBounds
     procedure Resize; virtual;// checks for changes and calls DoOnResize
@@ -1179,7 +1179,7 @@ type
     function GetDeviceContext(var WindowHandle: HWND): HDC; virtual;
     function GetEnabled: Boolean; virtual;
     function GetPopupMenu: TPopupMenu; virtual;
-    procedure DoOnShowHint(HintInfo: Pointer);
+    procedure DoOnShowHint(HintInfo: PHintInfo); virtual;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; virtual;
     function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; virtual;
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; virtual;
