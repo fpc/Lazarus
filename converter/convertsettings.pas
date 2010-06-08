@@ -423,7 +423,7 @@ var
   GridUpdater: TGridUpdater;
 begin
   RNForm:=TReplaceNamesForm.Create(nil);
-  GridUpdater:=TGridUpdater.Create(fSettings.ReplaceUnits, RNForm.NamePairGrid);
+  GridUpdater:=TGridUpdater.Create(fSettings.ReplaceUnits, RNForm.Grid);
   try
     RNForm.Caption:=lisConvUnitsToReplace;
     GridUpdater.MapToGrid;
@@ -441,7 +441,7 @@ var
   GridUpdater: TGridUpdater;
 begin
   RNForm:=TReplaceNamesForm.Create(nil);
-  GridUpdater:=TGridUpdater.Create(fSettings.ReplaceTypes, RNForm.NamePairGrid);
+  GridUpdater:=TGridUpdater.Create(fSettings.ReplaceTypes, RNForm.Grid);
   try
     RNForm.Caption:=lisConvTypesToReplace;
     GridUpdater.MapToGrid;

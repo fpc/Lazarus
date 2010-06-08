@@ -47,15 +47,16 @@ type
     HelpButton: TBitBtn;
     InsertRow1: TMenuItem;
     DeleteRow1: TMenuItem;
-    NamePairGrid: TStringGrid;
+    Grid: TStringGrid;
     PopupMenu1: TPopupMenu;
     procedure FormCreate(Sender: TObject);
     procedure InsertRow1Click(Sender: TObject);
     procedure DeleteRow1Click(Sender: TObject);
-    procedure NamePairGridEditingDone(Sender: TObject);
-    procedure NamePairGridSetEditText(Sender: TObject; ACol, ARow: Integer;
+    procedure GridEditingDone(Sender: TObject);
+    procedure GridSetEditText(Sender: TObject; ACol, ARow: Integer;
       const Value: string);
     procedure btnOKClick(Sender: TObject);
+    procedure PopupMenu1Popup(Sender: TObject);
   private
     IsLasRow: Boolean;
   public
@@ -203,19 +204,29 @@ begin
   IsLasRow:=false;
 end;
 
+procedure TReplaceNamesForm.PopupMenu1Popup(Sender: TObject);
+var
+  ControlCoord, NewCell: TPoint;
+begin
+  ControlCoord := Grid.ScreenToControl(PopupMenu1.PopupPoint);
+  NewCell:=Grid.MouseToCell(ControlCoord);
+  Grid.Col:=NewCell.X;
+  Grid.Row:=NewCell.Y;
+end;
+
 procedure TReplaceNamesForm.InsertRow1Click(Sender: TObject);
 begin
-  NamePairGrid.InsertColRow(False, NamePairGrid.Row);
+  Grid.InsertColRow(False, Grid.Row);
 end;
 
 procedure TReplaceNamesForm.DeleteRow1Click(Sender: TObject);
 begin
-  NamePairGrid.DeleteColRow(False, NamePairGrid.Row);
+  Grid.DeleteColRow(False, Grid.Row);
 end;
 
 // Add rows automatically to the end of the grid
 //  using OnSetEditText and OnEditingDone handlers and IsLasRow flag.
-procedure TReplaceNamesForm.NamePairGridEditingDone(Sender: TObject);
+procedure TReplaceNamesForm.GridEditingDone(Sender: TObject);
 var
   sg: TStringGrid;
 begin
@@ -226,7 +237,7 @@ begin
   end;
 end;
 
-procedure TReplaceNamesForm.NamePairGridSetEditText(Sender: TObject; ACol,
+procedure TReplaceNamesForm.GridSetEditText(Sender: TObject; ACol,
   ARow: Integer; const Value: string);
 begin
   if ARow = (Sender as TStringGrid).RowCount-1 then

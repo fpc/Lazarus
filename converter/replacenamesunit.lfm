@@ -3,14 +3,14 @@ object ReplaceNamesForm: TReplaceNamesForm
   Height = 472
   Top = 438
   Width = 343
-  ActiveControl = NamePairGrid
+  ActiveControl = Grid
   Caption = 'Properties and Types to replace'
   ClientHeight = 472
   ClientWidth = 343
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.29'
-  object NamePairGrid: TStringGrid
+  object Grid: TStringGrid
     Left = 0
     Height = 434
     Top = 0
@@ -28,12 +28,12 @@ object ReplaceNamesForm: TReplaceNamesForm
         Width = 170
       end>
     FixedCols = 0
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goEditing, goSmoothScroll]
     PopupMenu = PopupMenu1
     RowCount = 2
     TabOrder = 0
-    OnEditingDone = NamePairGridEditingDone
-    OnSetEditText = NamePairGridSetEditText
+    OnEditingDone = GridEditingDone
+    OnSetEditText = GridSetEditText
     ColWidths = (
       169
       170
@@ -103,6 +103,7 @@ object ReplaceNamesForm: TReplaceNamesForm
     end
   end
   object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
     left = 131
     top = 91
     object InsertRow1: TMenuItem
