@@ -33,7 +33,7 @@ type
   public
     constructor Create(AStringMap: TStringToStringTree; AGrid: TStringGrid);
     destructor Destroy; override;
-    procedure AddUnique(AOldIdent: string);
+    procedure AddUniqueToGrid(AOldIdent: string);
     procedure MapToGrid;
     procedure GridToMap;
   end;
@@ -177,7 +177,7 @@ begin
   end;
 end;
 
-procedure TGridUpdater.AddUnique(AOldIdent: string);
+procedure TGridUpdater.AddUniqueToGrid(AOldIdent: string);
 // Add a new Delphi -> Lazarus mapping to grid.
 var
   NewIdent: string;
@@ -199,7 +199,7 @@ end;
 
 procedure TReplaceNamesForm.FormCreate(Sender: TObject);
 begin
-  Caption:=lisReplacementPropTypes;
+  Caption:=lisReplacements;
   IsLasRow:=false;
 end;
 

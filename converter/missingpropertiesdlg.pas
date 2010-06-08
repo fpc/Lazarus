@@ -72,9 +72,10 @@ type
     fHasMissingObjectTypes: Boolean;
     // References to controls in UI:
     fPropReplaceGrid: TStringGrid;
+    fTypeReplaceGrid: TStringGrid;
     function ReplaceAndRemoveAll: TModalResult;
-    // Fill StringGrid with missing properties from fLFMTree.
-    procedure FillPropReplaceList;
+    // Fill StringGrids with missing properties and types from fLFMTree.
+    procedure FillReplaceGrids;
   protected
     procedure LoadLFM;
     function ShowRepairLFMWizard: TModalResult; override;
@@ -94,6 +95,7 @@ type
     CancelButton: TBitBtn;
     ErrorsGroupBox: TGroupBox;
     ErrorsListBox: TListBox;
+    TypeReplaceGrid: TStringGrid;
     PropertyReplaceGroupBox: TGroupBox;
     NoteLabel: TLabel;
     LFMGroupBox: TGroupBox;
@@ -101,7 +103,11 @@ type
     BtnPanel: TPanel;
     ReplaceAllButton: TBitBtn;
     Splitter1: TSplitter;
-    PropertyReplaceGrid: TStringGrid;
+    PropReplaceGrid: TStringGrid;
+    Splitter2: TSplitter;
+    Splitter3: TSplitter;
+    PropertiesText: TStaticText;
+    TypesText: TStaticText;
     SynLFMSyn1: TSynLFMSyn;
     procedure ErrorsListBoxClick(Sender: TObject);
     procedure ReplaceAllButtonClick(Sender: TObject);
@@ -246,21 +252,27 @@ var
   CurError: TLFMError;
   TheNode: TLFMTreeNode;
   ObjNode: TLFMObjectNode;
-  // Type name --> replacement name.
-  NameReplacements: TStringToStringTree;
+  // Property / Type name --> replacement name.
+  PropReplacements: TStringToStringTree;
+  TypeReplacements: TStringToStringTree;
   // List of TLFMChangeEntry objects.
   ChgEntryRepl: TObjectList;
-  GridUpdater: TGridUpdater;
+  // Updater moves data between grid and map.
+  PropUpdater: TGridUpdater;
+  TypeUpdater: TGridUpdater;
   OldIdent, NewIdent: string;
   StartPos, EndPos: integer;
 begin
   Result:=mrOK;
   ChgEntryRepl:=TObjectList.Create;
-  NameReplacements:=TStringToStringTree.Create(false);
-  GridUpdater:=TGridUpdater.Create(NameReplacements, fPropReplaceGrid);
+  PropReplacements:=TStringToStringTree.Create(false);
+  TypeReplacements:=TStringToStringTree.Create(false);
+  PropUpdater:=TGridUpdater.Create(PropReplacements, fPropReplaceGrid);
+  TypeUpdater:=TGridUpdater.Create(TypeReplacements, fTypeReplaceGrid);
   try
-    // Collect (maybe edited) properties from StringGrid to NameReplacements.
-    GridUpdater.GridToMap;
+    // Collect (maybe edited) properties from StringGrid to map.
+    PropUpdater.GridToMap;
+    TypeUpdater.GridToMap;
     // Replace each missing property / type or delete it if no replacement.
     CurError:=fLFMTree.LastError;
     while CurError<>nil do begin
@@ -270,7 +282,7 @@ begin
           // Object type
           ObjNode:=CurError.Node as TLFMObjectNode;
           OldIdent:=ObjNode.TypeName;
-          NewIdent:=NameReplacements[OldIdent];
+          NewIdent:=TypeReplacements[OldIdent];
           // Keep the old class name if no replacement.
           if NewIdent<>'' then begin
             StartPos:=ObjNode.TypeNamePosition;
@@ -284,7 +296,7 @@ begin
           TheNode.FindIdentifier(StartPos,EndPos);
           if StartPos>0 then begin
             OldIdent:=copy(fLFMBuffer.Source,StartPos,EndPos-StartPos);
-            NewIdent:=NameReplacements[OldIdent];
+            NewIdent:=PropReplacements[OldIdent];
             // Delete the whole property line if no replacement.
             if NewIdent='' then
               FindNiceNodeBounds(TheNode,StartPos,EndPos);
@@ -294,56 +306,61 @@ begin
       end;
       CurError:=CurError.PrevError;
     end;
-    // Apply replacement types also to pascal source.
-    if not CodeToolBoss.RetypeClassVariables(fPascalBuffer,
-                TLFMObjectNode(fLFMTree.Root).TypeName, NameReplacements, false)
-    then begin
+    // Apply replacements to LFM.
+    if not ApplyReplacements(ChgEntryRepl) then begin
       Result:=mrCancel;
       exit;
     end;
-    // Apply replacements to LFM.
-    if not ApplyReplacements(ChgEntryRepl) then
+    // Apply replacement types also to pascal source.
+    if not CodeToolBoss.RetypeClassVariables(fPascalBuffer,
+            TLFMObjectNode(fLFMTree.Root).TypeName, TypeReplacements, false) then
       Result:=mrCancel;
   finally
-    GridUpdater.Free;
-    NameReplacements.Free;
+    TypeUpdater.Free;
+    PropUpdater.Free;
+    TypeReplacements.Free;
+    PropReplacements.Free;
     ChgEntryRepl.Free;
   end;
 end;
 
-procedure TLFMFixer.FillPropReplaceList;
+procedure TLFMFixer.FillReplaceGrids;
 var
+  PropUpdater: TGridUpdater;
+  TypeUpdater: TGridUpdater;
   CurError: TLFMError;
-  GridUpdater: TGridUpdater;
   OldIdent: string;
 begin
   fHasMissingObjectTypes:=false;
-  GridUpdater:=TGridUpdater.Create(fSettings.ReplaceTypes, fPropReplaceGrid);
+  // ReplaceTypes is used for properties just in case it will provide some.
+  PropUpdater:=TGridUpdater.Create(fSettings.ReplaceTypes, fPropReplaceGrid);
+  TypeUpdater:=TGridUpdater.Create(fSettings.ReplaceTypes, fTypeReplaceGrid);
   try
     if fLFMTree<>nil then begin
       CurError:=fLFMTree.FirstError;
       while CurError<>nil do begin
         if CurError.IsMissingObjectType then begin
           OldIdent:=(CurError.Node as TLFMObjectNode).TypeName;
+          TypeUpdater.AddUniqueToGrid(OldIdent); // Add a unique type only once.
           fHasMissingObjectTypes:=true;
         end
-        else
+        else begin
           OldIdent:=CurError.Node.GetIdentifier;
-        // Add only one instance of each property name.
-        GridUpdater.AddUnique(OldIdent);
+          PropUpdater.AddUniqueToGrid(OldIdent); // Add a unique property only once.
+        end;
         CurError:=CurError.NextError;
       end;
     end;
   finally
-    GridUpdater.Free;
+    TypeUpdater.Free;
+    PropUpdater.Free;
   end;
 end;
 
 procedure TLFMFixer.LoadLFM;
 begin
   inherited LoadLFM;
-  // Fill PropertyReplaceGrid
-  FillPropReplaceList;
+  FillReplaceGrids;         // Fill both ReplaceGrids.
 end;
 
 function TLFMFixer.ShowRepairLFMWizard: TModalResult;
@@ -356,7 +373,8 @@ begin
   try
     fLFMSynEdit:=FixLFMDialog.LFMSynEdit;
     fErrorsListBox:=FixLFMDialog.ErrorsListBox;
-    fPropReplaceGrid:=FixLFMDialog.PropertyReplaceGrid;
+    fPropReplaceGrid:=FixLFMDialog.PropReplaceGrid;
+    fTypeReplaceGrid:=FixLFMDialog.TypeReplaceGrid;
     LoadLFM;
     if fSettings.AutoRemoveProperties and not fHasMissingObjectTypes then
       Result:=ReplaceAndRemoveAll
@@ -471,7 +489,9 @@ begin
   NoteLabel.Caption:=lisLFMFileContainsInvalidProperties;
   ErrorsGroupBox.Caption:=lisErrors;
   LFMGroupBox.Caption:=lisLFMFile;
-  PropertyReplaceGroupBox.Caption:=lisReplacementPropTypes;
+  PropertyReplaceGroupBox.Caption:=lisReplacements;
+  PropertiesText.Caption:=lisProperties;
+  TypesText.Caption:=lisTypes;
   ReplaceAllButton.Caption:=lisReplaceRemoveUnknown;
   ReplaceAllButton.LoadGlyphFromLazarusResource('laz_refresh');
   EditorOpts.GetHighlighterSettings(SynLFMSyn1);

@@ -1,13 +1,14 @@
 object FixLFMDialog: TFixLFMDialog
-  Left = 280
-  Height = 536
-  Top = 233
+  Left = 366
+  Height = 637
+  Top = 94
   Width = 756
   ActiveControl = LFMSynEdit
   Caption = 'Fix LFM file'
-  ClientHeight = 536
+  ClientHeight = 637
   ClientWidth = 756
   OnCreate = CheckLFMDialogCreate
+  Position = poScreenCenter
   LCLVersion = '0.9.29'
   object NoteLabel: TLabel
     Left = 0
@@ -21,17 +22,17 @@ object FixLFMDialog: TFixLFMDialog
   end
   object LFMGroupBox: TGroupBox
     Left = 0
-    Height = 368
+    Height = 469
     Top = 16
     Width = 408
     Align = alLeft
     Caption = 'LFM file'
-    ClientHeight = 349
+    ClientHeight = 450
     ClientWidth = 404
     TabOrder = 0
     inline LFMSynEdit: TSynEdit
       Left = 0
-      Height = 349
+      Height = 450
       Top = 0
       Width = 404
       Align = alClient
@@ -629,7 +630,7 @@ object FixLFMDialog: TFixLFMDialog
   object ErrorsGroupBox: TGroupBox
     Left = 0
     Height = 104
-    Top = 384
+    Top = 490
     Width = 756
     Align = alBottom
     Caption = 'Errors'
@@ -649,20 +650,20 @@ object FixLFMDialog: TFixLFMDialog
   end
   object BtnPanel: TPanel
     Left = 0
-    Height = 48
-    Top = 488
+    Height = 43
+    Top = 594
     Width = 756
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 48
+    ClientHeight = 43
     ClientWidth = 756
     TabOrder = 2
     object CancelButton: TBitBtn
-      Left = 669
-      Height = 36
+      Left = 670
+      Height = 31
       Top = 6
-      Width = 81
+      Width = 80
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 6
@@ -675,12 +676,12 @@ object FixLFMDialog: TFixLFMDialog
     end
     object ReplaceAllButton: TBitBtn
       Left = 6
-      Height = 25
+      Height = 26
       Top = 6
-      Width = 230
+      Width = 193
       AutoSize = True
       BorderSpacing.Around = 6
-      Caption = 'Replace unknown types and properties'
+      Caption = 'Fix unknown properties and types'
       NumGlyphs = 0
       OnClick = ReplaceAllButtonClick
       TabOrder = 1
@@ -688,29 +689,29 @@ object FixLFMDialog: TFixLFMDialog
   end
   object PropertyReplaceGroupBox: TGroupBox
     Left = 413
-    Height = 368
+    Height = 469
     Top = 16
     Width = 343
     Align = alClient
-    Caption = 'Properties and Types to replace'
-    ClientHeight = 349
+    Caption = 'Replacements'
+    ClientHeight = 450
     ClientWidth = 339
     TabOrder = 3
-    object PropertyReplaceGrid: TStringGrid
+    object PropReplaceGrid: TStringGrid
       Left = 0
-      Height = 349
-      Top = 0
+      Height = 187
+      Top = 17
       Width = 339
-      Align = alClient
+      Align = alTop
       AutoFillColumns = True
       ColCount = 2
       Columns = <      
         item
-          Title.Caption = 'Delphi name'
+          Title.Caption = 'Delphi Property'
           Width = 167
         end      
         item
-          Title.Caption = 'New name'
+          Title.Caption = 'New Property'
           Width = 168
         end>
       FixedCols = 0
@@ -722,12 +723,76 @@ object FixLFMDialog: TFixLFMDialog
         168
       )
     end
+    object PropertiesText: TStaticText
+      Left = 0
+      Height = 17
+      Top = 0
+      Width = 339
+      Align = alTop
+      BorderStyle = sbsSunken
+      Caption = 'Properties'
+      TabOrder = 1
+    end
+    object Splitter3: TSplitter
+      Cursor = crVSplit
+      Left = 0
+      Height = 5
+      Top = 204
+      Width = 339
+      Align = alTop
+      ResizeAnchor = akTop
+    end
+    object TypeReplaceGrid: TStringGrid
+      Left = 0
+      Height = 224
+      Top = 226
+      Width = 339
+      Align = alClient
+      AutoFillColumns = True
+      ColCount = 2
+      Columns = <      
+        item
+          Title.Caption = 'Delphi Type'
+          Width = 167
+        end      
+        item
+          Title.Caption = 'New Type'
+          Width = 168
+        end>
+      FixedCols = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
+      RowCount = 2
+      TabOrder = 3
+      ColWidths = (
+        167
+        168
+      )
+    end
+    object TypesText: TStaticText
+      Left = 0
+      Height = 17
+      Top = 209
+      Width = 339
+      Align = alTop
+      BorderStyle = sbsSunken
+      Caption = 'Types'
+      TabOrder = 4
+    end
   end
   object Splitter1: TSplitter
     Left = 408
-    Height = 368
+    Height = 469
     Top = 16
     Width = 5
+  end
+  object Splitter2: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 485
+    Width = 756
+    Align = alBottom
+    ResizeAnchor = akBottom
   end
   object SynLFMSyn1: TSynLFMSyn
     DefaultFilter = 'Lazarus Form Files (*.lfm)|*.lfm'

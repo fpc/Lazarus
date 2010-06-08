@@ -467,8 +467,10 @@ resourcestring
   lisConvTypesToReplace = 'Types to replace';
   lisConvUnitReplacements = 'Unit Replacements';
   lisConvTypeReplacements = 'Type Replacements';
-  lisReplacementPropTypes = 'Replacement Properties and Types';
-  lisReplaceRemoveUnknown = 'Replace unknown types and properties';
+  lisReplacements = 'Replacements';
+  lisProperties = 'Properties (replace or delete)';
+  lisTypes = 'Types (not removed if no replacement)';
+  lisReplaceRemoveUnknown = 'Fix unknown properties and types';
 
   lisUnableToLoadOldResourceFileTheResourceFileIs = 'Unable to load old '
     +'resource file.%sThe resource file is the first include file in the%'
