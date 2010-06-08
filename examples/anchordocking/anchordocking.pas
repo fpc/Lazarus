@@ -112,8 +112,8 @@ type
   TAnchorDockHeader = class(TCustomPanel)
   private
     FCloseButton: TSpeedButton;
-    FCloseMenuItem: TMenuItem;
     procedure CloseButtonClick(Sender: TObject);
+    procedure ChangeLockButtonClick(Sender: TObject);
   protected
     procedure Paint; override;
     procedure CalculatePreferredSize(var PreferredWidth,
@@ -129,7 +129,6 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     property CloseButton: TSpeedButton read FCloseButton;
-    property CloseMenuItem: TMenuItem read FCloseMenuItem;
   end;
 
   { TAnchorDockSplitter }
@@ -286,6 +285,7 @@ type
 
   TAnchorDockMaster = class(TComponent)
   private
+    FAllowDragging: boolean;
     FControls: TFPList;
     FDockOutsideMargin: integer;
     FDockParentMargin: integer;
@@ -363,6 +363,7 @@ type
     property ShowHeaderCaptionFloatingControl: boolean read FShowHeaderCaptionFloatingControl
                           write FShowHeaderCaptionFloatingControl default false;
     property OnCreateControl: TADCreateControlEvent read FOnCreateControl write FOnCreateControl;
+    property AllowDragging: boolean read FAllowDragging write FAllowDragging default true;
   end;
 
 var
@@ -848,6 +849,7 @@ constructor TAnchorDockMaster.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FControls:=TFPList.Create;
+  FAllowDragging:=true;
   FDragTreshold:=4;
   FDockOutsideMargin:=10;
   FDockParentMargin:=10;
@@ -2433,24 +2435,38 @@ end;
 { TAnchorDockHeader }
 
 procedure TAnchorDockHeader.PopupMenuPopup(Sender: TObject);
+var
+  ChangeLockItem: TMenuItem;
 begin
   debugln(['TAnchorDockHeader.PopupMenuPopup START']);
+  AddPopupMenuItem('CloseMenuItem',adrsClose,@CloseButtonClick);
+  ChangeLockItem:=AddPopupMenuItem('ChangeLockMenuItem', adrsLocked,@ChangeLockButtonClick);
+  ChangeLockItem.Checked:=not DockMaster.AllowDragging;
+  ChangeLockItem.ShowAlwaysCheckable:=true;
 end;
 
 function TAnchorDockHeader.AddPopupMenuItem(AName, ACaption: string;
   const OnClickEvent: TNotifyEvent): TMenuItem;
 begin
-  Result:=TMenuItem.Create(Self);
-  Result.Name:=AName;
+  Result:=TMenuItem(FindComponent(AName));
+  if Result=nil then begin
+    Result:=TMenuItem.Create(Self);
+    Result.Name:=AName;
+    PopupMenu.Items.Add(Result);
+  end;
   Result.Caption:=ACaption;
   Result.OnClick:=OnClickEvent;
-  PopupMenu.Items.Add(Result);
 end;
 
 procedure TAnchorDockHeader.CloseButtonClick(Sender: TObject);
 begin
   if Parent is TAnchorDockHostSite then
     TAnchorDockHostSite(Parent).CloseSite;
+end;
+
+procedure TAnchorDockHeader.ChangeLockButtonClick(Sender: TObject);
+begin
+  DockMaster.AllowDragging:=not DockMaster.AllowDragging;
 end;
 
 procedure TAnchorDockHeader.Paint;
@@ -2490,7 +2506,7 @@ procedure TAnchorDockHeader.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  if Button=mbLeft then
+  if (Button=mbLeft) and DockMaster.AllowDragging then
     DragManager.DragStart(Parent,false,DockMaster.DragTreshold);
 end;
 
@@ -2553,8 +2569,6 @@ begin
   ShowHint:=true;
   PopupMenu:=TPopupMenu.Create(Self);
   PopupMenu.OnPopup:=@PopupMenuPopup;
-  FCloseMenuItem:=AddPopupMenuItem('CloseMenuItem', adrsClose, @CloseButtonClick
-    );
 end;
 
 { TAnchorDockCloseButton }
@@ -2857,7 +2871,8 @@ var
 begin
   inherited MouseDown(Button, Shift, X, Y);
   ATabIndex := TabIndexAtClientPos(Point(X,Y));
-  if (Button = mbLeft) and (ATabIndex >= 0) then begin
+  if (Button = mbLeft) and DockMaster.AllowDragging and (ATabIndex >= 0) then
+  begin
     APage:=Page[ATabIndex];
     if (APage.ControlCount>0) and (APage.Controls[0] is TAnchorDockHostSite) then
     begin

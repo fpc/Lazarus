@@ -35,6 +35,7 @@ interface
 
 resourcestring
   adrsClose = 'Close';
+  adrsLocked = 'Locked';
   adrsRequestedButCreated = '%s requested, but %s created';
   adrsDragAndDockC = 'Drag and dock %c';
   adrsMissingControlName = 'missing control name';
