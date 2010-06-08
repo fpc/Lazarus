@@ -83,7 +83,7 @@ interface
 
 uses
   Math, Classes, SysUtils, LResources, types, LCLType, LCLIntf, LCLProc,
-  Controls, Forms, ExtCtrls, ComCtrls, Graphics, Themes, Buttons,
+  Controls, Forms, ExtCtrls, ComCtrls, Graphics, Themes, Menus, Buttons,
   LazConfigStorage, AnchorDockStorage;
 
 type
@@ -109,6 +109,7 @@ type
   TAnchorDockHeader = class(TCustomPanel)
   private
     FCloseButton: TSpeedButton;
+    FCloseMenuItem: TMenuItem;
     procedure CloseButtonClick(Sender: TObject);
   protected
     procedure Paint; override;
@@ -119,9 +120,13 @@ type
     procedure UpdateHeaderControls;
     procedure SetAlign(Value: TAlign); override;
     procedure DoOnShowHint(HintInfo: PHintInfo); override;
+    procedure PopupMenuPopup(Sender: TObject); virtual;
+    function AddPopupMenuItem(AName, ACaption: string;
+                              const OnClickEvent: TNotifyEvent): TMenuItem;
   public
     constructor Create(TheOwner: TComponent); override;
     property CloseButton: TSpeedButton read FCloseButton;
+    property CloseMenuItem: TMenuItem read FCloseMenuItem;
   end;
 
   { TAnchorDockSplitter }
@@ -2421,6 +2426,21 @@ end;
 
 { TAnchorDockHeader }
 
+procedure TAnchorDockHeader.PopupMenuPopup(Sender: TObject);
+begin
+  debugln(['TAnchorDockHeader.PopupMenuPopup START']);
+end;
+
+function TAnchorDockHeader.AddPopupMenuItem(AName, ACaption: string;
+  const OnClickEvent: TNotifyEvent): TMenuItem;
+begin
+  Result:=TMenuItem.Create(Self);
+  Result.Name:=AName;
+  Result.Caption:=ACaption;
+  Result.OnClick:=OnClickEvent;
+  PopupMenu.Items.Add(Result);
+end;
+
 procedure TAnchorDockHeader.CloseButtonClick(Sender: TObject);
 begin
   if Parent is TAnchorDockHostSite then
@@ -2464,7 +2484,8 @@ procedure TAnchorDockHeader.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  DragManager.DragStart(Parent,false,DockMaster.DragTreshold);
+  if Button=mbLeft then
+    DragManager.DragStart(Parent,false,DockMaster.DragTreshold);
 end;
 
 procedure TAnchorDockHeader.UpdateHeaderControls;
@@ -2524,6 +2545,9 @@ begin
   Align:=alTop;
   AutoSize:=true;
   ShowHint:=true;
+  PopupMenu:=TPopupMenu.Create(Self);
+  PopupMenu.OnPopup:=@PopupMenuPopup;
+  FCloseMenuItem:=AddPopupMenuItem('CloseMenuItem','Close',@CloseButtonClick);
 end;
 
 { TAnchorDockCloseButton }
