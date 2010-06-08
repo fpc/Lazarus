@@ -173,7 +173,7 @@ type
     sfEnsureCursorPos, sfEnsureCursorPosAtResize,
     sfIgnoreNextChar, sfPainting, sfHasScrolled,
     sfScrollbarChanged, sfHorizScrollbarVisible, sfVertScrollbarVisible,
-    sfAfterLoadFromFile, sfInHandleCreation,
+    sfAfterLoadFromFileNeeded,
     // Mouse-states
     sfDblClicked, sfGutterClick, sfTripleClicked, sfQuadClicked,
     sfWaitForDragging, sfIsDragging, sfMouseSelecting, sfMouseDoneSelecting,
@@ -573,7 +573,6 @@ type
     procedure CreateHandle; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
-    procedure SetVisible(Value: Boolean); override;
 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
       Integer); override;
@@ -1819,7 +1818,7 @@ begin
   try
     if (FPaintLock=1) and HandleAllocated then begin
       ScanRanges;
-      if sfAfterLoadFromFile in fStateFlags then
+      if sfAfterLoadFromFileNeeded in fStateFlags then
         AfterLoadFromFile;
       if FChangedLinesStart > 0 then begin
         InvalidateLines(FChangedLinesStart, FChangedLinesEnd);
@@ -4117,16 +4116,12 @@ end;
 procedure TCustomSynEdit.CreateHandle;
 begin
   Application.RemoveOnIdleHandler(@IdleScanRanges);
-  // A Resize will be received after CreateHandle is finished
-  // Resizes during CreateHandle may be wrong
-  include(fStateFlags, sfInHandleCreation);
   DoIncPaintLock(nil);
   try
     inherited CreateHandle;   //SizeOrFontChanged will be called
-    Include(fStateFlags, sfScrollbarChanged);
+    UpdateScrollBars;
   finally
     DoDecPaintLock(nil);
-    exclude(fStateFlags, sfInHandleCreation);
   end;
 end;
 
@@ -4222,7 +4217,8 @@ procedure TCustomSynEdit.ScrollAfterTopLineChanged;
 var
   Delta: Integer;
 begin
-  if (sfPainting in fStateFlags) or (fPaintLock <> 0) then exit;
+  if (sfPainting in fStateFlags) or (fPaintLock <> 0) or (not HandleAllocated) then
+    exit;
   Delta := FOldTopView - TopView;
   {$IFDEF SYNSCROLLDEBUG}
   if (sfHasScrolled in fStateFlags) then debugln(['ScrollAfterTopLineChanged with sfHasScrolled Delta=',Delta,' Ftopline=',FTopLine, '  FOldTopLine=',FOldTopLine,'  FOldTopView=',FOldTopView ]);
@@ -4276,6 +4272,9 @@ var
   NewCaretXY: TPoint;
   MaxY: LongInt;
 begin
+  if (not HandleAllocated) then
+    exit;
+
   NewCaretXY:=CaretXY;
   if NewCaretXY.X < fLeftChar then
     NewCaretXY.X := fLeftChar
@@ -4315,8 +4314,10 @@ var
   cf: TCompositionForm;
 {$ENDIF}
 begin
-  if ( (PaintLock <> 0) and not IgnorePaintLock )
-  or ((not Focused) and (not (eoPersistentCaret in fOptions))) then begin
+  if ( (PaintLock <> 0) and not IgnorePaintLock ) or
+     (not HandleAllocated) or
+     ((not Focused) and (not (eoPersistentCaret in fOptions)))
+  then begin
     Include(fStateFlags, sfCaretChanged);
   end else begin
     Exclude(fStateFlags, sfCaretChanged);
@@ -5682,8 +5683,7 @@ begin
   then
     exit;
 
-  if (sfInHandleCreation in fStateFlags) or (not HandleAllocated) or
-     (fPaintLock > 0) or
+  if (not HandleAllocated) or (fPaintLock > 0) or
      (FWinControlFlags * [wcfInitializing, wcfCreatingHandle] <> [])
   then begin
     include(fStateFlags, sfEnsureCursorPos);
@@ -6495,10 +6495,10 @@ begin
   if (not HandleAllocated) or
      ( (FPaintLock > 0) and not((FPaintLock = 1) and FIsInDecPaintLock) )
   then begin
-    Include(fStateFlags, sfAfterLoadFromFile);
+    Include(fStateFlags, sfAfterLoadFromFileNeeded);
     exit;
   end;
-  Exclude(fStateFlags, sfAfterLoadFromFile);
+  Exclude(fStateFlags, sfAfterLoadFromFileNeeded);
   if assigned(FFoldedLinesView) then begin
     ScanRanges;
     FFoldedLinesView.UnfoldAll;
@@ -7425,16 +7425,6 @@ begin
   {$IFDEF SYN_LAZARUS}
   SizeOrFontChanged(true);
   {$ENDIF}
-end;
-
-procedure TCustomSynEdit.SetVisible(Value: Boolean);
-begin
-  (* Catch and Combine the many repeated resizes.
-     Execute any sfEnsureCursorPos, even if set by a caret-move before HandleCreation
-  *)
-  DoIncPaintLock(nil);
-  inherited SetVisible(Value);
-  DoDecPaintLock(nil);
 end;
 
 procedure TCustomSynEdit.DestroyWnd;
