@@ -35,7 +35,7 @@ interface
 
 uses
   Math, Classes, SysUtils, LCLProc, AvgLvlTree, ExtCtrls, Forms, Controls,
-  LazConfigStorage;
+  LazConfigStorage, AnchorDockStr;
 
 const
   AnchorDockSplitterName = 'AnchorDockSplitter';
@@ -1041,34 +1041,42 @@ begin
         Sibling:=Parent.FindChildNode(Anchors[Side],false);
       if (Sibling=nil) then
         raise EAnchorDockLayoutError.Create(
-          'Anchor not found: Node="'+Name+'" Anchors['+dbgs(Side)+']="'+Anchors[Side]+'"');
+          Format(adrsAnchorNotFoundNodeAnchors, ['"', Name, '"', dbgs(Side),
+            '"', Anchors[Side], '"']));
       // only anchor to splitter
       if not Sibling.IsSplitter then
         raise EAnchorDockLayoutError.Create(
-          'Anchor is not splitter: Node="'+Name+'" Anchors['+dbgs(Side)+']="'+Anchors[Side]+'"');
+          Format(adrsAnchorIsNotSplitterNodeAnchors, ['"', Name, '"', dbgs(Side
+            ), '"', Anchors[Side], '"']));
       // the free sides of a splitter must not be anchored
       if ((NodeType=adltnSplitterVertical) and (Side in [akLeft,akRight]))
       or ((NodeType=adltnSplitterHorizontal) and (Side in [akTop,akBottom]))
       then
         raise EAnchorDockLayoutError.Create(
-          'A free side of a splitter must not be anchored: Node="'+Name+'" Type='+ADLTreeNodeTypeNames[NodeType]+' Anchors['+dbgs(Side)+']="'+Anchors[Side]+'"');
+          Format(adrsAFreeSideOfASplitterMustNotBeAnchoredNodeTypeAncho, ['"',
+            Name, '"', ADLTreeNodeTypeNames[NodeType], dbgs(Side), '"', Anchors[
+            Side], '"']));
       // a page must not be anchored
       if (Parent.NodeType=adltnPages) then
         raise EAnchorDockLayoutError.Create(
-          'A page must not be anchored: Node="'+Name+'" Parent='+Parent.Name+' ParentType='+ADLTreeNodeTypeNames[Parent.NodeType]+' Anchors['+dbgs(Side)+']="'+Anchors[Side]+'"');
+          Format(adrsAPageMustNotBeAnchoredNodeParentParentTypeAnchors, ['"',
+            Name, '"', Parent.Name, ADLTreeNodeTypeNames[Parent.NodeType], dbgs(
+            Side), '"', Anchors[Side], '"']));
       // check if anchored to the wrong side of a splitter
       if ((Sibling.NodeType=adltnSplitterHorizontal) and (Side in [akLeft,akRight]))
       or ((Sibling.NodeType=adltnSplitterVertical) and (Side in [akTop,akBottom]))
       then
         raise EAnchorDockLayoutError.Create(
-          'Anchor to wrong side of splitter: Node="'+Name+'" Anchors['+dbgs(Side)+']="'+Anchors[Side]+'"');
+          Format(adrsAnchorToWrongSideOfSplitterNodeAnchors, ['"', Name, '"',
+            dbgs(Side), '"', Anchors[Side], '"']));
     end;
   end;
   // only the root node, pages and layouts can have children
   if (Parent<>nil) and (Count>0) and (not (NodeType in [adltnLayout,adltnPages]))
   then
     raise EAnchorDockLayoutError.Create(
-      'No children allowed for Node="'+Name+'" Type='+ADLTreeNodeTypeNames[NodeType]);
+      Format(adrsNoChildrenAllowedForNodeType, ['"', Name, '"',
+        ADLTreeNodeTypeNames[NodeType]]));
 
   // check grandchild
   for i:=0 to Count-1 do begin
@@ -1352,10 +1360,10 @@ var
     i: Integer;
   begin
     if (Node.Name='') and (Node<>Self) then
-      RaiseNodePath('Empty name: ',Node);
+      RaiseNodePath(adrsEmptyName, Node);
     for i:=0 to Names.Count-1 do
       if CompareText(Names[i],Node.Name)=0 then
-        RaiseNodePath('Duplicate name: ',Node);
+        RaiseNodePath(adrsDuplicateName, Node);
     Names.Add(Node.Name);
     for i:=0 to Node.Count-1 do
       CheckNames(Node[i]);

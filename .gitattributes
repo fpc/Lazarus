@@ -2750,6 +2750,7 @@ examples/anchordocking/anchordocking.lpk svneol=native#text/plain
 examples/anchordocking/anchordocking.pas svneol=native#text/plain
 examples/anchordocking/anchordockpkg.pas svneol=native#text/plain
 examples/anchordocking/anchordockstorage.pas svneol=native#text/plain
+examples/anchordocking/anchordockstr.pas svneol=native#text/plain
 examples/anchordocking/minide/miniide1.lpi svneol=native#text/plain
 examples/anchordocking/minide/miniide1.lpr svneol=native#text/plain
 examples/anchordocking/minide/simplefrm.lfm svneol=native#text/plain

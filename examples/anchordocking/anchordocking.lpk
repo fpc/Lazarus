@@ -17,7 +17,7 @@
       </Other>
     </CompilerOptions>
     <Version Minor="4"/>
-    <Files Count="3">
+    <Files Count="4">
       <Item1>
         <Filename Value="anchordockpkg.pas"/>
         <Type Value="Main Unit"/>
@@ -31,6 +31,10 @@
         <Filename Value="anchordockstorage.pas"/>
         <UnitName Value="AnchorDockStorage"/>
       </Item3>
+      <Item4>
+        <Filename Value="anchordockstr.pas"/>
+        <UnitName Value="AnchorDockStr"/>
+      </Item4>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

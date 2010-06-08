@@ -63,7 +63,6 @@
        - lock/unlock
        - close (for pages)
        - tab position (default, left, top, right, bottom)
-    - i18n
     - fpdoc
     - wiki page
     - simple way to make forms dockable at designtime
@@ -84,7 +83,7 @@ interface
 uses
   Math, Classes, SysUtils, LResources, types, LCLType, LCLIntf, LCLProc,
   Controls, Forms, ExtCtrls, ComCtrls, Graphics, Themes, Menus, Buttons,
-  LazConfigStorage, AnchorDockStorage;
+  LazConfigStorage, AnchorDockStr, AnchorDockStorage;
 
 type
   TAnchorDockHostSite = class;
@@ -792,7 +791,8 @@ begin
   Result:=nil;
   OnCreateControl(Self,aName,Result,DisableAutoSizing);
   if (Result<>nil) and (Result.Name<>aName) then
-    raise Exception.Create('TAnchorDockMaster.DoCreateControl wrong name '+Result.Name+'<>'+aName);
+    raise Exception.Create('TAnchorDockMaster.DoCreateControl'+Format(
+      adrsRequestedButCreated, [aName, Result.Name]));
 end;
 
 procedure TAnchorDockMaster.EnableAllAutoSizing;
@@ -850,7 +850,7 @@ begin
   FPageAreaInPercent:=40;
   FHeaderAlignTop:=80;
   HeaderAlignLeft:=120;
-  FHeaderHint:='Drag and dock %c';
+  FHeaderHint:=adrsDragAndDockC;
   FSplitterWidth:=4;
   FScaleOnResize:=true;
   fNeedSimplify:=TFPList.Create;
@@ -919,7 +919,8 @@ var
   Site: TAnchorDockHostSite;
 begin
   if AControl.Name='' then
-    raise Exception.Create('TAnchorDockMaster.MakeDockable missing control name');
+    raise Exception.Create('TAnchorDockMaster.MakeDockable '+
+      adrsMissingControlName);
   Site:=nil;
   AControl.DisableAutoSizing;
   try
@@ -956,7 +957,8 @@ begin
       Site:=TAnchorDockHostSite(AControl.Parent);
       AControl.Visible:=true;
     end else begin
-      raise Exception.Create('TAnchorDockMaster.MakeDockable Not supported: '+DbgSName(AControl)+' has parent '+DbgSName(AControl));
+      raise Exception.Create('TAnchorDockMaster.MakeDockable '+Format(
+        adrsNotSupportedHasParent, [DbgSName(AControl), DbgSName(AControl)]));
     end;
     if (Site<>nil) and Show then
       ShowSite(Site);
@@ -1400,9 +1402,9 @@ begin
   Result:=true;
   debugln(['TAnchorDockHostSite.DockSecondControl Self="',Caption,'" AControl=',DbgSName(NewControl),' Align=',dbgs(DockAlign),' Inside=',Inside]);
   if SiteType<>adhstOneControl then
-    RaiseGDBException('TAnchorDockHostSite.DockSecondControl inconsistency');
+    RaiseGDBException('TAnchorDockHostSite.DockSecondControl inconsistency: not adhstOneControl');
   if not (DockAlign in [alLeft,alTop,alRight,alBottom]) then
-    RaiseGDBException('TAnchorDockHostSite.DockAnotherControl inconsistency');
+    RaiseGDBException('TAnchorDockHostSite.DockSecondControl inconsistency: DockAlign='+dbgs(DockAlign));
 
   FSiteType:=adhstLayout;
 
@@ -2003,7 +2005,7 @@ begin
   i:=0;
   repeat
     inc(i);
-    Result:='Splitter'+IntToStr(i);
+    Result:=AnchorDockSplitterName+IntToStr(i);
   until FindComponent(Result)=nil;
 end;
 
@@ -2539,7 +2541,7 @@ begin
     Flat:=true;
     BorderWidth:=1;
     ShowHint:=true;
-    Hint:='Close';
+    Hint:=adrsClose;
     OnClick:=@CloseButtonClick;
   end;
   Align:=alTop;
@@ -2547,7 +2549,8 @@ begin
   ShowHint:=true;
   PopupMenu:=TPopupMenu.Create(Self);
   PopupMenu.OnPopup:=@PopupMenuPopup;
-  FCloseMenuItem:=AddPopupMenuItem('CloseMenuItem','Close',@CloseButtonClick);
+  FCloseMenuItem:=AddPopupMenuItem('CloseMenuItem', adrsClose, @CloseButtonClick
+    );
 end;
 
 { TAnchorDockCloseButton }

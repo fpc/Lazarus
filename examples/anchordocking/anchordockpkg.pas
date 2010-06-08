@@ -7,7 +7,7 @@ unit anchordockpkg;
 interface
 
 uses
-  AnchorDocking, AnchorDockStorage, LazarusPackageIntf;
+  AnchorDocking, AnchorDockStorage, AnchorDockStr, LazarusPackageIntf;
 
 implementation
 
