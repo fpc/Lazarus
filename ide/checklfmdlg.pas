@@ -709,12 +709,8 @@ begin
   Result:=false;
   for i:=LfmChangeList.Count-1 downto 0 do begin
     Entry:=TLFMChangeEntry(LfmChangeList[i]);
-//    DebugLn('TCheckLFMDialog.ApplyReplacements A ',IntToStr(i),' ',
-//      IntToStr(Entry.StartPos),',',IntToStr(Entry.EndPos),
-//      ' "',copy(fLFMBuffer.Source,Entry.StartPos,Entry.EndPos-Entry.StartPos),'" -> "',Entry.NewText,'"');
     fLFMBuffer.Replace(Entry.StartPos,Entry.EndPos-Entry.StartPos,Entry.NewText);
   end;
-  //writeln(fLFMBuffer.Source);
   Result:=true;
 end;
 
