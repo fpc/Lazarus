@@ -2328,7 +2328,7 @@ var
   Splitter: TAnchorDockSplitter;
   EnlargeSplitter: TAnchorDockSplitter;
   SideShrink: TAnchorKind;
-  ShrinkSplitter: TAnchorDockSplitter;
+  ShrinkSplitter: TControl;
   i: Integer;
   Sibling: TControl;
   ParentSite: TAnchorDockHostSite;
@@ -2341,7 +2341,6 @@ begin
     ParentSite.DisableAutoSizing;
   end;
   try
-    // ToDo: ShrinkSplitter can be Parent
     Splitter:=TAnchorDockSplitter(AnchorSide[Side].Control);
     if not (Splitter is TAnchorDockSplitter) then exit;
     // side has a splitter
@@ -2353,20 +2352,27 @@ begin
     if not (EnlargeSplitter is TAnchorDockSplitter) then exit;
     // enlarge side has a splitter
     SideShrink:=OppositeAnchor[SideEnlarge];
-    ShrinkSplitter:=TAnchorDockSplitter(AnchorSide[SideShrink].Control);
-    if not (ShrinkSplitter is TAnchorDockSplitter) then exit;
-    // shrink side has a splitter
+    ShrinkSplitter:=AnchorSide[SideShrink].Control;
+    if (ShrinkSplitter<>ParentSite)
+    and (not (ShrinkSplitter is TAnchorDockSplitter)) then exit;
+    // shrink side is anchored to a splitter or parent
     if Splitter.AnchorSide[SideShrink].Control<>ShrinkSplitter then exit;
     // Splitter stopps at ShrinkSplitter
+
     if not OnlyCheckIfPossible then begin
-      EnlargeSplitter.AnchorSide[Side].Assign(ShrinkSplitter.AnchorSide[Side]);
-      AnchorSide[Side].Assign(ShrinkSplitter.AnchorSide[Side]);
+      if ShrinkSplitter=ParentSite then begin
+        EnlargeSplitter.AnchorParallel(Side,0,ParentSite);
+        AnchorParallel(Side,0,ParentSite);
+      end else begin
+        EnlargeSplitter.AnchorSide[Side].Assign(ShrinkSplitter.AnchorSide[Side]);
+        AnchorSide[Side].Assign(ShrinkSplitter.AnchorSide[Side]);
+      end;
       Splitter.AnchorSide[SideShrink].Control:=EnlargeSplitter;
     end;
 
     for i:=0 to Parent.ControlCount-1 do begin
       Sibling:=Controls[i];
-      if Sibling.AnchorSide[SideEnlarge].Control<>EnlargeSplitter then continue;
+      if Sibling.AnchorSide[SideEnlarge].Control<>ShrinkSplitter then continue;
       // Sibling is on the shrinking side
       case Side of
       akTop: if Sibling.Top>Top then continue;
