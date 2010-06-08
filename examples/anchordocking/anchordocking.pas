@@ -53,11 +53,11 @@
        - close site
        - lock/unlock
        - header auto, left, top, right, bottom
+       - undock (needed if no place to undock on screen)
 
   ToDo:
     - popup menu
        - merge (for example after moving a dock page into a layout)
-       - undock (needed if no place to undock on screen)
        - enlarge side to left, top, right, bottom
        - shrink side left, top, right, bottom
        - options
@@ -116,6 +116,7 @@ type
     procedure CloseButtonClick(Sender: TObject);
     procedure ChangeLockButtonClick(Sender: TObject);
     procedure HeaderPositionItemClick(Sender: TObject);
+    procedure UndockButtonClick(Sender: TObject);
     procedure SetHeaderPosition(const AValue: TADLHeaderPosition);
   protected
     procedure Paint; override;
@@ -231,6 +232,7 @@ type
     procedure SetParent(NewParent: TWinControl); override;
     function HeaderNeedsShowing: boolean;
     procedure DoClose(var CloseAction: TCloseAction); override;
+    procedure Undock;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2208,6 +2210,18 @@ begin
   inherited DoClose(CloseAction);
 end;
 
+procedure TAnchorDockHostSite.Undock;
+var
+  p: TPoint;
+begin
+  if Parent=nil then exit;
+  DisableAutoSizing;
+  p:=ClientOrigin;
+  Parent:=nil;
+  SetBounds(Left+p.x,Top+p.y,Width,Height);
+  EnableAutoSizing;
+end;
+
 function TAnchorDockHostSite.CloseQuery: boolean;
 
   function Check(AControl: TWinControl): boolean;
@@ -2539,6 +2553,7 @@ procedure TAnchorDockHeader.PopupMenuPopup(Sender: TObject);
 var
   ChangeLockItem: TMenuItem;
   HeaderPosItem: TMenuItem;
+  UndockItem: TMenuItem;
 begin
   debugln(['TAnchorDockHeader.PopupMenuPopup START']);
   ChangeLockItem:=AddPopupMenuItem('ChangeLockMenuItem', adrsLocked,@ChangeLockButtonClick);
@@ -2546,6 +2561,9 @@ begin
   ChangeLockItem.ShowAlwaysCheckable:=true;
 
   AddPopupMenuItem('CloseMenuItem',adrsClose,@CloseButtonClick);
+
+  UndockItem:=AddPopupMenuItem('UndockMenuItem','Undock',@UndockButtonClick);
+  UndockItem.Visible:=Parent.Parent<>nil;
 
   HeaderPosItem:=AddPopupMenuItem('HeaderPosMenuItem', adrsHeaderPosition, nil);
   AddPopupMenuItem('HeaderPosAutoMenuItem', adrsAutomatically, @
@@ -2594,6 +2612,11 @@ begin
   if not (Sender is TMenuItem) then exit;
   Item:=TMenuItem(Sender);
   HeaderPosition:=TADLHeaderPosition(Item.Parent.IndexOf(Item));
+end;
+
+procedure TAnchorDockHeader.UndockButtonClick(Sender: TObject);
+begin
+  TAnchorDockHostSite(Parent).Undock;
 end;
 
 procedure TAnchorDockHeader.SetHeaderPosition(const AValue: TADLHeaderPosition
