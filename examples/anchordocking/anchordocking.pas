@@ -118,6 +118,7 @@ type
     procedure HeaderPositionItemClick(Sender: TObject);
     procedure UndockButtonClick(Sender: TObject);
     procedure MergeButtonClick(Sender: TObject);
+    procedure EnlargeSideClick(Sender: TObject);
     procedure SetHeaderPosition(const AValue: TADLHeaderPosition);
   protected
     procedure Paint; override;
@@ -130,6 +131,8 @@ type
     procedure DoOnShowHint(HintInfo: PHintInfo); override;
     procedure PopupMenuPopup(Sender: TObject); virtual;
     function AddPopupMenuItem(AName, ACaption: string;
+                    const OnClickEvent: TNotifyEvent; AParent: TMenuItem = nil): TMenuItem;
+    function AddRemovePopupMenuItem(Add: boolean; AName, ACaption: string;
                     const OnClickEvent: TNotifyEvent; AParent: TMenuItem = nil): TMenuItem;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -234,6 +237,7 @@ type
     procedure SetParent(NewParent: TWinControl); override;
     function HeaderNeedsShowing: boolean;
     procedure DoClose(var CloseAction: TCloseAction); override;
+    function CanUndock: boolean;
     procedure Undock;
     function CanMerge: boolean;
     procedure Merge;
@@ -1498,7 +1502,6 @@ begin
 
   // add a splitter
   Splitter:=DockMaster.CreateSplitter;
-  Splitter.Name:=GetUniqueSplitterName;
   if DockAlign in [alLeft,alRight] then begin
     Splitter.ResizeAnchor:=akLeft;
     Splitter.Width:=DockMaster.SplitterWidth;
@@ -2247,6 +2250,11 @@ begin
   inherited DoClose(CloseAction);
 end;
 
+function TAnchorDockHostSite.CanUndock: boolean;
+begin
+  Result:=Parent<>nil;
+end;
+
 procedure TAnchorDockHostSite.Undock;
 var
   p: TPoint;
@@ -2768,32 +2776,46 @@ procedure TAnchorDockHeader.PopupMenuPopup(Sender: TObject);
 var
   ChangeLockItem: TMenuItem;
   HeaderPosItem: TMenuItem;
-  UndockItem: TMenuItem;
-  MergeItem: TMenuItem;
+  ParentSite: TAnchorDockHostSite;
+  Side: TAnchorKind;
+  SideCaptions: array[TAnchorKind] of string;
+  Item: TMenuItem;
 begin
-  debugln(['TAnchorDockHeader.PopupMenuPopup START']);
+  ParentSite:=TAnchorDockHostSite(Parent);
+  SideCaptions[akLeft]:=adrsLeft;
+  SideCaptions[akTop]:=adrsTop;
+  SideCaptions[akRight]:=adrsRight;
+  SideCaptions[akBottom]:=adrsBottom;
+  PopupMenu.Items.Clear;
+
+  // top popup menu item can be clicked by accident, so use something simple:
+  // lock/unlock
   ChangeLockItem:=AddPopupMenuItem('ChangeLockMenuItem', adrsLocked,@ChangeLockButtonClick);
   ChangeLockItem.Checked:=not DockMaster.AllowDragging;
   ChangeLockItem.ShowAlwaysCheckable:=true;
 
-  AddPopupMenuItem('CloseMenuItem',adrsClose,@CloseButtonClick);
+  // undock, merge
+  AddRemovePopupMenuItem(ParentSite.CanUndock,'UndockMenuItem',adrsUndock,@UndockButtonClick);
+  AddRemovePopupMenuItem(ParentSite.CanMerge,'MergeMenuItem', adrsMerge, @MergeButtonClick);
 
-  UndockItem:=AddPopupMenuItem('UndockMenuItem',adrsUndock,@UndockButtonClick);
-  UndockItem.Visible:=Parent.Parent<>nil;
-  MergeItem:=AddPopupMenuItem('MergeMenuItem', adrsMerge, @MergeButtonClick);
-  MergeItem.Visible:=TAnchorDockHostSite(Parent).CanMerge;
-
+  // header position
   HeaderPosItem:=AddPopupMenuItem('HeaderPosMenuItem', adrsHeaderPosition, nil);
-  AddPopupMenuItem('HeaderPosAutoMenuItem', adrsAutomatically, @
-                   HeaderPositionItemClick, HeaderPosItem);
-  AddPopupMenuItem('HeaderPosLeftMenuItem', adrsLeft, @HeaderPositionItemClick,
-                    HeaderPosItem);
-  AddPopupMenuItem('HeaderPosTopMenuItem', adrsTop, @HeaderPositionItemClick,
-                   HeaderPosItem);
-  AddPopupMenuItem('HeaderPosRightMenuItem', adrsRight, @HeaderPositionItemClick,
-                   HeaderPosItem);
-  AddPopupMenuItem('HeaderPosBottomMenuItem', adrsBottom, @HeaderPositionItemClick,
-                   HeaderPosItem);
+  AddPopupMenuItem('HeaderPosAutoMenuItem', adrsAutomatically,
+                   @HeaderPositionItemClick, HeaderPosItem);
+  for Side:=Low(TAnchorKind) to High(TAnchorKind) do
+    AddPopupMenuItem('HeaderPos'+AnchorNames[Side]+'MenuItem',
+                     SideCaptions[Side], @HeaderPositionItemClick,
+                     HeaderPosItem);
+  // enlarge
+  for Side:=Low(TAnchorKind) to High(TAnchorKind) do begin
+    Item:=AddRemovePopupMenuItem(ParentSite.EnlargeSide(Side,true),
+      'Enlarge'+AnchorNames[Side]+'MenuItem', Format(adrsEnlargeSide, [
+        SideCaptions[Side]]),@EnlargeSideClick);
+    if Item<>nil then Item.Tag:=ord(Side);
+  end;
+
+  // close
+  AddPopupMenuItem('CloseMenuItem',adrsClose,@CloseButtonClick);
 end;
 
 function TAnchorDockHeader.AddPopupMenuItem(AName, ACaption: string;
@@ -2810,6 +2832,19 @@ begin
   end;
   Result.Caption:=ACaption;
   Result.OnClick:=OnClickEvent;
+end;
+
+function TAnchorDockHeader.AddRemovePopupMenuItem(Add: boolean; AName,
+  ACaption: string; const OnClickEvent: TNotifyEvent; AParent: TMenuItem
+  ): TMenuItem;
+begin
+  if Add then
+    Result:=AddPopupMenuItem(AName,ACaption,OnClickEvent,AParent)
+  else begin
+    Result:=TMenuItem(FindComponent(AName));
+    if Result<>nil then
+      FreeAndNil(Result);
+  end;
 end;
 
 procedure TAnchorDockHeader.CloseButtonClick(Sender: TObject);
@@ -2840,6 +2875,15 @@ end;
 procedure TAnchorDockHeader.MergeButtonClick(Sender: TObject);
 begin
   TAnchorDockHostSite(Parent).Merge;
+end;
+
+procedure TAnchorDockHeader.EnlargeSideClick(Sender: TObject);
+var
+  Side: TAnchorKind;
+begin
+  if not (Sender is TMenuItem) then exit;
+  Side:=TAnchorKind(TMenuItem(Sender).Tag);
+  TAnchorDockHostSite(Parent).EnlargeSide(Side,false);
 end;
 
 procedure TAnchorDockHeader.SetHeaderPosition(const AValue: TADLHeaderPosition
