@@ -132,7 +132,7 @@ begin
   
   { Initializes the application type }
   if Application.ApplicationType = atDefault then
-    Application.ApplicationType := GetWinCEPlatform;
+    Application.ApplicationType := GetWinCEPlatform();
 
   //Init stock objects;
   FStockNullBrush := Windows.CreateSolidBrush(0);

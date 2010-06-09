@@ -28,7 +28,7 @@ interface
 
 uses
   // RTL, FCL, LCL
-  Windows, LCLProc,
+  Windows, LCLProc, Classes,
   SysUtils, Controls, LCLType, Forms, InterfaceBase,
   // Widgetset
   winceproc, wincewscontrols,
@@ -71,6 +71,12 @@ type
   { TWinCEWSCustomForm }
 
   TWinCEWSCustomForm = class(TWSCustomForm)
+  private
+    class function CalcBorderIconsFlags(const AForm: TCustomForm): dword;
+    class procedure CalcFormWindowFlags(const AForm: TCustomForm;
+      var Flags, FlagsEx: dword);
+    class procedure CalculateDialogPosition(var Params: TCreateWindowExParams;
+     Bounds: TRect; lForm: TCustomForm);
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
 
@@ -177,7 +183,7 @@ end;
 
 { TWinCEWSCustomForm }
 
-function CalcBorderIconsFlags(const AForm: TCustomForm): dword;
+class function TWinCEWSCustomForm.CalcBorderIconsFlags(const AForm: TCustomForm): dword;
 var
   BorderIcons: TBorderIcons;
 begin
@@ -194,7 +200,7 @@ begin
   end;
 end;
 
-procedure CalcFormWindowFlags(const AForm: TCustomForm;
+class procedure TWinCEWSCustomForm.CalcFormWindowFlags(const AForm: TCustomForm;
   var Flags, FlagsEx: dword);
 var
   BorderStyle: TFormBorderStyle;
@@ -209,22 +215,8 @@ begin
   Flags := Flags or CalcBorderIconsFlags(AForm);
 end;
 
-{
-  This routine fills SizeRect with
-  the necessary window size to have it's
-  BoundsRect.
-}
-procedure AdjustFormBounds(const AForm: TCustomForm; var SizeRect: TRect);
-begin
-  // the LCL defines the size of a form without border, win32 with.
-  // -> adjust size according to BorderStyle
-  SizeRect := AForm.BoundsRect;
-  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWinAPIFlags(
-    AForm.BorderStyle), false, BorderStyleToWinAPIFlagsEx(AForm, AForm.BorderStyle));
-end;
-
-procedure CalculateDialogPosition(var Params: TCreateWindowExParams;
- Bounds: TRect; lForm: TCustomForm);
+class procedure TWinCEWSCustomForm.CalculateDialogPosition(
+  var Params: TCreateWindowExParams; Bounds: TRect; lForm: TCustomForm);
 begin
   if lForm.Position in [poDefault, poDefaultPosOnly] then
   begin
@@ -262,7 +254,7 @@ var
   LForm : TCustomForm;
   BorderStyle: TFormBorderStyle;
   WR: Windows.RECT;
-  Bounds: TRect;
+  lWinBounds, lOldLCLBounds, lNewLCLBounds: TRect;
 begin
   {$ifdef VerboseWinCE}
   DebugLn('TWinCEWSCustomForm.CreateHandle');
@@ -274,8 +266,6 @@ begin
   with Params do
   begin
     // Different from win32
-    FlagsEx := 0;
-    Flags := WS_OVERLAPPEDWINDOW;
     SubClassWndProc := nil; // Otherwise crash in wince, works in win32
     BorderStyle := TCustomForm(AWinControl).BorderStyle;
 
@@ -284,13 +274,16 @@ begin
     CalcFormWindowFlags(lForm, Flags, FlagsEx);
     pClassName := @ClsName;
     WindowTitle := StrCaption;
-    AdjustFormBounds(lForm, Bounds);
 
-    // Gets the work area
-    Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);
+    // Get the difference between the client and window sizes
+    lWinBounds := lForm.BoundsRect;
+    Windows.AdjustWindowRectEx(@lWinBounds, Flags, false, FlagsEx);
 
     if Application.ApplicationType in [atPDA, atKeyPadDevice, atDefault] then
     begin
+      // Gets the work area
+      Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);
+
       { The position and size of common windows is ignored on PDA mode,
         and a position and size that covers the whole workarea excluding
         the menu is used. The Workarea size automatically excludes the
@@ -309,6 +302,10 @@ begin
         Top := WR.Top;
         Height := WR.Bottom - WR.Top;
         Width := WR.Right - WR.Left;
+
+        // Update the position of the window for the LCL
+        AWinControl.BoundsRect := Bounds(
+          Params.Left, Params.Top, Params.Width, Params.Height);
       end
       else if (BorderStyle = bsDialog) then
       {
@@ -323,33 +320,37 @@ begin
       }
       begin
         Top := WR.Top + (WR.Bottom - WR.Top) div 2
-          - (Bounds.Bottom - Bounds.Top) div 2;
+          - (lWinBounds.Bottom - lWinBounds.Top) div 2;
         Left := WR.Left + (WR.Right - WR.Left) div 2
-          - (Bounds.Right - Bounds.Left) div 2;
-        Height := Bounds.Bottom - Bounds.Top;
-        Width := Bounds.Right - Bounds.Left;
+          - (lWinBounds.Right - lWinBounds.Left) div 2;
+        Height := lWinBounds.Bottom - lWinBounds.Top;
+        Width := lWinBounds.Right - lWinBounds.Left;
+
+        // Update the position of the window for the LCL
+        lOldLCLBounds := lForm.BoundsRect;
+        lNewLCLBounds.Left := Params.Left - (lWinBounds.Left - lOldLCLBounds.Left);
+        lNewLCLBounds.Top := Params.Top - (lWinBounds.Top - lOldLCLBounds.Top);
+        lNewLCLBounds.Right := Params.Left + Params.Width
+          - (lWinBounds.Right - lOldLCLBounds.Right);
+        lNewLCLBounds.Bottom := Params.Top + Params.Height
+          - (lWinBounds.Bottom - lOldLCLBounds.Bottom);
+        AWinControl.BoundsRect := lNewLCLBounds;
       end
       else { BorderStyle = bsNone }
       { On borderless Windows we allow the user full control of the
         window position
       }
       begin
-        CalculateDialogPosition(Params, Bounds, lForm);
+        CalculateDialogPosition(Params, lWinBounds, lForm);
       end;
     end
     else
     begin
       { On Desktop mode we need to take into consideration the size of
         the window decoration }
-      CalculateDialogPosition(Params, Bounds, lForm);
+      CalculateDialogPosition(Params, lWinBounds, lForm);
     end;
   end;
-
-  // Update the position of the window for the LCL
-  AWinControl.Left := Params.Left;
-  AWinControl.Top := Params.Top;
-  AWinControl.Width := Params.Width;
-  AWinControl.Height := Params.Height;
 
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -394,8 +395,7 @@ begin
     { We should never move forms which are in full-screen mode }
     if (BorderStyle <> bsDialog) and (BorderStyle <> bsNone) then Exit;
 
-    { On normal dialogs we need to take into consideration the size of
-      the window decoration. }
+    { For dialogs, the window is put in the middle of the screen. }
     if (BorderStyle = bsDialog) then
     begin
       Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);

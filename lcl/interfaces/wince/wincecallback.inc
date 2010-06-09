@@ -1366,6 +1366,7 @@ begin
       if (lWinControl is TCustomFloatSpinEdit) then
         EnableFloatSpinEditBuddy(Window, WParam<>0);
     end;
+    WM_ENTERIDLE: Application.Idle(False);
     WM_ERASEBKGND:
     begin
       eraseBkgndCommand := TEraseBkgndCommand(EraseBkgndStack and EraseBkgndStackMask);
