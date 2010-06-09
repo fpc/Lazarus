@@ -239,7 +239,8 @@ type
     procedure Merge;
     function EnlargeSide(Side: TAnchorKind;
                          OnlyCheckIfPossible: boolean): boolean;
-    function EnlargeSideResizeTwoSplitters(Side, SideEnlarge: TAnchorKind;
+    function EnlargeSideResizeTwoSplitters(ShrinkSplitterSide,
+                         EnlargeSpitterSide: TAnchorKind;
                          OnlyCheckIfPossible: boolean): boolean;
   public
     constructor Create(AOwner: TComponent); override;
@@ -387,6 +388,8 @@ var
 function dbgs(SiteType: TAnchorDockHostSiteType): string; overload;
 
 procedure CopyAnchorBounds(Source, Target: TControl);
+procedure AnchorAndChangeBounds(AControl: TControl; Side: TAnchorKind;
+                                Target: TControl);
 function ControlsLeftTopOnScreen(AControl: TControl): TPoint;
 
 implementation
@@ -417,6 +420,32 @@ begin
   for a:=low(TAnchorKind) to high(TAnchorKind) do
     Target.AnchorSide[a].Assign(Source.AnchorSide[a]);
   Target.EnableAutoSizing;
+end;
+
+procedure AnchorAndChangeBounds(AControl: TControl; Side: TAnchorKind;
+  Target: TControl);
+var
+  NewBounds: TRect;
+begin
+  NewBounds:=AControl.BoundsRect;
+  if Target=AControl.Parent then begin
+    AControl.AnchorParallel(Side,0,Target);
+    case Side of
+    akTop: AControl.Top:=0;
+    akLeft: AControl.Left:=0;
+    akRight: AControl.Width:=AControl.Parent.ClientWidth-AControl.Left;
+    akBottom: AControl.Height:=AControl.Parent.ClientHeight-Acontrol.Top;
+    end;
+  end else begin
+    AControl.AnchorToNeighbour(Side,0,Target);
+    case Side of
+    akTop: AControl.Top:=Target.Top+Target.Height;
+    akLeft: AControl.Left:=Target.Left+Target.Width;
+    akRight: AControl.Width:=Target.Left-AControl.Width;
+    akBottom: AControl.Height:=Target.Top-AControl.Height;
+    end;
+  end;
+  AControl.BoundsRect:=NewBounds;
 end;
 
 function ControlsLeftTopOnScreen(AControl: TControl): TPoint;
@@ -2311,27 +2340,33 @@ begin
   // ToDo:
 end;
 
-function TAnchorDockHostSite.EnlargeSideResizeTwoSplitters(Side,
-  SideEnlarge: TAnchorKind; OnlyCheckIfPossible: boolean): boolean;
-{ Shrink one neighbor control, enlarge Control. Two splitters are resized.
+function TAnchorDockHostSite.EnlargeSideResizeTwoSplitters(ShrinkSplitterSide,
+  EnlargeSpitterSide: TAnchorKind; OnlyCheckIfPossible: boolean): boolean;
+{ Shrink one neighbor control, enlarge Self. Two splitters are resized.
 
-    |#|         |#         |#|         |#
-    |#| Control |#         |#|         |#
-  --+#+---------+#   --> --+#| Control |#
-  ===============#       ===#|         |#
-  --------------+#       --+#|         |#
-      A         |#        A|#|         |#
-  --------------+#       --+#+---------+#
-  ==================     ===================
+  For example: ShrinkSplitterSide=akBottom, EnlargeSpitterSide=akLeft
+
+    |#|        |#         |#|        |#
+    |#|  Self  |#         |#|        |#
+  --+#+--------+#   --> --+#|  Self  |#
+  ==============#       ===#|        |#
+  -------------+#       --+#|        |#
+      A        |#        A|#|        |#
+  -------------+#       --+#+--------+#
+  =================     ==================
+
+
+
 }
 var
-  Splitter: TAnchorDockSplitter;
-  EnlargeSplitter: TAnchorDockSplitter;
-  SideShrink: TAnchorKind;
-  ShrinkSplitter: TControl;
-  i: Integer;
-  Sibling: TControl;
   ParentSite: TAnchorDockHostSite;
+  ShrinkSplitter: TAnchorDockSplitter;
+  EnlargeSplitter: TAnchorDockSplitter;
+  KeptSide: TAnchorKind;
+  KeptAnchorControl: TControl;
+  Sibling: TControl;
+  ShrinkControl: TControl;
+  i: Integer;
 begin
   Result:=false;
   if not (Parent is TAnchorDockHostSite) then exit;
@@ -2341,57 +2376,56 @@ begin
     ParentSite.DisableAutoSizing;
   end;
   try
-    Splitter:=TAnchorDockSplitter(AnchorSide[Side].Control);
-    if not (Splitter is TAnchorDockSplitter) then exit;
-    // side has a splitter
-    if (SideEnlarge<>ClockwiseAnchor[Side])
-    and (SideEnlarge<>OppositeAnchor[ClockwiseAnchor[Side]]) then
+    // check ShrinkSplitter
+    ShrinkSplitter:=TAnchorDockSplitter(AnchorSide[ShrinkSplitterSide].Control);
+    if not (ShrinkSplitter is TAnchorDockSplitter) then exit;
+    // check if EnlargeSpitterSide is a neighbor ShrinkSplitterSide
+    if (EnlargeSpitterSide<>ClockwiseAnchor[ShrinkSplitterSide])
+    and (EnlargeSpitterSide<>OppositeAnchor[ClockwiseAnchor[ShrinkSplitterSide]]) then
       exit;
-    // enlarge side is not a neighbor side
-    EnlargeSplitter:=TAnchorDockSplitter(AnchorSide[SideEnlarge].Control);
+    // check EnlargeSpitter
+    EnlargeSplitter:=TAnchorDockSplitter(AnchorSide[EnlargeSpitterSide].Control);
     if not (EnlargeSplitter is TAnchorDockSplitter) then exit;
-    // enlarge side has a splitter
-    SideShrink:=OppositeAnchor[SideEnlarge];
-    ShrinkSplitter:=AnchorSide[SideShrink].Control;
-    if (ShrinkSplitter<>ParentSite)
-    and (not (ShrinkSplitter is TAnchorDockSplitter)) then exit;
-    // shrink side is anchored to a splitter or parent
-    if Splitter.AnchorSide[SideShrink].Control<>ShrinkSplitter then exit;
-    // Splitter stopps at ShrinkSplitter
+    // check if KeptSide is anchored to a splitter or parent
+    KeptSide:=OppositeAnchor[EnlargeSpitterSide];
+    KeptAnchorControl:=AnchorSide[KeptSide].Control;
+    if not ((KeptAnchorControl=ParentSite)
+            or (KeptAnchorControl is TAnchorDockSplitter)) then exit;
+    // check if ShrinkSplitter is anchored/stops at KeptAnchorControl
+    if ShrinkSplitter.AnchorSide[KeptSide].Control<>KeptAnchorControl then exit;
 
-    if not OnlyCheckIfPossible then begin
-      if ShrinkSplitter=ParentSite then begin
-        EnlargeSplitter.AnchorParallel(Side,0,ParentSite);
-        AnchorParallel(Side,0,ParentSite);
-      end else begin
-        EnlargeSplitter.AnchorSide[Side].Assign(ShrinkSplitter.AnchorSide[Side]);
-        AnchorSide[Side].Assign(ShrinkSplitter.AnchorSide[Side]);
+    // check if there is a control to shrink
+    ShrinkControl:=nil;
+    for i:=0 to ShrinkSplitter.AnchoredControlCount-1 do begin
+      Sibling:=ShrinkSplitter.AnchoredControls[i];
+      if (Sibling.AnchorSide[OppositeAnchor[ShrinkSplitterSide]].Control=ShrinkSplitter)
+      and (Sibling.AnchorSide[KeptSide].Control=KeptAnchorControl) then begin
+        ShrinkControl:=Sibling;
+        break;
       end;
-      Splitter.AnchorSide[SideShrink].Control:=EnlargeSplitter;
     end;
+    if ShrinkControl=nil then exit;
 
-    for i:=0 to Parent.ControlCount-1 do begin
-      Sibling:=Controls[i];
-      if Sibling.AnchorSide[SideEnlarge].Control<>ShrinkSplitter then continue;
-      // Sibling is on the shrinking side
-      case Side of
-      akTop: if Sibling.Top>Top then continue;
-      akLeft: if Sibling.Left>Left then continue;
-      akRight: if Sibling.Left<Left then continue;
-      akBottom: if Sibling.Top<Top then continue;
+    if OnlyCheckIfPossible then begin
+      // check if ShrinkControl is large enough for shrinking
+      case EnlargeSpitterSide of
+      akTop: if ShrinkControl.Top>=EnlargeSplitter.Top then exit;
+      akLeft: if ShrinkControl.Left>=EnlargeSplitter.Left then exit;
+      akRight: if ShrinkControl.Left+ShrinkControl.Width
+                      <=EnlargeSplitter.Left+EnlargeSplitter.Width then exit;
+      akBottom: if ShrinkControl.Top+ShrinkControl.Height
+                      <=EnlargeSplitter.Top+EnlargeSplitter.Height then exit;
       end;
-      if OnlyCheckIfPossible then begin
-        // check if the Sibling is big enough for shrinking
-        case SideShrink of
-        akTop: if Sibling.Top>=EnlargeSplitter.Top then exit;
-        akLeft: if Sibling.Left>=EnlargeSplitter.Left then exit;
-        akRight: if Sibling.Left+Sibling.Width<=EnlargeSplitter.Left+EnlargeSplitter.Width then exit;
-        akBottom: if Sibling.Top+Sibling.Height<=EnlargeSplitter.Top+EnlargeSplitter.Height then exit;
-        end;
-      end else begin
-        // shrink Sibling
-        Sibling.AnchorSide[SideShrink].Control:=EnlargeSplitter;
-      end;
+    end else begin
+      // do it
+      // enlarge the EnlargeSplitter and Self
+      AnchorAndChangeBounds(EnlargeSplitter,ShrinkSplitterSide,
+                          ShrinkControl.AnchorSide[ShrinkSplitterSide].Control);
+      AnchorAndChangeBounds(Self,ShrinkSplitterSide,
+                          ShrinkControl.AnchorSide[ShrinkSplitterSide].Control);
+      // shrink the ShrinkSplitter and ShrinkControl
+      AnchorAndChangeBounds(ShrinkSplitter,KeptSide,EnlargeSplitter);
+      AnchorAndChangeBounds(ShrinkControl,KeptSide,EnlargeSplitter);
     end;
 
   finally
