@@ -282,8 +282,6 @@ type
     FDockSite: TAnchorDockHostSite;
   public
     constructor Create(ADockSite: TWinControl); override;
-    procedure BeginUpdate; override;
-    procedure EndUpdate; override;
     procedure GetControlBounds(Control: TControl; out AControlBounds: TRect);
       override;
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
@@ -3112,16 +3110,6 @@ begin
   if not (ADockSite is TAnchorDockHostSite) then
     raise Exception.Create('TAnchorDockManager.Create not supported: '+DbgSName(ADockSite));
   FDockSite:=TAnchorDockHostSite(ADockSite);
-end;
-
-procedure TAnchorDockManager.BeginUpdate;
-begin
-
-end;
-
-procedure TAnchorDockManager.EndUpdate;
-begin
-
 end;
 
 procedure TAnchorDockManager.GetControlBounds(Control: TControl; out

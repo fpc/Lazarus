@@ -500,8 +500,8 @@ type
   TDockManager = class(TPersistent)
   public
     constructor Create(ADockSite: TWinControl); virtual;
-    procedure BeginUpdate; virtual; abstract;
-    procedure EndUpdate; virtual; abstract;
+    procedure BeginUpdate; virtual;
+    procedure EndUpdate; virtual;
     procedure GetControlBounds(Control: TControl;
                                out AControlBounds: TRect); virtual; abstract;
     function GetDockEdge(ADockObject: TDragDockObject): boolean; virtual;
@@ -3775,6 +3775,16 @@ end;
 constructor TDockManager.Create(ADockSite: TWinControl);
 begin
   inherited Create;
+end;
+
+procedure TDockManager.BeginUpdate;
+begin
+
+end;
+
+procedure TDockManager.EndUpdate;
+begin
+
 end;
 
 function TDockManager.GetDockEdge(ADockObject: TDragDockObject): boolean;
