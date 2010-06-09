@@ -31,9 +31,13 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-{$I gtkdefines.inc}
+{$I gtk2defines.inc}
 
 uses
+  ctypes,
+  {$ifdef Unix}
+  BaseUnix, Unix,
+  {$endif}
   Types, Classes, SysUtils, Math, maps,
   {$IfNDef GTK2_2}
     {$IfDef HasX}
@@ -41,24 +45,225 @@ uses
     {$EndIf}
   {$EndIf}
 
+
+  // LCL
+  FileUtil, Translations, ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts,
+  LMessages, LCLProc, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
+  Graphics, Menus, Themes, WSLCLClasses,
+
+  Buttons, StdCtrls, PairSplitter,
+  ComCtrls, Calendar, Arrow, Spin,
+  ExtCtrls, FileCtrl, LResources,
+
   gdk2pixbuf, gtk2, gdk2, glib2, Pango,
-  InterfaceBase, LMessages, LCLProc, LCLIntf, LCLType,
-  Controls, Graphics, StdCtrls, Forms, Themes,
-  GTKWinApiWindow, GTKGlobals,
-  GtkDef, Gtk2Def, GtkFontCache, GtkInt, GtkExtra;
+  InterfaceBase,
+  Gtk2WinApiWindow,
+  Gtk2Globals, Gtk2Proc,
+  Gtk2Def, Gtk2FontCache, Gtk2Extra,
+  Gtk2MsgQueue;
 
 type
 
   { TGtk2WidgetSet }
 
-  TGtk2WidgetSet = class(TGtkWidgetSet)
+  TGtk2WidgetSet = class(TWidgetSet)
   private
+    FMultiThreadingEnabled: boolean;
+    FocusTimer: cardinal;
+    FLastFocusIn: PGtkWidget;
+    FLastFocusOut: PGtkWidget;
     StayOnTopList: TMap;
+    FAppActive: Boolean;
+    function GetAppActive: Boolean;
+    procedure SetAppActive(const AValue: Boolean);
+
   protected
     procedure AppendText(Sender: TObject; Str: PChar);
     function GetText(Sender: TComponent; var Text: String): Boolean;
     function CreateThemeServices: TThemeServices; override;
-    function GetDeviceContextClass: TGtkDeviceContextClass; override;
+    function GetDeviceContextClass: TGtkDeviceContextClass;
+  protected
+    FKeyStateList_: TFPList; // Keeps track of which keys are pressed
+    FDeviceContexts: TDynHashArray;// hasharray of HDC
+    FGDIObjects: TDynHashArray;    // hasharray of PGdiObject
+    FMessageQueue: TGtkMessageQueue; // queue of PMsg (must be thread safe!)
+    WaitingForMessages: boolean;
+    MovedPaintMessageCount: integer;// how many paint messages moved to he end of the queue
+
+    FRCFilename: string;
+    FRCFileParsed: boolean;
+    FRCFileAge: integer;
+    FGTKToolTips: PGtkToolTips;
+
+    FLogHandlerID: guint; // ID returend by set_handler
+
+    FStockNullBrush: HBRUSH;
+    FStockBlackBrush: HBRUSH;
+    FStockLtGrayBrush: HBRUSH;
+    FStockGrayBrush: HBRUSH;
+    FStockDkGrayBrush: HBRUSH;
+    FStockWhiteBrush: HBRUSH;
+
+    FStockNullPen: HPEN;
+    FStockBlackPen: HPEN;
+    FStockWhitePen: HPEN;
+
+    FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
+
+    FWaitHandles: PWaitHandleEventHandler;
+    {$ifdef unix}
+    FChildSignalHandlers: PChildSignalEventHandler;
+    {$else}
+    {$IFDEF VerboseGtkToDos}{$warning no declaration of FChildSignalHandlers for this OS}{$ENDIF}
+    {$endif}
+
+    FDefaultFontDesc: PPangoFontDescription;
+    FDefaultFont: TGtkIntfFont;
+    FStockSystemFont: HFONT;
+    FExtUTF8OutCache: Pointer;
+    FExtUTF8OutCacheSize: integer;
+    FGlobalCursor: HCursor;
+
+    FDCManager: TDeviceContextMemManager;
+    FDockImage: PGtkWidget;
+    FDragImageList: PGtkWidget;
+    FDragImageListIcon: PGtkWidget;
+    FDragHotStop: TPoint;
+  public
+    procedure InitStockItems; virtual;
+    procedure FreeStockItems; virtual;
+    procedure InitSystemColors;
+    procedure InitSystemBrushes; virtual;
+    procedure FreeSystemBrushes; virtual;
+    procedure PassCmdLineOptions; override;
+
+{$ifdef Unix}
+    procedure InitSynchronizeSupport;
+    procedure ProcessChildSignal;
+    procedure PrepareSynchronize(AObject: TObject);
+{$endif}
+
+    procedure HandlePipeEvent(AData: PtrInt; AFlags: dword);
+
+    // styles
+    procedure FreeAllStyles; virtual;
+    function GetCompStyle(Sender : TObject) : Longint; virtual;
+
+    // create and destroy
+    function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
+    function OldCreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
+    function CreateSimpleClientAreaWidget(Sender: TObject;
+      NotOnParentsClientArea: boolean): PGtkWidget;
+    procedure DestroyEmptySubmenu(Sender: TObject);virtual;
+    procedure DestroyConnectedWidget(Widget: PGtkWidget;
+                                     CheckIfDestroying: boolean);virtual;
+    function  RecreateWnd(Sender: TObject): Integer; virtual;
+    procedure AssignSelf(Child, Data: Pointer);virtual;
+
+    // clipboard
+    procedure SetClipboardWidget(TargetWidget: PGtkWidget);virtual;
+
+    // device contexts
+    function IsValidDC(const DC: HDC): Boolean;virtual;
+    function NewDC: TGtkDeviceContext;virtual;
+    function FindDCWithGDIObject(GDIObject: PGdiObject): TGtkDeviceContext;virtual;
+    procedure DisposeDC(aDC: TGtkDeviceContext);virtual;
+    function CreateDCForWidget(AWidget: PGtkWidget; AWindow: PGdkWindow;
+                               AWithChildWindows: Boolean; ADoubleBuffer: PgdkDrawable = nil): HDC;
+    function GetDoubleBufferedDC(Handle: HWND): HDC;
+
+    // GDIObjects
+    function IsValidGDIObject(const AGDIObj: HGDIOBJ): Boolean; virtual;
+    function IsValidGDIObjectType(const GDIObject: HGDIOBJ;
+                                  const GDIType: TGDIType): Boolean;virtual;
+    function NewGDIObject(const GDIType: TGDIType): PGdiObject;virtual;
+    procedure DisposeGDIObject(GdiObject: PGdiObject);virtual;
+    function ReleaseGDIObject(GdiObject: PGdiObject): boolean;virtual;
+    procedure ReferenceGDIObject(GdiObject: PGdiObject);virtual;
+    function CreateDefaultBrush: PGdiObject;virtual;
+    function CreateDefaultFont: PGdiObject;virtual;
+    function CreateDefaultPen: PGdiObject;virtual;
+    function CreateDefaultGDIBitmap: PGdiObject;virtual;
+    procedure UpdateDCTextMetric(DC: TGtkDeviceContext); virtual;
+    function GetDefaultFontDesc(IncreaseReferenceCount: boolean): PPangoFontDescription;
+    function GetDefaultGtkFont(IncreaseReferenceCount: boolean): TGtkIntfFont;
+    function GetGtkFont(DC: TGtkDeviceContext): TGtkIntfFont;
+    function CreateRegionCopy(SrcRGN: hRGN): hRGN; override;
+    function DCClipRegionValid(DC: HDC): boolean; override;
+    function CreateEmptyRegion: hRGN; override;
+
+    // images
+    procedure LoadPixbufFromLazResource(const ResourceName: string;
+      var Pixbuf: PGdkPixbuf);
+    function InternalGetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
+      BitSize : Longint; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;virtual;
+    function RawImage_DescriptionFromDrawable(out ADesc: TRawImageDescription; ADrawable: PGdkDrawable; ACustomAlpha: Boolean): boolean;
+    function RawImage_DescriptionFromPixbuf(out ADesc: TRawImageDescription; APixbuf: PGdkPixbuf): boolean;
+    function RawImage_FromDrawable(out ARawImage: TRawImage; ADrawable, AAlpha: PGdkDrawable; ARect: PRect = nil): boolean;
+    function RawImage_FromPixbuf(out ARawImage: TRawImage; APixbuf: PGdkPixbuf; ARect: PRect = nil): boolean;
+    function RawImage_SetAlpha(var ARawImage: TRawImage; AAlpha: PGdkPixmap; ARect: PRect = nil): boolean;
+    function RawImage_AddMask(var ARawImage: TRawImage; AMask: PGdkBitmap; ARect: PRect = nil): boolean;
+    function StretchCopyArea(DestDC: HDC; X, Y, Width, Height: Integer;
+      SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
+      Mask: HBITMAP; XMask, YMask: Integer;
+      Rop: Cardinal): Boolean;
+
+    // RC file
+    procedure SetRCFilename(const AValue: string);virtual;
+    procedure CheckRCFilename;virtual;
+    procedure ParseRCFile;virtual;
+
+    // forms and dialogs
+    procedure BringFormToFront(Sender: TObject);
+    procedure UntransientWindow(GtkWindow: PGtkWindow);
+    // misc
+    function GetCaption(Sender : TObject) : String; virtual;
+    procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
+      var Lines: PPChar; var LineCount: integer);
+
+    procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
+    procedure RemoveCallbacks(Widget: PGtkWidget); virtual;
+
+    // for gtk specific components:
+    procedure SetWidgetColor(const AWidget: PGtkWidget;
+                             const FGColor, BGColor: TColor;
+                             const Mask: tGtkStateEnum);
+    procedure SetCallbackDirect(const AMsg: LongInt; const AGTKObject: PGTKObject;
+                          const ALCLObject: TObject);
+    procedure SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject;
+                          const ALCLObject: TObject);
+    function  LCLtoGtkMessagePending: boolean;virtual;
+    procedure SendCachedGtkMessages;virtual;
+    // show, hide and invalidate
+    procedure SetVisible(Sender: TObject; const AVisible: Boolean); virtual;
+
+    // Drag ImageLsit
+    function DragImageList_BeginDrag(APixmap: PGdkPixmap; AMask: PGdkBitmap; AHotSpot: TPoint): Boolean;
+    procedure DragImageList_EndDrag;
+    function DragImageList_DragMove(X, Y: Integer): Boolean;
+    function DragImageList_SetVisible(NewVisible: Boolean): Boolean;
+
+    procedure UpdateTransientWindows; virtual;
+    procedure SendCachedLCLMessages; override;
+
+    function CreateTimer(Interval: integer; TimerProc: TWSTimerProc) : THandle; override;
+    function DestroyTimer(TimerHandle: THandle) : boolean; override;
+    procedure DestroyLCLComponent(Sender: TObject);virtual;
+    // notebook
+    procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);virtual;
+
+
+    procedure SetDesigning(AComponent: TComponent); override;
+    function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
+    procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
+    procedure DCRedraw(CanvasHandle: HDC); override;
+    procedure FinishCreateHandle(const AWinControl: TWinControl;
+      Widget: PGtkWidget; const AParams: TCreateParams);
+
+  private
+    procedure Gtk1Create;
+    procedure Gtk1Destroy;
+
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -72,16 +277,32 @@ type
     function AppHandle: THandle; override;
     function AppRemoveStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
     function AppRestoreStayOnTopFlags(const ASystemTopAlso: Boolean = False): Boolean; override;
+    procedure AppProcessMessages; override;
+    procedure AppWaitMessage; override;
+    procedure AppTerminate; override;
+    procedure AppSetTitle(const ATitle: string); override;
 
-    procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: Boolean);override;
-    procedure SetCommonCallbacks(const AGTKObject: PGTKObject; const ALCLObject: TObject); override;
-    procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String); override;
+    // copied from GtkInt
+    procedure _SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: Boolean);
+    procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: Boolean);
+    procedure SetCommonCallbacks(const AGTKObject: PGTKObject; const ALCLObject: TObject);
+    procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String);
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
-      MultiSelect, ExtendedSelect: Boolean); override;
-    procedure SetWidgetFont(const AWidget: PGtkWidget; const AFont: TFont); override;
+      MultiSelect, ExtendedSelect: Boolean);
+    function ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
+                             ConvertAmpersandsToUnderScores: Boolean) : PChar;
+    procedure SetWidgetFont(const AWidget: PGtkWidget; const AFont: TFont);
     {$I gtk2winapih.inc}
     {$I gtk2lclintfh.inc}
+  public
+    procedure StartFocusTimer;
+    property AppActive: Boolean read GetAppActive write SetAppActive;
+    property LastFocusIn: PGtkWidget read FLastFocusIn write FLastFocusIn;
+    property LastFocusOut: PGtkWidget read FLastFocusOut write FLastFocusOut;
+    property MultiThreadingEnabled: boolean read FMultiThreadingEnabled;
   end;
+
+  {$I gtk2listslh.inc}
 
   { TGtkListStoreStringList }
 
@@ -131,8 +352,14 @@ type
   end;
 
 var
-  GTK2WidgetSet: TGTK2WidgetSet absolute GtkWidgetSet;
+  GTK2WidgetSet: TGTK2WidgetSet;
 
+
+// Gtk2FileDialogUtils
+
+procedure ExtractFilterList(const Filter: string;
+  out ListOfFileSelFilterEntry: TFPList; SplitMultiMask: boolean);
+procedure FreeListOfFileSelFilterEntry(ListOfFileSelFilterEntry: TFPList);
 
 implementation
 
@@ -142,10 +369,11 @@ uses
 {$endif}
   Gtk2WSFactory,
   Gtk2WSStdCtrls,
+  Gtk2WSControls,
+  Gtk2WSPrivate,
   Gtk2Themes,
 ////////////////////////////////////////////////////
-  GtkProc,
-  GtkDebug;
+  Gtk2Debug;
 
 {$include gtk2widgetset.inc}
 {$include gtk2winapi.inc}
@@ -662,6 +890,216 @@ begin
     EndUpdate;
   end;
 end;
+
+{$I gtk2listsl.inc}
+
+// Gtk2FileDialogUtils
+
+{------------------------------------------------------------------------------
+  Function: ExtractFilterList
+  Params: const Filter: string; var FilterIndex: integer;
+          var ListOfPFileSelFilterEntry: TStringList
+  Returns: -
+
+  Converts a Delphi file filter of the form
+  'description1|mask1|description2|mask2|...'
+  into a TFPList of PFileSelFilterEntry(s).
+  Multi masks:
+    - multi masks like '*.pas;*.pp' are converted into multiple entries.
+    - if the masks are found in the description they are adjusted
+    - if the mask is not included in the description it will be concatenated
+    For example:
+      'Pascal files (*.pas;*.pp)|*.pas;*.lpr;*.pp;
+      is converted to three filter entries:
+        'Pascal files (*.pas)' + '*.pas'
+        'Pascal files (*.pp)'  + '*.pp'
+        'Pascal files (*.lpr)' + '*.lpr'
+ ------------------------------------------------------------------------------}
+procedure ExtractFilterList(const Filter: string;
+  out ListOfFileSelFilterEntry: TFPList;
+  SplitMultiMask: boolean);
+var
+  Masks: TStringList;
+  CurFilterIndex: integer;
+
+  procedure ExtractMasks(const MultiMask: string);
+  var CurMaskStart, CurMaskEnd: integer;
+    s: string;
+  begin
+    if Masks=nil then
+      Masks:=TStringList.Create
+    else
+      Masks.Clear;
+    CurMaskStart:=1;
+    while CurMaskStart<=length(MultiMask) do begin
+      CurMaskEnd:=CurMaskStart;
+      if SplitMultiMask then begin
+        while (CurMaskEnd<=length(MultiMask)) and (MultiMask[CurMaskEnd]<>';')
+        do
+          inc(CurMaskEnd);
+      end else begin
+        CurMaskEnd:=length(MultiMask)+1;
+      end;
+      s:=Trim(copy(MultiMask,CurMaskStart,CurMaskEnd-CurMaskStart));
+      Masks.Add(s);
+      CurMaskStart:=CurMaskEnd+1;
+    end;
+  end;
+
+  procedure AddEntry(const Desc, Mask: string);
+  var NewFilterEntry: TFileSelFilterEntry;
+  begin
+    NewFilterEntry:=TFileSelFilterEntry.Create(Desc,Mask);
+    NewFilterEntry.FilterIndex:=CurFilterIndex;
+    ListOfFileSelFilterEntry.Add(NewFilterEntry);
+  end;
+
+  // remove all but one masks from description string
+  function RemoveOtherMasks(const Desc: string; MaskIndex: integer): string;
+  var i, StartPos, EndPos: integer;
+  begin
+    Result:=Desc;
+    for i:=0 to Masks.Count-1 do begin
+      if i=MaskIndex then continue;
+      StartPos:=Pos(Masks[i],Result);
+      EndPos:=StartPos+length(Masks[i]);
+      if StartPos<1 then continue;
+      while (StartPos>1) and (Result[StartPos-1] in [' ',#9,';']) do
+        dec(StartPos);
+      while (EndPos<=length(Result)) and (Result[EndPos] in [' ',#9]) do
+        inc(EndPos);
+      if (StartPos>1) and (Result[StartPos-1]='(')
+      and (EndPos<=length(Result)) then begin
+        if (Result[EndPos]=')') then begin
+          dec(StartPos);
+          inc(EndPos);
+        end else if Result[EndPos]=';' then begin
+          inc(EndPos);
+        end;
+      end;
+      System.Delete(Result,StartPos,EndPos-StartPos);
+    end;
+  end;
+
+  procedure AddEntries(const Desc: string; MultiMask: string);
+  var i: integer;
+    CurDesc: string;
+  begin
+    ExtractMasks(MultiMask);
+    for i:=0 to Masks.Count-1 do begin
+      CurDesc:=RemoveOtherMasks(Desc,i);
+      if (Masks.Count>1) and (Pos(Masks[i],CurDesc)<1) then begin
+        if (CurDesc='') or (CurDesc[length(CurDesc)]<>' ') then
+          CurDesc:=CurDesc+' ';
+        CurDesc:=CurDesc+'('+Masks[i]+')';
+      end;
+      //debugln('AddEntries ',CurDesc,' ',Masks[i]);
+      AddEntry(CurDesc,Masks[i]);
+    end;
+    inc(CurFilterIndex);
+  end;
+
+var
+  CurDescStart, CurDescEnd, CurMultiMaskStart, CurMultiMaskEnd: integer;
+  CurDesc, CurMultiMask: string;
+begin
+  ListOfFileSelFilterEntry:=TFPList.Create;
+  Masks:=nil;
+  CurFilterIndex:=0;
+  CurDescStart:=1;
+  while CurDescStart<=length(Filter) do begin
+    // extract next filter description
+    CurDescEnd:=CurDescStart;
+    while (CurDescEnd<=length(Filter)) and (Filter[CurDescEnd]<>'|') do
+      inc(CurDescEnd);
+    CurDesc:=copy(Filter,CurDescStart,CurDescEnd-CurDescStart);
+    // extract next filter multi mask
+    CurMultiMaskStart:=CurDescEnd+1;
+    CurMultiMaskEnd:=CurMultiMaskStart;
+    while (CurMultiMaskEnd<=length(Filter)) and (Filter[CurMultiMaskEnd]<>'|') do
+      inc(CurMultiMaskEnd);
+    CurMultiMask:=copy(Filter,CurMultiMaskStart,CurMultiMaskEnd-CurMultiMaskStart);
+    if CurDesc='' then CurDesc:=CurMultiMask;
+    // add filter(s)
+    if (CurMultiMask<>'') or (CurDesc<>'') then
+      AddEntries(CurDesc,CurMultiMask);
+    // next filter
+    CurDescStart:=CurMultiMaskEnd+1;
+  end;
+  Masks.Free;
+end;
+
+procedure FreeListOfFileSelFilterEntry(ListOfFileSelFilterEntry: TFPList);
+var
+  i: Integer;
+begin
+  if ListOfFileSelFilterEntry=nil then exit;
+  for i:=0 to ListOfFileSelFilterEntry.Count-1 do
+    TObject(ListOfFileSelFilterEntry[i]).Free;
+  ListOfFileSelFilterEntry.Free;
+end;
+
+
+procedure InternalInit;
+var
+  c: TClipboardType;
+begin
+  gtk_handler_quark := g_quark_from_static_string('gtk-signal-handlers');
+
+  MouseCaptureWidget := nil;
+  MouseCaptureType := mctGTK;
+
+  LastLeft:=EmptyLastMouseClick;
+  LastMiddle:=EmptyLastMouseClick;
+  LastRight:=EmptyLastMouseClick;
+
+  // clipboard
+  ClipboardSelectionData:=TFPList.Create;
+  for c:=Low(TClipboardType) to High(TClipboardType) do begin
+    ClipboardTypeAtoms[c]:=0;
+    ClipboardHandler[c]:=nil;
+    //ClipboardIgnoreLossCount[c]:=0;
+    ClipboardTargetEntries[c]:=nil;
+    ClipboardTargetEntryCnt[c]:=0;
+  end;
+
+  // charset encodings
+  CharSetEncodingList := TList.Create;
+  CreateDefaultCharsetEncodings;
+
+  InitDesignSignalMasks;
+end;
+
+procedure InternalFinal;
+var i: integer;
+  ced: PClipboardEventData;
+  c: TClipboardType;
+begin
+  // clipboard
+  for i:=0 to ClipboardSelectionData.Count-1 do begin
+    ced:=PClipboardEventData(ClipboardSelectionData[i]);
+    if ced^.Data.Data<>nil then FreeMem(ced^.Data.Data);
+    Dispose(ced);
+  end;
+  for c:=Low(TClipboardType) to High(TClipboardType) do
+    FreeClipboardTargetEntries(c);
+  ClipboardSelectionData.Free;
+  ClipboardSelectionData:=nil;
+
+  // charset encodings
+  if CharSetEncodingList<>nil then begin
+    ClearCharSetEncodings;
+    CharSetEncodingList.Free;
+    CharSetEncodingList:=nil;
+  end;
+end;
+
+
+initialization
+  InternalInit;
+
+finalization
+  InternalFinal;
 
 end.
 

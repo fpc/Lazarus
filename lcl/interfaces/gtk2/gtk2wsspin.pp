@@ -32,7 +32,7 @@ uses
   // RTL, FCL, LCL
   Math, Controls, LCLType, LCLProc, Spin, StdCtrls,
   // Widgetset
-  GtkProc, GtkExtra, GtkDef, Gtk2Int, Gtk2WSControls, Gtk2WSStdCtrls,
+  Gtk2Extra, Gtk2Def, Gtk2Int, Gtk2WSControls, Gtk2WSStdCtrls,
   Gtk2Proc, WSLCLClasses, WSSpin;
 
 type
@@ -81,7 +81,7 @@ begin
   Result:=GetGtkFloatSpinEditable(PGtkSpinButton(Spin.Handle));
 end;
 
-{ TGtkWSCustomFloatSpinEdit }
+{ TGtk2WSCustomFloatSpinEdit }
 
 class procedure TGtk2WSCustomFloatSpinEdit.SetCallbacks(
   const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);

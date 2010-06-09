@@ -28,7 +28,7 @@ interface
 
 uses
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
-  GtkInt, GtkProc, GtkGlobals, GtkDef, GtkExtra, GtkWSMenus,
+  Gtk2Int, Gtk2Proc, Gtk2Globals, Gtk2Def, Gtk2Extra,
   Classes, InterfaceBase, Types, LCLProc, LCLType, WSMenus, WSLCLClasses,
   LMessages, Graphics, Menus, Forms, LCLIntf;
 
@@ -55,8 +55,9 @@ type
 
   { TGtk2WSMenu }
 
-  TGtk2WSMenu = class(TGtkWSMenu)
+  TGtk2WSMenu = class(TWSMenu)
   published
+    class function CreateHandle(const AMenu: TMenu): HMENU; override;
     class procedure SetBiDiMode(const AMenu: TMenu; UseRightToLeftAlign, UseRightToLeftReading : Boolean); override;
   end;
 
@@ -69,13 +70,17 @@ type
   { TGtk2WSPopupMenu }
 
   TGtk2WSPopupMenu = class(TWSPopupMenu)
+  protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
+    class function CreateHandle(const AMenu: TMenu): HMENU; override;
+    class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;
 
 
 implementation
 
-{$I gtkdefines.inc}
+{$I gtk2defines.inc}
 
 function Gtk2MenuItemButtonPress(widget: PGtkWidget; event: PGdkEventButton;
  user_data: gpointer): gboolean; cdecl;
@@ -294,7 +299,7 @@ begin
     end;
 
     if GtkWidgetIsA(MenuItem, GTK_TYPE_RADIO_MENU_ITEM) then
-      TGtkWidgetSet(WidgetSet).RegroupMenuItem(HMENU(PtrUInt(MenuItem)), GroupIndex);
+      TGtk2WidgetSet(WidgetSet).RegroupMenuItem(HMENU(PtrUInt(MenuItem)), GroupIndex);
   end;
   //DebugLn('TGtkWidgetSet.AttachMenu END ',AMenuItem.Name,':',AMenuItem.ClassName);
 end;
@@ -354,7 +359,7 @@ end;
 class procedure TGtk2WSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 begin
   { TODO: cleanup }
-  TGtkWidgetSet(WidgetSet).DestroyLCLComponent(AMenuItem);
+  TGtk2WidgetSet(WidgetSet).DestroyLCLComponent(AMenuItem);
 end;
 
 class procedure TGtk2WSMenuItem.SetCaption(const AMenuItem: TMenuItem;
@@ -493,6 +498,42 @@ end;
 
 { TGtk2WSMenu }
 
+class function TGtk2WSMenu.CreateHandle(const AMenu: TMenu): HMENU;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  Box: Pointer;
+  ParentForm: TCustomForm;
+const
+  MenuDirection : array[Boolean] of Longint = (
+    GTK_PACK_DIRECTION_LTR,
+    GTK_PACK_DIRECTION_RTL);
+begin
+  Widget := gtk_menu_bar_new();
+  // get the VBox, the form has one child, a VBox
+  ParentForm := TCustomForm(AMenu.Parent);
+  if (ParentForm=nil) or (not (ParentForm is TCustomForm)) then
+    RaiseGDBException('MainMenu without form');
+  if ParentForm.Menu <> AMenu then
+    RaiseGDBException('Form already has a MainMenu');
+  if ParentForm.HandleAllocated then
+  begin
+    Box := PGTKBin(ParentForm.Handle)^.Child;
+    gtk_box_pack_start(Box, Widget, False, False, 0);
+  end;
+
+  gtk_menu_bar_set_pack_direction(PGtkMenuBar(Widget), MenuDirection[AMenu.UseRightToLeftAlignment]);
+  gtk_widget_show(Widget);
+
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AMenu));
+  {$ENDIF}
+  Result := THandle(PtrUInt(Widget));
+  WidgetInfo := CreateWidgetInfo(Widget);
+  WidgetInfo^.LCLObject := AMenu;
+  // no callbacks for main menu
+end;
+
 class procedure TGtk2WSMenu.SetBiDiMode(const AMenu : TMenu;
   UseRightToLeftAlign, UseRightToLeftReading : Boolean);
 const
@@ -524,6 +565,109 @@ begin
   {$endif}
   //gtk_widget_set_direction(PGtkWidget(AMenu.Handle), WidgetDirection[UseRightToLeftAlign]);
   Switch(AMenu.Items, False);
+end;
+
+{ TGtk2WSPopupMenu }
+
+procedure GtkWS_Popup(menu: PGtkMenu; X, Y: pgint; push_in: pgboolean;
+  WidgetInfo: PWidgetInfo); cdecl;
+var
+  Requisition: TGtkRequisition;
+  Alignment: TPopupAlignment;
+  ScreenHeight: gint;
+begin
+  X^ := PPoint(WidgetInfo^.UserData)^.X;
+  Y^ := PPoint(WidgetInfo^.UserData)^.Y;
+
+  if WidgetInfo^.LCLObject is TPopupMenu then
+  begin
+    // make menu to fit the screen vertically
+    gtk_widget_size_request(PGtkWidget(menu), @Requisition);
+    ScreenHeight := gdk_screen_height();
+    if Y^ + Requisition.height > ScreenHeight then
+    begin
+      Y^ := ScreenHeight - Requisition.height;
+      if Y^ < 0 then Y^ := 0;
+    end;
+
+    // get actual alignment
+    Alignment := TPopupMenu(WidgetInfo^.LCLObject).Alignment;
+    if TPopupMenu(WidgetInfo^.LCLObject).UseRightToLeftAlignment then
+    begin
+      if Alignment = paLeft then
+        Alignment := paRight
+      else
+      if Alignment = paRight then
+        Alignment := paLeft;
+    end;
+
+    case Alignment of
+      paCenter: X^ := X^ - Requisition.width div 2;
+      paRight: X^ := X^ - Requisition.width;
+    end;
+  end;
+end;
+
+function gtkWSPopupDelayedClose(Data: Pointer): gboolean; cdecl;
+var
+  PopupMenu: TPopupMenu absolute data;
+begin
+  Result := False;
+  if PopupMenu is TPopupMenu then
+    PopupMenu.Close;
+end;
+
+procedure gtkWSPopupMenuDeactivate(widget: PGtkWidget; data: gPointer); cdecl;
+begin
+  if data <> nil then
+    g_idle_add(@gtkWSPopupDelayedClose, Pointer(PWidgetInfo(data)^.LCLObject));
+end;
+
+
+class procedure TGtk2WSPopupMenu.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  g_signal_connect_after(PGtkObject(AGtkWidget), 'deactivate',
+    gtk_signal_func(@gtkWSPopupMenuDeactivate), AWidgetInfo);
+end;
+
+class function TGtk2WSPopupMenu.CreateHandle(const AMenu: TMenu): HMENU;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  Widget := gtk_menu_new;
+  Result := HMENU(PtrUInt(Widget));
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(Sender));
+  {$ENDIF}
+  WidgetInfo := CreateWidgetInfo(Widget);
+  WidgetInfo^.LCLObject := AMenu;
+  SetCallbacks(Widget, WidgetInfo);
+end;
+
+class procedure TGtk2WSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
+  Y: integer);
+var
+  APoint: TPoint;
+  AProc: Pointer;
+  MenuWidget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  ReleaseMouseCapture;
+  APoint.X := X;
+  APoint.Y := Y;
+  AProc := @GtkWS_Popup;
+
+  MenuWidget := PGtkWidget(APopupMenu.Handle);
+  WidgetInfo := GetWidgetInfo(MenuWidget);
+  WidgetInfo^.UserData := @APoint;
+  WidgetInfo^.DataOwner := False;
+  // MenuWidget can be either GtkMenu or GtkMenuItem submenu
+  if GTK_IS_MENU_ITEM(MenuWidget) then
+  MenuWidget := gtk_menu_item_get_submenu(PGtkMenuItem(MenuWidget));
+  gtk_menu_popup(PGtkMenu(MenuWidget), nil, nil, TGtkMenuPositionFunc(AProc),
+                 WidgetInfo, 0, gtk_get_current_event_time());
 end;
 
 end.

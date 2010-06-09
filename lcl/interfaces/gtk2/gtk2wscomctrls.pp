@@ -23,7 +23,7 @@
 unit Gtk2WSComCtrls;
 
 {$mode objfpc}{$H+}
-{$I gtkdefines.inc}
+{$I gtk2defines.inc}
 
 interface
 
@@ -36,7 +36,7 @@ uses
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   // GtkWidgetset
-  GtkWSControls, GtkDef, GtkGlobals, GtkProc,
+  Gtk2Def, Gtk2Globals, Gtk2Proc,
   // Gtk2Widgetset
   Gtk2WSControls, Gtk2Int;
   
@@ -233,7 +233,7 @@ type
 
 implementation
 
-uses Gtk2CellRenderer, GtkExtra{$IFNDEF USEORIGTREEMODEL}, Gtk2ListViewTreeModel{$ENDIF};
+uses Gtk2CellRenderer, Gtk2Extra{$IFNDEF USEORIGTREEMODEL}, Gtk2ListViewTreeModel{$ENDIF};
 
 // Will be used commonly for ListViews and TreeViews
 procedure GetCommonTreeViewWidgets(ATreeViewHandle: PGtkWidget;
@@ -426,7 +426,7 @@ begin
 
   InternalSetStyle(PGtkProgressBar(Widget), TCustomProgressBar(AWinControl).Style);
 
-  TGtkWSWinControl.SetCallbacks(PGtkObject(Widget), TComponent(WidgetInfo^.LCLObject));
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(Widget), TComponent(WidgetInfo^.LCLObject));
 end;
 
 class procedure TGtk2WSProgressBar.ApplyChanges(const AProgressBar: TCustomProgressBar);

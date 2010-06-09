@@ -28,12 +28,12 @@ interface
 
 uses
   // Bindings
-  Gtk2, Glib2, gdk2, pango, gtkextra,
+  Gtk2, Glib2, gdk2, pango, Gtk2Extra,
   // RTL, FCL and LCL
   SysUtils, Classes, Graphics, Controls, Dialogs, ExtDlgs, LCLType,
   FileUtil, LCLStrConsts, LCLProc, InterfaceBase,
   // Widgetset
-  Gtk2Int, GtkInt, GtkWSControls, GtkGlobals, GtkDef, GtkProc,
+  Gtk2Int, Gtk2WSControls, Gtk2Globals, Gtk2Def, Gtk2Proc,
   WSDialogs, WSLCLClasses;
   
 type
@@ -114,7 +114,7 @@ procedure UpdateDetailView(OpenDialog: TOpenDialog);
 
 implementation
 
-{$I gtkdefines.inc}
+{$I gtk2defines.inc}
 
 {-------------------------------------------------------------------------------
   procedure UpdateDetailView
@@ -1210,7 +1210,7 @@ class procedure TGtk2WSCommonDialog.DestroyHandle(
   const ACommonDialog: TCommonDialog);
 begin
   { TODO: cleanup }
-  TGtkWidgetSet(WidgetSet).DestroyLCLComponent(ACommonDialog);
+  TGtk2WidgetSet(WidgetSet).DestroyLCLComponent(ACommonDialog);
 end;
 
 { TGtk2WSColorDialog }

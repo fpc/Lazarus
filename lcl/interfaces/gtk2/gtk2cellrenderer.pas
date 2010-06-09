@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLProc, Controls, StdCtrls, ComCtrls, LMessages,
-  Gtk2Int, gtk2, gdk2, glib2, GtkProc, GtkDef;
+  Gtk2Int, gtk2, gdk2, glib2, Gtk2Proc, Gtk2Def;
   
 type
   PLCLIntfCellRenderer = ^TLCLIntfCellRenderer;
@@ -71,7 +71,7 @@ procedure LCLIntfCellRenderer_CellDataFunc(cell_layout:PGtkCellLayout;
                                            data: gpointer); cdecl;
 
 implementation
-uses GtkExtra;
+uses Gtk2Extra;
 
 type
   TCustomListViewAccess = class(TCustomListView);
