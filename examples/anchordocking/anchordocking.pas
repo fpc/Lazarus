@@ -279,6 +279,7 @@ type
 
   TAnchorDockManager = class(TDockManager)
   private
+    FDockableSites: TAnchors;
     FDockSite: TAnchorDockHostSite;
     FSite: TWinControl;
   public
@@ -296,6 +297,7 @@ type
     function GetDockEdge(ADockObject: TDragDockObject): boolean; override;
     property DockSite: TAnchorDockHostSite read FDockSite;
     property Site: TWinControl read FSite;
+    property DockableSites: TAnchors read FDockableSites write FDockableSites;
   end;
 
   { TAnchorDockMaster }
@@ -351,6 +353,7 @@ type
     procedure MakeDockable(AControl: TControl; Show: boolean = true;
                            BringToFront: boolean = false;
                            AddDockHeader: boolean = true);
+    procedure MakeDockSite(AForm: TCustomForm; Sites: TAnchors);
     procedure MakeVisible(AControl: TControl; SwitchPages: boolean);
     function ShowControl(ControlName: string; BringToFront: boolean = false
                          ): TControl;
@@ -1012,6 +1015,29 @@ begin
   // BringToFront
   if BringToFront and (Site<>nil) then
     GetParentForm(Site).BringToFront;
+end;
+
+procedure TAnchorDockMaster.MakeDockSite(AForm: TCustomForm; Sites: TAnchors);
+var
+  AManager: TAnchorDockManager;
+begin
+  if AForm.Name='' then
+    raise Exception.Create('TAnchorDockMaster.MakeDockable '+
+      adrsMissingControlName);
+  if AForm.DockManager<>nil then
+    raise Exception.Create('TAnchorDockMaster.MakeDockSite DockManager<>nil');
+  if AForm.Parent<>nil then
+    raise Exception.Create('TAnchorDockMaster.MakeDockSite Parent='+DbgSName(AForm.Parent));
+  AForm.DisableAutoSizing;
+  try
+    AManager:=TAnchorDockManager.Create(AForm);
+    AManager.DockableSites:=Sites;
+    AForm.DockManager:=AManager;
+    AForm.UseDockManager:=true;
+    AForm.DockSite:=true;
+  finally
+    AForm.EnableAutoSizing;
+  end;
 end;
 
 procedure TAnchorDockMaster.MakeVisible(AControl: TControl; SwitchPages: boolean
@@ -3108,6 +3134,7 @@ constructor TAnchorDockManager.Create(ADockSite: TWinControl);
 begin
   inherited Create(ADockSite);
   FSite:=ADockSite;
+  FDockableSites:=[akLeft,akTop,akBottom,akRight];
   if (ADockSite is TAnchorDockHostSite) then
     FDockSite:=TAnchorDockHostSite(ADockSite);
 end;
@@ -3145,7 +3172,7 @@ var
   Offset: TPoint;
   Inside: Boolean;
 begin
-  Inside:=(DropCtl=Site) or (Site.Parent<>nil);
+  Inside:=(DockSite<>nil) and (DropCtl=Site) or (Site.Parent<>nil);
   case DropAlign of
   alLeft:
     if Inside then
@@ -3178,7 +3205,7 @@ begin
   else
     exit; // use default
   end;
-  Offset:=DockSite.ClientOrigin;
+  Offset:=Site.ClientOrigin;
   OffsetRect(DockRect,Offset.X,Offset.Y);
 end;
 
@@ -3218,6 +3245,9 @@ var
 var
   p: TPoint;
 begin
+  //debugln(['TAnchorDockManager.GetDockEdge ',DbgSName(Site)]);
+  if DockableSites=[] then exit(false);
+
   p:=Site.ScreenToClient(ADockObject.DragPos);
   if (DockSite<>nil) and PtInRect(DockSite.GetPageArea,p) then begin
     // page docking
@@ -3226,10 +3256,10 @@ begin
 
     // check side
     BestDistance:=High(Integer);
-    FindMinDistance(alLeft,p.X);
-    FindMinDistance(alRight,Site.ClientWidth-p.X);
-    FindMinDistance(alTop,p.Y);
-    FindMinDistance(alBottom,Site.ClientHeight-p.Y);
+    if akLeft in DockableSites then FindMinDistance(alLeft,p.X);
+    if akRight in DockableSites then FindMinDistance(alRight,Site.ClientWidth-p.X);
+    if akTop in DockableSites then FindMinDistance(alTop,p.Y);
+    if akBottom in DockableSites then FindMinDistance(alBottom,Site.ClientHeight-p.Y);
 
     // check inside
     if ((ADockObject.DropAlign=alLeft) and (p.X>=0))

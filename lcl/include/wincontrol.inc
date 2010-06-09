@@ -5317,7 +5317,8 @@ procedure TWinControl.SetUseDockManager(const AValue: Boolean);
 begin
   if FUseDockManager=AValue then exit;
   FUseDockManager:=AValue;
-  if FUseDockManager and ([csDesigning,csDestroying]*ComponentState=[]) then
+  if FUseDockManager and ([csDesigning,csDestroying]*ComponentState=[])
+  and (DockManager=nil) then
     DockManager := CreateDockManager;
 end;
 

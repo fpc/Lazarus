@@ -5,9 +5,9 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
-  ExtCtrls, Buttons, ComCtrls, SimpleFrm, AnchorDocking, AnchorDockStorage,
-  XMLPropStorage;
+  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
+  Menus, ExtCtrls, Buttons, ComCtrls, SimpleFrm,
+  AnchorDocking, AnchorDockStorage, XMLPropStorage;
 
 type
 
