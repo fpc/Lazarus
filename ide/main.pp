@@ -640,7 +640,6 @@ type
     procedure SetupRemoteControl;
     procedure SetupIDEWindowsLayout;
     procedure RestoreIDEWindows;
-    procedure CloseIDEWindows;
     procedure FreeIDEWindows;
     function CloseQueryIDEWindows: boolean;
 
@@ -1702,7 +1701,10 @@ procedure TMainIDE.MainIDEFormClose(Sender: TObject;
 begin
   DoCallNotifyHandler(lihtIDEClose);
   SaveEnvironment;
-  CloseIDEWindows;
+  if IDEDockMaster<>nil then
+    IDEDockMaster.CloseAll
+  else
+    CloseAllForms;
   SaveIncludeLinks;
   InputHistories.Save;
   PkgBoss.SaveSettings;
@@ -2239,20 +2241,6 @@ begin
     AForm:=IDEWindowCreators.GetForm(ALayout.FormID,true);
     if AForm=nil then continue;
     IDEWindowCreators.ShowForm(AForm,false);
-  end;
-end;
-
-procedure TMainIDE.CloseIDEWindows;
-var
-  i: Integer;
-  AForm: TCustomForm;
-begin
-  i:=Screen.CustomFormCount-1;
-  while i>=0 do begin
-    AForm:=Screen.CustomForms[i];
-    if AForm<>MainIDEBar then
-      AForm.Close;
-    i:=Math.Min(i,Screen.CustomFormCount)-1;
   end;
 end;
 

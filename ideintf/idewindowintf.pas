@@ -217,6 +217,7 @@ var
 
 procedure MakeIDEWindowDockable(AControl: TWinControl);
 procedure MakeIDEWindowDockSite(AForm: TCustomForm);
+procedure CloseAllForms;
 
 procedure Register;
 
@@ -232,6 +233,21 @@ procedure MakeIDEWindowDockSite(AForm: TCustomForm);
 begin
   if Assigned(IDEDockMaster) then
     IDEDockMaster.MakeIDEWindowDockSite(AForm);
+end;
+
+procedure CloseAllForms;
+var
+  i: Integer;
+  AForm: TCustomForm;
+begin
+  i:=Screen.CustomFormCount-1;
+  while i>=0 do begin
+    AForm:=Screen.CustomForms[i];
+    if AForm<>Application.MainForm then
+      AForm.Close;
+    dec(i);
+    if i>=Screen.CustomFormCount then i:=Screen.CustomFormCount-1;
+  end;
 end;
 
 procedure Register;
@@ -727,18 +743,8 @@ end;
 { TIDEDockMaster }
 
 procedure TIDEDockMaster.CloseAll;
-var
-  i: Integer;
-  AForm: TCustomForm;
 begin
-  i:=Screen.CustomFormCount-1;
-  while i>=0 do begin
-    AForm:=Screen.CustomForms[i];
-    if AForm<>Application.MainForm then
-      AForm.Close;
-    dec(i);
-    if i>=Screen.CustomFormCount then i:=Screen.CustomFormCount-1;
-  end;
+  CloseAllForms;
 end;
 
 initialization

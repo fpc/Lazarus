@@ -280,6 +280,7 @@ type
   TAnchorDockManager = class(TDockManager)
   private
     FDockSite: TAnchorDockHostSite;
+    FSite: TWinControl;
   public
     constructor Create(ADockSite: TWinControl); override;
     procedure GetControlBounds(Control: TControl; out AControlBounds: TRect);
@@ -294,6 +295,7 @@ type
     procedure SaveToStream(Stream: TStream); override;
     function GetDockEdge(ADockObject: TDragDockObject): boolean; override;
     property DockSite: TAnchorDockHostSite read FDockSite;
+    property Site: TWinControl read FSite;
   end;
 
   { TAnchorDockMaster }
@@ -349,6 +351,7 @@ type
     procedure MakeDockable(AControl: TControl; Show: boolean = true;
                            BringToFront: boolean = false;
                            AddDockHeader: boolean = true);
+    procedure MakeVisible(AControl: TControl; SwitchPages: boolean);
     function ShowControl(ControlName: string; BringToFront: boolean = false
                          ): TControl;
     procedure CloseAll;
@@ -956,21 +959,6 @@ end;
 
 procedure TAnchorDockMaster.MakeDockable(AControl: TControl; Show: boolean;
   BringToFront: boolean; AddDockHeader: boolean);
-
-  procedure ShowSite(Site: TAnchorDockHostSite);
-  var
-    CurControl: TControl;
-  begin
-    CurControl:=Site;
-    while CurControl<>nil do begin
-      CurControl.Visible:=true;
-      if BringToFront and (CurControl is TAnchorDockPage) then
-        TAnchorDockPageControl(CurControl.Parent).PageIndex:=
-          TAnchorDockPage(CurControl).PageIndex;
-      CurControl:=CurControl.Parent;
-    end;
-  end;
-
 var
   Site: TAnchorDockHostSite;
 begin
@@ -1017,13 +1005,25 @@ begin
         adrsNotSupportedHasParent, [DbgSName(AControl), DbgSName(AControl)]));
     end;
     if (Site<>nil) and Show then
-      ShowSite(Site);
+      MakeVisible(Site,BringToFront);
   finally
     AControl.EnableAutoSizing;
   end;
   // BringToFront
   if BringToFront and (Site<>nil) then
     GetParentForm(Site).BringToFront;
+end;
+
+procedure TAnchorDockMaster.MakeVisible(AControl: TControl; SwitchPages: boolean
+  );
+begin
+  while AControl<>nil do begin
+    AControl.Visible:=true;
+    if SwitchPages and (AControl is TAnchorDockPage) then
+      TAnchorDockPageControl(AControl.Parent).PageIndex:=
+        TAnchorDockPage(AControl).PageIndex;
+    AControl:=AControl.Parent;
+  end;
 end;
 
 function TAnchorDockMaster.ShowControl(ControlName: string;
@@ -3107,9 +3107,9 @@ end;
 constructor TAnchorDockManager.Create(ADockSite: TWinControl);
 begin
   inherited Create(ADockSite);
-  if not (ADockSite is TAnchorDockHostSite) then
-    raise Exception.Create('TAnchorDockManager.Create not supported: '+DbgSName(ADockSite));
-  FDockSite:=TAnchorDockHostSite(ADockSite);
+  FSite:=ADockSite;
+  if (ADockSite is TAnchorDockHostSite) then
+    FDockSite:=TAnchorDockHostSite(ADockSite);
 end;
 
 procedure TAnchorDockManager.GetControlBounds(Control: TControl; out
@@ -3122,12 +3122,15 @@ end;
 procedure TAnchorDockManager.InsertControl(Control: TControl; InsertAt: TAlign;
   DropCtl: TControl);
 begin
-  debugln(['TAnchorDockManager.InsertControl DockSite="',DockSite.Caption,'" Control=',Control,' InsertAt=',dbgs(InsertAt),' DropCtl=',DbgSName(DropCtl)]);
+  if DockSite<>nil then
+    debugln(['TAnchorDockManager.InsertControl DockSite="',DockSite.Caption,'" Control=',DbgSName(Control),' InsertAt=',dbgs(InsertAt),' DropCtl=',DbgSName(DropCtl)])
+  else
+    debugln(['TAnchorDockManager.InsertControl DockSite=nil Site="',DbgSName(Site),'" Control=',DbgSName(Control),' InsertAt=',dbgs(InsertAt),' DropCtl=',DbgSName(DropCtl)])
 end;
 
 procedure TAnchorDockManager.LoadFromStream(Stream: TStream);
 begin
-  debugln(['TAnchorDockManager.LoadFromStream TODO DockSite="',DockSite.Caption,'"']);
+  debugln(['TAnchorDockManager.LoadFromStream TODO Site="',DbgSName(Site),'"']);
   if Stream=nil then ;
 end;
 
@@ -3142,34 +3145,35 @@ var
   Offset: TPoint;
   Inside: Boolean;
 begin
-  Inside:=(DropCtl=DockSite) or (DockSite.Parent<>nil);
+  Inside:=(DropCtl=Site) or (Site.Parent<>nil);
   case DropAlign of
   alLeft:
     if Inside then
-      DockRect:=Rect(0,0,Min(Client.Width,DockSite.ClientWidth div 2),DockSite.ClientHeight)
+      DockRect:=Rect(0,0,Min(Client.Width,Site.ClientWidth div 2),Site.ClientHeight)
     else
-      DockRect:=Rect(-Client.Width,0,0,DockSite.ClientHeight);
+      DockRect:=Rect(-Client.Width,0,0,Site.ClientHeight);
   alRight:
     if Inside then begin
-      DockRect:=Rect(0,0,Min(Client.Width,DockSite.Width div 2),DockSite.ClientHeight);
-      OffsetRect(DockRect,DockSite.ClientWidth-DockRect.Right,0);
+      DockRect:=Rect(0,0,Min(Client.Width,Site.Width div 2),Site.ClientHeight);
+      OffsetRect(DockRect,Site.ClientWidth-DockRect.Right,0);
     end else
-      DockRect:=Bounds(DockSite.ClientWidth,0,Client.Width,DockSite.ClientHeight);
+      DockRect:=Bounds(Site.ClientWidth,0,Client.Width,Site.ClientHeight);
   alTop:
     if Inside then
-      DockRect:=Rect(0,0,DockSite.ClientWidth,Min(Client.Height,DockSite.ClientHeight div 2))
+      DockRect:=Rect(0,0,Site.ClientWidth,Min(Client.Height,Site.ClientHeight div 2))
     else
-      DockRect:=Rect(0,-Client.Height,DockSite.ClientWidth,0);
+      DockRect:=Rect(0,-Client.Height,Site.ClientWidth,0);
   alBottom:
     if Inside then begin
-      DockRect:=Rect(0,0,DockSite.ClientWidth,Min(Client.Height,DockSite.ClientHeight div 2));
-      OffsetRect(DockRect,0,DockSite.ClientHeight-DockRect.Bottom);
+      DockRect:=Rect(0,0,Site.ClientWidth,Min(Client.Height,Site.ClientHeight div 2));
+      OffsetRect(DockRect,0,Site.ClientHeight-DockRect.Bottom);
     end else
-      DockRect:=Bounds(0,DockSite.ClientHeight,DockSite.ClientWidth,Client.Height);
+      DockRect:=Bounds(0,Site.ClientHeight,Site.ClientWidth,Client.Height);
   alClient:
     begin
-      // paged docking => show this as center
-      DockRect:=DockSite.GetPageArea;
+      // paged docking => show center
+      if DockSite<>nil then
+        DockRect:=DockSite.GetPageArea;
     end;
   else
     exit; // use default
@@ -3180,18 +3184,22 @@ end;
 
 procedure TAnchorDockManager.RemoveControl(Control: TControl);
 begin
-  debugln(['TAnchorDockManager.RemoveControl DockSite="',DockSite.Caption,'" Control=',DbgSName(Control)]);
+  if DockSite<>nil then
+    debugln(['TAnchorDockManager.RemoveControl DockSite="',DockSite.Caption,'" Control=',DbgSName(Control)])
+  else
+    debugln(['TAnchorDockManager.RemoveControl Site="',DbgSName(Site),'" Control=',DbgSName(Control)])
 end;
 
 procedure TAnchorDockManager.ResetBounds(Force: Boolean);
 begin
-  debugln(['TAnchorDockManager.ResetBounds DockSite="',DockSite.Caption,'" Force=',Force]);
+  if DockSite=nil then
+    debugln(['TAnchorDockManager.ResetBounds Site="',Site.Caption,'" Force=',Force,' ',dbgs(Site.ClientRect)]);
 end;
 
 procedure TAnchorDockManager.SaveToStream(Stream: TStream);
 begin
-  if STream=nil then ;
-  debugln(['TAnchorDockManager.SaveToStream TODO DockSite="',DockSite.Caption,'"']);
+  if Stream=nil then ;
+  debugln(['TAnchorDockManager.SaveToStream TODO Site="',DbgSName(Site),'"']);
 end;
 
 function TAnchorDockManager.GetDockEdge(ADockObject: TDragDockObject): boolean;
@@ -3210,8 +3218,8 @@ var
 var
   p: TPoint;
 begin
-  p:=DockSite.ScreenToClient(ADockObject.DragPos);
-  if PtInRect(DockSite.GetPageArea,p) then begin
+  p:=Site.ScreenToClient(ADockObject.DragPos);
+  if (DockSite<>nil) and PtInRect(DockSite.GetPageArea,p) then begin
     // page docking
     ADockObject.DropAlign:=alClient;
   end else begin
@@ -3219,17 +3227,17 @@ begin
     // check side
     BestDistance:=High(Integer);
     FindMinDistance(alLeft,p.X);
-    FindMinDistance(alRight,DockSite.ClientWidth-p.X);
+    FindMinDistance(alRight,Site.ClientWidth-p.X);
     FindMinDistance(alTop,p.Y);
-    FindMinDistance(alBottom,DockSite.ClientHeight-p.Y);
+    FindMinDistance(alBottom,Site.ClientHeight-p.Y);
 
     // check inside
     if ((ADockObject.DropAlign=alLeft) and (p.X>=0))
     or ((ADockObject.DropAlign=alTop) and (p.Y>=0))
-    or ((ADockObject.DropAlign=alRight) and (p.X<DockSite.ClientWidth))
-    or ((ADockObject.DropAlign=alBottom) and (p.Y<DockSite.ClientHeight))
+    or ((ADockObject.DropAlign=alRight) and (p.X<Site.ClientWidth))
+    or ((ADockObject.DropAlign=alBottom) and (p.Y<Site.ClientHeight))
     then
-      ADockObject.DropOnControl:=DockSite
+      ADockObject.DropOnControl:=Site
     else
       ADockObject.DropOnControl:=nil;
   end;
