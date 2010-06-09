@@ -8506,7 +8506,6 @@ var
   Widget, FixWidget : PGTKWidget;
   MainWidget: PGtkWidget;
   FreeFontName: boolean;
-  FreeFontSetName: boolean;
 
   procedure CreateRCStyle;
   begin
@@ -8530,7 +8529,6 @@ begin
 
   RCStyle:=nil;
   FreeFontName:=false;
-  FreeFontSetName:=false;
   try
     // set default background
     if (AWinControl.Color=clNone) then 

@@ -8167,7 +8167,6 @@ function TGtk2WidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
 const
   POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 var
-  GtkWindow: PGtkWindow;
   Layout: PgtkLayout;
   Scroll: PGTKWidget;
   IsScrollWindow: Boolean;

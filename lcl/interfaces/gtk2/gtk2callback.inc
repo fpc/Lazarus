@@ -303,18 +303,7 @@ end;
 
 function gtkshowCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
-  TheForm: TCustomForm;
-  SizeMsg: TLMSize;
-  GtkWidth: LongInt;
-  GtkHeight: LongInt;
   Mess : TLMShowWindow;
-  {$IFDEF HasX}
-  NetAtom: TGdkAtom;
-  AtomType: TGdkAtom;
-  AIndex, ADesktop: pguint;
-  AFormat: gint;
-  ALength: gint;
-  {$ENDIF}
 begin
   Result := True;
 
