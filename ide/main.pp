@@ -807,7 +807,7 @@ type
     procedure DoShowRestrictionBrowser(Show: boolean; const RestrictedName: String = '');
     procedure DoShowComponentList(Show: boolean);
     procedure CreateIDEWindow(Sender: TObject; aFormName: string;
-                              var AForm: TCustomForm);
+                          var AForm: TCustomForm; DoDisableAutoSizing: boolean);
     function CreateNewUniqueFilename(const Prefix, Ext: string;
        NewOwner: TObject; Flags: TSearchIDEFileFlags; TryWithoutNumber: boolean
        ): string; override;
@@ -9013,7 +9013,7 @@ begin
 end;
 
 procedure TMainIDE.CreateIDEWindow(Sender: TObject; aFormName: string; var
-  AForm: TCustomForm);
+  AForm: TCustomForm; DoDisableAutoSizing: boolean);
 
   function ItIs(Prefix: string): boolean;
   begin
@@ -9073,9 +9073,9 @@ begin
   begin
     DoShowComponentList(false);
     AForm:=ComponentListForm;
-  end
-  else
-    raise Exception.Create('TMainIDE.CreateIDEWindow invalid formname: '+aFormName);
+  end;
+  if (AForm<>nil) and DoDisableAutoSizing then
+    AForm.DisableAutoSizing;
 end;
 
 function TMainIDE.CreateNewUniqueFilename(const Prefix, Ext: string;

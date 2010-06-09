@@ -46,10 +46,10 @@ type
   { TIDEEasyDockMaster }
 
   TIDEEasyDockMaster = class(TIDEDockMaster)
+  private
     function DockMasterRestore(const CtrlName: string; ASite: TWinControl
       ): TControl;
     function DockMasterSave(ACtrl: TControl): string;
-  private
     procedure GetDefaultBounds(AForm: TCustomForm; out Creator: TIDEWindowCreator;
       out NewBounds: TRect; out DockSiblingName: string; out DockAlign: TAlign);
   public
@@ -283,7 +283,7 @@ begin
 end;
 
 initialization
-  // create the dockmaster in the initialization section, so that is ready
+  // create the dockmaster in the initialization section, so that it is ready
   // when the Register procedures of the packages are called.
   TDockMaster.Create(nil);
   IDEDockMaster:=TIDEEasyDockMaster.Create;

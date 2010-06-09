@@ -113,7 +113,7 @@ type
     );
 
   TCreateIDEWindowEvent = procedure(Sender: TObject; aFormName: string;
-                                    var AForm: TCustomForm) of object;
+                var AForm: TCustomForm; DoDisableAutoSizing: boolean) of object;
   TGetDefaultIDEWindowLayoutEvent = procedure(Sender: TObject; aFormName: string;
    out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign) of object;
   TShowIDEWindowEvent = procedure(Sender: TObject; AForm: TCustomForm;
@@ -190,7 +190,8 @@ type
     procedure Delete(Index: integer);
     function IndexOfName(FormName: string): integer;
     function FindWithName(FormName: string): TIDEWindowCreator;
-    function GetForm(aFormName: string; AutoCreate: boolean): TCustomForm;
+    function GetForm(aFormName: string; AutoCreate: boolean;
+                               DisableAutoSizing: boolean = false): TCustomForm;
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean);
     property OnShowForm: TShowIDEWindowEvent read FOnShowForm write FOnShowForm;
   end;
@@ -675,13 +676,17 @@ begin
     Result:=nil;
 end;
 
-function TIDEWindowCreatorList.GetForm(aFormName: string; AutoCreate: boolean
-  ): TCustomForm;
+function TIDEWindowCreatorList.GetForm(aFormName: string; AutoCreate: boolean;
+  DisableAutoSizing: boolean): TCustomForm;
 var
   Item: TIDEWindowCreator;
 begin
   Result:=Screen.FindForm(aFormName);
-  if Result<>nil then exit;
+  if Result<>nil then begin
+    if DisableAutoSizing then
+      Result.DisableAutoSizing;
+    exit;
+  end;
   if AutoCreate then begin
     Item:=FindWithName(aFormName);
     if Item=nil then begin
@@ -692,7 +697,7 @@ begin
       debugln(['TIDEWindowCreatorList.GetForm no OnCreateForm for ',aFormName]);
       exit;
     end;
-    Item.OnCreateForm(Self,aFormName,Result);
+    Item.OnCreateForm(Self,aFormName,Result,DisableAutoSizing);
     if Result=nil then begin
       debugln(['TIDEWindowCreatorList.GetForm create failed for ',aFormName]);
       exit;

@@ -40,8 +40,6 @@ uses
   Classes, Forms, Controls, IDEProcs, Debugger, EnvironmentOpts, IDEOptionDefs;
 
 type
-  TDebuggerDlgClass = class of TDebuggerDlg;
-
   TDebuggerDlg = class(TForm)
   private
     FUpdateCount: integer;
@@ -54,6 +52,7 @@ type
     procedure EndUpdate;
     function UpdateCount: integer;
   end;
+  TDebuggerDlgClass = class of TDebuggerDlg;
 
 implementation
 

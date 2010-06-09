@@ -55,10 +55,10 @@
        - header auto, left, top, right, bottom
        - undock (needed if no place to undock on screen)
        - merge (for example after moving a dock page into a layout)
+       - enlarge side to left, top, right, bottom
 
   ToDo:
     - popup menu
-       - enlarge side to left, top, right, bottom
        - shrink side left, top, right, bottom
        - options
        - close (for pages)
@@ -353,6 +353,7 @@ type
                            AddDockHeader: boolean = true);
     function ShowControl(ControlName: string; BringToFront: boolean = false
                          ): TControl;
+    procedure CloseAll;
 
     // save/restore layouts
     procedure SaveMainLayoutToTree(LayoutTree: TAnchorDockLayoutTree);
@@ -1031,6 +1032,29 @@ begin
   Result:=DoCreateControl(ControlName,false);
   if Result=nil then exit;
   MakeDockable(Result,true,BringToFront);
+end;
+
+procedure TAnchorDockMaster.CloseAll;
+var
+  AForm: TCustomForm;
+  i: Integer;
+begin
+  // first hide all to reduce flicker
+  i:=Screen.CustomFormCount-1;
+  while i>=0 do begin
+    AForm:=GetParentForm(Screen.CustomForms[i]);
+    if AForm<>nil then
+      AForm.Hide;
+    i:=Min(i,Screen.CustomFormCount);
+  end;
+  // then close all, but the MainForm
+  i:=Screen.CustomFormCount-1;
+  while i>=0 do begin
+    AForm:=Screen.CustomForms[i];
+    if AForm<>Application.MainForm then
+      AForm.Close;
+    i:=Min(i,Screen.CustomFormCount);
+  end;
 end;
 
 procedure TAnchorDockMaster.SaveMainLayoutToTree(LayoutTree: TAnchorDockLayoutTree
@@ -2345,7 +2369,7 @@ begin
                                    OnlyCheckIfPossible) then exit(true);
   if EnlargeSideResizeTwoSplitters(Side,OppositeAnchor[ClockwiseAnchor[Side]],
                                    OnlyCheckIfPossible) then exit(true);
-  // ToDo:
+  // ToDo: EnlargeBetween
 end;
 
 function TAnchorDockHostSite.EnlargeSideResizeTwoSplitters(ShrinkSplitterSide,

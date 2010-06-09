@@ -116,7 +116,7 @@ type
 
     // Dialog routines
     procedure CreateDebugDialog(Sender: TObject; aFormName: string;
-                                var AForm: TCustomForm);
+                          var AForm: TCustomForm; DoDisableAutoSizing: boolean);
     procedure DestroyDebugDialog(const ADialogType: TDebugDialogType);
     procedure InitDebugOutputDlg;
     procedure InitDebugEventsDlg;
@@ -187,7 +187,7 @@ type
     function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; override;
     function ShowWatchProperties(const AWatch: TIDEWatch; AWatchExpression: String = ''): TModalresult; override;
 
-    procedure ViewDebugDialog(const ADialogType: TDebugDialogType; BringToFront: Boolean = true; Show: Boolean = true); override;
+    procedure ViewDebugDialog(const ADialogType: TDebugDialogType; BringToFront: Boolean = true; Show: Boolean = true; DoDisableAutoSizing: boolean = false); override;
   end;
 
 
@@ -1741,7 +1741,7 @@ begin
 end;
 
 procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType;
-  BringToFront: Boolean; Show: Boolean);
+  BringToFront: Boolean; Show: Boolean; DoDisableAutoSizing: boolean);
 const
   DEBUGDIALOGCLASS: array[TDebugDialogType] of TDebuggerDlgClass = (
     TDbgOutputForm, TDbgEventsForm, TBreakPointsDlg, TWatchesDlg, TLocalsDlg,
@@ -1753,8 +1753,10 @@ begin
   if Destroying then exit;
   if FDialogs[ADialogType] = nil
   then begin
-    FDialogs[ADialogType] := DEBUGDIALOGCLASS[ADialogType].Create(Self);
-    CurDialog:=FDialogs[ADialogType];
+    CurDialog := TDebuggerDlg(DEBUGDIALOGCLASS[ADialogType].NewInstance);
+    CurDialog.DisableAutoSizing;
+    CurDialog.Create(Self);
+    FDialogs[ADialogType]:=CurDialog;
     CurDialog.Name:=NonModalIDEWindowNames[DebugDlgIDEWindow[ADialogType]];
     CurDialog.Tag := Integer(ADialogType);
     CurDialog.OnDestroy := @DebugDialogDestroy;
@@ -1773,12 +1775,16 @@ begin
   end
   else begin
     CurDialog:=FDialogs[ADialogType];
+    if DoDisableAutoSizing then
+      CurDialog.DisableAutoSizing;
     if (CurDialog is TBreakPointsDlg)
     then begin
       if (Project1<>nil) then
         TBreakPointsDlg(CurDialog).BaseDirectory:=Project1.ProjectDirectory;
     end;
   end;
+  if not DoDisableAutoSizing then
+    CurDialog.EnableAutoSizing;
   if Show then
   begin
     IDEWindowCreators.ShowForm(CurDialog,BringToFront);
@@ -2195,7 +2201,7 @@ begin
 end;
 
 procedure TDebugManager.CreateDebugDialog(Sender: TObject; aFormName: string;
-  var AForm: TCustomForm);
+  var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 
   function ItIs(Prefix: string): boolean;
   begin
@@ -2208,7 +2214,7 @@ begin
   for DlgType:=Low(TDebugDialogType) to High(TDebugDialogType) do
     if ItIs(NonModalIDEWindowNames[DebugDlgIDEWindow[DlgType]]) then
     begin
-      ViewDebugDialog(DlgType,false,false);
+      ViewDebugDialog(DlgType,false,false,DoDisableAutoSizing);
       AForm:=FDialogs[DlgType];
       exit;
     end;

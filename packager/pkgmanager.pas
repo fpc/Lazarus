@@ -159,7 +159,7 @@ type
     function LoadDependencyList(FirstDependency: TPkgDependency): TModalResult;
     procedure OnOpenPackageForCurrentSrcEditFile(Sender: TObject);
     procedure CreateIDEWindow(Sender: TObject; aFormName: string;
-                              var AForm: TCustomForm);
+                          var AForm: TCustomForm; DoDisableAutoSizing: boolean);
   private
     // helper functions
     FLastLazarusSrcDir: string;
@@ -717,12 +717,14 @@ begin
 end;
 
 procedure TPkgManager.CreateIDEWindow(Sender: TObject; aFormName: string; var
-  AForm: TCustomForm);
+  AForm: TCustomForm; DoDisableAutoSizing: boolean);
 begin
   if SysUtils.CompareText(aFormName,NonModalIDEWindowNames[nmiwPkgGraphExplorer])=0
   then begin
     DoShowPackageGraph(false);
     AForm:=PackageGraphExplorer;
+    if DoDisableAutoSizing then
+      AForm.DisableAutoSizing;
   end;
 end;
 

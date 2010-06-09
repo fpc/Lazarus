@@ -951,7 +951,7 @@ type
     function  ActiveOrNewSourceWindow: TSourceNotebook;
     function  NewSourceWindow: TSourceNotebook;
     procedure CreateSourceWindow(Sender: TObject; aFormName: string;
-                                 var AForm: TCustomForm);
+                          var AForm: TCustomForm; DoDisableAutoSizing: boolean);
     procedure GetDefaultLayout(Sender: TObject; aFormName: string;
              out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
     function  SourceWindowWithPage(const APage: TPage): TSourceNotebook;
@@ -1045,7 +1045,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function CreateNewWindow(Activate: Boolean= False): TSourceNotebook;
+    function CreateNewWindow(Activate: Boolean= False;
+                             DoDisableAutoSizing: boolean = False): TSourceNotebook;
   private
     FOnAddJumpPoint: TOnAddJumpPoint;
     FOnClearBookmark: TPlaceBookMarkEvent;
@@ -8406,12 +8407,12 @@ begin
 end;
 
 procedure TSourceEditorManager.CreateSourceWindow(Sender: TObject;
-  aFormName: string; var AForm: TCustomForm);
+  aFormName: string; var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 begin
   {$IFDEF VerboseIDEDocking}
   debugln(['TSourceEditorManager.CreateSourceWindow Sender=',DbgSName(Sender),' FormName="',aFormName,'"']);
   {$ENDIF}
-  AForm := CreateNewWindow(false);
+  AForm := CreateNewWindow(false,DoDisableAutoSizing);
   AForm.Name:=aFormName;
 end;
 
@@ -9107,12 +9108,14 @@ begin
   Result := AnsiStrComp(PChar(SrcWin1.Caption), PChar(SrcWin2.Caption));
 end;
 
-function TSourceEditorManager.CreateNewWindow(Activate: Boolean= False): TSourceNotebook;
+function TSourceEditorManager.CreateNewWindow(Activate: Boolean= False;
+  DoDisableAutoSizing: boolean = false): TSourceNotebook;
 var
   i: Integer;
 begin
-  Result := TSourceNotebook.Create(Self);
-  Result.FreeNotification(self);
+  Result := TSourceNotebook(TSourceNotebook.NewInstance);
+  Result.DisableAutoSizing;
+  Result.Create(Self);
   Result.OnDropFiles := @OnFilesDroping;
 
   for i := 1 to FUpdateLock do
@@ -9125,6 +9128,8 @@ begin
     ShowActiveWindowOnTop(False);
   end;
   FChangeNotifyLists[semWindowCreate].CallNotifyEvents(Result);
+  if not DoDisableAutoSizing then
+    Result.EnableAutoSizing;
 end;
 
 procedure TSourceEditorManager.RemoveWindow(AWindow: TSourceNotebook);
