@@ -2342,7 +2342,7 @@ function TAnchorDockHostSite.EnlargeSide(Side: TAnchorKind;
 begin
   Result:=false;
   if EnlargeSideResizeTwoSplitters(Side,ClockwiseAnchor[Side],
-                                   OnlyCheckIfPossible) then exit;
+                                   OnlyCheckIfPossible) then exit(true);
   if EnlargeSideResizeTwoSplitters(Side,OppositeAnchor[ClockwiseAnchor[Side]],
                                    OnlyCheckIfPossible) then exit(true);
   // ToDo:
