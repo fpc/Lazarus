@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, Unit1, SimpleFrm, anchordockpkg
+  Forms, Unit1, SimpleFrm, AnchorDocking, anchordockpkg
   { you can add units after this };
 
 {$R *.res}
@@ -15,7 +15,7 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TMainIDE, MainIDE);
-  Application.CreateForm(TSimpleForm, SimpleForm);
+  DockMaster.MakeDockable(MainIDE);
   Application.Run;
 end.
 

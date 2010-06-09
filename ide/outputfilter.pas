@@ -734,6 +734,8 @@ var i, j, FilenameEndPos: integer;
   end;
   
   function CheckForUrgentMessages(p: integer): boolean;
+  const
+    UnableToOpen = 'Fatal: Unable to open file ';
   var
     NewLine: String;
     LastFile: string;
@@ -770,7 +772,10 @@ var i, j, FilenameEndPos: integer;
       if fLastErrorType in [etPanic,etFatal] then begin
         // fatal and panic errors are not very informative
         // -> prepend current file
-        if (fCompilingHistory<>nil) and (fCompilingHistory.Count>0) then begin
+        if CompStr(UnableToOpen, NewLine, 1) then
+          CurrentMessageParts.Values['Filename']:=
+            TrimFilename(SetDirSeparators(Copy(NewLine,Length(UnableToOpen)+1,Length(NewLine))))
+        else if (fCompilingHistory<>nil) and (fCompilingHistory.Count>0) then begin
           LastFile:=fCompilingHistory[fCompilingHistory.Count-1];
           if not FilenameIsAbsolute(LastFile) then
             FullFilename:=TrimFilename(fCurrentDirectory+LastFile)
