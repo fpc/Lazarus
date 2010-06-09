@@ -1494,21 +1494,12 @@ begin
 end;
 
 procedure TEnvironmentOptions.CreateWindowLayout(const TheFormID: string);
-var
-  NewLayout: TSimpleWindowLayout;
 begin
   if TheFormID='' then
     RaiseException('TEnvironmentOptions.CreateWindowLayout TheFormID empty');
   if IDEWindowLayoutList.ItemByFormID(TheFormID)<>nil then
     RaiseException('TEnvironmentOptions.CreateWindowLayout TheFormID exists');
-  NewLayout:=TSimpleWindowLayout.Create;
-  with NewLayout do begin
-    FormID:=TheFormID;
-    WindowPlacementsAllowed:=[iwpRestoreWindowGeometry,iwpDefault,
-       iwpCustomPosition,iwpUseWindowManagerSetting];
-    DefaultWindowPlacement:=iwpRestoreWindowGeometry;
-  end;
-  IDEWindowLayoutList.Add(NewLayout);
+  IDEWindowLayoutList.Add(TSimpleWindowLayout.Create(TheFormID));
 end;
 
 function TEnvironmentOptions.IsDebuggerClassDefined: boolean;

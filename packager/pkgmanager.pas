@@ -303,7 +303,7 @@ type
                    Flags: TPkgUninstallFlags; ShowAbort: boolean): TModalResult;
     procedure DoTranslatePackage(APackage: TLazPackage);
     function DoOpenPackageSource(APackage: TLazPackage): TModalResult;
-    function DoViewPackageToDos(APackage: TLazPackage): TModalResult;
+    procedure DoViewPackageToDos(APackage: TLazPackage);
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags
                                           ): TModalResult; override;
     function DoSaveAutoInstallConfig: TModalResult; override;
@@ -924,7 +924,8 @@ end;
 function TPkgManager.OnPackageEditorViewPkgToDos(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
-  Result:=DoViewPackageToDos(APackage);
+  Result:=mrOk;
+  DoViewPackageToDos(APackage);
 end;
 
 procedure TPkgManager.PackageGraphBeginUpdate(Sender: TObject);
@@ -3897,19 +3898,15 @@ begin
   Result:=MainIDE.DoOpenEditorFile(Filename,-1,-1,[ofRegularFile]);
 end;
 
-function TPkgManager.DoViewPackageToDos(APackage: TLazPackage): TModalResult;
+procedure TPkgManager.DoViewPackageToDos(APackage: TLazPackage);
 begin
-  Result:=mrOk;
-  if not Assigned(frmToDo) then begin
-    frmToDo:=TfrmToDo.Create(LazarusIDE.OwningComponent);
-  end;
+  CreateTodoWindow;
   if APackage.GetSrcFilename<>'' then
-    frmToDo.MainSourceFilename:=APackage.GetSrcFilename
+    IDETodoWindow.MainSourceFilename:=APackage.GetSrcFilename
   else
-    frmToDo.MainSourceFilename:='';
+    IDETodoWindow.MainSourceFilename:='';
 
-  frmToDo.ShowOnTop;
-  Result:=mrOk;
+  IDEWindowCreators.ShowForm(IDETodoWindow,true);
 end;
 
 function TPkgManager.DoCompileAutoInstallPackages(

@@ -78,6 +78,7 @@ Const
   cDoneFlag = '#done';
   cAltTodoFLag = 'todo';
   cAltDoneFLag = 'done';
+  ToDoWindowName = 'IDETodoWindow';
 
 type
   TOnOpenFile = procedure(Sender: TObject; const Filename: string;
@@ -132,9 +133,9 @@ type
     property Items[Index: integer]: TTodoItem read GetItems; default;
   end;
 
-  { TfrmTodo }
+  { TIDETodoWindow }
 
-  TfrmTodo = class(TForm)
+  TIDETodoWindow = class(TForm)
     acGoto: TAction;
     acRefresh: TAction;
     acExport: TAction;
@@ -180,8 +181,9 @@ type
   end;
 
 var
-  frmTodo: TfrmTodo;
+  IDETodoWindow: TIDETodoWindow;
 
+procedure CreateTodoWindow;
 function IsToDoComment(const Src: string;
                        CommentStartPos, CommentEndPos: integer): boolean;
 function GetToDoComment(const Src: string;
@@ -202,6 +204,12 @@ function CompareAnsiStringWithTLScannedFile(Filename, ScannedFile: Pointer): int
 begin
   Result:=CompareFilenames(AnsiString(Filename),
                            TTLScannedFile(ScannedFile).Filename);
+end;
+
+procedure CreateTodoWindow;
+begin
+  if IDETodoWindow=nil then
+    IDETodoWindow:=TIDETodoWindow.Create(LazarusIDE.OwningComponent);
 end;
 
 function IsToDoComment(const Src: string;
@@ -270,47 +278,48 @@ begin
   Result:=true;
 end;
 
-{ TfrmTodo }
+{ TIDETodoWindow }
 
-constructor TfrmTodo.Create(AOwner: TComponent);
+constructor TIDETodoWindow.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  if Name<>ToDoWindowName then RaiseGDBException('');
   ToolBar.Images := IDEImages.Images_16;
   acGoto.ImageIndex := IDEImages.LoadImage(16, 'menu_goto_line');
   acRefresh.ImageIndex := IDEImages.LoadImage(16, 'laz_refresh');
   acExport.ImageIndex := IDEImages.LoadImage(16, 'menu_saveas');
 end;
 
-destructor TfrmTodo.Destroy;
+destructor TIDETodoWindow.Destroy;
 begin
   fScannedFiles.FreeAndClear;
   FreeAndNil(fScannedFiles);
   inherited Destroy;
 end;
 
-procedure TfrmTodo.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TIDETodoWindow.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key=VK_ESCAPE then
     ModalResult:=mrCancel;
 end;
 
-procedure TfrmTodo.lvTodoClick(Sender: TObject);
+procedure TIDETodoWindow.lvTodoClick(Sender: TObject);
 begin
   acGoto.Execute;
 end;
 
-procedure TfrmTodo.SaveDialog1Show(Sender: TObject);
+procedure TIDETodoWindow.SaveDialog1Show(Sender: TObject);
 begin
  SaveDialog1.InitialDir:=GetCurrentDirUTF8;
 end;
 
-procedure TfrmTodo.ToolButton1Click(Sender: TObject);
+procedure TIDETodoWindow.ToolButton1Click(Sender: TObject);
 begin
 
 end;
 
 //Initialise the todo project and find them
-procedure TfrmTodo.SetMainSourceFilename(const AValue: String);
+procedure TIDETodoWindow.SetMainSourceFilename(const AValue: String);
 begin
   if fMainSourceFilename=AValue then exit;
   fMainSourceFilename:=AValue;
@@ -318,7 +327,7 @@ begin
   acRefresh.Execute;
 end;
 
-function TfrmTodo.CreateToDoItem(aTLFile: TTLScannedFile;
+function TIDETodoWindow.CreateToDoItem(aTLFile: TTLScannedFile;
   const aFileName: string; const SComment, EComment: string;
   const TokenString: string; LineNumber: Integer): TTodoItem;
 var
@@ -461,7 +470,7 @@ begin
 end;
 
 
-procedure TfrmTodo.FormCreate(Sender: TObject);
+procedure TIDETodoWindow.FormCreate(Sender: TObject);
 begin
   fBuild := False;
   fScannedFiles := TAvgLvlTree.Create(@CompareTLScannedFiles);
@@ -498,7 +507,7 @@ begin
   end;
 end;
 
-procedure TfrmTodo.acGotoExecute(Sender: TObject);
+procedure TIDETodoWindow.acGotoExecute(Sender: TObject);
 var
   CurFilename: String;
   aTodoItem: TTodoItem;
@@ -564,7 +573,7 @@ begin
   end;
 end;
 
-procedure TfrmTodo.acExportExecute(Sender: TObject);
+procedure TIDETodoWindow.acExportExecute(Sender: TObject);
 
 var   CommaList     : TStringList;
       s,t           : string;
@@ -602,7 +611,7 @@ begin
   end;
 end;
 
-procedure TfrmTodo.acRefreshExecute(Sender: TObject);
+procedure TIDETodoWindow.acRefreshExecute(Sender: TObject);
 var
   i: integer;
   St : String;
@@ -711,7 +720,7 @@ begin
   end;
 end;
 
-procedure TfrmTodo.AddListItem(aTodoItem: TTodoItem);
+procedure TIDETodoWindow.AddListItem(aTodoItem: TTodoItem);
 var
    aListItem: TListItem;
 begin
@@ -733,7 +742,7 @@ begin
   end;
 end;
 
-procedure TfrmTodo.ScanFile(aFileName: string);
+procedure TIDETodoWindow.ScanFile(aFileName: string);
 var
   ExpandedFilename: String;
   AVLNode: TAvgLvlTreeNode;

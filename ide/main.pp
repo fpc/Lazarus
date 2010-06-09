@@ -805,6 +805,7 @@ type
     procedure DoShowCodeBrowser(Show: boolean);
     procedure DoShowRestrictionBrowser(Show: boolean; const RestrictedName: String = '');
     procedure DoShowComponentList(Show: boolean);
+    procedure DoShowToDoList(Show: boolean);
     procedure CreateIDEWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
     function CreateNewUniqueFilename(const Prefix, Ext: string;
@@ -845,7 +846,6 @@ type
     function DoCreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
     function DoSaveProjectIfChanged: TModalResult;
     function DoSaveProjectToTestDirectory(Flags: TSaveFlags): TModalResult;
-    function DoShowToDoList: TModalResult;
     function DoTestCompilerSettings(
                             TheCompilerOptions: TCompilerOptions): TModalResult;
     function CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
@@ -2221,6 +2221,8 @@ begin
     @CreateIDEWindow,'250','250','','');
   IDEWindowCreators.Add(ComponentListFormName,
     @CreateIDEWindow,'250','250','','');
+  IDEWindowCreators.Add(ToDoWindowName,
+    @CreateIDEWindow,'250','250','','');
 end;
 
 procedure TMainIDE.RestoreIDEWindows;
@@ -2596,7 +2598,7 @@ end;
 
 procedure TMainIDE.mnuViewTodoListClicked(Sender: TObject);
 begin
-  DoShowToDoList;
+  DoShowToDoList(true);
 end;
 
 procedure TMainIDE.SetDesigning(AComponent: TComponent; Value: Boolean);
@@ -9061,6 +9063,11 @@ begin
   begin
     DoShowComponentList(false);
     AForm:=ComponentListForm;
+  end
+  else if ItIs(ToDoWindowName) then
+  begin
+    DoShowToDoList(false);
+    AForm:=IDETodoWindow;
   end;
   if (AForm<>nil) and DoDisableAutoSizing then
     AForm.DisableAutoSizing;
@@ -10519,19 +10526,17 @@ begin
   Result:=DoSaveProject([sfSaveToTestDir,sfCheckAmbiguousFiles]+Flags);
 end;
 
-function TMainIDE.DoShowToDoList: TModalResult;
+procedure TMainIDE.DoShowToDoList(Show: boolean);
 begin
-  if not Assigned(frmToDo) then begin
-    frmToDo:=TfrmToDo.Create(OwningComponent);
-  end;
+  CreateTodoWindow;
 
   if Project1.MainUnitInfo<>nil then
-    frmToDo.MainSourceFilename:=Project1.MainUnitInfo.Filename
+    IDETodoWindow.MainSourceFilename:=Project1.MainUnitInfo.Filename
   else
-    frmToDo.MainSourceFilename:='';
+    IDETodoWindow.MainSourceFilename:='';
 
-  frmToDo.ShowOnTop;
-  Result:=mrOk;
+  if Show then
+    IDEWindowCreators.ShowForm(IDETodoWindow,true);
 end;
 
 function TMainIDE.DoTestCompilerSettings(

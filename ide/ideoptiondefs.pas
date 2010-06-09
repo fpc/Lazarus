@@ -202,7 +202,7 @@ type
     procedure SetHeight(const AValue: integer);
     procedure SetWindowPlacement(const AValue: TIDEWindowPlacement);
   public
-    constructor Create;
+    constructor Create(AFormID: string);
     destructor Destroy; override;
     procedure Clear;
     procedure GetCurrentPosition;
@@ -239,15 +239,15 @@ type
 
   { TSimpleWindowLayoutList }
 
-  TSimpleWindowLayoutList = class(TList)
+  TSimpleWindowLayoutList = class(TFPList)
   private
     function GetItems(Index: Integer): TSimpleWindowLayout;
     procedure SetItems(Index: Integer; const AValue: TSimpleWindowLayout);
   public
-    procedure Clear; override;
+    procedure Clear;
     procedure Delete(Index: Integer);
     procedure ApplyAndShow(Sender: TObject; AForm: TCustomForm;
-                              BringToFront: boolean);
+                           BringToFront: boolean);
     procedure StoreWindowPositions;
     procedure Assign(SrcList: TSimpleWindowLayoutList);
     function IndexOf(const FormID: string): integer;
@@ -385,10 +385,11 @@ end;
 
 { TSimpleWindowLayout }
 
-constructor TSimpleWindowLayout.Create;
+constructor TSimpleWindowLayout.Create(AFormID: string);
 begin
   inherited Create;
-  fDefaultWindowPlacement:=iwpDefault;
+  FormID:=AFormID;
+  fDefaultWindowPlacement:=iwpRestoreWindowGeometry;
   Clear;
   fWindowPlacementsAllowed:=
     [Low(TIDEWindowPlacement)..High(TIDEWindowPlacement)];
@@ -642,7 +643,6 @@ procedure TSimpleWindowLayoutList.Clear;
 var i: integer;
 begin
   for i:=0 to Count-1 do Items[i].Free;
-  inherited Clear;
 end;
 
 procedure TSimpleWindowLayoutList.Delete(Index: Integer);
@@ -895,7 +895,7 @@ begin
   Clear;
   if SrcList=nil then exit;
   for i:=0 to SrcList.Count-1 do begin
-    NewLayout:=TSimpleWindowLayout.Create;
+    NewLayout:=TSimpleWindowLayout.Create(SrcList[i].FormID);
     NewLayout.Assign(SrcList[i]);
     Add(NewLayout);
   end;

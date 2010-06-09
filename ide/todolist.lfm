@@ -1,27 +1,27 @@
-object frmTodo: TfrmTodo
+object IDETodoWindow: TIDETodoWindow
   Left = 462
   Height = 300
   Top = 419
   Width = 643
   ActiveControl = lvTodo
-  Caption = 'frmTodo'
+  Caption = 'IDETodoWindow'
   ClientHeight = 300
   ClientWidth = 643
   KeyPreview = True
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object StatusBar: TStatusBar
     Left = 0
-    Height = 21
-    Top = 279
+    Height = 22
+    Top = 278
     Width = 643
     Panels = <>
   end
   object lvTodo: TListView
     Left = 0
-    Height = 231
+    Height = 230
     Top = 48
     Width = 643
     Align = alClient
@@ -56,6 +56,7 @@ object frmTodo: TfrmTodo
         Caption = 'Caption'
         Width = 315
       end>
+    ItemIndex = -1
     RowSelect = True
     ScrollBars = ssAutoBoth
     TabOrder = 0
@@ -97,13 +98,13 @@ object frmTodo: TfrmTodo
       AutoSize = True
     end
     object tbGoto: TToolButton
-      Left = 48
+      Left = 58
       Top = 2
       Action = acGoto
       AutoSize = True
     end
     object tbExport: TToolButton
-      Left = 95
+      Left = 97
       Top = 2
       Action = acExport
       AutoSize = True
