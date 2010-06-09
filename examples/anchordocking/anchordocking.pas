@@ -358,6 +358,7 @@ type
     // save/restore layouts
     procedure SaveMainLayoutToTree(LayoutTree: TAnchorDockLayoutTree);
     procedure SaveLayoutToConfig(Config: TConfigStorage);
+    function ConfigIsEmpty(Config: TConfigStorage): boolean;
     function LoadLayoutFromConfig(Config: TConfigStorage): boolean;
 
     // simplification/garbage collection
@@ -496,7 +497,8 @@ begin
     AControl:=Controls[i];
     if (AControl.HostDockSite is TAnchorDockHostSite)
     and GetParentForm(AControl).IsVisible
-    and (Tree.Root.FindChildNode(AControl.Name,true)=nil) then begin
+    and (Tree.Root.FindChildNode(AControl.Name,true)=nil)
+    and (Application.MainForm<>AControl) then begin
       // AControl is currently on a visible site, but not in the Tree
       // => close site
       debugln(['TAnchorDockMaster.CloseUnneededControls Control=',DbgSName(AControl),' Site=',AControl.HostDockSite.Name]);
@@ -1101,6 +1103,11 @@ begin
   end;
 end;
 
+function TAnchorDockMaster.ConfigIsEmpty(Config: TConfigStorage): boolean;
+begin
+  Result:=Config.GetValue('MainConfig/Nodes/ChildCount',0)=0;
+end;
+
 function TAnchorDockMaster.LoadLayoutFromConfig(Config: TConfigStorage): Boolean;
 var
   Tree: TAnchorDockLayoutTree;
@@ -1116,6 +1123,7 @@ begin
     Config.AppendBasePath('MainConfig/');
     Tree.LoadFromConfig(Config);
     Config.UndoAppendBasePath;
+
     WriteDebugLayout('TAnchorDockMaster.LoadLayoutFromConfig ',Tree.Root);
     DebugWriteChildAnchors(Tree.Root);
 
@@ -2609,6 +2617,9 @@ begin
     if Parent is TAnchorDockPage then
       TAnchorDockPage(Parent).UpdateDockCaption;
   end;
+
+  // do not show close button for mainform
+  Header.CloseButton.Visible:=not IsParentOf(Application.MainForm);
 end;
 
 procedure TAnchorDockHostSite.GetSiteInfo(Client: TControl;
@@ -2804,6 +2815,8 @@ var
   Side: TAnchorKind;
   SideCaptions: array[TAnchorKind] of string;
   Item: TMenuItem;
+  ContainsMainForm: boolean;
+  s: String;
 begin
   ParentSite:=TAnchorDockHostSite(Parent);
   SideCaptions[akLeft]:=adrsLeft;
@@ -2839,7 +2852,12 @@ begin
   end;
 
   // close
-  AddPopupMenuItem('CloseMenuItem',adrsClose,@CloseButtonClick);
+  ContainsMainForm:=ParentSite.IsParentOf(Application.MainForm);
+  if ContainsMainForm then
+    s:=Format(adrsQuit, [Application.Title])
+  else
+    s:=adrsClose;
+  AddRemovePopupMenuItem(CloseButton.Visible,'CloseMenuItem',s,@CloseButtonClick);
 end;
 
 function TAnchorDockHeader.AddPopupMenuItem(AName, ACaption: string;

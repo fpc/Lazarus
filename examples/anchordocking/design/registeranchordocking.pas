@@ -144,7 +144,8 @@ begin
     debugln(['TIDEAnchorDockMaster.LoadDefaultLayout ',Filename]);
     Config:=GetIDEConfigStorage(Filename,true);
     try
-      DockMaster.LoadLayoutFromConfig(Config);
+      if not DockMaster.ConfigIsEmpty(Config) then
+        DockMaster.LoadLayoutFromConfig(Config);
     finally
       Config.Free;
     end;

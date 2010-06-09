@@ -35,6 +35,7 @@ interface
 
 resourcestring
   adrsClose = 'Close';
+  adrsQuit = 'Quit %s';
   adrsUndock = 'Undock';
   adrsHeaderPosition = 'Header position';
   adrsEnlargeSide = 'Enlarge %s side';
