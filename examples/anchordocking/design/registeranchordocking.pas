@@ -121,12 +121,14 @@ end;
 
 procedure TIDEAnchorDockMaster.MakeIDEWindowDockSite(AForm: TCustomForm);
 begin
-  // ToDo DockMaster.MakeDockable(AForm,false);
+  if AForm<>Application.MainForm then
+    DockMaster.MakeDockable(AForm,false);
 end;
 
 procedure TIDEAnchorDockMaster.MakeIDEWindowDockable(AControl: TWinControl);
 begin
-  DockMaster.MakeDockable(AControl,false);
+  if AControl<>Application.MainForm then
+    DockMaster.MakeDockable(AControl,false);
 end;
 
 function TIDEAnchorDockMaster.GetDefaultLayoutFilename: string;
@@ -232,7 +234,10 @@ begin
     end;
 
   finally
-    DockMaster.MakeDockable(AForm,true,false);
+    if AForm=Application.MainForm then
+      AForm.Show
+    else
+      DockMaster.MakeDockable(AForm,true,false);
     AForm.EnableAlign;
 
     if BringToFront then begin
