@@ -1939,18 +1939,34 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
             and (Parent.Parent=nil))
       then begin
         // shrink this site and the parent (which is a custom dock site)
+        NewParentBounds:=Parent.BoundsRect;
         case Align of
         alTop:
           begin
-            NewParentBounds:=Parent.BoundsRect;
-            // ToDo Height:=OnlySiteLeft.Height;
-
-            Parent.BoundsRect:=NewParentBounds;
+            inc(NewParentBounds.Top,Height-OnlySiteLeft.Height);
+            Width:=Parent.ClientWidth;
+            Height:=OnlySiteLeft.Height;
           end;
-        alBottom: ;
-        alLeft: ;
-        alRight: ;
+        alBottom:
+          begin
+            dec(NewParentBounds.Bottom,Height-OnlySiteLeft.Height);
+            Width:=Parent.ClientWidth;
+            Height:=OnlySiteLeft.Height;
+          end;
+        alLeft:
+          begin
+            inc(NewParentBounds.Left,Width-OnlySiteLeft.Width);
+            Width:=OnlySiteLeft.Width;
+            Height:=Parent.ClientHeight;
+          end;
+        alRight:
+          begin
+            dec(NewParentBounds.Right,Width-OnlySiteLeft.Width);
+            Width:=OnlySiteLeft.Width;
+            Height:=Parent.ClientHeight;
+          end;
         end;
+        Parent.BoundsRect:=NewParentBounds;
       end;
 
       // change type
