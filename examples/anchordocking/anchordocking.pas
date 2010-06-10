@@ -1915,10 +1915,11 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
     p: TPoint;
     i: Integer;
     Sibling: TControl;
+    NewParentBounds: TRect;
   begin
     BeginUpdateLayout;
     try
-      // remove splitters
+      // remove splitter
       for i:=ControlCount-1 downto 0 do begin
         Sibling:=Controls[i];
         if Sibling is TAnchorDockSplitter then
@@ -1927,12 +1928,29 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
           for a:=low(TAnchorKind) to high(TAnchorKind) do
             Sibling.AnchorSide[a].Control:=nil;
       end;
-      if Parent=nil then begin
+      if (Parent=nil) then begin
         // shrink this site
         NewBounds:=OnlySiteLeft.BoundsRect;
         p:=ClientOrigin;
         OffsetRect(NewBounds,p.x,p.y);
         BoundsRect:=NewBounds;
+      end else  if ((not (Parent is TAnchorDockHostSite))
+            and (Parent.DockManager is TAnchorDockManager)
+            and (Parent.Parent=nil))
+      then begin
+        // shrink this site and the parent (which is a custom dock site)
+        case Align of
+        alTop:
+          begin
+            NewParentBounds:=Parent.BoundsRect;
+            // ToDo Height:=OnlySiteLeft.Height;
+
+            Parent.BoundsRect:=NewParentBounds;
+          end;
+        alBottom: ;
+        alLeft: ;
+        alRight: ;
+        end;
       end;
 
       // change type
@@ -2137,7 +2155,7 @@ begin
     Caption:=Site.Caption;
 
     Site.BeginUpdateLayout;
-    // move controls
+    // move controls from Site to Self
     i:=Site.ControlCount-1;
     while i>=0 do begin
       Child:=Site.Controls[i];
