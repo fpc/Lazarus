@@ -873,7 +873,6 @@ begin
       Clear;
       For I:=0 to Loc.Count-1 do
         begin
-        Writeln('Adding ',Loc[i].Name);
         J:=Add(Loc[i].Name);
         Objects[J]:=Loc[i];
         end;
