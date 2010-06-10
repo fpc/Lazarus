@@ -63,6 +63,8 @@ resourcestring
     +'splitter: Node=%s%s%s Anchors[%s]=%s%s%s';
   adrsNoChildrenAllowedForNodeType = 'No children allowed for Node=%s%s%s '
     +'Type=%s';
+  adrsCustomDockSiteCanHaveOnlyOneSite = 'Custom dock site %s%s%s can have '
+    +'only one site.';
   adrsEmptyName = 'Empty name: ';
   adrsDuplicateName = 'Duplicate name: ';
 

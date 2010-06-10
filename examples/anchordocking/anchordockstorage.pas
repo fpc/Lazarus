@@ -47,7 +47,8 @@ type
     adltnControl,
     adltnSplitterHorizontal,
     adltnSplitterVertical,
-    adltnPages
+    adltnPages,
+    adltnCustomSite
     );
   TADLTreeNodeTypes = set of TADLTreeNodeType;
 
@@ -199,7 +200,8 @@ const
     'Control',
     'SplitterHorizontal',
     'SplitterVertical',
-    'Pages'
+    'Pages',
+    'CustomSite'
     );
   ADLWindowStateNames: array[TWindowState] of string = (
     'Normal',
@@ -964,7 +966,7 @@ var
 begin
   Name:=AControl.Name;
   BoundsRect:=AControl.BoundsRect;
-  if (AControl.Parent<>nil) and (AControl is TCustomForm) then begin
+  if (AControl.Parent=nil) and (AControl is TCustomForm) then begin
     WindowState:=TCustomForm(AControl).WindowState;
     Monitor:=TCustomForm(AControl).Monitor.MonitorNum;
   end else
@@ -1114,12 +1116,16 @@ begin
             dbgs(Side), '"', Anchors[Side], '"']));
     end;
   end;
-  // only the root node, pages and layouts can have children
-  if (Parent<>nil) and (Count>0) and (not (NodeType in [adltnLayout,adltnPages]))
+  // only the root node, pages, layouts and customsite can have children
+  if (Parent<>nil) and (Count>0)
+  and (not (NodeType in [adltnLayout,adltnPages,adltnCustomSite]))
   then
     raise EAnchorDockLayoutError.Create(
       Format(adrsNoChildrenAllowedForNodeType, ['"', Name, '"',
         ADLTreeNodeTypeNames[NodeType]]));
+  if (NodeType=adltnCustomSite) and (Count>1) then
+    raise EAnchorDockLayoutError.Create(Format(
+      adrsCustomDockSiteCanHaveOnlyOneSite, ['"', Name, '"']));
 
   // check grandchild
   for i:=0 to Count-1 do begin
@@ -1153,6 +1159,8 @@ begin
       // delete all children
       while ChildNode.Count>0 do
         ChildNode[0].Free;
+    end else if ChildNode.NodeType=adltnCustomSite then begin
+      // custom dock site
     end else if ChildNode.Count=0 then begin
       // inner node without child => delete
       DeleteNode(ChildNode);

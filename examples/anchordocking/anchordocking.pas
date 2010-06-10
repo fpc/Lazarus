@@ -299,6 +299,7 @@ type
     property DockSite: TAnchorDockHostSite read FDockSite;
     property Site: TWinControl read FSite;
     property DockableSites: TAnchors read FDockableSites write FDockableSites;
+    function GetChildSite: TAnchorDockHostSite;
   end;
 
   { TAnchorDockMaster }
@@ -1092,19 +1093,37 @@ var
   Site: TAnchorDockHostSite;
   SavedSites: TFPList;
   LayoutNode: TAnchorDockLayoutTreeNode;
+  AForm: TCustomForm;
 begin
   SavedSites:=TFPList.Create;
   try
     for i:=0 to ControlCount-1 do begin
       AControl:=Controls[i];
       if not AControl.IsVisible then continue;
-      Site:=GetParentForm(AControl) as TAnchorDockHostSite;
-      if SavedSites.IndexOf(Site)>=0 then continue;
-      SavedSites.Add(Site);
-      debugln(['TAnchorDockMaster.SaveMainLayoutToTree Site=',DbgSName(Site)]);
-      DebugWriteChildAnchors(Site);
-      LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
-      Site.SaveLayout(LayoutTree,LayoutNode);
+      AForm:=GetParentForm(AControl);
+      if AForm=nil then continue;
+      if SavedSites.IndexOf(AForm)>=0 then continue;
+      SavedSites.Add(AForm);
+      debugln(['TAnchorDockMaster.SaveMainLayoutToTree AForm=',DbgSName(AForm)]);
+      DebugWriteChildAnchors(AForm);
+      if (AForm is TAnchorDockHostSite) then begin
+        Site:=TAnchorDockHostSite(AForm);
+        LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
+        Site.SaveLayout(LayoutTree,LayoutNode);
+      end else if (AForm.DockManager is TAnchorDockManager)
+      and (AForm.Parent=nil) then begin
+        // custom dock site
+        LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
+        LayoutNode.NodeType:=adltnCustomSite;
+        LayoutNode.Assign(AForm);
+        // can have one normal dock site
+        Site:=TAnchorDockManager(AForm.DockManager).GetChildSite;
+        if Site<>nil then begin
+          LayoutNode:=LayoutTree.NewNode(LayoutNode);
+          Site.SaveLayout(LayoutTree,LayoutNode);
+        end;
+      end else
+        raise EAnchorDockLayoutError.Create('invalid root control class '+DbgSName(AControl));
     end;
   finally
     SavedSites.Free;
@@ -3407,6 +3426,18 @@ begin
   end;
   //debugln(['TAnchorDockManager.GetDockEdge ADockObject.DropAlign=',dbgs(ADockObject.DropAlign),' ',DbgSName(ADockObject.DropOnControl)]);
   Result:=true;
+end;
+
+function TAnchorDockManager.GetChildSite: TAnchorDockHostSite;
+var
+  i: Integer;
+begin
+  for i:=0 to Site.ControlCount-1 do
+    if Site.Controls[i] is TAnchorDockHostSite then begin
+      Result:=TAnchorDockHostSite(Site.Controls[i]);
+      exit;
+    end;
+  Result:=nil;
 end;
 
 { TAnchorDockSplitter }
