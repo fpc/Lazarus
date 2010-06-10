@@ -6880,15 +6880,11 @@ End;
 
 function TSourceNotebook.FindPageWithEditor(
   ASourceEditor: TSourceEditor):integer;
-var i:integer;
 begin
-  Result:=PageCount-1;
-  while (Result>=0) do begin
-    with NotebookPage[Result] do
-      for I := 0 to ControlCount-1 do
-        if Controls[I]=ASourceEditor.EditorComponent then exit;
-    dec(Result);
-  end;
+  if ASourceEditor.EditorComponent.Parent is TPage then
+    Result:=TPage(ASourceEditor.EditorComponent.Parent).PageIndex
+  else
+    Result:=-1;
 end;
 
 function TSourceNotebook.FindSourceEditorWithEditorComponent(
