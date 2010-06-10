@@ -328,23 +328,23 @@ class procedure TQtWSCustomNotebook.MovePage(const ANotebook: TCustomNotebook;
   const AChild: TCustomPage; const NewIndex: integer);
 var
   TabWidget: TQtTabWidget;
-  AIndex: Integer;
+  Index: Integer;
   Page: TQtPage;
 begin
   Page := TQtPage(AChild.Handle);
   TabWidget := TQtTabWidget(ANotebook.Handle);
-  AIndex := ANoteBook.IndexOf(AChild);
+  Index := AChild.PageIndex;
+  if Index < 0 then
+    Index := ANoteBook.IndexOf(AChild);
 
   TabWidget.BeginUpdate;
   TabWidget.setUpdatesEnabled(false);
-  TabWidget.removeTab(AIndex);
+  TabWidget.removeTab(Index);
   TabWidget.insertTab(NewIndex, Page.Widget, Page.getIcon, Page.getText);
   TabWidget.setUpdatesEnabled(true);
-  TabWidget.EndUpdate;
-
   if TabWidget.getCurrentIndex <> NewIndex then
     TabWidget.setCurrentWidget(Page);
-
+  TabWidget.EndUpdate;
 end;
 
 class procedure TQtWSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
@@ -435,8 +435,13 @@ end;
 class procedure TQtWSCustomNotebook.SetTabCaption(
   const ANotebook: TCustomNotebook; const AChild: TCustomPage;
   const AText: string);
+var
+  Index: Integer;
 begin
-  TQtTabWidget(ANotebook.Handle).setTabText(ANoteBook.IndexOf(AChild), GetUtf8String(AText));
+  Index := AChild.PageIndex;
+  if Index < 0 then
+    Index := ANotebook.IndexOf(AChild);
+  TQtTabWidget(ANotebook.Handle).setTabText(Index, GetUtf8String(AText));
 end;
 
 class procedure TQtWSCustomNotebook.SetTabPosition(
