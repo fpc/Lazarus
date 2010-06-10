@@ -7877,6 +7877,7 @@ begin
     MainIDEBar.itmFileCloseAll.Enabled:=True;
     NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.EditorInfo[0].SyntaxHighlighter;
     NewUnitInfo.GetClosedOrNewEditorInfo.EditorComponent := NewSrcEdit;
+    NewSrcEdit.EditorComponent.CaretXY := Point(1,1);
 
     // create component
     AncestorType:=NewFileDescriptor.ResourceClass;
