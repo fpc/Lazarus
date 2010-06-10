@@ -3325,12 +3325,26 @@ begin
 end;
 
 procedure TAnchorDockManager.RemoveControl(Control: TControl);
+var
+  NewBounds: TRect;
 begin
   if DockSite<>nil then
     debugln(['TAnchorDockManager.RemoveControl DockSite="',DockSite.Caption,'" Control=',DbgSName(Control)])
   else begin
-    debugln(['TAnchorDockManager.RemoveControl Site="',DbgSName(Site),'" Control=',DbgSName(Control)])
-
+    debugln(['TAnchorDockManager.RemoveControl Site="',DbgSName(Site),'" Control=',DbgSName(Control)]);
+    if Control is TAnchorDockHostSite then begin
+      // shrink Site
+      NewBounds:=Site.BoundsRect;
+      case Control.Align of
+      alTop: inc(NewBounds.Top,Control.Height);
+      alBottom: dec(NewBounds.Bottom,Control.Height);
+      alLeft: inc(NewBounds.Left,Control.Width);
+      alRight: dec(NewBounds.Right,Control.Width);
+      end;
+      Site.BoundsRect:=NewBounds;
+      // Site can dock a control again
+      DragManager.RegisterDockSite(Site,true);
+    end;
   end;
 end;
 
