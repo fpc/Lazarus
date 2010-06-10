@@ -7604,6 +7604,7 @@ begin
     DestRect := DockRect;
     DisableAlign;
     try
+      debugln(['TWinControl.DoDockClientMsg ',DbgSName(Self),' Control=',DbgSName(DragDockObject.Control),' DestRect=',dbgs(DestRect)]);
       DragDockObject.Control.Dock(Self, DestRect);
       if FUseDockManager and (DockManager <> nil) then
         DockManager.InsertControl(DragDockObject);

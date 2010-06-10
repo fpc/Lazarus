@@ -288,6 +288,7 @@ type
       override;
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
       DropCtl: TControl); override; overload;
+    procedure InsertControl(ADockObject: TDragDockObject); override; overload;
     procedure LoadFromStream(Stream: TStream); override;
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
       var DockRect: TRect); override; overload;
@@ -2274,6 +2275,12 @@ end;
 procedure TAnchorDockHostSite.DoDock(NewDockSite: TWinControl; var ARect: TRect
   );
 begin
+  if (not (NewDockSite is TAnchorDockHostSite))
+  and (NewDockSite.Parent<>nil)
+  and (NewDockSite.DockManager is TAnchorDockManager) then begin
+    // resize parent
+
+  end;
   inherited DoDock(NewDockSite, ARect);
   DockMaster.SimplifyPendingLayouts;
 end;
@@ -3149,10 +3156,36 @@ end;
 procedure TAnchorDockManager.InsertControl(Control: TControl; InsertAt: TAlign;
   DropCtl: TControl);
 begin
-  if DockSite<>nil then
-    debugln(['TAnchorDockManager.InsertControl DockSite="',DockSite.Caption,'" Control=',DbgSName(Control),' InsertAt=',dbgs(InsertAt),' DropCtl=',DbgSName(DropCtl)])
-  else
-    debugln(['TAnchorDockManager.InsertControl DockSite=nil Site="',DbgSName(Site),'" Control=',DbgSName(Control),' InsertAt=',dbgs(InsertAt),' DropCtl=',DbgSName(DropCtl)])
+  if Control=nil then;
+  if InsertAt=alNone then ;
+  if DropCtl=nil then ;
+end;
+
+procedure TAnchorDockManager.InsertControl(ADockObject: TDragDockObject);
+var
+  NewSiteBounds: TRect;
+begin
+  if DockSite<>nil then begin
+    // handled by TAnchorDockHostSite
+    debugln(['TAnchorDockManager.InsertControl DockSite="',DockSite.Caption,'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign)])
+  end else begin
+    debugln(['TAnchorDockManager.InsertControl DockSite=nil Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.Client=',dbgs(ADockObject.Control.ClientRect)]);
+    // align dragged Control
+    ADockObject.Control.Align:=ADockObject.DropAlign;
+    ADockObject.Control.Width:=ADockObject.DockRect.Right-ADockObject.DockRect.Left;
+    ADockObject.Control.Height:=ADockObject.DockRect.Bottom-ADockObject.DockRect.Top;
+
+    // resize Site
+    NewSiteBounds:=Site.BoundsRect;
+    case ADockObject.DropAlign of
+    alLeft: dec(NewSiteBounds.Left,ADockObject.Control.ClientWidth);
+    alRight: dec(NewSiteBounds.Right,ADockObject.Control.ClientWidth);
+    alTop: dec(NewSiteBounds.Top,ADockObject.Control.ClientHeight);
+    alBottom: inc(NewSiteBounds.Bottom,ADockObject.Control.ClientHeight);
+    end;
+    Site.BoundsRect:=NewSiteBounds;
+    debugln(['TAnchorDockManager.InsertControl AFTER Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.Client=',dbgs(ADockObject.Control.ClientRect)]);
+  end;
 end;
 
 procedure TAnchorDockManager.LoadFromStream(Stream: TStream);
@@ -3219,8 +3252,8 @@ end;
 
 procedure TAnchorDockManager.ResetBounds(Force: Boolean);
 begin
-  if DockSite=nil then
-    debugln(['TAnchorDockManager.ResetBounds Site="',Site.Caption,'" Force=',Force,' ',dbgs(Site.ClientRect)]);
+  if Force then ;
+  //debugln(['TAnchorDockManager.ResetBounds Site="',Site.Caption,'" Force=',Force,' ',dbgs(Site.ClientRect)]);
 end;
 
 procedure TAnchorDockManager.SaveToStream(Stream: TStream);
