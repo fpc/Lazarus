@@ -1632,7 +1632,7 @@ begin
         end;
       end;
       Parent.BoundsRect:=NewParentBounds;
-      NewBounds:=BoundsRect;
+      BoundsRect:=NewBounds;
       BoundsIncreased:=true;
     end;
     debugln(['TAnchorDockHostSite.DockAnotherControl AFTER ENLARGE ',Caption]);
@@ -3247,7 +3247,13 @@ var
   Offset: TPoint;
   Inside: Boolean;
 begin
-  Inside:=(DockSite<>nil) and (DropCtl=Site) or (Site.Parent<>nil);
+  Inside:=(DropCtl=Site);
+  if (not Inside) and (Site.Parent<>nil) then begin
+    if (Site.Parent is TAnchorDockHostSite)
+    or (not (Site.Parent.DockManager is TAnchorDockManager))
+    or (Site.Parent.Parent<>nil) then
+      Inside:=true;
+  end;
   case DropAlign of
   alLeft:
     if Inside then
