@@ -187,6 +187,7 @@ begin
   for APlacement := Low(TIDEWindowPlacement) to High(TIDEWindowPlacement) do
   begin
     RadioButton := GetPlacementRadioButtons(APlacement);
+    if RadioButton=nil then continue;
     if APlacement in Layout.WindowPlacementsAllowed then
     begin
       RadioButton.Enabled := True;
