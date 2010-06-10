@@ -1550,6 +1550,7 @@ var
   NewSiblingHeight: Integer;
   NewSize: LongInt;
   BoundsIncreased: Boolean;
+  NewParentBounds: TRect;
 begin
   Result:=false;
   if SiteType<>adhstLayout then
@@ -1573,27 +1574,67 @@ begin
   AddCleanControl(NewSite);
 
   BoundsIncreased:=false;
-  if (not Inside) and (Parent=nil) then begin
-    // expand
-    NewBounds:=BoundsRect;
-    case DockAlign of
-    alLeft:
-      begin
-        dec(NewBounds.Left,NewSite.Width+Splitter.Width);
-        MoveAllControls(NewSite.Width+Splitter.Width,0);
+  if (not Inside) then begin
+    if (Parent=nil) then begin
+      // expand Self
+      NewBounds:=BoundsRect;
+      case DockAlign of
+      alLeft:
+        begin
+          dec(NewBounds.Left,NewSite.Width+Splitter.Width);
+          MoveAllControls(NewSite.Width+Splitter.Width,0);
+        end;
+      alRight:
+        inc(NewBounds.Right,NewSite.Width+Splitter.Width);
+      alTop:
+        begin
+          dec(NewBounds.Top,NewSite.Height+Splitter.Height);
+          MoveAllControls(0,NewSite.Height+Splitter.Height);
+        end;
+      alBottom:
+        inc(NewBounds.Bottom,NewSite.Height+Splitter.Height);
       end;
-    alRight:
-      inc(NewBounds.Right,NewSite.Width+Splitter.Width);
-    alTop:
-      begin
-        dec(NewBounds.Top,NewSite.Height+Splitter.Height);
-        MoveAllControls(0,NewSite.Height+Splitter.Height);
+      BoundsRect:=NewBounds;
+      BoundsIncreased:=true;
+    end else if (Parent.DockManager is TAnchorDockManager)
+    and (Parent.Parent=nil) then begin
+      // Parent is a custom docksite
+      // => expand Self and Parent
+      // expand Parent (the custom docksite)
+      NewParentBounds:=Parent.BoundsRect;
+      NewBounds:=BoundsRect;
+      case DockAlign of
+      alLeft:
+        begin
+          i:=NewSite.Width+Splitter.Width;
+          dec(NewParentBounds.Left,i);
+          dec(NewBounds.Left,i);
+          MoveAllControls(i,0);
+        end;
+      alRight:
+        begin
+          i:=NewSite.Width+Splitter.Width;
+          inc(NewBounds.Right,i);
+          inc(NewParentBounds.Right,i);
+        end;
+      alTop:
+        begin
+          i:=NewSite.Height+Splitter.Height;
+          dec(NewBounds.Top,i);
+          dec(NewParentBounds.Top,i);
+          MoveAllControls(0,i);
+        end;
+      alBottom:
+        begin
+          i:=NewSite.Height+Splitter.Height;
+          inc(NewParentBounds.Bottom,i);
+          inc(NewBounds.Bottom,i);
+        end;
       end;
-    alBottom:
-      inc(NewBounds.Bottom,NewSite.Height+Splitter.Height);
+      Parent.BoundsRect:=NewParentBounds;
+      NewBounds:=BoundsRect;
+      BoundsIncreased:=true;
     end;
-    BoundsRect:=NewBounds;
-    BoundsIncreased:=true;
     debugln(['TAnchorDockHostSite.DockAnotherControl AFTER ENLARGE ',Caption]);
     DebugWriteChildAnchors(Self);
   end;
@@ -2275,12 +2316,6 @@ end;
 procedure TAnchorDockHostSite.DoDock(NewDockSite: TWinControl; var ARect: TRect
   );
 begin
-  if (not (NewDockSite is TAnchorDockHostSite))
-  and (NewDockSite.Parent<>nil)
-  and (NewDockSite.DockManager is TAnchorDockManager) then begin
-    // resize parent
-
-  end;
   inherited DoDock(NewDockSite, ARect);
   DockMaster.SimplifyPendingLayouts;
 end;
@@ -2660,7 +2695,11 @@ var
 begin
   GetWindowRect(Handle, InfluenceRect);
 
-  if Parent=nil then begin
+  if (Parent=nil)
+  or ((not (Parent is TAnchorDockHostSite))
+      and (Parent.DockManager is TAnchorDockManager)
+      and (Parent.Parent=nil))
+  then begin
     // allow docking outside => enlarge margins
     ADockMargin:=DockMaster.DockOutsideMargin;
     InfluenceRect.Left := InfluenceRect.Left-ADockMargin;
@@ -3184,6 +3223,9 @@ begin
     alBottom: inc(NewSiteBounds.Bottom,ADockObject.Control.ClientHeight);
     end;
     Site.BoundsRect:=NewSiteBounds;
+
+    // only allow to dock one control
+    DragManager.RegisterDockSite(Site,false);
     debugln(['TAnchorDockManager.InsertControl AFTER Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.Client=',dbgs(ADockObject.Control.ClientRect)]);
   end;
 end;
@@ -3246,8 +3288,10 @@ procedure TAnchorDockManager.RemoveControl(Control: TControl);
 begin
   if DockSite<>nil then
     debugln(['TAnchorDockManager.RemoveControl DockSite="',DockSite.Caption,'" Control=',DbgSName(Control)])
-  else
+  else begin
     debugln(['TAnchorDockManager.RemoveControl Site="',DbgSName(Site),'" Control=',DbgSName(Control)])
+
+  end;
 end;
 
 procedure TAnchorDockManager.ResetBounds(Force: Boolean);
@@ -3278,8 +3322,11 @@ var
 var
   p: TPoint;
 begin
-  //debugln(['TAnchorDockManager.GetDockEdge ',DbgSName(Site)]);
-  if DockableSites=[] then exit(false);
+  //debugln(['TAnchorDockManager.GetDockEdge ',DbgSName(Site),' ',DbgSName(DockSite),' DockableSites=',dbgs(DockableSites)]);
+  if DockableSites=[] then begin
+    ADockObject.DropAlign:=alNone;
+    exit(false);
+  end;
 
   p:=Site.ScreenToClient(ADockObject.DragPos);
   if (DockSite<>nil) and PtInRect(DockSite.GetPageArea,p) then begin

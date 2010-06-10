@@ -3909,6 +3909,7 @@ Begin
   writeln('TSourceEditor.CreateEditor  A ');
   {$ENDIF}
   if not assigned(FEditor) then Begin
+    FVisible := False;
     i:=0;
     repeat
       inc(i);
@@ -3919,7 +3920,6 @@ Begin
     with FEditor do begin
       Name:=NewName;
       Text:='';
-      Parent := AParent;
       Align := alClient;
       Visible := False;
       BookMarkOptions.EnableKeys := false;
@@ -3948,8 +3948,8 @@ Begin
       OnPlaceBookmark := @EditorPlaceBookmark;
       OnClearBookmark := @EditorClearBookmark;
       // IMPORTANT: when you change above, don't forget updating UnbindEditor
+      Parent := AParent;
     end;
-    FVisible := False;
     Manager.CodeTemplateModul.AddEditor(FEditor);
     Manager.NewEditorCreated(self);
     FEditor.TemplateEdit.OnActivate := @EditorActivateSyncro;
