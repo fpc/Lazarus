@@ -13,7 +13,7 @@ uses
  {$ENDIF}
  Classes ,Graphics, LCLProc, types, IntfGraphics, GraphType, FPimage, FPCanvas,
  {$IFDEF LCLGtk2}
- pango, LCLType, GTKProc, GtkDef, gtk2,
+ pango, LCLType, Gtk2Proc, Gtk2Def, gtk2,
  {$ENDIF}
  agg_arc, GraphMath, agg_fpimage, agg_basics;
 
