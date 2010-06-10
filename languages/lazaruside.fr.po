@@ -11724,6 +11724,10 @@ msgstr "Marque de répertoire source du projet"
 msgid "Prompt for value"
 msgstr "Demander la valeur"
 
+#: lazarusidestrconsts.lisproperties
+msgid "Properties (replace or delete)"
+msgstr ""
+
 #: lazarusidestrconsts.lispropertiesofconditionalcompileroption
 msgid "Properties of conditional compiler option"
 msgstr "Propriétés de l'option de compilation conditionnelle"
@@ -11906,12 +11910,14 @@ msgstr "Rouvrir avec un autre encodage"
 msgid "Repeat Count:"
 msgstr "Nombre de répétitions :"
 
-#: lazarusidestrconsts.lisreplacementproptypes
-msgid "Replacement Properties and Types"
-msgstr " Propriétés et types de rechange"
+#: lazarusidestrconsts.lisreplacements
+msgid "Replacements"
+msgstr ""
 
 #: lazarusidestrconsts.lisreplaceremoveunknown
-msgid "Replace unknown types and properties"
+#, fuzzy
+#| msgid "Replace unknown types and properties"
+msgid "Fix unknown properties and types"
 msgstr "Remplacer les types et les propriétées inconnus"
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
@@ -13060,6 +13066,10 @@ msgstr "Catégorie"
 #: lazarusidestrconsts.listurbopascal
 msgid "Turbo Pascal"
 msgstr "Turbo Pascal"
+
+#: lazarusidestrconsts.listypes
+msgid "Types (not removed if no replacement)"
+msgstr ""
 
 #: lazarusidestrconsts.lisuedonotsho
 msgid "Do not show this message again."

@@ -11679,6 +11679,10 @@ msgstr "סימן ספריית קוד המקור של הפרויקט"
 msgid "Prompt for value"
 msgstr "שאל על ערך"
 
+#: lazarusidestrconsts.lisproperties
+msgid "Properties (replace or delete)"
+msgstr ""
+
 #: lazarusidestrconsts.lispropertiesofconditionalcompileroption
 msgid "Properties of conditional compiler option"
 msgstr "תכונות של אפשרות מהדר מותנה"
@@ -11862,12 +11866,14 @@ msgstr "פתח מחדש בקידוד אחר"
 msgid "Repeat Count:"
 msgstr "חזור על הספירה:"
 
-#: lazarusidestrconsts.lisreplacementproptypes
-msgid "Replacement Properties and Types"
-msgstr "תכונות וסוגים תחליפיים"
+#: lazarusidestrconsts.lisreplacements
+msgid "Replacements"
+msgstr ""
 
 #: lazarusidestrconsts.lisreplaceremoveunknown
-msgid "Replace unknown types and properties"
+#, fuzzy
+#| msgid "Replace unknown types and properties"
+msgid "Fix unknown properties and types"
 msgstr "החלף תכונות וסוגים לא ידועים"
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
@@ -13015,6 +13021,10 @@ msgstr "קטגוריה"
 
 #: lazarusidestrconsts.listurbopascal
 msgid "Turbo Pascal"
+msgstr ""
+
+#: lazarusidestrconsts.listypes
+msgid "Types (not removed if no replacement)"
 msgstr ""
 
 #: lazarusidestrconsts.lisuedonotsho

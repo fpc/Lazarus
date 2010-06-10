@@ -11698,6 +11698,10 @@ msgstr "Projekto pradinio aplanko žymė"
 msgid "Prompt for value"
 msgstr "Kvietimas įvesti vertę"
 
+#: lazarusidestrconsts.lisproperties
+msgid "Properties (replace or delete)"
+msgstr ""
+
 #: lazarusidestrconsts.lispropertiesofconditionalcompileroption
 msgid "Properties of conditional compiler option"
 msgstr "Sąlyginės kompiliatoriaus parinkties savybės"
@@ -11880,12 +11884,14 @@ msgstr "Atveri iš naujo kitoje koduotėje"
 msgid "Repeat Count:"
 msgstr "Kartojimų kiekis:"
 
-#: lazarusidestrconsts.lisreplacementproptypes
-msgid "Replacement Properties and Types"
-msgstr "Savybių ir tipų keitiniai"
+#: lazarusidestrconsts.lisreplacements
+msgid "Replacements"
+msgstr ""
 
 #: lazarusidestrconsts.lisreplaceremoveunknown
-msgid "Replace unknown types and properties"
+#, fuzzy
+#| msgid "Replace unknown types and properties"
+msgid "Fix unknown properties and types"
 msgstr "Pakeisti nežinomus tipus ir savybes"
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
@@ -13045,6 +13051,10 @@ msgstr "Kategorija"
 #: lazarusidestrconsts.listurbopascal
 msgid "Turbo Pascal"
 msgstr "Turbo Pascal"
+
+#: lazarusidestrconsts.listypes
+msgid "Types (not removed if no replacement)"
+msgstr ""
 
 #: lazarusidestrconsts.lisuedonotsho
 msgid "Do not show this message again."

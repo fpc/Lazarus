@@ -11725,6 +11725,10 @@ msgstr "工程源代码目录掩码"
 msgid "Prompt for value"
 msgstr "值的表示方式"
 
+#: lazarusidestrconsts.lisproperties
+msgid "Properties (replace or delete)"
+msgstr ""
+
 #: lazarusidestrconsts.lispropertiesofconditionalcompileroption
 msgid "Properties of conditional compiler option"
 msgstr ""
@@ -11908,12 +11912,12 @@ msgstr "用另一种编码打开"
 msgid "Repeat Count:"
 msgstr "重复计数:"
 
-#: lazarusidestrconsts.lisreplacementproptypes
-msgid "Replacement Properties and Types"
+#: lazarusidestrconsts.lisreplacements
+msgid "Replacements"
 msgstr ""
 
 #: lazarusidestrconsts.lisreplaceremoveunknown
-msgid "Replace unknown types and properties"
+msgid "Fix unknown properties and types"
 msgstr ""
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
@@ -13061,6 +13065,10 @@ msgstr "种类"
 
 #: lazarusidestrconsts.listurbopascal
 msgid "Turbo Pascal"
+msgstr ""
+
+#: lazarusidestrconsts.listypes
+msgid "Types (not removed if no replacement)"
 msgstr ""
 
 #: lazarusidestrconsts.lisuedonotsho

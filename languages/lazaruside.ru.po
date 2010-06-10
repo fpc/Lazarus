@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-06-06 02:20+0300\n"
+"PO-Revision-Date: 2010-06-10 04:34+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -11710,6 +11710,10 @@ msgstr "Метка каталога с исходным кодом проект�
 msgid "Prompt for value"
 msgstr "Подсказка по значению"
 
+#: lazarusidestrconsts.lisproperties
+msgid "Properties (replace or delete)"
+msgstr "Свойства (заменять или удалять)"
+
 #: lazarusidestrconsts.lispropertiesofconditionalcompileroption
 msgid "Properties of conditional compiler option"
 msgstr "Свойства параметра режима сборки"
@@ -11892,13 +11896,14 @@ msgstr "Открыть с другой кодировкой"
 msgid "Repeat Count:"
 msgstr "Число повторов:"
 
-#: lazarusidestrconsts.lisreplacementproptypes
-msgid "Replacement Properties and Types"
-msgstr "Замена свойств и типов"
+#: lazarusidestrconsts.lisreplacements
+msgid "Replacements"
+msgstr "Замены"
 
 #: lazarusidestrconsts.lisreplaceremoveunknown
-msgid "Replace unknown types and properties"
-msgstr "Заменить неизвестные типы и свойства"
+#| msgid "Replace unknown types and properties"
+msgid "Fix unknown properties and types"
+msgstr "Исправить неизвестные свойства и типы"
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."
@@ -13049,6 +13054,10 @@ msgstr "Категория"
 #: lazarusidestrconsts.listurbopascal
 msgid "Turbo Pascal"
 msgstr "Turbo Pascal"
+
+#: lazarusidestrconsts.listypes
+msgid "Types (not removed if no replacement)"
+msgstr "Типы (не удаляются, если нет замены)"
 
 #: lazarusidestrconsts.lisuedonotsho
 msgid "Do not show this message again."

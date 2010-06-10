@@ -11651,6 +11651,10 @@ msgstr "Značka zdrojového adresáře projektu"
 msgid "Prompt for value"
 msgstr "Dotázat se na hodnotu"
 
+#: lazarusidestrconsts.lisproperties
+msgid "Properties (replace or delete)"
+msgstr ""
+
 #: lazarusidestrconsts.lispropertiesofconditionalcompileroption
 msgid "Properties of conditional compiler option"
 msgstr "Vlastnosti volby podmíněného překladu"
@@ -11832,12 +11836,12 @@ msgstr "Znovuotevřít s jiným kódováním"
 msgid "Repeat Count:"
 msgstr "Počet opakování:"
 
-#: lazarusidestrconsts.lisreplacementproptypes
-msgid "Replacement Properties and Types"
-msgstr "Nahrazení vlastností a typů"
+#: lazarusidestrconsts.lisreplacements
+msgid "Replacements"
+msgstr ""
 
 #: lazarusidestrconsts.lisreplaceremoveunknown
-msgid "Replace unknown types and properties"
+msgid "Fix unknown properties and types"
 msgstr ""
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
@@ -12986,6 +12990,10 @@ msgstr "Kategorie"
 #: lazarusidestrconsts.listurbopascal
 msgid "Turbo Pascal"
 msgstr "Turbo Pascal"
+
+#: lazarusidestrconsts.listypes
+msgid "Types (not removed if no replacement)"
+msgstr ""
 
 #: lazarusidestrconsts.lisuedonotsho
 msgid "Do not show this message again."

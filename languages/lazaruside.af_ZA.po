@@ -11647,6 +11647,10 @@ msgstr ""
 msgid "Prompt for value"
 msgstr "Vra vir waarde"
 
+#: lazarusidestrconsts.lisproperties
+msgid "Properties (replace or delete)"
+msgstr ""
+
 #: lazarusidestrconsts.lispropertiesofconditionalcompileroption
 msgid "Properties of conditional compiler option"
 msgstr ""
@@ -11830,12 +11834,12 @@ msgstr ""
 msgid "Repeat Count:"
 msgstr ""
 
-#: lazarusidestrconsts.lisreplacementproptypes
-msgid "Replacement Properties and Types"
+#: lazarusidestrconsts.lisreplacements
+msgid "Replacements"
 msgstr ""
 
 #: lazarusidestrconsts.lisreplaceremoveunknown
-msgid "Replace unknown types and properties"
+msgid "Fix unknown properties and types"
 msgstr ""
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
@@ -12983,6 +12987,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listurbopascal
 msgid "Turbo Pascal"
+msgstr ""
+
+#: lazarusidestrconsts.listypes
+msgid "Types (not removed if no replacement)"
 msgstr ""
 
 #: lazarusidestrconsts.lisuedonotsho
