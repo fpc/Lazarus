@@ -2784,6 +2784,7 @@ examples/cleandir/cleandir.lpi svneol=native#text/plain
 examples/cleandir/cleandir.lpr svneol=native#text/plain
 examples/cleandir/cleandirs.lpi svneol=native#text/plain
 examples/cleandir/cleandirs.lpr svneol=native#text/plain
+examples/cleandir/confcleandirs.ico -text svneol=unset#image/ico
 examples/cleandir/confcleandirs.lpi svneol=native#text/plain
 examples/cleandir/confcleandirs.lpr svneol=native#text/plain
 examples/cleandir/dircleaner.pp svneol=native#text/plain

@@ -11,10 +11,9 @@ uses
   { add your units here },
   sysutils,
   dircleaner, frmmain, frmlog;
-{$ifdef win32}
-{$R manifest.res}
-{$R confcleandirs.res}
-{$endif}
+
+{$R *.res}
+
 begin
   Application.Title:='Configure directory cleaner';
   Application.Initialize;
