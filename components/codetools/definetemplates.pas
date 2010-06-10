@@ -5626,8 +5626,6 @@ begin
         '',CurWidgetSet,da_Directory);
       LCLUnitsCPUOSDir.AddChild(LCLUnitsCPUOSWidgetSetDir);
       ExtraSrcPath:='../../../interfaces/'+CurWidgetSet;
-      if (CurWidgetSet='gtk2') then
-        ExtraSrcPath:=ExtraSrcPath+';../../../interfaces/gtk';
       if (CurWidgetSet='carbon') then
         ExtraSrcPath:=ExtraSrcPath+';../../../interfaces/carbon/pascocoa/appkit;../../../interfaces/carbon/objc';
       if (CurWidgetSet='fpgui') then
@@ -5657,39 +5655,11 @@ begin
   // <LazarusSrcDir>/lcl/interfaces/gtk
   IntfDirTemplate:=TDefineTemplate.Create('gtk',
     ctsIntfDirectory,'','gtk',da_Directory);
-    // if LCLWidgetType=gtk2
-    IfTemplate:=TDefineTemplate.Create('IF '''+WidgetType+'''=''gtk2''',
-      ctsIfLCLWidgetTypeEqualsGtk2,'',''''+WidgetType+'''=''gtk2''',da_If);
-      // then define gtk2
-      IfTemplate.AddChild(TDefineTemplate.Create('Define gtk2',
-        ctsDefineMacroGTK2,'gtk2','',da_Define));
-      IfTemplate.AddChild(TDefineTemplate.Create('add gtk2 to unit path',
-        Format(ctsAddsDirToSourcePath,[d('../gtk2')]),ExternalMacroStart+'SrcPath',
-        d('../gtk2;')+SrcPath,da_Define));
-      IfTemplate.AddChild(TDefineTemplate.Create('adds gtk2 as include path',
-        Format(ctsAddsDirToIncludePath,[d('../gtk2')]),ExternalMacroStart+'IncPath',
-        d('../gtk2;')+IncPath,da_Define));
-    IntfDirTemplate.AddChild(IfTemplate);
-    // else LCLWidgetType=gtk2
-    ElseTemplate:=TDefineTemplate.Create('ELSE',
-      ctsElse,'','',da_Else);
-      // then define gtk1
-      ElseTemplate.AddChild(TDefineTemplate.Create('Define gtk1',
-        ctsDefineMacroGTK1,'gtk1','',da_Define));
-    IntfDirTemplate.AddChild(ElseTemplate);
   SubDirTempl.AddChild(IntfDirTemplate);
 
   // <LazarusSrcDir>/lcl/interfaces/gtk2
   IntfDirTemplate:=TDefineTemplate.Create('gtk2',
     ctsGtk2IntfDirectory,'','gtk2',da_Directory);
-  // add '../gtk' to the SrcPath
-  IntfDirTemplate.AddChild(TDefineTemplate.Create('SrcPath',
-    Format(ctsAddsDirToSourcePath,['gtk']),ExternalMacroStart+'SrcPath',
-    d('../gtk;')+SrcPath,da_Define));
-  // add '../gtk' to the IncPath
-  IntfDirTemplate.AddChild(TDefineTemplate.Create('IncPath',
-    Format(ctsAddsDirToIncludePath,['gtk']),ExternalMacroStart+'IncPath',
-    d('../gtk;')+IncPath,da_Define));
   SubDirTempl.AddChild(IntfDirTemplate);
   
   // <LazarusSrcDir>/lcl/interfaces/win32
