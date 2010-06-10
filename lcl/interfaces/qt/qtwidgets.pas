@@ -4393,7 +4393,6 @@ function TQtMainWindow.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   w: QWidgetH;
   p: QPaletteH;
-  Parent: QWidgetH;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
@@ -4467,16 +4466,11 @@ begin
     end
     else
     begin
-      if AParams.WndParent <> 0 then
-        Parent := TQtWidget(AParams.WndParent).GetContainerWidget
-      else
-        Parent := nil;
-
       if (TCustomForm(LCLObject).FormStyle = fsSplash) and
       not (csDesigning in LCLObject.ComponentState) then
-        Result := QWidget_create(Parent, QtSplashScreen)
+        Result := QWidget_create(nil, QtSplashScreen)
       else
-        Result := QWidget_create(Parent, QtWindow);
+        Result := QWidget_create(nil, QtWindow);
 
       QWidget_setAttribute(Result, QtWA_Hover);
     end;
