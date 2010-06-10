@@ -287,7 +287,9 @@ end;
 
 procedure TQtWidgetSet.AppBringToFront;
 begin
-  if (Application.MainForm <> nil) and (Application.MainForm.HandleAllocated) then
+  if (Application.MainForm <> nil) and
+    (Application.MainForm.HandleAllocated) and
+    (TQtMainWindow(Application.MainForm.Handle).getVisible) then
     TQtMainWindow(Application.MainForm.Handle).BringToFront;
 end;
 
