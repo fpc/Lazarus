@@ -6778,11 +6778,23 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TQtTabWidget.insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: WideString): Integer; overload;
+var
+  UseAdd: Boolean;
 begin
+  UseAdd := Index > QTabWidget_count(QTabWidgetH(Widget)) - 1;
   if icon <> nil then
-    Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, icon, @p2)
-  else
-    Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, @p2);
+  begin
+    if UseAdd then
+      Result := QTabWidget_addTab(QTabWidgetH(Widget), page, icon, @p2)
+    else
+      Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, icon, @p2)
+  end else
+  begin
+    if UseAdd then
+      Result := QTabWidget_addTab(QTabWidgetH(Widget), page, @p2)
+    else
+      Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, @p2);
+  end;
 end;
 
 function TQtTabWidget.getClientBounds: TRect;
