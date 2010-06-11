@@ -25,7 +25,7 @@ uses
   Classes, SysUtils, LCLProc, LCLType, X, XUtil, XLib, gl, InterfaceBase,
   WSLCLClasses,
   {$IFDEF LCLGTK2}
-  LMessages, GtkDef, gdk2x, glib2, gdk2, gtk2, Gtk2Int, Gtk2WSControls,
+  LMessages, Gtk2Def, gdk2x, glib2, gdk2, gtk2, Gtk2Int, Gtk2WSControls,
   {$ENDIF}
   {$IFDEF LCLGTK}
   glib, gdk, gtk, GtkInt, GtkWSControls,

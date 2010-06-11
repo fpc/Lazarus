@@ -1775,8 +1775,7 @@ begin
   end
   else begin
     CurDialog:=FDialogs[ADialogType];
-    if DoDisableAutoSizing then
-      CurDialog.DisableAutoSizing;
+    CurDialog.DisableAutoSizing;
     if (CurDialog is TBreakPointsDlg)
     then begin
       if (Project1<>nil) then
