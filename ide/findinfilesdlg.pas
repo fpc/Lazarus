@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLIntf, Controls, StdCtrls, Forms, Buttons,
-  ExtCtrls, FileUtil, LazarusIDEStrConsts, Dialogs, SynEditTypes,
+  ExtCtrls, FileUtil, LazarusIDEStrConsts, Dialogs, SynEditTypes, MacroIntf,
   IDEDialogs, IDEWindowIntf, InputHistory, IDEContextHelpEdit, ButtonPanel,
   SrcEditorIntf, EditorOptions, SearchFrm, Project, SynEdit, SearchResultView;
 
@@ -76,6 +76,7 @@ type
     procedure FindInFilesPerDialog(AProject: TProject);
     procedure InitFromLazSearch(Sender: TObject);
     procedure FindInFiles(AProject: TProject; const AFindText: string);
+    function GetResolvedDirectory: string;
   end;
 
 function FindInFilesDialog: TLazFindInFilesDialog;
@@ -120,14 +121,19 @@ begin
 end;
 
 procedure TLazFindInFilesDialog.DirectoryBrowseClick(Sender: TObject);
+var
+  Dir: String;
 begin
   InitIDEFileDialog(SelectDirectoryDialog);
-  if DirectoryExistsUTF8(DirectoryComboBox.Text) then
-   SelectDirectoryDialog.InitialDir := DirectoryComboBox.Text
+  Dir:=GetResolvedDirectory;
+  if DirectoryExistsUTF8(Dir) then
+    SelectDirectoryDialog.InitialDir := Dir
   else
-   SelectDirectoryDialog.InitialDir := GetCurrentDirUTF8;
-  if SelectDirectoryDialog.Execute then
+    SelectDirectoryDialog.InitialDir := GetCurrentDirUTF8;
+  if SelectDirectoryDialog.Execute
+  and (CompareFilenames(SelectDirectoryDialog.FileName,Dir)<>0) then begin
     DirectoryComboBox.Text := SelectDirectoryDialog.FileName;
+  end;
   StoreIDEFileDialog(SelectDirectoryDialog);
 end;
 
@@ -179,12 +185,14 @@ begin
 end;
 
 procedure TLazFindInFilesDialog.OKButtonClick(Sender : TObject);
+var
+  Dir: String;
 begin
-  if (WhereRadioGroup.ItemIndex=2) and
-    (not DirectoryExistsUTF8(DirectoryComboBox.Text)) then
+  Dir:=GetResolvedDirectory;
+  if (WhereRadioGroup.ItemIndex=2) and (not DirectoryExistsUTF8(Dir)) then
   begin
     MessageDlg(lisEnvOptDlgDirectoryNotFound,
-               Format(dlgSeachDirectoryNotFound,[DirectoryComboBox.Text]),
+               Format(dlgSeachDirectoryNotFound,[Dir]),
                mtWarning, [mbOk],0);
     ModalResult:=mrNone;
   end
@@ -367,7 +375,7 @@ begin
   // if there is no FindText, use the most recently used FindText
   FindText:= AFindText;
   if (FindText = '') and (InputHistories.FindHistory.Count > 0) then
-      FindText := InputHistories.FindHistory[0];
+    FindText := InputHistories.FindHistory[0];
 
   // disable replace. Find in files is often called,
   // but almost never to replace with the same parameters
@@ -382,7 +390,7 @@ begin
     SearchText      := self.FindText;
     ReplaceText     := self.ReplaceText;
     SearchMask      := self.FileMaskComboBox.Text;
-    SearchDirectory := self.DirectoryComboBox.Text;
+    SearchDirectory := self.GetResolvedDirectory;
   end;
 
     try
@@ -398,6 +406,14 @@ begin
       FreeAndNil(SearchForm);
     end;
   end;
+end;
+
+function TLazFindInFilesDialog.GetResolvedDirectory: string;
+begin
+  Result:=DirectoryComboBox.Text;
+  IDEMacros.SubstituteMacros(Result);
+  if Result<>'' then
+    Result:=CleanAndExpandDirectory(Result);
 end;
 
 end.
