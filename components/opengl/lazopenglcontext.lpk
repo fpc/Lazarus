@@ -14,7 +14,7 @@
     </CompilerOptions>
     <Description Value="Simple cross-platform OpenGL viewer control"/>
     <Version Release="1"/>
-    <Files Count="4">
+    <Files Count="5">
       <Item1>
         <Filename Value="openglcontext.pas"/>
         <HasRegisterProc Value="True"/>
@@ -35,6 +35,10 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="GLWin32WGLContext"/>
       </Item4>
+      <Item5>
+        <Filename Value="glqtcontext.pas"/>
+        <UnitName Value="glqtcontext"/>
+      </Item5>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

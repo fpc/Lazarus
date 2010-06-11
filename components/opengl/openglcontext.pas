@@ -18,12 +18,18 @@
       - gtk with glx    : full
       - gtk2 with glx   : full
       - carbon with agl : full
+      - cocoa           : no
       - windows with wgl: full
+      - wince           : no
+      - qt with glx     : no (started)
+      - fpgui with glx  : no
+      - nogui           : no
 }
 unit OpenGLContext;
 
 {$mode objfpc}{$H+}
 
+// choose the right backend depending on used LCL widgetset
 {$IFDEF LCLGTK}
   {$IFDEF Linux}
     {$DEFINE UseGtkGLX}
@@ -42,6 +48,10 @@ unit OpenGLContext;
 {$ENDIF}
 {$IFDEF LCLWin32}
   {$DEFINE UseWin32WGL}
+  {$DEFINE OpenGLTargetDefined}
+{$ENDIF}
+{$IFDEF LCLQT}
+  {$DEFINE UseQTGLX}
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
 {$IFNDEF OpenGLTargetDefined}
@@ -64,6 +74,9 @@ uses
 {$ENDIF}
 {$IFDEF UseWin32WGL}
   GLWin32WGLContext;
+{$ENDIF}
+{$IFDEF UseQTGLX}
+  GLQTContext;
 {$ENDIF}
 
 

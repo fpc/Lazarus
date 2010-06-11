@@ -2,20 +2,20 @@
   This source is only used to compile and install the package.
  }
 
-unit lazopenglcontext;
+unit lazopenglcontext; 
 
 interface
 
 uses
-  OpenGLContext, LazarusPackageIntf;
+  OpenGLContext, GLQTContext, LazarusPackageIntf;
 
 implementation
 
-procedure Register;
+procedure Register; 
 begin
-  RegisterUnit('OpenGLContext',@OpenGLContext.Register);
-end;
+  RegisterUnit('OpenGLContext', @OpenGLContext.Register); 
+end; 
 
 initialization
-  RegisterPackage('LazOpenGLContext',@Register);
+  RegisterPackage('LazOpenGLContext', @Register); 
 end.
