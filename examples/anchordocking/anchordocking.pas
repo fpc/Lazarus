@@ -56,6 +56,9 @@
        - undock (needed if no place to undock on screen)
        - merge (for example after moving a dock page into a layout)
        - enlarge side to left, top, right, bottom
+    - dock site: MakeDockSite for forms, that should be able to dock other sites,
+       but should not be docked themselves. Their Parent is always nil.
+    - design time package for IDE
 
   ToDo:
     - popup menu
@@ -75,7 +78,6 @@
     - on close button: save a default layout
     - on show again: restore a default layout
     - close button for pages
-    - design time package for IDE
 }
 
 unit AnchorDocking;
@@ -916,7 +918,7 @@ end;
 procedure TAnchorDockMaster.DisableControlAutoSizing(AControl: TControl);
 begin
   if fDisabledAutosizing.IndexOf(AControl)>=0 then exit;
-  debugln(['TAnchorDockMaster.DisableControlAutoSizing ',DbgSName(AControl)]);
+  //debugln(['TAnchorDockMaster.DisableControlAutoSizing ',DbgSName(AControl)]);
   fDisabledAutosizing.Add(AControl);
   AControl.FreeNotification(Self);
   AControl.DisableAutoSizing;
@@ -929,7 +931,7 @@ var
 begin
   i:=fDisabledAutosizing.Count-1;
   while (i>=0) do begin
-    debugln(['TAnchorDockMaster.EnableAllAutoSizing ',DbgSName(TControl(fDisabledAutosizing[i]))]);
+    //debugln(['TAnchorDockMaster.EnableAllAutoSizing ',DbgSName(TControl(fDisabledAutosizing[i]))]);
     AControl:=TControl(fDisabledAutosizing[i]);
     fDisabledAutosizing.Delete(i);
     AControl.EnableAutoSizing;
@@ -1740,9 +1742,10 @@ begin
       Parent.BoundsRect:=NewParentBounds;
       BoundsRect:=NewBounds;
       BoundsIncreased:=true;
+      TAnchorDockManager(Parent.DockManager).FSiteClientRect:=Parent.ClientRect;
     end;
     debugln(['TAnchorDockHostSite.DockAnotherControl AFTER ENLARGE ',Caption]);
-    DebugWriteChildAnchors(Self,true,true);
+    //DebugWriteChildAnchors(Self,true,true);
   end;
 
   // anchors
@@ -1899,7 +1902,8 @@ begin
     end;
   end;
 
-  DebugWriteChildAnchors(Self,true,true);
+  //debugln(['TAnchorDockHostSite.DockAnotherControl ',DbgSName(Self)]);
+  //DebugWriteChildAnchors(Self,true,true);
   Result:=true;
 end;
 
@@ -2011,7 +2015,7 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
     debugln(['RemoveControlBoundSplitter ',DbgSName(Splitter)]);
     Splitter.Free;
 
-    DebugWriteChildAnchors(GetParentForm(Self),true,true);
+    //DebugWriteChildAnchors(GetParentForm(Self),true,true);
   end;
 
   procedure ConvertToOneControlType(OnlySiteLeft: TAnchorDockHostSite);
@@ -2080,7 +2084,7 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
       UpdateHeaderAlign;
 
       debugln(['TAnchorDockHostSite.RemoveControlFromLayout.ConvertToOneControlType AFTER CONVERT "',Caption,'" to onecontrol OnlySiteLeft="',OnlySiteLeft.Caption,'"']);
-      DebugWriteChildAnchors(GetParentForm(Self),true,true);
+      //DebugWriteChildAnchors(GetParentForm(Self),true,true);
 
       DockMaster.NeedSimplify(Self);
     finally
@@ -2241,7 +2245,7 @@ begin
       EnableAutoSizing;
     end;
     debugln(['TAnchorDockHostSite.SimplifyPages END Self="',Caption,'"']);
-    DebugWriteChildAnchors(GetParentForm(Self),true,true);
+    //DebugWriteChildAnchors(GetParentForm(Self),true,true);
   end else if Pages.PageCount=0 then begin
     debugln(['TAnchorDockHostSite.SimplifyPages "',Caption,'" PageCount=0 Self=',dbgs(Pointer(Self))]);
     FSiteType:=adhstNone;
@@ -2306,7 +2310,7 @@ begin
   end;
 
   debugln(['TAnchorDockHostSite.SimplifyOneControl END Self="',Caption,'"']);
-  DebugWriteChildAnchors(GetParentForm(Self),true,true);
+  //DebugWriteChildAnchors(GetParentForm(Self),true,true);
 end;
 
 function TAnchorDockHostSite.GetOneControl: TControl;
