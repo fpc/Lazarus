@@ -204,6 +204,7 @@ type
     FHeaderSide: TAnchorKind;
     FPages: TAnchorDockPageControl;
     FSiteType: TAnchorDockHostSiteType;
+    FBoundSplitter: TAnchorDockSplitter;
     fUpdateLayout: integer;
     procedure SetHeaderSide(const AValue: TAnchorKind);
   protected
@@ -246,6 +247,7 @@ type
     function EnlargeSideResizeTwoSplitters(ShrinkSplitterSide,
                          EnlargeSpitterSide: TAnchorKind;
                          OnlyCheckIfPossible: boolean): boolean;
+    procedure CreateBoundSplitter;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -273,7 +275,13 @@ type
     property Header: TAnchorDockHeader read FHeader;
     property Pages: TAnchorDockPageControl read FPages;
     property SiteType: TAnchorDockHostSiteType read FSiteType;
+    property BoundSplitter: TAnchorDockSplitter read FBoundSplitter;
   end;
+
+  TADMResizePolicy = (
+    admrpNone,
+    admrpChild  // resize child
+    );
 
   { TAnchorDockManager }
 
@@ -282,7 +290,9 @@ type
     FDockableSites: TAnchors;
     FDockSite: TAnchorDockHostSite;
     FInsideDockingAllowed: boolean;
+    FResizePolicy: TADMResizePolicy;
     FSite: TWinControl;
+    FSiteClientRect: TRect;
   public
     constructor Create(ADockSite: TWinControl); override;
     procedure GetControlBounds(Control: TControl; out AControlBounds: TRect);
@@ -302,6 +312,7 @@ type
     property DockableSites: TAnchors read FDockableSites write FDockableSites;
     property InsideDockingAllowed: boolean read FInsideDockingAllowed write FInsideDockingAllowed;
     function GetChildSite: TAnchorDockHostSite;
+    property ResizePolicy: TADMResizePolicy read FResizePolicy write FResizePolicy;
   end;
 
   { TAnchorDockMaster }
@@ -361,6 +372,7 @@ type
                            BringToFront: boolean = false;
                            AddDockHeader: boolean = true);
     procedure MakeDockSite(AForm: TCustomForm; Sites: TAnchors;
+                           ResizePolicy: TADMResizePolicy;
                            AllowInside: boolean = false);
     procedure MakeVisible(AControl: TControl; SwitchPages: boolean);
     function ShowControl(ControlName: string; BringToFront: boolean = false
@@ -1074,7 +1086,7 @@ begin
 end;
 
 procedure TAnchorDockMaster.MakeDockSite(AForm: TCustomForm; Sites: TAnchors;
-  AllowInside: boolean);
+  ResizePolicy: TADMResizePolicy; AllowInside: boolean);
 var
   AManager: TAnchorDockManager;
 begin
@@ -1096,6 +1108,7 @@ begin
     AManager:=TAnchorDockManager.Create(AForm);
     AManager.DockableSites:=Sites;
     AManager.InsideDockingAllowed:=AllowInside;
+    AManager.ResizePolicy:=ResizePolicy;
     AForm.DockManager:=AManager;
     AForm.UseDockManager:=true;
     AForm.DockSite:=true;
@@ -1493,6 +1506,7 @@ begin
   if Operation=opRemove then begin
     if AComponent=Pages then FPages:=nil;
     if AComponent=Header then FHeader:=nil;
+    if AComponent=BoundSplitter then FBoundSplitter:=nil;
   end;
 end;
 
@@ -2434,8 +2448,10 @@ end;
 procedure TAnchorDockHostSite.SetParent(NewParent: TWinControl);
 var
   OldCaption: string;
+  OldParent: TWinControl;
 begin
-  if NewParent=Parent then exit;
+  OldParent:=Parent;
+  if NewParent=OldParent then exit;
   inherited SetParent(NewParent);
   OldCaption:=Caption;
   UpdateDockCaption;
@@ -2447,6 +2463,11 @@ begin
       TAnchorDockPage(Parent).UpdateDockCaption;
   end;
   UpdateHeaderShowing;
+
+  if (BoundSplitter<>nil) and (BoundSplitter.Parent<>Parent) then begin
+    //debugln(['TAnchorDockHostSite.SetParent freeing splitter: ',DbgSName(BoundSplitter)]);
+    FreeAndNil(FBoundSplitter);
+  end;
 end;
 
 function TAnchorDockHostSite.HeaderNeedsShowing: boolean;
@@ -2652,6 +2673,13 @@ begin
     end;
   end;
   Result:=true;
+end;
+
+procedure TAnchorDockHostSite.CreateBoundSplitter;
+begin
+  if BoundSplitter<>nil then exit;
+  FBoundSplitter:=DockMaster.CreateSplitter;
+  FBoundSplitter.FreeNotification(Self);
 end;
 
 function TAnchorDockHostSite.CloseQuery: boolean;
@@ -3311,6 +3339,10 @@ end;
 procedure TAnchorDockManager.InsertControl(ADockObject: TDragDockObject);
 var
   NewSiteBounds: TRect;
+  NewChildBounds: TRect;
+  Child: TControl;
+  ChildSite: TAnchorDockHostSite;
+  SplitterWidth: Integer;
 begin
   if DockSite<>nil then begin
     // handled by TAnchorDockHostSite
@@ -3318,19 +3350,42 @@ begin
   end else begin
     debugln(['TAnchorDockManager.InsertControl DockSite=nil Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.Client=',dbgs(ADockObject.Control.ClientRect)]);
     // align dragged Control
-    ADockObject.Control.Align:=ADockObject.DropAlign;
-    ADockObject.Control.Width:=ADockObject.DockRect.Right-ADockObject.DockRect.Left;
-    ADockObject.Control.Height:=ADockObject.DockRect.Bottom-ADockObject.DockRect.Top;
+    Child:=ADockObject.Control;
+    Child.Align:=ADockObject.DropAlign;
+    Child.Width:=ADockObject.DockRect.Right-ADockObject.DockRect.Left;
+    Child.Height:=ADockObject.DockRect.Bottom-ADockObject.DockRect.Top;
+
+    SplitterWidth:=0;
+    if Child is TAnchorDockHostSite then begin
+      ChildSite:=TAnchorDockHostSite(Child);
+      ChildSite.CreateBoundSplitter;
+      ChildSite.BoundSplitter.Align:=Child.Align;
+      ChildSite.BoundSplitter.Parent:=Site;
+      SplitterWidth:=DockMaster.SplitterWidth;
+    end;
 
     // resize Site
     NewSiteBounds:=Site.BoundsRect;
     case ADockObject.DropAlign of
-    alLeft: dec(NewSiteBounds.Left,ADockObject.Control.ClientWidth);
-    alRight: dec(NewSiteBounds.Right,ADockObject.Control.ClientWidth);
-    alTop: dec(NewSiteBounds.Top,ADockObject.Control.ClientHeight);
-    alBottom: inc(NewSiteBounds.Bottom,ADockObject.Control.ClientHeight);
+    alLeft: dec(NewSiteBounds.Left,Child.ClientWidth+SplitterWidth);
+    alRight: dec(NewSiteBounds.Right,Child.ClientWidth+SplitterWidth);
+    alTop: dec(NewSiteBounds.Top,Child.ClientHeight+SplitterWidth);
+    alBottom: inc(NewSiteBounds.Bottom,Child.ClientHeight+SplitterWidth);
     end;
     Site.BoundsRect:=NewSiteBounds;
+    FSiteClientRect:=Site.ClientRect;
+
+    // resize child
+    NewChildBounds:=Child.BoundsRect;
+    case ADockObject.DropAlign of
+    alTop: NewChildBounds:=Bounds(0,0,Site.ClientWidth,Child.ClientHeight);
+    alBottom: NewChildBounds:=Bounds(0,Site.ClientHeight-Child.ClientHeight,
+                                     Site.ClientWidth,Child.ClientHeight);
+    alLeft: NewChildBounds:=Bounds(0,0,Child.ClientWidth,Site.ClientHeight);
+    alRight: NewChildBounds:=Bounds(Site.ClientWidth-Child.ClientWidth,0,
+                                    Child.ClientWidth,Site.ClientHeight);
+    end;
+    Child.BoundsRect:=NewChildBounds;
 
     // only allow to dock one control
     DragManager.RegisterDockSite(Site,false);
@@ -3401,19 +3456,28 @@ end;
 procedure TAnchorDockManager.RemoveControl(Control: TControl);
 var
   NewBounds: TRect;
+  ChildSite: TAnchorDockHostSite;
+  SplitterWidth: Integer;
 begin
   if DockSite<>nil then
     debugln(['TAnchorDockManager.RemoveControl DockSite="',DockSite.Caption,'" Control=',DbgSName(Control)])
   else begin
     debugln(['TAnchorDockManager.RemoveControl Site="',DbgSName(Site),'" Control=',DbgSName(Control)]);
     if Control is TAnchorDockHostSite then begin
+      SplitterWidth:=0;
+      if Control is TAnchorDockHostSite then begin
+        ChildSite:=TAnchorDockHostSite(Control);
+        if ChildSite.BoundSplitter<>nil then
+          SplitterWidth:=DockMaster.SplitterWidth;
+      end;
+
       // shrink Site
       NewBounds:=Site.BoundsRect;
       case Control.Align of
-      alTop: inc(NewBounds.Top,Control.Height);
-      alBottom: dec(NewBounds.Bottom,Control.Height);
-      alLeft: inc(NewBounds.Left,Control.Width);
-      alRight: dec(NewBounds.Right,Control.Width);
+      alTop: inc(NewBounds.Top,Control.Height+SplitterWidth);
+      alBottom: dec(NewBounds.Bottom,Control.Height+SplitterWidth);
+      alLeft: inc(NewBounds.Left,Control.Width+SplitterWidth);
+      alRight: dec(NewBounds.Right,Control.Width+SplitterWidth);
       end;
       Site.BoundsRect:=NewBounds;
       // Site can dock a control again
@@ -3423,9 +3487,37 @@ begin
 end;
 
 procedure TAnchorDockManager.ResetBounds(Force: Boolean);
+var
+  Child: TAnchorDockHostSite;
+  OldSiteClientRect: TRect;
+  WidthDiff: Integer;
+  HeightDiff: Integer;
 begin
   if Force then ;
   //debugln(['TAnchorDockManager.ResetBounds Site="',Site.Caption,'" Force=',Force,' ',dbgs(Site.ClientRect)]);
+  if DockSite<>nil then exit;
+  Child:=GetChildSite;
+  if Child=nil then exit;
+  OldSiteClientRect:=FSiteClientRect;
+  FSiteClientRect:=Site.ClientRect;
+  if CompareRect(@FSiteClientRect,@OldSiteClientRect) then exit;
+  WidthDiff:=FSiteClientRect.Right-OldSiteClientRect.Right;
+  HeightDiff:=FSiteClientRect.Bottom-OldSiteClientRect.Bottom;
+
+  //debugln(['TAnchorDockManager.ResetBounds ',dbgs(Child.BaseBounds),' ',WidthDiff,',',HeightDiff]);
+  case ResizePolicy of
+  admrpChild:
+    begin
+      case Child.Align of
+      alLeft,alRight:
+        Child.Width:=Max(1,Min(Site.ClientWidth-DockMaster.SplitterWidth,
+                               Child.Width+WidthDiff));
+      alTop,alBottom:
+        Child.Height:=Max(1,Min(Site.ClientHeight-DockMaster.SplitterWidth,
+                                Child.Height+HeightDiff));
+      end;
+    end;
+  end;
 end;
 
 procedure TAnchorDockManager.SaveToStream(Stream: TStream);

@@ -118,7 +118,7 @@ begin
   SaveLayoutToolButton.Hint:='Save Layout to layout.xml';
   LoadLayoutToolButton.Hint:='Load layout from layout.xml';
 
-  DockMaster.MakeDockSite(Self,[akBottom]);
+  DockMaster.MakeDockSite(Self,[akBottom],admrpChild);
   DockMaster.OnCreateControl:=@DockMasterCreateControl;
 
   SetBounds(100,50,600,80);
