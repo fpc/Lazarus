@@ -123,7 +123,7 @@ begin
 
   SetBounds(100,50,600,80);
   ViewSrcEditor1ToolButtonClick(Self);
-  //ViewMessagesToolButtonClick(Self);
+  ViewMessagesToolButtonClick(Self);
   //ViewOIToolButtonClick(Self);
 end;
 

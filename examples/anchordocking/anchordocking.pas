@@ -527,11 +527,28 @@ begin
     if GetParentForm(AControl).IsVisible
     and (Tree.Root.FindChildNode(AControl.Name,true)=nil)
     and (Application.MainForm<>AControl) then begin
+      DisableControlAutoSizing(AControl);
       // AControl is currently on a visible site, but not in the Tree
       // => close site
       debugln(['TAnchorDockMaster.CloseUnneededControls Control=',DbgSName(AControl),' Site=',AControl.HostDockSite.Name]);
-      if not TAnchorDockHostSite(AControl.HostDockSite).CloseSite then
-        exit(false);
+      if AControl.HostDockSite is TAnchorDockHostSite then begin
+        if not TAnchorDockHostSite(AControl.HostDockSite).CloseSite then begin
+          if FControls.IndexOf(AControl)<0 then
+            AControl:=nil;
+          debugln(['TAnchorDockMaster.CloseUnneededControls CloseSite failed Control=',DbgSName(AControl)]);
+          exit(false);
+        end;
+      end;
+      if FControls.IndexOf(AControl)>=0 then begin
+        // the control is still there
+        if AControl.HostDockSite<>nil then begin
+          AControl.HostDockSite.Visible:=false;
+          AControl.HostDockSite.Parent:=nil;
+        end else begin
+          AControl.Visible:=False;
+          AControl.Parent:=nil;
+        end;
+      end;
     end;
     i:=Min(i,ControlCount)-1;
   end;
@@ -1263,21 +1280,26 @@ begin
     // close all unneeded forms/controls
     if not CloseUnneededControls(Tree) then exit;
 
-    // create all needed forms/controls
-    if not CreateNeededControls(Tree,true,ControlNames) then exit;
+    BeginUpdate;
+    try
+      // create all needed forms/controls
+      if not CreateNeededControls(Tree,true,ControlNames) then exit;
 
-    // simplify layouts
-    ControlNames.Sort;
-    debugln(['TAnchorDockMaster.LoadLayoutFromConfig controls: ']);
-    debugln(ControlNames.Text);
-    Tree.Root.Simplify(ControlNames);
+      // simplify layouts
+      ControlNames.Sort;
+      debugln(['TAnchorDockMaster.LoadLayoutFromConfig controls: ']);
+      debugln(ControlNames.Text);
+      Tree.Root.Simplify(ControlNames);
 
-    // reuse existing sites to reduce flickering
-    MapTreeToControls(Tree,TreeNameToDocker);
-    TreeNameToDocker.WriteDebugReport('TAnchorDockMaster.LoadLayoutFromConfig Map');
+      // reuse existing sites to reduce flickering
+      MapTreeToControls(Tree,TreeNameToDocker);
+      TreeNameToDocker.WriteDebugReport('TAnchorDockMaster.LoadLayoutFromConfig Map');
 
-    // create sites
-    RestoreLayout(Tree,TreeNameToDocker);
+      // create sites
+      RestoreLayout(Tree,TreeNameToDocker);
+    finally
+      EndUpdate;
+    end;
   finally
     // clean up
     TreeNameToDocker.Free;
@@ -1286,6 +1308,7 @@ begin
     // commit (this can raise an exception)
     EnableAllAutoSizing;
   end;
+  DebugWriteChildAnchors(Application.MainForm,true,false);
   Result:=true;
 end;
 

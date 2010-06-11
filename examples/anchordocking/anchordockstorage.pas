@@ -733,6 +733,7 @@ procedure DebugWriteChildAnchors(RootControl: TWinControl;
   begin
     if OnlyWinControls and (not (AControl is TWinControl)) then exit;
     if OnlyForms and (not (AControl is TCustomForm)) then exit;
+    if not AControl.IsControlVisible then exit;
 
     debugln([Prefix,DbgSName(AControl),' Caption="',dbgstr(AControl.Caption),'" Align=',dbgs(AControl.Align),' Bounds=',dbgs(AControl.BoundsRect)]);
     for a:=low(TAnchorKind) to high(TAnchorKind) do begin
