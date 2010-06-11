@@ -544,7 +544,8 @@ function TAnchorDockMaster.CreateNeededControls(Tree: TAnchorDockLayoutTree;
     i: Integer;
     AControl: TControl;
   begin
-    if (Node.NodeType=adltnControl) and (Node.Name<>'') then begin
+    if (Node.NodeType in [adltnControl,adltnCustomSite])
+    and (Node.Name<>'') then begin
       AControl:=FindControl(Node.Name);
       if AControl<>nil then begin
         debugln(['CreateControlsForNode ',Node.Name,' already exists']);
@@ -556,7 +557,10 @@ function TAnchorDockMaster.CreateNeededControls(Tree: TAnchorDockLayoutTree;
           debugln(['CreateControlsForNode ',AControl.Name,' created']);
           if fDisabledAutosizing.IndexOf(AControl)<0 then
             fDisabledAutosizing.Add(AControl);
-          MakeDockable(AControl,false);
+          if Node.NodeType=adltnControl then
+            MakeDockable(AControl,false)
+          else if not IsCustomSite(AControl) then
+            raise EAnchorDockLayoutError.Create('not a docksite: '+DbgSName(AControl));
         end else begin
           debugln(['CreateControlsForNode ',Node.Name,' failed to create']);
         end;
@@ -3602,8 +3606,9 @@ var
   ChildSite: TAnchorDockHostSite;
 begin
   FSiteClientRect:=Site.ClientRect;
-  if DockSite=nil then exit;
+  if DockSite<>nil then exit;
   ChildSite:=GetChildSite;
+  //debugln(['TAnchorDockManager.RestoreSite ',DbgSName(Site),' ChildSite=',DbgSName(ChildSite)]);
   if ChildSite<>nil then begin
     ChildSite.CreateBoundSplitter;
     ChildSite.PositionBoundSplitter;
