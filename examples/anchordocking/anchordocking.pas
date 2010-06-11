@@ -742,6 +742,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
     if IsCustomSite(Parent) then begin
       Site.Align:=Node.Align;
       TAnchorDockManager(Parent.DockManager).RestoreSite;
+      Site.HostDockSite:=Parent;
     end;
     if Site is TAnchorDockHostSite then
       TAnchorDockHostSite(Site).Header.HeaderPosition:=Node.HeaderPosition;
@@ -924,11 +925,14 @@ end;
 procedure TAnchorDockMaster.EnableAllAutoSizing;
 var
   i: Integer;
+  AControl: TControl;
 begin
   i:=fDisabledAutosizing.Count-1;
   while (i>=0) do begin
     debugln(['TAnchorDockMaster.EnableAllAutoSizing ',DbgSName(TControl(fDisabledAutosizing[i]))]);
-    TControl(fDisabledAutosizing[i]).EnableAutoSizing;
+    AControl:=TControl(fDisabledAutosizing[i]);
+    fDisabledAutosizing.Delete(i);
+    AControl.EnableAutoSizing;
     i:=Min(i,fDisabledAutosizing.Count)-1;
   end;
 end;
@@ -3505,6 +3509,8 @@ begin
       alRight: dec(NewBounds.Right,Control.Width+SplitterWidth);
       end;
       Site.BoundsRect:=NewBounds;
+      debugln(['TAnchorDockManager.RemoveControl Site=',DbgSName(Site),' ',dbgs(Site.BoundsRect)]);
+
       // Site can dock a control again
       DragManager.RegisterDockSite(Site,true);
     end;
