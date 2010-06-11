@@ -3465,12 +3465,6 @@ function TStandardCodeTool.GetStringConstAsFormatString(StartPos,
               inc(APos);
               break;
             end;
-          '"':
-            begin
-              if InRange then
-                AddParameter('''"''');
-              inc(APos);
-            end;
           else
             begin
               // normal char
