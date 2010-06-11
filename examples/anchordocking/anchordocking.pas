@@ -248,6 +248,7 @@ type
                          EnlargeSpitterSide: TAnchorKind;
                          OnlyCheckIfPossible: boolean): boolean;
     procedure CreateBoundSplitter;
+    procedure PositionBoundSplitter;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -307,6 +308,8 @@ type
     procedure ResetBounds(Force: Boolean); override;
     procedure SaveToStream(Stream: TStream); override;
     function GetDockEdge(ADockObject: TDragDockObject): boolean; override;
+    procedure RestoreSite;
+
     property DockSite: TAnchorDockHostSite read FDockSite;
     property Site: TWinControl read FSite;
     property DockableSites: TAnchors read FDockableSites write FDockableSites;
@@ -732,8 +735,10 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
     Site.BoundsRect:=Node.BoundsRect;
     Site.Visible:=true;
     Site.Parent:=Parent;
-    if IsCustomSite(Parent) then
+    if IsCustomSite(Parent) then begin
       Site.Align:=Node.Align;
+      TAnchorDockManager(Parent.DockManager).RestoreSite;
+    end;
     if Site is TAnchorDockHostSite then
       TAnchorDockHostSite(Site).Header.HeaderPosition:=Node.HeaderPosition;
     if Parent=nil then begin
@@ -2679,7 +2684,21 @@ procedure TAnchorDockHostSite.CreateBoundSplitter;
 begin
   if BoundSplitter<>nil then exit;
   FBoundSplitter:=DockMaster.CreateSplitter;
-  FBoundSplitter.FreeNotification(Self);
+  BoundSplitter.FreeNotification(Self);
+  BoundSplitter.Align:=Align;
+  BoundSplitter.Parent:=Parent;
+end;
+
+procedure TAnchorDockHostSite.PositionBoundSplitter;
+begin
+  case Align of
+  alTop: BoundSplitter.SetBounds(0,Height,Parent.ClientWidth,BoundSplitter.Height);
+  alBottom: BoundSplitter.SetBounds(0,Parent.ClientHeight-Height-BoundSplitter.Height,
+                                Parent.ClientWidth,BoundSplitter.Height);
+  alLeft: BoundSplitter.SetBounds(Width,0,BoundSplitter.Width,Parent.ClientHeight);
+  alRight: BoundSplitter.SetBounds(Parent.ClientWidth-Width-BoundSplitter.Width,0
+                              ,BoundSplitter.Width,Parent.ClientHeight);
+  end;
 end;
 
 function TAnchorDockHostSite.CloseQuery: boolean;
@@ -3356,11 +3375,10 @@ begin
     Child.Height:=ADockObject.DockRect.Bottom-ADockObject.DockRect.Top;
 
     SplitterWidth:=0;
+    ChildSite:=nil;
     if Child is TAnchorDockHostSite then begin
       ChildSite:=TAnchorDockHostSite(Child);
       ChildSite.CreateBoundSplitter;
-      ChildSite.BoundSplitter.Align:=Child.Align;
-      ChildSite.BoundSplitter.Parent:=Site;
       SplitterWidth:=DockMaster.SplitterWidth;
     end;
 
@@ -3386,6 +3404,9 @@ begin
                                     Child.ClientWidth,Site.ClientHeight);
     end;
     Child.BoundsRect:=NewChildBounds;
+
+    if ChildSite<>nil then
+      ChildSite.PositionBoundSplitter;
 
     // only allow to dock one control
     DragManager.RegisterDockSite(Site,false);
@@ -3574,6 +3595,19 @@ begin
   end;
   //debugln(['TAnchorDockManager.GetDockEdge ADockObject.DropAlign=',dbgs(ADockObject.DropAlign),' DropOnControl=',DbgSName(ADockObject.DropOnControl)]);
   Result:=true;
+end;
+
+procedure TAnchorDockManager.RestoreSite;
+var
+  ChildSite: TAnchorDockHostSite;
+begin
+  FSiteClientRect:=Site.ClientRect;
+  if DockSite=nil then exit;
+  ChildSite:=GetChildSite;
+  if ChildSite<>nil then begin
+    ChildSite.CreateBoundSplitter;
+    ChildSite.PositionBoundSplitter;
+  end;
 end;
 
 function TAnchorDockManager.GetChildSite: TAnchorDockHostSite;
