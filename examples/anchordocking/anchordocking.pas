@@ -338,6 +338,7 @@ type
     function RestoreLayout(Tree: TAnchorDockLayoutTree;
                            TreeNameToDocker: TADNameToControl): boolean;
     function DoCreateControl(aName: string; DisableAutoSizing: boolean): TControl;
+    procedure DisableControlAutoSizing(AControl: TControl);
     procedure EnableAllAutoSizing;
     procedure ClearLayoutProperties(AControl: TControl);
   protected
@@ -529,19 +530,14 @@ function TAnchorDockMaster.CreateNeededControls(Tree: TAnchorDockLayoutTree;
       AControl:=FindControl(Node.Name);
       if AControl<>nil then begin
         debugln(['CreateControlsForNode ',Node.Name,' already exists']);
-        if DisableAutoSizing and (fDisabledAutosizing.IndexOf(AControl)<0) then
-        begin
-          AControl.DisableAutoSizing;
-          fDisabledAutosizing.Add(AControl);
-        end;
+        DisableControlAutoSizing(AControl);
       end else begin
         debugln(['CreateControlsForNode ',Node.Name,' needs creation']);
         AControl:=DoCreateControl(Node.Name,DisableAutoSizing);
         if AControl<>nil then begin
           debugln(['CreateControlsForNode ',AControl.Name,' created']);
-          if fDisabledAutosizing.IndexOf(AControl)>=0 then
-            RaiseGDBException(''); // should never happen
-          fDisabledAutosizing.Add(AControl);
+          if fDisabledAutosizing.IndexOf(AControl)<0 then
+            fDisabledAutosizing.Add(AControl);
           MakeDockable(AControl,false);
         end else begin
           debugln(['CreateControlsForNode ',Node.Name,' failed to create']);
@@ -721,6 +717,8 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
     Site.BoundsRect:=Node.BoundsRect;
     Site.Visible:=true;
     Site.Parent:=Parent;
+    if IsCustomSite(Parent) then
+      Site.Align:=Node.Align;
     if Site is TAnchorDockHostSite then
       TAnchorDockHostSite(Site).Header.HeaderPosition:=Node.HeaderPosition;
     if Parent=nil then begin
@@ -753,6 +751,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
         debugln(['TAnchorDockMaster.RestoreLayout.Restore can not find control ',Node.Name]);
         exit;
       end;
+      DisableControlAutoSizing(AControl);
       if AControl.HostDockSite=nil then
         MakeDockable(AControl,false)
       else
@@ -775,8 +774,13 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
         debugln(['TAnchorDockMaster.RestoreLayout.Restore WARNING: ',Node.Name,' is not a custom dock site ',DbgSName(AControl)]);
         exit;
       end;
+      DisableControlAutoSizing(AControl);
       SetupSite(TCustomForm(AControl),Node,nil);
       Result:=AControl;
+      // restore docked site
+      if Node.Count>0 then begin
+        Restore(Node[0],TCustomForm(AControl));
+      end;
     end else if Node.IsSplitter then begin
       // restore splitter
       Splitter:=TAnchorDockSplitter(TreeNameToDocker[Node.Name]);
@@ -877,9 +881,20 @@ function TAnchorDockMaster.DoCreateControl(aName: string;
 begin
   Result:=nil;
   OnCreateControl(Self,aName,Result,DisableAutoSizing);
+  if Result=nil then
+    debugln(['TAnchorDockMaster.DoCreateControl WARNING: control not found: "',aName,'"']);
   if (Result<>nil) and (Result.Name<>aName) then
     raise Exception.Create('TAnchorDockMaster.DoCreateControl'+Format(
       adrsRequestedButCreated, [aName, Result.Name]));
+end;
+
+procedure TAnchorDockMaster.DisableControlAutoSizing(AControl: TControl);
+begin
+  if fDisabledAutosizing.IndexOf(AControl)>=0 then exit;
+  debugln(['TAnchorDockMaster.DisableControlAutoSizing ',DbgSName(AControl)]);
+  fDisabledAutosizing.Add(AControl);
+  AControl.FreeNotification(Self);
+  AControl.DisableAutoSizing;
 end;
 
 procedure TAnchorDockMaster.EnableAllAutoSizing;
@@ -1145,7 +1160,7 @@ begin
       if SavedSites.IndexOf(AForm)>=0 then continue;
       SavedSites.Add(AForm);
       debugln(['TAnchorDockMaster.SaveMainLayoutToTree AForm=',DbgSName(AForm)]);
-      DebugWriteChildAnchors(AForm);
+      DebugWriteChildAnchors(AForm,true,true);
       if (AForm is TAnchorDockHostSite) then begin
         Site:=TAnchorDockHostSite(AForm);
         LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
@@ -1693,7 +1708,7 @@ begin
       BoundsIncreased:=true;
     end;
     debugln(['TAnchorDockHostSite.DockAnotherControl AFTER ENLARGE ',Caption]);
-    DebugWriteChildAnchors(Self);
+    DebugWriteChildAnchors(Self,true,true);
   end;
 
   // anchors
@@ -1850,7 +1865,7 @@ begin
     end;
   end;
 
-  DebugWriteChildAnchors(Self);
+  DebugWriteChildAnchors(Self,true,true);
   Result:=true;
 end;
 
@@ -1962,7 +1977,7 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
     debugln(['RemoveControlBoundSplitter ',DbgSName(Splitter)]);
     Splitter.Free;
 
-    DebugWriteChildAnchors(GetParentForm(Self));
+    DebugWriteChildAnchors(GetParentForm(Self),true,true);
   end;
 
   procedure ConvertToOneControlType(OnlySiteLeft: TAnchorDockHostSite);
@@ -2031,7 +2046,7 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
       UpdateHeaderAlign;
 
       debugln(['TAnchorDockHostSite.RemoveControlFromLayout.ConvertToOneControlType AFTER CONVERT "',Caption,'" to onecontrol OnlySiteLeft="',OnlySiteLeft.Caption,'"']);
-      DebugWriteChildAnchors(GetParentForm(Self));
+      DebugWriteChildAnchors(GetParentForm(Self),true,true);
 
       DockMaster.NeedSimplify(Self);
     finally
@@ -2192,7 +2207,7 @@ begin
       EnableAutoSizing;
     end;
     debugln(['TAnchorDockHostSite.SimplifyPages END Self="',Caption,'"']);
-    DebugWriteChildAnchors(GetParentForm(Self));
+    DebugWriteChildAnchors(GetParentForm(Self),true,true);
   end else if Pages.PageCount=0 then begin
     debugln(['TAnchorDockHostSite.SimplifyPages "',Caption,'" PageCount=0 Self=',dbgs(Pointer(Self))]);
     FSiteType:=adhstNone;
@@ -2257,7 +2272,7 @@ begin
   end;
 
   debugln(['TAnchorDockHostSite.SimplifyOneControl END Self="',Caption,'"']);
-  DebugWriteChildAnchors(GetParentForm(Self));
+  DebugWriteChildAnchors(GetParentForm(Self),true,true);
 end;
 
 function TAnchorDockHostSite.GetOneControl: TControl;

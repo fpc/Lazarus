@@ -81,6 +81,12 @@ procedure TMainIDE.DockMasterCreateControl(Sender: TObject; aName: string; var
   end;
 
 begin
+  AControl:=Screen.FindForm(aName);
+  if AControl<>nil then begin
+    if DoDisableAutoSizing then
+      AControl.DisableAutoSizing;
+    exit;
+  end;
   if aName='CodeExplorer' then
     CreateForm('Code Explorer',Bounds(700,230,100,250))
   else if aName='FPDocEditor' then
@@ -117,8 +123,8 @@ begin
 
   SetBounds(100,50,600,80);
   ViewSrcEditor1ToolButtonClick(Self);
-  ViewMessagesToolButtonClick(Self);
-  ViewOIToolButtonClick(Self);
+  //ViewMessagesToolButtonClick(Self);
+  //ViewOIToolButtonClick(Self);
 end;
 
 procedure TMainIDE.LoadLayoutToolButtonClick(Sender: TObject);

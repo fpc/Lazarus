@@ -67,6 +67,7 @@ type
 
   TAnchorDockLayoutTreeNode = class
   private
+    FAlign: TAlign;
     fAnchors: array[TAnchorKind] of string;
     FBoundsRect: TRect;
     FHeaderPosition: TADLHeaderPosition;
@@ -84,6 +85,7 @@ type
     function GetRight: integer;
     function GetTop: integer;
     function GetWidth: integer;
+    procedure SetAlign(const AValue: TAlign);
     procedure SetAnchors(Site: TAnchorKind; const AValue: string);
     procedure SetBottom(const AValue: integer);
     procedure SetBoundsRect(const AValue: TRect);
@@ -134,6 +136,7 @@ type
     property Bottom: integer read GetBottom write SetBottom;
     property BoundsRect: TRect read FBoundsRect write SetBoundsRect;
     property Anchors[Site: TAnchorKind]: string read GetAnchors write SetAnchors; // empty means default (parent)
+    property Align: TAlign read FAlign write SetAlign;
     property WindowState: TWindowState read FWindowState write SetWindowState;
     property Monitor: integer read FMonitor write SetMonitor;
     property HeaderPosition: TADLHeaderPosition read FHeaderPosition write SetHeaderPosition;
@@ -215,16 +218,27 @@ const
     'right',
     'bottom'
     );
+  ADLAlignNames: array[TAlign] of string = (
+    'None',
+    'Top',
+    'Bottom',
+    'Left',
+    'Right',
+    'Client',
+    'Custom'
+    );
 
 function NameToADLTreeNodeType(s: string): TADLTreeNodeType;
 function NameToADLWindowState(s: string): TWindowState;
 function NameToADLHeaderPosition(s: string): TADLHeaderPosition;
+function NameToADLAlign(s: string): TAlign;
 function dbgs(const NodeType: TADLTreeNodeType): string; overload;
 
 procedure WriteDebugLayout(Title: string; RootNode: TObject);
 function DebugLayoutAsString(RootNode: TObject): string;
 procedure DebugWriteChildAnchors(RootNode: TAnchorDockLayoutTreeNode); overload;
-procedure DebugWriteChildAnchors(RootControl: TWinControl); overload;
+procedure DebugWriteChildAnchors(RootControl: TWinControl;
+                                 OnlyWinControls, OnlyForms: boolean); overload;
 
 implementation
 
@@ -247,6 +261,13 @@ begin
   for Result:=low(TADLHeaderPosition) to high(TADLHeaderPosition) do
     if s=ADLHeaderPositionNames[Result] then exit;
   Result:=adlhpAuto;
+end;
+
+function NameToADLAlign(s: string): TAlign;
+begin
+  for Result:=low(TAlign) to high(TAlign) do
+    if s=ADLAlignNames[Result] then exit;
+  Result:=alNone;
 end;
 
 function dbgs(const NodeType: TADLTreeNodeType): string; overload;
@@ -498,7 +519,7 @@ var
       if MinPosCalculating then begin
         DebugLn(['DebugLayoutAsString.GetMinPos.Compute WARNING: anchor circle detected RootNode=',DbgSName(RootNode)]);
         if RootNode is TWinControl then
-          DebugWriteChildAnchors(TWinControl(RootNode))
+          DebugWriteChildAnchors(TWinControl(RootNode),true,true)
         else if RootNode is TAnchorDockLayoutTreeNode then
           DebugWriteChildAnchors(TAnchorDockLayoutTreeNode(RootNode));
         RaiseGDBException('circle detected');
@@ -700,7 +721,8 @@ begin
     WriteControl(RootNode[i],'  ');
 end;
 
-procedure DebugWriteChildAnchors(RootControl: TWinControl); overload;
+procedure DebugWriteChildAnchors(RootControl: TWinControl;
+  OnlyWinControls, OnlyForms: boolean); overload;
 
   procedure WriteControl(AControl: TControl; Prefix: string);
   var
@@ -709,6 +731,9 @@ procedure DebugWriteChildAnchors(RootControl: TWinControl); overload;
     AnchorControl: TControl;
     AnchorName: String;
   begin
+    if OnlyWinControls and (not (AControl is TWinControl)) then exit;
+    if OnlyForms and (not (AControl is TCustomForm)) then exit;
+
     debugln([Prefix,DbgSName(AControl),' Caption="',dbgstr(AControl.Caption),'" Align=',dbgs(AControl.Align),' Bounds=',dbgs(AControl.BoundsRect)]);
     for a:=low(TAnchorKind) to high(TAnchorKind) do begin
       AnchorControl:=AControl.AnchorSide[a].Control;
@@ -775,6 +800,13 @@ end;
 function TAnchorDockLayoutTreeNode.GetWidth: integer;
 begin
   Result:=FBoundsRect.Right-FBoundsRect.Left;
+end;
+
+procedure TAnchorDockLayoutTreeNode.SetAlign(const AValue: TAlign);
+begin
+  if FAlign=AValue then exit;
+  FAlign:=AValue;
+  IncreaseChangeStamp;
 end;
 
 procedure TAnchorDockLayoutTreeNode.SetAnchors(Site: TAnchorKind;
@@ -923,6 +955,7 @@ begin
   or (Count<>Node.Count)
   or (NodeType<>Node.NodeType)
   or (Name<>Node.Name)
+  or (Align<>Node.Align)
   or (WindowState<>Node.WindowState)
   or (HeaderPosition<>Node.HeaderPosition)
   then
@@ -943,6 +976,7 @@ begin
   Name:=Node.Name;
   NodeType:=Node.NodeType;
   BoundsRect:=Node.BoundsRect;
+  Align:=Node.Align;
   WindowState:=Node.WindowState;
   HeaderPosition:=Node.HeaderPosition;
   for a:=low(TAnchorKind) to high(TAnchorKind) do
@@ -966,6 +1000,7 @@ var
 begin
   Name:=AControl.Name;
   BoundsRect:=AControl.BoundsRect;
+  Align:=AControl.Align;
   if (AControl.Parent=nil) and (AControl is TCustomForm) then begin
     WindowState:=TCustomForm(AControl).WindowState;
     Monitor:=TCustomForm(AControl).Monitor.MonitorNum;
@@ -997,6 +1032,7 @@ begin
   Anchors[akTop]:=Config.GetValue('Anchors/Top','');
   Anchors[akRight]:=Config.GetValue('Anchors/Right','');
   Anchors[akBottom]:=Config.GetValue('Anchors/Bottom','');
+  Align:=NameToADLAlign(Config.GetValue('Anchors/Align',AlignNames[alNone]));
   WindowState:=NameToADLWindowState(Config.GetValue('WindowState',ADLWindowStateNames[wsNormal]));
   HeaderPosition:=NameToADLHeaderPosition(Config.GetValue('Header/Position',ADLHeaderPositionNames[adlhpAuto]));
   Monitor:=Config.GetValue('Monitor',0);
@@ -1025,6 +1061,7 @@ begin
   Config.SetDeleteValue('Anchors/Top',Anchors[akTop],'');
   Config.SetDeleteValue('Anchors/Right',Anchors[akRight],'');
   Config.SetDeleteValue('Anchors/Bottom',Anchors[akBottom],'');
+  Config.SetDeleteValue('Anchors/Align',ADLAlignNames[Align],ADLAlignNames[alNone]);
   Config.SetDeleteValue('WindowState',ADLWindowStateNames[WindowState],
                                       ADLWindowStateNames[wsNormal]);
   Config.SetDeleteValue('Header/Position',ADLHeaderPositionNames[HeaderPosition],
