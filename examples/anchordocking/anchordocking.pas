@@ -281,6 +281,7 @@ type
   private
     FDockableSites: TAnchors;
     FDockSite: TAnchorDockHostSite;
+    FInsideDockingAllowed: boolean;
     FSite: TWinControl;
   public
     constructor Create(ADockSite: TWinControl); override;
@@ -299,6 +300,7 @@ type
     property DockSite: TAnchorDockHostSite read FDockSite;
     property Site: TWinControl read FSite;
     property DockableSites: TAnchors read FDockableSites write FDockableSites;
+    property InsideDockingAllowed: boolean read FInsideDockingAllowed write FInsideDockingAllowed;
     function GetChildSite: TAnchorDockHostSite;
   end;
 
@@ -358,7 +360,8 @@ type
     procedure MakeDockable(AControl: TControl; Show: boolean = true;
                            BringToFront: boolean = false;
                            AddDockHeader: boolean = true);
-    procedure MakeDockSite(AForm: TCustomForm; Sites: TAnchors);
+    procedure MakeDockSite(AForm: TCustomForm; Sites: TAnchors;
+                           AllowInside: boolean = false);
     procedure MakeVisible(AControl: TControl; SwitchPages: boolean);
     function ShowControl(ControlName: string; BringToFront: boolean = false
                          ): TControl;
@@ -1070,7 +1073,8 @@ begin
     GetParentForm(Site).BringToFront;
 end;
 
-procedure TAnchorDockMaster.MakeDockSite(AForm: TCustomForm; Sites: TAnchors);
+procedure TAnchorDockMaster.MakeDockSite(AForm: TCustomForm; Sites: TAnchors;
+  AllowInside: boolean);
 var
   AManager: TAnchorDockManager;
 begin
@@ -1081,6 +1085,8 @@ begin
     raise Exception.Create('TAnchorDockMaster.MakeDockSite DockManager<>nil');
   if AForm.Parent<>nil then
     raise Exception.Create('TAnchorDockMaster.MakeDockSite Parent='+DbgSName(AForm.Parent));
+  if Sites=[] then
+    raise Exception.Create('TAnchorDockMaster.MakeDockSite Sites=[]');
   AForm.DisableAutoSizing;
   try
     if FControls.IndexOf(AForm)<0 then begin
@@ -1089,6 +1095,7 @@ begin
     end;
     AManager:=TAnchorDockManager.Create(AForm);
     AManager.DockableSites:=Sites;
+    AManager.InsideDockingAllowed:=AllowInside;
     AForm.DockManager:=AManager;
     AForm.UseDockManager:=true;
     AForm.DockSite:=true;
@@ -3281,6 +3288,7 @@ begin
   inherited Create(ADockSite);
   FSite:=ADockSite;
   FDockableSites:=[akLeft,akTop,akBottom,akRight];
+  FInsideDockingAllowed:=true;
   if (ADockSite is TAnchorDockHostSite) then
     FDockSite:=TAnchorDockHostSite(ADockSite);
 end;
@@ -3462,16 +3470,17 @@ begin
     if akBottom in DockableSites then FindMinDistance(alBottom,Site.ClientHeight-p.Y);
 
     // check inside
-    if ((ADockObject.DropAlign=alLeft) and (p.X>=0))
-    or ((ADockObject.DropAlign=alTop) and (p.Y>=0))
-    or ((ADockObject.DropAlign=alRight) and (p.X<Site.ClientWidth))
-    or ((ADockObject.DropAlign=alBottom) and (p.Y<Site.ClientHeight))
+    if InsideDockingAllowed
+    and ( ((ADockObject.DropAlign=alLeft) and (p.X>=0))
+       or ((ADockObject.DropAlign=alTop) and (p.Y>=0))
+       or ((ADockObject.DropAlign=alRight) and (p.X<Site.ClientWidth))
+       or ((ADockObject.DropAlign=alBottom) and (p.Y<Site.ClientHeight)) )
     then
       ADockObject.DropOnControl:=Site
     else
       ADockObject.DropOnControl:=nil;
   end;
-  //debugln(['TAnchorDockManager.GetDockEdge ADockObject.DropAlign=',dbgs(ADockObject.DropAlign),' ',DbgSName(ADockObject.DropOnControl)]);
+  //debugln(['TAnchorDockManager.GetDockEdge ADockObject.DropAlign=',dbgs(ADockObject.DropAlign),' DropOnControl=',DbgSName(ADockObject.DropOnControl)]);
   Result:=true;
 end;
 
