@@ -350,6 +350,8 @@ type
     property Controls[Index: integer]: TControl read GetControls;
     function IndexOfControl(const aName: string): integer;
     function FindControl(const aName: string): TControl;
+    function IsSite(AControl: TControl): boolean;
+    function IsCustomSite(AControl: TControl): boolean;
 
     // show / make a control dockable
     procedure MakeDockable(AControl: TControl; Show: boolean = true;
@@ -501,8 +503,7 @@ begin
   i:=ControlCount-1;
   while i>=0 do begin
     AControl:=Controls[i];
-    if (AControl.HostDockSite is TAnchorDockHostSite)
-    and GetParentForm(AControl).IsVisible
+    if GetParentForm(AControl).IsVisible
     and (Tree.Root.FindChildNode(AControl.Name,true)=nil)
     and (Application.MainForm<>AControl) then begin
       // AControl is currently on a visible site, but not in the Tree
@@ -563,7 +564,7 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree;
   TreeNameToDocker: TADNameToControl);
 
   procedure MapHostDockSites(Node: TAnchorDockLayoutTreeNode);
-  // map in TreeNameToDocker each control name to its HostDockSite
+  // map in TreeNameToDocker each control name to its HostDockSite or custom dock site
   var
     i: Integer;
     AControl: TControl;
@@ -573,9 +574,16 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree;
       AControl:=FindControl(Node.Name);
       if (AControl<>nil) and (AControl.HostDockSite is TAnchorDockHostSite) then
         TreeNameToDocker[Node.Name]:=AControl.HostDockSite;
-    end else
-      for i:=0 to Node.Count-1 do
-        MapHostDockSites(Node[i]); // recursive
+      // ignore kids
+      exit;
+    end;
+    if (Node.NodeType=adltnCustomSite) then begin
+      AControl:=FindControl(Node.Name);
+      if IsCustomSite(AControl) then
+        TreeNameToDocker[Node.Name]:=AControl;
+    end;
+    for i:=0 to Node.Count-1 do
+      MapHostDockSites(Node[i]); // recursive
   end;
 
   procedure MapTopLevelSites(Node: TAnchorDockLayoutTreeNode);
@@ -587,12 +595,12 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree;
   //    flickering.
 
     function FindMappedControl(ChildNode: TAnchorDockLayoutTreeNode
-      ): TAnchorDockHostSite;
+      ): TCustomForm;
     var
       i: Integer;
     begin
-      if ChildNode.NodeType=adltnControl then
-        Result:=TAnchorDockHostSite(TreeNameToDocker[ChildNode.Name])
+      if ChildNode.NodeType in [adltnControl,adltnCustomSite] then
+        Result:=TCustomForm(TreeNameToDocker[ChildNode.Name])
       else
         for i:=0 to ChildNode.Count-1 do begin
           Result:=FindMappedControl(ChildNode[i]); // search recursive
@@ -603,18 +611,18 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree;
   var
     i: Integer;
     RootSite: TCustomForm;
-    Site: TAnchorDockHostSite;
+    Site: TCustomForm;
   begin
     if Node.IsSplitter then exit;
     if Node.IsRootWindow then begin
       if Node.Name='' then exit;
       if Node.NodeType=adltnControl then exit;
-      // not is a complex site
+      // Node is a complex site
       if TreeNameToDocker[Node.Name]<>nil then exit;
       // and not yet mapped to a site
       Site:=FindMappedControl(Node);
       if Site=nil then exit;
-      // and there is sub node mapped to a site
+      // and there is sub node mapped to a site (anchor or custom)
       RootSite:=GetParentForm(Site);
       if not (RootSite is TAnchorDockHostSite) then exit;
       // and the mapped site has a root site
@@ -707,13 +715,14 @@ end;
 function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
   TreeNameToDocker: TADNameToControl): boolean;
 
-  procedure SetupSite(Site: TAnchorDockHostSite;
+  procedure SetupSite(Site: TCustomForm;
     Node: TAnchorDockLayoutTreeNode; Parent: TWinControl);
   begin
     Site.BoundsRect:=Node.BoundsRect;
     Site.Visible:=true;
     Site.Parent:=Parent;
-    Site.Header.HeaderPosition:=Node.HeaderPosition;
+    if Site is TAnchorDockHostSite then
+      TAnchorDockHostSite(Site).Header.HeaderPosition:=Node.HeaderPosition;
     if Parent=nil then begin
       Site.WindowState:=Node.WindowState;
       if (Node.Monitor>=0) and (Node.Monitor<Screen.MonitorCount) then
@@ -753,6 +762,21 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
       AControl.Visible:=true;
       SetupSite(Site,Node,Parent);
       Result:=Site;
+    end else if Node.NodeType=adltnCustomSite then begin
+      // restore custom dock site
+      // the control was already created
+      // => position it
+      AControl:=FindControl(Node.Name);
+      if AControl=nil then begin
+        debugln(['TAnchorDockMaster.RestoreLayout.Restore WARNING: can not find control ',Node.Name]);
+        exit;
+      end;
+      if not IsCustomSite(AControl) then begin
+        debugln(['TAnchorDockMaster.RestoreLayout.Restore WARNING: ',Node.Name,' is not a custom dock site ',DbgSName(AControl)]);
+        exit;
+      end;
+      SetupSite(TCustomForm(AControl),Node,nil);
+      Result:=AControl;
     end else if Node.IsSplitter then begin
       // restore splitter
       Splitter:=TAnchorDockSplitter(TreeNameToDocker[Node.Name]);
@@ -962,6 +986,18 @@ begin
     Result:=nil;
 end;
 
+function TAnchorDockMaster.IsSite(AControl: TControl): boolean;
+begin
+  Result:=(AControl is TAnchorDockHostSite) or IsCustomSite(AControl);
+end;
+
+function TAnchorDockMaster.IsCustomSite(AControl: TControl): boolean;
+begin
+  Result:=(AControl is TCustomForm) // also checks for nil
+      and (AControl.Parent=nil)
+      and (TCustomForm(AControl).DockManager is TAnchorDockManager);
+end;
+
 procedure TAnchorDockMaster.MakeDockable(AControl: TControl; Show: boolean;
   BringToFront: boolean; AddDockHeader: boolean);
 var
@@ -1032,6 +1068,10 @@ begin
     raise Exception.Create('TAnchorDockMaster.MakeDockSite Parent='+DbgSName(AForm.Parent));
   AForm.DisableAutoSizing;
   try
+    if FControls.IndexOf(AForm)<0 then begin
+      FControls.Add(AForm);
+      AForm.FreeNotification(Self);
+    end;
     AManager:=TAnchorDockManager.Create(AForm);
     AManager.DockableSites:=Sites;
     AForm.DockManager:=AManager;
@@ -1110,8 +1150,7 @@ begin
         Site:=TAnchorDockHostSite(AForm);
         LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
         Site.SaveLayout(LayoutTree,LayoutNode);
-      end else if (AForm.DockManager is TAnchorDockManager)
-      and (AForm.Parent=nil) then begin
+      end else if IsCustomSite(AForm) then begin
         // custom dock site
         LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
         LayoutNode.NodeType:=adltnCustomSite;
@@ -1615,8 +1654,7 @@ begin
       end;
       BoundsRect:=NewBounds;
       BoundsIncreased:=true;
-    end else if (Parent.DockManager is TAnchorDockManager)
-    and (Parent.Parent=nil) then begin
+    end else if DockMaster.IsCustomSite(Parent) then begin
       // Parent is a custom docksite
       // => expand Self and Parent
       // expand Parent (the custom docksite)
@@ -1953,11 +1991,9 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
         p:=ClientOrigin;
         OffsetRect(NewBounds,p.x,p.y);
         BoundsRect:=NewBounds;
-      end else  if ((not (Parent is TAnchorDockHostSite))
-            and (Parent.DockManager is TAnchorDockManager)
-            and (Parent.Parent=nil))
-      then begin
-        // shrink this site and the parent (which is a custom dock site)
+      end else if DockMaster.IsCustomSite(Parent) then begin
+        // parent is a custom dock site
+        // shrink this site and the parent
         NewParentBounds:=Parent.BoundsRect;
         case Align of
         alTop:
@@ -2748,11 +2784,7 @@ var
 begin
   GetWindowRect(Handle, InfluenceRect);
 
-  if (Parent=nil)
-  or ((not (Parent is TAnchorDockHostSite))
-      and (Parent.DockManager is TAnchorDockManager)
-      and (Parent.Parent=nil))
-  then begin
+  if (Parent=nil) or DockMaster.IsCustomSite(Parent) then begin
     // allow docking outside => enlarge margins
     ADockMargin:=DockMaster.DockOutsideMargin;
     InfluenceRect.Left := InfluenceRect.Left-ADockMargin;

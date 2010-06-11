@@ -15,7 +15,6 @@ uses
 begin
   Application.Initialize;
   Application.CreateForm(TMainIDE, MainIDE);
-  DockMaster.MakeDockSite(MainIDE,[akBottom]);
   Application.Run;
 end.
 

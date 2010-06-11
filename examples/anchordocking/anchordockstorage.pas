@@ -1078,6 +1078,13 @@ var
   Side: TAnchorKind;
   Sibling: TAnchorDockLayoutTreeNode;
 begin
+  // check parent
+  if (NodeType=adltnNone) and (Parent<>nil) then
+    raise EAnchorDockLayoutError.Create('invalid parent');
+  if (NodeType=adltnCustomSite) and (Parent.NodeType<>adltnNone) then
+    raise EAnchorDockLayoutError.Create('invalid parent');
+
+  // check sides
   for Side:=low(TAnchorKind) to high(TAnchorKind) do begin
     if Anchors[Side]<>'' then begin
       // anchor must be a sibling
@@ -1116,6 +1123,7 @@ begin
             dbgs(Side), '"', Anchors[Side], '"']));
     end;
   end;
+
   // only the root node, pages, layouts and customsite can have children
   if (Parent<>nil) and (Count>0)
   and (not (NodeType in [adltnLayout,adltnPages,adltnCustomSite]))
@@ -1123,9 +1131,11 @@ begin
     raise EAnchorDockLayoutError.Create(
       Format(adrsNoChildrenAllowedForNodeType, ['"', Name, '"',
         ADLTreeNodeTypeNames[NodeType]]));
-  if (NodeType=adltnCustomSite) and (Count>1) then
-    raise EAnchorDockLayoutError.Create(Format(
-      adrsCustomDockSiteCanHaveOnlyOneSite, ['"', Name, '"']));
+  if (NodeType=adltnCustomSite) then begin
+    if (Count>1) then
+      raise EAnchorDockLayoutError.Create(Format(
+        adrsCustomDockSiteCanHaveOnlyOneSite, ['"', Name, '"']));
+  end;
 
   // check grandchild
   for i:=0 to Count-1 do begin
@@ -1372,7 +1382,7 @@ end;
 
 function TAnchorDockLayoutTreeNode.IsRootWindow: boolean;
 begin
-  Result:=(NodeType in [adltnLayout,adltnPages,adltnControl])
+  Result:=(NodeType in [adltnLayout,adltnPages,adltnControl,adltnCustomSite])
           and ((Parent=nil) or (Parent.NodeType in [adltnNone]));
 end;
 
