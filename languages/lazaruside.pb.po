@@ -13,7 +13,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
-msgstr ""
+msgstr "Usar esquema predefinido"
 
 #: lazarusidestrconsts.dlfmouseresetall
 msgid "Reset all settings"
@@ -113,7 +113,7 @@ msgstr "Você tem alterações não salvas. Ao usar esta página, todas alteraç
 
 #: lazarusidestrconsts.dlfnopredefinedscheme
 msgid "< None >"
-msgstr ""
+msgstr "<Nenhum>"
 
 #: lazarusidestrconsts.dlfreadonlycolor
 msgctxt "lazarusidestrconsts.dlfreadonlycolor"
@@ -138,7 +138,7 @@ msgstr "Árvore código retrátil"
 
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
-msgstr ""
+msgstr "Texto Padrão"
 
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
@@ -684,7 +684,7 @@ msgstr "(Editar Cor)"
 
 #: lazarusidestrconsts.dlgcolornotmodified
 msgid "Not modified"
-msgstr ""
+msgstr "Não modificado"
 
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
@@ -758,7 +758,7 @@ msgstr "Copiar/Colar com info. retração"
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
-msgstr "Copiar palavra sobre copia nenhuma"
+msgstr "Selecionar/Copiar palavra se nada selecionado"
 
 #: lazarusidestrconsts.dlgcorange
 msgid "Range"
@@ -1001,7 +1001,7 @@ msgstr "Atraso"
 
 #: lazarusidestrconsts.dlgeddelayinsec
 msgid "(%s sec delay)"
-msgstr ""
+msgstr "(atraso %s seg)"
 
 #: lazarusidestrconsts.dlgeddelete
 msgctxt "lazarusidestrconsts.dlgeddelete"
@@ -1010,7 +1010,7 @@ msgstr "Excluir"
 
 #: lazarusidestrconsts.dlgeddisplay
 msgid "Display"
-msgstr "Mostrar"
+msgstr "Exibir"
 
 #: lazarusidestrconsts.dlgededit
 msgid "Edit..."
@@ -1123,8 +1123,9 @@ msgid "Editor options"
 msgstr "Opções do editor"
 
 #: lazarusidestrconsts.dlgeditschemdefaults
+#, fuzzy
 msgid "Scheme globals"
-msgstr ""
+msgstr "Esquemas globais"
 
 #: lazarusidestrconsts.dlgedmisc
 msgid "Misc"
@@ -1509,7 +1510,7 @@ msgstr "Medianiz"
 
 #: lazarusidestrconsts.dlgguttercollapsedcolor
 msgid "Collapsed"
-msgstr ""
+msgstr "Retraido"
 
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
@@ -1541,7 +1542,7 @@ msgstr "Altura:"
 
 #: lazarusidestrconsts.dlghideideonrun
 msgid "Hide IDE windows on run"
-msgstr "Esconder a janela da IDE ao executar"
+msgstr "Ocultar a janela da IDE ao executar"
 
 #: lazarusidestrconsts.dlghidemessagesicons
 msgid "Hide Messages Icons"
@@ -2560,23 +2561,23 @@ msgstr "Caminhos"
 
 #: lazarusidestrconsts.dlgselectcolorsglobal
 msgid "Select global colors"
-msgstr ""
+msgstr "Selecionar cores globais"
 
 #: lazarusidestrconsts.dlgselectcolorslang
 msgid "Select colors for %s"
-msgstr ""
+msgstr "Selecionar cor para %s"
 
 #: lazarusidestrconsts.dlgselectcolorstomodify
 msgid "Modify colors/styles"
-msgstr ""
+msgstr "Modificar cores/estilos"
 
 #: lazarusidestrconsts.dlgselectcolorstomodifyglobal
 msgid "Modify global colors/styles"
-msgstr ""
+msgstr "Modificar cores/estilos globais"
 
 #: lazarusidestrconsts.dlgselectcolorstomodifylang
 msgid "Modify colors/styles for %s"
-msgstr ""
+msgstr "Modificar cores/estilos para %s"
 
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected Text"
@@ -2904,11 +2905,11 @@ msgstr "Usar arquivo mensagens"
 
 #: lazarusidestrconsts.dlguserschemeerror
 msgid "Failed to load user-scheme file %s"
-msgstr ""
+msgstr "Falhou ao carregar esquema do usuário do arquivo %s"
 
 #: lazarusidestrconsts.dlguseschemedefaults
 msgid "Use global scheme settings"
-msgstr ""
+msgstr "Usar o esquema de ajustes globais"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
@@ -3366,10 +3367,9 @@ msgid "About Lazarus"
 msgstr "Sobre o Lazarus"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
-#, fuzzy
 #| msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr "Licença: GPL/LGPL%sLazarus é uma IDE para criar aplicações (gráficas ou console) com o Free Pascal. Free Pascal é um compilador Pascal (L)GPL e Object Pascal que roda em Windows, Linux, Mac OS X, FreeBSD e mais.%sLazarus é a peça que falta no quebra-cabeças que irá permitir a você desenvolver programas para todas as plataformas citadas em um ambiente semelhante ao Delphi. A IDE é uma ferramenta RAD que inclui um editor de formulários.%sNa medida que o Lazarus evolui nós precisamos de mais desenvolvedores."
+msgstr "Licença: GPL/LGPL. Veja os fontes Lazarus e Free Pascal para detalhes da licença.%sLazarus é uma IDE para criar aplicações gráficas e console com o Free Pascal. Free Pascal é um compilador Pascal e Object Pascal que roda em Windows, Linux, Mac OS X, FreeBSD e mais.%sLazarus é a peça que falta do quebra-cabeças que irá permitir a você desenvolver programas para todas as plataformas citadas em um ambiente semelhante ao Delphi. A IDE é uma ferramenta RAD que inclui um editor de formulários.%sNa medida que o Lazarus evolui nós precisamos de mais desenvolvedores."
 
 #: lazarusidestrconsts.lisaboutnocontributors
 msgid "Cannot find contributors list."
@@ -5237,15 +5237,15 @@ msgstr "%s (compilando ...)"
 
 #: lazarusidestrconsts.liscompletionlonglinehinttype
 msgid "Show long line hints"
-msgstr ""
+msgstr "Exibir dicas longas"
 
 #: lazarusidestrconsts.liscompletionlonglinehinttypefullleft
 msgid "Extend far left"
-msgstr ""
+msgstr "Estender à extrema esquerda"
 
 #: lazarusidestrconsts.liscompletionlonglinehinttypelittleleft
 msgid "Extend some left"
-msgstr ""
+msgstr "Estender pouco à esquerda"
 
 #: lazarusidestrconsts.liscompletionlonglinehinttypenone
 msgctxt "lazarusidestrconsts.liscompletionlonglinehinttypenone"
@@ -5254,7 +5254,7 @@ msgstr "Nunca"
 
 #: lazarusidestrconsts.liscompletionlonglinehinttyperightonly
 msgid "Extend right only"
-msgstr ""
+msgstr "Estender apenas à direita"
 
 #: lazarusidestrconsts.liscomponent
 msgid "Component"
@@ -5434,11 +5434,11 @@ msgstr "Copiar toda saída para área transferência"
 
 #: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
 msgid "Copy all shown and hidden messages to clipboard"
-msgstr ""
+msgstr "Copiar todas as mensagens exibidas e escondidas para Área Transferência"
 
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
 msgid "Copy all shown messages to clipboard"
-msgstr ""
+msgstr "Copiar todas as mensagens exibidas para Área Transferência"
 
 #: lazarusidestrconsts.liscopydescription
 msgid "Copy description to clipboard"
@@ -5816,7 +5816,7 @@ msgstr "Valor padrão"
 
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
-msgstr ""
+msgstr "Atraso para dicas longas na caixa de conclusão"
 
 #: lazarusidestrconsts.lisdelayforhintsandcompletionbox
 msgid "Delay for hints and completion box"
@@ -7273,7 +7273,7 @@ msgstr "Recuo"
 
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for pascal sources"
-msgstr ""
+msgstr "Identação para fontes pascal"
 
 #: lazarusidestrconsts.lisindex
 msgid "Index"
@@ -11700,7 +11700,7 @@ msgstr "Perguntar por valor"
 
 #: lazarusidestrconsts.lisproperties
 msgid "Properties (replace or delete)"
-msgstr ""
+msgstr "Propriedades (substituir ou excluir)"
 
 #: lazarusidestrconsts.lispropertiesofconditionalcompileroption
 msgid "Properties of conditional compiler option"
@@ -11886,13 +11886,12 @@ msgstr "Núm. Repetição:"
 
 #: lazarusidestrconsts.lisreplacements
 msgid "Replacements"
-msgstr ""
+msgstr "Substituições"
 
 #: lazarusidestrconsts.lisreplaceremoveunknown
-#, fuzzy
 #| msgid "Replace unknown types and properties"
 msgid "Fix unknown properties and types"
-msgstr "Substituir tipos e propriedades desconhecidas"
+msgstr "Corrigir propriedades e tipos desconhecidos"
 
 #: lazarusidestrconsts.lisreplacingselectionfailed
 msgid "Replacing selection failed."
@@ -12173,7 +12172,7 @@ msgstr "Ajustar padrão"
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"
-msgstr ""
+msgstr "(Ajustar identação padrão)"
 
 #: lazarusidestrconsts.lissetvalue
 msgid "Set value"
@@ -13046,7 +13045,7 @@ msgstr "Turbo Pascal"
 
 #: lazarusidestrconsts.listypes
 msgid "Types (not removed if no replacement)"
-msgstr ""
+msgstr "Tipos (não removidos se nenhuma substituição)"
 
 #: lazarusidestrconsts.lisuedonotsho
 msgid "Do not show this message again."
