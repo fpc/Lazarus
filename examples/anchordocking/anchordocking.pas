@@ -62,6 +62,8 @@
     - dock site: MakeDockSite for forms, that should be able to dock other sites,
        but should not be docked themselves. Their Parent is always nil.
     - design time package for IDE
+    - dnd move page index
+    - dnd move page to another pagecontrol
 
   ToDo:
     - popup menu
@@ -73,8 +75,6 @@
         example how to dock in code
         step by step how to use it in applications
     - simple way to make forms dockable at designtime
-    - dnd move page index
-    - dnd move page to another pagecontrol
     - minimize button and Hide => show in header
     - on close button: save a default layout
     - on show again: restore a default layout

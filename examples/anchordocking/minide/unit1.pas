@@ -81,12 +81,17 @@ procedure TMainIDE.DockMasterCreateControl(Sender: TObject; aName: string; var
   end;
 
 begin
+  // first check if the form already exists
+  // the LCL Screen has a list of all existing forms.
+  // Note: Remember that the LCL allows as form names only standard
+  // pascal identifiers and compares them case insensitive
   AControl:=Screen.FindForm(aName);
   if AControl<>nil then begin
+    // if it already exists, just disable autosizing if requested
     if DoDisableAutoSizing then
       AControl.DisableAutoSizing;
-    exit;
   end;
+  // if the form does not yet exist, create it
   if aName='CodeExplorer' then
     CreateForm('Code Explorer',Bounds(700,230,100,250))
   else if aName='FPDocEditor' then
@@ -194,8 +199,10 @@ var
   XMLConfig: TXMLConfigStorage;
 begin
   try
+    // create a new xml config file
     XMLConfig:=TXMLConfigStorage.Create(Filename,false);
     try
+      // save the current layout of all forms
       DockMaster.SaveLayoutToConfig(XMLConfig);
       XMLConfig.WriteToDisk;
     finally
@@ -215,8 +222,11 @@ var
   XMLConfig: TXMLConfigStorage;
 begin
   try
+    // load the xml config file
     XMLConfig:=TXMLConfigStorage.Create(Filename,True);
     try
+      // restore the layout
+      // this will close unneeded forms and call OnCreateControl for all needed
       DockMaster.LoadLayoutFromConfig(XMLConfig);
     finally
       XMLConfig.Free;
