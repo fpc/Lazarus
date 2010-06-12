@@ -218,6 +218,20 @@ begin
   end;
 end;
 
+function TScreen.FindNonDesignerForm(const FormName: string): TCustomForm;
+var
+  i: Integer;
+begin
+  for i := 0 to FCustomForms.Count - 1 do
+  begin
+    Result:=TCustomForm(FCustomForms[i]);
+    if (not (csDesigning in Result.ComponentState))
+    and (CompareText(Result.Name, FormName) = 0) then
+      exit;
+  end;
+  Result := nil;
+end;
+
 function TScreen.FindForm(const FormName: string): TCustomForm;
 var
   i: Integer;
@@ -228,16 +242,31 @@ begin
   Result := nil;
 end;
 
+function TScreen.FindNonDesignerDataModule(const DataModuleName: string
+  ): TDataModule;
+var
+  i: Integer;
+begin
+  for i:=0 to FDataModuleList.Count-1 do
+  begin
+    Result:=TDataModule(FDataModuleList[i]);
+    if (not (csDesigning in Result.ComponentState))
+    and (CompareText(Result.Name, DataModuleName) = 0) then
+      Exit;
+  end;
+  Result := nil;
+end;
+
 function TScreen.FindDataModule(const DataModuleName: string): TDataModule;
 var
   i: Integer;
 begin
   for i:=0 to FDataModuleList.Count-1 do
-    if CompareText(TDataModule(FDataModuleList[i]).Name, DataModuleName) = 0 then
-    begin
-      Result := TDataModule(FDataModuleList[i]);
+  begin
+    Result:=TDataModule(FDataModuleList[i]);
+    if (CompareText(Result.Name, DataModuleName) = 0) then
       Exit;
-    end;
+  end;
   Result := nil;
 end;
 

@@ -20,14 +20,16 @@
 { $define DebugHintWindow}
 
 function FindApplicationComponent(const ComponentName: string): TComponent;
+// Note: this function is used by TReader to auto rename forms to unique names.
 begin
   if Application.FindGlobalComponentEnabled then
   begin
+    // ignore designer forms (the IDE registers its own functions to handle them)
     Result:=Application.FindComponent(ComponentName);
     if Result=nil then
-      Result:=Screen.FindForm(ComponentName);
+      Result:=Screen.FindNonDesignerForm(ComponentName);
     if Result=nil then
-      Result:=Screen.FindDataModule(ComponentName);
+      Result:=Screen.FindNonDesignerDataModule(ComponentName);
   end
   else
     Result:=nil;

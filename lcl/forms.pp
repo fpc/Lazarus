@@ -982,7 +982,9 @@ type
     function GetCurrentModalForm: TCustomForm;
     function GetCurrentModalFormZIndex: Integer;
     function CustomFormBelongsToActiveGroup(AForm: TCustomForm): Boolean;
+    function FindNonDesignerForm(const FormName: string): TCustomForm;
     function FindForm(const FormName: string): TCustomForm;
+    function FindNonDesignerDataModule(const DataModuleName: string): TDataModule;
     function FindDataModule(const DataModuleName: string): TDataModule;
     procedure UpdateScreen;
     // handler
