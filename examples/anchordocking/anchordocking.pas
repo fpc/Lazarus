@@ -58,6 +58,7 @@
        - enlarge side to left, top, right, bottom
        - move page left, right, leftmost, rightmost
        - close page
+       - tab position (default, left, top, right, bottom)
     - dock site: MakeDockSite for forms, that should be able to dock other sites,
        but should not be docked themselves. Their Parent is always nil.
     - design time package for IDE
@@ -66,7 +67,6 @@
     - popup menu
        - shrink side left, top, right, bottom
        - options
-       - tab position (default, left, top, right, bottom)
     - fpdoc
     - examples on wiki:
         screenshots
@@ -227,7 +227,7 @@ type
                                 Inside: boolean): boolean; virtual;
     procedure CreatePages; virtual;
     function DockSecondPage(NewControl: TControl): boolean; virtual;
-    function DockAnotherPage(NewControl: TControl): boolean; virtual;
+    function DockAnotherPage(NewControl: TControl; InFrontOf: TControl): boolean; virtual;
     procedure AddCleanControl(AControl: TControl; TheAlign: TAlign = alNone);
     procedure RemoveControlFromLayout(AControl: TControl);
     procedure RemoveSpiralSplitter(AControl: TControl);
@@ -1989,13 +1989,13 @@ begin
         if SiteType=adhstOneControl then begin
           if Parent is TAnchorDockPage then begin
             // add as sibling page
-            Result:=(Parent.Parent.Parent as TAnchorDockHostSite).DockAnotherPage(NewControl);
+            Result:=(Parent.Parent.Parent as TAnchorDockHostSite).DockAnotherPage(NewControl,nil);
           end else
             // create pages
             Result:=DockSecondPage(NewControl);
         end else if SiteType=adhstPages then
           // add as sibling page
-          Result:=DockAnotherPage(NewControl)
+          Result:=DockAnotherPage(NewControl,DragDockObject.DropOnControl);
       end else if DragDockObject.DropAlign in [alLeft,alTop,alRight,alBottom] then
       begin
         // anchor docking
@@ -2372,12 +2372,14 @@ begin
   OldSite.Align:=alClient;
   OldSite.Visible:=true;
 
-  Result:=DockAnotherPage(NewControl);
+  Result:=DockAnotherPage(NewControl,nil);
 end;
 
-function TAnchorDockHostSite.DockAnotherPage(NewControl: TControl): boolean;
+function TAnchorDockHostSite.DockAnotherPage(NewControl: TControl;
+  InFrontOf: TControl): boolean;
 var
   NewSite: TAnchorDockHostSite;
+  NewIndex: LongInt;
 begin
   debugln(['TAnchorDockHostSite.DockAnotherPage Self="',Caption,'" make new control (',DbgSName(NewControl),') dockable ...']);
   if SiteType<>adhstPages then
@@ -2385,12 +2387,16 @@ begin
 
   NewSite:=GetSite(NewControl);
   //debugln(['TAnchorDockHostSite.DockAnotherPage Self="',Caption,'" adding newcontrol site ...']);
-  FPages.Pages.Add(NewSite.Caption);
+  NewIndex:=FPages.PageCount;
+  if (InFrontOf is TAnchorDockPage)
+  and (InFrontOf.Parent=Pages) then
+    NewIndex:=TAnchorDockPage(InFrontOf).PageIndex;
+  Pages.Pages.Insert(NewIndex,NewSite.Caption);
   //debugln(['TAnchorDockHostSite.DockAnotherPage ',DbgSName(FPages.Page[1])]);
-  NewSite.Parent:=FPages.Page[FPages.PageCount-1];
+  NewSite.Parent:=FPages.Page[NewIndex];
   NewSite.Align:=alClient;
   NewSite.Visible:=true;
-  FPages.PageIndex:=FPages.PageCount-1;
+  FPages.PageIndex:=NewIndex;
 
   Result:=true;
 end;
@@ -3861,7 +3867,7 @@ end;
 procedure TAnchorDockManager.PositionDockRect(Client, DropCtl: TControl;
   DropAlign: TAlign; var DockRect: TRect);
 { Client = dragged source site (a TAnchorDockHostSite)
-  DropCtl is dragged child control of Client
+  DropCtl is target control (the DockSite, DockSite.Pages or one of the pages)
   DropAlign: where on Client DropCtl should be placed
   DockRect: the estimated new bounds of DropCtl
 }
@@ -3869,6 +3875,31 @@ var
   Offset: TPoint;
   Inside: Boolean;
 begin
+  if (DropAlign=alClient) and (DockSite<>nil) and (DockSite.Pages<>nil) then begin
+    // dock into pages
+    if DropCtl=DockSite.Pages then begin
+      // dock as last page
+      DockRect:=DockSite.Pages.TabRect(DockSite.Pages.PageCount-1);
+      case DockSite.Pages.TabPosition of
+      tpTop,tpBottom: DockRect.Left:=(DockRect.Left+DockRect.Right) div 2;
+      tpLeft,tpRight: DockRect.Top:=(DockRect.Top+DockRect.Bottom) div 2;
+      end;
+      Offset:=DockSite.Pages.ClientOrigin;
+      OffsetRect(DockRect,Offset.X,Offset.Y);
+      exit;
+    end else if DropCtl is TAnchorDockPage then begin
+      // dock in front of page
+      DockRect:=DockSite.Pages.TabRect(TAnchorDockPage(DropCtl).PageIndex);
+      case DockSite.Pages.TabPosition of
+      tpTop,tpBottom: DockRect.Right:=(DockRect.Left+DockRect.Right) div 2;
+      tpLeft,tpRight: DockRect.Bottom:=(DockRect.Top+DockRect.Bottom) div 2;
+      end;
+      Offset:=DockSite.Pages.ClientOrigin;
+      OffsetRect(DockRect,Offset.X,Offset.Y);
+      exit;
+    end;
+  end;
+
   Inside:=(DropCtl=Site);
   if (not Inside) and (Site.Parent<>nil) then begin
     if (Site.Parent is TAnchorDockHostSite)
@@ -4002,6 +4033,8 @@ var
 
 var
   p: TPoint;
+  LastTabRect: TRect;
+  TabIndex: longint;
 begin
   //debugln(['TAnchorDockManager.GetDockEdge ',DbgSName(Site),' ',DbgSName(DockSite),' DockableSites=',dbgs(DockableSites)]);
   if DockableSites=[] then begin
@@ -4010,7 +4043,25 @@ begin
   end;
 
   p:=Site.ScreenToClient(ADockObject.DragPos);
-  if (DockSite<>nil) and PtInRect(DockSite.GetPageArea,p) then begin
+  if (DockSite<>nil) and (DockSite.Pages<>nil) then begin
+    // page docking
+    ADockObject.DropAlign:=alClient;
+    p:=DockSite.Pages.ScreenToClient(ADockObject.DragPos);
+    LastTabRect:=DockSite.Pages.TabRect(DockSite.Pages.PageCount-1);
+    if (p.Y>=LastTabRect.Top) and (p.y<LastTabRect.Bottom) then begin
+      // specific tab
+      if p.X>=LastTabRect.Right then begin
+        // insert as last
+        ADockObject.DropOnControl:=DockSite.Pages;
+      end else begin
+        TabIndex:=DockSite.Pages.TabIndexAtClientPos(p);
+        if TabIndex>=0 then begin
+          // insert in front of an existing
+          ADockObject.DropOnControl:=DockSite.Pages.Page[TabIndex];
+        end;
+      end;
+    end;
+  end else if (DockSite<>nil) and PtInRect(DockSite.GetPageArea,p) then begin
     // page docking
     ADockObject.DropAlign:=alClient;
   end else begin
