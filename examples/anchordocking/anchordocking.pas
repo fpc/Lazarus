@@ -138,6 +138,7 @@ type
     property CloseButton: TSpeedButton read FCloseButton;
     property HeaderPosition: TADLHeaderPosition read FHeaderPosition write SetHeaderPosition;
   end;
+  TAnchorDockHeaderClass = class of TAnchorDockHeader;
 
   { TAnchorDockSplitter }
 
@@ -158,6 +159,7 @@ type
     procedure SaveLayout(LayoutNode: TAnchorDockLayoutTreeNode);
     function HasOnlyOneSibling(Side: TAnchorKind; MinPos, MaxPos: integer): TControl;
   end;
+  TAnchorDockSplitterClass = class of TAnchorDockSplitter;
 
   { TAnchorDockPage }
 
@@ -168,6 +170,7 @@ type
     procedure RemoveControl(AControl: TControl); override;
     function GetSite: TAnchorDockHostSite;
   end;
+  TAnchorDockPageClass = class of TAnchorDockPage;
 
   { TAnchorDockPageControl }
 
@@ -191,6 +194,7 @@ type
     procedure RemoveControl(AControl: TControl); override;
     function GetActiveSite: TAnchorDockHostSite;
   end;
+  TAnchorDockPageControlClass = class of TAnchorDockPageControl;
 
   { TAnchorDockHostSite
     This form is the dockhostsite for all controls.
@@ -286,6 +290,7 @@ type
     property SiteType: TAnchorDockHostSiteType read FSiteType;
     property BoundSplitter: TAnchorDockSplitter read FBoundSplitter;
   end;
+  TAnchorDockHostSiteClass = class of TAnchorDockHostSite;
 
   TADMResizePolicy = (
     admrpNone,
@@ -325,6 +330,7 @@ type
     function GetChildSite: TAnchorDockHostSite;
     property ResizePolicy: TADMResizePolicy read FResizePolicy write FResizePolicy;
   end;
+  TAnchorDockManagerClass = class of TAnchorDockManager;
 
   { TAnchorDockMaster }
 
@@ -340,11 +346,17 @@ type
     FDragTreshold: integer;
     FHeaderAlignLeft: integer;
     FHeaderAlignTop: integer;
+    FHeaderClass: TAnchorDockHeaderClass;
     FHeaderHint: string;
+    FManagerClass: TAnchorDockManagerClass;
     FOnCreateControl: TADCreateControlEvent;
     FPageAreaInPercent: integer;
+    FPageClass: TAnchorDockPageClass;
+    FPageControlClass: TAnchorDockPageControlClass;
     FScaleOnResize: boolean;
     FShowHeaderCaptionFloatingControl: boolean;
+    FSiteClass: TAnchorDockHostSiteClass;
+    FSplitterClass: TAnchorDockSplitterClass;
     FSplitterWidth: integer;
     fNeedSimplify: TFPList; // list of TControl
     fNeedFree: TFPList; // list of TControl
@@ -430,6 +442,14 @@ type
                           write FShowHeaderCaptionFloatingControl default false;
     property OnCreateControl: TADCreateControlEvent read FOnCreateControl write FOnCreateControl;
     property AllowDragging: boolean read FAllowDragging write FAllowDragging default true;
+
+    // for descendants
+    property SplitterClass: TAnchorDockSplitterClass read FSplitterClass write FSplitterClass;
+    property SiteClass: TAnchorDockHostSiteClass read FSiteClass write FSiteClass;
+    property ManagerClass: TAnchorDockManagerClass read FManagerClass write FManagerClass;
+    property HeaderClass: TAnchorDockHeaderClass read FHeaderClass write FHeaderClass;
+    property PageControlClass: TAnchorDockPageControlClass read FPageControlClass write FPageControlClass;
+    property PageClass: TAnchorDockPageClass read FPageClass write FPageClass;
   end;
 
 var
@@ -1373,6 +1393,12 @@ begin
   fNeedSimplify:=TFPList.Create;
   fNeedFree:=TFPList.Create;
   fDisabledAutosizing:=TFPList.Create;
+  FSplitterClass:=TAnchorDockSplitter;
+  FSiteClass:=TAnchorDockHostSite;
+  FManagerClass:=TAnchorDockManager;
+  FHeaderClass:=TAnchorDockHeader;
+  FPageControlClass:=TAnchorDockPageControl;
+  FPageClass:=TAnchorDockPage;
 end;
 
 destructor TAnchorDockMaster.Destroy;
@@ -1547,7 +1573,7 @@ begin
       FControls.Add(AForm);
       AForm.FreeNotification(Self);
     end;
-    AManager:=TAnchorDockManager.Create(AForm);
+    AManager:=ManagerClass.Create(AForm);
     AManager.DockableSites:=Sites;
     AManager.InsideDockingAllowed:=AllowInside;
     AManager.ResizePolicy:=ResizePolicy;
@@ -1910,7 +1936,7 @@ var
   i: Integer;
   NewName: String;
 begin
-  Result:=TAnchorDockHostSite(TAnchorDockHostSite.NewInstance);
+  Result:=TAnchorDockHostSite(SiteClass.NewInstance);
   Result.DisableAutoSizing;
   Result.Create(Self);
   i:=0;
@@ -1929,7 +1955,7 @@ var
   i: Integer;
   NewName: String;
 begin
-  Result:=TAnchorDockSplitter.Create(Self);
+  Result:=SplitterClass.Create(Self);
   i:=0;
   repeat
     inc(i);
@@ -2341,7 +2367,7 @@ end;
 
 procedure TAnchorDockHostSite.CreatePages;
 begin
-  FPages:=TAnchorDockPageControl.Create(nil); // do not own it, pages can be moved to another site
+  FPages:=DockMaster.PageControlClass.Create(nil); // do not own it, pages can be moved to another site
   FPages.FreeNotification(Self);
   FPages.Parent:=Self;
   FPages.Align:=alClient;
@@ -3310,6 +3336,7 @@ begin
   if (Parent=nil) or DockMaster.IsCustomSite(Parent) then begin
     // allow docking outside => enlarge margins
     ADockMargin:=DockMaster.DockOutsideMargin;
+    //debugln(['TAnchorDockHostSite.GetSiteInfo ',DbgSName(Self),' allow outside ADockMargin=',ADockMargin,' ',dbgs(InfluenceRect)]);
     InfluenceRect.Left := InfluenceRect.Left-ADockMargin;
     InfluenceRect.Top := InfluenceRect.Top-ADockMargin;
     InfluenceRect.Right := InfluenceRect.Right+ADockMargin;
@@ -3319,6 +3346,7 @@ begin
     ADockMargin:=DockMaster.DockParentMargin;
     ADockMargin:=Min(ADockMargin,Min(ClientWidth,ClientHeight) div 10);
     ADockMargin:=Max(0,ADockMargin);
+    //debugln(['TAnchorDockHostSite.GetSiteInfo ',DbgSName(Self),' do not cover parent ADockMargin=',ADockMargin,' ',dbgs(InfluenceRect)]);
     InfluenceRect.Left := InfluenceRect.Left+ADockMargin;
     InfluenceRect.Top := InfluenceRect.Top+ADockMargin;
     InfluenceRect.Right := InfluenceRect.Right-ADockMargin;
@@ -3459,13 +3487,13 @@ begin
   inherited Create(AOwner);
   Visible:=false;
   FHeaderSide:=akTop;
-  FHeader:=TAnchorDockHeader.Create(Self);
+  FHeader:=DockMaster.HeaderClass.Create(Self);
   FHeader.Align:=alTop;
   FHeader.Parent:=Self;
   FSiteType:=adhstNone;
   UpdateHeaderAlign;
   DragKind:=dkDock;
-  DockManager:=TAnchorDockManager.Create(Self);
+  DockManager:=DockMaster.ManagerClass.Create(Self);
   UseDockManager:=true;
   DragManager.RegisterDockSite(Self,true);
 end;
@@ -4046,6 +4074,7 @@ begin
   end;
 
   p:=Site.ScreenToClient(ADockObject.DragPos);
+  //debugln(['TAnchorDockManager.GetDockEdge ',dbgs(p),' ',dbgs(Site.BoundsRect),' ',DbgSName(Site)]);
   if (DockSite<>nil) and (DockSite.Pages<>nil) then begin
     // page docking
     ADockObject.DropAlign:=alClient;
@@ -4383,7 +4412,7 @@ end;
 
 constructor TAnchorDockPageControl.Create(TheOwner: TComponent);
 begin
-  PageClass:=TAnchorDockPage;
+  PageClass:=DockMaster.PageClass;
   inherited Create(TheOwner);
   PopupMenu:=DockMaster.GetPopupMenu;
 end;

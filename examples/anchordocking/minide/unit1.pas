@@ -129,7 +129,7 @@ begin
   SetBounds(100,50,600,80);
   ViewSrcEditor1ToolButtonClick(Self);
   ViewMessagesToolButtonClick(Self);
-  ViewOIToolButtonClick(Self);
+  //ViewOIToolButtonClick(Self);
 end;
 
 procedure TMainIDE.LoadLayoutToolButtonClick(Sender: TObject);
