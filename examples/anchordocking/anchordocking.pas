@@ -259,6 +259,8 @@ type
     function EnlargeSideResizeTwoSplitters(ShrinkSplitterSide,
                          EnlargeSpitterSide: TAnchorKind;
                          OnlyCheckIfPossible: boolean): boolean;
+    function EnlargeSideRotateSplitter(Side: TAnchorKind;
+                         OnlyCheckIfPossible: boolean): boolean;
     procedure CreateBoundSplitter;
     procedure PositionBoundSplitter;
   public
@@ -509,17 +511,14 @@ end;
 
 procedure AnchorAndChangeBounds(AControl: TControl; Side: TAnchorKind;
   Target: TControl);
-var
-  NewBounds: TRect;
 begin
-  NewBounds:=AControl.BoundsRect;
   if Target=AControl.Parent then begin
     AControl.AnchorParallel(Side,0,Target);
     case Side of
     akTop: AControl.Top:=0;
     akLeft: AControl.Left:=0;
     akRight: AControl.Width:=AControl.Parent.ClientWidth-AControl.Left;
-    akBottom: AControl.Height:=AControl.Parent.ClientHeight-Acontrol.Top;
+    akBottom: AControl.Height:=AControl.Parent.ClientHeight-AControl.Top;
     end;
   end else begin
     AControl.AnchorToNeighbour(Side,0,Target);
@@ -530,7 +529,6 @@ begin
     akBottom: AControl.Height:=Target.Top-AControl.Height;
     end;
   end;
-  AControl.BoundsRect:=NewBounds;
 end;
 
 function ControlsLeftTopOnScreen(AControl: TControl): TPoint;
@@ -3051,12 +3049,13 @@ function TAnchorDockHostSite.EnlargeSide(Side: TAnchorKind;
    ===================      ===================
 }
 begin
-  Result:=false;
+  Result:=true;
   if EnlargeSideResizeTwoSplitters(Side,ClockwiseAnchor[Side],
-                                   OnlyCheckIfPossible) then exit(true);
+                                   OnlyCheckIfPossible) then exit;
   if EnlargeSideResizeTwoSplitters(Side,OppositeAnchor[ClockwiseAnchor[Side]],
-                                   OnlyCheckIfPossible) then exit(true);
-  // ToDo: EnlargeBetween
+                                   OnlyCheckIfPossible) then exit;
+  if EnlargeSideRotateSplitter(Side,OnlyCheckIfPossible) then exit;
+  Result:=false;
 end;
 
 function TAnchorDockHostSite.EnlargeSideResizeTwoSplitters(ShrinkSplitterSide,
@@ -3154,6 +3153,139 @@ begin
     end;
   end;
   Result:=true;
+end;
+
+function TAnchorDockHostSite.EnlargeSideRotateSplitter(Side: TAnchorKind;
+  OnlyCheckIfPossible: boolean): boolean;
+{ Shrink splitter at Side, enlarge both neighbor splitters,
+  rotate the splitter behind, enlarge Control,
+  shrink controls at rotate splitter
+
+     |#|         |#|          |#|         |#|
+     |#| Control |#|          |#|         |#|
+   --+#+---------+#+--  --> --+#| Control |#+--
+   ===================      ===#|         |#===
+   --------+#+--------      --+#|         |#+--
+           |#|   B            |#|         |#|B
+           |#+--------        |#|         |#+--
+       A   |#=========       A|#|         |#===
+           |#+--------        |#|         |#+--
+           |#|   C            |#|         |#|C
+   --------+#+--------      --+#+---------+#+--
+   ===================      ===================
+}
+var
+  Splitter: TAnchorDockSplitter;
+  CWSide: TAnchorKind;
+  CWSplitter: TAnchorDockSplitter;
+  CCWSide: TAnchorKind;
+  i: Integer;
+  Sibling: TControl;
+  BehindSide: TAnchorKind;
+  RotateSplitter: TAnchorDockSplitter;
+  CCWSplitter: TAnchorDockSplitter;
+begin
+  Result:=false;
+  // check if there is a splitter at Side
+  Splitter:=TAnchorDockSplitter(AnchorSide[Side].Control);
+  if not (Splitter is TAnchorDockSplitter) then exit;
+  // check if there is a splitter at clockwise Side
+  CWSide:=ClockwiseAnchor[Side];
+  CWSplitter:=TAnchorDockSplitter(AnchorSide[CWSide].Control);
+  if not (CWSplitter is TAnchorDockSplitter) then exit;
+  // check if there is a splitter at counter clockwise Side
+  CCWSide:=OppositeAnchor[CWSide];
+  CCWSplitter:=TAnchorDockSplitter(AnchorSide[CCWSide].Control);
+  if not (CCWSplitter is TAnchorDockSplitter) then exit;
+  // check if neighbor splitters end at Splitter
+  if CWSplitter.AnchorSide[Side].Control<>Splitter then exit;
+  if CCWSplitter.AnchorSide[Side].Control<>Splitter then exit;
+  // find the rotate splitter behind Splitter
+  BehindSide:=OppositeAnchor[Side];
+  RotateSplitter:=nil;
+  for i:=0 to Splitter.AnchoredControlCount-1 do begin
+    Sibling:=Splitter.AnchoredControls[i];
+    if Sibling.AnchorSide[BehindSide].Control<>Splitter then continue;
+    if not (Sibling is TAnchorDockSplitter) then continue;
+    if Side in [akLeft,akRight] then begin
+      if Sibling.Top<Top-DockMaster.SplitterWidth then continue;
+      if Sibling.Top>Top+Height then continue;
+    end else begin
+      if Sibling.Left<Left-DockMaster.SplitterWidth then continue;
+      if Sibling.Left>Left+Width then continue;
+    end;
+    if RotateSplitter=nil then
+      RotateSplitter:=TAnchorDockSplitter(Sibling)
+    else
+      // there are multiple splitters behind
+      exit;
+  end;
+  // check that all siblings at RotateSplitter are large enough to shrink
+  for i:=0 to RotateSplitter.AnchoredControlCount-1 do begin
+    Sibling:=RotateSplitter.AnchoredControls[i];
+    if Side in [akLeft,akRight] then begin
+      if (Sibling.Top>Top-DockMaster.SplitterWidth)
+      and (Sibling.Top+Sibling.Height<Top+Height+DockMaster.SplitterWidth) then
+        exit;
+    end else begin
+      if (Sibling.Left>Left-DockMaster.SplitterWidth)
+      and (Sibling.Left+Sibling.Width<Left+Width+DockMaster.SplitterWidth) then
+        exit;
+    end;
+  end;
+  Result:=true;
+  if OnlyCheckIfPossible then exit;
+
+  //debugln(['TAnchorDockHostSite.EnlargeSideRotateSplitter BEFORE Self=',DbgSName(Self),'=',dbgs(BoundsRect),' Side=',dbgs(Side),' CWSide=',dbgs(CWSide),' CWSplitter=',CWSplitter.Name,'=',dbgs(CWSplitter.BoundsRect),' CCWSide=',dbgs(CCWSide),' CCWSplitter=',CCWSplitter.Name,'=',dbgs(CCWSplitter.BoundsRect),' Behind=',dbgs(BehindSide),'=',RotateSplitter.Name,'=',dbgs(RotateSplitter.BoundsRect)]);
+
+  DisableAutoSizing;
+  try
+    // enlarge the two neighbor splitters
+    AnchorAndChangeBounds(CWSplitter,Side,RotateSplitter.AnchorSide[Side].Control);
+    AnchorAndChangeBounds(CCWSplitter,Side,RotateSplitter.AnchorSide[Side].Control);
+    // enlarge control
+    AnchorAndChangeBounds(Self,Side,RotateSplitter.AnchorSide[Side].Control);
+    // shrink the neighbors and anchor them to the enlarge splitters
+    for i:=0 to Parent.ControlCount-1 do begin
+      Sibling:=Parent.Controls[i];
+      if Sibling.AnchorSide[CWSide].Control=RotateSplitter then
+        AnchorAndChangeBounds(Sibling,CWSide,CCWSplitter)
+      else if Sibling.AnchorSide[CCWSide].Control=RotateSplitter then
+        AnchorAndChangeBounds(Sibling,CCWSide,CWSplitter);
+    end;
+    // rotate the RotateSplitter
+    RotateSplitter.AnchorSide[Side].Control:=nil;
+    RotateSplitter.AnchorSide[BehindSide].Control:=nil;
+    RotateSplitter.ResizeAnchor:=Side;
+    AnchorAndChangeBounds(RotateSplitter,CCWSide,Splitter.AnchorSide[CCWSide].Control);
+    AnchorAndChangeBounds(RotateSplitter,CWSide,CCWSplitter);
+    if Side in [akLeft,akRight] then begin
+      RotateSplitter.Left:=Splitter.Left;
+      RotateSplitter.Width:=DockMaster.SplitterWidth;
+    end else begin
+      RotateSplitter.Top:=Splitter.Top;
+      RotateSplitter.Height:=DockMaster.SplitterWidth;
+    end;
+    // shrink Splitter
+    AnchorAndChangeBounds(Splitter,CCWSide,CWSplitter);
+    // anchor some siblings of Splitter to RotateSplitter
+    for i:=0 to Parent.ControlCount-1 do begin
+      Sibling:=Parent.Controls[i];
+      case Side of
+      akLeft: if Sibling.Top<Top then continue;
+      akRight: if Sibling.Top>Top then continue;
+      akTop: if Sibling.Left>Left then continue;
+      akBottom: if Sibling.Left<Left then continue;
+      end;
+      if Sibling.AnchorSide[BehindSide].Control=Splitter then
+        Sibling.AnchorSide[BehindSide].Control:=RotateSplitter
+      else if Sibling.AnchorSide[Side].Control=Splitter then
+        Sibling.AnchorSide[Side].Control:=RotateSplitter;
+    end;
+    //debugln(['TAnchorDockHostSite.EnlargeSideRotateSplitter AFTER Self=',DbgSName(Self),'=',dbgs(BoundsRect),' Side=',dbgs(Side),' CWSide=',dbgs(CWSide),' CWSplitter=',CWSplitter.Name,'=',dbgs(CWSplitter.BoundsRect),' CCWSide=',dbgs(CCWSide),' CCWSplitter=',CCWSplitter.Name,'=',dbgs(CCWSplitter.BoundsRect),' Behind=',dbgs(BehindSide),'=',RotateSplitter.Name,'=',dbgs(RotateSplitter.BoundsRect)]);
+  finally
+    EnableAutoSizing;
+  end;
 end;
 
 procedure TAnchorDockHostSite.CreateBoundSplitter;
