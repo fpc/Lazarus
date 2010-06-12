@@ -3620,8 +3620,8 @@ begin
     end else begin
       if CloseButton.Visible then
         r.Right:=CloseButton.Left-2;
-      dx:=Max(0,(r.Right-r.Left-TxtH) div 2);
-      dy:=Max(0,(r.Bottom-r.Top-TxtW) div 2);
+      dx:=Max(0,(r.Right-r.Left-TxtW) div 2);
+      dy:=Max(0,(r.Bottom-r.Top-TxtH) div 2);
       Canvas.Font.Orientation:=0;
       Canvas.TextOut(r.Left+dx,r.Top+dy,Caption);
     end;
