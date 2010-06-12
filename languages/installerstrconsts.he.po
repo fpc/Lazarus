@@ -1,0 +1,29 @@
+# Ido K <idokan@gmail.com>, 2010.
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: Ido K <idokan@gmail.com>\n"
+"PO-Revision-Date: 2010-06-12 20:32+0300\n"
+"Project-Id-Version: \n"
+"X-Generator: Lokalize 1.0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: installerstrconsts.wiseditform
+msgid "&Edit form"
+msgstr "ערוך ח&לון"
+
+#: installerstrconsts.wiseditsource
+msgid "&Edit source"
+msgstr "ע&רוך קוד"
+
+#: installerstrconsts.wisopenpackage
+msgid "&Open package"
+msgstr "פ&תח חבילה"
+
+#: installerstrconsts.wisopenproject
+msgid "&Open project"
+msgstr "פ&תח פרויקט"
+
+
