@@ -345,16 +345,15 @@ type
     fSimplifying: boolean;
     fUpdateCount: integer;
     fDisabledAutosizing: TFPList; // list of TControl
+    fTreeNameToDocker: TADNameToControl;
     function GetControls(Index: integer): TControl;
     procedure SetHeaderAlignLeft(const AValue: integer);
     procedure SetHeaderAlignTop(const AValue: integer);
     function CloseUnneededControls(Tree: TAnchorDockLayoutTree): boolean;
     function CreateNeededControls(Tree: TAnchorDockLayoutTree;
                 DisableAutoSizing: boolean; ControlNames: TStrings): boolean;
-    procedure MapTreeToControls(Tree: TAnchorDockLayoutTree;
-                                TreeNameToDocker: TADNameToControl);
-    function RestoreLayout(Tree: TAnchorDockLayoutTree;
-                           TreeNameToDocker: TADNameToControl): boolean;
+    procedure MapTreeToControls(Tree: TAnchorDockLayoutTree);
+    function RestoreLayout(Tree: TAnchorDockLayoutTree): boolean;
     function DoCreateControl(aName: string; DisableAutoSizing: boolean): TControl;
     procedure DisableControlAutoSizing(AControl: TControl);
     procedure EnableAllAutoSizing;
@@ -597,8 +596,7 @@ begin
   Result:=true;
 end;
 
-procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree;
-  TreeNameToDocker: TADNameToControl);
+procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree);
 
   procedure MapHostDockSites(Node: TAnchorDockLayoutTreeNode);
   // map in TreeNameToDocker each control name to its HostDockSite or custom dock site
@@ -610,14 +608,14 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree;
     if (Node.NodeType=adltnControl) then begin
       AControl:=FindControl(Node.Name);
       if (AControl<>nil) and (AControl.HostDockSite is TAnchorDockHostSite) then
-        TreeNameToDocker[Node.Name]:=AControl.HostDockSite;
+        fTreeNameToDocker[Node.Name]:=AControl.HostDockSite;
       // ignore kids
       exit;
     end;
     if (Node.NodeType=adltnCustomSite) then begin
       AControl:=FindControl(Node.Name);
       if IsCustomSite(AControl) then
-        TreeNameToDocker[Node.Name]:=AControl;
+        fTreeNameToDocker[Node.Name]:=AControl;
     end;
     for i:=0 to Node.Count-1 do
       MapHostDockSites(Node[i]); // recursive
@@ -637,7 +635,7 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree;
       i: Integer;
     begin
       if ChildNode.NodeType in [adltnControl,adltnCustomSite] then
-        Result:=TCustomForm(TreeNameToDocker[ChildNode.Name])
+        Result:=TCustomForm(fTreeNameToDocker[ChildNode.Name])
       else
         for i:=0 to ChildNode.Count-1 do begin
           Result:=FindMappedControl(ChildNode[i]); // search recursive
@@ -655,7 +653,7 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree;
       if Node.Name='' then exit;
       if Node.NodeType=adltnControl then exit;
       // Node is a complex site
-      if TreeNameToDocker[Node.Name]<>nil then exit;
+      if fTreeNameToDocker[Node.Name]<>nil then exit;
       // and not yet mapped to a site
       Site:=FindMappedControl(Node);
       if Site=nil then exit;
@@ -663,10 +661,10 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree;
       RootSite:=GetParentForm(Site);
       if not (RootSite is TAnchorDockHostSite) then exit;
       // and the mapped site has a root site
-      if TreeNameToDocker.ControlToName(RootSite)<>'' then exit;
+      if fTreeNameToDocker.ControlToName(RootSite)<>'' then exit;
       // and the root site is not yet mapped
       // => map the root node to the root site
-      TreeNameToDocker[Node.Name]:=RootSite;
+      fTreeNameToDocker[Node.Name]:=RootSite;
     end else
       for i:=0 to Node.Count-1 do
         MapTopLevelSites(Node[i]); // recursive
@@ -683,19 +681,19 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree;
     BestSite: TControl;
   begin
     if Node.IsSplitter then exit;
-    BestSite:=TreeNameToDocker[Node.Name];
+    BestSite:=fTreeNameToDocker[Node.Name];
     for i:=0 to Node.Count-1 do begin
       MapBottomUp(Node[i]); // recursive
       if BestSite=nil then
-        BestSite:=TreeNameToDocker[Node[i].Name];
+        BestSite:=fTreeNameToDocker[Node[i].Name];
     end;
-    if (TreeNameToDocker[Node.Name]=nil) and (BestSite<>nil) then begin
+    if (fTreeNameToDocker[Node.Name]=nil) and (BestSite<>nil) then begin
       // search the parent site of a child site
       repeat
         BestSite:=BestSite.Parent;
         if BestSite is TAnchorDockHostSite then begin
-          if TreeNameToDocker.ControlToName(BestSite)='' then
-            TreeNameToDocker[Node.Name]:=BestSite;
+          if fTreeNameToDocker.ControlToName(BestSite)='' then
+            fTreeNameToDocker[Node.Name]:=BestSite;
           break;
         end;
       until (BestSite=nil);
@@ -722,7 +720,7 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree;
 
     if Node.Parent=nil then exit;
     // node is a child node
-    Site:=TreeNameToDocker[Node.Name];
+    Site:=fTreeNameToDocker[Node.Name];
     if Site=nil then exit;
     // node is mapped to a site
     // check each side
@@ -731,14 +729,14 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree;
       SplitterNode:=Node.Parent.FindChildNode(Node.Anchors[Side],false);
       if (SplitterNode=nil) then continue;
       // this side of node is anchored to a splitter node
-      if TreeNameToDocker[SplitterNode.Name]<>nil then continue;
+      if fTreeNameToDocker[SplitterNode.Name]<>nil then continue;
       // the splitter node is not yet mapped
       Splitter:=Site.AnchorSide[Side].Control;
       if (not (Splitter is TAnchorDockSplitter))
       or (Splitter.Parent<>Site.Parent) then continue;
       // there is an unmapped splitter anchored to the Site
       // => map the splitter to the splitter node
-      TreeNameToDocker[Splitter.Name]:=Splitter;
+      fTreeNameToDocker[Splitter.Name]:=Splitter;
     end;
   end;
 
@@ -749,8 +747,7 @@ begin
   MapSplitters(Tree.Root);
 end;
 
-function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
-  TreeNameToDocker: TADNameToControl): boolean;
+function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree): boolean;
 
   procedure SetupSite(Site: TCustomForm;
     Node: TAnchorDockLayoutTreeNode; Parent: TWinControl);
@@ -827,10 +824,10 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
       end;
     end else if Node.IsSplitter then begin
       // restore splitter
-      Splitter:=TAnchorDockSplitter(TreeNameToDocker[Node.Name]);
+      Splitter:=TAnchorDockSplitter(fTreeNameToDocker[Node.Name]);
       if Splitter=nil then begin
         Splitter:=CreateSplitter;
-        TreeNameToDocker[Node.Name]:=Splitter;
+        fTreeNameToDocker[Node.Name]:=Splitter;
       end;
       debugln(['Restore Splitter Node.Name=',Node.Name,' ',dbgs(Node.NodeType),' Splitter=',DbgSName(Splitter)]);
       Splitter.Parent:=Parent;
@@ -842,11 +839,11 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
       Result:=Splitter;
     end else if Node.NodeType=adltnLayout then begin
       // restore layout
-      Site:=TAnchorDockHostSite(TreeNameToDocker[Node.Name]);
+      Site:=TAnchorDockHostSite(fTreeNameToDocker[Node.Name]);
       if Site=nil then begin
         Site:=CreateSite('',true);
         fDisabledAutosizing.Add(Site);
-        TreeNameToDocker[Node.Name]:=Site;
+        fTreeNameToDocker[Node.Name]:=Site;
       end;
       debugln(['Restore Layout Node.Name=',Node.Name,' ChildCount=',Node.Count]);
       Site.BeginUpdateLayout;
@@ -860,7 +857,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
         // anchor children
         for i:=0 to Node.Count-1 do begin
           ChildNode:=Node[i];
-          AControl:=TreeNameToDocker[ChildNode.Name];
+          AControl:=fTreeNameToDocker[ChildNode.Name];
           debugln(['  Restore layout child anchors Site=',DbgSName(Site),' ChildNode.Name=',ChildNode.Name,' Control=',DbgSName(AControl)]);
           if AControl=nil then continue;
           for Side:=Low(TAnchorKind) to high(TAnchorKind) do begin
@@ -871,7 +868,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
             then continue;
             AnchorControl:=nil;
             if ChildNode.Anchors[Side]<>'' then
-              AnchorControl:=TreeNameToDocker[ChildNode.Anchors[Side]];
+              AnchorControl:=fTreeNameToDocker[ChildNode.Anchors[Side]];
             if AnchorControl<>nil then
               AControl.AnchorToNeighbour(Side,0,AnchorControl)
             else
@@ -884,11 +881,11 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
       Result:=Site;
     end else if Node.NodeType=adltnPages then begin
       // restore pages
-      Site:=TAnchorDockHostSite(TreeNameToDocker[Node.Name]);
+      Site:=TAnchorDockHostSite(fTreeNameToDocker[Node.Name]);
       if Site=nil then begin
         Site:=CreateSite('',true);
         fDisabledAutosizing.Add(Site);
-        TreeNameToDocker[Node.Name]:=Site;
+        fTreeNameToDocker[Node.Name]:=Site;
       end;
       Site.BeginUpdateLayout;
       try
@@ -985,6 +982,7 @@ begin
       fNeedSimplify.Remove(AControl);
       fNeedFree.Remove(AControl);
       fDisabledAutosizing.Remove(AControl);
+      if fTreeNameToDocker<>nil then fTreeNameToDocker.RemoveControl(AControl);
     end;
   end;
 end;
@@ -1012,6 +1010,7 @@ destructor TAnchorDockMaster.Destroy;
 var
   AControl: TControl;
 begin
+  FreeAndNil(fTreeNameToDocker);
   if FControls.Count>0 then begin
     while ControlCount>0 do begin
       AControl:=Controls[ControlCount-1];
@@ -1262,11 +1261,10 @@ function TAnchorDockMaster.LoadLayoutFromConfig(Config: TConfigStorage): Boolean
 var
   Tree: TAnchorDockLayoutTree;
   ControlNames: TStringList;
-  TreeNameToDocker: TADNameToControl;
 begin
   Result:=false;
   ControlNames:=TStringList.Create;
-  TreeNameToDocker:=TADNameToControl.Create;
+  fTreeNameToDocker:=TADNameToControl.Create;
   Tree:=TAnchorDockLayoutTree.Create;
   try
     // load tree
@@ -1292,17 +1290,17 @@ begin
       Tree.Root.Simplify(ControlNames);
 
       // reuse existing sites to reduce flickering
-      MapTreeToControls(Tree,TreeNameToDocker);
-      TreeNameToDocker.WriteDebugReport('TAnchorDockMaster.LoadLayoutFromConfig Map');
+      MapTreeToControls(Tree);
+      fTreeNameToDocker.WriteDebugReport('TAnchorDockMaster.LoadLayoutFromConfig Map');
 
       // create sites
-      RestoreLayout(Tree,TreeNameToDocker);
+      RestoreLayout(Tree);
     finally
       EndUpdate;
     end;
   finally
     // clean up
-    TreeNameToDocker.Free;
+    FreeAndNil(fTreeNameToDocker);
     ControlNames.Free;
     Tree.Free;
     // commit (this can raise an exception)
@@ -2770,6 +2768,7 @@ begin
   Result:=CloseQuery;
   if not Result then exit;
 
+  DisableAutoSizing;
   case SiteType of
   adhstNone:
     Release;
@@ -2806,8 +2805,11 @@ begin
         Release;
         AControl.Visible:=false;
       end;
+      Visible:=false;
+      Parent:=nil;
     end;
   end;
+  EnableAutoSizing;
 end;
 
 procedure TAnchorDockHostSite.RemoveControl(AControl: TControl);

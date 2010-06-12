@@ -193,6 +193,7 @@ type
     destructor Destroy; override;
     function ControlToName(AControl: TControl): string;
     property Control[const aName: string]: TControl read GetControl write SetControl; default;
+    procedure RemoveControl(AControl: TControl);
     procedure WriteDebugReport(Msg: string);
   end;
 
@@ -1593,6 +1594,18 @@ begin
     dec(i);
   end;
   Result:='';
+end;
+
+procedure TADNameToControl.RemoveControl(AControl: TControl);
+var
+  i: Integer;
+begin
+  i:=fItems.Count-1;
+  while i>=0 do begin
+    if fItems.Objects[i]=AControl then
+      fItems.Delete(i);
+    dec(i);
+  end;
 end;
 
 procedure TADNameToControl.WriteDebugReport(Msg: string);
