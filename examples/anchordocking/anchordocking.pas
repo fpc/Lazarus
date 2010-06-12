@@ -56,6 +56,8 @@
        - undock (needed if no place to undock on screen)
        - merge (for example after moving a dock page into a layout)
        - enlarge side to left, top, right, bottom
+       - move page left, right, leftmost, rightmost
+       - close page
     - dock site: MakeDockSite for forms, that should be able to dock other sites,
        but should not be docked themselves. Their Parent is always nil.
     - design time package for IDE
@@ -64,7 +66,6 @@
     - popup menu
        - shrink side left, top, right, bottom
        - options
-       - close (for pages)
        - tab position (default, left, top, right, bottom)
     - fpdoc
     - examples on wiki:
@@ -72,8 +73,8 @@
         example how to dock in code
         step by step how to use it in applications
     - simple way to make forms dockable at designtime
-    - move page index
-    - move page to another pagecontrol
+    - dnd move page index
+    - dnd move page to another pagecontrol
     - minimize button and Hide => show in header
     - on close button: save a default layout
     - on show again: restore a default layout
@@ -3255,6 +3256,8 @@ procedure TAnchorDockHeader.Paint;
 var
   r: TRect;
   TxtH: longint;
+  TxtW: longint;
+  dx,dy: Integer;
 begin
   r:=ClientRect;
   Canvas.Frame3d(r,1,bvRaised);
@@ -3263,12 +3266,21 @@ begin
   // caption
   if Caption<>'' then begin
     TxtH:=Canvas.TextHeight('ABCMgq');
+    TxtW:=Canvas.TextWidth(Caption);
     if Align in [alLeft,alRight] then begin
+      if CloseButton.Visible then
+        r.Top:=CloseButton.Top+CloseButton.Height+2;
+      dx:=Max(0,(r.Right-r.Left-TxtH) div 2);
+      dy:=Max(0,(r.Bottom-r.Top-TxtW) div 2);
       Canvas.Font.Orientation:=900;
-      Canvas.TextOut((r.Left+r.Right-TxtH) div 2,r.Bottom,Caption);
+      Canvas.TextOut(r.Left+dx,r.Bottom-dy,Caption);
     end else begin
+      if CloseButton.Visible then
+        r.Right:=CloseButton.Left-2;
+      dx:=Max(0,(r.Right-r.Left-TxtH) div 2);
+      dy:=Max(0,(r.Bottom-r.Top-TxtW) div 2);
       Canvas.Font.Orientation:=0;
-      Canvas.TextOut(r.Left,(r.Top+r.Bottom-TxtH) div 2,Caption);
+      Canvas.TextOut(r.Left+dx,r.Top+dy,Caption);
     end;
   end;
 end;
