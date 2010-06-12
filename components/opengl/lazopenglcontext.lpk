@@ -37,6 +37,7 @@
       </Item4>
       <Item5>
         <Filename Value="glqtcontext.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="glqtcontext"/>
       </Item5>
     </Files>
