@@ -346,6 +346,7 @@ type
     fUpdateCount: integer;
     fDisabledAutosizing: TFPList; // list of TControl
     fTreeNameToDocker: TADNameToControl;
+    fPopupMenu: TPopupMenu;
     function GetControls(Index: integer): TControl;
     procedure SetHeaderAlignLeft(const AValue: integer);
     procedure SetHeaderAlignTop(const AValue: integer);
@@ -358,6 +359,8 @@ type
     procedure DisableControlAutoSizing(AControl: TControl);
     procedure EnableAllAutoSizing;
     procedure ClearLayoutProperties(AControl: TControl);
+    procedure PopupMenuPopup(Sender: TObject);
+    procedure PopupMenuCloseUp(Sender: TObject);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);
           override;
@@ -370,6 +373,7 @@ type
     function FindControl(const aName: string): TControl;
     function IsSite(AControl: TControl): boolean;
     function IsCustomSite(AControl: TControl): boolean;
+    function GetPopupMenu: TPopupMenu;
 
     // show / make a control dockable
     procedure MakeDockable(AControl: TControl; Show: boolean = true;
@@ -969,6 +973,25 @@ begin
     AControl.AnchorSide[a].Control:=nil;
 end;
 
+procedure TAnchorDockMaster.PopupMenuPopup(Sender: TObject);
+var
+  Popup: TPopupMenu;
+begin
+  if not (Sender is TPopupMenu) then exit;
+  Popup:=TPopupMenu(Sender);
+  if Popup.PopupComponent is TAnchorDockHeader then
+    TAnchorDockHeader(Popup.PopupComponent).PopupMenuPopup(Sender);
+end;
+
+procedure TAnchorDockMaster.PopupMenuCloseUp(Sender: TObject);
+var
+  Popup: TPopupMenu;
+begin
+  if not (Sender is TPopupMenu) then exit;
+  Popup:=TPopupMenu(Sender);
+  Popup.Items.Clear;
+end;
+
 procedure TAnchorDockMaster.Notification(AComponent: TComponent;
   Operation: TOperation);
 var
@@ -1010,6 +1033,7 @@ destructor TAnchorDockMaster.Destroy;
 var
   AControl: TControl;
 begin
+  FreeAndNil(fPopupMenu);
   FreeAndNil(fTreeNameToDocker);
   if FControls.Count>0 then begin
     while ControlCount>0 do begin
@@ -1057,6 +1081,16 @@ begin
   Result:=(AControl is TCustomForm) // also checks for nil
       and (AControl.Parent=nil)
       and (TCustomForm(AControl).DockManager is TAnchorDockManager);
+end;
+
+function TAnchorDockMaster.GetPopupMenu: TPopupMenu;
+begin
+  if fPopupMenu=nil then begin
+    fPopupMenu:=TPopupMenu.Create(Self);
+    fPopupMenu.OnPopup:=@PopupMenuPopup;
+    fPopupMenu.OnClose:=@PopupMenuCloseUp;
+  end;
+  Result:=fPopupMenu;
 end;
 
 procedure TAnchorDockMaster.MakeDockable(AControl: TControl; Show: boolean;
@@ -3098,12 +3132,16 @@ begin
 
   // header position
   HeaderPosItem:=AddPopupMenuItem('HeaderPosMenuItem', adrsHeaderPosition, nil);
-  AddPopupMenuItem('HeaderPosAutoMenuItem', adrsAutomatically,
+  Item:=AddPopupMenuItem('HeaderPosAutoMenuItem', adrsAutomatically,
                    @HeaderPositionItemClick, HeaderPosItem);
-  for Side:=Low(TAnchorKind) to High(TAnchorKind) do
-    AddPopupMenuItem('HeaderPos'+AnchorNames[Side]+'MenuItem',
+  if Item<>nil then Item.Tag:=ord(adlhpAuto);
+  for Side:=Low(TAnchorKind) to High(TAnchorKind) do begin
+    Item:=AddPopupMenuItem('HeaderPos'+AnchorNames[Side]+'MenuItem',
                      SideCaptions[Side], @HeaderPositionItemClick,
                      HeaderPosItem);
+    if Item<>nil then Item.Tag:=ord(Side)+1;
+  end;
+
   // enlarge
   for Side:=Low(TAnchorKind) to High(TAnchorKind) do begin
     Item:=AddRemovePopupMenuItem(ParentSite.EnlargeSide(Side,true),
@@ -3167,7 +3205,7 @@ var
 begin
   if not (Sender is TMenuItem) then exit;
   Item:=TMenuItem(Sender);
-  HeaderPosition:=TADLHeaderPosition(Item.Parent.IndexOf(Item));
+  HeaderPosition:=TADLHeaderPosition(Item.Tag);
 end;
 
 procedure TAnchorDockHeader.UndockButtonClick(Sender: TObject);
@@ -3297,8 +3335,7 @@ begin
   Align:=alTop;
   AutoSize:=true;
   ShowHint:=true;
-  PopupMenu:=TPopupMenu.Create(Self);
-  PopupMenu.OnPopup:=@PopupMenuPopup;
+  PopupMenu:=DockMaster.GetPopupMenu;
 end;
 
 { TAnchorDockCloseButton }

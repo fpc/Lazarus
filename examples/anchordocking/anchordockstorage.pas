@@ -54,8 +54,8 @@ type
 
   TADLHeaderPosition = (
     adlhpAuto,
-    adlhpLeft,
     adlhpTop,
+    adlhpLeft,
     adlhpRight,
     adlhpBottom
     );
