@@ -76,6 +76,7 @@ type
     FNodes: TFPList; // list of TAnchorDockLayoutTreeNode
     FNodeType: TADLTreeNodeType;
     FParent: TAnchorDockLayoutTreeNode;
+    FTabPosition: TTabPosition;
     FWindowState: TWindowState;
     function GetAnchors(Site: TAnchorKind): string;
     function GetBottom: integer;
@@ -97,6 +98,7 @@ type
     procedure SetNodeType(const AValue: TADLTreeNodeType);
     procedure SetParent(const AValue: TAnchorDockLayoutTreeNode);
     procedure SetRight(const AValue: integer);
+    procedure SetTabPosition(const AValue: TTabPosition);
     procedure SetTop(const AValue: integer);
     procedure SetWidth(const AValue: integer);
     procedure SetWindowState(const AValue: TWindowState);
@@ -140,6 +142,7 @@ type
     property WindowState: TWindowState read FWindowState write SetWindowState;
     property Monitor: integer read FMonitor write SetMonitor;
     property HeaderPosition: TADLHeaderPosition read FHeaderPosition write SetHeaderPosition;
+    property TabPosition: TTabPosition read FTabPosition write SetTabPosition;
     function Count: integer;
     function IsSplitter: boolean;
     function IsRootWindow: boolean;
@@ -219,6 +222,12 @@ const
     'right',
     'bottom'
     );
+  ADLTabPostionNames: array[TTabPosition] of string = (
+    'Top',
+    'Bottom',
+    'Left',
+    'Right'
+    );
   ADLAlignNames: array[TAlign] of string = (
     'None',
     'Top',
@@ -232,6 +241,7 @@ const
 function NameToADLTreeNodeType(s: string): TADLTreeNodeType;
 function NameToADLWindowState(s: string): TWindowState;
 function NameToADLHeaderPosition(s: string): TADLHeaderPosition;
+function NameToADLTabPosition(s: string): TTabPosition;
 function NameToADLAlign(s: string): TAlign;
 function dbgs(const NodeType: TADLTreeNodeType): string; overload;
 
@@ -262,6 +272,13 @@ begin
   for Result:=low(TADLHeaderPosition) to high(TADLHeaderPosition) do
     if s=ADLHeaderPositionNames[Result] then exit;
   Result:=adlhpAuto;
+end;
+
+function NameToADLTabPosition(s: string): TTabPosition;
+begin
+  for Result:=low(TTabPosition) to high(TTabPosition) do
+    if s=ADLTabPostionNames[Result] then exit;
+  Result:=tpTop;
 end;
 
 function NameToADLAlign(s: string): TAlign;
@@ -898,6 +915,13 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TAnchorDockLayoutTreeNode.SetTabPosition(const AValue: TTabPosition);
+begin
+  if FTabPosition=AValue then exit;
+  FTabPosition:=AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TAnchorDockLayoutTreeNode.SetTop(const AValue: integer);
 begin
   if Top=AValue then exit;
@@ -960,6 +984,7 @@ begin
   or (Align<>Node.Align)
   or (WindowState<>Node.WindowState)
   or (HeaderPosition<>Node.HeaderPosition)
+  or (TabPosition<>Node.TabPosition)
   then
     exit;
   for a:=low(TAnchorKind) to high(TAnchorKind) do
@@ -981,6 +1006,7 @@ begin
   Align:=Node.Align;
   WindowState:=Node.WindowState;
   HeaderPosition:=Node.HeaderPosition;
+  TabPosition:=Node.TabPosition;
   for a:=low(TAnchorKind) to high(TAnchorKind) do
     Anchors[a]:=Node.Anchors[a];
   while Count>Node.Count do Nodes[Count-1].Free;
@@ -1008,6 +1034,10 @@ begin
     Monitor:=TCustomForm(AControl).Monitor.MonitorNum;
   end else
     WindowState:=wsNormal;
+  if AControl is TCustomNotebook then
+    TabPosition:=TCustomNotebook(AControl).TabPosition
+  else
+    TabPosition:=tpTop;
   for a:=low(TAnchorKind) to high(TAnchorKind) do begin
     AnchorControl:=AControl.AnchorSide[a].Control;
     if (AnchorControl=nil) or (AnchorControl=AControl.Parent) then
@@ -1037,6 +1067,7 @@ begin
   Align:=NameToADLAlign(Config.GetValue('Anchors/Align',AlignNames[alNone]));
   WindowState:=NameToADLWindowState(Config.GetValue('WindowState',ADLWindowStateNames[wsNormal]));
   HeaderPosition:=NameToADLHeaderPosition(Config.GetValue('Header/Position',ADLHeaderPositionNames[adlhpAuto]));
+  TabPosition:=NameToADLTabPosition(Config.GetValue('Header/TabPosition',ADLTabPostionNames[tpTop]));
   Monitor:=Config.GetValue('Monitor',0);
   NewCount:=Config.GetValue('ChildCount',0);
   for i:=1 to NewCount do begin
@@ -1067,7 +1098,9 @@ begin
   Config.SetDeleteValue('WindowState',ADLWindowStateNames[WindowState],
                                       ADLWindowStateNames[wsNormal]);
   Config.SetDeleteValue('Header/Position',ADLHeaderPositionNames[HeaderPosition],
-                                      ADLHeaderPositionNames[adlhpAuto]);
+                                          ADLHeaderPositionNames[adlhpAuto]);
+  Config.SetDeleteValue('Header/TabPosition',ADLTabPostionNames[TabPosition],
+                                             ADLTabPostionNames[tpTop]);
   Config.SetDeleteValue('Monitor',Monitor,0);
   Config.SetDeleteValue('ChildCount',Count,0);
   for i:=1 to Count do begin

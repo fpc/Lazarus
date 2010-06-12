@@ -183,6 +183,7 @@ type
     procedure MoveLeftMostButtonClick(Sender: TObject); virtual;
     procedure MoveRightButtonClick(Sender: TObject); virtual;
     procedure MoveRightMostButtonClick(Sender: TObject); virtual;
+    procedure TabPositionClick(Sender: TObject); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure UpdateDockCaption(Exclude: TControl = nil); override;
@@ -352,6 +353,8 @@ type
     fDisabledAutosizing: TFPList; // list of TControl
     fTreeNameToDocker: TADNameToControl;
     fPopupMenu: TPopupMenu;
+    fCloseBtnReferenceCount: integer;
+    fCloseBtnBitmap: TBitmap;
     function GetControls(Index: integer): TControl;
     procedure SetHeaderAlignLeft(const AValue: integer);
     procedure SetHeaderAlignTop(const AValue: integer);
@@ -439,11 +442,26 @@ procedure AnchorAndChangeBounds(AControl: TControl; Side: TAnchorKind;
                                 Target: TControl);
 function ControlsLeftTopOnScreen(AControl: TControl): TPoint;
 
-implementation
+type
+  TAnchorControlsRect = array[TAnchorKind] of TControl;
 
-var
-  CloseBtnReferenceCount: integer = 0;
-  CloseBtnBitmap: TBitmap = nil;
+function GetDockSplitter(Control: TControl; Side: TAnchorKind;
+                         out Splitter: TAnchorDockSplitter): boolean;
+function GetDockSplitterOrParent(Control: TControl; Side: TAnchorKind;
+                                 out AnchorControl: TControl): boolean;
+function CountAnchoredControls(Control: TControl; Side: TAnchorKind
+                               ): Integer;
+function NeighbourCanBeShrinked(EnlargeControl, Neighbour: TControl;
+                                Side: TAnchorKind): boolean;
+function ControlIsAnchoredIndirectly(StartControl: TControl; Side: TAnchorKind;
+                                     DestControl: TControl): boolean;
+procedure GetAnchorControlsRect(Control: TControl;
+                                out ARect: TAnchorControlsRect);
+function GetEnclosingControlRect(ControlList: TFPlist;
+                                 out ARect: TAnchorControlsRect): boolean;
+function GetEnclosedControls(const ARect: TAnchorControlsRect): TFPList;
+
+implementation
 
 function dbgs(SiteType: TAnchorDockHostSiteType): string; overload;
 begin
@@ -504,6 +522,323 @@ begin
   end else begin
     Result:=AControl.Parent.ClientOrigin;
   end;
+end;
+
+function GetDockSplitter(Control: TControl; Side: TAnchorKind; out
+  Splitter: TAnchorDockSplitter): boolean;
+begin
+  Result:=false;
+  Splitter:=nil;
+  if not (Side in Control.Anchors) then exit;
+  Splitter:=TAnchorDockSplitter(Control.AnchorSide[Side].Control);
+  if not (Splitter is TAnchorDockSplitter) then begin
+    Splitter:=nil;
+    exit;
+  end;
+  if Splitter.Parent<>Control.Parent then exit;
+  Result:=true;
+end;
+
+function GetDockSplitterOrParent(Control: TControl; Side: TAnchorKind; out
+  AnchorControl: TControl): boolean;
+begin
+  Result:=false;
+  AnchorControl:=nil;
+  if not (Side in Control.Anchors) then exit;
+  AnchorControl:=Control.AnchorSide[Side].Control;
+  if (AnchorControl is TAnchorDockSplitter)
+  and (AnchorControl.Parent=Control.Parent)
+  then
+    Result:=true
+  else if AnchorControl=Control.Parent then
+    Result:=true;
+end;
+
+function CountAnchoredControls(Control: TControl; Side: TAnchorKind): Integer;
+{ return the number of siblings, that are anchored on Side of Control
+  For example: if Side=akLeft it will return the number of controls, which
+  right side is anchored to the left of Control }
+var
+  i: Integer;
+  Neighbour: TControl;
+begin
+  Result:=0;
+  for i:=0 to Control.AnchoredControlCount-1 do begin
+    Neighbour:=Control.AnchoredControls[i];
+    if (OppositeAnchor[Side] in Neighbour.Anchors)
+    and (Neighbour.AnchorSide[OppositeAnchor[Side]].Control=Control) then
+      inc(Result);
+  end;
+end;
+
+function NeighbourCanBeShrinked(EnlargeControl, Neighbour: TControl;
+  Side: TAnchorKind): boolean;
+{ returns true if Neighbour can be shrinked on the opposite side of Side
+}
+const
+  MinControlSize = 20;
+var
+  Splitter: TAnchorDockSplitter;
+begin
+  Result:=false;
+  if not GetDockSplitter(EnlargeControl,OppositeAnchor[Side],Splitter) then
+    exit;
+  case Side of
+  akLeft: // check if left side of Neighbour can be moved
+    Result:=Neighbour.Left+Neighbour.Width
+        >EnlargeControl.Left+EnlargeControl.Width+Splitter.Width+MinControlSize;
+  akRight: // check if right side of Neighbour can be moved
+    Result:=Neighbour.Left+MinControlSize+Splitter.Width<EnlargeControl.Left;
+  akTop: // check if top side of Neighbour can be moved
+    Result:=Neighbour.Top+Neighbour.Height
+       >EnlargeControl.Top+EnlargeControl.Height+Splitter.Height+MinControlSize;
+  akBottom: // check if bottom side of Neighbour can be moved
+    Result:=Neighbour.Top+MinControlSize+Splitter.Height<EnlargeControl.Top;
+  end;
+end;
+
+function ControlIsAnchoredIndirectly(StartControl: TControl; Side: TAnchorKind;
+  DestControl: TControl): boolean;
+{ true if there is an Anchor way from StartControl to DestControl over Side.
+  For example:
+
+    +-+|+-+
+    |A|||B|
+    +-+|+-+
+
+  A is akLeft to B.
+  B is akRight to A.
+  The splitter is akLeft to B.
+  The splitter is akRight to A.
+  All other are false.
+}
+var
+  Checked: array of Boolean;
+  Parent: TWinControl;
+
+  function Check(ControlIndex: integer): boolean;
+  var
+    AControl: TControl;
+    SideControl: TControl;
+    i: Integer;
+  begin
+    if Checked[ControlIndex] then
+      exit(false);
+    Checked[ControlIndex]:=true;
+    AControl:=Parent.Controls[ControlIndex];
+    if AControl=DestControl then exit(true);
+
+    if (Side in AControl.Anchors) then begin
+      SideControl:=AControl.AnchorSide[Side].Control;
+      if (SideControl<>nil) and Check(Parent.GetControlIndex(SideControl)) then
+        exit(true);
+    end;
+    for i:=0 to AControl.AnchoredControlCount-1 do begin
+      if Checked[i] then continue;
+      SideControl:=AControl.AnchoredControls[i];
+      if OppositeAnchor[Side] in SideControl.Anchors then begin
+        if (SideControl.AnchorSide[OppositeAnchor[Side]].Control=AControl)
+        and Check(i) then
+          exit(true);
+      end;
+    end;
+    Result:=false;
+  end;
+
+var
+  i: Integer;
+begin
+  if (StartControl=nil) or (DestControl=nil)
+  or (StartControl.Parent=nil)
+  or (StartControl.Parent<>DestControl.Parent)
+  or (StartControl=DestControl) then
+    exit(false);
+  Parent:=StartControl.Parent;
+  SetLength(Checked,Parent.ControlCount);
+  for i:=0 to length(Checked)-1 do Checked[i]:=false;
+  Result:=Check(Parent.GetControlIndex(StartControl));
+end;
+
+procedure GetAnchorControlsRect(Control: TControl; out
+  ARect: TAnchorControlsRect);
+var
+  a: TAnchorKind;
+begin
+  for a:=Low(TAnchorKind) to High(TAnchorKind) do
+    ARect[a]:=Control.AnchorSide[a].Control;
+end;
+
+function GetEnclosingControlRect(ControlList: TFPlist; out
+  ARect: TAnchorControlsRect): boolean;
+{ ARect will be the minimum TAnchorControlsRect around the controls in the list
+  returns true, if there is such a TAnchorControlsRect.
+
+  The controls in ARect will either be the Parent or a TLazDockSplitter
+}
+var
+  Parent: TWinControl;
+
+  function ControlIsValidAnchor(Control: TControl; Side: TAnchorKind): boolean;
+  var
+    i: Integer;
+  begin
+    Result:=false;
+    if (Control=ARect[Side]) then exit(true);// this allows Parent at the beginning
+
+    if not (Control is TAnchorDockSplitter) then
+      exit;// not a splitter
+    if (TAnchorDockSplitter(Control).ResizeAnchor in [akLeft,akRight])
+      <>(Side in [akLeft,akRight]) then
+        exit;// wrong alignment
+    if ControlList.IndexOf(Control)>=0 then
+      exit;// is an inner control
+    if ControlIsAnchoredIndirectly(Control,Side,ARect[Side]) then
+      exit; // this anchor would be worse than the current maximum
+    for i:=0 to ControlList.Count-1 do begin
+      if not ControlIsAnchoredIndirectly(Control,Side,TControl(ControlList[i]))
+      then begin
+        // this anchor is not above (below, ...) the inner controls
+        exit;
+      end;
+    end;
+    Result:=true;
+  end;
+
+var
+  TopIndex: Integer;
+  TopControl: TControl;
+  RightIndex: Integer;
+  RightControl: TControl;
+  BottomIndex: Integer;
+  BottomControl: TControl;
+  LeftIndex: Integer;
+  LeftControl: TControl;
+  Candidates: TFPList;
+  i: Integer;
+  a: TAnchorKind;
+begin
+  Result:=false;
+  if (ControlList=nil) or (ControlList.Count=0) then exit;
+
+  // get Parent
+  Parent:=TControl(ControlList[0]).Parent;
+  if Parent=nil then exit;
+  for i:=0 to ControlList.Count-1 do
+    if TControl(ControlList[i]).Parent<>Parent then exit;
+
+  // set the default rect: the Parent
+  Result:=true;
+  for a:=Low(TAnchorKind) to High(TAnchorKind) do
+    ARect[a]:=Parent;
+
+  // find all possible Candidates
+  Candidates:=TFPList.Create;
+  try
+    Candidates.Add(Parent);
+    for i:=0 to Parent.ControlCount-1 do
+      if Parent.Controls[i] is TAnchorDockSplitter then
+        Candidates.Add(Parent.Controls[i]);
+
+    // now check every possible rectangle
+    // Note: four loops seems to be dog slow, but the checks
+    //       avoid most possibilities early
+    for TopIndex:=0 to Candidates.Count-1 do begin
+      TopControl:=TControl(Candidates[TopIndex]);
+      if not ControlIsValidAnchor(TopControl,akTop) then continue;
+
+      for RightIndex:=0 to Candidates.Count-1 do begin
+        RightControl:=TControl(Candidates[RightIndex]);
+        if (TopControl.AnchorSide[akRight].Control<>RightControl)
+        and (RightControl.AnchorSide[akTop].Control<>TopControl) then
+          continue; // not touching / not a corner
+        if not ControlIsValidAnchor(RightControl,akRight) then continue;
+
+        for BottomIndex:=0 to Candidates.Count-1 do begin
+          BottomControl:=TControl(Candidates[BottomIndex]);
+          if (RightControl.AnchorSide[akBottom].Control<>BottomControl)
+          and (BottomControl.AnchorSide[akRight].Control<>RightControl) then
+            continue; // not touching / not a corner
+          if not ControlIsValidAnchor(BottomControl,akBottom) then continue;
+
+          for LeftIndex:=0 to Candidates.Count-1 do begin
+            LeftControl:=TControl(Candidates[LeftIndex]);
+            if (BottomControl.AnchorSide[akLeft].Control<>LeftControl)
+            and (LeftControl.AnchorSide[akBottom].Control<>BottomControl) then
+              continue; // not touching / not a corner
+            if (TopControl.AnchorSide[akLeft].Control<>LeftControl)
+            and (LeftControl.AnchorSide[akTop].Control<>LeftControl) then
+              continue; // not touching / not a corner
+            if not ControlIsValidAnchor(LeftControl,akLeft) then continue;
+
+            // found a better rectangle
+            ARect[akLeft]  :=LeftControl;
+            ARect[akRight] :=RightControl;
+            ARect[akTop]   :=TopControl;
+            ARect[akBottom]:=BottomControl;
+          end;
+        end;
+      end;
+    end;
+  finally
+    Candidates.Free;
+  end;
+end;
+
+function GetEnclosedControls(const ARect: TAnchorControlsRect): TFPList;
+{ return a list of all controls bounded by the anchors in ARect }
+var
+  Parent: TWinControl;
+
+  procedure Fill(AControl: TControl);
+  var
+    a: TAnchorKind;
+    SideControl: TControl;
+    i: Integer;
+  begin
+    if AControl=nil then exit;
+    if AControl=Parent then exit;// do not add Parent
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do
+      if ARect[a]=AControl then exit;// do not add boundary
+
+    if Result.IndexOf(AControl)>=0 then exit;// already added
+    Result.Add(AControl);
+
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do
+      Fill(AControl.AnchorSide[a].Control);
+    for i:=0 to Parent.ControlCount-1 do begin
+      SideControl:=Parent.Controls[i];
+      for a:=Low(TAnchorKind) to High(TAnchorKind) do
+        if SideControl.AnchorSide[a].Control=AControl then
+          Fill(SideControl);
+    end;
+  end;
+
+var
+  i: Integer;
+  AControl: TControl;
+  LeftTopControl: TControl;
+begin
+  Result:=TFPList.Create;
+
+  // find the Parent
+  if (ARect[akLeft]=ARect[akRight]) and (ARect[akLeft] is TWinControl) then
+    Parent:=TWinControl(ARect[akLeft])
+  else
+    Parent:=ARect[akLeft].Parent;
+
+  // find the left, top most control
+  for i:=0 to Parent.ControlCount-1 do begin
+    AControl:=Parent.Controls[i];
+    if (AControl.AnchorSide[akLeft].Control=ARect[akLeft])
+    and (AControl.AnchorSide[akTop].Control=ARect[akTop]) then begin
+      LeftTopControl:=AControl;
+      break;
+    end;
+  end;
+  if Result.Count=0 then exit;
+
+  // use flood fill to find the rest
+  Fill(LeftTopControl);
 end;
 
 { TAnchorDockMaster }
@@ -3371,7 +3706,7 @@ constructor TAnchorDockCloseButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   GetCloseGlyph;
-  Glyph:=CloseBtnBitmap;
+  Glyph:=DockMaster.fCloseBtnBitmap;
 end;
 
 destructor TAnchorDockCloseButton.Destroy;
@@ -3385,36 +3720,38 @@ var
   BitmapHandle,MaskHandle: HBITMAP;
   OrigBitmap: TBitmap;
 begin
-  inc(CloseBtnReferenceCount);
-  if CloseBtnReferenceCount=1 then begin
+  inc(DockMaster.fCloseBtnReferenceCount);
+  if DockMaster.fCloseBtnReferenceCount=1 then begin
     ThemeServices.GetStockImage(idButtonClose,BitmapHandle,MaskHandle);
     OrigBitmap:=TBitmap.Create;
     OrigBitmap.Handle:=BitmapHandle;
     if MaskHandle<>0 then
       OrigBitmap.MaskHandle:=MaskHandle;
-    CloseBtnBitmap:=TBitmap.Create;
-    CloseBtnBitmap.SetSize(12,12);
-    CloseBtnBitmap.Canvas.Brush.Color:=clWhite;
-    CloseBtnBitmap.Canvas.FillRect(Rect(0,0,CloseBtnBitmap.Width,CloseBtnBitmap.Height));
-    CloseBtnBitmap.Canvas.StretchDraw(Rect(0,0,CloseBtnBitmap.Width,CloseBtnBitmap.Height),OrigBitmap);
-    CloseBtnBitmap.Transparent:=true;
-    CloseBtnBitmap.TransparentColor:=clWhite;
+    DockMaster.fCloseBtnBitmap:=TBitmap.Create;
+    with DockMaster.fCloseBtnBitmap do begin
+      SetSize(12,12);
+      Canvas.Brush.Color:=clWhite;
+      Canvas.FillRect(Rect(0,0,Width,Height));
+      Canvas.StretchDraw(Rect(0,0,Width,Height),OrigBitmap);
+      Transparent:=true;
+      TransparentColor:=clWhite;
+    end;
     OrigBitmap.Free;
   end;
 end;
 
 procedure TAnchorDockCloseButton.ReleaseCloseGlyph;
 begin
-  dec(CloseBtnReferenceCount);
-  if CloseBtnReferenceCount=0 then
-    FreeAndNil(CloseBtnBitmap);
+  dec(DockMaster.fCloseBtnReferenceCount);
+  if DockMaster.fCloseBtnReferenceCount=0 then
+    FreeAndNil(DockMaster.fCloseBtnBitmap);
 end;
 
 function TAnchorDockCloseButton.GetGlyphSize(PaintRect: TRect): TSize;
 begin
   if PaintRect.Left=0 then ;
-  Result.cx:=CloseBtnBitmap.Width;
-  Result.cy:=CloseBtnBitmap.Height;
+  Result.cx:=DockMaster.fCloseBtnBitmap.Width;
+  Result.cy:=DockMaster.fCloseBtnBitmap.Height;
 end;
 
 function TAnchorDockCloseButton.DrawGlyph(ACanvas: TCanvas;
@@ -3424,9 +3761,9 @@ begin
   if BiDiFlags=0 then ;
   if ATransparent then ;
   if AState=bsDisabled then ;
-  Result:=Rect(0,0,CloseBtnBitmap.Width,CloseBtnBitmap.Height);
+  Result:=Rect(0,0,DockMaster.fCloseBtnBitmap.Width,DockMaster.fCloseBtnBitmap.Height);
   OffsetRect(Result,AClient.Left+AOffset.X,AClient.Top+AOffset.Y);
-  ACanvas.Draw(Result.Left,Result.Top,CloseBtnBitmap);
+  ACanvas.Draw(Result.Left,Result.Top,DockMaster.fCloseBtnBitmap);
 end;
 
 { TAnchorDockManager }
@@ -3860,17 +4197,12 @@ end;
 procedure TAnchorDockPageControl.PopupMenuPopup(Sender: TObject);
 var
   ChangeLockItem: TMenuItem;
-  ParentSite: TAnchorDockHostSite;
-  Side: TAnchorKind;
-  SideCaptions: array[TAnchorKind] of string;
   ContainsMainForm: Boolean;
   s: String;
+  TabPositionSection: TMenuItem;
+  Item: TMenuItem;
+  tp: TTabPosition;
 begin
-  ParentSite:=TAnchorDockHostSite(Parent);
-  SideCaptions[akLeft]:=adrsLeft;
-  SideCaptions[akTop]:=adrsTop;
-  SideCaptions[akRight]:=adrsRight;
-  SideCaptions[akBottom]:=adrsBottom;
   PopupMenu.Items.Clear;
 
   // top popup menu item can be clicked by accident, so use something simple:
@@ -3880,6 +4212,7 @@ begin
   ChangeLockItem.Checked:=not DockMaster.AllowDragging;
   ChangeLockItem.ShowAlwaysCheckable:=true;
 
+  // movement
   if PageIndex>0 then
     DockMaster.AddPopupMenuItem('MoveLeftMenuItem', adrsMovePageLeft,
                                               @MoveLeftButtonClick);
@@ -3894,6 +4227,22 @@ begin
     DockMaster.AddPopupMenuItem('MoveRightMostMenuItem', adrsMovePageRightmost,
                                               @MoveRightMostButtonClick);
 
+  // tab position
+  TabPositionSection:=DockMaster.AddPopupMenuItem('TabPositionMenuItem',
+                                                  adrsTabPosition,nil);
+  for tp:=Low(TTabPosition) to high(TTabPosition) do begin
+    case tp of
+    tpTop: s:=adrsTop;
+    tpBottom: s:=adrsBottom;
+    tpLeft: s:=adrsLeft;
+    tpRight: s:=adrsRight;
+    end;
+    Item:=DockMaster.AddPopupMenuItem('TabPos'+ADLTabPostionNames[tp]+'MenuItem',
+                              s,@TabPositionClick,TabPositionSection);
+    Item.ShowAlwaysCheckable:=true;
+    Item.Checked:=TabPosition=tp;
+    Item.Tag:=ord(tp);
+  end;
 
   // close
   ContainsMainForm:=IsParentOf(Application.MainForm);
@@ -3941,6 +4290,15 @@ procedure TAnchorDockPageControl.MoveRightMostButtonClick(Sender: TObject);
 begin
   if PageIndex<PageCount-1 then
     Page[PageIndex].PageIndex:=PageCount-1;
+end;
+
+procedure TAnchorDockPageControl.TabPositionClick(Sender: TObject);
+var
+  Item: TMenuItem;
+begin
+  if not (Sender is TMenuItem) then exit;
+  Item:=TMenuItem(Sender);
+  TabPosition:=TTabPosition(Item.Tag);
 end;
 
 procedure TAnchorDockPageControl.UpdateDockCaption(Exclude: TControl);

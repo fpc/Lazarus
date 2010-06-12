@@ -36,6 +36,7 @@ interface
 resourcestring
   adrsClose = 'Close';
   adrsQuit = 'Quit %s';
+  adrsTabPosition = 'Tab position';
   adrsMovePageRight = 'Move page right';
   adrsMovePageRightmost = 'Move page rightmost';
   adrsUndock = 'Undock';
