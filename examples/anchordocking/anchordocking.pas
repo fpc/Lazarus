@@ -1392,6 +1392,8 @@ begin
   FreeAndNil(FControls);
   FreeAndNil(fNeedFree);
   FreeAndNil(fDisabledAutosizing);
+  fCloseBtnReferenceCount:=-1;
+  FreeAndNil(fCloseBtnBitmap);
   inherited Destroy;
 end;
 
@@ -3748,6 +3750,7 @@ end;
 
 procedure TAnchorDockCloseButton.ReleaseCloseGlyph;
 begin
+  if DockMaster=nil then exit;
   dec(DockMaster.fCloseBtnReferenceCount);
   if DockMaster.fCloseBtnReferenceCount=0 then
     FreeAndNil(DockMaster.fCloseBtnBitmap);

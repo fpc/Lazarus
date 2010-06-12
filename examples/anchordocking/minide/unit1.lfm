@@ -148,7 +148,6 @@ object MainIDE: TMainIDE
     top = 32
     object FileMenuItem: TMenuItem
       Caption = 'File'
-      OnClick = FileMenuItemClick
       object OpenFileMenuItem: TMenuItem
         Caption = 'Open file'
       end
