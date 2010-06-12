@@ -607,7 +607,7 @@ end;
 
 destructor TDragManagerDefault.Destroy;
 begin
-  FDockSites.Free;
+  FreeAndNil(FDockSites);
   inherited Destroy;
 end;
 
@@ -693,6 +693,9 @@ begin
   begin
     if FDockSites = nil then
       FDockSites := TFPList.Create;
+    if (FDockSites.IndexOf(Site)>=0)=DoRegister then exit;
+
+    //debugln(['TDragManagerDefault.RegisterDockSite Changed ',DbgSName(Site),' DoRegister=',DoRegister]);
     if DoRegister then begin
       FDockSites.Add(Site);
       Site.FreeNotification(Self);
@@ -736,6 +739,7 @@ begin
   inherited Notification(AComponent, Operation);
   if Operation=opRemove then begin
     if FDockSites<>nil then begin
+      //if FDockSites.IndexOf(AComponent)>=0 then debugln(['TDragManagerDefault.Notification DockSite: ',DbgSName(AComponent)]);
       FDockSites.Remove(AComponent);
       if FDockSites.Count=0 then
         FreeAndNil(FDockSites);
