@@ -4767,7 +4767,8 @@ begin
   CheckReason;
   {$ENDIF}
 
-  if FAutoSizingLockCount<=0 then RaiseGDBException('TControl.EnableAutoSizing');
+  if FAutoSizingLockCount<=0 then
+    raise Exception.Create('TControl.EnableAutoSizing '+DbgSName(Self)+': missing DisableAutoSizing');
 
   dec(FAutoSizingLockCount);
   //DebugLn([Space(FAutoSizingLockCount*2),'TControl.EnableAutoSizing ',DbgSName(Self),' ',FAutoSizingLockCount]);
