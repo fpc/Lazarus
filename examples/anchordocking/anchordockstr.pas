@@ -36,6 +36,8 @@ interface
 resourcestring
   adrsClose = 'Close';
   adrsQuit = 'Quit %s';
+  adrsMovePageRight = 'Move page right';
+  adrsMovePageRightmost = 'Move page rightmost';
   adrsUndock = 'Undock';
   adrsHeaderPosition = 'Header position';
   adrsEnlargeSide = 'Enlarge %s side';
@@ -47,6 +49,8 @@ resourcestring
   adrsRight = 'right';
   adrsBottom = 'bottom';
   adrsLocked = 'Locked';
+  adrsMovePageLeft = 'Move page left';
+  adrsMovePageLeftmost = 'Move page leftmost';
   adrsRequestedButCreated = '%s requested, but %s created';
   adrsDragAndDockC = 'Drag and dock %c';
   adrsMissingControlName = 'missing control name';

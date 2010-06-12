@@ -178,6 +178,10 @@ type
     procedure PopupMenuPopup(Sender: TObject); virtual;
     procedure CloseButtonClick(Sender: TObject); virtual;
     procedure ChangeLockButtonClick(Sender: TObject); virtual;
+    procedure MoveLeftButtonClick(Sender: TObject); virtual;
+    procedure MoveLeftMostButtonClick(Sender: TObject); virtual;
+    procedure MoveRightButtonClick(Sender: TObject); virtual;
+    procedure MoveRightMostButtonClick(Sender: TObject); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure UpdateDockCaption(Exclude: TControl = nil); override;
@@ -3864,6 +3868,21 @@ begin
   ChangeLockItem.Checked:=not DockMaster.AllowDragging;
   ChangeLockItem.ShowAlwaysCheckable:=true;
 
+  if PageIndex>0 then
+    DockMaster.AddPopupMenuItem('MoveLeftMenuItem', adrsMovePageLeft,
+                                              @MoveLeftButtonClick);
+  if PageIndex>1 then
+    DockMaster.AddPopupMenuItem('MoveLeftMostMenuItem', adrsMovePageLeftmost,
+                                              @MoveLeftMostButtonClick);
+
+  if PageIndex<PageCount-1 then
+    DockMaster.AddPopupMenuItem('MoveRightMenuItem', adrsMovePageRight,
+                                              @MoveRightButtonClick);
+  if PageIndex<PageCount-2 then
+    DockMaster.AddPopupMenuItem('MoveRightMostMenuItem', adrsMovePageRightmost,
+                                              @MoveRightMostButtonClick);
+
+
   // close
   ContainsMainForm:=IsParentOf(Application.MainForm);
   if ContainsMainForm then
@@ -3886,6 +3905,30 @@ end;
 procedure TAnchorDockPageControl.ChangeLockButtonClick(Sender: TObject);
 begin
   DockMaster.AllowDragging:=not DockMaster.AllowDragging;
+end;
+
+procedure TAnchorDockPageControl.MoveLeftButtonClick(Sender: TObject);
+begin
+  if PageIndex>0 then
+    Page[PageIndex].PageIndex:=Page[PageIndex].PageIndex-1;
+end;
+
+procedure TAnchorDockPageControl.MoveLeftMostButtonClick(Sender: TObject);
+begin
+  if PageIndex>0 then
+    Page[PageIndex].PageIndex:=0;
+end;
+
+procedure TAnchorDockPageControl.MoveRightButtonClick(Sender: TObject);
+begin
+  if PageIndex<PageCount-1 then
+    Page[PageIndex].PageIndex:=Page[PageIndex].PageIndex+1;
+end;
+
+procedure TAnchorDockPageControl.MoveRightMostButtonClick(Sender: TObject);
+begin
+  if PageIndex<PageCount-1 then
+    Page[PageIndex].PageIndex:=PageCount-1;
 end;
 
 procedure TAnchorDockPageControl.UpdateDockCaption(Exclude: TControl);
