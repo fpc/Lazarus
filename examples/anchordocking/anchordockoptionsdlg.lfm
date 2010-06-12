@@ -1,0 +1,149 @@
+object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
+  Left = 595
+  Height = 220
+  Top = 319
+  Width = 404
+  Caption = 'AnchorDockOptionsDialog'
+  ClientHeight = 220
+  ClientWidth = 404
+  OnCreate = FormCreate
+  LCLVersion = '0.9.29'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 172
+    Width = 392
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object DragThresholdLabel: TLabel
+    Left = 10
+    Height = 18
+    Top = 10
+    Width = 131
+    Caption = 'DragThresholdLabel'
+    ParentColor = False
+  end
+  object HeaderAlignTopLabel: TLabel
+    AnchorSideLeft.Control = DragThresholdLabel
+    AnchorSideTop.Control = DragThresholdLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 18
+    Top = 38
+    Width = 138
+    BorderSpacing.Top = 10
+    Caption = 'HeaderAlignTopLabel'
+    ParentColor = False
+  end
+  object HeaderAlignLeftLabel: TLabel
+    AnchorSideLeft.Control = DragThresholdLabel
+    AnchorSideTop.Control = HeaderAlignTopLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 18
+    Top = 66
+    Width = 141
+    BorderSpacing.Top = 10
+    Caption = 'HeaderAlignLeftLabel'
+    ParentColor = False
+  end
+  object SplitterWidthLabel: TLabel
+    AnchorSideLeft.Control = DragThresholdLabel
+    AnchorSideTop.Control = HeaderAlignLeftLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 18
+    Top = 94
+    Width = 121
+    BorderSpacing.Top = 10
+    Caption = 'SplitterWidthLabel'
+    ParentColor = False
+  end
+  object ScaleOnResizeCheckBox: TCheckBox
+    AnchorSideLeft.Control = DragThresholdLabel
+    AnchorSideTop.Control = SplitterWidthLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 22
+    Top = 122
+    Width = 188
+    BorderSpacing.Top = 10
+    Caption = 'ScaleOnResizeCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+  end
+  object DragThresholdTrackBar: TTrackBar
+    AnchorSideTop.Control = DragThresholdLabel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 188
+    Height = 25
+    Top = 7
+    Width = 206
+    Max = 20
+    Position = 0
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 10
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
+  end
+  object HeaderAlignTopTrackBar: TTrackBar
+    AnchorSideLeft.Control = DragThresholdTrackBar
+    AnchorSideTop.Control = HeaderAlignTopLabel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = DragThresholdTrackBar
+    AnchorSideRight.Side = asrBottom
+    Left = 188
+    Height = 25
+    Top = 35
+    Width = 206
+    Frequency = 10
+    Max = 150
+    PageSize = 10
+    Position = 0
+    Anchors = [akTop, akLeft, akRight]
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
+  end
+  object HeaderAlignLeftTrackBar: TTrackBar
+    AnchorSideLeft.Control = DragThresholdTrackBar
+    AnchorSideTop.Control = HeaderAlignLeftLabel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = DragThresholdTrackBar
+    AnchorSideRight.Side = asrBottom
+    Left = 188
+    Height = 25
+    Top = 63
+    Width = 206
+    Frequency = 10
+    Max = 200
+    PageSize = 10
+    Position = 0
+    Anchors = [akTop, akLeft, akRight]
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 4
+  end
+  object SplitterWidthTrackBar: TTrackBar
+    AnchorSideLeft.Control = DragThresholdTrackBar
+    AnchorSideTop.Control = SplitterWidthLabel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = DragThresholdTrackBar
+    AnchorSideRight.Side = asrBottom
+    Left = 188
+    Height = 25
+    Top = 91
+    Width = 206
+    Min = 1
+    Position = 1
+    Anchors = [akTop, akLeft, akRight]
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 5
+  end
+end

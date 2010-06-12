@@ -22,7 +22,7 @@
     <License Value="modified LGPL-2 like LCL
 "/>
     <Version Minor="5"/>
-    <Files Count="5">
+    <Files Count="6">
       <Item1>
         <Filename Value="anchordockpkg.pas"/>
         <Type Value="Main Unit"/>
@@ -44,6 +44,10 @@
         <Filename Value="README.txt"/>
         <Type Value="Text"/>
       </Item5>
+      <Item6>
+        <Filename Value="anchordockoptionsdlg.pas"/>
+        <UnitName Value="anchordockoptionsdlg"/>
+      </Item6>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
