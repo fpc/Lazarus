@@ -517,14 +517,14 @@ procedure TAnchorDockMaster.SetHeaderAlignLeft(const AValue: integer);
 begin
   if FHeaderAlignLeft=AValue then exit;
   FHeaderAlignLeft:=AValue;
-  FHeaderAlignTop:=Max(FHeaderAlignLeft+1,FHeaderAlignTop);
+  FHeaderAlignTop:=Min(FHeaderAlignLeft-1,FHeaderAlignTop);
 end;
 
 procedure TAnchorDockMaster.SetHeaderAlignTop(const AValue: integer);
 begin
   if FHeaderAlignTop=AValue then exit;
   FHeaderAlignTop:=AValue;
-  FHeaderAlignLeft:=Min(FHeaderAlignTop-1,FHeaderAlignLeft);
+  FHeaderAlignLeft:=Max(FHeaderAlignTop+1,FHeaderAlignLeft);
 end;
 
 function TAnchorDockMaster.CloseUnneededControls(Tree: TAnchorDockLayoutTree
