@@ -1,0 +1,175 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
+msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
+msgstr ""
+
+#: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
+msgid "Amount of pixel the mouse has to drag before drag starts"
+msgstr ""
+
+#: anchordockstr.adrsanchorisnotsplitternodeanchors
+msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgstr ""
+
+#: anchordockstr.adrsanchornotfoundnodeanchors
+msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgstr ""
+
+#: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
+msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgstr ""
+
+#: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
+msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
+msgstr ""
+
+#: anchordockstr.adrsautomatically
+msgid "Automatically"
+msgstr ""
+
+#: anchordockstr.adrsbottom
+msgid "bottom"
+msgstr ""
+
+#: anchordockstr.adrsclose
+msgid "Close"
+msgstr ""
+
+#: anchordockstr.adrscustomdocksitecanhaveonlyonesite
+msgid "Custom dock site %s%s%s can have only one site."
+msgstr ""
+
+#: anchordockstr.adrsdockingoptions
+msgid "Docking options"
+msgstr ""
+
+#: anchordockstr.adrsdraganddockc
+msgid "Drag and dock %c"
+msgstr ""
+
+#: anchordockstr.adrsdragthreshold
+msgid "Drag threshold"
+msgstr ""
+
+#: anchordockstr.adrsduplicatename
+msgid "Duplicate name: "
+msgstr ""
+
+#: anchordockstr.adrsemptyname
+msgid "Empty name: "
+msgstr ""
+
+#: anchordockstr.adrsenlarge
+msgid "Enlarge"
+msgstr ""
+
+#: anchordockstr.adrsenlargeside
+msgid "Enlarge %s side"
+msgstr ""
+
+#: anchordockstr.adrsheaderalignleft
+msgid "Header align left"
+msgstr ""
+
+#: anchordockstr.adrsheaderaligntop
+msgid "Header align top"
+msgstr ""
+
+#: anchordockstr.adrsheaderposition
+msgid "Header position"
+msgstr ""
+
+#: anchordockstr.adrsleft
+msgid "left"
+msgstr ""
+
+#: anchordockstr.adrslocked
+msgid "Locked"
+msgstr ""
+
+#: anchordockstr.adrsmerge
+msgid "Merge"
+msgstr ""
+
+#: anchordockstr.adrsmissingcontrolname
+msgid "missing control name"
+msgstr ""
+
+#: anchordockstr.adrsmodalformscannotbemadedockable
+msgid "modal forms can not be made dockable"
+msgstr ""
+
+#: anchordockstr.adrsmoveheadertoleftwhenwidthheight100headeralignleft
+msgid "Move header to left when (Width/Height)*100>=HeaderAlignLeft"
+msgstr ""
+
+#: anchordockstr.adrsmoveheadertotopwhenwidthheight100headeraligntop
+msgid "Move header to top when (Width/Height)*100<=HeaderAlignTop"
+msgstr ""
+
+#: anchordockstr.adrsmovepageleft
+msgid "Move page left"
+msgstr ""
+
+#: anchordockstr.adrsmovepageleftmost
+msgid "Move page leftmost"
+msgstr ""
+
+#: anchordockstr.adrsmovepageright
+msgid "Move page right"
+msgstr ""
+
+#: anchordockstr.adrsmovepagerightmost
+msgid "Move page rightmost"
+msgstr ""
+
+#: anchordockstr.adrsnochildrenallowedfornodetype
+msgid "No children allowed for Node=%s%s%s Type=%s"
+msgstr ""
+
+#: anchordockstr.adrsnotsupportedhasparent
+msgid "Not supported: %s has parent %s"
+msgstr ""
+
+#: anchordockstr.adrsquit
+msgid "Quit %s"
+msgstr ""
+
+#: anchordockstr.adrsrequestedbutcreated
+msgid "%s requested, but %s created"
+msgstr ""
+
+#: anchordockstr.adrsright
+msgid "right"
+msgstr ""
+
+#: anchordockstr.adrsscaleonresize
+msgid "Scale on resize"
+msgstr ""
+
+#: anchordockstr.adrsscalesubsiteswhenasiteisresized
+msgid "Scale sub sites when a site is resized"
+msgstr ""
+
+#: anchordockstr.adrssplitterthickness
+msgid "Splitter thickness"
+msgstr ""
+
+#: anchordockstr.adrssplitterwidth
+msgid "Splitter width"
+msgstr ""
+
+#: anchordockstr.adrstabposition
+msgid "Tab position"
+msgstr ""
+
+#: anchordockstr.adrstop
+msgid "top"
+msgstr ""
+
+#: anchordockstr.adrsundock
+msgid "Undock"
+msgstr ""
+
