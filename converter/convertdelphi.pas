@@ -1701,6 +1701,7 @@ begin
   UnitInfo.Filename:=AUnitName;
   UnitInfo.IsPartOfProject:=true;
   LazProject.AddFile(UnitInfo,false);  }
+  Result:=mrCancel;
 end;
 
 function TConvertDelphiPackage.ExtractOptionsFromDelphiSource: TModalResult;
