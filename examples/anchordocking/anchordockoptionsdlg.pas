@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  Spin, StdCtrls, ComCtrls, AnchorDocking, AnchorDockStr;
+  StdCtrls, ComCtrls, AnchorDocking, AnchorDockStr;
 
 type
 
@@ -52,6 +52,7 @@ type
     ScaleOnResizeCheckBox: TCheckBox;
     SplitterWidthLabel: TLabel;
     SplitterWidthTrackBar: TTrackBar;
+    procedure ButtonPanel1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     FMaster: TAnchorDockMaster;
@@ -84,7 +85,8 @@ end;
 procedure TAnchorDockOptionsDialog.FormCreate(Sender: TObject);
 begin
   DragThresholdLabel.Caption:=adrsDragThreshold;
-  DragThresholdTrackBar.Hint:=adrsAmountOfPixelOfMouseMovementBeforeDragStarts;
+  DragThresholdTrackBar.Hint:=
+    adrsAmountOfPixelTheMouseHasToDragBeforeDragStarts;
   HeaderAlignTopLabel.Caption:=adrsHeaderAlignTop;
   HeaderAlignTopTrackBar.Hint:=
     adrsMoveHeaderToTopWhenWidthHeight100HeaderAlignTop;
@@ -95,6 +97,18 @@ begin
   SplitterWidthTrackBar.Hint:=adrsSplitterThickness;
   ScaleOnResizeCheckBox.Caption:=adrsScaleOnResize;
   ScaleOnResizeCheckBox.Hint:=adrsScaleSubSitesWhenASiteIsResized;
+
+  ButtonPanel1.OKButton.ModalResult:=mrNone;
+  ButtonPanel1.OKButton.OnClick:=@ButtonPanel1Click;
+end;
+
+procedure TAnchorDockOptionsDialog.ButtonPanel1Click(Sender: TObject);
+begin
+  Master.DragTreshold    := DragThresholdTrackBar.Position;
+  Master.HeaderAlignTop  := HeaderAlignTopTrackBar.Position;
+  Master.HeaderAlignLeft := HeaderAlignLeftTrackBar.Position;
+  Master.SplitterWidth   := SplitterWidthTrackBar.Position;
+  Master.ScaleOnResize   := ScaleOnResizeCheckBox.Checked;
 end;
 
 procedure TAnchorDockOptionsDialog.SetMaster(const AValue: TAnchorDockMaster);

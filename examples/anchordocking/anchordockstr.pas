@@ -72,6 +72,20 @@ resourcestring
     +'only one site.';
   adrsEmptyName = 'Empty name: ';
   adrsDuplicateName = 'Duplicate name: ';
+  adrsDragThreshold = 'Drag threshold';
+  adrsAmountOfPixelTheMouseHasToDragBeforeDragStarts = 'Amount of pixel the '
+    +'mouse has to drag before drag starts';
+  adrsHeaderAlignTop = 'Header align top';
+  adrsMoveHeaderToTopWhenWidthHeight100HeaderAlignTop = 'Move header to top '
+    +'when (Width/Height)*100<=HeaderAlignTop';
+  adrsHeaderAlignLeft = 'Header align left';
+  adrsMoveHeaderToLeftWhenWidthHeight100HeaderAlignLeft = 'Move header to '
+    +'left when (Width/Height)*100>=HeaderAlignLeft';
+  adrsSplitterWidth = 'Splitter width';
+  adrsSplitterThickness = 'Splitter thickness';
+  adrsScaleOnResize = 'Scale on resize';
+  adrsScaleSubSitesWhenASiteIsResized =
+    'Scale sub sites when a site is resized';
 
 implementation
 

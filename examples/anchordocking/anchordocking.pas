@@ -383,6 +383,8 @@ type
     procedure ClearLayoutProperties(AControl: TControl);
     procedure PopupMenuPopup(Sender: TObject);
     procedure PopupMenuCloseUp(Sender: TObject);
+    procedure SetShowHeaderCaptionFloatingControl(const AValue: boolean);
+    procedure SetSplitterWidth(const AValue: integer);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);
           override;
@@ -438,10 +440,10 @@ type
     property HeaderAlignTop: integer read FHeaderAlignTop write SetHeaderAlignTop default 80; // move header to top, when (width/height)*100<=HeaderAlignTop
     property HeaderAlignLeft: integer read FHeaderAlignLeft write SetHeaderAlignLeft default 120; // move header to left, when (width/height)*100>=HeaderAlignLeft
     property HeaderHint: string read FHeaderHint write FHeaderHint;
-    property SplitterWidth: integer read FSplitterWidth write FSplitterWidth default 4;
+    property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
     property ScaleOnResize: boolean read FScaleOnResize write FScaleOnResize default true; // scale children when resizing a site
     property ShowHeaderCaptionFloatingControl: boolean read FShowHeaderCaptionFloatingControl
-                          write FShowHeaderCaptionFloatingControl default false;
+                          write SetShowHeaderCaptionFloatingControl default false;
     property OnCreateControl: TADCreateControlEvent read FOnCreateControl write FOnCreateControl;
     property AllowDragging: boolean read FAllowDragging write FAllowDragging default true;
 
@@ -1354,6 +1356,36 @@ begin
   if not (Sender is TPopupMenu) then exit;
   Popup:=TPopupMenu(Sender);
   Popup.Items.Clear;
+end;
+
+procedure TAnchorDockMaster.SetShowHeaderCaptionFloatingControl(
+  const AValue: boolean);
+var
+  Site: TAnchorDockHostSite;
+  i: Integer;
+begin
+  if AValue=ShowHeaderCaptionFloatingControl then exit;
+  for i:=0 to ComponentCount-1 do begin
+    Site:=TAnchorDockHostSite(Components[i]);
+    if not (Site is TAnchorDockHostSite) then continue;
+    Site.UpdateHeaderShowing;
+  end;
+end;
+
+procedure TAnchorDockMaster.SetSplitterWidth(const AValue: integer);
+var
+  i: Integer;
+  Splitter: TAnchorDockSplitter;
+begin
+  if AValue=SplitterWidth then exit;
+  for i:=0 to ComponentCount-1 do begin
+    Splitter:=TAnchorDockSplitter(Components[i]);
+    if not (Splitter is TAnchorDockSplitter) then continue;
+    if Splitter.ResizeAnchor in [akLeft,akRight] then
+      Splitter.Width:=SplitterWidth
+    else
+      Splitter.Height:=SplitterWidth;
+  end;
 end;
 
 procedure TAnchorDockMaster.Notification(AComponent: TComponent;
