@@ -53,10 +53,18 @@ type
     SplitterWidthLabel: TLabel;
     SplitterWidthTrackBar: TTrackBar;
     procedure ButtonPanel1Click(Sender: TObject);
+    procedure DragThresholdTrackBarChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure HeaderAlignLeftTrackBarChange(Sender: TObject);
+    procedure HeaderAlignTopTrackBarChange(Sender: TObject);
+    procedure SplitterWidthTrackBarChange(Sender: TObject);
   private
     FMaster: TAnchorDockMaster;
     procedure SetMaster(const AValue: TAnchorDockMaster);
+    procedure UpdateDragThresholdLabel;
+    procedure UpdateHeaderAlignTopLabel;
+    procedure UpdateHeaderAlignLeftLabel;
+    procedure UpdateSplitterWidthLabel;
   public
     property Master: TAnchorDockMaster read FMaster write SetMaster;
   end;
@@ -84,22 +92,40 @@ end;
 
 procedure TAnchorDockOptionsDialog.FormCreate(Sender: TObject);
 begin
-  DragThresholdLabel.Caption:=adrsDragThreshold;
+  Caption:='General docking options';
+  UpdateDragThresholdLabel;
   DragThresholdTrackBar.Hint:=
     adrsAmountOfPixelTheMouseHasToDragBeforeDragStarts;
-  HeaderAlignTopLabel.Caption:=adrsHeaderAlignTop;
+  UpdateHeaderAlignTopLabel;
   HeaderAlignTopTrackBar.Hint:=
     adrsMoveHeaderToTopWhenWidthHeight100HeaderAlignTop;
-  HeaderAlignLeftLabel.Caption:=adrsHeaderAlignLeft;
+  UpdateHeaderAlignLeftLabel;
   HeaderAlignLeftTrackBar.Hint:=
     adrsMoveHeaderToLeftWhenWidthHeight100HeaderAlignLeft;
-  SplitterWidthLabel.Caption:=adrsSplitterWidth;
+  UpdateSplitterWidthLabel;
   SplitterWidthTrackBar.Hint:=adrsSplitterThickness;
   ScaleOnResizeCheckBox.Caption:=adrsScaleOnResize;
   ScaleOnResizeCheckBox.Hint:=adrsScaleSubSitesWhenASiteIsResized;
 
   ButtonPanel1.OKButton.ModalResult:=mrNone;
   ButtonPanel1.OKButton.OnClick:=@ButtonPanel1Click;
+end;
+
+procedure TAnchorDockOptionsDialog.HeaderAlignLeftTrackBarChange(Sender: TObject
+  );
+begin
+  UpdateHeaderAlignLeftLabel;
+end;
+
+procedure TAnchorDockOptionsDialog.HeaderAlignTopTrackBarChange(Sender: TObject
+  );
+begin
+  UpdateHeaderAlignTopLabel;
+end;
+
+procedure TAnchorDockOptionsDialog.SplitterWidthTrackBarChange(Sender: TObject);
+begin
+  UpdateSplitterWidthLabel;
 end;
 
 procedure TAnchorDockOptionsDialog.ButtonPanel1Click(Sender: TObject);
@@ -111,17 +137,50 @@ begin
   Master.ScaleOnResize   := ScaleOnResizeCheckBox.Checked;
 end;
 
+procedure TAnchorDockOptionsDialog.DragThresholdTrackBarChange(Sender: TObject);
+begin
+  UpdateDragThresholdLabel;
+end;
+
 procedure TAnchorDockOptionsDialog.SetMaster(const AValue: TAnchorDockMaster);
 begin
   if FMaster=AValue then exit;
   FMaster:=AValue;
   if Master<>nil then begin
     DragThresholdTrackBar.Position:=Master.DragTreshold;
+    UpdateDragThresholdLabel;
     HeaderAlignTopTrackBar.Position:=Master.HeaderAlignTop;
+    UpdateHeaderAlignTopLabel;
     HeaderAlignLeftTrackBar.Position:=Master.HeaderAlignLeft;
+    UpdateHeaderAlignLeftLabel;
     SplitterWidthTrackBar.Position:=Master.SplitterWidth;
+    UpdateSplitterWidthLabel;
     ScaleOnResizeCheckBox.Checked:=Master.ScaleOnResize;
   end;
+end;
+
+procedure TAnchorDockOptionsDialog.UpdateDragThresholdLabel;
+begin
+  DragThresholdLabel.Caption:=adrsDragThreshold
+                             +' ('+IntToStr(DragThresholdTrackBar.Position)+')';
+end;
+
+procedure TAnchorDockOptionsDialog.UpdateHeaderAlignTopLabel;
+begin
+  HeaderAlignTopLabel.Caption:=adrsHeaderAlignTop
+                            +' ('+IntToStr(HeaderAlignTopTrackBar.Position)+')';
+end;
+
+procedure TAnchorDockOptionsDialog.UpdateHeaderAlignLeftLabel;
+begin
+  HeaderAlignLeftLabel.Caption:=adrsHeaderAlignLeft
+                           +' ('+IntToStr(HeaderAlignLeftTrackBar.Position)+')';
+end;
+
+procedure TAnchorDockOptionsDialog.UpdateSplitterWidthLabel;
+begin
+  SplitterWidthLabel.Caption:=adrsSplitterWidth
+                             +' ('+IntToStr(SplitterWidthTrackBar.Position)+')';
 end;
 
 end.

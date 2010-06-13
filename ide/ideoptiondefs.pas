@@ -211,8 +211,8 @@ type
     procedure CloseForm;
   public
     property FormID: string read GetFormID write SetFormID;
-    function FormBaseID(out SubIndex: Integer): String;
-    property FormCaption: string read FFormCaption;
+    function FormBaseID(out SubIndex: Integer): String; // split FormID into name+number
+    property FormCaption: string read FFormCaption; // used while Form=nil
     property WindowPlacement: TIDEWindowPlacement
       read fWindowPlacement write SetWindowPlacement;
     property DefaultWindowPlacement: TIDEWindowPlacement
@@ -591,13 +591,13 @@ end;
 procedure TSimpleWindowLayout.Assign(Layout: TSimpleWindowLayout);
 begin
   Clear;
+  Form:=Layout.Form;
   fWindowPlacement:=Layout.fWindowPlacement;
   fLeft:=Layout.fLeft;
   fTop:=Layout.fTop;
   fWidth:=Layout.fWidth;
   fHeight:=Layout.fHeight;
   fWindowState:=Layout.fWindowState;
-  fForm:=Layout.fForm;
   fFormID:=Layout.fFormID;
   fDefaultWindowPlacement:=Layout.fDefaultWindowPlacement;
 end;

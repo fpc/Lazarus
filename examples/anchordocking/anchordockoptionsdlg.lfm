@@ -1,18 +1,18 @@
 object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
   Left = 595
-  Height = 220
+  Height = 317
   Top = 319
-  Width = 404
+  Width = 311
   Caption = 'AnchorDockOptionsDialog'
-  ClientHeight = 220
-  ClientWidth = 404
+  ClientHeight = 317
+  ClientWidth = 311
   OnCreate = FormCreate
   LCLVersion = '0.9.29'
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 42
-    Top = 172
-    Width = 392
+    Top = 269
+    Width = 299
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
   end
@@ -26,11 +26,11 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
   end
   object HeaderAlignTopLabel: TLabel
     AnchorSideLeft.Control = DragThresholdLabel
-    AnchorSideTop.Control = DragThresholdLabel
+    AnchorSideTop.Control = ScaleOnResizeCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 10
     Height = 18
-    Top = 38
+    Top = 148
     Width = 138
     BorderSpacing.Top = 10
     Caption = 'HeaderAlignTopLabel'
@@ -38,11 +38,11 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
   end
   object HeaderAlignLeftLabel: TLabel
     AnchorSideLeft.Control = DragThresholdLabel
-    AnchorSideTop.Control = HeaderAlignTopLabel
+    AnchorSideTop.Control = HeaderAlignTopTrackBar
     AnchorSideTop.Side = asrBottom
     Left = 10
     Height = 18
-    Top = 66
+    Top = 201
     Width = 141
     BorderSpacing.Top = 10
     Caption = 'HeaderAlignLeftLabel'
@@ -50,11 +50,11 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
   end
   object SplitterWidthLabel: TLabel
     AnchorSideLeft.Control = DragThresholdLabel
-    AnchorSideTop.Control = HeaderAlignLeftLabel
+    AnchorSideTop.Control = DragThresholdTrackBar
     AnchorSideTop.Side = asrBottom
     Left = 10
     Height = 18
-    Top = 94
+    Top = 63
     Width = 121
     BorderSpacing.Top = 10
     Caption = 'SplitterWidthLabel'
@@ -62,11 +62,11 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
   end
   object ScaleOnResizeCheckBox: TCheckBox
     AnchorSideLeft.Control = DragThresholdLabel
-    AnchorSideTop.Control = SplitterWidthLabel
+    AnchorSideTop.Control = SplitterWidthTrackBar
     AnchorSideTop.Side = asrBottom
     Left = 10
     Height = 22
-    Top = 122
+    Top = 116
     Width = 188
     BorderSpacing.Top = 10
     Caption = 'ScaleOnResizeCheckBox'
@@ -75,17 +75,19 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
     TabOrder = 1
   end
   object DragThresholdTrackBar: TTrackBar
+    AnchorSideLeft.Control = DragThresholdLabel
     AnchorSideTop.Control = DragThresholdLabel
-    AnchorSideTop.Side = asrCenter
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 188
+    Left = 10
     Height = 25
-    Top = 7
-    Width = 206
+    Top = 28
+    Width = 291
     Max = 20
+    OnChange = DragThresholdTrackBarChange
     Position = 0
-    Anchors = [akTop, akRight]
+    Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Right = 10
     ParentShowHint = False
     ShowHint = True
@@ -94,15 +96,16 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
   object HeaderAlignTopTrackBar: TTrackBar
     AnchorSideLeft.Control = DragThresholdTrackBar
     AnchorSideTop.Control = HeaderAlignTopLabel
-    AnchorSideTop.Side = asrCenter
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = DragThresholdTrackBar
     AnchorSideRight.Side = asrBottom
-    Left = 188
+    Left = 10
     Height = 25
-    Top = 35
-    Width = 206
+    Top = 166
+    Width = 291
     Frequency = 10
     Max = 150
+    OnChange = HeaderAlignTopTrackBarChange
     PageSize = 10
     Position = 0
     Anchors = [akTop, akLeft, akRight]
@@ -113,15 +116,16 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
   object HeaderAlignLeftTrackBar: TTrackBar
     AnchorSideLeft.Control = DragThresholdTrackBar
     AnchorSideTop.Control = HeaderAlignLeftLabel
-    AnchorSideTop.Side = asrCenter
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = DragThresholdTrackBar
     AnchorSideRight.Side = asrBottom
-    Left = 188
+    Left = 10
     Height = 25
-    Top = 63
-    Width = 206
+    Top = 219
+    Width = 291
     Frequency = 10
     Max = 200
+    OnChange = HeaderAlignLeftTrackBarChange
     PageSize = 10
     Position = 0
     Anchors = [akTop, akLeft, akRight]
@@ -132,14 +136,15 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
   object SplitterWidthTrackBar: TTrackBar
     AnchorSideLeft.Control = DragThresholdTrackBar
     AnchorSideTop.Control = SplitterWidthLabel
-    AnchorSideTop.Side = asrCenter
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = DragThresholdTrackBar
     AnchorSideRight.Side = asrBottom
-    Left = 188
+    Left = 10
     Height = 25
-    Top = 91
-    Width = 206
+    Top = 81
+    Width = 291
     Min = 1
+    OnChange = SplitterWidthTrackBarChange
     Position = 1
     Anchors = [akTop, akLeft, akRight]
     ParentShowHint = False

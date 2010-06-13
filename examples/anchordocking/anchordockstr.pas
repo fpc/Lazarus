@@ -50,11 +50,13 @@ resourcestring
   adrsRight = 'right';
   adrsBottom = 'bottom';
   adrsLocked = 'Locked';
+  adrsDockingOptions = 'Docking options';
   adrsMovePageLeft = 'Move page left';
   adrsMovePageLeftmost = 'Move page leftmost';
   adrsRequestedButCreated = '%s requested, but %s created';
   adrsDragAndDockC = 'Drag and dock %c';
   adrsMissingControlName = 'missing control name';
+  adrsModalFormsCanNotBeMadeDockable = 'modal forms can not be made dockable';
   adrsNotSupportedHasParent = 'Not supported: %s has parent %s';
   adrsAnchorNotFoundNodeAnchors = 'Anchor not found: Node=%s%s%s Anchors[%s]=%'
     +'s%s%s';

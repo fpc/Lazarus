@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
   Menus, ExtCtrls, Buttons, ComCtrls, SimpleFrm,
-  AnchorDocking, AnchorDockStorage, XMLPropStorage;
+  AnchorDocking, AnchorDockStorage, XMLPropStorage, AnchorDockOptionsDlg;
 
 type
 
@@ -125,6 +125,7 @@ begin
 
   DockMaster.MakeDockSite(Self,[akBottom],admrpChild);
   DockMaster.OnCreateControl:=@DockMasterCreateControl;
+  DockMaster.OnShowOptions:=@ShowAnchorDockOptions;
 
   SetBounds(100,50,600,80);
   ViewSrcEditor1ToolButtonClick(Self);

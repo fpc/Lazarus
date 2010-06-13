@@ -117,7 +117,6 @@ type
     FCloseButton: TSpeedButton;
     FHeaderPosition: TADLHeaderPosition;
     procedure CloseButtonClick(Sender: TObject);
-    procedure ChangeLockButtonClick(Sender: TObject);
     procedure HeaderPositionItemClick(Sender: TObject);
     procedure UndockButtonClick(Sender: TObject);
     procedure MergeButtonClick(Sender: TObject);
@@ -181,7 +180,6 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X,Y: Integer); override;
     procedure PopupMenuPopup(Sender: TObject); virtual;
     procedure CloseButtonClick(Sender: TObject); virtual;
-    procedure ChangeLockButtonClick(Sender: TObject); virtual;
     procedure MoveLeftButtonClick(Sender: TObject); virtual;
     procedure MoveLeftMostButtonClick(Sender: TObject); virtual;
     procedure MoveRightButtonClick(Sender: TObject); virtual;
@@ -334,10 +332,12 @@ type
   end;
   TAnchorDockManagerClass = class of TAnchorDockManager;
 
+  TAnchorDockMaster = class;
   { TAnchorDockMaster }
 
   TADCreateControlEvent = procedure(Sender: TObject; aName: string;
                 var AControl: TControl; DoDisableAutoSizing: boolean) of object;
+  TADShowDockMasterOptionsEvent = function(aDockMaster: TAnchorDockMaster): TModalResult;
 
   TAnchorDockMaster = class(TComponent)
   private
@@ -352,6 +352,7 @@ type
     FHeaderHint: string;
     FManagerClass: TAnchorDockManagerClass;
     FOnCreateControl: TADCreateControlEvent;
+    FOnShowOptions: TADShowDockMasterOptionsEvent;
     FPageAreaInPercent: integer;
     FPageClass: TAnchorDockPageClass;
     FPageControlClass: TAnchorDockPageControlClass;
@@ -385,6 +386,8 @@ type
     procedure PopupMenuCloseUp(Sender: TObject);
     procedure SetShowHeaderCaptionFloatingControl(const AValue: boolean);
     procedure SetSplitterWidth(const AValue: integer);
+    procedure ChangeLockButtonClick(Sender: TObject);
+    procedure OptionsClick(Sender: TObject);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);
           override;
@@ -433,6 +436,7 @@ type
     function CreateSplitter(NamePrefix: string = ''): TAnchorDockSplitter;
 
     // options
+    property OnShowOptions: TADShowDockMasterOptionsEvent read FOnShowOptions write FOnShowOptions;
     property DragTreshold: integer read FDragTreshold write FDragTreshold default 4;
     property DockOutsideMargin: integer read FDockOutsideMargin write FDockOutsideMargin default 10; // max distance for outside mouse snapping
     property DockParentMargin: integer read FDockParentMargin write FDockParentMargin default 10; // max distance for snap to parent
@@ -1340,13 +1344,26 @@ end;
 procedure TAnchorDockMaster.PopupMenuPopup(Sender: TObject);
 var
   Popup: TPopupMenu;
+  ChangeLockItem: TMenuItem;
 begin
   if not (Sender is TPopupMenu) then exit;
   Popup:=TPopupMenu(Sender);
+  Popup.Items.Clear;
+
+  // top popup menu item can be clicked by accident, so use something simple:
+  // lock/unlock
+  ChangeLockItem:=AddPopupMenuItem('ChangeLockMenuItem', adrsLocked,
+                                    @ChangeLockButtonClick);
+  ChangeLockItem.Checked:=not AllowDragging;
+  ChangeLockItem.ShowAlwaysCheckable:=true;
+
   if Popup.PopupComponent is TAnchorDockHeader then
     TAnchorDockHeader(Popup.PopupComponent).PopupMenuPopup(Sender)
   else if Popup.PopupComponent is TAnchorDockPageControl then
     TAnchorDockPageControl(Popup.PopupComponent).PopupMenuPopup(Sender);
+
+  if Assigned(OnShowOptions) then
+    AddPopupMenuItem('OptionsMenuItem', adrsDockingOptions, @OptionsClick);
 end;
 
 procedure TAnchorDockMaster.PopupMenuCloseUp(Sender: TObject);
@@ -1386,6 +1403,16 @@ begin
     else
       Splitter.Height:=SplitterWidth;
   end;
+end;
+
+procedure TAnchorDockMaster.ChangeLockButtonClick(Sender: TObject);
+begin
+  AllowDragging:=not AllowDragging;
+end;
+
+procedure TAnchorDockMaster.OptionsClick(Sender: TObject);
+begin
+  if Assigned(OnShowOptions) then OnShowOptions(Self);
 end;
 
 procedure TAnchorDockMaster.Notification(AComponent: TComponent;
@@ -1534,6 +1561,10 @@ begin
   if AControl.Name='' then
     raise Exception.Create('TAnchorDockMaster.MakeDockable '+
       adrsMissingControlName);
+  if (AControl is TCustomForm) and (fsModal in TCustomForm(AControl).FormState)
+  then
+    raise Exception.Create('TAnchorDockMaster.MakeDockable '+
+      adrsModalFormsCanNotBeMadeDockable);
   Site:=nil;
   AControl.DisableAutoSizing;
   try
@@ -1595,6 +1626,9 @@ begin
     raise Exception.Create('TAnchorDockMaster.MakeDockSite DockManager<>nil');
   if AForm.Parent<>nil then
     raise Exception.Create('TAnchorDockMaster.MakeDockSite Parent='+DbgSName(AForm.Parent));
+  if fsModal in AForm.FormState then
+    raise Exception.Create('TAnchorDockMaster.MakeDockSite '+
+      adrsModalFormsCanNotBeMadeDockable);
   if Sites=[] then
     raise Exception.Create('TAnchorDockMaster.MakeDockSite Sites=[]');
   AForm.DisableAutoSizing;
@@ -3679,7 +3713,6 @@ end;
 
 procedure TAnchorDockHeader.PopupMenuPopup(Sender: TObject);
 var
-  ChangeLockItem: TMenuItem;
   HeaderPosItem: TMenuItem;
   ParentSite: TAnchorDockHostSite;
   Side: TAnchorKind;
@@ -3693,14 +3726,6 @@ begin
   SideCaptions[akTop]:=adrsTop;
   SideCaptions[akRight]:=adrsRight;
   SideCaptions[akBottom]:=adrsBottom;
-  PopupMenu.Items.Clear;
-
-  // top popup menu item can be clicked by accident, so use something simple:
-  // lock/unlock
-  ChangeLockItem:= DockMaster.AddPopupMenuItem('ChangeLockMenuItem', adrsLocked,
-                                               @ChangeLockButtonClick);
-  ChangeLockItem.Checked:=not DockMaster.AllowDragging;
-  ChangeLockItem.ShowAlwaysCheckable:=true;
 
   // undock, merge
   DockMaster.AddRemovePopupMenuItem(ParentSite.CanUndock,'UndockMenuItem',
@@ -3743,11 +3768,6 @@ procedure TAnchorDockHeader.CloseButtonClick(Sender: TObject);
 begin
   if Parent is TAnchorDockHostSite then
     TAnchorDockHostSite(Parent).CloseSite;
-end;
-
-procedure TAnchorDockHeader.ChangeLockButtonClick(Sender: TObject);
-begin
-  DockMaster.AllowDragging:=not DockMaster.AllowDragging;
 end;
 
 procedure TAnchorDockHeader.HeaderPositionItemClick(Sender: TObject);
@@ -4443,22 +4463,12 @@ end;
 
 procedure TAnchorDockPageControl.PopupMenuPopup(Sender: TObject);
 var
-  ChangeLockItem: TMenuItem;
   ContainsMainForm: Boolean;
   s: String;
   TabPositionSection: TMenuItem;
   Item: TMenuItem;
   tp: TTabPosition;
 begin
-  PopupMenu.Items.Clear;
-
-  // top popup menu item can be clicked by accident, so use something simple:
-  // lock/unlock
-  ChangeLockItem:=DockMaster.AddPopupMenuItem('ChangeLockMenuItem', adrsLocked,
-                                              @ChangeLockButtonClick);
-  ChangeLockItem.Checked:=not DockMaster.AllowDragging;
-  ChangeLockItem.ShowAlwaysCheckable:=true;
-
   // movement
   if PageIndex>0 then
     DockMaster.AddPopupMenuItem('MoveLeftMenuItem', adrsMovePageLeft,
@@ -4508,11 +4518,6 @@ begin
   if Site=nil then exit;
   Site.CloseSite;
   DockMaster.SimplifyPendingLayouts;
-end;
-
-procedure TAnchorDockPageControl.ChangeLockButtonClick(Sender: TObject);
-begin
-  DockMaster.AllowDragging:=not DockMaster.AllowDragging;
 end;
 
 procedure TAnchorDockPageControl.MoveLeftButtonClick(Sender: TObject);
