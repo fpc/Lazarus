@@ -218,6 +218,37 @@ Sites without children are removed and its parent marked for simplification.
       <element name="TAnchorDockMaster.PageClass">
         <short>For your extensions</short>
       </element>
+      <element name="DockMaster">
+        <short>The global DockMaster connects all sites and is your door to the anchor docking system.</short>
+      </element>
+      <element name="CopyAnchorBounds">
+        <short>Copy the anchorsides from Source to Target</short>
+      </element>
+      <element name="AnchorAndChangeBounds">
+        <short>Anchor AControl at Side to Target</short>
+      </element>
+      <element name="ControlsLeftTopOnScreen">
+        <short>returns the outer top, left pixel of a control in the screen coordinates.</short>
+      </element>
+      <element name="GetDockSplitter">
+        <short>returns true if Control is anchored to a anchor splitter at Side.</short>
+      </element>
+      <element name="TAnchorDockMaster">
+        <short>The central class of the anchor docking system.</short>
+        <descr>The central instance that connects all sites and manages all global settings. Its global variable is the DockMaster. Applications only need to talk to the DockMaster.
+</descr>
+      </element>
+      <element name="TAnchorDockManager">
+        <short>The TDockManager used by the anchor dock sites.</short>
+        <descr>A TDockManager is the LCL connector to catch various docking events for a TControl. Every TAnchorDockHostSite and every custom dock site gets one TAnchorDockManager. The LCL frees it automatically when the Site is freed.
+</descr>
+      </element>
+      <element name="TAnchorDockHostSite">
+        <descr>This form is the dockhostsite for all controls.
+When docked together they build a tree structure with the docked controls as leaf nodes. A TAnchorDockHostSite has four modes.
+</descr>
+        <short>This form is the base class for anchor dock sites.</short>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>
