@@ -20,6 +20,38 @@
       <element name="TAnchorDockMaster.DisableControlAutoSizing">
         <short>Add control to the internal list only once and delay autosizing</short>
       </element>
+      <element name="TAnchorDockMaster.ControlCount">
+        <short>Returns number of dockable controls, added via MakeDockable or MakeDockSite or OnCreateControl</short>
+      </element>
+      <element name="TAnchorDockMaster.Controls">
+        <short>the list of dockable controls, starting at 0</short>
+      </element>
+      <element name="TAnchorDockMaster.IndexOfControl">
+        <short>Index of control with Name is aName in the list of dockable controls (case insensitive)</short>
+      </element>
+      <element name="TAnchorDockMaster.FindControl">
+        <short>returns a dockable control with Name is aName (case insensitive)</short>
+      </element>
+      <element name="TAnchorDockMaster.IsSite">
+        <short>Returns true if control is a site (TAnchorDockHostSite) or custom site (MakeDockSite)</short>
+      </element>
+      <element name="TAnchorDockMaster.IsCustomSite">
+        <short>returns true if AControl is a custom dock site (MakeDockSite)</short>
+      </element>
+      <element name="TAnchorDockMaster.GetSite">
+        <short>returns the site (TAnchorDockHostSite) of AControl</short>
+      </element>
+      <element name="TAnchorDockMaster.GetPopupMenu">
+        <short>returns the shared popupmenu used by all headers and pages.</short>
+        <descr>The popup menu is cleared on popup and filled by the headers and pages on Popup.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.AddPopupMenuItem">
+        <short>Utility function to easily add a menu item to the popupmenu.</short>
+      </element>
+      <element name="TAnchorDockMaster.AddRemovePopupMenuItem">
+        <short>Utility function to add or remove a menu item to/from the popupmenu.</short>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>
