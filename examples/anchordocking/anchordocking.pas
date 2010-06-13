@@ -67,11 +67,10 @@
     - dnd move page to another pagecontrol
 
   ToDo:
+    - windows: close button glyph
     - popup menu
        - shrink side left, top, right, bottom
     - fpdoc
-    - examples on wiki:
-        example how to dock in code
     - simple way to make forms dockable at designtime
     - minimize button and Hide => show in header
     - on close button: save a default layout
@@ -3064,6 +3063,10 @@ begin
     //debugln(['TAnchorDockHostSite.SetParent freeing splitter: ',DbgSName(BoundSplitter)]);
     FreeAndNil(FBoundSplitter);
   end;
+  if Parent=nil then
+    BorderStyle:=bsSizeable
+  else
+    BorderStyle:=bsNone;
 end;
 
 function TAnchorDockHostSite.HeaderNeedsShowing: boolean;
