@@ -68,6 +68,10 @@
 
   ToDo:
     - windows: close button glyph
+    - windows: caption height for left aligned header
+    - windows: setting header position does not work
+    - windows: showing active header position does not work
+    - use site icon from wrapped form
     - popup menu
        - shrink side left, top, right, bottom
     - fpdoc
@@ -3792,12 +3796,17 @@ begin
                                              adrsHeaderPosition, nil);
   Item:=DockMaster.AddPopupMenuItem('HeaderPosAutoMenuItem', adrsAutomatically,
                    @HeaderPositionItemClick, HeaderPosItem);
-  if Item<>nil then Item.Tag:=ord(adlhpAuto);
+  if Item<>nil then begin
+    Item.Tag:=ord(adlhpAuto);
+    Item.Checked:=HeaderPosition=TADLHeaderPosition(Item.Tag);
+  end;
   for Side:=Low(TAnchorKind) to High(TAnchorKind) do begin
     Item:=DockMaster.AddPopupMenuItem('HeaderPos'+AnchorNames[Side]+'MenuItem',
                      SideCaptions[Side], @HeaderPositionItemClick,
                      HeaderPosItem);
-    if Item<>nil then Item.Tag:=ord(Side)+1;
+    if Item=nil then continue;
+    Item.Tag:=ord(Side)+1;
+    Item.Checked:=HeaderPosition=TADLHeaderPosition(Item.Tag);
   end;
 
   // enlarge
