@@ -67,7 +67,6 @@
     - dnd move page to another pagecontrol
 
   ToDo:
-    - windows: caption for left aligned header wrong because of bug 16724
     - popup menu
        - shrink side left, top, right, bottom
     - fpdoc
@@ -92,12 +91,14 @@ uses
 type
   TAnchorDockHostSite = class;
 
-  { TAnchorDockCloseButton }
+  { TAnchorDockCloseButton
+    Close button used in TAnchorDockHeader, uses the close button glyph of the
+    theme shrinked to a small size. The glyph is shared by all close buttons. }
 
   TAnchorDockCloseButton = class(TSpeedButton)
   protected
-    procedure GetCloseGlyph;
-    procedure ReleaseCloseGlyph;
+    procedure GetCloseGlyph; // increase reference count
+    procedure ReleaseCloseGlyph; // decrease reference count
     function GetGlyphSize(PaintRect: TRect): TSize; override;
     function DrawGlyph(ACanvas: TCanvas; const AClient: TRect;
             const AOffset: TPoint; AState: TButtonState; ATransparent: Boolean;
@@ -109,7 +110,12 @@ type
     destructor Destroy; override;
   end;
 
-  { TAnchorDockHeader }
+  { TAnchorDockHeader
+    The panel of a TAnchorDockHostSite containing the close button and the
+    caption when the form is docked. The header can be shown at any of the four
+    sides, shows a hint for long captions, starts dragging and shows the popup
+    menu of the dockmaster.
+    Hiding and aligning is done by its Parent a TAnchorDockHostSite }
 
   TAnchorDockHeader = class(TCustomPanel)
   private
@@ -138,7 +144,11 @@ type
   end;
   TAnchorDockHeaderClass = class of TAnchorDockHeader;
 
-  { TAnchorDockSplitter }
+  { TAnchorDockSplitter
+    A TSplitter used on a TAnchorDockHostSite with SiteType=adhstLayout.
+    It can store DockBounds, used by its parent to scale. Scaling works by
+    moving the splitters. All other controls are fully anchored to these
+    splitters or their parent. }
 
   TAnchorDockSplitter = class(TCustomSplitter)
   private
@@ -151,15 +161,16 @@ type
     property DockBounds: TRect read FDockBounds write FDockBounds;
     property DockParentClientSize: TSize read FDockParentClientSize write FDockParentClientSize;
     procedure UpdateDockBounds;
-    procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
-    procedure SetBoundsKeepDockBounds(ALeft, ATop, AWidth, AHeight: integer);
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override; // any normal movement sets the DockBounds
+    procedure SetBoundsKeepDockBounds(ALeft, ATop, AWidth, AHeight: integer); // movement for scaling keeps the DockBounds
     function SideAnchoredControlCount(Side: TAnchorKind): integer;
     procedure SaveLayout(LayoutNode: TAnchorDockLayoutTreeNode);
     function HasOnlyOneSibling(Side: TAnchorKind; MinPos, MaxPos: integer): TControl;
   end;
   TAnchorDockSplitterClass = class of TAnchorDockSplitter;
 
-  { TAnchorDockPage }
+  { TAnchorDockPage
+    A page of a TAnchorDockPageControl. }
 
   TAnchorDockPage = class(TCustomPage)
   public
@@ -170,7 +181,11 @@ type
   end;
   TAnchorDockPageClass = class of TAnchorDockPage;
 
-  { TAnchorDockPageControl }
+  { TAnchorDockPageControl
+    Used for page docking.
+    The parent is always a TAnchorDockHostSite with SiteType=adhstPages.
+    Its children are all TAnchorDockPage.
+    It shows the DockMaster popup menu and starts dragging. }
 
   TAnchorDockPageControl = class(TCustomNotebook)
   private
@@ -197,14 +212,15 @@ type
     This form is the dockhostsite for all controls.
     When docked together they build a tree structure with the docked controls
     as leaf nodes.
-    A TAnchorDockHostSite has three forms:
+    A TAnchorDockHostSite has four forms:
+
     }
 
   TAnchorDockHostSiteType = (
     adhstNone,  // fresh created, no control docked
-    adhstOneControl, // a control and a TAnchorDockHeader
+    adhstOneControl, // a control and the "Header" (TAnchorDockHeader)
     adhstLayout, // several controls/TAnchorDockHostSite separated by TAnchorDockSplitters
-    adhstPages  // several controls/TAnchorDockHostSite in a TPageControl
+    adhstPages  // the "Pages" (TAnchorDockPageControl) with several pages
     );
 
   TAnchorDockHostSite = class(TCustomForm)
@@ -298,7 +314,10 @@ type
     admrpChild  // resize child
     );
 
-  { TAnchorDockManager }
+  { TAnchorDockManager
+    A TDockManager is the LCL connector to catch various docking events for a
+    TControl. Every TAnchorDockHostSite and every custom dock site gets one
+    TAnchorDockManager. The LCL frees it automatically when the Site is freed. }
 
   TAnchorDockManager = class(TDockManager)
   private
@@ -324,18 +343,21 @@ type
     function GetDockEdge(ADockObject: TDragDockObject): boolean; override;
     procedure RestoreSite;
 
-    property DockSite: TAnchorDockHostSite read FDockSite;
-    property Site: TWinControl read FSite;
-    property DockableSites: TAnchors read FDockableSites write FDockableSites;
-    property InsideDockingAllowed: boolean read FInsideDockingAllowed write FInsideDockingAllowed;
-    function GetChildSite: TAnchorDockHostSite;
+    property Site: TWinControl read FSite; // the associated TControl (a TAnchorDockHostSite or a custom dock site)
+    property DockSite: TAnchorDockHostSite read FDockSite; // if Site is a TAnchorDockHostSite, this is it
+    property DockableSites: TAnchors read FDockableSites write FDockableSites; // at which sides can be docked.
+    property InsideDockingAllowed: boolean read FInsideDockingAllowed write FInsideDockingAllowed; // if true allow to put a site into the custom dock site
+    function GetChildSite: TAnchorDockHostSite; // get first child TAnchorDockHostSite
     property ResizePolicy: TADMResizePolicy read FResizePolicy write FResizePolicy;
   end;
   TAnchorDockManagerClass = class of TAnchorDockManager;
 
   TAnchorDockMaster = class;
 
-  { TAnchorDockMaster }
+  { TAnchorDockMaster
+    The central instance that connects all sites and manages all global
+    settings. Its global variable is the DockMaster.
+    Applications only need to talk to the DockMaster. }
 
   TADCreateControlEvent = procedure(Sender: TObject; aName: string;
                 var AControl: TControl; DoDisableAutoSizing: boolean) of object;
@@ -373,23 +395,23 @@ type
     fCloseBtnReferenceCount: integer;
     fCloseBtnBitmap: TBitmap;
     function GetControls(Index: integer): TControl;
-    procedure SetHeaderAlignLeft(const AValue: integer);
-    procedure SetHeaderAlignTop(const AValue: integer);
     function CloseUnneededControls(Tree: TAnchorDockLayoutTree): boolean;
     function CreateNeededControls(Tree: TAnchorDockLayoutTree;
                 DisableAutoSizing: boolean; ControlNames: TStrings): boolean;
     procedure MapTreeToControls(Tree: TAnchorDockLayoutTree);
     function RestoreLayout(Tree: TAnchorDockLayoutTree): boolean;
-    function DoCreateControl(aName: string; DisableAutoSizing: boolean): TControl;
-    procedure DisableControlAutoSizing(AControl: TControl);
     procedure EnableAllAutoSizing;
     procedure ClearLayoutProperties(AControl: TControl);
     procedure PopupMenuPopup(Sender: TObject);
-    procedure SetShowHeaderCaptionFloatingControl(const AValue: boolean);
-    procedure SetSplitterWidth(const AValue: integer);
     procedure ChangeLockButtonClick(Sender: TObject);
     procedure OptionsClick(Sender: TObject);
   protected
+    procedure SetHeaderAlignLeft(const AValue: integer);
+    procedure SetHeaderAlignTop(const AValue: integer);
+    procedure SetShowHeaderCaptionFloatingControl(const AValue: boolean);
+    procedure SetSplitterWidth(const AValue: integer);
+    function DoCreateControl(aName: string; DisableAutoSizing: boolean): TControl;
+    procedure DisableControlAutoSizing(AControl: TControl);
     procedure Notification(AComponent: TComponent; Operation: TOperation);
           override;
   public
@@ -4009,7 +4031,6 @@ begin
     Name:='CloseButton';
     Parent:=Self;
     Flat:=true;
-    BorderWidth:=0;
     ShowHint:=true;
     Hint:=adrsClose;
     OnClick:=@CloseButtonClick;
@@ -4028,6 +4049,7 @@ begin
   inherited Create(AOwner);
   GetCloseGlyph;
   Glyph:=DockMaster.fCloseBtnBitmap;
+  BorderWidth:=0;
 end;
 
 destructor TAnchorDockCloseButton.Destroy;
