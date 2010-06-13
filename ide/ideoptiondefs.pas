@@ -171,7 +171,7 @@ type
                                         
   { TSimpleWindowLayout }
 
-  TSimpleWindowLayout = class
+  TSimpleWindowLayout = class(TComponent)
   private
     FFormCaption: string;
     FVisible: boolean;
@@ -201,12 +201,14 @@ type
     procedure SetWidth(const AValue: integer);
     procedure SetHeight(const AValue: integer);
     procedure SetWindowPlacement(const AValue: TIDEWindowPlacement);
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-    constructor Create(AFormID: string);
+    constructor Create(AFormID: string); reintroduce;
     destructor Destroy; override;
     procedure Clear;
     procedure GetCurrentPosition;
-    procedure Assign(Layout: TSimpleWindowLayout);
+    procedure Assign(Layout: TSimpleWindowLayout); reintroduce;
     procedure ReadCurrentCoordinates;
     procedure ReadCurrentState;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -387,7 +389,7 @@ end;
 
 constructor TSimpleWindowLayout.Create(AFormID: string);
 begin
-  inherited Create;
+  inherited Create(nil);
   FormID:=AFormID;
   fDefaultWindowPlacement:=iwpRestoreWindowGeometry;
   Clear;
@@ -453,6 +455,16 @@ begin
   fWindowPlacement:=AValue;
 end;
 
+procedure TSimpleWindowLayout.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then begin
+    if fForm=AComponent then
+      fForm:=nil;
+  end;
+end;
+
 procedure TSimpleWindowLayout.SetHeight(const AValue: integer);
 begin
   fHeight:=AValue;
@@ -511,6 +523,7 @@ begin
   if (Form<>nil) then begin
     fFormID := FForm.Name;
     FFormCaption := fForm.Caption;
+    FreeNotification(fForm);
   end;
 end;
 
