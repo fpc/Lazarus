@@ -188,46 +188,39 @@ begin
   begin
     RadioButton := GetPlacementRadioButtons(APlacement);
     if RadioButton=nil then continue;
-    if APlacement in Layout.WindowPlacementsAllowed then
-    begin
-      RadioButton.Enabled := True;
-      RadioButton.Checked := (APlacement = Layout.WindowPlacement);
 
-      if APlacement = iwpCustomPosition then
+    RadioButton.Enabled := True;
+    RadioButton.Checked := (APlacement = Layout.WindowPlacement);
+
+    if APlacement = iwpCustomPosition then
+    begin
+      // custom window position
+      if Layout.CustomCoordinatesAreValid then
       begin
-        // custom window position
-        if Layout.CustomCoordinatesAreValid then
-        begin
-          LeftEdit.Value := Layout.Left;
-          TopEdit.Value := Layout.Top;
-          WidthEdit.Value := Layout.Width;
-          HeightEdit.Value := Layout.Height;
-        end
-        else
-        if Layout.Form <> nil then
-        begin
-          LeftEdit.Value := Layout.Form.Left;
-          TopEdit.Value := Layout.Form.Top;
-          WidthEdit.Value := Layout.Form.Width;
-          HeightEdit.Value := Layout.Form.Height;
-        end
-        else
-        begin
-          LeftEdit.Value := 0;
-          TopEdit.Value := 0;
-          WidthEdit.Value := 0;
-          HeightEdit.Value := 0;
-        end;
+        LeftEdit.Value := Layout.Left;
+        TopEdit.Value := Layout.Top;
+        WidthEdit.Value := Layout.Width;
+        HeightEdit.Value := Layout.Height;
+      end
+      else
+      if Layout.Form <> nil then
+      begin
+        LeftEdit.Value := Layout.Form.Left;
+        TopEdit.Value := Layout.Form.Top;
+        WidthEdit.Value := Layout.Form.Width;
+        HeightEdit.Value := Layout.Form.Height;
+      end
+      else
+      begin
+        LeftEdit.Value := 0;
+        TopEdit.Value := 0;
+        WidthEdit.Value := 0;
+        HeightEdit.Value := 0;
       end;
-    end
-    else
-    if RadioButton <> nil then
-      RadioButton.Enabled := False;
+    end;
   end;
 
-  GetWindowPositionButton.Enabled :=
-    (iwpCustomPosition in Layout.WindowPlacementsAllowed) and
-    (Layout.Form <> nil);
+  GetWindowPositionButton.Enabled := (Layout.Form <> nil);
 end;
 
 procedure TWindowOptionsFrame.WindowPositionsListBoxSelectionChange(Sender: TObject; User: boolean);
@@ -309,18 +302,15 @@ begin
 
   for APlacement := Low(TIDEWindowPlacement) to High(TIDEWindowPlacement) do
   begin
-    if APlacement in Layout.WindowPlacementsAllowed then
+    ARadioButton := GetPlacementRadioButtons(APlacement);
+    if (ARadioButton <> nil) and ARadioButton.Enabled and ARadioButton.Checked then
+      Layout.WindowPlacement := APlacement;
+    if APlacement = iwpCustomPosition then
     begin
-      ARadioButton := GetPlacementRadioButtons(APlacement);
-      if (ARadioButton <> nil) and ARadioButton.Enabled and ARadioButton.Checked then
-        Layout.WindowPlacement := APlacement;
-      if APlacement = iwpCustomPosition then
-      begin
-        Layout.Left := LeftEdit.Value;
-        Layout.Top := TopEdit.Value;
-        Layout.Width := WidthEdit.Value;
-        Layout.Height := HeightEdit.Value;
-      end;
+      Layout.Left := LeftEdit.Value;
+      Layout.Top := TopEdit.Value;
+      Layout.Width := WidthEdit.Value;
+      Layout.Height := HeightEdit.Value;
     end;
   end;
 end;

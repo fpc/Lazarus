@@ -176,24 +176,18 @@ type
     FFormCaption: string;
     FVisible: boolean;
     fWindowPlacement: TIDEWindowPlacement;
-    fWindowPlacementsAllowed: TIDEWindowPlacements;
     fLeft: integer;
     fTop: integer;
     fWidth: integer;
     fHeight: integer;
     fWindowState: TIDEWindowState;
-    fWindowStatesAllowed: TIDEWindowStates;
     fForm: TCustomForm;
     fFormID: string;
-    fOnGetDefaultIDEWindowPos: TOnGetDefaultIDEWindowPos;
     fDefaultWindowPlacement: TIDEWindowPlacement;
     function GetFormID: string;
     function GetXMLFormID: string;
     procedure SetFormID(const AValue: string);
-    procedure SetOnGetDefaultIDEWindowPos(const AValue: TOnGetDefaultIDEWindowPos);
     procedure SetVisible(const AValue: boolean);
-    procedure SetWindowPlacementsAllowed(const AValue: TIDEWindowPlacements);
-    procedure SetWindowStatesAllowed(const AValue: TIDEWindowStates);
     procedure SetForm(const AValue: TCustomForm);
     procedure SetWindowState(const AValue: TIDEWindowState);
     procedure SetLeft(const AValue: integer);
@@ -221,8 +215,6 @@ type
     property FormCaption: string read FFormCaption;
     property WindowPlacement: TIDEWindowPlacement
       read fWindowPlacement write SetWindowPlacement;
-    property WindowPlacementsAllowed: TIDEWindowPlacements
-      read fWindowPlacementsAllowed write SetWindowPlacementsAllowed;
     property DefaultWindowPlacement: TIDEWindowPlacement
       read fDefaultWindowPlacement write fDefaultWindowPlacement;
     property Left: integer read fLeft write SetLeft;
@@ -231,12 +223,8 @@ type
     property Height: integer read fHeight write SetHeight;
     property WindowState: TIDEWindowState
       read fWindowState write SetWindowState;
-    property WindowStatesAllowed: TIDEWindowStates
-      read fWindowStatesAllowed write SetWindowStatesAllowed;
     property Form: TCustomForm read fForm write SetForm;
     property Visible: boolean read FVisible write SetVisible;
-    property OnGetDefaultIDEWindowPos: TOnGetDefaultIDEWindowPos
-      read fOnGetDefaultIDEWindowPos write SetOnGetDefaultIDEWindowPos;
   end;
 
   { TSimpleWindowLayoutList }
@@ -393,9 +381,6 @@ begin
   FormID:=AFormID;
   fDefaultWindowPlacement:=iwpRestoreWindowGeometry;
   Clear;
-  fWindowPlacementsAllowed:=
-    [Low(TIDEWindowPlacement)..High(TIDEWindowPlacement)];
-  fWindowStatesAllowed:=[Low(TIDEWindowState)..High(TIDEWindowState)];
 end;
 
 procedure TSimpleWindowLayout.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -552,28 +537,10 @@ begin
   inherited Destroy;
 end;
 
-procedure TSimpleWindowLayout.SetWindowStatesAllowed(
-  const AValue: TIDEWindowStates);
-begin
-  fWindowStatesAllowed:=AValue;
-end;
-
-procedure TSimpleWindowLayout.SetWindowPlacementsAllowed(
-  const AValue: TIDEWindowPlacements);
-begin
-  fWindowPlacementsAllowed:=AValue;
-end;
-
 procedure TSimpleWindowLayout.SetVisible(const AValue: boolean);
 begin
   if FVisible=AValue then exit;
   FVisible:=AValue;
-end;
-
-procedure TSimpleWindowLayout.SetOnGetDefaultIDEWindowPos(
-  const AValue: TOnGetDefaultIDEWindowPos);
-begin
-  fOnGetDefaultIDEWindowPos:=AValue;
 end;
 
 procedure TSimpleWindowLayout.Clear;
@@ -625,16 +592,13 @@ procedure TSimpleWindowLayout.Assign(Layout: TSimpleWindowLayout);
 begin
   Clear;
   fWindowPlacement:=Layout.fWindowPlacement;
-  fWindowPlacementsAllowed:=Layout.fWindowPlacementsAllowed;
   fLeft:=Layout.fLeft;
   fTop:=Layout.fTop;
   fWidth:=Layout.fWidth;
   fHeight:=Layout.fHeight;
   fWindowState:=Layout.fWindowState;
-  fWindowStatesAllowed:=Layout.fWindowStatesAllowed;
   fForm:=Layout.fForm;
   fFormID:=Layout.fFormID;
-  fOnGetDefaultIDEWindowPos:=Layout.fOnGetDefaultIDEWindowPos;
   fDefaultWindowPlacement:=Layout.fDefaultWindowPlacement;
 end;
 
