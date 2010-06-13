@@ -67,7 +67,6 @@
     - dnd move page to another pagecontrol
 
   ToDo:
-    - windows: close button glyph
     - windows: caption height for left aligned header
     - windows: no menu item work
     - use site icon from wrapped form
@@ -387,7 +386,6 @@ type
     procedure EnableAllAutoSizing;
     procedure ClearLayoutProperties(AControl: TControl);
     procedure PopupMenuPopup(Sender: TObject);
-    procedure PopupMenuCloseUp(Sender: TObject);
     procedure SetShowHeaderCaptionFloatingControl(const AValue: boolean);
     procedure SetSplitterWidth(const AValue: integer);
     procedure ChangeLockButtonClick(Sender: TObject);
@@ -1378,15 +1376,6 @@ begin
     AddPopupMenuItem('OptionsMenuItem', adrsDockingOptions, @OptionsClick);
 end;
 
-procedure TAnchorDockMaster.PopupMenuCloseUp(Sender: TObject);
-var
-  Popup: TPopupMenu;
-begin
-  if not (Sender is TPopupMenu) then exit;
-  Popup:=TPopupMenu(Sender);
-  Popup.Items.Clear;
-end;
-
 procedure TAnchorDockMaster.SetShowHeaderCaptionFloatingControl(
   const AValue: boolean);
 var
@@ -1541,7 +1530,6 @@ begin
   if fPopupMenu=nil then begin
     fPopupMenu:=TPopupMenu.Create(Self);
     fPopupMenu.OnPopup:=@PopupMenuPopup;
-    fPopupMenu.OnClose:=@PopupMenuCloseUp;
   end;
   Result:=fPopupMenu;
 end;
