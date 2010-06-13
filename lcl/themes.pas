@@ -1884,8 +1884,31 @@ begin
 end;
 
 function TThemeServices.GetStockImage(StockID: LongInt; out Image, Mask: HBitmap): Boolean;
+var
+  img : TBitmap;
 begin
-  Result := False;
+  case StockID of
+    idButtonClose:
+    begin
+      img:=TBitmap.Create;
+      img.SetSize(16, 16);
+      img.PixelFormat:=pf32bit;
+      img.Transparent:=True;
+      img.Canvas.Pen.Color:=clBlack;
+      img.Canvas.Pen.Width:=3;
+      img.Canvas.FillRect(Rect(0,0,img.Width,img.Height));
+      img.Canvas.MoveTo(4,4);
+      img.Canvas.LineTo(12,12);
+      img.Canvas.MoveTo(12,4);
+      img.Canvas.LineTo(4,12);
+      Image:=img.ReleaseHandle; 
+      Mask:=img.ReleaseMaskHandle;
+      img.Free;
+      Result:=True;
+    end;
+  else
+    Result := False;
+  end;
 end;
 
 function TThemeServices.GetOption(AOption: TThemeOption): Integer;
