@@ -222,7 +222,8 @@ type
                            override;
     function DoDockClientMsg(DragDockObject: TDragDockObject;
                              aPosition: TPoint): boolean; override;
-    function DockFirstControl(DragDockObject: TDragDockObject): boolean; virtual;
+    function ExecuteDock(NewControl, DropOnControl: TControl; DockAlign: TAlign): boolean; virtual;
+    function DockFirstControl(NewControl: TControl): boolean; virtual;
     function DockSecondControl(NewControl: TControl; DockAlign: TAlign;
                                Inside: boolean): boolean; virtual;
     function DockAnotherControl(Sibling, NewControl: TControl; DockAlign: TAlign;
@@ -428,9 +429,9 @@ type
 
     // manual docking
     procedure ManualFloat(AControl: TControl);
-    {procedure ManualDock(SrcSite, TargetSite: TAnchorDockHostSite;
-                         Align: TAlign; Inside: boolean);}
-    function EnlargeSide(Site: TAnchorDockHostSite; Side: TAnchorKind;
+    procedure ManualDock(SrcSite, TargetSite: TAnchorDockHostSite;
+                         Align: TAlign; TargetControl: TControl = nil);
+    function ManualEnlarge(Site: TAnchorDockHostSite; Side: TAnchorKind;
                          OnlyCheckIfPossible: boolean): boolean;
 
     // simplification/garbage collection
@@ -1839,7 +1840,25 @@ begin
   Site.Undock;
 end;
 
-function TAnchorDockMaster.EnlargeSide(Site: TAnchorDockHostSite;
+procedure TAnchorDockMaster.ManualDock(SrcSite,
+  TargetSite: TAnchorDockHostSite; Align: TAlign; TargetControl: TControl);
+begin
+  if SrcSite=TargetSite then exit;
+  if SrcSite.IsParentOf(TargetSite) then
+    raise Exception.Create('TAnchorDockMaster.ManualDock SrcSite.IsParentOf(TargetSite)');
+  if TargetSite.IsParentOf(SrcSite) then
+    raise Exception.Create('TAnchorDockMaster.ManualDock TargetSite.IsParentOf(SrcSite)');
+  if AutoFreedIfControlIsRemoved(TargetSite,SrcSite) then
+    raise Exception.Create('TAnchorDockMaster.ManualDock TargetSite depends on SrcSite');
+  BeginUpdate;
+  try
+    TargetSite.ExecuteDock(SrcSite,TargetControl,Align);
+  finally
+    EndUpdate;
+  end;
+end;
+
+function TAnchorDockMaster.ManualEnlarge(Site: TAnchorDockHostSite;
   Side: TAnchorKind; OnlyCheckIfPossible: boolean): boolean;
 begin
   Result:=(Site<>nil) and Site.EnlargeSide(Side,OnlyCheckIfPossible);
@@ -2083,20 +2102,23 @@ end;
 
 function TAnchorDockHostSite.DoDockClientMsg(DragDockObject: TDragDockObject;
   aPosition: TPoint): boolean;
-var
-  NewControl: TControl;
 begin
-  Result:=false;
   if aPosition.X=0 then ;
+  Result:=ExecuteDock(DragDockObject.Control,DragDockObject.DropOnControl,
+                      DragDockObject.DropAlign);
+end;
+
+function TAnchorDockHostSite.ExecuteDock(NewControl, DropOnControl: TControl;
+  DockAlign: TAlign): boolean;
+begin
   if UpdatingLayout then exit;
-  debugln(['TAnchorDockHostSite.DoDockClientMsg Self="',Caption,'"  Control=',DbgSName(DragDockObject.Control),' DropOnControl=',DbgSName(DragDockObject.DropOnControl),' Align=',dbgs(DragDockObject.DropAlign)]);
+  debugln(['TAnchorDockHostSite.DoDockClientMsg Self="',Caption,'"  Control=',DbgSName(NewControl),' DropOnControl=',DbgSName(DropOnControl),' Align=',dbgs(DockAlign)]);
 
   DisableAutoSizing;
   try
     BeginUpdateLayout;
     try
       DockMaster.SimplifyPendingLayouts;
-      NewControl:=DragDockObject.Control;
       NewControl.DisableAutoSizing;
 
       if NewControl.Parent=Self then begin
@@ -2109,8 +2131,8 @@ begin
 
       if SiteType=adhstNone then begin
         // make a control dockable by docking it into a TAnchorDockHostSite;
-        Result:=DockFirstControl(DragDockObject);
-      end else if DragDockObject.DropAlign=alClient then begin
+        Result:=DockFirstControl(NewControl);
+      end else if DockAlign=alClient then begin
         // page docking
         if SiteType=adhstOneControl then begin
           if Parent is TAnchorDockPage then begin
@@ -2121,23 +2143,21 @@ begin
             Result:=DockSecondPage(NewControl);
         end else if SiteType=adhstPages then
           // add as sibling page
-          Result:=DockAnotherPage(NewControl,DragDockObject.DropOnControl);
-      end else if DragDockObject.DropAlign in [alLeft,alTop,alRight,alBottom] then
+          Result:=DockAnotherPage(NewControl,DropOnControl);
+      end else if DockAlign in [alLeft,alTop,alRight,alBottom] then
       begin
         // anchor docking
         if SiteType=adhstOneControl then begin
           if Parent is TAnchorDockHostSite then begin
             // add site as sibling
             Result:=TAnchorDockHostSite(Parent).DockAnotherControl(Self,NewControl,
-                      DragDockObject.DropAlign,DragDockObject.DropOnControl<>nil);
+                      DockAlign,DropOnControl<>nil);
           end else
             // create layout
-            Result:=DockSecondControl(NewControl,DragDockObject.DropAlign,
-                                      DragDockObject.DropOnControl<>nil);
+            Result:=DockSecondControl(NewControl,DockAlign,DropOnControl<>nil);
         end else if SiteType=adhstLayout then
           // add site as sibling
-          Result:=DockAnotherControl(nil,NewControl,DragDockObject.DropAlign,
-                                     DragDockObject.DropOnControl<>nil);
+          Result:=DockAnotherControl(nil,NewControl,DockAlign,DropOnControl<>nil);
       end;
 
       NewControl.EnableAutoSizing;
@@ -2149,18 +2169,15 @@ begin
   end;
 end;
 
-function TAnchorDockHostSite.DockFirstControl(DragDockObject: TDragDockObject
-  ): boolean;
+function TAnchorDockHostSite.DockFirstControl(NewControl: TControl): boolean;
 var
   DestRect: TRect;
 begin
   if SiteType<>adhstNone then
     RaiseGDBException('TAnchorDockHostSite.DockFirstControl inconsistency');
   // create adhstOneControl
-  with DragDockObject do begin
-    DestRect := DockRect;
-    DragDockObject.Control.Dock(Self, DestRect);
-  end;
+  DestRect := ClientRect;
+  NewControl.Dock(Self, DestRect);
   FSiteType:=adhstOneControl;
   Result:=true;
 end;
