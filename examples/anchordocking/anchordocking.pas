@@ -69,8 +69,7 @@
   ToDo:
     - windows: close button glyph
     - windows: caption height for left aligned header
-    - windows: setting header position does not work
-    - windows: showing active header position does not work
+    - windows: no menu item work
     - use site icon from wrapped form
     - popup menu
        - shrink side left, top, right, bottom
@@ -2115,7 +2114,7 @@ function TAnchorDockHostSite.ExecuteDock(NewControl, DropOnControl: TControl;
   DockAlign: TAlign): boolean;
 begin
   if UpdatingLayout then exit;
-  debugln(['TAnchorDockHostSite.DoDockClientMsg Self="',Caption,'"  Control=',DbgSName(NewControl),' DropOnControl=',DbgSName(DropOnControl),' Align=',dbgs(DockAlign)]);
+  debugln(['TAnchorDockHostSite.ExecuteDock Self="',Caption,'"  Control=',DbgSName(NewControl),' DropOnControl=',DbgSName(DropOnControl),' Align=',dbgs(DockAlign)]);
 
   DisableAutoSizing;
   try
@@ -2124,12 +2123,10 @@ begin
       DockMaster.SimplifyPendingLayouts;
       NewControl.DisableAutoSizing;
 
-      if NewControl.Parent=Self then begin
+      if (NewControl.Parent=Parent) and (Parent is TAnchorDockHostSite)
+      and (TAnchorDockHostSite(Parent).SiteType=adhstLayout) then begin
         // change of layout
-        if SiteType=adhstLayout then
-          RemoveControlFromLayout(NewControl)
-        else
-          raise Exception.Create('TAnchorDockHostSite.DoDockClientMsg TODO redock of '+NewControl.Caption);
+        TAnchorDockHostSite(Parent).RemoveControlFromLayout(NewControl);
       end;
 
       if SiteType=adhstNone then begin
@@ -3513,14 +3510,15 @@ end;
 
 procedure TAnchorDockHostSite.RemoveControl(AControl: TControl);
 begin
+  //debugln(['TAnchorDockHostSite.RemoveControl ',DbgSName(Self),'=',Caption,' ',DbgSName(AControl)]);
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.RemoveControl'){$ENDIF};
   inherited RemoveControl(AControl);
   if not (csDestroying in ComponentState) then begin
     if (not ((AControl is TAnchorDockHeader)
              or (AControl is TAnchorDockSplitter)))
     then begin
-      debugln(['TAnchorDockHostSite.RemoveControl START ',Caption,' ',dbgs(SiteType),' ',DbgSName(AControl)]);
-      if (not UpdatingLayout) and (SiteType=adhstLayout) then
+      debugln(['TAnchorDockHostSite.RemoveControl START ',Caption,' ',dbgs(SiteType),' ',DbgSName(AControl),' UpdatingLayout=',UpdatingLayout]);
+      if (SiteType=adhstLayout) then
         RemoveControlFromLayout(AControl)
       else
         DockMaster.NeedSimplify(Self);
