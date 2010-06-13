@@ -67,9 +67,7 @@
     - dnd move page to another pagecontrol
 
   ToDo:
-    - windows: caption height for left aligned header
-    - windows: no menu item work
-    - use site icon from wrapped form
+    - windows: caption for left aligned header wrong because of bug 16724
     - popup menu
        - shrink side left, top, right, bottom
     - fpdoc
@@ -3898,6 +3896,8 @@ begin
 
   // caption
   if Caption<>'' then begin
+    Canvas.Brush.Color:=clNone;
+    Canvas.Brush.Style:=bsClear;
     TxtH:=Canvas.TextHeight('ABCMgq');
     TxtW:=Canvas.TextWidth(Caption);
     if Align in [alLeft,alRight] then begin
