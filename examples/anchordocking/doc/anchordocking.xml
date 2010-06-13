@@ -52,6 +52,35 @@
       <element name="TAnchorDockMaster.AddRemovePopupMenuItem">
         <short>Utility function to add or remove a menu item to/from the popupmenu.</short>
       </element>
+      <element name="TAnchorDockMaster.MakeDockable">
+        <short>Give AControl a site and optionally show it</short>
+        <descr>If not already done AControl is added to the list of dockable controls and create a site.
+You can call MakeDockable on already dockable forms to show them.
+If Show=true the site, the control and all parents are made visible.
+If BringToFront=true then all parent pages are made active and the top form is focused.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.MakeDockSite">
+        <short>Give AForm a dockmanager to make it a custom dock site</short>
+        <descr>Sites defines at which sides a site can be docked. The site is docked by putting it onto the form with a splitter and use the Align property . For example alBottom when docking to the bottom. The ResizePolicy defines what happens with the docked site when AForm is resized. 
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.MakeVisible">
+        <short>Make a control and its parents visible</short>
+        <descr>If SwitchPages is true then all parent pages are made active.
+This function does not give focus, not does it bring the form to the front or to the current screen.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.ShowControl">
+        <short>Create and show a control by name.</short>
+        <descr>If the control does not exist, OnCreateControl is used to create it and is made dockable.
+Then the control and all its parents are made visible.
+If BringToFront=true then the form gets focus.
+</descr>
+      </element>
+      <element name="TAnchorDockMaster.CloseAll">
+        <short>Close all dockable controls.</short>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>
