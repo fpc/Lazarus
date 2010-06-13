@@ -5,6 +5,21 @@
       <element name="TAnchorDockMaster.SetHeaderAlignLeft">
         <short>Setter for HeaderAlignLeft</short>
       </element>
+      <element name="TAnchorDockMaster.SetHeaderAlignTop">
+        <short>Setter for HeaderAlignTop</short>
+      </element>
+      <element name="TAnchorDockMaster.SetShowHeaderCaptionFloatingControl">
+        <short>Setter for ShowHeaderCaptionFloatingControl</short>
+      </element>
+      <element name="TAnchorDockMaster.SetSplitterWidth">
+        <short>Setter for SplitterWidth</short>
+      </element>
+      <element name="TAnchorDockMaster.DoCreateControl">
+        <short>Create a control with OnCreateControl if not already exists and delay autosizing</short>
+      </element>
+      <element name="TAnchorDockMaster.DisableControlAutoSizing">
+        <short>Add control to the internal list only once and delay autosizing</short>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>

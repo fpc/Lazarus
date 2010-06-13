@@ -49,6 +49,7 @@
         <UnitName Value="AnchorDockOptionsDlg"/>
       </Item6>
     </Files>
+    <LazDoc Paths="doc/"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
