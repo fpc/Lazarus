@@ -59,6 +59,7 @@
        - move page left, right, leftmost, rightmost
        - close page
        - tab position (default, left, top, right, bottom)
+       - options
     - dock site: MakeDockSite for forms, that should be able to dock other sites,
        but should not be docked themselves. Their Parent is always nil.
     - design time package for IDE
@@ -68,12 +69,9 @@
   ToDo:
     - popup menu
        - shrink side left, top, right, bottom
-       - options
     - fpdoc
     - examples on wiki:
-        screenshots
         example how to dock in code
-        step by step how to use it in applications
     - simple way to make forms dockable at designtime
     - minimize button and Hide => show in header
     - on close button: save a default layout
@@ -105,6 +103,8 @@ type
     function DrawGlyph(ACanvas: TCanvas; const AClient: TRect;
             const AOffset: TPoint; AState: TButtonState; ATransparent: Boolean;
             BiDiFlags: Longint): TRect; override;
+    procedure CalculatePreferredSize(var PreferredWidth,
+           PreferredHeight: integer; WithThemeSpace: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -333,6 +333,7 @@ type
   TAnchorDockManagerClass = class of TAnchorDockManager;
 
   TAnchorDockMaster = class;
+
   { TAnchorDockMaster }
 
   TADCreateControlEvent = procedure(Sender: TObject; aName: string;
@@ -3842,12 +3843,34 @@ end;
 
 procedure TAnchorDockHeader.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
+const
+  TestTxt = 'ABCXYZ123gqj';
+var
+  DC: HDC;
+  R: TRect;
+  OldFont: HGDIOBJ;
+  Flags: cardinal;
+  NeededHeight: Integer;
 begin
-  if WithThemeSpace then ;
-  if Align in [alLeft,alRight] then begin
-    PreferredWidth:=20;
-  end else begin
-    PreferredHeight:=20;
+  inherited CalculatePreferredSize(PreferredWidth,PreferredHeight,WithThemeSpace);
+  if Caption<>'' then begin
+    DC := GetDC(Parent.Handle);
+    try
+      R := Rect(0, 0, 10000, 10000);
+      OldFont := SelectObject(DC, HGDIOBJ(Font.Reference.Handle));
+      Flags := DT_CALCRECT or DT_EXPANDTABS or DT_SINGLELINE or DT_NOPREFIX;
+
+      DrawText(DC, PChar(TestTxt), Length(TestTxt), R, Flags);
+      SelectObject(DC, OldFont);
+      NeededHeight := R.Bottom - R.Top + BevelWidth*2;
+    finally
+      ReleaseDC(Parent.Handle, DC);
+    end;
+    if Align in [alLeft,alRight] then begin
+      PreferredWidth:=Max(NeededHeight,PreferredWidth);
+    end else begin
+      PreferredHeight:=Max(NeededHeight,PreferredHeight);
+    end;
   end;
 end;
 
@@ -3909,10 +3932,11 @@ begin
     Name:='CloseButton';
     Parent:=Self;
     Flat:=true;
-    BorderWidth:=1;
+    BorderWidth:=0;
     ShowHint:=true;
     Hint:=adrsClose;
     OnClick:=@CloseButtonClick;
+    AutoSize:=true;
   end;
   Align:=alTop;
   AutoSize:=true;
@@ -3949,7 +3973,7 @@ begin
       OrigBitmap.MaskHandle:=MaskHandle;
     DockMaster.fCloseBtnBitmap:=TBitmap.Create;
     with DockMaster.fCloseBtnBitmap do begin
-      SetSize(12,12);
+      SetSize(10,10);
       Canvas.Brush.Color:=clWhite;
       Canvas.FillRect(Rect(0,0,Width,Height));
       Canvas.StretchDraw(Rect(0,0,Width,Height),OrigBitmap);
@@ -3985,6 +4009,14 @@ begin
   Result:=Rect(0,0,DockMaster.fCloseBtnBitmap.Width,DockMaster.fCloseBtnBitmap.Height);
   OffsetRect(Result,AClient.Left+AOffset.X,AClient.Top+AOffset.Y);
   ACanvas.Draw(Result.Left,Result.Top,DockMaster.fCloseBtnBitmap);
+end;
+
+procedure TAnchorDockCloseButton.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  if WithThemeSpace then ;
+  PreferredWidth:=DockMaster.fCloseBtnBitmap.Width+4;
+  PreferredHeight:=DockMaster.fCloseBtnBitmap.Height+4;
 end;
 
 { TAnchorDockManager }

@@ -35,7 +35,8 @@ interface
 
 uses
   Math, Classes, SysUtils, LCLProc, Forms, Controls, FileUtil,
-  BaseIDEIntf, LazConfigStorage, LazIDEIntf, IDEWindowIntf, AnchorDocking;
+  BaseIDEIntf, LazConfigStorage, LazIDEIntf, IDEWindowIntf,
+  AnchorDocking, AnchorDockOptionsDlg;
 
 const
   DefaultConfigFileName = 'anchordocklayout.xml';
@@ -111,6 +112,7 @@ constructor TIDEAnchorDockMaster.Create;
 begin
   IDEAnchorDockMaster:=Self;
   DockMaster.OnCreateControl:=@DockMasterCreateControl;
+  DockMaster.OnShowOptions:=@ShowAnchorDockOptions;
 end;
 
 destructor TIDEAnchorDockMaster.Destroy;
@@ -121,14 +123,12 @@ end;
 
 procedure TIDEAnchorDockMaster.MakeIDEWindowDockSite(AForm: TCustomForm);
 begin
-  if AForm<>Application.MainForm then
-    DockMaster.MakeDockable(AForm,false);
+  DockMaster.MakeDockSite(AForm,[akBottom],admrpChild);
 end;
 
 procedure TIDEAnchorDockMaster.MakeIDEWindowDockable(AControl: TWinControl);
 begin
-  if AControl<>Application.MainForm then
-    DockMaster.MakeDockable(AControl,false);
+  DockMaster.MakeDockable(AControl,false);
 end;
 
 function TIDEAnchorDockMaster.GetDefaultLayoutFilename: string;
