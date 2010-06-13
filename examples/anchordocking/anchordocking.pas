@@ -235,6 +235,7 @@ type
     procedure AddCleanControl(AControl: TControl; TheAlign: TAlign = alNone);
     procedure RemoveControlFromLayout(AControl: TControl);
     procedure RemoveSpiralSplitter(AControl: TControl);
+    procedure ClearChildControlAnchorSides(AControl: TControl);
     procedure Simplify;
     procedure SimplifyPages;
     procedure SimplifyOneControl;
@@ -2585,6 +2586,7 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
     debugln(['RemoveControlBoundSplitter ',DbgSName(Splitter)]);
     Splitter.Free;
 
+    ClearChildControlAnchorSides(AControl);
     //DebugWriteChildAnchors(GetParentForm(Self),true,true);
   end;
 
@@ -2674,6 +2676,7 @@ begin
     RaiseGDBException('TAnchorDockHostSite.RemoveControlFromLayout inconsistency');
 
   if IsOneSiteLayout(OnlySiteLeft) then begin
+    ClearChildControlAnchorSides(AControl);
     ConvertToOneControlType(OnlySiteLeft);
     exit;
   end;
@@ -2693,8 +2696,12 @@ begin
     end;
   end;
 
-  if SplitterCount=4 then
+  if SplitterCount=4 then begin
     RemoveSpiralSplitter(AControl);
+    exit;
+  end;
+
+  ClearChildControlAnchorSides(AControl);
 end;
 
 procedure TAnchorDockHostSite.RemoveSpiralSplitter(AControl: TControl);
@@ -2777,6 +2784,21 @@ begin
 
   // delete the splitter
   DeleteSplitter.Free;
+
+  ClearChildControlAnchorSides(AControl);
+end;
+
+procedure TAnchorDockHostSite.ClearChildControlAnchorSides(AControl: TControl);
+var
+  Side: TAnchorKind;
+  Sibling: TControl;
+begin
+  for Side:=Low(TAnchorKind) to high(TAnchorKind) do begin
+    Sibling:=AControl.AnchorSide[Side].Control;
+    if (Sibling=nil) then continue;
+    if (Sibling.Parent=Self) then
+      AControl.AnchorSide[Side].Control:=nil;
+  end;
 end;
 
 procedure TAnchorDockHostSite.Simplify;
@@ -3456,6 +3478,7 @@ begin
   if not Result then exit;
 
   DisableAutoSizing;
+  debugln(['TAnchorDockHostSite.CloseSite ',DbgSName(Self),' SiteType=',dbgs(SiteType)]);
   case SiteType of
   adhstNone:
     Release;
