@@ -2123,9 +2123,12 @@ begin
       DockMaster.SimplifyPendingLayouts;
       NewControl.DisableAutoSizing;
 
-      if (NewControl.Parent=Parent) and (Parent is TAnchorDockHostSite)
+      if (NewControl.Parent=Self) and (SiteType=adhstLayout) then begin
+        // change of layout, one child is docked to the outer side
+        RemoveControlFromLayout(NewControl);
+      end else if (NewControl.Parent=Parent) and (Parent is TAnchorDockHostSite)
       and (TAnchorDockHostSite(Parent).SiteType=adhstLayout) then begin
-        // change of layout
+        // change of layout, one sibling is moved
         TAnchorDockHostSite(Parent).RemoveControlFromLayout(NewControl);
       end;
 
