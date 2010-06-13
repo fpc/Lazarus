@@ -129,11 +129,13 @@ type
     // Units found in user defined paths.
     fCachedUnitNames: TStringToStringTree;
     // Map of case incorrect unit name -> real unit name.
-    fCachedRealUnitNames: TStringToStringTree;
+    fCachedRealFileNames: TStringToStringTree;
     // The user selected path when searching missing units.
     fPrevSelectedPath: string;
     // Missing units that are commented automatically in all units.
     fAllMissingUnits: TStringList;
+    // Units that are found and will be added to project and converted.
+    fUnitsToAddToProject: TStringList;
     fSettings: TConvertSettings;
     function ConvertSub: TModalResult;
     procedure CleanUpCompilerOptionsSearchPaths(Options: TBaseCompilerOptions);
@@ -148,8 +150,6 @@ type
     procedure CacheUnitsInPath(const APath, ABasePath: string);
     procedure CacheUnitsInPath(const APath: string);
     function GetCachedUnitPath(const AUnitName: string): string;
-    function NeedsRenameUnit(const AUnitName: string;
-                             out RealUnitName: string): Boolean;
   protected
     function CreateInstance: TModalResult; virtual; abstract;
     function CreateMainSourceFile: TModalResult; virtual;
@@ -165,6 +165,8 @@ type
     function GetMainName: string; virtual; abstract;
     procedure AddPackageDependency(const PackageName: string); virtual; abstract;
     procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean); virtual; abstract;
+    function AddUnit(AUnitName: string;
+                     out OutUnitInfo: TUnitInfo): TModalResult; virtual; abstract;
   public
     constructor Create(const AFilename, ADescription: string);
     destructor Destroy; override;
@@ -199,6 +201,8 @@ type
     function GetMainName: string; override;
     procedure AddPackageDependency(const PackageName: string); override;
     procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean); override;
+    function AddUnit(AUnitName: string;
+                     out OutUnitInfo: TUnitInfo): TModalResult; override;
   public
     constructor Create(const aProjectFilename: string);
     destructor Destroy; override;
@@ -229,6 +233,8 @@ type
     function GetMainName: string; override;
     procedure AddPackageDependency(const PackageName: string); override;
     procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean); override;
+    function AddUnit(AUnitName: string;
+                     out OutUnitInfo: TUnitInfo): TModalResult; override;
   public
     constructor Create(const aPackageFilename: string);
     destructor Destroy; override;
@@ -747,11 +753,9 @@ begin
     end;
     // Remove and rename missing units. More of them may be added later.
     ConvTool.UnitsToRename:=fUnitsToRename;
-    ConvTool.UnitsToRemove:=fUnitsToRemove;
     ConvTool.RenameUnits;
+    ConvTool.UnitsToRemove:=fUnitsToRemove;
     ConvTool.RemoveUnits;
-    fUnitsToRename.Clear;
-    fUnitsToRemove.Clear;
     // Find missing units again. Some replacements may not be valid.
     fMissingUnits.Clear;
     CTResult:=CodeToolBoss.FindMissingUnits(fPascalBuffer,fMissingUnits,true);
@@ -804,11 +808,12 @@ constructor TConvertDelphiPBase.Create(const AFilename, ADescription: string);
 begin
   fOrigPFilename:=AFilename;
   fCachedUnitNames:=TStringToStringTree.Create(false);
-  fCachedRealUnitNames:=TStringToStringTree.Create(true);
+  fCachedRealFileNames:=TStringToStringTree.Create(true);
   fSettings:=TConvertSettings.Create('Convert Delphi '+ADescription);
   fSettings.MainFilename:=fOrigPFilename;
   fAllMissingUnits:=TStringList.Create;
   fAllMissingUnits.Sorted:=true;
+  fUnitsToAddToProject:=TStringList.Create;
   fPrevSelectedPath:=fSettings.MainPath;
   // Scan unit files a level above project path. Used later for missing units.
   CacheUnitsInPath(TrimFilename(fSettings.MainPath+'../'));
@@ -816,8 +821,9 @@ end;
 
 destructor TConvertDelphiPBase.Destroy;
 begin
+  fUnitsToAddToProject.Free;
   fAllMissingUnits.Free;
-  fCachedRealUnitNames.Free;
+  fCachedRealFileNames.Free;
   fCachedUnitNames.Free;
   FreeAndNil(fSettings);
   inherited Destroy;
@@ -1109,8 +1115,8 @@ function TConvertDelphiPBase.DoMissingUnits(MissingUnits: TStrings;
 // Locate unit names in earlier cached list and remove them from MissingUnits.
 // Return the number of units still missing.
 var
+  mUnit, sUnitPath, RealFileName, RealUnitName: string;
   i: Integer;
-  mUnit, sUnitPath, RealUnitName: string;
 begin
   for i:=MissingUnits.Count-1 downto 0 do begin
     mUnit:=MissingUnits[i];
@@ -1119,9 +1125,13 @@ begin
       // Found: add unit path to project's settings.
       with CompOpts do
         OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,sUnitPath);
-      // Rename a unit with different casing.
-      if NeedsRenameUnit(mUnit, RealUnitName) then
+      // Rename a unit with different casing if needed.
+      RealFileName:=fCachedRealFileNames[UpperCase(mUnit)];
+      RealUnitName:=ExtractFileNameOnly(RealFileName);
+      if (RealUnitName<>'') and (RealUnitName<>mUnit) then
         UnitsToRename[mUnit]:=RealUnitName;
+      // Will be added later to project.
+      fUnitsToAddToProject.Add(sUnitPath+RealFileName);
       // No more missing, delete from list.
       MissingUnits.Delete(i);
     end;
@@ -1135,7 +1145,7 @@ procedure TConvertDelphiPBase.CacheUnitsInPath(const APath, ABasePath: string);
 var
   PasFileList: TStringList;
   i: Integer;
-  PasFile, RelPath, SubPath, sUnitName: String;
+  PasFile, RelPath, SubPath, sUnitName, FileName: String;
 begin
   PasFileList:=FindAllFiles(APath,'*.pas',true);
   try
@@ -1143,12 +1153,13 @@ begin
       PasFile:=PasFileList[i];
       RelPath:=FileUtil.CreateRelativePath(PasFile, ABasePath);
       SubPath:=ExtractFilePath(RelPath);
-      sUnitName:=ExtractFileNameOnly(RelPath);
+      FileName:=ExtractFileName(RelPath);
+      sUnitName:=ExtractFileNameOnly(FileName);
       if (SubPath<>'') and (sUnitName<>'') then begin
         // Map path by unit name.
         fCachedUnitNames[sUnitName]:=SubPath;
         // Map real unit name by uppercase unit name.
-        fCachedRealUnitNames[UpperCase(sUnitName)]:=sUnitName;
+        fCachedRealFileNames[UpperCase(sUnitName)]:=FileName;
       end;
     end;
   finally
@@ -1165,13 +1176,6 @@ end;
 function TConvertDelphiPBase.GetCachedUnitPath(const AUnitName: string): string;
 begin
   Result:=fCachedUnitNames[AUnitName];
-end;
-
-function TConvertDelphiPBase.NeedsRenameUnit(const AUnitName: string;
-                                             out RealUnitName: string): Boolean;
-begin
-  RealUnitName:=fCachedRealUnitNames[UpperCase(AUnitName)];
-  Result := (RealUnitName<>'') and (RealUnitName<>AUnitName);
 end;
 
 function TConvertDelphiPBase.CreateMainSourceFile: TModalResult;
@@ -1261,15 +1265,57 @@ begin
   Result:=fMainUnitConverter.ConvertFormFile;
 end;
 
+function TConvertDelphiProject.AddUnit(AUnitName: string;
+                                       out OutUnitInfo: TUnitInfo): TModalResult;
+// add new unit to project
+var
+  CurUnitInfo: TUnitInfo;
+begin
+  Result:=mrOK;
+  OutUnitInfo:=nil;
+  if not FilenameIsAbsolute(AUnitName) then
+    AUnitName:=AppendPathDelim(LazProject.ProjectDirectory)+AUnitName;
+  AUnitName:=TrimFilename(AUnitName);
+  if not FileExistsUTF8(AUnitName) then
+    exit(mrNo);
+  CurUnitInfo:=LazProject.UnitInfoWithFilename(AUnitName);
+  if CurUnitInfo<>nil then begin            // CurUnitInfo.IsPartOfProject:=true;
+    raise Exception.Create(Format('Unit %s should not be part of project yet!', [AUnitName]));
+  end else begin
+    if FilenameIsPascalUnit(AUnitName) then begin
+      // check unitname
+      CurUnitInfo:=LazProject.UnitWithUnitname(ExtractFileNameOnly(AUnitName));
+      if CurUnitInfo<>nil then begin
+        Result:=QuestionDlg('Unitname exists twice',
+          'There are two units with the same unitname:'#13
+          +CurUnitInfo.Filename+#13+AUnitName+#13,
+          mtWarning,[mrYes,'Remove first',mrNo,'Remove second',
+                     mrIgnore,'Keep both',mrAbort],0);
+        case Result of
+          mrYes: CurUnitInfo.IsPartOfProject:=false;
+          mrNo:  exit(mrNo);
+          mrIgnore: ;
+        else
+          exit(mrAbort);
+        end;
+      end;
+    end;
+    CurUnitInfo:=TUnitInfo.Create(nil);
+    CurUnitInfo.Filename:=AUnitName;
+    CurUnitInfo.IsPartOfProject:=true;
+    LazProject.AddFile(CurUnitInfo,false);
+    OutUnitInfo:=CurUnitInfo;
+  end;
+end;
+
 function TConvertDelphiProject.FindAllUnits: TModalResult;
 var
   FoundUnits, MisUnits, NormalUnits: TStrings;
   i: Integer;
-  CurUnitInfo: TUnitInfo;
   CurFilename: string;
   NewSearchPath, AllPath, UselessPath: string;
   p: LongInt;
-  OffendingUnit: TUnitInfo;
+  ui: TUnitInfo;
 begin
   Screen.Cursor:=crHourGlass;
   FoundUnits:=nil;
@@ -1295,40 +1341,8 @@ begin
         if p>0 then
           CurFilename:=copy(CurFilename,p+4,length(CurFilename));
         if CurFilename='' then continue;
-        if not FilenameIsAbsolute(CurFilename) then
-          CurFilename:=AppendPathDelim(LazProject.ProjectDirectory)+CurFilename;
-        CurFilename:=TrimFilename(CurFilename);
-        if not FileExistsUTF8(CurFilename) then
-          continue;
-        CurUnitInfo:=LazProject.UnitInfoWithFilename(CurFilename);
-        if CurUnitInfo<>nil then begin
-          CurUnitInfo.IsPartOfProject:=true;
-        end else begin
-          if FilenameIsPascalUnit(CurFilename) then begin
-            // check unitname
-            OffendingUnit:=LazProject.UnitWithUnitname(ExtractFileNameOnly(CurFilename));
-            if OffendingUnit<>nil then begin
-              Result:=QuestionDlg('Unitname exists twice',
-                'There are two units with the same unitname:'#13
-                +OffendingUnit.Filename+#13+CurFilename+#13,
-                mtWarning,[mrYes,'Remove first',mrNo,'Remove second',
-                           mrIgnore,'Keep both',mrAbort],0);
-              case Result of
-                mrYes: OffendingUnit.IsPartOfProject:=false;
-                mrNo:  continue;
-                mrIgnore: ;
-              else
-                Result:=mrAbort;
-                exit;
-              end;
-            end;
-          end;
-          // add new unit to project
-          CurUnitInfo:=TUnitInfo.Create(nil);
-          CurUnitInfo.Filename:=CurFilename;
-          CurUnitInfo.IsPartOfProject:=true;
-          LazProject.AddFile(CurUnitInfo,false);
-        end;
+        Result:=AddUnit(CurFilename, ui);
+        if Result=mrAbort then exit;
       end;
 
     finally
@@ -1389,6 +1403,21 @@ begin
         if Result<>mrOK then Break;
       end;
     end;
+    // During conversion there were more units added to be converted.
+    for i:=0 to fUnitsToAddToProject.Count-1 do begin
+      Result:=AddUnit(fUnitsToAddToProject[i], CurUnitInfo);
+      if Result=mrAbort then Break;
+      if Result=mrNo then continue;
+      /// From above:
+      Converter:=TConvertDelphiUnit.Create(Self, CurUnitInfo.Filename,[]);
+      Converter.fUnitInfo:=CurUnitInfo;
+      ConvUnits.Add(Converter);
+      Result:=Converter.CopyAndLoadFile;
+      Result:=Converter.CheckFailed(Result);
+      if Result<>mrOK then Break;
+      Result:=Converter.ConvertUnitFile;
+      if Result<>mrOK then Break;
+    end;
     if Result=mrOK then
       Result:=ConvertAllFormFiles(ConvUnits);
   finally
@@ -1398,7 +1427,7 @@ end;
 
 function TConvertDelphiProject.ExtractOptionsFromDelphiSource: TModalResult;
 begin
-  // TODO remove compiler directives and put them into project/package
+  // TODO: remove compiler directives and put them into project/package
   if fDelphiPFilename<>'' then begin
   end;
   Result:=mrOk;
@@ -1664,9 +1693,19 @@ begin
   Result:=LoadCodeBuffer(fDpkCode,DPKFilename,[],true);
 end;
 
+function TConvertDelphiPackage.AddUnit(AUnitName: string;
+                                       out OutUnitInfo: TUnitInfo): TModalResult;
+begin
+  // ToDo: add unit to package like it is added to project.
+{  UnitInfo:=TUnitInfo.Create(nil);
+  UnitInfo.Filename:=AUnitName;
+  UnitInfo.IsPartOfProject:=true;
+  LazProject.AddFile(UnitInfo,false);  }
+end;
+
 function TConvertDelphiPackage.ExtractOptionsFromDelphiSource: TModalResult;
 begin
-  // TODO, use fDelphiPFilename and LazPackage to get options.
+  // TODO: use fDelphiPFilename and LazPackage to get options.
   if fDelphiPFilename<>'' then begin
   end;
   Result:=mrOk;

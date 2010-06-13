@@ -352,6 +352,7 @@ begin
       if not fSrcCache.Apply then exit;
     end;
   end;
+  fUnitsToRemove.Clear;
   Result:=true;
 end;
 
@@ -362,6 +363,7 @@ begin
   if Assigned(fUnitsToRename) then
     if not fCodeTool.ReplaceUsedUnits(fUnitsToRename, fSrcCache) then
       exit;
+  fUnitsToRename.Clear;
   Result:=true;
 end;
 
