@@ -2171,6 +2171,9 @@ begin
   DestRect := ClientRect;
   NewControl.Dock(Self, DestRect);
   FSiteType:=adhstOneControl;
+  if NewControl is TCustomForm then begin
+    Icon.Assign(TCustomForm(NewControl).Icon);
+  end;
   Result:=true;
 end;
 
