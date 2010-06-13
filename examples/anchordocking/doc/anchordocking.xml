@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<fpdoc-descriptions>
+  <package name="AnchorDocking">
+    <module name="AnchorDocking">
+      <element name="TAnchorDockMaster.SetHeaderAlignLeft">
+        <short>Setter for HeaderAlignLeft</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>
