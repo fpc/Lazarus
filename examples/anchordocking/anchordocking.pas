@@ -401,6 +401,7 @@ type
     function FindControl(const aName: string): TControl;
     function IsSite(AControl: TControl): boolean;
     function IsCustomSite(AControl: TControl): boolean;
+    function GetSite(AControl: TControl): TAnchorDockHostSite;
     function GetPopupMenu: TPopupMenu;
     function AddPopupMenuItem(AName, ACaption: string;
                     const OnClickEvent: TNotifyEvent; AParent: TMenuItem = nil): TMenuItem; virtual;
@@ -424,6 +425,13 @@ type
     procedure SaveLayoutToConfig(Config: TConfigStorage);
     function ConfigIsEmpty(Config: TConfigStorage): boolean;
     function LoadLayoutFromConfig(Config: TConfigStorage): boolean;
+
+    // manual docking
+    procedure ManualFloat(AControl: TControl);
+    {procedure ManualDock(SrcSite, TargetSite: TAnchorDockHostSite;
+                         Align: TAlign; Inside: boolean);}
+    function EnlargeSide(Site: TAnchorDockHostSite; Side: TAnchorKind;
+                         OnlyCheckIfPossible: boolean): boolean;
 
     // simplification/garbage collection
     procedure BeginUpdate;
@@ -1515,6 +1523,16 @@ begin
       and (TCustomForm(AControl).DockManager is TAnchorDockManager);
 end;
 
+function TAnchorDockMaster.GetSite(AControl: TControl): TAnchorDockHostSite;
+begin
+  if AControl is TAnchorDockHostSite then
+    Result:=TAnchorDockHostSite(AControl)
+  else if (AControl.HostDockSite is TAnchorDockHostSite) then
+    Result:=TAnchorDockHostSite(AControl.HostDockSite)
+  else
+    Result:=nil;
+end;
+
 function TAnchorDockMaster.GetPopupMenu: TPopupMenu;
 begin
   if fPopupMenu=nil then begin
@@ -1810,6 +1828,21 @@ begin
   end;
   DebugWriteChildAnchors(Application.MainForm,true,false);
   Result:=true;
+end;
+
+procedure TAnchorDockMaster.ManualFloat(AControl: TControl);
+var
+  Site: TAnchorDockHostSite;
+begin
+  Site:=GetSite(AControl);
+  if Site=nil then exit;
+  Site.Undock;
+end;
+
+function TAnchorDockMaster.EnlargeSide(Site: TAnchorDockHostSite;
+  Side: TAnchorKind; OnlyCheckIfPossible: boolean): boolean;
+begin
+  Result:=(Site<>nil) and Site.EnlargeSide(Side,OnlyCheckIfPossible);
 end;
 
 procedure TAnchorDockMaster.BeginUpdate;
