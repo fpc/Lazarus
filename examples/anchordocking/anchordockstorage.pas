@@ -1144,6 +1144,27 @@ procedure TAnchorDockLayoutTreeNode.CheckConsistency;
         check for topological sort
         check for not overlapping (the bounds can overlap because of constraints)
 }
+
+  procedure CheckCornerIsUnique(Side1: TAnchorKind; Side1AnchorName: string;
+    Side2: TAnchorKind; Side2AnchorName: string);
+  var
+    i: Integer;
+    Child, Found: TAnchorDockLayoutTreeNode;
+  begin
+    Found:=nil;
+    for i:=0 to Count-1 do begin
+      Child:=Nodes[i];
+      if Child.IsSplitter then continue;
+      if CompareText(Child.Anchors[Side1],Side1AnchorName)<>0 then continue;
+      if CompareText(Child.Anchors[Side2],Side2AnchorName)<>0 then continue;
+      if Found<>nil then
+        raise EAnchorDockLayoutError.Create('overlapping controls found :'+Found.Name+','+Child.Name);
+      Found:=Child;
+    end;
+    if Found=nil then
+      raise EAnchorDockLayoutError.Create('empty space found :'+Name+' '+dbgs(Side1)+'='+Side1AnchorName+' '+dbgs(Side2)+'='+Side2AnchorName);
+  end;
+
 var
   i: Integer;
   Child: TAnchorDockLayoutTreeNode;
@@ -1152,9 +1173,11 @@ var
 begin
   // check parent
   if (NodeType=adltnNone) and (Parent<>nil) then
-    raise EAnchorDockLayoutError.Create('invalid parent');
+    raise EAnchorDockLayoutError.Create('invalid parent, root node');
   if (NodeType=adltnCustomSite) and (Parent.NodeType<>adltnNone) then
-    raise EAnchorDockLayoutError.Create('invalid parent');
+    raise EAnchorDockLayoutError.Create('invalid parent, custom sites parent must be nil');
+  if (Parent<>nil) and IsSplitter and (Parent.NodeType<>adltnLayout) then
+    raise EAnchorDockLayoutError.Create('invalid parent, splitter needs parent layout');
 
   // check sides
   for Side:=low(TAnchorKind) to high(TAnchorKind) do begin
@@ -1207,6 +1230,16 @@ begin
     if (Count>1) then
       raise EAnchorDockLayoutError.Create(Format(
         adrsCustomDockSiteCanHaveOnlyOneSite, ['"', Name, '"']));
+  end;
+
+  // check if in each corner sits exactly one child
+  if NodeType=adltnLayout then
+    for Side:=low(TAnchorKind) to high(TAnchorKind) do
+      CheckCornerIsUnique(Side,'',ClockwiseAnchor[Side],'');
+
+  if (Parent<>nil) and (NodeType=adltnSplitterHorizontal) then begin
+    // check if
+
   end;
 
   // check grandchild
