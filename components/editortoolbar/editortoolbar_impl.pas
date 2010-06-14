@@ -34,6 +34,7 @@ uses
   ,MenuIntf
   ,IDEImagesIntf
   ,SrcEditorIntf
+  ,editortoolbar_str
   ;
 
 
@@ -299,7 +300,7 @@ begin
     // Config Button
     if CfgButton = nil then
       CfgButton := TToolbutton.Create(TB);
-    CfgButton.Caption     := 'Configure Toolbar';
+    CfgButton.Caption     := rsConfigureToo;
     CfgButton.Hint        := CfgButton.Caption;
     CfgButton.ImageIndex  := IDEImages.LoadImage(16, 'preferences16');
     CfgButton.Style       := tbsButton;
@@ -310,7 +311,7 @@ begin
     
     // JumpTo Button
     B := TToolbutton.Create(TB);
-    B.Caption       := 'Jump To';
+    B.Caption       := rsJumpTo;
     B.Hint          := B.Caption;
     B.ImageIndex    := IDEImages.LoadImage(16, 'jumpto16');
     B.Style         := tbsDropDown;

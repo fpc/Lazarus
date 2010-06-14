@@ -1,0 +1,47 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: editortoolbar_str.rsadddivider
+msgid "Add Divider"
+msgstr "Adicionar Divisor"
+
+#: editortoolbar_str.rscancel
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: editortoolbar_str.rsconfiguretoo
+msgid "Configure Toolbar"
+msgstr "Configurar Barra Ferramentas"
+
+#: editortoolbar_str.rseditortoolbarconfigform
+msgid "Editor Toolbar Configuration"
+msgstr "Configuração do Editor da Barra de Tarefas"
+
+#: editortoolbar_str.rsjumpto
+msgid "Jump To"
+msgstr "Saltar para"
+
+#: editortoolbar_str.rsmenutree
+msgid "Menu Tree"
+msgstr "Árvore Menu"
+
+#: editortoolbar_str.rsok
+msgid "OK"
+msgstr "OK"
+
+#: editortoolbar_str.rstoolbar
+msgid "Toolbar"
+msgstr "Barra Ferramentas"
+
+#: editortoolbar_str.serrcouldnotfind
+msgid "Could not find <%s>"
+msgstr "Impossível localizar <%s>"
+

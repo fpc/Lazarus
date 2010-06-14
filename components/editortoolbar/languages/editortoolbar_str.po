@@ -1,0 +1,39 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: editortoolbar_str.rsadddivider
+msgid "Add Divider"
+msgstr ""
+
+#: editortoolbar_str.rscancel
+msgid "Cancel"
+msgstr ""
+
+#: editortoolbar_str.rsconfiguretoo
+msgid "Configure Toolbar"
+msgstr ""
+
+#: editortoolbar_str.rseditortoolbarconfigform
+msgid "Editor Toolbar Configuration"
+msgstr ""
+
+#: editortoolbar_str.rsjumpto
+msgid "Jump To"
+msgstr ""
+
+#: editortoolbar_str.rsmenutree
+msgid "Menu Tree"
+msgstr ""
+
+#: editortoolbar_str.rsok
+msgid "OK"
+msgstr ""
+
+#: editortoolbar_str.rstoolbar
+msgid "Toolbar"
+msgstr ""
+
+#: editortoolbar_str.serrcouldnotfind
+msgid "Could not find <%s>"
+msgstr ""
+

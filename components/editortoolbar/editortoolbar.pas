@@ -1,21 +1,22 @@
-{ This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+{ Этот файл был автоматически создан Lazarus. Не редактировать!
+  Исходный код используется только для компиляции и установки пакета.
  }
 
-unit editortoolbar; 
+unit editortoolbar;
 
 interface
 
 uses
-  jumpto_impl, editortoolbar_impl, EdtTbConfigFrm, LazarusPackageIntf; 
+    jumpto_impl, editortoolbar_impl, EdtTbConfigFrm, editortoolbar_str, 
+  LazarusPackageIntf;
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-  RegisterUnit('editortoolbar_impl', @editortoolbar_impl.Register); 
-end; 
+  RegisterUnit('editortoolbar_impl',@editortoolbar_impl.Register);
+end;
 
 initialization
-  RegisterPackage('editortoolbar', @Register); 
+  RegisterPackage('editortoolbar',@Register);
 end.

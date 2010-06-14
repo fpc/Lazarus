@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, StdCtrls, ComCtrls, MenuIntf;
+  Buttons, StdCtrls, ComCtrls, MenuIntf, editortoolbar_str;
 
 type
   TEdtTbConfigForm = class(TForm)
@@ -62,6 +62,8 @@ type
 
 implementation
 
+{$R *.lfm}
+
 uses
   editortoolbar_impl
   ,LazConfigStorage
@@ -69,16 +71,6 @@ uses
   ,LazIDEIntf
   ,IDEImagesIntf
   ;
-
-
-resourcestring
-  rsEditorToolbarConfigForm = 'Editor Toolbar Configuration';
-  rsOK                      = 'OK';
-  rsCancel                  = 'Cancel';
-  rsToolbar                 = 'Toolbar';
-  rsMenuTree                = 'Menu Tree';
-  rsAddDivider              = 'Add Divider';
-
 
 { TEdtTbConfigForm }
 
@@ -266,9 +258,6 @@ begin
     frm.Free;
   end;
 end;
-
-initialization
-  {$I edttbconfigfrm.lrs}
 
 end.
 

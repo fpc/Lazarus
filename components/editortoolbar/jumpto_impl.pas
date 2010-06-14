@@ -35,8 +35,6 @@ type
 
 
 const
-  SErrCouldNotFind = 'Could not find <%s>';
-
   cJumpNames: array[TJumpType] of string =
       ('Interface', 'Interface uses', 'Implementation', 'Implementation uses',
        'Initialization');
@@ -67,9 +65,8 @@ uses
   ,Forms
   ,ComCtrls
   ,Menus
+  ,editortoolbar_str
   ;
-  
-
 
 { TJumpHandler }
 
