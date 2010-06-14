@@ -4048,7 +4048,6 @@ begin
   inherited Create(AOwner);
   GetCloseGlyph;
   Glyph:=DockMaster.fCloseBtnBitmap;
-  BorderWidth:=0;
 end;
 
 destructor TAnchorDockCloseButton.Destroy;
