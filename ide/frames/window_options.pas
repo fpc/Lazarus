@@ -191,33 +191,29 @@ begin
 
     RadioButton.Enabled := True;
     RadioButton.Checked := (APlacement = Layout.WindowPlacement);
-
-    if APlacement = iwpCustomPosition then
-    begin
-      // custom window position
-      if Layout.CustomCoordinatesAreValid then
-      begin
-        LeftEdit.Value := Layout.Left;
-        TopEdit.Value := Layout.Top;
-        WidthEdit.Value := Layout.Width;
-        HeightEdit.Value := Layout.Height;
-      end
-      else
-      if Layout.Form <> nil then
-      begin
-        LeftEdit.Value := Layout.Form.Left;
-        TopEdit.Value := Layout.Form.Top;
-        WidthEdit.Value := Layout.Form.Width;
-        HeightEdit.Value := Layout.Form.Height;
-      end
-      else
-      begin
-        LeftEdit.Value := 0;
-        TopEdit.Value := 0;
-        WidthEdit.Value := 0;
-        HeightEdit.Value := 0;
-      end;
-    end;
+  end;
+  // custom window position
+  if Layout.CustomCoordinatesAreValid then
+  begin
+    LeftEdit.Value := Layout.Left;
+    TopEdit.Value := Layout.Top;
+    WidthEdit.Value := Layout.Width;
+    HeightEdit.Value := Layout.Height;
+  end
+  else
+  if Layout.Form <> nil then
+  begin
+    LeftEdit.Value := Layout.Form.Left;
+    TopEdit.Value := Layout.Form.Top;
+    WidthEdit.Value := Layout.Form.Width;
+    HeightEdit.Value := Layout.Form.Height;
+  end
+  else
+  begin
+    LeftEdit.Value := 0;
+    TopEdit.Value := 0;
+    WidthEdit.Value := 0;
+    HeightEdit.Value := 0;
   end;
 
   GetWindowPositionButton.Enabled := (Layout.Form <> nil);

@@ -504,20 +504,22 @@ end;
 procedure TSimpleWindowLayout.SetForm(const AValue: TCustomForm);
 begin
   if fForm=AValue then exit;
+  if (Form<>nil) then
+    RemoveFreeNotification(Form);
   fForm:=AValue;
   if (Form<>nil) then begin
-    fFormID := FForm.Name;
-    FFormCaption := fForm.Caption;
-    FreeNotification(fForm);
+    fFormID := Form.Name;
+    FFormCaption := Form.Caption;
+    FreeNotification(Form);
   end;
 end;
 
 function TSimpleWindowLayout.GetFormID: string;
 begin
-  if FForm=nil then
+  if Form=nil then
     Result:=fFormID
   else
-    Result:=FForm.Name;
+    Result:=Form.Name;
 end;
 
 function TSimpleWindowLayout.GetXMLFormID: string;

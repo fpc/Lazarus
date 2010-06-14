@@ -69,7 +69,6 @@
   ToDo:
     - popup menu
        - shrink side left, top, right, bottom
-    - fpdoc
     - simple way to make forms dockable at designtime
     - minimize button and Hide => show in header
     - on close button: save a default layout
