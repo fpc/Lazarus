@@ -1237,15 +1237,25 @@ begin
     for Side:=low(TAnchorKind) to high(TAnchorKind) do
       CheckCornerIsUnique(Side,'',ClockwiseAnchor[Side],'');
 
-  if (Parent<>nil) and (NodeType=adltnSplitterHorizontal) then begin
-    // check if
-
-  end;
-
   // check grandchild
   for i:=0 to Count-1 do begin
     Child:=Nodes[i];
     Child.CheckConsistency;
+
+    if (Child.NodeType=adltnSplitterHorizontal) then begin
+      // check if splitter corners have exactly one sibling
+      CheckCornerIsUnique(akLeft,Child.Anchors[akLeft],akTop,Child.Name);
+      CheckCornerIsUnique(akLeft,Child.Anchors[akLeft],akBottom,Child.Name);
+      CheckCornerIsUnique(akRight,Child.Anchors[akRight],akTop,Child.Name);
+      CheckCornerIsUnique(akRight,Child.Anchors[akRight],akBottom,Child.Name);
+    end;
+    if (Child.NodeType=adltnSplitterVertical) then begin
+      // check if splitter corners have exactly one sibling
+      CheckCornerIsUnique(akTop,Child.Anchors[akTop],akLeft,Child.Name);
+      CheckCornerIsUnique(akTop,Child.Anchors[akTop],akRight,Child.Name);
+      CheckCornerIsUnique(akBottom,Child.Anchors[akBottom],akLeft,Child.Name);
+      CheckCornerIsUnique(akBottom,Child.Anchors[akBottom],akRight,Child.Name);
+    end;
   end;
 end;
 
