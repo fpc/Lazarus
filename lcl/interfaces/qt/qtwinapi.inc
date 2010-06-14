@@ -3630,14 +3630,7 @@ begin
     QWidget_mapToGlobal(AParent, @APos, @APos);
 
   R1 := TQtWidget(Handle).getFrameGeometry;
-
-  ARect.Left := APos.x;
-  ARect.Top := APos.y;
-  with R1 do
-  begin
-    ARect.Right := ARect.Left + (Right - Left);
-    ARect.Bottom := ARect.Top + (Bottom - Top);
-  end;
+  ARect:=Bounds(APos.X,APos.Y,R1.Right-R1.Left,R1.Bottom-R1.Top);
 
   Result := -1;
 end;
