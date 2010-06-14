@@ -201,6 +201,9 @@ type
                                DisableAutoSizing: boolean = false): TCustomForm;
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean);
     property OnShowForm: TShowIDEWindowEvent read FOnShowForm write FOnShowForm;
+
+    procedure CreateForm(var AForm: TCustomForm; AFormClass: TCustomFormClass;
+                         DoDisableAutoSizing: boolean; TheOwner: TComponent);
   end;
 
 var
@@ -750,6 +753,17 @@ begin
     AForm.ShowOnTop
   else
     AForm.Show;
+end;
+
+procedure TIDEWindowCreatorList.CreateForm(var AForm: TCustomForm;
+  AFormClass: TCustomFormClass; DoDisableAutoSizing: boolean;
+  TheOwner: TComponent);
+begin
+  AForm:=TCustomForm(AFormClass.NewInstance);
+  AForm.DisableAutoSizing;
+  AForm.Create(TheOwner);
+  if not DoDisableAutoSizing then
+    AForm.EnableAutoSizing;
 end;
 
 { TIDEDockMaster }
