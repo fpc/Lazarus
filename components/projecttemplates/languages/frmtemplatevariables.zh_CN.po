@@ -12,13 +12,37 @@ msgstr ""
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: frmtemplatevariables.sbtncancel
+msgid "Cancel"
+msgstr ""
+
+#: frmtemplatevariables.sbtnok
+msgid "OK"
+msgstr ""
+
+#: frmtemplatevariables.screateindir
+msgid "Create in &directory:"
+msgstr ""
+
 #: frmtemplatevariables.sdescription
 msgid "Description"
 msgstr "描述"
 
+#: frmtemplatevariables.snameforproject
+msgid "&Name for new project:"
+msgstr ""
+
 #: frmtemplatevariables.snoadditionalvars
 msgid "This project has no additional variables."
 msgstr "工程未附加变量."
+
+#: frmtemplatevariables.sthisproject
+msgid "This project contains some additional variables. Please provide values for these variables."
+msgstr ""
+
+#: frmtemplatevariables.stitle
+msgid "New project from template"
+msgstr ""
 
 #: frmtemplatevariables.svalue
 msgid "Value"

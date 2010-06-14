@@ -1,0 +1,19 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: frmtemplatesettings.sbtncancel
+msgid "Cancel"
+msgstr ""
+
+#: frmtemplatesettings.sbtnok
+msgid "OK"
+msgstr ""
+
+#: frmtemplatesettings.sdirect
+msgid "&Directory with templates:"
+msgstr ""
+
+#: frmtemplatesettings.stitle
+msgid "Project templates settings"
+msgstr ""
+

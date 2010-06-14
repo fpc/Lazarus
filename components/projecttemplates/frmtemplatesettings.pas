@@ -18,6 +18,7 @@ type
     DETemplates: TDirectoryEdit;
     Label1: TLabel;
     procedure BOKClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { private declarations }
     FTemplates : TProjectTemplates;
@@ -32,6 +33,12 @@ var
 
 implementation
 
+resourcestring
+  STitle = 'Project templates settings';
+  SDirect= '&Directory with templates:';
+  SbtnCancel = 'Cancel';
+  SbtnOk = 'OK';
+
 {$R *.lfm}
 
 { TTemplateSettingsForm }
@@ -41,6 +48,14 @@ procedure TTemplateSettingsForm.BOKClick(Sender: TObject);
 begin
   If (Templates.TemplateDir<>DETemplates.Directory) then
     FTemplates.Initialize(DETemplates.Directory);
+end;
+
+procedure TTemplateSettingsForm.FormCreate(Sender: TObject);
+begin
+  Caption := STitle;
+  Label1.Caption := SDirect;
+  BCancel.Caption:= SbtnCancel;
+  BOK.Caption:= SbtnOk;
 end;
 
 procedure TTemplateSettingsForm.SetTemplates(const AValue: TProjectTemplates);

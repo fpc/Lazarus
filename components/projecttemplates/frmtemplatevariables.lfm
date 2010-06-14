@@ -3,18 +3,18 @@ object ProjectVariablesForm: TProjectVariablesForm
   Height = 326
   Top = 306
   Width = 573
-  ActiveControl = EProjectName
   Caption = 'New project from template'
   ClientHeight = 326
   ClientWidth = 573
+  OnCreate = FormCreate
   OnShow = ProjectVariablesFormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Label1: TLabel
     Left = 8
-    Height = 18
+    Height = 14
     Top = 16
-    Width = 153
+    Width = 109
     Alignment = taRightJustify
     Caption = '&Name for new project:'
     Layout = tlCenter
@@ -22,9 +22,9 @@ object ProjectVariablesForm: TProjectVariablesForm
   end
   object Label2: TLabel
     Left = 8
-    Height = 18
+    Height = 14
     Top = 48
-    Width = 133
+    Width = 95
     Alignment = taRightJustify
     Caption = 'Create in &directory:'
     Layout = tlCenter
@@ -89,10 +89,10 @@ object ProjectVariablesForm: TProjectVariablesForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 167
-    Height = 27
+    Left = 123
+    Height = 21
     Top = 16
-    Width = 400
+    Width = 444
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -101,14 +101,15 @@ object ProjectVariablesForm: TProjectVariablesForm
   object DEProject: TDirectoryEdit
     AnchorSideLeft.Control = EProjectName
     AnchorSideRight.Side = asrBottom
-    Left = 167
-    Height = 27
+    Left = 123
+    Height = 21
     Top = 48
-    Width = 376
+    Width = 420
     ShowHidden = False
     ButtonWidth = 23
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
+    MaxLength = 0
     TabOrder = 4
   end
 end

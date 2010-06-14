@@ -9,12 +9,36 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: frmtemplatevariables.sbtncancel
+msgid "Cancel"
+msgstr ""
+
+#: frmtemplatevariables.sbtnok
+msgid "OK"
+msgstr ""
+
+#: frmtemplatevariables.screateindir
+msgid "Create in &directory:"
+msgstr ""
+
 #: frmtemplatevariables.sdescription
 msgid "Description"
 msgstr "Description"
 
+#: frmtemplatevariables.snameforproject
+msgid "&Name for new project:"
+msgstr ""
+
 #: frmtemplatevariables.snoadditionalvars
 msgid "This project has no additional variables."
+msgstr ""
+
+#: frmtemplatevariables.sthisproject
+msgid "This project contains some additional variables. Please provide values for these variables."
+msgstr ""
+
+#: frmtemplatevariables.stitle
+msgid "New project from template"
 msgstr ""
 
 #: frmtemplatevariables.svalue

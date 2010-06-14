@@ -22,6 +22,7 @@ type
     PDescription: TPanel;
     SGVariables: TStringGrid;
     procedure BOKClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure ProjectVariablesFormShow(Sender: TObject);
   private
     FSChanged: Boolean;
@@ -47,12 +48,18 @@ implementation
 
 {$R *.lfm}
 
-ResourceString
+resourcestring
   SVariable    = 'Variable';
   SValue       = 'Value';
   SDescription = 'Description';
   SNoAdditionalVars = 'This project has no additional variables.';
-  
+  //
+  SNameforProject = '&Name for new project:';
+  SCreateinDir    = 'Create in &directory:';
+  SThisProject    = 'This project contains some additional variables. Please provide values for these variables.';
+  STitle          = 'New project from template';
+  SbtnOK          = 'OK';
+  SbtnCancel      = 'Cancel';
 
 { TProjectVariablesForm }
 
@@ -80,6 +87,15 @@ begin
     end;
 end;
 
+procedure TProjectVariablesForm.FormCreate(Sender: TObject);
+begin
+  Caption := STitle;
+  Label1.Caption:= SNameforProject;
+  Label2.Caption:= SCreateinDir;
+  PDescription.Caption:= SThisProject;
+  BCancel.Caption:= SbtnCancel;
+  BOK.Caption:= SbtnOK;
+end;
 
 procedure TProjectVariablesForm.SetVariables(const AValue: TStrings);
 

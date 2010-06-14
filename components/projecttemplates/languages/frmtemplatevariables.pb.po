@@ -9,13 +9,37 @@ msgstr ""
 "Last-Translator: Marcelo Borges de Paula\n"
 "Language-Team: \n"
 
+#: frmtemplatevariables.sbtncancel
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: frmtemplatevariables.sbtnok
+msgid "OK"
+msgstr "OK"
+
+#: frmtemplatevariables.screateindir
+msgid "Create in &directory:"
+msgstr "Criar no &diretório:"
+
 #: frmtemplatevariables.sdescription
 msgid "Description"
 msgstr "Descrição"
 
+#: frmtemplatevariables.snameforproject
+msgid "&Name for new project:"
+msgstr "&Nome para o novo projeto:"
+
 #: frmtemplatevariables.snoadditionalvars
 msgid "This project has no additional variables."
 msgstr "Este projeto não tem variáveis adicionais."
+
+#: frmtemplatevariables.sthisproject
+msgid "This project contains some additional variables. Please provide values for these variables."
+msgstr "Este projeto contem algumas variáveis adicionais. Favor informar os valores dessas variáveis."
+
+#: frmtemplatevariables.stitle
+msgid "New project from template"
+msgstr "Novo projeto do modelo"
 
 #: frmtemplatevariables.svalue
 msgid "Value"
