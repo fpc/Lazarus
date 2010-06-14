@@ -622,6 +622,7 @@ procedure TSimpleWindowLayoutList.Clear;
 var i: integer;
 begin
   for i:=0 to Count-1 do Items[i].Free;
+  inherited Clear;
 end;
 
 procedure TSimpleWindowLayoutList.Delete(Index: Integer);

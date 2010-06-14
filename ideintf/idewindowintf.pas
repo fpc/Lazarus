@@ -112,18 +112,22 @@ type
     iwcsDocked
     );
 
-  TCreateIDEWindowEvent = procedure(Sender: TObject; aFormName: string;
+  TCreateIDEWindowMethod = procedure(Sender: TObject; aFormName: string;
                 var AForm: TCustomForm; DoDisableAutoSizing: boolean) of object;
+  TCreateIDEWindowProc = procedure(Sender: TObject; aFormName: string;
+                var AForm: TCustomForm; DoDisableAutoSizing: boolean);
   TGetDefaultIDEWindowLayoutEvent = procedure(Sender: TObject; aFormName: string;
    out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign) of object;
   TShowIDEWindowEvent = procedure(Sender: TObject; AForm: TCustomForm;
                                   BringToFront: boolean) of object;
 
-  { TIDEWindowCreator }
+  { TIDEWindowCreator
+    Every dockable window of the IDE needs a TIDEWindowCreator. }
 
   TIDEWindowCreator = class
   private
-    FCreateForm: TCreateIDEWindowEvent;
+    FCreateFormMethod: TCreateIDEWindowMethod;
+    FCreateFormProc: TCreateIDEWindowProc;
     FDockAlign: TAlign;
     FDockSibling: string;
     FFormName: string;
@@ -141,7 +145,8 @@ type
   public
     constructor Create(aFormName: string); overload;
     constructor Create(aFormName: string;
-                       CreateFormEvent: TCreateIDEWindowEvent;
+                       CreateFormProc: TCreateIDEWindowProc;
+                       CreateFormMethod: TCreateIDEWindowMethod;
                        aLeft, aTop, aWidth, aHeight: string;
                        aDockSibling : string = '';
                        aDockAlign: TAlign = alNone;
@@ -156,7 +161,8 @@ type
     property Height: string read FHeight write SetHeight; // '12' for 12 pixel, '10%' for 10 percent of screen.height
     property DockSibling: string read FDockSibling write FDockSibling; // another form name
     property DockAlign: TAlign read FDockAlign write FDockAlign;
-    property OnCreateForm: TCreateIDEWindowEvent read FCreateForm write FCreateForm;
+    property OnCreateFormMethod: TCreateIDEWindowMethod read FCreateFormMethod write FCreateFormMethod;
+    property OnCreateFormProc: TCreateIDEWindowProc read FCreateFormProc write FCreateFormProc;
     property OnGetLayout: TGetDefaultIDEWindowLayoutEvent read FOnGetLayout
                                                           write FOnGetLayout;
     procedure CheckBoundValue(s: string);
@@ -180,7 +186,8 @@ type
     function Add(aLayout: TIDEWindowCreator): integer; overload;
     function Add(aFormName: string): TIDEWindowCreator; overload;
     function Add(aFormName: string;
-                 CreateFormEvent: TCreateIDEWindowEvent;
+                 CreateFormProc: TCreateIDEWindowProc;
+                 CreateFormMethod: TCreateIDEWindowMethod;
                  aLeft, aTop, aWidth, aHeight: string;
                  aDockSibling : string = '';
                  aDockAlign: TAlign = alNone;
@@ -578,9 +585,10 @@ begin
 end;
 
 constructor TIDEWindowCreator.Create(aFormName: string;
-  CreateFormEvent: TCreateIDEWindowEvent; aLeft, aTop, aWidth, aHeight: string;
-  aDockSibling: string; aDockAlign: TAlign;
-  aMulti: boolean; GetLayoutEvent: TGetDefaultIDEWindowLayoutEvent);
+  CreateFormProc: TCreateIDEWindowProc;
+  CreateFormMethod: TCreateIDEWindowMethod; aLeft, aTop, aWidth,
+  aHeight: string; aDockSibling: string; aDockAlign: TAlign; aMulti: boolean;
+  GetLayoutEvent: TGetDefaultIDEWindowLayoutEvent);
 begin
   Create(aFormName);
   FMulti:=aMulti;
@@ -590,7 +598,8 @@ begin
   Height:=aHeight;
   DockSibling:=aDockSibling;
   DockAlign:=aDockAlign;
-  OnCreateForm:=CreateFormEvent;
+  OnCreateFormMethod:=CreateFormMethod;
+  OnCreateFormProc:=CreateFormProc;
   OnGetLayout:=GetLayoutEvent;
 end;
 
@@ -649,13 +658,13 @@ begin
 end;
 
 function TIDEWindowCreatorList.Add(aFormName: string;
-  CreateFormEvent: TCreateIDEWindowEvent; aLeft, aTop, aWidth, aHeight: string;
-  aDockSibling: string; aDockAlign: TAlign;
-  aMulti: boolean;
+  CreateFormProc: TCreateIDEWindowProc;
+  CreateFormMethod: TCreateIDEWindowMethod; aLeft, aTop, aWidth,
+  aHeight: string; aDockSibling: string; aDockAlign: TAlign; aMulti: boolean;
   GetLayoutEvent: TGetDefaultIDEWindowLayoutEvent): TIDEWindowCreator;
 begin
   ErrorIfFormExists(aFormName);
-  Result:=TIDEWindowCreator.Create(aFormName,CreateFormEvent,
+  Result:=TIDEWindowCreator.Create(aFormName,CreateFormProc,CreateFormMethod,
        aLeft,aTop,aWidth,aHeight,aDockSibling,aDockAlign,aMulti,GetLayoutEvent);
   Add(Result);
 end;
@@ -709,11 +718,14 @@ begin
       debugln(['TIDEWindowCreatorList.GetForm no creator for ',aFormName]);
       exit;
     end;
-    if Item.OnCreateForm=nil then begin
+    if Assigned(Item.OnCreateFormProc) then begin
+      Item.OnCreateFormProc(Self,aFormName,Result,DisableAutoSizing);
+    end else if Assigned(Item.OnCreateFormMethod) then begin
+      Item.OnCreateFormMethod(Self,aFormName,Result,DisableAutoSizing);
+    end else begin
       debugln(['TIDEWindowCreatorList.GetForm no OnCreateForm for ',aFormName]);
       exit;
     end;
-    Item.OnCreateForm(Self,aFormName,Result,DisableAutoSizing);
     if Result=nil then begin
       debugln(['TIDEWindowCreatorList.GetForm create failed for ',aFormName]);
       exit;

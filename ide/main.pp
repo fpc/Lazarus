@@ -1945,8 +1945,8 @@ begin
   ObjectInspector1.OnDestroy:=@OIOnDestroy;
   ObjectInspector1.OnAutoShow:=@OIOnAutoShow;
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
-  IDEWindowCreators.Add(ObjectInspector1.Name,nil,'0','150','230','50%',
-                        NonModalIDEWindowNames[nmiwSourceNoteBookName],alLeft);
+  IDEWindowCreators.Add(ObjectInspector1.Name,nil,@CreateIDEWindow,
+   '0','150','230','50%',NonModalIDEWindowNames[nmiwSourceNoteBookName],alLeft);
 
   EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
 
@@ -2195,34 +2195,34 @@ end;
 procedure TMainIDE.SetupIDEWindowsLayout;
 begin
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwCodeExplorerName],
-    @CreateIDEWindow,
+    nil,@CreateIDEWindow,
     '72%','130','170','60%',NonModalIDEWindowNames[nmiwSourceNoteBookName],alRight);
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwMessagesViewName],
-    @CreateIDEWindow,
+    nil,@CreateIDEWindow,
     '230','75%','70%','100',NonModalIDEWindowNames[nmiwSourceNoteBookName],alBottom);
 
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwUnitDependenciesName],
-    @CreateIDEWindow,'200','200','','');
+    nil,@CreateIDEWindow,'200','200','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwFPDocEditorName],
-    @CreateIDEWindow,'250','75%','60%','120');
+    nil,@CreateIDEWindow,'250','75%','60%','120');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwClipbrdHistoryName],
-    @CreateIDEWindow,'250','200','','');
+    nil,@CreateIDEWindow,'250','200','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwProjectInspector],
-    @CreateIDEWindow,'200','150','300','400');
+    nil,@CreateIDEWindow,'200','150','300','400');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSearchResultsViewName],
-    @CreateIDEWindow,'250','250','60%','300');
+    nil,@CreateIDEWindow,'250','250','60%','300');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwAnchorEditor],
-    @CreateIDEWindow,'250','250','','');
+    nil,@CreateIDEWindow,'250','250','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwCodeBrowser],
-    @CreateIDEWindow,'200','200','650','500');
+    nil,@CreateIDEWindow,'200','200','650','500');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwIssueBrowser],
-    @CreateIDEWindow,'250','250','','');
+    nil,@CreateIDEWindow,'250','250','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwJumpHistory],
-    @CreateIDEWindow,'250','250','','');
+    nil,@CreateIDEWindow,'250','250','','');
   IDEWindowCreators.Add(ComponentListFormName,
-    @CreateIDEWindow,'250','250','','');
+    nil,@CreateIDEWindow,'250','250','','');
   IDEWindowCreators.Add(ToDoWindowName,
-    @CreateIDEWindow,'250','250','','');
+    nil,@CreateIDEWindow,'250','250','','');
 end;
 
 procedure TMainIDE.RestoreIDEWindows;

@@ -1881,7 +1881,7 @@ begin
   SetRecentPackagesMenu;
 
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwPkgGraphExplorer],
-                        @CreateIDEWindow,'250','200','400','300');
+                        nil,@CreateIDEWindow,'250','200','400','300');
 end;
 
 procedure TPkgManager.ConnectSourceNotebookEvents;

@@ -1137,6 +1137,7 @@ function SourceNotebook: TSourceNotebook;
 
 function SourceEditorManager: TSourceEditorManager;
 
+
   //=============================================================================
 
 const
@@ -9089,7 +9090,7 @@ begin
 
   // layout
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSourceNoteBookName],
-    @CreateSourceWindow,'250','100','70%','70%',
+    nil,@CreateSourceWindow,'250','100','70%','70%',
     NonModalIDEWindowNames[nmiwMainIDEName],alBottom,
     true,@GetDefaultLayout);
 end;
