@@ -200,10 +200,10 @@ type
     function GetForm(aFormName: string; AutoCreate: boolean;
                                DisableAutoSizing: boolean = false): TCustomForm;
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean);
-    property OnShowForm: TShowIDEWindowEvent read FOnShowForm write FOnShowForm;
-
     procedure CreateForm(var AForm: TCustomForm; AFormClass: TCustomFormClass;
                          DoDisableAutoSizing: boolean; TheOwner: TComponent); // utility function to create a form with delayed autosizing
+
+    property OnShowForm: TShowIDEWindowEvent read FOnShowForm write FOnShowForm; // set by the IDE to implement a default
   end;
 
 var
@@ -739,12 +739,6 @@ end;
 procedure TIDEWindowCreatorList.ShowForm(AForm: TCustomForm;
   BringToFront: boolean);
 begin
-  if AForm.IsVisible then
-  begin
-    if BringToFront then
-      AForm.ShowOnTop;
-    exit;
-  end;
   if IDEDockMaster<>nil then
     IDEDockMaster.ShowForm(AForm,BringToFront)
   else if Assigned(OnShowForm) then
