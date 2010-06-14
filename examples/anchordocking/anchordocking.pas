@@ -1701,24 +1701,33 @@ end;
 
 procedure TAnchorDockMaster.CloseAll;
 var
-  AForm: TCustomForm;
   i: Integer;
+  AForm: TCustomForm;
+  AControl: TWinControl;
 begin
-  // first hide all to reduce flicker
+  // hide all forms
   i:=Screen.CustomFormCount-1;
   while i>=0 do begin
     AForm:=GetParentForm(Screen.CustomForms[i]);
-    if AForm<>nil then
-      AForm.Hide;
-    i:=Min(i,Screen.CustomFormCount);
+    AForm.Hide;
+    i:=Min(i,Screen.CustomFormCount)-1;
   end;
-  // then close all, but the MainForm
+
+  // close all forms except the MainForm
   i:=Screen.CustomFormCount-1;
   while i>=0 do begin
     AForm:=Screen.CustomForms[i];
-    if AForm<>Application.MainForm then
+    if (AForm<>Application.MainForm) and not AForm.IsParentOf(Application.MainForm)
+    then begin
+      AControl:=AForm;
+      while (AControl.Parent<>nil)
+      and (AControl.Parent<>Application.MainForm) do begin
+        AControl:=AControl.Parent;
+        if AControl is TCustomForm then AForm:=TCustomForm(AControl);
+      end;
       AForm.Close;
-    i:=Min(i,Screen.CustomFormCount);
+    end;
+    i:=Min(i,Screen.CustomFormCount)-1;
   end;
 end;
 

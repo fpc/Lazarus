@@ -183,6 +183,20 @@ type
     function NewNode(aParent: TAnchorDockLayoutTreeNode): TAnchorDockLayoutTreeNode;
   end;
 
+  { TAnchorDockDefaultLayout }
+
+  TAnchorDockDefaultLayout = class
+  private
+    FControlNames: TStrings;
+    FLayout: TAnchorDockLayoutTree;
+    procedure SetControlNames(const AValue: TStrings);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property ControlNames: TStrings read FControlNames write SetControlNames;
+    property Layout: TAnchorDockLayoutTree read FLayout;
+  end;
+
   { TADNameToControl }
 
   TADNameToControl = class
@@ -1689,6 +1703,27 @@ begin
   for i:=0 to fItems.Count-1 do begin
     debugln(['  ',i,'/',fItems.Count,' "',dbgstr(fItems[i]),'" Control=',dbgsname(TControl(fItems.Objects[i]))]);
   end;
+end;
+
+{ TAnchorDockDefaultLayout }
+
+procedure TAnchorDockDefaultLayout.SetControlNames(const AValue: TStrings);
+begin
+  if FControlNames=AValue then exit;
+  FControlNames.Assign(AValue);
+end;
+
+constructor TAnchorDockDefaultLayout.Create;
+begin
+  FControlNames:=TStringList.Create;
+  FLayout:=TAnchorDockLayoutTree.Create;
+end;
+
+destructor TAnchorDockDefaultLayout.Destroy;
+begin
+  FreeAndNil(FLayout);
+  FreeAndNil(FControlNames);
+  inherited Destroy;
 end;
 
 end.

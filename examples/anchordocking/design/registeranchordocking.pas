@@ -193,8 +193,7 @@ begin
   debugln(['TIDEAnchorDockMaster.ShowForm ',DbgSName(AForm),' BringToFront=',BringToFront]);
   try
     AForm.DisableAlign;
-    if (AForm.HostDockSite<>nil) or (AForm is TAnchorDockHostSite) then
-    begin
+    if DockMaster.IsSite(AForm) then begin
       // already docked
     end else begin
       // this form was not yet docked
@@ -234,7 +233,7 @@ begin
     end;
 
   finally
-    if AForm=Application.MainForm then
+    if DockMaster.IsCustomSite(AForm) then
       AForm.Show
     else
       DockMaster.MakeDockable(AForm,true,false);
