@@ -1140,10 +1140,7 @@ begin
 end;
 
 procedure TAnchorDockLayoutTreeNode.CheckConsistency;
-{ ToDo: check that all childs are connected
-        check for topological sort
-        check for not overlapping (the bounds can overlap because of constraints)
-}
+{ ToDo: check for topological sort }
 
   procedure CheckCornerIsUnique(Side1: TAnchorKind; Side1AnchorName: string;
     Side2: TAnchorKind; Side2AnchorName: string);

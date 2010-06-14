@@ -173,6 +173,7 @@ type
 
   TSimpleWindowLayout = class(TComponent)
   private
+    FApplied: boolean;
     FFormCaption: string;
     FVisible: boolean;
     fWindowPlacement: TIDEWindowPlacement;
@@ -225,6 +226,7 @@ type
       read fWindowState write SetWindowState;
     property Form: TCustomForm read fForm write SetForm;
     property Visible: boolean read FVisible write SetVisible;
+    property Applied: boolean read FApplied write FApplied;
   end;
 
   { TSimpleWindowLayoutList }
@@ -593,6 +595,7 @@ end;
 procedure TSimpleWindowLayout.Assign(Layout: TSimpleWindowLayout);
 begin
   Clear;
+  FApplied:=Layout.Applied;
   Form:=Layout.Form;
   fWindowPlacement:=Layout.fWindowPlacement;
   fLeft:=Layout.fLeft;
@@ -741,6 +744,9 @@ begin
     if ALayout<>nil then
     begin
       ALayout.Form:=AForm;
+      if ALayout.Applied then exit;
+      ALayout.Applied:=true;
+      debugln(['TSimpleWindowLayoutList.ApplyAndShow restore']);
 
       WindowType:=NonModalIDEFormIDToEnum(ALayout.FormID);
       SubIndex := -1;
@@ -790,7 +796,6 @@ begin
           exit;
         end;
       end;
-
     end;
 
     // no layout found => use default
