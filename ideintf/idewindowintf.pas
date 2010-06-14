@@ -215,11 +215,11 @@ type
 
   TIDEDockMaster = class
   public
-    procedure MakeIDEWindowDockable(AControl: TWinControl); virtual; abstract;
-    procedure MakeIDEWindowDockSite(AForm: TCustomForm); virtual; abstract;
+    procedure MakeIDEWindowDockable(AControl: TWinControl); virtual; abstract; // make AControl dockable, it can be docked and other dockable windows can be docked to it, this does not make it visible
+    procedure MakeIDEWindowDockSite(AForm: TCustomForm); virtual; abstract; // make AForm a dock site, AForm can not be docked, its Parent must be kept nil, this does not make it visible
     procedure LoadDefaultLayout; virtual; abstract; // called before opening the first project
-    procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); virtual; abstract;
-    procedure CloseAll; virtual;
+    procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); virtual; abstract; // make a form visible, set BringToFront=true if form should be shown on active screen and on front of other windows, normally this focus the form
+    procedure CloseAll; virtual; // close all forms, called after IDE has saved all and shuts down
   end;
 
 var
@@ -249,12 +249,31 @@ procedure CloseAllForms;
 var
   i: Integer;
   AForm: TCustomForm;
+  AControl: TWinControl;
 begin
+  // hide all forms
+  i:=Screen.CustomFormCount-1;
+  while i>=0 do begin
+    AForm:=GetParentForm(Screen.CustomForms[i]);
+    AForm.Hide;
+    dec(i);
+    if i>=Screen.CustomFormCount then i:=Screen.CustomFormCount-1;
+  end;
+
+  // close all forms except the MainForm
   i:=Screen.CustomFormCount-1;
   while i>=0 do begin
     AForm:=Screen.CustomForms[i];
-    if AForm<>Application.MainForm then
+    if (AForm<>Application.MainForm) and not AForm.IsParentOf(Application.MainForm)
+    then begin
+      AControl:=AForm;
+      while (AControl.Parent<>nil)
+      and (AControl.Parent<>Application.MainForm) do begin
+        AControl:=AControl.Parent;
+        if AControl is TCustomForm then AForm:=TCustomForm(AControl);
+      end;
       AForm.Close;
+    end;
     dec(i);
     if i>=Screen.CustomFormCount then i:=Screen.CustomFormCount-1;
   end;
