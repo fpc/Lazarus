@@ -203,7 +203,7 @@ type
     property OnShowForm: TShowIDEWindowEvent read FOnShowForm write FOnShowForm;
 
     procedure CreateForm(var AForm: TCustomForm; AFormClass: TCustomFormClass;
-                         DoDisableAutoSizing: boolean; TheOwner: TComponent);
+                         DoDisableAutoSizing: boolean; TheOwner: TComponent); // utility function to create a form with delayed autosizing
   end;
 
 var
