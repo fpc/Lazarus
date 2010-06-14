@@ -165,8 +165,6 @@ type
     function GetMainName: string; virtual; abstract;
     procedure AddPackageDependency(const PackageName: string); virtual; abstract;
     procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean); virtual; abstract;
-    function AddUnit(AUnitName: string;
-                     out OutUnitInfo: TUnitInfo): TModalResult; virtual; abstract;
   public
     constructor Create(const AFilename, ADescription: string);
     destructor Destroy; override;
@@ -185,6 +183,7 @@ type
   private
     // Resource code
     fMainUnitConverter: TConvertDelphiUnit;
+    function AddUnit(AUnitName: string; out OutUnitInfo: TUnitInfo): TModalResult;
     function GetLazProject: TProject;
     procedure SetLazProject(const AValue: TProject);
   protected
@@ -201,8 +200,6 @@ type
     function GetMainName: string; override;
     procedure AddPackageDependency(const PackageName: string); override;
     procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean); override;
-    function AddUnit(AUnitName: string;
-                     out OutUnitInfo: TUnitInfo): TModalResult; override;
   public
     constructor Create(const aProjectFilename: string);
     destructor Destroy; override;
@@ -233,8 +230,6 @@ type
     function GetMainName: string; override;
     procedure AddPackageDependency(const PackageName: string); override;
     procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean); override;
-    function AddUnit(AUnitName: string;
-                     out OutUnitInfo: TUnitInfo): TModalResult; override;
   public
     constructor Create(const aPackageFilename: string);
     destructor Destroy; override;
@@ -1691,17 +1686,6 @@ begin
     exit;
   end;
   Result:=LoadCodeBuffer(fDpkCode,DPKFilename,[],true);
-end;
-
-function TConvertDelphiPackage.AddUnit(AUnitName: string;
-                                       out OutUnitInfo: TUnitInfo): TModalResult;
-begin
-  // ToDo: add unit to package like it is added to project.
-{  UnitInfo:=TUnitInfo.Create(nil);
-  UnitInfo.Filename:=AUnitName;
-  UnitInfo.IsPartOfProject:=true;
-  LazProject.AddFile(UnitInfo,false);  }
-  Result:=mrCancel;
 end;
 
 function TConvertDelphiPackage.ExtractOptionsFromDelphiSource: TModalResult;
