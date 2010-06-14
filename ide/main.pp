@@ -1396,6 +1396,7 @@ begin
   ToolStatus:=itExiting;
 
   DebugLn('[TMainIDE.Destroy] A ');
+
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy A ');{$ENDIF}
   MainIDEBar.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Destroy'){$ENDIF};
 

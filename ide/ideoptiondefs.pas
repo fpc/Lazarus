@@ -196,6 +196,7 @@ type
     procedure SetWidth(const AValue: integer);
     procedure SetHeight(const AValue: integer);
     procedure SetWindowPlacement(const AValue: TIDEWindowPlacement);
+    procedure OnFormClose(Sender: TObject; var CloseAction: TCloseAction);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
@@ -442,6 +443,12 @@ begin
   fWindowPlacement:=AValue;
 end;
 
+procedure TSimpleWindowLayout.OnFormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  GetCurrentPosition;
+end;
+
 procedure TSimpleWindowLayout.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
@@ -508,8 +515,10 @@ end;
 procedure TSimpleWindowLayout.SetForm(const AValue: TCustomForm);
 begin
   if fForm=AValue then exit;
-  if (Form<>nil) then
+  if (Form<>nil) then begin
     RemoveFreeNotification(Form);
+    Form.RemoveHandlerClose(@OnFormClose);
+  end;
   fForm:=AValue;
   if (Form<>nil) then begin
     fFormID := Form.Name;
