@@ -1377,10 +1377,24 @@ end;
 
 function TConvertDelphiProject.ConvertAllUnits: TModalResult;
 var
-  i: Integer;
-  CurUnitInfo: TUnitInfo;
-  Converter: TConvertDelphiUnit;
   ConvUnits: TObjectList;       // List of ConvertDelphiUnits.
+
+  function ConvertOne(AUnitInfo: TUnitInfo): TModalResult;
+  var
+    Converter: TConvertDelphiUnit;
+  begin
+    Converter:=TConvertDelphiUnit.Create(Self, AUnitInfo.Filename,[]);
+    Converter.fUnitInfo:=AUnitInfo;
+    ConvUnits.Add(Converter);
+    Result:=Converter.CopyAndLoadFile;
+    Result:=Converter.CheckFailed(Result);
+    if Result<>mrOK then exit;
+    Result:=Converter.ConvertUnitFile;
+  end;
+
+  var
+    CurUnitInfo: TUnitInfo;
+    i: Integer;
 begin
   Result:=mrOk;
   ConvUnits:=TObjectList.create;
@@ -1391,31 +1405,17 @@ begin
     for i:=0 to LazProject.UnitCount-1 do begin
       CurUnitInfo:=LazProject.Units[i];
       // Main LPR file was converted earlier.
-      if CurUnitInfo.IsPartOfProject and (CurUnitInfo<>LazProject.MainUnitInfo) then
-      begin
-        Converter:=TConvertDelphiUnit.Create(Self, CurUnitInfo.Filename,[]);
-        Converter.fUnitInfo:=CurUnitInfo;
-        ConvUnits.Add(Converter);
-        Result:=Converter.CopyAndLoadFile;
-        Result:=Converter.CheckFailed(Result);
-        if Result<>mrOK then Break;
-        Result:=Converter.ConvertUnitFile;
+      if CurUnitInfo.IsPartOfProject and (CurUnitInfo<>LazProject.MainUnitInfo) then begin
+        Result:=ConvertOne(CurUnitInfo);
         if Result<>mrOK then Break;
       end;
     end;
     // During conversion there were more units added to be converted.
     for i:=0 to fUnitsToAddToProject.Count-1 do begin
       Result:=AddUnit(fUnitsToAddToProject[i], CurUnitInfo);
-      if Result=mrAbort then Break;
       if Result=mrNo then continue;
-      /// From above:
-      Converter:=TConvertDelphiUnit.Create(Self, CurUnitInfo.Filename,[]);
-      Converter.fUnitInfo:=CurUnitInfo;
-      ConvUnits.Add(Converter);
-      Result:=Converter.CopyAndLoadFile;
-      Result:=Converter.CheckFailed(Result);
-      if Result<>mrOK then Break;
-      Result:=Converter.ConvertUnitFile;
+      if Result=mrAbort then Break;
+      Result:=ConvertOne(CurUnitInfo);
       if Result<>mrOK then Break;
     end;
     if Result=mrOK then
