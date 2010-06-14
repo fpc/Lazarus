@@ -447,8 +447,10 @@ procedure TSimpleWindowLayout.Notification(AComponent: TComponent;
 begin
   inherited Notification(AComponent, Operation);
   if Operation=opRemove then begin
-    if fForm=AComponent then
+    if fForm=AComponent then begin
       fForm:=nil;
+      Applied:=false;
+    end;
   end;
 end;
 
@@ -513,6 +515,7 @@ begin
     fFormID := Form.Name;
     FFormCaption := Form.Caption;
     FreeNotification(Form);
+    Applied:=false;
   end;
 end;
 
@@ -746,7 +749,7 @@ begin
       ALayout.Form:=AForm;
       if ALayout.Applied then exit;
       ALayout.Applied:=true;
-      debugln(['TSimpleWindowLayoutList.ApplyAndShow restore']);
+      debugln(['TSimpleWindowLayoutList.ApplyAndShow restore ',ALayout.FormID]);
 
       WindowType:=NonModalIDEFormIDToEnum(ALayout.FormID);
       SubIndex := -1;
