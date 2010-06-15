@@ -81,6 +81,7 @@ var
   List: TStringList;
   i: Integer;
 begin
+  Result:=true;
   List:=TStringList.Create;
   try
     AGrid.BeginUpdate;
@@ -105,6 +106,7 @@ var
   OldIdent, NewIdent: string;
   i: Integer;
 begin
+  Result:=true;
   AMap.Clear;
   // Collect (maybe edited) properties from StringGrid to fStringMap.
   for i:=1 to AGrid.RowCount-1 do begin // Skip the fixed row.
