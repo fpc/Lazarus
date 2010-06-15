@@ -135,6 +135,7 @@ begin
   Master.HeaderAlignLeft := HeaderAlignLeftTrackBar.Position;
   Master.SplitterWidth   := SplitterWidthTrackBar.Position;
   Master.ScaleOnResize   := ScaleOnResizeCheckBox.Checked;
+  ModalResult:=mrOk;
 end;
 
 procedure TAnchorDockOptionsDialog.DragThresholdTrackBarChange(Sender: TObject);

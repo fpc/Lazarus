@@ -453,10 +453,11 @@ type
     procedure CloseAll;
 
     // save/restore layouts
+    procedure SaveLayoutToConfig(Config: TConfigStorage);
     procedure SaveMainLayoutToTree(LayoutTree: TAnchorDockLayoutTree);
     procedure SaveSiteLayoutToTree(AForm: TCustomForm;
                                    LayoutTree: TAnchorDockLayoutTree);
-    procedure SaveLayoutToConfig(Config: TConfigStorage);
+    function CreateRestoreLayout(AControl: TControl): TAnchorDockRestoreLayout;
     function ConfigIsEmpty(Config: TConfigStorage): boolean;
     function LoadLayoutFromConfig(Config: TConfigStorage): boolean;
     property RestoreLayouts: TAnchorDockRestoreLayouts read FRestoreLayouts;
@@ -1430,7 +1431,8 @@ var
   i: Integer;
   Splitter: TAnchorDockSplitter;
 begin
-  if AValue=SplitterWidth then exit;
+  if (AValue<1) or (AValue=SplitterWidth) then exit;
+  FSplitterWidth:=AValue;
   for i:=0 to ComponentCount-1 do begin
     Splitter:=TAnchorDockSplitter(Components[i]);
     if not (Splitter is TAnchorDockSplitter) then continue;
@@ -1868,6 +1870,37 @@ begin
     raise EAnchorDockLayoutError.Create('invalid root control for save: '+DbgSName(AForm));
 end;
 
+function TAnchorDockMaster.CreateRestoreLayout(AControl: TControl
+  ): TAnchorDockRestoreLayout;
+{ Create a restore layout for AControl and its child controls.
+  It contains the whole parent structure so that the restore knows where to
+  put AControl.
+}
+
+  procedure AddControlNames(SubControl: TControl;
+    RestoreLayout: TAnchorDockRestoreLayout);
+  var
+    i: Integer;
+  begin
+    if (FControls.IndexOf(SubControl)>=0)
+    and not RestoreLayout.HasControlName(SubControl.Name) then
+      RestoreLayout.ControlNames.Add(SubControl.Name);
+    if SubControl is TWinControl then
+      for i:=0 to TWinControl(SubControl).ControlCount-1 do
+        AddControlNames(TWinControl(SubControl).Controls[i],RestoreLayout);
+  end;
+
+var
+  AForm: TCustomForm;
+begin
+  if not IsSite(AControl) then
+    raise Exception.Create('TAnchorDockMaster.CreateRestoreLayout: not a site '+DbgSName(AControl));
+  AForm:=GetParentForm(AControl);
+  Result:=TAnchorDockRestoreLayout.Create(TAnchorDockLayoutTree.Create);
+  SaveSiteLayoutToTree(AForm,Result.Layout);
+  AddControlNames(AControl,Result);
+end;
+
 procedure TAnchorDockMaster.SaveLayoutToConfig(Config: TConfigStorage);
 var
   Tree: TAnchorDockLayoutTree;
@@ -1877,6 +1910,9 @@ begin
     Config.AppendBasePath('MainConfig/');
     SaveMainLayoutToTree(Tree);
     Tree.SaveToConfig(Config);
+    Config.UndoAppendBasePath;
+    Config.AppendBasePath('Restores/');
+    RestoreLayouts.SaveToConfig(Config);
     Config.UndoAppendBasePath;
     WriteDebugLayout('TAnchorDockMaster.SaveLayoutToConfig ',Tree.Root);
     DebugWriteChildAnchors(Tree.Root);
@@ -1903,6 +1939,9 @@ begin
     // load tree
     Config.AppendBasePath('MainConfig/');
     Tree.LoadFromConfig(Config);
+    Config.UndoAppendBasePath;
+    Config.AppendBasePath('Restores/');
+    RestoreLayouts.LoadFromConfig(Config);
     Config.UndoAppendBasePath;
 
     WriteDebugLayout('TAnchorDockMaster.LoadLayoutFromConfig ',Tree.Root);
@@ -3965,8 +4004,10 @@ end;
 
 procedure TAnchorDockHeader.CloseButtonClick(Sender: TObject);
 begin
-  if Parent is TAnchorDockHostSite then
+  if Parent is TAnchorDockHostSite then begin
+    DockMaster.RestoreLayouts.Add(DockMaster.CreateRestoreLayout(Parent),true);
     TAnchorDockHostSite(Parent).CloseSite;
+  end;
 end;
 
 procedure TAnchorDockHeader.HeaderPositionItemClick(Sender: TObject);
@@ -4747,6 +4788,7 @@ var
 begin
   Site:=GetActiveSite;
   if Site=nil then exit;
+  DockMaster.RestoreLayouts.Add(DockMaster.CreateRestoreLayout(Site),true);
   Site.CloseSite;
   DockMaster.SimplifyPendingLayouts;
 end;

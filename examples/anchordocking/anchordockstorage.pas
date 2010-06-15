@@ -1764,7 +1764,7 @@ end;
 
 function TAnchorDockRestoreLayout.IndexOfControlName(AName: string): integer;
 begin
-  Result:=fControlNames.Count;
+  Result:=fControlNames.Count-1;
   while (Result>=0) and (CompareText(AName,FControlNames[Result])<>0) do
     dec(Result);
 end;
@@ -1890,6 +1890,7 @@ procedure TAnchorDockRestoreLayouts.Add(Layout: TAnchorDockRestoreLayout;
 var
   i: Integer;
 begin
+  if Layout=nil then exit;
   if RemoveOther then begin
     for i:=0 to Layout.ControlNames.Count-1 do
       RemoveByName(Layout.ControlNames[i]);
