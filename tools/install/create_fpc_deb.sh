@@ -331,8 +331,8 @@ fi
 
 # fixing permissions
 echo "fixing permissions ..."
-find $FPCBuildDir -type d | xargs -d '\n' chmod 755  # this is needed, don't ask me why
-find $FPCBuildDir -type f | xargs -d '\n' chmod a+r  # this is needed, don't ask me why
+find $FPCBuildDir -type d -print0 | xargs -0 chmod 755  # this is needed, don't ask me why
+find $FPCBuildDir -type f -print0 | xargs -0 chmod a+r  # this is needed, don't ask me why
 
 #------------------------------------------------------------------------------
 # creating deb
