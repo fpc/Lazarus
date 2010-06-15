@@ -67,6 +67,10 @@
     - dnd move page to another pagecontrol
 
   ToDo:
+    - smaller header
+    - option: hide caption
+    - list of default layouts
+    - make options a frame
     - popup menu
        - shrink side left, top, right, bottom
     - simple way to make forms dockable at designtime
@@ -371,6 +375,7 @@ type
     FDragTreshold: integer;
     FHeaderAlignLeft: integer;
     FHeaderAlignTop: integer;
+    FHeaderButtonSize: integer;
     FHeaderClass: TAnchorDockHeaderClass;
     FHeaderHint: string;
     FManagerClass: TAnchorDockManagerClass;
@@ -391,8 +396,6 @@ type
     fDisabledAutosizing: TFPList; // list of TControl
     fTreeNameToDocker: TADNameToControl;
     fPopupMenu: TPopupMenu;
-    fCloseBtnReferenceCount: integer;
-    fCloseBtnBitmap: TBitmap;
     function GetControls(Index: integer): TControl;
     function CloseUnneededControls(Tree: TAnchorDockLayoutTree): boolean;
     function CreateNeededControls(Tree: TAnchorDockLayoutTree;
@@ -404,7 +407,10 @@ type
     procedure PopupMenuPopup(Sender: TObject);
     procedure ChangeLockButtonClick(Sender: TObject);
     procedure OptionsClick(Sender: TObject);
+    procedure SetHeaderButtonSize(const AValue: integer);
   protected
+    fCloseBtnReferenceCount: integer;
+    fCloseBtnBitmap: TBitmap;
     procedure SetHeaderAlignLeft(const AValue: integer);
     procedure SetHeaderAlignTop(const AValue: integer);
     procedure SetShowHeaderCaptionFloatingControl(const AValue: boolean);
@@ -413,6 +419,9 @@ type
     procedure DisableControlAutoSizing(AControl: TControl);
     procedure Notification(AComponent: TComponent; Operation: TOperation);
           override;
+    procedure CreateCloseButtonBitmap; virtual;
+    procedure FreeCloseButtonBitmap; virtual;
+    procedure AutoSizeAllHeaders(EnableAutoSizing: boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -480,6 +489,7 @@ type
                           write SetShowHeaderCaptionFloatingControl default false;
     property OnCreateControl: TADCreateControlEvent read FOnCreateControl write FOnCreateControl;
     property AllowDragging: boolean read FAllowDragging write FAllowDragging default true;
+    property HeaderButtonSize: integer read FHeaderButtonSize write SetHeaderButtonSize default 10;
 
     // for descendants
     property SplitterClass: TAnchorDockSplitterClass read FSplitterClass write FSplitterClass;
@@ -1436,6 +1446,14 @@ begin
   if Assigned(OnShowOptions) then OnShowOptions(Self);
 end;
 
+procedure TAnchorDockMaster.SetHeaderButtonSize(const AValue: integer);
+begin
+  if FHeaderButtonSize=AValue then exit;
+  FHeaderButtonSize:=Max(1,AValue);
+  FreeCloseButtonBitmap;
+  AutoSizeAllHeaders(true);
+end;
+
 procedure TAnchorDockMaster.Notification(AComponent: TComponent;
   Operation: TOperation);
 var
@@ -1454,11 +1472,57 @@ begin
   end;
 end;
 
+procedure TAnchorDockMaster.FreeCloseButtonBitmap;
+begin
+  fCloseBtnBitmap.Free;
+end;
+
+procedure TAnchorDockMaster.AutoSizeAllHeaders(EnableAutoSizing: boolean);
+var
+  i: Integer;
+  Site: TAnchorDockHostSite;
+begin
+  for i:=0 to ComponentCount-1 do begin
+    Site:=TAnchorDockHostSite(Components[i]);
+    if not (Site is TAnchorDockHostSite) then continue;
+    if (Site.Header<>nil) and (Site.Header.Parent<>nil) then begin
+      Site.Header.InvalidatePreferredSize;
+      DisableControlAutoSizing(Site);
+    end;
+  end;
+  if EnableAutoSizing then
+    EnableAllAutoSizing;
+end;
+
+procedure TAnchorDockMaster.CreateCloseButtonBitmap;
+var
+  BitmapHandle,MaskHandle: HBITMAP;
+  OrigBitmap: TBitmap;
+begin
+  if fCloseBtnBitmap<>nil then exit;
+  ThemeServices.GetStockImage(idButtonClose,BitmapHandle,MaskHandle);
+  OrigBitmap:=TBitmap.Create;
+  OrigBitmap.Handle:=BitmapHandle;
+  if MaskHandle<>0 then
+    OrigBitmap.MaskHandle:=MaskHandle;
+  DockMaster.fCloseBtnBitmap:=TBitmap.Create;
+  with DockMaster.fCloseBtnBitmap do begin
+    SetSize(HeaderButtonSize,HeaderButtonSize);
+    Canvas.Brush.Color:=clWhite;
+    Canvas.FillRect(Rect(0,0,Width,Height));
+    Canvas.StretchDraw(Rect(0,0,Width,Height),OrigBitmap);
+    Transparent:=true;
+    TransparentColor:=clWhite;
+  end;
+  OrigBitmap.Free;
+end;
+
 constructor TAnchorDockMaster.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FControls:=TFPList.Create;
   FAllowDragging:=true;
+  FHeaderButtonSize:=10;
   FDragTreshold:=4;
   FDockOutsideMargin:=10;
   FDockParentMargin:=10;
@@ -4066,28 +4130,10 @@ begin
 end;
 
 procedure TAnchorDockCloseButton.GetCloseGlyph;
-var
-  BitmapHandle,MaskHandle: HBITMAP;
-  OrigBitmap: TBitmap;
 begin
   inc(DockMaster.fCloseBtnReferenceCount);
-  if DockMaster.fCloseBtnReferenceCount=1 then begin
-    ThemeServices.GetStockImage(idButtonClose,BitmapHandle,MaskHandle);
-    OrigBitmap:=TBitmap.Create;
-    OrigBitmap.Handle:=BitmapHandle;
-    if MaskHandle<>0 then
-      OrigBitmap.MaskHandle:=MaskHandle;
-    DockMaster.fCloseBtnBitmap:=TBitmap.Create;
-    with DockMaster.fCloseBtnBitmap do begin
-      SetSize(10,10);
-      Canvas.Brush.Color:=clWhite;
-      Canvas.FillRect(Rect(0,0,Width,Height));
-      Canvas.StretchDraw(Rect(0,0,Width,Height),OrigBitmap);
-      Transparent:=true;
-      TransparentColor:=clWhite;
-    end;
-    OrigBitmap.Free;
-  end;
+  if DockMaster.fCloseBtnBitmap=nil then
+    DockMaster.CreateCloseButtonBitmap;
 end;
 
 procedure TAnchorDockCloseButton.ReleaseCloseGlyph;
@@ -4095,7 +4141,7 @@ begin
   if DockMaster=nil then exit;
   dec(DockMaster.fCloseBtnReferenceCount);
   if DockMaster.fCloseBtnReferenceCount=0 then
-    FreeAndNil(DockMaster.fCloseBtnBitmap);
+    DockMaster.FreeCloseButtonBitmap;
 end;
 
 function TAnchorDockCloseButton.GetGlyphSize(PaintRect: TRect): TSize;
