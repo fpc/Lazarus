@@ -460,9 +460,9 @@ resourcestring
   lisBackupChangedFiles = 'Make backup of changed files';
   lisBackupHint = 'Creates a Backup directory under project directory';
   lisStartConversion = 'Start Conversion';
-  lisConvertTarget1 = 'Lazarus/LCL';
-  lisConvertTarget2 = 'Lazarus/LCL for Windows only';
-  lisConvertTarget3 = 'Both Lazarus/LCL and Delphi';
+  lisConvertTarget1 = 'Lazarus / LCL';
+  lisConvertTarget2 = 'Lazarus / LCL for Windows only';
+  lisConvertTarget3 = 'Both Lazarus / LCL and Delphi';
   lisConvertTargetHint = 'Converter adds conditional compilation to support different targets';
   lisConvUseSameDFM = 'Lazarus uses the same DFM form file as Delphi';
   lisConvUseSameDFMHint = 'Separate form files allow different properties';

@@ -91,9 +91,9 @@ object ConvertSettingsForm: TConvertSettingsForm
       ClientWidth = 268
       ItemIndex = 0
       Items.Strings = (
-        'Lazarus/LCL'
-        'Lazarus/LCL for Windows only'
-        'Both Lazarus/LCL and Delphi'
+        'Lazarus / LCL'
+        'Lazarus / LCL for Windows only'
+        'Both Lazarus / LCL and Delphi'
       )
       OnClick = TargetRadioGroupClick
       ParentShowHint = False
