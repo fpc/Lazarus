@@ -456,17 +456,25 @@ resourcestring
   lisTheFileIsNotADelphiProjectDpr = 'The file %s%s%s is not a Delphi '
     +'project (.dpr)';
   lisProjectPath = 'Project Path:';
+  lisProjectPathHint = 'Directory where project''s main file must be';
   lisBackupChangedFiles = 'Make backup of changed files';
+  lisBackupHint = 'Creates a Backup directory under project directory';
   lisStartConversion = 'Start Conversion';
   lisConvertTarget1 = 'Lazarus/LCL';
   lisConvertTarget2 = 'Lazarus/LCL for Windows only';
   lisConvertTarget3 = 'Both Lazarus/LCL and Delphi';
+  lisConvertTargetHint = 'Converter adds conditional compilation to support different targets';
+  lisConvUseSameDFM = 'Lazarus uses the same DFM form file as Delphi';
+  lisConvUseSameDFMHint = 'Separate form files allow different properties';
   lisConvUnitsTypesProperties = 'Units, Types and Properties';
   lisConvAutoRemoveProperties = 'Automatic removal of unknown properties';
+  lisConvAutoRemoveHint = 'If unchecked, there will be interactive dialogs for editing / accepting changes';
   lisConvUnitsToReplace = 'Units to replace';
   lisConvTypesToReplace = 'Types to replace';
   lisConvUnitReplacements = 'Unit Replacements';
+  lisConvUnitReplHint = 'Unit names in uses section of a source unit';
   lisConvTypeReplacements = 'Type Replacements';
+  lisConvTypeReplHint = 'Unknown types in form file (DFM/LFM)';
   lisReplacements = 'Replacements';
   lisProperties = 'Properties (replace or delete)';
   lisTypes = 'Types (not removed if no replacement)';

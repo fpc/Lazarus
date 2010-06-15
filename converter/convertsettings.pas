@@ -54,7 +54,6 @@ type
     fTarget: TConvertTarget;
     fSameDFMFile: boolean;
     fAutoRemoveProperties: boolean;
-    fAutoConvertTypes: boolean;
     // Delphi units mapped to Lazarus units, will be replaced or removed.
     fReplaceUnits: TStringToStringTree;
     // Delphi types mapped to Lazarus types, will be replaced.
@@ -92,7 +91,6 @@ type
     property Target: TConvertTarget read fTarget;
     property SameDFMFile: boolean read fSameDFMFile;
     property AutoRemoveProperties: boolean read fAutoRemoveProperties;
-    property AutoConvertTypes: boolean read fAutoConvertTypes;
     property ReplaceUnits: TStringToStringTree read fReplaceUnits;
     property ReplaceTypes: TStringToStringTree read fReplaceTypes;
   end;
@@ -110,8 +108,6 @@ type
     UnitReplacementsButton: TBitBtn;
     SettingsGroupBox: TGroupBox;
     MissingStuffGroupBox: TGroupBox;
-    MissingStuffLabel: TLabel;
-    AutoConvertTypesCheckBox: TCheckBox;
     AutoRemovePropertiesCheckBox: TCheckBox;
     procedure TypeReplacementsButtonClick(Sender: TObject);
     procedure UnitReplacementsButtonClick(Sender: TObject);
@@ -201,7 +197,6 @@ begin
   fTarget:=TConvertTarget(fConfigStorage.GetValue('ConvertTarget', 0));
   fSameDFMFile          :=fConfigStorage.GetValue('SameDFMFile', false);
   fAutoRemoveProperties :=fConfigStorage.GetValue('AutoRemoveProperties', false);
-  fAutoConvertTypes     :=fConfigStorage.GetValue('AutoConvertTypes', false);
   LoadStringToStringTree(fConfigStorage, 'ReplaceUnits', fReplaceUnits);
   LoadStringToStringTree(fConfigStorage, 'ReplaceTypes', fReplaceTypes);
 
@@ -241,7 +236,6 @@ begin
   fConfigStorage.SetDeleteValue('ConvertTarget',        integer(fTarget), 0);
   fConfigStorage.SetDeleteValue('SameDFMFile',          fSameDFMFile, false);
   fConfigStorage.SetDeleteValue('AutoRemoveProperties', fAutoRemoveProperties, false);
-  fConfigStorage.SetDeleteValue('AutoConvertTypes',     fAutoConvertTypes, false);
   SaveStringToStringTree(fConfigStorage, 'ReplaceUnits', fReplaceUnits);
   SaveStringToStringTree(fConfigStorage, 'ReplaceTypes', fReplaceTypes);
   // Free stuff
@@ -265,7 +259,6 @@ begin
     TargetRadioGroup.ItemIndex           :=integer(fTarget);
     SameDFMCheckBox.Checked              :=fSameDFMFile;
     AutoRemovePropertiesCheckBox.Checked :=fAutoRemoveProperties;
-    AutoConvertTypesCheckBox.Checked     :=fAutoConvertTypes;
     Result:=ShowModal;         // Let the user change settings in a form.
     if Result=mrOK then begin
       // UI --> Settings. Will be saved to ConfigSettings later.
@@ -273,7 +266,6 @@ begin
       fTarget              :=TConvertTarget(TargetRadioGroup.ItemIndex);
       fSameDFMFile         :=SameDFMCheckBox.Checked;
       fAutoRemoveProperties:=AutoRemovePropertiesCheckBox.Checked;
-      fAutoConvertTypes    :=AutoConvertTypesCheckBox.Checked;
     end;
   finally
     Free;
@@ -381,23 +373,28 @@ begin
 end;
 
 procedure TConvertSettingsForm.FormCreate(Sender: TObject);
-const                // Move later to resourcestrings
-  lisUseSameDFMFile = 'Use the same DFM file for Lazarus (ToDo...)';
 begin
   ProjectPathEdit.Text:='';
   ProjectPathEdit.EditLabel.Caption:=lisProjectPath;
+  ProjectPathEdit.Hint:=lisProjectPathHint;
   BackupCheckBox.Caption:=lisBackupChangedFiles;
+  BackupCheckBox.Hint:=lisBackupHint;
   ButtonPanel.OKButton.Caption:=lisStartConversion;
   TargetRadioGroup.Items.Clear;
   TargetRadioGroup.Items.Append(lisConvertTarget1);
   TargetRadioGroup.Items.Append(lisConvertTarget2);
   TargetRadioGroup.Items.Append(lisConvertTarget3);
   TargetRadioGroup.ItemIndex:=0;
-  SameDFMCheckBox.Caption:=lisUseSameDFMFile;
+  TargetRadioGroup.Hint:=lisConvertTargetHint;
+  SameDFMCheckBox.Caption:=lisConvUseSameDFM;
+  SameDFMCheckBox.Hint:=lisConvUseSameDFMHint;
   MissingStuffGroupBox.Caption:= lisConvUnitsTypesProperties;
   AutoRemovePropertiesCheckBox.Caption:=lisConvAutoRemoveProperties;
+  AutoRemovePropertiesCheckBox.Hint:=lisConvAutoRemoveHint;
   UnitReplacementsButton.Caption:=lisConvUnitReplacements;
+  UnitReplacementsButton.Hint:=lisConvUnitReplHint;
   TypeReplacementsButton.Caption:=lisConvTypeReplacements;
+  TypeReplacementsButton.Hint:=lisConvTypeReplHint;
   TargetRadioGroupClick(TargetRadioGroup);
 end;
 
@@ -414,7 +411,7 @@ begin
   Trg:=TConvertTarget((Sender as TRadioGroup).ItemIndex);
   if Trg<>ctLazarusAndDelphi then
     SameDFMCheckBox.Checked:=false;
-  SameDFMCheckBox.Enabled:=false; //Trg=ctLazarusAndDelphi;
+  SameDFMCheckBox.Enabled:=Trg=ctLazarusAndDelphi;
 end;
 
 procedure TConvertSettingsForm.UnitReplacementsButtonClick(Sender: TObject);
