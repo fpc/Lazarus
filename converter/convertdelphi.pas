@@ -34,7 +34,7 @@ interface
 uses
   // LCL+FCL
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, LResources,
-  FileUtil, contnrs, IniFiles,
+  FileUtil, contnrs, IniFiles, AVL_Tree,
   // codetools
   CodeToolManager, DefineTemplates, CodeAtom, CodeCache, LinkScanner,
   FileProcs, CodeToolsStructs,
@@ -706,16 +706,39 @@ end;
 
 function TConvertDelphiUnit.FixMissingUnits: TModalResult;
 var
-  UnitUpdater: TStringMapUpdater;
-  ConvTool: TConvDelphiCodeTool;
   UnitNames: TStringList;
+
+  procedure RenameOrRemoveUnit(AOldName, ANewName: string);
+  var
+    x: Integer;
+  begin
+    if (ANewName<>'') and not UnitNames.Find(ANewName, x) then begin
+      fUnitsToRename[AOldName]:=ANewName;
+      IDEMessagesWindow.AddMsg(Format(
+        'Replaced unit "%s" with "%s" in uses section.',[AOldName, ANewName]),'',-1);
+    end
+    else begin
+      fUnitsToRemove.Append(AOldName);
+      IDEMessagesWindow.AddMsg(Format(
+          'Removed used unit "%s" in uses section.',[AOldName]),'',-1);
+    end;
+  end;
+
+var
+  UnitUpdater: TStringMapUpdater;
+  MapToEdit: TStringToStringTree;
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+  ConvTool: TConvDelphiCodeTool;
   CTResult: Boolean;
-  i, x: Integer;
+  i: Integer;
   UnitN, s: string;
 begin
   Result:=mrOk;
   UnitUpdater:=TStringMapUpdater.Create(fSettings.ReplaceUnits);
   ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
+  if not fSettings.AutoReplaceUnits then
+    MapToEdit:=TStringToStringTree.Create(false);
   UnitNames:=nil;     // Will be created in ConvTool.UsesSectionsToUnitnames.
   fMissingUnits:=nil; // Will be created in CodeToolBoss.FindMissingUnits.
   try
@@ -732,20 +755,26 @@ begin
     // no missing units -> good
     if (fMissingUnits=nil) or (fMissingUnits.Count=0) then exit;
 
-    // Remove or replace units defined in settings.
+    // Find replacements for missing units from settings.
     for i:=fMissingUnits.Count-1 downto 0 do begin
       UnitN:=fMissingUnits[i];
       if UnitUpdater.FindReplacement(UnitN, s) then begin
-        if (s<>'') and not UnitNames.Find(s, x) then begin
-          fUnitsToRename[UnitN]:=s;
-          IDEMessagesWindow.AddMsg(Format(
-              'Replaced unit "%s" with "%s" in uses section.',[UnitN, s]),'',-1);
-        end
-        else begin
-          fUnitsToRemove.Append(UnitN);
-          IDEMessagesWindow.AddMsg(Format(
-              'Removed used unit "%s" in uses section.',[UnitN]),'',-1);
-        end;
+        if fSettings.AutoReplaceUnits then
+          RenameOrRemoveUnit(UnitN, s)         // Automatic rename / remove.
+        else
+          MapToEdit[UnitN]:=s;                 // Add for interactive editing.
+      end;
+    end;
+    if not fSettings.AutoReplaceUnits then begin
+      // Edit, then remove or replace units.
+      Result:=EditMap(MapToEdit, 'Units to rename or remove.');
+      if Result<>mrOK then exit;
+      // Iterate the map and rename / remove.
+      Node:=MapToEdit.Tree.FindLowest;
+      while Node<>nil do begin
+        Item:=PStringToStringTreeItem(Node.Data);
+        RenameOrRemoveUnit(Item^.Name, Item^.Value);
+        Node:=MapToEdit.Tree.FindSuccessor(Node);
       end;
     end;
     // Remove and rename missing units. More of them may be added later.
@@ -779,6 +808,8 @@ begin
       IDEMessagesWindow.AddMsg(MissingUnitToMsg(fMissingUnits[i]),'',-1);
     Application.ProcessMessages;
   finally
+    if not fSettings.AutoReplaceUnits then
+      MapToEdit.Free;
     fMissingUnits.Free;
     UnitNames.Free;
     ConvTool.Free;

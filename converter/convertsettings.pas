@@ -53,6 +53,7 @@ type
     fBackupFiles: boolean;
     fTarget: TConvertTarget;
     fSameDFMFile: boolean;
+    fAutoReplaceUnits: boolean;
     fAutoRemoveProperties: boolean;
     // Delphi units mapped to Lazarus units, will be replaced or removed.
     fReplaceUnits: TStringToStringTree;
@@ -90,6 +91,7 @@ type
     property BackupFiles: boolean read fBackupFiles;
     property Target: TConvertTarget read fTarget;
     property SameDFMFile: boolean read fSameDFMFile;
+    property AutoReplaceUnits: boolean read fAutoReplaceUnits;
     property AutoRemoveProperties: boolean read fAutoRemoveProperties;
     property ReplaceUnits: TStringToStringTree read fReplaceUnits;
     property ReplaceTypes: TStringToStringTree read fReplaceTypes;
@@ -199,6 +201,7 @@ begin
   fBackupFiles          :=fConfigStorage.GetValue('BackupFiles', true);
   fTarget:=TConvertTarget(fConfigStorage.GetValue('ConvertTarget', 0));
   fSameDFMFile          :=fConfigStorage.GetValue('SameDFMFile', false);
+  fAutoReplaceUnits     :=fConfigStorage.GetValue('AutoReplaceUnits', false);
   fAutoRemoveProperties :=fConfigStorage.GetValue('AutoRemoveProperties', false);
   LoadStringToStringTree(fConfigStorage, 'ReplaceUnits', fReplaceUnits);
   LoadStringToStringTree(fConfigStorage, 'ReplaceTypes', fReplaceTypes);
@@ -206,17 +209,26 @@ begin
   // Add default values for string maps if ConfigStorage doesn't have them.
   // Map Delphi units to Lazarus units.
   TheMap:=fReplaceUnits;
-  MapReplacement('Windows',  'LCLIntf, LCLType, LMessages');
-  MapReplacement('Mask',     'MaskEdit');
-  MapReplacement('Variants', '');
-  MapReplacement('ShellApi', '');
-  MapReplacement('pngImage', '');
-  MapReplacement('Jpeg',     '');
-  MapReplacement('gifimage', '');
-  MapReplacement('^Q(.+)',   '$1');               // Kylix unit names.
-  MapReplacement('^Tnt(.+)', '$1');               // Tnt* third party components.
+  MapReplacement('Windows',             'LCLIntf, LCLType, LMessages');
+  MapReplacement('Mask',                'MaskEdit');
+  MapReplacement('Variants',            '');
+  MapReplacement('ShellApi',            '');
+  MapReplacement('pngImage',            '');
+  MapReplacement('Jpeg',                '');
+  MapReplacement('gifimage',            '');
+  MapReplacement('^Q(.+)',              '$1');           // Kylix unit names.
+  // Tnt* third party components.
+  MapReplacement('TntLXStringGrids',    'Grids');
+  MapReplacement('TntLXCombos',         '');
+  MapReplacement('TntLXDataSet',        '');
+  MapReplacement('TntLXVarArrayDataSet','');
+  MapReplacement('TntLXLookupCtrls',    '');
+  MapReplacement('^TntLX(.+)',          '$1');
+  MapReplacement('^Tnt([^L][^X].+)',    '$1');
 
-  // Map Delphi types to LCL types.
+//  LXComCtrls, LXDBGrids,
+
+// Map Delphi types to LCL types.
   TheMap:=fReplaceTypes;
   MapReplacement('TFlowPanel',        'TPanel');
   MapReplacement('TGridPanel',        'TPanel');
@@ -228,8 +240,11 @@ begin
   MapReplacement('TDBRichEdit',       'TDBMemo');
   MapReplacement('TApplicationEvents','TApplicationProperties');
   MapReplacement('TPNGObject',        'TPortableNetworkGraphic');
+  // DevExpress components.
   MapReplacement('TCxEdit',           'TEdit');
-  MapReplacement('^TTnt(.+)',         'T$1');
+  // Tnt* third party components.
+  MapReplacement('^TTnt(.+)LX$',      'T$1');
+  MapReplacement('^TTnt(.+[^L][^X])$','T$1');
 end;
 
 destructor TConvertSettings.Destroy;
@@ -238,6 +253,7 @@ begin
   fConfigStorage.SetDeleteValue('BackupFiles',          fBackupFiles, true);
   fConfigStorage.SetDeleteValue('ConvertTarget',        integer(fTarget), 0);
   fConfigStorage.SetDeleteValue('SameDFMFile',          fSameDFMFile, false);
+  fConfigStorage.SetDeleteValue('AutoReplaceUnits',     fAutoReplaceUnits, false);
   fConfigStorage.SetDeleteValue('AutoRemoveProperties', fAutoRemoveProperties, false);
   SaveStringToStringTree(fConfigStorage, 'ReplaceUnits', fReplaceUnits);
   SaveStringToStringTree(fConfigStorage, 'ReplaceTypes', fReplaceTypes);
@@ -258,16 +274,18 @@ begin
     Caption:=fTitle;
     ProjectPathEdit.Text:=fMainPath;
     // Settings --> UI. Loaded from ConfigSettings earlier.
-    BackupCheckBox.Checked               :=fBackupFiles;
-    TargetRadioGroup.ItemIndex           :=integer(fTarget);
-    SameDFMCheckBox.Checked              :=fSameDFMFile;
-    AutoRemovePropCheckBox.Checked :=fAutoRemoveProperties;
+    BackupCheckBox.Checked           :=fBackupFiles;
+    TargetRadioGroup.ItemIndex       :=integer(fTarget);
+    SameDFMCheckBox.Checked          :=fSameDFMFile;
+    AutoReplaceUnitsCheckBox.Checked :=fAutoReplaceUnits;
+    AutoRemovePropCheckBox.Checked   :=fAutoRemoveProperties;
     Result:=ShowModal;         // Let the user change settings in a form.
     if Result=mrOK then begin
       // UI --> Settings. Will be saved to ConfigSettings later.
       fBackupFiles         :=BackupCheckBox.Checked;
       fTarget              :=TConvertTarget(TargetRadioGroup.ItemIndex);
       fSameDFMFile         :=SameDFMCheckBox.Checked;
+      fAutoReplaceUnits    :=AutoReplaceUnitsCheckBox.Checked;
       fAutoRemoveProperties:=AutoRemovePropCheckBox.Checked;
     end;
   finally
@@ -422,44 +440,18 @@ begin
 end;
 
 procedure TConvertSettingsForm.UnitReplacementsButtonClick(Sender: TObject);
-var
-  RNForm: TReplaceNamesForm;
-  GridUpdater: TGridUpdater;
 begin
-  RNForm:=TReplaceNamesForm.Create(nil);
-  GridUpdater:=TGridUpdater.Create(fSettings.ReplaceUnits, RNForm.Grid);
-  try
-    RNForm.Caption:=lisConvUnitsToReplace;
-    GridUpdater.MapToGrid;
-    if RNForm.ShowModal=mrOK then
-      GridUpdater.GridToMap;
-  finally
-    GridUpdater.Free;
-    RNForm.Free;
-  end;
+  EditMap(fSettings.ReplaceUnits, lisConvUnitsToReplace);
 end;
 
 procedure TConvertSettingsForm.TypeReplacementsButtonClick(Sender: TObject);
-var
-  RNForm: TReplaceNamesForm;
-  GridUpdater: TGridUpdater;
 begin
-  RNForm:=TReplaceNamesForm.Create(nil);
-  GridUpdater:=TGridUpdater.Create(fSettings.ReplaceTypes, RNForm.Grid);
-  try
-    RNForm.Caption:=lisConvTypesToReplace;
-    GridUpdater.MapToGrid;
-    if RNForm.ShowModal=mrOK then
-      GridUpdater.GridToMap;
-  finally
-    GridUpdater.Free;
-    RNForm.Free;
-  end;
+  EditMap(fSettings.ReplaceTypes, lisConvTypesToReplace);
 end;
 
 procedure TConvertSettingsForm.MethodReplacementsButtonClick(Sender: TObject);
 begin
-
+  ;
 end;
 
 

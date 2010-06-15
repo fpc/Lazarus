@@ -17,9 +17,9 @@ type
   private
     fStringMap: TStringToStringTree;
     fMapNames: TStringList;  // Names (keys) in fStringMap.
-    fSeenName: TStringList;
+    fSeenNames: TStringList;
   public
-    constructor Create(AStringMap: TStringToStringTree);
+    constructor Create(AStringsMap: TStringToStringTree);
     destructor Destroy; override;
     function FindReplacement(AIdent: string; out AReplacement: string): boolean;
   end;
@@ -31,11 +31,9 @@ type
     fGrid: TStringGrid;
     GridEndInd: Integer;
   public
-    constructor Create(AStringMap: TStringToStringTree; AGrid: TStringGrid);
+    constructor Create(AStringsMap: TStringToStringTree; AGrid: TStringGrid);
     destructor Destroy; override;
-    procedure AddUniqueToGrid(AOldIdent: string);
-    procedure MapToGrid;
-    procedure GridToMap(AllowEmptyValues: boolean = true);
+    procedure AddUnique(AOldIdent: string);
   end;
 
   { TReplaceNamesForm }
@@ -67,23 +65,88 @@ var
   ReplaceNamesForm: TReplaceNamesForm;
 
 
+function FromMapToGrid(AMap: TStringToStringTree; AGrid: TStringGrid): boolean;
+function FromGridToMap(AMap: TStringToStringTree; AGrid: TStringGrid;
+                    AllowEmptyValues: boolean = true): boolean;
+function EditMap(AMap: TStringToStringTree; ATitle: string): TModalResult;
+
 implementation
 
 {$R *.lfm}
 
+function FromMapToGrid(AMap: TStringToStringTree; AGrid: TStringGrid): boolean;
+// Copy strings from Map to Grid.
+var
+  OldIdent, NewIdent: string;
+  List: TStringList;
+  i: Integer;
+begin
+  List:=TStringList.Create;
+  try
+    AGrid.BeginUpdate;
+    AMap.GetNames(List);
+    for i:=0 to List.Count-1 do begin
+      OldIdent:=List[i];
+      NewIdent:=AMap[OldIdent];
+      if AGrid.RowCount<i+2 then
+        AGrid.RowCount:=i+2;         // Leave one empty row to the end.
+      AGrid.Cells[0,i]:=OldIdent;
+      AGrid.Cells[1,i]:=NewIdent;
+    end;
+    AGrid.EndUpdate;
+  finally
+    List.Free;
+  end;
+end;
+
+function FromGridToMap(AMap: TStringToStringTree; AGrid: TStringGrid;
+                    AllowEmptyValues: boolean = true): boolean;
+var
+  OldIdent, NewIdent: string;
+  i: Integer;
+begin
+  AMap.Clear;
+  // Collect (maybe edited) properties from StringGrid to fStringMap.
+  for i:=1 to AGrid.RowCount-1 do begin // Skip the fixed row.
+    OldIdent:=AGrid.Cells[0,i];
+    NewIdent:=AGrid.Cells[1,i];
+    if OldIdent<>'' then begin
+      if AllowEmptyValues or (NewIdent<>'') then
+        AMap[OldIdent]:=NewIdent;
+    end;
+  end;
+end;
+
+function EditMap(AMap: TStringToStringTree; ATitle: string): TModalResult;
+var
+  RNForm: TReplaceNamesForm;
+begin
+  RNForm:=TReplaceNamesForm.Create(nil);
+  try
+    RNForm.Caption:=ATitle;
+    FromMapToGrid(AMap, RNForm.Grid);
+    Result:=RNForm.ShowModal;
+    if Result=mrOK then
+      FromGridToMap(AMap, RNForm.Grid);
+  finally
+    RNForm.Free;
+  end;
+end;
+
+
 { TStringMapUpdater }
 
-constructor TStringMapUpdater.Create(AStringMap: TStringToStringTree);
+constructor TStringMapUpdater.Create(AStringsMap: TStringToStringTree);
 begin
-  fStringMap:=AStringMap;
+  fStringMap:=AStringsMap;
   fMapNames:=TStringList.Create;
   fStringMap.GetNames(fMapNames);
-  fSeenName:=TStringList.Create;
+  fSeenNames:=TStringList.Create;
 end;
 
 destructor TStringMapUpdater.Destroy;
 begin
-  fSeenName.Free;
+  fSeenNames.Free;
   fMapNames.Free;
   inherited Destroy;
 end;
@@ -126,9 +189,9 @@ end;
 
 { TGridUpdater }
 
-constructor TGridUpdater.Create(AStringMap: TStringToStringTree; AGrid: TStringGrid);
+constructor TGridUpdater.Create(AStringsMap: TStringToStringTree; AGrid: TStringGrid);
 begin
-  inherited Create(AStringMap);
+  inherited Create(AStringsMap);
   fGrid:=AGrid;
   GridEndInd:=1;
 end;
@@ -138,56 +201,14 @@ begin
   inherited Destroy;
 end;
 
-procedure TGridUpdater.MapToGrid;
-var
-  OldIdent, NewIdent: string;
-  List: TStringList;
-  i: Integer;
-begin
-  // Copy properties from NameReplacements to StringGrid.
-  List:=TStringList.Create;
-  try
-    fGrid.BeginUpdate;
-    fStringMap.GetNames(List);
-    for i:=0 to List.Count-1 do begin
-      OldIdent:=List[i];
-      NewIdent:=fStringMap[OldIdent];
-      if fGrid.RowCount<i+2 then
-        fGrid.RowCount:=i+2;         // Leave one empty row to the end.
-      fGrid.Cells[0,i]:=OldIdent;
-      fGrid.Cells[1,i]:=NewIdent;
-    end;
-    fGrid.EndUpdate;
-  finally
-    List.Free;
-  end;
-end;
-
-procedure TGridUpdater.GridToMap(AllowEmptyValues: boolean);
-var
-  OldIdent, NewIdent: string;
-  i: Integer;
-begin
-  fStringMap.Clear;
-  // Collect (maybe edited) properties from StringGrid to NameReplacements.
-  for i:=1 to fGrid.RowCount-1 do begin // Skip the fixed row.
-    OldIdent:=fGrid.Cells[0,i];
-    NewIdent:=fGrid.Cells[1,i];
-    if OldIdent<>'' then begin
-      if AllowEmptyValues or (NewIdent<>'') then
-        fStringMap[OldIdent]:=NewIdent;
-    end;
-  end;
-end;
-
-procedure TGridUpdater.AddUniqueToGrid(AOldIdent: string);
-// Add a new Delphi -> Lazarus mapping to grid.
+procedure TGridUpdater.AddUnique(AOldIdent: string);
+// Add a new Delphi -> Lazarus mapping to the grid.
 var
   NewIdent: string;
 begin
   // Add only one instance of each property name.
-  if fSeenName.IndexOf(AOldIdent)<0 then begin
-    fSeenName.Append(AOldIdent);
+  if fSeenNames.IndexOf(AOldIdent)<0 then begin
+    fSeenNames.Append(AOldIdent);
     FindReplacement(AOldIdent, NewIdent);
     if fGrid.RowCount<GridEndInd+1 then
       fGrid.RowCount:=GridEndInd+1;

@@ -257,9 +257,6 @@ var
   TypeReplacements: TStringToStringTree;
   // List of TLFMChangeEntry objects.
   ChgEntryRepl: TObjectList;
-  // Updater moves data between grid and map.
-  PropUpdater: TGridUpdater;
-  TypeUpdater: TGridUpdater;
   OldIdent, NewIdent: string;
   StartPos, EndPos: integer;
 begin
@@ -267,12 +264,10 @@ begin
   ChgEntryRepl:=TObjectList.Create;
   PropReplacements:=TStringToStringTree.Create(false);
   TypeReplacements:=TStringToStringTree.Create(false);
-  PropUpdater:=TGridUpdater.Create(PropReplacements, fPropReplaceGrid);
-  TypeUpdater:=TGridUpdater.Create(TypeReplacements, fTypeReplaceGrid);
   try
     // Collect (maybe edited) properties from StringGrid to map.
-    PropUpdater.GridToMap;
-    TypeUpdater.GridToMap(false);
+    FromGridToMap(PropReplacements, fPropReplaceGrid);
+    FromGridToMap(TypeReplacements, fTypeReplaceGrid, false);
     // Replace each missing property / type or delete it if no replacement.
     CurError:=fLFMTree.LastError;
     while CurError<>nil do begin
@@ -316,8 +311,6 @@ begin
             TLFMObjectNode(fLFMTree.Root).TypeName, TypeReplacements, false) then
       Result:=mrCancel;
   finally
-    TypeUpdater.Free;
-    PropUpdater.Free;
     TypeReplacements.Free;
     PropReplacements.Free;
     ChgEntryRepl.Free;
@@ -341,12 +334,12 @@ begin
       while CurError<>nil do begin
         if CurError.IsMissingObjectType then begin
           OldIdent:=(CurError.Node as TLFMObjectNode).TypeName;
-          TypeUpdater.AddUniqueToGrid(OldIdent); // Add a unique type only once.
+          TypeUpdater.AddUnique(OldIdent); // Add a unique type only once.
           fHasMissingObjectTypes:=true;
         end
         else begin
           OldIdent:=CurError.Node.GetIdentifier;
-          PropUpdater.AddUniqueToGrid(OldIdent); // Add a unique property only once.
+          PropUpdater.AddUnique(OldIdent); // Add a unique property only once.
         end;
         CurError:=CurError.NextError;
       end;
