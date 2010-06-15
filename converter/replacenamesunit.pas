@@ -35,7 +35,7 @@ type
     destructor Destroy; override;
     procedure AddUniqueToGrid(AOldIdent: string);
     procedure MapToGrid;
-    procedure GridToMap;
+    procedure GridToMap(AllowEmptyValues: boolean = true);
   end;
 
   { TReplaceNamesForm }
@@ -163,7 +163,7 @@ begin
   end;
 end;
 
-procedure TGridUpdater.GridToMap;
+procedure TGridUpdater.GridToMap(AllowEmptyValues: boolean);
 var
   OldIdent, NewIdent: string;
   i: Integer;
@@ -173,8 +173,10 @@ begin
   for i:=1 to fGrid.RowCount-1 do begin // Skip the fixed row.
     OldIdent:=fGrid.Cells[0,i];
     NewIdent:=fGrid.Cells[1,i];
-    if OldIdent<>'' then
-      fStringMap[OldIdent]:=NewIdent;
+    if OldIdent<>'' then begin
+      if AllowEmptyValues or (NewIdent<>'') then
+        fStringMap[OldIdent]:=NewIdent;
+    end;
   end;
 end;
 

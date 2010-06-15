@@ -164,6 +164,7 @@ type
     procedure CustomDefinesChanged; virtual; abstract;
     function GetMainName: string; virtual; abstract;
     procedure AddPackageDependency(const PackageName: string); virtual; abstract;
+    function FindDependencyByName(const PackageName: string): TPkgDependency; virtual; abstract;
     procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean); virtual; abstract;
   public
     constructor Create(const AFilename, ADescription: string);
@@ -199,6 +200,7 @@ type
     procedure CustomDefinesChanged; override;
     function GetMainName: string; override;
     procedure AddPackageDependency(const PackageName: string); override;
+    function FindDependencyByName(const PackageName: string): TPkgDependency; override;
     procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean); override;
   public
     constructor Create(const aProjectFilename: string);
@@ -229,6 +231,7 @@ type
     procedure CustomDefinesChanged; override;
     function GetMainName: string; override;
     procedure AddPackageDependency(const PackageName: string); override;
+    function FindDependencyByName(const PackageName: string): TPkgDependency; override;
     procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean); override;
   public
     constructor Create(const aPackageFilename: string);
@@ -562,7 +565,7 @@ function TConvertDelphiUnit.ConvertFormFile: TModalResult;
 var
   LfmFixer: TLFMFixer;
 begin
-  // check the LFM file and the pascal unit, updates fPascalBuffer and fLFMBuffer.
+  // Fix the LFM file and the pascal unit, updates fPascalBuffer and fLFMBuffer.
   if fLFMBuffer<>nil then begin
     IDEMessagesWindow.AddMsg('Repairing form file '+fLFMBuffer.Filename,'',-1);
     Application.ProcessMessages;
@@ -867,21 +870,21 @@ begin
   CleanUpCompilerOptionsSearchPaths(CompOpts);
 
   // load required packages
-  AddPackageDependency('LCL');// Nearly all Delphi projects require it
+  AddPackageDependency('LCL');         // Nearly all Delphi projects require it.
   if fProjPack is TProject then
     PkgBoss.AddDefaultDependencies(fProjPack as TProject);
   CustomDefinesChanged;
 
   SetCompilerModeForDefineTempl(CustomDefines);
   try
-    Result:=ConvertMainSourceFile; // Convert project's LPR file.
+    Result:=ConvertMainSourceFile;     // Convert project's LPR file.
     if Result<>mrOK then exit;
     // get all options from the .dpr or .dpk file
     Result:=ExtractOptionsFromDelphiSource;
     if Result<>mrOK then exit;
-    Result:=FindAllUnits;      // find all files
+    Result:=FindAllUnits;              // find all files.
     if Result<>mrOK then exit;
-    Result:=ConvertAllUnits; // convert all files
+    Result:=ConvertAllUnits;           // convert all files.
   finally
     UnsetCompilerModeForDefineTempl(CustomDefines);
   end;
@@ -1106,9 +1109,11 @@ end;
 
 function TConvertDelphiPBase.DoMissingUnits(MissingUnits: TStrings;
                                     UnitsToRename: TStringToStringTree): integer;
-// Locate unit names in earlier cached list and remove them from MissingUnits.
+// Locate unit names from earlier cached list or from packages.
 // Return the number of units still missing.
 var
+  Pack: TPkgFile;
+  Dep: TPkgDependency;
   mUnit, sUnitPath, RealFileName, RealUnitName: string;
   i: Integer;
 begin
@@ -1116,7 +1121,7 @@ begin
     mUnit:=MissingUnits[i];
     sUnitPath:=GetCachedUnitPath(mUnit);
     if sUnitPath<>'' then begin
-      // Found: add unit path to project's settings.
+      // Found from cached paths: add unit path to project's settings.
       with CompOpts do
         OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,sUnitPath);
       // Rename a unit with different casing if needed.
@@ -1126,8 +1131,18 @@ begin
         UnitsToRename[mUnit]:=RealUnitName;
       // Will be added later to project.
       fUnitsToAddToProject.Add(sUnitPath+RealFileName);
-      // No more missing, delete from list.
-      MissingUnits.Delete(i);
+      MissingUnits.Delete(i);      // No more missing, delete from list.
+    end
+    else begin
+      Pack:=PackageGraph.FindUnitInAllPackages(mUnit, True);
+      if Assigned(Pack) then begin
+        // Found from package: add package to project dependencies and open it.
+        AddPackageDependency(Pack.LazPackage.Name);
+        Dep:=FindDependencyByName(Pack.LazPackage.Name);
+        if Assigned(Dep) then
+          PackageGraph.OpenDependency(Dep,false);
+        MissingUnits.Delete(i);
+      end;
     end;
   end;
   Result:=MissingUnits.Count;
@@ -1467,6 +1482,11 @@ begin
   (fProjPack as TProject).AddPackageDependency(PackageName);
 end;
 
+function TConvertDelphiProject.FindDependencyByName(const PackageName: string): TPkgDependency;
+begin
+  Result:=(fProjPack as TProject).FindDependencyByName(PackageName);
+end;
+
 procedure TConvertDelphiProject.RemoveNonExistingFiles(RemoveFromUsesSection: boolean);
 begin
   (fProjPack as TProject).RemoveNonExistingFiles(RemoveFromUsesSection);
@@ -1731,6 +1751,11 @@ end;
 procedure TConvertDelphiPackage.AddPackageDependency(const PackageName: string);
 begin
   (fProjPack as TLazPackage).AddPackageDependency(PackageName);
+end;
+
+function TConvertDelphiPackage.FindDependencyByName(const PackageName: string): TPkgDependency;
+begin
+  Result:=(fProjPack as TLazPackage).FindDependencyByName(PackageName);
 end;
 
 procedure TConvertDelphiPackage.RemoveNonExistingFiles(RemoveFromUsesSection: boolean);

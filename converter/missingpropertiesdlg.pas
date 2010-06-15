@@ -272,7 +272,7 @@ begin
   try
     // Collect (maybe edited) properties from StringGrid to map.
     PropUpdater.GridToMap;
-    TypeUpdater.GridToMap;
+    TypeUpdater.GridToMap(false);
     // Replace each missing property / type or delete it if no replacement.
     CurError:=fLFMTree.LastError;
     while CurError<>nil do begin
@@ -398,9 +398,9 @@ var
   CurError: TLFMError;
   MissingObjectTypes: TStringList;
   ConvTool: TConvDelphiCodeTool;
-  RegComp: TRegisteredComponent;
+//  RegComp: TRegisteredComponent;
   TypeName: String;
-  i, LoopCount: integer;
+  LoopCount: integer;
 begin
   Result:=mrCancel;
   MissingObjectTypes:=TStringList.Create;
@@ -434,9 +434,8 @@ begin
         CurError:=CurError.NextError;
       end;
       // Missing object types in unit.
-
+{
       // keep all object types with a registered component class
-      TypeName:=MissingObjectTypes.Text;
       for i:=MissingObjectTypes.Count-1 downto 0 do begin
         RegComp:=IDEComponentPalette.FindComponent(MissingObjectTypes[i]);
         if (RegComp=nil) or (RegComp.GetUnitName='') then
@@ -451,7 +450,7 @@ begin
         if not CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
                                    fRootMustBeClassInIntf,fObjectsMustExists) then
           exit;
-      end;
+      end;  }
       // Rename / remove properties and types interactively.
       Result:=ShowRepairLFMWizard;
       Inc(LoopCount);
