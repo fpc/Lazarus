@@ -226,8 +226,6 @@ begin
   MapReplacement('^TntLX(.+)',          '$1');
   MapReplacement('^Tnt([^L][^X].+)',    '$1');
 
-//  LXComCtrls, LXDBGrids,
-
 // Map Delphi types to LCL types.
   TheMap:=fReplaceTypes;
   MapReplacement('TFlowPanel',        'TPanel');

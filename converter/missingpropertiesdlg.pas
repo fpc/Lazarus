@@ -396,7 +396,6 @@ var
   CurError: TLFMError;
   MissingObjectTypes: TStringList;
   ConvTool: TConvDelphiCodeTool;
-//  RegComp: TRegisteredComponent;
   TypeName: String;
   LoopCount: integer;
 begin
@@ -431,24 +430,6 @@ begin
         end;
         CurError:=CurError.NextError;
       end;
-      // Missing object types in unit.
-{
-      // keep all object types with a registered component class
-      for i:=MissingObjectTypes.Count-1 downto 0 do begin
-        RegComp:=IDEComponentPalette.FindComponent(MissingObjectTypes[i]);
-        if (RegComp=nil) or (RegComp.GetUnitName='') then
-          MissingObjectTypes.Delete(i);
-      end;
-      if MissingObjectTypes.Count>0 then begin
-        // Missing object types, but luckily found in IDE registered component classes.
-        Result:=PackageEditingInterface.AddUnitDependenciesForComponentClasses(
-                                     fPascalBuffer.Filename, MissingObjectTypes);
-        if Result<>mrOk then exit;
-        // check LFM again
-        if not CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
-                                   fRootMustBeClassInIntf,fObjectsMustExists) then
-          exit;
-      end;  }
       // Rename / remove properties and types interactively.
       Result:=ShowRepairLFMWizard;
       Inc(LoopCount);
