@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, types, FileUtil, Forms, Controls, StdCtrls, ExtCtrls,
   Spin, EnvironmentOpts, LazarusIDEStrConsts, IDEOptionDefs, ObjectInspector,
-  IDEOptionsIntf, InterfaceBase;
+  IDEOptionsIntf, InterfaceBase, IDEWindowIntf;
 
 type
   { TWindowOptionsFrame }
@@ -105,33 +105,39 @@ begin
   ProjectDirInIdeTitleCheckBox.Caption:=lisIDEProjectDirInIdeTitle;
   ProjectDirInIdeTitleCheckBox.Hint:=
     lisProjectDirectoryIsShowedInIdeTitleBar;
-  // Window Positions
-  WindowPositionsGroupBox.Caption := dlgWinPos;
-  with WindowPositionsListBox.Items do
-  begin
-    BeginUpdate;
-    for Window := Succ(Low(TNonModalIDEWindow)) to High(TNonModalIDEWindow) do
-      Add(GetCaptionFor(Window));
-    Add(dlgObjInsp);
-    for i := 0 to EnvironmentOptions.IDEWindowLayoutList.Count - 1 do
-      if (EnvironmentOptions.IDEWindowLayoutList[i].FormID <> DefaultObjectInspectorName) and
-      (NonModalIDEFormIDToEnum(EnvironmentOptions.IDEWindowLayoutList[i].FormID) = nmiwNone)
-    then
-      Add(EnvironmentOptions.IDEWindowLayoutList[i].FormCaption);
-    EndUpdate;
+
+  if IDEDockMaster=nil then begin
+    // Window Positions
+    WindowPositionsGroupBox.Parent:=Self;
+    WindowPositionsGroupBox.Caption := dlgWinPos;
+    with WindowPositionsListBox.Items do
+    begin
+      BeginUpdate;
+      for Window := Succ(Low(TNonModalIDEWindow)) to High(TNonModalIDEWindow) do
+        Add(GetCaptionFor(Window));
+      Add(dlgObjInsp);
+      for i := 0 to EnvironmentOptions.IDEWindowLayoutList.Count - 1 do
+        if (EnvironmentOptions.IDEWindowLayoutList[i].FormID <> DefaultObjectInspectorName) and
+        (NonModalIDEFormIDToEnum(EnvironmentOptions.IDEWindowLayoutList[i].FormID) = nmiwNone)
+      then
+        Add(EnvironmentOptions.IDEWindowLayoutList[i].FormCaption);
+      EndUpdate;
+    end;
+
+    LeftLabel.Caption := dlgLeftPos;
+    TopLabel.Caption := dlgTopPos;
+    WidthLabel.Caption := dlgWidthPos;
+    HeightLabel.Caption := DlgHeightPos;
+    ApplyButton.Caption := dlgButApply;
+    GetWindowPositionButton.Caption := dlgGetPosition;
+
+    UseWindowManagerSettingRadioButton.Caption := rsiwpUseWindowManagerSetting;
+    DefaultRadioButton.Caption := rsiwpDefault;
+    RestoreWindowGeometryRadioButton.Caption := rsiwpRestoreWindowGeometry;
+    CustomPositionRadioButton.Caption := rsiwpCustomPosition;
+  end else begin
+    WindowPositionsGroupBox.Parent:=nil;
   end;
-
-  LeftLabel.Caption := dlgLeftPos;
-  TopLabel.Caption := dlgTopPos;
-  WidthLabel.Caption := dlgWidthPos;
-  HeightLabel.Caption := DlgHeightPos;
-  ApplyButton.Caption := dlgButApply;
-  GetWindowPositionButton.Caption := dlgGetPosition;
-
-  UseWindowManagerSettingRadioButton.Caption := rsiwpUseWindowManagerSetting;
-  DefaultRadioButton.Caption := rsiwpDefault;
-  RestoreWindowGeometryRadioButton.Caption := rsiwpRestoreWindowGeometry;
-  CustomPositionRadioButton.Caption := rsiwpCustomPosition;
 end;
 
 procedure TWindowOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -181,6 +187,8 @@ var
   APlacement: TIDEWindowPlacement;
   RadioButton: TRadioButton;
 begin
+  if IDEDockMaster<>nil then exit;
+
   FLayout := AValue;
   if Layout=nil then Exit;
 
@@ -221,6 +229,7 @@ end;
 
 procedure TWindowOptionsFrame.WindowPositionsListBoxSelectionChange(Sender: TObject; User: boolean);
 begin
+  if IDEDockMaster<>nil then exit;
   if User then
     SetWindowPositionsItem(WindowPositionsListBox.ItemIndex);
 end;
@@ -229,6 +238,7 @@ procedure TWindowOptionsFrame.ApplyButtonClick(Sender: TObject);
 var
   NewBounds: TRect;
 begin
+  if IDEDockMaster<>nil then exit;
   SaveLayout;
   if (Layout.Form<>nil)
   and (Layout.WindowPlacement in [iwpCustomPosition,iwpRestoreWindowGeometry])
@@ -259,6 +269,7 @@ end;
 
 procedure TWindowOptionsFrame.GetWindowPositionButtonClick(Sender: TObject);
 begin
+  if IDEDockMaster<>nil then exit;
   if Layout.Form <> nil then
   begin
     LeftEdit.Value := Layout.Form.Left;
@@ -270,6 +281,8 @@ end;
 
 procedure TWindowOptionsFrame.SetWindowPositionsItem(Index: integer);
 begin
+  if IDEDockMaster<>nil then exit;
+
   SaveLayout;
   WindowPositionsListBox.ItemIndex := Index;
 
@@ -293,6 +306,8 @@ var
   APlacement: TIDEWindowPlacement;
   ARadioButton: TRadioButton;
 begin
+  if IDEDockMaster<>nil then exit;
+
   if Layout = nil then
    Exit;
 
