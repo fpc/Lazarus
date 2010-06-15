@@ -31,7 +31,6 @@ type
     fSrcCache: TSourceChangeCache;
     fAsk: Boolean;
     fHasFormFile: boolean;
-    fUseBothDfmAndLfm: boolean;
     fLowerCaseRes: boolean;
     fDfmDirectiveStart: integer;
     fDfmDirectiveEnd: integer;
@@ -58,7 +57,6 @@ type
                                   AReplaceTypes: TStringToStringTree): boolean;
   public
     property Ask: Boolean read fAsk write fAsk;
-    property UseBothDfmAndLfm: boolean read fUseBothDfmAndLfm write fUseBothDfmAndLfm;
     property HasFormFile: boolean read fHasFormFile write fHasFormFile;
     property LowerCaseRes: boolean read fLowerCaseRes write fLowerCaseRes;
     property Target: TConvertTarget read fTarget write fTarget;
@@ -78,7 +76,6 @@ begin
   // Default values for vars.
   fAsk:=true;
   fLowerCaseRes:=false;
-  fUseBothDfmAndLfm:=false;
   fTarget:=ctLazarus;
   fUnitsToRemove:=nil;            // These are set from outside.
   fUnitsToComment:=nil;
@@ -297,7 +294,7 @@ begin
         if (LowKey='dfm') or (LowKey='xfm') then begin
           // Lowercase existing key. (Future, when the same dfm file can be used)
 //          faUseDfm: if Key<>LowKey then NewKey:=LowKey;
-          if fUseBothDfmAndLfm then begin
+          if fTarget=ctLazarusAndDelphi then begin
             // Later IFDEF will be added so that Delphi can still use .dfm.
             fDfmDirectiveStart:=ACleanPos;
             fDfmDirectiveEnd:=ParamPos+6;
@@ -322,7 +319,7 @@ begin
       ACleanPos:=FindCommentEnd(Src,ACleanPos,fCodeTool.Scanner.NestedComments);
     until false;
   // if there is already .lfm file, don't add IFDEF for .dfm / .lfm.
-  if fUseBothDfmAndLfm and (fDfmDirectiveStart<>-1) and not AlreadyIsLfm then
+  if (fTarget=ctLazarusAndDelphi) and (fDfmDirectiveStart<>-1) and not AlreadyIsLfm then
   begin
     // Add IFDEF for .lfm and .dfm allowing Delphi to use .dfm.
     nl:=fSrcCache.BeautifyCodeOptions.LineEnd;

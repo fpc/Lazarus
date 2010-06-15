@@ -546,7 +546,6 @@ begin
     ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
     ConvTool.HasFormFile:=DfmFilename<>'';
     ConvTool.Target:=fSettings.Target;
-    ConvTool.UseBothDfmAndLfm:=fSettings.Target=ctLazarusAndDelphi;
     ConvTool.UnitsToRemove:=fUnitsToRemove;
     ConvTool.UnitsToRename:=fUnitsToRename;
     ConvTool.UnitsToComment:=fUnitsToComment;
