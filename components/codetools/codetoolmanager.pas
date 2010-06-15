@@ -2214,7 +2214,7 @@ begin
     DebugLn('TCodeToolManager.FindReferences unable to FindDeclaration ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y));
     exit;
   end;
-  // check if
+  // check if scope can be limited
   PrivateDeclaration:=(NewTool.GetSourceType in [ctnLibrary,ctnProgram]);
   if not PrivateDeclaration then begin
     ImplementationNode:=NewTool.FindImplementationNode;
