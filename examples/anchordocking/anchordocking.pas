@@ -98,7 +98,7 @@ type
     Close button used in TAnchorDockHeader, uses the close button glyph of the
     theme shrinked to a small size. The glyph is shared by all close buttons. }
 
-  TAnchorDockCloseButton = class(TSpeedButton)
+  TAnchorDockCloseButton = class(TCustomSpeedButton)
   protected
     procedure GetCloseGlyph; // increase reference count
     procedure ReleaseCloseGlyph; // decrease reference count
@@ -122,7 +122,7 @@ type
 
   TAnchorDockHeader = class(TCustomPanel)
   private
-    FCloseButton: TSpeedButton;
+    FCloseButton: TCustomSpeedButton;
     FHeaderPosition: TADLHeaderPosition;
     procedure CloseButtonClick(Sender: TObject);
     procedure HeaderPositionItemClick(Sender: TObject);
@@ -142,8 +142,9 @@ type
     procedure PopupMenuPopup(Sender: TObject); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
-    property CloseButton: TSpeedButton read FCloseButton;
+    property CloseButton: TCustomSpeedButton read FCloseButton;
     property HeaderPosition: TADLHeaderPosition read FHeaderPosition write SetHeaderPosition;
+    property BevelOuter default bvNone;
   end;
   TAnchorDockHeaderClass = class of TAnchorDockHeader;
 
@@ -3978,6 +3979,13 @@ begin
 end;
 
 procedure TAnchorDockHeader.Paint;
+
+  procedure DrawGrabber(r: TRect);
+  begin
+    Canvas.Frame3d(r,4,bvLowered);
+    Canvas.Frame3d(r,4,bvRaised);
+  end;
+
 var
   r: TRect;
   TxtH: longint;
@@ -3987,6 +3995,12 @@ begin
   r:=ClientRect;
   Canvas.Frame3d(r,1,bvRaised);
   Canvas.FillRect(r);
+  if CloseButton.IsControlVisible and (CloseButton.Parent=Self) then begin
+    if Align in [alLeft,alRight] then
+      r.Top:=CloseButton.Top+CloseButton.Height+1
+    else
+      r.Right:=CloseButton.Left-1;
+  end;
 
   // caption
   if Caption<>'' then begin
@@ -3995,21 +4009,24 @@ begin
     TxtH:=Canvas.TextHeight('ABCMgq');
     TxtW:=Canvas.TextWidth(Caption);
     if Align in [alLeft,alRight] then begin
-      if CloseButton.Visible then
-        r.Top:=CloseButton.Top+CloseButton.Height+2;
+      // vertical
       dx:=Max(0,(r.Right-r.Left-TxtH) div 2);
       dy:=Max(0,(r.Bottom-r.Top-TxtW) div 2);
       Canvas.Font.Orientation:=900;
       Canvas.TextOut(r.Left+dx,r.Bottom-dy,Caption);
+      DrawGrabber(Rect(r.Left,r.Top,r.Right,r.Bottom-dy-TxtW));
+      DrawGrabber(Rect(r.Left,r.Bottom-dy,r.Right,r.Bottom));
     end else begin
-      if CloseButton.Visible then
-        r.Right:=CloseButton.Left-2;
+      // horizontal
       dx:=Max(0,(r.Right-r.Left-TxtW) div 2);
       dy:=Max(0,(r.Bottom-r.Top-TxtH) div 2);
       Canvas.Font.Orientation:=0;
       Canvas.TextOut(r.Left+dx,r.Top+dy,Caption);
+      DrawGrabber(Rect(r.Left,r.Top,r.Left+dx,r.Bottom));
+      DrawGrabber(Rect(r.Left+dx+TxtW,r.Top,r.Right,r.Bottom));
     end;
-  end;
+  end else
+    DrawGrabber(r);
 end;
 
 procedure TAnchorDockHeader.CalculatePreferredSize(var PreferredWidth,
@@ -4099,6 +4116,8 @@ begin
   inherited Create(TheOwner);
   FHeaderPosition:=adlhpAuto;
   FCloseButton:=TAnchorDockCloseButton.Create(Self);
+  BevelOuter:=bvNone;
+  BorderWidth:=0;
   with FCloseButton do begin
     Name:='CloseButton';
     Parent:=Self;
