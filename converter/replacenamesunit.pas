@@ -33,7 +33,7 @@ type
   public
     constructor Create(AStringsMap: TStringToStringTree; AGrid: TStringGrid);
     destructor Destroy; override;
-    procedure AddUnique(AOldIdent: string);
+    function AddUnique(AOldIdent: string): string;
   end;
 
   { TReplaceNamesForm }
@@ -201,19 +201,18 @@ begin
   inherited Destroy;
 end;
 
-procedure TGridUpdater.AddUnique(AOldIdent: string);
+function TGridUpdater.AddUnique(AOldIdent: string): string;
 // Add a new Delphi -> Lazarus mapping to the grid.
-var
-  NewIdent: string;
+// Returns the replacement string.
 begin
-  // Add only one instance of each property name.
   if fSeenNames.IndexOf(AOldIdent)<0 then begin
+    // Add only one instance of each name.
     fSeenNames.Append(AOldIdent);
-    FindReplacement(AOldIdent, NewIdent);
+    FindReplacement(AOldIdent, Result);
     if fGrid.RowCount<GridEndInd+1 then
       fGrid.RowCount:=GridEndInd+1;
     fGrid.Cells[0,GridEndInd]:=AOldIdent;
-    fGrid.Cells[1,GridEndInd]:=NewIdent;
+    fGrid.Cells[1,GridEndInd]:=Result;
     Inc(GridEndInd);
   end;
 end;

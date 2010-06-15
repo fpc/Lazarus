@@ -68,8 +68,8 @@ type
   TLFMFixer = class(TLFMChecker)
   private
     fSettings: TConvertSettings;
-    // There are also unknown object types, not just properties.
-    fHasMissingObjectTypes: Boolean;
+    fHasMissingProperties: Boolean;         // LFM file has unknown properties.
+    fHasMissingObjectTypes: Boolean;        // LFM file has unknown object types.
     // References to controls in UI:
     fPropReplaceGrid: TStringGrid;
     fTypeReplaceGrid: TStringGrid;
@@ -236,6 +236,7 @@ constructor TLFMFixer.Create(APascalBuffer, ALFMBuffer: TCodeBuffer;
   const AOnOutput: TOnAddFilteredLine);
 begin
   inherited Create(APascalBuffer, ALFMBuffer, AOnOutput);
+  fHasMissingProperties:=false;
   fHasMissingObjectTypes:=false;
 end;
 
@@ -322,8 +323,9 @@ var
   PropUpdater: TGridUpdater;
   TypeUpdater: TGridUpdater;
   CurError: TLFMError;
-  OldIdent: string;
+  OldIdent, NewIdent: string;
 begin
+  fHasMissingProperties:=false;
   fHasMissingObjectTypes:=false;
   // ReplaceTypes is used for properties just in case it will provide some.
   PropUpdater:=TGridUpdater.Create(fSettings.ReplaceTypes, fPropReplaceGrid);
@@ -334,12 +336,14 @@ begin
       while CurError<>nil do begin
         if CurError.IsMissingObjectType then begin
           OldIdent:=(CurError.Node as TLFMObjectNode).TypeName;
-          TypeUpdater.AddUnique(OldIdent); // Add a unique type only once.
-          fHasMissingObjectTypes:=true;
+          NewIdent:=TypeUpdater.AddUnique(OldIdent); // Add each type only once.
+          if NewIdent<>'' then
+            fHasMissingObjectTypes:=true;
         end
         else begin
           OldIdent:=CurError.Node.GetIdentifier;
-          PropUpdater.AddUnique(OldIdent); // Add a unique property only once.
+          PropUpdater.AddUnique(OldIdent);           // Add each property only once.
+          fHasMissingProperties:=true;
         end;
         CurError:=CurError.NextError;
       end;
@@ -369,7 +373,8 @@ begin
     fPropReplaceGrid:=FixLFMDialog.PropReplaceGrid;
     fTypeReplaceGrid:=FixLFMDialog.TypeReplaceGrid;
     LoadLFM;
-    if fSettings.AutoRemoveProperties and not fHasMissingObjectTypes then
+    if (fSettings.AutoRemoveProperties or not fHasMissingProperties)
+    and not fHasMissingObjectTypes then
       Result:=ReplaceAndRemoveAll
     else begin
       // Cursor is earlier set to HourGlass. Show normal cursor while in dialog.
