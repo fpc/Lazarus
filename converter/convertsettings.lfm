@@ -1,11 +1,11 @@
 object ConvertSettingsForm: TConvertSettingsForm
   Left = 366
-  Height = 457
+  Height = 443
   Top = 299
   Width = 637
   ActiveControl = ProjectPathEdit
   Caption = 'Convert Delphi unit, project or package '
-  ClientHeight = 457
+  ClientHeight = 443
   ClientWidth = 637
   Constraints.MinHeight = 400
   OnCreate = FormCreate
@@ -17,20 +17,20 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 0
-    Height = 187
+    Height = 173
     Top = 219
     Width = 637
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     Caption = 'Units, Types and Properties'
-    ClientHeight = 168
+    ClientHeight = 154
     ClientWidth = 633
     TabOrder = 0
-    object AutoRemovePropertiesCheckBox: TCheckBox
+    object AutoRemovePropCheckBox: TCheckBox
       Left = 303
       Height = 21
       Hint = 'If unchecked, there will be interactive dialogs for editing / accepting changes.'
-      Top = 12
+      Top = 40
       Width = 250
       Caption = 'Automatic removal of unknown properties'
       ParentShowHint = False
@@ -53,13 +53,37 @@ object ConvertSettingsForm: TConvertSettingsForm
       Left = 11
       Height = 30
       Hint = 'Unknown types in form file (DFM/LFM)'
-      Top = 52
+      Top = 60
       Width = 272
       Caption = 'Type Replacements'
       OnClick = TypeReplacementsButtonClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
+    end
+    object AutoReplaceUnitsCheckBox: TCheckBox
+      Left = 303
+      Height = 21
+      Hint = 'If unchecked, there will be interactive dialogs for editing / accepting changes.'
+      Top = 12
+      Width = 228
+      Caption = 'Automatic replacement of unit names'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+    end
+    object MethodReplacementsButton: TBitBtn
+      Left = 11
+      Height = 30
+      Hint = 'Some Delphi functions can be replaced with a LCL function'
+      Top = 108
+      Width = 272
+      Caption = 'Method Replacements'
+      OnClick = MethodReplacementsButtonClick
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 4
+      Visible = False
     end
   end
   object SettingsGroupBox: TGroupBox
@@ -106,7 +130,7 @@ object ConvertSettingsForm: TConvertSettingsForm
       Left = 303
       Height = 21
       Hint = 'Separate form files allow different properties'
-      Top = 86
+      Top = 62
       Width = 285
       BorderSpacing.Left = 13
       BorderSpacing.Around = 7
@@ -163,7 +187,7 @@ object ConvertSettingsForm: TConvertSettingsForm
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 39
-    Top = 412
+    Top = 398
     Width = 625
     TabOrder = 4
     ShowButtons = [pbOK, pbCancel, pbHelp]

@@ -99,16 +99,19 @@ type
   { TConvertSettingsForm }
 
   TConvertSettingsForm = class(TForm)
+    AutoReplaceUnitsCheckBox: TCheckBox;
     BackupCheckBox: TCheckBox;
     ButtonPanel: TButtonPanel;
     TypeReplacementsButton: TBitBtn;
     SameDFMCheckBox: TCheckBox;
     ProjectPathEdit: TLabeledEdit;
     TargetRadioGroup: TRadioGroup;
+    MethodReplacementsButton: TBitBtn;
     UnitReplacementsButton: TBitBtn;
     SettingsGroupBox: TGroupBox;
     MissingStuffGroupBox: TGroupBox;
-    AutoRemovePropertiesCheckBox: TCheckBox;
+    AutoRemovePropCheckBox: TCheckBox;
+    procedure MethodReplacementsButtonClick(Sender: TObject);
     procedure TypeReplacementsButtonClick(Sender: TObject);
     procedure UnitReplacementsButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -258,14 +261,14 @@ begin
     BackupCheckBox.Checked               :=fBackupFiles;
     TargetRadioGroup.ItemIndex           :=integer(fTarget);
     SameDFMCheckBox.Checked              :=fSameDFMFile;
-    AutoRemovePropertiesCheckBox.Checked :=fAutoRemoveProperties;
+    AutoRemovePropCheckBox.Checked :=fAutoRemoveProperties;
     Result:=ShowModal;         // Let the user change settings in a form.
     if Result=mrOK then begin
       // UI --> Settings. Will be saved to ConfigSettings later.
       fBackupFiles         :=BackupCheckBox.Checked;
       fTarget              :=TConvertTarget(TargetRadioGroup.ItemIndex);
       fSameDFMFile         :=SameDFMCheckBox.Checked;
-      fAutoRemoveProperties:=AutoRemovePropertiesCheckBox.Checked;
+      fAutoRemoveProperties:=AutoRemovePropCheckBox.Checked;
     end;
   finally
     Free;
@@ -388,13 +391,17 @@ begin
   TargetRadioGroup.Hint:=lisConvertTargetHint;
   SameDFMCheckBox.Caption:=lisConvUseSameDFM;
   SameDFMCheckBox.Hint:=lisConvUseSameDFMHint;
-  MissingStuffGroupBox.Caption:= lisConvUnitsTypesProperties;
-  AutoRemovePropertiesCheckBox.Caption:=lisConvAutoRemoveProperties;
-  AutoRemovePropertiesCheckBox.Hint:=lisConvAutoRemoveHint;
+  MissingStuffGroupBox.Caption:= lisConvUnitsTypesProp;
+  AutoRemovePropCheckBox.Caption:=lisConvAutoRemoveProp;
+  AutoRemovePropCheckBox.Hint:=lisConvAutoRemovePropHint;
+  AutoReplaceUnitsCheckBox.Caption:=lisConvAutoReplaceUnits;
+  AutoReplaceUnitsCheckBox.Hint:=lisConvAutoReplaceUnitHint;
   UnitReplacementsButton.Caption:=lisConvUnitReplacements;
   UnitReplacementsButton.Hint:=lisConvUnitReplHint;
   TypeReplacementsButton.Caption:=lisConvTypeReplacements;
   TypeReplacementsButton.Hint:=lisConvTypeReplHint;
+  MethodReplacementsButton.Caption:=lisConvMethodReplacements;
+  MethodReplacementsButton.Hint:=lisConvMethodReplHint;
   TargetRadioGroupClick(TargetRadioGroup);
 end;
 
@@ -448,6 +455,11 @@ begin
     GridUpdater.Free;
     RNForm.Free;
   end;
+end;
+
+procedure TConvertSettingsForm.MethodReplacementsButtonClick(Sender: TObject);
+begin
+
 end;
 
 
