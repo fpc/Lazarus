@@ -794,7 +794,7 @@ type
     function DoSaveAll(Flags: TSaveFlags): TModalResult;
     procedure DoRestart;
     procedure DoExecuteRemoteControl;
-    function DoOpenMainUnit(Flags: TOpenFlags): TModalResult;
+    function DoOpenMainUnit(PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
     function DoRevertMainUnit: TModalResult;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
     function DoSelectFrame: TComponentClass;
@@ -3810,7 +3810,7 @@ end;
 
 procedure TMainIDE.mnuViewProjectSourceClicked(Sender: TObject);
 begin
-  DoOpenMainUnit([]);
+  DoOpenMainUnit(-1,-1,[]);
 end;
 
 procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
@@ -7659,6 +7659,7 @@ var
   AnUnitInfo: TUnitInfo;
   AShareEditor: TSourceEditor;
 begin
+  //debugln(['TMainIDE.DoOpenFileInSourceEditor ',AnEditorInfo.UnitInfo.Filename,' Window=',WindowIndex,'/',SourceEditorManager.SourceWindowCount,' Page=',PageIndex]);
   AnUnitInfo := AnEditorInfo.UnitInfo;
   AFilename:=AnUnitInfo.Filename;
   if (WindowIndex < 0) then
@@ -8428,7 +8429,7 @@ var
 begin
   {$IFDEF IDE_VERBOSE}
   DebugLn('');
-  DebugLn('*** TMainIDE.DoOpenEditorFile START "',AFilename,'" ',OpenFlagsToString(Flags));
+  DebugLn(['*** TMainIDE.DoOpenEditorFile START "',AFilename,'" ',OpenFlagsToString(Flags),' Window=',WindowIndex,' Page=',PageIndex]);
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenEditorFile START');{$ENDIF}
   Result:=mrCancel;
@@ -8477,7 +8478,7 @@ begin
   and (CompareFilenames(Project1.MainFilename,AFilename,
        not (ofVirtualFile in Flags))=0)
   then begin
-    Result:=DoOpenMainUnit(Flags);
+    Result:=DoOpenMainUnit(PageIndex,WindowIndex,Flags);
     exit;
   end;
 
@@ -8535,7 +8536,7 @@ begin
       end;
       if (not (ofProjectLoading in Flags)) and (NewEditorInfo.EditorComponent <> nil) then
       begin
-        //DebugLn('TMainIDE.DoOpenEditorFile file already open ',NewUnitInfo.Filename);
+        //DebugLn(['TMainIDE.DoOpenEditorFile file already open ',NewUnitInfo.Filename,' WindowIndex=',NewEditorInfo.WindowIndex,' PageIndex=',NewEditorInfo.PageIndex]);
         // file already open -> change source notebook page
         SourceEditorManager.ActiveSourceWindowIndex := NewEditorInfo.WindowIndex;
         SourceEditorManager.ActiveSourceWindow.PageIndex:= NewEditorInfo.PageIndex;
@@ -8671,7 +8672,8 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenEditorFile END');{$ENDIF}
 end;
 
-function TMainIDE.DoOpenMainUnit(Flags: TOpenFlags): TModalResult;
+function TMainIDE.DoOpenMainUnit(PageIndex, WindowIndex: integer;
+  Flags: TOpenFlags): TModalResult;
 var MainUnitInfo: TUnitInfo;
 begin
   {$IFDEF IDE_VERBOSE}
@@ -8692,7 +8694,7 @@ begin
   end;
 
   // open file in source notebook
-  Result:=DoOpenFileInSourceEditor(MainUnitInfo.GetClosedOrNewEditorInfo, -1,-1,Flags);
+  Result:=DoOpenFileInSourceEditor(MainUnitInfo.GetClosedOrNewEditorInfo, PageIndex,WindowIndex,Flags);
   if Result<>mrOk then exit;
 
   Result:=mrOk;
@@ -8865,7 +8867,7 @@ begin
           end else
           begin
             if Project1.MainUnitInfo = AnUnitInfo then
-              Result:=DoOpenMainUnit([])
+              Result:=DoOpenMainUnit(-1,-1,[])
             else
               Result:=DoOpenEditorFile(AnUnitInfo.Filename,-1,-1,[ofOnlyIfExists]);
             if Result=mrAbort then exit;
@@ -13640,8 +13642,8 @@ begin
     FIDECodeToolsDefines:=ctdReady;
     //DebugLn('TMainIDE.CodeToolBossPrepareTree CompilerGraphStamp=',dbgs(CompilerGraphStamp));
     {$IFDEF VerboseAddProjPkg}
-    DebugLn(['TMainIDE.CodeToolBossPrepareTree AAA1 "',CodeToolBoss.GetUnitPathForDirectory('',true),'"']);
-    DebugLn(['TMainIDE.CodeToolBossPrepareTree AAA2 "',CodeToolBoss.GetUnitPathForDirectory('',false),'"']);
+    DebugLn(['TMainIDE.CodeToolBossPrepareTree 1 "',CodeToolBoss.GetUnitPathForDirectory('',true),'"']);
+    DebugLn(['TMainIDE.CodeToolBossPrepareTree 2 "',CodeToolBoss.GetUnitPathForDirectory('',false),'"']);
     {$ENDIF}
   end;
 end;
