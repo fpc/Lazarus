@@ -183,9 +183,9 @@ type
     function NewNode(aParent: TAnchorDockLayoutTreeNode): TAnchorDockLayoutTreeNode;
   end;
 
-  { TAnchorDockDefaultLayout }
+  { TAnchorDockRestoreLayout }
 
-  TAnchorDockDefaultLayout = class
+  TAnchorDockRestoreLayout = class
   private
     FControlNames: TStrings;
     FLayout: TAnchorDockLayoutTree;
@@ -204,26 +204,26 @@ type
     property Layout: TAnchorDockLayoutTree read FLayout;
   end;
 
-  { TAnchorDockDefaultLayouts }
+  { TAnchorDockRestoreLayouts }
 
-  TAnchorDockDefaultLayouts = class
+  TAnchorDockRestoreLayouts = class
   private
     fItems: TFPList;
-    function GetItems(Index: integer): TAnchorDockDefaultLayout;
+    function GetItems(Index: integer): TAnchorDockRestoreLayout;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
     procedure Delete(Index: integer);
     function IndexOfName(AControlName: string): integer;
-    function FindByName(AControlName: string): TAnchorDockDefaultLayout;
-    procedure Add(Layout: TAnchorDockDefaultLayout; RemoveOther: boolean);
+    function FindByName(AControlName: string): TAnchorDockRestoreLayout;
+    procedure Add(Layout: TAnchorDockRestoreLayout; RemoveOther: boolean);
     procedure RemoveByName(AControlName: string);
     procedure LoadFromConfig(Config: TConfigStorage);
     procedure SaveToConfig(Config: TConfigStorage);
     function ConfigIsEmpty(Config: TConfigStorage): boolean;
     function Count: integer;
-    property Items[Index: integer]: TAnchorDockDefaultLayout read GetItems;
+    property Items[Index: integer]: TAnchorDockRestoreLayout read GetItems;
   end;
 
   { TADNameToControl }
@@ -1734,47 +1734,47 @@ begin
   end;
 end;
 
-{ TAnchorDockDefaultLayout }
+{ TAnchorDockRestoreLayout }
 
-procedure TAnchorDockDefaultLayout.SetControlNames(const AValue: TStrings);
+procedure TAnchorDockRestoreLayout.SetControlNames(const AValue: TStrings);
 begin
   if FControlNames=AValue then exit;
   FControlNames.Assign(AValue);
 end;
 
-constructor TAnchorDockDefaultLayout.Create;
+constructor TAnchorDockRestoreLayout.Create;
 begin
   FControlNames:=TStringList.Create;
   FLayout:=TAnchorDockLayoutTree.Create;
 end;
 
-constructor TAnchorDockDefaultLayout.Create(aLayout: TAnchorDockLayoutTree);
+constructor TAnchorDockRestoreLayout.Create(aLayout: TAnchorDockLayoutTree);
 begin
   FControlNames:=TStringList.Create;
   FLayout:=aLayout;
   UpdateControlNames;
 end;
 
-destructor TAnchorDockDefaultLayout.Destroy;
+destructor TAnchorDockRestoreLayout.Destroy;
 begin
   FreeAndNil(FLayout);
   FreeAndNil(FControlNames);
   inherited Destroy;
 end;
 
-function TAnchorDockDefaultLayout.IndexOfControlName(AName: string): integer;
+function TAnchorDockRestoreLayout.IndexOfControlName(AName: string): integer;
 begin
   Result:=fControlNames.Count;
   while (Result>=0) and (CompareText(AName,FControlNames[Result])<>0) do
     dec(Result);
 end;
 
-function TAnchorDockDefaultLayout.HasControlName(AName: string): boolean;
+function TAnchorDockRestoreLayout.HasControlName(AName: string): boolean;
 begin
   Result:=IndexOfControlName(AName)>=0;
 end;
 
-procedure TAnchorDockDefaultLayout.RemoveControlName(AName: string);
+procedure TAnchorDockRestoreLayout.RemoveControlName(AName: string);
 var
   i: Integer;
 begin
@@ -1783,7 +1783,7 @@ begin
       FControlNames.Delete(i);
 end;
 
-procedure TAnchorDockDefaultLayout.UpdateControlNames;
+procedure TAnchorDockRestoreLayout.UpdateControlNames;
 
   procedure Check(Node: TAnchorDockLayoutTreeNode);
   var
@@ -1801,7 +1801,7 @@ begin
   Check(Layout.Root);
 end;
 
-procedure TAnchorDockDefaultLayout.LoadFromConfig(Config: TConfigStorage);
+procedure TAnchorDockRestoreLayout.LoadFromConfig(Config: TConfigStorage);
 var
   i: Integer;
   AName: string;
@@ -1823,7 +1823,7 @@ begin
   end;
 end;
 
-procedure TAnchorDockDefaultLayout.SaveToConfig(Config: TConfigStorage);
+procedure TAnchorDockRestoreLayout.SaveToConfig(Config: TConfigStorage);
 begin
   FControlNames.Delimiter:=',';
   FControlNames.StrictDelimiter:=true;
@@ -1831,27 +1831,27 @@ begin
   Layout.SaveToConfig(Config);
 end;
 
-{ TAnchorDockDefaultLayouts }
+{ TAnchorDockRestoreLayouts }
 
-function TAnchorDockDefaultLayouts.GetItems(Index: integer
-  ): TAnchorDockDefaultLayout;
+function TAnchorDockRestoreLayouts.GetItems(Index: integer
+  ): TAnchorDockRestoreLayout;
 begin
-  Result:=TAnchorDockDefaultLayout(fItems[Index]);
+  Result:=TAnchorDockRestoreLayout(fItems[Index]);
 end;
 
-constructor TAnchorDockDefaultLayouts.Create;
+constructor TAnchorDockRestoreLayouts.Create;
 begin
   fItems:=TFPList.Create;
 end;
 
-destructor TAnchorDockDefaultLayouts.Destroy;
+destructor TAnchorDockRestoreLayouts.Destroy;
 begin
   Clear;
   FreeAndNil(fItems);
   inherited Destroy;
 end;
 
-procedure TAnchorDockDefaultLayouts.Clear;
+procedure TAnchorDockRestoreLayouts.Clear;
 var
   i: Integer;
 begin
@@ -1860,21 +1860,21 @@ begin
   fItems.Clear;
 end;
 
-procedure TAnchorDockDefaultLayouts.Delete(Index: integer);
+procedure TAnchorDockRestoreLayouts.Delete(Index: integer);
 begin
   TObject(fItems[Index]).Free;
   fItems.Delete(Index);
 end;
 
-function TAnchorDockDefaultLayouts.IndexOfName(AControlName: string): integer;
+function TAnchorDockRestoreLayouts.IndexOfName(AControlName: string): integer;
 begin
   Result:=Count-1;
   while (Result>=0) and not Items[Result].HasControlName(AControlName) do
     dec(Result);
 end;
 
-function TAnchorDockDefaultLayouts.FindByName(AControlName: string
-  ): TAnchorDockDefaultLayout;
+function TAnchorDockRestoreLayouts.FindByName(AControlName: string
+  ): TAnchorDockRestoreLayout;
 var
   i: LongInt;
 begin
@@ -1885,7 +1885,7 @@ begin
     Result:=nil;
 end;
 
-procedure TAnchorDockDefaultLayouts.Add(Layout: TAnchorDockDefaultLayout;
+procedure TAnchorDockRestoreLayouts.Add(Layout: TAnchorDockRestoreLayout;
   RemoveOther: boolean);
 var
   i: Integer;
@@ -1897,10 +1897,10 @@ begin
   fItems.Add(Layout);
 end;
 
-procedure TAnchorDockDefaultLayouts.RemoveByName(AControlName: string);
+procedure TAnchorDockRestoreLayouts.RemoveByName(AControlName: string);
 var
   i: Integer;
-  Layout: TAnchorDockDefaultLayout;
+  Layout: TAnchorDockRestoreLayout;
 begin
   for i:=Count-1 downto 0 do begin
     Layout:=Items[i];
@@ -1910,16 +1910,16 @@ begin
   end;
 end;
 
-procedure TAnchorDockDefaultLayouts.LoadFromConfig(Config: TConfigStorage);
+procedure TAnchorDockRestoreLayouts.LoadFromConfig(Config: TConfigStorage);
 var
   NewCount: longint;
-  NewItem: TAnchorDockDefaultLayout;
+  NewItem: TAnchorDockRestoreLayout;
   i: Integer;
 begin
   Clear;
   NewCount:=Config.GetValue('Count',0);
   for i:=1 to NewCount do begin
-    NewItem:=TAnchorDockDefaultLayout.Create;
+    NewItem:=TAnchorDockRestoreLayout.Create;
     Config.AppendBasePath('Item'+IntToStr(i+1)+'/');
     try
       NewItem.LoadFromConfig(Config);
@@ -1933,7 +1933,7 @@ begin
   end;
 end;
 
-procedure TAnchorDockDefaultLayouts.SaveToConfig(Config: TConfigStorage);
+procedure TAnchorDockRestoreLayouts.SaveToConfig(Config: TConfigStorage);
 var
   i: Integer;
 begin
@@ -1948,13 +1948,13 @@ begin
   end;
 end;
 
-function TAnchorDockDefaultLayouts.ConfigIsEmpty(Config: TConfigStorage
+function TAnchorDockRestoreLayouts.ConfigIsEmpty(Config: TConfigStorage
   ): boolean;
 begin
   Result:=Config.GetValue('Count',0)<=0;
 end;
 
-function TAnchorDockDefaultLayouts.Count: integer;
+function TAnchorDockRestoreLayouts.Count: integer;
 begin
   Result:=fItems.Count;
 end;

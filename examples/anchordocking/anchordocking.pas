@@ -385,6 +385,7 @@ type
     FPageAreaInPercent: integer;
     FPageClass: TAnchorDockPageClass;
     FPageControlClass: TAnchorDockPageControlClass;
+    FRestoreLayouts: TAnchorDockRestoreLayouts;
     FScaleOnResize: boolean;
     FShowHeaderCaptionFloatingControl: boolean;
     FSiteClass: TAnchorDockHostSiteClass;
@@ -458,6 +459,7 @@ type
     procedure SaveLayoutToConfig(Config: TConfigStorage);
     function ConfigIsEmpty(Config: TConfigStorage): boolean;
     function LoadLayoutFromConfig(Config: TConfigStorage): boolean;
+    property RestoreLayouts: TAnchorDockRestoreLayouts read FRestoreLayouts;
 
     // manual docking
     procedure ManualFloat(AControl: TControl);
@@ -1544,12 +1546,14 @@ begin
   FHeaderClass:=TAnchorDockHeader;
   FPageControlClass:=TAnchorDockPageControl;
   FPageClass:=TAnchorDockPage;
+  FRestoreLayouts:=TAnchorDockRestoreLayouts.Create;
 end;
 
 destructor TAnchorDockMaster.Destroy;
 var
   AControl: TControl;
 begin
+  FreeAndNil(FRestoreLayouts);
   FreeAndNil(fPopupMenu);
   FreeAndNil(fTreeNameToDocker);
   if FControls.Count>0 then begin
