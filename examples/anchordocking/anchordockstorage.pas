@@ -191,10 +191,39 @@ type
     FLayout: TAnchorDockLayoutTree;
     procedure SetControlNames(const AValue: TStrings);
   public
-    constructor Create;
+    constructor Create; overload;
+    constructor Create(aLayout: TAnchorDockLayoutTree); overload;
     destructor Destroy; override;
+    function IndexOfControlName(AName: string): integer;
+    function HasControlName(AName: string): boolean;
+    procedure RemoveControlName(AName: string);
+    procedure UpdateControlNames;
+    procedure LoadFromConfig(Config: TConfigStorage);
+    procedure SaveToConfig(Config: TConfigStorage);
     property ControlNames: TStrings read FControlNames write SetControlNames;
     property Layout: TAnchorDockLayoutTree read FLayout;
+  end;
+
+  { TAnchorDockDefaultLayouts }
+
+  TAnchorDockDefaultLayouts = class
+  private
+    fItems: TFPList;
+    function GetItems(Index: integer): TAnchorDockDefaultLayout;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Delete(Index: integer);
+    function IndexOfName(AControlName: string): integer;
+    function FindByName(AControlName: string): TAnchorDockDefaultLayout;
+    procedure Add(Layout: TAnchorDockDefaultLayout; RemoveOther: boolean);
+    procedure RemoveByName(AControlName: string);
+    procedure LoadFromConfig(Config: TConfigStorage);
+    procedure SaveToConfig(Config: TConfigStorage);
+    function ConfigIsEmpty(Config: TConfigStorage): boolean;
+    function Count: integer;
+    property Items[Index: integer]: TAnchorDockDefaultLayout read GetItems;
   end;
 
   { TADNameToControl }
@@ -1719,11 +1748,215 @@ begin
   FLayout:=TAnchorDockLayoutTree.Create;
 end;
 
+constructor TAnchorDockDefaultLayout.Create(aLayout: TAnchorDockLayoutTree);
+begin
+  FControlNames:=TStringList.Create;
+  FLayout:=aLayout;
+  UpdateControlNames;
+end;
+
 destructor TAnchorDockDefaultLayout.Destroy;
 begin
   FreeAndNil(FLayout);
   FreeAndNil(FControlNames);
   inherited Destroy;
+end;
+
+function TAnchorDockDefaultLayout.IndexOfControlName(AName: string): integer;
+begin
+  Result:=fControlNames.Count;
+  while (Result>=0) and (CompareText(AName,FControlNames[Result])<>0) do
+    dec(Result);
+end;
+
+function TAnchorDockDefaultLayout.HasControlName(AName: string): boolean;
+begin
+  Result:=IndexOfControlName(AName)>=0;
+end;
+
+procedure TAnchorDockDefaultLayout.RemoveControlName(AName: string);
+var
+  i: Integer;
+begin
+  for i:=FControlNames.Count-1 downto 0 do
+    if CompareText(AName,FControlNames[i])=0 then
+      FControlNames.Delete(i);
+end;
+
+procedure TAnchorDockDefaultLayout.UpdateControlNames;
+
+  procedure Check(Node: TAnchorDockLayoutTreeNode);
+  var
+    i: Integer;
+  begin
+    if (Node.Name<>'') and (Node.NodeType in [adltnControl,adltnCustomSite])
+    and (not HasControlName(Node.Name)) then
+      FControlNames.Add(Node.Name);
+    for i:=0 to Node.Count-1 do
+      Check(Node[i]);
+  end;
+
+begin
+  FControlNames.Clear;
+  Check(Layout.Root);
+end;
+
+procedure TAnchorDockDefaultLayout.LoadFromConfig(Config: TConfigStorage);
+var
+  i: Integer;
+  AName: string;
+  Node: TAnchorDockLayoutTreeNode;
+begin
+  FControlNames.Delimiter:=',';
+  FControlNames.StrictDelimiter:=true;
+  FControlNames.DelimitedText:=Config.GetValue('Names','');
+  Layout.LoadFromConfig(Config);
+  for i:=FControlNames.Count-1 downto 0 do begin
+    AName:=FControlNames[i];
+    if (AName<>'') and IsValidIdent(AName)
+    and (Layout.Root<>nil) then begin
+      Node:=Layout.Root.FindChildNode(AName,true);
+      if (Node<>nil) and (Node.NodeType in [adltnControl,adltnCustomSite]) then
+        continue;
+    end;
+    FControlNames.Delete(i);
+  end;
+end;
+
+procedure TAnchorDockDefaultLayout.SaveToConfig(Config: TConfigStorage);
+begin
+  FControlNames.Delimiter:=',';
+  FControlNames.StrictDelimiter:=true;
+  Config.SetDeleteValue('Names',FControlNames.DelimitedText,'');
+  Layout.SaveToConfig(Config);
+end;
+
+{ TAnchorDockDefaultLayouts }
+
+function TAnchorDockDefaultLayouts.GetItems(Index: integer
+  ): TAnchorDockDefaultLayout;
+begin
+  Result:=TAnchorDockDefaultLayout(fItems[Index]);
+end;
+
+constructor TAnchorDockDefaultLayouts.Create;
+begin
+  fItems:=TFPList.Create;
+end;
+
+destructor TAnchorDockDefaultLayouts.Destroy;
+begin
+  Clear;
+  FreeAndNil(fItems);
+  inherited Destroy;
+end;
+
+procedure TAnchorDockDefaultLayouts.Clear;
+var
+  i: Integer;
+begin
+  for i:=0 to fItems.Count-1 do
+    TObject(fItems[i]).Free;
+  fItems.Clear;
+end;
+
+procedure TAnchorDockDefaultLayouts.Delete(Index: integer);
+begin
+  TObject(fItems[Index]).Free;
+  fItems.Delete(Index);
+end;
+
+function TAnchorDockDefaultLayouts.IndexOfName(AControlName: string): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and not Items[Result].HasControlName(AControlName) do
+    dec(Result);
+end;
+
+function TAnchorDockDefaultLayouts.FindByName(AControlName: string
+  ): TAnchorDockDefaultLayout;
+var
+  i: LongInt;
+begin
+  i:=IndexOfName(AControlName);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
+end;
+
+procedure TAnchorDockDefaultLayouts.Add(Layout: TAnchorDockDefaultLayout;
+  RemoveOther: boolean);
+var
+  i: Integer;
+begin
+  if RemoveOther then begin
+    for i:=0 to Layout.ControlNames.Count-1 do
+      RemoveByName(Layout.ControlNames[i]);
+  end;
+  fItems.Add(Layout);
+end;
+
+procedure TAnchorDockDefaultLayouts.RemoveByName(AControlName: string);
+var
+  i: Integer;
+  Layout: TAnchorDockDefaultLayout;
+begin
+  for i:=Count-1 downto 0 do begin
+    Layout:=Items[i];
+    Layout.RemoveControlName(AControlName);
+    if Layout.ControlNames.Count=0 then
+      Delete(i);
+  end;
+end;
+
+procedure TAnchorDockDefaultLayouts.LoadFromConfig(Config: TConfigStorage);
+var
+  NewCount: longint;
+  NewItem: TAnchorDockDefaultLayout;
+  i: Integer;
+begin
+  Clear;
+  NewCount:=Config.GetValue('Count',0);
+  for i:=1 to NewCount do begin
+    NewItem:=TAnchorDockDefaultLayout.Create;
+    Config.AppendBasePath('Item'+IntToStr(i+1)+'/');
+    try
+      NewItem.LoadFromConfig(Config);
+    finally
+      Config.UndoAppendBasePath;
+    end;
+    if NewItem.ControlNames.Count>0 then
+      fItems.Add(NewItem)
+    else
+      NewItem.Free;
+  end;
+end;
+
+procedure TAnchorDockDefaultLayouts.SaveToConfig(Config: TConfigStorage);
+var
+  i: Integer;
+begin
+  Config.SetDeleteValue('Count',Count,0);
+  for i:=0 to Count-1 do begin
+    Config.AppendBasePath('Item'+IntToStr(i+1)+'/');
+    try
+      Items[i].SaveToConfig(Config);
+    finally
+      Config.UndoAppendBasePath;
+    end;
+  end;
+end;
+
+function TAnchorDockDefaultLayouts.ConfigIsEmpty(Config: TConfigStorage
+  ): boolean;
+begin
+  Result:=Config.GetValue('Count',0)<=0;
+end;
+
+function TAnchorDockDefaultLayouts.Count: integer;
+begin
+  Result:=fItems.Count;
 end;
 
 end.

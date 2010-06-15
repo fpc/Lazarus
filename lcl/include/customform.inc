@@ -2087,7 +2087,7 @@ begin
   if WindowState = wsMinimized then
     WindowState := wsNormal;
   BringToFront;
-  //DebugLn('TCustomForm.ShowOnTop ',Name,':',ClassName,' ',Visible,' ',HandleAllocated,' ',csDesigning in ComponentState);
+  //DebugLn(['TCustomForm.ShowOnTop ',Name,':',ClassName,' ',Visible,' ',HandleAllocated,' ',csDesigning in ComponentState]);
 end;
 
 function TCustomForm.AutoSizeCheckParent: Boolean;

@@ -453,6 +453,8 @@ type
 
     // save/restore layouts
     procedure SaveMainLayoutToTree(LayoutTree: TAnchorDockLayoutTree);
+    procedure SaveSiteLayoutToTree(AForm: TCustomForm;
+                                   LayoutTree: TAnchorDockLayoutTree);
     procedure SaveLayoutToConfig(Config: TConfigStorage);
     function ConfigIsEmpty(Config: TConfigStorage): boolean;
     function LoadLayoutFromConfig(Config: TConfigStorage): boolean;
@@ -1833,11 +1835,33 @@ begin
           Site.SaveLayout(LayoutTree,LayoutNode);
         end;
       end else
-        raise EAnchorDockLayoutError.Create('invalid root control class '+DbgSName(AControl));
+        raise EAnchorDockLayoutError.Create('invalid root control for save: '+DbgSName(AControl));
     end;
   finally
     SavedSites.Free;
   end;
+end;
+
+procedure TAnchorDockMaster.SaveSiteLayoutToTree(AForm: TCustomForm;
+  LayoutTree: TAnchorDockLayoutTree);
+var
+  LayoutNode: TAnchorDockLayoutTreeNode;
+  Site: TAnchorDockHostSite;
+begin
+  if (AForm is TAnchorDockHostSite) then begin
+    Site:=TAnchorDockHostSite(AForm);
+    Site.SaveLayout(LayoutTree,LayoutTree.Root);
+  end else if IsCustomSite(AForm) then begin
+    LayoutTree.Root.NodeType:=adltnCustomSite;
+    LayoutTree.Root.Assign(AForm);
+    // can have one normal dock site
+    Site:=TAnchorDockManager(AForm.DockManager).GetChildSite;
+    if Site<>nil then begin
+      LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
+      Site.SaveLayout(LayoutTree,LayoutNode);
+    end;
+  end else
+    raise EAnchorDockLayoutError.Create('invalid root control for save: '+DbgSName(AForm));
 end;
 
 procedure TAnchorDockMaster.SaveLayoutToConfig(Config: TConfigStorage);
@@ -3982,7 +4006,7 @@ procedure TAnchorDockHeader.Paint;
 
   procedure DrawGrabber(r: TRect);
   begin
-    Canvas.Frame3d(r,4,bvLowered);
+    Canvas.Frame3d(r,2,bvLowered);
     Canvas.Frame3d(r,4,bvRaised);
   end;
 
