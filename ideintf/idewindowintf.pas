@@ -154,6 +154,10 @@ type
                GetLayoutEvent: TGetDefaultIDEWindowLayoutEvent = nil); overload;
     property FormName: string read FFormName; // prefix for all forms
     property Multi: boolean read FMulti; // there can be more than one of this form, e.g. the source editors and the package editors
+    property OnCreateFormMethod: TCreateIDEWindowMethod read FCreateFormMethod write FCreateFormMethod;
+    property OnCreateFormProc: TCreateIDEWindowProc read FCreateFormProc write FCreateFormProc;
+
+    // hints for the layout system / dock master. It may ignore them completely.
     property State: TIWCState read FState write FState;
     property Left: string read FLeft write SetLeft; // '12' for 12 pixel, '10%' for 10 percent of screen.width
     property Top: string read FTop write SetTop; // '12' for 12 pixel, '10%' for 10 percent of screen.height
@@ -161,8 +165,6 @@ type
     property Height: string read FHeight write SetHeight; // '12' for 12 pixel, '10%' for 10 percent of screen.height
     property DockSibling: string read FDockSibling write FDockSibling; // another form name
     property DockAlign: TAlign read FDockAlign write FDockAlign;
-    property OnCreateFormMethod: TCreateIDEWindowMethod read FCreateFormMethod write FCreateFormMethod;
-    property OnCreateFormProc: TCreateIDEWindowProc read FCreateFormProc write FCreateFormProc;
     property OnGetLayout: TGetDefaultIDEWindowLayoutEvent read FOnGetLayout
                                                           write FOnGetLayout;
     procedure CheckBoundValue(s: string);
@@ -188,10 +190,12 @@ type
     function Add(aFormName: string;
                  CreateFormProc: TCreateIDEWindowProc;
                  CreateFormMethod: TCreateIDEWindowMethod;
+                 // you can pass some hints to the layout system how to place the form by default
+                 // Note: the IDE dockmaster may completely ignore these values
                  aLeft, aTop, aWidth, aHeight: string;
                  aDockSibling : string = '';
                  aDockAlign: TAlign = alNone;
-                 aMulti: boolean = false;
+                 aMulti: boolean = false; // if true, then there can be more than one instance, the aFormName is the shared prefix
                  GetLayoutEvent: TGetDefaultIDEWindowLayoutEvent = nil
                  ): TIDEWindowCreator; overload;
     procedure Delete(Index: integer);
@@ -199,7 +203,8 @@ type
     function FindWithName(FormName: string): TIDEWindowCreator;
     function GetForm(aFormName: string; AutoCreate: boolean;
                                DisableAutoSizing: boolean = false): TCustomForm;
-    procedure ShowForm(AForm: TCustomForm; BringToFront: boolean);
+    procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); overload;
+    function ShowForm(AFormName: string; BringToFront: boolean): TCustomForm; overload;
     procedure CreateForm(var AForm: TCustomForm; AFormClass: TCustomFormClass;
                          DoDisableAutoSizing: boolean; TheOwner: TComponent); // utility function to create a form with delayed autosizing
 
@@ -766,6 +771,14 @@ begin
     AForm.ShowOnTop
   else
     AForm.Show;
+end;
+
+function TIDEWindowCreatorList.ShowForm(AFormName: string; BringToFront: boolean
+  ): TCustomForm;
+begin
+  Result:=GetForm(AFormName,true,false);
+  if Result<>nil then
+    ShowForm(Result,BringToFront);
 end;
 
 procedure TIDEWindowCreatorList.CreateForm(var AForm: TCustomForm;

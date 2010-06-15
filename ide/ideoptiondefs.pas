@@ -758,7 +758,9 @@ begin
       ALayout.Form:=AForm;
       if ALayout.Applied then exit;
       ALayout.Applied:=true;
+      {$IFDEF VerboseIDEDocking}
       debugln(['TSimpleWindowLayoutList.ApplyAndShow restore ',ALayout.FormID]);
+      {$ENDIF}
 
       WindowType:=NonModalIDEFormIDToEnum(ALayout.FormID);
       SubIndex := -1;
