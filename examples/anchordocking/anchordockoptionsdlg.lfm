@@ -1,21 +1,13 @@
-object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
-  Left = 595
-  Height = 372
-  Top = 319
-  Width = 311
-  Caption = 'AnchorDockOptionsDialog'
-  ClientHeight = 372
-  ClientWidth = 311
-  OnCreate = FormCreate
-  LCLVersion = '0.9.29'
-  object ButtonPanel1: TButtonPanel
-    Left = 6
-    Height = 42
-    Top = 324
-    Width = 299
-    TabOrder = 0
-    ShowButtons = [pbOK, pbCancel]
-  end
+object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
+  Left = 0
+  Height = 346
+  Top = 0
+  Width = 352
+  ClientHeight = 346
+  ClientWidth = 352
+  TabOrder = 0
+  DesignLeft = 456
+  DesignTop = 222
   object DragThresholdLabel: TLabel
     Left = 10
     Height = 18
@@ -72,7 +64,7 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
     Caption = 'ScaleOnResizeCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 1
+    TabOrder = 0
   end
   object DragThresholdTrackBar: TTrackBar
     AnchorSideLeft.Control = DragThresholdLabel
@@ -83,7 +75,7 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
     Left = 10
     Height = 25
     Top = 28
-    Width = 291
+    Width = 332
     Max = 20
     OnChange = DragThresholdTrackBarChange
     Position = 0
@@ -91,7 +83,7 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
     BorderSpacing.Right = 10
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 2
+    TabOrder = 1
   end
   object HeaderAlignTopTrackBar: TTrackBar
     AnchorSideLeft.Control = DragThresholdTrackBar
@@ -102,7 +94,7 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
     Left = 10
     Height = 25
     Top = 210
-    Width = 291
+    Width = 332
     Frequency = 10
     Max = 150
     OnChange = HeaderAlignTopTrackBarChange
@@ -111,7 +103,7 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
     Anchors = [akTop, akLeft, akRight]
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 3
+    TabOrder = 2
   end
   object HeaderAlignLeftTrackBar: TTrackBar
     AnchorSideLeft.Control = DragThresholdTrackBar
@@ -122,7 +114,7 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
     Left = 10
     Height = 25
     Top = 263
-    Width = 291
+    Width = 332
     Frequency = 10
     Max = 200
     OnChange = HeaderAlignLeftTrackBarChange
@@ -131,7 +123,7 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
     Anchors = [akTop, akLeft, akRight]
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 4
+    TabOrder = 3
   end
   object SplitterWidthTrackBar: TTrackBar
     AnchorSideLeft.Control = DragThresholdTrackBar
@@ -142,14 +134,14 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
     Left = 10
     Height = 25
     Top = 81
-    Width = 291
+    Width = 332
     Min = 1
     OnChange = SplitterWidthTrackBarChange
     Position = 1
     Anchors = [akTop, akLeft, akRight]
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 5
+    TabOrder = 4
   end
   object ShowHeaderCaptionCheckBox: TCheckBox
     AnchorSideLeft.Control = ScaleOnResizeCheckBox
@@ -175,6 +167,6 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
     Caption = 'HideHeaderCaptionForFloatingCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 7
+    TabOrder = 5
   end
 end

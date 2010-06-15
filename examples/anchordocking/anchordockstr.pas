@@ -75,6 +75,7 @@ resourcestring
   adrsEmptyName = 'Empty name: ';
   adrsDuplicateName = 'Duplicate name: ';
   adrsDragThreshold = 'Drag threshold';
+  adrsGeneralDockingOptions = 'General docking options';
   adrsAmountOfPixelTheMouseHasToDragBeforeDragStarts = 'Amount of pixel the '
     +'mouse has to drag before drag starts';
   adrsHeaderAlignTop = 'Header align top';
@@ -88,6 +89,13 @@ resourcestring
   adrsScaleOnResize = 'Scale on resize';
   adrsScaleSubSitesWhenASiteIsResized =
     'Scale sub sites when a site is resized';
+  adrsShowHeaderCaptions = 'Show header captions';
+  adrsShowCaptionsOfDockedControlsInTheHeader = 'Show captions of docked '
+    +'controls in the header';
+  adrsNoCaptionsForFloatingSites = 'No captions for floating sites';
+  adrsHideHeaderCaptionsForSitesWithOnlyOneDockedControl = 'Hide header '
+    +'captions for sites with only one docked control, as that is already '
+    +'shown in the normal window title';
 
 implementation
 
