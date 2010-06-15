@@ -387,7 +387,8 @@ type
     FPageControlClass: TAnchorDockPageControlClass;
     FRestoreLayouts: TAnchorDockRestoreLayouts;
     FScaleOnResize: boolean;
-    FShowHeaderCaptionFloatingControl: boolean;
+    FShowHeaderCaption: boolean;
+    FHideHeaderCaptionFloatingControl: boolean;
     FSiteClass: TAnchorDockHostSiteClass;
     FSplitterClass: TAnchorDockSplitterClass;
     FSplitterWidth: integer;
@@ -409,21 +410,22 @@ type
     procedure PopupMenuPopup(Sender: TObject);
     procedure ChangeLockButtonClick(Sender: TObject);
     procedure OptionsClick(Sender: TObject);
-    procedure SetHeaderButtonSize(const AValue: integer);
   protected
     fCloseBtnReferenceCount: integer;
     fCloseBtnBitmap: TBitmap;
-    procedure SetHeaderAlignLeft(const AValue: integer);
-    procedure SetHeaderAlignTop(const AValue: integer);
-    procedure SetShowHeaderCaptionFloatingControl(const AValue: boolean);
-    procedure SetSplitterWidth(const AValue: integer);
     function DoCreateControl(aName: string; DisableAutoSizing: boolean): TControl;
+    procedure AutoSizeAllHeaders(EnableAutoSizing: boolean);
+    procedure CreateCloseButtonBitmap; virtual;
     procedure DisableControlAutoSizing(AControl: TControl);
+    procedure FreeCloseButtonBitmap; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
           override;
-    procedure CreateCloseButtonBitmap; virtual;
-    procedure FreeCloseButtonBitmap; virtual;
-    procedure AutoSizeAllHeaders(EnableAutoSizing: boolean);
+    procedure SetHeaderAlignLeft(const AValue: integer);
+    procedure SetHeaderAlignTop(const AValue: integer);
+    procedure SetHeaderButtonSize(const AValue: integer);
+    procedure SetShowHeaderCaption(const AValue: boolean);
+    procedure SetHideHeaderCaptionFloatingControl(const AValue: boolean);
+    procedure SetSplitterWidth(const AValue: integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -491,8 +493,9 @@ type
     property HeaderHint: string read FHeaderHint write FHeaderHint;
     property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
     property ScaleOnResize: boolean read FScaleOnResize write FScaleOnResize default true; // scale children when resizing a site
-    property ShowHeaderCaptionFloatingControl: boolean read FShowHeaderCaptionFloatingControl
-                          write SetShowHeaderCaptionFloatingControl default false;
+    property ShowHeaderCaption: boolean read FShowHeaderCaption write SetShowHeaderCaption default true;
+    property HideHeaderCaptionFloatingControl: boolean read FHideHeaderCaptionFloatingControl
+                          write SetHideHeaderCaptionFloatingControl default true;
     property OnCreateControl: TADCreateControlEvent read FOnCreateControl write FOnCreateControl;
     property AllowDragging: boolean read FAllowDragging write FAllowDragging default true;
     property HeaderButtonSize: integer read FHeaderButtonSize write SetHeaderButtonSize default 10;
@@ -1412,17 +1415,18 @@ begin
     AddPopupMenuItem('OptionsMenuItem', adrsDockingOptions, @OptionsClick);
 end;
 
-procedure TAnchorDockMaster.SetShowHeaderCaptionFloatingControl(
+procedure TAnchorDockMaster.SetHideHeaderCaptionFloatingControl(
   const AValue: boolean);
 var
   Site: TAnchorDockHostSite;
   i: Integer;
 begin
-  if AValue=ShowHeaderCaptionFloatingControl then exit;
+  if AValue=HideHeaderCaptionFloatingControl then exit;
+  fHideHeaderCaptionFloatingControl:=AValue;
   for i:=0 to ComponentCount-1 do begin
     Site:=TAnchorDockHostSite(Components[i]);
     if not (Site is TAnchorDockHostSite) then continue;
-    Site.UpdateHeaderShowing;
+    Site.UpdateDockCaption;
   end;
 end;
 
@@ -1459,6 +1463,20 @@ begin
   FHeaderButtonSize:=Max(1,AValue);
   FreeCloseButtonBitmap;
   AutoSizeAllHeaders(true);
+end;
+
+procedure TAnchorDockMaster.SetShowHeaderCaption(const AValue: boolean);
+var
+  i: Integer;
+  Site: TAnchorDockHostSite;
+begin
+  if FShowHeaderCaption=AValue then exit;
+  FShowHeaderCaption:=AValue;
+  for i:=0 to ComponentCount-1 do begin
+    Site:=TAnchorDockHostSite(Components[i]);
+    if not (Site is TAnchorDockHostSite) then continue;
+    Site.UpdateDockCaption;
+  end;
 end;
 
 procedure TAnchorDockMaster.Notification(AComponent: TComponent;
@@ -1537,6 +1555,8 @@ begin
   FHeaderAlignTop:=80;
   HeaderAlignLeft:=120;
   FHeaderHint:=adrsDragAndDockC;
+  FShowHeaderCaption:=true;
+  FHideHeaderCaptionFloatingControl:=true;
   FSplitterWidth:=4;
   FScaleOnResize:=true;
   fNeedSimplify:=TFPList.Create;
@@ -3741,7 +3761,8 @@ begin
   end;
   OldCaption:=Caption;
   Caption:=NewCaption;
-  if (Parent=nil) and not DockMaster.ShowHeaderCaptionFloatingControl then
+  if ((Parent=nil) and DockMaster.HideHeaderCaptionFloatingControl)
+  or (not DockMaster.ShowHeaderCaption) then
     Header.Caption:=''
   else
     Header.Caption:=Caption;

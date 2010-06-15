@@ -1,17 +1,17 @@
 object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
   Left = 595
-  Height = 317
+  Height = 372
   Top = 319
   Width = 311
   Caption = 'AnchorDockOptionsDialog'
-  ClientHeight = 317
+  ClientHeight = 372
   ClientWidth = 311
   OnCreate = FormCreate
   LCLVersion = '0.9.29'
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 42
-    Top = 269
+    Top = 324
     Width = 299
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
@@ -26,11 +26,11 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
   end
   object HeaderAlignTopLabel: TLabel
     AnchorSideLeft.Control = DragThresholdLabel
-    AnchorSideTop.Control = ScaleOnResizeCheckBox
+    AnchorSideTop.Control = HideHeaderCaptionForFloatingCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 10
     Height = 18
-    Top = 148
+    Top = 192
     Width = 138
     BorderSpacing.Top = 10
     Caption = 'HeaderAlignTopLabel'
@@ -42,7 +42,7 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
     AnchorSideTop.Side = asrBottom
     Left = 10
     Height = 18
-    Top = 201
+    Top = 245
     Width = 141
     BorderSpacing.Top = 10
     Caption = 'HeaderAlignLeftLabel'
@@ -101,7 +101,7 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
     AnchorSideRight.Side = asrBottom
     Left = 10
     Height = 25
-    Top = 166
+    Top = 210
     Width = 291
     Frequency = 10
     Max = 150
@@ -121,7 +121,7 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
     AnchorSideRight.Side = asrBottom
     Left = 10
     Height = 25
-    Top = 219
+    Top = 263
     Width = 291
     Frequency = 10
     Max = 200
@@ -150,5 +150,31 @@ object AnchorDockOptionsDialog: TAnchorDockOptionsDialog
     ParentShowHint = False
     ShowHint = True
     TabOrder = 5
+  end
+  object ShowHeaderCaptionCheckBox: TCheckBox
+    AnchorSideLeft.Control = ScaleOnResizeCheckBox
+    AnchorSideTop.Control = ScaleOnResizeCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 22
+    Top = 138
+    Width = 225
+    Caption = 'ShowHeaderCaptionCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 6
+  end
+  object HideHeaderCaptionForFloatingCheckBox: TCheckBox
+    AnchorSideLeft.Control = ShowHeaderCaptionCheckBox
+    AnchorSideTop.Control = ShowHeaderCaptionCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 22
+    Top = 160
+    Width = 294
+    Caption = 'HideHeaderCaptionForFloatingCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 7
   end
 end

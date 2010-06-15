@@ -49,7 +49,9 @@ type
     HeaderAlignLeftTrackBar: TTrackBar;
     HeaderAlignTopLabel: TLabel;
     HeaderAlignTopTrackBar: TTrackBar;
+    HideHeaderCaptionForFloatingCheckBox: TCheckBox;
     ScaleOnResizeCheckBox: TCheckBox;
+    ShowHeaderCaptionCheckBox: TCheckBox;
     SplitterWidthLabel: TLabel;
     SplitterWidthTrackBar: TTrackBar;
     procedure ButtonPanel1Click(Sender: TObject);
@@ -106,6 +108,10 @@ begin
   SplitterWidthTrackBar.Hint:=adrsSplitterThickness;
   ScaleOnResizeCheckBox.Caption:=adrsScaleOnResize;
   ScaleOnResizeCheckBox.Hint:=adrsScaleSubSitesWhenASiteIsResized;
+  ShowHeaderCaptionCheckBox.Caption:='Show header captions';
+  ShowHeaderCaptionCheckBox.Hint:='Show captions of docked controls in the header';
+  HideHeaderCaptionForFloatingCheckBox.Caption:='No captions for floating sites';
+  HideHeaderCaptionForFloatingCheckBox.Hint:='Hide header captions for sites with only one docked control, as that is already shown in the normal window title';
 
   ButtonPanel1.OKButton.ModalResult:=mrNone;
   ButtonPanel1.OKButton.OnClick:=@ButtonPanel1Click;
@@ -135,6 +141,8 @@ begin
   Master.HeaderAlignLeft := HeaderAlignLeftTrackBar.Position;
   Master.SplitterWidth   := SplitterWidthTrackBar.Position;
   Master.ScaleOnResize   := ScaleOnResizeCheckBox.Checked;
+  Master.ShowHeaderCaption   := ShowHeaderCaptionCheckBox.Checked;
+  Master.HideHeaderCaptionFloatingControl   := HideHeaderCaptionForFloatingCheckBox.Checked;
   ModalResult:=mrOk;
 end;
 
@@ -157,6 +165,8 @@ begin
     SplitterWidthTrackBar.Position:=Master.SplitterWidth;
     UpdateSplitterWidthLabel;
     ScaleOnResizeCheckBox.Checked:=Master.ScaleOnResize;
+    ShowHeaderCaptionCheckBox.Checked:=Master.ShowHeaderCaption;
+    HideHeaderCaptionForFloatingCheckBox.Checked:=Master.HideHeaderCaptionFloatingControl;
   end;
 end;
 
