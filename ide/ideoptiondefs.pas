@@ -876,7 +876,7 @@ begin
     if (AForm.WindowState in [wsNormal,wsMaximized]) and BringToFront then
       AForm.ShowOnTop
     else
-      AForm.Show;
+      AForm.Visible:=true;
   end;
 end;
 

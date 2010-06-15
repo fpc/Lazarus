@@ -770,7 +770,7 @@ begin
   else if BringToFront then
     AForm.ShowOnTop
   else
-    AForm.Show;
+    AForm.Visible:=true;
 end;
 
 function TIDEWindowCreatorList.ShowForm(AFormName: string; BringToFront: boolean
