@@ -405,7 +405,9 @@ begin
     for p:=length(s) downto 1 do
       if s[p]='\' then
         System.Insert('\',s,p+1);
-    FHints.Add(Trim(s));
+    s:=Trim(s);
+    if FHints.IndexOf(s)<0 then
+      FHints.AddObject(s,TObject(i));
   end;
   if FHints.Count=0 then
     FHints.Add(lisNoHints);
