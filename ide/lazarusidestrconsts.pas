@@ -3830,6 +3830,8 @@ resourcestring
   lisPckEditAddAnItem = 'Add an item';
   lisPckEditRemoveSelectedItem = 'Remove selected item';
   lisPckEditInstallPackageInTheIDE = 'Install package in the IDE';
+  lisUse = 'Use...';
+  lisClickToSeeThePossibleUses = 'Click to see the possible uses';
   lisPckEditEditGeneralOptions = 'Edit General Options';
   lisPckEditCompOpts = 'Compiler Options';
   lisPckEditHelp = 'Help';
@@ -3867,6 +3869,13 @@ resourcestring
   lisPkgEditRevertPackage = 'Revert package?';
   lisPkgEditDoYouReallyWantToForgetAllChangesToPackageAnd = 'Do you really '
     +'want to forget all changes to package %s and reload it from file?';
+  lisNotAnInstallPackage = 'Not an install package';
+  lisThePackageDoesNotHaveAnyRegisterProcedureWhichTypi = 'The package %s '
+    +'does not have any "Register" procedure, which typically means, it does '
+    +'not provide any IDE addon. Installing it will probably only increase '
+    +'the size of the IDE and may even make it unstable.%s%sHint: If you want '
+    +'to use a package in your project, use the "Add to project" menu item.';
+  lisInstallItILikeTheFat = 'Install it, I like the fat';
 
   // package options dialog
   lisPckOptsUsage = 'Usage';

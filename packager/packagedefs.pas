@@ -676,6 +676,7 @@ type
     procedure LongenFilename(var AFilename: string);
     function FindPkgFile(const AFilename: string;
                          IgnoreRemoved, FindNewFile: boolean): TPkgFile;
+    function FindUnitWithRegister(IgnorePkgFile: TPkgFile = nil): TPkgFile;
     function FindUnit(const TheUnitName: string): TPkgFile;
     function FindUnit(const TheUnitName: string; IgnoreRemoved: boolean): TPkgFile;
     function FindUnit(const TheUnitName: string; IgnoreRemoved: boolean;
@@ -2844,6 +2845,21 @@ begin
       if CompareFilenames(Result.Filename,TheFilename)=0 then
         exit;
     end;
+  end;
+  Result:=nil;
+end;
+
+function TLazPackage.FindUnitWithRegister(IgnorePkgFile: TPkgFile): TPkgFile;
+var
+  Cnt: LongInt;
+  i: Integer;
+begin
+  Cnt:=FileCount;
+  for i:=0 to Cnt-1 do begin
+    Result:=Files[i];
+    if IgnorePkgFile=Result then continue;
+    if not (Result.FileType in PkgFileRealUnitTypes) then continue;
+    if Result.HasRegisterProc then exit;
   end;
   Result:=nil;
 end;

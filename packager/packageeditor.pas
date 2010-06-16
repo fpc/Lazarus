@@ -109,7 +109,7 @@ type
     CompileBitBtn: TToolButton;
     AddBitBtn: TToolButton;
     RemoveBitBtn: TToolButton;
-    InstallBitBtn: TToolButton;
+    UseBitBtn: TToolButton;
     OptionsBitBtn: TToolButton;
     CompilerOptionsBitBtn: TToolButton;
     MoreBitBtn: TToolButton;
@@ -132,6 +132,7 @@ type
     // statusbar
     StatusBar: TStatusBar;
     // hidden components
+    UsePopupMenu: TPopupMenu;
     FilesPopupMenu: TPopupMenu;
     procedure AddBitBtnClick(Sender: TObject);
     procedure AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
@@ -146,12 +147,13 @@ type
     procedure CreateMakefileClick(Sender: TObject);
     procedure FilePropsGroupBoxResize(Sender: TObject);
     procedure FilesPopupMenuPopup(Sender: TObject);
+    procedure UsePopupMenuPopup(Sender: TObject);
     procedure FilesTreeViewDblClick(Sender: TObject);
     procedure FilesTreeViewKeyPress(Sender: TObject; var Key: Char);
     procedure FilesTreeViewSelectionChanged(Sender: TObject);
     procedure FixFilesCaseMenuItemClick(Sender: TObject);
     procedure HelpBitBtnClick(Sender: TObject);
-    procedure InstallBitBtnClick(Sender: TObject);
+    procedure InstallClick(Sender: TObject);
     procedure MaxVersionEditChange(Sender: TObject);
     procedure MinVersionEditChange(Sender: TObject);
     procedure MoveDependencyDownClick(Sender: TObject);
@@ -277,6 +279,7 @@ type
     function CompilePackage(APackage: TLazPackage;
                             CompileClean,CompileRequired: boolean): TModalResult;
     procedure UpdateAllEditors(Immediately: boolean);
+    function ShouldNotBeInstalled(APackage: TLazPackage): boolean;// possible, but probably a bad idea
     function InstallPackage(APackage: TLazPackage): TModalResult;
     function UninstallPackage(APackage: TLazPackage): TModalResult;
     function ViewPkgSource(APackage: TLazPackage): TModalResult;
@@ -473,14 +476,15 @@ var
   
 begin
   ItemCnt:=0;
+
   CurDependency:=GetCurrentDependency(Removed);
   Writable:=(not LazPackage.ReadOnly);
-  if CurDependency=nil then
+  if (CurDependency=nil) then
     CurFile:=GetCurrentFile(Removed)
   else
     CurFile:=nil;
 
-  if CurFile<>nil then begin
+  if (CurFile<>nil) then begin
     FileIndex:=LazPackage.IndexOfPkgFile(CurFile);
     if not Removed then begin
       AddPopupMenuItem(lisOpenFile, @OpenFileMenuItemClick, true);
@@ -500,7 +504,7 @@ begin
                        AddBitBtn.Enabled);
     end;
   end;
-  if LazPackage.FileCount>1 then begin
+  if (LazPackage.FileCount>1) then begin
     AddPopupMenuItem(lisPESortFiles, @SortFilesMenuItemClick, Writable);
     AddPopupMenuItem(lisPEFixFilesCase, @FixFilesCaseMenuItemClick, Writable);
   end;
@@ -537,8 +541,7 @@ begin
 
   AddPopupMenuItem(lisPckEditAddToProject, @AddToProjectClick,
                    CanBeAddedToProject);
-  AddPopupMenuItem(lisPckEditInstall, @InstallBitBtnClick, InstallBitBtn.Enabled
-    );
+  AddPopupMenuItem(lisPckEditInstall, @InstallClick,not LazPackage.AutoCreated);
   AddPopupMenuItem(lisPckEditUninstall, @UninstallClick,
           (LazPackage.Installed<>pitNope) or (LazPackage.AutoInstall<>pitNope));
   AddPopupMenuItem('-',nil,true);
@@ -573,6 +576,40 @@ begin
     FilesPopupMenu.Items.Delete(FilesPopupMenu.Items.Count-1);
 end;
 
+procedure TPackageEditorForm.UsePopupMenuPopup(Sender: TObject);
+var
+  ItemCnt: Integer;
+
+  function AddPopupMenuItem(const ACaption: string; AnEvent: TNotifyEvent;
+    EnabledFlag: boolean): TMenuItem;
+  begin
+    if UsePopupMenu.Items.Count<=ItemCnt then begin
+      Result:=TMenuItem.Create(Self);
+      UsePopupMenu.Items.Add(Result);
+    end else begin
+      Result:=UsePopupMenu.Items[ItemCnt];
+      while Result.Count>0 do Result.Delete(Result.Count-1);
+    end;
+    Result.Caption:=ACaption;
+    Result.OnClick:=AnEvent;
+    Result.Enabled:=EnabledFlag;
+    inc(ItemCnt);
+  end;
+
+begin
+  ItemCnt:=0;
+
+  AddPopupMenuItem(lisPckEditAddToProject, @AddToProjectClick,
+                   CanBeAddedToProject);
+  AddPopupMenuItem(lisPckEditInstall, @InstallClick,not LazPackage.AutoCreated);
+  AddPopupMenuItem(lisPckEditUninstall, @UninstallClick,
+          (LazPackage.Installed<>pitNope) or (LazPackage.AutoInstall<>pitNope));
+
+  // remove unneeded menu items
+  while UsePopupMenu.Items.Count>ItemCnt do
+    UsePopupMenu.Items.Delete(UsePopupMenu.Items.Count-1);
+end;
+
 procedure TPackageEditorForm.FilesTreeViewDblClick(Sender: TObject);
 begin
   OpenFileMenuItemClick(Self);
@@ -595,7 +632,7 @@ begin
   ShowContextHelpForIDE(HelpBitBtn);
 end;
 
-procedure TPackageEditorForm.InstallBitBtnClick(Sender: TObject);
+procedure TPackageEditorForm.InstallClick(Sender: TObject);
 begin
   PackageEditors.InstallPackage(LazPackage);
 end;
@@ -1315,7 +1352,7 @@ begin
 
   SaveBitBtn := CreateToolButton('SaveBitBtn', lisMenuSave, lisPckEditSavePackage, 'laz_save', @SaveBitBtnClick);
   CompileBitBtn := CreateToolButton('CompileBitBtn', lisPckEditCompile, lisPckEditCompilePackage, 'pkg_compile', @CompileBitBtnClick);
-  InstallBitBtn := CreateToolButton('InstallBitBtn', lisPckEditInstall, lisPckEditInstallPackageInTheIDE, 'pkg_install', @InstallBitBtnClick);
+  UseBitBtn := CreateToolButton('UseBitBtn', lisPckEditInstall, lisPckEditInstallPackageInTheIDE, 'pkg_install', nil);
   CreateDivider;
   AddBitBtn := CreateToolButton('AddBitBtn', lisCodeTemplAdd, lisPckEditAddAnItem, 'laz_add', @AddBitBtnClick);
   RemoveBitBtn := CreateToolButton('RemoveBitBtn', lisExtToolRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
@@ -1332,8 +1369,13 @@ begin
     Name := 'FilesPopupMenu';
     OnPopup := @FilesPopupMenuPopup;
   end;
+  UsePopupMenu := TPopupMenu.Create(Self);
+  with UsePopupMenu do
+  begin
+    Name := 'UsePopupMenu';
+    OnPopup := @UsePopupMenuPopup;
+  end;
 
-  //MoreBitBtn.Style := tbsDropDown;
   MoreBitBtn.DropdownMenu := FilesPopupMenu;
 
   FilesTreeView:=TTreeView.Create(Self);
@@ -1526,7 +1568,22 @@ begin
      and (FilesTreeView.Selected<>nil)
      and ((FilesTreeView.Selected.Parent=FilesNode)
            or (FilesTreeView.Selected.Parent=RequiredPackagesNode));
-  InstallBitBtn.Enabled:=(not LazPackage.AutoCreated);
+  if (LazPackage.Installed<>pitNope)
+  or PackageEditors.ShouldNotBeInstalled(LazPackage) then begin
+    // show use... button
+    UseBitBtn.Caption:=lisUse;
+    UseBitBtn.Hint:=lisClickToSeeThePossibleUses;
+    UseBitBtn.Enabled:=true;
+    UseBitBtn.OnClick:=nil;
+    UseBitBtn.DropdownMenu:=UsePopupMenu;
+  end else begin
+    // show install button
+    UseBitBtn.Caption:=lisPckEditInstall;
+    UseBitBtn.Hint:=lisPckEditInstallPackageInTheIDE;
+    UseBitBtn.Enabled:=(not LazPackage.AutoCreated);
+    UseBitBtn.OnClick:=@InstallClick;
+    UseBitBtn.DropdownMenu:=nil;
+  end;
   OptionsBitBtn.Enabled:=true;
   CompilerOptionsBitBtn.Enabled:=true;
 end;
@@ -2341,8 +2398,22 @@ begin
   for i:=0 to Count-1 do Editors[i].UpdateAll(Immediately);
 end;
 
+function TPackageEditors.ShouldNotBeInstalled(APackage: TLazPackage): boolean;
+begin
+  Result:=APackage.AutoCreated
+     or ((APackage.FindUnitWithRegister=nil) and (APackage.Provides.Count=0));
+end;
+
 function TPackageEditors.InstallPackage(APackage: TLazPackage): TModalResult;
 begin
+  if ShouldNotBeInstalled(APackage) then begin
+    if QuestionDlg(lisNotAnInstallPackage,
+      Format(lisThePackageDoesNotHaveAnyRegisterProcedureWhichTypi, [APackage.
+        Name, #13, #13]),
+      mtWarning,
+      [mrIgnore, lisInstallItILikeTheFat, mrCancel, dlgCancel], '')<>mrIgnore
+    then exit(mrCancel);
+  end;
   if Assigned(OnInstallPackage) then
     Result:=OnInstallPackage(Self,APackage)
   else
