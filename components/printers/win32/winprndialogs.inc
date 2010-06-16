@@ -238,6 +238,7 @@ begin
         nToPage := Word(ToPage);
         nMinPage := Word(MinPage);
         nMaxPage := Word(MaxPage);
+        DevMode^.dmCopies := nCopies;
         
         if PrintDlg(lpp) then
         begin
