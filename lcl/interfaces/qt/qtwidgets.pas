@@ -8309,7 +8309,7 @@ begin
 
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_SELCHANGE;
-  if getSelCount > 0 then
+  if (getSelCount > 0) and (FChildOfComplexWidget <> ccwComboBox) then
     DeliverMessage(Msg);
 end;
 
