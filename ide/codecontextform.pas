@@ -407,7 +407,7 @@ begin
         System.Insert('\',s,p+1);
     s:=Trim(s);
     if FHints.IndexOf(s)<0 then
-      FHints.AddObject(s,TObject(i));
+      FHints.Add(s);
   end;
   if FHints.Count=0 then
     FHints.Add(lisNoHints);
