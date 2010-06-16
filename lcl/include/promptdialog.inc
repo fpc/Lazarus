@@ -185,7 +185,7 @@ begin
   BorderStyle := bsDialog;
   Position    := poScreenCenter;
   SetInitialBounds(0,0,200,100);
-  MSG         := AMSG;
+  MSG         := ConvertLineEndings(AMSG);
   Buttons     := nil;
   FBitmap := nil;
   case DialogType of
@@ -606,7 +606,10 @@ var
   UseMaskHandle: HBitmap;
 begin
   inherited Paint;
+  // draw the text
+  Canvas.Brush := Brush;
   Canvas.TextRect(TextBox, TextBox.Left, TextBox.Top, MessageTxt, TextStyle);
+  // draw the icon
   if Assigned (FBitmap) then
   begin
     UseMaskHandle := FBitmap.MaskHandle;
@@ -788,11 +791,24 @@ var
   ok: Boolean;
 begin
   inherited Create(nil);
+
   BorderStyle := bsDialog;
   Position := poScreenCenter;
-  MessageTxt := aMsg;
+  MessageTxt := ConvertLineEndings(aMsg);
   HelpContext := HelpCtx;
   OnKeyDown := @ButtonKeyDown;
+
+  // Initialize TextStyle
+  FillChar(TextStyle, SizeOf(TTextStyle), 0);
+  with TextStyle do
+  begin
+    Clipping   := True;
+    Wordbreak  := True;
+    SystemFont := True;
+    Opaque     := False;
+    ShowPrefix := True;
+  end;
+
   ok := false;
   try
     i:=Low(Buttons);
