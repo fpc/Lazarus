@@ -64,7 +64,7 @@ uses
     TurboPowerIPro, {$ifdef UseTurbopowerInHelp}TurboPowerIProDsgn,{$endif}
     {$ifdef UseJCF}jcfidelazarus,{$endif}
     {$ifdef UseCHMHelp}chmhelppkg,{$endif}
-    FPCUnitTestRunner, FPCUnitIDE, ProjTemplates,
+    FPCUnitTestRunner, FPCUnitIDE, ProjTemplates, TAChartLazarusPkg,
     {$IFDEF windows}
       SQLDBLaz, DBFLaz,
     {$ENDIF}
