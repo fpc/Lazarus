@@ -20,6 +20,9 @@
  *                                                                           *
  *****************************************************************************
 
+  This unit is deprecated, because there is something better:
+  package TAChartLazarusPkg.
+
   Author: Michael Van Canneyt
 }
 unit Chart;
@@ -101,7 +104,9 @@ type
   end;
   
   
-  { TBarChart }
+  { TBarChart
+    Deprecated!
+    Use package TAChartLazarusPkg instead. It has a compatible and better component.}
   
   TBarChart = class(TCustomBarChart)
   published
@@ -144,7 +149,7 @@ type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
-  end deprecated;
+  end deprecated; // use package TAChartLazarusPkg instead. It has a compatible and better component.
 
 
 procedure Register;
