@@ -367,7 +367,7 @@ type
     property AlwaysShowDragImages: Boolean read FAlwaysShowDragImages write FAlwaysShowDragImages;
     property AutoCreated: Boolean read FAutoCreated;
     property AutoFree: Boolean read FAutoFree;
-    property Control: TControl read FControl write FControl;
+    property Control: TControl read FControl write FControl; // the dragged control
     property DragPos: TPoint read FDragPos write FDragPos;
     property DragTarget: TControl read FDragTarget write FDragTarget;
     property DragTargetPos: TPoint read FDragTargetPos write FDragTargetPos;
@@ -442,9 +442,9 @@ type
     procedure MoveDockImage; virtual;
   public
     property DockOffset: TPoint read FDockOffset write FDockOffset;
-    property DockRect: TRect read FDockRect write FDockRect;
-    property DropAlign: TAlign read FDropAlign write FDropAlign;
-    property DropOnControl: TControl read FDropOnControl write FDropOnControl;
+    property DockRect: TRect read FDockRect write FDockRect; // where to drop Control, screen coordinates
+    property DropAlign: TAlign read FDropAlign write FDropAlign; // how to align Control
+    property DropOnControl: TControl read FDropOnControl write FDropOnControl; // drop on child control of Target (Target is a parameter, not a property)
     property Floating: Boolean read FFloating write FFloating;
     property IncreaseDockArea: Boolean read FIncreaseDockArea;
     property EraseDockRect: TRect read FEraseDockRect write FEraseDockRect;

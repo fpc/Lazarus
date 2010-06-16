@@ -189,6 +189,7 @@ var
   DockAlign: TAlign;
   DockSibling: TCustomForm;
   NewDockSite: TWinControl;
+  Site: TAnchorDockHostSite;
 begin
   debugln(['TIDEAnchorDockMaster.ShowForm ',DbgSName(AForm),' BringToFront=',BringToFront]);
   try
@@ -197,6 +198,7 @@ begin
       // already docked
     end else begin
       // this form was not yet docked
+
       // place it at a default position and make it dockable
       GetDefaultBounds(AForm,Creator,NewBounds,DockSiblingName,DockAlign);
       if Creator<>nil then
@@ -206,35 +208,29 @@ begin
         NewBounds.Top:=Min(10000,Max(-10000,NewBounds.Top));
         NewBounds.Right:=Max(NewBounds.Left+100,NewBounds.Right);
         NewBounds.Bottom:=Max(NewBounds.Top+100,NewBounds.Bottom);
+        AForm.BoundsRect:=NewBounds;
         AForm.UndockWidth:=NewBounds.Right-NewBounds.Left;
         AForm.UndockHeight:=NewBounds.Bottom-NewBounds.Top;
         debugln(['TIDEAnchorDockMaster.ShowForm creator for ',DbgSName(AForm),' found: Left=',Creator.Left,' Top=',Creator.Top,' Width=',Creator.Width,' Height=',Creator.Height,' DockSiblingName=',DockSiblingName,' DockAlign=',dbgs(DockAlign)]);
+        DockMaster.MakeDockable(AForm,false);
+        Site:=DockMaster.GetSite(AForm);
         if DockSiblingName<>'' then
         begin
           DockSibling:=Screen.FindForm(DockSiblingName);
           debugln(['TIDEAnchorDockMaster.ShowForm DockSiblingName="',DockSiblingName,'" DockSibling=',DbgSName(DockSibling)]);
           if DockSibling<>nil then
           begin
-            NewDockSite:=DockSibling.HostDockSite;
-            debugln(['TIDEAnchorDockMaster.ShowForm NewDockSite=',DbgSName(NewDockSite)]);
-            {if NewDockSite<>nil then
-              AForm.ManualDock(NewDockSite,nil,DockAlign)
-            else
-              AForm.ManualDock(nil,DockSibling,DockAlign);}
+            NewDockSite:=DockMaster.GetSite(DockSibling);
+            debugln(['TIDEAnchorDockMaster.ShowForm NewDockSite=',DbgSName(NewDockSite),'="',NewDockSite.Caption,'"']);
+            DockMaster.ManualDock(Site,NewDockSite,DockAlign);
           end;
-        end;
-        if AForm.Parent=nil then begin
-          debugln(['TIDEAnchorDockMaster.ShowForm ',DbgSName(AForm),' make dockable NewBounds=',dbgs(NewBounds)]);
-          AForm.BoundsRect:=NewBounds;
-          // make form dockable
-          MakeIDEWindowDockable(AForm);
         end;
       end;
     end;
 
   finally
     if DockMaster.IsCustomSite(AForm) then
-      AForm.Show
+      AForm.Visible:=true
     else
       DockMaster.MakeDockable(AForm,true,false);
     AForm.EnableAlign;

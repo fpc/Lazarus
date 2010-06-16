@@ -262,7 +262,7 @@ type
     function IsOneSiteLayout(out Site: TAnchorDockHostSite): boolean;
     function IsTwoSiteLayout(out Site1, Site2: TAnchorDockHostSite): boolean;
     function GetUniqueSplitterName: string;
-    function GetSite(AControl: TControl): TAnchorDockHostSite;
+    function MakeSite(AControl: TControl): TAnchorDockHostSite;
     procedure MoveAllControls(dx, dy: integer);
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
     procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); override;
@@ -466,7 +466,7 @@ type
 
     // manual docking
     procedure ManualFloat(AControl: TControl);
-    procedure ManualDock(SrcSite, TargetSite: TAnchorDockHostSite;
+    procedure ManualDock(SrcSite: TAnchorDockHostSite; TargetSite: TCustomForm;
                          Align: TAlign; TargetControl: TControl = nil);
     function ManualEnlarge(Site: TAnchorDockHostSite; Side: TAnchorKind;
                          OnlyCheckIfPossible: boolean): boolean;
@@ -1262,7 +1262,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree): boolean;
       // restore layout
       Site:=TAnchorDockHostSite(fTreeNameToDocker[Node.Name]);
       if Site=nil then begin
-        Site:=CreateSite('',true);
+        Site:=CreateSite;
         fDisabledAutosizing.Add(Site);
         fTreeNameToDocker[Node.Name]:=Site;
       end;
@@ -1304,7 +1304,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree): boolean;
       // restore pages
       Site:=TAnchorDockHostSite(fTreeNameToDocker[Node.Name]);
       if Site=nil then begin
-        Site:=CreateSite('',true);
+        Site:=CreateSite;
         fDisabledAutosizing.Add(Site);
         fTreeNameToDocker[Node.Name]:=Site;
       end;
@@ -1688,6 +1688,9 @@ begin
   then
     raise Exception.Create('TAnchorDockMaster.MakeDockable '+
       adrsModalFormsCanNotBeMadeDockable);
+  if IsCustomSite(AControl) then
+    raise Exception.Create('TAnchorDockMaster.MakeDockable '+
+      adrsControlIsAlreadyADocksite);
   Site:=nil;
   AControl.DisableAutoSizing;
   try
@@ -2011,19 +2014,53 @@ begin
   Site.Undock;
 end;
 
-procedure TAnchorDockMaster.ManualDock(SrcSite,
-  TargetSite: TAnchorDockHostSite; Align: TAlign; TargetControl: TControl);
+procedure TAnchorDockMaster.ManualDock(SrcSite: TAnchorDockHostSite;
+  TargetSite: TCustomForm; Align: TAlign; TargetControl: TControl);
+var
+  Site: TAnchorDockHostSite;
+  aManager: TAnchorDockManager;
+  DockObject: TDragDockObject;
 begin
+  debugln(['TAnchorDockMaster.ManualDock SrcSite=',DbgSName(SrcSite),' TargetSite=',DbgSName(TargetSite),' Align=',dbgs(Align),' TargetControl=',DbgSName(TargetControl)]);
   if SrcSite=TargetSite then exit;
   if SrcSite.IsParentOf(TargetSite) then
     raise Exception.Create('TAnchorDockMaster.ManualDock SrcSite.IsParentOf(TargetSite)');
   if TargetSite.IsParentOf(SrcSite) then
     raise Exception.Create('TAnchorDockMaster.ManualDock TargetSite.IsParentOf(SrcSite)');
-  if AutoFreedIfControlIsRemoved(TargetSite,SrcSite) then
+
+  if IsCustomSite(TargetSite) then begin
+    aManager:=TAnchorDockManager(TargetSite.DockManager);
+    Site:=aManager.GetChildSite;
+    if Site=nil then begin
+      // dock as first site into custom dock site
+      debugln(['TAnchorDockMaster.ManualDock dock as first site into custom dock site: SrcSite=',DbgSName(SrcSite),' TargetSite=',DbgSName(TargetSite),' Align=',dbgs(Align)]);
+      BeginUpdate;
+      try
+        DockObject := TDragDockObject.Create(SrcSite);
+        try
+          DockObject.DropAlign:=Align;
+          DockObject.DockRect:=SrcSite.BoundsRect;
+          aManager.InsertControl(DockObject);
+        finally
+          DockObject.Free;
+        end;
+      finally
+        EndUpdate;
+      end;
+      exit;
+    end;
+    // else: dock into child site of custom dock site
+  end else begin
+    // dock to or into TargetSite
+    if not (TargetSite is TAnchorDockHostSite) then
+      raise Exception.Create('TAnchorDockMaster.ManualDock invalid TargetSite');
+    Site:=TAnchorDockHostSite(TargetSite);
+  end;
+  if AutoFreedIfControlIsRemoved(Site,SrcSite) then
     raise Exception.Create('TAnchorDockMaster.ManualDock TargetSite depends on SrcSite');
   BeginUpdate;
   try
-    TargetSite.ExecuteDock(SrcSite,TargetControl,Align);
+    Site.ExecuteDock(SrcSite,TargetControl,Align);
   finally
     EndUpdate;
   end;
@@ -2382,7 +2419,7 @@ begin
 
   // put the OldControl into a site of its own (OldSite) and dock OldSite
   OldControl:=GetOneControl;
-  OldSite:=GetSite(OldControl);
+  OldSite:=MakeSite(OldControl);
   AddCleanControl(OldSite);
   OldSite.AnchorClient(0);
   // the LCL will compute the bounds later after EnableAutoSizing
@@ -2427,7 +2464,7 @@ begin
   Splitter.Parent:=Self;
 
   // dock the NewControl
-  NewSite:=GetSite(NewControl);
+  NewSite:=MakeSite(NewControl);
   AddCleanControl(NewSite);
 
   BoundsIncreased:=false;
@@ -2682,7 +2719,7 @@ begin
   // put the OldControl into a page of its own
   debugln(['TAnchorDockHostSite.DockSecondPage Self="',Caption,'" move oldcontrol to site of its own ...']);
   OldControl:=GetOneControl;
-  OldSite:=GetSite(OldControl);
+  OldSite:=MakeSite(OldControl);
   OldSite.HostDockSite:=nil;
   debugln(['TAnchorDockHostSite.DockSecondPage Self="',Caption,'" adding oldcontrol site ...']);
   FPages.Pages.Add(OldSite.Caption);
@@ -2703,7 +2740,7 @@ begin
   if SiteType<>adhstPages then
     RaiseGDBException('TAnchorDockHostSite.DockAnotherPage inconsistency');
 
-  NewSite:=GetSite(NewControl);
+  NewSite:=MakeSite(NewControl);
   //debugln(['TAnchorDockHostSite.DockAnotherPage Self="',Caption,'" adding newcontrol site ...']);
   NewIndex:=FPages.PageCount;
   if (InFrontOf is TAnchorDockPage)
@@ -3163,7 +3200,7 @@ begin
   until FindComponent(Result)=nil;
 end;
 
-function TAnchorDockHostSite.GetSite(AControl: TControl): TAnchorDockHostSite;
+function TAnchorDockHostSite.MakeSite(AControl: TControl): TAnchorDockHostSite;
 begin
   if AControl is TAnchorDockHostSite then
     Result:=TAnchorDockHostSite(AControl)

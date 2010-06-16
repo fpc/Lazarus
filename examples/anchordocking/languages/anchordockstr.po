@@ -37,6 +37,10 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+#: anchordockstr.adrscontrolisalreadyadocksite
+msgid "control is already a docksite"
+msgstr ""
+
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
 msgid "Custom dock site %s%s%s can have only one site."
 msgstr ""

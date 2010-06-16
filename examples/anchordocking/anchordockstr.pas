@@ -57,6 +57,7 @@ resourcestring
   adrsDragAndDockC = 'Drag and dock %c';
   adrsMissingControlName = 'missing control name';
   adrsModalFormsCanNotBeMadeDockable = 'modal forms can not be made dockable';
+  adrsControlIsAlreadyADocksite = 'control is already a docksite';
   adrsNotSupportedHasParent = 'Not supported: %s has parent %s';
   adrsAnchorNotFoundNodeAnchors = 'Anchor not found: Node=%s%s%s Anchors[%s]=%'
     +'s%s%s';
