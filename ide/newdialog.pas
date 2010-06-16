@@ -327,7 +327,7 @@ begin
   ImageIndexTemplate := IDEImages.LoadImage(16, 'template');
   ImageIndexFolder := IDEImages.LoadImage(16, 'folder');
 
-  DescriptionGroupBox.Caption := lisToDoLDescription;
+  DescriptionGroupBox.Caption := lisCodeHelpDescrTag;
   DescriptionLabel.Caption := '';
 
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
@@ -536,7 +536,7 @@ end;
 
 function TNewLazIDEItemCategoryFile.LocalizedName: string;
 begin
-  Result := lisToDoLFile;
+  Result := lisDebugOptionsFrmModule;
 end;
 
 function TNewLazIDEItemCategoryFile.Description: string;

@@ -399,7 +399,7 @@ procedure TPackageOptionsDialog.SetupComponents;
 begin
   Notebook.Page[0].Caption:=lisPckOptsUsage;
   Notebook.Page[1].Caption:=lisPckOptsUsage; // todo: add new caption
-  Notebook.Page[2].Caption:=lisToDoLDescription;
+  Notebook.Page[2].Caption:=lisCodeHelpDescrTag;
   Notebook.Page[3].Caption:=lisPckOptsIDEIntegration;
   Notebook.Page[4].Caption:=lisPckOptsProvides;
   Notebook.Page[5].Caption:=dlgPOI18n;

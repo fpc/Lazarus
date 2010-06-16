@@ -125,7 +125,7 @@ begin
     OnSelectionChange:=@ListBoxSelectionChange;
   end;
 
-  DescriptionGroupBox.Caption := lisToDoLDescription;
+  DescriptionGroupBox.Caption := lisCodeHelpDescrTag;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 end;
 

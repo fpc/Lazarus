@@ -1548,7 +1548,9 @@ procedure TIDEMenuCommand.MenuItemClick(Sender: TObject);
 begin
   inherited MenuItemClick(Sender);
   // dont execute if something is already executed
-  if not Assigned(OnClick) and not Assigned(OnClickProc) and Assigned(Command) then
+  //debugln(['TIDEMenuCommand.MenuItemClick ',Assigned(OnClick),' ',Assigned(OnClickProc),' ',Assigned(Command),' ',(Command<>nil) and (Command.OnExecuteProc<>nil)]);
+  if (not Assigned(OnClick)) and (not Assigned(OnClickProc))
+  and Assigned(Command) then
     Command.Execute(Sender);
 end;
 

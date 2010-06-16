@@ -65,6 +65,7 @@ uses
     {$ifdef UseJCF}jcfidelazarus,{$endif}
     {$ifdef UseCHMHelp}chmhelppkg,{$endif}
     FPCUnitTestRunner, FPCUnitIDE, ProjTemplates, TAChartLazarusPkg,
+    TodoListLaz,
     {$IFDEF windows}
       SQLDBLaz, DBFLaz,
     {$ENDIF}

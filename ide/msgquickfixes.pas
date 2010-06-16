@@ -273,13 +273,13 @@ begin
       NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit);
       if NewFilename='' then begin
         DebugLn('QuickFixUnitNotFoundPosition unit not found: ',UsedByUnit);
-        ShowError('QuickFix: UnitNotFoundPosition unit not found: '+UsedByUnit);
+        //ShowError('QuickFix: UnitNotFoundPosition unit not found: '+UsedByUnit);
         exit;
       end;
       CodeBuf:=CodeToolBoss.LoadFile(NewFilename,false,false);
       if CodeBuf=nil then begin
         DebugLn('QuickFixUnitNotFoundPosition unable to load unit: ',NewFilename);
-        ShowError('QuickFix: UnitNotFoundPosition unable to load unit: '+NewFilename);
+        //ShowError('QuickFix: UnitNotFoundPosition unable to load unit: '+NewFilename);
         exit;
       end;
     end;
@@ -289,7 +289,7 @@ begin
     NamePos,InPos)
   then begin
     DebugLn('QuickFixUnitNotFoundPosition failed due to syntax errors or '+MissingUnitname+' is not used in '+CodeBuf.Filename);
-    LazarusIDE.DoJumpToCodeToolBossError;
+    //LazarusIDE.DoJumpToCodeToolBossError;
     exit;
   end;
   if InPos=0 then ;

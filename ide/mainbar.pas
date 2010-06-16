@@ -196,7 +196,6 @@ type
         itmViewCodeBrowser: TIDEMenuCommand;
         itmViewRestrictionBrowser: TIDEMenuCommand;
         itmViewComponents: TIDEMenuCommand;
-        itmViewToDoList: TIDEMenuCommand;
         itmJumpHistory: TIDEMenuCommand;
       //itmViewUnitWindows: TIDEMenuSection;
         itmViewUnits: TIDEMenuCommand;

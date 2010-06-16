@@ -785,11 +785,14 @@ procedure TIDEWindowCreatorList.CreateForm(var AForm: TCustomForm;
   AFormClass: TCustomFormClass; DoDisableAutoSizing: boolean;
   TheOwner: TComponent);
 begin
-  AForm:=TCustomForm(AFormClass.NewInstance);
-  AForm.DisableAutoSizing;
-  AForm.Create(TheOwner);
-  if not DoDisableAutoSizing then
-    AForm.EnableAutoSizing;
+  if AForm=nil then begin
+    AForm:=TCustomForm(AFormClass.NewInstance);
+    AForm.DisableAutoSizing;
+    AForm.Create(TheOwner);
+    if not DoDisableAutoSizing then
+      AForm.EnableAutoSizing;
+  end else if DoDisableAutoSizing then
+    AForm.DisableAutoSizing;
 end;
 
 { TIDEDockMaster }

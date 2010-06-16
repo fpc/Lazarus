@@ -64,13 +64,13 @@ uses
   // FCL, LCL
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, 
   StrUtils, ExtCtrls, ComCtrls, Menus, Buttons, GraphType, ActnList, AvgLvlTree,
-  StdCtrls, LCLIntf, LCLType,
+  LCLIntf, LCLType,
   // Codetools
   CodeAtom, CodeCache, CodeToolManager, BasicCodeTools, FileProcs,
   // IDEIntf
   LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf,
   // IDE
-  LazarusIDEStrConsts, PackageDefs;
+  ToDoListStrConsts;
 
 
 Const
@@ -154,16 +154,19 @@ type
     procedure acRefreshExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift:TShiftState);
+    procedure FormShow(Sender: TObject);
     procedure lvTodoClick(Sender: TObject);
     procedure SaveDialog1Show(Sender: TObject);
     procedure ToolButton1Click(Sender: TObject);
   private
     fBuild       : Boolean;
+    FIdleConnected: boolean;
     fMainSourceFilename    : String;
     FOnOpenFile  : TOnOpenFile;
     fRootCBuffer : TCodeBuffer;
     fScannedFiles: TAvgLvlTree;// tree of TTLScannedFile
 
+    procedure SetIdleConnected(const AValue: boolean);
     procedure SetMainSourceFilename(const AValue: String);
 
     function  CreateToDoItem(aTLFile: TTLScannedFile;
@@ -172,18 +175,19 @@ type
     procedure AddListItem(aTodoItem: TTodoItem);
     
     procedure ScanFile(aFileName : string);
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
     property MainSourceFilename : String read fMainSourceFilename write SetMainSourceFilename;
     property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
+    property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
 
 var
   IDETodoWindow: TIDETodoWindow;
 
-procedure CreateTodoWindow;
 function IsToDoComment(const Src: string;
                        CommentStartPos, CommentEndPos: integer): boolean;
 function GetToDoComment(const Src: string;
@@ -204,12 +208,6 @@ function CompareAnsiStringWithTLScannedFile(Filename, ScannedFile: Pointer): int
 begin
   Result:=CompareFilenames(AnsiString(Filename),
                            TTLScannedFile(ScannedFile).Filename);
-end;
-
-procedure CreateTodoWindow;
-begin
-  if IDETodoWindow=nil then
-    IDETodoWindow:=TIDETodoWindow.Create(LazarusIDE.OwningComponent);
 end;
 
 function IsToDoComment(const Src: string;
@@ -299,8 +297,14 @@ end;
 
 procedure TIDETodoWindow.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  if Key=VK_ESCAPE then
+  if Shift=[] then ;
+  if (Key=VK_ESCAPE) then
     ModalResult:=mrCancel;
+end;
+
+procedure TIDETodoWindow.FormShow(Sender: TObject);
+begin
+  IdleConnected:=true;
 end;
 
 procedure TIDETodoWindow.lvTodoClick(Sender: TObject);
@@ -310,7 +314,7 @@ end;
 
 procedure TIDETodoWindow.SaveDialog1Show(Sender: TObject);
 begin
- SaveDialog1.InitialDir:=GetCurrentDirUTF8;
+  SaveDialog1.InitialDir:=GetCurrentDirUTF8;
 end;
 
 procedure TIDETodoWindow.ToolButton1Click(Sender: TObject);
@@ -325,6 +329,16 @@ begin
   fMainSourceFilename:=AValue;
   Caption:=lisTodoListCaption+' '+fMainSourceFilename;
   acRefresh.Execute;
+end;
+
+procedure TIDETodoWindow.SetIdleConnected(const AValue: boolean);
+begin
+  if FIdleConnected=AValue then exit;
+  FIdleConnected:=AValue;
+  if IdleConnected then
+    Application.AddOnIdleHandler(@OnIdle)
+  else
+    Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
 function TIDETodoWindow.CreateToDoItem(aTLFile: TTLScannedFile;
@@ -532,6 +546,8 @@ begin
       begin
         fRootCBuffer:=CodeToolBoss.LoadFile(fMainSourceFilename,false,false);
         if not Assigned(fRootCBuffer) then Exit;
+        UsedInterfaceFilenames:=nil;
+        UsedImplementationFilenames:=nil;
         if CodeToolBoss.FindUsedUnitFiles(fRootCBuffer,UsedInterfaceFilenames,
                                           UsedImplementationFilenames) then
         begin
@@ -615,9 +631,8 @@ var
   Owners: TFPList;
   CurOwner: TObject;
   CurProject: TLazProject;
-  CurPackage: TLazPackage;
+  CurPackage: TIDEPackage;
   CurProjFile: TLazProjectFile;
-  CurPkgFile: TPkgFile;
   Node: TAvgLvlTreeNode;
   CurFile: TTLScannedFile;
 begin
@@ -665,15 +680,15 @@ begin
             break;
           end;
           CurProject:=nil;
-        end else if CurOwner is TLazPackage then begin
+        end else if CurOwner is TIDEPackage then begin
           // this file is owned by a package
-          CurPackage:=TLazPackage(CurOwner);
-          if (CurPackage.GetSrcFilename<>'')
+          CurPackage:=TIDEPackage(CurOwner);
+          {if (CurPackage.GetSrcFilename<>'')
           and (CompareFilenames(CurPackage.GetSrcFilename,MainSourceFilename)=0)
           then begin
             // create the list of todo items for this package
             break;
-          end;
+          end;}
           CurPackage:=nil;
         end;
         inc(i);
@@ -693,11 +708,11 @@ begin
     end;
     if CurPackage<>nil then begin
       // scan all units of package
-      for i:=0 to CurPackage.FileCount-1 do begin
+      {for i:=0 to CurPackage.FileCount-1 do begin
         CurPkgFile:=CurPackage.Files[i];
         if FilenameIsPascalUnit(CurPkgFile.Filename) then
           ScanFile(CurPkgFile.Filename);
-      end;
+      end;}
     end;
 
     Node:=fScannedFiles.FindLowest;
@@ -804,6 +819,21 @@ begin
       CreateToDoItem(CurFile,CodeXYPosition.Code.Filename, '(*', '*)', CommentStr, CodeXYPosition.Y);
     p:=CommentEnd;
   until false;
+end;
+
+procedure TIDETodoWindow.OnIdle(Sender: TObject; var Done: Boolean);
+var
+  AProject: TLazProject;
+  MainFile: TLazProjectFile;
+begin
+  if Done then ;
+  IdleConnected:=false;
+  if MainSourceFilename<>'' then exit;
+  AProject:=LazarusIDE.ActiveProject;
+  if AProject=nil then exit;
+  MainFile:=AProject.MainFile;
+  if MainFile=nil then exit;
+  MainSourceFilename:=MainFile.Filename;
 end;
 
 { TTodoItem }

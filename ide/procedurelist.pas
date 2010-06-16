@@ -265,7 +265,7 @@ begin
   tbCopy.Hint           := lisPListCopyMethodToClipboard;
   LV.Column[1].Caption  := lisProcedure;
   LV.Column[2].Caption  := lisPListType;
-  LV.Column[3].Caption  := lisToDoLLine;
+  LV.Column[3].Caption  := dlgAddHiAttrGroupLine;
   
   // assign resource images to toolbuttons
   TB.Images := IDEImages.Images_16;

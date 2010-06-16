@@ -1020,6 +1020,7 @@ resourcestring
   lisOk = '&OK';
   lisCancel = 'Cancel';
   lisCMParameter = 'Parameter';
+  lisInsertMacro = 'Insert Macro';
   lisCTPleaseSelectAMacro = 'please select a macro';
   lisA2PCreateNewFile = 'Create new file';
   dlgEnvLanguage = 'Language';
@@ -2186,7 +2187,6 @@ resourcestring
     +'system seems to use it.%sThat means non ASCII characters will probably '
     +'be shown incorrect.%sYou can select another font in the editor options.';
   lisUEDoNotSho = 'Do not show this message again.';
-  uemInsertTodo = 'Insert Todo';
   lisCodeHelpShowEmptyMethods = 'Show empty methods';
   lisCodeHelpShowUnusedUnits = 'Show unused units';
   uemHighlighter = 'Highlighter';
@@ -2686,9 +2686,7 @@ resourcestring
   dlgUnitDepBrowse      = 'Open';
   dlgUnitDepRefresh     = 'Refresh';
   lisPrint = 'Print';
-  lisToDoGoto = 'Goto';
-  lisToDoExport = 'Export';
-  
+
   // Doc Editor
   lisDocumentationEditor = 'Documentation Editor';
    
@@ -3015,21 +3013,6 @@ resourcestring
   lisDiffDlgIgnoreSpaces = 'Ignore spaces (newline chars not included)';
   lisDiffDlgOpenDiffInEditor = 'Open Diff in editor';
   lisSave = 'Save ...';
-
-  // todolist
-  lisTodoListCaption='ToDo List';
-  lisTodolistRefresh='Refresh todo items';
-  lisTodoListGotoLine='Goto selected source line';
-  lisTodoListPrintList='Print todo items';
-  lisToDoListOptions='ToDo options...';
-  lisCTInsertMacro = 'Insert Macro';
-  lisToDoLDone = 'Done';
-  lisToDoLDescription = 'Description';
-  lisToDoLPriority = 'Priority';
-  lisToDoLFile  = 'Module';
-  lisToDoLLine  = 'Line';
-  lisToDoLOwner = 'Owner';
-  listToDoLCategory = 'Category';
 
   // packages
   lisPkgFileTypeUnit = 'Unit';
@@ -4376,7 +4359,6 @@ resourcestring
   rsEnterOneOrMorePhrasesThatYouWantToSearchOrFilterIn = 'Enter one or more '
     +'phrases that you want to Search or Filter in the list, separated by '
     +'space, or comma';
-  lisTDDInsertToDo = 'Insert ToDo';
 
   // Application Bundle
   lisABCreationFailed = 'Error occured during Application Bundle creation: ';
@@ -4413,6 +4395,7 @@ resourcestring
   lisMore = 'More';
   lisTop = 'Top';
   lisBottom = 'Bottom';
+  lisGotoSelectedSourceLine = 'Goto selected source line';
   lisCopyAll = 'Copy All';
   lisIndex = 'Index';
   lisFunction = 'Function';

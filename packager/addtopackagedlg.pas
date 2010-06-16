@@ -962,7 +962,7 @@ end;
 procedure TAddToPackageDlg.SetupNewFilePage;
 begin
   with NewFileDescriptionGroupBox do begin
-    Caption:=lisToDoLDescription;
+    Caption:=lisCodeHelpDescrTag;
   end;
 
   with NewFileHelpLabel do begin

@@ -701,8 +701,7 @@ begin
   CodeTemplatePasteIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Paste',
     lisMenuPaste);
   CodeTemplateInsertMacroIDEMenuCommand := RegisterIDEMenuCommand(Path,
-                                                  'InsertMacro',
-                                                    lisCTInsertMacro);
+                                                'InsertMacro', lisInsertMacro);
 end;
 
 procedure CreateStandardCodeMacros;
@@ -942,9 +941,9 @@ begin
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
 
-  FilenameGroupBox.Caption:=lisToDoLFile;
+  FilenameGroupBox.Caption:=lisDebugOptionsFrmModule;
   UseMacrosCheckBox.Caption:=lisEnableMacros;
-  InsertMacroButton.Caption:=lisCTInsertMacro;
+  InsertMacroButton.Caption:=lisInsertMacro;
   AutoOnOptionsCheckGroup.Caption:=lisCodeTemplAutoCompleteOn;
   AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyOnLineBreak);
   AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyOnSpace);

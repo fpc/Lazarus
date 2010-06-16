@@ -115,8 +115,7 @@ const
   ecInsertCVSRevision       = ecFirstLazarus + 92;
   ecInsertCVSSource         = ecFirstLazarus + 93;
   ecInsertModifiedLGPLNotice= ecFirstLazarus + 94;
-  ecInsertTodo              = ecFirstLazarus + 95;
-  ecInsertGUID              = ecFirstLazarus + 96;
+  ecInsertGUID              = ecFirstLazarus + 95;
 
   // source tools
   ecWordCompletion          = ecFirstLazarus + 100;
@@ -522,6 +521,8 @@ var
 const
   CommandCategoryToolMenuName = 'ToolMenu';
   CommandCategoryCustomName = 'Custom';
+  CommandCategoryTextEditingName = 'text editing commands';
+  CommandCategoryViewName = 'ViewMenu';
 
 // register a new IDE command category (i.e. set of commands)
 function RegisterIDECommandCategory(Parent: TIDECommandCategory;

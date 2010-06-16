@@ -347,7 +347,6 @@ begin
   ecInsertCVSRevision: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInsertCVSSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInsertGUID: SetResult(VK_G, [ssCtrl,ssShift],VK_UNKNOWN,[]);
-  ecInsertToDo: SetResult(VK_T, [ssCtrl,ssShift],VK_UNKNOWN,[]);
 
   // command commands
   ecUndo: SetResult(VK_Z,[ssCtrl],VK_UNKNOWN,[]);
@@ -527,7 +526,6 @@ begin
   ecToggleRestrictionBrowser: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleCompPalette: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleIDESpeedBtns: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecViewTodoList: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // project menu
   ecNewProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -964,7 +962,6 @@ begin
   ecToggleRestrictionBrowser: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleCompPalette: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleIDESpeedBtns: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecViewTodoList: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // project menu
   ecNewProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1412,7 +1409,6 @@ begin
   ecInsertCVSRevision: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInsertCVSSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInsertGUID: SetResult(VK_G, [ssCtrl,ssShift],VK_UNKNOWN,[]);
-  ecInsertToDo: SetResult(VK_T, [ssCtrl,ssShift],VK_UNKNOWN,[]);
 
   // command commands
   ecUndo: SetResult(VK_Z,[ssMeta],VK_UNKNOWN,[]);
@@ -1583,7 +1579,6 @@ begin
   ecToggleRestrictionBrowser: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleCompPalette: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleIDESpeedBtns: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecViewTodoList: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // project menu
   ecNewProject: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -2040,7 +2035,6 @@ begin
     ecInsertCVSRevision       : Result:= srkmecInsertCVSRevision;
     ecInsertCVSSource         : Result:= srkmecInsertCVSSource;
     ecInsertGUID              : Result:= srkmecInsertGUID;
-    ecInsertToDo              : Result:= uemInsertTodo;
 
     // search menu
     ecFind                    : Result:= srkmecFind;
@@ -2087,7 +2081,6 @@ begin
     ecToggleCodeBrowser       : Result:= srkmecToggleCodeBrowser;
     ecToggleRestrictionBrowser: Result:= srkmecToggleRestrictionBrowser;
     ecViewComponents          : Result:= srkmecViewComponents;
-    ecViewTodoList            : Result:= srkmecViewToDoList;
     ecToggleCompPalette       : Result:= srkmecToggleCompPalette;
     ecToggleIDESpeedBtns      : Result:= srkmecToggleIDESpeedBtns;
 
@@ -2494,7 +2487,7 @@ begin
   AddDefault(C, 'Column Select to absolute end', srkmecColSelEditorBottom, ecColSelEditorBottom);
 
   // editing - without menu items in the IDE bar
-  C:=Categories[AddCategory('text editing commands',srkmCatEditing,
+  C:=Categories[AddCategory(CommandCategoryTextEditingName,srkmCatEditing,
                 IDECmdScopeSrcEditOnly)];
   AddDefault(C, 'Delete last char', lisKMDeleteLastChar, ecDeleteLastChar);
   AddDefault(C, 'Delete char at cursor', srkmecDeletechar, ecDeleteChar);
@@ -2535,7 +2528,6 @@ begin
   AddDefault(C, 'Insert CVS keyword Source', srkmecInsertCVSSource,
     ecInsertCVSSource);
   AddDefault(C, 'Insert a GUID',srkmecInsertGUID, ecInsertGUID);
-  AddDefault(C, 'Insert Todo',uemInsertTodo, ecInsertTodo);
 
   // command commands
   C:=Categories[AddCategory('CommandCommands',srkmCatCmdCmd,nil)];
@@ -2771,7 +2763,7 @@ begin
   AddDefault(C, 'Quit', srkmecQuit, ecQuit);
 
   // view menu
-  C:=Categories[AddCategory('ViewMenu',srkmCatViewMenu,nil)];
+  C:=Categories[AddCategory(CommandCategoryViewName,srkmCatViewMenu,nil)];
   AddDefault(C, 'Toggle view Object Inspector', lisKMToggleViewObjectInspector,
     ecToggleObjectInsp);
   AddDefault(C, 'Toggle view Source Editor', lisKMToggleViewSourceEditor,

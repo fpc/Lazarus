@@ -493,11 +493,11 @@ begin
   ToolButtonMore.Caption:= lisMore;
   ToolButtonTop.Caption:= lisTop;
   ToolButtonBottom.Caption:= lisBottom;
-  ToolButtonGoto.Caption:= lisToDoGoto;
+  ToolButtonGoto.Caption:=lisGotoSelectedSourceLine;
   ToolButtonCopyAll.Caption:= lisCopyAll;
   lvCallStack.Columns[1].Caption:= lisIndex;
   lvCallStack.Columns[2].Caption:= lisCEOModeSource;
-  lvCallStack.Columns[3].Caption:= lisToDoLLine;
+  lvCallStack.Columns[3].Caption:= dlgAddHiAttrGroupLine;
   lvCallStack.Columns[4].Caption:= lisFunction;
 
   ToolBar1.Images := IDEImages.Images_16;

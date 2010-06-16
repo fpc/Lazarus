@@ -86,8 +86,8 @@ begin
 
   Caption:=lisCTSelectCodeMacro;
   MacrosGroupBox.Caption:=lisEdtExtToolMacros;
-  DescriptionGroupBox.Caption:=lisToDoLDescription;
-  ButtonPanel1.OkButton.Caption:=lisCTInsertMacro;
+  DescriptionGroupBox.Caption:=lisCodeHelpDescrTag;
+  ButtonPanel1.OkButton.Caption:=lisInsertMacro;
   ParameterGroupBox.Caption:=lisCMParameter;
   ParameterEdit.Text:='';
   

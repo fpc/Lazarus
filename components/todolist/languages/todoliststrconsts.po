@@ -1,0 +1,91 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: todoliststrconsts.dlgfropts
+msgid "Options"
+msgstr ""
+
+#: todoliststrconsts.dlgunitdeprefresh
+msgid "Refresh"
+msgstr ""
+
+#: todoliststrconsts.lisctinsertmacro
+msgid "Insert Macro"
+msgstr ""
+
+#: todoliststrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr ""
+
+#: todoliststrconsts.lisprint
+msgid "Print"
+msgstr ""
+
+#: todoliststrconsts.listddinserttodo
+msgid "Insert ToDo"
+msgstr ""
+
+#: todoliststrconsts.listodoexport
+msgid "Export"
+msgstr ""
+
+#: todoliststrconsts.listodogoto
+msgid "Goto"
+msgstr ""
+
+#: todoliststrconsts.listodoldescription
+msgid "Description"
+msgstr ""
+
+#: todoliststrconsts.listodoldone
+msgid "Done"
+msgstr ""
+
+#: todoliststrconsts.listodolfile
+msgid "Module"
+msgstr ""
+
+#: todoliststrconsts.listodolist
+msgid "ToDo list"
+msgstr ""
+
+#: todoliststrconsts.listodolistcaption
+msgid "ToDo List"
+msgstr ""
+
+#: todoliststrconsts.listodolistgotoline
+msgid "Goto selected source line"
+msgstr ""
+
+#: todoliststrconsts.listodolistoptions
+msgid "ToDo options..."
+msgstr ""
+
+#: todoliststrconsts.listodolistprintlist
+msgid "Print todo items"
+msgstr ""
+
+#: todoliststrconsts.listodolistrefresh
+msgid "Refresh todo items"
+msgstr ""
+
+#: todoliststrconsts.listodolline
+msgid "Line"
+msgstr ""
+
+#: todoliststrconsts.listodolowner
+msgid "Owner"
+msgstr ""
+
+#: todoliststrconsts.listodolpriority
+msgid "Priority"
+msgstr ""
+
+#: todoliststrconsts.listtodolcategory
+msgid "Category"
+msgstr ""
+
+#: todoliststrconsts.lisviewtodolist
+msgid "View ToDo list"
+msgstr ""
+

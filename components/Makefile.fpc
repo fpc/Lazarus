@@ -34,6 +34,7 @@ bigidecomponents: all
         $(MAKE) -C memds
         $(MAKE) -C sdf
         $(MAKE) -C tachart
+        $(MAKE) -C todolist
         $(MAKE) -C jcf2/IdePlugin/lazarus
         $(MAKE) -C chmhelp/packages/help
         $(MAKE) -C chmhelp/packages/idehelp
@@ -60,6 +61,7 @@ bigideclean:
         $(MAKE) -C memds clean
         $(MAKE) -C sdf clean
         $(MAKE) -C tachart clean
+        $(MAKE) -C todolist clean
         $(MAKE) -C jcf2/IdePlugin/lazarus clean
         $(MAKE) -C chmhelp/packages/help clean
         $(MAKE) -C chmhelp/packages/idehelp clean

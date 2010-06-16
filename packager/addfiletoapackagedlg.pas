@@ -198,7 +198,7 @@ procedure TAddFileToAPackageDialog.SetupComponents;
 var
   pft: TPkgFileType;
 begin
-  FileGroupBox.Caption:=lisToDoLFile;
+  FileGroupBox.Caption:=dlgFoldDiffFile;
   FileNameEdit.Text:='';
   UnitNameLabel.Caption:=lisAF2PUnitName;
   UnitNameEdit.Text:='';

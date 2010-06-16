@@ -29,8 +29,9 @@ unit ToDoDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  TodoList, LazarusIDEStrConsts, Buttons, ButtonPanel;
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ExtCtrls, TodoList, ToDoListStrConsts, Buttons, ButtonPanel, MenuIntf,
+  SrcEditorIntf, IDECommands, LCLType, IDEWindowIntf, LazIDEIntf;
 
 type
 
@@ -54,12 +55,89 @@ type
     { public declarations }
   end;
   
+var
+  InsertToDoCmd: TIDECommand;
+  ViewToDoListCmd: TIDECommand;
+
 function ExecuteTodoDialog: TTodoItem;
 
+procedure Register;
+procedure InsertToDoForActiveSourceEditor(Sender: TObject);
+procedure ViewToDoList(Sender: TObject);
+procedure CreateIDEToDoWindow(Sender: TObject; aFormName: string;
+                          var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 
 implementation
 
 {$R *.lfm}
+
+procedure Register;
+var
+  Key: TIDEShortCut;
+  Cat: TIDECommandCategory;
+begin
+  // mattias: move icon resource item_todo to package
+  // mattias: add package intf for files and main file
+  // mattias: add menu item to package editor
+  // mattias: test short cut
+
+  // register shortcut for insert todo
+  Key := IDEShortCut(VK_T,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  Cat:=IDECommandList.FindCategoryByName(CommandCategoryTextEditingName);
+  InsertToDoCmd:=RegisterIDECommand(Cat, 'Insert ToDo', lisTDDInsertToDo,Key,
+    nil,@InsertToDoForActiveSourceEditor);
+
+  // add a menu item in the source editor
+  RegisterIDEMenuCommand(SrcEditMenuSectionFirstStatic, 'InsertToDo',
+    lisTDDInsertToDo,nil,nil,InsertToDoCmd,'item_todo');
+  // add a menu item in the Edit / Insert Text section
+  RegisterIDEMenuCommand(itmEditInsertText,'itmEditInsertTodo',lisTDDInsertToDo,
+    nil,nil,InsertToDoCmd,'item_todo');
+
+  // register shortcut for view todo list
+  Key := IDEShortCut(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Cat:=IDECommandList.FindCategoryByName(CommandCategoryViewName);
+  ViewToDoListCmd:=RegisterIDECommand(Cat, 'View ToDo list', lisViewToDoList,
+    Key,nil,@ViewToDoList);
+
+  // add a menu item in the view menu
+  RegisterIDEMenuCommand(itmViewMainWindows, 'ViewToDoList',
+    lisToDoList, nil, nil, ViewToDoListCmd, 'item_todo');
+
+  // register window creator
+  IDEWindowCreators.Add(ToDoWindowName,@CreateIDEToDoWindow,nil,'250','250','','');
+end;
+
+procedure InsertToDoForActiveSourceEditor(Sender: TObject);
+var
+  SrcEdit: TSourceEditorInterface;
+  aTodoItem: TTodoItem;
+begin
+  SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
+  if SrcEdit=nil then exit;
+  if SrcEdit.ReadOnly then exit;
+  aTodoItem := ExecuteTodoDialog;
+  try
+    if Assigned(aTodoItem) then
+      SrcEdit.Selection:=aTodoItem.AsComment;
+  finally
+    aTodoItem.Free;
+  end;
+end;
+
+procedure ViewToDoList(Sender: TObject);
+begin
+  IDEWindowCreators.ShowForm(ToDoWindowName,true);
+end;
+
+procedure CreateIDEToDoWindow(Sender: TObject; aFormName: string;
+  var AForm: TCustomForm; DoDisableAutoSizing: boolean);
+begin
+  if CompareText(aFormName,ToDoWindowName)<>0 then exit;
+  IDEWindowCreators.CreateForm(IDETodoWindow,TIDETodoWindow,DoDisableAutoSizing,
+                               LazarusIDE.OwningComponent);
+  AForm:=IDETodoWindow;
+end;
 
 { TTodoDialog }
 

@@ -10,6 +10,7 @@ object IDETodoWindow: TIDETodoWindow
   KeyPreview = True
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
+  OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object StatusBar: TStatusBar

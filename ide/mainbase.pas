@@ -482,7 +482,6 @@ begin
         CreateMenuItem(SubSubParentMI,itmEditInsertDateTime,'itmEditInsertDateTime',lisMenuInsertDateTime);
         CreateMenuItem(SubSubParentMI,itmEditInsertChangeLogEntry,'itmEditInsertChangeLogEntry',lisMenuInsertChangeLogEntry);
         CreateMenuItem(SubSubParentMI,itmEditInsertGUID,'itmEditInsertGUID',srkmecInsertGUID);
-        CreateMenuItem(SubSubParentMI,itmEditInsertTodo,'itmEditInsertTodo',uemInsertTodo);
       end;
     end;
 
@@ -557,7 +556,6 @@ begin
     CreateMenuItem(ParentMI,itmViewCodeBrowser,'itmViewCodeBrowser',lisMenuViewCodeBrowser, 'menu_view_code_browser');
     CreateMenuItem(ParentMI,itmViewRestrictionBrowser,'itmViewRestrictionBrowser',lisMenuViewRestrictionBrowser, 'menu_view_rectriction_browser');
     CreateMenuItem(ParentMI,itmViewComponents,'itmViewComponents',lisMenuViewComponents);
-    CreateMenuItem(ParentMI,itmViewToDoList,'itmViewToDoList',lisMenuViewTodoList, 'menu_view_todo');
     CreateMenuItem(ParentMI,itmJumpHistory,'itmJumpHistory',lisMenuViewJumpHistory);
 
     CreateMenuSeparatorSection(mnuView,itmViewUnitWindows,'itmViewUnitWindows');
@@ -882,7 +880,6 @@ begin
     itmEditInsertDateTime.Command:=GetCommand(ecInsertDateTime);
     itmEditInsertChangeLogEntry.Command:=GetCommand(ecInsertChangeLogEntry);
     itmEditInsertGUID.Command:=GetCommand(ecInsertGUID);
-    itmEditInsertTodo.Command:=GetCommand(ecInsertTodo);
 
     // search menu
     itmSearchFind.Command:=GetCommand(ecFind);
@@ -918,7 +915,6 @@ begin
     itmViewCodeBrowser.Command:=GetCommand(ecToggleCodeBrowser);
     itmViewRestrictionBrowser.Command:=GetCommand(ecToggleRestrictionBrowser);
     itmViewComponents.Command:=GetCommand(ecViewComponents);
-    itmViewToDoList.Command:=GetCommand(ecViewTodoList);
     itmViewUnitDependencies.Command:=GetCommand(ecViewUnitDependencies);
     itmViewUnitInfo.Command:=GetCommand(ecViewUnitInfo);
     itmViewForms.Command:=GetCommand(ecViewForms);

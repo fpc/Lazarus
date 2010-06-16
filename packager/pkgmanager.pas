@@ -59,7 +59,7 @@ uses
   PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
   PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg,
   IDETranslations, TransferMacros, MsgView, BuildLazDialog, NewDialog,
-  IDEDialogs, TodoList, ProjectInspector, ComponentPalette, SourceEditor,
+  IDEDialogs, ProjectInspector, ComponentPalette, SourceEditor,
   AddFileToAPackageDlg, LazarusPackageIntf, PublishProjectDlg, PkgLinksDlg,
   InstallPkgSetDlg, ConfirmPkgListDlg,
   // bosses
@@ -99,8 +99,6 @@ type
                                         SaveAs: boolean): TModalResult;
     function OnPackageEditorViewPkgSource(Sender: TObject;
                                           APackage: TLazPackage): TModalResult;
-    function OnPackageEditorViewPkgToDos(Sender: TObject;
-                                         APackage: TLazPackage): TModalResult;
     procedure OnPackageEditorFreeEditor(APackage: TLazPackage);
     procedure OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
                               const AFilename: string; var TheUnitName: string;
@@ -303,7 +301,6 @@ type
                    Flags: TPkgUninstallFlags; ShowAbort: boolean): TModalResult;
     procedure DoTranslatePackage(APackage: TLazPackage);
     function DoOpenPackageSource(APackage: TLazPackage): TModalResult;
-    procedure DoViewPackageToDos(APackage: TLazPackage);
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags
                                           ): TModalResult; override;
     function DoSaveAutoInstallConfig: TModalResult; override;
@@ -919,13 +916,6 @@ function TPkgManager.OnPackageEditorViewPkgSource(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoOpenPackageSource(APackage);
-end;
-
-function TPkgManager.OnPackageEditorViewPkgToDos(Sender: TObject;
-  APackage: TLazPackage): TModalResult;
-begin
-  Result:=mrOk;
-  DoViewPackageToDos(APackage);
 end;
 
 procedure TPkgManager.PackageGraphBeginUpdate(Sender: TObject);
@@ -1825,7 +1815,6 @@ begin
   PackageEditors.OnInstallPackage:=@OnPackageEditorInstallPackage;
   PackageEditors.OnUninstallPackage:=@OnPackageEditorUninstallPackage;
   PackageEditors.OnViewPackageSource:=@OnPackageEditorViewPkgSource;
-  PackageEditors.OnViewPackageToDos:=@OnPackageEditorViewPkgToDos;
   PackageEditors.OnDeleteAmbiguousFiles:=@OnPackageEditorDeleteAmbiguousFiles;
   PackageEditors.OnCreateMakefile:=@OnPackageEditorCreateMakefile;
 
@@ -3896,17 +3885,6 @@ begin
     exit;
   end;
   Result:=MainIDE.DoOpenEditorFile(Filename,-1,-1,[ofRegularFile]);
-end;
-
-procedure TPkgManager.DoViewPackageToDos(APackage: TLazPackage);
-begin
-  CreateTodoWindow;
-  if APackage.GetSrcFilename<>'' then
-    IDETodoWindow.MainSourceFilename:=APackage.GetSrcFilename
-  else
-    IDETodoWindow.MainSourceFilename:='';
-
-  IDEWindowCreators.ShowForm(IDETodoWindow,true);
 end;
 
 function TPkgManager.DoCompileAutoInstallPackages(

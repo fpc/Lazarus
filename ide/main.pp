@@ -136,7 +136,7 @@ uses
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDETranslations,
   IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
-  ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
+  ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
   ProcedureList, ExtractProcDlg, FindRenameIdentifier, AbstractsMethodsDlg,
   EmptyMethodsDlg, UnusedUnitsDlg, FindOverloadsDlg, CleanDirDlg,
@@ -238,7 +238,6 @@ type
     procedure mnuEditInsertUsernameClick(Sender: TObject);
     procedure mnuEditInsertDateTimeClick(Sender: TObject);
     procedure mnuEditInsertChangeLogEntryClick(Sender: TObject);
-    procedure mnuEditInsertTodo(Sender: TObject);
     procedure mnuEditInsertGUID(Sender: TObject);
 
     // search menu
@@ -272,7 +271,6 @@ type
     procedure mnuViewAnchorEditorClicked(Sender: TObject);
     procedure mnuViewComponentPaletteClicked(Sender: TObject);
     procedure mnuViewIDESpeedButtonsClicked(Sender: TObject);
-    procedure mnuViewTodoListClicked(Sender: TObject);
 
     // project menu
     procedure mnuNewProjectClicked(Sender: TObject);
@@ -805,7 +803,6 @@ type
     procedure DoShowCodeBrowser(Show: boolean);
     procedure DoShowRestrictionBrowser(Show: boolean; const RestrictedName: String = '');
     procedure DoShowComponentList(Show: boolean);
-    procedure DoShowToDoList(Show: boolean);
     procedure CreateIDEWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
     function CreateNewUniqueFilename(const Prefix, Ext: string;
@@ -1983,7 +1980,6 @@ begin
   SourceEditorManager.OnEditorPropertiesClicked := @mnuEnvEditorOptionsClicked;
   SourceEditorManager.OnFindDeclarationClicked := @OnSrcNotebookFindDeclaration;
   SourceEditorManager.OnInitIdentCompletion :=@OnSrcNotebookInitIdentCompletion;
-  SourceEditorManager.OnInsertTodoClicked := @mnuEditInsertTodo;
   SourceEditorManager.OnShowCodeContext :=@OnSrcNotebookShowCodeContext;
   SourceEditorManager.OnJumpToHistoryPoint := @OnSrcNotebookJumpToHistoryPoint;
   SourceEditorManager.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
@@ -2222,8 +2218,6 @@ begin
     nil,@CreateIDEWindow,'250','250','','');
   IDEWindowCreators.Add(ComponentListFormName,
     nil,@CreateIDEWindow,'250','250','','');
-  IDEWindowCreators.Add(ToDoWindowName,
-    nil,@CreateIDEWindow,'250','250','','');
 end;
 
 procedure TMainIDE.RestoreIDEWindows;
@@ -2425,7 +2419,6 @@ begin
     itmEditInsertUsername.OnClick:=@mnuEditInsertUsernameClick;
     itmEditInsertDateTime.OnClick:=@mnuEditInsertDateTimeClick;
     itmEditInsertChangeLogEntry.OnClick:=@mnuEditInsertChangeLogEntryClick;
-    itmEditInsertTodo.OnClick:=@mnuEditInsertTodo;
     itmEditInsertGUID.OnClick:=@mnuEditInsertGUID;
   end;
 end;
@@ -2463,7 +2456,6 @@ begin
     itmViewAnchorEditor.OnClick := @mnuViewAnchorEditorClicked;
     itmViewComponentPalette.OnClick := @mnuViewComponentPaletteClicked;
     itmViewIDESpeedButtons.OnClick := @mnuViewIDESpeedButtonsClicked;
-    itmViewToDoList.OnClick := @mnuViewTodoListClicked;
   end;
 end;
 
@@ -2595,11 +2587,6 @@ end;
 procedure TMainIDE.mnuViewIDESpeedButtonsClicked(Sender: TObject);
 begin
   DoToggleViewIDESpeedButtons;
-end;
-
-procedure TMainIDE.mnuViewTodoListClicked(Sender: TObject);
-begin
-  DoShowToDoList(true);
 end;
 
 procedure TMainIDE.SetDesigning(AComponent: TComponent; Value: Boolean);
@@ -3113,9 +3100,6 @@ begin
 
   ecInsertGUID:
     mnuEditInsertGUID(self);
-
-  ecInsertTodo:
-    mnuEditInsertTodo(self);
 
   else
     Handled:=false;
@@ -9067,11 +9051,6 @@ begin
   begin
     DoShowComponentList(false);
     AForm:=ComponentListForm;
-  end
-  else if ItIs(ToDoWindowName) then
-  begin
-    DoShowToDoList(false);
-    AForm:=IDETodoWindow;
   end;
   if (AForm<>nil) and DoDisableAutoSizing then
     AForm.DisableAutoSizing;
@@ -10528,19 +10507,6 @@ begin
     exit;
   end;
   Result:=DoSaveProject([sfSaveToTestDir,sfCheckAmbiguousFiles]+Flags);
-end;
-
-procedure TMainIDE.DoShowToDoList(Show: boolean);
-begin
-  CreateTodoWindow;
-
-  if Project1.MainUnitInfo<>nil then
-    IDETodoWindow.MainSourceFilename:=Project1.MainUnitInfo.Filename
-  else
-    IDETodoWindow.MainSourceFilename:='';
-
-  if Show then
-    IDEWindowCreators.ShowForm(IDETodoWindow,true);
 end;
 
 function TMainIDE.DoTestCompilerSettings(
@@ -16837,11 +16803,6 @@ end;
 procedure TMainIDE.mnuEditInsertChangeLogEntryClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertChangeLogEntry);
-end;
-
-procedure TMainIDE.mnuEditInsertTodo(Sender: TObject);
-begin
-  DoSourceEditorCommand(ecInsertTodo);
 end;
 
 procedure TMainIDE.mnuEditInsertGUID(Sender: TObject);

@@ -59,7 +59,7 @@ uses
   WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
   MacroPromptDlg, TransferMacros, CodeContextForm, SrcEditHintFrm,
   EnvironmentOpts, MsgView, InputHistory, CodeMacroPrompt,
-  CodeTemplatesDlg, TodoDlg, TodoList, CodeToolsOptions,
+  CodeTemplatesDlg, CodeToolsOptions,
   SortSelectionDlg, EncloseSelectionDlg, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
   FPDocHints,
@@ -382,7 +382,6 @@ type
     procedure InsertLGPLNotice(CommentType: TCommentType);
     procedure InsertModifiedLGPLNotice(CommentType: TCommentType);
     procedure InsertUsername;
-    procedure InsertTodo;
     procedure InsertDateTime;
     procedure InsertChangeLogEntry;
     procedure InsertCVSKeyword(const AKeyWord: string);
@@ -592,7 +591,6 @@ type
     procedure FindNextWordOccurrenceClicked(Sender: TObject);
     procedure FindPrevWordOccurrenceClicked(Sender: TObject);
     procedure FindInFilesClicked(Sender: TObject);
-    procedure InsertTodoClicked(Sender: TObject);
     procedure MoveEditorLeftClicked(Sender: TObject);
     procedure MoveEditorRightClicked(Sender: TObject);
     procedure MoveEditorFirstClicked(Sender: TObject);
@@ -1059,7 +1057,6 @@ type
     FOnGetIndent: TOnGetIndentEvent;
     FOnGotoBookmark: TBookMarkActionEvent;
     FOnInitIdentCompletion: TOnInitIdentCompletion;
-    FOnInsertTodoClicked: TNotifyEvent;
     FOnJumpToHistoryPoint: TOnJumpToHistoryPoint;
     FOnMouseLink: TSynMouseLinkEvent;
     FOnNoteBookCloseQuery: TCloseEvent;
@@ -1095,8 +1092,6 @@ type
              read FOnFindDeclarationClicked write FOnFindDeclarationClicked;
     property OnInitIdentCompletion: TOnInitIdentCompletion
              read FOnInitIdentCompletion write FOnInitIdentCompletion;
-    property OnInsertTodoClicked: TNotifyEvent
-             read FOnInsertTodoClicked write FOnInsertTodoClicked;
     property OnShowCodeContext: TOnShowCodeContext
              read FOnShowCodeContext write FOnShowCodeContext;
     property OnJumpToHistoryPoint: TOnJumpToHistoryPoint
@@ -1180,7 +1175,6 @@ var
     SrcEditMenuShowEmptyMethods: TIDEMenuCommand;
     SrcEditMenuShowUnusedUnits: TIDEMenuCommand;
     SrcEditMenuFindOverloads: TIDEMenuCommand;
-  SrcEditMenuInsertTodo: TIDEMenuCommand;
   SrcEditMenuMoveEditorLeft: TIDEMenuCommand;
   SrcEditMenuMoveEditorRight: TIDEMenuCommand;
   SrcEditMenuMoveEditorFirst: TIDEMenuCommand;
@@ -1428,9 +1422,6 @@ begin
    {$IFNDEF EnableFindOverloads}
    SrcEditMenuFindOverloads.Visible:=false;
    {$ENDIF}
-
-  SrcEditMenuInsertTodo:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
-                        'InsertTodo',uemInsertTodo, nil, nil, nil, 'item_todo');
 
   SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
            'EditorProperties', dlgFROpts, nil, nil, nil, 'menu_environment_options');
@@ -3007,9 +2998,6 @@ Begin
   ecInsertDateTime:
     InsertDateTime;
 
-  ecInsertTodo:
-    InsertTodo;
-
   ecInsertChangeLogEntry:
     InsertChangeLogEntry;
 
@@ -3482,21 +3470,6 @@ procedure TSourceEditor.InsertUsername;
 begin
   if ReadOnly then Exit;
   FEditor.InsertTextAtCaret(GetCurrentUserName);
-end;
-
-procedure TSourceEditor.InsertTodo;
-Var
-  aTodoItem: TTodoItem;
-begin
-  //DebugLn(['TSourceEditor.InsertTodo ']);
-  if ReadOnly then Exit;
-  aTodoItem := ExecuteTodoDialog;
-  try
-    if Assigned(aTodoItem) then
-      FEditor.InsertTextAtCaret(aTodoItem.AsComment);
-  finally
-    aTodoItem.Free;
-  end;
 end;
 
 procedure TSourceEditor.InsertDateTime;
@@ -5418,8 +5391,6 @@ begin
   SrcEditMenuMoveEditorLast.OnClick:=@MoveEditorLastClicked;
   SrcEditMenuMoveEditorLast.OnClick:=@MoveEditorLastClicked;
 
-  SrcEditMenuInsertTodo.OnClick:=@InsertTodoClicked;
-
   SrcEditMenuCompleteCode.OnClick:=@CompleteCodeMenuItemClick;
   SrcEditMenuEncloseSelection.OnClick:=@EncloseSelectionMenuItemClick;
   SrcEditMenuExtractProc.OnClick:=@ExtractProcMenuItemClick;
@@ -6426,12 +6397,6 @@ begin
   SrcEdit := GetActiveSE;
   if SrcEdit<>nil then
     SrcEdit.DoEditorExecuteCommand(ecFindInFiles);
-end;
-
-procedure TSourceNotebook.InsertTodoClicked(Sender: TObject);
-begin
-  if assigned(Manager) and Assigned(Manager.OnInsertTodoClicked) then
-    Manager.OnInsertTodoClicked(Sender);
 end;
 
 Procedure TSourceNotebook.CutClicked(Sender: TObject);
