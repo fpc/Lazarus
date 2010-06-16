@@ -3923,17 +3923,6 @@ var
       PosTree.Add(p);
   end;
   
-  procedure AddCodePosition(const NewCodePos: TCodeXYPosition);
-  var
-    AddCodePos: PCodeXYPosition;
-  begin
-    if ListOfPCodeXYPosition=nil then ListOfPCodeXYPosition:=TFPList.Create;
-    New(AddCodePos);
-    AddCodePos^:=NewCodePos;
-    ListOfPCodeXYPosition.Add(AddCodePos);
-    //debugln('TFindDeclarationTool.FindReferences.AddCodePosition line=',dbgs(NewCodePos.Y),' col=',dbgs(NewCodePos.X));
-  end;
-  
   procedure ReadIdentifier(IsComment: boolean);
   var
     IdentEndPos: LongInt;
@@ -4267,7 +4256,7 @@ begin
       while AVLNode<>nil do begin
         StartPos:=PChar(AVLNode.Data)-PChar(Pointer(Src))+1;
         if CleanPosToCaret(StartPos,ReferencePos) then
-          AddCodePosition(ReferencePos);
+          AddCodePosition(ListOfPCodeXYPosition,ReferencePos);
         AVLNode:=PosTree.FindPrecessor(AVLNode);
       end;
     end;
