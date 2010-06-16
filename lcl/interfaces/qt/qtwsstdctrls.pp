@@ -1196,8 +1196,22 @@ end;
  ------------------------------------------------------------------------------}
 class function TQtWSCustomComboBox.GetItemIndex(
   const ACustomComboBox: TCustomComboBox): integer;
+var
+  QtComboBox: TQtComboBox;
+  WStr: WideString;
+  i: Integer;
 begin
-  Result := TQtComboBox(ACustomComboBox.Handle).currentIndex;
+  Result := -1;
+  if not WSCheckHandleAllocated(ACustomComboBox, 'GetItemIndex') then
+    Exit;
+  QtComboBox := TQtComboBox(ACustomComboBox.Handle);
+  if QtComboBox.getEditable then
+  begin
+    WStr := QtComboBox.getText;
+    i := QComboBox_findText(QComboBoxH(QtComboBox.Widget), @WStr);
+    Result := i;
+  end else
+    Result := TQtComboBox(ACustomComboBox.Handle).currentIndex;
 end;
 
 class function TQtWSCustomComboBox.GetMaxLength(

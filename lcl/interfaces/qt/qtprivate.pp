@@ -437,18 +437,28 @@ begin
 end;
 
 procedure TQtComboStrings.InsertItem(Index: Integer; const S: string);
+var
+  FSavedIndex: Integer;
 begin
   inherited InsertItem(Index, S);
   FOwner.BeginUpdate;
+  FSavedIndex := FOwner.currentIndex;
   FOwner.insertItem(Index, S);
+  if FOwner.getEditable and (FSavedIndex <> FOwner.currentIndex) then
+    FOwner.setCurrentIndex(FSavedIndex);
   FOwner.EndUpdate;
 end;
 
 procedure TQtComboStrings.InsertItem(Index: Integer; const S: string; O: TObject);
+var
+  FSavedIndex: Integer;
 begin
   inherited InsertItem(Index, S, O);
   FOwner.BeginUpdate;
+  FSavedIndex := FOwner.currentIndex;
   FOwner.insertItem(Index, S);
+  if FOwner.getEditable and (FSavedIndex <> FOwner.currentIndex) then
+    FOwner.setCurrentIndex(FSavedIndex);
   FOwner.EndUpdate;
 end;
 
