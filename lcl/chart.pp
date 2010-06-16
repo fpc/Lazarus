@@ -144,7 +144,7 @@ type
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
-  end;
+  end deprecated;
 
 
 procedure Register;
@@ -153,7 +153,9 @@ implementation
 
 procedure Register;
 begin
+  {$WARNINGS off}
   RegisterComponents('Misc',[TBarChart]);
+  {$WARNINGS on}
 end;
 
 constructor TCustomBarChart.Create(AOwner: TComponent);
