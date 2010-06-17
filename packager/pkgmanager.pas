@@ -283,6 +283,7 @@ type
     function WarnAboutMissingPackageFiles(APackage: TLazPackage): TModalResult;
     function AddPackageDependency(APackage: TLazPackage; const ReqPackage: string;
                                   OnlyTestIfPossible: boolean = false): TModalResult; override;
+    function GetPackageOfEditorItem(Sender: TObject): TIDEPackage; override;
 
 
     // package compilation
@@ -3669,6 +3670,20 @@ begin
   finally
     NewDependency.Free;
   end;
+end;
+
+function TPkgManager.GetPackageOfEditorItem(Sender: TObject): TIDEPackage;
+begin
+  Result:=nil;
+  while (Sender is TMenuItem) and (TMenuItem(Sender).Parent<>nil) do
+    Sender:=TMenuItem(Sender).Parent;
+  if (Sender is TMenuItem) and (TMenuItem(Sender).Menu<>nil)
+  then
+    Sender:=TMenuItem(Sender).Menu;
+  if (Sender is TComponent) and (TComponent(Sender).Owner is TCustomForm) then
+    Sender:=TCustomForm(TComponent(Sender).Owner);
+  if Sender is TPackageEditorForm then
+    Result:=TPackageEditorForm(Sender).LazPackage;
 end;
 
 function TPkgManager.DoInstallPackage(APackage: TLazPackage): TModalResult;

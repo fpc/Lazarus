@@ -30,8 +30,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, TodoList, ToDoListStrConsts, Buttons, ButtonPanel, MenuIntf,
-  SrcEditorIntf, IDECommands, LCLType, IDEWindowIntf, LazIDEIntf;
+  ExtCtrls, TodoList, ToDoListStrConsts, Buttons, ButtonPanel, Menus, MenuIntf,
+  PackageIntf, SrcEditorIntf, IDECommands, LCLType, IDEWindowIntf, LazIDEIntf;
 
 type
 
@@ -77,7 +77,6 @@ var
   Cat: TIDECommandCategory;
 begin
   // mattias: move icon resource item_todo to package
-  // mattias: add package intf for files and main file
   // mattias: add menu item to package editor
   // mattias: test short cut
 
@@ -104,6 +103,10 @@ begin
   RegisterIDEMenuCommand(itmViewMainWindows, 'ViewToDoList',
     lisToDoList, nil, nil, ViewToDoListCmd, 'item_todo');
 
+  // add a menu item in the package editor
+  RegisterIDEMenuCommand(PkgEditMenuSectionMisc, 'ViewPkgToDoList',
+    lisToDoList, nil, nil, ViewToDoListCmd, 'item_todo');
+
   // register window creator
   IDEWindowCreators.Add(ToDoWindowName,@CreateIDEToDoWindow,nil,'250','250','','');
 end;
@@ -126,8 +129,13 @@ begin
 end;
 
 procedure ViewToDoList(Sender: TObject);
+var
+  Pkg: TIDEPackage;
 begin
   IDEWindowCreators.ShowForm(ToDoWindowName,true);
+  Pkg:=PackageEditingInterface.GetPackageOfEditorItem(Sender);
+  if Pkg<>nil then
+    IDETodoWindow.OwnerFilename:=Pkg.Filename;
 end;
 
 procedure CreateIDEToDoWindow(Sender: TObject; aFormName: string;

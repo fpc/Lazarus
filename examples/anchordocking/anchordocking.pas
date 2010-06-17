@@ -79,7 +79,8 @@
     - on show again: restore a default layout
     - close button for pages
 }
-
+{ TODO : RRR1
+ }
 unit AnchorDocking;
 
 {$mode objfpc}{$H+}

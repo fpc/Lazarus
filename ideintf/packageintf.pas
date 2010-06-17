@@ -223,6 +223,9 @@ type
     function GetPackages(Index: integer): TIDEPackage; virtual; abstract;
     function FindPackageWithName(const PkgName: string): TIDEPackage; virtual; abstract;
 
+    // package editors
+    function GetPackageOfEditorItem(Sender: TObject): TIDEPackage; virtual; abstract;
+
     // events
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
     procedure AddHandlerOnGraphChanged(const OnGraphChanged: TNotifyEvent;
