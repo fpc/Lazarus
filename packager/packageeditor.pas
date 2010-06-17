@@ -41,13 +41,58 @@ uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, LResources,
   Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil, AVL_Tree,
   // IDEIntf CodeTools
-  HelpIntfs, LazIDEIntf, ProjectIntf, FormEditingIntf, Laz_XMLCfg, PackageIntf,
+  MenuIntf, HelpIntfs, LazIDEIntf, ProjectIntf, FormEditingIntf, Laz_XMLCfg,
+  PackageIntf,
   // IDE
   MainIntf, IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   IDEContextHelpEdit, CompilerOptions, CompilerOptionsDlg, ComponentReg,
   PackageDefs, PkgOptionsDlg, AddToPackageDlg, PkgVirtualUnitEditor,
   PackageSystem;
   
+const
+  PackageEditorMenuRootName = 'PackageEditor';
+var
+  PkgEditMenuOpenFile: TIDEMenuCommand;
+  PkgEditMenuRemoveFile: TIDEMenuCommand;
+  PkgEditMenuReAddFile: TIDEMenuCommand;
+  PkgEditMenuMoveFileUp: TIDEMenuCommand;
+  PkgEditMenuMoveFileDown: TIDEMenuCommand;
+  PkgEditMenuEditVirtualUnit: TIDEMenuCommand;
+  PkgEditMenuSectionFileType: TIDEMenuSection;
+
+  PkgEditMenuOpenPackage: TIDEMenuCommand;
+  PkgEditMenuRemoveDependency: TIDEMenuCommand;
+  PkgEditMenuReAddDependency: TIDEMenuCommand;
+  PkgEditMenuMoveDependencyUp: TIDEMenuCommand;
+  PkgEditMenuMoveDependencyDown: TIDEMenuCommand;
+  PkgEditMenuDependencyStoreFileNameAsDefault: TIDEMenuCommand;
+  PkgEditMenuDependencyStoreFileNameAsPreferred: TIDEMenuCommand;
+  PkgEditMenuDependencyClearStoredFileName: TIDEMenuCommand;
+
+  PkgEditMenuSortFiles: TIDEMenuCommand;
+  PkgEditMenuFixFilesCase: TIDEMenuCommand;
+
+  PkgEditMenuAddToProject: TIDEMenuCommand;
+  PkgEditMenuInstall: TIDEMenuCommand;
+  PkgEditMenuUninstall: TIDEMenuCommand;
+
+  PkgEditMenuSave: TIDEMenuCommand;
+  PkgEditMenuSaveAs: TIDEMenuCommand;
+  PkgEditMenuRevert: TIDEMenuCommand;
+  PkgEditMenuPublish: TIDEMenuCommand;
+
+  PkgEditMenuCompile: TIDEMenuCommand;
+  PkgEditMenuRecompileClean: TIDEMenuCommand;
+  PkgEditMenuRecompileAllRequired: TIDEMenuCommand;
+  PkgEditMenuCreateMakefile: TIDEMenuCommand;
+
+  PkgEditMenuAdd: TIDEMenuCommand;
+  PkgEditMenuRemove: TIDEMenuCommand;
+
+  PkgEditMenuGeneralOptions: TIDEMenuCommand;
+  PkgEditMenuCompilerOptions: TIDEMenuCommand;
+  PkgEditMenuViewPackageSource: TIDEMenuCommand;
+
 type
   TOnCreatePkgMakefile =
     function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
@@ -331,6 +376,7 @@ type
 var
   PackageEditors: TPackageEditors;
 
+procedure RegisterStandardPackageEditorMenuItems;
 
 implementation
 
@@ -369,6 +415,78 @@ begin
   Filename:=String(Key);
   Layout:=TPackageEditorLayout(Data);
   Result:=CompareFilenames(Filename,Layout.Filename);
+end;
+
+procedure RegisterStandardPackageEditorMenuItems;
+var
+  AParent: TIDEMenuSection;
+begin
+  PackageEditorMenuRoot:=RegisterIDEMenuRoot(PackageEditorMenuRootName);
+
+  // register the section for operations on single files
+  PkgEditMenuSectionFile:=RegisterIDEMenuSection(PackageEditorMenuRoot,'File');
+  AParent:=PkgEditMenuSectionFile;
+  PkgEditMenuOpenFile:=RegisterIDEMenuCommand(AParent,'Open File',lisOpenFile);
+  PkgEditMenuRemoveFile:=RegisterIDEMenuCommand(AParent,'Remove File',lisPckEditRemoveFile);
+  PkgEditMenuReAddFile:=RegisterIDEMenuCommand(AParent,'ReAdd File',lisPckEditReAddFile);
+  PkgEditMenuMoveFileUp:=RegisterIDEMenuCommand(AParent,'Move File Up',lisPEMoveFileUp);
+  PkgEditMenuMoveFileDown:=RegisterIDEMenuCommand(AParent,'Move File Down',lisPEMoveFileDown);
+  PkgEditMenuEditVirtualUnit:=RegisterIDEMenuCommand(AParent,'Edit Virtual File',lisPEEditVirtualUnit);
+  PkgEditMenuSectionFileType:=RegisterIDESubMenu(AParent,'File Type',lisAF2PFileType);
+
+  // register the section for operations on single dependencies
+  PkgEditMenuSectionDependency:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Dependency');
+  AParent:=PkgEditMenuSectionDependency;
+  PkgEditMenuOpenPackage:=RegisterIDEMenuCommand(AParent,'Open Package',lisMenuOpenPackage);
+  PkgEditMenuRemoveDependency:=RegisterIDEMenuCommand(AParent,'Remove Dependency',lisPckEditRemoveDependency);
+  PkgEditMenuReAddDependency:=RegisterIDEMenuCommand(AParent,'ReAdd Dependency',lisPckEditReAddDependency);
+  PkgEditMenuMoveDependencyUp:=RegisterIDEMenuCommand(AParent,'Move Dependency Up',lisPckEditMoveDependencyUp);
+  PkgEditMenuMoveDependencyDown:=RegisterIDEMenuCommand(AParent,'Move Dependency Down',lisPckEditMoveDependencyDown);
+  PkgEditMenuDependencyStoreFileNameAsDefault:=RegisterIDEMenuCommand(AParent,'Dependency Store Filename As Default',lisPckEditStoreFileNameAsDefaultForThisDependency);
+  PkgEditMenuDependencyStoreFileNameAsPreferred:=RegisterIDEMenuCommand(AParent,'Dependency Store Filename As Preferred',lisPckEditStoreFileNameAsPreferredForThisDependency);
+  PkgEditMenuDependencyClearStoredFileName:=RegisterIDEMenuCommand(AParent,'Dependency Clear Stored Filename',lisPckEditClearDefaultPreferredFilenameOfDependency);
+
+  // register the section for operations on all files
+  PkgEditMenuSectionFiles:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Files');
+  AParent:=PkgEditMenuSectionFiles;
+  PkgEditMenuSortFiles:=RegisterIDEMenuCommand(AParent,'Sort Files',lisPESortFiles);
+  PkgEditMenuFixFilesCase:=RegisterIDEMenuCommand(AParent,'Fix Files Case',lisPEFixFilesCase);
+
+  // register the section for using the package
+  PkgEditMenuSectionUse:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Use');
+  AParent:=PkgEditMenuSectionUse;
+  PkgEditMenuAddToProject:=RegisterIDEMenuCommand(AParent,'Add To Project',lisPckEditAddToProject);
+  PkgEditMenuInstall:=RegisterIDEMenuCommand(AParent,'Install',lisPckEditInstall);
+  PkgEditMenuUninstall:=RegisterIDEMenuCommand(AParent,'Uninstall',lisPckEditUninstall);
+
+  // register the section for saving the package
+  PkgEditMenuSectionSave:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Save');
+  AParent:=PkgEditMenuSectionSave;
+  PkgEditMenuSave:=RegisterIDEMenuCommand(AParent,'Save',lisMenuSave);
+  PkgEditMenuSaveAs:=RegisterIDEMenuCommand(AParent,'Save As',lisMenuSaveAs);
+  PkgEditMenuRevert:=RegisterIDEMenuCommand(AParent,'Revert',lisMenuRevert);
+  PkgEditMenuPublish:=RegisterIDEMenuCommand(AParent,'Publish',lisPkgEditPublishPackage);
+
+  // register the section for compiling the package
+  PkgEditMenuSectionCompile:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Compile');
+  AParent:=PkgEditMenuSectionCompile;
+  PkgEditMenuCompile:=RegisterIDEMenuCommand(AParent,'Compile',lisPckEditCompile);
+  PkgEditMenuRecompileClean:=RegisterIDEMenuCommand(AParent,'Recompile Clean',lisPckEditRecompileClean);
+  PkgEditMenuRecompileAllRequired:=RegisterIDEMenuCommand(AParent,'Recompile All Required',lisPckEditRecompileAllRequired);
+  PkgEditMenuCreateMakefile:=RegisterIDEMenuCommand(AParent,'Create Makefile',lisPckEditCreateMakefile);
+
+  // register the section for adding to or removing from package
+  PkgEditMenuSectionAddRemove:=RegisterIDEMenuSection(PackageEditorMenuRoot,'AddRemove');
+  AParent:=PkgEditMenuSectionCompile;
+  PkgEditMenuAdd:=RegisterIDEMenuCommand(AParent,'Add',lisCodeTemplAdd);
+  PkgEditMenuRemove:=RegisterIDEMenuCommand(AParent,'Remove',lisExtToolRemove);
+
+  // register the section for other things
+  PkgEditMenuSectionMisc:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Misc');
+  AParent:=PkgEditMenuSectionMisc;
+  PkgEditMenuGeneralOptions:=RegisterIDEMenuCommand(AParent,'General Options',lisPckEditGeneralOptions);
+  PkgEditMenuCompilerOptions:=RegisterIDEMenuCommand(AParent,'Compiler Options',dlgCompilerOptions);
+  PkgEditMenuViewPackageSource:=RegisterIDEMenuCommand(AParent,'View Package Source',lisPckEditViewPackageSource);
 end;
 
 { TPackageEditorForm }
@@ -417,43 +535,34 @@ end;
 
 procedure TPackageEditorForm.FilesPopupMenuPopup(Sender: TObject);
 var
-  ItemCnt: Integer;
   CurDependency: TPkgDependency;
   Removed: boolean;
   CurFile: TPkgFile;
   Writable: Boolean;
   FileIndex: Integer;
 
-  function AddPopupMenuItem(const ACaption: string; AnEvent: TNotifyEvent;
-    EnabledFlag: boolean): TMenuItem;
+  procedure SetItem(Item: TIDEMenuCommand; AnOnClick: TNotifyEvent;
+                    aShow: boolean = true; AEnable: boolean = true);
   begin
-    if FilesPopupMenu.Items.Count<=ItemCnt then begin
-      Result:=TMenuItem.Create(Self);
-      FilesPopupMenu.Items.Add(Result);
-    end else begin
-      Result:=FilesPopupMenu.Items[ItemCnt];
-      while Result.Count>0 do Result.Delete(Result.Count-1);
-    end;
-    Result.Caption:=ACaption;
-    Result.OnClick:=AnEvent;
-    Result.Enabled:=EnabledFlag;
-    inc(ItemCnt);
+    Item.OnClick:=AnOnClick;
+    Item.Visible:=aShow;
+    Item.Enabled:=AEnable;
   end;
-  
+
   procedure AddFileTypeMenuItem;
   var
-    FileTypeMenuItem: TMenuItem;
     CurPFT: TPkgFileType;
-    NewMenuItem: TMenuItem;
     VirtualFileExists: Boolean;
+    NewMenuItem: TIDEMenuCommand;
   begin
-    FileTypeMenuItem:=AddPopupMenuItem(lisAF2PFileType, nil, true);
+    PkgEditMenuSectionFileType.Clear;
     VirtualFileExists:=(CurFile.FileType=pftVirtualUnit)
                        and FileExistsUTF8(CurFile.Filename);
     for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
-      NewMenuItem:=TMenuItem.Create(Self);
-      NewMenuItem.Caption:=GetPkgFileTypeLocalizedName(CurPFT);
-      NewMenuItem.OnClick:=@ChangeFileTypeMenuItemClick;
+      NewMenuItem:=RegisterIDEMenuCommand(PkgEditMenuSectionFileType,
+                      'SetFileType'+IntToStr(ord(CurPFT)),
+                      GetPkgFileTypeLocalizedName(CurPFT),
+                      @ChangeFileTypeMenuItemClick);
       if CurPFT=CurFile.FileType then begin
         // menuitem to keep the current type
         NewMenuItem.Enabled:=true;
@@ -470,110 +579,92 @@ var
       else
         // default is to not allow
         NewMenuItem.Enabled:=false;
-      FileTypeMenuItem.Add(NewMenuItem);
     end;
   end;
-  
+
 begin
-  ItemCnt:=0;
+  PackageEditorMenuRoot.MenuItem:=FilesPopupMenu.Items;
+  //debugln(['TPackageEditorForm.FilesPopupMenuPopup START ',FilesPopupMenu.Items.Count]);
+  PackageEditorMenuRoot.BeginUpdate;
+  try
 
-  CurDependency:=GetCurrentDependency(Removed);
-  Writable:=(not LazPackage.ReadOnly);
-  if (CurDependency=nil) then
-    CurFile:=GetCurrentFile(Removed)
-  else
-    CurFile:=nil;
+    CurDependency:=GetCurrentDependency(Removed);
+    Writable:=(not LazPackage.ReadOnly);
+    if (CurDependency=nil) then
+      CurFile:=GetCurrentFile(Removed)
+    else
+      CurFile:=nil;
 
-  if (CurFile<>nil) then begin
-    FileIndex:=LazPackage.IndexOfPkgFile(CurFile);
-    if not Removed then begin
-      AddPopupMenuItem(lisOpenFile, @OpenFileMenuItemClick, true);
-      AddPopupMenuItem(lisPckEditRemoveFile, @RemoveBitBtnClick,
-                       RemoveBitBtn.Enabled);
-      AddPopupMenuItem(lisPEMoveFileUp, @MoveFileUpMenuItemClick,
-                       (FileIndex>0) and Writable);
-      AddPopupMenuItem(lisPEMoveFileDown, @MoveFileDownMenuItemClick,
-                       (FileIndex<LazPackage.FileCount-1) and Writable);
+    PkgEditMenuSectionFileType.Clear;
+    if (CurFile<>nil) then begin
+      PkgEditMenuSectionFile.Visible:=true;
+      FileIndex:=LazPackage.IndexOfPkgFile(CurFile);
+      SetItem(PkgEditMenuOpenFile,@OpenFileMenuItemClick);
+      SetItem(PkgEditMenuReAddFile,@ReAddMenuItemClick,Removed);
+      SetItem(PkgEditMenuRemoveFile,@RemoveBitBtnClick,not Removed,RemoveBitBtn.Enabled);
+      SetItem(PkgEditMenuMoveFileUp,@MoveFileUpMenuItemClick,not Removed,(FileIndex>0) and Writable);
+      SetItem(PkgEditMenuMoveFileDown,@MoveFileDownMenuItemClick,
+                   not Removed,(FileIndex>LazPackage.FileCount-1) and Writable);
+      PkgEditMenuSectionFileType.Visible:=true;
       AddFileTypeMenuItem;
-      if CurFile.FileType=pftVirtualUnit then
-        AddPopupMenuItem(lisPEEditVirtualUnit, @EditVirtualUnitMenuItemClick,
-                         Writable);
+      SetItem(PkgEditMenuEditVirtualUnit,@EditVirtualUnitMenuItemClick,
+        (CurFile.FileType=pftVirtualUnit) and not Removed,Writable);
     end else begin
-      AddPopupMenuItem(lisOpenFile, @OpenFileMenuItemClick, true);
-      AddPopupMenuItem(lisPckEditReAddFile, @ReAddMenuItemClick,
-                       AddBitBtn.Enabled);
+      PkgEditMenuSectionFile.Visible:=false;
     end;
-  end;
-  if (LazPackage.FileCount>1) then begin
-    AddPopupMenuItem(lisPESortFiles, @SortFilesMenuItemClick, Writable);
-    AddPopupMenuItem(lisPEFixFilesCase, @FixFilesCaseMenuItemClick, Writable);
-  end;
+    SetItem(PkgEditMenuSortFiles,@SortFilesMenuItemClick,(LazPackage.FileCount>1),Writable);
+    SetItem(PkgEditMenuFixFilesCase,@FixFilesCaseMenuItemClick,(LazPackage.FileCount>1),Writable);
 
-  if CurDependency<>nil then begin
-    if (not Removed) then begin
-      AddPopupMenuItem(lisMenuOpenPackage, @OpenFileMenuItemClick, true);
-      AddPopupMenuItem(lisPckEditRemoveDependency, @RemoveBitBtnClick,
-                       RemoveBitBtn.Enabled);
-      AddPopupMenuItem(lisPckEditMoveDependencyUp, @MoveDependencyUpClick,
-                       (CurDependency.PrevRequiresDependency<>nil)
-                       and Writable);
-      AddPopupMenuItem(lisPckEditMoveDependencyDown, @MoveDependencyDownClick,
-                       (CurDependency.NextRequiresDependency<>nil)
-                       and Writable);
-      AddPopupMenuItem(lisPckEditStoreFileNameAsDefaultForThisDependency,
-                       @SetDependencyDefaultFilenameMenuItemClick,
-                       Writable and (CurDependency.RequiredPackage<>nil));
-      AddPopupMenuItem(lisPckEditStoreFileNameAsPreferredForThisDependency,
-                       @SetDependencyPreferredFilenameMenuItemClick,
-                       Writable and (CurDependency.RequiredPackage<>nil));
-      AddPopupMenuItem(lisPckEditClearDefaultPreferredFilenameOfDependency,
-                       @ClearDependencyFilenameMenuItemClick,
-                       Writable and (CurDependency.DefaultFilename<>''));
-    end else begin
-      AddPopupMenuItem(lisMenuOpenPackage, @OpenFileMenuItemClick, true);
-      AddPopupMenuItem(lisPckEditReAddDependency, @ReAddMenuItemClick,
-                       AddBitBtn.Enabled);
-    end;
+    if CurDependency<>nil then begin
+      PkgEditMenuSectionDependency.Visible:=true;
+      SetItem(PkgEditMenuOpenPackage,@OpenFileMenuItemClick,CurDependency.RequiredPackage<>nil);
+      SetItem(PkgEditMenuRemoveDependency,@RemoveBitBtnClick,not Removed,
+              RemoveBitBtn.Enabled);
+      SetItem(PkgEditMenuReAddDependency,@ReAddMenuItemClick,Removed and AddBitBtn.Enabled);
+      SetItem(PkgEditMenuMoveDependencyUp,@MoveDependencyUpClick,not Removed,
+              (CurDependency.PrevRequiresDependency<>nil) and Writable);
+      SetItem(PkgEditMenuMoveDependencyDown,@MoveDependencyDownClick,not Removed,
+              (CurDependency.NextRequiresDependency<>nil) and Writable);
+      SetItem(PkgEditMenuDependencyStoreFileNameAsDefault,
+              @SetDependencyDefaultFilenameMenuItemClick,not Removed,
+              Writable and (CurDependency.RequiredPackage<>nil));
+      SetItem(PkgEditMenuDependencyStoreFileNameAsPreferred,
+              @SetDependencyPreferredFilenameMenuItemClick,not Removed,
+              Writable and (CurDependency.RequiredPackage<>nil));
+      SetItem(PkgEditMenuDependencyClearStoredFileName,
+              @ClearDependencyFilenameMenuItemClick,not Removed,
+              Writable and (CurDependency.DefaultFilename<>''));
+    end else
+      PkgEditMenuSectionDependency.Visible:=false;
+
+    SetItem(PkgEditMenuAddToProject,@AddToProjectClick,true,CanBeAddedToProject);
+    SetItem(PkgEditMenuInstall,@InstallClick,true,not LazPackage.AutoCreated);
+    SetItem(PkgEditMenuUninstall,@UninstallClick,true,
+            (LazPackage.Installed<>pitNope) or (LazPackage.AutoInstall<>pitNope));
+
+    SetItem(PkgEditMenuSave,@SaveBitBtnClick,true,SaveBitBtn.Enabled);
+    SetItem(PkgEditMenuSaveAs,@SaveAsClick,true,not LazPackage.AutoCreated);
+    SetItem(PkgEditMenuRevert,@RevertClick,true,
+            (not LazPackage.AutoCreated) and FileExistsUTF8(LazPackage.Filename));
+    SetItem(PkgEditMenuPublish,@PublishClick,true,
+            (not LazPackage.AutoCreated) and LazPackage.HasDirectory);
+
+    SetItem(PkgEditMenuCompile,@CompileBitBtnClick,true,CompileBitBtn.Enabled);
+    SetItem(PkgEditMenuRecompileClean,@CompileCleanClick,true,CompileBitBtn.Enabled);
+    SetItem(PkgEditMenuRecompileAllRequired,@CompileAllCleanClick,true,CompileBitBtn.Enabled);
+    SetItem(PkgEditMenuCreateMakefile,@CreateMakefileClick,true,CompileBitBtn.Enabled);
+
+    SetItem(PkgEditMenuAdd,@AddBitBtnClick,true,AddBitBtn.Enabled);
+    SetItem(PkgEditMenuRemove,@RemoveBitBtnClick,true,RemoveBitBtn.Enabled);
+
+    SetItem(PkgEditMenuGeneralOptions,@OptionsBitBtnClick,true,OptionsBitBtn.Enabled);
+    SetItem(PkgEditMenuCompilerOptions,@CompilerOptionsBitBtnClick,true,
+            CompilerOptionsBitBtn.Enabled);
+    SetItem(PkgEditMenuViewPackageSource,@ViewPkgSourceClick);
+  finally
+    PackageEditorMenuRoot.EndUpdate;
   end;
-  
-  if ItemCnt>0 then
-    AddPopupMenuItem('-',nil,true);
-
-  AddPopupMenuItem(lisPckEditAddToProject, @AddToProjectClick,
-                   CanBeAddedToProject);
-  AddPopupMenuItem(lisPckEditInstall, @InstallClick,not LazPackage.AutoCreated);
-  AddPopupMenuItem(lisPckEditUninstall, @UninstallClick,
-          (LazPackage.Installed<>pitNope) or (LazPackage.AutoInstall<>pitNope));
-  AddPopupMenuItem('-',nil,true);
-  AddPopupMenuItem(lisMenuSave, @SaveBitBtnClick, SaveBitBtn.Enabled);
-  AddPopupMenuItem(lisMenuSaveAs, @SaveAsClick, not LazPackage.AutoCreated);
-  AddPopupMenuItem(lisMenuRevert, @RevertClick, (not LazPackage.AutoCreated) and
-                                                FileExistsUTF8(LazPackage.Filename));
-  AddPopupMenuItem(lisPkgEditPublishPackage, @PublishClick,
-                   (not LazPackage.AutoCreated) and (LazPackage.HasDirectory));
-  AddPopupMenuItem('-',nil,true);
-  AddPopupMenuItem(lisPckEditCompile, @CompileBitBtnClick, CompileBitBtn.Enabled
-    );
-  AddPopupMenuItem(lisPckEditRecompileClean, @CompileCleanClick,
-                   CompileBitBtn.Enabled);
-  AddPopupMenuItem(lisPckEditRecompileAllRequired, @CompileAllCleanClick,
-                   CompileBitBtn.Enabled);
-  AddPopupMenuItem(lisPckEditCreateMakefile, @CreateMakefileClick,
-                   CompileBitBtn.Enabled);
-  AddPopupMenuItem('-',nil,true);
-  AddPopupMenuItem(lisCodeTemplAdd, @AddBitBtnClick, AddBitBtn.Enabled);
-  AddPopupMenuItem(lisExtToolRemove, @RemoveBitBtnClick, RemoveBitBtn.Enabled);
-  AddPopupMenuItem('-',nil,true);
-  AddPopupMenuItem(lisPckEditGeneralOptions, @OptionsBitBtnClick,
-    OptionsBitBtn.Enabled);
-  AddPopupMenuItem(dlgCompilerOptions, @CompilerOptionsBitBtnClick,
-    CompilerOptionsBitBtn.Enabled);
-  AddPopupMenuItem(lisPckEditViewPackgeSource, @ViewPkgSourceClick,true);
-  AddPopupMenuItem(lisPEViewToDoList, @ViewPkgTodosClick, true);
-
-  // remove unneeded menu items
-  while FilesPopupMenu.Items.Count>ItemCnt do
-    FilesPopupMenu.Items.Delete(FilesPopupMenu.Items.Count-1);
+  //debugln(['TPackageEditorForm.FilesPopupMenuPopup END ',FilesPopupMenu.Items.Count]); PackageEditorMenuRoot.WriteDebugReport('  ',true);
 end;
 
 procedure TPackageEditorForm.UsePopupMenuPopup(Sender: TObject);
@@ -1444,7 +1535,7 @@ begin
     OnDrawItem:=@RegisteredListBoxDrawItem;
     Style:= lbOwnerDrawFixed;
     Parent:=RegisteredPluginsGroupBox;
-    //DebugLn('TPackageEditorForm.SetupComponents AAAAAAAAAA');
+    //DebugLn('TPackageEditorForm.SetupComponents ');
   end;
   
   UseMinVersionCheckBox:=TCheckBox.Create(Self);

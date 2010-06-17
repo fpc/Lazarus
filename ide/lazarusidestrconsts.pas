@@ -3786,7 +3786,7 @@ resourcestring
   lisPckEditAddToProject = 'Add to project';
   lisPckEditInstall = 'Install';
   lisPckEditUninstall = 'Uninstall';
-  lisPckEditViewPackgeSource = 'View Package Source';
+  lisPckEditViewPackageSource = 'View Package Source';
   lisPEViewToDoList = 'View ToDo list';
   lisPckEditGeneralOptions = 'General Options';
   lisPckEditSaveChanges = 'Save Changes?';

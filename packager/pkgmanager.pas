@@ -1871,6 +1871,7 @@ begin
 
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwPkgGraphExplorer],
                         nil,@CreateIDEWindow,'250','200','400','300');
+  RegisterStandardPackageEditorMenuItems;
 end;
 
 procedure TPkgManager.ConnectSourceNotebookEvents;
@@ -2147,7 +2148,7 @@ begin
   end;
 
   // save package file links
-  DebugLn(['TPkgManager.AddPackageToGraph ',APackage.Name]);
+  //DebugLn(['TPkgManager.AddPackageToGraph ',APackage.Name]);
   PkgLinks.SaveUserLinks;
 
   Result:=mrOk;

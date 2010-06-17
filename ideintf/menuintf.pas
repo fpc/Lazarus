@@ -368,7 +368,7 @@ var
       itmInfoHelps: TIDEMenuSection;
       itmHelpTools: TIDEMenuSection;
 
-  // Source Editor: Popupmenu
+  // Source Editor(s): Popupmenu
   SourceEditorMenuRoot: TIDEMenuSection = nil;
     // Source Editor: First dynamic section for often used context sensitive stuff
     //                The items are cleared automatically after each popup.
@@ -414,6 +414,17 @@ var
     DesignerMenuSectionClipboard: TIDEMenuSection;
     DesignerMenuSectionMisc: TIDEMenuSection;
     DesignerMenuSectionOptions: TIDEMenuSection;
+
+  // Package editor(s)
+  PackageEditorMenuRoot: TIDEMenuSection = nil;
+    PkgEditMenuSectionFile: TIDEMenuSection; // e.g. open file, remove file, move file up/down
+    PkgEditMenuSectionDependency: TIDEMenuSection; // e.g. open package, remove dependency
+    PkgEditMenuSectionFiles: TIDEMenuSection; // e.g. sort files, clean up files
+    PkgEditMenuSectionUse: TIDEMenuSection; // e.g. install, add to project
+    PkgEditMenuSectionSave: TIDEMenuSection; // e.g. save as, revert, publish
+    PkgEditMenuSectionCompile: TIDEMenuSection; // e.g. build clean, create Makefile
+    PkgEditMenuSectionAddRemove: TIDEMenuSection; // e.g. add unit, add dependency
+    PkgEditMenuSectionMisc: TIDEMenuSection; // e.g. options
 
 function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem = nil
                              ): TIDEMenuSection;
@@ -639,15 +650,11 @@ procedure TIDEMenuItem.SetMenuItem(const AValue: TMenuItem);
 begin
   if FMenuItem = AValue then exit;
   if FMenuItem <> nil then ClearMenuItems;
-  if FMenuItem = nil then
-  begin
-    FMenuItem := AValue;
-    AutoFreeMenuItem := False;
-    if MenuItem <> nil then
-      MenuItem.AddHandlerOnDestroy(@MenuItemDestroy);
-  end;
+  FMenuItem := AValue;
+  AutoFreeMenuItem := False;
   if MenuItem <> nil then
   begin
+    MenuItem.AddHandlerOnDestroy(@MenuItemDestroy);
     MenuItem.Caption := Caption;
     MenuItem.Bitmap := FBitmap;
     MenuItem.Hint := Hint;
@@ -896,7 +903,7 @@ var
 
   procedure UpdateNeedTopSeparator;
   // a separator at top is needed, if
-  // - this section is imbedded (not ChildsAsSubMenu)
+  // - this section is embedded (not ChildsAsSubMenu)
   // - and this section is visible
   // - and this section has visible childs
   // - and there is a visible menu item in front
@@ -912,7 +919,7 @@ var
         if Section[i].VisibleActive then begin
           // there is a visible menu item in front
           // => the Top separator is needed
-          //debugln('TIDEMenuSection.UpdateNeedTopSeparator Name="',Name,'" ItemInFront="',Section[i].Name,'"');
+          //debugln('TIDEMenuSection.UpdateNeedTopSeparator Name="',Name,'" ItemInFront="',Section[i].Name,'" ');
           NewNeedTopSeparator:=true;
           break;
         end;
@@ -1061,8 +1068,9 @@ begin
       inc(ContainerMenuIndex);
 
     // update childs
-    for i:=0 to FInvalidChildStartIndex-1 do
-      inc(ContainerMenuIndex,Items[i].Size);
+    if Visible then
+      for i:=0 to FInvalidChildStartIndex-1 do
+        inc(ContainerMenuIndex,Items[i].Size);
     while (FInvalidChildStartIndex<=FInvalidChildEndIndex)
     and (FInvalidChildStartIndex<Count) do begin
       Item:=Items[FInvalidChildStartIndex];
@@ -1074,9 +1082,10 @@ begin
         CurSection:=TIDEMenuSection(Item)
       else
         CurSection:=nil;
-      // insert menu item
-      if (CurSection=nil) or CurSection.ChildsAsSubMenu then begin
-        if ContainerMenuItem<>nil then begin
+      if Visible then begin
+        // insert menu item
+        if ((CurSection=nil) or CurSection.ChildsAsSubMenu)
+        and (ContainerMenuItem<>nil) then begin
           Item.CreateMenuItem;
           if Item.MenuItem.Parent=nil then begin
             {$IFDEF VerboseMenuIntf}
@@ -1085,17 +1094,24 @@ begin
             ContainerMenuItem.Insert(ContainerMenuIndex,Item.MenuItem);
           end;
         end;
+        // update grand childs
+        if CurSection<>nil then begin
+          CurSection:=TIDEMenuSection(Item);
+          CurSection.FInvalidChildStartIndex:=0;
+          CurSection.FInvalidChildEndIndex:=CurSection.Count-1;
+          CurSection.UpdateMenuStructure;
+        end;
+        //debugln('TIDEMenuSection.UpdateMenuStructure Increase ContainerMenuIndex MenuItem Name="',Name,'" Item="',Item.Name,'" ContainerMenuIndex=',dbgs(ContainerMenuIndex),' Item.Size=',dbgs(Item.Size));
+        inc(ContainerMenuIndex,Item.Size);
+      end else begin
+        // clear menu items
+        Item.MenuItem:=nil;
+        if CurSection<>nil then begin
+          // Separators are not needed anymore
+          FreeAndNil(CurSection.FTopSeparator);
+          FreeAndNil(CurSection.FBottomSeparator);
+        end;
       end;
-      // update grand childs
-      if CurSection<>nil then begin
-        CurSection:=TIDEMenuSection(Item);
-        CurSection.FInvalidChildStartIndex:=0;
-        CurSection.FInvalidChildEndIndex:=CurSection.Count-1;
-        CurSection.UpdateMenuStructure;
-      end;
-      // next
-      //debugln('TIDEMenuSection.UpdateMenuStructure Increase ContainerMenuIndex MenuItem Name="',Name,'" Item="',Item.Name,'" ContainerMenuIndex=',dbgs(ContainerMenuIndex),' Item.Size=',dbgs(Item.Size));
-      inc(ContainerMenuIndex,Item.Size);
     end;
 
     // update BottomSeparator
@@ -1174,6 +1190,8 @@ procedure TIDEMenuSection.ItemVisibleActiveChanged(AnItem: TIDEMenuItem);
 var
   OldVisibleActive: Boolean;
   NowVisibleActive: Boolean;
+  FromIndex: LongInt;
+  ToIndex: LongInt;
 begin
   if imssClearing in FStates then
     exit;
@@ -1182,7 +1200,11 @@ begin
     RaiseGDBException('');
   AnItem.FLastVisibleActive:=NowVisibleActive;
 
-  Invalidate(AnItem.SectionIndex,AnItem.SectionIndex);
+  FromIndex:=AnItem.SectionIndex;
+  ToIndex:=AnItem.SectionIndex;
+  if (FromIndex>0) and NowVisibleActive then dec(FromIndex);
+  if (ToIndex<Count-1) and not NowVisibleActive then inc(ToIndex);
+  Invalidate(FromIndex,ToIndex);
   {$IFDEF VerboseMenuIntf}
   debugln('TIDEMenuSection.ItemVisibleActiveChanged Self="',Name,'" AnItem="',AnItem.Name,'" AnItem.VisibleActive=',dbgs(AnItem.VisibleActive));
   {$ENDIF}
@@ -1375,7 +1397,7 @@ end;
 
 function TIDEMenuSection.VisibleActive: boolean;
 begin
-  Result:=VisibleCount>0;
+  Result:=Visible and (VisibleCount>0);
 end;
 
 function TIDEMenuSection.Size: integer;

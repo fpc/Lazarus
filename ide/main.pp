@@ -12698,7 +12698,7 @@ begin
   begin
     IDEWindowCreators.ShowForm(SearchResultsView,true);
     if IDEDockMaster=nil then
-      // the sourcenotebook is more interesting than the messages
+      // the sourcenotebook is more interesting than the search results
       SourceEditorManager.ShowActiveWindowOnTop(False);
   end;
 end;
