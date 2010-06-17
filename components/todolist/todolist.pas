@@ -159,6 +159,7 @@ type
     procedure SaveDialog1Show(Sender: TObject);
     procedure ToolButton1Click(Sender: TObject);
   private
+    FBaseDirectory: string;
     fBuild       : Boolean;
     FIdleConnected: boolean;
     fMainSourceFilename    : String;
@@ -166,6 +167,7 @@ type
     fRootCBuffer : TCodeBuffer;
     fScannedFiles: TAvgLvlTree;// tree of TTLScannedFile
 
+    procedure SetBaseDirectory(const AValue: string);
     procedure SetIdleConnected(const AValue: boolean);
     procedure SetMainSourceFilename(const AValue: String);
 
@@ -181,6 +183,7 @@ type
     destructor Destroy; override;
 
     property MainSourceFilename : String read fMainSourceFilename write SetMainSourceFilename;
+    property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
     property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
@@ -339,6 +342,13 @@ begin
     Application.AddOnIdleHandler(@OnIdle)
   else
     Application.RemoveOnIdleHandler(@OnIdle);
+end;
+
+procedure TIDETodoWindow.SetBaseDirectory(const AValue: string);
+begin
+  if FBaseDirectory=AValue then exit;
+  FBaseDirectory:=AValue;
+  acRefresh.Execute;
 end;
 
 function TIDETodoWindow.CreateToDoItem(aTLFile: TTLScannedFile;
@@ -653,7 +663,7 @@ begin
 
     if MainSourceFilename='' then exit;
     
-    // Find an '.todo' file of the main source
+    // Find a '.todo' file of the main source
     St:=ChangeFileExt(MainSourceFilename,'.todo');
     if FileExistsUTF8(St) then
       ScanFile(St);
@@ -699,6 +709,7 @@ begin
 
     if CurProject<>nil then begin
       // scan all units of project
+      FBaseDirectory:=ExtractFilePath(CurProject.ProjectInfoFile);
       for i:=0 to CurProject.FileCount-1 do begin
         CurProjFile:=CurProject.Files[i];
         if CurProjFile.IsPartOfProject
@@ -708,6 +719,7 @@ begin
     end;
     if CurPackage<>nil then begin
       // scan all units of package
+      FBaseDirectory:=ExtractFilePath(CurPackage.Filename);
       {for i:=0 to CurPackage.FileCount-1 do begin
         CurPkgFile:=CurPackage.Files[i];
         if FilenameIsPascalUnit(CurPkgFile.Filename) then
@@ -733,6 +745,7 @@ end;
 procedure TIDETodoWindow.AddListItem(aTodoItem: TTodoItem);
 var
    aListItem: TListItem;
+   aFilename: String;
 begin
   if Assigned(aTodoItem) then
   begin
@@ -745,7 +758,10 @@ begin
       aListItem.Caption := ' ';
     aListitem.SubItems.Add(aTodoItem.Text);
     aListitem.SubItems.Add(IntToStr(aTodoItem.Priority));
-    aListitem.SubItems.Add(aTodoItem.Filename);
+    aFilename:=aTodoItem.Filename;
+    if (BaseDirectory<>'') and FilenameIsAbsolute(aFilename) then
+      aFilename:=CreateRelativePath(aFilename,BaseDirectory);
+    aListitem.SubItems.Add(aFilename);
     aListitem.SubItems.Add(IntToStr(aTodoItem.LineNumber));
     aListitem.SubItems.Add(aTodoItem.Owner);
     aListitem.SubItems.Add(aTodoItem.Category);

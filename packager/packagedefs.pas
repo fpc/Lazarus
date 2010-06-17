@@ -142,14 +142,12 @@ type
   
   { TPkgFile }
 
-  TPkgFile = class
+  TPkgFile = class(TLazPackageFile)
   private
     FAutoReferenceSourceDir: boolean;
     FComponentPriority: TComponentPriority;
     FComponents: TFPList; // list of TPkgComponent
     FDirectory: string;
-    FRemoved: boolean;
-    FFilename: string;
     FFileType: TPkgFileType;
     FFlags: TPkgFileFlags;
     fFullFilename: string;
@@ -164,13 +162,15 @@ type
     function GetHasRegisterProc: boolean;
     procedure SetAddToUsesPkgSection(const AValue: boolean);
     procedure SetAutoReferenceSourceDir(const AValue: boolean);
-    procedure SetRemoved(const AValue: boolean);
-    procedure SetFilename(const AValue: string);
     procedure SetFileType(const AValue: TPkgFileType);
     procedure SetFlags(const AValue: TPkgFileFlags);
     procedure SetHasRegisterProc(const AValue: boolean);
     procedure UpdateUnitName;
     function GetComponentList: TFPList;
+  protected
+    function GetIDEPackage: TIDEPackage; override;
+    procedure SetFilename(const AValue: string); override;
+    procedure SetRemoved(const AValue: boolean); override;
   public
     constructor Create(ThePackage: TLazPackage);
     destructor Destroy; override;
@@ -181,15 +181,15 @@ type
       UsePathDelim: TPathDelimSwitch);
     procedure ConsistencyCheck;
     function IsVirtual: boolean;
-    function GetShortFilename(UseUp: boolean): string;
+    function GetShortFilename(UseUp: boolean): string; override;
     function ComponentCount: integer;
     procedure AddPkgComponent(APkgComponent: TPkgComponent);
     procedure RemovePkgComponent(APkgComponent: TPkgComponent);
-    function GetResolvedFilename: string;
     function HasRegisteredPlugins: boolean;
     function MakeSense: boolean;
     procedure UpdateSourceDirectoryReference;
-    function GetFullFilename: string;
+    function GetFullFilename: string; override;
+    function GetResolvedFilename: string; // GetFullFilename + ReadAllLinks
   public
     property AddToUsesPkgSection: boolean
                        read GetAddToUsesPkgSection write SetAddToUsesPkgSection;
@@ -201,13 +201,11 @@ type
                                                    write FComponentPriority;
     property Components[Index: integer]: TPkgComponent read GetComponents;// registered components
     property Directory: string read FDirectory;
-    property Filename: string read FFilename write SetFilename;
     property FileType: TPkgFileType read FFileType write SetFileType;
     property Flags: TPkgFileFlags read FFlags write SetFlags;
     property HasRegisterProc: boolean
                                read GetHasRegisterProc write SetHasRegisterProc;
     property LazPackage: TLazPackage read FPackage;
-    property Removed: boolean read FRemoved write SetRemoved;
     property SourceDirectoryReferenced: boolean read FSourceDirectoryReferenced;
     property Unit_Name: string read FUnitName write FUnitName;
   end;
@@ -589,9 +587,7 @@ type
     function GetAutoIncrementVersionOnBuild: boolean;
     function GetComponentCount: integer;
     function GetComponents(Index: integer): TPkgComponent;
-    function GetRemovedCount: integer;
     function GetRemovedFiles(Index: integer): TPkgFile;
-    function GetFileCount: integer;
     function GetFiles(Index: integer): TPkgFile;
     procedure SetAddToProjectUsesSection(const AValue: boolean);
     procedure SetAuthor(const AValue: string);
@@ -624,12 +620,16 @@ type
     procedure UpdateSourceDirectories;
     procedure SourceDirectoriesChanged(Sender: TObject);
   protected
+    function GetFileCount: integer; override;
+    function GetPkgFiles(Index: integer): TLazPackageFile; override;
     function GetDirectoryExpanded: string; override;
     function GetModified: boolean; override;
     procedure SetFilename(const AValue: string); override;
     procedure SetModified(const AValue: boolean); override;
     procedure SetName(const AValue: string); override;
     procedure VersionChanged(Sender: TObject); override;
+    function GetRemovedCount: integer; override;
+    function GetRemovedPkgFiles(Index: integer): TLazPackageFile; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -749,7 +749,6 @@ type
     property Editor: TBasePackageEditor read FPackageEditor
                                         write SetPackageEditor;
     property EnableI18N: Boolean read FEnableI18N write SetEnableI18N;
-    property FileCount: integer read GetFileCount;
     property FileReadOnly: boolean read FFileReadOnly write SetFileReadOnly;
     property Files[Index: integer]: TPkgFile read GetFiles;
     property FirstRemovedDependency: TPkgDependency
@@ -783,7 +782,6 @@ type
     property PublishOptions: TPublishPackageOptions
                                      read fPublishOptions write fPublishOptions;
     property Registered: boolean read FRegistered write SetRegistered;
-    property RemovedFilesCount: integer read GetRemovedCount;
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
     property SourceDirectories: TFileReferenceList read FSourceDirectories;
     property LastStateFileDate: longint read FLastStateFileDate write FLastStateFileDate;
@@ -1385,15 +1383,15 @@ begin
   NewFilename:=AValue;
   DoDirSeparators(NewFilename);
   LazPackage.LongenFilename(NewFilename);
-  if FFilename=NewFilename then exit;
-  FFilename:=NewFilename;
+  if Filename=NewFilename then exit;
+  inherited SetFilename(NewFilename);
   fFullFilenameStamp:=CompilerParseStamp;
   if fFullFilenameStamp=Low(fFullFilenameStamp) then
     fFullFilenameStamp:=High(fFullFilenameStamp)
   else
     dec(fFullFilenameStamp);
   OldDirectory:=FDirectory;
-  FDirectory:=ExtractFilePath(fFilename);
+  FDirectory:=ExtractFilePath(Filename);
   if OldDirectory<>FDirectory then begin
     if FSourceDirNeedReference then begin
       LazPackage.SourceDirectories.RemoveFilename(OldDirectory);
@@ -1427,8 +1425,8 @@ end;
 
 procedure TPkgFile.SetRemoved(const AValue: boolean);
 begin
-  if FRemoved=AValue then exit;
-  FRemoved:=AValue;
+  if Removed=AValue then exit;
+  inherited SetRemoved(AValue);
   FSourceDirNeedReference:=(FileType in PkgFileRealUnitTypes) and not Removed;
   UpdateSourceDirectoryReference;
 end;
@@ -1478,8 +1476,8 @@ procedure TPkgFile.UpdateUnitName;
 var
   NewUnitName: String;
 begin
-  if FilenameIsPascalUnit(FFilename) then begin
-    NewUnitName:=ExtractFileNameOnly(FFilename);
+  if FilenameIsPascalUnit(Filename) then begin
+    NewUnitName:=ExtractFileNameOnly(Filename);
     if CompareText(NewUnitName,FUnitName)<>0 then
       FUnitName:=NewUnitName;
   end else
@@ -1490,6 +1488,11 @@ function TPkgFile.GetComponentList: TFPList;
 begin
   if FComponents=nil then FComponents:=TFPList.Create;
   Result:=FComponents;
+end;
+
+function TPkgFile.GetIDEPackage: TIDEPackage;
+begin
+  Result:=FPackage;
 end;
 
 function TPkgFile.HasRegisteredPlugins: boolean;
@@ -1536,6 +1539,7 @@ end;
 
 constructor TPkgFile.Create(ThePackage: TLazPackage);
 begin
+  inherited Create;
   Clear;
   FPackage:=ThePackage;
   FComponentPriority:=ComponentPriorityNormal;
@@ -1550,8 +1554,8 @@ end;
 procedure TPkgFile.Clear;
 begin
   AutoReferenceSourceDir:=false;
-  FRemoved:=false;
-  FFilename:='';
+  inherited SetRemoved(false);
+  inherited SetFilename('');
   FDirectory:='';
   FFlags:=[];
   FFileType:=pftUnit;
@@ -1614,18 +1618,18 @@ procedure TPkgFile.ConsistencyCheck;
 begin
   if FPackage=nil then
     RaiseGDBException('TPkgFile.ConsistencyCheck FPackage=nil');
-  if FFilename='' then
+  if Filename='' then
     RaiseGDBException('TPkgFile.ConsistencyCheck FFilename=""');
 end;
 
 function TPkgFile.IsVirtual: boolean;
 begin
-  Result:=FilenameIsAbsolute(FFilename);
+  Result:=FilenameIsAbsolute(Filename);
 end;
 
 function TPkgFile.GetShortFilename(UseUp: boolean): string;
 begin
-  Result:=FFilename;
+  Result:=Filename;
   LazPackage.ShortenFilename(Result,UseUp);
 end;
 
@@ -1655,7 +1659,7 @@ end;
 
 function TPkgFile.GetResolvedFilename: string;
 begin
-  Result:=ReadAllLinks(Filename,false);
+  Result:=ReadAllLinks(GetFullFilename,false);
   if Result='' then Result:=Filename;
 end;
 
@@ -2103,6 +2107,11 @@ begin
   Result:=FRemovedFiles.Count;
 end;
 
+function TLazPackage.GetRemovedPkgFiles(Index: integer): TLazPackageFile;
+begin
+  Result:=GetRemovedFiles(Index);
+end;
+
 function TLazPackage.GetRemovedFiles(Index: integer): TPkgFile;
 begin
   Result:=TPkgFile(FRemovedFiles[Index]);
@@ -2111,6 +2120,11 @@ end;
 function TLazPackage.GetFileCount: integer;
 begin
   Result:=FFiles.Count;
+end;
+
+function TLazPackage.GetPkgFiles(Index: integer): TLazPackageFile;
+begin
+  Result:=GetFiles(Index);
 end;
 
 function TLazPackage.GetFiles(Index: integer): TPkgFile;

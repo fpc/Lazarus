@@ -60,6 +60,26 @@ type
     function VersionBound(v: integer): integer;
   end;
 
+  TIDEPackage = class;
+
+  { TLazPackageFile }
+
+  TLazPackageFile = class
+  private
+    FFilename: string;
+    FRemoved: boolean;
+  protected
+    procedure SetFilename(const AValue: string); virtual;
+    function GetIDEPackage: TIDEPackage; virtual; abstract;
+    procedure SetRemoved(const AValue: boolean); virtual;
+  public
+    function GetFullFilename: string; virtual; abstract;
+    function GetShortFilename(UseUp: boolean): string; virtual; abstract;
+  public
+    property Filename: string read FFilename write SetFilename;
+    property LazPackage: TIDEPackage read GetIDEPackage;
+    property Removed: boolean read FRemoved write SetRemoved;
+  end;
 
   { TLazPackageID }
 
@@ -95,9 +115,13 @@ type
     FFilename: string;
     FChangeStamp: integer;
     function GetDirectoryExpanded: string; virtual; abstract;
+    function GetFileCount: integer; virtual; abstract;
+    function GetPkgFiles(Index: integer): TLazPackageFile; virtual; abstract;
     function GetModified: boolean; virtual; abstract;
     procedure SetFilename(const AValue: string); virtual; abstract;
     procedure SetModified(const AValue: boolean); virtual; abstract;
+    function GetRemovedCount: integer; virtual; abstract;
+    function GetRemovedPkgFiles(Index: integer): TLazPackageFile; virtual; abstract;
   public
     function IsVirtual: boolean; virtual; abstract;
     function ReadOnly: boolean; virtual; abstract;
@@ -110,6 +134,10 @@ type
     property DirectoryExpanded: string read GetDirectoryExpanded;
     property CustomOptions: TConfigStorage read FCustomOptions;
     property ChangeStamp: integer read FChangeStamp;
+    property FileCount: integer read GetFileCount;
+    property Files[Index: integer]: TLazPackageFile read GetPkgFiles;
+    property RemovedFilesCount: integer read GetRemovedCount;
+    property RemovedFiles[Index: integer]: TLazPackageFile read GetRemovedPkgFiles;
   end;
 
 type
@@ -644,6 +672,18 @@ procedure TPackageEditingInterface.RemoveHandlerOnPackageFileLoaded(
   const OnPkgLoaded: TNotifyEvent);
 begin
   RemoveHandler(pihtPackageFileLoaded,TMethod(OnPkgLoaded));
+end;
+
+{ TLazPackageFile }
+
+procedure TLazPackageFile.SetFilename(const AValue: string);
+begin
+  FFilename:=AValue;
+end;
+
+procedure TLazPackageFile.SetRemoved(const AValue: boolean);
+begin
+  FRemoved:=AValue;
 end;
 
 initialization
