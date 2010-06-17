@@ -237,6 +237,7 @@ type
     function GetItems(Index: Integer): TSimpleWindowLayout;
     procedure SetItems(Index: Integer; const AValue: TSimpleWindowLayout);
   public
+    destructor Destroy; override;
     procedure Clear;
     procedure Delete(Index: Integer);
     procedure ApplyAndShow(Sender: TObject; AForm: TCustomForm;
@@ -655,6 +656,12 @@ procedure TSimpleWindowLayoutList.SetItems(Index: Integer;
   const AValue: TSimpleWindowLayout);
 begin
   Items[Index]:=AValue;
+end;
+
+destructor TSimpleWindowLayoutList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
 end;
 
 function TSimpleWindowLayoutList.IndexOf(const FormID: string): integer;
