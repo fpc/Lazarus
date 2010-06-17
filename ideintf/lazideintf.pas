@@ -129,6 +129,7 @@ type
   TLazarusIDEHandlerType = (
     lihtSavingAll, // called before IDE saves everything
     lihtSavedAll,  // called after IDE saved everything
+    lihtIDERestoreWindows, // called when IDE is restoring the windows (before opening the first project)
     lihtIDEClose, // called when IDE is shutting down (after closequery, so no more interactivity)
     lihtProjectOpened,// called after IDE opened a project
     lihtProjectClose, // called before IDE closes a project
@@ -285,6 +286,10 @@ type
     procedure AddHandlerOnSavedAll(const OnSaveAllEvent: TModalResultFunction;
                                    AsLast: boolean = false);
     procedure RemoveHandlerOnSavedAll(const OnSaveAllEvent: TModalResultFunction);
+    procedure AddHandlerOnIDERestoreWindows(const OnIDERestoreWindowsEvent: TNotifyEvent;
+                                   AsLast: boolean = false);
+    procedure RemoveHandlerOnIDERestoreWindows(
+                                  const OnIDERestoreWindowsEvent: TNotifyEvent);
     procedure AddHandlerOnIDEClose(const OnIDECloseEvent: TNotifyEvent;
                                    AsLast: boolean = false);
     procedure RemoveHandlerOnIDEClose(const OnIDECloseEvent: TNotifyEvent);
@@ -431,6 +436,18 @@ procedure TLazIDEInterface.RemoveHandlerOnSavedAll(
   const OnSaveAllEvent: TModalResultFunction);
 begin
   RemoveHandler(lihtSavedAll,TMethod(OnSaveAllEvent));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnIDERestoreWindows(
+  const OnIDERestoreWindowsEvent: TNotifyEvent; AsLast: boolean);
+begin
+  AddHandler(lihtIDERestoreWindows,TMethod(OnIDERestoreWindowsEvent),AsLast);
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnIDERestoreWindows(
+  const OnIDERestoreWindowsEvent: TNotifyEvent);
+begin
+  RemoveHandler(lihtIDERestoreWindows,TMethod(OnIDERestoreWindowsEvent));
 end;
 
 procedure TLazIDEInterface.AddHandlerOnIDEClose(

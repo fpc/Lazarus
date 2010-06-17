@@ -57,11 +57,12 @@ type
     procedure MakeIDEWindowDockSite(AForm: TCustomForm); override;
     procedure MakeIDEWindowDockable(AControl: TWinControl); override;
     function GetDefaultLayoutFilename: string;
-    procedure LoadDefaultLayout; override;
+    procedure LoadDefaultLayout;
     procedure SaveDefaultLayout;
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); override;
     procedure CloseAll; override;
     procedure OnIDEClose(Sender: TObject);
+    procedure OnIDERestoreWindows(Sender: TObject);
   end;
 
 var
@@ -73,7 +74,8 @@ implementation
 
 procedure Register;
 begin
-
+  LazarusIDE.AddHandlerOnIDERestoreWindows(@IDEAnchorDockMaster.OnIDERestoreWindows);
+  LazarusIDE.AddHandlerOnIDEClose(@IDEAnchorDockMaster.OnIDEClose);
 end;
 
 { TIDEAnchorDockMaster }
@@ -188,7 +190,7 @@ var
   DockSiblingName: string;
   DockAlign: TAlign;
   DockSibling: TCustomForm;
-  NewDockSite: TWinControl;
+  NewDockSite: TAnchorDockHostSite;
   Site: TAnchorDockHostSite;
 begin
   debugln(['TIDEAnchorDockMaster.ShowForm ',DbgSName(AForm),' BringToFront=',BringToFront]);
@@ -252,6 +254,11 @@ end;
 procedure TIDEAnchorDockMaster.OnIDEClose(Sender: TObject);
 begin
   SaveDefaultLayout;
+end;
+
+procedure TIDEAnchorDockMaster.OnIDERestoreWindows(Sender: TObject);
+begin
+  LoadDefaultLayout;
 end;
 
 initialization

@@ -60,11 +60,12 @@ type
     function IsDockSite(AForm: TCustomForm): boolean;
     function IsDockable(AForm: TCustomForm): boolean;
     function GetDefaultLayoutFilename: string;
-    procedure LoadDefaultLayout; override;
+    procedure LoadDefaultLayout;
     procedure SaveDefaultLayout;
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); override;
     procedure CloseAll; override;
     procedure OnIDEClose(Sender: TObject);
+    procedure OnIDERestoreWindows(Sender: TObject);
   end;
 
 var
@@ -76,6 +77,7 @@ implementation
 
 procedure Register;
 begin
+  LazarusIDE.AddHandlerOnIDERestoreWindows(@IDEEasyDockMaster.OnIDERestoreWindows);
   LazarusIDE.AddHandlerOnIDEClose(@IDEEasyDockMaster.OnIDEClose);
 end;
 
@@ -280,6 +282,11 @@ end;
 procedure TIDEEasyDockMaster.OnIDEClose(Sender: TObject);
 begin
   SaveDefaultLayout;
+end;
+
+procedure TIDEEasyDockMaster.OnIDERestoreWindows(Sender: TObject);
+begin
+  LoadDefaultLayout;
 end;
 
 initialization

@@ -2226,12 +2226,9 @@ var
   ALayout: TSimpleWindowLayout;
   AForm: TCustomForm;
 begin
+  DoCallNotifyHandler(lihtIDERestoreWindows);
   if IDEDockMaster<>nil then
-  begin
-    IDEDockMaster.LoadDefaultLayout;
     exit;
-  end;
-
   for i:=0 to EnvironmentOptions.IDEWindowLayoutList.Count-1 do begin
     ALayout:=EnvironmentOptions.IDEWindowLayoutList[i];
     if not ALayout.Visible then continue;
