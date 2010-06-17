@@ -3704,6 +3704,10 @@ msgstr "Daryti pakitusių failų rezervines kopijas"
 msgid "Backup file failed"
 msgstr "Nepavyko padaryti failo atsarginę kopiją"
 
+#: lazarusidestrconsts.lisbackuphint
+msgid "Creates a Backup directory under project directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisbddchangingthepackagenameorversionbreaksdependencies
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
 msgstr "Keičiant paketo pavadinimą ar versiją bus sugadintos priklausomybės. Keisti šias priklausomybes kaip priklauso?%sPaspaudus „Taip“ bus pakeistos visos pateiktos priklausomybės.%sPaspaudus „Ignoruoti“ priklausomybės bus sugadintos."
@@ -4430,6 +4434,10 @@ msgstr "Išvalyti klavišų priskyrimus"
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
 msgstr "Čia paspaudę, galėsite naršyti failo"
+
+#: lazarusidestrconsts.lisclicktoseethepossibleuses
+msgid "Click to see the possible uses"
+msgstr ""
 
 #: lazarusidestrconsts.lisclose
 msgid "&Close"
@@ -5360,9 +5368,22 @@ msgstr "Talkininkai"
 msgid "Control needs parent"
 msgstr "Valdikliui reikia tėvo"
 
-#: lazarusidestrconsts.lisconvautoremoveproperties
+#: lazarusidestrconsts.lisconvautoremoveprop
+msgctxt "lazarusidestrconsts.lisconvautoremoveprop"
 msgid "Automatic removal of unknown properties"
 msgstr "Automatiškai šalinti nežinomas savybes"
+
+#: lazarusidestrconsts.lisconvautoremoveprophint
+msgid "If unchecked, there will be interactive dialogs for editing / accepting changes"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvautoreplaceunithint
+msgid "If unchecked, there will be interactive dialogs for editing / accepting changes."
+msgstr ""
+
+#: lazarusidestrconsts.lisconvautoreplaceunits
+msgid "Automatic replacement of unit names"
+msgstr ""
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -5385,20 +5406,42 @@ msgid "Convert project or package"
 msgstr "Konvertuoti projektą ar paketą"
 
 #: lazarusidestrconsts.lisconverttarget1
-msgid "Lazarus/LCL"
+#, fuzzy
+#| msgid "Lazarus/LCL"
+msgid "Lazarus / LCL"
 msgstr "Lazarus/LCL"
 
 #: lazarusidestrconsts.lisconverttarget2
-msgid "Lazarus/LCL for Windows only"
+#, fuzzy
+#| msgid "Lazarus/LCL for Windows only"
+msgid "Lazarus / LCL for Windows only"
 msgstr "Lazarus/LCL skirtas tik Windows"
 
 #: lazarusidestrconsts.lisconverttarget3
-msgid "Both Lazarus/LCL and Delphi"
+#, fuzzy
+#| msgid "Both Lazarus/LCL and Delphi"
+msgid "Both Lazarus / LCL and Delphi"
 msgstr "Abu, Lazarus/LCL ir Delphi"
+
+#: lazarusidestrconsts.lisconverttargethint
+msgid "Converter adds conditional compilation to support different targets"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvmethodreplacements
+msgid "Method Replacements"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvmethodreplhint
+msgid "Some Delphi functions can be replaced with LCL function"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
 msgstr "Tipų keitiniai"
+
+#: lazarusidestrconsts.lisconvtypereplhint
+msgid "Unknown types in form file (DFM/LFM)"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvtypestoreplace
 msgid "Types to replace"
@@ -5408,13 +5451,26 @@ msgstr "Keistini tipai"
 msgid "Unit Replacements"
 msgstr "Modulių keitiniai"
 
+#: lazarusidestrconsts.lisconvunitreplhint
+msgid "Unit names in uses section of a source unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
 msgstr "Keistini moduliai"
 
-#: lazarusidestrconsts.lisconvunitstypesproperties
+#: lazarusidestrconsts.lisconvunitstypesprop
+msgctxt "lazarusidestrconsts.lisconvunitstypesprop"
 msgid "Units, Types and Properties"
 msgstr "Moduliai, tipai ir savybės"
+
+#: lazarusidestrconsts.lisconvusesamedfm
+msgid "Lazarus uses the same DFM form file as Delphi"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvusesamedfmhint
+msgid "Separate form files allow different properties"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -5591,10 +5647,6 @@ msgstr "Kintamojo pavadinimas"
 #: lazarusidestrconsts.lisctdtemplates
 msgid "Templates"
 msgstr "Šablonai"
-
-#: lazarusidestrconsts.lisctinsertmacro
-msgid "Insert Macro"
-msgstr "Įterpti makrokomandą"
 
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
@@ -6989,6 +7041,11 @@ msgstr "Grąžina žodį, ties kuriuo, šiuo metu yra žymeklis"
 msgid "Goto line"
 msgstr "„Goto“ eilutė"
 
+#: lazarusidestrconsts.lisgotoselectedsourceline
+msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
+msgid "Goto selected source line"
+msgstr "Rodyti eilutę pirminiame kode"
+
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<aprašymas>%sCopyright (C) <metai> <autoriaus vardas> <kontaktai>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -7369,6 +7426,11 @@ msgstr "Įterpti datą. Papildomai: formatuoti tekstą."
 msgid "insert end if needed"
 msgstr "Jei reikia, įterpti „end“"
 
+#: lazarusidestrconsts.lisinsertmacro
+msgctxt "lazarusidestrconsts.lisinsertmacro"
+msgid "Insert Macro"
+msgstr "Įterpti makrokomandą"
+
 #: lazarusidestrconsts.lisinsertnameofcurrentprocedure
 msgid "Insert name of current procedure"
 msgstr "Įterpti dabartinės procedūros pavadinimą"
@@ -7429,6 +7491,10 @@ msgstr "Diegimas nepavyko"
 #: lazarusidestrconsts.lisinstalledpackages
 msgid "Installed Packages"
 msgstr "Įdiegti paketai"
+
+#: lazarusidestrconsts.lisinstallitilikethefat
+msgid "Install it, I like the fat"
+msgstr ""
 
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
@@ -9816,6 +9882,10 @@ msgstr "Ne Delphi projektas"
 msgid "Not a Delphi unit"
 msgstr "Ne Delphi modulis"
 
+#: lazarusidestrconsts.lisnotaninstallpackage
+msgid "Not an install package"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid pascal identifier"
 msgstr "Ne paskalio identifikatorius"
@@ -10431,7 +10501,8 @@ msgstr "Minimali versiją  %s%s%s nėra gera versija paketui.%s(geras pavyzdys b
 msgid "Uninstall"
 msgstr "Išdiegti"
 
-#: lazarusidestrconsts.lispckeditviewpackgesource
+#: lazarusidestrconsts.lispckeditviewpackagesource
+msgctxt "lazarusidestrconsts.lispckeditviewpackagesource"
 msgid "View Package Source"
 msgstr "Rodyti paketo pirminį kodą"
 
@@ -11616,6 +11687,10 @@ msgstr "Projekto išvesties aplankas (pvz. „ppu“ failų aplankas)"
 msgid "Project Path:"
 msgstr "Kelias iki projekto:"
 
+#: lazarusidestrconsts.lisprojectpathhint
+msgid "Directory where project's main file must be"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
 msgstr "Projekte „%s“ susidarė klasės „%s“ išimtinė situacija."
@@ -12502,10 +12577,6 @@ msgstr "Skirtas OS"
 msgid "Internal compiler error! (%d)"
 msgstr "Vidinė kompiliatoriaus klaida! (%d)"
 
-#: lazarusidestrconsts.listddinserttodo
-msgid "Insert ToDo"
-msgstr "Įterpti ToDo"
-
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
 msgstr "Langelis, kurį galima keisti"
@@ -12752,6 +12823,10 @@ msgstr "Pakete jau yra modulis tokiu pavadinimu."
 msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
 msgstr "Paketo „%s“ negalima išdiegti, nes jis būtinas pačiam IKA."
 
+#: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
+msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%s%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
+msgstr ""
+
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr "Nerasta programa %ssmake%s.%sŠi programa reikalinga Lazarus darymui.%s"
@@ -12944,64 +13019,6 @@ msgstr "Funkcija: ištraukti tik kelią"
 msgid "(unknown macro: %s)"
 msgstr "(nežinoma makrokomanda: %s)"
 
-#: lazarusidestrconsts.listodoexport
-msgctxt "lazarusidestrconsts.listodoexport"
-msgid "Export"
-msgstr "Eksportas"
-
-#: lazarusidestrconsts.listodogoto
-msgid "Goto"
-msgstr "Rodyk kur"
-
-#: lazarusidestrconsts.listodoldescription
-msgctxt "lazarusidestrconsts.listodoldescription"
-msgid "Description"
-msgstr "Aprašymas"
-
-#: lazarusidestrconsts.listodoldone
-msgid "Done"
-msgstr "Baigta"
-
-#: lazarusidestrconsts.listodolfile
-msgctxt "lazarusidestrconsts.listodolfile"
-msgid "Module"
-msgstr "Modulis"
-
-#: lazarusidestrconsts.listodolistcaption
-msgctxt "lazarusidestrconsts.listodolistcaption"
-msgid "ToDo List"
-msgstr "ToDo sąrašas"
-
-#: lazarusidestrconsts.listodolistgotoline
-msgid "Goto selected source line"
-msgstr "Rodyti eilutę pirminiame kode"
-
-#: lazarusidestrconsts.listodolistoptions
-msgid "ToDo options..."
-msgstr "ToDo parinktys…"
-
-#: lazarusidestrconsts.listodolistprintlist
-msgid "Print todo items"
-msgstr "Spausdinti ToDo sąrašą"
-
-#: lazarusidestrconsts.listodolistrefresh
-msgid "Refresh todo items"
-msgstr "Atnaujinti ToDo sąrašą"
-
-#: lazarusidestrconsts.listodolline
-msgctxt "lazarusidestrconsts.listodolline"
-msgid "Line"
-msgstr "Eilutė"
-
-#: lazarusidestrconsts.listodolowner
-msgid "Owner"
-msgstr "Savininkas"
-
-#: lazarusidestrconsts.listodolpriority
-msgctxt "lazarusidestrconsts.listodolpriority"
-msgid "Priority"
-msgstr "Prioritetas"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "Failas:"
@@ -13042,11 +13059,6 @@ msgstr "Tolygiai rikiuoti pagal viršutinius kraštus"
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Medį būtina naujinti"
-
-#: lazarusidestrconsts.listtodolcategory
-msgctxt "lazarusidestrconsts.listtodolcategory"
-msgid "Category"
-msgstr "Kategorija"
 
 #: lazarusidestrconsts.listurbopascal
 msgid "Turbo Pascal"
@@ -13553,6 +13565,10 @@ msgstr "Teksto, kuris pateiktas, kaip parametras, raides versti didžiosiomis"
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
 msgstr "Pranešimas apie naudojimą (-h parinktis)"
+
+#: lazarusidestrconsts.lisuse
+msgid "Use..."
+msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"
@@ -15251,10 +15267,6 @@ msgstr "&Rodyti žymę"
 #: lazarusidestrconsts.uemhighlighter
 msgid "Highlighter"
 msgstr "Sintaksės paryškinimas"
-
-#: lazarusidestrconsts.ueminserttodo
-msgid "Insert Todo"
-msgstr "Įterpti ToDo"
 
 #: lazarusidestrconsts.ueminspect
 msgid "&Inspect..."

@@ -3713,6 +3713,10 @@ msgstr ""
 msgid "Backup file failed"
 msgstr "バックアップファイル失敗"
 
+#: lazarusidestrconsts.lisbackuphint
+msgid "Creates a Backup directory under project directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisbddchangingthepackagenameorversionbreaksdependencies
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
 msgstr "パッケージ名もしくはバージョンの変更は依存性を壊します。これらの依存性も同様に変更すべきでしょうか？ %s列挙された依存性を変更する場合は[はい]を選択してください。%s依存性を壊して継続する場合は[無視]を選択してください。 "
@@ -4436,6 +4440,10 @@ msgstr "キーマップを消去します"
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
 msgstr "ファイルを閲覧するためにここをクリックしてください。"
+
+#: lazarusidestrconsts.lisclicktoseethepossibleuses
+msgid "Click to see the possible uses"
+msgstr ""
 
 #: lazarusidestrconsts.lisclose
 msgid "&Close"
@@ -5367,8 +5375,21 @@ msgstr "貢献者"
 msgid "Control needs parent"
 msgstr "コントロールには親コントロールが必要です"
 
-#: lazarusidestrconsts.lisconvautoremoveproperties
+#: lazarusidestrconsts.lisconvautoremoveprop
+msgctxt "lazarusidestrconsts.lisconvautoremoveprop"
 msgid "Automatic removal of unknown properties"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvautoremoveprophint
+msgid "If unchecked, there will be interactive dialogs for editing / accepting changes"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvautoreplaceunithint
+msgid "If unchecked, there will be interactive dialogs for editing / accepting changes."
+msgstr ""
+
+#: lazarusidestrconsts.lisconvautoreplaceunits
+msgid "Automatic replacement of unit names"
 msgstr ""
 
 #: lazarusidestrconsts.lisconversionerror
@@ -5392,19 +5413,35 @@ msgid "Convert project or package"
 msgstr "プロジェクトもしくはパッケージを変換"
 
 #: lazarusidestrconsts.lisconverttarget1
-msgid "Lazarus/LCL"
+msgid "Lazarus / LCL"
 msgstr ""
 
 #: lazarusidestrconsts.lisconverttarget2
-msgid "Lazarus/LCL for Windows only"
+msgid "Lazarus / LCL for Windows only"
 msgstr ""
 
 #: lazarusidestrconsts.lisconverttarget3
-msgid "Both Lazarus/LCL and Delphi"
+msgid "Both Lazarus / LCL and Delphi"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttargethint
+msgid "Converter adds conditional compilation to support different targets"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvmethodreplacements
+msgid "Method Replacements"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvmethodreplhint
+msgid "Some Delphi functions can be replaced with LCL function"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvtypereplhint
+msgid "Unknown types in form file (DFM/LFM)"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvtypestoreplace
@@ -5415,12 +5452,25 @@ msgstr ""
 msgid "Unit Replacements"
 msgstr ""
 
+#: lazarusidestrconsts.lisconvunitreplhint
+msgid "Unit names in uses section of a source unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvunitstypesproperties
+#: lazarusidestrconsts.lisconvunitstypesprop
+msgctxt "lazarusidestrconsts.lisconvunitstypesprop"
 msgid "Units, Types and Properties"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvusesamedfm
+msgid "Lazarus uses the same DFM form file as Delphi"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvusesamedfmhint
+msgid "Separate form files allow different properties"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyall
@@ -5598,10 +5648,6 @@ msgstr "変数名"
 #: lazarusidestrconsts.lisctdtemplates
 msgid "Templates"
 msgstr "テンプレート"
-
-#: lazarusidestrconsts.lisctinsertmacro
-msgid "Insert Macro"
-msgstr "マクロを挿入"
 
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
@@ -6999,6 +7045,11 @@ msgstr "現在のカーソル位置の単語を取得"
 msgid "Goto line"
 msgstr ""
 
+#: lazarusidestrconsts.lisgotoselectedsourceline
+msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
+msgid "Goto selected source line"
+msgstr "選択されたソース行へ移動"
+
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "著作権(C)<年><作者名>%sこのソースはフリーソフトです。あなたは、Free Software Foundation  が公表したGNU一般公有使用許諾の「バージョン2」或いはそれ以降の各バージョンの中からいずれかを選択し、そのバージョンが定める条項に従って本プログラムを再頒布または変更することができます。%s本プログラムは有用とは思いますが、頒布にあたっては、市場性及び特定目的適合性についての暗黙の保証を含めて、いかなる保証も行ないません。詳細についてはGNU一般公衆使用許諾書をお読みください。%sGNU一般公衆使用許諾書のコピーはインターネット上の<http://www.gnu.org/copyleft/gpl.html>.。次の住所に手紙でリクエストすることによっても入手できます：Free Software Foundation Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA"
@@ -7379,6 +7430,11 @@ msgstr "日付と挿入。オプションとして：書式化文字列"
 msgid "insert end if needed"
 msgstr "必要ならばendを挿入"
 
+#: lazarusidestrconsts.lisinsertmacro
+msgctxt "lazarusidestrconsts.lisinsertmacro"
+msgid "Insert Macro"
+msgstr "マクロを挿入"
+
 #: lazarusidestrconsts.lisinsertnameofcurrentprocedure
 msgid "Insert name of current procedure"
 msgstr "現在の手続きの名前を挿入"
@@ -7439,6 +7495,10 @@ msgstr "インストールに失敗"
 #: lazarusidestrconsts.lisinstalledpackages
 msgid "Installed Packages"
 msgstr "インストールしたパッケージ"
+
+#: lazarusidestrconsts.lisinstallitilikethefat
+msgid "Install it, I like the fat"
+msgstr ""
 
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
@@ -9840,6 +9900,10 @@ msgstr "Delphiプロジェクトではありません"
 msgid "Not a Delphi unit"
 msgstr "Delphiユニットではありません"
 
+#: lazarusidestrconsts.lisnotaninstallpackage
+msgid "Not an install package"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid pascal identifier"
 msgstr "パスカルの有効な識別子ではありません"
@@ -10454,7 +10518,8 @@ msgstr "バージョンの下限値%s%s%sは有効なパッケージバージョ
 msgid "Uninstall"
 msgstr "アンインストール"
 
-#: lazarusidestrconsts.lispckeditviewpackgesource
+#: lazarusidestrconsts.lispckeditviewpackagesource
+msgctxt "lazarusidestrconsts.lispckeditviewpackagesource"
 msgid "View Package Source"
 msgstr "パッケージソースを表示"
 
@@ -11640,6 +11705,10 @@ msgstr "プロジェクト出力ディレクトリ（例：ppuディレクトリ
 msgid "Project Path:"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectpathhint
+msgid "Directory where project's main file must be"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
 msgstr "プロジェクト %s は、例外クラス'%s'を発生させました。"
@@ -12522,10 +12591,6 @@ msgstr "対象OS"
 msgid "Internal compiler error! (%d)"
 msgstr "内部コンパイラエラーです！ (%d)"
 
-#: lazarusidestrconsts.listddinserttodo
-msgid "Insert ToDo"
-msgstr "ToDoを挿入"
-
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
 msgstr "編集可能なセル"
@@ -12769,6 +12834,10 @@ msgstr "そのパッケージは既にこの名前のユニットを含んでい
 msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
 msgstr "パッケージ %s は、アンインストールできません。なぜなら、 IDE自身が必要としているからです。"
 
+#: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
+msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%s%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
+msgstr ""
+
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr "プログラム%smake%sが見つかりませんでした。%sこのツールはlazarusを構築するのに必要です。"
@@ -12961,64 +13030,6 @@ msgstr "機能：ファイルのパス（フォルダ名）を抽出"
 msgid "(unknown macro: %s)"
 msgstr "(不明マクロ: %S)"
 
-#: lazarusidestrconsts.listodoexport
-msgctxt "lazarusidestrconsts.listodoexport"
-msgid "Export"
-msgstr "エクスポート"
-
-#: lazarusidestrconsts.listodogoto
-msgid "Goto"
-msgstr "移動"
-
-#: lazarusidestrconsts.listodoldescription
-msgctxt "lazarusidestrconsts.listodoldescription"
-msgid "Description"
-msgstr "説明"
-
-#: lazarusidestrconsts.listodoldone
-msgid "Done"
-msgstr "完了"
-
-#: lazarusidestrconsts.listodolfile
-msgctxt "lazarusidestrconsts.listodolfile"
-msgid "Module"
-msgstr "モジュール"
-
-#: lazarusidestrconsts.listodolistcaption
-msgctxt "lazarusidestrconsts.listodolistcaption"
-msgid "ToDo List"
-msgstr "ToDoリスト"
-
-#: lazarusidestrconsts.listodolistgotoline
-msgid "Goto selected source line"
-msgstr "選択されたソース行へ移動"
-
-#: lazarusidestrconsts.listodolistoptions
-msgid "ToDo options..."
-msgstr "ToDoオプション..."
-
-#: lazarusidestrconsts.listodolistprintlist
-msgid "Print todo items"
-msgstr "ToDo項目を印刷"
-
-#: lazarusidestrconsts.listodolistrefresh
-msgid "Refresh todo items"
-msgstr "ToDo項目をリフレッシュ"
-
-#: lazarusidestrconsts.listodolline
-msgctxt "lazarusidestrconsts.listodolline"
-msgid "Line"
-msgstr "行"
-
-#: lazarusidestrconsts.listodolowner
-msgid "Owner"
-msgstr "オーナー"
-
-#: lazarusidestrconsts.listodolpriority
-msgctxt "lazarusidestrconsts.listodolpriority"
-msgid "Priority"
-msgstr "優先"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "パス："
@@ -13055,11 +13066,6 @@ msgstr "上端の間隔を均等に"
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "ツリーは、リフレッシュを必要とします"
-
-#: lazarusidestrconsts.listtodolcategory
-msgctxt "lazarusidestrconsts.listtodolcategory"
-msgid "Category"
-msgstr "カテゴリ"
 
 #: lazarusidestrconsts.listurbopascal
 msgid "Turbo Pascal"
@@ -13570,6 +13576,10 @@ msgstr "引数として与えられている大文字文字列 "
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
 msgstr "使用メッセージ（-hオプション）"
+
+#: lazarusidestrconsts.lisuse
+msgid "Use..."
+msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"
@@ -15268,10 +15278,6 @@ msgstr "ブックマークへ移動(&G)"
 #: lazarusidestrconsts.uemhighlighter
 msgid "Highlighter"
 msgstr "強調表示"
-
-#: lazarusidestrconsts.ueminserttodo
-msgid "Insert Todo"
-msgstr "Todoを挿入"
 
 #: lazarusidestrconsts.ueminspect
 msgid "&Inspect..."

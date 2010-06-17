@@ -3679,6 +3679,10 @@ msgstr "Vytvářet zálohy změněných souborů"
 msgid "Backup file failed"
 msgstr "Zálohování souboru selhalo"
 
+#: lazarusidestrconsts.lisbackuphint
+msgid "Creates a Backup directory under project directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisbddchangingthepackagenameorversionbreaksdependencies
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
 msgstr "Změna jména nebo verze balíčku naruší závislosti. Měly by být změněny také tyto závislosti?%sVyberte Ano ke změně všech uvedených závislostí.%sVyberte Ignorovat k porušení závislostí a pokračování."
@@ -4400,6 +4404,10 @@ msgstr "Vymazat mapování klávesy"
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
 msgstr "K procházení souboru klikněte zde"
+
+#: lazarusidestrconsts.lisclicktoseethepossibleuses
+msgid "Click to see the possible uses"
+msgstr ""
 
 #: lazarusidestrconsts.lisclose
 msgid "&Close"
@@ -5329,9 +5337,22 @@ msgstr "Přispěvatelé"
 msgid "Control needs parent"
 msgstr "Prvek potřebuje rodiče"
 
-#: lazarusidestrconsts.lisconvautoremoveproperties
+#: lazarusidestrconsts.lisconvautoremoveprop
+msgctxt "lazarusidestrconsts.lisconvautoremoveprop"
 msgid "Automatic removal of unknown properties"
 msgstr "Automatické odstranění neznámých vlastností"
+
+#: lazarusidestrconsts.lisconvautoremoveprophint
+msgid "If unchecked, there will be interactive dialogs for editing / accepting changes"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvautoreplaceunithint
+msgid "If unchecked, there will be interactive dialogs for editing / accepting changes."
+msgstr ""
+
+#: lazarusidestrconsts.lisconvautoreplaceunits
+msgid "Automatic replacement of unit names"
+msgstr ""
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -5354,20 +5375,42 @@ msgid "Convert project or package"
 msgstr "Převést projekt nebo balíček"
 
 #: lazarusidestrconsts.lisconverttarget1
-msgid "Lazarus/LCL"
+#, fuzzy
+#| msgid "Lazarus/LCL"
+msgid "Lazarus / LCL"
 msgstr "Lazarus/LCL"
 
 #: lazarusidestrconsts.lisconverttarget2
-msgid "Lazarus/LCL for Windows only"
+#, fuzzy
+#| msgid "Lazarus/LCL for Windows only"
+msgid "Lazarus / LCL for Windows only"
 msgstr "Lazarus/LCL pouze pro Windows"
 
 #: lazarusidestrconsts.lisconverttarget3
-msgid "Both Lazarus/LCL and Delphi"
+#, fuzzy
+#| msgid "Both Lazarus/LCL and Delphi"
+msgid "Both Lazarus / LCL and Delphi"
 msgstr "Oba Lazarus/LCL i Delphi"
+
+#: lazarusidestrconsts.lisconverttargethint
+msgid "Converter adds conditional compilation to support different targets"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvmethodreplacements
+msgid "Method Replacements"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvmethodreplhint
+msgid "Some Delphi functions can be replaced with LCL function"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
 msgstr "Nahrazení typu"
+
+#: lazarusidestrconsts.lisconvtypereplhint
+msgid "Unknown types in form file (DFM/LFM)"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvtypestoreplace
 msgid "Types to replace"
@@ -5377,13 +5420,26 @@ msgstr "Typy k nahrazení"
 msgid "Unit Replacements"
 msgstr "Nahrazení jednotky"
 
+#: lazarusidestrconsts.lisconvunitreplhint
+msgid "Unit names in uses section of a source unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
 msgstr "Jednoty k nahrazení"
 
-#: lazarusidestrconsts.lisconvunitstypesproperties
+#: lazarusidestrconsts.lisconvunitstypesprop
+msgctxt "lazarusidestrconsts.lisconvunitstypesprop"
 msgid "Units, Types and Properties"
 msgstr "Jednotky, Typy a Vlastnosti"
+
+#: lazarusidestrconsts.lisconvusesamedfm
+msgid "Lazarus uses the same DFM form file as Delphi"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvusesamedfmhint
+msgid "Separate form files allow different properties"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -5560,10 +5616,6 @@ msgstr "Jméno proměné"
 #: lazarusidestrconsts.lisctdtemplates
 msgid "Templates"
 msgstr "Šablony"
-
-#: lazarusidestrconsts.lisctinsertmacro
-msgid "Insert Macro"
-msgstr "Vložit makro"
 
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
@@ -6957,6 +7009,11 @@ msgstr "získat slovo na aktuální pozici"
 msgid "Goto line"
 msgstr "Přejít na řídek "
 
+#: lazarusidestrconsts.lisgotoselectedsourceline
+msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
+msgid "Goto selected source line"
+msgstr "Přejít na vybraný zdrojový řádek"
+
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
@@ -7337,6 +7394,11 @@ msgstr "Vložit datum. Volitelně: formátovací řetězec"
 msgid "insert end if needed"
 msgstr "vložit konec pokud je třeba"
 
+#: lazarusidestrconsts.lisinsertmacro
+msgctxt "lazarusidestrconsts.lisinsertmacro"
+msgid "Insert Macro"
+msgstr "Vložit makro"
+
 #: lazarusidestrconsts.lisinsertnameofcurrentprocedure
 msgid "Insert name of current procedure"
 msgstr "Vložit jméno aktuální procedury"
@@ -7397,6 +7459,10 @@ msgstr "Instalace selhala"
 #: lazarusidestrconsts.lisinstalledpackages
 msgid "Installed Packages"
 msgstr "Instalované balíčky"
+
+#: lazarusidestrconsts.lisinstallitilikethefat
+msgid "Install it, I like the fat"
+msgstr ""
 
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
@@ -9770,6 +9836,10 @@ msgstr "Není projekt Delphi"
 msgid "Not a Delphi unit"
 msgstr "Není jednotka Delphi"
 
+#: lazarusidestrconsts.lisnotaninstallpackage
+msgid "Not an install package"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid pascal identifier"
 msgstr "Neplatný pascalovský identifikátor"
@@ -10384,7 +10454,8 @@ msgstr "Minimální verze %s%s%s není platná verze balíčku.%s(dobrý příkl
 msgid "Uninstall"
 msgstr "Odinstalovat"
 
-#: lazarusidestrconsts.lispckeditviewpackgesource
+#: lazarusidestrconsts.lispckeditviewpackagesource
+msgctxt "lazarusidestrconsts.lispckeditviewpackagesource"
 msgid "View Package Source"
 msgstr "Zobrazit zdroj balíkču"
 
@@ -11570,6 +11641,10 @@ msgstr "Výstupní adresář projektu (např. ppu adresář)"
 msgid "Project Path:"
 msgstr "Cesta projektu:"
 
+#: lazarusidestrconsts.lisprojectpathhint
+msgid "Directory where project's main file must be"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
 msgstr ""
@@ -12448,10 +12523,6 @@ msgstr "Cílový OS"
 msgid "Internal compiler error! (%d)"
 msgstr "Vnitřní chyba překladače! (%d)"
 
-#: lazarusidestrconsts.listddinserttodo
-msgid "Insert ToDo"
-msgstr "Vložit úkol"
-
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
 msgstr "Upravitelná buňka"
@@ -12695,6 +12766,10 @@ msgstr "Balíček již obsahuje jednotku s tímto jménem."
 msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
 msgstr "Balíček %s nemůže být odinstalován, protože jej potřebuje samo IDE."
 
+#: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
+msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%s%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
+msgstr ""
+
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr ""
@@ -12887,64 +12962,6 @@ msgstr "Funkce: vytáhnout cestu"
 msgid "(unknown macro: %s)"
 msgstr "(neznámé makro: %s)"
 
-#: lazarusidestrconsts.listodoexport
-msgctxt "lazarusidestrconsts.listodoexport"
-msgid "Export"
-msgstr "Exportovat"
-
-#: lazarusidestrconsts.listodogoto
-msgid "Goto"
-msgstr "Přejít"
-
-#: lazarusidestrconsts.listodoldescription
-msgctxt "lazarusidestrconsts.listodoldescription"
-msgid "Description"
-msgstr "Popis"
-
-#: lazarusidestrconsts.listodoldone
-msgid "Done"
-msgstr "Hotovo"
-
-#: lazarusidestrconsts.listodolfile
-msgctxt "lazarusidestrconsts.listodolfile"
-msgid "Module"
-msgstr "Modul"
-
-#: lazarusidestrconsts.listodolistcaption
-msgctxt "lazarusidestrconsts.listodolistcaption"
-msgid "ToDo List"
-msgstr "Seznam úkolů"
-
-#: lazarusidestrconsts.listodolistgotoline
-msgid "Goto selected source line"
-msgstr "Přejít na vybraný zdrojový řádek"
-
-#: lazarusidestrconsts.listodolistoptions
-msgid "ToDo options..."
-msgstr "Volby seznamu úkolů..."
-
-#: lazarusidestrconsts.listodolistprintlist
-msgid "Print todo items"
-msgstr "Tisk položek úkolovníku"
-
-#: lazarusidestrconsts.listodolistrefresh
-msgid "Refresh todo items"
-msgstr "Obnovit seznam úkolů"
-
-#: lazarusidestrconsts.listodolline
-msgctxt "lazarusidestrconsts.listodolline"
-msgid "Line"
-msgstr "Řádek"
-
-#: lazarusidestrconsts.listodolowner
-msgid "Owner"
-msgstr "Vlastník"
-
-#: lazarusidestrconsts.listodolpriority
-msgctxt "lazarusidestrconsts.listodolpriority"
-msgid "Priority"
-msgstr "Priorita"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "Cesta:"
@@ -12981,11 +12998,6 @@ msgstr "Horní mezery stejně"
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Strom potřebuje obnovení"
-
-#: lazarusidestrconsts.listtodolcategory
-msgctxt "lazarusidestrconsts.listtodolcategory"
-msgid "Category"
-msgstr "Kategorie"
 
 #: lazarusidestrconsts.listurbopascal
 msgid "Turbo Pascal"
@@ -13487,6 +13499,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
+msgstr ""
+
+#: lazarusidestrconsts.lisuse
+msgid "Use..."
 msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter
@@ -15182,10 +15198,6 @@ msgstr "&Skok na značku"
 #: lazarusidestrconsts.uemhighlighter
 msgid "Highlighter"
 msgstr "Zvýrazňovač"
-
-#: lazarusidestrconsts.ueminserttodo
-msgid "Insert Todo"
-msgstr "Vložit úkol"
 
 #: lazarusidestrconsts.ueminspect
 msgid "&Inspect..."

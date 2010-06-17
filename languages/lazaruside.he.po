@@ -3683,6 +3683,10 @@ msgstr "צור גיבוי לקבצים ששונו"
 msgid "Backup file failed"
 msgstr "קובץ הגיבוי נכשל"
 
+#: lazarusidestrconsts.lisbackuphint
+msgid "Creates a Backup directory under project directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisbddchangingthepackagenameorversionbreaksdependencies
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
 msgstr "שינוי שם חבילה או גרסה שובר את התלויות. האם לשנות את התלויות בנוסף?%sבחר \"כן\" לשנות את כל התלויות הרשומות.%sבחר \"התעלם\" לשבור את התלויות ולהמשיך."
@@ -4404,6 +4408,10 @@ msgstr "נקה מיפוי מקשים"
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
 msgstr "לחץ כאן בשביל לצפות בקובץ"
+
+#: lazarusidestrconsts.lisclicktoseethepossibleuses
+msgid "Click to see the possible uses"
+msgstr ""
 
 #: lazarusidestrconsts.lisclose
 msgid "&Close"
@@ -5333,9 +5341,22 @@ msgstr "תורמים"
 msgid "Control needs parent"
 msgstr "הפקד חייב הורה"
 
-#: lazarusidestrconsts.lisconvautoremoveproperties
+#: lazarusidestrconsts.lisconvautoremoveprop
+msgctxt "lazarusidestrconsts.lisconvautoremoveprop"
 msgid "Automatic removal of unknown properties"
 msgstr "הסרה אוטומטית של תכונות לא ידועות"
+
+#: lazarusidestrconsts.lisconvautoremoveprophint
+msgid "If unchecked, there will be interactive dialogs for editing / accepting changes"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvautoreplaceunithint
+msgid "If unchecked, there will be interactive dialogs for editing / accepting changes."
+msgstr ""
+
+#: lazarusidestrconsts.lisconvautoreplaceunits
+msgid "Automatic replacement of unit names"
+msgstr ""
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -5358,20 +5379,42 @@ msgid "Convert project or package"
 msgstr "המר פרויקט או חבילה"
 
 #: lazarusidestrconsts.lisconverttarget1
-msgid "Lazarus/LCL"
+#, fuzzy
+#| msgid "Lazarus/LCL"
+msgid "Lazarus / LCL"
 msgstr "Lazarus/LCL"
 
 #: lazarusidestrconsts.lisconverttarget2
-msgid "Lazarus/LCL for Windows only"
+#, fuzzy
+#| msgid "Lazarus/LCL for Windows only"
+msgid "Lazarus / LCL for Windows only"
 msgstr "לזאדוס/LCL עבור חלונות בלבד"
 
 #: lazarusidestrconsts.lisconverttarget3
-msgid "Both Lazarus/LCL and Delphi"
+#, fuzzy
+#| msgid "Both Lazarus/LCL and Delphi"
+msgid "Both Lazarus / LCL and Delphi"
 msgstr "גם לזארוס/LCL ודלפי"
+
+#: lazarusidestrconsts.lisconverttargethint
+msgid "Converter adds conditional compilation to support different targets"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvmethodreplacements
+msgid "Method Replacements"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvmethodreplhint
+msgid "Some Delphi functions can be replaced with LCL function"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
 msgstr "החלפת סוג משתנה"
+
+#: lazarusidestrconsts.lisconvtypereplhint
+msgid "Unknown types in form file (DFM/LFM)"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvtypestoreplace
 msgid "Types to replace"
@@ -5381,13 +5424,26 @@ msgstr "סוג משתנה להחלפה"
 msgid "Unit Replacements"
 msgstr "החלפת יחידות"
 
+#: lazarusidestrconsts.lisconvunitreplhint
+msgid "Unit names in uses section of a source unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
 msgstr "יחידות להחלפה"
 
-#: lazarusidestrconsts.lisconvunitstypesproperties
+#: lazarusidestrconsts.lisconvunitstypesprop
+msgctxt "lazarusidestrconsts.lisconvunitstypesprop"
 msgid "Units, Types and Properties"
 msgstr "יחידות סוגי משתנים ותכונות"
+
+#: lazarusidestrconsts.lisconvusesamedfm
+msgid "Lazarus uses the same DFM form file as Delphi"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvusesamedfmhint
+msgid "Separate form files allow different properties"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -5564,10 +5620,6 @@ msgstr "שם משתנה"
 #: lazarusidestrconsts.lisctdtemplates
 msgid "Templates"
 msgstr "תבניות"
-
-#: lazarusidestrconsts.lisctinsertmacro
-msgid "Insert Macro"
-msgstr "הכנס מאקרו"
 
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
@@ -6961,6 +7013,11 @@ msgstr "קח את המילה במקום הנוכחי של הסמן"
 msgid "Goto line"
 msgstr "לך אל שורה"
 
+#: lazarusidestrconsts.lisgotoselectedsourceline
+msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
+msgid "Goto selected source line"
+msgstr "לך לשורת הקוד שנבחרה"
+
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<תאור> s% זכויות יוצרים (C) <שנה> <שם המחבר> <התקשרות> s% קוד זה הוא תכנה חפשית; אתה רשאי להפיץ ו/או לשנות אותה בהתאם לתנאים של GNU GPL כמו שפורסמו ע\"י הקרן למען תכנה חפשית; לפי גרסה 2 או לפי גרסה מאוחרת יותר (לפי בחירתך)  של הרשיון. קוד זה מופץ בתקווה שיהיה שימושי, אבל ללא אחריות כלשהי; אפילו לא אחריות שיווקית או התאמה לתכלית מסוימת. ראה GNU GPL לפרטים נוספים. ניתן למצוא ברשת את הרשיון בכתובת <http://www.gnu.org/copyleft/gpl.html>.או לקבל אותו ע\"י כתיבה ל the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -7341,6 +7398,11 @@ msgstr "הכנס תאריך. אפשרי: עיצוב המחרוזת"
 msgid "insert end if needed"
 msgstr "הכנס סיום אם צריך"
 
+#: lazarusidestrconsts.lisinsertmacro
+msgctxt "lazarusidestrconsts.lisinsertmacro"
+msgid "Insert Macro"
+msgstr "הכנס מאקרו"
+
 #: lazarusidestrconsts.lisinsertnameofcurrentprocedure
 msgid "Insert name of current procedure"
 msgstr "הכנס את שם הפרוצדורה הנוכחית"
@@ -7401,6 +7463,10 @@ msgstr "ההתקנה נכשלה"
 #: lazarusidestrconsts.lisinstalledpackages
 msgid "Installed Packages"
 msgstr "חבילה מותקנת"
+
+#: lazarusidestrconsts.lisinstallitilikethefat
+msgid "Install it, I like the fat"
+msgstr ""
 
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
@@ -9782,6 +9848,10 @@ msgstr "זה אינו פרוייקט דלפי"
 msgid "Not a Delphi unit"
 msgstr "זו אינה יחידת דלפי"
 
+#: lazarusidestrconsts.lisnotaninstallpackage
+msgid "Not an install package"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid pascal identifier"
 msgstr "זה אינו מזהה פסקל חוקי"
@@ -10397,7 +10467,8 @@ msgstr "הגירסה המינימלית s%s%s% היא לא גירסה חוקית
 msgid "Uninstall"
 msgstr "הסר התקנה"
 
-#: lazarusidestrconsts.lispckeditviewpackgesource
+#: lazarusidestrconsts.lispckeditviewpackagesource
+msgctxt "lazarusidestrconsts.lispckeditviewpackagesource"
 msgid "View Package Source"
 msgstr "צפה בקוד החבילה"
 
@@ -11582,6 +11653,10 @@ msgstr "תיקיית הפלט של הפרוייקט (למשל תיקיית ה pp
 msgid "Project Path:"
 msgstr "נתיב הפרוייקט:"
 
+#: lazarusidestrconsts.lisprojectpathhint
+msgid "Directory where project's main file must be"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
 msgstr "הפרוייקט העלה חריגה במחלקה s%"
@@ -12465,10 +12540,6 @@ msgstr "יעד מערכת ההפעלה"
 msgid "Internal compiler error! (%d)"
 msgstr "שגיאת מהדר פנימית"
 
-#: lazarusidestrconsts.listddinserttodo
-msgid "Insert ToDo"
-msgstr "הוסף ToDO"
-
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
 msgstr "תא בר עריכה"
@@ -12712,6 +12783,10 @@ msgstr "החבילה כבר מכילה יחידה עם שםזה."
 msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
 msgstr "אי אפשר להסיר את התקנת החבילה, כי היא דרושה ל IDE עצמו."
 
+#: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
+msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%s%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
+msgstr ""
+
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr "התוכנית make לא נמצאה. כלי זה דרוש לבניית לזארוס."
@@ -12904,64 +12979,6 @@ msgstr "פונקציה: חלץ את נתיב הקובץ"
 msgid "(unknown macro: %s)"
 msgstr "(מאקרו לא מוכר: s%)"
 
-#: lazarusidestrconsts.listodoexport
-msgctxt "lazarusidestrconsts.listodoexport"
-msgid "Export"
-msgstr "יצוא"
-
-#: lazarusidestrconsts.listodogoto
-msgid "Goto"
-msgstr "לך אל"
-
-#: lazarusidestrconsts.listodoldescription
-msgctxt "lazarusidestrconsts.listodoldescription"
-msgid "Description"
-msgstr "תאור"
-
-#: lazarusidestrconsts.listodoldone
-msgid "Done"
-msgstr "סיים"
-
-#: lazarusidestrconsts.listodolfile
-msgctxt "lazarusidestrconsts.listodolfile"
-msgid "Module"
-msgstr "מודול"
-
-#: lazarusidestrconsts.listodolistcaption
-msgctxt "lazarusidestrconsts.listodolistcaption"
-msgid "ToDo List"
-msgstr "רשימת \"לעשות\""
-
-#: lazarusidestrconsts.listodolistgotoline
-msgid "Goto selected source line"
-msgstr "לך לשורת הקוד שנבחרה"
-
-#: lazarusidestrconsts.listodolistoptions
-msgid "ToDo options..."
-msgstr "אפשרויות \"לעשות\""
-
-#: lazarusidestrconsts.listodolistprintlist
-msgid "Print todo items"
-msgstr "הדפס את משימות ה todo"
-
-#: lazarusidestrconsts.listodolistrefresh
-msgid "Refresh todo items"
-msgstr "רענן את משימות ה todo"
-
-#: lazarusidestrconsts.listodolline
-msgctxt "lazarusidestrconsts.listodolline"
-msgid "Line"
-msgstr "שורה"
-
-#: lazarusidestrconsts.listodolowner
-msgid "Owner"
-msgstr "בעלים"
-
-#: lazarusidestrconsts.listodolpriority
-msgctxt "lazarusidestrconsts.listodolpriority"
-msgid "Priority"
-msgstr "עדיפות"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "נתיב:"
@@ -12998,11 +13015,6 @@ msgstr "רווח שווה מלמעלה"
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "העת זקוק לרענון"
-
-#: lazarusidestrconsts.listtodolcategory
-msgctxt "lazarusidestrconsts.listtodolcategory"
-msgid "Category"
-msgstr "קטגוריה"
 
 #: lazarusidestrconsts.listurbopascal
 msgid "Turbo Pascal"
@@ -13505,6 +13517,10 @@ msgstr "מחרוזת באותיות ראשיות ניתנה כפרמטר"
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
 msgstr "הודעת \"איך להשתמש\" (אפשרות h-)"
+
+#: lazarusidestrconsts.lisuse
+msgid "Use..."
+msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"
@@ -15201,10 +15217,6 @@ msgstr "לך לסימניה"
 #: lazarusidestrconsts.uemhighlighter
 msgid "Highlighter"
 msgstr "מדגש"
-
-#: lazarusidestrconsts.ueminserttodo
-msgid "Insert Todo"
-msgstr "הכנס TODO"
 
 #: lazarusidestrconsts.ueminspect
 msgid "&Inspect..."

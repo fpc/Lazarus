@@ -3678,6 +3678,10 @@ msgstr ""
 msgid "Backup file failed"
 msgstr "dosyayı yedekleme başarısız oldu"
 
+#: lazarusidestrconsts.lisbackuphint
+msgid "Creates a Backup directory under project directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisbddchangingthepackagenameorversionbreaksdependencies
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
 msgstr ""
@@ -4399,6 +4403,10 @@ msgstr ""
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
 msgstr "Dosyayı araştırmak için buraya tıklayın"
+
+#: lazarusidestrconsts.lisclicktoseethepossibleuses
+msgid "Click to see the possible uses"
+msgstr ""
 
 #: lazarusidestrconsts.lisclose
 msgid "&Close"
@@ -5328,8 +5336,21 @@ msgstr ""
 msgid "Control needs parent"
 msgstr "Denetim, bir üst-denetim gerektiriyor"
 
-#: lazarusidestrconsts.lisconvautoremoveproperties
+#: lazarusidestrconsts.lisconvautoremoveprop
+msgctxt "lazarusidestrconsts.lisconvautoremoveprop"
 msgid "Automatic removal of unknown properties"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvautoremoveprophint
+msgid "If unchecked, there will be interactive dialogs for editing / accepting changes"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvautoreplaceunithint
+msgid "If unchecked, there will be interactive dialogs for editing / accepting changes."
+msgstr ""
+
+#: lazarusidestrconsts.lisconvautoreplaceunits
+msgid "Automatic replacement of unit names"
 msgstr ""
 
 #: lazarusidestrconsts.lisconversionerror
@@ -5353,19 +5374,35 @@ msgid "Convert project or package"
 msgstr ""
 
 #: lazarusidestrconsts.lisconverttarget1
-msgid "Lazarus/LCL"
+msgid "Lazarus / LCL"
 msgstr ""
 
 #: lazarusidestrconsts.lisconverttarget2
-msgid "Lazarus/LCL for Windows only"
+msgid "Lazarus / LCL for Windows only"
 msgstr ""
 
 #: lazarusidestrconsts.lisconverttarget3
-msgid "Both Lazarus/LCL and Delphi"
+msgid "Both Lazarus / LCL and Delphi"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttargethint
+msgid "Converter adds conditional compilation to support different targets"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvmethodreplacements
+msgid "Method Replacements"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvmethodreplhint
+msgid "Some Delphi functions can be replaced with LCL function"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvtypereplhint
+msgid "Unknown types in form file (DFM/LFM)"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvtypestoreplace
@@ -5376,12 +5413,25 @@ msgstr ""
 msgid "Unit Replacements"
 msgstr ""
 
+#: lazarusidestrconsts.lisconvunitreplhint
+msgid "Unit names in uses section of a source unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvunitstypesproperties
+#: lazarusidestrconsts.lisconvunitstypesprop
+msgctxt "lazarusidestrconsts.lisconvunitstypesprop"
 msgid "Units, Types and Properties"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvusesamedfm
+msgid "Lazarus uses the same DFM form file as Delphi"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvusesamedfmhint
+msgid "Separate form files allow different properties"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyall
@@ -5558,10 +5608,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisctdtemplates
 msgid "Templates"
-msgstr ""
-
-#: lazarusidestrconsts.lisctinsertmacro
-msgid "Insert Macro"
 msgstr ""
 
 #: lazarusidestrconsts.lisctpleaseselectamacro
@@ -6954,6 +7000,11 @@ msgstr ""
 msgid "Goto line"
 msgstr ""
 
+#: lazarusidestrconsts.lisgotoselectedsourceline
+msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
+msgid "Goto selected source line"
+msgstr ""
+
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -7334,6 +7385,11 @@ msgstr ""
 msgid "insert end if needed"
 msgstr ""
 
+#: lazarusidestrconsts.lisinsertmacro
+msgctxt "lazarusidestrconsts.lisinsertmacro"
+msgid "Insert Macro"
+msgstr ""
+
 #: lazarusidestrconsts.lisinsertnameofcurrentprocedure
 msgid "Insert name of current procedure"
 msgstr ""
@@ -7393,6 +7449,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinstalledpackages
 msgid "Installed Packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisinstallitilikethefat
+msgid "Install it, I like the fat"
 msgstr ""
 
 #: lazarusidestrconsts.lisinstallselection
@@ -9785,6 +9845,10 @@ msgstr "Bir Delphi projesi değil"
 msgid "Not a Delphi unit"
 msgstr ""
 
+#: lazarusidestrconsts.lisnotaninstallpackage
+msgid "Not an install package"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid pascal identifier"
 msgstr ""
@@ -10401,7 +10465,8 @@ msgstr ""
 msgid "Uninstall"
 msgstr ""
 
-#: lazarusidestrconsts.lispckeditviewpackgesource
+#: lazarusidestrconsts.lispckeditviewpackagesource
+msgctxt "lazarusidestrconsts.lispckeditviewpackagesource"
 msgid "View Package Source"
 msgstr ""
 
@@ -11585,6 +11650,10 @@ msgstr ""
 msgid "Project Path:"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectpathhint
+msgid "Directory where project's main file must be"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
 msgstr ""
@@ -12465,10 +12534,6 @@ msgstr "Hedef işletim sistemi"
 msgid "Internal compiler error! (%d)"
 msgstr ""
 
-#: lazarusidestrconsts.listddinserttodo
-msgid "Insert ToDo"
-msgstr ""
-
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
 msgstr ""
@@ -12712,6 +12777,10 @@ msgstr ""
 msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
 msgstr ""
 
+#: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
+msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%s%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
+msgstr ""
+
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr ""
@@ -12904,64 +12973,6 @@ msgstr ""
 msgid "(unknown macro: %s)"
 msgstr "(bilinmeyen makro: %s)"
 
-#: lazarusidestrconsts.listodoexport
-msgctxt "lazarusidestrconsts.listodoexport"
-msgid "Export"
-msgstr ""
-
-#: lazarusidestrconsts.listodogoto
-msgid "Goto"
-msgstr ""
-
-#: lazarusidestrconsts.listodoldescription
-msgctxt "lazarusidestrconsts.listodoldescription"
-msgid "Description"
-msgstr ""
-
-#: lazarusidestrconsts.listodoldone
-msgid "Done"
-msgstr ""
-
-#: lazarusidestrconsts.listodolfile
-msgctxt "lazarusidestrconsts.listodolfile"
-msgid "Module"
-msgstr ""
-
-#: lazarusidestrconsts.listodolistcaption
-msgctxt "lazarusidestrconsts.listodolistcaption"
-msgid "ToDo List"
-msgstr ""
-
-#: lazarusidestrconsts.listodolistgotoline
-msgid "Goto selected source line"
-msgstr ""
-
-#: lazarusidestrconsts.listodolistoptions
-msgid "ToDo options..."
-msgstr ""
-
-#: lazarusidestrconsts.listodolistprintlist
-msgid "Print todo items"
-msgstr ""
-
-#: lazarusidestrconsts.listodolistrefresh
-msgid "Refresh todo items"
-msgstr ""
-
-#: lazarusidestrconsts.listodolline
-msgctxt "lazarusidestrconsts.listodolline"
-msgid "Line"
-msgstr ""
-
-#: lazarusidestrconsts.listodolowner
-msgid "Owner"
-msgstr ""
-
-#: lazarusidestrconsts.listodolpriority
-msgctxt "lazarusidestrconsts.listodolpriority"
-msgid "Priority"
-msgstr ""
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr ""
@@ -12997,11 +13008,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
-msgstr ""
-
-#: lazarusidestrconsts.listtodolcategory
-msgctxt "lazarusidestrconsts.listtodolcategory"
-msgid "Category"
 msgstr ""
 
 #: lazarusidestrconsts.listurbopascal
@@ -13510,6 +13516,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
+msgstr ""
+
+#: lazarusidestrconsts.lisuse
+msgid "Use..."
 msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter
@@ -15204,10 +15214,6 @@ msgstr "Yer imine &Git"
 
 #: lazarusidestrconsts.uemhighlighter
 msgid "Highlighter"
-msgstr ""
-
-#: lazarusidestrconsts.ueminserttodo
-msgid "Insert Todo"
 msgstr ""
 
 #: lazarusidestrconsts.ueminspect

@@ -3717,6 +3717,10 @@ msgstr ""
 msgid "Backup file failed"
 msgstr "备份文件失败"
 
+#: lazarusidestrconsts.lisbackuphint
+msgid "Creates a Backup directory under project directory"
+msgstr ""
+
 #: lazarusidestrconsts.lisbddchangingthepackagenameorversionbreaksdependencies
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
 msgstr "改变包名和版本将破坏依赖关系,确定更改依赖关系么?%s选择 确定 更改所有列出的依赖关系.%s选择 忽略 中断依赖关系."
@@ -4440,6 +4444,10 @@ msgstr ""
 #: lazarusidestrconsts.lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
 msgstr "点击这里浏览文件"
+
+#: lazarusidestrconsts.lisclicktoseethepossibleuses
+msgid "Click to see the possible uses"
+msgstr ""
 
 #: lazarusidestrconsts.lisclose
 msgid "&Close"
@@ -5371,8 +5379,21 @@ msgstr "贡献者"
 msgid "Control needs parent"
 msgstr "控件需要父类"
 
-#: lazarusidestrconsts.lisconvautoremoveproperties
+#: lazarusidestrconsts.lisconvautoremoveprop
+msgctxt "lazarusidestrconsts.lisconvautoremoveprop"
 msgid "Automatic removal of unknown properties"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvautoremoveprophint
+msgid "If unchecked, there will be interactive dialogs for editing / accepting changes"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvautoreplaceunithint
+msgid "If unchecked, there will be interactive dialogs for editing / accepting changes."
+msgstr ""
+
+#: lazarusidestrconsts.lisconvautoreplaceunits
+msgid "Automatic replacement of unit names"
 msgstr ""
 
 #: lazarusidestrconsts.lisconversionerror
@@ -5396,19 +5417,35 @@ msgid "Convert project or package"
 msgstr "转换工程或包"
 
 #: lazarusidestrconsts.lisconverttarget1
-msgid "Lazarus/LCL"
+msgid "Lazarus / LCL"
 msgstr ""
 
 #: lazarusidestrconsts.lisconverttarget2
-msgid "Lazarus/LCL for Windows only"
+msgid "Lazarus / LCL for Windows only"
 msgstr ""
 
 #: lazarusidestrconsts.lisconverttarget3
-msgid "Both Lazarus/LCL and Delphi"
+msgid "Both Lazarus / LCL and Delphi"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttargethint
+msgid "Converter adds conditional compilation to support different targets"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvmethodreplacements
+msgid "Method Replacements"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvmethodreplhint
+msgid "Some Delphi functions can be replaced with LCL function"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvtypereplhint
+msgid "Unknown types in form file (DFM/LFM)"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvtypestoreplace
@@ -5419,12 +5456,25 @@ msgstr ""
 msgid "Unit Replacements"
 msgstr ""
 
+#: lazarusidestrconsts.lisconvunitreplhint
+msgid "Unit names in uses section of a source unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvunitstypesproperties
+#: lazarusidestrconsts.lisconvunitstypesprop
+msgctxt "lazarusidestrconsts.lisconvunitstypesprop"
 msgid "Units, Types and Properties"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvusesamedfm
+msgid "Lazarus uses the same DFM form file as Delphi"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvusesamedfmhint
+msgid "Separate form files allow different properties"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyall
@@ -5602,10 +5652,6 @@ msgstr "变量名"
 #: lazarusidestrconsts.lisctdtemplates
 msgid "Templates"
 msgstr "模板"
-
-#: lazarusidestrconsts.lisctinsertmacro
-msgid "Insert Macro"
-msgstr "插入宏"
 
 #: lazarusidestrconsts.lisctpleaseselectamacro
 msgid "please select a macro"
@@ -7001,6 +7047,11 @@ msgstr ""
 msgid "Goto line"
 msgstr ""
 
+#: lazarusidestrconsts.lisgotoselectedsourceline
+msgctxt "lazarusidestrconsts.lisgotoselectedsourceline"
+msgid "Goto selected source line"
+msgstr "前往所选代码行"
+
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 msgstr ""
@@ -7381,6 +7432,11 @@ msgstr ""
 msgid "insert end if needed"
 msgstr ""
 
+#: lazarusidestrconsts.lisinsertmacro
+msgctxt "lazarusidestrconsts.lisinsertmacro"
+msgid "Insert Macro"
+msgstr "插入宏"
+
 #: lazarusidestrconsts.lisinsertnameofcurrentprocedure
 msgid "Insert name of current procedure"
 msgstr ""
@@ -7441,6 +7497,10 @@ msgstr "安装失败"
 #: lazarusidestrconsts.lisinstalledpackages
 msgid "Installed Packages"
 msgstr "已经安装的包"
+
+#: lazarusidestrconsts.lisinstallitilikethefat
+msgid "Install it, I like the fat"
+msgstr ""
 
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
@@ -9840,6 +9900,10 @@ msgstr "不是一个 Delphi 工程"
 msgid "Not a Delphi unit"
 msgstr "不是 Delphi 单元"
 
+#: lazarusidestrconsts.lisnotaninstallpackage
+msgid "Not an install package"
+msgstr ""
+
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid pascal identifier"
 msgstr ""
@@ -10456,7 +10520,8 @@ msgstr "最小版本 %s%s%s 不是有效的包版本.%s(一个正确的例子是
 msgid "Uninstall"
 msgstr "卸载"
 
-#: lazarusidestrconsts.lispckeditviewpackgesource
+#: lazarusidestrconsts.lispckeditviewpackagesource
+msgctxt "lazarusidestrconsts.lispckeditviewpackagesource"
 msgid "View Package Source"
 msgstr "查看包的源代码"
 
@@ -11642,6 +11707,10 @@ msgstr "工程输出目录(例如ppu目录)"
 msgid "Project Path:"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojectpathhint
+msgid "Directory where project's main file must be"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
 msgstr ""
@@ -12524,10 +12593,6 @@ msgstr "目标操作系统"
 msgid "Internal compiler error! (%d)"
 msgstr "内部编译错误! (%d)"
 
-#: lazarusidestrconsts.listddinserttodo
-msgid "Insert ToDo"
-msgstr "插入 ToDo"
-
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
 msgstr ""
@@ -12771,6 +12836,10 @@ msgstr "包已经包含了这个单元."
 msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
 msgstr ""
 
+#: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
+msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%s%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
+msgstr ""
+
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
 msgstr "程序 %smake%s 未找到.%s构建 Lazarus 这个工具是必须的.%s"
@@ -12963,64 +13032,6 @@ msgstr "功能: 获取文件路径"
 msgid "(unknown macro: %s)"
 msgstr "(未知的宏: %s)"
 
-#: lazarusidestrconsts.listodoexport
-msgctxt "lazarusidestrconsts.listodoexport"
-msgid "Export"
-msgstr ""
-
-#: lazarusidestrconsts.listodogoto
-msgid "Goto"
-msgstr "转向"
-
-#: lazarusidestrconsts.listodoldescription
-msgctxt "lazarusidestrconsts.listodoldescription"
-msgid "Description"
-msgstr "描述"
-
-#: lazarusidestrconsts.listodoldone
-msgid "Done"
-msgstr "完成"
-
-#: lazarusidestrconsts.listodolfile
-msgctxt "lazarusidestrconsts.listodolfile"
-msgid "Module"
-msgstr "模块"
-
-#: lazarusidestrconsts.listodolistcaption
-msgctxt "lazarusidestrconsts.listodolistcaption"
-msgid "ToDo List"
-msgstr "ToDo 列表"
-
-#: lazarusidestrconsts.listodolistgotoline
-msgid "Goto selected source line"
-msgstr "前往所选代码行"
-
-#: lazarusidestrconsts.listodolistoptions
-msgid "ToDo options..."
-msgstr "ToDo 选项..."
-
-#: lazarusidestrconsts.listodolistprintlist
-msgid "Print todo items"
-msgstr "打印 todo 项目"
-
-#: lazarusidestrconsts.listodolistrefresh
-msgid "Refresh todo items"
-msgstr "刷新 todo 项目"
-
-#: lazarusidestrconsts.listodolline
-msgctxt "lazarusidestrconsts.listodolline"
-msgid "Line"
-msgstr "行"
-
-#: lazarusidestrconsts.listodolowner
-msgid "Owner"
-msgstr ""
-
-#: lazarusidestrconsts.listodolpriority
-msgctxt "lazarusidestrconsts.listodolpriority"
-msgid "Priority"
-msgstr "优先级"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "路径:"
@@ -13057,11 +13068,6 @@ msgstr "上方空白相等"
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr ""
-
-#: lazarusidestrconsts.listtodolcategory
-msgctxt "lazarusidestrconsts.listtodolcategory"
-msgid "Category"
-msgstr "种类"
 
 #: lazarusidestrconsts.listurbopascal
 msgid "Turbo Pascal"
@@ -13571,6 +13577,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
+msgstr ""
+
+#: lazarusidestrconsts.lisuse
+msgid "Use..."
 msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter
@@ -15272,10 +15282,6 @@ msgstr "跳到书签(&G) "
 #: lazarusidestrconsts.uemhighlighter
 msgid "Highlighter"
 msgstr "高亮"
-
-#: lazarusidestrconsts.ueminserttodo
-msgid "Insert Todo"
-msgstr "插入 Todo"
 
 #: lazarusidestrconsts.ueminspect
 msgid "&Inspect..."

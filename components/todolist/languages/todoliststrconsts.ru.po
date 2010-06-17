@@ -1,0 +1,99 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: todoliststrconsts.dlgfropts
+msgid "Options"
+msgstr "Параметры"
+
+#: todoliststrconsts.dlgunitdeprefresh
+msgid "Refresh"
+msgstr "Обновить"
+
+#: todoliststrconsts.lisctinsertmacro
+msgid "Insert Macro"
+msgstr "Вставить макрос"
+
+#: todoliststrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Текст"
+
+#: todoliststrconsts.lisprint
+msgid "Print"
+msgstr "Печать"
+
+#: todoliststrconsts.listddinserttodo
+msgid "Insert ToDo"
+msgstr "Вставить элемент списка ToDo"
+
+#: todoliststrconsts.listodoexport
+msgid "Export"
+msgstr "Экспорт"
+
+#: todoliststrconsts.listodogoto
+msgid "Goto"
+msgstr "Переход"
+
+#: todoliststrconsts.listodoldescription
+msgid "Description"
+msgstr "Описание"
+
+#: todoliststrconsts.listodoldone
+msgid "Done"
+msgstr "Готово"
+
+#: todoliststrconsts.listodolfile
+msgid "Module"
+msgstr "Модуль"
+
+#: todoliststrconsts.listodolist
+msgid "ToDo list"
+msgstr "Список ToDo"
+
+#: todoliststrconsts.listodolistcaption
+msgid "ToDo List"
+msgstr "Список ToDo"
+
+#: todoliststrconsts.listodolistgotoline
+msgid "Goto selected source line"
+msgstr "Перейти к выделенной строке исходного кода"
+
+#: todoliststrconsts.listodolistoptions
+msgid "ToDo options..."
+msgstr "Параметры ToDo..."
+
+#: todoliststrconsts.listodolistprintlist
+msgid "Print todo items"
+msgstr "Распечатать элементы ToDo"
+
+#: todoliststrconsts.listodolistrefresh
+msgid "Refresh todo items"
+msgstr "Обновить элементы ToDo"
+
+#: todoliststrconsts.listodolline
+msgid "Line"
+msgstr "Строка"
+
+#: todoliststrconsts.listodolowner
+msgid "Owner"
+msgstr "Владелец"
+
+#: todoliststrconsts.listodolpriority
+msgid "Priority"
+msgstr "Приоритет"
+
+#: todoliststrconsts.listtodolcategory
+msgid "Category"
+msgstr "Категория"
+
+#: todoliststrconsts.lisviewtodolist
+msgid "View ToDo list"
+msgstr "Показать список ToDo"
+
