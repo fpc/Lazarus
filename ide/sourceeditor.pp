@@ -6847,7 +6847,9 @@ End;
 function TSourceNotebook.FindPageWithEditor(
   ASourceEditor: TSourceEditor):integer;
 begin
-  if ASourceEditor.EditorComponent.Parent is TPage then
+  if (ASourceEditor.EditorComponent.Parent is TPage) and
+     (TPage(ASourceEditor.EditorComponent.Parent).Parent = FNotebook)
+  then
     Result:=TPage(ASourceEditor.EditorComponent.Parent).PageIndex
   else
     Result:=-1;
