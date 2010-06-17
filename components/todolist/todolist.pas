@@ -157,7 +157,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure lvTodoClick(Sender: TObject);
     procedure SaveDialog1Show(Sender: TObject);
-    procedure ToolButton1Click(Sender: TObject);
   private
     FBaseDirectory: string;
     fBuild       : Boolean;
@@ -317,11 +316,6 @@ end;
 procedure TIDETodoWindow.SaveDialog1Show(Sender: TObject);
 begin
   SaveDialog1.InitialDir:=GetCurrentDirUTF8;
-end;
-
-procedure TIDETodoWindow.ToolButton1Click(Sender: TObject);
-begin
-
 end;
 
 //Initialise the todo project and find them
