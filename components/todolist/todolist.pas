@@ -162,14 +162,13 @@ type
     FBaseDirectory: string;
     fBuild       : Boolean;
     FIdleConnected: boolean;
-    fMainSourceFilename    : String;
+    fOwnerFilename    : String;
     FOnOpenFile  : TOnOpenFile;
-    fRootCBuffer : TCodeBuffer;
     fScannedFiles: TAvgLvlTree;// tree of TTLScannedFile
 
     procedure SetBaseDirectory(const AValue: string);
     procedure SetIdleConnected(const AValue: boolean);
-    procedure SetMainSourceFilename(const AValue: String);
+    procedure SetOwnerFilename(const AValue: String);
 
     function  CreateToDoItem(aTLFile: TTLScannedFile;
         const aFileName: string; const SComment, EComment: string;
@@ -182,7 +181,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    property MainSourceFilename : String read fMainSourceFilename write SetMainSourceFilename;
+    property OwnerFilename : String read fOwnerFilename write SetOwnerFilename; // lpr or lpi or lpk
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
     property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -326,11 +325,12 @@ begin
 end;
 
 //Initialise the todo project and find them
-procedure TIDETodoWindow.SetMainSourceFilename(const AValue: String);
+procedure TIDETodoWindow.SetOwnerFilename(const AValue: String);
 begin
-  if fMainSourceFilename=AValue then exit;
-  fMainSourceFilename:=AValue;
-  Caption:=lisTodoListCaption+' '+fMainSourceFilename;
+  //debugln(['TIDETodoWindow.SetOwnerFilename ',AValue]);
+  if fOwnerFilename=AValue then exit;
+  fOwnerFilename:=AValue;
+  Caption:=lisTodoListCaption+' '+fOwnerFilename;
   acRefresh.Execute;
 end;
 
@@ -537,60 +537,14 @@ var
   aTodoItem: TTodoItem;
   aListItem: TListItem;
   TheLine: integer;
-  UsedInterfaceFilenames: TStrings;
-  UsedImplementationFilenames: TStrings;
-  i: integer;
-  Found: boolean;
 begin
   CurFilename:='';
   aListItem:= lvtodo.Selected;
-  Found:= false;
   if Assigned(aListItem) and Assigned(aListItem.Data) then
   begin
     aTodoItem := TTodoItem(aListItem.Data);
     CurFileName := aTodoItem.Filename;
     TheLine     := aTodoItem.LineNumber;
-    if not FileNameIsAbsolute(CurFileName) then
-    begin
-      if Assigned(CodeToolBoss) then
-      begin
-        fRootCBuffer:=CodeToolBoss.LoadFile(fMainSourceFilename,false,false);
-        if not Assigned(fRootCBuffer) then Exit;
-        UsedInterfaceFilenames:=nil;
-        UsedImplementationFilenames:=nil;
-        if CodeToolBoss.FindUsedUnitFiles(fRootCBuffer,UsedInterfaceFilenames,
-                                          UsedImplementationFilenames) then
-        begin
-          try
-            for i:=0 to UsedInterfaceFilenames.Count-1 do
-            begin
-              if CompareFilenames(ExtractFileName(UsedInterfaceFileNames[i]),
-                                  CurFileName) = 0 then
-              begin
-                CurFileName:= UsedInterFaceFileNames[i];
-                Found:= true;
-                break;
-              end;
-            end;
-            if not Found then
-            begin
-              for i:=0 to UsedImplementationFilenames.Count-1 do
-              begin
-                if CompareFilenames(ExtractFileName
-                (UsedImplementationFilenames[i]), CurFileName) = 0 then
-                begin
-                  CurFileName:= UsedImplementationFilenames[i];
-                  break;
-                end;
-              end;
-            end;
-          finally
-            UsedImplementationFilenames.Free;
-            UsedInterfaceFilenames.Free;
-          end;
-        end;
-      end;
-    end;
     if Assigned(OnOpenFile) then
       OnOpenFile(Self,CurFilename,TheLine)
     else
@@ -645,10 +599,11 @@ var
   CurProjFile: TLazProjectFile;
   Node: TAvgLvlTreeNode;
   CurFile: TTLScannedFile;
+  CurPkgFile: TLazPackageFile;
 begin
   if fBuild then Exit;
 
-  //DebugLn(['TfrmTodo.acRefreshExecute MainSourceFilename=',MainSourceFilename]);
+  //DebugLn(['TfrmTodo.acRefreshExecute OwnerFilename=',OwnerFilename]);
 
   LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
 
@@ -661,21 +616,22 @@ begin
     fScannedFiles.FreeAndClear;
     lvTodo.Items.Clear;
 
-    if MainSourceFilename='' then exit;
+    if OwnerFilename='' then exit;
     
     // Find a '.todo' file of the main source
-    St:=ChangeFileExt(MainSourceFilename,'.todo');
+    St:=ChangeFileExt(OwnerFilename,'.todo');
     if FileExistsUTF8(St) then
       ScanFile(St);
 
     // Scan main source file
-    ScanFile(MainSourceFilename);
+    if FilenameIsPascalUnit(OwnerFilename) then
+      ScanFile(OwnerFilename);
     
     // find project/package
     CurOwner:=nil;
     CurProject:=nil;
     CurPackage:=nil;
-    Owners:=PackageEditingInterface.GetOwnersOfUnit(MainSourceFilename);
+    Owners:=PackageEditingInterface.GetOwnersOfUnit(OwnerFilename);
     if (Owners<>nil) then begin
       i:=0;
       while i<Owners.Count do begin
@@ -683,23 +639,12 @@ begin
         if CurOwner is TLazProject then begin
           // this file is owned by a project
           CurProject:=TLazProject(CurOwner);
-          if (CurProject.MainFile<>nil)
-          and (CompareFilenames(CurProject.MainFile.Filename,MainSourceFilename)=0)
-          then begin
-            // create the list of todo items for this project
-            break;
-          end;
-          CurProject:=nil;
+          // create the list of todo items for this project
+          break;
         end else if CurOwner is TIDEPackage then begin
           // this file is owned by a package
           CurPackage:=TIDEPackage(CurOwner);
-          {if (CurPackage.GetSrcFilename<>'')
-          and (CompareFilenames(CurPackage.GetSrcFilename,MainSourceFilename)=0)
-          then begin
-            // create the list of todo items for this package
-            break;
-          end;}
-          CurPackage:=nil;
+          break;
         end;
         inc(i);
       end;
@@ -720,11 +665,11 @@ begin
     if CurPackage<>nil then begin
       // scan all units of package
       FBaseDirectory:=ExtractFilePath(CurPackage.Filename);
-      {for i:=0 to CurPackage.FileCount-1 do begin
+      for i:=0 to CurPackage.FileCount-1 do begin
         CurPkgFile:=CurPackage.Files[i];
         if FilenameIsPascalUnit(CurPkgFile.Filename) then
           ScanFile(CurPkgFile.Filename);
-      end;}
+      end;
     end;
 
     Node:=fScannedFiles.FindLowest;
@@ -840,16 +785,13 @@ end;
 procedure TIDETodoWindow.OnIdle(Sender: TObject; var Done: Boolean);
 var
   AProject: TLazProject;
-  MainFile: TLazProjectFile;
 begin
   if Done then ;
   IdleConnected:=false;
-  if MainSourceFilename<>'' then exit;
+  if OwnerFilename<>'' then exit;
   AProject:=LazarusIDE.ActiveProject;
   if AProject=nil then exit;
-  MainFile:=AProject.MainFile;
-  if MainFile=nil then exit;
-  MainSourceFilename:=MainFile.Filename;
+  OwnerFilename:=AProject.ProjectInfoFile;
 end;
 
 { TTodoItem }

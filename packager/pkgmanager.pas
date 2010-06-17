@@ -3300,26 +3300,38 @@ var
   begin
     if AProject=nil then exit;
     Add:=false;
+
+    // check if in units
     if not (piosfExcludeOwned in Flags) then begin
       //DebugLn(['SearchInProject ',AProject.ProjectInfoFile,' UnitFilename=',UnitFilename]);
-      if AProject.UnitInfoWithFilename(UnitFilename,
-        [pfsfResolveFileLinks,pfsfOnlyProjectFiles])<>nil
+      if (CompareFilenames(UnitFilename,AProject.ProjectInfoFile)=0)
+      or (AProject.UnitInfoWithFilename(UnitFilename,[pfsfOnlyProjectFiles])<>nil)
       then
         Add:=true;
     end;
-    if (piosfIncludeSourceDirectories in Flags)
-    and FilenameIsAbsolute(UnitFilename) then begin
+
+    BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
+
+    // check if in virtual project
+    if (not Add)
+    and (piosfIncludeSourceDirectories in Flags)
+    and (BaseDir='')
+    and (ExtractFilePath(UnitFilename)='') then
+      Add:=true;
+
+    if (not Add)
+    and (piosfIncludeSourceDirectories in Flags)
+    and FilenameIsAbsolute(UnitFilename)
+    and (BaseDir<>'') then begin
       // search in project source directories
-      BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
-      if BaseDir<>'' then begin
-        ProjectDirs:=AProject.LazCompilerOptions.OtherUnitFiles+';.';
-        if not IDEMacros.CreateAbsoluteSearchPath(ProjectDirs,BaseDir) then exit;
-        if FindPathInSearchPath(PChar(SrcDir),length(SrcDir),
-          PChar(ProjectDirs),length(ProjectDirs))<>nil
-        then
-          Add:=true;
-      end;
+      ProjectDirs:=AProject.LazCompilerOptions.OtherUnitFiles+';.';
+      if not IDEMacros.CreateAbsoluteSearchPath(ProjectDirs,BaseDir) then exit;
+      if FindPathInSearchPath(PChar(SrcDir),length(SrcDir),
+        PChar(ProjectDirs),length(ProjectDirs))<>nil
+      then
+        Add:=true;
     end;
+
     if Add then
       Result.Add(AProject);
   end;
@@ -3346,7 +3358,8 @@ begin
     // check package source files (they usually do not have a TPkgFile)
     for i:=0 to PackageGraph.Count-1 do begin
       CurPackage:=PackageGraph.Packages[i];
-      if (CompareFilenames(UnitFilename,CurPackage.GetSrcFilename)=0)
+      if ((CompareFilenames(UnitFilename,CurPackage.GetSrcFilename)=0)
+          or (CompareFilenames(UnitFilename,CurPackage.Filename)=0))
       and (Result.IndexOf(CurPackage)<0) then
         Result.Add(CurPackage);
     end;
