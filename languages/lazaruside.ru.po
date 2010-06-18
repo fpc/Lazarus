@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-06-18 19:40+0300\n"
+"PO-Revision-Date: 2010-06-19 01:02+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -13787,8 +13787,9 @@ msgid "XML parser error in file %s%sError: %s"
 msgstr "Ошибка разбора XML в файле %s%sОшибка: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
-msgid "You can disable this for individual forms via the popup menu in the source editor, file settings, i18n for lfm strings"
-msgstr "Вы можете отключить это поведение для отдельных форм через всплывающее меню редактора исходного кода (Параметры файла -> Отключить i18n для LFM)"
+#| msgid "You can disable this for individual forms via the popup menu in the source editor, file settings, i18n for lfm strings"
+msgid "You can disable this for individual forms via the popup menu in the project inspector"
+msgstr "Вы можете отключить это поведение для отдельных форм через всплывающее меню инспектора проекта"
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."

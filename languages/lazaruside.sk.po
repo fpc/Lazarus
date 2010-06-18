@@ -13800,7 +13800,7 @@ msgid "XML parser error in file %s%sError: %s"
 msgstr "Chyba parsera XML v súbore %s%sChyba: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
-msgid "You can disable this for individual forms via the popup menu in the source editor, file settings, i18n for lfm strings"
+msgid "You can disable this for individual forms via the popup menu in the project inspector"
 msgstr ""
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
