@@ -805,7 +805,7 @@ var
 implementation
 
 const
-  CompilerOptionsVersion = 8;
+  CompilerOptionsVersion = 9;
   Config_Filename = 'compileroptions.xml';
 
 function ParseString(Options: TParsedCompilerOptions;
@@ -1395,7 +1395,7 @@ begin
   CStyleMacros := XMLConfigFile.GetValue(p+'CStyleMacros/Value', false);
   InitConstructor := XMLConfigFile.GetValue(p+'InitConstructor/Value', false);
   StaticKeyword := XMLConfigFile.GetValue(p+'StaticKeyword/Value', false);
-  UseAnsiStrings := XMLConfigFile.GetValue(p+'UseAnsiStrings/Value', false);
+  UseAnsiStrings := XMLConfigFile.GetValue(p+'UseAnsiStrings/Value', FileVersion>=9);
 
   { CodeGeneration }
   p:=Path+'CodeGeneration/';
@@ -1593,7 +1593,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'CStyleMacros/Value', CStyleMacros,false);
   XMLConfigFile.SetDeleteValue(p+'InitConstructor/Value', InitConstructor,false);
   XMLConfigFile.SetDeleteValue(p+'StaticKeyword/Value', StaticKeyword,false);
-  XMLConfigFile.SetDeleteValue(p+'UseAnsiStrings/Value', UseAnsiStrings,false);
+  XMLConfigFile.SetDeleteValue(p+'UseAnsiStrings/Value', UseAnsiStrings,true);
 
   { CodeGeneration }
   p:=Path+'CodeGeneration/';
