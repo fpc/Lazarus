@@ -2073,11 +2073,13 @@ procedure TMainIDE.SetupStartProject;
 
   function AskIfLoadLastFailingProject: boolean;
   begin
+    debugln(['AskIfLoadLastFailingProject START']);
     Result:=QuestionDlg(lisOpenProject2,
       Format(lisAnErrorOccuredAtLastStartupWhileLoadingLoadThisPro, [
         EnvironmentOptions.LastSavedProjectFile, #13, #13]), mtWarning,
         [mrYes, lisOpenProjectAgain, mrNoToAll, lisStartWithANewProject], 0)=
           mrYes;
+    debugln(['AskIfLoadLastFailingProject END ',dbgs(Result)]);
   end;
 
 var

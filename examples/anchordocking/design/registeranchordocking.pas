@@ -168,6 +168,7 @@ begin
     Config:=GetIDEConfigStorage(Filename,true);
     try
       if not DockMaster.ConfigIsEmpty(Config) then begin
+        debugln(['TIDEAnchorDockMaster.LoadDefaultLayout restoring ...']);
         DockMaster.LoadLayoutFromConfig(Config);
         DefaultLayoutLoaded:=true;
       end;
@@ -215,6 +216,7 @@ var
   Site: TAnchorDockHostSite;
   AControl: TControl;
   NeedPlacing: Boolean;
+  SiteForm: TCustomForm;
 begin
   debugln(['TIDEAnchorDockMaster.ShowForm START ',DbgSName(AForm),' BringToFront=',BringToFront,' IsSite=',DockMaster.IsSite(AForm),' IsCustomSite=',DockMaster.IsCustomSite(AForm)]);
   try
@@ -239,11 +241,12 @@ begin
       // place it at a default position and/or dock it
       GetDefaultBounds(AForm,Creator,NewBounds,DockSiblingName,DockAlign);
       if Creator<>nil then begin
-        AForm.BoundsRect:=NewBounds;
-        AForm.UndockWidth:=NewBounds.Right-NewBounds.Left;
-        AForm.UndockHeight:=NewBounds.Bottom-NewBounds.Top;
+        SiteForm:=GetParentForm(AForm);
+        SiteForm.BoundsRect:=NewBounds;
+        SiteForm.UndockWidth:=NewBounds.Right-NewBounds.Left;
+        SiteForm.UndockHeight:=NewBounds.Bottom-NewBounds.Top;
         debugln(['TIDEAnchorDockMaster.ShowForm creator for ',DbgSName(AControl),' found: Left=',Creator.Left,' Top=',Creator.Top,' Width=',Creator.Width,' Height=',Creator.Height,' DockSiblingName=',DockSiblingName,' DockAlign=',dbgs(DockAlign)]);
-        Site:=DockMaster.GetSite(AForm);
+        Site:=DockMaster.GetSite(SiteForm);
         if DockMaster.IsAnchorSite(Site) and (DockSiblingName<>'') then begin
           DockSibling:=Screen.FindForm(DockSiblingName);
           debugln(['TIDEAnchorDockMaster.ShowForm DockSiblingName="',DockSiblingName,'" DockSibling=',DbgSName(DockSibling)]);
