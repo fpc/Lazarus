@@ -5613,6 +5613,10 @@ msgstr "Crear un nuevo proyecto"
 msgid "Create project"
 msgstr "Crear proyecto"
 
+#: lazarusidestrconsts.liscreateupdatepofilewhensavingalfmfile
+msgid "Create/update .po file when saving a lfm file"
+msgstr ""
+
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
 msgstr "Escoja Directorio"
@@ -6056,6 +6060,10 @@ msgstr "Directorio %s%s%s no encontrado."
 msgid "Directory not writable"
 msgstr "Directorio no escribible"
 
+#: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
+msgid "Directory where the IDE puts the .po files"
+msgstr ""
+
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
 msgstr "Deshabilitar todo en el mismo fuente"
@@ -6071,6 +6079,10 @@ msgstr "Deshabilitado"
 #: lazarusidestrconsts.lisdisablegroup
 msgid "Disable Group"
 msgstr "Deshabilitar Grupo"
+
+#: lazarusidestrconsts.lisdisablei18nforlfm
+msgid "Disable I18N for LFM"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -6373,6 +6385,10 @@ msgstr "Activo"
 msgid "Enable Group"
 msgstr "Habilitar Grupo"
 
+#: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
+msgid "Enable internationalization and translation support"
+msgstr ""
+
 #: lazarusidestrconsts.lisenablemacros
 msgid "Enable Macros"
 msgstr "Activar Macros"
@@ -6506,6 +6522,10 @@ msgstr "Error inicializando programa%s%s%s%s%s Error: %s"
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
 msgstr "Error cargando archivo"
+
+#: lazarusidestrconsts.liserrorloadingfile2
+msgid "Error loading file \"%s\":%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.liserrorloadingfrom
 msgid "Error loading %s from%s%s%s%s"
@@ -9860,6 +9880,10 @@ msgstr "%ninguno"
 msgid "none"
 msgstr "ninguno"
 
+#: lazarusidestrconsts.lisnoneclicktochooseone
+msgid "none, click to choose one"
+msgstr ""
+
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
 msgstr "No hay ningún nodo seleccionado"
@@ -11937,6 +11961,10 @@ msgstr "Borrar de la ruta de búsqueda"
 msgid "Remove local variable %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisremovenonexistingfiles
+msgid "Remove non existing files"
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr "Remover las Unidades seleccionadas"
@@ -13765,6 +13793,10 @@ msgstr "Archivos XML"
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "Error de análisis en archivo XML %s%sError: %s"
+
+#: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
+msgid "You can disable this for individual forms via the popup menu in the source editor, file settings, i18n for lfm strings"
+msgstr ""
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."

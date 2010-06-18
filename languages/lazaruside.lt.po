@@ -5612,6 +5612,10 @@ msgstr "Kurti naują projektą"
 msgid "Create project"
 msgstr "Sukurti projektą"
 
+#: lazarusidestrconsts.liscreateupdatepofilewhensavingalfmfile
+msgid "Create/update .po file when saving a lfm file"
+msgstr ""
+
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
 msgstr "Parinkite aplanką"
@@ -6054,6 +6058,10 @@ msgstr "Nepavyko rasti aplanko %s%s%s."
 msgid "Directory not writable"
 msgstr "Aplanke draudžiama rašyti"
 
+#: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
+msgid "Directory where the IDE puts the .po files"
+msgstr ""
+
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
 msgstr "Pasyvinti visus tame pačiame pirminiame kode"
@@ -6069,6 +6077,10 @@ msgstr "Pasyvus"
 #: lazarusidestrconsts.lisdisablegroup
 msgid "Disable Group"
 msgstr "Pasyvinti grupę"
+
+#: lazarusidestrconsts.lisdisablei18nforlfm
+msgid "Disable I18N for LFM"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -6371,6 +6383,10 @@ msgstr "Veiksnus"
 msgid "Enable Group"
 msgstr "Aktyvinti grupę"
 
+#: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
+msgid "Enable internationalization and translation support"
+msgstr ""
+
 #: lazarusidestrconsts.lisenablemacros
 msgid "Enable Macros"
 msgstr "Įgalinti makrokomandas"
@@ -6503,6 +6519,10 @@ msgstr "Įvyko klaida inicializuojant programą%s%s%s%s%sKlaida: %s"
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
 msgstr "Klaida įkeliant failą"
+
+#: lazarusidestrconsts.liserrorloadingfile2
+msgid "Error loading file \"%s\":%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.liserrorloadingfrom
 msgid "Error loading %s from%s%s%s%s"
@@ -9850,6 +9870,10 @@ msgstr "%snieks"
 msgid "none"
 msgstr "nieks"
 
+#: lazarusidestrconsts.lisnoneclicktochooseone
+msgid "none, click to choose one"
+msgstr ""
+
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
 msgstr "mazgas nepažymėtas"
@@ -11923,6 +11947,10 @@ msgstr "Šalinti iš paieškos kelio"
 msgid "Remove local variable %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisremovenonexistingfiles
+msgid "Remove non existing files"
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr "Pašalinti pažymėtus modulius"
@@ -13757,6 +13785,10 @@ msgstr "XML failai"
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML analizatorius klaida, failas: %s%sKlaida: %s"
+
+#: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
+msgid "You can disable this for individual forms via the popup menu in the source editor, file settings, i18n for lfm strings"
+msgstr ""
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."

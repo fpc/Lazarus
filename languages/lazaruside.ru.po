@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-06-17 21:40+0300\n"
+"PO-Revision-Date: 2010-06-18 19:40+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5619,6 +5619,10 @@ msgstr "Создать новый проект"
 msgid "Create project"
 msgstr "Создать проект"
 
+#: lazarusidestrconsts.liscreateupdatepofilewhensavingalfmfile
+msgid "Create/update .po file when saving a lfm file"
+msgstr "Создавать/обновлять файлы PO при сохранении файла LFM"
+
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
 msgstr "Выберите каталог"
@@ -6061,6 +6065,10 @@ msgstr "Каталог %s%s%s не найден."
 msgid "Directory not writable"
 msgstr "Каталог недоступен для записи"
 
+#: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
+msgid "Directory where the IDE puts the .po files"
+msgstr "Каталог, в котором IDE размещает файлы PO"
+
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
 msgstr "Отключить все в том же файле исходного кода"
@@ -6076,6 +6084,10 @@ msgstr "Отключено"
 #: lazarusidestrconsts.lisdisablegroup
 msgid "Disable Group"
 msgstr "Отключить группу"
+
+#: lazarusidestrconsts.lisdisablei18nforlfm
+msgid "Disable I18N for LFM"
+msgstr "Отключить i18n для LFM"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -6378,6 +6390,10 @@ msgstr "Включить"
 msgid "Enable Group"
 msgstr "Включить группу"
 
+#: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
+msgid "Enable internationalization and translation support"
+msgstr "Включить поддержку интернационализации и локализации"
+
 #: lazarusidestrconsts.lisenablemacros
 msgid "Enable Macros"
 msgstr "Включить макросы"
@@ -6510,6 +6526,10 @@ msgstr "Ошибка инициализации программы %s%s%s%s%sО�
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
 msgstr "Ошибка загрузки файла"
+
+#: lazarusidestrconsts.liserrorloadingfile2
+msgid "Error loading file \"%s\":%s%s"
+msgstr "Ошибка загрузки файла \"%s\":%s%s"
 
 #: lazarusidestrconsts.liserrorloadingfrom
 msgid "Error loading %s from%s%s%s%s"
@@ -9859,6 +9879,10 @@ msgstr "%sнет"
 msgid "none"
 msgstr "нет"
 
+#: lazarusidestrconsts.lisnoneclicktochooseone
+msgid "none, click to choose one"
+msgstr "нет, щёлкните для выбора"
+
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
 msgstr "элементов не выбрано"
@@ -11932,6 +11956,10 @@ msgstr "Удалить из путей поиска"
 msgid "Remove local variable %s"
 msgstr "Удалить локальную переменную %s"
 
+#: lazarusidestrconsts.lisremovenonexistingfiles
+msgid "Remove non existing files"
+msgstr "Удалить несуществующие файлы"
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr "Удалить выбранные модули"
@@ -13757,6 +13785,10 @@ msgstr "Файлы XML"
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "Ошибка разбора XML в файле %s%sОшибка: %s"
+
+#: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
+msgid "You can disable this for individual forms via the popup menu in the source editor, file settings, i18n for lfm strings"
+msgstr "Вы можете отключить это поведение для отдельных форм через всплывающее меню редактора исходного кода (Параметры файла -> Отключить i18n для LFM)"
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."

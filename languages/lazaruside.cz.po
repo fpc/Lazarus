@@ -5581,6 +5581,10 @@ msgstr "Vytvořit nový projekt"
 msgid "Create project"
 msgstr "Vytvořit projekt"
 
+#: lazarusidestrconsts.liscreateupdatepofilewhensavingalfmfile
+msgid "Create/update .po file when saving a lfm file"
+msgstr ""
+
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
 msgstr "Vyberte adresář"
@@ -6024,6 +6028,10 @@ msgstr "Adresář %s%s%s nenalezen."
 msgid "Directory not writable"
 msgstr "Adresář není zapisovatelný"
 
+#: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
+msgid "Directory where the IDE puts the .po files"
+msgstr ""
+
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
 msgstr "Zakázat vše ve stejném zdroji"
@@ -6039,6 +6047,10 @@ msgstr "Zakázáno"
 #: lazarusidestrconsts.lisdisablegroup
 msgid "Disable Group"
 msgstr "Zakáza skupinu"
+
+#: lazarusidestrconsts.lisdisablei18nforlfm
+msgid "Disable I18N for LFM"
+msgstr ""
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -6341,6 +6353,10 @@ msgstr "Povoleno"
 msgid "Enable Group"
 msgstr "Povolit skupinu"
 
+#: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
+msgid "Enable internationalization and translation support"
+msgstr ""
+
 #: lazarusidestrconsts.lisenablemacros
 msgid "Enable Macros"
 msgstr "Povolit makra"
@@ -6472,6 +6488,10 @@ msgstr "Chyba inicializace programu%s%s%s%s%sChyba: %s"
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
 msgstr "Chyba načítání souboru"
+
+#: lazarusidestrconsts.liserrorloadingfile2
+msgid "Error loading file \"%s\":%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.liserrorloadingfrom
 msgid "Error loading %s from%s%s%s%s"
@@ -9804,6 +9824,10 @@ msgstr "%sžádný"
 msgid "none"
 msgstr "žádné"
 
+#: lazarusidestrconsts.lisnoneclicktochooseone
+msgid "none, click to choose one"
+msgstr ""
+
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
 msgstr "žádný uzel nevybrán"
@@ -11875,6 +11899,10 @@ msgstr "Odstranit z vyhledávací cesty"
 msgid "Remove local variable %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisremovenonexistingfiles
+msgid "Remove non existing files"
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr "Odstranit vybrané jednotky"
@@ -13692,6 +13720,10 @@ msgstr "XML soubory"
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
 msgstr "Chyba XML analyzátoru v souboru %s%sChyba: %s"
+
+#: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
+msgid "You can disable this for individual forms via the popup menu in the source editor, file settings, i18n for lfm strings"
+msgstr ""
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."

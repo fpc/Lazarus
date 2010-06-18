@@ -5606,6 +5606,10 @@ msgstr "Maak nieuw bestand"
 msgid "Create project"
 msgstr ""
 
+#: lazarusidestrconsts.liscreateupdatepofilewhensavingalfmfile
+msgid "Create/update .po file when saving a lfm file"
+msgstr ""
+
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
 msgstr "Kies directory"
@@ -6049,6 +6053,10 @@ msgstr ""
 msgid "Directory not writable"
 msgstr ""
 
+#: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
+msgid "Directory where the IDE puts the .po files"
+msgstr ""
+
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
 msgstr ""
@@ -6063,6 +6071,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdisablegroup
 msgid "Disable Group"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisablei18nforlfm
+msgid "Disable I18N for LFM"
 msgstr ""
 
 #: lazarusidestrconsts.lisdiscardchanges
@@ -6366,6 +6378,10 @@ msgstr "Ingeschakeld"
 msgid "Enable Group"
 msgstr ""
 
+#: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
+msgid "Enable internationalization and translation support"
+msgstr ""
+
 #: lazarusidestrconsts.lisenablemacros
 msgid "Enable Macros"
 msgstr "Schakel Macro's in"
@@ -6496,6 +6512,10 @@ msgstr "Fout tijdens initialiseren van programma%s%s%s%s%sFout: %s"
 
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
+msgstr ""
+
+#: lazarusidestrconsts.liserrorloadingfile2
+msgid "Error loading file \"%s\":%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorloadingfrom
@@ -9853,6 +9873,10 @@ msgstr "%sgeen"
 msgid "none"
 msgstr "geen"
 
+#: lazarusidestrconsts.lisnoneclicktochooseone
+msgid "none, click to choose one"
+msgstr ""
+
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
 msgstr ""
@@ -11930,6 +11954,10 @@ msgstr ""
 msgid "Remove local variable %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisremovenonexistingfiles
+msgid "Remove non existing files"
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
 msgstr ""
@@ -13754,6 +13782,10 @@ msgstr "XML bestanden"
 
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
+msgid "You can disable this for individual forms via the popup menu in the source editor, file settings, i18n for lfm strings"
 msgstr ""
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
