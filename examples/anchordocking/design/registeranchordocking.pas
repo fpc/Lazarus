@@ -47,10 +47,12 @@ type
 
   TIDEAnchorDockMaster = class(TIDEDockMaster)
   private
+    FDefaultLayoutLoaded: boolean;
     procedure DockMasterCreateControl(Sender: TObject; aName: string;
       var AControl: TControl; DoDisableAutoSizing: boolean);
     procedure GetDefaultBounds(AForm: TCustomForm; out Creator: TIDEWindowCreator;
       out NewBounds: TRect; out DockSiblingName: string; out DockAlign: TAlign);
+    procedure SetDefaultLayoutLoaded(const AValue: boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -63,6 +65,7 @@ type
     procedure CloseAll; override;
     procedure OnIDEClose(Sender: TObject);
     procedure OnIDERestoreWindows(Sender: TObject);
+    property DefaultLayoutLoaded: boolean read FDefaultLayoutLoaded write SetDefaultLayoutLoaded;
   end;
 
 var
@@ -91,10 +94,18 @@ end;
 procedure TIDEAnchorDockMaster.GetDefaultBounds(AForm: TCustomForm; out
   Creator: TIDEWindowCreator; out NewBounds: TRect; out
   DockSiblingName: string; out DockAlign: TAlign);
+var
+  AControl: TControl;
 begin
   NewBounds:=Rect(0,0,0,0);
   DockSiblingName:='';
   DockAlign:=alNone;
+
+  // get the embedded control
+  AControl:=DockMaster.GetControl(AForm);
+  if not (AControl is TCustomForm) then exit;
+  AForm:=TCustomForm(AControl);
+
   Creator:=IDEWindowCreators.FindWithName(AForm.Name);
   if Creator=nil then exit;
   if Creator.OnGetLayout<>nil then
@@ -108,6 +119,12 @@ begin
   NewBounds.Top:=Min(10000,Max(-10000,NewBounds.Top));
   NewBounds.Right:=Max(NewBounds.Left+100,NewBounds.Right);
   NewBounds.Bottom:=Max(NewBounds.Top+100,NewBounds.Bottom);
+end;
+
+procedure TIDEAnchorDockMaster.SetDefaultLayoutLoaded(const AValue: boolean);
+begin
+  if FDefaultLayoutLoaded=AValue then exit;
+  FDefaultLayoutLoaded:=AValue;
 end;
 
 constructor TIDEAnchorDockMaster.Create;
@@ -125,11 +142,13 @@ end;
 
 procedure TIDEAnchorDockMaster.MakeIDEWindowDockSite(AForm: TCustomForm);
 begin
+  debugln(['TIDEAnchorDockMaster.MakeIDEWindowDockSite ',DbgSName(AForm)]);
   DockMaster.MakeDockSite(AForm,[akBottom],admrpChild);
 end;
 
 procedure TIDEAnchorDockMaster.MakeIDEWindowDockable(AControl: TWinControl);
 begin
+  debugln(['TIDEAnchorDockMaster.MakeIDEWindowDockable ',DbgSName(AControl)]);
   DockMaster.MakeDockable(AControl,false);
 end;
 
@@ -148,8 +167,10 @@ begin
     debugln(['TIDEAnchorDockMaster.LoadDefaultLayout ',Filename]);
     Config:=GetIDEConfigStorage(Filename,true);
     try
-      if not DockMaster.ConfigIsEmpty(Config) then
+      if not DockMaster.ConfigIsEmpty(Config) then begin
         DockMaster.LoadLayoutFromConfig(Config);
+        DefaultLayoutLoaded:=true;
+      end;
     finally
       Config.Free;
     end;
@@ -192,36 +213,37 @@ var
   DockSibling: TCustomForm;
   NewDockSite: TAnchorDockHostSite;
   Site: TAnchorDockHostSite;
+  AControl: TControl;
 begin
-  debugln(['TIDEAnchorDockMaster.ShowForm ',DbgSName(AForm),' BringToFront=',BringToFront]);
+  debugln(['TIDEAnchorDockMaster.ShowForm ',DbgSName(AForm),' BringToFront=',BringToFront,' IsSite=',DockMaster.IsSite(AForm),' IsCustomSite=',DockMaster.IsCustomSite(AForm)]);
   try
     AForm.DisableAlign;
-    if DockMaster.IsSite(AForm) then begin
-      // already docked
-    end else begin
-      // this form was not yet docked
 
-      // place it at a default position and make it dockable
+    if not DockMaster.IsSite(AForm) then begin
+      // this form was not yet docked
+      // => make it dockable
+      DockMaster.MakeDockable(AForm,false);
+    end;
+    AControl:=DockMaster.GetControl(AForm);
+
+    if (AControl<>nil) and (not AForm.IsVisible) and (AForm.Parent=nil) then begin
+      // this form is not yet on the screen and is not yet docked
+      debugln(['TIDEAnchorDockMaster.ShowForm placing ',DbgSName(AControl),' ...']);
+
+      // ToDo: use the restore layout
+
+      // place it at a default position and/or dock it
       GetDefaultBounds(AForm,Creator,NewBounds,DockSiblingName,DockAlign);
-      if Creator<>nil then
-      begin
-        // this window should become dockable
-        NewBounds.Left:=Min(10000,Max(-10000,NewBounds.Left));
-        NewBounds.Top:=Min(10000,Max(-10000,NewBounds.Top));
-        NewBounds.Right:=Max(NewBounds.Left+100,NewBounds.Right);
-        NewBounds.Bottom:=Max(NewBounds.Top+100,NewBounds.Bottom);
+      if Creator<>nil then begin
         AForm.BoundsRect:=NewBounds;
         AForm.UndockWidth:=NewBounds.Right-NewBounds.Left;
         AForm.UndockHeight:=NewBounds.Bottom-NewBounds.Top;
-        debugln(['TIDEAnchorDockMaster.ShowForm creator for ',DbgSName(AForm),' found: Left=',Creator.Left,' Top=',Creator.Top,' Width=',Creator.Width,' Height=',Creator.Height,' DockSiblingName=',DockSiblingName,' DockAlign=',dbgs(DockAlign)]);
-        DockMaster.MakeDockable(AForm,false);
+        debugln(['TIDEAnchorDockMaster.ShowForm creator for ',DbgSName(AControl),' found: Left=',Creator.Left,' Top=',Creator.Top,' Width=',Creator.Width,' Height=',Creator.Height,' DockSiblingName=',DockSiblingName,' DockAlign=',dbgs(DockAlign)]);
         Site:=DockMaster.GetSite(AForm);
-        if DockSiblingName<>'' then
-        begin
+        if DockMaster.IsAnchorSite(Site) and (DockSiblingName<>'') then begin
           DockSibling:=Screen.FindForm(DockSiblingName);
           debugln(['TIDEAnchorDockMaster.ShowForm DockSiblingName="',DockSiblingName,'" DockSibling=',DbgSName(DockSibling)]);
-          if DockSibling<>nil then
-          begin
+          if DockSibling<>nil then begin
             NewDockSite:=DockMaster.GetSite(DockSibling);
             debugln(['TIDEAnchorDockMaster.ShowForm NewDockSite=',DbgSName(NewDockSite),'="',NewDockSite.Caption,'"']);
             DockMaster.ManualDock(Site,NewDockSite,DockAlign);
@@ -231,10 +253,7 @@ begin
     end;
 
   finally
-    if DockMaster.IsCustomSite(AForm) then
-      AForm.Visible:=true
-    else
-      DockMaster.MakeDockable(AForm,true,false);
+    DockMaster.MakeVisible(AForm,BringToFront);
     AForm.EnableAlign;
 
     if BringToFront then begin

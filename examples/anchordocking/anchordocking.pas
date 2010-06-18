@@ -79,8 +79,6 @@
     - on show again: restore a default layout
     - close button for pages
 }
-{ TODO : RRR1
- }
 unit AnchorDocking;
 
 {$mode objfpc}{$H+}
@@ -435,8 +433,10 @@ type
     function IndexOfControl(const aName: string): integer;
     function FindControl(const aName: string): TControl;
     function IsSite(AControl: TControl): boolean;
+    function IsAnchorSite(AControl: TControl): boolean;
     function IsCustomSite(AControl: TControl): boolean;
     function GetSite(AControl: TControl): TAnchorDockHostSite;
+    function GetControl(Site: TControl): TControl;
     function GetPopupMenu: TPopupMenu;
     function AddPopupMenuItem(AName, ACaption: string;
                     const OnClickEvent: TNotifyEvent; AParent: TMenuItem = nil): TMenuItem; virtual;
@@ -1622,6 +1622,11 @@ begin
   Result:=(AControl is TAnchorDockHostSite) or IsCustomSite(AControl);
 end;
 
+function TAnchorDockMaster.IsAnchorSite(AControl: TControl): boolean;
+begin
+  Result:=AControl is TAnchorDockHostSite;
+end;
+
 function TAnchorDockMaster.IsCustomSite(AControl: TControl): boolean;
 begin
   Result:=(AControl is TCustomForm) // also checks for nil
@@ -1637,6 +1642,20 @@ begin
     Result:=TAnchorDockHostSite(AControl.HostDockSite)
   else
     Result:=nil;
+end;
+
+function TAnchorDockMaster.GetControl(Site: TControl): TControl;
+var
+  AnchorSite: TAnchorDockHostSite;
+begin
+  Result:=nil;
+  if IsCustomSite(Site) then
+    Result:=Site
+  else if Site is TAnchorDockHostSite then begin
+    AnchorSite:=TAnchorDockHostSite(Site);
+    if AnchorSite.SiteType=adhstOneControl then
+      Result:=AnchorSite.GetOneControl;
+  end;
 end;
 
 function TAnchorDockMaster.GetPopupMenu: TPopupMenu;
@@ -1696,6 +1715,7 @@ begin
   AControl.DisableAutoSizing;
   try
     if AControl is TAnchorDockHostSite then begin
+      // already a site
       Site:=TAnchorDockHostSite(AControl);
     end else if AControl.Parent=nil then begin
 
@@ -1714,7 +1734,7 @@ begin
           AControl.ManualDock(Site);
           AControl.Visible:=true;
           if not AddDockHeader then
-            Site.Header.Parent:=nil; // ToDo set property
+            Site.Header.Parent:=nil;
         except
           FreeAndNil(Site);
           raise;
@@ -4406,7 +4426,7 @@ end;
 
 procedure TAnchorDockManager.LoadFromStream(Stream: TStream);
 begin
-  debugln(['TAnchorDockManager.LoadFromStream TODO Site="',DbgSName(Site),'"']);
+  debugln(['TAnchorDockManager.LoadFromStream not implemented Site="',DbgSName(Site),'"']);
   if Stream=nil then ;
 end;
 
@@ -4561,7 +4581,7 @@ end;
 procedure TAnchorDockManager.SaveToStream(Stream: TStream);
 begin
   if Stream=nil then ;
-  debugln(['TAnchorDockManager.SaveToStream TODO Site="',DbgSName(Site),'"']);
+  debugln(['TAnchorDockManager.SaveToStream not implemented Site="',DbgSName(Site),'"']);
 end;
 
 function TAnchorDockManager.GetDockEdge(ADockObject: TDragDockObject): boolean;
