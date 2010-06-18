@@ -4183,22 +4183,22 @@ begin
     end;
     SetParent(nil);
   end;
-  FreeThenNil(FActionLink);
-  for Side := Low(FAnchorSides) to High(FAnchorSides) do
-    FreeThenNil(FAnchorSides[Side]);
-  FreeThenNil(FBorderSpacing);
-  FreeThenNil(FConstraints);
   if FAnchoredControls <> nil then
   begin
     for i := 0 to FAnchoredControls.Count - 1 do
       for Side := Low(TAnchorKind) to High(TAnchorKind) do
       begin
         CurAnchorSide := AnchoredControls[i].AnchorSide[Side];
-        if CurAnchorSide.FControl = Self then
+        if (CurAnchorSide<>nil) and (CurAnchorSide.FControl = Self) then
           CurAnchorSide.FControl := nil;
       end;
     FreeThenNil(FAnchoredControls);
   end;
+  FreeThenNil(FActionLink);
+  for Side := Low(FAnchorSides) to High(FAnchorSides) do
+    FreeThenNil(FAnchorSides[Side]);
+  FreeThenNil(FBorderSpacing);
+  FreeThenNil(FConstraints);
   FreeThenNil(FFont);
   //DebugLn('[TControl.Destroy] B ',DbgSName(Self));
   inherited Destroy;
