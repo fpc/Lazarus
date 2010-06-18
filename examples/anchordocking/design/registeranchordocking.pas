@@ -214,19 +214,23 @@ var
   NewDockSite: TAnchorDockHostSite;
   Site: TAnchorDockHostSite;
   AControl: TControl;
+  NeedPlacing: Boolean;
 begin
-  debugln(['TIDEAnchorDockMaster.ShowForm ',DbgSName(AForm),' BringToFront=',BringToFront,' IsSite=',DockMaster.IsSite(AForm),' IsCustomSite=',DockMaster.IsCustomSite(AForm)]);
+  debugln(['TIDEAnchorDockMaster.ShowForm START ',DbgSName(AForm),' BringToFront=',BringToFront,' IsSite=',DockMaster.IsSite(AForm),' IsCustomSite=',DockMaster.IsCustomSite(AForm)]);
   try
     AForm.DisableAlign;
 
+    NeedPlacing:=not AForm.IsVisible;
     if not DockMaster.IsSite(AForm) then begin
       // this form was not yet docked
       // => make it dockable
       DockMaster.MakeDockable(AForm,false);
+      NeedPlacing:=true;
     end;
     AControl:=DockMaster.GetControl(AForm);
 
-    if (AControl<>nil) and (not AForm.IsVisible) and (AForm.Parent=nil) then begin
+    debugln(['TIDEAnchorDockMaster.ShowForm AControl=',DbgSName(AControl),' NeedPlacing=',NeedPlacing,' Floating=',DockMaster.IsFloating(AForm)]);
+    if (AControl<>nil) and NeedPlacing and DockMaster.IsFloating(AForm) then begin
       // this form is not yet on the screen and is not yet docked
       debugln(['TIDEAnchorDockMaster.ShowForm placing ',DbgSName(AControl),' ...']);
 

@@ -437,6 +437,7 @@ type
     function IsCustomSite(AControl: TControl): boolean;
     function GetSite(AControl: TControl): TAnchorDockHostSite;
     function GetControl(Site: TControl): TControl;
+    function IsFloating(AControl: TControl): Boolean;
     function GetPopupMenu: TPopupMenu;
     function AddPopupMenuItem(AName, ACaption: string;
                     const OnClickEvent: TNotifyEvent; AParent: TMenuItem = nil): TMenuItem; virtual;
@@ -1655,7 +1656,19 @@ begin
     AnchorSite:=TAnchorDockHostSite(Site);
     if AnchorSite.SiteType=adhstOneControl then
       Result:=AnchorSite.GetOneControl;
-  end;
+  end else if (Site<>nil) and (Site.HostDockSite is TAnchorDockHostSite)
+  and (TAnchorDockHostSite(Site.HostDockSite).SiteType=adhstOneControl) then
+    Result:=Site;
+end;
+
+function TAnchorDockMaster.IsFloating(AControl: TControl): Boolean;
+begin
+  if AControl is TAnchorDockHostSite then
+    Result:=TAnchorDockHostSite(AControl).SiteType=adhstOneControl
+  else if (AControl.HostDockSite is TAnchorDockHostSite) then
+    Result:=TAnchorDockHostSite(AControl.HostDockSite).SiteType=adhstOneControl
+  else
+    Result:=AControl.Parent=nil;
 end;
 
 function TAnchorDockMaster.GetPopupMenu: TPopupMenu;
