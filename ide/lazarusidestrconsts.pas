@@ -1951,8 +1951,17 @@ resourcestring
   dlgPOMisc = 'Miscellaneous';
   dlgPOI18n = 'i18n';
   rsEnableI18n = 'Enable i18n';
+  lisEnableInternationalizationAndTranslationSupport = 'Enable internationaliza'
+    +'tion and translation support';
   rsI18nOptions = 'i18n Options';
   rsPOOutputDirectory = 'PO Output Directory:';
+  lisDirectoryWhereTheIDEPutsThePoFiles = 'Directory where the IDE puts the .'
+    +'po files';
+  lisCreateUpdatePoFileWhenSavingALfmFile = 'Create/update .po file when '
+    +'saving a lfm file';
+  lisYouCanDisableThisForIndividualFormsViaThePopupMenu = 'You can disable '
+    +'this for individual forms via the popup menu in the source editor, file '
+    +'settings, i18n for lfm strings';
   rsIncludeVersionInfoInExecutable = 'Include Version Info in executable';
   rsVersionNumbering = 'Version numbering';
   rsMajorVersion = '&Major version:';
@@ -2153,6 +2162,7 @@ resourcestring
   uemReadOnly = 'Read Only';
   uemShowLineNumbers = 'Show Line Numbers';
   uemShowUnitInfo = 'Unit Info';
+  lisDisableI18NForLFM = 'Disable I18N for LFM';
   uemDebugWord = 'Debug';
   uemToggleBreakpoint = '&Toggle Breakpoint';
   uemEvaluateModify = '&Evaluate/Modify...';

@@ -15,10 +15,12 @@ type
   TProjectI18NOptionsFrame = class(TAbstractIDEOptionsEditor)
     EnableI18NCheckBox: TCheckBox;
     I18NGroupBox: TGroupBox;
+    PoForFormsCheckBox: TCheckBox;
     POOutDirButton: TButton;
     POOutDirEdit: TEdit;
     PoOutDirLabel: TLabel;
     procedure EnableI18NCheckBoxChange(Sender: TObject);
+    procedure FrameClick(Sender: TObject);
     procedure POOutDirButtonClick(Sender: TObject);
   private
     FProject: TProject;
@@ -40,6 +42,11 @@ implementation
 procedure TProjectI18NOptionsFrame.EnableI18NCheckBoxChange(Sender: TObject);
 begin
   Enablei18nInfo(EnableI18NCheckBox.Checked);
+end;
+
+procedure TProjectI18NOptionsFrame.FrameClick(Sender: TObject);
+begin
+
 end;
 
 procedure TProjectI18NOptionsFrame.POOutDirButtonClick(Sender: TObject);
@@ -67,8 +74,13 @@ end;
 procedure TProjectI18NOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   EnableI18NCheckBox.Caption := rsEnableI18n;
+  EnableI18NCheckBox.Hint:=lisEnableInternationalizationAndTranslationSupport;
   I18NGroupBox.Caption := rsI18nOptions;
   PoOutDirLabel.Caption := rsPOOutputDirectory;
+  POOutDirEdit.Hint:=lisDirectoryWhereTheIDEPutsThePoFiles;
+  PoForFormsCheckBox.Caption:=lisCreateUpdatePoFileWhenSavingALfmFile;
+  PoForFormsCheckBox.Hint:=
+    lisYouCanDisableThisForIndividualFormsViaThePopupMenu;
 end;
 
 procedure TProjectI18NOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -83,6 +95,7 @@ begin
       AFilename:=CreateRelativePath(AFilename,FProject.ProjectDirectory);
     POOutDirEdit.Text := AFilename;
     EnableI18NCheckBox.Checked := Enablei18n;
+    PoForFormsCheckBox.Checked:=EnableI18NForLFM;
     Enablei18nInfo(Enablei18n);
   end;
 end;
@@ -98,6 +111,7 @@ begin
       AFilename:=AppendPathDelim(ProjectDirectory)+AFilename;
     POOutputDirectory := AFilename;
     EnableI18N := EnableI18NCheckBox.Checked;
+    EnableI18NForLFM := PoForFormsCheckBox.Checked;
   end;
 end;
 

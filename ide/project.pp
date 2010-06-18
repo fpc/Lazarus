@@ -245,6 +245,7 @@ type
   private
     FCustomDefaultHighlighter: boolean;
     FDefaultSyntaxHighlighter: TLazSyntaxHighlighter;
+    FDisableI18NForLFM: boolean;
     FEditorInfoList: TUnitEditorInfoList;
     FAutoReferenceSourceDir: boolean;
     fAutoRevertLockCount: integer;// =0 means, codetools can auto update from disk
@@ -310,6 +311,7 @@ type
     procedure SetBuildFileIfActive(const AValue: boolean);
     procedure SetDefaultSyntaxHighlighter(const AValue: TLazSyntaxHighlighter);
     procedure SetDirectives(const AValue: TStrings);
+    procedure SetDisableI18NForLFM(const AValue: boolean);
     procedure SetFileReadOnly(const AValue: Boolean);
     procedure SetComponent(const AValue: TComponent);
     procedure SetLoaded(const AValue: Boolean);
@@ -432,6 +434,7 @@ type
     property CustomDefaultHighlighter: boolean
                                read FCustomDefaultHighlighter write FCustomDefaultHighlighter;
     property Directives: TStrings read FDirectives write SetDirectives;
+    property DisableI18NForLFM: boolean read FDisableI18NForLFM write SetDisableI18NForLFM;
     property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
     property FirstRequiredComponent: TUnitComponentDependency
                                                    read FFirstRequiredComponent;
@@ -672,6 +675,7 @@ type
     FActiveWindowIndexAtStart: integer;
     FEditorInfoList: TUnitEditorInfoList;
     FAutoCreateForms: boolean;
+    FEnableI18NForLFM: boolean;
     FTmpAutoCreatedForms: TStrings; // temporary, used to apply auto create forms changes
     FAutoOpenDesignerFormsDisabled: boolean;
     FBookmarks: TProjectBookmarkList;
@@ -735,24 +739,25 @@ type
     function JumpHistoryCheckPosition(
                                 APosition:TProjectJumpHistoryPosition): boolean;
     function OnUnitFileBackup(const Filename: string): TModalResult;
+    procedure ClearSourceDirectories;
+    procedure EmbeddedObjectModified(Sender: TObject);
     procedure OnLoadSaveFilename(var AFilename: string; Load: boolean);
     procedure OnUnitNameChange(AnUnitInfo: TUnitInfo;
                                const OldUnitName, NewUnitName: string;
                                CheckIfAllowed: boolean; var Allowed: boolean);
     procedure SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
     procedure SetCompilerOptions(const AValue: TProjectCompilerOptions);
+    procedure SetEnableI18N(const AValue: boolean);
+    procedure SetEnableI18NForLFM(const AValue: boolean);
     procedure SetMainProject(const AValue: boolean);
+    procedure SetMainUnitID(const AValue: Integer);
+    procedure SetPOOutputDirectory(const AValue: string);
     procedure SetSkipCheckLCLInterfaces(const AValue: boolean);
     procedure SetTargetFilename(const NewTargetFilename: string);
-    procedure SetEnableI18N(const AValue: boolean);
-    procedure SetPOOutputDirectory(const AValue: string);
-    procedure SetMainUnitID(const AValue: Integer);
+    procedure SourceDirectoriesChanged(Sender: TObject);
     procedure UpdateProjectDirectory;
     procedure UpdateSessionFilename;
     procedure UpdateSourceDirectories;
-    procedure ClearSourceDirectories;
-    procedure SourceDirectoriesChanged(Sender: TObject);
-    procedure EmbeddedObjectModified(Sender: TObject);
   protected
     function GetMainFile: TLazProjectFile; override;
     function GetMainFileID: Integer; override;
@@ -952,6 +957,7 @@ type
     property DefineTemplates: TProjectDefineTemplates read FDefineTemplates;
     property Destroying: boolean read fDestroying;
     property EnableI18N: boolean read FEnableI18N write SetEnableI18N;
+    property EnableI18NForLFM: boolean read FEnableI18NForLFM write SetEnableI18NForLFM;
     property FirstAutoRevertLockedUnit: TUnitInfo read GetFirstAutoRevertLockedUnit;
     property FirstLoadedUnit: TUnitInfo read GetFirstLoadedUnit;
     property FirstPartOfProject: TUnitInfo read GetFirstPartOfProject;
@@ -1514,6 +1520,7 @@ begin
   fComponentResourceName := '';
   FComponentState := wsNormal;
   FDefaultSyntaxHighlighter := lshText;
+  FDisableI18NForLFM:=false;
   FCustomDefaultHighlighter := False;
   FEditorInfoList.ClearEachInfo;
   fFilename := '';
@@ -1589,6 +1596,8 @@ begin
 
   if SaveSession and Assigned(Project.OnSaveUnitSessionInfo) then
     Project.OnSaveUnitSessionInfo(Self);
+  if IsPartOfProject and SaveData then
+    XMLConfig.SetDeleteValue(Path+'DisableI18NForLFM/Value',FDisableI18NForLFM,false);
 
   // context data (project/session)
   if (IsPartOfProject and SaveData)
@@ -1662,6 +1671,7 @@ begin
     if fComponentName='' then
       fComponentName:=XMLConfig.GetValue(Path+'FormName/Value','');
     FComponentState := TWindowState(XMLConfig.GetValue(Path+'ComponentState/Value',0));
+    FDisableI18NForLFM:=XMLConfig.GetValue(Path+'DisableI18NForLFM/Value',false);
     HasResources:=XMLConfig.GetValue(Path+'HasResources/Value',false);
     FResourceBaseClass:=StrToComponentBaseClass(
                          XMLConfig.GetValue(Path+'ResourceBaseClass/Value',''));
@@ -2313,6 +2323,13 @@ begin
   FDirectives:=AValue;
 end;
 
+procedure TUnitInfo.SetDisableI18NForLFM(const AValue: boolean);
+begin
+  if FDisableI18NForLFM=AValue then exit;
+  FDisableI18NForLFM:=AValue;
+  Modified:=true;
+end;
+
 procedure TUnitInfo.SetFileReadOnly(const AValue: Boolean);
 begin
   if fFileReadOnly=AValue then exit;
@@ -2643,6 +2660,7 @@ begin
       
       // i18n
       xmlconfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
+      xmlconfig.SetDeleteValue(Path+'i18n/EnableI18N/LFM', EnableI18NForLFM, true);
       xmlconfig.SetDeleteValue(Path+'i18n/OutDir/Value',
          SwitchPathDelims(CreateRelativePath(POOutputDirectory,ProjectDirectory),
                           fCurStorePathDelim) ,
@@ -3102,6 +3120,7 @@ begin
         EnableI18N := POOutputDirectory <> '';
       end else begin
         EnableI18N := xmlconfig.GetValue(Path+'i18n/EnableI18N/Value', False);
+        EnableI18NForLFM := xmlconfig.GetValue(Path+'i18n/EnableI18N/LFM', True);
         POOutputDirectory := SwitchPathDelims(
              xmlconfig.GetValue(Path+'i18n/OutDir/Value', ''),fPathDelimChanged);
       end;
@@ -3384,6 +3403,8 @@ begin
   FActiveWindowIndexAtStart := -1;
   FSkipCheckLCLInterfaces:=false;
   FAutoOpenDesignerFormsDisabled := false;
+  FEnableI18N:=false;
+  FEnableI18NForLFM:=true;
   FBookmarks.Clear;
   FCompilerOptions.Clear;
   FDefineTemplates.Clear;
@@ -4809,6 +4830,13 @@ begin
   if FCompilerOptions=AValue then exit;
   FCompilerOptions:=AValue;
   inherited SetLazCompilerOptions(AValue);
+end;
+
+procedure TProject.SetEnableI18NForLFM(const AValue: boolean);
+begin
+  if FEnableI18NForLFM=AValue then exit;
+  FEnableI18NForLFM:=AValue;
+  Modified:=true;
 end;
 
 procedure TProject.SetMainProject(const AValue: boolean);

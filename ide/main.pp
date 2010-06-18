@@ -3848,7 +3848,7 @@ begin
       CurFilename:=AnUnitInfo.Filename;
       if (not AnUnitInfo.IsVirtual) and FilenameIsPascalSource(CurFilename) then
       begin
-        // check .lst file
+        // check .lrt file
         LRTFilename:=ChangeFileExt(CurFilename,'.lrt');
         if FileExistsCached(LRTFilename)
         and ((not POFileAgeValid) or (FileAgeCached(LRTFilename)>POFileAge)) then
@@ -5134,7 +5134,8 @@ begin
           BinCompStream.Position:=0;
           Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
           // used to save lrt files
-          HasI18N:=AnUnitInfo.IsPartOfProject and AnUnitInfo.Project.EnableI18N;
+          HasI18N:=AnUnitInfo.IsPartOfProject and (not AnUnitInfo.DisableI18NForLFM)
+             and AnUnitInfo.Project.EnableI18N and AnUnitInfo.Project.EnableI18NForLFM;
           if (not HasI18N) and (UnitOwners<>nil) then begin
             for i:=0 to UnitOwners.Count-1 do begin
               if TObject(UnitOwners[i]) is TLazPackage then begin

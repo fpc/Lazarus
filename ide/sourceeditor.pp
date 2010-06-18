@@ -610,6 +610,7 @@ type
     procedure ShowUnitInfo(Sender: TObject);
     procedure SrcPopUpMenuPopup(Sender: TObject);
     procedure ToggleLineNumbersClicked(Sender: TObject);
+    procedure ToggleI18NForLFMClicked(Sender: TObject);
     procedure InsertCharacter(const C: TUTF8Char);
     procedure SrcEditMenuCopyToNewWindowClicked(Sender: TObject);
     procedure SrcEditMenuCopyToExistingWindowClicked(Sender: TObject);
@@ -1181,6 +1182,7 @@ var
   SrcEditMenuMoveEditorLast: TIDEMenuCommand;
   SrcEditMenuReadOnly: TIDEMenuCommand;
   SrcEditMenuShowLineNumbers: TIDEMenuCommand;
+  SrcEditMenuDisableI18NForLFM: TIDEMenuCommand;
   SrcEditMenuShowUnitInfo: TIDEMenuCommand;
   SrcEditMenuEditorProperties: TIDEMenuCommand;
   {$IFnDEF SingleSrcWindow}
@@ -1328,6 +1330,8 @@ begin
       SrcEditMenuShowLineNumbers:=RegisterIDEMenuCommand(AParent,
                                             'ShowLineNumbers',uemShowLineNumbers);
       SrcEditMenuShowLineNumbers.ShowAlwaysCheckable:=true;
+      SrcEditMenuDisableI18NForLFM:=RegisterIDEMenuCommand(AParent,
+                                      'DisableI18NForLFM',lisDisableI18NForLFM);
       SrcEditMenuShowUnitInfo:=RegisterIDEMenuCommand(AParent,'ShowUnitInfo',
                                                       uemShowUnitInfo);
       SrcEditSubMenuHighlighter:=RegisterIDESubMenu(AParent,'Highlighter',
@@ -5166,9 +5170,11 @@ begin
     SrcEditMenuPaste.Enabled := not ASrcEdit.ReadOnly;
 
     // Readonly, ShowLineNumbers
-    SrcEditMenuReadOnly.MenuItem.Checked:=ASrcEdit.ReadOnly;
-    SrcEditMenuShowLineNumbers.MenuItem.Checked :=
+    SrcEditMenuReadOnly.Checked:=ASrcEdit.ReadOnly;
+    SrcEditMenuShowLineNumbers.Checked :=
       EditorComp.Gutter.LineNumberPart.Visible;
+    SrcEditMenuDisableI18NForLFM.Visible:=false;
+
     UpdateHighlightMenuItems;
     UpdateLineEndingMenuItems;
     UpdateEncodingMenuItems;
@@ -5405,6 +5411,7 @@ begin
 
   SrcEditMenuReadOnly.OnClick:=@ReadOnlyClicked;
   SrcEditMenuShowLineNumbers.OnClick:=@ToggleLineNumbersClicked;
+  SrcEditMenuDisableI18NForLFM.OnClick:=@ToggleI18NForLFMClicked;
   SrcEditMenuShowUnitInfo.OnClick:=@ShowUnitInfo;
   SrcEditMenuEditorProperties.OnClick:=@EditorPropertiesClicked;
 
@@ -6350,6 +6357,11 @@ begin
       := ShowLineNumbers;
   EditorOpts.ShowLineNumbers := ShowLineNumbers;
   EditorOpts.Save;
+end;
+
+procedure TSourceNotebook.ToggleI18NForLFMClicked(Sender: TObject);
+begin
+
 end;
 
 Procedure TSourceNotebook.OpenAtCursorClicked(Sender: TObject);
