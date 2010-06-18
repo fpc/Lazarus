@@ -1310,7 +1310,6 @@ begin
     Layout.WindowState:=iwsNormal;
   if IDEDockMaster<>nil then
     IDEDockMaster.MakeIDEWindowDockSite(MainIDEBar);
-  IDEWindowCreators.ShowForm(MainIDEBar,true);
 
   HiddenWindowsOnRun:=TList.Create;
 
@@ -1351,9 +1350,6 @@ begin
   SetupTextConverters;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create IDE COMPONENTS');{$ENDIF}
 
-  // Main IDE bar created and setup completed -> Show it
-  MainIDEBar.Show;
-
   // load installed packages
   PkgBoss.LoadInstalledPackages;
   FormEditor1.RegisterFrame;
@@ -1379,6 +1375,8 @@ begin
 
   SetupIDEWindowsLayout;
   RestoreIDEWindows;
+  // make sure the main IDE bar is always shown
+  IDEWindowCreators.ShowForm(MainIDEBar,false);
 
   // Now load a project
   SetupStartProject;
