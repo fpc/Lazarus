@@ -87,6 +87,7 @@ type
     procedure ReAddMenuItemClick(Sender: TObject);
     procedure RemoveBitBtnClick(Sender: TObject);
     procedure RemoveNonExistingFilesMenuItemClick(Sender: TObject);
+    procedure ToggleI18NForLFMMenuItemClick(Sender: TObject);
   private
     FOnAddDependency: TAddProjInspDepEvent;
     FOnAddUnitToProject: TOnAddUnitToProject;
@@ -291,25 +292,24 @@ procedure TProjectInspectorForm.ItemsPopupMenuPopup(Sender: TObject);
 var
   ItemCnt: integer;
 
-  procedure AddPopupMenuItem(const ACaption: string; AnEvent: TNotifyEvent;
-    EnabledFlag: boolean);
-  var
-    CurMenuItem: TMenuItem;
+  function AddPopupMenuItem(const ACaption: string; AnEvent: TNotifyEvent;
+    EnabledFlag: boolean): TMenuItem;
   begin
     if ItemsPopupMenu.Items.Count<=ItemCnt then begin
-      CurMenuItem:=TMenuItem.Create(Self);
-      ItemsPopupMenu.Items.Add(CurMenuItem);
+      Result:=TMenuItem.Create(Self);
+      ItemsPopupMenu.Items.Add(Result);
     end else
-      CurMenuItem:=ItemsPopupMenu.Items[ItemCnt];
-    CurMenuItem.Caption:=ACaption;
-    CurMenuItem.OnClick:=AnEvent;
-    CurMenuItem.Enabled:=EnabledFlag;
+      Result:=ItemsPopupMenu.Items[ItemCnt];
+    Result.Caption:=ACaption;
+    Result.OnClick:=AnEvent;
+    Result.Enabled:=EnabledFlag;
     inc(ItemCnt);
   end;
 
 var
   CurFile: TUnitInfo;
   CurDependency: TPkgDependency;
+  Item: TMenuItem;
 begin
   ItemCnt:=0;
   CurFile:=GetSelectedFile;
@@ -317,6 +317,12 @@ begin
     AddPopupMenuItem(lisOpenFile, @OpenBitBtnClick, true);
     AddPopupMenuItem(lisPckEditRemoveFile, @RemoveBitBtnClick,
       RemoveBitBtn.Enabled);
+    if FilenameIsPascalSource(CurFile.Filename) then begin
+      Item:=AddPopupMenuItem('Disable I18N for lfm',
+                             @ToggleI18NForLFMMenuItemClick,true);
+      Item.Checked:=CurFile.DisableI18NForLFM;
+      Item.ShowAlwaysCheckable:=true;
+    end;
   end;
   CurDependency:=GetSelectedDependency;
   if CurDependency<>nil then begin
@@ -428,6 +434,15 @@ begin
     LazProject.Modified:=true;
     UpdateAll;
   end;
+end;
+
+procedure TProjectInspectorForm.ToggleI18NForLFMMenuItemClick(Sender: TObject);
+var
+  CurFile: TUnitInfo;
+begin
+  CurFile:=GetSelectedFile;
+  if CurFile=nil then exit;
+  CurFile.DisableI18NForLFM:=not CurFile.DisableI18NForLFM;
 end;
 
 procedure TProjectInspectorForm.SetLazProject(const AValue: TProject);

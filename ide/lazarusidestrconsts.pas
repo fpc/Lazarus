@@ -1960,8 +1960,7 @@ resourcestring
   lisCreateUpdatePoFileWhenSavingALfmFile = 'Create/update .po file when '
     +'saving a lfm file';
   lisYouCanDisableThisForIndividualFormsViaThePopupMenu = 'You can disable '
-    +'this for individual forms via the popup menu in the source editor, file '
-    +'settings, i18n for lfm strings';
+    +'this for individual forms via the popup menu in the project inspector';
   rsIncludeVersionInfoInExecutable = 'Include Version Info in executable';
   rsVersionNumbering = 'Version numbering';
   rsMajorVersion = '&Major version:';
