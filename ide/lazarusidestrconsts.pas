@@ -1880,6 +1880,8 @@ resourcestring
   dlgCCOTestMissingPPU = 'Test: Checking missing fpc ppu ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
+  lisErrorLoadingFile2 = 'Error loading file "%s":%s%s';
+  lisNoneClickToChooseOne = 'none, click to choose one';
   lisTreeNeedsRefresh = 'Tree needs refresh';
   lisEMDEmtpyMethods = 'Emtpy Methods';
   lisEMDSearchInTheseClassSections = 'Search in these class sections:';

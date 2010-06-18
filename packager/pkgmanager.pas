@@ -45,7 +45,7 @@ uses
   {$ENDIF}
   // FCL, LCL
   TypInfo, Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, Menus,
-  StringHashList, Translations,
+  StringHashList, Translations, LResources,
   // codetools
   CodeToolsConfig, CodeToolManager, CodeCache, NonPascalCodeTools,
   BasicCodeTools, DefineTemplates, FileProcs, AVL_Tree, Laz_XMLCfg,
@@ -784,8 +784,59 @@ var
   UsesLine: String;
   NewSource: String;
   UnitDirectives: String;
+  IconLRSFilename: String;
+  BinFileStream: TFileStream;
+  BinMemStream: TMemoryStream;
+  BinExt: String;
+  ResourceType: String;
+  ResourceName: String;
+  ResMemStream: TMemoryStream;
+  CodeBuf: TCodeBuffer;
 begin
   Result:=mrCancel;
+
+  // create icon resource
+  IconLRSFilename:='';
+  if Params.IconFile<>'' then begin
+    IconLRSFilename:=ChangeFileExt(Params.UnitFilename,'')+'_icon.lrs';
+    CodeBuf:=CodeToolBoss.CreateFile(IconLRSFilename);
+    if CodeBuf=nil then begin
+      debugln(['TPkgManager.OnPackageEditorCreateFile file create failed: ',IconLRSFilename]);
+      exit;
+    end;
+    try
+      BinFileStream:=TFileStream.Create(UTF8ToSys(Params.IconFile),fmOpenRead);
+      try
+        BinMemStream:=TMemoryStream.Create;
+        ResMemStream:=TMemoryStream.Create;
+        try
+          BinMemStream.CopyFrom(BinFileStream,BinFileStream.Size);
+          BinMemStream.Position:=0;
+          BinExt:=uppercase(ExtractFileExt(Params.IconFile));
+          ResourceType:=copy(BinExt,2,length(BinExt)-1);
+          ResourceName:=ExtractFileNameOnly(Params.IconFile);
+          BinaryToLazarusResourceCode(BinMemStream,ResMemStream
+             ,ResourceName,ResourceType);
+          ResMemStream.Position:=0;
+          CodeBuf.LoadFromStream(ResMemStream);
+          Result:=SaveCodeBuffer(CodeBuf);
+          if Result<>mrOk then exit;
+        finally
+          BinMemStream.Free;
+          ResMemStream.Free;
+        end;
+      finally
+        BinFileStream.Free;
+      end;
+    except
+      on E: Exception do begin
+        MessageDlg(lisCCOErrorCaption,
+          Format(lisErrorLoadingFile2, [Params.IconFile, #13, E.Message]), mtError, [
+            mbCancel], 0);
+      end;
+    end;
+  end;
+
   // create sourcecode
   LE:=LineEnding;
   UsesLine:='Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs';
@@ -824,7 +875,11 @@ begin
     +'implementation'+LE
     +LE
     +'procedure Register;'+LE
-    +'begin'+LE
+    +'begin'+LE;
+  if IconLRSFilename<>'' then
+    NewSource:=NewSource
+      +'  {$I '+ExtractFileName(IconLRSFilename)+'}'+LE;
+  NewSource:=NewSource
     +'  RegisterComponents('''+Params.PageName+''',['+Params.NewClassName+']);'+LE
     +'end;'+LE
     +LE

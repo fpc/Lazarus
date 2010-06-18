@@ -1112,7 +1112,7 @@ procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
     // add file
     with AddParams do
       FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
-                                          PkgFileFlags,cpNormal);
+                                              PkgFileFlags,cpNormal);
     // add dependency
     if AddParams.Dependency<>nil then begin
       PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);

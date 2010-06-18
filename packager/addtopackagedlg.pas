@@ -38,9 +38,9 @@ unit AddToPackageDlg;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLType, Forms, Controls, Buttons,
+  Math, Classes, SysUtils, LCLType, Forms, Controls, Buttons, ExtDlgs,
   StdCtrls, ExtCtrls, Dialogs, FileUtil, ComCtrls, AVL_Tree, LCLProc,
-  NewItemIntf, ProjectIntf, PackageIntf,
+  NewItemIntf, ProjectIntf, PackageIntf, FormEditingIntf,
   LazarusIDEStrConsts, IDEWindowIntf, InputHistory, CodeToolManager, IDEDefs,
   IDEProcs, EnvironmentOpts, PackageSystem, PackageDefs, ComponentReg,
   AddDirToPkgDlg;
@@ -57,6 +57,7 @@ type
     );
     
   TAddToPkgResult = class
+  public
     Pkg: TLazPackage;
     AddType: TAddToPkgType;
     Dependency: TPkgDependency;
@@ -68,6 +69,7 @@ type
     FileType: TPkgFileType;
     PkgFileFlags: TPkgFileFlags;
     UsedUnitname: string;
+    IconFile: string;
     AutoAddLFMFile: boolean;
     AutoAddLRSFile: boolean;
     NewItem: TNewIDEItemTemplate;
@@ -84,6 +86,8 @@ type
   TAddToPackageDlg = class(TForm)
     CancelDependButton: TBitBtn;
     CancelNewComponentButton: TBitBtn;
+    ComponentIconLabel: TLabel;
+    ComponentIconSpeedButton: TSpeedButton;
     NewCompBtnPanel: TPanel;
     NewComponentButton: TBitBtn;
     NewDepBtnPanel: TPanel;
@@ -141,6 +145,7 @@ type
     procedure CancelAddUnitButtonClick(Sender: TObject);
     procedure CancelNewComponentButtonClick(Sender: TObject);
     procedure ClassNameEditChange(Sender: TObject);
+    procedure ComponentIconSpeedButtonClick(Sender: TObject);
     procedure ComponentUnitFileBrowseButtonClick(Sender: TObject);
     procedure ComponentUnitFileShortenButtonClick(Sender: TObject);
     procedure FilesAddButtonClick(Sender: TObject);
@@ -166,6 +171,7 @@ type
     FOnGetUnitRegisterInfo: TOnGetUnitRegisterInfo;
     fPkgComponents: TAVLTree;// tree of TPkgComponent
     fPackages: TAVLTree;// tree of  TLazPackage or TPackageLink
+    FComponentIconFilename: string;
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetupComponents;
     procedure SetupNewFilePage;
@@ -179,6 +185,7 @@ type
     function SwitchRelativeAbsoluteFilename(const Filename: string): string;
     procedure FillNewFileTreeView;
     function FindFileInFilesList(AFilename: string): Integer;
+    procedure LoadComponentIcon(AFilename: string);
   public
     Params: TAddToPkgResult;
     procedure UpdateAvailableAncestorTypes;
@@ -457,6 +464,29 @@ begin
   AutoCompleteNewComponentUnitName;
 end;
 
+procedure TAddToPackageDlg.ComponentIconSpeedButtonClick(Sender: TObject);
+var
+  Dlg: TOpenPictureDialog;
+begin
+  Dlg:=TOpenPictureDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(Dlg);
+    Dlg.InitialDir:=LazPackage.GetFileDialogInitialDir(ExtractFilePath(ComponentUnitFileEdit.Text));
+    Dlg.Title := 'Choose a component icon 24x24';
+    Dlg.Options := Dlg.Options+[ofPathMustExist];
+    Dlg.Filter:='PNG|*.png'
+              +'|Bitmap, bmp|*.bmp'
+              +'|Pixmap, xpm|*.xpm'
+              +'|'+lisAllFiles+'|'+GetAllFilesMask;
+    if Dlg.Execute then begin
+      LoadComponentIcon(Dlg.FileName);
+    end;
+    InputHistories.StoreFileDialogSettings(Dlg);
+  finally
+    Dlg.Free;
+  end;
+end;
+
 procedure TAddToPackageDlg.ComponentUnitFileBrowseButtonClick(Sender: TObject);
 var
   SaveDialog: TSaveDialog;
@@ -724,6 +754,7 @@ begin
   Params.Unit_Name:=ComponentUnitNameEdit.Text;
   Params.UnitFilename:=ComponentUnitFileEdit.Text;
   Params.UsedUnitname:='';
+  Params.IconFile:=FComponentIconFilename;
 
   // check Ancestor Type
   if not IsValidIdent(Params.AncestorType) then begin
@@ -835,6 +866,7 @@ begin
   x:=Max(x,PalettePageLabel.Left+PalettePageLabel.Width);
   x:=Max(x,ComponentUnitFileLabel.Left+ComponentUnitFileLabel.Width);
   x:=Max(x,ComponentUnitNameLabel.Left+ComponentUnitNameLabel.Width);
+  x:=Max(x,ComponentIconLabel.Left+ComponentIconLabel.Width);
   AncestorComboBox.Left:=x+6;
 end;
 
@@ -1038,6 +1070,10 @@ begin
     Text:='';
   end;
 
+  ComponentIconLabel.Caption:='Icon (maximum 24x24)';
+  ComponentIconSpeedButton.Width:=ComponentPaletteBtnWidth;
+  ComponentIconSpeedButton.Height:=ComponentPaletteBtnHeight;
+
   with NewComponentButton do begin
     Caption:=lisLazBuildOk;
   end;
@@ -1238,6 +1274,37 @@ begin
     end;
   end;
   Result:=-1;
+end;
+
+procedure TAddToPackageDlg.LoadComponentIcon(AFilename: string);
+var
+  ShortFilename: String;
+  Image: TImage;
+begin
+  try
+    Image:=TImage.Create(nil);
+    try
+      Image.Picture.LoadFromFile(AFilename);
+      ComponentIconSpeedButton.Glyph.Assign(Image.Picture.Graphic);
+      ShortFilename:=AFilename;
+      LazPackage.ShortenFilename(ShortFilename,true);
+      ComponentIconSpeedButton.Hint:=
+        ShortFilename+' ('+IntToStr(ComponentIconSpeedButton.Glyph.Width)
+                         +'x'+IntToStr(ComponentIconSpeedButton.Glyph.Height)+')';
+      FComponentIconFilename:=AFilename;
+    finally
+      Image.Free;
+    end;
+  except
+    on E: Exception do begin
+      MessageDlg(lisCCOErrorCaption,
+        Format(lisErrorLoadingFile2, [AFilename, #13, E.Message]), mtError, [
+          mbCancel], 0);
+      ComponentIconSpeedButton.Glyph.Clear;
+      FComponentIconFilename:='';
+      ComponentIconSpeedButton.Hint:=lisNoneClickToChooseOne;
+    end;
+  end;
 end;
 
 procedure TAddToPackageDlg.UpdateAvailableAncestorTypes;
