@@ -3780,6 +3780,7 @@ resourcestring
     +'preferred for this dependency';
   lisPckEditClearDefaultPreferredFilenameOfDependency = 'Clear default/'
     +'preferred filename of dependency';
+  lisRemoveNonExistingFiles = 'Remove non existing files';
   lisPckEditReAddDependency = 'Re-Add dependency';
   lisPckEditCompile = 'Compile';
   lisPckEditRecompileClean = 'Recompile clean';

@@ -86,6 +86,7 @@ type
     procedure ProjectInspectorFormShow(Sender: TObject);
     procedure ReAddMenuItemClick(Sender: TObject);
     procedure RemoveBitBtnClick(Sender: TObject);
+    procedure RemoveNonExistingFilesMenuItemClick(Sender: TObject);
   private
     FOnAddDependency: TAddProjInspDepEvent;
     FOnAddUnitToProject: TOnAddUnitToProject;
@@ -343,6 +344,9 @@ begin
     end;
   end;
 
+  AddPopupMenuItem(lisRemoveNonExistingFiles,@RemoveNonExistingFilesMenuItemClick,
+          not LazProject.IsVirtual);
+
   while ItemsPopupMenu.Items.Count>ItemCnt do
     ItemsPopupMenu.Items.Delete(ItemsPopupMenu.Items.Count-1);
 end;
@@ -398,6 +402,31 @@ begin
       mtConfirmation,[mbYes,mbNo],0)<>mrYes
     then exit;
     if Assigned(OnRemoveFile) then OnRemoveFile(Self,CurFile);
+  end;
+end;
+
+procedure TProjectInspectorForm.RemoveNonExistingFilesMenuItemClick(
+  Sender: TObject);
+var
+  AnUnitInfo: TUnitInfo;
+  NextUnitInfo: TUnitInfo;
+  HasChanged: Boolean;
+begin
+  if LazProject.IsVirtual then exit;
+  HasChanged:=false;
+  AnUnitInfo:=LazProject.FirstPartOfProject;
+  while AnUnitInfo<>nil do begin
+    NextUnitInfo:=AnUnitInfo.NextPartOfProject;
+    if (not AnUnitInfo.IsVirtual)
+    and (not FileExistsUTF8(AnUnitInfo.Filename)) then begin
+      AnUnitInfo.IsPartOfProject:=false;
+      HasChanged:=true;
+    end;
+    AnUnitInfo:=NextUnitInfo;
+  end;
+  if HasChanged then begin
+    LazProject.Modified:=true;
+    UpdateAll;
   end;
 end;
 
