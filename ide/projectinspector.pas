@@ -318,7 +318,7 @@ begin
     AddPopupMenuItem(lisPckEditRemoveFile, @RemoveBitBtnClick,
       RemoveBitBtn.Enabled);
     if FilenameIsPascalSource(CurFile.Filename) then begin
-      Item:=AddPopupMenuItem('Disable I18N for lfm',
+      Item:=AddPopupMenuItem(lisDisableI18NForLFM,
                              @ToggleI18NForLFMMenuItemClick,true);
       Item.Checked:=CurFile.DisableI18NForLFM;
       Item.ShowAlwaysCheckable:=true;
