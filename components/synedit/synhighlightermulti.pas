@@ -100,6 +100,7 @@ type
     FRScanStartedAtVLine: Integer;
     FRegionScanStartRangeIndex: Integer;
     FRegionScanRangeIndex: Integer;
+    FLastPCharLine: String;
   protected
     function  GetRange(Index: Pointer): TSynManagedStorageMem; override;
     procedure PutRange(Index: Pointer; const ARange: TSynManagedStorageMem); override;
@@ -112,6 +113,7 @@ type
     procedure Clear; override;                                   // should not be called ever
     procedure Delete(Index: Integer); override;                  // should not be called ever
     procedure Insert(Index: Integer; const S: string); override; // should not be called ever
+    function  GetPChar(ALineIndex: Integer; out ALen: Integer): PChar; override; // experimental
     procedure SendHighlightChanged(aIndex, aCount: Integer); override;
     procedure PrepareRegionScan(AStartLineIdx: Integer);
     procedure FinishRegionScan(AEndLineIdx: Integer);
@@ -552,6 +554,13 @@ end;
 procedure TSynHLightMultiVirtualLines.Insert(Index: Integer; const S: string);
 begin
   raise Exception.Create('Not allowed');
+end;
+
+function TSynHLightMultiVirtualLines.GetPChar(ALineIndex: Integer; out ALen: Integer): PChar;
+begin
+  FLastPCharLine := Get(ALineIndex);
+  ALen := length(FLastPCharLine);
+  Result := PChar(FLastPCharLine);
 end;
 
 function TSynHLightMultiVirtualLines.GetCount: integer;
