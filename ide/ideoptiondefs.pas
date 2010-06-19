@@ -198,8 +198,8 @@ type
     procedure Assign(Layout: TSimpleWindowLayout); reintroduce;
     procedure ReadCurrentCoordinates;
     procedure ReadCurrentState;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromConfig(Config: TConfigStorage; const Path: string);
+    procedure SaveToConfig(Config: TConfigStorage; const Path: string);
     function CustomCoordinatesAreValid: boolean;
     procedure CloseForm;
   public
@@ -241,8 +241,8 @@ type
     function ItemByFormCaption(const aFormCaption: string): TSimpleWindowLayout;
     function ItemByEnum(ID: TNonModalIDEWindow): TSimpleWindowLayout;
     procedure CloseForm(AForm: TCustomForm);
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromConfig(Config: TConfigStorage; const Path: string);
+    procedure SaveToConfig(Config: TConfigStorage; const Path: string);
   public
     function Count: integer;
     property Items[Index: Integer]: TSimpleWindowLayout read GetItems; default;
@@ -384,7 +384,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TSimpleWindowLayout.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+procedure TSimpleWindowLayout.LoadFromConfig(Config: TConfigStorage;
   const Path: string);
 var
   P: string;
@@ -396,22 +396,22 @@ begin
   P:=FormID;
   if P='' then exit;
   P:=Path+P+'/';
-  FFormCaption := XMLConfig.GetValue(P+'Caption/Value', fFormID);
+  FFormCaption := Config.GetValue(P+'Caption/Value', fFormID);
   // placement
-  fWindowPlacement:=StrToIDEWindowPlacement(XMLConfig.GetValue(
+  fWindowPlacement:=StrToIDEWindowPlacement(Config.GetValue(
     P+'WindowPlacement/Value',IDEWindowPlacementNames[fWindowPlacement]));
   // custom position
-  fLeft:=XMLConfig.GetValue(P+'CustomPosition/Left',fLeft);
-  fTop:=XMLConfig.GetValue(P+'CustomPosition/Top',fTop);
-  fWidth:=XMLConfig.GetValue(P+'CustomPosition/Width',fWidth);
-  fHeight:=XMLConfig.GetValue(P+'CustomPosition/Height',fHeight);
+  fLeft:=Config.GetValue(P+'CustomPosition/Left',fLeft);
+  fTop:=Config.GetValue(P+'CustomPosition/Top',fTop);
+  fWidth:=Config.GetValue(P+'CustomPosition/Width',fWidth);
+  fHeight:=Config.GetValue(P+'CustomPosition/Height',fHeight);
   // state
-  fWindowState:=StrToIDEWindowState(XMLConfig.GetValue(
+  fWindowState:=StrToIDEWindowState(Config.GetValue(
     P+'WindowState/Value',IDEWindowStateNames[fWindowState]));
-  FVisible:=XMLConfig.GetValue(P+'Visible/Value',false);
+  FVisible:=Config.GetValue(P+'Visible/Value',false);
 end;
 
-procedure TSimpleWindowLayout.SaveToXMLConfig(XMLConfig: TXMLConfig;
+procedure TSimpleWindowLayout.SaveToConfig(Config: TConfigStorage;
   const Path: string);
 var
   P: string;
@@ -420,19 +420,19 @@ begin
   P:=FormID;
   if P='' then exit;
   P:=Path+P+'/';
-  XMLConfig.SetDeleteValue(P+'Caption/Value',FFormCaption,'');
+  Config.SetDeleteValue(P+'Caption/Value',FFormCaption,'');
   // placement
-  XMLConfig.SetDeleteValue(P+'WindowPlacement/Value',
+  Config.SetDeleteValue(P+'WindowPlacement/Value',
     IDEWindowPlacementNames[fWindowPlacement],
     IDEWindowPlacementNames[iwpRestoreWindowSize]);
   // custom position
-  XMLConfig.SetDeleteValue(P+'CustomPosition/Left',fLeft,0);
-  XMLConfig.SetDeleteValue(P+'CustomPosition/Top',fTop,0);
-  XMLConfig.SetDeleteValue(P+'CustomPosition/Width',fWidth,0);
-  XMLConfig.SetDeleteValue(P+'CustomPosition/Height',fHeight,0);
+  Config.SetDeleteValue(P+'CustomPosition/Left',fLeft,0);
+  Config.SetDeleteValue(P+'CustomPosition/Top',fTop,0);
+  Config.SetDeleteValue(P+'CustomPosition/Width',fWidth,0);
+  Config.SetDeleteValue(P+'CustomPosition/Height',fHeight,0);
   // state
-  XMLConfig.SetValue(P+'WindowState/Value',IDEWindowStateNames[fWindowState]);
-  XMLConfig.SetDeleteValue(P+'Visible/Value',FVisible,false);
+  Config.SetValue(P+'WindowState/Value',IDEWindowStateNames[fWindowState]);
+  Config.SetDeleteValue(P+'Visible/Value',FVisible,false);
 end;
 
 procedure TSimpleWindowLayout.OnFormClose(Sender: TObject;
@@ -606,23 +606,21 @@ begin
   while (Result>=0) and (FormID<>Items[Result].GetFormID) do dec(Result);
 end;
 
-procedure TSimpleWindowLayoutList.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+procedure TSimpleWindowLayoutList.LoadFromConfig(Config: TConfigStorage;
   const Path: string);
 var i: integer;
 begin
   for i:=0 to Count-1 do
-    Items[i].LoadFromXMLConfig(XMLConfig,Path);
+    Items[i].LoadFromConfig(Config,Path);
 end;
 
-procedure TSimpleWindowLayoutList.SaveToXMLConfig(XMLConfig: TXMLConfig;
+procedure TSimpleWindowLayoutList.SaveToConfig(Config: TConfigStorage;
   const Path: string);
 var i: integer;
 begin
-  XMLConfig.SetDeleteValue(Path+'FormIdCount',Count,0);
-  for i:=0 to Count-1 do Begin
-    XMLConfig.SetDeleteValue(Path+'FormIdList/a'+IntToStr(i), Items[i].FormID, '');
-    Items[i].SaveToXMLConfig(XMLConfig,Path);
-  end
+  Config.SetDeleteValue(Path+'FormIdCount',Count,0);
+  for i:=0 to Count-1 do
+    Items[i].SaveToConfig(Config,Path);
 end;
 
 function TSimpleWindowLayoutList.Count: integer;

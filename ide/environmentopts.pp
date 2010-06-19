@@ -35,7 +35,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Graphics, Controls, Forms, LCLProc, FileProcs, Dialogs,
-  Laz_XMLCfg, AvgLvlTree, ProjectIntf,
+  Laz_XMLCfg, AvgLvlTree, ProjectIntf, LazConfigStorage,
   IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   ObjectInspector, IDEOptionDefs, IDEWindowIntf, ExtToolDialog, TransferMacros,
   IDEOptionsIntf;
@@ -845,6 +845,7 @@ var XMLConfig: TXMLConfig;
   i, j: Integer;
   name: String;
   Rec: PIDEOptionsGroupRec;
+  Cfg: TXMLOptionsStorage;
 
   procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
   var i:integer;
@@ -890,291 +891,297 @@ var XMLConfig: TXMLConfig;
   end;
 
 begin
+  Cfg:=nil;
   try
     XMLConfig:=GetXMLCfg(false);
-    Path:='EnvironmentOptions/';
-    
-    FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
+    Cfg:=TXMLOptionsStorage.Create(XMLConfig);
+    try
+      Path:='EnvironmentOptions/';
 
-    // language
-    LoadLanguage;
+      FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
 
-    // auto save
-    FAutoSaveEditorFiles:=XMLConfig.GetValue(
-       Path+'AutoSave/EditorFiles',true);
-    FAutoSaveProject:=XMLConfig.GetValue(
-       Path+'AutoSave/Project',true);
-    FAutoSaveIntervalInSecs:=XMLConfig.GetValue(
-       Path+'AutoSave/IntervalInSecs',600);
-    FLastSavedProjectFile:=XMLConfig.GetValue(
-       Path+'AutoSave/LastSavedProjectFile','');
-    FOpenLastProjectAtStart:=XMLConfig.GetValue(
-       Path+'AutoSave/OpenLastProjectAtStart',true);
-    FShowCompileDialog:=XMLConfig.GetValue(
-       Path+'ShowCompileDialog/Value',false);
-    FAutoCloseCompileDialog:=XMLConfig.GetValue(
-       Path+'AutoCloseCompileDialog/Value',false);
 
-    // windows
-    i := XMLConfig.GetValue(Path+'Desktop/FormIdCount', 0);
-    while i > 0 do begin
-      name := XMLConfig.GetValue(Path+'Desktop/FormIdList/a'+IntToStr(i), '');
-      if (name <> '') and (IDEWindowLayoutList.ItemByFormID(name) = nil) then
-        CreateWindowLayout(name);
-      dec(i);
-    end;
+      // language
+      LoadLanguage;
 
-    FIDEWindowLayoutList.LoadFromXMLConfig(XMLConfig,
-      Path+'Desktop/');
-    FIDEDialogLayoutList.LoadFromConfig(FConfigStore,
-      Path+'Desktop/Dialogs/');
-    FSingleTaskBarButton := XMLConfig.GetValue(
-      Path+'Desktop/SingleTaskBarButton/Value', False);
-    FHideIDEOnRun:=XMLConfig.GetValue(
-      Path+'Desktop/HideIDEOnRun/Value',false);
-    FHideMessagesIcons:=XMLConfig.GetValue(
-      Path+'Desktop/HideMessagesIcons/Value',false);
-    FIDETitleStartsWithProject:=XMLConfig.GetValue(
-      Path+'Desktop/IDETitleStartsWithProject/Value',false);
-    IDEProjectDirectoryInIdeTitle:=XMLConfig.GetValue(
-      Path+'Desktop/IDEProjectDirectoryInIdeTitle/Value',false);
-    FComponentPaletteVisible:=XMLConfig.GetValue(
-      Path+'Desktop/ComponentPaletteVisible/Value',true);
-    FIDESpeedButtonsVisible:=XMLConfig.GetValue(
-      Path+'Desktop/IDESpeedButtonsVisible/Value',true);
+      // auto save
+      FAutoSaveEditorFiles:=XMLConfig.GetValue(
+         Path+'AutoSave/EditorFiles',true);
+      FAutoSaveProject:=XMLConfig.GetValue(
+         Path+'AutoSave/Project',true);
+      FAutoSaveIntervalInSecs:=XMLConfig.GetValue(
+         Path+'AutoSave/IntervalInSecs',600);
+      FLastSavedProjectFile:=XMLConfig.GetValue(
+         Path+'AutoSave/LastSavedProjectFile','');
+      FOpenLastProjectAtStart:=XMLConfig.GetValue(
+         Path+'AutoSave/OpenLastProjectAtStart',true);
+      FShowCompileDialog:=XMLConfig.GetValue(
+         Path+'ShowCompileDialog/Value',false);
+      FAutoCloseCompileDialog:=XMLConfig.GetValue(
+         Path+'AutoCloseCompileDialog/Value',false);
 
-    // EnvironmentOptionsDialog editor
-    FShowGrid:=XMLConfig.GetValue(
-       Path+'FormEditor/ShowGrid',true);
-    FShowBorderSpacing:=XMLConfig.GetValue(
-       Path+'FormEditor/ShowBorderSpacing',false);
-    FGridColor:=XMLConfig.GetValue(
-       Path+'FormEditor/GridColor',FGridColor);
-    FSnapToGrid:=XMLConfig.GetValue(
-       Path+'FormEditor/SnapToGrid',true);
-    FGridSizeX:=XMLConfig.GetValue(
-       Path+'FormEditor/GridSizeX',8);
-    FGridSizeY:=XMLConfig.GetValue(
-       Path+'FormEditor/GridSizeY',8);
-    FShowGuideLines:=XMLConfig.GetValue(
-       Path+'FormEditor/ShowGuideLines',true);
-    FSnapToGuideLines:=XMLConfig.GetValue(
-       Path+'FormEditor/SnapToGuideLines',true);
-    FGuideLineColorLeftTop:=XMLConfig.GetValue(
-       Path+'FormEditor/GuideLineColorLeftTop',
-       FGuideLineColorLeftTop);
-    FGuideLineColorRightBottom:=XMLConfig.GetValue(
-       Path+'FormEditor/GuideLineColorRightBottom',
-       FGuideLineColorRightBottom);
-    FShowComponentCaptions:=XMLConfig.GetValue(
-       Path+'FormEditor/ShowComponentCaptions',true);
-    FShowEditorHints:=XMLConfig.GetValue(
-       Path+'FormEditor/ShowEditorHints',true);
-    FAutoCreateFormsOnOpen:=XMLConfig.GetValue(
-       Path+'FormEditor/AutoCreateFormsOnOpen',true);
-    FCheckPackagesOnFormCreate:=XMLConfig.GetValue(
-       Path+'FormEditor/CheckPackagesOnFormCreate',true);
-    FRightClickSelects:=XMLConfig.GetValue(
-       Path+'FormEditor/RightClickSelects',true);
-    FGrabberColor:=XMLConfig.GetValue(
-       Path+'FormEditor/GrabberColor/Value',FGrabberColor);
-    FMarkerColor:=XMLConfig.GetValue(
-       Path+'FormEditor/MarkerColor/Value',FMarkerColor);
-    FRubberbandSelectionColor:=XMLConfig.GetValue(
-       Path+'FormEditor/Rubberband/SelectionColor/Value',
-       FRubberbandSelectionColor);
-    FRubberbandCreationColor:=XMLConfig.GetValue(
-       Path+'FormEditor/Rubberband/CreationColor/Value',
-       FRubberbandCreationColor);
-    FRubberbandSelectsGrandChilds:=XMLConfig.GetValue(
-       Path+'FormEditor/Rubberband/SelectsGrandChilds/Value',
-       false);
-    FDesignerPaintLazy:=XMLConfig.GetValue(
-       Path+'FormEditor/DesignerPaint/Lazy/Value',true);
-    FCreateComponentFocusNameProperty:=XMLConfig.GetValue(
-       Path+'FormEditor/CreateComponentFocusNameProperty/Value',false);
-    FSwitchToFavoritesOITab:=XMLConfig.GetValue(
-       Path+'FormEditor/SwitchToFavoritesOITab/Value',false);
-
-    if not OnlyDesktop then begin
-      // files
-      LazarusDirectory:=XMLConfig.GetValue(
-         Path+'LazarusDirectory/Value',FLazarusDirectory);
-      LoadRecentList(XMLConfig,FLazarusDirsHistory,
-         Path+'LazarusDirectory/History/');
-      if FLazarusDirsHistory.Count=0 then begin
-        FLazarusDirsHistory.Add(ProgramDirectory(true));
+      // windows
+      i := XMLConfig.GetValue(Path+'Desktop/FormIdCount', 0);
+      while i > 0 do begin
+        name := XMLConfig.GetValue(Path+'Desktop/FormIdList/a'+IntToStr(i), '');
+        if (name <> '') and (IDEWindowLayoutList.ItemByFormID(name) = nil) then
+          CreateWindowLayout(name);
+        dec(i);
       end;
-      CompilerFilename:=TrimFilename(XMLConfig.GetValue(
-         Path+'CompilerFilename/Value',FCompilerFilename));
-      LoadRecentList(XMLConfig,FCompilerFileHistory,
-         Path+'CompilerFilename/History/');
-      if FCompilerFileHistory.Count=0 then
-        GetDefaultCompilerFilenames(FCompilerFileHistory);
-      FPCSourceDirectory:=XMLConfig.GetValue(
-         Path+'FPCSourceDirectory/Value',FFPCSourceDirectory);
-      LoadRecentList(XMLConfig,FFPCSourceDirHistory,
-         Path+'FPCSourceDirectory/History/');
-      if FFPCSourceDirHistory.Count=0 then begin
-      
+
+      FIDEWindowLayoutList.LoadFromConfig(Cfg,Path+'Desktop/');
+      FIDEDialogLayoutList.LoadFromConfig(FConfigStore,
+        Path+'Desktop/Dialogs/');
+      FSingleTaskBarButton := XMLConfig.GetValue(
+        Path+'Desktop/SingleTaskBarButton/Value', False);
+      FHideIDEOnRun:=XMLConfig.GetValue(
+        Path+'Desktop/HideIDEOnRun/Value',false);
+      FHideMessagesIcons:=XMLConfig.GetValue(
+        Path+'Desktop/HideMessagesIcons/Value',false);
+      FIDETitleStartsWithProject:=XMLConfig.GetValue(
+        Path+'Desktop/IDETitleStartsWithProject/Value',false);
+      IDEProjectDirectoryInIdeTitle:=XMLConfig.GetValue(
+        Path+'Desktop/IDEProjectDirectoryInIdeTitle/Value',false);
+      FComponentPaletteVisible:=XMLConfig.GetValue(
+        Path+'Desktop/ComponentPaletteVisible/Value',true);
+      FIDESpeedButtonsVisible:=XMLConfig.GetValue(
+        Path+'Desktop/IDESpeedButtonsVisible/Value',true);
+
+      // EnvironmentOptionsDialog editor
+      FShowGrid:=XMLConfig.GetValue(
+         Path+'FormEditor/ShowGrid',true);
+      FShowBorderSpacing:=XMLConfig.GetValue(
+         Path+'FormEditor/ShowBorderSpacing',false);
+      FGridColor:=XMLConfig.GetValue(
+         Path+'FormEditor/GridColor',FGridColor);
+      FSnapToGrid:=XMLConfig.GetValue(
+         Path+'FormEditor/SnapToGrid',true);
+      FGridSizeX:=XMLConfig.GetValue(
+         Path+'FormEditor/GridSizeX',8);
+      FGridSizeY:=XMLConfig.GetValue(
+         Path+'FormEditor/GridSizeY',8);
+      FShowGuideLines:=XMLConfig.GetValue(
+         Path+'FormEditor/ShowGuideLines',true);
+      FSnapToGuideLines:=XMLConfig.GetValue(
+         Path+'FormEditor/SnapToGuideLines',true);
+      FGuideLineColorLeftTop:=XMLConfig.GetValue(
+         Path+'FormEditor/GuideLineColorLeftTop',
+         FGuideLineColorLeftTop);
+      FGuideLineColorRightBottom:=XMLConfig.GetValue(
+         Path+'FormEditor/GuideLineColorRightBottom',
+         FGuideLineColorRightBottom);
+      FShowComponentCaptions:=XMLConfig.GetValue(
+         Path+'FormEditor/ShowComponentCaptions',true);
+      FShowEditorHints:=XMLConfig.GetValue(
+         Path+'FormEditor/ShowEditorHints',true);
+      FAutoCreateFormsOnOpen:=XMLConfig.GetValue(
+         Path+'FormEditor/AutoCreateFormsOnOpen',true);
+      FCheckPackagesOnFormCreate:=XMLConfig.GetValue(
+         Path+'FormEditor/CheckPackagesOnFormCreate',true);
+      FRightClickSelects:=XMLConfig.GetValue(
+         Path+'FormEditor/RightClickSelects',true);
+      FGrabberColor:=XMLConfig.GetValue(
+         Path+'FormEditor/GrabberColor/Value',FGrabberColor);
+      FMarkerColor:=XMLConfig.GetValue(
+         Path+'FormEditor/MarkerColor/Value',FMarkerColor);
+      FRubberbandSelectionColor:=XMLConfig.GetValue(
+         Path+'FormEditor/Rubberband/SelectionColor/Value',
+         FRubberbandSelectionColor);
+      FRubberbandCreationColor:=XMLConfig.GetValue(
+         Path+'FormEditor/Rubberband/CreationColor/Value',
+         FRubberbandCreationColor);
+      FRubberbandSelectsGrandChilds:=XMLConfig.GetValue(
+         Path+'FormEditor/Rubberband/SelectsGrandChilds/Value',
+         false);
+      FDesignerPaintLazy:=XMLConfig.GetValue(
+         Path+'FormEditor/DesignerPaint/Lazy/Value',true);
+      FCreateComponentFocusNameProperty:=XMLConfig.GetValue(
+         Path+'FormEditor/CreateComponentFocusNameProperty/Value',false);
+      FSwitchToFavoritesOITab:=XMLConfig.GetValue(
+         Path+'FormEditor/SwitchToFavoritesOITab/Value',false);
+
+      if not OnlyDesktop then begin
+        // files
+        LazarusDirectory:=XMLConfig.GetValue(
+           Path+'LazarusDirectory/Value',FLazarusDirectory);
+        LoadRecentList(XMLConfig,FLazarusDirsHistory,
+           Path+'LazarusDirectory/History/');
+        if FLazarusDirsHistory.Count=0 then begin
+          FLazarusDirsHistory.Add(ProgramDirectory(true));
+        end;
+        CompilerFilename:=TrimFilename(XMLConfig.GetValue(
+           Path+'CompilerFilename/Value',FCompilerFilename));
+        LoadRecentList(XMLConfig,FCompilerFileHistory,
+           Path+'CompilerFilename/History/');
+        if FCompilerFileHistory.Count=0 then
+          GetDefaultCompilerFilenames(FCompilerFileHistory);
+        FPCSourceDirectory:=XMLConfig.GetValue(
+           Path+'FPCSourceDirectory/Value',FFPCSourceDirectory);
+        LoadRecentList(XMLConfig,FFPCSourceDirHistory,
+           Path+'FPCSourceDirectory/History/');
+        if FFPCSourceDirHistory.Count=0 then begin
+
+        end;
+        MakeFilename:=TrimFilename(XMLConfig.GetValue(
+           Path+'MakeFilename/Value',FMakeFilename));
+        LoadRecentList(XMLConfig,FMakeFileHistory,
+           Path+'MakeFilename/History/');
+        if FMakeFileHistory.Count=0 then
+          GetDefaultMakeFilenames(FMakeFileHistory);
+
+        TestBuildDirectory:=XMLConfig.GetValue(
+           Path+'TestBuildDirectory/Value',FTestBuildDirectory);
+        LoadRecentList(XMLConfig,FTestBuildDirHistory,
+           Path+'TestBuildDirectory/History/');
+        if FTestBuildDirHistory.Count=0 then
+          GetDefaultTestBuildDirs(FTestBuildDirHistory);
+        CompilerMessagesFilename:=XMLConfig.GetValue(
+           Path+'CompilerMessagesFilename/Value',FCompilerMessagesFilename);
+        LoadRecentList(XMLConfig, FCompilerMessagesFileHistory,
+           Path+'CompilerMessagesFilename/History/');
+
+        // backup
+        LoadBackupInfo(FBackupInfoProjectFiles
+          ,Path+'BackupProjectFiles/');
+        LoadBackupInfo(FBackupInfoOtherFiles
+          ,Path+'BackupOtherFiles/');
+
+        // Debugger
+        // first try to load the old type
+        // it will be overwritten by Class if found
+        CurDebuggerClass := XMLConfig.GetValue(
+           Path+'Debugger/Class','');
+        if CurDebuggerClass='' then begin
+          // try old format
+          OldDebuggerType := DebuggerNameToType(XMLConfig.GetValue(
+            Path+'Debugger/Type',''));
+          if OldDebuggerType=dtGnuDebugger then
+            CurDebuggerClass:='TGDBMIDEBUGGER';
+        end;
+        DebuggerClass:=CurDebuggerClass;
+        DebuggerFilename:=XMLConfig.GetValue(
+           Path+'DebuggerFilename/Value','');
+        LoadRecentList(XMLConfig,FDebuggerFileHistory,
+           Path+'DebuggerFilename/History/');
+        DebuggerSearchPath:=XMLConfig.GetValue(
+           Path+'DebuggerSearchPath/Value','');
+        // Debugger General Options
+        DebuggerShowStopMessage:=XMLConfig.GetValue(
+           Path+'DebuggerOptions/ShowStopMessage/Value', True);
+        FDebuggerEventLogClearOnRun := XMLConfig.GetValue(
+          Path+'Debugger/EventLogClearOnRun', True);
+        FDebuggerEventLogCheckLineLimit := XMLConfig.GetValue(
+          Path+'Debugger/EventLogCheckLineLimit', False);
+        FDebuggerEventLogLineLimit := XMLConfig.GetValue(
+          Path+'Debugger/EventLogLineLimit', 1000);
+        FDebuggerEventLogShowBreakpoint := XMLConfig.GetValue(
+          Path+'Debugger/EventLogShowBreakpoint', False);
+        FDebuggerEventLogShowProcess := XMLConfig.GetValue(
+          Path+'Debugger/EventLogShowProcess', True);
+        FDebuggerEventLogShowThread := XMLConfig.GetValue(
+          Path+'Debugger/EventLogShowThread', True);
+        FDebuggerEventLogShowModule := XMLConfig.GetValue(
+          Path+'Debugger/EventLogShowModule', False);
+        FDebuggerEventLogShowOutput := XMLConfig.GetValue(
+          Path+'Debugger/EventLogShowOutput', True);
+        FDebuggerEventLogShowWindow := XMLConfig.GetValue(
+          Path+'Debugger/EventLogShowWindow', False);
+        FDebuggerEventLogShowDebugger := XMLConfig.GetValue(
+          Path+'Debugger/EventLogShowDebugger', True);
       end;
-      MakeFilename:=TrimFilename(XMLConfig.GetValue(
-         Path+'MakeFilename/Value',FMakeFilename));
-      LoadRecentList(XMLConfig,FMakeFileHistory,
-         Path+'MakeFilename/History/');
-      if FMakeFileHistory.Count=0 then
-        GetDefaultMakeFilenames(FMakeFileHistory);
 
-      TestBuildDirectory:=XMLConfig.GetValue(
-         Path+'TestBuildDirectory/Value',FTestBuildDirectory);
-      LoadRecentList(XMLConfig,FTestBuildDirHistory,
-         Path+'TestBuildDirectory/History/');
-      if FTestBuildDirHistory.Count=0 then
-        GetDefaultTestBuildDirs(FTestBuildDirHistory);
-      CompilerMessagesFilename:=XMLConfig.GetValue(
-         Path+'CompilerMessagesFilename/Value',FCompilerMessagesFilename);
-      LoadRecentList(XMLConfig, FCompilerMessagesFileHistory,
-         Path+'CompilerMessagesFilename/History/');
+      // hints
+      FCheckDiskChangesWithLoading:=XMLConfig.GetValue(
+        Path+'CheckDiskChangesWithLoading/Value',false);
+      FShowHintsForComponentPalette:=XMLConfig.GetValue(
+        Path+'ShowHintsForComponentPalette/Value',true);
+      FShowHintsForMainSpeedButtons:=XMLConfig.GetValue(
+        Path+'ShowHintsForMainSpeedButtons/Value',true);
 
-      // backup
-      LoadBackupInfo(FBackupInfoProjectFiles
-        ,Path+'BackupProjectFiles/');
-      LoadBackupInfo(FBackupInfoOtherFiles
-        ,Path+'BackupOtherFiles/');
+      // messages view
+      fMsgViewDblClickJumps:=XMLConfig.GetValue(
+        Path+'MsgViewDblClickJumps/Value',false);
+      fMsgViewFocus:=XMLConfig.GetValue(
+        Path+'MsgViewFocus/Value',DefaultMsgViewFocus);
 
-      // Debugger
-      // first try to load the old type
-      // it will be overwritten by Class if found
-      CurDebuggerClass := XMLConfig.GetValue(
-         Path+'Debugger/Class','');
-      if CurDebuggerClass='' then begin
-        // try old format
-        OldDebuggerType := DebuggerNameToType(XMLConfig.GetValue(
-          Path+'Debugger/Type',''));
-        if OldDebuggerType=dtGnuDebugger then
-          CurDebuggerClass:='TGDBMIDEBUGGER';
+      // glyphs
+      FShowButtonGlyphs := TApplicationShowGlyphs(XMLConfig.GetValue(Path+'ShowButtonGlyphs/Value',
+        Ord(sbgSystem)));
+      FShowMenuGlyphs := TApplicationShowGlyphs(XMLConfig.GetValue(Path+'ShowMenuGlyphs/Value',
+        Ord(sbgSystem)));
+
+      // recent files and directories
+      FMaxRecentOpenFiles:=XMLConfig.GetValue(
+        Path+'Recent/OpenFiles/Max',FMaxRecentOpenFiles);
+      LoadRecentList(XMLConfig,FRecentOpenFiles,
+        Path+'Recent/OpenFiles/');
+      FMaxRecentProjectFiles:=XMLConfig.GetValue(
+        Path+'Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
+      LoadRecentList(XMLConfig,FRecentProjectFiles,
+        Path+'Recent/ProjectFiles/');
+      FMaxRecentPackageFiles:=XMLConfig.GetValue(
+        Path+'Recent/PackageFiles/Max',FMaxRecentOpenFiles);
+      LoadRecentList(XMLConfig,FRecentPackageFiles,
+        Path+'Recent/PackageFiles/');
+
+      // external tools
+      fExternalTools.Load(FConfigStore,Path+'ExternalTools/');
+
+      // naming
+      LoadPascalFileExt(Path+'');
+      if FileVersion>=103 then begin
+        fCharcaseFileAction:=CharCaseFileActionNameToType(XMLConfig.GetValue(
+          Path+'CharcaseFileAction/Value',''));
+      end else begin
+        if XMLConfig.GetValue(Path+'PascalFileAskLowerCase/Value',true) then
+          fCharcaseFileAction:=ccfaAsk
+        else if XMLConfig.GetValue(Path+'PascalFileAutoLowerCase/Value',false)
+        then
+          fCharcaseFileAction:=ccfaAutoRename
+        else
+          fCharcaseFileAction:=ccfaIgnore;
       end;
-      DebuggerClass:=CurDebuggerClass;
-      DebuggerFilename:=XMLConfig.GetValue(
-         Path+'DebuggerFilename/Value','');
-      LoadRecentList(XMLConfig,FDebuggerFileHistory,
-         Path+'DebuggerFilename/History/');
-      DebuggerSearchPath:=XMLConfig.GetValue(
-         Path+'DebuggerSearchPath/Value','');
-      // Debugger General Options
-      DebuggerShowStopMessage:=XMLConfig.GetValue(
-         Path+'DebuggerOptions/ShowStopMessage/Value', True);
-      FDebuggerEventLogClearOnRun := XMLConfig.GetValue(
-        Path+'Debugger/EventLogClearOnRun', True);
-      FDebuggerEventLogCheckLineLimit := XMLConfig.GetValue(
-        Path+'Debugger/EventLogCheckLineLimit', False);
-      FDebuggerEventLogLineLimit := XMLConfig.GetValue(
-        Path+'Debugger/EventLogLineLimit', 1000);
-      FDebuggerEventLogShowBreakpoint := XMLConfig.GetValue(
-        Path+'Debugger/EventLogShowBreakpoint', False);
-      FDebuggerEventLogShowProcess := XMLConfig.GetValue(
-        Path+'Debugger/EventLogShowProcess', True);
-      FDebuggerEventLogShowThread := XMLConfig.GetValue(
-        Path+'Debugger/EventLogShowThread', True);
-      FDebuggerEventLogShowModule := XMLConfig.GetValue(
-        Path+'Debugger/EventLogShowModule', False);
-      FDebuggerEventLogShowOutput := XMLConfig.GetValue(
-        Path+'Debugger/EventLogShowOutput', True);
-      FDebuggerEventLogShowWindow := XMLConfig.GetValue(
-        Path+'Debugger/EventLogShowWindow', False);
-      FDebuggerEventLogShowDebugger := XMLConfig.GetValue(
-        Path+'Debugger/EventLogShowDebugger', True);
-    end;
-
-    // hints
-    FCheckDiskChangesWithLoading:=XMLConfig.GetValue(
-      Path+'CheckDiskChangesWithLoading/Value',false);
-    FShowHintsForComponentPalette:=XMLConfig.GetValue(
-      Path+'ShowHintsForComponentPalette/Value',true);
-    FShowHintsForMainSpeedButtons:=XMLConfig.GetValue(
-      Path+'ShowHintsForMainSpeedButtons/Value',true);
-      
-    // messages view
-    fMsgViewDblClickJumps:=XMLConfig.GetValue(
-      Path+'MsgViewDblClickJumps/Value',false);
-    fMsgViewFocus:=XMLConfig.GetValue(
-      Path+'MsgViewFocus/Value',DefaultMsgViewFocus);
-
-    // glyphs
-    FShowButtonGlyphs := TApplicationShowGlyphs(XMLConfig.GetValue(Path+'ShowButtonGlyphs/Value',
-      Ord(sbgSystem)));
-    FShowMenuGlyphs := TApplicationShowGlyphs(XMLConfig.GetValue(Path+'ShowMenuGlyphs/Value',
-      Ord(sbgSystem)));
-
-    // recent files and directories
-    FMaxRecentOpenFiles:=XMLConfig.GetValue(
-      Path+'Recent/OpenFiles/Max',FMaxRecentOpenFiles);
-    LoadRecentList(XMLConfig,FRecentOpenFiles,
-      Path+'Recent/OpenFiles/');
-    FMaxRecentProjectFiles:=XMLConfig.GetValue(
-      Path+'Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
-    LoadRecentList(XMLConfig,FRecentProjectFiles,
-      Path+'Recent/ProjectFiles/');
-    FMaxRecentPackageFiles:=XMLConfig.GetValue(
-      Path+'Recent/PackageFiles/Max',FMaxRecentOpenFiles);
-    LoadRecentList(XMLConfig,FRecentPackageFiles,
-      Path+'Recent/PackageFiles/');
-
-    // external tools
-    fExternalTools.Load(FConfigStore,Path+'ExternalTools/');
-    
-    // naming
-    LoadPascalFileExt(Path+'');
-    if FileVersion>=103 then begin
-      fCharcaseFileAction:=CharCaseFileActionNameToType(XMLConfig.GetValue(
-        Path+'CharcaseFileAction/Value',''));
-    end else begin
-      if XMLConfig.GetValue(Path+'PascalFileAskLowerCase/Value',true) then
-        fCharcaseFileAction:=ccfaAsk
-      else if XMLConfig.GetValue(Path+'PascalFileAutoLowerCase/Value',false)
-      then
-        fCharcaseFileAction:=ccfaAutoRename
+      if FileVersion>=104 then
+        CurPath:=Path+'AmbiguousFileAction/Value'
       else
-        fCharcaseFileAction:=ccfaIgnore;
-    end;
-    if FileVersion>=104 then
-      CurPath:=Path+'AmbiguousFileAction/Value'
-    else
-      CurPath:=Path+'AmbigiousFileAction/Value';
-    fAmbiguousFileAction:=AmbiguousFileActionNameToType(XMLConfig.GetValue(
-      CurPath,AmbiguousFileActionNames[fAmbiguousFileAction]));
-    FUnitRenameReferencesAction:=UnitRenameReferencesActionNameToType(XMLConfig.GetValue(
-      Path+'UnitRenameReferencesAction/Value',UnitRenameReferencesActionNames[urraAsk]));
-    FAskForFilenameOnNewFile:=XMLConfig.GetValue(
-      Path+'AskForFilenameOnNewFile/Value',false);
+        CurPath:=Path+'AmbigiousFileAction/Value';
+      fAmbiguousFileAction:=AmbiguousFileActionNameToType(XMLConfig.GetValue(
+        CurPath,AmbiguousFileActionNames[fAmbiguousFileAction]));
+      FUnitRenameReferencesAction:=UnitRenameReferencesActionNameToType(XMLConfig.GetValue(
+        Path+'UnitRenameReferencesAction/Value',UnitRenameReferencesActionNames[urraAsk]));
+      FAskForFilenameOnNewFile:=XMLConfig.GetValue(
+        Path+'AskForFilenameOnNewFile/Value',false);
 
-    //lazdoc
-    FLazDocPaths := XMLConfig.GetValue(Path+'LazDoc/Paths', DefaultLazDocPath);
-    if FileVersion<=105 then
-      FLazDocPaths:=LineBreaksToDelimiter(FLazDocPaths,';');
+      //lazdoc
+      FLazDocPaths := XMLConfig.GetValue(Path+'LazDoc/Paths', DefaultLazDocPath);
+      if FileVersion<=105 then
+        FLazDocPaths:=LineBreaksToDelimiter(FLazDocPaths,';');
 
-    // 'new items'
-    FNewUnitTemplate:=XMLConfig.GetValue(Path+'New/UnitTemplate/Value',FileDescNamePascalUnit);
-    FNewFormTemplate:=XMLConfig.GetValue(Path+'New/FormTemplate/Value',FileDescNameLCLForm);
+      // 'new items'
+      FNewUnitTemplate:=XMLConfig.GetValue(Path+'New/UnitTemplate/Value',FileDescNamePascalUnit);
+      FNewFormTemplate:=XMLConfig.GetValue(Path+'New/FormTemplate/Value',FileDescNameLCLForm);
 
-    // object inspector
-    FObjectInspectorOptions.Load;
-    FObjectInspectorOptions.SaveBounds:=false;
+      // object inspector
+      FObjectInspectorOptions.Load;
+      FObjectInspectorOptions.SaveBounds:=false;
 
-    for i := 0 to IDEEditorGroups.Count - 1 do begin
-      Rec := IDEEditorGroups[i];
-      name := Rec^.GroupClass.ClassName;
-      Rec^.Collapsed := XMLConfig.GetValue('OptionDialog/Tree/' + name + '/Value',
-                                           Rec^.DefaultCollapsed);
-      if Rec^.Items <> nil then begin
-        for j := 0 to Rec^.Items.Count - 1 do begin
-        Rec^.Items[j]^.Collapsed := XMLConfig.GetValue('OptionDialog/Tree/' + name
-                + '/' + Rec^.Items[j]^.EditorClass.ClassName + '/Value',
-                Rec^.Items[j]^.DefaultCollapsed);
+      for i := 0 to IDEEditorGroups.Count - 1 do begin
+        Rec := IDEEditorGroups[i];
+        name := Rec^.GroupClass.ClassName;
+        Rec^.Collapsed := XMLConfig.GetValue('OptionDialog/Tree/' + name + '/Value',
+                                             Rec^.DefaultCollapsed);
+        if Rec^.Items <> nil then begin
+          for j := 0 to Rec^.Items.Count - 1 do begin
+          Rec^.Items[j]^.Collapsed := XMLConfig.GetValue('OptionDialog/Tree/' + name
+                  + '/' + Rec^.Items[j]^.EditorClass.ClassName + '/Value',
+                  Rec^.Items[j]^.DefaultCollapsed);
+          end;
         end;
       end;
-    end;
 
+    finally
+      Cfg.Free;
+    end;
     FileUpdated;
   except
     // ToDo
@@ -1189,6 +1196,7 @@ var XMLConfig: TXMLConfig;
   i, j: Integer;
   name: String;
   Rec: PIDEOptionsGroupRec;
+  Cfg: TXMLOptionsStorage;
 
   procedure SaveBackupInfo(var BackupInfo: TBackupInfo; Path:string);
   var i:integer;
@@ -1217,238 +1225,243 @@ var XMLConfig: TXMLConfig;
   end;
   
 begin
+  Cfg:=nil;
   try
     XMLConfig:=GetXMLCfg(true);
-    Path:='EnvironmentOptions/';
+    Cfg:=TXMLOptionsStorage.Create(XMLConfig);
+    try
+      Path:='EnvironmentOptions/';
 
-    XMLConfig.SetValue(Path+'Version/Value',EnvOptsVersion);
+      XMLConfig.SetValue(Path+'Version/Value',EnvOptsVersion);
 
-    // language
-    XMLConfig.SetDeleteValue(Path+'Language/ID',LanguageID,'');
+      // language
+      XMLConfig.SetDeleteValue(Path+'Language/ID',LanguageID,'');
 
-    // auto save
-    XMLConfig.SetDeleteValue(Path+'AutoSave/EditorFiles'
-       ,FAutoSaveEditorFiles,true);
-    XMLConfig.SetDeleteValue(Path+'AutoSave/Project',
-       FAutoSaveProject,true);
-    XMLConfig.SetDeleteValue(Path+'AutoSave/IntervalInSecs'
-       ,FAutoSaveIntervalInSecs,600);
-    XMLConfig.SetDeleteValue(Path+'AutoSave/LastSavedProjectFile'
-       ,FLastSavedProjectFile,'');
-    XMLConfig.SetDeleteValue(Path+'AutoSave/OpenLastProjectAtStart',
-       FOpenLastProjectAtStart,true);
+      // auto save
+      XMLConfig.SetDeleteValue(Path+'AutoSave/EditorFiles'
+         ,FAutoSaveEditorFiles,true);
+      XMLConfig.SetDeleteValue(Path+'AutoSave/Project',
+         FAutoSaveProject,true);
+      XMLConfig.SetDeleteValue(Path+'AutoSave/IntervalInSecs'
+         ,FAutoSaveIntervalInSecs,600);
+      XMLConfig.SetDeleteValue(Path+'AutoSave/LastSavedProjectFile'
+         ,FLastSavedProjectFile,'');
+      XMLConfig.SetDeleteValue(Path+'AutoSave/OpenLastProjectAtStart',
+         FOpenLastProjectAtStart,true);
 
-    // windows
-    FIDEWindowLayoutList.SaveToXMLConfig(XMLConfig,Path+'Desktop/');
-    FIDEDialogLayoutList.SaveToConfig(FConfigStore,Path+'Desktop/Dialogs/');
-    XMLConfig.SetDeleteValue(Path+'Desktop/SingleTaskBarButton/Value',
-                             FSingleTaskBarButton, False);
-    XMLConfig.SetDeleteValue(Path+'Desktop/HideIDEOnRun/Value',FHideIDEOnRun,
-                             false);
-    XMLConfig.SetDeleteValue(Path+'Desktop/HideMessagesIcons/Value',FHideMessagesIcons,
-                             false);
-    XMLConfig.SetDeleteValue(Path+'Desktop/IDETitleStartsWithProject/Value',
-                             FIDETitleStartsWithProject,false);
-    XMLConfig.SetDeleteValue(Path+'Desktop/IDEProjectDirectoryInIdeTitle/Value',
-                             FIDEProjectDirectoryInIdeTitle,false);
-    XMLConfig.SetDeleteValue(Path+'Desktop/ComponentPaletteVisible/Value',
-                             FComponentPaletteVisible,true);
-    XMLConfig.SetDeleteValue(Path+'Desktop/IDESpeedButtonsVisible/Value',
-                             FIDESpeedButtonsVisible,true);
+      // windows
+      FIDEWindowLayoutList.SaveToConfig(Cfg,Path+'Desktop/');
+      FIDEDialogLayoutList.SaveToConfig(FConfigStore,Path+'Desktop/Dialogs/');
+      XMLConfig.SetDeleteValue(Path+'Desktop/SingleTaskBarButton/Value',
+                               FSingleTaskBarButton, False);
+      XMLConfig.SetDeleteValue(Path+'Desktop/HideIDEOnRun/Value',FHideIDEOnRun,
+                               false);
+      XMLConfig.SetDeleteValue(Path+'Desktop/HideMessagesIcons/Value',FHideMessagesIcons,
+                               false);
+      XMLConfig.SetDeleteValue(Path+'Desktop/IDETitleStartsWithProject/Value',
+                               FIDETitleStartsWithProject,false);
+      XMLConfig.SetDeleteValue(Path+'Desktop/IDEProjectDirectoryInIdeTitle/Value',
+                               FIDEProjectDirectoryInIdeTitle,false);
+      XMLConfig.SetDeleteValue(Path+'Desktop/ComponentPaletteVisible/Value',
+                               FComponentPaletteVisible,true);
+      XMLConfig.SetDeleteValue(Path+'Desktop/IDESpeedButtonsVisible/Value',
+                               FIDESpeedButtonsVisible,true);
 
-    // EnvironmentOptionsDialog editor
-    XMLConfig.SetDeleteValue(Path+'FormEditor/ShowBorderSpacing',
-                             FShowBorderSpacing,false);
-    XMLConfig.SetDeleteValue(Path+'FormEditor/ShowGrid',FShowGrid,true);
-    XMLConfig.SetDeleteValue(Path+'FormEditor/GridColor',FGridColor,clBlack);
-    XMLConfig.SetDeleteValue(Path+'FormEditor/SnapToGrid',FSnapToGrid,true);
-    XMLConfig.SetDeleteValue(Path+'FormEditor/GridSizeX',FGridSizeX,8);
-    XMLConfig.SetDeleteValue(Path+'FormEditor/GridSizeY',FGridSizeY,8);
-    XMLConfig.SetDeleteValue(Path+'FormEditor/ShowGuideLines',FShowGuideLines,
-                             true);
-    XMLConfig.SetDeleteValue(Path+'FormEditor/SnapToGuideLines',
-                             FSnapToGuideLines,true);
-    XMLConfig.SetDeleteValue(Path+'FormEditor/GuideLineColorLeftTop',
-       FGuideLineColorLeftTop,clGreen);
-    XMLConfig.SetDeleteValue(Path+'FormEditor/GuideLineColorRightBottom',
-       FGuideLineColorRightBottom,clBlue);
-    XMLConfig.SetDeleteValue(Path+'FormEditor/ShowComponentCaptions',
-       FShowComponentCaptions,true);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/ShowEditorHints',FShowEditorHints,true);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/AutoCreateFormsOnOpen',FAutoCreateFormsOnOpen,true);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/CheckPackagesOnFormCreate',FCheckPackagesOnFormCreate,true);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/RightClickSelects',FRightClickSelects,true);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/GrabberColor/Value',FGrabberColor,clBlack);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/MarkerColor/Value',FMarkerColor,clDkGray);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/Rubberband/SelectionColor/Value',
-       FRubberbandSelectionColor,clBlack);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/Rubberband/CreationColor/Value',
-       FRubberbandCreationColor,clRed);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/Rubberband/SelectsGrandChilds/Value',
-       FRubberbandSelectsGrandChilds,false);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/DesignerPaint/Lazy/Value',FDesignerPaintLazy,true);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/CreateComponentFocusNameProperty/Value',FCreateComponentFocusNameProperty,false);
-    XMLConfig.SetDeleteValue(
-       Path+'FormEditor/SwitchToFavoritesOITab/Value',FSwitchToFavoritesOITab,false);
-
-    XMLConfig.SetDeleteValue(
-       Path+'ShowCompileDialog/Value',FShowCompileDialog,False);
-    XMLConfig.SetDeleteValue(
-       Path+'AutoCloseCompileDialog/Value',FAutoCloseCompileDialog,False);
-
-    if not OnlyDesktop then begin
-      // files
+      // EnvironmentOptionsDialog editor
+      XMLConfig.SetDeleteValue(Path+'FormEditor/ShowBorderSpacing',
+                               FShowBorderSpacing,false);
+      XMLConfig.SetDeleteValue(Path+'FormEditor/ShowGrid',FShowGrid,true);
+      XMLConfig.SetDeleteValue(Path+'FormEditor/GridColor',FGridColor,clBlack);
+      XMLConfig.SetDeleteValue(Path+'FormEditor/SnapToGrid',FSnapToGrid,true);
+      XMLConfig.SetDeleteValue(Path+'FormEditor/GridSizeX',FGridSizeX,8);
+      XMLConfig.SetDeleteValue(Path+'FormEditor/GridSizeY',FGridSizeY,8);
+      XMLConfig.SetDeleteValue(Path+'FormEditor/ShowGuideLines',FShowGuideLines,
+                               true);
+      XMLConfig.SetDeleteValue(Path+'FormEditor/SnapToGuideLines',
+                               FSnapToGuideLines,true);
+      XMLConfig.SetDeleteValue(Path+'FormEditor/GuideLineColorLeftTop',
+         FGuideLineColorLeftTop,clGreen);
+      XMLConfig.SetDeleteValue(Path+'FormEditor/GuideLineColorRightBottom',
+         FGuideLineColorRightBottom,clBlue);
+      XMLConfig.SetDeleteValue(Path+'FormEditor/ShowComponentCaptions',
+         FShowComponentCaptions,true);
       XMLConfig.SetDeleteValue(
-         Path+'LazarusDirectory/Value',FLazarusDirectory,'');
-      SaveRecentList(XMLConfig,FLazarusDirsHistory,
-         Path+'LazarusDirectory/History/');
+         Path+'FormEditor/ShowEditorHints',FShowEditorHints,true);
       XMLConfig.SetDeleteValue(
-         Path+'CompilerFilename/Value',FCompilerFilename,'');
-      SaveRecentList(XMLConfig,FCompilerFileHistory,
-         Path+'CompilerFilename/History/');
-      XMLConfig.SetValue(
-         Path+'FPCSourceDirectory/Value',FFPCSourceDirectory);
-      SaveRecentList(XMLConfig,FFPCSourceDirHistory,
-         Path+'FPCSourceDirectory/History/');
+         Path+'FormEditor/AutoCreateFormsOnOpen',FAutoCreateFormsOnOpen,true);
       XMLConfig.SetDeleteValue(
-         Path+'MakeFilename/Value',FMakeFilename,'');
-      SaveRecentList(XMLConfig,FMakeFileHistory,
-         Path+'MakeFilename/History/');
+         Path+'FormEditor/CheckPackagesOnFormCreate',FCheckPackagesOnFormCreate,true);
+      XMLConfig.SetDeleteValue(
+         Path+'FormEditor/RightClickSelects',FRightClickSelects,true);
+      XMLConfig.SetDeleteValue(
+         Path+'FormEditor/GrabberColor/Value',FGrabberColor,clBlack);
+      XMLConfig.SetDeleteValue(
+         Path+'FormEditor/MarkerColor/Value',FMarkerColor,clDkGray);
+      XMLConfig.SetDeleteValue(
+         Path+'FormEditor/Rubberband/SelectionColor/Value',
+         FRubberbandSelectionColor,clBlack);
+      XMLConfig.SetDeleteValue(
+         Path+'FormEditor/Rubberband/CreationColor/Value',
+         FRubberbandCreationColor,clRed);
+      XMLConfig.SetDeleteValue(
+         Path+'FormEditor/Rubberband/SelectsGrandChilds/Value',
+         FRubberbandSelectsGrandChilds,false);
+      XMLConfig.SetDeleteValue(
+         Path+'FormEditor/DesignerPaint/Lazy/Value',FDesignerPaintLazy,true);
+      XMLConfig.SetDeleteValue(
+         Path+'FormEditor/CreateComponentFocusNameProperty/Value',FCreateComponentFocusNameProperty,false);
+      XMLConfig.SetDeleteValue(
+         Path+'FormEditor/SwitchToFavoritesOITab/Value',FSwitchToFavoritesOITab,false);
+
+      XMLConfig.SetDeleteValue(
+         Path+'ShowCompileDialog/Value',FShowCompileDialog,False);
+      XMLConfig.SetDeleteValue(
+         Path+'AutoCloseCompileDialog/Value',FAutoCloseCompileDialog,False);
+
+      if not OnlyDesktop then begin
+        // files
+        XMLConfig.SetDeleteValue(
+           Path+'LazarusDirectory/Value',FLazarusDirectory,'');
+        SaveRecentList(XMLConfig,FLazarusDirsHistory,
+           Path+'LazarusDirectory/History/');
+        XMLConfig.SetDeleteValue(
+           Path+'CompilerFilename/Value',FCompilerFilename,'');
+        SaveRecentList(XMLConfig,FCompilerFileHistory,
+           Path+'CompilerFilename/History/');
+        XMLConfig.SetValue(
+           Path+'FPCSourceDirectory/Value',FFPCSourceDirectory);
+        SaveRecentList(XMLConfig,FFPCSourceDirHistory,
+           Path+'FPCSourceDirectory/History/');
+        XMLConfig.SetDeleteValue(
+           Path+'MakeFilename/Value',FMakeFilename,'');
+        SaveRecentList(XMLConfig,FMakeFileHistory,
+           Path+'MakeFilename/History/');
+        XMLConfig.SetValue(
+           Path+'TestBuildDirectory/Value',FTestBuildDirectory);
+        SaveRecentList(XMLConfig,FTestBuildDirHistory,
+           Path+'TestBuildDirectory/History/');
+        XMLConfig.SetValue(
+           Path+'CompilerMessagesFilename/Value',FCompilerMessagesFilename);
+        SaveRecentList(XMLConfig,FCompilerMessagesFileHistory,
+           Path+'CompilerMessagesFilename/History/');
+
+        // backup
+        SaveBackupInfo(FBackupInfoProjectFiles
+          ,Path+'BackupProjectFiles/');
+        SaveBackupInfo(FBackupInfoOtherFiles
+          ,Path+'BackupOtherFiles/');
+
+        // debugger
+        XMLConfig.SetDeleteValue(Path+'Debugger/Class',
+            FDebuggerClass,'');
+        XMLConfig.SetDeleteValue(Path+'DebuggerFilename/Value',
+            FDebuggerFilename,'');
+        XMLConfig.SetDeleteValue(Path+'DebuggerOptions/ShowStopMessage/Value',
+            FDebuggerShowStopMessage, True);
+        SaveRecentList(XMLConfig,FDebuggerFileHistory,
+           Path+'DebuggerFilename/History/');
+        XMLConfig.SetDeleteValue(Path+'DebuggerSearchPath/Value',
+            FDebuggerSearchPath,'');
+        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogClearOnRun',
+            FDebuggerEventLogClearOnRun, True);
+        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogCheckLineLimit',
+            FDebuggerEventLogCheckLineLimit, False);
+        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogLineLimit',
+            FDebuggerEventLogLineLimit, 1000);
+        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowBreakpoint',
+            FDebuggerEventLogShowBreakpoint, False);
+        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowProcess',
+            FDebuggerEventLogShowProcess, True);
+        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowThread',
+            FDebuggerEventLogShowThread, True);
+        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowModule',
+            FDebuggerEventLogShowModule, False);
+        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowOutput',
+            FDebuggerEventLogShowOutput, True);
+        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowWindow',
+            FDebuggerEventLogShowWindow, False);
+        XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowDebugger',
+            FDebuggerEventLogShowDebugger, True);
+      end;
+
+      // hints
+      XMLConfig.SetDeleteValue(Path+'CheckDiskChangesWithLoading/Value',
+        FCheckDiskChangesWithLoading,false);
+      XMLConfig.SetDeleteValue(Path+'ShowHintsForComponentPalette/Value',
+        FShowHintsForComponentPalette,true);
+      XMLConfig.SetDeleteValue(Path+'ShowHintsForMainSpeedButtons/Value',
+        FShowHintsForMainSpeedButtons,true);
+
+      // messages view
+      XMLConfig.SetDeleteValue(Path+'MsgViewDblClickJumps/Value',
+        fMsgViewDblClickJumps,false);
+      XMLConfig.SetDeleteValue(Path+'MsgViewFocus/Value',
+        fMsgViewFocus,DefaultMsgViewFocus);
+
+      // glyphs
+      XMLConfig.SetDeleteValue(Path+'ShowButtonGlyphs/Value',
+        Ord(FShowButtonGlyphs), Ord(sbgSystem));
+      XMLConfig.SetDeleteValue(Path+'ShowMenuGlyphs/Value',
+        Ord(FShowMenuGlyphs), Ord(sbgSystem));
+
+      // recent files and directories
       XMLConfig.SetValue(
-         Path+'TestBuildDirectory/Value',FTestBuildDirectory);
-      SaveRecentList(XMLConfig,FTestBuildDirHistory,
-         Path+'TestBuildDirectory/History/');
+        Path+'Recent/OpenFiles/Max',FMaxRecentOpenFiles);
+      SaveRecentList(XMLConfig,FRecentOpenFiles,
+        Path+'Recent/OpenFiles/');
       XMLConfig.SetValue(
-         Path+'CompilerMessagesFilename/Value',FCompilerMessagesFilename);
-      SaveRecentList(XMLConfig,FCompilerMessagesFileHistory,
-         Path+'CompilerMessagesFilename/History/');
+        Path+'Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
+      SaveRecentList(XMLConfig,FRecentProjectFiles,
+        Path+'Recent/ProjectFiles/');
+      XMLConfig.SetValue(
+        Path+'Recent/PackageFiles/Max',FMaxRecentPackageFiles);
+      SaveRecentList(XMLConfig,FRecentPackageFiles,
+        Path+'Recent/PackageFiles/');
 
-      // backup
-      SaveBackupInfo(FBackupInfoProjectFiles
-        ,Path+'BackupProjectFiles/');
-      SaveBackupInfo(FBackupInfoOtherFiles
-        ,Path+'BackupOtherFiles/');
-        
-      // debugger
-      XMLConfig.SetDeleteValue(Path+'Debugger/Class',
-          FDebuggerClass,'');
-      XMLConfig.SetDeleteValue(Path+'DebuggerFilename/Value',
-          FDebuggerFilename,'');
-      XMLConfig.SetDeleteValue(Path+'DebuggerOptions/ShowStopMessage/Value',
-          FDebuggerShowStopMessage, True);
-      SaveRecentList(XMLConfig,FDebuggerFileHistory,
-         Path+'DebuggerFilename/History/');
-      XMLConfig.SetDeleteValue(Path+'DebuggerSearchPath/Value',
-          FDebuggerSearchPath,'');
-      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogClearOnRun',
-          FDebuggerEventLogClearOnRun, True);
-      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogCheckLineLimit',
-          FDebuggerEventLogCheckLineLimit, False);
-      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogLineLimit',
-          FDebuggerEventLogLineLimit, 1000);
-      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowBreakpoint',
-          FDebuggerEventLogShowBreakpoint, False);
-      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowProcess',
-          FDebuggerEventLogShowProcess, True);
-      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowThread',
-          FDebuggerEventLogShowThread, True);
-      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowModule',
-          FDebuggerEventLogShowModule, False);
-      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowOutput',
-          FDebuggerEventLogShowOutput, True);
-      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowWindow',
-          FDebuggerEventLogShowWindow, False);
-      XMLConfig.SetDeleteValue(Path+'Debugger/EventLogShowDebugger',
-          FDebuggerEventLogShowDebugger, True);
-    end;
+      // external tools
+      fExternalTools.Save(FConfigStore,Path+'ExternalTools/');
 
-    // hints
-    XMLConfig.SetDeleteValue(Path+'CheckDiskChangesWithLoading/Value',
-      FCheckDiskChangesWithLoading,false);
-    XMLConfig.SetDeleteValue(Path+'ShowHintsForComponentPalette/Value',
-      FShowHintsForComponentPalette,true);
-    XMLConfig.SetDeleteValue(Path+'ShowHintsForMainSpeedButtons/Value',
-      FShowHintsForMainSpeedButtons,true);
+      // naming
+      XMLConfig.SetDeleteValue(Path+'Naming/PascalFileExtension',
+                               PascalExtension[fPascalFileExtension],'.pas');
+      XMLConfig.SetDeleteValue(Path+'CharcaseFileAction/Value',
+                               CharCaseFileActionNames[fCharcaseFileAction],
+                               CharCaseFileActionNames[ccfaAutoRename]);
+      XMLConfig.SetDeleteValue(Path+'AutoDeleteAmbiguousSources/Value',
+        AmbiguousFileActionNames[fAmbiguousFileAction],
+        AmbiguousFileActionNames[afaAsk]);
+      XMLConfig.SetDeleteValue(Path+'AskForFilenameOnNewFile/Value',
+                     FAskForFilenameOnNewFile,false);
 
-    // messages view
-    XMLConfig.SetDeleteValue(Path+'MsgViewDblClickJumps/Value',
-      fMsgViewDblClickJumps,false);
-    XMLConfig.SetDeleteValue(Path+'MsgViewFocus/Value',
-      fMsgViewFocus,DefaultMsgViewFocus);
+      // lazdoc
+      XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FLazDocPaths,DefaultLazDocPath);
 
-    // glyphs
-    XMLConfig.SetDeleteValue(Path+'ShowButtonGlyphs/Value',
-      Ord(FShowButtonGlyphs), Ord(sbgSystem));
-    XMLConfig.SetDeleteValue(Path+'ShowMenuGlyphs/Value',
-      Ord(FShowMenuGlyphs), Ord(sbgSystem));
+      // 'new items'
+      XMLConfig.SetDeleteValue(Path+'New/UnitTemplate/Value',FNewUnitTemplate,FileDescNamePascalUnit);
+      XMLConfig.SetDeleteValue(Path+'New/FormTemplate/Value',FNewFormTemplate,FileDescNameLCLForm);
 
-    // recent files and directories
-    XMLConfig.SetValue(
-      Path+'Recent/OpenFiles/Max',FMaxRecentOpenFiles);
-    SaveRecentList(XMLConfig,FRecentOpenFiles,
-      Path+'Recent/OpenFiles/');
-    XMLConfig.SetValue(
-      Path+'Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
-    SaveRecentList(XMLConfig,FRecentProjectFiles,
-      Path+'Recent/ProjectFiles/');
-    XMLConfig.SetValue(
-      Path+'Recent/PackageFiles/Max',FMaxRecentPackageFiles);
-    SaveRecentList(XMLConfig,FRecentPackageFiles,
-      Path+'Recent/PackageFiles/');
+      // object inspector
+      FObjectInspectorOptions.SaveBounds:=false;
+      FObjectInspectorOptions.Save;
 
-    // external tools
-    fExternalTools.Save(FConfigStore,Path+'ExternalTools/');
-
-    // naming
-    XMLConfig.SetDeleteValue(Path+'Naming/PascalFileExtension',
-                             PascalExtension[fPascalFileExtension],'.pas');
-    XMLConfig.SetDeleteValue(Path+'CharcaseFileAction/Value',
-                             CharCaseFileActionNames[fCharcaseFileAction],
-                             CharCaseFileActionNames[ccfaAutoRename]);
-    XMLConfig.SetDeleteValue(Path+'AutoDeleteAmbiguousSources/Value',
-      AmbiguousFileActionNames[fAmbiguousFileAction],
-      AmbiguousFileActionNames[afaAsk]);
-    XMLConfig.SetDeleteValue(Path+'AskForFilenameOnNewFile/Value',
-                   FAskForFilenameOnNewFile,false);
-
-    // lazdoc
-    XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FLazDocPaths,DefaultLazDocPath);
-
-    // 'new items'
-    XMLConfig.SetDeleteValue(Path+'New/UnitTemplate/Value',FNewUnitTemplate,FileDescNamePascalUnit);
-    XMLConfig.SetDeleteValue(Path+'New/FormTemplate/Value',FNewFormTemplate,FileDescNameLCLForm);
-
-    // object inspector
-    FObjectInspectorOptions.SaveBounds:=false;
-    FObjectInspectorOptions.Save;
-    
-    for i := 0 to IDEEditorGroups.Count - 1 do begin
-      Rec := IDEEditorGroups[i];
-      name := Rec^.GroupClass.ClassName;
-      XMLConfig.SetDeleteValue('OptionDialog/Tree/' + name + '/Value',
-                               Rec^.Collapsed,
-                               Rec^.DefaultCollapsed);
-      if Rec^.Items <> nil then begin
-        for j := 0 to Rec^.Items.Count - 1 do begin
-          XMLConfig.SetDeleteValue('OptionDialog/Tree/' + name
-                                   + '/' + Rec^.Items[j]^.EditorClass.ClassName + '/Value',
-                                   Rec^.Items[j]^.Collapsed,
-                                   Rec^.Items[j]^.DefaultCollapsed);
+      for i := 0 to IDEEditorGroups.Count - 1 do begin
+        Rec := IDEEditorGroups[i];
+        name := Rec^.GroupClass.ClassName;
+        XMLConfig.SetDeleteValue('OptionDialog/Tree/' + name + '/Value',
+                                 Rec^.Collapsed,
+                                 Rec^.DefaultCollapsed);
+        if Rec^.Items <> nil then begin
+          for j := 0 to Rec^.Items.Count - 1 do begin
+            XMLConfig.SetDeleteValue('OptionDialog/Tree/' + name
+                                     + '/' + Rec^.Items[j]^.EditorClass.ClassName + '/Value',
+                                     Rec^.Items[j]^.Collapsed,
+                                     Rec^.Items[j]^.DefaultCollapsed);
+          end;
         end;
       end;
+    finally
+      Cfg.Free;
     end;
-
     XMLConfig.Flush;
     FileUpdated;
   except
