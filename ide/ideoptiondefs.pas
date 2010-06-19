@@ -186,16 +186,7 @@ type
     fFormID: string;
     fDefaultWindowPlacement: TIDEWindowPlacement;
     function GetFormID: string;
-    function GetXMLFormID: string;
-    procedure SetFormID(const AValue: string);
-    procedure SetVisible(const AValue: boolean);
     procedure SetForm(const AValue: TCustomForm);
-    procedure SetWindowState(const AValue: TIDEWindowState);
-    procedure SetLeft(const AValue: integer);
-    procedure SetTop(const AValue: integer);
-    procedure SetWidth(const AValue: integer);
-    procedure SetHeight(const AValue: integer);
-    procedure SetWindowPlacement(const AValue: TIDEWindowPlacement);
     procedure OnFormClose(Sender: TObject; var CloseAction: TCloseAction);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -212,31 +203,30 @@ type
     function CustomCoordinatesAreValid: boolean;
     procedure CloseForm;
   public
-    property FormID: string read GetFormID write SetFormID;
+    property FormID: string read GetFormID write FFormID;
     function FormBaseID(out SubIndex: Integer): String; // split FormID into name+number
     property FormCaption: string read FFormCaption; // used while Form=nil
-    property WindowPlacement: TIDEWindowPlacement
-      read fWindowPlacement write SetWindowPlacement;
+    property WindowPlacement: TIDEWindowPlacement read fWindowPlacement write FWindowPlacement;
     property DefaultWindowPlacement: TIDEWindowPlacement
       read fDefaultWindowPlacement write fDefaultWindowPlacement;
-    property Left: integer read fLeft write SetLeft;
-    property Top: integer read fTop write SetTop;
-    property Width: integer read fWidth write SetWidth;
-    property Height: integer read fHeight write SetHeight;
-    property WindowState: TIDEWindowState
-      read fWindowState write SetWindowState;
+    property Left: integer read fLeft write FLeft;
+    property Top: integer read fTop write FTop;
+    property Width: integer read fWidth write FWidth;
+    property Height: integer read fHeight write FHeight;
+    property WindowState: TIDEWindowState read fWindowState write FWindowState;
     property Form: TCustomForm read fForm write SetForm;
-    property Visible: boolean read FVisible write SetVisible;
+    property Visible: boolean read FVisible write FVisible;
     property Applied: boolean read FApplied write FApplied;
   end;
 
   { TSimpleWindowLayoutList }
 
-  TSimpleWindowLayoutList = class(TFPList)
+  TSimpleWindowLayoutList = class
   private
+    fItems: TFPList;
     function GetItems(Index: Integer): TSimpleWindowLayout;
-    procedure SetItems(Index: Integer; const AValue: TSimpleWindowLayout);
   public
+    constructor Create;
     destructor Destroy; override;
     procedure Clear;
     procedure Delete(Index: Integer);
@@ -244,6 +234,7 @@ type
                            BringToFront: boolean);
     procedure StoreWindowPositions;
     procedure Assign(SrcList: TSimpleWindowLayoutList);
+    function Add(ALayout: TSimpleWindowLayout): integer;
     function IndexOf(const FormID: string): integer;
     function ItemByForm(AForm: TCustomForm): TSimpleWindowLayout;
     function ItemByFormID(const FormID: string): TSimpleWindowLayout;
@@ -253,8 +244,8 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   public
-    property Items[Index: Integer]: TSimpleWindowLayout
-      read GetItems write SetItems; default;
+    function Count: integer;
+    property Items[Index: Integer]: TSimpleWindowLayout read GetItems; default;
   end;
   
 const
@@ -387,6 +378,12 @@ begin
   Clear;
 end;
 
+destructor TSimpleWindowLayout.Destroy;
+begin
+  Form:=nil;
+  inherited Destroy;
+end;
+
 procedure TSimpleWindowLayout.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
@@ -396,7 +393,7 @@ begin
   Clear;
   // read settings
   // build path
-  P:=GetXMLFormID;
+  P:=FormID;
   if P='' then exit;
   P:=Path+P+'/';
   FFormCaption := XMLConfig.GetValue(P+'Caption/Value', fFormID);
@@ -420,7 +417,7 @@ var
   P: string;
 begin
   // build path
-  P:=GetXMLFormID;
+  P:=FormID;
   if P='' then exit;
   P:=Path+P+'/';
   XMLConfig.SetDeleteValue(P+'Caption/Value',FFormCaption,'');
@@ -436,12 +433,6 @@ begin
   // state
   XMLConfig.SetValue(P+'WindowState/Value',IDEWindowStateNames[fWindowState]);
   XMLConfig.SetDeleteValue(P+'Visible/Value',FVisible,false);
-end;
-
-procedure TSimpleWindowLayout.SetWindowPlacement(
-  const AValue: TIDEWindowPlacement);
-begin
-  fWindowPlacement:=AValue;
 end;
 
 procedure TSimpleWindowLayout.OnFormClose(Sender: TObject;
@@ -460,31 +451,6 @@ begin
       Applied:=false;
     end;
   end;
-end;
-
-procedure TSimpleWindowLayout.SetHeight(const AValue: integer);
-begin
-  fHeight:=AValue;
-end;
-
-procedure TSimpleWindowLayout.SetLeft(const AValue: integer);
-begin
-  fLeft:=AValue;
-end;
-
-procedure TSimpleWindowLayout.SetTop(const AValue: integer);
-begin
-  fTop:=AValue;
-end;
-
-procedure TSimpleWindowLayout.SetWidth(const AValue: integer);
-begin
-  fWidth:=AValue;
-end;
-
-procedure TSimpleWindowLayout.SetWindowState(const AValue: TIDEWindowState);
-begin
-  fWindowState:=AValue;
 end;
 
 function TSimpleWindowLayout.CustomCoordinatesAreValid: boolean;
@@ -537,29 +503,6 @@ begin
     Result:=Form.Name;
 end;
 
-function TSimpleWindowLayout.GetXMLFormID: string;
-var
-  i: integer;
-begin
-  Result:=GetFormID;
-  for i:=1 to length(Result) do
-    if not ( (Result[i] in ['A'..'Z','a'..'z','_'])
-            or ( (i > 1) and (Result[i] in ['0'..'9'])) )
-    then
-      Result[i]:='_';
-end;
-
-destructor TSimpleWindowLayout.Destroy;
-begin
-  inherited Destroy;
-end;
-
-procedure TSimpleWindowLayout.SetVisible(const AValue: boolean);
-begin
-  if FVisible=AValue then exit;
-  FVisible:=AValue;
-end;
-
 procedure TSimpleWindowLayout.Clear;
 begin
   fWindowPlacement:=fDefaultWindowPlacement;
@@ -568,12 +511,6 @@ begin
   fWidth:=0;
   fHeight:=0;
   fWindowState:=iwsNormal;
-end;
-
-procedure TSimpleWindowLayout.SetFormID(const AValue: string);
-begin
-  if Form=nil then
-    fFormID:=AValue;
 end;
 
 procedure TSimpleWindowLayout.ReadCurrentCoordinates;
@@ -626,7 +563,6 @@ begin
   case WindowPlacement of
   iwpRestoreWindowGeometry, iwpRestoreWindowSize:
     ReadCurrentCoordinates;
-
   end;
   ReadCurrentState;
   //debugln('TSimpleWindowLayout.GetCurrentPosition ',DbgSName(Self),' ',FormID,' Width=',dbgs(Width));
@@ -638,29 +574,29 @@ procedure TSimpleWindowLayoutList.Clear;
 var i: integer;
 begin
   for i:=0 to Count-1 do Items[i].Free;
-  inherited Clear;
+  fItems.Clear;
 end;
 
 procedure TSimpleWindowLayoutList.Delete(Index: Integer);
 begin
   Items[Index].Free;
-  inherited Delete(Index);
+  fItems.Delete(Index);
 end;
 
 function TSimpleWindowLayoutList.GetItems(Index: Integer): TSimpleWindowLayout;
 begin
-  Result:=TSimpleWindowLayout(inherited Items[Index]);
+  Result:=TSimpleWindowLayout(fItems[Index]);
 end;
 
-procedure TSimpleWindowLayoutList.SetItems(Index: Integer;
-  const AValue: TSimpleWindowLayout);
+constructor TSimpleWindowLayoutList.Create;
 begin
-  Items[Index]:=AValue;
+  fItems:=TFPList.Create;
 end;
 
 destructor TSimpleWindowLayoutList.Destroy;
 begin
   Clear;
+  FreeAndNil(fItems);
   inherited Destroy;
 end;
 
@@ -687,6 +623,11 @@ begin
     XMLConfig.SetDeleteValue(Path+'FormIdList/a'+IntToStr(i), Items[i].FormID, '');
     Items[i].SaveToXMLConfig(XMLConfig,Path);
   end
+end;
+
+function TSimpleWindowLayoutList.Count: integer;
+begin
+  Result:=fItems.Count;
 end;
 
 function TSimpleWindowLayoutList.ItemByForm(AForm: TCustomForm): TSimpleWindowLayout;
@@ -745,8 +686,6 @@ procedure TSimpleWindowLayoutList.ApplyAndShow(Sender: TObject;
   AForm: TCustomForm; BringToFront: boolean);
 var
   ALayout: TSimpleWindowLayout;
-  SubIndex: Integer;
-  WindowType: TNonModalIDEWindow;
   NewBounds: TRect;
   Creator: TIDEWindowCreator;
   DockSiblingName: string;
@@ -768,12 +707,6 @@ begin
       {$IFDEF VerboseIDEDocking}
       debugln(['TSimpleWindowLayoutList.ApplyAndShow restore ',ALayout.FormID]);
       {$ENDIF}
-
-      WindowType:=NonModalIDEFormIDToEnum(ALayout.FormID);
-      SubIndex := -1;
-      if WindowType = nmiwNone then begin
-        WindowType:=NonModalIDEFormIDToEnum(ALayout.FormBaseID(SubIndex));
-      end;
 
       case ALayout.WindowPlacement of
       iwpCustomPosition,iwpRestoreWindowGeometry:
@@ -905,6 +838,11 @@ begin
     NewLayout.Assign(SrcList[i]);
     Add(NewLayout);
   end;
+end;
+
+function TSimpleWindowLayoutList.Add(ALayout: TSimpleWindowLayout): integer;
+begin
+  Result:=fItems.Add(ALayout);
 end;
 
 { TXMLOptionsStorage }
