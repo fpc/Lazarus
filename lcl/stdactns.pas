@@ -791,30 +791,33 @@ end;
 function TSearchAction.PerformSearch: Boolean;
 var
   StartPos, Position, Increment, CharsToMatch: Integer;
-  S, Text: String;
+  SearchTxt, Text: String;
   Down: Boolean;
   P: PChar;
   
   procedure RestoreSearch; inline;
   begin
-    CharsToMatch := Length(S);
+    CharsToMatch := Length(SearchTxt);
     if not Down then
-      P := PChar(S) + CharsToMatch - 1
+      P := PChar(SearchTxt) + CharsToMatch - 1
     else
-      P := PChar(S);
+      P := PChar(SearchTxt);
   end;
   
 begin
-  S := UTF8Decode(TFindDialog(FDialog).FindText);
+  SearchTxt := UTF8Decode(TFindDialog(FDialog).FindText);
   Text := UTF8Decode(FControl.Text);
   
-  Result := (S <> '') and (Text <> '');
+  Result := (SearchTxt <> '') and (Text <> '');
   if not Result then
     Exit;
 
   if not (frMatchCase in TFindDialog(FDialog).Options) then
+  begin
     Text := LowerCase(Text);
-  
+    SearchTxt := LowerCase(SearchTxt);
+  end;
+
   Down := frDown in TFindDialog(FDialog).Options;
   if not Down then
   begin
@@ -853,8 +856,8 @@ begin
   
   if Result then
   begin
-    FControl.SelStart := Position - Length(S);
-    FControl.SelLength := Length(S);
+    FControl.SelStart := Position - Length(SearchTxt);
+    FControl.SelLength := Length(SearchTxt);
   end;
 end;
 
