@@ -2242,6 +2242,7 @@ components/tdbf/registerdbf.pas svneol=native#text/pascal
 components/tdbf/tdbf.png -text svneol=unset#image/png
 components/todolist/Makefile svneol=native#text/plain
 components/todolist/Makefile.fpc svneol=native#text/plain
+components/todolist/languages/todoliststrconsts.pb.po svneol=native#text/plain
 components/todolist/languages/todoliststrconsts.po svneol=native#text/plain
 components/todolist/languages/todoliststrconsts.ru.po svneol=native#text/plain
 components/todolist/tododlg.lfm svneol=native#text/plain

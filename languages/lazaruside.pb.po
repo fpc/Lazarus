@@ -3715,7 +3715,7 @@ msgstr "Arquivo cópia de segurança falhou"
 
 #: lazarusidestrconsts.lisbackuphint
 msgid "Creates a Backup directory under project directory"
-msgstr ""
+msgstr "Cria um diretório de cópia de segurança sob o diretório do projeto"
 
 #: lazarusidestrconsts.lisbddchangingthepackagenameorversionbreaksdependencies
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
@@ -4441,7 +4441,7 @@ msgstr "Clique aqui para navegar no arquivo"
 
 #: lazarusidestrconsts.lisclicktoseethepossibleuses
 msgid "Click to see the possible uses"
-msgstr ""
+msgstr "Clique para ver usos possíveis"
 
 #: lazarusidestrconsts.lisclose
 msgid "&Close"
@@ -5379,15 +5379,15 @@ msgstr "Remoção automática de propriedades desconhecidas"
 
 #: lazarusidestrconsts.lisconvautoremoveprophint
 msgid "If unchecked, there will be interactive dialogs for editing / accepting changes"
-msgstr ""
+msgstr "Se desmarcado, haverá diálogos interativos para edição / confirmação alterações"
 
 #: lazarusidestrconsts.lisconvautoreplaceunithint
 msgid "If unchecked, there will be interactive dialogs for editing / accepting changes."
-msgstr ""
+msgstr "Se desmarcado, haverá diálogos interativos para edição / confirmação alterações."
 
 #: lazarusidestrconsts.lisconvautoreplaceunits
 msgid "Automatic replacement of unit names"
-msgstr ""
+msgstr "Substituição automática de nomes de unidade"
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -5410,34 +5410,31 @@ msgid "Convert project or package"
 msgstr "Converter projeto ou pacote"
 
 #: lazarusidestrconsts.lisconverttarget1
-#, fuzzy
 #| msgid "Lazarus/LCL"
 msgid "Lazarus / LCL"
-msgstr "Lazarus/LCL"
+msgstr "Lazarus / LCL"
 
 #: lazarusidestrconsts.lisconverttarget2
-#, fuzzy
 #| msgid "Lazarus/LCL for Windows only"
 msgid "Lazarus / LCL for Windows only"
-msgstr "Lazarus/LCL apenas para Windows"
+msgstr "Lazarus / LCL apenas para Windows"
 
 #: lazarusidestrconsts.lisconverttarget3
-#, fuzzy
 #| msgid "Both Lazarus/LCL and Delphi"
 msgid "Both Lazarus / LCL and Delphi"
-msgstr "Ambos Lazarus/LCL e Delphi"
+msgstr "Ambos Lazarus / LCL e Delphi"
 
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
-msgstr ""
+msgstr "Conversor adiciona compilação condicional para suportar alvos diferentes"
 
 #: lazarusidestrconsts.lisconvmethodreplacements
 msgid "Method Replacements"
-msgstr ""
+msgstr "Substituições Métodos"
 
 #: lazarusidestrconsts.lisconvmethodreplhint
 msgid "Some Delphi functions can be replaced with LCL function"
-msgstr ""
+msgstr "Algumas funções Delphi podem ser substituídas por funções LCL"
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
@@ -5445,7 +5442,7 @@ msgstr "Substituições Tipos"
 
 #: lazarusidestrconsts.lisconvtypereplhint
 msgid "Unknown types in form file (DFM/LFM)"
-msgstr ""
+msgstr "Tipos desconhecidos no arquivo de formulário (DFM/LFM)"
 
 #: lazarusidestrconsts.lisconvtypestoreplace
 msgid "Types to replace"
@@ -5457,7 +5454,7 @@ msgstr "Substituições Unidades"
 
 #: lazarusidestrconsts.lisconvunitreplhint
 msgid "Unit names in uses section of a source unit"
-msgstr ""
+msgstr "Nomes de unidades na seção \"uses\" de uma unidade fonte"
 
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
@@ -5470,11 +5467,11 @@ msgstr "Unidades, Tipos e Propriedades"
 
 #: lazarusidestrconsts.lisconvusesamedfm
 msgid "Lazarus uses the same DFM form file as Delphi"
-msgstr ""
+msgstr "Lazarus usa o mesmo arquivo de formulário DFM como o Delphi"
 
 #: lazarusidestrconsts.lisconvusesamedfmhint
 msgid "Separate form files allow different properties"
-msgstr ""
+msgstr "Arquivos de formulários separados permitem propriedades diferentes"
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -5618,7 +5615,7 @@ msgstr "Criar projeto"
 
 #: lazarusidestrconsts.liscreateupdatepofilewhensavingalfmfile
 msgid "Create/update .po file when saving a lfm file"
-msgstr ""
+msgstr "Criar/atualizar arquivo .po ao salvar o arquivo lfm"
 
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
@@ -6064,7 +6061,7 @@ msgstr "Diretório não gravável"
 
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
-msgstr ""
+msgstr "Diretório onde a IDE coloca os arquivos .po"
 
 #: lazarusidestrconsts.lisdisableallinsamesource
 msgid "Disable All in same source"
@@ -6084,7 +6081,7 @@ msgstr "Desabilitar Grupo"
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
-msgstr ""
+msgstr "Desabilitar I18N para LFM"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -6389,7 +6386,7 @@ msgstr "Habilitar Grupo"
 
 #: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
 msgid "Enable internationalization and translation support"
-msgstr ""
+msgstr "Habilitar internacionalização e suporte a tradução"
 
 #: lazarusidestrconsts.lisenablemacros
 msgid "Enable Macros"
@@ -6526,7 +6523,7 @@ msgstr "Erro carregando arquivo"
 
 #: lazarusidestrconsts.liserrorloadingfile2
 msgid "Error loading file \"%s\":%s%s"
-msgstr ""
+msgstr "Erro ao carregar arquivo \"%s\":%s%s"
 
 #: lazarusidestrconsts.liserrorloadingfrom
 msgid "Error loading %s from%s%s%s%s"
@@ -7517,8 +7514,9 @@ msgid "Installed Packages"
 msgstr "Pacotes Instalados"
 
 #: lazarusidestrconsts.lisinstallitilikethefat
+#, fuzzy
 msgid "Install it, I like the fat"
-msgstr ""
+msgstr "Install it, I like the fat"
 
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
@@ -9872,7 +9870,7 @@ msgstr "nenhum"
 
 #: lazarusidestrconsts.lisnoneclicktochooseone
 msgid "none, click to choose one"
-msgstr ""
+msgstr "nenhum, clique para escolher"
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
@@ -9908,7 +9906,7 @@ msgstr "Não é uma unidade Delphi"
 
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
-msgstr ""
+msgstr "Não é um pacote de instalação"
 
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid pascal identifier"
@@ -11713,7 +11711,7 @@ msgstr "Caminho Projeto:"
 
 #: lazarusidestrconsts.lisprojectpathhint
 msgid "Directory where project's main file must be"
-msgstr ""
+msgstr "Diretório onde o arquivo principal do projeto deve estar"
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclasss
 msgid "Project %s raised exception class '%s'."
@@ -11949,7 +11947,7 @@ msgstr "Remover variável local %s"
 
 #: lazarusidestrconsts.lisremovenonexistingfiles
 msgid "Remove non existing files"
-msgstr ""
+msgstr "Remover arquivos inexistentes"
 
 #: lazarusidestrconsts.lisremoveselectedunits
 msgid "Remove selected units"
@@ -12848,7 +12846,7 @@ msgstr "O pacote %s não pode ser desinstalado, porque é necessário pela próp
 
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
 msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%s%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
-msgstr ""
+msgstr "O pacote %s não tem nenhum procedimento \"Register\", o que tipicamente significa que não é para a IDE. Instalá-lo provavelmente apenas aumentará o tamanho da IDE, tornando-a instável.%s%sDica: Se deseja usar um pacote em seu projeto, use o item de menu \"Adicionar ao projeto\""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program %smake%s was not found.%sThis tool is needed to build lazarus.%s"
@@ -13587,7 +13585,7 @@ msgstr "Mensagem forma de uso (opção -h)"
 
 #: lazarusidestrconsts.lisuse
 msgid "Use..."
-msgstr ""
+msgstr "Usar..."
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use Exclude Filter"
@@ -13779,7 +13777,7 @@ msgstr "Erro análise XML no arquivo %s%sErro: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepopupmenu
 msgid "You can disable this for individual forms via the popup menu in the project inspector"
-msgstr ""
+msgstr "Você pode desabilitar isto para formulários individuais através do menu de contexto no inspetor de projeto"
 
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
