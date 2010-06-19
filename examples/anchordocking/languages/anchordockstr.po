@@ -73,6 +73,18 @@ msgstr ""
 msgid "Enlarge %s side"
 msgstr ""
 
+#: anchordockstr.adrserror
+msgid "Error"
+msgstr ""
+
+#: anchordockstr.adrserrorloadingwindowlayoutfromfile
+msgid "Error loading window layout from file \"%s\"%s%s"
+msgstr ""
+
+#: anchordockstr.adrserrorwritingwindowlayouttofile
+msgid "Error writing window layout to file \"%s\"%s%s"
+msgstr ""
+
 #: anchordockstr.adrsgeneraldockingoptions
 msgid "General docking options"
 msgstr ""
@@ -95,6 +107,14 @@ msgstr ""
 
 #: anchordockstr.adrsleft
 msgid "left"
+msgstr ""
+
+#: anchordockstr.adrsloadwindowlayoutfromfile
+msgid "Load window layout from file ..."
+msgstr ""
+
+#: anchordockstr.adrsloadwindowlayoutfromfilexml
+msgid "Load window layout from file (*.xml)"
 msgstr ""
 
 #: anchordockstr.adrslocked
@@ -159,6 +179,14 @@ msgstr ""
 
 #: anchordockstr.adrsright
 msgid "right"
+msgstr ""
+
+#: anchordockstr.adrssavewindowlayouttofile
+msgid "Save window layout to file ..."
+msgstr ""
+
+#: anchordockstr.adrssavewindowlayouttofilexml
+msgid "Save window layout to file (*.xml)"
 msgstr ""
 
 #: anchordockstr.adrsscaleonresize

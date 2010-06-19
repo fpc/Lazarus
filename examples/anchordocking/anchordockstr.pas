@@ -97,6 +97,15 @@ resourcestring
   adrsHideHeaderCaptionsForSitesWithOnlyOneDockedControl = 'Hide header '
     +'captions for sites with only one docked control, as that is already '
     +'shown in the normal window title';
+  adrsErrorWritingWindowLayoutToFile = 'Error writing window layout to file "%'
+    +'s"%s%s';
+  adrsLoadWindowLayoutFromFileXml = 'Load window layout from file (*.xml)';
+  adrsSaveWindowLayoutToFile = 'Save window layout to file ...';
+  adrsLoadWindowLayoutFromFile = 'Load window layout from file ...';
+  adrsErrorLoadingWindowLayoutFromFile = 'Error loading window layout from '
+    +'file "%s"%s%s';
+  adrsError = 'Error';
+  adrsSaveWindowLayoutToFileXml = 'Save window layout to file (*.xml)';
 
 implementation
 

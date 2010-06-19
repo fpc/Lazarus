@@ -328,7 +328,6 @@ var
       itmProjectWindowSection: TIDEMenuSection;
       itmProjectAddRemoveSection: TIDEMenuSection;
 
-
     // run menu
     mnuRun: TIDEMenuSection;
       itmRunBuilding: TIDEMenuSection;

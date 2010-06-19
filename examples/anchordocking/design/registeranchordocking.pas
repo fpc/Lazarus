@@ -34,12 +34,17 @@ unit RegisterAnchorDocking;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLProc, Forms, Controls, FileUtil,
-  BaseIDEIntf, LazConfigStorage, LazIDEIntf, IDEWindowIntf,
-  AnchorDocking, AnchorDockOptionsDlg;
+  Math, Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs,
+  LazConfigStorage, XMLCfg, XMLPropStorage,
+  BaseIDEIntf, IDEDialogs, MenuIntf, LazIDEIntf, IDEWindowIntf,
+  AnchorDockStr, AnchorDocking, AnchorDockOptionsDlg;
 
 const
   DefaultConfigFileName = 'anchordocklayout.xml';
+var
+  mnuAnchorDockSection: TIDEMenuSection;
+    mnuADSaveLayoutToFile: TIDEMenuCommand;
+    mnuADLoadLayoutFromFile: TIDEMenuCommand;
 
 type
 
@@ -61,10 +66,14 @@ type
     function GetDefaultLayoutFilename: string;
     procedure LoadDefaultLayout;
     procedure SaveDefaultLayout;
+    procedure LoadLayoutFromFile(Filename: string);
+    procedure SaveLayoutToFile(Filename: string);
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); override;
     procedure CloseAll; override;
     procedure OnIDEClose(Sender: TObject);
     procedure OnIDERestoreWindows(Sender: TObject);
+    procedure LoadLayoutFromFileClicked(Sender: TObject);
+    procedure SaveLayoutToFileClicked(Sender: TObject);
     property DefaultLayoutLoaded: boolean read FDefaultLayoutLoaded write SetDefaultLayoutLoaded;
   end;
 
@@ -77,8 +86,19 @@ implementation
 
 procedure Register;
 begin
+  if not (IDEDockMaster is TIDEAnchorDockMaster) then exit;
+
   LazarusIDE.AddHandlerOnIDERestoreWindows(@IDEAnchorDockMaster.OnIDERestoreWindows);
   LazarusIDE.AddHandlerOnIDEClose(@IDEAnchorDockMaster.OnIDEClose);
+
+  // add menu section
+  mnuAnchorDockSection:=RegisterIDEMenuSection(mnuEnvironment,'AnchorDocking');
+  mnuADSaveLayoutToFile:=RegisterIDEMenuCommand(mnuAnchorDockSection,
+    'ADSaveLayoutToFile', adrsSaveWindowLayoutToFile,
+    @IDEAnchorDockMaster.SaveLayoutToFileClicked);
+  mnuADLoadLayoutFromFile:=RegisterIDEMenuCommand(mnuAnchorDockSection,
+    'ADLoadLayoutFromFile', adrsLoadWindowLayoutFromFile,
+    @IDEAnchorDockMaster.LoadLayoutFromFileClicked);
 end;
 
 { TIDEAnchorDockMaster }
@@ -204,6 +224,47 @@ begin
   end;
 end;
 
+procedure TIDEAnchorDockMaster.LoadLayoutFromFile(Filename: string);
+var
+  XMLConfig: TXMLConfig;
+  Config: TXMLConfigStorage;
+begin
+  XMLConfig:=TXMLConfig.Create(nil);
+  try
+    XMLConfig.Filename:=Filename;
+    Config:=TXMLConfigStorage.Create(XMLConfig);
+    try
+      DockMaster.LoadLayoutFromConfig(Config);
+    finally
+      Config.Free;
+    end;
+    XMLConfig.Flush;
+  finally
+    XMLConfig.Free;
+  end;
+end;
+
+procedure TIDEAnchorDockMaster.SaveLayoutToFile(Filename: string);
+var
+  XMLConfig: TXMLConfig;
+  Config: TXMLConfigStorage;
+begin
+  XMLConfig:=TXMLConfig.Create(nil);
+  try
+    XMLConfig.StartEmpty:=true;
+    XMLConfig.Filename:=Filename;
+    Config:=TXMLConfigStorage.Create(XMLConfig);
+    try
+      DockMaster.SaveLayoutToConfig(Config);
+    finally
+      Config.Free;
+    end;
+    XMLConfig.Flush;
+  finally
+    XMLConfig.Free;
+  end;
+end;
+
 procedure TIDEAnchorDockMaster.ShowForm(AForm: TCustomForm;
   BringToFront: boolean);
 var
@@ -293,10 +354,72 @@ begin
   LoadDefaultLayout;
 end;
 
+procedure TIDEAnchorDockMaster.LoadLayoutFromFileClicked(Sender: TObject);
+var
+  Dlg: TSaveDialog;
+  Filename: String;
+begin
+  Dlg:=TSaveDialog.Create(nil);
+  try
+    InitIDEFileDialog(Dlg);
+    Dlg.Title:=adrsLoadWindowLayoutFromFileXml;
+    Dlg.Options:=Dlg.Options+[ofFileMustExist];
+    if Dlg.Execute then begin
+      Filename:=CleanAndExpandFilename(Dlg.FileName);
+      try
+        LoadLayoutFromFile(Filename);
+      except
+        on E: Exception do begin
+          IDEMessageDialog(adrsError,
+            Format(adrsErrorLoadingWindowLayoutFromFile, [Filename, #13, E.Message]),
+            mtError,[mbCancel]);
+        end;
+      end;
+    end;
+    StoreIDEFileDialog(Dlg);
+  finally
+    Dlg.Free;
+  end;
+end;
+
+procedure TIDEAnchorDockMaster.SaveLayoutToFileClicked(Sender: TObject);
+var
+  Dlg: TSaveDialog;
+  Filename: String;
+begin
+  Dlg:=TSaveDialog.Create(nil);
+  try
+    InitIDEFileDialog(Dlg);
+    Dlg.Title:=adrsSaveWindowLayoutToFileXml;
+    Dlg.Options:=Dlg.Options+[ofPathMustExist,ofNoReadOnlyReturn];
+    Dlg.Filter:='Anchor Docking Layout|*.xml|All files|'+GetAllFilesMask;
+    if Dlg.Execute then begin
+      Filename:=CleanAndExpandFilename(Dlg.FileName);
+      if ExtractFileExt(Filename)='' then
+        Filename:=Filename+'.xml';
+      try
+        SaveLayoutToFile(Filename);
+      except
+        on E: Exception do begin
+          IDEMessageDialog(adrsError,
+            Format(adrsErrorWritingWindowLayoutToFile, [Filename, #13, E.Message]),
+            mtError,[mbCancel]);
+        end;
+      end;
+    end;
+    StoreIDEFileDialog(Dlg);
+  finally
+    Dlg.Free;
+  end;
+end;
+
 initialization
   // create the dockmaster in the initialization section, so that it is ready
   // when the Register procedures of the packages are called.
-  IDEDockMaster:=TIDEAnchorDockMaster.Create;
+  if IDEDockMaster<>nil then
+    debugln('WARNING: there is already another IDEDOckMaster installed.')
+  else
+    IDEDockMaster:=TIDEAnchorDockMaster.Create;
 
 finalization
   FreeAndNil(IDEDockMaster);
