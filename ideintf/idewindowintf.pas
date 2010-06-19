@@ -205,7 +205,7 @@ type
                                DisableAutoSizing: boolean = false): TCustomForm;
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); overload;
     function ShowForm(AFormName: string; BringToFront: boolean): TCustomForm; overload;
-    procedure CreateForm(var AForm: TCustomForm; AFormClass: TCustomFormClass;
+    procedure CreateForm(var AForm; AFormClass: TCustomFormClass;
                          DoDisableAutoSizing: boolean; TheOwner: TComponent); // utility function to create a form with delayed autosizing
 
     property OnShowForm: TShowIDEWindowEvent read FOnShowForm write FOnShowForm; // set by the IDE to implement a default
@@ -780,18 +780,18 @@ begin
     ShowForm(Result,BringToFront);
 end;
 
-procedure TIDEWindowCreatorList.CreateForm(var AForm: TCustomForm;
+procedure TIDEWindowCreatorList.CreateForm(var AForm;
   AFormClass: TCustomFormClass; DoDisableAutoSizing: boolean;
   TheOwner: TComponent);
 begin
-  if AForm=nil then begin
-    AForm:=TCustomForm(AFormClass.NewInstance);
-    AForm.DisableAutoSizing;
-    AForm.Create(TheOwner);
+  if TCustomForm(AForm)=nil then begin
+    TCustomForm(AForm):=TCustomForm(AFormClass.NewInstance);
+    TCustomForm(AForm).DisableAutoSizing;
+    TCustomForm(AForm).Create(TheOwner);
     if not DoDisableAutoSizing then
-      AForm.EnableAutoSizing;
+      TCustomForm(AForm).EnableAutoSizing;
   end else if DoDisableAutoSizing then
-    AForm.DisableAutoSizing;
+    TCustomForm(AForm).DisableAutoSizing;
 end;
 
 { TIDEDockMaster }
