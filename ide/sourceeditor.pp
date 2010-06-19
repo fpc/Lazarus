@@ -4816,6 +4816,7 @@ constructor TSourceNotebook.Create(AOwner: TComponent);
 var
   i: Integer;
   n: TComponent;
+  Layout: TSimpleWindowLayout;
 begin
   inherited Create(AOwner);
   FManager := TSourceEditorManager(AOwner);
@@ -4832,6 +4833,7 @@ begin
   end
   else
     Name := NonModalIDEWindowNames[nmiwSourceNoteBookName];
+
   if Manager.SourceWindowCount > 0 then
     FBaseCaption := locWndSrcEditor + ' (' + IntToStr(Manager.SourceWindowCount+1) + ')'
   else
@@ -4840,9 +4842,14 @@ begin
   KeyPreview:=true;
   FProcessingCommand := false;
 
-  if EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(self.Name) = nil then begin
-    EnvironmentOptions.CreateWindowLayout(self.name);
-    EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(self.Name).Clear;
+  Layout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(self.Name);
+  if Layout = nil then
+  begin
+    Layout:=EnvironmentOptions.CreateWindowLayout(self);
+    Layout.Clear;
+  end else
+  begin
+    Layout.Form:=Self;
   end;
 
   FSourceEditorList := TList.Create;

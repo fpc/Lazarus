@@ -296,7 +296,8 @@ type
     property Filename: string read FFilename write SetFilename;
     procedure SetLazarusDefaultFilename;
     procedure GetDefaultFPCSourceDirectory;
-    procedure CreateWindowLayout(const TheFormID: string);
+    function CreateWindowLayout(const TheFormID: string): TSimpleWindowLayout;
+    function CreateWindowLayout(const TheForm: TCustomForm): TSimpleWindowLayout;
     function IsDebuggerClassDefined: boolean;
     function GetTestBuildDirectory: string;
     function GetFPCSourceDirectory: string;
@@ -1506,13 +1507,22 @@ begin
   CreateWindowLayout(DefaultObjectInspectorName);
 end;
 
-procedure TEnvironmentOptions.CreateWindowLayout(const TheFormID: string);
+function TEnvironmentOptions.CreateWindowLayout(const TheFormID: string
+  ): TSimpleWindowLayout;
 begin
   if TheFormID='' then
     RaiseException('TEnvironmentOptions.CreateWindowLayout TheFormID empty');
   if IDEWindowLayoutList.ItemByFormID(TheFormID)<>nil then
     RaiseException('TEnvironmentOptions.CreateWindowLayout TheFormID exists');
-  IDEWindowLayoutList.Add(TSimpleWindowLayout.Create(TheFormID));
+  Result:=TSimpleWindowLayout.Create(TheFormID);
+  IDEWindowLayoutList.Add(Result);
+end;
+
+function TEnvironmentOptions.CreateWindowLayout(const TheForm: TCustomForm
+  ): TSimpleWindowLayout;
+begin
+  Result:=CreateWindowLayout(TheForm.Name);
+  Result.Form:=TheForm;
 end;
 
 function TEnvironmentOptions.IsDebuggerClassDefined: boolean;
