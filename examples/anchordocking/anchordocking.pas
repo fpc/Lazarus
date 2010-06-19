@@ -435,7 +435,8 @@ type
     function IsSite(AControl: TControl): boolean;
     function IsAnchorSite(AControl: TControl): boolean;
     function IsCustomSite(AControl: TControl): boolean;
-    function GetSite(AControl: TControl): TAnchorDockHostSite;
+    function GetSite(AControl: TControl): TCustomForm;
+    function GetAnchorSite(AControl: TControl): TAnchorDockHostSite;
     function GetControl(Site: TControl): TControl;
     function IsFloating(AControl: TControl): Boolean;
     function GetPopupMenu: TPopupMenu;
@@ -1635,14 +1636,28 @@ begin
       and (TCustomForm(AControl).DockManager is TAnchorDockManager);
 end;
 
-function TAnchorDockMaster.GetSite(AControl: TControl): TAnchorDockHostSite;
+function TAnchorDockMaster.GetSite(AControl: TControl): TCustomForm;
 begin
-  if AControl is TAnchorDockHostSite then
+  Result:=nil;
+  if AControl=nil then
+    exit
+  else if IsCustomSite(AControl) then
+    Result:=TCustomForm(AControl)
+  else if AControl is TAnchorDockHostSite then
     Result:=TAnchorDockHostSite(AControl)
   else if (AControl.HostDockSite is TAnchorDockHostSite) then
-    Result:=TAnchorDockHostSite(AControl.HostDockSite)
-  else
-    Result:=nil;
+    Result:=TAnchorDockHostSite(AControl.HostDockSite);
+end;
+
+function TAnchorDockMaster.GetAnchorSite(AControl: TControl): TAnchorDockHostSite;
+begin
+  Result:=nil;
+  if AControl=nil then
+    Result:=nil
+  else if AControl is TAnchorDockHostSite then
+    Result:=TAnchorDockHostSite(AControl)
+  else if (AControl.HostDockSite is TAnchorDockHostSite) then
+    Result:=TAnchorDockHostSite(AControl.HostDockSite);
 end;
 
 function TAnchorDockMaster.GetControl(Site: TControl): TControl;
@@ -1663,11 +1678,13 @@ end;
 
 function TAnchorDockMaster.IsFloating(AControl: TControl): Boolean;
 begin
-  if AControl is TAnchorDockHostSite then
-    Result:=TAnchorDockHostSite(AControl).SiteType=adhstOneControl
-  else if (AControl.HostDockSite is TAnchorDockHostSite) then
-    Result:=TAnchorDockHostSite(AControl.HostDockSite).SiteType=adhstOneControl
-  else
+  if AControl is TAnchorDockHostSite then begin
+    Result:=(TAnchorDockHostSite(AControl).SiteType=adhstOneControl)
+            and (AControl.Parent=nil);
+  end else if (AControl.HostDockSite is TAnchorDockHostSite) then begin
+    Result:=(TAnchorDockHostSite(AControl.HostDockSite).SiteType=adhstOneControl)
+        and (AControl.HostDockSite.Parent=nil);
+  end else
     Result:=AControl.Parent=nil;
 end;
 
@@ -2043,7 +2060,7 @@ procedure TAnchorDockMaster.ManualFloat(AControl: TControl);
 var
   Site: TAnchorDockHostSite;
 begin
-  Site:=GetSite(AControl);
+  Site:=GetAnchorSite(AControl);
   if Site=nil then exit;
   Site.Undock;
 end;
@@ -4390,50 +4407,63 @@ begin
     // handled by TAnchorDockHostSite
     debugln(['TAnchorDockManager.InsertControl DockSite="',DockSite.Caption,'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign)])
   end else begin
-    debugln(['TAnchorDockManager.InsertControl DockSite=nil Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.Client=',dbgs(ADockObject.Control.ClientRect)]);
-    // align dragged Control
-    Child:=ADockObject.Control;
-    Child.Align:=ADockObject.DropAlign;
-    Child.Width:=ADockObject.DockRect.Right-ADockObject.DockRect.Left;
-    Child.Height:=ADockObject.DockRect.Bottom-ADockObject.DockRect.Top;
+    debugln(['TAnchorDockManager.InsertControl DockSite=nil Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.Client=',dbgs(ADockObject.Control.ClientRect),' Parent=',DbgSName(ADockObject.Control.Parent)]);
+    Site.DisableAutoSizing;
+    try
 
-    SplitterWidth:=0;
-    ChildSite:=nil;
-    if Child is TAnchorDockHostSite then begin
-      ChildSite:=TAnchorDockHostSite(Child);
-      ChildSite.CreateBoundSplitter;
-      SplitterWidth:=DockMaster.SplitterWidth;
+      // align dragged Control
+      Child:=ADockObject.Control;
+      Child.Parent:=Site;
+      Child.Align:=ADockObject.DropAlign;
+      Child.Width:=ADockObject.DockRect.Right-ADockObject.DockRect.Left;
+      Child.Height:=ADockObject.DockRect.Bottom-ADockObject.DockRect.Top;
+
+      SplitterWidth:=0;
+      ChildSite:=nil;
+      if Child is TAnchorDockHostSite then begin
+        ChildSite:=TAnchorDockHostSite(Child);
+        ChildSite.CreateBoundSplitter;
+        SplitterWidth:=DockMaster.SplitterWidth;
+      end;
+
+      // resize Site
+      NewSiteBounds:=Site.BoundsRect;
+      case ADockObject.DropAlign of
+      alLeft: dec(NewSiteBounds.Left,Child.ClientWidth+SplitterWidth);
+      alRight: dec(NewSiteBounds.Right,Child.ClientWidth+SplitterWidth);
+      alTop: dec(NewSiteBounds.Top,Child.ClientHeight+SplitterWidth);
+      alBottom: inc(NewSiteBounds.Bottom,Child.ClientHeight+SplitterWidth);
+      end;
+      if ADockObject.DropAlign in [alLeft,alRight] then
+        Site.Constraints.MaxWidth:=0
+      else
+        Site.Constraints.MaxHeight:=0;
+      Site.BoundsRect:=NewSiteBounds;
+      debugln(['TAnchorDockManager.InsertControl Site.BoundsRect=',dbgs(Site.BoundsRect),' NewSiteBounds=',dbgs(NewSiteBounds),' Child.ClientRect=',dbgs(Child.ClientRect)]);
+      FSiteClientRect:=Site.ClientRect;
+
+      // resize child
+      NewChildBounds:=Child.BoundsRect;
+      case ADockObject.DropAlign of
+      alTop: NewChildBounds:=Bounds(0,0,Site.ClientWidth,Child.ClientHeight);
+      alBottom: NewChildBounds:=Bounds(0,Site.ClientHeight-Child.ClientHeight,
+                                       Site.ClientWidth,Child.ClientHeight);
+      alLeft: NewChildBounds:=Bounds(0,0,Child.ClientWidth,Site.ClientHeight);
+      alRight: NewChildBounds:=Bounds(Site.ClientWidth-Child.ClientWidth,0,
+                                      Child.ClientWidth,Site.ClientHeight);
+      end;
+      Child.BoundsRect:=NewChildBounds;
+
+      if ChildSite<>nil then
+        ChildSite.PositionBoundSplitter;
+
+      // only allow to dock one control
+      DragManager.RegisterDockSite(Site,false);
+      debugln(['TAnchorDockManager.InsertControl AFTER Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.ClientRect=',dbgs(ADockObject.Control.ClientRect)]);
+
+    finally
+      Site.EnableAutoSizing;
     end;
-
-    // resize Site
-    NewSiteBounds:=Site.BoundsRect;
-    case ADockObject.DropAlign of
-    alLeft: dec(NewSiteBounds.Left,Child.ClientWidth+SplitterWidth);
-    alRight: dec(NewSiteBounds.Right,Child.ClientWidth+SplitterWidth);
-    alTop: dec(NewSiteBounds.Top,Child.ClientHeight+SplitterWidth);
-    alBottom: inc(NewSiteBounds.Bottom,Child.ClientHeight+SplitterWidth);
-    end;
-    Site.BoundsRect:=NewSiteBounds;
-    FSiteClientRect:=Site.ClientRect;
-
-    // resize child
-    NewChildBounds:=Child.BoundsRect;
-    case ADockObject.DropAlign of
-    alTop: NewChildBounds:=Bounds(0,0,Site.ClientWidth,Child.ClientHeight);
-    alBottom: NewChildBounds:=Bounds(0,Site.ClientHeight-Child.ClientHeight,
-                                     Site.ClientWidth,Child.ClientHeight);
-    alLeft: NewChildBounds:=Bounds(0,0,Child.ClientWidth,Site.ClientHeight);
-    alRight: NewChildBounds:=Bounds(Site.ClientWidth-Child.ClientWidth,0,
-                                    Child.ClientWidth,Site.ClientHeight);
-    end;
-    Child.BoundsRect:=NewChildBounds;
-
-    if ChildSite<>nil then
-      ChildSite.PositionBoundSplitter;
-
-    // only allow to dock one control
-    DragManager.RegisterDockSite(Site,false);
-    debugln(['TAnchorDockManager.InsertControl AFTER Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.Client=',dbgs(ADockObject.Control.ClientRect)]);
   end;
 end;
 

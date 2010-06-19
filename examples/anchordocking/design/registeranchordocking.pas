@@ -108,6 +108,7 @@ begin
 
   Creator:=IDEWindowCreators.FindWithName(AForm.Name);
   if Creator=nil then exit;
+  debugln(['TIDEAnchorDockMaster.GetDefaultBounds AAA1 ',AForm.Name,' ',Creator.DockSibling,' ',dbgs(Creator.DockAlign)]);
   if Creator.OnGetLayout<>nil then
     Creator.OnGetLayout(Self,AForm.Name,NewBounds,DockSiblingName,DockAlign)
   else begin
@@ -212,13 +213,14 @@ var
   DockSiblingName: string;
   DockAlign: TAlign;
   DockSibling: TCustomForm;
-  NewDockSite: TAnchorDockHostSite;
+  NewDockSite: TCustomForm;
   Site: TAnchorDockHostSite;
   AControl: TControl;
   NeedPlacing: Boolean;
   SiteForm: TCustomForm;
 begin
   debugln(['TIDEAnchorDockMaster.ShowForm START ',DbgSName(AForm),' BringToFront=',BringToFront,' IsSite=',DockMaster.IsSite(AForm),' IsCustomSite=',DockMaster.IsCustomSite(AForm)]);
+  DumpStack;
   try
     AForm.DisableAlign;
 
@@ -246,20 +248,24 @@ begin
         SiteForm.UndockWidth:=NewBounds.Right-NewBounds.Left;
         SiteForm.UndockHeight:=NewBounds.Bottom-NewBounds.Top;
         debugln(['TIDEAnchorDockMaster.ShowForm creator for ',DbgSName(AControl),' found: Left=',Creator.Left,' Top=',Creator.Top,' Width=',Creator.Width,' Height=',Creator.Height,' DockSiblingName=',DockSiblingName,' DockAlign=',dbgs(DockAlign)]);
-        Site:=DockMaster.GetSite(SiteForm);
-        if DockMaster.IsAnchorSite(Site) and (DockSiblingName<>'') then begin
+        Site:=DockMaster.GetAnchorSite(SiteForm);
+        if (Site<>nil) and (DockSiblingName<>'') then begin
           DockSibling:=Screen.FindForm(DockSiblingName);
           debugln(['TIDEAnchorDockMaster.ShowForm DockSiblingName="',DockSiblingName,'" DockSibling=',DbgSName(DockSibling)]);
           if DockSibling<>nil then begin
             NewDockSite:=DockMaster.GetSite(DockSibling);
-            debugln(['TIDEAnchorDockMaster.ShowForm NewDockSite=',DbgSName(NewDockSite),'="',NewDockSite.Caption,'"']);
-            DockMaster.ManualDock(Site,NewDockSite,DockAlign);
+            if NewDockSite<>nil then begin
+              debugln(['TIDEAnchorDockMaster.ShowForm NewDockSite=',DbgSName(NewDockSite),'="',NewDockSite.Caption,'"']);
+              DockMaster.ManualDock(Site,NewDockSite,DockAlign);
+              debugln(['TIDEAnchorDockMaster.ShowForm after docking: ',DbgSName(AControl),' Floating=',DockMaster.IsFloating(AControl)]);
+            end;
           end;
         end;
       end;
     end;
 
   finally
+    debugln(['TIDEAnchorDockMaster.ShowForm MakeVisible ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect),' Floating=',DockMaster.IsFloating(AForm)]);
     DockMaster.MakeVisible(AForm,BringToFront);
     AForm.EnableAlign;
 
