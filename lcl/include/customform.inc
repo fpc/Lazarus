@@ -425,7 +425,7 @@ var
 begin
   if [csLoading,csDestroying]*ComponentState<>[] then exit;
   if (FActiveControl <> nil) and (FDesigner = nil) then
-    NewFocusControl := FActiveControl
+    NewFocusControl := ActiveControl
   else
     NewFocusControl := Self;
   {$IFDEF VerboseFocus}
@@ -1727,6 +1727,7 @@ begin
     {$ENDIF}
 
     FActiveControl := AWinControl;
+    if FActiveControl<>nil then FreeNotification(FActiveControl);
     if ([csLoading, csDestroying] * ComponentState = []) then
     begin
       if FActive then
@@ -2243,9 +2244,11 @@ begin
   // update FActiveControl
   if (FDesigner = nil) and (not (csLoading in ComponentState)) then
   begin
-    if Control <> Self then
-      FActiveControl := Control
-    else
+    if Control <> Self then begin
+      FActiveControl := Control;
+      if FActiveControl<>nil then
+        FreeNotification(FActiveControl);
+    end else
       FActiveControl := nil;
   end;
 
@@ -2279,8 +2282,10 @@ begin
       CurControl := Control.Parent;
       while CurControl <> nil do
       begin
-        if CurControl is TCustomForm then
+        if CurControl is TCustomForm then begin
           TCustomForm(CurControl).FActiveControl := Control;
+          TCustomForm(CurControl).FreeNotification(Control);
+        end;
         CurControl := CurControl.Parent;
       end;
       Result := SendEnterExitLoop;
