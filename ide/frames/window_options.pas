@@ -26,8 +26,10 @@ interface
 
 uses
   Classes, SysUtils, types, FileUtil, Forms, Controls, StdCtrls, ExtCtrls,
-  Spin, EnvironmentOpts, LazarusIDEStrConsts, IDEOptionDefs, ObjectInspector,
-  IDEOptionsIntf, InterfaceBase, IDEWindowIntf;
+  Spin,
+  ObjInspStrConsts, ObjectInspector, IDEOptionsIntf, IDEWindowIntf,
+  EnvironmentOpts, IDEOptionDefs,
+  InterfaceBase, LazarusIDEStrConsts;
 
 type
   { TWindowOptionsFrame }
@@ -67,7 +69,7 @@ type
     procedure SetLayout(const AValue: TSimpleWindowLayout);
     procedure SetWindowPositionsItem(Index: integer);
     procedure SaveLayout;
-    function GetCaptionFor(AWindow: TNonModalIDEWindow): String;
+    function GetLayoutCaption(ALayout: TSimpleWindowLayout): String;
     property Layout: TSimpleWindowLayout read FLayout write SetLayout;
   public
     function GetTitle: String; override;
@@ -90,8 +92,9 @@ end;
 
 procedure TWindowOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 var
-  Window: TNonModalIDEWindow;
   i: Integer;
+  Creator: TIDEWindowCreator;
+  j: Integer;
 begin
   // windows
   SingleTaskBarButtonCheckBox.Caption := dlgSingleTaskBarButton;
@@ -108,21 +111,22 @@ begin
 
   if IDEDockMaster=nil then begin
     // Window Positions
+    FLayouts:=EnvironmentOptions.IDEWindowLayoutList;
     WindowPositionsGroupBox.Parent:=Self;
     WindowPositionsGroupBox.Caption := dlgWinPos;
-    with WindowPositionsListBox.Items do
-    begin
-      BeginUpdate;
-      for Window := Succ(Low(TNonModalIDEWindow)) to High(TNonModalIDEWindow) do
-        Add(GetCaptionFor(Window));
-      Add(dlgObjInsp);
-      for i := 0 to EnvironmentOptions.IDEWindowLayoutList.Count - 1 do
-        if (EnvironmentOptions.IDEWindowLayoutList[i].FormID <> DefaultObjectInspectorName) and
-        (NonModalIDEFormIDToEnum(EnvironmentOptions.IDEWindowLayoutList[i].FormID) = nmiwNone)
-      then
-        Add(EnvironmentOptions.IDEWindowLayoutList[i].FormCaption);
-      EndUpdate;
+    WindowPositionsListBox.Items.BeginUpdate;
+    // show all registered windows
+    // Note: the layouts also contain forms, that were once registered and may be
+    // registered in the future again
+    for i:=0 to IDEWindowCreators.Count-1 do begin
+      Creator:=IDEWindowCreators[i];
+      for j:=0 to FLayouts.Count-1 do begin
+        if CompareText(Creator.FormName,copy(FLayouts[j].FormID,1,length(Creator.FormName)))<>0
+        then continue;
+        WindowPositionsListBox.Items.AddObject(GetLayoutCaption(FLayouts[j]),FLayouts[j]);
+      end;
     end;
+    WindowPositionsListBox.Items.EndUpdate;
 
     LeftLabel.Caption := dlgLeftPos;
     TopLabel.Caption := dlgTopPos;
@@ -170,7 +174,8 @@ begin
   end;
 end;
 
-function TWindowOptionsFrame.GetPlacementRadioButtons(APlacement: TIDEWindowPlacement): TRadioButton;
+function TWindowOptionsFrame.GetPlacementRadioButtons(
+  APlacement: TIDEWindowPlacement): TRadioButton;
 begin
   case APlacement of
     iwpRestoreWindowGeometry:   Result := RestoreWindowGeometryRadioButton;
@@ -186,9 +191,8 @@ procedure TWindowOptionsFrame.SetLayout(const AValue: TSimpleWindowLayout);
 var
   APlacement: TIDEWindowPlacement;
   RadioButton: TRadioButton;
+  p: TPoint;
 begin
-  if IDEDockMaster<>nil then exit;
-
   FLayout := AValue;
   if Layout=nil then Exit;
 
@@ -211,8 +215,14 @@ begin
   else
   if Layout.Form <> nil then
   begin
-    LeftEdit.Value := Layout.Form.Left;
-    TopEdit.Value := Layout.Form.Top;
+    if Layout.Form.Parent<>nil then begin
+      p:=Layout.Form.ClientOrigin;
+      LeftEdit.Value := p.X;
+      TopEdit.Value := p.Y;
+    end else begin
+      LeftEdit.Value := Layout.Form.Left;
+      TopEdit.Value := Layout.Form.Top;
+    end;
     WidthEdit.Value := Layout.Form.Width;
     HeightEdit.Value := Layout.Form.Height;
   end
@@ -227,9 +237,9 @@ begin
   GetWindowPositionButton.Enabled := (Layout.Form <> nil);
 end;
 
-procedure TWindowOptionsFrame.WindowPositionsListBoxSelectionChange(Sender: TObject; User: boolean);
+procedure TWindowOptionsFrame.WindowPositionsListBoxSelectionChange(
+  Sender: TObject; User: boolean);
 begin
-  if IDEDockMaster<>nil then exit;
   if User then
     SetWindowPositionsItem(WindowPositionsListBox.ItemIndex);
 end;
@@ -238,9 +248,8 @@ procedure TWindowOptionsFrame.ApplyButtonClick(Sender: TObject);
 var
   NewBounds: TRect;
 begin
-  if IDEDockMaster<>nil then exit;
   SaveLayout;
-  if (Layout.Form<>nil)
+  if (Layout<>nil) and (Layout.Form<>nil) and (Layout.Form.Parent=nil)
   and (Layout.WindowPlacement in [iwpCustomPosition,iwpRestoreWindowGeometry])
   then begin
     if (Layout.CustomCoordinatesAreValid) then begin
@@ -269,8 +278,7 @@ end;
 
 procedure TWindowOptionsFrame.GetWindowPositionButtonClick(Sender: TObject);
 begin
-  if IDEDockMaster<>nil then exit;
-  if Layout.Form <> nil then
+  if (Layout<>nil) and (Layout.Form <> nil) then
   begin
     LeftEdit.Value := Layout.Form.Left;
     TopEdit.Value := Layout.Form.Top;
@@ -281,21 +289,13 @@ end;
 
 procedure TWindowOptionsFrame.SetWindowPositionsItem(Index: integer);
 begin
-  if IDEDockMaster<>nil then exit;
-
   SaveLayout;
   WindowPositionsListBox.ItemIndex := Index;
 
-  if Index < Ord(High(TNonModalIDEWindow)) then
-    Layout := FLayouts.ItemByEnum(TNonModalIDEWindow(Index + 1))
+  if Index>=0 then
+    Layout:=TSimpleWindowLayout(WindowPositionsListBox.Items.Objects[Index])
   else
-  begin
-    case Index - Ord(High(TNonModalIDEWindow)) of
-      0: Layout := FLayouts.ItemByFormID(DefaultObjectInspectorName);
-      else
-         Layout := FLayouts.ItemByFormCaption(WindowPositionsListBox.Items[Index]);
-    end;
-  end;
+    Layout:=nil;
 
   if Index >= 0 then
     lblWindowCaption.Caption := WindowPositionsListBox.Items[Index];
@@ -306,8 +306,6 @@ var
   APlacement: TIDEWindowPlacement;
   ARadioButton: TRadioButton;
 begin
-  if IDEDockMaster<>nil then exit;
-
   if Layout = nil then
    Exit;
 
@@ -326,35 +324,49 @@ begin
   end;
 end;
 
-function TWindowOptionsFrame.GetCaptionFor(AWindow: TNonModalIDEWindow): String;
-begin
-  case AWindow of
-    nmiwMainIDEName: Result := dlgMainMenu;
-    nmiwSourceNoteBookName: Result := dlgSrcEdit;
-    nmiwMessagesViewName: Result := dlgMsgs;
-    nmiwCodeExplorerName: Result := lisCodeExplorer;
-    nmiwFPDocEditorName: Result := lisCodeHelpMainFormCaption;
-    nmiwPkgGraphExplorer: Result := dlgPackageGraph;
-    nmiwProjectInspector: Result := lisMenuProjectInspector;
-    nmiwUnitDependenciesName: Result := dlgUnitDepCaption;
-    nmiwDbgOutput: Result := lisMenuViewDebugOutput;
-    nmiwDbgEvents: Result := lisMenuViewDebugEvents;
-    nmiwBreakPoints: Result := lisMenuViewBreakPoints;
-    nmiwWatches: Result := liswlWatchList;
-    nmiwLocals: Result := lisLocals;
-    nmiwCallStack: Result := lisMenuViewCallStack;
-    nmiwEvaluate: Result := lisKMEvaluateModify;
-    nmiwRegisters: Result := lisRegisters;
-    nmiwAssembler: Result := lisMenuViewAssembler;
-    nmiwSearchResultsViewName: Result := lisMenuViewSearchResults;
-    nmiwAnchorEditor: Result := lisMenuViewAnchorEditor;
-    nmiwCodeBrowser: Result := lisCodeBrowser;
-    nmiwIssueBrowser: Result := lisMenuViewRestrictionBrowser;
-    nmiwJumpHistory: Result := lisJHJumpHistory;
-    nmiwInspect: Result := lisInspectDialog;
-  else
-    Result := NonModalIDEWindowNames[AWindow];
+function TWindowOptionsFrame.GetLayoutCaption(ALayout: TSimpleWindowLayout
+  ): String;
+
+  function Fits(FormName, aCaption: string): boolean;
+  var
+    SubIndex: LongInt;
+  begin
+    Result:=CompareText(FormName,copy(ALayout.FormID,1,length(FormName)))=0;
+    if not Result then exit(false);
+    SubIndex:=StrToIntDef(copy(ALayout.FormID,length(FormName)+1,10),-1);
+    if SubIndex<0 then
+      GetLayoutCaption:=aCaption
+    else
+      GetLayoutCaption:=aCaption+' '+IntToStr(SubIndex);
   end;
+
+begin
+  // use the known resourcestrings
+  if Fits('MainIDE',dlgMainMenu) then exit;
+  if Fits('SourceNotebook',dlgSrcEdit) then exit;
+  if Fits('MessagesView',dlgMsgs) then exit;
+  if Fits('ObjectInspectorDlg',oisObjectInspector) then exit;
+  if Fits('UnitDependencies',dlgUnitDepCaption) then exit;
+  if Fits('CodeExplorerView',lisCodeExplorer) then exit;
+  if Fits('FPDocEditor',lisCodeHelpMainFormCaption) then exit;
+  if Fits('PkgGraphExplorer',dlgPackageGraph) then exit;
+  if Fits('ProjectInspector',lisMenuProjectInspector) then exit;
+  if Fits('DbgOutput',lisMenuViewDebugOutput) then exit;
+  if Fits('DbgEvents',lisMenuViewDebugEvents) then exit;
+  if Fits('BreakPoints',lisMenuViewBreakPoints) then exit;
+  if Fits('Watches',liswlWatchList) then exit;
+  if Fits('Locals',lisLocals) then exit;
+  if Fits('CallStack',lisMenuViewCallStack) then exit;
+  if Fits('EvaluateModify',lisKMEvaluateModify) then exit;
+  if Fits('Registers',lisRegisters) then exit;
+  if Fits('Assembler',lisMenuViewAssembler) then exit;
+  if Fits('Inspect',lisInspectDialog) then exit;
+  if Fits('SearchResults',lisMenuViewSearchResults) then exit;
+  if Fits('AnchorEditor',lisMenuViewAnchorEditor) then exit;
+  if Fits('CodeBrowser',lisCodeBrowser) then exit;
+  if Fits('IssueBrowser',lisMenuViewRestrictionBrowser) then exit;
+  if Fits('JumpHistory',lisJHJumpHistory) then exit;
+  Result:=ALayout.FormCaption;
 end;
 
 class function TWindowOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

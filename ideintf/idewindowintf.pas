@@ -184,7 +184,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     function Count: integer;
-    property Items[Index: integer]: TIDEWindowCreator read GetItems;
+    property Items[Index: integer]: TIDEWindowCreator read GetItems; default;
     function Add(aLayout: TIDEWindowCreator): integer; overload;
     function Add(aFormName: string): TIDEWindowCreator; overload;
     function Add(aFormName: string;

@@ -185,6 +185,7 @@ type
     fForm: TCustomForm;
     fFormID: string;
     fDefaultWindowPlacement: TIDEWindowPlacement;
+    function GetFormCaption: string;
     function GetFormID: string;
     procedure SetForm(const AValue: TCustomForm);
     procedure OnFormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -205,7 +206,7 @@ type
   public
     property FormID: string read GetFormID write FFormID;
     function FormBaseID(out SubIndex: Integer): String; // split FormID into name+number
-    property FormCaption: string read FFormCaption; // used while Form=nil
+    property FormCaption: string read GetFormCaption;
     property WindowPlacement: TIDEWindowPlacement read fWindowPlacement write FWindowPlacement;
     property DefaultWindowPlacement: TIDEWindowPlacement
       read fDefaultWindowPlacement write fDefaultWindowPlacement;
@@ -239,7 +240,6 @@ type
     function ItemByForm(AForm: TCustomForm): TSimpleWindowLayout;
     function ItemByFormID(const FormID: string): TSimpleWindowLayout;
     function ItemByFormCaption(const aFormCaption: string): TSimpleWindowLayout;
-    function ItemByEnum(ID: TNonModalIDEWindow): TSimpleWindowLayout;
     procedure CloseForm(AForm: TCustomForm);
     procedure LoadFromConfig(Config: TConfigStorage; const Path: string);
     procedure SaveToConfig(Config: TConfigStorage; const Path: string);
@@ -503,6 +503,15 @@ begin
     Result:=Form.Name;
 end;
 
+function TSimpleWindowLayout.GetFormCaption: string;
+begin
+  if Form<>nil then
+    FFormCaption:=Form.Caption
+  else if FFormCaption='' then
+    FFormCaption:=FormID;
+  Result:=FFormCaption;
+end;
+
 procedure TSimpleWindowLayout.Clear;
 begin
   fWindowPlacement:=fDefaultWindowPlacement;
@@ -663,12 +672,6 @@ begin
     dec(i);
   end;
   Result:=nil;
-end;
-
-function TSimpleWindowLayoutList.ItemByEnum(ID: TNonModalIDEWindow
-  ): TSimpleWindowLayout;
-begin
-  Result:=ItemByFormID(NonModalIDEWindowNames[ID]);
 end;
 
 procedure TSimpleWindowLayoutList.CloseForm(AForm: TCustomForm);

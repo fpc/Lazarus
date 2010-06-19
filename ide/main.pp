@@ -1305,7 +1305,7 @@ begin
   FormCreator:=IDEWindowCreators.Add(MainIDEBar.Name);
   FormCreator.Width:='100%';
   FormCreator.Height:='90';
-  Layout:=EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwMainIDEName);
+  Layout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(MainIDEBar.Name);
   if not (Layout.WindowState in [iwsNormal,iwsMaximized]) then
     Layout.WindowState:=iwsNormal;
   if IDEDockMaster<>nil then
@@ -2202,8 +2202,8 @@ begin
     nil,@CreateIDEWindow,'200','200','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwFPDocEditorName],
     nil,@CreateIDEWindow,'250','75%','60%','120');
-  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwClipbrdHistoryName],
-    nil,@CreateIDEWindow,'250','200','','');
+  //IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwClipbrdHistoryName],
+  //  nil,@CreateIDEWindow,'250','200','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwProjectInspector],
     nil,@CreateIDEWindow,'200','150','300','400');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSearchResultsViewName],
@@ -12707,13 +12707,14 @@ end;
 procedure TMainIDE.DoArrangeSourceEditorAndMessageView(PutOnTop: boolean);
 var
   SrcNoteBook: TSourceNotebook;
+  Layout: TSimpleWindowLayout;
 begin
   DoShowMessagesView;
   if SourceEditorManager.SourceWindowCount = 0 then exit;
   SrcNoteBook := SourceEditorManager.SourceWindows[0];
 
-  if (iwpDefault = EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(
-                                        nmiwSourceNoteBookName).WindowPlacement)
+  Layout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(SrcNoteBook.Name);
+  if (Layout<>nil) and (Layout.WindowPlacement=iwpDefault)
   and ((SrcNoteBook.Top + SrcNoteBook.Height) > MessagesView.Top)
   and (MessagesView.Parent = nil) then
     SrcNoteBook.Height := Max(50,Min(SrcNoteBook.Height,
