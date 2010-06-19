@@ -36,7 +36,7 @@ interface
 uses
   Math, Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs,
   LazConfigStorage, XMLCfg, XMLPropStorage,
-  BaseIDEIntf, IDEDialogs, MenuIntf, LazIDEIntf, IDEWindowIntf,
+  BaseIDEIntf, ProjectIntf, IDEDialogs, MenuIntf, LazIDEIntf, IDEWindowIntf,
   AnchorDockStr, AnchorDocking, AnchorDockOptionsDlg;
 
 const
@@ -70,8 +70,8 @@ type
     procedure SaveLayoutToFile(Filename: string);
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); override;
     procedure CloseAll; override;
-    procedure OnIDEClose(Sender: TObject);
     procedure OnIDERestoreWindows(Sender: TObject);
+    function OnProjectClose(Sender: TObject; AProject: TLazProject): TModalResult;
     procedure LoadLayoutFromFileClicked(Sender: TObject);
     procedure SaveLayoutToFileClicked(Sender: TObject);
     property DefaultLayoutLoaded: boolean read FDefaultLayoutLoaded write SetDefaultLayoutLoaded;
@@ -89,7 +89,7 @@ begin
   if not (IDEDockMaster is TIDEAnchorDockMaster) then exit;
 
   LazarusIDE.AddHandlerOnIDERestoreWindows(@IDEAnchorDockMaster.OnIDERestoreWindows);
-  LazarusIDE.AddHandlerOnIDEClose(@IDEAnchorDockMaster.OnIDEClose);
+  LazarusIDE.AddHandlerOnProjectClose(@IDEAnchorDockMaster.OnProjectClose);
 
   // add menu section
   mnuAnchorDockSection:=RegisterIDEMenuSection(mnuEnvironment,'AnchorDocking');
@@ -344,8 +344,11 @@ begin
   DockMaster.CloseAll;
 end;
 
-procedure TIDEAnchorDockMaster.OnIDEClose(Sender: TObject);
+function TIDEAnchorDockMaster.OnProjectClose(Sender: TObject;
+  AProject: TLazProject): TModalResult;
 begin
+  Result:=mrOk;
+  if AProject=nil then exit;
   SaveDefaultLayout;
 end;
 

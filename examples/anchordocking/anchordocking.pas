@@ -1176,6 +1176,8 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree): boolean;
   procedure SetupSite(Site: TCustomForm;
     Node: TAnchorDockLayoutTreeNode; Parent: TWinControl);
   begin
+    Site.Constraints.MaxWidth:=0;
+    Site.Constraints.MaxHeight:=0;
     Site.BoundsRect:=Node.BoundsRect;
     Site.Visible:=true;
     Site.Parent:=Parent;
@@ -1577,6 +1579,7 @@ end;
 destructor TAnchorDockMaster.Destroy;
 var
   AControl: TControl;
+  i: Integer;
 begin
   FreeAndNil(FRestoreLayouts);
   FreeAndNil(fPopupMenu);
@@ -1594,6 +1597,9 @@ begin
   FreeAndNil(fDisabledAutosizing);
   fCloseBtnReferenceCount:=-1;
   FreeAndNil(fCloseBtnBitmap);
+  for i:=0 to ComponentCount-1 do begin
+    debugln(['TAnchorDockMaster.Destroy ',i,'/',ComponentCount,' ',DbgSName(Components[i])]);
+  end;
   inherited Destroy;
 end;
 
@@ -1887,12 +1893,15 @@ var
   SavedSites: TFPList;
   LayoutNode: TAnchorDockLayoutTreeNode;
   AForm: TCustomForm;
+  VisibleControls: TStringList;
 begin
   SavedSites:=TFPList.Create;
+  VisibleControls:=TStringList.Create;
   try
     for i:=0 to ControlCount-1 do begin
       AControl:=Controls[i];
       if not AControl.IsVisible then continue;
+      VisibleControls.Add(AControl.Name);
       AForm:=GetParentForm(AControl);
       if AForm=nil then continue;
       if SavedSites.IndexOf(AForm)>=0 then continue;
@@ -1917,7 +1926,10 @@ begin
       end else
         raise EAnchorDockLayoutError.Create('invalid root control for save: '+DbgSName(AControl));
     end;
+    // remove invisible controls
+    LayoutTree.Root.Simplify(VisibleControls);
   finally
+    VisibleControls.Free;
     SavedSites.Free;
   end;
 end;
