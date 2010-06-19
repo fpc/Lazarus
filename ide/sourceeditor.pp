@@ -8406,6 +8406,10 @@ begin
   {$ENDIF}
   aBounds:=Bounds(250+30*i,160+30*i,
                     Min(1000,(Screen.Width*7) div 10),(Screen.Height*7) div 10);
+  if i=0 then begin
+    DockSibling:=NonModalIDEWindowNames[nmiwMainIDEName];
+    DockAlign:=alBottom;
+  end;
 end;
 
 function TSourceEditorManager.SourceWindowWithPage(const APage: TPage
