@@ -5670,8 +5670,6 @@ begin
   CloseAction := caHide;
   {$IFnDEF SingleSrcWindow}
   if PageCount = 0 then begin { $NOTE maybe keep the last one}
-    if EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Self.Name) <> nil then
-      EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Self.Name).CloseForm;
     // Make the name unique, because it may not immediately be released
     Name := Name + '___' + IntToStr(PtrUInt(Pointer(Self)));
     CloseAction := caFree;
