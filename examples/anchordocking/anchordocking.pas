@@ -990,13 +990,13 @@ function TAnchorDockMaster.CreateNeededControls(Tree: TAnchorDockLayoutTree;
     and (Node.Name<>'') then begin
       AControl:=FindControl(Node.Name);
       if AControl<>nil then begin
-        debugln(['CreateControlsForNode ',Node.Name,' already exists']);
+        //debugln(['CreateControlsForNode ',Node.Name,' already exists']);
         DisableControlAutoSizing(AControl);
       end else begin
-        debugln(['CreateControlsForNode ',Node.Name,' needs creation']);
+        //debugln(['CreateControlsForNode ',Node.Name,' needs creation']);
         AControl:=DoCreateControl(Node.Name,DisableAutoSizing);
         if AControl<>nil then begin
-          debugln(['CreateControlsForNode ',AControl.Name,' created']);
+          //debugln(['CreateControlsForNode ',AControl.Name,' created']);
           if fDisabledAutosizing.IndexOf(AControl)<0 then
             fDisabledAutosizing.Add(AControl);
           if Node.NodeType=adltnControl then
@@ -1206,7 +1206,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree): boolean;
     ChildNode: TAnchorDockLayoutTreeNode;
   begin
     Result:=nil;
-    debugln(['Restore ',Node.Name,' ',dbgs(Node.NodeType),' Bounds=',dbgs(Node.BoundsRect),' Parent=',DbgSName(Parent),' ']);
+    //debugln(['Restore ',Node.Name,' ',dbgs(Node.NodeType),' Bounds=',dbgs(Node.BoundsRect),' Parent=',DbgSName(Parent),' ']);
     if Node.NodeType=adltnControl then begin
       // restore control
       // the control was already created
@@ -1222,7 +1222,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree): boolean;
       else
         ClearLayoutProperties(AControl);
       Site:=AControl.HostDockSite as TAnchorDockHostSite;
-      debugln(['Restore Control Node.Name=',Node.Name,' Control=',DbgSName(AControl),' Site=',DbgSName(Site)]);
+      //debugln(['Restore Control Node.Name=',Node.Name,' Control=',DbgSName(AControl),' Site=',DbgSName(Site)]);
       AControl.Visible:=true;
       SetupSite(Site,Node,Parent);
       Result:=Site;
@@ -1253,7 +1253,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree): boolean;
         Splitter:=CreateSplitter;
         fTreeNameToDocker[Node.Name]:=Splitter;
       end;
-      debugln(['Restore Splitter Node.Name=',Node.Name,' ',dbgs(Node.NodeType),' Splitter=',DbgSName(Splitter)]);
+      //debugln(['Restore Splitter Node.Name=',Node.Name,' ',dbgs(Node.NodeType),' Splitter=',DbgSName(Splitter)]);
       Splitter.Parent:=Parent;
       Splitter.BoundsRect:=Node.BoundsRect;
       if Node.NodeType=adltnSplitterVertical then
@@ -1269,7 +1269,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree): boolean;
         fDisabledAutosizing.Add(Site);
         fTreeNameToDocker[Node.Name]:=Site;
       end;
-      debugln(['Restore Layout Node.Name=',Node.Name,' ChildCount=',Node.Count]);
+      //debugln(['Restore Layout Node.Name=',Node.Name,' ChildCount=',Node.Count]);
       Site.BeginUpdateLayout;
       try
         SetupSite(Site,Node,Parent);
@@ -1282,7 +1282,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree): boolean;
         for i:=0 to Node.Count-1 do begin
           ChildNode:=Node[i];
           AControl:=fTreeNameToDocker[ChildNode.Name];
-          debugln(['  Restore layout child anchors Site=',DbgSName(Site),' ChildNode.Name=',ChildNode.Name,' Control=',DbgSName(AControl)]);
+          //debugln(['  Restore layout child anchors Site=',DbgSName(Site),' ChildNode.Name=',ChildNode.Name,' Control=',DbgSName(AControl)]);
           if AControl=nil then continue;
           for Side:=Low(TAnchorKind) to high(TAnchorKind) do begin
             if ((ChildNode.NodeType=adltnSplitterHorizontal)
@@ -1989,7 +1989,7 @@ begin
     RestoreLayouts.SaveToConfig(Config);
     Config.UndoAppendBasePath;
     WriteDebugLayout('TAnchorDockMaster.SaveLayoutToConfig ',Tree.Root);
-    DebugWriteChildAnchors(Tree.Root);
+    //DebugWriteChildAnchors(Tree.Root);
   finally
     Tree.Free;
   end;
@@ -2019,7 +2019,7 @@ begin
     Config.UndoAppendBasePath;
 
     WriteDebugLayout('TAnchorDockMaster.LoadLayoutFromConfig ',Tree.Root);
-    DebugWriteChildAnchors(Tree.Root);
+    //DebugWriteChildAnchors(Tree.Root);
 
     // close all unneeded forms/controls
     if not CloseUnneededControls(Tree) then exit;
@@ -2031,13 +2031,13 @@ begin
 
       // simplify layouts
       ControlNames.Sort;
-      debugln(['TAnchorDockMaster.LoadLayoutFromConfig controls: ']);
-      debugln(ControlNames.Text);
+      //debugln(['TAnchorDockMaster.LoadLayoutFromConfig controls: ']);
+      //debugln(ControlNames.Text);
       Tree.Root.Simplify(ControlNames);
 
       // reuse existing sites to reduce flickering
       MapTreeToControls(Tree);
-      fTreeNameToDocker.WriteDebugReport('TAnchorDockMaster.LoadLayoutFromConfig Map');
+      //fTreeNameToDocker.WriteDebugReport('TAnchorDockMaster.LoadLayoutFromConfig Map');
 
       // create sites
       RestoreLayout(Tree);
@@ -2052,7 +2052,7 @@ begin
     // commit (this can raise an exception)
     EnableAllAutoSizing;
   end;
-  DebugWriteChildAnchors(Application.MainForm,true,false);
+  //DebugWriteChildAnchors(Application.MainForm,true,false);
   Result:=true;
 end;
 
@@ -2829,7 +2829,7 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
     Sibling: TControl;
     NewBounds: TRect;
   begin
-    debugln(['RemoveControlBoundSplitter START ',DbgSName(Splitter)]);
+    //debugln(['RemoveControlBoundSplitter START ',DbgSName(Splitter)]);
     { Example: Side=akRight
                           #             #
         #####################     #########
@@ -2854,7 +2854,7 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
         Sibling.BoundsRect:=NewBounds;
       end;
     end;
-    debugln(['RemoveControlBoundSplitter ',DbgSName(Splitter)]);
+    //debugln(['RemoveControlBoundSplitter ',DbgSName(Splitter)]);
     Splitter.Free;
 
     ClearChildControlAnchorSides(AControl);
@@ -2926,7 +2926,7 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
       Header.Parent:=Self;
       UpdateHeaderAlign;
 
-      debugln(['TAnchorDockHostSite.RemoveControlFromLayout.ConvertToOneControlType AFTER CONVERT "',Caption,'" to onecontrol OnlySiteLeft="',OnlySiteLeft.Caption,'"']);
+      //debugln(['TAnchorDockHostSite.RemoveControlFromLayout.ConvertToOneControlType AFTER CONVERT "',Caption,'" to onecontrol OnlySiteLeft="',OnlySiteLeft.Caption,'"']);
       //DebugWriteChildAnchors(GetParentForm(Self),true,true);
 
       DockMaster.NeedSimplify(Self);
@@ -3107,10 +3107,10 @@ begin
       EndUpdateLayout;
       EnableAutoSizing;
     end;
-    debugln(['TAnchorDockHostSite.SimplifyPages END Self="',Caption,'"']);
+    //debugln(['TAnchorDockHostSite.SimplifyPages END Self="',Caption,'"']);
     //DebugWriteChildAnchors(GetParentForm(Self),true,true);
   end else if Pages.PageCount=0 then begin
-    debugln(['TAnchorDockHostSite.SimplifyPages "',Caption,'" PageCount=0 Self=',dbgs(Pointer(Self))]);
+    //debugln(['TAnchorDockHostSite.SimplifyPages "',Caption,'" PageCount=0 Self=',dbgs(Pointer(Self))]);
     FSiteType:=adhstNone;
     FreeAndNil(FPages);
     DockMaster.NeedSimplify(Self);
@@ -3147,7 +3147,7 @@ begin
     while i>=0 do begin
       Child:=Site.Controls[i];
       if Child.Owner<>Site then begin
-        debugln(['TAnchorDockHostSite.SimplifyOneControl Self="',Caption,'" Child=',DbgSName(Child),'="',Child.Caption,'"']);
+        //debugln(['TAnchorDockHostSite.SimplifyOneControl Self="',Caption,'" Child=',DbgSName(Child),'="',Child.Caption,'"']);
         Child.Parent:=Self;
         if Child=Site.Pages then begin
           FPages:=Site.Pages;
@@ -3172,7 +3172,7 @@ begin
     EnableAutoSizing;
   end;
 
-  debugln(['TAnchorDockHostSite.SimplifyOneControl END Self="',Caption,'"']);
+  //debugln(['TAnchorDockHostSite.SimplifyOneControl END Self="',Caption,'"']);
   //DebugWriteChildAnchors(GetParentForm(Self),true,true);
 end;
 
@@ -3802,13 +3802,13 @@ begin
     if (not ((AControl is TAnchorDockHeader)
              or (AControl is TAnchorDockSplitter)))
     then begin
-      debugln(['TAnchorDockHostSite.RemoveControl START ',Caption,' ',dbgs(SiteType),' ',DbgSName(AControl),' UpdatingLayout=',UpdatingLayout]);
+      //debugln(['TAnchorDockHostSite.RemoveControl START ',Caption,' ',dbgs(SiteType),' ',DbgSName(AControl),' UpdatingLayout=',UpdatingLayout]);
       if (SiteType=adhstLayout) then
         RemoveControlFromLayout(AControl)
       else
         DockMaster.NeedSimplify(Self);
       UpdateDockCaption;
-      debugln(['TAnchorDockHostSite.RemoveControl END ',Caption,' ',dbgs(SiteType),' ',DbgSName(AControl)]);
+      //debugln(['TAnchorDockHostSite.RemoveControl END ',Caption,' ',dbgs(SiteType),' ',DbgSName(AControl)]);
     end;
   end;
   EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.RemoveControl'){$ENDIF};
@@ -3855,7 +3855,7 @@ begin
   else
     Header.Caption:=Caption;
   if OldCaption<>Caption then begin
-    debugln(['TAnchorDockHostSite.UpdateDockCaption Caption="',Caption,'" NewCaption="',NewCaption,'" HasParent=',Parent<>nil]);
+    //debugln(['TAnchorDockHostSite.UpdateDockCaption Caption="',Caption,'" NewCaption="',NewCaption,'" HasParent=',Parent<>nil]);
     if Parent is TAnchorDockHostSite then
       TAnchorDockHostSite(Parent).UpdateDockCaption;
     if Parent is TAnchorDockPage then
@@ -4039,14 +4039,13 @@ begin
 end;
 
 destructor TAnchorDockHostSite.Destroy;
-var
-  i: Integer;
+//var i: Integer;
 begin
-  debugln(['TAnchorDockHostSite.Destroy ',DbgSName(Self),' Caption="',Caption,'" Self=',dbgs(Pointer(Self)),' ComponentCount=',ComponentCount,' ControlCount=',ControlCount]);
-  for i:=0 to ComponentCount-1 do
+  //debugln(['TAnchorDockHostSite.Destroy ',DbgSName(Self),' Caption="',Caption,'" Self=',dbgs(Pointer(Self)),' ComponentCount=',ComponentCount,' ControlCount=',ControlCount]);
+  {for i:=0 to ComponentCount-1 do
     debugln(['TAnchorDockHostSite.Destroy Component ',i,'/',ComponentCount,' ',DbgSName(Components[i])]);
   for i:=0 to ControlCount-1 do
-    debugln(['TAnchorDockHostSite.Destroy Control ',i,'/',ControlCount,' ',DbgSName(Controls[i])]);
+    debugln(['TAnchorDockHostSite.Destroy Control ',i,'/',ControlCount,' ',DbgSName(Controls[i])]);}
   FreeAndNil(FPages);
   inherited Destroy;
 end;
@@ -4383,8 +4382,9 @@ end;
 procedure TAnchorDockManager.GetControlBounds(Control: TControl; out
   AControlBounds: TRect);
 begin
+  if Control=nil then ;
   AControlBounds:=Rect(0,0,0,0);
-  debugln(['TAnchorDockManager.GetControlBounds DockSite="',DockSite.Caption,'" Control=',DbgSName(Control)]);
+  //debugln(['TAnchorDockManager.GetControlBounds DockSite="',DockSite.Caption,'" Control=',DbgSName(Control)]);
 end;
 
 procedure TAnchorDockManager.InsertControl(Control: TControl; InsertAt: TAlign;
@@ -4405,7 +4405,7 @@ var
 begin
   if DockSite<>nil then begin
     // handled by TAnchorDockHostSite
-    debugln(['TAnchorDockManager.InsertControl DockSite="',DockSite.Caption,'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign)])
+    //debugln(['TAnchorDockManager.InsertControl DockSite="',DockSite.Caption,'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign)])
   end else begin
     debugln(['TAnchorDockManager.InsertControl DockSite=nil Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.Client=',dbgs(ADockObject.Control.ClientRect),' Parent=',DbgSName(ADockObject.Control.Parent)]);
     Site.DisableAutoSizing;
@@ -4439,7 +4439,7 @@ begin
       else
         Site.Constraints.MaxHeight:=0;
       Site.BoundsRect:=NewSiteBounds;
-      debugln(['TAnchorDockManager.InsertControl Site.BoundsRect=',dbgs(Site.BoundsRect),' NewSiteBounds=',dbgs(NewSiteBounds),' Child.ClientRect=',dbgs(Child.ClientRect)]);
+      //debugln(['TAnchorDockManager.InsertControl Site.BoundsRect=',dbgs(Site.BoundsRect),' NewSiteBounds=',dbgs(NewSiteBounds),' Child.ClientRect=',dbgs(Child.ClientRect)]);
       FSiteClientRect:=Site.ClientRect;
 
       // resize child
@@ -4459,7 +4459,7 @@ begin
 
       // only allow to dock one control
       DragManager.RegisterDockSite(Site,false);
-      debugln(['TAnchorDockManager.InsertControl AFTER Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.ClientRect=',dbgs(ADockObject.Control.ClientRect)]);
+      //debugln(['TAnchorDockManager.InsertControl AFTER Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.ClientRect=',dbgs(ADockObject.Control.ClientRect)]);
 
     finally
       Site.EnableAutoSizing;
@@ -4579,7 +4579,7 @@ begin
       alRight: dec(NewBounds.Right,Control.Width+SplitterWidth);
       end;
       Site.BoundsRect:=NewBounds;
-      debugln(['TAnchorDockManager.RemoveControl Site=',DbgSName(Site),' ',dbgs(Site.BoundsRect)]);
+      //debugln(['TAnchorDockManager.RemoveControl Site=',DbgSName(Site),' ',dbgs(Site.BoundsRect)]);
 
       // Site can dock a control again
       DragManager.RegisterDockSite(Site,true);

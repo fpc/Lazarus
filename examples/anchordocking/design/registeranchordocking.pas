@@ -220,7 +220,6 @@ var
   SiteForm: TCustomForm;
 begin
   debugln(['TIDEAnchorDockMaster.ShowForm START ',DbgSName(AForm),' BringToFront=',BringToFront,' IsSite=',DockMaster.IsSite(AForm),' IsCustomSite=',DockMaster.IsCustomSite(AForm)]);
-  DumpStack;
   try
     AForm.DisableAlign;
 
@@ -233,7 +232,8 @@ begin
     end;
     AControl:=DockMaster.GetControl(AForm);
 
-    debugln(['TIDEAnchorDockMaster.ShowForm AControl=',DbgSName(AControl),' NeedPlacing=',NeedPlacing,' Floating=',DockMaster.IsFloating(AForm)]);
+    if not Aform.IsVisible then debugln(['TIDEAnchorDockMaster.ShowForm AControl=',DbgSName(AControl),' NeedPlacing=',NeedPlacing,' Floating=',DockMaster.IsFloating(AForm)]);
+
     if (AControl<>nil) and NeedPlacing and DockMaster.IsFloating(AForm) then begin
       // this form is not yet on the screen and is not yet docked
       debugln(['TIDEAnchorDockMaster.ShowForm placing ',DbgSName(AControl),' ...']);
@@ -265,7 +265,7 @@ begin
     end;
 
   finally
-    debugln(['TIDEAnchorDockMaster.ShowForm MakeVisible ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect),' Floating=',DockMaster.IsFloating(AForm)]);
+    if not Aform.IsVisible then debugln(['TIDEAnchorDockMaster.ShowForm MakeVisible ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect),' Floating=',DockMaster.IsFloating(AForm)]);
     DockMaster.MakeVisible(AForm,BringToFront);
     AForm.EnableAlign;
 
@@ -275,7 +275,7 @@ begin
         Parent.ShowOnTop;
     end;
   end;
-  debugln(['TIDEAnchorDockMaster.ShowForm END ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect)]);
+  //debugln(['TIDEAnchorDockMaster.ShowForm END ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect)]);
 end;
 
 procedure TIDEAnchorDockMaster.CloseAll;
