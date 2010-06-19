@@ -1892,17 +1892,21 @@ begin
     begin
       img:=TBitmap.Create;
       img.SetSize(16, 16);
-      img.PixelFormat:=pf32bit;
+      img.PixelFormat:=pf24bit;
       img.Transparent:=True;
+      img.TransparentColor:=clLime;
+      img.Canvas.AntialiasingMode:=amOff;
+      img.Canvas.Brush.Color:=img.TransparentColor;
+      img.Canvas.Brush.Style:=bsSolid;
+      img.Canvas.FillRect(Rect(0,0,img.Width,img.Height));
       img.Canvas.Pen.Color:=clBlack;
       img.Canvas.Pen.Width:=3;
-      img.Canvas.FillRect(Rect(0,0,img.Width,img.Height));
       img.Canvas.MoveTo(4,4);
-      img.Canvas.LineTo(12,12);
-      img.Canvas.MoveTo(12,4);
-      img.Canvas.LineTo(4,12);
+      img.Canvas.LineTo(img.Width-4,img.Height-4);
+      img.Canvas.MoveTo(img.Width-4,4);
+      img.Canvas.LineTo(4,img.Height-4);
       Image:=img.ReleaseHandle; 
-      Mask:=img.ReleaseMaskHandle;
+      Mask:=0;
       img.Free;
       Result:=True;
     end;
