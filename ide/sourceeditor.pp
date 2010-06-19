@@ -5672,12 +5672,18 @@ Begin
 End;
 
 procedure TSourceNotebook.DoClose(var CloseAction: TCloseAction);
+var
+  Layout: TSimpleWindowLayout;
 begin
   inherited DoClose(CloseAction);
   CloseAction := caHide;
   {$IFnDEF SingleSrcWindow}
   if PageCount = 0 then begin { $NOTE maybe keep the last one}
     // Make the name unique, because it may not immediately be released
+    // disconnect first
+    Layout:=EnvironmentOptions.IDEWindowLayoutList.ItemByForm(Self);
+    if Layout<>nil then
+      Layout.Form:=nil;
     Name := Name + '___' + IntToStr(PtrUInt(Pointer(Self)));
     CloseAction := caFree;
   end

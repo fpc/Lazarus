@@ -706,7 +706,7 @@ begin
       if ALayout.Applied then exit;
       ALayout.Applied:=true;
       {$IFDEF VerboseIDEDocking}
-      debugln(['TSimpleWindowLayoutList.ApplyAndShow restore ',ALayout.FormID]);
+      debugln(['TSimpleWindowLayoutList.ApplyAndShow restore ',ALayout.FormID,' ',IDEWindowPlacementNames[ALayout.WindowPlacement]]);
       {$ENDIF}
 
       case ALayout.WindowPlacement of
@@ -752,6 +752,8 @@ begin
         end;
       end;
     end;
+
+    debugln(['TSimpleWindowLayoutList.ApplyAndShow no layout found ',ALayout<>nil,' ',DbgSName(AForm)]);
 
     // no layout found => use default
     Creator:=IDEWindowCreators.FindWithName(AForm.Name);
