@@ -5,8 +5,16 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
 msgstr ""
 
+#: anchordockstr.adrsallfiles
+msgid "All files"
+msgstr ""
+
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
+msgstr ""
+
+#: anchordockstr.adrsanchordockinglayout
+msgid "Anchor Docking Layout"
 msgstr ""
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors

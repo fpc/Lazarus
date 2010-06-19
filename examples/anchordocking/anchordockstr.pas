@@ -106,6 +106,8 @@ resourcestring
     +'file "%s"%s%s';
   adrsError = 'Error';
   adrsSaveWindowLayoutToFileXml = 'Save window layout to file (*.xml)';
+  adrsAllFiles = 'All files';
+  adrsAnchorDockingLayout = 'Anchor Docking Layout';
 
 implementation
 
