@@ -916,16 +916,16 @@ procedure TSimpleWindowLayoutList.LoadFromConfig(Config: TConfigStorage;
   const Path: string);
 var
   i: integer;
-  Name: String;
+  ID: String;
 begin
   // do not clear, just add/replace the values from the config
 
   // create new windows
   i := Config.GetValue(Path+'Desktop/FormIdCount', 0);
   while i > 0 do begin
-    Name := Config.GetValue(Path+'Desktop/FormIdList/a'+IntToStr(i), '');
-    if (Name <> '') and (IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(Name) = nil) then
-      CreateWindowLayout(Name);
+    ID := Config.GetValue(Path+'Desktop/FormIdList/a'+IntToStr(i), '');
+    if (ID <> '') and (IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(ID) = nil) then
+      CreateWindowLayout(ID);
     dec(i);
   end;
 
@@ -938,8 +938,9 @@ procedure TSimpleWindowLayoutList.SaveToConfig(Config: TConfigStorage;
 var i: integer;
 begin
   Config.SetDeleteValue(Path+'FormIdCount',Count,0);
+  debugln(['TSimpleWindowLayoutList.SaveToConfig ',Count]);
   for i:=0 to Count-1 do begin
-    Config.SetDeleteValue(Path+'Desktop/FormIdList/a'+IntToStr(i+1),Items[i].Name,'');
+    Config.SetDeleteValue(Path+'Desktop/FormIdList/a'+IntToStr(i+1),Items[i].FormID,'');
     Items[i].SaveToConfig(Config,Path);
   end;
 end;
