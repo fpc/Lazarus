@@ -353,6 +353,7 @@ begin
       Parent:=GetParentForm(AForm);
       if Parent<>nil then
         Parent.ShowOnTop;
+      AForm.SetFocus;
     end;
   end;
   //debugln(['TIDEAnchorDockMaster.ShowForm END ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect)]);

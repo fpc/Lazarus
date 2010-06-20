@@ -1793,8 +1793,10 @@ begin
     AControl.EnableAutoSizing;
   end;
   // BringToFront
-  if BringToFront and (Site<>nil) then
+  if BringToFront and (Site<>nil) then begin
     GetParentForm(Site).BringToFront;
+    Site.SetFocus;
+  end;
 end;
 
 procedure TAnchorDockMaster.MakeDockSite(AForm: TCustomForm; Sites: TAnchors;
@@ -4627,7 +4629,7 @@ begin
   WidthDiff:=FSiteClientRect.Right-OldSiteClientRect.Right;
   HeightDiff:=FSiteClientRect.Bottom-OldSiteClientRect.Bottom;
 
-  debugln(['TAnchorDockManager.ResetBounds ',DbgSName(Site),' ',dbgs(Child.BaseBounds),' ',WidthDiff,',',HeightDiff]);
+  //debugln(['TAnchorDockManager.ResetBounds ',DbgSName(Site),' ',dbgs(Child.BaseBounds),' ',WidthDiff,',',HeightDiff]);
   case ResizePolicy of
   admrpChild:
     begin
