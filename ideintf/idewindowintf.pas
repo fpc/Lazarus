@@ -131,23 +131,23 @@ type
     FDockAlign: TAlign;
     FDockSibling: string;
     FFormName: string;
-    FHeight: string;
+    FBottom: string;
     FLeft: string;
     FMulti: boolean;
     FOnGetLayout: TGetDefaultIDEWindowLayoutEvent;
     FState: TIWCState;
     FTop: string;
-    FWidth: string;
-    procedure SetHeight(const AValue: string);
+    FRight: string;
+    procedure SetBottom(const AValue: string);
     procedure SetLeft(const AValue: string);
     procedure SetTop(const AValue: string);
-    procedure SetWidth(const AValue: string);
+    procedure SetRight(const AValue: string);
   public
     constructor Create(aFormName: string); overload;
     constructor Create(aFormName: string;
                        CreateFormProc: TCreateIDEWindowProc;
                        CreateFormMethod: TCreateIDEWindowMethod;
-                       aLeft, aTop, aWidth, aHeight: string;
+                       aLeft, aTop, aRight, aBottom: string;
                        aDockSibling : string = '';
                        aDockAlign: TAlign = alNone;
                        aMulti: boolean = false;
@@ -161,8 +161,8 @@ type
     property State: TIWCState read FState write FState;
     property Left: string read FLeft write SetLeft; // '12' for 12 pixel, '10%' for 10 percent of screen.width
     property Top: string read FTop write SetTop; // '12' for 12 pixel, '10%' for 10 percent of screen.height
-    property Width: string read FWidth write SetWidth; // '12' for 12 pixel, '10%' for 10 percent of screen.width
-    property Height: string read FHeight write SetHeight; // '12' for 12 pixel, '10%' for 10 percent of screen.height
+    property Right: string read FRight write SetRight; // '12' for 12 pixel, '+12' for a Width of 12 pixel, '-12' for Screen.Width-12, '10%' for 10 percent of screen.width
+    property Bottom: string read FBottom write SetBottom; // '12' for 12 pixel, '+12' for a Height of 12 pixel, '10%' for 10 percent of screen.height
     property DockSibling: string read FDockSibling write FDockSibling; // another form name
     property DockAlign: TAlign read FDockAlign write FDockAlign;
     property OnGetLayout: TGetDefaultIDEWindowLayoutEvent read FOnGetLayout
@@ -192,7 +192,7 @@ type
                  CreateFormMethod: TCreateIDEWindowMethod;
                  // you can pass some hints to the layout system how to place the form by default
                  // Note: the IDE dockmaster may completely ignore these values
-                 aLeft, aTop, aWidth, aHeight: string;
+                 aLeft, aTop, aRight, aBottom: string;
                  aDockSibling : string = '';
                  aDockAlign: TAlign = alNone;
                  aMulti: boolean = false; // if true, then there can be more than one instance, the aFormName is the shared prefix
@@ -524,11 +524,11 @@ end;
 
 { TIDEWindowCreator }
 
-procedure TIDEWindowCreator.SetHeight(const AValue: string);
+procedure TIDEWindowCreator.SetBottom(const AValue: string);
 begin
   CheckBoundValue(AValue);
-  if FHeight=AValue then exit;
-  FHeight:=AValue;
+  if FBottom=AValue then exit;
+  FBottom:=AValue;
 end;
 
 procedure TIDEWindowCreator.SetLeft(const AValue: string);
@@ -545,11 +545,11 @@ begin
   FTop:=AValue;
 end;
 
-procedure TIDEWindowCreator.SetWidth(const AValue: string);
+procedure TIDEWindowCreator.SetRight(const AValue: string);
 begin
   CheckBoundValue(AValue);
-  if FWidth=AValue then exit;
-  FWidth:=AValue;
+  if FRight=AValue then exit;
+  FRight:=AValue;
 end;
 
 procedure TIDEWindowCreator.CheckBoundValue(s: string);
@@ -558,6 +558,7 @@ var
 begin
   if s='' then exit;
   p:=1;
+  if (p<=length(s)) and (s[p] in ['+','-']) then inc(p);
   while (p<=length(s)) and (s[p] in ['0'..'9']) do inc(p);
   if p<=1 then
     raise Exception.Create('TIDEWindowDefaultLayout.CheckBoundValue: expected number, but '+s+' found');
@@ -570,8 +571,8 @@ end;
 procedure TIDEWindowCreator.GetDefaultBounds(AForm: TCustomForm; out
   DefBounds: TRect);
 var
-  aWidth: LongInt;
-  aHeight: LongInt;
+  aRight: LongInt;
+  aBottom: LongInt;
 begin
   // left
   if Left='' then
@@ -587,22 +588,30 @@ begin
     DefBounds.Top:=Screen.Height*StrToIntDef(copy(Top,1,length(Top)-1),0) div 100
   else
     DefBounds.Top:=StrToIntDef(Top,0);
-  // width
-  if Width='' then
-    aWidth:=AForm.Width
-  else if Width[length(Width)]='%' then
-    aWidth:=Screen.Width*StrToIntDef(copy(Width,1,length(Width)-1),0) div 100
+  // right
+  if Right='' then
+    aRight:=AForm.Left+AForm.Width
+  else if Right[length(Right)]='%' then
+    aRight:=Screen.Width*StrToIntDef(copy(Right,1,length(Right)-1),0) div 100
   else
-    aWidth:=StrToIntDef(Width,0);
-  DefBounds.Right:=DefBounds.Left+aWidth;
-  // height
-  if Height='' then
-    aHeight:=AForm.Height
-  else if Height[length(Height)]='%' then
-    aHeight:=Screen.Height*StrToIntDef(copy(Height,1,length(Height)-1),0) div 100
+    aRight:=StrToIntDef(Right,0);
+  if aRight<0 then
+    aRight:=Screen.Width-aRight
+  else if (Right<>'') and (Right[1]='+') then
+    inc(aRight,DefBounds.Left);
+  DefBounds.Right:=aRight;
+  // bottom
+  if Bottom='' then
+    aBottom:=AForm.Top+AForm.Height
+  else if Bottom[length(Bottom)]='%' then
+    aBottom:=Screen.Height*StrToIntDef(copy(Bottom,1,length(Bottom)-1),0) div 100
   else
-    aHeight:=StrToIntDef(Height,0);
-  DefBounds.Bottom:=DefBounds.Top+aHeight;
+    aBottom:=StrToIntDef(Bottom,0);
+  if aBottom<0 then
+    aBottom:=Screen.Height-aBottom
+  else if (Bottom<>'') and (Bottom[1]='+') then
+    inc(aBottom,DefBounds.Top);
+  DefBounds.Bottom:=aBottom;
 end;
 
 constructor TIDEWindowCreator.Create(aFormName: string);
@@ -612,16 +621,16 @@ end;
 
 constructor TIDEWindowCreator.Create(aFormName: string;
   CreateFormProc: TCreateIDEWindowProc;
-  CreateFormMethod: TCreateIDEWindowMethod; aLeft, aTop, aWidth,
-  aHeight: string; aDockSibling: string; aDockAlign: TAlign; aMulti: boolean;
+  CreateFormMethod: TCreateIDEWindowMethod;
+  aLeft, aTop, aRight, aBottom: string; aDockSibling: string; aDockAlign: TAlign; aMulti: boolean;
   GetLayoutEvent: TGetDefaultIDEWindowLayoutEvent);
 begin
   Create(aFormName);
   FMulti:=aMulti;
   Left:=aLeft;
   Top:=aTop;
-  Width:=aWidth;
-  Height:=aHeight;
+  Right:=aRight;
+  Bottom:=aBottom;
   DockSibling:=aDockSibling;
   DockAlign:=aDockAlign;
   OnCreateFormMethod:=CreateFormMethod;
@@ -685,13 +694,14 @@ end;
 
 function TIDEWindowCreatorList.Add(aFormName: string;
   CreateFormProc: TCreateIDEWindowProc;
-  CreateFormMethod: TCreateIDEWindowMethod; aLeft, aTop, aWidth,
-  aHeight: string; aDockSibling: string; aDockAlign: TAlign; aMulti: boolean;
+  CreateFormMethod: TCreateIDEWindowMethod;
+  aLeft, aTop, aRight, aBottom: string;
+  aDockSibling: string; aDockAlign: TAlign; aMulti: boolean;
   GetLayoutEvent: TGetDefaultIDEWindowLayoutEvent): TIDEWindowCreator;
 begin
   ErrorIfFormExists(aFormName);
   Result:=TIDEWindowCreator.Create(aFormName,CreateFormProc,CreateFormMethod,
-       aLeft,aTop,aWidth,aHeight,aDockSibling,aDockAlign,aMulti,GetLayoutEvent);
+       aLeft,aTop,aRight,aBottom,aDockSibling,aDockAlign,aMulti,GetLayoutEvent);
   Add(Result);
 end;
 

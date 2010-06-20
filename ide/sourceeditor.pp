@@ -8408,16 +8408,23 @@ procedure TSourceEditorManager.GetDefaultLayout(Sender: TObject;
   DockAlign: TAlign);
 var
   i: LongInt;
+  p: Integer;
 begin
+  DockSibling:='';
+  DockAlign:=alNone;
   i:=StrToIntDef(
        copy(aFormName,length(NonModalIDEWindowNames[nmiwSourceNoteBookName])+1,
             length(aFormName)),0);
   {$IFDEF VerboseIDEDocking}
   debugln(['TSourceEditorManager.GetDefaultLayout ',aFormName,' i=',i]);
   {$ENDIF}
-  aBounds:=Bounds(250+30*i,160+30*i,
-                    Min(1000,(Screen.Width*7) div 10),(Screen.Height*7) div 10);
-  if i=0 then begin
+  if Application.MainForm<>nil then
+    p:=Min(200,Application.MainForm.Top+Application.MainForm.Height+25)
+  else
+    p:=120;
+  inc(p,30*i);
+  aBounds:=Rect(250+30*i,p,Min(1000,Screen.Width-300),Screen.Height-200);
+  if (i=0) and (IDEDockMaster<>nil) then begin
     DockSibling:=NonModalIDEWindowNames[nmiwMainIDEName];
     DockAlign:=alBottom;
   end;
@@ -9084,7 +9091,7 @@ begin
 
   // layout
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSourceNoteBookName],
-    nil,@CreateSourceWindow,'250','100','70%','70%',
+    nil,@CreateSourceWindow,'250','100','+70%','+70%',
     NonModalIDEWindowNames[nmiwMainIDEName],alBottom,
     true,@GetDefaultLayout);
 end;

@@ -753,13 +753,14 @@ begin
       end;
     end;
 
-    debugln(['TSimpleWindowLayoutList.ApplyAndShow no layout found ',ALayout<>nil,' ',DbgSName(AForm)]);
+    {$IFDEF VerboseIDEDocking}
+    debugln(['TSimpleWindowLayoutList.ApplyAndShow no stored layout found, layout registered=',ALayout<>nil,' AForm=',DbgSName(AForm)]);
+    {$ENDIF}
 
     // no layout found => use default
     Creator:=IDEWindowCreators.FindWithName(AForm.Name);
     if Creator<>nil then
     begin
-      debugln(['TSimpleWindowLayoutList.ApplyAndShow creator found for ',DbgSName(AForm),': Left=',Creator.Left,' Top=',Creator.Top,' Width=',Creator.Width,' Height=',Creator.Height,' DockSibling=',Creator.DockSibling,' DockAlign=',dbgs(Creator.DockAlign)]);
       if Creator.OnGetLayout<>nil then
         Creator.OnGetLayout(Self,AForm.Name,NewBounds,DockSiblingName,DockAlign)
       else begin
@@ -767,6 +768,9 @@ begin
         DockSiblingName:=Creator.DockSibling;
         DockAlign:=Creator.DockAlign;
       end;
+      {$IFDEF VerboseIDEDocking}
+      debugln(['TSimpleWindowLayoutList.ApplyAndShow creator found for ',DbgSName(AForm),': Left=',Creator.Left,' Top=',Creator.Top,' Right=',Creator.Right,' Bottom=',Creator.Bottom,' Creator.DockSibling=',Creator.DockSibling,' Creator.DockAlign=',dbgs(Creator.DockAlign),' NewBounds=',dbgs(NewBounds),' DockSibling=',DockSiblingName,' DockAlign=',dbgs(DockAlign)]);
+      {$ENDIF}
       if DockSiblingName<>'' then
       begin
         DockSibling:=Screen.FindForm(DockSiblingName);
@@ -808,7 +812,9 @@ begin
           end;
         end;
       end;
+      {$IFDEF VerboseIDEDocking}
       debugln(['TSimpleWindowLayoutList.ApplyAndShow ',DbgSName(AForm),' NewBounds=',dbgs(NewBounds)]);
+      {$ENDIF}
       NewBounds.Left:=Min(10000,Max(-10000,NewBounds.Left));
       NewBounds.Top:=Min(10000,Max(-10000,NewBounds.Top));
       NewBounds.Right:=Max(NewBounds.Left+100,NewBounds.Right);

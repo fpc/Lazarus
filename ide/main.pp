@@ -573,6 +573,9 @@ type
                                          var Abort: boolean);
     procedure OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
                                         ErrorOccurred: boolean);
+
+    procedure OnGetLayout(Sender: TObject; aFormName: string;
+            out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
   private
     FDisplayState: TDisplayState;
     FLastFormActivated: TCustomForm;// used to find the last form so you can
@@ -1303,8 +1306,8 @@ begin
   MainIDEBar.Constraints.MaxHeight:=110;
   MainIDEBar.Name := NonModalIDEWindowNames[nmiwMainIDEName];
   FormCreator:=IDEWindowCreators.Add(MainIDEBar.Name);
-  FormCreator.Width:='100%';
-  FormCreator.Height:='90';
+  FormCreator.Right:='100%';
+  FormCreator.Bottom:='+90';
   Layout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(MainIDEBar.Name);
   if not (Layout.WindowState in [iwsNormal,iwsMaximized]) then
     Layout.WindowState:=iwsNormal;
@@ -1942,7 +1945,8 @@ begin
   ObjectInspector1.OnAutoShow:=@OIOnAutoShow;
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
   IDEWindowCreators.Add(ObjectInspector1.Name,nil,@CreateIDEWindow,
-   '0','150','230','50%',NonModalIDEWindowNames[nmiwSourceNoteBookName],alLeft);
+   '0','120','+230','-120',NonModalIDEWindowNames[nmiwSourceNoteBookName],alLeft,
+   false,@OnGetLayout);
 
   EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
 
@@ -2191,27 +2195,28 @@ end;
 
 procedure TMainIDE.SetupIDEWindowsLayout;
 begin
-  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwCodeExplorerName],
-    nil,@CreateIDEWindow,
-    '72%','130','170','60%',NonModalIDEWindowNames[nmiwSourceNoteBookName],alRight);
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwMessagesViewName],
     nil,@CreateIDEWindow,
-    '230','75%','70%','100',NonModalIDEWindowNames[nmiwSourceNoteBookName],alBottom);
+    '250','75%','+70%','+100',NonModalIDEWindowNames[nmiwSourceNoteBookName],alBottom,
+    false,@OnGetLayout);
+  IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwCodeExplorerName],
+    nil,@CreateIDEWindow,
+    '72%','120','+170','-200',NonModalIDEWindowNames[nmiwSourceNoteBookName],alRight);
 
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwUnitDependenciesName],
     nil,@CreateIDEWindow,'200','200','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwFPDocEditorName],
-    nil,@CreateIDEWindow,'250','75%','60%','120');
+    nil,@CreateIDEWindow,'250','75%','+70%','+120');
   //IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwClipbrdHistoryName],
   //  nil,@CreateIDEWindow,'250','200','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwProjectInspector],
-    nil,@CreateIDEWindow,'200','150','300','400');
+    nil,@CreateIDEWindow,'200','150','+300','+400');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwSearchResultsViewName],
-    nil,@CreateIDEWindow,'250','250','60%','300');
+    nil,@CreateIDEWindow,'250','250','+70%','+300');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwAnchorEditor],
     nil,@CreateIDEWindow,'250','250','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwCodeBrowser],
-    nil,@CreateIDEWindow,'200','200','650','500');
+    nil,@CreateIDEWindow,'200','200','+650','+500');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwIssueBrowser],
     nil,@CreateIDEWindow,'250','250','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwJumpHistory],
@@ -16109,6 +16114,37 @@ begin
     ToolStatus:=itNone;
   if ErrorOccurred then
     DoJumpToCompilerMessage(-1,true);
+end;
+
+procedure TMainIDE.OnGetLayout(Sender: TObject; aFormName: string; out
+  aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
+var
+  SrcEditWnd: TSourceNotebook;
+begin
+  DockSibling:='';
+  DockAlign:=alNone;
+  if (ObjectInspector1<>nil) and (aFormName=ObjectInspector1.Name) then begin
+    // place object inspector below main bar
+    aBounds:=Rect(0,Min(MainIDEBar.Top+MainIDEBar.Height+25,200),230,Screen.Height-150);
+    // or left of source editor
+    DockSibling:=NonModalIDEWindowNames[nmiwSourceNoteBookName];
+    DockAlign:=alLeft;
+  end
+  else if (aFormName=NonModalIDEWindowNames[nmiwMessagesViewName]) then begin
+    // place messages below source editor
+    if SourceEditorManager.SourceWindowCount>0 then begin
+      SrcEditWnd:=SourceEditorManager.SourceWindows[0];
+      aBounds:=GetParentForm(SrcEditWnd).BoundsRect;
+      aBounds.Top:=aBounds.Bottom+25;
+      aBounds.Bottom:=aBounds.Top+100;
+    end else begin
+      aBounds:=Rect(250,Screen.Height-200,Screen.Width-250,100);
+    end;
+    if IDEDockMaster<>nil then begin
+      DockSibling:=NonModalIDEWindowNames[nmiwSourceNoteBookName];
+      DockAlign:=alBottom;
+    end;
+  end;
 end;
 
 procedure TMainIDE.RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings
