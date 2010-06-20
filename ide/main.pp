@@ -1223,7 +1223,7 @@ begin
     Application.ShowButtonGlyphs := ShowButtonGlyphs;
     Application.ShowMenuGlyphs := ShowMenuGlyphs;
   end;
-  IDEWindowCreators.OnShowForm:=@EnvironmentOptions.IDEWindowLayoutList.ApplyAndShow;
+  IDEWindowCreators.OnShowForm:=@IDEWindowCreators.SimpleLayoutStorage.ApplyAndShow;
   UpdateDefaultPascalFileExtensions;
 
   EditorOpts := TEditorOptions.Create;
@@ -1308,7 +1308,7 @@ begin
   FormCreator:=IDEWindowCreators.Add(MainIDEBar.Name);
   FormCreator.Right:='100%';
   FormCreator.Bottom:='+90';
-  Layout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(MainIDEBar.Name);
+  Layout:=IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(MainIDEBar.Name);
   if not (Layout.WindowState in [iwsNormal,iwsMaximized]) then
     Layout.WindowState:=iwsNormal;
   if IDEDockMaster<>nil then
@@ -2234,8 +2234,8 @@ begin
   DoCallNotifyHandler(lihtIDERestoreWindows);
   if IDEDockMaster<>nil then
     exit;
-  for i:=0 to EnvironmentOptions.IDEWindowLayoutList.Count-1 do begin
-    ALayout:=EnvironmentOptions.IDEWindowLayoutList[i];
+  for i:=0 to IDEWindowCreators.SimpleLayoutStorage.Count-1 do begin
+    ALayout:=IDEWindowCreators.SimpleLayoutStorage[i];
     if not ALayout.Visible then continue;
     AForm:=IDEWindowCreators.GetForm(ALayout.FormID,true);
     if AForm=nil then continue;
@@ -4227,8 +4227,8 @@ end;
 procedure TMainIDE.SaveDesktopSettings(
   TheEnvironmentOptions: TEnvironmentOptions);
 begin
+  IDEWindowCreators.SimpleLayoutStorage.StoreWindowPositions;
   with TheEnvironmentOptions do begin
-    IDEWindowLayoutList.StoreWindowPositions;
     ObjectInspectorOptions.Assign(ObjectInspector1);
   end;
 end;
@@ -12718,7 +12718,7 @@ begin
   if SourceEditorManager.SourceWindowCount = 0 then exit;
   SrcNoteBook := SourceEditorManager.SourceWindows[0];
 
-  Layout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(SrcNoteBook.Name);
+  Layout:=IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(SrcNoteBook.Name);
   if (Layout<>nil) and (Layout.WindowPlacement=iwpDefault)
   and ((SrcNoteBook.Top + SrcNoteBook.Height) > MessagesView.Top)
   and (MessagesView.Parent = nil) then
@@ -15916,7 +15916,6 @@ end;
 procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
 begin
   HiddenWindowsOnRun.Remove(AForm);
-  EnvironmentOptions.IDEWindowLayoutList.CloseForm(AForm);
 end;
 
 procedure TMainIDE.OnRemoteControlTimer(Sender: TObject);

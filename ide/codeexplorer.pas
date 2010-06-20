@@ -134,8 +134,6 @@ type
     RefreshSpeedButton: TSpeedButton;
     ModeSpeedButton: TSpeedButton;
     TreePopupmenu: TPopupMenu;
-    procedure CodeExplorerViewClose(Sender: TObject;
-                                    var CloseAction: TCloseAction);
     procedure CodeExplorerViewCreate(Sender: TObject);
     procedure CodeExplorerViewDestroy(Sender: TObject);
     procedure CodeTreeviewDblClick(Sender: TObject);
@@ -507,12 +505,6 @@ begin
       exit;
     Refresh(true);
   end;
-end;
-
-procedure TCodeExplorerView.CodeExplorerViewCLOSE(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-  EnvironmentOptions.IDEWindowLayoutList.ItemByForm(Self).GetCurrentPosition;
 end;
 
 procedure TCodeExplorerView.JumpToMenuitemCLICK(Sender: TObject);

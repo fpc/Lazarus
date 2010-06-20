@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, types, FileUtil, Forms, Controls, StdCtrls, ExtCtrls,
-  Spin,
+  LCLProc, Spin,
   ObjInspStrConsts, ObjectInspector, IDEOptionsIntf, IDEWindowIntf,
   EnvironmentOpts, IDEOptionDefs,
   InterfaceBase, LazarusIDEStrConsts;
@@ -72,6 +72,8 @@ type
     function GetLayoutCaption(ALayout: TSimpleWindowLayout): String;
     property Layout: TSimpleWindowLayout read FLayout write SetLayout;
   public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
@@ -91,10 +93,6 @@ begin
 end;
 
 procedure TWindowOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
-var
-  i: Integer;
-  Creator: TIDEWindowCreator;
-  j: Integer;
 begin
   // windows
   SingleTaskBarButtonCheckBox.Caption := dlgSingleTaskBarButton;
@@ -108,22 +106,42 @@ begin
   ProjectDirInIdeTitleCheckBox.Caption:=lisIDEProjectDirInIdeTitle;
   ProjectDirInIdeTitleCheckBox.Hint:=
     lisProjectDirectoryIsShowedInIdeTitleBar;
+end;
+
+procedure TWindowOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  Creator: TIDEWindowCreator;
+  i: Integer;
+  j: Integer;
+begin
+  with AOptions as TEnvironmentOptions do
+  begin
+    // window minimizing and hiding
+    SingleTaskBarButtonCheckBox.Checked := SingleTaskBarButton;
+    HideIDEOnRunCheckBox.Checked := HideIDEOnRun;
+    HideMessagesIconsCheckBox.Checked := HideMessagesIcons;
+    TitleStartsWithProjectCheckBox.Checked:=IDETitleStartsWithProject;
+    ProjectDirInIdeTitleCheckBox.Checked:=IDEProjectDirectoryInIdeTitle;
+
+  end;
+
+  FLayouts.Assign(IDEWindowCreators.SimpleLayoutStorage);
 
   if IDEDockMaster=nil then begin
     // Window Positions
-    FLayouts:=EnvironmentOptions.IDEWindowLayoutList;
+    FLayouts.Assign(IDEWindowCreators.SimpleLayoutStorage);
     WindowPositionsGroupBox.Parent:=Self;
     WindowPositionsGroupBox.Caption := dlgWinPos;
     WindowPositionsListBox.Items.BeginUpdate;
+    WindowPositionsListBox.Items.Clear;
     // show all registered windows
     // Note: the layouts also contain forms, that were once registered and may be
     // registered in the future again
     for i:=0 to IDEWindowCreators.Count-1 do begin
       Creator:=IDEWindowCreators[i];
       for j:=0 to FLayouts.Count-1 do begin
-        if CompareText(Creator.FormName,copy(FLayouts[j].FormID,1,length(Creator.FormName)))<>0
-        then continue;
-        WindowPositionsListBox.Items.AddObject(GetLayoutCaption(FLayouts[j]),FLayouts[j]);
+        if Creator.NameFits(FLayouts[j].FormID) then
+          WindowPositionsListBox.Items.AddObject(GetLayoutCaption(FLayouts[j]),FLayouts[j]);
       end;
     end;
     WindowPositionsListBox.Items.EndUpdate;
@@ -139,32 +157,20 @@ begin
     DefaultRadioButton.Caption := rsiwpDefault;
     RestoreWindowGeometryRadioButton.Caption := rsiwpRestoreWindowGeometry;
     CustomPositionRadioButton.Caption := rsiwpCustomPosition;
+
+    SetWindowPositionsItem(0);
   end else begin
     WindowPositionsGroupBox.Parent:=nil;
   end;
 end;
 
-procedure TWindowOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-begin
-  with AOptions as TEnvironmentOptions do
-  begin
-    FLayouts := IDEWindowLayoutList;
-    SetWindowPositionsItem(0);
-
-    // window minimizing and hiding
-    SingleTaskBarButtonCheckBox.Checked := SingleTaskBarButton;
-    HideIDEOnRunCheckBox.Checked := HideIDEOnRun;
-    HideMessagesIconsCheckBox.Checked := HideMessagesIcons;
-    TitleStartsWithProjectCheckBox.Checked:=IDETitleStartsWithProject;
-    ProjectDirInIdeTitleCheckBox.Checked:=IDEProjectDirectoryInIdeTitle;
-  end;
-end;
-
 procedure TWindowOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  SaveLayout;
+  IDEWindowCreators.SimpleLayoutStorage.Assign(FLayouts);
+
   with AOptions as TEnvironmentOptions do
   begin
-    SaveLayout;
     // window minimizing
     SingleTaskBarButton := SingleTaskBarButtonCheckBox.Checked;
     HideIDEOnRun:=HideIDEOnRunCheckBox.Checked;
@@ -195,6 +201,7 @@ var
 begin
   FLayout := AValue;
   if Layout=nil then Exit;
+  //debugln(['TWindowOptionsFrame.SetLayout ',Layout.FormID,' ',IDEWindowPlacementNames[Layout.WindowPlacement]]);
 
   for APlacement := Low(TIDEWindowPlacement) to High(TIDEWindowPlacement) do
   begin
@@ -308,7 +315,7 @@ var
 begin
   if Layout = nil then
    Exit;
-
+  //debugln(['TWindowOptionsFrame.SaveLayout ',Layout.FormID]);
   for APlacement := Low(TIDEWindowPlacement) to High(TIDEWindowPlacement) do
   begin
     ARadioButton := GetPlacementRadioButtons(APlacement);
@@ -367,6 +374,18 @@ begin
   if Fits('IssueBrowser',lisMenuViewRestrictionBrowser) then exit;
   if Fits('JumpHistory',lisJHJumpHistory) then exit;
   Result:=ALayout.FormCaption;
+end;
+
+constructor TWindowOptionsFrame.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FLayouts:=TSimpleWindowLayoutList.Create;
+end;
+
+destructor TWindowOptionsFrame.Destroy;
+begin
+  FreeAndNil(FLayouts);
+  inherited Destroy;
 end;
 
 class function TWindowOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

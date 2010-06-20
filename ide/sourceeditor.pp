@@ -4816,7 +4816,6 @@ constructor TSourceNotebook.Create(AOwner: TComponent);
 var
   i: Integer;
   n: TComponent;
-  Layout: TSimpleWindowLayout;
 begin
   inherited Create(AOwner);
   FManager := TSourceEditorManager(AOwner);
@@ -4841,16 +4840,6 @@ begin
   Caption := FBaseCaption;
   KeyPreview:=true;
   FProcessingCommand := false;
-
-  Layout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(self.Name);
-  if Layout = nil then
-  begin
-    Layout:=EnvironmentOptions.CreateWindowLayout(self);
-    Layout.Clear;
-  end else
-  begin
-    Layout.Form:=Self;
-  end;
 
   FSourceEditorList := TList.Create;
 
@@ -5681,7 +5670,7 @@ begin
   if PageCount = 0 then begin { $NOTE maybe keep the last one}
     // Make the name unique, because it may not immediately be released
     // disconnect first
-    Layout:=EnvironmentOptions.IDEWindowLayoutList.ItemByForm(Self);
+    Layout:=IDEWindowCreators.SimpleLayoutStorage.ItemByForm(Self);
     if Layout<>nil then
       Layout.Form:=nil;
     Name := Name + '___' + IntToStr(PtrUInt(Pointer(Self)));

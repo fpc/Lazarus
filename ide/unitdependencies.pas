@@ -155,8 +155,6 @@ type
     procedure RefreshButtonClick(Sender: TObject);
     procedure SelectUnitButtonClick(Sender: TObject);
     procedure ShowProjectButtonClick(Sender: TObject);
-    procedure UnitDependenciesViewClose(Sender: TObject;
-      var CloseAction: TCloseAction);
     procedure UnitHistoryListEditingDone(Sender: TObject);
     procedure UnitTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
           Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
@@ -261,12 +259,6 @@ begin
     if NewFilename<>'' then
       RootFilename:=NewFilename;
   end;
-end;
-
-procedure TUnitDependenciesView.UnitDependenciesViewClose(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-  EnvironmentOptions.IDEWindowLayoutList.ItemByForm(Self).GetCurrentPosition;
 end;
 
 procedure TUnitDependenciesView.UnitHistoryListEditingDone(Sender: TObject);

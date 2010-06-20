@@ -83,13 +83,9 @@ begin
 end;
 *)
 procedure TDebuggerDlg.DoClose(var CloseAction: TCloseAction);
-var
-  Layout: TSimpleWindowLayout;
 begin
   CloseAction := caFree; // we default to free
   inherited DoClose(CloseAction);
-  Layout := EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
-  if Layout <> nil then Layout.GetCurrentPosition;
 end;
 
 procedure TDebuggerDlg.DoBeginUpdate;

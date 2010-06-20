@@ -8,9 +8,8 @@ object UnitDependenciesView: TUnitDependenciesView
   ClientHeight = 300
   ClientWidth = 400
   KeyPreview = True
-  OnClose = UnitDependenciesViewClose
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object ToolBar: TToolBar
     Left = 0
     Height = 48
@@ -24,7 +23,7 @@ object UnitDependenciesView: TUnitDependenciesView
     ShowHint = True
     TabOrder = 0
     object ShowProjectButton: TToolButton
-      Left = 167
+      Left = 219
       Top = 2
       Caption = 'ShowProjectButton'
       OnClick = ShowProjectButtonClick
@@ -36,7 +35,7 @@ object UnitDependenciesView: TUnitDependenciesView
       OnClick = SelectUnitButtonClick
     end
     object RefreshButton: TToolButton
-      Left = 89
+      Left = 119
       Top = 2
       Caption = 'RefreshButton'
       OnClick = RefreshButtonClick
@@ -44,14 +43,12 @@ object UnitDependenciesView: TUnitDependenciesView
   end
   object UnitHistoryList: TComboBox
     Left = 6
-    Height = 21
+    Height = 27
     Top = 54
     Width = 388
     Align = alTop
-    AutoComplete = False
     BorderSpacing.Around = 6
-    ItemHeight = 13
-    ItemWidth = 0
+    ItemHeight = 0
     OnEditingDone = UnitHistoryListEditingDone
     TabOrder = 1
     Text = 'UnitHistoryList'
@@ -61,10 +58,10 @@ object UnitDependenciesView: TUnitDependenciesView
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 319
-    Height = 26
-    Top = 268
-    Width = 75
+    Left = 309
+    Height = 30
+    Top = 264
+    Width = 85
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -77,13 +74,13 @@ object UnitDependenciesView: TUnitDependenciesView
   object UnitTreeView: TTreeView
     AnchorSideBottom.Control = CloseButton
     Left = 6
-    Height = 181
-    Top = 81
+    Height = 171
+    Top = 87
     Width = 388
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    DefaultItemHeight = 15
+    DefaultItemHeight = 19
     ReadOnly = True
     TabOrder = 3
     OnAdvancedCustomDrawItem = UnitTreeViewAdvancedCustomDrawItem

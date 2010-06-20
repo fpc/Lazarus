@@ -157,7 +157,6 @@ type
     FLastSavedProjectFile: string;
     
     // window layout
-    FIDEWindowLayoutList: TSimpleWindowLayoutList;
     FIDEDialogLayoutList: TIDEDialogLayoutList;
     FSingleTaskBarButton: boolean;
     FHideIDEOnRun: boolean;
@@ -296,8 +295,6 @@ type
     property Filename: string read FFilename write SetFilename;
     procedure SetLazarusDefaultFilename;
     procedure GetDefaultFPCSourceDirectory;
-    function CreateWindowLayout(const TheFormID: string): TSimpleWindowLayout;
-    function CreateWindowLayout(const TheForm: TCustomForm): TSimpleWindowLayout;
     function IsDebuggerClassDefined: boolean;
     function GetTestBuildDirectory: string;
     function GetFPCSourceDirectory: string;
@@ -330,8 +327,6 @@ type
                                              write FAutoSaveIntervalInSecs;
        
     // window layouts
-    property IDEWindowLayoutList: TSimpleWindowLayoutList
-                           read FIDEWindowLayoutList write FIDEWindowLayoutList;
     property IDEDialogLayoutList: TIDEDialogLayoutList
                            read FIDEDialogLayoutList write FIDEDialogLayoutList;
     property SingleTaskBarButton: boolean read FSingleTaskBarButton
@@ -790,7 +785,6 @@ begin
   if IDEWindowIntf.IDEDialogLayoutList=FIDEDialogLayoutList then
     IDEWindowIntf.IDEDialogLayoutList:=nil;
   FreeAndNil(FIDEDialogLayoutList);
-  FreeAndNil(fIDEWindowLayoutList);
   FreeAndNil(FConfigStore);
   FreeAndNil(FXMLCfg);
   inherited Destroy;
@@ -921,16 +915,7 @@ begin
       FAutoCloseCompileDialog:=XMLConfig.GetValue(
          Path+'AutoCloseCompileDialog/Value',false);
 
-      // windows
-      i := XMLConfig.GetValue(Path+'Desktop/FormIdCount', 0);
-      while i > 0 do begin
-        name := XMLConfig.GetValue(Path+'Desktop/FormIdList/a'+IntToStr(i), '');
-        if (name <> '') and (IDEWindowLayoutList.ItemByFormID(name) = nil) then
-          CreateWindowLayout(name);
-        dec(i);
-      end;
-
-      FIDEWindowLayoutList.LoadFromConfig(Cfg,Path+'Desktop/');
+      IDEWindowCreators.SimpleLayoutStorage.LoadFromConfig(Cfg,Path+'Desktop/');
       FIDEDialogLayoutList.LoadFromConfig(FConfigStore,
         Path+'Desktop/Dialogs/');
       FSingleTaskBarButton := XMLConfig.GetValue(
@@ -1251,7 +1236,7 @@ begin
          FOpenLastProjectAtStart,true);
 
       // windows
-      FIDEWindowLayoutList.SaveToConfig(Cfg,Path+'Desktop/');
+      IDEWindowCreators.SimpleLayoutStorage.SaveToConfig(Cfg,Path+'Desktop/');
       FIDEDialogLayoutList.SaveToConfig(FConfigStore,Path+'Desktop/Dialogs/');
       XMLConfig.SetDeleteValue(Path+'Desktop/SingleTaskBarButton/Value',
                                FSingleTaskBarButton, False);
@@ -1499,30 +1484,10 @@ procedure TEnvironmentOptions.InitLayoutList;
 var
   l: TNonModalIDEWindow;
 begin
-  fIDEWindowLayoutList:=TSimpleWindowLayoutList.Create;
-
   for l:=Low(TNonModalIDEWindow) to High(TNonModalIDEWindow) do
     if l<>nmiwNone then
-      CreateWindowLayout(NonModalIDEWindowNames[l]);
-  CreateWindowLayout(DefaultObjectInspectorName);
-end;
-
-function TEnvironmentOptions.CreateWindowLayout(const TheFormID: string
-  ): TSimpleWindowLayout;
-begin
-  if TheFormID='' then
-    RaiseException('TEnvironmentOptions.CreateWindowLayout TheFormID empty');
-  if IDEWindowLayoutList.ItemByFormID(TheFormID)<>nil then
-    RaiseException('TEnvironmentOptions.CreateWindowLayout TheFormID exists');
-  Result:=TSimpleWindowLayout.Create(TheFormID);
-  IDEWindowLayoutList.Add(Result);
-end;
-
-function TEnvironmentOptions.CreateWindowLayout(const TheForm: TCustomForm
-  ): TSimpleWindowLayout;
-begin
-  Result:=CreateWindowLayout(TheForm.Name);
-  Result.Form:=TheForm;
+      IDEWindowCreators.SimpleLayoutStorage.CreateWindowLayout(NonModalIDEWindowNames[l]);
+  IDEWindowCreators.SimpleLayoutStorage.CreateWindowLayout(DefaultObjectInspectorName);
 end;
 
 function TEnvironmentOptions.IsDebuggerClassDefined: boolean;

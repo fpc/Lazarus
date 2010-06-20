@@ -8,7 +8,6 @@ object CodeExplorerView: TCodeExplorerView
   ClientHeight = 517
   ClientWidth = 215
   KeyPreview = True
-  OnClose = CodeExplorerViewCLOSE
   OnCreate = CodeExplorerViewCREATE
   OnDestroy = CodeExplorerViewDestroy
   LCLVersion = '0.9.29'
@@ -44,7 +43,7 @@ object CodeExplorerView: TCodeExplorerView
         OnDblClick = CodeTreeviewDblClick
         OnDeletion = CodeTreeviewDeletion
         OnKeyUp = CodeTreeviewKeyUp
-        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw, tvoNoDoubleClickExpand]
+        Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand, tvoThemedDraw]
       end
       object CodeTreeviewButtonPanel: TPanel
         Left = 0
@@ -112,8 +111,8 @@ object CodeExplorerView: TCodeExplorerView
     end
     object DirectivesPage: TPage
       Caption = 'DirectivesPage'
-      ClientWidth = 213
-      ClientHeight = 488
+      ClientWidth = 211
+      ClientHeight = 482
       object DirectivesFilterEdit: TEdit
         AnchorSideLeft.Control = DirectivesPage
         AnchorSideTop.Control = DirectivesPage
@@ -122,7 +121,7 @@ object CodeExplorerView: TCodeExplorerView
         Left = 0
         Height = 27
         Top = 0
-        Width = 213
+        Width = 211
         Anchors = [akTop, akLeft, akRight]
         OnChange = DirectivesFilterEditChange
         TabOrder = 0
@@ -132,9 +131,9 @@ object CodeExplorerView: TCodeExplorerView
         AnchorSideTop.Control = DirectivesFilterEdit
         AnchorSideTop.Side = asrBottom
         Left = 0
-        Height = 460
+        Height = 454
         Top = 28
-        Width = 213
+        Width = 211
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Top = 1

@@ -131,8 +131,6 @@ type
     TopRefTopSpeedButton: TSpeedButton;
     TopSiblingComboBox: TComboBox;
     TopSiblingLabel: TLabel;
-    procedure AnchorDesignerClose(Sender: TObject; var CloseAction: TCloseAction
-      );
     procedure AnchorDesignerCreate(Sender: TObject);
     procedure AnchorDesignerDestroy(Sender: TObject);
     procedure AnchorDesignerShow(Sender: TObject);
@@ -910,12 +908,6 @@ procedure TAnchorDesigner.OnSetSelection(
 begin
   if FSelection.IsEqual(ASelection) then exit;
   Refresh(false);
-end;
-
-procedure TAnchorDesigner.AnchorDesignerClose(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-  EnvironmentOptions.IDEWindowLayoutList.ItemByForm(Self).GetCurrentPosition;
 end;
 
 { TAnchorDesignerValues }
