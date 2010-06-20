@@ -3,31 +3,63 @@
   <MainConfig>
     <Nodes ChildCount="1">
       <Item1 Name="MainIDE" Type="CustomSite" ChildCount="1">
-        <Bounds Top="25" Width="1594" Height="1083"/>
-        <Item1 Name="AnchorDockSite1" Type="Layout" ChildCount="5">
-          <Bounds Top="67" Width="1594" Height="991"/>
+        <Bounds Top="25" Width="1316" Height="1080"/>
+        <Item1 Name="AnchorDockSite4" Type="Layout" ChildCount="5">
+          <Bounds Top="66" Width="1316" Height="989"/>
           <Anchors Align="Bottom"/>
           <Item1 Name="SourceNotebook" Type="Control">
-            <Bounds Left="204" Width="1390" Height="881"/>
-            <Anchors Left="AnchorDockSplitter3" Bottom="AnchorDockSplitter2"/>
+            <Bounds Width="1142" Height="864"/>
+            <Anchors Right="AnchorDockSplitter3" Bottom="AnchorDockSplitter2"/>
+            <Header Position="left"/>
           </Item1>
           <Item2 Name="AnchorDockSplitter2" Type="SplitterHorizontal">
-            <Bounds Top="881" Left="204" Width="1390" Height="4"/>
-            <Anchors Left="AnchorDockSplitter3"/>
+            <Bounds Top="864" Width="1142" Height="4"/>
+            <Anchors Right="AnchorDockSplitter3"/>
           </Item2>
           <Item3 Name="MessagesView" Type="Control">
-            <Bounds Top="885" Left="204" Width="1390" Height="106"/>
-            <Anchors Top="AnchorDockSplitter2" Left="AnchorDockSplitter3"/>
+            <Bounds Top="868" Width="1142" Height="121"/>
+            <Anchors Top="AnchorDockSplitter2" Right="AnchorDockSplitter3"/>
           </Item3>
           <Item4 Name="AnchorDockSplitter3" Type="SplitterVertical">
-            <Bounds Left="200" Width="4" Height="991"/>
+            <Bounds Left="1142" Width="4" Height="989"/>
           </Item4>
-          <Item5 Name="ObjectInspectorDlg" Type="Control">
-            <Bounds Width="200" Height="991"/>
-            <Anchors Right="AnchorDockSplitter3"/>
+          <Item5 Name="CodeExplorerView" Type="Control">
+            <Bounds Left="1146" Width="170" Height="989"/>
+            <Anchors Left="AnchorDockSplitter3"/>
           </Item5>
         </Item1>
       </Item1>
     </Nodes>
   </MainConfig>
+  <Restores Count="1">
+    <Item1 Names="ObjectInspectorDlg">
+      <Nodes Name="MainIDE" Type="CustomSite" ChildCount="1">
+        <Bounds Top="25" Width="1142" Height="1080"/>
+        <Item1 Name="AnchorDockSite4" Type="Layout" ChildCount="5">
+          <Bounds Top="66" Width="1142" Height="989"/>
+          <Anchors Align="Bottom"/>
+          <Item1 Name="SourceNotebook" Type="Control">
+            <Bounds Left="205" Width="937" Height="864"/>
+            <Anchors Left="AnchorDockSplitter3" Bottom="AnchorDockSplitter2"/>
+            <Header Position="left"/>
+          </Item1>
+          <Item2 Name="AnchorDockSplitter2" Type="SplitterHorizontal">
+            <Bounds Top="864" Left="205" Width="937" Height="4"/>
+            <Anchors Left="AnchorDockSplitter3"/>
+          </Item2>
+          <Item3 Name="MessagesView" Type="Control">
+            <Bounds Top="868" Left="205" Width="937" Height="121"/>
+            <Anchors Top="AnchorDockSplitter2" Left="AnchorDockSplitter3"/>
+          </Item3>
+          <Item4 Name="AnchorDockSplitter3" Type="SplitterVertical">
+            <Bounds Left="201" Width="4" Height="989"/>
+          </Item4>
+          <Item5 Name="ObjectInspectorDlg" Type="Control">
+            <Bounds Width="201" Height="989"/>
+            <Anchors Right="AnchorDockSplitter3"/>
+          </Item5>
+        </Item1>
+      </Nodes>
+    </Item1>
+  </Restores>
 </CONFIG>

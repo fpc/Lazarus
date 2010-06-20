@@ -374,7 +374,7 @@ procedure TCustomForm.SetFocus;
 
 begin
   {$IFDEF VerboseFocus}
-  DebugLn('TCustomForm.SetFocus ',Name,':',ClassName);
+  DebugLn('TCustomForm.SetFocus ',Name,':',ClassName,' ActiveControl=',DbgSName(ActiveControl));
   {$ENDIF}
   if not FActive then
   begin

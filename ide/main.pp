@@ -1945,8 +1945,7 @@ begin
   ObjectInspector1.OnAutoShow:=@OIOnAutoShow;
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
   IDEWindowCreators.Add(ObjectInspector1.Name,nil,@CreateIDEWindow,
-   '0','120','+230','-120',NonModalIDEWindowNames[nmiwSourceNoteBookName],alLeft,
-   false,@OnGetLayout);
+   '0','120','+230','-120','',alNone,false,@OnGetLayout);
 
   EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
 
@@ -16125,9 +16124,7 @@ begin
   if (ObjectInspector1<>nil) and (aFormName=ObjectInspector1.Name) then begin
     // place object inspector below main bar
     aBounds:=Rect(0,Min(MainIDEBar.Top+MainIDEBar.Height+25,200),230,Screen.Height-150);
-    // or left of source editor
-    DockSibling:=NonModalIDEWindowNames[nmiwSourceNoteBookName];
-    DockAlign:=alLeft;
+    // do not dock object inspector, because this would hide the designers
   end
   else if (aFormName=NonModalIDEWindowNames[nmiwMessagesViewName]) then begin
     // place messages below source editor
