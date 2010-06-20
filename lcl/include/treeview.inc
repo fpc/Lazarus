@@ -4637,7 +4637,7 @@ end;
 function TCustomTreeView.CanChange(Node: TTreeNode): Boolean;
 begin
   Result := True;
-  if Assigned(FOnChanging) then FOnChanging(Self, Node, Result);
+  if Assigned(Node) and Assigned(FOnChanging) then FOnChanging(Self, Node, Result);
 end;
 
 procedure TCustomTreeView.Change(Node: TTreeNode);
