@@ -64,6 +64,7 @@ type
     destructor Destroy; override;
     procedure MakeIDEWindowDockSite(AForm: TCustomForm); override;
     procedure MakeIDEWindowDockable(AControl: TWinControl); override;
+    function AddableInWindowMenu(AForm: TCustomForm): boolean; override;
     function GetDefaultLayoutFilename: string;
     procedure LoadDefaultLayout;
     procedure LoadUserLayout;
@@ -173,6 +174,14 @@ procedure TIDEAnchorDockMaster.MakeIDEWindowDockable(AControl: TWinControl);
 begin
   debugln(['TIDEAnchorDockMaster.MakeIDEWindowDockable ',DbgSName(AControl)]);
   DockMaster.MakeDockable(AControl,false);
+end;
+
+function TIDEAnchorDockMaster.AddableInWindowMenu(AForm: TCustomForm): boolean;
+begin
+  Result:=false;
+  if AForm is TAnchorDockHostSite then exit;
+  if (DockMaster.FindControl(AForm.Name)=nil) and (AForm.Parent<>nil) then exit;
+  Result:=true;
 end;
 
 function TIDEAnchorDockMaster.GetDefaultLayoutFilename: string;

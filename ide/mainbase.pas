@@ -61,7 +61,7 @@ uses
   CodeToolManager, CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDEIntf
   LazConf, LazarusIDEStrConsts, SrcEditorIntf, LazIDEIntf, MenuIntf,
-  IDECommands, IDEMsgIntf,
+  IDECommands, IDEMsgIntf, IDEWindowIntf,
   // IDE
   ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
   ComponentReg, OutputFilter,
@@ -209,8 +209,7 @@ begin
   while (i>=0) do begin
     if Screen.CustomForms[i].Caption=(Sender as TIDEMenuCommand).Caption then
     begin
-      Screen.CustomForms[i].Show;
-      Screen.CustomForms[i].BringToFront;
+      IDEWindowCreators.ShowForm(Screen.CustomForms[i],true);
       break;
     end;
     dec(i);
@@ -1048,10 +1047,17 @@ begin
   // add special IDE windows
   for i:=0 to Screen.FormCount-1 do begin
     AForm:=Screen.Forms[i];
-    if (AForm.Parent=nil) and (AForm<>MainIDEBar) and (AForm<>SplashForm)
-    and (AForm.Designer=nil) and (AForm.Visible)
-    and (WindowsList.IndexOf(AForm)<0) then
-      WindowsList.Add(AForm);
+    //debugln(['TMainIDEBase.UpdateWindowMenu ',DbgSName(AForm),' Vis=',AForm.IsVisible,' Des=',DbgSName(AForm.Designer)]);
+    if (not AForm.IsVisible) or (AForm=MainIDEBar) or (AForm=SplashForm)
+    or (AForm.Designer<>nil) or (WindowsList.IndexOf(AForm)>=0) then
+      continue;
+    if IDEDockMaster<>nil then
+    begin
+      if not IDEDockMaster.AddableInWindowMenu(AForm) then continue;
+    end else begin
+      if AForm.Parent<>nil then continue;
+    end;
+    WindowsList.Add(AForm);
   end;
   // add designer forms and datamodule forms
   for i:=0 to Screen.FormCount-1 do begin
