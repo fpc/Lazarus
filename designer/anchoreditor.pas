@@ -406,36 +406,41 @@ var
   NewValue: String;
   UseNeighbours: boolean;
   OldPositions,OldPositions2: array of Integer;
- function NeighbourPosition(c: tcontrol):Integer;
- begin
-   case CurNeighbour of
-     akTop: result:=c.top;
-     akLeft: result:=c.Left;
-     akRight: result:=c.left+c.Width;
-     akBottom: result:=c.Top+c.Height;
-   end;
+
+  function NeighbourPosition(c: tcontrol):Integer;
+  begin
+    case CurNeighbour of
+    akTop: result:=c.top;
+    akLeft: result:=c.Left;
+    akRight: result:=c.left+c.Width;
+    akBottom: result:=c.Top+c.Height;
+    end;
+  end;
+
+  function FindNeighbour(i:longint):TControl;
+  var firstNeighbour,lastNeighbour,cur,resultId: Integer;
+  begin
+    if i=0 then exit(nil);
+    firstNeighbour:=i-1;
+    while (firstNeighbour>=0) and (OldPositions[firstNeighbour] = OldPositions[i]) do
+      dec(firstNeighbour);
+    if firstNeighbour=-1 then exit(nil); //there is no real neighbour at this side
+    lastNeighbour:=firstNeighbour;
+    while (lastNeighbour>=0) and (OldPositions[lastNeighbour] = OldPositions[firstNeighbour]) do
+      dec(lastNeighbour);
+    inc(lastNeighbour);
+    //take nearest
+    resultId:=lastNeighbour;
+    for cur:=lastNeighbour+1 to firstNeighbour do
+      if abs(OldPositions2[cur]-OldPositions2[i]) < abs(OldPositions2[resultId]-OldPositions2[i])  then
+         resultid:=cur;
+    result:=tcontrol(SelectedControls[resultId]);
  end;
 
- function FindNeighbour(i:longint):TControl;
- var firstNeighbour,lastNeighbour,cur,resultId: Integer;
- begin
-   if i=0 then exit(nil);
-   firstNeighbour:=i-1;
-   while (firstNeighbour>=0) and (OldPositions[firstNeighbour] = OldPositions[i]) do
-     dec(firstNeighbour);
-   if firstNeighbour=-1 then exit(nil); //there is no real neighbour at this side
-   lastNeighbour:=firstNeighbour;
-   while (lastNeighbour>=0) and (OldPositions[lastNeighbour] = OldPositions[firstNeighbour]) do
-     dec(lastNeighbour);
-   inc(lastNeighbour);
-   //take nearest
-   resultId:=lastNeighbour;
-   for cur:=lastNeighbour+1 to firstNeighbour do
-     if abs(OldPositions2[cur]-OldPositions2[i]) < abs(OldPositions2[resultId]-OldPositions2[i])  then
-        resultid:=cur;
-   result:=tcontrol(SelectedControls[resultId]);
- end;
-
+var
+  ReferenceControl: TControl;
+  ReferenceSide: TAnchorSideReference;
+  CheckPosition: Integer;
 begin
   //debugln('TAnchorDesigner.SiblingComboBoxChange ',DbgSName(Sender),' ',TComboBox(Sender).Text);
   if FUpdating or (Values=nil) then exit;
@@ -476,18 +481,18 @@ begin
       begin
         //todo: copy the list if it is needed unsorted somewhere else
         case CurNeighbour of //todo: use just one sorting function
-           akTop: SelectedControls.Sort(@compareControlTop);
-           akLeft: SelectedControls.Sort(@compareControlLeft);
-           akRight: SelectedControls.Sort(@compareControlRight);
-           akBottom: SelectedControls.Sort(@compareControlBottom);
+          akTop: SelectedControls.Sort(@compareControlTop);
+          akLeft: SelectedControls.Sort(@compareControlLeft);
+          akRight: SelectedControls.Sort(@compareControlRight);
+          akBottom: SelectedControls.Sort(@compareControlBottom);
         end;
         setlength(OldPositions,SelectedControls.Count);
         setlength(OldPositions2,SelectedControls.Count);
         for i:=0 to SelectedControls.Count-1 do begin
-          OldPositions[i]:=NeighbourPosition(tcontrol(SelectedControls[i]));
+          OldPositions[i]:=NeighbourPosition(TControl(SelectedControls[i]));
           case CurNeighbour of
-            akLeft,akRight: OldPositions2[i]:=tcontrol(SelectedControls[i]).top;
-            akTop,akBottom: OldPositions2[i]:=tcontrol(SelectedControls[i]).Left;
+            akLeft,akRight: OldPositions2[i]:=TControl(SelectedControls[i]).top;
+            akTop,akBottom: OldPositions2[i]:=TControl(SelectedControls[i]).Left;
           end;
         end;
      end
@@ -496,6 +501,27 @@ begin
         if NewSibling=nil then exit;
       end;
     end;
+    // check
+    for i:=0 to SelectedControls.Count-1 do begin
+      CurControl:=TControl(SelectedControls[i]);
+      if UseNeighbours then begin
+        NewSibling:=findNeighbour(i);
+        if (NewSibling=nil) and (i<>0) then continue;
+      end;
+      if not CurControl.AnchorSide[Kind].CheckSidePosition(NewSibling,
+        CurControl.AnchorSide[Kind].Side,
+        ReferenceControl,ReferenceSide,CheckPosition)
+      then begin
+        if MessageDlg(lisCCOWarningCaption,
+          lisThisWillCreateACircle, mtWarning, [mbIgnore, mbCancel], 0)<>
+            mrIgnore
+        then begin
+          Refresh(false);
+          exit;
+        end;
+      end;
+    end;
+    // commit
     for i:=0 to SelectedControls.Count-1 do begin
       CurControl:=TControl(SelectedControls[i]);
       if UseNeighbours then begin
@@ -526,6 +552,9 @@ var
   SelectedControls: TList;
   i: Integer;
   CurControl: TControl;
+  ReferenceControl: TControl;
+  ReferenceSide: TAnchorSideReference;
+  CheckPosition: Integer;
 begin
   //debugln('TAnchorDesigner.ReferenceSideButtonClicked ',DbgSName(Sender),' ',dbgs(TSpeedButton(Sender).Down));
   if FUpdating or (Values=nil) then exit;
@@ -585,6 +614,23 @@ begin
     // user changed a sibling
     SelectedControls:=GetSelectedControls;
     if SelectedControls=nil then exit;
+    // check
+    for i:=0 to SelectedControls.Count-1 do begin
+      CurControl:=TControl(SelectedControls[i]);
+      if not CurControl.AnchorSide[Kind].CheckSidePosition(
+        CurControl.AnchorSide[Kind].Control,Side,
+        ReferenceControl,ReferenceSide,CheckPosition)
+      then begin
+        if MessageDlg(lisCCOWarningCaption,
+          lisThisWillCreateACircle, mtWarning, [mbIgnore, mbCancel], 0)<>
+            mrIgnore
+        then begin
+          Refresh(false);
+          exit;
+        end;
+      end;
+    end;
+    // commit
     for i:=0 to SelectedControls.Count-1 do begin
       CurControl:=TControl(SelectedControls[i]);
       CurControl.AnchorSide[Kind].Side:=Side;
@@ -694,7 +740,7 @@ begin
   //debugln('TAnchorDesigner.Refresh A ');
   if not Force then begin
     // check if uddate is needed
-    if not Visible then exit;
+    if not IsVisible then exit;
   end;
   if FUpdating then exit;
   FUpdating:=true;

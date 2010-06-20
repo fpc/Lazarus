@@ -3675,8 +3675,13 @@ begin
       //  DebugLn(['TAnchorSide.GetSidePosition Success ',DbgSName(Owner),' ReferenceControl=',dbgsName(ReferenceControl),' CurReferenceControl=',DbgSName(CurReferenceControl),' CurReferenceSide=',dbgs(Kind,CurReferenceSide)]);
       exit(true);
     end;
-    CurReferenceControl:=NextReferenceSide.Control;
-    CurReferenceSide:=NextReferenceSide.Side;
+    if NextReferenceSide=Self then begin
+      CurReferenceControl:=NewControl;
+      CurReferenceSide:=NewSide;
+    end else begin
+      CurReferenceControl:=NextReferenceSide.Control;
+      CurReferenceSide:=NextReferenceSide.Side;
+    end;
     //DebugLn(['TAnchorSide.GetSidePosition ',DbgSName(FOwner),' ReferenceControl=',DbgSName(ReferenceControl),' Kind=',dbgs(Kind),' ReferenceSide=',dbgs(Kind,ReferenceSide)]);
   end;
 end;

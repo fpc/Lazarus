@@ -4274,6 +4274,7 @@ resourcestring
   lisLeftGroupBoxCaption = 'Left anchoring';
   lisBottomGroupBoxCaption = 'Bottom anchoring';
   lisUnableToSetAnchorSideControl = 'Unable to set AnchorSide Control';
+  lisThisWillCreateACircle = 'This will create a circle.';
   lisAnchorEditorNoControlSelected = 'Anchor Editor - no control selected';
   lisAnchorsOfSelectedControls = 'Anchors of selected controls';
   lisDebugOptionsFrmAdditionalSearchPath = 'Additional search path';
