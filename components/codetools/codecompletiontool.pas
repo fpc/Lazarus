@@ -2370,8 +2370,6 @@ begin
   CodeCompleteSrcChgCache:=SourceChangeCache;
   // check if variable already exists
   if not VarExistsInCodeCompleteClass(UpperCaseStr(VarName)) then begin
-
-  end else begin
     AddClassInsertion(UpperCaseStr(VarName),
                       VarName+':'+VarType+';',VarName,ncpPublishedVars);
     if not InsertAllNewClassParts then
