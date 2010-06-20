@@ -229,7 +229,7 @@ begin
         NewBounds.Bottom:=Max(NewBounds.Top+100,NewBounds.Bottom);
         AForm.UndockWidth:=NewBounds.Right-NewBounds.Left;
         AForm.UndockHeight:=NewBounds.Bottom-NewBounds.Top;
-        debugln(['TIDEEasyDockMaster.ShowForm creator for ',DbgSName(AForm),' found: Left=',Creator.Left,' Top=',Creator.Top,' Width=',Creator.Width,' Height=',Creator.Height,' DockSiblingName=',DockSiblingName,' DockAlign=',dbgs(DockAlign)]);
+        debugln(['TIDEEasyDockMaster.ShowForm creator for ',DbgSName(AForm),' found: Left=',Creator.Left,' Top=',Creator.Top,' Right=',Creator.Right,' Bottom=',Creator.Bottom,' DockSiblingName=',DockSiblingName,' DockAlign=',dbgs(DockAlign)]);
         if DockSiblingName<>'' then
         begin
           DockSibling:=Screen.FindForm(DockSiblingName);
