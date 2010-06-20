@@ -1066,6 +1066,16 @@ procedure TAutoSizeCtrlData.ComputePreferredClientArea(
     Child:=ChildData.Control;
     Child.AnchorSide[a].GetSidePosition(ReferenceControl,ReferenceSide,Position);
     //DebugLn(['GetSideAnchor Child=',DbgSName(Child),', a=',dbgs(a),' ReferenceControl=',DbgSName(ReferenceControl),' ReferenceSide=',dbgs(a,ReferenceSide)]);
+    if ReferenceControl=nil then begin
+      // invalid anchor
+      // => anchor to parent
+      ChildData.Sides[a].CtrlData:=Self;
+      if a in [akLeft,akTop] then
+        ChildData.Sides[a].Side:=asrLeft
+      else
+        ChildData.Sides[a].Side:=asrRight;
+      exit;
+    end;
     if ReferenceControl=Control then
       ChildData.Sides[a].CtrlData:=Self
     else if (ReferenceControl<>nil) and (ReferenceControl.Parent=Control) then

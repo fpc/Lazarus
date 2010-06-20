@@ -755,6 +755,9 @@ type
     destructor Destroy; override;
     procedure GetSidePosition(out ReferenceControl: TControl;
                 out ReferenceSide: TAnchorSideReference; out Position: Integer);
+    function CheckSidePosition(NewControl: TControl; NewSide: TAnchorSideReference;
+                out ReferenceControl: TControl;
+                out ReferenceSide: TAnchorSideReference; out Position: Integer): boolean;
     procedure Assign(Source: TPersistent); override;
     function IsAnchoredToParent(ParentSide: TAnchorKind): boolean;
   public
@@ -3406,8 +3409,16 @@ begin
   inherited Destroy;
 end;
 
-procedure TAnchorSide.GetSidePosition(out ReferenceControl: TControl;
-  out ReferenceSide: TAnchorSideReference; out Position: Integer);
+procedure TAnchorSide.GetSidePosition(out ReferenceControl: TControl; out
+  ReferenceSide: TAnchorSideReference; out Position: Integer);
+begin
+  CheckSidePosition(Control,Side,ReferenceControl,ReferenceSide,Position);
+end;
+
+function TAnchorSide.CheckSidePosition(NewControl: TControl;
+  NewSide: TAnchorSideReference;
+  out ReferenceControl: TControl;
+  out ReferenceSide: TAnchorSideReference; out Position: Integer): boolean;
 var
   ParentRect: TRect;
   ParentRectValid: boolean;
@@ -3466,20 +3477,29 @@ begin
   ChainLength:=0;
   MaxChainLength:=OwnerParent.ControlCount;
   Found:=false;
-  CurReferenceControl:=Control;
-  CurReferenceSide:=Side;
+  CurReferenceControl:=NewControl;
+  CurReferenceSide:=NewSide;
   while CurReferenceControl<>nil do begin
 
     // check for circles
+    if CurReferenceControl=Owner then begin
+      // circle
+      {$IFNDEF DisableChecks}
+      DebugLn(['TAnchorSide.GetSidePosition Circle, ',DbgSName(Owner)]);
+      {$ENDIF}
+      ReferenceControl:=nil;
+      exit(false);
+    end;
+
     inc(ChainLength);
     if ChainLength>MaxChainLength then begin
       // the chain has more elements than there are siblings -> circle
       //if CheckPosition(Owner) then
       {$IFNDEF DisableChecks}
-      DebugLn(['TAnchorSide.GetSidePosition Circle ',DbgSName(Owner)]);
+      DebugLn(['TAnchorSide.GetSidePosition Circle, ',DbgSName(Owner)]);
       {$ENDIF}
       ReferenceControl:=nil;
-      exit;
+      exit(false);
     end;
 
     // check if ReferenceControl is valid
@@ -3487,8 +3507,11 @@ begin
     and (CurReferenceControl<>OwnerParent) then begin
       // not a sibling and not the parent -> invalid AnchorSide
       //if CheckPosition(Owner) then DebugLn(['TAnchorSide.GetSidePosition invalid AnchorSide ',dbgsName(ReferenceControl)]);
+      {$IFNDEF DisableChecks}
+      DebugLn(['TAnchorSide.GetSidePosition invalid anchor control, ',DbgSName(Owner)]);
+      {$ENDIF}
       ReferenceControl:=nil;
-      exit;
+      exit(false);
     end;
 
     if CurReferenceControl.IsControlVisible then begin
@@ -3641,15 +3664,16 @@ begin
         NextReferenceSide:=CurReferenceControl.AnchorSide[Kind];
       end else begin
         // anchor opposite (e.g. a left side to a right side)
-        NextReferenceSide:=CurReferenceControl.AnchorSide[Kind];
+        NextReferenceSide:=CurReferenceControl.AnchorSide[OppositeAnchor[Kind]];
       end;
     end;
     if (NextReferenceSide=nil) then
     begin
       // no further side => anchor ok
       //if CheckPosition(Owner) and (Kind=akRight) then
-      //  DebugLn(['TAnchorSide.GetSidePosition not IsControlVisible ReferenceControl=',dbgsName(ReferenceControl)]);
-      exit;
+      //if Owner.Name='ClassPartInsertPolicyRadioGroup' then
+      //  DebugLn(['TAnchorSide.GetSidePosition Success ',DbgSName(Owner),' ReferenceControl=',dbgsName(ReferenceControl),' CurReferenceControl=',DbgSName(CurReferenceControl),' CurReferenceSide=',dbgs(Kind,CurReferenceSide)]);
+      exit(true);
     end;
     CurReferenceControl:=NextReferenceSide.Control;
     CurReferenceSide:=NextReferenceSide.Side;
