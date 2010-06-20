@@ -5667,9 +5667,9 @@ begin
   inherited DoClose(CloseAction);
   CloseAction := caHide;
   {$IFnDEF SingleSrcWindow}
-  if PageCount = 0 then begin { $NOTE maybe keep the last one}
+  if (PageCount = 0) and (Parent=nil) then begin { $NOTE maybe keep the last one}
     // Make the name unique, because it may not immediately be released
-    // disconnect first
+    // => disconnect first
     Layout:=IDEWindowCreators.SimpleLayoutStorage.ItemByForm(Self);
     if Layout<>nil then
       Layout.Form:=nil;
@@ -6175,7 +6175,7 @@ begin
   DestWin.UpdateActiveEditColors(Edit.EditorComponent);
   DestWin.UpdateStatusBar;
 
-  if (PageCount = 0) and not FIsClosing then
+  if (PageCount = 0) and (Parent=nil) and not FIsClosing then
     Close;
 end;
 
@@ -6643,7 +6643,7 @@ begin
     if WasSelected then
       UpdateStatusBar;
     // set focus to new editor
-    if PageCount = 0 then begin
+    if (PageCount = 0) and (Parent=nil) then begin
       {$IFnDEF SingleSrcWindow}
       Manager.RemoveWindow(self);
       FManager := nil;
