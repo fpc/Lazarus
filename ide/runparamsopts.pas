@@ -176,9 +176,46 @@ implementation
 {$R *.lfm}
 
 const
-  DefaultLauncherApplication =
-    '/usr/X11R6/bin/xterm -T ''Lazarus Run Output''' +
-    ' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)';
+  DefaultLauncherTitle = '''Lazarus Run Output''';
+  DefaultLauncherApplication = '$(LazarusDir)/tools/runwait.sh $(TargetCmdLine)';
+
+function FindTerminalInPath(const ATerm: String = ''): String;
+var
+  List: TStrings;
+  i: Integer;
+  s: String;
+  Term: String;
+begin
+  Result := '';
+  List := TStringList.Create;
+  {$IFDEF MSWINDOWS}
+  List.Delimiter := ';';
+  {$ELSE}
+  List.Delimiter := ':';
+  {$ENDIF}
+  Term := ATerm;
+  if Term = '' then
+    Term := GetEnvironmentVariable('TERM');
+  if Term = '' then
+    Term := 'xterm';
+  List.DelimitedText := GetEnvironmentVariable('PATH');
+  for i := 0 to List.Count - 1 do
+  begin
+    S := List.Strings[i] + PathDelim + Term;
+    if FileExistsUTF8(S) and FileIsExecutable(S) then
+    begin
+      // gnome-terminal is not compatibile to xterm params.
+      if Term = 'gnome-terminal' then
+        Result := S + ' -t ' + DefaultLauncherTitle + ' -e ' +
+          '''' + DefaultLauncherApplication + ''''
+      else
+        Result := S + ' -T ' + DefaultLauncherTitle + ' -e ' +
+          DefaultLauncherApplication;
+      break;
+    end;
+  end;
+  List.Free;
+end;
 
 function ShowRunParamsOptsDlg(RunParamsOptions: TRunParamsOptions): TModalResult;
 var
@@ -210,12 +247,17 @@ begin
 end;
 
 procedure TRunParamsOptions.Clear;
+var
+  s: String;
 begin
   // local options
   fHostApplicationFilename := '';
   fCmdLineParams := '';
   fUseLaunchingApplication := False;
-  fLaunchingApplicationPathPlusParams := DefaultLauncherApplication;
+  S := FindTerminalInPath;
+  if S <> '' then
+    fLaunchingApplicationPathPlusParams := S;
+  // TODO: guess are we under gnome or kde so query for gnome-terminal or konsole.
   fWorkingDirectory := '';
   fUseDisplay := False;
   fDisplay    := ':0';
@@ -227,7 +269,8 @@ end;
 
 function TRunParamsOptions.Load(XMLConfig: TXMLConfig; const Path: string;
   AdjustPathDelims: boolean): TModalResult;
-
+var
+  S: String;
 
   function f(const Filename: string): string;
   begin
@@ -260,7 +303,11 @@ begin
     f(XMLConfig.GetValue(Path + 'RunParams/local/LaunchingApplication/PathPlusParams',
     fLaunchingApplicationPathPlusParams));
   if (fLaunchingApplicationPathPlusParams = '') then
-    fLaunchingApplicationPathPlusParams := DefaultLauncherApplication;
+  begin
+    S := FindTerminalInPath;
+    if S <> '' then
+      fLaunchingApplicationPathPlusParams := S;
+  end;
   fWorkingDirectory := f(XMLConfig.GetValue(
     Path + 'RunParams/local/WorkingDirectory/Value', fWorkingDirectory));
   fUseDisplay := XMLConfig.GetValue(Path + 'RunParams/local/Display/Use',
@@ -376,6 +423,7 @@ end;
 procedure TRunParamsOptsDlg.SetupLocalPage;
 var
   List: THistoryList;
+  S: String;
 begin
   HostApplicationGroupBox.Caption   := dlgHostApplication;
   HostApplicationBrowseBtn.Caption  := '...';
@@ -394,11 +442,17 @@ begin
   WorkingDirectoryComboBox.Items.Assign(List);
 
   // history list: UseLaunchingApplicationComboBox
-  List:=InputHistories.HistoryLists.GetList(hlLaunchingApplication,true);
-  List.AppendEntry(DefaultLauncherApplication);
-  {$IFNdef MSWindows}
-  List.AppendEntry('/usr/bin/gnome-terminal -t ''Lazarus Run Output'''
-           + ' -e ''$(LazarusDir)/tools/runwait.sh $(TargetCmdLine)''');
+  List := InputHistories.HistoryLists.GetList(hlLaunchingApplication,true);
+  S := FindTerminalInPath;
+  if S <> '' then
+    List.AppendEntry(S);
+  {$IFNDEF MSWINDOWS}
+  S := FindTerminalInPath('gnome-terminal');
+  if S <> '' then
+    List.AppendEntry(S);
+  S := FindTerminalInPath('konsole');
+  if S <> '' then
+    List.AppendEntry(S);
   {$ENDIF}
   UseLaunchingApplicationComboBox.Items.Assign(List);
 
