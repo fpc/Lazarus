@@ -4215,16 +4215,16 @@ begin
       dy:=Max(0,(r.Bottom-r.Top-TxtW) div 2);
       Canvas.Font.Orientation:=900;
       Canvas.TextOut(r.Left+dx,r.Bottom-dy,Caption);
-      DrawGrabber(Rect(r.Left,r.Top,r.Right,r.Bottom-dy-TxtW));
-      DrawGrabber(Rect(r.Left,r.Bottom-dy,r.Right,r.Bottom));
+      DrawGrabber(Rect(r.Left,r.Top,r.Right,r.Bottom-dy-TxtW-1));
+      DrawGrabber(Rect(r.Left,r.Bottom-dy+1,r.Right,r.Bottom));
     end else begin
       // horizontal
       dx:=Max(0,(r.Right-r.Left-TxtW) div 2);
       dy:=Max(0,(r.Bottom-r.Top-TxtH) div 2);
       Canvas.Font.Orientation:=0;
       Canvas.TextOut(r.Left+dx,r.Top+dy,Caption);
-      DrawGrabber(Rect(r.Left,r.Top,r.Left+dx,r.Bottom));
-      DrawGrabber(Rect(r.Left+dx+TxtW,r.Top,r.Right,r.Bottom));
+      DrawGrabber(Rect(r.Left,r.Top,r.Left+dx-1,r.Bottom));
+      DrawGrabber(Rect(r.Left+dx+TxtW+2,r.Top,r.Right,r.Bottom));
     end;
   end else
     DrawGrabber(r);
