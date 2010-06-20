@@ -5664,8 +5664,7 @@ procedure TSourceNotebook.DoClose(var CloseAction: TCloseAction);
 var
   Layout: TSimpleWindowLayout;
 begin
-  debugln(['TSourceNotebook.DoClose ',DbgSName(Self)]);
-  DumpStack;
+  //debugln(['TSourceNotebook.DoClose ',DbgSName(Self)]);
   inherited DoClose(CloseAction);
   CloseAction := caHide;
   {$IFnDEF SingleSrcWindow}
