@@ -698,6 +698,7 @@ begin
   fWindowState:=StrToIDEWindowState(Config.GetValue(
     P+'WindowState/Value',IDEWindowStateNames[fWindowState]));
   FVisible:=Config.GetValue(P+'Visible/Value',false);
+  //debugln(['TSimpleWindowLayout.LoadFromConfig ',FormID,' ',Left,',',Top,',',Width,',',Height]);
 end;
 
 procedure TSimpleWindowLayout.SaveToConfig(Config: TConfigStorage;
@@ -803,6 +804,7 @@ end;
 
 procedure TSimpleWindowLayout.Clear;
 begin
+  //debugln(['TSimpleWindowLayout.Clear ',FormID]);
   fWindowPlacement:=fDefaultWindowPlacement;
   fLeft:=0;
   fTop:=0;
@@ -922,8 +924,10 @@ begin
 
   // create new windows
   i := Config.GetValue(Path+'Desktop/FormIdCount', 0);
+  //debugln(['TSimpleWindowLayoutList.LoadFromConfig ',i]);
   while i > 0 do begin
     ID := Config.GetValue(Path+'Desktop/FormIdList/a'+IntToStr(i), '');
+    //debugln(['TSimpleWindowLayoutList.LoadFromConfig ',i,' ',ID]);
     if (ID <> '') and (IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(ID) = nil) then
       CreateWindowLayout(ID);
     dec(i);
@@ -937,8 +941,8 @@ procedure TSimpleWindowLayoutList.SaveToConfig(Config: TConfigStorage;
   const Path: string);
 var i: integer;
 begin
-  Config.SetDeleteValue(Path+'FormIdCount',Count,0);
-  debugln(['TSimpleWindowLayoutList.SaveToConfig ',Count]);
+  Config.SetDeleteValue(Path+'Desktop/FormIdCount',Count,0);
+  //debugln(['TSimpleWindowLayoutList.SaveToConfig ',Count]);
   for i:=0 to Count-1 do begin
     Config.SetDeleteValue(Path+'Desktop/FormIdList/a'+IntToStr(i+1),Items[i].FormID,'');
     Items[i].SaveToConfig(Config,Path);
@@ -1019,7 +1023,7 @@ begin
       if ALayout.Applied then exit;
       ALayout.Applied:=true;
       {$IFDEF VerboseIDEDocking}
-      debugln(['TSimpleWindowLayoutList.ApplyAndShow restore ',ALayout.FormID,' ',IDEWindowPlacementNames[ALayout.WindowPlacement]]);
+      debugln(['TSimpleWindowLayoutList.ApplyAndShow restore ',ALayout.FormID,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' Valid=',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,',',ALayout.Top,',',ALayout.Width,',',ALayout.Height]);
       {$ENDIF}
 
       case ALayout.WindowPlacement of
