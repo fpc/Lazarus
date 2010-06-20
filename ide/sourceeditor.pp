@@ -5664,6 +5664,8 @@ procedure TSourceNotebook.DoClose(var CloseAction: TCloseAction);
 var
   Layout: TSimpleWindowLayout;
 begin
+  debugln(['TSourceNotebook.DoClose ',DbgSName(Self)]);
+  DumpStack;
   inherited DoClose(CloseAction);
   CloseAction := caHide;
   {$IFnDEF SingleSrcWindow}
@@ -6656,7 +6658,7 @@ begin
   end;
   // Move focus from Notebook-tabs to editor
   TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
-  if Visible and (TempEditor <> nil) then
+  if IsVisible and (TempEditor <> nil) then
     TempEditor.EditorComponent.SetFocus;
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.CloseFile END');
@@ -8369,9 +8371,21 @@ begin
 end;
 
 function TSourceEditorManager.ActiveOrNewSourceWindow: TSourceNotebook;
+var
+  i: Integer;
 begin
   Result := ActiveSourceWindow;
   if Result <> nil then exit;
+  if SourceWindowCount>0 then begin
+    for i:=0 to SourceWindowCount-1 do
+    begin
+      Result:=SourceWindows[i];
+      if Result.FIsClosing then continue;
+      ActiveSourceWindow := Result;
+      exit;
+    end;
+  end;
+
   Result := CreateNewWindow(True);
   ActiveSourceWindow := Result;
 end;

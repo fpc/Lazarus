@@ -12267,9 +12267,11 @@ begin
   // collect all windows except the main bar
   for i:=0 to Screen.CustomFormCount-1 do begin
     AForm:=Screen.CustomForms[i];
-    if (AForm<>MainIDEBar)                    // ignore the main bar
+    if (AForm.Parent=nil)                     // ignore nested forms
+    and (AForm<>MainIDEBar)                   // ignore the main bar
     and (AForm.Designer=nil)                  // ignore designer forms
-    and (AForm.Visible)                       // ignore hidden forms
+    and (not (csDesigning in AForm.ComponentState))
+    and (AForm.IsVisible)                     // ignore hidden forms
     and (not (fsModal in AForm.FormState))    // ignore modal forms
     and (HiddenWindowsOnRun.IndexOf(AForm)<0) // ignore already collected forms
     then
@@ -12279,8 +12281,7 @@ begin
   // hide all collected windows
   for i:=0 to HiddenWindowsOnRun.Count-1 do begin
     AForm:=TCustomForm(HiddenWindowsOnRun[i]);
-    if not (csDesigning in ComponentState) then
-      AForm.Hide;
+    AForm.Hide;
   end;
 
   // minimize IDE

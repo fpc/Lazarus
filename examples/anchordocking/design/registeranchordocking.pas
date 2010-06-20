@@ -131,7 +131,6 @@ begin
 
   Creator:=IDEWindowCreators.FindWithName(AForm.Name);
   if Creator=nil then exit;
-  debugln(['TIDEAnchorDockMaster.GetDefaultBounds AAA1 ',AForm.Name,' ',Creator.DockSibling,' ',dbgs(Creator.DockAlign)]);
   if Creator.OnGetLayout<>nil then
     Creator.OnGetLayout(Self,AForm.Name,NewBounds,DockSiblingName,DockAlign)
   else begin
