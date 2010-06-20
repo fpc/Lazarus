@@ -308,7 +308,7 @@ begin
         SiteForm.BoundsRect:=NewBounds;
         SiteForm.UndockWidth:=NewBounds.Right-NewBounds.Left;
         SiteForm.UndockHeight:=NewBounds.Bottom-NewBounds.Top;
-        debugln(['TIDEAnchorDockMaster.ShowForm creator for ',DbgSName(AControl),' found: Left=',Creator.Left,' Top=',Creator.Top,' Width=',Creator.Width,' Height=',Creator.Height,' DockSiblingName=',DockSiblingName,' DockAlign=',dbgs(DockAlign)]);
+        debugln(['TIDEAnchorDockMaster.ShowForm creator for ',DbgSName(AControl),' found: Left=',Creator.Left,' Top=',Creator.Top,' Right=',Creator.Right,' Bottom=',Creator.Bottom,' DockSiblingName=',DockSiblingName,' DockAlign=',dbgs(DockAlign)]);
         Site:=DockMaster.GetAnchorSite(SiteForm);
         if (Site<>nil) and (DockSiblingName<>'') then begin
           DockSibling:=Screen.FindForm(DockSiblingName);
@@ -395,7 +395,7 @@ begin
   try
     InitIDEFileDialog(Dlg);
     Dlg.Title:=adrsSaveWindowLayoutToFileXml;
-    Dlg.Options:=Dlg.Options+[ofPathMustExist,ofNoReadOnlyReturn];
+    Dlg.Options:=Dlg.Options+[ofPathMustExist,ofNoReadOnlyReturn,ofOverwritePrompt];
     Dlg.Filter:=adrsAnchorDockingLayout+'|*.xml|'+adrsAllFiles+'|'+GetAllFilesMask;
     if Dlg.Execute then begin
       Filename:=CleanAndExpandFilename(Dlg.FileName);

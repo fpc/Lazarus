@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <MainConfig>
+    <Nodes ChildCount="1">
+      <Item1 Name="MainIDE" Type="CustomSite" ChildCount="1">
+        <Bounds Top="25" Width="1594" Height="1083"/>
+        <Item1 Name="AnchorDockSite1" Type="Layout" ChildCount="5">
+          <Bounds Top="67" Width="1594" Height="991"/>
+          <Anchors Align="Bottom"/>
+          <Item1 Name="SourceNotebook" Type="Control">
+            <Bounds Left="204" Width="1390" Height="881"/>
+            <Anchors Left="AnchorDockSplitter3" Bottom="AnchorDockSplitter2"/>
+          </Item1>
+          <Item2 Name="AnchorDockSplitter2" Type="SplitterHorizontal">
+            <Bounds Top="881" Left="204" Width="1390" Height="4"/>
+            <Anchors Left="AnchorDockSplitter3"/>
+          </Item2>
+          <Item3 Name="MessagesView" Type="Control">
+            <Bounds Top="885" Left="204" Width="1390" Height="106"/>
+            <Anchors Top="AnchorDockSplitter2" Left="AnchorDockSplitter3"/>
+          </Item3>
+          <Item4 Name="AnchorDockSplitter3" Type="SplitterVertical">
+            <Bounds Left="200" Width="4" Height="991"/>
+          </Item4>
+          <Item5 Name="ObjectInspectorDlg" Type="Control">
+            <Bounds Width="200" Height="991"/>
+            <Anchors Right="AnchorDockSplitter3"/>
+          </Item5>
+        </Item1>
+      </Item1>
+    </Nodes>
+  </MainConfig>
+</CONFIG>
