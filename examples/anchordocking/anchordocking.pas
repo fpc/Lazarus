@@ -65,18 +65,17 @@
     - design time package for IDE
     - dnd move page index
     - dnd move page to another pagecontrol
+    - on close button: save a restore layout
 
   ToDo:
-    - smaller header
+    - restore custom dock site size
+    - undock on hide
     - option: hide caption
-    - list of default layouts
-    - make options a frame
     - popup menu
        - shrink side left, top, right, bottom
     - simple way to make forms dockable at designtime
     - minimize button and Hide => show in header
-    - on close button: save a default layout
-    - on show again: restore a default layout
+    - on show again: restore layout
     - close button for pages
 }
 unit AnchorDocking;
@@ -344,7 +343,7 @@ type
     procedure ResetBounds(Force: Boolean); override;
     procedure SaveToStream(Stream: TStream); override;
     function GetDockEdge(ADockObject: TDragDockObject): boolean; override;
-    procedure RestoreSite;
+    procedure RestoreSite(SplitterPos: integer);
 
     property Site: TWinControl read FSite; // the associated TControl (a TAnchorDockHostSite or a custom dock site)
     property DockSite: TAnchorDockHostSite read FDockSite; // if Site is a TAnchorDockHostSite, this is it
@@ -1183,7 +1182,8 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree): boolean;
     Site.Parent:=Parent;
     if IsCustomSite(Parent) then begin
       Site.Align:=Node.Align;
-      TAnchorDockManager(Parent.DockManager).RestoreSite;
+      //debugln(['TAnchorDockMaster.RestoreLayout.SetupSite Site=',DbgSName(Site),' Site.Bounds=',dbgs(Site.BoundsRect),' BoundSplitterPos=',Node.BoundSplitterPos]);
+      TAnchorDockManager(Parent.DockManager).RestoreSite(Node.BoundSplitterPos);
       Site.HostDockSite:=Parent;
     end;
     if Site is TAnchorDockHostSite then
@@ -1922,6 +1922,10 @@ begin
         if Site<>nil then begin
           LayoutNode:=LayoutTree.NewNode(LayoutNode);
           Site.SaveLayout(LayoutTree,LayoutNode);
+          {if Site.BoundSplitter<>nil then begin
+            LayoutNode:=LayoutTree.NewNode(LayoutNode);
+            Site.BoundSplitter.SaveLayout(LayoutNode);
+          end;}
         end;
       end else
         raise EAnchorDockLayoutError.Create('invalid root control for save: '+DbgSName(AControl));
@@ -4032,6 +4036,12 @@ begin
     LayoutNode.HeaderPosition:=Header.HeaderPosition;
   end else
     LayoutNode.NodeType:=adltnNone;
+  if BoundSplitter<>nil then begin
+    if Align in [alLeft,alRight] then
+      LayoutNode.BoundSplitterPos:=BoundSplitter.Left
+    else
+      LayoutNode.BoundSplitterPos:=BoundSplitter.Top;
+  end;
 end;
 
 constructor TAnchorDockHostSite.Create(AOwner: TComponent);
@@ -4617,7 +4627,7 @@ begin
   WidthDiff:=FSiteClientRect.Right-OldSiteClientRect.Right;
   HeightDiff:=FSiteClientRect.Bottom-OldSiteClientRect.Bottom;
 
-  //debugln(['TAnchorDockManager.ResetBounds ',dbgs(Child.BaseBounds),' ',WidthDiff,',',HeightDiff]);
+  debugln(['TAnchorDockManager.ResetBounds ',DbgSName(Site),' ',dbgs(Child.BaseBounds),' ',WidthDiff,',',HeightDiff]);
   case ResizePolicy of
   admrpChild:
     begin
@@ -4710,7 +4720,7 @@ begin
   Result:=true;
 end;
 
-procedure TAnchorDockManager.RestoreSite;
+procedure TAnchorDockManager.RestoreSite(SplitterPos: integer);
 var
   ChildSite: TAnchorDockHostSite;
 begin
@@ -4721,6 +4731,19 @@ begin
   if ChildSite<>nil then begin
     ChildSite.CreateBoundSplitter;
     ChildSite.PositionBoundSplitter;
+    if ChildSite.Align in [alLeft,alRight] then
+      ChildSite.BoundSplitter.Left:=SplitterPos
+    else
+      ChildSite.BoundSplitter.Top:=SplitterPos;
+    case ChildSite.Align of
+    alTop: ChildSite.Height:=ChildSite.BoundSplitter.Top;
+    alBottom: ChildSite.Height:=Site.ClientHeight
+                  -(ChildSite.BoundSplitter.Top+ChildSite.BoundSplitter.Height);
+    alLeft: ChildSite.Width:=ChildSite.BoundSplitter.Left;
+    alRight: ChildSite.Width:=Site.ClientWidth
+                  -(ChildSite.BoundSplitter.Left+ChildSite.BoundSplitter.Width);
+    end;
+    //debugln(['TAnchorDockManager.RestoreSite ',DbgSName(Site),' ChildSite=',DbgSName(ChildSite),' Site.Bounds=',dbgs(Site.BoundsRect),' Site.Client=',dbgs(Site.ClientRect),' ChildSite.Bounds=',dbgs(ChildSite.BoundsRect),' Splitter.Bounds=',dbgs(ChildSite.BoundSplitter.BoundsRect)]);
   end;
 end;
 

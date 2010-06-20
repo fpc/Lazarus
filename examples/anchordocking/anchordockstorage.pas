@@ -69,6 +69,7 @@ type
   private
     FAlign: TAlign;
     fAnchors: array[TAnchorKind] of string;
+    FBoundSplitterPos: integer;
     FBoundsRect: TRect;
     FHeaderPosition: TADLHeaderPosition;
     FMonitor: integer;
@@ -89,6 +90,7 @@ type
     procedure SetAlign(const AValue: TAlign);
     procedure SetAnchors(Site: TAnchorKind; const AValue: string);
     procedure SetBottom(const AValue: integer);
+    procedure SetBoundSplitterPos(const AValue: integer);
     procedure SetBoundsRect(const AValue: TRect);
     procedure SetHeaderPosition(const AValue: TADLHeaderPosition);
     procedure SetHeight(const AValue: integer);
@@ -143,6 +145,7 @@ type
     property Monitor: integer read FMonitor write SetMonitor;
     property HeaderPosition: TADLHeaderPosition read FHeaderPosition write SetHeaderPosition;
     property TabPosition: TTabPosition read FTabPosition write SetTabPosition;
+    property BoundSplitterPos: integer read FBoundSplitterPos write SetBoundSplitterPos;
     function Count: integer;
     function IsSplitter: boolean;
     function IsRootWindow: boolean;
@@ -886,6 +889,13 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TAnchorDockLayoutTreeNode.SetBoundSplitterPos(const AValue: integer);
+begin
+  if FBoundSplitterPos=AValue then exit;
+  FBoundSplitterPos:=AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TAnchorDockLayoutTreeNode.SetBoundsRect(const AValue: TRect);
 begin
   if CompareRect(@FBoundsRect,@AValue) then exit;
@@ -1028,6 +1038,7 @@ begin
   or (WindowState<>Node.WindowState)
   or (HeaderPosition<>Node.HeaderPosition)
   or (TabPosition<>Node.TabPosition)
+  or (BoundSplitterPos<>Node.BoundSplitterPos)
   then
     exit;
   for a:=low(TAnchorKind) to high(TAnchorKind) do
@@ -1050,6 +1061,7 @@ begin
   WindowState:=Node.WindowState;
   HeaderPosition:=Node.HeaderPosition;
   TabPosition:=Node.TabPosition;
+  BoundSplitterPos:=Node.BoundSplitterPos;
   for a:=low(TAnchorKind) to high(TAnchorKind) do
     Anchors[a]:=Node.Anchors[a];
   while Count>Node.Count do Nodes[Count-1].Free;
@@ -1103,6 +1115,7 @@ begin
   Top:=Config.GetValue('Bounds/Top',0);
   Width:=Config.GetValue('Bounds/Width',0);
   Height:=Config.GetValue('Bounds/Height',0);
+  BoundSplitterPos:=Config.GetValue('Bounds/SplitterPos',0);
   Anchors[akLeft]:=Config.GetValue('Anchors/Left','');
   Anchors[akTop]:=Config.GetValue('Anchors/Top','');
   Anchors[akRight]:=Config.GetValue('Anchors/Right','');
@@ -1133,6 +1146,7 @@ begin
   Config.SetDeleteValue('Bounds/Top',Top,0);
   Config.SetDeleteValue('Bounds/Width',Width,0);
   Config.SetDeleteValue('Bounds/Height',Height,0);
+  Config.SetDeleteValue('Bounds/SplitterPos',BoundSplitterPos,0);
   Config.SetDeleteValue('Anchors/Left',Anchors[akLeft],'');
   Config.SetDeleteValue('Anchors/Top',Anchors[akTop],'');
   Config.SetDeleteValue('Anchors/Right',Anchors[akRight],'');
