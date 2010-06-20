@@ -36,7 +36,8 @@ interface
 uses
   Math, Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs,
   LazConfigStorage, XMLCfg, XMLPropStorage,
-  BaseIDEIntf, ProjectIntf, IDEDialogs, MenuIntf, LazIDEIntf, IDEWindowIntf,
+  BaseIDEIntf, ProjectIntf, MacroIntf, IDEDialogs, MenuIntf, LazIDEIntf,
+  IDEWindowIntf,
   AnchorDockStr, AnchorDocking, AnchorDockOptionsDlg;
 
 const
@@ -52,12 +53,12 @@ type
 
   TIDEAnchorDockMaster = class(TIDEDockMaster)
   private
-    FDefaultLayoutLoaded: boolean;
+    FUserLayoutLoaded: boolean;
     procedure DockMasterCreateControl(Sender: TObject; aName: string;
       var AControl: TControl; DoDisableAutoSizing: boolean);
     procedure GetDefaultBounds(AForm: TCustomForm; out Creator: TIDEWindowCreator;
       out NewBounds: TRect; out DockSiblingName: string; out DockAlign: TAlign);
-    procedure SetDefaultLayoutLoaded(const AValue: boolean);
+    procedure SetUserLayoutLoaded(const AValue: boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -65,7 +66,8 @@ type
     procedure MakeIDEWindowDockable(AControl: TWinControl); override;
     function GetDefaultLayoutFilename: string;
     procedure LoadDefaultLayout;
-    procedure SaveDefaultLayout;
+    procedure LoadUserLayout;
+    procedure SaveUserLayout;
     procedure LoadLayoutFromFile(Filename: string);
     procedure SaveLayoutToFile(Filename: string);
     procedure ShowForm(AForm: TCustomForm; BringToFront: boolean); override;
@@ -74,7 +76,7 @@ type
     function OnProjectClose(Sender: TObject; AProject: TLazProject): TModalResult;
     procedure LoadLayoutFromFileClicked(Sender: TObject);
     procedure SaveLayoutToFileClicked(Sender: TObject);
-    property DefaultLayoutLoaded: boolean read FDefaultLayoutLoaded write SetDefaultLayoutLoaded;
+    property UserLayoutLoaded: boolean read FUserLayoutLoaded write SetUserLayoutLoaded;
   end;
 
 var
@@ -142,10 +144,10 @@ begin
   NewBounds.Bottom:=Max(NewBounds.Top+100,NewBounds.Bottom);
 end;
 
-procedure TIDEAnchorDockMaster.SetDefaultLayoutLoaded(const AValue: boolean);
+procedure TIDEAnchorDockMaster.SetUserLayoutLoaded(const AValue: boolean);
 begin
-  if FDefaultLayoutLoaded=AValue then exit;
-  FDefaultLayoutLoaded:=AValue;
+  if FUserLayoutLoaded=AValue then exit;
+  FUserLayoutLoaded:=AValue;
 end;
 
 constructor TIDEAnchorDockMaster.Create;
@@ -180,30 +182,47 @@ end;
 
 procedure TIDEAnchorDockMaster.LoadDefaultLayout;
 var
+  BaseDir: String;
+  Filename: String;
+begin
+  BaseDir:='$PkgDir(AnchorDockingDsgn)';
+  IDEMacros.SubstituteMacros(BaseDir);
+  if (BaseDir<>'') and DirectoryExistsUTF8(BaseDir) then begin
+    Filename:=AppendPathDelim(BaseDir)+'ADLayoutDefault.xml';
+    if FileExistsUTF8(Filename) then
+      LoadLayoutFromFile(Filename);
+  end;
+end;
+
+procedure TIDEAnchorDockMaster.LoadUserLayout;
+var
   Filename: String;
   Config: TConfigStorage;
 begin
   Filename:=DefaultConfigFileName;
   try
-    debugln(['TIDEAnchorDockMaster.LoadDefaultLayout ',Filename]);
+    debugln(['TIDEAnchorDockMaster.LoadUserLayout ',Filename]);
     Config:=GetIDEConfigStorage(Filename,true);
     try
       if not DockMaster.ConfigIsEmpty(Config) then begin
-        debugln(['TIDEAnchorDockMaster.LoadDefaultLayout restoring ...']);
+        // loading last layout
+        debugln(['TIDEAnchorDockMaster.LoadUserLayout restoring ...']);
         DockMaster.LoadLayoutFromConfig(Config);
-        DefaultLayoutLoaded:=true;
+        UserLayoutLoaded:=true;
+      end else begin
+        LoadDefaultLayout;
       end;
     finally
       Config.Free;
     end;
   except
     on E: Exception do begin
-      DebugLn(['TIDEAnchorDockMaster.LoadDefaultLayout loading ',Filename,' failed: ',E.Message]);
+      DebugLn(['TIDEAnchorDockMaster.LoadUserLayout loading ',Filename,' failed: ',E.Message]);
     end;
   end;
 end;
 
-procedure TIDEAnchorDockMaster.SaveDefaultLayout;
+procedure TIDEAnchorDockMaster.SaveUserLayout;
 var
   Filename: String;
   Config: TConfigStorage;
@@ -349,12 +368,12 @@ function TIDEAnchorDockMaster.OnProjectClose(Sender: TObject;
 begin
   Result:=mrOk;
   if AProject=nil then exit;
-  SaveDefaultLayout;
+  SaveUserLayout;
 end;
 
 procedure TIDEAnchorDockMaster.OnIDERestoreWindows(Sender: TObject);
 begin
-  LoadDefaultLayout;
+  LoadUserLayout;
 end;
 
 procedure TIDEAnchorDockMaster.LoadLayoutFromFileClicked(Sender: TObject);
