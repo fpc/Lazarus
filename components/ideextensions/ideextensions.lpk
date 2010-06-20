@@ -4,25 +4,20 @@
     <PathDelim Value="\"/>
     <Name Value="IdeExtensions"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Parsing>
-        <SyntaxOptions>
-          <UseAnsiStrings Value="True"/>
-        </SyntaxOptions>
-      </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Files Count="1">
       <Item1>
-        <Filename Value="idegroupbox.pas"/>
+        <Filename Value="dividerbevel.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="IdeGroupBox"/>
+        <UnitName Value="dividerbevel"/>
       </Item1>
     </Files>
     <Type Value="RunAndDesignTime"/>

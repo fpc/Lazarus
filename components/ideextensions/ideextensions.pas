@@ -7,13 +7,13 @@ unit ideextensions;
 interface
 
 uses
-  IdeGroupBox, LazarusPackageIntf;
+  DividerBevel, LazarusPackageIntf;
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('IdeGroupBox', @IdeGroupBox.Register); 
+  RegisterUnit('DividerBevel', @DividerBevel.Register); 
 end; 
 
 initialization
