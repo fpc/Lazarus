@@ -128,11 +128,13 @@ type
     FRegistrationPackage: TLazPackage;
     FRegistrationUnitName: string;
     FSynEditPackage: TLazPackage;
+    FLazControlsPackage: TLazPackage;
     FTree: TAVLTree; // sorted tree of TLazPackage
     FUpdateLock: integer;
     function CreateFCLPackage: TLazPackage;
     function CreateLCLPackage: TLazPackage;
     function CreateSynEditPackage: TLazPackage;
+    function CreateLazControlsPackage: TLazPackage;
     function CreateCodeToolsPackage: TLazPackage;
     function CreateIDEIntfPackage: TLazPackage;
     function CreateDefaultPackage: TLazPackage;
@@ -339,6 +341,7 @@ type
     property FCLPackage: TLazPackage read FFCLPackage;
     property LCLPackage: TLazPackage read FLCLPackage;
     property SynEditPackage: TLazPackage read FSynEditPackage;
+    property LazControlsPackage: TLazPackage read FLazControlsPackage;
     property CodeToolsPackage: TLazPackage read FCodeToolsPackage;
     property IDEIntfPackage: TLazPackage read FIDEIntfPackage;
     property LazarusBasePackages: TFPList read FLazarusBasePackages;
@@ -584,6 +587,8 @@ begin
     FIDEIntfPackage:=nil
   else if CurPkg=SynEditPackage then
     FSynEditPackage:=nil
+  else if CurPkg=LazControlsPackage then
+    FLazControlsPackage:=nil
   else if CurPkg=CodeToolsPackage then
     FCodeToolsPackage:=nil;
   FLazarusBasePackages.Remove(CurPkg);
@@ -1522,6 +1527,48 @@ begin
   end;
 end;
 
+function TLazPackageGraph.CreateLazControlsPackage: TLazPackage;
+begin
+  Result:=TLazPackage.Create;
+  with Result do begin
+    AutoCreated:=true;
+    Name:='LazControls';
+    Filename:=SetDirSeparators('$(LazarusDir)/components/lazcontrols/lazcontrols.lpk');
+    Version.SetValues(0,0,0,0);
+    Author:='Martin Friebe';
+    License:='modified LGPL-2';
+    AutoInstall:=pitStatic;
+    AutoUpdate:=pupManually;
+    Description:='LCL controls for the Lazarus IDE';
+    PackageType:=lptRunAndDesignTime;
+    Installed:=pitStatic;
+    CompilerOptions.UnitOutputDirectory:='';
+    POOutputDirectory:='languages';
+    LazDocPaths:='docs';
+    Translated:=SystemLanguageID1;
+    AddToProjectUsesSection:=false;
+
+    // add requirements
+    AddRequiredDependency(LCLPackage.CreateDependencyWithOwner(Result));
+
+    // add units
+    AddFile('dividerbevel.pas','DividerBevel',pftUnit,[],cpBase);
+
+    CompilerOptions.CustomOptions:='$(IDEBuildOptions)';
+
+    // add unit paths
+    UsageOptions.UnitPath:=SetDirSeparators(
+           '$(LazarusDir)/components/lazcontrols/lib/$(TargetCPU)-$(TargetOS)');
+
+    // use the components/lazcontrols/lib/..../lazcontrols.o file as indicator,
+    // if lazcontrols have been recompiled
+    OutputStateFile:=SetDirSeparators(
+      '$(LazarusDir)/components/lazcontrols/lib/$(TargetCPU)-$(TargetOS)/lazcontrols.o');
+
+    Modified:=false;
+  end;
+end;
+
 function TLazPackageGraph.CreateCodeToolsPackage: TLazPackage;
 begin
   Result:=TLazPackage.Create;
@@ -1711,6 +1758,7 @@ begin
   else if PkgName='ideintf' then Result:=CreateIDEIntfPackage
   else if PkgName='synedit' then Result:=CreateSynEditPackage
   else if PkgName='codetools' then Result:=CreateCodeToolsPackage
+  else if PkgName='lazcontrols' then Result:=CreateLazControlsPackage
   else RaiseGDBException('');
 end;
 
@@ -1747,6 +1795,8 @@ begin
       SetBasePackage(FIDEIntfPackage)
     else if SysUtils.CompareText(APackage.Name,'SynEdit')=0 then
       SetBasePackage(FSynEditPackage)
+    else if SysUtils.CompareText(APackage.Name,'LazControls')=0 then
+      SetBasePackage(FLazControlsPackage)
     else if SysUtils.CompareText(APackage.Name,'CodeTools')=0 then
       SetBasePackage(FCodeToolsPackage);
     if FLazarusBasePackages.IndexOf(APackage)<0 then

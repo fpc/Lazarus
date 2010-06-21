@@ -902,7 +902,7 @@ begin
     ResultsList.Clear;
     ResultsWindow:= ListPage;
     try
-      IDEWindowCreators.ShowForm(SearchResultsView,true);
+      Show; // floating window, not dockable
       // update Window Menu, the OnIdle event does not occur while searching
       MainIDEInterface.UpdateWindowMenu;
       DoSearch;

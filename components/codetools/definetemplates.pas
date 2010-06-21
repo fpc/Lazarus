@@ -5254,8 +5254,8 @@ var
   IDEIntfDir: TDefineTemplate;
   ToolsInstallDirTempl: TDefineTemplate;
   CurCPUOS: String;
-  SynEditDirTempl: TDefineTemplate;
-  SynEditUnitsDirTempl: TDefineTemplate;
+  SynEditDirTempl, SynEditUnitsDirTempl: TDefineTemplate;
+  LazControlsDirTempl, LazControlsUnitsDirTempl: TDefineTemplate;
   CodeToolsDirTempl: TDefineTemplate;
   CodeToolsUnitsDirTempl: TDefineTemplate;
   FPGUIPlatformTempl: TDefineTemplate;
@@ -5352,6 +5352,12 @@ begin
       d(LazarusSrcDir+'/components/synedit;'
        +SrcPath)
     ,da_DefineRecurse));
+  DirTempl.AddChild(TDefineTemplate.Create('LazControls path addition',
+    Format(ctsAddsDirToSourcePath,['lazcontrols']),
+    ExternalMacroStart+'SrcPath',
+      d(LazarusSrcDir+'/components/lazcontrols;'
+       +SrcPath)
+    ,da_DefineRecurse));
   DirTempl.AddChild(TDefineTemplate.Create('CodeTools path addition',
     Format(ctsAddsDirToSourcePath,['codetools']),
     ExternalMacroStart+'SrcPath',
@@ -5396,6 +5402,7 @@ begin
       d('../ideintf;'
        +'../components/synedit;'
        +'../components/codetools;'
+       +'../components/lazcontrols;'
        +'../components/custom;'
        +'jitform;')
        +SrcPath
@@ -5457,6 +5464,7 @@ begin
        +';../ideintf'
        +';../components/codetools'
        +';../components/synedit'
+       +';../components/lazcontrols'
        +';../packager'
        +';../debugger'
        +';../designer'
@@ -5471,13 +5479,14 @@ begin
   DirTempl:=TDefineTemplate.Create('Packager',ctsDesignerDirectory,
     '','packager',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('src path addition',
-    Format(ctsAddsDirToSourcePath,['lcl synedit codetools ideintf']),
+    Format(ctsAddsDirToSourcePath,['lcl synedit codetools lazcontrols ideintf']),
     SrcPathMacroName,
       d(LazarusSrcDir+'/lcl'
       +';'+LazarusSrcDir+'/lcl/interfaces/'+WidgetType
       +';'+LazarusSrcDir+'/ide'
       +';'+LazarusSrcDir+'/ideintf'
       +';'+LazarusSrcDir+'/components/synedit'
+      +';'+LazarusSrcDir+'/components/lazcontrols'
       +';'+LazarusSrcDir+'/components/codetools'
       +';'+LazarusSrcDir+'/packager/frames'
       +';'+LazarusSrcDir+'/packager/registration'
@@ -5745,6 +5754,20 @@ begin
      d(LazarusSrcDir+'components/synedit')
      ,da_DefineRecurse));
   DirTempl.AddChild(SynEditDirTempl);
+
+  // <LazarusSrcDir>/components/lazcontrols
+  LazControlsDirTempl:=TDefineTemplate.Create('lazcontrols',
+    'LazControls','','lazcontrols',da_Directory);
+  // <LazarusSrcDir>/components/lazcontrols/lib
+  LazControlsUnitsDirTempl:=TDefineTemplate.Create('lazcontrols output directory',
+    'lib','','lib',da_Directory);
+  LazControlsDirTempl.AddChild(LazControlsUnitsDirTempl);
+  LazControlsUnitsDirTempl.AddChild(TDefineTemplate.Create('CompiledSrcPath',
+     ctsSrcPathForCompiledUnits,
+     ExternalMacroStart+'CompiledSrcPath',
+     d(LazarusSrcDir+'components/lazcontrols')
+     ,da_DefineRecurse));
+  DirTempl.AddChild(LazControlsDirTempl);
 
   // <LazarusSrcDir>/components/codetools/units
   CodeToolsDirTempl:=TDefineTemplate.Create('codetools',

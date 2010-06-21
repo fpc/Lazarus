@@ -16,7 +16,7 @@ unit DividerBevel;
 interface
 
 uses
-  Classes, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls, types,
+  Classes, LResources, Forms, Controls, Graphics, Dialogs, Types,
   LCLType, LCLIntf, LCLProc, math, ExtCtrls;
 
 type
@@ -163,6 +163,7 @@ end;
 procedure TDividerBevel.CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
 begin
+  if WithThemeSpace then ;
   FNeedCalcSize := True;
   CalcSize;
   PreferredWidth := FTextWidth + 2*FLeftIndent + 2*FCaptionSpacing;
