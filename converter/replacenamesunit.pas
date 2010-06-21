@@ -67,7 +67,7 @@ var
 
 function FromMapToGrid(AMap: TStringToStringTree; AGrid: TStringGrid): boolean;
 function FromGridToMap(AMap: TStringToStringTree; AGrid: TStringGrid;
-                    AllowEmptyValues: boolean = true): boolean;
+                       AllowEmptyValues: boolean = true): boolean;
 function EditMap(AMap: TStringToStringTree; ATitle: string): TModalResult;
 
 implementation
@@ -101,7 +101,7 @@ begin
 end;
 
 function FromGridToMap(AMap: TStringToStringTree; AGrid: TStringGrid;
-                    AllowEmptyValues: boolean = true): boolean;
+                       AllowEmptyValues: boolean = true): boolean;
 var
   OldIdent, NewIdent: string;
   i: Integer;

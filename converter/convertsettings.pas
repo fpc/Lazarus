@@ -225,6 +225,8 @@ begin
   MapReplacement('TntLXLookupCtrls',    '');
   MapReplacement('^TntLX(.+)',          '$1');
   MapReplacement('^Tnt([^L][^X].+)',    '$1');
+  // from Mattias: ^Tnt(([^L]|.[^X]).+)  or  ^Tnt(([^L]|L[^X]).*|L$)
+  // from Alexander Klenin: ^Tnt(?!LX)(.+)$
 
 // Map Delphi types to LCL types.
   TheMap:=fReplaceTypes;
