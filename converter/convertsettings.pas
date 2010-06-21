@@ -146,9 +146,9 @@ var
   i: Integer;
 begin
   Tree.Clear;
-  Cnt:=Config.GetValue(Path+'Count',0);
+  Cnt:=Config.GetValue(Path+'/'+'Count',0);
   for i:=0 to Cnt-1 do begin
-    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    SubPath:=Path+'/'+'Item'+IntToStr(i)+'/';
     CurName:=Config.GetValue(SubPath+'Name','');
     CurValue:=Config.GetValue(SubPath+'Value','');
     Tree[CurName]:=CurValue;
@@ -163,19 +163,20 @@ var
   i, j: Integer;
   SubPath: String;
 begin
-  Config.SetDeleteValue(Path+'Count',Tree.Tree.Count,0);
+  Config.SetDeleteValue(Path+'/'+'Count',Tree.Tree.Count,0);
   Node:=Tree.Tree.FindLowest;
   i:=0;
   while Node<>nil do begin
     Item:=PStringToStringTreeItem(Node.Data);
-    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    SubPath:=Path+'/'+'Item'+IntToStr(i)+'/';
     Config.SetDeleteValue(SubPath+'Name',Item^.Name,'');
     Config.SetDeleteValue(SubPath+'Value',Item^.Value,'');
     Node:=Tree.Tree.FindSuccessor(Node);
     inc(i);
   end;
+  // Remove leftover items in case the list has become shorter.
   for j:=i to i+10 do begin
-    SubPath:=Path+'Item'+IntToStr(j)+'/';
+    SubPath:=Path+'/'+'Item'+IntToStr(j)+'/';
     Config.DeletePath(SubPath);
   end;
 end;
