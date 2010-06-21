@@ -123,7 +123,7 @@ type
 
 implementation
 
-uses {$IFDEF HASX11}qtint,{$ENDIF} QtWSControls;
+uses {$IFDEF HASX11}qtint,{$ENDIF} QtWSControls, LCLIntf;
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomForm.CreateHandle
@@ -339,6 +339,8 @@ const
 var
   Widget: TQtMainWindow;
   R: TRect;
+  ActiveWin: HWND;
+  W: QWidgetH;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'ShowHide') then
     Exit;
@@ -350,7 +352,23 @@ begin
     if fsModal in TForm(AWinControl).FormState then
     begin
       {$ifdef HASX11}
-      QWidget_setParent(Widget.Widget, QApplication_activeWindow());
+      W := nil;
+      ActiveWin := GetActiveWindow;
+      if ActiveWin <> 0 then
+      begin
+        if Assigned(TQtWidget(ActiveWin).LCLObject) then
+        begin
+          if (TQtWidget(ActiveWin).LCLObject is TCustomForm) then
+          begin
+            with TCustomForm(TQtWidget(ActiveWin).LCLObject) do
+            begin
+              if Visible and (FormStyle <> fsSplash) then
+                W := TQtWidget(Handle).Widget;
+            end;
+          end;
+        end;
+      end;
+      QWidget_setParent(Widget.Widget, W);
       QWidget_setWindowFlags(Widget.Widget, QtDialog);
       {$endif}
       {$ifdef darwin}
