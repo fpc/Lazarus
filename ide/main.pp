@@ -14321,15 +14321,8 @@ begin
     // ToDo: search i18n references
     // ToDo: designer references
 
-    // show result
-    if (not Options.Rename) or (not Rename) then begin
-      Result:=ShowIdentifierReferences(DeclarationUnitInfo.Source,
-        DeclarationCaretXY,PascalReferences);
-      if Result<>mrOk then exit;
-    end;
-
     // rename identifier
-    if Options.Rename and Rename then begin
+    if Options.Rename then begin
       if CompareIdentifiers(PChar(Identifier),PChar(CurUnitName))=0 then
       begin
         IDEMessageDialog(srkmecRenameIdentifier,
@@ -14345,6 +14338,13 @@ begin
         Result:=mrCancel;
         exit;
       end;
+    end;
+
+    // show result
+    if (not Options.Rename) or (not Rename) then begin
+      Result:=ShowIdentifierReferences(DeclarationUnitInfo.Source,
+        DeclarationCaretXY,PascalReferences);
+      if Result<>mrOk then exit;
     end;
 
   finally
