@@ -2509,7 +2509,6 @@ resourcestring
   srkmecToggleRestrictionBrowser  = 'View restriction browser';
   srkmecToggleCompPalette         = 'View component palette';
   srkmecToggleIDESpeedBtns        = 'View IDE speed buttons';
-  srkmecViewToDoList              = 'View todo list';
 
   // codetools
   srkmecWordCompletion            = 'Word completion';
@@ -3799,7 +3798,6 @@ resourcestring
   lisPckEditInstall = 'Install';
   lisPckEditUninstall = 'Uninstall';
   lisPckEditViewPackageSource = 'View Package Source';
-  lisPEViewToDoList = 'View ToDo list';
   lisPckEditGeneralOptions = 'General Options';
   lisPckEditSaveChanges = 'Save Changes?';
   lisPckEditPackageHasChangedSavePackage = 'Package %s%s%s has changed.%sSave '

@@ -2803,7 +2803,6 @@ begin
     lisKMToggleViewComponentPalette, ecToggleCompPalette);
   AddDefault(C, 'Toggle view IDE speed buttons',
     lisKMToggleViewIDESpeedButtons, ecToggleIDESpeedBtns);
-  AddDefault(C, 'View ToDo list', srkmecViewToDoList, ecViewTodoList);
 
   // project menu
   C:=Categories[AddCategory('ProjectMenu',srkmCatProjectMenu,nil)];
