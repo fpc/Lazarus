@@ -51,6 +51,7 @@ uses
   
 const
   PackageEditorMenuRootName = 'PackageEditor';
+  PackageEditorWindowPrefix = 'PackageEditor_';
 var
   PkgEditMenuOpenFile: TIDEMenuCommand;
   PkgEditMenuRemoveFile: TIDEMenuCommand;
@@ -2412,6 +2413,7 @@ begin
   Result:=FindEditor(Pkg);
   if Result=nil then begin
     Result:=TPackageEditorForm.Create(Application);
+    Result.Name:=PackageEditorWindowPrefix+Pkg.Name;
     Result.LazPackage:=Pkg;
     FItems.Add(Result);
   end;

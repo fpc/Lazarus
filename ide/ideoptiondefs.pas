@@ -144,7 +144,6 @@ const
     'IssueBrowser',
     'JumpHistory'
    );
-   
 
 function CreateNiceWindowPosition(Width, Height: integer): TRect;
 function NonModalIDEFormIDToEnum(const FormID: string): TNonModalIDEWindow;

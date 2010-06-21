@@ -716,6 +716,8 @@ end;
 
 procedure TPkgManager.CreateIDEWindow(Sender: TObject; aFormName: string; var
   AForm: TCustomForm; DoDisableAutoSizing: boolean);
+var
+  PkgName: String;
 begin
   if SysUtils.CompareText(aFormName,NonModalIDEWindowNames[nmiwPkgGraphExplorer])=0
   then begin
@@ -723,6 +725,12 @@ begin
     AForm:=PackageGraphExplorer;
     if DoDisableAutoSizing then
       AForm.DisableAutoSizing;
+  end else if SysUtils.CompareText(PackageEditorWindowPrefix,
+    copy(aFormName,1,length(PackageEditorWindowPrefix)))=0
+  then begin
+    PkgName:=copy(aFormName,length(PackageEditorWindowPrefix)+1,length(aFormName));
+    if (PkgName='') or not IsValidIdent(PkgName) then exit;
+
   end;
 end;
 
@@ -1927,7 +1935,7 @@ begin
 
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwPkgGraphExplorer],
                         nil,@CreateIDEWindow,'250','200','+400','+300');
-  IDEWindowCreators.Add('PackageEditor_',
+  IDEWindowCreators.Add(PackageEditorWindowPrefix,
                         nil,@CreateIDEWindow,'250','200','+400','+300');
   RegisterStandardPackageEditorMenuItems;
 end;
