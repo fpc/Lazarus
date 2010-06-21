@@ -50,6 +50,8 @@ uses
   // codetools
   AVL_Tree, Laz_XMLCfg, DefineTemplates, CodeCache, BasicCodeTools,
   SourceChanger, CodeToolManager,
+  // LazControls
+  LazControls,
   // IDEIntf,
   SrcEditorIntf, IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
   LazIDEIntf,
@@ -1849,6 +1851,7 @@ begin
   LoadLazarusBasePackage('IDEIntf');
   LoadLazarusBasePackage('SynEdit');
   LoadLazarusBasePackage('CodeTools');
+  LoadLazarusBasePackage('LazControls');
   // the default package will be added on demand
   if FDefaultPackage=nil then
     FDefaultPackage:=CreateDefaultPackage;
@@ -1972,7 +1975,8 @@ begin
        or (PackageName='lcl')
        or (PackageName='synedit')
        or (PackageName='ideintf')
-       or (PackageName='codetools');
+       or (PackageName='codetools')
+       or (PackageName='lazcontrols');
 end;
 
 procedure TLazPackageGraph.FreeAutoInstallDependencies;
