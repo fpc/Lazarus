@@ -10,7 +10,7 @@ object SplashForm: TSplashForm
   Caption = 'Lazarus'
   ClientHeight = 341
   ClientWidth = 429
-  FormStyle = fsStayOnTop
+  FormStyle = fsSplash
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object Image: TImage
