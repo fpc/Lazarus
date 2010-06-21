@@ -12529,7 +12529,7 @@ begin
         TopLine:=LogCaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
         if TopLine<1 then TopLine:=1;
         if FocusEditor then begin
-          MessagesView.ShowOnTop;
+          IDEWindowCreators.ShowForm(MessagesView,true);
           SourceEditorManager.ShowActiveWindowOnTop(True);
         end;
         SrcEdit.EditorComponent.LogicalCaretXY:=LogCaretXY;
@@ -12636,7 +12636,7 @@ begin
         if LogCaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
           LogCaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;
         if FocusEditor then begin
-          SearchResultsView.ShowOnTop;
+          IDEWindowCreators.ShowForm(SearchResultsView,true);
           SourceEditorManager.ShowActiveWindowOnTop(True);
         end;
         try
@@ -12674,13 +12674,11 @@ begin
   else
     MessagesView.MessageTreeView.Images := IDEImages.Images_12;
 
-  if not MessagesView.IsVisible then begin
-    // don't move the messagesview, if it was already visible.
-    IDEWindowCreators.ShowForm(MessagesView,true);
-    if IDEDockMaster=nil then
-      // the sourcenotebook is more interesting than the messages
-      SourceEditorManager.ShowActiveWindowOnTop(False);
-  end;
+  // don't move the messagesview, if it was already visible.
+  IDEWindowCreators.ShowForm(MessagesView,BringToFront);
+  if BringToFront then
+    // the sourcenotebook is more interesting than the messages
+    SourceEditorManager.ShowActiveWindowOnTop(False);
 end;
 
 procedure TMainIDE.DoShowSearchResultsView(Show: boolean);
@@ -12715,8 +12713,7 @@ begin
        MessagesView.Top-SrcNoteBook.Top));
   if PutOnTop then
   begin
-    if MessagesView.Parent = nil then
-      MessagesView.ShowOnTop;
+    IDEWindowCreators.ShowForm(MessagesView,true);
     SourceEditorManager.ShowActiveWindowOnTop(False);
   end;
 end;
@@ -14091,7 +14088,7 @@ begin
         ActiveSrcEdit:=SourceEditorManager.ActiveEditor;
     end;
     if ActiveSrcEdit<> nil then begin
-      MessagesView.ShowOnTop;
+      IDEWindowCreators.ShowForm(MessagesView,true);
       with ActiveSrcEdit.EditorComponent do begin
         LogicalCaretXY:=ErrorCaret;
         if ErrorTopLine>0 then

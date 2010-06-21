@@ -51,8 +51,8 @@ uses
   CodeToolManager, PascalParserTool, LinkScanner, FileProcs, CodeIndex,
   StdCodeTools, SourceLog,
   // IDEIntf
-  SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage, PackageIntf,
-  TextTools, IDECommands, LazIDEIntf,
+  IDEWindowIntf, SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage,
+  PackageIntf, TextTools, IDECommands, LazIDEIntf,
   // IDE
   Project, DialogProcs, PackageSystem, PackageDefs, LazarusIDEStrConsts,
   IDEOptionDefs, MsgQuickFixes, BasePkgManager, AddToProjectDlg,
@@ -3143,7 +3143,7 @@ begin
     CreateCodeBrowser;
     CodeBrowserView.SetScopeToCurUnitOwner(true,true);
     CodeBrowserView.SetFilterToSimpleIdentifier(Identifier);
-    CodeBrowserView.ShowOnTop;
+    IDEWindowCreators.ShowForm(CodeBrowserView,true);
   end;
 end;
 

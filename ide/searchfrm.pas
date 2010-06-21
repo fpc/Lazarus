@@ -37,7 +37,7 @@ uses
   // synedit, codetools
   SynEditSearch, SynRegExpr, SourceLog, KeywordFuncLists, BasicCodeTools,
   // IDEIntf
-  LazIDEIntf, SrcEditorIntf, MainIntf,
+  IDEWindowIntf, LazIDEIntf, SrcEditorIntf, MainIntf,
   // ide
   LazarusIDEStrConsts, InputHistory, SearchResultView, Project;
 
@@ -902,7 +902,7 @@ begin
     ResultsList.Clear;
     ResultsWindow:= ListPage;
     try
-      Show;
+      IDEWindowCreators.ShowForm(SearchResultsView,true);
       // update Window Menu, the OnIdle event does not occur while searching
       MainIDEInterface.UpdateWindowMenu;
       DoSearch;
@@ -913,7 +913,7 @@ begin
     end;
   finally
     SearchResultsView.EndUpdate(ListPage.PageIndex);
-    SearchResultsView.ShowOnTop;
+    IDEWindowCreators.ShowForm(SearchResultsView,false);
   end;
 end;
 

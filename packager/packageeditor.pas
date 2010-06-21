@@ -132,19 +132,6 @@ type
   TOnFreePkgEditor = procedure(APackage: TLazPackage) of object;
 
 
-  { TPackageEditorLayout }
-
-  TPackageEditorLayout = class
-  public
-    Filename: string;
-    Rectangle: TRect;
-    constructor Create;
-    destructor Destroy; override;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-  end;
-  
-
   { TPackageEditorForm }
 
   TPackageEditorForm = class(TBasePackageEditor)
@@ -279,7 +266,6 @@ type
   TPackageEditors = class
   private
     FItems: TList; // list of TPackageEditorForm
-    fLayouts: TAVLTree;// tree of TPackageEditorLayout sorted for filename
     FOnAddToProject: TOnAddPkgToProject;
     FOnCompilePackage: TOnCompilePackage;
     FOnCreateNewFile: TOnCreateNewPkgFile;
@@ -299,16 +285,11 @@ type
     FOnViewPackageSource: TOnViewPackageSource;
     FOnViewPackageToDos: TOnViewPackageToDos;
     function GetEditors(Index: integer): TPackageEditorForm;
-    procedure ApplyLayout(AnEditor: TPackageEditorForm);
-    procedure SaveLayout(AnEditor: TPackageEditorForm);
-    procedure LoadLayouts;
-    function GetLayoutConfigFilename: string;
   public
     constructor Create;
     destructor Destroy; override;
     function Count: integer;
     procedure Clear;
-    procedure SaveLayouts;
     procedure Remove(Editor: TPackageEditorForm);
     function IndexOfPackage(Pkg: TLazPackage): integer;
     function FindEditor(Pkg: TLazPackage): TPackageEditorForm;
@@ -397,26 +378,6 @@ var
   ImageIndexText: integer;
   ImageIndexBinary: integer;
   ImageIndexConflict: integer;
-
-function CompareLayouts(Data1, Data2: Pointer): integer;
-var
-  Layout1: TPackageEditorLayout;
-  Layout2: TPackageEditorLayout;
-begin
-  Layout1:=TPackageEditorLayout(Data1);
-  Layout2:=TPackageEditorLayout(Data2);
-  Result:=CompareFilenames(Layout1.Filename,Layout2.Filename);
-end;
-
-function CompareFilenameWithLayout(Key, Data: Pointer): integer;
-var
-  Filename: String;
-  Layout: TPackageEditorLayout;
-begin
-  Filename:=String(Key);
-  Layout:=TPackageEditorLayout(Data);
-  Result:=CompareFilenames(Filename,Layout.Filename);
-end;
 
 procedure RegisterStandardPackageEditorMenuItems;
 var
@@ -848,7 +809,6 @@ procedure TPackageEditorForm.PackageEditorFormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   if LazPackage=nil then exit;
-  PackageEditors.SaveLayout(Self);
 end;
 
 procedure TPackageEditorForm.PackageEditorFormCloseQuery(Sender: TObject;
@@ -1391,7 +1351,6 @@ begin
   end;
   Name:=PackageEditorWindowPrefix+LazPackage.Name;
   FLazPackage.Editor:=Self;
-  PackageEditors.ApplyLayout(Self);
   // update components
   UpdateAll(true);
   // show files
@@ -2230,99 +2189,6 @@ begin
   Result:=TPackageEditorForm(FItems[Index]);
 end;
 
-procedure TPackageEditors.ApplyLayout(AnEditor: TPackageEditorForm);
-var
-  PkgFilename: String;
-  ANode: TAVLTreeNode;
-  ARect, ABounds: TRect;
-begin
-  if fLayouts = nil then LoadLayouts;
-  PkgFilename := AnEditor.LazPackage.Filename;
-  ANode := fLayouts.FindKey(Pointer(PkgFilename), @CompareFilenameWithLayout);
-  // find a nice position for the editor
-  if ANode <> nil then
-    ARect := TPackageEditorLayout(ANode.Data).Rectangle
-  else
-    ARect := Rect(0, 0, 0, 0);
-  if Screen.ActiveCustomForm <> nil then
-    ABounds := Screen.ActiveCustomForm.Monitor.BoundsRect
-  else
-    ABounds := Screen.PrimaryMonitor.BoundsRect;
-  if (ARect.Bottom < ARect.Top + 50) or (ARect.Right < ARect.Left + 50) or
-     (ARect.Bottom > ABounds.Bottom) or (ARect.Right > ABounds.Right) or
-     (Arect.Top < ABounds.Top) or (ARect.Left < ABounds.Left) then
-    ARect := CreateNiceWindowPosition(500, 400);
-  AnEditor.SetBounds(ARect.Left, ARect.Top,
-                     ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
-end;
-
-procedure TPackageEditors.SaveLayout(AnEditor: TPackageEditorForm);
-var
-  PkgFilename: String;
-  ANode: TAVLTreeNode;
-  CurLayout: TPackageEditorLayout;
-begin
-  if fLayouts=nil then exit;
-  PkgFilename:=AnEditor.LazPackage.Filename;
-  ANode:=fLayouts.FindKey(Pointer(PkgFilename),@CompareFilenameWithLayout);
-  if ANode<>nil then begin
-    CurLayout:=TPackageEditorLayout(ANode.Data);
-    fLayouts.Remove(CurLayout);
-  end else begin
-    CurLayout:=TPackageEditorLayout.Create;
-  end;
-  CurLayout.Filename:=PkgFilename;
-  with AnEditor do
-    CurLayout.Rectangle:=Bounds(Left,Top,Width,Height);
-  fLayouts.Add(CurLayout);
-end;
-
-procedure TPackageEditors.LoadLayouts;
-var
-  Filename: String;
-  Path: String;
-  XMLConfig: TXMLConfig;
-  LayoutCount: Integer;
-  NewLayout: TPackageEditorLayout;
-  i: Integer;
-begin
-  if fLayouts=nil then fLayouts:=TAVLTree.Create(@CompareLayouts);
-  fLayouts.FreeAndClear;
-  Filename:=GetLayoutConfigFilename;
-  if not FileExistsUTF8(Filename) then exit;
-  try
-    XMLConfig:=TXMLConfig.Create(Filename);
-  except
-    DebugLn('ERROR: unable to open package editor layouts "',Filename,'"');
-    exit;
-  end;
-  try
-    try
-      Path:='PackageEditorLayouts/';
-      LayoutCount:=XMLConfig.GetValue(Path+'Count/Value',0);
-      for i:=1 to LayoutCount do begin
-        NewLayout:=TPackageEditorLayout.Create;
-        NewLayout.LoadFromXMLConfig(XMLConfig,Path+'Layout'+IntToStr(i));
-        if (NewLayout.Filename='') or (fLayouts.Find(NewLayout)<>nil) then
-          NewLayout.Free
-        else
-          fLayouts.Add(NewLayout);
-      end;
-    finally
-      XMLConfig.Free;
-    end;
-  except
-    on E: Exception do begin
-      DebugLn('ERROR: unable read miscellaneous options from "',Filename,'": ',E.Message);
-    end;
-  end;
-end;
-
-function TPackageEditors.GetLayoutConfigFilename: string;
-begin
-  Result:=SetDirSeparators(GetPrimaryConfigPath+'/packageeditorlayouts.xml');
-end;
-
 constructor TPackageEditors.Create;
 begin
   FItems:=TList.Create;
@@ -2332,10 +2198,6 @@ destructor TPackageEditors.Destroy;
 begin
   Clear;
   FItems.Free;
-  if fLayouts<>nil then begin
-    fLayouts.FreeAndClear;
-    fLayouts.Free;
-  end;
   inherited Destroy;
 end;
 
@@ -2347,48 +2209,6 @@ end;
 procedure TPackageEditors.Clear;
 begin
   FItems.Clear;
-end;
-
-procedure TPackageEditors.SaveLayouts;
-var
-  Filename: String;
-  XMLConfig: TXMLConfig;
-  Path: String;
-  LayoutCount: Integer;
-  ANode: TAVLTreeNode;
-  CurLayout: TPackageEditorLayout;
-begin
-  if fLayouts=nil then exit;
-  Filename:=GetLayoutConfigFilename;
-  try
-    XMLConfig:=TXMLConfig.CreateClean(Filename);
-  except
-    on E: Exception do begin
-      DebugLn('ERROR: unable to open miscellaneous options "',Filename,'": ',E.Message);
-      exit;
-    end;
-  end;
-  try
-    try
-      Path:='PackageEditorLayouts/';
-      LayoutCount:=0;
-      ANode:=fLayouts.FindLowest;
-      while ANode<>nil do begin
-        inc(LayoutCount);
-        CurLayout:=TPackageEditorLayout(ANode.Data);
-        CurLayout.SaveToXMLConfig(XMLConfig,Path+'Layout'+IntToStr(LayoutCount));
-        ANode:=fLayouts.FindSuccessor(ANode);
-      end;
-      XMLConfig.SetDeleteValue(Path+'Count/Value',LayoutCount,0);
-
-      InvalidateFileStateCache;
-      XMLConfig.Flush;
-    finally
-      XMLConfig.Free;
-    end;
-  except
-    DebugLn('ERROR: unable read miscellaneous options from "',Filename,'"');
-  end;
 end;
 
 procedure TPackageEditors.Remove(Editor: TPackageEditorForm);
@@ -2582,32 +2402,6 @@ begin
     Result:=OnPublishPackage(Self,APackage)
   else
     Result:=mrCancel;
-end;
-
-{ TPackageEditorLayout }
-
-constructor TPackageEditorLayout.Create;
-begin
-
-end;
-
-destructor TPackageEditorLayout.Destroy;
-begin
-  inherited Destroy;
-end;
-
-procedure TPackageEditorLayout.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
-begin
-  Filename:=XMLConfig.GetValue(Path+'Filename/Value','');
-  LoadRect(XMLConfig,Path+'Rect/',Rectangle);
-end;
-
-procedure TPackageEditorLayout.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
-begin
-  XMLConfig.SetDeleteValue(Path+'Filename/Value',Filename,'');
-  SaveRect(XMLConfig,Path+'Rect/',Rectangle);
 end;
 
 initialization

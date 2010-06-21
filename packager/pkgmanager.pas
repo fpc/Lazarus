@@ -717,8 +717,12 @@ end;
 procedure TPkgManager.CreateIDEWindow(Sender: TObject; aFormName: string; var
   AForm: TCustomForm; DoDisableAutoSizing: boolean);
 var
-  PkgName: String;
+  APackageName: String;
+  NewDependency: TPkgDependency;
+  APackage: TLazPackage;
+  LoadResult: TLoadPackageResult;
 begin
+  //debugln(['TPkgManager.CreateIDEWindow ',aFormName]);
   if SysUtils.CompareText(aFormName,NonModalIDEWindowNames[nmiwPkgGraphExplorer])=0
   then begin
     DoShowPackageGraph(false);
@@ -728,9 +732,19 @@ begin
   end else if SysUtils.CompareText(PackageEditorWindowPrefix,
     copy(aFormName,1,length(PackageEditorWindowPrefix)))=0
   then begin
-    PkgName:=copy(aFormName,length(PackageEditorWindowPrefix)+1,length(aFormName));
-    if (PkgName='') or not IsValidIdent(PkgName) then exit;
-
+    APackageName:=copy(aFormName,length(PackageEditorWindowPrefix)+1,length(aFormName));
+    if (APackageName='') or not IsValidIdent(APackageName) then exit;
+    NewDependency:=TPkgDependency.Create;
+    try
+      NewDependency.PackageName:=APackageName;
+      LoadResult:=PackageGraph.OpenDependency(NewDependency,false);
+      if LoadResult<>lprSuccess then exit;
+    finally
+      NewDependency.Free;
+    end;
+    APackage:=PackageGraph.FindAPackageWithName(APackageName,nil);
+    if APackage=nil then exit;
+    AForm:=PackageEditors.OpenEditor(APackage);
   end;
 end;
 
@@ -1966,7 +1980,7 @@ end;
 
 procedure TPkgManager.SaveSettings;
 begin
-  PackageEditors.SaveLayouts;
+
 end;
 
 function TPkgManager.GetDefaultSaveDirectoryForFile(const Filename: string
@@ -2390,7 +2404,7 @@ begin
 
   // open a package editor
   CurEditor:=PackageEditors.OpenEditor(NewPackage);
-  CurEditor.Show;
+  IDEWindowCreators.ShowForm(CurEditor,true);
 
   Result:=DoSavePackage(NewPackage,[psfSaveAs]);
 end;
@@ -2420,8 +2434,8 @@ begin
 
   // open a package editor
   CurEditor:=PackageEditors.OpenEditor(APackage);
-  CurEditor.ShowOnTop;
-  
+  IDEWindowCreators.ShowForm(CurEditor,true);
+
   // add to recent packages
   if (pofAddToRecent in Flags) then begin
     AFilename:=APackage.Filename;
@@ -2604,7 +2618,7 @@ begin
     if (APackage.Editor=nil) and APackage.Modified
     and (APackage.UserIgnoreChangeStamp<>APackage.ChangeStamp) then begin
       Editor:=PackageEditors.OpenEditor(APackage);
-      Editor.Visible:=true;
+      IDEWindowCreators.ShowForm(Editor,false);
     end;
   end;
 end;

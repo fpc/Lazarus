@@ -300,7 +300,7 @@ begin
     OldSearchPageIndex:=SearchPageIndex;
     SearchPageIndex:=nil;
     SearchResultsView.EndUpdate(OldSearchPageIndex.PageIndex);
-    SearchResultsView.ShowOnTop;
+    IDEWindowCreators.ShowForm(SearchResultsView,true);
   finally
     if SearchPageIndex <> nil then
       SearchResultsView.EndUpdate(SearchPageIndex.PageIndex);
