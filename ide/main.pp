@@ -2790,10 +2790,15 @@ end;
 procedure TMainIDE.mnuCloseAllClicked(Sender: TObject);
 begin
   DoSaveAll([]);
-  while (SourceEditorManager.SourceEditorCount > 0) and
-    (DoCloseEditorFile(SourceEditorManager.SourceEditors[0],
-       [cfSaveFirst]) = mrOk)
-  do ;
+  SourceEditorManager.IncUpdateLock;
+  try
+    while (SourceEditorManager.SourceEditorCount > 0) and
+      (DoCloseEditorFile(SourceEditorManager.SourceEditors[0],
+         [cfSaveFirst]) = mrOk)
+    do ;
+  finally
+    SourceEditorManager.DecUpdateLock;
+  end;
 end;
 
 procedure TMainIDE.mnuCleanDirectoryClicked(Sender: TObject);
@@ -2824,13 +2829,18 @@ begin
       if ActiveSrcNoteBook = nil then exit;
       PageIndex := ActiveSrcNoteBook.PageIndex;
     end;
-    repeat
-      i:=ActiveSrcNoteBook.PageCount-1;
-      if i=PageIndex then dec(i);
-      if i<0 then break;
-      if DoCloseEditorFile(ActiveSrcNoteBook.FindSourceEditorWithPageIndex(i),[cfSaveFirst])<>mrOk then exit;
-      if i<PageIndex then PageIndex:=i;
-    until false;
+    SourceEditorManager.IncUpdateLock;
+    try
+      repeat
+        i:=ActiveSrcNoteBook.PageCount-1;
+        if i=PageIndex then dec(i);
+        if i<0 then break;
+        if DoCloseEditorFile(ActiveSrcNoteBook.FindSourceEditorWithPageIndex(i),[cfSaveFirst])<>mrOk then exit;
+        if i<PageIndex then PageIndex:=i;
+      until false;
+    finally
+      SourceEditorManager.DecUpdateLock;
+    end
   end else
     // close only the clicked source editor
     mnuCloseClicked(Sender);
@@ -9754,11 +9764,16 @@ begin
   Result:=DoCallProjectChangedHandler(lihtProjectClose,Project1);
   if Result=mrAbort then exit;
 
-  // close all loaded files
-  while SourceEditorManager.SourceEditorCount > 0 do begin
-    Result:=DoCloseEditorFile(SourceEditorManager.SourceEditors[0],
-                              [cfProjectClosing]);
-    if Result=mrAbort then exit;
+    // close all loaded files
+  SourceEditorManager.IncUpdateLock;
+  try
+    while SourceEditorManager.SourceEditorCount > 0 do begin
+      Result:=DoCloseEditorFile(SourceEditorManager.SourceEditors[0],
+                                [cfProjectClosing]);
+      if Result=mrAbort then exit;
+    end;
+  finally
+    SourceEditorManager.DecUpdateLock;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject B');{$ENDIF}
   // deactivate project build properties
@@ -15791,11 +15806,16 @@ begin
                   0)
   of
     mrYes : begin
-        while (SrcNB.EditorCount > 0) and
-              (DoCloseEditorFile(SrcNB.Editors[0], [cfSaveFirst]) = mrOK)
-        do ;
-        if SrcNB.EditorCount = 0 then
-          CloseAction := caFree;
+        SourceEditorManager.IncUpdateLock;
+        try
+          while (SrcNB.EditorCount > 0) and
+                (DoCloseEditorFile(SrcNB.Editors[0], [cfSaveFirst]) = mrOK)
+          do ;
+          if SrcNB.EditorCount = 0 then
+            CloseAction := caFree;
+        finally
+          SourceEditorManager.DecUpdateLock;
+        end;
       end;
     mrNo : CloseAction := caHide;
     mrCancel : CloseAction := caNone;

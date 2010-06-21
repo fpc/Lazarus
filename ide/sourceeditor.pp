@@ -6657,7 +6657,7 @@ begin
   end;
   // Move focus from Notebook-tabs to editor
   TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
-  if IsVisible and (TempEditor <> nil) then
+  if IsVisible and (TempEditor <> nil) and (FUpdateLock = 0) then
     TempEditor.EditorComponent.SetFocus;
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.CloseFile END');
