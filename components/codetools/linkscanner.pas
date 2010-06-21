@@ -147,7 +147,8 @@ type
     cmsProperty,            
     cmsDefault_inline,      
     cmsExcept,              
-    cmsObjectiveC1
+    cmsObjectiveC1,
+    cmsObjectiveC2
     );
 
   TPascalCompiler = (pcFPC, pcDelphi);
@@ -520,7 +521,7 @@ const
         'POINTERTOPROCVAR', 'AUTODEREF', 'INITFINAL', 'POINTERARITHMETICS',
         'ANSISTRINGS', 'OUT', 'DEFAULTPARAMETERS', 'HINTDIRECTIVE',
         'DUPLICATELOCALS', 'PROPERTIES', 'ALLOWINLINE', 'EXCEPTIONS',
-        'OBJECTIVEC1');
+        'OBJECTIVEC1', 'OBJECTIVEC2');
 
   PascalCompilerNames: array[TPascalCompiler] of shortstring=(
         'FPC', 'DELPHI'
