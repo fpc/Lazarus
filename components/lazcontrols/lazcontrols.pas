@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit ideextensions; 
+unit lazcontrols; 
 
 interface
 
@@ -17,5 +17,5 @@ begin
 end; 
 
 initialization
-  RegisterPackage('IdeExtensions', @Register); 
+  RegisterPackage('LazControls', @Register); 
 end.

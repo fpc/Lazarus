@@ -2,7 +2,7 @@
 <CONFIG>
   <Package Version="3">
     <PathDelim Value="\"/>
-    <Name Value="IdeExtensions"/>
+    <Name Value="LazControls"/>
     <CompilerOptions>
       <Version Value="9"/>
       <PathDelim Value="\"/>
