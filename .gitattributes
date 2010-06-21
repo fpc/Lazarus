@@ -1219,6 +1219,8 @@ components/jcf2/Utils/JcfSystemUtils.pas svneol=native#text/pascal
 components/jcf2/Utils/JcfUnicode.pas svneol=native#text/pascal
 components/jcf2/Utils/JcfUnicodeFiles.pas svneol=native#text/pascal
 components/jcf2/readme.txt svneol=native#text/plain
+components/lazcontrols/Makefile svneol=native#text/plain
+components/lazcontrols/Makefile.fpc svneol=native#text/plain
 components/lazcontrols/dividerbevel.pas svneol=native#text/pascal
 components/lazcontrols/dividerbevel_icon.lrs svneol=native#text/pascal
 components/lazcontrols/images/tdividerbevel.png -text
