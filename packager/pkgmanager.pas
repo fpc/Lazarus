@@ -1927,6 +1927,8 @@ begin
 
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwPkgGraphExplorer],
                         nil,@CreateIDEWindow,'250','200','+400','+300');
+  IDEWindowCreators.Add('PackageEditor_',
+                        nil,@CreateIDEWindow,'250','200','+400','+300');
   RegisterStandardPackageEditorMenuItems;
 end;
 

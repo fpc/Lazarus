@@ -2225,21 +2225,10 @@ begin
 end;
 
 procedure TMainIDE.RestoreIDEWindows;
-var
-  i: Integer;
-  ALayout: TSimpleWindowLayout;
-  AForm: TCustomForm;
 begin
   DoCallNotifyHandler(lihtIDERestoreWindows);
-  if IDEDockMaster<>nil then
-    exit;
-  for i:=0 to IDEWindowCreators.SimpleLayoutStorage.Count-1 do begin
-    ALayout:=IDEWindowCreators.SimpleLayoutStorage[i];
-    if not ALayout.Visible then continue;
-    AForm:=IDEWindowCreators.GetForm(ALayout.FormID,true);
-    if AForm=nil then continue;
-    IDEWindowCreators.ShowForm(AForm,false);
-  end;
+  if IDEDockMaster=nil then
+    IDEWindowCreators.RestoreSimpleLayout;
 end;
 
 procedure TMainIDE.FreeIDEWindows;

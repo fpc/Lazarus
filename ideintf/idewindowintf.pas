@@ -329,6 +329,7 @@ type
     property OnShowForm: TShowIDEWindowEvent read FOnShowForm write FOnShowForm; // set by the IDE to implement a default
 
     property SimpleLayoutStorage: TSimpleWindowLayoutList read FSimpleLayoutStorage;
+    procedure RestoreSimpleLayout;
   end;
 
 var
@@ -1481,6 +1482,21 @@ begin
       TCustomForm(AForm).EnableAutoSizing;
   end else if DoDisableAutoSizing then
     TCustomForm(AForm).DisableAutoSizing;
+end;
+
+procedure TIDEWindowCreatorList.RestoreSimpleLayout;
+var
+  i: Integer;
+  ALayout: TSimpleWindowLayout;
+  AForm: TCustomForm;
+begin
+  for i:=0 to SimpleLayoutStorage.Count-1 do begin
+    ALayout:=SimpleLayoutStorage[i];
+    if not ALayout.Visible then continue;
+    AForm:=GetForm(ALayout.FormID,true);
+    if AForm=nil then continue;
+    ShowForm(AForm,false);
+  end;
 end;
 
 { TIDEDockMaster }
