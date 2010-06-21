@@ -1421,7 +1421,14 @@ begin
         //DebugLn(['TFindDeclarationTool.FindDeclaration CleanPosIsDeclarationIdentifier']);
         NewTool:=Self;
         NewNode:=CursorNode;
-        CleanCursorPos:=GetIdentStartPosition(Src,CleanCursorPos);
+        if CursorNode.Desc=ctnVarDefinition then begin
+          // if this is is a parmater, try to find the corresponding declaration
+          NewNode:=FindCorrespondingProcParamNode(NewNode);
+          if (NewNode=nil) or (NewNode.StartPos>CursorNode.StartPos) then
+            NewNode:=CursorNode;
+        end;
+        CleanCursorPos:=GetIdentStartPosition(Src,NewNode.StartPos);
+
         Result:=JumpToCleanPos(CleanCursorPos,CleanCursorPos,CleanCursorPos,
                                NewPos,NewTopLine,false);
         exit;
@@ -4122,10 +4129,6 @@ var
   end;
   
   function FindDeclarationNode: boolean;
-  const
-    JumpToProcAttr = [phpInUpperCase,phpWithoutClassName,phpWithVarModifiers];
-  var
-    ProcNode: TCodeTreeNode;
   begin
     Result:=false;
 
@@ -4156,31 +4159,13 @@ var
 
     ctnProcedure:
       AliasDeclarationNode:=DeclarationTool.FindCorrespondingProcNode(
-                                                DeclarationNode,JumpToProcAttr);
+                                                DeclarationNode);
     ctnProcedureHead:
       AliasDeclarationNode:=DeclarationTool.FindCorrespondingProcNode(
-                                         DeclarationNode.Parent,JumpToProcAttr);
+                                         DeclarationNode.Parent);
     ctnVarDefinition:
       if DeclarationNode.HasParentOfType(ctnProcedureHead) then begin
-        // this is a parameter name
-        ProcNode:=DeclarationNode.GetNodeOfType(ctnProcedure);
-        // search alias for parameter
-        ProcNode:=DeclarationTool.FindCorrespondingProcNode(ProcNode,JumpToProcAttr);
-        if ProcNode<>nil then begin
-          DeclarationTool.BuildSubTreeForProcHead(ProcNode);
-          AliasDeclarationNode:=ProcNode;
-          while (AliasDeclarationNode<>nil) do begin
-            if AliasDeclarationNode.Desc
-              in [ctnProcedure,ctnProcedureHead,ctnParameterList]
-            then
-              AliasDeclarationNode:=AliasDeclarationNode.FirstChild
-            else begin
-              if CompareIdentifiers(PChar(Pointer(Identifier)),
-                @DeclarationTool.Src[AliasDeclarationNode.StartPos])=0 then break;
-              AliasDeclarationNode:=AliasDeclarationNode.NextBrother;
-            end;
-          end;
-        end;
+        AliasDeclarationNode:=FindCorrespondingProcParamNode(DeclarationNode);
       end;
 
     end;

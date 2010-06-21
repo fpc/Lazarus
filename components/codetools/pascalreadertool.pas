@@ -96,7 +96,11 @@ type
     function FindProcNode(StartNode: TCodeTreeNode; const AProcHead: string;
         Attr: TProcHeadAttributes): TCodeTreeNode;
     function FindCorrespondingProcNode(ProcNode: TCodeTreeNode;
-        Attr: TProcHeadAttributes): TCodeTreeNode;
+        Attr: TProcHeadAttributes = [phpInUpperCase,phpWithoutClassName,phpWithVarModifiers]
+        ): TCodeTreeNode;
+    function FindCorrespondingProcParamNode(ProcParamNode: TCodeTreeNode;
+        Attr: TProcHeadAttributes = [phpInUpperCase,phpWithoutClassName,phpWithVarModifiers]
+        ): TCodeTreeNode;
     function FindProcBody(ProcNode: TCodeTreeNode): TCodeTreeNode;
     function ProcBodyIsEmpty(ProcNode: TCodeTreeNode): boolean;
     procedure MoveCursorToFirstProcSpecifier(ProcNode: TCodeTreeNode);
@@ -658,6 +662,41 @@ begin
     // found itself -> search further
     StartNode:=FindNextNodeOnSameLvl(Result);
     Result:=FindProcNode(StartNode,ProcHead,Attr);
+  end;
+end;
+
+function TPascalReaderTool.FindCorrespondingProcParamNode(
+  ProcParamNode: TCodeTreeNode; Attr: TProcHeadAttributes): TCodeTreeNode;
+var
+  ProcNode: TCodeTreeNode;
+begin
+  Result:=nil;
+  if ProcParamNode=nil then exit;
+  if (ProcParamNode.Desc=ctnVarDefinition)
+  and (ProcParamNode.Parent.Desc=ctnParameterList)
+  and (ProcParamNode.Parent.Parent.Desc=ctnProcedureHead) then begin
+    // this is a parameter name
+    ProcNode:=ProcParamNode.GetNodeOfType(ctnProcedure);
+    if ProcNode=nil then exit;
+    // search alias for parameter
+    ProcNode:=FindCorrespondingProcNode(ProcNode,Attr);
+    if ProcNode=nil then exit;
+    BuildSubTreeForProcHead(ProcNode);
+    Result:=ProcNode;
+    while (Result<>nil) do begin
+      //debugln(['TPascalReaderTool.FindCorrespondingProcParamNode ',dbgstr(copy(Src,Result.StartPos,20))]);
+      if Result.Desc
+        in [ctnProcedure,ctnProcedureHead,ctnParameterList]
+      then
+        Result:=Result.FirstChild
+      else begin
+        if Result.StartPos<1 then break;
+        if CompareIdentifiers(@Src[ProcParamNode.StartPos],@Src[Result.StartPos])=0
+        then exit;
+        Result:=Result.NextBrother;
+      end;
+    end;
+    Result:=nil;
   end;
 end;
 
