@@ -1385,7 +1385,7 @@ begin
   SetupStartProject;
 
   // reopen extra windows
-  DoShowMessagesView;
+  DoShowMessagesView(false);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE END');{$ENDIF}
 end;
 
@@ -12719,7 +12719,7 @@ var
   SrcNoteBook: TSourceNotebook;
   Layout: TSimpleWindowLayout;
 begin
-  DoShowMessagesView;
+  DoShowMessagesView(PutOnTop);
   if SourceEditorManager.SourceWindowCount = 0 then exit;
   SrcNoteBook := SourceEditorManager.SourceWindows[0];
 
