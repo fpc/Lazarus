@@ -1385,7 +1385,11 @@ begin
   if FLazPackage=AValue then exit;
   if FLazPackage<>nil then FLazPackage.Editor:=nil;
   FLazPackage:=AValue;
-  if FLazPackage=nil then exit;
+  if FLazPackage=nil then begin
+    Name:=Name+'___off___';
+    exit;
+  end;
+  Name:=PackageEditorWindowPrefix+LazPackage.Name;
   FLazPackage.Editor:=Self;
   PackageEditors.ApplyLayout(Self);
   // update components
@@ -1621,6 +1625,7 @@ end;
 procedure TPackageEditorForm.UpdateAll(Immediately: boolean);
 begin
   if LazPackage=nil then exit;
+  Name:=PackageEditorWindowPrefix+LazPackage.Name;
   if not Immediately then begin
     if FNeedUpdateAll then exit;
     FNeedUpdateAll:=true;
@@ -2412,8 +2417,7 @@ function TPackageEditors.OpenEditor(Pkg: TLazPackage): TPackageEditorForm;
 begin
   Result:=FindEditor(Pkg);
   if Result=nil then begin
-    Result:=TPackageEditorForm.Create(Application);
-    Result.Name:=PackageEditorWindowPrefix+Pkg.Name;
+    Result:=TPackageEditorForm.Create(LazarusIDE.OwningComponent);
     Result.LazPackage:=Pkg;
     FItems.Add(Result);
   end;
