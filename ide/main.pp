@@ -4216,6 +4216,10 @@ procedure TMainIDE.SaveDesktopSettings(
   TheEnvironmentOptions: TEnvironmentOptions);
 begin
   IDEWindowCreators.SimpleLayoutStorage.StoreWindowPositions;
+  // do not auto show the search results view
+  IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(
+    NonModalIDEWindowNames[nmiwSearchResultsViewName]).Visible:=false;
+
   with TheEnvironmentOptions do begin
     ObjectInspectorOptions.Assign(ObjectInspector1);
   end;
