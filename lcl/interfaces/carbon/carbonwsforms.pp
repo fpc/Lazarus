@@ -76,6 +76,8 @@ type
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
+
+    class procedure ShowHide(const AWinControl: TWinControl); override;
     
     class procedure SetBorderIcons(const AForm: TCustomForm; const ABorderIcons: TBorderIcons); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
@@ -190,6 +192,27 @@ begin
   if not CheckHandle(ACustomForm, Self, SShowModal) then Exit;
 
   TCarbonWindow(ACustomForm.Handle).ShowModal;
+end;
+
+class procedure TCarbonWSCustomForm.ShowHide(const AWinControl: TWinControl);
+var
+  nCmdShow : Integer;
+begin
+  if not CheckHandle(AWinControl, Self, 'ShowHide') then Exit;
+
+  if AWinControl.HandleObjectShouldBeVisible then
+  begin
+    case TCustomForm(AWinControl).WindowState of
+      wsMaximized: nCmdShow := SW_SHOWMAXIMIZED;
+      wsMinimized: nCmdShow := SW_SHOWMINIMIZED;
+    else
+      nCmdShow := SW_SHOW;
+    end;
+    TCarbonWindow(AWinControl.Handle).ShowHide(True);
+    TCarbonWindow(AWinControl.Handle).Show(nCmdShow);
+  end
+  else
+    TCarbonWindow(AWinControl.Handle).ShowHide(False);
 end;
 
 {------------------------------------------------------------------------------
