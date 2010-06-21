@@ -2683,6 +2683,7 @@ procedure TControl.SetName(const Value: TComponentName);
 var
   ChangeText: Boolean;
 begin
+  if Name=Value then exit;
   ChangeText :=
     (csSetCaption in ControlStyle) and not (csLoading in ComponentState) and
     (Name = Text) and
