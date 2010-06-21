@@ -2439,12 +2439,22 @@ function TPkgManager.DoOpenPackageWithName(const APackageName: string;
   Flags: TPkgOpenFlags; ShowAbort: boolean): TModalResult;
 var
   APackage: TLazPackage;
+  NewDependency: TPkgDependency;
+  LoadResult: TLoadPackageResult;
 begin
+  Result:=mrCancel;
+  if (APackageName='') or not IsValidIdent(APackageName) then exit;
+  NewDependency:=TPkgDependency.Create;
+  try
+    NewDependency.PackageName:=APackageName;
+    LoadResult:=PackageGraph.OpenDependency(NewDependency,ShowAbort);
+    if LoadResult<>lprSuccess then exit;
+  finally
+    NewDependency.Free;
+  end;
   APackage:=PackageGraph.FindAPackageWithName(APackageName,nil);
-  if APackage=nil then
-    Result:=mrCancel
-  else
-    Result:=DoOpenPackage(APackage,Flags,ShowAbort);
+  if APackage=nil then exit;
+  Result:=DoOpenPackage(APackage,Flags,ShowAbort);
 end;
 
 function TPkgManager.DoOpenPackageFile(AFilename: string; Flags: TPkgOpenFlags;
