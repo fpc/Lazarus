@@ -237,58 +237,21 @@ procedure TControlScrollBar.AutoCalcRange;
 
   procedure AutoCalcVRange;
   var
-    I: Integer;
-    TmpRange: Longint;
-    c: TControl;
     PreferredWidth: Integer;
     PreferredHeight: Integer;
   begin
-    if FControl.AutoSize
-    or ((FControl.Parent<>nil) and (FControl.Parent.ChildSizing.Layout<>cclNone)) then
-    begin
-      GetPreferredClientRect(PreferredWidth,PreferredHeight);
-      TmpRange := PreferredHeight;
-    end
-    else begin
-      TmpRange := 0;
-      for I := 0 to FControl.ControlCount - 1 do
-      begin
-        c:=FControl.Controls[I];
-        if not c.IsControlVisible then continue;
-        if not IsNonAligned(c) then continue;
-        //DebugLn(['AutoCalcVRange c=',DbgSName(c)]);
-        TmpRange := Max(TmpRange, c.Top + c.Height);
-      end;
-    end;
+    GetPreferredClientRect(PreferredWidth,PreferredHeight);
     //DebugLn(['AutoCalcVRange ',DbgSName(FControl),' AutoSize=',FControl.AutoSize,' Bounds=',dbgs(FControl.BoundsRect),' Client=',dbgs(FControl.ClientRect),' TmpRange=',TmpRange,' pref=',PreferredWidth,'x',PreferredHeight]);
-    InternalSetRange(TmpRange);
+    InternalSetRange(PreferredHeight);
   end;
 
   procedure AutoCalcHRange;
   var
-    i: Integer;
-    TmpRange : Longint;
-    c: TControl;
     PreferredWidth: Integer;
     PreferredHeight: Integer;
   begin
-    if FControl.AutoSize
-    or ((FControl.Parent<>nil) and (FControl.Parent.ChildSizing.Layout<>cclNone)) then
-    begin
-      GetPreferredClientRect(PreferredWidth,PreferredHeight);
-      TmpRange := PreferredWidth;
-    end
-    else begin
-      TmpRange := 0;
-      for i := 0 to FControl.ControlCount - 1 do
-      begin
-        c:=FControl.Controls[I];
-        if not c.IsControlVisible then continue;
-        if not IsNonAligned(c) then continue;
-        TmpRange := Max(TmpRange, c.Left + c.Width);
-      end;
-    end;
-    InternalSetRange(TmpRange);
+    GetPreferredClientRect(PreferredWidth,PreferredHeight);
+    InternalSetRange(PreferredWidth);
   end;
 
 begin

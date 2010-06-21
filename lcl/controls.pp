@@ -218,7 +218,9 @@ type
     csHasCancelAction,       // control implements useful ExecuteCancelAction
     csNoDesignSelectable,    // control can not be selected at design time
     csOwnedChildrenNotSelectable, // child controls owned by this control are NOT selectable in the designer
-    csAutoSize0x0            // if the preferred size is 0x0 then control is shrinked ot 0x0
+    csAutoSize0x0,           // if the preferred size is 0x0 then control is shrinked ot 0x0
+    csAutoSizeKeepChildLeft, // when AutoSize=true do not move children horizontally
+    csAutoSizeKeepChildTop   // when AutoSize=true do not move children vertically
     );
   TControlStyle = set of TControlStyleType;
 

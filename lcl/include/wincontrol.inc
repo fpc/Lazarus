@@ -170,7 +170,8 @@ type
     function GetChildren(AControl: TControl): TAutoSizeCtrlData;
     procedure DoMoveNonAlignedChildren(Side: TAnchorKind;
                                    var MoveDiff: integer; FindMinimum: boolean);
-    procedure SetupNonAlignedChildren(MoveNonAlignedChildren: boolean);
+    procedure SetupNonAlignedChildren(MoveNonAlignedChildrenLeft,
+                                      MoveNonAlignedChildrenTop: boolean);
     procedure AlignChildren;
     procedure SetupSpace;
     function ComputePositions: boolean;// false if recomputation is needed (a property changed)
@@ -188,7 +189,8 @@ type
     constructor Create(AControl: TControl; IsParent: boolean = true);
     destructor Destroy; override;
     procedure Clear;
-    procedure ComputePreferredClientArea(MoveNonAlignedChilds: boolean;
+    procedure ComputePreferredClientArea(MoveNonAlignedChildrenLeft,
+                      MoveNonAlignedChildrenTop: boolean;
                       out MoveNonAlignedToLeft, MoveNonAlignedToTop,
                       PreferredClientWidth, PreferredClientHeight: integer);
     procedure FixControlProperties(Child: TControl);
@@ -874,7 +876,8 @@ begin
   end;
 end;
 
-procedure TAutoSizeCtrlData.SetupNonAlignedChildren(MoveNonAlignedChildren: boolean);
+procedure TAutoSizeCtrlData.SetupNonAlignedChildren(MoveNonAlignedChildrenLeft,
+  MoveNonAlignedChildrenTop: boolean);
 var
   ChildSizing: TControlChildSizing;
   Box: TAutoSizeBox;
@@ -897,12 +900,12 @@ begin
     MoveDiff:=0;
     DoMoveNonAlignedChildren(akLeft,MoveDiff,true);
     //DebugLn(['TAutoSizeCtrlData.ComputePreferredClientArea akLeft MoveDiff=',MoveDiff]);
-    if not MoveNonAlignedChildren then MoveDiff:=0;
+    if not MoveNonAlignedChildrenLeft then MoveDiff:=0;
     DoMoveNonAlignedChildren(akLeft,MoveDiff,false);
     MoveDiff:=0;
     DoMoveNonAlignedChildren(akTop,MoveDiff,true);
     //DebugLn(['TAutoSizeCtrlData.ComputePreferredClientArea akTop MoveDiff=',MoveDiff]);
-    if not MoveNonAlignedChildren then MoveDiff:=0;
+    if not MoveNonAlignedChildrenTop then MoveDiff:=0;
     DoMoveNonAlignedChildren(akTop,MoveDiff,false);
   end else begin
     // there is an automatic layout for non aligned childs
@@ -960,9 +963,9 @@ begin
 end;
 
 procedure TAutoSizeCtrlData.ComputePreferredClientArea(
-  MoveNonAlignedChilds: boolean;
-  out MoveNonAlignedToLeft, MoveNonAlignedToTop,
-  PreferredClientWidth, PreferredClientHeight: integer);
+  MoveNonAlignedChildrenLeft, MoveNonAlignedChildrenTop: boolean; out
+  MoveNonAlignedToLeft, MoveNonAlignedToTop, PreferredClientWidth,
+  PreferredClientHeight: integer);
 { if MoveNonAlignedChilds=true then all non-aligned childs will be moved in
   parallel, so that at least one child is positioned left most and one child
   is positioned top most.
@@ -1140,7 +1143,7 @@ begin
     end;
     //WriteDebugReport('anchored','');
 
-    SetupNonAlignedChildren(MoveNonAlignedChilds);
+    SetupNonAlignedChildren(MoveNonAlignedChildrenLeft,MoveNonAlignedChildrenTop);
     //WriteDebugReport('nonaligned','');
     // setup the dependencies for Aligned controls
     AlignChildren;
@@ -1182,7 +1185,7 @@ begin
   end;
 
   // compute needed MoveNonAlignedToLeft,MoveNonAlignedToTop
-  if MoveNonAlignedChilds then
+  if MoveNonAlignedChildrenLeft or MoveNonAlignedChildrenTop then
   begin
     MoveNonAlignedToLeft:=Low(integer);
     MoveNonAlignedToTop:=Low(integer);
@@ -1192,7 +1195,8 @@ begin
       ChildData:=Children[Child];
       if not Child.IsControlVisible then continue;
       if not IsNotAligned(Child) then continue;
-      if (ChildData.Sides[akLeft].DistanceState[assddLeftTop]=assdfValid) then
+      if MoveNonAlignedChildrenLeft
+      and (ChildData.Sides[akLeft].DistanceState[assddLeftTop]=assdfValid) then
         MoveNonAlignedToLeft:=Max(MoveNonAlignedToLeft,
                    Child.Left-ChildData.Sides[akLeft].Distance[assddLeftTop]);
       { the below is only correct, if PreferredClientWidth is realized.
@@ -1201,7 +1205,8 @@ begin
           Child.Left
           -(PreferredClientWidth
             -ChildData.Sides[akLeft].Distance[assddRightBottom]));}
-      if (ChildData.Sides[akTop].DistanceState[assddLeftTop]=assdfValid) then
+      if MoveNonAlignedChildrenTop
+      and (ChildData.Sides[akTop].DistanceState[assddLeftTop]=assdfValid) then
         MoveNonAlignedToTop:=Max(MoveNonAlignedToTop,
                      Child.Top-ChildData.Sides[akTop].Distance[assddLeftTop]);
       { the below is only correct, if PreferredClientWidth is realized.
@@ -3254,8 +3259,10 @@ var
     Layout:=nil;
     try
       Layout:=TAutoSizeCtrlData.Create(Self);
-      Layout.ComputePreferredClientArea(true,dx,dy,
-                                        NewClientWidth,NewClientHeight);
+      Layout.ComputePreferredClientArea(
+          not (csAutoSizeKeepChildLeft in ControlStyle),
+          not (csAutoSizeKeepChildTop in ControlStyle),
+          dx,dy,NewClientWidth,NewClientHeight);
       if (NewClientWidth<>0) or (NewClientHeight<>0) then ;
       //if (dx<>0) or (dy<>0) then DebugLn(['GetMoveDiffForNonAlignedChilds ',DbgSName(Self),' dx=',dx,' dy=',dy]);
     finally
@@ -7757,7 +7764,7 @@ begin
     Layout:=nil;
     try
       Layout:=TAutoSizeCtrlData.Create(Self);
-      Layout.ComputePreferredClientArea(false,NewMoveLeft,NewMoveRight,
+      Layout.ComputePreferredClientArea(false,false,NewMoveLeft,NewMoveRight,
                                         NewClientWidth,NewClientHeight);
       //Layout.WriteDebugReport('TWinControl.CalculatePreferredSize ','  ');
       if (NewMoveLeft<>0) or (NewMoveRight<>0) then ;

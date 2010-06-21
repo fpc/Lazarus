@@ -223,6 +223,16 @@ begin
   UpdateScrollbars;
 end;
 
+procedure TScrollingWinControl.SetAutoSize(Value: Boolean);
+begin
+  if AutoSize=Value then exit;
+  if Value then
+    ControlStyle:=ControlStyle-[csAutoSizeKeepChildLeft,csAutoSizeKeepChildTop]
+  else
+    ControlStyle:=ControlStyle+[csAutoSizeKeepChildLeft,csAutoSizeKeepChildTop];
+  inherited SetAutoSize(Value);
+end;
+
 procedure TScrollingWinControl.WMVScroll(var Message : TLMVScroll);
 begin
   VertScrollbar.ScrollHandler(Message);
@@ -242,7 +252,8 @@ begin
   FVertScrollbar := TControlScrollBar.Create(Self, sbVertical);
   FHorzScrollbar := TControlScrollBar.Create(Self, sbHorizontal);
 
-  ControlStyle := [csAcceptsControls, csClickEvents, csDoubleClicks];
+  ControlStyle := [csAcceptsControls, csClickEvents, csDoubleClicks,
+                   csAutoSizeKeepChildLeft, csAutoSizeKeepChildTop];
 
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);

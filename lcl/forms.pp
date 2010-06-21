@@ -175,6 +175,7 @@ type
     procedure SetAutoScroll(Value: Boolean); virtual;
     procedure Loaded; override;
     property AutoScroll: Boolean read FAutoScroll write SetAutoScroll default False;// auto show/hide scrollbars
+    procedure SetAutoSize(Value: Boolean); override;
   public
     constructor Create(TheOwner : TComponent); override;
     destructor Destroy; override;
