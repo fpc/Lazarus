@@ -1014,7 +1014,7 @@ type
 
     // search results
     function DoJumpToSearchResult(FocusEditor: boolean): boolean;
-    procedure DoShowSearchResultsView(Show: boolean);
+    procedure DoShowSearchResultsView(Show, BringToFront: boolean);
 
     // form editor and designer
     procedure DoBringToFrontFormOrUnit;
@@ -9019,7 +9019,7 @@ begin
   end
   else if ItIs(NonModalIDEWindowNames[nmiwSearchResultsViewName]) then
   begin
-    DoShowSearchResultsView(false);
+    DoShowSearchResultsView(false,false);
     AForm:=SearchResultsView;
   end
   else if ItIs(NonModalIDEWindowNames[nmiwAnchorEditor]) then
@@ -12685,7 +12685,7 @@ begin
     SourceEditorManager.ShowActiveWindowOnTop(False);
 end;
 
-procedure TMainIDE.DoShowSearchResultsView(Show: boolean);
+procedure TMainIDE.DoShowSearchResultsView(Show, BringToFront: boolean);
 begin
   //set the event here for the selectionchanged event
   if not assigned(SearchresultsView.OnSelectionChanged) then
@@ -12693,10 +12693,9 @@ begin
 
   if Show and (not SearchResultsView.IsVisible) then
   begin
-    IDEWindowCreators.ShowForm(SearchResultsView,true);
-    if IDEDockMaster=nil then
-      // the sourcenotebook is more interesting than the search results
-      SourceEditorManager.ShowActiveWindowOnTop(False);
+    IDEWindowCreators.ShowForm(SearchResultsView,BringToFront);
+    // the sourcenotebook is more interesting than the search results
+    SourceEditorManager.ShowActiveWindowOnTop(False);
   end;
 end;
 
