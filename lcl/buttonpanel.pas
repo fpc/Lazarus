@@ -39,8 +39,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    // the translation of the IDE at designtime is used default item
+    // IDE translation at designtime is used as default
     property Caption stored True;
+    property Left stored False;
+    property Top stored False;
+    property Width stored False;
+    property Height stored False;
     property Enabled;
     property Font;
     property Glyph;
@@ -94,10 +98,10 @@ type
     property Align default alBottom;
     property AutoSize default True;
 
-    property OKButton: TPanelBitBtn read FButtons[pbOK] stored False;
-    property HelpButton: TPanelBitBtn read FButtons[pbHelp] stored False;
-    property CloseButton: TPanelBitBtn read FButtons[pbClose] stored False;
-    property CancelButton: TPanelBitBtn read FButtons[pbCancel] stored False;
+    property OKButton: TPanelBitBtn read FButtons[pbOK] default nil;
+    property HelpButton: TPanelBitBtn read FButtons[pbHelp] default nil;
+    property CloseButton: TPanelBitBtn read FButtons[pbClose] default nil;
+    property CancelButton: TPanelBitBtn read FButtons[pbCancel] default nil;
     property ButtonOrder: TButtonOrder read FButtonOrder write SetButtonOrder default boDefault;
 
     property DefaultButton: TPanelButton read FDefaultButton write SetDefaultButton default pbOK;
