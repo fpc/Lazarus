@@ -48,6 +48,8 @@ type
     property Enabled;
     property Font;
     property Glyph;
+    property Name stored True;
+    property ShowHint;
     property OnClick;
   end;
 
