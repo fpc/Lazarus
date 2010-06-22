@@ -164,9 +164,15 @@ begin
 end;
 
 procedure TIDEAnchorDockMaster.MakeIDEWindowDockSite(AForm: TCustomForm);
+var
+  aManager: TAnchorDockManager;
 begin
   debugln(['TIDEAnchorDockMaster.MakeIDEWindowDockSite ',DbgSName(AForm)]);
   DockMaster.MakeDockSite(AForm,[akBottom],admrpChild);
+  if AForm.DockManager is TAnchorDockManager then begin
+    aManager:=TAnchorDockManager(AForm.DockManager);
+    aManager.PreferredSiteSizeAsSiteMinimum:=false;
+  end;
 end;
 
 procedure TIDEAnchorDockMaster.MakeIDEWindowDockable(AControl: TWinControl);

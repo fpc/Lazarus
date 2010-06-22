@@ -326,10 +326,12 @@ type
     FDockableSites: TAnchors;
     FDockSite: TAnchorDockHostSite;
     FInsideDockingAllowed: boolean;
+    FPreferredSiteSizeAsSiteMinimum: boolean;
     FResizePolicy: TADMResizePolicy;
     FStoredConstraints: TRect;
     FSite: TWinControl;
     FSiteClientRect: TRect;
+    procedure SetPreferredSiteSizeAsSiteMinimum(const AValue: boolean);
   public
     constructor Create(ADockSite: TWinControl); override;
     procedure GetControlBounds(Control: TControl; out AControlBounds: TRect);
@@ -346,6 +348,7 @@ type
     function GetDockEdge(ADockObject: TDragDockObject): boolean; override;
     procedure RestoreSite(SplitterPos: integer);
     procedure StoreConstraints;
+    function GetSitePreferredClientSize: TPoint;
 
     property Site: TWinControl read FSite; // the associated TControl (a TAnchorDockHostSite or a custom dock site)
     property DockSite: TAnchorDockHostSite read FDockSite; // if Site is a TAnchorDockHostSite, this is it
@@ -355,6 +358,7 @@ type
     property ResizePolicy: TADMResizePolicy read FResizePolicy write FResizePolicy;
     property StoredConstraints: TRect read FStoredConstraints write FStoredConstraints;
     function StoredConstraintsValid: boolean;
+    property PreferredSiteSizeAsSiteMinimum: boolean read FPreferredSiteSizeAsSiteMinimum write SetPreferredSiteSizeAsSiteMinimum;
   end;
   TAnchorDockManagerClass = class of TAnchorDockManager;
 
@@ -4446,12 +4450,22 @@ end;
 
 { TAnchorDockManager }
 
+procedure TAnchorDockManager.SetPreferredSiteSizeAsSiteMinimum(
+  const AValue: boolean);
+begin
+  if FPreferredSiteSizeAsSiteMinimum=AValue then exit;
+  FPreferredSiteSizeAsSiteMinimum:=AValue;
+  if DockSite=nil then
+    Site.AdjustSize;
+end;
+
 constructor TAnchorDockManager.Create(ADockSite: TWinControl);
 begin
   inherited Create(ADockSite);
   FSite:=ADockSite;
   FDockableSites:=[akLeft,akTop,akBottom,akRight];
   FInsideDockingAllowed:=true;
+  FPreferredSiteSizeAsSiteMinimum:=true;
   if (ADockSite is TAnchorDockHostSite) then
     FDockSite:=TAnchorDockHostSite(ADockSite);
 end;
@@ -4682,6 +4696,8 @@ var
   OldSiteClientRect: TRect;
   WidthDiff: Integer;
   HeightDiff: Integer;
+  SiteMinSize: TPoint;
+  ChildMaxSize: TPoint;
 begin
   if Force then ;
   //debugln(['TAnchorDockManager.ResetBounds Site="',Site.Caption,'" Force=',Force,' ',dbgs(Site.ClientRect)]);
@@ -4690,22 +4706,32 @@ begin
   if Child=nil then exit;
   OldSiteClientRect:=FSiteClientRect;
   FSiteClientRect:=Site.ClientRect;
-  if CompareRect(@FSiteClientRect,@OldSiteClientRect) then exit;
+  if CompareRect(@FSiteClientRect,@OldSiteClientRect)
+  and (not PreferredSiteSizeAsSiteMinimum) then
+    exit;
   WidthDiff:=FSiteClientRect.Right-OldSiteClientRect.Right;
   HeightDiff:=FSiteClientRect.Bottom-OldSiteClientRect.Bottom;
 
   //debugln(['TAnchorDockManager.ResetBounds ',DbgSName(Site),' ',dbgs(Child.BaseBounds),' ',WidthDiff,',',HeightDiff]);
+  ChildMaxSize:=Point(Site.ClientWidth-DockMaster.SplitterWidth,
+                      Site.ClientHeight-DockMaster.SplitterWidth);
+  if PreferredSiteSizeAsSiteMinimum then begin
+    SiteMinSize:=GetSitePreferredClientSize;
+    if Child.Align in [alLeft,alRight] then begin
+      ChildMaxSize.X:=Max(0,(ChildMaxSize.X-SiteMinSize.X));
+    end else begin
+      ChildMaxSize.Y:=Max(0,(ChildMaxSize.Y-SiteMinSize.Y));
+    end;
+    debugln(['TAnchorDockManager.ResetBounds ChildMaxSize=',dbgs(ChildMaxSize),' SiteMinSize=',dbgs(SiteMinSize)]);
+  end;
+
   case ResizePolicy of
   admrpChild:
     begin
-      case Child.Align of
-      alLeft,alRight:
-        Child.Width:=Max(1,Min(Site.ClientWidth-DockMaster.SplitterWidth,
-                               Child.Width+WidthDiff));
-      alTop,alBottom:
-        Child.Height:=Max(1,Min(Site.ClientHeight-DockMaster.SplitterWidth,
-                                Child.Height+HeightDiff));
-      end;
+      if Child.Align in [alLeft,alRight] then
+        Child.Width:=Max(1,Min(ChildMaxSize.X,Child.Width+WidthDiff))
+      else
+        Child.Height:=Max(1,Min(ChildMaxSize.Y,Child.Height+HeightDiff));
     end;
   end;
 end;
@@ -4818,6 +4844,32 @@ procedure TAnchorDockManager.StoreConstraints;
 begin
   with Site.Constraints do
     FStoredConstraints:=Rect(MinWidth,MinHeight,MaxWidth,MaxHeight);
+end;
+
+function TAnchorDockManager.GetSitePreferredClientSize: TPoint;
+{ Compute the preferred inner size of Site without the ChildSite
+}
+var
+  ChildSite: TAnchorDockHostSite;
+  ChildSitePrefSize: TPoint;
+  SplitterSize: TPoint;
+begin
+  Result:=Point(0,0);
+  Site.GetPreferredSize(Result.X,Result.Y);
+  ChildSite:=GetChildSite;
+  if ChildSite<>nil then begin
+    ChildSitePrefSize:=Point(0,0);
+    ChildSite.GetPreferredSize(ChildSitePrefSize.X,ChildSitePrefSize.Y,true);
+    SplitterSize:=Point(0,0);
+    if ChildSite.BoundSplitter<>nil then
+      ChildSite.BoundSplitter.GetPreferredSize(SplitterSize.X,SplitterSize.Y);
+    debugln(['TAnchorDockManager.GetSitePreferredClientSize Total=',dbgs(Result),' Child=',dbgs(ChildSitePrefSize),' Splitter=',dbgs(SplitterSize)]);
+    if ChildSite.Align in [alLeft,alRight] then begin
+      Result.X:=Max(0,Result.X-ChildSitePrefSize.X-SplitterSize.X);
+    end else begin
+      Result.Y:=Max(0,Result.Y-ChildSitePrefSize.Y-SplitterSize.Y);
+    end;
+  end;
 end;
 
 function TAnchorDockManager.GetChildSite: TAnchorDockHostSite;
