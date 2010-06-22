@@ -301,7 +301,7 @@ end;//Create
 procedure TSearchResultsView.FormKeyDown(Sender: TObject; var Key: Word; 
   Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then  
+  if (Key = VK_ESCAPE) and (Parent=nil) then
   begin
     Key := VK_UNKNOWN;
     Close;

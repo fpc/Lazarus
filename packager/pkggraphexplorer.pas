@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, ComCtrls,
-  StdCtrls, Menus, Dialogs, Graphics, FileCtrl,
+  StdCtrls, Menus, Dialogs, Graphics, FileCtrl, LCLType,
   AVL_Tree,
   IDECommands, PackageIntf,
   LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
@@ -249,7 +249,7 @@ end;
 procedure TPkgGraphExplorerDlg.InfoMemoKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
-  if Key = 27 then
+  if (Key = VK_ESCAPE) and (Parent=nil) then
     Close;
 end;
 

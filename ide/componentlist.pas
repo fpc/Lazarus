@@ -375,8 +375,8 @@ end;
 procedure TComponentListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 //Close the form on escape key like every other IDE dialog does
 begin
-  if Key=VK_ESCAPE
-  then Close;
+  if (Key=VK_ESCAPE) and (Parent=nil) then
+    Close;
 end;
 
 procedure TComponentListForm.PatternEditChange(Sender: TObject);
