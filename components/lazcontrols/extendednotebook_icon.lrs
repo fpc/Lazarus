@@ -1,4 +1,4 @@
-LazarusResources.Add('textnotebook','PNG',[
+LazarusResources.Add('textendednotebook','PNG',[
   #137'PNG'#13#10#26#10#0#0#0#13'IHDR'#0#0#0#24#0#0#0#24#8#6#0#0#0#224'w='#248#0
   +#0#0#1'sRGB'#0#174#206#28#233#0#0#0#4'gAMA'#0#0#177#143#11#252'a'#5#0#0#0#9
   +'pHYs'#0#0#14#195#0#0#14#195#1#199'o'#168'd'#0#0#1'CIDATHKc'#252#15#4#12'4'#4
