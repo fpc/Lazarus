@@ -471,7 +471,7 @@ object AnchorDesigner: TAnchorDesigner
     object LeftRefLeftSpeedButton: TSpeedButton
       AnchorSideTop.Control = LeftRefCenterSpeedButton
       AnchorSideRight.Control = LeftRefRightSpeedButton
-      Left = 68
+      Left = 67
       Height = 30
       Top = 101
       Width = 30
@@ -489,11 +489,11 @@ object AnchorDesigner: TAnchorDesigner
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = LeftRefCenterSpeedButton
       AnchorSideRight.Control = LeftRefCenterSpeedButton
-      Left = 102
+      Left = 101
       Height = 30
       Top = 101
       Width = 30
-      Anchors = [akTop]
+      Anchors = [akTop, akRight]
       BorderSpacing.Right = 4
       Color = clBtnFace
       GroupIndex = 2
