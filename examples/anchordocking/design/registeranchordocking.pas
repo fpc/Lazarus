@@ -215,7 +215,7 @@ begin
       if not DockMaster.ConfigIsEmpty(Config) then begin
         // loading last layout
         debugln(['TIDEAnchorDockMaster.LoadUserLayout restoring ...']);
-        DockMaster.LoadLayoutFromConfig(Config);
+        DockMaster.LoadLayoutFromConfig(Config,true);
         UserLayoutLoaded:=true;
       end else begin
         LoadDefaultLayout;
@@ -261,7 +261,7 @@ begin
     XMLConfig.Filename:=Filename;
     Config:=TXMLConfigStorage.Create(XMLConfig);
     try
-      DockMaster.LoadLayoutFromConfig(Config);
+      DockMaster.LoadLayoutFromConfig(Config,true);
     finally
       Config.Free;
     end;

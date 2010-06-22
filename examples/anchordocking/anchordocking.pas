@@ -406,7 +406,7 @@ type
     function CreateNeededControls(Tree: TAnchorDockLayoutTree;
                 DisableAutoSizing: boolean; ControlNames: TStrings): boolean;
     procedure MapTreeToControls(Tree: TAnchorDockLayoutTree);
-    function RestoreLayout(Tree: TAnchorDockLayoutTree): boolean;
+    function RestoreLayout(Tree: TAnchorDockLayoutTree; Scale: boolean): boolean;
     procedure EnableAllAutoSizing;
     procedure ClearLayoutProperties(AControl: TControl);
     procedure PopupMenuPopup(Sender: TObject);
@@ -467,7 +467,7 @@ type
                                    LayoutTree: TAnchorDockLayoutTree);
     function CreateRestoreLayout(AControl: TControl): TAnchorDockRestoreLayout;
     function ConfigIsEmpty(Config: TConfigStorage): boolean;
-    function LoadLayoutFromConfig(Config: TConfigStorage): boolean;
+    function LoadLayoutFromConfig(Config: TConfigStorage; Scale: Boolean): boolean;
     property RestoreLayouts: TAnchorDockRestoreLayouts read FRestoreLayouts;
 
     // manual docking
@@ -1174,7 +1174,8 @@ begin
   MapSplitters(Tree.Root);
 end;
 
-function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree): boolean;
+function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
+  Scale: boolean): boolean;
 var
   ScreenWidth, ScreenHeight: integer;
 
@@ -1251,7 +1252,7 @@ var
     NewBounds: TRect;
   begin
     Result:=nil;
-    if SrcRectValid(Node.ScreenRect) then
+    if Scale and SrcRectValid(Node.ScreenRect) then
       SrcRect:=Node.ScreenRect;
     //debugln(['Restore ',Node.Name,' ',dbgs(Node.NodeType),' Bounds=',dbgs(Node.BoundsRect),' Parent=',DbgSName(Parent),' ']);
     if Node.NodeType=adltnControl then begin
@@ -2069,7 +2070,8 @@ begin
   Result:=Config.GetValue('MainConfig/Nodes/ChildCount',0)=0;
 end;
 
-function TAnchorDockMaster.LoadLayoutFromConfig(Config: TConfigStorage): Boolean;
+function TAnchorDockMaster.LoadLayoutFromConfig(Config: TConfigStorage;
+  Scale: Boolean): boolean;
 var
   Tree: TAnchorDockLayoutTree;
   ControlNames: TStringList;
@@ -2109,7 +2111,7 @@ begin
       //fTreeNameToDocker.WriteDebugReport('TAnchorDockMaster.LoadLayoutFromConfig Map');
 
       // create sites
-      RestoreLayout(Tree);
+      RestoreLayout(Tree,Scale);
     finally
       EndUpdate;
     end;
