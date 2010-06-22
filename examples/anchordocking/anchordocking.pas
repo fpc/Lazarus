@@ -327,6 +327,7 @@ type
     FDockSite: TAnchorDockHostSite;
     FInsideDockingAllowed: boolean;
     FResizePolicy: TADMResizePolicy;
+    FStoredConstraints: TRect;
     FSite: TWinControl;
     FSiteClientRect: TRect;
   public
@@ -344,6 +345,7 @@ type
     procedure SaveToStream(Stream: TStream); override;
     function GetDockEdge(ADockObject: TDragDockObject): boolean; override;
     procedure RestoreSite(SplitterPos: integer);
+    procedure StoreConstraints;
 
     property Site: TWinControl read FSite; // the associated TControl (a TAnchorDockHostSite or a custom dock site)
     property DockSite: TAnchorDockHostSite read FDockSite; // if Site is a TAnchorDockHostSite, this is it
@@ -351,6 +353,8 @@ type
     property InsideDockingAllowed: boolean read FInsideDockingAllowed write FInsideDockingAllowed; // if true allow to put a site into the custom dock site
     function GetChildSite: TAnchorDockHostSite; // get first child TAnchorDockHostSite
     property ResizePolicy: TADMResizePolicy read FResizePolicy write FResizePolicy;
+    property StoredConstraints: TRect read FStoredConstraints write FStoredConstraints;
+    function StoredConstraintsValid: boolean;
   end;
   TAnchorDockManagerClass = class of TAnchorDockManager;
 
@@ -1174,16 +1178,26 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree): boolean;
 
   procedure SetupSite(Site: TCustomForm;
     Node: TAnchorDockLayoutTreeNode; Parent: TWinControl);
+  var
+    aManager: TAnchorDockManager;
   begin
+    if IsCustomSite(Site) then begin
+      aManager:=TAnchorDockManager(Site.DockManager);
+      if Node.Count>0 then begin
+        // this custom dock site gets a child => store and clear constraints
+        aManager.StoreConstraints;
+      end;
+    end;
     Site.Constraints.MaxWidth:=0;
     Site.Constraints.MaxHeight:=0;
     Site.BoundsRect:=Node.BoundsRect;
     Site.Visible:=true;
     Site.Parent:=Parent;
     if IsCustomSite(Parent) then begin
+      aManager:=TAnchorDockManager(Parent.DockManager);
       Site.Align:=Node.Align;
       //debugln(['TAnchorDockMaster.RestoreLayout.SetupSite Site=',DbgSName(Site),' Site.Bounds=',dbgs(Site.BoundsRect),' BoundSplitterPos=',Node.BoundSplitterPos]);
-      TAnchorDockManager(Parent.DockManager).RestoreSite(Node.BoundSplitterPos);
+      aManager.RestoreSite(Node.BoundSplitterPos);
       Site.HostDockSite:=Parent;
     end;
     if Site is TAnchorDockHostSite then
@@ -4458,6 +4472,8 @@ begin
       alTop: dec(NewSiteBounds.Top,Child.ClientHeight+SplitterWidth);
       alBottom: inc(NewSiteBounds.Bottom,Child.ClientHeight+SplitterWidth);
       end;
+      if not StoredConstraintsValid then
+        StoreConstraints;
       if ADockObject.DropAlign in [alLeft,alRight] then
         Site.Constraints.MaxWidth:=0
       else
@@ -4601,6 +4617,16 @@ begin
       alBottom: dec(NewBounds.Bottom,Control.Height+SplitterWidth);
       alLeft: inc(NewBounds.Left,Control.Width+SplitterWidth);
       alRight: dec(NewBounds.Right,Control.Width+SplitterWidth);
+      end;
+      if StoredConstraintsValid then begin
+        // restore constraints
+        with Site.Constraints do begin
+          MinWidth:=FStoredConstraints.Left;
+          MinHeight:=FStoredConstraints.Top;
+          MaxWidth:=FStoredConstraints.Right;
+          MaxHeight:=FStoredConstraints.Bottom;
+        end;
+        FStoredConstraints:=Rect(0,0,0,0);
       end;
       Site.BoundsRect:=NewBounds;
       //debugln(['TAnchorDockManager.RemoveControl Site=',DbgSName(Site),' ',dbgs(Site.BoundsRect)]);
@@ -4749,6 +4775,12 @@ begin
   end;
 end;
 
+procedure TAnchorDockManager.StoreConstraints;
+begin
+  with Site.Constraints do
+    FStoredConstraints:=Rect(MinWidth,MinHeight,MaxWidth,MaxHeight);
+end;
+
 function TAnchorDockManager.GetChildSite: TAnchorDockHostSite;
 var
   i: Integer;
@@ -4759,6 +4791,12 @@ begin
       exit;
     end;
   Result:=nil;
+end;
+
+function TAnchorDockManager.StoredConstraintsValid: boolean;
+begin
+  with FStoredConstraints do
+    Result:=(Left<>0) or (Top<>0) or (Right<>0) or (Bottom<>0);
 end;
 
 { TAnchorDockSplitter }

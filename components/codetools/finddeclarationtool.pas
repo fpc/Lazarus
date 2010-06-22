@@ -1424,10 +1424,11 @@ begin
         if CursorNode.Desc=ctnVarDefinition then begin
           // if this is is a parmater, try to find the corresponding declaration
           NewNode:=FindCorrespondingProcParamNode(NewNode);
-          if (NewNode=nil) or (NewNode.StartPos>CursorNode.StartPos) then
+          if (NewNode<>nil) and (NewNode.StartPos<CursorNode.StartPos) then
+            CleanCursorPos:=GetIdentStartPosition(Src,NewNode.StartPos)
+          else
             NewNode:=CursorNode;
         end;
-        CleanCursorPos:=GetIdentStartPosition(Src,NewNode.StartPos);
 
         Result:=JumpToCleanPos(CleanCursorPos,CleanCursorPos,CleanCursorPos,
                                NewPos,NewTopLine,false);
