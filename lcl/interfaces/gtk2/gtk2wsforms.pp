@@ -77,6 +77,7 @@ type
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure ScrollBy(const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer); override;
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm;
        const AlphaBlend: Boolean; const Alpha: Byte); override;
@@ -361,6 +362,59 @@ begin
   SetCallbacks(P, WidgetInfo);
 end;
 
+function Gtk2WSDelayRedraw(Data: Pointer): GBoolean; cdecl;
+begin
+  Result := False;
+  gtk_widget_queue_draw(PWidgetInfo(Data)^.ClientWidget);
+  g_idle_remove_by_data(Data);
+end;
+
+class procedure TGtk2WSCustomForm.ScrollBy(
+  const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer);
+var
+  Layout: PGtkLayout;
+  WidgetInfo: PWidgetInfo;
+  Adjustment: PGtkAdjustment;
+  h, v: Double;
+  NewPos: Double;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  WidgetInfo := GetWidgetInfo(PGtkWidget(AWinControl.Handle));
+  Layout := PGtkLayout(WidgetInfo^.ClientWidget);
+  Adjustment := gtk_layout_get_hadjustment(Layout);
+  if Adjustment <> nil then
+  begin
+    h := gtk_adjustment_get_value(Adjustment);
+    NewPos := Adjustment^.upper - Adjustment^.page_size;
+    if h + DeltaX <= NewPos then
+      NewPos := h + DeltaX;
+    if gtk_adjustment_get_value(Adjustment) <> NewPos then
+    begin
+      gtk_adjustment_set_value(Adjustment, NewPos);
+      //if our adjustment reached end, scrollbar button is disabled
+      //so gtk blocks paints for some reason, so we must postpone an update
+      if NewPos >= Adjustment^.upper - Adjustment^.page_size then
+        g_idle_add(@Gtk2WSDelayRedraw, WidgetInfo);
+    end;
+  end;
+  Adjustment := gtk_layout_get_vadjustment(Layout);
+  if Adjustment <> nil then
+  begin
+    v := gtk_adjustment_get_value(Adjustment);
+    NewPos := Adjustment^.upper - Adjustment^.page_size;
+    if v + DeltaY <= NewPos then
+      NewPos := v + DeltaY;
+    if gtk_adjustment_get_value(Adjustment) <> NewPos then
+    begin
+      gtk_adjustment_set_value(Adjustment, NewPos);
+      //if our adjustment reached end, scrollbar button is disabled
+      //so gtk blocks paints for some reason, so we must postpone an update
+      if NewPos >= Adjustment^.upper - Adjustment^.page_size then
+        g_idle_add(@Gtk2WSDelayRedraw, WidgetInfo);
+    end;
+  end;
+end;
+
 class procedure TGtk2WSCustomForm.SetIcon(const AForm: TCustomForm;
   const Small, Big: HICON);
 var
@@ -629,19 +683,32 @@ end;
 class procedure TGtk2WSScrollingWinControl.ScrollBy(
   const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer);
 var
-  GtkWidget: PGtkWidget;
-  WidgetInfo: PWidgetInfo;
+  Scrolled: PGtkScrolledWindow;
+  Adjustment: PGtkAdjustment;
+  h, v: Double;
+  NewPos: Double;
 begin
   if not AWinControl.HandleAllocated then exit;
-  {gtk-2.8 have problem with gtk_window_scroll
-  also for >= gtk2-2.18 GDK_NATIVE_WINDOW env variable must be setted
-  or we get paint glitches.}
-  if (gtk_major_version >= 2) and (gtk_minor_version > 8) then
+  Scrolled := GTK_SCROLLED_WINDOW(Pointer(AWinControl.Handle));
+  if not GTK_IS_SCROLLED_WINDOW(Scrolled) then
+    exit;
+  Adjustment := gtk_scrolled_window_get_hadjustment(Scrolled);
+  if Adjustment <> nil then
   begin
-    GtkWidget := PGtkWidget(AWinControl.Handle);
-    WidgetInfo := GetWidgetInfo(GtkWidget);
-    if WidgetInfo <> nil then
-      gdk_window_scroll(WidgetInfo^.ClientWidget^.window, -DeltaX, -DeltaY);
+    h := gtk_adjustment_get_value(Adjustment);
+    NewPos := Adjustment^.upper - Adjustment^.page_size;
+    if h + DeltaX <= NewPos then
+      NewPos := h + DeltaX;
+    gtk_adjustment_set_value(Adjustment, NewPos);
+  end;
+  Adjustment := gtk_scrolled_window_get_vadjustment(Scrolled);
+  if Adjustment <> nil then
+  begin
+    v := gtk_adjustment_get_value(Adjustment);
+    NewPos := Adjustment^.upper - Adjustment^.page_size;
+    if v + DeltaY <= NewPos then
+      NewPos := v + DeltaY;
+    gtk_adjustment_set_value(Adjustment, NewPos);
   end;
 end;
 
