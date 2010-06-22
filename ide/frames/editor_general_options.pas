@@ -27,30 +27,24 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLType, StdCtrls, Controls, ExtCtrls, Graphics,
   EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf,
-  SynEdit, SynBeautifier;
+  SynEdit, SynBeautifier, DividerBevel;
 
 type
   TPreviewEditor = TSynEdit;
   { TEditorGeneralOptionsFrame }
 
   TEditorGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
-    Bevel1: TBevel;
-    Bevel2a: TBevel;
-    Bevel2: TBevel;
-    Bevel3a: TBevel;
-    Bevel3: TBevel;
-    Bevel5a: TBevel;
-    Bevel5: TBevel;
-    Bevel1a: TBevel;
-    Bevel6: TBevel;
-    Bevel6a: TBevel;
     BlockIndentComboBox: TComboBox;
     BlockIndentTypeComboBox: TComboBox;
     BlockIndentLabel: TLabel;
     AutoIndentCheckBox: TCheckBox;
     BlockIndentTypeLabel: TLabel;
-    BlockGroupLabel: TLabel;
     CursorSkipsTabCheckBox: TCheckBox;
+    CaretGroupDivider: TDividerBevel;
+    BlockGroupDivider: TDividerBevel;
+    IndentsTabsGroupDivider: TDividerBevel;
+    ScrollGroupDivider: TDividerBevel;
+    UndoGroupDivider: TDividerBevel;
     EndKeyJumpsToNearestStartCheckBox: TCheckBox;
     KeepCursorXCheckBox: TCheckBox;
     AutoIndentLink: TLabel;
@@ -60,7 +54,6 @@ type
     AlwaysVisibleCursorCheckBox: TCheckBox;
     CursorSkipsSelectionCheckBox: TCheckBox;
     HomeKeyJumpsToNearestStartCheckBox: TCheckBox;
-    CursorGroupLabel: TLabel;
     PersistentBlockCheckBox: TCheckBox;
     TabIndentBlocksCheckBox: TCheckBox;
     SmartTabsCheckBox: TCheckBox;
@@ -69,13 +62,10 @@ type
     ScrollPastEndFileCheckBox: TCheckBox;
     ScrollPastEndLineCheckBox: TCheckBox;
     ScrollByOneLessCheckBox: TCheckBox;
-    UndoGroupLabel: TLabel;
     UndoAfterSaveCheckBox: TCheckBox;
     GroupUndoCheckBox: TCheckBox;
     TabWidthsComboBox: TComboBox;
     TabWidthsLabel: TLabel;
-    ScrollGroupLabel: TLabel;
-    IndentsTabsGroupLabel: TLabel;
     UndoLimitComboBox: TComboBox;
     UndoLimitLabel: TLabel;
     procedure AlwaysVisibleCursorCheckBoxChange(Sender: TObject);
@@ -144,20 +134,20 @@ begin
   TabWidthsLabel.Caption := dlgTabWidths;
 
   // undo
-  UndoGroupLabel.Caption := dlgUndoGroupOptions;
+  UndoGroupDivider.Caption := dlgUndoGroupOptions;
   UndoAfterSaveCheckBox.Caption := dlgUndoAfterSave;
   GroupUndoCheckBox.Caption := dlgGroupUndo;
   UndoLimitLabel.Caption := dlgUndoLimit;
 
   // scroll
-  ScrollGroupLabel.Caption := dlgScrollGroupOptions;
+  ScrollGroupDivider.Caption := dlgScrollGroupOptions;
   HalfPageScrollCheckBox.Caption := dlgHalfPageScroll;
   ScrollByOneLessCheckBox.Caption := dlgScrollByOneLess;
   ScrollPastEndFileCheckBox.Caption := dlgScrollPastEndFile;
   ScrollPastEndLineCheckBox.Caption := dlgScrollPastEndLine;
 
   // indents, tabs
-  IndentsTabsGroupLabel.Caption := dlgIndentsTabsGroupOptions;
+  IndentsTabsGroupDivider.Caption := dlgIndentsTabsGroupOptions;
   AutoIndentCheckBox.Caption := dlgAutoIndent;
   TabIndentBlocksCheckBox.Caption := dlgTabIndent;
   SmartTabsCheckBox.Caption := dlgSmartTabs;
@@ -165,7 +155,7 @@ begin
   AutoIndentLink.Caption := dlgAutoIndentLink;
 
   // caret + key navigation
-  CursorGroupLabel.Caption := dlgCursorGroupOptions;
+  CaretGroupDivider.Caption := dlgCursorGroupOptions;
   KeepCursorXCheckBox.Caption := dlgKeepCursorX;
   PersistentCursorCheckBox.Caption := dlgPersistentCursor;
   AlwaysVisibleCursorCheckBox.Caption := dlgAlwaysVisibleCursor;
@@ -175,7 +165,7 @@ begin
   EndKeyJumpsToNearestStartCheckBox.Caption := dlgEndKeyJumpsToNearestStart;
 
   // Block
-  BlockGroupLabel.Caption := dlgBlockGroupOptions;
+  BlockGroupDivider.Caption := dlgBlockGroupOptions;
   PersistentBlockCheckBox.Caption := dlgPersistentBlock;
   OverwriteBlockCheckBox.Caption := dlgOverwriteBlock;
 end;
