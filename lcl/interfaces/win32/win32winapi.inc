@@ -1626,6 +1626,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: GetCurrentObject
+  Params:
+    DC - A handle to the DC
+    uObjectType - The object type to be queried
+  Returns: If the function succeeds, the return value is a handle to the specified object.
+    If the function fails, the return value is NULL.
+ ------------------------------------------------------------------------------}
+
+function TWin32WidgetSet.GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
+begin
+  Result := Windows.GetCurrentObject(DC, uObjectType);
+end;
+
+{------------------------------------------------------------------------------
   Method:  GetCursorPos
   Params:  LPPoint - record to receive coordinates
   Returns: True if the function succeeds

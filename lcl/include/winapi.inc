@@ -356,6 +356,11 @@ begin
   Result := WidgetSet.GetCursorPos(lpPoint);
 end;
 
+function GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
+begin
+  Result := WidgetSet.GetCurrentObject(DC, uObjectType);
+end;
+
 function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean;
 begin
   Result := WidgetSet.GetCharABCWidths(DC, p2, p3, ABCStructs);

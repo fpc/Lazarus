@@ -937,6 +937,11 @@ begin
   Result := -1;
 end;
 
+function TWidgetSet.GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
+begin
+  Result := 0;
+end;
+
 function TWidgetSet.GetCursorPos(var lpPoint: TPoint): Boolean;
 begin
   Result := False;
