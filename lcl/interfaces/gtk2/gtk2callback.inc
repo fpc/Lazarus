@@ -410,6 +410,7 @@ var
   GStart, GEnd: gint;
   Info: PWidgetInfo;
   EntryText: PgChar;
+  NeedCursorCheck: Boolean;
 begin
   Result := CallBackDefaultReturn;
 
@@ -417,7 +418,7 @@ begin
   {$IFDEF EventTrace}
   EventTrace('changed_editbox', data);
   {$ENDIF}
-
+  NeedCursorCheck := False;
   if GTK_IS_ENTRY(Widget) then
   begin
     {cheat GtkEditable to update cursor pos in gtkEntry. issue #7243}
@@ -431,12 +432,22 @@ begin
       if wwiInvalidEvent in Info^.Flags then
         exclude(Info^.Flags, wwiInvalidEvent)
       else
+      begin
+        // if we change selstart in OnChange event new cursor pos need to
+        // be postponed in TGtk2WSCustomEdit.SetSelStart
+        NeedCursorCheck := True;
         gtk_editable_set_position(PGtkEditable(Widget), GStart + 1);
+      end;
     end;
   end;
+
+  if NeedCursorCheck then
+    LockOnChange(PgtkObject(Widget), +1);
   FillByte(Mess,SizeOf(Mess),0);
   Mess.Msg := CM_TEXTCHANGED;
   DeliverMessage(Data, Mess);
+  if NeedCursorCheck then
+    LockOnChange(PgtkObject(Widget), -1);
 end;
 
 function gtkchanged_spinbox(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;

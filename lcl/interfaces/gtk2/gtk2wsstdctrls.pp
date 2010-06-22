@@ -1142,11 +1142,22 @@ begin
     gtk_editable_set_editable(PGtkEditable(Widget), not NewReadOnly);
 end;
 
+function gtk2WSDelayedSelStart(Data: Pointer): gboolean; cdecl;
+var
+  Entry: PGtkEntry;
+begin
+  Result := False;
+  Entry := PGtkEntry(PWidgetInfo(Data)^.CoreWidget);
+  gtk_editable_set_position(PGtkEditable(Entry), PWidgetInfo(Data)^.CursorPos);
+  g_idle_remove_by_data(Data);
+end;
+
 class procedure TGtk2WSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit;
   NewStart: integer);
 var
   NewPos: Integer;
   Entry: PGtkEntry;
+  WidgetInfo: PWidgetInfo;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetSelStart') then
     Exit;
@@ -1157,7 +1168,14 @@ begin
     NewPos := Min(NewStart, Entry^.text_max_length)
   else
     NewPos := Min(NewStart, Entry^.text_length);
-  gtk_entry_set_position(Entry, NewPos);
+  if LockOnChange(PgtkObject(Entry),0) > 0 then
+  begin
+    WidgetInfo := GetWidgetInfo(Entry);
+    WidgetInfo^.CursorPos := NewPos;
+    // postpone
+    g_idle_add(@gtk2WSDelayedSelStart, WidgetInfo);
+  end else
+    gtk_editable_set_position(PGtkEditable(Entry), NewPos);
 end;
 
 class procedure TGtk2WSCustomEdit.SetSelLength(

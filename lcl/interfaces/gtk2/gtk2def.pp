@@ -463,6 +463,7 @@ type
     ExStyle: Integer;
     EventMask: TGdkEventMask;
     DoubleBuffer: PGdkPixmap;
+    CursorPos: integer;               // needed for delayed SetSelStart
     ControlCursor: HCursor;           // current widget cursor
     DefaultCursor: HCursor;           // default widget cursor
     Flags: TWidgetInfoFlags;
