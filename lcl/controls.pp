@@ -3487,7 +3487,7 @@ begin
     if CurReferenceControl=Owner then begin
       // circle
       {$IFNDEF DisableChecks}
-      DebugLn(['TAnchorSide.GetSidePosition Circle, ',DbgSName(Owner)]);
+      DebugLn(['TAnchorSide.GetSidePosition Circle, ',DbgSName(Owner),' ',dbgs(Kind)]);
       {$ENDIF}
       ReferenceControl:=nil;
       exit(false);
@@ -3498,7 +3498,7 @@ begin
       // the chain has more elements than there are siblings -> circle
       //if CheckPosition(Owner) then
       {$IFNDEF DisableChecks}
-      DebugLn(['TAnchorSide.GetSidePosition Circle, ',DbgSName(Owner)]);
+      DebugLn(['TAnchorSide.GetSidePosition Circle, ',DbgSName(Owner),' ',dbgs(Kind)]);
       {$ENDIF}
       ReferenceControl:=nil;
       exit(false);
@@ -3510,7 +3510,7 @@ begin
       // not a sibling and not the parent -> invalid AnchorSide
       //if CheckPosition(Owner) then DebugLn(['TAnchorSide.GetSidePosition invalid AnchorSide ',dbgsName(ReferenceControl)]);
       {$IFNDEF DisableChecks}
-      DebugLn(['TAnchorSide.GetSidePosition invalid anchor control, ',DbgSName(Owner)]);
+      DebugLn(['TAnchorSide.GetSidePosition invalid anchor control, ',DbgSName(Owner),' ',dbgs(Kind)]);
       {$ENDIF}
       ReferenceControl:=nil;
       exit(false);
