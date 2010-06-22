@@ -227,8 +227,10 @@ begin
     if OldCancelControl<>nil then
       OldCancelControl.UpdateRolesForForm;
     // notify new control
-    if FCancelControl<>nil then
+    if FCancelControl<>nil then begin
+      FreeNotification(FCancelControl);
       FCancelControl.UpdateRolesForForm;
+    end;
   end;
 end;
 
@@ -242,10 +244,7 @@ begin
     FDefaultControl := NewControl;
     // notify old control
     if OldDefaultControl <> nil then
-    begin
-      OldDefaultControl.RemoveFreeNotification(Self);
       OldDefaultControl.UpdateRolesForForm;
-    end;
     // notify new control
     if FDefaultControl <> nil then
     begin
