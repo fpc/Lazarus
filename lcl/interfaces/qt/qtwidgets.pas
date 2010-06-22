@@ -5084,9 +5084,9 @@ begin
     QFontMetrics_destroy(FontMetrics);
   end;
 
-  {currently applies only to wrong TopMargin calculation (gtk theme).}
-  if (TopMargin - 1 = FontHeight) then
-    inc(TopMargin)
+  {currently applies only to wrong TopMargin calculation (eg.gtk style).}
+  if (TopMargin - FontHeight < 2) then
+    TopMargin := FontHeight + 2 // top & bottom +1px
   else {currently applies only to oxygen & nitrogen theme.}
   if ((TopMargin - BottomMargin - 2) > FontHeight) then
   begin
