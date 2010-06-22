@@ -1288,6 +1288,34 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: GetCurrentObject
+  Params:
+    DC - A handle to the DC
+    uObjectType - The object type to be queried
+  Returns: If the function succeeds, the return value is a handle to the specified object.
+    If the function fails, the return value is NULL.
+ ------------------------------------------------------------------------------}
+
+function TCarbonWidgetSet.GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
+var
+  CarbonDC: TCarbonDeviceContext absolute DC;
+begin
+  Result := 0;
+  if not CheckDC(DC, 'GetCurrentObject') then
+    Exit;
+  case uObjectType of
+    OBJ_BITMAP:
+      begin
+         if CarbonDC is TCarbonBitmapContext then
+           Result := HGDIOBJ(TCarbonBitmapContext(CarbonDC).Bitmap);
+      end;
+    OBJ_BRUSH: Result := HGDIOBJ(CarbonDC.CurrentBrush);
+    OBJ_FONT: Result := HGDIOBJ(CarbonDC.CurrentFont);
+    OBJ_PEN: Result := HGDIOBJ(CarbonDC.CurrentPen);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method:  GetCursorPos
   Params:  lpPoint - Record for coordinates
   Returns: If the function succeeds

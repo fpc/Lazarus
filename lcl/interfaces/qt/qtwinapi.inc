@@ -2117,6 +2117,30 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: GetCurrentObject
+  Params:
+    DC - A handle to the DC
+    uObjectType - The object type to be queried
+  Returns: If the function succeeds, the return value is a handle to the specified object.
+    If the function fails, the return value is NULL.
+ ------------------------------------------------------------------------------}
+
+function TQtWidgetSet.GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
+var
+  QtDC: TQtDeviceContext absolute DC;
+begin
+  Result := 0;
+  if not QtWidgetSet.IsValidDC(DC) then
+    Exit;
+  case uObjectType of
+    OBJ_BITMAP: Result := HGDIOBJ(QtDC.vImage);
+    OBJ_BRUSH: Result := HGDIOBJ(QtDC.vBrush);
+    OBJ_FONT: Result := HGDIOBJ(QtDC.vFont);
+    OBJ_PEN: Result := HGDIOBJ(QtDC.vPen);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetCursorPos
   Params:  lpPoint: The cursorposition
   Returns: True if succesful

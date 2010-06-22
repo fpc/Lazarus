@@ -1456,6 +1456,20 @@ begin
   Result := Windows.GetClipRGN(DC, RGN);
 end;
 
+{------------------------------------------------------------------------------
+  Method: GetCurrentObject
+  Params:
+    DC - A handle to the DC
+    uObjectType - The object type to be queried
+  Returns: If the function succeeds, the return value is a handle to the specified object.
+    If the function fails, the return value is NULL.
+ ------------------------------------------------------------------------------}
+
+function TWinCEWidgetSet.GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
+begin
+  Result := Windows.GetCurrentObject(DC, uObjectType);
+end;
+
 {function TWinCEWidgetSet.GetCmdLineParamDescForInterface: string;
 begin
   Result:=inherited GetCmdLineParamDescForInterface;

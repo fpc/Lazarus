@@ -4840,6 +4840,21 @@ begin
 end;
 {$ENDIF HasX}
 
+function TGTKWidgetSet.GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
+var
+  GtkDC: TGtkDeviceContext absolute DC;
+begin
+  Result := 0;
+  if not GTKWidgetSet.IsValidDC(DC) then
+    Exit;
+  case uObjectType of
+    OBJ_BITMAP: Result := HGDIOBJ(GtkDC.CurrentBitmap);
+    OBJ_BRUSH: Result := HGDIOBJ(GtkDC.CurrentBrush);
+    OBJ_FONT: Result := HGDIOBJ(GtkDC.CurrentFont);
+    OBJ_PEN: Result := HGDIOBJ(GtkDC.CurrentPen);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: GetDC
   Params:  none

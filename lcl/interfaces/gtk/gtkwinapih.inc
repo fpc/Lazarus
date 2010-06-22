@@ -101,6 +101,7 @@ function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
 function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
 function GetCmdLineParamDescForInterface: string; override;
 function GetCursorPos(var lpPoint: TPoint): Boolean; override;
+function GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ; override;
 function GetDC(hWnd: HWND): HDC;  override;
 function GetDCOriginRelativeToWindow(PaintDC: HDC; WindowHandle: HWND; var OriginDiff: TPoint): boolean; override;
 function GetDesignerDC(WindowHandle: HWND): HDC; override;

@@ -4203,6 +4203,30 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: GetCurrentObject
+  Params:
+    DC - A handle to the DC
+    uObjectType - The object type to be queried
+  Returns: If the function succeeds, the return value is a handle to the specified object.
+    If the function fails, the return value is NULL.
+ ------------------------------------------------------------------------------}
+
+function TGtk2WidgetSet.GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
+var
+  Gtk2DC: TGtk2DeviceContext absolute DC;
+begin
+  Result := 0;
+  if not GTK2WidgetSet.IsValidDC(DC) then
+    Exit;
+  case uObjectType of
+    OBJ_BITMAP: Result := HGDIOBJ(Gtk2DC.CurrentBitmap);
+    OBJ_BRUSH: Result := HGDIOBJ(Gtk2DC.CurrentBrush);
+    OBJ_FONT: Result := HGDIOBJ(Gtk2DC.CurrentFont);
+    OBJ_PEN: Result := HGDIOBJ(Gtk2DC.CurrentPen);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetCursorPos
   Params:  lpPoint: The cursorposition
   Returns: True if succesful
