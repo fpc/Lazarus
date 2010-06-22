@@ -50,6 +50,7 @@ type
     property Align;
     property Autosize;
     property Anchors;
+    property BorderSpacing;
     property Color;
     property Constraints;
     property Font;
