@@ -11,15 +11,22 @@
       </SearchPaths>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
+        <CreateMakefileOnBuild Value="True"/>
       </Other>
     </CompilerOptions>
-    <Files Count="1">
+    <Files Count="2">
       <Item1>
         <Filename Value="dividerbevel.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="dividerbevel"/>
+        <UnitName Value="DividerBevel"/>
       </Item1>
+      <Item2>
+        <Filename Value="extendednotebook.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="ExtendedNotebook"/>
+      </Item2>
     </Files>
+    <LazDoc Paths="docs\"/>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
