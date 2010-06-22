@@ -441,6 +441,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Caption = 'ScrollGroupDivider'
     Autosize = True
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
     Font.Style = [fsBold]
     ParentFont = False
   end
@@ -457,6 +458,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Caption = 'IndentsTabsGroupDivider'
     Autosize = True
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
     Font.Style = [fsBold]
     ParentFont = False
   end
@@ -473,6 +475,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Caption = 'CaretGroupDivider'
     Autosize = True
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
     Font.Style = [fsBold]
     ParentFont = False
   end
@@ -489,6 +492,7 @@ inherited EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Caption = 'BlockGroupDivider'
     Autosize = True
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
     Font.Style = [fsBold]
     ParentFont = False
   end
