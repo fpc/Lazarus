@@ -312,7 +312,7 @@ begin
     AForm.DisableAlign;
 
     NeedPlacing:=not AForm.IsVisible;
-    if not DockMaster.IsSite(AForm) then begin
+    if DockMaster.GetSite(AForm)=nil then begin
       // this form was not yet docked
       // => make it dockable
       DockMaster.MakeDockable(AForm,false);

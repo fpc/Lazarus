@@ -68,7 +68,7 @@
     - on close button: save a restore layout
 
   ToDo:
-    - restore custom dock site size
+    - keep custom dock site content visible
     - undock on hide
     - option: hide caption
     - popup menu
