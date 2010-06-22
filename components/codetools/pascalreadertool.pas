@@ -634,19 +634,23 @@ begin
     // in a class definition -> search method body
     StartNode:=ClassNode.GetNodeOfType(ctnTypeSection)
   end else if NodeIsMethodBody(ProcNode) then begin
-    //debugln('TPascalReaderTool.FindCorrespondingProcNode Method');
+    //debugln('TPascalReaderTool.FindCorrespondingProcNode Method ',ExtractClassNameOfProcNode(ProcNode));
     // in a method body -> search in class
     StartNode:=FindClassNodeInUnit(ExtractClassNameOfProcNode(ProcNode),true,
                                    false,false,true);
+    if StartNode=nil then exit;
     BuildSubTreeForClass(StartNode);
     if (StartNode<>nil) and (StartNode.Desc in AllClasses)
     then begin
       StartNode:=StartNode.FirstChild;
-      while (StartNode<>nil) and (not (StartNode.Desc in AllClassBaseSections))
-      do
+      while (StartNode<>nil) do begin
+        if (StartNode.Desc in AllClassBaseSections)
+        and (StartNode.FirstChild<>nil) then begin
+          StartNode:=StartNode.FirstChild;
+          break;
+        end;
         StartNode:=StartNode.NextBrother;
-      if StartNode<>nil then
-        StartNode:=StartNode.FirstChild;
+      end;
     end;
   end else begin
     //DebugLn('TPascalReaderTool.FindCorrespondingProcNode Normal');
@@ -655,8 +659,8 @@ begin
   end;
   if StartNode=nil then exit;
 
-  //debugln('TPascalReaderTool.FindCorrespondingProcNode StartNode=',StartNode.DescAsString);
   ProcHead:=ExtractProcHead(ProcNode,Attr);
+  //debugln('TPascalReaderTool.FindCorrespondingProcNode StartNode=',StartNode.DescAsString,' ProcHead=',dbgstr(ProcHead));
   Result:=FindProcNode(StartNode,ProcHead,Attr);
   if Result=ProcNode then begin
     // found itself -> search further

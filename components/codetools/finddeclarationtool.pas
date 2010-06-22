@@ -1421,11 +1421,12 @@ begin
         //DebugLn(['TFindDeclarationTool.FindDeclaration CleanPosIsDeclarationIdentifier']);
         NewTool:=Self;
         NewNode:=CursorNode;
+        CleanCursorPos:=GetIdentStartPosition(Src,CleanCursorPos);
         if CursorNode.Desc=ctnVarDefinition then begin
-          // if this is is a parmater, try to find the corresponding declaration
+          // if this is is a parameter, try to find the corresponding declaration
           NewNode:=FindCorrespondingProcParamNode(NewNode);
           if (NewNode<>nil) and (NewNode.StartPos<CursorNode.StartPos) then
-            CleanCursorPos:=GetIdentStartPosition(Src,NewNode.StartPos)
+            CleanCursorPos:=NewNode.StartPos
           else
             NewNode:=CursorNode;
         end;
