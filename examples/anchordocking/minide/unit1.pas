@@ -229,7 +229,7 @@ begin
     try
       // restore the layout
       // this will close unneeded forms and call OnCreateControl for all needed
-      DockMaster.LoadLayoutFromConfig(XMLConfig);
+      DockMaster.LoadLayoutFromConfig(XMLConfig,true);
     finally
       XMLConfig.Free;
     end;

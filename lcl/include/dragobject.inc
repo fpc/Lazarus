@@ -147,14 +147,15 @@ end;
 
 procedure TDragDockObject.HideDockImage;
 begin
-  WidgetSet.DrawDefaultDockImage(EraseDockRect, DockRect, disHide);
+  if FEraseDockRect.Left<MaxInt then
+    WidgetSet.DrawDefaultDockImage(EraseDockRect, DockRect, disHide);
   FEraseDockRect := Rect(MaxInt, 0, MaxInt, 0);
 end;
 
 procedure TDragDockObject.MoveDockImage;
 begin
   //Draw the form outlines when the position has changed
-  if not CompareMem(@DockRect, @EraseDockRect, SizeOf(TRect)) then
+  if not CompareRect(@DockRect, @EraseDockRect) then
   begin
     WidgetSet.DrawDefaultDockImage(EraseDockRect, DockRect, disMove);
     EraseDockRect := DockRect;
