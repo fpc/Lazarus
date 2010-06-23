@@ -605,8 +605,8 @@ end;
 
 function RegisterCustomPairSplitter: Boolean; alias : 'WSRegisterCustomPairSplitter';
 begin
-  RegisterWSComponent(TCustomPairSplitter, TGtk2WSCustomPairSplitter, TGtkPrivatePaned); { GTK1 }
-//  RegisterWSComponent(TCustomPairSplitter, TGtk2WSCustomPairSplitter);
+  // RegisterWSComponent(TCustomPairSplitter, TGtk2WSCustomPairSplitter, TGtkPrivatePaned); { GTK1 }
+  RegisterWSComponent(TCustomPairSplitter, TGtk2WSCustomPairSplitter);
   Result := True;
 end;
 
