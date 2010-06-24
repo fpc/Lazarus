@@ -79,6 +79,8 @@ type
   TfrFrameBorders = set of TfrFrameBorder;
   TfrFrameStyle = (frsSolid,frsDash, frsDot, frsDashDot, frsDashDotDot,frsDouble);
   TfrPageType = (ptReport, ptDialog);
+  TfrReportOption = (roIgnoreFieldNotFound);
+  TfrReportOptions = set of TfrReportOption;
 
   TfrView = class;
   TfrBand = class;
@@ -848,6 +850,7 @@ type
     FReportAutor: string;
     FReportCreateDate: TDateTime;
     FReportLastChange: TDateTime;
+    FReportOptions: TfrReportOptions;
     FReportVersionBuild: string;
     FReportVersionMajor: string;
     FReportVersionMinor: string;
@@ -985,6 +988,7 @@ type
     property InitialZoom: TfrPreviewZoom read FInitialZoom write FInitialZoom;
     property ModalPreview: Boolean read FModalPreview write FModalPreview default True;
     property ModifyPrepared: Boolean read FModifyPrepared write FModifyPrepared default True;
+    property Options: TfrReportOptions read FReportOptions write FReportOptions;
     property Preview: TfrPreview read FPreview write FPreview;
     property PreviewButtons: TfrPreviewButtons read FPreviewButtons write FPreviewButtons;
     property ReportType: TfrReportType read FReportType write FReportType default rtSimple;
@@ -7742,6 +7746,8 @@ begin
         else
            aValue:=F.AsVariant
       end
+      else if (D<>nil) and (roIgnoreFieldNotFound in FReportOptions) then
+        aValue := ''
       else if s = 'VALUE' then
         aValue:= CurValue
       else if s = frSpecFuncs[0] then
