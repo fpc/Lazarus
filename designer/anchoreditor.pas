@@ -284,6 +284,9 @@ var
   SelectedControls: TList;
   i: Integer;
   CurControl: TControl;
+  ReferenceControl: TControl;
+  ReferenceSide: TAnchorSideReference;
+  CheckPosition: Integer;
 begin
   //debugln('TAnchorDesigner.AnchorEnabledCheckBoxChange ',DbgSName(Sender),' ',dbgs(TCheckBox(Sender).Checked));
   if FUpdating or (Values=nil) then exit;
@@ -305,6 +308,27 @@ begin
     // user changed an anchor
     SelectedControls:=GetSelectedControls;
     if SelectedControls=nil then exit;
+
+    // check
+    for i:=0 to SelectedControls.Count-1 do begin
+      CurControl:=TControl(SelectedControls[i]);
+      if NewValue and (not CurControl.AnchorSide[Kind].CheckSidePosition(
+        CurControl.AnchorSide[Kind].Control,
+        CurControl.AnchorSide[Kind].Side,
+        ReferenceControl,ReferenceSide,CheckPosition))
+      then begin
+        if MessageDlg(lisCCOWarningCaption,
+          lisThisWillCreateACircle, mtWarning, [mbIgnore, mbCancel], 0)<>
+            mrIgnore
+        then begin
+          Refresh(false);
+          exit;
+        end;
+        break;
+      end;
+    end;
+
+    // commit
     for i:=0 to SelectedControls.Count-1 do begin
       CurControl:=TControl(SelectedControls[i]);
       if NewValue then
@@ -508,9 +532,10 @@ begin
         NewSibling:=findNeighbour(i);
         if (NewSibling=nil) and (i<>0) then continue;
       end;
-      if not CurControl.AnchorSide[Kind].CheckSidePosition(NewSibling,
+      if (Kind in CurControl.Anchors)
+      and (not CurControl.AnchorSide[Kind].CheckSidePosition(NewSibling,
         CurControl.AnchorSide[Kind].Side,
-        ReferenceControl,ReferenceSide,CheckPosition)
+        ReferenceControl,ReferenceSide,CheckPosition))
       then begin
         if MessageDlg(lisCCOWarningCaption,
           lisThisWillCreateACircle, mtWarning, [mbIgnore, mbCancel], 0)<>
@@ -519,6 +544,7 @@ begin
           Refresh(false);
           exit;
         end;
+        break;
       end;
     end;
     // commit
@@ -617,9 +643,10 @@ begin
     // check
     for i:=0 to SelectedControls.Count-1 do begin
       CurControl:=TControl(SelectedControls[i]);
-      if not CurControl.AnchorSide[Kind].CheckSidePosition(
+      if (Kind in CurControl.Anchors)
+      and (not CurControl.AnchorSide[Kind].CheckSidePosition(
         CurControl.AnchorSide[Kind].Control,Side,
-        ReferenceControl,ReferenceSide,CheckPosition)
+        ReferenceControl,ReferenceSide,CheckPosition))
       then begin
         if MessageDlg(lisCCOWarningCaption,
           lisThisWillCreateACircle, mtWarning, [mbIgnore, mbCancel], 0)<>
@@ -628,6 +655,7 @@ begin
           Refresh(false);
           exit;
         end;
+        break;
       end;
     end;
     // commit
