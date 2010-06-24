@@ -251,6 +251,8 @@ procedure TControlScrollBar.AutoCalcRange;
     PreferredHeight: Integer;
   begin
     GetPreferredClientRect(PreferredWidth,PreferredHeight);
+    //if FControl.ClassName='TEditorCodetoolsOptionsFrame' then
+    //  DebugLn(['AutoCalcHRange ',DbgSName(FControl),' AutoSize=',FControl.AutoSize,' Bounds=',dbgs(FControl.BoundsRect),' Client=',dbgs(FControl.ClientRect),' pref=',PreferredWidth,'x',PreferredHeight]);
     InternalSetRange(PreferredWidth);
   end;
 

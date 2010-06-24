@@ -1031,13 +1031,14 @@ procedure TAutoSizeCtrlData.ComputePreferredClientArea(
         if (not UseCurrentWidth) or (not UseCurrentHeight) then
           Child.GetPreferredSize(CurPreferredWidth,CurPreferredHeight,true,true);
 
+        //if Child.Name='ToolTipBevel' then debugln(['InitPreferredSizes ',DbgSName(Child),' Bounds=',dbgs(Child.BoundsRect),' Anchors=',dbgs(Child.Anchors),' CurAnchors=',dbgs(CurAnchors),' UseW=',UseCurrentWidth,' UseH=',UseCurrentHeight,' Pref=',CurPreferredWidth,'x',CurPreferredHeight]);
         if UseCurrentWidth then
           NewWidth:=Child.Width
         else if (CurPreferredWidth>0)
         or ((CurPreferredWidth=0) and (csAutoSize0x0 in Child.ControlStyle)) then
           NewWidth:=CurPreferredWidth
         else
-          NewWidth:=Child.GetDefaultWidth;
+          NewWidth:=1;
         NewWidth:=Child.Constraints.MinMaxWidth(NewWidth);
 
         if UseCurrentHeight then
@@ -1046,7 +1047,7 @@ procedure TAutoSizeCtrlData.ComputePreferredClientArea(
         or ((CurPreferredHeight=0) and (csAutoSize0x0 in Child.ControlStyle)) then
           NewHeight:=CurPreferredHeight
         else
-          NewHeight:=Child.GetDefaultHeight;
+          NewHeight:=1;
         NewHeight:=Child.Constraints.MinMaxHeight(NewHeight);
       end else begin
         NewWidth:=0;
@@ -7766,7 +7767,8 @@ begin
       Layout:=TAutoSizeCtrlData.Create(Self);
       Layout.ComputePreferredClientArea(false,false,NewMoveLeft,NewMoveRight,
                                         NewClientWidth,NewClientHeight);
-      //Layout.WriteDebugReport('TWinControl.CalculatePreferredSize ','  ');
+      if ClassName='TEditorCodetoolsOptionsFrame' then
+        Layout.WriteDebugReport('TWinControl.CalculatePreferredSize ','  ');
       if (NewMoveLeft<>0) or (NewMoveRight<>0) then ;
     finally
       Layout.Free;
