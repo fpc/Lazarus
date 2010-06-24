@@ -7767,8 +7767,6 @@ begin
       Layout:=TAutoSizeCtrlData.Create(Self);
       Layout.ComputePreferredClientArea(false,false,NewMoveLeft,NewMoveRight,
                                         NewClientWidth,NewClientHeight);
-      if ClassName='TEditorCodetoolsOptionsFrame' then
-        Layout.WriteDebugReport('TWinControl.CalculatePreferredSize ','  ');
       if (NewMoveLeft<>0) or (NewMoveRight<>0) then ;
     finally
       Layout.Free;
