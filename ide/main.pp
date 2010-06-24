@@ -13365,8 +13365,7 @@ begin
     MainBuildBoss.GetFPCCompilerParamsForEnvironmentTest(
                                        MainBuildBoss.CurDefinesCompilerOptions);
     //DebugLn('TMainIDE.InitCodeToolBoss CurDefinesCompilerOptions="',CurDefinesCompilerOptions,'"');
-    CreateNotUsedDirectoryTemplate;
-    CreateFallBackTemplate;
+    CreateUseDefaultsFlagTemplate;
 
     ADefTempl:=CreateFPCTemplate(MainBuildBoss.CurDefinesCompilerFilename,
                        MainBuildBoss.CurDefinesCompilerOptions,
@@ -13410,7 +13409,7 @@ begin
 
     // create compiler macros for the lazarus sources
     SetupLazarusDirectory(InteractiveSetup);
-    ADefTempl:=CreateLazarusSrcTemplate(
+    ADefTempl:=CreateLazarusSourceTemplate(
       '$('+ExternalMacroStart+'LazarusDir)',
       '$('+ExternalMacroStart+'LCLWidgetType)',
       MiscellaneousOptions.BuildLazOpts.ExtraOptions,CodeToolsOpts);

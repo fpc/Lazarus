@@ -50,7 +50,8 @@ uses
   CodeToolManager, DefineTemplates,
   IDEWindowIntf, IDEImagesIntf,
   LazarusIDEStrConsts, CodeToolsOptions, CodeToolsDefPreview, TransferMacros,
-  EditorOptions, InputFileDialog, IDEOptionDefs, LazConf, IDEProcs;
+  EditorOptions, InputFileDialog, IDEOptionDefs, LazConf, IDEProcs,
+  EditDefineTree;
 
 type
 
@@ -626,7 +627,7 @@ begin
     DebugLn('  FPCSrcDir="',FPCSrcDir,'"');
     if (FPCSrcDir<>'') and (FPCSrcDir<>DefaultFPCSrcDir)
     and (UnitSearchPath<>'') then
-      FPCSrcTemplate:=Boss.DefinePool.CreateFPCSrcTemplate(FPCSrcDir,
+      FPCSrcTemplate:=CreateFPCSourceTemplate(FPCSrcDir,
                       UnitSearchPath, 'ppu', TargetOS, TargetProcessor, false,
                       UnitLinkList, CodeToolsOpts)
     else
@@ -754,7 +755,7 @@ begin
     FPCSrcDir:=FileNames[0];
     if Macros<>nil then Macros.SubstituteStr(FPCSrcDir);
     DebugLn('  FPCSrcDir="',FPCSrcDir,'"');
-    FPCSrcTemplate:=Boss.DefinePool.CreateFPCSrcTemplate(FPCSrcDir,
+    FPCSrcTemplate:=CreateFPCSourceTemplate(FPCSrcDir,
                         UnitSearchPath, 'ppu', TargetOS, TargetProcessor, false,
                         UnitLinks, CodeToolsOpts);
     if FPCSrcTemplate=nil then begin
@@ -798,7 +799,7 @@ begin
 
     EndUpdate;
     if ShowModal=mrCancel then exit;
-    LazTemplate:=Boss.DefinePool.CreateLazarusSrcTemplate(FileNames[0],
+    LazTemplate:=CreateLazarusSourceTemplate(FileNames[0],
                                '$('+ExternalMacroStart+'LCLWidgetType)','',
                                CodeToolsOpts);
     if LazTemplate=nil then exit;

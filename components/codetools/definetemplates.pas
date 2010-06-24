@@ -317,6 +317,8 @@ type
     procedure Unbind;
     procedure UnmarkNodes(WithSiblings, WithChilds: boolean);
     procedure WriteDebugReport(OnlyMarked: boolean);
+    function GetNext: TDefineTemplate;
+    function GetNextSkipChildren: TDefineTemplate;
   public
     property ChildCount: integer read FChildCount;
     property FirstChild: TDefineTemplate read FFirstChild;
@@ -2753,6 +2755,25 @@ procedure TDefineTemplate.WriteDebugReport(OnlyMarked: boolean);
 
 begin
   WriteNode(Self,'  ');
+end;
+
+function TDefineTemplate.GetNext: TDefineTemplate;
+begin
+  if FirstChild<>nil then
+    exit(FirstChild);
+  Result:=GetNextSkipChildren;
+end;
+
+function TDefineTemplate.GetNextSkipChildren: TDefineTemplate;
+begin
+  Result:=Self;
+  while (Result<>nil) do begin
+    if Result.Next<>nil then begin
+      Result:=Result.Next;
+      exit;
+    end;
+    Result:=Result.Parent;
+  end;
 end;
 
 function TDefineTemplate.HasDefines(OnlyMarked, WithSiblings: boolean): boolean;

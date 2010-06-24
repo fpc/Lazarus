@@ -43,9 +43,9 @@ uses
   LazIDEIntf,
   // IDE
   LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions, InputHistory,
-  ProjectResources, MiscOptions, LazConf, EnvironmentOpts, TransferMacros,
-  CompilerOptions, OutputFilter, Compiler, Project, BaseBuildManager,
-  ApplicationBundle;
+  EditDefineTree, ProjectResources, MiscOptions, LazConf, EnvironmentOpts,
+  TransferMacros, CompilerOptions, OutputFilter, Compiler, Project,
+  BaseBuildManager, ApplicationBundle;
   
 type
 
@@ -580,7 +580,7 @@ begin
       UnitLinksValid:=false;
     end;
 
-    FPCSrcTemplate:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(
+    FPCSrcTemplate:=CreateFPCSourceTemplate(
       CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
       CompilerUnitSearchPath,
       CodeToolBoss.GetCompiledSrcExtForDirectory(''),
