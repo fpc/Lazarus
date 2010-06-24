@@ -1049,7 +1049,7 @@ var
 begin
   inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
     WithThemeSpace);
-  if Anchors*[akRight,akBottom]<>[] then begin
+  if (Parent=nil) and (Anchors*[akRight,akBottom]<>[]) then begin
     // do size bigger than the monitor workarea
     WorkArea:=Monitor.WorkareaRect;
     if akRight in Anchors then
