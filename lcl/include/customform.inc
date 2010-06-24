@@ -1042,6 +1042,23 @@ Begin
   inherited RequestAlign;
 end;
 
+procedure TCustomForm.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  WorkArea: TRect;
+begin
+  inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
+    WithThemeSpace);
+  if Anchors*[akRight,akBottom]<>[] then begin
+    // do size bigger than the monitor workarea
+    WorkArea:=Monitor.WorkareaRect;
+    if akRight in Anchors then
+      PreferredWidth:=min(PreferredWidth,WorkArea.Right-WorkArea.Left);
+    if akBottom in Anchors then
+      PreferredHeight:=min(PreferredHeight,WorkArea.Bottom-WorkArea.Top);
+  end;
+end;
+
 {------------------------------------------------------------------------------
        TCustomForm SetDesigner
 ------------------------------------------------------------------------------}
