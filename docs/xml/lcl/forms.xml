@@ -9742,6 +9742,34 @@ Different operation systems has different preferences regards showing images in 
         <short>
           <var>Primary</var> - indicates whether this monitor is primary</short>
       </element>
+      <element name="TMonitorList">
+        <short>
+          <var>TMonitorList</var> - a list of monitors</short>
+      </element>
+      <element name="TScreen.MonitorCount">
+        <short>
+          <var>MonitorCount</var> - returns a number of monitors</short>
+      </element>
+      <element name="TScreen.Monitors">
+        <short>
+          <var>Monitors</var> - provides access to the monitor list array</short>
+      </element>
+      <element name="TScreen.PrimaryMonitor">
+        <short>
+          <var>PrimaryMonitor</var> - return the primary monitor of the system</short>
+      </element>
+      <element name="TCustomForm.Monitor">
+        <short>
+          <var>Monitor</var> - returns the monitor on which the form is mostly places (the biggest form area is placed)</short>
+      </element>
+      <element name="TDefaultMonitor">
+        <short>
+          <var>TDefaultMonitor</var> - enumerated type to specify on which monitor to place the form</short>
+        <descr>dmDesktop - don't change the form position (use the full desktop)
+dmPrimary - place the form on the primary monitor
+dmMainForm - place the form on the same monitor as the main form. If there is no main form then use dmPrimary behavior.
+dmActiveForm - place the form on the same monitor as the current active form. If there is no active form use dmMainForm behavior.</descr>
+      </element>
     </module>
     <!-- Forms -->
   </package>
