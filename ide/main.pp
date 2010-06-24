@@ -102,10 +102,7 @@ uses
   SourceEditProcs, MsgQuickFixes, ViewUnit_dlg, FPDocEditWindow,
   // converter
   ChgEncodingDlg, ConvertDelphi, MissingPropertiesDlg, LazXMLForms,
-  // rest of the ide
-  Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
-  CodeTemplatesDlg, CodeBrowser, FindUnitDlg, IdeOptionsDlg,
-  // environment options
+  // environment option frames
   editor_general_options, formed_options, OI_options,
   files_options, desktop_options, window_options,
   Backup_Options, naming_options, fpdoc_options,
@@ -123,16 +120,19 @@ uses
   codeexplorer_update_options, codeexplorer_categories_options,
   codeobserver_options,
   help_general_options,
-  // project options
+  // project option frames
   project_application_options, project_forms_options, project_lazdoc_options,
   project_save_options, project_versioninfo_options, project_i18n_options,
   project_misc_options,
-  // project compiler options
+  // project compiler option frames
   compiler_path_options, compiler_parsing_options, compiler_codegen_options,
   compiler_linking_options, compiler_verbosity_options, compiler_messages_options,
   compiler_other_options, compiler_inherited_options, compiler_compilation_options,
   BuildModesEditor,
 
+  // rest of the ide
+  Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, SearchResultView,
+  CodeTemplatesDlg, CodeBrowser, FindUnitDlg, IdeOptionsDlg, EditDefineTree,
   PublishModule, EnvironmentOpts, TransferMacros, KeyMapping, IDETranslations,
   IDEProcs, ExtToolDialog, ExtToolEditDlg, OutputFilter, JumpHistoryView,
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
@@ -13365,6 +13365,9 @@ begin
     MainBuildBoss.GetFPCCompilerParamsForEnvironmentTest(
                                        MainBuildBoss.CurDefinesCompilerOptions);
     //DebugLn('TMainIDE.InitCodeToolBoss CurDefinesCompilerOptions="',CurDefinesCompilerOptions,'"');
+    CreateNotUsedDirectoryTemplate;
+    CreateFallBackTemplate;
+
     ADefTempl:=CreateFPCTemplate(MainBuildBoss.CurDefinesCompilerFilename,
                        MainBuildBoss.CurDefinesCompilerOptions,
                        CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
@@ -13383,7 +13386,7 @@ begin
     CompilerUnitLinks:=InputHistories.FPCConfigCache.GetUnitLinks('');
     UnitLinksChanged:=InputHistories.LastFPCUnitLinksNeedsUpdate('',
                   CompilerUnitSearchPath,EnvironmentOptions.GetFPCSourceDirectory);
-    ADefTempl:=CreateFPCSrcTemplate(
+    ADefTempl:=CreateFPCSourceTemplate(
             CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
             CompilerUnitSearchPath,
             CodeToolBoss.GetCompiledSrcExtForDirectory(''),

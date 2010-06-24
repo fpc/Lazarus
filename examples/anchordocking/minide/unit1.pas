@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
   Menus, ExtCtrls, Buttons, ComCtrls, SimpleFrm,
-  AnchorDocking, AnchorDockStorage, XMLPropStorage, AnchorDockOptionsDlg;
+  AnchorDocking, AnchorDockStorage, XMLPropStorage, AnchorDockOptionsDlg,
+  DefineTemplates;
 
 type
 

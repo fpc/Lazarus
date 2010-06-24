@@ -437,6 +437,7 @@ type
     procedure Add(ADefineTemplate: TDefineTemplate);
     procedure AddChild(ParentTemplate, NewDefineTemplate: TDefineTemplate);
     procedure AddFirst(ADefineTemplate: TDefineTemplate);
+    procedure MoveToLast(ADefineTemplate: TDefineTemplate);
     procedure Assign(SrcDefineTree: TDefineTree);
     procedure AssignNonAutoCreated(SrcDefineTree: TDefineTree);
     procedure Clear;
@@ -3779,6 +3780,14 @@ begin
     RootTemplate:=ADefineTemplate;
   end;
   ClearCache;
+end;
+
+procedure TDefineTree.MoveToLast(ADefineTemplate: TDefineTemplate);
+begin
+  if (ADefineTemplate.Next=nil) and (ADefineTemplate.Parent=nil) then exit;
+  ADefineTemplate.Unbind;
+  if FFirstDefineTemplate=ADefineTemplate then FFirstDefineTemplate:=nil;
+  Add(ADefineTemplate);
 end;
 
 function TDefineTree.FindDefineTemplateByName(
