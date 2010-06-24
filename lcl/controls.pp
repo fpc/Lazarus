@@ -3663,15 +3663,18 @@ begin
       end else if (CurReferenceSide=asrLeft) = (Kind in [akLeft,akTop]) then
       begin
         // anchor parallel (e.g. a left side to a left side)
-        NextReferenceSide:=CurReferenceControl.AnchorSide[Kind];
+        if Kind in CurReferenceControl.Anchors then
+          NextReferenceSide:=CurReferenceControl.AnchorSide[Kind];
       end else begin
         // anchor opposite (e.g. a left side to a right side)
-        NextReferenceSide:=CurReferenceControl.AnchorSide[OppositeAnchor[Kind]];
+        if OppositeAnchor[Kind] in CurReferenceControl.Anchors then
+          NextReferenceSide:=CurReferenceControl.AnchorSide[OppositeAnchor[Kind]];
       end;
     end;
     if (NextReferenceSide=nil) then
     begin
       // no further side => anchor ok
+      // Note: if anchored control is not visible, it is anchored to the parent
       //if CheckPosition(Owner) and (Kind=akRight) then
       //if Owner.Name='ClassPartInsertPolicyRadioGroup' then
       //  DebugLn(['TAnchorSide.GetSidePosition Success ',DbgSName(Owner),' ReferenceControl=',dbgsName(ReferenceControl),' CurReferenceControl=',DbgSName(CurReferenceControl),' CurReferenceSide=',dbgs(Kind,CurReferenceSide)]);
