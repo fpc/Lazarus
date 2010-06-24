@@ -10757,10 +10757,6 @@ msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasan
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "Modulio ir failo pavadinimai nesutampa.%sPavyzdžiui: jei modulis yra „Unit1“, tada failas - „unit1.pas“."
 
-#: lazarusidestrconsts.lispeviewtodolist
-msgid "View ToDo list"
-msgstr "Rodyti ToDo sąrašą"
-
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "Priedas prie CompiledSrcPath"
@@ -12999,6 +12995,10 @@ msgstr "Šis Lazarus nepalaiko šių Lazarus darymo parinkčių grupės.%Į apla
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Sakinį ištraukti neis.%sPrieš ištraukiant naują procedūrą/metodą pažymėkite kažkiek kodo."
 
+#: lazarusidestrconsts.listhiswillcreateacircle
+msgid "This will create a circle."
+msgstr ""
+
 #: lazarusidestrconsts.listinfobuildautocloseonsuccess
 msgid "&Automatically close on success"
 msgstr "Pavykus, uždaryti &automatiškai"
@@ -15140,10 +15140,6 @@ msgstr "Rodyti komponentes"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Rodyti formas"
-
-#: lazarusidestrconsts.srkmecviewtodolist
-msgid "View todo list"
-msgstr "Rodyti „ToDo“ sąrašą"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

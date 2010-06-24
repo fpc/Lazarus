@@ -10783,10 +10783,6 @@ msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasan
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "Le nom d'unité et de fichier ne doivent pas être identique. %s Example: unit1.pas and Unit1"
 
-#: lazarusidestrconsts.lispeviewtodolist
-msgid "View ToDo list"
-msgstr "Afficher la ToDo liste"
-
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "Chemin de source compilé additionnel"
@@ -13018,6 +13014,10 @@ msgstr "Le jeux des options pour construire Lazarus n'est pas supporté par cett
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Cette sélection ne peut pas être extraite.%sVeuillez sélectionner du code pour en extraire une nouvelle procédure/méthode."
 
+#: lazarusidestrconsts.listhiswillcreateacircle
+msgid "This will create a circle."
+msgstr ""
+
 #: lazarusidestrconsts.listinfobuildautocloseonsuccess
 msgid "&Automatically close on success"
 msgstr "&Fermer automatiquement en cas de succès"
@@ -15156,10 +15156,6 @@ msgstr "Afficher les composants"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Afficher les fiches"
-
-#: lazarusidestrconsts.srkmecviewtodolist
-msgid "View todo list"
-msgstr "Afficher la liste des ToDo"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

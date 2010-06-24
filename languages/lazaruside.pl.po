@@ -10764,10 +10764,6 @@ msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasan
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr ""
 
-#: lazarusidestrconsts.lispeviewtodolist
-msgid "View ToDo list"
-msgstr "Zobacz listę \"Do zrobienia\""
-
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "dodatek ŚcieżkaŹródłowaKompilatora"
@@ -12998,6 +12994,10 @@ msgstr ""
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr ""
 
+#: lazarusidestrconsts.listhiswillcreateacircle
+msgid "This will create a circle."
+msgstr ""
+
 #: lazarusidestrconsts.listinfobuildautocloseonsuccess
 msgid "&Automatically close on success"
 msgstr ""
@@ -15138,10 +15138,6 @@ msgstr "Pokaż komponenty"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Pokaż formularze"
-
-#: lazarusidestrconsts.srkmecviewtodolist
-msgid "View todo list"
-msgstr "Pokaż listę do zrobienia"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

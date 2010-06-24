@@ -10757,10 +10757,6 @@ msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasan
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr ""
 
-#: lazarusidestrconsts.lispeviewtodolist
-msgid "View ToDo list"
-msgstr ""
-
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "Afegeix CompiledSrcPath"
@@ -12993,6 +12989,10 @@ msgstr ""
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "No s'ha pogut extraure aquesta declaració.%sSi us plau, seleccioneu codi per extreure'n un nou procediment/mètode."
 
+#: lazarusidestrconsts.listhiswillcreateacircle
+msgid "This will create a circle."
+msgstr ""
+
 #: lazarusidestrconsts.listinfobuildautocloseonsuccess
 msgid "&Automatically close on success"
 msgstr ""
@@ -15129,10 +15129,6 @@ msgstr ""
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Mostra les formes"
-
-#: lazarusidestrconsts.srkmecviewtodolist
-msgid "View todo list"
-msgstr ""
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

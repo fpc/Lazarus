@@ -10776,10 +10776,6 @@ msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasan
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "单元名和文件名不匹配.%s例如: unit1.pas和Unit1"
 
-#: lazarusidestrconsts.lispeviewtodolist
-msgid "View ToDo list"
-msgstr "查看 ToDo 列表"
-
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "附加 CompiledSrcPath"
@@ -13012,6 +13008,10 @@ msgstr ""
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "语句无法分析.%s请选择一段代码用来分析 procedure/method."
 
+#: lazarusidestrconsts.listhiswillcreateacircle
+msgid "This will create a circle."
+msgstr ""
+
 #: lazarusidestrconsts.listinfobuildautocloseonsuccess
 msgid "&Automatically close on success"
 msgstr ""
@@ -15154,10 +15154,6 @@ msgstr "查看组件"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "查看窗体"
-
-#: lazarusidestrconsts.srkmecviewtodolist
-msgid "View todo list"
-msgstr "查看todo列表"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

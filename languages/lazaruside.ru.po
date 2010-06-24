@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-06-19 01:02+0300\n"
+"PO-Revision-Date: 2010-06-24 03:59+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -10766,10 +10766,6 @@ msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasan
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "Имена модуля и файла не совпадают.%sПример: unit1.pas и Unit1"
 
-#: lazarusidestrconsts.lispeviewtodolist
-msgid "View ToDo list"
-msgstr "Показать список ToDo"
-
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "добавление CompiledSrcPath"
@@ -13003,6 +12999,10 @@ msgstr "Этот набор параметров сборки Lazarus не по�
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Это выражение не может быть извлечено.%sВыберите какой-то код, чтобы извлечь новую процедуру/метод."
 
+#: lazarusidestrconsts.listhiswillcreateacircle
+msgid "This will create a circle."
+msgstr "Это действие приведёт к появлению цикла привязок."
+
 #: lazarusidestrconsts.listinfobuildautocloseonsuccess
 msgid "&Automatically close on success"
 msgstr "&Автоматически закрывать в случае успеха"
@@ -15141,10 +15141,6 @@ msgstr "Показать список компонентов"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Показать формы"
-
-#: lazarusidestrconsts.srkmecviewtodolist
-msgid "View todo list"
-msgstr "Показать список ToDo"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

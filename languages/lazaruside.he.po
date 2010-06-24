@@ -10723,10 +10723,6 @@ msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasan
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "שם היחידה ושם הקובץ לא מתאימים. לדוגמה: unit1.pas ו  Unit1 "
 
-#: lazarusidestrconsts.lispeviewtodolist
-msgid "View ToDo list"
-msgstr "צפה ברשימת הToDo"
-
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "הוספת CompiledSrcPath"
@@ -12959,6 +12955,10 @@ msgstr "סט זה של אפשרויות הבניה של לזארוס לא נתמ
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "אי אפשר לחלץ משפט זה. בחר קוד אחר לחילוץ פרוצדורה/מתודה חדשה."
 
+#: lazarusidestrconsts.listhiswillcreateacircle
+msgid "This will create a circle."
+msgstr ""
+
 #: lazarusidestrconsts.listinfobuildautocloseonsuccess
 msgid "&Automatically close on success"
 msgstr "סגור אוטומטית אם הפעולה הצליחה"
@@ -15090,10 +15090,6 @@ msgstr "צפה ברכיבים"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "צפה בטפסים"
-
-#: lazarusidestrconsts.srkmecviewtodolist
-msgid "View todo list"
-msgstr "צפה ברשימת הToDo"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"

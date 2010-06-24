@@ -10776,10 +10776,6 @@ msgctxt "lazarusidestrconsts.lispeunitnameandfilenamedonotmatchexampleunit1pasan
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "Meno jednotky a meno súboru nesúhlasia.%sNapríklad: unit1.pas a Unit1"
 
-#: lazarusidestrconsts.lispeviewtodolist
-msgid "View ToDo list"
-msgstr "Zobraziť zoznam ToDo"
-
 #: lazarusidestrconsts.lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "Doplnenie CompiledSrcPath"
@@ -13012,6 +13008,10 @@ msgstr ""
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Tento príkaz nemôže byť vytiahnutý.%sProsím vyberte nejaký kód pre vytiahnutie procedúry/metódy."
 
+#: lazarusidestrconsts.listhiswillcreateacircle
+msgid "This will create a circle."
+msgstr ""
+
 #: lazarusidestrconsts.listinfobuildautocloseonsuccess
 msgid "&Automatically close on success"
 msgstr ""
@@ -15154,10 +15154,6 @@ msgstr "Zobraziť komponenty"
 #: lazarusidestrconsts.srkmecviewforms
 msgid "View forms"
 msgstr "Zobraziť formuláre"
-
-#: lazarusidestrconsts.srkmecviewtodolist
-msgid "View todo list"
-msgstr "Zobraziť zoznam ToDo"
 
 #: lazarusidestrconsts.srkmecviewunitdependencies
 msgid "View unit dependencies"
