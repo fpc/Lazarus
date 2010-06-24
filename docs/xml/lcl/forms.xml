@@ -9701,6 +9701,47 @@ Different operation systems has different preferences regards showing images in 
           <p>sbgSystem - use system preferences for glyphs showing</p>
         </descr>
       </element>
+      <element name="TMonitor">
+        <short>
+          <var>TMonitor</var> - system monitor</short>
+        <descr>TMonitor contains properties to access visible and work dimensions of the system monitor.</descr>
+      </element>
+      <element name="TMonitor.Handle">
+        <short>
+          <var>Hanlde</var> - system handle of monitor</short>
+      </element>
+      <element name="TMonitor.MonitorNum">
+        <short>
+          <var>MonitorNum</var> - index of the monitor in the screen monitors list</short>
+      </element>
+      <element name="TMonitor.Left">
+        <short>
+          <var>Left</var> - the logical position of the left side of the monitor</short>
+      </element>
+      <element name="TMonitor.Height">
+        <short>
+          <var>Height</var> - the logical height of the monitor</short>
+      </element>
+      <element name="TMonitor.Top">
+        <short>
+          <var>Top</var> - the logical position of the top side of the monitor</short>
+      </element>
+      <element name="TMonitor.Width">
+        <short>
+          <var>Width</var> - the logical width of the monitor</short>
+      </element>
+      <element name="TMonitor.BoundsRect">
+        <short>
+          <var>BoundsRect</var> - the logical dimensions of the monitor</short>
+      </element>
+      <element name="TMonitor.WorkareaRect">
+        <short>
+          <var>WorkareaRect</var> - the logical dimensions of the monitor except the unusable parts (like the taskbar, the dockbar, the global menu)</short>
+      </element>
+      <element name="TMonitor.Primary">
+        <short>
+          <var>Primary</var> - indicates whether this monitor is primary</short>
+      </element>
     </module>
     <!-- Forms -->
   </package>
