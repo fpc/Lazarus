@@ -51,6 +51,7 @@ type
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
+    class function DefaultCollapseChildNodes: Boolean; override;
   end;
 
 implementation
@@ -108,6 +109,11 @@ end;
 class function TfClarify.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result := TFormatSettings;
+end;
+
+class function TfClarify.DefaultCollapseChildNodes: Boolean;
+begin
+  Result := True;
 end;
 
 {-------------------------------------------------------------------------------
