@@ -20,7 +20,7 @@ msgstr "Formatador de Código \"JEDI\""
 
 #: jcfideregister.format_current_idecmd
 msgid "Format code in current editor window"
-msgstr ""
+msgstr "Formatar código na janela atual do editor"
 
 #: jcfideregister.format_current_menu
 msgctxt "jcfideregister.format_current_menu"

@@ -31,7 +31,7 @@ msgstr "Versão $VERSION$%S$DATE$%s%sEste programa tenta padronizar e tornar leg
 
 #: jcfuiconsts.lisalignalign
 msgid "Align"
-msgstr "Alinhar"
+msgstr "Alinhamento"
 
 #: jcfuiconsts.lisalignassign
 msgid "Assign"
@@ -55,23 +55,23 @@ msgstr "Apenas Interface"
 
 #: jcfuiconsts.lisalignmaxcolumn
 msgid "Max Column"
-msgstr "Maior Coluna"
+msgstr "Coluna Máxima"
 
 #: jcfuiconsts.lisalignmaxunaligned
 msgid "Max unaligned"
-msgstr "Maior desalinhamento"
+msgstr "Desalinhamento máximo"
 
 #: jcfuiconsts.lisalignmaxvariance
 msgid "Max Variance"
-msgstr "Maior Variação"
+msgstr "Variação Máxima"
 
 #: jcfuiconsts.lisalignmaxvarianceinterface
 msgid "Max Variance Interface"
-msgstr "Maior Variação Interface"
+msgstr "Variação Interface máxima"
 
 #: jcfuiconsts.lisalignmincolumn
 msgid "Min Column"
-msgstr "Menor Coluna"
+msgstr "Coluna Mínima"
 
 #: jcfuiconsts.lisaligntypedefs
 msgid "Type defs"
@@ -95,7 +95,7 @@ msgstr "&Interrupções após rótulo"
 
 #: jcfuiconsts.lisasmcapitalization
 msgid "&Capitalization"
-msgstr "&Capitalização"
+msgstr "&Maiúsculas/minúsculas"
 
 #: jcfuiconsts.lisasmenabled
 msgid "&Enabled"
@@ -147,11 +147,11 @@ msgstr "Linhas antes de procedimento"
 
 #: jcfuiconsts.lisblmaxconsecutiveblanklinesanywhere
 msgid "Max consecutive blank lines anywhere"
-msgstr "Maior número consecutivo de linhas em branco em qualquer lugar"
+msgstr "Máximo de linhas em branco consecutivas em qualquer lugar"
 
 #: jcfuiconsts.lisblmaxconsecutiveblanklinesbeforeremoval
 msgid "Max consecutive blank lines before removal"
-msgstr "Maior número de linhas em branco antes da remoção"
+msgstr "Máximo de linhas em branco consecutivas antes da remoção"
 
 #: jcfuiconsts.lisblnumberofreturnsaftertheunitsfinalend
 msgid "Number of returns after the unit's final End."
@@ -203,11 +203,11 @@ msgstr "Habilitado"
 
 #: jcfuiconsts.liscapsanywordsetcapitalisationonthesewords
 msgid "Set capitalisation on these words:"
-msgstr "Ajustar capitalização nestas palavras:"
+msgstr "Definir maiúsculas/minúsculas destas palavras:"
 
 #: jcfuiconsts.liscapscapitalisation
 msgid "Capitalisation"
-msgstr "Capitalização"
+msgstr "Maiúsculas/minúsculas"
 
 #: jcfuiconsts.liscapsconstants
 msgid "Constants"
@@ -219,7 +219,7 @@ msgstr "Diretivas"
 
 #: jcfuiconsts.liscapsenablecapitalisationfixing
 msgid "Enable capitalisation fixing"
-msgstr "Habilitar correções capitalização"
+msgstr "Habilitar correção maiúsculas/minúsculas"
 
 #: jcfuiconsts.liscapsidentifiersidentifiers
 msgid "Identifiers"
@@ -227,7 +227,7 @@ msgstr "Identificadores"
 
 #: jcfuiconsts.liscapsidentifierssetcapitalisationontheseidentifiers
 msgid "Set capitalisation on these identifiers:"
-msgstr "Ajustar capitalização nestes identificadores:"
+msgstr "Definir maiúsculas/minúsculas destes identificadores:"
 
 #: jcfuiconsts.liscapsnotidentifiersnotidentifiers
 msgid "Non-identifiers"
@@ -235,7 +235,7 @@ msgstr "Não-identificadores"
 
 #: jcfuiconsts.liscapsnotidentifierssetcapitalisationonthesenonidentifiers
 msgid "Set capitalisation on these non-identifiers:"
-msgstr "Ajustar capitalização nestes não-identificadores:"
+msgstr "Definir maiúsculas/minúsculas destes não-identificadores:"
 
 #: jcfuiconsts.liscapsoperators
 msgid "Operators"
@@ -251,7 +251,7 @@ msgstr "Tipos"
 
 #: jcfuiconsts.liscapsunitnamessetcapitalisationontheseunitnames
 msgid "Set capitalisation on these unit names:"
-msgstr "Ajustar capitalização nestes nomes de unidade:"
+msgstr "Definir maiúsculas/minúsculas destes nomes de unidade:"
 
 #: jcfuiconsts.liscapsunitnamesunitnames
 msgid "Unit Names"
@@ -330,7 +330,7 @@ msgstr "cláusula \"Uses\""
 
 #: jcfuiconsts.lisclarifyclarify
 msgid "Clarify"
-msgstr "Purificar"
+msgstr "Corrigir"
 
 #: jcfuiconsts.lisclarifydonotrun
 msgid "Do &not run"
@@ -542,7 +542,7 @@ msgstr "tudo em minúsculas"
 
 #: jcfuiconsts.lisobfsleavealone
 msgid "Leave alone"
-msgstr "Deixe sozinho"
+msgstr "Deixar como está"
 
 #: jcfuiconsts.lisobfsmixedcase
 msgid "Mixed Case"
@@ -636,7 +636,7 @@ msgstr "Nas declarações de variáveis"
 #: jcfuiconsts.lisreturnsleaveasis
 msgctxt "jcfuiconsts.lisreturnsleaveasis"
 msgid "Leave as is"
-msgstr "Deixe como está"
+msgstr "Deixar como está"
 
 #: jcfuiconsts.lisreturnsoneusesclauseitemperline
 msgid "One uses clause item per line"
@@ -718,11 +718,11 @@ msgstr "Rótu&lo"
 #: jcfuiconsts.lisspacesleaveasis
 msgctxt "jcfuiconsts.lisspacesleaveasis"
 msgid "Leave as is"
-msgstr "Deixe como está"
+msgstr "Deixar como está"
 
 #: jcfuiconsts.lisspacesmaxspacesincode
 msgid "&Max spaces in code"
-msgstr "&Maior número espaços no código"
+msgstr "&Máximo de espaços no código"
 
 #: jcfuiconsts.lisspacesmovespacestobeforecolon
 msgid "Move spaces to before colon"
