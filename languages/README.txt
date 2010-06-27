@@ -35,7 +35,7 @@ required languages to a lazaruside.xx.po file. For the xx see the gettext unit
 in the procedure TranslateResourceStrings.
 
 german:           lazaruside.de.po
-russian (KOI8-R): lazaruside.ru.po
+russian (UTF-8):  lazaruside.ru.po
 spanish:          lazaruside.es.po
 french:           lazaruside.fr.po
 italian:          lazaruside.it.po
