@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-06-24 03:59+0300\n"
+"PO-Revision-Date: 2010-06-27 17:19+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -11529,8 +11529,9 @@ msgid "Private Method"
 msgstr "Скрытый метод"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe project depends on some packages, which contain units with the Register procedure. The Register procedure is normally used to install components in the IDE. But the following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
-msgstr "Возможно, вам следует установить некоторые пакеты перед продолжением.%s%sВнимание:%sПроект зависит от некоторых пакетов, содержащих модули с процедурой Register. Эта процедура обычно используется для установки компонентов в IDE. Но следующие модули принадлежат пакетам, которые ещё не установлены в IDE. Если вы попытаетесь в IDE открыть форму, использующую эти компоненты, вы получите ошибки об отсутствующих компонентах, и загрузка формы, возможно, приведёт к очень неприятным результатам.%s%sЭто не оказывает влияния на открытие проекта и принадлежащего ему исходного кода.%s%sЭто значит только, что открытие форм для редактирования перед установкой отсутствующих компонентов является плохой идеей.%s%s"
+#| msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe project depends on some packages, which contain units with the Register procedure. The Register procedure is normally used to install components in the IDE. But the following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
+msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
+msgstr "Вероятно, вам следует установить некоторые пакеты перед продолжением.%s%sВнимание:%sСледующие модули принадлежат пакетам, которые ещё не установлены в IDE. Если вы попытаетесь в IDE открыть форму, использующую эти компоненты, вы получите ошибки об отсутствующих компонентах, и загрузка формы, возможно, приведёт к очень неприятным результатам.%s%sЭто не оказывает влияния на открытие проекта и принадлежащего ему исходного кода.%s%sЭто только означает, что открытие форм для редактирования перед установкой отсутствующих компонентов не рекомендуется.%s%s"
 
 #: lazarusidestrconsts.lisprocedure
 msgctxt "lazarusidestrconsts.lisprocedure"
@@ -13534,7 +13535,7 @@ msgstr "Идентификатор модуля существует"
 
 #: lazarusidestrconsts.lisunitinpackage
 msgid "%s unit %s in package %s%s"
-msgstr "модуль %s в пакете %s%s"
+msgstr "%s Модуль %s в пакете %s%s"
 
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
 msgid "Unitname already in project"
