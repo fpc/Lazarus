@@ -4060,11 +4060,19 @@ var
   Scheme: TColorSchemeLanguage;
   Attrib: TColorSchemeAttribute;
 begin
-  SynColorScheme := ReadColorScheme(Syn.LanguageName);
-  SchemeGrp := UserColorSchemeGroup.ColorSchemeGroup[SynColorScheme];
-  if SchemeGrp = nil then
-    exit;
-  Scheme := SchemeGrp.ColorSchemeBySynClass[Syn.ClassType];
+  if assigned(Syn) then begin
+    SynColorScheme := ReadColorScheme(Syn.LanguageName);
+    SchemeGrp := UserColorSchemeGroup.ColorSchemeGroup[SynColorScheme];
+    if SchemeGrp = nil then
+      exit;
+    Scheme := SchemeGrp.ColorSchemeBySynClass[Syn.ClassType];
+  end else begin
+    SchemeGrp := UserColorSchemeGroup.ColorSchemeGroup[DefaultColorSchemeName];
+    if SchemeGrp = nil then
+      exit;
+    Scheme := SchemeGrp.DefaultColors;
+  end;
+
   Attrib := Scheme.AttributeByEnum[AddHilightAttr];
   if Attrib <> nil then begin
     Attrib.ApplyTo(aMarkup);
