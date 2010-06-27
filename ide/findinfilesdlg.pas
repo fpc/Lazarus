@@ -176,6 +176,7 @@ begin
   UpdateReplaceCheck;
   DirectoryOptionsGroupBox.Enabled:=WhereRadioGroup.ItemIndex=2;
 
+  AutoSize:=IDEDialogLayoutList.Find(Self,false)=nil;
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
 

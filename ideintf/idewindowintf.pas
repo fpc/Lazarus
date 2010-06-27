@@ -518,6 +518,7 @@ var
 begin
   if (ADialog=nil) or (Self=nil) then exit;
   ALayout:=Find(ADialog,true);
+  //debugln(['TIDEDialogLayoutList.ApplyLayout ',ALayout.Name,' ',ALayout.SizeValid,' ',ALayout.Width,',',ALayout.Height]);
   if ALayout.SizeValid then begin
     NewWidth:=ALayout.Width;
     NewHeight:=ALayout.Height;
