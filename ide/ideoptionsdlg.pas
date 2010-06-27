@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, Forms, ComCtrls, LCLProc, LCLType,
-  Buttons, ButtonPanel,
+  Buttons, ButtonPanel, ExtCtrls,
   EnvironmentOpts, LazarusIDEStrConsts, IDEWindowIntf, IDEOptionsIntf,
   EditorOptions, IDECommands;
 
@@ -41,6 +41,7 @@ type
   TIDEOptionsDialog = class(TAbstractOptionsEditorDialog)
     ButtonPanel: TButtonPanel;
     CategoryTree: TTreeView;
+    CatTVSplitter: TSplitter;
     procedure CategoryTreeChange(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeCollapsed(Sender: TObject; Node: TTreeNode);
     procedure CategoryTreeExpanded(Sender: TObject; Node: TTreeNode);
@@ -137,14 +138,7 @@ begin
       PrevEditor.Visible := False;
       //PrevEditor.Parent := nil;
 
-    AEditor.Anchors := [akLeft, akTop, akRight, akBottom];
-    AEditor.AnchorSideLeft.Side := asrBottom;
-    AEditor.AnchorSideLeft.Control := CategoryTree;
-    AEditor.AnchorSideTop.Control := Self;
-    AEditor.AnchorSideRight.Side := asrBottom;
-    AEditor.AnchorSideRight.Control := Self;
-    AEditor.AnchorSideBottom.Side := asrTop;
-    AEditor.AnchorSideBottom.Control := CategoryTree.AnchorSide[akBottom].Control;
+    AEditor.Align := alClient;
     AEditor.BorderSpacing.Around := 6;
     //AEditor.Parent := Self;
     AEditor.Visible := True;

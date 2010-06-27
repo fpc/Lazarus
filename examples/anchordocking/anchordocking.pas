@@ -519,6 +519,13 @@ type
     property PageClass: TAnchorDockPageClass read FPageClass write FPageClass;
   end;
 
+  { TControl_Hack }
+
+  TControl_Hack = class(TControl)
+  published
+    property OnStartDock; // was Protected
+  end;
+
 var
   DockMaster: TAnchorDockMaster = nil;
 

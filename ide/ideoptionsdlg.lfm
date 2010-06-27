@@ -1,4 +1,4 @@
-object IDEOptionsDialog: TIDEOptionsDialog
+inherited IDEOptionsDialog: TIDEOptionsDialog
   Left = 317
   Height = 500
   Top = 304
@@ -11,36 +11,44 @@ object IDEOptionsDialog: TIDEOptionsDialog
   Constraints.MinWidth = 700
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
-  object ButtonPanel: TButtonPanel
+  object ButtonPanel: TButtonPanel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     Left = 6
-    Height = 34
-    Top = 460
+    Height = 42
+    Top = 452
     Width = 688
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     BorderSpacing.Around = 0
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
-  object CategoryTree: TTreeView
+  object CategoryTree: TTreeView[1]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = ButtonPanel
     Left = 6
-    Height = 454
+    Height = 446
     Top = 6
     Width = 206
-    Anchors = [akTop, akLeft, akBottom]
+    Align = alLeft
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Constraints.MinWidth = 206
-    DefaultItemHeight = 17
+    DefaultItemHeight = 19
     ReadOnly = True
     TabOrder = 0
     OnChange = CategoryTreeChange
@@ -48,5 +56,11 @@ object IDEOptionsDialog: TIDEOptionsDialog
     OnExpanded = CategoryTreeExpanded
     OnKeyDown = CategoryTreeKeyDown
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+  end
+  object CatTVSplitter: TSplitter[2]
+    Left = 212
+    Height = 452
+    Top = 0
+    Width = 5
   end
 end
