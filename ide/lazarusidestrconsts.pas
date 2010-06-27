@@ -4504,6 +4504,7 @@ resourcestring
     +'not be deleted, because it is not owned by %s.';
   lisFilter2 = '(filter)';
   lisFindKeyCombination = 'Find key combination';
+  lisFilter3 = 'Filter: %s';
   lisInvalidPublishingDirectory = 'Invalid publishing Directory';
   lisSourceDirectoryAndDestinationDirectoryAreTheSameMa = 'Source directory %'
     +'s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you '

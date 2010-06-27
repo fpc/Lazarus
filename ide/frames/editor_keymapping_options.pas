@@ -62,6 +62,7 @@ type
     procedure FillKeyMappingTreeView;
     function KeyMappingRelationToString(Index: Integer): String;
     function KeyMappingRelationToString(KeyRelation: TKeyCommandRelation): String;
+    procedure UpdateKeyFilterButton;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -228,6 +229,7 @@ begin
     Exit;
   //debugln(['TEditorOptionsForm.KeyMappingFindKeyButtonClick ',KeyAndShiftStateToEditorKeyString(KeyFilter)]);
   KeyMapKeyFilter := KeyFilter;
+  UpdateKeyFilterButton;
   FillKeyMappingTreeView;
 end;
 
@@ -420,6 +422,15 @@ begin
                        + '  '+lisOr+'  ' +
                          AddBrakets(KeyAndShiftStateToEditorKeyString(ShortcutB));
   end;
+end;
+
+procedure TEditorKeymappingOptionsFrame.UpdateKeyFilterButton;
+begin
+  if IDEShortCutEmpty(KeyMapKeyFilter) then
+    KeyMappingFindKeyButton.Caption:=lisFindKeyCombination
+  else
+    KeyMappingFindKeyButton.Caption:=
+      Format(lisFilter3, [KeyAndShiftStateToEditorKeyString(KeyMapKeyFilter)]);
 end;
 
 constructor TEditorKeymappingOptionsFrame.Create(AOwner: TComponent);

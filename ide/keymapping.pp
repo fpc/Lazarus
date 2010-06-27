@@ -164,6 +164,7 @@ type
     property RelationCount:integer read GetRelationCount;
   end;
 
+function IDEShortCutEmpty(const Key: TIDEShortCut): boolean;
 function KeyAndShiftStateToEditorKeyString(const Key: TIDEShortCut): String;
 function FindKeymapConflicts(Keymap: TKeyCommandRelationList;
                       Protocol: TStrings; out Index1, Index2: integer): integer;
@@ -2317,6 +2318,11 @@ begin
       Check(Key1.ShortcutB,Key2.ShortcutB);
     end;
   end;
+end;
+
+function IDEShortCutEmpty(const Key: TIDEShortCut): boolean;
+begin
+  Result:=(Key.Key1=VK_UNKNOWN) and (Key.Key2=VK_UNKNOWN);
 end;
 
 function KeyAndShiftStateToEditorKeyString(const Key: TIDEShortCut): String;
