@@ -6566,6 +6566,7 @@ begin
     Parent:=Self;
     AnchorToNeighbour(akRight,6,FGrabButton);
     AnchorVerticalCenterTo(FGrabButton);
+    Constraints.MinWidth:=130;
   end;
 
   BevelOuter:=bvNone;
