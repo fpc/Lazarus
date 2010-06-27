@@ -168,8 +168,10 @@ begin
   IncludeSubDirsCheckBox.Caption := lisFindFileIncludeSubDirectories;
 
   ButtonPanel1.OkButton.Caption := lisLazBuildOk;
-  ButtonPanel1.OKButton.OnClick:= @OKButtonClick;
-  ButtonPanel1.HelpButton.OnClick:=@HelpButtonClick;
+  ButtonPanel1.OKButton.OnClick := @OKButtonClick;
+  ButtonPanel1.HelpButton.Caption := lisMenuHelp;
+  ButtonPanel1.HelpButton.OnClick := @HelpButtonClick;
+  ButtonPanel1.CancelButton.Caption := dlgCancel;
 
   ReplaceCheckBox.Enabled:=true;
 
