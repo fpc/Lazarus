@@ -167,6 +167,7 @@ type
 
   TCarbonWSCustomPanel = class(TWSCustomPanel)
   published
+    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
   end;
 
   { TCarbonWSPanel }
@@ -351,6 +352,23 @@ begin
 
   TCarbonTabsControl(ANotebook.Handle).ShowTabs(AShowTabs);
 end;
+
+{ TCarbonWSCustomPanel }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSCustomNotebook.ShowTabs
+  Params:  ANotebook - LCL custom notebook
+           AShowTabs - Tabs visibility
+
+  TCustomPanel should return preferred size (0,0)
+  bugs #16337, and Mattias in comment 0036957 of #16323
+ ------------------------------------------------------------------------------}
+class procedure TCarbonWSCustomPanel.GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  PreferredWidth:=0;
+  PreferredHeight:=0;
+end;
+
 
 {$include carbontrayicon.inc}
 

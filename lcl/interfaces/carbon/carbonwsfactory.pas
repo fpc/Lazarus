@@ -375,7 +375,8 @@ end;
 
 function RegisterCustomPanel: Boolean; alias : 'WSRegisterCustomPanel';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomPanel, TCarbonWSCustomPanel);
+  Result := True;
 end;
 
 function RegisterCustomTrayIcon: Boolean; alias : 'WSRegisterCustomTrayIcon';

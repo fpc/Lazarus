@@ -266,6 +266,7 @@ type
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     function GetContent: ControlRef; override;
+    function GetPreferredSize: TPoint; override;
   public
     function GetClientRect(var ARect: TRect): Boolean; override;
     function SetBounds(const ARect: TRect): Boolean; override;
@@ -1225,6 +1226,18 @@ end;
 function TCarbonGroupBox.GetContent: ControlRef;
 begin
   Result := FUserPane;
+end;
+
+function TCarbonGroupBox.GetPreferredSize:TPoint;
+var
+  ContentRect: TRect;
+begin
+  Result:=inherited;
+  if GetClientRect(ContentRect) then
+  begin
+    Dec(Result.X, ContentRect.Right - ContentRect.Left);
+    Dec(Result.Y, ContentRect.Bottom - ContentRect.Top);
+  end;
 end;
 
 {------------------------------------------------------------------------------
