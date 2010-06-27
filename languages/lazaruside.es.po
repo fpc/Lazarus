@@ -6829,6 +6829,10 @@ msgstr "Filtro"
 msgid "(filter)"
 msgstr "(filtro)"
 
+#: lazarusidestrconsts.lisfilter3
+msgid "Filter: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
 msgstr "Conjuntos de filtros"

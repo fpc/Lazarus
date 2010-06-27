@@ -6833,6 +6833,10 @@ msgstr "过滤"
 msgid "(filter)"
 msgstr "(过滤)"
 
+#: lazarusidestrconsts.lisfilter3
+msgid "Filter: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
 msgstr "过滤设置"

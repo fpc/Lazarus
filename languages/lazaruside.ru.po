@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-06-27 17:19+0300\n"
+"PO-Revision-Date: 2010-06-28 01:52+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6832,6 +6832,10 @@ msgstr "Фильтр"
 #: lazarusidestrconsts.lisfilter2
 msgid "(filter)"
 msgstr "(фильтр)"
+
+#: lazarusidestrconsts.lisfilter3
+msgid "Filter: %s"
+msgstr "Фильтр: %s"
 
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
