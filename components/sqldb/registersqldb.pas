@@ -175,10 +175,11 @@ procedure Register;
 begin
   RegisterPropertyEditor(TypeInfo(AnsiString),
     TIBConnection, 'DatabaseName', TSQLFirebirdFileNamePropertyEditor);
-  RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery, 'SQL'      , TSQLStringsPropertyEditor);
-  RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery, 'InsertSQL', TSQLStringsPropertyEditor);
-  RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery, 'DeleteSQL', TSQLStringsPropertyEditor);
-  RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery, 'UpdateSQL', TSQLStringsPropertyEditor);
+  RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery,  'SQL'      , TSQLStringsPropertyEditor);
+  RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery,  'InsertSQL', TSQLStringsPropertyEditor);
+  RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery,  'DeleteSQL', TSQLStringsPropertyEditor);
+  RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery,  'UpdateSQL', TSQLStringsPropertyEditor);
+  RegisterPropertyEditor(TStrings.ClassInfo, TSQLScript, 'Script'   , TSQLStringsPropertyEditor);
 
   RegisterUnit('sqldb',@RegisterUnitSQLdb);
 end;
