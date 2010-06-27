@@ -1529,6 +1529,7 @@ var
   Node: TCodeTreeNode;
 begin
   Node:=Context.Node;
+  debugln(['TIdentCompletionTool.GatherContextKeywords ',Node.DescAsString]);
   case Node.Desc of
   ctnClass,ctnObject,ctnObjCCategory,ctnObjCClass,
   ctnClassPrivate,ctnClassProtected,ctnClassPublic,ctnClassPublished:
@@ -1575,6 +1576,21 @@ begin
       Add('const');
       Add('procedure');
       Add('function');
+    end;
+
+  ctnVarDefinition:
+    if Node.Parent.Desc in [ctnClass,ctnObject,ctnObjCCategory,ctnObjCClass]
+      +AllClassBaseSections
+    then begin
+      Add('public');
+      Add('private');
+      Add('protected');
+      Add('published');
+      Add('procedure');
+      Add('function');
+      Add('property');
+      Add('constructor');
+      Add('destructor');
     end;
   end;
 end;
