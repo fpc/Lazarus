@@ -1512,6 +1512,11 @@ end;
 
 procedure TIdentCompletionTool.GatherContextKeywords(const Context: TFindContext;
    CleanPos: integer);
+type
+  TPropertySpecifier = (
+    psIndex,psRead,psWrite,psStored,psImplements,psDefault,psNoDefault
+  );
+  TPropertySpecifiers = set of TPropertySpecifier;
 
   procedure Add(const Keyword: string);
   var
@@ -1525,11 +1530,73 @@ procedure TIdentCompletionTool.GatherContextKeywords(const Context: TFindContext
     CurrentIdentifierList.Add(NewItem);
   end;
 
+  procedure AddSpecifiers(Forbidden: TPropertySpecifiers);
+  begin
+    if not (psIndex in Forbidden) then Add('index');
+    if not (psRead in Forbidden) then Add('read');
+    if not (psWrite in Forbidden) then Add('write');
+    if not (psStored in Forbidden) then Add('stored');
+    if not (psImplements in Forbidden) then Add('implements');
+    if not (psDefault in Forbidden) then Add('default');
+    if not (psNoDefault in Forbidden) then Add('nodefault');
+  end;
+
+  procedure CheckProperty(PropNode: TCodeTreeNode);
+  var
+    Forbidden: TPropertySpecifiers;
+  begin
+    if not MoveCursorToPropType(PropNode) then exit;
+    if CleanPos<CurPos.EndPos then exit;
+    ReadNextAtom;
+    if CurPos.Flag=cafPoint then begin
+      ReadNextAtom;
+      if CurPos.Flag<>cafWord then exit;
+      ReadNextAtom;
+    end;
+    Forbidden:=[];
+    repeat
+      if CleanPos<=CurPos.EndPos then begin
+        AddSpecifiers(Forbidden);
+        exit;
+      end;
+      if (not (psIndex in Forbidden)) and UpAtomIs('INDEX') then begin
+        ReadNextAtom;
+        Include(Forbidden,psIndex);
+      end else if (not (psRead in Forbidden)) and UpAtomIs('READ') then begin
+        ReadNextAtom;
+        Forbidden:=Forbidden+[psIndex..psRead];
+      end else if (not (psWrite in Forbidden)) and UpAtomIs('WRITE') then begin
+        ReadNextAtom;
+        Forbidden:=Forbidden+[psIndex..psWrite];
+      end else if (not (psImplements in Forbidden)) and UpAtomIs('IMPLEMENTS')
+      then begin
+        ReadNextAtom;
+        exit;
+      end else if (not (psStored in Forbidden)) and UpAtomIs('STORED') then
+      begin
+        ReadNextAtom;
+        Forbidden:=Forbidden+[psIndex..psImplements];
+      end else if (not (psDefault in Forbidden)) and UpAtomIs('DEFAULT') then
+      begin
+        ReadNextAtom;
+        exit;
+      end else if (not (psNoDefault in Forbidden)) and UpAtomIs('NODEFAULT') then
+      begin
+        ReadNextAtom;
+        exit;
+      end else if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
+        if not ReadTilBracketClose(false) then exit;
+      end else
+        ReadNextAtom;
+    until (CleanPos<CurPos.StartPos) or (CurPos.EndPos>SrcLen);
+  end;
+
 var
   Node: TCodeTreeNode;
+  SubNode: TCodeTreeNode;
 begin
   Node:=Context.Node;
-  debugln(['TIdentCompletionTool.GatherContextKeywords ',Node.DescAsString]);
+  //debugln(['TIdentCompletionTool.GatherContextKeywords ',Node.DescAsString]);
   case Node.Desc of
   ctnClass,ctnObject,ctnObjCCategory,ctnObjCClass,
   ctnClassPrivate,ctnClassProtected,ctnClassPublic,ctnClassPublished:
@@ -1543,6 +1610,15 @@ begin
       Add('property');
       Add('constructor');
       Add('destructor');
+      if (Node.LastChild<>nil) and (CleanPos>Node.LastChild.StartPos)
+      and (Node.LastChild.EndPos>Node.LastChild.StartPos)
+      and (Node.LastChild.EndPos<Srclen) then begin
+        //debugln(['TIdentCompletionTool.GatherContextKeywords end of class section ',dbgstr(copy(Src,Node.LastChild.EndPos-10,10))]);
+        SubNode:=Node.LastChild;
+        if SubNode.Desc=ctnProperty then begin
+          CheckProperty(SubNode);
+        end;
+      end;
     end;
 
   ctnClassInterface,ctnDispinterface,ctnObjCProtocol,ctnCPPClass:
@@ -1592,6 +1668,10 @@ begin
       Add('constructor');
       Add('destructor');
     end;
+
+  ctnProperty:
+    CheckProperty(Node);
+
   end;
 end;
 
