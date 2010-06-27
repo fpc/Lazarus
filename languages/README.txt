@@ -31,15 +31,13 @@ rstconv -i ../lazarusidestrconsts.rst -o lazaruside.po
 Hint: this is done by <lazarusdir>/localize.sh or <lazarusdir>\localize.bat.
 
 This will create the file lazaruside.po, which should be translated in all
-required languages to a lazaruside.xx.po file. For the xx see the gettext unit
+required languages to a lazaruside.xx.po file (it should have UTF-8 encoding). For the xx see the gettext unit
 in the procedure TranslateResourceStrings.
 
-german:           lazaruside.de.po
-russian (UTF-8):  lazaruside.ru.po
-spanish:          lazaruside.es.po
-french:           lazaruside.fr.po
-italian:          lazaruside.it.po
+For example:
 
-
-
-
+German:      lazaruside.de.po
+Russian:     lazaruside.ru.po
+Spanish:     lazaruside.es.po
+French:      lazaruside.fr.po
+Italian:     lazaruside.it.po
