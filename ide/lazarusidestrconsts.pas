@@ -3476,9 +3476,7 @@ resourcestring
   lisPkgMangNewPackage = 'NewPackage';
   lisProbablyYouNeedToInstallSomePackagesForBeforeConti = 'Probably you need '
     +'to install some packages for before continuing.%s%sWarning:%sThe '
-    +'project depends on some packages, which contain units with the Register '
-    +'procedure. The Register procedure is normally used to install '
-    +'components in the IDE. But the following units belong to packages '
+    +'following units belong to packages '
     +'which are not yet installed in the IDE. If you try to open a form in '
     +'the IDE, that uses such components, you will get errors about missing '
     +'components and the form loading will probably create very unpleasant '
