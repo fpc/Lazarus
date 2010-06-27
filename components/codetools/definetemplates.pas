@@ -289,6 +289,7 @@ type
     procedure InheritMarks(WithSiblings, WithChilds, Down, Up: boolean);
     procedure InsertBehind(APrior: TDefineTemplate);
     procedure InsertInFront(ANext: TDefineTemplate);
+    procedure MoveToLast(Child: TDefineTemplate);
     procedure LoadValuesFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                       WithMergeInfo: boolean);
     procedure MarkFlags(const MustFlags, NotFlags: TDefineTemplateFlags;
@@ -2249,6 +2250,17 @@ begin
   ANext.FPrior:=LastSibling;
 end;
 
+procedure TDefineTemplate.MoveToLast(Child: TDefineTemplate);
+var
+  Node: TDefineTemplate;
+begin
+  if Child.Next=nil then exit;
+  Node:=Child.Next;
+  while Node.Next<>nil do Node:=Node.Next;
+  Child.Unbind;
+  Child.InsertBehind(Node);
+end;
+
 procedure TDefineTemplate.Assign(ADefineTemplate: TDefineTemplate;
   WithSubNodes, WithNextSiblings, ClearOldSiblings: boolean);
 var ChildTemplate, CopyTemplate, NextTemplate: TDefineTemplate;
@@ -3656,13 +3668,14 @@ var
         begin
           // test expression in value
           ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
-          EvalResult:=DirDef.Values.Eval(TempValue);
+          EvalResult:=DirDef.Values.Eval(TempValue,true);
           if Assigned(OnCalculate) then
             OnCalculate(Self,DefTempl,true,TempValue,true,EvalResult,EvalResult='1');
           //debugln('da_If,da_ElseIf: DefTempl.Value="',DbgStr(DefTempl.Value),'" CurPath="',CurPath,'" TempValue="',TempValue,'" EvalResult=',EvalResult);
           if DirDef.Values.ErrorPosition>=0 then begin
             FErrorDescription:=Format(ctsSyntaxErrorInExpr,[TempValue]);
             FErrorTemplate:=DefTempl;
+            //debugln(['CalculateTemplate "',FErrorDescription,'"']);
           end else if EvalResult='1' then
             CalculateIfChilds;
         end;

@@ -106,7 +106,7 @@ type
     function CompareValues(const v1, v2: string): integer;
     function GetVariables(const Name: string): string;
     procedure SetVariables(const Name: string; const Value: string);
-    function IndexOfName(const VarName: string; InsertPos: boolean): integer;
+    function IndexOfName(VarName: PChar; VarLen: integer; InsertPos: boolean): integer;
     function IndexOfIdentifier(Identifier: PChar; InsertPos: boolean): integer;
     procedure Expand;
   public
@@ -119,10 +119,10 @@ type
     function Equals(AnExpressionEvaluator: TExpressionEvaluator): boolean; reintroduce;
     procedure Assign(SourceExpressionEvaluator: TExpressionEvaluator);
     procedure AssignTo(SL: TStringList);
-    function Eval(const Expression: string):string;
+    function Eval(const Expression: string; AllowExternalMacro: boolean = false):string;
     function EvalPChar(Expression: PChar; ExprLen: PtrInt;
-                       out Operand: TEvalOperand): boolean;// true if expression valid
-    function EvalBoolean(Expression: PChar; ExprLen: PtrInt): boolean;
+                       out Operand: TEvalOperand; AllowExternalMacro: boolean = false): boolean;// true if expression valid
+    function EvalBoolean(Expression: PChar; ExprLen: PtrInt; AllowExternalMacro: boolean = false): boolean;
     function EvalOld(const Expression: string):string;
     property ErrorPosition: integer read FErrorPos write FErrorPos;
     property ErrorMsg: string read FErrorMsg write FErrorMsg;
@@ -902,8 +902,8 @@ begin
   ReAllocMem(FNames,NewSize);
 end;
 
-function TExpressionEvaluator.IndexOfName(
-  const VarName: string; InsertPos: boolean): integer;
+function TExpressionEvaluator.IndexOfName(VarName: PChar; VarLen: integer;
+  InsertPos: boolean): integer;
 var l,r,m, cmp: integer;
 begin
   if FCount=0 then begin
@@ -919,7 +919,7 @@ begin
   cmp:=0;
   while l<=r do begin
     m:=(l+r) shr 1;
-    cmp:=CompareNames(VarName,FNames[m]);
+    cmp:=CompareNames(VarName,VarLen,PChar(FNames[m]),length(FNames[m]));
     if cmp>0 then
       l:=m+1
     else if cmp<0 then
@@ -979,7 +979,7 @@ end;
 function TExpressionEvaluator.GetVariables(const Name: string): string;
 var i: integer;
 begin
-  i:=IndexOfName(Name,false);
+  i:=IndexOfName(PChar(Name),length(Name),false);
   if (i>=0) then
     Result:=FValues[i]
   else 
@@ -988,7 +988,7 @@ end;
 
 function TExpressionEvaluator.IsDefined(const Name: string): boolean;
 begin
-  Result:=IndexOfName(Name,false)>=0;
+  Result:=IndexOfName(PChar(Name),length(Name),false)>=0;
 end;
 
 function TExpressionEvaluator.IsIdentifierDefined(Identifier: PChar): boolean;
@@ -1109,7 +1109,7 @@ procedure TExpressionEvaluator.SetVariables(const Name: string;
 var i: integer;
   Size: Integer;
 begin
-  i:=IndexOfName(Name,true);
+  i:=IndexOfName(PChar(Name),length(Name),true);
   if (i>=0) and (i<FCount) and (CompareNames(FNames[i],Name)=0) then begin
     // variable already exists -> replace value
     if FValues[i]<>Value then begin
@@ -1138,7 +1138,7 @@ procedure TExpressionEvaluator.Undefine(const Name: string);
 var i: integer;
   Size: Integer;
 begin
-  i:=IndexOfName(Name,false);
+  i:=IndexOfName(PChar(Name),length(Name),false);
   if (i>=0) then begin
     FNames[i]:='';
     FValues[i]:='';
@@ -1179,14 +1179,15 @@ begin
     SL.Add(FNames[i]+'='+FValues[i]);
 end;
 
-function TExpressionEvaluator.Eval(const Expression: string): string;
+function TExpressionEvaluator.Eval(const Expression: string;
+  AllowExternalMacro: boolean): string;
 {  0 = false
    else true }
 var
   Operand: TEvalOperand;
 begin
   if Expression='' then exit('0');
-  if not EvalPChar(PChar(Expression),length(Expression),Operand) then
+  if not EvalPChar(PChar(Expression),length(Expression),Operand,AllowExternalMacro) then
     Result:=''
   else begin
     SetLength(Result,Operand.Len);
@@ -1196,8 +1197,8 @@ begin
   FreeEvalOperand(Operand);
 end;
 
-function TExpressionEvaluator.EvalPChar(Expression: PChar; ExprLen: PtrInt;
-  out Operand: TEvalOperand): boolean;
+function TExpressionEvaluator.EvalPChar(Expression: PChar; ExprLen: PtrInt; out
+  Operand: TEvalOperand; AllowExternalMacro: boolean): boolean;
 {  0 = false
    else true
 
@@ -1219,7 +1220,7 @@ type
 var
   ExprStack: TExprStack;
   StackPtr: integer; // -1 = empty
-  ExprEnd: Pointer;
+  ExprEnd: PChar;
   p, AtomStart: PChar;
 
   procedure FreeStack;
@@ -1371,8 +1372,13 @@ var
     f: string;
   begin
     s:=ExpectedStr;
-    f:=NewErrorPos^;
-    Error(NewErrorPos,'expected '+s+', but found '+f);
+    if ExprEnd>NewErrorPos then begin
+      SetLength(f,ExprEnd-NewErrorPos);
+      System.Move(NewErrorPos^,f[1],ExprEnd-NewErrorPos);
+      Error(NewErrorPos,'expected '+s+', but found '+f);
+    end else begin
+      Error(NewErrorPos,'expected '+s);
+    end;
   end;
 
   function ReadTilEndBracket: boolean;
@@ -1403,7 +1409,7 @@ var
   // p is behind defined or undefined keyword
   // Operand: '1' or '-1'
   var
-    NeedBracketClose: Boolean;
+    NameStart: PChar;
   begin
     Result:=false;
     ReadNextAtom;
@@ -1411,37 +1417,45 @@ var
       IdentifierMissing(AtomStart);
       exit;
     end;
-    NeedBracketClose:=false;
-    if AtomStart^='(' then begin
-      // defined(
-      NeedBracketClose:=true;
+    if IsIdentifierChar[AtomStart^] then begin
+      if IsIdentifierDefined(AtomStart) then begin
+        SetOperandValueChar(Operand,'1');
+      end else begin
+        SetOperandValueConst(Operand,'0');
+      end;
+    end else if AtomStart^='(' then begin
       ReadNextAtom;
-      // skip space
-      if AtomStart>=ExprEnd then begin
-        IdentifierMissing(AtomStart);
+      if p=AtomStart then begin
+        StrExpectedAtPos(AtomStart,'macro name');
         exit;
       end;
-    end;
-    if not IsIdentifierChar[AtomStart^] then begin
-      StrExpectedAtPos(AtomStart,'macro name');
-      exit;
-    end;
-    if IsIdentifierDefined(AtomStart) then begin
-      SetOperandValueChar(Operand,'1');
-    end else begin
-      SetOperandValueConst(Operand,'0');
-    end;
-    if NeedBracketClose then begin
-      // read bracket close
-      ReadNextAtom;
-      if AtomStart>=ExprEnd then begin
-        CharMissing(ExprEnd,')');
+      if AtomStart^=')' then begin
+        SetOperandValueConst(Operand,'0');
+        exit(true);
+      end;
+      NameStart:=AtomStart;
+      if (AtomStart^=ExternalMacroStart) and AllowExternalMacro then begin
+        inc(AtomStart);
+        p:=AtomStart;
+      end;
+      if not IsIdentStartChar[AtomStart^] then begin
+        StrExpectedAtPos(AtomStart,'macro name');
         exit;
       end;
+      while IsIdentifierChar[p^] do inc(p);
+      if IndexOfName(NameStart,p-NameStart,false)>=0 then begin
+        SetOperandValueConst(Operand,'1');
+      end else begin
+        SetOperandValueConst(Operand,'0');
+      end;
+      ReadNextAtom;
       if AtomStart^<>')' then begin
         StrExpectedAtPos(AtomStart,')');
         exit;
       end;
+    end else begin
+      StrExpectedAtPos(AtomStart,'macro name');
+      exit;
     end;
     Result:=true;
   end;
@@ -1913,12 +1927,13 @@ begin
   end;
 end;
 
-function TExpressionEvaluator.EvalBoolean(Expression: PChar; ExprLen: PtrInt
-  ): boolean;
+function TExpressionEvaluator.EvalBoolean(Expression: PChar; ExprLen: PtrInt;
+  AllowExternalMacro: boolean): boolean;
 var
   Operand: TEvalOperand;
 begin
-  Result:=EvalPChar(Expression,ExprLen,Operand) and EvalOperandIsTrue(Operand);
+  Result:=EvalPChar(Expression,ExprLen,Operand,AllowExternalMacro)
+       and EvalOperandIsTrue(Operand);
   FreeEvalOperand(Operand);
 end;
 
@@ -1988,7 +2003,7 @@ begin
   if WithNamesAndValues then begin
     for i:=0 to FCount-1 do begin
       if Original<>nil then begin
-        j:=Original.IndexOfName(FNames[i],false);
+        j:=Original.IndexOfName(PChar(FNames[i]),length(FNames[i]),false);
         if j>=0 then begin
           if Pointer(FNames[i])=Pointer(Original.FNames[j]) then continue;
         end;
