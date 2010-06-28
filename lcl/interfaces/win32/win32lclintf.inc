@@ -331,10 +331,30 @@ const
   end;
 
 begin
-  if AOperation in [disMove, disHide] then
-    DefaultDockImage(AOldRect);
-  if AOperation in [disMove, disShow] then
-    DefaultDockImage(ANewRect);
+  if WindowsVersion >= wvVista then
+  begin
+    case AOperation of
+      disShow:
+      begin
+        FDockWndHandle := CreateWindowEx(WS_EX_LAYERED or WS_EX_TRANSPARENT or WS_EX_TOPMOST or WS_EX_TOOLWINDOW,
+          ClsName, 'LazDockWnd', WS_POPUP or WS_VISIBLE,
+          ANewRect.Left, ANewRect.Top, ANewRect.Right - ANewRect.Left, ANewRect.Bottom - ANewRect.Top, 0, 0, HINSTANCE, nil);
+
+        SetLayeredWindowAttributes(FDockWndHandle, 0, $30, LWA_ALPHA);
+      end;
+      disHide: DestroyWindow(FDockWndHandle);
+      disMove:
+        with ANewRect do
+          SetWindowPos(FDockWndHandle, 0, Left, Top, Right - Left, Bottom - Top, SWP_NOZORDER or SWP_NOACTIVATE);
+    end;
+  end
+  else
+  begin
+    if AOperation in [disMove, disHide] then
+      DefaultDockImage(AOldRect);
+    if AOperation in [disMove, disShow] then
+      DefaultDockImage(ANewRect);
+  end;
 end;
 
 procedure TWin32WidgetSet.DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer);

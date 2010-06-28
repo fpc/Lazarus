@@ -79,7 +79,9 @@ var
   GetMenuBarInfo: function(hwnd: HWND; idObject: LONG; idItem: LONG; pmbi: PMENUBARINFO): BOOL; stdcall;
   GetWindowInfo: function(hwnd: HWND; pwi: PWINDOWINFO): BOOL; stdcall;
   SetLayout: function(dc: HDC; l: DWord): DWord; stdcall;
-  SetLayeredWindowAttributes: function (HWND:hwnd;crKey :COLORREF;bAlpha : byte;dwFlags : DWORD):WINBOOL; stdcall;
+  SetLayeredWindowAttributes: function (HWND: hwnd; crKey: COLORREF; bAlpha: byte; dwFlags: DWORD): BOOL; stdcall;
+  UpdateLayeredWindow: function(hWnd: HWND; hdcDst: HDC; pptDst: PPoint; psize: PSize;
+      hdcSrc: HDC; pptSrc: PPoint; crKey: COLORREF; pblend: PBlendFunction; dwFlags: DWORD): BOOL; stdcall;
 
 const
   // ComCtlVersions
@@ -546,7 +548,13 @@ begin
   Result := GDI_ERROR;
 end;
 
-function _SetLayeredWindowAttributes(HWND:hwnd;crKey :COLORREF;bAlpha : byte;dwFlags : DWORD):WINBOOL; stdcall;
+function _SetLayeredWindowAttributes(HWND: hwnd; crKey: COLORREF; bAlpha: byte; dwFlags: DWORD): BOOL; stdcall;
+begin
+  Result := False;
+end;
+
+function _UpdateLayeredWindow(hWnd: HWND; hdcDst: HDC; pptDst: PPoint; psize: PSize;
+      hdcSrc: HDC; pptSrc: PPoint; crKey: COLORREF; pblend: PBlendFunction; dwFlags: DWORD): BOOL; stdcall;
 begin
   Result := False;
 end;
@@ -602,6 +610,7 @@ begin
   Pointer(GetMenuBarInfo) := @_GetMenuBarInfo;
   Pointer(GetWindowInfo) := @_GetWindowInfo;
   Pointer(SetLayeredWindowAttributes) := @_SetLayeredWindowAttributes;
+  Pointer(UpdateLayeredWindow) := @_UpdateLayeredWindow;
 
   user32handle := LoadLibrary(user32lib);
   if user32handle <> 0 then
@@ -621,6 +630,10 @@ begin
     p := GetProcAddress(user32handle, 'SetLayeredWindowAttributes');
     if p <> nil
     then Pointer(SetLayeredWindowAttributes) := p;
+
+    p := GetProcAddress(user32handle, 'UpdateLayeredWindow');
+    if p <> nil
+    then Pointer(UpdateLayeredWindow) := p;
   end;
 
   // Defaults

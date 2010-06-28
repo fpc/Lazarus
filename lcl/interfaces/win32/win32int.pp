@@ -122,7 +122,8 @@ type
     // The parent of all windows, represents the button of the taskbar
     // This window is also the owner of the clipboard.
     // Assoc. windowproc also acts as handler for popup menus
-    FAppHandle: HWND;
+    FAppHandle,
+    FDockWndHandle: HWND;
     FCommonControlsVersion: DWord;
 
     FMetrics: TNonClientMetrics;
