@@ -4239,7 +4239,7 @@ msgstr "Zkontrolovat změny na disku s načtením"
 
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "check if the next token in source is an end and if not returns lineend + end; + lineend"
-msgstr "zkontrolovat zda další element ve zdrojovém kódu je \"end. Pokud ne, zapiš konec řádku + \"end;\" + konec řádku"
+msgstr "zkontrolovat zda další element ve zdrojovém kódu je \"end\". Pokud ne, zapiš konec řádku + \"end;\" + konec řádku"
 
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
@@ -5344,15 +5344,15 @@ msgstr "Automatické odstranění neznámých vlastností"
 
 #: lazarusidestrconsts.lisconvautoremoveprophint
 msgid "If unchecked, there will be interactive dialogs for editing / accepting changes"
-msgstr ""
+msgstr "Pokud není zaškrtnuto, zobrazí se dialog pro změnu / přijmutí změn"
 
 #: lazarusidestrconsts.lisconvautoreplaceunithint
 msgid "If unchecked, there will be interactive dialogs for editing / accepting changes."
-msgstr ""
+msgstr "Pokud není zaškrtnuto, zobrazí se dialog pro změnu / přijmutí změn."
 
 #: lazarusidestrconsts.lisconvautoreplaceunits
 msgid "Automatic replacement of unit names"
-msgstr ""
+msgstr "Automatická náhrada jména jednotky"
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -5394,15 +5394,15 @@ msgstr "Oba Lazarus/LCL i Delphi"
 
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
-msgstr ""
+msgstr "Převaděč přidá podmíněný překlad k podpoře různých cílů"
 
 #: lazarusidestrconsts.lisconvmethodreplacements
 msgid "Method Replacements"
-msgstr ""
+msgstr "Nahrazování metod"
 
 #: lazarusidestrconsts.lisconvmethodreplhint
 msgid "Some Delphi functions can be replaced with LCL function"
-msgstr ""
+msgstr "Některé funkce Delphi mohou být nahrazeny funkcemi LCL"
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
@@ -5410,7 +5410,7 @@ msgstr "Nahrazení typu"
 
 #: lazarusidestrconsts.lisconvtypereplhint
 msgid "Unknown types in form file (DFM/LFM)"
-msgstr ""
+msgstr "Neznámé typy v souboru formuláře (DFM/LFM)"
 
 #: lazarusidestrconsts.lisconvtypestoreplace
 msgid "Types to replace"
@@ -5422,7 +5422,7 @@ msgstr "Nahrazení jednotky"
 
 #: lazarusidestrconsts.lisconvunitreplhint
 msgid "Unit names in uses section of a source unit"
-msgstr ""
+msgstr "Jména jednotek v sekci \"uses\" zdrojové jednotky"
 
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
@@ -5435,11 +5435,11 @@ msgstr "Jednotky, Typy a Vlastnosti"
 
 #: lazarusidestrconsts.lisconvusesamedfm
 msgid "Lazarus uses the same DFM form file as Delphi"
-msgstr ""
+msgstr "Lazarus používá stejný soubor formuláře DFM jako Delphi"
 
 #: lazarusidestrconsts.lisconvusesamedfmhint
 msgid "Separate form files allow different properties"
-msgstr ""
+msgstr "Oddělené soubory formulářů umožňují použít různé vlastnosti"
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -5583,7 +5583,7 @@ msgstr "Vytvořit projekt"
 
 #: lazarusidestrconsts.liscreateupdatepofilewhensavingalfmfile
 msgid "Create/update .po file when saving a lfm file"
-msgstr ""
+msgstr "Vytvořit/aktualizovat soubor .po při uložení souboru lfm"
 
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
@@ -6050,7 +6050,7 @@ msgstr "Zakáza skupinu"
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
-msgstr ""
+msgstr "Zakázat I18N pro LFM"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -6491,7 +6491,7 @@ msgstr "Chyba načítání souboru"
 
 #: lazarusidestrconsts.liserrorloadingfile2
 msgid "Error loading file \"%s\":%s%s"
-msgstr ""
+msgstr "Chyba načítání souboru \"%s\":%s%s"
 
 #: lazarusidestrconsts.liserrorloadingfrom
 msgid "Error loading %s from%s%s%s%s"
@@ -6695,7 +6695,7 @@ msgstr "Nelze spustit nástroj %s%s%s:%s%s"
 
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
-msgstr ""
+msgstr "Načtení stavu složení selhalo"
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
@@ -6703,7 +6703,7 @@ msgstr "Redukovat vykreslování návrháře"
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
-msgstr ""
+msgstr "Vykreslovat prvky návrháře pouze při nečinnosti (snižuje zatížení u pomalých počítačů)"
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -6797,7 +6797,7 @@ msgstr "(filtr)"
 
 #: lazarusidestrconsts.lisfilter3
 msgid "Filter: %s"
-msgstr ""
+msgstr "Filtr: %s"
 
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
@@ -6947,7 +6947,7 @@ msgstr "Nenalezen Free Pascal Compiler"
 
 #: lazarusidestrconsts.lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "Free Pascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program source is automatically maintained by Lazarus."
-msgstr ""
+msgstr "Program FreePascal používající TCustomApplication pro snažší zjišťování voleb příkazového řádku, obsluhu výjimek, atd. Zdrojový program je automaticky spravovaný Lazarusem."
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 msgid "Freepascal source directory"
@@ -7040,7 +7040,7 @@ msgstr "Přejít na vybraný zdrojový řádek"
 
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
+msgstr "<description>%sCopyright (C) <rok> <jméno autora> <kontakt>%sTento zdrojový kód je svobodný program; můžete ho rozšiřovat a/nebo upravovat podle podmínek GNU Všeobecné veřejné licence, tak jak je zveřejněná Nadací Free Software; verze 2 licence nebo (podle svého rozhodnutí) jakékoliv pozdější verze. %sTento zdrojový kód je šířen v naději, že bude užitečný, ale BEZ JAKÉKOLIV ZÁRUKY; dokonce i bez zahrnuté záruky PRODEJNOSTI nebo VHODNOSTI NA PŘÍSLUŠNÝ ÚČEL. Další detaily získáte v GNU Všeobecné veřejné licenci. %sKopie GNU Všeobecné Veřejné Licence je dostupná přes World Wide Web na <http://www.gnu.org/copyleft/gpl.html>. Můžete ji získaj také napsáním do Nadace Free Software, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
@@ -7076,7 +7076,7 @@ msgstr "Nápověda pro zprávy překladače FreePascalu"
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
-msgstr ""
+msgstr "Tip: Zkontrolujte, zda dva balíčky neobsahují jednotku se stejným jménem."
 
 #: lazarusidestrconsts.lishintdoubleclickonthecommandyouwanttoedit
 msgid "Hint: double click on the command you want to edit"
@@ -7112,7 +7112,7 @@ msgstr "Vejít do"
 
 #: lazarusidestrconsts.lishintstepout
 msgid "Run until function returns"
-msgstr ""
+msgstr "Spustit do návratu z funkce"
 
 #: lazarusidestrconsts.lishintstepover
 msgid "Step Over"
@@ -7125,11 +7125,11 @@ msgstr "Zastavit"
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
-msgstr ""
+msgstr "Tip: Funkce \"Vytvořit Řetězec Zdrojů\" očekává řetězcovou konstantu.%sProsím vyberte výraz a zkuste znova."
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon2
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
-msgstr ""
+msgstr "Tip: Funkce \"Vytvořit Řetězec Zdrojů\" očekává řetězcovou konstantu.%sProsím vyberte jen řetězcový výraz a zkuste znova."
 
 #: lazarusidestrconsts.lishinttoggleformunit
 msgid "Toggle Form/Unit"
@@ -7229,7 +7229,7 @@ msgstr "Exportovaný soubor existuje"
 
 #: lazarusidestrconsts.lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
-msgstr ""
+msgstr "Exportovaný soubor %s%s%s existuje.%sOtevřít soubor a nahradit jen volby překladače?%s(Ostatní nastavení zůstanou zachována.)"
 
 #: lazarusidestrconsts.lisiecoloadfromfile
 msgid "Load from file"
@@ -7286,7 +7286,7 @@ msgstr "Ignorovat, použít TForm jako předka"
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
-msgstr ""
+msgstr "Přizpůsobit odsazení aktuální jednotce, projektu nebo balíčku"
 
 #: lazarusidestrconsts.lisimplementationcommentforclass
 msgid "Implementation comment for class"
@@ -7318,7 +7318,7 @@ msgstr "Odsazení"
 
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for pascal sources"
-msgstr ""
+msgstr "Odsazení pro zdrojové texty pascalu"
 
 #: lazarusidestrconsts.lisindex
 msgid "Index"
@@ -7384,7 +7384,7 @@ msgstr "Informace o %s"
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
-msgstr ""
+msgstr "Před související"
 
 #: lazarusidestrconsts.lisinheritedcomponent
 msgid "Inherited Component"
@@ -7396,7 +7396,7 @@ msgstr "Zděděná položka"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
-msgstr ""
+msgstr "Před vytvořením čisté kopie projektu/balíčku budou smazané všechny soubory v následujícím adresáři a veškerý jejich obsah bude ztracen.%s%sSmazat všechny soubory v %s%s%s?"
 
 #: lazarusidestrconsts.lisinsertdate
 msgid "insert date"
@@ -7486,7 +7486,7 @@ msgstr "Instalované balíčky"
 
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
-msgstr ""
+msgstr "Nainstalovat jej, mám to rád tučné"
 
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
@@ -7494,7 +7494,7 @@ msgstr "Instalovat výběr"
 
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
-msgstr ""
+msgstr "Neplatná sestavovací proměnná %s%s%s. Sestavovací proměnná musí být pletným identifikátorem Pascalu."
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -7530,7 +7530,7 @@ msgstr "Neplatnýá filtr"
 
 #: lazarusidestrconsts.lisinvalidfreepascalsourcedirectory
 msgid "Invalid Free Pascal source directory"
-msgstr ""
+msgstr "Neplatný adresář zdrojových kódů FreePascalu"
 
 #: lazarusidestrconsts.lisinvalidmultiselection
 msgid "Invalid multiselection"
@@ -7570,7 +7570,7 @@ msgstr "Neplatný výběr"
 
 #: lazarusidestrconsts.lisisagroupasettingcanonlybeaddedtonormalbuildmodes
 msgid "%s is a group. A setting can only be added to normal build modes."
-msgstr ""
+msgstr "%s je skupinou. Nastavení může být přidáno pouze k normálním sestavovacím módům."
 
 #: lazarusidestrconsts.lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
@@ -8404,7 +8404,7 @@ msgstr "Vlevo"
 
 #: lazarusidestrconsts.lisleftborderspacespinedithint
 msgid "Left borderspace. This value is added to base borderspace and used for the space left to the control."
-msgstr ""
+msgstr "Levý okraj. Tato hodnota je přidaná k základnímu okraji a použitá pro mezeru vlevo od prvku."
 
 #: lazarusidestrconsts.lisleftgroupboxcaption
 msgid "Left anchoring"
@@ -8412,7 +8412,7 @@ msgstr "Levé ukotvení"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
-msgstr ""
+msgstr "Toto je sourozenec prvku, k jehož levé straně je ukotvený. Ponechte prázdné pro rodiče."
 
 #: lazarusidestrconsts.lisleftsides
 msgid "Left sides"
@@ -8420,7 +8420,7 @@ msgstr "Levé strany"
 
 #: lazarusidestrconsts.lisleftspaceequally
 msgid "Left space equally"
-msgstr ""
+msgstr "Shodná levá vzdálenost"
 
 #: lazarusidestrconsts.lislevels
 msgid "Levels"
@@ -8440,11 +8440,11 @@ msgstr "LFM je dobrý"
 
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
+msgstr "<popis>%sCopyright (C) <rok> <jméno autora> <kontakt>%sTato knihovna je svobodný program; můžete ji distribuovat a/nebo upravovat za podmínek GNU Library General Public License, tak jak ji zveřejnila Free Software Foundation; buď verze 2 Licence nebo (podle Vaší volby) jakékoliv novější verze. %sTento program je distribuován v naději, že bude užitečný, ale BEZ JAKÉKOIV ZÁRUKY; dokonca i bez záruky MERCHANTABILITY alebo FITNESS FOR A PARTICULAR PURPOSE. Další podrobnosti najdete v GNU Library General Public License. %sKopi GNU Library General Public License jste měli získat spolu s touto knihovnou, pokud ne, napište Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lislibraryafreepascallibrarydllunderwindowssounderlin
 msgid "Library%sA Free Pascal library (.dll under Windows, .so under Linux, .dylib under MacOS X). The library source is automatically maintained by Lazarus."
-msgstr ""
+msgstr "Knihovna%sKnihovna Free Pascal (.dll ve Windows, .so v Linuxu, .dylib v MacOS X). Soubor zdrojového kódu knihovny je automaticky spravovaný Lazarusem."
 
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
@@ -8472,7 +8472,7 @@ msgstr "Cíl odkazu"
 
 #: lazarusidestrconsts.lislistofallcasevalues
 msgid "list of all case values"
-msgstr ""
+msgstr "seznam všech případných hodnot"
 
 #: lazarusidestrconsts.lisloadingfailed
 msgid "Loading %s failed."
@@ -8502,11 +8502,11 @@ msgstr "Logo"
 
 #: lazarusidestrconsts.lislowercasestring
 msgid "lowercase string"
-msgstr ""
+msgstr "řetězec malými písmeny"
 
 #: lazarusidestrconsts.lislowercasestringgivenasparameter
 msgid "Lowercase string given as parameter"
-msgstr ""
+msgstr "Řetězec malými písmeny daný jako parametr"
 
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "lrs include files"
@@ -8526,19 +8526,19 @@ msgstr "Zadejte spouštěcí parametry"
 
 #: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
 msgid "Main Unit has Application.CreateForm statements"
-msgstr ""
+msgstr "Hlavní jednotka obsahuje Application.CreateForm"
 
 #: lazarusidestrconsts.lismainunithasapplicationtitlestatements
 msgid "Main Unit has Application.Title statements"
-msgstr ""
+msgstr "Hlavní jednotka obsahuje Application.Title"
 
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
 msgid "Main Unit has Uses Section containing all Units of project"
-msgstr ""
+msgstr "Hlavní jednotka má v sekci Uses všechny jednotky projektu"
 
 #: lazarusidestrconsts.lismainunitispascalsource
 msgid "Main Unit is Pascal Source"
-msgstr ""
+msgstr "Hlavní jednotka ja Zdrojový kód Pascalu"
 
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
