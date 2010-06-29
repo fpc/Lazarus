@@ -435,6 +435,7 @@ begin
 
   CEJumpToIDEMenuCommand.OnClick:=@JumpToMenuitemCLICK;
   CERefreshIDEMenuCommand.OnClick:=@RefreshMenuitemCLICK;
+  CERenameIDEMenuCommand.OnClick:=@RenameMenuItemClick;
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewDestroy(Sender: TObject);
@@ -1893,16 +1894,13 @@ var
 begin
   Result:=false;
   CurTreeView:=GetCurrentTreeView;
-  DebugLn(['TCodeExplorerView.JumpToSelection AAA1']);
   if CurTreeView=nil then exit;
-  DebugLn(['TCodeExplorerView.JumpToSelection AAA2']);
   if tvoAllowMultiselect in CurTreeView.Options then
     CurItem:=CurTreeView.GetFirstMultiSelected
   else
     CurItem:=CurTreeView.Selected;
   if CurItem=nil then exit;
   CurNode:=TViewNodeData(CurItem.Data);
-  DebugLn(['TCodeExplorerView.JumpToSelection AAA3 ',CurNode.StartPos]);
   if CurNode.StartPos<1 then exit;
   CodeBuffer:=nil;
   case CurrentPage of
@@ -1929,16 +1927,14 @@ begin
   else
     exit;
   end;
-  DebugLn(['TCodeExplorerView.JumpToSelection AAA1']);
   if Assigned(OnJumpToCode) then
     OnJumpToCode(Self,Caret.Code.Filename,Point(Caret.X,Caret.Y),NewTopLine);
   SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
-  DebugLn(['TCodeExplorerView.JumpToSelection AAA2 ',SrcEdit.FileName,' ',dbgs(SrcEdit.CursorTextXY),' X=',Caret.X,' Y=',Caret.Y]);
+  //DebugLn(['TCodeExplorerView.JumpToSelection  ',SrcEdit.FileName,' ',dbgs(SrcEdit.CursorTextXY),' X=',Caret.X,' Y=',Caret.Y]);
   // check if jump was successful
   if (SrcEdit.CodeToolsBuffer<>CodeBuffer)
   or (SrcEdit.CursorTextXY.X<>Caret.X) or (SrcEdit.CursorTextXY.Y<>Caret.Y) then
     exit;
-  DebugLn(['TCodeExplorerView.JumpToSelection AAA3']);
   Result:=true;
 end;
 
@@ -2165,7 +2161,7 @@ begin
     if (Data1.Desc=ctnConstant) and (Data2.Desc=ctnConstant)
     and (fSortCodeTool<>nil) then begin
       //if GetAtomLength(@fSortCodeTool.Src[Data1.StartPos])>50 then
-      //  DebugLn(['TCodeExplorerView.CompareCodeNodes AAA1 ',GetAtomString(@fSortCodeTool.Src[Data1.StartPos],fSortCodeTool.Scanner.NestedComments),' ',round(Now*8640000) mod 10000]);
+      //  DebugLn(['TCodeExplorerView.CompareCodeNodes ',GetAtomString(@fSortCodeTool.Src[Data1.StartPos],fSortCodeTool.Scanner.NestedComments),' ',round(Now*8640000) mod 10000]);
       //Result:=-CompareAtom(@fSortCodeTool.Src[Data1.StartPos],
       //                     @fSortCodeTool.Src[Data2.StartPos]);
       //if Result<>0 then exit;
