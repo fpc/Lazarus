@@ -35,15 +35,16 @@ interface
 
 uses
   Math, Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs,
-  LazConfigStorage, XMLCfg, XMLPropStorage,
+  LazConfigStorage, XMLCfg, XMLPropStorage, StdCtrls,
   BaseIDEIntf, ProjectIntf, MacroIntf, IDEDialogs, MenuIntf, LazIDEIntf,
-  IDEWindowIntf,
+  IDEWindowIntf, IDEOptionsIntf,
   AnchorDockStr, AnchorDocking, AnchorDockOptionsDlg;
 
 const
   DefaultConfigFileName = 'anchordocklayout.xml';
 var
   mnuAnchorDockSection: TIDEMenuSection;
+    mnuADSaveLayoutAsDefault: TIDEMenuCommand;
     mnuADSaveLayoutToFile: TIDEMenuCommand;
     mnuADLoadLayoutFromFile: TIDEMenuCommand;
 
@@ -53,11 +54,16 @@ type
 
   TIDEAnchorDockMaster = class(TIDEDockMaster)
   private
+    FChangeStamp: int64;
+    FEnabled: boolean;
+    FModified: boolean;
     FUserLayoutLoaded: boolean;
     procedure DockMasterCreateControl(Sender: TObject; aName: string;
       var AControl: TControl; DoDisableAutoSizing: boolean);
     procedure GetDefaultBounds(AForm: TCustomForm; out Creator: TIDEWindowCreator;
       out NewBounds: TRect; out DockSiblingName: string; out DockAlign: TAlign);
+    procedure SetEnabled(const AValue: boolean);
+    procedure SetModified(const AValue: boolean);
     procedure SetUserLayoutLoaded(const AValue: boolean);
   public
     constructor Create;
@@ -77,7 +83,28 @@ type
     function OnProjectClose(Sender: TObject; AProject: TLazProject): TModalResult;
     procedure LoadLayoutFromFileClicked(Sender: TObject);
     procedure SaveLayoutToFileClicked(Sender: TObject);
+    procedure SaveLayoutAsDefaultClicked(Sender: TObject);
     property UserLayoutLoaded: boolean read FUserLayoutLoaded write SetUserLayoutLoaded;
+    property Enabled: boolean read FEnabled write SetEnabled;
+    procedure IncreaseChangeStamp;
+    property ChangeStamp: int64 read FChangeStamp;
+    property Modified: boolean read FModified write SetModified;
+  end;
+
+  { TAnchorDockIDEFrame }
+
+  TAnchorDockIDEFrame = class(TAbstractIDEOptionsEditor)
+    EnableCheckBox: TCheckBox;
+    NoteLabel: TLabel;
+  public
+    OptionsFrame: TAnchorDockOptionsFrame;
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 var
@@ -96,12 +123,19 @@ begin
 
   // add menu section
   mnuAnchorDockSection:=RegisterIDEMenuSection(mnuEnvironment,'AnchorDocking');
+  mnuADSaveLayoutAsDefault:=RegisterIDEMenuCommand(mnuAnchorDockSection,
+    'ADSaveLayoutAsDefault', adrsSaveWindowLayoutAsDefault,
+    @IDEAnchorDockMaster.SaveLayoutAsDefaultClicked);
   mnuADSaveLayoutToFile:=RegisterIDEMenuCommand(mnuAnchorDockSection,
     'ADSaveLayoutToFile', adrsSaveWindowLayoutToFile,
     @IDEAnchorDockMaster.SaveLayoutToFileClicked);
   mnuADLoadLayoutFromFile:=RegisterIDEMenuCommand(mnuAnchorDockSection,
     'ADLoadLayoutFromFile', adrsLoadWindowLayoutFromFile,
     @IDEAnchorDockMaster.LoadLayoutFromFileClicked);
+
+  // add options frame
+  {$R *.lfm}
+
 end;
 
 { TIDEAnchorDockMaster }
@@ -144,6 +178,19 @@ begin
   NewBounds.Bottom:=Max(NewBounds.Top+100,NewBounds.Bottom);
 end;
 
+procedure TIDEAnchorDockMaster.SetEnabled(const AValue: boolean);
+begin
+  if FEnabled=AValue then exit;
+  FEnabled:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TIDEAnchorDockMaster.SetModified(const AValue: boolean);
+begin
+  if FModified=AValue then exit;
+  FModified:=AValue;
+end;
+
 procedure TIDEAnchorDockMaster.SetUserLayoutLoaded(const AValue: boolean);
 begin
   if FUserLayoutLoaded=AValue then exit;
@@ -160,6 +207,8 @@ end;
 destructor TIDEAnchorDockMaster.Destroy;
 begin
   IDEAnchorDockMaster:=nil;
+  if IDEDockMaster=Self then
+    IDEDockMaster:=Self;
   inherited Destroy;
 end;
 
@@ -383,7 +432,8 @@ function TIDEAnchorDockMaster.OnProjectClose(Sender: TObject;
 begin
   Result:=mrOk;
   if AProject=nil then exit;
-  SaveUserLayout;
+  // do not auto save user layout, the restore is not yet stable
+  //SaveUserLayout;
 end;
 
 procedure TIDEAnchorDockMaster.OnIDERestoreWindows(Sender: TObject);
@@ -451,16 +501,93 @@ begin
   end;
 end;
 
+procedure TIDEAnchorDockMaster.SaveLayoutAsDefaultClicked(Sender: TObject);
+begin
+  SaveUserLayout;
+end;
+
+procedure TIDEAnchorDockMaster.IncreaseChangeStamp;
+begin
+  if FChangeStamp<High(FChangeStamp) then
+    inc(FChangeStamp)
+  else
+    FChangeStamp:=low(FChangeStamp);
+end;
+
+{ TAnchorDockIDEFrame }
+
+constructor TAnchorDockIDEFrame.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+
+  OptionsFrame:=TAnchorDockOptionsFrame.Create(Self);
+  with OptionsFrame do begin
+    Name:='OptionsFrame';
+    Align:=alBottom;
+    AnchorToNeighbour(akTop,6,EnableCheckBox);
+  end;
+end;
+
+destructor TAnchorDockIDEFrame.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TAnchorDockIDEFrame.GetTitle: String;
+begin
+  Result:='Docking / Anchordocking';
+end;
+
+procedure TAnchorDockIDEFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  if ADialog=nil then ;
+  if IDEDockMaster=IDEAnchorDockMaster then begin
+    NoteLabel.Visible:=false;
+    EnableCheckBox.Enabled:=false;
+    OptionsFrame.Visible:=false;
+  end else begin
+    NoteLabel.Visible:=true;
+    NoteLabel.Caption:=Format(adrsToUseAnchordockingYouMustFirstUninstall, [
+      DbgSName(IDEDockMaster)]);
+    NoteLabel.Hint:=Format(
+      adrsThereIsAnotherDockMasterInstalledOnlyOneDockingPac, [DbgSName(
+      IDEDockMaster)]);
+    OptionsFrame.Visible:=true;
+  end;
+  EnableCheckBox.Caption:=adrsDockingEnabledRequiresARestartOfTheIDE;
+end;
+
+procedure TAnchorDockIDEFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+begin
+  if not (AOptions is SupportedOptionsClass) then exit;
+  EnableCheckBox.Checked:=IDEAnchorDockMaster.Enabled;
+  OptionsFrame.Master:=DockMaster;
+end;
+
+procedure TAnchorDockIDEFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+begin
+  if not (AOptions is SupportedOptionsClass) then exit;
+  IDEAnchorDockMaster.Enabled:=EnableCheckBox.Checked;
+  OptionsFrame.SaveToMaster;
+end;
+
+class function TAnchorDockIDEFrame.
+  SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result:=IDEEditorGroups.GetByIndex(GroupEnvironment)^.GroupClass;
+end;
+
 initialization
   // create the dockmaster in the initialization section, so that it is ready
   // when the Register procedures of the packages are called.
-  if IDEDockMaster<>nil then
-    debugln('WARNING: there is already another IDEDOckMaster installed.')
-  else
+  if IDEDockMaster<>nil then begin
+    debugln('WARNING: there is already another IDEDockMaster installed.');
+    TIDEAnchorDockMaster.Create;
+  end else
     IDEDockMaster:=TIDEAnchorDockMaster.Create;
 
 finalization
-  FreeAndNil(IDEDockMaster);
+  FreeAndNil(IDEAnchorDockMaster);
 
 end.
 

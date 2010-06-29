@@ -53,6 +53,10 @@ msgstr ""
 msgid "Custom dock site %s%s%s can have only one site."
 msgstr ""
 
+#: anchordockstr.adrsdockingenabledrequiresarestartoftheide
+msgid "Docking enabled (Requires a restart of the IDE)"
+msgstr ""
+
 #: anchordockstr.adrsdockingoptions
 msgid "Docking options"
 msgstr ""
@@ -189,6 +193,10 @@ msgstr ""
 msgid "right"
 msgstr ""
 
+#: anchordockstr.adrssavewindowlayoutasdefault
+msgid "Save window layout as default"
+msgstr ""
+
 #: anchordockstr.adrssavewindowlayouttofile
 msgid "Save window layout to file ..."
 msgstr ""
@@ -225,8 +233,16 @@ msgstr ""
 msgid "Tab position"
 msgstr ""
 
+#: anchordockstr.adrsthereisanotherdockmasterinstalledonlyonedockingpac
+msgid "There is another dock master installed. Only one docking package can be installed at a time. Please uninstall the other dock master %s and restart the IDE"
+msgstr ""
+
 #: anchordockstr.adrstop
 msgid "top"
+msgstr ""
+
+#: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
+msgid "To use anchordocking you must first uninstall %s"
 msgstr ""
 
 #: anchordockstr.adrsundock

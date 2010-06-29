@@ -99,7 +99,15 @@ resourcestring
     +'shown in the normal window title';
   adrsErrorWritingWindowLayoutToFile = 'Error writing window layout to file "%'
     +'s"%s%s';
+  adrsDockingEnabledRequiresARestartOfTheIDE = 'Docking enabled (Requires a '
+    +'restart of the IDE)';
+  adrsToUseAnchordockingYouMustFirstUninstall = 'To use anchordocking you '
+    +'must first uninstall %s';
+  adrsThereIsAnotherDockMasterInstalledOnlyOneDockingPac = 'There is another '
+    +'dock master installed. Only one docking package can be installed at a '
+    +'time. Please uninstall the other dock master %s and restart the IDE';
   adrsLoadWindowLayoutFromFileXml = 'Load window layout from file (*.xml)';
+  adrsSaveWindowLayoutAsDefault = 'Save window layout as default';
   adrsSaveWindowLayoutToFile = 'Save window layout to file ...';
   adrsLoadWindowLayoutFromFile = 'Load window layout from file ...';
   adrsErrorLoadingWindowLayoutFromFile = 'Error loading window layout from '

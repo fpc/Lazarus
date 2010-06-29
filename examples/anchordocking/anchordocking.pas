@@ -68,12 +68,13 @@
     - on close button: save a restore layout
 
   ToDo:
+    - use workarearect instead of screen
     - keep custom dock site content visible
+    - restore:
     - undock on hide
-    - option: hide caption
     - popup menu
        - shrink side left, top, right, bottom
-    - simple way to make forms dockable at designtime
+    - simple way to make forms dockable at designtime without any code
     - minimize button and Hide => show in header
     - on show again: restore layout
     - close button for pages
