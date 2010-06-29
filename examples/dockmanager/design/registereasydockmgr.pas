@@ -32,6 +32,8 @@ unit RegisterEasyDockMgr;
 
 {$mode objfpc}{$H+}
 
+{.$DEFINE DockMaster}  //must match IDE setting
+
 interface
 
 uses
@@ -42,9 +44,14 @@ uses
 const
   DefaultConfigFileName = 'easydocklayout.lyt';
 type
+  TDockSides = set of TAlign;
 
   { TIDEEasyDockMaster }
 
+{$IFDEF DockMaster}
+{$ELSE}
+  TIDEDockMaster = TIDELayout;
+{$ENDIF}
   TIDEEasyDockMaster = class(TIDEDockMaster)
   private
     function DockMasterRestore(const CtrlName: string; ASite: TWinControl
@@ -53,9 +60,15 @@ type
     procedure GetDefaultBounds(AForm: TCustomForm; out Creator: TIDEWindowCreator;
       out NewBounds: TRect; out DockSiblingName: string; out DockAlign: TAlign);
   public
+  {$IFDEF DockMaster}
     constructor Create;
+  {$ELSE}
+    constructor Create; override;
+    function AddableInWindowMenu(AForm: TCustomForm): boolean; override;
+    procedure RestoreIDEWindows; override;
+  {$ENDIF}
     destructor Destroy; override;
-    procedure MakeIDEWindowDockSite(AForm: TCustomForm); override;
+    procedure MakeIDEWindowDockSite(AForm: TCustomForm; ASides: TDockSides = [alBottom]); override;
     procedure MakeIDEWindowDockable(AControl: TWinControl); override;
     function IsDockSite(AForm: TCustomForm): boolean;
     function IsDockable(AForm: TCustomForm): boolean;
@@ -77,8 +90,13 @@ implementation
 
 procedure Register;
 begin
+//required?
+{$IFDEF DockMaster}
   LazarusIDE.AddHandlerOnIDERestoreWindows(@IDEEasyDockMaster.OnIDERestoreWindows);
   LazarusIDE.AddHandlerOnIDEClose(@IDEEasyDockMaster.OnIDEClose);
+{$ELSE}
+  //should not be required
+{$ENDIF}
 end;
 
 { TIDEEasyDockMaster }
@@ -125,13 +143,27 @@ begin
   DockMaster.OnSave:=@DockMasterSave;
 end;
 
+{$IFDEF DockMaster}
+{$ELSE}
+function TIDEEasyDockMaster.AddableInWindowMenu(AForm: TCustomForm): boolean;
+begin
+  Result:=inherited AddableInWindowMenu(AForm);
+end;
+
+procedure TIDEEasyDockMaster.RestoreIDEWindows;
+begin
+  inherited RestoreIDEWindows; //required?
+  LoadDefaultLayout;
+end;
+{$ENDIF}
+
 destructor TIDEEasyDockMaster.Destroy;
 begin
   IDEEasyDockMaster:=nil;
   inherited Destroy;
 end;
 
-procedure TIDEEasyDockMaster.MakeIDEWindowDockSite(AForm: TCustomForm);
+procedure TIDEEasyDockMaster.MakeIDEWindowDockSite(AForm: TCustomForm; ASides: TDockSides);
 var
   Creator: TIDEWindowCreator;
   NewBounds: TRect;
@@ -142,7 +174,7 @@ begin
   GetDefaultBounds(AForm,Creator,NewBounds,DockSiblingName,DockAlign);
   if Creator<>nil then
     AForm.BoundsRect:=NewBounds;
-  DockMaster.AddElasticSites(AForm, [alBottom]);
+  DockMaster.AddElasticSites(AForm, ASides);
   debugln(['TIDEEasyDockMaster.MakeIDEWindowDockSite AFTER ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect)]);
 end;
 
@@ -257,10 +289,14 @@ begin
     AControl:=AForm;
     while AControl<>nil do begin
       // ToDo: if this is a page switch pageindex of parent
+    {$IFDEF old}
       if AControl is TCustomForm then
         TCustomForm(AControl).Show
       else
         AControl.Visible:=true;
+    {$ELSE}
+      AControl.Visible := True;
+    {$ENDIF}
       AControl:=AControl.Parent;
     end;
     AForm.EnableAlign;
@@ -276,6 +312,7 @@ end;
 
 procedure TIDEEasyDockMaster.CloseAll;
 begin
+  SaveDefaultLayout;
   inherited CloseAll;
 end;
 
@@ -293,10 +330,19 @@ initialization
   // create the dockmaster in the initialization section, so that it is ready
   // when the Register procedures of the packages are called.
   TDockMaster.Create(nil);
+{$IFDEF DockMaster}
   IDEDockMaster:=TIDEEasyDockMaster.Create;
+{$ELSE}
+  if IDELayout = nil then
+    IDELayout := TIDEEasyDockMaster.Create;
+{$ENDIF}
 
 finalization
+{$IFDEF DockMaster}
   FreeAndNil(IDEDockMaster);
+{$ELSE}
+  FreeAndNil(IDELayout);
+{$ENDIF}
   FreeAndNil(DockMaster);
 
 end.

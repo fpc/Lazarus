@@ -65,8 +65,8 @@ uses
 type
   TTabButton = class(TToolButton)
   protected
+    function GetDefaultDockCaption: String; override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-
   public
     Control: TControl;
     constructor Create(TheOwner: TComponent); override;
@@ -111,6 +111,8 @@ type
     destructor Destroy; override;
   {$ENDIF}
     procedure Clear; virtual;
+    procedure ShowForm(AForm: TControl); override;
+    procedure ShowPage(ATab: TTabButton);
     procedure LoadFromStream(strm: TStream); override;
     procedure SaveToStream(strm: TStream); override;
   end;
@@ -127,6 +129,10 @@ procedure Register;
 begin
   //RegisterComponents('Common Controls', [TEasyDockBook]);
 end;
+
+type
+  TControlAccess = class(TControl)
+  end;
 
 { TEasyDockBook }
 
@@ -195,6 +201,32 @@ begin
     {$ENDIF}
     end;
   end;
+end;
+
+procedure TEasyDockBook.ShowForm(AForm: TControl);
+var
+  btn: TTabButton;
+begin
+//activate page of this control
+  btn := GetControlTab(AForm);
+  if btn = nil then
+    inherited ShowForm(AForm)
+  else
+    ShowPage(btn);
+end;
+
+procedure TEasyDockBook.ShowPage(ATab: TTabButton);
+begin
+(* Show the (clicked) page
+*)
+  if (ATab = nil) or (ATab = CurTab) then
+    exit; //nothing to change
+
+  if CurTab <> nil then
+    CurTab.Control.Visible := false;
+  if ATab.Control <> nil then
+    ATab.Control.Visible := True;
+  CurTab := ATab;
 end;
 
 
@@ -385,15 +417,21 @@ end;
 function TEasyDockBook.GetDefaultDockCaption: string;
 var
   i: integer;
-  pg: TToolButton;
+  btn: TToolButton;
+  pg: TTabButton absolute btn;
 begin
+(* Update button captions?
+  If 1 control docked: get full caption?
+*)
   Result := '';
   for i := 0 to Tabs.ButtonCount - 1 do begin
-    pg := Tabs.Buttons[i];
-    if Result = '' then
-      Result := pg.Caption
+    btn := Tabs.Buttons[i];
+    if Result <> '' then
+      Result := Result + ', ' + pg.GetDefaultDockCaption
+    else if tabs.ButtonCount = 1 then
+      Result := pg.Control.Caption //full Caption of single client
     else
-      Result := Result + ', ' + pg.Caption;
+      Result := pg.GetDefaultDockCaption;
   end;
 end;
 
@@ -444,12 +482,7 @@ procedure TEasyDockBook.ToolButton1Click(Sender: TObject);
 var
   btn: TTabButton absolute Sender;
 begin
-  if CurTab <> nil then begin
-    CurTab.Control.Visible := false;
-  end;
-  if btn.Control <> nil then
-    btn.Control.Visible := True;
-  CurTab := btn;
+  ShowPage(btn);
 end;
 
 { TTabButton }
@@ -465,28 +498,26 @@ begin
   Grouped := True;
 end;
 
+function TTabButton.GetDefaultDockCaption: String;
+begin
+(* Also update button caption, to reflect an eventually changed control caption.
+*)
+  if Control = nil then
+    Result:=inherited GetDefaultDockCaption
+  else begin
+    Result := TControlAccess(Control).GetDefaultDockCaption;
+    Caption := Result;
+  end;
+end;
+
 procedure TTabButton.MouseMove(Shift: TShiftState; X, Y: Integer);
-//var AControl: TControl;
 begin
 (* Implement dragging of the associated page.
 *)
   inherited MouseMove(Shift, X, Y);
   if (ssLeft in Shift) and not DragManager.IsDragging then begin
-    if Control <> nil then begin
-{ Problems with TWinControls - must be wrapped into forms :-(
-      //DebugLn('---undock "', Control.GetDefaultDockCaption, '"');
-      DebugLn('---undock "', Control.ClassName, '"');
-      if False and (Control is TWinControl) then begin
-        AControl := Control; //will change when undocked?
-        AControl.ManualDock(nil);
-        if AControl.HostDockSite <> nil then
-          AControl.HostDockSite.BeginDrag(True);
-      end else
-}
-//both immediate and delayed drag start seem to work
-        //Control.BeginDrag(False); //delayed docking
-        Control.BeginDrag(True); //immediate drag
-    end;
+    if Control <> nil then
+      Control.BeginDrag(True); //immediate drag
   end;
 end;
 

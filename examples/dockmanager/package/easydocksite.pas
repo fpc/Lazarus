@@ -262,6 +262,7 @@ type
   public
     StayDocked: boolean; //here???
     class function ReloadSite(AName: string; AOwner: TComponent): TCustomDockSite;
+    procedure ShowForm(AForm: TControl); virtual;
     function  SaveSite: string; virtual;
     procedure LoadFromStream(strm: TStream); virtual;
     procedure SaveToStream(strm: TStream); virtual;
@@ -2198,6 +2199,13 @@ begin
   finally
     ss.Free;
   end;
+end;
+
+procedure TCustomDockSite.ShowForm(AForm: TControl);
+begin
+(* Notebooks activate this control
+*)
+  AForm.Visible := True;
 end;
 
 function TCustomDockSite.SaveSite: string;
