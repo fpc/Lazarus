@@ -35,7 +35,7 @@ interface
 
 uses
   Math, Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs,
-  LazConfigStorage, XMLCfg, XMLPropStorage, StdCtrls,
+  LazConfigStorage, XMLCfg, XMLPropStorage, StdCtrls, LCLIntf,
   BaseIDEIntf, ProjectIntf, MacroIntf, IDEDialogs, MenuIntf, LazIDEIntf,
   IDEWindowIntf, IDEOptionsIntf,
   AnchorDockStr, AnchorDocking, AnchorDockOptionsDlg;
@@ -417,16 +417,20 @@ begin
     AForm.EnableAlign;
 
     if BringToFront then begin
-      Parent:=GetParentForm(AForm);
-      if Parent<>nil then
+      if (OldActiveControl=nil)
+      or (not OldActiveControl.HandleAllocated)
+      or (FindControl(GetFocus)<>OldActiveControl) then begin
+        Parent:=GetParentForm(AForm);
         Parent.ShowOnTop;
-      if OldActiveControl<>nil then
-        AForm.ActiveControl:=OldActiveControl;
-      AForm.SetFocus;
-      debugln(['TIDEAnchorDockMaster.ShowForm AForm.ActiveControl=',dbgsname(AForm.ActiveControl)]);
+        if OldActiveControl<>nil then
+          Parent.ActiveControl:=OldActiveControl;
+        debugln(['TIDEAnchorDockMaster.ShowForm AAA1 AForm.Active=',AForm.Active]);
+        AForm.SetFocus;
+        debugln(['TIDEAnchorDockMaster.ShowForm AForm.ActiveControl=',dbgsname(AForm.ActiveControl),' ',DbgSName(Parent.ActiveControl),' ',DbgSName(FindControl(GetFocus))]);
+      end;
     end;
   end;
-  //debugln(['TIDEAnchorDockMaster.ShowForm END ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect)]);
+  debugln(['TIDEAnchorDockMaster.ShowForm END ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect),' ',DbgSName(FindControl(GetFocus))]);
 end;
 
 procedure TIDEAnchorDockMaster.CloseAll;

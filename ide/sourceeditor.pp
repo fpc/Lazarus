@@ -1499,6 +1499,8 @@ begin
   //debugln(GetStackTrace(true));
   {$ENDIF}
   Manager.DeactivateCompletionForm;
+  if Manager.ActiveEditor<>nil then
+    Manager.ActiveEditor.FocusEditor;
 end;
 
 procedure TSourceEditCompletion.ccComplete(var Value: string;
