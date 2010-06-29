@@ -4509,7 +4509,6 @@ begin
     debugln(['TAnchorDockManager.InsertControl DockSite=nil Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.Client=',dbgs(ADockObject.Control.ClientRect),' Parent=',DbgSName(ADockObject.Control.Parent)]);
     Site.DisableAutoSizing;
     try
-
       // align dragged Control
       Child:=ADockObject.Control;
       Child.Parent:=Site;
