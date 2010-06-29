@@ -572,7 +572,7 @@ begin
       if CurNode.StartPos>0 then begin
         case CurrentPage of
         cepCode:
-          if (CurNode.Desc in AllIdentifierDefinitions)
+          if (CurNode.Desc in AllIdentifierDefinitions+[ctnProcedure])
           and (CurItem.GetNextMultiSelected=nil) then
             CanRename:=true;
         cepDirectives:
@@ -772,7 +772,7 @@ begin
         ShowNode:=false;
         ShowChilds:=false;
       end;
-      
+
       // category mode: put nodes in categories
       Category:=cecNone;
       if ShowNode
@@ -1891,6 +1891,8 @@ var
   ACodeTool: TCodeTool;
   CurTreeView: TCustomTreeView;
   SrcEdit: TSourceEditorInterface;
+  NewNode: TCodeTreeNode;
+  p: LongInt;
 begin
   Result:=false;
   CurTreeView:=GetCurrentTreeView;
@@ -1911,7 +1913,16 @@ begin
       ACodeTool:=nil;
       CodeToolBoss.Explore(CodeBuffer,ACodeTool,false);
       if ACodeTool=nil then exit;
-      if not ACodeTool.CleanPosToCaretAndTopLine(CurNode.StartPos,Caret,NewTopLine)
+      p:=CurNode.StartPos;
+      NewNode:=ACodeTool.FindDeepestNodeAtPos(p,false);
+      if NewNode<>nil then begin
+        if (NewNode.Desc=ctnProcedure)
+        and (NewNode.FirstChild<>nil)
+        and (NewNode.FirstChild.Desc=ctnProcedureHead)
+        and (NewNode.FirstChild.StartPos>p) then
+          p:=NewNode.FirstChild.StartPos;
+      end;
+      if not ACodeTool.CleanPosToCaretAndTopLine(p,Caret,NewTopLine)
       then exit;
     end;
   cepDirectives:
