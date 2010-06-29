@@ -47,6 +47,7 @@ type
   TEmulatedCaret = class(TComponent)
   private
     FCaretDirty: Boolean;
+    FCaretDirtyPos: TQtPoint;
     FTimer: TTimer;
     FOldRect: TRect;
     FWidget: TQtWidget;
@@ -279,6 +280,7 @@ begin
   FCaretDirty := False;
   FOldRect := Rect(0, 0, 1, 1);
   FPos := QtPoint(0, 0);
+  FCaretDirtyPos := FPos;
   
   FTimer := TTimer.Create(self);
   FTimer.Enabled := False;
@@ -366,6 +368,7 @@ end;
 function TEmulatedCaret.Show(AWidget: TQtWidget): Boolean;
 var
   Pt: TQtPoint;
+  R: TRect;
 begin
   {$IFDEF VerboseQtCaret}
   writeln('TEmulatedCaret.Show AWidget=',dbghex(PtrUInt(AWidget)));
@@ -377,7 +380,15 @@ begin
     if FCaretDirty and (AWidget <> nil) then
     begin
       CreateCaret(FWidget, nil, FLastValidWidth, FLastValidHeight);
-      SetPos(FPos);
+      if (FCaretDirtyPos.X > 0) or (FCaretDirtyPos.Y > 0) then
+      begin
+        Pt := FPos;
+        SetPos(FCaretDirtyPos);
+        FCaretDirtyPos := QtPoint(0, 0);
+        QCoreApplication_processEvents();
+        SetPos(Pt);
+      end else
+        SetPos(FPos);
     end;
   end;
   Result := IsValid;
@@ -407,6 +418,7 @@ begin
   if (FWidget = nil) or (FWidget.Widget = nil) then
   begin
     // oops, our caret is dirty here.
+    FCaretDirtyPos := FPos;
     FCaretDirty := True;
     FPos := Value;
     exit;
