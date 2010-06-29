@@ -2363,20 +2363,19 @@ var SrcLen: integer;
   
   procedure DoSkipEmptyLines(var p: integer);
   var
-    OldPos: LongInt;
+    r: LongInt;
   begin
-    OldPos:=p;
+    r:=p;
     repeat
-      while (p<=SrcLen) and (Source[p] in [' ',#9]) do inc(p);
-      if (p<=SrcLen) and (Source[p] in [#10,#13]) then begin
+      while (r<=SrcLen) and (Source[r] in [' ',#9]) do inc(r);
+      if (r<=SrcLen) and (Source[r] in [#10,#13]) then begin
         // an empty line => skip
-        OldPos:=p;// remember position in front of new line characters
-        inc(p);
-        if (p<=SrcLen) and (Source[p] in [#10,#13]) and (Source[p]<>Source[p-1])
+        p:=r;// remember position in front of new line characters
+        inc(r);
+        if (r<=SrcLen) and (Source[r] in [#10,#13]) and (Source[r]<>Source[r-1])
         then
-          inc(p);
+          inc(r);
       end else begin
-        p:=OldPos;
         exit;
       end;
     until false;

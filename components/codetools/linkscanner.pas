@@ -3716,6 +3716,9 @@ begin
     else
       Len:=aLinkSize-StartPos;
     inc(StartPos,FLinks[LinkIndex].SrcPos);
+    {$IFDEF VerboseBug16168}
+    DebugLn(['[TLinkScanner.DeleteRange] Pos=',StartPos,'-',StartPos+Len,' ',dbgstr(copy(Src,StartPos,Len))]);
+    {$ENDIF}
     FOnDeleteSource(Self,FLinks[LinkIndex].Code,StartPos,Len);
     if FLinks[LinkIndex].CleanedPos<=CleanStartPos then break;
     dec(LinkIndex);

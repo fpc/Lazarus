@@ -4930,6 +4930,9 @@ begin
         // delete group
         FromPos:=FindLineEndOrCodeInFrontOfPosition(FirstNodeExt.Node.StartPos,true);
         ToPos:=FindLineEndOrCodeAfterPosition(LastNodeExt.Node.EndPos,true);
+        {$IFDEF VerboseBug16168}
+        debugln(['TCodeCompletionCodeTool.RemoveEmptyMethods ',dbgstr(copy(Src,FromPos,ToPos-FromPos))]);
+        {$ENDIF}
         if AllRemoved and FirstGroup
         and FindClassMethodsComment(FromPos,CommentStart,CommentEnd) then begin
           // all method bodies will be removed => remove the default comment too
