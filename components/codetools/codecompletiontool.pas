@@ -5150,6 +5150,7 @@ var
 
 var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
   CleanParamList, ParamList, PropType, ProcBody, VariableName: string;
+  IsClassProp: boolean;
   InsertPos: integer;
   BeautifyCodeOpts: TBeautifyCodeOptions;
   
@@ -5166,7 +5167,11 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
   begin
     MoveCursorToNodeStart(PropNode);
     ReadNextAtom; // read 'property'
-    if UpAtomIs('CLASS') then ReadNextAtom;
+    IsClassProp:=false;
+    if UpAtomIs('CLASS') then begin
+      IsClassProp:=true;
+      ReadNextAtom;
+    end;
     ReadNextAtom; // read name
     Parts[ppName]:=CurPos;
     ReadNextAtom;
@@ -5423,6 +5428,8 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
                       +'(AIndex:integer):'+PropType+';';
         end;
       end;
+      if IsClassProp then
+        AccessFunc:='class '+AccessFunc;
       // add new Insert Node
       if CompleteProperties then
         AddClassInsertion(CleanAccessFunc,AccessFunc,AccessParam,
@@ -5577,6 +5584,8 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         end;
       end;
       // add new Insert Node
+      if IsClassProp then
+        AccessFunc:='class '+AccessFunc;
       if CompleteProperties then
         AddClassInsertion(CleanAccessFunc,AccessFunc,AccessParam,
                           ncpPrivateProcs,PropNode,ProcBody);
@@ -5615,6 +5624,8 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
       // add insert demand for function
       // build function code
       AccessFunc:='function '+AccessParam+':boolean;';
+      if IsClassProp then
+        AccessFunc:='class '+AccessFunc;
       CleanAccessFunc:=CleanAccessFunc+';';
       // add new Insert Node
       if CompleteProperties then
