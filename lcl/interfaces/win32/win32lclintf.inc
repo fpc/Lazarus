@@ -294,6 +294,12 @@ begin
   if Assigned(PMethod) then Freemem(PMethod);
 end;
 
+function DockWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+begin
+   Result := Windows.DefWindowProc(Window, Msg, WParam, LParam);
+end;
+
 procedure TWin32WidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
 const
   LineSize = 4;
@@ -329,20 +335,39 @@ const
       ReleaseDC(0, DC);
     end;
   end;
-
+var
+  WindowClass: WndClass;
 begin
   if WindowsVersion >= wvVista then
   begin
     case AOperation of
       disShow:
       begin
+        with WindowClass do
+        begin
+          Style := CS_DBLCLKS;
+          LPFnWndProc := @DockWindowProc;
+          CbClsExtra := 0;
+          CbWndExtra := 0;
+          hInstance := System.HInstance;
+          hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
+          hCursor := Windows.LoadCursor(0, IDC_ARROW);
+          hbrBackground := GetSysColorBrush(COLOR_HIGHLIGHT);
+          LPSzMenuName := nil;
+          LPSzClassName := 'LazDockWnd';
+        end;
+        Windows.RegisterClass(@WindowClass);
         FDockWndHandle := CreateWindowEx(WS_EX_LAYERED or WS_EX_TRANSPARENT or WS_EX_TOPMOST or WS_EX_TOOLWINDOW,
-          ClsName, 'LazDockWnd', WS_POPUP or WS_VISIBLE,
-          ANewRect.Left, ANewRect.Top, ANewRect.Right - ANewRect.Left, ANewRect.Bottom - ANewRect.Top, 0, 0, HINSTANCE, nil);
+          'LazDockWnd', 'LazDockWnd', WS_POPUP or WS_VISIBLE,
+          ANewRect.Left, ANewRect.Top, ANewRect.Right - ANewRect.Left, ANewRect.Bottom - ANewRect.Top, 0, 0, System.HINSTANCE, nil);
 
         SetLayeredWindowAttributes(FDockWndHandle, 0, $30, LWA_ALPHA);
       end;
-      disHide: DestroyWindow(FDockWndHandle);
+      disHide:
+        begin
+          DestroyWindow(FDockWndHandle);
+          Windows.UnRegisterClass('LazDockWnd', System.HINSTANCE);
+        end;
       disMove:
         with ANewRect do
           SetWindowPos(FDockWndHandle, 0, Left, Top, Right - Left, Bottom - Top, SWP_NOZORDER or SWP_NOACTIVATE);
