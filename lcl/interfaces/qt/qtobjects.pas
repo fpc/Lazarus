@@ -3339,7 +3339,6 @@ begin
     QMimeData_hasURLS(TempMimeData)) then
   begin
     QMimeData_text(TempMimeData, @WStr);
-    WStr := UTF16ToUTF8(WStr);
     // do not touch LCL's selection if shift is down
     // since in that case event is tracked via FSelTimer
     // until shift depressed.
@@ -3351,7 +3350,7 @@ begin
     Clip := Clipbrd.Clipboard(ctPrimarySelection);
     Clip.OnRequest := nil;
     FOnClipBoardRequest[ctPrimarySelection] := nil;
-    Clip.AsText := WStr;
+    Clip.AsText := UTF8Decode(WStr);
     EndUpdate;
   end;
 end;
@@ -3453,6 +3452,9 @@ var
       QByteArray_destroy(Data);
     end;
     DataStream.Free;
+    // we must "wake up" QMimeData text property, otherwise
+    // some non ascii chars could be eaten (possible qt bug)
+    QMimeData_text(MimeData, @MimeType);
     setMimeData(MimeData, ClipbBoardTypeToQtClipboard[ClipBoardType]);
     // do not destroy MimeData!!!
   end;
