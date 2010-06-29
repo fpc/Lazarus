@@ -572,7 +572,7 @@ begin
       if CurNode.StartPos>0 then begin
         case CurrentPage of
         cepCode:
-          if (CurNode.Desc in AllIdentifierDefinitions+[ctnProcedure])
+          if (CurNode.Desc in AllIdentifierDefinitions+[ctnProcedure,ctnProperty])
           and (CurItem.GetNextMultiSelected=nil) then
             CanRename:=true;
         cepDirectives:
@@ -1921,6 +1921,10 @@ begin
         and (NewNode.FirstChild.Desc=ctnProcedureHead)
         and (NewNode.FirstChild.StartPos>p) then
           p:=NewNode.FirstChild.StartPos;
+        if NewNode.Desc=ctnProperty then begin
+          if ACodeTool.MoveCursorToPropName(NewNode) then
+            p:=ACodeTool.CurPos.StartPos;
+        end;
       end;
       if not ACodeTool.CleanPosToCaretAndTopLine(p,Caret,NewTopLine)
       then exit;
