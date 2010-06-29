@@ -287,7 +287,6 @@ resourcestring
   lisCopySelectedItemToClipboard = 'Copy selected items to clipboard';
   lisCopyAllItemsToClipboard = 'Copy all items to clipboard';
   lisSaveAllMessagesToFile = 'Save all messages to file';
-  lisMVDocking = 'Docking';
   lisMenuViewSearchResults = 'Search Results';
   lisMenuViewAnchorEditor = 'Anchor Editor';
   lisKMToggleViewComponentPalette = 'Toggle view component palette';

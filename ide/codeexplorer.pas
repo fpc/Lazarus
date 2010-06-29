@@ -273,7 +273,6 @@ var
   CodeExplorerView: TCodeExplorerView = nil;
   CEJumpToIDEMenuCommand: TIDEMenuCommand;
   CERefreshIDEMenuCommand: TIDEMenuCommand;
-  CEDockingIDEMenuCommand: TIDEMenuCommand;
   CERenameIDEMenuCommand: TIDEMenuCommand;
 
 procedure RegisterStandardCodeExplorerMenuItems;
@@ -334,8 +333,6 @@ begin
     );
   CERefreshIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Refresh',
     dlgUnitDepRefresh);
-  CEDockingIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Docking', lisMVDocking
-    );
   CERenameIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Rename', lisFRIRename);
 end;
 

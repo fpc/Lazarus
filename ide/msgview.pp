@@ -187,7 +187,6 @@ var
   MsgCopyAllAndHiddenIDEMenuCommand: TIDEMenuCommand;
   MsgHelpIDEMenuCommand: TIDEMenuCommand;
   MsgSaveAllToFileIDEMenuCommand: TIDEMenuCommand;
-  MsgDockIDEMenuCommand: TIDEMenuCommand;
 
 const
   MessagesMenuRootName = 'Messages';
@@ -265,8 +264,6 @@ begin
   MsgSaveAllToFileIDEMenuCommand :=
     RegisterIDEMenuCommand(Path, 'Copy selected',
     lisSaveAllMessagesToFile);
-  MsgDockIDEMenuCommand :=
-    RegisterIDEMenuCommand(Path, 'Docking', lisMVDocking);
 end;
 
 function MessageLinesAsText(ListOfTLazMessageLine: TFPList): string;
