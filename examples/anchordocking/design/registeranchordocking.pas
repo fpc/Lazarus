@@ -422,7 +422,7 @@ begin
       or (FindControl(GetFocus)<>OldActiveControl) then begin
         Parent:=GetParentForm(AForm);
         Parent.ShowOnTop;
-        if OldActiveControl<>nil then
+        if (OldActiveControl<>nil) and OldActiveControl.CanFocus then
           Parent.ActiveControl:=OldActiveControl;
         debugln(['TIDEAnchorDockMaster.ShowForm AAA1 AForm.Active=',AForm.Active]);
         AForm.SetFocus;
