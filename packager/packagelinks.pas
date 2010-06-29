@@ -83,6 +83,7 @@ type
     FFilename: string;
     FLastCheck: TDateTime;
     FLastCheckValid: boolean;
+    FLastUsed: TDateTime;
     FNotFoundCount: integer;
     FOrigin: TPkgLinkOrigin;
     fReferenceCount: integer;
@@ -104,6 +105,7 @@ type
     property LastCheck: TDateTime read FLastCheck write FLastCheck;
     property FileDateValid: boolean read FFileDateValid write FFileDateValid;
     property FileDate: TDateTime read FFileDate write FFileDate;
+    property LastUsed: TDateTime read FLastUsed write FLastUsed;
   end;
 
 
@@ -544,6 +546,8 @@ begin
       
       NewPkgLink.NotFoundCount:=
                            XMLConfig.GetValue(ItemPath+'NotFoundCount/Value',0);
+      CfgStrToDate(XMLConfig.GetValue(ItemPath+'LastUsed/Value',''),
+                            NewPkgLink.FLastUsed);
 
       if NewPkgLink.MakeSense then begin
         FUserLinksSortID.Add(NewPkgLink);
@@ -666,6 +670,8 @@ begin
                                  DateToCfgStr(CurPkgLink.LastCheck),'');
       XMLConfig.SetDeleteValue(ItemPath+'NotFoundCount/Value',
                                CurPkgLink.NotFoundCount,0);
+      XMLConfig.SetDeleteValue(ItemPath+'LastUsed/Value',
+                               DateToCfgStr(CurPkgLink.LastUsed),'');
 
       ANode:=FUserLinksSortID.FindSuccessor(ANode);
     end;
@@ -690,8 +696,8 @@ function TPackageLinks.NeedSaveUserLinks(const ConfigFilename: string): boolean;
 begin
   Result:=Modified
           or (not UserLinkLoadTimeValid)
-          or (not FileExistsUTF8(ConfigFilename))
-          or (FileAgeUTF8(ConfigFilename)<>UserLinkLoadTime);
+          or (not FileExistsCached(ConfigFilename))
+          or (FileAgeCached(ConfigFilename)<>UserLinkLoadTime);
 end;
 
 procedure TPackageLinks.WriteLinkTree(LinkTree: TAVLTree);
@@ -732,12 +738,21 @@ begin
     DebugLn(['TPackageLinks.FindLinkWithDependencyInTree Dependency makes no sense']);
     exit;
   end;
+  // if there are several fitting the description, use the last used
+  // and highest version
   CurNode:=FindLeftMostNode(LinkTree,Dependency.PackageName);
   while CurNode<>nil do begin
     Link:=TPackageLink(CurNode.Data);
     if Dependency.IsCompatible(Link.Version) then begin
-      Result:=Link;
-      break;
+      if Result=nil then
+        Result:=Link
+      else begin
+        // there are two packages fitting
+        if ((Link.LastUsed>Result.LastUsed)
+            or (Link.Version.Compare(Result.Version)>0))
+        and FileExistsCached(Link.GetEffectiveFilename) then
+          Result:=Link; // this one is better
+      end;
     end;
     CurNode:=LinkTree.FindSuccessor(CurNode);
     if CurNode=nil then break;
@@ -839,6 +854,7 @@ begin
     if (OldLink.Compare(APackage)=0)
     and (OldLink.GetEffectiveFilename=APackage.Filename) then begin
       Result:=OldLink;
+      Result.LastUsed:=Now;
       exit;
     end;
     RemoveLink(APackage);
@@ -858,6 +874,7 @@ begin
   end;
   EndUpdate;
   Result:=NewLink;
+  Result.LastUsed:=Now;
 end;
 
 function TPackageLinks.AddUserLink(const PkgFilename, PkgName: string
@@ -873,6 +890,7 @@ begin
     // link exists
     if CompareFilenames(OldLink.GetEffectiveFilename,PkgFilename)=0 then begin
       Result:=OldLink;
+      Result.LastUsed:=Now;
       exit;
     end;
   end;
@@ -891,6 +909,7 @@ begin
   end;
   EndUpdate;
   Result:=NewLink;
+  Result.LastUsed:=Now;
 end;
 
 procedure TPackageLinks.RemoveLink(APackageID: TLazPackageID);
