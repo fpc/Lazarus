@@ -109,6 +109,7 @@ type
 
 var
   IDEAnchorDockMaster: TIDEAnchorDockMaster = nil;
+  AnchorDockOptionsID: integer = 1000;
 
 procedure Register;
 
@@ -135,7 +136,8 @@ begin
 
   // add options frame
   {$R *.lfm}
-
+  AnchorDockOptionsID:=RegisterIDEOptionsEditor(GroupEnvironment,TAnchorDockIDEFrame,
+                                                AnchorDockOptionsID)^.Index;
 end;
 
 { TIDEAnchorDockMaster }
@@ -361,6 +363,7 @@ var
   AControl: TControl;
   NeedPlacing: Boolean;
   SiteForm: TCustomForm;
+  OldActiveControl: TWinControl;
 begin
   debugln(['TIDEAnchorDockMaster.ShowForm START ',DbgSName(AForm),' BringToFront=',BringToFront,' IsSite=',DockMaster.IsSite(AForm),' IsCustomSite=',DockMaster.IsCustomSite(AForm)]);
   try
@@ -408,7 +411,8 @@ begin
     end;
 
   finally
-    if not Aform.IsVisible then debugln(['TIDEAnchorDockMaster.ShowForm MakeVisible ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect),' Floating=',DockMaster.IsFloating(AForm)]);
+    OldActiveControl:=AForm.ActiveControl;
+    if not AForm.IsVisible then debugln(['TIDEAnchorDockMaster.ShowForm MakeVisible ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect),' Floating=',DockMaster.IsFloating(AForm)]);
     DockMaster.MakeVisible(AForm,BringToFront);
     AForm.EnableAlign;
 
@@ -416,7 +420,10 @@ begin
       Parent:=GetParentForm(AForm);
       if Parent<>nil then
         Parent.ShowOnTop;
+      if OldActiveControl<>nil then
+        AForm.ActiveControl:=OldActiveControl;
       AForm.SetFocus;
+      debugln(['TIDEAnchorDockMaster.ShowForm AForm.ActiveControl=',dbgsname(AForm.ActiveControl)]);
     end;
   end;
   //debugln(['TIDEAnchorDockMaster.ShowForm END ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect)]);
