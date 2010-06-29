@@ -2,11 +2,11 @@ object CodeExplorerView: TCodeExplorerView
   Left = 799
   Height = 517
   Top = 136
-  Width = 215
+  Width = 220
   ActiveControl = MainNotebook
   Caption = 'CodeExplorerView'
   ClientHeight = 517
-  ClientWidth = 215
+  ClientWidth = 220
   KeyPreview = True
   OnCreate = CodeExplorerViewCREATE
   OnDestroy = CodeExplorerViewDestroy
@@ -16,24 +16,25 @@ object CodeExplorerView: TCodeExplorerView
     Left = 0
     Height = 515
     Top = 2
-    Width = 215
+    Width = 220
     Align = alClient
     BorderSpacing.Top = 2
     OnPageChanged = MainNotebookPageChanged
-    PageIndex = 1
+    PageIndex = 0
     TabOrder = 0
     object CodePage: TPage
       Caption = 'CodePage'
-      ClientWidth = 213
-      ClientHeight = 488
+      ClientWidth = 216
+      ClientHeight = 482
       object CodeTreeview: TTreeView
         AnchorSideTop.Side = asrBottom
         Left = 0
-        Height = 462
-        Top = 26
-        Width = 213
+        Height = 454
+        Top = 28
+        Width = 216
         Align = alClient
         BorderSpacing.Top = 1
+        DefaultItemHeight = 19
         HideSelection = False
         Images = Imagelist1
         PopupMenu = TreePopupmenu
@@ -47,16 +48,17 @@ object CodeExplorerView: TCodeExplorerView
       end
       object CodeTreeviewButtonPanel: TPanel
         Left = 0
-        Height = 25
+        Height = 27
         Top = 0
-        Width = 213
+        Width = 216
         Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
-        ClientHeight = 25
-        ClientWidth = 213
+        ClientHeight = 27
+        ClientWidth = 216
         TabOrder = 1
         object OptionsSpeedButton: TSpeedButton
-          Left = 186
+          Left = 189
           Height = 22
           Hint = 'Options for CodeExplorer'
           Top = 1
@@ -69,7 +71,7 @@ object CodeExplorerView: TCodeExplorerView
           ParentShowHint = False
         end
         object RefreshSpeedButton: TSpeedButton
-          Left = 138
+          Left = 141
           Height = 22
           Hint = 'Refresh CodeExplorer'
           Top = 1
@@ -82,7 +84,7 @@ object CodeExplorerView: TCodeExplorerView
           ParentShowHint = False
         end
         object ModeSpeedButton: TSpeedButton
-          Left = 162
+          Left = 165
           Height = 22
           Top = 1
           Width = 23
@@ -94,14 +96,13 @@ object CodeExplorerView: TCodeExplorerView
           ParentShowHint = False
         end
         object CodeFilterEdit: TEdit
-          AnchorSideLeft.Control = CodePage
-          AnchorSideTop.Control = CodePage
-          AnchorSideRight.Control = CodePage
-          AnchorSideRight.Side = asrBottom
+          AnchorSideLeft.Control = CodeTreeviewButtonPanel
+          AnchorSideTop.Control = CodeTreeviewButtonPanel
+          AnchorSideRight.Control = RefreshSpeedButton
           Left = 0
-          Height = 23
+          Height = 27
           Top = 0
-          Width = 136
+          Width = 141
           Anchors = [akTop, akLeft, akRight]
           OnChange = CodeFilterEditChange
           TabOrder = 0
