@@ -1990,6 +1990,8 @@ var
   KeyPos: integer;
   AVLNode: TAvgLvlTreeNode;
   Node: TTreeNode;
+  NodeData: TViewNodeData;
+  BestData: TViewNodeData;
 begin
   Result:=nil;
   if (fLastCodeTool=nil) or (not FLastCodeValid) or (CodeTreeview=nil)
@@ -1997,10 +1999,23 @@ begin
   KeyPos:=CleanPos;
   AVLNode:=fCodeSortedForStartPos.FindLeftMostKey(@KeyPos,
                             TListSortCompare(@CompareStartPosWithViewNodeData));
-  if AVLNode=nil then exit;
-  Node:=TTreeNode(AVLNode.Data);
-  // ToDo: find the shortest
-  Result:=Node;
+  // find the shortest
+  BestData:=nil;
+  Result:=nil;
+  while AVLNode<>nil do begin
+    Node:=TTreeNode(AVLNode.Data);
+    if TObject(Node.Data) is TViewNodeData then begin
+      NodeData:=TViewNodeData(Node.Data);
+      if (BestData=nil)
+      or ((BestData.StartPos<=NodeData.StartPos)
+          and (BestData.EndPos>=NodeData.EndPos))
+      then begin
+        Result:=Node;
+        BestData:=TViewNodeData(Node.Data);
+      end;
+    end;
+    AVLNode:=fCodeSortedForStartPos.FindSuccessor(AVLNode);
+  end;
 end;
 
 procedure TCodeExplorerView.BuildCodeSortedForStartPos;
