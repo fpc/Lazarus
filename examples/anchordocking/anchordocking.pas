@@ -1189,7 +1189,7 @@ end;
 function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
   Scale: boolean): boolean;
 var
-  ScreenWidth, ScreenHeight: integer;
+  WorkArea: TRect;
 
   function SrcRectValid(const r: TRect): boolean;
   begin
@@ -1199,15 +1199,19 @@ var
   function ScaleX(p: integer; const SrcRect: TRect): integer;
   begin
     Result:=p;
-    if SrcRectValid(SrcRect) then
-      Result:=((p-SrcRect.Left)*ScreenWidth) div (SrcRect.Right-SrcRect.Left);
+    if SrcRectValid(SrcRect) and SrcRectValid(WorkArea) then
+      Result:=((p-SrcRect.Left)*(WorkArea.Right-WorkArea.Left))
+                div (SrcRect.Right-SrcRect.Left)
+              +WorkArea.Left;
   end;
 
   function ScaleY(p: integer; const SrcRect: TRect): integer;
   begin
     Result:=p;
     if SrcRectValid(SrcRect) then
-      Result:=((p-SrcRect.Top)*ScreenHeight) div (SrcRect.Bottom-SrcRect.Top);
+      Result:=((p-SrcRect.Top)*(WorkArea.Bottom-WorkArea.Top))
+                   div (SrcRect.Bottom-SrcRect.Top)
+              +WorkArea.Top;
   end;
 
   procedure SetupSite(Site: TCustomForm;
@@ -1217,6 +1221,8 @@ var
     aManager: TAnchorDockManager;
     NewBounds: TRect;
   begin
+    if Parent=nil then
+      WorkArea:=Site.Monitor.WorkareaRect;
     if IsCustomSite(Site) then begin
       aManager:=TAnchorDockManager(Site.DockManager);
       if Node.Count>0 then begin
@@ -1264,8 +1270,8 @@ var
     NewBounds: TRect;
   begin
     Result:=nil;
-    if Scale and SrcRectValid(Node.ScreenRect) then
-      SrcRect:=Node.ScreenRect;
+    if Scale and SrcRectValid(Node.WorkAreaRect) then
+      SrcRect:=Node.WorkAreaRect;
     //debugln(['Restore ',Node.Name,' ',dbgs(Node.NodeType),' Bounds=',dbgs(Node.BoundsRect),' Parent=',DbgSName(Parent),' ']);
     if Node.NodeType=adltnControl then begin
       // restore control
@@ -1402,8 +1408,7 @@ var
 
 begin
   Result:=true;
-  ScreenWidth:=Screen.Width;
-  ScreenHeight:=Screen.Height;
+  WorkArea:=Rect(0,0,0,0);
   Restore(Tree.Root,nil,Rect(0,0,0,0));
 end;
 

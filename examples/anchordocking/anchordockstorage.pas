@@ -77,7 +77,7 @@ type
     FNodes: TFPList; // list of TAnchorDockLayoutTreeNode
     FNodeType: TADLTreeNodeType;
     FParent: TAnchorDockLayoutTreeNode;
-    FScreenRect: TRect;
+    FWorkAreaRect: TRect;
     FTabPosition: TTabPosition;
     FWindowState: TWindowState;
     function GetAnchors(Site: TAnchorKind): string;
@@ -101,7 +101,7 @@ type
     procedure SetNodeType(const AValue: TADLTreeNodeType);
     procedure SetParent(const AValue: TAnchorDockLayoutTreeNode);
     procedure SetRight(const AValue: integer);
-    procedure SetScreenRect(const AValue: TRect);
+    procedure SetWorkAreaRect(const AValue: TRect);
     procedure SetTabPosition(const AValue: TTabPosition);
     procedure SetTop(const AValue: integer);
     procedure SetWidth(const AValue: integer);
@@ -142,7 +142,7 @@ type
     property Bottom: integer read GetBottom write SetBottom;
     property BoundsRect: TRect read FBoundsRect write SetBoundsRect;
     property BoundSplitterPos: integer read FBoundSplitterPos write SetBoundSplitterPos;
-    property ScreenRect: TRect read FScreenRect write SetScreenRect;
+    property WorkAreaRect: TRect read FWorkAreaRect write SetWorkAreaRect;
     property Anchors[Site: TAnchorKind]: string read GetAnchors write SetAnchors; // empty means default (parent)
     property Align: TAlign read FAlign write SetAlign;
     property WindowState: TWindowState read FWindowState write SetWindowState;
@@ -971,10 +971,10 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TAnchorDockLayoutTreeNode.SetScreenRect(const AValue: TRect);
+procedure TAnchorDockLayoutTreeNode.SetWorkAreaRect(const AValue: TRect);
 begin
-  if CompareRect(@FScreenRect,@AValue) then exit;
-  FScreenRect:=AValue;
+  if CompareRect(@FWorkAreaRect,@AValue) then exit;
+  FWorkAreaRect:=AValue;
   IncreaseChangeStamp;
 end;
 
@@ -1033,7 +1033,7 @@ begin
   HeaderPosition:=adlhpAuto;
   TabPosition:=tpTop;
   BoundSplitterPos:=0;
-  ScreenRect:=Rect(0,0,0,0);
+  WorkAreaRect:=Rect(0,0,0,0);
   for a:=low(TAnchorKind) to high(TAnchorKind) do
     Anchors[a]:='';
 end;
@@ -1054,7 +1054,7 @@ begin
   or (HeaderPosition<>Node.HeaderPosition)
   or (TabPosition<>Node.TabPosition)
   or (BoundSplitterPos<>Node.BoundSplitterPos)
-  or (not CompareRect(@FScreenRect,@Node.FScreenRect))
+  or (not CompareRect(@FWorkAreaRect,@Node.FWorkAreaRect))
   then
     exit;
   for a:=low(TAnchorKind) to high(TAnchorKind) do
@@ -1078,7 +1078,7 @@ begin
   HeaderPosition:=Node.HeaderPosition;
   TabPosition:=Node.TabPosition;
   BoundSplitterPos:=Node.BoundSplitterPos;
-  ScreenRect:=Node.ScreenRect;
+  WorkAreaRect:=Node.WorkAreaRect;
   for a:=low(TAnchorKind) to high(TAnchorKind) do
     Anchors[a]:=Node.Anchors[a];
   while Count>Node.Count do Nodes[Count-1].Free;
@@ -1104,7 +1104,7 @@ begin
   if (AControl.Parent=nil) and (AControl is TCustomForm) then begin
     WindowState:=TCustomForm(AControl).WindowState;
     Monitor:=TCustomForm(AControl).Monitor.MonitorNum;
-    ScreenRect:=Rect(0,0,Screen.Width,Screen.Height);
+    WorkAreaRect:=TCustomForm(AControl).Monitor.WorkareaRect;
   end else
     WindowState:=wsNormal;
   if AControl is TCustomNotebook then
@@ -1134,7 +1134,7 @@ begin
   Width:=Config.GetValue('Bounds/Width',0);
   Height:=Config.GetValue('Bounds/Height',0);
   BoundSplitterPos:=Config.GetValue('Bounds/SplitterPos',0);
-  Config.GetValue('Bounds/Screen/Rect/',FScreenRect,Rect(0,0,0,0));
+  Config.GetValue('Bounds/WorkArea/Rect/',FWorkAreaRect,Rect(0,0,0,0));
   Anchors[akLeft]:=Config.GetValue('Anchors/Left','');
   Anchors[akTop]:=Config.GetValue('Anchors/Top','');
   Anchors[akRight]:=Config.GetValue('Anchors/Right','');
@@ -1166,7 +1166,7 @@ begin
   Config.SetDeleteValue('Bounds/Width',Width,0);
   Config.SetDeleteValue('Bounds/Height',Height,0);
   Config.SetDeleteValue('Bounds/SplitterPos',BoundSplitterPos,0);
-  Config.SetDeleteValue('Bounds/Screen/Rect/',FScreenRect,Rect(0,0,0,0));
+  Config.SetDeleteValue('Bounds/WorkArea/Rect/',FWorkAreaRect,Rect(0,0,0,0));
   Config.SetDeleteValue('Anchors/Left',Anchors[akLeft],'');
   Config.SetDeleteValue('Anchors/Top',Anchors[akTop],'');
   Config.SetDeleteValue('Anchors/Right',Anchors[akRight],'');
