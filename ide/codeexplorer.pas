@@ -155,6 +155,7 @@ type
     procedure RefreshSpeedButtonClick(Sender: TObject);
     procedure RenameMenuItemClick(Sender: TObject);
     procedure TreePopupmenuPopup(Sender: TObject);
+    procedure OnUserInput(Sender: TObject; Msg: Cardinal);
   private
     FCodeFilename: string;
     fCategoryNodes: array[TCodeExplorerCategory] of TTreeNode;
@@ -436,6 +437,8 @@ begin
   CEJumpToIDEMenuCommand.OnClick:=@JumpToMenuitemCLICK;
   CERefreshIDEMenuCommand.OnClick:=@RefreshMenuitemCLICK;
   CERenameIDEMenuCommand.OnClick:=@RenameMenuItemClick;
+
+  Application.AddOnUserInputHandler(@OnUserInput);
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewDestroy(Sender: TObject);
@@ -495,14 +498,13 @@ end;
 
 procedure TCodeExplorerView.IdleTimer1Timer(Sender: TObject);
 begin
-  if ((cevCheckOnIdle in FFlags) or (CodeExplorerOptions.Refresh=cerOnIdle)) then
-  begin
-    if Active then exit;
-    if (Screen.ActiveCustomForm<>nil)
-    and (fsModal in Screen.ActiveCustomForm.FormState) then
-      exit;
-    Refresh(true);
-  end;
+  if not (cevCheckOnIdle in FFlags) then exit;
+  if (Screen.ActiveCustomForm<>nil)
+  and (fsModal in Screen.ActiveCustomForm.FormState) then
+    exit;
+  if not IsVisible then exit;
+  if Active then exit;
+  Refresh(true);
 end;
 
 procedure TCodeExplorerView.JumpToMenuitemCLICK(Sender: TObject);
@@ -583,6 +585,12 @@ begin
   end;
   CERenameIDEMenuCommand.Visible:=CanRename;
   DebugLn(['TCodeExplorerView.TreePopupmenuPopup ',CERenameIDEMenuCommand.Visible]);
+end;
+
+procedure TCodeExplorerView.OnUserInput(Sender: TObject; Msg: Cardinal);
+begin
+  if CodeExplorerOptions.Refresh=cerOnIdle then
+    CheckOnIdle;
 end;
 
 function TCodeExplorerView.GetCodeNodeDescription(ACodeTool: TCodeTool;
@@ -1624,6 +1632,7 @@ end;
 procedure TCodeExplorerView.Refresh(OnlyVisible: boolean);
 begin
   Exclude(FFlags,cevCheckOnIdle);
+  debugln(['TCodeExplorerView.Refresh ']);
   RefreshCode(OnlyVisible);
   RefreshDirectives(OnlyVisible);
 end;
@@ -1727,13 +1736,21 @@ begin
         // still no tool
         exit;
       end;
+      debugln(['TCodeExplorerView.RefreshCode no tool']);
     end else begin
-      if FLastCodeValid
-      and (ACodeTool.MainFilename=FCodeFilename)
-      and (ACodeTool.Scanner<>nil)
-      and (ACodeTool.Scanner.ChangeStep=FLastCodeChangeStep)
-      and (Mode=FLastMode)
-      and (fLastCodeOptionsChangeStep=CodeExplorerOptions.ChangeStep) then begin
+      if not FLastCodeValid then begin
+        debugln(['TCodeExplorerView.RefreshCode last code not valid'])
+      end else if ACodeTool.MainFilename<>FCodeFilename then begin
+        debugln(['TCodeExplorerView.RefreshCode File changed ',ACodeTool.MainFilename,' ',FCodeFilename])
+      end else if (ACodeTool.Scanner=nil) then begin
+        debugln(['TCodeExplorerView.RefreshCode Scanner=nil'])
+      end else if (ACodeTool.Scanner.ChangeStep<>FLastCodeChangeStep) then begin
+        debugln(['TCodeExplorerView.RefreshCode Scanner changed ',ACodeTool.Scanner.ChangeStep,' ',FLastCodeChangeStep])
+      end else if (Mode<>FLastMode) then begin
+        debugln(['TCodeExplorerView.RefreshCode Mode changed ',ord(Mode),' ',ord(FLastMode)])
+      end else if (fLastCodeOptionsChangeStep<>CodeExplorerOptions.ChangeStep) then begin
+        debugln(['TCodeExplorerView.RefreshCode Options changed ',fLastCodeOptionsChangeStep,' ',CodeExplorerOptions.ChangeStep])
+      end else begin
         // still the same source and options
         exit;
       end;

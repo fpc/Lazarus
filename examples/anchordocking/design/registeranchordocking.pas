@@ -365,7 +365,7 @@ var
   SiteForm: TCustomForm;
   OldActiveControl: TWinControl;
 begin
-  debugln(['TIDEAnchorDockMaster.ShowForm START ',DbgSName(AForm),' BringToFront=',BringToFront,' IsSite=',DockMaster.IsSite(AForm),' IsCustomSite=',DockMaster.IsCustomSite(AForm)]);
+  //debugln(['TIDEAnchorDockMaster.ShowForm START ',DbgSName(AForm),' BringToFront=',BringToFront,' IsSite=',DockMaster.IsSite(AForm),' IsCustomSite=',DockMaster.IsCustomSite(AForm)]);
   try
     AForm.DisableAlign;
 
@@ -424,13 +424,12 @@ begin
         Parent.ShowOnTop;
         if (OldActiveControl<>nil) and OldActiveControl.CanFocus then
           Parent.ActiveControl:=OldActiveControl;
-        debugln(['TIDEAnchorDockMaster.ShowForm AAA1 AForm.Active=',AForm.Active]);
         AForm.SetFocus;
-        debugln(['TIDEAnchorDockMaster.ShowForm AForm.ActiveControl=',dbgsname(AForm.ActiveControl),' ',DbgSName(Parent.ActiveControl),' ',DbgSName(FindControl(GetFocus))]);
+        //debugln(['TIDEAnchorDockMaster.ShowForm AForm.ActiveControl=',dbgsname(AForm.ActiveControl),' ',DbgSName(Parent.ActiveControl),' ',DbgSName(FindControl(GetFocus))]);
       end;
     end;
   end;
-  debugln(['TIDEAnchorDockMaster.ShowForm END ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect),' ',DbgSName(FindControl(GetFocus))]);
+  //debugln(['TIDEAnchorDockMaster.ShowForm END ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect),' ',DbgSName(FindControl(GetFocus))]);
 end;
 
 procedure TIDEAnchorDockMaster.CloseAll;

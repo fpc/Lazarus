@@ -1246,8 +1246,9 @@ var
       aManager.RestoreSite(Node.BoundSplitterPos);
       Site.HostDockSite:=Parent;
     end;
-    if Site is TAnchorDockHostSite then
+    if Site is TAnchorDockHostSite then begin
       TAnchorDockHostSite(Site).Header.HeaderPosition:=Node.HeaderPosition;
+    end;
     if Parent=nil then begin
       Site.WindowState:=Node.WindowState;
       if (Node.Monitor>=0) and (Node.Monitor<Screen.MonitorCount) then
