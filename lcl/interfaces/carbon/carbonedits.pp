@@ -1442,17 +1442,7 @@ begin
   inc(r.Left, EditExtraLeft);
   dec(r.Right, EditExtraRight);
 
-  FTooSmall:=False;
-  if r.Right<r.Left then
-  begin
-    FTooSmall:=True;
-    r.Right:=r.Left;
-  end;
-  if r.Bottom<r.Top then
-  begin
-    FTooSmall:=True;
-    r.Bottom:=r.Top;
-  end;
+  FTooSmall:=(r.Right<r.Left) or (r.Bottom<r.Top);
   if FTooSmall then FSmallBounds:=ARect;
 
   Result := inherited SetBounds(r);
