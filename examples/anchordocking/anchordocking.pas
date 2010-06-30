@@ -68,9 +68,7 @@
     - on close button: save a restore layout
 
   ToDo:
-    - use workarearect instead of screen
     - keep custom dock site content visible
-    - restore:
     - undock on hide
     - popup menu
        - shrink side left, top, right, bottom

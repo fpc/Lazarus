@@ -26,6 +26,15 @@
   You should have received a copy of the GNU Library General Public License
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+  ToDo:
+    - save settings after options dialog
+    - when opening another project first tab in source editor shows wrong page name
+    - close source editor and show again
+    - show anchor editor => too small
+    - qt: focus on close page
+    - gtk2: focus on cancel completion box
+    - gtk2: focus on execute completion box
 }
 unit RegisterAnchorDocking;
 
@@ -397,7 +406,7 @@ begin
         SiteForm.BoundsRect:=NewBounds;
         SiteForm.UndockWidth:=NewBounds.Right-NewBounds.Left;
         SiteForm.UndockHeight:=NewBounds.Bottom-NewBounds.Top;
-        debugln(['TIDEAnchorDockMaster.ShowForm creator for ',DbgSName(AControl),' found: Left=',Creator.Left,' Top=',Creator.Top,' Right=',Creator.Right,' Bottom=',Creator.Bottom,' DockSiblingName=',DockSiblingName,' DockAlign=',dbgs(DockAlign)]);
+        debugln(['TIDEAnchorDockMaster.ShowForm creator for ',DbgSName(AControl),' found: Left=',Creator.Left,' Top=',Creator.Top,' Right=',Creator.Right,' Bottom=',Creator.Bottom,' DockSiblingName=',DockSiblingName,' DockAlign=',dbgs(DockAlign),' ',dbgs(SiteForm.BoundsRect)]);
         Site:=DockMaster.GetAnchorSite(SiteForm);
         if (Site<>nil) and (DockSiblingName<>'') then begin
           DockSibling:=Screen.FindForm(DockSiblingName);
