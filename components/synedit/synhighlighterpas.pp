@@ -111,6 +111,8 @@ type
     cfbtCase,
     cfbtIfDef,        // {$IfDef} directive, ths is not counted in the Range-Node
     cfbtRegion,       // {%Region} user folds, not counted in the Range-Node
+    cfbtAnsiComment,  // (* ... *)
+    cfbtBorCommand,   // { ... }
     // Internal type / not configurable
     cfbtNone
     );
@@ -2163,6 +2165,8 @@ begin
       end else begin
         fRange := fRange - [rsBor];
         Inc(p);
+        if TopPascalCodeFoldBlockType=cfbtBorCommand then
+          EndPascalCodeFoldBlock;
         break;
       end;
     '{':
@@ -2325,8 +2329,12 @@ begin
               FNodeInfoList[FNodeInfoCount-1].FoldAction + [sfaDefaultCollapsed];
       end
       else if KeyComp('endregion') then
-        EndCustomCodeFoldBlock(cfbtRegion);
-    end;
+        EndCustomCodeFoldBlock(cfbtRegion)
+      else
+        StartPascalCodeFoldBlock(cfbtBorCommand);
+    end
+    else
+      StartPascalCodeFoldBlock(cfbtBorCommand);
     BorProc;
   end;
 end;
@@ -2453,6 +2461,8 @@ begin
         EndPascalCodeFoldBlock;
       end else begin
         fRange := fRange - [rsAnsi];
+        if TopPascalCodeFoldBlockType=cfbtAnsiComment then
+          EndPascalCodeFoldBlock;
         break;
       end;
     end
@@ -2501,6 +2511,7 @@ begin
         // We would not be here, if we were in a comment or directive already
         fRange := fRange + [rsAnsi];
         fTokenID := tkComment;
+        StartPascalCodeFoldBlock(cfbtAnsiComment);
         if not (fLine[Run] in [#0, #10, #13]) then begin
           AnsiProc;
         end;
@@ -2511,9 +2522,11 @@ begin
         fTokenID := tkSymbol;
         PasCodeFoldRange.IncBracketNestLevel;
       end;
-  else
-    fTokenID := tkSymbol;
-    PasCodeFoldRange.IncBracketNestLevel;
+    else
+      begin
+        fTokenID := tkSymbol;
+        PasCodeFoldRange.IncBracketNestLevel;
+      end;
   end;
 end;
 
