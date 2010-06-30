@@ -842,7 +842,6 @@ var
   CurIcon: TCustomBitmap;
   IconWidth: Integer;
   IconHeight: Integer;
-  CurRect: TRect;
 begin
   //DebugLn('TPackageEditorForm.RegisteredListBoxDrawItem START');
   if LazPackage=nil then exit;
@@ -855,13 +854,7 @@ begin
       CurStr:=Format(lisPckEditPage, [CurComponent.ComponentClass.ClassName,
         CurComponent.Page.PageName]);
       TxtH:=TextHeight(CurStr);
-      CurRect:=ARect;
-      inc(CurRect.Left,25);
-      FillRect(CurRect);
-      Brush.Color:=clLtGray;
-      CurRect:=ARect;
-      CurRect.Right:=ARect.Left+25;
-      FillRect(CurRect);
+      FillRect(ARect);
       CurIcon:=CurComponent.Icon;
       //DebugLn('TPackageEditorForm.RegisteredListBoxDrawItem ',DbgSName(CurIcon),' ',CurComponent.ComponentClass.ClassName);
       if CurIcon<>nil then begin
