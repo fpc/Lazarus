@@ -491,12 +491,13 @@ begin
       CaretPos  := CPos;
     end;
   end;
-
   if not (wcfCreatingHandle in FWinControlFlags) then
   begin
-    Modified := True;
     if ([csLoading,csDestroying]*ComponentState=[]) then
+    begin
+      Modified := True;
       Change;
+    end;
   end;
 end;
 
