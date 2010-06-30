@@ -1079,6 +1079,9 @@ begin
           ]);
         {$ENDIF}
         DeliverMessage(TheForm, SizeMsg);
+        if (gtk_major_version = 2) and (gtk_minor_version <= 8) and
+          (TheForm.WindowState = wsMaximized) then
+            gtk_widget_queue_draw(PGtkWidget(TheForm.Handle));
       end;
     end;
   end;
