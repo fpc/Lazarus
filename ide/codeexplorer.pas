@@ -1632,7 +1632,7 @@ end;
 procedure TCodeExplorerView.Refresh(OnlyVisible: boolean);
 begin
   Exclude(FFlags,cevCheckOnIdle);
-  debugln(['TCodeExplorerView.Refresh ']);
+  //debugln(['TCodeExplorerView.Refresh ']);
   RefreshCode(OnlyVisible);
   RefreshDirectives(OnlyVisible);
 end;
@@ -1736,20 +1736,20 @@ begin
         // still no tool
         exit;
       end;
-      debugln(['TCodeExplorerView.RefreshCode no tool']);
+      //debugln(['TCodeExplorerView.RefreshCode no tool']);
     end else begin
       if not FLastCodeValid then begin
-        debugln(['TCodeExplorerView.RefreshCode last code not valid'])
+        //debugln(['TCodeExplorerView.RefreshCode last code not valid'])
       end else if ACodeTool.MainFilename<>FCodeFilename then begin
-        debugln(['TCodeExplorerView.RefreshCode File changed ',ACodeTool.MainFilename,' ',FCodeFilename])
+        //debugln(['TCodeExplorerView.RefreshCode File changed ',ACodeTool.MainFilename,' ',FCodeFilename])
       end else if (ACodeTool.Scanner=nil) then begin
-        debugln(['TCodeExplorerView.RefreshCode Scanner=nil'])
+        //debugln(['TCodeExplorerView.RefreshCode Scanner=nil'])
       end else if (ACodeTool.Scanner.ChangeStep<>FLastCodeChangeStep) then begin
-        debugln(['TCodeExplorerView.RefreshCode Scanner changed ',ACodeTool.Scanner.ChangeStep,' ',FLastCodeChangeStep])
+        //debugln(['TCodeExplorerView.RefreshCode Scanner changed ',ACodeTool.Scanner.ChangeStep,' ',FLastCodeChangeStep])
       end else if (Mode<>FLastMode) then begin
-        debugln(['TCodeExplorerView.RefreshCode Mode changed ',ord(Mode),' ',ord(FLastMode)])
+        //debugln(['TCodeExplorerView.RefreshCode Mode changed ',ord(Mode),' ',ord(FLastMode)])
       end else if (fLastCodeOptionsChangeStep<>CodeExplorerOptions.ChangeStep) then begin
-        debugln(['TCodeExplorerView.RefreshCode Options changed ',fLastCodeOptionsChangeStep,' ',CodeExplorerOptions.ChangeStep])
+        //debugln(['TCodeExplorerView.RefreshCode Options changed ',fLastCodeOptionsChangeStep,' ',CodeExplorerOptions.ChangeStep])
       end else begin
         // still the same source and options
         exit;
