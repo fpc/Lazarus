@@ -723,7 +723,7 @@ var
     end;
   end;
 begin
-  if UpdatingColor or (hafStyleMask in FCurHighlightElement.Features) then
+  if UpdatingColor or not (hafStyleMask in FCurHighlightElement.Features) then
     Exit;
 
   AttrToEdit := FCurHighlightElement;
