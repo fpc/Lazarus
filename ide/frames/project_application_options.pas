@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, Buttons, ComCtrls, ExtDlgs, Math, LCLType, IDEOptionsIntf,
   Project, LazarusIDEStrConsts, EnvironmentOpts, ApplicationBundle, ProjectIcon,
-  W32Manifest;
+  W32Manifest, CompilerOptions;
 
 type
 
@@ -40,10 +40,12 @@ type
     procedure IconTrackChange(Sender: TObject);
     procedure LoadIconButtonClick(Sender: TObject);
     procedure SaveIconButtonClick(Sender: TObject);
+    procedure TargetFileEditChange(Sender: TObject);
   private
     FProject: TProject;
     procedure SetIconFromStream(Value: TStream);
     function GetIconAsStream: TStream;
+    procedure UpdateTargetFileLabel;
   public
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -56,13 +58,18 @@ implementation
 
 {$R *.lfm}
 
-function CreateProjectApplicationBundle(AProject: TProject): boolean;
+function CreateProjectApplicationBundle(AProject: TProject): string;
+// returns target file name
 var
   TargetExeName: string;
 begin
-  Result := False;
+  Result := '';
   if AProject.MainUnitInfo = nil then
+  begin
+    MessageDlg(lisCCOErrorCaption, lisThisProjectHasNoMainSourceFile,
+      mtError, [mbCancel], 0);
     Exit;
+  end;
   if AProject.IsVirtual then
     TargetExeName := EnvironmentOptions.GetTestBuildDirectory +
       ExtractFilename(AProject.MainUnitInfo.Filename)
@@ -72,10 +79,20 @@ begin
 
   if not (CreateApplicationBundle(TargetExeName, AProject.Title, True) in
     [mrOk, mrIgnore]) then
+  begin
+    MessageDlg(lisCCOErrorCaption, Format(
+      lisFailedToCreateApplicationBundleFor, [TargetExeName]), mtError, [
+      mbCancel], 0);
     Exit;
+  end;
   if not (CreateAppBundleSymbolicLink(TargetExeName, True) in [mrOk, mrIgnore]) then
+  begin
+    // no error message needed
     Exit;
-  Result := True;
+  end;
+  MessageDlg(lisSuccess, Format(lisTheApplicationBundleWasCreatedFor, [
+    TargetExeName]), mtInformation, [mbOk], 0);
+  Result := TargetExeName;
 end;
 
 { TProjectApplicationOptionsFrame }
@@ -134,6 +151,11 @@ begin
     IconImage.Picture.SaveToFile(SavePictureDialog1.FileName);
 end;
 
+procedure TProjectApplicationOptionsFrame.TargetFileEditChange(Sender: TObject);
+begin
+  UpdateTargetFileLabel;
+end;
+
 procedure TProjectApplicationOptionsFrame.SetIconFromStream(Value: TStream);
 begin
   IconImage.Picture.Clear;
@@ -157,6 +179,14 @@ begin
   end;
 end;
 
+procedure TProjectApplicationOptionsFrame.UpdateTargetFileLabel;
+begin
+  if TargetFileEdit.Text<>'' then
+    TargetFileLabel.Caption:=dlgPOTargetFileName
+  else
+    TargetFileLabel.Caption:=lisTargetFileNameEmptyUseUnitOutputDirectory;
+end;
+
 function TProjectApplicationOptionsFrame.GetTitle: string;
 begin
   Result := dlgPOApplication;
@@ -168,8 +198,8 @@ begin
   TitleLabel.Caption := dlgPOTitle;
   TitleEdit.Text := '';
   OutputSettingsGroupBox.Caption := dlgPOOutputSettings;
-  TargetFileLabel.Caption := dlgPOTargetFileName;
   TargetFileEdit.Text := '';
+  UpdateTargetFileLabel;
   UseAppBundleCheckBox.Caption := dlgPOUseAppBundle;
   UseAppBundleCheckBox.Checked := False;
   UseXPManifestCheckBox.Caption := dlgPOUseManifest;

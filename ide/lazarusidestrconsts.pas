@@ -1879,6 +1879,9 @@ resourcestring
   dlgCCOTestMissingPPU = 'Test: Checking missing fpc ppu ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
+  lisFailedToCreateApplicationBundleFor = 'Failed to create Application '
+    +'Bundle for "%s"';
+  lisThisProjectHasNoMainSourceFile = 'This project has no main source file';
   lisErrorLoadingFile2 = 'Error loading file "%s":%s%s';
   lisNoneClickToChooseOne = 'none, click to choose one';
   lisTreeNeedsRefresh = 'Tree needs refresh';
@@ -1978,6 +1981,8 @@ resourcestring
   dlgPOTitle = 'Title:';
   dlgPOOutputSettings = 'Output Settings';
   dlgPOTargetFileName = 'Target file name:';
+  lisTargetFileNameEmptyUseUnitOutputDirectory = 'Target file name: (empty = '
+    +'use unit output directory)';
   dlgPOUseAppBundle = 'Use Application Bundle for running and debugging (darwin only)';
   dlgPOCreateAppBundle = 'Create Application Bundle';
   dlgPOUseManifest = 'Use manifest file to enable themes (windows only)';
@@ -3002,6 +3007,8 @@ resourcestring
   lisMakeResStrSourcePreview = 'Source preview';
   lisNoStringConstantFound = 'No string constant found';
   lisSuccess = 'Success';
+  lisTheApplicationBundleWasCreatedFor = 'The Application Bundle was created '
+    +'for "%s"';
   lisAllBlocksLooksOk = 'All blocks looks ok.';
   lisHintTheMakeResourcestringFunctionExpectsAStringCon = 'Hint: The "Make '
     +'Resourcestring" function expects a string constant.%sPlease select the '

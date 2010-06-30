@@ -538,6 +538,7 @@ begin
       mtError,ErrorButtons+[mbCancel],'');
     if Result<>mrRetry then exit;
   end;
+  Result:=mrOk;
   {$ELSE}
   Result:=mrIgnore;
   {$ENDIF}
