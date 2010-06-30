@@ -459,6 +459,7 @@ begin
   Pos2:=0;
   if Node1<>nil then Pos1:=Node1.StartPos;
   if Node2<>nil then Pos2:=Node2.StartPos;
+  ClearIgnoreErrorAfter;
   BuildTree(false); // parse whole unit
   if Node1<>nil then Node1:=FindDeepestNodeAtPos(Pos1,true);
   if Node2<>nil then Node2:=FindDeepestNodeAtPos(Pos2,true);
@@ -1158,7 +1159,6 @@ begin
   // cursor is in class/object definition
   if (AClassNode.SubDesc and ctnsForwardDeclaration)>0 then exit;
   CheckWholeUnitParsed(AClassNode,CursorNode);
-  //BuildSubTreeForClass(AClassNode);
   // parse class and build CodeTreeNodes for all properties/methods
   {$IFDEF CTDEBUG}
   DebugLn('TCodeCompletionCodeTool.CompleteCode C ',dbgs(CleanCursorPos),', |',copy(Src,CleanCursorPos,8));
