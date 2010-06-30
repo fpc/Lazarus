@@ -153,7 +153,17 @@ type
 
   TCarbonEdit = class(TCarbonCustomEdit)
   private
-    FIsPassword: Boolean;
+    FIsPassword   : Boolean;
+
+    //   Native Carbon edit's bounds are changing "internal edit" control (not the frame)  //
+    // for this reason EditExtra* constants have been introduced.                          //
+    // So the bounds of the frame a changed (for LCL compatibility);                       //
+    //   Howevr, GetFrameBounds cannot return correct value, if Bounds of the edit         //
+    // is smaller than EditExtraLeft + EditExtraRight, or EditExtraTop+EditExtraBottom     //
+    // Incorrect returned bounds is causes endless loop in LCL processing.                 //
+    // For this reason "TooSmall" flag is introduced to return smaller size of the control //
+    FTooSmall     : Boolean;
+    FSmallBounds  : TRect;
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
     function GetFrameBounds(var r: TRect): Boolean; override;    
@@ -1431,16 +1441,38 @@ begin
   dec(r.Bottom, EditExtraBottom);
   inc(r.Left, EditExtraLeft);
   dec(r.Right, EditExtraRight);
+
+  FTooSmall:=False;
+  if r.Right<r.Left then
+  begin
+    FTooSmall:=True;
+    r.Right:=r.Left;
+  end;
+  if r.Bottom<r.Top then
+  begin
+    FTooSmall:=True;
+    r.Bottom:=r.Top;
+  end;
+  if FTooSmall then FSmallBounds:=ARect;
+
   Result := inherited SetBounds(r);
 end;
 
 function TCarbonEdit.GetFrameBounds(var r: TRect): Boolean; 
 begin
-  Result := inherited GetFrameBounds(r);
-  dec(r.Top, EditExtraTop);
-  inc(r.Bottom, EditExtraBottom);
-  dec(r.Left, EditExtraLeft);
-  inc(r.Right, EditExtraRight);
+  if FTooSmall then
+  begin
+    r:=FSmallBounds;
+    Result:=True;
+  end
+  else
+  begin
+    Result := inherited GetFrameBounds(r);
+    dec(r.Top, EditExtraTop);
+    inc(r.Bottom, EditExtraBottom);
+    dec(r.Left, EditExtraLeft);
+    inc(r.Right, EditExtraRight);
+  end;
 end;
 
 
