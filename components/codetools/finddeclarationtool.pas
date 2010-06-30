@@ -5306,13 +5306,33 @@ var
   OldFlags: TFindDeclarationFlags;
   Node: TCodeTreeNode;
   CollectResult: TIdentifierFoundResult;
+  MissingUnitNamePos: Integer;
+
+  procedure RaiseUnitNotFound;
+  var
+    AnUnitName: String;
+    aFilename: String;
+  begin
+    MoveCursorToCleanPos(MissingUnitNamePos);
+    ReadNextAtom;
+    AnUnitName:=GetAtom;
+    ReadNextAtom;
+    if UpAtomIs('IN') then begin
+      ReadNextAtom;
+      aFilename:=GetAtom;
+    end else
+      aFilename:=AnUnitName;
+    RaiseExceptionInstance(
+      ECodeToolUnitNotFound.Create(Self,Format(ctsUnitNotFound,[AnUnitName]),aFilename));
+  end;
+
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(UsesNode);{$ENDIF}
   {$IFDEF ShowTriedParentContexts}
   DebugLn(['TFindDeclarationTool.FindIdentifierInUsesSection ',MainFilename,' fdfIgnoreUsedUnits=',fdfIgnoreUsedUnits in Params.Flags]);
   {$ENDIF}
   Result:=false;
-  // first search in used unit names
+  // first search the identifier in the uses section (not in the interfaces of the units)
   if (Params.IdentifierTool=Self) then begin
     Node:=UsesNode.LastChild;
     while Node<>nil do begin
@@ -5338,6 +5358,7 @@ begin
   end;
 
   if not (fdfIgnoreUsedUnits in Params.Flags) then begin
+    MissingUnitNamePos:=0;
     // search in units
     Node:=UsesNode.LastChild;
     while Node<>nil do begin
@@ -5350,18 +5371,27 @@ begin
         InAtom:=CurPos;
       end else
         InAtom.StartPos:=0;
-      NewCodeTool:=OpenCodeToolForUnit(UnitNameAtom,InAtom,true);
-      // search the identifier in the interface of the used unit
-      OldFlags:=Params.Flags;
-      Params.Flags:=[fdfIgnoreUsedUnits]+(fdfGlobalsSameIdent*Params.Flags)
-                   -[fdfExceptionOnNotFound];
-      Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
-      Params.Flags:=OldFlags;
+      NewCodeTool:=OpenCodeToolForUnit(UnitNameAtom,InAtom,false);
+      if NewCodeTool<>nil then begin
+        // search the identifier in the interface of the used unit
+        OldFlags:=Params.Flags;
+        Params.Flags:=[fdfIgnoreUsedUnits]+(fdfGlobalsSameIdent*Params.Flags)
+                     -[fdfExceptionOnNotFound];
+        Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
+        Params.Flags:=OldFlags;
+        if Result and Params.IsFinal then exit;
+      end else if MissingUnitNamePos=0 then begin
+        MissingUnitNamePos:=UnitNameAtom.StartPos;
+      end;
       {$IFDEF ShowTriedParentContexts}
       DebugLn(['TFindDeclarationTool.FindIdentifierInUsesSection ',GetAtom(UnitNameAtom),' Result=',Result,' IsFinal=',Params.IsFinal]);
       {$ENDIF}
-      if Result and Params.IsFinal then exit;
       Node:=Node.PriorBrother;
+    end;
+
+    if (not Result) and (MissingUnitNamePos>0) then begin
+      // identifier not found and there is a missing unit
+      RaiseUnitNotFound;
     end;
   end;
 end;

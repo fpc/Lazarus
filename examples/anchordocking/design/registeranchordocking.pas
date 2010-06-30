@@ -201,6 +201,8 @@ end;
 
 constructor TIDEAnchorDockMaster.Create;
 begin
+  inherited Create;
+  fEnabled:=true;
   IDEAnchorDockMaster:=Self;
   DockMaster.OnCreateControl:=@DockMasterCreateControl;
   DockMaster.OnShowOptions:=@ShowAnchorDockOptions;
@@ -533,8 +535,6 @@ begin
   OptionsFrame:=TAnchorDockOptionsFrame.Create(Self);
   with OptionsFrame do begin
     Name:='OptionsFrame';
-    Align:=alBottom;
-    AnchorToNeighbour(akTop,6,EnableCheckBox);
   end;
 end;
 
@@ -553,8 +553,11 @@ begin
   if ADialog=nil then ;
   if IDEDockMaster=IDEAnchorDockMaster then begin
     NoteLabel.Visible:=false;
-    EnableCheckBox.Enabled:=false;
-    OptionsFrame.Visible:=false;
+    EnableCheckBox.AnchorParallel(akTop,6,Self);
+    OptionsFrame.Align:=alBottom;
+    OptionsFrame.AnchorToNeighbour(akTop,6,EnableCheckBox);
+    OptionsFrame.Parent:=Self;
+    EnableCheckBox.Caption:=adrsDockingEnabledRequiresARestartOfTheIDE;
   end else begin
     NoteLabel.Visible:=true;
     NoteLabel.Caption:=Format(adrsToUseAnchordockingYouMustFirstUninstall, [
@@ -562,9 +565,9 @@ begin
     NoteLabel.Hint:=Format(
       adrsThereIsAnotherDockMasterInstalledOnlyOneDockingPac, [DbgSName(
       IDEDockMaster)]);
-    OptionsFrame.Visible:=true;
+    EnableCheckBox.Visible:=false;
+    OptionsFrame.Parent:=nil;
   end;
-  EnableCheckBox.Caption:=adrsDockingEnabledRequiresARestartOfTheIDE;
 end;
 
 procedure TAnchorDockIDEFrame.ReadSettings(AOptions: TAbstractIDEOptions);
