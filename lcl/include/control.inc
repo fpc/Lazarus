@@ -113,7 +113,7 @@ procedure TControl.DoDock(NewDockSite: TWinControl; var ARect: TRect);
 begin
   if (NewDockSite = nil) then Parent := nil;
   if NewDockSite<>nil then begin
-    DebugLn('TControl.DoDock BEFORE Adjusting ',DbgSName(Self),' ',dbgs(ARect));
+    //DebugLn('TControl.DoDock BEFORE Adjusting ',DbgSName(Self),' ',dbgs(ARect));
     // adjust new bounds, so that they at least fit into the client area of
     // its parent
     if NewDockSite.AutoSize then begin
@@ -135,14 +135,14 @@ begin
         alBottom: OffsetRect(ARect,0,NewDockSite.ClientHeight-ARect.Bottom);
       end;
     end;
-    DebugLn('TControl.DoDock AFTER Adjusting ',DbgSName(Self),' ',dbgs(ARect),' Align=',AlignNames[Align],' NewDockSite.ClientRect=',dbgs(NewDockSite.ClientRect));
+    //DebugLn('TControl.DoDock AFTER Adjusting ',DbgSName(Self),' ',dbgs(ARect),' Align=',AlignNames[Align],' NewDockSite.ClientRect=',dbgs(NewDockSite.ClientRect));
   end;
   //debugln('TControl.DoDock BEFORE MOVE ',Name,' BoundsRect=',dbgs(BoundsRect),' NewRect=',dbgs(ARect));
   if Parent<>NewDockSite then
     BoundsRectForNewParent := ARect
   else
     BoundsRect := ARect;
-  debugln('TControl.DoDock AFTER MOVE ',DbgSName(Self),' BoundsRect=',dbgs(BoundsRect),' TriedRect=',dbgs(ARect));
+  //debugln('TControl.DoDock AFTER MOVE ',DbgSName(Self),' BoundsRect=',dbgs(BoundsRect),' TriedRect=',dbgs(ARect));
 end;
 
 {------------------------------------------------------------------------------
@@ -3871,7 +3871,7 @@ begin
       NewBounds.TopLeft:=ControlOrigin;
     end;
     NewBounds := Bounds(NewBounds.Left,NewBounds.Top,UndockWidth,UndockHeight);
-    DebugLn('TControl.ManualDock ',Name,' NewDockSite=nil HostDockSiteManagerAvailable=',dbgs(HostDockSiteManagerAvailable(HostDockSite)),' NewBounds=',dbgs(NewBounds));
+    //DebugLn('TControl.ManualDock ',Name,' NewDockSite=nil HostDockSiteManagerAvailable=',dbgs(HostDockSiteManagerAvailable(HostDockSite)),' NewBounds=',dbgs(NewBounds));
     Result := ManualFloat(NewBounds);
   end
   else
@@ -3886,12 +3886,12 @@ begin
       // - this control still uses the DockSite as parent control
       // Note: This can *not* be combined with ManualFloat, because that would
       //       create a new HostDockSite
-      DebugLn('TControl.ManualDock UNDOCKING ',Name);
+      //DebugLn('TControl.ManualDock UNDOCKING ',Name);
       Result:=HostDockSite.DoUndock(NewDockSite,Self);
     end;
     
     if Result then begin
-      DebugLn('TControl.ManualDock DOCKING ',Name);
+      //DebugLn('TControl.ManualDock DOCKING ',Name);
       // create TDragDockObject for docking parameters
       DockObject := TDragDockObject.Create(Self);
       try
@@ -3908,7 +3908,7 @@ begin
         // map from screen coordinates to new HostSite coordinates
         NewPosition:=NewDockSite.ScreenToClient(NewPosition);
         // DockDrop
-        DebugLn('TControl.ManualDock DOCKDROP ',Name,' DockRect=',dbgs(DockObject.DockRect),' NewPos=',dbgs(NewPosition));
+        //DebugLn('TControl.ManualDock DOCKDROP ',Name,' DockRect=',dbgs(DockObject.DockRect),' NewPos=',dbgs(NewPosition));
         NewDockSite.DockDrop(DockObject,NewPosition.X,NewPosition.Y);
       finally
         DockObject.Free;

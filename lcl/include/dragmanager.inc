@@ -391,13 +391,17 @@ procedure TDockPerformer.DragMove(APosition: TPoint);
       if QualifyingSites.Count > 0 then
       begin
         // if a parent and a child has qualified remove the parent
-        for i:=QualifyingSites.Count-1 downto 0 do
-          for j:=i+1 to QualifyingSites.Count-1 do
+        for i:=QualifyingSites.Count-1 downto 0 do begin
+          debugln(['FindDockSiteAtPosition qualified: ',DbgSName(TWinControl(QualifyingSites[i]))]);
+          for j:=i+1 to QualifyingSites.Count-1 do begin
             if TWinControl(QualifyingSites[i]).IsParentOf(TWinControl(QualifyingSites[j]))
             then begin
+              debugln(['FindDockSiteAtPosition isparentof ',DbgSName(TWinControl(QualifyingSites[j]))]);
               QualifyingSites.Delete(i);
               break;
             end;
+          end;
+        end;
 
         i:=0;
         if QualifyingSites.Count>1 then

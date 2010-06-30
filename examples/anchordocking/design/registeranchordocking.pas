@@ -145,9 +145,9 @@ end;
 procedure TIDEAnchorDockMaster.DockMasterCreateControl(Sender: TObject;
   aName: string; var AControl: TControl; DoDisableAutoSizing: boolean);
 begin
-  debugln(['TIDEAnchorDockMaster.DockMasterCreateControl CtrlName="',dbgstr(AName),'"']);
+  //debugln(['TIDEAnchorDockMaster.DockMasterCreateControl CtrlName="',dbgstr(AName),'"']);
   AControl:=IDEWindowCreators.GetForm(aName,true,DoDisableAutoSizing);
-  debugln(['TIDEAnchorDockMaster.DockMasterCreateControl Result=',DbgSName(AControl)]);
+  //debugln(['TIDEAnchorDockMaster.DockMasterCreateControl Result=',DbgSName(AControl)]);
 end;
 
 procedure TIDEAnchorDockMaster.GetDefaultBounds(AForm: TCustomForm; out

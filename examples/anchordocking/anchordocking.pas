@@ -2511,7 +2511,7 @@ function TAnchorDockHostSite.ExecuteDock(NewControl, DropOnControl: TControl;
   DockAlign: TAlign): boolean;
 begin
   if UpdatingLayout then exit;
-  debugln(['TAnchorDockHostSite.ExecuteDock Self="',Caption,'"  Control=',DbgSName(NewControl),' DropOnControl=',DbgSName(DropOnControl),' Align=',dbgs(DockAlign)]);
+  //debugln(['TAnchorDockHostSite.ExecuteDock Self="',Caption,'"  Control=',DbgSName(NewControl),' DropOnControl=',DbgSName(DropOnControl),' Align=',dbgs(DockAlign)]);
 
   DisableAutoSizing;
   try
@@ -4036,7 +4036,7 @@ begin
 
   CanDock:=(Client is TAnchorDockHostSite)
            and not DockMaster.AutoFreedIfControlIsRemoved(Self,Client);
-  //debugln(['TAnchorDockHostSite.GetSiteInfo ',DbgSName(Self),' ',dbgs(BoundsRect),' CanDock=',CanDock]);
+  debugln(['TAnchorDockHostSite.GetSiteInfo ',DbgSName(Self),' ',dbgs(BoundsRect),' ',Caption,' CanDock=',CanDock,' PtIn=',PtInRect(InfluenceRect,MousePos)]);
 
   if Assigned(OnGetSiteInfo) then
     OnGetSiteInfo(Self, Client, InfluenceRect, MousePos, CanDock);
@@ -4617,7 +4617,7 @@ begin
 
       // only allow to dock one control
       DragManager.RegisterDockSite(Site,false);
-      //debugln(['TAnchorDockManager.InsertControl AFTER Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.ClientRect=',dbgs(ADockObject.Control.ClientRect)]);
+      debugln(['TAnchorDockManager.InsertControl AFTER Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.ClientRect=',dbgs(ADockObject.Control.ClientRect)]);
 
     finally
       Site.EnableAutoSizing;
@@ -4747,7 +4747,7 @@ begin
         FStoredConstraints:=Rect(0,0,0,0);
       end;
       Site.BoundsRect:=NewBounds;
-      //debugln(['TAnchorDockManager.RemoveControl Site=',DbgSName(Site),' ',dbgs(Site.BoundsRect)]);
+      debugln(['TAnchorDockManager.RemoveControl Site=',DbgSName(Site),' ',dbgs(Site.BoundsRect)]);
 
       // Site can dock a control again
       DragManager.RegisterDockSite(Site,true);
@@ -4925,6 +4925,8 @@ begin
     alRight: ChildSite.Width:=Site.ClientWidth
                   -(ChildSite.BoundSplitter.Left+ChildSite.BoundSplitter.Width);
     end;
+    // only allow to dock one control
+    DragManager.RegisterDockSite(Site,false);
     //debugln(['TAnchorDockManager.RestoreSite ',DbgSName(Site),' ChildSite=',DbgSName(ChildSite),' Site.Bounds=',dbgs(Site.BoundsRect),' Site.Client=',dbgs(Site.ClientRect),' ChildSite.Bounds=',dbgs(ChildSite.BoundsRect),' Splitter.Bounds=',dbgs(ChildSite.BoundSplitter.BoundsRect)]);
   end;
 end;

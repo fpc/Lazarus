@@ -4,15 +4,10 @@
     <Name Value="AnchorDocking"/>
     <Author Value="Mattias Gaertner mattias@freepascal.org"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Parsing>
-        <SyntaxOptions>
-          <UseAnsiStrings Value="True"/>
-        </SyntaxOptions>
-      </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -21,7 +16,7 @@
 "/>
     <License Value="modified LGPL-2 like LCL
 "/>
-    <Version Minor="5"/>
+    <Version Minor="6"/>
     <Files Count="6">
       <Item1>
         <Filename Value="anchordockpkg.pas"/>
