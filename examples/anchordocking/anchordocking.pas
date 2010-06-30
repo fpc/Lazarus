@@ -157,6 +157,7 @@ type
   private
     FDockBounds: TRect;
     FDockParentClientSize: TSize;
+    FDockRestoreBounds: TRect;
   protected
     procedure SetResizeAnchor(const AValue: TAnchorKind); override;
   public
@@ -169,6 +170,7 @@ type
     function SideAnchoredControlCount(Side: TAnchorKind): integer;
     procedure SaveLayout(LayoutNode: TAnchorDockLayoutTreeNode);
     function HasOnlyOneSibling(Side: TAnchorKind; MinPos, MaxPos: integer): TControl;
+    property DockRestoreBounds: TRect read FDockRestoreBounds write FDockRestoreBounds;
   end;
   TAnchorDockSplitterClass = class of TAnchorDockSplitter;
 
@@ -228,6 +230,7 @@ type
 
   TAnchorDockHostSite = class(TCustomForm)
   private
+    FDockRestoreBounds: TRect;
     FHeader: TAnchorDockHeader;
     FHeaderSide: TAnchorKind;
     FPages: TAnchorDockPageControl;
@@ -303,6 +306,7 @@ type
     // save/restore layout
     procedure SaveLayout(LayoutTree: TAnchorDockLayoutTree;
                          LayoutNode: TAnchorDockLayoutTreeNode);
+    property DockRestoreBounds: TRect read FDockRestoreBounds write FDockRestoreBounds;
 
     property HeaderSide: TAnchorKind read FHeaderSide write SetHeaderSide;
     property Header: TAnchorDockHeader read FHeader;
@@ -386,6 +390,7 @@ type
     FHeaderButtonSize: integer;
     FHeaderClass: TAnchorDockHeaderClass;
     FHeaderHint: string;
+    FIdleConnected: Boolean;
     FManagerClass: TAnchorDockManagerClass;
     FOnCreateControl: TADCreateControlEvent;
     FOnShowOptions: TADShowDockMasterOptionsEvent;
@@ -393,6 +398,7 @@ type
     FPageClass: TAnchorDockPageClass;
     FPageControlClass: TAnchorDockPageControlClass;
     FRestoreLayouts: TAnchorDockRestoreLayouts;
+    FRestoring: boolean;
     FScaleOnResize: boolean;
     FShowHeaderCaption: boolean;
     FHideHeaderCaptionFloatingControl: boolean;
@@ -417,6 +423,8 @@ type
     procedure PopupMenuPopup(Sender: TObject);
     procedure ChangeLockButtonClick(Sender: TObject);
     procedure OptionsClick(Sender: TObject);
+    procedure SetIdleConnected(const AValue: Boolean);
+    procedure SetRestoring(const AValue: boolean);
   protected
     fCloseBtnReferenceCount: integer;
     fCloseBtnBitmap: TBitmap;
@@ -433,6 +441,7 @@ type
     procedure SetShowHeaderCaption(const AValue: boolean);
     procedure SetHideHeaderCaptionFloatingControl(const AValue: boolean);
     procedure SetSplitterWidth(const AValue: integer);
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -474,6 +483,8 @@ type
     function ConfigIsEmpty(Config: TConfigStorage): boolean;
     function LoadLayoutFromConfig(Config: TConfigStorage; Scale: Boolean): boolean;
     property RestoreLayouts: TAnchorDockRestoreLayouts read FRestoreLayouts;
+    property Restoring: boolean read FRestoring write SetRestoring;
+    property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
 
     // manual docking
     procedure ManualFloat(AControl: TControl);
@@ -1248,6 +1259,7 @@ var
     end;
     if Site is TAnchorDockHostSite then begin
       TAnchorDockHostSite(Site).Header.HeaderPosition:=Node.HeaderPosition;
+      TAnchorDockHostSite(Site).DockRestoreBounds:=NewBounds;
     end;
     if Parent=nil then begin
       Site.WindowState:=Node.WindowState;
@@ -1326,6 +1338,7 @@ var
       if SrcRectValid(SrcRect) then
         NewBounds:=Bounds(ScaleX(NewBounds.Left,SrcRect),ScaleX(NewBounds.Top,SrcRect),
           NewBounds.Right-NewBounds.Left,NewBounds.Bottom-NewBounds.Top);
+      Splitter.DockRestoreBounds:=NewBounds;
       Splitter.BoundsRect:=NewBounds;
       if Node.NodeType=adltnSplitterVertical then
         Splitter.ResizeAnchor:=akLeft
@@ -1411,6 +1424,7 @@ begin
   Result:=true;
   WorkArea:=Rect(0,0,0,0);
   Restore(Tree.Root,nil,Rect(0,0,0,0));
+  Restoring:=true;
 end;
 
 function TAnchorDockMaster.DoCreateControl(aName: string;
@@ -1522,6 +1536,13 @@ begin
   end;
 end;
 
+procedure TAnchorDockMaster.OnIdle(Sender: TObject; var Done: Boolean);
+begin
+  if Done then ;
+  Restoring:=false;
+  IdleConnected:=false;
+end;
+
 procedure TAnchorDockMaster.ChangeLockButtonClick(Sender: TObject);
 begin
   AllowDragging:=not AllowDragging;
@@ -1530,6 +1551,36 @@ end;
 procedure TAnchorDockMaster.OptionsClick(Sender: TObject);
 begin
   if Assigned(OnShowOptions) then OnShowOptions(Self);
+end;
+
+procedure TAnchorDockMaster.SetIdleConnected(const AValue: Boolean);
+begin
+  if FIdleConnected=AValue then exit;
+  FIdleConnected:=AValue;
+  if IdleConnected then
+    Application.AddOnIdleHandler(@OnIdle,true)
+  else
+    Application.RemoveOnIdleHandler(@OnIdle);
+end;
+
+procedure TAnchorDockMaster.SetRestoring(const AValue: boolean);
+var
+  AComponent: TComponent;
+  i: Integer;
+begin
+  if FRestoring=AValue then exit;
+  FRestoring:=AValue;
+  if FRestoring then begin
+    IdleConnected:=true;
+  end else begin
+    for i:=0 to ComponentCount-1 do begin
+      AComponent:=Components[i];
+      if AComponent is TAnchorDockHostSite then
+        TAnchorDockHostSite(AComponent).DockRestoreBounds:=Rect(0,0,0,0)
+      else if AComponent is TAnchorDockSplitter then
+        TAnchorDockSplitter(AComponent).DockRestoreBounds:=Rect(0,0,0,0)
+    end;
+  end;
 end;
 
 procedure TAnchorDockMaster.SetHeaderButtonSize(const AValue: integer);
@@ -3382,7 +3433,8 @@ var
 begin
   inherited AlignControls(AControl, ARect);
   if csDestroying in ComponentState then exit;
-  if DockMaster.ScaleOnResize and (not UpdatingLayout) then begin
+  if DockMaster.ScaleOnResize and (not UpdatingLayout)
+  and (not DockMaster.Restoring) then begin
     // scale splitters
     for i:=0 to ControlCount-1 do begin
       Child:=Controls[i];
@@ -4711,19 +4763,43 @@ var
   HeightDiff: Integer;
   SiteMinSize: TPoint;
   ChildMaxSize: TPoint;
+  ClientRectChanged: Boolean;
+  AControl: TControl;
+  b: TRect;
+  i: Integer;
 begin
   if Force then ;
+
   //debugln(['TAnchorDockManager.ResetBounds Site="',Site.Caption,'" Force=',Force,' ',dbgs(Site.ClientRect)]);
+  OldSiteClientRect:=FSiteClientRect;
+  FSiteClientRect:=Site.ClientRect;
+  WidthDiff:=FSiteClientRect.Right-OldSiteClientRect.Right;
+  HeightDiff:=FSiteClientRect.Bottom-OldSiteClientRect.Bottom;
+  ClientRectChanged:=(WidthDiff<>0) or (HeightDiff<>0);
+  if (not ClientRectChanged) and (not PreferredSiteSizeAsSiteMinimum) then
+    exit;
+
+  if ClientRectChanged and DockMaster.Restoring then begin
+    // ClientRect changed => restore bounds
+    for i:=0 to Site.ControlCount-1 do begin
+      AControl:=Site.Controls[i];
+      b:=Rect(0,0,0,0);
+      if AControl is TAnchorDockHostSite then
+        b:=TAnchorDockHostSite(AControl).DockRestoreBounds
+      else if AControl is TAnchorDockSplitter then
+        b:=TAnchorDockSplitter(AControl).DockRestoreBounds;
+      if (b.Right>b.Left) and (b.Bottom>b.Top) then begin
+        AControl.BoundsRect:=b;
+        if AControl is TAnchorDockSplitter then
+          TAnchorDockSplitter(AControl).UpdateDockBounds;
+      end;
+    end;
+    exit;
+  end;
+
   if DockSite<>nil then exit;
   Child:=GetChildSite;
   if Child=nil then exit;
-  OldSiteClientRect:=FSiteClientRect;
-  FSiteClientRect:=Site.ClientRect;
-  if CompareRect(@FSiteClientRect,@OldSiteClientRect)
-  and (not PreferredSiteSizeAsSiteMinimum) then
-    exit;
-  WidthDiff:=FSiteClientRect.Right-OldSiteClientRect.Right;
-  HeightDiff:=FSiteClientRect.Bottom-OldSiteClientRect.Bottom;
 
   //debugln(['TAnchorDockManager.ResetBounds ',DbgSName(Site),' ',dbgs(Child.BaseBounds),' ',WidthDiff,',',HeightDiff]);
   ChildMaxSize:=Point(Site.ClientWidth-DockMaster.SplitterWidth,
