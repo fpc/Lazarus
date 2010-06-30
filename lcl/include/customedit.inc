@@ -463,6 +463,12 @@ begin
   end;//End if (Button = mbLeft)
 end;
 
+procedure TCustomEdit.RealSetText(const AValue: TCaption);
+begin
+  inherited RealSetText(AValue);
+  Modified := False;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.SetModified
   Params:  Value to set FModified to

@@ -729,6 +729,7 @@ type
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
+    procedure RealSetText(const AValue: TCaption); override;
     property AutoSelect: Boolean read FAutoSelect write FAutoSelect default True;
     property AutoSelected: Boolean read FAutoSelected write FAutoSelected;
     property ParentColor default False;
