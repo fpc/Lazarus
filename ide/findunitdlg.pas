@@ -181,7 +181,7 @@ begin
   if Step=imqfoMenuItem then begin
     DebugLn(['TQuickFixUnitNotFound_Search.Execute ']);
     // get source position
-    if not GetMsgLineFilename(Msg,CodeBuf) then exit;
+    if not GetMsgLineFilename(Msg,CodeBuf,false) then exit;
     Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
     if not LazarusIDE.BeginCodeTools then begin
       DebugLn(['TQuickFixUnitNotFound_Search.Execute failed because IDE busy']);
@@ -649,7 +649,7 @@ begin
   if Step=imqfoMenuItem then begin
     DebugLn(['TQuickFixIncludeNotFound_Search.Execute ']);
     // get source position
-    if not GetMsgLineFilename(Msg,CodeBuf) then exit;
+    if not GetMsgLineFilename(Msg,CodeBuf,false) then exit;
     Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
     if not LazarusIDE.BeginCodeTools then begin
       DebugLn(['TQuickFixIncludeNotFound_Search.Execute failed because IDE busy']);

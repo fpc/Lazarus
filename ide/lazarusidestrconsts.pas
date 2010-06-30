@@ -1882,6 +1882,11 @@ resourcestring
   dlgCCOTestMissingPPU = 'Test: Checking missing fpc ppu ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
+  lisInvalidLineColumnInMessage = 'Invalid line, column in message%s%s';
+  lisUnableToLoadFile = 'Unable to load file :%s%s';
+  lisQuickFixRemoveUnit = 'Quick fix: Remove unit';
+  lisMessageContainsNoFilePositionInformation = 'Message contains no file '
+    +'position information:%s%s';
   lisFailedToCreateApplicationBundleFor = 'Failed to create Application '
     +'Bundle for "%s"';
   lisThisProjectHasNoMainSourceFile = 'This project has no main source file';
@@ -4827,6 +4832,8 @@ resourcestring
     +'hostname gdb%s or: %s/usr/bin/setsid /usr/bin/ssh username@hostname gdb%s';
   lisRemoveUnitFromUsesSection = 'Remove unit from uses section';
   lisRemoveLocalVariable = 'Remove local variable %s';
+  lisHideMessageViaDirective = 'Hide message via directive';
+  lisRemoveLocalVariable2 = 'Remove local variable';
   lisNoHints = 'no hints';
 
 implementation
