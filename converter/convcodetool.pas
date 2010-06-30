@@ -50,6 +50,7 @@ type
     constructor Create(Code: TCodeBuffer);
     destructor Destroy; override;
     function Convert: TModalResult;
+    function FindApptypeConsole: boolean;
     function RemoveUnits: boolean;
     function RenameUnits: boolean;
     function UsesSectionsToUnitnames: TStringList;
@@ -152,6 +153,22 @@ begin
       CodeToolBoss.HandleException(e);
       Result:=HandleCodetoolError;
     end;
+  end;
+end;
+
+function TConvDelphiCodeTool.FindApptypeConsole: boolean;
+// Return true if there is {$APPTYPE CONSOLE} directive.
+var
+  ParamPos, ACleanPos: Integer;
+begin
+  Result:=false;
+  ACleanPos:=0;
+  with fCodeTool do begin
+    BuildTree(true);
+    ACleanPos:=FindNextCompilerDirectiveWithName(Src, 1, 'Apptype',
+                                                 Scanner.NestedComments, ParamPos);
+    if (ACleanPos>0) and (ACleanPos<=SrcLen) and (ParamPos>0) then
+      Result:=LowerCase(copy(Src,ParamPos,7))='console';
   end;
 end;
 

@@ -126,6 +126,7 @@ type
     fDelphiPFilename: string;          // .dpr or .dpk file name
     fLazPSuffix: string;               // '.lpi' or '.lpk'
     fDelphiPSuffix: string;            // '.dpr' or '.dpk'
+    fIsConsoleApp: Boolean;
     // Units found in user defined paths.
     fCachedUnitNames: TStringToStringTree;
     // Map of case incorrect unit name -> real unit name.
@@ -153,6 +154,7 @@ type
   protected
     function CreateInstance: TModalResult; virtual; abstract;
     function CreateMainSourceFile: TModalResult; virtual;
+    function ScanMainSourceFile: TModalResult; virtual;
     function ConvertMainSourceFile: TModalResult; virtual;
     function FindAllUnits: TModalResult; virtual; abstract;
     function ConvertAllUnits: TModalResult; virtual; abstract;
@@ -190,6 +192,7 @@ type
   protected
     function CreateInstance: TModalResult; override;
     function CreateMainSourceFile: TModalResult; override;
+    function ScanMainSourceFile: TModalResult; override;
     function ConvertMainSourceFile: TModalResult; override;
     function FindAllUnits: TModalResult; override;
     function ConvertAllUnits: TModalResult; override;
@@ -531,8 +534,8 @@ begin
       if Result<>mrOk then exit;
     end;
 
-    // check LCL path only for projects/packages.
-    if Assigned(fOwnerConverter) then begin
+    // Check LCL path for single files. They are correct when converting projects.
+    if not Assigned(fOwnerConverter) then begin
       Result:=CheckFilenameForLCLPaths(fLazUnitFilename);
       if Result<>mrOk then exit;
     end;
@@ -759,6 +762,10 @@ begin
     for i:=fMissingUnits.Count-1 downto 0 do begin
       UnitN:=fMissingUnits[i];
       if UnitUpdater.FindReplacement(UnitN, s) then begin
+        // Don't replace Windows with LCL units in a console application.
+        if Assigned(fOwnerConverter) and fOwnerConverter.fIsConsoleApp and
+            (LowerCase(UnitN)='windows') then
+          s:='';
         if fSettings.AutoReplaceUnits then
           RenameOrRemoveUnit(UnitN, s)         // Automatic rename / remove.
         else
@@ -835,6 +842,7 @@ end;
 constructor TConvertDelphiPBase.Create(const AFilename, ADescription: string);
 begin
   fOrigPFilename:=AFilename;
+  fIsConsoleApp:=False;                      // Default = GUI app.
   fCachedUnitNames:=TStringToStringTree.Create(false);
   fCachedRealFileNames:=TStringToStringTree.Create(true);
   fSettings:=TConvertSettings.Create('Convert Delphi '+ADescription);
@@ -899,9 +907,12 @@ begin
 
   RemoveNonExistingFiles(false);
   CleanUpCompilerOptionsSearchPaths(CompOpts);
-
-  // load required packages
-  AddPackageDependency('LCL');         // Nearly all Delphi projects require it.
+  // Scan LPR file for directives. Sets fIsConsoleApp flag.
+  Result:=ScanMainSourceFile;
+  if Result<>mrOK then exit;
+  // LCL dependency is added automatically later for GUI applications.
+//  AddPackageDependency('LCL');
+  // ToDo: make an option to add NoGUI to Project.CompilerOptions.LCLWidgetType.
   if fProjPack is TProject then
     PkgBoss.AddDefaultDependencies(fProjPack as TProject);
   CustomDefinesChanged;
@@ -1223,6 +1234,11 @@ begin
   Result:=mrOK; // Do nothing. Overridden in project.
 end;
 
+function TConvertDelphiPBase.ScanMainSourceFile: TModalResult;
+begin
+  Result:=mrOK; // Do nothing. Overridden in project.
+end;
+
 function TConvertDelphiPBase.ConvertMainSourceFile: TModalResult;
 begin
   Result:=mrOK; // Do nothing. Overridden in project.
@@ -1295,6 +1311,19 @@ begin
     LazProject.MainUnitInfo.Source:=fMainUnitConverter.fPascalBuffer;
   end;
   Result:=mrOk;
+end;
+
+function TConvertDelphiProject.ScanMainSourceFile: TModalResult;
+var
+  ConvTool: TConvDelphiCodeTool;
+begin
+  Result:=mrOK;
+  ConvTool:=TConvDelphiCodeTool.Create(fMainUnitConverter.fPascalBuffer);
+  try
+    fIsConsoleApp:=ConvTool.FindApptypeConsole;
+  finally
+    ConvTool.Free;
+  end;
 end;
 
 function TConvertDelphiProject.ConvertMainSourceFile: TModalResult;
