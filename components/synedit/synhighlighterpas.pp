@@ -84,7 +84,8 @@ type
     rsAtClass,
     rsAfterClass,
     rsAtClosingBracket, // ')'
-    rsAtCaseLabel
+    rsAtCaseLabel,
+    rsLineIsAllComment
   );
   TRangeStates = set of TRangeState;
 
@@ -113,6 +114,7 @@ type
     cfbtRegion,       // {%Region} user folds, not counted in the Range-Node
     cfbtAnsiComment,  // (* ... *)
     cfbtBorCommand,   // { ... }
+    cfbtSlashComment, // //
     // Internal type / not configurable
     cfbtNone
     );
@@ -2100,6 +2102,7 @@ begin
   FNodeInfoLine := -1;
   fLineNumber := LineNumber;
   FAtLineStart := True;
+  Exclude(fRange, rsLineIsAllComment);
   if not FCatchNodeInfo then
     Next;
 end; { SetLine }
@@ -2581,6 +2584,8 @@ begin
   Inc(Run);
   if fLine[Run] = '/' then begin
     fTokenID := tkComment;
+    if FAtLineStart then
+      include(fRange, rsLineIsAllComment);
     repeat
       Inc(Run);
     until fLine[Run] in [#0, #10, #13];
@@ -2805,6 +2810,7 @@ begin
   inherited SetRange(Value);
   CompilerMode := PasCodeFoldRange.Mode;
   fRange := TRangeStates(Integer(PtrUInt(CodeFoldRange.RangeType)));
+  Exclude(fRange, rsLineIsAllComment);
   FNodeInfoLine := -1;
   FSynPasRangeInfo := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[LineIndex-1];
 end;
@@ -2956,6 +2962,7 @@ end;
 function TSynPasSyn.MinimumPasFoldLevel(Index: Integer; AType: Integer = 1): integer;
 var
   r: TSynPasSynRange;
+  i1, i2: Integer;
 begin
   case AType of
     2:
@@ -2969,10 +2976,26 @@ begin
         if (Index < 0) or (Index >= CurrentLines.Count) then
           exit(0);
         r := TSynPasSynRange(CurrentRanges[Index]);
-        if (r <> nil) and (Pointer(r) <> NullRange) then
-          Result := Min(r.PasFoldEndLevel + LastLinePasFoldLevelFix(Index + 1),
-                        r.PasFoldMinLevel)
-        else
+        if (r <> nil) and (Pointer(r) <> NullRange) then begin
+          i1 := 0;
+          i2 := 0;
+          // Increase result for multiline "//" comments
+          if FFoldConfig[ord(cfbtSlashComment)].Enabled and
+             (rsLineIsAllComment in TRangeStates(Integer(PtrUInt(r.RangeType)))) and
+             (Index + 1 < CurrentLines.Count)
+          then begin
+            if rsLineIsAllComment in
+               TRangeStates(Integer(PtrUInt(TSynPasSynRange(CurrentRanges[Index - 1]).RangeType)))
+            then
+              i1 := 1;
+            if rsLineIsAllComment in
+               TRangeStates(Integer(PtrUInt(TSynPasSynRange(CurrentRanges[Index + 1]).RangeType)))
+            then
+              i2 := 1;
+          end;
+          Result := Min(r.PasFoldEndLevel + LastLinePasFoldLevelFix(Index + 1) + i2,
+                        r.PasFoldMinLevel + i1)
+        end else
           Result := 0;
       end;
   end;
@@ -2994,9 +3017,21 @@ begin
         if (Index < 0) or (Index >= CurrentLines.Count) then
           exit(0);
         r := TSynPasSynRange(CurrentRanges[Index]);
-        if (r <> nil) and (Pointer(r) <> NullRange) then
-          Result := r.PasFoldEndLevel + LastLinePasFoldLevelFix(Index + 1)
-        else
+        if (r <> nil) and (Pointer(r) <> NullRange) then begin
+          Result := r.PasFoldEndLevel + LastLinePasFoldLevelFix(Index + 1);
+          // Increase result for multiline "//" comments
+          if FFoldConfig[ord(cfbtSlashComment)].Enabled and
+             (rsLineIsAllComment in TRangeStates(Integer(PtrUInt(r.RangeType)))) and
+             (Index + 1 < CurrentLines.Count) and (Index > 0)
+             // and not TopPascalCodeFoldBlockType() in [cfbtAnsiComment, cfbtBorCommand]
+          then begin
+            r := TSynPasSynRange(CurrentRanges[Index + 1]);
+            if (r <> nil) and
+               (rsLineIsAllComment in TRangeStates(Integer(PtrUInt(r.RangeType))))
+            then
+              inc(Result);
+          end;
+        end else
           Result := 0;
       end;
   end;
