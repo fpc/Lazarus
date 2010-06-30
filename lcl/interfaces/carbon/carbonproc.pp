@@ -599,8 +599,10 @@ begin
 // Width and Height skipped
   Desc.PaletteColorCount := 0;
 
-  Desc.BitOrder := riboReversedBits;
-  Desc.ByteOrder := riboMSBFirst;
+  //Desc.BitOrder := riboReversedBits;
+  //Desc.ByteOrder := riboMSBFirst;
+  Desc.BitOrder := riboBitsInOrder;
+  Desc.ByteOrder := riboLSBFirst;
   Desc.LineEnd := rileDQWordBoundary; // 128bit aligned
   
   Desc.LineOrder := riloTopToBottom;
@@ -618,7 +620,7 @@ begin
   Desc.GreenShift := 08;
   Desc.BlueShift  := 00;
 
-  Desc.MaskBitOrder := riboReversedBits;
+  Desc.MaskBitOrder := riboBitsInOrder;
   Desc.MaskBitsPerPixel := 1;
   Desc.MaskLineEnd := rileByteBoundary;
   Desc.MaskShift := 0;

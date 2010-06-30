@@ -655,8 +655,10 @@ begin
 
   //ADesc.PaletteColorCount := 0;
 
-  ADesc.BitOrder := riboReversedBits;
-  ADesc.ByteOrder := riboMSBFirst;
+  //ADesc.BitOrder := riboReversedBits;
+  //ADesc.ByteOrder := riboMSBFirst;
+  ADesc.BitOrder := riboBitsInOrder;
+  ADesc.ByteOrder := riboLSBFirst;
 
   BPR := CGImageGetBytesPerRow(ABitmap.CGImage) and $FF;
   if BPR and $F = 0 then ADesc.LineEnd := rileDQWordBoundary     // 128bit aligned
@@ -687,7 +689,7 @@ begin
   if ADesc.Format = ricfGray then Exit;
 
   // alpha
-  case AlphaInfo of
+  case AlphaInfo and kCGBitmapAlphaInfoMask of
     kCGImageAlphaNone,
     kCGImageAlphaNoneSkipLast,
     kCGImageAlphaNoneSkipFirst: begin
@@ -699,7 +701,7 @@ begin
     ADesc.AlphaPrec := Prec;
   end;
 
-  case AlphaInfo of
+  case AlphaInfo and kCGBitmapAlphaInfoMask of
     kCGImageAlphaNone,
     kCGImageAlphaNoneSkipLast: begin
       // RGBx
