@@ -1265,12 +1265,20 @@ msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfoldpasansicomment
+msgid "Comment (* *)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasasm
 msgid "Asm"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasbeginend
 msgid "Begin/End (nested)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpasborcomment
+msgid "Comment { }"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpascase
@@ -1317,6 +1325,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasrepeat
 msgid "Repeat"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpasslashcomment
+msgid "Comment //"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpastry
@@ -6716,6 +6728,10 @@ msgstr ""
 msgid "Unable to run the tool %s%s%s:%s%s"
 msgstr "No es pot executar l'eina %s%s%s:%s%s"
 
+#: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
+msgid "Failed to create Application Bundle for \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr ""
@@ -9704,10 +9720,6 @@ msgstr ""
 msgid "(ms)"
 msgstr ""
 
-#: lazarusidestrconsts.lismvdocking
-msgid "Docking"
-msgstr ""
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Desa missatges a arxiu (*.txt)"
@@ -12585,6 +12597,10 @@ msgstr ""
 msgid "Target CPU"
 msgstr "CPU destinació"
 
+#: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
+msgid "Target file name: (empty = use unit output directory)"
+msgstr ""
+
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"
 msgstr "Nom del fitxer destinació del projecte"
@@ -12616,6 +12632,10 @@ msgstr ""
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "Directori de proves"
+
+#: lazarusidestrconsts.listheapplicationbundlewascreatedfor
+msgid "The Application Bundle was created for \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -12984,6 +13004,10 @@ msgstr "aquest missatge d'ajuda"
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "Sembla un arxiu pascal.%sS'hi recomana utilitzar minúscules per evitar problemes diversos amb alguns sistemes d'arxius i diferents compiladors.%sCanviar-li el nom a minúscules?"
+
+#: lazarusidestrconsts.listhisprojecthasnomainsourcefile
+msgid "This project has no main source file"
+msgstr ""
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."

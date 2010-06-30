@@ -1284,6 +1284,10 @@ msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
 msgstr "Var/Type (local)"
 
+#: lazarusidestrconsts.dlgfoldpasansicomment
+msgid "Comment (* *)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasasm
 msgid "Asm"
 msgstr "Asm"
@@ -1291,6 +1295,10 @@ msgstr "Asm"
 #: lazarusidestrconsts.dlgfoldpasbeginend
 msgid "Begin/End (nested)"
 msgstr "Begin/End (aninhado)"
+
+#: lazarusidestrconsts.dlgfoldpasborcomment
+msgid "Comment { }"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpascase
 msgid "Case"
@@ -1337,6 +1345,10 @@ msgstr "Record"
 #: lazarusidestrconsts.dlgfoldpasrepeat
 msgid "Repeat"
 msgstr "Repeat"
+
+#: lazarusidestrconsts.dlgfoldpasslashcomment
+msgid "Comment //"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpastry
 msgid "Try"
@@ -6725,6 +6737,10 @@ msgstr "\"%s\" completado"
 msgid "Unable to run the tool %s%s%s:%s%s"
 msgstr "Impossível executar ferramenta %s%s%s:%s%s"
 
+#: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
+msgid "Failed to create Application Bundle for \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr "Falha ao carregar estado retração"
@@ -9703,10 +9719,6 @@ msgstr "Mover Página ..."
 msgid "(ms)"
 msgstr "(ms)"
 
-#: lazarusidestrconsts.lismvdocking
-msgid "Docking"
-msgstr "Aportar"
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Salvar mensagens para arquivo (*.txt)"
@@ -12583,6 +12595,10 @@ msgstr "Ordem tabulação de"
 msgid "Target CPU"
 msgstr "CPU Alvo"
 
+#: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
+msgid "Target file name: (empty = use unit output directory)"
+msgstr ""
+
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"
 msgstr "Nome de arquivo alvo do projeto"
@@ -12617,6 +12633,10 @@ msgstr ""
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "Diretório de teste"
+
+#: lazarusidestrconsts.listheapplicationbundlewascreatedfor
+msgid "The Application Bundle was created for \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -12985,6 +13005,10 @@ msgstr "esta mensagem de ajuda"
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "Este parece um arquivo Pascal.%sÉ recomendado usar nomes de arquivo em minúsculas, para evitar vários problemas em alguns sistemas de arquivos e compiladores diferentes.%sRenomeá-lo usando minúsculas?"
+
+#: lazarusidestrconsts.listhisprojecthasnomainsourcefile
+msgid "This project has no main source file"
+msgstr ""
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-16 03:29+0300\n"
+"PO-Revision-Date: 2010-07-01 01:19+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -319,7 +319,7 @@ msgstr "Вперёд"
 
 #: codetoolsstrconsts.ctsforwardclassdefinitionnotresolved
 msgid "Forward class definition not resolved: %s"
-msgstr "Не найдено описание ранее упомянутого класса: %s"
+msgstr "Не найдена реализация ранее объявленного класса: %s"
 
 #: codetoolsstrconsts.ctsfpdocsystemon
 msgid "enable FPDocSystem"

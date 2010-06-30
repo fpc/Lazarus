@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-04-15 02:19+0300\n"
+"PO-Revision-Date: 2010-07-01 00:54+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -1896,7 +1896,7 @@ msgstr "Ошибка преобразования"
 
 #: ipconst.ssmtpresponse70
 msgid "Other or undefined security status"
-msgstr "Другое или неопределенное состояние беопасности"
+msgstr "Другое или неопределенное состояние безопасности"
 
 #: ipconst.ssmtpresponse71
 msgid "Delivery not authorized, message refused"

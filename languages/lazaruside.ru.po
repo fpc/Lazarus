@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-06-28 01:52+0300\n"
+"PO-Revision-Date: 2010-07-01 01:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1288,6 +1288,10 @@ msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
 msgstr "Секции Var/Type (локальные)"
 
+#: lazarusidestrconsts.dlgfoldpasansicomment
+msgid "Comment (* *)"
+msgstr "Комментарий (* *)"
+
 #: lazarusidestrconsts.dlgfoldpasasm
 msgid "Asm"
 msgstr "Секция Asm"
@@ -1295,6 +1299,10 @@ msgstr "Секция Asm"
 #: lazarusidestrconsts.dlgfoldpasbeginend
 msgid "Begin/End (nested)"
 msgstr "Begin/End (вложенная)"
+
+#: lazarusidestrconsts.dlgfoldpasborcomment
+msgid "Comment { }"
+msgstr "Комментарий { }"
 
 #: lazarusidestrconsts.dlgfoldpascase
 msgid "Case"
@@ -1341,6 +1349,10 @@ msgstr "Запись"
 #: lazarusidestrconsts.dlgfoldpasrepeat
 msgid "Repeat"
 msgstr "Repeat"
+
+#: lazarusidestrconsts.dlgfoldpasslashcomment
+msgid "Comment //"
+msgstr "Комментарий //"
 
 #: lazarusidestrconsts.dlgfoldpastry
 msgid "Try"
@@ -4775,7 +4787,7 @@ msgstr "Преобразовать элемент"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
-msgstr "Создать определения для кталога %s"
+msgstr "Создать определения для каталога %s"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforfreepascalcompiler
 msgid "Create Defines for Free Pascal Compiler"
@@ -6730,6 +6742,10 @@ msgstr "\"%s\" - действие завершено"
 #: lazarusidestrconsts.lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
 msgstr "Невозможно запустить средство %s%s%s:%s%s"
+
+#: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
+msgid "Failed to create Application Bundle for \"%s\""
+msgstr "Не удалось создать Application Bundle для \"%s\""
 
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
@@ -9714,10 +9730,6 @@ msgstr "Переместить страницу"
 msgid "(ms)"
 msgstr "(мс)"
 
-#: lazarusidestrconsts.lismvdocking
-msgid "Docking"
-msgstr "Стыковка"
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Сохранить сообщения в файл (*.txt)"
@@ -12141,7 +12153,7 @@ msgstr "Абстрактные методы, подлежащие замещен
 
 #: lazarusidestrconsts.lissamthismethodcannotbeoverriddenbecauseitisdefinedinth
 msgid "This method can not be overridden because it is defined in the current class"
-msgstr "Этот метод не может быть замещён, так как он задан в текущем классе"
+msgstr "Этот метод не может быть замещён, так как он определён в текущем классе"
 
 #: lazarusidestrconsts.lissamunabletoshowabstractmethodsofthecurrentclassbecaus
 msgid "Unable to show abstract methods of the current class, because"
@@ -12593,6 +12605,10 @@ msgstr "Порядок перехода"
 msgid "Target CPU"
 msgstr "Семейство процессоров:"
 
+#: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
+msgid "Target file name: (empty = use unit output directory)"
+msgstr "Имя исполнимого файла: (пустое = использовать каталог вывода модулей)"
+
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"
 msgstr "Имя исполнимого файла проекта"
@@ -12627,6 +12643,10 @@ msgstr ""
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "Каталог проб"
+
+#: lazarusidestrconsts.listheapplicationbundlewascreatedfor
+msgid "The Application Bundle was created for \"%s\""
+msgstr "Application Bundle для \"%s\" успешно создан"
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -12995,6 +13015,10 @@ msgstr "это справочное сообщение"
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "Содержимое этого файла похоже на исходный код на Паскале.%sРекомендуется использовать имена файлов в нижнем регистре во избежание различных проблем на некоторых файловых системах и с другими компиляторами.%sПереименовать в нижний регистр?"
+
+#: lazarusidestrconsts.listhisprojecthasnomainsourcefile
+msgid "This project has no main source file"
+msgstr "Этот проект не имеет главного файла исходного хода"
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."
@@ -14495,11 +14519,11 @@ msgstr "Найти предыдущее вхождение слова"
 
 #: lazarusidestrconsts.srkmecfindproceduredefinition
 msgid "Find procedure definiton"
-msgstr "Найти описание процедуры"
+msgstr "Найти объявление процедуры"
 
 #: lazarusidestrconsts.srkmecfindproceduremethod
 msgid "Find procedure method"
-msgstr "Найти метод процедуры"
+msgstr "Найти тело процедуры"
 
 #: lazarusidestrconsts.srkmecfoldcurrent
 msgid "Fold at Cursor"

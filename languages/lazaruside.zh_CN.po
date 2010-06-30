@@ -1268,12 +1268,20 @@ msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgfoldpasansicomment
+msgid "Comment (* *)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasasm
 msgid "Asm"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasbeginend
 msgid "Begin/End (nested)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpasborcomment
+msgid "Comment { }"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpascase
@@ -1320,6 +1328,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasrepeat
 msgid "Repeat"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpasslashcomment
+msgid "Comment //"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpastry
@@ -6731,6 +6743,10 @@ msgstr "\"%s\" 完成"
 msgid "Unable to run the tool %s%s%s:%s%s"
 msgstr "无法运行工具 %s%s%s:%s%s"
 
+#: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
+msgid "Failed to create Application Bundle for \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr ""
@@ -9719,10 +9735,6 @@ msgstr "移动页 ..."
 msgid "(ms)"
 msgstr ""
 
-#: lazarusidestrconsts.lismvdocking
-msgid "Docking"
-msgstr "停靠"
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "保存信息到文本文件 (*.txt)"
@@ -12606,6 +12618,10 @@ msgstr "Tab 键顺序"
 msgid "Target CPU"
 msgstr "目标 CPU"
 
+#: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
+msgid "Target file name: (empty = use unit output directory)"
+msgstr ""
+
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"
 msgstr "目标工程文件名"
@@ -12637,6 +12653,10 @@ msgstr ""
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "测试目录"
+
+#: lazarusidestrconsts.listheapplicationbundlewascreatedfor
+msgid "The Application Bundle was created for \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -13005,6 +13025,10 @@ msgstr "帮助信息"
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "这个好像是一个 pascal 文件.%s建议将文件名小写来消除某些文件系统上和不同编译器上会发生的问题 .%s重命名为小写么?"
+
+#: lazarusidestrconsts.listhisprojecthasnomainsourcefile
+msgid "This project has no main source file"
+msgstr ""
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."

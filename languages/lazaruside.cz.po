@@ -1268,6 +1268,10 @@ msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
 msgstr "Var/Type (místní)"
 
+#: lazarusidestrconsts.dlgfoldpasansicomment
+msgid "Comment (* *)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasasm
 msgid "Asm"
 msgstr "Asm"
@@ -1275,6 +1279,10 @@ msgstr "Asm"
 #: lazarusidestrconsts.dlgfoldpasbeginend
 msgid "Begin/End (nested)"
 msgstr "Begin/End (vnořené)"
+
+#: lazarusidestrconsts.dlgfoldpasborcomment
+msgid "Comment { }"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpascase
 msgid "Case"
@@ -1321,6 +1329,10 @@ msgstr "Record"
 #: lazarusidestrconsts.dlgfoldpasrepeat
 msgid "Repeat"
 msgstr "Repeat"
+
+#: lazarusidestrconsts.dlgfoldpasslashcomment
+msgid "Comment //"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpastry
 msgid "Try"
@@ -6693,6 +6705,10 @@ msgstr "\"%s\" hotovo"
 msgid "Unable to run the tool %s%s%s:%s%s"
 msgstr "Nelze spustit nástroj %s%s%s:%s%s"
 
+#: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
+msgid "Failed to create Application Bundle for \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr "Načtení stavu složení selhalo"
@@ -9655,10 +9671,6 @@ msgstr "Přesunout stránku..."
 msgid "(ms)"
 msgstr "(ms)"
 
-#: lazarusidestrconsts.lismvdocking
-msgid "Docking"
-msgstr "Dokování"
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Uložit zprávy do souboru (*.txt)"
@@ -12534,6 +12546,10 @@ msgstr "Pořadí záložek"
 msgid "Target CPU"
 msgstr "Cílový CPU"
 
+#: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
+msgid "Target file name: (empty = use unit output directory)"
+msgstr ""
+
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"
 msgstr "Cílové jméno souboru projektu"
@@ -12565,6 +12581,10 @@ msgstr ""
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "Testovací složka"
+
+#: lazarusidestrconsts.listheapplicationbundlewascreatedfor
+msgid "The Application Bundle was created for \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -12932,6 +12952,10 @@ msgstr "tato zpráva nápovědy"
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
+msgstr ""
+
+#: lazarusidestrconsts.listhisprojecthasnomainsourcefile
+msgid "This project has no main source file"
 msgstr ""
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis

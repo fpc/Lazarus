@@ -1282,6 +1282,10 @@ msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
 msgstr "Var/Type (lokalne)"
 
+#: lazarusidestrconsts.dlgfoldpasansicomment
+msgid "Comment (* *)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasasm
 msgid "Asm"
 msgstr ""
@@ -1290,6 +1294,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.dlgfoldpasbeginend"
 msgid "Begin/End (nested)"
 msgstr "Begin/End (zagnieżdżone)"
+
+#: lazarusidestrconsts.dlgfoldpasborcomment
+msgid "Comment { }"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpascase
 msgid "Case"
@@ -1337,6 +1345,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasrepeat
 msgid "Repeat"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfoldpasslashcomment
+msgid "Comment //"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpastry
@@ -6726,6 +6738,10 @@ msgstr ""
 msgid "Unable to run the tool %s%s%s:%s%s"
 msgstr "Nie można uruchomić narzędzia %s%s%s:%s%s"
 
+#: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
+msgid "Failed to create Application Bundle for \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr ""
@@ -9709,10 +9725,6 @@ msgstr "Przenieś stronę ..."
 msgid "(ms)"
 msgstr ""
 
-#: lazarusidestrconsts.lismvdocking
-msgid "Docking"
-msgstr ""
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Zapisz komunikaty do pliku (*.txt)"
@@ -12590,6 +12602,10 @@ msgstr ""
 msgid "Target CPU"
 msgstr "Docelowy procesor"
 
+#: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
+msgid "Target file name: (empty = use unit output directory)"
+msgstr ""
+
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"
 msgstr "Docelowa nazwa projektu"
@@ -12621,6 +12637,10 @@ msgstr ""
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "Katalog testowy"
+
+#: lazarusidestrconsts.listheapplicationbundlewascreatedfor
+msgid "The Application Bundle was created for \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -12988,6 +13008,10 @@ msgstr "ten komunikat pomocy"
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
+msgstr ""
+
+#: lazarusidestrconsts.listhisprojecthasnomainsourcefile
+msgid "This project has no main source file"
 msgstr ""
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis

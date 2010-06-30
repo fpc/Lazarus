@@ -1269,6 +1269,10 @@ msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
 msgstr "Var/Type (vietinis)"
 
+#: lazarusidestrconsts.dlgfoldpasansicomment
+msgid "Comment (* *)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasasm
 msgid "Asm"
 msgstr "Asm"
@@ -1276,6 +1280,10 @@ msgstr "Asm"
 #: lazarusidestrconsts.dlgfoldpasbeginend
 msgid "Begin/End (nested)"
 msgstr "Begin/End (įdėtinis)"
+
+#: lazarusidestrconsts.dlgfoldpasborcomment
+msgid "Comment { }"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpascase
 msgid "Case"
@@ -1322,6 +1330,10 @@ msgstr "Record"
 #: lazarusidestrconsts.dlgfoldpasrepeat
 msgid "Repeat"
 msgstr "Repeat"
+
+#: lazarusidestrconsts.dlgfoldpasslashcomment
+msgid "Comment //"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpastry
 msgid "Try"
@@ -6724,6 +6736,10 @@ msgstr "„%s“ baigta"
 msgid "Unable to run the tool %s%s%s:%s%s"
 msgstr "Nepavyko startuoti įrankį %s%s%s:%s%s"
 
+#: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
+msgid "Failed to create Application Bundle for \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
 msgstr "Nepavyko įkelti sulankstymo būsenos"
@@ -9705,10 +9721,6 @@ msgstr "Perkelti lapą…"
 msgid "(ms)"
 msgstr "(ms)"
 
-#: lazarusidestrconsts.lismvdocking
-msgid "Docking"
-msgstr "Lango pritvirtinimas"
-
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
 msgstr "Įrašyti pranešimus faile (*.txt)"
@@ -12590,6 +12602,10 @@ msgstr "Vieta tabuliatoriaus eilėje"
 msgid "Target CPU"
 msgstr "Skirtas procesoriui"
 
+#: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
+msgid "Target file name: (empty = use unit output directory)"
+msgstr ""
+
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"
 msgstr "Projekto būsimo failo pavadinimas"
@@ -12624,6 +12640,10 @@ msgstr ""
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "Testo aplankas"
+
+#: lazarusidestrconsts.listheapplicationbundlewascreatedfor
+msgid "The Application Bundle was created for \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -12992,6 +13012,10 @@ msgstr "Šis žinyno pranešimas"
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "Panašu kad tai paskalio failas.%sRekomenduotina failo pavadinime naudoti tik mažąsias raides, tokiu būdu išvengsite problemų, susijusių su įvairiomis failų sistemomis ar įvairiais kompiliatoriais.%sPervadinti mažosiomis raidėmis?"
+
+#: lazarusidestrconsts.listhisprojecthasnomainsourcefile
+msgid "This project has no main source file"
+msgstr ""
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."
