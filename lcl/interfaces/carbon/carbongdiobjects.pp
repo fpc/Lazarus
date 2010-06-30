@@ -409,9 +409,9 @@ const
   BITMAPINFOMAP: array[TCarbonBitmapType] of CGBitmapInfo = (
     {cbtMask} kCGImageAlphaNone,
     {cbtGray} kCGImageAlphaNone,
-    {cbtRGB}  kCGImageAlphaNoneSkipFirst or kCGBitmapByteOrder32Little,
-    {cbtARGB} kCGImageAlphaFirst or kCGBitmapByteOrder32Little,
-    {cbtRGBA} kCGImageAlphaLast or kCGBitmapByteOrder32Little,
+    {cbtRGB}  kCGImageAlphaNoneSkipFirst,
+    {cbtARGB} kCGImageAlphaFirst,
+    {cbtRGBA} kCGImageAlphaLast,
     {cbtBGR}  kCGImageAlphaNoneSkipFirst or kCGBitmapByteOrder32Little,
     {cbtBGRA} kCGImageAlphaFirst or kCGBitmapByteOrder32Little
   );
