@@ -296,8 +296,8 @@ begin
   // find $R directive
   with fCodeTool do
     repeat
-      ACleanPos:=FindNextCompilerDirectiveWithName(Src,ACleanPos,'R',
-        fCodeTool.Scanner.NestedComments,ParamPos);
+      ACleanPos:=FindNextCompilerDirectiveWithName(Src, ACleanPos, 'R',
+                                                   Scanner.NestedComments, ParamPos);
       if (ACleanPos<1) or (ACleanPos>SrcLen) or (ParamPos>SrcLen-6) then break;
       NewKey:='';
       if (Src[ACleanPos]='{') and
@@ -333,7 +333,7 @@ begin
         if NewKey<>'' then
           if not fSrcCache.Replace(gtNone,gtNone,ParamPos+2,ParamPos+5,NewKey) then exit;
       end;
-      ACleanPos:=FindCommentEnd(Src,ACleanPos,fCodeTool.Scanner.NestedComments);
+      ACleanPos:=FindCommentEnd(Src, ACleanPos, Scanner.NestedComments);
     until false;
   // if there is already .lfm file, don't add IFDEF for .dfm / .lfm.
   if (fTarget=ctLazarusAndDelphi) and (fDfmDirectiveStart<>-1) and not AlreadyIsLfm then

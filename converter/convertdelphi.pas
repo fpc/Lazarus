@@ -924,7 +924,7 @@ begin
     // get all options from the .dpr or .dpk file
     Result:=ExtractOptionsFromDelphiSource;
     if Result<>mrOK then exit;
-    Result:=FindAllUnits;              // find all files.
+    Result:=FindAllUnits;              // find all files and save the project.
     if Result<>mrOK then exit;
     Result:=ConvertAllUnits;           // convert all files.
   finally
