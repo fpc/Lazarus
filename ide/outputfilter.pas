@@ -30,6 +30,7 @@ interface
 uses
   Classes, Math, SysUtils, Forms, Controls, Dialogs, CompilerOptions,
   Process, AsyncProcess, LCLProc, DynQueue, FileUtil, UTF8Process,
+  SourceLog, CodeCache, CodeToolManager,
   IDEDialogs, IDEMsgIntf, IDEExternToolIntf,
   IDEProcs, LazConf;
 
@@ -142,6 +143,7 @@ type
     DarwinLinkerMultiline: Boolean;
     DarwinLinkerLine : String;
     FErrorNames : array [TFPCErrorType] of string; {customizable error names}
+    fLastBuffer: TCodeBuffer;
     procedure DoAddFilteredLine(const s: string; OriginalIndex: integer = -1);
     procedure DoAddLastLinkerMessages(SkipLastLine: boolean);
     procedure DoAddLastAssemblerMessages;
@@ -187,6 +189,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure RaiseOutputFilterError(const Msg: string);
+    function HasHideDirective(Filename: string; Line,Column: integer): boolean;
   public
     property CurrentDirectory: string read fCurrentDirectory
                                       write fCurrentDirectory;
@@ -690,6 +693,10 @@ var i, j, FilenameEndPos: integer;
   MessageStartPos: Integer;
   LineNumberEndPos: LongInt;
   AbsFilename: String;
+  LineNumberStr: String;
+  Line: LongInt;
+  Col: LongInt;
+  ColNumberStr: String;
 
   function CompStr(const SubStr, s: string; Position: integer): boolean;
   begin
@@ -1084,10 +1091,10 @@ begin
       fLastMessageType:=omtFPC;
       CurrentMessageParts.Values['Stage']:='FPC';
       CurrentMessageParts.Values['Type']:=FPCErrorTypeNames[fLastErrorType];
-      CurrentMessageParts.Values['Line']:=
-                 copy(s,LineNumberStartPos,LineNumberEndPos-LineNumberStartPos);
-      CurrentMessageParts.Values['Column']:=
-           copy(s,ColumnNumberStartPos,ColumnNumberEndPos-ColumnNumberStartPos);
+      LineNumberStr:=copy(s,LineNumberStartPos,LineNumberEndPos-LineNumberStartPos);
+      CurrentMessageParts.Values['Line']:=LineNumberStr;
+      ColNumberStr:=copy(s,ColumnNumberStartPos,ColumnNumberEndPos-ColumnNumberStartPos);
+      CurrentMessageParts.Values['Column']:=ColNumberStr;
       CurrentMessageParts.Values['Message']:=copy(s,MessageStartPos,length(s));
 
       SkipMessage:=true;
@@ -1209,9 +1216,14 @@ begin
         end;
       end;
       //DebugLn('TOutputFilter.ReadFPCompilerLine AbsFilename=',AbsFilename,' Filename=',Filename,' Dir=',fCurrentDirectory);
-      if AbsFilename<>'' then
-        CurrentMessageParts.Values['Filename']:=AbsFilename
-      else
+      if AbsFilename<>'' then begin
+        CurrentMessageParts.Values['Filename']:=AbsFilename;
+        Line:=StrToIntDef(LineNumberStr,1);
+        Col:=StrToIntDef(ColNumberStr,1);
+        if (MsgType in [etHint,etNone,etWarning])
+        and HasHideDirective(AbsFilename,Line,Col) then
+          SkipMessage:=true;
+      end else
         CurrentMessageParts.Values['Filename']:=Filename;
 
       // add line
@@ -1655,6 +1667,50 @@ begin
   if FHasRaisedException then exit;
   FHasRaisedException:=true;
   raise EOutputFilterError.Create(Msg);
+end;
+
+function TOutputFilter.HasHideDirective(Filename: string;
+  Line,Column: integer): boolean;
+var
+  Buf: TCodeBuffer;
+  p: Integer;
+  Src: String;
+begin
+  Result:=false;
+  if (Line<1) or (Column<1) then exit;
+  if not FilenameIsAbsolute(Filename) then exit;
+  Filename:=TrimFilename(Filename);
+  if (fLastBuffer=nil) or (CompareFilenames(fLastBuffer.Filename,Filename)<>0)
+  then begin
+    Buf:=CodeToolBoss.LoadFile(Filename,true,false);
+    if Buf=nil then exit;
+    fLastBuffer:=Buf;
+  end;
+  // search for an IDE directive in front
+  if Line>fLastBuffer.LineCount then exit;
+  fLastBuffer.LineColToPosition(Line,Column,p);
+  Src:=fLastBuffer.Source;
+  while (p>1) do begin
+    if Src[p] in [#10,#13,',',';'] then exit(false);
+    if Src[p]='}' then begin
+      // could be a IDE directive
+      while (p>0) do begin
+        case Src[p] of
+        #10,#13: exit;
+        '{':
+          begin
+            if (Src[p+1]='%')
+            and (Src[p+2] in ['h','H'])
+            and (Src[p+3]='-') then begin
+              exit(true);
+            end;
+          end;
+        end;
+        dec(p);
+      end;
+    end;
+    dec(p);
+  end;
 end;
 
 { TFilteredOutputLines }
