@@ -422,7 +422,7 @@ type
 const
 
   (* When adding new entries, ensure that resourcestrings are re-assigned in InitLocale *)
-  EditorOptionsFoldInfoPas: Array [0..21] of TEditorOptionsFoldInfo
+  EditorOptionsFoldInfoPas: Array [0..22] of TEditorOptionsFoldInfo
   = (
       (Name:  dlgFoldPasProcedure;     Xml:     'Procedure';
        Index: ord(cfbtProcedure);    Enabled: True),
@@ -472,7 +472,9 @@ const
       (Name:  dlgFoldPasAnsiComment;   Xml:     'AnsiComment';
        Index: ord(cfbtAnsiComment);  Enabled: True),
       (Name:  dlgFoldPasBorComment;    Xml:     'BorComment';
-       Index: ord(cfbtBorCommand);   Enabled: True)
+       Index: ord(cfbtBorCommand);   Enabled: True),
+      (Name:  dlgFoldPasSlashComment;    Xml:     'SlashComment';
+       Index: ord(cfbtSlashComment); Enabled: False)
     );
 
   EditorOptionsFoldInfoLFM: Array [0..2] of TEditorOptionsFoldInfo
@@ -566,8 +568,8 @@ const
     TEditorOptionsFoldRecord =
     ( (Count:  0; Info: nil), // none
       (Count:  0; Info: nil), // text
-      (Count: 22; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoPas[0]), // Freepas
-      (Count: 22; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoPas[0]), // pas
+      (Count: 23; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoPas[0]), // Freepas
+      (Count: 23; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoPas[0]), // pas
       (Count:  3; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoLFM[0]), // lfm
       (Count:  5; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoXML[0]), // xml
       (Count:  3; Info: {$IFDEF FPC}@{$ENDIF}EditorOptionsFoldInfoHTML[0]), // html

@@ -1511,6 +1511,7 @@ resourcestring
   dlgFoldPasUserRegion      = '{%Region}';
   dlgFoldPasAnsiComment     = 'Comment (* *)';
   dlgFoldPasBorComment      = 'Comment { }';
+  dlgFoldPasSlashComment    = 'Comment //';
 
   dlgFoldLfmObject      = 'Object (inherited, inline)';
   dlgFoldLfmList        = 'List <>';
