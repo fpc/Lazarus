@@ -1883,7 +1883,7 @@ resourcestring
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
   lisInvalidLineColumnInMessage = 'Invalid line, column in message%s%s';
-  lisUnableToLoadFile = 'Unable to load file :%s%s';
+  lisUnableToLoadFile = 'Unable to load file:%s%s';
   lisQuickFixRemoveUnit = 'Quick fix: Remove unit';
   lisMessageContainsNoFilePositionInformation = 'Message contains no file '
     +'position information:%s%s';
