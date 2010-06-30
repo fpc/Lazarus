@@ -274,6 +274,7 @@ begin
       if not DockMaster.ConfigIsEmpty(Config) then begin
         // loading last layout
         debugln(['TIDEAnchorDockMaster.LoadUserLayout restoring ...']);
+        DockMaster.LoadSettingsFromConfig(Config);
         DockMaster.LoadLayoutFromConfig(Config,true);
         UserLayoutLoaded:=true;
       end else begin
@@ -299,6 +300,7 @@ begin
     debugln(['TIDEAnchorDockMaster.SaveDefaultLayout ',Filename]);
     Config:=GetIDEConfigStorage(Filename,false);
     try
+      DockMaster.SaveSettingsToConfig(Config);
       DockMaster.SaveLayoutToConfig(Config);
     finally
       Config.Free;
@@ -582,6 +584,7 @@ begin
   if not (AOptions is SupportedOptionsClass) then exit;
   IDEAnchorDockMaster.Enabled:=EnableCheckBox.Checked;
   OptionsFrame.SaveToMaster;
+
 end;
 
 class function TAnchorDockIDEFrame.

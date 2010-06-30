@@ -485,6 +485,8 @@ type
     property RestoreLayouts: TAnchorDockRestoreLayouts read FRestoreLayouts;
     property Restoring: boolean read FRestoring write SetRestoring;
     property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
+    procedure LoadSettingsFromConfig(Config: TConfigStorage);
+    procedure SaveSettingsToConfig(Config: TConfigStorage);
 
     // manual docking
     procedure ManualFloat(AControl: TControl);
@@ -2194,6 +2196,48 @@ begin
   end;
   //DebugWriteChildAnchors(Application.MainForm,true,false);
   Result:=true;
+end;
+
+procedure TAnchorDockMaster.LoadSettingsFromConfig(Config: TConfigStorage);
+begin
+  Config.AppendBasePath('Settings/');
+  DragTreshold:=Config.GetValue('DragThreshold',4);
+  DockOutsideMargin:=Config.GetValue('DockOutsideMargin',10);
+  DockParentMargin:=Config.GetValue('DockOutsideMargin',10);
+  PageAreaInPercent:=Config.GetValue('DockOutsideMargin',40);
+  HeaderAlignTop:=Config.GetValue('DockOutsideMargin',80);
+  HeaderAlignLeft:=Config.GetValue('DockOutsideMargin',120);
+  SplitterWidth:=Config.GetValue('DockOutsideMargin',4);
+  ScaleOnResize:=Config.GetValue('DockOutsideMargin',true);
+  ShowHeaderCaption:=Config.GetValue('DockOutsideMargin',true);
+  HideHeaderCaptionFloatingControl:=Config.GetValue('DockOutsideMargin',true);
+  AllowDragging:=Config.GetValue('DockOutsideMargin',true);
+  HeaderButtonSize:=Config.GetValue('DockOutsideMargin',10);
+
+  //property HeaderHint: string read FHeaderHint write FHeaderHint;
+
+  Config.UndoAppendBasePath;
+end;
+
+procedure TAnchorDockMaster.SaveSettingsToConfig(Config: TConfigStorage);
+begin
+  Config.AppendBasePath('Settings/');
+  Config.SetDeleteValue('DragThreshold',DragTreshold,4);
+  Config.SetDeleteValue('DockOutsideMargin',DockOutsideMargin,10);
+  Config.SetDeleteValue('DockParentMargin',DockParentMargin,10);
+  Config.SetDeleteValue('PageAreaInPercent',PageAreaInPercent,40);
+  Config.SetDeleteValue('HeaderAlignTop',HeaderAlignTop,80);
+  Config.SetDeleteValue('HeaderAlignLeft',HeaderAlignLeft,120);
+  Config.SetDeleteValue('SplitterWidth',SplitterWidth,4);
+  Config.SetDeleteValue('ScaleOnResize',ScaleOnResize,true);
+  Config.SetDeleteValue('ShowHeaderCaption',ShowHeaderCaption,true);
+  Config.SetDeleteValue('HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
+  Config.SetDeleteValue('AllowDragging',AllowDragging,true);
+  Config.SetDeleteValue('HeaderButtonSize',HeaderButtonSize,10);
+
+  //property HeaderHint: string read FHeaderHint write FHeaderHint;
+
+  Config.UndoAppendBasePath;
 end;
 
 procedure TAnchorDockMaster.ManualFloat(AControl: TControl);
