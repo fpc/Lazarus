@@ -712,6 +712,7 @@ var
   UnitNames: TStringList;
 
   procedure RenameOrRemoveUnit(AOldName, ANewName: string);
+  // Replace a unit name with a new name or remove it if there is no new name.
   var
     x: Integer;
   begin
@@ -727,13 +728,35 @@ var
     end;
   end;
 
+  function GetMissingUnits: TModalResult;
+  // Get missing unit by codetools.
+  var
+    CTResult: Boolean;
+    i: Integer;
+  begin
+    Result:=mrOk;
+    CTResult:=CodeToolBoss.FindMissingUnits(fPascalBuffer,fMissingUnits,true);
+    if not CTResult then begin
+      IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"','',-1);
+      Result:=mrCancel;
+      exit;
+    end;
+    // Remove Windows unit from the list if target is "Windows only".
+    if fSettings.Target=ctLazarusWin then begin
+      for i:=fMissingUnits.Count-1 downto 0 do
+        if LowerCase(fMissingUnits[i])='windows' then begin
+          fMissingUnits.Delete(i);
+          Break;
+        end;
+    end;
+  end;
+
 var
   UnitUpdater: TStringMapUpdater;
   MapToEdit: TStringToStringTree;
   Node: TAVLTreeNode;
   Item: PStringToStringTreeItem;
   ConvTool: TConvDelphiCodeTool;
-  CTResult: Boolean;
   i: Integer;
   UnitN, s: string;
 begin
@@ -745,26 +768,19 @@ begin
   UnitNames:=nil;     // Will be created in ConvTool.UsesSectionsToUnitnames.
   fMissingUnits:=nil; // Will be created in CodeToolBoss.FindMissingUnits.
   try
+    Result:=GetMissingUnits;
+    if (Result<>mrOK) or (fMissingUnits=nil) or (fMissingUnits.Count=0) then exit;
+
     // Collect all unit names from uses sections.
     UnitNames:=ConvTool.UsesSectionsToUnitnames;
     UnitNames.Sorted:=true;
-    // find missing units
-    CTResult:=CodeToolBoss.FindMissingUnits(fPascalBuffer,fMissingUnits,true);
-    if not CTResult then begin
-      IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"','',-1);
-      Result:=mrCancel;
-      exit;
-    end;
-    // no missing units -> good
-    if (fMissingUnits=nil) or (fMissingUnits.Count=0) then exit;
-
     // Find replacements for missing units from settings.
     for i:=fMissingUnits.Count-1 downto 0 do begin
       UnitN:=fMissingUnits[i];
       if UnitUpdater.FindReplacement(UnitN, s) then begin
-        // Don't replace Windows with LCL units in a console application.
-        if Assigned(fOwnerConverter) and fOwnerConverter.fIsConsoleApp and
-            (LowerCase(UnitN)='windows') then
+        // Don't replace Windows unit with LCL units in a console application.
+        if (LowerCase(UnitN)='windows') and
+            Assigned(fOwnerConverter) and fOwnerConverter.fIsConsoleApp then
           s:='';
         if fSettings.AutoReplaceUnits then
           RenameOrRemoveUnit(UnitN, s)         // Automatic rename / remove.
@@ -791,13 +807,8 @@ begin
     ConvTool.RemoveUnits;
     // Find missing units again. Some replacements may not be valid.
     fMissingUnits.Clear;
-    CTResult:=CodeToolBoss.FindMissingUnits(fPascalBuffer,fMissingUnits,true);
-    if not CTResult then begin
-      IDEMessagesWindow.AddMsg('Error="'+CodeToolBoss.ErrorMessage+'"','',-1);
-      Result:=mrCancel;
-      exit;
-    end;
-    if fMissingUnits.Count=0 then exit;
+    Result:=GetMissingUnits;
+    if (Result<>mrOK) or (fMissingUnits.Count=0) then exit;
 
     if Assigned(fOwnerConverter) then begin
       // Try to find from subdirectories scanned earlier.
@@ -805,7 +816,6 @@ begin
       // Comment out automatically units that were commented in other files.
       if CommentAutomatically=0 then exit;
     end;
-
     // Interactive dialog for searching unit.
     Result:=AskUnitPathFromUser;
     if Result<>mrOK then exit;
