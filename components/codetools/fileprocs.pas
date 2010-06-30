@@ -186,7 +186,7 @@ type
   TFileStateCache = class
   private
     FFiles: TAVLTree; // tree of TFileStateCacheItem
-    FTimeStamp: integer;
+    FTimeStamp: int64;
     FLockCount: integer;
     FChangeTimeStampHandler: array of TNotifyEvent;
     procedure SetFlag(AFile: TFileStateCacheItem;
@@ -215,7 +215,7 @@ type
     procedure RemoveChangeTimeStampHandler(const Handler: TNotifyEvent);
     function CalcMemSize: PtrUint;
   public
-    property TimeStamp: integer read FTimeStamp;
+    property TimeStamp: int64 read FTimeStamp;
   end;
 
 var
@@ -2993,10 +2993,10 @@ begin
   if Self=nil then exit;
   if AFilename='' then begin
     // invalidate all
-    if FTimeStamp<maxLongint then
+    if FTimeStamp<high(FTimeStamp) then
       inc(FTimeStamp)
     else
-      FTimeStamp:=-maxLongint;
+      FTimeStamp:=low(FTimeStamp);
     for i:=0 to length(FChangeTimeStampHandler)-1 do
       FChangeTimeStampHandler[i](Self);
   end else begin

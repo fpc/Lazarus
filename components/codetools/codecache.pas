@@ -69,6 +69,7 @@ type
     procedure SetScanner(const Value: TLinkScanner);
     procedure SetIsDeleted(const NewValue: boolean);
   protected
+    procedure IncreaseChangeStep; override;
     procedure DecodeLoaded(const AFilename: string;
                     var ASource, ADiskEncoding, AMemEncoding: string); override;
     procedure EncodeSaving(const AFilename: string; var ASource: string); override;
@@ -134,6 +135,7 @@ type
 
   TCodeCache = class(TObject)
   private
+    FChangeStamp: int64;
     FDefaultEncoding: string;
     FItems: TAVLTree;  // tree of TCodeBuffer
     FIncludeLinks: TAVLTree; // tree of TIncludedByLink
@@ -197,6 +199,7 @@ type
     procedure WriteAllFileNames;
     procedure WriteDebugReport;
     function CalcMemSize(Stats: TCTMemStats): PtrUInt;
+    procedure IncreaseChangeStamp;
   public
     property ExpirationTimeInDays: integer
           read FExpirationTimeInDays write FExpirationTimeInDays;
@@ -209,6 +212,7 @@ type
     property OnEncodeSaving: TOnCodeCacheEncodeSaving read FOnEncodeSaving
                                                       write FOnEncodeSaving;
     property DefaultEncoding: string read FDefaultEncoding write FDefaultEncoding;
+    property ChangeStamp: int64 read FChangeStamp;
   end;
 
 
@@ -958,6 +962,14 @@ begin
   end;
 end;
 
+procedure TCodeCache.IncreaseChangeStamp;
+begin
+  if FChangeStamp<high(FChangeStamp) then
+    inc(FChangeStamp)
+  else
+    FChangeStamp:=low(FChangeStamp);
+end;
+
 procedure TCodeCache.WriteAllFileNames;
   procedure WriteNode(ANode: TAVLTreeNode);
   begin
@@ -1102,6 +1114,13 @@ begin
     FIsDeleted:=true;
     //DebugLn(['TCodeBuffer.SetIsDeleted ',Filename,' ',FileNeedsUpdate]);
   end;
+end;
+
+procedure TCodeBuffer.IncreaseChangeStep;
+begin
+  inherited IncreaseChangeStep;
+  if FCodeCache<>nil then
+    FCodeCache.IncreaseChangeStamp;
 end;
 
 procedure TCodeBuffer.DecodeLoaded(const AFilename: string; var ASource,

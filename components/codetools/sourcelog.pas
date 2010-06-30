@@ -123,7 +123,7 @@ type
     procedure SetReadOnly(const Value: boolean);
     function IndexOfChangeHook(AChangeHook: TOnSourceChange): integer;
   protected
-    procedure IncreaseChangeStep;
+    procedure IncreaseChangeStep; virtual;
     procedure DecodeLoaded(const AFilename: string;
                         var ASource, ADiskEncoding, AMemEncoding: string); virtual;
     procedure EncodeSaving(const AFilename: string; var ASource: string); virtual;
@@ -814,10 +814,10 @@ end;
 
 procedure TSourceLog.IncreaseChangeStep;
 begin
-  if FChangeStep<>$7fffffff then
+  if FChangeStep<High(FChangeStep) then
     inc(FChangeStep)
   else
-    FChangeStep:=-$7fffffff;
+    FChangeStep:=low(FChangeStep);
   //DebugLn('[TSourceLog.IncreaseChangeStep] ',FChangeStep,',',DbgS(Self));
 end;
 

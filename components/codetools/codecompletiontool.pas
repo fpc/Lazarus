@@ -1158,6 +1158,7 @@ begin
   // cursor is in class/object definition
   if (AClassNode.SubDesc and ctnsForwardDeclaration)>0 then exit;
   CheckWholeUnitParsed(AClassNode,CursorNode);
+  //BuildSubTreeForClass(AClassNode);
   // parse class and build CodeTreeNodes for all properties/methods
   {$IFDEF CTDEBUG}
   DebugLn('TCodeCompletionCodeTool.CompleteCode C ',dbgs(CleanCursorPos),', |',copy(Src,CleanCursorPos,8));
