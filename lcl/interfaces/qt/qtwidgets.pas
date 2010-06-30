@@ -1611,7 +1611,8 @@ begin
   ChildOfComplexWidget := ccwNone;
   // creates the widget
   Widget := CreateWidget(FParams);
-
+  if LCLObject.BiDiMode = bdRightToLeft then
+    setLayoutDirection(QtRightToLeft);
   // retrieve default cursor on create
   FDefaultCursor := QCursor_create();
   QWidget_cursor(Widget, FDefaultCursor);
