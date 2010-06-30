@@ -202,8 +202,8 @@ begin
   fBackupFiles          :=fConfigStorage.GetValue('BackupFiles', true);
   fTarget:=TConvertTarget(fConfigStorage.GetValue('ConvertTarget', 0));
   fSameDFMFile          :=fConfigStorage.GetValue('SameDFMFile', false);
-  fAutoReplaceUnits     :=fConfigStorage.GetValue('AutoReplaceUnits', false);
-  fAutoRemoveProperties :=fConfigStorage.GetValue('AutoRemoveProperties', false);
+  fAutoReplaceUnits     :=fConfigStorage.GetValue('AutoReplaceUnits', true);
+  fAutoRemoveProperties :=fConfigStorage.GetValue('AutoRemoveProperties', true);
   LoadStringToStringTree(fConfigStorage, 'ReplaceUnits', fReplaceUnits);
   LoadStringToStringTree(fConfigStorage, 'ReplaceTypes', fReplaceTypes);
 
