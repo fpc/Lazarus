@@ -86,8 +86,8 @@ begin
   try
     AGrid.BeginUpdate;
     AMap.GetNames(List);
-    for i:=0 to List.Count-1 do begin
-      OldIdent:=List[i];
+    for i:=1 to List.Count do begin  // Skip the fixed row in grid.
+      OldIdent:=List[i-1];
       NewIdent:=AMap[OldIdent];
       if AGrid.RowCount<i+2 then
         AGrid.RowCount:=i+2;         // Leave one empty row to the end.
