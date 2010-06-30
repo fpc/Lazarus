@@ -7115,6 +7115,10 @@ msgstr ""
 msgid "Help for FreePascal Compiler message"
 msgstr ""
 
+#: lazarusidestrconsts.lishidemessageviadirective
+msgid "Hide message via directive"
+msgstr ""
+
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr ""
@@ -7572,6 +7576,10 @@ msgstr ""
 #: lazarusidestrconsts.lisinvalidfreepascalsourcedirectory
 msgid "Invalid Free Pascal source directory"
 msgstr "Ongeldige Free Pascal broncode directory"
+
+#: lazarusidestrconsts.lisinvalidlinecolumninmessage
+msgid "Invalid line, column in message%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmultiselection
 msgid "Invalid multiselection"
@@ -9650,6 +9658,10 @@ msgstr "Watches"
 
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
+msgstr ""
+
+#: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
+msgid "Message contains no file position information:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lismessageseditor
@@ -11909,6 +11921,10 @@ msgstr "Open Recent"
 msgid "Quick fixes"
 msgstr ""
 
+#: lazarusidestrconsts.lisquickfixremoveunit
+msgid "Quick fix: Remove unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
 msgstr "Verlaat Lazarus"
@@ -11966,6 +11982,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisremovelocalvariable
 msgid "Remove local variable %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisremovelocalvariable2
+msgid "Remove local variable"
 msgstr ""
 
 #: lazarusidestrconsts.lisremovenonexistingfiles
@@ -13385,6 +13405,10 @@ msgstr "Kan de bewerker-wijzigingen niet verzamelen."
 #: lazarusidestrconsts.lisunabletogetsourcefordesigner
 msgid "Unable to get source for designer."
 msgstr "Kan de broncode niet vinden voor de \"designer\"."
+
+#: lazarusidestrconsts.lisunabletoloadfile
+msgid "Unable to load file:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."

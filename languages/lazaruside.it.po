@@ -7130,6 +7130,10 @@ msgstr "Esadecimale"
 msgid "Help for FreePascal Compiler message"
 msgstr "Aiuto su un messaggio del Compilatore FreePascal"
 
+#: lazarusidestrconsts.lishidemessageviadirective
+msgid "Hide message via directive"
+msgstr ""
+
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Consiglio: Controlloa se due pacchetti contengono una unit con lo stesso nome."
@@ -7587,6 +7591,10 @@ msgstr "Filtro invalido"
 #: lazarusidestrconsts.lisinvalidfreepascalsourcedirectory
 msgid "Invalid Free Pascal source directory"
 msgstr "Cartella sorgenti compilatore Free Pascal non valida"
+
+#: lazarusidestrconsts.lisinvalidlinecolumninmessage
+msgid "Invalid line, column in message%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmultiselection
 msgid "Invalid multiselection"
@@ -9666,6 +9674,10 @@ msgstr "Viste di watch"
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "Finestre"
+
+#: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
+msgid "Message contains no file position information:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
@@ -11924,6 +11936,10 @@ msgstr "Apri recenti"
 msgid "Quick fixes"
 msgstr ""
 
+#: lazarusidestrconsts.lisquickfixremoveunit
+msgid "Quick fix: Remove unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
 msgstr "Esci da Lazarus"
@@ -11981,6 +11997,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisremovelocalvariable
 msgid "Remove local variable %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisremovelocalvariable2
+msgid "Remove local variable"
 msgstr ""
 
 #: lazarusidestrconsts.lisremovenonexistingfiles
@@ -13400,6 +13420,10 @@ msgstr "Impossibile raccogliere i cambiamenti dell'editor."
 #: lazarusidestrconsts.lisunabletogetsourcefordesigner
 msgid "Unable to get source for designer."
 msgstr "Impossibile ottenere il sorgente per il designer."
+
+#: lazarusidestrconsts.lisunabletoloadfile
+msgid "Unable to load file:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."

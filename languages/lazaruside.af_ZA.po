@@ -7083,6 +7083,10 @@ msgstr ""
 msgid "Help for FreePascal Compiler message"
 msgstr ""
 
+#: lazarusidestrconsts.lishidemessageviadirective
+msgid "Hide message via directive"
+msgstr ""
+
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr ""
@@ -7539,6 +7543,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinvalidfreepascalsourcedirectory
 msgid "Invalid Free Pascal source directory"
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidlinecolumninmessage
+msgid "Invalid line, column in message%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmultiselection
@@ -9595,6 +9603,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
+msgstr ""
+
+#: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
+msgid "Message contains no file position information:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lismessageseditor
@@ -11844,6 +11856,10 @@ msgstr "Laai Onlangse"
 msgid "Quick fixes"
 msgstr ""
 
+#: lazarusidestrconsts.lisquickfixremoveunit
+msgid "Quick fix: Remove unit"
+msgstr ""
+
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
 msgstr "Verlaat Lazarus"
@@ -11901,6 +11917,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisremovelocalvariable
 msgid "Remove local variable %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisremovelocalvariable2
+msgid "Remove local variable"
 msgstr ""
 
 #: lazarusidestrconsts.lisremovenonexistingfiles
@@ -13317,6 +13337,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunabletogetsourcefordesigner
 msgid "Unable to get source for designer."
+msgstr ""
+
+#: lazarusidestrconsts.lisunabletoloadfile
+msgid "Unable to load file:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoloadoldresourcefiletheresourcefileis

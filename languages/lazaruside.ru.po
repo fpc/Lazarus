@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-01 01:25+0300\n"
+"PO-Revision-Date: 2010-07-01 03:45+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -2851,7 +2851,7 @@ msgstr "При покидании строки"
 
 #: lazarusidestrconsts.dlgtrimspacetypeposonly
 msgid "Position Only"
-msgstr "Только положение курсора"
+msgstr "Только позиция курсора"
 
 #: lazarusidestrconsts.dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
@@ -7082,7 +7082,7 @@ msgstr "Функция"
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
-msgstr "Возвратить слово в текущей позиции курсора."
+msgstr "Возвратить слово в текущей позиции курсора"
 
 #: lazarusidestrconsts.lisgotoline
 msgid "Goto line"
@@ -7128,6 +7128,10 @@ msgstr "Шестнадцатеричное"
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
 msgstr "Справка по сообщениям компилятора FreePascal"
+
+#: lazarusidestrconsts.lishidemessageviadirective
+msgid "Hide message via directive"
+msgstr "Скрыть сообщение с помощью директивы"
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
@@ -7586,6 +7590,10 @@ msgstr "Неверный фильтр"
 #: lazarusidestrconsts.lisinvalidfreepascalsourcedirectory
 msgid "Invalid Free Pascal source directory"
 msgstr "Неверный каталог исходого кода FreePascal"
+
+#: lazarusidestrconsts.lisinvalidlinecolumninmessage
+msgid "Invalid line, column in message%s%s"
+msgstr "Неверные строка, столбец в сообщении%s%s"
 
 #: lazarusidestrconsts.lisinvalidmultiselection
 msgid "Invalid multiselection"
@@ -9654,6 +9662,10 @@ msgstr "Окно наблюдений"
 #: lazarusidestrconsts.lismenuwindow
 msgid "&Window"
 msgstr "Ок&но"
+
+#: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
+msgid "Message contains no file position information:%s%s"
+msgstr "Сообщение не содержит информации о позиции в файле:%s%s"
 
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
@@ -11910,6 +11922,10 @@ msgstr "Открыть недавний проект"
 msgid "Quick fixes"
 msgstr "Быстрые исправления"
 
+#: lazarusidestrconsts.lisquickfixremoveunit
+msgid "Quick fix: Remove unit"
+msgstr "Быстрое исправление: удалить модуль"
+
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
 msgstr "Выход из Lazarus"
@@ -11968,6 +11984,10 @@ msgstr "Удалить из путей поиска"
 #: lazarusidestrconsts.lisremovelocalvariable
 msgid "Remove local variable %s"
 msgstr "Удалить локальную переменную %s"
+
+#: lazarusidestrconsts.lisremovelocalvariable2
+msgid "Remove local variable"
+msgstr "Удалить локальную переменную"
 
 #: lazarusidestrconsts.lisremovenonexistingfiles
 msgid "Remove non existing files"
@@ -13389,6 +13409,11 @@ msgstr "Невозможно определить изменения в реда
 #: lazarusidestrconsts.lisunabletogetsourcefordesigner
 msgid "Unable to get source for designer."
 msgstr "Невозможно получить исходный код для дизайнера."
+
+#: lazarusidestrconsts.lisunabletoloadfile
+#| msgid "Unable to load file :%s%s"
+msgid "Unable to load file:%s%s"
+msgstr "Невозможно загрузить файл:%s%s"
 
 #: lazarusidestrconsts.lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
