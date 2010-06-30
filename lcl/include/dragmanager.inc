@@ -383,6 +383,7 @@ procedure TDockPerformer.DragMove(APosition: TPoint);
         begin
           CanDock := True;
           AControl.GetSiteInfo(FDockObject.Control, ARect, APosition, CanDock);
+          //debugln(['FindDockSiteAtPosition ',DbgSName(AControl),' CanDock=',CanDock,' PtIn=',PtInRect(ARect, APosition)]);
           if CanDock and PtInRect(ARect, APosition) then
             QualifyingSites.Add(AControl);
         end;
@@ -392,11 +393,11 @@ procedure TDockPerformer.DragMove(APosition: TPoint);
       begin
         // if a parent and a child has qualified remove the parent
         for i:=QualifyingSites.Count-1 downto 0 do begin
-          debugln(['FindDockSiteAtPosition qualified: ',DbgSName(TWinControl(QualifyingSites[i]))]);
-          for j:=i+1 to QualifyingSites.Count-1 do begin
+          //debugln(['FindDockSiteAtPosition qualified: ',DbgSName(TWinControl(QualifyingSites[i])),' ',TWinControl(QualifyingSites[i]).Caption]);
+          for j:=0 to QualifyingSites.Count-1 do begin
             if TWinControl(QualifyingSites[i]).IsParentOf(TWinControl(QualifyingSites[j]))
             then begin
-              debugln(['FindDockSiteAtPosition isparentof ',DbgSName(TWinControl(QualifyingSites[j]))]);
+              //debugln(['FindDockSiteAtPosition isparentof ',DbgSName(TWinControl(QualifyingSites[j])),' ',TWinControl(QualifyingSites[j]).Caption]);
               QualifyingSites.Delete(i);
               break;
             end;

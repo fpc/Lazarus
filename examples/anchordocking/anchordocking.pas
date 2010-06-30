@@ -4036,7 +4036,7 @@ begin
 
   CanDock:=(Client is TAnchorDockHostSite)
            and not DockMaster.AutoFreedIfControlIsRemoved(Self,Client);
-  debugln(['TAnchorDockHostSite.GetSiteInfo ',DbgSName(Self),' ',dbgs(BoundsRect),' ',Caption,' CanDock=',CanDock,' PtIn=',PtInRect(InfluenceRect,MousePos)]);
+  //debugln(['TAnchorDockHostSite.GetSiteInfo ',DbgSName(Self),' ',dbgs(BoundsRect),' ',Caption,' CanDock=',CanDock,' PtIn=',PtInRect(InfluenceRect,MousePos)]);
 
   if Assigned(OnGetSiteInfo) then
     OnGetSiteInfo(Self, Client, InfluenceRect, MousePos, CanDock);
