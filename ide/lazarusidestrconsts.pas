@@ -1509,6 +1509,8 @@ resourcestring
   dlgFoldPasAsm             = 'Asm';
   dlgFoldPasIfDef           = '{$IfDef}';
   dlgFoldPasUserRegion      = '{%Region}';
+  dlgFoldPasAnsiComment     = 'Comment (* *)';
+  dlgFoldPasBorComment      = 'Comment { }';
 
   dlgFoldLfmObject      = 'Object (inherited, inline)';
   dlgFoldLfmList        = 'List <>';
