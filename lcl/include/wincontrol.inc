@@ -7135,6 +7135,9 @@ begin
       if not HandleAllocated then
         RaiseGDBException('Handle creation failed creating '+DbgSName(Self));
       //debugln('TWinControl.CreateWnd update constraints ... ',DbgSName(Self));
+      TWSWinControlClass(WidgetSetClass).SetBiDiMode(Self,
+         UseRightToLeftAlignment, UseRightToLeftReading, UseRightToLeftScrollBar);
+
       Constraints.UpdateInterfaceConstraints;
       InvalidateClientRectCache(False);
       TWSWinControlClass(WidgetSetClass).ConstraintsChange(Self);

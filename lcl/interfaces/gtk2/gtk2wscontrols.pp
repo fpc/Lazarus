@@ -242,19 +242,11 @@ class procedure TGtk2WSWinControl.SetBiDiMode(const AWinControl : TWinControl;
 const
   WidgetDirection : array[boolean] of longint = (GTK_TEXT_DIR_LTR, GTK_TEXT_DIR_RTL);
 begin
-  gtk_widget_set_direction(PGtkWidget(AWinControl.Handle), WidgetDirection[UseRightToLeftAlign]);
-       
-  if UseRightToLeftReading then // By default GTK2 support bidi regardless of the layout
-    begin
-    end
-  else begin
-       end;
+  if not WSCheckHandleAllocated(AWinControl, 'SetBiDiMode') then
+    Exit;
 
-  if UseRightToLeftScrollBar then  // I don't know how to do it for now (if possible)
-   begin
-   end
-  else begin
-       end;
+  gtk_widget_set_direction(PGtkWidget(AWinControl.Handle),
+    WidgetDirection[UseRightToLeftAlign]);
 end;
 
 
