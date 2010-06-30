@@ -2385,6 +2385,7 @@ begin
         fMessageQueue.UnLock;
       end;
 
+      //debugln(['TGtk2WidgetSet.AppProcessMessages ',vlMsg^.Message,' ',LM_CHAR,' ',dbgsname(GetLCLObject(Pointer(vlMsg^.hwnd)))]);
       // Send message
       try
         with vlMsg^ do SendMessage(hWND, Message, WParam, LParam);

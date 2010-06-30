@@ -6706,6 +6706,7 @@ var
 begin
   Result := True;
 
+  //debugln(['TGtk2WidgetSet.PostMessage ',dbgsname(GetLCLObject(Pointer(Handle)))]);
   New(AMessage);
   FillByte(AMessage^,SizeOf(TMsg),0);
   AMessage^.HWnd := Handle; // this is normally the main gtk widget

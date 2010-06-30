@@ -5089,6 +5089,7 @@ procedure TWinControl.WndProc(var Message: TLMessage);
 var
   Form: TCustomForm;
 begin
+  //debugln(['TWinControl.WndProc ',DbgSName(Self),' ',Message.Msg]);
 //  Assert(False, Format('Trace:[TWinControl.WndPRoc] %s(%s) --> Message = %d', [ClassName, Name, Message.Msg]));
   case Message.Msg of
     LM_SETFOCUS:

@@ -1609,6 +1609,7 @@ begin
     end;
   end;
 
+  //debugln(['TControl.WndProc ',DbgSName(Self),' ',TheMessage.Msg]);
   if TheMessage.Msg=LM_PAINT then begin
     Include(FControlFlags,cfProcessingWMPaint);
     try
