@@ -512,19 +512,11 @@ begin
 end;
 
 function TIDEOptionsDialog.AddControl(AControlClass: TControlClass): TControl;
-var
-  Control: TControl;
 begin
   Result := AControlClass.Create(Self);
   Result.Parent := Self;
-  Result.Anchors := [akLeft, akBottom];
+  Result.Align:=alBottom;
   Result.BorderSpacing.Around := 6;
-  Control := CategoryTree;
-  while Control.AnchorSide[akBottom].Control <> ButtonPanel do
-    Control := Control.AnchorSide[akBottom].Control;
-  Result.AnchorSide[akBottom].Control := ButtonPanel;
-  Result.AnchorSide[akLeft].Control := Self;
-  Control.AnchorSide[akBottom].Control := Result;
 end;
 
 procedure TIDEOptionsDialog.OpenEditor(AEditor: TAbstractIDEOptionsEditorClass);
