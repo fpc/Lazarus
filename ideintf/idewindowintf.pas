@@ -1259,7 +1259,7 @@ begin
     DefBounds.Top:=StrToIntDef(Top,0);
   // right
   if Right='' then
-    aRight:=AForm.Left+AForm.Width
+    aRight:=DefBounds.Left+AForm.Width
   else if Right[length(Right)]='%' then
     aRight:=Screen.Width*StrToIntDef(copy(Right,1,length(Right)-1),0) div 100
   else
@@ -1271,7 +1271,7 @@ begin
   DefBounds.Right:=aRight;
   // bottom
   if Bottom='' then
-    aBottom:=AForm.Top+AForm.Height
+    aBottom:=DefBounds.Top+AForm.Height
   else if Bottom[length(Bottom)]='%' then
     aBottom:=Screen.Height*StrToIntDef(copy(Bottom,1,length(Bottom)-1),0) div 100
   else
