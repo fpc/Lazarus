@@ -472,8 +472,7 @@ function ExtractCodeFromMakefile(const Source: string): string;
       LineEndPos:=SrcPos;
       IsEmptyLine:=true;
       CommentStartPos:=0;
-      while (LineEndPos<=SrcLen) and (not (Source[LineEndPos] in [#10,#13])) do
-      begin
+      while (LineEndPos<=SrcLen) do begin
         case Source[LineEndPos] of
         #10,#13: break;
         ' ',#9:  ;
@@ -516,9 +515,9 @@ function ExtractCodeFromMakefile(const Source: string): string;
       end;
 
       // next line
-      SrcPos:=LineEndPos;
-      if (SrcPos<=SrcLen) and (Source[SrcLen] in [#10,#13])
-      and (Source[SrcLen]<>Source[SrcLen-1]) then
+      SrcPos:=LineEndPos+1;
+      if (SrcPos<=SrcLen) and (Source[SrcPos] in [#10,#13])
+      and (Source[SrcPos]<>Source[SrcPos-1]) then
         inc(SrcPos);
     end;
     NewLength:=DestPos-1;
