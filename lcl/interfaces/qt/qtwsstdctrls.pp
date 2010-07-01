@@ -1165,14 +1165,27 @@ class function TQtWSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtComboBox: TQtComboBox;
+  ItemIndex: Integer;
+  Text: String;
 begin
   QtComboBox := TQtComboBox.Create(AWinControl, AParams);
-  QtComboBox.AttachEvents;
-  QtComboBox.OwnerDrawn := TCustomComboBox(AWinControl).Style in [csOwnerDrawFixed, csOwnerDrawVariable];
 
   // create our FList helper
   QtComboBox.FList := TQtComboStrings.Create(AWinControl, QtComboBox);
   QtComboBox.setMaxVisibleItems(TCustomComboBox(AWinControl).DropDownCount);
+
+  // load combo data imediatelly and set LCLs itemIndex and Text otherwise
+  // qt will set itemindex to 0 if lcl itemindex = -1.
+  ItemIndex := TCustomComboBox(AWinControl).ItemIndex;
+  Text := TCustomComboBox(AWinControl).Text;
+  QtComboBox.FList.Assign(TCustomComboBox(AWinControl).Items);
+  QtComboBox.setCurrentIndex(ItemIndex);
+  QtComboBox.setText(GetUTF8String(Text));
+  QtComboBox.setEditable(AParams.Style and CBS_DROPDOWN <> 0);
+
+  QtComboBox.AttachEvents;
+  QtComboBox.OwnerDrawn := (AParams.Style and CBS_OWNERDRAWFIXED <> 0) or
+    (AParams.Style and CBS_OWNERDRAWVARIABLE <> 0);
 
   Result := TLCLIntfHandle(QtComboBox);
 end;

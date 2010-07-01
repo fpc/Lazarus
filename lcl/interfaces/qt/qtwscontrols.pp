@@ -307,8 +307,9 @@ class procedure TQtWSWinControl.SetText(const AWinControl: TWinControl;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText') then
     Exit;
-
+  TQtWidget(AWinControl.Handle).BeginUpdate;
   TQtWidget(AWinControl.Handle).setText(GetUtf8String(AText));
+  TQtWidget(AWinControl.Handle).EndUpdate;
 end;
 
 class procedure TQtWSWinControl.SetChildZPosition(const AWinControl,
