@@ -2160,8 +2160,8 @@ end;
 constructor TPackageEditorForm.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  Constraints.MinWidth := 550;
-  Constraints.MinHeight := 450;
+  Width := 550;
+  Height := 450;
   FPlugins:=TStringList.Create;
   SetupComponents;
   OnCloseQuery:=@PackageEditorFormCloseQuery;
