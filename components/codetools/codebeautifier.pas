@@ -1399,10 +1399,10 @@ begin
     'N': // EN
       if CompareIdentifiers('END',r)=0 then begin
         // common syntax error: open brackets in statements => ignore
-        while Stack.TopType in bbtAllBrackets do
+        while StackTopType in bbtAllBrackets do
           EndBlock;
         // statements can be closed by end without semicolon
-        while Stack.TopType in bbtAllAutoEnd do
+        while StackTopType in bbtAllAutoEnd do
           EndBlock;
         if IsMethodDeclaration then
           EndBlock;
