@@ -1173,6 +1173,7 @@ begin
   // create our FList helper
   QtComboBox.FList := TQtComboStrings.Create(AWinControl, QtComboBox);
   QtComboBox.setMaxVisibleItems(TCustomComboBox(AWinControl).DropDownCount);
+  QtComboBox.setEditable(TCustomComboBox(AWinControl).Style = csDropDown);
 
   Result := TLCLIntfHandle(QtComboBox);
 end;
