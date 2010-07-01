@@ -4224,6 +4224,8 @@ begin
   if AMode<>smNormal then exit;
   if SyncroLockCount > 0 then exit;
   if not CodeToolsOpts.IndentOnPaste then exit;
+  if not (SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
+    exit;
   {$IFDEF VerboseIndenter}
   debugln(['TSourceEditor.EditorPaste LogCaret=',dbgs(ALogStartPos)]);
   {$ENDIF}
