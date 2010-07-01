@@ -41,6 +41,9 @@ targetdir=..
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.or) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
       $(wildcard ../designer/*$(OEXT)) $(wildcard ../designer/*$(PPUEXT)) \
       $(wildcard ../debugger/*$(OEXT)) $(wildcard ../debugger/*$(PPUEXT)) \
       $(wildcard ../converter/*$(OEXT)) $(wildcard ../converter/*$(PPUEXT)) \
