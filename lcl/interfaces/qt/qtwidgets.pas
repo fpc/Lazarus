@@ -5236,7 +5236,8 @@ begin
   else
     Parent := nil;
   Result := QFrame_create(Parent);
-  QWidget_setAutoFillBackground(Result, True);
+  if (QtVersionMajor = 4) and (QtVersionMinor < 6) then
+    QWidget_setAutoFillBackground(Result, True);
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
@@ -5695,7 +5696,8 @@ begin
     Parent := nil;
   Result := QScrollBar_create(Parent);
   QWidget_setFocusPolicy(Result, QtNoFocus);
-  QWidget_setAutoFillBackground(Result, True);
+  if (QtVersionMajor = 4) and (QtVersionMinor < 6) then
+    QWidget_setAutoFillBackground(Result, True);
   FHasPaint := True;
 end;
 
@@ -6651,7 +6653,8 @@ begin
   {$ifdef darwin}
   QTabWidget_setUsesScrollButtons(QTabWidgetH(Result), True);
   {$endif}
-  QWidget_setAutoFillBackground(Result, True);
+  if (QtVersionMajor = 4) and (QtVersionMinor < 6) then
+    QWidget_setAutoFillBackground(Result, True);
 end;
 
 destructor TQtTabWidget.Destroy;
@@ -9756,7 +9759,8 @@ begin
   else
     Parent := nil;
   Result := QTableView_create(Parent);
-  QWidget_setAutoFillBackground(Result, True);
+  if (QtVersionMajor = 4) and (QtVersionMinor < 6) then
+    QWidget_setAutoFillBackground(Result, True);
 end;
 
 function TQtTableView.verticalHeader: TQtHeaderView;
@@ -10460,7 +10464,8 @@ begin
   else
     Parent := nil;
   Result := QStatusBar_create(Parent);
-  QWidget_setAutoFillBackground(Result, True);
+  if (QtVersionMajor = 4) and (QtVersionMinor < 6) then
+    QWidget_setAutoFillBackground(Result, True);
   Widget := Result;
 end;
 
@@ -10839,7 +10844,8 @@ begin
 
   if (LCLObject is TScrollingWinControl) then
   begin
-    if not (csDesigning in LCLObject.ComponentState) then
+    if (QtVersionMajor = 4) and (QtVersionMinor < 6) and
+      not (csDesigning in LCLObject.ComponentState) then
       QWidget_setAutoFillBackground(Result, True);
     FChildOfComplexWidget := ccwScrollingWinControl;
   end else
@@ -11555,7 +11561,8 @@ begin
   else
     Parent := nil;
   Result := QWidget_create(Parent);
-  QWidget_setAutoFillBackground(Result, True);
+  if (QtVersionMajor = 4) and (QtVersionMinor < 6) then
+    QWidget_setAutoFillBackground(Result, True);
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
