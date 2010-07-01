@@ -2718,6 +2718,15 @@ begin
       if not (ccloAbsolutePaths in Flags) then
         NewTargetFilename := CreateRelativePath(NewTargetFilename, BaseDirectory);
       NewTargetDirectory := ExtractFilePath(NewTargetFilename);
+      if (NewTargetDirectory <> '')
+      and (CompareFilenames(ChompPathDelim(NewTargetDirectory),ChompPathDelim(BaseDirectory))=0)
+      then begin
+        // if target file is in base directory, do not use -FE switch
+        // Without -FE and -FU switch the compiler puts .ppu files in the source
+        // directories, which is Delphi compatible.
+        // See bug http://bugs.freepascal.org/view.php?id=15535
+        NewTargetDirectory:='';
+      end;
       if NewTargetDirectory <> '' then
         switches := switches + ' '+PrepareCmdLineOption('-FE' + NewTargetDirectory);
       NewTargetFileName := ExtractFileName(NewTargetFilename);
