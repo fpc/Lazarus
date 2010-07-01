@@ -1401,7 +1401,7 @@ end;
 
 function TFileDescPascalUnitWithResource.GetResourceType: TResourceType;
 begin
-  Result := rtLRS;
+  Result := rtRes;
 end;
 
 constructor TFileDescPascalUnitWithResource.Create;
