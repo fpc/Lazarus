@@ -1524,6 +1524,7 @@ type
     FMarked: Boolean;
     FMenuItem: TMenuItem;
     FMouseInControl: boolean;
+    FShowCaption: boolean;
     FStyle: TToolButtonStyle;
     FToolButtonFlags: TToolButtonFlags;
     FUpdateCount: Integer;
@@ -1541,6 +1542,7 @@ type
     procedure SetIndeterminate(Value: Boolean);
     procedure SetMarked(Value: Boolean);
     procedure SetMenuItem(Value: TMenuItem);
+    procedure SetShowCaption(const AValue: boolean);
     procedure SetStyle(Value: TToolButtonStyle);
     procedure SetWrap(Value: Boolean);
     procedure SetMouseInControl(NewMouseInControl: Boolean);
@@ -1606,13 +1608,6 @@ type
     property Indeterminate: Boolean read FIndeterminate write SetIndeterminate default False;
     property Marked: Boolean read FMarked write SetMarked default False;
     property MenuItem: TMenuItem read FMenuItem write SetMenuItem;
-    property ParentShowHint;
-    property PopupMenu;
-    property Wrap: Boolean read FWrap write SetWrap default False;
-    property ShowHint;
-    property Style: TToolButtonStyle read FStyle write SetStyle default tbsButton;
-    property Visible;
-    property Width stored IsWidthStored;
     property OnClick;
     property OnContextPopup;
     property OnDragDrop;
@@ -1624,6 +1619,14 @@ type
     property OnMouseUp;
     property OnStartDock;
     property OnStartDrag;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowCaption: boolean read FShowCaption write SetShowCaption default true;
+    property ShowHint;
+    property Style: TToolButtonStyle read FStyle write SetStyle default tbsButton;
+    property Visible;
+    property Width stored IsWidthStored;
+    property Wrap: Boolean read FWrap write SetWrap default False;
   end;
 
   { TToolBarEnumerator }

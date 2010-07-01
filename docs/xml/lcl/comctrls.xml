@@ -17422,6 +17422,10 @@ the comparision is case sensitive.
       <element name="TToolBar.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomTrackBar.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TCustomTreeView.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+      <element name="TToolButton.ShowCaption">
+        <short>Show/Hide caption</short>
+        <descr>The ToolBar.ShowCaptions has precendence. Hiding will only work if ToolBar.List is true.</descr>
+      </element>
     </module>
     <!-- ComCtrls -->
   </package>

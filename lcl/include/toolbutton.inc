@@ -59,6 +59,7 @@ begin
   inherited Create(TheOwner);
   FImageIndex := -1;
   FStyle := tbsButton;
+  FShowCaption := true;
   ControlStyle := [csCaptureMouse, csSetCaption, csDesignNoSmoothResize];
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
@@ -259,9 +260,11 @@ begin
     // calculate text size
     TextSize.cx:=0;
     TextSize.cy:=0;
-    if (Style in [tbsButton, tbsDropDown, tbsCheck]) and
-       (FToolBar.ShowCaptions) and
-       (Caption <> '') then
+    if (Style in [tbsButton, tbsDropDown, tbsCheck]) and (FToolBar.ShowCaptions)
+    and ((FToolbar.List and ShowCaption) //Allow hide caption only in list mode
+         or not FToolBar.List)
+       and (Caption <> '')
+    then
       TextSize := GetTextSize;
 
     // calculate icon size
@@ -563,7 +566,7 @@ begin
   if FImageIndex = Value then exit;
   //debugln('TToolButton.SetImageIndex ',Name,':',ClassName,' Old=',FImageIndex,' New=',Value);
   FImageIndex := Value;
-  if Visible and (FToolBar <> nil) then
+  if IsControlVisible and (FToolBar <> nil) then
   begin
     RefreshControl;
     Invalidate;
@@ -600,12 +603,23 @@ begin
     FMenuItem.FreeNotification(Self);
 end;
 
+procedure TToolButton.SetShowCaption(const AValue: boolean);
+begin
+  if FShowCaption=AValue then exit;
+  FShowCaption:=AValue;
+  if IsControlVisible then
+  begin
+    InvalidatePreferredSize;
+    UpdateVisibleToolbar;
+  end;
+end;
+
 procedure TToolButton.SetStyle(Value: TToolButtonStyle);
 begin
   if FStyle = Value then exit;
   FStyle := Value;
   InvalidatePreferredSize;
-  if Visible then
+  if IsControlVisible then
     UpdateVisibleToolbar;
 end;
 
@@ -929,7 +943,9 @@ begin
     // calculate text size
     TextSize.cx:=0;
     TextSize.cy:=0;
-    if (Style in [tbsButton,tbsDropDown,tbsCheck]) and (FToolBar.ShowCaptions) then
+    if (Style in [tbsButton,tbsDropDown,tbsCheck]) and (FToolBar.ShowCaptions) and
+       //Allow hide caption only in list mode
+       ((FToolBar.List and ShowCaption) or not FToolBar.List) then
     begin
       if (Caption<>'') then
       begin
