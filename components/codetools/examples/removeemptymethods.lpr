@@ -29,7 +29,7 @@ program RemoveEmptyMethods;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, DefineTemplates,
+  Classes, SysUtils, CodeCache, CodeToolManager, DefineTemplates, FileProcs,
   CodeAtom, CodeToolsConfig, CodeToolsStructs, PascalParserTool,
   EmptyMethods1;
 
@@ -81,7 +81,7 @@ begin
         P:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
         writeln(i,' ',DbgsCXY(P^));
       end;
-      if CodeToolBoss.RemoveEmptyMethods(Code,X,Y,Sections,All,[],RemovedProcHeads)
+      if CodeToolBoss.RemoveEmptyMethods(Code,'',X,Y,Sections,All,[],RemovedProcHeads)
       then begin
         writeln('Empty methods removed:');
         if RemovedProcHeads<>nil then
