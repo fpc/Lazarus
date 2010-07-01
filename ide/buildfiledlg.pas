@@ -654,7 +654,7 @@ var
   BuildScan: TIDEDirBuildScanFlags;
   RunFlags: TIDEDirRunFlags;
 begin
-  // get values form directive list
+  // get values from directive list
   // build
   BuildWorkingDir:=GetIDEStringDirective(DirectiveList,
                                        IDEDirectiveNames[idedBuildWorkingDir],
