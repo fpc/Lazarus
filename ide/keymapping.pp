@@ -3102,15 +3102,19 @@ var
 
   procedure Load(SubPath: string; out Key, DefaultKey: TIDEShortCut);
   begin
+    DefaultKey:=CleanIDEShortCut;
     if XMLConfig.GetValue(SubPath+'Default',True) then begin
       Key:=CleanIDEShortCut;
     end else begin
+      // not default
       key.Key1:=XMLConfig.GetValue(SubPath+'Key1',VK_UNKNOWN);
       key.Shift1:=CfgStrToShiftState(XMLConfig.GetValue(SubPath+'Shift1',''));
       key.Key2:=XMLConfig.GetValue(SubPath+'Key2',VK_UNKNOWN);
       key.Shift2:=CfgStrToShiftState(XMLConfig.GetValue(SubPath+'Shift2',''));
+      if CompareIDEShortCuts(@Key,@CleanIDEShortCut)=0 then
+        // this key is empty, mark it so that it differs from default
+        key.Shift2:=[ssShift];
     end;
-    DefaultKey:=CleanIDEShortCut;
   end;
 
 // LoadFromXMLConfig
@@ -3121,7 +3125,6 @@ var
   SubPath: String;
   AVLNode: TAvgLvlTreeNode;
   LoadedKey: TLoadedKeyCommand;
-  TheKeyA, TheKeyB: TIDEShortCut;
 begin
   //debugln('TKeyCommandRelationList.LoadFromXMLConfig A ');
   FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
@@ -3129,6 +3132,7 @@ begin
 
   if FileVersion>5 then begin
     Cnt:=XMLConfig.GetValue(Path+'Count',0);
+    // load all keys from the config, this may be more than the current relations
     for a:=1 to Cnt do begin
       SubPath:=Path+'Item'+IntToStr(a)+'/';
       Name:=XMLConfig.GetValue(SubPath+'Name','');
@@ -3141,9 +3145,6 @@ begin
         LoadedKey:=TLoadedKeyCommand.Create;
         LoadedKey.Name:=Name;
         fLoadedKeyCommands.Add(LoadedKey);
-        GetDefaultKeyForCommand(Relations[a].Command,TheKeyA,TheKeyB);
-        LoadedKey.DefaultShortcutA:=TheKeyA;
-        LoadedKey.DefaultShortcutB:=TheKeyB;
       end;
       Load(SubPath+'KeyA/',LoadedKey.ShortcutA,LoadedKey.DefaultShortcutA);
       Load(SubPath+'KeyB/',LoadedKey.ShortcutB,LoadedKey.DefaultShortcutB);
@@ -3166,7 +3167,7 @@ begin
         else
           Relations[a].ShortcutB:=LoadedKey.ShortcutB;
       end else begin
-        // no value in config => restore default
+        // no value in config => use default
         Relations[a].ShortcutA:=Relations[a].DefaultShortcutA;
         Relations[a].ShortcutB:=Relations[a].DefaultShortcutB;
       end;
@@ -3221,25 +3222,35 @@ function TKeyCommandRelationList.SaveToXMLConfig(
   procedure Store(const SubPath: string; Key, DefaultKey: TIDEShortCut);
   var
     IsDefault: boolean;
+    s: TShiftState;
   begin
     IsDefault:=CompareIDEShortCuts(@Key,@DefaultKey)=0;
     XMLConfig.SetDeleteValue(SubPath+'Default',IsDefault,True);
     if IsDefault then begin
+      // clear values
       XMLConfig.SetDeleteValue(SubPath+'Key1',0,0);
       XMLConfig.SetDeleteValue(SubPath+'Shift1','','');
       XMLConfig.SetDeleteValue(SubPath+'Key2',0,0);
       XMLConfig.SetDeleteValue(SubPath+'Shift2','','');
     end else begin
+      // store values
       XMLConfig.SetDeleteValue(SubPath+'Key1',key.Key1,VK_UNKNOWN);
-      XMLConfig.SetDeleteValue(SubPath+'Shift1',ShiftStateToCfgStr(key.Shift1),ShiftStateToCfgStr([]));
+      if key.Key1=VK_UNKNOWN then
+        s:=[]
+      else
+        s:=key.Shift1;
+      XMLConfig.SetDeleteValue(SubPath+'Shift1',ShiftStateToCfgStr(s),ShiftStateToCfgStr([]));
       XMLConfig.SetDeleteValue(SubPath+'Key2',key.Key2,VK_UNKNOWN);
-      XMLConfig.SetDeleteValue(SubPath+'Shift2',ShiftStateToCfgStr(key.Shift2),ShiftStateToCfgStr([]));
+      if key.Key2=VK_UNKNOWN then
+        s:=[]
+      else
+        s:=key.Shift2;
+      XMLConfig.SetDeleteValue(SubPath+'Shift2',ShiftStateToCfgStr(s),ShiftStateToCfgStr([]));
     end;
   end;
 
 var a: integer;
   Name: String;
-  TheKeyA, TheKeyB: TIDEShortCut;
   AVLNode: TAvgLvlTreeNode;
   LoadedKey: TLoadedKeyCommand;
   Cnt: Integer;
@@ -3259,14 +3270,14 @@ begin
       LoadedKey:=TLoadedKeyCommand.Create;
       LoadedKey.Name:=Name;
       fLoadedKeyCommands.Add(LoadedKey);
-      GetDefaultKeyForCommand(Relations[a].Command,TheKeyA,TheKeyB);
-      LoadedKey.DefaultShortcutA:=TheKeyA;
-      LoadedKey.DefaultShortcutB:=TheKeyB;
+      LoadedKey.DefaultShortcutA:=Relations[a].DefaultShortcutA;
+      LoadedKey.DefaultShortcutB:=Relations[a].DefaultShortcutB;
     end;
     LoadedKey.ShortcutA:=Relations[a].ShortcutA;
     LoadedKey.ShortcutB:=Relations[a].ShortcutB;
   end;
-  // save keys to config
+  // save keys to config (including the one that were read from the last config
+  //                      and were not used)
   Cnt:=0;
   AVLNode:=fLoadedKeyCommands.FindLowest;
   while AVLNode<>nil do begin
