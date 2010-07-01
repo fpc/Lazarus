@@ -332,6 +332,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
+    procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure AttachEvents; override;
@@ -5696,6 +5697,16 @@ begin
   QWidget_setFocusPolicy(Result, QtNoFocus);
   QWidget_setAutoFillBackground(Result, True);
   FHasPaint := True;
+end;
+
+procedure TQtScrollBar.preferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  Size: TSize;
+begin
+  QScrollBar_sizeHint(QScrollBarH(Widget), @Size);
+  PreferredWidth := Size.cx;
+  PreferredHeight := Size.cy;
 end;
 
 procedure TQtScrollBar.setFocusPolicy(const APolicy: QtFocusPolicy);
