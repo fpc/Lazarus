@@ -1,43 +1,53 @@
-#   $Id$
+#   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for Lazarus for Free Pascal
+#   Makefile.fpc for CodeTools 1.0.1
 #
+#   This file was generated on 07/02/2010
 
 [package]
 name=codetools
-version=1.0
-
-[require]
-packages=
+version=1.0.1
 
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=.
-options=-gl
+unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
+includedir=./
+options=-gh -gl -dVerboseIndenter -dEnableBuildModes -dVerboseBug16168 -MObjFPC -Sci
 
 [target]
-units=allcodetoolunits
-implicitunits=codetoolsstrconsts avl_tree basiccodetools codecache sourcelog \
-   customcodetool multikeywordlisttool pascalparsertool finddeclarationtool \
-   identcompletiontool stdcodetools resourcecodetool codetemplatestool \
-   methodjumptool eventcodetool codecompletiontool codeatom codetree \
-   definetemplates expreval keywordfunclists linkscanner sourcechanger \
-   fileprocs codetoolsstructs codetoolmanager \
-   laz_dom laz_xmlcfg laz_xmlread laz_xmlwrite
+units=codetools.pas
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+[prerules]
+# LCL Platform
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),win64)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),darwin)
+LCL_PLATFORM=carbon
+else
+LCL_PLATFORM=gtk2
+endif
+endif
+endif
+endif
+export LCL_PLATFORM
 
 [rules]
 .PHONY: cleartarget all
 
 cleartarget:
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/allcodetoolunits$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/codetools$(PPUEXT)
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) allcodetoolunits$(PPUEXT)
-
-# end.
-
+all: cleartarget $(COMPILER_UNITTARGETDIR) codetools$(PPUEXT)
