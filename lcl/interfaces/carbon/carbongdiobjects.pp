@@ -2547,7 +2547,6 @@ begin
   try
     GetRGBA(Bitmap, x,y, sr, sg, sb, sa, clpos);
     if (sr=r) and (sg=g) and (sb=b) then Exit;
-
     SetLength(data, Bitmap.Width*Bitmap.Height);
     cnt:=1;
     data[0].x:=x;
@@ -2562,16 +2561,14 @@ begin
       begin
         i:=x+dx[k];
         j:=y+dy[k];
-        for j:=Max(0, y-1) to Min(Bitmap.Height-1, y+1) do
+        if (i<0) or (j<0) or (i>=Bitmap.Width) or (j>=Bitmap.Height) then Continue;
+        GetRGBA(Bitmap, i,j, tr, tg, tb, ta, clPos);
+        if (tr=sr) and (tg=sg) and (tb=sb) then
         begin
-          GetRGBA(Bitmap, i,j, tr, tg, tb, ta, clPos);
-          if (tr=sr) and (tg=sg) and (tb=sb) then
-          begin
-            SetRGBA(Bitmap, i,j, r, g, b, a, clPos);
-            data[cnt].X:=i;
-            data[cnt].Y:=j;
-            inc(cnt);
-          end;
+          SetRGBA(Bitmap, i,j, r, g, b, a, clPos);
+          data[cnt].X:=i;
+          data[cnt].Y:=j;
+          inc(cnt);
         end;
       end;
       dec(cnt);
