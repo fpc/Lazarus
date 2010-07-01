@@ -2744,6 +2744,7 @@ resourcestring
   lisLazBuildBuildJITForm = 'Build JITForm';
   lisLazBuildWithStaticPackages = 'With packages';
   lisLazBuildRestartAfterBuild = 'Restart after successful Build';
+  lisUpdateRevisionInc = 'Update revision.inc';
   lisLazBuildConfirmBuild = 'Confirm before rebuilding Lazarus';
   lisLazBuildOk = 'Ok';
   lisCTDTemplates = 'Templates';

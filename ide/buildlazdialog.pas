@@ -129,17 +129,13 @@ type
     fTargetPlatform: TLCLPlatform; // holds selection for LCL Build
     fIDEPlatform: TLCLPlatform;  // holds selection for IDE Build
     fStaticAutoInstallPackages: TStringList;
+    FUpdateRevisionInc: boolean;
     FWithStaticPackages: boolean;
     FItems: TList; // list of TBuildLazarusItem
     function GetCount: integer;
     function GetItems(Index: integer): TBuildLazarusItem;
-    procedure SetRestartAfterBuild(const AValue: boolean);
-    procedure SetConfirmBuild(const AValue: boolean);
-    procedure SetQuickBuildOption(const AValue: integer);
     procedure SetTargetCPU(const AValue: string);
-    procedure SetTargetDirectory(const AValue: string);
     procedure SetTargetOS(const AValue: string);
-    procedure SetWithStaticPackages(const AValue: boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -172,13 +168,14 @@ type
     property StaticAutoInstallPackages: TStringList
                                                 read fStaticAutoInstallPackages;
     property TargetDirectory: string read FTargetDirectory
-                                     write SetTargetDirectory;
+                                     write FTargetDirectory;
     property WithStaticPackages: boolean read FWithStaticPackages
-                                         write SetWithStaticPackages;
+                                         write FWithStaticPackages;
+    property UpdateRevisionInc: boolean read FUpdateRevisionInc write FUpdateRevisionInc;
     property RestartAfterBuild: boolean read FRestartAfterBuild
-                                        write SetRestartAfterBuild;
-    property ConfirmBuild: boolean read FConfirmBuild write SetConfirmBuild;
-    property QuickBuildOption:integer read FQuickBuildOption write SetQuickBuildOption;
+                                        write FRestartAfterBuild;
+    property ConfirmBuild: boolean read FConfirmBuild write FConfirmBuild;
+    property QuickBuildOption:integer read FQuickBuildOption write FQuickBuildOption;
     property Globals: TGlobalCompilerOptions read FGlobals;
   end;
 
@@ -209,6 +206,7 @@ type
     TargetDirectoryLabel: TLabel;
     TargetCPULabel: TLabel;
     ItemsListBox: TListBox;
+    UpdateRevisionIncCheckBox: TCheckBox;
     WithStaticPackagesCheckBox: TCheckBox;
     ItemListHeader: THeaderControl;
     Notebook: TNotebook;
@@ -260,7 +258,7 @@ function BuildLazarus(Options: TBuildLazarusOptions;
 function CreateBuildLazarusOptions(Options: TBuildLazarusOptions;
   ItemIndex: integer; Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags;
-  var ExtraOptions: string; out DisableSvn2RevisionInc: boolean;
+  var ExtraOptions: string; out UpdateRevisionInc: boolean;
   out OutputDirRedirected: boolean): TModalResult;
 function SaveIDEMakeOptions(Options: TBuildLazarusOptions;
   Macros: TTransferMacroList;
@@ -342,10 +340,9 @@ var
   i: Integer;
   CurItem: TBuildLazarusItem;
   ExtraOptions, LinkerAddition: String;
-  DisableSvn2RevisionInc: boolean;
   CurMakeMode: TMakeMode;
   WorkingDirectory: String;
-  OutputDirRedirected: boolean;
+  OutputDirRedirected, UpdateRevisionInc: boolean;
 begin
   Result:=mrCancel;
 
@@ -434,7 +431,7 @@ begin
       // append extra options
       ExtraOptions:='';
       Result:=CreateBuildLazarusOptions(Options,i,Macros,PackageOptions,Flags,
-                                        ExtraOptions,DisableSvn2RevisionInc,
+                                        ExtraOptions,UpdateRevisionInc,
                                         OutputDirRedirected);
       if Result<>mrOk then exit;
 
@@ -454,7 +451,7 @@ begin
       
       if ExtraOptions<>'' then
         Tool.EnvironmentOverrides.Values['OPT'] := ExtraOptions;
-      if DisableSvn2RevisionInc then
+      if not UpdateRevisionInc then
         Tool.EnvironmentOverrides.Values['USESVN2REVISIONINC'] := '0';
       // add -w option to print leaving/entering messages
       Tool.CmdLineParams:=Tool.CmdLineParams+' -w';
@@ -477,7 +474,7 @@ end;
 function CreateBuildLazarusOptions(Options: TBuildLazarusOptions;
   ItemIndex: integer; Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags;
-  var ExtraOptions: string; out DisableSvn2RevisionInc: boolean;
+  var ExtraOptions: string; out UpdateRevisionInc: boolean;
   out OutputDirRedirected: boolean): TModalResult;
 
   function RemoveProfilerOption(const ExtraOptions: string): string;
@@ -529,7 +526,7 @@ var
   BundleDir: String;
 begin
   Result:=mrOk;
-  DisableSvn2RevisionInc:=false;
+  UpdateRevisionInc:=Options.UpdateRevisionInc;
   OutputDirRedirected:=false;
   CurItem:=Options.Items[ItemIndex];
 
@@ -635,7 +632,7 @@ begin
           if not DirectoryIsWritableCached(NewTargetDirectory) then begin
             // Case 3. the lazarus directory is not writable
             // create directory <primary config dir>/bin/
-            DisableSvn2RevisionInc:=true;
+            UpdateRevisionInc:=false;
             NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin';
             NewUnitDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'units'
                             +PathDelim+NewTargetCPU+'-'+NewTargetOS;
@@ -778,13 +775,13 @@ var
   Filename: String;
   fs: TFileStream;
   OptionsAsText: String;
-  DisableSvn2RevisionInc: boolean;
+  UpdateRevisionInc: boolean;
   OutputDirRedirected: boolean;
 begin
   ExtraOptions:='';
   Result:=CreateBuildLazarusOptions(Options,Options.IndexOf(Options.ItemIDE),
                                     Macros,PackageOptions,Flags,
-                                    ExtraOptions,DisableSvn2RevisionInc,
+                                    ExtraOptions,UpdateRevisionInc,
                                     OutputDirRedirected);
   if Result<>mrOk then exit;
   Filename:=GetMakeIDEConfigFilename;
@@ -889,6 +886,7 @@ begin
   end;
   
   WithStaticPackagesCheckBox.Caption := lisLazBuildWithStaticPackages;
+  UpdateRevisionIncCheckBox.Caption := lisUpdateRevisionInc;
   RestartAfterBuildCheckBox.Caption := lisLazBuildRestartAfterBuild;
   ConfirmBuildCheckBox.Caption := lisLazBuildConfirmBuild;
   CompileButton.Caption := lisMenuBuild;
@@ -1121,6 +1119,7 @@ begin
   AppLCLInterfaceComboBox.ItemIndex:=ord(Options.TargetPlatform);
   IDELCLInterfaceComboBox.ItemIndex:=ord(Options.IDEPlatform);
   WithStaticPackagesCheckBox.Checked:=Options.WithStaticPackages;
+  UpdateRevisionIncCheckBox.Checked:=Options.UpdateRevisionInc;
   RestartAfterBuildCheckBox.Checked:=Options.RestartAfterBuild;
   ConfirmBuildCheckBox.Checked:=Options.ConfirmBuild;
   QuickBuildOptionsRadioGroup.ItemIndex:=Options.QuickBuildOption;
@@ -1150,6 +1149,7 @@ begin
   else
     Options.IDEPlatform := TLCLPlatform(IDELCLInterfaceComboBox.ItemIndex);
   Options.WithStaticPackages:=WithStaticPackagesCheckBox.Checked;
+  Options.UpdateRevisionInc:=UpdateRevisionIncCheckBox.Checked;
   Options.RestartAfterBuild:=RestartAfterBuildCheckBox.Checked;
   Options.ConfirmBuild:=ConfirmBuildCheckBox.Checked;
   Options.QuickBuildOption:=QuickBuildOptionsRadioGroup.itemindex;
@@ -1358,24 +1358,6 @@ begin
   Result:=TBuildLazarusItem(FItems[Index]);
 end;
 
-procedure TBuildLazarusOptions.SetRestartAfterBuild(const AValue: boolean);
-begin
-  if FRestartAfterBuild=AValue then exit;
-  FRestartAfterBuild:=AValue;
-end;
-
-procedure TBuildLazarusOptions.SetConfirmBuild(const AValue: boolean);
-begin
-  if FConfirmBuild=AValue then exit;
-  FConfirmBuild:=AValue;
-end;
-
-procedure TBuildLazarusOptions.SetQuickBuildOption(const AValue: integer);
-begin
-  if FQuickBuildOption=AValue then exit;
-  FQuickBuildOption:=AValue;
-end;
-
 procedure TBuildLazarusOptions.SetTargetCPU(const AValue: string);
 begin
   if FTargetCPU=AValue then exit;
@@ -1383,23 +1365,11 @@ begin
   FGlobals.TargetCPU:=TargetCPU;
 end;
 
-procedure TBuildLazarusOptions.SetTargetDirectory(const AValue: string);
-begin
-  if FTargetDirectory=AValue then exit;
-  FTargetDirectory:=AValue;
-end;
-
 procedure TBuildLazarusOptions.SetTargetOS(const AValue: string);
 begin
   if fTargetOS=AValue then exit;
   fTargetOS:=AValue;
   FGlobals.TargetOS:=TargetOS;
-end;
-
-procedure TBuildLazarusOptions.SetWithStaticPackages(const AValue: boolean);
-begin
-  if FWithStaticPackages=AValue then exit;
-  FWithStaticPackages:=AValue;
 end;
 
 constructor TBuildLazarusOptions.Create;
@@ -1530,6 +1500,7 @@ begin
   FConfirmBuild:=XMLConfig.GetValue(Path+'ConfirmBuild/Value',true);
   FQuickBuildOption:=XMLConfig.GetValue(Path+'QuickBuild/Value',0);
   FWithStaticPackages:=XMLConfig.GetValue(Path+'WithStaticPackages/Value',true);
+  FUpdateRevisionInc:=XMLConfig.GetValue(Path+'UpdateRevisionInc/Value',true);
 
   // auto install packages
   LoadStringList(XMLConfig,fStaticAutoInstallPackages,
@@ -1570,6 +1541,8 @@ begin
   XMLConfig.SetDeleteValue(Path+'QuickBuild/Value',FQuickBuildOption,0);
   XMLConfig.SetDeleteValue(Path+'WithStaticPackages/Value',FWithStaticPackages,
                            true);
+  XMLConfig.SetDeleteValue(Path+'UpdateRevisionInc/Value',FUpdateRevisionInc,
+                           true);
 
   // auto install packages
   SaveStringList(XMLConfig,fStaticAutoInstallPackages,
@@ -1594,6 +1567,7 @@ begin
   IDEPlatform:= Source.IDEPlatform;
   TargetDirectory:=Source.TargetDirectory;
   WithStaticPackages:=Source.WithStaticPackages;
+  UpdateRevisionInc:=Source.UpdateRevisionInc;
   RestartAfterBuild:=Source.RestartAfterBuild;
   ConfirmBuild:=Source.ConfirmBuild;
   QuickBuildOption:=Source.QuickBuildOption;
