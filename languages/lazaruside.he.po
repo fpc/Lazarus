@@ -13585,6 +13585,10 @@ msgstr "עדכן תצוגה מקדימה"
 msgid "Update references?"
 msgstr "עדכן מקורות"
 
+#: lazarusidestrconsts.lisupdaterevisioninc
+msgid "Update revision.inc"
+msgstr ""
+
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
 msgstr "מחרוזת באותיות ראשיות"

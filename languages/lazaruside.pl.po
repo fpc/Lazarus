@@ -13633,6 +13633,10 @@ msgstr "Odśwież podgląd"
 msgid "Update references?"
 msgstr ""
 
+#: lazarusidestrconsts.lisupdaterevisioninc
+msgid "Update revision.inc"
+msgstr ""
+
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
 msgstr ""

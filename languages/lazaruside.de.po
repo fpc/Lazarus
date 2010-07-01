@@ -13677,6 +13677,10 @@ msgstr "Vorschau aktualisieren"
 msgid "Update references?"
 msgstr "Verweise aktualisieren?"
 
+#: lazarusidestrconsts.lisupdaterevisioninc
+msgid "Update revision.inc"
+msgstr ""
+
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
 msgstr "Großbuchstabige Zeichenkette"

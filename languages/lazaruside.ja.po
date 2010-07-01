@@ -13647,6 +13647,10 @@ msgstr "プレビューを更新"
 msgid "Update references?"
 msgstr "参照を更新しますか？"
 
+#: lazarusidestrconsts.lisupdaterevisioninc
+msgid "Update revision.inc"
+msgstr ""
+
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
 msgstr "大文字文字列"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-01 03:45+0300\n"
+"PO-Revision-Date: 2010-07-01 23:41+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -13635,6 +13635,10 @@ msgstr "Обновить предпросмотр"
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "Обновить ссылки?"
+
+#: lazarusidestrconsts.lisupdaterevisioninc
+msgid "Update revision.inc"
+msgstr "Обновить revision.inc"
 
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"

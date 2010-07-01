@@ -13549,6 +13549,10 @@ msgstr "Aktualizovat náhled"
 msgid "Update references?"
 msgstr "Aktualizovat odkazy?"
 
+#: lazarusidestrconsts.lisupdaterevisioninc
+msgid "Update revision.inc"
+msgstr ""
+
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
 msgstr ""

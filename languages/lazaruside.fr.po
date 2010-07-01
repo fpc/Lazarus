@@ -13651,6 +13651,10 @@ msgstr "Mise à jour de l'aperçu"
 msgid "Update references?"
 msgstr "Mise à jour des références ?"
 
+#: lazarusidestrconsts.lisupdaterevisioninc
+msgid "Update revision.inc"
+msgstr ""
+
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
 msgstr "chaîne en majuscule"

@@ -13636,6 +13636,10 @@ msgstr "Naujinti peržiūrą"
 msgid "Update references?"
 msgstr "Naujinti nuorodas?"
 
+#: lazarusidestrconsts.lisupdaterevisioninc
+msgid "Update revision.inc"
+msgstr ""
+
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
 msgstr "Teksto raides versti didžiosiomis"

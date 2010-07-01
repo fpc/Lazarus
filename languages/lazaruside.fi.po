@@ -13613,6 +13613,10 @@ msgstr ""
 msgid "Update references?"
 msgstr "Päivitetäänkö viittaukset?"
 
+#: lazarusidestrconsts.lisupdaterevisioninc
+msgid "Update revision.inc"
+msgstr ""
+
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
 msgstr ""
