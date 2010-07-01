@@ -63,62 +63,64 @@ const
     );
 
 
-  { Config Path Functions }
+{ Config Path Functions }
 
-  { The primary config path is the local or user specific path.
-    If the primary config path does not exist, it will automatically be
-    created by the IDE.
-    The secondary config path is for templates. The IDE will never write to it.
-    If a config file is not found in the primary config file, Lazarus will
-    copy the template file from the secondary config file. If there is no
-    template file, the IDE will use defaults.
-  }
-  function GetPrimaryConfigPath: String;
-  function GetSecondaryConfigPath: String;
-  procedure CreatePrimaryConfigPath;
-  procedure SetPrimaryConfigPath(const NewValue: String);
-  procedure SetSecondaryConfigPath(const NewValue: String);
-  procedure CopySecondaryConfigFile(const AFilename: String);
-  function GetProjectSessionsConfigPath: String;
+{ The primary config path is the local or user specific path.
+  If the primary config path does not exist, it will automatically be
+  created by the IDE.
+  The secondary config path is for templates. The IDE will never write to it.
+  If a config file is not found in the primary config file, Lazarus will
+  copy the template file from the secondary config file. If there is no
+  template file, the IDE will use defaults.
+}
+function GetPrimaryConfigPath: String;
+function GetSecondaryConfigPath: String;
+procedure CreatePrimaryConfigPath;
+procedure SetPrimaryConfigPath(const NewValue: String);
+procedure SetSecondaryConfigPath(const NewValue: String);
+procedure CopySecondaryConfigFile(const AFilename: String);
+function GetProjectSessionsConfigPath: String;
 
-  function GetDefaultTestBuildDirectory: string;
-  
-  function FindDefaultExecutablePath(const Executable: string): string;
-  function FindDefaultCompilerPath: string;
-  function FindDefaultMakePath: string;
-  function FindDefaultFPCSrcDirectory: string;
-  function FindDefaultLazarusSrcDirectory: string;
-  function CheckFPCSourceDir(ADirectory: string): boolean;
-  function CheckLazarusDirectory(const ADirectory: string): boolean;
+function GetDefaultTestBuildDirectory: string;
 
-  // create a pascal file, which can be used to test the compiler
-  function CreateCompilerTestPascalFilename: string;
+function FindDefaultExecutablePath(const Executable: string): string;
+function FindDefaultCompilerPath: string;
+function FindDefaultMakePath: string;
+function FindDefaultFPCSrcDirectory: string;
+function FindDefaultLazarusSrcDirectory: string;
+function CheckFPCSourceDir(ADirectory: string): boolean;
+function CheckLazarusDirectory(const ADirectory: string): boolean;
 
-  // returns the standard executable extension (e.g '.exe')
-  function GetExecutableExt(TargetOS: string = ''): string;
-  // returns the standard library extension (e.g '.dll' or '.dylib')
-  function GetLibraryExt(TargetOS: string = ''): string;
+// create a pascal file, which can be used to test the compiler
+function CreateCompilerTestPascalFilename: string;
 
-  // returns the standard file extension for compiled units (e.g '.ppu')
-  function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;
-  
-  function OSLocksExecutables: boolean;
+// returns the standard executable extension (e.g '.exe')
+function GetExecutableExt(TargetOS: string = ''): string;
+// returns the standard library extension (e.g '.dll' or '.dylib')
+function GetLibraryExt(TargetOS: string = ''): string;
+// returns the standard library prefix (e.g 'lib')
+function GetLibraryPrefix(TargetOS: string = ''): string;
 
-  procedure GetDefaultCompilerFilenames(List: TStrings);
-  procedure GetDefaultMakeFilenames(List: TStrings);
-  procedure GetDefaultTestBuildDirs(List: TStrings);
-  function GetDefaultCompilerFilename: string;
+// returns the standard file extension for compiled units (e.g '.ppu')
+function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;
 
-  function GetDefaultTargetCPU: string;
-  function GetDefaultTargetOS: string;
+function OSLocksExecutables: boolean;
 
-  function GetDefaultLCLWidgetType: TLCLPlatform;
-  function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
-  procedure GetDefaultLCLLibPaths(List: TStrings);
-  function GetDefaultLCLLibPaths(const Prefix, Postfix, Separator: string): string;
-  
-  // returrns the default browser
-  procedure GetDefaultBrowser(var Browser, Params: string);
+procedure GetDefaultCompilerFilenames(List: TStrings);
+procedure GetDefaultMakeFilenames(List: TStrings);
+procedure GetDefaultTestBuildDirs(List: TStrings);
+function GetDefaultCompilerFilename: string;
+
+function GetDefaultTargetCPU: string;
+function GetDefaultTargetOS: string;
+
+function GetDefaultLCLWidgetType: TLCLPlatform;
+function DirNameToLCLPlatform(const ADirName: string): TLCLPlatform;
+procedure GetDefaultLCLLibPaths(List: TStrings);
+function GetDefaultLCLLibPaths(const Prefix, Postfix, Separator: string): string;
+
+// returrns the default browser
+procedure GetDefaultBrowser(var Browser, Params: string);
 
 type
   TLazConfMacroFunc = procedure(var s: string);
@@ -339,6 +341,18 @@ begin
     Result:='.so'
   else
     Result:='';
+end;
+
+function GetLibraryPrefix(TargetOS: string): string;
+var
+  SrcOS: String;
+begin
+  if TargetOS='' then
+    TargetOS:=GetDefaultTargetOS;
+  Result:='';
+  SrcOS:=GetDefaultSrcOSForTargetOS(TargetOS);
+  if CompareText(SrcOS, 'unix') = 0 then
+    Result:='lib';
 end;
 
 function GetDefaultTargetOS: string;

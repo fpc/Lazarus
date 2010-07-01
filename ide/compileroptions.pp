@@ -42,7 +42,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, FileUtil, InterfaceBase, LCLProc, Forms,
-  Controls, Laz_XMLCfg, ExprEval,
+  Controls, Laz_XMLCfg, ExprEval, DefineTemplates,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, IDEOptionsIntf,
   // IDE
@@ -588,6 +588,7 @@ type
     function GetXMLConfigPath: String; virtual;
     function CreateTargetFilename(const MainSourceFileName: string): string; virtual;
     function GetTargetFileExt: string; virtual;
+    function GetTargetFilePrefix: string; virtual;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList); virtual;
     function GetOwnerName: string; virtual;
     function GetInheritedOption(Option: TInheritedCompilerOption;
@@ -1735,10 +1736,41 @@ function TBaseCompilerOptions.CreateTargetFilename(
     Ext:=GetTargetFileExt;
     if Ext<>'' then begin
       Result:=Result+Ext;
+      //debugln ( 'Filename result is ',Result,' in AppendDefaultExt' );
       exit;
     end;
   end;
-  
+
+  procedure PrependDefaultType;
+  var
+    Prefix: String;
+    FileName: String;
+    PathName: String;
+    CurTargetOS: String;
+    aSrcOS: String;
+ begin
+    //debugln ( 'Filename result is ',Result, ' in PrependDefaultType' );
+    if (ExtractFileName(Result)='') or
+    (CompareText(copy(ExtractFileName(Result),1,3), 'lib') = 0) then exit;
+    Prefix:=GetTargetFilePrefix;
+    if Prefix<>'' then begin
+      FileName := ExtractFileName(Result);
+      PathName := ExtractFilePath(Result);
+      //debugln ( 'Filename is ',FileName, ' in PrependDefaultType' );
+      CurTargetOS:=TargetOS;
+      if CurTargetOS='' then CurTargetOS:=GetDefaultTargetOS;
+      aSrcOS:=GetDefaultSrcOSForTargetOS(CurTargetOS);
+      if (CompareText(aSrcOS, 'unix') = 0)
+      then begin
+        Result:=PathName+Prefix+UTF8LowerCase(FileName);
+      end else begin
+        Result:=PathName+Prefix+FileName;
+      end;
+      //debugln ( 'Result is ',Result, ' in PrependDefaultType' );
+      exit;
+    end;
+  end;
+
 var
   UnitOutDir: String;
   OutFilename: String;
@@ -1763,6 +1795,7 @@ begin
   end;
   Result:=TrimFilename(Result);
   AppendDefaultExt;
+  PrependDefaultType;
 end;
 
 function TBaseCompilerOptions.GetTargetFileExt: string;
@@ -1776,6 +1809,17 @@ begin
     RaiseGDBException('');
   end;
   //DebugLn('TBaseCompilerOptions.GetTargetFileExt ',Result,' ',dbgs(ord(ExecutableType)),' ',fTargetOS);
+end;
+
+function TBaseCompilerOptions.GetTargetFilePrefix: string;
+begin
+  case ExecutableType of
+  cetLibrary:
+    Result:=GetLibraryPrefix(fTargetOS);
+  else
+    Result:='';
+  end;
+  //DebugLn('TBaseCompilerOptions.GetTargetFilePrefix ',Result,' ',dbgs(ord(ExecutableType)),' ',fTargetOS);
 end;
 
 procedure TBaseCompilerOptions.GetInheritedCompilerOptions(
