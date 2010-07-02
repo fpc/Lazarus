@@ -1781,7 +1781,7 @@ begin
     // fully specified target filename
   end else if Result<>'' then begin
     // TargetFilename is relative to BaseDirectory
-    Result:=AppendPathDelim(BaseDirectory)+Result;
+    Result:=CreateAbsolutePath(Result,BaseDirectory);
   end else begin
     // no target given => put into unit output directory
     // calculate output directory
@@ -1791,7 +1791,7 @@ begin
     OutFilename:=ExtractFileNameOnly(MainSourceFileName);
     //debugln('TBaseCompilerOptions.CreateTargetFilename MainSourceFileName=',MainSourceFileName,' OutFilename=',OutFilename,' TargetFilename=',TargetFilename);
 
-    Result:=AppendPathDelim(UnitOutDir)+OutFilename;
+    Result:=CreateAbsolutePath(OutFilename,UnitOutDir);
   end;
   Result:=TrimFilename(Result);
   AppendDefaultExt;
