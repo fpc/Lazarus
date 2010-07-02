@@ -10,7 +10,7 @@ object frmGoto: TfrmGoto
   Caption = 'frmGoto'
   ClientHeight = 101
   ClientWidth = 250
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Label1: TLabel
     Left = 6
     Height = 18
@@ -25,11 +25,12 @@ object frmGoto: TfrmGoto
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 23
+    Height = 27
     Top = 30
     Width = 238
     Align = alTop
     BorderSpacing.Around = 6
+    Constraints.MinWidth = 200
     TabOrder = 0
     Text = 'Edit1'
   end
@@ -37,10 +38,20 @@ object frmGoto: TfrmGoto
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 36
-    Top = 59
+    Height = 34
+    Top = 63
     Width = 238
     Align = alTop
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
