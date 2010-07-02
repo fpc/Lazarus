@@ -6,7 +6,7 @@ msgstr ""
 "Last-Translator: ezik shulamy <shulamy@regba.org.il>\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-06-23 19:23+0200\n"
+"PO-Revision-Date: 2010-07-02 19:27+0200\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "X-Generator: Lokalize 1.0\n"
@@ -1269,7 +1269,7 @@ msgstr "משתנה/סוג (מקומי)"
 
 #: lazarusidestrconsts.dlgfoldpasansicomment
 msgid "Comment (* *)"
-msgstr ""
+msgstr "הערה  (* *)"
 
 #: lazarusidestrconsts.dlgfoldpasasm
 msgid "Asm"
@@ -1281,7 +1281,7 @@ msgstr "התחלה/סיום (מקונן)"
 
 #: lazarusidestrconsts.dlgfoldpasborcomment
 msgid "Comment { }"
-msgstr ""
+msgstr "הערה { }"
 
 #: lazarusidestrconsts.dlgfoldpascase
 msgid "Case"
@@ -1331,7 +1331,7 @@ msgstr "חזור"
 
 #: lazarusidestrconsts.dlgfoldpasslashcomment
 msgid "Comment //"
-msgstr ""
+msgstr "הערה //"
 
 #: lazarusidestrconsts.dlgfoldpastry
 msgid "Try"
@@ -6323,7 +6323,7 @@ msgstr "נמצאה מתודה ריקה:"
 
 #: lazarusidestrconsts.lisemdonlypublished
 msgid "Only published"
-msgstr "רק מה שפורסם"
+msgstr "רק published"
 
 #: lazarusidestrconsts.lisemdpublic
 msgid "Public"
@@ -6331,7 +6331,7 @@ msgstr "ציבורי"
 
 #: lazarusidestrconsts.lisemdpublished
 msgid "Published"
-msgstr "מפורסם"
+msgstr "Published"
 
 #: lazarusidestrconsts.lisemdremovemethods
 msgid "Remove methods"
@@ -6708,7 +6708,7 @@ msgstr "לא ניתן להריץ את הכלי %s%s%s:%s%s"
 
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
-msgstr ""
+msgstr "לא מצליח ליצור חבילת יישומים עבור \"%s\""
 
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
@@ -6814,7 +6814,7 @@ msgstr "(מסנן)"
 
 #: lazarusidestrconsts.lisfilter3
 msgid "Filter: %s"
-msgstr ""
+msgstr "מסנן: s%"
 
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
@@ -7093,7 +7093,7 @@ msgstr "עזרה להודעות שגיאה של מהדר FPC"
 
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
-msgstr ""
+msgstr "הסתר הודעה דרך הוראת מהדר"
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
@@ -7555,7 +7555,7 @@ msgstr "תיקיית קוד מקור לא חוקית של Free Pascal "
 
 #: lazarusidestrconsts.lisinvalidlinecolumninmessage
 msgid "Invalid line, column in message%s%s"
-msgstr ""
+msgstr "שורה לא חוקית, עמודה בהודעה s%s%"
 
 #: lazarusidestrconsts.lisinvalidmultiselection
 msgid "Invalid multiselection"
@@ -9623,7 +9623,7 @@ msgstr "חל&ון"
 
 #: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
 msgid "Message contains no file position information:%s%s"
-msgstr ""
+msgstr "ההודעה אינה מכילה מידע על מיקום הקובץ: s%s%"
 
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
@@ -11808,7 +11808,7 @@ msgstr "מתודה ציבורית"
 
 #: lazarusidestrconsts.lispublishedmethod
 msgid "Published Method"
-msgstr "מתודה מפורסמת"
+msgstr "מתודה מסוג Published"
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
@@ -11879,7 +11879,7 @@ msgstr "תיקונים מהירים"
 
 #: lazarusidestrconsts.lisquickfixremoveunit
 msgid "Quick fix: Remove unit"
-msgstr ""
+msgstr "תיקון מהיר: הסר את היחידה"
 
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
@@ -11942,7 +11942,7 @@ msgstr "הסר משתנה מקומי s%"
 
 #: lazarusidestrconsts.lisremovelocalvariable2
 msgid "Remove local variable"
-msgstr ""
+msgstr "הסר משתנה מקומי"
 
 #: lazarusidestrconsts.lisremovenonexistingfiles
 msgid "Remove non existing files"
@@ -12584,7 +12584,7 @@ msgstr "מעבד היעד"
 
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
 msgid "Target file name: (empty = use unit output directory)"
-msgstr ""
+msgstr "שם קובץ המטרה: (ריק = השתמש בתיקיית הפלט)"
 
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"
@@ -12620,7 +12620,7 @@ msgstr "תיקיית ביקורת"
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
-msgstr ""
+msgstr "חבילת היישומים נוצרה עבור \"%s\""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -12992,7 +12992,7 @@ msgstr "זה נראה כמו קובץ פסקל. מומלץ להשתמש בשם �
 
 #: lazarusidestrconsts.listhisprojecthasnomainsourcefile
 msgid "This project has no main source file"
-msgstr ""
+msgstr "לפרוייקט זה אין קובץ קוד ראשי"
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."
@@ -13004,7 +13004,7 @@ msgstr "אי אפשר לחלץ משפט זה. בחר קוד אחר לחילוץ 
 
 #: lazarusidestrconsts.listhiswillcreateacircle
 msgid "This will create a circle."
-msgstr ""
+msgstr "זה ייצור מעגל."
 
 #: lazarusidestrconsts.listinfobuildautocloseonsuccess
 msgid "&Automatically close on success"
@@ -13365,7 +13365,7 @@ msgstr "לא ניתן לקבל את הקוד של המתכנן."
 
 #: lazarusidestrconsts.lisunabletoloadfile
 msgid "Unable to load file:%s%s"
-msgstr ""
+msgstr "לא יכול לטעון קובץ: s%s%"
 
 #: lazarusidestrconsts.lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
@@ -13587,7 +13587,7 @@ msgstr "עדכן מקורות"
 
 #: lazarusidestrconsts.lisupdaterevisioninc
 msgid "Update revision.inc"
-msgstr ""
+msgstr "עדכן את revision.inc"
 
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
