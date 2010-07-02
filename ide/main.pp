@@ -8383,7 +8383,7 @@ var
     if FilenameIsPascalUnit(AFilename) then begin
       // this could be a unit with a form
       //debugln('TMainIDE.DoOpenEditorFile ',AFilename,' ',OpenFlagsToString(Flags));
-      if (not (ofDoNotLoadResource in Flags))
+      if ([ofDoNotLoadResource,ofProjectLoading]*Flags=[])
       and ( (ofDoLoadResource in Flags)
          or ((not Project1.AutoOpenDesignerFormsDisabled)
              and (EnvironmentOptions.AutoCreateFormsOnOpen
@@ -9984,6 +9984,18 @@ begin
       SourceEditorManager.ActiveSourceWindow :=
         SourceEditorManager.SourceWindows[Project1.ActiveWindowIndexAtStart];
       SourceEditorManager.ShowActiveWindowOnTop(True);
+    end;
+
+    if ([ofDoNotLoadResource]*Flags=[])
+    and ( (not Project1.AutoOpenDesignerFormsDisabled)
+           and EnvironmentOptions.AutoCreateFormsOnOpen
+           and (SourceEditorManager.ActiveEditor<>nil) )
+    then begin
+      // auto open form of active unit
+      AnUnitInfo:=Project1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);
+      if AnUnitInfo<>nil then
+        Result:=DoLoadLFM(AnUnitInfo,[ofProjectLoading,ofMultiOpen,ofOnlyIfExists],
+                          [cfSaveDependencies]);
     end;
 
     // select a form (object inspector, formeditor, control selection)
