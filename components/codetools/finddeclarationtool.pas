@@ -2313,10 +2313,13 @@ begin
   Result:=false;
   // search in cleaned source
   MoveCursorToCleanPos(Params.Identifier);
-  if Params.ContextNode.Desc<>ctnIdentifier then
-    StartPos:=-1
-  else
-    StartPos:=GetHybridCursorStart;
+  StartPos:=-1;
+  if Params.ContextNode.Desc=ctnIdentifier then begin
+    if HybridCursorType=hcDirty then
+      StartPos:=DirtySrc.CurPos.StartPos
+    else
+      StartPos:=Params.ContextNode.StartPos;
+  end;
   ReadNextAtom;
   EndPos:=CurPos.EndPos;
   ReadNextAtom;
