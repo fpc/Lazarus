@@ -206,6 +206,8 @@ type
     function CleanPosToCaretAndTopLine(CleanPos: integer;
         out Caret:TCodeXYPosition; out NewTopLine: integer): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToStr(CleanPos: integer; WithFilename: boolean = false): string;
+    function CleanPosToRelativeStr(CleanPos: integer;
+        const BasePos: TCodeXYPosition): string;
     procedure GetCleanPosInfo(CodePosInFront, CleanPos: integer;
         ResolveComments: boolean; out SameArea: TAtomPosition);
     procedure GetLineInfo(ACleanPos: integer;
@@ -2329,6 +2331,25 @@ begin
     Result:='y=?,x=?';
 end;
 
+function TCustomCodeTool.CleanPosToRelativeStr(CleanPos: integer;
+  const BasePos: TCodeXYPosition): string;
+var
+  CodePos: TCodeXYPosition;
+begin
+  if not CleanPosToCaret(CleanPos,CodePos) then
+    Result:='(?)'
+  else begin
+    if (BasePos.Code=nil) or (not FilenameIsAbsolute(BasePos.COde.Filename)) then
+      Result:=CodePos.Code.Filename
+    else if (CodePos.Code<>BasePos.Code) then
+      Result:=CreateRelativePath(CodePos.Code.Filename,
+                                 ExtractFilePath(BasePos.Code.Filename))
+    else
+      Result:='';
+    Result:=Result+'('+IntToStr(CodePos.Y)+','+IntToStr(CodePos.X)+')';
+  end;
+end;
+
 procedure TCustomCodeTool.GetCleanPosInfo(CodePosInFront, CleanPos: integer;
   ResolveComments: boolean; out SameArea: TAtomPosition);
 var
@@ -2584,7 +2605,10 @@ end;
 
 procedure TCustomCodeTool.RaiseBracketCloseExpectedButAtomFound;
 begin
-  SaveRaiseExceptionFmt(ctsBracketCloseExpectedButAtomFound,[GetAtom],true);
+  if CurPos.StartPos<SrcLen then
+    SaveRaiseExceptionFmt(ctsBracketCloseExpectedButAtomFound,[GetAtom],true)
+  else
+    SaveRaiseExceptionFmt(ctsBracketNotFound,[],true)
 end;
 
 procedure TCustomCodeTool.ActivateGlobalWriteLock;

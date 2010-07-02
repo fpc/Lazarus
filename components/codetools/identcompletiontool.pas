@@ -1973,7 +1973,7 @@ var
       CurrentIdentifierList.ContextFlags:=
         CurrentIdentifierList.ContextFlags+[ilcfCanProcDeclaration];
   end;
-  
+
 begin
   Result:=false;
 

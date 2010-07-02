@@ -43,7 +43,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   CustomCodeTool, MultiKeyWordListTool, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, CodeCache, AVL_Tree;
+  CodeToolsStructs, LinkScanner, CodeCache, AVL_Tree;
 
 type
   TProcHeadAttribute = (
@@ -89,6 +89,12 @@ type
   
   TProcHeadExtractPos = (phepNone, phepStart, phepName, phepParamList,
     phepResultType, phepSpecifiers);
+
+  TSkipBracketCheck = (
+    sbcStopOnRecord,
+    sbcStopOnSemicolon
+    );
+  TSkipBracketChecks = set of TSkipBracketCheck;
     
   TTreeRange = (trInterface, trAll, trTillCursor, trTillCursorSection);
   
@@ -99,7 +105,6 @@ type
     btCursorPosOutAllowed
     );
   TBuildTreeFlags = set of TBuildTreeFlag;
-  
 
   { TPascalParserTool }
   
@@ -189,6 +194,8 @@ type
     function ReadRequiresSection(ExceptionOnError: boolean): boolean;
     function ReadContainsSection(ExceptionOnError: boolean): boolean;
     function ReadSubRange(ExceptionOnError: boolean): boolean;
+    function ReadTilBracketCloseOrUnexpected(ExceptionOnNotFound: boolean;
+      Flags: TSkipBracketChecks): boolean;
     function ReadTilBlockEnd(StopOnBlockMiddlePart,
         CreateNodes: boolean): boolean;
     function ReadTilBlockStatementEnd(ExceptionOnNotFound: boolean): boolean;
@@ -2015,6 +2022,239 @@ begin
   Result:=true;
 end;
 
+function TPascalParserTool.ReadTilBracketCloseOrUnexpected(
+  ExceptionOnNotFound: boolean; Flags: TSkipBracketChecks): boolean;
+{ Cursor must be on round/edged bracket open
+  After parsing cursor will be on closing bracket or on the unexpected atom
+}
+type
+  TStackItemType = (
+    siNone,
+    siRoundBracketOpen,
+    siEdgedBracketOpen,
+    siRecord
+    );
+  TStackItem = record
+    Typ: TStackItemType;
+    StartPos: integer;
+  end;
+  PStackItem = ^TStackItem;
+var
+  Stack: array[0..16] of TStackItem;
+  ExtStack: PStackItem;
+  ExtStackCapacity: integer;
+  Ptr: integer;
+  Top: TStackItemType;
+  p: PChar;
+
+  procedure Push(Item: TStackItemType);
+  var
+    p: Integer;
+  begin
+    inc(Ptr);
+    if Ptr<=High(Stack) then begin
+      Stack[Ptr].Typ:=Item;
+      Stack[Ptr].StartPos:=CurPos.StartPos;
+    end else begin
+      // need ExStack
+      if (ExtStack=nil) then begin
+        ExtStackCapacity:=10;
+        GetMem(ExtStack,SizeOf(TStackItem)*ExtStackCapacity);
+      end else begin
+        ExtStackCapacity:=ExtStackCapacity*2;
+        ReAllocMem(ExtStack,SizeOf(TStackItem)*ExtStackCapacity);
+      end;
+      p:=Ptr-High(Stack)-1;
+      ExtStack[p].Typ:=Item;
+      ExtStack[p].StartPos:=CurPos.StartPos;
+    end;
+    Top:=Item;
+  end;
+
+  procedure Pop;
+  begin
+    dec(Ptr);
+    if Ptr<0 then
+      Top:=siNone
+    else if Ptr<=High(Stack) then
+      Top:=Stack[Ptr].Typ
+    else
+      Top:=ExtStack[Ptr-High(Stack)-1].Typ;
+  end;
+
+  function GetTopPos: integer;
+  begin
+    if Ptr<0 then
+      Result:=0
+    else if Ptr<=High(Stack) then
+      Result:=Stack[Ptr].StartPos
+    else
+      Result:=ExtStack[Ptr-High(Stack)-1].StartPos;
+  end;
+
+  procedure Unexpected;
+  var
+    p: LongInt;
+    Msg: String;
+  begin
+    ReadTilBracketCloseOrUnexpected:=false;
+    if not ExceptionOnNotFound then exit;
+    // the unexpected keyword is wrong, but probably the closing bracket is
+    // missing and the method has read too far
+    p:=GetTopPos;
+    CleanPosToCaret(p,ErrorNicePosition);
+    case Top of
+    siNone: Msg:='closing bracket not found';
+    siRoundBracketOpen: Msg:='bracket ) not found';
+    siEdgedBracketOpen: Msg:='bracket ] not found';
+    siRecord: Msg:='record end not found';
+    end;
+    if CurPos.StartPos<=SrcLen then
+      Msg:=Msg+', found unexpected '+GetAtom
+        +' at '+CleanPosToRelativeStr(CurPos.StartPos,ErrorNicePosition);
+    SaveRaiseException(Msg,not CleanPosToCaret(p,ErrorNicePosition));
+  end;
+
+begin
+  Result:=true;
+  Ptr:=-1;
+  ExtStack:=nil;
+  if CurPos.Flag=cafRoundBracketOpen then
+    Push(siRoundBracketOpen)
+  else if CurPos.Flag=cafEdgedBracketOpen then
+    Push(siEdgedBracketOpen)
+  else
+    RaiseBracketOpenExpectedButAtomFound;
+  try
+    repeat
+      ReadNextAtom;
+      //debugln(['TPascalParserTool.ReadTilBracketCloseOrUnexpected ',GetAtom]);
+      case CurPos.Flag of
+
+      cafNone:
+        if CurPos.StartPos>SrcLen then Unexpected;
+
+      cafSemicolon:
+        if sbcStopOnSemicolon in Flags then Unexpected;
+
+      cafRoundBracketOpen:
+        Push(siRoundBracketOpen);
+
+      cafRoundBracketClose:
+        if Top=siRoundBracketOpen then begin
+          if Ptr=0 then exit(true);
+          Pop;
+        end else
+          Unexpected;
+
+      cafEdgedBracketOpen:
+        Push(siEdgedBracketOpen);
+
+      cafEdgedBracketClose:
+        if Top=siEdgedBracketOpen then begin
+          if Ptr=0 then exit(true);
+          Pop;
+        end else
+          Unexpected;
+
+      cafWord:
+        begin
+          p:=@Src[CurPos.StartPos];
+          case UpChars[p^] of
+          'A':
+            case UpChars[p[1]] of
+            'S': if UpAtomIs('ASM') then Unexpected;
+            end;
+          'B':
+            case UpChars[p[1]] of
+            'E': if UpAtomIs('BEGIN') then Unexpected;
+            end;
+          'C':
+            case UpChars[p[1]] of
+            'O': if UpAtomIs('CONST') then Unexpected;
+            end;
+          'D':
+            case UpChars[p[1]] of
+            'O': if UpAtomIs('DO') then Unexpected;
+            end;
+          'E':
+            if UpAtomIs('END') then begin
+              if Top=siRecord then
+                Pop
+              else
+                Unexpected;
+            end;
+          'I':
+            case UpChars[p[1]] of
+            'N':
+              case UpChars[p[2]] of
+              'I': if UpAtomIs('INITIALIZATION') then Unexpected;
+              'T': if UpAtomIs('INTERFACE') then Unexpected;
+              end;
+            'M': if UpAtomIs('IMPLEMENTATION') then Unexpected;
+            end;
+          'F':
+            case UpChars[p[1]] of
+            'I':
+              if UpAtomIs('FINALIZATION')
+              or UpAtomIs('FINALLY')
+              then Unexpected;
+            'O': if UpAtomIs('FOR') then Unexpected;
+            end;
+          'L':
+            case UpChars[p[1]] of
+            'A': if UpAtomIs('LABEL') then Unexpected;
+            end;
+          'P':
+            case UpChars[p[1]] of
+            'U':
+              case UpChars[p[2]] of
+              'B':
+                if UpAtomIs('PUBLIC')
+                or UpAtomIs('PUBLISHED') then Unexpected;
+              end;
+            'R':
+              case UpChars[p[2]] of
+              'I': if UpAtomIs('PRIVATE') then Unexpected;
+              'O': if UpAtomIs('PROTECTED') then Unexpected;
+              end;
+            end;
+          'R':
+            case UpChars[p[1]] of
+            'E':
+              case UpChars[p[2]] of
+              'C':
+                if UpAtomIs('RECORD') then begin
+                  if sbcStopOnRecord in Flags then
+                    Unexpected
+                  else
+                    Push(siRecord);
+                end;
+              'P': if UpAtomIs('REPEAT') then Unexpected;
+              'S': if UpAtomIs('RESOURCESTRING') then Unexpected;
+              end;
+            end;
+          'T':
+            case UpChars[p[1]] of
+            'R': if UpAtomIs('TRY') then Unexpected;
+            end;
+          'V':
+            case UpChars[p[1]] of
+            'A': if UpAtomIs('VAR') then Unexpected;
+            end;
+          'W':
+            case UpChars[p[1]] of
+            'H': if UpAtomIs('WHILE') then Unexpected;
+            end;
+          end;
+        end;
+      end;
+    until false;
+  finally
+    if ExtStack<>nil then FreeMem(ExtStack);
+  end;
+end;
+
 function TPascalParserTool.KeyWordFuncClassProperty: boolean;
 { parse class/object property
 
@@ -3457,13 +3697,17 @@ begin
     CreateChildNode;
     CurNode.Desc:=ClassDesc;
     CurNode.StartPos:=ClassAtomPos.StartPos;
+    CurNode.SubDesc:=CurNode.SubDesc+ctnsNeedJITParsing; // will not create sub nodes now
   end;
   // find end of class
   IsForward:=true;
   ReadNextAtom;
   if UpAtomIs('OF') then begin
     IsForward:=false;
-    if ChildCreated then CurNode.Desc:=ctnClassOfType;
+    if ChildCreated then begin
+      CurNode.Desc:=ctnClassOfType;
+      CurNode.SubDesc:=CurNode.SubDesc-ctnsNeedJITParsing;
+    end;
     ReadNextAtom;
     AtomIsIdentifier(true);
     if ChildCreated then begin
@@ -3490,7 +3734,7 @@ begin
     if (CurPos.Flag=cafRoundBracketOpen) then begin
       // read inheritage brackets
       IsForward:=false;
-      ReadTilBracketClose(true);
+      ReadTilBracketCloseOrUnexpected(true,[sbcStopOnSemicolon,sbcStopOnRecord]);
       ReadNextAtom;
     end;
   end;
@@ -3499,15 +3743,12 @@ begin
     begin
       if IsForward then begin
         // forward class definition found
-        CurNode.SubDesc:=CurNode.SubDesc+ctnsForwardDeclaration;
+        CurNode.SubDesc:=CurNode.SubDesc+ctnsForwardDeclaration-ctnsNeedJITParsing;
       end else begin
         // very short class found e.g. = class(TAncestor);
-        CurNode.SubDesc:=CurNode.SubDesc+ctnsNeedJITParsing; // will not create sub nodes now
       end;
     end;
   end else begin
-    if ChildCreated and (ClassDesc in AllClassObjects) then
-      CurNode.SubDesc:=CurNode.SubDesc+ctnsNeedJITParsing; // will not create sub nodes now
     // read til end or any suspicious keyword
     Level:=1;
     BracketLvl:=0;
