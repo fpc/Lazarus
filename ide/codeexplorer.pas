@@ -977,9 +977,10 @@ procedure TCodeExplorerView.CreateObservations(Tool: TCodeTool);
       if CodeNode.Desc in AllIdentifierDefinitions then begin
         if not NodeSorted(CodeNode) then exit;
         // skip all variables in a group (e.g. Next,Prev:TNode)
-        while CodeNode.FirstChild=nil do
+        while CodeNode.FirstChild=nil do begin
           CodeNode:=CodeNode.NextBrother;
-        if CodeNode=nil then break;
+          if CodeNode=nil then exit;
+        end;
       end else if CodeNode.Desc in [ctnProperty,ctnProcedure] then
       begin
         if not NodeSorted(CodeNode) then exit;
