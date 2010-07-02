@@ -4530,22 +4530,64 @@ function GetDefaultMouseCaptureWidget(Widget: PGtkWidget
 var
   WidgetInfo: PWinWidgetInfo;
   LCLObject: TObject;
+  CanCapture: Boolean;
+  Parent: TWinControl;
+  {$IFDEF DEBUG_GTK_MOUSECAPTURE}
+  CurrentGrab: PGtkWidget;
+  GrabInfo: PWinWidgetInfo;
+  {$ENDIF}
 begin
   Result:=nil;
   if Widget=nil then exit;
-  if GtkWidgetIsA(Widget,GTKAPIWidget_Type) then begin
+  if GtkWidgetIsA(Widget,GTKAPIWidget_Type) then
+  begin
     WidgetInfo:=GetWidgetInfo(Widget,false);
     if WidgetInfo<>nil then
       Result:=WidgetInfo^.CoreWidget;
     exit;
   end;
   LCLObject:=GetNearestLCLObject(Widget);
+
   if LCLObject=nil then exit;
-  if (TWinControl(LCLObject) is TCustomSplitter) and (TWinControl(LCLObject).HandleAllocated)
-  then begin
+
+  CanCapture := TWinControl(LCLObject).HandleAllocated and
+    not (csDesigning in TWinControl(LCLObject).ComponentState);
+
+  if CanCapture then
+  begin
+
+    if GTK_IS_NOTEBOOK(PGtkWidget(TWinControl(LCLObject).Handle)) then
+      exit;
+
+    Parent := TWinControl(LCLObject).Parent;
+    if Assigned(Parent) then
+    begin
+      if GTK_IS_NOTEBOOK(PGtkWidget(Parent.Handle)) then
+        exit;
+    end;
     WidgetInfo:=GetWidgetInfo(PGtkWidget(TWinControl(LCLObject).Handle),false);
-    if WidgetInfo<>nil then
-      Result:=WidgetInfo^.CoreWidget;
+    if WidgetInfo <> nil then
+    begin
+      {$IFDEF DEBUG_GTK_MOUSECAPTURE}
+      CurrentGrab := gtk_grab_get_current;
+      writeln('GetDefaultMouseCaptureWidget: ',TWinControl(LCLObject).ClassName,' core ',
+        dbghex(PtrUInt(WidgetInfo^.CoreWidget)),' client ',dbghex(PtrUInt(WidgetInfo^.ClientWidget)),
+        ' currentgrab ', dbghex(PtrUInt(CurrentGrab)));
+      if CurrentGrab <> nil then
+      begin
+        GrabInfo := GetWidgetInfo(CurrentGrab);
+        if GrabInfo <> nil then
+          writeln('GetDefaultMouseCaptureWidget: CURRENT GRAB ',GrabInfo^.LCLObject.ClassName);
+      end;
+      {$ENDIF}
+      if WidgetInfo^.ClientWidget <> nil then
+      begin
+        if TWinControl(LCLObject) is TCustomForm then
+          Result := WidgetInfo^.ClientWidget
+        else
+          Result := WidgetInfo^.CoreWidget;
+      end;
+    end;
   end;
 end;
 
