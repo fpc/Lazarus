@@ -1397,6 +1397,20 @@ begin
     Result:='.'; // Filename is the BaseDirectory
 end;
 
+function CreateAbsolutePath(const Filename, BaseDirectory: string): string;
+begin
+  if (Filename='') or FilenameIsAbsolute(Filename) then
+    Result:=Filename
+  {$IFDEF Windows}
+  else if (Filename[1]='\') then
+    // only use drive of BaseDirectory
+    Result:=ExtractFileDrive(BaseDirectory)+Filename
+  {$ENDIF}
+  else
+    Result:=AppendPathDelim(BaseDirectory)+Filename;
+  Result:=TrimFilename(Result);
+end;
+
 {------------------------------------------------------------------------------
   function FileIsInPath(const Filename, Path: string): boolean;
  ------------------------------------------------------------------------------}

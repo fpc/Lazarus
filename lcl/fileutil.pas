@@ -91,6 +91,7 @@ function CleanAndExpandDirectory(const Filename: string): string;
 function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
 function CreateRelativePath(const Filename, BaseDirectory: string;
                             UsePointDirectory: boolean = false): string;
+function CreateAbsolutePath(const Filename, BaseDirectory: string): string;
 function FileIsInPath(const Filename, Path: string): boolean;
 function FileIsInDirectory(const Filename, Directory: string): boolean;
 
