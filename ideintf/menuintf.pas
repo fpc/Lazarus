@@ -19,6 +19,8 @@ unit MenuIntf;
 
 {$mode objfpc}{$H+}
 
+{off $DEFINE VerboseMenuIntf}
+
 interface
 
 uses
@@ -82,6 +84,7 @@ type
   public
     constructor Create(const TheName: string); virtual;
     destructor Destroy; override;
+    function GetImageList: TCustomImageList; virtual;
     function HasBitmap: Boolean;
     procedure CreateMenuItem; virtual;
     function GetPath: string;
@@ -741,11 +744,31 @@ begin
   inherited Destroy;
 end;
 
+function TIDEMenuItem.GetImageList: TCustomImageList;
+var
+  CurSection: TIDEMenuSection;
+  AMenu: TMenu;
+begin
+  Result:=nil;
+  CurSection:=Section;
+  while CurSection<>nil do begin
+    Result:=CurSection.SubMenuImages;
+    if Result<>nil then exit;
+    if (CurSection.Section=nil) then begin
+      if CurSection.MenuItem<>nil then begin
+        AMenu:=CurSection.MenuItem.GetParentMenu;
+        if AMenu<>nil then
+          Result:=AMenu.Images;
+      end;
+      exit;
+    end;
+    CurSection:=CurSection.Section;
+  end;
+end;
+
 function TIDEMenuItem.HasBitmap: Boolean;
 begin
-  Result:=((FBitmap<>nil) and (not FBitmap.Empty))
-     or ((ImageIndex>=0) and (Section<>nil) and (Section.SubMenuImages<>nil)
-         and (Section.SubMenuImages.Count>ImageIndex));
+  Result:=(FBitmap<>nil) or ((ImageIndex>=0) and (GetImageList<>nil));
 end;
 
 procedure TIDEMenuItem.CreateMenuItem;
@@ -841,10 +864,22 @@ procedure TIDEMenuItem.ConsistencyCheck;
     RaiseGDBException(s);
   end;
 
+  procedure RaiseBitmapError;
+  var
+    s: String;
+  begin
+    s:='TIDEMenuItem.ConsistencyCheck Name="'+Name+'" Caption="'+DbgStr(Caption)+'"';
+    debugln(s);
+    debugln(['RaiseBitmapError HasBitmap=',HasBitmap,' MenuItem.HasBitmap=',MenuItem.HasBitmap]);
+    debugln(['RaiseBitmapError ImageIndex=',ImageIndex,' MenuItem.ImageIndex=',MenuItem.ImageIndex]);
+    debugln(['RaiseBitmapError ImageList=',dbgsname(GetImageList),' MenuItem.ImageIndex=',DbgSName(MenuItem.GetImageList)]);
+    RaiseError;
+  end;
+
 begin
   if MenuItem<>nil then begin
     if MenuItem.HasBitmap<>HasBitmap then
-      RaiseError;
+      RaiseBitmapError;
     if MenuItem.Enabled<>Enabled then
       RaiseError;
     if MenuItem.Visible<>Visible then
