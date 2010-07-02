@@ -5,11 +5,16 @@
     <Name Value="TAChartLazarusPkg"/>
     <Author Value="Luís Rodrigues (lr@neei.uevora.pt), Philippe Martinole, Alexander Klenin"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
         <CreateMakefileOnBuild Value="True"/>
@@ -20,67 +25,63 @@
  for details about the copyright.
 "/>
     <Version Major="1"/>
-    <Files Count="13">
+    <Files Count="12">
       <Item1>
-        <Filename Value="taseries.pas"/>
-        <UnitName Value="TASeries"/>
+        <Filename Value="tachartaxis.pas"/>
+        <UnitName Value="TAChartAxis"/>
       </Item1>
       <Item2>
-        <Filename Value="tagraph.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="TAGraph"/>
-      </Item2>
-      <Item3>
         <Filename Value="tachartutils.pas"/>
         <UnitName Value="TAChartUtils"/>
+      </Item2>
+      <Item3>
+        <Filename Value="tacustomseries.pas"/>
+        <UnitName Value="TACustomSeries"/>
       </Item3>
       <Item4>
-        <Filename Value="taserieseditor.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="TASeriesEditor"/>
-      </Item4>
-      <Item5>
-        <Filename Value="tatypes.pas"/>
-        <UnitName Value="TATypes"/>
-      </Item5>
-      <Item6>
-        <Filename Value="tasources.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="TASources"/>
-      </Item6>
-      <Item7>
         <Filename Value="tadbsource.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="TADbSource"/>
+      </Item4>
+      <Item5>
+        <Filename Value="tagraph.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="TAGraph"/>
+      </Item5>
+      <Item6>
+        <Filename Value="taseries.pas"/>
+        <UnitName Value="TASeries"/>
+      </Item6>
+      <Item7>
+        <Filename Value="taserieseditor.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="TASeriesEditor"/>
       </Item7>
       <Item8>
-        <Filename Value="tacustomseries.pas"/>
-        <UnitName Value="TACustomSeries"/>
+        <Filename Value="tasources.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="TASources"/>
       </Item8>
       <Item9>
-        <Filename Value="TALegend.pas"/>
-        <UnitName Value="TALegend"/>
+        <Filename Value="tasubcomponentseditor.pas"/>
+        <UnitName Value="TASubcomponentsEditor"/>
       </Item9>
       <Item10>
-        <Filename Value="tachartaxis.pas"/>
-        <UnitName Value="TAChartAxis"/>
-      </Item10>
-      <Item11>
         <Filename Value="tatools.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="TATools"/>
-      </Item11>
-      <Item12>
-        <Filename Value="tasubcomponentseditor.pas"/>
-        <UnitName Value="TASubcomponentsEditor"/>
-      </Item12>
-      <Item13>
+      </Item10>
+      <Item11>
         <Filename Value="tatransformations.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="TATransformations"/>
-      </Item13>
+      </Item11>
+      <Item12>
+        <Filename Value="tatypes.pas"/>
+        <UnitName Value="TATypes"/>
+      </Item12>
     </Files>
-    <LazDoc Paths="$(LazarusDir)/components/tachart/fpdoc/"/>
+    <LazDoc Paths="$(LazarusDir)\components\tachart\fpdoc\"/>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>
@@ -99,7 +100,6 @@
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>

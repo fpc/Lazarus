@@ -30,7 +30,7 @@ program lazbuild;
 
 uses
   Classes, SysUtils, CustApp, LCLProc, Dialogs, Forms, Controls, FileUtil,
-  Interfaces, InterfaceBase, Process, UTF8Process,
+  Interfaces, InterfaceBase, UTF8Process,
   // codetools
   CodeToolManager, DefineTemplates, Laz_XMLCfg,
   // IDEIntf

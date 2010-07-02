@@ -1,21 +1,21 @@
 { This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+  This source is only used to compile and install the package.
  }
 
-unit TurboPowerIProDsgn; 
+unit turbopoweriprodsgn; 
 
 interface
 
 uses
-  IPIDEHTMLControl, LazarusPackageIntf; 
+  IPIDEHTMLControl, LazarusPackageIntf;
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('IPIDEHTMLControl', @IPIDEHTMLControl. Register); 
+  RegisterUnit('IPIDEHTMLControl', @IPIDEHTMLControl.Register); 
 end; 
 
 initialization
   RegisterPackage('TurboPowerIProDsgn', @Register); 
-end. 
+end.

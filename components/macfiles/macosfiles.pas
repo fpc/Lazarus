@@ -1,13 +1,13 @@
 { This file was automatically created by Lazarus. Do not edit!
-This source is only used to compile and install the package.
+  This source is only used to compile and install the package.
  }
 
-unit MacOSFiles; 
+unit macosfiles; 
 
 interface
 
 uses
-  MacApplicationRes, LazarusPackageIntf; 
+  MacApplicationRes, LazarusPackageIntf;
 
 implementation
 

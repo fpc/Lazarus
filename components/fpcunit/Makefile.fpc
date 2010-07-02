@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for FPCUnitTestRunner 0.1
 #
-#   This file was generated on 12-4-09
+#   This file was generated on 07/02/2010
 
 [package]
 name=fpcunittestrunner
@@ -21,6 +21,8 @@ units=fpcunittestrunner.pas
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 [prerules]
