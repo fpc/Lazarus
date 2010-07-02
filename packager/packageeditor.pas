@@ -546,8 +546,9 @@ var
   end;
 
 begin
+  debugln(['TPackageEditorForm.FilesPopupMenuPopup START ',FilesPopupMenu.Items.Count]);
   PackageEditorMenuRoot.MenuItem:=FilesPopupMenu.Items;
-  //debugln(['TPackageEditorForm.FilesPopupMenuPopup START ',FilesPopupMenu.Items.Count]);
+  debugln(['TPackageEditorForm.FilesPopupMenuPopup START after connect ',FilesPopupMenu.Items.Count]);
   PackageEditorMenuRoot.BeginUpdate;
   try
 

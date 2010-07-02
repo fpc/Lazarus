@@ -666,7 +666,8 @@ begin
     MenuItem.OnClick := @MenuItemClick;
     if ResourceName <> '' then
       MenuItem.ImageIndex := IDEImages.LoadImage(16, ResourceName);
-  end;
+  end else if Section<>nil then
+    Section.Invalidate(SectionIndex,SectionIndex);
 end;
 
 procedure TIDEMenuItem.SetName(const AValue: string);
@@ -713,6 +714,8 @@ begin
     FMenuItem.Free;
   end;
   FMenuItem:=nil;
+  if Section<>nil then
+    Section.Invalidate(SectionIndex,SectionIndex);
 end;
 
 constructor TIDEMenuItem.Create(const TheName: string);
@@ -917,6 +920,7 @@ begin
   FreeSeparators;
   for i:=0 to Count-1 do Items[i].ClearMenuItems;
   inherited ClearMenuItems;
+  Invalidate(0,Count-1);
 end;
 
 procedure TIDEMenuSection.UpdateChildsIndex(StartIndex: Integer);
@@ -1377,7 +1381,8 @@ begin
   // add all siblings in front
   SiblingIndex:=0;
   while (Section[SiblingIndex]<>Self) do begin
-    inc(Result,Section[SiblingIndex].Size);
+    if Section[SiblingIndex].Visible then
+      inc(Result,Section[SiblingIndex].Size);
     inc(SiblingIndex);
   end;
   // add separator
