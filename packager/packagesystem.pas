@@ -49,9 +49,7 @@ uses
   Classes, SysUtils, FileProcs, FileUtil, LCLProc, Forms, Controls, Dialogs,
   // codetools
   AVL_Tree, Laz_XMLCfg, DefineTemplates, CodeCache, BasicCodeTools,
-  SourceChanger, CodeToolManager,
-  // LazControls
-  LazControls,
+  NonPascalCodeTools, SourceChanger, CodeToolManager,
   // IDEIntf,
   SrcEditorIntf, IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
   LazIDEIntf,
@@ -90,7 +88,6 @@ type
 
   TPkgAddedEvent = procedure(APackage: TLazPackage) of object;
   TPkgDeleteEvent = procedure(APackage: TLazPackage) of object;
-  TPkgWriteMakeFile = function(APackage: TLazPackage): TModalResult of object;
   TPkgUninstall = function(APackage: TLazPackage;
                     Flags: TPkgUninstallFlags; ShowAbort: boolean): TModalResult of object;
   TPkgTranslate = procedure(APackage: TLazPackage) of object;
@@ -123,7 +120,6 @@ type
     FOnEndUpdate: TEndUpdateEvent;
     FOnTranslatePackage: TPkgTranslate;
     FOnUninstallPackage: TPkgUninstall;
-    FOnWriteMakeFile: TPkgWriteMakeFile;
     FRegistrationFile: TPkgFile;
     FRegistrationPackage: TLazPackage;
     FRegistrationUnitName: string;
@@ -293,6 +289,7 @@ type
                             ShowAbort: boolean;
                             Globals: TGlobalCompilerOptions = nil): TModalResult;
     function ConvertPackageRSTFiles(APackage: TLazPackage): TModalResult;
+    function WriteMakeFile(APackage: TLazPackage): TModalResult;
   public
     // installed packages
     FirstAutoInstallDependency: TPkgDependency;
@@ -358,8 +355,6 @@ type
     property OnEndUpdate: TEndUpdateEvent read FOnEndUpdate write FOnEndUpdate;
     property OnDeleteAmbiguousFiles: TPkgDeleteAmbiguousFiles
                      read FOnDeleteAmbiguousFiles write FOnDeleteAmbiguousFiles;
-    property OnWriteMakeFile: TPkgWriteMakeFile read FOnWriteMakeFile
-                                                write FOnWriteMakeFile;
     property OnTranslatePackage: TPkgTranslate read FOnTranslatePackage
                                                    write FOnTranslatePackage;
     property OnUninstallPackage: TPkgUninstall read FOnUninstallPackage
@@ -3132,9 +3127,8 @@ begin
 
       // create Makefile
       if ((pcfCreateMakefile in Flags)
-      or (APackage.CompilerOptions.CreateMakefileOnBuild))
-      and Assigned(OnWriteMakeFile) then begin
-        Result:=OnWriteMakeFile(APackage);
+      or (APackage.CompilerOptions.CreateMakefileOnBuild)) then begin
+        Result:=WriteMakeFile(APackage);
         if Result<>mrOk then begin
           DebugLn('TLazPackageGraph.CompilePackage DoWriteMakefile failed: ',APackage.IDAsString);
           exit;
@@ -3294,6 +3288,234 @@ begin
     exit(mrCancel);
   end;
   Result:=mrOK;
+end;
+
+function TLazPackageGraph.WriteMakeFile(APackage: TLazPackage): TModalResult;
+var
+  PathDelimNeedsReplace: Boolean;
+
+  procedure Replace(var s: string; const SearchTxt, ReplaceTxt: string);
+  var
+    p: LongInt;
+  begin
+    repeat
+      p:=Pos(SearchTxt,s);
+      if p<=1 then break;
+      s:=copy(s,1,p-1)+ReplaceTxt+copy(s,p+length(SearchTxt),length(s));
+    until false;
+  end;
+
+  function ConvertPIMacrosToMakefileMacros(const s: string): string;
+  begin
+    Result:=s;
+    Replace(Result,'%(','$(');
+  end;
+
+  function ConvertLazarusToMakefileSearchPath(const s: string): string;
+  begin
+    Result:=ConvertPIMacrosToMakefileMacros(s);
+    Result:=CreateRelativeSearchPath(TrimSearchPath(Result,''),APackage.Directory);
+    Replace(Result,';',' ');
+    if PathDelimNeedsReplace then
+      Replace(Result,PathDelim,'/');
+  end;
+
+  function ConvertLazarusToMakefileDirectory(const s: string): string;
+  begin
+    Result:=ConvertPIMacrosToMakefileMacros(s);
+    Result:=CreateRelativePath(TrimFilename(Result),APackage.Directory);
+    if PathDelimNeedsReplace then
+      Replace(Result,PathDelim,'/');
+    // trim trailing PathDelim, as windows does not like it
+    Result:=ChompPathDelim(Result);
+  end;
+
+  function ConvertLazarusOptionsToMakefileOptions(const s: string): string;
+  begin
+    Result:=ConvertPIMacrosToMakefileMacros(s);
+    if PathDelimNeedsReplace then
+      Replace(Result,PathDelim,'/');
+  end;
+
+var
+  s: String;
+  e: string;
+  SrcFilename: String;
+  MainUnitName: String;
+  MakefileFPCFilename: String;
+  UnitOutputPath: String;
+  UnitPath: String;
+  FPCMakeTool: TIDEExternalToolOptions;
+  CodeBuffer: TCodeBuffer;
+  MainSrcFile: String;
+  CustomOptions: String;
+  IncPath: String;
+begin
+  Result:=mrCancel;
+  PathDelimNeedsReplace:=PathDelim<>'/';
+
+  MakefileFPCFilename:=AppendPathDelim(APackage.Directory)+'Makefile.fpc';
+  if not DirectoryIsWritableCached(APackage.Directory) then begin
+    // the Makefile.fpc is only needed for custom building
+    // if the package directory is not writable, then the user don't want to
+    // custom build
+    // => silently skip
+    DebugLn(['TPkgManager.DoWriteMakefile Skipping, because package directory is not writable: ',APackage.Directory]);
+    Result:=mrOk;
+    exit;
+  end;
+
+  SrcFilename:=APackage.GetSrcFilename;
+  MainUnitName:=lowercase(ExtractFileNameOnly((SrcFilename)));
+  UnitPath:=APackage.CompilerOptions.GetUnitPath(true,
+                                                 coptParsedPlatformIndependent);
+  IncPath:=APackage.CompilerOptions.GetIncludePath(true,
+                                                 coptParsedPlatformIndependent);
+  UnitOutputPath:=APackage.CompilerOptions.GetUnitOutPath(true,
+                                                 coptParsedPlatformIndependent);
+  CustomOptions:=APackage.CompilerOptions.GetCustomOptions(
+                                                 coptParsedPlatformIndependent);
+  s:=APackage.CompilerOptions.GetSyntaxOptionsString;
+  if s<>'' then
+    CustomOptions:=CustomOptions+' '+s;
+  // TODO: other options
+
+  //DebugLn('TPkgManager.DoWriteMakefile ',APackage.Name,' makefile UnitPath="',UnitPath,'"');
+  UnitPath:=ConvertLazarusToMakefileSearchPath(UnitPath);
+  IncPath:=ConvertLazarusToMakefileSearchPath(IncPath);
+  // remove path delimiter at the end, or else it will fail on windows
+  UnitOutputPath:=ConvertLazarusToMakefileDirectory(
+                                                ChompPathDelim(UnitOutputPath));
+  MainSrcFile:=CreateRelativePath(SrcFilename,APackage.Directory);
+  CustomOptions:=ConvertLazarusOptionsToMakefileOptions(CustomOptions);
+
+
+  e:=LineEnding;
+  s:='';
+  s:=s+'#   File generated automatically by Lazarus Package Manager'+e;
+  s:=s+'#'+e;
+  s:=s+'#   Makefile.fpc for '+APackage.IDAsString+e;
+  s:=s+'#'+e;
+  s:=s+'#   This file was generated on '+DateToStr(Now)+''+e;
+  s:=s+''+e;
+  s:=s+'[package]'+e;
+  s:=s+'name='+lowercase(APackage.Name)+e;
+  s:=s+'version='+APackage.Version.AsString+e;
+  s:=s+''+e;
+  s:=s+'[compiler]'+e;
+  s:=s+'unittargetdir='+UnitOutputPath+e;
+  if UnitPath<>'' then
+    s:=s+'unitdir='+UnitPath+e;
+  if IncPath<>'' then
+    s:=s+'includedir='+IncPath+e;
+  s:=s+'options='+CustomOptions+e; // ToDo do the other options
+  s:=s+''+e;
+  s:=s+'[target]'+e;
+  s:=s+'units='+MainSrcFile+e;
+  //s:=s+'implicitunits=syntextdrawer'+e; // TODO list all unit names
+  s:=s+''+e;
+  s:=s+'[clean]'+e;
+  s:=s+'files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \'+e;
+  s:=s+'      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \'+e;
+  s:=s+'      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \'+e;
+  if (TrimFilename(UnitOutputPath)<>'') and (TrimFilename(UnitOutputPath)<>'.')
+  then begin
+    s:=s+'      $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \'+e;
+    s:=s+'      $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \'+e;
+  end;
+  s:=s+'      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \'+e;
+  s:=s+'      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))'+e;
+  s:=s+'[prerules]'+e;
+  s:=s+'# LCL Platform'+e;
+  s:=s+'ifndef LCL_PLATFORM'+e;
+  s:=s+'ifeq ($(OS_TARGET),win32)'+e;
+  s:=s+'LCL_PLATFORM=win32'+e;
+  s:=s+'else'+e;
+  s:=s+'ifeq ($(OS_TARGET),win64)'+e;
+  s:=s+'LCL_PLATFORM=win32'+e;
+  s:=s+'else'+e;
+  s:=s+'ifeq ($(OS_TARGET),darwin)'+e;
+  s:=s+'LCL_PLATFORM=carbon'+e;
+  s:=s+'else'+e;
+  s:=s+'LCL_PLATFORM=gtk2'+e;
+  s:=s+'endif'+e;
+  s:=s+'endif'+e;
+  s:=s+'endif'+e;
+  s:=s+'endif'+e;
+  s:=s+'export LCL_PLATFORM'+e;
+
+  s:=s+''+e;
+  s:=s+'[rules]'+e;
+  s:=s+'.PHONY: cleartarget all'+e;
+  s:=s+''+e;
+  s:=s+'cleartarget:'+e;
+  s:=s+'        -$(DEL) $(COMPILER_UNITTARGETDIR)/'+MainUnitName+'$(PPUEXT)'+e;
+  s:=s+''+e;
+  s:=s+'all: cleartarget $(COMPILER_UNITTARGETDIR) '+MainUnitName+'$(PPUEXT)'+e;
+
+  //DebugLn('TPkgManager.DoWriteMakefile [',s,']');
+
+  CodeBuffer:=CodeToolBoss.LoadFile(MakefileFPCFilename,true,true);
+  if CodeBuffer=nil then begin
+    CodeBuffer:=CodeToolBoss.CreateFile(MakefileFPCFilename);
+    if CodeBuffer=nil then begin
+      if not DirectoryIsWritableCached(ExtractFilePath(MakefileFPCFilename))
+      then begin
+        // the package source is read only => no problem
+        exit(mrOk);
+      end;
+      exit(mrCancel);
+    end;
+  end;
+
+  if ExtractCodeFromMakefile(CodeBuffer.Source)=ExtractCodeFromMakefile(s)
+  then begin
+    // Makefile.fpc not changed
+    Result:=mrOk;
+    exit;
+  end;
+  CodeBuffer.Source:=s;
+
+  //debugln('TPkgManager.DoWriteMakefile MakefileFPCFilename="',MakefileFPCFilename,'"');
+  Result:=SaveCodeBufferToFile(CodeBuffer,MakefileFPCFilename);
+  if Result<>mrOk then begin
+    if not DirectoryIsWritableCached(ExtractFilePath(MakefileFPCFilename)) then
+    begin
+      // the package source is read only => no problem
+      Result:=mrOk;
+    end;
+    exit;
+  end;
+
+  // call fpcmake to create the Makefile
+  FPCMakeTool:=TIDEExternalToolOptions.Create;
+  try
+    FPCMakeTool.Title:='Creating Makefile for package '+APackage.IDAsString;
+    FPCMakeTool.WorkingDirectory:=APackage.Directory;
+    FPCMakeTool.Filename:=FindFPCTool('fpcmake'+GetExecutableExt,
+                                      EnvironmentOptions.CompilerFilename);
+    FPCMakeTool.CmdLineParams:='-q -TAll';
+    FPCMakeTool.EnvironmentOverrides.Add(
+                            'FPCDIR='+EnvironmentOptions.GetFPCSourceDirectory);
+
+    // clear old errors
+    SourceEditorManagerIntf.ClearErrorLines;
+
+    // compile package
+    Result:=RunExternalTool(FPCMakeTool);
+    if Result<>mrOk then begin
+      Result:=IDEMessageDialog(lisFpcmakeFailed,
+        Format(lisCallingToCreateMakefileFromFailed, [FPCMakeTool.Filename,
+          MakefileFPCFilename]),
+        mtError,[mbCancel]);
+      exit;
+    end;
+  finally
+    // clean up
+    FPCMakeTool.Free;
+  end;
+
+  Result:=mrOk;
 end;
 
 function TLazPackageGraph.PreparePackageOutputDirectory(APackage: TLazPackage;
