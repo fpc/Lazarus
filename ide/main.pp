@@ -13929,7 +13929,8 @@ begin
       Result := mrOK;
     end
     else
-      Result:=DoOpenEditorFile(NewSource.Filename,-1,-1,[ofOnlyIfExists,ofRegularFile]);
+      Result:=DoOpenEditorFile(NewSource.Filename,-1,-1,
+        [ofOnlyIfExists,ofRegularFile,ofDoNotLoadResource]);
     if Result<>mrOk then begin
       UpdateSourceNames;
       exit;
