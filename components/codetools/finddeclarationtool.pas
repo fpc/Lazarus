@@ -3974,7 +3974,7 @@ var
         else
           Params.Clear;
         Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                       fdfExceptionOnNotFound,fdfIgnoreCurContextNode];
+                       fdfIgnoreCurContextNode];
         if NodeIsForwardDeclaration(CursorNode) then begin
           //debugln('Node is forward declaration');
           Params.Flags:=Params.Flags+[fdfSearchForward];
@@ -3991,8 +3991,14 @@ var
           else
             Found:=FindDeclarationOfIdentAtParam(Params);
         except
-          on E: ECodeToolError do
-            if not IsComment then raise;
+          on E: ECodeToolError do begin
+            if E.Sender<>Self then begin
+              // there is an error in another unit, which prevetns searching
+              // stop further searching in this unit
+              raise;
+            end;
+            // continue
+          end;
           on E: Exception do
             raise;
         end;

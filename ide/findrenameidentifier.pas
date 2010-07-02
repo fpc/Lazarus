@@ -41,7 +41,7 @@ uses
   AVL_Tree, CodeTree, CodeAtom, CodeCache, CodeToolManager,
   // IDE
   LazarusIDEStrConsts, IDEProcs, IDEWindowIntf, MiscOptions, DialogProcs,
-  InputHistory, SearchResultView, CodeHelp, ButtonPanel;
+  LazIDEIntf, InputHistory, SearchResultView, CodeHelp, ButtonPanel;
 
 type
 
@@ -176,6 +176,7 @@ begin
 
     // search in every file
     for i:=0 to Files.Count-1 do begin
+      //debugln(['GatherIdentifierReferences ',Files[i]]);
       LoadResult:=
           LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk],true);
       if LoadResult=mrAbort then begin

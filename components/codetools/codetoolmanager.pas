@@ -2210,16 +2210,21 @@ begin
   except
     on e: Exception do HandleException(e);
   end;
-  if not Result then begin
+  if (not Result) or (NewNode=nil) then begin
     DebugLn('TCodeToolManager.FindReferences unable to FindDeclaration ',IdentifierCode.Filename,' x=',dbgs(x),' y=',dbgs(y));
     exit;
   end;
+  Result:=true;
   // check if scope can be limited
   PrivateDeclaration:=(NewTool.GetSourceType in [ctnLibrary,ctnProgram]);
   if not PrivateDeclaration then begin
     ImplementationNode:=NewTool.FindImplementationNode;
     if (ImplementationNode<>nil) and (NewNode.StartPos>=ImplementationNode.StartPos)
     then
+      PrivateDeclaration:=true;
+  end;
+  if not PrivateDeclaration then begin
+    if (NewNode.Parent<>nil) and (NewNode.Parent.Desc=ctnParameterList) then
       PrivateDeclaration:=true;
   end;
   if NewTopLine=0 then ;
