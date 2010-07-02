@@ -173,6 +173,30 @@ begin
   Result := True;
 end;
 
+function gtk2GrabNotify(widget: PGtkWidget; grabbed: GBoolean; data: GPointer): GBoolean; cdecl;
+var
+  W: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  Result := CallBackDefaultReturn;
+  if Grabbed then
+  begin
+    w := gtk_grab_get_current;
+    if MouseCaptureWidget <> nil then
+      WidgetInfo := GetWidgetInfo(MouseCaptureWidget)
+    else
+      WidgetInfo := nil;
+
+    if (WidgetInfo <> nil) and (W = MouseCaptureWidget) and (W <> Widget)
+    and (WidgetInfo^.ClientWidget = nil) then
+    begin
+      Result := True;
+      ReleaseCaptureWidget(W);
+    end;
+  end;
+end;
+
+
 procedure gtk_clb_toggle(cellrenderertoggle : PGtkCellRendererToggle; arg1 : PGChar;
                          WinControl: TWinControl); cdecl;
 var
@@ -936,6 +960,7 @@ begin
 
   // set gtk2 only callbacks
   ConnectSignal(AGTKObject, 'show-help', @gtk2ShowHelpCB, ALCLObject);
+  ConnectSignal(AGTKObject,'grab-notify',@gtk2GrabNotify, ALCLObject);
 end;
 
 procedure TGtk2WidgetSet.SetLabelCaption(const ALabel: PGtkLabel;

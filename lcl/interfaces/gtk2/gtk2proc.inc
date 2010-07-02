@@ -4639,7 +4639,9 @@ begin
   or ((MouseCaptureWidget<>Widget) and (MouseCaptureWidget<>Widget^.parent))
   then
     exit;
+  {$IFDEF VerboseMouseCapture}
   DebugLn('ReleaseCaptureWidget ',GetWidgetDebugReport(Widget));
+  {$ENDIF}
   ReleaseMouseCapture;
 end;
 
