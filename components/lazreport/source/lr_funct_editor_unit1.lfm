@@ -10,7 +10,7 @@ object LR_FunctEditor1Form: TLR_FunctEditor1Form
   Caption = 'LR_FunctEditor1Form'
   ClientHeight = 300
   ClientWidth = 412
-  Position = poDesktopCenter
+  Position = poScreenCenter
   LCLVersion = '0.9.29'
   object Panel1: TPanel
     Left = 0

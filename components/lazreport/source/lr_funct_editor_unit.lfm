@@ -12,7 +12,7 @@ object LR_FunctEditorForm: TLR_FunctEditorForm
   ClientWidth = 420
   OnClose = FormClose
   OnCreate = FormCreate
-  Position = poDesktopCenter
+  Position = poScreenCenter
   LCLVersion = '0.9.29'
   object ListBox1: TListBox
     Left = 0

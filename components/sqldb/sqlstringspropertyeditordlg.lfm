@@ -8,7 +8,7 @@ object SQLStringsPropertyEditorDlg: TSQLStringsPropertyEditorDlg
   ClientWidth = 494
   OnShow = FormShow
   ParentFont = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   LCLVersion = '0.9.25'
   object ButtonsPanel: TButtonPanel
     Left = 6
