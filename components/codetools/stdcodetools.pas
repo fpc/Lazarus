@@ -41,7 +41,6 @@ interface
 
 {$I codetools.inc}
 
-{ $DEFINE DisableIgnoreErrorAfter}
 {$DEFINE VerboseGetStringConstBounds}
 { $DEFINE ShowCompleteBlock}
 
@@ -6049,7 +6048,7 @@ begin
   Result:=false;
   NewPos:=CursorPos;
   BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-                [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
+                [btSetIgnoreErrorPos]);
   StartNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
   SourceChangeCache.MainScanner:=Scanner;
@@ -6120,7 +6119,7 @@ begin
   Result:=false;
   try
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-             [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
+             [btSetIgnoreErrorPos]);
     LinkIndex:=Scanner.LinkIndexAtCleanPos(CleanCursorPos);
     LinkIndex:=Scanner.FindParentLink(LinkIndex);
     if LinkIndex<0 then

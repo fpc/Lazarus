@@ -32,8 +32,6 @@ interface
 
 {$I codetools.inc}
 
-{ $DEFINE DisableIgnoreErrorAfter}
-
 uses
   {$IFDEF MEM_CHECK}
   MemCheck,

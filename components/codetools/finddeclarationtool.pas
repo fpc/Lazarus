@@ -72,9 +72,6 @@ interface
 {$IFDEF ShowTriedIdentifiers}{$DEFINE DebugPrefix}{$ENDIF}
 {$IFDEF ShowTriedContexts}{$DEFINE DebugPrefix}{$ENDIF}
 
-// new features
-{ $DEFINE DisableIgnoreErrorAfter}
-
 uses
   {$IFDEF MEM_CHECK}
   MemCheck,
@@ -1217,7 +1214,7 @@ begin
     {$ENDIF}
     if DirtySrc<>nil then DirtySrc.Clear;
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-                  [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
+                  [btSetIgnoreErrorPos]);
     {$IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclarationOfIdentifier B CleanCursorPos=',dbgs(CleanCursorPos));
     {$ENDIF}
@@ -1407,8 +1404,7 @@ begin
     {$ENDIF}
     if DirtySrc<>nil then DirtySrc.Clear;
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-                  [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos,{$ENDIF}
-                   btLoadDirtySource,btCursorPosOutAllowed]);
+                  [btSetIgnoreErrorPos,btLoadDirtySource,btCursorPosOutAllowed]);
     {$IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclaration C CleanCursorPos=',dbgs(CleanCursorPos));
     {$ENDIF}
@@ -3872,7 +3868,7 @@ begin
   ActivateGlobalWriteLock;
   try
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-                [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
+                [btSetIgnoreErrorPos]);
 
     // find class node
     ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
