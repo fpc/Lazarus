@@ -301,6 +301,11 @@ begin
     Blinking := GTKAPIWidgetClient_GetCursorBlink(PGTKAPIWidgetClient(Client));
     BlinkTime := GTKAPIWidgetClient_GetCursorBlinkTime(PGTKAPIWidgetClient(Client));
     BlinkTimeout := GTKAPIWidgetClient_GetCursorBlinkTimeout(PGTKAPIWidgetClient(Client));
+    if (gtk_major_version = 2) and (gtk_minor_version >= 18) then
+    begin
+      if not Blinking and (BlinkTimeOut > 0) then
+        Blinking := True;
+    end;
     X := 0;
     Y := 0;
     Width := 1;
