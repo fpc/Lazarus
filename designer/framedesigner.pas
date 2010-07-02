@@ -101,8 +101,8 @@ begin
     // reset anchors
     for a := Low(TAnchorKind) to High(TAnchorKind) do
       AControl.AnchorSide[a].Control := nil;
-    // reset bounds
-    AControl.SetBounds(0, 0, Width, Height);
+    // reset left, top but save width and height
+    AControl.SetBounds(0, 0, AControl.Width, AControl.Height);
   finally
     FChangingBounds := False;
   end;
