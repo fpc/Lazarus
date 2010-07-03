@@ -329,7 +329,8 @@ begin
      (Application.MainForm <> AForm) then
     Enable := false;
   {$IFDEF HASX11}
-  SetSkipX11Taskbar(TQtMainWindow(AForm.Handle).Widget, not Enable);
+  if AForm.FormStyle <> fsMDIChild then
+    SetSkipX11Taskbar(TQtMainWindow(AForm.Handle).Widget, not Enable);
   {$ENDIF}
   TQtMainWindow(AForm.Handle).setShowInTaskBar(Enable);
 end;
