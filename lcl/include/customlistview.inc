@@ -758,10 +758,10 @@ end;
 function TCustomListView.GetItemIndex: Integer;
 begin
   Result := -1;
-  if Selected = nil then Exit;
-  if not OwnerData then
+  if not OwnerData then begin
+    if Selected = nil then Exit;
     Result := Selected.Index
-  else
+  end else
     Result := FSelectedIdx;
 end;
 
@@ -812,20 +812,28 @@ function TCustomListView.GetSelection: TListItem;
 var
   i: Integer;
 begin
-  if not (lffSelectedValid in FFlags) then
-  begin
-    FSelected := nil;
-    for i := 0 to Items.Count - 1 do
+  if not OwnerData then begin
+    if not (lffSelectedValid in FFlags) then
     begin
-      if Items[i].Selected then
+      FSelected := nil;
+      for i := 0 to Items.Count - 1 do
       begin
-        FSelected := Items[i];
-        break;
+        if Items[i].Selected then
+        begin
+          FSelected := Items[i];
+          break;
+        end;
       end;
+      Include(FFlags, lffSelectedValid);
     end;
-    Include(FFlags, lffSelectedValid);
+    Result := FSelected;
+  end else begin
+    if FSelectedIdx>=0 then begin
+      FOwnerDataItem.SetDataIndex(FSelectedIdx);
+      Result:=FOwnerDataItem;
+    end else
+      Result:=nil;
   end;
-  Result := FSelected;
 end;
 
 function TCustomListView.GetTopItem: TListItem;
