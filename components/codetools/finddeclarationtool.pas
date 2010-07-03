@@ -3926,9 +3926,18 @@ var
     if PosTree=nil then
       PosTree:=TAVLTree.Create;
     p:=@Src[StartPos];
-    //debugln('TFindDeclarationTool.FindReferences.AddReference ',DbgS(p),' ',dbgs(PosTree.Find(p)=nil));
+    //debugln('TFindDeclarationTool.FindReferences.AddReference ',CleanPosToStr(StartPos),' ',dbgs(PosTree.Find(p)=nil));
     if PosTree.Find(p)=nil then
       PosTree.Add(p);
+  end;
+
+  procedure UseProcHead(var Node: TCodeTreeNode);
+  begin
+    if Node=nil then exit;
+    if (Node.Desc=ctnProcedure)
+    and (Node.FirstChild<>nil)
+    and (Node.FirstChild.Desc=ctnProcedureHead) then
+      Node:=Node.FirstChild;
   end;
   
   procedure ReadIdentifier(IsComment: boolean);
@@ -4005,15 +4014,7 @@ var
 
         //debugln(' Found=',dbgs(Found));
         if Found and (Params.NewNode<>nil) then begin
-          if (Params.NewNode.Desc=ctnProcedure)
-          and (Params.NewNode.FirstChild<>nil)
-          and (Params.NewNode.FirstChild.Desc=ctnProcedureHead) then begin
-            // Instead of jumping to the procedure keyword,
-            // jump to the procedure name
-            Params.NewNode:=Params.NewNode.FirstChild;
-            Params.NewCodeTool.MoveCursorToProcName(Params.NewNode,true);
-            Params.NewCleanPos:=Params.NewCodeTool.CurPos.StartPos;
-          end;
+          UseProcHead(Params.NewNode);
           //debugln('Context=',Params.NewNode.DescAsString,' ',dbgs(Params.NewNode.StartPos),' ',dbgs(DeclarationNode.StartPos));
           if (Params.NewNode=DeclarationNode)
           or (Params.NewNode=AliasDeclarationNode) then
@@ -4136,6 +4137,8 @@ var
   end;
   
   function FindDeclarationNode: boolean;
+  var
+    Node: TCodeTreeNode;
   begin
     Result:=false;
 
@@ -4158,6 +4161,9 @@ var
       debugln('FindDeclarationNode Identifier="',Identifier,'"');
       exit;
     end;
+    UseProcHead(DeclarationNode);
+    StartPos:=DeclarationNode.StartPos;
+    AddReference;
 
     // find alias declaration node
     //debugln('FindDeclarationNode DeclarationNode=',DeclarationNode.DescAsString);
@@ -4176,12 +4182,16 @@ var
       end;
 
     end;
-    
-    if (AliasDeclarationNode<>nil) and (AliasDeclarationNode.Desc=ctnProcedure)
-    and (AliasDeclarationNode.FirstChild<>nil)
-    and (AliasDeclarationNode.FirstChild.Desc=ctnProcedureHead) then
-      AliasDeclarationNode:=AliasDeclarationNode.FirstChild;
+
     if AliasDeclarationNode<>nil then begin
+      UseProcHead(AliasDeclarationNode);
+      StartPos:=AliasDeclarationNode.StartPos;
+      AddReference;
+      if AliasDeclarationNode.StartPos>DeclarationNode.StartPos then begin
+        Node:=AliasDeclarationNode;
+        AliasDeclarationNode:=DeclarationNode;
+        DeclarationNode:=Node;
+      end;
       //debugln('FindDeclarationNode AliasDeclarationNode=',AliasDeclarationNode.DescAsString);
     end;
 
@@ -4204,17 +4214,34 @@ var
       ctnImplementation:
         // only search in implementation
         if MinPos<Node.StartPos then MinPos:=Node.StartPos;
-      ctnVarDefinition,ctnConstDefinition,ctnLabelType:
+
+      ctnTypeDefinition:
+        begin
+          // Note: types can be used before declaration
+        end;
+
+      ctnVarDefinition,ctnConstDefinition,ctnLabelType,ctnEnumIdentifier:
         begin
           // only search behind variable
           if MinPos<Node.StartPos then MinPos:=Node.StartPos;
-          if (Node.Parent.Desc in [ctnVarSection,ctnConstSection,ctnLabelSection,ctnResStrSection])
-          and (Node.Parent.Parent.Desc=ctnProcedure) then begin
-            // only search till procedure end
-            if MaxPos>Node.Parent.Parent.EndPos then
-              MaxPos:=Node.Parent.Parent.EndPos;
+        end;
+
+      ctnProcedure:
+        begin
+          if (DeclarationNode<>Node)
+          and (DeclarationNode<>Node.FirstChild)
+          and (AliasDeclarationNode<>Node)
+          and (AliasDeclarationNode<>Node.FirstChild)
+          then begin
+            // DeclarationNode is a local identifier
+            // limit scope to procedure
+            if MinPos<Node.FirstChild.EndPos then
+              MinPos:=Node.FirstChild.EndPos;
+            if MaxPos>Node.EndPos then
+              MaxPos:=Node.EndPos;
           end;
         end;
+
       end;
       Node:=Node.Parent;
     end;
