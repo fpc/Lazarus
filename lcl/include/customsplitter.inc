@@ -509,6 +509,31 @@ begin
     Invalidate;
 end;
 
+procedure TCustomSplitter.StopSplitterMove(const MouseXY: TPoint);
+var
+  Offset: Integer;
+begin
+  if FSplitDragging then
+  begin
+    case ResizeAnchor of
+      akLeft, akRight:
+        Offset := (MouseXY.X - FSplitterStartMouseXY.X) - (Self.Left - FSplitterStartLeftTop.X);
+      akTop, akBottom:
+        Offset := (MouseXY.Y - FSplitterStartMouseXY.Y) - (Self.Top - FSplitterStartLeftTop.Y);
+    else
+      Offset := 0;
+    end;
+
+    if Offset <> 0 then
+      MoveSplitter(Offset);
+
+    if Assigned(OnMoved) then OnMoved(Self);
+    FSplitDragging := False;
+    if ResizeStyle in [rsLine, rsPattern] then
+      Invalidate;
+  end;
+end;
+
 procedure TCustomSplitter.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 var
@@ -516,8 +541,11 @@ var
 begin
   inherited MouseDown(Button, Shift, X, Y);
   // While resizing X, Y are not valid. Use absolute mouse position.
-  GetCursorPos(MousePos);
-  StartSplitterMove(MousePos);
+  if Button = mbLeft then
+  begin
+    GetCursorPos(MousePos);
+    StartSplitterMove(MousePos);
+  end;
 end;
 
 procedure TCustomSplitter.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -526,34 +554,31 @@ var
   MousePos: TPoint;
 begin
   inherited MouseMove(Shift, X, Y);
-  if (ssLeft in Shift) and (Parent <> nil) and (FSplitDragging) then
+  if (ssLeft in Shift) and (Parent <> nil) and (FSplitDragging) and (ResizeStyle <> rsNone) then
   begin
     // While resizing X, Y are not valid. Use the absolute mouse position.
     GetCursorPos(MousePos);
     case ResizeAnchor of
       akLeft, akRight:
-         Offset := (MousePos.X - FSplitterStartMouseXY.X) - (Self.Left - FSplitterStartLeftTop.X);
+        Offset := (MousePos.X - FSplitterStartMouseXY.X) - (Self.Left - FSplitterStartLeftTop.X);
       akTop, akBottom:
-         Offset := (MousePos.Y - FSplitterStartMouseXY.Y) - (Self.Top - FSplitterStartLeftTop.Y);
+        Offset := (MousePos.Y - FSplitterStartMouseXY.Y) - (Self.Top - FSplitterStartLeftTop.Y);
+    else
+      Offset := 0;
     end;
 
-    if Offset = 0 then Exit;
-
-    MoveSplitter(Offset);
+    if Offset <> 0 then
+      MoveSplitter(Offset);
   end;
 end;
 
-procedure TCustomSplitter.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TCustomSplitter.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  MousePos: TPoint;
 begin
   inherited MouseUp(Button, Shift, X, Y);
-  if FSplitDragging then
-  begin
-    if Assigned(OnMoved) then OnMoved(Self);
-    FSplitDragging := False;
-    if ResizeStyle in [rsLine, rsPattern] then
-      Invalidate;
-  end;
+  GetCursorPos(MousePos);
+  StopSplitterMove(MousePos);
 end;
 
 function TCustomSplitter.FindAlignControl: TControl;

@@ -492,6 +492,7 @@ type
     procedure SetResizeAnchor(const AValue: TAnchorKind); virtual;
     procedure SetResizeControl(const AValue: TControl); virtual;
     procedure StartSplitterMove(const MouseXY: TPoint);
+    procedure StopSplitterMove(const MouseXY: TPoint);
   public
     constructor Create(TheOwner: TComponent); override;
     procedure AnchorSplitter(Kind: TAnchorKind; AControl: TControl);
