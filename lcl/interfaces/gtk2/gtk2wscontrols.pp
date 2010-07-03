@@ -185,7 +185,8 @@ begin
   AValue := Max(AValue, Range^.adjustment^.lower);
   AValue := Min(AValue, Range^.adjustment^.upper - Range^.adjustment^.page_size);
 
-  with Msg do begin
+  with Msg do
+  begin
     Pos := Round(AValue);
     if Pos < High(SmallPos) then
       SmallPos := Pos
@@ -262,20 +263,21 @@ begin
   Result := true;
   Handle := AWinControl.Handle;
   case AWinControl.fCompStyle of
-   csComboBox:
-     begin
-       AText := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(Handle)^.entry)));
-     end;
+    csComboBox:
+      begin
+        AText := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(Handle)^.entry)));
+      end;
 
-   csEdit, csSpinEdit:
+    csEdit, csSpinEdit:
        AText:= StrPas(gtk_entry_get_text(PgtkEntry(Handle)));
 
-   csMemo    : begin
-                  CS := gtk_editable_get_chars(PGtkOldEditable(
-                    GetWidgetInfo(Pointer(Handle), True)^.CoreWidget), 0, -1);
-                  AText := StrPas(CS);
-                  g_free(CS);
-               end;
+    csMemo:
+      begin
+        CS := gtk_editable_get_chars(PGtkOldEditable(
+          GetWidgetInfo(Pointer(Handle), True)^.CoreWidget), 0, -1);
+        AText := StrPas(CS);
+        g_free(CS);
+      end;
   else
     Result := false;
   end;
@@ -294,24 +296,17 @@ begin
   Result := true;
   Handle := AWinControl.Handle;
   case AWinControl.fCompStyle of
-   //csComboBox:
-   //  begin
-   //    AText := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(Handle)^.entry)));
-   //  end;
-
-   //csEdit, csSpinEdit:
-   //    AText:= StrPas(gtk_entry_get_text(PgtkEntry(Handle)));
-
-   csMemo    : begin
-                  TextBuf := gtk_text_view_get_buffer(PGtkTextView(GetWidgetInfo(Pointer(Handle), True)^.CoreWidget));
-                  gtk_text_buffer_get_start_iter(TextBuf, @StartIter);
-                  gtk_text_buffer_get_end_iter(TextBuf, @EndIter);
-                  CS := gtk_text_buffer_get_text(TextBuf, @StartIter, @EndIter, False);
-                  AText := StrPas(CS);
-                  g_free(CS);
-               end;
-  else
-    Result:=Gtk1GetText(AWinControl, AText);
+    csMemo:
+      begin
+        TextBuf := gtk_text_view_get_buffer(PGtkTextView(GetWidgetInfo(Pointer(Handle), True)^.CoreWidget));
+        gtk_text_buffer_get_start_iter(TextBuf, @StartIter);
+        gtk_text_buffer_get_end_iter(TextBuf, @EndIter);
+        CS := gtk_text_buffer_get_text(TextBuf, @StartIter, @EndIter, False);
+        AText := StrPas(CS);
+        g_free(CS);
+      end;
+    else
+      Result:=Gtk1GetText(AWinControl, AText);
   end;
 end;
 
@@ -612,24 +607,25 @@ begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetChildZPosition')
   then Exit;
 
-  if ANewPos < AChildren.Count div 2
-  then begin
+  if ANewPos < AChildren.Count div 2 then
+  begin
     // move down (and others below us)
     for n := ANewPos downto 0 do
     begin
       child := TWinControlHack(AChildren[n]);
-      if child.HandleAllocated
-      then TGtkPrivateWidgetClass(child.WidgetSetClass.WSPrivate).
-                  SetZPosition(child, wszpBack);
+      if child.HandleAllocated then
+        TGtkPrivateWidgetClass(
+          child.WidgetSetClass.WSPrivate).SetZPosition(child, wszpBack);
     end;
-  end
-  else begin
+  end else
+  begin
     // move up (and others above us)
     for n := ANewPos to AChildren.Count - 1 do
     begin
       child := TWinControlHack(AChildren[n]);
-      if child.HandleAllocated
-      then TGtkPrivateWidgetClass(child.WidgetSetClass.WSPrivate).SetZPosition(child, wszpFront);
+      if child.HandleAllocated then
+        TGtkPrivateWidgetClass(
+          child.WidgetSetClass.WSPrivate).SetZPosition(child, wszpFront);
     end;
   end;
 end;
@@ -786,89 +782,93 @@ begin
   pLabel := pchar(AText);
 
   case AWinControl.fCompStyle of
-  csBitBtn,
-  csButton: DebugLn('[WARNING] Obsolete call to TGTKOBject.SetLabel for ', AWinControl.ClassName);
+    csBitBtn,
+    csButton: DebugLn('[WARNING] Obsolete call to TGTKOBject.SetLabel for ', AWinControl.ClassName);
 
-{$IFDEF OldToolBar}
-  csToolButton:
-    with PgtkButton(P)^ do
-    begin
-      //aLabel := StrAlloc(Length(AnsiString(PLabel)) + 1);
-      aLabel := Ampersands2Underscore(PLabel);
-      Try
-        //StrPCopy(aLabel, AnsiString(PLabel));
-        //Accel := Ampersands2Underscore(aLabel);
-        if gtk_bin_get_child(P) = nil then
-        begin
-          Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s has no child label', [AWinControl.ClassName]));
-           gtk_container_add(P, gtk_label_new(aLabel));
-        end
-        else begin
-          Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s has child label', [AWinControl.ClassName]));
-          gtk_label_set_text(pgtkLabel( gtk_bin_get_child(P)), aLabel);
+    {$IFDEF OldToolBar}
+    csToolButton:
+      with PgtkButton(P)^ do
+      begin
+        //aLabel := StrAlloc(Length(AnsiString(PLabel)) + 1);
+        aLabel := Ampersands2Underscore(PLabel);
+        Try
+          //StrPCopy(aLabel, AnsiString(PLabel));
+          //Accel := Ampersands2Underscore(aLabel);
+          if gtk_bin_get_child(P) = nil then
+          begin
+            Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s has no child label', [AWinControl.ClassName]));
+             gtk_container_add(P, gtk_label_new(aLabel));
+          end else
+          begin
+            Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s has child label', [AWinControl.ClassName]));
+            gtk_label_set_text(pgtkLabel( gtk_bin_get_child(P)), aLabel);
+          end;
+          //If Accel <> -1 then
+          AccelKey:=gtk_label_parse_uline(PGtkLabel( gtk_bin_get_child(P)), aLabel);
+          Accelerate(AWinControl,PGtkWidget(P),AccelKey,0,'clicked');
+        finally
+          StrDispose(aLabel);
         end;
-        //If Accel <> -1 then
-        AccelKey:=gtk_label_parse_uline(PGtkLabel( gtk_bin_get_child(P)), aLabel);
-        Accelerate(AWinControl,PGtkWidget(P),AccelKey,0,'clicked');
-      Finally
-        StrDispose(aLabel);
       end;
-    end;
-{$ENDIF OldToolBar}
+    {$ENDIF OldToolBar}
 
-  csForm,
-  csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
-  csPreviewFileDialog,
-  csColorDialog,
-  csFontDialog:
-    if GtkWidgetIsA(p,gtk_window_get_type) then
-      gtk_window_set_title(pGtkWindow(p),PLabel);
+    csForm,
+    csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
+    csPreviewFileDialog,
+    csColorDialog,
+    csFontDialog:
+      if GtkWidgetIsA(p,gtk_window_get_type) then
+        gtk_window_set_title(pGtkWindow(p),PLabel);
 
-  csCheckBox,
-  csToggleBox,
-  csRadioButton:
-    begin
-      aLabel := Ampersands2Underscore(PLabel);
-      Try
-        gtk_label_set_text(
-                    pGtkLabel(gtk_bin_get_child(PGtkBin(@PGTKToggleButton(p)^.Button))),
-                    aLabel);
-        gtk_label_parse_uline(pGtkLabel(gtk_bin_get_child(PGtkBin(@PGTKToggleButton(p)^.Button))),
-          aLabel);
-      Finally
-        StrDispose(aLabel);
+    csCheckBox,
+    csToggleBox,
+    csRadioButton:
+      begin
+        aLabel := Ampersands2Underscore(PLabel);
+        try
+          gtk_label_set_text(
+            pGtkLabel(gtk_bin_get_child(PGtkBin(@PGTKToggleButton(p)^.Button))),
+                      aLabel);
+          gtk_label_parse_uline(
+            pGtkLabel(gtk_bin_get_child(PGtkBin(@PGTKToggleButton(p)^.Button))),
+                      aLabel);
+        finally
+          StrDispose(aLabel);
+        end;
       end;
-    end;
 
-  csEdit        : begin
-                    LockOnChange(PGtkObject(p),+1);
-                    gtk_entry_set_text(pGtkEntry(P), pLabel);
-                    LockOnChange(PGtkObject(p),-1);
-                  end;
+    csEdit:
+      begin
+        LockOnChange(PGtkObject(p),+1);
+        gtk_entry_set_text(pGtkEntry(P), pLabel);
+        LockOnChange(PGtkObject(p),-1);
+      end;
 
-  csSpinEdit    : begin
-                    LockOnChange(PGtkObject(p),+1);
-                    gtk_entry_set_text(pGtkEntry(P), pLabel);
-                    gtk_spin_button_update(PGtkSpinButton(p));
-                    LockOnChange(PGtkObject(p),-1);
-                  end;
+    csSpinEdit:
+      begin
+        LockOnChange(PGtkObject(p),+1);
+        gtk_entry_set_text(pGtkEntry(P), pLabel);
+        gtk_spin_button_update(PGtkSpinButton(p));
+        LockOnChange(PGtkObject(p),-1);
+      end;
 
-  csMemo        : begin
-                    P:= GetWidgetInfo(P, True)^.CoreWidget;
-                    //debugln('TGtk2WSWinControl.SetText A ',dbgs(gtk_text_get_length(PGtkText(P))),' AText="',AText,'"');
-                    gtk_text_freeze(PGtkText(P));
-                    gtk_text_set_point(PGtkText(P), 0);
-                    gtk_text_forward_delete(PGtkText(P), gtk_text_get_length(PGtkText(P)));
-                    gtk_text_insert(PGtkText(P), nil, nil, nil, pLabel, -1);
-                    gtk_text_thaw(PGtkText(P));
-                    //debugln('TGtk2WSWinControl.SetText B ',dbgs(gtk_text_get_length(PGtkText(P))));
-                  end;
+    csMemo:
+      begin
+        P:= GetWidgetInfo(P, True)^.CoreWidget;
+        //debugln('TGtk2WSWinControl.SetText A ',dbgs(gtk_text_get_length(PGtkText(P))),' AText="',AText,'"');
+        gtk_text_freeze(PGtkText(P));
+        gtk_text_set_point(PGtkText(P), 0);
+        gtk_text_forward_delete(PGtkText(P), gtk_text_get_length(PGtkText(P)));
+        gtk_text_insert(PGtkText(P), nil, nil, nil, pLabel, -1);
+        gtk_text_thaw(PGtkText(P));
+        //debugln('TGtk2WSWinControl.SetText B ',dbgs(gtk_text_get_length(PGtkText(P))));
+      end;
 
-  csPage:
-    SetNotebookPageTabLabel;
+    csPage:
+      SetNotebookPageTabLabel;
 
-  else
-    // DebugLn('WARNING: [TGtkWidgetSet.SetLabel] --> not handled for class ',Sender.ClassName);
+      // else
+      // DebugLn('WARNING: [TGtkWidgetSet.SetLabel] --> not handled for class ',Sender.ClassName);
   end;
   Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s --> END', [AWinControl.ClassName]));
 end;
@@ -967,8 +967,8 @@ begin
 
   // get keystates
   Mask := 0;
-  if ScrollingData^.HScroll <> nil
-  then begin
+  if ScrollingData^.HScroll <> nil then
+  begin
     {$IFDEF UseGDKErrorTrap}
     BeginGDKErrorTrap;
     {$ENDIF}
@@ -1029,8 +1029,8 @@ begin
 
   // get keystates
   Mask := 0;
-  if ScrollingData^.VScroll <> nil
-  then begin
+  if ScrollingData^.VScroll <> nil then
+  begin
     {$IFDEF UseGDKErrorTrap}
     BeginGDKErrorTrap;
     {$ENDIF}
