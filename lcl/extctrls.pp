@@ -471,10 +471,8 @@ type
     FSplitterStartMouseXY: TPoint; // in screen coordinates
     FSplitterStartLeftTop: TPoint; // in screen coordinates
     function GetResizeControl: TControl;
-    procedure SetAutoSnap(const AValue: boolean);
     procedure SetBeveled(const AValue: boolean);
     procedure SetMinSize(const AValue: integer);
-    procedure SetResizeStyle(const AValue: TResizeStyle);
   protected
     class procedure WSRegisterClass; override;
     procedure CheckAlignment;
@@ -504,14 +502,14 @@ type
     function GetSplitterPosition: integer;
   public
     property Align default alLeft;
-    property AutoSnap: boolean read FAutoSnap write SetAutoSnap default true;
+    property AutoSnap: boolean read FAutoSnap write FAutoSnap default true;
     property Beveled: boolean read FBeveled write SetBeveled default false;
     property Cursor default crHSplit;
     property MinSize: integer read FMinSize write SetMinSize default 30;
     property OnCanResize: TCanResizeEvent read FOnCanResize write FOnCanResize;
     property OnMoved: TNotifyEvent read FOnMoved write FOnMoved;
     property ResizeAnchor: TAnchorKind read FResizeAnchor write SetResizeAnchor default akLeft;
-    property ResizeStyle: TResizeStyle read FResizeStyle write SetResizeStyle default rsUpdate;
+    property ResizeStyle: TResizeStyle read FResizeStyle write FResizeStyle default rsUpdate;
   end;
 
 
