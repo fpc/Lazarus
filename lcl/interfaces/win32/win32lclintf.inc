@@ -297,7 +297,9 @@ end;
 function DockWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 begin
-   Result := Windows.DefWindowProc(Window, Msg, WParam, LParam);
+  if (Msg = WM_ACTIVATE) and (LoWord(WParam) <> WA_INACTIVE) and (LParam <> 0) then
+    Windows.SendMessage(LParam, WM_NCACTIVATE, 1, 0);
+  Result := Windows.DefWindowProc(Window, Msg, WParam, LParam);
 end;
 
 procedure TWin32WidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
@@ -338,7 +340,7 @@ const
 var
   WindowClass: WndClass;
 begin
-  if WindowsVersion >= wvVista then
+  if WindowsVersion >= wvXP then
   begin
     case AOperation of
       disShow:
@@ -359,7 +361,7 @@ begin
         Windows.RegisterClass(@WindowClass);
         FDockWndHandle := CreateWindowEx(WS_EX_LAYERED or WS_EX_TRANSPARENT or WS_EX_TOPMOST or WS_EX_TOOLWINDOW,
           'LazDockWnd', 'LazDockWnd', WS_POPUP or WS_VISIBLE,
-          ANewRect.Left, ANewRect.Top, ANewRect.Right - ANewRect.Left, ANewRect.Bottom - ANewRect.Top, 0, 0, System.HINSTANCE, nil);
+          ANewRect.Left, ANewRect.Top, ANewRect.Right - ANewRect.Left, ANewRect.Bottom - ANewRect.Top, AppHandle, 0, System.HINSTANCE, nil);
 
         SetLayeredWindowAttributes(FDockWndHandle, 0, $30, LWA_ALPHA);
       end;
