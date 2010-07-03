@@ -142,6 +142,7 @@ begin
   RootWin := XRootWindow(Display, ScreenNum);
 
   // _NET_WM_STATE_SKIP_TASKBAR
+  FillChar(XClient, SizeOf(XClient), 0);
   XClient._type := ClientMessage;
   XClient.window := QWidget_winId(Widget);
   WMAtom := XInternAtom(Display,'_NET_WM_STATE', False);
