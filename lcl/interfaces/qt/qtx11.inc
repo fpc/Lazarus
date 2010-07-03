@@ -1,3 +1,4 @@
+{%MainUnit qtint.pp}
 function IsCurrentDesktop(AWidget: QWidgetH): Boolean;
 var
   Display: PDisplay;
@@ -119,5 +120,45 @@ begin
        end;
     end;
   end;
+end;
+
+procedure SetSkipX11Taskbar(Widget: QWidgetH; const ASkipTaskBar: Boolean);
+const
+  _NET_WM_STATE_REMOVE = 0;
+  _NET_WM_STATE_ADD = 1;
+  _NET_WM_STATE_TOGGLE = 2;
+var
+   Display: PDisplay;
+   RootWin: TWindow;
+   ScreenNum: Integer;
+   XClient: TXClientMessageEvent;
+   WMAtom: TAtom;
+begin
+  Display := QX11Info_display();
+
+  if Display = nil then
+    exit;
+  ScreenNum := QX11Info_appScreen();
+  RootWin := XRootWindow(Display, ScreenNum);
+
+  // _NET_WM_STATE_SKIP_TASKBAR
+  XClient._type := ClientMessage;
+  XClient.window := QWidget_winId(Widget);
+  WMAtom := XInternAtom(Display,'_NET_WM_STATE', False);
+  XClient.message_type := WMAtom;
+  XClient.format := 32;
+
+  if ASkipTaskBar then
+    Xclient.data.l[0] := _NET_WM_STATE_ADD
+  else
+    Xclient.data.l[0] := _NET_WM_STATE_REMOVE;
+  WMAtom := XInternAtom(Display,'_NET_WM_STATE_SKIP_TASKBAR', True);
+  Xclient.data.l[1] := WMAtom;
+  Xclient.data.l[2] := 0;
+  Xclient.data.l[3] := 0;
+  Xclient.data.l[4] := 0;
+  XSendEvent (Display, RootWin, False,
+	      SubstructureRedirectMask or SubstructureNotifyMask,
+	      @Xclient);
 end;
 

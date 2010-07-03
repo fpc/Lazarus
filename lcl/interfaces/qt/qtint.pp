@@ -179,6 +179,7 @@ type
   {$IFDEF HASX11}
   function IsCurrentDesktop(AWidget: QWidgetH): Boolean;
   function GetWindowManager: String;
+  procedure SetSkipX11Taskbar(Widget: QWidgetH; const ASkipTaskBar: Boolean);
   {$ENDIF}
 
 const
