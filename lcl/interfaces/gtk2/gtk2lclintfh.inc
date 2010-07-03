@@ -37,6 +37,8 @@ function AddProcessEventHandler(AHandle: THandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
 
 function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
+function CreateRubberBand(const ARect: TRect; const ABrush: HBrush = 0): HWND; override;
+procedure DestroyRubberBand(ARubberBand: HWND); override;
 procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); override;
 procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
 
@@ -65,6 +67,7 @@ procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); overrid
 
 function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; override;
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); override;
+procedure SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect); override;
 
 function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

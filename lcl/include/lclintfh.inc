@@ -56,10 +56,12 @@ function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; {$I
 function CreateEmptyRegion: hRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateRegionCopy(SrcRGN: hRGN): hRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function CreateRubberBand(const ARect: TRect; const ABrush: HBrush = 0): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateStandardCursor(ACursor: SmallInt): hCursor; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function DCClipRegionValid(DC: HDC): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure DeallocateHWnd(Wnd: HWND); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure DestroyRubberBand(ARubberBand: HWND); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -113,6 +115,7 @@ procedure SendCachedLCLMessages; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function TextUTF8Out(DC: HDC; X, Y: Integer;  Str: PChar; Count: Longint): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

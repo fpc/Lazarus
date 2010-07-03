@@ -1,4 +1,4 @@
-{%MainUnit qtkint.pp}
+{%MainUnit qtint.pp}
 { $Id$ }
 
 {******************************************************************************
@@ -42,8 +42,10 @@ function AddProcessEventHandler(AHandle: THandle;
 
 function CreateEmptyRegion: hRGN; override;
 function CreateStandardCursor(ACursor: SmallInt): HCURSOR; override;
+function CreateRubberBand(const ARect: TRect; const ABrush: HBrush = 0): HWND; override;
 procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); override;
 procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
+procedure DestroyRubberBand(ARubberBand: HWND); override;
 
 function FontCanUTF8(Font: HFont): boolean; override;
 function FontIsMonoSpace(Font: HFont): boolean; override;
@@ -77,6 +79,7 @@ procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;
 procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); override;
 
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword); override;
+procedure SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect); override;
 
 function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;
 

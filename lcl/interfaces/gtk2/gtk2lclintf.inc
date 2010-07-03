@@ -30,6 +30,62 @@
 
 //##apiwiz##sps##   // Do not remove
 
+function TGtk2WidgetSet.CreateRubberBand(const ARect: TRect; const ABrush: HBrush): HWND;
+const
+  LineWidth = 2;
+var
+  Widget: PGtkWidget absolute Result;
+  dx, dy: integer;
+  Pixmap: PGdkPixmap;
+  gc: PGdkGC;
+  AColor: TGdkColor;
+begin
+  dx := ARect.Right - ARect.Left;
+  dy := ARect.Bottom - ARect.Top;
+  if dx < 0 then
+    dx := 0;
+  if dy < 0 then
+    dy := 0;
+
+  // rubber band is just a window without a title
+  Result := HWND(gtk_window_new(GTK_WINDOW_POPUP));
+  gtk_window_set_default_size(PGtkWindow(Result), dx, dy);
+  gtk_widget_set_uposition(Widget, ARect.Left, ARect.Top);
+  gtk_widget_set_app_paintable(Widget, True);
+  gtk_widget_realize(Widget);
+  gdk_window_set_decorations(Widget^.window, 0);
+  gdk_window_set_functions(Widget^.window, GDK_FUNC_RESIZE or GDK_FUNC_CLOSE);
+  gtk_window_set_opacity(PGtkWindow(Result), 0.25);
+  if ABrush = 0 then
+    SetWidgetColor(Widget, clNone, clGradientActiveCaption, [GTK_STATE_NORMAL])
+  else
+  if PGDIObject(ABrush)^.GDIBrushFill = GDK_SOLID then
+    SetWidgetColor(Widget, clNone, PGDIObject(ABrush)^.GDIBrushColor.ColorRef, [GTK_STATE_NORMAL])
+  else
+  begin
+    Pixmap := gdk_pixmap_new(Widget^.window, dx, dy, -1);
+    gc := gdk_gc_new(Pixmap);
+    AColor := AllocGDKColor(clWhite);
+    gdk_gc_set_foreground(gc, @AColor);
+    gdk_gc_set_fill(gc, PGDIObject(ABrush)^.GDIBrushFill);
+    case PGDIObject(ABrush)^.GDIBrushFill of
+      GDK_TILED: gdk_gc_set_tile(gc, PGDIObject(ABrush)^.GDIBrushPixMap);
+      GDK_STIPPLED: gdk_gc_set_stipple(gc, PGDIObject(ABrush)^.GDIBrushPixMap);
+    end;
+    gdk_draw_rectangle(Pixmap, gc, -1, 0, 0, dx, dy);
+    gdk_gc_unref(gc);
+    gdk_window_set_back_pixmap(Widget^.window, Pixmap, False);
+    g_object_unref(Pixmap);
+  end;
+
+  gtk_widget_show(Widget);
+end;
+
+procedure TGtk2WidgetSet.DestroyRubberBand(ARubberBand: HWND);
+begin
+  gtk_widget_destroy(PGtkWidget(ARubberBand));
+end;
+
 procedure TGtk2WidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect;
   AOperation: TDockImageOperation);
 const
@@ -891,6 +947,13 @@ begin
   lEventHandler^.GSourceID := g_io_add_watch(lEventHandler^.GIOChannel,
     NewFlags, @waithandle_iocallback, lEventHandler);
   //debugln('TGtk2WidgetSet.SetEventHandlerFlags lEventHandler=',HexStr(Cardinal(lEventHandler),8),' AHandle=',dbgs(lEventHandler^.Handle));
+end;
+
+procedure TGtk2WidgetSet.SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect);
+begin
+  with ARect do
+    gdk_window_move_resize(PGtkWidget(ARubberBand)^.window, Left,
+      Top, Right - Left, Bottom - Top);
 end;
 
 type

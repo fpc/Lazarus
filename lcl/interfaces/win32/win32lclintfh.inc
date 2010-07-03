@@ -38,8 +38,10 @@ function AddProcessEventHandler(AHandle: THandle;
 function AllocateHWnd(Method: TLCLWndMethod): HWND; override;
 
 function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
+function CreateRubberBand(const ARect: TRect; const ABrush: HBrush = 0): HWND; override;
 
 procedure DeallocateHWnd(Wnd: HWND); override;
+procedure DestroyRubberBand(ARubberBand: HWND); override;
 procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); override;
 procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
 
@@ -67,5 +69,6 @@ procedure RemoveEventHandler(var AHandler: PEventHandler); override;
 procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;
 procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); override;
 
+procedure SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect); override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

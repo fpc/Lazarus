@@ -193,6 +193,14 @@ begin
     Result := HCURSOR(TQtCursor.Create(CursorShape));
 end;
 
+function TQtWidgetSet.CreateRubberBand(const ARect: TRect; const ABrush: HBrush): HWND;
+begin
+  // todo: think of ABrush
+  Result := HWND(QRubberBand_create(QRubberBandRectangle));
+  QRubberBand_setGeometry(QRubberBandH(Result), @ARect);
+  QWidget_show(QRubberBandH(Result));
+end;
+
 procedure TQtWidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
 begin
   if FDockImage = nil then
@@ -224,6 +232,11 @@ begin
   finally
     QtDC.restore;
   end;
+end;
+
+procedure TQtWidgetSet.DestroyRubberBand(ARubberBand: HWND);
+begin
+  QWidget_destroy(QRubberBandH(ARubberBand));
 end;
 
 {------------------------------------------------------------------------------
@@ -786,6 +799,11 @@ begin
   QSocketNotifier_setEnabled(wheh^.qsn[QSocketNotifierRead], do_read);
   QSocketNotifier_setEnabled(wheh^.qsn[QSocketNotifierWrite], do_write);
   QSocketNotifier_setEnabled(wheh^.qsn[QSocketNotifierException], do_error);
+end;
+
+procedure TQtWidgetSet.SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect);
+begin
+  QRubberBand_setGeometry(QRubberBandH(ARubberBand), @ARect);
 end;
 
 function TQtWidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean;

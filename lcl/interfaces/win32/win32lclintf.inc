@@ -182,6 +182,12 @@ begin
   AHandler := nil;
 end;
 
+procedure TWin32WidgetSet.SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect);
+begin
+  with ARect do
+    SetWindowPos(ARubberBand, 0, Left, Top, Right - Left, Bottom - Top, SWP_NOZORDER or SWP_NOACTIVATE);
+end;
+
 function TWin32WidgetSet.AppHandle: THandle;
 begin
   Result:= FAppHandle;
@@ -208,6 +214,56 @@ begin
   else
     Result := Windows.LoadCursor(0, LclCursorToWin32CursorMap[ACursor]);
   end;
+end;
+
+function DockWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+begin
+  if (Msg = WM_ACTIVATE) and (LoWord(WParam) <> WA_INACTIVE) and (LParam <> 0) then
+    Windows.SendMessage(LParam, WM_NCACTIVATE, 1, 0);
+  Result := Windows.DefWindowProc(Window, Msg, WParam, LParam);
+end;
+
+function TWin32WidgetSet.CreateRubberBand(const ARect: TRect; const ABrush: HBrush = 0): HWND;
+var
+  WindowClass: Windows.WNDCLASS;
+  WndClassName: String;
+begin
+  WndClassName := 'LazRubberBand' + IntToStr(ABrush);
+
+  if not Windows.GetClassInfo(System.HInstance, PChar(WndClassName), WindowClass) then
+  begin
+    with WindowClass do
+    begin
+      Style := 0;
+      LPFnWndProc := @DockWindowProc;
+      CbClsExtra := 0;
+      CbWndExtra := 0;
+      hInstance := System.HInstance;
+      hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
+      hCursor := Windows.LoadCursor(0, IDC_ARROW);
+      if ABrush = 0 then
+        hbrBackground := GetSysColorBrush(COLOR_HIGHLIGHT)
+      else
+        hbrBackground := ABrush;
+      LPSzMenuName := nil;
+      LPSzClassName := PChar(WndClassName);
+    end;
+    Windows.RegisterClass(@WindowClass);
+  end;
+
+  if WindowsVersion >= wv2000 then
+  begin
+    Result := CreateWindowEx(WS_EX_LAYERED or WS_EX_TRANSPARENT or WS_EX_TOPMOST or WS_EX_TOOLWINDOW,
+      PChar(WndClassName), PChar(WndClassName), WS_POPUP or WS_VISIBLE,
+      ARect.Left, ARect.Top, ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, AppHandle, 0, System.HInstance, nil);
+
+    SetLayeredWindowAttributes(Result, 0, $30, LWA_ALPHA);
+  end
+  else
+    Result := CreateWindowEx(WS_EX_TOPMOST or WS_EX_TOOLWINDOW,
+      PChar(WndClassName), PChar(WndClassName), WS_POPUP or WS_VISIBLE,
+      ARect.Left, ARect.Top, ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, AppHandle, 0, System.HInstance, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -294,12 +350,15 @@ begin
   if Assigned(PMethod) then Freemem(PMethod);
 end;
 
-function DockWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; stdcall;
+procedure TWin32WidgetSet.DestroyRubberBand(ARubberBand: HWND);
+var
+  WndClassName: array[0..255] of Char;
 begin
-  if (Msg = WM_ACTIVATE) and (LoWord(WParam) <> WA_INACTIVE) and (LParam <> 0) then
-    Windows.SendMessage(LParam, WM_NCACTIVATE, 1, 0);
-  Result := Windows.DefWindowProc(Window, Msg, WParam, LParam);
+  GetClassName(ARubberBand, @WndClassName, 255);
+  // preserve the brush or it will be deleted
+  SetClassLongPtr(ARubberBand, GCL_HBRBACKGROUND, 0);
+  DestroyWindow(ARubberBand);
+  Windows.UnRegisterClass(@WndClassName, System.HINSTANCE);
 end;
 
 procedure TWin32WidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
@@ -340,14 +399,14 @@ const
 var
   WindowClass: WndClass;
 begin
-  if WindowsVersion >= wvXP then
+  if WindowsVersion >= wv2000 then
   begin
     case AOperation of
       disShow:
       begin
         with WindowClass do
         begin
-          Style := CS_DBLCLKS;
+          Style := 0;
           LPFnWndProc := @DockWindowProc;
           CbClsExtra := 0;
           CbWndExtra := 0;

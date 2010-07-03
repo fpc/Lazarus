@@ -105,6 +105,11 @@ begin
   CombineRGN(Result,SrcRGN,SrcRGN,RGN_COPY);
 end;
 
+function TWidgetSet.CreateRubberBand(const ARect: TRect; const ABrush: HBrush): HWND;
+begin
+  Result := 0;
+end;
+
 function TWidgetSet.CreateStandardCursor(ACursor: SmallInt): hCursor;
 begin
   Result := 0;
@@ -122,6 +127,11 @@ begin
 end;
 
 procedure TWidgetSet.DeallocateHWnd(Wnd: HWND);
+begin
+
+end;
+
+procedure TWidgetSet.DestroyRubberBand(ARubberBand: HWND);
 begin
 
 end;
@@ -693,6 +703,11 @@ end;
 
 procedure TWidgetSet.SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword);
 begin
+end;
+
+procedure TWidgetSet.SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect);
+begin
+
 end;
 
 function TWidgetSet.StretchMaskBlt(DestDC: HDC;

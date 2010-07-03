@@ -118,9 +118,19 @@ begin
   Result := WidgetSet.DCClipRegionValid(DC);
 end;
 
+function CreateRubberBand(const ARect: TRect; const ABrush: HBrush = 0): HWND;
+begin
+  Result := WidgetSet.CreateRubberBand(ARect, ABrush);
+end;
+
 procedure DeallocateHWnd(Wnd: HWND);
 begin
   WidgetSet.DeallocateHWnd(Wnd);
+end;
+
+procedure DestroyRubberBand(ARubberBand: HWND);
+begin
+  WidgetSet.DestroyRubberBand(ARubberBand);
 end;
 
 procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
@@ -414,6 +424,11 @@ end;
 procedure SetEventHandlerFlags(AHandler: PEventHandler; NewFlags: dword);
 begin
   WidgetSet.SetEventHandlerFlags(AHandler, NewFlags);
+end;
+
+procedure SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect);
+begin
+  WidgetSet.SetRubberBandRect(ARubberBand, ARect);
 end;
 
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
