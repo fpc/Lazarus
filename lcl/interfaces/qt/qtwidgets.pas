@@ -513,6 +513,7 @@ type
     procedure slotWindowStateChange; cdecl;
     procedure setShowInTaskBar(AValue: Boolean);
     procedure setPopupParent(APopupMode: TPopupMode; NewParent: QWidgetH);
+    property ShowOnTaskBar: Boolean read FShowOnTaskBar;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -4399,6 +4400,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtMainWindow.CreateWidget Name: ', LCLObject.Name);
   {$endif}
+  FShowOnTaskBar := False;
   QtFormBorderStyle := Ord(bsSizeable);
   QtFormStyle := Ord(fsNormal);
   FHasPaint := True;
@@ -4796,8 +4798,10 @@ end;
 procedure TQtMainWindow.setShowInTaskBar(AValue: Boolean);
 begin
   FShowOnTaskBar := AValue;
+  {$IFNDEF HASX11}
   if not QWidget_isModal(Widget) then
     UpdateParent;
+  {$ENDIF}
 end;
 
 procedure TQtMainWindow.setPopupParent(APopupMode: TPopupMode; NewParent: QWidgetH);

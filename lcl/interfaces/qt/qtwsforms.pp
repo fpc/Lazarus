@@ -180,7 +180,6 @@ begin
        and not (TCustomForm(AWinControl).BorderStyle in [bsSizeToolWin, bsToolWindow])
        {$endif} then
       QtMainWindow.setShowInTaskBar(False);
-
     if Assigned(TCustomForm(AWinControl).PopupParent) then
       PopupParent := TQtWidget(TCustomForm(AWinControl).PopupParent.Handle).Widget
     else
@@ -322,10 +321,16 @@ begin
 
   Enable := AValue <> stNever;
   if (AValue = stDefault) and
+    {$IFDEF HASX11}
+    TQtMainWindow(AForm.Handle).ShowOnTaskBar and
+    {$ENDIF}
      (Application<>nil) and
      (Application.MainForm <> nil) and
      (Application.MainForm <> AForm) then
     Enable := false;
+  {$IFDEF HASX11}
+  SetSkipX11Taskbar(TQtMainWindow(AForm.Handle).Widget, not Enable);
+  {$ENDIF}
   TQtMainWindow(AForm.Handle).setShowInTaskBar(Enable);
 end;
 

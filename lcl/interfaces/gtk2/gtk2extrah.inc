@@ -35,13 +35,15 @@ const
 
 // this is required for compilation under windows
 
-{$if defined(HasX) and not defined(HasGdk2X)}
+{$IFNDEF MSWINDOWS}
+{.$if defined(HasX) and not defined(HasGdk2X)}
 var
   gdk_display: PDisplay; external gdklib name 'gdk_display';
 
 function gdk_window_xwindow(win : PGdkDrawable): TXID; cdecl; external gdklib name 'gdk_x11_drawable_get_xid';
 function gdk_x11_image_get_ximage(image:PGdkImage):PXImage;cdecl;external gdklib name 'gdk_x11_image_get_ximage';
-{$endif}
+{.$endif}
+{$ENDIF}
 
 procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
   dashlist:Pgint8; n:gint); cdecl; external gdkdll name 'gdk_gc_set_dashes';
