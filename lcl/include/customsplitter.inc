@@ -204,21 +204,46 @@ var
   var
     NewBounds: TRect;
   begin
-    NewBounds:=CurResizeControl.BoundsRect;
+    NewBounds := CurResizeControl.BoundsRect;
     //DebugLn('SetAlignControlSize ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl),' OldBounds=',dbgs(NewBounds),' NewSize=',dbgs(NewSize));
     case ResizeAnchor of
       akLeft:
-        NewBounds.Right := NewBounds.Left+NewSize;
+        NewBounds.Right := NewBounds.Left + NewSize;
       akRight:
-        NewBounds.Left := NewBounds.Right-NewSize;
+        NewBounds.Left := NewBounds.Right - NewSize;
       akTop:
-        NewBounds.Bottom := NewBounds.Top+NewSize;
+        NewBounds.Bottom := NewBounds.Top + NewSize;
       akBottom:
-        NewBounds.Top := NewBounds.Bottom-NewSize;
+        NewBounds.Top := NewBounds.Bottom - NewSize;
     end;
     //DebugLn('SetAlignControlSize ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl),' NewBounds=',dbgs(NewBounds));
-    CurResizeControl.BoundsRect:=NewBounds;
+    CurResizeControl.BoundsRect := NewBounds;
     //DebugLn('SetAlignControlSize ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl),' NowBounds=',dbgs(CurResizeControl.BoundsRect));
+  end;
+
+  procedure DrawAlignControlSize(NewSize: Integer);
+  var
+    NewRect: TRect;
+    OldSize: Integer;
+  begin
+    // get the splitter position
+    NewRect := BoundsRect;
+    NewRect.TopLeft := Parent.ClientToScreen(NewRect.TopLeft);
+    NewRect.BottomRight := Parent.ClientToScreen(NewRect.BottomRight);
+
+    // offset it accordinly
+    OldSize := GetControlSize(CurResizeControl);
+    case ResizeAnchor of
+      akLeft:
+        OffsetRect(NewRect, NewSize - OldSize, 0);
+      akRight:
+        OffsetRect(NewRect, OldSize - NewSize, 0);
+      akTop:
+        OffsetRect(NewRect, 0, NewSize - OldSize);
+      akBottom:
+        OffsetRect(NewRect, 0, OldSize - NewSize);
+    end;
+    SetRubberBandRect(FSplitterWindow, NewRect);
   end;
 
   function CalcNewSize(StartSize, EndSize, Offset: Integer): Integer;
@@ -234,7 +259,7 @@ var
     if NewSize > EndSize then NewSize := EndSize;
     if NewSize < StartSize then NewSize := StartSize;
 
-    if AutoSnap and (NewSize < fMinSize) then
+    if AutoSnap and (NewSize < FMinSize) then
       NewSize := StartSize;
     Result := NewSize;
   end;
@@ -317,6 +342,7 @@ var
   OffsetMaxUpper: integer;
   CurMaxShrink: integer;
   CurMaxEnlarge: integer;
+  NewRect: TRect;
 begin
   //DebugLn('TCustomSplitter.MoveSplitter ',DbgSName(Self),' Offset=',dbgs(Offset));
   if Offset = 0 then Exit;
@@ -341,7 +367,7 @@ begin
     if Assigned(CurOtherResizeControl) then
       EndSize := GetControlSize(CurResizeControl) +
                  GetControlSize(CurOtherResizeControl) -
-                 Max(fMinSize, GetControlConstraintsMinSize(CurOtherResizeControl))
+                 Max(FMinSize, GetControlConstraintsMinSize(CurOtherResizeControl))
     else
     begin
       VirtualOppositeControl := FindVirtualOppositeControl(Self);
@@ -376,8 +402,10 @@ begin
 
     // OnCanResize event
     if CheckNewSize(NewSize) then
-      SetAlignControlSize(NewSize);
-
+      if not FSplitDragging or (ResizeStyle = rsUpdate) then
+        SetAlignControlSize(NewSize)
+      else
+        DrawAlignControlSize(NewSize);
   end else
   begin
     // anchored Splitter
@@ -435,10 +463,26 @@ begin
     //DebugLn(['TCustomSplitter.MoveSplitter Offset=',Offset,' OffsetMaxLower=',OffsetMaxLower,' OffsetMaxUpper=',OffsetMaxUpper]);
 
     // move splitter
-    if ResizeAnchor in [akLeft, akRight] then
-      Left := Left + Offset
+    if not FSplitDragging or (ResizeStyle = rsUpdate) then
+    begin
+      if ResizeAnchor in [akLeft, akRight] then
+        Left := Left + Offset
+      else
+        Top := Top + Offset;
+    end
     else
-      Top := Top + Offset;
+    begin
+      // get the splitter position
+      NewRect := BoundsRect;
+      NewRect.TopLeft := Parent.ClientToScreen(NewRect.TopLeft);
+      NewRect.BottomRight := Parent.ClientToScreen(NewRect.BottomRight);
+
+      if ResizeAnchor in [akLeft, akRight] then
+        OffsetRect(NewRect, Offset, 0)
+      else
+        OffsetRect(NewRect, 0, Offset);
+      SetRubberBandRect(FSplitterWindow, NewRect);
+    end;
   end;
 end;
 
@@ -500,13 +544,27 @@ begin
 end;
 
 procedure TCustomSplitter.StartSplitterMove(const MouseXY: TPoint);
+var
+  NewRect: TRect;
+  Pattern: HBrush;
 begin
   if FSplitDragging then Exit;
   FSplitDragging := True;
   FSplitterStartMouseXY := MouseXY;
   FSplitterStartLeftTop := Point(Left, Top);
   if ResizeStyle in [rsLine, rsPattern] then
-    Invalidate;
+  begin
+    NewRect := BoundsRect;
+    NewRect.TopLeft := Parent.ClientToScreen(NewRect.TopLeft);
+    NewRect.BottomRight := Parent.ClientToScreen(NewRect.BottomRight);
+
+    if ResizeStyle = rsLine then
+      Pattern := GetStockObject(BLACK_BRUSH)
+    else
+      Pattern := ThemeServices.DottedBrush;
+
+    FSplitterWindow := CreateRubberband(NewRect, Pattern);
+  end;
 end;
 
 procedure TCustomSplitter.StopSplitterMove(const MouseXY: TPoint);
@@ -524,13 +582,13 @@ begin
       Offset := 0;
     end;
 
+    FSplitDragging := False;
     if Offset <> 0 then
       MoveSplitter(Offset);
 
     if Assigned(OnMoved) then OnMoved(Self);
-    FSplitDragging := False;
     if ResizeStyle in [rsLine, rsPattern] then
-      Invalidate;
+      DestroyRubberBand(FSplitterWindow);
   end;
 end;
 
@@ -554,7 +612,7 @@ var
   MousePos: TPoint;
 begin
   inherited MouseMove(Shift, X, Y);
-  if (ssLeft in Shift) and (Parent <> nil) and (FSplitDragging) and (ResizeStyle <> rsNone) then
+  if (ssLeft in Shift) and (Parent <> nil) and (FSplitDragging) then
   begin
     // While resizing X, Y are not valid. Use the absolute mouse position.
     GetCursorPos(MousePos);
@@ -819,21 +877,10 @@ procedure TCustomSplitter.Paint;
     ThemeServices.DrawElement(Canvas.Handle, GripperDetails, GripperRect);
   end;
 
-  procedure DrawResizePattern(ARect: TRect);
-  begin
-    if ResizeStyle = rsPattern then
-      FillRect(Canvas.Handle, ARect, ThemeServices.DottedBrush)
-    else
-      FillRect(Canvas.Handle, ARect, GetStockObject(BLACK_BRUSH));
-  end;
-
 begin
   inherited Paint;
 
-  if (ResizeStyle in [rsNone, rsUpdate]) or not FSplitDragging then
-    DrawThemedPattern(ClientRect)
-  else
-    DrawResizePattern(ClientRect);
+  DrawThemedPattern(ClientRect)
 end;
 
 procedure TCustomSplitter.MouseEnter;

@@ -470,6 +470,7 @@ type
     FSplitDragging: Boolean;
     FSplitterStartMouseXY: TPoint; // in screen coordinates
     FSplitterStartLeftTop: TPoint; // in screen coordinates
+    FSplitterWindow: HWND;
     function GetResizeControl: TControl;
     procedure SetBeveled(const AValue: boolean);
     procedure SetMinSize(const AValue: integer);
