@@ -267,6 +267,7 @@ resourceString
   rsCursor = 'Cursor';
   rsJpeg = 'Joint Picture Expert Group';
   rsTiff = 'Tagged Image File Format';
+  rsGraphic = 'Graphic';
   rsUnsupportedClipboardFormat = 'Unsupported clipboard format: %s';
   rsGroupIndexCannotBeLessThanPrevious = 'GroupIndex cannot be less than a '
     +'previous menu item''s GroupIndex';

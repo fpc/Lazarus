@@ -205,7 +205,7 @@ begin
   end;
   if C > 1 then
     FmtStr(Descriptions, '%s (%s)|%1:s|%s',
-     ['Graphic', Filters, Descriptions]);
+     [rsGraphic, Filters, Descriptions]);
 end;
 
 //------------------------------------------------------------------------------
