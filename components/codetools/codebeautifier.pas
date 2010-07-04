@@ -350,7 +350,7 @@ type
     function FindPolicyInExamples(StartCode: TCodeBuffer;
                                   Typ, SubTyp: TFABBlockType): TFABPolicies;
     function GetNestedCommentsForCode(Code: TCodeBuffer): boolean;
-    function FindStackPosForBlockCloseAtPos(const Source: string;
+    function AdjustByNextAtom(const Source: string;
                              CleanPos: integer; NestedComments: boolean;
                              Stack: TFABBlockStack;
                              out TopType: TFABBlockType;
@@ -1252,7 +1252,7 @@ begin
     OnGetNestedComments(Self,Code,Result);
 end;
 
-function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
+function TFullyAutomaticBeautifier.AdjustByNextAtom(
   const Source: string; CleanPos: integer; NestedComments: boolean;
   Stack: TFABBlockStack; out TopType: TFABBlockType; out TopTypeValid: boolean
   ): integer;
@@ -1270,7 +1270,7 @@ function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
   var
     i: Integer;
   begin
-    i:=FindStackPosForBlockCloseAtPos;
+    i:=AdjustByNextAtom;
     if (i>=0) and (i<=Stack.Top) then
       Result:=Stack.Stack[i].Typ
     else
@@ -1279,7 +1279,7 @@ function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
 
   procedure EndBlock(aCount: integer = 1);
   begin
-    dec(FindStackPosForBlockCloseAtPos,aCount);
+    dec(AdjustByNextAtom,aCount);
     TopTypeValid:=false;
   end;
 
@@ -1297,13 +1297,15 @@ function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
       EndBlock;
     if StackTopType in bbtAllIdentifierSections then
       EndBlock;
+    TopType:=bbtProcedure;
+    TopTypeValid:=true;
   end;
 
   function IsMethodDeclaration: boolean;
   var
     i: Integer;
   begin
-    i:=FindStackPosForBlockCloseAtPos;
+    i:=AdjustByNextAtom;
     Result:=(StackTopType in bbtAllProcedures)
       and (i>0)
       and (Stack.Stack[i-1].Typ=bbtClassSection);
@@ -1321,7 +1323,7 @@ function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
   var
     i: Integer;
   begin
-    i:=FindStackPosForBlockCloseAtPos;
+    i:=AdjustByNextAtom;
     if i>=0 then
       EndBlock(i+1);
   end;
@@ -1332,7 +1334,7 @@ function TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos(
   begin
     i:=Stack.TopMostIndexOf(BlockTyp);
     if i>=0 then
-      FindStackPosForBlockCloseAtPos:=i-1;
+      AdjustByNextAtom:=i-1;
   end;
 
 var
@@ -1341,7 +1343,7 @@ var
   p: LongInt;
 begin
   {$IFDEF VerboseIndenter}
-  DebugLn(['TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos START']);
+  DebugLn(['TFullyAutomaticBeautifier.AdjustByNextAtom START']);
   {$ENDIF}
   Result:=Stack.Top;
   TopType:=bbtNone;
@@ -1353,11 +1355,11 @@ begin
   p:=CleanPos;
   ReadRawNextPascalAtom(Source,p,AtomStart,NestedComments);
   {$IFDEF VerboseIndenter}
-  DebugLn(['TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos ',AtomStart<>CleanPos,' CleanPos=',dbgstr(copy(Source,CleanPos,10)),' AtomStart=',dbgstr(copy(Source,AtomStart,10))]);
+  DebugLn(['TFullyAutomaticBeautifier.AdjustByNextAtom ',AtomStart<>CleanPos,' CleanPos=',dbgstr(copy(Source,CleanPos,10)),' AtomStart=',dbgstr(copy(Source,AtomStart,10))]);
   {$ENDIF}
   if AtomStart<>CleanPos then exit;
   {$IFDEF VerboseIndenter}
-  DebugLn(['TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos Atom=',copy(Source,AtomStart,p-AtomStart)]);
+  DebugLn(['TFullyAutomaticBeautifier.AdjustByNextAtom Atom=',copy(Source,AtomStart,p-AtomStart)]);
   {$ENDIF}
   TopTypeValid:=true;
   r:=@Source[AtomStart];
@@ -1515,9 +1517,9 @@ begin
   end;
   {$IFDEF VerboseIndenter}
   if (Stack.Top<>Result)  then
-    DebugLn(['TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos block close: Stack.Top=',Stack.Top,' Result=',Result]);
+    DebugLn(['TFullyAutomaticBeautifier.AdjustByNextAtom block close: Stack.Top=',Stack.Top,' Result=',Result]);
   if TopTypeValid then
-    DebugLn(['TFullyAutomaticBeautifier.FindStackPosForBlockCloseAtPos block open: TopType=',FABBlockTypeNames[TopType]]);
+    DebugLn(['TFullyAutomaticBeautifier.AdjustByNextAtom block open: TopType=',FABBlockTypeNames[TopType]]);
   {$ENDIF}
 end;
 
@@ -1645,14 +1647,14 @@ begin
     SubTypeValid:=false;
     if UseLineStart then begin
       if InsertText='' then begin
-        StackIndex:=FindStackPosForBlockCloseAtPos(Source,CleanPos,
+        StackIndex:=AdjustByNextAtom(Source,CleanPos,
                                   NewNestedComments,Stack,SubType,SubTypeValid);
       end else begin
         InsertTextStartPos:=1;
         while (InsertTextStartPos<=length(InsertText))
         and (InsertText[InsertTextStartPos] in [' ',#9]) do
           inc(InsertTextStartPos);
-        StackIndex:=FindStackPosForBlockCloseAtPos(InsertText,InsertTextStartPos,
+        StackIndex:=AdjustByNextAtom(InsertText,InsertTextStartPos,
                                   NewNestedComments,Stack,SubType,SubTypeValid);
       end;
     end;
@@ -1874,7 +1876,7 @@ begin
         Item^.SubType:=bbtNone;
         Item^.SubTypeValid:=false;
         if UseLineStart then
-          StackIndex:=FindStackPosForBlockCloseAtPos(Source,Item^.CleanPos,
+          StackIndex:=AdjustByNextAtom(Source,Item^.CleanPos,
                       NewNestedComments,Stack,Item^.SubType,Item^.SubTypeValid);
         if (StackIndex<0) then begin
           // no context
