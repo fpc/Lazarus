@@ -2120,7 +2120,6 @@ begin
         begin
           // check if a semicolon is needed at the end
           if (not (ilcfNoEndSemicolon in CurrentIdentifierList.ContextFlags))
-          and (not (ilcfStartOfStatement in CurrentIdentifierList.ContextFlags))
           then begin
             // check if a semicolon is needed at the end
             if (CurPos.Flag in [cafEnd])

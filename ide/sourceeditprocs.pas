@@ -650,6 +650,7 @@ begin
   end;
 
   // add semicolon for statement ends
+  //debugln(['GetIdentCompletionValue CanAddSemicolon=',CanAddSemicolon,' ilcfNoEndSemicolon=',ilcfNoEndSemicolon in IdentList.ContextFlags,' ']);
   if CanAddSemicolon
   and (not (ilcfNoEndSemicolon in IdentList.ContextFlags))
   then begin
@@ -660,8 +661,8 @@ begin
       Result:=Result+';';
       if (CursorToLeft=0) and (IdentItem.GetDesc=ctnProcedure)
       and (not IdentItem.IsFunction) then begin
-        // a procedure call without paramters
-        // put cursor behind semicolon
+        // a procedure call without parameters
+        // => put cursor behind semicolon
       end else begin
         // keep cursor in front of semicolon
         inc(CursorToLeft);
