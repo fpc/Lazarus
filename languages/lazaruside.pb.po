@@ -1286,7 +1286,7 @@ msgstr "Var/Type (local)"
 
 #: lazarusidestrconsts.dlgfoldpasansicomment
 msgid "Comment (* *)"
-msgstr ""
+msgstr "Comentário (* *)"
 
 #: lazarusidestrconsts.dlgfoldpasasm
 msgid "Asm"
@@ -1298,7 +1298,7 @@ msgstr "Begin/End (aninhado)"
 
 #: lazarusidestrconsts.dlgfoldpasborcomment
 msgid "Comment { }"
-msgstr ""
+msgstr "Comentário { }"
 
 #: lazarusidestrconsts.dlgfoldpascase
 msgid "Case"
@@ -1348,7 +1348,7 @@ msgstr "Repeat"
 
 #: lazarusidestrconsts.dlgfoldpasslashcomment
 msgid "Comment //"
-msgstr ""
+msgstr "Comentário //"
 
 #: lazarusidestrconsts.dlgfoldpastry
 msgid "Try"
@@ -6739,7 +6739,7 @@ msgstr "Impossível executar ferramenta %s%s%s:%s%s"
 
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
-msgstr ""
+msgstr "Falha ao criar Aplicação Encartada para \"%s\""
 
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
@@ -6845,7 +6845,7 @@ msgstr "(filtro)"
 
 #: lazarusidestrconsts.lisfilter3
 msgid "Filter: %s"
-msgstr ""
+msgstr "Filtro: %s"
 
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
@@ -7125,7 +7125,7 @@ msgstr "Ajuda para mensagem do Compilador Free Pascal"
 
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
-msgstr ""
+msgstr "Ocultar mensagem via diretiva"
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
@@ -7588,7 +7588,7 @@ msgstr "Diretório fonte do Free Pascal inválido"
 
 #: lazarusidestrconsts.lisinvalidlinecolumninmessage
 msgid "Invalid line, column in message%s%s"
-msgstr ""
+msgstr "Linha, coluna inválida na mensagem%s%s"
 
 #: lazarusidestrconsts.lisinvalidmultiselection
 msgid "Invalid multiselection"
@@ -9657,7 +9657,7 @@ msgstr "&Janela"
 
 #: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
 msgid "Message contains no file position information:%s%s"
-msgstr ""
+msgstr "Mensagem não contém informação de posição arquivo:%s%s"
 
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
@@ -11546,10 +11546,9 @@ msgid "Private Method"
 msgstr "Método Privado"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-#, fuzzy
 #| msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe project depends on some packages, which contain units with the Register procedure. The Register procedure is normally used to install components in the IDE. But the following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
 msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe following units belong to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
-msgstr "Provavelmente você necessita instalar alguns pacotes antes de continuar.%s%sAviso:%sO projeto depende de alguns pacotes, que contenham unidades com procedimento de Registro. O procedimento de Regitro é automaticamente usado para instalar componentes na IDE. Mas as seguintes unidades pertencem a pacotes que ainda não estão instalados na IDE. Se você tentar abrir um formulário na IDE, que usa tais componentes, você receberá erros sobre componentes faltando e o carregamento do formulário provavelmente criará resultados desagradáveis.%s%sIsto não tem impacto ao abrir o projeto ou algum de seus fontes.%s%sIsto apenas significa: Não é uma boa ideia abrir formulários para edição, antes de instalar os pacotes que faltam.%s%s"
+msgstr "Provavelmente você necessita instalar alguns pacotes antes de continuar.%s%sAviso:%sAs seguintes unidades pertencem ao pacote que ainda não está instalado na IDE. Se você tentar abrir um formulário que use estes componentes, obterá erros de componentes faltando e a carga do formulário irá criar provalvemente resultados desagradáveis.%s%sIsso não tem nenhum impacto na abertura do projeto ou qualquer de seus fontes.%s%sIsso apenas significa que é uma péssima idéia abrir formulários para desenho antes de instalar os pacotes que estão faltando.%s%s"
 
 #: lazarusidestrconsts.lisprocedure
 msgctxt "lazarusidestrconsts.lisprocedure"
@@ -11914,7 +11913,7 @@ msgstr "Reparos rápidos"
 
 #: lazarusidestrconsts.lisquickfixremoveunit
 msgid "Quick fix: Remove unit"
-msgstr ""
+msgstr "Correção rápida: Remover unidade"
 
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
@@ -11977,7 +11976,7 @@ msgstr "Remover variável local %s"
 
 #: lazarusidestrconsts.lisremovelocalvariable2
 msgid "Remove local variable"
-msgstr ""
+msgstr "Remover variável local"
 
 #: lazarusidestrconsts.lisremovenonexistingfiles
 msgid "Remove non existing files"
@@ -12617,7 +12616,7 @@ msgstr "CPU Alvo"
 
 #: lazarusidestrconsts.listargetfilenameemptyuseunitoutputdirectory
 msgid "Target file name: (empty = use unit output directory)"
-msgstr ""
+msgstr "Nome arquivo alvo: (vazio = usar diretório de saída de unidades)"
 
 #: lazarusidestrconsts.listargetfilenameofproject
 msgid "Target filename of project"
@@ -12656,7 +12655,7 @@ msgstr "Diretório de teste"
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
-msgstr ""
+msgstr "A Aplicação Encartada foi criada para \"%s\""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -13028,7 +13027,7 @@ msgstr "Este parece um arquivo Pascal.%sÉ recomendado usar nomes de arquivo em 
 
 #: lazarusidestrconsts.listhisprojecthasnomainsourcefile
 msgid "This project has no main source file"
-msgstr ""
+msgstr "Este projeto não tem um arquivo fonte principal"
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."
@@ -13402,7 +13401,7 @@ msgstr "Impossível obter o fonte para o editor."
 
 #: lazarusidestrconsts.lisunabletoloadfile
 msgid "Unable to load file:%s%s"
-msgstr ""
+msgstr "Incapaz de carregar arquivo:%s%s"
 
 #: lazarusidestrconsts.lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
@@ -13627,7 +13626,7 @@ msgstr "Atualizar referências?"
 
 #: lazarusidestrconsts.lisupdaterevisioninc
 msgid "Update revision.inc"
-msgstr ""
+msgstr "Atualizar \"revision.inc\""
 
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
