@@ -2790,8 +2790,6 @@ function TStandardCodeTool.SetAllCreateFromStatements(List: TStrings;
 { every string in the list has the format VarName:ClassName
   or simply VarName In the latter case it will be automatically expanded
   to VarName:TVarName
-  
-  ToDo: do it less destructable
 }
 var Position, InsertPos, i, ColonPos, Indent: integer;
   StatementPos: TAtomPosition;
@@ -5407,18 +5405,6 @@ function TStandardCodeTool.CompleteBlock(const CursorPos: TCodeXYPosition;
   procedure
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-ToDo:
-
-  if then begin
-    |
-  else
-
-  while do begin
-    |
-    foo;
-  bar;
-
-
   Statements:
     begin: end;
     asm: end;
@@ -5614,6 +5600,14 @@ var
         BehindCursorBlock:=true;
     end;
 
+    function CloseBrackets: boolean;
+    begin
+      while TopBlockType(Stack) in [btRoundBracket,btEdgedBracket] do begin
+        if not EndBlockIsOk then exit(false);
+      end;
+      Result:=true;
+    end;
+
   begin
     Result:=false;
     MoveCursorToNodeStart(StartNode);
@@ -5773,8 +5767,8 @@ var
         if TopBlockType(Stack)=btCaseOf then
           BeginBlock(Stack,btCaseColon,CurPos.StartPos);
       cafSemicolon:
-        // todo: close btRoundBracket, btEdgedBracket
-        while TopBlockType(Stack) in [btCaseColon,btIf,btIfElse] do begin
+        while TopBlockType(Stack)
+        in [btCaseColon,btIf,btIfElse,btRoundBracket,btEdgedBracket] do begin
           if not EndBlockIsOk then exit;
         end;
       cafWord:
@@ -5807,17 +5801,17 @@ var
           end else if UpAtomIs('IF') then begin
             BeginBlock(Stack,btIf,CurPos.StartPos);
           end else if UpAtomIs('THEN') then begin
-            // todo: close brackets
+            CloseBrackets;
             if TopBlockType(Stack)=btIf then
               Stack.Stack[Stack.Top].InnerIndent:=-1;
           end else if UpAtomIs('CASE') then begin
             BeginBlock(Stack,btCase,CurPos.StartPos)
           end else if UpAtomIs('OF') then begin
-            // todo: close brackets
+            CloseBrackets;
             if TopBlockType(Stack)=btCase then
               BeginBlock(Stack,btCaseOf,CurPos.StartPos);
           end else if UpAtomIs('ELSE') then begin
-            // todo: close brackets
+            CloseBrackets;
             case TopBlockType(Stack) of
             btIf:
               begin
