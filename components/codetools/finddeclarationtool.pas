@@ -4023,8 +4023,8 @@ var
         if Found and (Params.NewNode<>nil) then begin
           UseProcHead(Params.NewNode);
           //debugln('Context=',Params.NewNode.DescAsString,' ',dbgs(Params.NewNode.StartPos),' ',dbgs(DeclarationNode.StartPos));
-          if (Params.NewNode<>DeclarationNode)
-          and (Params.NewNode<>AliasDeclarationNode) then
+          if (Params.NewNode=DeclarationNode)
+          or (Params.NewNode=AliasDeclarationNode) then
             AddReference(StartPos);
         end;
       end;
