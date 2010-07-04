@@ -672,7 +672,8 @@ type
           const AClassName: string;
           RootComponent: TComponent; ExceptionOnClassNotFound,
           SearchInAncestors: boolean;
-          out ListOfPInstancePropInfo: TFPList): boolean;
+          out ListOfPInstancePropInfo: TFPList;
+          const OverrideGetMethodName: TOnGetMethodname = nil): boolean;
 
     // functions for events in the object inspector
     function GetCompatiblePublishedMethods(Code: TCodeBuffer;
@@ -4691,9 +4692,9 @@ end;
 
 function TCodeToolManager.FindDanglingComponentEvents(Code: TCodeBuffer;
   const AClassName: string; RootComponent: TComponent;
-  ExceptionOnClassNotFound, SearchInAncestors: boolean;
-  out ListOfPInstancePropInfo: TFPList
-  ): boolean;
+  ExceptionOnClassNotFound, SearchInAncestors: boolean; out
+  ListOfPInstancePropInfo: TFPList;
+  const OverrideGetMethodName: TOnGetMethodname): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -4704,7 +4705,7 @@ begin
   try
     Result:=FCurCodeTool.FindDanglingComponentEvents(AClassName,RootComponent,
                               ExceptionOnClassNotFound,SearchInAncestors,
-                              ListOfPInstancePropInfo);
+                              ListOfPInstancePropInfo,OverrideGetMethodName);
   except
     on e: Exception do Result:=HandleException(e);
   end;

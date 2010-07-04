@@ -155,6 +155,8 @@ type
       var Handled: boolean);
     function SaveUnitComponentToBinStream(AnUnitInfo: TUnitInfo;
       var BinCompStream: TExtMemoryStream): TModalResult;
+    function OnGetDanglingMethodName(const AMethod: TMethod;
+                                     aRootComponent: TObject): string;
 
     // ancestors
     function GetAncestorLookupRoot(AComponent: TComponent): TComponent; override;
@@ -970,6 +972,20 @@ begin
         debugln('TCustomFormEditor.SaveUnitComponentToBinStream Error cleaning up: ',E.Message);
       end;
     end;
+  end;
+end;
+
+function TCustomFormEditor.OnGetDanglingMethodName(const AMethod: TMethod;
+  aRootComponent: TObject): string;
+// check if event is a JITMethod of aRootComponent
+var
+  JITMethod: TJITMethod;
+begin
+  Result:='';
+  if IsJITMethod(aMethod) then begin
+    JITMethod:=TJITMethod(aMethod.Data);
+    if aRootComponent.ClassType=JITMethod.TheClass then
+      Result:=JITMethod.TheMethodName;
   end;
 end;
 

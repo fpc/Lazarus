@@ -157,6 +157,24 @@ type
     procedure ReplaceString(var s: string);
     function CalcMemSize: PtrUInt;
   end;
+
+type
+  TCTComponentAccess = class(TComponent);
+
+  { TComponentChildCollector }
+
+  TComponentChildCollector = class
+  private
+    FChilds: TFPList;
+    FRoot: TComponent;
+    procedure AddChildComponent(Child: TComponent);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function GetComponents(RootComponent: TComponent; AddRoot: boolean = true): TFPList;
+    property Childs: TFPList read FChilds;
+    property Root: TComponent read FRoot;
+  end;
   
 function CompareStringToStringItems(Data1, Data2: Pointer): integer;
 function CompareStringAndStringToStringTreeItem(Key, Data: Pointer): integer;
@@ -672,6 +690,46 @@ begin
     inc(Result,MemSizeString(AnsiString(Node.Data)));
     Node:=Tree.FindSuccessor(Node);
   end;
+end;
+
+{ TComponentChildCollector }
+
+procedure TComponentChildCollector.AddChildComponent(Child: TComponent);
+var
+  OldRoot: TComponent;
+begin
+  //debugln(['TComponentChildCollector.AddChildComponent ',DbgSName(Child)]);
+  Childs.Add(Child);
+  OldRoot := Root;
+  try
+    if csInline in Child.ComponentState then
+      FRoot := Child;
+    TCTComponentAccess(Child).GetChildren(@AddChildComponent,Root);
+  finally
+    FRoot := OldRoot;
+  end;
+end;
+
+constructor TComponentChildCollector.Create;
+begin
+  FChilds:=TFPList.Create;
+end;
+
+destructor TComponentChildCollector.Destroy;
+begin
+  FreeAndNil(FChilds);
+  inherited Destroy;
+end;
+
+function TComponentChildCollector.GetComponents(RootComponent: TComponent;
+  AddRoot: boolean): TFPList;
+begin
+  Childs.Clear;
+  if AddRoot then
+    Childs.Add(RootComponent);
+  FRoot:=RootComponent;
+  TCTComponentAccess(RootComponent).GetChildren(@AddChildComponent,FRoot);
+  Result:=Childs;
 end;
 
 end.

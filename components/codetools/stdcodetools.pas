@@ -192,7 +192,8 @@ type
     function FindDanglingComponentEvents(const TheClassName: string;
           RootComponent: TComponent; ExceptionOnClassNotFound,
           SearchInAncestors: boolean;
-          out ListOfPInstancePropInfo: TFPList): boolean;
+          out ListOfPInstancePropInfo: TFPList;
+          const OverrideGetMethodName: TOnGetMethodname = nil): boolean;
 
     // variables, constants, types
     function RemoveIdentifierDefinition(const CursorPos: TCodeXYPosition;
@@ -4968,8 +4969,9 @@ end;
 
 function TStandardCodeTool.FindDanglingComponentEvents(
   const TheClassName: string; RootComponent: TComponent;
-  ExceptionOnClassNotFound, SearchInAncestors: boolean;
-  out ListOfPInstancePropInfo: TFPList): boolean;
+  ExceptionOnClassNotFound, SearchInAncestors: boolean; out
+  ListOfPInstancePropInfo: TFPList;
+  const OverrideGetMethodName: TOnGetMethodname): boolean;
 var
   PublishedMethods: TAVLTree;
   
@@ -4987,7 +4989,7 @@ var
     {$ENDIF}
   end;
 
-  procedure CheckMethodsInComponent(AComponent: TComponent);
+  procedure CheckMethodsInPersistent(APersistent: TPersistent);
   var
     TypeInfo: PTypeInfo;
     TypeData: PTypeData;
@@ -4997,13 +4999,14 @@ var
     NodeExt: TCodeTreeNodeExtension;
     CurMethod: TMethod;
     CurMethodName: String;
+    ObjValue: TObject;
   begin
-    if AComponent=nil then exit;
+    if APersistent=nil then exit;
     {$IFDEF VerboseDanglingComponentEvents}
-    debugln('TStandardCodeTool.FindDanglingComponentEvents Checking ',DbgSName(AComponent));
+    debugln('TStandardCodeTool.FindDanglingComponentEvents.CheckMethodsInPersistent Checking ',DbgSName(APersistent));
     {$ENDIF}
     // read all properties and remove doubles
-    TypeInfo:=AComponent.ClassInfo;
+    TypeInfo:=APersistent.ClassInfo;
     repeat
       // read all property infos of current class
       TypeData:=GetTypeData(TypeInfo);
@@ -5023,21 +5026,40 @@ var
         debugln('      Property ',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name);
         {$ENDIF}
         PropType:=PropInfo^.PropType;
-        if PropType^.Kind=tkMethod then begin
+
+        if (PropType^.Kind=tkMethod) then begin
           // RTTI property is method
           // -> search method in source
-          CurMethod:=GetMethodProp(AComponent,PropInfo);
-          CurMethodName:=OnGetMethodName(CurMethod,RootComponent);
-          {$IFDEF VerboseDanglingComponentEvents}
-          if (CurMethod.Data<>nil) or (CurMethod.COde<>nil) then
-            debugln('      Component ',DbgSName(AComponent),' Property ',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' CurMethodName="',CurMethodName,'"');
-          {$ENDIF}
-          if CurMethodName<>'' then begin
-            NodeExt:=FindCodeTreeNodeExt(PublishedMethods,CurMethodName);
-            if NodeExt=nil then begin
-              // method not found -> dangling event
-              AddDanglingEvent(AComponent,PropInfo);
+          CurMethod:=GetMethodProp(APersistent,PropInfo);
+          if (CurMethod.Data<>nil) or (CurMethod.Code<>nil) then begin
+            if Assigned(OverrideGetMethodName) then
+              CurMethodName:=OverrideGetMethodName(CurMethod,RootComponent)
+            else
+              CurMethodName:=OnGetMethodName(CurMethod,RootComponent);
+            {$IFDEF VerboseDanglingComponentEvents}
+            debugln('      Persistent ',DbgSName(APersistent),' Property ',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' CurMethodName="',CurMethodName,'"');
+            {$ENDIF}
+            if CurMethodName<>'' then begin
+              NodeExt:=FindCodeTreeNodeExt(PublishedMethods,CurMethodName);
+              if NodeExt=nil then begin
+                // method not found -> dangling event
+                AddDanglingEvent(APersistent,PropInfo);
+              end;
             end;
+          end;
+        end else if (PropType^.Kind=tkClass) then begin
+          // RTTI property is class instance
+          ObjValue := TObject(GetObjectProp(APersistent, PropInfo));
+          if ObjValue is TCollection then begin
+            // collection
+
+          end else if (ObjValue is TPersistent)
+          and (not (ObjValue is TComponent)
+               or (csSubComponent in TComponent(ObjValue).ComponentStyle))
+          then begin
+            // sub persistent (e.g. Canvas.Font)
+            //debugln(['CheckMethodsInPersistent sub persistent: ',DbgSName(ObjValue)]);
+            CheckMethodsInPersistent(TPersistent(ObjValue));
           end;
         end;
         PropInfo:=PPropInfo(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1);
@@ -5049,9 +5071,13 @@ var
 
 var
   i: Integer;
+  Collector: TComponentChildCollector;
+  AllComponents: TFPList;
 begin
   PublishedMethods:=nil;
   ListOfPInstancePropInfo:=nil;
+  Collector:=nil;
+  AllComponents:=nil;
   try
     // search all available published methods
     {$IFDEF VerboseDanglingComponentEvents}
@@ -5062,10 +5088,12 @@ begin
                                          PublishedMethods);
     if not Result then exit;
     // go through all components
-    CheckMethodsInComponent(RootComponent);
-    for i:=0 to RootComponent.ComponentCount-1 do
-      CheckMethodsInComponent(RootComponent.Components[i]);
+    Collector:=TComponentChildCollector.Create;
+    AllComponents:=Collector.GetComponents(RootComponent,true);
+    for i:=0 to AllComponents.Count-1 do
+      CheckMethodsInPersistent(TComponent(AllComponents[i]));
   finally
+    Collector.Free;
     NodeExtMemManager.DisposeAVLTree(PublishedMethods);
   end;
 end;

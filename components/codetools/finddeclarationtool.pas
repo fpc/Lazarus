@@ -4274,6 +4274,7 @@ begin
       AVLNode:=PosTree.FindHighest;
       while AVLNode<>nil do begin
         StartPos:=PChar(AVLNode.Data)-PChar(Pointer(Src))+1;
+        // ToDo: if an include file is included twice a code position could be duplicated
         if CleanPosToCaret(StartPos,ReferencePos) then
           AddCodePosition(ListOfPCodeXYPosition,ReferencePos);
         AVLNode:=PosTree.FindPrecessor(AVLNode);

@@ -301,7 +301,8 @@ begin
     // find all dangling events
     //debugln('RemoveDanglingEvents A ',PascalBuffer.Filename,' ',DbgSName(RootComponent));
     if not CodeToolBoss.FindDanglingComponentEvents(PascalBuffer,
-      RootComponent.ClassName,RootComponent,false,true,ListOfPInstancePropInfo)
+      RootComponent.ClassName,RootComponent,false,true,ListOfPInstancePropInfo,
+      @BaseFormEditor1.OnGetDanglingMethodName)
     then begin
       //debugln('RemoveDanglingEvents Errors in code');
       if OkOnCodeErrors then
