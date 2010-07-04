@@ -1038,7 +1038,7 @@ procedure TAutoSizeCtrlData.ComputePreferredClientArea(
         or ((CurPreferredWidth=0) and (csAutoSize0x0 in Child.ControlStyle)) then
           NewWidth:=CurPreferredWidth
         else
-          NewWidth:=1;
+          NewWidth:=Max(1,Child.GetControlClassDefaultSize.cx);
         NewWidth:=Child.Constraints.MinMaxWidth(NewWidth);
 
         if UseCurrentHeight then
@@ -1047,7 +1047,7 @@ procedure TAutoSizeCtrlData.ComputePreferredClientArea(
         or ((CurPreferredHeight=0) and (csAutoSize0x0 in Child.ControlStyle)) then
           NewHeight:=CurPreferredHeight
         else
-          NewHeight:=1;
+          NewHeight:=Max(1,Child.GetControlClassDefaultSize.cy);
         NewHeight:=Child.Constraints.MinMaxHeight(NewHeight);
       end else begin
         NewWidth:=0;
