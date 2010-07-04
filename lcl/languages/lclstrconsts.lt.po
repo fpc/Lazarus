@@ -554,6 +554,10 @@ msgstr "Veikiamosios antraštės gradientas"
 msgid "Gradient Inactive Caption"
 msgstr "Įprastos antraštės gradientas"
 
+#: lclstrconsts.rsgraphic
+msgid "Graphic"
+msgstr ""
+
 #: lclstrconsts.rsgraycolorcaption
 msgid "Gray"
 msgstr "Pilka"

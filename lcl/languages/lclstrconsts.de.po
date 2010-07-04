@@ -555,6 +555,10 @@ msgstr "Gradient der aktiven Titelleiste"
 msgid "Gradient Inactive Caption"
 msgstr "Gradient der inaktiven Titelleiste"
 
+#: lclstrconsts.rsgraphic
+msgid "Graphic"
+msgstr ""
+
 #: lclstrconsts.rsgraycolorcaption
 msgid "Gray"
 msgstr "Grau"

@@ -5842,7 +5842,7 @@ msgstr ""
 #: lazarusidestrconsts.lisdebugoptionsfrmwindow
 msgctxt "lazarusidestrconsts.lisdebugoptionsfrmwindow"
 msgid "Window"
-msgstr ""
+msgstr "Ikkuna"
 
 #: lazarusidestrconsts.lisdebugunabletoloadfile
 msgid "Unable to load file"

@@ -552,6 +552,10 @@ msgstr "Degradado título activo"
 msgid "Gradient Inactive Caption"
 msgstr "Gradiente título inactivo"
 
+#: lclstrconsts.rsgraphic
+msgid "Graphic"
+msgstr ""
+
 #: lclstrconsts.rsgraycolorcaption
 msgid "Gray"
 msgstr "Gris"

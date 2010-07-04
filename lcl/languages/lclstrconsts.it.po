@@ -551,6 +551,10 @@ msgstr "Caption con gradient attiva"
 msgid "Gradient Inactive Caption"
 msgstr "Caption con gradient disattiva"
 
+#: lclstrconsts.rsgraphic
+msgid "Graphic"
+msgstr ""
+
 #: lclstrconsts.rsgraycolorcaption
 msgid "Gray"
 msgstr "Grigio"

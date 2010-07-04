@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-27 01:23+0300\n"
+"PO-Revision-Date: 2010-07-04 18:50+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -550,6 +550,10 @@ msgstr "Градиент активного заголовка"
 #: lclstrconsts.rsgradientinactivecaptioncolorcaption
 msgid "Gradient Inactive Caption"
 msgstr "Градиент неактивного заголовка"
+
+#: lclstrconsts.rsgraphic
+msgid "Graphic"
+msgstr "Графические файлы"
 
 #: lclstrconsts.rsgraycolorcaption
 msgid "Gray"

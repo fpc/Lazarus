@@ -552,6 +552,10 @@ msgstr ""
 msgid "Gradient Inactive Caption"
 msgstr ""
 
+#: lclstrconsts.rsgraphic
+msgid "Graphic"
+msgstr ""
+
 #: lclstrconsts.rsgraycolorcaption
 msgid "Gray"
 msgstr "Šedá"

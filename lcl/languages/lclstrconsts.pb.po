@@ -551,6 +551,10 @@ msgstr "Rótulo Gradiente Ativo"
 msgid "Gradient Inactive Caption"
 msgstr "Rótulo Gradiente Inativo"
 
+#: lclstrconsts.rsgraphic
+msgid "Graphic"
+msgstr ""
+
 #: lclstrconsts.rsgraycolorcaption
 msgid "Gray"
 msgstr "Cinza"
