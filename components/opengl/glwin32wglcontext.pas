@@ -439,7 +439,7 @@ begin
   Result^.Window := Window;
   if WGLControlInfoAtom=0 then
     WGLControlInfoAtom := Windows.GlobalAddAtom('WGLControlInfo');
-  Windows.SetProp(Window, PChar(dword(WGLControlInfoAtom)), dword(Result));
+  Windows.SetProp(Window, PChar(PtrUInt(WGLControlInfoAtom)), PtrUInt(Result));
 end;
 
 function DisposeWGLControlInfo(Window: HWND): boolean;
@@ -447,8 +447,8 @@ var
   Info: PWGLControlInfo;
 begin
   Info := PWGLControlInfo(Windows.GetProp(Window,
-                                          PChar(dword(WGLControlInfoAtom))));
-  Result := Windows.RemoveProp(Window, PChar(dword(WGLControlInfoAtom)))<>0;
+                                          PChar(PtrUInt(WGLControlInfoAtom))));
+  Result := Windows.RemoveProp(Window, PChar(PtrUInt(WGLControlInfoAtom)))<>0;
   if Result then begin
     Dispose(Info);
   end;
@@ -457,7 +457,7 @@ end;
 function GetWGLControlInfo(Window: HWND): PWGLControlInfo;
 begin
   Result:=PWGLControlInfo(Windows.GetProp(Window,
-                                          PChar(dword(WGLControlInfoAtom))));
+                                          PChar(PtrUInt(WGLControlInfoAtom))));
 end;
 
 end.
