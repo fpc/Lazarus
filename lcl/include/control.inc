@@ -4612,13 +4612,15 @@ end;
  ------------------------------------------------------------------------------}
 function TControl.GetDefaultWidth: integer;
 begin
-  if cfBaseBoundsValid in FControlFlags then
+  if AutoSize or WidthIsAnchored then
+    Result := GetControlClassDefaultSize.cx
+  else if cfBaseBoundsValid in FControlFlags then
     Result := FBaseBounds.Right - FBaseBounds.Left
   else
   if cfWidthLoaded in FControlFlags then
     Result := FReadBounds.Right - FReadBounds.Left
   else
-    Result := GetControlClassDefaultSize.CX;
+    Result := GetControlClassDefaultSize.cx;
 end;
 
 {------------------------------------------------------------------------------
@@ -4629,7 +4631,9 @@ end;
  ------------------------------------------------------------------------------}
 function TControl.GetDefaultHeight: integer;
 begin
-  if cfBaseBoundsValid in FControlFlags then
+  if AutoSize or HeightIsAnchored then
+    Result := GetControlClassDefaultSize.cy
+  else if cfBaseBoundsValid in FControlFlags then
     Result := BaseBounds.Bottom - BaseBounds.Top
   else
   if cfHeightLoaded in FControlFlags then
