@@ -169,6 +169,11 @@ type
                                             ): boolean;
     function FindEndOfWithVar(WithVarNode: TCodeTreeNode): integer;
     function NodeIsIdentifierInInterface(Node: TCodeTreeNode): boolean;
+    function NodeCanHaveForwardType(TypeNode: TCodeTreeNode): boolean;
+    function NodeIsForwardType(TypeNode: TCodeTreeNode): boolean;
+    function FindForwardTypeNode(TypeNode: TCodeTreeNode;
+                                 SearchFirst: boolean): TCodeTreeNode;
+    function FindTypeOfForwardNode(TypeNode: TCodeTreeNode): TCodeTreeNode;
 
     // arrays
     function ExtractArrayRange(ArrayNode: TCodeTreeNode;
@@ -1904,6 +1909,154 @@ begin
         and (Node.Parent.Parent.Desc=ctnInterface);
   end;
   Result:=false;
+end;
+
+function TPascalReaderTool.NodeCanHaveForwardType(TypeNode: TCodeTreeNode
+  ): boolean;
+begin
+  Result:=false;
+  if (TypeNode=nil) or (TypeNode.Desc<>ctnTypeDefinition)
+  or (TypeNode.FirstChild=nil) then
+    exit;
+  if (TypeNode.FirstChild.Desc in AllClasses)
+  and (TypeNode.FirstChild.SubDesc and ctnsForwardDeclaration=0) then
+    Result:=true;
+end;
+
+function TPascalReaderTool.NodeIsForwardType(TypeNode: TCodeTreeNode): boolean;
+begin
+  Result:=false;
+  if (TypeNode=nil) or (TypeNode.Desc<>ctnTypeDefinition)
+  or (TypeNode.FirstChild=nil) then
+    exit;
+  if (TypeNode.FirstChild.Desc in AllClasses)
+  and (TypeNode.FirstChild.SubDesc and ctnsForwardDeclaration>0) then
+    Result:=true;
+end;
+
+function TPascalReaderTool.FindForwardTypeNode(TypeNode: TCodeTreeNode;
+  SearchFirst: boolean): TCodeTreeNode;
+{ Find the first forward type of TypeNode
+}
+
+  function Next: TCodeTreeNode;
+  begin
+    if Result.PriorBrother<>nil then
+      // search upwards
+      Result:=Result.PriorBrother
+    else if Result.Parent.Desc in AllDefinitionSections then begin
+      // type section was searched
+      // check for other type sections in front
+      Result:=Result.Parent;
+      repeat
+        while (Result.PriorBrother<>nil) do begin
+          Result:=Result.PriorBrother;
+          if (Result.Desc in AllDefinitionSections)
+          and (Result.LastChild<>nil) then begin
+            Result:=Result.LastChild;
+            exit;
+          end;
+        end;
+        // check if in implementation section
+        if (Result.Parent=nil) or (Result.Parent.Desc<>ctnImplementation) then
+          exit(nil);
+        Result:=Result.Parent;
+        // check if there is an interface section
+        if (Result.PriorBrother=nil) or (Result.PriorBrother.Desc<>ctnInterface)
+        then
+          exit(nil);
+        // search in interface section
+        Result:=Result.PriorBrother;
+        Result:=Result.LastChild;
+      until Result=nil;
+    end else
+      exit;
+  end;
+
+var
+  Node: TCodeTreeNode;
+begin
+  Result:=nil;
+  if not NodeCanHaveForwardType(TypeNode) then exit;
+  Node:=TypeNode;
+  while Node<>nil do begin
+    if Node.Desc in AllIdentifierDefinitions then begin
+      if CompareIdentifiers(@Src[TypeNode.StartPos],@Src[Node.StartPos])=0
+      then begin
+        if (Node.Desc=ctnTypeDefinition) and NodeIsForwardType(Node) then begin
+          // a forward
+          Result:=Node;
+          if not SearchFirst then exit;
+        end else begin
+          // a redefinition
+          exit;
+        end;
+      end;
+    end;
+    Node:=Next;
+  end;
+end;
+
+function TPascalReaderTool.FindTypeOfForwardNode(TypeNode: TCodeTreeNode
+  ): TCodeTreeNode;
+
+  function Next: TCodeTreeNode;
+  begin
+    if Result.NextBrother<>nil then
+      // search forwards
+      Result:=Result.NextBrother
+    else if Result.Parent.Desc in AllDefinitionSections then begin
+      // type section was searched
+      // check for other type sections in front
+      Result:=Result.Parent;
+      repeat
+        while (Result.NextBrother<>nil) do begin
+          Result:=Result.NextBrother;
+          if (Result.Desc in AllDefinitionSections)
+          and (Result.FirstChild<>nil) then begin
+            Result:=Result.FirstChild;
+            exit;
+          end;
+        end;
+        // check if in interface section
+        if (Result.Parent=nil) or (Result.Parent.Desc<>ctnInterface) then
+          exit(nil);
+        Result:=Result.Parent;
+        // check if there is an implementation section
+        if (Result.NextBrother=nil) or (Result.NextBrother.Desc<>ctnImplementation)
+        then
+          exit(nil);
+        // search in implementation section
+        Result:=Result.NextBrother;
+        Result:=Result.FirstChild;
+      until Result=nil;
+    end else
+      exit;
+  end;
+
+var
+  Node: TCodeTreeNode;
+begin
+  Result:=nil;
+  if not NodeIsForwardType(TypeNode) then exit;
+  Node:=TypeNode;
+  while Node<>nil do begin
+    if Node.Desc in AllIdentifierDefinitions then begin
+      if CompareIdentifiers(@Src[TypeNode.StartPos],@Src[Node.StartPos])=0
+      then begin
+        if (Node.Desc=ctnTypeDefinition) and (not NodeIsForwardType(Node)) then
+        begin
+          // a type
+          Result:=Node;
+          exit;
+        end else begin
+          // a redefinition
+          exit;
+        end;
+      end;
+    end;
+    Node:=Next;
+  end;
 end;
 
 function TPascalReaderTool.ExtractArrayRange(ArrayNode: TCodeTreeNode;

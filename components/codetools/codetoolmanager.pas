@@ -2299,7 +2299,7 @@ begin
     CurCodePos:=PCodeXYPosition(ANode.Data);
     Code:=CurCodePos^.Code;
     Code.LineColToPosition(CurCodePos^.Y,CurCodePos^.X,IdentStartPos);
-    //DebugLn('TCodeToolManager.RenameIdentifier File ',Code.Filename,' Line=',dbgs(CurCodePos^.Y),' Col=',dbgs(CurCodePos^.X));
+    DebugLn('TCodeToolManager.RenameIdentifier File ',Code.Filename,' Line=',dbgs(CurCodePos^.Y),' Col=',dbgs(CurCodePos^.X),' Identifier=',GetIdentifier(@Code.Source[IdentStartPos]));
     // search absolute position in source
     if IdentStartPos<1 then begin
       SetError(Code, CurCodePos^.Y, CurCodePos^.X, ctsPositionNotInSource);
@@ -2308,6 +2308,7 @@ begin
     // check if old identifier is there
     if CompareIdentifiers(@Code.Source[IdentStartPos],PChar(Pointer(OldIdentifier)))<>0
     then begin
+      debugln(['TCodeToolManager.RenameIdentifier CONSISTENCY ERROR ',DbgsCXY(CurCodePos^),' ']);
       SetError(CurCodePos^.Code,CurCodePos^.Y,CurCodePos^.X,
         Format(ctsStrExpectedButAtomFound,[OldIdentifier,
                                    GetIdentifier(@Code.Source[IdentStartPos])])
@@ -2318,16 +2319,16 @@ begin
     if CompareIdentifiersCaseSensitive(@Code.Source[IdentStartPos],
        PChar(Pointer(NewIdentifier)))<>0
     then begin
-      //DebugLn('TCodeToolManager.RenameIdentifier Change ');
+      DebugLn('TCodeToolManager.RenameIdentifier Change ');
       SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,Code,
          IdentStartPos,IdentStartPos+IdentLen,NewIdentifier);
     end else begin
-      //DebugLn('TCodeToolManager.RenameIdentifier KEPT ',GetIdentifier(@Code.Source[IdentStartPos]));
+      DebugLn('TCodeToolManager.RenameIdentifier KEPT ',GetIdentifier(@Code.Source[IdentStartPos]));
     end;
     ANode:=TreeOfPCodeXYPosition.FindSuccessor(ANode);
   end;
   // apply
-  //DebugLn('TCodeToolManager.RenameIdentifier Apply');
+  DebugLn('TCodeToolManager.RenameIdentifier Apply');
   if not SourceChangeCache.Apply then exit;
 
   //DebugLn('TCodeToolManager.RenameIdentifier Success');

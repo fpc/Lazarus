@@ -3919,16 +3919,31 @@ var
   CursorNode: TCodeTreeNode;
   UnitStartFound, Found: Boolean;
 
-  procedure AddReference;
+  procedure AddReference(ACleanPos: integer);
   var
     p: PChar;
   begin
     if PosTree=nil then
       PosTree:=TAVLTree.Create;
-    p:=@Src[StartPos];
-    //debugln('TFindDeclarationTool.FindReferences.AddReference ',CleanPosToStr(StartPos),' ',dbgs(PosTree.Find(p)=nil));
+    p:=@Src[ACleanPos];
+    //debugln('TFindDeclarationTool.FindReferences.AddReference ',CleanPosToStr(ACleanPos),' ',dbgs(PosTree.Find(p)=nil));
     if PosTree.Find(p)=nil then
       PosTree.Add(p);
+  end;
+
+  procedure AddNodeReference(Node: TCodeTreeNode);
+  var
+    p: LongInt;
+  begin
+    p:=Node.StartPos;
+    if Node.Desc in [ctnProcedure,ctnProcedureHead] then begin
+      MoveCursorToProcName(Node,true);
+      p:=CurPos.StartPos;
+    end else if Node.Desc=ctnProperty then begin
+      MoveCursorToPropName(Node);
+      p:=CurPos.StartPos;
+    end;
+    AddReference(p);
   end;
 
   procedure UseProcHead(var Node: TCodeTreeNode);
@@ -3956,15 +3971,14 @@ var
     and ((not IsComment)
          or ((not SkipComments) and UnitStartFound))
     then begin
-      {debugln('Identifier with same name found at: ',
-        dbgs(StartPos),' ',GetIdentifier(@Src[StartPos]),
-        ' CleanDeclCursorPos=',dbgs(CleanDeclCursorPos),
-        ' MaxPos='+dbgs(MaxPos),
-        ' IsComment='+dbgs(IsComment),
-        ' SkipComments='+dbgs(SkipComments),
-        ' UnitStartFound='+dbgs(UnitStartFound));
-      if CleanPosToCaret(StartPos,ReferencePos) then
-        debugln('  x=',dbgs(ReferencePos.X),' y=',dbgs(ReferencePos.Y),' ',ReferencePos.Code.Filename);}
+      {debugln(['Identifier with same name found at: ',
+        StartPos,'=',CleanPosToStr(StartPos),' ',GetIdentifier(@Src[StartPos]),
+        ' CleanDeclCursorPos=',CleanDeclCursorPos,
+        ' MaxPos=',MaxPos,
+        ' IsComment=',IsComment,
+        ' SkipComments=',SkipComments,
+        ' UnitStartFound=',UnitStartFound
+        ]);}
 
       CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(StartPos,true);
       //debugln('  CursorNode=',CursorNode.DescAsString,' Forward=',dbgs(CursorNode.SubDesc and ctnsForwardDeclaration));
@@ -3973,7 +3987,7 @@ var
       and ((StartPos=CleanDeclCursorPos) or (CursorNode=AliasDeclarationNode))
       then
         // declaration itself found
-        AddReference
+        AddReference(StartPos)
       else if CleanPosIsDeclarationIdentifier(StartPos,CursorNode) then
         // this identifier is another declaration with the same name
       else begin
@@ -3984,10 +3998,6 @@ var
           Params.Clear;
         Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                        fdfIgnoreCurContextNode];
-        if NodeIsForwardDeclaration(CursorNode) then begin
-          //debugln('Node is forward declaration');
-          Params.Flags:=Params.Flags+[fdfSearchForward];
-        end;
         Params.ContextNode:=CursorNode;
         //debugln(copy(Src,Params.ContextNode.StartPos,200));
         Params.SetIdentifier(Self,@Src[StartPos],@CheckSrcIdentifier);
@@ -3995,10 +4005,7 @@ var
         // search identifier in comment -> if not found, this is no bug
         // => silently ignore
         try
-          if fdfSearchForward in Params.Flags then
-            Found:=FindIdentifierInContext(Params)
-          else
-            Found:=FindDeclarationOfIdentAtParam(Params);
+          Found:=FindDeclarationOfIdentAtParam(Params);
         except
           on E: ECodeToolError do begin
             if E.Sender<>Self then begin
@@ -4016,9 +4023,9 @@ var
         if Found and (Params.NewNode<>nil) then begin
           UseProcHead(Params.NewNode);
           //debugln('Context=',Params.NewNode.DescAsString,' ',dbgs(Params.NewNode.StartPos),' ',dbgs(DeclarationNode.StartPos));
-          if (Params.NewNode=DeclarationNode)
-          or (Params.NewNode=AliasDeclarationNode) then
-            AddReference;
+          if (Params.NewNode<>DeclarationNode)
+          and (Params.NewNode<>AliasDeclarationNode) then
+            AddReference(StartPos);
         end;
       end;
     end;
@@ -4162,8 +4169,8 @@ var
       exit;
     end;
     UseProcHead(DeclarationNode);
-    StartPos:=DeclarationNode.StartPos;
-    AddReference;
+    if DeclarationTool=Self then
+      AddNodeReference(DeclarationNode);
 
     // find alias declaration node
     //debugln('FindDeclarationNode DeclarationNode=',DeclarationNode.DescAsString);
@@ -4181,12 +4188,21 @@ var
         AliasDeclarationNode:=FindCorrespondingProcParamNode(DeclarationNode);
       end;
 
+    ctnTypeDefinition:
+      if NodeIsForwardType(DeclarationNode) then
+        AliasDeclarationNode:=DeclarationTool.FindTypeOfForwardNode(DeclarationNode)
+      else
+        AliasDeclarationNode:=DeclarationTool.FindForwardTypeNode(DeclarationNode,true);
+
     end;
+    if AliasDeclarationNode=DeclarationNode then
+      AliasDeclarationNode:=nil;
+
 
     if AliasDeclarationNode<>nil then begin
       UseProcHead(AliasDeclarationNode);
-      StartPos:=AliasDeclarationNode.StartPos;
-      AddReference;
+      if DeclarationTool=Self then
+        AddNodeReference(AliasDeclarationNode);
       if AliasDeclarationNode.StartPos>DeclarationNode.StartPos then begin
         Node:=AliasDeclarationNode;
         AliasDeclarationNode:=DeclarationNode;
@@ -4250,7 +4266,7 @@ var
   
 begin
   Result:=false;
-  //debugln('FindReferences CursorPos=',CursorPos.Code.Filename,' x=',dbgs(CursorPos.X),' y=',dbgs(CursorPos.Y),' SkipComments=',dbgs(SkipComments));
+  //debugln('FindReferences ',MainFilename,' CursorPos=',CursorPos.Code.Filename,' x=',dbgs(CursorPos.X),' y=',dbgs(CursorPos.Y),' SkipComments=',dbgs(SkipComments));
   
   ListOfPCodeXYPosition:=nil;
   Params:=nil;
@@ -4266,7 +4282,7 @@ begin
     // search identifiers
     LimitScope;
 
-    //debugln('FindReferences StartPos=',dbgs(StartPos),' MaxPos=',dbgs(MaxPos));
+    //debugln('FindReferences MinPos=',dbgs(MinPos),' MaxPos=',dbgs(MaxPos));
     SearchIdentifiers;
 
     // create the reference list
