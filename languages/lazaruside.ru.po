@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-01 23:41+0300\n"
+"PO-Revision-Date: 2010-07-04 20:13+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -10848,7 +10848,7 @@ msgstr "Двоичный"
 
 #: lazarusidestrconsts.lispkgfiletypeinclude
 msgid "Include file"
-msgstr "Включаемый файл:"
+msgstr "Включаемый файл"
 
 #: lazarusidestrconsts.lispkgfiletypeissues
 msgid "Issues xml file"
@@ -10869,7 +10869,7 @@ msgstr "Главный модуль"
 #: lazarusidestrconsts.lispkgfiletypetext
 msgctxt "lazarusidestrconsts.lispkgfiletypetext"
 msgid "Text"
-msgstr "Текст"
+msgstr "Текстовый"
 
 #: lazarusidestrconsts.lispkgfiletypeunit
 msgctxt "lazarusidestrconsts.lispkgfiletypeunit"
