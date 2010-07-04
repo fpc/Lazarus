@@ -100,7 +100,7 @@ type
     procedure Add(NewAtom: TAtomPosition); inline;
     procedure UndoLastAdd; inline;
     function GetValueAt(RelativePos:integer): TAtomPosition; inline;
-          // 0=current 1=prior current ...
+          // 0=current last 1=prior current ...
           // for LastAtoms: 0 is the last atom
     function Count: integer; inline;
     property Size: integer read FSize write SetSize;

@@ -5591,6 +5591,7 @@ var
     Indent: Integer;
     CursorBlockInnerIndent, CursorBlockOuterIndent: LongInt;
     CursorBlock: TBlock;
+    AtomInFrontOfCursor: TAtomPosition;
     BehindCursorBlock: Boolean; // atom is behind cursor block
     InCursorBlock: Boolean;
     NeedCompletion: Boolean;
@@ -5600,6 +5601,9 @@ var
     FrontGap: TGapTyp;
     BeautifyFlags: TBeautifyCodeFlags;
     BehindPos: LongInt;
+    CursorInEmptyStatement: Boolean;
+    FromPos: LongInt;
+    ToPos: LongInt;
 
     function EndBlockIsOk: boolean;
     begin
@@ -5621,6 +5625,8 @@ var
     CursorBlock.StartPos:=0;
     BehindCursorBlock:=false;
     NeedCompletion:=false;
+    AtomInFrontOfCursor.StartPos:=0;
+    CursorInEmptyStatement:=false;
     repeat
       ReadNextAtom;
 
@@ -5628,7 +5634,7 @@ var
       if (Stack.Top>=0) and (Stack.Stack[Stack.Top].InnerIndent<0)
       and (not PositionsInSameLine(Src,Stack.Stack[Stack.Top].StartPos,CurPos.StartPos))
       then begin
-        // the first atom of this block on a new line
+        // the first atom of this block is on a new line
         Stack.Stack[Stack.Top].InnerIndent:=GetLineIndent(Src,CurPos.StartPos);
       end;
 
@@ -5643,6 +5649,15 @@ var
           CursorBlock:=Stack.Stack[CursorBlockLvl];
           CursorBlockOuterIndent:=GetLineIndent(Src,CursorBlock.StartPos);
           CursorBlockInnerIndent:=Stack.Stack[Stack.Top].InnerIndent;
+          AtomInFrontOfCursor:=LastAtoms.GetValueAt(0);
+          if (CurPos.Flag=cafSemicolon)
+          and ((AtomInFrontOfCursor.Flag=cafSemicolon)
+            or (CursorBlock.StartPos=AtomInFrontOfCursor.StartPos))
+          and (FindNextNonSpace(Src,AtomInFrontOfCursor.EndPos)=CurPos.StartPos)
+          then begin
+            // cursor in empty statement
+            CursorInEmptyStatement:=true;
+          end;
         end;
         //DebugLn(['ReadStatements CursorBlockLvl=',CursorBlockLvl,' Indent=',CursorBlockIndent]);
       end;
@@ -5758,6 +5773,7 @@ var
         if TopBlockType(Stack)=btCaseOf then
           BeginBlock(Stack,btCaseColon,CurPos.StartPos);
       cafSemicolon:
+        // todo: close btRoundBracket, btEdgedBracket
         while TopBlockType(Stack) in [btCaseColon,btIf,btIfElse] do begin
           if not EndBlockIsOk then exit;
         end;
@@ -5791,14 +5807,17 @@ var
           end else if UpAtomIs('IF') then begin
             BeginBlock(Stack,btIf,CurPos.StartPos);
           end else if UpAtomIs('THEN') then begin
+            // todo: close brackets
             if TopBlockType(Stack)=btIf then
               Stack.Stack[Stack.Top].InnerIndent:=-1;
           end else if UpAtomIs('CASE') then begin
             BeginBlock(Stack,btCase,CurPos.StartPos)
           end else if UpAtomIs('OF') then begin
+            // todo: close brackets
             if TopBlockType(Stack)=btCase then
               BeginBlock(Stack,btCaseOf,CurPos.StartPos);
           end else if UpAtomIs('ELSE') then begin
+            // todo: close brackets
             case TopBlockType(Stack) of
             btIf:
               begin
@@ -5836,6 +5855,8 @@ var
           end else if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION')
           or UpAtomIs('CONSTRUCTOR') or UpAtomIs('DESTRUCTOR')
           or UpAtomIs('VAR') or UpAtomIs('TYPE') or UpAtomIs('CONST')
+          or UpAtomIs('RESOURCESTRING') or UpAtomIs('LABEL') or UpAtomIs('CLASS')
+          or UpAtomIs('INITIALIZATION') or UpAtomIs('FINALIZATION')
           then begin
             // unexpected keyword => block not closed
             {$IFDEF ShowCompleteBlock}
@@ -5896,7 +5917,8 @@ var
       // check code behind
       BehindPos:=FindNextNonSpace(Src,InsertPos);
       if BehindPos<=SrcLen then begin
-        if PositionsInSameLine(Src,InsertPos,BehindPos) then begin
+        if (not CursorInEmptyStatement)
+        and PositionsInSameLine(Src,InsertPos,BehindPos) then begin
           // target line not empty
           {$IFDEF ShowCompleteBlock}
           DebugLn(['CompleteStatements target line not empty => skip']);
@@ -5916,30 +5938,38 @@ var
         end;
       end;
 
-      NewCode:='';
+      NewCode:=';';
       FrontGap:=gtEmptyLine;
       AfterGap:=gtNewLine;
+      FromPos:=InsertPos;
+      ToPos:=InsertPos;
       BeautifyFlags:=[bcfIndentExistingLineBreaks];
+      if CursorInEmptyStatement and (BehindPos<=SrcLen) then begin
+        // replace the empty statement
+        FrontGap:=gtNewLine;
+        ToPos:=BehindPos;
+      end;
       case CursorBlock.Typ of
       btBegin,btFinally,btExcept,btAsm,btCaseOf,btCaseElse:
-        NewCode:='end;';
+        NewCode:='end'+NewCode;
       btRepeat:
-        NewCode:='until ;';
+        NewCode:='until '+NewCode;
       btTry:
         NewCode:='finally'+SourceChangeCache.BeautifyCodeOptions.LineEnd
-           +'end;';
+           +'end'+NewCode;
       btCaseColon:
         begin
-          NewCode:=';';
           FrontGap:=gtNone;
           AfterGap:=gtNone;
         end;
       else
         exit;
       end;
-      if (CursorBlockLvl=0) and (AfterGap=gtNewLine) then
+      if (CursorBlockLvl=0) and (AfterGap=gtNewLine) then begin
+        // top level => insert empty lines between top level structures
         AfterGap:=gtEmptyLine;
-      if not Replace(NewCode,InsertPos,InsertPos,Indent,FrontGap,AfterGap,
+      end;
+      if not Replace(NewCode,FromPos,ToPos,Indent,FrontGap,AfterGap,
         BeautifyFlags) then exit;
     end;
     Result:=true;

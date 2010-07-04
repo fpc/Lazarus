@@ -250,6 +250,7 @@ type
     // read atoms
     function AtomIs(const AnAtom: shortstring): boolean;
     function UpAtomIs(const AnAtom: shortstring): boolean;
+    function UpAtomIs(const AtomPos: TAtomPosition; const AnAtom: shortstring): boolean; overload;
     function ReadNextAtomIs(const AnAtom: shortstring): boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function ReadNextUpAtomIs(const AnAtom: shortstring): boolean; {$IFDEF UseInline}inline;{$ENDIF}
     function ReadNextAtomIsChar(const c: char): boolean; {$IFDEF UseInline}inline;{$ENDIF}
@@ -575,6 +576,25 @@ begin
   if AnAtomLen<>CurPos.EndPos-CurPos.StartPos then exit;
   if (CurPos.EndPos<=SrcLen+1) and (CurPos.StartPos>=1) then begin
     p:=@Src[CurPos.StartPos];
+    for i:=1 to AnAtomLen do begin
+      if AnAtom[i]<>UpChars[p^] then exit;
+      inc(p);
+    end;
+    Result:=true;
+  end;
+end;
+
+function TCustomCodeTool.UpAtomIs(const AtomPos: TAtomPosition;
+  const AnAtom: shortstring): boolean;
+var
+  AnAtomLen, i: integer;
+  p: PChar;
+begin
+  Result:=false;
+  AnAtomLen:=length(AnAtom);
+  if AnAtomLen<>AtomPos.EndPos-AtomPos.StartPos then exit;
+  if (AtomPos.EndPos<=SrcLen+1) and (AtomPos.StartPos>=1) then begin
+    p:=@Src[AtomPos.StartPos];
     for i:=1 to AnAtomLen do begin
       if AnAtom[i]<>UpChars[p^] then exit;
       inc(p);
