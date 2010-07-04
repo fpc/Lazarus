@@ -235,8 +235,7 @@ begin
   begin
     gtk_container_remove(BitBtnInfo^.TableWidget, BitBtnInfo^.LabelWidget);
     BitBtnInfo^.LabelWidget := nil;
-  end
-  else
+  end else
   begin
     if BitBtnInfo^.LabelWidget = nil then
     begin
@@ -305,10 +304,10 @@ begin
   else
     AGlyph := nil;
   // check if an image is needed
-  if (AGlyph = nil) or AGlyph.Empty
-  then begin
-    if BitBtnInfo^.ImageWidget <> nil
-    then begin
+  if (AGlyph = nil) or AGlyph.Empty then
+  begin
+    if BitBtnInfo^.ImageWidget <> nil then
+    begin
       gtk_container_remove(BitBtnInfo^.TableWidget, BitBtnInfo^.ImageWidget);
       BitBtnInfo^.ImageWidget := nil;
     end;
@@ -324,8 +323,8 @@ begin
   else
     Mask := CreateGdkMaskBitmap(AGlyph.Handle, AGlyph.MaskHandle);
   // check for image
-  if BitBtnInfo^.ImageWidget = nil
-  then begin
+  if BitBtnInfo^.ImageWidget = nil then
+  begin
     BitBtnInfo^.ImageWidget := gtk_image_new;
     gtk_widget_show(BitBtnInfo^.ImageWidget);
     UpdateLayout(BitBtnInfo, ABitBtn.Layout, ABitBtn.Margin);
@@ -335,8 +334,7 @@ begin
   begin
     gtk_image_set_from_pixbuf(BitBtnInfo^.ImageWidget, Pixbuf);
     //DbgDumpPixbuf(Pixbuf);
-  end
-  else
+  end else
   begin
     gtk_image_set_from_pixmap(BitBtnInfo^.ImageWidget, GDIObject^.GDIPixmapObject.Image, Mask);
     //DbgDumpPixmap(GDIObject^.GDIPixmapObject.Image);
@@ -436,10 +434,10 @@ end;
 class procedure TGtk2WSBitBtn.UpdateMargin(const AInfo: PBitBtnWidgetInfo;
   const ALayout: TButtonLayout; const AMargin: Integer);
 begin
-  if AMargin < 0 
-  then begin
-    if AInfo^.SpaceWidget <> nil
-    then begin
+  if AMargin < 0 then
+  begin
+    if AInfo^.SpaceWidget <> nil then
+    begin
       gtk_container_remove(AInfo^.TableWidget, AInfo^.SpaceWidget);
       AInfo^.SpaceWidget := nil;
 
@@ -452,45 +450,49 @@ begin
         blGlyphBottom: gtk_table_set_row_spacing(AInfo^.TableWidget, 2, 0);
       end;
     end;
-  end
-  else begin
+  end else
+  begin
     if (AInfo^.SpaceWidget = nil)
-    and (ALayout in [blGlyphRight, blGlyphBottom])
-    then begin
+    and (ALayout in [blGlyphRight, blGlyphBottom]) then
+    begin
       // dont use gtk_invisible_new - it cannot have parent
       AInfo^.SpaceWidget := gtk_image_new;
       UpdateLayout(AInfo, ALayout, AMargin);
-    end
-    else begin
+    end else
+    begin
       case ALayout of 
-        blGlyphLeft: begin
-          gtk_alignment_set(AInfo^.AlignWidget, 0, 0.5, 0, 0);
-          gtk_table_set_col_spacing(AInfo^.TableWidget, 0, AMargin);
-          gtk_table_set_col_spacing(AInfo^.TableWidget, 2, 0);
-          gtk_table_set_row_spacing(AInfo^.TableWidget, 0, 0);
-          gtk_table_set_row_spacing(AInfo^.TableWidget, 2, 0);
-        end;
-        blGlyphRight: begin
-          gtk_alignment_set(AInfo^.AlignWidget, 1, 0.5, 0, 0);
-          gtk_table_set_col_spacing(AInfo^.TableWidget, 0, 0);
-          gtk_table_set_col_spacing(AInfo^.TableWidget, 2, AMargin);
-          gtk_table_set_row_spacing(AInfo^.TableWidget, 0, 0);
-          gtk_table_set_row_spacing(AInfo^.TableWidget, 2, 0);
-        end;
-        blGlyphTop: begin
-          gtk_alignment_set(AInfo^.AlignWidget, 0.5, 0, 0, 0);
-          gtk_table_set_col_spacing(AInfo^.TableWidget, 0, 0);
-          gtk_table_set_col_spacing(AInfo^.TableWidget, 2, 0);
-          gtk_table_set_row_spacing(AInfo^.TableWidget, 0, AMargin);
-          gtk_table_set_row_spacing(AInfo^.TableWidget, 2, 0);
-        end;
-        blGlyphBottom: begin
-          gtk_alignment_set(AInfo^.AlignWidget, 0.5, 1, 0, 0);
-          gtk_table_set_col_spacing(AInfo^.TableWidget, 0, 0);
-          gtk_table_set_col_spacing(AInfo^.TableWidget, 2, 0);
-          gtk_table_set_row_spacing(AInfo^.TableWidget, 0, 0);
-          gtk_table_set_row_spacing(AInfo^.TableWidget, 2, AMargin);
-        end;
+        blGlyphLeft:
+          begin
+            gtk_alignment_set(AInfo^.AlignWidget, 0, 0.5, 0, 0);
+            gtk_table_set_col_spacing(AInfo^.TableWidget, 0, AMargin);
+            gtk_table_set_col_spacing(AInfo^.TableWidget, 2, 0);
+            gtk_table_set_row_spacing(AInfo^.TableWidget, 0, 0);
+            gtk_table_set_row_spacing(AInfo^.TableWidget, 2, 0);
+          end;
+        blGlyphRight:
+          begin
+            gtk_alignment_set(AInfo^.AlignWidget, 1, 0.5, 0, 0);
+            gtk_table_set_col_spacing(AInfo^.TableWidget, 0, 0);
+            gtk_table_set_col_spacing(AInfo^.TableWidget, 2, AMargin);
+            gtk_table_set_row_spacing(AInfo^.TableWidget, 0, 0);
+            gtk_table_set_row_spacing(AInfo^.TableWidget, 2, 0);
+          end;
+        blGlyphTop:
+          begin
+            gtk_alignment_set(AInfo^.AlignWidget, 0.5, 0, 0, 0);
+            gtk_table_set_col_spacing(AInfo^.TableWidget, 0, 0);
+            gtk_table_set_col_spacing(AInfo^.TableWidget, 2, 0);
+            gtk_table_set_row_spacing(AInfo^.TableWidget, 0, AMargin);
+            gtk_table_set_row_spacing(AInfo^.TableWidget, 2, 0);
+          end;
+        blGlyphBottom:
+          begin
+            gtk_alignment_set(AInfo^.AlignWidget, 0.5, 1, 0, 0);
+            gtk_table_set_col_spacing(AInfo^.TableWidget, 0, 0);
+            gtk_table_set_col_spacing(AInfo^.TableWidget, 2, 0);
+            gtk_table_set_row_spacing(AInfo^.TableWidget, 0, 0);
+            gtk_table_set_row_spacing(AInfo^.TableWidget, 2, AMargin);
+          end;
       end;
     end;
   end;
