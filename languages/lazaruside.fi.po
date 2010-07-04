@@ -779,7 +779,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcouseasdefault
 msgid "Use these compiler options as default for new projects"
-msgstr ""
+msgstr "Käytä näitä kääntäjän asetuksia oletuksena uusissa projekteissa"
 
 #: lazarusidestrconsts.dlgcovalgrind
 msgid "Generate code for valgrind"
@@ -968,7 +968,7 @@ msgstr "Väri"
 
 #: lazarusidestrconsts.dlgedcompleteblocks
 msgid "Add close statement for pascal blocks"
-msgstr ""
+msgstr "Lisää Pascal:n lauserakenteiden lopputekstit."
 
 #: lazarusidestrconsts.dlgedcustomext
 msgid "User defined extension"
@@ -1716,7 +1716,7 @@ msgstr "Näytä projektin lomakkeet (forms)"
 
 #: lazarusidestrconsts.dlgmainviewframes
 msgid "View project frames"
-msgstr ""
+msgstr "Näytä projektin Frame-komponentit"
 
 #: lazarusidestrconsts.dlgmainviewunits
 msgid "View project units"
@@ -2162,7 +2162,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmultiwinoptions
 msgid "Pages and Windows"
-msgstr ""
+msgstr "Välilehdet ja ikkunat"
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
 msgid "Notebook Tabs:"
@@ -2361,7 +2361,7 @@ msgstr "Projektikohtaiset asetukset"
 
 #: lazarusidestrconsts.dlgprojectoptionsfor
 msgid "Options for Project: %s"
-msgstr ""
+msgstr "Projektin %s asetukset"
 
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project files"
@@ -2744,7 +2744,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgtabnumbersnotebook
 msgid "Show tab numbers in notebook"
-msgstr ""
+msgstr "Näytä välilehtien numerot lähdekoodieditorissa"
 
 #: lazarusidestrconsts.dlgtabstospaces
 msgid "Tabs to spaces"
@@ -2938,7 +2938,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgwindow
 msgctxt "lazarusidestrconsts.dlgwindow"
 msgid "Window"
-msgstr ""
+msgstr "Ikkuna"
 
 #: lazarusidestrconsts.dlgwinpos
 msgid "Window Positions"
@@ -3545,7 +3545,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisalways
 msgid "Always"
-msgstr ""
+msgstr "Aina"
 
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
@@ -3643,7 +3643,7 @@ msgstr "Kysytään komponentin nimi välittömästi kun se sijoitetaan suunnitte
 
 #: lazarusidestrconsts.lisaskforfilenameonnewfile
 msgid "Ask for file name on new file"
-msgstr ""
+msgstr "Kysytään tiedoston nimi kun luodaan uusi tiedosto"
 
 #: lazarusidestrconsts.lisasknameoncreate
 msgid "Ask name on create"
@@ -3732,7 +3732,7 @@ msgstr ""
 #: lazarusidestrconsts.lisbfbuild
 msgctxt "lazarusidestrconsts.lisbfbuild"
 msgid "Build"
-msgstr "Käännä"
+msgstr "Käännä (Build)"
 
 #: lazarusidestrconsts.lisbfbuildcommand
 msgid "Build Command"
@@ -3769,7 +3769,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisboldnondefaultobjectinspector
 msgid "Bold non default values"
-msgstr ""
+msgstr "Lihavoi muutetut arvot (muut kuin oletusarvot)"
 
 #: lazarusidestrconsts.lisborderspace
 msgid "BorderSpace"
@@ -4495,12 +4495,12 @@ msgstr ""
 #: lazarusidestrconsts.liscocallonbuild
 msgctxt "lazarusidestrconsts.liscocallonbuild"
 msgid "Build"
-msgstr "Käännä"
+msgstr "Käännä (Build)"
 
 #: lazarusidestrconsts.liscocalloncompile
 msgctxt "lazarusidestrconsts.liscocalloncompile"
 msgid "Compile"
-msgstr "Käännä"
+msgstr "Käännä (Compile)"
 
 #: lazarusidestrconsts.liscocallonrun
 msgctxt "lazarusidestrconsts.liscocallonrun"
@@ -5587,7 +5587,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscreatefunction
 msgid "Create function"
-msgstr ""
+msgstr "Luo funktio"
 
 #: lazarusidestrconsts.liscreatehelpnode
 msgid "Create Help node"
@@ -6887,7 +6887,7 @@ msgstr "Etsi vain kokonaisia sanoja"
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"
-msgstr ""
+msgstr "Etsi näppäinyhdistelmä"
 
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
@@ -7055,7 +7055,7 @@ msgstr "Mistä etsitään"
 
 #: lazarusidestrconsts.lisfunction
 msgid "Function"
-msgstr ""
+msgstr "Funktio"
 
 #: lazarusidestrconsts.lisgetwordatcurrentcursorposition
 msgid "get word at current cursor position"
@@ -7116,7 +7116,7 @@ msgstr "Vihje: Tarkista sisältääkö kaksi eri komponenttipakettia käännösy
 
 #: lazarusidestrconsts.lishintdoubleclickonthecommandyouwanttoedit
 msgid "Hint: double click on the command you want to edit"
-msgstr ""
+msgstr "Vihje: kaksoisnapsauta komentoa jota haluat muokata"
 
 #: lazarusidestrconsts.lishintopen
 msgctxt "lazarusidestrconsts.lishintopen"
@@ -7546,7 +7546,7 @@ msgstr "Virheellinen kääntäjän tiedostonimi"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
-msgstr ""
+msgstr "Onnistumaton poisto"
 
 #: lazarusidestrconsts.lisinvaliddestinationdirectory
 msgid "Invalid destination directory"
@@ -7787,7 +7787,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmfindincremental
 msgid "Find incremental"
-msgstr ""
+msgstr "Etsi kirjain kerrallaan"
 
 #: lazarusidestrconsts.liskmgotomarker0
 msgid "Go to marker 0"
@@ -7952,7 +7952,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liskmrunprogram
 msgid "Run program"
-msgstr ""
+msgstr "Suorita ohjelma"
 
 #: lazarusidestrconsts.liskmsaveall
 msgid "SaveAll"
@@ -8262,7 +8262,7 @@ msgstr ""
 #: lazarusidestrconsts.lislazbuildbuild
 msgctxt "lazarusidestrconsts.lislazbuildbuild"
 msgid "Build"
-msgstr "Käännä"
+msgstr "Käännä (Build)"
 
 #: lazarusidestrconsts.lislazbuildbuildcodetools
 msgid "Build CodeTools"
@@ -8702,11 +8702,11 @@ msgstr ""
 #: lazarusidestrconsts.lismenubuild
 msgctxt "lazarusidestrconsts.lismenubuild"
 msgid "Build"
-msgstr "Käännä"
+msgstr "Käännä (Build)"
 
 #: lazarusidestrconsts.lismenubuildall
 msgid "Build all"
-msgstr "Käännä kaikki"
+msgstr "Käännä kaikki (Build)"
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"
@@ -8855,7 +8855,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenueditor
 msgid "Menu Editor..."
-msgstr ""
+msgstr "Valikkomuokkain ..."
 
 #: lazarusidestrconsts.lismenueditorcancel
 msgctxt "lazarusidestrconsts.lismenueditorcancel"
@@ -8876,7 +8876,7 @@ msgstr "Poista valikon kohta"
 
 #: lazarusidestrconsts.lismenueditorhandleonclickevent
 msgid "Handle OnClick Event"
-msgstr ""
+msgstr "Siirry käsittelemään tämän kohdan OnClick-tapahtumaa"
 
 #: lazarusidestrconsts.lismenueditorinsertfromtemplate
 msgid "Insert From Template..."
@@ -9804,7 +9804,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithaframe
 msgid "Create a new unit with a frame."
-msgstr ""
+msgstr "Luo uusi käännösyksikkö Frame-komponentiksi"
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithalclform
 msgid "Create a new unit with a LCL form."
@@ -10331,7 +10331,7 @@ msgstr ""
 #: lazarusidestrconsts.lispckeditcompile
 msgctxt "lazarusidestrconsts.lispckeditcompile"
 msgid "Compile"
-msgstr "Käännä"
+msgstr "Käännä (Compile)"
 
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
@@ -10348,7 +10348,7 @@ msgstr ""
 #: lazarusidestrconsts.lispckeditcompopts
 msgctxt "lazarusidestrconsts.lispckeditcompopts"
 msgid "Compiler Options"
-msgstr ""
+msgstr "Kääntäjän asetukset"
 
 #: lazarusidestrconsts.lispckeditcreatemakefile
 msgctxt "lazarusidestrconsts.lispckeditcreatemakefile"
@@ -11676,7 +11676,7 @@ msgstr "Projekti on muuttunut"
 
 #: lazarusidestrconsts.lisprojectchangedondisk
 msgid "Project changed on disk"
-msgstr ""
+msgstr "Projektin tallennus on muuttunut"
 
 #: lazarusidestrconsts.lisprojectdirectory
 msgctxt "lazarusidestrconsts.lisprojectdirectory"
@@ -11733,7 +11733,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisprojectsraisedexceptionclassswithmessagess
 msgid "Project %s raised exception class '%s' with message:%s%s"
-msgstr ""
+msgstr "Projekti %s nosti poikkeuksen luokalla '%s' jossa viestinä oli:%s%s"
 
 #: lazarusidestrconsts.lisprojectsrcpath
 msgid "Project Src Path"
@@ -11997,7 +11997,7 @@ msgstr "Vaihda nimi pienillä kirjaimilla kirjoitetuksi"
 
 #: lazarusidestrconsts.lisreopenproject
 msgid "Reopen project"
-msgstr ""
+msgstr "Avaa projekti uudestaan"
 
 #: lazarusidestrconsts.lisreopenwithanotherencoding
 msgid "Reopen with another encoding"
@@ -12053,7 +12053,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisresult2
 msgid "Result:"
-msgstr ""
+msgstr "Paluuarvo:"
 
 #: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
 msgid "returns list of all values of case variable in front of variable"
@@ -12535,7 +12535,7 @@ msgstr "Pysäytetäänkö virheenjäljitys?"
 
 #: lazarusidestrconsts.lisstrangelpifile
 msgid "Strange lpi file"
-msgstr ""
+msgstr "Outo lpi-tiedosto"
 
 #: lazarusidestrconsts.lisstreamerror
 msgid "Stream Error"
@@ -12672,7 +12672,7 @@ msgstr ""
 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtodeleteaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo delete an inherited component open the ancestor and delete it there."
-msgstr ""
+msgstr "Komponentti %s kuuluu luokkaan %s. Komponentin voi poistaa avaamalla kyseisen luokan ja poistamalla sen sieltä."
 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtorenameaninheritedcomp
 msgid "The component %s is inherited from %s.%sTo rename an inherited component open the ancestor and rename it there."
@@ -12744,7 +12744,7 @@ msgstr "Tiedosto %s%s%s"
 
 #: lazarusidestrconsts.listhefiledoesnotlooklikealpifile
 msgid "The file %s does not look like a lpi file."
-msgstr ""
+msgstr "Tiedosto %s ei vaikuttaisi olevan lpi-tiedosto."
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
@@ -12888,7 +12888,7 @@ msgstr "Projektn info tiedosto %s%s%s%son/olisi saman niminen kuin projektin pä
 
 #: lazarusidestrconsts.listheprojectinformationfilehaschangedondisk
 msgid "The project information file %s%s%s%shas changed on disk."
-msgstr ""
+msgstr "Tallennettuna oleva projektin lpi-tiedosto (project information file) %s%s%s%son muuttunut."
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
@@ -13743,7 +13743,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
 msgid "When a unit is renamed, update references ..."
-msgstr ""
+msgstr "Kun käännösyksikön (unit:n) nimeä muutetaan niin päivitetään viittaukset..."
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
@@ -13942,7 +13942,7 @@ msgstr ""
 #: lazarusidestrconsts.rskey
 msgctxt "lazarusidestrconsts.rskey"
 msgid "Key"
-msgstr ""
+msgstr "Näppäin"
 
 #: lazarusidestrconsts.rslanguageafrikaans
 msgid "Afrikaans"
@@ -13966,7 +13966,7 @@ msgstr "kiina"
 
 #: lazarusidestrconsts.rslanguageczech
 msgid "Czech"
-msgstr ""
+msgstr "tsekki"
 
 #: lazarusidestrconsts.rslanguagedutch
 msgid "Dutch"
@@ -14139,7 +14139,7 @@ msgstr "Tiedostovalikon komennot"
 
 #: lazarusidestrconsts.srkmcatfold
 msgid "Text folding commands"
-msgstr ""
+msgstr "Koodin laskostuskomennot"
 
 #: lazarusidestrconsts.srkmcatmarker
 msgid "Text marker commands"
@@ -14805,7 +14805,7 @@ msgstr "Vaihda tunnisteiden nimiä"
 
 #: lazarusidestrconsts.srkmecreplace
 msgid "Replace text"
-msgstr ""
+msgstr "Etsi ja korvaa"
 
 #: lazarusidestrconsts.srkmecreportingbug
 msgid "Reporting a bug"
@@ -15273,7 +15273,7 @@ msgstr "Kopio tiedoston nimi leikepöydälle"
 #, fuzzy
 #| msgid "Copy to new Window"
 msgid "Clone to new Window"
-msgstr "Kopioi uuteen ikkunaan"
+msgstr "Tee uusi näkymä tästä uuteen ikkunaan"
 
 #: lazarusidestrconsts.uemcopytootherwindow
 msgid "Clone to other Window"

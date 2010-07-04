@@ -508,7 +508,7 @@ msgstr ""
 
 #: objinspstrconsts.oisisnotavalidmethodname
 msgid "%s%s%s is not a valid method name."
-msgstr ""
+msgstr "%s%s%s ei ole sallittu metodin nimi."
 
 #: objinspstrconsts.oisitemsselected
 msgid "%u items selected"
