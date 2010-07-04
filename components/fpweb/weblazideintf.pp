@@ -117,6 +117,33 @@ var
 
 procedure Register;
 
+resourcestring
+  rsCGIApplicati = 'CGI Application';
+  rsCGIApplicati2 = 'CGI Application%sA CGI (Common Gateway Interface) '
+    +'program in Free Pascal using webmodules. The program source is '
+    +'automatically maintained by Lazarus.';
+  rsCustomCGIApp = 'Custom CGI Application';
+  rsCustomCGIApp2 = 'Custom CGI Application%sA CGI (Common Gateway Interface) '
+    +'program in Free Pascal. The program source is automatically maintained '
+    +'by Lazarus.';
+  rsWebModule = 'Web Module';
+  rsWEBModuleADa = 'WEB Module%sA datamodule for WEB (HTTP) applications.';
+  rsHTMLWebModul = 'HTML Web Module';
+  rsHTMLWEBModul2 = 'HTML WEB Module%sA Web datamodule for producing strict '
+    +'HTML.';
+  rsApacheModule = 'Apache Module';
+  rsApacheModule2 = 'Apache module%sAn Apache loadable module in Free Pascal '
+    +'using webmodules. The main library file is automatically maintained by '
+    +'Lazarus.';
+  rsCustomFastCG = 'Custom FastCGI Application';
+  rsCustomFastCG2 = 'Custom FastCGI Application%sA FastCGI (Common Gateway '
+    +'Interface) program in Free Pascal. The program source is automatically '
+    +'maintained by Lazarus.';
+  rsFastCGIAppli = 'FastCGI Application';
+  rsFastCGIAppli2 = 'FastCGI Application%sA FastCGI (Common Gateway '
+    +'Interface) program in Free Pascal using webmodules. The program source '
+    +'is automatically maintained by Lazarus.';
+
 implementation
 
 uses LazarusPackageIntf,FormEditingIntf;
@@ -184,14 +211,12 @@ end;
 
 function TCGIApplicationDescriptor.GetLocalizedName: string;
 begin
-  Result:='CGI Application';
+  Result:=rsCGIApplicati;
 end;
 
 function TCGIApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:='CGI Application'#13#13'A CGI (Common Gateway Interface) program '
-          +'in Free Pascal using webmodules. The program source is '
-          +'automatically maintained by Lazarus.';
+  Result:=Format(rsCGIApplicati2, [#13#13]);
 end;
 
 function TCGIApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
@@ -253,14 +278,12 @@ end;
 
 function TCustomCGIApplicationDescriptor.GetLocalizedName: string;
 begin
-  Result:='Custom CGI Application';
+  Result:=rsCustomCGIApp;
 end;
 
 function TCustomCGIApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:='Custom CGI Application'#13#13'A CGI (Common Gateway Interface) program '
-          +'in Free Pascal. The program source is '
-          +'automatically maintained by Lazarus.';
+  Result:=Format(rsCustomCGIApp2, [#13#13]);
 end;
 
 function TCustomCGIApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
@@ -341,13 +364,12 @@ end;
 
 function TFileDescWebDataModule.GetLocalizedName: string;
 begin
-  Result:='Web Module';
+  Result:=rsWebModule;
 end;
 
 function TFileDescWebDataModule.GetLocalizedDescription: string;
 begin
-  Result:='WEB Module'#13
-         +'A datamodule for WEB (HTTP) applications.';
+  Result:=Format(rsWEBModuleADa, [#13]);
 end;
 
 function TFileDescWebDataModule.GetImplementationSource(const Filename, SourceName, ResourceName: string): string;
@@ -375,13 +397,12 @@ end;
 
 function TFileDescHTMLModule.GetLocalizedName: string;
 begin
-  Result:='HTML Web Module';
+  Result:=rsHTMLWebModul;
 end;
 
 function TFileDescHTMLModule.GetLocalizedDescription: string;
 begin
-  Result:='HTML WEB Module'#13
-         +'A Web datamodule for producing strict HTML.';
+  Result:=Format(rsHTMLWEBModul2, [#13]);
 end;
 
 function TFileDescHTMLModule.GetImplementationSource(const Filename, SourceName, ResourceName: string): string;
@@ -401,14 +422,12 @@ end;
 
 function TApacheApplicationDescriptor.GetLocalizedName: string;
 begin
-  Result:='Apache Module';
+  Result:=rsApacheModule;
 end;
 
 function TApacheApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:='Apache module'#13#13'An Apache loadable module '
-          +'in Free Pascal using webmodules. The main library file is '
-          +'automatically maintained by Lazarus.';
+  Result:=Format(rsApacheModule2, [#13#13]);
 end;
 
 function TApacheApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
@@ -494,14 +513,12 @@ end;
 
 function TCustomFCGIApplicationDescriptor.GetLocalizedName: string;
 begin
-  Result:='Custom FastCGI Application';
+  Result:=rsCustomFastCG;
 end;
 
 function TCustomFCGIApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:='Custom FastCGI Application'#13#13'A FastCGI (Common Gateway Interface) program '
-          +'in Free Pascal. The program source is '
-          +'automatically maintained by Lazarus.';
+  Result:=Format(rsCustomFastCG2, [#13#13]);
 end;
 
 function TCustomFCGIApplicationDescriptor.InitProject(AProject: TLazProject
@@ -576,14 +593,12 @@ end;
 
 function TFCGIApplicationDescriptor.GetLocalizedName: string;
 begin
-  Result:='FastCGI Application';
+  Result:=rsFastCGIAppli;
 end;
 
 function TFCGIApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:='FastCGI Application'#13#13'A FastCGI (Common Gateway Interface) program '
-          +'in Free Pascal using webmodules. The program source is '
-          +'automatically maintained by Lazarus.';
+  Result:=Format(rsFastCGIAppli2, [#13#13]);
 end;
 
 function TFCGIApplicationDescriptor.InitProject(AProject: TLazProject

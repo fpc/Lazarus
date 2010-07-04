@@ -22,6 +22,7 @@ type
     Label2: TLabel;
     procedure CBRegisterHandlersChange(Sender: TObject);
     procedure CBRegisterModuleChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     function GetHP: String;
     function GetJC: String;
@@ -43,6 +44,13 @@ var
 
 implementation
 
+resourcestring
+  sCaption = 'Create a new JSON-RPC module';
+  sRegisterJSON = 'Register JSON-RPC handlers in factory';
+  sJSONClass = 'JSON-RPC class';
+  sRegisterWebM = 'Register web module';
+  sHTTPPath = 'HTTP Path';
+
 {$R *.lfm}
 
 { TJSONRPCModuleOptionsForm }
@@ -55,6 +63,15 @@ end;
 procedure TJSONRPCModuleOptionsForm.CBRegisterModuleChange(Sender: TObject);
 begin
    ERegModuleName.Enabled:=CBRegisterModule.Checked;
+end;
+
+procedure TJSONRPCModuleOptionsForm.FormCreate(Sender: TObject);
+begin
+  Caption := sCaption;
+  CBRegisterHandlers.Caption := sRegisterJSON;
+  CBRegisterModule.Caption := sRegisterWebM;
+  Label1.Caption:= sJSONClass;
+  Label2.Caption:= sHTTPPath;
 end;
 
 function TJSONRPCModuleOptionsForm.GetHP: String;

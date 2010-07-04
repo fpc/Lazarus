@@ -1,0 +1,27 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: reglazwebextra.rswebdataprovi
+msgid "Web DataProvider Module"
+msgstr ""
+
+#: reglazwebextra.rswebdataprovi2
+msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
+msgstr ""
+
+#: reglazwebextra.rswebextdirect
+msgid "Web Ext.Direct Module"
+msgstr ""
+
+#: reglazwebextra.rswebextdirect2
+msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr ""
+
+#: reglazwebextra.rswebjsonrpcmo
+msgid "Web JSON-RPC Module"
+msgstr ""
+
+#: reglazwebextra.rswebjsonrpcmo2
+msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
+msgstr ""
+

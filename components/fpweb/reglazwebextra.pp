@@ -51,6 +51,18 @@ Type
 
 Procedure Register;
 
+resourcestring
+  rsWebDataProvi = 'Web DataProvider Module';
+  rsWEBDataProvi2 = 'WEB DataProvider Module%sA datamodule to handle data '
+    +'requests for WEB (HTTP) applications using WebDataProvider components.';
+  rsWebJSONRPCMo = 'Web JSON-RPC Module';
+  rsWEBJSONRPCMo2 = 'WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC '
+    +'requests in WEB (HTTP) applications using TJSONRPCHandler components.';
+  rsWebExtDirect = 'Web Ext.Direct Module';
+  rsWEBExtDirect2 = 'WEB Ext.Direct Module%sA datamodule to dispatch Ext.'
+    +'Direct requests in WEB (HTTP) applications using TJSONRPCHandler '
+    +'components.';
+
 Var
    FileDescriptorWebProviderDataModule: TFileDescWebProviderDataModule;
    FileDescriptorJSONRPCModule : TFileDescWebJSONRPCModule;
@@ -99,13 +111,12 @@ end;
 
 function TFileDescWebProviderDataModule.GetLocalizedName: string;
 begin
-  Result:='Web DataProvider Module';
+  Result:=rsWebDataProvi;
 end;
 
 function TFileDescWebProviderDataModule.GetLocalizedDescription: string;
 begin
-  Result:='WEB DataProvider Module'#13
-         +'A datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components.';
+  Result:=Format(rsWEBDataProvi2, [#13]);
 end;
 
 function TFileDescWebProviderDataModule.GetImplementationSource(const Filename,
@@ -135,13 +146,12 @@ end;
 
 function TFileDescWebJSONRPCModule.GetLocalizedName: string;
 begin
-  Result:='Web JSON-RPC Module';
+  Result:=rsWebJSONRPCMo;
 end;
 
 function TFileDescWebJSONRPCModule.GetLocalizedDescription: string;
 begin
-  Result:='WEB JSON-RPC Module'#13
-         +'A datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components.';
+  Result:=Format(rsWEBJSONRPCMo2, [#13]);
 end;
 
 function TFileDescWebJSONRPCModule.GetImplementationSource(const Filename,
@@ -196,13 +206,12 @@ end;
 function TFileDescExtDirectModule.GetLocalizedName: string;
 begin
   Result:=inherited GetLocalizedName;
-  Result:='Web Ext.Direct Module';
+  Result:=rsWebExtDirect;
 end;
 
 function TFileDescExtDirectModule.GetLocalizedDescription: string;
 begin
-  Result:='WEB Ext.Direct Module'#13
-         +'A datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components.';
+  Result:=Format(rsWEBExtDirect2, [#13]);
 end;
 
 function TFileDescExtDirectModule.GetImplementationSource(const Filename,

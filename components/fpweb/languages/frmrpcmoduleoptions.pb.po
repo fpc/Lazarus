@@ -1,0 +1,31 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Marcelo Borges de Paula\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: frmrpcmoduleoptions.scaption
+msgid "Create a new JSON-RPC module"
+msgstr "Criar um novo módulo JSON-RPC"
+
+#: frmrpcmoduleoptions.shttppath
+msgid "HTTP Path"
+msgstr "Caminho HTTP"
+
+#: frmrpcmoduleoptions.sjsonclass
+msgid "JSON-RPC class"
+msgstr "Classe JSON-RPC"
+
+#: frmrpcmoduleoptions.sregisterjson
+msgid "Register JSON-RPC handlers in factory"
+msgstr "Registrar manipuladores JSON-RPC na fábrica"
+
+#: frmrpcmoduleoptions.sregisterwebm
+msgid "Register web module"
+msgstr "Registrar módulo web"
+

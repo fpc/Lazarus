@@ -4,11 +4,16 @@
     <Name Value="lazwebextra"/>
     <AddToProjectUsesSection Value="False"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <SearchPaths>
         <OtherUnitFiles Value="/home/michael/public_html/extjs/"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
       <CodeGeneration>
         <Optimizations>
           <OptimizationLevel Value="0"/>
@@ -73,6 +78,10 @@
         <UnitName Value="webjsonrpc"/>
       </Item11>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>

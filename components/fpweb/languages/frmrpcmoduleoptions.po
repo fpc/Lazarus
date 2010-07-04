@@ -1,0 +1,23 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: frmrpcmoduleoptions.scaption
+msgid "Create a new JSON-RPC module"
+msgstr ""
+
+#: frmrpcmoduleoptions.shttppath
+msgid "HTTP Path"
+msgstr ""
+
+#: frmrpcmoduleoptions.sjsonclass
+msgid "JSON-RPC class"
+msgstr ""
+
+#: frmrpcmoduleoptions.sregisterjson
+msgid "Register JSON-RPC handlers in factory"
+msgstr ""
+
+#: frmrpcmoduleoptions.sregisterwebm
+msgid "Register web module"
+msgstr ""
+

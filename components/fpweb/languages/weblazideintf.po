@@ -1,0 +1,59 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: weblazideintf.rsapachemodule
+msgid "Apache Module"
+msgstr ""
+
+#: weblazideintf.rsapachemodule2
+msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
+msgstr ""
+
+#: weblazideintf.rscgiapplicati
+msgid "CGI Application"
+msgstr ""
+
+#: weblazideintf.rscgiapplicati2
+msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgstr ""
+
+#: weblazideintf.rscustomcgiapp
+msgid "Custom CGI Application"
+msgstr ""
+
+#: weblazideintf.rscustomcgiapp2
+msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgstr ""
+
+#: weblazideintf.rscustomfastcg
+msgid "Custom FastCGI Application"
+msgstr ""
+
+#: weblazideintf.rscustomfastcg2
+msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
+msgstr ""
+
+#: weblazideintf.rsfastcgiappli
+msgid "FastCGI Application"
+msgstr ""
+
+#: weblazideintf.rsfastcgiappli2
+msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
+msgstr ""
+
+#: weblazideintf.rshtmlwebmodul
+msgid "HTML Web Module"
+msgstr ""
+
+#: weblazideintf.rshtmlwebmodul2
+msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
+msgstr ""
+
+#: weblazideintf.rswebmodule
+msgid "Web Module"
+msgstr ""
+
+#: weblazideintf.rswebmoduleada
+msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
+msgstr ""
+
