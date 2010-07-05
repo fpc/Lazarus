@@ -186,6 +186,24 @@ var
     begin
       FolderName := UTF16ToUTF8(DialogRec^.UnicodeFolderName);
       FileNames := UTF16ToUTF8(DialogRec^.UnicodeFileNames);
+      if FolderName='' then
+      begin
+        // On Windows 7, the SendMessageW(GetParent(Wnd), CDM_GETFOLDERPATH, 0, LPARAM(nil))
+        // at UpdateStorage might fail (see #16797)
+        // However, the valid directory is returned in OpenFile^.lpstrFile
+        //
+        // What was the reason not to use OpenFile^.lpstrFile, since it's list
+        // of the selected files, without need of writting any callbacks!
+        FolderName:=UTF16ToUTF8(PWidechar(OpenFile^.lpstrFile));
+        // Check for DirectoryExistsUTF8(FolderName) is required, because Win 7
+        // sometimes returns a single file name in OpenFile^.lpstrFile, while
+        // OFN_ALLOWMULTISELECT is set
+        // to reproduce.
+        //   1. Allow mulitple files in OpenDialog options. Run the project.
+        //   2. OpenDialog.Execute -> Library -> Documens. Select a single file!
+        if (OpenFile^.Flags and OFN_ALLOWMULTISELECT=0) or not DirectoryExistsUTF8(FolderName) then
+          FolderName:=ExtractFileDir(FolderName);
+      end;
     end
     else
     begin
