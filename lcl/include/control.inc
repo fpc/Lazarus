@@ -4612,7 +4612,8 @@ end;
  ------------------------------------------------------------------------------}
 function TControl.GetDefaultWidth: integer;
 begin
-  if AutoSize or WidthIsAnchored then
+  if WidthIsAnchored then
+    // if width is anchored the read and base bounds were changed at designtime
     Result := GetControlClassDefaultSize.cx
   else if cfBaseBoundsValid in FControlFlags then
     Result := FBaseBounds.Right - FBaseBounds.Left
@@ -4631,7 +4632,8 @@ end;
  ------------------------------------------------------------------------------}
 function TControl.GetDefaultHeight: integer;
 begin
-  if AutoSize or HeightIsAnchored then
+  if HeightIsAnchored then
+    // if height is anchored the read and base bounds were changed at designtime
     Result := GetControlClassDefaultSize.cy
   else if cfBaseBoundsValid in FControlFlags then
     Result := BaseBounds.Bottom - BaseBounds.Top
