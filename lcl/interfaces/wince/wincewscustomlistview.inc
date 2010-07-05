@@ -884,7 +884,7 @@ begin
 end;
 
 function ListCompare(lParam1, lParam2: LParam; lParamSort: LParam): Integer;
-(* {$ifdef Win32}stdcall;{$endif}*)
+ {$ifndef Win32}cdecl;{$endif}
 var
   Item1: TListItem absolute lParam1;
   Item2: TListItem absolute lParam2;
