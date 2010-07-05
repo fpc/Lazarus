@@ -54,6 +54,9 @@ type
     iOrder: Integer;
   end;
 
+type
+  TCustomListViewAccess = class(TCustomListView);
+  TListColumnAccess = class(TListColumn);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Event code
@@ -187,7 +190,7 @@ begin
 
   if AAutoSize
   then ListView_SetColumnWidth(ALV.Handle, AIndex, LVSCW_AUTOSIZE)
-  else ListView_SetColumnWidth(ALV.Handle, AIndex, AColumn.Width);
+  else ListView_SetColumnWidth(ALV.Handle, AIndex, TListColumnAccess(AColumn).GetStoredWidth);
 end;
 
 class procedure TWinCEWSCustomListView.ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
@@ -251,12 +254,15 @@ begin
   // TODO: in messageHandler
 end;
 
-class procedure TWinCEWSCustomListView.ColumnSetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer);
+class procedure TWinCEWSCustomListView.ColumnSetWidth(const ALV: TCustomListView;
+  const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetWidth')
   then Exit;
 
-  ListView_SetColumnWidth(ALV.Handle, AIndex, AWidth)
+  if AColumn.AutoSize
+  then ListView_SetColumnWidth(ALV.Handle, AIndex, LVSCW_AUTOSIZE)
+  else ListView_SetColumnWidth(ALV.Handle, AIndex, AWidth);
 end;
 
 class procedure TWinCEWSCustomListView.ColumnSetVisible(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean);
@@ -266,8 +272,10 @@ begin
 
   // TODO: implement with LV_COLUMN.subitem (associate different columns and insert/delete last.
 
-  if AVisible
-  then ListView_SetColumnWidth(ALV.Handle, AIndex, AColumn.Width)
+  if AVisible then
+    if AColumn.AutoSize
+    then ListView_SetColumnWidth(ALV.Handle, AIndex, LVSCW_AUTOSIZE)
+    else ListView_SetColumnWidth(ALV.Handle, AIndex, TListColumnAccess(AColumn).GetStoredWidth)
   else ListView_SetColumnWidth(ALV.Handle, AIndex, 0);
 end;
 
@@ -347,9 +355,10 @@ begin
   if not WSCheckHandleAllocated(ALV, 'ItemInsert')
   then Exit;
 
-  lvi.Mask := LVIF_TEXT;
+  lvi.Mask := LVIF_TEXT or LVIF_PARAM;
   lvi.iItem := AIndex;
   lvi.iSubItem := 0;
+  lvi.lParam := LPARAM(AItem);
 
   {$ifdef Win32}
   lvi.pszText := PChar(PWideChar(UTF8Decode(AItem.Caption)));
@@ -465,6 +474,8 @@ begin
     pClassName := WC_LISTVIEW;
     WindowTitle := StrCaption;
     Flags := Flags or LISTVIEWSTYLES[TListView(AWinControl).ViewStyle] or LVS_SINGLESEL;
+    if TCustomListView(AWinControl).OwnerData then
+      Flags := Flags or LVS_OWNERDATA;
     FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
   end;
   // create window
