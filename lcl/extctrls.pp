@@ -444,7 +444,12 @@ type
 
   { TCustomSplitter }
 
-  TResizeStyle = (rsLine,rsNone,rsPattern,rsUpdate);
+  TResizeStyle = (
+    rsLine,     // draw a line, don't update splitter position during moving
+    rsNone,     // draw nothing and don't update splitter position during moving
+    rsPattern,  // draw a dot pattern, don't update splitter position during moving
+    rsUpdate    // draw nothing, update splitter position during moving
+  );
 
   TCanResizeEvent = procedure(Sender: TObject; var NewSize: Integer;
     var Accept: Boolean) of object;

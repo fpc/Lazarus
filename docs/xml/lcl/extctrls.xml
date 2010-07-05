@@ -2242,7 +2242,11 @@
       <element name="TResizeStyle">
         <short>
           <var>TResizeStyle</var> - enumerated type for style of resizing using splitters</short>
-        <descr/>
+        <descr>
+          <var>rsLine</var> - draw a line, don't update splitter position during moving
+<var>rsNone</var> - draw nothing and don't update splitter position during moving
+<var>rsPattern</var> - draw a dot pattern, don't update splitter position during moving
+<var>rsUpdate</var> - draw nothing, update splitter position during moving  </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
