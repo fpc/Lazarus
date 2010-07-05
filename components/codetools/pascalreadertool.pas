@@ -1941,6 +1941,7 @@ function TPascalReaderTool.FindForwardTypeNode(TypeNode: TCodeTreeNode;
 
   function Next: TCodeTreeNode;
   begin
+    Result:=FindForwardTypeNode;
     if Result.PriorBrother<>nil then
       // search upwards
       Result:=Result.PriorBrother
@@ -2002,6 +2003,7 @@ function TPascalReaderTool.FindTypeOfForwardNode(TypeNode: TCodeTreeNode
 
   function Next: TCodeTreeNode;
   begin
+    Result:=FindTypeOfForwardNode;
     if Result.NextBrother<>nil then
       // search forwards
       Result:=Result.NextBrother

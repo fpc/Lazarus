@@ -5,20 +5,22 @@
     <AddToProjectUsesSection Value="False"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <SearchPaths>
         <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
         <SyntaxOptions>
           <AllowLabel Value="False"/>
+          <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
       <Other>
         <Verbosity>
           <ShowHints Value="False"/>
         </Verbosity>
-        <CustomOptions Value="$(IDEBuildOptions)"/>
+        <CustomOptions Value="$(IDEBuildOptions)
+"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>

@@ -304,6 +304,7 @@ function ShowConfigureBuildLazarusDlg(
 // mrYes=save and compile
 var
   ConfigBuildLazDlg: TConfigureBuildLazarusDlg;
+  OldExtraOptions: String;
 begin
   Result := mrCancel;
   ConfigBuildLazDlg := TConfigureBuildLazarusDlg.Create(nil);
@@ -313,7 +314,10 @@ begin
     if Result in [mrOk,mrYes]
     then begin
       //DebugLn('ShowConfigureBuildLazarusDialog');
+      OldExtraOptions:=AOptions.ExtraOptions;
       AOptions.Assign(ConfigBuildLazDlg.Options);
+      if OldExtraOptions<>AOptions.ExtraOptions then
+        IncreaseCompilerParseStamp;
     end;
   finally
     ConfigBuildLazDlg.Free;
