@@ -151,11 +151,6 @@ begin
 end;
 
 procedure THintWindow.ActivateHint(ARect: TRect; const AHint: String);
-begin
-  ActivateHintData(ARect, AHint, nil);
-end;
-
-procedure THintWindow.ActivateHintData(ARect: TRect; const AHint: String; AData: pointer);
 var
   InvalidateNeeded: Boolean;
   AMonitor: TMonitor;
@@ -197,6 +192,11 @@ begin
   finally
     FActivating := False;
   end;
+end;
+
+procedure THintWindow.ActivateHintData(ARect: TRect; const AHint: String; AData: pointer);
+begin
+  ActivateHint(ARect, AHint);
 end;
 
 function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String;
