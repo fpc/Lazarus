@@ -2067,10 +2067,10 @@ begin
         if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then
         begin
           // check if LValue
-          if (CurPos.Flag in [cafSemicolon,cafEnd])
+          if (CurPos.Flag in [cafSemicolon,cafEnd,cafColon])
           or UpAtomIs('BEGIN')
           or UpAtomIs('TRY') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
-          or UpAtomIs('FOR') or UpAtomIs('DO')
+          or UpAtomIs('FOR') or UpAtomIs('DO') or UpAtomIs('THEN')
           or UpAtomIs('REPEAT') or UpAtomIs('ASM') or UpAtomIs('ELSE')
           then begin
             CurrentIdentifierList.ContextFlags:=

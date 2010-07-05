@@ -617,10 +617,11 @@ begin
   if CursorAtEnd then ;
 
   // add assignment operator :=
+  //debugln(['GetIdentCompletionValue CursorToLeft=',CursorToLeft,' AddChar=',AddChar,' ilcfStartOfStatement=',ilcfStartOfStatement in IdentList.ContextFlags,' ilcfEndOfLine=',ilcfEndOfLine in IdentList.ContextFlags]);
   if (CursorToLeft=0)
   and (AddChar='')
   and (ilcfStartOfStatement in IdentList.ContextFlags)
-  and (ilcfEndOfLine in IdentList.ContextFlags)
+  and ((ilcfEndOfLine in IdentList.ContextFlags) or IdentList.StartUpAtomBehindIs(';'))
   and (not IdentItem.HasChilds)
   and (not IdentItem.HasIndex)
   and (not IdentList.StartUpAtomBehindIs(':='))
