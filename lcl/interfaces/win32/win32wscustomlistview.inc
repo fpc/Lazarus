@@ -762,15 +762,6 @@ begin
   Result := ListView_GetNextItem(ALV.Handle, -1, LVNI_ALL or LVNI_FOCUSED);
 end;
 
-class function TWin32WSCustomListView.GetHoverTime(const ALV: TCustomListView): Integer;
-begin
-  Result := -1; 
-  if not WSCheckHandleAllocated(ALV, 'GetHoverTime')
-  then Exit;
-
-  Result := SendMessage(ALV.Handle, LVM_GETHOVERTIME, 0, 0);
-end;
-
 class function TWin32WSCustomListView.GetHitTestInfoAt( const ALV: TCustomListView; X, Y: Integer ) : THitTests;
 var
   HitInfo: LV_HITTESTINFO;
@@ -818,6 +809,15 @@ begin
       Include(Result, htToRight);
 
   end;
+end;
+
+class function TWin32WSCustomListView.GetHoverTime(const ALV: TCustomListView): Integer;
+begin
+  Result := -1; 
+  if not WSCheckHandleAllocated(ALV, 'GetHoverTime')
+  then Exit;
+
+  Result := SendMessage(ALV.Handle, LVM_GETHOVERTIME, 0, 0);
 end;
 
 class function TWin32WSCustomListView.GetItemAt(const ALV: TCustomListView; x,y: integer): Integer;

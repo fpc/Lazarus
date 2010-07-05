@@ -283,6 +283,47 @@ begin
   ListView_DeleteItem(ALV.Handle, AIndex);
 end;
 
+class function TWinCEWSCustomListView.ItemDisplayRect(const ALV: TCustomListView; const AIndex, ASubItem: Integer; ACode: TDisplayCode):TRect;
+const
+  DISPLAYCODES: array[TDisplayCode] of DWORD=(LVIR_BOUNDS, LVIR_ICON, LVIR_LABEL, LVIR_SELECTBOUNDS);
+var
+  mes: uint;
+begin
+  Result := Rect(0,0,0,0);
+  if not WSCheckHandleAllocated(ALV, 'ItemDisplayRect')
+  then Exit;
+
+  if ASubItem = 0
+  then mes:=LVM_GETITEMRECT
+  else begin
+    mes:=LVM_GETSUBITEMRECT;
+    if ACode = drSelectBounds
+    then ACode := drBounds;
+  end;
+  Result.top := ASubItem;
+  Result.left := DISPLAYCODES[ACode];
+  SendMessage(ALV.Handle, mes, AIndex, lparam(@Result));
+end;
+
+class function TWinCEWSCustomListView.ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean;
+begin
+  Result := False;
+  if not WSCheckHandleAllocated(ALV, 'ItemGetChecked')
+  then Exit;
+  // shr 12 will give teh stateimage index, however a value of
+  // 0 means no image and 1 means unchecked. All other 14 are checked (?)
+  // so shifting 13 will always result in something <> 0 when checked.
+  Result := SendMessage(ALV.Handle, LVM_GETITEMSTATE, AIndex, LVIS_STATEIMAGEMASK) shr 13 <> 0;
+end;
+
+class function TWinCEWSCustomListView.ItemGetPosition(
+  const ALV: TCustomListView; const AIndex: Integer): TPoint;
+begin
+  Result := Point(0, 0);
+  if WSCheckHandleAllocated(ALV, 'ItemGetPosition') then
+    SendMessage(ALV.Handle, LVM_GETITEMPOSITION, AIndex, LPARAM(@Result));
+end;
+
 class function TWinCEWSCustomListView.ItemGetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   out AIsSet: Boolean): Boolean;
@@ -319,6 +360,17 @@ begin
   {$endif}
 end;
 
+class procedure TWinCEWSCustomListView.ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean);
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemSetChecked')
+  then Exit;
+
+  if AChecked then
+    ListView_SetItemState(ALV.Handle, AIndex, IndexToStateImageMask(2), LVIS_STATEIMAGEMASK)
+  else
+    ListView_SetItemState(ALV.Handle, AIndex, IndexToStateImageMask(1), LVIS_STATEIMAGEMASK);
+end;
+
 class procedure TWinCEWSCustomListView.ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer);
 var
   lvi: TLvItem;
@@ -332,6 +384,23 @@ begin
   lvi.iImage := AImageIndex;
 
   ListView_SetItem(ALV.Handle, lvi);
+end;
+
+class function TWinCEWSCustomListView.ItemSetPosition(const ALV: TCustomListView; const AIndex: Integer; const ANewPosition: TPoint): Boolean;
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemSetPosition') then
+    Result := False
+  else
+    Result := SendMessage(ALV.Handle, LVM_SETITEMPOSITION,
+      AIndex, MAKELPARAM(ANewPosition.X, ANewPosition.Y)) <> 0;
+end;
+
+class procedure TWinCEWSCustomListView.ItemSetStateImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AStateImageIndex: Integer);
+begin
+  if not WSCheckHandleAllocated(ALV, 'ItemSetStateImage')
+  then Exit;
+
+  ListView_SetItemState(ALV.Handle, AIndex, IndexToStateImageMask(AStateImageIndex + 1), LVIS_STATEIMAGEMASK);
 end;
 
 class procedure TWinCEWSCustomListView.ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean);
@@ -421,6 +490,7 @@ end;
 
 class function TWinCEWSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
 begin
+  Result := Rect(0,0,0,0);
   if not WSCheckHandleAllocated(ALV, 'GetBoundingRect')
   then Exit;
 
@@ -429,6 +499,7 @@ end;
 
 class function TWinCEWSCustomListView.GetDropTarget(const ALV: TCustomListView): Integer;
 begin
+  Result := -1;
   if not WSCheckHandleAllocated(ALV, 'GetDropTarget')
   then Exit;
   
@@ -437,10 +508,60 @@ end;
 
 class function TWinCEWSCustomListView.GetFocused(const ALV: TCustomListView): Integer;
 begin
+  Result := -1;
   if not WSCheckHandleAllocated(ALV, 'GetFocused')
   then Exit;
 
   Result := ListView_GetNextItem(ALV.Handle, -1, LVNI_ALL or LVNI_FOCUSED);
+end;
+
+class function TWinCEWSCustomListView.GetHitTestInfoAt( const ALV: TCustomListView; X, Y: Integer ) : THitTests;
+var
+  HitInfo: LV_HITTESTINFO;
+
+begin
+  Result := [];
+  if not WSCheckHandleAllocated(ALV, 'GetHitTestInfoAt')
+  then Exit;
+
+  with HitInfo do
+  begin
+    pt.X := X;
+    pt.Y := Y;
+    ListView_HitTest( ALV.Handle, HitInfo );
+
+    if ((flags and LVHT_ABOVE) <> 0) and (Y < 0) then
+      Include(Result, htAbove);
+
+    if (flags and LVHT_BELOW) <> 0 then
+      Include(Result, htBelow);
+
+    if (flags and LVHT_NOWHERE) <> 0 then
+      Include(Result, ComCtrls.htNowhere);
+
+    if (flags and LVHT_ONITEM) = LVHT_ONITEM then
+      Include(Result, htOnItem)
+
+    else
+      begin
+      if (flags and LVHT_ONITEMICON) <> 0 then
+        Include(Result, htOnIcon);
+
+      if (flags and LVHT_ONITEMLABEL) <> 0 then
+        Include(Result, htOnLabel);
+
+      if (flags and LVHT_ONITEMSTATEICON) <> 0 then
+        Include(Result, htOnStateIcon);
+
+      end;
+
+    if (flags and LVHT_TOLEFT) <> 0 then
+      Include(Result, htToLeft);
+
+    if (flags and LVHT_TORIGHT) <> 0 then
+      Include(Result, htToRight);
+
+  end;
 end;
 
 class function TWinCEWSCustomListView.GetHoverTime(const ALV: TCustomListView): Integer;
@@ -452,8 +573,24 @@ begin
 //  Result := ListView_GetHoverTime(ALV.Handle);
 end;
 
+class function TWinCEWSCustomListView.GetItemAt(const ALV: TCustomListView; x,y: integer): Integer;
+var
+  HitInfo: LV_HITTESTINFO;
+begin
+  Result := -1;
+  if not WSCheckHandleAllocated(ALV, 'GetItemAt')
+  then Exit;
+
+  HitInfo.pt.x:=x;
+  HitInfo.pt.y:=y;
+  ListView_HitTest(alv.Handle,HitInfo);
+  if HitInfo.flags <> LVHT_NOWHERE
+  then Result:=HitInfo.iItem;
+end;
+
 class function TWinCEWSCustomListView.GetSelCount(const ALV: TCustomListView): Integer;
 begin
+  Result := 0;
   if not WSCheckHandleAllocated(ALV, 'GetSelCount')
   then Exit;
   
@@ -462,6 +599,7 @@ end;
 
 class function TWinCEWSCustomListView.GetSelection(const ALV: TCustomListView): Integer;
 begin
+  Result := -1;
   if not WSCheckHandleAllocated(ALV, 'GetSelection')
   then Exit;
 
@@ -470,6 +608,7 @@ end;
 
 class function TWinCEWSCustomListView.GetTopItem(const ALV: TCustomListView): Integer;
 begin
+  Result := -1;
   if not WSCheckHandleAllocated(ALV, 'GetTopItem')
   then Exit;
 
@@ -494,6 +633,7 @@ end;
 
 class function TWinCEWSCustomListView.GetVisibleRowCount(const ALV: TCustomListView): Integer;
 begin
+  Result := 0;
   if not WSCheckHandleAllocated(ALV, 'GetVisibleRowCount')
   then Exit;
   
@@ -509,7 +649,7 @@ class function TWinCEWSCustomListView.GetHeader(const AHandle: THandle): THandle
 begin
 //roozbeh not supported!
 //  Result := ListView_GetHeader(AHandle);
-  if Result <> 0 then Exit;
+//  if Result <> 0 then Exit;
   
   // probably old version, try the first child
   Result := GetWindow(AHandle, GW_CHILD);
@@ -564,12 +704,37 @@ begin
   ListView_SetItemCount(ALV.Handle, AValue);
 end;
 
+class procedure TWinCEWSCustomListView.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'TWin32WSCustomListView.SetBorder') then
+    Exit;
+  // changing border style by changing EXSTYLE here does not work correctly
+  RecreateWnd(AWinControl);
+end;
+
+class procedure TWinCEWSCustomListView.SetColor(const AWinControl: TWinControl);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'TWin32WSCustomListView.SetColor') then
+    Exit;
+  Windows.SendMessage(AWinControl.Handle, LVM_SETBKCOLOR, 0, ColorToRGB(AWinControl.Color));
+  Windows.SendMessage(AWinControl.Handle, LVM_SETTEXTBKCOLOR, 0, ColorToRGB(AWinControl.Color));
+end;
+
 class procedure TWinCEWSCustomListView.SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetDefaultItemHeight')
   then Exit;
   
   // TODO ???
+end;
+
+class procedure TWinCEWSCustomListView.SetFont(const AWinControl: TWinControl;
+  const AFont: TFont);
+begin
+  // call inherited SetFont; need to do it this way,
+  // because the compile time ancestor class is TWSCustomListView
+  TWSWinControlClass(ClassParent).SetFont(AWinControl, AFont);
+  Windows.SendMessage(AWinControl.Handle, LVM_SETTEXTCOLOR, 0, ColorToRGB(AFont.Color));
 end;
 
 //roozbeh not supported!
@@ -603,7 +768,22 @@ begin
   if not WSCheckHandleAllocated(ALV, 'SetHoverTime')
   then Exit;
 
-//  ListView_SetHoverTime(ALV.Handle, AValue);
+//  SendMessage(ALV.Handle, LVM_SETHOVERTIME, 0, AValue);
+end;
+
+class procedure TWinCEWSCustomListView.SetIconArrangement(
+  const ALV: TCustomListView; const AValue: TIconArrangement);
+const
+  ArrangementMap: array[TIconArrangement] of DWord = (
+    { iaTop  } LVS_ALIGNTOP,
+    { iaLeft } LVS_ALIGNLEFT
+  );
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetIconArrangement')
+  then Exit;
+
+  // LVM_ALIGN styles are not implemented in windows (according to w7 sdk) => change style
+//  UpdateStyle(ALV.Handle, LVS_ALIGNMASK, ArrangementMap[AValue]);
 end;
 
 class procedure TWinCEWSCustomListView.SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList);
@@ -612,6 +792,20 @@ begin
   then Exit;
   
   //TODO: implement imagelist
+end;
+
+class procedure TWinCEWSCustomListView.SetItemsCount(const ALV: TCustomListView; const AValue: Integer);
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetItemsCount')
+  then Exit;
+  SendMessage(ALV.Handle, LVM_SETITEMCOUNT, AValue, 0);
+end;
+
+class procedure TWinCEWSCustomListView.SetOwnerData(const ALV: TCustomListView; const AValue: Boolean);
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetOwnerData')
+  then Exit;
+  RecreateWnd(ALV);
 end;
 
 class procedure TWinCEWSCustomListView.SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean);
@@ -689,12 +883,21 @@ begin
   else UpdateStyle(ALV.Handle, LVS_NOSCROLL, 0);
 end;
 
+function ListCompare(lParam1, lParam2: LParam; lParamSort: LParam): Integer;
+(* {$ifdef Win32}stdcall;{$endif}*)
+var
+  Item1: TListItem absolute lParam1;
+  Item2: TListItem absolute lParam2;
+begin
+  Result := CompareValue(Item1.Index, Item2.Index);
+end;
+
 class procedure TWinCEWSCustomListView.SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetSort')
   then Exit;
-  
-  // TODO: implement
+
+  ListView_SortItems(ALV.Handle, @ListCompare, 0);
 end;
 
 class procedure TWinCEWSCustomListView.SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint);

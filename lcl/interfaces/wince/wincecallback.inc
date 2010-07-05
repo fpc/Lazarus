@@ -2229,6 +2229,17 @@ begin
             Windows.SendMessage(Window, EM_SETSEL, 0, -1);
           end;
         end;
+
+{        // handle the hardware back key (= VK_ESCAPE) for edit controls
+        // It should work as the backspace
+        if (PLMsg^.Result = 0) and (Msg = WM_KEYDOWN) and (WParam = VK_ESCAPE)
+          {and (GetKeyState(VK_CONTROL) >= 0) and (GetKeyState(VK_MENU) >= 0)} then
+        begin
+          if (WndClassName(Window) = EditClsName) then
+          begin
+            Windows.SendMessage(Window, WM_KEYDOWN, VK_BACK, -1);
+          end;
+        end;}
       end;
     end;
   end;
