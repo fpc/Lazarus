@@ -13,6 +13,8 @@ LazarusResources.Add('indentation','PAS',[
   +' end;'#10'  end'#10'  else'#10'  begin'#10'    case c of'#10'    1: Code;'
   +#10'    2:'#10'      begin'#10'        code;'#10'      end;'#10'    else'#10
   +'      code;'#10'    end;'#10'  end;'#10'end;'#10#10'procedure TMyClass.Code'
-  +';'#10'begin'#10'  writeln(''TMyClass.Code '');'#10'  repeat'#10#10'  until '
-  +';'#10'end;'#10#10'end.'#10#10
+  +';'#10#10'  procedure SubProc;'#10'  begin'#10#10'  end;'#10#10'var'#10'  i:'
+  +' Integer;'#10'begin'#10'  writeln(''TMyClass.Code '');'#10'  repeat'#10#10
+  +'  until ;'#10'  for i:=1 to 3 do'#10'    Code;'#10'  for i:=1 to 3 do'#10' '
+  +' begin'#10'    Code;'#10'  end;'#10'end;'#10#10'end.'#10#10
 ]);

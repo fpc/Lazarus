@@ -68,11 +68,25 @@ begin
 end;
 
 procedure TMyClass.Code;
+
+  procedure SubProc;
+  begin
+
+  end;
+
+var
+  i: Integer;
 begin
   writeln('TMyClass.Code ');
   repeat
 
   until ;
+  for i:=1 to 3 do
+    Code;
+  for i:=1 to 3 do
+  begin
+    Code;
+  end;
 end;
 
 end.
