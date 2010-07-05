@@ -1713,10 +1713,12 @@ begin
     if (PrevLineAtomEndPos>0) then
       PrevLineAtomEndPos:=FindPrevNonSpace(Source,PrevLineAtomEndPos);
 
+    //debugln(['TFullyAutomaticBeautifier.GetIndent AAA1 ',Stack.LastBlockClosed.StartPos,' ',PositionsInSameLine(Source,Stack.LastBlockClosed.StartPos,Block.StartPos),' SubTypeValid=',SubTypeValid]);
     if (Stack.LastBlockClosed.StartPos>0)
     and (not PositionsInSameLine(Source,Stack.LastBlockClosed.StartPos,Block.StartPos))
     and ((not SubTypeValid) or (SubType in bbtAllAlignToSibling))
     then begin
+      //debugln(['TFullyAutomaticBeautifier.GetIndent AAA2 ',Stack.LastBlockClosedAt,' ',PositionsInSameLine(Source,Stack.LastBlockClosedAt,PrevLineAtomEndPos)]);
       // a child block was closed that was started in another line than current block
       // and this subtype aligns as its siblings
       if (Stack.LastBlockClosedAt>0)
