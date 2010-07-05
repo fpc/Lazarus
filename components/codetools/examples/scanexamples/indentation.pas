@@ -56,7 +56,8 @@ begin
   else
   begin
     case c of
-    1: Code;
+    1:
+      Code;
     2:
       begin
         code;
