@@ -425,6 +425,17 @@ end;
 
 class function TWinCEWSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
+// The prefered style for the non-supported ones is bottom, as per MS guidelines,
+// so that the user won't cover the screen with the hand while changing tabs
+// Left and Right styles aren't supported because vertical text isn't supported
+// See: http://wiki.lazarus.freepascal.org/Windows_CE_Development_Notes#Tab_Controls_.28TPageControl.29
+const
+  TabPositionFlags: array[TTabPosition] of DWord = (
+ { tpTop    } 0,
+ { tpBottom } TCS_BOTTOM,
+ { tpLeft   } TCS_BOTTOM, //TCS_VERTICAL or TCS_MULTILINE,
+ { tpRight  } TCS_BOTTOM //TCS_VERTICAL or TCS_RIGHT or TCS_MULTILINE
+  );
 var
   Params: TCreateWindowExParams;
   init : TINITCOMMONCONTROLSEX;
@@ -437,10 +448,7 @@ begin
   // customization of Params
   with Params do
   begin
-    // Hard-coded bottom style as per MS guidelines
-    // so that the user won't cover the screen with the hand while changing tabs
-    // Without doing this the text on the Tab becomes invisible
-    Flags := (Flags or TCS_BOTTOM) and not (TCS_VERTICAL or TCS_MULTILINE);
+    Flags := Flags or TabPositionFlags[TCustomNoteBook(AWinControl).TabPosition];
     if nboMultiLine in TCustomNotebook(AWinControl).Options then
       Flags := Flags or TCS_MULTILINE;
     pClassName := WC_TABCONTROL;
