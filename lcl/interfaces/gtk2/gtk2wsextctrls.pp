@@ -598,34 +598,19 @@ var
   NoteBookWidget: PGtkNotebook;
   TabWidget: PGtkWidget;
   PageWidget: PGtkWidget;
-  Window: PGdkWindow;
-  WindowOrg,ClientOrg: TPoint;
-  XOffset, YOffset: Integer;
   Count: guint;
 begin
   Result := inherited;
   NoteBookWidget:=PGtkNotebook(ANotebook.Handle);
   if (NotebookWidget=nil) then exit;
-  //DebugLn(['TGtkWSCustomNotebook.GetTabIndexAtPos ',GetWidgetDebugReport(PGtkWidget(NotebookWidget))]);
 
-  Window := GetControlWindow(NoteBookWidget);
-  gdk_window_get_origin(Window,@WindowOrg.X,@WindowOrg.Y);
-  ClientOrg:=GetWidgetClientOrigin(PGtkWidget(NotebookWidget));
-  XOffset := (ClientOrg.X-WindowOrg.X);
-  YOffset := (ClientOrg.Y-WindowOrg.Y);
-
-  // go through all tabs
-  Count:=g_list_length(NoteBookWidget^.Children);
-  PageWidget:=gtk_notebook_get_nth_page(NoteBookWidget, AIndex);
-  if (PageWidget<>nil) and (AIndex < Count) then begin
-    TabWidget:=gtk_notebook_get_tab_label(NoteBookWidget, PageWidget);
-    if TabWidget<>nil then begin
-      Result.Top := TabWidget^.Allocation.Y - YOffset;
-      Result.Bottom := TabWidget^.Allocation.Y - YOffset + TabWidget^.Allocation.Height;
-      Result.Left := TabWidget^.Allocation.X - XOffset;
-      Result.right := TabWidget^.Allocation.X - XOffset + TabWidget^.Allocation.Width;
-      exit;
-    end;
+  Count := g_list_length(NoteBookWidget^.Children);
+  PageWidget := gtk_notebook_get_nth_page(NoteBookWidget, AIndex);
+  if (PageWidget<>nil) and (AIndex < Count) then
+  begin
+    TabWidget := gtk_notebook_get_tab_label(NoteBookWidget, PageWidget);
+    if TabWidget <> nil then
+      Result := RectFromGdkRect(TabWidget^.allocation);
   end;
 end;
 
