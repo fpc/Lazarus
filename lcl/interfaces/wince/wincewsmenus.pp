@@ -123,44 +123,6 @@ type
 //menus
 
 {$ifndef Win32}
-//both menus are popup menus or submenus
-procedure CeMakeMenuesSame(SrcMenu,dstMenu : HMENU);
-var
-  i: Integer;
-  mi: MENUITEMINFO;
-  buf: array[0..255] of WideChar;
-  fState:integer;
-  uIDNewItem : Integer;
-begin
-//  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-//   'CeMakeMenusSame Src: ' + IntToStr(SrcMenu) + ' Dst: ' + IntToStr(DstMenu));
-
-  while RemoveMenu(dstMenu,0,MF_BYPOSITION)  do ;
-
-  i:=0;
-  mi.cbSize:=SizeOf(mi);
-  mi.fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
-  mi.dwTypeData:=@buf;
-
-  while GetMenuItemInfo(srcMenu, i, True, mi) do
-  begin
-    buf[mi.cch]:=#0;
-    fState:=MF_STRING;
-    if mi.fState and MFS_DISABLED <> 0 then
-      fState:=fState or MF_GRAYED;
-    if mi.fState and MFS_CHECKED <> 0 then
-      fState:=fState or MF_CHECKED;
-    uIDNewItem := mi.wID + StartMenuItem;
-    if mi.hSubMenu <>  0 then
-    begin
-      uIDNewItem  := mi.hSubMenu;
-      fstate := fstate or MF_POPUP;
-    end;
-    AppendMenu(dstMenu,fState,uIDNewItem,@buf);
-    inc(i);
-  end;
-end;
-
 {
   The main menu setting routine, it is called by LCLIntf.SetMenu, which
   associates a menu with a window.
@@ -178,17 +140,30 @@ var
   RightMenuCount: Integer = -1;
   MenuBarRLID: integer;
 begin
+  {$ifdef VerboseWinCEMenu}
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log', ':> CeSetMenu');
+  {$endif}
+
   GetWindowRect(Wnd, BR);
-  mbi.hwndMB:=SHFindMenuBar(Wnd);
-//  if (mbi.hwndMB <> 0) and (CePlatform = cpSmartphone) then begin
-//    DestroyWindow(mbi.hwndMB);
-//    mbi.hwndMB:=0;
-//  end;
+  mbi.hwndMB := SHFindMenuBar(Wnd);
+
+  {$ifdef VerboseWinCEMenu}
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+    'p1 menu bar window = ' + IntToStr(mbi.hwndMB));
+  {$endif}
+
+{  // It is always necessary to create a new menu bar for atKeyPadDevice?
+  if (Application.ApplicationType = atKeyPadDevice) then
+  begin
+    if (mbi.hwndMB <> 0) then
+      DestroyWindow(mbi.hwndMB);
+
+    mbi.hwndMB := 0;
+  end;}
 
   // If no menu is currently associated in the application
   // so we create a new one
   GetWindowRect(Wnd, BR);
-  mbi.hwndMB:=SHFindMenuBar(Wnd);
 
   if mbi.hwndMB = 0 then
   begin
@@ -234,13 +209,19 @@ begin
     if not SHCreateMenuBar(@mbi) then Exit;
   end;
 
-//  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-//    'menu bar window = ' + IntToStr(mbi.hwndMB) +
-//    ' mbi.nToolBarId = ' + IntToStr(mbi.nToolBarId)
-//    );
+  {$ifdef VerboseWinCEMenu}
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+    'menu bar window = ' + IntToStr(mbi.hwndMB) +
+    ' mbi.nToolBarId = ' + IntToStr(mbi.nToolBarId)
+    );
+  {$endif}
 
   // Clear any previously set menu items
-  while SendMessage(mbi.hwndMB, TB_DELETEBUTTON, 0, 0) <> 0 do ;
+  while SendMessage(mbi.hwndMB, TB_DELETEBUTTON, 0, 0) <> 0 do
+  {$ifdef VerboseWinCEMenu}
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log', 'TB_DELETEBUTTON')
+  {$endif}
+  ;
 
   // Now we will add the buttons in the menu
   //
@@ -278,12 +259,22 @@ begin
 
           tbbi.cbSize := sizeof(tbbi);
           tbbi.pszText := PWideChar(UTF8Decode(LCLMenu.Items.Items[j].Caption));
-          tbbi.dwMask := TBIF_TEXT {or TBIF_COMMAND} or TBIF_STATE;
+          tbbi.dwMask := TBIF_TEXT or TBIF_COMMAND or TBIF_STATE;
+
+          // Without setting idCommand the top-level items don't respond to clicks
+          if i = 0 then tbbi.idCommand := StartMenuItem + MenuBarID_L
+          else tbbi.idCommand := StartMenuItem + MenuBarID_R;
+
           SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, MenuBarRLID, LPARAM(@tbbi));
 
           // Adds subitems to a top-level item
           tbbi.dwMask := TBIF_LPARAM;
           SendMessage(mbi.hwndMB, TB_GETBUTTONINFO, MenuBarRLID, LPARAM(@tbbi));
+
+          {$ifdef VerboseWinCEMenu}
+          DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+            'p3 command = ' + IntToStr(tbbi.idCommand));
+          {$endif}
 
           // Remove any present buttons, for example the one from the .rc file
           // Careful that using TB_DELETEBUTTON doesnt work here
@@ -320,6 +311,10 @@ begin
         FillChar(tb, SizeOf(tb), 0);
         tb.iBitmap:=I_IMAGENONE;
         tb.idCommand:=mi.wID;
+        {$ifdef VerboseWinCEMenu}
+        DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+          'p3 command = ' + IntToStr(tb.idCommand));
+        {$endif}
         tb.iString:=SendMessage(mbi.hwndMB, TB_ADDSTRING, 0, LPARAM(@buf));
         if mi.fState and MFS_DISABLED = 0 then
           tb.fsState:=TBSTATE_ENABLED;
@@ -333,21 +328,6 @@ begin
         {roozbeh : this wont work on 2002/2003...should i uncomment it or not?works this way anyway}
         SendMessage(mbi.hwndMB, TB_INSERTBUTTON, i, LPARAM(@tb));
         //MsgBox('i = ' + int2str(i),0);
-
-{        if (Application.ApplicationType = atKeyPadDevice) and (i < 2) then{KeyPadDevices can have only 2 buttons!}
-        begin
-          case i of
-            0: MenuBarRLID := MenuBarID_L;
-            1: MenuBarRLID := MenuBarID_R;
-          end;
-          tbbi.cbSize := sizeof(tbbi);
-          tbbi.pszText := @buf;
-          tbbi.dwMask := TBIF_TEXT;
-          SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, MenuBarRLID, LPARAM(@tbbi));
-          tbbi.dwMask := TBIF_LPARAM;
-          SendMessage(mbi.hwndMB, TB_GETBUTTONINFO, MenuBarRLID, LPARAM(@tbbi));
-          CeMakeMenuesSame(mi.hSubMenu, HMENU(tbbi.lParam));
-        end;}
 
         Inc(i);
       end;
@@ -681,8 +661,8 @@ begin
         if AMenu.Items.Items[j].Visible then Inc(i);
       end;
 
-      if i = 0 then MenuBarRLID := MenuBarID_L
-      else MenuBarRLID := MenuBarID_R;
+      if i = 0 then MenuBarRLID := StartMenuItem + MenuBarID_L
+      else MenuBarRLID := StartMenuItem + MenuBarID_R;
 
       SendMessageW(h, TB_SETBUTTONINFO, MenuBarRLID, LPARAM(@bi));
     end
