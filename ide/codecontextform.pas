@@ -767,6 +767,9 @@ begin
       NewMaxWidth:=CurHintRect.Right;
     NewMaxHeight:=CurHintRect.Bottom;
   end;
+  // for fractionals add some space
+  inc(NewMaxWidth,2);
+  inc(NewMaxHeight,2);
   if Draw then begin
     // fill rest of form
     if NewMaxHeight<MaxHeight then
