@@ -104,6 +104,8 @@ function PositionsInSameLine(const Source: string;
     Pos1, Pos2: integer): boolean;
 function FindFirstNonSpaceCharInLine(const Source: string;
     Position: integer): integer;
+function IsFirstNonSpaceCharInLine(const Source: string;
+    Position: integer): boolean;
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
     Position, MinPosition: integer; NestedComments: boolean;
     StopAtDirectives: boolean = true; SkipSemicolonComma: boolean = true): integer;
@@ -2408,6 +2410,14 @@ begin
       exit;
     end;
   end;
+end;
+
+function IsFirstNonSpaceCharInLine(const Source: string; Position: integer
+  ): boolean;
+begin
+  while (Position>1) and (Source[Position-1] in [' ',#9]) do
+    dec(Position);
+  Result:=(Position=1) or (Source[Position-1] in [#10,#13]);
 end;
 
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
