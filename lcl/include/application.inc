@@ -2185,7 +2185,6 @@ end;
 procedure TApplication.ReleaseComponents;
 var
   Component: TComponent;
-  Node: TAvgLvlTreeNode;
 begin
   if FComponentsReleasing<>nil then exit; // currently releasing
   if (FComponentsToRelease<>nil) then begin
@@ -2203,14 +2202,14 @@ begin
     try
       while (FComponentsReleasing<>nil) and (FComponentsReleasing.Count>0) do
       begin
-        Node:=FComponentsReleasing.FindLowest;
-        Component:=TComponent(Node.Data);
-        FComponentsReleasing.Delete(Node);
+        Component:=TComponent(FComponentsReleasing[0]);
+        FComponentsReleasing.Delete(0);
         if (Component is TLCLComponent)
         and (TLCLComponent(Component).LCLRefCount>0) then begin
           // add again to FComponentsToRelease
           ReleaseComponent(Component);
         end else begin
+          // this might free some more components from FComponentsReleasing
           Component.Free;
         end;
       end;
@@ -2218,9 +2217,8 @@ begin
       // add remaining to FComponentsToRelease
       while (FComponentsReleasing<>nil) and (FComponentsReleasing.Count>0) do
       begin
-        Node:=FComponentsReleasing.FindLowest;
-        Component:=TComponent(Node.Data);
-        FComponentsReleasing.Delete(Node);
+        Component:=TComponent(FComponentsReleasing[0]);
+        FComponentsReleasing.Delete(0);
         ReleaseComponent(Component);
       end;
       FreeAndNil(FComponentsReleasing);
@@ -2242,8 +2240,8 @@ begin
     // => add to the FComponentsToRelease
     IsFirstItem:=FComponentsToRelease=nil;
     if IsFirstItem then
-      FComponentsToRelease:=TAvgLvlTree.Create(@ComparePointers)
-    else if FComponentsToRelease.Find(AComponent)<>nil then
+      FComponentsToRelease:=TFPList.Create
+    else if FComponentsToRelease.IndexOf(AComponent)>=0 then
       exit;
     FComponentsToRelease.Add(AComponent);
     AComponent.FreeNotification(Self);

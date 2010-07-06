@@ -1171,8 +1171,8 @@ type
     FApplicationHandlers: array[TApplicationHandlerType] of TMethodList;
     FApplicationType: TApplicationType;
     FCaptureExceptions: boolean;
-    FComponentsToRelease: TAvgLvlTree;
-    FComponentsReleasing: TAvgLvlTree;
+    FComponentsToRelease: TFPList;
+    FComponentsReleasing: TFPList;
     FCreatingForm: TForm;// currently created form (CreateForm), candidate for MainForm
     FFindGlobalComponentEnabled: boolean;
     FFlags: TApplicationFlags;
