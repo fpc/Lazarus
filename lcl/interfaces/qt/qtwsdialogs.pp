@@ -388,10 +388,18 @@ begin
     Flags := 0;
     if not (ofOverwritePrompt in TSaveDialog(FileDialog).Options) then
       Flags := Flags or QFileDialogDontConfirmOverwrite;
-
-    QFileDialog_getSaveFileName(@ReturnText,
-      QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName,
-      @saveFilter, @selectedFilter, Flags);
+    {$IFDEF HASX11}
+    Clipboard.BeginX11SelectionLock;
+    try
+    {$ENDIF}
+      QFileDialog_getSaveFileName(@ReturnText,
+        QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName,
+        @saveFilter, @selectedFilter, Flags);
+    {$IFDEF HASX11}
+    finally
+      Clipboard.EndX11SelectionLock;
+    end;
+    {$ENDIF}
 
     if ReturnText <> '' then
     begin

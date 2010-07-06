@@ -516,6 +516,7 @@ type
     FClipSelectionChangedHook: QClipboard_hookH;
     FSelTimer: TQtTimer; // timer for keyboard X11 selection
     FSelFmtCount: Integer;
+    FLockX11Selection: Integer;
     {$ENDIF}
     FClipChanged: Boolean;
     FClipBoardFormats: TStringList;
@@ -544,6 +545,9 @@ type
       
     procedure signalDataChanged; cdecl;
     {$IFDEF HASX11}
+    procedure BeginX11SelectionLock;
+    procedure EndX11SelectionLock;
+    function InX11SelectionLock: Boolean;
     procedure signalSelectionChanged; cdecl;
     procedure selectionTimer;
     {$ENDIF}
@@ -3286,6 +3290,7 @@ begin
   FClipBoardFormats.Add('foo'); // 0 is reserved
   TheObject := QApplication_clipBoard;
   {$IFDEF HASX11}
+  FLockX11Selection := 0;
   FSelTimer := TQtTimer.CreateTimer(10, @selectionTimer, TheObject);
   {$ENDIF}
   AttachEvents;
@@ -3323,6 +3328,21 @@ begin
 end;
 
 {$IFDEF HASX11}
+procedure TQtClipboard.BeginX11SelectionLock;
+begin
+  inc(FLockX11Selection);
+end;
+
+procedure TQtClipboard.EndX11SelectionLock;
+begin
+  dec(FLockX11Selection);
+end;
+
+function TQtClipboard.InX11SelectionLock: Boolean;
+begin
+  Result := FLockX11Selection > 0;
+end;
+
 procedure TQtClipboard.signalSelectionChanged; cdecl;
 var
   TempMimeData: QMimeDataH;
@@ -3333,6 +3353,8 @@ begin
   writeln('signalSelectionChanged() OWNER?=', QClipboard_ownsSelection(Self.clipboard),
   ' FOnClipBoardRequest ? ',FOnClipBoardRequest[ctPrimarySelection] <> nil);
   {$ENDIF}
+  if InX11SelectionLock then
+    exit;
   TempMimeData := getMimeData(QClipboardSelection);
   if (TempMimeData <> nil) and
   (QMimeData_hasText(TempMimeData) or QMimeData_hasHtml(TempMimeData) or
