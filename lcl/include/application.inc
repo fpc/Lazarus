@@ -994,7 +994,7 @@ var
   Data: PtrInt;
 begin
   with FAsyncCall do begin
-    // move the items of NextQueue to CurQueue
+    // move the items of NextQueue to CurQueue, keep the order
     if Next.Top<>nil then
     begin
       if Cur.Last<>nil then
@@ -1011,21 +1011,24 @@ begin
       Next.Last:=nil;
     end;
 
-    // only process items from last to top in current queue
-    // this can create new items, which are added to the next queue
+    // process items from top to last in 'Cur' queue
+    // this can create new items, which are added to the 'Next' queue
     // or it can call ProcessAsyncCallQueue, for example via calling
     // Application.ProcesssMessages
     while Cur.Top <> nil do
     begin
+      // remove top item from queue
       lItem:=Cur.Top;
       Cur.Top := lItem^.NextItem;
       if Cur.Top = nil then
         Cur.Last := nil
       else
         Cur.Top^.PrevItem := nil;
+      // free item
       Event:=lItem^.Method;
       Data:=lItem^.Data;
       Dispose(lItem);
+      // call event
       Event(Data);
     end;
   end;

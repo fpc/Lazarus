@@ -1142,7 +1142,8 @@ type
     Top, Last: PAsyncCallQueueItem;
   end;
   TAsyncCallQueues = record
-    Cur, Next: TAsyncCallQueue;
+    Cur: TAsyncCallQueue; // currently processing
+    Next: TAsyncCallQueue; // new calls added to this queue
   end;
   
   TApplicationType = (
