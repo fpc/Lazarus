@@ -1452,8 +1452,11 @@ begin
       end;
     end;
   'C':
-    if CompareIdentifiers('CONST',r)=0 then
+    if CompareIdentifiers('CONST',r)=0 then begin
       EndIdentifierSectionAndProc;
+      if StackTopType=bbtProcedure then
+        BeginBlock(bbtLabelSection);
+    end;
   'E':
     case UpChars[r[1]] of
     'L': // EL
@@ -1549,8 +1552,11 @@ begin
       end;
     end;
   'L':
-    if CompareIdentifiers('LABEL',r)=0 then
+    if CompareIdentifiers('LABEL',r)=0 then begin
       EndIdentifierSectionAndProc;
+      if StackTopType=bbtProcedure then
+        BeginBlock(bbtLabelSection);
+    end;
   'P':
     case UpChars[r[1]] of
     'R': // PR
@@ -1588,8 +1594,11 @@ begin
   'T':
     case UpChars[r[1]] of
     'Y': // TY
-      if CompareIdentifiers('TYPE',r)=0 then
+      if CompareIdentifiers('TYPE',r)=0 then begin
         EndIdentifierSectionAndProc;
+        if StackTopType=bbtProcedure then
+          BeginBlock(bbtTypeSection);
+      end;
     end;
   'U':
     case UpChars[r[1]] of
@@ -1599,8 +1608,11 @@ begin
       end;
     end;
   'V':
-    if CompareIdentifiers('VAR',r)=0 then
+    if CompareIdentifiers('VAR',r)=0 then begin
       EndIdentifierSectionAndProc;
+      if StackTopType=bbtProcedure then
+        BeginBlock(bbtVarSection);
+    end;
   end;
   {$IFDEF VerboseIndenter}
   if (Stack.Top<>Result)  then
