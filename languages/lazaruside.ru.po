@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-04 20:13+0300\n"
+"PO-Revision-Date: 2010-07-07 02:12+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -13771,6 +13771,10 @@ msgstr "Обновление ссылок при переименовании м
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
 msgstr "Если включено, текущие параметры сохраняются в шаблон, используемый при создании новых проектов"
+
+#: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
+msgid "When the source editor cursor moves, show the current node in the code explorer"
+msgstr "При перемещении курсора в редакторе исходного кода показывать текущий узел в обозревателе кода"
 
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"

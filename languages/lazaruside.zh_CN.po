@@ -13785,6 +13785,10 @@ msgstr "当单元被重命名, 更新引用..."
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
 msgstr ""
 
+#: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
+msgid "When the source editor cursor moves, show the current node in the code explorer"
+msgstr ""
+
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"
 msgstr "包含需要的包"

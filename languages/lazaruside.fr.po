@@ -13788,6 +13788,10 @@ msgstr "Mettre à jour les références si une unité est renommée ..."
 msgid "When enabled the current options are saved to the template, which is used when creating new projects"
 msgstr ""
 
+#: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
+msgid "When the source editor cursor moves, show the current node in the code explorer"
+msgstr ""
+
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"
 msgstr "Avec les paquets requis "
