@@ -222,7 +222,7 @@ type
     procedure UpdateMode;
   protected
     fLastCodeTool: TCodeTool;
-    fCodeSortedForStartPos: TAvgLvlTree;// tree of TTreeNode sorted for TViewNodeData(Node.Data).StartPos
+    fCodeSortedForStartPos: TAvgLvlTree;// tree of TTreeNode sorted for TViewNodeData(Node.Data).StartPos, secondary EndPos
     procedure ApplyCodeFilter;
     procedure ApplyDirectivesFilter;
     function CompareCodeNodes(Node1, Node2: TTreeNode): integer;
@@ -285,7 +285,7 @@ implementation
 type
   TViewNodeData = class
   public
-    CTNode: TCodeTreeNode;
+    CTNode: TCodeTreeNode; // only valid during update, other times it is nil
     Desc: TCodeTreeNodeDesc;
     SubDesc: TCodeTreeNodeSubDesc;
     StartPos, EndPos: integer;
@@ -302,6 +302,10 @@ begin
   if NodeData1.StartPos>NodeData2.StartPos then
     Result:=1
   else if NodeData1.StartPos<NodeData2.StartPos then
+    Result:=-1
+  else if NodeData1.EndPos>NodeData2.EndPos then
+    Result:=1
+  else if NodeData1.EndPos<NodeData2.EndPos then
     Result:=-1
   else
     Result:=0;
@@ -1714,6 +1718,7 @@ var
   Code: TCodeBuffer;
   NewXY: TPoint;
   OnlyXYChanged: Boolean;
+  CurFollowNode: Boolean;
 begin
   if (FUpdateCount>0)
   or (OnlyVisible and ((CurrentPage<>cepCode) or (not IsVisible))) then begin
@@ -1722,7 +1727,7 @@ begin
   end;
   Exclude(FFlags,cevCodeRefreshNeeded);
   fLastCodeTool:=nil;
-
+  OldExpanded:=nil;
   try
     Include(FFlags,cevRefreshing);
     
@@ -1768,73 +1773,85 @@ begin
         if not CodeExplorerOptions.FollowCursor then
           exit;
         NewXY:=SrcEdit.CursorTextXY;
+        //debugln(['TCodeExplorerView.RefreshCode ',dbgs(NewXY),' ',dbgs(FLastCodeXY)]);
         if ComparePoints(NewXY,FLastCodeXY)=0 then begin
           // still the same cursor position
           exit;
         end;
+        FLastCodeXY:=NewXY;
       end;
     end;
 
     if OnlyXYChanged then begin
-
-    end;
-
-    FLastCodeValid:=true;
-    FLastMode:=Mode;
-    fLastCodeOptionsChangeStep:=CodeExplorerOptions.ChangeStep;
-    FLastCodeXY:=SrcEdit.CursorTextXY;
-    // remember the codetools ChangeStep
-    if ACodeTool<>nil then begin
-      FCodeFilename:=ACodeTool.MainFilename;
-      if ACodeTool.Scanner<>nil then
-        FLastCodeChangeStep:=ACodeTool.Scanner.ChangeStep;
-    end else
-      FCodeFilename:='';
-
-    if fCodeSortedForStartPos<>nil then
-      fCodeSortedForStartPos.Clear;
-
-    //DebugLn(['TCodeExplorerView.RefreshCode ',FCodeFilename]);
-
-    // start updating the CodeTreeView
-    CodeTreeview.BeginUpdate;
-    OldExpanded:=TTreeNodeExpandedState.Create(CodeTreeView);
-
-    for c:=low(TCodeExplorerCategory) to high(TCodeExplorerCategory) do
-      fCategoryNodes[c]:=nil;
-    fObserverNode:=nil;
-    for f:=low(TCEObserverCategory) to high(TCEObserverCategory) do
-      fObserverCatNodes[f]:=nil;
-
-    if (ACodeTool=nil) or (ACodeTool.Tree=nil) or (ACodeTool.Tree.Root=nil) then
-    begin
-      CodeTreeview.Items.Clear;
+      SelectCodePosition(Code,FLastCodeXY.X,FLastCodeXY.Y);
     end else begin
-      CodeTreeview.Items.Clear;
-      CreateIdentifierNodes(ACodeTool,ACodeTool.Tree.Root,nil,nil,true);
-      if (Mode = cemCategory) and
-         (cecCodeObserver in CodeExplorerOptions.Categories) then
-        CreateObservations(ACodeTool);
+
+      FLastCodeValid:=true;
+      FLastMode:=Mode;
+      fLastCodeOptionsChangeStep:=CodeExplorerOptions.ChangeStep;
+      FLastCodeXY:=SrcEdit.CursorTextXY;
+      // remember the codetools ChangeStep
+      if ACodeTool<>nil then begin
+        FCodeFilename:=ACodeTool.MainFilename;
+        if ACodeTool.Scanner<>nil then
+          FLastCodeChangeStep:=ACodeTool.Scanner.ChangeStep;
+      end else
+        FCodeFilename:='';
+
+      if fCodeSortedForStartPos<>nil then
+        fCodeSortedForStartPos.Clear;
+
+      //DebugLn(['TCodeExplorerView.RefreshCode ',FCodeFilename]);
+
+      CurFollowNode:=CodeExplorerOptions.FollowCursor and (not Active);
+
+      // start updating the CodeTreeView
+      CodeTreeview.BeginUpdate;
+      if not CurFollowNode then
+        OldExpanded:=TTreeNodeExpandedState.Create(CodeTreeView);
+
+      for c:=low(TCodeExplorerCategory) to high(TCodeExplorerCategory) do
+        fCategoryNodes[c]:=nil;
+      fObserverNode:=nil;
+      for f:=low(TCEObserverCategory) to high(TCEObserverCategory) do
+        fObserverCatNodes[f]:=nil;
+
+      if (ACodeTool=nil) or (ACodeTool.Tree=nil) or (ACodeTool.Tree.Root=nil) then
+      begin
+        CodeTreeview.Items.Clear;
+      end else begin
+        CodeTreeview.Items.Clear;
+        CreateIdentifierNodes(ACodeTool,ACodeTool.Tree.Root,nil,nil,true);
+        if (Mode = cemCategory) and
+           (cecCodeObserver in CodeExplorerOptions.Categories) then
+          CreateObservations(ACodeTool);
+      end;
+
+      fSortCodeTool:=ACodeTool;
+      CodeTreeview.CustomSort(@CompareCodeNodes);
+
+      DeleteDuplicates(ACodeTool);
+
+      // restore old expanded state
+      if not CurFollowNode then
+        AutoExpandNodes;
+
+      BuildCodeSortedForStartPos;
+      ClearCTNodes(CodeTreeview);
+
+      ApplyCodeFilter;
+
+      if OldExpanded<>nil then
+        OldExpanded.Apply(CodeTreeView);
+
+      if CurFollowNode then
+        SelectCodePosition(Code,FLastCodeXY.X,FLastCodeXY.Y);
+
+      CodeTreeview.EndUpdate;
     end;
-
-    // restore old expanded state
-    fSortCodeTool:=ACodeTool;
-    CodeTreeview.CustomSort(@CompareCodeNodes);
-
-    DeleteDuplicates(ACodeTool);
-    AutoExpandNodes;
-
-    BuildCodeSortedForStartPos;
-    ClearCTNodes(CodeTreeview);
-
-    ApplyCodeFilter;
-
-    OldExpanded.Apply(CodeTreeView);
-    OldExpanded.Free;
-    CodeTreeview.EndUpdate;
-
   finally
     Exclude(FFlags,cevRefreshing);
+    OldExpanded.Free;
   end;
 end;
 
@@ -2020,7 +2037,18 @@ begin
       if fLastCodeTool.CaretToCleanPos(CodePos,CleanPos)<>0 then exit;
       TVNode:=FindCodeTVNodeAtCleanPos(CleanPos);
       if TVNode=nil then exit;
-      TVNode.Selected:=true;
+      CodeTreeview.BeginUpdate;
+      CodeTreeview.Options:=CodeTreeview.Options-[tvoAllowMultiselect];
+      if not TVNode.IsVisible then begin
+        // collapse all other and expand only this
+        CodeTreeview.FullCollapse;
+        CodeTreeview.Selected:=TVNode;
+        //debugln(['TCodeExplorerView.SelectCodePosition ',TVNode.Text]);
+      end else begin
+        CodeTreeview.Selected:=TVNode;
+        //debugln(['TCodeExplorerView.SelectCodePosition ',TVNode.Text]);
+      end;
+      CodeTreeview.EndUpdate;
       Result:=true;
     end;
   end;
@@ -2032,32 +2060,27 @@ function TCodeExplorerView.FindCodeTVNodeAtCleanPos(CleanPos: integer
 // if there are several nodes, the one with the shortest range (EndPos-StartPos)
 // is returned.
 var
-  KeyPos: integer;
   AVLNode: TAvgLvlTreeNode;
   Node: TTreeNode;
   NodeData: TViewNodeData;
-  BestData: TViewNodeData;
 begin
   Result:=nil;
   if (fLastCodeTool=nil) or (not FLastCodeValid) or (CodeTreeview=nil)
   or (fCodeSortedForStartPos=nil) then exit;
-  KeyPos:=CleanPos;
-  AVLNode:=fCodeSortedForStartPos.FindLeftMostKey(@KeyPos,
-                            TListSortCompare(@CompareStartPosWithViewNodeData));
-  // find the shortest
-  BestData:=nil;
-  Result:=nil;
+  // find nearest node in tree
+
+  AVLNode:=fCodeSortedForStartPos.FindLowest;
   while AVLNode<>nil do begin
     Node:=TTreeNode(AVLNode.Data);
-    if TObject(Node.Data) is TViewNodeData then begin
-      NodeData:=TViewNodeData(Node.Data);
-      if (BestData=nil)
-      or ((BestData.StartPos<=NodeData.StartPos)
-          and (BestData.EndPos>=NodeData.EndPos))
-      then begin
+    NodeData:=TViewNodeData(Node.Data);
+    //debugln(['TCodeExplorerView.FindCodeTVNodeAtCleanPos Node ',NodeData.StartPos,'-',NodeData.EndPos,' ',Node.Text,' ',CleanPos]);
+    if NodeData.StartPos>CleanPos then exit;
+    if NodeData.EndPos>=CleanPos then begin
+      if (Result=nil)
+      or (NodeData.EndPos-NodeData.StartPos
+         < TViewNodeData(Result.Data).EndPos-TViewNodeData(Result.Data).StartPos)
+      then
         Result:=Node;
-        BestData:=TViewNodeData(Node.Data);
-      end;
     end;
     AVLNode:=fCodeSortedForStartPos.FindSuccessor(AVLNode);
   end;
@@ -2074,7 +2097,8 @@ begin
   TVNode:=CodeTreeview.Items.GetFirstNode;
   while TVNode<>nil do begin
     NodeData:=TViewNodeData(TVNode.Data);
-    if (NodeData<>nil) and (NodeData.StartPos>0) then begin
+    if (NodeData<>nil) and (NodeData.StartPos>0)
+    and (NodeData.EndPos>=NodeData.StartPos) then begin
       if fCodeSortedForStartPos=nil then
         fCodeSortedForStartPos:=
               TAvgLvlTree.Create(TListSortCompare(@CompareViewNodeDataStartPos));

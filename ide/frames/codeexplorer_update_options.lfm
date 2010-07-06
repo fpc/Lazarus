@@ -85,6 +85,5 @@ inherited CodeExplorerUpdateOptionsFrame: TCodeExplorerUpdateOptionsFrame
     ParentShowHint = False
     ShowHint = True
     TabOrder = 2
-    Visible = False
   end
 end
