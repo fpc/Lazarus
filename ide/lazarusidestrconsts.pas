@@ -4195,6 +4195,8 @@ resourcestring
   lisCEOWhenSwitchingFile = 'When switching file in source editor';
   lisCEOOnIdle = 'On idle';
   lisCEFollowCursor = 'Follow cursor';
+  lisWhenTheSourceEditorCursorMovesShowTheCurrentNodeIn = 'When the source '
+    +'editor cursor moves, show the current node in the code explorer';
   lisCECategories = 'Categories';
   lisCEUses = 'Uses';
   lisCEOnlyUsedInCategoryMode = 'Only used in category mode';

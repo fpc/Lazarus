@@ -518,8 +518,6 @@ type
         const Filename: string);
 
     // code explorer events
-    procedure OnCodeExplorerGetCodeTree(Sender: TObject;
-                                        var ACodeTool: TCodeTool);
     procedure OnCodeExplorerGetDirectivesTree(Sender: TObject;
                                           var ADirectivesTool: TDirectivesTool);
     procedure OnCodeExplorerJumpToCode(Sender: TObject; const Filename: string;
@@ -8953,7 +8951,6 @@ begin
   if CodeExplorerView=nil then 
   begin
     CodeExplorerView:=TCodeExplorerView.Create(OwningComponent);
-    CodeExplorerView.OnGetCodeTree:=@OnCodeExplorerGetCodeTree;
     CodeExplorerView.OnGetDirectivesTree:=@OnCodeExplorerGetDirectivesTree;
     CodeExplorerView.OnJumpToCode:=@OnCodeExplorerJumpToCode;
     CodeExplorerView.OnShowOptions:=@OnCodeExplorerShowOptions;
@@ -13247,17 +13244,6 @@ procedure TMainIDE.UnitDependenciesViewOpenFile(Sender: TObject;
   const Filename: string);
 begin
   DoOpenEditorFile(Filename,-1,-1,[]);
-end;
-
-procedure TMainIDE.OnCodeExplorerGetCodeTree(Sender: TObject;
-  var ACodeTool: TCodeTool);
-var
-  ActiveUnitInfo: TUnitInfo;
-  ActiveSrcEdit: TSourceEditor;
-begin
-  ACodeTool:=nil;
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
-  CodeToolBoss.Explore(ActiveUnitInfo.Source,ACodeTool,false);
 end;
 
 procedure TMainIDE.OnCodeExplorerGetDirectivesTree(Sender: TObject;

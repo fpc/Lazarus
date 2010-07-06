@@ -12,7 +12,7 @@ inherited CodeExplorerUpdateOptionsFrame: TCodeExplorerUpdateOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 53
+    Height = 55
     Top = 0
     Width = 400
     Anchors = [akTop, akLeft, akRight]
@@ -28,7 +28,7 @@ inherited CodeExplorerUpdateOptionsFrame: TCodeExplorerUpdateOptionsFrame
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
     ClientHeight = 34
-    ClientWidth = 396
+    ClientWidth = 392
     Columns = 2
     ItemIndex = 0
     Items.Strings = (
@@ -45,8 +45,8 @@ inherited CodeExplorerUpdateOptionsFrame: TCodeExplorerUpdateOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 97
-    Top = 59
+    Height = 99
+    Top = 61
     Width = 400
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -62,7 +62,7 @@ inherited CodeExplorerUpdateOptionsFrame: TCodeExplorerUpdateOptionsFrame
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
     ClientHeight = 78
-    ClientWidth = 396
+    ClientWidth = 392
     Items.Strings = (
       'Manual'
       'SwitchPage'
@@ -77,11 +77,13 @@ inherited CodeExplorerUpdateOptionsFrame: TCodeExplorerUpdateOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 22
-    Top = 162
-    Width = 167
+    Top = 166
+    Width = 178
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'FollowCursorCheckBox'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 2
     Visible = False
   end

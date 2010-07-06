@@ -39,7 +39,7 @@ interface
 
 uses
   // FCL+LCL
-  Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Graphics,
+  Classes, SysUtils, types, LCLProc, LCLType, Forms, Controls, Graphics,
   Dialogs, Buttons, ComCtrls, Menus, AvgLvlTree, StdCtrls, ExtCtrls,
   // CodeTools
   BasicCodeTools, CustomCodeTool, CodeToolManager, CodeAtom, CodeCache,
@@ -54,8 +54,6 @@ uses
 type
   TCodeExplorerView = class;
 
-  TOnGetCodeTree =
-                 procedure(Sender: TObject; var ACodeTool: TCodeTool) of object;
   TOnGetDirectivesTree =
      procedure(Sender: TObject; var ADirectivesTool: TDirectivesTool) of object;
   TOnJumpToCode = procedure(Sender: TObject; const Filename: string;
@@ -172,7 +170,7 @@ type
     FMode: TCodeExplorerMode;
     FLastMode: TCodeExplorerMode;
     FLastCodeValid: boolean;
-    FOnGetCodeTree: TOnGetCodeTree;
+    FLastCodeXY: TPoint;
     FOnGetDirectivesTree: TOnGetDirectivesTree;
     FOnJumpToCode: TOnJumpToCode;
     FOnShowOptions: TNotifyEvent;
@@ -250,8 +248,6 @@ type
     function FilterFits(const NodeText, TheFilter: string): boolean; virtual;
     function GetCurrentTreeView: TCustomTreeView;
   public
-    property OnGetCodeTree: TOnGetCodeTree read FOnGetCodeTree
-                                           write FOnGetCodeTree;
     property OnGetDirectivesTree: TOnGetDirectivesTree read FOnGetDirectivesTree
                                                      write FOnGetDirectivesTree;
     property OnJumpToCode: TOnJumpToCode read FOnJumpToCode write FOnJumpToCode;
@@ -1713,6 +1709,11 @@ var
   ACodeTool: TCodeTool;
   c: TCodeExplorerCategory;
   f: TCEObserverCategory;
+  SrcEdit: TSourceEditorInterface;
+  Filename: String;
+  Code: TCodeBuffer;
+  NewXY: TPoint;
+  OnlyXYChanged: Boolean;
 begin
   if (FUpdateCount>0)
   or (OnlyVisible and ((CurrentPage<>cepCode) or (not IsVisible))) then begin
@@ -1725,13 +1726,23 @@ begin
   try
     Include(FFlags,cevRefreshing);
     
-    // get the codetool with the updated codetree
+    // get the current editor
+    if not LazarusIDE.BeginCodeTools then exit;
+    SrcEdit:=SourceEditorManagerIntf.ActiveEditor;
+    if SrcEdit=nil then exit;
+    // get the codetool for the current editor
+    Filename:=SrcEdit.FileName;
+    Code:=CodeToolBoss.FindFile(Filename);
+    if Code=nil then exit;
     ACodeTool:=nil;
-    if Assigned(OnGetCodeTree) then
-      OnGetCodeTree(Self,ACodeTool);
+    // ToDo: check if something changed (file stamp, codebuffer stamp, defines stamp)
+    CodeToolBoss.Explore(Code,ACodeTool,false);
+    if ACodeTool=nil then exit;
+
     fLastCodeTool:=ACodeTool;
 
-    // check for changes in the codetools
+    // check for changes in the codetool
+    OnlyXYChanged:=false;
     if (ACodeTool=nil) then begin
       if (FCodeFilename='') then begin
         // still no tool
@@ -1753,13 +1764,25 @@ begin
         //debugln(['TCodeExplorerView.RefreshCode Options changed ',fLastCodeOptionsChangeStep,' ',CodeExplorerOptions.ChangeStep])
       end else begin
         // still the same source and options
-        exit;
+        OnlyXYChanged:=true;
+        if not CodeExplorerOptions.FollowCursor then
+          exit;
+        NewXY:=SrcEdit.CursorTextXY;
+        if ComparePoints(NewXY,FLastCodeXY)=0 then begin
+          // still the same cursor position
+          exit;
+        end;
       end;
+    end;
+
+    if OnlyXYChanged then begin
+
     end;
 
     FLastCodeValid:=true;
     FLastMode:=Mode;
     fLastCodeOptionsChangeStep:=CodeExplorerOptions.ChangeStep;
+    FLastCodeXY:=SrcEdit.CursorTextXY;
     // remember the codetools ChangeStep
     if ACodeTool<>nil then begin
       FCodeFilename:=ACodeTool.MainFilename;
@@ -1770,7 +1793,7 @@ begin
 
     if fCodeSortedForStartPos<>nil then
       fCodeSortedForStartPos.Clear;
-      
+
     //DebugLn(['TCodeExplorerView.RefreshCode ',FCodeFilename]);
 
     // start updating the CodeTreeView

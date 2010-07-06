@@ -74,6 +74,8 @@ begin
     Items[2] := lisCEOOnIdle;
   end;
   FollowCursorCheckBox.Caption := lisCEFollowCursor;
+  FollowCursorCheckBox.Hint :=
+    lisWhenTheSourceEditorCursorMovesShowTheCurrentNodeIn;
 end;
 
 procedure TCodeExplorerUpdateOptionsFrame.ReadSettings(
