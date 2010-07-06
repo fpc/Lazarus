@@ -151,6 +151,9 @@ type
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
 
     //class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
+    class procedure Cut(const ACustomEdit: TCustomEdit); override;
+    class procedure Copy(const ACustomEdit: TCustomEdit); override;
+    class procedure Paste(const ACustomEdit: TCustomEdit); override;
     class procedure Undo(const ACustomEdit: TCustomEdit); override;
   end;
 
@@ -896,6 +899,36 @@ begin
   AStart := GetSelStart(ACustomEdit);
   if Supports(Widget, IQtEdit, QtEdit) then
     QtEdit.setSelection(AStart, NewLength);
+end;
+
+class procedure TQtWSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
+begin
+  Widget := TQtWidget(ACustomEdit.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    QtEdit.Cut;
+end;
+
+class procedure TQtWSCustomEdit.Copy(const ACustomEdit: TCustomEdit);
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
+begin
+  Widget := TQtWidget(ACustomEdit.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    QtEdit.Copy;
+end;
+
+class procedure TQtWSCustomEdit.Paste(const ACustomEdit: TCustomEdit);
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
+begin
+  Widget := TQtWidget(ACustomEdit.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    QtEdit.Paste;
 end;
 
 class procedure TQtWSCustomEdit.Undo(const ACustomEdit: TCustomEdit);

@@ -69,8 +69,10 @@ type
 
   { IQtTextEdit }
 
+  { IQtEdit }
+
   IQtEdit = interface
-  ['{035CA259-4442-4E82-9E70-96A114DD3BC6}']
+    ['{035CA259-4442-4E82-9E70-96A114DD3BC6}']
     function getMaxLength: Integer;
     function getSelectionStart: Integer;
     function getSelectionLength: Integer;
@@ -80,6 +82,9 @@ type
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
     procedure setBorder(const ABorder: Boolean);
+    procedure Cut;
+    procedure Copy;
+    procedure Paste;
     procedure Undo;
   end;
 
@@ -652,6 +657,9 @@ type
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
     procedure setText(const AText: WideString); override;
+    procedure Cut;
+    procedure Copy;
+    procedure Paste;
     procedure Undo;
   public
     procedure AttachEvents; override;
@@ -696,6 +704,9 @@ type
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
     procedure setTabChangesFocus(const AValue: Boolean);
+    procedure Cut;
+    procedure Copy;
+    procedure Paste;
     procedure Undo;
   public
     procedure AttachEvents; override;
@@ -793,6 +804,9 @@ type
     procedure setMaxLength(const ALength: Integer);
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
+    procedure Cut;
+    procedure Copy;
+    procedure Paste;
     procedure Undo;
   public
     FList: TStrings;
@@ -854,6 +868,9 @@ type
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setMaxLength(const ALength: Integer);
     procedure setSelection(const AStart, ALength: Integer);
+    procedure Cut;
+    procedure Copy;
+    procedure Paste;
     procedure Undo;
   public
     function getValue: Double; virtual; abstract;
@@ -6059,6 +6076,21 @@ begin
   QLineEdit_setText(QLineEditH(Widget), @AText);
 end;
 
+procedure TQtLineEdit.Cut;
+begin
+  QLineEdit_cut(QLineEditH(Widget));
+end;
+
+procedure TQtLineEdit.Copy;
+begin
+  QLineEdit_copy(QLineEditH(Widget));
+end;
+
+procedure TQtLineEdit.Paste;
+begin
+  QLineEdit_paste(QLineEditH(Widget));
+end;
+
 procedure TQtLineEdit.Undo;
 begin
   QLineEdit_undo(QLineEditH(Widget));
@@ -6326,6 +6358,21 @@ end;
 procedure TQtTextEdit.setTabChangesFocus(const AValue: Boolean);
 begin
   QTextEdit_setTabChangesFocus(QTextEditH(Widget), AValue);
+end;
+
+procedure TQtTextEdit.Cut;
+begin
+  QTextEdit_cut(QTextEditH(Widget));
+end;
+
+procedure TQtTextEdit.Copy;
+begin
+  QTextEdit_copy(QTextEditH(Widget));
+end;
+
+procedure TQtTextEdit.Paste;
+begin
+  QTextEdit_paste(QTextEditH(Widget));
 end;
 
 procedure TQtTextEdit.Undo;
@@ -7062,6 +7109,24 @@ begin
     LineEdit.setSelection(AStart, ALength);
 end;
 
+procedure TQtComboBox.Cut;
+begin
+  if LineEdit <> nil then
+    LineEdit.Cut;
+end;
+
+procedure TQtComboBox.Copy;
+begin
+  if LineEdit <> nil then
+    LineEdit.Copy;
+end;
+
+procedure TQtComboBox.Paste;
+begin
+  if LineEdit <> nil then
+    LineEdit.Paste;
+end;
+
 procedure TQtComboBox.Undo;
 begin
   if LineEdit <> nil then
@@ -7650,6 +7715,24 @@ begin
     else
       QLineEdit_setCursorPosition(LineEdit, AStart);
   end;
+end;
+
+procedure TQtAbstractSpinBox.Cut;
+begin
+  if LineEdit <> nil then
+    QLineEdit_cut(LineEdit);
+end;
+
+procedure TQtAbstractSpinBox.Copy;
+begin
+  if LineEdit <> nil then
+    QLineEdit_copy(LineEdit);
+end;
+
+procedure TQtAbstractSpinBox.Paste;
+begin
+  if LineEdit <> nil then
+    QLineEdit_paste(LineEdit);
 end;
 
 procedure TQtAbstractSpinBox.Undo;
