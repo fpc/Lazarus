@@ -240,8 +240,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomEdit.CopyToClipboard;
 begin
-  if (EchoMode = emNormal) and (SelLength > 0) then
-    Clipboard.AsText := SelText;
+  if HandleAllocated then
+    TWSCustomEditClass(WidgetSetClass).Copy(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -253,14 +253,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomEdit.CutToClipboard;
 begin
-  CopyToClipboard;
-  ClearSelection;
+  if HandleAllocated then
+    TWSCustomEditClass(WidgetSetClass).Cut(Self);
 end;
 
 procedure TCustomEdit.PasteFromClipboard;
 begin
-  if Clipboard.HasFormat(CF_TEXT) then
-    SelText := Clipboard.AsText;
+  if HandleAllocated then
+    TWSCustomEditClass(WidgetSetClass).Paste(Self);
 end;
 
 procedure TCustomEdit.Undo;

@@ -162,6 +162,9 @@ type
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
 
+    class procedure Cut(const ACustomEdit: TCustomEdit); override;
+    class procedure Copy(const ACustomEdit: TCustomEdit); override;
+    class procedure Paste(const ACustomEdit: TCustomEdit); override;
     class procedure Undo(const ACustomEdit: TCustomEdit); override;
   end;
 
@@ -981,10 +984,23 @@ begin
   EditSetSelLength(ACustomEdit.Handle, NewLength);
 end;
 
+class procedure TWinCEWSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
+begin
+  SendMessage(ACustomEdit.Handle, WM_CUT, 0, 0)
+end;
+
+class procedure TWinCEWSCustomEdit.Copy(const ACustomEdit: TCustomEdit);
+begin
+  SendMessage(ACustomEdit.Handle, WM_COPY, 0, 0)
+end;
+
+class procedure TWinCEWSCustomEdit.Paste(const ACustomEdit: TCustomEdit);
+begin
+  SendMessage(ACustomEdit.Handle, WM_PASTE, 0, 0)
+end;
+
 class procedure TWinCEWSCustomEdit.Undo(const ACustomEdit: TCustomEdit);
 begin
-  if not WSCheckHandleAllocated(ACustomEdit, 'Undo') then
-    Exit;
   SendMessage(ACustomEdit.Handle, EM_UNDO, 0, 0)
 end;
 

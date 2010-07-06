@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
   StdCtrls, Graphics,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls, Classes, WSFactory;
+  WSLCLClasses, WSControls, Classes, WSFactory, Clipbrd;
 
 type
   { TWSScrollBar }
@@ -157,6 +157,9 @@ type
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); virtual;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); virtual;
 
+    class procedure Cut(const ACustomEdit: TCustomEdit); virtual;
+    class procedure Copy(const ACustomEdit: TCustomEdit); virtual;
+    class procedure Paste(const ACustomEdit: TCustomEdit); virtual;
     class procedure Undo(const ACustomEdit: TCustomEdit); virtual;
   end;
   TWSCustomEditClass = class of TWSCustomEdit;
@@ -519,6 +522,24 @@ end;
 
 class procedure TWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
 begin
+end;
+
+class procedure TWSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
+begin
+  ACustomEdit.CopyToClipboard;
+  ACustomEdit.ClearSelection;
+end;
+
+class procedure TWSCustomEdit.Copy(const ACustomEdit: TCustomEdit);
+begin
+  if (ACustomEdit.EchoMode = emNormal) and (ACustomEdit.SelLength > 0) then
+    Clipboard.AsText := ACustomEdit.SelText;
+end;
+
+class procedure TWSCustomEdit.Paste(const ACustomEdit: TCustomEdit);
+begin
+  if Clipboard.HasFormat(CF_TEXT) then
+    ACustomEdit.SelText := Clipboard.AsText;
 end;
 
 class procedure TWSCustomEdit.Undo(const ACustomEdit: TCustomEdit);

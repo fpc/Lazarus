@@ -174,6 +174,9 @@ type
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
+    class procedure Cut(const ACustomEdit: TCustomEdit); override;
+    class procedure Copy(const ACustomEdit: TCustomEdit); override;
+    class procedure Paste(const ACustomEdit: TCustomEdit); override;
     class procedure Undo(const ACustomEdit: TCustomEdit); override;
   end;
 
@@ -1185,10 +1188,23 @@ begin
     TWin32WSWinControl.SetText(ACustomEdit, AText);
 end;
 
+class procedure TWin32WSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
+begin
+  SendMessage(ACustomEdit.Handle, WM_CUT, 0, 0)
+end;
+
+class procedure TWin32WSCustomEdit.Copy(const ACustomEdit: TCustomEdit);
+begin
+  SendMessage(ACustomEdit.Handle, WM_COPY, 0, 0)
+end;
+
+class procedure TWin32WSCustomEdit.Paste(const ACustomEdit: TCustomEdit);
+begin
+  SendMessage(ACustomEdit.Handle, WM_PASTE, 0, 0)
+end;
+
 class procedure TWin32WSCustomEdit.Undo(const ACustomEdit: TCustomEdit);
 begin
-  if not WSCheckHandleAllocated(ACustomEdit, 'Undo') then
-    Exit;
   SendMessage(ACustomEdit.Handle, EM_UNDO, 0, 0)
 end;
 
