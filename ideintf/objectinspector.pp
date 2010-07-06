@@ -293,6 +293,7 @@ type
     FTopY: integer;
     FDrawHorzGridLines: Boolean;
     FActiveRowBmp: TCustomBitmap;
+    FFirstClickTime: TDateTime;
 
     // hint stuff
     FHintTimer: TTimer;
@@ -1462,8 +1463,12 @@ end;
 procedure TOICustomPropertyGrid.ValueComboBoxMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if (Button=mbLeft) and (Shift=[ssCtrl,ssLeft]) then
-    DoCallEdit(oiqeShowValue);
+  if (Button=mbLeft) then begin
+    if (Shift=[ssCtrl,ssLeft]) then
+      DoCallEdit(oiqeShowValue)
+    else if (FFirstClickTime<>0) and (Now-FFirstClickTime<(1/86400*0.4)) then
+      ValueEditDblClick(Sender);
+  end;
 end;
 
 procedure TOICustomPropertyGrid.ValueButtonClick(Sender: TObject);
@@ -1975,6 +1980,7 @@ begin
   HideHint;
 
   if Button=mbLeft then begin
+    FFirstClickTime:=Now;
     if Cursor=crHSplit then begin
       FDragging:=true;
     end
@@ -3175,6 +3181,7 @@ end;
 
 procedure TOICustomPropertyGrid.ValueEditDblClick(Sender: TObject);
 begin
+  FFirstClickTime:=0;
   ToggleRow;
 end;
 
