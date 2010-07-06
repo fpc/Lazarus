@@ -446,6 +446,9 @@ begin
     begin
       ReturnText := '';
       ReturnList := QStringList_create;
+      {$IFDEF HASX11}
+      Clipboard.BeginX11SelectionLock;
+      {$ENDIF}
       try
         QFileDialog_getOpenFileNames(ReturnList,
           QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName,
@@ -464,11 +467,25 @@ begin
 
       finally
         QStringList_destroy(ReturnList);
+        {$IFDEF HASX11}
+        Clipboard.EndX11SelectionLock;
+        {$ENDIF}
       end;
     end else
-      QFileDialog_getOpenFileName(@ReturnText,
-        QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName,
-        @saveFilter, @selectedFilter, Flags);
+    begin
+      {$IFDEF HASX11}
+      Clipboard.BeginX11SelectionLock;
+      try
+      {$ENDIF}
+        QFileDialog_getOpenFileName(@ReturnText,
+          QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName,
+          @saveFilter, @selectedFilter, Flags);
+      {$IFDEF HASX11}
+      finally
+        Clipboard.EndX11SelectionLock;
+      end;
+      {$ENDIF}
+    end;
 
     if ReturnText <> '' then
     begin
