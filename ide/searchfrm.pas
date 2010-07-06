@@ -913,7 +913,8 @@ begin
     end;
   finally
     SearchResultsView.EndUpdate(ListPage.PageIndex);
-    IDEWindowCreators.ShowForm(SearchResultsView,false);
+    // bring to front
+    IDEWindowCreators.ShowForm(SearchResultsView,true);
   end;
 end;
 
