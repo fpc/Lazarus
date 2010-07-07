@@ -111,12 +111,14 @@ type
 
 implementation
 uses qtint;
+{$ifndef QT_NATIVE_DIALOGS}
 const
   QtDialogCodeToModalResultMap: array[QDialogDialogCode] of TModalResult =
   (
 {QDialogRejected} mrCancel,
 {QDialogAccepted} mrOk
   );
+{$endif}
   
 { TQtWSCommonDialog }
 
@@ -573,8 +575,10 @@ var
   {$endif}
   FileDialog: TSelectDirectoryDialog;
   QtFileDialog: TQtFileDialog;
+  {$ifndef QT_NATIVE_DIALOGS}
   ReturnList: QStringListH;
   i: Integer;
+  {$endif}
 begin
   {------------------------------------------------------------------------------
     Initialization of variables
