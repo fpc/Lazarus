@@ -37,7 +37,7 @@ uses
   FileUtil, contnrs, IniFiles, AVL_Tree,
   // codetools
   CodeToolManager, DefineTemplates, CodeAtom, CodeCache, LinkScanner,
-  FileProcs, CodeToolsStructs,
+  FileProcs, CodeToolsStructs, FindDeclarationTool,
   // IDEIntf
   ComponentReg, IDEMsgIntf, MainIntf, LazIDEIntf, PackageIntf, ProjectIntf,
   // IDE
@@ -552,6 +552,7 @@ begin
     ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
     ConvTool.HasFormFile:=DfmFilename<>'';
     ConvTool.Target:=fSettings.Target;
+    ConvTool.ReplaceFuncs:=fSettings.ReplaceFuncs;
     ConvTool.UnitsToRemove:=fUnitsToRemove;
     ConvTool.UnitsToRename:=fUnitsToRename;
     ConvTool.UnitsToComment:=fUnitsToComment;

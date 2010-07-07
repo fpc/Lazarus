@@ -59,6 +59,8 @@ type
     fReplaceUnits: TStringToStringTree;
     // Delphi types mapped to Lazarus types, will be replaced.
     fReplaceTypes: TStringToStringTree;
+    // Delphi global function names mapped to FCL/LCL functions.
+    fReplaceFuncs: TStringToStringTree;
     // Getter / setter:
     function GetBackupPath: String;
     procedure SetMainFilename(const AValue: String);
@@ -73,7 +75,6 @@ type
     // Lazarus file name based on Delphi file name with new suffix.
     function DelphiToLazFilename(const DelphiFilename, LazExt: string;
       LowercaseFilename: boolean): string; overload;
-
     // Create Lazarus file name and copy/rename from Delphi file, keep suffix.
     function RenameDelphiToLazFile(const DelphiFilename: string;
       out LazFilename: string; LowercaseFilename: boolean): TModalResult; overload;
@@ -95,6 +96,7 @@ type
     property AutoRemoveProperties: boolean read fAutoRemoveProperties;
     property ReplaceUnits: TStringToStringTree read fReplaceUnits;
     property ReplaceTypes: TStringToStringTree read fReplaceTypes;
+    property ReplaceFuncs: TStringToStringTree read fReplaceFuncs;
   end;
 
 
@@ -197,6 +199,7 @@ begin
   fMainPath:='';
   fReplaceUnits:=TStringToStringTree.Create(false);
   fReplaceTypes:=TStringToStringTree.Create(false);
+  fReplaceFuncs:=TStringToStringTree.Create(false);
   // Load settings from ConfigStorage.
   fConfigStorage:=GetIDEConfigStorage('delphiconverter.xml', true);
   fBackupFiles          :=fConfigStorage.GetValue('BackupFiles', true);
@@ -206,6 +209,7 @@ begin
   fAutoRemoveProperties :=fConfigStorage.GetValue('AutoRemoveProperties', true);
   LoadStringToStringTree(fConfigStorage, 'ReplaceUnits', fReplaceUnits);
   LoadStringToStringTree(fConfigStorage, 'ReplaceTypes', fReplaceTypes);
+  LoadStringToStringTree(fConfigStorage, 'ReplaceFuncs', fReplaceFuncs);
 
   // Add default values for string maps if ConfigStorage doesn't have them.
   // Map Delphi units to Lazarus units.
@@ -229,7 +233,7 @@ begin
   // from Mattias: ^Tnt(([^L]|.[^X]).+)  or  ^Tnt(([^L]|L[^X]).*|L$)
   // from Alexander Klenin: ^Tnt(?!LX)(.+)$
 
-// Map Delphi types to LCL types.
+  // Map Delphi types to LCL types.
   TheMap:=fReplaceTypes;
   MapReplacement('TFlowPanel',        'TPanel');
   MapReplacement('TGridPanel',        'TPanel');
@@ -246,6 +250,17 @@ begin
   // Tnt* third party components.
   MapReplacement('^TTnt(.+)LX$',      'T$1');
   MapReplacement('^TTnt(.+[^L][^X])$','T$1');
+
+  // Map Delphi function names to FCL/LCL functions.
+  TheMap:=fReplaceFuncs;
+  MapReplacement('ShellExecute',      'OpenURL(%3)');
+  // File name encoding. ToDo: add other similar funcs with UTF8 counterparts.
+  MapReplacement('FileExists',        'FileExistsUTF8(%1)');
+  // File functions using a handle.
+  MapReplacement('CreateFile',        'FileCreate(%1)'); // in SysUtils
+  MapReplacement('GetFileSize',       'FileSize(%1)');   // in SysUtils
+  MapReplacement('ReadFile',          'FileRead(%1)');   // in SysUtils
+  MapReplacement('CloseHandle',       'FileClose(%1)');  // in SysUtils
 end;
 
 destructor TConvertSettings.Destroy;
@@ -258,8 +273,10 @@ begin
   fConfigStorage.SetDeleteValue('AutoRemoveProperties', fAutoRemoveProperties, false);
   SaveStringToStringTree(fConfigStorage, 'ReplaceUnits', fReplaceUnits);
   SaveStringToStringTree(fConfigStorage, 'ReplaceTypes', fReplaceTypes);
+  SaveStringToStringTree(fConfigStorage, 'ReplaceFuncs', fReplaceFuncs);
   // Free stuff
   fConfigStorage.Free;
+  fReplaceFuncs.Free;
   fReplaceTypes.Free;
   fReplaceUnits.Free;
   inherited Destroy;
