@@ -1358,9 +1358,7 @@ begin
   if not FileExistsUTF8(AUnitName) then
     exit(mrNo);
   CurUnitInfo:=LazProject.UnitInfoWithFilename(AUnitName);
-  if CurUnitInfo<>nil then begin            // CurUnitInfo.IsPartOfProject:=true;
-    raise Exception.Create(Format('Unit %s should not be part of project yet!', [AUnitName]));
-  end else begin
+  if CurUnitInfo=nil then begin
     if FilenameIsPascalUnit(AUnitName) then begin
       // check unitname
       CurUnitInfo:=LazProject.UnitWithUnitname(ExtractFileNameOnly(AUnitName));
@@ -1381,10 +1379,10 @@ begin
     end;
     CurUnitInfo:=TUnitInfo.Create(nil);
     CurUnitInfo.Filename:=AUnitName;
-    CurUnitInfo.IsPartOfProject:=true;
     LazProject.AddFile(CurUnitInfo,false);
-    OutUnitInfo:=CurUnitInfo;
   end;
+  CurUnitInfo.IsPartOfProject:=true;
+  OutUnitInfo:=CurUnitInfo;
 end;
 
 function TConvertDelphiProject.FindAllUnits: TModalResult;
