@@ -37,7 +37,7 @@ begin
   Pos := Stream.Position;
   try
     Stream.Read(SOI, SizeOf(SOI));
-    Result := SOI = $FFD8;
+    Result := SOI = NtoLE($D8FF);
   finally
     Stream.Position := Pos;
   end;
