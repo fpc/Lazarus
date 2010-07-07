@@ -41,7 +41,7 @@ interface
 
 {$I codetools.inc}
 
-{$DEFINE VerboseGetStringConstBounds}
+{ $DEFINE VerboseGetStringConstBounds}
 { $DEFINE ShowCompleteBlock}
 
 uses
@@ -5555,7 +5555,7 @@ var
       if (p=1) or (Src[p] in [#10,#13]) then begin
         while (p<=SrcLen) and (Src[p] in [' ',#9]) do inc(p);
         if (p>SrcLen) or (Src[p] in [#10,#13]) then begin
-          // inserting at an empty line
+          // inserting in an empty line
           inc(p);
           if (p<=SrcLen) and (Src[p] in [#10,#13]) and (Src[p]<>Src[p-1]) then
             inc(p);
@@ -5586,10 +5586,20 @@ var
       BeautifyFlags:=BeautifyFlags+[bcfDoNotIndentFirstLine];
       NewCode:=GetIndentStr(Indent-GetPosInLine(Src,FromPos))+NewCode;
     end;
-    debugln(['Replace Indent=',Indent,' NewCode=',NewCode]);
     // beautify
     NewCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
                      NewCode,Indent,BeautifyFlags);
+
+    if AfterGap=gtNewLine then begin
+      // do not reuse existing newline, but always add newline
+      NewCode:=NewCode+SourceChangeCache.BeautifyCodeOptions.LineEnd;
+      if (ToPos<SrcLen) and (not (Src[ToPos] in [#10,#13])) then
+        NewCode:=NewCode+GetIndentStr(GetLineIndent(Src,ToPos));
+      AfterGap:=gtNone;
+    end;
+    {$IFDEF ShowCompleteBlock}
+    debugln(['Replace Indent=',Indent,' NewCode="',dbgstr(NewCode),'" Replace="',DbgStr(copy(Src,FromPos-5,5)),'|',dbgstr(copy(Src,FromPos,ToPos-FromPos)),'|',dbgstr(copy(Src,ToPos,5)),'"']);
+    {$ENDIF}
     // insert
     if not SourceChangeCache.Replace(FrontGap,AfterGap,
       FromPos,ToPos,NewCode) then exit;
