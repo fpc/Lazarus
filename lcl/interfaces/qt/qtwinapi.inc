@@ -4469,7 +4469,7 @@ begin
   if ((Flags and SW_SCROLLCHILDREN) <> 0) or (PRcScroll = nil) then
     W.scroll(dx, dy, nil)
   else
-    W.scroll(dx, dy, @PRcScroll);
+    W.scroll(dx, dy, PRcScroll);
 
   if ((Flags and SW_INVALIDATE) <> 0) then
   begin
