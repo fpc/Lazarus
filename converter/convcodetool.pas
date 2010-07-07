@@ -596,7 +596,6 @@ function TConvDelphiCodeTool.ReplaceFuncCalls: boolean;
 // implementation section. Add their positions to another list for replacement.
 var
   FuncNames: TStringList;
-  DeclarationNode: TCodeTreeNode;
   CursorNode: TCodeTreeNode;
   StartPos: Integer;
   MinPos, MaxPos: Integer;
