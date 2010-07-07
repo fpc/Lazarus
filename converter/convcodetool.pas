@@ -487,7 +487,7 @@ begin
 end;
 
 procedure SplitParam(const aStr: string; aDelimiter: Char; Result: TStringList);
-// A modified split function. Removes '%' in front of every token.
+// A modified split function. Removes '$' in front of every token.
 
   procedure SetItem(Start, Len: integer); // Add the item.
   begin
@@ -497,12 +497,12 @@ procedure SplitParam(const aStr: string; aDelimiter: Char; Result: TStringList);
     end;
     while (aStr[Start+Len-1]=' ') do      // Trim trailing space.
       Dec(Len);
-    if (aStr[Start]='%') then begin       // Parameters must begin with '%'.
+    if (aStr[Start]='$') then begin       // Parameters must begin with '$'.
       Inc(Start);
       Dec(Len);
     end
     else
-      raise EConverterError.Create('Replacement function parameter should start with "%".');
+      raise EConverterError.Create('Replacement function parameter should start with "$".');
     Result.Add(Copy(aStr, Start, Len));
   end;
 

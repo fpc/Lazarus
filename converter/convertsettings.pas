@@ -253,14 +253,14 @@ begin
 
   // Map Delphi function names to FCL/LCL functions.
   TheMap:=fReplaceFuncs;
-  MapReplacement('ShellExecute',      'OpenURL(%3)');
+  MapReplacement('ShellExecute',      'OpenURL($3)');
   // File name encoding. ToDo: add other similar funcs with UTF8 counterparts.
-  MapReplacement('FileExists',        'FileExistsUTF8(%1)');
+  MapReplacement('FileExists',        'FileExistsUTF8($1)');
   // File functions using a handle.
-  MapReplacement('CreateFile',        'FileCreate(%1)'); // in SysUtils
-  MapReplacement('GetFileSize',       'FileSize(%1)');   // in SysUtils
-  MapReplacement('ReadFile',          'FileRead(%1)');   // in SysUtils
-  MapReplacement('CloseHandle',       'FileClose(%1)');  // in SysUtils
+  MapReplacement('CreateFile',        'FileCreate($1)'); // in SysUtils
+  MapReplacement('GetFileSize',       'FileSize($1)');   // in SysUtils
+  MapReplacement('ReadFile',          'FileRead($1)');   // in SysUtils
+  MapReplacement('CloseHandle',       'FileClose($1)');  // in SysUtils
 end;
 
 destructor TConvertSettings.Destroy;
