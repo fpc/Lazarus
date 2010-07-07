@@ -777,10 +777,7 @@ begin
       Writer.Free;
       S.Free;
     end;
-  end
-  else
-  if FilenameIsAbsolute(resFileName) and FileExistsUTF8(resFileName) then
-    DeleteFileInteractive(resFileName,[mbRetry]);
+  end;
   if FLrsIncludeAllowed and HasLazarusResources then
   begin
     CodeBuf := CodeToolBoss.CreateFile(lrsFileName);
