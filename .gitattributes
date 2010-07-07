@@ -2328,6 +2328,7 @@ converter/convcodetool.pas svneol=native#text/plain
 converter/convertdelphi.pas svneol=native#text/plain
 converter/convertsettings.lfm svneol=native#text/plain
 converter/convertsettings.pas svneol=native#text/plain
+converter/converttypes.pas svneol=native#text/plain
 converter/lazxmlforms.pas svneol=native#text/plain
 converter/missingpropertiesdlg.lfm svneol=native#text/plain
 converter/missingpropertiesdlg.pas svneol=native#text/plain
