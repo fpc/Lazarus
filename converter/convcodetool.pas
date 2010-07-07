@@ -15,7 +15,7 @@ uses
   CodeBeautifier, ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
   CodeCache, SourceChanger, CustomCodeTool, CodeToolsStructs, EventCodeTool,
   // Converter
-  ConvertTypes, ConvertSettings, ReplaceNamesUnit;
+  ConverterTypes, ConvertSettings, ReplaceNamesUnit;
 
 type
 
@@ -63,6 +63,7 @@ type
     function RenameResourceDirectives: boolean;
     function CommentOutUnits: boolean;
     function ReplaceFuncsInSource: boolean;
+    function ReplaceFuncCalls: boolean;
     function HandleCodetoolError: TModalResult;
   public
     constructor Create(Code: TCodeBuffer);
@@ -74,7 +75,6 @@ type
     function UsesSectionsToUnitnames: TStringList;
     function FixMainClassAncestor(const AClassName: string;
                                   AReplaceTypes: TStringToStringTree): boolean;
-    function ReplaceFuncCalls: boolean;
   public
     property Ask: Boolean read fAsk write fAsk;
     property HasFormFile: boolean read fHasFormFile write fHasFormFile;

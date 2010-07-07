@@ -1,4 +1,4 @@
-unit ConvertTypes;
+unit ConverterTypes;
 
 {$mode objfpc}{$H+}
 
