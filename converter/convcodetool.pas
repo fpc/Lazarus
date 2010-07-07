@@ -671,6 +671,7 @@ var
           else begin
             FuncInfo:=TCalledFuncInfo.Create({FuncName,} fReplaceFuncs[FuncName]);
             ReadParams(FuncInfo);
+            IdentEndPos:=FuncInfo.fEndPos; // Skip the params, too, for next search.
             fFuncsToReplace.Add(FuncInfo);
 //            ExprTypes:=CreateParamExprListFromStatement(CurPos.EndPos, Params);
           end;
