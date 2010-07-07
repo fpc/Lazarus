@@ -451,13 +451,7 @@ end;
 procedure TCustomForm.WMShowWindow(var message: TLMShowWindow);
 begin
   {$IFDEF VerboseFocus}
-  DbgOut('TCustomForm.WMShowWindow A ',Name,':'+ClassName+' fsShowing='+dbgs(fsShowing in FFormState)+' Msg.Show='+dbgs(Message.Show));
-  if FActiveControl<>nil then begin
-    DbgOut(' FActiveControl=',FActiveControl.Name,':',FActiveControl.ClassName,' HandleAllocated=',dbgs(FActiveControl.HandleAllocated));
-  end else begin
-    DbgOut(' FActiveControl=nil');
-  end;
-  DebugLn('');
+  Debugln(['TCustomForm.WMShowWindow A ',DbgSName(Self),' fsShowing=',fsShowing in FFormState,' Msg.Show=',Message.Show,' FActiveControl=',DbgSName(FActiveControl)]);
   {$ENDIF}
   if (fsShowing in FFormState) then exit;
   Include(FFormState, fsShowing);
@@ -483,7 +477,7 @@ end;
 procedure TCustomForm.WMActivate(var Message : TLMActivate);
 begin
   {$IFDEF VerboseFocus}
-  DebugLn('TCustomForm.WMActivate A ',Name,':',ClassName,' Msg.Active=',dbgs(Message.Active));
+  DebugLn('TCustomForm.WMActivate A ',DbgSName(Self),' Msg.Active=',dbgs(Message.Active));
   {$ENDIF}
   if (FormStyle <> fsMDIForm) or (csDesigning in ComponentState) then
     SetActive(Message.Active);
@@ -1708,48 +1702,38 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomForm.SetActiveControl(AWinControl: TWinControl);
 begin
-  if FActiveControl <> AWinControl then
+  if FActiveControl = AWinControl then exit;
+  if (AWinControl<>nil) and IsVisible then
   begin
-    if (AWinControl<>nil) and IsVisible then
+    // this form can focus => do some sanity checks and raise an exception to
+    // to help programmers to understand why a control is not focused
+    if (AWinControl = Self) or
+       (GetParentForm(AWinControl) <> Self) or
+       not ((csLoading in ComponentState) or AWinControl.CanFocus) then
     begin
-      // this form can focus => do some sanity checks and raise an exception to
-      // to help programmers to understand why a control is not focused
-      if (AWinControl = Self) or 
-         (GetParentForm(AWinControl) <> Self) or 
-         not ((csLoading in ComponentState) or AWinControl.CanFocus) then 
-      begin
-        DebugLn('TCustomForm.SetActiveControl ',DbgSName(Self),' AWinControl=',DbgSName(AWinControl),' GetParentForm(AWinControl)=',
-                DbgSName(GetParentForm(AWinControl)),' csLoading=',dbgs(csLoading in ComponentState),' AWinControl.CanFocus=',
-                dbgs((AWinControl<>nil) and AWinControl.CanFocus),' IsControlVisible=',dbgs((AWinControl<>nil) and AWinControl.IsControlVisible),
-                ' Enabled=',dbgs((AWinControl<>nil) and AWinControl.Enabled));
-        {$IFDEF VerboseFocus}
-        RaiseGDBException(SCannotFocus);
-        {$ELSE}
-        raise EInvalidOperation.Create(SCannotFocus);
-        {$ENDIF}
-      end;
+      DebugLn('TCustomForm.SetActiveControl ',DbgSName(Self),' AWinControl=',DbgSName(AWinControl),' GetParentForm(AWinControl)=',
+              DbgSName(GetParentForm(AWinControl)),' csLoading=',dbgs(csLoading in ComponentState),' AWinControl.CanFocus=',
+              dbgs((AWinControl<>nil) and AWinControl.CanFocus),' IsControlVisible=',dbgs((AWinControl<>nil) and AWinControl.IsControlVisible),
+              ' Enabled=',dbgs((AWinControl<>nil) and AWinControl.Enabled));
+      {$IFDEF VerboseFocus}
+      RaiseGDBException(SCannotFocus);
+      {$ELSE}
+      raise EInvalidOperation.Create(SCannotFocus);
+      {$ENDIF}
     end;
+  end;
 
-    {$IFDEF VerboseFocus}
-    DbgOut('TCustomForm.SetActiveControl ',Name,':',ClassName,' FActive=',DbgS(FActive));
-    if FActiveControl<>nil then
-      DebugLn(' OldActiveControl=',DbgSName(FActiveControl))
-    else
-      DebugLn(' OldActiveControl=nil');
-    if AWinControl<>nil then
-      DebugLn(' NewActiveControl=',DbgSName(AWinControl))
-    else
-      DebugLn(' NewActiveControl=nil');
-    {$ENDIF}
+  {$IFDEF VerboseFocus}
+  Debugln(['TCustomForm.SetActiveControl ',DbgSName(Self),' FActive=',DbgS(FActive),' OldActiveControl=',DbgSName(FActiveControl),' NewActiveControl=',DbgSName(AWinControl)]);
+  {$ENDIF}
 
-    FActiveControl := AWinControl;
-    if FActiveControl<>nil then FreeNotification(FActiveControl);
-    if ([csLoading, csDestroying] * ComponentState = []) then
-    begin
-      if FActive then
-        SetWindowFocus;
-      ActiveChanged;
-    end;
+  FActiveControl := AWinControl;
+  if FActiveControl<>nil then FreeNotification(FActiveControl);
+  if ([csLoading, csDestroying] * ComponentState = []) then
+  begin
+    if FActive then
+      SetWindowFocus;
+    ActiveChanged;
   end;
 end;
 
@@ -2261,11 +2245,20 @@ begin
   if (FDesigner = nil) and (not (csLoading in ComponentState)) then
   begin
     if Control <> Self then begin
+      {$IFDEF VerboseFocus}
+      if FActiveControl<>Control then
+        debugln(['TCustomForm.SetFocusedControl ',DbgSName(Self),' OldActiveControl=',DbgSName(FActiveControl),' New=',DbgSName(Control)]);
+      {$ENDIF}
       FActiveControl := Control;
       if FActiveControl<>nil then
         FreeNotification(FActiveControl);
-    end else
+    end else begin
+      {$IFDEF VerboseFocus}
+      if FActiveControl<>nil then
+        debugln(['TCustomForm.SetFocusedControl ',DbgSName(Self),' OldActiveControl=',DbgSName(FActiveControl),' New=',DbgSName(Control)]);
+      {$ENDIF}
       FActiveControl := nil;
+    end;
   end;
 
   // update Screen object
@@ -2299,6 +2292,10 @@ begin
       while CurControl <> nil do
       begin
         if CurControl is TCustomForm then begin
+          {$IFDEF VerboseFocus}
+          if TCustomForm(CurControl).FActiveControl<>Control then
+            debugln(['TCustomForm.SetFocusedControl Self=',DbgSName(Self),' SomeParent=',DbgSName(CurControl),' OldActiveControl=',DbgSName(TCustomForm(CurControl).FActiveControl),' New=',DbgSName(Control)]);
+          {$ENDIF}
           TCustomForm(CurControl).FActiveControl := Control;
           TCustomForm(CurControl).FreeNotification(Control);
         end;
@@ -2478,9 +2475,12 @@ begin
   end;
   if (ActiveControl <> nil) and (Parent=nil) then
   begin
+    // check if loaded ActiveControl can be focused
+    // and if yes, call SetActiveControl to invoke handlers
     Control := ActiveControl;
     {$IFDEF VerboseFocus}
-    Debugln('TCustomForm.Loaded Self=',DbgSName(Self),' FActiveControl=',DbgSName(FActiveControl));
+    if FActiveControl<>nil then
+      Debugln('TCustomForm.Loaded Self=',DbgSName(Self),' FActiveControl=',DbgSName(FActiveControl));
     {$ENDIF}
     FActiveControl := nil;
     if Control.CanFocus then SetActiveControl(Control);
