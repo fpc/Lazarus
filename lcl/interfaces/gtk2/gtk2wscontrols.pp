@@ -242,14 +242,24 @@ class procedure TGtk2WSWinControl.SetBiDiMode(const AWinControl : TWinControl;
   );
 const
   WidgetDirection : array[boolean] of longint = (GTK_TEXT_DIR_LTR, GTK_TEXT_DIR_RTL);
+var
+  Info: PWidgetInfo;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBiDiMode') then
     Exit;
-
   gtk_widget_set_direction(PGtkWidget(AWinControl.Handle),
     WidgetDirection[UseRightToLeftAlign]);
+  Info := GetWidgetInfo(PGtkWidget(AWinControl.Handle));
+  if Info <> nil then
+  begin
+    if Info^.CoreWidget <> nil then
+      gtk_widget_set_direction(Info^.CoreWidget,
+        WidgetDirection[UseRightToLeftAlign]);
+    if Info^.ClientWidget <> nil then
+      gtk_widget_set_direction(Info^.ClientWidget,
+        WidgetDirection[UseRightToLeftAlign]);
+  end;
 end;
-
 
 function Gtk1GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 var
