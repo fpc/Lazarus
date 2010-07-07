@@ -210,6 +210,7 @@ type
           out BlockCleanStart, BlockCleanEnd: integer): boolean;
     function CompleteBlock(const CursorPos: TCodeXYPosition;
           SourceChangeCache: TSourceChangeCache;
+          OnlyIfCursorBlockIndented: boolean;
           out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
       
     // compiler directives
@@ -5413,7 +5414,7 @@ begin
 end;
 
 function TStandardCodeTool.CompleteBlock(const CursorPos: TCodeXYPosition;
-  SourceChangeCache: TSourceChangeCache;
+  SourceChangeCache: TSourceChangeCache; OnlyIfCursorBlockIndented: boolean;
   out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
 { For example:
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -5618,7 +5619,7 @@ var
     AtomInFrontOfCursor: TAtomPosition;
     BehindCursorBlock: Boolean; // atom is behind cursor block
     InCursorBlock: Boolean;
-    NeedCompletion: Boolean;
+    NeedCompletion: integer;
     InsertPos: LongInt;
     NewCode: String;
     AfterGap: TGapTyp;
@@ -5632,6 +5633,15 @@ var
     function EndBlockIsOk: boolean;
     begin
       //DebugLn(['EndBlockIsOk ']);
+      if (NeedCompletion>0) and (CursorBlockLvl>=0)
+      and (Stack.Top=CursorBlockLvl)
+      and (GetLineIndent(Src,CurPos.StartPos)=CursorBlockOuterIndent) then begin
+        // cursor block is properly closed => do not complete
+        {$IFDEF ShowCompleteBlock}
+        debugln(['EndBlockIsOk cursor block is properly closed at ',CleanPosToStr(CurPos.StartPos)]);
+        {$ENDIF}
+        NeedCompletion:=0;
+      end;
       EndBlock(Stack);
       Result:=true;
       if (not BehindCursorBlock) and (Stack.Top<CursorBlockLvl) then
@@ -5656,7 +5666,7 @@ var
     Indent:=0;
     CursorBlock.StartPos:=0;
     BehindCursorBlock:=false;
-    NeedCompletion:=false;
+    NeedCompletion:=0;
     AtomInFrontOfCursor.StartPos:=0;
     CursorInEmptyStatement:=false;
     repeat
@@ -5681,6 +5691,11 @@ var
           CursorBlock:=Stack.Stack[CursorBlockLvl];
           CursorBlockOuterIndent:=GetLineIndent(Src,CursorBlock.StartPos);
           CursorBlockInnerIndent:=Stack.Stack[Stack.Top].InnerIndent;
+          if (CursorBlockInnerIndent<=CursorBlockOuterIndent)
+          and OnlyIfCursorBlockIndented then begin
+            // cursor block not indented
+            exit;
+          end;
           AtomInFrontOfCursor:=LastAtoms.GetValueAt(0);
           if (CurPos.Flag=cafSemicolon)
           and ((AtomInFrontOfCursor.Flag=cafSemicolon)
@@ -5694,13 +5709,22 @@ var
         //DebugLn(['ReadStatements CursorBlockLvl=',CursorBlockLvl,' Indent=',CursorBlockIndent]);
       end;
 
-      // check if end of node
-      if (CurPos.StartPos>SrcLen) or (CurPos.StartPos>=StartNode.EndPos) then
-        break;
-
-      // check if line start vs outer indent
       InCursorBlock:=(CursorBlockLvl>=0) and (CursorBlockLvl=Stack.Top)
                      and (not BehindCursorBlock);
+
+      // check if end of node
+      if (CurPos.StartPos>SrcLen) or (CurPos.StartPos>=StartNode.EndPos) then
+      begin
+        if InCursorBlock and (NeedCompletion=0) then begin
+          {$IFDEF ShowCompleteBlock}
+          DebugLn(['ReadStatements NeedCompletion: source end found at ',CleanPosToStr(CurPos.StartPos)]);
+          {$ENDIF}
+          NeedCompletion:=CleanCursorPos;
+        end;
+        break;
+      end;
+
+      // check if line start vs outer indent
       LineStart:=InCursorBlock and (LastPos>0)
                  and not PositionsInSameLine(Src,LastPos,CurPos.StartPos);
       if LineStart then
@@ -5710,16 +5734,17 @@ var
         // atom is in same block as cursor (not sub block)
         // and first atom of a line
         // => check indent
-        if Indent<CursorBlockOuterIndent then begin
+        if (Indent<CursorBlockOuterIndent) and (NeedCompletion=0) then begin
           // for example:
           //    begin
           //    |
+          //    Code;
           //  end;
           //DebugLn(['ReadStatements Indent=',Indent,' < CursorBlockIndent=',CursorBlockIndent]);
           {$IFDEF ShowCompleteBlock}
           DebugLn(['ReadStatements NeedCompletion: at ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockOuterIndent=',CursorBlockOuterIndent]);
           {$ENDIF}
-          NeedCompletion:=true;
+          NeedCompletion:=CleanCursorPos;
         end;
       end;
 
@@ -5735,8 +5760,14 @@ var
           end else begin
             // unexpected end of source
             {$IFDEF ShowCompleteBlock}
-            DebugLn(['ReadStatements unexpected end. ',GetAtom,' at ',CleanPosToStr(CurPos.StartPos)]);
+            DebugLn(['ReadStatements unexpected end. at ',CleanPosToStr(CurPos.StartPos)]);
             {$ENDIF}
+            if InCursorBlock and (NeedCompletion=0) then begin
+              {$IFDEF ShowCompleteBlock}
+              DebugLn(['ReadStatements NeedCompletion: unexpected end. at ',CleanPosToStr(CurPos.StartPos)]);
+              {$ENDIF}
+              NeedCompletion:=CleanCursorPos;
+            end;
           end;
           break;
         end else begin
@@ -5753,11 +5784,11 @@ var
               // missing semicolon or until
               DebugLn(['ReadStatements CursorBlockLvl=',CursorBlockLvl,' Stack.Top=',Stack.Top,' BehindCursorBlock=',BehindCursorBlock]);
               DebugLn(['ReadStatements unexpected end at ',CleanPosToStr(CurPos.StartPos),': missing finally ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
-              if InCursorBlock then begin
+              if InCursorBlock and (NeedCompletion=0) then begin
                 {$IFDEF ShowCompleteBlock}
                 DebugLn(['ReadStatements NeedCompletion: unexpected end at ',CleanPosToStr(CurPos.StartPos),': missing semicolon or until ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
                 {$ENDIF}
-                NeedCompletion:=true;
+                NeedCompletion:=CleanCursorPos;
               end;
               break;
             end;
@@ -5766,11 +5797,11 @@ var
               // missing finally/except
               DebugLn(['ReadStatements CursorBlockLvl=',CursorBlockLvl,' Stack.Top=',Stack.Top,' BehindCursorBlock=',BehindCursorBlock]);
               DebugLn(['ReadStatements unexpected end at ',CleanPosToStr(CurPos.StartPos),': missing finally ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
-              if InCursorBlock then begin
+              if InCursorBlock and (NeedCompletion=0) then begin
                 {$IFDEF ShowCompleteBlock}
                 DebugLn(['ReadStatements NeedCompletion: unexpected end at ',CleanPosToStr(CurPos.StartPos),': missing finally ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
                 {$ENDIF}
-                NeedCompletion:=true;
+                NeedCompletion:=CleanCursorPos;
               end;
               break;
             end;
@@ -5864,22 +5895,22 @@ var
             btBegin:
               begin
                 // missing end
-                if InCursorBlock then begin
+                if InCursorBlock and (NeedCompletion=0) then begin
                   {$IFDEF ShowCompleteBlock}
                   DebugLn(['ReadStatements NeedCompletion: unexpected else at ',CleanPosToStr(CurPos.StartPos),': missing end. block start: ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
                   {$ENDIF}
-                  NeedCompletion:=true;
+                  NeedCompletion:=CurPos.StartPos;
                 end;
                 break;
               end;
             btCaseColon,btRepeat:
               begin
                 // missing semicolon
-                if InCursorBlock then begin
+                if InCursorBlock and (NeedCompletion=0) then begin
                   {$IFDEF ShowCompleteBlock}
                   DebugLn(['ReadStatements NeedCompletion: unexpected else at ',CleanPosToStr(CurPos.StartPos),': missing semicolon or until. block start: ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
                   {$ENDIF}
-                  NeedCompletion:=true;
+                  NeedCompletion:=CurPos.StartPos;
                 end;
                 break;
               end;
@@ -5891,9 +5922,12 @@ var
           or UpAtomIs('INITIALIZATION') or UpAtomIs('FINALIZATION')
           then begin
             // unexpected keyword => block not closed
-            {$IFDEF ShowCompleteBlock}
-            DebugLn(['ReadStatements unexpected keyword ',GetAtom,' at ',CleanPosToStr(CurPos.StartPos)]);
-            {$ENDIF}
+            if InCursorBlock and (NeedCompletion=0) then begin
+              {$IFDEF ShowCompleteBlock}
+              DebugLn(['ReadStatements NeedCompletion: unexpected keyword ',GetAtom,' at ',CleanPosToStr(CurPos.StartPos)]);
+              {$ENDIF}
+              NeedCompletion:=CleanCursorPos;
+            end;
             break;
           end;
         end;
@@ -5906,16 +5940,27 @@ var
         // atom is in same block as cursor (not sub block)
         // and first atom of a line
         // => check indent
-        if Indent<CursorBlockInnerIndent then begin
-          // for example:
-          //    Code;
-          //    |
-          //  Code;
-          //DebugLn(['ReadStatements Indent=',Indent,' < CursorBlockIndent=',CursorBlockIndent]);
+        if (Indent<CursorBlockInnerIndent) and (NeedCompletion=0) then begin
           {$IFDEF ShowCompleteBlock}
           DebugLn(['ReadStatements NeedCompletion: at ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockInnerIndent=',CursorBlockInnerIndent]);
           {$ENDIF}
-          NeedCompletion:=true;
+          if CursorBlockOuterIndent<CursorBlockInnerIndent then begin
+            // for example:
+            //  begin
+            //    Code;
+            //    |
+            //    Code;
+            //  Code;
+            //DebugLn(['ReadStatements Indent=',Indent,' < CursorBlockIndent=',CursorBlockIndent]);
+            NeedCompletion:=CurPos.StartPos;
+          end else begin
+            // for example:
+            // begin
+            // |
+            // Code;
+            NeedCompletion:=CleanCursorPos;
+            // Note: if the end is coming later, NeedCompletion is diabled
+          end;
         end;
       end;
 
@@ -5929,21 +5974,16 @@ var
     if Stack.Top<0 then begin
       // all blocks closed
       {$IFDEF ShowCompleteBlock}
-      if NeedCompletion then
+      if NeedCompletion>0 then
         DebugLn(['ReadStatements all blocks closed: no completion needed']);
       {$ENDIF}
-      NeedCompletion:=false;
-    end;
-    if (not NeedCompletion) and (Stack.Top>=0)
-    and (not BehindCursorBlock) and (CursorBlockLvl=Stack.Top) then begin
-      {$IFDEF ShowCompleteBlock}
-      DebugLn(['ReadStatements NeedCompletion: in cursor block, block not closed']);
-      {$ENDIF}
-      NeedCompletion:=true;
+      NeedCompletion:=0;
     end;
 
-    if NeedCompletion then begin
-      InsertPos:=CleanCursorPos;
+    if (NeedCompletion>0) then begin
+      InsertPos:=NeedCompletion;
+      while (InsertPos>CleanCursorPos) and (IsSpaceChar[Src[InsertPos-1]]) do
+        dec(InsertPos);
       Indent:=CursorBlockOuterIndent;
 
       // check code behind

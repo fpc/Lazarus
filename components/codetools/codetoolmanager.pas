@@ -363,8 +363,10 @@ type
     function GuessUnclosedBlock(Code: TCodeBuffer; X,Y: integer;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
-    function CompleteBlock(Code: TCodeBuffer; X,Y: integer): boolean;
     function CompleteBlock(Code: TCodeBuffer; X,Y: integer;
+          OnlyIfCursorBlockIndented: boolean): boolean;
+    function CompleteBlock(Code: TCodeBuffer; X,Y: integer;
+          OnlyIfCursorBlockIndented: boolean;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
 
@@ -3140,18 +3142,20 @@ begin
   {$ENDIF}
 end;
 
-function TCodeToolManager.CompleteBlock(Code: TCodeBuffer; X, Y: integer
-  ): boolean;
+function TCodeToolManager.CompleteBlock(Code: TCodeBuffer; X, Y: integer;
+  OnlyIfCursorBlockIndented: boolean): boolean;
 var
   NewCode: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
-  Result:=CompleteBlock(Code,X,Y,NewCode,NewX,NewY,NewTopLine);
+  Result:=CompleteBlock(Code,X,Y,OnlyIfCursorBlockIndented,
+                        NewCode,NewX,NewY,NewTopLine);
   if (NewCode=nil) and (NewX<0) and (NewY<0) and (NewTopLine<1) then ;
 end;
 
-function TCodeToolManager.CompleteBlock(Code: TCodeBuffer; X, Y: integer; out
-  NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer): boolean;
+function TCodeToolManager.CompleteBlock(Code: TCodeBuffer; X, Y: integer;
+  OnlyIfCursorBlockIndented: boolean;
+  out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer): boolean;
 var
   CursorPos, NewPos: TCodeXYPosition;
 begin
@@ -3169,7 +3173,7 @@ begin
   CursorPos.Code:=Code;
   try
     Result:=FCurCodeTool.CompleteBlock(CursorPos,SourceChangeCache,
-                                       NewPos,NewTopLine);
+                                   OnlyIfCursorBlockIndented,NewPos,NewTopLine);
     if Result then begin
       NewCode:=NewPos.Code;
       NewX:=NewPos.X;

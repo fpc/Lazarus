@@ -3752,7 +3752,6 @@ begin
   and ((SysUtils.CompareText(WordToken,'if')=0)
     or (SysUtils.CompareText(WordToken,'while')=0)
     or (SysUtils.CompareText(WordToken,'for')=0)
-    or (SysUtils.CompareText(WordToken,'foreach')=0)
     )
   then begin
     p:=x2;
@@ -3760,6 +3759,7 @@ begin
     if SysUtils.CompareText(copy(Line,StartPos,p-StartPos),'begin')=0 then begin
       // 'if begin' => insert 'then'
       // 'while begin' => insert 'do'
+      // 'for begin' => insert 'do'
       Result:=true;
       if (SysUtils.CompareText(WordToken,'if')=0) then
         s:='then'
@@ -3788,21 +3788,21 @@ begin
   if (not EditorOpts.AutoBlockCompletion)
   or (not (SyntaxHighlighterType in [lshFreePascal,lshDelphi])) then
     exit;
-  if (Char='n') or (Char='N') then begin
-    p:=GetCursorTextXY;
-    FEditor.GetWordBoundsAtRowCol(p, x1, x2);
-    Line:=GetLineText;
-    WordToken := copy(Line, x1, x2-x1);
-    if SysUtils.CompareText(WordToken,'begin')<>0 then exit;
+  p:=GetCursorTextXY;
+  FEditor.GetWordBoundsAtRowCol(p, x1, x2);
+  Line:=GetLineText;
+  WordToken := copy(Line, x1, x2-x1);
+  if (SysUtils.CompareText(WordToken,'begin')=0)
+  then begin
     debugln(['TSourceEditor.AutoBlockCompleteChar ']);
     // user typed 'begin'
     if not LazarusIDE.SaveSourceEditorChangesToCodeCache(self) then exit;
-    {FEditor.BeginUndoBlock;
+    FEditor.BeginUndoBlock;
     try
-      if not CodeToolBoss.CompleteBlock(CodeBuffer,p.X,p.Y) then exit;
+      if not CodeToolBoss.CompleteBlock(CodeBuffer,p.X,p.Y,true) then exit;
     finally
       FEditor.EndUndoBlock;
-    end;}
+    end;
   end;
 end;
 
@@ -3816,7 +3816,7 @@ begin
   XY:=FEditor.LogicalCaretXY;
   FEditor.BeginUndoBlock;
   try
-    if not CodeToolBoss.CompleteBlock(CodeBuffer,XY.X,XY.Y,
+    if not CodeToolBoss.CompleteBlock(CodeBuffer,XY.X,XY.Y,false,
                                       NewCode,NewX,NewY,NewTopLine) then exit;
     XY:=FEditor.LogicalCaretXY;
     //DebugLn(['TSourceEditor.AutoCompleteBlock XY=',dbgs(XY),' NewX=',NewX,' NewY=',NewY]);
