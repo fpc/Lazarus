@@ -140,6 +140,8 @@ begin
   if (Result<MinW) then Result:=MinW;
   MaxW:=EffectiveMaxWidth;
   if (MaxW>0) and (Result>MaxW) then Result:=MaxW;
+  if (Control is TWinControl) and TWinControl(Control).HandleAllocated then
+    TWSControlClass(Control.WidgetSetClass).ConstraintWidth(Control, Self, Result);
 end;
 
 function TSizeConstraints.MinMaxHeight(Height: integer): integer;
@@ -152,6 +154,8 @@ begin
   if (Result<MinH) then Result:=MinH;
   MaxH:=EffectiveMaxHeight;
   if (MaxH>0) and (Result>MaxH) then Result:=MaxH;
+  if (Control is TWinControl) and TWinControl(Control).HandleAllocated then
+    TWSControlClass(Control.WidgetSetClass).ConstraintHeight(Control, Self, Result);
 end;
 
 {------------------------------------------------------------------------------

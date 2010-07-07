@@ -73,6 +73,8 @@ type
   published
     class procedure AddControl(const AControl: TControl); virtual;
     class function GetConstraints(const AControl: TControl; const AConstraints: TObject): Boolean; virtual;
+    class procedure ConstraintWidth(const AControl: TControl; const AConstraints: TObject; var aWidth: integer); virtual;
+    class procedure ConstraintHeight(const AControl: TControl; const AConstraints: TObject; var aHeight: integer); virtual;
   end;
 
   TWSControlClass = class of TWSControl;
@@ -158,6 +160,18 @@ end;
 class function TWSControl.GetConstraints(const AControl: TControl; const AConstraints: TObject): Boolean;
 begin
   Result := WidgetSet.GetControlConstraints(AConstraints);
+end;
+
+class procedure TWSControl.ConstraintWidth(const AControl: TControl;
+  const AConstraints: TObject; var aWidth: integer);
+begin
+
+end;
+
+class procedure TWSControl.ConstraintHeight(const AControl: TControl;
+  const AConstraints: TObject; var aHeight: integer);
+begin
+
 end;
 
 { TWSWinControl }
