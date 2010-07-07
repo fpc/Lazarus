@@ -7901,6 +7901,7 @@ begin
   DebugLn('');
   debugln('[TGtk2WidgetSet.SetFocus] A hWnd=',GetWidgetDebugReport(Widget));
   //DebugLn(getStackTrace(true));
+  //if GtkWidgetIsA(Widget,GTK_TYPE_NOTEBOOK) then DumpStack;
   {$EndIf}
 
   // return the old focus handle

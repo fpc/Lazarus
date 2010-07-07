@@ -811,8 +811,9 @@ function GTKFocusCBAfter(widget: PGtkWidget; event:PGdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
-{$IFDEF VerboseFocus}
   LCLObject: TObject;
+  AForm: TCustomForm;
+{$IFDEF VerboseFocus}
   CurFocusWidget: PGtkWidget;
 {$ENDIF}
 begin
@@ -821,9 +822,9 @@ begin
   {$ENDIF}
   if (Widget=nil) or (Event=nil) then ;
   //DebugLn('GTKFocusCBAfter ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
+  LCLObject:=TObject(data);
   {$IFDEF VerboseFocus}
   write('GTKFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^._in);
-  LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
       write(' LCLObject=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
@@ -858,6 +859,19 @@ begin
   end;
   DebugLn('');
   {$ENDIF}
+
+  if LCLObject is TCustomForm then begin
+    // a form became active
+    // it does not mean: the control focus is switch to the form
+    AForm:=TCustomForm(LCLObject);
+    if AForm.Active then begin
+      // it is already active
+      // do not send this message to the LCL
+      // to prevent setting AForm.ActiveControl:=nil
+      exit(true);
+    end;
+    // MG: maybe better send a LM_ACTIVATE instead of a LM_SETFOCUS message?
+  end;
 
   ResetDefaultIMContext;
   UpdateMouseCaptureControl;
