@@ -188,6 +188,7 @@ type
     ImgIDFunction: Integer;
     ImgIDProgram: Integer;
     ImgIDProperty: Integer;
+    ImgIDPropertyReadOnly: Integer;
     ImgIDType: Integer;
     ImgIDUnit: Integer;
     ImgIDVariable: Integer;
@@ -425,6 +426,7 @@ begin
   ImgIDProcedure := Imagelist1.AddLazarusResource('ce_procedure');
   ImgIDFunction := Imagelist1.AddLazarusResource('ce_function');
   ImgIDProperty := Imagelist1.AddLazarusResource('ce_property');
+  ImgIDPropertyReadOnly := Imagelist1.AddLazarusResource('ce_property_readonly');
   // sections
   ImgIDSection := Imagelist1.AddLazarusResource('ce_section');
   ImgIDHint := Imagelist1.AddLazarusResource('state_hint');
@@ -693,7 +695,7 @@ begin
                                       else
                                         Result:=ImgIDProcedure;
     ctnProperty:                      Result:=ImgIDProperty;
-    ctnUsesSection:                   Result:= ImgIDSection;
+    ctnUsesSection:                   Result:=ImgIDSection;
     ctnUseUnit:                       Result:=ImgIDUnit;
   else
     Result:=ImgIDDefault;

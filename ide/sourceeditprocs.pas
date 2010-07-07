@@ -39,7 +39,7 @@ uses
   CodeAtom, CodeCache, SourceChanger, CodeToolManager, PascalParserTool,
   KeywordFuncLists, FileProcs, IdentCompletionTool, PascalReaderTool,
   LazIDEIntf, TextTools, IDETextConverter, DialogProcs, MainIntf, EditorOptions,
-  CodeToolsOptions;
+  IDEImagesIntf, CodeToolsOptions;
 
 type
 
@@ -220,6 +220,8 @@ var
   ANode: TCodeTreeNode;
   ItemNode: TCodeTreeNode;
   SubNode: TCodeTreeNode;
+  IsReadOnly: boolean;
+  ImageIndex: longint;
 begin
   ForegroundColor := ColorToRGB(ACanvas.Font.Color);
   Result.X := 0;
@@ -236,6 +238,7 @@ begin
     BGRed:=(BackgroundColor shr 16) and $ff;
     BGGreen:=(BackgroundColor shr 8) and $ff;
     BGBlue:=BackgroundColor and $ff;
+    ImageIndex:=-1;
 
     // first write the type
     // var, procedure, property, function, type, const
@@ -285,6 +288,9 @@ begin
       begin
         AColor:=clPurple;
         s:='property';
+        IsReadOnly:=IdentItem.IsPropertyReadOnly;
+        if IsReadOnly then
+          ImageIndex:=IDEImages.LoadImage(16,'ce_property_readonly');
       end;
       
     ctnEnumIdentifier:
@@ -334,6 +340,17 @@ begin
       if x>MaxX then exit;
     end;
     ACanvas.Font.Style:=ACanvas.Font.Style-[fsBold];
+
+    // paint icon
+    if ImageIndex>=0 then begin
+      if MeasureOnly then
+        Inc(Result.X, 18)
+      else begin
+        IDEImages.Images_16.Draw(ACanvas,x+1,y+(Result.Y-16) div 2,ImageIndex);
+        inc(x,18);
+        if x>MaxX then exit;
+      end;
+    end;
     
     // finally paint the type/value/parameters
     s:='';
@@ -500,6 +517,7 @@ var
   CanAddSemicolon: Boolean;
   CanAddComma: Boolean;
   ClassNode: TCodeTreeNode;
+  IsReadOnly: Boolean;
 begin
   Result:='';
   CursorToLeft:=0;
@@ -507,8 +525,6 @@ begin
   ValueType:=icvIdentifier;
   Index:=aCompletion.Position;
   IdentList:=CodeToolBoss.IdentifierList;
-  CanAddSemicolon:=CodeToolsOpts.IdentComplAddSemicolon and (AddChar<>';');
-  CanAddComma:=(AddChar<>',');
 
   IdentItem:=IdentList.FilteredItems[Index];
   if IdentItem=nil then begin
@@ -521,6 +537,10 @@ begin
     MainIDEInterface.DoJumpToCodeToolBossError;
     exit;
   end;
+
+  CanAddSemicolon:=CodeToolsOpts.IdentComplAddSemicolon and (AddChar<>';');
+  CanAddComma:=(AddChar<>',');
+  IsReadOnly:=false;
 
   Result:=IdentItem.Identifier;
 
@@ -537,8 +557,11 @@ begin
     end;
 
     ctnProperty:
-      if IdentItem.IsPropertyWithParams then
-        ValueType:=icvIndexedProp;
+      begin
+        if IdentItem.IsPropertyWithParams then
+          ValueType:=icvIndexedProp;
+        IsReadOnly:=IdentItem.IsPropertyReadOnly;
+      end;
 
     ctnUnit, ctnPackage, ctnLibrary:
       ValueType:=icvUnitName;
@@ -624,6 +647,7 @@ begin
   and ((ilcfEndOfLine in IdentList.ContextFlags) or IdentList.StartUpAtomBehindIs(';'))
   and (not IdentItem.HasChilds)
   and (not IdentItem.HasIndex)
+  and (not IsReadOnly)
   and (not IdentList.StartUpAtomBehindIs(':='))
   and (not IdentList.StartUpAtomBehindIs('('))
   and (IdentItem.CanBeAssigned)

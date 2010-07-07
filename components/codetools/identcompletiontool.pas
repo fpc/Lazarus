@@ -86,7 +86,11 @@ type
     iliKeyword,
     iliResultTypeValid,
     iliHasIndexValid,
-    iliHasIndex
+    iliHasIndex,
+    iliHasParamListValid,
+    iliHasParamList,
+    iliIsReadOnlyValid,
+    iliIsReadOnly
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
   
@@ -137,6 +141,7 @@ type
                        NewDefaultDesc: TCodeTreeNodeDesc);
     function IsProcNodeWithParams: boolean;
     function IsPropertyWithParams: boolean;
+    function IsPropertyReadOnly: boolean;
     function CheckHasChilds: boolean;
     function CanBeAssigned: boolean;
     procedure UpdateBaseContext;
@@ -2746,8 +2751,31 @@ function TIdentifierListItem.IsPropertyWithParams: boolean;
 var
   ANode: TCodeTreeNode;
 begin
-  ANode:=Node;
-  Result:=(ANode<>nil) and Tool.PropertyNodeHasParamList(ANode);
+  if not (iliHasParamListValid in Flags) then begin
+    ANode:=Node;
+    if (ANode<>nil) and Tool.PropertyNodeHasParamList(ANode) then
+      Include(Flags,iliHasParamList)
+    else
+      Exclude(Flags,iliHasParamList);
+    Include(Flags,iliHasParamListValid)
+  end;
+  Result:=iliHasParamList in Flags;
+end;
+
+function TIdentifierListItem.IsPropertyReadOnly: boolean;
+var
+  ANode: TCodeTreeNode;
+begin
+  if not (iliIsReadOnlyValid in Flags) then begin
+    ANode:=Node;
+    if (ANode<>nil) and Tool.PropertyHasSpecifier(ANode,'read',false)
+    and not Tool.PropertyHasSpecifier(ANode,'write',false) then
+      Include(Flags,iliIsReadOnly)
+    else
+      Exclude(Flags,iliIsReadOnly);
+    Include(Flags,iliIsReadOnlyValid)
+  end;
+  Result:=iliIsReadOnly in Flags;
 end;
 
 function TIdentifierListItem.CheckHasChilds: boolean;

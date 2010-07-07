@@ -139,6 +139,7 @@ codeexplorer/ce_procedure.png
 codeexplorer/ce_function.png
 codeexplorer/ce_program.png
 codeexplorer/ce_property.png
+codeexplorer/ce_property_readonly.png
 codeexplorer/ce_section.png
 codeexplorer/ce_type.png
 codeexplorer/ce_unit.png
