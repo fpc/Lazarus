@@ -148,9 +148,9 @@ var
   i: Integer;
 begin
   Tree.Clear;
-  Cnt:=Config.GetValue(Path+'/'+'Count',0);
+  Cnt:=Config.GetValue(Path+'Count',0);
   for i:=0 to Cnt-1 do begin
-    SubPath:=Path+'/'+'Item'+IntToStr(i)+'/';
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
     CurName:=Config.GetValue(SubPath+'Name','');
     CurValue:=Config.GetValue(SubPath+'Value','');
     Tree[CurName]:=CurValue;
@@ -165,12 +165,12 @@ var
   i, j: Integer;
   SubPath: String;
 begin
-  Config.SetDeleteValue(Path+'/'+'Count',Tree.Tree.Count,0);
+  Config.SetDeleteValue(Path+'Count',Tree.Tree.Count,0);
   Node:=Tree.Tree.FindLowest;
   i:=0;
   while Node<>nil do begin
     Item:=PStringToStringTreeItem(Node.Data);
-    SubPath:=Path+'/'+'Item'+IntToStr(i)+'/';
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
     Config.SetDeleteValue(SubPath+'Name',Item^.Name,'');
     Config.SetDeleteValue(SubPath+'Value',Item^.Value,'');
     Node:=Tree.Tree.FindSuccessor(Node);
@@ -178,7 +178,7 @@ begin
   end;
   // Remove leftover items in case the list has become shorter.
   for j:=i to i+10 do begin
-    SubPath:=Path+'/'+'Item'+IntToStr(j)+'/';
+    SubPath:=Path+'Item'+IntToStr(j)+'/';
     Config.DeletePath(SubPath);
   end;
 end;
@@ -207,9 +207,9 @@ begin
   fSameDFMFile          :=fConfigStorage.GetValue('SameDFMFile', false);
   fAutoReplaceUnits     :=fConfigStorage.GetValue('AutoReplaceUnits', true);
   fAutoRemoveProperties :=fConfigStorage.GetValue('AutoRemoveProperties', true);
-  LoadStringToStringTree(fConfigStorage, 'ReplaceUnits', fReplaceUnits);
-  LoadStringToStringTree(fConfigStorage, 'ReplaceTypes', fReplaceTypes);
-  LoadStringToStringTree(fConfigStorage, 'ReplaceFuncs', fReplaceFuncs);
+  LoadStringToStringTree(fConfigStorage, 'ReplaceUnits/', fReplaceUnits);
+  LoadStringToStringTree(fConfigStorage, 'ReplaceTypes/', fReplaceTypes);
+  LoadStringToStringTree(fConfigStorage, 'ReplaceFuncs/', fReplaceFuncs);
 
   // Add default values for string maps if ConfigStorage doesn't have them.
   // Map Delphi units to Lazarus units.
@@ -271,9 +271,9 @@ begin
   fConfigStorage.SetDeleteValue('SameDFMFile',          fSameDFMFile, false);
   fConfigStorage.SetDeleteValue('AutoReplaceUnits',     fAutoReplaceUnits, false);
   fConfigStorage.SetDeleteValue('AutoRemoveProperties', fAutoRemoveProperties, false);
-  SaveStringToStringTree(fConfigStorage, 'ReplaceUnits', fReplaceUnits);
-  SaveStringToStringTree(fConfigStorage, 'ReplaceTypes', fReplaceTypes);
-  SaveStringToStringTree(fConfigStorage, 'ReplaceFuncs', fReplaceFuncs);
+  SaveStringToStringTree(fConfigStorage, 'ReplaceUnits/', fReplaceUnits);
+  SaveStringToStringTree(fConfigStorage, 'ReplaceTypes/', fReplaceTypes);
+  SaveStringToStringTree(fConfigStorage, 'ReplaceFuncs/', fReplaceFuncs);
   // Free stuff
   fConfigStorage.Free;
   fReplaceFuncs.Free;
