@@ -2858,6 +2858,7 @@ function TWinCEWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
 begin
   Result := Boolean(Windows.SetCaretPos(X, Y));
 end;
+
 {------------------------------------------------------------------------------
   Method:  SetCaretPosEx
   Params:  Handle - handle of window
@@ -2894,6 +2895,7 @@ end;
 begin
   Result:=inherited SetCursorPos(X, Y);
 end;}
+
 {------------------------------------------------------------------------------
   Method:  SetFocus
   Params:  HWnd - Handle of new focus window

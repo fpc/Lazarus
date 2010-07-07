@@ -119,6 +119,7 @@ var
 type
   TCaptionFlags = (cfBold, cfUnderline);
   TCaptionFlagsSet = set of TCaptionFlags;
+  TMenuItemAccess = class(TMenuItem);
 
 //menus
 
@@ -141,19 +142,18 @@ var
   MenuBarRLID: integer;
 begin
   {$ifdef VerboseWinCEMenu}
-  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log', ':> CeSetMenu');
+  DebugLn('[CeSetMenu]');
   {$endif}
 
   GetWindowRect(Wnd, BR);
   mbi.hwndMB := SHFindMenuBar(Wnd);
 
   {$ifdef VerboseWinCEMenu}
-  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-    'p1 menu bar window = ' + IntToStr(mbi.hwndMB));
+  DebugLn('[CeSetMenu] p1 menu bar window = ' + IntToStr(mbi.hwndMB));
   {$endif}
 
-{  // It is always necessary to create a new menu bar for atKeyPadDevice?
-  if (Application.ApplicationType = atKeyPadDevice) then
+  // It is necessary to always create a new menu bar for atKeyPadDevice?
+{  if (Application.ApplicationType = atKeyPadDevice) then
   begin
     if (mbi.hwndMB <> 0) then
       DestroyWindow(mbi.hwndMB);
@@ -161,10 +161,10 @@ begin
     mbi.hwndMB := 0;
   end;}
 
-  // If no menu is currently associated in the application
-  // so we create a new one
   GetWindowRect(Wnd, BR);
 
+  // If no menu is currently associated in the application
+  // so we create a new one
   if mbi.hwndMB = 0 then
   begin
     FillChar(mbi, SizeOf(mbi), 0);
@@ -172,9 +172,6 @@ begin
     mbi.hwndParent := Wnd;
     //mbi.dwFlags := SHCMBF_HMENU;// This options ruins smartphone menu setting
     mbi.hInstRes := HINSTANCE;
-
-//    if (Application.ApplicationType = atKeyPadDevice)
-//      and (LCLMenu <> nil) then
 
     FillChar(mi, SizeOf(mi), 0);
     mi.cbSize:=SizeOf(mi);
@@ -206,20 +203,24 @@ begin
     else
       mbi.nToolBarId := MenuBarID_Items;
 
-    if not SHCreateMenuBar(@mbi) then Exit;
+    if not SHCreateMenuBar(@mbi) then
+    begin
+      {$ifdef VerboseWinCEMenu}
+      DebugLn('[CeSetMenu] SHCreateMenuBar failed');
+      {$endif}
+      Exit;
+    end;
   end;
 
   {$ifdef VerboseWinCEMenu}
-  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-    'menu bar window = ' + IntToStr(mbi.hwndMB) +
-    ' mbi.nToolBarId = ' + IntToStr(mbi.nToolBarId)
-    );
+  DebugLn('[CeSetMenu] menu bar window = ' + IntToStr(mbi.hwndMB) +
+    ' mbi.nToolBarId = ' + IntToStr(mbi.nToolBarId));
   {$endif}
 
   // Clear any previously set menu items
   while SendMessage(mbi.hwndMB, TB_DELETEBUTTON, 0, 0) <> 0 do
   {$ifdef VerboseWinCEMenu}
-  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log', 'TB_DELETEBUTTON')
+  DebugLn('[CeSetMenu] TB_DELETEBUTTON')
   {$endif}
   ;
 
@@ -262,23 +263,30 @@ begin
           tbbi.dwMask := TBIF_TEXT or TBIF_COMMAND or TBIF_STATE;
 
           // Without setting idCommand the top-level items don't respond to clicks
-          if i = 0 then tbbi.idCommand := StartMenuItem + MenuBarID_L
-          else tbbi.idCommand := StartMenuItem + MenuBarID_R;
-
-          SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, MenuBarRLID, LPARAM(@tbbi));
-
-          // Adds subitems to a top-level item
-          tbbi.dwMask := TBIF_LPARAM;
-          SendMessage(mbi.hwndMB, TB_GETBUTTONINFO, MenuBarRLID, LPARAM(@tbbi));
+          tbbi.idCommand := StartMenuItem + MenuBarRLID;
+          // Update the MenuItem Command to use latter
+          TMenuItemAccess(LCLMenu.Items.Items[j]).FCommand := MenuBarRLID;
 
           {$ifdef VerboseWinCEMenu}
-          DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-            'p3 command = ' + IntToStr(tbbi.idCommand));
+          DebugLn('[CeSetMenu] atKeyPadDevice Set FCommand from ', LCLMenu.Items.Items[j].Name, ' to: ',
+            dbgs(TMenuItemAccess(LCLMenu.Items.Items[j]).FCommand));
+          DebugLn('[CeSetMenu] atKeyPadDevice Message TB_SETBUTTONINFO with ButtonID: MenuBarRLID = ' + IntToStr(MenuBarRLID));
           {$endif}
+
+          if SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, MenuBarRLID, LPARAM(@tbbi)) = 0 then
+            DebugLn('[CeSetMenu] TB_SETBUTTONINFO failed');
+
+          // Adds subitems to a top-level item
+          {$ifdef VerboseWinCEMenu}
+          DebugLn('[CeSetMenu] atKeyPadDevice Message TB_GETBUTTONINFO with ButtonID: MenuBarRLID = ' + IntToStr(MenuBarRLID));
+          {$endif}
+          tbbi.dwMask := TBIF_LPARAM;
+          if SendMessage(mbi.hwndMB, TB_GETBUTTONINFO, MenuBarRLID, LPARAM(@tbbi)) = - 1 then
+            DebugLn('[CeSetMenu] TB_GETBUTTONINFO failed');
 
           // Remove any present buttons, for example the one from the .rc file
           // Careful that using TB_DELETEBUTTON doesnt work here
-          while RemoveMenu(HMENU(tbbi.lParam), 0, MF_BYPOSITION) do ;
+          while RemoveMenu(HMENU(tbbi.lParam), 0, MF_BYPOSITION) do DebugLn('[CeSetMenu] RemoveMenu');
 
           for k := 0 to LCLMenu.Items.Items[j].Count - 1 do
             TWinCEWSMenuItem.AttachMenuEx(
@@ -299,22 +307,42 @@ begin
   begin
     // Now we will add the buttons in the menu
   //  DebugLn('Menu: ' + IntToStr(Menu) + ' LCLMenu: ' + IntToStr(PtrInt(LCLMenu)));
-    if (Menu <> 0) then
+    if (Menu <> 0) and (LCLMenu <> nil) then
     begin
-  //  DebugLn('if (Menu <> 0) and (LCLMenu <> nil) then');
       i:=0;
       while True do
       begin
         mi.cch:=SizeOf(buf);
-        if not GetMenuItemInfo(Menu, i, True, @mi) then Break;
+
+        // Find the winapi menu item
+        if not GetMenuItemInfo(Menu, i, True, @mi) then
+        begin
+          DebugLn('GetMenuItemInfo i=', dbgs(i), ' failed, breaking');
+          Break;
+        end;
+
+        // Find the associated LCL Menu item
+        k:=0; // j = counts all top-level menu items
+              // k = counts only visible ones;
+        for j:=0 to LCLMenu.Items.Count - 1 do
+        begin
+          if LCLMenu.Items.Items[j].Visible then
+          begin
+            if k = i then Break;
+            Inc(k);
+          end;
+        end;
+        // Update the MenuItem Command to use latter
+        TMenuItemAccess(LCLMenu.Items.Items[j]).FCommand := mi.wID;
+
         buf[mi.cch]:=#0;
         FillChar(tb, SizeOf(tb), 0);
         tb.iBitmap:=I_IMAGENONE;
-        tb.idCommand:=mi.wID;
+        tb.idCommand := mi.wID;
         {$ifdef VerboseWinCEMenu}
-        DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-          'p3 command = ' + IntToStr(tb.idCommand));
+        DebugLn('[CeSetMenu] p3 atPDA menu ' + LCLMenu.Items.Items[j].Name + ' Set FCommand = mi.wID = ' + IntToStr(tb.idCommand));
         {$endif}
+
         tb.iString:=SendMessage(mbi.hwndMB, TB_ADDSTRING, 0, LPARAM(@buf));
         if mi.fState and MFS_DISABLED = 0 then
           tb.fsState:=TBSTATE_ENABLED;
@@ -325,9 +353,13 @@ begin
         else
           tb.fsStyle:=TBSTYLE_BUTTON or TBSTYLE_AUTOSIZE;
         tb.dwData:=mi.hSubMenu;
+
         {roozbeh : this wont work on 2002/2003...should i uncomment it or not?works this way anyway}
-        SendMessage(mbi.hwndMB, TB_INSERTBUTTON, i, LPARAM(@tb));
-        //MsgBox('i = ' + int2str(i),0);
+        {$ifdef VerboseWinCEMenu}
+        DebugLn('[CeSetMenu] atPDA Message TB_INSERTBUTTON with ButtonID: i = ' + IntToStr(i));
+        {$endif}
+        if SendMessage(mbi.hwndMB, TB_INSERTBUTTON, i, LPARAM(@tb)) = 0 then
+          DebugLn('TB_INSERTBUTTON failed');
 
         Inc(i);
       end;
@@ -468,6 +500,10 @@ begin
       fState := MFS_DISABLED;
    end;
   end;
+  {$ifdef VerboseWinCEMenu}
+  DebugLn('[UpdateCaption] SetMenuItemInfo for ' + AMenuItem.Name +
+    ' with ButtonID = AMenuItem.Command + StartMenuItem = ' + IntToStr(AMenuItem.Command + StartMenuItem));
+  {$endif}
   if not SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command + StartMenuItem, false, @MenuInfo) then
     DebugLn('SetMenuItemInfo failed: ', GetLastErrorText(GetLastError));
   TriggerFormUpdate(AMenuItem);
@@ -481,11 +517,16 @@ var
   wCaption: WideString;
   Index, fstate, cmd: integer;
 begin
+  {$ifdef VerboseWinCEMenu}
+  DebugLn('[TWinCEWSMenuItem.AttachMenuEx] Start');
+  {$endif}
+
   FillChar(MenuInfo, SizeOf(MenuInfo), 0);
 
   {Following part fixes the case when an item is added in runtime
   but the parent item has not defined the submenu flag (hSubmenu=0) }
-  if AMenuItem.Parent.Parent <> nil then
+  if (AMenuItem.Parent.Parent <> nil) and
+    (Application.ApplicationType <> atKeyPadDevice) then
   begin
     ParentOfParent := AMenuItem.Parent.Parent.Handle;
     with MenuInfo do
@@ -493,17 +534,33 @@ begin
       cbSize := menuiteminfosize;
       fMask := MIIM_SUBMENU;
     end;
-    GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command + StartMenuItem,
-                    False, @MenuInfo);
+    {$ifdef VerboseWinCEMenu}
+    DebugLn('[TWinCEWSMenuItem.AttachMenuEx] GetMenuItemInfo for '
+      + AMenuItem.Parent.Name + ' with ButtonID = AMenuItem.Parent.Command + StartMenuItem = ' + IntToStr(AMenuItem.Parent.Command + StartMenuItem));
+    {$endif}
+    if not GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command + StartMenuItem, False, @MenuInfo) then
+      DebugLn('[TWinCEWSMenuItem.AttachMenuEx] GetMenuItemInfo failed');
     if MenuInfo.hSubmenu = 0 then // the parent menu item is not yet defined with submenu flag
     begin
       //roozbeh: wont work on smartphones...i guess i have to remove and add new one with submenu flag
       //not yet found time to do....not so hard
       MenuInfo.hSubmenu := AParentHandle;
-      SetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command,
-                      False, @MenuInfo);
+      {$ifdef VerboseWinCEMenu}
+      DebugLn('[TWinCEWSMenuItem.AttachMenuEx] SetMenuItemInfo for ' +
+        AMenuItem.Parent.Name + ' with ButtonID = AMenuItem.Parent.Command = ' + IntToStr(AMenuItem.Parent.Command));
+      {$endif}
+      if not SetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo) then
+        DebugLn('[TWinCEWSMenuItem.AttachMenuEx] SetMenuItemInfo failed');
     end;
   end;
+{  else if (AMenuItem.Parent.Parent = nil) and
+    (Application.ApplicationType = atKeyPadDevice) then
+  begin
+    {$ifdef VerboseWinCEMenu}
+    DebugLn('[TWinCEWSMenuItem.AttachMenuEx] Exiting from initial AttachMenuEx');
+    {$endif}
+    Exit;
+  end;}
 
   fState := MF_STRING or MF_BYPOSITION;
   if AMenuItem.Enabled then fState := fState or MF_ENABLED
@@ -523,19 +580,41 @@ begin
       fState := (fState xor MF_STRING) or MF_SEPARATOR;
   end;
 
+  // Never allow the use of the value 201 and 202 under atKeyPadDevice
+  // Because they may colide with the ids of the fixed menus
+{  if Application.ApplicationType = atKeyPadDevice then
+  begin
+    if (cmd = 201) then
+    begin
+      TMenuItemAccess(AMenuItem).FCommand := 2001;
+      cmd := 2201;
+    end;
+    if (cmd = 202) then
+    begin
+      TMenuItemAccess(AMenuItem).FCommand := 2002;
+      cmd := 2202;
+    end;
+  end;}
+
   wCaption := UTF8Decode(AmenuItem.Caption);
   Index := AMenuItem.Parent.VisibleIndexOf(AMenuItem);
 
+  {$ifdef VerboseWinCEMenu}
+  DebugLn('[TWinCEWSMenuItem.AttachMenuEx] InsertMenuW item = ', AMenuItem.Name, ' cmd = ', IntToStr(cmd));
+  {$endif}
   if not InsertMenuW(AParentHandle, Index, fState, cmd, PWideChar(wCaption)) then
-    DebugLn('InsertMenuW failed for ', dbgsName(AMenuItem), ' : ', GetLastErrorText(GetLastError));
+    DebugLn('[TWinCEWSMenuItem.AttachMenuEx] InsertMenuW failed for ', dbgsName(AMenuItem), ' : ', GetLastErrorText(GetLastError));
 
   MenuInfo.cbSize := SizeOf(MenuInfo);
   MenuInfo.fMask := MIIM_DATA;
   //GetMenuItemInfo(ParentMenuHandle, Index, True, @MenuInfo);
   MenuInfo.dwItemData := PtrInt(AMenuItem);
   //MenuInfo.wID := AMenuItem.Command;
+  {$ifdef VerboseWinCEMenu}
+  DebugLn('[TWinCEWSMenuItem.AttachMenuEx] SetMenuItemInfoW Index = ' + IntToStr(Index));
+  {$endif}
   if not SetMenuItemInfoW(AParentHandle, Index, True, @MenuInfo) then
-    DebugLn(['SetMenuItemInfoW failed for ', dbgsName(AMenuItem), ' : ', GetLastErrorText(GetLastError)]);
+    DebugLn('[TWinCEWSMenuItem.AttachMenuEx] SetMenuItemInfoW failed for ', dbgsName(AMenuItem), ' : ', GetLastErrorText(GetLastError));
 
   MenuItemsList.AddObject(IntToStr(AMenuItem.Command + StartMenuItem), AMenuItem);
   TriggerFormUpdate(AMenuItem);
@@ -619,8 +698,7 @@ begin
   // The code to set top-level menus is different then ordinary items under WinCE
   {$ifndef Win32}
   AMenu := AMenuItem.GetParentMenu;
-//  DebugLn(Format('[TWinCEWSMenuItem.SetCaption] A AItem.Menu:%d',
-//    [PtrInt(AMenu)]));
+//  DebugLn(Format('[TWinCEWSMenuItem.SetCaption] A AItem.Menu:%d', [PtrInt(AMenu)]));
 
   // Top-Level menu items for PDA systems
   if (Application.ApplicationType in [atPDA, atKeyPadDevice]) and
@@ -664,10 +742,18 @@ begin
       if i = 0 then MenuBarRLID := StartMenuItem + MenuBarID_L
       else MenuBarRLID := StartMenuItem + MenuBarID_R;
 
+      {$ifdef VerboseWinCEMenu}
+      DebugLn('[TWinCEWSMenuItem.SetCaption] TB_SETBUTTONINFO with ButtonID: ' + IntToStr(MenuBarRLID));
+      {$endif}
       SendMessageW(h, TB_SETBUTTONINFO, MenuBarRLID, LPARAM(@bi));
     end
     else
-      SendMessageW(h, TB_SETBUTTONINFO, AMenuItem.Command + StartMenuItem, LPARAM(@bi));
+    begin
+      {$ifdef VerboseWinCEMenu}
+      DebugLn('[TWinCEWSMenuItem.SetCaption] TB_SETBUTTONINFO with ButtonID: ' + IntToStr(AMenuItem.Command));
+      {$endif}
+      SendMessageW(h, TB_SETBUTTONINFO, AMenuItem.Command, LPARAM(@bi));
+    end;
   end
   else
   {$endif}
@@ -723,8 +809,6 @@ begin
   // LCLIntf.SetProp and SetWindowLongW were also tryed but didn't work
   MenuHandleList.Add(Pointer(Result));
   MenuLCLObjectList.Add(Pointer(AMenu));
-//  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-//   'TWinCEWSMenu.CreateHandle: ' + IntToStr(Result) + ' AMenu: ' + IntToStr(PtrInt(AMenu)));
 end;
 
 { TWinCEWSPopupMenu }

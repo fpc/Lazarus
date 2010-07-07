@@ -119,7 +119,6 @@ type
   private
     FActionLink: TMenuActionLink;
     FCaption: string;
-    FCommand: integer;
     FBitmap: TBitmap;
     FGlyphShowMode: TGlyphShowMode;
     FHandle: HMenu;
@@ -180,6 +179,7 @@ type
     procedure TurnSiblingsOff;
     procedure DoActionChange(Sender: TObject);
   protected
+    FCommand: integer;
     class procedure WSRegisterClass; override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); virtual;
     procedure AssignTo(Dest: TPersistent); override;
