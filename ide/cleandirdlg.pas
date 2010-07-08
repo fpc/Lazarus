@@ -126,6 +126,10 @@ begin
   SimpleSyntaxKeepCheckbox.Caption:=lisClDirSimpleSyntaxEGInsteadOf;
   KeepTextFilesCheckbox.Caption:=lisClDirKeepAllTextFiles;
 
+  ButtonPanel.OKButton.Caption:=lisOk;
+  ButtonPanel.HelpButton.Caption:=lisMenuHelp;
+  ButtonPanel.CancelButton.Caption:=dlgCancel;
+
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 end;

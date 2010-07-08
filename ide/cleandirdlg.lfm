@@ -3,7 +3,6 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
   Height = 309
   Top = 209
   Width = 450
-  ActiveControl = DirCombobox
   AutoSize = True
   BorderIcons = [biSystemMenu]
   Caption = 'Clean Directory'
@@ -11,7 +10,7 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
   ClientWidth = 450
   OnCreate = CleanDirectoryDialogCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object DirGroupbox: TGroupBox
     Left = 6
     Height = 74
@@ -31,11 +30,9 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
       Top = 6
       Width = 394
       Anchors = [akTop, akLeft, akRight]
-      AutoComplete = False
       AutoCompleteText = [cbactSearchAscending]
       BorderSpacing.Around = 6
       ItemHeight = 13
-      ItemWidth = 0
       TabOrder = 0
       Text = 'DirCombobox'
     end
@@ -88,11 +85,9 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
       Top = 6
       Width = 422
       Align = alTop
-      AutoComplete = False
       AutoCompleteText = [cbactSearchAscending]
       BorderSpacing.Around = 6
       ItemHeight = 13
-      ItemWidth = 0
       TabOrder = 0
       Text = 'RemoveCombobox'
     end
@@ -125,11 +120,9 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
       Top = 6
       Width = 422
       Align = alTop
-      AutoComplete = False
       AutoCompleteText = [cbactSearchAscending]
       BorderSpacing.Around = 6
       ItemHeight = 13
-      ItemWidth = 0
       TabOrder = 0
       Text = 'KeepCombobox'
     end
@@ -159,6 +152,15 @@ object CleanDirectoryDialog: TCleanDirectoryDialog
     Height = 26
     Top = 277
     Width = 438
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&ОК'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Справка'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Закрыть'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Отмена'
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
