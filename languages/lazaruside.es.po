@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Last-Translator: javivf <javivf@gmail.com>\n"
-"PO-Revision-Date: 2010-02-23 08:31+0100\n"
+"Last-Translator: Jesus Reyes Aguilar <jesusrmx@yahoo.com.mx>\n"
+"PO-Revision-Date: 2010-05-28 13:56-0600\n"
 "Project-Id-Version: lazaruside\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -344,7 +344,7 @@ msgstr "Remover métodos vacios automáticamente"
 
 #: lazarusidestrconsts.dlgautoren
 msgid "Auto rename file lowercase"
-msgstr "Renombrar automáticamente el archivo en minúsculas"
+msgstr "Renombrar automáticamente en minúsculas"
 
 #: lazarusidestrconsts.dlgautosave
 msgid "Auto save"
@@ -491,7 +491,7 @@ msgstr "Sufijo Almacenado"
 
 #: lazarusidestrconsts.dlgcdtuppercase
 msgid "UPPERCASE"
-msgstr "MAYUSCULAS"
+msgstr "MAYÚSCULAS"
 
 #: lazarusidestrconsts.dlgcdtvariableprefix
 msgid "Variable prefix"
@@ -507,7 +507,7 @@ msgstr "Centrar Línea de Cursor"
 
 #: lazarusidestrconsts.dlgcharcasefileact
 msgid "Save As - auto rename pascal files lower case"
-msgstr "Guardar como - autorenombrar archivos pascal a minúsculas"
+msgstr "Guardar como - autorenombrar archivos pascal en minúsculas"
 
 #: lazarusidestrconsts.dlgcheckconsistency
 msgid "Check consistency"
@@ -2183,10 +2183,9 @@ msgid "Naming"
 msgstr "Nombrando"
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
-#, fuzzy
 #| msgid "no automatic renaming"
 msgid "No automatic renaming"
-msgstr "no renombrar automáticamente"
+msgstr "No renombrar automáticamente"
 
 #: lazarusidestrconsts.dlgnobrackethighlight
 msgid "No Highlight"
@@ -4181,7 +4180,7 @@ msgstr "Usado sólo en modo categoría"
 
 #: lazarusidestrconsts.lisceoonidle
 msgid "On idle"
-msgstr "Cuando esté parado"
+msgstr "Cuando esté inactivo"
 
 #: lazarusidestrconsts.lisceorefreshautomatically
 msgid "Refresh automatically"
@@ -6753,7 +6752,7 @@ msgstr "Reducir pintado del diseñador"
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
-msgstr "Dibujar elementos del diseñador cuando se esté parado (reduce la sobrecarga en máquinas lentas)"
+msgstr "Dibujar elementos del diseñador cuando se esté inactivo (reduce la sobrecarga en máquinas lentas)"
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
@@ -11093,7 +11092,7 @@ msgstr "¿Renombrar archivo en el paquete?"
 
 #: lazarusidestrconsts.lispkgmangrenamefilelowercase
 msgid "Rename File lowercase?"
-msgstr "¿Renombrar archivo a minúsculas?"
+msgstr "¿Renombrar archivo en minúsculas?"
 
 #: lazarusidestrconsts.lispkgmangreplaceexistingfile
 msgid "Replace existing file %s%s%s?"
@@ -11117,7 +11116,7 @@ msgstr "Guardar Paquete %s (*.lpk)"
 
 #: lazarusidestrconsts.lispkgmangshouldthefilerenamedlowercaseto
 msgid "Should the file be renamed lowercase to%s%s%s%s?"
-msgstr "¿Debería renombrarse a minúsculas el archivo %s%s%s%s?"
+msgstr "¿Debería renombrarse el archivo %s%s%s%s en minúsculas?"
 
 #: lazarusidestrconsts.lispkgmangskipthispackage
 msgid "Skip this package"
@@ -13650,11 +13649,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
-msgstr "Cadena a mayúsculas"
+msgstr "Cadena en mayúsculas"
 
 #: lazarusidestrconsts.lisuppercasestringgivenasparameter
 msgid "Uppercase string given as parameter"
-msgstr "Cadena dada como parámetro a mayúsculas"
+msgstr "Cadena dada como parámetro en mayúsculas"
 
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
@@ -14071,7 +14070,7 @@ msgstr "Eslovaco"
 
 #: lazarusidestrconsts.rslanguagespanish
 msgid "Spanish"
-msgstr "Castellano"
+msgstr "Español"
 
 #: lazarusidestrconsts.rslanguageturkish
 msgid "Turkish"
