@@ -363,6 +363,7 @@ begin
       if AutoResizeViewport then
         LOpenGLViewport(0,0,Width,Height);
     end;
+    //LOpenGLClip(Handle);
     DoOnPaint;
   end;
 end;
@@ -370,8 +371,9 @@ end;
 procedure TCustomOpenGLControl.RealizeBounds;
 begin
   if IsVisible and HandleAllocated
-  and ([csDesigning,csDestroying]*ComponentState=[]) and MakeCurrent then begin
-    if AutoResizeViewport then
+  and ([csDesigning,csDestroying]*ComponentState=[])
+  and AutoResizeViewport then begin
+    if MakeCurrent then
       LOpenGLViewport(0,0,Width,Height);
   end;
   inherited RealizeBounds;

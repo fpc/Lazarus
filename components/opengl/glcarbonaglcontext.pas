@@ -29,19 +29,22 @@ uses
 procedure LOpenGLViewport(Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
+procedure LOpenGLClip(Handle: HWND);
 function LOpenGLCreateContext(AWinControl: TWinControl;
-              WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
+              {%H-}WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
               DoubleBuffered, RGBA: boolean;
-              const AParams: TCreateParams): HWND;
+              const {%H-}AParams: TCreateParams): HWND;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
   RGBA: boolean): PInteger;
-  
+
+
 type
   TWidgetSetWSWinControl = TCarbonWSWinControl;
 
   TAGLControlInfo = record
     Control: ControlRef;
+    WinControl: TWinControl;
     AGLContext: TAGLContext;
   end;
   PAGLControlInfo = ^TAGLControlInfo;
@@ -49,8 +52,8 @@ type
 var
   AGLControlInfo_FOURCC: FourCharCode;
 
-function CreateAGLControlInfo(Control: ControlRef; AGLContext: TAGLContext
-  ): PAGLControlInfo;
+function CreateAGLControlInfo(Control: ControlRef; AGLContext: TAGLContext;
+  WinControl: TWinControl): PAGLControlInfo;
 function GetAGLControlInfo(Control: ControlRef): PAGLControlInfo;
 procedure FreeAGLControlInfo(Control: ControlRef);
 function GetAGLContext(Control: ControlRef): TAGLContext;
@@ -73,9 +76,45 @@ end;
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
 var
   AGLContext: TAGLContext;
+  Info: PAGLControlInfo;
+  Control: TCarbonCustomControl;
 begin
-  AGLContext:=GetAGLContext(ControlRef(Handle));
-  Result:=aglSetCurrentContext(aglContext)<>0;
+  Control:=TCarbonCustomControl(Handle);
+  Info:=GetAGLControlInfo(Control.Widget);
+  if Info=nil then exit;
+  AGLContext:=Info^.AGLContext;
+  Result:=aglSetCurrentContext(AGLContext)<>0;
+end;
+
+procedure LOpenGLClip(Handle: HWND);
+var
+  AGLContext: TAGLContext;
+  Info: PAGLControlInfo;
+  Form: TCustomForm;
+  Win: WindowRef;
+  //b: Rect;
+  clipRgn: RgnHandle;
+  Control: TCarbonCustomControl;
+begin
+  Control:=TCarbonCustomControl(Handle);
+  Info:=GetAGLControlInfo(Control.Widget);
+  debugln(['LOpenGLMakeCurrent AAA0']);
+  if Info=nil then exit;
+  AGLContext:=Info^.AGLContext;
+  aglSetCurrentContext(AGLContext);
+  debugln(['LOpenGLMakeCurrent AAA1 ',dbgs(Handle)]);
+  debugln(['LOpenGLMakeCurrent AAA2']);
+  Form:=GetParentForm(Info^.WinControl);
+  debugln(['LOpenGLMakeCurrent AAA3']);
+  Win:=TCarbonWindow(Form.Handle).Window;
+
+  debugln(['LOpenGLMakeCurrent ']);
+  //GetWindowPortBounds(Win,b);
+  clipRgn:=NewRgn;
+  SetRectRgn(clipRgn,10,10,100,100);
+  aglSetInteger(TAGLContext(GetWRefCon(Win)),AGL_CLIP_REGION,clipRgn);
+  aglEnable(TAGLContext(GetWRefCon(Win)),AGL_CLIP_REGION);
+  DisposeRgn(clipRgn);
 end;
 
 function LOpenGLCreateContext(AWinControl: TWinControl;
@@ -101,7 +140,7 @@ begin
   C.Height := AWinControl.Height;
   // create a custom control
   Control := TCarbonCustomControl.Create(AWinControl, C);
-  debugln(['LOpenGLCreateContext ',dbgsName(Control)]);
+  //debugln(['LOpenGLCreateContext ',dbgsName(Control)]);
 
   // create the AGL context
   disp := GetMainDevice ();
@@ -118,10 +157,11 @@ begin
 
   AGLControlInfo_FOURCC := MakeFourCC('ACI ');
 
-  AGLInfo:=CreateAGLControlInfo(Control.Widget, AGLContext);
+  AGLInfo:=CreateAGLControlInfo(Control.Widget, AGLContext, AWinControl);
   if AGLInfo<>GetAGLControlInfo(Control.Widget) then
     RaiseGDBException('GLCarbonAGLContext.LOpenGLCreateContext inconsistency');
   Result:=HWnd(Control);
+  //debugln(['LOpenGLCreateContext ',dbgs(Result)]);
 end;
 
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
@@ -176,12 +216,13 @@ begin
   CreateList;
 end;
 
-function CreateAGLControlInfo(Control: ControlRef; AGLContext: TAGLContext
-  ): PAGLControlInfo;
+function CreateAGLControlInfo(Control: ControlRef; AGLContext: TAGLContext;
+  WinControl: TWinControl): PAGLControlInfo;
 begin
   New(Result);
   FillByte(Result^, SizeOf(Result^), 0);
   Result^.Control:=Control;
+  Result^.WinControl:=WinControl;
   Result^.AGLContext:=AGLContext;
 
   SetControlProperty(Control, LAZARUS_FOURCC, AGLControlInfo_FOURCC,
