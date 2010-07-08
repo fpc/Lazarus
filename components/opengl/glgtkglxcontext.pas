@@ -25,10 +25,10 @@ uses
   Classes, SysUtils, LCLProc, LCLType, X, XUtil, XLib, gl, InterfaceBase,
   WSLCLClasses,
   {$IFDEF LCLGTK2}
-  LMessages, Gtk2Def, gdk2x, glib2, gdk2, gtk2, Gtk2Int, Gtk2WSControls,
+  LMessages, Gtk2Def, gdk2x, glib2, gdk2, gtk2, Gtk2Int,
   {$ENDIF}
   {$IFDEF LCLGTK}
-  glib, gdk, gtk, GtkInt, GtkWSControls,
+  glib, gdk, gtk, GtkInt,
   {$ENDIF}
   Controls;
 
@@ -135,14 +135,6 @@ function LOpenGLCreateContext(AWinControl: TWinControl;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
                                      RGBA: boolean): PInteger;
-
-type
-  {$IFDEF LCLGtk}
-  TWidgetSetWSWinControl = TGtkWSWinControl;
-  {$ENDIF}
-  {$IFDEF LCLGtk2}
-  TWidgetSetWSWinControl = TGtk2WSWinControl;
-  {$ENDIF}
 
 implementation
 
@@ -701,7 +693,7 @@ end;
 
 procedure LOpenGLSwapBuffers(Handle: HWND);
 begin
-  gtk_gl_area_swap_buffers(PGtkGLArea(Handle));
+  gtk_gl_area_swap_buffers({%H-}PGtkGLArea(Handle));
 end;
 
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
@@ -713,7 +705,7 @@ begin
     RaiseGDBException('LOpenGLSwapBuffers Handle=0');
   Result:=false;
 
-  Widget:=PGtkWidget(PtrUInt(Handle));
+  Widget:={%H-}PGtkWidget(PtrUInt(Handle));
   glarea:=PGtkGLArea(Widget);
   if not GTK_IS_GL_AREA(glarea) then
     RaiseGDBException('LOpenGLSwapBuffers not a PGtkGLArea');
@@ -777,14 +769,14 @@ begin
   AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA);
   try
     if SharedControl<>nil then begin
-      SharedArea:=PGtkGLArea(PtrUInt(SharedControl.Handle));
+      SharedArea:={%H-}PGtkGLArea(PtrUInt(SharedControl.Handle));
       if not GTK_IS_GL_AREA(SharedArea) then
         RaiseGDBException('LOpenGLCreateContext');
       NewWidget:=gtk_gl_area_share_new(AttrList,SharedArea);
     end else begin
       NewWidget:=gtk_gl_area_new(AttrList);
     end;
-    Result:=HWND(PtrUInt(Pointer(NewWidget)));
+    Result:=HWND({%H-}PtrUInt(Pointer(NewWidget)));
     PGtkobject(NewWidget)^.flags:=PGtkobject(NewWidget)^.flags or GTK_CAN_FOCUS;
     {$IFDEF LCLGtk}
     TGTKWidgetSet(WidgetSet).FinishCreateHandle(AWinControl,NewWidget,AParams);

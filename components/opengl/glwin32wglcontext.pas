@@ -37,8 +37,6 @@ procedure InitOpenGLContextGLWindowClass;
 
 
 type
-  TWidgetSetWSWinControl = TWin32WSWinControl;
-
   TWGLControlInfo = record
     Window: HWND;
     DC: HDC;

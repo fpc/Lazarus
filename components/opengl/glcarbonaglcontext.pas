@@ -40,8 +40,6 @@ function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
 
 
 type
-  TWidgetSetWSWinControl = TCarbonWSWinControl;
-
   TAGLControlInfo = record
     Control: ControlRef;
     WinControl: TWinControl;

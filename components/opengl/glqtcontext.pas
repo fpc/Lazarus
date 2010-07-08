@@ -76,9 +76,6 @@ procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
                                      RGBA: boolean): PInteger;
 
-type
-  TWidgetSetWSWinControl = TQTWSWinControl;
-
 implementation
 
 type

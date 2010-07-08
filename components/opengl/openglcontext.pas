@@ -62,7 +62,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, LCLType, LCLIntf, LResources,
-  Graphics, LMessages, WSLCLClasses,
+  Graphics, LMessages, WSLCLClasses, WSControls,
 {$IFDEF UseGtkGLX}
   GLGtkGlxContext;
 {$ENDIF}
@@ -184,7 +184,7 @@ type
 
   { TWSOpenGLControl }
 
-  TWSOpenGLControl = class(TWidgetSetWSWinControl)
+  TWSOpenGLControl = class(TWSWinControl)
   published
     class function CreateHandle(const AWinControl: TWinControl;
                                 const AParams: TCreateParams): HWND; override;
