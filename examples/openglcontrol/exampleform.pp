@@ -802,7 +802,7 @@ begin
       glEnable(GL_BLEND);
       glDisable(GL_DEPTH_TEST);
     end;
-    glCallList(BackList);    
+    glCallList(BackList);
     
     glPopMatrix;
        
