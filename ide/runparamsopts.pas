@@ -398,10 +398,10 @@ begin
   inherited Create(AnOwner);
 
   Caption := dlgRunParameters;
+  ButtonPanel.OKButton.Caption:=lisOk;
+  ButtonPanel.HelpButton.Caption:=lisMenuHelp;
+  ButtonPanel.CancelButton.Caption:=dlgCancel;
   SetupNotebook;
-
-  ButtonPanel.OKButton.OnClick := @OKButtonClick;
-  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
 end;
 
 procedure TRunParamsOptsDlg.SetupNotebook;
