@@ -363,6 +363,9 @@ type
     FHScrollbar: TQtScrollBar;
     FVScrollbar: TQtScrollbar;
   public
+    function GetContainerWidget: QWidgetH; override;
+    function getClientOffset: TPoint; override;
+    function getClientBounds: TRect; override;
     function getViewOrigin: TPoint;
     function viewportWidget: QWidgetH;
     function horizontalScrollBar: TQtScrollBar;
@@ -396,9 +399,6 @@ type
   public
     function cornerWidget: TQtWidget;
     function viewport: TQtViewPort;
-    function GetContainerWidget: QWidgetH; override;
-
-    function getClientOffset: TPoint; override;
     function getClientBounds: TRect; override;
     procedure grabMouse; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
@@ -942,6 +942,9 @@ type
 
   TQtAbstractItemView = class(TQtAbstractScrollArea)
   private
+    FSavedEvent: QMouseEventH;
+    FSavedEventTimer: QTimerH;
+    FSavedEventTimerHook: QTimer_hookH;
     FCheckable: boolean;
     FHideSelection: Boolean;
     FOldDelegate: QAbstractItemDelegateH;
@@ -962,6 +965,8 @@ type
     procedure SetOwnerDrawn(const AValue: Boolean);
   protected
     procedure OwnerDataNeeded(ARect: TRect); virtual;
+    procedure PostponedMouseRelease(AEvent: QEventH); virtual;
+    procedure PostponedMouseReleaseTimerEvent(); cdecl; virtual;
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     procedure signalActivated(index: QModelIndexH); cdecl; virtual;
@@ -1168,6 +1173,7 @@ type
     destructor Destroy; override;
     procedure DestroyNotify(AWidget: TQtWidget); override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure ClearItems;
     procedure DeleteItem(const AIndex: integer);
     function currentRow: Integer;
@@ -8107,6 +8113,10 @@ function TQtListWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
 begin
+  FSavedEvent := nil;
+  FSavedEventTimer := nil;
+  FSavedEventTimerHook := nil;
+
   FViewStyle := -1;
   FSyncingItems := False;
   FCheckable := False;
@@ -9021,6 +9031,9 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Create');
   {$endif}
+  FSavedEvent := nil;
+  FSavedEventTimer := nil;
+  FSavedEventTimerHook := nil;
   FViewStyle := -1;
   FCheckable := False;
   FHideSelection := False;
@@ -9097,6 +9110,15 @@ begin
     {eat mouse button events -> signalItemClicked is fired}
   else
     Result:=inherited EventFilter(Sender, Event);
+end;
+
+function TQtTreeWidget.itemViewViewportEventFilter(Sender: QObjectH;
+  Event: QEventH): Boolean; cdecl;
+begin
+  if QEvent_type(Event) = QEventMouseButtonRelease then
+    PostponedMouseRelease(Event)
+  else
+    Result := inherited itemViewViewportEventFilter(Sender, Event);
 end;
 
 procedure TQtTreeWidget.OwnerDataNeeded(ARect: TRect);
@@ -9741,7 +9763,6 @@ var
   ASubIndex: Integer;
   AIndex: Integer;
 begin
-
   FillChar(Msg, SizeOf(Msg), #0);
   FillChar(NMLV, SizeOf(NMLV), #0);
 
@@ -10723,6 +10744,22 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 
+function TQtAbstractScrollArea.GetContainerWidget: QWidgetH;
+begin
+  Result := viewportWidget;
+end;
+
+function TQtAbstractScrollArea.getClientOffset: TPoint;
+begin
+  with getClientBounds do
+    Result := Point(Left, Top);
+end;
+
+function TQtAbstractScrollArea.getClientBounds: TRect;
+begin
+  QWidget_rect(viewportWidget, @Result);
+end;
+
 function TQtAbstractScrollArea.getViewOrigin: TPoint;
 var
   R: TRect;
@@ -11119,20 +11156,6 @@ function TQtCustomControl.viewport: TQtViewport;
 begin
   viewportNeeded;
   Result := FViewPortWidget;
-end;
-
-function TQtCustomControl.GetContainerWidget: QWidgetH;
-begin
-  if ClassType = TQtCustomControl then
-    Result := viewport.Widget
-  else
-    Result := Widget;
-end;
-
-function TQtCustomControl.getClientOffset: TPoint;
-begin
-  with getClientBounds do
-    Result := Point(Left, Top);
 end;
 
 function TQtCustomControl.getClientBounds: TRect;
@@ -11761,6 +11784,42 @@ end;
 procedure TQtAbstractItemView.OwnerDataNeeded(ARect: TRect);
 begin
   // override
+end;
+
+procedure TQtAbstractItemView.PostponedMouseRelease(AEvent: QEventH);
+ // postpone mouse release for LCL
+var
+  ev: QMouseEventH;
+begin
+  if QEvent_type(AEvent) = QEventMouseButtonRelease then
+  begin
+    ev := QMouseEventH(AEvent);
+    FSavedEvent := QMouseEvent_create(QEventMouseButtonRelease,
+      QMouseEvent_pos(ev), QMouseEvent_globalPos(ev),
+      QMouseEvent_button(ev), QMouseEvent_buttons(ev),
+      QInputEvent_modifiers(QInputEventH(AEvent)));
+    FSavedEventTimer := QTimer_create(Widget);
+    FSavedEventTimerHook := QTimer_hook_create(FSavedEventTimer);
+    QTimer_hook_hook_timeout(FSavedEventTimerHook,
+      @PostponedMouseReleaseTimerEvent);
+    QTimer_setInterval(FSavedEventTimer, 5);
+    QTimer_setSingleShot(FSavedEventTimer, True);
+    QTimer_start(FSavedEventTimer);
+  end;
+end;
+
+procedure TQtAbstractItemView.PostponedMouseReleaseTimerEvent(); cdecl;
+begin
+  if FSavedEvent <> nil then
+  begin
+    SlotMouse(Widget, FSavedEvent);
+    QMouseEvent_destroy(FSavedEvent);
+    FSavedEvent := nil;
+    QTimer_hook_destroy(FSavedEventTimerHook);
+    QTimer_destroy(FSavedEventTimer);
+    FSavedEventTimer := nil;
+    FSavedEventTimerHook := nil;
+  end;
 end;
 
 constructor TQtAbstractItemView.Create(const AWinControl: TWinControl;
