@@ -72,18 +72,17 @@ object ConvertSettingsForm: TConvertSettingsForm
       ShowHint = True
       TabOrder = 3
     end
-    object MethodReplacementsButton: TBitBtn
+    object FuncReplacementsButton: TBitBtn
       Left = 11
       Height = 30
       Hint = 'Some Delphi functions can be replaced with a LCL function'
       Top = 108
       Width = 272
-      Caption = 'Method Replacements'
-      OnClick = MethodReplacementsButtonClick
+      Caption = 'Function Replacements'
+      OnClick = FuncReplacementsButtonClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 4
-      Visible = False
     end
   end
   object SettingsGroupBox: TGroupBox
@@ -92,7 +91,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     Top = 80
     Width = 637
     Anchors = [akTop, akLeft, akRight]
-    ClientHeight = 132
+    ClientHeight = 117
     ClientWidth = 633
     TabOrder = 1
     object TargetRadioGroup: TRadioGroup
@@ -189,6 +188,15 @@ object ConvertSettingsForm: TConvertSettingsForm
     Height = 39
     Top = 398
     Width = 625
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 4
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

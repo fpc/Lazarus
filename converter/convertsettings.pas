@@ -110,12 +110,12 @@ type
     SameDFMCheckBox: TCheckBox;
     ProjectPathEdit: TLabeledEdit;
     TargetRadioGroup: TRadioGroup;
-    MethodReplacementsButton: TBitBtn;
+    FuncReplacementsButton: TBitBtn;
     UnitReplacementsButton: TBitBtn;
     SettingsGroupBox: TGroupBox;
     MissingStuffGroupBox: TGroupBox;
     AutoRemovePropCheckBox: TCheckBox;
-    procedure MethodReplacementsButtonClick(Sender: TObject);
+    procedure FuncReplacementsButtonClick(Sender: TObject);
     procedure TypeReplacementsButtonClick(Sender: TObject);
     procedure UnitReplacementsButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -436,8 +436,8 @@ begin
   UnitReplacementsButton.Hint:=lisConvUnitReplHint;
   TypeReplacementsButton.Caption:=lisConvTypeReplacements;
   TypeReplacementsButton.Hint:=lisConvTypeReplHint;
-  MethodReplacementsButton.Caption:=lisConvMethodReplacements;
-  MethodReplacementsButton.Hint:=lisConvMethodReplHint;
+  FuncReplacementsButton.Caption:=lisConvFuncReplacements;
+  FuncReplacementsButton.Hint:=lisConvFuncReplHint;
   TargetRadioGroupClick(TargetRadioGroup);
 end;
 
@@ -467,9 +467,9 @@ begin
   EditMap(fSettings.ReplaceTypes, lisConvTypesToReplace);
 end;
 
-procedure TConvertSettingsForm.MethodReplacementsButtonClick(Sender: TObject);
+procedure TConvertSettingsForm.FuncReplacementsButtonClick(Sender: TObject);
 begin
-  ;
+  EditMap(fSettings.ReplaceFuncs, lisConvFuncsToReplace);
 end;
 
 

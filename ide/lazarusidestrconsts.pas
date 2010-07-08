@@ -472,12 +472,13 @@ resourcestring
   lisConvAutoReplaceUnitHint = 'If unchecked, there will be interactive dialogs for editing / accepting changes.';
   lisConvUnitsToReplace = 'Units to replace';
   lisConvTypesToReplace = 'Types to replace';
+  lisConvFuncsToReplace = 'Functions / procedures to replace';
   lisConvUnitReplacements = 'Unit Replacements';
   lisConvUnitReplHint = 'Unit names in uses section of a source unit';
   lisConvTypeReplacements = 'Type Replacements';
   lisConvTypeReplHint = 'Unknown types in form file (DFM/LFM)';
-  lisConvMethodReplacements = 'Method Replacements';
-  lisConvMethodReplHint = 'Some Delphi functions can be replaced with LCL function';
+  lisConvFuncReplacements = 'Function Replacements';
+  lisConvFuncReplHint = 'Some Delphi functions can be replaced with LCL function';
   lisReplacements = 'Replacements';
   lisProperties = 'Properties (replace or delete)';
   lisTypes = 'Types (not removed if no replacement)';
