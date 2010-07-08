@@ -36,6 +36,8 @@ interface
 
 {$I ide.inc}
 
+{ $DEFINE VerboseIDECompletionBox}
+
 uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,

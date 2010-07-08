@@ -868,6 +868,7 @@ begin
       // it is already active
       // do not send this message to the LCL
       // to prevent setting AForm.ActiveControl:=nil
+      //debugln(['GTKFocusCBAfter ',DbgSName(LCLObject),' send=',event^.send_event,' window=',dbgs(event^.window),' in=',event^._in,' type=',event^._type]);
       exit(true);
     end;
     // MG: maybe better send a LM_ACTIVATE instead of a LM_SETFOCUS message?
