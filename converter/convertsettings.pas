@@ -419,6 +419,8 @@ begin
   BackupCheckBox.Caption:=lisBackupChangedFiles;
   BackupCheckBox.Hint:=lisBackupHint;
   ButtonPanel.OKButton.Caption:=lisStartConversion;
+  ButtonPanel.HelpButton.Caption:=lisMenuHelp;
+  ButtonPanel.CancelButton.Caption:=dlgCancel;
   TargetRadioGroup.Items.Clear;
   TargetRadioGroup.Items.Append(lisConvertTarget1);
   TargetRadioGroup.Items.Append(lisConvertTarget2);

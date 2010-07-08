@@ -3,7 +3,6 @@ object ConvertSettingsForm: TConvertSettingsForm
   Height = 443
   Top = 299
   Width = 637
-  ActiveControl = ProjectPathEdit
   Caption = 'Convert Delphi unit, project or package '
   ClientHeight = 443
   ClientWidth = 637
@@ -17,21 +16,21 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 0
-    Height = 173
+    Height = 178
     Top = 219
     Width = 637
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     Caption = 'Units, Types and Properties'
-    ClientHeight = 154
+    ClientHeight = 160
     ClientWidth = 633
     TabOrder = 0
     object AutoRemovePropCheckBox: TCheckBox
       Left = 303
-      Height = 21
+      Height = 17
       Hint = 'If unchecked, there will be interactive dialogs for editing / accepting changes.'
       Top = 40
-      Width = 250
+      Width = 218
       Caption = 'Automatic removal of unknown properties'
       ParentShowHint = False
       ShowHint = True
@@ -63,10 +62,10 @@ object ConvertSettingsForm: TConvertSettingsForm
     end
     object AutoReplaceUnitsCheckBox: TCheckBox
       Left = 303
-      Height = 21
+      Height = 17
       Hint = 'If unchecked, there will be interactive dialogs for editing / accepting changes.'
       Top = 12
-      Width = 228
+      Width = 196
       Caption = 'Automatic replacement of unit names'
       ParentShowHint = False
       ShowHint = True
@@ -91,7 +90,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     Top = 80
     Width = 637
     Anchors = [akTop, akLeft, akRight]
-    ClientHeight = 117
+    ClientHeight = 118
     ClientWidth = 633
     TabOrder = 1
     object TargetRadioGroup: TRadioGroup
@@ -110,7 +109,7 @@ object ConvertSettingsForm: TConvertSettingsForm
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 93
+      ClientHeight = 94
       ClientWidth = 268
       ItemIndex = 0
       Items.Strings = (
@@ -127,10 +126,10 @@ object ConvertSettingsForm: TConvertSettingsForm
       AnchorSideLeft.Control = TargetRadioGroup
       AnchorSideLeft.Side = asrBottom
       Left = 303
-      Height = 21
+      Height = 17
       Hint = 'Separate form files allow different properties'
       Top = 62
-      Width = 285
+      Width = 239
       BorderSpacing.Left = 13
       BorderSpacing.Around = 7
       Caption = 'Lazarus uses the same DFM form file as Delphi'
@@ -140,11 +139,11 @@ object ConvertSettingsForm: TConvertSettingsForm
     end
   end
   object ProjectPathEdit: TLabeledEdit
-    Left = 96
+    Left = 144
     Height = 21
     Hint = 'Directory where project''s main file must be'
     Top = 15
-    Width = 529
+    Width = 481
     Anchors = [akTop, akLeft, akRight]
     BorderStyle = bsNone
     Color = clBtnFace
@@ -153,10 +152,10 @@ object ConvertSettingsForm: TConvertSettingsForm
     EditLabel.AnchorSideTop.Side = asrCenter
     EditLabel.AnchorSideRight.Control = ProjectPathEdit
     EditLabel.AnchorSideBottom.Control = ProjectPathEdit
-    EditLabel.Left = 19
-    EditLabel.Height = 16
-    EditLabel.Top = 17
-    EditLabel.Width = 70
+    EditLabel.Left = 73
+    EditLabel.Height = 14
+    EditLabel.Top = 18
+    EditLabel.Width = 64
     EditLabel.Caption = 'Project Path:'
     EditLabel.ParentColor = False
     LabelPosition = lpLeft
@@ -170,10 +169,10 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = ProjectPathEdit
     AnchorSideTop.Side = asrBottom
     Left = 16
-    Height = 21
+    Height = 17
     Hint = 'Creates a Backup directory under project directory'
     Top = 48
-    Width = 186
+    Width = 159
     BorderSpacing.Top = 5
     BorderSpacing.Around = 7
     Caption = 'Make backup of changed files'
@@ -185,8 +184,8 @@ object ConvertSettingsForm: TConvertSettingsForm
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 39
-    Top = 398
+    Height = 34
+    Top = 403
     Width = 625
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
