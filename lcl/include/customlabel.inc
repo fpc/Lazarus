@@ -37,6 +37,7 @@ begin
     AWidth:=Width
   else
     AWidth:=10000;
+  AWidth:=Constraints.MinMaxWidth(AWidth);
   CalculateSize(AWidth,PreferredWidth,PreferredHeight);
 end;
 

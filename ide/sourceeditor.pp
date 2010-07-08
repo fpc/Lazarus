@@ -6578,6 +6578,7 @@ Begin
     {$IFDEF IDE_DEBUG}
     writeln('[TSourceNotebook.NewFile] D ');
     {$ENDIF}
+    //debugln(['TSourceNotebook.NewFile ',NewShortName,' ',ASource.Filename]);
     Result.PageName:= Manager.FindUniquePageName(NewShortName, Result);
     UpdatePageNames;
     UpdateProjectFiles;
