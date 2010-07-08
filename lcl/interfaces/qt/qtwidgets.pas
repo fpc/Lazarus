@@ -1053,10 +1053,10 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
 
-    procedure signalCurrentItemChanged(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl;
-    procedure signalItemTextChanged(ANewText: PWideString); cdecl;
-    procedure signalItemClicked(item: QListWidgetItemH); cdecl;
-    procedure signalSelectionChanged(); cdecl;
+    procedure signalCurrentItemChanged(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl; virtual;
+    procedure signalItemTextChanged(ANewText: PWideString); cdecl; virtual;
+    procedure signalItemClicked(item: QListWidgetItemH); cdecl; virtual;
+    procedure signalSelectionChanged(); cdecl; virtual;
     procedure ItemDelegatePaint(painter: QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH); cdecl; override;
   public
     procedure ClearItems;
@@ -1088,7 +1088,21 @@ type
     procedure exchangeItems(AIndex1, AIndex2: Integer);
     property ItemCount: Integer read getItemCount write setItemCount;
   end;
-  
+
+  { TQtCheckListBox }
+
+  TQtCheckListBox = class (TQtListWidget)
+  protected
+    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+  public
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+
+    procedure signalCurrentItemChanged(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl; override;
+    procedure signalItemClicked(item: QListWidgetItemH); cdecl; override;
+    procedure signalSelectionChanged(); cdecl; override;
+  end;
+
   { TQtHeaderView }
 
   TQtHeaderView = class (TQtAbstractItemView)
@@ -8858,13 +8872,116 @@ begin
   end;
 end;
 
-  { TQtHeaderView }
+{ TQtCheckListBox }
+
+function TQtCheckListBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
+var
+  Parent: QWidgetH;
+begin
+  FSavedEvent := nil;
+  FSavedEventTimer := nil;
+  FSavedEventTimerHook := nil;
+
+  FViewStyle := -1;
+  FSyncingItems := False;
+  FDontPassSelChange := False;
+  FOwnerData := False;
+
+  FCheckable := True;
+  if AParams.WndParent <> 0 then
+    Parent := TQtWidget(AParams.WndParent).GetContainerWidget
+  else
+    Parent := nil;
+  Result := QListWidget_create(Parent);
+  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
+end;
+
+function TQtCheckListBox.EventFilter(Sender: QObjectH; Event: QEventH
+  ): Boolean; cdecl;
+var
+  MousePos: TQtPoint;
+  Item: QListWidgetItemH;
+  x: Integer;
+  Msg: TLMessage;
+begin
+  if (QEvent_type(Event) = QEventMouseButtonPress) or
+    (QEvent_type(Event) = QEventMouseButtonRelease) then
+  begin
+    SlotMouse(Sender, Event);
+    if (QEvent_type(Event) = QEventMouseButtonPress) and
+      (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
+    begin
+      MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+      Item := itemAt(MousePos.x, MousePos.y);
+      if (Item <> nil) and
+        ((QListWidgetItem_flags(Item) and QtItemIsUserCheckable) <> 0) then
+      begin
+        x := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth,
+          nil, Widget);
+        if ((MousePos.X > 2) and (MousePos.X < (X + 2))) then
+        begin
+          if QListWidgetItem_checkState(Item) = QtUnChecked then
+            QListWidgetItem_setCheckState(Item, QtChecked)
+          else
+            QListWidgetItem_setCheckState(Item, QtUnChecked);
+          FillChar(Msg, SizeOf(Msg), #0);
+          Msg.Msg := LM_CHANGED;
+          Msg.WParam := QListWidget_row(QListWidgetH(Widget), Item);
+          DeliverMessage(Msg);
+        end;
+      end;
+    end;
+  end else
+    Result := inherited EventFilter(Sender, Event);
+end;
+
+function TQtCheckListBox.itemViewViewportEventFilter(Sender: QObjectH;
+  Event: QEventH): Boolean; cdecl;
+begin
+  Result := False;
+  QEvent_accept(Event);
+  if (LCLObject <> nil) then
+  begin
+    case QEvent_type(Event) of
+      QEventMouseButtonRelease,
+      QEventMouseButtonPress,
+      QEventMouseButtonDblClick: QEvent_ignore(Event);
+      else
+      begin
+        {do not change selection if mousepressed and mouse moved}
+        Result := (QEvent_type(Event) = QEventMouseMove) and
+          hasFocus and (QApplication_mouseButtons() > 0);
+         QEvent_ignore(Event);
+      end;
+    end;
+  end;
+end;
+
+procedure TQtCheckListBox.signalCurrentItemChanged(current: QListWidgetItemH;
+  previous: QListWidgetItemH); cdecl;
+begin
+  // Do nothing
+  // inherited signalCurrentItemChanged(current, previous);
+end;
+
+procedure TQtCheckListBox.signalItemClicked(item: QListWidgetItemH); cdecl;
+begin
+  // DO NOTHING
+  //inherited signalItemClicked(item);
+end;
+
+procedure TQtCheckListBox.signalSelectionChanged(); cdecl;
+begin
+  // DO NOTHING
+  // inherited signalSelectionChanged;
+end;
+
+{ TQtHeaderView }
 
 function TQtHeaderView.getClickable: Boolean;
 begin
   Result := QHeaderView_isClickable(QHeaderViewH(Widget));
 end;
-
 
 function TQtHeaderView.getMinSectionSize: Integer;
 begin
