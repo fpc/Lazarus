@@ -8261,7 +8261,14 @@ begin
       QEventHideToParent: TQtComboBox(FOwner).SlotDropListVisibility(False);
     end;
   end else
-    Result:=inherited EventFilter(Sender, Event);
+  begin
+    if (ViewStyle >= 0) and ((QEvent_type(Event) = QEventMouseButtonPress) or
+    (QEvent_type(Event) = QEventMouseButtonRelease)) then
+      {eat mouse button events when we are TListView class.
+       Such events are handled by itemViewportEventFilter.}
+    else
+      Result:=inherited EventFilter(Sender, Event);
+  end;
 end;
 
 function TQtListWidget.itemViewViewportEventFilter(Sender: QObjectH;
@@ -8274,15 +8281,13 @@ var
   procedure SendEventToParent;
   var
     AEvent: QEventH;
-    Modifiers: QtKeyboardModifiers;
   begin
-    Modifiers := QApplication_keyboardModifiers();
     AEvent := QMouseEvent_create(QEvent_type(Event),
       QMouseEvent_pos(QMouseEventH(Event)),
       QMouseEvent_globalPos(QMouseEventH(Event)),
       QMouseEvent_button(QMouseEventH(Event)),
       QMouseEvent_buttons(QMouseEventH(Event)),
-      Modifiers);
+      QInputEvent_modifiers(QInputEventH(Event)));
     QCoreApplication_postEvent(Widget, AEvent, 1);
   end;
 
@@ -8295,6 +8300,13 @@ begin
 
   if (LCLObject <> nil) then
   begin
+    if ViewStyle >= 0 then
+    begin
+      if QEvent_type(Event) = QEventMouseButtonRelease then
+        PostponedMouseRelease(Event)
+      else
+        Result := inherited itemViewViewportEventFilter(Sender, Event);
+    end else
     case QEvent_type(Event) of
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
@@ -8421,6 +8433,9 @@ begin
     Exit;
   end;
 
+  if ViewStyle >= 0 then
+    exit;
+
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_SELCHANGE;
   if (getSelCount > 0) and (FChildOfComplexWidget <> ccwComboBox) then
@@ -8443,10 +8458,61 @@ procedure TQtListWidget.signalItemClicked(item: QListWidgetItemH)cdecl;
 var
   Msg: TLMessage;
   ItemRow: Integer;
+  MsgN: TLMNotify;
+  NMLV: TNMListView;
+  R: TRect;
+  Pt: TPoint;
+  i: Integer;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtListWidget.signalItemClicked');
   {$endif}
+  if (ViewStyle >= 0) and (FChildOfComplexWidget <> ccwComboBox) then
+  begin
+    FillChar(MsgN, SizeOf(MsgN), #0);
+    FillChar(NMLV, SizeOf(NMLV), #0);
+
+    MsgN.Msg := LM_CLICKED;
+
+    NMLV.hdr.hwndfrom := LCLObject.Handle;
+    NMLV.hdr.code := NM_CLICK;
+
+    NMLV.iItem := getRow(Item);
+
+    NMLV.iSubItem := 0;
+    NMLV.uNewState := UINT(NM_CLICK);
+    NMLV.uChanged :=  LVIS_SELECTED;
+
+    QListWidget_visualItemRect(QListWidgetH(Widget), @R, Item);
+
+    pt.X := R.Left;
+    pt.Y := R.Top;
+
+    NMLV.ptAction := pt;
+
+    MsgN.NMHdr := @NMLV.hdr;
+
+    DeliverMessage(MsgN);
+
+    {sync LCL items for selected property}
+    if (LCLObject <> nil) and (LCLObject is TListView) then
+      for i := 0 to TListView(LCLObject).Items.Count - 1 do
+        TListView(LCLObject).Items[i].Selected;
+
+    {inform LCL about current change}
+    MsgN.Msg := CN_NOTIFY;
+    NMLV.hdr.code := LVN_ITEMCHANGED;
+    NMLV.uNewState := 0;
+    NMLV.uOldState := 0;
+    if QListWidget_isItemSelected(QListWidgetH(Widget), Item) then
+      NMLV.uNewState := LVIS_SELECTED
+    else
+      NMLV.uOldState := LVIS_SELECTED;
+    NMLV.uChanged :=  LVIF_STATE;
+    MsgN.NMHdr := @NMLV.hdr;
+    DeliverMessage(Msgn);
+  end;
+
   if Checkable then
   begin
     FillChar(Msg, SizeOf(Msg), #0);
@@ -8455,6 +8521,7 @@ begin
     Msg.WParam := ItemRow;
     DeliverMessage(Msg);
   end;
+
 end;
 
 procedure TQtListWidget.ItemDelegatePaint(painter: QPainterH;
