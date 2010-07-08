@@ -5459,12 +5459,17 @@ msgstr "A la fois  Lazarus/LCL et Delphi"
 msgid "Converter adds conditional compilation to support different targets"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvmethodreplacements
-msgid "Method Replacements"
+#: lazarusidestrconsts.lisconvfuncreplacements
+msgid "Function Replacements"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvmethodreplhint
+#: lazarusidestrconsts.lisconvfuncreplhint
+msgctxt "lazarusidestrconsts.lisconvfuncreplhint"
 msgid "Some Delphi functions can be replaced with LCL function"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvfuncstoreplace
+msgid "Functions / procedures to replace"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvtypereplacements

@@ -5400,13 +5400,18 @@ msgstr "Oba Lazarus / LCL i Delphi"
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "Převaděč přidá podmíněný překlad k podpoře různých cílů"
 
-#: lazarusidestrconsts.lisconvmethodreplacements
-msgid "Method Replacements"
-msgstr "Nahrazování metod"
+#: lazarusidestrconsts.lisconvfuncreplacements
+msgid "Function Replacements"
+msgstr ""
 
-#: lazarusidestrconsts.lisconvmethodreplhint
+#: lazarusidestrconsts.lisconvfuncreplhint
+msgctxt "lazarusidestrconsts.lisconvfuncreplhint"
 msgid "Some Delphi functions can be replaced with LCL function"
 msgstr "Některé funkce Delphi mohou být nahrazeny funkcemi LCL"
+
+#: lazarusidestrconsts.lisconvfuncstoreplace
+msgid "Functions / procedures to replace"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"

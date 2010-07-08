@@ -5409,13 +5409,18 @@ msgstr "גם לזארוס / LCL וגם דלפי"
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "הממיר מוסיף הידור מותנה כדי לתמוך ביעדים שונים"
 
-#: lazarusidestrconsts.lisconvmethodreplacements
-msgid "Method Replacements"
-msgstr "החלפת מתודות"
+#: lazarusidestrconsts.lisconvfuncreplacements
+msgid "Function Replacements"
+msgstr ""
 
-#: lazarusidestrconsts.lisconvmethodreplhint
+#: lazarusidestrconsts.lisconvfuncreplhint
+msgctxt "lazarusidestrconsts.lisconvfuncreplhint"
 msgid "Some Delphi functions can be replaced with LCL function"
 msgstr "פונקציות דלפי מסוימות ניתנות להחלפה בפונקציות LCL"
+
+#: lazarusidestrconsts.lisconvfuncstoreplace
+msgid "Functions / procedures to replace"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"

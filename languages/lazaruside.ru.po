@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-07 02:12+0300\n"
+"PO-Revision-Date: 2010-07-09 00:09+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5446,13 +5446,18 @@ msgstr "Lazarus/LCL и Delphi"
 msgid "Converter adds conditional compilation to support different targets"
 msgstr "Добавление директив условной компиляции для поддержки различных целей"
 
-#: lazarusidestrconsts.lisconvmethodreplacements
-msgid "Method Replacements"
-msgstr "Замена методов"
+#: lazarusidestrconsts.lisconvfuncreplacements
+msgid "Function Replacements"
+msgstr "Замена функций"
 
-#: lazarusidestrconsts.lisconvmethodreplhint
+#: lazarusidestrconsts.lisconvfuncreplhint
+msgctxt "lazarusidestrconsts.lisconvfuncreplhint"
 msgid "Some Delphi functions can be replaced with LCL function"
 msgstr "Некоторые функции Delphi могут быть заменены функциями LCL"
+
+#: lazarusidestrconsts.lisconvfuncstoreplace
+msgid "Functions / procedures to replace"
+msgstr "Заменяемые функции/процедуры"
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
