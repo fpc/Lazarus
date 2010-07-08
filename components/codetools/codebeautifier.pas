@@ -2214,7 +2214,9 @@ end;
 
 procedure TFABPolicies.Clear;
 begin
+  IndentationCount:=0;
   ReAllocMem(Indentations,0);
+  IndentationCapacity:=0;
 end;
 
 procedure TFABPolicies.AddIndent(Typ, SubType: TFABBlockType;
