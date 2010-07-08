@@ -7893,6 +7893,15 @@ begin
           LRSFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lrs');
           CodeToolBoss.CreateFile(LRSFilename);
         end;
+        if (NewUnitInfo.Component<>nil)
+        and NewFileDescriptor.UseCreateFormStatements
+        and NewUnitInfo.IsPartOfProject
+        and Project1.AutoCreateForms
+        and (pfMainUnitHasCreateFormStatements in Project1.Flags) then
+        begin
+          Project1.AddCreateFormToProjectFile(NewUnitInfo.Component.ClassName,
+                                              NewUnitInfo.Component.Name);
+        end;
       end else begin
         // create a designer form for a form/datamodule/frame
         //DebugLn(['TMainIDE.DoNewFile Name=',NewFileDescriptor.Name,' Class=',NewFileDescriptor.ClassName]);
