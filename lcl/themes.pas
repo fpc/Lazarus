@@ -1900,11 +1900,9 @@ begin
       img.Canvas.Brush.Style:=bsSolid;
       img.Canvas.FillRect(Rect(0,0,img.Width,img.Height));
       img.Canvas.Pen.Color:=clBlack;
-      img.Canvas.Pen.Width:=3;
-      img.Canvas.MoveTo(4,4);
-      img.Canvas.LineTo(img.Width-4,img.Height-4);
-      img.Canvas.MoveTo(img.Width-4,4);
-      img.Canvas.LineTo(4,img.Height-4);
+      img.Canvas.Pen.Width:=2;
+      img.Canvas.Line(4,4,img.Width-3, img.Height-3);
+      img.Canvas.Line(img.Width-4, 4, 3, img.Height-3);
       Image:=img.ReleaseHandle; 
       Mask:=0;
       img.Free;
