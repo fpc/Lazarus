@@ -225,6 +225,9 @@ end;
 procedure TReplaceNamesForm.FormCreate(Sender: TObject);
 begin
   Caption:=lisReplacements;
+  btnOK.Caption:=lisOk;
+  HelpButton.Caption:=lisMenuHelp;
+  btnCancel.Caption:=dlgCancel;
   IsLasRow:=false;
 end;
 

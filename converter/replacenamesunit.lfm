@@ -3,7 +3,6 @@ object ReplaceNamesForm: TReplaceNamesForm
   Height = 472
   Top = 438
   Width = 343
-  ActiveControl = Grid
   Caption = 'Properties and Types to replace'
   ClientHeight = 472
   ClientWidth = 343
@@ -59,6 +58,7 @@ object ReplaceNamesForm: TReplaceNamesForm
       Align = alLeft
       AutoSize = True
       BorderSpacing.Around = 6
+      Caption = '&Help'
       Constraints.MinHeight = 25
       Constraints.MinWidth = 75
       Kind = bkHelp
