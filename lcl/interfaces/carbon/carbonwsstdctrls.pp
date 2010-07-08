@@ -304,8 +304,12 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomComboBox.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+var
+  sz : TPoint;
 begin
   Result := TLCLIntfHandle(TCarbonComboBox.Create(AWinControl, AParams));
+  sz:=TCarbonComboBox(Result).GetPreferredSize;
+  AWinControl.Constraints.SetInterfaceConstraints(0,0,0, sz.Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -434,10 +438,14 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSCustomComboBox.SetStyle(const ACustomComboBox: TCustomComboBox;
   NewStyle: TComboBoxStyle);
+var
+  sz : TPoint;
 begin
   if not CheckHandle(ACustomComboBox, Self, 'SetStyle') then Exit;
 
   TCarbonComboBox(ACustomComboBox.Handle).SetReadOnly(ACustomComboBox.ReadOnly);
+  sz:=TCarbonComboBox(ACustomComboBox.Handle).GetPreferredSize;
+  ACustomComboBox.Constraints.SetInterfaceConstraints(0,0,0,sz.Y);
 end;
 
 {------------------------------------------------------------------------------

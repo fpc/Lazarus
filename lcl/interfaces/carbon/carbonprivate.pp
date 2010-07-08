@@ -45,7 +45,7 @@ type
   TCarbonControlEvent = (cceValueChanged, cceIndicatorMoved, cceDoAction,
     cceDraw, cceHit);
   TCarbonControlEvents = set of TCarbonControlEvent;
-  
+
   { TCarbonControl }
   
   TCarbonControl = class(TCarbonWidget)
@@ -266,8 +266,8 @@ type
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     function GetContent: ControlRef; override;
-    function GetPreferredSize: TPoint; override;
   public
+    function GetPreferredSize: TPoint; override;
     function GetClientRect(var ARect: TRect): Boolean; override;
     function SetBounds(const ARect: TRect): Boolean; override;
     procedure SetColor(const AColor: TColor); override;
