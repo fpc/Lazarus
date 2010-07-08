@@ -2277,7 +2277,8 @@ end;
 { The constructor for @link(TSourceEditor).
   AOwner is the @link(TSourceNotebook)
   and the AParent is usually a page of a @link(TNotebook) }
-constructor TSourceEditor.Create(AOwner: TComponent; AParent: TWinControl; ASharedEditor: TSourceEditor = nil);
+constructor TSourceEditor.Create(AOwner: TComponent; AParent: TWinControl;
+  ASharedEditor: TSourceEditor = nil);
 var
   i: Integer;
 Begin

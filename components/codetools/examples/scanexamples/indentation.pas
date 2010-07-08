@@ -31,7 +31,8 @@ implementation
 
 { TMyClass }
 
-procedure TMyClass.DoSomething1(a, b, c: integer);
+procedure TMyClass.DoSomething1(a, b, c: integer;
+  LongParameter1: TSomeLongParameter);
 var
   i: integer;
 begin
