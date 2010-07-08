@@ -13,17 +13,17 @@ inherited CompilerMessagesOptionsFrame: TCompilerMessagesOptionsFrame
     Width = 626
     Align = alClient
     Caption = 'grpCompilerMessages'
-    ClientHeight = 437
+    ClientHeight = 436
     ClientWidth = 622
     TabOrder = 0
     object editMsgFilter: TEdit
       AnchorSideLeft.Control = lblFilter
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = grpCompilerMessages
-      Left = 47
+      Left = 56
       Height = 21
       Top = 6
-      Width = 567
+      Width = 558
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -41,21 +41,21 @@ inherited CompilerMessagesOptionsFrame: TCompilerMessagesOptionsFrame
       AnchorSideBottom.Control = grpCompilerMessages
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 398
+      Height = 397
       Top = 33
       Width = 610
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ItemHeight = 0
-      OnClick = chklistCompMsgClick
+      OnItemClick = chklistCompMsgItemClick
       Sorted = True
       TabOrder = 1
     end
     object lblFilter: TLabel
       Left = 6
-      Height = 14
+      Height = 16
       Top = 8
-      Width = 35
+      Width = 44
       Caption = 'lblFilter'
       ParentColor = False
     end

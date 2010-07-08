@@ -21,7 +21,7 @@ type
     grpCompilerMessages: TGroupBox;
     lblFilter: TLabel;
     procedure btnBrowseMsgClick(Sender: TObject);
-    procedure chklistCompMsgClick(Sender: TObject);
+    procedure chklistCompMsgItemClick(Sender: TObject; Index: integer);
     procedure chkUseMsgFileChange(Sender: TObject);
     procedure editMsgFilterChange(Sender: TObject);
   private
@@ -57,12 +57,12 @@ begin
   UpdateFilter;
 end;
 
-procedure TCompilerMessagesOptionsFrame.chklistCompMsgClick(Sender: TObject);
-var
-  i : Integer;
+procedure TCompilerMessagesOptionsFrame.chklistCompMsgItemClick(
+  Sender: TObject; Index: integer);
 begin
-  for i := 0 to chklistCompMsg.Count - 1 do
-    TCompilerMessageConfig(chklistCompMsg.Items.Objects[i]).Ignored := not chklistCompMsg.Checked[i];
+  if (Index >= 0) and (Index < chklistCompMsg.Items.Count) then
+    TCompilerMessageConfig(chklistCompMsg.Items.Objects[Index]).Ignored :=
+      not chklistCompMsg.Checked[Index];
 end;
 
 procedure TCompilerMessagesOptionsFrame.btnBrowseMsgClick(Sender: TObject);
