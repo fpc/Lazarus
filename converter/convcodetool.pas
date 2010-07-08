@@ -581,8 +581,8 @@ begin
       fSrcCache.MainScanner:=fCodeTool.Scanner;
       if not fSrcCache.Replace(gtNone, gtNone,
                         FuncInfo.fStartPos, FuncInfo.fEndPos, NewFunc) then exit;
-      IDEMessagesWindow.AddMsg('Replaced call to '+s, '', -1);
-      IDEMessagesWindow.AddMsg('  with '+NewFunc, '', -1);
+      IDEMessagesWindow.AddMsg('Replaced call '+s, '', -1);
+      IDEMessagesWindow.AddMsg('                  with '+NewFunc, '', -1);
     end;
 //    if fFuncsToReplace.Count > 0 then
 //      if not fSrcCache.Apply then exit;     Applied in method Convert.
@@ -600,14 +600,11 @@ var
 begin
   with fCodeTool do begin
     MoveCursorToCleanPos(aNode.StartPos);
-    ReadNextAtom;                         // Read proc name.
+    ReadNextAtom;               // Read proc name.
     ProcName:=GetAtom;
     ReadNextAtom;
-    // Don't save a method name (like TClass.Method).
-    if not AtomIsChar('.') then
-      fDefinedProcNames.Add(ProcName)
-    else
-      ProcName:='';   // For debug only. Never executed!
+    if GetAtom<>'.' then        // Don't save a method name (like TClass.Method).
+      fDefinedProcNames.Add(ProcName);
   end;
   Result:=aNode.Next;
 end;
@@ -800,6 +797,7 @@ begin
     FuncNames:=TStringList.Create;
     fDefinedProcNames:=TStringList.Create;
     fDefinedProcNames.Sorted:=True;
+    fDefinedProcNames.Duplicates:=dupIgnore;
     ActivateGlobalWriteLock;
     try
       fReplaceFuncs.GetNames(FuncNames);
