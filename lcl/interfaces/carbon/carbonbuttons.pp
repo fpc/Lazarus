@@ -110,6 +110,7 @@ type
     procedure SetGlyph(Glyph: CGImageRef); virtual;
     procedure SetLayout(APlacement: ControlButtonTextPlacement; ATextAlign: ControlButtonTextAlignment); virtual;
     procedure SetDefault(ADefault: Boolean); override;
+    function GetBounds(var ARect:TRect):Boolean;override;
     function SetBounds(const ARect: TRect): Boolean; override;
   end;
 
@@ -372,6 +373,21 @@ const
   StdPushButtonSmallHeight  = 17;
   StdPushButtonTinyHeight   = 0; // 14
 
+  NormalPushBtnAddV = 2;
+  SmallPushBtnAddV  = 1;
+  TinyPushBtnAddV   = 0;
+
+function PushBtnAddV(PushBtnStyle: Integer=kThemePushButtonNormal): Integer;
+begin
+  case PushBtnStyle of
+    kThemePushButtonMini: Result:=TinyPushBtnAddV;
+    kThemePushButtonSmall: Result:=SmallPushBtnAddV;
+    kThemePushButtonNormal: Result:=NormalPushBtnAddV;
+  else
+    Result:=0;
+  end;
+end;
+
 procedure GetBevelButtonStyle(const r: TRect; var ButtonStyle: ThemeButtonKind; var ThemeFont: ThemeFontID);
 var
   h : Integer;
@@ -457,7 +473,7 @@ end;
 function TCarbonBitBtn.GetPreferredSize: TPoint;
 begin
   Result:=inherited GetPreferredSize;
-  Result.Y := 20;
+  Result.Y := 20 + PushBtnAddV;
 end;
 
 procedure TCarbonBitBtn.SetFont(const AFont: TFont);
@@ -521,9 +537,19 @@ begin
   // not supported
 end;
 
-function TCarbonBitBtn.SetBounds(const ARect: TRect): Boolean;
+function TCarbonBitBtn.GetBounds(var ARect:TRect):Boolean;
 begin
-  Result:=inherited SetBounds(ARect);
+  Result:=inherited GetBounds(ARect);
+  inc(ARect.Bottom, PushBtnAddV);
+end;
+
+function TCarbonBitBtn.SetBounds(const ARect: TRect): Boolean;
+var
+  r : TRect;
+begin
+  r:=ARect;
+  dec(r.Bottom, PushBtnAddV);
+  Result:=inherited SetBounds(r);
   UpdateButtonStyle;
 end;
 
