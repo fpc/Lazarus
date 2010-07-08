@@ -4146,6 +4146,9 @@ var
   function FindDeclarationNode: boolean;
   var
     Node: TCodeTreeNode;
+    CommentStart: integer;
+    CommentEnd: integer;
+    p: LongInt;
   begin
     Result:=false;
 
@@ -4209,6 +4212,24 @@ var
         DeclarationNode:=Node;
       end;
       //debugln('FindDeclarationNode AliasDeclarationNode=',AliasDeclarationNode.DescAsString);
+    end;
+
+    // search comment in front of declaration
+    if (DeclarationTool=Self)
+    and (not SkipComments)
+    and FindCommentInFront(DeclarationNode.StartPos,Identifier,
+      true,false,false,true,true,CommentStart,CommentEnd)
+    then begin
+      //debugln(['FindDeclarationNode Comment="',dbgstr(copy(Src,CommentStart,CommentEnd)),'"']);
+      p:=CommentStart;
+      if (Src[p]='{') then begin
+        inc(p);
+        while (p<=SrcLen) and IsSpaceChar[Src[p]] do inc(p);
+        if (p<=SrcLen) and (CompareIdentifiers(@Src[p],PChar(Identifier))=0)
+        then begin
+          AddReference(p);
+        end;
+      end;
     end;
 
     Result:=true;

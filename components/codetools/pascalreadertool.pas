@@ -39,7 +39,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   CustomCodeTool, PascalParserTool, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, AVL_Tree;
+  SourceChanger, LinkScanner, AVL_Tree;
 
 type
 
@@ -197,6 +197,23 @@ type
     procedure MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
     procedure ReadNextUsedUnit(out UnitNameAtom, InAtom: TAtomPosition);
     procedure ReadPriorUsedUnit(out UnitNameAtom, InAtom: TAtomPosition);
+
+    // comments
+    function FindCommentInFront(const StartPos: TCodeXYPosition;
+          const CommentText: string; InvokeBuildTree, SearchInParentNode,
+          WithCommentBounds, CaseSensitive, IgnoreSpaces,
+          CompareOnlyStart: boolean;
+          out CommentStart, CommentEnd: TCodeXYPosition): boolean;
+    function FindCommentInFront(const StartPos: integer;
+          const CommentText: string; SearchInParentNode,
+          WithCommentBounds, CaseSensitive, IgnoreSpaces,
+          CompareOnlyStart: boolean;
+          out CommentStart, CommentEnd: integer): boolean;
+    function CommentCode(const StartPos, EndPos: integer;
+          SourceChangeCache: TSourceChangeCache; Apply: boolean): boolean;
+    function GetPasDocComments(const StartPos: TCodeXYPosition;
+                               InvokeBuildTree: boolean;
+                               out ListOfPCodeXYPosition: TFPList): boolean;
 
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
@@ -2255,6 +2272,409 @@ begin
   end;
   AtomIsIdentifier(true);
   UnitNameAtom:=CurPos;
+end;
+
+function TPascalReaderTool.FindCommentInFront(const StartPos: TCodeXYPosition;
+  const CommentText: string; InvokeBuildTree, SearchInParentNode,
+  WithCommentBounds, CaseSensitive, IgnoreSpaces, CompareOnlyStart: boolean;
+  out CommentStart, CommentEnd: TCodeXYPosition): boolean;
+var
+  CleanCursorPos: integer;
+  CommentCleanStart: integer;
+  CommentCleanEnd: integer;
+begin
+  Result:=false;
+  if CommentText='' then exit;
+
+  {debugln('TPascalReaderTool.FindCommentInFront A CommentText="',CommentText,'" ',
+    ' StartPos=Y='+dbgs(StartPos.Y)+',X='+dbgs(StartPos.X),
+    ' InvokeBuildTree='+dbgs(InvokeBuildTree),
+    ' SearchInParentNode='+dbgs(SearchInParentNode),
+    ' WithCommentBounds='+dbgs(WithCommentBounds),
+    ' CaseSensitive='+dbgs(CaseSensitive),
+    ' IgnoreSpaces='+dbgs(IgnoreSpaces),
+    ' CompareOnlyStart='+dbgs(CompareOnlyStart)); }
+
+  // parse source and find clean positions
+  if InvokeBuildTree then
+    BuildTreeAndGetCleanPos(trAll,StartPos,CleanCursorPos,[])
+  else
+    if CaretToCleanPos(StartPos,CleanCursorPos)<>0 then
+      exit;
+  Result:=FindCommentInFront(CleanCursorPos,CommentText,SearchInParentNode,
+                  WithCommentBounds,CaseSensitive,IgnoreSpaces,CompareOnlyStart,
+                  CommentCleanStart,CommentCleanEnd);
+  if not Result then exit;
+  Result:=(CommentCleanStart>=1)
+          and CleanPosToCaret(CommentCleanStart,CommentStart)
+          and CleanPosToCaret(CommentCleanEnd,CommentEnd);
+end;
+
+function TPascalReaderTool.FindCommentInFront(const StartPos: integer;
+  const CommentText: string;
+  SearchInParentNode, WithCommentBounds, CaseSensitive,
+  IgnoreSpaces, CompareOnlyStart: boolean;
+  out CommentStart, CommentEnd: integer): boolean;
+// searches a comment in front.
+var
+  FoundStartPos: integer;
+  FoundEndPos: integer;
+
+  procedure CompareComment(CStartPos, CEndPos: integer);
+  var
+    Found: LongInt;
+    CompareStartPos: LongInt;
+    CompareEndPos: LongInt;
+    CompareLen: Integer;
+    CompareCommentLength: Integer;
+  begin
+    //debugln('CompareComment "',copy(Src,CStartPos,CEndPos-CStartPos),'"');
+
+    CompareStartPos:=CStartPos;
+    CompareEndPos:=CEndPos;
+    if not WithCommentBounds then begin
+      // chomp comment boundaries
+      case Src[CompareStartPos] of
+      '/','(': inc(CompareStartPos,2);
+      '{': inc(CompareStartPos,1);
+      end;
+      case Src[CompareEndPos-1] of
+      '}': dec(CompareEndPos);
+      ')': dec(CompareEndPos,2);
+      #10,#13:
+        begin
+          dec(CompareEndPos);
+          if (Src[CompareEndPos-1] in [#10,#13])
+          and (Src[CompareEndPos-1]<>Src[CompareEndPos]) then
+            dec(CompareEndPos);
+        end;
+      end;
+    end;
+    if IgnoreSpaces then begin
+      while (CompareStartPos<=CompareEndPos)
+      and IsSpaceChar[Src[CompareStartPos]]
+      do
+        inc(CompareStartPos);
+    end;
+
+    CompareCommentLength:=length(CommentText);
+    CompareLen:=CompareEndPos-CompareStartPos;
+    if CompareOnlyStart and (CompareLen>CompareCommentLength) then
+      CompareLen:=CompareCommentLength;
+
+    //debugln('Compare: "',copy(Src,CompareStartPos,CompareEndPos-CompareStartPos),'"',
+    //  ' "',CommentText,'"');
+    if IgnoreSpaces then begin
+      Found:=CompareTextIgnoringSpace(
+                          @Src[CompareStartPos],CompareLen,
+                          @CommentText[1],length(CommentText),
+                          CaseSensitive);
+    end else begin
+      Found:=CompareText(@Src[CompareStartPos],CompareLen,
+                         @CommentText[1],length(CommentText),
+                         CaseSensitive);
+    end;
+    if Found=0 then begin
+      FoundStartPos:=CStartPos;
+      FoundEndPos:=CEndPos;
+    end;
+  end;
+
+var
+  CleanCursorPos: integer;
+  ANode: TCodeTreeNode;
+  p: LongInt;
+  CommentLvl: Integer;
+  CommentStartPos: LongInt;
+begin
+  Result:=false;
+  if CommentText='' then exit;
+
+  {debugln('TPascalReaderTool.FindCommentInFront A CommentText="',CommentText,'" ',
+    ' StartPos=Y='+dbgs(StartPos.Y)+',X='+dbgs(StartPos.X),
+    ' InvokeBuildTree='+dbgs(InvokeBuildTree),
+    ' SearchInParentNode='+dbgs(SearchInParentNode),
+    ' WithCommentBounds='+dbgs(WithCommentBounds),
+    ' CaseSensitive='+dbgs(CaseSensitive),
+    ' IgnoreSpaces='+dbgs(IgnoreSpaces),
+    ' CompareOnlyStart='+dbgs(CompareOnlyStart)); }
+
+  // find node
+  ANode:=FindDeepestNodeAtPos(StartPos,true);
+  if (ANode=nil) then exit;
+
+  { find end of last atom in front of node
+    for example:
+      uses classes;
+
+      // Comment
+      type
+
+    If ANode is the 'type' block, the position after the semicolon is searched
+  }
+
+  if SearchInParentNode and (ANode.Parent<>nil) then begin
+    // search all siblings in front
+    ANode:=ANode.Parent;
+    MoveCursorToCleanPos(ANode.Parent.StartPos);
+  end else if ANode.PriorBrother<>nil then begin
+    // search between prior sibling and this node
+    //DebugLn('TPascalReaderTool.FindCommentInFront ANode.Prior=',ANode.Prior.DescAsString);
+    MoveCursorToLastNodeAtom(ANode.PriorBrother);
+  end else if ANode.Parent<>nil then begin
+    // search from start of parent node to this node
+    //DebugLn('TPascalReaderTool.FindCommentInFront ANode.Parent=',ANode.Parent.DescAsString);
+    MoveCursorToCleanPos(ANode.Parent.StartPos);
+  end else begin
+    // search in this node
+    //DebugLn('TPascalReaderTool.FindCommentInFront Aode=',ANode.DescAsString);
+    MoveCursorToCleanPos(ANode.StartPos);
+  end;
+
+  //debugln('TPascalReaderTool.FindCommentInFront B Area="',copy(Src,CurPos.StartPos,CleanCursorPos-CurPos.StartPos),'"');
+
+  FoundStartPos:=-1;
+  repeat
+    p:=CurPos.EndPos;
+    //debugln('TPascalReaderTool.FindCommentInFront Atom=',GetAtom);
+
+    // read space and comment till next atom
+    CommentLvl:=0;
+    while true do begin
+      case Src[p] of
+      #0:
+        if p>SrcLen then
+          break
+        else
+          inc(p);
+      #1..#32:
+        inc(p);
+      '{': // pascal comment
+        begin
+          CommentLvl:=1;
+          CommentStartPos:=p;
+          inc(p);
+          while true do begin
+            case Src[p] of
+            #0:  if p>SrcLen then break;
+            '{': if Scanner.NestedComments then inc(CommentLvl);
+            '}':
+              begin
+                dec(CommentLvl);
+                if CommentLvl=0 then break;
+              end;
+            end;
+            inc(p);
+          end;
+          inc(p);
+          CompareComment(CommentStartPos,p);
+        end;
+      '/':  // Delphi comment
+        if (Src[p+1]<>'/') then begin
+          break;
+        end else begin
+          CommentStartPos:=p;
+          inc(p,2);
+          while (not (Src[p] in [#10,#13,#0])) do
+            inc(p);
+          inc(p);
+          if (p<=SrcLen) and (Src[p] in [#10,#13])
+          and (Src[p-1]<>Src[p]) then
+            inc(p);
+          CompareComment(CommentStartPos,p);
+        end;
+      '(': // old turbo pascal comment
+        if (Src[p+1]<>'*') then begin
+          break;
+        end else begin
+          CommentStartPos:=p;
+          inc(p,3);
+          while (p<=SrcLen)
+          and ((Src[p-1]<>'*') or (Src[p]<>')')) do
+            inc(p);
+          inc(p);
+          CompareComment(CommentStartPos,p);
+        end;
+      else
+        break;
+      end;
+    end;
+    ReadNextAtom;
+    //DebugLn('TPascalReaderTool.FindCommentInFront NextAtom=',GetAtom);
+  until (CurPos.EndPos>=CleanCursorPos) or (CurPos.EndPos>=SrcLen);
+
+  Result:=(FoundStartPos>=1);
+  CommentStart:=FoundStartPos;
+  CommentEnd:=FoundEndPos;
+end;
+
+function TPascalReaderTool.CommentCode(const StartPos, EndPos: integer;
+  SourceChangeCache: TSourceChangeCache; Apply: boolean): boolean;
+var
+  i: LongInt;
+  CurStartPos: LongInt;
+  CommentNeeded: Boolean;
+  CurEndPos: LongInt;
+begin
+  if StartPos>=EndPos then
+    RaiseException('TStandardCodeTool CommentCode');
+
+  Result:=false;
+  // comment with curly brackets {}
+  i:=StartPos;
+  CurStartPos:=i;
+  CurEndPos:=CurStartPos;
+  CommentNeeded:=false;
+  repeat
+    if (Src[i]='{') or (i>=EndPos) then begin
+      // the area contains a comment -> comment in front
+      if CommentNeeded then begin
+        if not SourceChangeCache.Replace(gtNone,gtNone,
+          CurStartPos,CurStartPos,'{') then exit;
+        if not SourceChangeCache.Replace(gtNone,gtNone,
+          CurEndPos,CurEndPos,'}') then exit;
+        //DebugLn('Comment "',copy(Src,CurStartPos,i-CurStartPos),'"');
+        CommentNeeded:=false;
+      end;
+      if i>=EndPos then break;
+      // skip comment
+      i:=FindCommentEnd(Src,i,Scanner.NestedComments);
+    end else if not IsSpaceChar[Src[i]] then begin
+      if not CommentNeeded then begin
+        CurStartPos:=i;
+        CommentNeeded:=true;
+      end;
+      CurEndPos:=i+1;
+    end;
+    inc(i);
+  until false;
+  if Apply then
+    Result:=SourceChangeCache.Apply
+  else
+    Result:=true;
+end;
+
+function TPascalReaderTool.GetPasDocComments(const StartPos: TCodeXYPosition;
+  InvokeBuildTree: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
+// Comments are normally in front.
+// { Description of TMyClass. }
+//  TMyClass = class
+//
+// Comments can be behind in the same line
+// property Color; // description of Color
+//
+// Comments can be in the following line if started with <
+
+  function CommentBelongsToPrior(CommentStart: integer): boolean;
+  var
+    p: Integer;
+  begin
+    //DebugLn(['CommentBelongsToPrior Comment=',dbgstr(copy(Src,CommentStart,20))]);
+    if (CommentStart<SrcLen) and (Src[CommentStart]='{')
+    and (Src[CommentStart+1]='<') then
+      Result:=true
+    else if (CommentStart+2<=SrcLen) and (Src[CommentStart]='(')
+    and (Src[CommentStart+1]='*') and (Src[CommentStart+2]='<') then
+      Result:=true
+    else if (CommentStart+2<=SrcLen) and (Src[CommentStart]='/')
+    and (Src[CommentStart+1]='/') and (Src[CommentStart+2]='<') then
+      Result:=true
+    else begin
+      p:=CommentStart-1;
+      while (p>=1) and (Src[p] in [' ',#9]) do dec(p);
+      //DebugLn(['CommentBelongsToPrior Code in front: ',dbgstr(copy(Src,p,20))]);
+      if (p<1) or (Src[p] in [#10,#13]) then
+        Result:=false
+      else
+        Result:=true; // there is code in the same line in front of the comment
+    end;
+  end;
+
+  procedure Add(CleanPos: integer);
+  var
+    CodePos: TCodeXYPosition;
+  begin
+    if not CleanPosToCaret(CleanPos,CodePos) then exit;
+    AddCodePosition(ListOfPCodeXYPosition,CodePos);
+  end;
+
+  function Scan(StartPos, EndPos: integer): boolean;
+  var
+    p: LongInt;
+  begin
+    // read comments (start in front of node)
+    //DebugLn(['TPascalReaderTool.GetPasDocComments Scan Src=',copy(Src,StartPos,EndPos-StartPos)]);
+    p:=FindLineEndOrCodeInFrontOfPosition(StartPos,true);
+    while p<EndPos do begin
+      p:=FindNextComment(Src,p,EndPos);
+      if (p>=EndPos)
+      or ((Src[p]='{') and (Src[p+1]='$'))
+      or ((Src[p]='(') and (Src[p+1]='*') and (Src[p+2]='$'))
+      then
+        break;
+      //debugln(['TStandardCodeTool.GetPasDocComments Comment="',copy(Src,p,FindCommentEnd(Src,p,Scanner.NestedComments)-p),'"']);
+      if (p<StartPos) then begin
+        // comment in front of node
+        if not CommentBelongsToPrior(p) then
+          Add(p);
+      end else if (p<EndPos) then begin
+        // comment in the middle or behind
+        if CommentBelongsToPrior(p) then
+          Add(p);
+      end;
+      p:=FindCommentEnd(Src,p,Scanner.NestedComments);
+    end;
+    Result:=true;
+  end;
+
+var
+  CleanCursorPos: integer;
+  ANode: TCodeTreeNode;
+  NextNode: TCodeTreeNode;
+  EndPos: LongInt;
+  TypeNode: TCodeTreeNode;
+begin
+  ListOfPCodeXYPosition:=nil;
+  Result:=false;
+
+  // parse source and find clean positions
+  if InvokeBuildTree then
+    BuildTreeAndGetCleanPos(trAll,StartPos,CleanCursorPos,[])
+  else
+    if CaretToCleanPos(StartPos,CleanCursorPos)<>0 then
+      exit;
+
+  // find node
+  ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  if (ANode=nil) then exit;
+  if (ANode.Desc=ctnProcedureHead)
+  and (ANode.Parent<>nil) and (ANode.Parent.Desc=ctnProcedure) then
+    ANode:=ANode.Parent;
+
+  // add space behind node to scan range
+  NextNode:=ANode.Next;
+  if NextNode<>nil then
+    EndPos:=NextNode.StartPos
+  else
+    EndPos:=ANode.EndPos;
+
+  // scan range for comments
+  if not Scan(ANode.StartPos,EndPos) then exit;
+
+  if ANode.Desc in AllIdentifierDefinitions then begin
+    // scan behind type
+    // for example:   i: integer; // comment
+    TypeNode:=FindTypeNodeOfDefinition(ANode);
+    if TypeNode<>nil then begin
+      NextNode:=TypeNode.Next;
+      if NextNode<>nil then
+        EndPos:=NextNode.StartPos
+      else
+        EndPos:=ANode.EndPos;
+      if not Scan(TypeNode.EndPos,EndPos) then exit;
+    end;
+  end;
+  Result:=true;
 end;
 
 procedure TPascalReaderTool.CalcMemSize(Stats: TCTMemStats);
