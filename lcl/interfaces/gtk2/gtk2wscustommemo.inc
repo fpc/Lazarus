@@ -246,6 +246,20 @@ begin
   // not supported
 end;
 
+class procedure TGtk2WSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo;
+  const NewWordWrap: boolean);
+var
+  TextView: PGtkTextView;
+begin
+  if not WSCheckHandleAllocated(ACustomMemo, 'SetWordWrap') then
+    Exit;
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomMemo.Handle), False)^.CoreWidget);
+  if NewWordWrap then
+    gtk_text_view_set_wrap_mode(PGtkTextView(TextView), GTK_WRAP_WORD)
+  else
+    gtk_text_view_set_wrap_mode(PGtkTextView(TextView), GTK_WRAP_NONE);
+end;
+
 class procedure TGtk2WSCustomMemo.SetCharCase(const ACustomEdit: TCustomEdit;
   NewCase: TEditCharCase);
 begin
