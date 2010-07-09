@@ -2381,7 +2381,6 @@ var
   end;
 
 var
-  CleanCursorPos: integer;
   ANode: TCodeTreeNode;
   p: LongInt;
   CommentLvl: Integer;
@@ -2431,7 +2430,7 @@ begin
     MoveCursorToCleanPos(ANode.StartPos);
   end;
 
-  //debugln('TPascalReaderTool.FindCommentInFront B Area="',copy(Src,CurPos.StartPos,CleanCursorPos-CurPos.StartPos),'"');
+  //debugln('TPascalReaderTool.FindCommentInFront B Area="',copy(Src,CurPos.StartPos,StartPos-CurPos.StartPos),'"');
 
   FoundStartPos:=-1;
   repeat
@@ -2501,7 +2500,7 @@ begin
     end;
     ReadNextAtom;
     //DebugLn('TPascalReaderTool.FindCommentInFront NextAtom=',GetAtom);
-  until (CurPos.EndPos>=CleanCursorPos) or (CurPos.EndPos>=SrcLen);
+  until (CurPos.StartPos>=StartPos) or (CurPos.EndPos>=SrcLen);
 
   Result:=(FoundStartPos>=1);
   CommentStart:=FoundStartPos;

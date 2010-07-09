@@ -4215,6 +4215,7 @@ var
     end;
 
     // search comment in front of declaration
+    //debugln(['FindDeclarationNode search comment in front: ',DeclarationTool=Self,' SkipComments=',SkipComments,' Identifier=',Identifier]);
     if (DeclarationTool=Self)
     and (not SkipComments)
     and FindCommentInFront(DeclarationNode.StartPos,Identifier,
