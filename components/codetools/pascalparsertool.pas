@@ -568,7 +568,6 @@ begin
   DebugLn('TPascalParserTool.BuildTree A ',MainFilename);
   {$ENDIF}
   ValidateToolDependencies;
-  debugln(['TPascalParserTool.BuildTree ']);
   if not UpdateNeeded(OnlyInterfaceNeeded) then begin
     // input is the same as last time -> output is the same
     // => if there was an error, raise it again
