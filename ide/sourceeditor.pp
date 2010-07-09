@@ -1501,8 +1501,6 @@ begin
   //debugln(GetStackTrace(true));
   {$ENDIF}
   Manager.DeactivateCompletionForm;
-  if Manager.ActiveEditor<>nil then
-    Manager.ActiveEditor.FocusEditor;
 end;
 
 procedure TSourceEditCompletion.ccComplete(var Value: string;
@@ -7863,6 +7861,8 @@ begin
 end;
 
 procedure TSourceEditorManagerBase.DeactivateCompletionForm;
+var
+  PluginFocused: Boolean;
 begin
   if ActiveCompletionPlugin<>nil then begin
     ActiveCompletionPlugin.Cancel;
@@ -7874,13 +7874,16 @@ begin
   then
     exit;
 
+  // Do not move focus, if it was moved by user
+  PluginFocused := FDefaultCompletionForm.TheForm.Focused;
+
   // clear the IdentifierList (otherwise it would try to update everytime
   // the codetools are used)
   CodeToolBoss.IdentifierList.Clear;
   FDefaultCompletionForm.CurrentCompletionType:=ctNone;
   FDefaultCompletionForm.Deactivate;
 
-  if ActiveEditor<>nil then begin
+  if PluginFocused and (ActiveEditor<>nil) then begin
     //LCLIntf.ShowCaret(ActSE.EditorComponent.Handle);
     TSourceEditor(ActiveEditor).EditorComponent.SetFocus;
   end;
