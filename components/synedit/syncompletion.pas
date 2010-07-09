@@ -144,7 +144,11 @@ type
     fCurrentEditor: TComponent;
     FOnMeasureItem: TSynBaseCompletionMeasureItem;
     FOnPositionChanged: TNotifyEvent;
+    procedure SetCurrentEditor(const AValue: TComponent);
     procedure SetLongLineHintTime(const AValue: Integer);
+    procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
+  protected
+    procedure SetVisible(Value: Boolean); override;
   public
     constructor Create(AOwner: Tcomponent); override;
     destructor Destroy; override;
@@ -166,7 +170,7 @@ type
       write SetNbLinesInWindow;
     property ClSelect: TColor read FClSelect write FClSelect;
     property CaseSensitive: boolean read FCaseSensitive write FCaseSensitive;
-    property CurrentEditor: TComponent read fCurrentEditor write fCurrentEditor;
+    property CurrentEditor: TComponent read fCurrentEditor write SetCurrentEditor;
     property FontHeight:integer read FFontHeight;
     property OnSearchPosition:TSynBaseCompletionSearchPosition
       read FOnSearchPosition write FOnSearchPosition;
@@ -810,6 +814,34 @@ begin
   if FLongLineHintTime = AValue then exit;
   FLongLineHintTime := AValue;
   FHintTimer.Interval := AValue;
+end;
+
+procedure TSynBaseCompletionForm.EditorStatusChanged(Sender: TObject;
+  Changes: TSynStatusChanges);
+begin
+  if (scTopLine in Changes) and Assigned(OnCancel) then
+    OnCancel(Self);
+end;
+
+procedure TSynBaseCompletionForm.SetCurrentEditor(const AValue: TComponent);
+begin
+  if fCurrentEditor = AValue then exit;
+  if fCurrentEditor <> nil then
+    TSynEdit(fCurrentEditor).UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged);
+  fCurrentEditor := AValue;
+  if (fCurrentEditor <> nil) and Visible then
+    TSynEdit(fCurrentEditor).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged);
+end;
+
+procedure TSynBaseCompletionForm.SetVisible(Value: Boolean);
+begin
+  inherited SetVisible(Value);
+  if (fCurrentEditor <> nil) then begin
+    if Visible then
+      TSynEdit(fCurrentEditor).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged)
+    else
+      TSynEdit(fCurrentEditor).UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged);
+  end;
 end;
 
 procedure TSynBaseCompletionForm.SetItemList(const Value: TStrings);

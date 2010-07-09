@@ -306,6 +306,13 @@ type
       var Command: TSynEditorCommand; var ComboKeyStrokes: TSynEditKeyStrokes);
   end;
 
+  { TSynStatusChangedHandlerList }
+
+  TSynStatusChangedHandlerList = Class(TMethodList)
+  public
+    procedure CallStatusChangedHandlers(Sender: TObject; Changes: TSynStatusChanges);
+  end;
+
   TSynMouseLinkEvent = procedure (
     Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean) of object;
 
@@ -418,6 +425,7 @@ type
     fTSearch: TSynEditSearch;
     fHookedCommandHandlers: TList;
     FHookedKeyTranslationList: TSynHookedKeyTranslationList;
+    FStatusChangedList: TSynStatusChangedHandlerList;
     FPlugins: TList;
     fScrollTimer: TTimer;
     fScrollDeltaX, fScrollDeltaY: Integer;
@@ -798,6 +806,10 @@ type
 
     procedure RegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent);
     procedure UnRegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent);
+
+    procedure RegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent);
+    procedure UnRegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent);
+
     function RowColumnToPixels(
                       {$IFDEF SYN_LAZARUS}const {$ENDIF}RowCol: TPoint): TPoint;
     function SearchReplace(const ASearch, AReplace: string;
@@ -1633,6 +1645,7 @@ begin
   Cursor := crIBeam;
   fPlugins := TList.Create;
   FHookedKeyTranslationList := TSynHookedKeyTranslationList.Create;
+  FStatusChangedList := TSynStatusChangedHandlerList.Create;
 {$IFDEF SYN_LAZARUS}
   // needed before setting color
   fMarkupHighCaret := TSynEditMarkupHighlightAllCaret.Create(self);
@@ -1887,6 +1900,7 @@ begin
   RemoveHandlers;
 
   FreeAndNil(FHookedKeyTranslationList);
+  FreeAndNil(FStatusChangedList);
   fHookedCommandHandlers:=nil;
   fPlugins:=nil;
   FCaret.Lines := nil;
@@ -8420,6 +8434,16 @@ begin
   FHookedKeyTranslationList.Remove(TMEthod(AHandlerProc));
 end;
 
+procedure TCustomSynEdit.RegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent);
+begin
+  FStatusChangedList.Add(TMethod(AStatusChangeProc));
+end;
+
+procedure TCustomSynEdit.UnRegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent);
+begin
+  FStatusChangedList.Remove(TMethod(AStatusChangeProc));
+end;
+
 procedure TCustomSynEdit.NotifyHookedCommandHandlers(AfterProcessing: boolean;
   var Command: TSynEditorCommand;
   var AChar: TUTF8Char; Data: pointer);
@@ -8474,6 +8498,7 @@ end;
 
 procedure TCustomSynEdit.DoOnStatusChange(Changes: TSynStatusChanges);
 begin
+  FStatusChangedList.CallStatusChangedHandlers(Self, Changes);
   if Assigned(fOnStatusChange) then begin
     fOnStatusChange(Self, fStatusChanges);
     fStatusChanges := [];
@@ -8645,6 +8670,18 @@ begin
   for i := 0 to Count - 1 do
     THookedKeyTranslationEvent(Items[i])(Sender, Code, SState, Data,
       IsStartOfCombo, Handled, Command, False, ComboKeyStrokes);
+end;
+
+{ TSynStatusChangedHandlerList }
+
+procedure TSynStatusChangedHandlerList.CallStatusChangedHandlers(Sender: TObject;
+  Changes: TSynStatusChanges);
+var
+  i: Integer;
+begin
+  i:=Count;
+  while NextDownIndex(i) do
+    TStatusChangeEvent(Items[i])(Sender, Changes);
 end;
 
 initialization
