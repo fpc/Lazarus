@@ -613,8 +613,8 @@ msgid "Mouse"
 msgstr "Maus"
 
 #: lazarusidestrconsts.dlgcodegeneration
-msgid "Code"
-msgstr "Quelltext"
+msgid "Code generation"
+msgstr "Codegenerierung"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
 msgid "CodeTools Options"
