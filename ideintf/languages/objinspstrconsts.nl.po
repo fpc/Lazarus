@@ -508,6 +508,10 @@ msgstr ""
 msgid "%u items selected"
 msgstr "%u onderdelen geselecteerd"
 
+#: objinspstrconsts.oisjumptodeclarationof
+msgid "Jump to declaration of %s"
+msgstr ""
+
 #: objinspstrconsts.oisload
 msgid "&Load"
 msgstr "&Laden"

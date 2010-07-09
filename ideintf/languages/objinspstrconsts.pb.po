@@ -516,6 +516,10 @@ msgstr "%s%s%s não é um nome de método válido."
 msgid "%u items selected"
 msgstr "%u itens selecionados"
 
+#: objinspstrconsts.oisjumptodeclarationof
+msgid "Jump to declaration of %s"
+msgstr ""
+
 #: objinspstrconsts.oisload
 msgid "&Load"
 msgstr "&Carregar"

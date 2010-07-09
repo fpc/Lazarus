@@ -517,6 +517,10 @@ msgstr ""
 msgid "%u items selected"
 msgstr "%u アイテム 選択されました"
 
+#: objinspstrconsts.oisjumptodeclarationof
+msgid "Jump to declaration of %s"
+msgstr ""
+
 #: objinspstrconsts.oisload
 msgid "&Load"
 msgstr "読み込み(&L)"

@@ -514,6 +514,10 @@ msgstr "%s%s%s ei ole sallittu metodin nimi."
 msgid "%u items selected"
 msgstr ""
 
+#: objinspstrconsts.oisjumptodeclarationof
+msgid "Jump to declaration of %s"
+msgstr ""
+
 #: objinspstrconsts.oisload
 msgid "&Load"
 msgstr "Tuo"

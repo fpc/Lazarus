@@ -524,6 +524,10 @@ msgstr ""
 msgid "%u items selected"
 msgstr "%u 个项目被选择"
 
+#: objinspstrconsts.oisjumptodeclarationof
+msgid "Jump to declaration of %s"
+msgstr ""
+
 #: objinspstrconsts.oisload
 msgid "&Load"
 msgstr "载入(&L)"

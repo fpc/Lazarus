@@ -518,6 +518,10 @@ msgstr "%s%s%s nėra tinkamas pavadinimas metodui."
 msgid "%u items selected"
 msgstr "pažymėta %u elementų"
 
+#: objinspstrconsts.oisjumptodeclarationof
+msgid "Jump to declaration of %s"
+msgstr ""
+
 #: objinspstrconsts.oisload
 msgid "&Load"
 msgstr "Į&kelti"
