@@ -101,6 +101,7 @@ type
   private
     fPlacement : ControlButtonTextPlacement;
     fAlignment : ControlButtonTextAlignment;
+    CustomFont : Boolean;
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure UpdateButtonStyle;
@@ -454,16 +455,17 @@ var
   FontStyle   : ControlFontStyleRec;
   themeid     : ThemeFontID;
 begin
-  FillChar(FontStyle, sizeof(FontStyle), 0);
   GetBounds(bnds);
   GetBevelButtonStyle(bnds, ButtonKind, themeid);
 
-  FontStyle.font := themeid;
-  FontStyle.flags := kControlUseThemeFontIDMask;
-  SetControlFontStyle(ControlRef(Widget), FontStyle);
-
-  OSError(SetControlFontStyle(ControlRef(Widget), FontStyle),
-    Self, 'UpdateButtonStyle', SSetFontStyle, 'kControlBevelButtonKindTag');
+  if not CustomFont then
+  begin
+    FillChar(FontStyle, sizeof(FontStyle), 0);
+    FontStyle.font := themeid;
+    FontStyle.flags := kControlUseThemeFontIDMask;
+    OSError(SetControlFontStyle(ControlRef(Widget), FontStyle),
+      Self, 'UpdateButtonStyle', SSetFontStyle, 'kControlBevelButtonKindTag');
+  end;
 
   OSError(SetControlData(ControlRef(Widget), kControlEntireControl,
       kControlBevelButtonKindTag, SizeOf(ThemeButtonKind), @ButtonKind),
@@ -478,7 +480,9 @@ end;
 
 procedure TCarbonBitBtn.SetFont(const AFont: TFont);
 begin
-  // should be prohibited. Font is set by button style
+  inherited;
+  CustomFont:=(AFont.Name<>'default') and (AFont.Name<>'');
+  UpdateButtonStyle;
 end;
 
 {------------------------------------------------------------------------------
