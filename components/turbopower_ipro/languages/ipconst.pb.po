@@ -99,7 +99,7 @@ msgstr "Erro Win32 carregando \"%s\" ponteiro: %s"
 
 #: ipconst.sactiveerr
 msgid "Cannot set property on an active socket"
-msgstr "Impossível ajustar propriedade no soquete ativo"
+msgstr "Impossível configurar propriedade no soquete ativo"
 
 #: ipconst.sattemptingtoread
 msgid "Attempting to read "
@@ -354,7 +354,7 @@ msgstr "Escopo especificado inválido"
 
 #: ipconst.shtmlinvscroll
 msgid "Invalid scrolling specified"
-msgstr "Deslizamento especificado inválido"
+msgstr "Rolagem especificada inválida"
 
 #: ipconst.shtmlinvshape
 msgid "Invalid shape specified"
@@ -1615,7 +1615,7 @@ msgstr "Chamada retorno completa"
 
 #: ipconst.srascallbacksetbycaller
 msgid "Callback set by caller"
-msgstr "Chamada retorno ajustada pelo chamador"
+msgstr "Chamada retorno configurada pelo chamador"
 
 #: ipconst.srasconnectdevice
 msgid "Connect device"

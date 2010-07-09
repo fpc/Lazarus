@@ -553,7 +553,7 @@ msgstr "Rótulo Gradiente Inativo"
 
 #: lclstrconsts.rsgraphic
 msgid "Graphic"
-msgstr ""
+msgstr "Gráfico"
 
 #: lclstrconsts.rsgraycolorcaption
 msgid "Gray"
@@ -666,7 +666,7 @@ msgstr "Palavra-chave Ajuda %s%s%s não encontrada no banco de dados %s%s%s."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
 msgid "Help node %s%s%s has no Help Database"
-msgstr "Ramificação ajuda %s%s%s não tem banco de dados ajuda"
+msgstr "Nó ajuda %s%s%s não tem banco de dados ajuda"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
@@ -674,7 +674,7 @@ msgstr "Nenhuma ajuda encontrada para a linha %d, coluna %d de %s."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
 msgid "No help nodes available"
-msgstr "Nenhuma ramificação de ajuda disponível"
+msgstr "Nenhum nó de ajuda disponível"
 
 #: lclstrconsts.rshelpnotfound
 msgid "Help not found"
@@ -1136,11 +1136,11 @@ msgstr "Recurso %s não encontrado"
 
 #: lclstrconsts.rsscrollbarcolorcaption
 msgid "ScrollBar"
-msgstr "Barra deslizante"
+msgstr "Barra de rolagem"
 
 #: lclstrconsts.rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
-msgstr "Propriedade da Barra deslizante fora de faixa"
+msgstr "Propriedade da Barra de rolagem fora de faixa"
 
 #: lclstrconsts.rsselectcolortitle
 msgid "Select color"

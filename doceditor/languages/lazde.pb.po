@@ -109,15 +109,15 @@ msgstr "Nenhum módulo encontrado para inserir o elemento \"%s\""
 
 #: lazdemsg.serrnonodeformodule
 msgid "No node found for module \"%s\""
-msgstr "Nenhuma ramificação encontrada para o módulo \"%s\""
+msgstr "Nenhum nó encontrado para o módulo \"%s\""
 
 #: lazdemsg.serrnonodeforpackage
 msgid "No node found for package \"%s\""
-msgstr "Nenhuma ramificação encontrada para o pacote \"%s\""
+msgstr "Nenhum nó encontrado para o pacote \"%s\""
 
 #: lazdemsg.serrnonodefortopic
 msgid "No parent node found to insert topic \"%s\""
-msgstr "Nenhuma ramificação-pai encontrada para inserir o tópico \"%s\""
+msgstr "Nenhum nó-pai encontrado para inserir o tópico \"%s\""
 
 #: lazdemsg.serrnopackageformodule
 msgid "No package found to insert module \"%s\""
@@ -470,7 +470,7 @@ msgstr "Renomear"
 
 #: lazdemsg.smoduleelements
 msgid "Elements for selected node"
-msgstr "Elementos para ramificação selecionada"
+msgstr "Elementos para nó selecionado"
 
 #: lazdemsg.snew
 msgid "New"
@@ -559,7 +559,7 @@ msgstr "Exibir dicas"
 
 #: lazdemsg.soptdlgskipemptynodes
 msgid "&Skip empty nodes when saving"
-msgstr "&Saltar ramificações vazias ao salvar"
+msgstr "&Saltar nós vazios ao salvar"
 
 #: lazdemsg.soptdlgstartmaximized
 msgid "Start maximized"
@@ -649,5 +649,5 @@ msgstr "Construindo docs. usando comandos:"
 
 #: lazdemsg.swarnifnodocumentationnodefound
 msgid "Warn if no documentation node found"
-msgstr "Alertar se nenhuma ramificação de documentação encontrada"
+msgstr "Alertar se nenhum nó de documentação encontrado"
 

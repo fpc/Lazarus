@@ -130,7 +130,7 @@ msgstr "Acima"
 
 #: objinspstrconsts.fescheckdset
 msgid "Check dataset settings"
-msgstr "Verificar ajustes \"dataset\""
+msgstr "Verificar configurações \"dataset\""
 
 #: objinspstrconsts.fesfetitle
 #| msgid "Edit Fields"
@@ -180,7 +180,7 @@ msgstr "\"IfNDef\""
 
 #: objinspstrconsts.liissetvalue
 msgid "Set value"
-msgstr "Ajustar valor"
+msgstr "Definir valor"
 
 #: objinspstrconsts.lisoem1
 msgid "OEM 1"
@@ -664,15 +664,15 @@ msgstr "Selecionar atalho"
 
 #: objinspstrconsts.oisset
 msgid "Set"
-msgstr "Ajustar"
+msgstr "Definir"
 
 #: objinspstrconsts.oissettodefault
 msgid "Set to default: %s"
-msgstr "Ajustar ao padrão: %s"
+msgstr "Definir para padrão: %s"
 
 #: objinspstrconsts.oissettodefaultvalue
 msgid "Set to default value"
-msgstr "Ajustar para valor padrão"
+msgstr "Definir para valor padrão"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
@@ -1622,7 +1622,7 @@ msgstr "Tecla windows direita"
 
 #: objinspstrconsts.srvk_scroll
 msgid "Scroll"
-msgstr "Deslizar"
+msgstr "Rolar"
 
 #: objinspstrconsts.srvk_select
 msgid "Select"

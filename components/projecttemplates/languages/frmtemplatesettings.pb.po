@@ -23,5 +23,5 @@ msgstr "&Diretório com modelos:"
 
 #: frmtemplatesettings.stitle
 msgid "Project templates settings"
-msgstr "Ajustes dos modelos de Projeto"
+msgstr "Configurações dos modelos de Projeto"
 

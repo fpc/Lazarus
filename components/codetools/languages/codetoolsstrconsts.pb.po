@@ -63,7 +63,7 @@ msgstr "esperado identificador de classe"
 
 #: codetoolsstrconsts.ctsclassnodewithoutparentnode
 msgid "class node without parent node"
-msgstr "ramificação classe sem ramificação pai"
+msgstr "nó classe sem nó pai"
 
 #: codetoolsstrconsts.ctsclassnotfound
 msgid "class %s%s%s not found"
@@ -425,7 +425,7 @@ msgstr "qualificador ilegal %s encontrado"
 
 #: codetoolsstrconsts.ctsimplementationnodenotfound
 msgid "implementation node not found"
-msgstr "remificação implementação não encontrado"
+msgstr "nó implementação não encontrado"
 
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
@@ -577,7 +577,7 @@ msgstr "corpo novo procedimento não encontrado"
 
 #: codetoolsstrconsts.ctsnocontextnodefoundatcursor
 msgid "no context node found at cursor"
-msgstr "nenhuma ramificação de contexto encontrada sob o cursor"
+msgstr "nenhum nó de contexto encontrada sob o cursor"
 
 #: codetoolsstrconsts.ctsnodefaultspecifierdefinedtwice
 msgid "nodefault specifier defined twice"
@@ -585,7 +585,7 @@ msgstr "especificador \"nodefault\" duplicado"
 
 #: codetoolsstrconsts.ctsnonodefoundatcursor
 msgid "no pascal node found at cursor (i.e. in unparsed code)"
-msgstr "ramificação pascal não encontrada sob o cursor (ex. em código não analisado)"
+msgstr "nenhum nó pascal encontrado sob o cursor (ex. em código não analisado)"
 
 #: codetoolsstrconsts.ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
@@ -661,7 +661,7 @@ msgstr "qualificador esperado mas %s encontrado"
 
 #: codetoolsstrconsts.ctsresetalldefines
 msgid "Reset all defines"
-msgstr "Reiniciar todas as definições"
+msgstr "Redefinir todas as definições"
 
 #: codetoolsstrconsts.ctsresulttypeoffunctiongetenumeratornotfound
 msgid "result type of function GetEnumerator not found"
@@ -681,11 +681,11 @@ msgstr "ponto e vírgula não encontrado"
 
 #: codetoolsstrconsts.ctssetsincpathto
 msgid "sets IncPath to %s"
-msgstr "ajustar \"IncPath\" para %s"
+msgstr "configura \"IncPath\" para %s"
 
 #: codetoolsstrconsts.ctssetssrcpathto
 msgid "sets SrcPath to %s"
-msgstr "ajustar \"SrcPath\" para %s"
+msgstr "configura \"SrcPath\" para %s"
 
 #: codetoolsstrconsts.ctssourcefilenamesforstandardfpcunits
 msgid "Source filenames for the standard fpc units"

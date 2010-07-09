@@ -111,7 +111,7 @@ msgstr "Projeto está ativo"
 
 #: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
 msgid "Project is not active in SVN settings, please activate first."
-msgstr "Projeto não está ativo nos ajustes do SVN, favor ativar primeiro."
+msgstr "Projeto não está ativo nas configurações do SVN, favor ativar primeiro."
 
 #: svnclasses.rsprojectname
 msgid "Project name"
@@ -143,7 +143,7 @@ msgstr "Salvar"
 
 #: svnclasses.rssettings
 msgid "Settings"
-msgstr "Ajustes"
+msgstr "Configurações"
 
 #: svnclasses.rsshowdiff
 msgid "Show diff"
@@ -163,7 +163,7 @@ msgstr "Arquivo fonte não pertence ao projeto. Favor adicionar primeiro."
 
 #: svnclasses.rssvnsettings
 msgid "SVN settings"
-msgstr ""
+msgstr "Configurações SVN"
 
 #: svnclasses.rssvntools
 msgid "SVN tools"

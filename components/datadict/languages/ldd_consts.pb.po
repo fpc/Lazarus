@@ -103,7 +103,7 @@ msgstr "Selecione código a ser gerado"
 
 #: ldd_consts.ldd_setprojectdatadictionary
 msgid "Set project Data Dictionary"
-msgstr "Ajustar projeto Dicionário Dados"
+msgstr "Configurar Dicionário Dados do projeto"
 
 #: ldd_consts.ldd_showgeneratedcode
 msgid "Show generated code"
@@ -139,7 +139,7 @@ msgid ""
 "Please set a data dictionary for the project\n"
 msgstr ""
 "Nenhum dicionário dados ativo.\n"
-"Favor ajustar um dicionário dados para o projeto\n"
+"Favor configurar um para o projeto\n"
 
 #: ldd_consts.serrselectdd
 msgid "Please select a known data dictionary"
