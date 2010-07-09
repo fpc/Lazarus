@@ -1993,6 +1993,7 @@ function TQtWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl
 var
   QColor, OldColor: TQColor;
   Color: TColor;
+  QtEdit: IQtEdit;
 begin
   BeginEventProcessing;
   Result := False;
@@ -2036,8 +2037,8 @@ begin
       QEventKeyPress,
       QEventKeyRelease:
         begin
-          {non-spontaneous key events are garbage in Qt >= 4.4}
-          Result := QEvent_spontaneous(Event);
+          {non-spontaneous key events are garbage in Qt >= 4.4 for non edits}
+          Result := QEvent_spontaneous(Event) or Supports(Self, IQtEdit, QtEdit);
           if Result then
             Result := SlotKey(Sender, Event) or (LCLObject is TCustomControl);
         end;
