@@ -71,6 +71,7 @@ resourcestring
   oisRemoveFromFavorites = 'Remove from Favorites';
   oisUndo = 'Undo';
   oisFinddeclaration = 'Jump to declaration';
+  oisJumpToDeclarationOf = 'Jump to declaration of %s';
   oisCutComponents = 'Cu&t';
   oisCopyComponents = '&Copy';
   oisPasteComponents = '&Paste';

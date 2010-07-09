@@ -5088,7 +5088,16 @@ begin
     UndoPropertyPopupMenuItem.Visible := True;
     UndoPropertyPopupMenuItem.Enabled := (CurRow<>nil) and (CurRow.Editor.GetVisualValue <> CurGrid.CurrentEditValue);
     ShowHintsPopupMenuItem.Checked := PropertyGrid.ShowHint;
-    FindDeclarationPopupmenuItem.Visible := True;
+    if CurRow=nil then begin
+      FindDeclarationPopupmenuItem.Visible := False;
+    end
+    else begin
+      FindDeclarationPopupmenuItem.Visible := true;
+      FindDeclarationPopupmenuItem.Caption:=Format(oisJumpToDeclarationOf, [
+        CurRow.Name]);
+      FindDeclarationPopupmenuItem.Hint:=Format(oisJumpToDeclarationOf, [CurRow.
+        Editor.GetPropertyPath(0)]);
+    end;
     ViewRestrictedPropertiesPopupMenuItem.Visible := True;
     OptionsSeparatorMenuItem.Visible := True;
   end
@@ -5102,6 +5111,7 @@ begin
     ViewRestrictedPropertiesPopupMenuItem.Visible := False;
     OptionsSeparatorMenuItem.Visible := False;
   end;
+  //debugln(['TObjectInspectorDlg.OnMainPopupMenuPopup ',FindDeclarationPopupmenuItem.Visible]);
 end;
 
 procedure TObjectInspectorDlg.DoUpdateRestricted;
