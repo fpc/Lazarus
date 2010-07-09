@@ -25,7 +25,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, TypInfo,
   ExtCtrls, Dialogs, Menus, ComCtrls, Grids, CustomTimer,
-  CodeToolManager, CodeCache,
+  DirectoryCacher, CodeToolManager, CodeCache,
   LazIDEIntf, ProjectIntf, ObjectInspector, OIFavouriteProperties, PropEdits,
   DialogProcs, FileUtil, LazConf, BaseIDEIntf, LazConfigStorage,
   LazarusIDEStrConsts;
@@ -224,10 +224,14 @@ var
   NewCode: TCodeBuffer;
   NewX, NewY: integer;
   APersistent: TPersistent;
+  AnUnitName: String;
+  InFilename: String;
+  FilenameOfClass: string;
 begin
   Result:=false;
   Code:=nil;
   Caret:=Point(0,0);
+  // check Row
   if AnInspector=nil then begin
     DebugLn('FindDeclarationOfOIProperty AnInspector=nil');
     exit;
@@ -238,49 +242,61 @@ begin
     DebugLn('FindDeclarationOfOIProperty Row=nil');
     exit;
   end;
-  // get the unit filename of the LookupRoot
-  if AnInspector.PropertyEditorHook=nil then begin
-    DebugLn('FindDeclarationOfOIProperty AnInspector.PropertyEditorHook=nil');
+  if Row.Editor=nil then begin
+    DebugLn('FindDeclarationOfOIProperty Row.Editor=nil Row=',Row.Name);
     exit;
   end;
-  LookupRoot:=AnInspector.PropertyEditorHook.LookupRoot;
-  if not (LookupRoot is TComponent) then begin
-    DebugLn('FindDeclarationOfOIProperty not (LookupRoot is TComponent)');
+  // get first instance of property
+  APersistent:=Row.Editor.GetComponent(0);
+  if APersistent=nil then begin
+    DebugLn('FindDeclarationOfOIProperty APersistent=nil Row=',Row.Name);
     exit;
   end;
+  // get unit name of first instance
+  AnUnitName:=GetClassUnitName(APersistent.ClassType);
+  if AnUnitName='' then begin
+    DebugLn('FindDeclarationOfOIProperty no RTTI unit found for APersistent.ClassType=',DbgSName(APersistent.ClassType));
+    exit;
+  end;
+  // get lookup root
+  if Row.Editor.PropertyHook=nil then begin
+    debugln(['FindDeclarationOfOIProperty Row.Editor.PropertyHook=nil Row=',Row.Name]);
+    exit;
+  end;
+  LookupRoot:=Row.Editor.PropertyHook.LookupRoot;
+  if LookupRoot=nil then begin
+    debugln(['FindDeclarationOfOIProperty Row.Editor.PropertyHook.LookupRoot=nil Row=',Row.Name]);
+    exit;
+  end;
+  // get file of lookup root
   AFile:=LazarusIDE.GetProjectFileWithRootComponent(TComponent(LookupRoot));
   if AFile=nil then begin
-    DebugLn('FindDeclarationOfOIProperty AFile=nil');
+    DebugLn('FindDeclarationOfOIProperty AFile=nil Row=',Row.Name,' LookupRoot=',DbgSName(LookupRoot));
+    exit;
+  end;
+
+  InFilename:='';
+  FilenameOfClass:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+                   ExtractFilePath(AFile.Filename),AnUnitName,InFilename);
+  if FilenameOfClass='' then begin
+    debugln(['FindDeclarationOfOIProperty Row=',Row.Name,' Instance=',DbgSName(APersistent),' LookupRoot=',DbgSName(LookupRoot),' Unit not found: ',AnUnitName,' started search in directory of lookuproot: ',AFile.Filename]);
     exit;
   end;
   if not LazarusIDE.BeginCodeTools then begin
-    DebugLn('FindDeclarationOfOIProperty not LazarusIDE.BeginCodeTools');
+    DebugLn('FindDeclarationOfOIProperty LazarusIDE.BeginCodeTools failed');
     exit;
   end;
   Code:=nil;
-  if LoadCodeBuffer(Code,AFile.Filename,[],false)<>mrOk then begin
+  if LoadCodeBuffer(Code,FilenameOfClass,[],false)<>mrOk then begin
+    debugln(['FindDeclarationOfOIProperty LoadCodeBuffer failed of ',FilenameOfClass]);
     exit;
-  end;
-  if Row.Editor=nil then begin
-    DebugLn('FindDeclarationOfOIProperty Row.Editor=nil');
-    exit;
-  end;
-  // create the property search path
-  APersistent:=Row.Editor.GetComponent(0);
-  if APersistent=nil then begin
-    DebugLn('FindDeclarationOfOIProperty APersistent=nil');
-    exit;
-  end;
-  PropPath:=AnInspector.GetActivePropertyGrid.PropertyPath(Row);
-  if APersistent is TComponent then begin
-    PropPath:=TComponent(APersistent).Name+'.'+PropPath;
-    if TComponent(APersistent).Owner=LookupRoot then
-      PropPath:=LookupRoot.ClassName+'.'+PropPath;
   end;
   // find the property declaration
+  PropPath:=APersistent.ClassName+'.'+Row.Name;
   if not CodeToolBoss.FindDeclarationOfPropertyPath(Code,PropPath,NewCode,
     NewX,NewY,NewTopLine) then
   begin
+    debugln(['FindDeclarationOfOIProperty failed to find property ',PropPath,' in unit ',Code.Filename]);
     LazarusIDE.DoJumpToCodeToolBossError;
     exit;
   end;
