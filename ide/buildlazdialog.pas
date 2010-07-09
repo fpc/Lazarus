@@ -214,6 +214,7 @@ type
     AdvancedBuildOptionsPage: TPage;
     CBLDBtnPanel: TPanel;
     LCLInterfaceRadioGroup: TRadioGroup;
+    procedure AdvancedBuildOptionsPageResize(Sender: TObject);
     procedure AppLCLInterfaceComboBoxChange(Sender: TObject);
     procedure CompileButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -1181,6 +1182,12 @@ var
 begin
   Combo := Sender as TComboBox;
   LCLInterfaceRadioGroup.ItemIndex := Combo.ItemIndex;
+end;
+
+procedure TConfigureBuildLazarusDlg.AdvancedBuildOptionsPageResize(
+  Sender: TObject);
+begin
+  ItemListHeader.Width:=AdvancedBuildOptionsPage.ClientWidth div 2;
 end;
 
 procedure TConfigureBuildLazarusDlg.CompileButtonClick(Sender: TObject);

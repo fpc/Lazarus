@@ -1703,7 +1703,7 @@ resourcestring
     +'functions.';
   dlgSearchPaths = 'Paths';
   dlgCOParsing = 'Parsing';
-  dlgCodeGeneration = 'Code';
+  dlgCodeGeneration = 'Code generation';
   dlgCOLinking = 'Linking';
   dlgCOVerbosity = 'Verbosity';
   dlgCOCfgCmpMessages = 'Messages';

@@ -216,6 +216,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
       Caption = 'AdvancedBuildOptions'
       ClientWidth = 555
       ClientHeight = 531
+      OnResize = AdvancedBuildOptionsPageResize
       object OptionsLabel: TLabel
         AnchorSideTop.Control = ItemsListBox
         AnchorSideTop.Side = asrBottom
