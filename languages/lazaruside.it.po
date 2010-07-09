@@ -607,7 +607,9 @@ msgid "Mouse"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcodegeneration
-msgid "Code"
+#, fuzzy
+#| msgid "Code"
+msgid "Code generation"
 msgstr "Codice"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
@@ -4540,6 +4542,10 @@ msgstr "%s%sClick OK if you are sure to do that."
 msgctxt "lazarusidestrconsts.liscocommand"
 msgid "Command:"
 msgstr "Comando:"
+
+#: lazarusidestrconsts.liscode
+msgid "Code"
+msgstr ""
 
 #: lazarusidestrconsts.liscodebrowser
 msgid "Code browser"

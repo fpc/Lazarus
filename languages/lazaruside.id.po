@@ -607,7 +607,9 @@ msgid "Mouse"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcodegeneration
-msgid "Code"
+#, fuzzy
+#| msgid "Code"
+msgid "Code generation"
 msgstr "Kode"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
@@ -4530,6 +4532,10 @@ msgstr "%s%sKlik OK jika anda yakin akan melakukannya."
 msgctxt "lazarusidestrconsts.liscocommand"
 msgid "Command:"
 msgstr "Perintah:"
+
+#: lazarusidestrconsts.liscode
+msgid "Code"
+msgstr ""
 
 #: lazarusidestrconsts.liscodebrowser
 msgid "Code browser"
@@ -14868,7 +14874,7 @@ msgstr "parameter menjalankan"
 #: lazarusidestrconsts.srkmecsave
 msgctxt "lazarusidestrconsts.srkmecsave"
 msgid "Save"
-msgstr ""
+msgstr "Simpan"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

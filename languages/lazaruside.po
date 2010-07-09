@@ -602,7 +602,7 @@ msgid "Mouse"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcodegeneration
-msgid "Code"
+msgid "Code generation"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcodetoolsopts
@@ -4482,6 +4482,10 @@ msgstr ""
 #: lazarusidestrconsts.liscocommand
 msgctxt "lazarusidestrconsts.liscocommand"
 msgid "Command:"
+msgstr ""
+
+#: lazarusidestrconsts.liscode
+msgid "Code"
 msgstr ""
 
 #: lazarusidestrconsts.liscodebrowser

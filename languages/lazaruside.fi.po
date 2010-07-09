@@ -602,7 +602,9 @@ msgid "Mouse"
 msgstr "Hiiri"
 
 #: lazarusidestrconsts.dlgcodegeneration
-msgid "Code"
+#, fuzzy
+#| msgid "Code"
+msgid "Code generation"
 msgstr "Koodi"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
@@ -4515,6 +4517,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.liscocommand"
 msgid "Command:"
 msgstr "Komento:"
+
+#: lazarusidestrconsts.liscode
+msgid "Code"
+msgstr ""
 
 #: lazarusidestrconsts.liscodebrowser
 msgid "Code browser"
@@ -14839,7 +14845,7 @@ msgstr ""
 #: lazarusidestrconsts.srkmecsave
 msgctxt "lazarusidestrconsts.srkmecsave"
 msgid "Save"
-msgstr ""
+msgstr "Tallenna"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

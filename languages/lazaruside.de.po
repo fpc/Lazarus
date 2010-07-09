@@ -4553,6 +4553,10 @@ msgctxt "lazarusidestrconsts.liscocommand"
 msgid "Command:"
 msgstr "Befehl:"
 
+#: lazarusidestrconsts.liscode
+msgid "Code"
+msgstr ""
+
 #: lazarusidestrconsts.liscodebrowser
 msgid "Code browser"
 msgstr "Code-Browser"

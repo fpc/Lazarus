@@ -611,7 +611,9 @@ msgid "Mouse"
 msgstr "עכבר"
 
 #: lazarusidestrconsts.dlgcodegeneration
-msgid "Code"
+#, fuzzy
+#| msgid "Code"
+msgid "Code generation"
 msgstr "קוד"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
@@ -4501,6 +4503,10 @@ msgstr "לחץ על OK אם אתה בטוח שברצונך לעשות זאת."
 msgctxt "lazarusidestrconsts.liscocommand"
 msgid "Command:"
 msgstr "פקודה:"
+
+#: lazarusidestrconsts.liscode
+msgid "Code"
+msgstr ""
 
 #: lazarusidestrconsts.liscodebrowser
 msgid "Code browser"

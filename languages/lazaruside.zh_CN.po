@@ -610,7 +610,9 @@ msgid "Mouse"
 msgstr "鼠标"
 
 #: lazarusidestrconsts.dlgcodegeneration
-msgid "Code"
+#, fuzzy
+#| msgid "Code"
+msgid "Code generation"
 msgstr "代码"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
@@ -4537,6 +4539,10 @@ msgstr "%s%s请点击以确认."
 msgctxt "lazarusidestrconsts.liscocommand"
 msgid "Command:"
 msgstr "命令:"
+
+#: lazarusidestrconsts.liscode
+msgid "Code"
+msgstr ""
 
 #: lazarusidestrconsts.liscodebrowser
 msgid "Code browser"

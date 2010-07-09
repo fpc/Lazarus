@@ -607,7 +607,7 @@ msgid "Mouse"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcodegeneration
-msgid "Code"
+msgid "Code generation"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcodetoolsopts
@@ -4495,6 +4495,10 @@ msgstr "%s%sbunu yapmak istediğinizden eminseniz tamam düğmesini tıklatın."
 #: lazarusidestrconsts.liscocommand
 msgctxt "lazarusidestrconsts.liscocommand"
 msgid "Command:"
+msgstr ""
+
+#: lazarusidestrconsts.liscode
+msgid "Code"
 msgstr ""
 
 #: lazarusidestrconsts.liscodebrowser
@@ -14812,7 +14816,7 @@ msgstr ""
 #: lazarusidestrconsts.srkmecsave
 msgctxt "lazarusidestrconsts.srkmecsave"
 msgid "Save"
-msgstr ""
+msgstr "Kaydet"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

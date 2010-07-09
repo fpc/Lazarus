@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-09 00:09+0300\n"
+"PO-Revision-Date: 2010-07-10 03:12+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -622,8 +622,9 @@ msgid "Mouse"
 msgstr "Мышь"
 
 #: lazarusidestrconsts.dlgcodegeneration
-msgid "Code"
-msgstr "Код"
+#| msgid "Code"
+msgid "Code generation"
+msgstr "Генерация кода"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
 msgid "CodeTools Options"
@@ -4540,6 +4541,10 @@ msgstr "%s%sНажмите OK если уверены."
 msgctxt "lazarusidestrconsts.liscocommand"
 msgid "Command:"
 msgstr "Команда:"
+
+#: lazarusidestrconsts.liscode
+msgid "Code"
+msgstr "Код"
 
 #: lazarusidestrconsts.liscodebrowser
 msgid "Code browser"

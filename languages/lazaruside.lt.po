@@ -611,7 +611,9 @@ msgid "Mouse"
 msgstr "Pelė"
 
 #: lazarusidestrconsts.dlgcodegeneration
-msgid "Code"
+#, fuzzy
+#| msgid "Code"
+msgid "Code generation"
 msgstr "Kodas"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
@@ -4527,6 +4529,10 @@ msgstr "%s%sJei esate tikras kad to reikia, spustelėkit „Tinka“."
 msgctxt "lazarusidestrconsts.liscocommand"
 msgid "Command:"
 msgstr "Komanda:"
+
+#: lazarusidestrconsts.liscode
+msgid "Code"
+msgstr ""
 
 #: lazarusidestrconsts.liscodebrowser
 msgid "Code browser"

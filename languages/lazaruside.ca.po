@@ -607,7 +607,9 @@ msgid "Mouse"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcodegeneration
-msgid "Code"
+#, fuzzy
+#| msgid "Code"
+msgid "Code generation"
 msgstr "Codi"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
@@ -4524,6 +4526,10 @@ msgstr "%s%sClica D'Acord si estàs segur de fer-ho."
 msgctxt "lazarusidestrconsts.liscocommand"
 msgid "Command:"
 msgstr "Ordre:"
+
+#: lazarusidestrconsts.liscode
+msgid "Code"
+msgstr ""
 
 #: lazarusidestrconsts.liscodebrowser
 msgid "Code browser"
@@ -14852,7 +14858,7 @@ msgstr "executa els paràmetres"
 #: lazarusidestrconsts.srkmecsave
 msgctxt "lazarusidestrconsts.srkmecsave"
 msgid "Save"
-msgstr ""
+msgstr "Desa"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

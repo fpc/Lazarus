@@ -612,7 +612,9 @@ msgid "Mouse"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcodegeneration
-msgid "Code"
+#, fuzzy
+#| msgid "Code"
+msgid "Code generation"
 msgstr "Kód"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
@@ -4535,6 +4537,10 @@ msgstr "%s%sKliknite na OK, ak ste si istí vykonaním."
 msgctxt "lazarusidestrconsts.liscocommand"
 msgid "Command:"
 msgstr "Príkaz:"
+
+#: lazarusidestrconsts.liscode
+msgid "Code"
+msgstr ""
 
 #: lazarusidestrconsts.liscodebrowser
 msgid "Code browser"

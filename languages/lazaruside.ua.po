@@ -602,7 +602,9 @@ msgid "Mouse"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcodegeneration
-msgid "Code"
+#, fuzzy
+#| msgid "Code"
+msgid "Code generation"
 msgstr "Код"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
@@ -4523,6 +4525,10 @@ msgstr "%s%sКлацніть ОК, ящко Ви впевнені це зроб�
 msgctxt "lazarusidestrconsts.liscocommand"
 msgid "Command:"
 msgstr "Команда:"
+
+#: lazarusidestrconsts.liscode
+msgid "Code"
+msgstr ""
 
 #: lazarusidestrconsts.liscodebrowser
 msgid "Code browser"
@@ -14855,7 +14861,7 @@ msgstr "параметри запуску"
 #: lazarusidestrconsts.srkmecsave
 msgctxt "lazarusidestrconsts.srkmecsave"
 msgid "Save"
-msgstr ""
+msgstr "Зберегти"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"

@@ -607,7 +607,9 @@ msgid "Mouse"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcodegeneration
-msgid "Code"
+#, fuzzy
+#| msgid "Code"
+msgid "Code generation"
 msgstr "Code"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
@@ -4526,6 +4528,10 @@ msgstr "%s%sKlik op OK als je zeker weet dat je dat wilt doen."
 msgctxt "lazarusidestrconsts.liscocommand"
 msgid "Command:"
 msgstr "Opdracht:"
+
+#: lazarusidestrconsts.liscode
+msgid "Code"
+msgstr ""
 
 #: lazarusidestrconsts.liscodebrowser
 msgid "Code browser"
@@ -14860,7 +14866,7 @@ msgstr "uitvoer parameters"
 #: lazarusidestrconsts.srkmecsave
 msgctxt "lazarusidestrconsts.srkmecsave"
 msgid "Save"
-msgstr ""
+msgstr "Opslaan"
 
 #: lazarusidestrconsts.srkmecscrolldown
 msgid "Scroll down one line"
