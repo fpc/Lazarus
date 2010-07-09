@@ -404,7 +404,7 @@ begin
   RefreshSpeedButton.Hint:=dlgUnitDepRefresh;
   OptionsSpeedButton.Hint:=dlgFROpts;
   CodeFilterEdit.Text:=lisCEFilter;
-  CodePage.Caption:=dlgCodeGeneration;
+  CodePage.Caption:=lisCode;
   DirectivesFilterEdit.Text:=lisCEFilter;
   DirectivesPage.Caption:=lisDirectives;
   

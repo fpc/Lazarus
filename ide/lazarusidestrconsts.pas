@@ -2134,6 +2134,7 @@ resourcestring
 
   // Code Explorer
   lisCodeExplorer = 'Code Explorer';
+  lisCode = 'Code';
 
   // Unit editor
   uemFindDeclaration = '&Find Declaration';
