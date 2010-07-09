@@ -1933,6 +1933,7 @@ var
   StartPosOfVariable: LongInt;
   CursorContext: TFindContext;
   IdentStartXY: TCodeXYPosition;
+  InFrontOfDirective: Boolean;
   
   procedure CheckProcedureDeclarationContext;
   var
@@ -2069,7 +2070,8 @@ begin
         MoveCursorToCleanPos(StartPosOfVariable);
         ReadPriorAtom;
         CurrentIdentifierList.StartAtomInFront:=CurPos;
-        if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags) then
+        if (ilcfStartInStatement in CurrentIdentifierList.ContextFlags)
+        and (not IsDirtySrcValid) then
         begin
           // check if LValue
           if (CurPos.Flag in [cafSemicolon,cafEnd,cafColon])
@@ -2092,18 +2094,22 @@ begin
         end;
       end;
       // context behind
-      if IdentEndPos<SrcLen then begin
+      if (IdentEndPos<SrcLen) and (not IsDirtySrcValid) then begin
         MoveCursorToCleanPos(IdentEndPos);
+        InFrontOfDirective:=(CurPos.StartPos<SrcLen) and (Src[CurPos.StartPos]='{')
+                            and (Src[CurPos.StartPos+1]='$');
         ReadNextAtom;
 
         // check end of line
-        if not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos) then
+        if (not InFrontOfDirective)
+        and (not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos)) then
           CurrentIdentifierList.ContextFlags:=
             CurrentIdentifierList.ContextFlags+[ilcfEndOfLine];
 
         CurrentIdentifierList.StartAtomBehind:=CurPos;
         // check if a semicolon is needed or forbidden at the end
-        if (CurrentIdentifierList.StartBracketLvl>0)
+        if InFrontOfDirective
+        or (CurrentIdentifierList.StartBracketLvl>0)
         or (CurPos.Flag in [cafSemicolon, cafEqual, cafColon, cafComma,
                    cafPoint, cafRoundBracketOpen, cafRoundBracketClose,
                    cafEdgedBracketOpen, cafEdgedBracketClose])
