@@ -3657,7 +3657,7 @@ begin
   Result:=MainIDE.DoSaveBuildIDEConfigs(BuildIDEFlags);
   if Result<>mrOk then exit;
 
-  // ask user to rebuilt Lazarus now
+  // ask user to rebuild Lazarus now
   Result:=IDEMessageDialog(lisPkgMangRebuildLazarus,
     Format(lisPkgMangThePackageWasMarkedForInstallationCurrentlyLazarus, [
       '"', APackage.IDAsString, '"', #13, #13, #13]),
