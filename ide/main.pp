@@ -4790,12 +4790,19 @@ var
   LFMCode: TCodeBuffer;
   AFilename: String;
 begin
-  AFilename:=CleanAndExpandFilename(UnitFilename);
-  if not FileExistsInIDE(AFilename,[]) then begin
-    DebugLn(['TMainIDE.DoOpenComponent file not found ',AFilename]);
-    exit(mrCancel);
-  end;
+  // try to find a unit name without expaning the path. this is required if unit is virtual
+  // in other case file name will be expanded with the wrong path
+  AFilename := UnitFilename;
   AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename);
+  if AnUnitInfo = nil then
+  begin
+    AFilename:=CleanAndExpandFilename(UnitFilename);
+    if not FileExistsInIDE(AFilename,[]) then begin
+      DebugLn(['TMainIDE.DoOpenComponent file not found ',AFilename]);
+      exit(mrCancel);
+    end;
+    AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename);
+  end;
   if (not (ofRevert in OpenFlags))
   and (AnUnitInfo<>nil) and (AnUnitInfo.Component<>nil) then begin
     // already open
