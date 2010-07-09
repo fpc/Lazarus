@@ -1034,8 +1034,8 @@ var
 begin
   try
     Result:=false;
-    BuildTree(false);
-    if not EndOfSourceFound then exit;
+    ClearIgnoreErrorAfter;
+    BuildTree(true);
     UpperClassName:=UpperCaseStr(AComponent.ClassName);
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CompleteComponent] A Component="',AComponent.Name,':',AComponent.ClassName);
@@ -1064,7 +1064,7 @@ begin
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CompleteComponent] invoke class completion');
     {$ENDIF}
-    Result:=ApplyClassCompletion(true);
+    Result:=ApplyClassCompletion(false);
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CompleteComponent] END');
     {$ENDIF}

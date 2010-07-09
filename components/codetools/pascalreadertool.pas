@@ -185,12 +185,6 @@ type
     function GetSourceNamePos(var NamePos: TAtomPosition): boolean;
     function PositionInSourceName(CleanPos: integer): boolean;
     function ExtractSourceName: string;
-    function FindInterfaceNode: TCodeTreeNode;
-    function FindImplementationNode: TCodeTreeNode;
-    function FindInitializationNode: TCodeTreeNode;
-    function FindFinalizationNode: TCodeTreeNode;
-    function FindMainBeginEndNode: TCodeTreeNode;
-    function FindFirstSectionChild: TCodeTreeNode;
 
     // uses sections
     procedure MoveCursorToUsesStart(UsesNode: TCodeTreeNode);
@@ -1670,58 +1664,6 @@ begin
     Result:=GetAtom
   else
     Result:='';
-end;
-
-function TPascalReaderTool.FindInterfaceNode: TCodeTreeNode;
-begin
-  Result:=Tree.Root;
-  while (Result<>nil) and (Result.Desc<>ctnInterface) do
-    Result:=Result.NextBrother;
-end;
-
-function TPascalReaderTool.FindImplementationNode: TCodeTreeNode;
-begin
-  Result:=Tree.Root;
-  while (Result<>nil) and (Result.Desc<>ctnImplementation) do
-    Result:=Result.NextBrother;
-end;
-
-function TPascalReaderTool.FindInitializationNode: TCodeTreeNode;
-begin
-  Result:=Tree.Root;
-  while (Result<>nil) and (Result.Desc<>ctnInitialization) do
-    Result:=Result.NextBrother;
-end;
-
-function TPascalReaderTool.FindFinalizationNode: TCodeTreeNode;
-begin
-  Result:=Tree.Root;
-  while (Result<>nil) and (Result.Desc<>ctnFinalization) do
-    Result:=Result.NextBrother;
-end;
-
-function TPascalReaderTool.FindMainBeginEndNode: TCodeTreeNode;
-begin
-  Result:=Tree.Root;
-  if (Result=nil) then exit;
-  if (Result.Desc in [ctnProgram,ctnLibrary]) then
-    Result:=Result.LastChild
-  else begin
-    Result:=FindImplementationNode;
-    if Result<>nil then
-      Result:=Result.LastChild;
-  end;
-  if Result=nil then exit;
-  if Result.Desc<>ctnBeginBlock then Result:=nil;
-end;
-
-function TPascalReaderTool.FindFirstSectionChild: TCodeTreeNode;
-begin
-  Result:=Tree.Root;
-  while (Result<>nil) and (Result.FirstChild=nil) do
-    Result:=Result.NextBrother;
-  if (Result=nil) then exit;
-  Result:=Result.FirstChild;
 end;
 
 function TPascalReaderTool.NodeIsInAMethod(Node: TCodeTreeNode): boolean;

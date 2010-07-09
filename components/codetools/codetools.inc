@@ -31,6 +31,8 @@
 
 {off $DEFINE CTDEBUG}
 
+{off $DEFINE VerboseUpdateNeeded}
+
 {$inline on}
 
 // end.

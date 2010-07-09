@@ -36,6 +36,7 @@ interface
 {$I codetools.inc}
 
 { $DEFINE ShowIgnoreErrorAfter}
+{ $DEFINE VerboseUpdateNeeded}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -241,7 +242,15 @@ type
     function FindFirstNodeOnSameLvl(StartNode: TCodeTreeNode): TCodeTreeNode;
     function FindNextNodeOnSameLvl(StartNode: TCodeTreeNode): TCodeTreeNode;
     function FindPrevNodeOnSameLvl(StartNode: TCodeTreeNode): TCodeTreeNode;
-    
+
+    // sections
+    function FindInterfaceNode: TCodeTreeNode;
+    function FindImplementationNode: TCodeTreeNode;
+    function FindInitializationNode: TCodeTreeNode;
+    function FindFinalizationNode: TCodeTreeNode;
+    function FindMainBeginEndNode: TCodeTreeNode;
+    function FindFirstSectionChild: TCodeTreeNode;
+
     function NodeHasParentOfType(ANode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): boolean;
 
@@ -552,21 +561,39 @@ end;
 procedure TPascalParserTool.BuildTree(OnlyInterfaceNeeded: boolean);
 var
   SourceType: TCodeTreeNodeDesc;
+  Node: TCodeTreeNode;
 begin
   {$IFDEF MEM_CHECK}CheckHeap('TBasicCodeTool.BuildTree A '+IntToStr(MemCheck_GetMem_Cnt));{$ENDIF}
   {$IFDEF CTDEBUG}
   DebugLn('TPascalParserTool.BuildTree A ',MainFilename);
   {$ENDIF}
   ValidateToolDependencies;
+  debugln(['TPascalParserTool.BuildTree ']);
   if not UpdateNeeded(OnlyInterfaceNeeded) then begin
     // input is the same as last time -> output is the same
-    // -> if there was an error, raise it again
+    // => if there was an error, raise it again
     //debugln(['TPascalParserTool.BuildTree ',ord(LastErrorPhase),' ',IgnoreErrorAfterValid]);
-    if (LastErrorPhase in [CodeToolPhaseScan,CodeToolPhaseParse])
-    and ((not IgnoreErrorAfterValid)
-      or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage))
-    then
+    if (LastErrorPhase in [CodeToolPhaseScan,CodeToolPhaseParse]) then begin
+      // last time a parsing error occurred
+      if IgnoreErrorAfterValid
+      and IgnoreErrorAfterPositionIsInFrontOfLastErrMessage
+      then begin
+        // last error is behind needed code
+        // => ignore
+        exit;
+      end;
+      //debugln(['TPascalParserTool.BuildTree ',MainFilename,' OnlyInterfaceNeeded=',OnlyInterfaceNeeded,' ImplementationSectionFound=',ImplementationSectionFound]);
+      if OnlyInterfaceNeeded and ImplementationSectionFound then begin
+        Node:=FindImplementationNode;
+        if (Node<>nil) and not LastErrorIsInFrontOfCleanedPos(Node.StartPos)
+        then begin
+          // last error was after interface section and only interface is needed
+          // => ignore
+          exit;
+        end;
+      end;
       RaiseLastError;
+    end;
     exit;
   end;
   ClearLastError;
@@ -575,6 +602,11 @@ begin
   
   // scan code
   BeginParsing(true,OnlyInterfaceNeeded);
+  {$IFDEF VerboseUpdateNeeded}
+  if FForceUpdateNeeded=true then
+    DebugLn(['TCustomCodeTool.BuildTree FForceUpdateNeeded:=false ',MainFilename]);
+  {$ENDIF}
+  FForceUpdateNeeded:=false;
   
   // parse code and build codetree
   CurrentPhase:=CodeToolPhaseParse;
@@ -4985,6 +5017,58 @@ begin
     Result:=FindDeepestNodeAtPos(Result,P,ExceptionOnNotFound);
     //debugln('TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos B ',Result.DescAsString,' ',dbgs(NodeNeedsBuildSubTree(Result)));
   end;
+end;
+
+function TPascalParserTool.FindInterfaceNode: TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  while (Result<>nil) and (Result.Desc<>ctnInterface) do
+    Result:=Result.NextBrother;
+end;
+
+function TPascalParserTool.FindImplementationNode: TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  while (Result<>nil) and (Result.Desc<>ctnImplementation) do
+    Result:=Result.NextBrother;
+end;
+
+function TPascalParserTool.FindInitializationNode: TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  while (Result<>nil) and (Result.Desc<>ctnInitialization) do
+    Result:=Result.NextBrother;
+end;
+
+function TPascalParserTool.FindFinalizationNode: TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  while (Result<>nil) and (Result.Desc<>ctnFinalization) do
+    Result:=Result.NextBrother;
+end;
+
+function TPascalParserTool.FindMainBeginEndNode: TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  if (Result=nil) then exit;
+  if (Result.Desc in [ctnProgram,ctnLibrary]) then
+    Result:=Result.LastChild
+  else begin
+    Result:=FindImplementationNode;
+    if Result<>nil then
+      Result:=Result.LastChild;
+  end;
+  if Result=nil then exit;
+  if Result.Desc<>ctnBeginBlock then Result:=nil;
+end;
+
+function TPascalParserTool.FindFirstSectionChild: TCodeTreeNode;
+begin
+  Result:=Tree.Root;
+  while (Result<>nil) and (Result.FirstChild=nil) do
+    Result:=Result.NextBrother;
+  if (Result=nil) then exit;
+  Result:=Result.FirstChild;
 end;
 
 
