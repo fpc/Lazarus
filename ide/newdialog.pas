@@ -330,8 +330,9 @@ begin
   DescriptionGroupBox.Caption := lisCodeHelpDescrTag;
   DescriptionLabel.Caption := '';
 
-  ButtonPanel.OKButton.OnClick := @OKButtonClick;
-  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
+  ButtonPanel.OKButton.Caption := lisOk;
+  ButtonPanel.HelpButton.Caption := lisMenuHelp;
+  ButtonPanel.CancelButton.Caption := dlgCancel;
 end;
 
 procedure TNewOtherDialog.UpdateDescription;

@@ -11,24 +11,24 @@ object NewOtherDialog: TNewOtherDialog
   LCLVersion = '0.9.29'
   object Panel1: TPanel
     Left = 6
-    Height = 369
+    Height = 377
     Top = 6
     Width = 549
     Align = alClient
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 369
+    ClientHeight = 377
     ClientWidth = 549
     TabOrder = 0
     object ItemsTreeView: TTreeView
       AnchorSideLeft.Control = Owner
       AnchorSideTop.Control = Owner
       Left = 0
-      Height = 369
+      Height = 377
       Top = 0
       Width = 263
       Align = alClient
-      DefaultItemHeight = 19
+      DefaultItemHeight = 15
       ReadOnly = True
       ScrollBars = ssAutoBoth
       TabOrder = 0
@@ -43,19 +43,19 @@ object NewOtherDialog: TNewOtherDialog
       AnchorSideRight.Control = Owner
       AnchorSideRight.Side = asrBottom
       Left = 268
-      Height = 369
+      Height = 377
       Top = 0
       Width = 281
       Align = alRight
       Caption = 'DescriptionGroupBox'
-      ClientHeight = 348
-      ClientWidth = 273
+      ClientHeight = 359
+      ClientWidth = 277
       TabOrder = 1
       object DescriptionLabel: TLabel
         Left = 6
-        Height = 18
+        Height = 14
         Top = 6
-        Width = 261
+        Width = 265
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'DescriptionLabel'
@@ -64,9 +64,9 @@ object NewOtherDialog: TNewOtherDialog
       end
       object InheritableComponentsListView: TListView
         Left = 0
-        Height = 318
-        Top = 30
-        Width = 273
+        Height = 333
+        Top = 26
+        Width = 277
         Align = alClient
         Columns = <        
           item
@@ -88,7 +88,7 @@ object NewOtherDialog: TNewOtherDialog
     end
     object Splitter1: TSplitter
       Left = 263
-      Height = 369
+      Height = 377
       Top = 0
       Width = 5
       Align = alRight
@@ -97,13 +97,15 @@ object NewOtherDialog: TNewOtherDialog
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 381
+    Height = 26
+    Top = 389
     Width = 549
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
+    OKButton.OnClick = OkButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.Caption = '&Help'
+    HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
     CloseButton.Caption = '&Close'
     CloseButton.Enabled = False
