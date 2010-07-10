@@ -59,7 +59,7 @@ uses
   MemCheck,
 {$ENDIF}
   // fpc packages
-  Math, Classes, SysUtils, Process, AsyncProcess, TypInfo, AVL_Tree,
+  Math, Classes, SysUtils, Process, AsyncProcess, TypInfo, types, AVL_Tree,
   // lcl
   LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages, ComCtrls,
   FileUtil, LResources, StdCtrls, Forms, Buttons, Menus, Controls, GraphType,
@@ -4673,6 +4673,8 @@ function TMainIDE.CreateNewForm(NewUnitInfo: TUnitInfo;
 var
   NewComponent: TComponent;
   new_x, new_y: integer;
+  p: TPoint;
+  r: TRect;
 begin
   if not AncestorType.InheritsFrom(TComponent) then
     RaiseException('TMainIDE.CreateNewForm invalid AncestorType');
@@ -4693,10 +4695,16 @@ begin
 
   // Figure out where we want to put the new form
   // if there is more place left of the OI put it left, otherwise right
-  new_x:=ObjectInspector1.Left+ObjectInspector1.Width;
-  new_y:=MainIDEBar.Top+MainIDEBar.Height;
-  if screen.width-new_x>=ObjectInspector1.left then inc(new_x, 60) else new_x:=16;
-  if screen.height-new_y>=MainIDEBar.top then inc(new_y, 80) else new_y:=24;
+  p:=ObjectInspector1.ClientOrigin;
+  new_x:=p.X;
+  if new_x>Screen.Width div 2 then
+    new_x:=new_x-500
+  else
+    new_x:=new_x+ObjectInspector1.Width;
+  new_y:=p.Y+10;
+  r:=Screen.PrimaryMonitor.WorkareaRect;
+  new_x:=Max(r.Left,Min(new_x,r.Right-200));
+  new_y:=Max(r.Top,Min(new_y,r.Bottom-200));
 
   // create jit component
   NewComponent := FormEditor1.CreateComponent(nil,TComponentClass(AncestorType),
