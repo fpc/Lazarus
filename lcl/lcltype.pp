@@ -88,7 +88,7 @@ type
   TDockImageOperation = (disShow, disMove, disHide);
 
   {$ifndef WINDOWS}
-  THandle = type PtrUInt;
+  THandle = type PtrUInt; // define our own, because the SysUtils.THandle = System.THandle is a longint
   HANDLE = THandle;
   PHandle = ^THandle;
 
