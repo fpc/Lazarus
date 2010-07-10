@@ -382,7 +382,10 @@ begin
       CreateCaret(FWidget, nil, FLastValidWidth, FLastValidHeight);
       if (FCaretDirtyPos.X > 0) or (FCaretDirtyPos.Y > 0) then
       begin
-        Pt := FPos;
+        if (FWidget.LastCaretPos.X >= 0) and (FWidget.LastCaretPos.Y >= 0) then
+          Pt := FWidget.LastCaretPos
+        else
+          Pt := FPos;
         SetPos(FCaretDirtyPos);
         FCaretDirtyPos := QtPoint(0, 0);
         QCoreApplication_processEvents();
@@ -426,6 +429,7 @@ begin
   
   if ((FPos.x <> Value.x) or (FPos.y <> Value.y)) or FCaretDirty then
   begin
+    FWidget.LastCaretPos := FPos;
     FPos := Value;
     FTimer.Enabled := False;
     FVisibleState := FWidget.Context = 0;

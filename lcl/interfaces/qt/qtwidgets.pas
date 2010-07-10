@@ -105,6 +105,7 @@ type
     FKeysToEat: TByteSet;
     FText: WideString;
     FHasCaret: Boolean;
+    FLastCaretPos: TQtPoint;
     FHasPaint: Boolean;
     FOwner: TQtWidget;
 
@@ -124,6 +125,7 @@ type
     function QtButtonsToLCLButtons(AButtons: QtMouseButton): PtrInt;
     function QtKeyModifiersToKeyState(AModifiers: QtKeyboardModifiers): PtrInt;
     function QtKeyToLCLKey(AKey: Integer; AText: WideString): Word;
+    procedure SetLastCaretPos(const AValue: TQtPoint);
     procedure SetProps(const AnIndex: String; const AValue: pointer);
     procedure SetStyleSheet(const AValue: WideString);
     procedure SetWidget(const AValue: QWidgetH);
@@ -267,6 +269,7 @@ type
     property HasCaret: Boolean read FHasCaret write SetHasCaret;
     property HasPaint: Boolean read FHasPaint write FHasPaint;
     property KeysToEat: TByteSet read FKeysToEat write FKeysToEat;
+    property LastCaretPos: TQtPoint read FLastCaretPos write SetLastCaretPos;
     property StyleSheet: WideString read GetStyleSheet write SetStyleSheet;
     property PaintData: TPaintData read FPaintData write FPaintData;
     property Palette: TQtWidgetPalette read GetPalette;
@@ -1647,6 +1650,8 @@ begin
   // default color roles
   SetDefaultColorRoles;
   FPalette := nil;
+  FHasCaret := False;
+  FLastCaretPos := QtPoint(-1, -1);
   ChildOfComplexWidget := ccwNone;
   // creates the widget
   Widget := CreateWidget(FParams);
@@ -3746,6 +3751,11 @@ begin
       // then try to map that char to VK_ code
     end;
   end;
+end;
+
+procedure TQtWidget.SetLastCaretPos(const AValue: TQtPoint);
+begin
+  FLastCaretPos := AValue;
 end;
 
 procedure TQtWidget.SetHasCaret(const AValue: Boolean);
