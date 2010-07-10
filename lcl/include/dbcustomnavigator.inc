@@ -190,6 +190,7 @@ end;
 procedure TDBCustomNavigator.Loaded;
 begin
   inherited Loaded;
+  UpdateButtons;
   UpdateHints;
   ActiveChanged;
 end;
@@ -208,15 +209,6 @@ procedure TDBCustomNavigator.UpdateButtons;
 var
   CurButtonType: TDBNavButtonType;
   CurButton: TDBNavButton;
-  ButtonCount: Integer;
-  ButtonNumber: Integer;
-  ButtonStartPos: Integer;
-  ButtonEndPos: Integer;
-  ButtonSpace: Integer;
-  X: Integer;
-  Y: Integer;
-  W: Integer;
-  H: Integer;
 begin
   if FUpdateButtonsLock>0
   then begin
@@ -226,34 +218,13 @@ begin
 
   DisableAlign;
   FUpdateButtonsNeeded:=false;
-  ButtonCount:=VisibleButtonCount;
   if Direction=nbdHorizontal then
-    ButtonSpace:=ClientWidth
+    ChildSizing.Layout:=cclLeftToRightThenTopToBottom
   else
-    ButtonSpace:=ClientHeight;
+    ChildSizing.Layout:=cclTopToBottomThenLeftToRight;
 
-  ButtonNumber:=1;
-  ButtonEndPos:=0;
-  ButtonStartPos:=ButtonEndPos;
   for CurButtonType:=Low(Buttons) to High(Buttons) do
   begin
-    // calculate button bounds
-    if ButtonCount>0 then
-      ButtonEndPos:=(ButtonSpace*ButtonNumber) div ButtonCount
-    else
-      ButtonEndPos:=ButtonStartPos+1;
-    if Direction=nbdHorizontal then begin
-      X:=ButtonStartPos;
-      Y:=0;
-      W:=ButtonEndPos-ButtonStartPos;
-      H:=ClientHeight;
-    end else begin
-      X:=0;
-      Y:=ButtonStartPos;
-      W:=ClientWidth;
-      H:=ButtonEndPos-ButtonStartPos;
-    end;
-    
     // create/get button
     if Buttons[CurButtonType]=nil
     then begin
@@ -273,13 +244,7 @@ begin
     // update button properties
     CurButton.Flat:=Flat;
     CurButton.Index:=CurButtonType;
-    CurButton.SetBounds(X,Y,W,H);
     CurButton.Visible:=CurButtonType in FVisibleButtons;
-    if CurButton.Visible then
-    begin
-      inc(ButtonNumber);
-      ButtonStartPos:=ButtonEndPos;
-    end;
   end;
   EnableAlign;
   ActiveChanged;
@@ -334,13 +299,6 @@ begin
   BtnClick(TDBNavButton(Sender).Index);
 end;
 
-procedure TDBCustomNavigator.DoOnResize;
-begin
-  inherited DoOnResize;
-  if (not (csLoading in ComponentState)) and (Buttons[nbFirst]<>nil) then
-    UpdateButtons;
-end;
-
 class function TDBCustomNavigator.GetControlClassDefaultSize: TSize;
 begin
   Result.CX := 241;
@@ -378,6 +336,10 @@ begin
   inherited Create(TheOwner);
   ControlStyle:=ControlStyle-[csAcceptsControls,csSetCaption]+[csOpaque];
   FDirection:=nbdHorizontal;
+  ChildSizing.Layout:=cclLeftToRightThenTopToBottom;
+  ChildSizing.ControlsPerLine:=100;
+  ChildSizing.EnlargeHorizontal:=crsScaleChilds;
+  ChildSizing.ShrinkHorizontal:=crsScaleChilds;
   FDataLink:=TDBNavDataLink.Create(Self);
   FVisibleButtons:=DefaultDBNavigatorButtons;
   FHints:=TStringList.Create;

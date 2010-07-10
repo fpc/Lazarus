@@ -1145,7 +1145,6 @@ type
     procedure UpdateHints; virtual;
     procedure HintsChanged(Sender: TObject); virtual;
     procedure ButtonClickHandler(Sender: TObject); virtual;
-    procedure DoOnResize; override;
     class function GetControlClassDefaultSize: TSize; override;
     procedure BeginUpdateButtons; virtual;
     procedure EndUpdateButtons; virtual;
