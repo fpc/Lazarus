@@ -864,14 +864,16 @@ begin
     // a form became active
     // it does not mean: the control focus is switch to the form
     AForm:=TCustomForm(LCLObject);
-    if AForm.Active then begin
-      // it is already active
-      // do not send this message to the LCL
-      // to prevent setting AForm.ActiveControl:=nil
-      //debugln(['GTKFocusCBAfter ',DbgSName(LCLObject),' send=',event^.send_event,' window=',dbgs(event^.window),' in=',event^._in,' type=',event^._type]);
-      exit(true);
+    //debugln(['GTKFocusCBAfter ',DbgSName(AForm),' ',DbgSName(AForm.ActiveControl)]);
+    // the PGtkWindow(Data)^.focus_widget shows the last focus call for this
+    // window. If there is a sub window (e.g. docking), then the focus_widget
+    // of the parent window was not updated, so it can not be used.
+    // The gtk will use, if we let it, which will not follow the LCL focus logic.
+    // Follow the LCL logic:
+    if AForm.ActiveControl<>nil then begin
+      Data:=AForm.ActiveControl;
+      //debugln(['GTKFocusCBAfter ',DbgSName(LCLObject),' send=',event^.send_event,' window=',dbgs(event^.window),' in=',event^._in,' type=',event^._type,' Data=',dbgsname(TObject(Data))]);
     end;
-    // MG: maybe better send a LM_ACTIVATE instead of a LM_SETFOCUS message?
   end;
 
   ResetDefaultIMContext;
