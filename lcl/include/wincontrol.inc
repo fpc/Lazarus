@@ -1503,12 +1503,12 @@ begin
   case ChildSizing.Layout of
   cclLeftToRightThenTopToBottom:
     begin
-      ColCount:=Max(1,ChildSizing.ControlsPerLine);
+      ColCount:=Max(1,Min(ChildSizing.ControlsPerLine,ListOfControls.Count));
       RowCount:=((ListOfControls.Count-1) div ColCount)+1;
     end;
   cclTopToBottomThenLeftToRight:
     begin
-      RowCount:=Max(1,ChildSizing.ControlsPerLine);
+      RowCount:=Max(1,min(ChildSizing.ControlsPerLine,ListOfControls.Count));
       ColCount:=((ListOfControls.Count-1) div RowCount)+1;
     end;
   else
