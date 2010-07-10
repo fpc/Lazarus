@@ -95,6 +95,7 @@ begin
   else
     Result := s;
   FreeMem(Dst);
+  Result := SysToUTF8(Result);
   {$else}
   Result := SysToUTF8(S);
   {$endif}
