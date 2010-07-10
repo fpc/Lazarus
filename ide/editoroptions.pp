@@ -1491,6 +1491,9 @@ begin
   EditorOptionsFoldInfoPas[17].Name := dlgFoldPasNestedComment;
   EditorOptionsFoldInfoPas[18].Name := dlgFoldPasIfDef;
   EditorOptionsFoldInfoPas[19].Name := dlgFoldPasUserRegion;
+  EditorOptionsFoldInfoPas[20].Name := dlgFoldPasAnsiComment;
+  EditorOptionsFoldInfoPas[21].Name := dlgFoldPasBorComment;
+  EditorOptionsFoldInfoPas[22].Name := dlgFoldPasSlashComment;
 
   EditorOptionsFoldInfoHTML[0].Name := dlgFoldHtmlNode;
   EditorOptionsFoldInfoHTML[1].Name := dlgFoldHtmlComment;
