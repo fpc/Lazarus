@@ -483,7 +483,7 @@ msgstr "Ordem da Classe"
 
 #: lazarusidestrconsts.dlgcdtlast
 msgid "Last"
-msgstr "Último"
+msgstr "Por último"
 
 #: lazarusidestrconsts.dlgcdtlower
 msgid "lowercase"
@@ -621,10 +621,9 @@ msgid "Mouse"
 msgstr "Mouse"
 
 #: lazarusidestrconsts.dlgcodegeneration
-#, fuzzy
 #| msgid "Code"
 msgid "Code generation"
-msgstr "Código"
+msgstr "Geração código"
 
 #: lazarusidestrconsts.dlgcodetoolsopts
 msgid "CodeTools Options"
@@ -1167,7 +1166,7 @@ msgstr "Perguntar"
 
 #: lazarusidestrconsts.dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
-msgstr "Notas: Arquivos de projetos são todos os arquivos no diretório de projeto"
+msgstr "Nota: Arquivos de projetos são todos os arquivos no diretório de projeto"
 
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
@@ -1629,7 +1628,7 @@ msgstr "Identações e Tabulações:"
 
 #: lazarusidestrconsts.dlginfrontofmethods
 msgid "In front of methods"
-msgstr "Antes dos métodos"
+msgstr "Na frente de métodos"
 
 #: lazarusidestrconsts.dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -1641,7 +1640,7 @@ msgstr "Inserir espaço após"
 
 #: lazarusidestrconsts.dlginsspacefront
 msgid "Insert space in front of"
-msgstr "Inserir espaço antes"
+msgstr "Inserir espaço na frente de"
 
 #: lazarusidestrconsts.dlgintvinsec
 msgid "Interval in secs"
@@ -1682,7 +1681,7 @@ msgstr "Idioma"
 
 #: lazarusidestrconsts.dlglast
 msgid "Last (i.e. at end of source)"
-msgstr "Último (ex. no final do fonte)"
+msgstr "Por último (ex. no final do fonte)"
 
 #: lazarusidestrconsts.dlglazarusdir
 msgid "Lazarus directory (default for all projects)"
@@ -2239,7 +2238,7 @@ msgstr "Não dividir a linha após:"
 
 #: lazarusidestrconsts.dlgnotsplitlinefront
 msgid "Do not split line In front of:"
-msgstr "Não dividir linha antes de:"
+msgstr "Não dividir linha na frente de:"
 
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
@@ -2721,7 +2720,7 @@ msgstr "Contador (.pp;1)"
 
 #: lazarusidestrconsts.dlgsmbfront
 msgid "Symbol in front (.~pp)"
-msgstr "Símbolo no início (.~pp)"
+msgstr "Símbolo na frente (.~pp)"
 
 #: lazarusidestrconsts.dlgsnapguidelines
 msgid "Snap to Guide Lines"
@@ -4536,7 +4535,7 @@ msgstr "Comando:"
 
 #: lazarusidestrconsts.liscode
 msgid "Code"
-msgstr ""
+msgstr "Código"
 
 #: lazarusidestrconsts.liscodebrowser
 msgid "Code browser"
@@ -7448,7 +7447,7 @@ msgstr "Informação sobre %s"
 
 #: lazarusidestrconsts.lisinfrontofrelated
 msgid "In front of related"
-msgstr "Antes do relacionado"
+msgstr "Na frente do relacionado"
 
 #: lazarusidestrconsts.lisinheritedcomponent
 msgid "Inherited Component"
@@ -9861,7 +9860,7 @@ msgstr "Nova configuração"
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections:"
-msgstr "Novas unidades serão adicionadas à seção \"uses\":"
+msgstr "Novas unidades são adicionadas à seção \"uses\":"
 
 #: lazarusidestrconsts.lisno
 msgid "No"
@@ -13939,7 +13938,7 @@ msgstr "Opções \"i18n\""
 
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 msgid "Include Version Info in executable"
-msgstr "Inclua informações de Versão no executável"
+msgstr "Incluir informações de versão no executável"
 
 #: lazarusidestrconsts.rsiwpcustomposition
 msgid "Custom position"
@@ -15182,11 +15181,11 @@ msgstr "Expandir sob o Cursor"
 
 #: lazarusidestrconsts.srkmecunknown
 msgid "unknown editor command"
-msgstr "editor de comando desconhecido"
+msgstr "comando do editor desconhecido"
 
 #: lazarusidestrconsts.srkmecuserfirst
 msgid "User First"
-msgstr "Primeiro Usuário"
+msgstr "Usuário Primeiro"
 
 #: lazarusidestrconsts.srkmecviewanchoreditor
 msgid "View anchor editor"

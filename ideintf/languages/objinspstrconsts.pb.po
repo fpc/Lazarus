@@ -518,7 +518,7 @@ msgstr "%u itens selecionados"
 
 #: objinspstrconsts.oisjumptodeclarationof
 msgid "Jump to declaration of %s"
-msgstr ""
+msgstr "Saltar para declaração de %s"
 
 #: objinspstrconsts.oisload
 msgid "&Load"
