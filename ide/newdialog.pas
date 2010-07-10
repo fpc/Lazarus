@@ -376,7 +376,7 @@ begin
   FillItemsTree;
   FillProjectInheritableItemsList;
   InheritableComponentsListView.Visible := false;
-  IDEDialogLayoutList.ApplyLayout(Self, 470, 400);
+  IDEDialogLayoutList.ApplyLayout(Self, 570, 400);
 end;
 
 destructor TNewOtherDialog.Destroy;
