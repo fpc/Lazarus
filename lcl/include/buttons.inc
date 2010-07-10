@@ -287,7 +287,7 @@ begin
     end;
   end;
   inherited WSSetText(AText);
-  //DebugLn(['TCustomButton.WSSetText ',dbgsName(Self),' Caption="',Caption,'" AutoSizeCanStart=',AutoSizeCanStart,' AutoSizeDelayed=',AutoSizeDelayed]);
+  //DebugLn(['TCustomButton.WSSetText ',dbgsName(Self),' Caption="',Caption,'"]);
 end;
 
 procedure TCustomButton.TextChanged;

@@ -490,22 +490,24 @@ begin
     Result := GetVertSCrollbar;
 end;
 
-function TControlScrollBar.ClientSizeWithBar: integer;
+function TControlScrollBar.ClientSize: integer;
 begin
   if Kind = sbVertical then
     Result:=FControl.ClientWidth
   else
     Result:=FControl.ClientHeight;
+end;
+
+function TControlScrollBar.ClientSizeWithBar: integer;
+begin
+  Result:=ClientSize;
   if not Visible then
     dec(Result,GetSize);
 end;
 
 function TControlScrollBar.ClientSizeWithoutBar: integer;
 begin
-  if Kind = sbVertical then
-    Result:=FControl.ClientWidth
-  else
-    Result:=FControl.ClientHeight;
+  Result:=ClientSize;
   if Visible then
     inc(Result,GetSize);
 end;

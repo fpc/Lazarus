@@ -3292,7 +3292,7 @@ begin
   {$ENDIF}
   if not (caspComputingBounds in AutoSizePhases) then begin
     {$IFDEF VerboseAllAutoSize}
-    DebugLn(['TWinControl.DoAutoSize DELAYED AutoSizeCanStart=',AutoSizeCanStart,' AutoSizeDelayed=',AutoSizeDelayed,' AutoSizePhase=',AutoSizePhaseNames[AutoSizePhase]]);
+    DebugLn(['TWinControl.DoAutoSize DELAYED AutoSizePhase=',AutoSizePhaseNames[AutoSizePhase]]);
     {$ENDIF}
     Include(FControlFlags,cfAutoSizeNeeded);
     exit;

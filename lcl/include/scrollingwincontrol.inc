@@ -121,14 +121,7 @@ function TScrollingWinControl.ComputeScrollbars: Boolean;
     OldAutoRange := p_Bar.FAutoRange;
     p_Bar.FAutoRange := 0;
     OtherScrollbar := p_Bar.GetOtherScrollBar;
-    if OtherScrollbar.FVisible then
-      SBSize := OtherScrollbar.Size
-    else
-      SBSize := 0;
-    if p_Bar.Kind = sbVertical then
-      SBSize := ClientHeight - SBSize
-    else
-      SBSize := ClientWidth - SBSize;
+    SBSize := OtherScrollbar.ClientSize;
     if (p_Bar.FRange > SBSize) and (SBSize > 0) then
       p_Bar.FAutoRange := (p_Bar.FRange - SBSize)
     else
@@ -145,14 +138,15 @@ var
   NewPage: Integer;
 begin
   Result := False;
-  // page
-  NewPage := Max(1,Min(ClientWidth - 1, High(HorzScrollbar.FPage)));
+
+  // page (must be smaller than Range and at least 1)
+  NewPage := Max(1,Min(VertScrollbar.ClientSize - 1, High(HorzScrollbar.FPage)));
   if NewPage <> HorzScrollbar.FPage then
   begin
     HorzScrollbar.FPage := NewPage;
     Result := True;
   end;
-  NewPage := Max(1,Min(ClientHeight - 1, High(VertScrollbar.FPage)));
+  NewPage := Max(1,Min(HorzScrollbar.ClientSize - 1, High(VertScrollbar.FPage)));
   if NewPage <> VertScrollbar.FPage then
   begin
     VertScrollbar.FPage := NewPage;
