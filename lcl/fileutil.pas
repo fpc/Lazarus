@@ -187,6 +187,7 @@ function NeedRTLAnsi: boolean;// true if system encoding is not UTF-8
 procedure SetNeedRTLAnsi(NewValue: boolean);
 function UTF8ToSys(const s: string): string;// as UTF8ToAnsi but more independent of widestringmanager
 function SysToUTF8(const s: string): string;// as AnsiToUTF8 but more independent of widestringmanager
+function ConsoleToUTF8(const s: string): string;// converts OEM encoded string to UTF8 (used with some Windows specific functions)
 function UTF8ToConsole(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
 
 // file operations

@@ -82,6 +82,23 @@ begin
     Result := s;
 end;
 
+function ConsoleToUTF8(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
+{$ifdef MSWindows}
+var
+  Dst: PChar;
+{$endif}
+begin
+  {$ifdef MSWindows}
+  Dst := AllocMem((Length(s) + 1) * SizeOf(Char));
+  if OemToChar(PChar(s), Dst) then 
+    Result := StrPas(Dst)
+  else
+    Result := s;
+  FreeMem(Dst);
+  {$endif}
+  Result := SysToUTF8(Result);
+end;
+
 function UTF8ToConsole(const s: string): string;
 {$ifdef MSWindows}
 var
@@ -244,12 +261,18 @@ end;
 
 function GetEnvironmentStringUTF8(Index: Integer): String;
 begin
-  Result:=SysToUTF8(SysUtils.GetEnvironmentString(Index));
+  // on Windows SysUtils.GetEnvironmentString returns OEM encoded string
+  // so ConsoleToUTF8 function should be used!
+  // RTL issue: http://bugs.freepascal.org/view.php?id=15233
+  Result:=ConsoleToUTF8(SysUtils.GetEnvironmentString(Index));
 end;
 
 function GetEnvironmentVariableUTF8(const EnvVar: String): String;
 begin
-  Result:=SysToUTF8(SysUtils.GetEnvironmentVariable(UTF8ToSys(EnvVar)));
+  // on Windows SysUtils.GetEnvironmentString returns OEM encoded string
+  // so ConsoleToUTF8 function should be used!
+  // RTL issue: http://bugs.freepascal.org/view.php?id=15233
+  Result:=ConsoleToUTF8(SysUtils.GetEnvironmentVariable(UTF8ToSys(EnvVar)));
 end;
 
 function GetAppConfigDirUTF8(Global: Boolean): string;
