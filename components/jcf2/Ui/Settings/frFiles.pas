@@ -72,6 +72,10 @@ begin
   lblFormatFileName.Caption := Format(lisFrFilesFormatFileIs, [lcSet.FormatConfigFileName]);
   //lblFormatFileName.Caption := PathCompactPath(lblFormatFileName.Canvas.Handle, 'Format file is ' + lcSet.FormatConfigFileName, 450, cpCenter);
 
+  lblDate.Caption := '';
+  lblVersion.Caption := '';
+  lblDescription.Caption := lisFrFilesDescription;
+
   if not FileExists(lcSet.FormatConfigFileName) then
   begin
     lblStatus.Caption := lisFrFilesFileNotFound;
@@ -95,7 +99,6 @@ begin
       [FormatDateTime(ShortDateFormat + ' ' + ShortTimeFormat,
       FormatSettings.WriteDateTime)]);
     lblVersion.Caption := Format(lisFrFilesVersionThatWroteThisFile, [FormatSettings.WriteVersion]);
-    lblDescription.Caption := lisFrFilesDescription;
     mDescription.Text  := FormatSettings.Description;
 
   end;
