@@ -1065,7 +1065,9 @@ begin
     Result:=Result+'Node='+FindContext.Node.DescAsString;
     IdentNode:=FindContext.Node;
     while (IdentNode<>nil) do begin
-      if IdentNode.Desc in AllSimpleIdentifierDefinitions then begin
+      if IdentNode.Desc in AllSimpleIdentifierDefinitions
+        +[ctnIdentifier,ctnEnumIdentifier]
+      then begin
         Result:=Result+' Ident="'+
           FindContext.Tool.ExtractIdentifier(IdentNode.StartPos)+'"';
         break;
@@ -1607,6 +1609,7 @@ var
   IsLastProperty: Boolean;
   Context: TFindContext;
   IsTypeLess: Boolean;
+  Node: TCodeTreeNode;
 begin
   Result:=false;
   NewContext:=CleanFindContext;
@@ -1636,17 +1639,54 @@ begin
     end;
     // then search the properties
     repeat
-      //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath ',Context.Node.DescAsString);
-      if (not (Context.Node.Desc in (AllClasses+[ctnRecordType])))
-      then
-        exit;
-      Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors];
       Identifier:=GetNextIdentifier;
-      //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath Identifier="',identifier,'"');
+      IsLastProperty:=StartPos>length(PropertyPath);
+      //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath Context=',Context.Node.DescAsString,' Identifier=',Identifier);
       if Identifier='' then exit;
+      if Context.Node.Desc=ctnSetType then begin
+        // set
+        if not IsLastProperty then exit;
+        Node:=Context.Node.FirstChild;
+        if (Node=nil) or (Node.Desc<>ctnIdentifier) then exit;
+
+        // search enum type
+        Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInParentNodes,fdfFindChilds];
+        Params.SetIdentifier(Self,@Context.Tool.Src[Node.StartPos],nil);
+        Params.ContextNode:=Node;
+        if not Context.Tool.FindIdentifierInContext(Params) then exit;
+
+        Context.Tool:=Params.NewCodeTool;
+        Context.Node:=Params.NewNode;
+        // search enum base type
+        Context:=Context.Tool.FindBaseTypeOfNode(Params,Context.Node);
+        //debugln(['TFindDeclarationTool.FindDeclarationOfPropertyPath enum base type ',FindContextToString(Context)]);
+        if (Context.Node=nil) or (Context.Node.Desc<>ctnEnumerationType) then
+          exit;
+        // search enum
+        Node:=Context.Node.FirstChild;
+        while Node<>nil do begin
+          if CompareIdentifiers(PChar(Pointer(Identifier)),@Context.Tool.Src[Node.StartPos])=0
+          then begin
+            //debugln(['TFindDeclarationTool.FindDeclarationOfPropertyPath identifier=',Identifier]);
+            NewContext.Tool:=Context.Tool;
+            NewContext.Node:=Node;
+            //debugln(['TFindDeclarationTool.FindDeclarationOfPropertyPath FOUND ',FindContextToString(NewContext)]);
+            exit(true);
+          end;
+          Node:=Node.NextBrother;
+        end;
+        exit;
+      end;
+
+      if (not (Context.Node.Desc in (AllClasses+[ctnRecordType])))
+      then begin
+        debugln(['TFindDeclarationTool.FindDeclarationOfPropertyPath failed Context=',Context.Node.DescAsString]);
+        exit;
+      end;
+      //DebugLn('TFindDeclarationTool.FindDeclarationOfPropertyPath Identifier="',identifier,'"');
+      Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInAncestors];
       Params.SetIdentifier(Self,PChar(Pointer(Identifier)),nil);
       Params.ContextNode:=Context.Node;
-      IsLastProperty:=StartPos>length(PropertyPath);
       if IsLastProperty then
         Params.Flags:=Params.Flags+[fdfFindVariable]
       else
