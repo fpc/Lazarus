@@ -3510,6 +3510,11 @@ begin
   end;
 end;
 
+function TWinControl.AutoSizeCanStart: boolean;
+begin
+  Result:=true;
+end;
+
 procedure TWinControl.AllAutoSized;
 begin
   // see TCustomForm.AllAutoSized

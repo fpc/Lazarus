@@ -1723,6 +1723,7 @@ type
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DoAutoSize; override;
     procedure DoAllAutoSize; override;
+    function AutoSizeCanStart: boolean; deprecated;
     procedure AllAutoSized; virtual; // called by DoAllAutoSize after all bounds are computed, see TCustomForm.AllAutoSized
     procedure CalculatePreferredSize(var PreferredWidth,
                                      PreferredHeight: integer;
