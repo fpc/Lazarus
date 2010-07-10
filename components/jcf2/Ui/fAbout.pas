@@ -47,7 +47,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure imgOpenSourceClick(Sender: TObject);
     procedure lblMPLClick(Sender: TObject);
-    procedure FormResize(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
     procedure hlHomePageClick(Sender: TObject);
     procedure lblMPLMouseEnter(Sender: TObject);
@@ -122,20 +121,6 @@ begin
 
   hlHomePage.Caption := Format(lisAboutFindMoreInformationOnTheWebAt,
     [PROGRAM_HOME_PAGE]);
-end;
-
-procedure TfrmAboutBox.FormResize(Sender: TObject);
-const
-  SPACING = 8;
-begin
-  mWarning.Left  := SPACING;
-  mWarning.Width := pnlClient.ClientWidth - (2 * SPACING);
-
-  lblMPL.Left  := SPACING;
-  lblMPL.Width := pnlClient.ClientWidth - (2 * SPACING);
-
-  hlHomePage.Left  := SPACING;
-  hlHomePage.Width := pnlClient.ClientWidth - (2 * SPACING);
 end;
 
 procedure TfrmAboutBox.FormKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);

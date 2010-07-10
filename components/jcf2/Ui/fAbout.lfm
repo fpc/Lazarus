@@ -13,7 +13,6 @@ object frmAboutBox: TfrmAboutBox
   KeyPreview = True
   OnCreate = FormCreate
   OnKeyUp = FormKeyUp
-  OnResize = FormResize
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object bbOK: TBitBtn
@@ -424,11 +423,18 @@ object frmAboutBox: TfrmAboutBox
       }
     end
     object hlHomePage: TLabel
+      AnchorSideLeft.Control = lblMPL
+      AnchorSideTop.Control = lblMPL
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = lblMPL
+      AnchorSideRight.Side = asrBottom
       Cursor = crHandPoint
       Left = 11
       Height = 18
-      Top = 307
-      Width = 85
+      Top = 304
+      Width = 462
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 8
       Caption = 'hlHomePage'
       Font.CharSet = ANSI_CHARSET
       Font.Color = clBlack
@@ -442,11 +448,18 @@ object frmAboutBox: TfrmAboutBox
       OnMouseLeave = lblMPLMouseLeave
     end
     object lblMPL: TLabel
+      AnchorSideLeft.Control = mWarning
+      AnchorSideTop.Control = mWarning
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = mWarning
+      AnchorSideRight.Side = asrBottom
       Cursor = crHandPoint
       Left = 11
       Height = 35
-      Top = 259
-      Width = 455
+      Top = 261
+      Width = 462
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 8
       Caption = 'This program is open source software. It is released under the Mozilla '#13#10'Public licence (MPL).  http://www.mozilla.org/MPL'
       ParentColor = False
       WordWrap = True
