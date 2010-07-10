@@ -61,7 +61,7 @@ implementation
 
 uses
   { local }
-  JcfFileUtils, JcfRegistrySettings, JcfSettings, jcfuiconsts;
+  JcfFileUtils, JcfRegistrySettings, JcfSettings, jcfuiconsts, FileUtil;
 
 procedure TfFiles.ReadSettings(AOptions: TAbstractIDEOptions);
 var
@@ -76,7 +76,7 @@ begin
   lblVersion.Caption := '';
   lblDescription.Caption := lisFrFilesDescription;
 
-  if not FileExists(lcSet.FormatConfigFileName) then
+  if not FileExistsUTF8(lcSet.FormatConfigFileName) then
   begin
     lblStatus.Caption := lisFrFilesFileNotFound;
   end
