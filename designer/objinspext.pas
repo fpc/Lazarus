@@ -25,8 +25,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, TypInfo,
   ExtCtrls, Dialogs, Menus, ComCtrls, Grids, CustomTimer,
-  DirectoryCacher, CodeToolManager, CodeCache,
-  LazIDEIntf, ProjectIntf, ObjectInspector, OIFavouriteProperties, PropEdits,
+  DirectoryCacher, CodeToolManager, CodeCache, PropEdits,
+  LazIDEIntf, ProjectIntf, ObjectInspector, OIFavouriteProperties,
   DialogProcs, FileUtil, LazConf, BaseIDEIntf, LazConfigStorage,
   LazarusIDEStrConsts;
   
@@ -293,11 +293,17 @@ begin
   end;
   // find the property declaration
   PropPath:=APersistent.ClassName+'.'+Row.Name;
+  if Row.Editor is TNestedPropertyEditor then begin
+    if Row.Parent=nil then begin
+      debugln(['FindDeclarationOfOIProperty missing parent row ',PropPath,' in unit ',Code.Filename,' Row.Editor=',DbgSName(Row.Editor)]);
+      exit;
+    end;
+    PropPath:=APersistent.ClassName+'.'+Row.Parent.Name+'.'+Row.Name;
+  end;
   if not CodeToolBoss.FindDeclarationOfPropertyPath(Code,PropPath,NewCode,
     NewX,NewY,NewTopLine) then
   begin
     debugln(['FindDeclarationOfOIProperty failed to find property ',PropPath,' in unit ',Code.Filename]);
-    LazarusIDE.DoJumpToCodeToolBossError;
     exit;
   end;
   Code:=NewCode;
