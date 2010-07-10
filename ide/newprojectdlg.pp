@@ -126,7 +126,10 @@ begin
   end;
 
   DescriptionGroupBox.Caption := lisCodeHelpDescrTag;
-  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
+
+  ButtonPanel.OKButton.Caption := lisOk;
+  ButtonPanel.HelpButton.Caption := lisMenuHelp;
+  ButtonPanel.CancelButton.Caption := dlgCancel;
 end;
 
 procedure TNewProjectDialog.HelpButtonClick(Sender: TObject);

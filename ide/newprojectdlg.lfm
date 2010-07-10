@@ -3,7 +3,6 @@ object NewProjectDialog: TNewProjectDialog
   Height = 302
   Top = 451
   Width = 561
-  ActiveControl = ListBox
   Caption = 'NewProjectDialog'
   ClientHeight = 302
   ClientWidth = 561
@@ -15,30 +14,30 @@ object NewProjectDialog: TNewProjectDialog
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 250
+    Height = 258
     Top = 6
     Width = 549
     Align = alClient
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 250
+    ClientHeight = 258
     ClientWidth = 549
     TabOrder = 0
     object DescriptionGroupBox: TGroupBox
       Left = 251
-      Height = 250
+      Height = 258
       Top = 0
       Width = 298
       Align = alClient
       Caption = 'DescriptionGroupBox'
-      ClientHeight = 229
-      ClientWidth = 290
+      ClientHeight = 240
+      ClientWidth = 294
       TabOrder = 0
       object HelpLabel: TLabel
         Left = 6
-        Height = 217
+        Height = 228
         Top = 6
-        Width = 278
+        Width = 282
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'HelpLabel'
@@ -48,7 +47,7 @@ object NewProjectDialog: TNewProjectDialog
     end
     object ListBox: TListBox
       Left = 0
-      Height = 250
+      Height = 258
       Top = 0
       Width = 246
       Align = alLeft
@@ -59,20 +58,21 @@ object NewProjectDialog: TNewProjectDialog
     end
     object Splitter1: TSplitter
       Left = 246
-      Height = 250
+      Height = 258
       Top = 0
       Width = 5
     end
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 262
+    Height = 26
+    Top = 270
     Width = 549
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
     HelpButton.Name = 'HelpButton'
     HelpButton.Caption = '&Help'
+    HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
     CloseButton.Caption = '&Close'
     CloseButton.Enabled = False
