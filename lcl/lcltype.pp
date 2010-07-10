@@ -88,12 +88,9 @@ type
   TDockImageOperation = (disShow, disMove, disHide);
 
   {$ifndef WINDOWS}
-  {$IFDEF CPU64}
-  // temp solution for 32bit system.Thandle
   THandle = type PtrUInt;
   HANDLE = THandle;
   PHandle = ^THandle;
-  {$ENDIF}
 
   { Provided for compatibility with Windows registry ONLY }
   HKEY  = Integer;
