@@ -1,44 +1,44 @@
 object NewProjectDialog: TNewProjectDialog
   Left = 240
-  Height = 240
+  Height = 302
   Top = 451
-  Width = 390
+  Width = 561
   ActiveControl = ListBox
   Caption = 'NewProjectDialog'
-  ClientHeight = 240
-  ClientWidth = 390
+  ClientHeight = 302
+  ClientWidth = 561
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Panel1: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 196
+    Height = 250
     Top = 6
-    Width = 378
+    Width = 549
     Align = alClient
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 196
-    ClientWidth = 378
+    ClientHeight = 250
+    ClientWidth = 549
     TabOrder = 0
     object DescriptionGroupBox: TGroupBox
-      Left = 170
-      Height = 196
+      Left = 251
+      Height = 250
       Top = 0
-      Width = 208
+      Width = 298
       Align = alClient
       Caption = 'DescriptionGroupBox'
-      ClientHeight = 178
-      ClientWidth = 204
+      ClientHeight = 229
+      ClientWidth = 290
       TabOrder = 0
       object HelpLabel: TLabel
         Left = 6
-        Height = 166
+        Height = 217
         Top = 6
-        Width = 192
+        Width = 278
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'HelpLabel'
@@ -48,9 +48,9 @@ object NewProjectDialog: TNewProjectDialog
     end
     object ListBox: TListBox
       Left = 0
-      Height = 196
+      Height = 250
       Top = 0
-      Width = 165
+      Width = 246
       Align = alLeft
       Anchors = []
       ItemHeight = 0
@@ -58,17 +58,26 @@ object NewProjectDialog: TNewProjectDialog
       TabOrder = 1
     end
     object Splitter1: TSplitter
-      Left = 165
-      Height = 196
+      Left = 246
+      Height = 250
       Top = 0
       Width = 5
     end
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 26
-    Top = 208
-    Width = 378
+    Height = 34
+    Top = 262
+    Width = 549
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
     ShowBevel = False
