@@ -69,6 +69,7 @@
 
   ToDo:
     - keep custom dock site content visible
+    - change custom dock site title only if some flag is set
     - undock on hide
     - popup menu
        - shrink side left, top, right, bottom

@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, AvgLvlTree, Forms, Controls, Buttons,
-  ComCtrls, StdCtrls, Menus, Dialogs, Graphics, FileUtil,
+  ComCtrls, StdCtrls, Menus, Dialogs, Graphics, FileUtil, ExtCtrls,
   LazIDEIntf, IDECommands,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
   Project, AddToProjectDlg, PackageSystem, PackageDefs;
@@ -65,6 +65,7 @@ type
 
   TProjectInspectorForm = class(TForm)
     AddBitBtn: TSpeedButton;
+    BtnPanel: TPanel;
     OpenBitBtn: TSpeedButton;
     ItemsTreeView: TTreeView;
     ItemsPopupMenu: TPopupMenu;
