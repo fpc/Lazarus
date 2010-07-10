@@ -95,8 +95,9 @@ begin
   else
     Result := s;
   FreeMem(Dst);
+  {$else}
+  Result := SysToUTF8(S);
   {$endif}
-  Result := SysToUTF8(Result);
 end;
 
 function UTF8ToConsole(const s: string): string;
