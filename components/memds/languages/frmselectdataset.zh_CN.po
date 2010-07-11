@@ -12,6 +12,22 @@ msgstr ""
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: frmselectdataset.scancelbtn
+msgid "Cancel"
+msgstr ""
+
+#: frmselectdataset.scaption
+msgid "Select dataset to copy from"
+msgstr ""
+
+#: frmselectdataset.scopymeta
+msgid "Copy only metadata"
+msgstr ""
+
+#: frmselectdataset.sdataset
+msgid "&Dataset to copy from:"
+msgstr ""
+
 #: frmselectdataset.serrcomponentnotfound
 msgid "Error: Component \"%s\" not found"
 msgstr "错误: 组件 \"%s\" 未找到"
@@ -27,4 +43,8 @@ msgstr "从数据集拷贝数据"
 #: frmselectdataset.smenucreatedataset
 msgid "Create dataset"
 msgstr "建立数据集"
+
+#: frmselectdataset.sokbtn
+msgid "OK"
+msgstr ""
 

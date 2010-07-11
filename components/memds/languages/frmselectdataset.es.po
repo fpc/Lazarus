@@ -9,6 +9,22 @@ msgstr ""
 "Last-Translator: javivf <javivf@gmail.com>\n"
 "Language-Team: \n"
 
+#: frmselectdataset.scancelbtn
+msgid "Cancel"
+msgstr ""
+
+#: frmselectdataset.scaption
+msgid "Select dataset to copy from"
+msgstr ""
+
+#: frmselectdataset.scopymeta
+msgid "Copy only metadata"
+msgstr ""
+
+#: frmselectdataset.sdataset
+msgid "&Dataset to copy from:"
+msgstr ""
+
 #: frmselectdataset.serrcomponentnotfound
 msgid "Error: Component \"%s\" not found"
 msgstr "Error: Componente \"%s\" no encontrado"
@@ -24,4 +40,8 @@ msgstr "Copia informacion desde Dataset"
 #: frmselectdataset.smenucreatedataset
 msgid "Create dataset"
 msgstr "Crear dataset"
+
+#: frmselectdataset.sokbtn
+msgid "OK"
+msgstr ""
 

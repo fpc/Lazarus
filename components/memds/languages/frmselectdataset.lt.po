@@ -10,6 +10,22 @@ msgstr ""
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#: frmselectdataset.scancelbtn
+msgid "Cancel"
+msgstr ""
+
+#: frmselectdataset.scaption
+msgid "Select dataset to copy from"
+msgstr ""
+
+#: frmselectdataset.scopymeta
+msgid "Copy only metadata"
+msgstr ""
+
+#: frmselectdataset.sdataset
+msgid "&Dataset to copy from:"
+msgstr ""
+
 #: frmselectdataset.serrcomponentnotfound
 msgid "Error: Component \"%s\" not found"
 msgstr "Klaida: nerastas komponentas „%s“"
@@ -25,4 +41,8 @@ msgstr "Kopijuoti duomenis iš duomenų aibės (DataSet)"
 #: frmselectdataset.smenucreatedataset
 msgid "Create dataset"
 msgstr "Kurti duomenų aibę (DataSet)"
+
+#: frmselectdataset.sokbtn
+msgid "OK"
+msgstr ""
 

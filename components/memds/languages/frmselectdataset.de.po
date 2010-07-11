@@ -12,6 +12,22 @@ msgstr ""
 "X-Poedit-Country: GERMANY\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: frmselectdataset.scancelbtn
+msgid "Cancel"
+msgstr ""
+
+#: frmselectdataset.scaption
+msgid "Select dataset to copy from"
+msgstr ""
+
+#: frmselectdataset.scopymeta
+msgid "Copy only metadata"
+msgstr ""
+
+#: frmselectdataset.sdataset
+msgid "&Dataset to copy from:"
+msgstr ""
+
 #: frmselectdataset.serrcomponentnotfound
 msgid "Error: Component \"%s\" not found"
 msgstr "Fehler: Komponente »%s« nicht gefunden"
@@ -27,4 +43,8 @@ msgstr "Daten aus Dataset kopieren"
 #: frmselectdataset.smenucreatedataset
 msgid "Create dataset"
 msgstr "Dataset erzeugen"
+
+#: frmselectdataset.sokbtn
+msgid "OK"
+msgstr ""
 
