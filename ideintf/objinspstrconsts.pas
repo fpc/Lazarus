@@ -395,6 +395,22 @@ resourcestring
   peFilterEditor = 'Filter editor';
   peFilterName = 'Filter name';
   peFilter = 'Filter';
+
+  fesFormCaption = 'New field';
+  fesFieldType   = 'Field Type';
+  fesCalculated  = '&Calculated';
+  fesLookup      = '&Lookup';
+  fesFieldProps  = 'Field properties';
+  fesName        = '&Name:';
+  fesType        = '&Type:';
+  fesSize        = '&Size:';
+  fesLookupDef   = 'Lookup definition';
+  fesKeyfield    = '&Key fields:';
+  fesDataset     = '&Dataset:';
+  fesLookupKeys  = 'L&ookup keys:';
+  fesResultField = '&Result Fields:';
+  fesOkBtn       = 'OK';
+  fesCancelBtn   = 'Cancel';
   
   //Key strings
   srVK_UNKNOWN    = 'Unknown';

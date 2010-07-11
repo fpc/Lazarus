@@ -156,6 +156,24 @@ procedure TNewFieldFrm.FormCreate(Sender: TObject);
 var i: integer;
 begin
   NoteLbl.Caption := fesNoFieldsNote;
+
+  Caption := fesFormCaption;
+  RadioGroup1.Caption := fesFieldType;
+  RadioGroup1.Items.Clear;
+  RadioGroup1.Items.Add(fesCalculated);
+  RadioGroup1.Items.Add(fesLookup);
+  GroupBox1.Caption := fesFieldProps;
+  Label1.Caption := fesName;
+  Label2.Caption := fesType;
+  Label3.Caption := fesSize;
+  GroupBox2.Caption := fesLookupDef;
+  Label4.Caption := fesKeyfield;
+  Label10.Caption := fesDataset;
+  Label5.Caption := fesLookupKeys;
+  Label6.Caption := fesResultField;
+  OkBtn.Caption := fesOkBtn;
+  CancelBtn.Caption := fesCancelBtn;
+
   if Assigned(LinkDataSet) then begin
     try
       LinkDataset.FieldDefs.Update;
