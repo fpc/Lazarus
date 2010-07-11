@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-01 16:53+0100\n"
-"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
+"PO-Revision-Date: 2010-06-08 17:24+0100\n"
+"Last-Translator: samuel herzog <sam_herzog@yahoo.com>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
-msgstr ""
+msgstr "Benutzerdefiniertes Schema"
 
 #: lazarusidestrconsts.dlfmouseresetall
 msgid "Reset all settings"
@@ -138,7 +138,7 @@ msgstr "Codefaltungs-Baum"
 
 #: lazarusidestrconsts.dlgaddhiattrdefault
 msgid "Default Text"
-msgstr ""
+msgstr "Standard Text"
 
 #: lazarusidestrconsts.dlgaddhiattrdisabledbreakpoint
 msgid "Disabled breakpoint"
@@ -676,7 +676,7 @@ msgstr "(Farbe ändern)"
 
 #: lazarusidestrconsts.dlgcolornotmodified
 msgid "Not modified"
-msgstr ""
+msgstr "Nicht modifiziert"
 
 #: lazarusidestrconsts.dlgcommandlineparameters
 msgid "Command line parameters"
@@ -708,7 +708,7 @@ msgstr "Compiler-Meldungen"
 
 #: lazarusidestrconsts.dlgcompilermessages
 msgid "Compiler messages language file"
-msgstr ""
+msgstr "Compiler Meldungen Sprachdatei"
 
 #: lazarusidestrconsts.dlgcompileroptions
 msgctxt "lazarusidestrconsts.dlgcompileroptions"
@@ -995,7 +995,7 @@ msgstr "Wartezeit"
 
 #: lazarusidestrconsts.dlgeddelayinsec
 msgid "(%s sec delay)"
-msgstr ""
+msgstr "(%s Sek. Verzögerung)"
 
 #: lazarusidestrconsts.dlgeddelete
 msgctxt "lazarusidestrconsts.dlgeddelete"
@@ -2581,15 +2581,15 @@ msgstr "Pfade"
 
 #: lazarusidestrconsts.dlgselectcolorsglobal
 msgid "Select global colors"
-msgstr ""
+msgstr "Globale Farben auswählen"
 
 #: lazarusidestrconsts.dlgselectcolorslang
 msgid "Select colors for %s"
-msgstr ""
+msgstr "Farbe für %s wählen"
 
 #: lazarusidestrconsts.dlgselectcolorstomodify
 msgid "Modify colors/styles"
-msgstr ""
+msgstr "Farbe/Stil ändern"
 
 #: lazarusidestrconsts.dlgselectcolorstomodifyglobal
 msgid "Modify global colors/styles"
@@ -2931,7 +2931,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlguseschemedefaults
 msgid "Use global scheme settings"
-msgstr ""
+msgstr "Globale Schema Einstellungen verwenden"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
@@ -4334,7 +4334,7 @@ msgstr "Geben Sie eine Pascal-Datei für die Einrückungsbeispiele an"
 
 #: lazarusidestrconsts.lischoosecompilermessages
 msgid "Choose compiler messages file"
-msgstr ""
+msgstr "Compiler Meldungen Datei auswählen"
 
 #: lazarusidestrconsts.lischoosecompilerpath
 msgid "Choose compiler filename (%s)"
@@ -5282,7 +5282,7 @@ msgstr "%s (Kompilieren...)"
 
 #: lazarusidestrconsts.liscompletionlonglinehinttype
 msgid "Show long line hints"
-msgstr ""
+msgstr "Lange Zeilen-Hinweise anzeigen"
 
 #: lazarusidestrconsts.liscompletionlonglinehinttypefullleft
 msgid "Extend far left"
@@ -5919,7 +5919,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdelayforhintsandcompletionbox
 msgid "Delay for hints and completion box"
-msgstr ""
+msgstr "Verzögerung für Hinweise und Vervollständigung"
 
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
@@ -6467,7 +6467,7 @@ msgstr "Umgebungsvariable, Name als Parameter"
 
 #: lazarusidestrconsts.lisenvjumpfrommessagetosrcondblclickotherwisesingleclick
 msgid "Jump from message to source line on double click (otherwise: single click)"
-msgstr ""
+msgstr "Von der Meldung zur Codezeile springen bei Doppelklick (ansonst: Klick)"
 
 #: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
@@ -7407,7 +7407,7 @@ msgstr "Einrückung"
 
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for pascal sources"
-msgstr ""
+msgstr "Einrückung für Pascal Quellcode"
 
 #: lazarusidestrconsts.lisindex
 msgid "Index"
@@ -9927,7 +9927,7 @@ msgstr "Keine abgeleiteten Compilereinstellungen"
 
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
-msgstr ""
+msgstr "keine Hinweise"
 
 #: lazarusidestrconsts.lisnoidewindowselected
 msgid "No IDE window selected"
@@ -10391,7 +10391,7 @@ msgstr "%sRegister%s-Prozedur dieser Unit aufrufen"
 
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
-msgstr ""
+msgstr "Standard/Bevorzugter Dateiname dieser Abhängigkeit löschen"
 
 #: lazarusidestrconsts.lispckeditcompile
 msgctxt "lazarusidestrconsts.lispckeditcompile"
@@ -10422,7 +10422,7 @@ msgstr "Makedatei erzeugen"
 
 #: lazarusidestrconsts.lispckeditdefault
 msgid "%s, default: %s"
-msgstr ""
+msgstr "%s, Standard: %s"
 
 #: lazarusidestrconsts.lispckeditdependencyproperties
 msgid "Dependency Properties"
@@ -10587,11 +10587,11 @@ msgstr "Package speichern"
 
 #: lazarusidestrconsts.lispckeditstorefilenameasdefaultforthisdependency
 msgid "Store file name as default for this dependency"
-msgstr ""
+msgstr "Den Dateinamen als Standard speichern für diese Abhängigkeit"
 
 #: lazarusidestrconsts.lispckeditstorefilenameaspreferredforthisdependency
 msgid "Store file name as preferred for this dependency"
-msgstr ""
+msgstr "Den Dateiname als Vorgabe für diese Abhängigkeit speichern"
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
 msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
@@ -12030,7 +12030,7 @@ msgstr "Aus dem Suchpfad entfernen"
 
 #: lazarusidestrconsts.lisremovelocalvariable
 msgid "Remove local variable %s"
-msgstr ""
+msgstr "Lokale Variable %s entfernen"
 
 #: lazarusidestrconsts.lisremovelocalvariable2
 msgid "Remove local variable"
@@ -12050,7 +12050,7 @@ msgstr "Entfernen"
 
 #: lazarusidestrconsts.lisremoveunitfromusessection
 msgid "Remove unit from uses section"
-msgstr ""
+msgstr "Unit aus der Sektion <Uses> entfernen"
 
 #: lazarusidestrconsts.lisrenamefile
 msgid "Rename file?"
@@ -12117,7 +12117,7 @@ msgstr "Ressourcentyp des Projekts:"
 
 #: lazarusidestrconsts.lisresponsecontinue
 msgid "Response: %sContinue ?"
-msgstr ""
+msgstr "Antwort: %sWeiter ?"
 
 #: lazarusidestrconsts.lisresult
 msgid "Result :="
@@ -12366,7 +12366,7 @@ msgstr "Voreinstellungens setzen"
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"
-msgstr ""
+msgstr "(Einstellung Standard Einrückung)"
 
 #: lazarusidestrconsts.lissetvalue
 msgid "Set value"
@@ -12382,7 +12382,7 @@ msgstr "Zeigen"
 
 #: lazarusidestrconsts.lisshowdeclarationhints
 msgid "Show declaration hints"
-msgstr ""
+msgstr "Deklarations Hinweise anzeigen"
 
 #: lazarusidestrconsts.lisshowemptyunitspackages
 msgid "Show empty units/packages"
@@ -12430,7 +12430,7 @@ msgstr "Units anzeigen"
 
 #: lazarusidestrconsts.lisshowvaluehintswhiledebugging
 msgid "Show value hints while debugging"
-msgstr ""
+msgstr "Werte-Hinweise während dem Debuggen anzeigen"
 
 #: lazarusidestrconsts.lisshowversionandexit
 msgid "show version and exit"
@@ -12450,7 +12450,7 @@ msgstr "Einfache Syntax"
 
 #: lazarusidestrconsts.lisskipfile
 msgid "Skip file"
-msgstr ""
+msgstr "Datei überspringen"
 
 #: lazarusidestrconsts.lisskipfileandcontinueloading
 msgid "Skip file and continue loading"
@@ -13618,7 +13618,7 @@ msgstr "Kann XML-Stream nicht in %s%s schreiben. Fehler: %S"
 
 #: lazarusidestrconsts.lisunexpectedresultthedebuggerwillterminate
 msgid "Unexpected result:%sThe debugger will terminate"
-msgstr ""
+msgstr "Unerwartetes Ergebnis:%s Der Debugger wird beendet"
 
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
@@ -14047,7 +14047,7 @@ msgstr "Chinesisch"
 
 #: lazarusidestrconsts.rslanguageczech
 msgid "Czech"
-msgstr ""
+msgstr "Tschechisch"
 
 #: lazarusidestrconsts.rslanguagedutch
 msgid "Dutch"
@@ -14868,7 +14868,7 @@ msgstr "Schnelles Kompilieren, kein Linken"
 
 #: lazarusidestrconsts.srkmecquit
 msgid "Quit"
-msgstr ""
+msgstr "Schliessen"
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
 msgid "remove break point"
@@ -14892,7 +14892,7 @@ msgstr "Ersetze Text"
 
 #: lazarusidestrconsts.srkmecreportingbug
 msgid "Reporting a bug"
-msgstr ""
+msgstr "Fehler melden"
 
 #: lazarusidestrconsts.srkmecresetdebugger
 msgid "reset debugger"
