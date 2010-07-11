@@ -423,7 +423,7 @@ begin
   Result.CY := 23;
 end;
 
-procedure TCustomEdit.KeyUp(var Key: Word; Shift: TShiftState);
+procedure TCustomEdit.KeyUpAfterInterface(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
   if Key = VK_RETURN then

@@ -726,7 +726,7 @@ type
     procedure SetSelText(const Val: string); virtual;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     class function GetControlClassDefaultSize: TSize; override;
-    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); override;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
     procedure RealSetText(const AValue: TCaption); override;
