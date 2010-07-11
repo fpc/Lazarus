@@ -154,7 +154,7 @@ var
     : TKeyWordFunctionList;
   UpChars: array[char] of char;
 
-  IsSpaceChar,
+  IsSpaceChar, // [#0..#32]
   IsLineEndChar,
   IsWordChar, // ['a'..'z','A'..'Z']
   IsNonWordChar,      // [#0..#127]-IsIdentChar

@@ -64,6 +64,7 @@ function ExtractCommentContent(const ASource: string; CommentStart: integer;
     TrimStart: boolean = false; TrimEnd: boolean = false;
     TrimPasDoc: boolean = false): string;
 function FindMainUnitHint(const ASource: string; out Filename: string): boolean;
+function InEmptyLine(const ASource: string; StartPos: integer): boolean;
 
 // indent
 function GetLineIndent(const Source: string; Position: integer): integer;
@@ -3284,6 +3285,34 @@ begin
   while (EndPos<=MaxPos) and (ASource[EndPos]<>'}') do inc(EndPos);
   if (EndPos=StartPos) or (EndPos>MaxPos) then exit;
   Filename:=SetDirSeparators(copy(ASource,StartPos,EndPos-StartPos));
+  Result:=true;
+end;
+
+function InEmptyLine(const ASource: string; StartPos: integer): boolean;
+var
+  p: LongInt;
+  SrcLen: Integer;
+begin
+  Result:=false;
+  SrcLen:=length(ASource);
+  if (StartPos<1) or (StartPos>SrcLen) or (not IsSpaceChar[ASource[StartPos]])
+  then exit;
+  p:=StartPos;
+  while (p>1) do begin
+    case ASource[p-1] of
+    ' ',#9: dec(p);
+    #10,#13: break;
+    else exit;
+    end;
+  end;
+  p:=StartPos;
+  while p<=SrcLen do begin
+    case ASource[p] of
+    ' ',#9: inc(p);
+    #10,#13: break;
+    else exit;
+    end;
+  end;
   Result:=true;
 end;
 

@@ -5105,6 +5105,7 @@ type
 var
   CleanCursorPos: integer;
   StartNode: TCodeTreeNode;
+  CursorInEmptyLine: Boolean;
 
   procedure InitStack(out Stack: TBlockStack);
   begin
@@ -5351,14 +5352,44 @@ var
         if (Indent<CursorBlockOuterIndent) and (NeedCompletion=0) then begin
           // for example:
           //    begin
-          //    |
           //    Code;
-          //  end;
-          //DebugLn(['ReadStatements Indent=',Indent,' < CursorBlockIndent=',CursorBlockIndent]);
-          {$IFDEF ShowCompleteBlock}
-          DebugLn(['ReadStatements NeedCompletion: at ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockOuterIndent=',CursorBlockOuterIndent]);
-          {$ENDIF}
-          NeedCompletion:=CleanCursorPos;
+          //  |end;
+          //DebugLn(['ReadStatements Indent=',Indent,' < CursorBlockOuterIndent=',CursorBlockOuterIndent,' CursorBlockInnerIndent=',CursorBlockInnerIndent,' CursorInEmptyLine=',CursorInEmptyLine,' CursorInEmptyStatement=',CursorInEmptyStatement]);
+          if CursorBlockOuterIndent<CursorBlockInnerIndent then begin
+            // for example:
+            //    begin
+            //      Code;
+            //  |end;
+            {$IFDEF ShowCompleteBlock}
+            DebugLn(['ReadStatements NeedCompletion: at out indented ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockOuterIndent=',CursorBlockOuterIndent,' < CursorBlockInnerIndent=',CursorBlockInnerIndent]);
+            {$ENDIF}
+            NeedCompletion:=CurPos.StartPos;
+          end else if CursorInEmptyLine or CursorInEmptyStatement
+          or (FindNextNonSpace(Src,CleanCursorPos)=CurPos.StartPos) then begin
+            { for example:
+                  begin
+                  |
+                  Code;
+                end;
+
+                  begin
+                  Code;
+                  |
+                end;
+            }
+            {$IFDEF ShowCompleteBlock}
+            DebugLn(['ReadStatements NeedCompletion: at empty line ',CleanPosToStr(CleanCursorPos),' Indent=',Indent,' < CursorBlockOuterIndent=',CursorBlockOuterIndent,' < CursorBlockInnerIndent=',CursorBlockInnerIndent]);
+            {$ENDIF}
+            NeedCompletion:=CleanCursorPos;
+          end else begin
+            { It needs completion, but where?
+              for example:
+                begin
+                  begin|
+                  Code;
+                end;
+            }
+          end;
         end;
       end;
 
@@ -5555,9 +5586,6 @@ var
         // and first atom of a line
         // => check indent
         if (Indent<CursorBlockInnerIndent) and (NeedCompletion=0) then begin
-          {$IFDEF ShowCompleteBlock}
-          DebugLn(['ReadStatements NeedCompletion: at ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockInnerIndent=',CursorBlockInnerIndent]);
-          {$ENDIF}
           if CursorBlockOuterIndent<CursorBlockInnerIndent then begin
             // for example:
             //  begin
@@ -5566,14 +5594,20 @@ var
             //    Code;
             //  Code;
             //DebugLn(['ReadStatements Indent=',Indent,' < CursorBlockIndent=',CursorBlockIndent]);
+            {$IFDEF ShowCompleteBlock}
+            DebugLn(['ReadStatements NeedCompletion: at ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockInnerIndent=',CursorBlockInnerIndent]);
+            {$ENDIF}
             NeedCompletion:=CurPos.StartPos;
           end else begin
             // for example:
             // begin
             // |
             // Code;
+            {$IFDEF ShowCompleteBlock}
+            DebugLn(['ReadStatements NeedCompletion: at ',CleanPosToStr(CleanCursorPos),' Indent=',Indent,' CursorBlockInnerIndent=',CursorBlockInnerIndent]);
+            {$ENDIF}
             NeedCompletion:=CleanCursorPos;
-            // Note: if the end is coming later, NeedCompletion is diabled
+            // Note: if the end is coming later, NeedCompletion is disabled
           end;
         end;
       end;
@@ -5617,8 +5651,9 @@ var
           //   repeat
           //   |
           //     DoSomething;
+          debugln(['CompleteStatements BehindPos ',dbgstr(copy(Src,BehindPos-8,8)),'|',dbgstr(copy(Src,BehindPos,8))]);
           {$IFDEF ShowCompleteBlock}
-          DebugLn(['CompleteStatements code behind is indented more => skip']);
+          DebugLn(['CompleteStatements code behind is indented more (Behind=',GetLineIndent(Src,BehindPos),' > Indent=',Indent,') => skip']);
           {$ENDIF}
           exit;
         end;
@@ -5767,6 +5802,8 @@ begin
                 [btSetIgnoreErrorPos]);
   StartNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
+  CursorInEmptyLine:=InEmptyLine(Src,CleanCursorPos);
+  //debugln(['TStandardCodeTool.CompleteBlock ',CursorInEmptyLine,' ',dbgstr(copy(Src,CleanCursorPos-10,10)),'|',dbgstr(copy(Src,CleanCursorPos,10))]);
   SourceChangeCache.MainScanner:=Scanner;
   InitStack(Stack);
   try
