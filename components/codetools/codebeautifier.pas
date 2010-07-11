@@ -834,8 +834,11 @@ begin
         end;
       'L': // CL
         if CompareIdentifiers('CLASS',r)=0 then begin
-          if Stack.TopType=bbtDefinition then
+          if Stack.TopType=bbtDefinition then begin
             BeginBlock(bbtClass);
+            // the first section is created automatically
+            BeginBlock(bbtClassSection);
+          end;
         end;
       'O': // CO
         if CompareIdentifiers('CONST',r)=0 then
