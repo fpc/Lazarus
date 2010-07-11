@@ -1110,7 +1110,7 @@ begin
   and (LastSplitPos>1) then begin
     // new atom does not fit into the line and there is a split position
     // -> split line
-    //DebugLn('[TBeautifyCodeOptions.AddAtom]  NEW LINE CurLineLen=',CurLineLen,' NewAtom=',NewAtom,' "',copy(s,LastSplitPos,5));
+    //DebugLn(['[TBeautifyCodeOptions.AddAtom]  NEW LINE CurLineLen=',CurLineLen,' NewAtom=',NewAtom,' "',copy(CurCode,LastSplitPos,5),'" LineLength=',LineLength]);
     RestLineLen:=length(CurCode)-LastSplitPos+1;
     IndentLen:=Indent+GetLineIndent(CurCode,LastSrcLineStart)+HiddenIndent;
     CurCode:=copy(CurCode,1,LastSplitPos-1)+LineEnd
@@ -1130,6 +1130,7 @@ begin
       HiddenIndent:=0;
     end;
   end;
+  //debugln(['TBeautifyCodeOptions.AddAtom ',dbgstr(CurCode),' ',CurLineLen]);
 end;
 
 procedure TBeautifyCodeOptions.ReadNextAtom;

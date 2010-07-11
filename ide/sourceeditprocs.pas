@@ -37,7 +37,7 @@ uses
   Classes, SysUtils, LCLProc, LCLType, GraphType, Graphics, Controls, SynEdit,
   SynEditHighlighter, SynRegExpr, SynCompletion, BasicCodeTools, CodeTree,
   CodeAtom, CodeCache, SourceChanger, CodeToolManager, PascalParserTool,
-  KeywordFuncLists, FileProcs, IdentCompletionTool, PascalReaderTool,
+  KeywordFuncLists, FileProcs, IdentCompletionTool, PascalReaderTool, SourceLog,
   LazIDEIntf, TextTools, IDETextConverter, DialogProcs, MainIntf, EditorOptions,
   IDEImagesIntf, CodeToolsOptions;
 
@@ -518,6 +518,8 @@ var
   CanAddComma: Boolean;
   ClassNode: TCodeTreeNode;
   IsReadOnly: Boolean;
+  Line: string;
+  Indent: LongInt;
 begin
   Result:='';
   CursorToLeft:=0;
@@ -625,9 +627,17 @@ begin
         if ProcModifierPos>0 then
           Result:=copy(Result,1,ProcModifierPos-1)
                   +copy(Result,ProcModifierPos+9,length(Result));
+        with CodeToolBoss.IdentifierList.StartContextPos do begin
+          Line:=Code.GetLine(Y);
+          if InEmptyLine(Line,1) then
+            Indent:=X
+          else
+            Indent:=GetLineIndent(Line,X);
+        end;
+
         Result:=TrimLeft(CodeToolBoss.SourceChangeCache
-          .BeautifyCodeOptions.BeautifyProc(
-                   Result,CodeToolBoss.IdentifierList.StartContextPos.X,false));
+          .BeautifyCodeOptions.BeautifyProc(Result,Indent,false));
+        //debugln(['GetIdentCompletionValue ',dbgstr(Result),' LineLen=',CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.LineLength]);
         CanAddSemicolon:=false;
       end;
 
