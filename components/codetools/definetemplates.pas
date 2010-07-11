@@ -754,6 +754,10 @@ type
                   CreateIfNotExists: boolean): TFPCSourceCache;
   end;
 
+  TFPCUnitCaches = class
+
+  end;
+
   { TFPCDefinesCache }
 
   TFPCDefinesCache = class

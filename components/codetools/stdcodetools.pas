@@ -42,7 +42,7 @@ interface
 {$I codetools.inc}
 
 { $DEFINE VerboseGetStringConstBounds}
-{ $DEFINE ShowCompleteBlock}
+{$DEFINE ShowCompleteBlock}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -5705,6 +5705,7 @@ var
     LastIndent: LongInt;
     Indent: LongInt;
     InsertPos: LongInt;
+    NeedCompletion: Integer;
   begin
     Result:=false;
     if CleanCursorPos<StartNode.StartPos then exit;
@@ -5714,19 +5715,40 @@ var
     if Indent<LastIndent then
       LastIndent:=Indent;
     ReadNextAtom;
-    if CurPos.Flag=cafEnd then exit(true);
-    if CleanCursorPos<=CurPos.StartPos then begin
-      Indent:=GetLineIndent(Src,CurPos.StartPos);
-      InsertPos:=CleanCursorPos;
-      if Indent<LastIndent then begin
-        if not Replace('end;',InsertPos,InsertPos,LastIndent,
-          gtNewLine,gtEmptyLine,
-          [bcfIndentExistingLineBreaks])
-        then
-          exit;
+    NeedCompletion:=0;
+    if CurPos.Flag=cafWord then begin
+      if AtomIsIdentifier(false) then begin
+        ReadNextAtom;
+        if CurPos.Flag=cafEqual then begin
+          { For example:
+              TMyClass = class
+
+              TIdentifier =
+          }
+          NeedCompletion:=CleanCursorPos;
+        end else
+          exit(true);
+      end else begin
+        Indent:=GetLineIndent(Src,CurPos.StartPos);
+        if Indent<LastIndent then begin
+          { For example:
+                TMyClass = class
+
+              type
+          }
+          NeedCompletion:=CleanCursorPos;
+        end;
       end;
-    end;
-    Result:=true;
+    end else
+      exit(true);
+
+    if NeedCompletion>0 then begin
+      InsertPos:=NeedCompletion;
+      Result:=Replace('end;',InsertPos,InsertPos,LastIndent,
+        gtNewLine,gtEmptyLine,
+        [bcfIndentExistingLineBreaks]);
+    end else
+      Result:=true;
   end;
 
   function CompleteClassInterface(var Stack: TBlockStack): Boolean;
