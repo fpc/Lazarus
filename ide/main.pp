@@ -175,6 +175,7 @@ type
     procedure OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
     procedure OnRemoteControlTimer(Sender: TObject);
     procedure OnSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
+    procedure OIChangedTimerTimer(Sender: TObject);
 
     // file menu
     procedure mnuFileClicked(Sender: TObject);
@@ -591,6 +592,7 @@ type
     FFixingGlobalComponentLock: integer;
     OldCompilerFilename, OldLanguage: String;
     OldCompOpts: TBaseCompilerOptions;
+    OIChangedTimer: TIdleTimer;
 
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
     function OIHelpProvider: TAbstractIDEHTMLProvider;
@@ -1563,50 +1565,10 @@ begin
 end;
 
 procedure TMainIDE.OIOnSelectionChange(Sender: TObject);
-var
-  OI: TObjectInspectorDlg absolute Sender;
-  ARow: TOIPropertyGridRow;
-  Code: TCodeBuffer;
-  Caret: TPoint;
-  NewTopLine: integer;
-  HtmlHint, BaseURL: string;
-  CacheWasUsed: Boolean;
-  Stream: TStringStream;
 begin
   if not (Sender is TObjectInspectorDlg) then
     Exit;
-
-  if not BeginCodeTools or not OI.ShowInfoBox then
-    Exit;
-
-  HtmlHint := '';
-  BaseURL := '';
-
-  ARow := OI.GetActivePropertyRow;
-
-  if (ARow <> nil)
-  and FindDeclarationOfOIProperty(OI, ARow, Code, Caret, NewTopLine) then
-  begin
-    if CodeHelpBoss.GetHTMLHint(Code, Caret.X, Caret.Y, [chhoComplete],
-      BaseURL, HtmlHint, CacheWasUsed) <> chprSuccess then
-    begin
-      HtmlHint := '';
-      BaseURL := '';
-    end;
-  end;
-
-  if OI.InfoPanel.ControlCount > 0 then
-    OI.InfoPanel.Controls[0].Visible := HtmlHint <> '';
-  if HtmlHint <> '' then
-  begin
-    OIHelpProvider.BaseURL := BaseURL;
-    Stream := TStringStream.Create(HtmlHint);
-    try
-      OIHelpProvider.ControlIntf.SetHTMLContent(Stream);
-    finally
-      Stream.Free;
-    end;
-  end;
+  OIChangedTimer.AutoEnabled:=true;
 end;
 
 function TMainIDE.OIOnPropertyHint(Sender: TObject;
@@ -1942,6 +1904,16 @@ begin
   ObjectInspector1.OnDestroy:=@OIOnDestroy;
   ObjectInspector1.OnAutoShow:=@OIOnAutoShow;
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
+
+  // after OI changes the hints needs to be updated
+  // do that after some idle time
+  OIChangedTimer:=TIdleTimer.Create(OwningComponent);
+  with OIChangedTimer do begin
+    Name:='OIChangedTimer';
+    Interval:=400;
+    OnTimer:=@OIChangedTimerTimer;
+  end;
+
   IDEWindowCreators.Add(ObjectInspector1.Name,nil,@CreateIDEWindow,
    '0','120','+230','-120','',alNone,false,@OnGetLayout);
 
@@ -15966,6 +15938,56 @@ end;
 procedure TMainIDE.OnSelectFrame(Sender: TObject; var AComponentClass: TComponentClass);
 begin
   AComponentClass := DoSelectFrame;
+end;
+
+procedure TMainIDE.OIChangedTimerTimer(Sender: TObject);
+var
+  OI: TObjectInspectorDlg;
+  ARow: TOIPropertyGridRow;
+  Code: TCodeBuffer;
+  Caret: TPoint;
+  NewTopLine: integer;
+  HtmlHint, BaseURL: string;
+  CacheWasUsed: Boolean;
+  Stream: TStringStream;
+begin
+  OI:=ObjectInspector1;
+  if (OI=nil) or (not OI.IsVisible) then
+    Exit;
+  OIChangedTimer.AutoEnabled:=false;
+  OIChangedTimer.Enabled:=false;
+
+  if not BeginCodeTools or not OI.ShowInfoBox then
+    Exit;
+
+  HtmlHint := '';
+  BaseURL := '';
+
+  ARow := OI.GetActivePropertyRow;
+
+  if (ARow <> nil)
+  and FindDeclarationOfOIProperty(OI, ARow, Code, Caret, NewTopLine) then
+  begin
+    if CodeHelpBoss.GetHTMLHint(Code, Caret.X, Caret.Y, [chhoComplete],
+      BaseURL, HtmlHint, CacheWasUsed) <> chprSuccess then
+    begin
+      HtmlHint := '';
+      BaseURL := '';
+    end;
+  end;
+
+  if OI.InfoPanel.ControlCount > 0 then
+    OI.InfoPanel.Controls[0].Visible := HtmlHint <> '';
+  if HtmlHint <> '' then
+  begin
+    OIHelpProvider.BaseURL := BaseURL;
+    Stream := TStringStream.Create(HtmlHint);
+    try
+      OIHelpProvider.ControlIntf.SetHTMLContent(Stream);
+    finally
+      Stream.Free;
+    end;
+  end;
 end;
 
 procedure TMainIDE.mnuFileClicked(Sender: TObject);
