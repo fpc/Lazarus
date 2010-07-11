@@ -30,6 +30,7 @@ msgid "Delete Action"
 msgstr "删除动作"
 
 #: objinspstrconsts.cactionlisteditordialogcategory
+msgctxt "objinspstrconsts.cactionlisteditordialogcategory"
 msgid "Dialog"
 msgstr "对话框"
 
@@ -131,9 +132,22 @@ msgctxt "objinspstrconsts.clbup"
 msgid "Up"
 msgstr "上移"
 
+#: objinspstrconsts.fescalculated
+msgid "&Calculated"
+msgstr ""
+
+#: objinspstrconsts.fescancelbtn
+msgctxt "objinspstrconsts.fescancelbtn"
+msgid "Cancel"
+msgstr "取消"
+
 #: objinspstrconsts.fescheckdset
 msgid "Check dataset settings"
 msgstr "检查数据集设置"
+
+#: objinspstrconsts.fesdataset
+msgid "&Dataset:"
+msgstr ""
 
 #: objinspstrconsts.fesfetitle
 #, fuzzy
@@ -141,9 +155,44 @@ msgstr "检查数据集设置"
 msgid "Edit Fields..."
 msgstr "编辑字段"
 
+#: objinspstrconsts.fesfieldprops
+msgid "Field properties"
+msgstr ""
+
+#: objinspstrconsts.fesfieldtype
+msgid "Field Type"
+msgstr ""
+
 #: objinspstrconsts.fesfltitle
 msgid "FieldDefs"
 msgstr "字段定义"
+
+#: objinspstrconsts.fesformcaption
+#, fuzzy
+#| msgid "New fileld"
+msgctxt "objinspstrconsts.fesformcaption"
+msgid "New field"
+msgstr "对话框"
+
+#: objinspstrconsts.feskeyfield
+msgid "&Key fields:"
+msgstr ""
+
+#: objinspstrconsts.feslookup
+msgid "&Lookup"
+msgstr ""
+
+#: objinspstrconsts.feslookupdef
+msgid "Lookup definition"
+msgstr ""
+
+#: objinspstrconsts.feslookupkeys
+msgid "L&ookup keys:"
+msgstr ""
+
+#: objinspstrconsts.fesname
+msgid "&Name:"
+msgstr ""
 
 #: objinspstrconsts.fesnofields
 msgid "It was not possible to get the dataset field's list"
@@ -152,6 +201,23 @@ msgstr "不能获得数据集字段列表"
 #: objinspstrconsts.fesnofieldsnote
 msgid "Field's list is not available, can't check for duplicates"
 msgstr "字段列表无效，不能检查重复项"
+
+#: objinspstrconsts.fesokbtn
+msgctxt "objinspstrconsts.fesokbtn"
+msgid "OK"
+msgstr "确定"
+
+#: objinspstrconsts.fesresultfield
+msgid "&Result Fields:"
+msgstr ""
+
+#: objinspstrconsts.fessize
+msgid "&Size:"
+msgstr ""
+
+#: objinspstrconsts.festype
+msgid "&Type:"
+msgstr ""
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
@@ -1146,6 +1212,7 @@ msgid "Move up"
 msgstr "上移"
 
 #: objinspstrconsts.rscdok
+msgctxt "objinspstrconsts.rscdok"
 msgid "OK"
 msgstr "确定"
 

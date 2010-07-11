@@ -27,6 +27,7 @@ msgid "Delete Action"
 msgstr "Eliminar Ação"
 
 #: objinspstrconsts.cactionlisteditordialogcategory
+msgctxt "objinspstrconsts.cactionlisteditordialogcategory"
 msgid "Dialog"
 msgstr "Caixa de diálogo"
 
@@ -128,18 +129,66 @@ msgctxt "objinspstrconsts.clbup"
 msgid "Up"
 msgstr "Acima"
 
+#: objinspstrconsts.fescalculated
+msgid "&Calculated"
+msgstr ""
+
+#: objinspstrconsts.fescancelbtn
+msgctxt "objinspstrconsts.fescancelbtn"
+msgid "Cancel"
+msgstr "Cancelar"
+
 #: objinspstrconsts.fescheckdset
 msgid "Check dataset settings"
 msgstr "Verificar configurações \"dataset\""
+
+#: objinspstrconsts.fesdataset
+msgid "&Dataset:"
+msgstr ""
 
 #: objinspstrconsts.fesfetitle
 #| msgid "Edit Fields"
 msgid "Edit Fields..."
 msgstr "Editar Campos"
 
+#: objinspstrconsts.fesfieldprops
+msgid "Field properties"
+msgstr ""
+
+#: objinspstrconsts.fesfieldtype
+msgid "Field Type"
+msgstr ""
+
 #: objinspstrconsts.fesfltitle
 msgid "FieldDefs"
 msgstr "Definições Campos"
+
+#: objinspstrconsts.fesformcaption
+#, fuzzy
+#| msgid "New fileld"
+msgctxt "objinspstrconsts.fesformcaption"
+msgid "New field"
+msgstr "Caixa de diálogo"
+
+#: objinspstrconsts.feskeyfield
+msgid "&Key fields:"
+msgstr ""
+
+#: objinspstrconsts.feslookup
+msgid "&Lookup"
+msgstr ""
+
+#: objinspstrconsts.feslookupdef
+msgid "Lookup definition"
+msgstr ""
+
+#: objinspstrconsts.feslookupkeys
+msgid "L&ookup keys:"
+msgstr ""
+
+#: objinspstrconsts.fesname
+msgid "&Name:"
+msgstr ""
 
 #: objinspstrconsts.fesnofields
 msgid "It was not possible to get the dataset field's list"
@@ -148,6 +197,23 @@ msgstr "Impossível obter lista de campos do \"dataset\""
 #: objinspstrconsts.fesnofieldsnote
 msgid "Field's list is not available, can't check for duplicates"
 msgstr "Lista de campos indisponível, impossível verificar duplicidades"
+
+#: objinspstrconsts.fesokbtn
+msgctxt "objinspstrconsts.fesokbtn"
+msgid "OK"
+msgstr "OK"
+
+#: objinspstrconsts.fesresultfield
+msgid "&Result Fields:"
+msgstr ""
+
+#: objinspstrconsts.fessize
+msgid "&Size:"
+msgstr ""
+
+#: objinspstrconsts.festype
+msgid "&Type:"
+msgstr ""
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
@@ -1137,6 +1203,7 @@ msgid "Move up"
 msgstr "Move acima"
 
 #: objinspstrconsts.rscdok
+msgctxt "objinspstrconsts.rscdok"
 msgid "OK"
 msgstr "OK"
 

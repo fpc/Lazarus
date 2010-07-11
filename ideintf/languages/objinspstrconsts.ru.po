@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-10 02:50+0300\n"
+"PO-Revision-Date: 2010-07-11 19:51+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -27,6 +27,7 @@ msgid "Delete Action"
 msgstr "Удалить действие"
 
 #: objinspstrconsts.cactionlisteditordialogcategory
+msgctxt "objinspstrconsts.cactionlisteditordialogcategory"
 msgid "Dialog"
 msgstr "Диалог"
 
@@ -128,26 +129,94 @@ msgctxt "objinspstrconsts.clbup"
 msgid "Up"
 msgstr "Вверх"
 
+#: objinspstrconsts.fescalculated
+msgid "&Calculated"
+msgstr "&Вычисляемое"
+
+#: objinspstrconsts.fescancelbtn
+msgctxt "objinspstrconsts.fescancelbtn"
+msgid "Cancel"
+msgstr "Отмена"
+
 #: objinspstrconsts.fescheckdset
 msgid "Check dataset settings"
-msgstr "Проверить параметры набора данных"
+msgstr "Проверьте параметры набора данных."
+
+#: objinspstrconsts.fesdataset
+#| msgid "Dataset"
+msgid "&Dataset:"
+msgstr "&Набор данных:"
 
 #: objinspstrconsts.fesfetitle
 #| msgid "Edit Fields"
 msgid "Edit Fields..."
 msgstr "Редактировать поля..."
 
+#: objinspstrconsts.fesfieldprops
+msgid "Field properties"
+msgstr "Свойства поля"
+
+#: objinspstrconsts.fesfieldtype
+msgid "Field Type"
+msgstr "Тип поля"
+
 #: objinspstrconsts.fesfltitle
 msgid "FieldDefs"
 msgstr "FieldDefs"
 
+#: objinspstrconsts.fesformcaption
+#| msgid "New fileld"
+msgctxt "objinspstrconsts.fesformcaption"
+msgid "New field"
+msgstr "Новое поле"
+
+#: objinspstrconsts.feskeyfield
+#| msgid "&Key fields"
+msgid "&Key fields:"
+msgstr "&Ключевые поля:"
+
+#: objinspstrconsts.feslookup
+msgid "&Lookup"
+msgstr "&Поле подстановок"
+
+#: objinspstrconsts.feslookupdef
+msgid "Lookup definition"
+msgstr "Определение подстановки"
+
+#: objinspstrconsts.feslookupkeys
+#| msgid "L&ookup keys"
+msgid "L&ookup keys:"
+msgstr "К&лючи подстановки:"
+
+#: objinspstrconsts.fesname
+msgid "&Name:"
+msgstr "&Имя:"
+
 #: objinspstrconsts.fesnofields
 msgid "It was not possible to get the dataset field's list"
-msgstr "Не удалось получить список полей набора данных"
+msgstr "Не удалось получить список полей набора данных."
 
 #: objinspstrconsts.fesnofieldsnote
 msgid "Field's list is not available, can't check for duplicates"
-msgstr "Список полей недоступен, не могу проверить наличие дубликатов"
+msgstr "Список полей недоступен, невозможно проверить наличие дубликатов."
+
+#: objinspstrconsts.fesokbtn
+msgctxt "objinspstrconsts.fesokbtn"
+msgid "OK"
+msgstr "OK"
+
+#: objinspstrconsts.fesresultfield
+#| msgid "&Result Fields"
+msgid "&Result Fields:"
+msgstr "Поля р&езультата:"
+
+#: objinspstrconsts.fessize
+msgid "&Size:"
+msgstr "&Размер:"
+
+#: objinspstrconsts.festype
+msgid "&Type:"
+msgstr "&Тип:"
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
@@ -1137,6 +1206,7 @@ msgid "Move up"
 msgstr "Переместить вверх"
 
 #: objinspstrconsts.rscdok
+msgctxt "objinspstrconsts.rscdok"
 msgid "OK"
 msgstr "OK"
 
