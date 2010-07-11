@@ -5536,10 +5536,10 @@ begin
   //
   // stretch_factor := Width / SrcWidth;
   // Width := stretch_factor * (SrcWidthOrig - XSrc);
-  if (SrcWidthOrig - XSrc < SrcWidth) then
+  if (SrcWidthOrig - XSrc < SrcWidth - XSrc) then
     Width := Width * (SrcWidthOrig - XSrc) div SrcWidth;
 
-  if (SrcHeightOrig - YSrc < SrcHeight) then
+  if (SrcHeightOrig - YSrc < SrcHeight - YSrc) then
     Height := Height * (SrcHeightOrig - YSrc) div SrcHeight;
 
   if dx <> 0 then // apply shifts
