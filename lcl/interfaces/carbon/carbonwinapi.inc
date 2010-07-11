@@ -1878,7 +1878,7 @@ end;
 
   Retrieves a handle to one of the predefined stock objects
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.GetStockObject(Value: Integer): LongInt;
+function TCarbonWidgetSet.GetStockObject(Value: Integer): THandle;
 begin
   Result := 0;
 

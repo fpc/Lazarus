@@ -307,7 +307,7 @@ var
   ColSpace  : CGColorSpaceRef;
   data      : array of byte;
   iconHnd   : IconFamilyHandle;
-  tmpHnd    : Handle;
+  tmpHnd    : MacOSAll.Handle;
   i,c,sz    : Integer;
   dataType  : Integer;
   maskType  : Integer;
@@ -385,9 +385,9 @@ begin
   end;
 
   OSError(
-    GetIconRefFromIconFamilyPtr( iconHnd^^, GetHandleSize(Handle(iconHnd)), Result),
+    GetIconRefFromIconFamilyPtr( iconHnd^^, GetHandleSize(MacOSAll.Handle(iconHnd)), Result),
     'GetIconRefFromBitmap', 'GetIconRefFromIconFamilyPtr');
-  DisposeHandle(Handle(iconHnd));
+  DisposeHandle(MacOSAll.Handle(iconHnd));
 end;
 
 function GetIconRefFromImageList(Images: TCustomImageList; AIndex: Integer; WantedIconSize: Integer): IconRef;

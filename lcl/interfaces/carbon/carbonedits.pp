@@ -1897,7 +1897,7 @@ end;
 function TCarbonMemo.GetLine(AIndex: Integer): String;
 var
   AStart, AEnd: TXNOffset;
-  Data: Handle;
+  Data: MacOSAll.Handle;
   W: WideString;
 begin
   Result := '';
