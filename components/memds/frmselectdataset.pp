@@ -37,6 +37,8 @@ Type
     Procedure CreateTable; virtual;
   end;
 
+  { TSelectSrcDatasetForm }
+
   TSelectSrcDatasetForm = class(TForm)
     BOK: TButton;
     BCancel: TButton;
@@ -44,6 +46,7 @@ Type
     LLBDatasets: TLabel;
     LBDatasets: TListBox;
     procedure BOKClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure LBDatasetsClick(Sender: TObject);
   private
   public
@@ -54,6 +57,12 @@ Resourcestring
   SMenuCreateDataset    = 'Create dataset';
   SMenuCopyDataset      = 'Copy data from Dataset';
   SErrSelectDataset = 'Please select a dataset first';
+
+  SCaption = 'Select dataset to copy from';
+  SCopyMeta = 'Copy only metadata';
+  SDataset = '&Dataset to copy from:';
+  SOkBtn  = 'OK';
+  SCancelBtn = 'Cancel';
 
 var
   SelectSrcDatasetForm: TSelectSrcDatasetForm;
@@ -169,6 +178,15 @@ begin
   if Sender=nil then ;
   If LBDatasets.ItemIndex=-1 then
     Raise Exception.Create(SErrSelectDataset)
+end;
+
+procedure TSelectSrcDatasetForm.FormCreate(Sender: TObject);
+begin
+  Caption := SCaption;
+  CBMetaDataOnly.Caption := SCopyMeta;
+  LLBDatasets.Caption := SDataset;
+  BOK.Caption := SOkBtn;
+  BCancel.Caption := SCancelBtn;
 end;
 
 initialization
