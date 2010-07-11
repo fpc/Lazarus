@@ -43,8 +43,7 @@ interface
 uses
   LCLProc, LCLIntf, LCLType, SynEditMiscProcs,
   Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Menus,
-  SysUtils, SynEditKeyCmds, SynEditHighlighter,
-  SynEdit;
+  SysUtils, SynEditKeyCmds, SynEdit;
 
 type
   TSynBaseCompletionPaintItem =
@@ -123,6 +122,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
     procedure Paint; override;
+    procedure AppDeactivated(Sender: TObject); // Because Form.Deactrivate isn't called
     procedure Deactivate; override;
     procedure SelectPrec;
     procedure SelectNext;
@@ -670,6 +670,11 @@ begin
   Canvas.LineTo(0, 0);
 end;
 
+procedure TSynBaseCompletionForm.AppDeactivated(Sender: TObject);
+begin
+  Deactivate;
+end;
+
 procedure TSynBaseCompletionForm.ScrollChange(Sender: TObject);
 begin
   if Position < Scroll.Position then
@@ -835,6 +840,7 @@ end;
 
 procedure TSynBaseCompletionForm.SetVisible(Value: Boolean);
 begin
+  if Visible = Value then exit;;
   inherited SetVisible(Value);
   if (fCurrentEditor <> nil) then begin
     if Visible then
@@ -842,6 +848,10 @@ begin
     else
       TSynEdit(fCurrentEditor).UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged);
   end;
+  if Value then
+    Application.AddOnDeactivateHandler({$IFDEF FPC}@{$ENDIF}AppDeactivated)
+  else
+    Application.RemoveOnDeactivateHandler({$IFDEF FPC}@{$ENDIF}AppDeactivated);
 end;
 
 procedure TSynBaseCompletionForm.SetItemList(const Value: TStrings);
