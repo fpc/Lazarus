@@ -6,7 +6,8 @@ interface
 
 uses
   // LCL+FCL
-  Classes, SysUtils, FileProcs, Forms, Controls, DialogProcs, Dialogs, contnrs,
+  Classes, SysUtils, FileProcs, Forms, Controls, DialogProcs, Dialogs,
+  contnrs, strutils,
   // IDE
   LazarusIDEStrConsts, LazIDEIntf, FormEditor, IDEMsgIntf,
   // codetools
@@ -26,13 +27,13 @@ type
 
   TCalledFuncInfo = class
   private
-//    fFuncName: string;
+    fFuncName: string;
     fReplacement: string;
     fStartPos: Integer;
     fEndPos: Integer;
     fParams: TStringList; // fParamTypes: TExprTypeList;
   public
-    constructor Create({aFuncName,} aReplacement: string);
+    constructor Create(aFuncName, aReplacement: string);
     destructor Destroy; override;
   end;
 
@@ -93,9 +94,9 @@ implementation
 
 { TCalledFuncInfo }
 
-constructor TCalledFuncInfo.Create({aFuncName,} aReplacement: string);
+constructor TCalledFuncInfo.Create(aFuncName, aReplacement: string);
 begin
-//  fFuncName:=aFuncName;
+  fFuncName:=aFuncName;
   fReplacement:=aReplacement;
   fParams:=TStringList.Create;
 end;
@@ -459,7 +460,7 @@ begin
   with fCodeTool do begin
     BuildTree(true);
     // Find the class name that the main class inherits from.
-    ANode:=FindClassNodeInInterface(AClassName,true,false,false); // FindFirstClassNode;
+    ANode:=FindClassNodeInInterface(AClassName,true,false,false);
     if ANode=nil then exit;
     BuildSubTreeForClass(ANode);
     InheritanceNode:=FindInheritanceNode(ANode);
@@ -471,10 +472,9 @@ begin
       ReadNextAtom;
       OldType:=GetAtom;
     end;
-    // Change the inheritance type to a fall-back type if needed.
     TypeUpdater:=TStringMapUpdater.Create(AReplaceTypes);
     try
-      // Find replacement maybe using regexp syntax.
+      // Find replacement for ancestor type maybe using regexp syntax.
       if TypeUpdater.FindReplacement(OldType, NewType) then begin
         fSrcCache.MainScanner:=Scanner;
         if not fSrcCache.Replace(gtNone, gtNone,
@@ -535,11 +535,82 @@ end;
 function TConvDelphiCodeTool.ReplaceFuncsInSource: boolean;
 // Replace the function names and parameters in source.
 var
-  FuncInfo: TCalledFuncInfo;
   ParamList: TStringList;
-  BegPos, EndPos, ParamPos: Integer;
-  i, j: Integer;
-  s, NewFunc, Param: String;
+  BodyEnd: Integer;                     // End of function body.
+
+  function ParseReplacementParams(aStr: string): integer;
+  // Parse replacement params. They show which original params are copied where.
+  // Returns the first position where comments can be searched from.
+  var
+    ParamBeg, ParamEnd: Integer;          // Start and end of parameters.
+    s: String;
+  begin
+    Result:=1;
+    ParamBeg:=Pos('(', aStr);
+    if ParamBeg>0 then begin
+      ParamEnd:=Pos(')', aStr);
+      if ParamEnd=0 then
+        raise EConverterError.Create('")" is missing from replacement function.');
+      s:=Copy(aStr, ParamBeg+1, ParamEnd-ParamBeg-1);
+      SplitParam(s, ',', ParamList);      // The actual parameter list.
+      BodyEnd:=ParamBeg-1;
+      Result:=ParamEnd+1;
+    end;
+  end;
+
+  function CollectParams(aParams: TStringList): string;
+  // Collect parameters from original call. Construct and return a new parameter list.
+  var
+    Param: String;
+    ParamPos: Integer;             // Position of parameter in the original call.
+    i: Integer;
+  begin
+    Result:='';
+    for i:=0 to ParamList.Count-1 do begin
+      ParamPos:=StrToInt(ParamList[i]);
+      if ParamPos < 1 then
+        raise EConverterError.Create('Replacement function parameter number should be >= 1.');
+      Param:='nil';         // Default value if not found from original code.
+      if ParamPos <= aParams.Count then
+        Param:=aParams[ParamPos-1];
+      if Result<>'' then
+        Result:=Result+', ';
+      Result:=Result+Param;
+    end;
+  end;
+
+  function GetComment(aStr: string; aPossibleStartPos: integer): string;
+  // Extract and return a possible comment.
+  var
+    CommChBeg, CommBeg, CommEnd, i: Integer;   // Start and end of comment.
+  begin
+    Result:='';
+    CommEnd:=Length(aStr);
+    CommChBeg:=PosEx('//', aStr, aPossibleStartPos);
+    if CommChBeg<>0 then
+      CommBeg:=CommChBeg+2
+    else begin
+      CommChBeg:=PosEx('{', aStr, aPossibleStartPos);
+      if CommChBeg<>0 then begin
+      CommBeg:=CommChBeg+1;
+        i:=PosEx('}', aStr, CommBeg);
+        if i<>0 then
+          CommEnd:=i-1;
+      end;
+    end;
+    if CommChBeg<>0 then begin
+      if BodyEnd=-1 then
+        BodyEnd:=CommChBeg-1;
+      Result:=Trim(Copy(aStr, CommBeg, CommEnd-CommBeg+1));
+    end;
+  end;
+
+ var
+   FuncInfo: TCalledFuncInfo;
+   PossibleCommPos: Integer;                 // Start looking for comments here.
+   i: Integer;
+   s, NewFunc, NewParamStr, Comment: String;
+
 begin
   Result:=false;
   ParamList:=TStringList.Create;
@@ -547,33 +618,16 @@ begin
     // Replace from bottom to top.
     for i:=fFuncsToReplace.Count-1 downto 0 do begin
       FuncInfo:=TCalledFuncInfo(fFuncsToReplace[i]);
-      // Parse replacement params. They show which original params are copied where.
-      BegPos:=Pos('(', FuncInfo.fReplacement);
-      if BegPos>0 then begin
-        EndPos:=Pos(')', FuncInfo.fReplacement);
-        if EndPos=0 then
-          raise EConverterError.Create('")" is missing from replacement function.');
-        NewFunc:=Copy(FuncInfo.fReplacement, 1, BegPos-1);
-        s:=Copy(FuncInfo.fReplacement, BegPos+1, EndPos-BegPos-1);
-        SplitParam(s, ',', ParamList);      // The actual parameter list.
-      end
-      else begin
-        NewFunc:=FuncInfo.fReplacement;
-      end;
-      // Collect parameters from original call and construct a new function call.
-      s:='';
-      for j:=0 to ParamList.Count-1 do begin
-        ParamPos:=StrToInt(ParamList[j]);
-        if ParamPos < 1 then
-          raise EConverterError.Create('Replacement function parameter number should be >= 1.');
-        Param:='nil';         // Default value if not found from original code.
-        if ParamPos <= FuncInfo.fParams.Count then
-          Param:=FuncInfo.fParams[ParamPos-1];
-        if s<>'' then
-          s:=s+', ';
-        s:=s+Param;
-      end;
-      NewFunc:=NewFunc+'('+s+')';
+      BodyEnd:=-1;
+      PossibleCommPos:=ParseReplacementParams(FuncInfo.fReplacement);
+      NewParamStr:=CollectParams(FuncInfo.fParams);
+      Comment:=GetComment(FuncInfo.fReplacement, PossibleCommPos);
+      // Separate function body
+      if BodyEnd=-1 then
+        BodyEnd:=Length(FuncInfo.fReplacement);
+      NewFunc:=Trim(Copy(FuncInfo.fReplacement, 1, BodyEnd));
+      NewFunc:=Format('%s(%s) { *Converted from %s* %s }',
+                      [NewFunc, NewParamStr, FuncInfo.fFuncName, Comment]);
       // Old function call with params for IDE message output.
       s:=copy(fCodeTool.Src, FuncInfo.fStartPos, FuncInfo.fEndPos-FuncInfo.fStartPos);
       s:=StringReplace(s, sLineBreak, '', [rfReplaceAll]);
@@ -584,8 +638,6 @@ begin
       IDEMessagesWindow.AddMsg('Replaced call '+s, '', -1);
       IDEMessagesWindow.AddMsg('                  with '+NewFunc, '', -1);
     end;
-//    if fFuncsToReplace.Count > 0 then
-//      if not fSrcCache.Apply then exit;     Applied in method Convert.
   finally
     ParamList.Free;
   end;
@@ -664,7 +716,6 @@ var
 
   procedure ReadFuncCall(MaxPos: Integer);
   var
-//    CursorNode: TCodeTreeNode;
     FuncInfo: TCalledFuncInfo;
     FuncName: string;
     i, x, IdentEndPos: Integer;
@@ -679,15 +730,10 @@ var
         and (CompareIdentifiers(PChar(Pointer(FuncName)),@Src[StartPos])=0)
         and not fDefinedProcNames.Find(FuncName, x)
         then begin
-{          CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(StartPos,true);
-          if CleanPosIsDeclarationIdentifier(StartPos,CursorNode) then
-            // declaration ???
-          else begin  }
-            FuncInfo:=TCalledFuncInfo.Create({FuncName,} fReplaceFuncs[FuncName]);
-            ReadParams(FuncInfo);
-            IdentEndPos:=FuncInfo.fEndPos; // Skip the params, too, for next search.
-            fFuncsToReplace.Add(FuncInfo);
-//          end;
+          FuncInfo:=TCalledFuncInfo.Create(FuncName, fReplaceFuncs[FuncName]);
+          ReadParams(FuncInfo);
+          IdentEndPos:=FuncInfo.fEndPos; // Skip the params, too, for next search.
+          fFuncsToReplace.Add(FuncInfo);
           Break;
         end;
       end;
