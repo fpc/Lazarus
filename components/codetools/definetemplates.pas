@@ -650,7 +650,9 @@ type
 
   TFPCTargetConfigCaches = class;
 
-  { TFPCTargetConfigCache }
+  { TFPCTargetConfigCache
+    Storing all information (maros, search paths) of one compiler
+    with one specific TargetOS and TargetCPU. }
 
   TFPCTargetConfigCache = class
   private
@@ -689,7 +691,8 @@ type
     property ChangeStamp: integer read FChangeStamp;
   end;
 
-  { TFPCTargetConfigCaches }
+  { TFPCTargetConfigCaches
+    List of TFPCTargetConfigCache }
 
   TFPCTargetConfigCaches = class
   private
@@ -711,7 +714,8 @@ type
 
   TFPCSourceCaches = class;
 
-  { TFPCSourceCache }
+  { TFPCSourceCache
+    All source files of one FPC source directory }
 
   TFPCSourceCache = class
   private
@@ -750,42 +754,66 @@ type
     procedure SaveToFile(Filename: string);
     procedure IncreaseChangeStamp;
     property ChangeStamp: integer read FChangeStamp;
-    function Find(const Directory: string;
+    function Find(Directory: string;
                   CreateIfNotExists: boolean): TFPCSourceCache;
   end;
 
-  TFPCUnitCaches = class
+  TFPCDefinesCache = class;
 
+  { TFPCUnitToSrcCache
+    Unit name to FPC source file.
+    Specific to one compiler, targetos, targetcpu and FPC source directory. }
+
+  TFPCUnitToSrcCache = class
+  private
+    FCaches: TFPCDefinesCache;
+    FChangeStamp: integer;
+    FCompilerFilename: string;
+    FFPCSourceDirectory: string;
+    FTargetCPU: string;
+    FTargetOS: string;
+    FConfigCache: TFPCTargetConfigCache;
+    fSourceCache: TFPCSourceCache;
+    fFPCSourceRules: TFPCSourceRules;
+    fUnitToSourceTree: TStringToStringTree; // lowercase unit name to file name (maybe relative)
+    fSrcDuplicates: TStringToStringTree; // lower case unit to semicolon separated list of files
+    fOldUnitToSourceTree: TStringToStringTree;
+    procedure SetCompilerFilename(const AValue: string);
+    procedure SetFPCSourceDirectory(const AValue: string);
+    procedure SetTargetCPU(const AValue: string);
+    procedure SetTargetOS(const AValue: string);
+    procedure ClearConfigCache;
+    procedure ClearSourceCache;
+  public
+    constructor Create(Owner: TFPCDefinesCache);
+    destructor Destroy; override;
+    procedure Clear;
+    property Caches: TFPCDefinesCache read FCaches;
+    property CompilerFilename: string read FCompilerFilename write SetCompilerFilename;
+    property TargetOS: string read FTargetOS write SetTargetOS;
+    property TargetCPU: string read FTargetCPU write SetTargetCPU;
+    property FPCSourceDirectory: string read FFPCSourceDirectory write SetFPCSourceDirectory;
+    function GetConfigCache(AutoUpdate: boolean): TFPCTargetConfigCache;
+    function GetSourceCache(AutoUpdate: boolean): TFPCSourceCache;
+    function GetSourceRules(AutoUpdate: boolean): TFPCSourceRules;
+    function GetUnitToSourceTree(AutoUpdate: boolean): TStringToStringTree; // lowercase unit name to file name (maybe relative)
+    function GetSourceDuplicates(AutoUpdate: boolean): TStringToStringTree; // lower case unit to semicolon separated list of files
+    property ChangeStamp: integer read FChangeStamp;
   end;
 
   { TFPCDefinesCache }
 
   TFPCDefinesCache = class
   private
-    FCompilerFilename: string;
     FConfigCaches: TFPCTargetConfigCaches;
     FConfigCachesSaveStamp: integer;
-    FFPCSourceDirectory: string;
     FSourceCaches: TFPCSourceCaches;
     FSourceCachesSaveStamp: integer;
-    FTargetCPU: string;
-    FTargetOS: string;
-    FConfigCache: TFPCTargetConfigCache;
-    fSourceCache: TFPCSourceCache;
-    fFPCSourceRules: TFPCSourceRules;
     FTestFilename: string;
-    fUnitToSourceTree: TStringToStringTree; // lowercase unit name to file name (maybe relative)
-    fSrcDuplicates: TStringToStringTree; // lower case unit to semicolon separated list of files
-    FUnitToSourceTreeChangeStamp: integer;
-    fOldUnitToSourceTree: TStringToStringTree;
-    procedure SetCompilerFilename(const AValue: string);
+    fUnitToSrcCaches: TFPList; // list of TFPCUnitToSrcCache
     procedure SetConfigCaches(const AValue: TFPCTargetConfigCaches);
-    procedure SetFPCSourceDirectory(const AValue: string);
     procedure SetSourceCaches(const AValue: TFPCSourceCaches);
-    procedure SetTargetCPU(const AValue: string);
-    procedure SetTargetOS(const AValue: string);
-    procedure ClearConfigCache;
-    procedure ClearSourceCache;
+    procedure ClearUnitToSrcCaches;
   public
     constructor Create;
     destructor Destroy; override;
@@ -797,17 +825,11 @@ type
     function NeedsSave: boolean;
     property SourceCaches: TFPCSourceCaches read FSourceCaches write SetSourceCaches;
     property ConfigCaches: TFPCTargetConfigCaches read FConfigCaches write SetConfigCaches;
-    property CompilerFilename: string read FCompilerFilename write SetCompilerFilename;
-    property TargetOS: string read FTargetOS write SetTargetOS;
-    property TargetCPU: string read FTargetCPU write SetTargetCPU;
+    function FindUnitToSrcCache(const CompilerFilename, TargetOS, TargetCPU,
+                                FPCSrcDir: string; CreateIfNotExists: boolean
+                                ): TFPCUnitToSrcCache;
+
     property TestFilename: string read FTestFilename write FTestFilename; // an empty file to test the compiler, will be auto created
-    property FPCSourceDirectory: string read FFPCSourceDirectory write SetFPCSourceDirectory;
-    function GetConfigCache(AutoUpdate: boolean): TFPCTargetConfigCache;
-    function GetSourceCache(AutoUpdate: boolean): TFPCSourceCache;
-    function GetSourceRules(AutoUpdate: boolean): TFPCSourceRules;
-    function GetUnitToSourceTree(AutoUpdate: boolean): TStringToStringTree; // lowercase unit name to file name (maybe relative)
-    function GetSourceDuplicates(AutoUpdate: boolean): TStringToStringTree; // lower case unit to semicolon separated list of files
-    property UnitToSourceTreeChangeStamp: integer read FUnitToSourceTreeChangeStamp;
   end;
 
 function DefineActionNameToAction(const s: string): TDefineAction;
@@ -7362,11 +7384,12 @@ begin
     FChangeStamp:=Low(FChangeStamp);
 end;
 
-function TFPCSourceCaches.Find(const Directory: string;
+function TFPCSourceCaches.Find(Directory: string;
   CreateIfNotExists: boolean): TFPCSourceCache;
 var
   Node: TAVLTreeNode;
 begin
+  Directory:=ChompPathDelim(TrimFilename(Directory));
   Node:=fItems.FindKey(PChar(Directory),@CompareDirectoryWithFPCSourceCacheItem);
   if Node<>nil then begin
     Result:=TFPCSourceCache(Node.Data);
@@ -7388,21 +7411,6 @@ begin
   if FConfigCaches=AValue then exit;
   FConfigCaches:=AValue;
   FConfigCachesSaveStamp:=Low(FConfigCachesSaveStamp);
-  ClearConfigCache;
-end;
-
-procedure TFPCDefinesCache.SetCompilerFilename(const AValue: string);
-begin
-  if FCompilerFilename=AValue then exit;
-  FCompilerFilename:=AValue;
-  ClearConfigCache;
-end;
-
-procedure TFPCDefinesCache.SetFPCSourceDirectory(const AValue: string);
-begin
-  if FFPCSourceDirectory=AValue then exit;
-  FFPCSourceDirectory:=AValue;
-  ClearSourceCache;
 end;
 
 procedure TFPCDefinesCache.SetSourceCaches(const AValue: TFPCSourceCaches);
@@ -7410,60 +7418,37 @@ begin
   if FSourceCaches=AValue then exit;
   FSourceCaches:=AValue;
   FSourceCachesSaveStamp:=low(FSourceCachesSaveStamp);
-  ClearSourceCache;
 end;
 
-procedure TFPCDefinesCache.SetTargetCPU(const AValue: string);
+procedure TFPCDefinesCache.ClearUnitToSrcCaches;
+var
+  i: Integer;
 begin
-  if FTargetCPU=AValue then exit;
-  FTargetCPU:=AValue;
-  ClearConfigCache;
-end;
-
-procedure TFPCDefinesCache.SetTargetOS(const AValue: string);
-begin
-  if FTargetOS=AValue then exit;
-  FTargetOS:=AValue;
-  ClearConfigCache;
-end;
-
-procedure TFPCDefinesCache.ClearConfigCache;
-begin
-  FConfigCache:=nil;
-  FreeAndNil(fFPCSourceRules);
-  FreeAndNil(fUnitToSourceTree);
-end;
-
-procedure TFPCDefinesCache.ClearSourceCache;
-begin
-  fSourceCache:=nil;
-  FreeAndNil(fUnitToSourceTree);
-  FreeAndNil(fSrcDuplicates);
+  for i:=0 to fUnitToSrcCaches.Count-1 do
+    TObject(fUnitToSrcCaches[i]).Free;
+  fUnitToSrcCaches.Clear;
 end;
 
 constructor TFPCDefinesCache.Create;
 begin
   ConfigCaches:=TFPCTargetConfigCaches.Create;
   SourceCaches:=TFPCSourceCaches.Create;
-  fOldUnitToSourceTree:=TStringToStringTree.Create(true);
+  fUnitToSrcCaches:=TFPList.Create;
 end;
 
 destructor TFPCDefinesCache.Destroy;
 begin
-  ClearConfigCache;
-  ClearSourceCache;
+  ClearUnitToSrcCaches;
   FreeAndNil(FConfigCaches);
   FreeAndNil(FSourceCaches);
-  FreeAndNil(fOldUnitToSourceTree);
   inherited Destroy;
 end;
 
 procedure TFPCDefinesCache.Clear;
 begin
+  ClearUnitToSrcCaches;
   if ConfigCaches<>nil then ConfigCaches.Clear;
-  ClearConfigCache;
   if SourceCaches<>nil then SourceCaches.Clear;
-  ClearSourceCache;
 end;
 
 procedure TFPCDefinesCache.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -7472,12 +7457,10 @@ begin
   if ConfigCaches<>nil then begin
     ConfigCaches.LoadFromXMLConfig(XMLConfig,Path+'FPCConfigs/');
     FConfigCachesSaveStamp:=ConfigCaches.ChangeStamp;
-    ClearConfigCache;
   end;
   if SourceCaches<>nil then begin
     SourceCaches.LoadFromXMLConfig(XMLConfig,Path+'FPCSources/');
     FSourceCachesSaveStamp:=SourceCaches.ChangeStamp;
-    ClearSourceCache;
   end;
 end;
 
@@ -7528,30 +7511,102 @@ begin
   Result:=false;
 end;
 
-function TFPCDefinesCache.GetConfigCache(AutoUpdate: boolean
+function TFPCDefinesCache.FindUnitToSrcCache(const CompilerFilename, TargetOS,
+  TargetCPU, FPCSrcDir: string; CreateIfNotExists: boolean
+    ): TFPCUnitToSrcCache;
+begin
+  Result:=nil;
+end;
+
+{ TFPCUnitToSrcCache }
+
+procedure TFPCUnitToSrcCache.SetCompilerFilename(const AValue: string);
+begin
+  if FCompilerFilename=AValue then exit;
+  FCompilerFilename:=AValue;
+  ClearConfigCache;
+end;
+
+procedure TFPCUnitToSrcCache.SetFPCSourceDirectory(const AValue: string);
+begin
+  if FFPCSourceDirectory=AValue then exit;
+  FFPCSourceDirectory:=AValue;
+  ClearSourceCache;
+end;
+
+procedure TFPCUnitToSrcCache.SetTargetCPU(const AValue: string);
+begin
+  if FTargetCPU=AValue then exit;
+  FTargetCPU:=AValue;
+  ClearConfigCache;
+end;
+
+procedure TFPCUnitToSrcCache.SetTargetOS(const AValue: string);
+begin
+  if FTargetOS=AValue then exit;
+  FTargetOS:=AValue;
+  ClearConfigCache;
+end;
+
+procedure TFPCUnitToSrcCache.ClearConfigCache;
+begin
+  FConfigCache:=nil;
+  FreeAndNil(fFPCSourceRules);
+  FreeAndNil(fUnitToSourceTree);
+end;
+
+procedure TFPCUnitToSrcCache.ClearSourceCache;
+begin
+  fSourceCache:=nil;
+  FreeAndNil(fUnitToSourceTree);
+  FreeAndNil(fSrcDuplicates);
+end;
+
+constructor TFPCUnitToSrcCache.Create(Owner: TFPCDefinesCache);
+begin
+  fOldUnitToSourceTree:=TStringToStringTree.Create(true);
+  FCaches:=Owner;
+end;
+
+destructor TFPCUnitToSrcCache.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(fOldUnitToSourceTree);
+end;
+
+procedure TFPCUnitToSrcCache.Clear;
+begin
+
+end;
+
+function TFPCUnitToSrcCache.GetConfigCache(AutoUpdate: boolean
   ): TFPCTargetConfigCache;
 begin
   if CompilerFilename='' then
-    raise Exception.Create('TFPCDefinesCache.GetConfigCache missing CompilerFilename');
-  if TestFilename='' then
-    raise Exception.Create('TFPCDefinesCache.GetConfigCache missing TestFilename');
+    raise Exception.Create('TFPCUnitToSrcCache.GetConfigCache missing CompilerFilename');
+  if Caches.TestFilename='' then
+    raise Exception.Create('TFPCUnitToSrcCache.GetConfigCache missing TestFilename');
   if FConfigCache=nil then
-    FConfigCache:=ConfigCaches.Find(CompilerFilename,TargetOS,TargetCPU,true);
+    FConfigCache:=Caches.ConfigCaches.Find(CompilerFilename,TargetOS,TargetCPU,true);
   if AutoUpdate and FConfigCache.NeedsUpdate then
-    FConfigCache.Update(TestFilename);
+    FConfigCache.Update(Caches.TestFilename);
   Result:=FConfigCache;
 end;
 
-function TFPCDefinesCache.GetSourceCache(AutoUpdate: boolean): TFPCSourceCache;
+function TFPCUnitToSrcCache.GetSourceCache(AutoUpdate: boolean
+  ): TFPCSourceCache;
 begin
+  if FPCSourceDirectory='' then
+    raise Exception.Create('TFPCUnitToSrcCache.GetSourceCache missing FPCSourceDirectory');
   if fSourceCache=nil then
-    fSourceCache:=SourceCaches.Find(FPCSourceDirectory,true);
+    fSourceCache:=Caches.SourceCaches.Find(FPCSourceDirectory,true);
   if AutoUpdate and (fSourceCache.Files.Count=0) then
     fSourceCache.Update(nil);
   Result:=fSourceCache;
 end;
 
-function TFPCDefinesCache.GetSourceRules(AutoUpdate: boolean): TFPCSourceRules;
+function TFPCUnitToSrcCache.GetSourceRules(AutoUpdate: boolean
+  ): TFPCSourceRules;
 var
   Cfg: TFPCTargetConfigCache;
 begin
@@ -7563,14 +7618,16 @@ begin
   Result:=fFPCSourceRules;
 end;
 
-function TFPCDefinesCache.GetUnitToSourceTree(AutoUpdate: boolean
+function TFPCUnitToSrcCache.GetUnitToSourceTree(AutoUpdate: boolean
   ): TStringToStringTree;
 var
   Src: TFPCSourceCache;
   SrcRules: TFPCSourceRules;
 begin
+  Src:=GetSourceCache(AutoUpdate);
+  // ToDo: check
+
   if fUnitToSourceTree=nil then begin
-    Src:=GetSourceCache(AutoUpdate);
     fSrcDuplicates:=TStringToStringTree.Create(true);
     SrcRules:=GetSourceRules(AutoUpdate);
     fUnitToSourceTree:=GatherUnitsInFPCSources(Src.Files,TargetOS,TargetCPU,
@@ -7578,17 +7635,17 @@ begin
     if fUnitToSourceTree=nil then
       fUnitToSourceTree:=TStringToStringTree.Create(true);
     if not fOldUnitToSourceTree.Equals(fUnitToSourceTree) then begin
-      if FUnitToSourceTreeChangeStamp<High(FUnitToSourceTreeChangeStamp) then
-        inc(FUnitToSourceTreeChangeStamp)
+      if FChangeStamp<High(FChangeStamp) then
+        inc(FChangeStamp)
       else
-        FUnitToSourceTreeChangeStamp:=Low(FUnitToSourceTreeChangeStamp);
+        FChangeStamp:=Low(FChangeStamp);
       fOldUnitToSourceTree.Assign(fUnitToSourceTree);
     end;
   end;
   Result:=fUnitToSourceTree;
 end;
 
-function TFPCDefinesCache.GetSourceDuplicates(AutoUpdate: boolean
+function TFPCUnitToSrcCache.GetSourceDuplicates(AutoUpdate: boolean
   ): TStringToStringTree;
 begin
   GetUnitToSourceTree(AutoUpdate);
