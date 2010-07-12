@@ -31,7 +31,8 @@ type
     fReplacement: string;
     fStartPos: Integer;
     fEndPos: Integer;
-    fParams: TStringList; // fParamTypes: TExprTypeList;
+    fInclSemiColon: string;
+    fParams: TStringList;
   public
     constructor Create(aFuncName, aReplacement: string);
     destructor Destroy; override;
@@ -605,12 +606,11 @@ var
     end;
   end;
 
- var
-   FuncInfo: TCalledFuncInfo;
-   PossibleCommPos: Integer;                 // Start looking for comments here.
-   i: Integer;
-   s, NewFunc, NewParamStr, Comment: String;
-
+var
+  FuncInfo: TCalledFuncInfo;
+  PossibleCommPos: Integer;                    // Start looking for comments here.
+  i: Integer;
+  s, NewFunc, NewParamStr, Comment: String;
 begin
   Result:=false;
   ParamList:=TStringList.Create;
@@ -626,8 +626,8 @@ begin
       if BodyEnd=-1 then
         BodyEnd:=Length(FuncInfo.fReplacement);
       NewFunc:=Trim(Copy(FuncInfo.fReplacement, 1, BodyEnd));
-      NewFunc:=Format('%s(%s) { *Converted from %s* %s }',
-                      [NewFunc, NewParamStr, FuncInfo.fFuncName, Comment]);
+      NewFunc:=Format('%s(%s)%s { *Converted from %s* %s }',
+        [NewFunc, NewParamStr, FuncInfo.fInclSemiColon, FuncInfo.fFuncName, Comment]);
       // Old function call with params for IDE message output.
       s:=copy(fCodeTool.Src, FuncInfo.fStartPos, FuncInfo.fEndPos-FuncInfo.fStartPos);
       s:=StringReplace(s, sLineBreak, '', [rfReplaceAll]);
@@ -667,13 +667,22 @@ function TConvDelphiCodeTool.ReplaceFuncCalls: boolean;
 // implementation section. Add their positions to another list for replacement.
 var
   FuncNames: TStringList;
-  Node: TCodeTreeNode;
   StartPos: Integer;
+
+  procedure CheckSemiColon(FuncInfo: TCalledFuncInfo);
+  begin
+    with fCodeTool do
+      if AtomIsChar(';') then begin
+        FuncInfo.fEndPos:=CurPos.EndPos;
+        FuncInfo.fInclSemiColon:=';';
+      end;
+  end;
 
   procedure ReadParams(FuncInfo: TCalledFuncInfo);
   var
     ExprStartPos, ExprEndPos: integer;
   begin
+    FuncInfo.fInclSemiColon:='';
     FuncInfo.fStartPos:=StartPos;
     with fCodeTool do begin
       MoveCursorToCleanPos(StartPos);
@@ -700,6 +709,8 @@ var
             ReadNextAtom;
             if AtomIsChar(')') then begin
               FuncInfo.fEndPos:=CurPos.EndPos;
+              ReadNextAtom;
+              CheckSemiColon(FuncInfo);
               break;
             end;
             if not AtomIsChar(',') then
@@ -708,9 +719,8 @@ var
           end;
         end;
       end
-      else if AtomIsChar(';') then
-        FuncInfo.fEndPos:=CurPos.EndPos;
-//raise EConverterError.Create('The called function is not ended like it should.');
+      else
+        CheckSemiColon(FuncInfo);
     end;
   end;
 
@@ -835,7 +845,8 @@ var
     Result:=aNode.NextSkipChilds;
   end;
 
-
+var
+  Node: TCodeTreeNode;
 begin
   Result:=false;
   with fCodeTool do begin
