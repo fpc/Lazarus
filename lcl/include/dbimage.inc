@@ -160,6 +160,7 @@ begin
           Picture.Clear;
           exit;
           end;
+        AGraphic := nil;
         try
           GraphExt :=  s.ReadAnsiString;
 
