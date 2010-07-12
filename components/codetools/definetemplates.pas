@@ -614,7 +614,8 @@ const
 
 type
 
-  { TFPCConfigFileState }
+  { TFPCConfigFileState
+    Store if a config file exists and its modification date }
 
   TFPCConfigFileState = class
   public
@@ -628,7 +629,8 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   end;
 
-  { TFPCConfigFileStateList }
+  { TFPCConfigFileStateList
+    list of TFPCConfigFileState }
 
   TFPCConfigFileStateList = class
   private
@@ -654,7 +656,7 @@ type
     Storing all information (maros, search paths) of one compiler
     with one specific TargetOS and TargetCPU. }
 
-  TFPCTargetConfigCache = class
+  TFPCTargetConfigCache = class(TComponent)
   private
     FChangeStamp: integer;
   public
@@ -674,12 +676,12 @@ type
     ErrorMsg: string;
     ErrorTranslatedMsg: string;
     Caches: TFPCTargetConfigCaches;
-    constructor Create(aCompiler, aTargetOS, aTargetCPU: string);
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear; // values, not keys
     function Equals(Item: TFPCTargetConfigCache;
                     CompareKey: boolean = true): boolean; reintroduce;
-    procedure Assign(Item: TFPCTargetConfigCache);
+    procedure Assign(Source: TPersistent); override;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure LoadFromFile(Filename: string);
@@ -717,17 +719,17 @@ type
   { TFPCSourceCache
     All source files of one FPC source directory }
 
-  TFPCSourceCache = class
+  TFPCSourceCache = class(TComponent)
   private
     FChangeStamp: integer;
   public
     Directory: string;
     Files: TStringList;
     Caches: TFPCSourceCaches;
-    constructor Create;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear;
-    procedure Assign(Cache: TFPCSourceCache);
+    procedure Assign(Source: TPersistent); override;
     function Equals(Cache: TFPCSourceCache): boolean; reintroduce;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -6501,12 +6503,9 @@ end;
 
 { TFPCTargetConfigCacheItem }
 
-constructor TFPCTargetConfigCache.Create(aCompiler, aTargetOS,
-  aTargetCPU: string);
+constructor TFPCTargetConfigCache.Create(AOwner: TComponent);
 begin
-  Compiler:=aCompiler;
-  TargetOS:=aTargetOS;
-  TargetCPU:=aTargetCPU;
+  inherited Create(AOwner);
   ConfigFiles:=TFPCConfigFileStateList.Create;
 end;
 
@@ -6581,44 +6580,50 @@ begin
   Result:=true;
 end;
 
-procedure TFPCTargetConfigCache.Assign(Item: TFPCTargetConfigCache);
+procedure TFPCTargetConfigCache.Assign(Source: TPersistent);
+var
+  Item: TFPCTargetConfigCache;
 begin
-  // keys
-  TargetOS:=Item.TargetOS;
-  TargetCPU:=Item.TargetCPU;
-  Compiler:=Item.Compiler;
-  // values
-  CompilerDate:=Item.CompilerDate;
-  TargetCompiler:=Item.TargetCompiler;
-  TargetCompilerDate:=Item.TargetCompilerDate;
-  ConfigFiles.Assign(Item.ConfigFiles);
-  if Item.Defines<>nil then begin
-    if Defines=nil then Defines:=TStringToStringTree.Create(true);
-    Defines.Assign(Item.Defines);
-  end else begin
-    FreeAndNil(Defines);
-  end;
-  if Item.Undefines<>nil then begin
-    if Undefines=nil then Undefines:=TStringToStringTree.Create(true);
-    Undefines.Assign(Item.Undefines);
-  end else begin
-    FreeAndNil(Undefines);
-  end;
-  if Item.UnitPaths<>nil then begin
-    if UnitPaths=nil then UnitPaths:=TStringList.Create;
-    UnitPaths.Assign(Item.UnitPaths);
-  end else begin
-    FreeAndNil(UnitPaths);
-  end;
-  if Item.Units<>nil then begin
-    if Units=nil then Units:=TStringToStringTree.Create(true);
-    Units.Assign(Item.Units);
-  end else begin
-    FreeAndNil(Units);
-  end;
+  if Source is TFPCTargetConfigCache then begin
+    Item:=TFPCTargetConfigCache(Source);
+    // keys
+    TargetOS:=Item.TargetOS;
+    TargetCPU:=Item.TargetCPU;
+    Compiler:=Item.Compiler;
+    // values
+    CompilerDate:=Item.CompilerDate;
+    TargetCompiler:=Item.TargetCompiler;
+    TargetCompilerDate:=Item.TargetCompilerDate;
+    ConfigFiles.Assign(Item.ConfigFiles);
+    if Item.Defines<>nil then begin
+      if Defines=nil then Defines:=TStringToStringTree.Create(true);
+      Defines.Assign(Item.Defines);
+    end else begin
+      FreeAndNil(Defines);
+    end;
+    if Item.Undefines<>nil then begin
+      if Undefines=nil then Undefines:=TStringToStringTree.Create(true);
+      Undefines.Assign(Item.Undefines);
+    end else begin
+      FreeAndNil(Undefines);
+    end;
+    if Item.UnitPaths<>nil then begin
+      if UnitPaths=nil then UnitPaths:=TStringList.Create;
+      UnitPaths.Assign(Item.UnitPaths);
+    end else begin
+      FreeAndNil(UnitPaths);
+    end;
+    if Item.Units<>nil then begin
+      if Units=nil then Units:=TStringToStringTree.Create(true);
+      Units.Assign(Item.Units);
+    end else begin
+      FreeAndNil(Units);
+    end;
 
-  ErrorMsg:=Item.ErrorMsg;
-  ErrorTranslatedMsg:=Item.ErrorTranslatedMsg;
+    ErrorMsg:=Item.ErrorMsg;
+    ErrorTranslatedMsg:=Item.ErrorTranslatedMsg;
+  end else
+    inherited Assign(Source);
 end;
 
 procedure TFPCTargetConfigCache.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -6879,7 +6884,7 @@ var
   CfgFileExists: Boolean;
   CfgFileDate: Integer;
 begin
-  OldOptions:=TFPCTargetConfigCache.Create('','','');
+  OldOptions:=TFPCTargetConfigCache.Create(nil);
   CfgFiles:=nil;
   try
     // remember old state to find out if something changed
@@ -6951,7 +6956,7 @@ begin
   Clear;
   Cnt:=XMLConfig.GetValue(Path+'Count',0);
   for i:=1 to Cnt do begin
-    Item:=TFPCTargetConfigCache.Create('','','');
+    Item:=TFPCTargetConfigCache.Create(nil);
     Item.LoadFromXMLConfig(XMLConfig,Path+'Item'+IntToStr(i)+'/');
     if (Item.TargetOS<>'')
     and (Item.TargetCPU<>'')
@@ -7022,8 +7027,11 @@ begin
     TargetOS:=GetCompiledTargetOS;
   if TargetCPU='' then
     TargetCPU:=GetCompiledTargetCPU;
-  Cmp:=TFPCTargetConfigCache.Create(CompilerFilename,TargetOS,TargetCPU);
+  Cmp:=TFPCTargetConfigCache.Create(nil);
   try
+    Cmp.Compiler:=CompilerFilename;
+    Cmp.TargetOS:=TargetOS;
+    Cmp.TargetCPU:=TargetCPU;
     Node:=fItems.Find(cmp);
     if Node<>nil then begin
       Result:=TFPCTargetConfigCache(Node.Data);
@@ -7166,8 +7174,9 @@ end;
 
 { TFPCSourceCacheItem }
 
-constructor TFPCSourceCache.Create;
+constructor TFPCSourceCache.Create(AOwner: TComponent);
 begin
+  inherited Create(AOwner);
   Files:=TStringList.Create;
 end;
 
@@ -7182,10 +7191,16 @@ begin
   FreeAndNil(Files);
 end;
 
-procedure TFPCSourceCache.Assign(Cache: TFPCSourceCache);
+procedure TFPCSourceCache.Assign(Source: TPersistent);
+var
+  Cache: TFPCSourceCache;
 begin
-  Directory:=Cache.Directory;
-  Files.Assign(Cache.Files);
+  if Source is TFPCSourceCache then begin
+    Cache:=TFPCSourceCache(Source);
+    Directory:=Cache.Directory;
+    Files.Assign(Cache.Files);
+  end else
+    inherited Assign(Source);
 end;
 
 function TFPCSourceCache.Equals(Cache: TFPCSourceCache): boolean;
@@ -7323,7 +7338,7 @@ begin
   Clear;
   Cnt:=XMLConfig.GetValue(Path+'Count',0);
   for i:=1 to Cnt do begin
-    Item:=TFPCSourceCache.Create;
+    Item:=TFPCSourceCache.Create(nil);
     Item.LoadFromXMLConfig(XMLConfig,Path+'Item'+IntToStr(i)+'/');
     if (Item.Directory='') or (fItems.Find(Item)<>nil) then
       Item.Free
@@ -7394,7 +7409,7 @@ begin
   if Node<>nil then begin
     Result:=TFPCSourceCache(Node.Data);
   end else if CreateIfNotExists then begin
-    Result:=TFPCSourceCache.Create;
+    Result:=TFPCSourceCache.Create(nil);
     Result.Directory:=Directory;
     Result.Caches:=Self;
     fItems.Add(Result);
