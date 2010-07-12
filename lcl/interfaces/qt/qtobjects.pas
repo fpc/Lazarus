@@ -2896,6 +2896,7 @@ var
   APixmap, ATemp: QPixmapH;
   AMask: QBitmapH;
   ScaledImage: QImageH;
+  ScaledMask: QImageH;
   NewRect: TRect;
 
   function NeedScaling: boolean;
@@ -2923,22 +2924,48 @@ begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawImage() ');
   {$endif}
+  ScaledImage := nil;
   LocalRect := targetRect^;
 
   if mask <> nil then
   begin
+    if NeedScaling then
+    begin
+      ScaledImage := QImage_create();
+      QImage_copy(Image, ScaledImage, 0, 0, QImage_width(Image), QImage_height(Image));
+      QImage_scaled(ScaledImage, ScaledImage, LocalRect.Right - LocalRect.Left,
+            LocalRect.Bottom - LocalRect.Top);
+      NewRect := sourceRect^;
+      NewRect.Right := (LocalRect.Right - LocalRect.Left) + sourceRect^.Left;
+      NewRect.Bottom := (LocalRect.Bottom - LocalRect.Top) + sourceRect^.Top;
+    end;
     // TODO: check maskRect
     APixmap := QPixmap_create();
     try
-      QPixmap_fromImage(APixmap, image, flags);
+      if ScaledImage <> nil then
+        QPixmap_fromImage(APixmap, ScaledImage, flags)
+      else
+        QPixmap_fromImage(APixmap, image, flags);
       ATemp := QPixmap_create();
       try
         // QBitmap_fromImage raises assertion in the qt library
-        QPixmap_fromImage(ATemp, mask, flags);
+        if ScaledImage <> nil then
+        begin
+          ScaledMask := QImage_create();
+          QImage_copy(Mask, ScaledMask, 0, 0, QImage_width(Mask), QImage_height(Mask));
+          QImage_scaled(ScaledMask, ScaledMask, LocalRect.Right - LocalRect.Left,
+              LocalRect.Bottom - LocalRect.Top);
+          QPixmap_fromImage(ATemp, ScaledMask, flags);
+          QImage_destroy(ScaledMask);
+        end else
+          QPixmap_fromImage(ATemp, mask, flags);
         AMask := QBitmap_create(ATemp);
         try
           QPixmap_setMask(APixmap, AMask);
-          QPainter_drawPixmap(Widget, PRect(@LocalRect), APixmap, sourceRect);
+          if ScaledImage <> nil then
+            QPainter_drawPixmap(Widget, PRect(@LocalRect), APixmap, @NewRect)
+          else
+            QPainter_drawPixmap(Widget, PRect(@LocalRect), APixmap, sourceRect);
         finally
           QBitmap_destroy(AMask);
         end;
@@ -2948,6 +2975,8 @@ begin
     finally
       QPixmap_destroy(APixmap);
     end;
+    if ScaledImage <> nil then
+      QImage_destroy(ScaledImage);
   end else
   begin
     {$note TQtDeviceContext.drawImage workaround - possible qt4 bug with QPainter & RGB32 images.}

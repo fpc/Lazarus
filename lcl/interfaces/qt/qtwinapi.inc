@@ -5531,17 +5531,6 @@ begin
   else
     dy := 0;
 
-  // if passed source Width/Height is more than original then
-  // qt skip that, so for that case we should transform size here
-  //
-  // stretch_factor := Width / SrcWidth;
-  // Width := stretch_factor * (SrcWidthOrig - XSrc);
-  if (SrcWidthOrig - XSrc < SrcWidth - XSrc) then
-    Width := Width * (SrcWidthOrig - XSrc) div SrcWidth;
-
-  if (SrcHeightOrig - YSrc < SrcHeight - YSrc) then
-    Height := Height * (SrcHeightOrig - YSrc) div SrcHeight;
-
   if dx <> 0 then // apply shifts
   begin
     inc(X, dx);        // shift destination
