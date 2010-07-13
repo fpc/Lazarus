@@ -555,6 +555,7 @@ type
     FHoldPackageCount: integer;
     FIconFile: string;
     FInstalled: TPackageInstallType;
+    FLastCompileComplete: boolean;
     FLastCompilerFileDate: integer;
     FLastCompilerFilename: string;
     FLastCompilerParams: string;
@@ -766,6 +767,8 @@ type
                                           write FLastCompilerFilename;
     property LastCompilerParams: string read FLastCompilerParams
                                         write FLastCompilerParams;
+    property LastCompileComplete: boolean read FLastCompileComplete
+                                          write FLastCompileComplete;
     property LazDocPaths: string read FLazDocPaths write SetLazDocPaths;
     property License: string read FLicense write SetLicense;
     property LPKSource: TCodeBuffer read FLPKSource write SetLPKSource;// can be nil when file on disk was removed

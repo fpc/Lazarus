@@ -267,7 +267,8 @@ type
                               const NewName: string; NewVersion: TPkgVersion;
                               RenameDependencies: boolean);
     function SavePackageCompiledState(APackage: TLazPackage;
-                  const CompilerFilename, CompilerParams: string): TModalResult;
+                  const CompilerFilename, CompilerParams: string;
+                  Complete: boolean): TModalResult;
     function LoadPackageCompiledState(APackage: TLazPackage;
                                       IgnoreErrors: boolean): TModalResult;
     function CheckCompileNeedDueToDependencies(FirstDependency: TPkgDependency;
@@ -2701,7 +2702,8 @@ begin
 end;
 
 function TLazPackageGraph.SavePackageCompiledState(APackage: TLazPackage;
-  const CompilerFilename, CompilerParams: string): TModalResult;
+  const CompilerFilename, CompilerParams: string; Complete: boolean
+  ): TModalResult;
 var
   XMLConfig: TXMLConfig;
   StateFile: String;
@@ -2710,20 +2712,24 @@ begin
   Result:=mrCancel;
   StateFile:=APackage.GetStateFilename;
   try
-    CompilerFileDate:=FileAgeUTF8(CompilerFilename);
+    CompilerFileDate:=FileAgeCached(CompilerFilename);
+
+    APackage.LastCompilerFilename:=CompilerFilename;
+    APackage.LastCompilerFileDate:=CompilerFileDate;
+    APackage.LastCompilerParams:=CompilerParams;
+    APackage.LastCompileComplete:=Complete;
+
     XMLConfig:=TXMLConfig.CreateClean(StateFile);
     try
       XMLConfig.SetValue('Compiler/Value',CompilerFilename);
       XMLConfig.SetValue('Compiler/Date',CompilerFileDate);
       XMLConfig.SetValue('Params/Value',CompilerParams);
+      XMLConfig.SetDeleteValue('Complete/Value',Complete,true);
       InvalidateFileStateCache;
       XMLConfig.Flush;
     finally
       XMLConfig.Free;
     end;
-    APackage.LastCompilerFilename:=CompilerFilename;
-    APackage.LastCompilerFileDate:=CompilerFileDate;
-    APackage.LastCompilerParams:=CompilerParams;
     APackage.LastStateFileName:=StateFile;
     APackage.LastStateFileDate:=FileAgeUTF8(StateFile);
     APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
@@ -2767,6 +2773,7 @@ begin
         APackage.LastCompilerFilename:=XMLConfig.GetValue('Compiler/Value','');
         APackage.LastCompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
         APackage.LastCompilerParams:=XMLConfig.GetValue('Params/Value','');
+        APackage.LastCompileComplete:=XMLConfig.GetValue('Complete/Value',true);
       finally
         XMLConfig.Free;
       end;
@@ -2976,6 +2983,12 @@ begin
   // quick compile is possible
   NeedBuildAllFlag:=false;
 
+  if not APackage.LastCompileComplete
+  then begin
+    DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compile was incomplete for ',APackage.IDAsString);
+    exit(mrYes);
+  end;
+
   // check all required packages
   Result:=CheckCompileNeedDueToDependencies(APackage.FirstRequiredDependency,
                                              StateFileAge);
@@ -3047,6 +3060,7 @@ var
   CompilePolicies: TPackageUpdatePolicies;
   BlockBegan: Boolean;
   NeedBuildAllFlag: Boolean;
+  CompileResult: TModalResult;
 begin
   Result:=mrCancel;
 
@@ -3189,18 +3203,17 @@ begin
             SourceEditorManagerIntf.ClearErrorLines;
 
           // compile package
-          Result:=RunCompilerWithOptions(PkgCompileTool,APackage.CompilerOptions);
-          if Result<>mrOk then exit;
-          // compilation succeded -> write state file
+          CompileResult:=RunCompilerWithOptions(PkgCompileTool,APackage.CompilerOptions);
+          // write state file
           Result:=SavePackageCompiledState(APackage,
-                                           CompilerFilename,CompilerParams);
+                                           CompilerFilename,CompilerParams,
+                                           CompileResult=mrOk);
           if Result<>mrOk then begin
-            APackage.LastCompilerFilename:=CompilerFilename;
-            APackage.LastCompilerParams:=CompilerParams;
-            APackage.LastCompilerFileDate:=FileAgeUTF8(CompilerFilename);
             DebugLn(['TLazPackageGraph.CompilePackage SavePackageCompiledState failed: ',APackage.IDAsString]);
             exit;
           end;
+          Result:=CompileResult;
+          if Result<>mrOk then exit;
         finally
           // clean up
           PkgCompileTool.Free;
