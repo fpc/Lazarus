@@ -634,6 +634,7 @@ end;
 procedure TDragManagerDefault.DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer);
 //Start a drag operation
 begin
+  //debugln(['TDragManagerDefault.DragStart ',DbgSName(AControl)]);
   if FPerformer = nil then
   begin
     if AThreshold >= 0 then

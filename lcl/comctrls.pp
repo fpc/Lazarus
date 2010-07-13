@@ -2313,8 +2313,6 @@ type
     tvsManualNotify,
     tvsUpdating,
     tvsPainting,
-    tvsMouseCapture,
-    tvsWaitForDragging,
     tvsDblClicked,
     tvsTripleClicked,
     tvsQuadClicked,
@@ -2383,8 +2381,7 @@ type
     FLastVertScrollInfo: TScrollInfo;
     FMaxLvl: integer; // maximum level of all nodes
     FMaxRight: integer; // maximum text width of all nodes (needed for horizontal scrolling)
-    fMouseDownX: integer;
-    fMouseDownY: integer;
+    fMouseDownPos: TPoint;
     FOnAddition: TTVExpandedEvent;
     FOnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent;
     FOnAdvancedCustomDrawItem: TTVAdvancedCustomDrawItemEvent;

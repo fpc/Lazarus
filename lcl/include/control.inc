@@ -81,6 +81,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.BeginAutoDrag;
 begin
+  debugln(['TControl.BeginAutoDrag ',DbgSName(Self)]);
   BeginDrag(DragManager.DragImmediate, DragManager.DragThreshold);
 end;
 

@@ -692,7 +692,6 @@ end;
 procedure TTreeNode.SetCut(AValue: Boolean);
 begin
   if AValue=Cut then exit;
-  // ToDo
   if AValue then
     Include(FStates,nsCut)
   else
@@ -726,26 +725,12 @@ begin
 end;
 
 procedure TTreeNode.SetFocused(AValue: Boolean);
-{var
-  Item: TTVItem;
-  Template: DWORD;}
 begin
   if AValue=GetFocused then exit;
-  // ToDo
   if AValue then
     Include(FStates,nsFocused)
   else
     Exclude(FStates,nsFocused);
-  {if Value then Template := DWORD(-1)
-  else Template := 0;
-  with Item do
-  begin
-    mask := TVIF_STATE;
-    hItem := ItemId;
-    stateMask := TVIS_FOCUSED;
-    state := stateMask and Template;
-  end;
-  TreeView_SetItem(Handle, Item);}
   Update;
 end;
 
@@ -2464,7 +2449,6 @@ var
   Node: TTreeNode;
   NodeExpanded: Boolean;
 begin
-  // ToDo: read different stream formats
   if Stream.Position < Stream.Size then
     Stream.ReadBuffer(ItemCount, SizeOf(ItemCount))
   else Exit;
@@ -2484,7 +2468,6 @@ var
   ANode: TTreeNode;
   NodeExpanded: Boolean;
 begin
-  // ToDo: read different stream formats
   Size := SizeOf(Boolean) * Count;
   Stream.WriteBuffer(Size, SizeOf(Size));
   ANode := GetFirstNode;
@@ -4338,7 +4321,7 @@ var
       case ExpandSignType of
       tvestTheme:
         begin
-          //draw a themed expand sign. Todo: track hot
+          // draw a themed expand sign. Todo: track hot
           R := Rect(ALeft, ATop, ARight + 1, ABottom + 1);
           Details := ThemeServices.GetElementDetails(PlusMinusDetail[False, CollapseSign]);
           ThemeServices.DrawElement(Canvas.Handle, Details, R, nil);
@@ -4394,7 +4377,7 @@ var
         with Canvas do begin
           // draw virtual tree line
           Pen.Color:=TreeLineColor;
-          //Pen.Style:=TreeLinePenStyle; ToDo: not yet implemented in all widgetsets
+          // Pen.Style:=TreeLinePenStyle; ToDo: not yet implemented in all widgetsets
           x:=Node.DisplayExpandSignRight+Indent div 2;
           MoveTo(x,NodeRect.Bottom-3);
           LineTo(x,NodeRect.Bottom-2);
@@ -4745,22 +4728,14 @@ procedure TCustomTreeView.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   CursorNode: TTreeNode;
-  bStartDrag: boolean;
   LogicalX: Integer;
 begin
   {$IFDEF VerboseDrag}
   DebugLn('TCustomTreeView.MouseDown A ',Name,':',ClassName,' ');
   {$ENDIF}
-  fMouseDownX := X;
-  fMouseDownY := Y;
+  fMouseDownPos := Point(X,Y);
   Exclude(FStates,tvsEditOnMouseUp);
-  if Button=mbMiddle then begin
-    if ([ssDouble,ssTriple,ssQuad]*Shift)<>[] then Exit;
-    if tvsIsEditing in FStates then begin
-      // ToDo: insert clipboard text into node text
-      //  :=PrimarySelection.AsText;
-    end;
-  end else if Button=mbRight then begin
+  if Button=mbRight then begin
     if RightClickSelect then begin
       Selected:=GetNodeAt(X,Y);
     end;
@@ -4773,12 +4748,10 @@ begin
 
   CursorNode := GetNodeAt(X, Y);
   LogicalX:=X;
-  bStartDrag := false;
   if ([ssDouble, ssTriple, ssQuad] * Shift) = [] then
   begin
     if (Button = mbLeft) and (CursorNode <> nil) then
     begin
-      Exclude(fStates, tvsWaitForDragging);
       if CursorNode.HasChildren and ShowButtons and
          (LogicalX >= CursorNode.DisplayExpandSignLeft) and
          (LogicalX < CursorNode.DisplayExpandSignRight) then
@@ -4793,8 +4766,6 @@ begin
         {$IFDEF VerboseDrag}
         DebugLn(['TCustomTreeView.MouseDown In Text ',Name,':',ClassName,' MouseCapture=',MouseCapture]);
         {$ENDIF}
-        if MouseCapture then
-          Include(FStates, tvsMouseCapture);
         if (Selected = CursorNode) and (LogicalX >= CursorNode.DisplayTextLeft) then
           Include(FStates, tvsEditOnMouseUp);
         if not (tvoAllowMultiselect in Options) then
@@ -4818,16 +4789,7 @@ begin
               Items.SelectOnlyThis(CursorNode);
           end;
         end;
-        bStartDrag := tvsMouseCapture in FStates;
       end;
-    end;
-    if (bStartDrag) then
-    begin
-      {$IFDEF VerboseDrag}
-      DebugLn('TCustomTreeView.MouseDown A bStartDrag ',Name,':',ClassName,' ');
-      {$ENDIF}
-      FDragNode := CursorNode;
-      Include(fStates, tvsWaitForDragging);
     end;
   end else
   if not (tvoNoDoubleClickExpand in Options) and (ssDouble in Shift)
@@ -4838,18 +4800,6 @@ end;
 procedure TCustomTreeView.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseMove(Shift, x, y);
-  if (tvsWaitForDragging in fStates) then begin
-    if (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG))
-    or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
-    then begin
-      {$IFDEF VerboseDrag}
-      DebugLn('TCustomTreeView.MouseMove A Begindrag ',Name,':',ClassName,' ');
-      {$ENDIF}
-      Exclude(fStates, tvsWaitForDragging);
-      Exclude(fStates, tvsEditOnMouseUp);
-      BeginDrag(false);
-    end;
-  end;
   if (tvoAutoInsertMark in FOptions) then
     UpdateInsertMark(X,Y);
 end;
@@ -4862,13 +4812,13 @@ begin
     exit;
   if Button=mbLeft then
     MouseCapture := False;
-  Exclude(fStates, tvsWaitForDragging);
   if (Button=mbLeft)
-  and (fStates * [tvsDblClicked, tvsTripleClicked, tvsQuadClicked,
-    tvsWaitForDragging] = [])
+  and (fStates * [tvsDblClicked, tvsTripleClicked, tvsQuadClicked] = [])
   then begin
     //AquirePrimarySelection;
-    if (tvsEditOnMouseUp in FStates) and (not ReadOnly) then
+    if (tvsEditOnMouseUp in FStates) and (not ReadOnly)
+    and (abs(fMouseDownPos.X-X)+abs(fMouseDownPos.Y-Y)<10)
+    and (GetNodeAt(fMouseDownPos.X,fMouseDownPos.Y)=GetNodeAt(X,Y)) then
       BeginEditing(Selected);
   end;
   fStates:=fStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked,tvsEditOnMouseUp];
@@ -5039,31 +4989,6 @@ begin
   {$IFDEF VerboseDrag}
   DebugLn('TCustomTreeView.WMLButtonDown END ',Name,':',ClassName,' ');
   {$ENDIF}
-  { ToDo
-  FDragNode := nil;
-  try
-    inherited;
-    if (DragMode = dmAutomatic) and (DragKind = dkDrag) then
-    begin
-      SetFocus;
-      if not (tvsDragged in FStates) then begin
-        GetCursorPos(MousePos);
-        P:=PointToSmallPoint(ScreenToClient(MousePos));
-        Perform(LM_LBUTTONUP, 0, LParam(MakeLong(P.X, P.Y)));
-      end
-      else begin
-        Node := GetNodeAt(AMessage.XPos, AMessage.YPos);
-        if Node <> nil then
-        begin
-          Node.Focused := True;
-          Node.Selected := True;
-          BeginDrag(False);
-        end;
-      end;
-    end;
-  finally
-    FDragNode := nil;
-  end;}
 end;
 
 procedure TCustomTreeView.WMNotify(var AMessage: TLMNotify);
