@@ -3667,9 +3667,7 @@ end;
 function TLazPackageGraph.SavePackageMainSource(APackage: TLazPackage;
   Flags: TPkgCompileFlags; ShowAbort: boolean): TModalResult;
 var
-  SrcFilename: String;
-  UsedUnits: String;
-  Src: String;
+  PkgUnitName, SrcFilename, UsedUnits, Src: String;
   i: Integer;
   e: String;
   CurFile: TPkgFile;
@@ -3780,7 +3778,11 @@ begin
            +lisPkgMangThisFileWasAutomaticallyCreatedByLazarusDoNotEdit+e
            +'  '+lisPkgMangThisSourceIsOnlyUsedToCompileAndInstallThePackage+e
            +' }'+e+e;
-  Src:='unit '+ExtractFileNameOnly(SrcFilename)+';'+e
+  // leave the unit case the same as the package name (e.g: package name LazReport, unit name lazreport)
+  PkgUnitName := ExtractFileNameOnly(SrcFilename);
+  if AnsiSameText(APackage.Name, PkgUnitName) then
+    PkgUnitName := APackage.Name;  
+  Src:='unit '+ PkgUnitName +';'+e
       +e
       +'interface'+e
       +e;
