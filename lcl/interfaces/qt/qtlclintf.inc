@@ -160,7 +160,7 @@ begin
   if ACursor > crHigh then Exit;
 
   // TODO: map is better
-  case TCursor(ACursor) of
+  case ACursor of
     crNone      : CursorShape := QtBlankCursor;
     crArrow     : CursorShape := QtArrowCursor;
     crCross     : CursorShape := QtCrossCursor;
