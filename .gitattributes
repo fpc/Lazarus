@@ -3730,9 +3730,10 @@ ide/sourcesyneditor.pas svneol=native#text/pascal
 ide/splash.lfm svneol=native#text/plain
 ide/splash.pp svneol=native#text/pascal
 ide/srcedithintfrm.pas svneol=native#text/plain
+ide/startlazarus.ico -text svneol=unset#image/ico
 ide/startlazarus.lpi svneol=native#text/plain
 ide/startlazarus.lpr svneol=native#text/pascal
-ide/startlazarus.rc svneol=CRLF#text/plain eol=crlf
+ide/startlazarus.res -text
 ide/sysvaruseroverridedlg.lfm svneol=native#text/plain
 ide/sysvaruseroverridedlg.pas svneol=native#text/pascal
 ide/transfermacros.pp svneol=native#text/pascal

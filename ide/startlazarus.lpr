@@ -30,15 +30,13 @@ program StartLazarus;
 
 {$mode objfpc}{$H+}
 
-{$IFDEF WINDOWS}
-  {$R *.rc}
-{$ENDIF}
-
 uses
   Interfaces, SysUtils,
   Forms,
   LazarusManager;
   
+{$R *.res}
+
 var
   ALazarusManager: TLazarusManager;
   
