@@ -124,6 +124,26 @@ msgstr "Тека налагоджувача"
 msgid "default class ancestor TObject not found"
 msgstr "не знайдений клас-предок за замовчуванням TObject"
 
+#: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
+msgid "Default fpc source Operating System 2"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpcsourceoperatingsystem
+msgid "Default fpc source Operating System"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpcsymbol
+msgid "Default fpc symbol"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpctargetoperatingsystem
+msgid "Default fpc target Operating System"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpctargetprocessor
+msgid "Default fpc target processor"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultinterfaceancestoriinterfacenotfound
 msgid "default interface ancestor IInterface not found"
 msgstr "не знайдений інтерфейс-предок за замовчуванням IInterface"
@@ -131,26 +151,6 @@ msgstr "не знайдений інтерфейс-предок за замов�
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"
 msgstr "очікується параметр за замовчуванням, але знайдено %s"
-
-#: codetoolsstrconsts.ctsdefaultppc386source2operatingsystem
-msgid "Default ppc386 source Operating System 2"
-msgstr "За замовчуванням код Операційної Системи 2 pp386"
-
-#: codetoolsstrconsts.ctsdefaultppc386sourceoperatingsystem
-msgid "Default ppc386 source Operating System"
-msgstr "Операційна система для коду за замовчуванням для ppc386"
-
-#: codetoolsstrconsts.ctsdefaultppc386symbol
-msgid "Default ppc386 symbol"
-msgstr "Символ ppc386 за замовчуванням"
-
-#: codetoolsstrconsts.ctsdefaultppc386targetoperatingsystem
-msgid "Default ppc386 target Operating System"
-msgstr "Операційна система для виконуваного файлу за замовчуванням для ppc386"
-
-#: codetoolsstrconsts.ctsdefaultppc386targetprocessor
-msgid "Default ppc386 target processor"
-msgstr "Процесор для виконуваного файлу за замовчуванням для ppc386"
 
 #: codetoolsstrconsts.ctsdefaultpropertynotfound
 msgid "default property not found"

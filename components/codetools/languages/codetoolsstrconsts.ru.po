@@ -129,6 +129,26 @@ msgstr "Каталог отладчика"
 msgid "default class ancestor TObject not found"
 msgstr "класс-предок по умолчанию - TObject - не найден"
 
+#: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
+msgid "Default fpc source Operating System 2"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpcsourceoperatingsystem
+msgid "Default fpc source Operating System"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpcsymbol
+msgid "Default fpc symbol"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpctargetoperatingsystem
+msgid "Default fpc target Operating System"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpctargetprocessor
+msgid "Default fpc target processor"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultinterfaceancestoriinterfacenotfound
 msgid "default interface ancestor IInterface not found"
 msgstr "интерфейс-предок по умолчанию - IInterface - не найден"
@@ -136,26 +156,6 @@ msgstr "интерфейс-предок по умолчанию - IInterface - �
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"
 msgstr "ожидается параметр по умолчанию, найдено %s"
-
-#: codetoolsstrconsts.ctsdefaultppc386source2operatingsystem
-msgid "Default ppc386 source Operating System 2"
-msgstr "Исходная операционная система 2 для ppc386 по умолчанию"
-
-#: codetoolsstrconsts.ctsdefaultppc386sourceoperatingsystem
-msgid "Default ppc386 source Operating System"
-msgstr "Исходная операционная система для ppc386 по умолчанию"
-
-#: codetoolsstrconsts.ctsdefaultppc386symbol
-msgid "Default ppc386 symbol"
-msgstr "Символ ppc386 по умолчанию"
-
-#: codetoolsstrconsts.ctsdefaultppc386targetoperatingsystem
-msgid "Default ppc386 target Operating System"
-msgstr "Целевая операционная система для ppc386 по умолчанию"
-
-#: codetoolsstrconsts.ctsdefaultppc386targetprocessor
-msgid "Default ppc386 target processor"
-msgstr "Целевой процессор для ppc386 по умолчанию"
 
 #: codetoolsstrconsts.ctsdefaultpropertynotfound
 msgid "default property not found"

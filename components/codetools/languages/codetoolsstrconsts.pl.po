@@ -133,6 +133,26 @@ msgstr "Katalog odpluskwiacza"
 msgid "default class ancestor TObject not found"
 msgstr "nie znaleziono domyślnego przodka klasy: TObject"
 
+#: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
+msgid "Default fpc source Operating System 2"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpcsourceoperatingsystem
+msgid "Default fpc source Operating System"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpcsymbol
+msgid "Default fpc symbol"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpctargetoperatingsystem
+msgid "Default fpc target Operating System"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpctargetprocessor
+msgid "Default fpc target processor"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultinterfaceancestoriinterfacenotfound
 msgid "default interface ancestor IInterface not found"
 msgstr "nie znaleziono domyślnego przodka interfejsu: IInterface"
@@ -140,26 +160,6 @@ msgstr "nie znaleziono domyślnego przodka interfejsu: IInterface"
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"
 msgstr "zamiast domyślnego parametru znaleziono %s"
-
-#: codetoolsstrconsts.ctsdefaultppc386source2operatingsystem
-msgid "Default ppc386 source Operating System 2"
-msgstr ""
-
-#: codetoolsstrconsts.ctsdefaultppc386sourceoperatingsystem
-msgid "Default ppc386 source Operating System"
-msgstr "Domyślny system operacyjny źródła ppc386"
-
-#: codetoolsstrconsts.ctsdefaultppc386symbol
-msgid "Default ppc386 symbol"
-msgstr "Domyślny symbol ppc386"
-
-#: codetoolsstrconsts.ctsdefaultppc386targetoperatingsystem
-msgid "Default ppc386 target Operating System"
-msgstr "Domyślny docelowy system operacyjny ppc386"
-
-#: codetoolsstrconsts.ctsdefaultppc386targetprocessor
-msgid "Default ppc386 target processor"
-msgstr "Domyślny docelowy procesor ppc386"
 
 #: codetoolsstrconsts.ctsdefaultpropertynotfound
 msgid "default property not found"

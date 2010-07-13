@@ -130,6 +130,26 @@ msgstr "Répertoire débogueur"
 msgid "default class ancestor TObject not found"
 msgstr "ancêtre de classe par défaut (TObject) non trouvé"
 
+#: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
+msgid "Default fpc source Operating System 2"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpcsourceoperatingsystem
+msgid "Default fpc source Operating System"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpcsymbol
+msgid "Default fpc symbol"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpctargetoperatingsystem
+msgid "Default fpc target Operating System"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpctargetprocessor
+msgid "Default fpc target processor"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultinterfaceancestoriinterfacenotfound
 msgid "default interface ancestor IInterface not found"
 msgstr "Ancêtre par défaut de IInterface non trouvée"
@@ -137,26 +157,6 @@ msgstr "Ancêtre par défaut de IInterface non trouvée"
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"
 msgstr "paramètre default attendu, mais %s trouvé"
-
-#: codetoolsstrconsts.ctsdefaultppc386source2operatingsystem
-msgid "Default ppc386 source Operating System 2"
-msgstr "OS2 source par défaut pour ppc386"
-
-#: codetoolsstrconsts.ctsdefaultppc386sourceoperatingsystem
-msgid "Default ppc386 source Operating System"
-msgstr "OS source par défaut pour ppc386"
-
-#: codetoolsstrconsts.ctsdefaultppc386symbol
-msgid "Default ppc386 symbol"
-msgstr "Symbole par défaut de ppc386"
-
-#: codetoolsstrconsts.ctsdefaultppc386targetoperatingsystem
-msgid "Default ppc386 target Operating System"
-msgstr "OS cible par défaut pour ppc386"
-
-#: codetoolsstrconsts.ctsdefaultppc386targetprocessor
-msgid "Default ppc386 target processor"
-msgstr "Micro processeur cible par défaut pour ppc386"
 
 #: codetoolsstrconsts.ctsdefaultpropertynotfound
 msgid "default property not found"

@@ -174,11 +174,11 @@ ResourceString
   // definetemplates
   ctsUnknownFunction = 'Unknown function %s';
   ctsSyntaxErrorInExpr = 'Syntax Error in expression "%s"';
-  ctsDefaultppc386Symbol = 'Default ppc386 symbol';
-  ctsDefaultppc386TargetOperatingSystem = 'Default ppc386 target Operating System';
-  ctsDefaultppc386SourceOperatingSystem = 'Default ppc386 source Operating System';
-  ctsDefaultppc386Source2OperatingSystem = 'Default ppc386 source Operating System 2';
-  ctsDefaultppc386TargetProcessor = 'Default ppc386 target processor';
+  ctsDefaultFPCSymbol = 'Default fpc symbol';
+  ctsDefaultFPCTargetOperatingSystem = 'Default fpc target Operating System';
+  ctsDefaultFPCSourceOperatingSystem = 'Default fpc source Operating System';
+  ctsDefaultFPCSource2OperatingSystem = 'Default fpc source Operating System 2';
+  ctsDefaultFPCTargetProcessor = 'Default fpc target processor';
   ctsFreePascalCompilerInitialMacros = 'Free Pascal Compiler initial macros';
   ctsFreePascalSourcesPlusDesc = 'Free Pascal Sources, %s';
   ctsSourceFilenamesForStandardFPCUnits =

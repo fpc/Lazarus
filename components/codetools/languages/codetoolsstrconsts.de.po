@@ -132,6 +132,26 @@ msgstr "Debugger-Verzeichnis"
 msgid "default class ancestor TObject not found"
 msgstr "Default-Klassenvorfahr TObject nicht gefunden"
 
+#: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
+msgid "Default fpc source Operating System 2"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpcsourceoperatingsystem
+msgid "Default fpc source Operating System"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpcsymbol
+msgid "Default fpc symbol"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpctargetoperatingsystem
+msgid "Default fpc target Operating System"
+msgstr ""
+
+#: codetoolsstrconsts.ctsdefaultfpctargetprocessor
+msgid "Default fpc target processor"
+msgstr ""
+
 #: codetoolsstrconsts.ctsdefaultinterfaceancestoriinterfacenotfound
 msgid "default interface ancestor IInterface not found"
 msgstr "Default-Interfacevorfahr IInterface nicht gefunden"
@@ -139,26 +159,6 @@ msgstr "Default-Interfacevorfahr IInterface nicht gefunden"
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"
 msgstr "Default-Parameter erwartet aber %s gefunden"
-
-#: codetoolsstrconsts.ctsdefaultppc386source2operatingsystem
-msgid "Default ppc386 source Operating System 2"
-msgstr "Voreingestelltes ppc386-Quellbetriebssystem 2"
-
-#: codetoolsstrconsts.ctsdefaultppc386sourceoperatingsystem
-msgid "Default ppc386 source Operating System"
-msgstr "Voreingestelltes ppc386-Quellbetriebssystem"
-
-#: codetoolsstrconsts.ctsdefaultppc386symbol
-msgid "Default ppc386 symbol"
-msgstr "Voreingestelltes ppc386-Symbol"
-
-#: codetoolsstrconsts.ctsdefaultppc386targetoperatingsystem
-msgid "Default ppc386 target Operating System"
-msgstr "Voreingestelltes ppc386-Zielbetriebssystem"
-
-#: codetoolsstrconsts.ctsdefaultppc386targetprocessor
-msgid "Default ppc386 target processor"
-msgstr "Voreingestellter ppc386-Zielprozessor"
 
 #: codetoolsstrconsts.ctsdefaultpropertynotfound
 msgid "default property not found"

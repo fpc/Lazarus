@@ -667,6 +667,7 @@ type
     TargetOS: string; // will be passed lowercase
     TargetCPU: string; // will be passed lowercase
     Compiler: string; // full file name
+    CompilerOptions: string;
     // values
     CompilerDate: longint;
     TargetCompiler: string; // when Compiler is fpc, this is the real compiler (e.g. ppc386)
@@ -713,7 +714,7 @@ type
     procedure SaveToFile(Filename: string);
     procedure IncreaseChangeStamp;
     property ChangeStamp: integer read FChangeStamp;
-    function Find(CompilerFilename, TargetOS, TargetCPU: string;
+    function Find(CompilerFilename, CompilerOptions, TargetOS, TargetCPU: string;
                   CreateIfNotExists: boolean): TFPCTargetConfigCache;
   end;
 
@@ -780,6 +781,7 @@ type
     FCaches: TFPCDefinesCache;
     FChangeStamp: integer;
     FCompilerFilename: string;
+    FCompilerOptions: string;
     FFPCSourceDirectory: string;
     FTargetCPU: string;
     FTargetOS: string;
@@ -793,6 +795,7 @@ type
     fSrcDuplicates: TStringToStringTree; // lower case unit to semicolon separated list of files
     fFlags: TFPCUnitToSrcCacheFlags;
     procedure SetCompilerFilename(const AValue: string);
+    procedure SetCompilerOptions(const AValue: string);
     procedure SetFPCSourceDirectory(const AValue: string);
     procedure SetTargetCPU(const AValue: string);
     procedure SetTargetOS(const AValue: string);
@@ -807,6 +810,7 @@ type
     procedure Clear;
     property Caches: TFPCDefinesCache read FCaches;
     property CompilerFilename: string read FCompilerFilename write SetCompilerFilename;
+    property CompilerOptions: string read FCompilerOptions write SetCompilerOptions;
     property TargetOS: string read FTargetOS write SetTargetOS; // case insensitive, will be passed lowercase
     property TargetCPU: string read FTargetCPU write SetTargetCPU; // case insensitive, will be passed lowercase
     property FPCSourceDirectory: string read FFPCSourceDirectory write SetFPCSourceDirectory;
@@ -894,6 +898,8 @@ function GatherUnitsInFPCSources(Files: TStringList;
                    TargetOS: string = ''; TargetCPU: string = '';
                    Duplicates: TStringToStringTree = nil; // lower case unit to semicolon separated list of files
                    Rules: TFPCSourceRules = nil): TStringToStringTree;
+function CreateFPCTemplate(Config: TFPCTargetConfigCache;
+                           Owner: TObject): TDefineTemplate;
 procedure CheckPPUSources(PPUFiles,  // lowercase unitname to filename
                           UnitToSource, // lowercase unitname to file name
                           UnitToDuplicates: TStringToStringTree; // lowercase unitname to semicolon separated list of files
@@ -1595,6 +1601,74 @@ begin
     Links.FreeAndClear;
     Links.Free;
   end;
+end;
+
+function CreateFPCTemplate(Config: TFPCTargetConfigCache; Owner: TObject
+  ): TDefineTemplate;
+var
+  Node: TAVLTreeNode;
+  StrItem: PStringToStringTreeItem;
+  NewDefTempl: TDefineTemplate;
+  TargetOS: String;
+  SrcOS: String;
+  SrcOS2: String;
+  TargetCPU: String;
+begin
+  Result:=TDefineTemplate.Create(StdDefTemplFPC,
+    ctsFreePascalCompilerInitialMacros,'','',da_Block);
+
+  // define #TargetOS
+  TargetOS:=Config.TargetOS;
+  NewDefTempl:=TDefineTemplate.Create('Define TargetOS',
+    ctsDefaultFPCTargetOperatingSystem,
+    ExternalMacroStart+'TargetOS',TargetOS,da_DefineRecurse);
+  Result.AddChild(NewDefTempl);
+  // define #SrcOS
+  SrcOS:=GetDefaultSrcOSForTargetOS(TargetOS);
+  if SrcOS='' then SrcOS:=TargetOS;
+  NewDefTempl:=TDefineTemplate.Create('Define SrcOS',
+    ctsDefaultFPCSourceOperatingSystem,
+    ExternalMacroStart+'SrcOS',SrcOS,da_DefineRecurse);
+  Result.AddChild(NewDefTempl);
+  // define #SrcOS2
+  SrcOS2:=GetDefaultSrcOS2ForTargetOS(TargetOS);
+  if SrcOS2='' then SrcOS2:=TargetOS;
+  NewDefTempl:=TDefineTemplate.Create('Define SrcOS2',
+    ctsDefaultFPCSource2OperatingSystem,
+    ExternalMacroStart+'SrcOS2',SrcOS2,da_DefineRecurse);
+  Result.AddChild(NewDefTempl);
+  // define #TargetProcessor
+  TargetCPU:=Config.TargetCPU;
+  NewDefTempl:=TDefineTemplate.Create('Define TargetProcessor',
+    ctsDefaultFPCTargetProcessor,
+    ExternalMacroStart+'TargetProcessor',TargetCPU,
+    da_DefineRecurse);
+  Result.AddChild(NewDefTempl);
+
+  if Config.Defines<>nil then begin
+    Node:=Config.Defines.Tree.FindLowest;
+    while Node<>nil do begin
+      StrItem:=PStringToStringTreeItem(Node.Data);
+      NewDefTempl:=TDefineTemplate.Create('Define '+StrItem^.Name,
+           'Macro',StrItem^.Name,StrItem^.Value,da_DefineRecurse);
+      Result.AddChild(NewDefTempl);
+      Node:=Config.Defines.Tree.FindSuccessor(Node);
+    end;
+  end;
+
+  if Config.Undefines<>nil then begin
+    Node:=Config.Defines.Tree.FindLowest;
+    while Node<>nil do begin
+      StrItem:=PStringToStringTreeItem(Node.Data);
+      NewDefTempl:=TDefineTemplate.Create('Undefine '+StrItem^.Name,
+           'Macro',StrItem^.Name,'',da_UndefineRecurse);
+      Result.AddChild(NewDefTempl);
+      Node:=Config.Defines.Tree.FindSuccessor(Node);
+    end;
+  end;
+
+  Result.SetFlags([dtfAutoGenerated],[],false);
+  Result.SetDefineOwner(Owner,true);
 end;
 
 procedure CheckPPUSources(PPUFiles, UnitToSource,
@@ -4146,7 +4220,7 @@ var
       if Description<>'' then
         Desc:=Description
       else
-        Desc:=ctsDefaultppc386Symbol;
+        Desc:=ctsDefaultFPCSymbol;
       NewDefTempl:=TDefineTemplate.Create('Define '+SymbolName,
            Desc,SymbolName,SymbolValue,da_DefineRecurse);
       AddTemplate(NewDefTempl);
@@ -4328,21 +4402,21 @@ begin
           // define #TargetOS
           TargetOS:=copy(Buf,1,i-1);
           NewDefTempl:=TDefineTemplate.Create('Define TargetOS',
-            ctsDefaultppc386TargetOperatingSystem,
+            ctsDefaultFPCTargetOperatingSystem,
             ExternalMacroStart+'TargetOS',TargetOS,da_DefineRecurse);
           AddTemplate(NewDefTempl);
           // define #SrcOS
           SrcOS:=GetDefaultSrcOSForTargetOS(TargetOS);
           if SrcOS='' then SrcOS:=TargetOS;
           NewDefTempl:=TDefineTemplate.Create('Define SrcOS',
-            ctsDefaultppc386SourceOperatingSystem,
+            ctsDefaultFPCSourceOperatingSystem,
             ExternalMacroStart+'SrcOS',SrcOS,da_DefineRecurse);
           AddTemplate(NewDefTempl);
           // define #SrcOS2
           SrcOS2:=GetDefaultSrcOS2ForTargetOS(TargetOS);
           if SrcOS2='' then SrcOS2:=TargetOS;
           NewDefTempl:=TDefineTemplate.Create('Define SrcOS2',
-            ctsDefaultppc386Source2OperatingSystem,
+            ctsDefaultFPCSource2OperatingSystem,
             ExternalMacroStart+'SrcOS2',SrcOS2,da_DefineRecurse);
           AddTemplate(NewDefTempl);
           break;
@@ -4377,7 +4451,7 @@ begin
         if Buf[i] in [#10,#13] then begin
           TargetProcessor:=copy(Buf,1,i-1);
           NewDefTempl:=TDefineTemplate.Create('Define TargetProcessor',
-            ctsDefaultppc386TargetProcessor,
+            ctsDefaultFPCTargetProcessor,
             ExternalMacroStart+'TargetProcessor',TargetProcessor,
             da_DefineRecurse);
           AddTemplate(NewDefTempl);
@@ -6548,6 +6622,7 @@ end;
 procedure TFPCTargetConfigCache.Clear;
 begin
   CompilerDate:=0;
+  CompilerOptions:='';
   TargetCompiler:='';
   TargetCompilerDate:=0;
   ConfigFiles.Clear;
@@ -6593,6 +6668,7 @@ begin
     if (TargetOS<>Item.TargetOS)
       or (TargetCPU<>Item.TargetCPU)
       or (Compiler<>Item.Compiler)
+      or (CompilerOptions<>Item.CompilerOptions)
     then
       exit;
   end;
@@ -6619,6 +6695,7 @@ begin
     TargetOS:=Item.TargetOS;
     TargetCPU:=Item.TargetCPU;
     Compiler:=Item.Compiler;
+    CompilerOptions:=Item.CompilerOptions;
     // values
     CompilerDate:=Item.CompilerDate;
     TargetCompiler:=Item.TargetCompiler;
@@ -6674,10 +6751,11 @@ begin
 
   TargetOS:=XMLConfig.GetValue(Path+'TargetOS','');
   TargetCPU:=XMLConfig.GetValue(Path+'TargetCPU','');
-  Compiler:=XMLConfig.GetValue(Path+'Compiler','');
-  CompilerDate:=XMLConfig.GetValue(Path+'CompilerDate',0);
-  TargetCompiler:=XMLConfig.GetValue(Path+'TargetCompiler','');
-  TargetCompilerDate:=XMLConfig.GetValue(Path+'TargetCompilerDate',0);
+  Compiler:=XMLConfig.GetValue(Path+'Compiler/File','');
+  CompilerOptions:=XMLConfig.GetValue(Path+'Compiler/Options','');
+  CompilerDate:=XMLConfig.GetValue(Path+'Compiler/Date',0);
+  TargetCompiler:=XMLConfig.GetValue(Path+'TargetCompiler/File','');
+  TargetCompilerDate:=XMLConfig.GetValue(Path+'TargetCompiler/Date',0);
   ConfigFiles.LoadFromXMLConfig(XMLConfig,Path+'Configs/');
 
   // defines: format: Define<Number>/Name,Value
@@ -6765,9 +6843,10 @@ var
 begin
   XMLConfig.SetDeleteValue(Path+'TargetOS',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'TargetCPU',TargetCPU,'');
-  XMLConfig.SetDeleteValue(Path+'Compiler',Compiler,'');
-  XMLConfig.SetDeleteValue(Path+'CompilerDate',CompilerDate,0);
-  XMLConfig.SetDeleteValue(Path+'TargetCompiler',TargetCompiler,'');
+  XMLConfig.SetDeleteValue(Path+'Compiler/File',Compiler,'');
+  XMLConfig.SetDeleteValue(Path+'Compiler/Options',CompilerOptions,'');
+  XMLConfig.SetDeleteValue(Path+'Compiler/Date',CompilerDate,0);
+  XMLConfig.SetDeleteValue(Path+'TargetCompiler/File',TargetCompiler,'');
   XMLConfig.SetDeleteValue(Path+'TargetCompilerDate',TargetCompilerDate,0);
   ConfigFiles.SaveToXMLConfig(XMLConfig,Path+'Configs/');
 
@@ -6920,8 +6999,11 @@ begin
     OldOptions.Assign(Self);
     Clear;
     // run fpc and parse output
-    if ExtraOptions<>'' then ExtraOptions:=' '+ExtraOptions;
-    ExtraOptions:='-T'+LowerCase(TargetOS)+' -P'+LowerCase(TargetCPU);
+    if ExtraOptions<>'' then
+      ExtraOptions:=' '+ExtraOptions;
+    ExtraOptions:='-T'+LowerCase(TargetOS)+' -P'+LowerCase(TargetCPU)+ExtraOptions;
+    if CompilerOptions<>'' then
+      ExtraOptions:=ExtraOptions+' '+CompilerOptions;
     RunFPCVerbose(Compiler,TestFilename,CfgFiles,TargetCompiler,UnitPaths,
                   Defines,Undefines,ExtraOptions);
     CompilerDate:=FileAgeCached(Compiler);
@@ -7047,8 +7129,9 @@ begin
     FChangeStamp:=low(FChangeStamp);
 end;
 
-function TFPCTargetConfigCaches.Find(CompilerFilename, TargetOS,
-  TargetCPU: string; CreateIfNotExists: boolean): TFPCTargetConfigCache;
+function TFPCTargetConfigCaches.Find(CompilerFilename, CompilerOptions,
+  TargetOS, TargetCPU: string; CreateIfNotExists: boolean
+  ): TFPCTargetConfigCache;
 var
   Node: TAVLTreeNode;
   Cmp: TFPCTargetConfigCache;
@@ -7060,6 +7143,7 @@ begin
   Cmp:=TFPCTargetConfigCache.Create(nil);
   try
     Cmp.Compiler:=CompilerFilename;
+    Cmp.CompilerOptions:=CompilerOptions;
     Cmp.TargetOS:=TargetOS;
     Cmp.TargetCPU:=TargetCPU;
     Node:=fItems.Find(cmp);
@@ -7587,6 +7671,13 @@ begin
   ClearConfigCache;
 end;
 
+procedure TFPCUnitToSrcCache.SetCompilerOptions(const AValue: string);
+begin
+  if FCompilerOptions=AValue then exit;
+  FCompilerOptions:=AValue;
+  ClearConfigCache;
+end;
+
 procedure TFPCUnitToSrcCache.SetFPCSourceDirectory(const AValue: string);
 var
   NewValue: String;
@@ -7668,7 +7759,8 @@ begin
   if Caches.TestFilename='' then
     raise Exception.Create('TFPCUnitToSrcCache.GetConfigCache missing TestFilename');
   if FConfigCache=nil then begin
-    FConfigCache:=Caches.ConfigCaches.Find(CompilerFilename,TargetOS,TargetCPU,true);
+    FConfigCache:=Caches.ConfigCaches.Find(CompilerFilename,CompilerOptions,
+                                           TargetOS,TargetCPU,true);
     FConfigCache.FreeNotification(Self);
   end;
   if AutoUpdate and FConfigCache.NeedsUpdate then
