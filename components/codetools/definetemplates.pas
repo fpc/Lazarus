@@ -696,12 +696,12 @@ type
   { TFPCTargetConfigCaches
     List of TFPCTargetConfigCache }
 
-  TFPCTargetConfigCaches = class
+  TFPCTargetConfigCaches = class(TComponent)
   private
     FChangeStamp: integer;
     fItems: TAVLTree; // tree of TFPCTargetConfigCacheItem
   public
-    constructor Create;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -742,12 +742,12 @@ type
 
   { TFPCSourceCaches }
 
-  TFPCSourceCaches = class
+  TFPCSourceCaches = class(TComponent)
   private
     FChangeStamp: integer;
     fItems: TAVLTree; // tree of TFPCSourceCacheItem
   public
-    constructor Create;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -766,7 +766,7 @@ type
     Unit name to FPC source file.
     Specific to one compiler, targetos, targetcpu and FPC source directory. }
 
-  TFPCUnitToSrcCache = class
+  TFPCUnitToSrcCache = class(TComponent)
   private
     FCaches: TFPCDefinesCache;
     FChangeStamp: integer;
@@ -787,7 +787,7 @@ type
     procedure ClearConfigCache;
     procedure ClearSourceCache;
   public
-    constructor Create(Owner: TFPCDefinesCache);
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear;
     property Caches: TFPCDefinesCache read FCaches;
@@ -805,7 +805,7 @@ type
 
   { TFPCDefinesCache }
 
-  TFPCDefinesCache = class
+  TFPCDefinesCache = class(TComponent)
   private
     FConfigCaches: TFPCTargetConfigCaches;
     FConfigCachesSaveStamp: integer;
@@ -817,7 +817,7 @@ type
     procedure SetSourceCaches(const AValue: TFPCSourceCaches);
     procedure ClearUnitToSrcCaches;
   public
-    constructor Create;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -1617,8 +1617,8 @@ procedure LoadFPCCacheFromFile(Filename: string;
 var
   XMLConfig: TXMLConfig;
 begin
-  if Configs=nil then Configs:=TFPCTargetConfigCaches.Create;
-  if Sources=nil then Sources:=TFPCSourceCaches.Create;
+  if Configs=nil then Configs:=TFPCTargetConfigCaches.Create(nil);
+  if Sources=nil then Sources:=TFPCSourceCaches.Create(nil);
   if not FileExistsUTF8(Filename) then exit;
   XMLConfig:=TXMLConfig.Create(Filename);
   try
@@ -6927,8 +6927,9 @@ end;
 
 { TFPCTargetConfigCache }
 
-constructor TFPCTargetConfigCaches.Create;
+constructor TFPCTargetConfigCaches.Create(AOwner: TComponent);
 begin
+  inherited Create(AOwner);
   fItems:=TAVLTree.Create(@CompareFPCTargetConfigCacheItems);
 end;
 
@@ -7309,8 +7310,9 @@ end;
 
 { TFPCSourceCache }
 
-constructor TFPCSourceCaches.Create;
+constructor TFPCSourceCaches.Create(AOwner: TComponent);
 begin
+  inherited Create(AOwner);
   fItems:=TAVLTree.Create(@CompareFPCSourceCacheItems);
 end;
 
@@ -7444,10 +7446,11 @@ begin
   fUnitToSrcCaches.Clear;
 end;
 
-constructor TFPCDefinesCache.Create;
+constructor TFPCDefinesCache.Create(AOwner: TComponent);
 begin
-  ConfigCaches:=TFPCTargetConfigCaches.Create;
-  SourceCaches:=TFPCSourceCaches.Create;
+  inherited Create(AOwner);
+  ConfigCaches:=TFPCTargetConfigCaches.Create(nil);
+  SourceCaches:=TFPCSourceCaches.Create(nil);
   fUnitToSrcCaches:=TFPList.Create;
 end;
 
@@ -7577,10 +7580,11 @@ begin
   FreeAndNil(fSrcDuplicates);
 end;
 
-constructor TFPCUnitToSrcCache.Create(Owner: TFPCDefinesCache);
+constructor TFPCUnitToSrcCache.Create(TheOwner: TComponent);
 begin
+  inherited Create(TheOwner);
+  FCaches:=TheOwner as TFPCDefinesCache;
   fOldUnitToSourceTree:=TStringToStringTree.Create(true);
-  FCaches:=Owner;
 end;
 
 destructor TFPCUnitToSrcCache.Destroy;
