@@ -5095,6 +5095,7 @@ type
     Typ: TBlockType;
     StartPos: integer;
     InnerIndent: integer;
+    InnerStartPos: integer;
   end;
   PBlock = ^TBlock;
   TBlockStack = record
@@ -5102,10 +5103,47 @@ type
     Capacity: integer;
     Top: integer;
   end;
+  TExBool = (ebNone, ebTrue, ebFalse);
 var
   CleanCursorPos: integer;
   StartNode: TCodeTreeNode;
-  CursorInEmptyLine: Boolean;
+  InternalCursorAtEmptyLine: TExBool;
+
+  function CursorAtEmptyLine: Boolean;
+  // true if cursor in empty line or at line end in front of an empty line
+  var
+    p: LongInt;
+  begin
+    if InternalCursorAtEmptyLine=ebNone then begin
+      if (CleanCursorPos>SrcLen) or InEmptyLine(Src,CleanCursorPos) then
+        InternalCursorAtEmptyLine:=ebTrue
+      else begin
+        p:=CleanCursorPos;
+        while (p<=SrcLen) do begin
+          case Src[p] of
+          ' ',#9: inc(p);
+          #10,#13:
+            begin
+              // after cursor the rest of the line is blank
+              // check the next line
+              inc(p);
+              if (p<=SrcLen) and (Src[p] in [#10,#13]) and (Src[p]<>Src[p-1]) then
+                inc(p);
+              if (p>SrcLen) or InEmptyLine(Src,p) then
+                InternalCursorAtEmptyLine:=ebTrue
+              else
+                InternalCursorAtEmptyLine:=ebFalse;
+              break;
+            end;
+          else
+            InternalCursorAtEmptyLine:=ebFalse;
+            break;
+          end;
+        end;
+      end;
+    end;
+    Result:=InternalCursorAtEmptyLine=ebTrue;
+  end;
 
   procedure InitStack(out Stack: TBlockStack);
   begin
@@ -5140,6 +5178,7 @@ var
     Block^.Typ:=Typ;
     Block^.StartPos:=StartPos;
     Block^.InnerIndent:=-1;
+    Block^.InnerStartPos:=-1;
   end;
 
   procedure EndBlock(var Stack: TBlockStack);
@@ -5294,6 +5333,7 @@ var
       then begin
         // the first atom of this block is on a new line
         Stack.Stack[Stack.Top].InnerIndent:=GetLineIndent(Src,CurPos.StartPos);
+        Stack.Stack[Stack.Top].InnerStartPos:=CurPos.StartPos;
       end;
 
       // check if cursor reached
@@ -5347,16 +5387,31 @@ var
       if LineStart then
         Indent:=GetLineIndent(Src,CurPos.StartPos);
 
-      if LineStart then begin
+      if LineStart and (NeedCompletion=0) then begin
         // atom is in same block as cursor (not sub block)
         // and first atom of a line
         // => check indent
-        if (Indent<CursorBlockOuterIndent) and (NeedCompletion=0) then begin
+        if (Indent=CursorBlockOuterIndent) then begin
+          if (CursorBlockLvl>0)
+          and (Stack.Stack[CursorBlockLvl-1].InnerIndent=Indent)
+          and (Stack.Stack[CursorBlockLvl-1].InnerStartPos<CurPos.StartPos)
+          then begin
+            { for example:
+                Code;
+                begin|
+                Code;
+            }
+            {$IFDEF ShowCompleteBlock}
+            DebugLn(['ReadStatements NeedCompletion: between same indented ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockOuterIndent=',CursorBlockOuterIndent,' < CursorBlockInnerIndent=',CursorBlockInnerIndent,' Parent.InnerStartPos=',CleanPosToStr(Stack.Stack[CursorBlockLvl-1].InnerStartPos)]);
+            {$ENDIF}
+            NeedCompletion:=CurPos.StartPos;
+          end;
+        end else if (Indent<CursorBlockOuterIndent) then begin
           // for example:
           //    begin
           //    Code;
           //  |end;
-          //DebugLn(['ReadStatements Indent=',Indent,' < CursorBlockOuterIndent=',CursorBlockOuterIndent,' CursorBlockInnerIndent=',CursorBlockInnerIndent,' CursorInEmptyLine=',CursorInEmptyLine,' CursorInEmptyStatement=',CursorInEmptyStatement]);
+          //DebugLn(['ReadStatements Indent=',Indent,' < CursorBlockOuterIndent=',CursorBlockOuterIndent,' CursorBlockInnerIndent=',CursorBlockInnerIndent,' CursorAtEmptyLine=',CursorAtEmptyLine,' CursorInEmptyStatement=',CursorInEmptyStatement]);
           if CursorBlockOuterIndent<CursorBlockInnerIndent then begin
             // for example:
             //    begin
@@ -5366,7 +5421,7 @@ var
             DebugLn(['ReadStatements NeedCompletion: at out indented ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockOuterIndent=',CursorBlockOuterIndent,' < CursorBlockInnerIndent=',CursorBlockInnerIndent]);
             {$ENDIF}
             NeedCompletion:=CurPos.StartPos;
-          end else if CursorInEmptyLine or CursorInEmptyStatement
+          end else if CursorAtEmptyLine or CursorInEmptyStatement
           or (FindNextNonSpace(Src,CleanCursorPos)=CurPos.StartPos) then begin
             { for example:
                   begin
@@ -5518,8 +5573,10 @@ var
             BeginBlock(Stack,btIf,CurPos.StartPos);
           end else if UpAtomIs('THEN') then begin
             CloseBrackets;
-            if TopBlockType(Stack)=btIf then
+            if TopBlockType(Stack)=btIf then begin
               Stack.Stack[Stack.Top].InnerIndent:=-1;
+              Stack.Stack[Stack.Top].InnerStartPos:=-1;
+            end;
           end else if UpAtomIs('CASE') then begin
             BeginBlock(Stack,btCase,CurPos.StartPos)
           end else if UpAtomIs('OF') then begin
@@ -5826,8 +5883,7 @@ begin
                 [btSetIgnoreErrorPos]);
   StartNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
-  CursorInEmptyLine:=InEmptyLine(Src,CleanCursorPos);
-  //debugln(['TStandardCodeTool.CompleteBlock ',CursorInEmptyLine,' ',dbgstr(copy(Src,CleanCursorPos-10,10)),'|',dbgstr(copy(Src,CleanCursorPos,10))]);
+  InternalCursorAtEmptyLine:=ebNone;
   SourceChangeCache.MainScanner:=Scanner;
   InitStack(Stack);
   try
