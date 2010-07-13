@@ -197,6 +197,8 @@ type
 
 implementation
 
+{$R *.lfm}
+
 uses LR_Class, LR_Prntr, LR_Srch, Registry, LR_PrDlg,Printers;
 
 type
@@ -1254,9 +1256,6 @@ begin
     Application.HelpCommand(HELP_CONTEXTPOPUP, c.Tag);
 *)
 end;
-
-initialization
-  {$I lr_view.lrs}
 
 end.
 
