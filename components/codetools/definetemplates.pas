@@ -661,12 +661,12 @@ type
     FChangeStamp: integer;
   public
     // key
-    TargetOS: string;
-    TargetCPU: string;
-    Compiler: string;
+    TargetOS: string; // will be passed lowercase
+    TargetCPU: string; // will be passed lowercase
+    Compiler: string; // full file name
     // values
     CompilerDate: longint;
-    TargetCompiler: string;
+    TargetCompiler: string; // when Compiler is fpc, this is the real compiler (e.g. ppc386)
     TargetCompilerDate: longint;
     ConfigFiles: TFPCConfigFileStateList;
     UnitPaths: TStrings;
@@ -792,8 +792,8 @@ type
     procedure Clear;
     property Caches: TFPCDefinesCache read FCaches;
     property CompilerFilename: string read FCompilerFilename write SetCompilerFilename;
-    property TargetOS: string read FTargetOS write SetTargetOS;
-    property TargetCPU: string read FTargetCPU write SetTargetCPU;
+    property TargetOS: string read FTargetOS write SetTargetOS; // case insensitive, will be passed lowercase
+    property TargetCPU: string read FTargetCPU write SetTargetCPU; // case insensitive, will be passed lowercase
     property FPCSourceDirectory: string read FFPCSourceDirectory write SetFPCSourceDirectory;
     function GetConfigCache(AutoUpdate: boolean): TFPCTargetConfigCache;
     function GetSourceCache(AutoUpdate: boolean): TFPCSourceCache;
@@ -6892,7 +6892,7 @@ begin
     Clear;
     // run fpc and parse output
     if ExtraOptions<>'' then ExtraOptions:=' '+ExtraOptions;
-    ExtraOptions:='-T'+TargetOS+' -P'+TargetCPU;
+    ExtraOptions:='-T'+LowerCase(TargetOS)+' -P'+LowerCase(TargetCPU);
     RunFPCVerbose(Compiler,TestFilename,CfgFiles,TargetCompiler,UnitPaths,
                   Defines,Undefines,ExtraOptions);
     CompilerDate:=FileAgeCached(Compiler);
@@ -7532,7 +7532,17 @@ end;
 function TFPCDefinesCache.FindUnitToSrcCache(const CompilerFilename, TargetOS,
   TargetCPU, FPCSrcDir: string; CreateIfNotExists: boolean
     ): TFPCUnitToSrcCache;
+var
+  i: Integer;
 begin
+  for i:=0 to fUnitToSrcCaches.Count-1 do begin
+    Result:=TFPCUnitToSrcCache(fUnitToSrcCaches[i]);
+    if (CompareFilenames(Result.CompilerFilename,CompilerFilename)=0)
+    and (SysUtils.CompareText(Result.TargetOS,TargetOS)=0)
+    and (SysUtils.CompareText(Result.TargetCPU,TargetCPU)=0)
+    and (CompareFilenames(Result.FPCSourceDirectory,FPCSrcDir)=0) then
+      exit;
+  end;
   Result:=nil;
 end;
 

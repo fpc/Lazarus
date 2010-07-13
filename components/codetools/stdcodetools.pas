@@ -42,7 +42,7 @@ interface
 {$I codetools.inc}
 
 { $DEFINE VerboseGetStringConstBounds}
-{$DEFINE ShowCompleteBlock}
+{ $DEFINE ShowCompleteBlock}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -5244,6 +5244,7 @@ var
     CursorInEmptyStatement: Boolean;
     FromPos: LongInt;
     ToPos: LongInt;
+    WasInCursorBlock: Boolean;
 
     function EndBlockIsOk: boolean;
     begin
@@ -5326,6 +5327,7 @@ var
 
       InCursorBlock:=(CursorBlockLvl>=0) and (CursorBlockLvl=Stack.Top)
                      and (not BehindCursorBlock);
+      WasInCursorBlock:=InCursorBlock;
 
       // check if end of node
       if (CurPos.StartPos>SrcLen) or (CurPos.StartPos>=StartNode.EndPos) then
@@ -5579,12 +5581,12 @@ var
       end;
 
       // check if line start
-      InCursorBlock:=(CursorBlockLvl>=0) and (CursorBlockLvl=Stack.Top)
-                     and (not BehindCursorBlock);
-      if LineStart and InCursorBlock then begin
-        // atom is in same block as cursor (not sub block)
-        // and first atom of a line
+      if LineStart and WasInCursorBlock and (not BehindCursorBlock) then begin
+        // atom is first atom of a line
+        // and atom is in same block as cursor (not sub block)
+        // (maybe the atom started a new sub block, but it did not close it)
         // => check indent
+        //debugln(['CompleteStatements ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' CursorBlockInnerIndent=',CursorBlockInnerIndent,' CursorBlockOuterIndent=',CursorBlockOuterIndent]);
         if (Indent<CursorBlockInnerIndent) and (NeedCompletion=0) then begin
           if CursorBlockOuterIndent<CursorBlockInnerIndent then begin
             // for example:
