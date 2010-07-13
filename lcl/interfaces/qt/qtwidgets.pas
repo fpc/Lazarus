@@ -409,8 +409,8 @@ type
     procedure setCursor(const ACursor: QCursorH); override;
     procedure setViewport(const AViewPort: QWidgetH);
     procedure setVisible(AVisible: Boolean); override;
-    procedure viewportNeeded;
-    procedure viewportDelete;
+    procedure viewportNeeded; virtual;
+    procedure viewportDelete; virtual;
   end;
   
   { TQtViewPort }
