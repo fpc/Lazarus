@@ -75,6 +75,8 @@ type
 
 implementation
 
+{$R *.lfm}
+
 uses LR_Desgn, LR_Fmted, LR_Var, LR_Flds, LR_Const, lr_expres;
 
 function TfrEditorForm.ShowEditor: TModalResult;
@@ -283,9 +285,6 @@ begin
   ptMinTrackSize.y := 200;
   }
 end;
-
-initialization
-  {$I lr_edit.lrs}
 
 end.
 

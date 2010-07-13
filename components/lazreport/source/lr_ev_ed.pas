@@ -75,6 +75,8 @@ function ShowEvEditor(Component: TfrReport): Boolean;
 
 implementation
 
+{$R *.lfm}
+
 uses LR_Vared, LR_Const, LR_Utils, LR_DBRel, DB;
 
 var
@@ -458,7 +460,6 @@ end;
 
 
 initialization
-  {$I lr_ev_ed.lrs}
 
   SMemo := TStringList.Create;
   VarClipbd := TMemoryStream.Create;

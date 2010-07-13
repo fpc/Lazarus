@@ -140,6 +140,8 @@ procedure Register;
 
 implementation
 
+{$R *.lfm}
+
 uses Registry;
 
 var
@@ -1069,8 +1071,6 @@ end;
 
 {----------------------------------------------------------------------------}
 initialization
-  {$I lr_dock.lrs}
-
 
   FloatingToolBars := TFpList.Create;
   RegRootKey := 'Software\FastReport';

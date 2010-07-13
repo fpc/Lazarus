@@ -85,6 +85,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses LR_Prntr, LR_Class, LR_Const, LR_Utils, Math;
 
 procedure TfrPgoptForm.RB1Click(Sender: TObject);
@@ -218,10 +220,6 @@ begin
     RBRows.Enabled:=true;
   end;
 end;
-
-
-initialization
-  {$I lr_pgopt.lrs}
 
 end.
 

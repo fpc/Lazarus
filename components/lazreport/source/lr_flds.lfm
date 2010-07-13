@@ -19,9 +19,9 @@ object frFieldsForm: TfrFieldsForm
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 18
+    Height = 16
     Top = 6
-    Width = 107
+    Width = 90
     BorderSpacing.Around = 6
     Caption = '&Available DB''s'
     FocusControl = ValCombo
@@ -34,8 +34,8 @@ object frFieldsForm: TfrFieldsForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 31
-    Top = 30
+    Height = 29
+    Top = 28
     Width = 295
     HelpContext = 10
     Anchors = [akTop, akLeft, akRight]
@@ -55,8 +55,8 @@ object frFieldsForm: TfrFieldsForm
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 278
-    Top = 67
+    Height = 282
+    Top = 63
     Width = 295
     HelpContext = 23
     Anchors = [akTop, akLeft, akRight, akBottom]

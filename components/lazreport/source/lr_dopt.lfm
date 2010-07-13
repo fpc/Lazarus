@@ -14,15 +14,24 @@ object frDocOptForm: TfrDocOptForm
   LCLVersion = '0.9.29'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 461
+    Height = 38
+    Top = 463
     Width = 464
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object PageControl1: TPageControl
     Left = 6
-    Height = 449
+    Height = 451
     Top = 6
     Width = 464
     ActivePage = TabSheet2
@@ -33,7 +42,7 @@ object frDocOptForm: TfrDocOptForm
     object TabSheet1: TTabSheet
       Caption = 'Options'
       ClientHeight = 418
-      ClientWidth = 460
+      ClientWidth = 458
       object labPrinter: TLabel
         Left = 6
         Height = 18
@@ -94,24 +103,24 @@ object frDocOptForm: TfrDocOptForm
     object TabSheet2: TTabSheet
       Caption = 'Other'
       ClientHeight = 418
-      ClientWidth = 460
+      ClientWidth = 458
       object GroupBox3: TGroupBox
         AnchorSideRight.Side = asrBottom
         Left = 0
-        Height = 69
-        Top = 349
-        Width = 460
+        Height = 71
+        Top = 347
+        Width = 458
         Align = alBottom
         AutoSize = True
         Caption = 'Version'
-        ClientHeight = 48
-        ClientWidth = 452
+        ClientHeight = 55
+        ClientWidth = 456
         TabOrder = 0
         object labMaj: TLabel
           Left = 0
-          Height = 18
+          Height = 16
           Top = 0
-          Width = 44
+          Width = 42
           Caption = 'labMaj'
           ParentColor = False
         end
@@ -120,9 +129,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = labMaj
           Left = 98
-          Height = 18
+          Height = 16
           Top = 0
-          Width = 59
+          Width = 55
           BorderSpacing.Left = 12
           Caption = 'labMinor'
           ParentColor = False
@@ -132,9 +141,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = labMaj
           Left = 196
-          Height = 18
+          Height = 16
           Top = 0
-          Width = 76
+          Width = 69
           BorderSpacing.Left = 12
           Caption = 'labRelease'
           ParentColor = False
@@ -144,9 +153,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = labMaj
           Left = 294
-          Height = 18
+          Height = 16
           Top = 0
-          Width = 55
+          Width = 51
           BorderSpacing.Left = 12
           Caption = 'labBuild'
           ParentColor = False
@@ -156,8 +165,8 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideTop.Control = labMaj
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 29
-          Top = 24
+          Height = 21
+          Top = 22
           Width = 80
           BorderSpacing.Bottom = 6
           BorderSpacing.Around = 6
@@ -169,8 +178,8 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideTop.Control = labMinor
           AnchorSideTop.Side = asrBottom
           Left = 104
-          Height = 29
-          Top = 24
+          Height = 21
+          Top = 22
           Width = 80
           BorderSpacing.Bottom = 6
           BorderSpacing.Around = 6
@@ -182,8 +191,8 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideTop.Control = labRelease
           AnchorSideTop.Side = asrBottom
           Left = 202
-          Height = 29
-          Top = 24
+          Height = 21
+          Top = 22
           Width = 80
           BorderSpacing.Bottom = 6
           BorderSpacing.Around = 6
@@ -195,8 +204,8 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideTop.Control = labBuild
           AnchorSideTop.Side = asrBottom
           Left = 300
-          Height = 29
-          Top = 24
+          Height = 21
+          Top = 22
           Width = 80
           BorderSpacing.Bottom = 6
           BorderSpacing.Around = 6
@@ -211,20 +220,20 @@ object frDocOptForm: TfrDocOptForm
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = GroupBox3
         Left = 0
-        Height = 349
+        Height = 347
         Top = 0
-        Width = 460
+        Width = 458
         Align = alClient
         Caption = 'Other'
-        ClientHeight = 328
-        ClientWidth = 452
+        ClientHeight = 331
+        ClientWidth = 456
         TabOrder = 1
         object labTitle: TLabel
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 18
+          Height = 16
           Top = 6
-          Width = 30
+          Width = 27
           Caption = 'Title'
           ParentColor = False
         end
@@ -233,9 +242,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideTop.Control = edAutor
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 18
-          Top = 124
-          Width = 53
+          Height = 16
+          Top = 104
+          Width = 49
           Caption = 'Subject'
           ParentColor = False
         end
@@ -244,9 +253,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideTop.Control = edSubject
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 18
-          Top = 183
-          Width = 78
+          Height = 16
+          Top = 153
+          Width = 70
           Caption = 'Keys works'
           ParentColor = False
         end
@@ -255,9 +264,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideTop.Control = edKeyWords
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 18
-          Top = 242
-          Width = 77
+          Height = 16
+          Top = 202
+          Width = 72
           Caption = 'Comments'
           ParentColor = False
         end
@@ -266,9 +275,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideTop.Control = edTitle
           AnchorSideTop.Side = asrBottom
           Left = 6
-          Height = 18
-          Top = 65
-          Width = 58
+          Height = 16
+          Top = 55
+          Width = 55
           Caption = 'labAutor'
           ParentColor = False
         end
@@ -279,9 +288,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideRight.Control = GroupBox2
           AnchorSideRight.Side = asrBottom
           Left = 12
-          Height = 29
-          Top = 30
-          Width = 434
+          Height = 21
+          Top = 28
+          Width = 438
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           TabOrder = 0
@@ -293,9 +302,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideRight.Control = GroupBox2
           AnchorSideRight.Side = asrBottom
           Left = 12
-          Height = 29
-          Top = 148
-          Width = 434
+          Height = 21
+          Top = 126
+          Width = 438
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           TabOrder = 2
@@ -308,9 +317,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideRight.Control = GroupBox2
           AnchorSideRight.Side = asrBottom
           Left = 12
-          Height = 29
-          Top = 207
-          Width = 434
+          Height = 21
+          Top = 175
+          Width = 438
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           TabOrder = 3
@@ -325,9 +334,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideBottom.Control = GroupBox2
           AnchorSideBottom.Side = asrBottom
           Left = 6
-          Height = 56
-          Top = 266
-          Width = 440
+          Height = 101
+          Top = 224
+          Width = 444
           Anchors = [akTop, akLeft, akRight, akBottom]
           BorderSpacing.Around = 6
           Lines.Strings = (
@@ -343,9 +352,9 @@ object frDocOptForm: TfrDocOptForm
           AnchorSideRight.Control = GroupBox2
           AnchorSideRight.Side = asrBottom
           Left = 12
-          Height = 29
-          Top = 89
-          Width = 434
+          Height = 21
+          Top = 77
+          Width = 438
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 6
           TabOrder = 1

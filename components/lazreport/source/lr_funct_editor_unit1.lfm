@@ -91,14 +91,14 @@ object LR_FunctEditor1Form: TLR_FunctEditor1Form
     Width = 412
     Align = alClient
     Caption = 'Arguments'
-    ClientHeight = 159
-    ClientWidth = 408
+    ClientHeight = 160
+    ClientWidth = 410
     TabOrder = 2
     object Label3: TLabel
       Left = 6
       Height = 16
       Top = 14
-      Width = 68
+      Width = 77
       Caption = 'Argument 1'
       ParentColor = False
     end
@@ -106,7 +106,7 @@ object LR_FunctEditor1Form: TLR_FunctEditor1Form
       Left = 6
       Height = 16
       Top = 49
-      Width = 68
+      Width = 77
       Caption = 'Argument 2'
       ParentColor = False
     end
@@ -114,13 +114,13 @@ object LR_FunctEditor1Form: TLR_FunctEditor1Form
       Left = 6
       Height = 16
       Top = 81
-      Width = 68
+      Width = 77
       Caption = 'Argument 3'
       ParentColor = False
     end
     object BitBtn3: TBitBtn
       Tag = 1
-      Left = 374
+      Left = 376
       Height = 23
       Top = 5
       Width = 27
@@ -169,23 +169,23 @@ object LR_FunctEditor1Form: TLR_FunctEditor1Form
     end
     object Edit1: TEdit
       Left = 78
-      Height = 25
+      Height = 21
       Top = 5
-      Width = 296
+      Width = 298
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 1
     end
     object Edit2: TEdit
       Left = 78
-      Height = 25
+      Height = 21
       Top = 40
-      Width = 296
+      Width = 298
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 2
     end
     object BitBtn4: TBitBtn
       Tag = 2
-      Left = 374
+      Left = 376
       Height = 23
       Top = 40
       Width = 27
@@ -234,15 +234,15 @@ object LR_FunctEditor1Form: TLR_FunctEditor1Form
     end
     object Edit3: TEdit
       Left = 78
-      Height = 25
+      Height = 21
       Top = 72
-      Width = 296
+      Width = 298
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 4
     end
     object BitBtn5: TBitBtn
       Tag = 3
-      Left = 374
+      Left = 376
       Height = 23
       Top = 72
       Width = 27

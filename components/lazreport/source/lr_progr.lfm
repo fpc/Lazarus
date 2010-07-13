@@ -13,9 +13,9 @@ object frProgressForm: TfrProgressForm
   LCLVersion = '0.9.29'
   object Label1: TLabel
     Left = 20
-    Height = 18
+    Height = 16
     Top = 32
-    Width = 10
+    Width = 9
     Alignment = taCenter
     Caption = '1'
     ParentColor = False
@@ -26,10 +26,10 @@ object frProgressForm: TfrProgressForm
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 106
+    Left = 107
     Height = 37
     Top = 63
-    Width = 67
+    Width = 65
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Bottom = 6

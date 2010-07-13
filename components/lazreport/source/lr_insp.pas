@@ -93,6 +93,8 @@ type
 
 implementation
 
+{$R *.lfm}
+
 constructor TProp.Create(a: PChar; st: TCtrlStyle; de: TPropEditor);
 begin
   inherited Create;
@@ -422,9 +424,6 @@ begin
   Edit1.Width := w - w1 - 4;
   PaintBox1.Invalidate;
 end;
-
-initialization
-  {$I lr_insp.lrs}
 
 end.
 

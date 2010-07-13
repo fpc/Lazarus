@@ -52,6 +52,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses LR_Class, LR_Const, LR_Utils, DB;
 
 procedure TfrInsertFieldsForm.FormShow(Sender: TObject);
@@ -92,10 +94,6 @@ begin
   HeaderCB.Caption := sInsertFieldsFormHeader;
   BandCB.Caption := sInsertFieldsFormBand;
 end;
-
-INITIALIZATION
-  {$I lr_iflds.lrs}
-
 
 end.
 

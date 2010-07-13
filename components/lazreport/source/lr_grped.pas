@@ -43,6 +43,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses LR_Flds;
 
 procedure TfrGroupEditorForm.ShowEditor(t: TfrView);
@@ -70,9 +72,6 @@ begin
   GB1.Caption := sGroupEditorFormCond;
   Edit1.ButtonHint := sGroupEditorFormAddDbField;
 end;
-
-INITIALIZATION
-  {$I lr_grped.lrs}
 
 end.
 

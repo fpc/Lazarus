@@ -21,13 +21,13 @@ object frTemplForm: TfrTemplForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 253
-    Height = 232
+    Height = 234
     Top = 0
     Width = 209
     Anchors = [akTop, akRight, akBottom]
     Caption = 'Description'
-    ClientHeight = 228
-    ClientWidth = 205
+    ClientHeight = 218
+    ClientWidth = 207
     TabOrder = 0
     object Image1: TImage
       Left = 54
@@ -54,7 +54,7 @@ object frTemplForm: TfrTemplForm
     AnchorSideRight.Control = GroupBox1
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 226
+    Height = 228
     Top = 6
     Width = 241
     HelpContext = 65
@@ -69,9 +69,18 @@ object frTemplForm: TfrTemplForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 238
+    Height = 38
+    Top = 240
     Width = 450
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

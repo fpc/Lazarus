@@ -20,7 +20,7 @@ object frEvForm: TfrEvForm
     AnchorSideTop.Control = Button3
     AnchorSideBottom.Control = Button3
     AnchorSideBottom.Side = asrBottom
-    Left = 95
+    Left = 94
     Height = 85
     Hint = 'Copy variables'
     Top = 300
@@ -48,7 +48,7 @@ object frEvForm: TfrEvForm
     AnchorSideTop.Control = Button3
     AnchorSideBottom.Control = Button3
     AnchorSideBottom.Side = asrBottom
-    Left = 120
+    Left = 119
     Height = 85
     Hint = 'Paste variables'
     Top = 300
@@ -76,7 +76,7 @@ object frEvForm: TfrEvForm
     AnchorSideBottom.Control = Label3
     Left = 0
     Height = 2
-    Top = 290
+    Top = 302
     Width = 521
     Anchors = [akLeft, akRight, akBottom]
     Shape = bsTopLine
@@ -85,9 +85,9 @@ object frEvForm: TfrEvForm
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 18
+    Height = 16
     Top = 6
-    Width = 66
+    Width = 52
     BorderSpacing.Around = 6
     Caption = '&Variable'
     FocusControl = VarCombo
@@ -97,10 +97,10 @@ object frEvForm: TfrEvForm
     AnchorSideLeft.Control = Owner
     AnchorSideLeft.Side = asrCenter
     AnchorSideTop.Control = Owner
-    Left = 235
-    Height = 18
+    Left = 242
+    Height = 16
     Top = 6
-    Width = 50
+    Width = 36
     BorderSpacing.Top = 6
     Caption = 'Va&lue'
     FocusControl = ValCombo
@@ -109,9 +109,9 @@ object frEvForm: TfrEvForm
   object Label3: TLabel
     AnchorSideBottom.Control = Edit1
     Left = 4
-    Height = 18
-    Top = 292
-    Width = 89
+    Height = 16
+    Top = 304
+    Width = 70
     Anchors = [akLeft, akBottom]
     Caption = '&Expression'
     FocusControl = Edit1
@@ -123,9 +123,9 @@ object frEvForm: TfrEvForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Label2
     Left = 6
-    Height = 31
-    Top = 30
-    Width = 223
+    Height = 29
+    Top = 28
+    Width = 230
     HelpContext = 69
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
@@ -143,9 +143,9 @@ object frEvForm: TfrEvForm
     AnchorSideRight.Control = Label2
     AnchorSideBottom.Control = Bevel1
     Left = 6
-    Height = 217
-    Top = 67
-    Width = 223
+    Height = 233
+    Top = 63
+    Width = 230
     HelpContext = 78
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
@@ -161,10 +161,10 @@ object frEvForm: TfrEvForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 241
-    Height = 31
-    Top = 30
-    Width = 274
+    Left = 248
+    Height = 29
+    Top = 28
+    Width = 267
     HelpContext = 87
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
@@ -182,10 +182,10 @@ object frEvForm: TfrEvForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Bevel1
-    Left = 241
-    Height = 217
-    Top = 67
-    Width = 274
+    Left = 248
+    Height = 233
+    Top = 63
+    Width = 267
     HelpContext = 93
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
@@ -199,8 +199,8 @@ object frEvForm: TfrEvForm
   object Edit1: TEdit
     AnchorSideBottom.Control = ButtonPanel1
     Left = 4
-    Height = 29
-    Top = 310
+    Height = 21
+    Top = 320
     Width = 512
     HelpContext = 104
     Anchors = [akLeft, akRight, akBottom]
@@ -213,7 +213,7 @@ object frEvForm: TfrEvForm
     Left = 4
     Height = 85
     Top = 300
-    Width = 85
+    Width = 84
     HelpContext = 114
     Anchors = [akTop, akLeft, akBottom]
     AutoSize = True
@@ -224,9 +224,18 @@ object frEvForm: TfrEvForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 345
+    Height = 38
+    Top = 347
     Width = 509
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 6
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

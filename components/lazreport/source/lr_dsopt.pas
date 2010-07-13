@@ -56,6 +56,8 @@ type
 
 implementation
 
+{$R *.lfm}
+
 procedure TfrDesOptionsForm.FormCreate(Sender: TObject);
 begin
   Caption := sDesOptionsFormOpt;
@@ -79,10 +81,6 @@ begin
   RB7.Caption := sDesOptionsFormmm;
   RB8.Caption := sDesOptionsFormInch;
 end;
-
-initialization
-  {$I lr_dsopt.lrs}
-
 
 end.
 

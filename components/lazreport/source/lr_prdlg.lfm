@@ -5,6 +5,7 @@ object frPrintForm: TfrPrintForm
   Width = 368
   HorzScrollBar.Page = 367
   VertScrollBar.Page = 269
+  ActiveControl = PropButton
   BorderStyle = bsDialog
   Caption = 'Print'
   ClientHeight = 270
@@ -14,6 +15,7 @@ object frPrintForm: TfrPrintForm
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   Position = poScreenCenter
+  LCLVersion = '0.9.29'
   object Image1: TImage
     Left = 192
     Height = 16
@@ -37,16 +39,16 @@ object frPrintForm: TfrPrintForm
   end
   object Label1: TLabel
     Left = 16
-    Height = 14
+    Height = 15
     Top = 76
-    Width = 33
+    Width = 40
     Caption = 'Copies'
     FocusControl = E1
     ParentColor = False
   end
   object E1: TEdit
     Left = 64
-    Height = 21
+    Height = 20
     Top = 72
     Width = 61
     HelpContext = 99
@@ -59,21 +61,21 @@ object frPrintForm: TfrPrintForm
     Top = 104
     Width = 253
     Caption = 'Page range'
-    ClientHeight = 142
-    ClientWidth = 249
+    ClientHeight = 145
+    ClientWidth = 251
     TabOrder = 1
     object Label2: TLabel
       Left = 14
-      Height = 27
+      Height = 15
       Top = 81
-      Width = 221
+      Width = 504
       Caption = 'Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12'
       ParentColor = False
       WordWrap = True
     end
     object RB1: TRadioButton
       Left = 8
-      Height = 19
+      Height = 22
       Top = 20
       Width = 37
       HelpContext = 108
@@ -85,28 +87,30 @@ object frPrintForm: TfrPrintForm
     end
     object RB2: TRadioButton
       Left = 8
-      Height = 19
+      Height = 22
       Top = 40
-      Width = 87
+      Width = 99
       HelpContext = 118
       AllowGrayed = True
       Caption = 'Current &page'
       TabOrder = 1
+      TabStop = False
     end
     object RB3: TRadioButton
       Left = 8
-      Height = 19
+      Height = 22
       Top = 60
-      Width = 71
+      Width = 80
       HelpContext = 124
       AllowGrayed = True
       Caption = '&Numbers:'
       OnClick = RB3Click
       TabOrder = 2
+      TabStop = False
     end
     object E2: TEdit
       Left = 88
-      Height = 21
+      Height = 20
       Top = 58
       Width = 155
       HelpContext = 133
@@ -125,7 +129,9 @@ object frPrintForm: TfrPrintForm
     FullRepaint = False
     TabOrder = 2
     object frSpeedButton1: TSpeedButton
+      Left = 0
       Height = 8
+      Top = 0
       Width = 17
       Color = clBtnFace
       Glyph.Data = {
@@ -140,6 +146,7 @@ object frPrintForm: TfrPrintForm
       OnClick = frSpeedButton1Click
     end
     object frSpeedButton2: TSpeedButton
+      Left = 0
       Height = 8
       Top = 9
       Width = 17
@@ -183,8 +190,8 @@ object frPrintForm: TfrPrintForm
     Top = 8
     Width = 349
     Caption = 'Printer'
-    ClientHeight = 31
-    ClientWidth = 345
+    ClientHeight = 34
+    ClientWidth = 347
     TabOrder = 5
     object PropButton: TButton
       Left = 264
@@ -198,13 +205,11 @@ object frPrintForm: TfrPrintForm
     end
     object CB1: TComboBox
       Left = 8
-      Height = 21
+      Height = 29
       Top = 1
       Width = 245
       HelpContext = 142
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-      ItemHeight = 13
-      MaxLength = 0
+      ItemHeight = 0
       OnChange = CB1Click
       OnClick = CB1Click
       OnDrawItem = CB1DrawItem

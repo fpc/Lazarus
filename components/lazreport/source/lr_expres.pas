@@ -46,6 +46,9 @@ type
   end; 
 
 implementation
+
+{$R *.lfm}
+
 uses LR_Var, LR_Flds, lr_funct_editor_unit, lr_funct_editor_unit1, LR_Class;
 
 { TlrExpresionEditorForm }
@@ -131,9 +134,6 @@ function TlrExpresionEditorForm.ResultExpresion: string;
 begin
   Result:=Trim(Memo1.Text);
 end;
-
-initialization
-  {$I lr_expres.lrs}
 
 end.
 

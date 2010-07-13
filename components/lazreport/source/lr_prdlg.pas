@@ -65,6 +65,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses LR_Const, LR_Prntr,Printers;
 
 procedure TfrPrintForm.FormCreate(Sender: TObject);
@@ -149,8 +151,5 @@ procedure TfrPrintForm.RB3Click(Sender: TObject);
 begin
   E2.SetFocus;
 end;
-
-initialization
-  {$I lr_prdlg.lrs}
 
 end.

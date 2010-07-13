@@ -15,22 +15,22 @@ object frBandEditorForm: TfrBandEditorForm
   LCLVersion = '0.9.29'
   object GB1: TGroupBox
     Left = 0
-    Height = 102
+    Height = 104
     Top = 0
     Width = 341
     Align = alClient
     Caption = 'Data source'
-    ClientHeight = 81
-    ClientWidth = 333
+    ClientHeight = 88
+    ClientWidth = 339
     TabOrder = 0
     object Label2: TLabel
       AnchorSideLeft.Control = GB1
       AnchorSideBottom.Control = Edit1
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 18
-      Top = 54
-      Width = 106
+      Height = 16
+      Top = 46
+      Width = 84
       Anchors = [akLeft, akBottom]
       BorderSpacing.Left = 6
       Caption = '&Record count'
@@ -43,9 +43,9 @@ object frBandEditorForm: TfrBandEditorForm
       AnchorSideRight.Control = GB1
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 31
+      Height = 29
       Top = 6
-      Width = 321
+      Width = 327
       HelpContext = 88
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
@@ -61,10 +61,10 @@ object frBandEditorForm: TfrBandEditorForm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = GB1
       AnchorSideRight.Side = asrBottom
-      Left = 118
-      Height = 29
-      Top = 43
-      Width = 209
+      Left = 96
+      Height = 21
+      Top = 41
+      Width = 237
       HelpContext = 95
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
@@ -74,9 +74,18 @@ object frBandEditorForm: TfrBandEditorForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 108
+    Height = 38
+    Top = 110
     Width = 329
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

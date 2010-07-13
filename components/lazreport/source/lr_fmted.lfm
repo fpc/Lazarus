@@ -16,19 +16,19 @@ object frFmtForm: TfrFmtForm
   LCLVersion = '0.9.29'
   object GroupBox2: TGroupBox
     Left = 0
-    Height = 118
+    Height = 120
     Top = 0
     Width = 378
     Align = alClient
     Caption = 'Variable format'
-    ClientHeight = 97
-    ClientWidth = 370
+    ClientHeight = 104
+    ClientWidth = 376
     TabOrder = 0
     object ComboBox1: TComboBox
       AnchorSideLeft.Control = GroupBox2
       AnchorSideTop.Control = GroupBox2
       Left = 6
-      Height = 31
+      Height = 29
       Top = 6
       Width = 109
       HelpContext = 21
@@ -45,9 +45,9 @@ object frFmtForm: TfrFmtForm
       AnchorSideRight.Control = GroupBox2
       AnchorSideRight.Side = asrBottom
       Left = 121
-      Height = 31
+      Height = 29
       Top = 6
-      Width = 243
+      Width = 249
       HelpContext = 31
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
@@ -69,25 +69,25 @@ object frFmtForm: TfrFmtForm
       Visible = False
       object Label5: TLabel
         Left = 0
-        Height = 18
+        Height = 16
         Top = 8
-        Width = 109
+        Width = 91
         Caption = '&Decimal digits'
         FocusControl = Edit3
         ParentColor = False
       end
       object Label6: TLabel
         Left = 134
-        Height = 18
+        Height = 16
         Top = 5
-        Width = 120
+        Width = 101
         Caption = 'Fraction &symbol'
         FocusControl = SplEdit
         ParentColor = False
       end
       object SplEdit: TEdit
         Left = 238
-        Height = 29
+        Height = 21
         Top = 4
         Width = 25
         HelpContext = 41
@@ -98,7 +98,7 @@ object frFmtForm: TfrFmtForm
       end
       object Edit3: TEdit
         Left = 94
-        Height = 29
+        Height = 21
         Top = 4
         Width = 25
         HelpContext = 51
@@ -119,9 +119,9 @@ object frFmtForm: TfrFmtForm
       object Label1: TLabel
         AnchorSideTop.Side = asrBottom
         Left = 58
-        Height = 18
+        Height = 16
         Top = 8
-        Width = 61
+        Width = 47
         BorderSpacing.Around = 6
         Caption = '&Format'
         FocusControl = Edit1
@@ -130,7 +130,7 @@ object frFmtForm: TfrFmtForm
       object Edit1: TEdit
         AnchorSideTop.Side = asrBottom
         Left = 126
-        Height = 29
+        Height = 21
         Top = 0
         Width = 142
         HelpContext = 61
@@ -141,9 +141,18 @@ object frFmtForm: TfrFmtForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 124
+    Height = 38
+    Top = 126
     Width = 366
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

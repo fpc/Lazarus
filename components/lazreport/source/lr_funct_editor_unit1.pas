@@ -39,6 +39,9 @@ type
   end; 
 
 implementation
+
+{$R *.lfm}
+
 uses lr_expres, lr_utils;
 
 { TLR_FunctEditor1Form }
@@ -115,9 +118,6 @@ begin
     Result:='('+Result+')';
   Result:=FD.funName + Result;
 end;
-
-initialization
-  {$I lr_funct_editor_unit1.lrs}
 
 end.
 

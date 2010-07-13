@@ -13,4 +13,5 @@ object frFloatWindow: TfrFloatWindow
   OnDestroy = FormDestroy
   OnShow = FormShow
   ShowHint = True
+  LCLVersion = '0.9.29'
 end

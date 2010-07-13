@@ -42,6 +42,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses LR_Desgn;
 
 
@@ -92,9 +94,6 @@ procedure TfrBandTypesForm.bClick(Sender: TObject);
 begin
   SelectedTyp := TfrBandType((Sender as TComponent).Tag);
 end;
-
-INITIALIZATION
-  {$I lr_btyp.lrs}
 
 end.
 

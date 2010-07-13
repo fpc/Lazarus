@@ -5,6 +5,7 @@ object frVarForm: TfrVarForm
   Width = 217
   HorzScrollBar.Page = 216
   VertScrollBar.Page = 316
+  ActiveControl = ValList
   BorderStyle = bsDialog
   Caption = 'Variables'
   ClientHeight = 317
@@ -17,11 +18,12 @@ object frVarForm: TfrVarForm
   OnDeactivate = FormDeactivate
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
+  LCLVersion = '0.9.29'
   object Label1: TLabel
     Left = 4
-    Height = 14
+    Height = 15
     Top = 4
-    Width = 50
+    Width = 55
     Caption = '&Category:'
     FocusControl = ValCombo
     ParentColor = False
@@ -36,20 +38,20 @@ object frVarForm: TfrVarForm
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     IntegralHeight = True
-    ItemHeight = 13
+    ItemHeight = 0
     OnDblClick = ValListDblClick
     OnKeyDown = ValListKeyDown
+    ParentFont = False
     TabOrder = 0
+    TopIndex = -1
   end
   object ValCombo: TComboBox
     Left = 4
-    Height = 21
+    Height = 29
     Top = 24
     Width = 209
     HelpContext = 32
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 13
-    MaxLength = 0
+    ItemHeight = 0
     OnChange = ValComboClick
     Style = csDropDownList
     TabOrder = 1

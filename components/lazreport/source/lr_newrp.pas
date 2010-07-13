@@ -47,6 +47,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses LR_Class, LR_Desgn;
 
 var
@@ -102,9 +104,6 @@ begin
   Caption := sTemplFormNewRp;
   GroupBox1.Caption := sTemplFormDesc;
 end;
-
-initialization
-  {$I lr_newrp.lrs}
 
 end.
 

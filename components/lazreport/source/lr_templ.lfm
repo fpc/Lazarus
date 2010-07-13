@@ -18,9 +18,9 @@ object frTemplNewForm: TfrTemplNewForm
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 18
+    Height = 16
     Top = 6
-    Width = 80
+    Width = 73
     BorderSpacing.Around = 6
     Caption = 'Description'
     FocusControl = Memo1
@@ -32,15 +32,15 @@ object frTemplNewForm: TfrTemplNewForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 122
-    Top = 179
+    Height = 117
+    Top = 186
     Width = 388
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Image'
     ClientHeight = 101
-    ClientWidth = 380
+    ClientWidth = 386
     TabOrder = 0
     object Panel1: TPanel
       AnchorSideLeft.Control = GroupBox2
@@ -89,8 +89,8 @@ object frTemplNewForm: TfrTemplNewForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = GroupBox2
     Left = 6
-    Height = 143
-    Top = 30
+    Height = 152
+    Top = 28
     Width = 388
     HelpContext = 73
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -99,9 +99,18 @@ object frTemplNewForm: TfrTemplNewForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 307
+    Height = 38
+    Top = 309
     Width = 388
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

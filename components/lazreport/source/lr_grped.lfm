@@ -21,23 +21,23 @@ object frGroupEditorForm: TfrGroupEditorForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 61
+    Height = 63
     Top = 6
     Width = 493
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Condition'
-    ClientHeight = 40
-    ClientWidth = 485
+    ClientHeight = 47
+    ClientWidth = 491
     TabOrder = 0
     object Edit1: TEditButton
       AnchorSideLeft.Control = GB1
       AnchorSideTop.Control = GB1
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 29
+      Height = 21
       Top = 6
-      Width = 443
+      Width = 449
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -59,9 +59,18 @@ object frGroupEditorForm: TfrGroupEditorForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 73
+    Height = 38
+    Top = 75
     Width = 493
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

@@ -41,6 +41,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 procedure TfrVaredForm.FormActivate(Sender: TObject);
 begin
   Memo1.Lines.Assign(Doc.Variables);
@@ -53,9 +55,6 @@ begin
   Button4.Caption := sOk;
   Button5.Caption := sCancel;
 end;
-
-Initialization
-  {$I lr_VarEd.lrs}
 
 end.
 

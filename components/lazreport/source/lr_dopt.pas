@@ -69,6 +69,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses LR_Prntr, math;
 
 procedure TfrDocOptForm.FormActivate(Sender: TObject);
@@ -116,9 +118,6 @@ begin
     ListBox1.Canvas.TextOut(ARect.Left + 24, (ARect.Top + ARect.Bottom  - ListBox1.Canvas.TextHeight('Wg')) div 2, ListBox1.Items[Index]);  { display the text }
   end;
 end;
-
-initialization
-  {$I lr_dopt.lrs}
 
 end.
 

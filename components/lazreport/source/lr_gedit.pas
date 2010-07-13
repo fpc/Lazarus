@@ -48,6 +48,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses LR_Class, LR_Desgn;
 
 procedure TfrGEditorForm.BitBtn1Click(Sender: TObject);
@@ -84,9 +86,6 @@ procedure TfrGEditorForm.Button5Click(Sender: TObject);
 begin
   TfrDesignerForm(frDesigner).ShowMemoEditor;
 end;
-
-initialization
-  {$I lr_gedit.lrs}
 
 end.
 

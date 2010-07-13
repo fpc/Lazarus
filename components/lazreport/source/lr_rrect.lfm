@@ -16,12 +16,12 @@ object frRoundRectForm: TfrRoundRectForm
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object lblSample: TLabel
     Left = 360
     Height = 15
     Top = 8
-    Width = 36
+    Width = 44
     Caption = 'Sample'
     ParentColor = False
   end
@@ -104,9 +104,9 @@ object frRoundRectForm: TfrRoundRectForm
   end
   object cbGradian: TCheckBox
     Left = 360
-    Height = 21
+    Height = 22
     Top = 136
-    Width = 64
+    Width = 73
     Caption = 'Gradian '
     OnChange = cbGradianChange
     OnClick = cbGradianClick
@@ -127,7 +127,7 @@ object frRoundRectForm: TfrRoundRectForm
       Left = 9
       Height = 15
       Top = 41
-      Width = 94
+      Width = 114
       Caption = 'Largeur de l''ombre '
       ParentColor = False
     end
@@ -135,7 +135,7 @@ object frRoundRectForm: TfrRoundRectForm
       Left = 8
       Height = 15
       Top = 67
-      Width = 41
+      Width = 49
       Caption = 'Couleur '
       ParentColor = False
     end
@@ -148,9 +148,9 @@ object frRoundRectForm: TfrRoundRectForm
     end
     object cmShadow: TCheckBox
       Left = 8
-      Height = 21
+      Height = 22
       Top = 15
-      Width = 52
+      Width = 57
       Caption = 'Curve'
       Checked = True
       OnClick = cmShadowClick
@@ -159,7 +159,7 @@ object frRoundRectForm: TfrRoundRectForm
     end
     object sCurve: TEdit
       Left = 136
-      Height = 22
+      Height = 20
       Top = 12
       Width = 49
       OnChange = ShWidthChange
@@ -168,7 +168,7 @@ object frRoundRectForm: TfrRoundRectForm
     end
     object ShWidth: TEdit
       Left = 136
-      Height = 22
+      Height = 20
       Top = 37
       Width = 49
       OnChange = ShWidthChange
@@ -177,9 +177,9 @@ object frRoundRectForm: TfrRoundRectForm
     end
     object cbCadre: TCheckBox
       Left = 8
-      Height = 21
+      Height = 22
       Top = 90
-      Width = 94
+      Width = 108
       Caption = 'Zone encadr e'
       Checked = True
       OnClick = cbCadreClick
@@ -202,7 +202,7 @@ object frRoundRectForm: TfrRoundRectForm
       Left = 8
       Height = 15
       Top = 77
-      Width = 46
+      Width = 54
       Caption = 'End color'
       ParentColor = False
     end
@@ -217,7 +217,7 @@ object frRoundRectForm: TfrRoundRectForm
       Left = 8
       Height = 15
       Top = 49
-      Width = 51
+      Width = 61
       Caption = 'Start color'
       ParentColor = False
     end
@@ -233,13 +233,13 @@ object frRoundRectForm: TfrRoundRectForm
       Left = 8
       Height = 15
       Top = 16
-      Width = 25
+      Width = 29
       Caption = 'Style'
       ParentColor = False
     end
     object cbStyle: TComboBox
       Left = 64
-      Height = 27
+      Height = 29
       Top = 12
       Width = 121
       ItemHeight = 0

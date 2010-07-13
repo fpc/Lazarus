@@ -5,6 +5,7 @@ object frInspForm: TfrInspForm
   Width = 132
   HorzScrollBar.Page = 131
   VertScrollBar.Page = 175
+  ActiveControl = Edit1
   BorderStyle = bsSizeToolWin
   Caption = 'Object inspector'
   ClientHeight = 176
@@ -16,8 +17,11 @@ object frInspForm: TfrInspForm
   OnDestroy = FormDestroy
   OnResize = FormResize
   OnShow = FormShow
+  LCLVersion = '0.9.29'
   object PaintBox1: TPaintBox
+    Left = 0
     Height = 136
+    Top = 0
     Width = 132
     Align = alTop
     OnMouseDown = PaintBox1MouseDown
@@ -43,7 +47,7 @@ object frInspForm: TfrInspForm
   end
   object Edit1: TEdit
     Left = 24
-    Height = 23
+    Height = 20
     Top = 16
     Width = 80
     TabOrder = 0

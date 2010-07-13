@@ -56,6 +56,7 @@ var
 
 implementation
 
+{$R *.lfm}
 
 function TfrProgressForm.Show_Modal(Doc: TfrReport): Word;
 begin
@@ -96,9 +97,6 @@ procedure TfrProgressForm.Timer1Timer(Sender: TObject);
 begin
   Timer1.Enabled:=false;
 end;
-
-initialization
-  {$I lr_progr.lrs}
 
 end.
 

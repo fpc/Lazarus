@@ -150,6 +150,8 @@ implementation
 
 uses LR_Const, LR_Var, LR_Flds;
 
+{$R *.lfm}
+
 var
   frRoundRectForm: TfrRoundRectForm;
 
@@ -923,12 +925,13 @@ begin
 end;
 
 initialization
-  {$I lr_rrect.lrs}
 
   frRoundRectForm:=nil;
+
 finalization
+
   if Assigned(frRoundRectForm) then
-     frRoundRectForm.Free;
+    frRoundRectForm.Free;
 
 end.
 

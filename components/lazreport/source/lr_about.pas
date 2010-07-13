@@ -46,13 +46,12 @@ var
 
 implementation
 
+{$R *.lfm}
+
 procedure TfrAboutForm.FormCreate(Sender: TObject);
 begin
   Caption := sAboutFormCapt;
 end;
-
-INITIALIZATION
-  {$I lr_about.lrs}
 
 end.
 

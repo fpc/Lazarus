@@ -56,6 +56,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses LR_Class;
 
 var
@@ -199,9 +201,6 @@ begin
         SelectedItem := frSpecFuncs[0];
   LastCategory := ValCombo.Items[ValCombo.ItemIndex];
 end;
-
-initialization
-  {$I lr_var.lrs}
 
 end.
 

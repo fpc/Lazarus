@@ -52,6 +52,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses LR_DSet, LR_Const, LR_Utils;
 
 procedure TfrVBandEditorForm.ShowEditor(t: TfrView);
@@ -174,9 +176,6 @@ begin
   else
     List[s] := CB1.Items[CB1.ItemIndex];
 end;
-
-Initialization
-  {$I lr_vbnd.lrs}
 
 end.
 

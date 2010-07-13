@@ -62,6 +62,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses LR_Const;
 
 {$WARNINGS OFF}
@@ -201,8 +203,5 @@ begin
     c := SplEdit.Text[1];
   Result := Result + Ord(c);
 end;
-
-initialization
-  {$I lr_fmted.lrs}
 
 end.

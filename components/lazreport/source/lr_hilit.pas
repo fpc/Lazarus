@@ -55,6 +55,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses LR_Desgn, LR_Class;
 
 procedure TfrHilightForm.SpeedButton1Click(Sender: TObject);
@@ -107,10 +109,6 @@ begin
   RB1.Caption := sHilightFormTransp;
   RB2.Caption := sHilightFormOther;
 end;
-
-initialization
-  {$I lr_hilit.lrs}
-
 
 end.
 

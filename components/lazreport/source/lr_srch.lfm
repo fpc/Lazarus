@@ -5,6 +5,7 @@ object frPreviewSearchForm: TfrPreviewSearchForm
   Width = 291
   HorzScrollBar.Page = 290
   VertScrollBar.Page = 166
+  ActiveControl = Edit1
   BorderStyle = bsDialog
   Caption = 'Find text'
   ClientHeight = 167
@@ -14,18 +15,19 @@ object frPreviewSearchForm: TfrPreviewSearchForm
   OnActivate = FormActivate
   OnCreate = FormCreate
   Position = poScreenCenter
+  LCLVersion = '0.9.29'
   object Label1: TLabel
     Left = 4
-    Height = 14
+    Height = 15
     Top = 8
-    Width = 57
+    Width = 63
     Caption = 'Text to &find'
     FocusControl = Edit1
     ParentColor = False
   end
   object Edit1: TEdit
     Left = 4
-    Height = 21
+    Height = 20
     Top = 24
     Width = 285
     HelpContext = 98
@@ -59,14 +61,14 @@ object frPreviewSearchForm: TfrPreviewSearchForm
     Top = 52
     Width = 141
     Caption = 'Options'
-    ClientHeight = 63
-    ClientWidth = 137
+    ClientHeight = 66
+    ClientWidth = 139
     TabOrder = 3
     object CB1: TCheckBox
       Left = 8
-      Height = 19
+      Height = 22
       Top = 20
-      Width = 94
+      Width = 108
       HelpContext = 107
       AllowGrayed = True
       Caption = '&Case sensitive'
@@ -79,14 +81,14 @@ object frPreviewSearchForm: TfrPreviewSearchForm
     Top = 52
     Width = 137
     Caption = 'Origin'
-    ClientHeight = 63
-    ClientWidth = 133
+    ClientHeight = 66
+    ClientWidth = 135
     TabOrder = 4
     object RB1: TRadioButton
       Left = 8
-      Height = 19
+      Height = 22
       Top = 20
-      Width = 67
+      Width = 74
       HelpContext = 116
       AllowGrayed = True
       Caption = '&1st page'
@@ -96,13 +98,14 @@ object frPreviewSearchForm: TfrPreviewSearchForm
     end
     object RB2: TRadioButton
       Left = 8
-      Height = 19
+      Height = 22
       Top = 40
-      Width = 87
+      Width = 99
       HelpContext = 123
       AllowGrayed = True
       Caption = 'Current &page'
       TabOrder = 1
+      TabStop = False
     end
   end
 end

@@ -14,7 +14,7 @@ object frBandTypesForm: TfrBandTypesForm
   LCLVersion = '0.9.29'
   object GB1: TGroupBox
     Left = 0
-    Height = 309
+    Height = 311
     Top = 0
     Width = 377
     HelpContext = 89
@@ -24,9 +24,18 @@ object frBandTypesForm: TfrBandTypesForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 315
+    Height = 38
+    Top = 317
     Width = 365
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

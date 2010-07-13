@@ -80,6 +80,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses LR_Const;
 
 constructor TfrShapeView.Create;
@@ -225,12 +227,13 @@ begin
 end;
 
 initialization
-  {$I lr_shape.lrs}
 
   frShapeForm:=nil;
+
 finalization
+
   if Assigned(frShapeForm) then
-     frShapeForm.Free;
+    frShapeForm.Free;
 
 end.
 

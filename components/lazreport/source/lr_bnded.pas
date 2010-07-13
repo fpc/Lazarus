@@ -46,6 +46,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses LR_DSet, LR_Const, LR_Utils;
 
 procedure TfrBandEditorForm.ShowEditor(t: TfrView);
@@ -100,9 +102,6 @@ procedure TfrBandEditorForm.CB1Click(Sender: TObject);
 begin
   frEnableControls([Label2, Edit1], CB1.ItemIndex = 1);
 end;
-
-Initialization
-  {$I lr_bndEd.lrs}
 
 end.
 

@@ -16,7 +16,7 @@ object frAboutForm: TfrAboutForm
   LCLVersion = '0.9.29'
   object Bevel2: TBevel
     Left = 0
-    Height = 122
+    Height = 124
     Top = 0
     Width = 285
     Align = alClient
@@ -119,7 +119,7 @@ object frAboutForm: TfrAboutForm
     Top = 64
     Width = 142
     Alignment = taCenter
-    Caption = 'Copyright (©) 1998-2002'
+    Caption = 'Copyright (Â©) 1998-2002'
     Font.Color = clBlack
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
@@ -141,9 +141,19 @@ object frAboutForm: TfrAboutForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 128
+    Height = 38
+    Top = 130
     Width = 273
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    OKButton.Enabled = False
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    CancelButton.Enabled = False
     TabOrder = 0
     ShowButtons = [pbClose, pbHelp]
   end

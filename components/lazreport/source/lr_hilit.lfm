@@ -21,15 +21,15 @@ object frHilightForm: TfrHilightForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 80
-    Top = 74
+    Height = 78
+    Top = 61
     Width = 299
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Font'
-    ClientHeight = 59
-    ClientWidth = 291
+    ClientHeight = 62
+    ClientWidth = 297
     TabOrder = 0
     object SpeedButton1: TSpeedButton
       AnchorSideTop.Control = GroupBox1
@@ -37,9 +37,9 @@ object frHilightForm: TfrHilightForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = GroupBox1
       AnchorSideBottom.Side = asrBottom
-      Left = 215
+      Left = 221
       Height = 25
-      Top = 28
+      Top = 31
       Width = 70
       Anchors = [akRight, akBottom]
       AutoSize = True
@@ -51,9 +51,9 @@ object frHilightForm: TfrHilightForm
     end
     object CB1: TCheckBox
       Left = 0
-      Height = 19
+      Height = 22
       Top = 0
-      Width = 51
+      Width = 52
       HelpContext = 67
       AllowGrayed = True
       Caption = '&Bold'
@@ -61,9 +61,9 @@ object frHilightForm: TfrHilightForm
     end
     object CB2: TCheckBox
       Left = 0
-      Height = 19
+      Height = 22
       Top = 20
-      Width = 50
+      Width = 53
       HelpContext = 76
       AllowGrayed = True
       Caption = '&Italic'
@@ -71,9 +71,9 @@ object frHilightForm: TfrHilightForm
     end
     object CB3: TCheckBox
       Left = 0
-      Height = 19
+      Height = 22
       Top = 40
-      Width = 86
+      Width = 85
       HelpContext = 85
       AllowGrayed = True
       Caption = '&Underline'
@@ -87,24 +87,24 @@ object frHilightForm: TfrHilightForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 60
-    Top = 160
+    Height = 58
+    Top = 145
     Width = 299
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Background'
-    ClientHeight = 39
-    ClientWidth = 291
+    ClientHeight = 42
+    ClientWidth = 297
     TabOrder = 1
     object SpeedButton2: TSpeedButton
       AnchorSideRight.Control = GroupBox2
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = GroupBox2
       AnchorSideBottom.Side = asrBottom
-      Left = 215
+      Left = 221
       Height = 25
-      Top = 8
+      Top = 11
       Width = 70
       Anchors = [akRight, akBottom]
       AutoSize = True
@@ -116,9 +116,9 @@ object frHilightForm: TfrHilightForm
     end
     object RB1: TRadioButton
       Left = 0
-      Height = 19
+      Height = 22
       Top = 0
-      Width = 102
+      Width = 99
       HelpContext = 92
       AllowGrayed = True
       Caption = '&Transparent'
@@ -129,9 +129,9 @@ object frHilightForm: TfrHilightForm
     end
     object RB2: TRadioButton
       Left = 0
-      Height = 19
+      Height = 22
       Top = 20
-      Width = 59
+      Width = 60
       HelpContext = 103
       AllowGrayed = True
       Caption = 'Ot&her'
@@ -146,15 +146,15 @@ object frHilightForm: TfrHilightForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 62
+    Height = 49
     Top = 6
     Width = 299
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Condition'
-    ClientHeight = 41
-    ClientWidth = 291
+    ClientHeight = 33
+    ClientWidth = 297
     TabOrder = 2
     object Edit1: TEdit
       AnchorSideLeft.Control = GroupBox3
@@ -162,9 +162,9 @@ object frHilightForm: TfrHilightForm
       AnchorSideRight.Control = GroupBox3
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 29
+      Height = 21
       Top = 6
-      Width = 279
+      Width = 285
       HelpContext = 113
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
@@ -173,9 +173,18 @@ object frHilightForm: TfrHilightForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 225
+    Height = 38
+    Top = 227
     Width = 299
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

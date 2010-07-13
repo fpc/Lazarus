@@ -34,6 +34,9 @@ type
   end;
 
 implementation
+
+{$R *.lfm}
+
 { TLR_FunctEditorForm }
 
 procedure TLR_FunctEditorForm.FormCreate(Sender: TObject);
@@ -128,9 +131,6 @@ procedure TLR_FunctEditorForm.ListBox2DblClick(Sender: TObject);
 begin
   ModalResult:=mrOk;
 end;
-
-initialization
-  {$I lr_funct_editor_unit.lrs}
 
 end.
 

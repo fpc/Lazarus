@@ -42,6 +42,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 procedure TfrPreviewSearchForm.FormActivate(Sender: TObject);
 begin
   Edit1.SetFocus;
@@ -60,9 +62,6 @@ begin
   Button1.Caption := sOk;
   Button2.Caption := sCancel;
 end;
-
-initialization
-  {$I lr_srch.lrs}
 
 end.
 

@@ -49,6 +49,8 @@ var
   frFieldsForm: TfrFieldsForm;
 implementation
 
+{$R *.lfm}
+
 uses LR_Class, LR_Const, LR_Utils, LR_DBRel, DB;
 
 var
@@ -152,8 +154,5 @@ procedure TfrFieldsForm.FormDeactivate(Sender: TObject);
 begin
   //UpdateDBField;
 end;
-
-initialization
-  {$I lr_flds.lrs}
 
 end.

@@ -143,6 +143,8 @@ type
 
 implementation
 
+{$R *.lfm}
+
 uses LR_Var, LR_Flds, LR_Const, LR_Utils;
 
 
@@ -626,7 +628,6 @@ begin
 end;
 
 initialization
-  {$I lr_barc.lrs}
 
   frBarCodeForm:=nil;
 finalization

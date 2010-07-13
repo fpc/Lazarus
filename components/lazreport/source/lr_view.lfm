@@ -3,7 +3,11 @@ object frPreviewForm: TfrPreviewForm
   Height = 374
   Top = 103
   Width = 412
-  AutoScroll = True
+  HorzScrollBar.Page = 411
+  HorzScrollBar.Range = 269
+  VertScrollBar.Page = 373
+  VertScrollBar.Range = 199
+  ActiveControl = PanTop
   Caption = 'Preview'
   ClientHeight = 374
   ClientWidth = 412
@@ -461,7 +465,7 @@ object frPreviewForm: TfrPreviewForm
       TabOrder = 1
       object HScrollBar: TScrollBar
         Left = 76
-        Height = 19
+        Height = 15
         Top = 0
         Width = 318
         Align = alClient
@@ -562,10 +566,10 @@ object frPreviewForm: TfrPreviewForm
         OnClick = PgDownClick
       end
       object VScrollBar: TScrollBar
-        Left = 0
+        Left = 4
         Height = 287
         Top = 0
-        Width = 19
+        Width = 15
         Align = alClient
         Kind = sbVertical
         LargeChange = 200

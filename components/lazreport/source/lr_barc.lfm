@@ -1,4 +1,4 @@
-inherited frBarCodeForm: TfrBarCodeForm
+object frBarCodeForm: TfrBarCodeForm
   Left = 376
   Height = 337
   Top = 242
@@ -16,30 +16,31 @@ inherited frBarCodeForm: TfrBarCodeForm
   OnCreate = FormCreate
   Position = poScreenCenter
   ShowHint = True
-  object Label1: TLabel[0]
+  LCLVersion = '0.9.29'
+  object Label1: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 18
+    Height = 16
     Top = 6
-    Width = 38
+    Width = 34
     BorderSpacing.Around = 6
     Caption = 'Code'
     ParentColor = False
   end
-  object Label2: TLabel[1]
+  object Label2: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = M1
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 18
-    Top = 65
-    Width = 76
+    Height = 16
+    Top = 55
+    Width = 70
     BorderSpacing.Around = 6
     Caption = 'Type of bar'
     ParentColor = False
   end
-  object Image1: TImage[2]
+  object Image1: TImage
     Left = 264
     Height = 16
     Top = 0
@@ -58,30 +59,30 @@ inherited frBarCodeForm: TfrBarCodeForm
     }
     Visible = False
   end
-  object M1: TEdit[3]
+  object M1: TEdit
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Label1
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 29
-    Top = 30
+    Height = 21
+    Top = 28
     Width = 341
     HelpContext = 260
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     TabOrder = 0
   end
-  object cbType: TComboBox[4]
+  object cbType: TComboBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Label2
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 31
-    Top = 89
+    Height = 29
+    Top = 77
     Width = 341
     HelpContext = 261
     Anchors = [akTop, akLeft, akRight]
@@ -90,7 +91,7 @@ inherited frBarCodeForm: TfrBarCodeForm
     Style = csDropDownList
     TabOrder = 1
   end
-  object Panel1: TPanel[5]
+  object Panel1: TPanel
     Left = 251
     Height = 17
     Top = 26
@@ -122,31 +123,31 @@ inherited frBarCodeForm: TfrBarCodeForm
       OnClick = VarBtnClick
     end
   end
-  object GroupBox1: TGroupBox[6]
+  object GroupBox1: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = cbType
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 86
-    Top = 126
+    Height = 78
+    Top = 112
     Width = 341
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Options'
-    ClientHeight = 65
-    ClientWidth = 333
+    ClientHeight = 62
+    ClientWidth = 339
     TabOrder = 3
     object labZoom: TLabel
       AnchorSideLeft.Control = GroupBox1
       AnchorSideLeft.Side = asrCenter
       AnchorSideTop.Control = GroupBox1
-      Left = 145
-      Height = 18
+      Left = 149
+      Height = 16
       Top = 6
-      Width = 42
+      Width = 40
       BorderSpacing.Around = 6
       Caption = 'Zoom'
       ParentColor = False
@@ -155,9 +156,9 @@ inherited frBarCodeForm: TfrBarCodeForm
       AnchorSideLeft.Control = GroupBox1
       AnchorSideTop.Control = GroupBox1
       Left = 6
-      Height = 19
+      Height = 22
       Top = 6
-      Width = 98
+      Width = 95
       HelpContext = 262
       BorderSpacing.Around = 6
       Caption = 'Checksum '
@@ -168,9 +169,9 @@ inherited frBarCodeForm: TfrBarCodeForm
       AnchorSideTop.Control = ckCheckSum
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 19
-      Top = 31
-      Width = 133
+      Height = 22
+      Top = 34
+      Width = 131
       HelpContext = 263
       BorderSpacing.Around = 6
       Caption = 'Human readable'
@@ -180,9 +181,9 @@ inherited frBarCodeForm: TfrBarCodeForm
       AnchorSideLeft.Control = labZoom
       AnchorSideTop.Control = labZoom
       AnchorSideTop.Side = asrBottom
-      Left = 151
-      Height = 29
-      Top = 30
+      Left = 155
+      Height = 21
+      Top = 28
       Width = 77
       BorderSpacing.Around = 6
       OnKeyPress = edZoomKeyPress
@@ -190,7 +191,7 @@ inherited frBarCodeForm: TfrBarCodeForm
       Text = '1'
     end
   end
-  object GroupBox2: TGroupBox[7]
+  object GroupBox2: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = GroupBox1
     AnchorSideTop.Side = asrBottom
@@ -198,19 +199,19 @@ inherited frBarCodeForm: TfrBarCodeForm
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 65
-    Top = 218
+    Top = 196
     Width = 341
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     Caption = 'Orientation'
-    ClientHeight = 44
-    ClientWidth = 333
+    ClientHeight = 49
+    ClientWidth = 339
     TabOrder = 4
     object RB1: TRadioButton
       Left = 8
-      Height = 19
+      Height = 22
       Top = 16
-      Width = 33
+      Width = 36
       HelpContext = 264
       Caption = '0 '
       Checked = True
@@ -219,9 +220,9 @@ inherited frBarCodeForm: TfrBarCodeForm
     end
     object RB2: TRadioButton
       Left = 72
-      Height = 19
+      Height = 22
       Top = 16
-      Width = 42
+      Width = 44
       HelpContext = 264
       Caption = '90 '
       TabOrder = 1
@@ -229,9 +230,9 @@ inherited frBarCodeForm: TfrBarCodeForm
     end
     object RB3: TRadioButton
       Left = 136
-      Height = 19
+      Height = 22
       Top = 16
-      Width = 51
+      Width = 52
       HelpContext = 264
       Caption = '180 '
       TabOrder = 2
@@ -239,20 +240,29 @@ inherited frBarCodeForm: TfrBarCodeForm
     end
     object RB4: TRadioButton
       Left = 200
-      Height = 19
+      Height = 22
       Top = 16
-      Width = 51
+      Width = 52
       HelpContext = 264
       Caption = '270 '
       TabOrder = 3
       TabStop = False
     end
   end
-  object ButtonPanel1: TButtonPanel[8]
+  object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 291
+    Height = 38
+    Top = 293
     Width = 341
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 5
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

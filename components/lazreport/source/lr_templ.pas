@@ -45,6 +45,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 procedure TfrTemplNewForm.Button1Click(Sender: TObject);
 begin
   OpenDialog1.Filter := sBMPFile + ' (*.bmp)|*.bmp';
@@ -67,9 +69,6 @@ begin
   GroupBox2.Caption := sGEditorFormCapt;
   Button1.Caption := sGEditorFormLoad;
 end;
-
-initialization
-  {$I lr_templ.lrs}
 
 end.
 

@@ -555,6 +555,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses
   LR_Pgopt, LR_GEdit, LR_Templ, LR_Newrp, LR_DsOpt, LR_Const,
   LR_Prntr, LR_Hilit, LR_Flds, LR_Dopt, LR_Ev_ed, LR_BndEd, LR_VBnd,
@@ -6364,7 +6366,7 @@ begin
 end;
 
 initialization
-  {$I lr_desgn.lrs}
+
   {$I fr_pencil.lrs}
   
   frDesigner:=nil;
