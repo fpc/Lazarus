@@ -10903,6 +10903,9 @@ begin
 end;
 
 function TQtViewPort.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  HaveVertBar: Boolean;
+  HaveHorzBar: Boolean;
 begin
   Result := False;
   {$IF DEFINED(VerboseQt) OR DEFINED(VerboseQtEvents)}
@@ -10917,7 +10920,13 @@ begin
     QEventResize:
     begin
       // immediate update clientRect !
-      LCLObject.DoAdjustClientRectChange;
+      if FOwner <> nil then
+      begin
+        HaveVertBar := Assigned(TQtCustomControl(FOwner).FVScrollbar);
+        HaveHorzBar := Assigned(TQtCustomControl(FOwner).FHScrollbar);
+        LCLObject.DoAdjustClientRectChange(HaveVertBar or HaveHorzBar);
+      end else
+        LCLObject.DoAdjustClientRectChange;
     end;
     QEventLayoutRequest,
     QEventWheel: ; // nothing to do here
@@ -11243,6 +11252,7 @@ end;
 procedure TQtCustomControl.ViewPortEventFilter(event: QEventH; retval: PBoolean); cdecl;
 var
   MouseEventTyp: Boolean;
+  AForm: TCustomForm;
 begin
   {$ifdef VerboseViewPortEventFilter}
     WriteLn('ViewPortEventFilter ',QEvent_type(Event));
@@ -11265,10 +11275,18 @@ begin
       if FResizing and (QEvent_type(Event) = QEventResize) then
         FResizing := False;
 
+      {$note this is workaround for infinite loop with some
+       applications since qt doesn't have scrollbars on forms yet.
+       example of problem: #16413.
+       After implementing TQtMainWindow.Widget from QAbstractScrollArea
+       remove this workaround.}
       if (QEvent_type(Event) = QEventResize) and
-        (FChildOfComplexWidget = ccwScrollingWinControl) then
-        //do nothing for TScrollingWinControl otherwise we are hanging.
-      else
+        (FChildOfComplexWidget = ccwScrollingWinControl) and
+        Assigned(LCLObject.Parent) then
+      begin
+        AForm := GetParentForm(LCLObject);
+        LCLObject.DoAdjustClientRectChange(not AForm.AutoScroll);
+      end else
         Viewport.EventFilter(ViewPort.Widget, Event);
       // do not allow qt to call notifications on user input events (mouse)
       // otherwise we can crash since our object maybe does not exist
@@ -11354,17 +11372,21 @@ begin
 end;
 
 function TQtCustomControl.getClientBounds: TRect;
+var
+  HaveBar: Boolean;
 begin
   if FResizing then
   begin
     QWidget_contentsRect(Widget, @Result);
     if not FFrameOnlyAroundContents then
     begin
-      if (verticalScrollBar.getVisibleTo(Widget)) then
+      HaveBar := Assigned(FVScrollbar);
+      if HaveBar and (verticalScrollBar.getVisibleTo(Widget)) then
         dec(Result.Right, verticalScrollBar.getWidth);
 
-     if (horizontalScrollBar.getVisibleTo(Widget)) then
-       dec(Result.Bottom, horizontalScrollBar.getHeight);
+      HaveBar := Assigned(FHScrollbar);
+      if HaveBar and (horizontalScrollBar.getVisibleTo(Widget)) then
+        dec(Result.Bottom, horizontalScrollBar.getHeight);
     end;
   end else
     QWidget_rect(viewportWidget, @Result);
