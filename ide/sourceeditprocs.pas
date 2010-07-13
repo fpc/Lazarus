@@ -520,6 +520,7 @@ var
   IsReadOnly: Boolean;
   Line: string;
   Indent: LongInt;
+  StartContextPos: TCodeXYPosition;
 begin
   Result:='';
   CursorToLeft:=0;
@@ -627,14 +628,12 @@ begin
         if ProcModifierPos>0 then
           Result:=copy(Result,1,ProcModifierPos-1)
                   +copy(Result,ProcModifierPos+9,length(Result));
-        with CodeToolBoss.IdentifierList.StartContextPos do begin
-          Line:=Code.GetLine(Y);
-          if InEmptyLine(Line,1) then
-            Indent:=X
-          else
-            Indent:=GetLineIndent(Line,X);
-        end;
-
+        StartContextPos:=CodeToolBoss.IdentifierList.StartContextPos;
+        Line:=StartContextPos.Code.GetLine(StartContextPos.Y-1);
+        Indent:=StartContextPos.X;
+        //debugln(['GetIdentCompletionValue ',Indent,' "',dbgstr(Line),'" ',GetLineIndent(Line,1),' empty=',InEmptyLine(Line,1),' ',DbgsCXY(StartContextPos)]);
+        if not InEmptyLine(Line,1) then
+          Indent:=GetLineIndent(Line,1);
         Result:=TrimLeft(CodeToolBoss.SourceChangeCache
           .BeautifyCodeOptions.BeautifyProc(Result,Indent,false));
         //debugln(['GetIdentCompletionValue ',dbgstr(Result),' LineLen=',CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.LineLength]);
