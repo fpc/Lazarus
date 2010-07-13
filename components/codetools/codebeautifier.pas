@@ -1119,6 +1119,19 @@ begin
         bbtProcedureModifiers:
           if not CheckProcedureModifiers then
             EndProcedureHead;
+        bbtClassSection,bbtClass:
+          begin
+            if (LastAtomStart>0)
+            and ((CompareIdentifiers('CLASS',@Src[LastAtomStart])=0)
+                or (CompareIdentifiers('INTERFACE',@Src[LastAtomStart])=0)) then
+            begin
+              if Stack.TopType=bbtClassSection then
+                EndBlock;
+              EndBlock;
+              if Stack.TopType=bbtDefinition then
+                EndBlock;
+            end;
+          end;
         end;
       end;
     ':':
