@@ -412,23 +412,26 @@ begin
   end;
 
   Widget.BeginUpdate;
-  if AWinControl.HandleObjectShouldBeVisible
-    and (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop) then
+  if not (csDesigning in AWinControl.ComponentState) then
   begin
-    Flags := Widget.windowFlags;
-    if (Flags and QtWindowStaysOnTopHint = 0) then
-    begin
-      Flags := Flags or QtWindowStaysOnTopHint;
-      Widget.setWindowFlags(Flags);
-    end;
-  end else
-  begin
-    if (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop)
-    and not (csDestroying in AWinControl.ComponentState) then
+    if AWinControl.HandleObjectShouldBeVisible
+      and (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop) then
     begin
       Flags := Widget.windowFlags;
-      Flags := Flags and not QtWindowStaysOnTopHint;
-      Widget.setWindowFlags(Flags);
+      if (Flags and QtWindowStaysOnTopHint = 0) then
+      begin
+        Flags := Flags or QtWindowStaysOnTopHint;
+        Widget.setWindowFlags(Flags);
+      end;
+    end else
+    begin
+      if (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop)
+      and not (csDestroying in AWinControl.ComponentState) then
+      begin
+        Flags := Widget.windowFlags;
+        Flags := Flags and not QtWindowStaysOnTopHint;
+        Widget.setWindowFlags(Flags);
+      end;
     end;
   end;
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
