@@ -5475,7 +5475,6 @@ var
   SrcQDC: TQtDeviceContext absolute SrcDC;
   DstQDC: TQtDeviceContext absolute DestDC;
   SrcRect, DstRect, MaskRect: TRect;
-  SrcWidthOrig, SrcHeightOrig: Integer;
   Image, TmpImage, QMask, TmpMask: QImageH;
   TmpPixmap: QPixmapH;
   SrcMatrix: QTransformH;
@@ -5511,8 +5510,7 @@ begin
   end
   else
     Image := SrcQDC.vImage.Handle;
-  SrcWidthOrig := QImage_width(Image);
-  SrcHeightOrig := QImage_height(Image);
+
   QTransform_map(SrcMatrix, XSrc, YSrc, @XSrc, @YSrc);
   // our map can have some transformations
   if XSrc < 0 then // we cannot draw from negative coord, so we will draw from zero with shift
