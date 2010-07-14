@@ -454,9 +454,12 @@ class function TWSOpenGLControl.CreateHandle(const AWinControl: TWinControl;
 var
   OpenGlControl: TCustomOpenGLControl;
   AttrControl: TCustomOpenGLControl;
+  ParentWidgetClass: TWSLCLComponentClass;
 begin
-  if csDesigning in AWinControl.ComponentState then
-    Result:=inherited CreateHandle(AWinControl,AParams)
+  if csDesigning in AWinControl.ComponentState then begin
+    ParentWidgetClass:=FindWSComponentClass(TWinControl);
+    Result:=TWSWinControlClass(ParentWidgetClass).CreateHandle(AWinControl,AParams);
+  end
   else begin
     OpenGlControl:=AWinControl as TCustomOpenGLControl;
     if OpenGlControl.SharedControl<>nil then
