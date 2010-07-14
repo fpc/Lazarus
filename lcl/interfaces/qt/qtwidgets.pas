@@ -2617,7 +2617,7 @@ begin
 
   if (LCLObject <> nil) and
     (not (csDesigning in LCLObject.ComponentState) and not getEnabled) then
-    exit;
+    Exit;
 
   // idea of multi click implementation is taken from gtk
 
@@ -3056,7 +3056,7 @@ var
 
 begin
   if not CanSendLCLMessage then
-    Exit;
+    Exit(False);
 
   FillChar(Msg, SizeOf(Msg), #0);
   MousePos := QContextMenuEvent_globalPos(QContextMenuEventH(Event))^;
@@ -3085,21 +3085,6 @@ begin
 
   if Result and (csDesigning in LCLObject.ComponentState) then
     SendMouseReleaseEventToSelf;
-{
-  if Supports(Self, IQtEdit, QtEdit) then
-  begin
-    if Assigned(LCLObject.PopupMenu) then
-    begin
-      if getContextMenuPolicy <> QtCustomContextMenu then
-        setContextMenuPolicy(QtCustomContextMenu);
-    end else
-    begin
-      {revert to default if widget supports defaultcontextmenu }
-      if getContextMenuPolicy <> QtDefaultContextMenu then
-        setContextMenuPolicy(QtDefaultContextMenu);
-      Exit;
-    end;
-  end;}
 end;
 
 procedure TQtWidget.SlotWhatsThis(Sender: QObjectH; Event: QEventH); cdecl;
@@ -11263,6 +11248,7 @@ begin
     QEventMouseButtonPress,
     QEventMouseButtonRelease,
     QEventMouseButtonDblClick,
+    QEventMouseMove,
     QEventPaint:
     begin
       MouseEventTyp := (QEvent_type(Event) = QEventMouseButtonPress) or
