@@ -361,9 +361,9 @@ begin
   Msg.Pos.Y := P.v;
   
   if DeliverMessage(AWidget.LCLObject, Msg) <> 0 then
-    Result := noErr
+    Result := noErr // do not propagate
   else
-    Result := CallNextEventHandler(ANextHandler, AEvent); // do not propagate
+    Result := CallNextEventHandler(ANextHandler, AEvent); 
 end;
 
 {------------------------------------------------------------------------------
