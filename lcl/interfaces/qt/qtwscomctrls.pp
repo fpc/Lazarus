@@ -639,6 +639,7 @@ begin
   begin
     QtTreeWidget := TQtTreeWidget.Create(AWinControl, AParams);
     QtTreeWidget.ViewStyle := Ord(TListView(AWinControl).ViewStyle);
+    QtTreeWidget.setStretchLastSection(False);
     QtTreeWidget.setRootIsDecorated(False);
     QtTreeWidget.AttachEvents;
     Result := TLCLIntfHandle(QtTreeWidget);
@@ -652,9 +653,6 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomListView.ColumnDelete(const ALV: TCustomListView;
   const AIndex: Integer);
-var
-  QtTreeWidget: TQtTreeWidget;
-  TWI: QTreeWidgetItemH;
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnDelete') then
     Exit;
@@ -663,9 +661,9 @@ begin
   if IsIconView(ALV) then
     exit;
 
-  QtTreeWidget := TQtTreeWidget(ALV.Handle);
-  TWI := QtTreeWidget.headerItem;
-  QTreeWidgetItem_takeChild(TWI, AIndex);
+  // we must recreate handle since there's no column removal support
+  // in our bindings (protected methods in qt).
+  RecreateWnd(ALV);
 end;
 
 {------------------------------------------------------------------------------
@@ -691,7 +689,10 @@ begin
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
 
   if QtTreeWidget.ColCount <> TListView(ALV).Columns.Count then
-  	QtTreeWidget.ColCount := TListView(ALV).Columns.Count;
+   	QtTreeWidget.ColCount := TListView(ALV).Columns.Count;
+
+  if (QtTreeWidget.ColCount <= 1) and TListView(ALV).ShowColumnHeaders then
+    QtTreeWidget.setHeaderVisible(True);
 
   TWI := QtTreeWidget.headerItem;
 
@@ -706,6 +707,7 @@ begin
 
   if (csDesigning in ALV.ComponentState) then
     exit;
+
 	QtTreeWidget.Header.Clickable := TListView(ALV).ColumnClick;
 end;
 
@@ -1721,7 +1723,8 @@ begin
       begin
         if not IsIconView(ALV) then
           with TQtTreeWidget(ALV.Handle) do
-            setHeaderVisible(AIsSet and (TListView(ALV).ViewStyle = vsReport));
+            setHeaderVisible(AIsSet and (TListView(ALV).ViewStyle = vsReport)
+              and (TListView(ALV).Columns.Count > 0) );
       end;
     lvpReadOnly: QtItemView.setEditTriggers(BoolToEditTriggers[AIsSet]);
     lvpRowSelect:
@@ -1792,7 +1795,8 @@ begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
     ItemViewWidget := QTreeWidgetH(QtTreeWidget.Widget);
     with QtTreeWidget do
-      setHeaderVisible(TListView(ALV).ShowColumnHeaders and (AValue = vsReport));
+      setHeaderVisible(TListView(ALV).ShowColumnHeaders and (AValue = vsReport)
+        and (TListView(ALV).Columns.Count > 0) );
   end;
   case AValue of
     vsIcon:

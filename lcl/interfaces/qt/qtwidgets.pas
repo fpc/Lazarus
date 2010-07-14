@@ -1215,6 +1215,7 @@ type
     function selectedItems: TPtrIntArray;
     procedure setHeaderVisible(AVisible: Boolean);
     procedure setItemSelected(AItem: QTreeWidgetItemH; ASelect: Boolean);
+    procedure setStretchLastSection(AValue: Boolean);
     procedure sortItems(Acolumn: Integer; AOrder: QtSortOrder);
   public
     procedure AttachEvents; override;
@@ -9715,6 +9716,15 @@ begin
 
   if not FSyncingItems then
     DeliverMessage(Msg);
+end;
+
+procedure TQtTreeWidget.setStretchLastSection(AValue: Boolean);
+begin
+  if (csDesigning in LCLObject.ComponentState) then
+    QHeaderView_setStretchLastSection(QTreeView_header(QTreeViewH(Widget)),
+      AValue)
+  else
+    Header.setStretchLastSection(AValue);
 end;
 
 procedure TQtTreeWidget.sortItems(Acolumn: Integer; AOrder: QtSortOrder);
