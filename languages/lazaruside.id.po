@@ -11260,17 +11260,9 @@ msgstr "Ada paket tidak disimpan dalam paket yang diperlukan. Lihat grafik paket
 msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
 msgstr "Ada unit dengan nama yang sama dengan paket:%s%s1. %s%s%s dari %s%s2. %s%s%s%s"
 
-#: lazarusidestrconsts.lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "This file was automatically created by Lazarus. Do not edit!"
-msgstr "File ini dibuat secara otomatis oleh Lazarus. Jangan diedit"
-
 #: lazarusidestrconsts.lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
 msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr "Ini adalah paket virtual. belum mempunyai sumber. Silahkan simpan paket terlebih dulu."
-
-#: lazarusidestrconsts.lispkgmangthissourceisonlyusedtocompileandinstallthepackage
-msgid "This source is only used to compile and install the package."
-msgstr "Sumber ini hanya digunakan untuk kompilasi dan instalasi paket."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"

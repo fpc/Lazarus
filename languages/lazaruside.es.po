@@ -11258,17 +11258,9 @@ msgstr "Hay un paquete sin guardar en los paquetes requeridos. Mire el gráfico 
 msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
 msgstr "Hay una unidad con el mismo nombre que el paquete:%s%s1. %s%s%s de %s%s2. %s%s%s%s"
 
-#: lazarusidestrconsts.lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "This file was automatically created by Lazarus. Do not edit!"
-msgstr "Este archivo ha sido creado automáticamente por Lazarus. ¡No lo edite!"
-
 #: lazarusidestrconsts.lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
 msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr "Este es un paquete virtual. Todavía no tiene código. Por favor, guarde el paquete primero."
-
-#: lazarusidestrconsts.lispkgmangthissourceisonlyusedtocompileandinstallthepackage
-msgid "This source is only used to compile and install the package."
-msgstr "Este fuente se utiliza sólo para compilar e instalar el paquete."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"

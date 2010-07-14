@@ -11252,17 +11252,9 @@ msgstr "Er is een niet opgeslagen package in the benodigde packages. Zie package
 msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
 msgstr "Er is een unit met dezelfde naam als een package:%s%s1. %s%s%s uit %s%s2. %s%s%s%s"
 
-#: lazarusidestrconsts.lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "This file was automatically created by Lazarus. Do not edit!"
-msgstr "Dit bestand is automatisch aangemaakt door Lazarus. Niet wijzigen!"
-
 #: lazarusidestrconsts.lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
 msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr "Dit is een viruteel pakket. Er is nog geen broncode. Sla het pakket eerst op."
-
-#: lazarusidestrconsts.lispkgmangthissourceisonlyusedtocompileandinstallthepackage
-msgid "This source is only used to compile and install the package."
-msgstr "Deze broncode is alleen gebruikt voor compilatie en installatie."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"

@@ -11256,17 +11256,9 @@ msgstr "Среди требуемых пакетов есть несохранё
 msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
 msgstr "Есть модуль с тем же именем, что и пакет: %s%s1. %s%s%s из %s%s2. %s%s%s%s"
 
-#: lazarusidestrconsts.lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "This file was automatically created by Lazarus. Do not edit!"
-msgstr "Этот файл был автоматически создан Lazarus. Не редактировать!"
-
 #: lazarusidestrconsts.lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
 msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr "Это виртуальный пакет. Он ещё не имеет исходного кода. Сначала сохраните пакет."
-
-#: lazarusidestrconsts.lispkgmangthissourceisonlyusedtocompileandinstallthepackage
-msgid "This source is only used to compile and install the package."
-msgstr "Исходный код используется только для компиляции и установки пакета."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"

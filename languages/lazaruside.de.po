@@ -11289,17 +11289,9 @@ msgstr "Das benötigte Package enthält ein ungesichertes Package. Siehe Package
 msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
 msgstr "Es gibt bereits eine Unit mit dem gleichen Namen wie ein Package:%s%s1. %s%s%s aus %s%s2. %s%s%s%s"
 
-#: lazarusidestrconsts.lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "This file was automatically created by Lazarus. Do not edit!"
-msgstr "Diese Datei wurde automatisch von Lazarus erzeugt. Sie darf nicht bearbeitet werden!"
-
 #: lazarusidestrconsts.lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
 msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr "Das ist ein virtuelles Packages. Es besitzt, solange es noch nicht gespeichert wurde, keinen Quelltext. Bitte speichern Sie es zuerst."
-
-#: lazarusidestrconsts.lispkgmangthissourceisonlyusedtocompileandinstallthepackage
-msgid "This source is only used to compile and install the package."
-msgstr "Dieser Quelltext dient nur dem Übersetzen und Installieren des Packages."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"

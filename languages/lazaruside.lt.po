@@ -11248,17 +11248,9 @@ msgstr "Reikiamuose paketuose aptiktas neišsaugotas paketas. Žvilgtelėkit į 
 msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
 msgstr "Rastas modulis tuo pačiu pavadinimu kaip ir paketas:%s%s1. %s%s%s iš %s%s2. %s%s%s%s"
 
-#: lazarusidestrconsts.lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "This file was automatically created by Lazarus. Do not edit!"
-msgstr "Šį failą automatiškai sukūrė Lazarus. Nekeiskite jo!"
-
 #: lazarusidestrconsts.lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
 msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr "Tai virtualus paketas. Jis kol kas dar neturi pirminio kodo. Todėl pirma išsaugokite paketą."
-
-#: lazarusidestrconsts.lispkgmangthissourceisonlyusedtocompileandinstallthepackage
-msgid "This source is only used to compile and install the package."
-msgstr "Šis pirminis kodas skirtas tik paketo kompiliavimui ir diegimui."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"

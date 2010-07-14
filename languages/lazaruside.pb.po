@@ -11245,17 +11245,9 @@ msgstr "Há um pacote não salvo nos pacotes requeridos. Veja o gráfico de paco
 msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
 msgstr "Há uma unidade com o mesmo nome do pacote:%s%s1. %s%s%s de %s%s2. %s%s%s%s"
 
-#: lazarusidestrconsts.lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "This file was automatically created by Lazarus. Do not edit!"
-msgstr "Este arquivo foi auto criado pelo Lazarus. Não edite!"
-
 #: lazarusidestrconsts.lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
 msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr "Este é um pacote virtual. Ele não tem um fonte ainda. Favor salvar o pacote primeiro."
-
-#: lazarusidestrconsts.lispkgmangthissourceisonlyusedtocompileandinstallthepackage
-msgid "This source is only used to compile and install the package."
-msgstr "Este fonte é usado apenas para compilar e instalar o pacote."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"

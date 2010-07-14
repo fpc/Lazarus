@@ -11267,17 +11267,9 @@ msgstr "Medzi vyžadovanými balíčkami sú neuloýené balíčky. Pozrite graf
 msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
 msgstr "Už existuje jednotka s rovnakým enom ako blíček:%s%s1. %s%s%s z %s%s2. %s%s%s%s"
 
-#: lazarusidestrconsts.lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "This file was automatically created by Lazarus. Do not edit!"
-msgstr "Tento súbor bol automaticky vytvorený Lazarom. Prosím neurpavovať!"
-
 #: lazarusidestrconsts.lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
 msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr "Toto je virtuálny balíček. Zatiaľ nemá zdrojový kód. Prosím najprv uložte balíček."
-
-#: lazarusidestrconsts.lispkgmangthissourceisonlyusedtocompileandinstallthepackage
-msgid "This source is only used to compile and install the package."
-msgstr "Tento zdrojový kód je použitý len na preloženie a nainštalovanie tohoto balíčka."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"

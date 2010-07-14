@@ -11265,17 +11265,9 @@ msgstr "要求されたパッケージに保存されていないパッケージ
 msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
 msgstr "パッケージと同じ名前のユニットがあります: %s%s1. %s%s%s from %s%s2. %s%s%s%s"
 
-#: lazarusidestrconsts.lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit
-msgid "This file was automatically created by Lazarus. Do not edit!"
-msgstr "このファイルは、Lazarusが自動的に(再)作成したものです。編集しないでください。"
-
 #: lazarusidestrconsts.lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
 msgid "This is a virtual package. It has no source yet. Please save the package first."
 msgstr "これは仮想パッケージです。まだソースがありません。まずパッケージを保存してください。"
-
-#: lazarusidestrconsts.lispkgmangthissourceisonlyusedtocompileandinstallthepackage
-msgid "This source is only used to compile and install the package."
-msgstr "このソースは、パッケージのコンパイルとインストールをするためにのみ用いられます。"
 
 #: lazarusidestrconsts.lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"
