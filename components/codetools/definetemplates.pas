@@ -7591,6 +7591,7 @@ begin
   ClearUnitToSrcCaches;
   FreeAndNil(FConfigCaches);
   FreeAndNil(FSourceCaches);
+  FreeAndNil(fUnitToSrcCaches);
   inherited Destroy;
 end;
 
