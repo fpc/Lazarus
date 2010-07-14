@@ -2288,8 +2288,9 @@ var
   MouseMsg: TLMMouseMove absolute Msg;
   MousePos: TQtPoint;
 begin
+  Result := False;
   if not CanSendLCLMessage then
-    Exit(False);
+    Exit;
 
   if (QApplication_mouseButtons() = 0) and
      not QWidget_hasMouseTracking(QWidgetH(Sender)) then // in other case MouseMove will be hooked
@@ -2310,11 +2311,8 @@ begin
         end;
     end;
     NotifyApplicationUserInput(Msg.Msg);
-    Result := DeliverMessage(Msg) = 0;
-    if Result then
-      QEvent_accept(Event)
-    else
-      QEvent_ignore(Event)
+    DeliverMessage(Msg);
+    QWidget_setAttribute(QWidgetH(Sender), QtWA_NoMousePropagation, True);
   end;
 end;
 
@@ -2646,12 +2644,8 @@ begin
         QtMidButton: Msg.Msg := CheckMouseButtonDown(2);
       end;
       NotifyApplicationUserInput(Msg.Msg);
-      Result := DeliverMessage(Msg) = 0;
-      // accept the event so we have no message propagation
-      if Result then
-        QEvent_accept(Event)
-      else
-        QEvent_ignore(Event);
+      DeliverMessage(Msg);
+      QWidget_setAttribute(QWidgetH(Sender), QtWA_NoMousePropagation, True);
     end;
     QEventMouseButtonRelease:
     begin
@@ -2665,12 +2659,8 @@ begin
       end;
 
       NotifyApplicationUserInput(Msg.Msg);
-      Result := DeliverMessage(Msg) = 0;
-      // accept the event so we have no message propagation
-      if Result then
-        QEvent_accept(Event)
-      else
-        QEvent_ignore(Event);
+      DeliverMessage(Msg);
+      QWidget_setAttribute(QWidgetH(Sender), QtWA_NoMousePropagation, True);
 
       { Clicking on buttons operates differently, because QEventMouseButtonRelease
         is sent if you click a control, drag the mouse out of it and release, but
@@ -2767,8 +2757,9 @@ var
   Msg: TLMMouseMove;
   MousePos: TQtPoint;
 begin
+  Result := False;
   if not CanSendLCLMessage then
-    Exit(False);
+    Exit;
   FillChar(Msg, SizeOf(Msg), #0);
   
   MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
@@ -2783,12 +2774,8 @@ begin
   Msg.Msg := LM_MOUSEMOVE;
 
   NotifyApplicationUserInput(Msg.Msg);
-  // stop event propagation
-  Result := DeliverMessage(Msg) = 0;
-  if Result then
-    QEvent_accept(Event)
-  else
-    QEvent_ignore(Event);
+  DeliverMessage(Msg);
+  QWidget_setAttribute(QWidgetH(Sender), QtWA_NoMousePropagation, True);
 end;
 
 {------------------------------------------------------------------------------
@@ -3091,7 +3078,11 @@ begin
   if Result then
     QEvent_accept(Event)
   else
+  begin
     QEvent_ignore(Event);
+    QWidget_setAttribute(QWidgetH(Sender), QtWA_NoMousePropagation, False);
+  end;
+
   if Result and (csDesigning in LCLObject.ComponentState) then
     SendMouseReleaseEventToSelf;
 {
