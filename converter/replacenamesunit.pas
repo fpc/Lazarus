@@ -7,9 +7,29 @@ interface
 uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   Grids, Buttons, ExtCtrls, Menus, CodeToolsStructs, SynRegExpr,
-  LazarusIDEStrConsts;
+  LazarusIDEStrConsts, ConverterTypes;
 
 type
+
+  { TCalledFuncInfo }
+
+  TCalledFuncInfo = class
+  // Used for function replacements.
+  private
+    function ParseIf(var StartPos: integer): boolean;
+  public
+    fFuncName: string;
+    fReplClause: string;
+    fReplFunc: string;
+    fStartPos: Integer;
+    fEndPos: Integer;
+    fInclSemiColon: string;
+    fParams: TStringList;
+    constructor Create(aFuncName, aReplacement: string);
+    destructor Destroy; override;
+    procedure UpdateReplacement;
+  end;
+
 
   { TStringMapUpdater }
 
@@ -132,6 +152,144 @@ begin
       FromGridToMap(AMap, RNForm.Grid);
   finally
     RNForm.Free;
+  end;
+end;
+
+
+{ TCalledFuncInfo }
+
+constructor TCalledFuncInfo.Create(aFuncName, aReplacement: string);
+begin
+  fFuncName:=aFuncName;
+  fReplClause:=aReplacement;
+  fParams:=TStringList.Create;
+end;
+
+destructor TCalledFuncInfo.Destroy;
+begin
+  fParams.Free;
+  inherited Destroy;
+end;
+
+function TCalledFuncInfo.ParseIf(var StartPos: integer): boolean;
+// Parse a clause starting with "if" and set fReplFunc if the condition matches.
+// Example:  'if $3 match ":/" then OpenURL($3); OpenDocument($3)'
+// Return true if the condition matched.
+var
+  RE: TRegExpr;
+  ParamPos: integer;
+  Str, Param: String;
+  Repl: String;
+
+  procedure ReadWhiteSpace(NewStartPos: integer);
+  begin
+    StartPos:=NewStartPos;
+    while (StartPos<=Length(fReplClause)) and (fReplClause[StartPos]=' ') do
+      inc(StartPos);
+  end;
+
+  function ParseParamNum: integer;
+  var
+    EndPos: Integer;
+    s: String;
+  begin
+    if fReplClause[StartPos]<>'$' then
+      raise EDelphiConverterError.Create(Format('$ expected, %s found.', [fReplClause[StartPos]]));
+    Inc(StartPos);      // Skip $
+    EndPos:=StartPos;
+    while (EndPos<=Length(fReplClause)) and (fReplClause[EndPos] in ['0'..'9']) do
+      Inc(EndPos);
+    s:=Copy(fReplClause, StartPos, EndPos-StartPos);
+    Result:=StrToInt(s);
+    ReadWhiteSpace(EndPos);
+  end;
+
+  procedure ParseString(aStr: string);
+  var
+    EndPos: Integer;
+    s: String;
+  begin
+    EndPos:=StartPos;
+    while (EndPos<=Length(fReplClause)) and
+          (fReplClause[EndPos] in ['a'..'z','A'..'Z','_']) do
+      Inc(EndPos);
+    s:=Copy(fReplClause, StartPos, EndPos-StartPos);
+    if s<>aStr then
+      raise EDelphiConverterError.Create(Format('%s expected, %s found.', [aStr, s]));
+    ReadWhiteSpace(EndPos);
+  end;
+
+  function ParseDoubleQuoted: string;
+  var
+    EndPos: Integer;
+  begin
+    if fReplClause[StartPos]<>'"' then
+      raise EDelphiConverterError.Create(Format('" expected, %s found.', [fReplClause[StartPos]]));
+    Inc(StartPos);      // Skip "
+    EndPos:=StartPos;
+    while (EndPos<=Length(fReplClause)) and (fReplClause[EndPos]<>'"') do
+      inc(EndPos);
+    Result:=Copy(fReplClause, StartPos, EndPos-StartPos);
+    ReadWhiteSpace(EndPos+1);
+  end;
+
+  function GetReplacement: string;
+  var
+    EndPos: Integer;
+  begin
+    EndPos:=StartPos;
+    while (EndPos<=Length(fReplClause)) and (fReplClause[EndPos]<>';') do
+      inc(EndPos);
+    Result:=Copy(fReplClause, StartPos, EndPos-StartPos);
+    StartPos:=EndPos+1;    // Skip ';'
+  end;
+
+begin
+  // "if " is already skipped when coming here.
+  ReadWhiteSpace(StartPos);            // Possible space in the beginning.
+  ParamPos:=ParseParamNum;
+  ParseString('match');
+  Str:=ParseDoubleQuoted;
+  ParseString('then');
+  Repl:=GetReplacement;
+
+  Result:=False;
+  if ParamPos<=fParams.Count then begin
+    Param:=fParams[ParamPos-1];
+    RE:=TRegExpr.Create;
+    try
+      RE.Expression:=Str;
+      if RE.Exec(Param) then begin
+        fReplFunc:=Repl;
+        Result:=True;
+      end;
+    finally
+      RE.Free;
+    end;
+  end;
+end;
+
+procedure TCalledFuncInfo.UpdateReplacement;
+// Parse fReplClause and set fReplFunc, maybe conditionally based on parameters.
+var
+  StartPos, EndPos: Integer;
+begin
+  StartPos:=1;
+  while true do begin // StartPos<=Length(fReplClause)
+    // "If" condition can match or not. Continue if it didn't match.
+    if Copy(fReplClause, StartPos, 3) = 'if ' then begin
+      Inc(StartPos, 3);
+      if ParseIf(StartPos) then
+        Break;
+    end
+    else begin
+      // Replacement without conditions. Copy it and stop.
+      EndPos:=StartPos;
+      while (EndPos<=Length(fReplClause)) and (fReplClause[EndPos]<>';') do
+        inc(EndPos);
+      fReplFunc:=Copy(fReplClause, StartPos, EndPos-StartPos);
+      Break;
+    end;
   end;
 end;
 

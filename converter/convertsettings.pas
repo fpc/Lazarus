@@ -253,7 +253,7 @@ begin
 
   // Map Delphi function names to FCL/LCL functions.
   TheMap:=fReplaceFuncs;
-  MapReplacement('ShellExecute',      'OpenURL($3) // Can be also OpenDocument depending on parameter.');
+  MapReplacement('ShellExecute', 'if $3 match ":/" then OpenURL($3); OpenDocument($3)');
   // File name encoding. ToDo: add other similar funcs with UTF8 counterparts.
   MapReplacement('FileExists',        'FileExistsUTF8($1)');
   // File functions using a handle.

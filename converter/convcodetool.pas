@@ -23,21 +23,6 @@ type
   // For future, when .dfm form file can be used for both Delphi and Lazarus.
 {  TFormFileAction = (faUseDfm, faRenameToLfm, faUseBothDfmAndLfm); }
 
-  { TFuncCallPosition }
-
-  TCalledFuncInfo = class
-  private
-    fFuncName: string;
-    fReplacement: string;
-    fStartPos: Integer;
-    fEndPos: Integer;
-    fInclSemiColon: string;
-    fParams: TStringList;
-  public
-    constructor Create(aFuncName, aReplacement: string);
-    destructor Destroy; override;
-  end;
-
   { TConvDelphiCodeTool }
 
   TConvDelphiCodeTool = class
@@ -92,22 +77,6 @@ type
 
 
 implementation
-
-{ TCalledFuncInfo }
-
-constructor TCalledFuncInfo.Create(aFuncName, aReplacement: string);
-begin
-  fFuncName:=aFuncName;
-  fReplacement:=aReplacement;
-  fParams:=TStringList.Create;
-end;
-
-destructor TCalledFuncInfo.Destroy;
-begin
-  fParams.Free;
-  inherited Destroy;
-end;
-
 
 { TConvDelphiCodeTool }
 
@@ -505,7 +474,7 @@ procedure SplitParam(const aStr: string; aDelimiter: Char; ResultList: TStringLi
       Dec(Len);
     end
     else
-      raise EConverterError.Create('Replacement function parameter should start with "$".');
+      raise EDelphiConverterError.Create('Replacement function parameter should start with "$".');
     ResultList.Add(Copy(aStr, Start, Len));
   end;
 
@@ -543,7 +512,7 @@ var
   // Parse replacement params. They show which original params are copied where.
   // Returns the first position where comments can be searched from.
   var
-    ParamBeg, ParamEnd: Integer;          // Start and end of parameters.
+    ParamBeg, ParamEnd: Integer;        // Start and end of parameters.
     s: String;
   begin
     Result:=1;
@@ -551,9 +520,9 @@ var
     if ParamBeg>0 then begin
       ParamEnd:=Pos(')', aStr);
       if ParamEnd=0 then
-        raise EConverterError.Create('")" is missing from replacement function.');
+        raise EDelphiConverterError.Create('")" is missing from replacement function.');
       s:=Copy(aStr, ParamBeg+1, ParamEnd-ParamBeg-1);
-      SplitParam(s, ',', ParamList);      // The actual parameter list.
+      SplitParam(s, ',', ParamList);    // The actual parameter list.
       BodyEnd:=ParamBeg-1;
       Result:=ParamEnd+1;
     end;
@@ -570,9 +539,9 @@ var
     for i:=0 to ParamList.Count-1 do begin
       ParamPos:=StrToInt(ParamList[i]);
       if ParamPos < 1 then
-        raise EConverterError.Create('Replacement function parameter number should be >= 1.');
-      Param:='nil';         // Default value if not found from original code.
-      if ParamPos <= aParams.Count then
+        raise EDelphiConverterError.Create('Replacement function parameter number should be >= 1.');
+      Param:='nil';                // Default value if not found from original code.
+      if ParamPos<=aParams.Count then
         Param:=aParams[ParamPos-1];
       if Result<>'' then
         Result:=Result+', ';
@@ -619,13 +588,13 @@ begin
     for i:=fFuncsToReplace.Count-1 downto 0 do begin
       FuncInfo:=TCalledFuncInfo(fFuncsToReplace[i]);
       BodyEnd:=-1;
-      PossibleCommPos:=ParseReplacementParams(FuncInfo.fReplacement);
+      PossibleCommPos:=ParseReplacementParams(FuncInfo.fReplFunc);
       NewParamStr:=CollectParams(FuncInfo.fParams);
-      Comment:=GetComment(FuncInfo.fReplacement, PossibleCommPos);
+      Comment:=GetComment(FuncInfo.fReplFunc, PossibleCommPos);
       // Separate function body
       if BodyEnd=-1 then
-        BodyEnd:=Length(FuncInfo.fReplacement);
-      NewFunc:=Trim(Copy(FuncInfo.fReplacement, 1, BodyEnd));
+        BodyEnd:=Length(FuncInfo.fReplFunc);
+      NewFunc:=Trim(Copy(FuncInfo.fReplFunc, 1, BodyEnd));
       NewFunc:=Format('%s(%s)%s { *Converted from %s* %s }',
         [NewFunc, NewParamStr, FuncInfo.fInclSemiColon, FuncInfo.fFuncName, Comment]);
       // Old function call with params for IDE message output.
@@ -714,7 +683,7 @@ var
               break;
             end;
             if not AtomIsChar(',') then
-              raise EConverterError.Create('Bracket not found');
+              raise EDelphiConverterError.Create('Bracket not found');
             ReadNextAtom;
           end;
         end;
@@ -722,6 +691,7 @@ var
       else
         CheckSemiColon(FuncInfo);
     end;
+    FuncInfo.UpdateReplacement;
   end;
 
   procedure ReadFuncCall(MaxPos: Integer);
@@ -761,7 +731,7 @@ var
     while StartPos<=aNode.EndPos do begin
       case Src[StartPos] of
 
-      '{': // pascal comment
+      '{':                         // pascal comment
         begin
           inc(StartPos);
           CommentLvl:=1;
@@ -782,7 +752,7 @@ var
           inc(StartPos);
         end;
 
-      '/':  // Delphi comment
+      '/':                         // Delphi comment
         if (Src[StartPos+1]<>'/') then begin
           inc(StartPos);
         end else begin
@@ -803,7 +773,7 @@ var
             inc(StartPos);
         end;
 
-      '(': // turbo pascal comment
+      '(':                         // turbo pascal comment
         if (Src[StartPos+1]<>'*') then begin
           inc(StartPos);
         end else begin
@@ -825,8 +795,7 @@ var
         ReadFuncCall(aNode.EndPos);
 
       '''':
-        begin
-          // skip string constant
+        begin                      // skip string constant
           inc(StartPos);
           while (StartPos<=aNode.EndPos) do begin
             if (not (Src[StartPos] in ['''',#10,#13])) then

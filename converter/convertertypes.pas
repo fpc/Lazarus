@@ -13,7 +13,7 @@ type
 
   { EConverterError }
 
-  EConverterError = class(Exception)
+  EDelphiConverterError = class(Exception)
     constructor Create(const AMessage: string);
   end;
 
@@ -22,7 +22,7 @@ implementation
 
 { EConverterError }
 
-constructor EConverterError.Create(const AMessage: string);
+constructor EDelphiConverterError.Create(const AMessage: string);
 begin
   inherited Create('Converter: '+AMessage);
 end;
