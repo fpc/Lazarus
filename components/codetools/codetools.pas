@@ -1,8 +1,8 @@
-{ This file was automatically created by Lazarus. Do not edit!
-  This source is only used to compile and install the package.
+{ Этот файл был автоматически создан Lazarus. Не редактировать!
+  Исходный код используется только для компиляции и установки пакета.
  }
 
-unit CodeTools; 
+unit codetools;
 
 interface
 
@@ -22,10 +22,10 @@ uses
 
 implementation
 
-procedure Register; 
+procedure Register;
 begin
-end; 
+end;
 
 initialization
-  RegisterPackage('CodeTools', @Register); 
+  RegisterPackage('CodeTools',@Register);
 end.
