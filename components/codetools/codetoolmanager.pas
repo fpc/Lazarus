@@ -156,6 +156,8 @@ type
     function DirectoryCachePoolGetString(const ADirectory: string;
                                   const AStringType: TCTDirCacheString): string;
     function DirectoryCachePoolFindVirtualFile(const Filename: string): string;
+    function DirectoryCachePoolGetUnitFromSet(const UnitSet, AnUnitName: string
+                                              ): string;
   public
     DefinePool: TDefinePool; // definition templates (rules)
     DefineTree: TDefineTree; // cache for defines (e.g. initial compiler values)
@@ -163,6 +165,7 @@ type
     SourceChangeCache: TSourceChangeCache; // cache for write accesses
     GlobalValues: TExpressionEvaluator;
     DirectoryCachePool: TCTDirectoryCachePool;
+    FPCDefinesCache: TFPCDefinesCache;
     IdentifierList: TIdentifierList;
     IdentifierHistory: TIdentifierHistoryList;
     Positions: TCodeXYPositions;
@@ -292,6 +295,9 @@ type
     function FindUnitInUnitLinks(const Directory, AUnitName: string): string;
     function GetUnitLinksForDirectory(const Directory: string;
                                       UseCache: boolean = false): string;
+    function FindUnitInUnitSet(const Directory, AUnitName: string): string;
+    function GetUnitSetForDirectory(const Directory: string;
+                                    UseCache: boolean = false): string;
     function GetFPCUnitPathForDirectory(const Directory: string;
                                         UseCache: boolean = false): string;// unit paths reported by FPC
     procedure GetFPCVersionForDirectory(const Directory: string;
@@ -828,7 +834,9 @@ begin
   DirectoryCachePool:=TCTDirectoryCachePool.Create;
   DirectoryCachePool.OnGetString:=@DirectoryCachePoolGetString;
   DirectoryCachePool.OnFindVirtualFile:=@DirectoryCachePoolFindVirtualFile;
+  DirectoryCachePool.OnGetUnitFromSet:=@DirectoryCachePoolGetUnitFromSet;
   DefineTree.DirectoryCachePool:=DirectoryCachePool;
+  FPCDefinesCache:=TFPCDefinesCache.Create(nil);
   FAddInheritedCodeToOverrideMethod:=true;
   FAdjustTopLineDueToComment:=true;
   FCatchExceptions:=true;
@@ -882,6 +890,7 @@ begin
     DefaultConfigCodeCache:=nil;
   FreeAndNil(SourceCache);
   FreeAndNil(DirectoryCachePool);
+  FreeAndNil(FPCDefinesCache);
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.Destroy] F');
   {$ENDIF}
@@ -1430,6 +1439,27 @@ begin
     Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
     if Evaluator=nil then exit;
     Result:=Evaluator[UnitLinksMacroName];
+  end;
+end;
+
+function TCodeToolManager.FindUnitInUnitSet(const Directory, AUnitName: string
+  ): string;
+begin
+  Result:=DirectoryCachePool.FindUnitInUnitSet(Directory,AUnitName);
+end;
+
+function TCodeToolManager.GetUnitSetForDirectory(const Directory: string;
+  UseCache: boolean): string;
+var
+  Evaluator: TExpressionEvaluator;
+begin
+  if UseCache then begin
+    Result:=DirectoryCachePool.GetString(Directory,ctdcsUnitSet,true)
+  end else begin
+    Result:='';
+    Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
+    if Evaluator=nil then exit;
+    Result:=Evaluator[UnitSetMacroName];
   end;
 end;
 
@@ -5212,6 +5242,7 @@ begin
   ctdcsIncludePath: Result:=GetIncludePathForDirectory(ADirectory,false);
   ctdcsCompleteSrcPath: Result:=GetCompleteSrcPathForDirectory(ADirectory,false);
   ctdcsUnitLinks: Result:=GetUnitLinksForDirectory(ADirectory,false);
+  ctdcsUnitSet: Result:=GetUnitSetForDirectory(ADirectory,false);
   ctdcsFPCUnitPath: Result:=GetFPCUnitPathForDirectory(ADirectory,false);
   else RaiseCatchableException('');
   end;
@@ -5228,6 +5259,18 @@ begin
   Code:=FindFile(Filename);
   if Code<>nil then
     Result:=Code.Filename;
+end;
+
+function TCodeToolManager.DirectoryCachePoolGetUnitFromSet(const UnitSet,
+  AnUnitName: string): string;
+var
+  Changed: boolean;
+  UnitSetCache: TFPCUnitSetCache;
+  Tree: TStringToStringTree;
+begin
+  UnitSetCache:=FPCDefinesCache.FindUnitToSrcCache(UnitSet,Changed,true);
+  Tree:=UnitSetCache.GetUnitToSourceTree(false);
+  Result:=Tree[AnUnitName];
 end;
 
 procedure TCodeToolManager.OnToolSetWriteLock(Lock: boolean);

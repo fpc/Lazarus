@@ -790,7 +790,8 @@ type
                                      AnUnitInFilename: string): string;
     procedure GatherUnitAndSrcPath(var UnitPath, CompleteSrcPath: string);
     function SearchUnitInUnitLinks(const TheUnitName: string): string;
-    
+    function SearchUnitInUnitSet(const TheUnitName: string): string;
+
     function FindSmartHint(const CursorPos: TCodeXYPosition): string;
     
     function BaseTypeOfNodeHasSubIdents(ANode: TCodeTreeNode): boolean;
@@ -2101,6 +2102,14 @@ begin
   Result:='';
   if not CheckDirectoryCache then exit;
   Result:=DirectoryCache.FindUnitLink(TheUnitName);
+end;
+
+function TFindDeclarationTool.SearchUnitInUnitSet(const TheUnitName: string
+  ): string;
+begin
+  Result:='';
+  if not CheckDirectoryCache then exit;
+  Result:=DirectoryCache.FindUnitInUnitSet(TheUnitName);
 end;
 
 function TFindDeclarationTool.FindSmartHint(const CursorPos: TCodeXYPosition

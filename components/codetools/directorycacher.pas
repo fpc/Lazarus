@@ -56,6 +56,7 @@ type
     ctdcsIncludePath,
     ctdcsCompleteSrcPath, // including unit path, src path and compiled src paths
     ctdcsUnitLinks,
+    ctdcsUnitSet,
     ctdcsFPCUnitPath  // unit paths reported by FPC
     );
 
@@ -82,6 +83,16 @@ const
                           ctdusUnitFileCaseInsensitive];
 
 type
+
+  { TUnitNameLink }
+
+  TUnitNameLink = class
+  public
+    Unit_Name: string;
+    Filename: string;
+    function CalcMemSize: PtrUInt;
+  end;
+
   TCTDirCacheUnitSrcRecord = record
     Files: TStringToStringTree;
     ConfigTimeStamp: Cardinal;
@@ -134,6 +145,7 @@ type
     procedure Reference;
     procedure Release;
     function FindUnitLink(const AUnitName: string): string;
+    function FindUnitInUnitSet(const AUnitName: string): string;
     function FindFile(const ShortFilename: string;
                       const FileCase: TCTSearchFileCase): string;
     function FindUnitSource(const AUnitName: string; AnyCase: boolean): string;
@@ -157,6 +169,7 @@ type
                                   const AStringType: TCTDirCacheString
                                   ): string of object;
   TCTDirCacheFindVirtualFile = function(const Filename: string): string of object;
+  TCTGetUnitFromSet = function(const UnitSet, AnUnitName: string): string of object;
 
   TCTDirectoryCachePool = class
   private
@@ -165,6 +178,7 @@ type
     FDirectories: TAVLTree;// tree of TCTDirectoryCache
     FOnFindVirtualFile: TCTDirCacheFindVirtualFile;
     FOnGetString: TCTDirCacheGetString;
+    FOnGetUnitFromSet: TCTGetUnitFromSet;
     procedure DoRemove(ACache: TCTDirectoryCache);
     procedure OnFileStateCacheChangeTimeStamp(Sender: TObject);
   public
@@ -179,6 +193,7 @@ type
     procedure IncreaseFileTimeStamp;
     procedure IncreaseConfigTimeStamp;
     function FindUnitInUnitLinks(const Directory, AUnitName: string): string;
+    function FindUnitInUnitSet(const Directory, AUnitName: string): string;
     function FindDiskFilename(const Filename: string): string;
     function FindUnitInDirectory(const Directory, AUnitName: string;
                                  AnyCase: boolean = false): string;
@@ -195,6 +210,8 @@ type
     property OnGetString: TCTDirCacheGetString read FOnGetString write FOnGetString;
     property OnFindVirtualFile: TCTDirCacheFindVirtualFile read FOnFindVirtualFile
                                                    write FOnFindVirtualFile;
+    property OnGetUnitFromSet: TCTGetUnitFromSet read FOnGetUnitFromSet
+                                                 write FOnGetUnitFromSet;
   end;
   
 function CompareCTDirectoryCaches(Data1, Data2: Pointer): integer;
@@ -204,21 +221,11 @@ function ComparePCharFirstCaseInsThenCase(Data1, Data2: Pointer): integer;
 function ComparePCharCaseInsensitive(Data1, Data2: Pointer): integer;
 function ComparePCharCaseSensitive(Data1, Data2: Pointer): integer;
 
-type
-
-  { TUnitNameLink }
-
-  TUnitNameLink = class
-  public
-    Unit_Name: string;
-    Filename: string;
-    function CalcMemSize: PtrUInt;
-  end;
-
+// unit links
 function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
   var UnitLinkStart, UnitLinkEnd: integer; out Filename: string): boolean;
-function CreateUnitLinksTree(const UnitLinks: string): TAVLTree;
-function CompareUnitLinkNodes(NodeData1, NodeData2: pointer): integer;
+function CreateUnitLinksTree(const UnitLinks: string): TAVLTree; // tree of TUnitNameLink
+function CompareUnitLinkNodes(NodeData1, NodeData2: Pointer): integer;
 function CompareUnitNameWithUnitLinkNode(AUnitName: Pointer;
   NodeData: pointer): integer;
 
@@ -706,6 +713,14 @@ begin
     end;
   end;
   Result:='';
+end;
+
+function TCTDirectoryCache.FindUnitInUnitSet(const AUnitName: string): string;
+var
+  UnitSet: string;
+begin
+  UnitSet:=Strings[ctdcsUnitSet];
+  Result:=Pool.OnGetUnitFromSet(UnitSet,AUnitName);
 end;
 
 function TCTDirectoryCache.FindFile(const ShortFilename: string;
@@ -1201,6 +1216,23 @@ begin
     RaiseDirNotAbsolute;
   Cache:=GetCache(Directory,true,false);
   Result:=Cache.FindUnitLink(AUnitName);
+end;
+
+function TCTDirectoryCachePool.FindUnitInUnitSet(const Directory,
+  AUnitName: string): string;
+
+  procedure RaiseDirNotAbsolute;
+  begin
+    raise Exception.Create('TCTDirectoryCachePool.FindUnitInUnitSet not absolute Directory="'+Directory+'"');
+  end;
+
+var
+  Cache: TCTDirectoryCache;
+begin
+  if (Directory<>'') and not FilenameIsAbsolute(Directory) then
+    RaiseDirNotAbsolute;
+  Cache:=GetCache(Directory,true,false);
+  Result:=Cache.FindUnitInUnitSet(AUnitName);
 end;
 
 function TCTDirectoryCachePool.FindDiskFilename(const Filename: string
