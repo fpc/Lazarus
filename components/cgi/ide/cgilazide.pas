@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit cgilazide;
+unit CGILazIDE; 
 
 interface
 
@@ -11,11 +11,11 @@ uses
 
 implementation
 
-procedure Register;
+procedure Register; 
 begin
-  RegisterUnit('CGILazIDEIntf',@CGILazIDEIntf.Register);
-end;
+  RegisterUnit('CGILazIDEIntf', @CGILazIDEIntf.Register); 
+end; 
 
 initialization
-  RegisterPackage('CGILazIDE',@Register);
+  RegisterPackage('CGILazIDE', @Register); 
 end.

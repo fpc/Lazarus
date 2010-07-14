@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit cgilaz;
+unit cgiLaz; 
 
 interface
 
@@ -11,10 +11,10 @@ uses
 
 implementation
 
-procedure Register;
+procedure Register; 
 begin
-end;
+end; 
 
 initialization
-  RegisterPackage('cgiLaz',@Register);
+  RegisterPackage('cgiLaz', @Register); 
 end.

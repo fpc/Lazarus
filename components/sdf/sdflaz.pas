@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit sdflaz;
+unit SDFLaz; 
 
 interface
 
@@ -11,11 +11,11 @@ uses
 
 implementation
 
-procedure Register;
+procedure Register; 
 begin
-  RegisterUnit('RegisterSDF',@RegisterSDF.Register);
-end;
+  RegisterUnit('RegisterSDF', @RegisterSDF.Register); 
+end; 
 
 initialization
-  RegisterPackage('SDFLaz',@Register);
+  RegisterPackage('SDFLaz', @Register); 
 end.

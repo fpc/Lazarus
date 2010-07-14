@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit projtemplates;
+unit ProjTemplates; 
 
 interface
 
@@ -12,11 +12,11 @@ uses
 
 implementation
 
-procedure Register;
+procedure Register; 
 begin
-  RegisterUnit('IDETemplateProject',@IDETemplateProject.Register);
-end;
+  RegisterUnit('IDETemplateProject', @IDETemplateProject.Register); 
+end; 
 
 initialization
-  RegisterPackage('ProjTemplates',@Register);
+  RegisterPackage('ProjTemplates', @Register); 
 end.

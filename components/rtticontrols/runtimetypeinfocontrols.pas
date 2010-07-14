@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit runtimetypeinfocontrols;
+unit RunTimeTypeInfoControls; 
 
 interface
 
@@ -11,12 +11,12 @@ uses
 
 implementation
 
-procedure Register;
+procedure Register; 
 begin
-  RegisterUnit('RTTICtrls',@RTTICtrls.Register);
-  RegisterUnit('RTTIGrids',@RTTIGrids.Register);
-end;
+  RegisterUnit('RTTICtrls', @RTTICtrls.Register); 
+  RegisterUnit('RTTIGrids', @RTTIGrids.Register); 
+end; 
 
 initialization
-  RegisterPackage('RunTimeTypeInfoControls',@Register);
+  RegisterPackage('RunTimeTypeInfoControls', @Register); 
 end.
