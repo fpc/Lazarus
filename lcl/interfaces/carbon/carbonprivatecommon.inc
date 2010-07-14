@@ -346,23 +346,24 @@ function CarbonCommon_ContextualMenuClick(ANextHandler: EventHandlerCallRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   Msg: TLMContextMenu;
-  P: TPoint;
+  P: MacOSAll.Point;
 begin
   {$IFDEF VerboseCommonEvent}
     DebugLn('CarbonCommon_ContextualMenuClick: ', DbgSName(AWidget.LCLObject));
   {$ENDIF}
-  // Result := CallNextEventHandler(ANextHandler, AEvent);
 
-  P := AWidget.GetMousePos;
+  GetGlobalMouse(P);
 
   FillChar(Msg, SizeOf(TLMContextMenu), 0);
   Msg.Msg := LM_CONTEXTMENU;
   Msg.hWnd := HWND(AWidget);
-  Msg.Pos.X := P.X;
-  Msg.Pos.Y := P.Y;
+  Msg.Pos.X := P.h;
+  Msg.Pos.Y := P.v;
   
-  DeliverMessage(AWidget.LCLObject, Msg);
-  Result := noErr; // do not propagate
+  if DeliverMessage(AWidget.LCLObject, Msg) <> 0 then
+    Result := noErr
+  else
+    Result := CallNextEventHandler(ANextHandler, AEvent); // do not propagate
 end;
 
 {------------------------------------------------------------------------------
