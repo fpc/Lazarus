@@ -166,7 +166,7 @@ type
     procedure KeyDown(Sender: TControl; var TheMessage: TLMKEY);
     procedure KeyUp(Sender: TControl; var TheMessage: TLMKEY);
     function  HandleSetCursor(var TheMessage: TLMessage): boolean;
-    procedure HandlePopupMenu(Sender: TControl; var Message: TLMMouse);
+    procedure HandlePopupMenu(Sender: TControl; var Message: TLMContextMenu);
     procedure GetMouseMsgShift(TheMessage: TLMMouse; var Shift: TShiftState;
                                var Button: TMouseButton);
 
@@ -1574,16 +1574,19 @@ begin
   end;
 end;
 
-procedure TDesigner.HandlePopupMenu(Sender: TControl; var Message: TLMMouse);
+procedure TDesigner.HandlePopupMenu(Sender: TControl; var Message: TLMContextMenu);
 var
   PopupPos: TPoint;
 begin
-  PopupMenuComponentEditor := GetComponentEditorForSelection;
-  BuildPopupMenu;
-  with ControlSelection do
-    PopupPos := Point(Left + Width, Top);
-  with Form.ClientToScreen(PopupPos) do
-    FDesignerPopupMenu.Popup(X, Y);
+  if Message.XPos = -1 then
+  begin
+    PopupMenuComponentEditor := GetComponentEditorForSelection;
+    BuildPopupMenu;
+    with ControlSelection do
+      PopupPos := Point(Left + Width, Top);
+    with Form.ClientToScreen(PopupPos) do
+      FDesignerPopupMenu.Popup(X, Y);
+  end;
   Message.Result := 1;
 end;
 
@@ -2594,7 +2597,7 @@ begin
       LM_ACTIVATE:    Result:=OnFormActivated;
       LM_CLOSEQUERY:  Result:=OnFormCloseQuery;
       LM_SETCURSOR:   Result:=HandleSetCursor(TheMessage);
-      LM_CONTEXTMENU: HandlePopupMenu(Sender, TLMMouse(TheMessage));
+      LM_CONTEXTMENU: HandlePopupMenu(Sender, TLMContextMenu(TheMessage));
     else
       Result:=false;
     end;
