@@ -56,7 +56,6 @@ const
   LM_CHANGED        = LM_LCL + 05;
   LM_FOCUS          = LM_LCL + 06;
   LM_CLICKED        = LM_LCL + 07;
-  LM_PRESSED        = LM_LCL + 08;
   LM_RELEASED       = LM_LCL + 09;
   LM_ENTER          = LM_LCL + 11;
   LM_LEAVE          = LM_LCL + 12;
@@ -934,8 +933,6 @@ begin
   LM_CHANGED        :Result:='LM_CHANGED';
   LM_FOCUS          :Result:='LM_FOCUS';
   LM_CLICKED        :Result:='LM_CLICKED';
-  LM_PRESSED        :Result:='LM_PRESSED';
-  LM_RELEASED       :Result:='LM_RELEASED';
   LM_ENTER          :Result:='LM_ENTER';
   LM_LEAVE          :Result:='LM_LEAVE';
   LM_CHECKRESIZE    :Result:='LM_CHECKRESIZE';

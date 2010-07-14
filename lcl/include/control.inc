@@ -1738,13 +1738,17 @@ end;
 procedure TControl.WMContextMenu(var Message: TLMContextMenu);
 var
   TempPopupMenu: TPopupMenu;
-  P2: TPoint;
+  P: TPoint;
   Handled: Boolean;
 begin
   if (csDesigning in ComponentState) or (Message.Result <> 0) then Exit;
-  P2 := SmallPointToPoint(Message.Pos);
+  P := SmallPointToPoint(Message.Pos);
+  // X and Y = -1 when user clicks on keyboard menu button
+  if P.X <> -1 then
+    P := ScreenToClient(P);
+
   Handled := False;
-  DoContextPopup(P2, Handled);
+  DoContextPopup(P, Handled);
   if Handled then
   begin
     Message.Result := 1;
@@ -1756,10 +1760,11 @@ begin
   begin
     if not TempPopupMenu.AutoPopup then Exit;
     TempPopupMenu.PopupComponent := Self;
-    P2 := ClientToScreen(P2);
-    TempPopupMenu.Popup(P2.X, P2.Y);
+    if P.X = -1 then
+      P := Point(0, 0);
+    P := ClientToScreen(P);
+    TempPopupMenu.Popup(P.X, P.Y);
     Message.Result := 1;
-    Exit;
   end;
 end;
 
@@ -2145,10 +2150,6 @@ end;
   Mouse event handler
  ------------------------------------------------------------------------------}
 procedure TControl.WMRButtonUp(var Message: TLMRButtonUp);
-var
-  Control: TControl;
-  P: TPoint;
-  ContextMenuMsg: TLMContextMenu;
 begin
   DoBeforeMouseMessage;
   if (csCaptureMouse in ControlStyle) and (mbRight in CaptureMouseButtons) then
@@ -2157,31 +2158,6 @@ begin
     DebugLn('TControl.WMRButtonUp ',Name,':',ClassName);
     {$ENDIF}
     MouseCapture := False;
-  end;
-
-  // VCL like behavior. we need to have a child-parent recursion
-  Control := Self;
-  P := SmallPointToPoint(Message.Pos);
-  if InheritsFrom(TWinControl) then
-    ContextMenuMsg.hWnd := TWinControl(Self).Handle
-  else
-  if Parent <> nil then
-    ContextMenuMsg.hWnd := Parent.Handle
-  else
-    ContextMenuMsg.hWnd := 0;
-  while (Control <> nil) and (Message.Result = 0) do
-  begin
-    ContextMenuMsg.Pos := PointToSmallPoint(P);
-    Message.Result := Control.Perform(LM_CONTEXTMENU, TLMessage(ContextMenuMsg).wParam, TLMessage(ContextMenuMsg).lParam);
-    if Message.Result = 0 then
-    begin
-      with P, Control do
-      begin
-        X := X + Left;
-        Y := Y + Top;
-      end;
-      Control := Control.Parent;
-    end;
   end;
   //MouseUp event is independent of return values of contextmenu
   DoMouseUp(Message, mbRight);
@@ -3544,7 +3520,7 @@ end;
 {------------------------------------------------------------------------------
   TControl WMMouseMove
 ------------------------------------------------------------------------------}
-procedure TControl.WMMouseMove(Var Message: TLMMouseMove);
+procedure TControl.WMMouseMove(var Message: TLMMouseMove);
 begin
   {$IFDEF VerboseMouseBugfix}
   DebugLn(['[TControl.WMMouseMove] ',Name,':',ClassName,' ',Message.XPos,',',Message.YPos]);

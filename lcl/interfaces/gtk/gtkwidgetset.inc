@@ -3570,18 +3570,6 @@ begin
       ConnectSenderSignal(gCore, 'next-month', @gtkmonthchanged);
     end;
 
-    LM_PRESSED:
-    begin
-      Assert(False, 'Trace:OBSOLETE: [TGtkWidgetSet.SetCallback] LM_PRESSED');
-      ConnectSenderSignal(gObject, 'pressed', @gtkpressedCB);
-    end;
-
-    LM_RELEASED:
-    begin
-      Assert(False, 'Trace:OBSOLETE: [TGtkWidgetSet.SetCallback] LM_RELEASED');
-      ConnectSenderSignal(gObject, 'released', @gtkreleasedCB);
-    end;
-
     LM_MOUSEMOVE:
     begin
       {$IFDEF GTK1}

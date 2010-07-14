@@ -51,8 +51,6 @@ function LCLSendSelectionChangedMsg(const Target: TControl): PtrInt;
 function LCLSendDestroyMsg(const Target: TControl): PtrInt;
 function LCLSendChangedMsg(const Target: TControl; ItemIndex: WPARAM = 0): PtrInt;
 function LCLSendClickedMsg(const Target: TControl): PtrInt;
-function LCLSendPressedMsg(const Target: TControl): PtrInt;
-function LCLSendReleasedMsg(const Target: TControl): PtrInt;
 function LCLSendMouseEnterMsg(const Target: TControl): PtrInt;
 function LCLSendMouseLeaveMsg(const Target: TControl): PtrInt;
 function LCLSendSetEditableMsg(const Target: TControl): PtrInt;
@@ -520,42 +518,6 @@ end;
 function LCLSendClickedMsg(const Target: TControl): PtrInt;
 begin
   Result := SendSimpleMessage(Target, LM_CLICKED);
-end;
-
-{******************************************************************************
- *                                                                            *
- *  LCLSendPressedMsg                                                         *
- *                                                                            *
- *  Returns     : 0 to accept the message, non-zero to reject the message     *
- *                                                                            *
- *  Params                                                                    *
- *                                                                            *
- *  Target      : The Control that will recieve the message LM_PRESSED        *
- *                                                                            *
- *  Not used by the LCL                                                       *
- *                                                                            *
- ******************************************************************************}
-function LCLSendPressedMsg(const Target: TControl): PtrInt;
-begin
-  Result := SendSimpleMessage(Target, LM_PRESSED);
-end;
-
-{******************************************************************************
- *                                                                            *
- *  LCLSendReleasedMsg                                                        *
- *                                                                            *
- *  Returns     : 0 to accept the message, non-zero to reject the message     *
- *                                                                            *
- *  Params                                                                    *
- *                                                                            *
- *  Target      : The Control that will recieve the message LM_RELEASED       *
- *                                                                            *
- *  Not used by the LCL                                                       *
- *                                                                            *
- ******************************************************************************}
-function LCLSendReleasedMsg(const Target: TControl): PtrInt;
-begin
-  Result := SendSimpleMessage(Target, LM_RELEASED);
 end;
 
 {******************************************************************************

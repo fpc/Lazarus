@@ -1963,22 +1963,15 @@ begin
     end;
     WM_CONTEXTMENU:
     begin
-      WinProcess := false;
+      WinProcess := False;
       NotifyUserInput := True;
-      PLMsg:=@LMContextMenu;
+      PLMsg := @LMContextMenu;
       with LMContextMenu do
       begin
         Msg := LM_CONTEXTMENU;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
         hWnd := Window;
-        //Only keyboard triggered contextmenu (Shift-F10) should be sent to LCL
-        //but calling default handler is necessary. This schema avoids parent recursion
-        //and also keeps default popupmenu (TMemo)
-        if XPos = -1 then
-          Pos := GetClientCursorPos(Window)
-        else
-          lWinControl := nil; // make sure no message is sent to the LCL
         Result := 0;
       end;
     end;

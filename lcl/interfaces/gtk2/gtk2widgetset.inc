@@ -118,28 +118,15 @@ end;
 function gtk2PopupMenuCB(Widget: PGtkWidget; data: gPointer): gboolean; cdecl;
 var
   Msg: TLMContextMenu;
-  x, y: gint;
 begin
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_CONTEXTMENU;
   Msg.hWnd := HWND(Widget); // todo: true keystate
-  gtk_widget_get_pointer(Widget, @x, @y);
 
-  if x > Widget^.allocation.width then
-    x := Widget^.allocation.width
-  else
-  if x < 0 then
-    x := 0;
-
-  if y > Widget^.allocation.height then
-    y := Widget^.allocation.height
-  else
-  if y < 0 then
-    y := 0;
-
-  Msg.XPos := x;
-  Msg.YPos := y;
+  // keyboard popup menu must have -1, -1 coords
+  Msg.XPos := -1;
+  Msg.YPos := -1;
 
   Result := DeliverMessage(TComponent(data), Msg) <> 0;
 end;
@@ -600,18 +587,6 @@ begin
       ConnectSenderSignal(gCore, 'month-changed', @gtkmonthchanged);
       ConnectSenderSignal(gCore, 'prev-month', @gtkmonthchanged);
       ConnectSenderSignal(gCore, 'next-month', @gtkmonthchanged);
-    end;
-
-    LM_PRESSED:
-    begin
-      Assert(False, 'Trace:OBSOLETE: [TGtkWidgetSet.SetCallback] LM_PRESSED');
-      ConnectSenderSignal(gObject, 'pressed', @gtkpressedCB);
-    end;
-
-    LM_RELEASED:
-    begin
-      Assert(False, 'Trace:OBSOLETE: [TGtkWidgetSet.SetCallback] LM_RELEASED');
-      ConnectSenderSignal(gObject, 'released', @gtkreleasedCB);
     end;
 
     LM_MOUSEMOVE:

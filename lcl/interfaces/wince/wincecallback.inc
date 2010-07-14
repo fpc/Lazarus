@@ -196,6 +196,7 @@ Var
   LMKey: TLMKey; // used by WM_KEYDOWN WM_KEYUP
   LMChar: TLMChar; // used by WM_CHAR
   LMMouse: TLMMouse; // used by WM_LBUTTONDBLCLK
+  LMContextMenu: TLMContextMenu;
   LMMouseMove: TLMMouseMove; // used by WM_MOUSEMOVE
   LMMouseEvent: TLMMouseEvent; // used by WM_MOUSEWHEEL
   LMMove: TLMMove; // used by WM_MOVE
@@ -1790,25 +1791,14 @@ begin
     begin
       WinProcess := false;
       NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
+      PLMsg := @LMContextMenu;
+      with LMContextMenu do
       begin
-        Msg := LM_RBUTTONUP;
+        Msg := LM_CONTEXTMENU;
         XPos := GET_X_LPARAM(LParam);
         YPos := GET_Y_LPARAM(LParam);
+        hWnd := Window;
         Result := 0;
-      end;
-      if (LMMouse.XPos<>-1) and (LMMouse.YPos<>-1) then
-      begin
-        P := SmallPointToPoint(LMMouse.Pos);
-        Windows.ScreenToClient(Window, Windows.POINT(P));
-        LMMouse.Pos := PointToSmallPoint(P);
-      end
-      else
-      begin
-       LMMouse.XPos := 0;
-       LMMouse.YPos := 0; {TODO : Fix that in future because popup menu should
-                           appear near selected element of control}
       end;
     end;
     WM_SETCURSOR:

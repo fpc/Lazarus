@@ -1916,22 +1916,6 @@ begin
   DeliverMessage(Data, Mess);
 end;
 
-function gtkPressedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-var
-  Mess : TLMessage;
-begin
-  Result := CallBackDefaultReturn;
-
-  if (Widget=nil) then ;
-  {$IFDEF EventTrace}
-  EventTrace('pressed', data);
-  {$ENDIF}
-  Mess.msg := LM_PRESSED;
-  DeliverMessage(Data, Mess);
-
-  Result := CallBackDefaultReturn;
-end;
-
 function gtkEnterCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
@@ -2087,21 +2071,6 @@ begin
     Height:= Event^.Height;
   end;
   Result:= gtksize_allocateCB( Widget, @Allocation, Data);
-end;
-
-function gtkreleasedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-var
-  Mess : TLMEssage;
-begin
-  Result := CallBackDefaultReturn;
-
-  if (Widget=nil) then ;
-  {$IFDEF EventTrace}
-
-  EventTrace('released', data);
-  {$ENDIF}
-  Mess.msg := LM_RELEASED;
-  DeliverMessage(Data, Mess);
 end;
 
 function gtkInsertText(widget: PGtkWidget; char : pChar;

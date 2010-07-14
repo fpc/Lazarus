@@ -1378,8 +1378,7 @@ end;
 
   Called whenever the mouse is over a widget and a mouse button is pressed.
 -------------------------------------------------------------------------------}
-function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
-  data: gPointer) : GBoolean; cdecl;
+function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton; data: gPointer): GBoolean; cdecl;
 
   procedure CheckListSelection;
   var
@@ -1421,10 +1420,15 @@ function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
 var
   DesignOnlySignal: boolean;
   AWinControl: TWinControl;
+  Msg: TLMContextMenu;
+  x, y: gint;
+  W: PGtkWidget;
+  Info: PWidgetInfo;
+  Old: TObject;
 begin
   Result := CallBackDefaultReturn;
   MousePositionValid := False;
-  AWinControl:=TWinControl(Data);
+  AWinControl := TWinControl(Data);
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('');
@@ -1459,12 +1463,32 @@ begin
       //CaptureMouseForWidget(CaptureWidget,mctGTKIntf);
     end
     else
-    // how to skip default right click handling? LCL can tell only on mouse up
-    // if handling can be skiped but gtk needs on mouse down
-    if (Event^.button = 3) and
-       ((AWinControl.PopupMenu <> nil) or
-        (TWinControlAccess(Data).OnContextPopup <> nil)) then begin
-      Result := True;
+    // if LCL process LM_CONTEXTMENU then stop the event propagation
+    if (Event^.button = 3) then
+    begin
+      W := Widget;
+      gdk_display_get_pointer(gtk_widget_get_display(Widget), nil, @x, @y, nil);
+      Old := nil;
+      while W <> nil do
+      begin
+        Info := GetWidgetInfo(W);
+        if (Info <> nil) and (Info^.LCLObject <> Old) then
+        begin
+          Old := Info^.LCLObject;
+          FillChar(Msg, SizeOf(Msg), #0);
+          Msg.Msg := LM_CONTEXTMENU;
+          Msg.hWnd := HWND(W);
+          Msg.XPos := x;
+          Msg.YPos := y;
+
+          Result := DeliverMessage(Old, Msg) <> 0;
+          if Result then break;
+        end;
+        // check if widget has a standard popup menu
+        if Assigned(GTK_WIDGET_GET_CLASS(W)^.popup_menu) then
+          break;
+        W := gtk_widget_get_parent(W);
+      end;
     end;
   end else begin
     if (event^.Button=1) and
@@ -1920,22 +1944,6 @@ begin
   DeliverMessage(Data, Mess);
 end;
 
-function gtkPressedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-var
-  Mess : TLMessage;
-begin
-  Result := CallBackDefaultReturn;
-
-  if (Widget=nil) then ;
-  {$IFDEF EventTrace}
-  EventTrace('pressed', data);
-  {$ENDIF}
-  Mess.msg := LM_PRESSED;
-  DeliverMessage(Data, Mess);
-
-  Result := CallBackDefaultReturn;
-end;
-
 function gtkEnterCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
@@ -2078,21 +2086,6 @@ begin
     Height:= Event^.Height;
   end;
   Result:= gtksize_allocateCB( Widget, @Allocation, Data);
-end;
-
-function gtkreleasedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-var
-  Mess : TLMEssage;
-begin
-  Result := CallBackDefaultReturn;
-
-  if (Widget=nil) then ;
-  {$IFDEF EventTrace}
-
-  EventTrace('released', data);
-  {$ENDIF}
-  Mess.msg := LM_RELEASED;
-  DeliverMessage(Data, Mess);
 end;
 
 function gtkInsertText(widget: PGtkWidget; char : pChar;

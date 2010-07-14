@@ -167,18 +167,18 @@ type
     function SlotClose: Boolean; cdecl; virtual;
     procedure SlotDestroy; cdecl;
     function slotDropFiles(Sender: QObjectH; Event: QEventH): Boolean;
-    procedure SlotHover(Sender: QObjectH; Event: QEventH); cdecl;
+    function SlotHover(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function SlotKey(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function SlotMouse(Sender: QObjectH; Event: QEventH): Boolean; virtual; cdecl;
     procedure SlotNCMouse(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotMouseEnter(Sender: QObjectH; Event: QEventH); cdecl;
-    procedure SlotMouseMove(Event: QEventH); cdecl;
+    function SlotMouseMove(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     procedure SlotMouseWheel(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotMove(Event: QEventH); cdecl;
     procedure SlotPaintBg(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotPaint(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotResize(Event: QEventH); cdecl;
-    procedure SlotContextMenu(Sender: QObjectH; Event: QEventH); cdecl;
+    function SlotContextMenu(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     procedure SlotWhatsThis(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotLCLMessage(Sender: QObjectH; Event: QEventH); cdecl;
   public
@@ -1644,8 +1644,6 @@ begin
 end;
 
 procedure TQtWidget.InitializeWidget;
-var
-  QtEdit: IQtEdit;
 begin
   // default color roles
   SetDefaultColorRoles;
@@ -1685,13 +1683,6 @@ begin
   // set focus policy
   if (LCLObject <> nil) and not (Self is TQtMainWindow) then
     setFocusPolicy(QtClickFocus);
-
-  // Set context menus to custom so LCL can better handle our popup menus
-  if Supports(Self, IQtEdit, QtEdit) then
-  begin
-    setContextMenuPolicy(QtCustomContextMenu);
-    setAttribute(QtWA_NoMousePropagation, True);
-  end;
 
   if (csDesigning in LCLObject.ComponentState) and not
      (Self is TQtMainWindow) and
@@ -2028,7 +2019,7 @@ begin
       
       QEventHoverEnter,
       QEventHoverLeave,
-      QEventHoverMove: SlotHover(Sender, Event);
+      QEventHoverMove: Result := SlotHover(Sender, Event);
 
       QEventDrop,
       QEventDragMove,
@@ -2051,10 +2042,7 @@ begin
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick: Result := SlotMouse(Sender, Event);
-      QEventMouseMove:
-        begin
-          SlotMouseMove(Event);
-        end;
+      QEventMouseMove: Result := SlotMouseMove(Sender, Event);
       QEventWheel:
         begin
           SlotMouseWheel(Sender, Event);
@@ -2069,7 +2057,8 @@ begin
           if FHasPaint then
             SlotPaint(Sender, Event);
         end;
-      QEventContextMenu: SlotContextMenu(Sender, Event);
+      QEventContextMenu:
+          Result := SlotContextMenu(Sender, Event);
       QEventNonClientAreaMouseButtonPress:
         begin
           SlotNCMouse(Sender, Event);
@@ -2293,17 +2282,17 @@ begin
   end;
 end;
 
-procedure TQtWidget.SlotHover(Sender: QObjectH; Event: QEventH); cdecl;
+function TQtWidget.SlotHover(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   Msg: TLMessage;
   MouseMsg: TLMMouseMove absolute Msg;
   MousePos: TQtPoint;
 begin
-
   if not CanSendLCLMessage then
-    exit;
+    Exit(False);
 
-  if QApplication_mouseButtons() = 0 then // in other case MouseMove will be hooked
+  if (QApplication_mouseButtons() = 0) and
+     not QWidget_hasMouseTracking(QWidgetH(Sender)) then // in other case MouseMove will be hooked
   begin
     FillChar(Msg, SizeOf(Msg), #0);
 
@@ -2311,9 +2300,9 @@ begin
     OffsetMousePos(@MousePos);
 
     case QEvent_type(Event) of
-      QEventHoverEnter : Msg.Msg := CM_MOUSEENTER;
-      QEventHoverLeave : Msg.Msg := CM_MOUSELEAVE;
-      QEventHoverMove  :
+      QEventHoverEnter: Msg.Msg := CM_MOUSEENTER;
+      QEventHoverLeave: Msg.Msg := CM_MOUSELEAVE;
+      QEventHoverMove:
         begin
           MouseMsg.Msg := LM_MOUSEMOVE;
           MouseMsg.XPos := SmallInt(MousePos.X);
@@ -2321,7 +2310,11 @@ begin
         end;
     end;
     NotifyApplicationUserInput(Msg.Msg);
-    DeliverMessage(Msg);
+    Result := DeliverMessage(Msg) = 0;
+    if Result then
+      QEvent_accept(Event)
+    else
+      QEvent_ignore(Event)
   end;
 end;
 
@@ -2653,9 +2646,12 @@ begin
         QtMidButton: Msg.Msg := CheckMouseButtonDown(2);
       end;
       NotifyApplicationUserInput(Msg.Msg);
-      DeliverMessage(Msg);
-      Msg.Msg := LM_PRESSED;
-      DeliverMessage(Msg);
+      Result := DeliverMessage(Msg) = 0;
+      // accept the event so we have no message propagation
+      if Result then
+        QEvent_accept(Event)
+      else
+        QEvent_ignore(Event);
     end;
     QEventMouseButtonRelease:
     begin
@@ -2669,7 +2665,12 @@ begin
       end;
 
       NotifyApplicationUserInput(Msg.Msg);
-      DeliverMessage(Msg);
+      Result := DeliverMessage(Msg) = 0;
+      // accept the event so we have no message propagation
+      if Result then
+        QEvent_accept(Event)
+      else
+        QEvent_ignore(Event);
 
       { Clicking on buttons operates differently, because QEventMouseButtonRelease
         is sent if you click a control, drag the mouse out of it and release, but
@@ -2679,8 +2680,6 @@ begin
         Msg.Msg := LM_CLICKED;
         DeliverMessage(Msg);
       end;
-      Msg.Msg := LM_RELEASED;
-      DeliverMessage(Msg);
     end;
   end;
 end;
@@ -2763,14 +2762,13 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-procedure TQtWidget.SlotMouseMove(Event: QEventH); cdecl;
+function TQtWidget.SlotMouseMove(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   Msg: TLMMouseMove;
   MousePos: TQtPoint;
 begin
   if not CanSendLCLMessage then
-    exit;
-
+    Exit(False);
   FillChar(Msg, SizeOf(Msg), #0);
   
   MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
@@ -2785,7 +2783,12 @@ begin
   Msg.Msg := LM_MOUSEMOVE;
 
   NotifyApplicationUserInput(Msg.Msg);
-  DeliverMessage(Msg);
+  // stop event propagation
+  Result := DeliverMessage(Msg) = 0;
+  if Result then
+    QEvent_accept(Event)
+  else
+    QEvent_ignore(Event);
 end;
 
 {------------------------------------------------------------------------------
@@ -3043,12 +3046,11 @@ begin
   DeliverMessage(Msg);
 end;
 
-procedure TQtWidget.SlotContextMenu(Sender: QObjectH; Event: QEventH); cdecl;
+function TQtWidget.SlotContextMenu(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   Msg: TLMContextMenu;
   MousePos: TQtPoint;
   QtEdit: IQtEdit;
-  AResult: LResult;
 
   procedure SendMouseReleaseEventToSelf;
   var
@@ -3067,8 +3069,32 @@ var
 
 begin
   if not CanSendLCLMessage then
-    exit;
+    Exit;
 
+  FillChar(Msg, SizeOf(Msg), #0);
+  MousePos := QContextMenuEvent_globalPos(QContextMenuEventH(Event))^;
+
+  Msg.Msg := LM_CONTEXTMENU;
+  Msg.hWnd := HWND(Self);
+  if QContextMenuEvent_reason(QContextMenuEventH(Event)) = QContextMenuEventKeyboard then
+  begin
+    Msg.XPos := -1;
+    Msg.YPos := -1;
+  end
+  else
+  begin
+    Msg.XPos := SmallInt(MousePos.X);
+    Msg.YPos := SmallInt(MousePos.Y);
+  end;
+
+  Result := DeliverMessage(Msg) <> 0;
+  if Result then
+    QEvent_accept(Event)
+  else
+    QEvent_ignore(Event);
+  if Result and (csDesigning in LCLObject.ComponentState) then
+    SendMouseReleaseEventToSelf;
+{
   if Supports(Self, IQtEdit, QtEdit) then
   begin
     if Assigned(LCLObject.PopupMenu) then
@@ -3080,22 +3106,9 @@ begin
       {revert to default if widget supports defaultcontextmenu }
       if getContextMenuPolicy <> QtDefaultContextMenu then
         setContextMenuPolicy(QtDefaultContextMenu);
-        exit;
+      Exit;
     end;
-  end;
-
-  FillChar(Msg, SizeOf(Msg), #0);
-  MousePos := QContextMenuEvent_pos(QContextMenuEventH(Event))^;
-  OffsetMousePos(@MousePos);
-
-  Msg.Msg := LM_CONTEXTMENU;
-  Msg.hWnd := HWND(Self);
-  Msg.XPos := SmallInt(MousePos.X);
-  Msg.YPos := SmallInt(MousePos.Y);
-
-  AResult := DeliverMessage(Msg);
-  if (AResult = 1) and (csDesigning in LCLObject.ComponentState) then
-    SendMouseReleaseEventToSelf;
+  end;}
 end;
 
 procedure TQtWidget.SlotWhatsThis(Sender: QObjectH; Event: QEventH); cdecl;
@@ -4474,8 +4487,9 @@ begin
       MenuBar := TQtMenuBar.Create(Result);
     {$endif}
     
-    if (Application.MainForm <> nil) and (Application.MainForm.FormStyle = fsMDIForm)
-    and not (csDesigning in LCLObject.ComponentState) then
+    if (Application.MainForm <> nil) and
+       (Application.MainForm.FormStyle = fsMDIForm) and
+       not (csDesigning in LCLObject.ComponentState) then
     begin
       FCentralWidget := QWidget_create(Result);
       MDIAreaHandle := QMdiArea_create(Result);
@@ -4494,8 +4508,11 @@ begin
     end;
     
     if FCentralWidget <> nil then
+    begin
       QMainWindow_setCentralWidget(QMainWindowH(Result), FCentralWidget);
-    
+      QWidget_setMouseTracking(FCentralWidget, True);
+    end;
+
     if not (csDesigning in LCLObject.ComponentState) then
       QMainWindow_setDockOptions(QMainWindowH(Result), QMainWindowAnimatedDocks);
   end
@@ -4518,12 +4535,13 @@ begin
     else
     begin
       if (TCustomForm(LCLObject).FormStyle = fsSplash) and
-      not (csDesigning in LCLObject.ComponentState) then
+        not (csDesigning in LCLObject.ComponentState) then
         Result := QWidget_create(nil, QtSplashScreen)
       else
         Result := QWidget_create(nil, QtWindow);
 
       QWidget_setAttribute(Result, QtWA_Hover);
+      QWidget_setMouseTracking(Result, True);
     end;
 
     // Main menu bar
@@ -4534,7 +4552,8 @@ begin
     {$endif}
 
     FCentralWidget := QWidget_create(Result);
-      
+    QWidget_setMouseTracking(FCentralWidget, True);
+
     LayoutWidget := QBoxLayout_create(QBoxLayoutTopToBottom, Result);
 
     QBoxLayout_setSpacing(LayoutWidget, 0);
@@ -4549,8 +4568,6 @@ begin
     QWidget_setLayout(Result, QLayoutH(LayoutWidget));
     QWidget_setAttribute(Result, QtWA_DeleteOnClose);
   end;
-
-  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 procedure TQtMainWindow.ChangeParent(NewParent: QWidgetH);
@@ -4955,7 +4972,6 @@ begin
   else
     Parent := nil;
   Result := QLabel_create(Parent);
-  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 function TQtStaticText.CanPaintBackground: Boolean;
@@ -5290,7 +5306,6 @@ begin
   Result := QFrame_create(Parent);
   if (QtVersionMajor = 4) and (QtVersionMinor < 6) then
     QWidget_setAutoFillBackground(Result, True);
-  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 procedure TQtFrame.setFocusPolicy(const APolicy: QtFocusPolicy);
@@ -5350,7 +5365,6 @@ begin
   else
     Parent := nil;
   Result := QFrame_create(Parent);
-  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 function TQtAbstractSlider.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -6465,8 +6479,7 @@ begin
   inherited DetachEvents;
 end;
 
-function TQtTextEdit.viewportEventFilter(Sender: QObjectH; Event: QEventH
-  ): Boolean; cdecl;
+function TQtTextEdit.viewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -6474,8 +6487,8 @@ begin
     QEventContextMenu: SlotContextMenu(Sender, Event);
     QEventMouseButtonPress,
     QEventMouseButtonRelease,
-    QEventMouseButtonDblClick: SlotMouse(Sender, Event);
-    QEventMouseMove: SlotMouseMove(Event);
+    QEventMouseButtonDblClick: Result := SlotMouse(Sender, Event);
+    QEventMouseMove: Result := SlotMouseMove(Sender, Event);
   end;
 end;
 
@@ -8152,7 +8165,6 @@ begin
   else
     Parent := nil;
   Result := QListWidget_create(Parent);
-  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 procedure TQtListWidget.OwnerDataNeeded(ARect: TRect);
@@ -8904,7 +8916,6 @@ begin
   else
     Parent := nil;
   Result := QListWidget_create(Parent);
-  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 function TQtCheckListBox.EventFilter(Sender: QObjectH; Event: QEventH
@@ -9241,7 +9252,6 @@ begin
     Parent := nil;
   Result := QTreeWidget_create(Parent);
   FHeader := nil;
-  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 {------------------------------------------------------------------------------
@@ -10596,7 +10606,6 @@ begin
   else
     Parent := nil;
   Result := QProgressBar_create(Parent);
-  QWidget_setAttribute(Result, QtWA_NoMousePropagation, True);
 end;
 
 procedure TQtProgressBar.AttachEvents;
@@ -10680,7 +10689,6 @@ begin
   else
     Parent := nil;
   Result := QLabel_create(Parent);
-  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 procedure TQtStatusBarPanel.DrawItem(Sender: QObjectH; Event: QEventH);
@@ -11179,7 +11187,6 @@ begin
   end else
     QWidget_setAutoFillBackground(Result, False);
 
-  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
   QWidget_setAttribute(Result, QtWA_InputMethodEnabled);
 end;
 
@@ -11890,7 +11897,6 @@ begin
   Result := QWidget_create(Parent);
   if (QtVersionMajor = 4) and (QtVersionMinor < 6) then
     QWidget_setAutoFillBackground(Result, True);
-  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 function TQtPage.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
@@ -12471,7 +12477,6 @@ begin
   else
     Parent := nil;
   Result := QGraphicsView_create(Parent);
-  QWidget_setAttribute(Result, QtWA_NoMousePropagation);
 end;
 
 { TQtDesignWidget }

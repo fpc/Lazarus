@@ -176,7 +176,6 @@ function gtkMouseBtnReleaseAfter(widget: PGtkWidget; event: pgdkEventButton;
                                  data: gPointer): GBoolean; cdecl;
 function gtkclickedCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 
-function gtkPressedCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkEnterCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkLeaveCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtksize_allocateCB(widget: PGtkWidget; size :pGtkAllocation;
@@ -185,7 +184,6 @@ function gtksize_allocate_client(widget: PGtkWidget; size :pGtkAllocation;
   data: gPointer): GBoolean; cdecl;
 function gtkconfigureevent( widget: PGtkWidget; event: PgdkEventConfigure;
   data: gPointer): GBoolean; cdecl;
-function gtkreleasedCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkInsertText(widget: PGtkWidget; char: pChar; NewTextLength:
                      Integer; Position: pgint; data: gPointer): GBoolean; cdecl;
 function gtkSetEditable( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
