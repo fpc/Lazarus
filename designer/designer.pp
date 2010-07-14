@@ -110,6 +110,7 @@ type
     FOnViewLFM: TNotifyEvent;
     FShiftState: TShiftState;
     FTheFormEditor: TCustomFormEditor;
+    FPopupMenuComponentEditor: TBaseComponentEditor;
 
     //hint stuff
     FHintTimer: TTimer;
@@ -137,6 +138,7 @@ type
     procedure SetGridSizeY(const AValue: integer);
     procedure SetIsControl(Value: Boolean);
     procedure SetMediator(const AValue: TDesignerMediator);
+    procedure SetPopupMenuComponentEditor(const AValue: TBaseComponentEditor);
     procedure SetShowBorderSpacing(const AValue: boolean);
     procedure SetShowComponentCaptions(const AValue: boolean);
     procedure SetShowEditorHints(const AValue: boolean);
@@ -149,7 +151,6 @@ type
     MouseDownShift: TShiftState;
     MouseUpPos: TPoint;
     LastMouseMovePos: TPoint;
-    PopupMenuComponentEditor: TBaseComponentEditor;
     LastFormCursor: TCursor;
     DeletingPersistent: TList;
     IgnoreDeletingPersistent: TList;
@@ -237,6 +238,8 @@ type
     function GetPropertyEditorHook: TPropertyEditorHook; override;
     function OnFormActivated: boolean;
     function OnFormCloseQuery: boolean;
+
+    property PopupMenuComponentEditor: TBaseComponentEditor read FPopupMenuComponentEditor write SetPopupMenuComponentEditor;
   public
     ControlSelection : TControlSelection;
     DDC: TDesignerDeviceContext;
@@ -610,6 +613,7 @@ begin
   LastFormCursor := crDefault;
   DeletingPersistent:=TList.Create;
   IgnoreDeletingPersistent:=TList.Create;
+  FPopupMenuComponentEditor := nil;
 end;
 
 procedure TDesigner.FreeDesigner(FreeComponent: boolean);
@@ -648,14 +652,15 @@ begin
 end;
 
 destructor TDesigner.Destroy;
-Begin
+begin
+  PopupMenuComponentEditor := nil;
   FreeAndNil(FDesignerPopupMenu);
   FreeAndNil(FHintWIndow);
   FreeAndNil(FHintTimer);
   FreeAndNil(DDC);
   FreeAndNil(DeletingPersistent);
   FreeAndNil(IgnoreDeletingPersistent);
-  Inherited Destroy;
+  inherited Destroy;
 end;
 
 procedure TDesigner.NudgePosition(DiffX, DiffY : Integer);
@@ -3008,9 +3013,18 @@ begin
   if Mediator<>nil then Mediator.Designer:=Self;
 end;
 
+procedure TDesigner.SetPopupMenuComponentEditor(const AValue: TBaseComponentEditor);
+begin
+   if FPopupMenuComponentEditor <> AValue then
+   begin
+     FPopupMenuComponentEditor.Free;
+     FPopupMenuComponentEditor := AValue;
+   end;
+end;
+
 procedure TDesigner.SetShowEditorHints(const AValue: boolean);
 begin
-  if AValue=ShowEditorHints then exit;
+  if AValue = ShowEditorHints then Exit;
   if AValue then
     Include(FFlags, dfShowEditorHints)
   else
