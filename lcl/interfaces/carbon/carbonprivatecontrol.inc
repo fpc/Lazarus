@@ -212,7 +212,7 @@ begin
   end;
   
   AParent.ControlAdded;
-    
+
   //DebugLn('TCarbonControl.AddToWidget ' + LCLObject.Name + ' ' + DbgS(LCLObject.Parent.ClientRect));
 end;
 
@@ -544,6 +544,30 @@ begin
     end
     else
       RecreateWnd(LCLObject);
+  end;
+end;
+
+procedure TCarbonCustomControl.SendScrollUpdate;
+var
+  Event: EventRef;
+  after, before : TRect;
+const
+  SName='SendScrollUpdate';
+
+begin
+  if OSError(
+    CreateEvent(nil, kEventClassScrollable, kEventScrollableInfoChanged, 0,
+      kEventAttributeUserEvent, Event),
+    Self, SName, 'CreateEvent') then Exit;
+  try
+    GetClientRect(before);
+    OSError(SendEventToEventTarget(Event, GetControlEventTarget(FScrollView)),
+      Self, SName, 'SendEventToEventTarget');
+    GetClientRect(after);
+    if not CompareRect(@before, @after) then
+      UpdateLCLClientRect;
+  finally
+    ReleaseEvent(Event);
   end;
 end;
 

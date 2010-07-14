@@ -135,12 +135,14 @@ type
     procedure DestroyWidget; override;
     function GetFrame(Index: Integer): ControlRef; override;
     function GetForceEmbedInScrollView: Boolean; override;
+    procedure SendScrollUpdate;
   public
     class function GetValidEvents: TCarbonControlEvents; override;
     procedure Draw; override;
     procedure GetInfo(out AImageSize, AViewSize, ALineSize: HISize; out AOrigin: HIPoint); virtual;
     procedure ScrollTo(const ANewOrigin: HIPoint); virtual;
   public
+    procedure AddToWidget(AParent: TCarbonWidget); override;
     procedure SetColor(const AColor: TColor); override;
     procedure SetFont(const AFont: TFont); override;
     procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo); override;
@@ -749,6 +751,13 @@ begin
   inherited DestroyWidget;
 end;
 
+procedure TCarbonCustomControl.AddToWidget(AParent: TCarbonWidget);
+begin
+  inherited AddToWidget(AParent);
+  // Updating ScrollInfo of the control. Sometimes Carbon shows "unused" scrollbars #16613
+  SendScrollUpdate;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonCustomControl.GetFrame
   Params:  Frame index
@@ -942,16 +951,13 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonCustomControl.SetScrollInfo(SBStyle: Integer;
   const ScrollInfo: TScrollInfo): Integer;
-var
-  Event: EventRef;
-  after, before : TRect;
 const
   SName = 'SetScrollInfo';
 begin
-  {$IFDEF VerboseScroll}
+  {.$IFDEF VerboseScroll}
     DebugLn('TCarbonCustomControl.SetScrollInfo ' + LCLObject.Name +
       ' SBStyle: ' + DbgS(SBStyle) + ' ' + DbgS(ScrollInfo));
-  {$ENDIF}
+  {.$ENDIF}
 
   if (SIF_RANGE and ScrollInfo.fMask) > 0 then
   begin
@@ -990,22 +996,7 @@ begin
   
   if (SBStyle in [SB_HORZ, SB_VERT]) and
     ((ScrollInfo.fMask and (SIF_RANGE or SIF_POS or SIF_PAGE)) > 0) then
-  begin
-    if OSError(
-      CreateEvent(nil, kEventClassScrollable, kEventScrollableInfoChanged, 0,
-        kEventAttributeUserEvent, Event),
-      Self, SName, 'CreateEvent') then Exit;
-    try
-      GetClientRect(before);
-      OSError(SendEventToEventTarget(Event, GetControlEventTarget(FScrollView)),
-        Self, SName, 'SendEventToEventTarget');
-      GetClientRect(after);
-      if not CompareRect(@before, @after) then
-        UpdateLCLClientRect;
-    finally
-      ReleaseEvent(Event);
-    end;
-  end;
+    SendScrollUpdate;
 end;
 
 {------------------------------------------------------------------------------
