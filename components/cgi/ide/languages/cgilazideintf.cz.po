@@ -1,0 +1,27 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Chronos <robie@centrum.cz>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: cgilazideintf.lisdescription
+msgid "Simple CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal.%sThe application source is automatically maintained by Lazarus.%sThis kind of application is deprecated, for CGI programs or Apache modules, please use the LazWeb package instead."
+msgstr "Jednoduchá CGI aplikace%sCGI(Common Gateway Interface) program je Free Pascal.%sZdrojový kód aplikace je automaticky spravován Lazarusem.%sTento druh aplikace je zastaralý. Pro CGI programy nebo moduly Apache prosím použijte jako náhradu balíček LazWeb."
+
+#: cgilazideintf.lisdescrmod
+msgid "Simple CGI Module%sA datamodule for CGI applications.%sThis module is deprecated, please use the CGI module support of the LazWeb package instead."
+msgstr "Jednoduchý CGI modul%sDatový modul pro CGI aplikace.%sTento modul je zastaralý. Jako náhradu prosíme použijte CGI modulovou podporu balíčku LazWeb."
+
+#: cgilazideintf.lissimplecgiapp
+msgid "Simple CGI Application"
+msgstr "Jednoduchá CGI aplikace"
+
+#: cgilazideintf.lissimplecgimod
+msgid "Simple CGI Module"
+msgstr "Jednoduchý CGI modul"
+

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-13 10:11+0100\n"
+"PO-Revision-Date: 2010-07-13 12:54+0100\n"
 "Last-Translator: Chronos <robie@centrum.cz>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -242,7 +242,7 @@ msgstr "Nahoru"
 
 #: lclstrconsts.liscannotexecute
 msgid "can not execute %s"
-msgstr ""
+msgstr "nelze spustit %s"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
@@ -251,7 +251,7 @@ msgstr "Zdroj %s nenalezen"
 
 #: lclstrconsts.lisprogramfilenotfound
 msgid "program file not found %s"
-msgstr ""
+msgstr "soubor programu %s nenalezen "
 
 #: lclstrconsts.rs3ddkshadowcolorcaption
 msgid "3D Dark Shadow"
@@ -554,7 +554,7 @@ msgstr ""
 
 #: lclstrconsts.rsgraphic
 msgid "Graphic"
-msgstr ""
+msgstr "Grafika"
 
 #: lclstrconsts.rsgraycolorcaption
 msgid "Gray"
@@ -1171,7 +1171,7 @@ msgstr "Text"
 
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"
-msgstr ""
+msgstr "Označkovaný obrazový formát souboru"
 
 #: lclstrconsts.rsunabletoloaddefaultfont
 msgid "Unable to load default font"
@@ -1199,11 +1199,11 @@ msgstr "Nepodporovaný formát schránky: %s"
 
 #: lclstrconsts.rswarningunreleaseddcsdump
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
-msgstr ""
+msgstr "VAROVÁNÍ: Existuje %d neuvolněných DC, následuje podrobný popis:"
 
 #: lclstrconsts.rswarningunreleasedgdiobjectsdump
 msgid " WARNING: There are %d unreleased GDIObjects, a detailed dump follows:"
-msgstr ""
+msgstr "VAROVÁNÍ: Existuje %d neuvolněných GDIObjects, následuje podrobný popis:"
 
 #: lclstrconsts.rswarningunreleasedmessagesinqueue
 msgid " WARNING: There are %d messages left in the queue! I'll free them"
