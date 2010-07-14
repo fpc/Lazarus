@@ -954,10 +954,10 @@ function TCarbonCustomControl.SetScrollInfo(SBStyle: Integer;
 const
   SName = 'SetScrollInfo';
 begin
-  {.$IFDEF VerboseScroll}
+  {$IFDEF VerboseScroll}
     DebugLn('TCarbonCustomControl.SetScrollInfo ' + LCLObject.Name +
       ' SBStyle: ' + DbgS(SBStyle) + ' ' + DbgS(ScrollInfo));
-  {.$ENDIF}
+  {$ENDIF}
 
   if (SIF_RANGE and ScrollInfo.fMask) > 0 then
   begin
