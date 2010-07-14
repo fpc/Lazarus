@@ -374,10 +374,10 @@ resourcestring
   lisMenuOpenPackageOfCurUnit = 'Open package of current unit';
   lisMenuAddCurUnitToPkg = 'Add active unit to a package';
   lisKMPackageGraph = 'Package graph';
-  lisKMConfigureInstalledPackages = 'Configure installed packages';
+  lisKMConfigureInstalledPackages = 'Install/Uninstall packages';
   lisKMConfigureCustomComponents = 'Configure custom components';
   lisMenuPackageGraph = 'Package Graph ...';
-  lisMenuEditInstallPkgs = 'Configure installed packages ...';
+  lisMenuEditInstallPkgs = 'Install/Uninstall packages ...';
   lisMenuConfigCustomComps = 'Configure custom components ...';
 
   lisMenuConfigExternalTools = 'Configure external tools ...';
@@ -4121,9 +4121,10 @@ resourcestring
   lisErrorSettingTheNameOfAComponentTo = 'Error setting the name of a '
     +'component %s to %s';
   lisErrorMovingComponent2 = 'Error moving component %s:%s';
-  lisInstalledPackages = 'Installed Packages';
+  lisInstallUninstallPackages = 'Install/Uninstall packages';
   lisAvailablePackages = 'Available packages';
   lisExportList = 'Export list';
+  lisDoNotInstall = 'Do not install';
   lisImportList = 'Import list';
   lisUninstallSelection = 'Uninstall selection';
   lisPackagesToInstallInTheIDE = 'Packages to install in the IDE';

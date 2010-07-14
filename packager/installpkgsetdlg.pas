@@ -150,12 +150,12 @@ end;
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogCreate(Sender: TObject);
 begin
-  Caption:=lisInstalledPackages;
-  AvailablePkgGroupBox.Caption:=lisAvailablePackages;
+  Caption:=lisInstallUninstallPackages;
+  AvailablePkgGroupBox.Caption:=lisDoNotInstall;
   ExportButton.Caption:=lisExportList;
   ImportButton.Caption:=lisImportList;
   UninstallButton.Caption:=lisUninstallSelection;
-  InstallPkgGroupBox.Caption:=lisPackagesToInstallInTheIDE;
+  InstallPkgGroupBox.Caption:=lisPckEditInstall;
   AddToInstallButton.Caption:=lisInstallSelection;
   PkgInfoGroupBox.Caption := lisPackageInfo;
   SaveAndRebuildButton.Caption:=lisSaveAndRebuildIDE;
