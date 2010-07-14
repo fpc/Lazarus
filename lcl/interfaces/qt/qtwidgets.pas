@@ -11249,6 +11249,7 @@ begin
     QEventMouseButtonRelease,
     QEventMouseButtonDblClick,
     QEventMouseMove,
+    QEventContextMenu,
     QEventPaint:
     begin
       MouseEventTyp := (QEvent_type(Event) = QEventMouseButtonPress) or
