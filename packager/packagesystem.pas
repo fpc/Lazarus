@@ -3787,9 +3787,9 @@ begin
 
   // create source
   BeautifyCodeOptions:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions;
-  HeaderSrc:= '{ '
-           +lisPkgMangThisFileWasAutomaticallyCreatedByLazarusDoNotEdit+e
-           +'  '+lisPkgMangThisSourceIsOnlyUsedToCompileAndInstallThePackage+e
+  // keep in english to avoid svn updates
+  HeaderSrc:= '{ This file was automatically created by Lazarus. Do not edit!'+e
+           +'  This source is only used to compile and install the package.'+e
            +' }'+e+e;
   // leave the unit case the same as the package name (e.g: package name LazReport, unit name lazreport)
   PkgUnitName := ExtractFileNameOnly(SrcFilename);

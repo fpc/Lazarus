@@ -3542,10 +3542,6 @@ resourcestring
   lisPkgMangPackageHasNoValidOutputDirectory = 'Package %s%s%s has no valid '
     +'output directory:%s%s%s%s';
   lisPkgMangpackageMainSourceFile = 'package main source file';
-  lisPkgMangThisFileWasAutomaticallyCreatedByLazarusDoNotEdit = 'This file '
-    +'was automatically created by Lazarus. Do not edit!';
-  lisPkgMangThisSourceIsOnlyUsedToCompileAndInstallThePackage = 'This source '
-    +'is only used to compile and install the package.';
   lisPkgMangRenameFileInPackage = 'Rename file in package?';
   lisPkgMangThePackageOwnsTheFileShouldTheFileBeRenamed = 'The package %s '
     +'owns the file%s%s%s%s.%sShould the file be renamed in the package as '
