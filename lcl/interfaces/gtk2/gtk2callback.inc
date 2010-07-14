@@ -1419,18 +1419,20 @@ function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton; data: gPoi
 
 var
   DesignOnlySignal: boolean;
-  AWinControl: TWinControl;
   Msg: TLMContextMenu;
   x, y: gint;
   W: PGtkWidget;
   Info: PWidgetInfo;
   Old: TObject;
+  {$IFDEF VerboseMouseBugfix}
+  AWinControl: TWinControl;
+  {$ENDIF}
 begin
   Result := CallBackDefaultReturn;
   MousePositionValid := False;
-  AWinControl := TWinControl(Data);
 
   {$IFDEF VerboseMouseBugfix}
+  AWinControl := TWinControl(Data);
   DebugLn('');
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
   DebugLn('[gtkMouseBtnPress] ',
