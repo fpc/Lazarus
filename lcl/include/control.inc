@@ -44,10 +44,6 @@ begin
   if (Parent=nil) and (not (cfAutoSizeNeeded in FControlFlags))
   and (Self is TCustomForm) then begin
     DebugLn(['TControl.Adjustsize ',DbgSName(Self)]);
-    if Name='SearchResults' then begin
-      //debugln(GetStackTrace(true));
-      DebugLn(['TControl.Adjustsize AAA1']);
-    end;
   end;
   {$ENDIF}
   Include(FControlFlags, cfAutoSizeNeeded);
@@ -4586,14 +4582,14 @@ begin
     // use defaults for undefined preferred size
     if (PreferredWidth<0)
     or ((PreferredWidth=0) and (not (csAutoSize0x0 in ControlStyle))) then begin
-      if AutoSize then
+      if AutoSize or WidthIsAnchored then
         PreferredWidth:=GetDefaultWidth
       else
         PreferredWidth:=Width;
     end;
     if (PreferredHeight<0)
     or ((PreferredHeight=0) and (not (csAutoSize0x0 in ControlStyle))) then begin
-      if AutoSize then
+      if AutoSize or HeightIsAnchored then
         PreferredHeight:=GetDefaultHeight
       else
         PreferredHeight:=Height;

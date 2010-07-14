@@ -96,6 +96,8 @@ type
     procedure CreateWnd; override;
     procedure Change; virtual;
     procedure Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer); virtual;
+    procedure CalculatePreferredSize(var PreferredWidth,
+      PreferredHeight: integer; WithThemeSpace: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetParams(APosition, AMin, AMax, APageSize: Integer);

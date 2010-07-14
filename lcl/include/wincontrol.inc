@@ -1085,7 +1085,7 @@ procedure TAutoSizeCtrlData.ComputePreferredClientArea(
     else if (ReferenceControl<>nil) and (ReferenceControl.Parent=Control) then
       ChildData.Sides[a].CtrlData:=Children[ReferenceControl];
     ChildData.Sides[a].Side:=ReferenceSide;
-    //if ChildData.Sides[a].CtrlData<>nil then DebugLn(['GetSideAnchor AAA1 Child=',DbgSName(Child),', a=',dbgs(a),' ReferenceControl=',DbgSName(ChildData.Sides[a].CtrlData.Control),' ReferenceSide=',dbgs(a,ChildData.Sides[a].Side)]);
+    //if ChildData.Sides[a].CtrlData<>nil then DebugLn(['GetSideAnchor Child=',DbgSName(Child),', a=',dbgs(a),' ReferenceControl=',DbgSName(ChildData.Sides[a].CtrlData.Control),' ReferenceSide=',dbgs(a,ChildData.Sides[a].Side)]);
   end;
 
 var
@@ -3138,7 +3138,7 @@ begin
 
     if NeedAlignWork then
     begin
-      //DebugLn(['TWinControl.AlignControls AAA1 ',DbgSName(Self),' RemainingClientRect=',dbgs(RemainingClientRect),' ',dbgs(ClientRect)]);
+      //DebugLn(['TWinControl.AlignControls  ',DbgSName(Self),' RemainingClientRect=',dbgs(RemainingClientRect),' ',dbgs(ClientRect)]);
       RemainingBorderSpace:=Rect(0,0,0,0);
       // adjust RemainingClientRect by ChildSizing properties
       AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,

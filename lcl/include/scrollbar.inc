@@ -141,6 +141,17 @@ begin
   SetParams(APosition, AMin, AMax, FPageSize);
 end;
 
+procedure TCustomScrollBar.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
+    WithThemeSpace);
+  if (Kind=sbHorizontal) and (PreferredHeight=0) then
+    PreferredHeight:=GetSystemMetrics(SM_CYHSCROLL);
+  if (Kind=sbVertical) and (PreferredWidth=0) then
+    PreferredWidth:=GetSystemMetrics(SM_CYVSCROLL);
+end;
+
 procedure TCustomScrollBar.SetPosition(Value: Integer);
 begin
   SetParams(Value, FMin, FMax, FPageSize);
