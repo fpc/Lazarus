@@ -39,8 +39,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  KeywordFuncLists, StdCtrls, Buttons, FileUtil, ExtCtrls,
-  AVL_Tree, Laz_XMLCfg, PackageIntf,
+  KeywordFuncLists, StdCtrls, Buttons, FileUtil, ExtCtrls, ComCtrls,
+  AVL_Tree, Laz_XMLCfg, PackageIntf, IDEImagesIntf,
   LazarusIDEStrConsts, EnvironmentOpts, InputHistory, LazConf, IDEProcs,
   PackageDefs, PackageSystem, PackageLinks, IDEContextHelpEdit;
 
@@ -51,33 +51,34 @@ type
   { TInstallPkgSetDialog }
 
   TInstallPkgSetDialog = class(TForm)
-    AddToInstallButton: TButton;
-    AvailableListBox: TListBox;
+    AddToInstallButton: TBitBtn;
+    AvailableTreeView: TTreeView;
     AvailablePkgGroupBox: TGroupBox;
     HelpButton: TBitBtn;
     CancelButton: TBitBtn;
     ExportButton: TButton;
     BtnPanel: TPanel;
+    InstallTreeView: TTreeView;
+    NoteLabel: TLabel;
     PkgInfoMemo: TMemo;
     PkgInfoGroupBox: TGroupBox;
     ImportButton: TButton;
     SaveAndExitButton: TBitBtn;
-    InstallListBox: TListBox;
     InstallPkgGroupBox: TGroupBox;
     SaveAndRebuildButton: TBitBtn;
-    UninstallButton: TButton;
+    UninstallButton: TBitBtn;
     procedure AddToInstallButtonClick(Sender: TObject);
-    procedure AvailableListBoxDblClick(Sender: TObject);
-    procedure AvailableListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure AvailableTreeViewDblClick(Sender: TObject);
+    procedure AvailableTreeViewSelectionChanged(Sender: TObject);
     procedure ExportButtonClick(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure ImportButtonClick(Sender: TObject);
     procedure InstallButtonClick(Sender: TObject);
-    procedure InstallListBoxDblClick(Sender: TObject);
-    procedure InstallListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure InstallTreeViewDblClick(Sender: TObject);
     procedure InstallPkgSetDialogCreate(Sender: TObject);
     procedure InstallPkgSetDialogDestroy(Sender: TObject);
     procedure InstallPkgSetDialogResize(Sender: TObject);
+    procedure InstallTreeViewSelectionChanged(Sender: TObject);
     procedure SaveAndExitButtonClick(Sender: TObject);
     procedure UninstallButtonClick(Sender: TObject);
   private
@@ -87,6 +88,12 @@ type
     fPackages: TAVLTree;// tree of TLazPackageID (all available packages and links)
     FRebuildIDE: boolean;
     FSelectedPkg: TLazPackage;
+    ImgIndexPackage: integer;
+    ImgIndexInstallPackage: integer;
+    ImgIndexInstalledPackage: integer;
+    ImgIndexUninstallPackage: integer;
+    ImgIndexCirclePackage: integer;
+    ImgIndexMissingPackage: integer;
     procedure SetOldInstalledPackages(const AValue: TPkgDependency);
     procedure AssignOldInstalledPackagesToList;
     function PackageInInstallList(PkgName: string): boolean;
@@ -97,7 +104,7 @@ type
     procedure ClearNewInstalledPackages;
     function CheckSelection: boolean;
     procedure UpdateButtonStates;
-    procedure UpdatePackageInfo(List: TListBox);
+    procedure UpdatePackageInfo(Tree: TTreeView);
     function NewInstalledPackagesContains(APackageID: TLazPackageID): boolean;
     function IndexOfNewInstalledPackageID(APackageID: TLazPackageID): integer;
     function IndexOfNewInstalledPkgByName(const APackageName: string): integer;
@@ -150,13 +157,26 @@ end;
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogCreate(Sender: TObject);
 begin
+  InstallTreeView.Images := IDEImages.Images_16;
+  AvailableTreeView.Images := IDEImages.Images_16;
+  ImgIndexPackage := IDEImages.LoadImage(16, 'item_package');
+  ImgIndexInstalledPackage := IDEImages.LoadImage(16, 'pkg_installed');
+  ImgIndexInstallPackage := IDEImages.LoadImage(16, 'pkg_package_autoinstall');
+  ImgIndexUninstallPackage := IDEImages.LoadImage(16, 'pkg_package_uninstall');
+  ImgIndexCirclePackage := IDEImages.LoadImage(16, 'pkg_package_circle');
+  ImgIndexMissingPackage := IDEImages.LoadImage(16, 'pkg_conflict');
+
   Caption:=lisInstallUninstallPackages;
+  NoteLabel.Caption:=lisToInstallYouMustCompileAndRestartTheIDE;
+
   AvailablePkgGroupBox.Caption:=lisDoNotInstall;
   ExportButton.Caption:=lisExportList;
   ImportButton.Caption:=lisImportList;
   UninstallButton.Caption:=lisUninstallSelection;
+  UninstallButton.LoadGlyphFromLazarusResource('arrow_right');
   InstallPkgGroupBox.Caption:=lisPckEditInstall;
   AddToInstallButton.Caption:=lisInstallSelection;
+  AddToInstallButton.LoadGlyphFromLazarusResource('arrow_left');
   PkgInfoGroupBox.Caption := lisPackageInfo;
   SaveAndRebuildButton.Caption:=lisSaveAndRebuildIDE;
   SaveAndExitButton.Caption:=lisSaveAndExitDialog;
@@ -176,16 +196,16 @@ begin
   ModalResult:=mrOk;
 end;
 
-procedure TInstallPkgSetDialog.InstallListBoxDblClick(Sender: TObject);
+procedure TInstallPkgSetDialog.InstallTreeViewDblClick(Sender: TObject);
 begin
   AddToUninstall;
 end;
 
-procedure TInstallPkgSetDialog.AvailableListBoxSelectionChange(Sender: TObject;
-  User: boolean);
+procedure TInstallPkgSetDialog.AvailableTreeViewSelectionChanged(Sender: TObject
+  );
 begin
   UpdateButtonStates;
-  UpdatePackageInfo(AvailableListBox);
+  UpdatePackageInfo(AvailableTreeView);
 end;
 
 procedure TInstallPkgSetDialog.ExportButtonClick(Sender: TObject);
@@ -242,16 +262,9 @@ begin
   AddToInstall;
 end;
 
-procedure TInstallPkgSetDialog.AvailableListBoxDblClick(Sender: TObject);
+procedure TInstallPkgSetDialog.AvailableTreeViewDblClick(Sender: TObject);
 begin
   AddToInstall;
-end;
-
-procedure TInstallPkgSetDialog.InstallListBoxSelectionChange(Sender: TObject;
-  User: boolean);
-begin
-  UpdateButtonStates;
-  UpdatePackageInfo(InstallListBox);
 end;
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogDestroy(Sender: TObject);
@@ -270,6 +283,12 @@ begin
   w := (ClientWidth - 3 * x) div 2;
   InstallPkgGroupBox.SetBounds(x, x, w, Height - 150);
   AvailablePkgGroupBox.SetBounds(2 * x + w, x, w, Height - 150);
+end;
+
+procedure TInstallPkgSetDialog.InstallTreeViewSelectionChanged(Sender: TObject);
+begin
+  UpdateButtonStates;
+  UpdatePackageInfo(InstallTreeView);
 end;
 
 procedure TInstallPkgSetDialog.SaveAndExitButtonClick(Sender: TObject);
@@ -305,6 +324,7 @@ begin
     NewPackageID:=TLazPackageID.Create;
     if (Dependency.LoadPackageResult=lprSuccess)
     and (Dependency.RequiredPackage<>nil) then begin
+      // packages can be freed while the dialog runs => use packageid instead
       NewPackageID.AssignID(Dependency.RequiredPackage);
     end else begin
       NewPackageID.Name:=Dependency.PackageName;
@@ -320,8 +340,12 @@ function TInstallPkgSetDialog.PackageInInstallList(PkgName: string): boolean;
 var
   i: Integer;
 begin
-  for i:=0 to InstallListBox.Items.Count-1 do
-    if SysUtils.CompareText(ExtractNameFromPkgID(InstallListBox.Items[i]),PkgName)=0 then
+  //for i:=0 to InstallTreeView.Items.TopLvlCount-1 do
+    //debugln(['TInstallPkgSetDialog.PackageInInstallList ',i,' ',ExtractNameFromPkgID(InstallTreeView.Items.TopLvlItems[i].Text),' ',PkgName]);
+  for i:=0 to InstallTreeView.Items.TopLvlCount-1 do
+    if SysUtils.CompareText(
+      ExtractNameFromPkgID(InstallTreeView.Items.TopLvlItems[i].Text),PkgName)=0
+    then
       exit(true);
   Result:=false;
 end;
@@ -332,6 +356,10 @@ var
   sl: TStringList;
   PkgName: String;
   Pkg: TLazPackageID;
+  TVNode: TTreeNode;
+  APackage: TLazPackage;
+  ImgIndex: LongInt;
+  i: Integer;
 begin
   fPackages.Clear;
   PackageGraph.IteratePackages(fpfSearchAllExisting,@OnIteratePackages);
@@ -346,13 +374,29 @@ begin
       if not PackageInInstallList(Pkg.Name) then begin
         PkgName:=Pkg.IDAsString;
         if (sl.IndexOf(PkgName)<0) then
-          sl.Add(PkgName);
+          sl.AddObject(PkgName,Pkg);
       end;
     end;
     ANode:=fPackages.FindSuccessor(ANode);
   end;
   sl.Sort;
-  AvailableListBox.Items.Assign(sl);
+  AvailableTreeView.BeginUpdate;
+  AvailableTreeView.Items.Clear;
+  for i:=0 to sl.Count-1 do begin
+    TVNode:=AvailableTreeView.Items.Add(nil,sl[i]);
+    Pkg:=TLazPackageID(sl.Objects[i]);
+    ImgIndex:=ImgIndexPackage;
+    if (Pkg is TLazPackage) then begin
+      APackage:=TLazPackage(Pkg);
+      if APackage.Installed<>pitNope then begin
+        // is installed and will be uninstalled
+        ImgIndex:=ImgIndexUninstallPackage;
+      end;
+    end;
+    TVNode.ImageIndex:=ImgIndex;
+    TVNode.SelectedIndex:=ImgIndex;
+  end;
+  AvailableTreeView.EndUpdate;
   sl.Free;
 end;
 
@@ -362,16 +406,40 @@ var
   NewPackageID: TLazPackageID;
   i: Integer;
   sl: TStringList;
+  TVNode: TTreeNode;
+  APackage: TLazPackage;
+  ImgIndex: LongInt;
 begin
   sl:=TStringList.Create;
   for i:=0 to FNewInstalledPackages.Count-1 do begin
     NewPackageID:=TLazPackageID(FNewInstalledPackages[i]);
+    APackage:=PackageGraph.FindAPackageWithName(NewPackageID.Name,nil);
+    if APackage<>nil then
+      NewPackageID:=APackage;
     s:=NewPackageID.IDAsString;
-    sl.Add(s);
+    sl.AddObject(s,NewPackageID);
   end;
   sl.Sort;
-  InstallListBox.Items.Assign(sl);  
+  InstallTreeView.BeginUpdate;
+  InstallTreeView.Items.Clear;
+  for i:=0 to sl.Count-1 do begin
+    TVNode:=InstallTreeView.Items.Add(nil,sl[i]);
+    NewPackageID:=TLazPackageID(sl.Objects[i]);
+    ImgIndex:=ImgIndexInstallPackage;
+    //debugln(['TInstallPkgSetDialog.UpdateNewInstalledPackages ',NewPackageID.IDAsString,' ',DbgSName(NewPackageID)]);
+    if NewPackageID is TLazPackage then begin
+      APackage:=TLazPackage(NewPackageID);
+      if APackage.Installed<>pitNope then begin
+        // stay installed
+        ImgIndex:=ImgIndexInstalledPackage;
+      end;
+    end;
+    TVNode.ImageIndex:=ImgIndex;
+    TVNode.SelectedIndex:=ImgIndex;
+  end;
+  InstallTreeView.EndUpdate;
   sl.Free;
+  //debugln(['TInstallPkgSetDialog.UpdateNewInstalledPackages END ',InstallTreeView.Items.TopLvlCount]);
   UpdateAvailablePackages;
 end;
 
@@ -416,28 +484,28 @@ var
   s: String;
   ListChanged: Boolean;
 begin
-  UninstallButton.Enabled:=InstallListBox.ItemIndex>=0;
-  AddToInstallButton.Enabled:=AvailableListBox.ItemIndex>=0;
+  UninstallButton.Enabled:=InstallTreeView.Selected<>nil;
+  AddToInstallButton.Enabled:=AvailableTreeView.Selected<>nil;
   // check for changes
   ListChanged:=false;
   Cnt:=0;
   Dependency:=OldInstalledPackages;
   while Dependency<>nil do begin
-    s:=DependencyToStr(Dependency);
-    if InstallListBox.Items.IndexOf(s)<0 then begin
+    s:=Dependency.PackageName;
+    if not PackageInInstallList(s) then begin
       ListChanged:=true;
       break;
     end;
     Dependency:=Dependency.NextRequiresDependency;
     inc(Cnt);
   end;
-  if InstallListBox.Items.Count<>Cnt then
+  if InstallTreeView.Items.TopLvlCount<>Cnt then
     ListChanged:=true;
   SaveAndExitButton.Enabled:=ListChanged;
   SaveAndRebuildButton.Enabled:=ListChanged;
 end;
 
-procedure TInstallPkgSetDialog.UpdatePackageInfo(List: TListBox);
+procedure TInstallPkgSetDialog.UpdatePackageInfo(Tree: TTreeView);
 var
   PkgName: String;
   PkgID: TLazPackageID;
@@ -446,10 +514,10 @@ var
   PkgLink: TPackageLink;
   XMLConfig: TXMLConfig;
 begin
-  if List = nil then Exit;
+  if Tree = nil then Exit;
   PkgName := '';
-  if List.ItemIndex >= 0 then
-    PkgName := List.Items[List.ItemIndex];
+  if Tree.Selected <> nil then
+    PkgName := Tree.Selected.Text;
 
   if PkgName = '' then Exit;
   if Assigned(FSelectedPkg) and (PkgName = FSelectedPkg.IDAsString) then Exit;
@@ -638,17 +706,21 @@ var
   j: LongInt;
   APackage: TLazPackage;
   Additions: TFPList;
+  TVNode: TTreeNode;
+  PkgName: String;
 begin
   Additions:=TFPList.Create;
   NewPackageID:=TLazPackageID.Create;
   try
-    for i:=0 to AvailableListBox.Items.Count-1 do begin
-      if not AvailableListBox.Selected[i] then continue;
+    for i:=0 to AvailableTreeView.Items.TopLvlCount-1 do begin
+      TVNode:=AvailableTreeView.Items.TopLvlItems[i];
+      if not TVNode.MultiSelected then continue;
+      PkgName:=TVNode.Text;
       // check string
-      if not NewPackageID.StringToID(AvailableListBox.Items[i]) then begin
-        AvailableListBox.Selected[i]:=false;
+      if not NewPackageID.StringToID(PkgName) then begin
+        TVNode.Selected:=false;
         debugln('TInstallPkgSetDialog.AddToInstallButtonClick invalid ID: ',
-                AvailableListBox.Items[i]);
+                PkgName);
         continue;
       end;
       // check if already in list
@@ -656,7 +728,7 @@ begin
         MessageDlg('Double',
           'The package '+NewPackageID.Name+' is already in the list',mtError,
           [mbCancel],0);
-        AvailableListBox.Selected[i]:=false;
+        TVNode.Selected:=false;
         exit;
       end;
       // check if a package with same name is already in the list
@@ -665,7 +737,7 @@ begin
         MessageDlg('Conflict',
           'There is already a package '+NewPackageID.Name+' in the list',
           mtError,[mbCancel],0);
-        AvailableListBox.Selected[i]:=false;
+        TVNode.Selected:=false;
         exit;
       end;
       // check if package is loaded and has some attributes that prevents
@@ -677,7 +749,7 @@ begin
             'The package '+APackage.IDAsString+' is not a design time package.'
             +' It can not be installed in the IDE',mtError,
             [mbCancel],0);
-          AvailableListBox.Selected[i]:=false;
+          TVNode.Selected:=false;
           exit;
         end;
       end;
@@ -708,18 +780,22 @@ var
   Deletions: TFPList;
   DelPackageID: TLazPackageID;
   j: LongInt;
+  TVNode: TTreeNode;
+  PkgName: String;
 begin
   OldPackageID := nil;
   Deletions:=TFPList.Create;
   try
-    for i:=0 to InstallListBox.Items.Count-1 do begin
-      if not InstallListBox.Selected[i] then continue;
+    for i:=0 to InstallTreeView.Items.TopLvlCount-1 do begin
+      TVNode:=InstallTreeView.Items.TopLvlItems[i];
+      if not TVNode.MultiSelected then continue;
       if OldPackageID = nil then
         OldPackageID:=TLazPackageID.Create;
-      if not OldPackageID.StringToID(InstallListBox.Items[i]) then begin
-        InstallListBox.Selected[i]:=false;
+      PkgName:=TVNode.Text;
+      if not OldPackageID.StringToID(PkgName) then begin
+        TVNode.Selected:=false;
         debugln('TInstallPkgSetDialog.AddToUninstallButtonClick invalid ID: ',
-                InstallListBox.Items[i]);
+                PkgName);
         continue;
       end;
       // ok => add to deletions
@@ -732,7 +808,7 @@ begin
         // check if package is a base package
         if APackage.AutoCreated
         or PackageGraph.IsStaticBasePackage(APackage.Name) then begin
-          InstallListBox.Selected[i]:=false;
+          TVNode.Selected:=false;
           MessageDlg(lisUninstallImpossible,
             Format(lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh, [
               APackage.Name]), mtError, [mbCancel], 0);
@@ -742,7 +818,7 @@ begin
     end;
 
     // ok => remove from list
-    InstallListBox.ItemIndex:=-1;
+    InstallTreeView.Selected:=nil;
     for i:=0 to Deletions.Count-1 do begin
       DelPackageID:=TLazPackageID(Deletions[i]);
       j:=IndexOfNewInstalledPackageID(DelPackageID);

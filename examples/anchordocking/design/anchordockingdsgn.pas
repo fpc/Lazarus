@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit AnchorDockingDsgn; 
+unit anchordockingdsgn; 
 
 interface
 

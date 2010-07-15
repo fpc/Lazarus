@@ -4837,6 +4837,8 @@ resourcestring
   lisHideMessageViaDirective = 'Hide message via directive';
   lisRemoveLocalVariable2 = 'Remove local variable';
   lisNoHints = 'no hints';
+  lisToInstallYouMustCompileAndRestartTheIDE = 'To install you must compile '
+    +'and restart the IDE';
 
 implementation
 
