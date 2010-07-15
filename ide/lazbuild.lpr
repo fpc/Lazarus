@@ -24,10 +24,6 @@ program lazbuild;
 
 {$mode objfpc}{$H+}
 
-{$IFDEF WINDOWS}
-  {$R lazbuild.rc}
-{$ENDIF}
-
 uses
   Classes, SysUtils, CustApp, LCLProc, Dialogs, Forms, Controls, FileUtil,
   Interfaces, InterfaceBase, UTF8Process,

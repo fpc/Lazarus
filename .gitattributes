@@ -3638,7 +3638,6 @@ ide/lazarusidestrconsts.pas svneol=native#text/pascal
 ide/lazarusmanager.pas svneol=native#text/pascal
 ide/lazbuild.lpi svneol=native#text/plain
 ide/lazbuild.lpr svneol=native#text/plain
-ide/lazbuild.rc svneol=CRLF#text/plain eol=crlf
 ide/lazconf.pp svneol=native#text/pascal
 ide/lazdoc.lrs svneol=native#text/pascal
 ide/macropromptdlg.pas svneol=native#text/pascal
