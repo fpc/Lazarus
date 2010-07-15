@@ -1,0 +1,94 @@
+object ReplaceFuncsForm: TReplaceFuncsForm
+  Left = 361
+  Height = 321
+  Top = 90
+  Width = 856
+  Caption = 'Functions to replace'
+  ClientHeight = 321
+  ClientWidth = 856
+  OnCreate = FormCreate
+  LCLVersion = '0.9.29'
+  object ButtonPanel: TButtonPanel
+    Left = 6
+    Height = 39
+    Top = 276
+    Width = 844
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object Grid: TStringGrid
+    Left = 162
+    Height = 270
+    Top = 0
+    Width = 694
+    Align = alClient
+    Columns = <    
+      item
+        Title.Caption = 'Category'
+        Width = 80
+      end    
+      item
+        Title.Caption = 'Delphi Function'
+        Width = 120
+      end    
+      item
+        Title.Caption = 'Replacement'
+        Width = 310
+      end    
+      item
+        Title.Caption = 'Package'
+        Width = 100
+      end    
+      item
+        Title.Caption = 'Unit'
+        Width = 100
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goEditing, goSmoothScroll]
+    PopupMenu = PopupMenu1
+    RowCount = 2
+    TabOrder = 1
+    ColWidths = (
+      80
+      120
+      310
+      100
+      100
+    )
+  end
+  object CheckListBox1: TCheckListBox
+    Left = 0
+    Height = 270
+    Top = 0
+    Width = 157
+    Align = alLeft
+    ItemHeight = 0
+    TabOrder = 2
+  end
+  object Splitter1: TSplitter
+    Left = 157
+    Height = 270
+    Top = 0
+    Width = 5
+  end
+  object PopupMenu1: TPopupMenu
+    left = 248
+    top = 152
+    object InsertRow1: TMenuItem
+      Caption = 'Insert Row'
+    end
+    object DeleteRow1: TMenuItem
+      Caption = 'Delete Row'
+    end
+  end
+end
