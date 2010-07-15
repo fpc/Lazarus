@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, IDEProcs,
   StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, LazarusIDEStrConsts,
   CodeToolsStructs, AVL_Tree, BaseIDEIntf, LazConfigStorage,
-  ButtonPanel, ReplaceNamesUnit;
+  ButtonPanel, ReplaceNamesUnit, ReplaceFuncsUnit;
 
 type
 
@@ -60,7 +60,7 @@ type
     // Delphi types mapped to Lazarus types, will be replaced.
     fReplaceTypes: TStringToStringTree;
     // Delphi global function names mapped to FCL/LCL functions.
-    fReplaceFuncs: TStringToStringTree;
+    fReplaceFuncs: TStringList;     // Objects property is used for data items.
     // Getter / setter:
     function GetBackupPath: String;
     procedure SetMainFilename(const AValue: String);
@@ -96,7 +96,7 @@ type
     property AutoRemoveProperties: boolean read fAutoRemoveProperties;
     property ReplaceUnits: TStringToStringTree read fReplaceUnits;
     property ReplaceTypes: TStringToStringTree read fReplaceTypes;
-    property ReplaceFuncs: TStringToStringTree read fReplaceFuncs;
+    property ReplaceFuncs: TStringList read fReplaceFuncs;
   end;
 
 
@@ -136,7 +136,7 @@ implementation
 
 {$R *.lfm}
 
-{ TConvertSettings }
+// Load and store configuration in StringToStringTree :
 
 procedure LoadStringToStringTree(Config: TConfigStorage; const Path: string;
   Tree: TStringToStringTree);
@@ -148,7 +148,7 @@ var
   i: Integer;
 begin
   Tree.Clear;
-  Cnt:=Config.GetValue(Path+'Count',0);
+  Cnt:=Config.GetValue(Path+'Count', 0);
   for i:=0 to Cnt-1 do begin
     SubPath:=Path+'Item'+IntToStr(i)+'/';
     CurName:=Config.GetValue(SubPath+'Name','');
@@ -165,7 +165,7 @@ var
   i, j: Integer;
   SubPath: String;
 begin
-  Config.SetDeleteValue(Path+'Count',Tree.Tree.Count,0);
+  Config.SetDeleteValue(Path+'Count', Tree.Tree.Count, 0);
   Node:=Tree.Tree.FindLowest;
   i:=0;
   while Node<>nil do begin
@@ -183,6 +183,62 @@ begin
   end;
 end;
 
+// Load and store configuration in TStringList + TFuncReplacement :
+
+procedure LoadFuncReplacements(Config: TConfigStorage; const Path: string;
+  aFuncs: TStringList);
+var
+  Cnt: LongInt;
+  SubPath: String;
+  FuncRepl: TFuncReplacement;
+  xCategory, xDelphiFunc, xReplacement, xPackage, xUnitName: String;
+  i: Integer;
+begin
+  aFuncs.Clear;
+  Cnt:=Config.GetValue(Path+'Count', 0);
+  for i:=0 to Cnt-1 do begin
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    xCategory   :=Config.GetValue(SubPath+'Category','');
+    xDelphiFunc :=Config.GetValue(SubPath+'DelphiFunction','');
+    xReplacement:=Config.GetValue(SubPath+'Replacement','');
+    xPackage    :=Config.GetValue(SubPath+'Package','');
+    xUnitName   :=Config.GetValue(SubPath+'UnitName','');
+    if xDelphiFunc<>'' then begin
+      FuncRepl:=TFuncReplacement.Create(xCategory,
+                                  xDelphiFunc, xReplacement, xPackage, xUnitName);
+      aFuncs.AddObject(xDelphiFunc, FuncRepl);
+    end;
+  end;
+end;
+
+procedure SaveFuncReplacements(Config: TConfigStorage; const Path: string;
+  aFuncs: TStringList);
+var
+  SubPath: String;
+  FuncRepl: TFuncReplacement;
+  i, j: Integer;
+begin
+  Config.SetDeleteValue(Path+'Count', aFuncs.Count, 0);
+  for i:=0 to aFuncs.Count-1 do
+    if (aFuncs[i]<>'') and (aFuncs.Objects[i]<>nil) then begin
+      FuncRepl:=TFuncReplacement(aFuncs.Objects[i]);
+      SubPath:=Path+'Item'+IntToStr(i)+'/';
+      Config.SetDeleteValue(SubPath+'Category'      ,FuncRepl.Category,'');
+      Config.SetDeleteValue(SubPath+'DelphiFunction',aFuncs[i],'');
+      Config.SetDeleteValue(SubPath+'Replacement'   ,FuncRepl.ReplClause,'');
+      Config.SetDeleteValue(SubPath+'Package'       ,FuncRepl.PackageName,'');
+      Config.SetDeleteValue(SubPath+'UnitName'      ,FuncRepl.UnitName,'');
+    end;
+  // Remove leftover items in case the list has become shorter.
+  for j:=i to i+10 do begin
+    SubPath:=Path+'Item'+IntToStr(j)+'/';
+    Config.DeletePath(SubPath);
+  end;
+end;
+
+
+{ TConvertSettings }
+
 constructor TConvertSettings.Create(const ATitle: string);
 var
   TheMap: TStringToStringTree;
@@ -199,7 +255,9 @@ begin
   fMainPath:='';
   fReplaceUnits:=TStringToStringTree.Create(false);
   fReplaceTypes:=TStringToStringTree.Create(false);
-  fReplaceFuncs:=TStringToStringTree.Create(false);
+  fReplaceFuncs:=TStringList.Create;
+  fReplaceFuncs.Sorted:=True;
+  fReplaceFuncs.CaseSensitive:=False;
   // Load settings from ConfigStorage.
   fConfigStorage:=GetIDEConfigStorage('delphiconverter.xml', true);
   fBackupFiles          :=fConfigStorage.GetValue('BackupFiles', true);
@@ -207,9 +265,9 @@ begin
   fSameDFMFile          :=fConfigStorage.GetValue('SameDFMFile', false);
   fAutoReplaceUnits     :=fConfigStorage.GetValue('AutoReplaceUnits', true);
   fAutoRemoveProperties :=fConfigStorage.GetValue('AutoRemoveProperties', true);
-  LoadStringToStringTree(fConfigStorage, 'ReplaceUnits/', fReplaceUnits);
-  LoadStringToStringTree(fConfigStorage, 'ReplaceTypes/', fReplaceTypes);
-  LoadStringToStringTree(fConfigStorage, 'ReplaceFuncs/', fReplaceFuncs);
+  LoadStringToStringTree(fConfigStorage, 'UnitReplacements/', fReplaceUnits);
+  LoadStringToStringTree(fConfigStorage, 'TypeReplacements/', fReplaceTypes);
+  LoadFuncReplacements  (fConfigStorage, 'FuncReplacements/', fReplaceFuncs);
 
   // Add default values for string maps if ConfigStorage doesn't have them.
   // Map Delphi units to Lazarus units.
@@ -252,18 +310,20 @@ begin
   MapReplacement('^TTnt(.+[^L][^X])$','T$1');
 
   // Map Delphi function names to FCL/LCL functions.
-  TheMap:=fReplaceFuncs;
-  MapReplacement('ShellExecute', 'if $3 match ":/" then OpenURL($3); OpenDocument($3)');
+  AddReplaceFunc(fReplaceFuncs, 'Other', 'ShellExecute',
+                 'if $3 match ":/" then OpenURL($3); OpenDocument($3)', '', '');
   // File name encoding. ToDo: add other similar funcs with UTF8 counterparts.
-  MapReplacement('FileExists',        'FileExistsUTF8($1)');
+  AddReplaceFunc(fReplaceFuncs, 'UTF8Names', 'FileExists', 'FileExistsUTF8($1)', '', '');
   // File functions using a handle.
-  MapReplacement('CreateFile',        'FileCreate($1)'); // in SysUtils
-  MapReplacement('GetFileSize',       'FileSize($1)');   // in SysUtils
-  MapReplacement('ReadFile',          'FileRead($1)');   // in SysUtils
-  MapReplacement('CloseHandle',       'FileClose($1)');  // in SysUtils
+  AddReplaceFunc(fReplaceFuncs, 'Other', 'CreateFile',  'FileCreate($1)', '', 'SysUtils');
+  AddReplaceFunc(fReplaceFuncs, 'Other', 'GetFileSize', 'FileSize($1)'  , '', 'SysUtils');
+  AddReplaceFunc(fReplaceFuncs, 'Other', 'ReadFile',    'FileRead($1)'  , '', 'SysUtils');
+  AddReplaceFunc(fReplaceFuncs, 'Other', 'CloseHandle', 'FileClose($1)' , '', 'SysUtils');
 end;
 
 destructor TConvertSettings.Destroy;
+var
+  i: Integer;
 begin
   // Save possibly modified settings to ConfigStorage.
   fConfigStorage.SetDeleteValue('BackupFiles',          fBackupFiles, true);
@@ -271,11 +331,15 @@ begin
   fConfigStorage.SetDeleteValue('SameDFMFile',          fSameDFMFile, false);
   fConfigStorage.SetDeleteValue('AutoReplaceUnits',     fAutoReplaceUnits, false);
   fConfigStorage.SetDeleteValue('AutoRemoveProperties', fAutoRemoveProperties, false);
-  SaveStringToStringTree(fConfigStorage, 'ReplaceUnits/', fReplaceUnits);
-  SaveStringToStringTree(fConfigStorage, 'ReplaceTypes/', fReplaceTypes);
-  SaveStringToStringTree(fConfigStorage, 'ReplaceFuncs/', fReplaceFuncs);
+  SaveStringToStringTree(fConfigStorage, 'UnitReplacements/', fReplaceUnits);
+  SaveStringToStringTree(fConfigStorage, 'TypeReplacements/', fReplaceTypes);
+  SaveFuncReplacements  (fConfigStorage, 'FuncReplacements/', fReplaceFuncs);
   // Free stuff
   fConfigStorage.Free;
+  for i:=0 to fReplaceFuncs.Count-1 do begin
+    fReplaceFuncs.Objects[i].Free;
+    fReplaceFuncs.Objects[i]:=nil;
+  end;
   fReplaceFuncs.Free;
   fReplaceTypes.Free;
   fReplaceUnits.Free;
@@ -471,7 +535,7 @@ end;
 
 procedure TConvertSettingsForm.FuncReplacementsButtonClick(Sender: TObject);
 begin
-  EditMap(fSettings.ReplaceFuncs, lisConvFuncsToReplace);
+  EditFuncReplacements(fSettings.ReplaceFuncs, lisConvFuncsToReplace);
 end;
 
 

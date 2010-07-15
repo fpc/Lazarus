@@ -483,6 +483,7 @@ resourcestring
   lisProperties = 'Properties (replace or delete)';
   lisTypes = 'Types (not removed if no replacement)';
   lisReplaceRemoveUnknown = 'Fix unknown properties and types';
+  lisReplacementFuncs = 'Replacement functions';
 
   lisUnableToLoadOldResourceFileTheResourceFileIs = 'Unable to load old '
     +'resource file.%sThe resource file is the first include file in the%'

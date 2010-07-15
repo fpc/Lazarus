@@ -16,7 +16,7 @@ uses
   CodeBeautifier, ExprEval, KeywordFuncLists, BasicCodeTools, LinkScanner,
   CodeCache, SourceChanger, CustomCodeTool, CodeToolsStructs, EventCodeTool,
   // Converter
-  ConverterTypes, ConvertSettings, ReplaceNamesUnit;
+  ConverterTypes, ConvertSettings, ReplaceNamesUnit, ReplaceFuncsUnit;
 
 type
 
@@ -44,8 +44,8 @@ type
     fUnitsToComment: TStringList;
     // Delphi Function names to replace with FCL/LCL functions.
     fDefinedProcNames: TStringList;
-    fReplaceFuncs: TStringToStringTree;
-    fFuncsToReplace: TObjectList;           // List of TCalledFuncInfo.
+    fReplaceFuncs: TStringList;
+    fFuncsToReplace: TObjectList;           // List of TFuncReplacement.
     function AddDelphiAndLCLSections: boolean;
     function AddModeDelphiDirective: boolean;
     function RenameResourceDirectives: boolean;
@@ -72,7 +72,7 @@ type
     property UnitsToRemove: TStringList read fUnitsToRemove write fUnitsToRemove;
     property UnitsToRename: TStringToStringTree read fUnitsToRename write fUnitsToRename;
     property UnitsToComment: TStringList read fUnitsToComment write fUnitsToComment;
-    property ReplaceFuncs: TStringToStringTree read fReplaceFuncs write fReplaceFuncs;
+    property ReplaceFuncs: TStringList read fReplaceFuncs write fReplaceFuncs;
   end;
 
 
@@ -576,7 +576,7 @@ var
   end;
 
 var
-  FuncInfo: TCalledFuncInfo;
+  FuncInfo: TFuncReplacement;
   PossibleCommPos: Integer;                    // Start looking for comments here.
   i: Integer;
   s, NewFunc, NewParamStr, Comment: String;
@@ -586,24 +586,24 @@ begin
   try
     // Replace from bottom to top.
     for i:=fFuncsToReplace.Count-1 downto 0 do begin
-      FuncInfo:=TCalledFuncInfo(fFuncsToReplace[i]);
+      FuncInfo:=TFuncReplacement(fFuncsToReplace[i]);
       BodyEnd:=-1;
-      PossibleCommPos:=ParseReplacementParams(FuncInfo.fReplFunc);
-      NewParamStr:=CollectParams(FuncInfo.fParams);
-      Comment:=GetComment(FuncInfo.fReplFunc, PossibleCommPos);
+      PossibleCommPos:=ParseReplacementParams(FuncInfo.ReplFunc);
+      NewParamStr:=CollectParams(FuncInfo.Params);
+      Comment:=GetComment(FuncInfo.ReplFunc, PossibleCommPos);
       // Separate function body
       if BodyEnd=-1 then
-        BodyEnd:=Length(FuncInfo.fReplFunc);
-      NewFunc:=Trim(Copy(FuncInfo.fReplFunc, 1, BodyEnd));
+        BodyEnd:=Length(FuncInfo.ReplFunc);
+      NewFunc:=Trim(Copy(FuncInfo.ReplFunc, 1, BodyEnd));
       NewFunc:=Format('%s(%s)%s { *Converted from %s* %s }',
-        [NewFunc, NewParamStr, FuncInfo.fInclSemiColon, FuncInfo.fFuncName, Comment]);
+        [NewFunc, NewParamStr, FuncInfo.InclSemiColon, FuncInfo.FuncName, Comment]);
       // Old function call with params for IDE message output.
-      s:=copy(fCodeTool.Src, FuncInfo.fStartPos, FuncInfo.fEndPos-FuncInfo.fStartPos);
+      s:=copy(fCodeTool.Src, FuncInfo.StartPos, FuncInfo.EndPos-FuncInfo.StartPos);
       s:=StringReplace(s, sLineBreak, '', [rfReplaceAll]);
       // Now replace it.
       fSrcCache.MainScanner:=fCodeTool.Scanner;
       if not fSrcCache.Replace(gtNone, gtNone,
-                        FuncInfo.fStartPos, FuncInfo.fEndPos, NewFunc) then exit;
+                          FuncInfo.StartPos, FuncInfo.EndPos, NewFunc) then exit;
       IDEMessagesWindow.AddMsg('Replaced call '+s, '', -1);
       IDEMessagesWindow.AddMsg('                  with '+NewFunc, '', -1);
     end;
@@ -635,26 +635,25 @@ function TConvDelphiCodeTool.ReplaceFuncCalls: boolean;
 // Search for calls to functions / procedures given in a list in current unit's
 // implementation section. Add their positions to another list for replacement.
 var
-  FuncNames: TStringList;
-  StartPos: Integer;
+  xStart: Integer;
 
-  procedure CheckSemiColon(FuncInfo: TCalledFuncInfo);
+  procedure CheckSemiColon(FuncInfo: TFuncReplacement);
   begin
     with fCodeTool do
       if AtomIsChar(';') then begin
-        FuncInfo.fEndPos:=CurPos.EndPos;
-        FuncInfo.fInclSemiColon:=';';
+        FuncInfo.EndPos:=CurPos.EndPos;
+        FuncInfo.InclSemiColon:=';';
       end;
   end;
 
-  procedure ReadParams(FuncInfo: TCalledFuncInfo);
+  procedure ReadParams(FuncInfo: TFuncReplacement);
   var
     ExprStartPos, ExprEndPos: integer;
   begin
-    FuncInfo.fInclSemiColon:='';
-    FuncInfo.fStartPos:=StartPos;
+    FuncInfo.InclSemiColon:='';
+    FuncInfo.StartPos:=xStart;
     with fCodeTool do begin
-      MoveCursorToCleanPos(StartPos);
+      MoveCursorToCleanPos(xStart);
       ReadNextAtom;                     // Read func name.
       ReadNextAtom;                     // Read first atom after proc name.
       if AtomIsChar('(') then begin
@@ -673,11 +672,11 @@ var
             until false;
             ExprEndPos:=CurPos.StartPos;
             // Add parameter to list
-            FuncInfo.fParams.Add(copy(Src,ExprStartPos,ExprEndPos-ExprStartPos));
+            FuncInfo.Params.Add(copy(Src,ExprStartPos,ExprEndPos-ExprStartPos));
             MoveCursorToCleanPos(ExprEndPos);
             ReadNextAtom;
             if AtomIsChar(')') then begin
-              FuncInfo.fEndPos:=CurPos.EndPos;
+              FuncInfo.EndPos:=CurPos.EndPos;
               ReadNextAtom;
               CheckSemiColon(FuncInfo);
               break;
@@ -696,29 +695,30 @@ var
 
   procedure ReadFuncCall(MaxPos: Integer);
   var
-    FuncInfo: TCalledFuncInfo;
+    FuncInfo: TFuncReplacement;
     FuncName: string;
     i, x, IdentEndPos: Integer;
   begin
-    IdentEndPos:=StartPos;
+    IdentEndPos:=xStart;
     with fCodeTool do begin
       while (IdentEndPos<=MaxPos) and (IsIdentChar[Src[IdentEndPos]]) do
         inc(IdentEndPos);
-      for i:=0 to FuncNames.Count-1 do begin
-        FuncName:=FuncNames[i];
-        if (IdentEndPos-StartPos=length(FuncName))
-        and (CompareIdentifiers(PChar(Pointer(FuncName)),@Src[StartPos])=0)
+      for i:=0 to fReplaceFuncs.Count-1 do begin
+        FuncName:=fReplaceFuncs[i];
+        if (IdentEndPos-xStart=length(FuncName))
+        and (CompareIdentifiers(PChar(Pointer(FuncName)),@Src[xStart])=0)
         and not fDefinedProcNames.Find(FuncName, x)
         then begin
-          FuncInfo:=TCalledFuncInfo.Create(FuncName, fReplaceFuncs[FuncName]);
+          // Create a new replacement object for params, position and other info.
+          FuncInfo:=TFuncReplacement.Create(TFuncReplacement(fReplaceFuncs.Objects[i]));
           ReadParams(FuncInfo);
-          IdentEndPos:=FuncInfo.fEndPos; // Skip the params, too, for next search.
+          IdentEndPos:=FuncInfo.EndPos; // Skip the params, too, for next search.
           fFuncsToReplace.Add(FuncInfo);
           Break;
         end;
       end;
     end;
-    StartPos:=IdentEndPos;
+    xStart:=IdentEndPos;
   end;
 
   function SearchFuncCalls(aNode: TCodeTreeNode): TCodeTreeNode;
@@ -726,18 +726,18 @@ var
     CommentLvl: Integer;
     InStrConst: Boolean;
   begin
-    StartPos:=aNode.StartPos;
+    xStart:=aNode.StartPos;
     with fCodeTool do
-    while StartPos<=aNode.EndPos do begin
-      case Src[StartPos] of
+    while xStart<=aNode.EndPos do begin
+      case Src[xStart] of
 
       '{':                         // pascal comment
         begin
-          inc(StartPos);
+          inc(xStart);
           CommentLvl:=1;
           InStrConst:=false;
-          while StartPos<=aNode.EndPos do begin
-            case Src[StartPos] of
+          while xStart<=aNode.EndPos do begin
+            case Src[xStart] of
             '{': if Scanner.NestedComments then inc(CommentLvl);
             '}':
               begin
@@ -747,48 +747,48 @@ var
             '''':
               InStrConst:=not InStrConst;
             end;
-            inc(StartPos);
+            inc(xStart);
           end;
-          inc(StartPos);
+          inc(xStart);
         end;
 
       '/':                         // Delphi comment
-        if (Src[StartPos+1]<>'/') then begin
-          inc(StartPos);
+        if (Src[xStart+1]<>'/') then begin
+          inc(xStart);
         end else begin
-          inc(StartPos,2);
+          inc(xStart,2);
           InStrConst:=false;
-          while (StartPos<=aNode.EndPos) do begin
-            case Src[StartPos] of
+          while (xStart<=aNode.EndPos) do begin
+            case Src[xStart] of
             #10,#13:
               break;
             '''':
               InStrConst:=not InStrConst;
             end;
-            inc(StartPos);
+            inc(xStart);
           end;
-          inc(StartPos);
-          if (StartPos<=aNode.EndPos) and (Src[StartPos] in [#10,#13])
-          and (Src[StartPos-1]<>Src[StartPos]) then
-            inc(StartPos);
+          inc(xStart);
+          if (xStart<=aNode.EndPos) and (Src[xStart] in [#10,#13])
+          and (Src[xStart-1]<>Src[xStart]) then
+            inc(xStart);
         end;
 
       '(':                         // turbo pascal comment
-        if (Src[StartPos+1]<>'*') then begin
-          inc(StartPos);
+        if (Src[xStart+1]<>'*') then begin
+          inc(xStart);
         end else begin
-          inc(StartPos,3);
+          inc(xStart,3);
           InStrConst:=false;
-          while (StartPos<=aNode.EndPos) do begin
-            case Src[StartPos] of
+          while (xStart<=aNode.EndPos) do begin
+            case Src[xStart] of
             ')':
-              if Src[StartPos-1]='*' then break;
+              if Src[xStart-1]='*' then break;
             '''':
               InStrConst:=not InStrConst;
             end;
-            inc(StartPos);
+            inc(xStart);
           end;
-          inc(StartPos);
+          inc(xStart);
         end;
 
       'a'..'z','A'..'Z','_':
@@ -796,19 +796,19 @@ var
 
       '''':
         begin                      // skip string constant
-          inc(StartPos);
-          while (StartPos<=aNode.EndPos) do begin
-            if (not (Src[StartPos] in ['''',#10,#13])) then
-              inc(StartPos)
+          inc(xStart);
+          while (xStart<=aNode.EndPos) do begin
+            if (not (Src[xStart] in ['''',#10,#13])) then
+              inc(xStart)
             else begin
-              inc(StartPos);
+              inc(xStart);
               break;
             end;
           end;
         end;
 
       else
-        inc(StartPos);
+        inc(xStart);
       end;
     end;
     Result:=aNode.NextSkipChilds;
@@ -820,13 +820,11 @@ begin
   Result:=false;
   with fCodeTool do begin
     fFuncsToReplace:=TObjectList.Create;
-    FuncNames:=TStringList.Create;
     fDefinedProcNames:=TStringList.Create;
     fDefinedProcNames.Sorted:=True;
     fDefinedProcNames.Duplicates:=dupIgnore;
     ActivateGlobalWriteLock;
     try
-      fReplaceFuncs.GetNames(FuncNames);
       BuildTree(false);
       // Only convert identifiers in ctnBeginBlock nodes
       Node:=fCodeTool.Tree.Root;
@@ -842,7 +840,6 @@ begin
     finally
       DeactivateGlobalWriteLock;
       fDefinedProcNames.Free;
-      FuncNames.Free;
       fFuncsToReplace.Free;
     end;
   end;
