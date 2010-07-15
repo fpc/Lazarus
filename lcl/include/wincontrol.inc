@@ -7513,19 +7513,12 @@ end;
   decreases the BoundsLockCount
  ------------------------------------------------------------------------------}
 procedure TWinControl.EndUpdateBounds;
-
-  procedure RaiseTooManyEndUpdates;
-  begin
-    raise Exception.Create('TWinControl.EndUpdateBounds '+DbgSName(Self)
-      +' too many calls.');
-  end;
-
 begin
-  if FBoundsLockCount<=0 then RaiseTooManyEndUpdates;
+  if FBoundsLockCount <= 0 then
+    raise EInvalidOperation.CreateFmt('TWinControl.EndUpdateBounds %s too many calls.', [DbgSName(Self)]);
   dec(FBoundsLockCount);
-  if FBoundsLockCount=0 then begin
-    SetBounds(Left,Top,Width,Height);
-  end;
+  if FBoundsLockCount = 0 then
+    SetBounds(Left, Top, Width, Height);
 end;
 
 procedure TWinControl.LockRealizeBounds;
@@ -7667,16 +7660,12 @@ procedure TWinControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 
   procedure CheckDesignBounds;
   begin
-    if FRealizeBoundsLockCount>0 then exit;
+    if FRealizeBoundsLockCount > 0 then Exit;
     // the user changed the bounds
-    if aWidth<0 then
-      raise Exception.Create(
-        'TWinControl.SetBounds ('+DbgSName(Self)+'): Negative width '
-          +dbgs(aWidth)+' not allowed.');
-    if aHeight<0 then
-      raise Exception.Create(
-        'TWinControl.SetBounds ('+DbgSName(Self)+'): Negative height '
-          +dbgs(aHeight)+' not allowed.');
+    if AWidth < 0 then
+      raise EInvalidOperation.CreateFmt('TWinControl.SetBounds (%s): Negative width %d not allowed.', [DbgSName(Self), AWidth]);
+    if AHeight < 0 then
+      raise EInvalidOperation.CreateFmt('TWinControl.SetBounds (%s): Negative height %d not allowed.', [DbgSName(Self), AHeight]);
   end;
 
 var

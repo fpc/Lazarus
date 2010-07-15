@@ -342,7 +342,7 @@ end;
 
 procedure TDockZone.Remove(ChildZone: TDockZone);
 begin
-  if ChildZone.Parent<>Self then
+  if ChildZone.Parent <> Self then
     raise Exception.Create('TDockZone.Remove');
   if ChildZone=FFirstChildZone then FFirstChildZone:=ChildZone.FNextSibling;
   if ChildZone.FNextSibling<>nil then

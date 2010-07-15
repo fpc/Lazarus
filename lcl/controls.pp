@@ -3428,7 +3428,7 @@ var
 
   procedure RaiseInvalidSide;
   begin
-    raise Exception.Create('TAnchorSide.GetSidePosition invalid Side');
+    raise Exception.Create('TAnchorSide.CheckSidePosition invalid Side');
   end;
 
   function GetNextCentered(ReferenceControl: TControl; Side: TAnchorKind;
