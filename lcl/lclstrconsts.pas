@@ -250,7 +250,9 @@ resourceString
   rsGridIndexOutOfRange = 'Grid index out of range.';
   rsERRORInLCL = 'ERROR in LCL: ';
   rsCreatingGdbCatchableError = 'Creating gdb catchable error:';
-  rsAControlCanNotHaveItselfAsParent = 'A control can''t have itself as parent';
+  rsAControlCanNotHaveItselfAsParent = 'A control can''t have itself as a parent';
+  rsControlHasNoParentWindow = 'Control ''%s'' has no parent window';
+  rsControlClassCantContainChildClass = 'Control of class ''%s'' can''t have control of class ''%s'' as a child';
   lisLCLResourceSNotFound = 'Resource %s not found';
   rsErrorCreatingDeviceContext = 'Error creating device context for %s.%s';
   rsIndexOutOfBounds = '%s Index %d out of bounds 0 .. %d';

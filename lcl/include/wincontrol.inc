@@ -4867,10 +4867,9 @@ end;
   Searches a child (not grand child) control, which client area contains Pos.
   Pos is relative to the ClientOrigin.
 ------------------------------------------------------------------------------}
-function TWinControl.ControlAtPos(const Pos : TPoint;
-  AllowDisabled : Boolean): TControl;
+function TWinControl.ControlAtPos(const Pos: TPoint; AllowDisabled: Boolean): TControl;
 begin
-  Result := ControlAtPos(Pos,AllowDisabled,false);
+  Result := ControlAtPos(Pos, AllowDisabled, False);
 end;
 
 {------------------------------------------------------------------------------
@@ -4882,15 +4881,15 @@ end;
   Searches a child (not grand child) control, which client area contains Pos.
   Pos is relative to the ClientOrigin.
 ------------------------------------------------------------------------------}
-function TWinControl.ControlAtPos(const Pos : TPoint;
+function TWinControl.ControlAtPos(const Pos: TPoint;
   AllowDisabled, AllowWinControls: Boolean): TControl;
 var
   Flags: TControlAtPosFlags;
 begin
-  Flags:=[capfOnlyClientAreas];
-  if AllowDisabled then Include(Flags,capfAllowDisabled);
-  if AllowWinControls then Include(Flags,capfAllowWinControls);
-  Result := ControlAtPos(Pos,Flags);
+  Flags := [capfOnlyClientAreas];
+  if AllowDisabled then Include(Flags, capfAllowDisabled);
+  if AllowWinControls then Include(Flags, capfAllowWinControls);
+  Result := ControlAtPos(Pos, Flags);
 end;
 
 {------------------------------------------------------------------------------
@@ -4920,15 +4919,16 @@ var
       // MG: Delphi checks for PtInRect(ClientRect,P). But the client area is
       //     not always at 0,0, so I guess this is a bug in the VCL.
 
-      ControlPos:=Point(P.X-Left,P.Y-Top);
-      Result:=(ControlPos.X>=0) and (ControlPos.Y>=0)
-              and (ControlPos.X<Width) and (ControlPos.Y<Height);
-      if Result and (capfOnlyClientAreas in Flags) then begin
-        ControlClientBounds:=GetChildsRect(false);
-        Result:=PtInRect(ControlClientBounds,ControlPos);
+      ControlPos := Point(P.X - Left, P.Y - Top);
+      Result := (ControlPos.X >= 0) and (ControlPos.Y >= 0) and
+                (ControlPos.X < Width) and (ControlPos.Y < Height);
+      if Result and (capfOnlyClientAreas in Flags) then
+      begin
+        ControlClientBounds := GetChildsRect(false);
+        Result:=PtInRect(ControlClientBounds, ControlPos);
       end;
 
-      Result:= Result
+      Result := Result
         and (
              (
               (csDesigning in ComponentState)
@@ -4972,8 +4972,8 @@ begin
   //debugln(['TWinControl.ControlAtPos START ',DbgSName(Self),' P=',dbgs(Pos)]);
 
   // check if Pos in visible client area
-  ClientBounds:=GetClientRect;
-  ScrolledOffset:=GetClientScrollOffset;
+  ClientBounds := GetClientRect;
+  ScrolledOffset := GetClientScrollOffset;
   if capfHasScrollOffset in Flags then
   begin
     { ClientBounds do not include scrolling offset }
@@ -4983,17 +4983,19 @@ begin
     inc(ClientBounds.Bottom, ScrolledOffset.y);
   end;
 
-  if not PtInRect(ClientBounds,Pos) then begin
+  if not PtInRect(ClientBounds, Pos) then
+  begin
     //debugln(['TWinControl.ControlAtPos OUT OF CLIENTBOUNDS ',DbgSName(Self),' P=',dbgs(Pos),' ClientBounds=',dbgs(ClientBounds)]);
-    Result:=nil;
+    Result := nil;
     exit;
   end;
 
   // map Pos to logical client area
-  P:=Pos;
-  if not (capfHasScrollOffset in Flags) then begin
-    inc(P.X,ScrolledOffset.X);
-    inc(P.Y,ScrolledOffset.Y);
+  P := Pos;
+  if not (capfHasScrollOffset in Flags) then
+  begin
+    inc(P.X, ScrolledOffset.X);
+    inc(P.Y, ScrolledOffset.Y);
   end;
 
   LControl := nil;
@@ -5015,17 +5017,18 @@ begin
   Result := LControl;
   
   // check recursive sub childs
-  if (capfRecursive in Flags) and (Result is TWinControl)
-  and (TWinControl(Result).ControlCount>0) then begin
-    OldClientOrigin:=ClientOrigin;
-    NewClientOrigin:=TWinControl(Result).ClientOrigin;
-    NewPos:=Pos;
-    NewPos.X:=NewPos.X-NewClientOrigin.X+OldClientOrigin.X;
-    NewPos.Y:=NewPos.Y-NewClientOrigin.Y+OldClientOrigin.Y;
-    LControl:=TWinControl(Result).ControlAtPos(NewPos,Flags-[capfHasScrollOffset]);
+  if (capfRecursive in Flags) and (Result is TWinControl) and
+     (TWinControl(Result).ControlCount > 0) then
+  begin
+    OldClientOrigin := ClientOrigin;
+    NewClientOrigin := TWinControl(Result).ClientOrigin;
+    NewPos := Pos;
+    NewPos.X := NewPos.X - NewClientOrigin.X + OldClientOrigin.X;
+    NewPos.Y := NewPos.Y - NewClientOrigin.Y + OldClientOrigin.Y;
+    LControl := TWinControl(Result).ControlAtPos(NewPos, Flags - [capfHasScrollOffset]);
     //debugln(['TWinControl.RECURSED ControlAtPos Result=',DbgSName(Result),' LControl=',DbgSName(LControl),' ',dbgs(NewPos),' AllowDisabled=',AllowDisabled,' OnlyClientAreas=',OnlyClientAreas]);
-    if LControl<>nil then
-      Result:=LControl;
+    if LControl <> nil then
+      Result := LControl;
   end;
   //debugln(['TWinControl.ControlAtPos END ',DbgSName(Self),' P=',dbgs(Pos),' Result=',DbgSName(Result)]);
 end;
@@ -5037,10 +5040,10 @@ end;
 -------------------------------------------------------------------------------}
 function TWinControl.GetControlIndex(AControl: TControl): integer;
 begin
-  if FControls<>nil then
-    Result:=FControls.IndexOf(AControl)
+  if FControls <> nil then
+    Result := FControls.IndexOf(AControl)
   else
-    Result:=-1;
+    Result := -1;
 end;
 
 {-------------------------------------------------------------------------------
@@ -7131,7 +7134,7 @@ begin
         if (WndParent = 0) and (Style and WS_CHILD <> 0) then
         begin
           DebugLn(['TWinControl.CreateWnd ',DbgSName(Self),' Parent=',DbgSName(Parent),' ERROR WndParent=0']);
-          raise EInvalidOperation.CreateFmt('Control ''%s'' has no parent window', [Name]);
+          raise EInvalidOperation.CreateFmt(rsControlHasNoParentWindow, [Name]);
         end;
       end;
 
@@ -7891,9 +7894,8 @@ function TWinControl.GetDeviceContext(var WindowHandle: HWnd): HDC;
 begin
   Result := GetDC(Handle);
   //DebugLn('[TWinControl.GetDeviceContext] ',ClassName,' DC=',DbgS(Result,8),' Handle=',DbgS(FHandle));
-  if Result = 0
-  then raise EOutOfResources.CreateFmt(rsErrorCreatingDeviceContext, [Name,
-    ClassName]);
+  if Result = 0 then
+     raise EOutOfResources.CreateFmt(rsErrorCreatingDeviceContext, [Name, ClassName]);
 
   WindowHandle := Handle;
 end;

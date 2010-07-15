@@ -1013,22 +1013,12 @@ end;
        TControl.GetClientOrigin
 ------------------------------------------------------------------------------}
 function TControl.GetClientOrigin: TPoint;
-
-  procedure RaiseParentNil;
-  begin
-    raise Exception.Create('TControl.GetClientOrigin: Parent=nil for '
-                           +Name+':'+ClassName);
-  end;
-
 begin
-  //Assert(False, Format('Trace:[TControl.GetClientOrigin] %s',  [Classname]));
   if Parent = nil then
-    RaiseParentNil;
-    //raise EInvalidOperation.CreateFmt(SParentRequired, [Name]);
+    raise EInvalidOperation.CreateFmt(rsControlHasNoParentWindow, [Name]);
   Result := Parent.ClientOrigin;
   Inc(Result.X, FLeft);
   Inc(Result.Y, FTop);
-  //Assert(False, Format('Trace:[TControl.GetClientOrigin] %s --> (%d, %d)',  [Classname, Result.X, Result.Y]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2269,18 +2259,11 @@ end;
     
   Checks if this control can be the parent of a control of class ChildClass.
 ------------------------------------------------------------------------------}
-function TControl.CheckChildClassAllowed(ChildClass: TClass;
-  ExceptionOnInvalid: boolean): boolean;
-  
-  procedure RaiseInvalidChild;
-  begin
-    raise Exception.Create(ClassName+' can not have '+ChildClass.ClassName+' as child');
-  end;
-  
+function TControl.CheckChildClassAllowed(ChildClass: TClass; ExceptionOnInvalid: boolean): boolean;
 begin
-  Result:=ChildClassAllowed(ChildClass);
+  Result := ChildClassAllowed(ChildClass);
   if (not Result) and ExceptionOnInvalid then
-    RaiseInvalidChild;
+    raise EInvalidOperation.CreateFmt(rsControlClassCantContainChildClass, [ClassName, ChildClass.ClassName]);
 end;
 
 {------------------------------------------------------------------------------
@@ -2291,10 +2274,10 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.CheckNewParent(AParent: TWinControl);
 begin
-  if (AParent<>nil) then AParent.CheckChildClassAllowed(ClassType,true);
-  if AParent = Self then begin
-    raise EInvalidOperation.Create('A control can not have itself as parent');
-  end;
+  if (AParent <> nil) then
+    AParent.CheckChildClassAllowed(ClassType, True);
+  if AParent = Self then
+    raise EInvalidOperation.Create(rsAControlCanNotHaveItselfAsParent);
 end;
 
 {------------------------------------------------------------------------------
@@ -2396,7 +2379,8 @@ procedure TControl.DoAllAutoSize;
   end;
 
 begin
-  if Parent <> nil then raise Exception.Create('TControl.DoAllAutoSize Parent<>nil');
+  if Parent <> nil then
+    raise EInvalidOperation.Create('TControl.DoAllAutoSize Parent <> nil');
   if AutoSizingAll then exit;
   FAutoSizingAll := True;
   if not (Self is TWinControl) then exit;
@@ -3343,11 +3327,11 @@ procedure TControl.SetWidth(Value: Integer);
   begin
     // the user changed the width
     if Value<0 then
-      raise Exception.Create(
+      raise EInvalidOperation.Create(
         'TWinControl.SetBounds ('+DbgSName(Self)+'): Negative width '
           +dbgs(Value)+' not allowed.');
     if Value>=10000 then
-      raise Exception.Create(
+      raise EInvalidOperation.Create(
         'TWinControl.SetBounds ('+DbgSName(Self)+'): Width '
           +dbgs(Value)+' not allowed.');
   end;
@@ -3389,11 +3373,11 @@ procedure TControl.SetHeight(Value: Integer);
   begin
     // the user changed the height
     if Value<0 then
-      raise Exception.Create(
+      raise EInvalidOperation.Create(
         'TWinControl.SetHeight ('+DbgSName(Self)+'): Negative height '
           +dbgs(Value)+' not allowed.');
     if Value>=10000 then
-      raise Exception.Create(
+      raise EInvalidOperation.Create(
         'TWinControl.SetBounds ('+DbgSName(Self)+'): Height '
           +dbgs(Value)+' not allowed.');
   end;
@@ -4258,8 +4242,8 @@ end;
  ------------------------------------------------------------------------------}
 function TControl.GetDeviceContext(var WindowHandle: HWnd): HDC;
 begin
-  if Parent = nil
-  then raise EInvalidOperation.CreateFmt('Control ''%s'' has no parent window', [Name]);
+  if Parent = nil then
+    raise EInvalidOperation.CreateFmt(rsControlHasNoParentWindow, [Name]);
 
   Result := Parent.GetDeviceContext(WindowHandle);
   MoveWindowOrgEx(Result, Left, Top);
@@ -4749,7 +4733,7 @@ begin
   {$ENDIF}
 
   if FAutoSizingLockCount<=0 then
-    raise Exception.Create('TControl.EnableAutoSizing '+DbgSName(Self)+': missing DisableAutoSizing');
+    raise EInvalidOperation.Create('TControl.EnableAutoSizing '+DbgSName(Self)+': missing DisableAutoSizing');
 
   dec(FAutoSizingLockCount);
   //DebugLn([Space(FAutoSizingLockCount*2),'TControl.EnableAutoSizing ',DbgSName(Self),' ',FAutoSizingLockCount]);
