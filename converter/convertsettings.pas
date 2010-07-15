@@ -186,7 +186,6 @@ end;
 procedure LoadFuncReplacements(Config: TConfigStorage;
   const FuncPath, CategPath: string; aFuncsAndCateg: TFuncsAndCategories);
 var
-  FuncRepl: TFuncReplacement;
   SubPath: String;
   xCategory, xDelphiFunc, xReplacement, xPackage, xUnitName: String;
   Cnt, i: Integer;
@@ -340,8 +339,6 @@ begin
 end;
 
 destructor TConvertSettings.Destroy;
-var
-  i: Integer;
 begin
   // Save possibly modified settings to ConfigStorage.
   fConfigStorage.SetDeleteValue('BackupFiles',          fBackupFiles, true);
