@@ -3831,21 +3831,20 @@ var
 begin
   Result.X := 0;
   Result.Y := 0;
-//DebugLn('[TWinControl.GetClientOrigin] ',Name,':',ClassName,'  ',Handle);
-  if HandleAllocated then begin
+  if HandleAllocated then
+  begin
     // get the interface idea where the client area is on the screen
-    LCLIntf.ClientToScreen(Handle,Result);
+    LCLIntf.ClientToScreen(Handle, Result);
     // adjust the result by all bounds, that are not yet sent to the interface
-    AControl:=Self;
+    AControl := Self;
     repeat
-      inc(Result.X,AControl.Left-AControl.FBoundsRealized.Left);
-      inc(Result.Y,AControl.Top-AControl.FBoundsRealized.Top);
-      AControl:=AControl.Parent;
-    until AControl=nil;
+      inc(Result.X, AControl.Left - AControl.FBoundsRealized.Left);
+      inc(Result.Y, AControl.Top - AControl.FBoundsRealized.Top);
+      AControl := AControl.Parent;
+    until AControl = nil;
   end else
   if Parent <> nil then
-    Result:=inherited GetClientOrigin;
-  Assert(False, Format('Trace:[TWinControl.GetClientOrigin] %s --> (%d, %d)',  [Classname, Result.X, Result.Y]));
+    Result := inherited GetClientOrigin;
 end;
 
 {-------------------------------------------------------------------------------
@@ -5020,12 +5019,14 @@ begin
   if (capfRecursive in Flags) and (Result is TWinControl) and
      (TWinControl(Result).ControlCount > 0) then
   begin
+    // in LCL ClientOrigin contains the scroll offset. At least this is so
+    // for win32 and gtk2
     OldClientOrigin := ClientOrigin;
     NewClientOrigin := TWinControl(Result).ClientOrigin;
     NewPos := Pos;
     NewPos.X := NewPos.X - NewClientOrigin.X + OldClientOrigin.X;
     NewPos.Y := NewPos.Y - NewClientOrigin.Y + OldClientOrigin.Y;
-    LControl := TWinControl(Result).ControlAtPos(NewPos, Flags - [capfHasScrollOffset]);
+    LControl := TWinControl(Result).ControlAtPos(NewPos, Flags + [capfHasScrollOffset]);
     //debugln(['TWinControl.RECURSED ControlAtPos Result=',DbgSName(Result),' LControl=',DbgSName(LControl),' ',dbgs(NewPos),' AllowDisabled=',AllowDisabled,' OnlyClientAreas=',OnlyClientAreas]);
     if LControl <> nil then
       Result := LControl;

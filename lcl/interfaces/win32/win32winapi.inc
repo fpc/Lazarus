@@ -287,7 +287,7 @@ end;
 
   Converts client coordinates to screen coordinates
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.ClientToScreen(Handle: HWND; Var P: TPoint): Boolean;
+function TWin32WidgetSet.ClientToScreen(Handle: HWND; var P: TPoint): Boolean;
 var
   ORect: TRect;
 begin
