@@ -46,12 +46,29 @@ type
     property Params: TStringList read fParams;
   end;
 
+  { TFuncsAndCategories }
+
+  TFuncsAndCategories = class
+  private
+    fFuncs: TStringList; // Objects property has TFuncReplacement items.
+    fCategInUse: TStringList;   // Categories to be replaced.
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function AddFunc(aCategory, aDelphiFunc, aReplaceFunc, aPackage, aUnitName: string): integer;
+    function AddCategory(aCategory: string): integer;
+    function FuncAtInd(Ind: integer): TFuncReplacement;
+  public
+    property Funcs: TStringList read fFuncs;
+    property CategInUse: TStringList read fCategInUse;
+  end;
 
   { TReplaceFuncsForm }
 
   TReplaceFuncsForm = class(TForm)
     ButtonPanel: TButtonPanel;
-    CheckListBox1: TCheckListBox;
+    CategoryListBox: TCheckListBox;
     DeleteRow1: TMenuItem;
     Grid: TStringGrid;
     InsertRow1: TMenuItem;
@@ -62,100 +79,39 @@ type
     procedure InsertRow1Click(Sender: TObject);
     procedure DeleteRow1Click(Sender: TObject);
     procedure GridEditingDone(Sender: TObject);
-    procedure GridSetEditText(Sender: TObject; ACol, ARow: Integer;
-      const Value: string);
+    procedure GridSetEditText(Sender: TObject; ACol, ARow: Integer; const Value: string);
     procedure OKButtonClick(Sender: TObject);
   private
     IsLasRow: Boolean;
   public
-
-  end; 
+    function FromFuncListToUI(aFuncsAndCateg: TFuncsAndCategories): boolean;
+    function FromUIToFuncList(aFuncsAndCateg: TFuncsAndCategories): boolean;
+  end;
 
 var
   ReplaceFuncsForm: TReplaceFuncsForm;
 
-procedure ClearFuncList(aFuncs: TStringList);
-procedure AddReplaceFunc(aFuncs: TStringList;
-                 aCategory, aDelphiFunc, aReplaceFunc, aPackage, aUnitName: string);
-function FromFuncListToUI(aFuncs: TStringList; aGrid: TStringGrid): boolean;
-function FromUIToFuncList(aFuncs: TStringList; aGrid: TStringGrid): boolean;
-function EditFuncReplacements(aFuncs: TStringList; aTitle: string): TModalResult;
+
+function EditFuncReplacements(aFuncsAndCateg: TFuncsAndCategories;
+                              aTitle: string): TModalResult;
 
 
 implementation
 
 {$R *.lfm}
 
-procedure ClearFuncList(aFuncs: TStringList);
-var
-  i: Integer;
-begin
-  for i := 0 to aFuncs.Count-1 do
-    aFuncs.Objects[i].Free;
-  aFuncs.Clear;
-end;
-
-procedure AddReplaceFunc(aFuncs: TStringList;
-                 aCategory, aDelphiFunc, aReplaceFunc, aPackage, aUnitName: string);
-var
-  FuncRepl: TFuncReplacement;
-  x: integer;
-begin
-  if not aFuncs.Find(aDelphiFunc, x) then begin
-    FuncRepl:=TFuncReplacement.Create(aCategory,
-                                  aDelphiFunc, aReplaceFunc, aPackage, aUnitName);
-    aFuncs.AddObject(aDelphiFunc, FuncRepl);
-  end;
-end;
-
-function FromFuncListToUI(aFuncs: TStringList; aGrid: TStringGrid): boolean;
-// Copy strings from Map to Grid.
-var
-  i: Integer;
-  FuncRepl: TFuncReplacement;
-begin
-  Result:=true;
-  aGrid.BeginUpdate;
-  for i:=1 to aFuncs.Count do begin     // Skip the fixed row in grid.
-    if aGrid.RowCount<i+2 then
-      aGrid.RowCount:=i+2;              // Leave one empty row to the end.
-    FuncRepl:=TFuncReplacement(aFuncs.Objects[i-1]);
-    aGrid.Cells[0,i]:=FuncRepl.fCategory;
-    aGrid.Cells[1,i]:=aFuncs[i-1];      // Delphi function name
-    aGrid.Cells[2,i]:=FuncRepl.fReplClause;
-    aGrid.Cells[3,i]:=FuncRepl.PackageName;
-    aGrid.Cells[4,i]:=FuncRepl.fUnitName;
-  end;
-  aGrid.EndUpdate;
-end;
-
-function FromUIToFuncList(aFuncs: TStringList; aGrid: TStringGrid): boolean;
-var
-  i: Integer;
-begin
-  Result:=true;
-  ClearFuncList(aFuncs);
-  // Collect (maybe edited) properties from StringGrid to fStringMap.
-  for i:=1 to aGrid.RowCount-1 do     // Skip the fixed row.
-    if aGrid.Cells[1,i]<>'' then      // Delphi function name must have something.
-      AddReplaceFunc(aFuncs, aGrid.Cells[0,i],
-                             aGrid.Cells[1,i],
-                             aGrid.Cells[2,i],
-                             aGrid.Cells[3,i],
-                             aGrid.Cells[4,i]);
-end;
-
-function EditFuncReplacements(aFuncs: TStringList; aTitle: string): TModalResult;
+function EditFuncReplacements(aFuncsAndCateg: TFuncsAndCategories;
+                              aTitle: string): TModalResult;
 var
   RFForm: TReplaceFuncsForm;
 begin
   RFForm:=TReplaceFuncsForm.Create(nil);
   try
     RFForm.Caption:=aTitle;
-    FromFuncListToUI(aFuncs, RFForm.Grid);
+    RFForm.FromFuncListToUI(aFuncsAndCateg);
     Result:=RFForm.ShowModal;
     if Result=mrOK then
-      FromUIToFuncList(aFuncs, RFForm.Grid);
+      RFForm.FromUIToFuncList(aFuncsAndCateg);
   finally
     RFForm.Free;
   end;
@@ -315,6 +271,62 @@ begin
 end;
 
 
+{ TFuncsAndCategories }
+
+constructor TFuncsAndCategories.Create;
+begin
+  inherited Create;
+  fFuncs:=TStringList.Create;
+  fFuncs.Sorted:=True;
+  fFuncs.CaseSensitive:=False;
+  fCategInUse:=TStringList.Create;
+end;
+
+destructor TFuncsAndCategories.Destroy;
+begin
+  fCategInUse.Free;
+  fFuncs.Free;
+  inherited Destroy;
+end;
+
+procedure TFuncsAndCategories.Clear;
+var
+  i: Integer;
+begin
+  for i := 0 to fFuncs.Count-1 do
+    fFuncs.Objects[i].Free;
+  fFuncs.Clear;
+  fCategInUse.Clear;
+end;
+
+function TFuncsAndCategories.AddFunc(
+      aCategory, aDelphiFunc, aReplaceFunc, aPackage, aUnitName: string): integer;
+// This is called when settings are read or when user made changes in GUI.
+var
+  FuncRepl: TFuncReplacement;
+  x: integer;
+begin
+  Result:=-1;
+  if (aDelphiFunc<>'') and not fFuncs.Find(aDelphiFunc, x) then begin
+    FuncRepl:=TFuncReplacement.Create(aCategory,
+                                  aDelphiFunc, aReplaceFunc, aPackage, aUnitName);
+    Result:=fFuncs.AddObject(aDelphiFunc, FuncRepl);
+  end;
+end;
+
+function TFuncsAndCategories.AddCategory(aCategory: string): integer;
+begin
+  Result:=fCategInUse.Add(aCategory);
+end;
+
+function TFuncsAndCategories.FuncAtInd(Ind: integer): TFuncReplacement;
+begin
+  Result:=nil;
+  if fFuncs[Ind]<>'' then
+    Result:=TFuncReplacement(fFuncs.Objects[Ind]);
+end;
+
+
 { TReplaceFuncsForm }
 
 procedure TReplaceFuncsForm.FormCreate(Sender: TObject);
@@ -327,7 +339,7 @@ procedure TReplaceFuncsForm.PopupMenu1Popup(Sender: TObject);
 var
   ControlCoord, NewCell: TPoint;
 begin
-  ControlCoord := Grid.ScreenToControl(PopupMenu1.PopupPoint);
+  ControlCoord:=Grid.ScreenToControl(PopupMenu1.PopupPoint);
   NewCell:=Grid.MouseToCell(ControlCoord);
   Grid.Col:=NewCell.X;
   Grid.Row:=NewCell.Y;
@@ -366,6 +378,61 @@ end;
 procedure TReplaceFuncsForm.OKButtonClick(Sender: TObject);
 begin
   ModalResult:=mrOK;
+end;
+
+function TReplaceFuncsForm.FromFuncListToUI(aFuncsAndCateg: TFuncsAndCategories): boolean;
+// Copy strings from Map to Grid.
+var
+  FuncRepl: TFuncReplacement;
+  NewCategories: TStringList;
+  i, x: Integer;
+  NewCatInd: longint;
+begin
+  Result:=true;
+  NewCategories:=TStringList.Create;
+  NewCategories.Sorted:=True;
+  try
+    Grid.BeginUpdate;
+    for i:=1 to aFuncsAndCateg.fFuncs.Count do begin     // Skip the fixed row in grid.
+      if Grid.RowCount<i+2 then
+        Grid.RowCount:=i+2;              // Leave one empty row to the end.
+      FuncRepl:=TFuncReplacement(aFuncsAndCateg.fFuncs.Objects[i-1]);
+      Grid.Cells[0,i]:=FuncRepl.fCategory;
+      Grid.Cells[1,i]:=aFuncsAndCateg.fFuncs[i-1];      // Delphi function name
+      Grid.Cells[2,i]:=FuncRepl.fReplClause;
+      Grid.Cells[3,i]:=FuncRepl.PackageName;
+      Grid.Cells[4,i]:=FuncRepl.fUnitName;
+      if not NewCategories.Find(FuncRepl.fCategory, x) then begin
+        CategoryListBox.Items.Add(FuncRepl.fCategory);
+        NewCatInd:=NewCategories.Add(FuncRepl.fCategory);
+        CategoryListBox.Checked[NewCatInd]:=
+                              aFuncsAndCateg.fCategInUse.Find(FuncRepl.fCategory, x);
+      end;
+    end;
+    Grid.EndUpdate;
+  finally
+    NewCategories.Free;
+  end;
+end;
+
+function TReplaceFuncsForm.FromUIToFuncList(aFuncsAndCateg: TFuncsAndCategories): boolean;
+var
+  i: Integer;
+begin
+  Result:=true;
+  aFuncsAndCateg.Clear;
+  // Collect (maybe edited) properties from StringGrid to fStringMap.
+  for i:=1 to Grid.RowCount-1 do     // Skip the fixed row.
+    if Grid.Cells[1,i]<>'' then      // Delphi function name must have something.
+      aFuncsAndCateg.AddFunc(Grid.Cells[0,i],
+                     Grid.Cells[1,i],
+                     Grid.Cells[2,i],
+                     Grid.Cells[3,i],
+                     Grid.Cells[4,i]);
+  // Copy checked (used) categories.
+  for i:=0 to CategoryListBox.Count-1 do
+    if CategoryListBox.Checked[i] then
+      aFuncsAndCateg.AddCategory(CategoryListBox.Items[i]);
 end;
 
 

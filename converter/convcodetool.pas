@@ -44,7 +44,7 @@ type
     fUnitsToComment: TStringList;
     // Delphi Function names to replace with FCL/LCL functions.
     fDefinedProcNames: TStringList;
-    fReplaceFuncs: TStringList;
+    fReplaceFuncs: TFuncsAndCategories;
     fFuncsToReplace: TObjectList;           // List of TFuncReplacement.
     function AddDelphiAndLCLSections: boolean;
     function AddModeDelphiDirective: boolean;
@@ -72,7 +72,7 @@ type
     property UnitsToRemove: TStringList read fUnitsToRemove write fUnitsToRemove;
     property UnitsToRename: TStringToStringTree read fUnitsToRename write fUnitsToRename;
     property UnitsToComment: TStringList read fUnitsToComment write fUnitsToComment;
-    property ReplaceFuncs: TStringList read fReplaceFuncs write fReplaceFuncs;
+    property ReplaceFuncs: TFuncsAndCategories read fReplaceFuncs write fReplaceFuncs;
   end;
 
 
@@ -703,14 +703,14 @@ var
     with fCodeTool do begin
       while (IdentEndPos<=MaxPos) and (IsIdentChar[Src[IdentEndPos]]) do
         inc(IdentEndPos);
-      for i:=0 to fReplaceFuncs.Count-1 do begin
-        FuncName:=fReplaceFuncs[i];
+      for i:=0 to fReplaceFuncs.Funcs.Count-1 do begin
+        FuncName:=fReplaceFuncs.Funcs[i];
         if (IdentEndPos-xStart=length(FuncName))
         and (CompareIdentifiers(PChar(Pointer(FuncName)),@Src[xStart])=0)
         and not fDefinedProcNames.Find(FuncName, x)
         then begin
           // Create a new replacement object for params, position and other info.
-          FuncInfo:=TFuncReplacement.Create(TFuncReplacement(fReplaceFuncs.Objects[i]));
+          FuncInfo:=TFuncReplacement.Create(fReplaceFuncs.FuncAtInd(i));
           ReadParams(FuncInfo);
           IdentEndPos:=FuncInfo.EndPos; // Skip the params, too, for next search.
           fFuncsToReplace.Add(FuncInfo);
