@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-10 03:12+0300\n"
+"PO-Revision-Date: 2010-07-16 02:54+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -6163,6 +6163,10 @@ msgstr "Не закрывать проект"
 msgid "do not compile dependencies"
 msgstr "не собирать зависимости"
 
+#: lazarusidestrconsts.lisdonotinstall
+msgid "Do not install"
+msgstr "Не устанавливать"
+
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr "Не показывать начальную заставку"
@@ -7549,10 +7553,6 @@ msgstr "Свойства"
 msgid "Installation failed"
 msgstr "Установка не удалась"
 
-#: lazarusidestrconsts.lisinstalledpackages
-msgid "Installed Packages"
-msgstr "Установленные пакеты"
-
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
 msgstr "Установить, я люблю полных"
@@ -7560,6 +7560,11 @@ msgstr "Установить, я люблю полных"
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
 msgstr "Установить выбранное"
+
+#: lazarusidestrconsts.lisinstalluninstallpackages
+msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
+msgid "Install/Uninstall packages"
+msgstr "Установка/удаление пакетов"
 
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
@@ -7754,8 +7759,10 @@ msgid "Configure Help"
 msgstr "Параметры справки"
 
 #: lazarusidestrconsts.liskmconfigureinstalledpackages
-msgid "Configure installed packages"
-msgstr "Настройка установленных пакетов"
+#| msgid "Configure installed packages"
+msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
+msgid "Install/Uninstall packages"
+msgstr "Установить/удалить пакеты"
 
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
@@ -8882,8 +8889,9 @@ msgid "Edit context sensitive Help"
 msgstr "Редактировать контекстно-зависимую справку"
 
 #: lazarusidestrconsts.lismenueditinstallpkgs
-msgid "Configure installed packages ..."
-msgstr "Настройка установленных пакетов ..."
+#| msgid "Configure installed packages ..."
+msgid "Install/Uninstall packages ..."
+msgstr "Установить/удалить пакеты ..."
 
 #: lazarusidestrconsts.lismenueditor
 msgid "Menu Editor..."
@@ -12031,6 +12039,10 @@ msgstr "Открыть с другой кодировкой"
 msgid "Repeat Count:"
 msgstr "Число повторов:"
 
+#: lazarusidestrconsts.lisreplacementfuncs
+msgid "Replacement functions"
+msgstr "Функции замены"
+
 #: lazarusidestrconsts.lisreplacements
 msgid "Replacements"
 msgstr "Замены"
@@ -13109,6 +13121,10 @@ msgstr "Путь:"
 #: lazarusidestrconsts.listoggleshowingfilenameswithfullpathorwithrelativepa
 msgid "Toggle showing filenames with full path or with relative path"
 msgstr "Переключение режимов показа имён файлов с полным или относительным путём"
+
+#: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
+msgid "To install you must compile and restart the IDE"
+msgstr "Для установки следует перекомпилировать и перезапустить IDE"
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"

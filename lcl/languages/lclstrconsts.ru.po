@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-04 18:50+0300\n"
+"PO-Revision-Date: 2010-07-16 03:03+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -261,8 +261,9 @@ msgid "3D Light"
 msgstr "Освещённая часть объекта 3D"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
-msgid "A control can't have itself as parent"
-msgstr "Элемент управления не может быть сам себе потомком"
+#| msgid "A control can't have itself as parent"
+msgid "A control can't have itself as a parent"
+msgstr "Элемент управления не может быть родителем сам себе"
 
 #: lclstrconsts.rsactivebordercolorcaption
 msgid "Active Border"
@@ -348,6 +349,14 @@ msgstr "Текст заголовка"
 #: lclstrconsts.rscasesensitive
 msgid "Case sensitive"
 msgstr "С учётом регистра"
+
+#: lclstrconsts.rscontrolclasscantcontainchildclass
+msgid "Control of class '%s' can't have control of class '%s' as a child"
+msgstr "Элемент управления класса '%s' не может иметь потомком элемент управления класса '%s'"
+
+#: lclstrconsts.rscontrolhasnoparentwindow
+msgid "Control '%s' has no parent window"
+msgstr "Элемент управления '%s' не имеет родительского окна"
 
 #: lclstrconsts.rscreamcolorcaption
 msgid "Cream"

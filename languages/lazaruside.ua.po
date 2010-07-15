@@ -6149,6 +6149,10 @@ msgstr "Не закривати проект"
 msgid "do not compile dependencies"
 msgstr ""
 
+#: lazarusidestrconsts.lisdonotinstall
+msgid "Do not install"
+msgstr ""
+
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr "Не показувати заставки"
@@ -7533,10 +7537,6 @@ msgstr ""
 msgid "Installation failed"
 msgstr "Встановлення не вдалося"
 
-#: lazarusidestrconsts.lisinstalledpackages
-msgid "Installed Packages"
-msgstr "Встановлені пакунки"
-
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
 msgstr ""
@@ -7544,6 +7544,11 @@ msgstr ""
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
 msgstr "Встановити вибране"
+
+#: lazarusidestrconsts.lisinstalluninstallpackages
+msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
+msgid "Install/Uninstall packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
@@ -7738,7 +7743,10 @@ msgid "Configure Help"
 msgstr "Налаштувати Поміч"
 
 #: lazarusidestrconsts.liskmconfigureinstalledpackages
-msgid "Configure installed packages"
+#, fuzzy
+#| msgid "Configure installed packages"
+msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
+msgid "Install/Uninstall packages"
 msgstr "Налаштувати встановлені пакети"
 
 #: lazarusidestrconsts.liskmcontextsensitivehelp
@@ -8865,7 +8873,9 @@ msgid "Edit context sensitive Help"
 msgstr "Редагувати контекстно-чутливої Допомоги"
 
 #: lazarusidestrconsts.lismenueditinstallpkgs
-msgid "Configure installed packages ..."
+#, fuzzy
+#| msgid "Configure installed packages ..."
+msgid "Install/Uninstall packages ..."
 msgstr "Налаштувати встановлені пакунки ..."
 
 #: lazarusidestrconsts.lismenueditor
@@ -12026,6 +12036,10 @@ msgstr ""
 msgid "Repeat Count:"
 msgstr ""
 
+#: lazarusidestrconsts.lisreplacementfuncs
+msgid "Replacement functions"
+msgstr ""
+
 #: lazarusidestrconsts.lisreplacements
 msgid "Replacements"
 msgstr ""
@@ -13099,6 +13113,10 @@ msgstr "Шлях:"
 
 #: lazarusidestrconsts.listoggleshowingfilenameswithfullpathorwithrelativepa
 msgid "Toggle showing filenames with full path or with relative path"
+msgstr ""
+
+#: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
+msgid "To install you must compile and restart the IDE"
 msgstr ""
 
 #: lazarusidestrconsts.listop

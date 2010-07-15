@@ -6116,6 +6116,10 @@ msgstr "Nezavírat projekt"
 msgid "do not compile dependencies"
 msgstr "nepřekládat závislosti"
 
+#: lazarusidestrconsts.lisdonotinstall
+msgid "Do not install"
+msgstr ""
+
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr "Nezobrazovat úvodní obrázek při startu"
@@ -7500,10 +7504,6 @@ msgstr "Vlastnosti"
 msgid "Installation failed"
 msgstr "Instalace selhala"
 
-#: lazarusidestrconsts.lisinstalledpackages
-msgid "Installed Packages"
-msgstr "Instalované balíčky"
-
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
 msgstr "Nainstalovat jej, mám to rád tučné"
@@ -7511,6 +7511,11 @@ msgstr "Nainstalovat jej, mám to rád tučné"
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
 msgstr "Instalovat výběr"
+
+#: lazarusidestrconsts.lisinstalluninstallpackages
+msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
+msgid "Install/Uninstall packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
@@ -7705,7 +7710,10 @@ msgid "Configure Help"
 msgstr "Nastavit nápovědu"
 
 #: lazarusidestrconsts.liskmconfigureinstalledpackages
-msgid "Configure installed packages"
+#, fuzzy
+#| msgid "Configure installed packages"
+msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
+msgid "Install/Uninstall packages"
 msgstr "Konfigurovat instalované balíčky"
 
 #: lazarusidestrconsts.liskmcontextsensitivehelp
@@ -8828,7 +8836,9 @@ msgid "Edit context sensitive Help"
 msgstr "Upravit kontextově citlivou nápovědu"
 
 #: lazarusidestrconsts.lismenueditinstallpkgs
-msgid "Configure installed packages ..."
+#, fuzzy
+#| msgid "Configure installed packages ..."
+msgid "Install/Uninstall packages ..."
 msgstr "Konfigurovat instalované balíčky..."
 
 #: lazarusidestrconsts.lismenueditor
@@ -11953,6 +11963,10 @@ msgstr "Znovuotevřít s jiným kódováním"
 msgid "Repeat Count:"
 msgstr "Počet opakování:"
 
+#: lazarusidestrconsts.lisreplacementfuncs
+msgid "Replacement functions"
+msgstr ""
+
 #: lazarusidestrconsts.lisreplacements
 msgid "Replacements"
 msgstr "Náhrady"
@@ -13030,6 +13044,10 @@ msgstr "Cesta:"
 #: lazarusidestrconsts.listoggleshowingfilenameswithfullpathorwithrelativepa
 msgid "Toggle showing filenames with full path or with relative path"
 msgstr "Přepnout zobrazení názvů souborů s plnou cestou nebo s relativní cestou"
+
+#: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
+msgid "To install you must compile and restart the IDE"
+msgstr ""
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"

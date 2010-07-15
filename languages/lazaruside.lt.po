@@ -6157,6 +6157,10 @@ msgstr "Neužverti projekto"
 msgid "do not compile dependencies"
 msgstr "priklausomybes nekompiliuoti"
 
+#: lazarusidestrconsts.lisdonotinstall
+msgid "Do not install"
+msgstr ""
+
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr "Nerodyti prisistatymo langelio"
@@ -7543,10 +7547,6 @@ msgstr "Savybės"
 msgid "Installation failed"
 msgstr "Diegimas nepavyko"
 
-#: lazarusidestrconsts.lisinstalledpackages
-msgid "Installed Packages"
-msgstr "Įdiegti paketai"
-
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
 msgstr ""
@@ -7554,6 +7554,11 @@ msgstr ""
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
 msgstr "Įdiegti pažymėtą"
+
+#: lazarusidestrconsts.lisinstalluninstallpackages
+msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
+msgid "Install/Uninstall packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
@@ -7748,7 +7753,10 @@ msgid "Configure Help"
 msgstr "Derinti žinyną"
 
 #: lazarusidestrconsts.liskmconfigureinstalledpackages
-msgid "Configure installed packages"
+#, fuzzy
+#| msgid "Configure installed packages"
+msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
+msgid "Install/Uninstall packages"
 msgstr "Derinti įdiegtus paketus"
 
 #: lazarusidestrconsts.liskmcontextsensitivehelp
@@ -8878,7 +8886,9 @@ msgid "Edit context sensitive Help"
 msgstr "Rengyklės kontekstinis žinynas"
 
 #: lazarusidestrconsts.lismenueditinstallpkgs
-msgid "Configure installed packages ..."
+#, fuzzy
+#| msgid "Configure installed packages ..."
+msgid "Install/Uninstall packages ..."
 msgstr "Derinti įdiegtus paketus…"
 
 #: lazarusidestrconsts.lismenueditor
@@ -12024,6 +12034,10 @@ msgstr "Atveri iš naujo kitoje koduotėje"
 msgid "Repeat Count:"
 msgstr "Kartojimų kiekis:"
 
+#: lazarusidestrconsts.lisreplacementfuncs
+msgid "Replacement functions"
+msgstr ""
+
 #: lazarusidestrconsts.lisreplacements
 msgid "Replacements"
 msgstr ""
@@ -13107,6 +13121,10 @@ msgstr "Failas:"
 #: lazarusidestrconsts.listoggleshowingfilenameswithfullpathorwithrelativepa
 msgid "Toggle showing filenames with full path or with relative path"
 msgstr "Failų pavadinimuose rodyti pilnus arba reliatyvius kelius"
+
+#: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
+msgid "To install you must compile and restart the IDE"
+msgstr ""
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"

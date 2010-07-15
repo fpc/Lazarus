@@ -6159,6 +6159,10 @@ msgstr "プロジェクトを閉じない"
 msgid "do not compile dependencies"
 msgstr "依存関係をコンパイルしない"
 
+#: lazarusidestrconsts.lisdonotinstall
+msgid "Do not install"
+msgstr ""
+
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr "スプラッシュ画面を表示しない"
@@ -7547,10 +7551,6 @@ msgstr "プロパティ"
 msgid "Installation failed"
 msgstr "インストールに失敗"
 
-#: lazarusidestrconsts.lisinstalledpackages
-msgid "Installed Packages"
-msgstr "インストールしたパッケージ"
-
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
 msgstr ""
@@ -7558,6 +7558,11 @@ msgstr ""
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
 msgstr "選択対象をインストール"
+
+#: lazarusidestrconsts.lisinstalluninstallpackages
+msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
+msgid "Install/Uninstall packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
@@ -7752,7 +7757,10 @@ msgid "Configure Help"
 msgstr "ヘルプを設定"
 
 #: lazarusidestrconsts.liskmconfigureinstalledpackages
-msgid "Configure installed packages"
+#, fuzzy
+#| msgid "Configure installed packages"
+msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
+msgid "Install/Uninstall packages"
 msgstr "インストールされたパッケージを設定"
 
 #: lazarusidestrconsts.liskmcontextsensitivehelp
@@ -8881,7 +8889,9 @@ msgid "Edit context sensitive Help"
 msgstr "状況感知型ヘルプを編集"
 
 #: lazarusidestrconsts.lismenueditinstallpkgs
-msgid "Configure installed packages ..."
+#, fuzzy
+#| msgid "Configure installed packages ..."
+msgid "Install/Uninstall packages ..."
 msgstr "インストール済みパッケージを設定 ..."
 
 #: lazarusidestrconsts.lismenueditor
@@ -12044,6 +12054,10 @@ msgstr "他のエンコーディングで開き直す"
 msgid "Repeat Count:"
 msgstr "反復回数："
 
+#: lazarusidestrconsts.lisreplacementfuncs
+msgid "Replacement functions"
+msgstr ""
+
 #: lazarusidestrconsts.lisreplacements
 msgid "Replacements"
 msgstr ""
@@ -13118,6 +13132,10 @@ msgstr "パス："
 #: lazarusidestrconsts.listoggleshowingfilenameswithfullpathorwithrelativepa
 msgid "Toggle showing filenames with full path or with relative path"
 msgstr "ファイル名をフルパスで表示するか相対パスで表示するかを切り替え"
+
+#: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
+msgid "To install you must compile and restart the IDE"
+msgstr ""
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"

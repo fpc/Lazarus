@@ -6181,6 +6181,10 @@ msgstr "Schließen Sie das Projekt nicht"
 msgid "do not compile dependencies"
 msgstr "Abhängigkeiten nicht kompilieren"
 
+#: lazarusidestrconsts.lisdonotinstall
+msgid "Do not install"
+msgstr ""
+
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr "Startbildschirm nicht anzeigen"
@@ -7569,10 +7573,6 @@ msgstr "Properties"
 msgid "Installation failed"
 msgstr "Installation fehlgeschlagen"
 
-#: lazarusidestrconsts.lisinstalledpackages
-msgid "Installed Packages"
-msgstr "Installierte Packages"
-
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
 msgstr ""
@@ -7580,6 +7580,11 @@ msgstr ""
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
 msgstr "Auswahl installieren"
+
+#: lazarusidestrconsts.lisinstalluninstallpackages
+msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
+msgid "Install/Uninstall packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
@@ -7774,7 +7779,10 @@ msgid "Configure Help"
 msgstr "Hilfe einrichten"
 
 #: lazarusidestrconsts.liskmconfigureinstalledpackages
-msgid "Configure installed packages"
+#, fuzzy
+#| msgid "Configure installed packages"
+msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
+msgid "Install/Uninstall packages"
 msgstr "Installierte Packages einrichten"
 
 #: lazarusidestrconsts.liskmcontextsensitivehelp
@@ -8905,7 +8913,9 @@ msgid "Edit context sensitive Help"
 msgstr "Kontextsensitive Hilfe bearbeiten"
 
 #: lazarusidestrconsts.lismenueditinstallpkgs
-msgid "Configure installed packages ..."
+#, fuzzy
+#| msgid "Configure installed packages ..."
+msgid "Install/Uninstall packages ..."
 msgstr "Installierte Packages einrichten ..."
 
 #: lazarusidestrconsts.lismenueditor
@@ -12068,6 +12078,10 @@ msgstr "Mit anderer Kodierung erneut lesen"
 msgid "Repeat Count:"
 msgstr "Wiederholungen:"
 
+#: lazarusidestrconsts.lisreplacementfuncs
+msgid "Replacement functions"
+msgstr ""
+
 #: lazarusidestrconsts.lisreplacements
 msgid "Replacements"
 msgstr ""
@@ -13148,6 +13162,10 @@ msgstr "Pfad:"
 #: lazarusidestrconsts.listoggleshowingfilenameswithfullpathorwithrelativepa
 msgid "Toggle showing filenames with full path or with relative path"
 msgstr "Umschalten der Anzeige der Dateinamen zwischen voller/relativer Pfad"
+
+#: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
+msgid "To install you must compile and restart the IDE"
+msgstr ""
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"

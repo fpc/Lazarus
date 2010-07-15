@@ -264,7 +264,9 @@ msgid "3D Light"
 msgstr ""
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
-msgid "A control can't have itself as parent"
+#, fuzzy
+#| msgid "A control can't have itself as parent"
+msgid "A control can't have itself as a parent"
 msgstr "Kontrolka nie może być sama swoim rodzicem"
 
 #: lclstrconsts.rsactivebordercolorcaption
@@ -350,6 +352,14 @@ msgstr ""
 
 #: lclstrconsts.rscasesensitive
 msgid "Case sensitive"
+msgstr ""
+
+#: lclstrconsts.rscontrolclasscantcontainchildclass
+msgid "Control of class '%s' can't have control of class '%s' as a child"
+msgstr ""
+
+#: lclstrconsts.rscontrolhasnoparentwindow
+msgid "Control '%s' has no parent window"
 msgstr ""
 
 #: lclstrconsts.rscreamcolorcaption

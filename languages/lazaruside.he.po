@@ -6128,6 +6128,10 @@ msgstr "אל תסגור את הפרוייקט"
 msgid "do not compile dependencies"
 msgstr "אל תהדר תלויות"
 
+#: lazarusidestrconsts.lisdonotinstall
+msgid "Do not install"
+msgstr ""
+
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
 msgstr "אל תציג מצג פתיחה"
@@ -7512,10 +7516,6 @@ msgstr "תכונות"
 msgid "Installation failed"
 msgstr "ההתקנה נכשלה"
 
-#: lazarusidestrconsts.lisinstalledpackages
-msgid "Installed Packages"
-msgstr "חבילה מותקנת"
-
 #: lazarusidestrconsts.lisinstallitilikethefat
 msgid "Install it, I like the fat"
 msgstr "התקן זאת,אני אוהב אותו שמן"
@@ -7523,6 +7523,11 @@ msgstr "התקן זאת,אני אוהב אותו שמן"
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
 msgstr "התקן את מה שנבחר"
+
+#: lazarusidestrconsts.lisinstalluninstallpackages
+msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
+msgid "Install/Uninstall packages"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
 msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
@@ -7717,7 +7722,10 @@ msgid "Configure Help"
 msgstr "הגדר עזרה"
 
 #: lazarusidestrconsts.liskmconfigureinstalledpackages
-msgid "Configure installed packages"
+#, fuzzy
+#| msgid "Configure installed packages"
+msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
+msgid "Install/Uninstall packages"
 msgstr "הגדרות חבילות מותקנות"
 
 #: lazarusidestrconsts.liskmcontextsensitivehelp
@@ -8841,7 +8849,9 @@ msgid "Edit context sensitive Help"
 msgstr "ערוך עזרה רגישת הקשר"
 
 #: lazarusidestrconsts.lismenueditinstallpkgs
-msgid "Configure installed packages ..."
+#, fuzzy
+#| msgid "Configure installed packages ..."
+msgid "Install/Uninstall packages ..."
 msgstr "הגדרות חבילות מותקנות ..."
 
 #: lazarusidestrconsts.lismenueditor
@@ -11987,6 +11997,10 @@ msgstr "פתח מחדש בקידוד אחר"
 msgid "Repeat Count:"
 msgstr "חזור על הספירה:"
 
+#: lazarusidestrconsts.lisreplacementfuncs
+msgid "Replacement functions"
+msgstr ""
+
 #: lazarusidestrconsts.lisreplacements
 msgid "Replacements"
 msgstr "תחליפים"
@@ -13064,6 +13078,10 @@ msgstr "נתיב:"
 #: lazarusidestrconsts.listoggleshowingfilenameswithfullpathorwithrelativepa
 msgid "Toggle showing filenames with full path or with relative path"
 msgstr "החלף בין תצוגה עם נתיב מלא לבין נתיב יחסי"
+
+#: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
+msgid "To install you must compile and restart the IDE"
+msgstr ""
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
