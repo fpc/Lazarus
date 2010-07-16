@@ -135,7 +135,7 @@ type
 
   TGridFlagsOption = (gfEditorUpdateLock, gfNeedsSelectActive, gfEditorTab,
     gfRevEditorTab, gfVisualChange, gfDefRowHeightChanged, gfColumnsLocked,
-    gfEditingDone);
+    gfEditingDone, gfSizingStarted);
   TGridFlags = set of TGridFlagsOption;
 
   TSortOrder = (soAscending, soDescending);
@@ -566,6 +566,14 @@ type
     TGridCoord = TPoint;
     TGridRect  = TRect;
 
+    TSizingRec = record
+      Index: Integer;
+      OffIni,OffEnd: Integer;
+      DeltaOff: Integer;
+      PrevLine: boolean;
+      PrevOffset: Integer;
+    end;
+
     TGridDataCache=record
       FixedWidth: Integer;    // Sum( Fixed ColsWidths[i] )
       FixedHeight: Integer;   // Sum( Fixed RowsHeights[i] )
@@ -641,7 +649,7 @@ type
     FScrollBars: TScrollStyle;
     FSelectActive: Boolean;
     FTopLeft: TPoint;
-    FSplitter, FPivot: TPoint;
+    FPivot: TPoint;
     FRange: TRect;
     FDragDx: Integer;
     FMoveLast: TPoint;
@@ -667,8 +675,6 @@ type
     FExtendedColSizing: boolean;
     FExtendedRowSizing: boolean;
     FUpdatingAutoFillCols: boolean;
-    FPrevLine: boolean;
-    FPrevValue: Integer;
     FGridBorderStyle: TBorderStyle;
     FGridFlags: TGridFlags;
     FGridPropBackup: TGridPropertyBackup;
@@ -679,6 +685,7 @@ type
     FHeaderPushZones: TGridZoneSet;
     FCheckedBitmap, FUnCheckedBitmap, FGrayedBitmap: TBitmap;
     FSavedCursor: TCursor;
+    FSizing: TSizingRec;
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
     procedure CancelSelection;
@@ -772,6 +779,7 @@ type
     procedure SetSelectActive(const AValue: Boolean);
     procedure SetSelection(const AValue: TGridRect);
     procedure SetTopRow(const AValue: Integer);
+    function  StartColSizing(const X, Y: Integer): boolean;
     procedure ChangeCursor(ACursor: Integer = MAXINT);
     procedure TryScrollTo(aCol,aRow: integer);
     procedure UpdateScrollBarPos(Which: TScrollStyle);
@@ -2320,6 +2328,84 @@ end;
 procedure TCustomGrid.SetTopRow(const AValue: Integer);
 begin
   TryScrollTo(FTopLeft.X, Avalue);
+end;
+
+function TCustomGrid.StartColSizing(const X, Y: Integer):boolean;
+var
+  OrgIndex, TmpIndex: Integer;
+  ACase: Integer;
+begin
+
+  with FSizing do begin
+
+    OrgIndex := FGCache.ClickCell.X;
+    Index := OrgIndex;
+    ColRowToOffset(true, true, Index, OffIni, OffEnd);
+
+    if (OffEnd-FGCache.ClickMouse.X) <  (FGCache.ClickMouse.X-OffIni) then begin
+      if X>FGCache.ClickMouse.X then
+        ACase := 4  // dragging right side to the right
+      else
+        ACase := 3; // dragging right side to the left
+    end else begin
+      if X>FGCache.ClickMouse.X then
+        ACase := 2  // dragging left side to the right
+      else
+        ACase := 1; // dragging left side to the left
+    end;
+
+    if UseRightToLeftAlignment then begin
+      case ACase of
+        1: ACase := 4;
+        2: ACase := 3;
+        3: ACase := 2;
+        4: ACase := 1;
+      end;
+    end;
+
+    case ACase of
+      3: ; // current column is the right one to resize
+      4:   // find following covered column (visible 0-width) at the right side
+        begin
+          TmpIndex := Index;
+          while (TmpIndex<ColCount-1) and (ColWidths[TmpIndex+1]=0) do begin
+            Inc(TmpIndex);
+            if not Columns.Enabled or ColumnFromGridColumn(TmpIndex).Visible then
+              Index := TmpIndex;
+          end;
+        end;
+      2:   // find previous visible (width>0) or covered column
+        begin
+          Dec(Index);
+          while (Index>FixedCols) do begin
+            if not Columns.Enabled or ColumnFromGridColumn(Index).Visible then
+              break;
+            Dec(Index);
+          end;
+        end;
+      1:   // find previous visible (width>0) column
+        begin
+          Dec(Index);
+          while (Index>FixedCols) do begin
+            if ColWidths[Index]>0 then
+              break;
+            Dec(Index);
+          end;
+        end;
+    end;
+
+    if OrgIndex<>Index then
+      ColRowToOffset(True, True, Index, OffIni, OffEnd);
+
+    // if precision on changing cursor from normal to split is expanded, there
+    // will be a starting big jump on size, to fix it, uncomment next lines
+    // TODO: check for RTL
+    //DeltaOff := OffEnd - FGCache.ClickMouse.X;
+    DeltaOff := 0;
+
+    result := (Index>=FixedCols);
+  end;
+
 end;
 
 procedure TCustomGrid.ChangeCursor(ACursor: Integer = MAXINT);
@@ -4655,30 +4741,53 @@ end;
 
 function TCustomGrid.doColSizing(X, Y: Integer): Boolean;
 var
-  OffIni,OffEnd,Loc: Integer;
+  Offset: Integer;
+
+  procedure FindPrevColumn;
+  begin
+    with FSizing do begin
+      Dec(Index);
+      while (Index>FixedCols) and (ColWidths[Index]=0) do
+        Dec(Index);
+    end;
+  end;
+
 begin
   Result:=False;
+
+  with FSizing do
   if gsColSizing = fGridState then begin
+
+    if not (gfSizingStarted in FGridFlags) then
+      if not StartColSizing(X,Y) then
+        exit;
+    Include(FGridFlags, gfSizingStarted);
+
     if FUseXORFeatures then begin
+
       if UseRightToLeftAlignment then begin
-        if (FSplitter.Y - x) <=0 then
-          x:= FSplitter.Y;
+        if (OffEnd - x) <=0 then
+          x:= OffEnd;
       end
-      else if (x-FSplitter.Y)<=0 then
-        x:= FSplitter.Y;
-      if x<>FPrevValue then begin
-        if FPrevLine then
-          DrawXorVertLine(FPrevValue);
-        DrawXorVertLine(X);
-        FPrevLine:=True;
-        FPrevValue:=X;
-      end;
-    end else
-      if UseRightToLeftAlignment then
-        ResizeColumn(FSplitter.x, FSplitter.y - x)
       else
-        ResizeColumn(FSplitter.x, x - FSplitter.y);
-    HeaderSizing(true, FSplitter.x, x-FSplitter.y);
+      if (X-OffIni)<=0 then
+        X := OffIni;
+
+      if X<>PrevOffset then begin
+        if PrevLine then
+          DrawXorVertLine(PrevOffset);
+        DrawXorVertLine(X);
+        PrevLine:=True;
+        PrevOffset:=X;
+      end;
+
+    end else begin
+      if UseRightToLeftAlignment then
+        ResizeColumn(Index, OffEnd - X + DeltaOff)
+      else
+        ResizeColumn(Index, X - OffIni + DeltaOff);
+    end;
+    HeaderSizing(true, Index, X - OffIni + DeltaOff);
     exit(true);
   end else
   if (fGridState=gsNormal) and (ColCount>FixedCols) and
@@ -4687,41 +4796,35 @@ begin
   then begin
 
     // find closest cell and cell boundaries
-    if (UseRightToLeftAlignment and (X < 1)) or
-        (X>FGCache.GridWidth-1) then
-      FSplitter.x := ColCount-1
+    if (FlipX(X)>FGCache.GridWidth-1) then
+      Index := ColCount-1
     else
-      OffsetToColRow(True, True, X, FSplitter.X, Loc);
-    ColRowToOffset(True, true, FSplitter.X, OffIni, OffEnd);
+      OffsetToColRow(True, True, X, Index, Offset);
+    ColRowToOffset(True, true, Index, OffIni, OffEnd);
 
-    // find out what cell boundary is closer to X
-    if UseRightToLeftAlignment and (OffIni < 0) then
-      Loc := 0
-    else if OffEnd>FGCache.ClientWidth then
-      Loc := FGCache.ClientWidth
-    else if UseRightToLeftAlignment and ((X-OffIni)<(OffEnd-X)) then
-      Loc := OffIni
-    else if not UseRightToLeftAlignment and ((OffEnd-X)<(X-OffIni)) then
-      Loc := OffEnd
-    else begin
+    if OffEnd>FGCache.ClientWidth then
+      Offset := FGCache.ClientWidth
+    else if (OffEnd-X)<(X-OffIni) then begin
+      Offset := OffEnd;
       if UseRightToLeftAlignment then
-        Loc := OffEnd
-      else
-        Loc := OffIni;
-      Dec(FSplitter.X);
+        FindPrevColumn;
+    end else begin
+      Offset := OffIni;
+      if not UseRightToLeftAlignment then
+        FindPrevColumn;
     end;
 
     // check if it's not fixed col and if cursor is close enough to sel boundary
-    if (FSplitter.X>=FFixedCols)and(Abs(Loc-x)<=2) then begin
+    if (Index>=FFixedCols)and(Abs(Offset-x)<=2) then begin
       // start resizing
       if Cursor<>crHSplit then begin
-        FSplitter.Y := X;
+        PrevLine := false;
+        PrevOffset := -1;
         ChangeCursor(crHSplit);
-        FPrevLine := False;
-        FPrevValue := -1;
       end;
       exit(true);
-    end
+    end;
+
   end;
 
   if (cursor=crHSplit) then
@@ -4730,56 +4833,60 @@ end;
 
 function TCustomGrid.doRowSizing(X, Y: Integer): Boolean;
 var
-  OffIni,OffEnd,Loc: Integer;
+  Offset: Integer;
 begin
   Result:=False;
+
+  with FSizing do
   if gsRowSizing = fGridState then begin
     if FUseXORFeatures then begin
-      if (y-FSplitter.x)<=0 then
-        y:= FSplitter.x;
-      if y<>FPrevValue then begin
-        if FPrevLine then
-          DrawXorHorzLine(FPrevValue);
+      if (y-OffIni)<=0 then
+        y:= OffIni;
+      if y<>PrevOffset then begin
+        if PrevLine then
+          DrawXorHorzLine(PrevOffset);
         DrawXorHorzLine(Y);
-        FPrevLine:=True;
-        FPrevValue:=y;
+        PrevLine:=True;
+        PrevOffset:=y;
       end;
     end else
-      ResizeRow(FSplitter.y, y-FSplitter.x);
-    HeaderSizing(false, FSplitter.Y, y-FSplitter.x);
+      ResizeRow(Index, y-OffIni);
+    HeaderSizing(false, Index, y-OffIni);
     Result:=True;
   end else
   if (fGridState=gsNormal) and (RowCount>FixedRows) and
-     ((FlipX(X)<FGCache.FixedWidth) or (FExtendedRowSizing and (FlipX(X)<FGCache.MaxClientXY.X))) and
+     ((FlipX(X)<FGCache.FixedWidth) or
+      (FExtendedRowSizing and (FlipX(X)<FGCache.MaxClientXY.X))) and
      (Y>FGCache.FixedHeight) then
   begin
 
     // find closest cell and cell boundaries
     if Y>FGCache.GridHeight-1 then
-      FSplitter.Y := RowCount-1
+      Index := RowCount-1
     else
-      OffsetToColRow(False, True, Y, FSplitter.Y, OffEnd{dummy});
-    ColRowToOffset(False, True, FSplitter.Y, OffIni, OffEnd);
+      OffsetToColRow(False, True, Y, Index, OffEnd{dummy});
+    ColRowToOffset(False, True, Index, OffIni, OffEnd);
 
     // find out what cell boundary is closer to Y
     if OffEnd>FGCache.ClientHeight then
-      Loc := FGCache.ClientHeight
+      Offset := FGCache.ClientHeight
     else
     if (OffEnd-Y)<(Y-OffIni) then
-      Loc := OffEnd
+      Offset := OffEnd
     else begin
-      Loc := OffIni;
-      Dec(FSplitter.Y);
+      Offset := OffIni;
+      Dec(Index);
+      ColRowToOffset(False, True, Index, OffIni, OffEnd);
     end;
 
-    // check if it's not fixed row and if cursor is close enough to sel boundary
-    if (FSplitter.Y>=FFixedRows)and(Abs(Loc-Y)<=2) then begin
+    // check if it's not fixed row and if cursor is close enough to
+    // selected boundary
+    if (Index>=FFixedRows)and(Abs(Offset-Y)<=2) then begin
       // start resizing
       if Cursor<>crVSplit then begin
-        FSplitter.X := Y;
         ChangeCursor(crVSplit);
-        FPrevLine := False;
-        FPrevValue := -1;
+        PrevLine := False;
+        PrevOffset := -1;
       end;
       exit(true);
     end
@@ -4795,7 +4902,6 @@ var
   CurCell: TPoint;
   R: TRect;
 begin
-  //debugLn('DoColMoving: FDragDX=',IntToStr(FDragDX), ' Sp.x= ', IntTOStr(FSplitter.X), 'Sp.y= ', IntToStr(FSplitter.y));
   CurCell:=MouseToCell(Point(X,Y));
 
   with FGCache do begin
@@ -5288,7 +5394,7 @@ var
   function DoAutoEdit: boolean;
   begin
     result := FAutoEdit and EditingAllowed(FCol) and
-      (FSplitter.X=Col) and (FSplitter.Y=Row);
+      (FGCache.ClickCell.X=Col) and (FGCache.ClickCell.Y=Row);
     if result then begin
       SelectEditor;
       EditorShow(True);
@@ -5322,14 +5428,11 @@ begin
 
     gzFixedCols:
       begin
-        if (goColSizing in Options) and (Cursor=crHSplit) then begin
-          R:=CellRect(FSplitter.x, 0{FTopLeft.y});
-          if UseRightToLeftAlignment then
-            FSplitter.y:=R.Right
-          else
-            FSplitter.y:=R.Left;
-          fGridState:= gsColSizing;
-        end else begin
+        if (goColSizing in Options) and (Cursor=crHSplit) then
+
+          fGridState:= gsColSizing
+
+        else begin
           // ColMoving or Clicking
           fGridState:=gsColMoving;
           FMoveLast:=Point(-1,-1);
@@ -5338,11 +5441,11 @@ begin
       end;
 
     gzFixedRows:
-      if (goRowSizing in Options)and(Cursor=crVSplit) then begin
-        R:=CellRect(0{FTopLeft.X}, FSplitter.y);
-        FSplitter.x:=R.top;
-        fGridState:= gsRowSizing;
-      end else begin
+      if (goRowSizing in Options)and(Cursor=crVSplit) then
+
+        fGridState:= gsRowSizing
+
+      else begin
         // RowMoving or Clicking
         fGridState:=gsRowMoving;
         FMoveLast:=Point(-1,-1);
@@ -5360,14 +5463,12 @@ begin
           (Cursor=crHSplit) and
           (goColSizing in Options) then begin
           // extended column sizing
-          R:=CellRect(FSplitter.x, FTopLeft.y);
-          FSplitter.y:=R.Left;
           fGridState:= gsColSizing;
+
         end
         else if not FixedGrid then begin
           // normal selecting
           fGridState:=gsSelecting;
-          FSplitter:=MouseToCell(Point(X,Y));
 
           if not EditingAllowed(FCol) or
             (ExtendedSelect and not EditorAlwaysShown) then begin
@@ -5386,7 +5487,7 @@ begin
                   // do that only if editor is not shown
                   GridFlags := GridFlags + [gfNeedsSelectActive];
 
-                FPivot:=FSplitter;
+                FPivot:=FGCache.ClickCell;
 
               end;
             end;
@@ -5396,7 +5497,7 @@ begin
             Exit;
           end;
 
-          if not MoveExtend(False, FSplitter.X, FSplitter.Y) then begin
+          if not MoveExtend(False, FGCache.ClickCell.X, FGCache.ClickCell.Y) then begin
             if EditorAlwaysShown then begin
               SelectEditor;
               EditorShow(true);
@@ -5511,35 +5612,36 @@ begin
       end;
 
     gsColSizing:
-      begin
+      if gfSizingStarted in FGridFlags then
+      with FSizing do begin
         if FUseXORFeatures then begin
-          if FPrevLine then
-            DrawXorVertLine(FPrevValue);
-          FPrevLine := False;
-          FPrevValue := -1;
+          if PrevLine then
+            DrawXorVertLine(PrevOffset);
+          PrevLine := False;
+          PrevOffset := -1;
         end;
         if UseRightToLeftAlignment then
-          ResizeColumn(FSplitter.x, FSplitter.y - x)
+          ResizeColumn(Index, OffEnd - X + DeltaOff)
         else
-          ResizeColumn(FSplitter.x, x - FSplitter.y);
-        HeaderSized(True, FSplitter.X);
+          ResizeColumn(Index, X - OffIni + DeltaOff);
+        HeaderSized(True, Index);
       end;
 
     gsRowSizing:
-      begin
+      with FSizing do begin
         if FUseXORFeatures then begin
-          if FPrevLine then
-            DrawXorHorzLine(FPrevValue);
-          FPrevLine := False;
-          FPrevValue := -1;
+          if PrevLine then
+            DrawXorHorzLine(PrevOffset);
+          PrevLine := False;
+          PrevOffset := -1;
         end;
-        ResizeRow(FSplitter.y, y-FSplitter.x);
-        HeaderSized( False, FSplitter.Y);
+        ResizeRow(Index, Y - OffIni);
+        HeaderSized(False, Index);
       end;
 
   end;
   fGridState:=gsNormal;
-  GridFlags := GridFlags - [gfNeedsSelectActive];
+  GridFlags := GridFlags - [gfNeedsSelectActive, gfSizingStarted];
 
   if (goHeaderPushedLook in Options) and IsPushCellActive() then
   begin
@@ -5550,13 +5652,18 @@ begin
 end;
 
 procedure TCustomGrid.DblClick;
+var
+  OldWidth: Integer;
 begin
   {$IfDef dbgGrid}DebugLn('DoubleClick INIT');{$Endif}
   SelectActive:=False;
   fGridState:=gsNormal;
   if (goColSizing in Options) and (Cursor=crHSplit) then begin
     if (goDblClickAutoSize in Options) then begin
-      AutoAdjustColumn( FSplitter.X );
+      OldWidth := ColWidths[FSizing.Index];
+      AutoAdjustColumn( FSizing.Index );
+      if OldWidth<>ColWidths[FSizing.Index] then
+        ChangeCursor;
     end {else
       DebugLn('Got Doubleclick on Col Resizing: AutoAdjust?');}
   end else
