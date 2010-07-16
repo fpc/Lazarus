@@ -4353,10 +4353,19 @@ begin
   CreateChildNode;
   CurNode.Desc:=ctnRecordCase;
   ReadNextAtom; // read ordinal type
+  { case a of
+    case a:b of
+    case a:b.c of
+  }
   AtomIsIdentifier(true);
   ReadNextAtom;
   if (CurPos.Flag=cafColon) then begin
     ReadNextAtom;
+    AtomIsIdentifier(true);
+    ReadNextAtom;
+  end;
+  if CurPos.Flag=cafPoint then begin
+    ReadNextAtom; // unit.type
     AtomIsIdentifier(true);
     ReadNextAtom;
   end;
