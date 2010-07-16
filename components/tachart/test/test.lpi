@@ -62,6 +62,12 @@
       <IncludeFiles Value="$(ProjOutDir)\"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
+    <CodeGeneration>
+      <Checks>
+        <RangeChecks Value="True"/>
+        <OverflowChecks Value="True"/>
+      </Checks>
+    </CodeGeneration>
     <Other>
       <CompilerMessages>
         <UseMsgFile Value="True"/>

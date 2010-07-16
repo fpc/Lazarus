@@ -188,7 +188,9 @@ procedure ExpandRect(var ARect: TDoubleRect; const APoint: TDoublePoint); inline
 
 function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
 
-function IsPointOnLine(const AP, A1, A2: TPoint): Boolean;
+function IsPointOnLine(const AP, A1, A2: TPoint): Boolean; inline;
+function IsPointInRect(const AP, A1, A2: TPoint): Boolean; inline;
+function IsLineIntersectsLine(const AA, AB, AC, AD: TPoint): Boolean;
 function LineIntersectsRect(
   var AA, AB: TDoublePoint; const ARect: TDoubleRect): Boolean;
 
@@ -220,6 +222,8 @@ operator -(const A, B: TDoublePoint): TDoublePoint; overload; inline;
 operator =(const A, B: TMethod): Boolean; overload; inline;
 
 implementation
+
+function PointLineSide(AP, A1, A2: TPoint): TValueSign; forward;
 
 function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 begin
@@ -418,10 +422,30 @@ end;
 
 function IsPointOnLine(const AP, A1, A2: TPoint): Boolean;
 begin
-  Result :=
-    SafeInRange(AP.X, A1.X, A2.X) and
-    SafeInRange(AP.Y, A1.Y, A2.Y) and
-    ((AP.X - A1.X) * (A2.Y - A1.Y) = (AP.Y - A1.Y) * (A2.X - A1.X));
+  Result := IsPointInRect(AP, A1, A2) and (PointLineSide(AP, A1, A2) = 0);
+end;
+
+function IsPointInRect(const AP, A1, A2: TPoint): Boolean;
+begin
+  Result := SafeInRange(AP.X, A1.X, A2.X) and SafeInRange(AP.Y, A1.Y, A2.Y);
+end;
+
+function IsLineIntersectsLine(const AA, AB, AC, AD: TPoint): Boolean;
+var
+  sa, sb, sc, sd: TValueSign;
+begin
+  sa := PointLineSide(AA, AC, AD);
+  sb := PointLineSide(AB, AC, AD);
+  if (sa = 0) and (sb = 0) then
+    // All points are on the same infinite line.
+    Result :=
+      IsPointInRect(AA, AC, AD) or IsPointInRect(AB, AC, AD) or
+      IsPointInRect(AC, AA, AB) or IsPointInRect(AD, AA, AB)
+  else begin
+    sc := PointLineSide(AC, AA, AB);
+    sd := PointLineSide(AD, AA, AB);
+    Result := (sa * sb <= 0) and (sc * sd <= 0);
+  end;
 end;
 
 function LineIntersectsRect(
@@ -496,6 +520,15 @@ end;
 function PointDistY(const A, B: TPoint): Integer; inline;
 begin
   Result := Abs(A.Y - B.Y);
+end;
+
+function PointLineSide(AP, A1, A2: TPoint): TValueSign;
+var
+  a1x, a1y: Int64;
+begin
+  a1x := A1.X;
+  a1y := A1.Y;
+  Result := Sign((AP.X - a1x) * (A2.Y - a1y) - (AP.Y - a1y) * (A2.X - a1x));
 end;
 
 function RectIntersectsRect(

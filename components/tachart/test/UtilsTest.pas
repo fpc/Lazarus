@@ -46,6 +46,7 @@ type
   private
     procedure AssertEquals(const Expected, Actual: TDoublePoint); overload;
   published
+    procedure TestLineIntersectsLine;
     procedure TestLineIntersectsRect;
     procedure TestPointOnLine;
   end;
@@ -126,6 +127,23 @@ procedure TGeometryTest.AssertEquals(const Expected, Actual: TDoublePoint);
 begin
   AssertEquals(Expected.X, Actual.X);
   AssertEquals(Expected.Y, Actual.Y);
+end;
+
+procedure TGeometryTest.TestLineIntersectsLine;
+var
+  p1, p2: TPoint;
+begin
+  p1 := Point(0, 0);
+  p2 := Point(1, 1);
+  AssertTrue(IsLineIntersectsLine(Point(1, 0), Point(0, 1), p1, p2));
+  AssertTrue(IsLineIntersectsLine(Point(1, 0), Point(0, 0), p1, p2));
+  AssertTrue(IsLineIntersectsLine(Point(1, 1), Point(2, 2), p1, p2));
+  AssertFalse(IsLineIntersectsLine(Point(2, 2), Point(3, 3), p1, p2));
+  AssertTrue(IsLineIntersectsLine(Point(2, 0), Point(0, 2), p1, p2));
+  AssertFalse(IsLineIntersectsLine(Point(3, 0), Point(0, 3), p1, p2));
+  p2 := Point(1, 0);
+  AssertTrue(IsLineIntersectsLine(Point(0, 0), Point(2, 0), p1, p2));
+  AssertFalse(IsLineIntersectsLine(Point(0, 1), Point(1, 1), p1, p2));
 end;
 
 procedure TGeometryTest.TestLineIntersectsRect;
