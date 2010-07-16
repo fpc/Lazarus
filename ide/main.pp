@@ -1023,7 +1023,8 @@ type
     procedure DoShowSourceOfActiveDesignerForm;
     procedure SetDesigning(AComponent: TComponent; Value: Boolean);
     procedure SetDesignInstance(AComponent: TComponent; Value: Boolean);
-    procedure CreateDesignerForComponent(AComponent: TComponent);
+    procedure CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
+                                         AComponent: TComponent);
     procedure InvalidateAllDesignerForms;
     procedure UpdateIDEComponentPalette;
     procedure ShowDesignerForm(AForm: TCustomForm);
@@ -3259,7 +3260,8 @@ begin
   end;
 end;
 
-procedure TMainIDE.CreateDesignerForComponent(AComponent: TComponent);
+procedure TMainIDE.CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
+  AComponent: TComponent);
 var
   DesignerForm: TCustomForm;
 begin
@@ -3306,6 +3308,8 @@ begin
     ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
     ShowComponentCaptions := EnvironmentOptions.ShowComponentCaptions;
   end;
+  if AnUnitInfo<>nil then
+    AnUnitInfo.LoadedDesigner:=true;
 end;
 
 {-------------------------------------------------------------------------------
@@ -4693,7 +4697,7 @@ begin
   and (csSetCaption in TControl(NewComponent).ControlStyle) then
     TControl(NewComponent).Caption:=NewComponent.Name;
   NewUnitInfo.Component := NewComponent;
-  CreateDesignerForComponent(NewComponent);
+  CreateDesignerForComponent(NewUnitInfo,NewComponent);
 
   NewUnitInfo.ComponentName:=NewComponent.Name;
   NewUnitInfo.ComponentResourceName:=NewUnitInfo.ComponentName;
@@ -6158,7 +6162,7 @@ begin
   DesignerForm := nil;
   if not (ofLoadHiddenResource in OpenFlags) then
   begin
-    CreateDesignerForComponent(NewComponent);
+    CreateDesignerForComponent(AnUnitInfo,NewComponent);
     DesignerForm := FormEditor1.GetDesignerForm(NewComponent);
   end;
 
@@ -6967,6 +6971,7 @@ begin
         {$IFDEF VerboseIDEMultiForm}
         DebugLn(['TMainIDE.CloseUnitComponent hiding component and freeing designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
         {$ENDIF}
+        AnUnitInfo.LoadedDesigner:=false;
         OldDesigner.FreeDesigner(false);
       end else begin
         // free designer and design form
@@ -6974,6 +6979,7 @@ begin
         DebugLn(['TMainIDE.CloseUnitComponent freeing component and designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
         {$ENDIF}
         try
+          AnUnitInfo.LoadedDesigner:=false;
           OldDesigner.FreeDesigner(true);
         finally
           AnUnitInfo.Component:=nil;
@@ -8381,14 +8387,15 @@ var
     if FilenameIsPascalUnit(AFilename) then begin
       // this could be a unit with a form
       //debugln('TMainIDE.DoOpenEditorFile ',AFilename,' ',OpenFlagsToString(Flags));
-      if ([ofDoNotLoadResource,ofProjectLoading]*Flags=[])
+      if ([ofDoNotLoadResource]*Flags=[])
       and ( (ofDoLoadResource in Flags)
-         or ((not Project1.AutoOpenDesignerFormsDisabled)
-             and (EnvironmentOptions.AutoCreateFormsOnOpen
-                  or (NewUnitInfo.Component<>nil))))
+         or ((ofProjectLoading in Flags)
+             and NewUnitInfo.LoadedDesigner
+             and (not Project1.AutoOpenDesignerFormsDisabled)
+             and EnvironmentOptions.AutoCreateFormsOnOpen))
       then begin
         // -> try to (re)load the lfm file
-        //debugln('TMainIDE.DoOpenEditorFile Loading LFM for ',NewUnitInfo.Filename);
+        //debugln(['TMainIDE.DoOpenEditorFile Loading LFM for ',NewUnitInfo.Filename,' LoadedDesigner=',NewUnitInfo.LoadedDesigner]);
         CloseFlags:=[cfSaveDependencies];
         if ofRevert in Flags then
           Include(CloseFlags,cfCloseDependencies);
@@ -8409,8 +8416,11 @@ var
       if Result<>mrOk then begin
         DebugLn(['OpenResource CloseUnitComponent failed']);
       end;
-    end else
+    end else begin
       Result:=mrOk;
+    end;
+    if NewUnitInfo.Component=nil then
+      NewUnitInfo.LoadedDesigner:=false;
   end;
 
 begin

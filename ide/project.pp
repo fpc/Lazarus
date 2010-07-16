@@ -272,7 +272,8 @@ type
     fHasResources: boolean; // source has resource file
     FIgnoreFileDateOnDiskValid: boolean;
     FIgnoreFileDateOnDisk: longint;
-    fLoaded: Boolean; // loaded in the source editor
+    fLoaded: Boolean; // loaded in the source editor, needed to restore open files
+    fLoadedDesigner: Boolean; // has a visible designer, needed to restore open designers
     FLoadingComponent: boolean;
     fModified: boolean;
     fNext, fPrev: array[TUnitInfoList] of TUnitInfo;
@@ -315,6 +316,7 @@ type
     procedure SetFileReadOnly(const AValue: Boolean);
     procedure SetComponent(const AValue: TComponent);
     procedure SetLoaded(const AValue: Boolean);
+    procedure SetLoadedDesigner(const AValue: Boolean);
     procedure SetModified(const AValue: boolean);
     procedure SetProject(const AValue: TProject);
     procedure SetRunFileIfActive(const AValue: boolean);
@@ -361,7 +363,8 @@ type
     function CreateUnitName: string;
     procedure ImproveUnitNameCache(const NewUnitName: string);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                                Merge, IgnoreIsPartOfProject: boolean);
+                                Merge, IgnoreIsPartOfProject: boolean;
+                                FileVersion: integer);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                               SaveData, SaveSession: boolean;
                               UsePathDelim: TPathDelimSwitch);
@@ -443,6 +446,7 @@ type
     property Flags: TUnitInfoFlags read FFlags write FFlags;
     property HasResources: boolean read GetHasResources write fHasResources;
     property Loaded: Boolean read fLoaded write SetLoaded;
+    property LoadedDesigner: Boolean read fLoadedDesigner write SetLoadedDesigner;
     property LoadingComponent: boolean read FLoadingComponent write FLoadingComponent;
     property Modified: boolean read GetModified write SetModified;// not Session data
     property SessionModified: boolean read FSessionModified write SetSessionModified;
@@ -1040,7 +1044,7 @@ function dbgs(Flags: TUnitInfoFlags): string; overload;
 implementation
 
 const
-  ProjectInfoFileVersion = 7;
+  ProjectInfoFileVersion = 8;
 
 procedure AddCompileReasonsDiff(Tool: TCompilerDiffTool;
   const PropertyName: string; const Old, New: TCompileReasons);
@@ -1538,6 +1542,7 @@ begin
   fUserReadOnly := false;
   if fSource<>nil then fSource.Clear;
   Loaded := false;
+  LoadedDesigner := false;
   ClearComponentDependencies;
 end;
 
@@ -1638,6 +1643,7 @@ begin
       end;
     FBookmarks.SaveToXMLConfig(XMLConfig,Path+'Bookmarks/');
     XMLConfig.SetDeleteValue(Path+'Loaded/Value',fLoaded,false);
+    XMLConfig.SetDeleteValue(Path+'LoadedDesigner/Value',fLoadedDesigner,false);
     XMLConfig.SetDeleteValue(Path+'ReadOnly/Value',fUserReadOnly,false);
     XMLConfig.SetDeleteValue(Path+'BuildFileIfActive/Value',
                              FBuildFileIfActive,false);
@@ -1654,8 +1660,9 @@ end;
 {------------------------------------------------------------------------------
   TUnitInfo LoadFromXMLConfig
  ------------------------------------------------------------------------------}
-procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-  Merge, IgnoreIsPartOfProject: boolean);
+procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string; Merge, IgnoreIsPartOfProject: boolean;
+  FileVersion: integer);
 var
   AFilename: string;
   c, i: Integer;
@@ -1700,6 +1707,10 @@ begin
     FEditorInfoList.NewEditorInfo.LoadFromXMLConfig(XMLConfig, Path + 'ExtraEditor'+IntToStr(i)+'/');
 
   Loaded:=XMLConfig.GetValue(Path+'Loaded/Value',false);
+  if Loaded then
+    LoadedDesigner:=XMLConfig.GetValue(Path+'LoadedDesigner/Value',FileVersion<8)
+  else
+    LoadedDesigner:=false;
   fUserReadOnly:=XMLConfig.GetValue(Path+'ReadOnly/Value',false);
   FBuildFileIfActive:=XMLConfig.GetValue(Path+'BuildFileIfActive/Value',
                                          false);
@@ -2366,7 +2377,7 @@ end;
   procedure TUnitInfo.SetLoaded(const AValue: Boolean);
 
   Loaded is a flag, that is set, when a unit has finished loading into the
-  editor. It is saved to the project info file and a loaded unit will be
+  editor. It is saved to the project session file and a loaded unit will be
   reloaded, when the project is opened.
 -------------------------------------------------------------------------------}
 procedure TUnitInfo.SetLoaded(const AValue: Boolean);
@@ -2379,6 +2390,20 @@ begin
   end else begin
     DecreaseAutoRevertLock;
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  procedure TUnitInfo.SetLoadedDesigner(const AValue: Boolean);
+
+  LoadedDesigner is a flag, that is set, when a visible designer form has
+  finished opening. It is saved to the project session file and a designer
+  is restored, when the project is opened and the IDE form editor option
+  auto open designer forms is enabled.
+-------------------------------------------------------------------------------}
+procedure TUnitInfo.SetLoadedDesigner(const AValue: Boolean);
+begin
+  if fLoadedDesigner=AValue then exit;
+  fLoadedDesigner:=AValue;
 end;
 
 procedure TUnitInfo.SetModified(const AValue: boolean);
@@ -2974,7 +2999,7 @@ var
         MergeUnitInfo:=false;
       end;
 
-      NewUnitInfo.LoadFromXMLConfig(xmlconfig,SubPath,MergeUnitInfo,Merge);
+      NewUnitInfo.LoadFromXMLConfig(xmlconfig,SubPath,MergeUnitInfo,Merge,FileVersion);
       if i=NewMainUnitID then begin
         MainUnitID:=IndexOf(NewUnitInfo);
         NewMainUnitID:=-1;
@@ -3624,7 +3649,7 @@ function TProject.NewUniqueComponentName(const AComponentPrefix: string
         then exit;
       end else if (Units[i].ComponentName<>'')
       and ((Units[i].IsPartOfProject) or (Units[i].Loaded)) then begin
-        if AnsiCompareText(Units[i].ComponentName,AComponentName)=0 then exit;
+        if SysUtils.CompareText(Units[i].ComponentName,AComponentName)=0 then exit;
       end;
     end;
     Result:=false;
