@@ -398,6 +398,7 @@ resourcestring
 
   fesFormCaption = 'New field';
   fesFieldType   = 'Field Type';
+  fesData        = '&Data';
   fesCalculated  = '&Calculated';
   fesLookup      = '&Lookup';
   fesFieldProps  = 'Field properties';
@@ -411,6 +412,7 @@ resourcestring
   fesResultField = '&Result Fields:';
   fesOkBtn       = 'OK';
   fesCancelBtn   = 'Cancel';
+  fesFieldCanTBeC = 'Field %s cannot be created!';
   
   //Key strings
   srVK_UNKNOWN    = 'Unknown';
