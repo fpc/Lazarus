@@ -11903,9 +11903,19 @@ end;
 function TQtPage.getIndex: Integer;
 var
   AParent: QTabWidgetH;
+
+  function CanReturnIndex: Boolean;
+  begin
+    Result := AParent <> nil;
+    if Result then
+      Result := QWidget_isVisible(AParent) or
+        ( (QtVersionMajor >= 4) and (QtVersionMinor >= 6)
+         and LCLObject.HandleObjectShouldBeVisible );
+  end;
+
 begin
   AParent := getTabWidget;
-  if (AParent <> nil) and QWidget_isVisible(AParent) then
+  if CanReturnIndex then
     Result := QTabWidget_indexOf(AParent, Widget)
   else
     Result := -1;
