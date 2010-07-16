@@ -137,12 +137,20 @@ msgstr "Скасувати"
 msgid "Check dataset settings"
 msgstr ""
 
+#: objinspstrconsts.fesdata
+msgid "&Data"
+msgstr ""
+
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
 msgstr ""
 
 #: objinspstrconsts.fesfetitle
 msgid "Edit Fields..."
+msgstr ""
+
+#: objinspstrconsts.fesfieldcantbec
+msgid "Field %s cannot be created!"
 msgstr ""
 
 #: objinspstrconsts.fesfieldprops

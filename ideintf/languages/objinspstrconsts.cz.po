@@ -144,6 +144,10 @@ msgstr "Zrušit"
 msgid "Check dataset settings"
 msgstr "Zkontrolujte nastavení datové sady"
 
+#: objinspstrconsts.fesdata
+msgid "&Data"
+msgstr ""
+
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
 msgstr "&Datová sada"
@@ -151,6 +155,10 @@ msgstr "&Datová sada"
 #: objinspstrconsts.fesfetitle
 msgid "Edit Fields..."
 msgstr "Upravit pole..."
+
+#: objinspstrconsts.fesfieldcantbec
+msgid "Field %s cannot be created!"
+msgstr ""
 
 #: objinspstrconsts.fesfieldprops
 msgid "Field properties"

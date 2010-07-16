@@ -138,6 +138,10 @@ msgstr "キャンセル"
 msgid "Check dataset settings"
 msgstr "データセットの設定を調べてください"
 
+#: objinspstrconsts.fesdata
+msgid "&Data"
+msgstr ""
+
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
 msgstr ""
@@ -147,6 +151,10 @@ msgstr ""
 #| msgid "Edit Fields"
 msgid "Edit Fields..."
 msgstr "フィールドを編集..."
+
+#: objinspstrconsts.fesfieldcantbec
+msgid "Field %s cannot be created!"
+msgstr ""
 
 #: objinspstrconsts.fesfieldprops
 msgid "Field properties"

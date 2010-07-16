@@ -144,6 +144,10 @@ msgstr "Abbrechen"
 msgid "Check dataset settings"
 msgstr "Prüfe Dataset-Einstellungen"
 
+#: objinspstrconsts.fesdata
+msgid "&Data"
+msgstr ""
+
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
 msgstr ""
@@ -153,6 +157,10 @@ msgstr ""
 #| msgid "Edit Fields"
 msgid "Edit Fields..."
 msgstr "Felder bearbeiten"
+
+#: objinspstrconsts.fesfieldcantbec
+msgid "Field %s cannot be created!"
+msgstr ""
 
 #: objinspstrconsts.fesfieldprops
 msgid "Field properties"

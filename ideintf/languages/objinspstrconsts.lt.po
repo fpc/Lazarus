@@ -144,6 +144,10 @@ msgstr "Atsisakyti"
 msgid "Check dataset settings"
 msgstr "Patikrinkite duomenų aibės nustatymus"
 
+#: objinspstrconsts.fesdata
+msgid "&Data"
+msgstr ""
+
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
 msgstr ""
@@ -152,6 +156,10 @@ msgstr ""
 #| msgid "Edit Fields"
 msgid "Edit Fields..."
 msgstr "Keisti laukus..."
+
+#: objinspstrconsts.fesfieldcantbec
+msgid "Field %s cannot be created!"
+msgstr ""
 
 #: objinspstrconsts.fesfieldprops
 msgid "Field properties"

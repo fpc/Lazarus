@@ -145,6 +145,10 @@ msgstr "取消"
 msgid "Check dataset settings"
 msgstr "检查数据集设置"
 
+#: objinspstrconsts.fesdata
+msgid "&Data"
+msgstr ""
+
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
 msgstr ""
@@ -154,6 +158,10 @@ msgstr ""
 #| msgid "Edit Fields"
 msgid "Edit Fields..."
 msgstr "编辑字段"
+
+#: objinspstrconsts.fesfieldcantbec
+msgid "Field %s cannot be created!"
+msgstr ""
 
 #: objinspstrconsts.fesfieldprops
 msgid "Field properties"

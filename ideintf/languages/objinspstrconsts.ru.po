@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-11 19:51+0300\n"
+"PO-Revision-Date: 2010-07-16 23:48+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -142,6 +142,10 @@ msgstr "Отмена"
 msgid "Check dataset settings"
 msgstr "Проверьте параметры набора данных."
 
+#: objinspstrconsts.fesdata
+msgid "&Data"
+msgstr "Поле &данных"
+
 #: objinspstrconsts.fesdataset
 #| msgid "Dataset"
 msgid "&Dataset:"
@@ -151,6 +155,10 @@ msgstr "&Набор данных:"
 #| msgid "Edit Fields"
 msgid "Edit Fields..."
 msgstr "Редактировать поля..."
+
+#: objinspstrconsts.fesfieldcantbec
+msgid "Field %s cannot be created!"
+msgstr "Невозможно создать поле %s!"
 
 #: objinspstrconsts.fesfieldprops
 msgid "Field properties"
