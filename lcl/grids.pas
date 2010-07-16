@@ -5377,7 +5377,6 @@ end;
 procedure TCustomGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 var
-  R: TRect;
   WasFocused: boolean;
 
   procedure DoPushCell;
