@@ -1589,13 +1589,13 @@ type
     wcfClientRectNeedsUpdate,
     wcfColorChanged,
     wcfFontChanged,          // Set if font was changed before handle creation
-    wcfAllAutoSizing,
+    wcfAllAutoSizing,        // Set inside DoAllAutosize
     wcfAligningControls,
     wcfEraseBackground,
     wcfCreatingHandle,       // Set while constructing the handle of this control
     wcfInitializing,         // Set while initializing during handle creation
     wcfCreatingChildHandles, // Set while constructing the handles of the childs
-    wcfRealizingBounds,
+    wcfRealizingBounds,      // Set inside RealizeBoundsRecursive
     wcfBoundsRealized,       // bounds were sent to the interface
     wcfUpdateShowing,
     wcfHandleVisible,

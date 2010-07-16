@@ -4823,7 +4823,7 @@ function TWinControl.IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
 begin
   IncLCLRefCount;
   try
-    Result:=(RepeatCount>0) and (not SystemKey) and DoUTF8KeyPress(UTF8Key);
+    Result := (RepeatCount > 0) and not SystemKey and DoUTF8KeyPress(UTF8Key);
   finally
     DecLCLRefCount;
   end;
@@ -5741,22 +5741,24 @@ var
   AParent: TWinControl;
   F: TCustomForm;
 begin
-  Result:=true;
+  Result := True;
   
   // let each parent form with keypreview handle the key
-  AParent:=Parent;
-  while (AParent<>nil) do begin
-    if (AParent is TCustomForm) then begin
+  AParent := Parent;
+  while Assigned(AParent) do
+  begin
+    if (AParent is TCustomForm) then
+    begin
       F := TCustomForm(AParent);
-      if  (F.KeyPreview)
-      and (F.DoUTF8KeyPress(UTF8Key)) then Exit;
+      if (F.KeyPreview) and F.DoUTF8KeyPress(UTF8Key) then Exit;
     end;
-    AParent:=AParent.Parent;
+    AParent := AParent.Parent;
   end;
   
-  if not (csNoStdEvents in ControlStyle) then begin
+  if not (csNoStdEvents in ControlStyle) then
+  begin
     UTF8KeyPress(UTF8Key);
-    if UTF8Key='' then exit;
+    if UTF8Key = '' then Exit;
   end;
   
   Result := False;
