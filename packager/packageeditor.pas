@@ -546,9 +546,9 @@ var
   end;
 
 begin
-  debugln(['TPackageEditorForm.FilesPopupMenuPopup START ',FilesPopupMenu.Items.Count]);
+  //debugln(['TPackageEditorForm.FilesPopupMenuPopup START ',FilesPopupMenu.Items.Count]);
   PackageEditorMenuRoot.MenuItem:=FilesPopupMenu.Items;
-  debugln(['TPackageEditorForm.FilesPopupMenuPopup START after connect ',FilesPopupMenu.Items.Count]);
+  //debugln(['TPackageEditorForm.FilesPopupMenuPopup START after connect ',FilesPopupMenu.Items.Count]);
   PackageEditorMenuRoot.BeginUpdate;
   try
 
@@ -568,7 +568,7 @@ begin
       SetItem(PkgEditMenuRemoveFile,@RemoveBitBtnClick,not Removed,RemoveBitBtn.Enabled);
       SetItem(PkgEditMenuMoveFileUp,@MoveFileUpMenuItemClick,not Removed,(FileIndex>0) and Writable);
       SetItem(PkgEditMenuMoveFileDown,@MoveFileDownMenuItemClick,
-                   not Removed,(FileIndex>LazPackage.FileCount-1) and Writable);
+                   not Removed,(FileIndex<LazPackage.FileCount-1) and Writable);
       PkgEditMenuSectionFileType.Visible:=true;
       AddFileTypeMenuItem;
       SetItem(PkgEditMenuEditVirtualUnit,@EditVirtualUnitMenuItemClick,
