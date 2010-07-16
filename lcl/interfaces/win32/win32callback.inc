@@ -932,18 +932,28 @@ var
   end;
 
   // returns false if the UnicodeChar is not handled
-  function HandleUnicodeChar(AChar: Word): boolean;
+  function HandleUnicodeChar(var AChar: Word): boolean;
   var
-    UTF8Char: TUTF8Char;
+    OldUTF8Char, UTF8Char: TUTF8Char;
+    WS: WideString;
   begin
-    Result := false;
-    UTF8Char := UTF16ToUTF8(widestring(WideChar(AChar)));
+    Result := False;
+    UTF8Char := UTF16ToUTF8(WideString(WideChar(AChar)));
+    OldUTF8Char := UTF8Char;
     if Assigned(lWinControl) then
     begin
-      Result:= lWinControl.IntfUTF8KeyPress(UTF8Char, 1, False);
-
-      if UTF8Char='' then
-        Result:= true;
+      // if somewhere key is changed to '' then don't process this message
+      WinProcess := not lWinControl.IntfUTF8KeyPress(UTF8Char, 1, False);
+      // if somewhere key is changed then don't perform a regular keypress
+      Result := WinProcess or (UTF8Char <> OldUTF8Char);
+      if UTF8Char <> OldUTF8Char then
+      begin
+        WS := UTF8ToUTF16(UTF8Char);
+        if Length(WS) > 0 then
+          AChar := Word(WS[1])
+        else
+          AChar := 0;
+      end;
     end;
   end;
 
@@ -1102,9 +1112,10 @@ begin
       {$ifdef WindowsUnicodeSupport}
       // first send a IntfUTF8KeyPress to the LCL
       // if the key was not handled send a CN_CHAR for AnsiChar<=#127
-      if not HandleUnicodeChar(Word(WParam)) then
+      OrgCharCode := Word(WParam);
+      if not HandleUnicodeChar(OrgCharCode) then
       begin
-        PLMsg:=@LMChar;
+        PLMsg := @LMChar;
         with LMChar do
         begin
           Msg := CN_CHAR;
@@ -1115,12 +1126,11 @@ begin
             CharCode := Word(WParam);
           OrgCharCode := CharCode;
           Result := 0;
-          Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
         end;
         WinProcess := false;
       end
       else
-        WinProcess := true;
+        WParam := OrgCharCode;
       {$else}
       PLMsg:=@LMChar;
       with LMChar do
@@ -2393,13 +2403,15 @@ begin
       // if key not yet processed, let windows process it
       WinProcess := LMChar.Result = 0;
       {$IFDEF WindowsUnicodeSupport}
-      if UnicodeEnabledOS then begin
+      if UnicodeEnabledOS then
+      begin
         // if charcode was modified by LCL, convert ansi char
         // to unicode char, if not change was made WParam has
         // the right unicode char so just use it.
-        if (LMChar.Result=1) or (OrgCharCode<>LMChar.CharCode) then
+        if (LMChar.Result = 1) or (OrgCharCode <> LMChar.CharCode) then
           WParam := Word(WideChar(Char(LMChar.CharCode)));
-      end else
+      end
+      else
       {$ENDIF}
         WParam := LMChar.CharCode;
     end;
