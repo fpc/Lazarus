@@ -82,7 +82,7 @@ procedure TNBPages.Put(Index: Integer; const S: String);
 begin
   if (Index<0) or (Index>=fPageList.Count) then
     RaiseGDBException('TNBPages.Put Index out of bounds');
-  
+  //debugln(['TNBPages.Put ',DbgSName(FNotebook),' ',Index,' S="',S,'"']);
   TCustomPage(fPageList[Index]).Caption := S;
 end;
 
