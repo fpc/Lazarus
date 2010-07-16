@@ -40,6 +40,16 @@ type
   end;
 
 
+  { TGeometryTest }
+
+  TGeometryTest = class(TTestCase)
+  private
+    procedure AssertEquals(const Expected, Actual: TDoublePoint); overload;
+  published
+    procedure TestLineIntersectsRect;
+  end;
+
+
 implementation
 
 { TIntervalListTest }
@@ -109,9 +119,49 @@ begin
   FreeAndNil(FIList);
 end;
 
+{ TGeometryTest }
+
+procedure TGeometryTest.AssertEquals(const Expected, Actual: TDoublePoint);
+begin
+  AssertEquals(Expected.X, Actual.X);
+  AssertEquals(Expected.Y, Actual.Y);
+end;
+
+procedure TGeometryTest.TestLineIntersectsRect;
+var
+  r: TDoubleRect = (a: (X: 0; Y: 0); b: (X: 20; Y: 10));
+
+  procedure Check(AP1, AP2, AR1, AR2: TDoublePoint);
+  begin
+    AssertTrue(LineIntersectsRect(AP1, AP2, r));
+    AssertEquals(AR1, AP1);
+    AssertEquals(AR2, AP2);
+  end;
+
+var
+  p1, p2: TDoublePoint;
+begin
+  p1 := DoublePoint(-1, -1);
+  p2 := DoublePoint(0, 20);
+  AssertFalse(LineIntersectsRect(p1, p2, r));
+  p1 := DoublePoint(100, 20);
+  AssertFalse(LineIntersectsRect(p1, p2, r));
+  p1 := DoublePoint(-1, -1);
+  p2 := DoublePoint(1, 1);
+  Check(p1, p2, DoublePoint(0, 0), p2);
+  p1 := DoublePoint(0, 0);
+  Check(p1, p2, p1, p2);
+  p1 := DoublePoint(20, 20);
+  p2 := DoublePoint(20, -10);
+  Check(p1, p2, DoublePoint(20, 10), DoublePoint(20, 0));
+  p1 := DoublePoint(10, 20);
+  p2 := DoublePoint(15, -10);
+  Check(p1, p2, DoublePoint(11.6667, 10), DoublePoint(13.3333, 0));
+end;
+
 initialization
 
-  RegisterTests([TIntervalListTest]);
+  RegisterTests([TIntervalListTest, TGeometryTest]);
 
 end.
 

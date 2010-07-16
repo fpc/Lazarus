@@ -75,7 +75,7 @@ var
 
 begin
   Application:=TAChartTests.Create(nil);
-  Application.Title:='TAChart tests';
+  Application.Title := 'TAChart tests';
   Application.Initialize;
   Application.Run;
   Application.Free;
