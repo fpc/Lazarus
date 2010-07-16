@@ -12587,7 +12587,7 @@ begin
       if FilenameIsAbsolute(Filename) then begin
         MessageDlg(Format(lisUnableToFindFile, ['"', Filename, '"']),
            mtInformation,[mbOk],0)
-      end else begin
+      end else if Filename<>'' then begin
         MessageDlg(Format(
           lisUnableToFindFileCheckSearchPathInProjectCompilerOption, ['"',
           Filename, '"', #13, #13]),
@@ -12700,7 +12700,7 @@ begin
       if FilenameIsAbsolute(AFilename) then begin
         MessageDlg(Format(lisUnableToFindFile, ['"', AFilename, '"']),
            mtInformation,[mbOk],0)
-      end else begin
+      end else if AFileName<>'' then begin
         MessageDlg(Format(
           lisUnableToFindFileCheckSearchPathInProjectCompilerOption, ['"',
           AFilename, '"', #13, #13]),
