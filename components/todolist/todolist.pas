@@ -324,7 +324,6 @@ begin
   //debugln(['TIDETodoWindow.SetOwnerFilename ',AValue]);
   if fOwnerFilename=AValue then exit;
   fOwnerFilename:=AValue;
-  Caption:=lisTodoListCaption+' '+fOwnerFilename;
   acRefresh.Execute;
 end;
 
@@ -645,9 +644,14 @@ begin
       if i=Owners.Count then
         CurOwner:=nil;// no appropriate owner found
     end;
+    if CurOwner=nil then begin
+      CurProject:=LazarusIDE.ActiveProject;
+      CurOwner:=CurProject;
+    end;
 
     if CurProject<>nil then begin
       // scan all units of project
+      Caption:=lisTodoListCaption+' '+CurProject.ProjectInfoFile;
       FBaseDirectory:=ExtractFilePath(CurProject.ProjectInfoFile);
       for i:=0 to CurProject.FileCount-1 do begin
         CurProjFile:=CurProject.Files[i];
@@ -655,9 +659,9 @@ begin
         and FilenameIsPascalUnit(CurProjFile.Filename) then
           ScanFile(CurProjFile.Filename);
       end;
-    end;
-    if CurPackage<>nil then begin
+    end else if CurPackage<>nil then begin
       // scan all units of package
+      Caption:=lisTodoListCaption+' '+CurPackage.Filename;
       FBaseDirectory:=ExtractFilePath(CurPackage.Filename);
       for i:=0 to CurPackage.FileCount-1 do begin
         CurPkgFile:=CurPackage.Files[i];

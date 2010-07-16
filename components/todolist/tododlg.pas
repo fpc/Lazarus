@@ -135,7 +135,9 @@ begin
   IDEWindowCreators.ShowForm(ToDoWindowName,true);
   Pkg:=PackageEditingInterface.GetPackageOfEditorItem(Sender);
   if Pkg<>nil then
-    IDETodoWindow.OwnerFilename:=Pkg.Filename;
+    IDETodoWindow.OwnerFilename:=Pkg.Filename
+  else
+    IDETodoWindow.OwnerFilename:=LazarusIDE.ActiveProject.ProjectInfoFile;
 end;
 
 procedure CreateIDEToDoWindow(Sender: TObject; aFormName: string;
