@@ -698,7 +698,7 @@ begin
   if i <= High(FIntervals) then
     AStart := Min(AStart, FIntervals[i].FStart);
   j := High(FIntervals);
-  while (j >= 0) and (FIntervals[j].FStart > FIntervals[j].FEnd) do
+  while (j >= 0) and (FIntervals[j].FStart > AEnd) do
     Dec(j);
   if j >= 0 then
     AEnd := Max(AEnd, FIntervals[j].FEnd);
