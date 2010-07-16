@@ -62,8 +62,8 @@ type
     phpWithDefaultValues,  // extract default values
     phpWithResultType,     // extract colon + result type
     phpWithOfObject,       // extract 'of object'
-    phpWithCallingSpecs,   // extract cdecl; inline;
-    phpWithProcModifiers,  // extract forward; alias; external;
+    phpWithCallingSpecs,   // extract cdecl; extdecl; popstack;
+    phpWithProcModifiers,  // extract forward; alias; external; ...
     phpWithComments,       // extract comments and spaces
     phpInUpperCase,        // turn to uppercase
     phpCommentsToSpace,    // replace comments with a single space
