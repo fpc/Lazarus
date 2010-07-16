@@ -702,7 +702,8 @@ begin
     begin
     try
       DocURL := fChms.Chm[i].LookupTopicByID(FoundTopics[j].Topic, DocTitle);
-      //WriteLn(Docurl);
+      if (Length(DocURL) > 0) and (DocURL[1] <> '/') then
+        Insert('/', DocURL, 1);
       if DocTitle = '' then
         Doctitle := 'untitled';
       ListItem := fSearchResults.Items.Add;
