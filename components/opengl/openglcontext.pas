@@ -474,9 +474,12 @@ begin
 end;
 
 class procedure TWSOpenGLControl.DestroyHandle(const AWinControl: TWinControl);
+var
+  ParentWidgetClass: TWSLCLComponentClass;
 begin
   LOpenGLDestroyContextInfo(AWinControl);
-  inherited DestroyHandle(AWinControl);
+  ParentWidgetClass:=FindWSComponentClass(TWinControl);
+  TWSWinControlClass(ParentWidgetClass).DestroyHandle(AWinControl);
 end;
 
 initialization
