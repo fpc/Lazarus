@@ -125,6 +125,8 @@ type
   TModalResultFunction = function(Sender: TObject): TModalResult of object;
   TLazProjectChangedFunction = function(Sender: TObject;
                                  AProject: TLazProject): TModalResult of object;
+  TModalHandledFunction = function(Sender: TObject; var Handled: boolean
+                              ): TModalResult of object;
 
   TLazarusIDEHandlerType = (
     lihtSavingAll, // called before IDE saves everything
@@ -135,14 +137,14 @@ type
     lihtProjectClose, // called before IDE closes a project
     lihtProjectBuilding, // called before IDE builds the project
     lihtProjectDependenciesCompiling, // called before IDE compiles dependencies of project
-    lihtProjectDependenciesCompiled // called after IDE compiled dependencies of project
+    lihtProjectDependenciesCompiled, // called after IDE compiled dependencies of project
+    lihtQuickSyntaxCheck  // called when quick syntax check is clicked (menu item or shortcut)
     );
     
   { TLazIDEInterface }
 
   TLazIDEInterface = class(TComponent)
   private
-    FLazarusIDEHandlers: array[TLazarusIDEHandlerType] of TMethodList;
     FMainBarSubTitle: string;
     FOpenEditorsOnCodeToolChange: boolean;
     FOpenMainSourceOnCodeToolChange: boolean;
@@ -152,6 +154,7 @@ type
     procedure RemoveHandler(HandlerType: TLazarusIDEHandlerType;
                             const AMethod: TMethod);
   protected
+    FLazarusIDEHandlers: array[TLazarusIDEHandlerType] of TMethodList;
     fOwningComponent: TComponent;
 
     function GetActiveProject: TLazProject; virtual; abstract;
@@ -160,6 +163,8 @@ type
                                         ): TModalResult;
     function DoCallProjectChangedHandler(HandlerType: TLazarusIDEHandlerType;
                                          AProject: TLazProject): TModalResult;
+    function DoCallModalHandledHandler(HandlerType: TLazarusIDEHandlerType;
+                                       var Handled: boolean): TModalResult;
     procedure SetMainBarSubTitle(const AValue: string); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -318,6 +323,11 @@ type
                     AsLast: boolean = false);
     procedure RemoveHandlerOnProjectDependenciesCompiled(
                    const OnProjDependenciesCompiledEvent: TModalResultFunction);
+    procedure AddHandlerOnQuickSyntaxCheck(
+                           const OnQuickSyntaxCheckEvent: TModalHandledFunction;
+                           AsLast: boolean = false);
+    procedure RemoveHandlerOnQuickSyntaxCheck(
+                               const OnQuickSyntaxCheckEvent: TModalHandledFunction);
   end;
   
 var
@@ -381,6 +391,21 @@ begin
     if CurResult=mrAbort then exit(mrAbort);
     if CurResult<>mrOk then Result:=mrCancel;
   end;
+end;
+
+function TLazIDEInterface.DoCallModalHandledHandler(
+  HandlerType: TLazarusIDEHandlerType; var Handled: boolean): TModalResult;
+var
+  i: longint;
+begin
+  i:=FLazarusIDEHandlers[HandlerType].Count;
+  while FLazarusIDEHandlers[HandlerType].NextDownIndex(i) do
+  begin
+    Handled:=false;
+    Result:=TModalHandledFunction(FLazarusIDEHandlers[HandlerType][i])(Self,Handled);
+    if Handled then exit;
+  end;
+  Result:=mrOk;
 end;
 
 constructor TLazIDEInterface.Create(TheOwner: TComponent);
@@ -525,6 +550,18 @@ procedure TLazIDEInterface.RemoveHandlerOnProjectDependenciesCompiled(
 begin
   RemoveHandler(lihtProjectDependenciesCompiled,
                 TMethod(OnProjDependenciesCompiledEvent));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnQuickSyntaxCheck(
+  const OnQuickSyntaxCheckEvent: TModalHandledFunction; AsLast: boolean);
+begin
+  AddHandler(lihtQuickSyntaxCheck,TMethod(OnQuickSyntaxCheckEvent),AsLast);
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnQuickSyntaxCheck(
+  const OnQuickSyntaxCheckEvent: TModalHandledFunction);
+begin
+  RemoveHandler(lihtQuickSyntaxCheck,TMethod(OnQuickSyntaxCheckEvent));
 end;
 
 initialization

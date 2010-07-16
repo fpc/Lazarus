@@ -11806,11 +11806,17 @@ var
   NewCode: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
   ErrorMsg: string;
+  Handled: Boolean;
 begin
   Result:=mrOk;
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveUnitInfo=nil) or (ActiveUnitInfo.Source=nil)
   or (ActiveSrcEdit=nil) then exit;
+
+  Handled:=false;
+  Result:=DoCallModalHandledHandler(lihtQuickSyntaxCheck,Handled);
+  if Handled then exit;
+
   SaveSourceEditorChangesToCodeCache(nil);
   CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
   if CodeToolBoss.CheckSyntax(ActiveUnitInfo.Source,NewCode,NewX,NewY,
