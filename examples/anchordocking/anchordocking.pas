@@ -4540,13 +4540,18 @@ end;
 function TAnchorDockCloseButton.DrawGlyph(ACanvas: TCanvas;
   const AClient: TRect; const AOffset: TPoint; AState: TButtonState;
   ATransparent: Boolean; BiDiFlags: Longint): TRect;
+var
+  closeBmp: TBitmap;
 begin
   if BiDiFlags=0 then ;
-  if ATransparent then ;
+  closeBmp := DockMaster.fCloseBtnBitmap;
+  closeBmp.Transparent := ATransparent;
+  if ATransparent then
+    closeBmp.TransparentMode := tmAuto;
   if AState=bsDisabled then ;
-  Result:=Rect(0,0,DockMaster.fCloseBtnBitmap.Width,DockMaster.fCloseBtnBitmap.Height);
+  Result:=Rect(0,0,closeBmp.Width,closeBmp.Height);
   OffsetRect(Result,AClient.Left+AOffset.X,AClient.Top+AOffset.Y);
-  ACanvas.Draw(Result.Left,Result.Top,DockMaster.fCloseBtnBitmap);
+  ACanvas.Draw(Result.Left,Result.Top,closeBmp);
 end;
 
 procedure TAnchorDockCloseButton.CalculatePreferredSize(var PreferredWidth,
