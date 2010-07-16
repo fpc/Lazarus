@@ -1131,6 +1131,7 @@ type
     property UseDockManager default True;
     property Visible;
     property OnClick;
+    property OnContextPopup;
     property OnDockDrop;
     property OnDockOver;
     property OnDblClick;
