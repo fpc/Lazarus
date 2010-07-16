@@ -63,23 +63,23 @@ begin
           shr bp_TGtkContainer_border_width;
 end;
 
-procedure gdk_event_key_get_string(Event : PGDKEventKey; var theString : Pointer);
+procedure gdk_event_key_get_string(Event : PGDKEventKey; var theString: Pointer);
 begin
   theString := Pointer(Event^._String);
 end;
 
-procedure gdk_event_key_set_string(Event: PGDKEventKey; const NewString: PChar
-  );
+procedure gdk_event_key_set_string(Event: PGDKEventKey; const NewString: PChar);
 var
   OldString: PChar;
 begin
   OldString := Pointer(Event^._String);
   // MG: should we set Event^.length := 0; or is this used for mem allocation?
-  if (OldString<>nil) then begin
-    if (NewString<>nil) then
-      OldString[0]:=NewString[0]
+  if (OldString <> nil) then
+  begin
+    if (NewString <> nil) then
+      OldString[0] := NewString[0]
     else
-      OldString[0]:=#0;
+      OldString[0] := #0;
   end;
 end;
 
@@ -1861,7 +1861,8 @@ var
   VKey: Byte;
   ShiftState: TShiftState;
 
-  Character: TUTF8Char;
+  Character, OldCharacter: TUTF8Char;
+  WS: WideString;
   SysKey: Boolean;
 
   CommonKeyData: Integer;
@@ -2329,20 +2330,34 @@ begin
         LCLObject := GetNearestLCLObject(TargetWidget);
         if LCLObject is TWinControl
         then begin
+          OldCharacter := Character;
           // send the key after navigation keys were handled
           Result := TWinControl(LCLObject).IntfUTF8KeyPress(Character, 1, SysKey);
           if Result or (Character = '')
           then StopKeyEvent
-          else if (Length(Character) = 1)
+          else if (Character <> OldCharacter)
           then begin
-            CharToKeyVal(Character[1], AEvent^.KeyVal, AEvent^.length);
-            if AEvent^.length = 1 then
+            WS := UTF8ToUTF16(Character);
+            if Length(WS) > 0 then
             begin
-              EventString^ := Character[1];
-              EventString[1] := #0;
+              AEvent^.keyval := gdk_unicode_to_keyval(Word(WS[1]));
+              if (AEvent^.keyval and $1000000) = $1000000 then
+              begin
+                CharToKeyVal(Char(Word(WS[1]) and $FF), AEvent^.keyval, AEvent^.length);
+                if AEvent^.length = 1 then
+                begin
+                  EventString^ := Char(Word(WS[1]) and $FF);
+                  EventString[1] := #0;
+                end
+                else
+                  EventString^ := #0;
+                gdk_event_key_set_string(AEvent, EventString);
+              end
+              else
+                AEvent^.length := 1;
             end
             else
-              EventString^ := #0;
+              StopKeyEvent;
           end;
         end;
       end;
