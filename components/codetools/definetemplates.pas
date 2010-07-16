@@ -672,8 +672,10 @@ type
     CompilerOptions: string;
     // values
     CompilerDate: longint;
-    TargetCompiler: string; // when Compiler is fpc, this is the real compiler (e.g. ppc386)
-    TargetCompilerDate: longint;
+    RealCompiler: string; // when Compiler is fpc, this is the real compiler (e.g. ppc386)
+    RealCompilerDate: longint;
+    RealTargetOS: string;
+    RealTargetCPU: string;
     ConfigFiles: TFPCConfigFileStateList;
     UnitPaths: TStrings;
     Defines: TStringToStringTree; // upper case macro to value
@@ -6642,8 +6644,10 @@ procedure TFPCTargetConfigCache.Clear;
 begin
   CompilerDate:=0;
   CompilerOptions:='';
-  TargetCompiler:='';
-  TargetCompilerDate:=0;
+  RealCompiler:='';
+  RealCompilerDate:=0;
+  RealTargetCPU:='';
+  RealTargetOS:='';
   ConfigFiles.Clear;
   ErrorMsg:='';
   ErrorTranslatedMsg:='';
@@ -6692,8 +6696,10 @@ begin
       exit;
   end;
   if (CompilerDate<>Item.CompilerDate)
-    or (TargetCompiler<>Item.TargetCompiler)
-    or (TargetCompilerDate<>Item.TargetCompilerDate)
+    or (RealCompiler<>Item.RealCompiler)
+    or (RealCompilerDate<>Item.RealCompilerDate)
+    or (RealTargetOS<>Item.RealTargetOS)
+    or (RealTargetCPU<>Item.RealTargetCPU)
     or (not ConfigFiles.Equals(Item.ConfigFiles,true))
   then
     exit;
@@ -6717,8 +6723,10 @@ begin
     CompilerOptions:=Item.CompilerOptions;
     // values
     CompilerDate:=Item.CompilerDate;
-    TargetCompiler:=Item.TargetCompiler;
-    TargetCompilerDate:=Item.TargetCompilerDate;
+    RealCompiler:=Item.RealCompiler;
+    RealCompilerDate:=Item.RealCompilerDate;
+    RealTargetOS:=Item.RealTargetOS;
+    RealTargetCPU:=Item.RealTargetCPU;
     ConfigFiles.Assign(Item.ConfigFiles);
     if Item.Defines<>nil then begin
       if Defines=nil then Defines:=TStringToStringTree.Create(true);
@@ -6773,8 +6781,10 @@ begin
   Compiler:=XMLConfig.GetValue(Path+'Compiler/File','');
   CompilerOptions:=XMLConfig.GetValue(Path+'Compiler/Options','');
   CompilerDate:=XMLConfig.GetValue(Path+'Compiler/Date',0);
-  TargetCompiler:=XMLConfig.GetValue(Path+'TargetCompiler/File','');
-  TargetCompilerDate:=XMLConfig.GetValue(Path+'TargetCompiler/Date',0);
+  RealCompiler:=XMLConfig.GetValue(Path+'RealCompiler/File','');
+  RealCompilerDate:=XMLConfig.GetValue(Path+'RealCompiler/Date',0);
+  RealTargetOS:=XMLConfig.GetValue(Path+'RealCompiler/OS','');
+  RealTargetCPU:=XMLConfig.GetValue(Path+'RealCompiler/CPU','');
   ConfigFiles.LoadFromXMLConfig(XMLConfig,Path+'Configs/');
 
   // defines: format: Define<Number>/Name,Value
@@ -6865,8 +6875,10 @@ begin
   XMLConfig.SetDeleteValue(Path+'Compiler/File',Compiler,'');
   XMLConfig.SetDeleteValue(Path+'Compiler/Options',CompilerOptions,'');
   XMLConfig.SetDeleteValue(Path+'Compiler/Date',CompilerDate,0);
-  XMLConfig.SetDeleteValue(Path+'TargetCompiler/File',TargetCompiler,'');
-  XMLConfig.SetDeleteValue(Path+'TargetCompilerDate',TargetCompilerDate,0);
+  XMLConfig.SetDeleteValue(Path+'RealCompiler/File',RealCompiler,'');
+  XMLConfig.SetDeleteValue(Path+'RealCompiler/Date',RealCompilerDate,0);
+  XMLConfig.SetDeleteValue(Path+'RealCompiler/OS',RealTargetOS,'');
+  XMLConfig.SetDeleteValue(Path+'RealCompiler/CPU',RealTargetCPU,'');
   ConfigFiles.SaveToXMLConfig(XMLConfig,Path+'Configs/');
 
   // Defines: write as Define<Number>/Name,Value
@@ -6976,10 +6988,10 @@ begin
   if (not FileExistsCached(Compiler))
   or (FileAgeCached(Compiler)<>CompilerDate) then
     exit;
-  if (TargetCompiler<>'') and (CompareFilenames(TargetCompiler,Compiler)<>0)
+  if (RealCompiler<>'') and (CompareFilenames(RealCompiler,Compiler)<>0)
   then begin
-    if (not FileExistsCached(TargetCompiler))
-    or (FileAgeCached(TargetCompiler)<>TargetCompilerDate) then
+    if (not FileExistsCached(RealCompiler))
+    or (FileAgeCached(RealCompiler)<>RealCompilerDate) then
       exit;
   end;
   for i:=0 to ConfigFiles.Count-1 do begin
@@ -7010,6 +7022,8 @@ var
   Filename: string;
   CfgFileExists: Boolean;
   CfgFileDate: Integer;
+  Info: String;
+  Infos: TFPCInfoStrings;
 begin
   OldOptions:=TFPCTargetConfigCache.Create(nil);
   CfgFiles:=nil;
@@ -7017,18 +7031,28 @@ begin
     // remember old state to find out if something changed
     OldOptions.Assign(Self);
     Clear;
-    // run fpc and parse output
-    if ExtraOptions<>'' then
-      ExtraOptions:=' '+ExtraOptions;
-    ExtraOptions:='-T'+LowerCase(TargetOS)+' -P'+LowerCase(TargetCPU)+ExtraOptions;
+
     if CompilerOptions<>'' then
-      ExtraOptions:=ExtraOptions+' '+CompilerOptions;
-    RunFPCVerbose(Compiler,TestFilename,CfgFiles,TargetCompiler,UnitPaths,
+      ExtraOptions:=CompilerOptions+' '+ExtraOptions;
+    if TargetOS<>'' then
+      ExtraOptions:='-T'+LowerCase(TargetOS)+' '+ExtraOptions;
+    if TargetCPU<>'' then
+      ExtraOptions:='-P'+LowerCase(TargetCPU)+' '+ExtraOptions;
+    ExtraOptions:=Trim(ExtraOptions);
+
+    // get real OS and CPU
+    Info:=RunFPCInfo(Compiler,[fpciCompilerOS,fpciCompilerProcessor],ExtraOptions);
+    ParseFPCInfo(Info,[fpciCompilerOS,fpciCompilerProcessor],Infos);
+    RealTargetOS:=Infos[fpciCompilerOS];
+    RealTargetCPU:=Infos[fpciCompilerProcessor];
+
+    // run fpc and parse output
+    RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
                   Defines,Undefines,ExtraOptions);
     CompilerDate:=FileAgeCached(Compiler);
-    // store the used target compiler
-    if (TargetCompiler<>'') and FileExistsCached(TargetCompiler) then
-      TargetCompilerDate:=FileAgeCached(TargetCompiler);
+    // store the real compiler file and date
+    if (RealCompiler<>'') and FileExistsCached(RealCompiler) then
+      RealCompilerDate:=FileAgeCached(RealCompiler);
     // store the list of tried and read cfg files
     if CfgFiles<>nil then begin
       for i:=0 to CfgFiles.Count-1 do begin
