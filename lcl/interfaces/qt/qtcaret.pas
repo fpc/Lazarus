@@ -101,9 +101,12 @@ procedure DestroyGlobalCaret;
 function GlobalCaretDirty: Boolean;
 
 implementation
-{$IFDEF VerboseQtCaret}
-uses LCLProc;
-{$ENDIF}
+uses
+  qtint
+  {$IFDEF VerboseQtCaret}
+  ,LCLProc
+  {$ENDIF}
+  ;
 var
   GlobalCaret: TEmulatedCaret = nil;
   
@@ -388,7 +391,7 @@ begin
           Pt := FPos;
         SetPos(FCaretDirtyPos);
         FCaretDirtyPos := QtPoint(0, 0);
-        QCoreApplication_processEvents();
+        QCoreApplication_processEvents(QEventLoopExcludeUserInputEvents);
         SetPos(Pt);
       end else
         SetPos(FPos);
@@ -418,7 +421,7 @@ begin
   ' Y=',Value.Y,' OldX=',FPos.X,' OldY=',FPos.Y);
   {$ENDIF}
 
-  if (FWidget = nil) or (FWidget.Widget = nil) then
+  if not QtWidgetSet.IsValidHandle(HWND(FWidget)) or (FWidget.Widget = nil) then
   begin
     // oops, our caret is dirty here.
     FCaretDirtyPos := FPos;
@@ -426,7 +429,7 @@ begin
     FPos := Value;
     exit;
   end;
-  
+
   if ((FPos.x <> Value.x) or (FPos.y <> Value.y)) or FCaretDirty then
   begin
     FWidget.LastCaretPos := FPos;
@@ -515,7 +518,9 @@ end;
 
 function TEmulatedCaret.IsValid: Boolean;
 begin
-  Result := (FWidget <> nil) and (FPixmap <> nil) and (FWidget.Context <> 0);
+  Result := QtWidgetSet.IsValidHandle(HWND(FWidget));
+  if Result then
+    Result := (FPixmap <> nil) and (FWidget.Context <> 0);
 end;
 
 procedure TEmulatedCaret.SetWidget(AWidget: TQtWidget);
@@ -535,7 +540,9 @@ procedure TEmulatedCaret.UpdateCaret(const AForceUpdate: Boolean = False);
 var
   R: TRect;
 begin
-  if (FWidget <> nil) and (FWidget.Widget <> nil) then
+  if not QtWidgetSet.IsValidHandle(HWND(FWidget)) then
+    exit;
+  if (FWidget.Widget <> nil) then
   begin
     if FPos.X < 0 then
       FPos.X := 0;
