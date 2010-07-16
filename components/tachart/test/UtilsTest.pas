@@ -49,6 +49,8 @@ type
     procedure TestLineIntersectsLine;
     procedure TestLineIntersectsRect;
     procedure TestPointOnLine;
+    procedure TestPointInPolygon;
+    procedure TestPolygonIntersectsPolygon;
   end;
 
 
@@ -183,6 +185,27 @@ begin
   Check(p1, p2, DoublePoint(11.6667, 10), DoublePoint(13.3333, 0));
 end;
 
+procedure TGeometryTest.TestPointInPolygon;
+var
+  p: TPoint;
+  r: array [1..4] of TPoint =
+    ((X: 0; Y: 0), (X: 10; Y: 0), (X: 10; Y: 5), (X: 0; Y: 5));
+begin
+  p := Point(1, 1);
+  AssertFalse(IsPointInPolygon(p, []));
+
+  AssertTrue(IsPointInPolygon(p, [Point(0, 0), Point(0, 2), Point(3, 0)]));
+  AssertTrue(IsPointInPolygon(p, [Point(0, 0), Point(0, 2), Point(3, 1)]));
+  AssertTrue(IsPointInPolygon(p, [Point(0, 0), Point(0, 2), Point(1, 1)]));
+  AssertFalse(IsPointInPolygon(p, [Point(2, 0), Point(2, 2), Point(3, 1)]));
+  AssertFalse(IsPointInPolygon(p, [Point(2, 0), Point(1, 2), Point(0, 10)]));
+
+  AssertTrue(IsPointInPolygon(Point(5, 5), r));
+  AssertTrue(IsPointInPolygon(Point(10, 5), r));
+  AssertFalse(IsPointInPolygon(Point(11, 5), r));
+  AssertFalse(IsPointInPolygon(Point(0, -1), r));
+end;
+
 procedure TGeometryTest.TestPointOnLine;
 begin
   AssertTrue(IsPointOnLine(Point(0, 0), Point(-1, -1), Point(1, 1)));
@@ -193,6 +216,29 @@ begin
 
   AssertTrue(IsPointOnLine(Point(0, 0), Point(-1, 0), Point(1, 0)));
   AssertFalse(IsPointOnLine(Point(0, 1), Point(-1, 0), Point(1, 0)));
+end;
+
+procedure TGeometryTest.TestPolygonIntersectsPolygon;
+
+  function OffsetPolygon(AP: array of TPoint; AOffset: TPoint): TPointArray;
+  var
+    i: Integer;
+  begin
+    SetLength(Result, Length(AP));
+    for i := 0 to High(AP) do
+      Result[i] := AP[i] + AOffset;
+  end;
+
+var
+  p1: array [1..4] of TPoint =
+    ((X: 0; Y: 0), (X: 10; Y: 0), (X: 10; Y: 5), (X: 0; Y: 5));
+begin
+  AssertTrue(IsPolygonIntersectsPolygon(p1, OffsetPolygon(p1, Point(0, 0))));
+  AssertTrue(IsPolygonIntersectsPolygon(p1, OffsetPolygon(p1, Point(1, 1))));
+  AssertTrue(IsPolygonIntersectsPolygon(p1, OffsetPolygon(p1, Point(5, 0))));
+  AssertTrue(IsPolygonIntersectsPolygon(p1, OffsetPolygon(p1, Point(10, 0))));
+  AssertFalse(IsPolygonIntersectsPolygon(p1, OffsetPolygon(p1, Point(11, 0))));
+  AssertFalse(IsPolygonIntersectsPolygon(p1, OffsetPolygon(p1, Point(0, -6))));
 end;
 
 initialization

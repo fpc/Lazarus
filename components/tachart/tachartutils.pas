@@ -54,6 +54,8 @@ type
     );
   end;
 
+  TPointArray = array of TPoint;
+
   TChartDistance = 0..MaxInt;
 
   TPointDistFunc = function (const A, B: TPoint): Integer;
@@ -189,8 +191,11 @@ procedure ExpandRect(var ARect: TDoubleRect; const APoint: TDoublePoint); inline
 function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
 
 function IsPointOnLine(const AP, A1, A2: TPoint): Boolean; inline;
+function IsPointInPolygon(
+  const AP: TPoint; const APolygon: array of TPoint): Boolean;
 function IsPointInRect(const AP, A1, A2: TPoint): Boolean; inline;
 function IsLineIntersectsLine(const AA, AB, AC, AD: TPoint): Boolean;
+function IsPolygonIntersectsPolygon(const AP1, AP2: array of TPoint): Boolean;
 function LineIntersectsRect(
   var AA, AB: TDoublePoint; const ARect: TDoubleRect): Boolean;
 
@@ -425,6 +430,40 @@ begin
   Result := IsPointInRect(AP, A1, A2) and (PointLineSide(AP, A1, A2) = 0);
 end;
 
+function IsPointInPolygon(
+  const AP: TPoint; const APolygon: array of TPoint): Boolean;
+var
+  i, count: Integer;
+  p1, p2: TPoint;
+  s1, s2: TValueSign;
+begin
+  if Length(APolygon) = 0 then exit(false);
+  p1 := APolygon[High(APolygon)];
+  for i := 0 to High(APolygon) do begin
+    p2 := APolygon[i];
+    if IsPointOnLine(AP, p1, p2) then exit(true);
+    p1 := p2;
+  end;
+  count := 0;
+  p1 := APolygon[High(APolygon)];
+  for i := 0 to High(APolygon) do begin
+    p2 := APolygon[i];
+    s1 := Sign(p1.Y - AP.Y);
+    s2 := Sign(p2.Y - AP.Y);
+    case s1 * s2 of
+      -1: count += Ord(PointLineSide(AP, p1, p2) = Sign(p1.Y - p2.Y));
+      0: if s1 + s2 = 1 then begin
+        if s1 = 0 then
+          count += Ord(p1.X >= AP.X)
+        else
+          count += Ord(p2.X >= AP.X)
+      end;
+    end;
+    p1 := p2;
+  end;
+  Result := count mod 2 = 1;
+end;
+
 function IsPointInRect(const AP, A1, A2: TPoint): Boolean;
 begin
   Result := SafeInRange(AP.X, A1.X, A2.X) and SafeInRange(AP.Y, A1.Y, A2.Y);
@@ -446,6 +485,24 @@ begin
     sd := PointLineSide(AD, AA, AB);
     Result := (sa * sb <= 0) and (sc * sd <= 0);
   end;
+end;
+
+function IsPolygonIntersectsPolygon(const AP1, AP2: array of TPoint): Boolean;
+var
+  i, j: Integer;
+  p1, p2: TPoint;
+begin
+  if (Length(AP1) = 0) or (Length(AP2) = 0) then exit(false);
+  if IsPointInPolygon(AP1[0], AP2) or IsPointInPolygon(AP2[0], AP1) then
+    exit(true);
+  for i := 0 to High(AP1) do begin
+    p1 := AP1[i];
+    p2 := AP1[(i + 1) mod Length(AP1)];
+    for j := 0 to High(AP2) do
+      if IsLineIntersectsLine(p1, p2, AP2[j], AP2[(j + 1) mod Length(AP2)]) then
+        exit(true);
+  end;
+  Result := false;
 end;
 
 function LineIntersectsRect(
