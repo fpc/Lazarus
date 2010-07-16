@@ -762,6 +762,7 @@ type
                 out ReferenceSide: TAnchorSideReference; out Position: Integer): boolean;
     procedure Assign(Source: TPersistent); override;
     function IsAnchoredToParent(ParentSide: TAnchorKind): boolean;
+    procedure FixCenterAnchoring;
   public
     property Owner: TControl read FOwner;
     property Kind: TAnchorKind read FKind;
@@ -3346,6 +3347,10 @@ begin
   {$ENDIF}
   if FControl=AValue then exit;
   OldControl:=FControl;
+  if Side=asrCenter then begin
+    FixCenterAnchoring;
+    if Control<>OldControl then exit;
+  end;
   FControl:=nil;
   if OldControl<>nil then
     OldControl.ForeignAnchorSideChanged(Self,ascoRemove);
@@ -3366,25 +3371,17 @@ var
   OldSide: TAnchorSideReference;
 begin
   if FSide=AValue then exit;
+  FOwner.DisableAutoSizing;
   if AValue=asrCenter then begin
-    // in case asrCenter, both sides are controlled by one anchor
-    // -> disable opposite anchor and aligning
     OldSide:=FSide;
-    if FOwner.Align in [alLeft,alTop,alRight,alBottom,alClient] then begin
-      FOwner.Align:=alNone;
-    end;
-    case Kind of
-    akLeft: FOwner.Anchors:=FOwner.Anchors-[akRight];
-    akTop: FOwner.Anchors:=FOwner.Anchors-[akBottom];
-    akRight: FOwner.Anchors:=FOwner.Anchors-[akLeft];
-    akBottom: FOwner.Anchors:=FOwner.Anchors-[akTop];
-    end;
+    FixCenterAnchoring;
     if OldSide<>FSide then exit;
   end;
   FSide:=AValue;
   FOwner.AnchorSideChanged(Self);
   if FControl<>nil then
     FControl.ForeignAnchorSideChanged(Self,ascoChangeSide);
+  FOwner.EnableAutoSizing;
 end;
 
 function TAnchorSide.GetOwner: TPersistent;
@@ -3723,6 +3720,19 @@ begin
   if (ReferenceControl=Owner.Parent) and (Kind=ParentSide) then
     exit(true);
   Result:=false;
+end;
+
+procedure TAnchorSide.FixCenterAnchoring;
+begin
+  if (Side=asrCenter) and (Control<>nil) and (Kind in FOwner.Anchors) then
+  begin
+    // in case asrCenter, both sides are controlled by one anchor
+    // -> disable opposite anchor and aligning
+    if FOwner.Align in [alLeft,alTop,alRight,alBottom,alClient] then begin
+      FOwner.Align:=alNone;
+    end;
+    FOwner.Anchors:=FOwner.Anchors-[OppositeAnchor[Kind]];
+  end;
 end;
 
 { TControlPropertyStorage }

@@ -3154,11 +3154,18 @@ end;
 procedure TControl.SetAlign(Value: TAlign);
 var
   OldAlign: TAlign;
+  a: TAnchorKind;
 begin
   if FAlign = Value then exit;
   //DebugLn(['TControl.SetAlign ',DbgSName(Self),' Old=',AlignNames[FAlign],' New=',AlignNames[Value],' ',Anchors<>AnchorAlign[FAlign]]);
   OldAlign := FAlign;
   FAlign := Value;
+  for a:=low(TAnchorKind) to High(TAnchorKind) do
+  begin
+    if not (a in AnchorAlign[FAlign]) then continue;
+    AnchorSide[a].Control:=nil;
+    AnchorSide[a].Side:=asrTop;
+  end;
   // if anchors were on default then change them to new default
   // This is done for Delphi compatibility.
   if (Anchors = AnchorAlign[OldAlign]) and (Anchors <> AnchorAlign[FAlign]) then
@@ -3171,9 +3178,16 @@ end;
   TControl SetAnchors
 ------------------------------------------------------------------------------}
 procedure TControl.SetAnchors(const AValue: TAnchors);
+var
+  NewAnchors: TAnchors;
+  a: TAnchorKind;
 begin
   if Anchors = AValue then Exit;
+  NewAnchors:=AValue-FAnchors;
   FAnchors := AValue;
+  for a:=Low(TAnchorKind) to high(TAnchorKind) do
+    if (a in NewAnchors) and (AnchorSide[a].Side=asrCenter) then
+      AnchorSide[a].FixCenterAnchoring;
   AdjustSize;
 end;
 
