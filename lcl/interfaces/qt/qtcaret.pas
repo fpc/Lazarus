@@ -371,7 +371,6 @@ end;
 function TEmulatedCaret.Show(AWidget: TQtWidget): Boolean;
 var
   Pt: TQtPoint;
-  R: TRect;
 begin
   {$IFDEF VerboseQtCaret}
   writeln('TEmulatedCaret.Show AWidget=',dbghex(PtrUInt(AWidget)));

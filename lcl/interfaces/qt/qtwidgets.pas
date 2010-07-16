@@ -3038,7 +3038,6 @@ function TQtWidget.SlotContextMenu(Sender: QObjectH; Event: QEventH): Boolean; c
 var
   Msg: TLMContextMenu;
   MousePos: TQtPoint;
-  QtEdit: IQtEdit;
 
   procedure SendMouseReleaseEventToSelf;
   var
