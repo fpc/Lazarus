@@ -22,7 +22,7 @@ unit TASources;
 interface
 
 uses
-  Classes, Graphics, SysUtils, Types, TAChartUtils;
+  Classes, Graphics, SysUtils, Types, TAChartUtils, TADrawUtils;
 
 type
   EEditableSourceRequired = class(EChartError);

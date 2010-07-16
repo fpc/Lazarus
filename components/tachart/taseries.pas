@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, Graphics,
-  TAChartUtils, TACustomSeries, TAGraph, TALegend, TATypes;
+  TAChartUtils, TADrawUtils, TACustomSeries, TAGraph, TALegend, TATypes;
 
 const
   DEF_BAR_WIDTH_PERCENT = 70;

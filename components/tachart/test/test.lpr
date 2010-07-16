@@ -22,8 +22,11 @@ uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
   {$ENDIF}{$ENDIF}
-  Classes, SysUtils, CustApp, Interfaces,
+  Classes, SysUtils, CustApp,
   FPCUnit, TestReport, TestRegistry, PlainTestReport, UtilsTest;
+
+// This is deliberately a console application to also test a proper
+// separation of logic and presentation in TAChart units.
 
 type
 

@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils,
-  TAChartUtils, TAGraph, TASources, TATypes;
+  TAChartUtils, TADrawUtils, TAGraph, TASources, TATypes;
 
 const
   DEF_AXIS_INDEX = -1;

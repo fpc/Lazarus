@@ -202,7 +202,7 @@ type
 implementation
 
 uses
-  LResources, Math;
+  LResources, Math, TADrawUtils;
 
 const
   FONT_SLOPE_VERTICAL = 45 * 10;

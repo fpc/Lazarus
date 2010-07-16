@@ -322,7 +322,7 @@ var
 implementation
 
 uses
-  Clipbrd, GraphMath, LCLProc, Math, Types;
+  Clipbrd, GraphMath, LCLProc, Math, Types, TADrawUtils;
 
 {$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
 {$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}

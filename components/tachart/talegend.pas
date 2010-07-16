@@ -113,7 +113,7 @@ type
 implementation
 
 uses
-  Math, Types;
+  Math, Types, TADrawUtils;
 
 const
   SYMBOL_TEXT_SPACING = 4;

@@ -29,13 +29,9 @@ unit TAChartUtils;
 interface
 
 uses
-  Classes, Graphics, Math, Types, SysUtils;
+  Classes, Math, Types, SysUtils;
 
 const
-  Colors: array [1..15] of TColor = (
-    clRed, clGreen, clYellow, clBlue, clWhite, clGray, clFuchsia,
-    clTeal, clNavy, clMaroon, clLime, clOlive, clPurple, clSilver, clAqua);
-  clTAColor = clScrollBar;
   CHART_COMPONENT_IDE_PAGE = 'Chart';
   PERCENT = 0.01;
 
@@ -64,8 +60,6 @@ type
 
   TAxisScale = (asIncreasing, asDecreasing, asLogIncreasing, asLogDecreasing);
 
-  TPenBrushFont = set of (pbfPen, pbfBrush, pbfFont);
-
   TSeriesMarksStyle = (
     smsCustom,         { user-defined }
     smsNone,           { no labels }
@@ -82,20 +76,6 @@ type
   TSeriesPointerStyle = (
     psNone, psRectangle, psCircle, psCross, psDiagCross, psStar,
     psLowBracket, psHighBracket, psLeftBracket, psRightBracket, psDiamond);
-
-  { TPenBrushFontRecall }
-
-  TPenBrushFontRecall = class
-  private
-    FBrush: TBrush;
-    FCanvas: TCanvas;
-    FFont: TFont;
-    FPen: TPen;
-  public
-    constructor Create(ACanvas: TCanvas; AParams: TPenBrushFont);
-    destructor Destroy; override;
-    procedure Recall;
-  end;
 
   TDoubleInterval = record
     FStart, FEnd: Double;
@@ -195,9 +175,6 @@ function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 function DoublePoint(AX, AY: Double): TDoublePoint; inline;
 function DoubleRect(AX1, AY1, AX2, AY2: Double): TDoubleRect; inline;
 
-procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
-procedure DrawLineDepth(ACanvas: TCanvas; const AP1, AP2: TPoint; ADepth: Integer);
-
 procedure EnsureOrder(var A, B: Integer); overload; inline;
 procedure EnsureOrder(var A, B: Double); overload; inline;
 
@@ -221,15 +198,10 @@ function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
 function PointDistY(const A, B: TPoint): Integer; inline;
 
-procedure PrepareSimplePen(ACanvas: TCanvas; AColor: TColor);
-procedure PrepareXorPen(ACanvas: TCanvas);
-
 function RectIntersectsRect(
   var ARect: TDoubleRect; const AFixed: TDoubleRect): Boolean;
 
 function RoundChecked(A: Double): Integer; inline;
-
-function TypicalTextHeight(ACanvas: TCanvas): Integer;
 
 // Call this to silence 'parameter is unused' hint
 procedure Unused(const A1);
@@ -245,9 +217,6 @@ operator -(const A, B: TDoublePoint): TDoublePoint; overload; inline;
 operator =(const A, B: TMethod): Boolean; overload; inline;
 
 implementation
-
-uses
-  LCLIntf;
 
 function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 begin
@@ -336,20 +305,6 @@ begin
   Result.a.Y := AY1;
   Result.b.X := AX2;
   Result.b.Y := AY2;
-end;
-
-procedure DrawLineDepth(ACanvas: TCanvas; AX1, AY1, AX2, AY2, ADepth: Integer);
-begin
-  DrawLineDepth(ACanvas, Point(AX1, AY1), Point(AX2, AY2), ADepth);
-end;
-
-procedure DrawLineDepth(
-  ACanvas: TCanvas; const AP1, AP2: TPoint; ADepth: Integer);
-var
-  d: TSize;
-begin
-  d := Size(ADepth, -ADepth);
-  ACanvas.Polygon([AP1, AP1 + d, AP2 + d, AP2]);
 end;
 
 procedure EnsureOrder(var A, B: Integer); overload; inline;
@@ -532,27 +487,6 @@ begin
   Result := Abs(A.Y - B.Y);
 end;
 
-procedure PrepareSimplePen(ACanvas: TCanvas; AColor: TColor);
-begin
-  with ACanvas.Pen do begin
-    Color := AColor;
-    Style := psSolid;
-    Mode := pmCopy;
-    Width := 1;
-  end;
-end;
-
-procedure PrepareXorPen(ACanvas: TCanvas);
-begin
-  with ACanvas do begin
-    Brush.Style := bsClear;
-    Pen.Style := psSolid;
-    Pen.Mode := pmXor;
-    Pen.Color := clWhite;
-    Pen.Width := 1;
-  end;
-end;
-
 function RectIntersectsRect(
   var ARect: TDoubleRect; const AFixed: TDoubleRect): Boolean;
 
@@ -575,13 +509,6 @@ end;
 function RoundChecked(A: Double): Integer;
 begin
   Result := Round(EnsureRange(A, -MaxInt, MaxInt));
-end;
-
-function TypicalTextHeight(ACanvas: TCanvas): Integer;
-const
-  TYPICAL_TEXT = 'Iy';
-begin
-  Result := ACanvas.TextHeight(TYPICAL_TEXT);
 end;
 
 {$HINTS OFF}
@@ -635,48 +562,6 @@ end;
 operator = (const A, B: TMethod): Boolean;
 begin
   Result := (A.Code = B.Code) and (A.Data = B.Data);
-end;
-
-{ TPenBrushFontRecall }
-
-constructor TPenBrushFontRecall.Create(ACanvas: TCanvas; AParams: TPenBrushFont);
-begin
-  inherited Create;
-  FCanvas := ACanvas;
-  if pbfPen in AParams then begin
-    FPen := TPen.Create;
-    FPen.Assign(FCanvas.Pen);
-  end;
-  if pbfBrush in AParams then begin
-    FBrush := TBrush.Create;
-    FBrush.Assign(FCanvas.Brush);
-  end;
-  if pbfFont in AParams then begin
-    FFont := TFont.Create;
-    FFont.Assign(FCanvas.Font);
-  end;
-end;
-
-destructor TPenBrushFontRecall.Destroy;
-begin
-  Recall;
-  inherited;
-end;
-
-procedure TPenBrushFontRecall.Recall;
-begin
-  if FPen <> nil then begin
-    FCanvas.Pen.Assign(FPen);
-    FreeAndNil(FPen);
-  end;
-  if FBrush <> nil then begin
-    FCanvas.Brush.Assign(FBrush);
-    FreeAndNil(FBrush);
-  end;
-  if FFont <> nil then begin
-    FCanvas.Font.Assign(FFont);
-    FreeAndNil(FFont);
-  end;
 end;
 
 { TIntervalList }
