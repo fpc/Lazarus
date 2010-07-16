@@ -13,6 +13,7 @@
  *                                                                           *
  *****************************************************************************
 }
+{ 2010-07-15 - New field type option (Data) Marcelo B. Paula }
 unit newfield;
 
 {$mode Delphi} {$H+}
@@ -160,6 +161,7 @@ begin
   Caption := fesFormCaption;
   RadioGroup1.Caption := fesFieldType;
   RadioGroup1.Items.Clear;
+  RadioGroup1.Items.Add(fesData);
   RadioGroup1.Items.Add(fesCalculated);
   RadioGroup1.Items.Add(fesLookup);
   GroupBox1.Caption := fesFieldProps;
@@ -241,7 +243,16 @@ begin
   LinkDataSet.Active := False;
   try
     case RadioGroup1.ItemIndex of
-      0: begin //Create calc field
+      0: begin //Create data field
+        fldType := TFieldType(PtrUInt(SelectType.Items.Objects[SelectType.ItemIndex]));
+        NewField := CreateField(fldType, CheckName(EditName.Text));
+        NewField.Calculated := False;
+        NewField.FieldKind := fkData;
+
+        FDesigner.PropertyEditorHook.PersistentAdded(NewField, True);
+        FDesigner.Modified;
+      end;
+      1: begin //Create calc field
         fldType := TFieldType(PtrUInt(SelectType.Items.Objects[SelectType.ItemIndex]));
         NewField := CreateField(fldType, CheckName(EditName.Text));
         NewField.Calculated := True;
@@ -268,7 +279,7 @@ begin
 
               FDesigner.PropertyEditorHook.PersistentAdded(NewField, True);
             end else
-              ShowMessage('Field ''' + L[i] + ''' can''t be created!');
+              ShowMessage(Format(fesFieldCanTBeC, [L[i]]));
           end;
           FDesigner.Modified;
         finally
@@ -285,12 +296,12 @@ end;
 procedure TNewFieldFrm.RadioGroup1Click(Sender: TObject);
 begin
   case RadioGroup1.ItemIndex of
-    0: begin //calculated field
+    0..1: begin //data,calculated field
       Panel3.Visible := False;
       Panel2.Visible := True;
       ClientHeight := Panel1.Height + Panel2.Height + Panel4.Height;
     end;
-    1: begin //lookup field
+    2: begin //lookup field
       Panel3.Visible := True;
       Panel2.Visible := False;
       ClientHeight := Panel1.Height + Panel3.Height + Panel4.Height;
@@ -330,9 +341,9 @@ begin
     end
   else EditSize.Enabled := False;
   case RadioGroup1.ItemIndex of
-    0: OkBtn.Enabled := (Length(EditName.Text) > 0) And
+    0..1: OkBtn.Enabled := (Length(EditName.Text) > 0) And
                           (SelectType.ItemIndex > -1);
-    1: OkBtn.Enabled := (SelectKeyFields.Text <> '') And
+    2: OkBtn.Enabled := (SelectKeyFields.Text <> '') And
                           (DataSetsCombo.ItemIndex > -1) And
                           (SelectLookupKeys.Text <> '') And
                           (SelectResultField.Text <> '');

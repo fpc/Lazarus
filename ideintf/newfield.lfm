@@ -2,13 +2,13 @@ object NewFieldFrm: TNewFieldFrm
   Left = 447
   Height = 428
   Top = 271
-  Width = 354
+  Width = 357
   HorzScrollBar.Page = 261
   VertScrollBar.Page = 375
   BorderStyle = bsDialog
   Caption = 'Dialog'
   ClientHeight = 428
-  ClientWidth = 354
+  ClientWidth = 357
   OnCreate = FormCreate
   ParentFont = True
   Position = poScreenCenter
@@ -18,52 +18,52 @@ object NewFieldFrm: TNewFieldFrm
     Left = 0
     Height = 121
     Top = 112
-    Width = 354
+    Width = 357
     Align = alTop
     ClientHeight = 121
-    ClientWidth = 354
+    ClientWidth = 357
     FullRepaint = False
     TabOrder = 0
     object GroupBox1: TGroupBox
       Left = 8
       Height = 105
       Top = 8
-      Width = 336
+      Width = 339
       Anchors = [akTop, akLeft, akRight]
       Caption = 'Field properties'
-      ClientHeight = 87
-      ClientWidth = 332
+      ClientHeight = 83
+      ClientWidth = 335
       TabOrder = 0
       object Label1: TLabel
         Left = 6
-        Height = 14
+        Height = 18
         Top = 11
-        Width = 32
+        Width = 41
         Caption = '&Name:'
         FocusControl = EditName
         ParentColor = False
       end
       object Label2: TLabel
         Left = 6
-        Height = 14
+        Height = 18
         Top = 35
-        Width = 29
+        Width = 37
         Caption = '&Type:'
         FocusControl = SelectType
         ParentColor = False
       end
       object Label3: TLabel
         Left = 6
-        Height = 14
+        Height = 18
         Top = 59
-        Width = 24
+        Width = 29
         Caption = '&Size:'
         FocusControl = EditSize
         ParentColor = False
       end
       object EditName: TEdit
         Left = 158
-        Height = 21
+        Height = 25
         Hint = 'Field name'
         Top = 8
         Width = 168
@@ -74,11 +74,11 @@ object NewFieldFrm: TNewFieldFrm
       end
       object SelectType: TComboBox
         Left = 158
-        Height = 21
+        Height = 25
         Hint = 'Field type'
         Top = 32
         Width = 168
-        ItemHeight = 13
+        ItemHeight = 17
         Items.Strings = (
           'String'
           'Integer'
@@ -101,7 +101,7 @@ object NewFieldFrm: TNewFieldFrm
       end
       object EditSize: TEdit
         Left = 158
-        Height = 21
+        Height = 25
         Hint = 'Field size'
         Top = 56
         Width = 168
@@ -114,10 +114,10 @@ object NewFieldFrm: TNewFieldFrm
     Left = 0
     Height = 144
     Top = 233
-    Width = 354
+    Width = 357
     Align = alTop
     ClientHeight = 144
-    ClientWidth = 354
+    ClientWidth = 357
     FullRepaint = False
     TabOrder = 1
     Visible = False
@@ -125,54 +125,54 @@ object NewFieldFrm: TNewFieldFrm
       Left = 8
       Height = 129
       Top = 8
-      Width = 336
+      Width = 339
       Anchors = [akTop, akLeft, akRight, akBottom]
       Caption = 'Lookup definition'
-      ClientHeight = 111
-      ClientWidth = 332
+      ClientHeight = 107
+      ClientWidth = 335
       TabOrder = 0
       object Label4: TLabel
         Left = 6
-        Height = 14
+        Height = 18
         Top = 10
-        Width = 47
+        Width = 57
         Caption = '&Key fields'
         FocusControl = SelectKeyFields
         ParentColor = False
       end
       object Label5: TLabel
         Left = 6
-        Height = 14
+        Height = 18
         Top = 58
-        Width = 60
+        Width = 79
         Caption = 'L&ookup keys'
         FocusControl = SelectLookupKeys
         ParentColor = False
       end
       object Label6: TLabel
         Left = 6
-        Height = 14
+        Height = 18
         Top = 82
-        Width = 61
+        Width = 74
         Caption = '&Result Fields'
         FocusControl = SelectResultField
         ParentColor = False
       end
       object Label10: TLabel
         Left = 6
-        Height = 14
+        Height = 18
         Top = 34
-        Width = 39
+        Width = 48
         Caption = 'Dataset'
         ParentColor = False
       end
       object SelectKeyFields: TComboBox
         Left = 158
-        Height = 21
+        Height = 25
         Hint = 'Key fields'
         Top = 7
         Width = 168
-        ItemHeight = 13
+        ItemHeight = 17
         OnChange = SelectKeyFieldsChange
         ParentShowHint = False
         ShowHint = True
@@ -180,31 +180,31 @@ object NewFieldFrm: TNewFieldFrm
       end
       object SelectLookupKeys: TComboBox
         Left = 158
-        Height = 21
+        Height = 25
         Top = 55
         Width = 168
         Enabled = False
-        ItemHeight = 13
+        ItemHeight = 17
         OnChange = SelectLookupKeysChange
         TabOrder = 2
       end
       object SelectResultField: TComboBox
         Left = 158
-        Height = 21
+        Height = 25
         Top = 79
         Width = 168
         Enabled = False
-        ItemHeight = 13
+        ItemHeight = 17
         OnChange = SelectResultFieldChange
         TabOrder = 3
       end
       object DataSetsCombo: TComboBox
         Left = 158
-        Height = 21
+        Height = 25
         Hint = 'Lookup dataset'
         Top = 31
         Width = 168
-        ItemHeight = 13
+        ItemHeight = 17
         OnChange = DataSetsComboChange
         ParentShowHint = False
         ShowHint = True
@@ -217,10 +217,10 @@ object NewFieldFrm: TNewFieldFrm
     Left = 0
     Height = 47
     Top = 381
-    Width = 354
+    Width = 357
     Align = alBottom
     ClientHeight = 47
-    ClientWidth = 354
+    ClientWidth = 357
     FullRepaint = False
     TabOrder = 2
     object OKBtn: TButton
@@ -252,17 +252,17 @@ object NewFieldFrm: TNewFieldFrm
     Left = 0
     Height = 112
     Top = 0
-    Width = 354
+    Width = 357
     Align = alTop
     ClientHeight = 112
-    ClientWidth = 354
+    ClientWidth = 357
     FullRepaint = False
     TabOrder = 3
     object NoteLbl: TLabel
       Left = 8
       Height = 37
       Top = 58
-      Width = 336
+      Width = 339
       Anchors = [akTop, akLeft, akRight]
       AutoSize = False
       Caption = 'NoteLbl'
@@ -274,7 +274,7 @@ object NewFieldFrm: TNewFieldFrm
       Left = 8
       Height = 48
       Top = 8
-      Width = 336
+      Width = 339
       Anchors = [akTop, akLeft, akRight]
       AutoFill = True
       Caption = 'Field Type'
@@ -285,12 +285,13 @@ object NewFieldFrm: TNewFieldFrm
       ChildSizing.ShrinkHorizontal = crsScaleChilds
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 2
-      ClientHeight = 30
-      ClientWidth = 332
-      Columns = 2
+      ChildSizing.ControlsPerLine = 3
+      ClientHeight = 26
+      ClientWidth = 335
+      Columns = 3
       ItemIndex = 0
       Items.Strings = (
+        '&Data'
         '&Calculated'
         '&Lookup'
       )

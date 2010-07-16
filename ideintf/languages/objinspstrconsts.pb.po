@@ -131,7 +131,7 @@ msgstr "Acima"
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
-msgstr ""
+msgstr "&Calculado"
 
 #: objinspstrconsts.fescancelbtn
 msgctxt "objinspstrconsts.fescancelbtn"
@@ -142,53 +142,60 @@ msgstr "Cancelar"
 msgid "Check dataset settings"
 msgstr "Verificar configurações \"dataset\""
 
+#: objinspstrconsts.fesdata
+msgid "&Data"
+msgstr "&Dado"
+
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
-msgstr ""
+msgstr "&Dataset:"
 
 #: objinspstrconsts.fesfetitle
 #| msgid "Edit Fields"
 msgid "Edit Fields..."
 msgstr "Editar Campos"
 
+#: objinspstrconsts.fesfieldcantbec
+msgid "Field %s cannot be created!"
+msgstr "Campo %s não pôde ser criado!"
+
 #: objinspstrconsts.fesfieldprops
 msgid "Field properties"
-msgstr ""
+msgstr "Propriedades campo"
 
 #: objinspstrconsts.fesfieldtype
 msgid "Field Type"
-msgstr ""
+msgstr "Tipo de campo"
 
 #: objinspstrconsts.fesfltitle
 msgid "FieldDefs"
 msgstr "Definições Campos"
 
 #: objinspstrconsts.fesformcaption
-#, fuzzy
 #| msgid "New fileld"
 msgctxt "objinspstrconsts.fesformcaption"
 msgid "New field"
-msgstr "Caixa de diálogo"
+msgstr "Novo campo"
 
 #: objinspstrconsts.feskeyfield
 msgid "&Key fields:"
-msgstr ""
+msgstr "Campos c&have:"
 
 #: objinspstrconsts.feslookup
 msgid "&Lookup"
-msgstr ""
+msgstr "&Lookup"
 
 #: objinspstrconsts.feslookupdef
 msgid "Lookup definition"
-msgstr ""
+msgstr "Definição \"Lookup\""
 
 #: objinspstrconsts.feslookupkeys
 msgid "L&ookup keys:"
-msgstr ""
+msgstr "Chaves \"L&ookup\":"
 
 #: objinspstrconsts.fesname
 msgid "&Name:"
-msgstr ""
+msgstr "&Nome:"
 
 #: objinspstrconsts.fesnofields
 msgid "It was not possible to get the dataset field's list"
@@ -205,15 +212,15 @@ msgstr "OK"
 
 #: objinspstrconsts.fesresultfield
 msgid "&Result Fields:"
-msgstr ""
+msgstr "Campos &Resultado:"
 
 #: objinspstrconsts.fessize
 msgid "&Size:"
-msgstr ""
+msgstr "&Tamanho:"
 
 #: objinspstrconsts.festype
 msgid "&Type:"
-msgstr ""
+msgstr "T&ipo:"
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
