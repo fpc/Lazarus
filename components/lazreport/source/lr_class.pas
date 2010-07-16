@@ -16,9 +16,9 @@ interface
 
 uses
   SysUtils, Classes, MaskUtils, Controls, FileUtil, Forms, ComCtrls, Dialogs,
-  Menus, Variants, DB, Graphics, Printers, osPrinters, XMLConf, LCLType, LCLIntf,
-  TypInfo, LCLProc,{$IFDEF UNIX}SysUtilsAdds,{$ENDIF} LR_View, LR_Pars, LR_Intrp,
-  LR_DSet, LR_DBSet, LR_DBRel, LR_Const;
+  Menus, Variants, DB, Graphics, Printers, osPrinters, DOM, XMLRead, XMLConf, LCLType,
+  LCLIntf, TypInfo, LCLProc,{$IFDEF UNIX}SysUtilsAdds,{$ENDIF} LR_View, LR_Pars,
+  LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const;
 
 const
 // object flags
@@ -144,6 +144,7 @@ type
 
   TLrXMLConfig = class (TXMLConfig)
   public
+    procedure LoadFromStream(const Stream: TStream);
     procedure SetValue(const APath: string; const AValue: string); overload;
     function  GetValue(const APath: string; const ADefault: string): string; overload;
   end;
@@ -944,6 +945,7 @@ type
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromFile(const FName: String);
     procedure LoadFromXMLFile(const Fname: String);
+    procedure LoadFromXMLStream(const Stream: TStream);
     procedure SaveToFile(FName: String);
     procedure SavetoXML(XML: TLrXMLConfig; const Path: String);
     procedure SaveToXMLFile(const FName: String);
@@ -7909,6 +7911,20 @@ begin
   end;
 end;
 
+procedure TfrReport.LoadFromXMLStream(const Stream: TStream);
+var
+  XML: TLrXMLConfig;
+begin
+  XML := TLrXMLConfig.Create(nil);
+  XML.LoadFromStream(Stream);
+  try
+    LoadFromXML(XML, 'LazReport/');
+    FileName := '-stream-';
+  finally
+    XML.Free;
+  end;
+end;
+
 procedure TfrReport.SaveToFile(FName: String);
 var
   Stream: TFileStream;
@@ -10091,6 +10107,28 @@ begin
 end;
 
 { TLrXMLConfig }
+
+procedure TLrXMLConfig.LoadFromStream(const Stream: TStream);
+begin
+
+  Flush;
+  FreeAndNil(Doc);
+
+  if csLoading in ComponentState then
+    exit;
+
+  if assigned(Stream) and not StartEmpty then
+    ReadXMLFile(Doc, Stream);
+
+  if not Assigned(Doc) then
+    Doc := TXMLDocument.Create;
+
+  if not Assigned(Doc.DocumentElement) then
+    Doc.AppendChild(Doc.CreateElement(RootName))
+  else
+    if Doc.DocumentElement.NodeName <> RootName then
+      raise EXMLConfigError.Create(SWrongRootName);
+end;
 
 procedure TLrXMLConfig.SetValue(const APath: string; const AValue: string);
 begin
