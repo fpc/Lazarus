@@ -22,7 +22,7 @@ unit TASources;
 interface
 
 uses
-  Classes, Graphics, SysUtils, Types, TAChartUtils, TADrawUtils;
+  Classes, Graphics, SysUtils, Types, TAChartUtils;
 
 type
   EEditableSourceRequired = class(EChartError);
@@ -217,7 +217,7 @@ procedure SetDataItemDefaults(var AItem: TChartDataItem);
 implementation
 
 uses
-  LCLIntf, Math, StrUtils;
+  LCLIntf, Math, StrUtils, TADrawUtils;
 
 {$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
 {$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}

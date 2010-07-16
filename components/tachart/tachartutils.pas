@@ -188,6 +188,7 @@ procedure ExpandRect(var ARect: TDoubleRect; const APoint: TDoublePoint); inline
 
 function GetIntervals(AMin, AMax: Double; AInverted: Boolean): TDoubleDynArray;
 
+function IsPointOnLine(const AP, A1, A2: TPoint): Boolean;
 function LineIntersectsRect(
   var AA, AB: TDoublePoint; const ARect: TDoubleRect): Boolean;
 
@@ -202,6 +203,8 @@ function RectIntersectsRect(
   var ARect: TDoubleRect; const AFixed: TDoubleRect): Boolean;
 
 function RoundChecked(A: Double): Integer; inline;
+
+function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
 
 // Call this to silence 'parameter is unused' hint
 procedure Unused(const A1);
@@ -413,6 +416,14 @@ begin
   end;
 end;
 
+function IsPointOnLine(const AP, A1, A2: TPoint): Boolean;
+begin
+  Result :=
+    SafeInRange(AP.X, A1.X, A2.X) and
+    SafeInRange(AP.Y, A1.Y, A2.Y) and
+    ((AP.X - A1.X) * (A2.Y - A1.Y) = (AP.Y - A1.Y) * (A2.X - A1.X));
+end;
+
 function LineIntersectsRect(
   var AA, AB: TDoublePoint; const ARect: TDoubleRect): Boolean;
 var
@@ -512,6 +523,13 @@ begin
 end;
 
 {$HINTS OFF}
+
+function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
+begin
+  EnsureOrder(ABound1, ABound2);
+  Result := InRange(AValue, ABound1, ABound2);
+end;
+
 procedure Unused(const A1);
 begin
 end;
