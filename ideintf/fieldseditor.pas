@@ -175,7 +175,7 @@ begin
       fld := TField(FieldsListBox.Items.Objects[i]);
       FieldsListBox.Items.Delete(i);
       FDesigner.PropertyEditorHook.PersistentDeleting(fld);
-      fld.Free;
+      fld := nil;
       bModified := True;
     end;
   SelectionChanged;

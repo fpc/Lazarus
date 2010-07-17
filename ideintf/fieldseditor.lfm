@@ -1,17 +1,15 @@
 object DSFieldsEditorFrm: TDSFieldsEditorFrm
-  Left = 22
+  Left = 472
   Height = 288
-  Top = 29
+  Top = 230
   Width = 215
   HorzScrollBar.Page = 214
   VertScrollBar.Page = 287
-  ActiveControl = FieldsListBox
   Caption = 'Fields Editor'
   ClientHeight = 288
   ClientWidth = 215
   OnClose = FieldsEditorFrmClose
   OnDestroy = FieldsEditorFrmDestroy
-  Position = poDefaultPosOnly
   LCLVersion = '0.9.29'
   object FieldsListBox: TListBox
     Left = 0
@@ -27,7 +25,7 @@ object DSFieldsEditorFrm: TDSFieldsEditorFrm
     TabOrder = 0
   end
   object PopupMenu1: TPopupMenu
-    left = 8
+    left = 32
     top = 144
     object MenuItem1: TMenuItem
       Action = AddFieldsActn
@@ -60,7 +58,7 @@ object DSFieldsEditorFrm: TDSFieldsEditorFrm
   end
   object ActionList1: TActionList
     OnUpdate = ActionList1Update
-    left = 40
+    left = 120
     top = 144
     object AddFieldsActn: TAction
       Category = 'Fields'
