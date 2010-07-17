@@ -1433,7 +1433,7 @@ var
 
   procedure LoadDefaultFont;
   begin
-    DisposeGDIObject(GdiObject);
+    ReleaseGdiObject(GdiObject);
     GdiObject:=CreateDefaultFont;
     {$IFDEF VerboseFonts}
     DebugLn('TGtkWidgetSet.CreateFontIndirectEx.LoadDefaultFont');
