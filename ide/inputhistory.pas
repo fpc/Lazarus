@@ -169,6 +169,40 @@ type
     );
   TLazFindInFileSearchOptions = set of TLazFindInFileSearchOption;
 
+
+  { TIHIngoreItem }
+
+  TIHIgnoreItemDuration = (
+    iiidIDERestart,
+    iiid24H,
+    iiidForever
+    );
+  TIHIgnoreItemDurations = set of TIHIgnoreItemDuration;
+
+  TIHIngoreItem = class
+    Identifier: string;
+    Date: TDateTime;
+    Duration: TIHIgnoreItemDuration;
+  end;
+
+  { TIHIgnoreItemList }
+
+  TIHIgnoreItemList = class
+  private
+    FItems: TAvgLvlTree; // tree of TIHIngoreItem
+    function FindNode(const Identifier: string): TAvgLvlTreeNode;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function Add(const Identifier: string;
+                 Duration: TIHIgnoreItemDuration): TIHIngoreItem;
+    procedure Delete(const Identifier: string);
+    function Find(const Identifier: string): TIHIngoreItem;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+  end;
+
   TInputHistories = class
   private
     FDiffFlags: TTextDiffFlags;
@@ -182,6 +216,7 @@ type
     FFindInFilesSearchOptions: TLazFindInFileSearchOptions;
     FFindAutoComplete: boolean;
     FFindOptions: TSynSearchOptions;
+    FIgnores: TIHIgnoreItemList;
     FLastConvertDelphiPackage: string;
     FLastConvertDelphiProject: string;
     FLastConvertDelphiUnit: string;
@@ -284,6 +319,9 @@ type
                                            
     // file encodings
     property FileEncodings: TStringToStringTree read fFileEncodings write fFileEncodings;
+
+    // ignores
+    property Ignores: TIHIgnoreItemList read FIgnores;
   end;
 
 const
@@ -314,10 +352,20 @@ const
     'Replace',
     'ReplaceAll'
     );
+  IHIgnoreItemDurationNames: array[TIHIgnoreItemDuration] of string = (
+    'IDERestart',
+    '24H',
+    'Forever'
+    );
 
 var
   InputHistories: TInputHistories = nil;
-  
+
+function CompareIHIgnoreItems(Item1, Item2: Pointer): integer;
+function CompareAnsiStringWithIHIgnoreItem(AString, Item: Pointer): integer;
+
+function NameToIHIgnoreItemDuration(const s: string): TIHIgnoreItemDuration;
+
 
 implementation
 
@@ -327,6 +375,28 @@ const
   InputHistoryVersion = 1;
   DefaultDiffFlags = [tdfIgnoreCase,tdfIgnoreEmptyLineChanges,
                       tdfIgnoreLineEnds,tdfIgnoreTrailingSpaces];
+
+function CompareIHIgnoreItems(Item1, Item2: Pointer): integer;
+var
+  IgnoreItem1: TIHIngoreItem absolute Item1;
+  IgnoreItem2: TIHIngoreItem absolute Item2;
+begin
+  Result:=SysUtils.CompareText(IgnoreItem1.Identifier,IgnoreItem2.Identifier);
+end;
+
+function CompareAnsiStringWithIHIgnoreItem(AString, Item: Pointer): integer;
+var
+  IgnoreItem: TIHIngoreItem absolute Item;
+begin
+  Result:=SysUtils.CompareText(AnsiString(AString),IgnoreItem.Identifier);
+end;
+
+function NameToIHIgnoreItemDuration(const s: string): TIHIgnoreItemDuration;
+begin
+  for Result:=low(TIHIgnoreItemDuration) to high(TIHIgnoreItemDuration) do
+    if SysUtils.CompareText(IHIgnoreItemDurationNames[Result],s)=0 then exit;
+  Result:=iiidIDERestart;
+end;
 
 { TInputHistories }
 
@@ -364,12 +434,15 @@ begin
   FFPCConfigCache:=TFPCConfigCache.Create;
   
   fFileEncodings:=TStringToStringTree.Create({$IFDEF CaseInsensitiveFilenames}false{$ELSE}true{$ENDIF});
-  
+
+  FIgnores:=TIHIgnoreItemList.Create;
+
   Clear;
 end;
 
 destructor TInputHistories.Destroy;
 begin
+  FreeAndNil(FIgnores);
   FreeAndNil(FHistoryLists);
   FreeAndNil(FFileDialogSettings.HistoryList);
   FreeAndNil(FUnitDependenciesHistory);
@@ -402,6 +475,7 @@ begin
   FLastConvertDelphiProject:='';
   FLastConvertDelphiUnit:='';
   fFileEncodings.Clear;
+  FIgnores.Clear;
 end;
 
 procedure TInputHistories.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -475,6 +549,8 @@ begin
 
   // encodings
   LoadStringToStringTree(XMLConfig,fFileEncodings,Path+'FileEncodings/');
+
+  Ignores.LoadFromXMLConfig(XMLConfig,Path+'Ignores/');
 end;
 
 procedure TInputHistories.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -539,6 +615,8 @@ begin
                            FLastConvertDelphiUnit,'');
   // encodings
   SaveStringToStringTree(XMLConfig,fFileEncodings,Path+'FileEncodings/');
+
+  Ignores.SaveToXMLConfig(XMLConfig,Path+'Ignores/');
 end;
 
 procedure TInputHistories.SetLazarusDefaultFilename;
@@ -1003,6 +1081,118 @@ begin
   XMLConfig.SetDeleteValue(Path+'SearchPath/Value',SearchPath,'');
   XMLConfig.SetDeleteValue(Path+'FPCSrcDir/Value',FPCSrcDir,'');
   XMLConfig.SetDeleteValue(Path+'UnitLinks/Value',UnitLinks,'');
+end;
+
+{ TIHIgnoreItemList }
+
+function TIHIgnoreItemList.FindNode(const Identifier: string): TAvgLvlTreeNode;
+begin
+  Result:=FItems.FindKey(Pointer(Identifier),@CompareAnsiStringWithIHIgnoreItem);
+end;
+
+constructor TIHIgnoreItemList.Create;
+begin
+  FItems:=TAvgLvlTree.Create(@CompareIHIgnoreItems);
+end;
+
+destructor TIHIgnoreItemList.Destroy;
+begin
+  FItems.FreeAndClear;
+  FreeAndNil(FItems);
+  inherited Destroy;
+end;
+
+procedure TIHIgnoreItemList.Clear;
+begin
+  FItems.FreeAndClear;
+end;
+
+function TIHIgnoreItemList.Add(const Identifier: string;
+  Duration: TIHIgnoreItemDuration): TIHIngoreItem;
+var
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FindNode(Identifier);
+  if Node<>nil then begin
+    Result:=TIHIngoreItem(Node.Data);
+  end else begin
+    Result:=TIHIngoreItem.Create;
+    Result.Identifier:=Identifier;
+    FItems.Add(Result);
+  end;
+  Result.Duration:=Duration;
+  Result.Date:=Now;
+end;
+
+procedure TIHIgnoreItemList.Delete(const Identifier: string);
+var
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FindNode(Identifier);
+  if Node<>nil then
+    FItems.FreeAndDelete(Node);
+end;
+
+function TIHIgnoreItemList.Find(const Identifier: string): TIHIngoreItem;
+var
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FindNode(Identifier);
+  if Node<>nil then
+    Result:=TIHIngoreItem(Node.Data)
+  else
+    Result:=nil;
+end;
+
+procedure TIHIgnoreItemList.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  Cnt: longint;
+  i: Integer;
+  SubPath: String;
+  Identifier: String;
+  ADate: TDateTime;
+  ADuration: TIHIgnoreItemDuration;
+  Item: TIHIngoreItem;
+begin
+  Clear;
+  Cnt:=XMLConfig.GetValue(Path+'Count',0);
+  for i:=1 to Cnt do begin
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    Identifier:=XMLConfig.GetValue(SubPath+'Name','');
+    if Identifier='' then continue;
+    if not CfgStrToDate(XMLConfig.GetValue(SubPath+'Date',''),ADate) then continue;
+    ADuration:=NameToIHIgnoreItemDuration(XMLConfig.GetValue(SubPath+'Duration',''));
+    if ADuration=iiidIDERestart then continue;
+    Item:=Add(Identifier,ADuration);
+    Item.Date:=ADate;
+  end;
+end;
+
+procedure TIHIgnoreItemList.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  i: Integer;
+  Node: TAvgLvlTreeNode;
+  Item: TIHIngoreItem;
+  SubPath: String;
+begin
+  i:=0;
+  Node:=FItems.FindLowest;
+  while Node<>nil do begin
+    Item:=TIHIngoreItem(Node.Data);
+    if (Item.Duration<>iiidIDERestart) and (Item.Identifier<>'') then begin
+      inc(i);
+      SubPath:=Path+'Item'+IntToStr(i)+'/';
+      XMLConfig.SetDeleteValue(SubPath+'Name',Item.Identifier,'');
+      XMLConfig.SetDeleteValue(SubPath+'Date',DateToCfgStr(Item.Date),'');
+      XMLConfig.SetDeleteValue(SubPath+'Duration',
+                               IHIgnoreItemDurationNames[Item.Duration],
+                               IHIgnoreItemDurationNames[iiid24H]);
+    end;
+    Node:=FItems.FindSuccessor(Node);
+  end;
+  XMLConfig.SetDeleteValue(Path+'Count',i,0);
 end;
 
 initialization
