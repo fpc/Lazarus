@@ -3346,8 +3346,7 @@ begin
   InitializeNodeStack(@NodeStack);
   try
     while (Result.Node<>nil) do begin
-      if (Result.Node.Cache<>nil) and (Result.Node.Cache is TBaseTypeCache) then
-      begin
+      if (Result.Node.Cache is TBaseTypeCache) then begin
         // base type already cached
         Result:=CreateFindContext(TBaseTypeCache(Result.Node.Cache));
         exit;
@@ -8912,7 +8911,7 @@ begin
   if Node<>nil then begin
     if (Node.Cache=nil) and CreateIfNotExists then
       CreateNewNodeCache(Node);
-    if (Node.Cache<>nil) and (Node.Cache is TCodeTreeNodeCache) then
+    if (Node.Cache is TCodeTreeNodeCache) then
       Result:=TCodeTreeNodeCache(Node.Cache)
     else
       Result:=nil;
@@ -9118,8 +9117,7 @@ begin
   {$ENDIF}
   for i:=0 to (NodeStack^.StackPtr-1) do begin
     Node:=GetNodeStackEntry(NodeStack,i);
-    if (Node.Cache=nil)
-    and ((Result.Tool<>Self) or (Result.Node<>Node)) then begin
+    if (Node.Cache=nil) then begin
       {$IFDEF ShowBaseTypeCache}
       DebugLn('  i=',DbgS(i),' Node=',Node.DescAsString,' "',copy(Src,Node.StartPos,15),'"');
       {$ENDIF}

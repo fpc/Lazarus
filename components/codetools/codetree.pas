@@ -636,6 +636,7 @@ begin
   LastChild:=nil;
   StartPos:=-1;
   EndPos:=-1;
+  Cache:=nil;
 end;
 
 function TCodeTreeNode.Next: TCodeTreeNode;
