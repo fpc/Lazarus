@@ -1315,7 +1315,8 @@ begin
         if HostDockSite <> nil then Activate;
       end;
     LM_WINDOWPOSCHANGING:
-      if ([csLoading, csDesigning] * ComponentState = [csLoading])
+      if (not (csDesigning in ComponentState))
+      and (fsFirstShow in FFormState)
       then begin
         if  (Position in [poDefault, poDefaultPosOnly])
         and (WindowState <> wsMaximized)
