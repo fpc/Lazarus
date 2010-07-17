@@ -90,9 +90,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.BeforeDestruction;
 begin
+  // set csDestroying
+  inherited BeforeDestruction;
+  //debugln(['TCustomForm.BeforeDestruction ',DbgSName(Self),' ',csDestroying in ComponentState]);
   // EndWrite will happen in the destructor
   GlobalNameSpace.BeginWrite;
-  Destroying;
   Screen.FSaveFocusedList.Remove(Self);
   RemoveFixupReferences(Self, '');
   if FormStyle <> fsMDIChild then Hide;
