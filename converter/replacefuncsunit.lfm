@@ -82,13 +82,16 @@ object ReplaceFuncsForm: TReplaceFuncsForm
     Width = 5
   end
   object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
     left = 248
     top = 152
     object InsertRow1: TMenuItem
       Caption = 'Insert Row'
+      OnClick = InsertRow1Click
     end
     object DeleteRow1: TMenuItem
       Caption = 'Delete Row'
+      OnClick = DeleteRow1Click
     end
   end
 end
