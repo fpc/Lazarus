@@ -69,7 +69,7 @@
 
   ToDo:
     - keep custom dock site content visible
-    - change custom dock site title only if some flag is set
+    - restore custom dock site splitter without resizing content, only resize docked site
     - undock on hide
     - popup menu
        - shrink side left, top, right, bottom
@@ -266,6 +266,7 @@ type
     function MakeSite(AControl: TControl): TAnchorDockHostSite;
     procedure MoveAllControls(dx, dy: integer);
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
+    function CheckIfOneControlHidden: boolean;
     procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); override;
     procedure SetParent(NewParent: TWinControl); override;
     function HeaderNeedsShowing: boolean;
@@ -396,6 +397,7 @@ type
     FPageAreaInPercent: integer;
     FPageClass: TAnchorDockPageClass;
     FPageControlClass: TAnchorDockPageControlClass;
+    FQueueSimplify: Boolean;
     FRestoreLayouts: TAnchorDockRestoreLayouts;
     FRestoring: boolean;
     FScaleOnResize: boolean;
@@ -423,6 +425,7 @@ type
     procedure ChangeLockButtonClick(Sender: TObject);
     procedure OptionsClick(Sender: TObject);
     procedure SetIdleConnected(const AValue: Boolean);
+    procedure SetQueueSimplify(const AValue: Boolean);
     procedure SetRestoring(const AValue: boolean);
   protected
     fCloseBtnReferenceCount: integer;
@@ -441,6 +444,7 @@ type
     procedure SetHideHeaderCaptionFloatingControl(const AValue: boolean);
     procedure SetSplitterWidth(const AValue: integer);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure AsyncSimplify({%H-}Data: PtrInt);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -504,6 +508,7 @@ type
     function CreateSite(NamePrefix: string = '';
                         DisableAutoSizing: boolean = true): TAnchorDockHostSite;
     function CreateSplitter(NamePrefix: string = ''): TAnchorDockSplitter;
+    property QueueSimplify: Boolean read FQueueSimplify write SetQueueSimplify;
 
     // options
     property OnShowOptions: TADShowDockMasterOptionsEvent read FOnShowOptions write FOnShowOptions;
@@ -1544,6 +1549,12 @@ begin
   IdleConnected:=false;
 end;
 
+procedure TAnchorDockMaster.AsyncSimplify(Data: PtrInt);
+begin
+  FQueueSimplify:=false;
+  SimplifyPendingLayouts;
+end;
+
 procedure TAnchorDockMaster.ChangeLockButtonClick(Sender: TObject);
 begin
   AllowDragging:=not AllowDragging;
@@ -1562,6 +1573,16 @@ begin
     Application.AddOnIdleHandler(@OnIdle,true)
   else
     Application.RemoveOnIdleHandler(@OnIdle);
+end;
+
+procedure TAnchorDockMaster.SetQueueSimplify(const AValue: Boolean);
+begin
+  if FQueueSimplify=AValue then exit;
+  FQueueSimplify:=AValue;
+  if FQueueSimplify then
+    Application.QueueAsyncCall(@AsyncSimplify,0)
+  else
+    Application.RemoveAsyncCalls(Self);
 end;
 
 procedure TAnchorDockMaster.SetRestoring(const AValue: boolean);
@@ -1703,6 +1724,7 @@ var
   AControl: TControl;
   i: Integer;
 begin
+  QueueSimplify:=false;
   FreeAndNil(FRestoreLayouts);
   FreeAndNil(fPopupMenu);
   FreeAndNil(fTreeNameToDocker);
@@ -2332,13 +2354,15 @@ begin
   then
     exit;
   if Application.Terminated then exit;
-  debugln(['TAnchorDockMaster.NeedSimplify ',DbgSName(AControl),' Caption="',AControl.Caption,'"']);
+  //debugln(['TAnchorDockMaster.NeedSimplify ',DbgSName(AControl),' Caption="',AControl.Caption,'"']);
   fNeedSimplify.Add(AControl);
   AControl.FreeNotification(Self);
+  QueueSimplify:=true;
 end;
 
 procedure TAnchorDockMaster.NeedFree(AControl: TControl);
 begin
+  //debugln(['TAnchorDockMaster.NeedFree ',DbgSName(AControl),' ',csDestroying in AControl.ComponentState]);
   if fNeedFree.IndexOf(AControl)>=0 then exit;
   if csDestroying in AControl.ComponentState then exit;
   fNeedFree.Add(AControl);
@@ -2367,15 +2391,17 @@ begin
           fNeedSimplify.Delete(i);
           Changed:=true;
         end else if (AControl is TAnchorDockHostSite) then begin
+          //debugln(['TAnchorDockMaster.SimplifyPendingLayouts ',DbgSName(AControl),' ',dbgs(TAnchorDockHostSite(AControl).SiteType),' UpdatingLayout=',TAnchorDockHostSite(AControl).UpdatingLayout]);
           if not TAnchorDockHostSite(AControl).UpdatingLayout then begin
             fNeedSimplify.Delete(i);
             Changed:=true;
             if TAnchorDockHostSite(AControl).SiteType=adhstNone then
             begin
-              debugln(['TAnchorDockMaster.SimplifyPendingLayouts free empty site: ',dbgs(pointer(AControl)),' Caption="',AControl.Caption,'"']);
+              //debugln(['TAnchorDockMaster.SimplifyPendingLayouts free empty site: ',dbgs(pointer(AControl)),' Caption="',AControl.Caption,'"']);
               NeedFree(AControl);
-            end else
+            end else begin
               TAnchorDockHostSite(AControl).Simplify;
+            end;
           end;
         end else if AControl is TAnchorDockPage then begin
           fNeedSimplify.Delete(i);
@@ -3256,11 +3282,19 @@ begin
 end;
 
 procedure TAnchorDockHostSite.Simplify;
+var
+  AControl: TControl;
 begin
   if (Pages<>nil) and (Pages.PageCount=1) then
     SimplifyPages
-  else if (SiteType=adhstOneControl) and (GetOneControl is TAnchorDockHostSite) then
-    SimplifyOneControl;
+  else if (SiteType=adhstOneControl) then begin
+    AControl:=GetOneControl;
+    debugln(['TAnchorDockHostSite.Simplify ',DbgSName(Self),' ',DbgSName(AControl)]);
+    if AControl is TAnchorDockHostSite then
+      SimplifyOneControl
+    else if (AControl=nil) or (csDestroying in AControl.ComponentState) then
+      DockMaster.NeedFree(Self);
+  end;
 end;
 
 procedure TAnchorDockHostSite.SimplifyPages;
@@ -3476,6 +3510,7 @@ var
 begin
   inherited AlignControls(AControl, ARect);
   if csDestroying in ComponentState then exit;
+
   if DockMaster.ScaleOnResize and (not UpdatingLayout)
   and (not DockMaster.Restoring) then begin
     // scale splitters
@@ -3500,6 +3535,35 @@ begin
       end;
     end;
   end;
+end;
+
+function TAnchorDockHostSite.CheckIfOneControlHidden: boolean;
+var
+  Child: TControl;
+begin
+  Result:=false;
+  //debugln(['TAnchorDockHostSite.CheckIfOneControlHidden ',DbgSName(Self),' UpdatingLayout=',UpdatingLayout,' Visible=',Visible,' Parent=',DbgSName(Parent),' csDestroying=',csDestroying in ComponentState,' SiteType=',dbgs(SiteType)]);
+  if UpdatingLayout or (not Visible)
+  or (csDestroying in ComponentState)
+  or (SiteType<>adhstOneControl)
+  then
+    exit;
+  Child:=GetOneControl;
+  if (Child=nil) then exit;
+  if Child.IsControlVisible then exit;
+
+  // docked child was hidden/closed
+  Result:=true;
+  // => undock
+  BeginUpdateLayout;
+  DisableAutoSizing;
+  debugln(['TAnchorDockHostSite.CheckIfOneControlHidden ',DbgSName(Self),' UpdatingLayout=',UpdatingLayout,' Visible=',Visible,' Parent=',DbgSName(Parent),' csDestroying=',csDestroying in ComponentState,' SiteType=',dbgs(SiteType),' Child=',DbgSName(Child),' Child.csDestroying=',csDestroying in Child.ComponentState]);
+  Visible:=false;
+  Parent:=nil;
+  EnableAutoSizing;
+  EndUpdateLayout;
+  if (not (Child is TCustomForm)) or (csDestroying in Child.ComponentState) then
+    Release;
 end;
 
 procedure TAnchorDockHostSite.DoDock(NewDockSite: TWinControl; var ARect: TRect
@@ -3932,13 +3996,16 @@ begin
   Result:=CloseQuery;
   if not Result then exit;
 
-  DisableAutoSizing;
   debugln(['TAnchorDockHostSite.CloseSite ',DbgSName(Self),' SiteType=',dbgs(SiteType)]);
   case SiteType of
   adhstNone:
-    Release;
+    begin
+      Release;
+      exit;
+    end;
   adhstOneControl:
     begin
+      DisableAutoSizing;
       AControl:=GetOneControl;
       if AControl is TCustomForm then begin
         AForm:=TCustomForm(AControl);
@@ -3963,18 +4030,20 @@ begin
             else begin
               Release;
               AForm.Release;
+              exit;
             end;
           end;
         end;
       end else begin
-        Release;
         AControl.Visible:=false;
+        Release;
+        exit;
       end;
       Visible:=false;
       Parent:=nil;
+      EnableAutoSizing;
     end;
   end;
-  EnableAutoSizing;
 end;
 
 procedure TAnchorDockHostSite.RemoveControl(AControl: TControl);

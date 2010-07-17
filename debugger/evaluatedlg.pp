@@ -38,7 +38,8 @@ interface
 
 uses
   Classes, SysUtils, LCLType, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, StdCtrls, DebuggerDlg, BaseDebugManager, IDEWindowIntf, InputHistory,debugger;
+  ComCtrls, StdCtrls, DebuggerDlg, BaseDebugManager, IDEWindowIntf,
+  InputHistory, Debugger;
 
 type
 
@@ -77,7 +78,6 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     property FindText: string read GetFindText write SetFindText;
-
   end;
 
 implementation
