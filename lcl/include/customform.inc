@@ -1390,7 +1390,11 @@ procedure TCustomForm.SetAutoSize(Value: Boolean);
 begin
   if Value = AutoSize then Exit;
   if Value then
+  begin
     Exclude(FFormState, fsDisableAutoSize);
+    if Position=poDefaultPosOnly then
+      FPosition:=poDefault;
+  end;
   inherited SetAutoSize(Value);
 end;
 
@@ -1811,6 +1815,7 @@ begin
   if Value <> FPosition then
   begin
     FPosition := Value;
+    if Value=poDefaultPosOnly then AutoSize:=false;
     UpdateControlState;
 
     // we must update form TPosition if it's changed during runtime.
