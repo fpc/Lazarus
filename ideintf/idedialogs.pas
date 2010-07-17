@@ -52,6 +52,40 @@ function IDEQuestionDialogAb(const aCaption, aMsg: string;
                    DlgType: TMsgDlgType; Buttons: array of const;
                    HideAbort: boolean; const HelpKeyword: string = ''): Integer;
 
+type
+  { TIgnoreIDEQuestionItem }
+
+  TIgnoreQuestionDuration = (
+    iiidIDERestart,
+    iiid24H,
+    iiidForever
+    );
+  TIgnoreQuestionDurations = set of TIgnoreQuestionDuration;
+
+  TIgnoreIDEQuestionItem = class
+  private
+    FIdentifier: string;
+  public
+    Date: TDateTime;
+    Flag: string;
+    Duration: TIgnoreQuestionDuration;
+    constructor Create(const TheIdentifier: string);
+    property Identifier: string read FIdentifier;
+  end;
+
+  { TIgnoreIDEQuestionList }
+
+  TIgnoreIDEQuestionList = class
+  public
+    function Add(const Identifier: string;
+                 const Duration: TIgnoreQuestionDuration;
+                 const Flag: string = ''): TIgnoreIDEQuestionItem; virtual; abstract;
+    procedure Delete(const Identifier: string); virtual; abstract;
+    function Find(const Identifier: string): TIgnoreIDEQuestionItem; virtual; abstract;
+  end;
+
+var
+  IgnoreQuestions: TIgnoreIDEQuestionList = nil;
 
 implementation
 
@@ -103,6 +137,14 @@ begin
   end;
   SetLength(NewButtons,j);
   Result:=IDEQuestionDialog(aCaption,aMsg,DlgType,NewButtons,HelpKeyword);
+end;
+
+
+{ TIgnoreIDEQuestionItem }
+
+constructor TIgnoreIDEQuestionItem.Create(const TheIdentifier: string);
+begin
+  fIdentifier:=TheIdentifier;
 end;
 
 end.

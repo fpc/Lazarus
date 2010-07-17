@@ -268,9 +268,9 @@ type
                               RenameDependencies: boolean);
     function SavePackageCompiledState(APackage: TLazPackage;
                   const CompilerFilename, CompilerParams: string;
-                  Complete: boolean): TModalResult;
+                  Complete, ShowAbort: boolean): TModalResult;
     function LoadPackageCompiledState(APackage: TLazPackage;
-                                      IgnoreErrors: boolean): TModalResult;
+                                IgnoreErrors, ShowAbort: boolean): TModalResult;
     function CheckCompileNeedDueToDependencies(FirstDependency: TPkgDependency;
                                            StateFileAge: longint): TModalResult;
     function ExtractCompilerParamsForBuildAll(const CompParams: string): string;
@@ -2702,7 +2702,7 @@ begin
 end;
 
 function TLazPackageGraph.SavePackageCompiledState(APackage: TLazPackage;
-  const CompilerFilename, CompilerParams: string; Complete: boolean
+  const CompilerFilename, CompilerParams: string; Complete, ShowAbort: boolean
   ): TModalResult;
 var
   XMLConfig: TXMLConfig;
@@ -2735,10 +2735,10 @@ begin
     APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
   except
     on E: Exception do begin
-      Result:=IDEMessageDialog(lisPkgMangErrorWritingFile,
+      Result:=IDEMessageDialogAb(lisPkgMangErrorWritingFile,
         Format(lisPkgMangUnableToWriteStateFileOfPackageError, ['"', StateFile,
           '"', #13, APackage.IDAsString, #13, E.Message]),
-        mtError,[mbAbort,mbCancel]);
+        mtError,[mbCancel],ShowAbort);
       exit;
     end;
   end;
@@ -2747,7 +2747,7 @@ begin
 end;
 
 function TLazPackageGraph.LoadPackageCompiledState(APackage: TLazPackage;
-  IgnoreErrors: boolean): TModalResult;
+  IgnoreErrors, ShowAbort: boolean): TModalResult;
 var
   XMLConfig: TXMLConfig;
   StateFile: String;
@@ -2784,10 +2784,10 @@ begin
         if IgnoreErrors then begin
           Result:=mrOk;
         end else begin
-          Result:=IDEMessageDialog(lisPkgMangErrorReadingFile,
+          Result:=IDEMessageDialogAb(lisPkgMangErrorReadingFile,
             Format(lisPkgMangUnableToReadStateFileOfPackageError, ['"',
               StateFile, '"', #13, APackage.IDAsString, #13, E.Message]),
-            mtError,[mbCancel,mbAbort]);
+            mtError,[mbCancel],ShowAbort);
         end;
         exit;
       end;
@@ -2822,7 +2822,7 @@ begin
       RequiredPackage:=Dependency.RequiredPackage;
       // check compile state file of required package
       if not RequiredPackage.AutoCreated then begin
-        Result:=LoadPackageCompiledState(RequiredPackage,false);
+        Result:=LoadPackageCompiledState(RequiredPackage,false,true);
         if Result<>mrOk then exit;
         Result:=mrYes;
         if not (lpfStateFileLoaded in RequiredPackage.Flags) then begin
@@ -2937,7 +2937,7 @@ begin
 
   // check state file
   StateFilename:=APackage.GetStateFilename;
-  Result:=LoadPackageCompiledState(APackage,false);
+  Result:=LoadPackageCompiledState(APackage,false,true);
   if Result<>mrOk then exit;
   if not (lpfStateFileLoaded in APackage.Flags) then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  No state file for ',APackage.IDAsString);
@@ -3051,6 +3051,12 @@ end;
 function TLazPackageGraph.CompilePackage(APackage: TLazPackage;
   Flags: TPkgCompileFlags; ShowAbort: boolean; Globals: TGlobalCompilerOptions
   ): TModalResult;
+
+  function GetIgnoreIdentifier: string;
+  begin
+    Result:='install_package_compile_failed:'+APackage.Filename;
+  end;
+
 var
   PkgCompileTool: TIDEExternalToolOptions;
   CompilerFilename: String;
@@ -3060,7 +3066,7 @@ var
   CompilePolicies: TPackageUpdatePolicies;
   BlockBegan: Boolean;
   NeedBuildAllFlag: Boolean;
-  CompileResult: TModalResult;
+  CompileResult, MsgResult: TModalResult;
 begin
   Result:=mrCancel;
 
@@ -3207,7 +3213,7 @@ begin
           // write state file
           Result:=SavePackageCompiledState(APackage,
                                            CompilerFilename,CompilerParams,
-                                           CompileResult=mrOk);
+                                           CompileResult=mrOk,true);
           if Result<>mrOk then begin
             DebugLn(['TLazPackageGraph.CompilePackage SavePackageCompiledState failed: ',APackage.IDAsString]);
             exit;
@@ -3247,15 +3253,21 @@ begin
       if BlockBegan and (IDEMessagesWindow<>nil) then
         IDEMessagesWindow.EndBlock;
       if Result<>mrOk then begin
-        if (APackage.AutoInstall<>pitNope) and (APackage.Installed=pitNope)
-        and (OnUninstallPackage<>nil) then begin
-          // package was tried to install, but failed
+        if (APackage.AutoInstall<>pitNope)
+        and (OnUninstallPackage<>nil)
+        and (IgnoreQuestions<>nil)
+        and (IgnoreQuestions.Find(GetIgnoreIdentifier)=nil)
+        then begin
+          // a package needed for installation failed to compile
           // -> ask user if the package should be removed from the installation
           // list
-          if IDEMessageDialog(lisInstallationFailed,
+          MsgResult:=IDEMessageDialog(lisInstallationFailed,
             Format(lisPkgMangThePackageFailedToCompileRemoveItFromTheInstallati,
               ['"', APackage.IDAsString, '"', #13]), mtConfirmation,
-              [mbYes,mbIgnore])=mrYes then
+              [mbYes,mbIgnore]);
+          if MsgResult=mrIgnore then
+            IgnoreQuestions.Add(GetIgnoreIdentifier,iiid24H)
+          else if MsgResult=mrYes then
           begin
             Result:=OnUninstallPackage(APackage,
               [puifDoNotConfirm,puifDoNotBuildIDE],true);
