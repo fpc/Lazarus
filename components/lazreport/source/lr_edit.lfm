@@ -813,7 +813,6 @@ inherited frEditorForm: TfrEditorForm
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 36
     Top = 0
@@ -833,7 +832,6 @@ inherited frEditorForm: TfrEditorForm
       Top = 7
       Width = 61
       HelpContext = 80
-      AllowGrayed = True
       BorderSpacing.Around = 6
       Caption = '&Script'
       OnClick = CB1Click
@@ -848,7 +846,6 @@ inherited frEditorForm: TfrEditorForm
       Top = 7
       Width = 73
       HelpContext = 90
-      AllowGrayed = True
       BorderSpacing.Around = 6
       Caption = '&Big font'
       OnClick = CB2Click
@@ -863,7 +860,6 @@ inherited frEditorForm: TfrEditorForm
       Top = 7
       Width = 89
       HelpContext = 100
-      AllowGrayed = True
       BorderSpacing.Around = 6
       Caption = '&Word wrap'
       OnClick = CB3Click
