@@ -1192,6 +1192,11 @@ begin
         Y := ((TCustomForm(Owner).Height - Height) div 2) + TCustomForm(Owner).Top;
       end;
     end;
+    if (p in [poDefault,poDefaultPosOnly]) and HandleAllocated
+    then begin
+      // get current widgetset position
+      GetWindowRelativePosition(Handle,X,Y);
+    end;
     if (Position in [poScreenCenter, poMainFormCenter, poOwnerFormCenter]) then
       MoveToDefaultMonitor(X, Y);
     SetBounds(X, Y, Width, Height);
