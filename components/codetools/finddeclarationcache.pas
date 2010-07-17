@@ -1129,12 +1129,12 @@ end;
 
 procedure TNodeCacheMemManager.DisposeNodeCache(NodeCache: TCodeTreeNodeCache);
 begin
+  NodeCache.UnbindFromOwner;
   if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
   begin
     // add Entry to Free list
     NodeCache.Next:=TCodeTreeNodeCache(FFirstFree);
     TCodeTreeNodeCache(FFirstFree):=NodeCache;
-    NodeCache.UnbindFromOwner;
     inc(FFreeCount);
   end else begin
     // free list full -> free the NodeCache
@@ -1236,12 +1236,12 @@ end;
 procedure TBaseTypeCacheMemManager.DisposeBaseTypeCache(
   BaseTypeCache: TBaseTypeCache);
 begin
+  BaseTypeCache.UnbindFromOwner;
   if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
   begin
     // add Entry to Free list
     BaseTypeCache.Next:=TBaseTypeCache(FFirstFree);
     TBaseTypeCache(FFirstFree):=BaseTypeCache;
-    BaseTypeCache.UnbindFromOwner;
     inc(FFreeCount);
   end else begin
     // free list full -> free the BaseType
