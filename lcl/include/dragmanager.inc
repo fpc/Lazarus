@@ -674,7 +674,8 @@ begin
         exit;
       FPerformer.DragStarted(APosition);
     end;
-    FPerformer.DragMove(APosition);
+    if FPerformer<>nil then
+      FPerformer.DragMove(APosition);
   end;
 end;
 
