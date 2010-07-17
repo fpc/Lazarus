@@ -237,15 +237,15 @@ begin
     Config.DeletePath(SubPath);
   end;
   // Categories
-  Config.SetDeleteValue(CategPath+'Count', aFuncsAndCateg.CategInUse.Count, 0);
-  for i:=0 to aFuncsAndCateg.CategInUse.Count-1 do begin
-    s:=aFuncsAndCateg.CategInUse[i];
+  Config.SetDeleteValue(CategPath+'Count', aFuncsAndCateg.CategoryInUse.Count, 0);
+  for i:=0 to aFuncsAndCateg.CategoryInUse.Count-1 do begin
+    s:=aFuncsAndCateg.CategoryInUse[i];
     if s<>'' then begin
       SubPath:=CategPath+'Item'+IntToStr(i)+'/';
       Config.SetDeleteValue(SubPath+'Name',s,'');
     end;
   end;
-  for i:=aFuncsAndCateg.CategInUse.Count to aFuncsAndCateg.CategInUse.Count+10 do begin
+  for i:=aFuncsAndCateg.CategoryInUse.Count to aFuncsAndCateg.CategoryInUse.Count+10 do begin
     SubPath:=CategPath+'Item'+IntToStr(i)+'/';
     Config.DeletePath(SubPath);
   end;
@@ -257,6 +257,7 @@ end;
 constructor TConvertSettings.Create(const ATitle: string);
 var
   TheMap: TStringToStringTree;
+  Categ: string;
 
   procedure MapReplacement(ADelphi, ALCL: string);
   begin
@@ -324,18 +325,44 @@ begin
   MapReplacement('^TTnt(.+[^L][^X])$','T$1');
 
   // Map Delphi function names to FCL/LCL functions.
-  fReplaceFuncs.AddFunc('Other', 'ShellExecute',
-                   'if $3 match ":/" then OpenURL($3); OpenDocument($3)', '', '');
-  // File name encoding. ToDo: add other similar funcs with UTF8 counterparts.
-  fReplaceFuncs.AddFunc('UTF8Names', 'FileExists', 'FileExistsUTF8($1)', '', '');
-  // File functions using a handle.
-  fReplaceFuncs.AddFunc('Other', 'CreateFile',  'FileCreate($1)', '', 'SysUtils');
-  fReplaceFuncs.AddFunc('Other', 'GetFileSize', 'FileSize($1)'  , '', 'SysUtils');
-  fReplaceFuncs.AddFunc('Other', 'ReadFile',    'FileRead($1)'  , '', 'SysUtils');
-  fReplaceFuncs.AddFunc('Other', 'CloseHandle', 'FileClose($1)' , '', 'SysUtils');
-  // Categories.
-  fReplaceFuncs.AddCategory('UTF8Names');
-  fReplaceFuncs.AddCategory('Other');
+  with fReplaceFuncs do begin
+    // File name encoding.
+    Categ:='UTF8Names';
+    if AddFunc(Categ,'FileExists',       'FileExistsUTF8($1)','LCL','FileUtil')<>-1 then
+      AddCategory(Categ);    // Use the category by default if the func was added.
+    AddFunc(Categ,'FileAge',             'FileAgeUTF8($1)',             'LCL','FileUtil');
+    AddFunc(Categ,'DirectoryExists',     'DirectoryExistsUTF8($1)',     'LCL','FileUtil');
+    AddFunc(Categ,'ExpandFileName',      'ExpandFileNameUTF8($1)',      'LCL','FileUtil');
+    AddFunc(Categ,'ExpandUNCFileName',   'ExpandUNCFileNameUTF8($1)',   'LCL','FileUtil');
+    AddFunc(Categ,'ExtractShortPathName','ExtractShortPathNameUTF8($1)','LCL','FileUtil');
+    AddFunc(Categ,'FindFirst',           'FindFirstUTF8($1,$2,$3)',     'LCL','FileUtil');
+    AddFunc(Categ,'FindNext',            'FindNextUTF8($1)',            'LCL','FileUtil');
+    AddFunc(Categ,'FindClose',           'FindCloseUTF8($1)',           'LCL','FileUtil');
+    AddFunc(Categ,'FileSetDate',         'FileSetDateUTF8($1,$2)',      'LCL','FileUtil');
+    AddFunc(Categ,'FileGetAttr',         'FileGetAttrUTF8($1)',         'LCL','FileUtil');
+    AddFunc(Categ,'FileSetAttr',         'FileSetAttrUTF8($1)',         'LCL','FileUtil');
+    AddFunc(Categ,'DeleteFile',          'DeleteFileUTF8($1)',          'LCL','FileUtil');
+    AddFunc(Categ,'RenameFile',          'RenameFileUTF8($1,$2)',       'LCL','FileUtil');
+    AddFunc(Categ,'FileSearch',          'FileSearchUTF8($1,$2)',       'LCL','FileUtil');
+    AddFunc(Categ,'FileIsReadOnly',      'FileIsReadOnlyUTF8($1)',      'LCL','FileUtil');
+    AddFunc(Categ,'GetCurrentDir',       'GetCurrentDirUTF8',           'LCL','FileUtil');
+    AddFunc(Categ,'SetCurrentDir',       'SetCurrentDirUTF8($1)',       'LCL','FileUtil');
+    AddFunc(Categ,'CreateDir',           'CreateDirUTF8($1)',           'LCL','FileUtil');
+    AddFunc(Categ,'RemoveDir',           'RemoveDirUTF8($1)',           'LCL','FileUtil');
+    AddFunc(Categ,'ForceDirectories',    'ForceDirectoriesUTF8($1)',    'LCL','FileUtil');
+    // File functions using a handle.
+    Categ:='FileHandle';
+    if AddFunc(Categ,'CreateFile','FileCreate($1)','','SysUtils')<>-1 then
+      AddCategory(Categ);
+    AddFunc(Categ, 'GetFileSize','FileSize($1)' ,'','SysUtils');
+    AddFunc(Categ, 'ReadFile',   'FileRead($1)' ,'','SysUtils');
+    AddFunc(Categ, 'CloseHandle','FileClose($1)','','SysUtils');
+    // Others
+    Categ:='Other';
+    if AddFunc(Categ, 'ShellExecute',
+             'if $3 match ":/" then OpenURL($3); OpenDocument($3)', '', '')<>-1 then
+      AddCategory(Categ);
+  end;
 end;
 
 destructor TConvertSettings.Destroy;

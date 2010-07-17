@@ -1,18 +1,19 @@
 object ReplaceFuncsForm: TReplaceFuncsForm
-  Left = 361
-  Height = 321
-  Top = 90
-  Width = 856
+  Left = 508
+  Height = 626
+  Top = 104
+  Width = 928
   Caption = 'Functions to replace'
-  ClientHeight = 321
-  ClientWidth = 856
+  ClientHeight = 626
+  ClientWidth = 928
   OnCreate = FormCreate
+  Position = poScreenCenter
   LCLVersion = '0.9.29'
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 39
-    Top = 276
-    Width = 844
+    Top = 581
+    Width = 916
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
     OKButton.OnClick = OKButtonClick
@@ -27,19 +28,22 @@ object ReplaceFuncsForm: TReplaceFuncsForm
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object Grid: TStringGrid
+    AnchorSideLeft.Control = Splitter1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel
     Left = 162
-    Height = 270
+    Height = 575
     Top = 0
-    Width = 694
-    Align = alClient
+    Width = 766
+    Anchors = [akTop, akLeft, akRight, akBottom]
     Columns = <    
       item
         Title.Caption = 'Category'
-        Width = 80
+        Width = 100
       end    
       item
         Title.Caption = 'Delphi Function'
-        Width = 120
+        Width = 150
       end    
       item
         Title.Caption = 'Replacement'
@@ -47,11 +51,11 @@ object ReplaceFuncsForm: TReplaceFuncsForm
       end    
       item
         Title.Caption = 'Package'
-        Width = 100
+        Width = 90
       end    
       item
         Title.Caption = 'Unit'
-        Width = 100
+        Width = 90
       end>
     FixedCols = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goEditing, goSmoothScroll]
@@ -59,19 +63,24 @@ object ReplaceFuncsForm: TReplaceFuncsForm
     RowCount = 2
     TabOrder = 1
     ColWidths = (
-      80
-      120
+      100
+      150
       310
-      100
-      100
+      90
+      90
     )
   end
   object CategoryListBox: TCheckListBox
+    AnchorSideTop.Control = CategoriesLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Splitter1
+    AnchorSideBottom.Control = ButtonPanel
     Left = 0
-    Height = 270
-    Top = 0
+    Height = 546
+    Top = 29
     Width = 157
-    Align = alLeft
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 5
     ItemHeight = 0
     TabOrder = 2
   end
@@ -80,6 +89,17 @@ object ReplaceFuncsForm: TReplaceFuncsForm
     Height = 270
     Top = 0
     Width = 5
+    Align = alNone
+  end
+  object CategoriesLabel: TLabel
+    Left = 6
+    Height = 16
+    Top = 8
+    Width = 131
+    Caption = 'Categories to convert :'
+    Font.Height = -13
+    ParentColor = False
+    ParentFont = False
   end
   object PopupMenu1: TPopupMenu
     OnPopup = PopupMenu1Popup

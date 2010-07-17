@@ -52,12 +52,12 @@ type
     function CommentOutUnits: boolean;
     function ReplaceFuncsInSource: boolean;
     function RememberProcDefinition(aNode: TCodeTreeNode): TCodeTreeNode;
-    function ReplaceFuncCalls: boolean;
+    function ReplaceFuncCalls(aIsConsoleApp: boolean): boolean;
     function HandleCodetoolError: TModalResult;
   public
     constructor Create(Code: TCodeBuffer);
     destructor Destroy; override;
-    function Convert: TModalResult;
+    function Convert(aIsConsoleApp: boolean): TModalResult;
     function FindApptypeConsole: boolean;
     function RemoveUnits: boolean;
     function RenameUnits: boolean;
@@ -126,7 +126,7 @@ begin
   end;
 end;
 
-function TConvDelphiCodeTool.Convert: TModalResult;
+function TConvDelphiCodeTool.Convert(aIsConsoleApp: boolean): TModalResult;
 // add {$mode delphi} directive
 // remove {$R *.dfm} or {$R *.xfm} directive
 // Change {$R *.RES} to {$R *.res} if needed
@@ -139,7 +139,7 @@ begin
       // these changes can be applied together without rescan
       if not AddModeDelphiDirective then exit;
       if not RenameResourceDirectives then exit;
-      if not ReplaceFuncCalls then exit;
+      if not ReplaceFuncCalls(aIsConsoleApp) then exit;
       if not fSrcCache.Apply then exit;
     finally
       fSrcCache.EndUpdate;
@@ -508,7 +508,7 @@ var
   ParamList: TStringList;
   BodyEnd: Integer;                     // End of function body.
 
-  function ParseReplacementParams(aStr: string): integer;
+  function ParseReplacementParams(const aStr: string): integer;
   // Parse replacement params. They show which original params are copied where.
   // Returns the first position where comments can be searched from.
   var
@@ -549,7 +549,7 @@ var
     end;
   end;
 
-  function GetComment(aStr: string; aPossibleStartPos: integer): string;
+  function GetComment(const aStr: string; aPossibleStartPos: integer): string;
   // Extract and return a possible comment.
   var
     CommChBeg, CommBeg, CommEnd, i: Integer;   // Start and end of comment.
@@ -630,10 +630,10 @@ begin
   Result:=aNode.Next;
 end;
 
-function TConvDelphiCodeTool.ReplaceFuncCalls: boolean;
+function TConvDelphiCodeTool.ReplaceFuncCalls(aIsConsoleApp: boolean): boolean;
 // Copied and modified from TFindDeclarationTool.FindReferences.
-// Search for calls to functions / procedures given in a list in current unit's
-// implementation section. Add their positions to another list for replacement.
+// Search for calls to functions / procedures in a list from current unit's
+// implementation section. Replace found calls with a given replacement.
 var
   xStart: Integer;
 
@@ -695,7 +695,7 @@ var
 
   procedure ReadFuncCall(MaxPos: Integer);
   var
-    FuncInfo: TFuncReplacement;
+    FuncDefInfo, FuncCallInfo: TFuncReplacement;
     FuncName: string;
     i, x, IdentEndPos: Integer;
   begin
@@ -709,12 +709,17 @@ var
         and (CompareIdentifiers(PChar(Pointer(FuncName)),@Src[xStart])=0)
         and not fDefinedProcNames.Find(FuncName, x)
         then begin
-          // Create a new replacement object for params, position and other info.
-          FuncInfo:=TFuncReplacement.Create(fReplaceFuncs.FuncAtInd(i));
-          ReadParams(FuncInfo);
-          IdentEndPos:=FuncInfo.EndPos; // Skip the params, too, for next search.
-          fFuncsToReplace.Add(FuncInfo);
-          Break;
+          FuncDefInfo:=fReplaceFuncs.FuncAtInd(i);
+          if fReplaceFuncs.CategoryInUse.Find(FuncDefInfo.Category, x)
+          and not (aIsConsoleApp and (FuncDefInfo.Category='UTF8Names'))
+          then begin
+            // Create a new replacement object for params, position and other info.
+            FuncCallInfo:=TFuncReplacement.Create(FuncDefInfo);
+            ReadParams(FuncCallInfo);
+            IdentEndPos:=FuncCallInfo.EndPos; // Skip the params, too, for next search.
+            fFuncsToReplace.Add(FuncCallInfo);
+            Break;
+          end;
         end;
       end;
     end;

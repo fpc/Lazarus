@@ -492,6 +492,7 @@ function TConvertDelphiUnit.ConvertUnitFile: TModalResult;
 var
   DfmFilename: string;     // Delphi .DFM file name.
   LfmFilename: string;     // Lazarus .LFM file name.
+  ConsApp: Boolean;
   ConvTool: TConvDelphiCodeTool;
 begin
   fUnitsToRemove:=TStringList.Create;
@@ -546,7 +547,11 @@ begin
     // Fix or comment missing units, show error messages.
     Result:=FixMissingUnits;
     if Result<>mrOk then exit;
-
+    // Check from the project if this is a console application.
+    if Assigned(fOwnerConverter) then
+      ConsApp:=fOwnerConverter.fIsConsoleApp
+    else
+      ConsApp:=False;
     // Do the actual code conversion.
     ConvTool.Ask:=Assigned(fOwnerConverter);
     ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
@@ -556,7 +561,7 @@ begin
     ConvTool.UnitsToRemove:=fUnitsToRemove;
     ConvTool.UnitsToRename:=fUnitsToRename;
     ConvTool.UnitsToComment:=fUnitsToComment;
-    Result:=ConvTool.Convert;
+    Result:=ConvTool.Convert(ConsApp);
   finally
     ConvTool.Free;
     fUnitsToComment.Free;

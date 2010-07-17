@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, ButtonPanel, ComCtrls, Grids, CheckLst, Menus, SynRegExpr,
+  Buttons, ButtonPanel, ComCtrls, Grids, CheckLst, Menus, StdCtrls, SynRegExpr,
   LazarusIDEStrConsts, ConverterTypes;
 
 type
@@ -61,7 +61,7 @@ type
     function FuncAtInd(Ind: integer): TFuncReplacement;
   public
     property Funcs: TStringList read fFuncs;
-    property CategInUse: TStringList read fCategInUse;
+    property CategoryInUse: TStringList read fCategInUse;
   end;
 
   { TReplaceFuncsForm }
@@ -72,6 +72,7 @@ type
     DeleteRow1: TMenuItem;
     Grid: TStringGrid;
     InsertRow1: TMenuItem;
+    CategoriesLabel: TLabel;
     PopupMenu1: TPopupMenu;
     Splitter1: TSplitter;
     procedure FormCreate(Sender: TObject);
@@ -280,6 +281,8 @@ begin
   fFuncs.Sorted:=True;
   fFuncs.CaseSensitive:=False;
   fCategInUse:=TStringList.Create;
+  fCategInUse.Sorted:=True;
+  fCategInUse.Duplicates:=dupIgnore;
 end;
 
 destructor TFuncsAndCategories.Destroy;
@@ -302,6 +305,7 @@ end;
 function TFuncsAndCategories.AddFunc(
       aCategory, aDelphiFunc, aReplaceFunc, aPackage, aUnitName: string): integer;
 // This is called when settings are read or when user made changes in GUI.
+// Returns index for the added func replacement, or -1 if not added (duplicate).
 var
   FuncRepl: TFuncReplacement;
   x: integer;
@@ -395,10 +399,10 @@ begin
   NewCategories:=TStringList.Create;
   NewCategories.Sorted:=True;
   try
-    Grid.BeginUpdate;
-    for i:=1 to aFuncsAndCateg.fFuncs.Count do begin     // Skip the fixed row in grid.
+    Grid.BeginUpdate;                          // Skip the fixed row in grid.
+    for i:=1 to aFuncsAndCateg.fFuncs.Count do begin
       if Grid.RowCount<i+2 then
-        Grid.RowCount:=i+2;              // Leave one empty row to the end.
+        Grid.RowCount:=i+2;                    // Leave one empty row to the end.
       FuncRepl:=TFuncReplacement(aFuncsAndCateg.fFuncs.Objects[i-1]);
       Grid.Cells[0,i]:=FuncRepl.fCategory;
       Grid.Cells[1,i]:=aFuncsAndCateg.fFuncs[i-1];      // Delphi function name
@@ -409,7 +413,7 @@ begin
         CategoryListBox.Items.Add(FuncRepl.fCategory);
         NewCatInd:=NewCategories.Add(FuncRepl.fCategory);
         CategoryListBox.Checked[NewCatInd]:=
-                              aFuncsAndCateg.fCategInUse.Find(FuncRepl.fCategory, x);
+                          aFuncsAndCateg.fCategInUse.Find(FuncRepl.fCategory, x);
       end;
     end;
     Grid.EndUpdate;
