@@ -1162,37 +1162,34 @@ begin
     p:=Position;
     if (Position = poMainFormCenter) and (Application.Mainform=nil) then
       p:=poScreenCenter;
-    if  (P = poMainFormCenter)
-    and (FormStyle = fsMDIChild)
-    and (Self <> Application.Mainform)
-    then begin
-      X := (Application.Mainform.ClientWidth - Width) div 2;
-      Y := (Application.Mainform.ClientHeight - Height) div 2;
-    end
-    else begin
-      case P of
-      poDesktopCenter :
+    case P of
+    poDesktopCenter :
+      begin
+        X := (Screen.DesktopWidth - Width) div 2;
+        Y := (Screen.DesktopHeight - Height) div 2;
+      end;
+    poScreenCenter :
+      begin
+        X := (Screen.Width - Width) div 2;
+        Y := (Screen.Height - Height) div 2;
+      end;
+    poMainFormCenter :
+      if (Self <> Application.MainForm) then
+      begin
+        if FormStyle = fsMDIChild then
         begin
-          X := (Screen.DesktopWidth - Width) div 2;
-          Y := (Screen.DesktopHeight - Height) div 2;
-        end;
-      poScreenCenter :
-        begin
-          X := (Screen.Width - Width) div 2;
-          Y := (Screen.Height - Height) div 2;
-        end;
-      poMainFormCenter :
-        if (Self <> Application.MainForm) then
-        begin
+          X := (Application.Mainform.ClientWidth - Width) div 2;
+          Y := (Application.Mainform.ClientHeight - Height) div 2;
+        end else begin
           X := ((Application.MainForm.Width - Width) div 2) + Application.MainForm.Left;
           Y := ((Application.MainForm.Height - Height) div 2) + Application.MainForm.Top;
         end;
-      poOwnerFormCenter :
-        if (Owner is TCustomForm) then
-        begin
-          X := ((TCustomForm(Owner).Width - Width) div 2) + TCustomForm(Owner).Left;
-          Y := ((TCustomForm(Owner).Height - Height) div 2) + TCustomForm(Owner).Top;
-        end;
+      end;
+    poOwnerFormCenter :
+      if (Owner is TCustomForm) then
+      begin
+        X := ((TCustomForm(Owner).Width - Width) div 2) + TCustomForm(Owner).Left;
+        Y := ((TCustomForm(Owner).Height - Height) div 2) + TCustomForm(Owner).Top;
       end;
     end;
     if (Position in [poScreenCenter, poMainFormCenter, poOwnerFormCenter]) then
