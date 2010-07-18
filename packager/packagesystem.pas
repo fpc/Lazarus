@@ -3255,6 +3255,7 @@ begin
       if Result<>mrOk then begin
         if (APackage.AutoInstall<>pitNope)
         and (OnUninstallPackage<>nil)
+        and (not IsStaticBasePackage(APackage.Name))
         and (IgnoreQuestions<>nil)
         and (IgnoreQuestions.Find(GetIgnoreIdentifier)=nil)
         then begin
