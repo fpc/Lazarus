@@ -720,9 +720,9 @@ var
   UnitSet: string;
 begin
   UnitSet:=Strings[ctdcsUnitSet];
-  debugln(['TCTDirectoryCache.FindUnitInUnitSet Directory="',Directory,'" UnitSet="',UnitSet,'" AUnitName="',AUnitName,'"']);
+  //debugln(['TCTDirectoryCache.FindUnitInUnitSet Directory="',Directory,'" UnitSet="',UnitSet,'" AUnitName="',AUnitName,'"']);
   Result:=Pool.OnGetUnitFromSet(UnitSet,AUnitName);
-  debugln(['TCTDirectoryCache.FindUnitInUnitSet Directory="',Directory,'" UnitSet="',UnitSet,'" AUnitName="',AUnitName,'" Result="',Result,'"']);
+  debugln(['TCTDirectoryCache.FindUnitInUnitSet Directory="',Directory,'" UnitSet="',dbgstr(UnitSet),'" AUnitName="',AUnitName,'" Result="',Result,'"']);
 end;
 
 function TCTDirectoryCache.FindFile(const ShortFilename: string;

@@ -946,10 +946,8 @@ begin
   UnitSetCache:=FPCDefinesCache.FindUnitToSrcCache(Config.FPCPath,
     Config.TargetOS,Config.TargetProcessor,Config.FPCOptions,Config.FPCSrcDir,
     true);
-  // parse compiler settings
-  UnitSetCache.GetConfigCache(true);
-  // parse fpc sources
-  UnitSetCache.GetSourceCache(true);
+  // parse compiler settings, fpc sources
+  UnitSetCache.Init;
 
   // create template for FPC settings
   FPCDefines:=CreateFPCTemplate(UnitSetCache,nil);
@@ -5310,11 +5308,19 @@ function TCodeToolManager.DirectoryCachePoolGetUnitFromSet(const UnitSet,
 var
   Changed: boolean;
   UnitSetCache: TFPCUnitSetCache;
-  Tree: TStringToStringTree;
 begin
-  UnitSetCache:=FPCDefinesCache.FindUnitToSrcCache(UnitSet,Changed,true);
-  Tree:=UnitSetCache.GetUnitToSourceTree(false);
-  Result:=Tree[AnUnitName];
+  UnitSetCache:=FPCDefinesCache.FindUnitToSrcCache(UnitSet,Changed,false);
+  if UnitSetCache=nil then begin
+    debugln(['TCodeToolManager.DirectoryCachePoolGetUnitFromSet invalid UnitSet="',dbgstr(UnitSet),'"']);
+    Result:='';
+    exit;
+  end;
+  if Changed then begin
+    debugln(['TCodeToolManager.DirectoryCachePoolGetUnitFromSet outdated UnitSet="',dbgstr(UnitSet),'"']);
+    Result:='';
+    exit;
+  end;
+  Result:=UnitSetCache.GetUnitSrcFile(AnUnitName);
 end;
 
 procedure TCodeToolManager.OnToolSetWriteLock(Lock: boolean);

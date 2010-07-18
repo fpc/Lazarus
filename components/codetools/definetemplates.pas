@@ -816,6 +816,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear;
+    procedure Init;
     property Caches: TFPCDefinesCache read FCaches;
     property CompilerFilename: string read FCompilerFilename write SetCompilerFilename;
     property CompilerOptions: string read FCompilerOptions write SetCompilerOptions;
@@ -827,6 +828,7 @@ type
     function GetSourceRules(AutoUpdate: boolean): TFPCSourceRules;
     function GetUnitToSourceTree(AutoUpdate: boolean): TStringToStringTree; // lowercase unit name to file name (maybe relative)
     function GetSourceDuplicates(AutoUpdate: boolean): TStringToStringTree; // lower case unit to semicolon separated list of files
+    function GetUnitSrcFile(const AUnitName: string): string;
     property ChangeStamp: integer read FChangeStamp;
     procedure IncreaseChangeStamp;
     function GetUnitSetID: string;
@@ -8160,8 +8162,15 @@ begin
                  Options, FPCSrcDir, ChangeStamp);
   debugln(['TFPCDefinesCache.FindUnitToSrcCache UnitSetID="',dbgstr(UnitSetID),'" CompilerFilename="',CompilerFilename,'" TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',Options,'" FPCSrcDir="',FPCSrcDir,'" ChangeStamp=',ChangeStamp,' exists=',FindUnitToSrcCache(CompilerFilename, TargetOS, TargetCPU,Options, FPCSrcDir,false)<>nil]);
   Result:=FindUnitToSrcCache(CompilerFilename, TargetOS, TargetCPU,
-                             Options, FPCSrcDir,CreateIfNotExists);
-  Changed:=ChangeStamp<>Result.ChangeStamp;
+                             Options, FPCSrcDir, false);
+  if Result<>nil then begin
+    Changed:=ChangeStamp<>Result.ChangeStamp;
+  end else if CreateIfNotExists then begin
+    Changed:=true;
+    Result:=FindUnitToSrcCache(CompilerFilename, TargetOS, TargetCPU,
+                               Options, FPCSrcDir, true);
+  end else
+    Changed:=false;
 end;
 
 function TFPCDefinesCache.GetUnitSetID(CompilerFilename, TargetOS, TargetCPU,
@@ -8220,15 +8229,16 @@ begin
     case NameStartPos^ of
     'c','C':
       if NameFits(PChar('CompilerFilename')) then
-        CompilerFilename:=Value
-      else if NameFits(PChar('Stamp')) then
-        ChangeStamp:=StrToIntDef(Value,0);
+        CompilerFilename:=Value;
     'f','F':
       if NameFits(PChar('FPCSrcDir')) then
         FPCSrcDir:=Value;
     'o','O':
       if NameFits(PChar('Options')) then
         Options:=Value;
+    's','S':
+      if NameFits(PChar('Stamp')) then
+        ChangeStamp:=StrToIntDef(Value,0);
     't','T':
       if NameFits(PChar('TargetOS')) then
         TargetOS:=Value
@@ -8285,7 +8295,6 @@ end;
 procedure TFPCUnitSetCache.ClearConfigCache;
 begin
   FConfigCache:=nil;
-  FreeAndNil(fSourceRules);
   fFlags:=fFlags+[fuscfUnitTreeNeedsUpdate,fuscfSrcRulesNeedUpdate];
 end;
 
@@ -8293,7 +8302,6 @@ procedure TFPCUnitSetCache.ClearSourceCache;
 begin
   fSourceCache:=nil;
   Include(fFlags,fuscfUnitTreeNeedsUpdate);
-  FreeAndNil(fSrcDuplicates);
 end;
 
 procedure TFPCUnitSetCache.Notification(AComponent: TComponent;
@@ -8329,6 +8337,11 @@ end;
 procedure TFPCUnitSetCache.Clear;
 begin
 
+end;
+
+procedure TFPCUnitSetCache.Init;
+begin
+  GetUnitToSourceTree(True);
 end;
 
 function TFPCUnitSetCache.GetConfigCache(AutoUpdate: boolean
@@ -8370,15 +8383,17 @@ var
 begin
   Cfg:=GetConfigCache(AutoUpdate);
   if (fuscfSrcRulesNeedUpdate in fFlags)
-  or (Cfg.ChangeStamp<>fRulesStampOfConfig) then begin
+  or (fRulesStampOfConfig<>Cfg.ChangeStamp) then begin
+    Exclude(fFlags,fuscfSrcRulesNeedUpdate);
     NewRules:=DefaultFPCSourceRules.Clone;
     try
       AdjustFPCSrcRulesForPPUPaths(Cfg.Units,NewRules);
+      debugln(['TFPCUnitSetCache.GetSourceRules ',DbgSName(fSourceRules),' ',DbgSName(NewRules)]);
       fSourceRules.Assign(NewRules); // increases ChangeStamp if something changed
+      fRulesStampOfConfig:=Cfg.ChangeStamp;
     finally
       NewRules.Free;
     end;
-    fRulesStampOfConfig:=Cfg.ChangeStamp;
   end;
   Result:=fSourceRules;
 end;
@@ -8391,12 +8406,14 @@ var
   NewUnitToSourceTree: TStringToStringTree;
   NewSrcDuplicates: TStringToStringTree;
 begin
+  debugln(['TFPCUnitSetCache.GetUnitToSourceTree START ChangeStamp=',ChangeStamp]);
   Src:=GetSourceCache(AutoUpdate);
   SrcRules:=GetSourceRules(AutoUpdate);
 
   if (fuscfUnitTreeNeedsUpdate in fFlags)
   or (fUnitStampOfFiles<>Src.ChangeStamp)
   or (fUnitStampOfRules<>SrcRules.ChangeStamp) then begin
+    Exclude(fFlags,fuscfUnitTreeNeedsUpdate);
     NewSrcDuplicates:=nil;
     NewUnitToSourceTree:=nil;
     try
@@ -8413,12 +8430,14 @@ begin
         fSrcDuplicates.Assign(NewSrcDuplicates);
         IncreaseChangeStamp;
       end;
+      fUnitStampOfFiles:=Src.ChangeStamp;
+      fUnitStampOfRules:=SrcRules.ChangeStamp;
     finally
       NewUnitToSourceTree.Free;
       NewSrcDuplicates.Free;
     end;
-    Exclude(fFlags,fuscfUnitTreeNeedsUpdate);
   end;
+  debugln(['TFPCUnitSetCache.GetUnitToSourceTree END ChangeStamp=',ChangeStamp]);
   Result:=fUnitToSourceTree;
 end;
 
@@ -8427,6 +8446,17 @@ function TFPCUnitSetCache.GetSourceDuplicates(AutoUpdate: boolean
 begin
   GetUnitToSourceTree(AutoUpdate);
   Result:=fSrcDuplicates;
+end;
+
+function TFPCUnitSetCache.GetUnitSrcFile(const AUnitName: string): string;
+var
+  Tree: TStringToStringTree;
+begin
+  Tree:=GetUnitToSourceTree(false);
+  if Tree=nil then
+    Result:=''
+  else
+    Result:=FPCSourceDirectory+Tree[LowerCase(AUnitName)];
 end;
 
 procedure TFPCUnitSetCache.IncreaseChangeStamp;
