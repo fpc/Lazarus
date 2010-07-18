@@ -3312,7 +3312,7 @@ function TFindDeclarationTool.FindBaseTypeOfNode(Params: TFindDeclarationParams;
     RaiseExceptionFmt(ctsBaseTypeOfNotFound+' ("class of")',
                       [GetIdentifier(Params.Identifier)]);
   end;
-  
+
 var
   OldInput: TFindDeclarationInput;
   ClassIdentNode, DummyNode: TCodeTreeNode;
@@ -3349,7 +3349,10 @@ begin
       if (Result.Node.Cache is TBaseTypeCache) then begin
         // base type already cached
         Result:=CreateFindContext(TBaseTypeCache(Result.Node.Cache));
-        exit;
+        if Result.Tool<>Self then begin
+          Result:=Result.Tool.FindBaseTypeOfNode(Params,Result.Node);
+          exit;
+        end;
       end;
       if NodeExistsInStack(@NodeStack,Result.Node) then begin
         // circle detected
@@ -3364,7 +3367,7 @@ begin
       {$ENDIF}
       if (Result.Node.Desc in AllIdentifierDefinitions) then begin
         // instead of variable/const/type definition, return the type
-        DummyNode:=Result.Tool.FindTypeNodeOfDefinition(Result.Node);
+        DummyNode:=FindTypeNodeOfDefinition(Result.Node);
         if DummyNode=nil then
           // some constants and variants do not have a type
           break;
@@ -3402,9 +3405,14 @@ begin
           MoveCursorToCleanPos(Result.Node.StartPos);
           RaiseForwardNotResolved;
         end;
-        Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
-        Params.Load(OldInput,true);
-        exit;
+        if Params.NewCodeTool<>Self then begin
+          Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
+          Params.Load(OldInput,true);
+          exit;
+        end else begin
+          Result.Node:=Params.NewNode;
+          Params.Load(OldInput,true);
+        end;
       end else
       if (Result.Node.Desc=ctnClassOfType) and (fdfFindChilds in Params.Flags)
       then begin
@@ -3446,9 +3454,14 @@ begin
           MoveCursorToCleanPos(Result.Node.StartPos);
           RaiseClassOfNotResolved;
         end;
-        Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
-        Params.Load(OldInput,true);
-        exit;
+        if Params.NewCodeTool<>Self then begin
+          Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
+          Params.Load(OldInput,true);
+          exit;
+        end else begin
+          Result.Node:=Params.NewNode;
+          Params.Load(OldInput,true);
+        end;
       end else
       if (Result.Node.Desc=ctnOnIdentifier) and (Result.Node.PriorBrother=nil)
       then begin
@@ -3468,8 +3481,7 @@ begin
         Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
                       +(fdfGlobals*Params.Flags);
         Params.ContextNode:=Result.Node.Parent;
-        if (Params.ContextNode.Desc in [ctnVarDefinition,ctnConstDefinition])
-        then begin
+        if (Params.ContextNode.Desc in AllIdentifierDefinitions) then begin
           // pascal allows things like 'var a: a;' -> skip var definition
           Include(Params.Flags,fdfIgnoreCurContextNode);
         end;
@@ -3481,17 +3493,19 @@ begin
           Params.ContextNode:=Params.ContextNode.Parent;
         TypeFound:=FindIdentifierInContext(Params);
         if TypeFound and (Params.NewNode.Desc in [ctnUseUnit,ctnUsesSection])
+        and (Params.NewCodeTool=Self)
         then begin
           NameNode:=Params.NewNode;
           Params.NewNode:=nil;
-          Params.NewCodeTool:=FindCodeToolForUnitIdentifier(NameNode,
-            GetIdentifier(Params.Identifier),true);
+          Params.NewCodeTool:=FindCodeToolForUnitIdentifier(
+                                NameNode,GetIdentifier(Params.Identifier),true);
           Params.NewCodeTool.BuildTree(true);
           Params.NewNode:=Params.NewCodeTool.Tree.Root;
         end;
         if TypeFound and (Params.NewNode.Desc in [ctnUnit,ctnLibrary,ctnPackage])
         then begin
-          // AUnitName.typename
+          // identifier is a unit
+          // => check for AUnitName.typename
           MoveCursorToNodeStart(Result.Node);
           ReadNextAtom; // read AUnitName
           if not ReadNextAtomIsChar('.') then
@@ -3503,8 +3517,7 @@ begin
                                @CheckSrcIdentifier);
           Params.Flags:=[fdfExceptionOnNotFound]
                         +(fdfGlobals*OldInput.Flags);
-          Params.ContextNode:=Params.NewCodeTool.FindInterfaceNode;
-          TypeFound:=Params.NewCodeTool.FindIdentifierInContext(Params);
+          TypeFound:=Params.NewCodeTool.FindIdentifierInInterface(Self,Params);
         end;
         if TypeFound then begin
           // only types allowed here
@@ -3536,6 +3549,7 @@ begin
       or (Result.Node.Desc=ctnGlobalProperty) then begin
         // this is a property -> search the type definition of the property
         if MoveCursorToPropType(Result.Node) then begin
+          // property has a type
           AtomIsIdentifier(true);
           OldPos:=CurPos.StartPos;
           ReadNextAtom;
@@ -3599,20 +3613,10 @@ begin
           exit;
         end;
       end else
-      if (Result.Node.Desc in [ctnProcedure,ctnProcedureHead])
-      and (fdfFunctionResult in Params.Flags) then begin
-        // a proc -> if this is a function then return the result type
+      if (Result.Node.Desc in [ctnProcedure,ctnProcedureHead]) then begin
         if Result.Node.Desc=ctnProcedure then
           Result.Node:=Result.Node.FirstChild;
-        BuildSubTreeForProcHead(Result.Node,DummyNode);
-        if (DummyNode<>nil) then begin
-          // a function or an overloaded operator
-          Result.Node:=DummyNode;
-          Exclude(Params.Flags,fdfFunctionResult);
-        end else begin
-          // this is a procedure or destructor
-          break;
-        end;
+        break;
       end else
       if (Result.Node.Desc=ctnTypeType) then begin
         // a TypeType is for example 'MyInt = type integer;'
@@ -3697,7 +3701,22 @@ begin
     CreateBaseTypeCaches(@NodeStack,Result);
     // free node stack
     FinalizeNodeStack(@NodeStack);
+
+    if (Result.Node<>nil) and (Result.Node.Desc in [ctnProcedure,ctnProcedureHead])
+    and (fdfFunctionResult in Params.Flags) then begin
+      // a proc -> if this is a function then return the result type
+      //debugln(['TFindDeclarationTool.FindBaseTypeOfNode checking function result: ',Result.Tool.ExtractNode(Result.Node,[])]);
+      Result.Tool.BuildSubTreeForProcHead(Result.Node,DummyNode);
+      if (DummyNode<>nil) then begin
+        // a function or an overloaded operator
+        // search further for the base type of the function result type
+        Exclude(Params.Flags,fdfFunctionResult);
+        //debugln(['TFindDeclarationTool.FindBaseTypeOfNode searching for function result type: ',Result.Tool.ExtractNode(DummyNode,[])]);
+        Result:=Result.Tool.FindBaseTypeOfNode(Params,DummyNode);
+      end;
+    end;
   end;
+
   {$IFDEF ShowFoundIdentifier}
   DbgOut('[TFindDeclarationTool.FindBaseTypeOfNode] END Node=');
   if Node<>nil then DbgOut(Node.DescAsString) else DbgOut('NIL');
@@ -6454,6 +6473,9 @@ var
           ProcNode:=ProcNode.Parent;
         ExprType.Context.Tool.BuildSubTreeForProcHead(ProcNode.FirstChild,
                                                       FuncResultNode);
+        {$IFDEF ShowExprEval}
+        DebugLn(['  ResolveBaseTypeOfIdentifier IsFunction/operator=',FuncResultNode<>nil,' IsConstructor=',ExprType.Context.Tool.NodeIsConstructor(ProcNode),' IsIdentifierEndOfVariable=',IsIdentifierEndOfVariable,' fdfFunctionResult in StartFlags=',fdfFunctionResult in StartFlags]);
+        {$ENDIF}
         if (FuncResultNode<>nil) or ExprType.Context.Tool.NodeIsConstructor(ProcNode)
         then begin
           // it is function or a constructor
