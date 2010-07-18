@@ -1,7 +1,7 @@
 object frAboutForm: TfrAboutForm
-  Left = 411
+  Left = 228
   Height = 174
-  Top = 290
+  Top = 135
   Width = 285
   HorzScrollBar.Page = 278
   VertScrollBar.Page = 149
@@ -16,7 +16,7 @@ object frAboutForm: TfrAboutForm
   LCLVersion = '0.9.29'
   object Bevel2: TBevel
     Left = 0
-    Height = 124
+    Height = 126
     Top = 0
     Width = 285
     Align = alClient
@@ -87,62 +87,55 @@ object frAboutForm: TfrAboutForm
     }
   end
   object Label1: TLabel
-    Left = 104
-    Height = 15
+    Left = 96
+    Height = 16
     Top = 16
-    Width = 71
+    Width = 72
     Alignment = taCenter
     Caption = 'FreeReport'
     Font.Color = clBlack
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
+    Font.Height = -13
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
   end
   object Label2: TLabel
     Left = 104
-    Height = 15
+    Height = 14
     Top = 32
-    Width = 72
+    Width = 60
     Alignment = taCenter
     Caption = 'Version 2.32'
     Font.Color = clBlack
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
     ParentColor = False
     ParentFont = False
   end
   object Label3: TLabel
     Left = 88
-    Height = 15
+    Height = 14
     Top = 64
-    Width = 142
+    Width = 116
     Alignment = taCenter
     Caption = 'Copyright (©) 1998-2002'
     Font.Color = clBlack
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
     ParentColor = False
     ParentFont = False
   end
   object Label4: TLabel
     Left = 88
-    Height = 15
+    Height = 14
     Top = 48
-    Width = 99
+    Width = 85
     Alignment = taCenter
     Caption = 'by Tzyganenko A.'
     Font.Color = clBlack
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
     ParentColor = False
     ParentFont = False
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 38
-    Top = 130
+    Height = 36
+    Top = 132
     Width = 273
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'

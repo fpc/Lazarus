@@ -10,8 +10,6 @@ object frVaredForm: TfrVaredForm
   Caption = 'Variables list'
   ClientHeight = 269
   ClientWidth = 249
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
   OnActivate = FormActivate
   OnCreate = FormCreate
   Position = poScreenCenter

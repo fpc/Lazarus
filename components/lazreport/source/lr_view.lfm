@@ -12,8 +12,6 @@ object frPreviewForm: TfrPreviewForm
   ClientHeight = 374
   ClientWidth = 412
   Font.Color = clBlack
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
   KeyPreview = True
   OnActivate = FormActivate
   OnClose = FormClose

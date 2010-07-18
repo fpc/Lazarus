@@ -7,8 +7,6 @@ object frFloatWindow: TfrFloatWindow
   VertScrollBar.Page = 60
   BorderStyle = bsToolWindow
   Caption = 'frFloatWindow'
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
   FormStyle = fsStayOnTop
   OnDestroy = FormDestroy
   OnShow = FormShow

@@ -11,8 +11,6 @@ object frVarForm: TfrVarForm
   ClientHeight = 317
   ClientWidth = 217
   Font.Color = clBlack
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
   OnActivate = FormActivate
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
@@ -35,8 +33,6 @@ object frVarForm: TfrVarForm
     Width = 209
     HelpContext = 22
     ClickOnSelChange = False
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
     IntegralHeight = True
     ItemHeight = 0
     OnDblClick = ValListDblClick

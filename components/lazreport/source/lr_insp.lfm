@@ -10,8 +10,6 @@ object frInspForm: TfrInspForm
   Caption = 'Object inspector'
   ClientHeight = 176
   ClientWidth = 132
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   OnDestroy = FormDestroy
@@ -47,7 +45,7 @@ object frInspForm: TfrInspForm
   end
   object Edit1: TEdit
     Left = 24
-    Height = 20
+    Height = 23
     Top = 16
     Width = 80
     TabOrder = 0

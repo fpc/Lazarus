@@ -217,7 +217,6 @@ begin
     begin
       Brush.Color := clBtnFace;
       Pen.Color := clBtnShadow;
-      Font.Name := 'MS Sans Serif';
       Font.Size := 8;
       Font.Style := [];
       Font.Color := clBlack;

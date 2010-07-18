@@ -10,8 +10,6 @@ object frPreviewSearchForm: TfrPreviewSearchForm
   Caption = 'Find text'
   ClientHeight = 167
   ClientWidth = 291
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
   OnActivate = FormActivate
   OnCreate = FormCreate
   Position = poScreenCenter

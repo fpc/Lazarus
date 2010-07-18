@@ -9,8 +9,6 @@ object frRoundRectForm: TfrRoundRectForm
   ClientHeight = 284
   ClientWidth = 562
   Font.Color = clBlack
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
   KeyPreview = True
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
@@ -55,8 +53,6 @@ object frRoundRectForm: TfrRoundRectForm
     Height = 237
     Top = 8
     Width = 333
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
     Lines.Strings = (
       'M1'
     )

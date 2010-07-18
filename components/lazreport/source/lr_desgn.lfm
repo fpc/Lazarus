@@ -11,8 +11,6 @@ inherited frDesignerForm: TfrDesignerForm
   Caption = 'Designer'
   ClientHeight = 411
   ClientWidth = 695
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
   KeyPreview = True
   Menu = MainMenu1
   OnClose = frDesignerFormClose
@@ -1954,8 +1952,6 @@ inherited frDesignerForm: TfrDesignerForm
           Height = 29
           Top = 2
           Width = 67
-          Font.Height = -11
-          Font.Name = 'MS Sans Serif'
           ItemHeight = 0
           Items.Strings = (
             '5'
@@ -1988,8 +1984,6 @@ inherited frDesignerForm: TfrDesignerForm
           Height = 29
           Top = 2
           Width = 155
-          Font.Height = -11
-          Font.Name = 'MS Sans Serif'
           ItemHeight = 15
           OnChange = DoClick
           OnDrawItem = C2DrawItem
