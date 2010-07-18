@@ -253,7 +253,7 @@ type
     procedure AlphaFromMask(AKeepAlpha: Boolean = True);
     procedure GetXYDataPosition(x, y: integer; out Position: TRawImagePosition);
     procedure GetXYMaskPosition(x, y: integer; out Position: TRawImagePosition);
-    function  GetDataLineStart(y: integer): Pointer;// similar to Delphi TBitmap.ScanLine. Only works with byte aligned lines.
+    function  GetDataLineStart(y: integer): Pointer;// similar to Delphi TBitmap.ScanLine. Only works with lines aligned to whole bytes.
     procedure CreateData; virtual;
     function  HasTransparency: boolean; virtual;
     function  HasMask: boolean; virtual;

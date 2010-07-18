@@ -41,6 +41,7 @@ var
   Code: TCodeBuffer;
   X: Integer;
   Y: Integer;
+  Filename: String;
 begin
   if (ParamCount>=1) and (Paramcount<3) then begin
     writeln('Usage:');
@@ -79,7 +80,7 @@ begin
     // optional: ProjectDir and TestPascalFile exists only to easily test some
     // things.
     Options.ProjectDir:=SetDirSeparators(GetCurrentDir+'/scanexamples/');
-    Options.TestPascalFile:=Options.ProjectDir+'simpleunit1.pas';
+    Filename:=Options.ProjectDir+'simpleunit1.pas';
 
     // init the codetools
     if not Options.UnitLinkListValid then
@@ -105,9 +106,9 @@ begin
     end;
 
     // Step 1: load the file
-    Code:=CodeToolBoss.LoadFile(Options.TestPascalFile,false,false);
+    Code:=CodeToolBoss.LoadFile(Filename,false,false);
     if Code=nil then
-      raise Exception.Create('loading failed '+Options.TestPascalFile);
+      raise Exception.Create('loading failed '+Filename);
 
     // Step 2: find declaration
     if CodeToolBoss.FindDeclaration(Code,X,Y,NewCode,NewX,NewY,NewTopLine) then

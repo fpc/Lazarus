@@ -90,8 +90,7 @@ type
 
   TCodeToolsOptions = class
   private
-    FDefaultTargetOS: string;
-    FDefaultTargetProcessor: string;
+    FConfigCaches: TFPCTargetConfigCaches;
     FFPCOptions: string;
     FFPCPath: string;
     FFPCSrcDir: string;
@@ -102,6 +101,7 @@ type
     FModified: boolean;
     FPPUExt: string;
     FProjectDir: string;
+    FSourceCaches: TFPCSourceCaches;
     FTargetOS: string;
     FTargetProcessor: string;
     FTestPascalFile: string;
@@ -124,10 +124,10 @@ type
     procedure SetUnitLinkListValid(const AValue: boolean);
   public
     constructor Create;
+    destructor Destroy; override;
     procedure InitWithEnvironmentVariables;
     function FindDefaultCompilerFilename: string;
-    procedure UpdateUnitLinkListValid;
-    
+
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToFile(const Filename: string);
@@ -137,15 +137,15 @@ type
 
     // FPC
     property FPCSrcDir: string read FFPCSrcDir write SetFPCSrcDir; // e.g. /usr/share/fpcsrc
-    property FPCPath: string read FFPCPath write SetFPCPath; // e.g. /usr/bin/ppc386
-    property FPCOptions: string read FFPCOptions write SetFPCOptions;
+    property FPCPath: string read FFPCPath write SetFPCPath; // e.g. /usr/bin/fpc or /usr/bin/ppc386
+    property FPCOptions: string read FFPCOptions write SetFPCOptions; // extra options for fpc
     property TargetOS: string read FTargetOS write SetTargetOS;
     property TargetProcessor: string read FTargetProcessor write SetTargetProcessor;
-    property DefaultTargetOS: string read FDefaultTargetOS;
-    property DefaultTargetProcessor: string read FDefaultTargetProcessor;
     property TestPascalFile: string read FTestPascalFile write SetTestPascalFile; // points to an empty unit
     property FPCUnitPath: string read FFPCUnitPath write SetFPCUnitPath;
     property PPUExt: string read FPPUExt write SetPPUExt;
+    property SourceCaches: TFPCSourceCaches read FSourceCaches;
+    property ConfigCaches: TFPCTargetConfigCaches read FConfigCaches;
     property UnitLinkListValid: boolean read FUnitLinkListValid write SetUnitLinkListValid;
     property UnitLinkList: string read FUnitLinkList write SetUnitLinkList;
 
@@ -283,7 +283,16 @@ end;
 constructor TCodeToolsOptions.Create;
 begin
   FPPUExt:='.ppu';
-  FLCLWidgetType:='gtk';
+  FLCLWidgetType:='gtk2';
+  FConfigCaches:=TFPCTargetConfigCaches.Create(nil);
+  FSourceCaches:=TFPCSourceCaches.Create(nil);
+end;
+
+destructor TCodeToolsOptions.Destroy;
+begin
+  FreeAndNil(FConfigCaches);
+  FreeAndNil(FSourceCaches);
+  inherited Destroy;
 end;
 
 procedure TCodeToolsOptions.InitWithEnvironmentVariables;
@@ -308,12 +317,6 @@ begin
                            GetEnvironmentVariableUTF8('PATH'),':',ctsfcDefault);
 end;
 
-procedure TCodeToolsOptions.UpdateUnitLinkListValid;
-begin
-  if not UnitLinkListValid then exit;
-  
-end;
-
 procedure TCodeToolsOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
@@ -323,7 +326,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'FPC/UnitPath/Value',FPCUnitPath,'');
   XMLConfig.SetDeleteValue(Path+'FPC/TargetOS/Value',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'FPC/TargetProcessor/Value',TargetProcessor,'');
-  XMLConfig.SetDeleteValue(Path+'FPC/PPUExt/Value',PPUExt,'');
+  XMLConfig.SetDeleteValue(Path+'FPC/PPUExt/Value',PPUExt,'.ppu');
   XMLConfig.SetDeleteValue(Path+'FPC/TestPascalFile/Value',TestPascalFile,'');
   XMLConfig.SetDeleteValue(Path+'FPC/UnitLinkList/Value',UnitLinkList,'');
   XMLConfig.SetDeleteValue(Path+'FPC/UnitLinkList/Valid',UnitLinkListValid,false);
@@ -331,6 +334,8 @@ begin
   XMLConfig.SetDeleteValue(Path+'Lazarus/SrcDirOptions/Value',LazarusSrcOptions,'');
   XMLConfig.SetDeleteValue(Path+'Lazarus/LCLWidgetType/Value',LCLWidgetType,'');
   XMLConfig.SetDeleteValue(Path+'Project/Dir/Value',ProjectDir,'');
+  FConfigCaches.SaveToXMLConfig(XMLConfig,Path+'FPCConfigCaches/');
+  FSourceCaches.SaveToXMLConfig(XMLConfig,Path+'FPCSrcDirCaches/');
   Modified:=false;
 end;
 
@@ -350,11 +355,13 @@ begin
   FPCUnitPath:=UnitPath;
   TargetOS:=XMLConfig.GetValue(Path+'FPC/TargetOS/Value','');
   TargetProcessor:=XMLConfig.GetValue(Path+'FPC/TargetProcessor/Value','');
-  PPUExt:=XMLConfig.GetValue(Path+'FPC/PPUExt/Value','');
+  PPUExt:=XMLConfig.GetValue(Path+'FPC/PPUExt/Value','.ppu');
   TestPascalFile:=XMLConfig.GetValue(Path+'FPC/TestPascalFile/Value','');
   UnitLinkList:=XMLConfig.GetValue(Path+'FPC/UnitLinkList/Value','');
   // UnitLinkListValid must be set as last
   UnitLinkListValid:=XMLConfig.GetValue(Path+'FPC/UnitLinkList/Valid',false);
+  FConfigCaches.LoadFromXMLConfig(XMLConfig,Path+'FPCConfigCaches/');
+  FSourceCaches.LoadFromXMLConfig(XMLConfig,Path+'FPCSrcDirCaches/');
 
   LazarusSrcDir:=XMLConfig.GetValue(Path+'Lazarus/SrcDir/Value','');
   LazarusSrcOptions:=XMLConfig.GetValue(Path+'Lazarus/SrcDirOptions/Value','');

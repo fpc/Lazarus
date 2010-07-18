@@ -720,7 +720,9 @@ var
   UnitSet: string;
 begin
   UnitSet:=Strings[ctdcsUnitSet];
+  debugln(['TCTDirectoryCache.FindUnitInUnitSet Directory="',Directory,'" UnitSet="',UnitSet,'" AUnitName="',AUnitName,'"']);
   Result:=Pool.OnGetUnitFromSet(UnitSet,AUnitName);
+  debugln(['TCTDirectoryCache.FindUnitInUnitSet Directory="',Directory,'" UnitSet="',UnitSet,'" AUnitName="',AUnitName,'" Result="',Result,'"']);
 end;
 
 function TCTDirectoryCache.FindFile(const ShortFilename: string;
@@ -1012,7 +1014,11 @@ begin
         {$IFDEF ShowTriedUnits}
         DebugLn(['TCTDirectoryCache.FindUnitSourceInCompletePath unit ',AUnitName,' not found in SrcPath="',SrcPath,'"  Directory="',Directory,'"']);
         {$ENDIF}
+        {$IFDEF EnableFPCCache}
+        Result:=FindUnitInUnitSet(AUnitName);
+        {$ELSE}
         Result:=FindUnitLink(AUnitName);
+        {$ENDIF}
         {$IFDEF ShowTriedUnits}
         if Result='' then begin
           DebugLn(['TCTDirectoryCache.FindUnitSourceInCompletePath unit ',AUnitName,' not found in unitlinks. Directory="',Directory,'"']);

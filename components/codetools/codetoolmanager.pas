@@ -905,13 +905,19 @@ end;
 
 procedure TCodeToolManager.Init(Config: TCodeToolsOptions);
 var
-  FPCUnitPath, TargetOS, TargetProcessor: string;
-  UnitLinkList: String;
   FPCDefines: TDefineTemplate;
   FPCSrcDefines: TDefineTemplate;
   LazarusSrcDefines: TDefineTemplate;
-  ATestPascalFile: String;
   CurFPCOptions: String;
+  {$IFDEF EnableFPCCache}
+  UnitSetCache: TFPCUnitSetCache;
+  {$ELSE}
+  FPCUnitPath: String;
+  TargetOS: String;
+  TargetProcessor: String;
+  ATestPascalFile: String;
+  UnitLinkList: String;
+  {$ENDIF}
 
   procedure AddFPCOption(s: string);
   begin
@@ -930,15 +936,52 @@ begin
     Variables[ExternalMacroStart+'ProjectDir']:=Config.ProjectDir;
   end;
 
+  {$IFDEF EnableFPCCache}
+  FPCDefinesCache.ConfigCaches.Assign(Config.ConfigCaches);
+  FPCDefinesCache.SourceCaches.Assign(Config.SourceCaches);
+  FPCDefinesCache.TestFilename:=Config.TestPascalFile;
+  if FPCDefinesCache.TestFilename='' then
+    FPCDefinesCache.TestFilename:=GetTempFilename('fpctest.pas','');
+
+  UnitSetCache:=FPCDefinesCache.FindUnitToSrcCache(Config.FPCPath,
+    Config.TargetOS,Config.TargetProcessor,Config.FPCOptions,Config.FPCSrcDir,
+    true);
+  // parse compiler settings
+  UnitSetCache.GetConfigCache(true);
+  // parse fpc sources
+  UnitSetCache.GetSourceCache(true);
+
+  // create template for FPC settings
+  FPCDefines:=CreateFPCTemplate(UnitSetCache,nil);
+  DefineTree.Add(FPCDefines);
+
+  // create template for FPC source directory
+  FPCSrcDefines:=CreateFPCSrcTemplate(UnitSetCache,nil);
+  DefineTree.Add(FPCSrcDefines);
+
+  // create template for lazarus source directory
+  LazarusSrcDefines:=DefinePool.CreateLazarusSrcTemplate('$(#LazarusSrcDir)',
+                              '$(#LCLWidgetType)',Config.LazarusSrcOptions,nil);
+  DefineTree.Add(LazarusSrcDefines);
+
+  // create template for LCL project
+  DefineTree.Add(DefinePool.CreateLCLProjectTemplate(
+                 '$(#LazarusSrcDir)','$(#LCLWidgetType)','$(#ProjectDir)',nil));
+
+  // save
+  Config.ConfigCaches.Assign(FPCDefinesCache.ConfigCaches);
+  Config.SourceCaches.Assign(FPCDefinesCache.SourceCaches);
+  {$ELSE}
+
   // build DefinePool
+  FPCUnitPath:=Config.FPCUnitPath;
+  TargetOS:=Config.TargetOS;
+  TargetProcessor:=Config.TargetProcessor;
+  ATestPascalFile:=Config.TestPascalFile;
+  if ATestPascalFile='' then
+    ATestPascalFile:=GetTempFilename('fpctest.pas','');
+  CurFPCOptions:=Config.FPCOptions;
   with DefinePool do begin
-    FPCUnitPath:=Config.FPCUnitPath;
-    TargetOS:=Config.TargetOS;
-    TargetProcessor:=Config.TargetProcessor;
-    ATestPascalFile:=Config.TestPascalFile;
-    if ATestPascalFile='' then
-      ATestPascalFile:=GetTempFilename('fpctest.pas','');
-    CurFPCOptions:=Config.FPCOptions;
     if TargetOS<>'' then AddFPCOption('-T'+TargetOS);
     if TargetProcessor<>'' then AddFPCOption('-P'+TargetProcessor);
     FPCDefines:=CreateFPCTemplate(Config.FPCPath, CurFPCOptions,
@@ -970,13 +1013,13 @@ begin
                                  Config.LazarusSrcOptions,nil);
     Add(LazarusSrcDefines);
   end;
-
   // build define tree
   DefineTree.Add(FPCDefines.CreateCopy);
   DefineTree.Add(FPCSrcDefines.CreateCopy);
   DefineTree.Add(LazarusSrcDefines.CreateCopy);
   DefineTree.Add(DefinePool.CreateLCLProjectTemplate(
                  '$(#LazarusSrcDir)','$(#LCLWidgetType)','$(#ProjectDir)',nil));
+  {$ENDIF}
 end;
 
 procedure TCodeToolManager.SimpleInit(const ConfigFilename: string);
@@ -1001,10 +1044,11 @@ begin
     // init the codetools
     if not Options.UnitLinkListValid then
       debugln('Scanning FPC sources may take a while ...');
-    CodeToolBoss.Init(Options);
+    Init(Options);
 
     // save the options and the FPC unit links results.
     Options.SaveToFile(ConfigFilename);
+    Halt;
   finally
     Options.Free;
   end;
