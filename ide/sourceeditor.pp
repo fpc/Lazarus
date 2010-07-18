@@ -203,7 +203,8 @@ type
   end;
 
 { TSourceEditor ---
-  TSourceEditor is the class that controls access for the Editor. }
+  TSourceEditor is the class that controls access for a single source editor,
+  which is part of TSourceNotebook. }
 
   TSourceEditor = class(TSourceEditorInterface)
   private

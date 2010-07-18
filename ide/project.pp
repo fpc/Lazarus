@@ -831,6 +831,7 @@ type
     procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean = true);
     function CreateProjectFile(const Filename: string): TLazProjectFile; override;
     procedure UpdateVisibleUnit(AnEditor: TSourceEditorInterface; AWindowIndex: Integer);
+    procedure UpdateAllVisibleUnits;
     procedure MoveUnitWindowIndex(OldIndex, NewIndex: Integer);
     // search
     function IndexOf(AUnitInfo: TUnitInfo): integer;
@@ -3356,6 +3357,21 @@ begin
   for i := 0 to EditorInfoCount - 1 do
     if EditorInfo[i].WindowIndex = AWindowIndex then
       EditorInfo[i].IsVisibleTab := EditorInfo[i].EditorComponent = AnEditor;
+end;
+
+procedure TProject.UpdateAllVisibleUnits;
+var
+  i: Integer;
+  aWndId: LongInt;
+  Info: TUnitEditorInfo;
+begin
+  for i := 0 to EditorInfoCount - 1 do begin
+    Info:=EditorInfo[i];
+    aWndId:=Info.WindowIndex;
+    Info.IsVisibleTab := (aWndId>=0)
+      and (aWndId<SourceEditorManagerIntf.SourceWindowCount)
+      and (Info.EditorComponent = SourceEditorManagerIntf.SourceWindows[aWndId].ActiveEditor);
+  end;
 end;
 
 procedure TProject.MoveUnitWindowIndex(OldIndex, NewIndex: Integer);
