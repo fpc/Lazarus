@@ -3348,7 +3348,8 @@ begin
   Result:=AnUnitInfo;
 end;
 
-procedure TProject.UpdateVisibleUnit(AnEditor: TSourceEditorInterface; AWindowIndex: Integer);
+procedure TProject.UpdateVisibleUnit(AnEditor: TSourceEditorInterface;
+  AWindowIndex: Integer);
 var
   i: Integer;
 begin

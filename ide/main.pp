@@ -9640,12 +9640,15 @@ begin
       Project1.EndUpdate;
     end;
 
+    Result:=mrOk;
+  finally
+    //SrcEdit:=SourceEditorManager.act
+    //Project1.UpdateVisibleUnit(SourceEditorManager);
     // set all modified to false
     for i:=0 to Project1.UnitCount-1 do
       Project1.Units[i].ClearModifieds;
     Project1.Modified:=false;
-    Result:=mrOk;
-  finally
+    debugln(['TMainIDE.DoNewProject AAA1 ',SomethingOfProjectIsModified]);
     // call handlers
     HandlerResult:=DoCallProjectChangedHandler(lihtProjectOpened,Project1);
     if not (HandlerResult in [mrOk,mrCancel,mrAbort]) then
