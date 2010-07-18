@@ -50,18 +50,21 @@ type
 
   TFuncsAndCategories = class
   private
-    fFuncs: TStringList; // Objects property has TFuncReplacement items.
-    fCategInUse: TStringList;   // Categories to be replaced.
+    // Delphi func names, objects property has TFuncReplacement items.
+    fFuncs: TStringList;
+    // Category names, objects property has boolean info Used/Not used.
+    fCategories: TStringList;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
     function AddFunc(aCategory, aDelphiFunc, aReplaceFunc, aPackage, aUnitName: string): integer;
-    function AddCategory(aCategory: string): integer;
     function FuncAtInd(Ind: integer): TFuncReplacement;
+    function AddCategory(aCategory: string; aUsed: Boolean): integer;
+    function CategoryIsUsed(Ind: integer): Boolean;
   public
     property Funcs: TStringList read fFuncs;
-    property CategoryInUse: TStringList read fCategInUse;
+    property Categories: TStringList read fCategories;
   end;
 
   { TReplaceFuncsForm }
@@ -280,14 +283,14 @@ begin
   fFuncs:=TStringList.Create;
   fFuncs.Sorted:=True;
   fFuncs.CaseSensitive:=False;
-  fCategInUse:=TStringList.Create;
-  fCategInUse.Sorted:=True;
-  fCategInUse.Duplicates:=dupIgnore;
+  fCategories:=TStringList.Create;
+  fCategories.Sorted:=True;
+  fCategories.Duplicates:=dupIgnore;
 end;
 
 destructor TFuncsAndCategories.Destroy;
 begin
-  fCategInUse.Free;
+  fCategories.Free;
   fFuncs.Free;
   inherited Destroy;
 end;
@@ -299,7 +302,7 @@ begin
   for i := 0 to fFuncs.Count-1 do
     fFuncs.Objects[i].Free;
   fFuncs.Clear;
-  fCategInUse.Clear;
+  fCategories.Clear;
 end;
 
 function TFuncsAndCategories.AddFunc(
@@ -318,16 +321,31 @@ begin
   end;
 end;
 
-function TFuncsAndCategories.AddCategory(aCategory: string): integer;
-begin
-  Result:=fCategInUse.Add(aCategory);
-end;
-
 function TFuncsAndCategories.FuncAtInd(Ind: integer): TFuncReplacement;
 begin
   Result:=nil;
   if fFuncs[Ind]<>'' then
     Result:=TFuncReplacement(fFuncs.Objects[Ind]);
+end;
+
+function TFuncsAndCategories.AddCategory(aCategory: string; aUsed: Boolean): integer;
+var
+  CategUsed: PtrInt;
+begin
+  CategUsed:=0;
+  if aUsed then
+    CategUsed:=1;
+  Result:=fCategories.AddObject(aCategory, TObject(CategUsed));
+end;
+
+function TFuncsAndCategories.CategoryIsUsed(Ind: integer): Boolean;
+var
+  CategUsed: PtrInt;
+begin
+  CategUsed:=0;
+  if fCategories[Ind]<>'' then
+    CategUsed:=PtrInt(fCategories.Objects[Ind]);
+  Result:=CategUsed=1;
 end;
 
 
@@ -391,35 +409,25 @@ function TReplaceFuncsForm.FromFuncListToUI(aFuncsAndCateg: TFuncsAndCategories)
 // Copy strings from Map to Grid.
 var
   FuncRepl: TFuncReplacement;
-  NewCategories: TStringList;
-  i, x: Integer;
-  NewCatInd: longint;
+  i: Integer;
 begin
   Result:=true;
-  NewCategories:=TStringList.Create;
-  NewCategories.Sorted:=True;
-  try
-    Grid.BeginUpdate;                          // Skip the fixed row in grid.
-    for i:=1 to aFuncsAndCateg.fFuncs.Count do begin
-      if Grid.RowCount<i+2 then
-        Grid.RowCount:=i+2;                    // Leave one empty row to the end.
-      FuncRepl:=TFuncReplacement(aFuncsAndCateg.fFuncs.Objects[i-1]);
-      Grid.Cells[0,i]:=FuncRepl.fCategory;
-      Grid.Cells[1,i]:=aFuncsAndCateg.fFuncs[i-1];      // Delphi function name
-      Grid.Cells[2,i]:=FuncRepl.fReplClause;
-      Grid.Cells[3,i]:=FuncRepl.PackageName;
-      Grid.Cells[4,i]:=FuncRepl.fUnitName;
-      if not NewCategories.Find(FuncRepl.fCategory, x) then begin
-        CategoryListBox.Items.Add(FuncRepl.fCategory);
-        NewCatInd:=NewCategories.Add(FuncRepl.fCategory);
-        CategoryListBox.Checked[NewCatInd]:=
-                          aFuncsAndCateg.fCategInUse.Find(FuncRepl.fCategory, x);
-      end;
-    end;
-    Grid.EndUpdate;
-  finally
-    NewCategories.Free;
+  Grid.BeginUpdate;                          // Skip the fixed row in grid.
+  for i:=1 to aFuncsAndCateg.fFuncs.Count do begin
+    if Grid.RowCount<i+2 then
+      Grid.RowCount:=i+2;                    // Leave one empty row to the end.
+    FuncRepl:=TFuncReplacement(aFuncsAndCateg.fFuncs.Objects[i-1]);
+    Grid.Cells[0,i]:=FuncRepl.fCategory;
+    Grid.Cells[1,i]:=aFuncsAndCateg.fFuncs[i-1];      // Delphi function name
+    Grid.Cells[2,i]:=FuncRepl.fReplClause;
+    Grid.Cells[3,i]:=FuncRepl.PackageName;
+    Grid.Cells[4,i]:=FuncRepl.fUnitName;
   end;
+  for i:=0 to aFuncsAndCateg.fCategories.Count-1 do begin
+    CategoryListBox.Items.Add(aFuncsAndCateg.fCategories[i]);
+    CategoryListBox.Checked[i]:=aFuncsAndCateg.CategoryIsUsed(i);
+  end;
+  Grid.EndUpdate;
 end;
 
 function TReplaceFuncsForm.FromUIToFuncList(aFuncsAndCateg: TFuncsAndCategories): boolean;
@@ -438,8 +446,7 @@ begin
                      Grid.Cells[4,i]);
   // Copy checked (used) categories.
   for i:=0 to CategoryListBox.Count-1 do
-    if CategoryListBox.Checked[i] then
-      aFuncsAndCateg.AddCategory(CategoryListBox.Items[i]);
+    aFuncsAndCateg.AddCategory(CategoryListBox.Items[i], CategoryListBox.Checked[i]);
 end;
 
 

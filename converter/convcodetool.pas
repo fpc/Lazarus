@@ -710,7 +710,7 @@ var
         and not fDefinedProcNames.Find(FuncName, x)
         then begin
           FuncDefInfo:=fReplaceFuncs.FuncAtInd(i);
-          if fReplaceFuncs.CategoryInUse.Find(FuncDefInfo.Category, x)
+          if fReplaceFuncs.Categories.Find(FuncDefInfo.Category, x)
           and not (aIsConsoleApp and (FuncDefInfo.Category='UTF8Names'))
           then begin
             // Create a new replacement object for params, position and other info.

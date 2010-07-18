@@ -188,6 +188,7 @@ procedure LoadFuncReplacements(Config: TConfigStorage;
 var
   SubPath: String;
   xCategory, xDelphiFunc, xReplacement, xPackage, xUnitName: String;
+  CategUsed: Boolean;
   Cnt, i: Integer;
 begin
   aFuncsAndCateg.Clear;
@@ -207,7 +208,8 @@ begin
   for i:=0 to Cnt-1 do begin
     SubPath:=CategPath+'Item'+IntToStr(i)+'/';
     xCategory:=Config.GetValue(SubPath+'Name','');
-    aFuncsAndCateg.AddCategory(xCategory);
+    CategUsed:=Config.GetValue(SubPath+'InUse',True);
+    aFuncsAndCateg.AddCategory(xCategory, CategUsed);
   end;
 end;
 
@@ -237,15 +239,16 @@ begin
     Config.DeletePath(SubPath);
   end;
   // Categories
-  Config.SetDeleteValue(CategPath+'Count', aFuncsAndCateg.CategoryInUse.Count, 0);
-  for i:=0 to aFuncsAndCateg.CategoryInUse.Count-1 do begin
-    s:=aFuncsAndCateg.CategoryInUse[i];
+  Config.SetDeleteValue(CategPath+'Count', aFuncsAndCateg.Categories.Count, 0);
+  for i:=0 to aFuncsAndCateg.Categories.Count-1 do begin
+    s:=aFuncsAndCateg.Categories[i];
     if s<>'' then begin
       SubPath:=CategPath+'Item'+IntToStr(i)+'/';
       Config.SetDeleteValue(SubPath+'Name',s,'');
+      Config.SetDeleteValue(SubPath+'InUse',aFuncsAndCateg.CategoryIsUsed(i),True);
     end;
   end;
-  for i:=aFuncsAndCateg.CategoryInUse.Count to aFuncsAndCateg.CategoryInUse.Count+10 do begin
+  for i:=aFuncsAndCateg.Categories.Count to aFuncsAndCateg.Categories.Count+10 do begin
     SubPath:=CategPath+'Item'+IntToStr(i)+'/';
     Config.DeletePath(SubPath);
   end;
@@ -259,10 +262,19 @@ var
   TheMap: TStringToStringTree;
   Categ: string;
 
-  procedure MapReplacement(ADelphi, ALCL: string);
+  procedure MapReplacement(aDelphi, aLCL: string);
   begin
-    if not TheMap.Contains(ADelphi) then
-      TheMap[ADelphi]:=ALCL;
+    if not TheMap.Contains(aDelphi) then
+      TheMap[aDelphi]:=aLCL;
+  end;
+
+  procedure AddDefaultCategory(aCategory: string);
+  var
+    x: integer;
+  begin
+    with fReplaceFuncs do
+      if not Categories.Find(aCategory, x) then
+        AddCategory(aCategory, True);
   end;
 
 begin
@@ -328,8 +340,8 @@ begin
   with fReplaceFuncs do begin
     // File name encoding.
     Categ:='UTF8Names';
-    if AddFunc(Categ,'FileExists',       'FileExistsUTF8($1)','LCL','FileUtil')<>-1 then
-      AddCategory(Categ);    // Use the category by default if the func was added.
+    AddDefaultCategory(Categ);
+    AddFunc(Categ,'FileExists',          'FileExistsUTF8($1)',          'LCL','FileUtil');
     AddFunc(Categ,'FileAge',             'FileAgeUTF8($1)',             'LCL','FileUtil');
     AddFunc(Categ,'DirectoryExists',     'DirectoryExistsUTF8($1)',     'LCL','FileUtil');
     AddFunc(Categ,'ExpandFileName',      'ExpandFileNameUTF8($1)',      'LCL','FileUtil');
@@ -352,16 +364,16 @@ begin
     AddFunc(Categ,'ForceDirectories',    'ForceDirectoriesUTF8($1)',    'LCL','FileUtil');
     // File functions using a handle.
     Categ:='FileHandle';
-    if AddFunc(Categ,'CreateFile','FileCreate($1)','','SysUtils')<>-1 then
-      AddCategory(Categ);
-    AddFunc(Categ, 'GetFileSize','FileSize($1)' ,'','SysUtils');
-    AddFunc(Categ, 'ReadFile',   'FileRead($1)' ,'','SysUtils');
-    AddFunc(Categ, 'CloseHandle','FileClose($1)','','SysUtils');
+    AddDefaultCategory(Categ);
+    AddFunc(Categ, 'CreateFile', 'FileCreate($1)','','SysUtils');
+    AddFunc(Categ, 'GetFileSize','FileSize($1)'  ,'','SysUtils');
+    AddFunc(Categ, 'ReadFile',   'FileRead($1)'  ,'','SysUtils');
+    AddFunc(Categ, 'CloseHandle','FileClose($1)' ,'','SysUtils');
     // Others
     Categ:='Other';
-    if AddFunc(Categ, 'ShellExecute',
-             'if $3 match ":/" then OpenURL($3); OpenDocument($3)', '', '')<>-1 then
-      AddCategory(Categ);
+    AddDefaultCategory(Categ);
+    AddFunc(Categ, 'ShellExecute',
+                   'if $3 match ":/" then OpenURL($3); OpenDocument($3)', '', '');
   end;
 end;
 
