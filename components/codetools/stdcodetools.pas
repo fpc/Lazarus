@@ -5311,6 +5311,12 @@ var
       Result:=true;
     end;
 
+    function InsertPosAtCursor: integer;
+    begin
+      Result:=BasicCodeTools.FindLineEndOrCodeInFrontOfPosition(Src,
+                         CurPos.StartPos,CleanCursorPos,Scanner.NestedComments);
+    end;
+
   begin
     Result:=false;
     MoveCursorToNodeStart(StartNode);
@@ -5404,7 +5410,7 @@ var
             {$IFDEF ShowCompleteBlock}
             DebugLn(['ReadStatements NeedCompletion: between same indented ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockOuterIndent=',CursorBlockOuterIndent,' < CursorBlockInnerIndent=',CursorBlockInnerIndent,' Parent.InnerStartPos=',CleanPosToStr(Stack.Stack[CursorBlockLvl-1].InnerStartPos)]);
             {$ENDIF}
-            NeedCompletion:=CurPos.StartPos;
+            NeedCompletion:=InsertPosAtCursor;
           end;
         end else if (Indent<CursorBlockOuterIndent) then begin
           // for example:
@@ -5420,7 +5426,7 @@ var
             {$IFDEF ShowCompleteBlock}
             DebugLn(['ReadStatements NeedCompletion: at out indented ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockOuterIndent=',CursorBlockOuterIndent,' < CursorBlockInnerIndent=',CursorBlockInnerIndent]);
             {$ENDIF}
-            NeedCompletion:=CurPos.StartPos;
+            NeedCompletion:=InsertPosAtCursor;
           end else if CursorAtEmptyLine or CursorInEmptyStatement
           or (FindNextNonSpace(Src,CleanCursorPos)=CurPos.StartPos) then begin
             { for example:
@@ -5603,7 +5609,7 @@ var
                   {$IFDEF ShowCompleteBlock}
                   DebugLn(['ReadStatements NeedCompletion: unexpected else at ',CleanPosToStr(CurPos.StartPos),': missing end. block start: ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
                   {$ENDIF}
-                  NeedCompletion:=CurPos.StartPos;
+                  NeedCompletion:=InsertPosAtCursor;
                 end;
                 break;
               end;
@@ -5614,7 +5620,7 @@ var
                   {$IFDEF ShowCompleteBlock}
                   DebugLn(['ReadStatements NeedCompletion: unexpected else at ',CleanPosToStr(CurPos.StartPos),': missing semicolon or until. block start: ',CleanPosToStr(Stack.Stack[Stack.Top].StartPos)]);
                   {$ENDIF}
-                  NeedCompletion:=CurPos.StartPos;
+                  NeedCompletion:=InsertPosAtCursor;
                 end;
                 break;
               end;
@@ -5656,7 +5662,7 @@ var
             {$IFDEF ShowCompleteBlock}
             DebugLn(['ReadStatements NeedCompletion: at ',CleanPosToStr(CurPos.StartPos),' Indent=',Indent,' < CursorBlockInnerIndent=',CursorBlockInnerIndent]);
             {$ENDIF}
-            NeedCompletion:=CurPos.StartPos;
+            NeedCompletion:=InsertPosAtCursor;
           end else begin
             // for example:
             // begin

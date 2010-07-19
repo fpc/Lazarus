@@ -52,7 +52,6 @@ begin
   // setup the Options
   Options:=TCodeToolsOptions.Create;
   try
-
     // setup your paths
     writeln('Config=',ConfigFilename);
     if FileExists(ConfigFilename) then begin
