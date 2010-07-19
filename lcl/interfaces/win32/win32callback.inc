@@ -945,7 +945,7 @@ var
       // if somewhere key is changed to '' then don't process this message
       WinProcess := not lWinControl.IntfUTF8KeyPress(UTF8Char, 1, False);
       // if somewhere key is changed then don't perform a regular keypress
-      Result := WinProcess or (UTF8Char <> OldUTF8Char);
+      Result := not WinProcess or (UTF8Char <> OldUTF8Char);
       if UTF8Char <> OldUTF8Char then
       begin
         WS := UTF8ToUTF16(UTF8Char);
