@@ -6996,6 +6996,7 @@ begin
   ErrorTranslatedMsg:='';
   FreeAndNil(Defines);
   FreeAndNil(Undefines);
+  FreeAndNil(UnitPaths);
   FreeAndNil(Units);
 end;
 
@@ -7243,9 +7244,9 @@ begin
 
   // Undefines: write as Undefines/Value and comma separated list of names
   Cnt:=0;
+  s:='';
   if Undefines<>nil then begin
     Node:=Undefines.Tree.FindLowest;
-    s:='';
     while Node<>nil do begin
       Item:=PStringToStringTreeItem(Node.Data);
       inc(Cnt);
@@ -7253,23 +7254,28 @@ begin
       s:=s+Item^.Name;
       Node:=Undefines.Tree.FindSuccessor(Node);
     end;
-    XMLConfig.SetDeleteValue(Path+'Undefines/Values',s,'');
   end;
+  XMLConfig.SetDeleteValue(Path+'Undefines/Values',s,'');
 
   // UnitPaths: write as semicolon separated compressed list
-  List:=TStringList.Create;
-  try
-    List:=Compress1FileList(UnitPaths);
-    // do not sort, order is important (e.g. for httpd.ppu)
-    List.Delimiter:=';';
-    List.StrictDelimiter:=true;
-    XMLConfig.SetDeleteValue(Path+'UnitPaths/Value',List.DelimitedText,'');
-  finally
-    List.Free;
+  s:='';
+  if UnitPaths<>nil then begin
+    List:=TStringList.Create;
+    try
+      List:=Compress1FileList(UnitPaths);
+      // do not sort, order is important (e.g. for httpd.ppu)
+      List.Delimiter:=';';
+      List.StrictDelimiter:=true;
+      s:=List.DelimitedText;
+    finally
+      List.Free;
+    end;
   end;
+  XMLConfig.SetDeleteValue(Path+'UnitPaths/Value',s,'');
 
   // Units: Units/Values semicolon separated list of compressed filenames
   // Units contains thousands of file names. This needs compression.
+  s:='';
   List:=nil;
   UnitList:=TStringList.Create;
   try
@@ -7290,12 +7296,13 @@ begin
       // and write the semicolon separated list
       List.Delimiter:=';';
       List.StrictDelimiter:=true;
-      XMLConfig.SetDeleteValue(Path+'Units/Value',List.DelimitedText,'');
+      s:=List.DelimitedText;
     end;
   finally
     List.Free;
     UnitList.Free;
   end;
+  XMLConfig.SetDeleteValue(Path+'Units/Value',s,'');
 end;
 
 procedure TFPCTargetConfigCache.LoadFromFile(Filename: string);
@@ -7328,8 +7335,11 @@ var
   Cfg: TFPCConfigFileState;
 begin
   Result:=true;
-  if (not FileExistsCached(Compiler))
-  or (FileAgeCached(Compiler)<>CompilerDate) then begin
+  if (not FileExistsCached(Compiler)) then begin
+    debugln(['TFPCTargetConfigCache.NeedsUpdate compiler file missing ',Compiler]);
+    exit;
+  end;
+  if (FileAgeCached(Compiler)<>CompilerDate) then begin
     debugln(['TFPCTargetConfigCache.NeedsUpdate compiler file changed ',Compiler,' FileAge=',FileAgeCached(Compiler),' StoredAge=',CompilerDate]);
     exit;
   end;
@@ -7378,8 +7388,6 @@ var
   Info: String;
   Infos: TFPCInfoStrings;
 begin
-  debugln(['TFPCTargetConfigCache.Update HALT']); Halt;
-
   OldOptions:=TFPCTargetConfigCache.Create(nil);
   CfgFiles:=nil;
   try
@@ -7387,43 +7395,50 @@ begin
     OldOptions.Assign(Self);
     Clear;
 
-    if CompilerOptions<>'' then
-      ExtraOptions:=CompilerOptions+' '+ExtraOptions;
-    if TargetOS<>'' then
-      ExtraOptions:='-T'+LowerCase(TargetOS)+' '+ExtraOptions;
-    if TargetCPU<>'' then
-      ExtraOptions:='-P'+LowerCase(TargetCPU)+' '+ExtraOptions;
-    ExtraOptions:=Trim(ExtraOptions);
-
-    // get real OS and CPU
-    Info:=RunFPCInfo(Compiler,[fpciCompilerOS,fpciCompilerProcessor],ExtraOptions);
-    ParseFPCInfo(Info,[fpciCompilerOS,fpciCompilerProcessor],Infos);
-    RealTargetOS:=Infos[fpciCompilerOS];
-    RealTargetCPU:=Infos[fpciCompilerProcessor];
-
-    // run fpc and parse output
-    RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
-                  Defines,Undefines,ExtraOptions);
     CompilerDate:=FileAgeCached(Compiler);
-    // store the real compiler file and date
-    if (RealCompiler<>'') and FileExistsCached(RealCompiler) then
-      RealCompilerDate:=FileAgeCached(RealCompiler);
-    // store the list of tried and read cfg files
-    if CfgFiles<>nil then begin
-      for i:=0 to CfgFiles.Count-1 do begin
-        Filename:=CfgFiles[i];
-        if Filename='' then continue;
-        CfgFileExists:=Filename[1]='+';
-        Filename:=copy(Filename,2,length(Filename));
-        CfgFileDate:=0;
-        if CfgFileExists then
-          CfgFileDate:=FileAgeCached(Filename);
-        ConfigFiles.Add(Filename,CfgFileExists,CfgFileDate);
+    if FileExistsCached(Compiler) then begin
+
+      if CompilerOptions<>'' then
+        ExtraOptions:=CompilerOptions+' '+ExtraOptions;
+      if TargetOS<>'' then
+        ExtraOptions:='-T'+LowerCase(TargetOS)+' '+ExtraOptions;
+      if TargetCPU<>'' then
+        ExtraOptions:='-P'+LowerCase(TargetCPU)+' '+ExtraOptions;
+      ExtraOptions:=Trim(ExtraOptions);
+
+      // get real OS and CPU
+      Info:=RunFPCInfo(Compiler,[fpciCompilerOS,fpciCompilerProcessor],ExtraOptions);
+      ParseFPCInfo(Info,[fpciCompilerOS,fpciCompilerProcessor],Infos);
+      RealTargetOS:=Infos[fpciCompilerOS];
+      RealTargetCPU:=Infos[fpciCompilerProcessor];
+
+      // run fpc and parse output
+      RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
+                    Defines,Undefines,ExtraOptions);
+      // store the real compiler file and date
+      if (RealCompiler<>'') and FileExistsCached(RealCompiler) then
+        RealCompilerDate:=FileAgeCached(RealCompiler);
+      // store the list of tried and read cfg files
+      if CfgFiles<>nil then begin
+        for i:=0 to CfgFiles.Count-1 do begin
+          Filename:=CfgFiles[i];
+          if Filename='' then continue;
+          CfgFileExists:=Filename[1]='+';
+          Filename:=copy(Filename,2,length(Filename));
+          CfgFileDate:=0;
+          if CfgFileExists then
+            CfgFileDate:=FileAgeCached(Filename);
+          ConfigFiles.Add(Filename,CfgFileExists,CfgFileDate);
+        end;
+      end;
+      // gather all units in all unit search paths
+      if (UnitPaths<>nil) and (UnitPaths.Count>0) then
+        Units:=GatherUnitsInSearchPaths(UnitPaths,OnProgress)
+      else begin
+        debugln(['TFPCTargetConfigCache.Update WARNING: no unit paths: ',Compiler,' ',ExtraOptions]);
+        Units:=TStringToStringTree.Create(true);
       end;
     end;
-    // gather all units in all unit search paths
-    if UnitPaths<>nil then
-      Units:=GatherUnitsInSearchPaths(UnitPaths,OnProgress);
     // check for changes
     if not Equals(OldOptions) then
       IncreaseChangeStamp;
@@ -8228,21 +8243,21 @@ begin
     //debugln(['TFPCDefinesCache.ParseUnitSetID Name=',copy(ID,NameStartPos-PChar(ID)+1,ValueStartPos-NameStartPos-1),' Value="',Value,'"']);
     case NameStartPos^ of
     'c','C':
-      if NameFits(PChar('CompilerFilename')) then
+      if NameFits('CompilerFilename') then
         CompilerFilename:=Value;
     'f','F':
-      if NameFits(PChar('FPCSrcDir')) then
+      if NameFits('FPCSrcDir') then
         FPCSrcDir:=Value;
     'o','O':
-      if NameFits(PChar('Options')) then
+      if NameFits('Options') then
         Options:=Value;
     's','S':
-      if NameFits(PChar('Stamp')) then
+      if NameFits('Stamp') then
         ChangeStamp:=StrToIntDef(Value,0);
     't','T':
-      if NameFits(PChar('TargetOS')) then
+      if NameFits('TargetOS') then
         TargetOS:=Value
-      else if NameFits(PChar('TargetCPU')) then
+      else if NameFits('TargetCPU') then
         TargetCPU:=Value;
     end;
     NameStartPos:=ValueEndPos;
@@ -8387,8 +8402,8 @@ begin
     Exclude(fFlags,fuscfSrcRulesNeedUpdate);
     NewRules:=DefaultFPCSourceRules.Clone;
     try
-      AdjustFPCSrcRulesForPPUPaths(Cfg.Units,NewRules);
-      debugln(['TFPCUnitSetCache.GetSourceRules ',DbgSName(fSourceRules),' ',DbgSName(NewRules)]);
+      if Cfg.Units<>nil then
+        AdjustFPCSrcRulesForPPUPaths(Cfg.Units,NewRules);
       fSourceRules.Assign(NewRules); // increases ChangeStamp if something changed
       fRulesStampOfConfig:=Cfg.ChangeStamp;
     finally
@@ -8406,13 +8421,13 @@ var
   NewUnitToSourceTree: TStringToStringTree;
   NewSrcDuplicates: TStringToStringTree;
 begin
-  debugln(['TFPCUnitSetCache.GetUnitToSourceTree START ChangeStamp=',ChangeStamp]);
   Src:=GetSourceCache(AutoUpdate);
   SrcRules:=GetSourceRules(AutoUpdate);
 
   if (fuscfUnitTreeNeedsUpdate in fFlags)
   or (fUnitStampOfFiles<>Src.ChangeStamp)
   or (fUnitStampOfRules<>SrcRules.ChangeStamp) then begin
+    debugln(['TFPCUnitSetCache.GetUnitToSourceTree START ChangeStamp=',ChangeStamp]);
     Exclude(fFlags,fuscfUnitTreeNeedsUpdate);
     NewSrcDuplicates:=nil;
     NewUnitToSourceTree:=nil;
@@ -8436,8 +8451,8 @@ begin
       NewUnitToSourceTree.Free;
       NewSrcDuplicates.Free;
     end;
+    debugln(['TFPCUnitSetCache.GetUnitToSourceTree END ChangeStamp=',ChangeStamp]);
   end;
-  debugln(['TFPCUnitSetCache.GetUnitToSourceTree END ChangeStamp=',ChangeStamp]);
   Result:=fUnitToSourceTree;
 end;
 
@@ -8469,8 +8484,8 @@ end;
 
 function TFPCUnitSetCache.GetUnitSetID: string;
 begin
-  Result:=Caches.GetUnitSetID(CompilerFilename,CompilerOptions,
-                             TargetOS,TargetCPU,FPCSourceDirectory,ChangeStamp);
+  Result:=Caches.GetUnitSetID(CompilerFilename,TargetOS,TargetCPU,
+                              CompilerOptions,FPCSourceDirectory,ChangeStamp);
 end;
 
 initialization

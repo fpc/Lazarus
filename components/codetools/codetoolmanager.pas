@@ -1046,7 +1046,6 @@ begin
 
     // save the options and the FPC unit links results.
     Options.SaveToFile(ConfigFilename);
-    Halt;
   finally
     Options.Free;
   end;

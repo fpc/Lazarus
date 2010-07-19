@@ -119,7 +119,7 @@ begin
     end;
   except
     on E: Exception do begin
-      writeln(E.Message);
+      writeln('Error: ',E.Message);
     end;
   end;
   Options.Free;
