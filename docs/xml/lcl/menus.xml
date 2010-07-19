@@ -2255,7 +2255,7 @@ customise by choosing various menu items.</p>
       <element name="TPopupMenu.OnClose">
         <short>
           <var>OnClose</var> - event handler for closing down the popup</short>
-        <descr/>
+        <descr>You can delete menu items here. But if you delete the clicked menu item on OnClose the OnClick will not follow under Windows.</descr>
         <seealso/>
       </element>
       <!-- function Visibility: default -->
