@@ -195,13 +195,13 @@ function TMenu.FindItem(AValue: PtrInt; Kind: TFindItemKind): TMenuItem;
   begin
     Result := nil;
     //DebugLn(['Find ',dbgsName(Item),' Item.ShortCut=',dbgs(Item.ShortCut),' ',dbgs(TShortCut(AValue))]);
-    if Item=nil then exit;
-    if ((Kind = fkCommand) and (AValue = Item.Command))
-    or ((Kind = fkHandle) and (HMenu(AValue) = Item.FHandle))
-    or ((Kind = fkShortCut) and (AValue = Item.ShortCut))
-    then begin
+    if Item = nil then exit;
+    if ((Kind = fkCommand) and (AValue = Item.Command)) or
+       ((Kind = fkHandle) and (HMenu(AValue) = Item.FHandle)) or
+       ((Kind = fkShortCut) and (AValue = Item.ShortCut)) then
+    begin
       Result := Item;
-      exit;
+      Exit;
     end;
     {$IFDEF UseAltKeysForMenuItems}
     if (Kind = fkShortCut) and (Item.IsInMenuBar)
@@ -216,15 +216,16 @@ function TMenu.FindItem(AValue: PtrInt; Kind: TFindItemKind): TMenuItem;
     end;
     {$ENDIF}
 
-    for I := 0 to Item.GetCount - 1 do begin
-      Result:=Find(Item[I]);
-      if Result<>nil then
+    for I := 0 to Item.GetCount - 1 do
+    begin
+      Result := Find(Item[I]);
+      if Assigned(Result) then
         Exit;
     end;
   end;
 
 begin
-  Result:=Find(Items);
+  Result := Find(Items);
 end;
 
 function TMenu.GetHelpContext(AValue: PtrInt; ByCommand: Boolean): THelpContext;

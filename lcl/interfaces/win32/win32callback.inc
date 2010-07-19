@@ -1080,7 +1080,7 @@ begin
     WM_ENTERIDLE: Application.Idle(False);
     WM_ACTIVATE:
     begin
-      case LOWORD(WParam) Of
+      case LOWORD(WParam) of
         WA_ACTIVE, WA_CLICKACTIVE:
         begin
           LMessage.Msg := LM_ACTIVATE;
@@ -1190,7 +1190,7 @@ begin
     
     WM_COMMAND:
     begin
-      if LParam=0 then
+      if LParam = 0 then
       begin
         {menuitem or shortcut}
         TargetObject := GetMenuItemObject(False);
