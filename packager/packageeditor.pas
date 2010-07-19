@@ -179,7 +179,6 @@ type
     procedure CompilerOptionsBitBtnClick(Sender: TObject);
     procedure CreateMakefileClick(Sender: TObject);
     procedure FilePropsGroupBoxResize(Sender: TObject);
-    procedure FilesPopupMenuClose(Sender: TObject);
     procedure FilesPopupMenuPopup(Sender: TObject);
     procedure UsePopupMenuPopup(Sender: TObject);
     procedure FilesTreeViewDblClick(Sender: TObject);
@@ -1017,11 +1016,6 @@ begin
     SetBounds(x,y,150,Height);
 end;
 
-procedure TPackageEditorForm.FilesPopupMenuClose(Sender: TObject);
-begin
-  PackageEditorMenuRoot.MenuItem:=nil;
-end;
-
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
 
   procedure AddUnit(AddParams: TAddToPkgResult);
@@ -1423,7 +1417,6 @@ begin
   begin
     Name := 'FilesPopupMenu';
     OnPopup := @FilesPopupMenuPopup;
-    OnClose :=@FilesPopupMenuClose;
   end;
   UsePopupMenu := TPopupMenu.Create(Self);
   with UsePopupMenu do
@@ -2178,6 +2171,8 @@ end;
 
 destructor TPackageEditorForm.Destroy;
 begin
+  if PackageEditorMenuRoot.MenuItem=FilesPopupMenu.Items then
+    PackageEditorMenuRoot.MenuItem:=nil;
   PackageEditors.DoFreeEditor(LazPackage);
   FreeAndNil(FPlugins);
   inherited Destroy;
