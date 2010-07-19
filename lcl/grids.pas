@@ -3863,6 +3863,9 @@ begin
 end;
 
 procedure TCustomGrid.WMHScroll(var message: TLMHScroll);
+var
+  C,TL,CTL: Integer;
+  R: TRect;
 
   function NextColWidth(aCol: Integer; Delta: Integer): integer;
   begin
@@ -3872,9 +3875,19 @@ procedure TCustomGrid.WMHScroll(var message: TLMHScroll);
     until (Result<>0) or (aCol>=ColCount) or (aCol<0);
   end;
 
-var
-  C,TL,CTL: Integer;
-  R: TRect;
+  function ThumbPos: Integer;
+  var
+    ScrollInfo: TScrollInfo;
+  begin
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    ScrollInfo.fMask := SIF_RANGE or SIF_PAGE;
+    GetScrollInfo(Handle, SB_HORZ, ScrollInfo);
+    with ScrollInfo do
+      if message.Pos>=(nMax-nMin-nPage) then
+        result := TL
+      else
+        result := message.Pos;
+  end;
 begin
 
   {$IfDef dbgScroll}
@@ -3901,10 +3914,10 @@ begin
     SB_PAGELEFT:   C := CTL - FGCache.ClientWidth;
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION:
-      C := message.Pos;
+      C := ThumbPos;
     SB_THUMBTRACK:
       if goThumbTracking in Options then
-        C := message.Pos
+        C := ThumbPos
       else
         Exit;
       // Ends scrolling
@@ -3959,6 +3972,9 @@ begin
 end;
 
 procedure TCustomGrid.WMVScroll(var message: TLMVScroll);
+var
+  C, TL, CTL, MaxPos: Integer;
+  R: TRect;
 
   function NextRowHeight(aRow: Integer; Delta: Integer): integer;
   begin
@@ -3968,9 +3984,20 @@ procedure TCustomGrid.WMVScroll(var message: TLMVScroll);
     until (Result<>0) or (aRow>=RowCount) or (aRow<0);
   end;
 
-var
-  C, TL, CTL: Integer;
-  R: TRect;
+  function ThumbPos: Integer;
+  var
+    ScrollInfo: TScrollInfo;
+  begin
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    ScrollInfo.fMask := SIF_RANGE or SIF_PAGE;
+    GetScrollInfo(Handle, SB_VERT, ScrollInfo);
+    with ScrollInfo do
+      if message.Pos>=(nMax-nMin-nPage) then
+        result := TL
+      else
+        result := message.Pos;
+  end;
+
 begin
   {$IfDef dbgScroll}
   DebugLn('VSCROLL: Code=%d Position=%d',[message.ScrollCode, message.Pos]);
@@ -3996,10 +4023,10 @@ begin
     SB_PAGEUP:     C := CTL - FGCache.ClientHeight;
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION:
-      C := message.Pos;
+      C := ThumbPos;
     SB_THUMBTRACK:
       if goThumbTracking in Options then
-        C := message.Pos
+        C := ThumbPos
       else
         Exit;
       // Ends scrolling
