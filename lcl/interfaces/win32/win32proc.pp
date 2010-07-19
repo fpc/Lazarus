@@ -117,7 +117,6 @@ procedure RedrawMenus;
 function MeasureTextForWnd(const AWindow: HWND; Text: string; var Width, Height: integer): boolean;
 function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
 function GetControlText(AHandle: HWND): string;
-procedure SetMenuFlag(const Menu: HMenu; Flag: Cardinal; Value: boolean);
 
 procedure FillRawImageDescriptionColors(var ADesc: TRawImageDescription);
 procedure FillRawImageDescription(const ABitmapInfo: Windows.TBitmap; out ADesc: TRawImageDescription);
@@ -1170,35 +1169,6 @@ begin
   for I := 0 to ChangedMenus.Count - 1 do
     DrawMenuBar(HWND(ChangedMenus[I]));
   ChangedMenus.Clear;
-end;
-
-{------------------------------------------------------------------------------
-  Method: SetMenuFlags
-  Returns: Nothing
-
-  Change the menu flags for handle of TMenuItem or TMenu,
-  added for BidiMode Menus
- ------------------------------------------------------------------------------}
-procedure SetMenuFlag(const Menu: HMenu; Flag: Cardinal; Value: boolean);
-var
-  MenuInfo: MENUITEMINFO;
-  MenuItemInfoSize: DWORD;
-const
-  W95_MENUITEMINFO_SIZE = 44;
-begin
-  if (Win32MajorVersion = 4) and (Win32MinorVersion = 0) then
-    MenuItemInfoSize := W95_MENUITEMINFO_SIZE
-  else
-    MenuItemInfoSize := sizeof(MENUITEMINFO);
-  FillChar(MenuInfo, SizeOf(MenuInfo), 0);
-  MenuInfo.cbSize := MenuItemInfoSize;
-  MenuInfo.fMask := MIIM_TYPE;
-  GetMenuItemInfo(Menu, 0, True, @MenuInfo);
-  if Value then
-    MenuInfo.fType := MenuInfo.fType or Flag
-  else
-    MenuInfo.fType := MenuInfo.fType and not Flag;
-  SetMenuItemInfo(Menu, 0, True, @MenuInfo);
 end;
 
 function MeasureTextForWnd(const AWindow: HWND; Text: string; var Width,

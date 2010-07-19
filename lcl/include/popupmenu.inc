@@ -64,22 +64,22 @@ begin
   inherited Destroy;
 end;
 
-procedure TPopupMenu.PopUp();
+procedure TPopupMenu.PopUp;
 var
   MousePos: TPoint;
 begin
   GetCursorPos(MousePos);
-  PopUp(MousePos.x,MousePos.y);
+  PopUp(MousePos.x, MousePos.y);
 end;
 
-procedure TPopupMenu.PopUp(X,Y : Integer);
+procedure TPopupMenu.PopUp(X, Y: Integer);
 begin
   if ActivePopupMenu <> nil then ActivePopupMenu.Close;
   FPopupPoint := Point(X, Y);
   ReleaseCapture;
   DoPopup(Self);
-  if Items.Count=0 then exit;
-  ActivePopupMenu:=Self;
+  if Items.Count = 0 then exit;
+  ActivePopupMenu := Self;
   Items.InitiateActions;
   DestroyHandle;
   CreateHandle;

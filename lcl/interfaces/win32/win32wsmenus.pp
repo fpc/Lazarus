@@ -1155,9 +1155,9 @@ function ChangeMenuFlag(const AMenuItem: TMenuItem; Flag: Cardinal; Value: boole
 var
   MenuInfo: MENUITEMINFO;
 begin
+  FillChar(MenuInfo, SizeOf(MenuInfo), 0);
   MenuInfo.cbSize := menuiteminfosize;
   MenuInfo.fMask := MIIM_TYPE;
-  MenuInfo.dwTypeData := nil;  // don't retrieve caption
   GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
   if Value then
     MenuInfo.fType := MenuInfo.fType or Flag
@@ -1166,6 +1166,28 @@ begin
   MenuInfo.dwTypeData := LPSTR(AMenuItem.Caption);
   Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
   TriggerFormUpdate(AMenuItem);
+end;
+
+{------------------------------------------------------------------------------
+  Method: SetMenuFlag
+  Returns: Nothing
+
+  Change the menu flags for handle of TMenuItem or TMenu,
+  added for BidiMode Menus
+ ------------------------------------------------------------------------------}
+procedure SetMenuFlag(const Menu: HMenu; Flag: Cardinal; Value: boolean);
+var
+  MenuInfo: MENUITEMINFO;
+begin
+  FillChar(MenuInfo, SizeOf(MenuInfo), 0);
+  MenuInfo.cbSize := menuiteminfosize;
+  MenuInfo.fMask := MIIM_TYPE;
+  GetMenuItemInfo(Menu, 0, True, @MenuInfo);
+  if Value then
+    MenuInfo.fType := MenuInfo.fType or Flag
+  else
+    MenuInfo.fType := MenuInfo.fType and not Flag;
+  SetMenuItemInfo(Menu, 0, True, @MenuInfo);
 end;
 
 { TWin32WSMenuItem }

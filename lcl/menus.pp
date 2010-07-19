@@ -341,7 +341,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DestroyHandle; virtual;
-    function FindItem(AValue: PtrInt; Kind: TFindItemKind) : TMenuItem;
+    function FindItem(AValue: PtrInt; Kind: TFindItemKind): TMenuItem;
     function GetHelpContext(AValue: PtrInt; ByCommand: Boolean): THelpContext;
     function IsShortcut(var Message: TLMKey): boolean;
     function HandleAllocated: Boolean;
@@ -402,7 +402,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure PopUp();
+    procedure PopUp;
     procedure PopUp(X, Y: Integer); virtual;
     property PopupComponent: TComponent read FPopupComponent write FPopupComponent;
     property PopupPoint: TPoint read FPopupPoint;
