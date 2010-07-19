@@ -179,7 +179,7 @@ type
     procedure TurnSiblingsOff;
     procedure DoActionChange(Sender: TObject);
   protected
-    FCommand: integer;
+    FCommand: Word;
     class procedure WSRegisterClass; override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); virtual;
     procedure AssignTo(Dest: TPersistent); override;
@@ -258,7 +258,7 @@ type
     property MenuIndex: Integer read GetMenuIndex write SetMenuIndex;
     property Menu: TMenu read FMenu;
     property Parent: TMenuItem read GetParent;
-    property Command: integer read FCommand;
+    property Command: Word read FCommand;
     function MenuVisibleIndex: integer;
     procedure WriteDebugReport(const Prefix: string);
   published
@@ -461,8 +461,8 @@ var
 
 function UniqueCommand: LongInt;
 begin
-  if CommandPool=nil then
-    CommandPool:=TBits.Create(32);
+  if CommandPool = nil then
+    CommandPool := TBits.Create(16);
   Result := CommandPool.OpenBit;
   CommandPool[Result] := True;
 end;
