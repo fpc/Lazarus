@@ -113,6 +113,7 @@ type
     function CalcMemSize: PtrUInt;
   end;
   
+  TCTOnIterateFile = procedure(const Filename: string) of object;
   TCTDirectoryCachePool = class;
 
 
@@ -155,6 +156,7 @@ type
                                           AnyCase: boolean): string;
     function FindCompiledUnitInCompletePath(var ShortFilename: string;
                                             AnyCase: boolean): string;
+    procedure IterateFPCUnitsInSet(const Iterate: TCTOnIterateFile);
     procedure WriteListing;
   public
     property Directory: string read FDirectory;
@@ -170,6 +172,8 @@ type
                                   ): string of object;
   TCTDirCacheFindVirtualFile = function(const Filename: string): string of object;
   TCTGetUnitFromSet = function(const UnitSet, AnUnitName: string): string of object;
+  TCTIterateFPCUnitsFromSet = procedure(const UnitSet: string;
+                                     const Iterate: TCTOnIterateFile) of object;
 
   TCTDirectoryCachePool = class
   private
@@ -179,6 +183,7 @@ type
     FOnFindVirtualFile: TCTDirCacheFindVirtualFile;
     FOnGetString: TCTDirCacheGetString;
     FOnGetUnitFromSet: TCTGetUnitFromSet;
+    FOnIterateFPCUnitsFromSet: TCTIterateFPCUnitsFromSet;
     procedure DoRemove(ACache: TCTDirectoryCache);
     procedure OnFileStateCacheChangeTimeStamp(Sender: TObject);
   public
@@ -194,6 +199,8 @@ type
     procedure IncreaseConfigTimeStamp;
     function FindUnitInUnitLinks(const Directory, AUnitName: string): string;
     function FindUnitInUnitSet(const Directory, AUnitName: string): string;
+    procedure IterateFPCUnitsInSet(const Directory: string;
+                                   const Iterate: TCTOnIterateFile);
     function FindDiskFilename(const Filename: string): string;
     function FindUnitInDirectory(const Directory, AUnitName: string;
                                  AnyCase: boolean = false): string;
@@ -212,6 +219,8 @@ type
                                                    write FOnFindVirtualFile;
     property OnGetUnitFromSet: TCTGetUnitFromSet read FOnGetUnitFromSet
                                                  write FOnGetUnitFromSet;
+    property OnIterateFPCUnitsFromSet: TCTIterateFPCUnitsFromSet
+                 read FOnIterateFPCUnitsFromSet write FOnIterateFPCUnitsFromSet;
   end;
   
 function CompareCTDirectoryCaches(Data1, Data2: Pointer): integer;
@@ -1089,6 +1098,15 @@ begin
   end;
 end;
 
+procedure TCTDirectoryCache.IterateFPCUnitsInSet(const Iterate: TCTOnIterateFile
+  );
+var
+  UnitSet: string;
+begin
+  UnitSet:=Strings[ctdcsUnitSet];
+  Pool.OnIterateFPCUnitsFromSet(UnitSet,Iterate);
+end;
+
 procedure TCTDirectoryCache.WriteListing;
 var
   i: Integer;
@@ -1239,6 +1257,23 @@ begin
     RaiseDirNotAbsolute;
   Cache:=GetCache(Directory,true,false);
   Result:=Cache.FindUnitInUnitSet(AUnitName);
+end;
+
+procedure TCTDirectoryCachePool.IterateFPCUnitsInSet(const Directory: string;
+  const Iterate: TCTOnIterateFile);
+
+  procedure RaiseDirNotAbsolute;
+  begin
+    raise Exception.Create('TCTDirectoryCachePool.IterateFPCUnitsInSet not absolute Directory="'+Directory+'"');
+  end;
+
+var
+  Cache: TCTDirectoryCache;
+begin
+  if (Directory<>'') and not FilenameIsAbsolute(Directory) then
+    RaiseDirNotAbsolute;
+  Cache:=GetCache(Directory,true,false);
+  Cache.IterateFPCUnitsInSet(Iterate);
 end;
 
 function TCTDirectoryCachePool.FindDiskFilename(const Filename: string

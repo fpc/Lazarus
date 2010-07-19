@@ -1397,6 +1397,13 @@ procedure TIdentCompletionTool.GatherUnitnames(CleanPos: integer;
 var
   TreeOfUnitFiles: TAVLTree;
 
+  {$IFDEF EnableFPCCache}
+  procedure GatherUnitsFromSet;
+  begin
+    // collect all unit files in fpc unit paths
+    //DirectoryCache.IterateFPCUnitsInSet();
+  end;
+  {$ELSE}
   procedure GatherUnitsFromUnitLinks;
   var
     UnitLinks: string;
@@ -1426,6 +1433,7 @@ var
         inc(UnitLinkStart);
     end;
   end;
+  {$ENDIF}
   
 var
   UnitPath, SrcPath: string;
@@ -1446,12 +1454,20 @@ begin
   try
     // search in unitpath
     UnitExt:='pp;pas;ppu';
+    if Scanner.CompilerMode=cmMacPas then
+      UnitExt:=UnitExt+';p';
     GatherUnitFiles(BaseDir,UnitPath,UnitExt,false,true,TreeOfUnitFiles);
     // search in srcpath
     SrcExt:='pp;pas';
+    if Scanner.CompilerMode=cmMacPas then
+      SrcExt:=SrcExt+';p';
     GatherUnitFiles(BaseDir,SrcPath,SrcExt,false,true,TreeOfUnitFiles);
     // add unitlinks
+    {$IFDEF EnableFPCCache}
+    GatherUnitsFromSet;
+    {$ELSE}
     GatherUnitsFromUnitLinks;
+    {$ENDIF}
     // create list
     CurSourceName:=GetSourceName;
     ANode:=TreeOfUnitFiles.FindLowest;

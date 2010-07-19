@@ -859,10 +859,10 @@ type
     property SourceCaches: TFPCSourceCaches read FSourceCaches write SetSourceCaches;
     property ConfigCaches: TFPCTargetConfigCaches read FConfigCaches write SetConfigCaches;
     property TestFilename: string read FTestFilename write FTestFilename; // an empty file to test the compiler, will be auto created
-    function FindUnitToSrcCache(const CompilerFilename, TargetOS, TargetCPU,
+    function FindUnitSet(const CompilerFilename, TargetOS, TargetCPU,
                                 Options, FPCSrcDir: string;
                                 CreateIfNotExists: boolean): TFPCUnitSetCache;
-    function FindUnitToSrcCache(const UnitSetID: string; out Changed: boolean;
+    function FindUnitSetWithID(const UnitSetID: string; out Changed: boolean;
                                 CreateIfNotExists: boolean): TFPCUnitSetCache;
     function GetUnitSetID(CompilerFilename, TargetOS, TargetCPU, Options,
                           FPCSrcDir: string; ChangeStamp: integer): string;
@@ -8139,7 +8139,7 @@ begin
   Result:=false;
 end;
 
-function TFPCDefinesCache.FindUnitToSrcCache(const CompilerFilename, TargetOS,
+function TFPCDefinesCache.FindUnitSet(const CompilerFilename, TargetOS,
   TargetCPU, Options, FPCSrcDir: string; CreateIfNotExists: boolean
   ): TFPCUnitSetCache;
 var
@@ -8167,7 +8167,7 @@ begin
     Result:=nil;
 end;
 
-function TFPCDefinesCache.FindUnitToSrcCache(const UnitSetID: string; out
+function TFPCDefinesCache.FindUnitSetWithID(const UnitSetID: string; out
   Changed: boolean; CreateIfNotExists: boolean): TFPCUnitSetCache;
 var
   CompilerFilename, TargetOS, TargetCPU, Options, FPCSrcDir: string;
@@ -8176,13 +8176,13 @@ begin
   ParseUnitSetID(UnitSetID,CompilerFilename, TargetOS, TargetCPU,
                  Options, FPCSrcDir, ChangeStamp);
   //debugln(['TFPCDefinesCache.FindUnitToSrcCache UnitSetID="',dbgstr(UnitSetID),'" CompilerFilename="',CompilerFilename,'" TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',Options,'" FPCSrcDir="',FPCSrcDir,'" ChangeStamp=',ChangeStamp,' exists=',FindUnitToSrcCache(CompilerFilename, TargetOS, TargetCPU,Options, FPCSrcDir,false)<>nil]);
-  Result:=FindUnitToSrcCache(CompilerFilename, TargetOS, TargetCPU,
+  Result:=FindUnitSet(CompilerFilename, TargetOS, TargetCPU,
                              Options, FPCSrcDir, false);
   if Result<>nil then begin
     Changed:=ChangeStamp<>Result.ChangeStamp;
   end else if CreateIfNotExists then begin
     Changed:=true;
-    Result:=FindUnitToSrcCache(CompilerFilename, TargetOS, TargetCPU,
+    Result:=FindUnitSet(CompilerFilename, TargetOS, TargetCPU,
                                Options, FPCSrcDir, true);
   end else
     Changed:=false;

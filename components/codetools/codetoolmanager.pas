@@ -158,6 +158,8 @@ type
     function DirectoryCachePoolFindVirtualFile(const Filename: string): string;
     function DirectoryCachePoolGetUnitFromSet(const UnitSet, AnUnitName: string
                                               ): string;
+    procedure DirectoryCachePoolIterateFPCUnitsFromSet(const UnitSet: string;
+                                              const Iterate: TCTOnIterateFile);
   public
     DefinePool: TDefinePool; // definition templates (rules)
     DefineTree: TDefineTree; // cache for defines (e.g. initial compiler values)
@@ -835,6 +837,7 @@ begin
   DirectoryCachePool.OnGetString:=@DirectoryCachePoolGetString;
   DirectoryCachePool.OnFindVirtualFile:=@DirectoryCachePoolFindVirtualFile;
   DirectoryCachePool.OnGetUnitFromSet:=@DirectoryCachePoolGetUnitFromSet;
+  DirectoryCachePool.OnIterateFPCUnitsFromSet:=@DirectoryCachePoolIterateFPCUnitsFromSet;
   DefineTree.DirectoryCachePool:=DirectoryCachePool;
   FPCDefinesCache:=TFPCDefinesCache.Create(nil);
   FAddInheritedCodeToOverrideMethod:=true;
@@ -943,7 +946,7 @@ begin
   if FPCDefinesCache.TestFilename='' then
     FPCDefinesCache.TestFilename:=GetTempFilename('fpctest.pas','');
 
-  UnitSetCache:=FPCDefinesCache.FindUnitToSrcCache(Config.FPCPath,
+  UnitSetCache:=FPCDefinesCache.FindUnitSet(Config.FPCPath,
     Config.TargetOS,Config.TargetProcessor,Config.FPCOptions,Config.FPCSrcDir,
     true);
   // parse compiler settings, fpc sources
@@ -5308,7 +5311,7 @@ var
   Changed: boolean;
   UnitSetCache: TFPCUnitSetCache;
 begin
-  UnitSetCache:=FPCDefinesCache.FindUnitToSrcCache(UnitSet,Changed,false);
+  UnitSetCache:=FPCDefinesCache.FindUnitSetWithID(UnitSet,Changed,false);
   if UnitSetCache=nil then begin
     debugln(['TCodeToolManager.DirectoryCachePoolGetUnitFromSet invalid UnitSet="',dbgstr(UnitSet),'"']);
     Result:='';
@@ -5320,6 +5323,34 @@ begin
     exit;
   end;
   Result:=UnitSetCache.GetUnitSrcFile(AnUnitName);
+end;
+
+procedure TCodeToolManager.DirectoryCachePoolIterateFPCUnitsFromSet(
+  const UnitSet: string; const Iterate: TCTOnIterateFile);
+var
+  Changed: boolean;
+  UnitSetCache: TFPCUnitSetCache;
+  aConfigCache: TFPCTargetConfigCache;
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+begin
+  UnitSetCache:=FPCDefinesCache.FindUnitSetWithID(UnitSet,Changed,false);
+  if UnitSetCache=nil then begin
+    debugln(['TCodeToolManager.DirectoryCachePoolIterateFPCUnitsFromSet invalid UnitSet="',dbgstr(UnitSet),'"']);
+    exit;
+  end;
+  if Changed then begin
+    debugln(['TCodeToolManager.DirectoryCachePoolIterateFPCUnitsFromSet outdated UnitSet="',dbgstr(UnitSet),'"']);
+    exit;
+  end;
+  aConfigCache:=UnitSetCache.GetConfigCache(false);
+  if (aConfigCache=nil) or (aConfigCache.Units=nil) then exit;
+  Node:=aConfigCache.Units.Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToStringTreeItem(Node.Data);
+    Iterate(Item^.Value);
+    Node:=aConfigCache.Units.Tree.FindSuccessor(Node);
+  end;
 end;
 
 procedure TCodeToolManager.OnToolSetWriteLock(Lock: boolean);
