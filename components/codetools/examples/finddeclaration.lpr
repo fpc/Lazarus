@@ -58,24 +58,12 @@ begin
     if FileExists(ConfigFilename) then begin
       // To not parse the FPC sources every time, the options are saved to a file.
       Options.LoadFromFile(ConfigFilename);
-    end else begin
-      Options.InitWithEnvironmentVariables;
-      if Options.FPCPath='' then
-        Options.FPCPath:='/usr/bin/ppc386';
-      if Options.FPCSrcDir='' then
-        Options.FPCSrcDir:=ExpandFileName('~/freepascal/fpc');
-      if Options.LazarusSrcDir='' then
-        Options.LazarusSrcDir:=ExpandFileName('~/pascal/lazarus');
-      { Linux }
-      {Options.FPCPath:='/usr/bin/ppc386';
-      Options.FPCSrcDir:=ExpandFileName('~/freepascal/fpc');
-      Options.LazarusSrcDir:=ExpandFileName('~/pascal/lazarus');}
-
-      { Windows
-      Options.FPCPath:='C:\lazarus\fpc\2.0.4\bin\i386-win32\ppc386.exe';
-      Options.FPCSrcDir:='C:\lazarus\fpc\2.0.4\source';
-      Options.LazarusSrcDir:='C:\lazarus\';}
     end;
+    Options.InitWithEnvironmentVariables;
+    if Options.FPCSrcDir='' then
+      Options.FPCSrcDir:=ExpandFileName('~/freepascal/fpc');
+    if Options.LazarusSrcDir='' then
+      Options.LazarusSrcDir:=ExpandFileName('~/pascal/lazarus');
 
     // optional: ProjectDir and TestPascalFile exists only to easily test some
     // things.

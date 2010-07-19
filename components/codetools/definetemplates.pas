@@ -1242,7 +1242,7 @@ function ParseFPCVerbose(List: TStrings; out ConfigFiles: TSTrings;
     i, len, CurPos: integer;
     Filename: String;
   begin
-    DebugLn(['ProcessOutputLine ',Line]);
+    //DebugLn(['ProcessOutputLine ',Line]);
     len := length(Line);
     if len <= 6 then Exit; // shortest match
 
@@ -8175,7 +8175,7 @@ var
 begin
   ParseUnitSetID(UnitSetID,CompilerFilename, TargetOS, TargetCPU,
                  Options, FPCSrcDir, ChangeStamp);
-  debugln(['TFPCDefinesCache.FindUnitToSrcCache UnitSetID="',dbgstr(UnitSetID),'" CompilerFilename="',CompilerFilename,'" TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',Options,'" FPCSrcDir="',FPCSrcDir,'" ChangeStamp=',ChangeStamp,' exists=',FindUnitToSrcCache(CompilerFilename, TargetOS, TargetCPU,Options, FPCSrcDir,false)<>nil]);
+  //debugln(['TFPCDefinesCache.FindUnitToSrcCache UnitSetID="',dbgstr(UnitSetID),'" CompilerFilename="',CompilerFilename,'" TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',Options,'" FPCSrcDir="',FPCSrcDir,'" ChangeStamp=',ChangeStamp,' exists=',FindUnitToSrcCache(CompilerFilename, TargetOS, TargetCPU,Options, FPCSrcDir,false)<>nil]);
   Result:=FindUnitToSrcCache(CompilerFilename, TargetOS, TargetCPU,
                              Options, FPCSrcDir, false);
   if Result<>nil then begin
@@ -8427,7 +8427,6 @@ begin
   if (fuscfUnitTreeNeedsUpdate in fFlags)
   or (fUnitStampOfFiles<>Src.ChangeStamp)
   or (fUnitStampOfRules<>SrcRules.ChangeStamp) then begin
-    debugln(['TFPCUnitSetCache.GetUnitToSourceTree START ChangeStamp=',ChangeStamp]);
     Exclude(fFlags,fuscfUnitTreeNeedsUpdate);
     NewSrcDuplicates:=nil;
     NewUnitToSourceTree:=nil;
@@ -8451,7 +8450,6 @@ begin
       NewUnitToSourceTree.Free;
       NewSrcDuplicates.Free;
     end;
-    debugln(['TFPCUnitSetCache.GetUnitToSourceTree END ChangeStamp=',ChangeStamp]);
   end;
   Result:=fUnitToSourceTree;
 end;

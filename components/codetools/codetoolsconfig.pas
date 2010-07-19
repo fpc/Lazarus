@@ -297,10 +297,10 @@ end;
 
 procedure TCodeToolsOptions.InitWithEnvironmentVariables;
 begin
-  if FPCPath='' then
-    FPCPath:=FindDefaultCompilerFilename;
   if GetEnvironmentVariableUTF8('PP')<>'' then
-    FPCPath:=GetEnvironmentVariableUTF8('PP');
+    FPCPath:=GetEnvironmentVariableUTF8('PP')
+  else if (FPCPath='') or not FileExistsCached(FPCPath) then
+    FPCPath:=FindDefaultCompilerFilename;
   if GetEnvironmentVariableUTF8('FPCDIR')<>'' then
     FPCSrcDir:=GetEnvironmentVariableUTF8('FPCDIR');
   if GetEnvironmentVariableUTF8('LAZARUSDIR')<>'' then
