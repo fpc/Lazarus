@@ -78,8 +78,9 @@ type
     lcFormIcon,                 // Forms have icon
     lcModalWindow,              // native modal windows support
     lcDragDockStartOnTitleClick,// ability to start drag/dock events on title bar click
-    lcAntialiasingEnabledByDefault
+    lcAntialiasingEnabledByDefault,
                                 // is amDontCare = amOn for the widgetset
+    lcLMHelpSupport             // support for LM_HELP command
   );
 
 type

@@ -1509,7 +1509,7 @@ begin
     end;
     WM_EXITMENULOOP:
       // is it a popup menu
-      if longbool(WPARAM) and assigned(WindowInfo^.PopupMenu) then
+      if longbool(WPARAM) and Assigned(WindowInfo^.PopupMenu) then
         WindowInfo^.PopupMenu.Close;
     WM_GETDLGCODE:
     begin
@@ -1517,8 +1517,14 @@ begin
       WinProcess := false;
     end;
     WM_HELP:
-      if Window = Win32WidgetSet.AppHandle then
-        Application.HelpCommand(0, LParam);
+    begin
+      LMessage.Msg := LM_HELP;
+      LMessage.WParam := WParam;
+      LMessage.LParam := LParam;
+      // Don't ask windows to process the message here. It will be processed
+      // either by TCustomForm LM_HELP handler or passed to parent by DefaultHandler
+      WinProcess := False;
+    end;
     WM_HOTKEY:
     begin
       LMessage.Msg := WM_HOTKEY;

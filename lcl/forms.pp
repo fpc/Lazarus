@@ -485,6 +485,7 @@ type
     procedure WMActivate(var Message : TLMActivate); message LM_ACTIVATE;
     procedure WMCloseQuery(var message: TLMessage); message LM_CLOSEQUERY;
     procedure WMDeactivate(var Message : TLMActivate); message LM_DEACTIVATE;
+    procedure WMHelp(var Message: TLMHelp); message LM_HELP;
     procedure WMShowWindow(var message: TLMShowWindow); message LM_SHOWWINDOW;
     procedure WMSize(var message: TLMSize); message LM_Size;
     procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
@@ -1305,11 +1306,7 @@ type
     procedure HandleException(Sender: TObject); override;
     procedure HandleMessage;
     function HelpCommand(Command: Word; Data: PtrInt): Boolean;
-    function HelpContext(Sender: TObject; const Position: TPoint;
-                         Context: THelpContext): Boolean;
     function HelpContext(Context: THelpContext): Boolean;
-    function HelpKeyword(Sender: TObject; const Position: TPoint;
-                         const Keyword: String): Boolean;
     function HelpKeyword(const Keyword: String): Boolean;
     procedure ShowHelpForObject(Sender: TObject);
     procedure RemoveStayOnTop(const ASystemTopAlso: Boolean = False);

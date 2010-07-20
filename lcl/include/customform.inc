@@ -516,6 +516,43 @@ begin
   {$ENDIF}
 end;
 
+procedure TCustomForm.WMHelp(var Message: TLMHelp);
+var
+  Child: TWinControl;
+  Context: THelpContext;
+begin
+  if (csDesigning in ComponentState) or not Assigned(Message.HelpInfo) then
+    Exit;
+
+{
+  WriteLn('context type = ', Message.HelpInfo^.iContextType);
+  WriteLn('control id   = ', Message.HelpInfo^.iCtrlId);
+  WriteLn('item handle  = ', Message.HelpInfo^.hItemHandle);
+  WriteLn('context id   = ', Message.HelpInfo^.dwContextId);
+  WriteLn('MousePos     = ', dbgs(Message.HelpInfo^.MousePos));
+}
+
+  case Message.HelpInfo^.iContextType of
+    HELPINFO_WINDOW:
+      begin
+        Child := FindControl(Message.HelpInfo^.hItemHandle);
+        if Assigned(Child) then
+          Child.ShowHelp;
+      end;
+    HELPINFO_MENUITEM:
+      begin
+        if Assigned(Menu) then
+        begin
+          Context := Menu.GetHelpContext(Message.HelpInfo^.iCtrlId, True);
+          if Context = 0 then
+            Context := Menu.GetHelpContext(Message.HelpInfo^.hItemHandle, False);
+          if Context <> 0 then
+            Application.HelpContext(Context);
+        end;
+      end;
+  end;
+end;
+
 procedure TCustomForm.CMShowingChanged(var Message: TLMessage);
 begin
   try

@@ -3735,26 +3735,32 @@ end;
 
 procedure TControl.ShowHelp;
 begin
-  if HelpType=htContext then begin
-    if HelpContext<>0 then begin
-      Application.HelpContext(Self,ClientToScreen(Point(0,0)),HelpContext);
-      exit;
+  if HelpType = htContext then
+  begin
+    if HelpContext <> 0 then
+    begin
+      Application.HelpContext(HelpContext);
+      Exit;
     end;
-  end else begin
-    if HelpKeyword<>'' then begin
-      Application.HelpKeyword(Self,ClientToScreen(Point(0,0)),HelpKeyword);
-      exit;
+  end
+  else
+  begin
+    if HelpKeyword <> '' then
+    begin
+      Application.HelpKeyword(HelpKeyword);
+      Exit;
     end;
   end;
-  if Parent<>nil then Parent.ShowHelp;
+  if Parent <> nil then
+    Parent.ShowHelp;
 end;
 
 function TControl.HasHelp: Boolean;
 begin
-  if HelpType=htContext then
-    Result:=HelpContext<>0
+  if HelpType = htContext then
+    Result := HelpContext <> 0
   else
-    Result:=HelpKeyword<>'';
+    Result := HelpKeyword <> '';
 end;
 
 {------------------------------------------------------------------------------

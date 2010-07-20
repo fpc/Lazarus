@@ -237,7 +237,8 @@ begin
     LM_MOUSEWHEEL: // provide default wheel scrolling functionality
       CallMouseWheelHandler;
     LM_ERASEBKGND,
-    LM_GETDLGCODE:
+    LM_GETDLGCODE,
+    LM_HELP:
       with TLMessage(Message) do
         Result := CallDefaultWindowProc(Handle, Msg, WParam, LParam);
   else

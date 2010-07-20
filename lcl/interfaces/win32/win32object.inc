@@ -533,6 +533,7 @@ begin
     lcModalWindow: Result := LCL_CAPABILITY_NO;
     lcDragDockStartOnTitleClick: Result := LCL_CAPABILITY_YES;
     lcApplicationWindow: Result := LCL_CAPABILITY_YES;
+    lcLMHelpSupport: Result := LCL_CAPABILITY_YES;
   else
     Result := inherited;
   end;

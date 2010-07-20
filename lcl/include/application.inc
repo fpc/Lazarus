@@ -1221,45 +1221,44 @@ begin
   if not Terminated then Idle(true);
 end;
 
-function TApplication.HelpContext(Sender: TObject; const Position: TPoint;
-  Context: THelpContext): Boolean;
-begin
-  if ValidateHelpSystem then begin
-    Result := ShowHelpOrErrorForContext('',Context)=shrSuccess;
-  end else
-    Result := false;
-end;
-
 {------------------------------------------------------------------------------
   function TApplication.HelpContext(Context: THelpContext): Boolean;
 ------------------------------------------------------------------------------}
 function TApplication.HelpContext(Context: THelpContext): Boolean;
+var
+  CallHelp: Boolean;
 begin
-  Result:=HelpContext(nil,Point(0,0),Context);
-end;
-
-function TApplication.HelpKeyword(Sender: TObject; const Position: TPoint;
-  const Keyword: String): Boolean;
-begin
-  if ValidateHelpSystem then begin
-    Result := ShowHelpOrErrorForKeyword('',Keyword)=shrSuccess;
-  end else
-    Result := false;
+  CallHelp := True;
+  Result := DoOnHelp(HELP_CONTEXT, Context, CallHelp);
+  if not CallHelp then
+    Exit;
+  if ValidateHelpSystem then
+    Result := ShowHelpOrErrorForContext('', Context) = shrSuccess
+  else
+    Result := False;
 end;
 
 {------------------------------------------------------------------------------
   function TApplication.HelpKeyword(const Keyword: String): Boolean;
 ------------------------------------------------------------------------------}
 function TApplication.HelpKeyword(const Keyword: String): Boolean;
+var
+  CallHelp: Boolean;
 begin
-  Result:=HelpKeyword(nil,Point(0,0),Keyword);
+  CallHelp := True;
+  Result := DoOnHelp(HELP_COMMAND, PtrInt(PChar(Keyword)), CallHelp);
+  if not CallHelp then
+    Exit;
+  if ValidateHelpSystem then
+    Result := ShowHelpOrErrorForKeyword('', Keyword) = shrSuccess
+  else
+    Result := False;
 end;
 
 procedure TApplication.ShowHelpForObject(Sender: TObject);
 begin
-  if Sender is TControl then begin
+  if Sender is TControl then
     TControl(Sender).ShowHelp;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1587,10 +1586,11 @@ procedure TApplication.NotifyKeyDownHandler(Sender: TObject;
 var
   i: Integer;
 begin
-  i:=FApplicationHandlers[ahtKeyDownAfter].Count;
+  i := FApplicationHandlers[ahtKeyDownAfter].Count;
   while FApplicationHandlers[ahtKeyDownAfter].NextDownIndex(i) do
-    TKeyEvent(FApplicationHandlers[ahtKeyDownAfter][i])(Sender,Key,Shift);
-  if WidgetSet.IsHelpKey(Key, Shift) then
+    TKeyEvent(FApplicationHandlers[ahtKeyDownAfter][i])(Sender, Key, Shift);
+  if WidgetSet.IsHelpKey(Key, Shift) and
+     (Widgetset.GetLCLCapability(lcLMHelpSupport) = LCL_CAPABILITY_NO) then
     ShowHelpForObject(Sender);
 end;
 

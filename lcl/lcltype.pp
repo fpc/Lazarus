@@ -1318,6 +1318,10 @@ const
   HELPINFO_WINDOW   = $0001;
   HELPINFO_MENUITEM = $0002;
 
+// DoOnHelp commands
+  HELP_CONTEXT = 1;
+  HELP_COMMAND = 258;
+
 //==============================================
 // Background Modes
 //==============================================

@@ -165,6 +165,7 @@ const
   LM_WINDOWPOSCHANGING = $0046;
   LM_WINDOWPOSCHANGED  = $0047;
   LM_NOTIFY            = $004E;
+  LM_HELP              = $0053;
   LM_NOTIFYFORMAT      = $0055;
   LM_CONTEXTMENU       = $007B;
 
@@ -877,6 +878,16 @@ type
     2: (
        Dummy: LPARAM; // needed for64 bit alignment
        Result: LResult);
+  end;
+
+  TLMHelp = record
+    Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
+    Unused: LCLType.WPARAM;
+    HelpInfo: PHelpInfo;
+    Result: LRESULT;
   end;
 
 { Combo Box Notification Codes }
