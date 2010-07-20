@@ -1487,7 +1487,7 @@ begin
           if Result then break;
         end;
         // check if widget has a standard popup menu
-        if Assigned(GTK_WIDGET_GET_CLASS(W)^.popup_menu) then
+        if (W = widget) and Assigned(GTK_WIDGET_GET_CLASS(W)^.popup_menu) then
           break;
         W := gtk_widget_get_parent(W);
       end;
