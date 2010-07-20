@@ -893,7 +893,6 @@ type
     FHelpType: THelpType;
     FHint: TTranslateString;
     FHostDockSite: TWinControl;
-    FLastChangebounds: TRect;
     FLastDoChangeBounds: TRect;
     FLastDoChangeClientSize: TPoint;
     FLastResizeClientHeight: integer;

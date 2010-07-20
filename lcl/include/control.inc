@@ -38,11 +38,13 @@
   they do not all tests, which can result in too much overhead. To reduce this
   the LCL calls AdjustSize instead.
 ------------------------------------------------------------------------------}
-procedure TControl.Adjustsize;
+procedure TControl.AdjustSize;
 begin
   {$IFDEF VerboseAdjustSize}
-  if (Parent=nil) and (not (cfAutoSizeNeeded in FControlFlags))
-  and (Self is TCustomForm) then begin
+  if (not (cfAutoSizeNeeded in FControlFlags))
+    and (Parent=nil)
+    and (Self is TCustomForm)
+  then begin
     DebugLn(['TControl.Adjustsize ',DbgSName(Self)]);
   end;
   {$ENDIF}
@@ -318,7 +320,6 @@ var
   OldTop: Integer;
   OldWidth: Integer;
   OldHeight: Integer;
-  NewBounds: TRect;
 
   function PosSizeKept: boolean;
   begin
@@ -340,22 +341,17 @@ begin
   // constraint the size
   DoConstrainedResize(ALeft, ATop, AWidth, AHeight);
 
-  // check, if we are already processing this bound change
-  NewBounds := Bounds(ALeft, ATop, AWidth, AHeight);
-  if CompareRect(@FLastChangebounds, @NewBounds) then Exit;
-  FLastChangebounds := NewBounds;
+  // check if something would change
+  SizeChanged := (FWidth <> AWidth) or (FHeight <> AHeight);
+  PosChanged := (FLeft <> ALeft) or (FTop <> ATop);
+  if (not SizeChanged) and (not PosChanged) then Exit;
 
   OldLeft := FLeft;
   OldTop := FTop;
   OldWidth := FWidth;
   OldHeight := FHeight;
 
-  // check if something would change
-  SizeChanged := (FWidth <> AWidth) or (FHeight <> AHeight);
-  PosChanged := (FLeft <> ALeft) or (FTop <> ATop);
-  if (not SizeChanged) and (not PosChanged) then Exit;
-
-  //DebugLn('TControl.ChangeBounds A ',DbgSName(Self),' Old=',dbgs(BoundsRect),' New=',dbgs(NewBounds));
+  //DebugLn('TControl.ChangeBounds A ',DbgSName(Self),' Old=',dbgs(BoundsRect),' New=',dbgs(Bounds(ALeft,ATop,AWidth,AHeight)));
   if (not (csLoading in ComponentState))
   and (not (Self is TWinControl)) then
     InvalidateControl(IsControlVisible, False, true);
@@ -2333,16 +2329,18 @@ procedure TControl.DoAllAutoSize;
   var
     AWinControl: TWinControl;
     i: Integer;
+    Needed: Boolean;
   begin
     if AControl.AutoSizeDelayed then exit;
-    if not (cfAutoSizeNeeded in AControl.FControlFlags) then exit;
+    Needed:=cfAutoSizeNeeded in AControl.FControlFlags;
 
-    //DebugLn(['TControl.DoAllAutoSize.AutoSizeControl ',DbgSName(AControl),' AutoSize=',AControl.AutoSize,' IsControlVisible=',AControl.IsControlVisible]);
+    //DebugLn(['TControl.DoAllAutoSize.AutoSizeControl ',DbgSName(AControl),' AutoSize=',AControl.AutoSize,' IsControlVisible=',AControl.IsControlVisible,' cfAutoSizeNeeded=',Needed]);
     Exclude(AControl.FControlFlags, cfAutoSizeNeeded);
     if not AControl.IsControlVisible then exit;
 
-    if AControl.AutoSize and
-       (not ((AControl.Parent = nil) and (csDesigning in AControl.ComponentState))) then
+    if Needed and AControl.AutoSize and
+       (not ((AControl.Parent = nil) and (csDesigning in AControl.ComponentState)))
+    then
       AControl.DoAutoSize;
     if AControl is TWinControl then
     begin
@@ -2357,17 +2355,14 @@ procedure TControl.DoAllAutoSize;
 
   function CallAllOnResize(AControl: TControl): boolean;
   // the OnResize event is called for Delphi compatibility after child resizes
+  // call all OnResize events so they will probably only invoke one more
+  // loop, instead of one per OnResize
   var
     AWinControl: TWinControl;
     i: Integer;
   begin
     if AControl = nil then Exit(True);
     Result := False;
-    if cfAutoSizeNeeded in FControlFlags then
-    begin
-      // something has changed => the autosizing must restart
-      exit;
-    end;
     if AControl is TWinControl then
     begin
       AWinControl := TWinControl(AControl);
@@ -2389,7 +2384,7 @@ begin
   {$ENDIF}
   //writeln(GetStackTrace(true));
   try
-    while not AutoSizeDelayed and (cfAutoSizeNeeded in FControlFlags) do
+    while (not AutoSizeDelayed) and (cfAutoSizeNeeded in FControlFlags) do
     begin
       {$IFDEF VerboseAllAutoSize}
       DebugLn(['TControl.DoAllAutoSize LOOP ',DbgSName(Self),' ',dbgs(BoundsRect)]);

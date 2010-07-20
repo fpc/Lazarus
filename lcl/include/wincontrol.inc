@@ -3388,7 +3388,6 @@ begin
       SetBoundsKeepBase(NewLeft,NewTop,PreferredWidth,PreferredHeight);
     end;
   finally
-    Exclude(FControlFlags,cfAutoSizeNeeded);
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.DoAutoSize'){$ENDIF};
   end;
 end;
