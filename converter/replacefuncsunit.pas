@@ -78,10 +78,13 @@ type
     CategoriesLabel: TLabel;
     PopupMenu1: TPopupMenu;
     Splitter1: TSplitter;
+    procedure CategoryListBoxClickCheck(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure PopupMenu1Popup(Sender: TObject);
     procedure InsertRow1Click(Sender: TObject);
     procedure DeleteRow1Click(Sender: TObject);
+    procedure GridDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect;
+      aState: TGridDrawState);
     procedure GridEditingDone(Sender: TObject);
     procedure GridSetEditText(Sender: TObject; ACol, ARow: Integer; const Value: string);
     procedure OKButtonClick(Sender: TObject);
@@ -360,6 +363,11 @@ begin
   IsLasRow:=false;
 end;
 
+procedure TReplaceFuncsForm.CategoryListBoxClickCheck(Sender: TObject);
+begin
+  Grid.Invalidate; // Update;
+end;
+
 procedure TReplaceFuncsForm.PopupMenu1Popup(Sender: TObject);
 var
   ControlCoord, NewCell: TPoint;
@@ -378,6 +386,20 @@ end;
 procedure TReplaceFuncsForm.DeleteRow1Click(Sender: TObject);
 begin
   Grid.DeleteColRow(False, Grid.Row);
+end;
+
+procedure TReplaceFuncsForm.GridDrawCell(Sender: TObject; aCol, aRow: Integer;
+  aRect: TRect; aState: TGridDrawState);
+var
+  SGrid: TStringGrid;
+  Categ: string;
+  i: integer;
+begin
+  SGrid:=Sender as TStringGrid;
+  Categ:=SGrid.Cells[0, aRow];  // Column 0 = category.
+  i:=CategoryListBox.Items.IndexOf(Categ);
+  if (i<>-1) and not CategoryListBox.Checked[i] then
+    SGrid.Canvas.Font.Color:= clGrayText;
 end;
 
 // Add rows automatically to the end of the grid
