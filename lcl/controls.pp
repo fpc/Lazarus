@@ -1745,6 +1745,7 @@ type
     procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
     procedure CMEnter(var Message: TLMessage); message CM_ENTER;
     procedure CMExit(var Message: TLMessage); message CM_EXIT;
+    procedure WMContextMenu(var Message: TLMContextMenu); message LM_CONTEXTMENU;
     procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMNotify(var Message: TLMNotify); message LM_NOTIFY;
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;

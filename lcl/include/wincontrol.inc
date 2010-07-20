@@ -3777,7 +3777,7 @@ The messages could be sent immediately to the docking manager, if this is a dock
         {$IFDEF VerboseDrag}
         DebugLn('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' Start DragMsg.DragRec^.Pos=',IntToStr(APosition.X),',',IntToStr(APosition.Y));
         {$ENDIF}
-        TargetControl := ControlatPos(ScreentoClient(APosition),
+        TargetControl := ControlAtPos(ScreentoClient(APosition),
                                       [capfAllowWinControls,capfRecursive]);
         if TargetControl = nil then TargetControl := Self;
         {$IFDEF VerboseDrag}
@@ -7916,6 +7916,34 @@ end;
 procedure TWinControl.CMExit(var Message: TLMessage);
 begin
   DoExit;
+end;
+
+procedure TWinControl.WMContextMenu(var Message: TLMContextMenu);
+var
+  Child: TControl;
+begin
+  // find if at the click place we have a control and if so then pass the message
+  // to it
+
+  // don't check csDesigning here - let a child control to check it
+  if (Message.Result <> 0) then
+    Exit;
+
+  if Message.XPos <> -1 then
+  begin
+    // don't allow disabled and don't search wincontrols - they recieve their
+    // message themself
+    Child := ControlAtPos(ScreenToClient(SmallPointToPoint(Message.Pos)), []);
+    if Assigned(Child) then
+      with Message do
+      begin
+        Result := Child.Perform(Msg, WParam(hWnd), LParam(Integer(Pos)));
+        if (Result <> 0) then
+          Exit;
+      end;
+  end;
+
+  inherited;
 end;
 
 procedure TWinControl.DoSendShowHideToInterface;
