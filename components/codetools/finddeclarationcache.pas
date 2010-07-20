@@ -147,7 +147,8 @@ type
       CleanStartPos, CleanEndPos: integer;
       InFront: boolean): PCodeTreeNodeCacheEntry;
     function Find(Identifier: PChar): PCodeTreeNodeCacheEntry;
-    procedure Add(Identifier: PChar; CleanStartPos, CleanEndPos: integer;
+    procedure Add(Identifier: PChar;
+      SrcTool: TPascalParserTool; CleanStartPos, CleanEndPos: integer;
       NewNode: TCodeTreeNode; NewTool: TPascalParserTool; NewCleanPos: integer;
       Flags: TNodeCacheEntryFlags);
     procedure Clear;
@@ -779,7 +780,7 @@ begin
 end;
 
 procedure TCodeTreeNodeCache.Add(Identifier: PChar;
-  CleanStartPos, CleanEndPos: integer;
+  SrcTool: TPascalParserTool; CleanStartPos, CleanEndPos: integer;
   NewNode: TCodeTreeNode; NewTool: TPascalParserTool; NewCleanPos: integer;
   Flags: TNodeCacheEntryFlags);
 
@@ -802,23 +803,28 @@ var
   OldNode: TAVLTreeNode;
   NewSearchRangeFlags: TNodeCacheEntryFlags;
 
+  function P2S(CleanPos: integer): string;
+  begin
+    Result:=SrcTool.CleanPosToStr(CleanPos);
+  end;
+
   function ParamsDebugReport: string;
   var
     s: string;
   begin
     s:=' Ident='+GetIdentifier(Identifier);
-    s:=s+' New: Range='+IntToStr(CleanStartPos)
-             +'-'+IntToStr(CleanEndPos);
+    s:=s+' New: Range='+P2S(CleanStartPos)
+             +'-'+P2S(CleanEndPos);
     if Owner<>nil then begin
       s:=s+' Owner='+Owner.DescAsString;
-      s:=s+' OwnerPos='+IntToStr(Owner.StartPos);
+      s:=s+' OwnerPos='+P2S(Owner.StartPos);
     end;
     if OldEntry<>nil then begin
-      s:=s+' Old: Range='+IntToStr(OldEntry^.CleanStartPos)
-               +'-'+IntToStr(OldEntry^.CleanEndPos);
+      s:=s+' Old: Range='+P2S(OldEntry^.CleanStartPos)
+               +'-'+P2S(OldEntry^.CleanEndPos);
       if OldEntry^.NewNode<>nil then begin
         s:=s+' Node='+OldEntry^.NewNode.DescAsString
-            +' Pos='+IntToStr(OldEntry^.NewNode.StartPos);
+            +' Pos='+OldEntry^.NewTool.CleanPosToStr(OldEntry^.NewNode.StartPos);
       end else
         s:=s+' Node=nil';
       if OldEntry^.NewTool<>nil then begin
@@ -831,7 +837,7 @@ var
     end;
     if NewNode<>nil then begin
       s:=s+' Node='+NewNode.DescAsString
-          +' Pos='+IntToStr(NewNode.StartPos);
+          +' Pos='+NewTool.CleanPosToStr(NewNode.StartPos);
     end else
       s:=s+' Node=nil';
     if NewTool<>nil then begin

@@ -8971,11 +8971,12 @@ var Node: TCodeTreeNode;
     else
       Result:='?'+ANodeOwner.ClassName+'?';
   end;
-  
   {$ENDIF}
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(StartNode);{$ENDIF}
   if StartNode=nil then exit;
+  if EndNode=nil then EndNode:=StartNode;
+
   if Params.NewNode<>nil then begin
     // identifier found
     NewNode:=Params.NewNode;
@@ -9056,17 +9057,7 @@ begin
   LastNodeCache:=nil;
   // start with parent of deepest node and end parent of highest
   Node:=StartNode;
-  if (EndNode<>nil) then begin
-    if (EndNode.GetLevel>StartNode.GetLevel) then begin
-      Node:=EndNode;
-      EndNode:=StartNode.Parent;
-    end else begin
-      EndNode:=EndNode.Parent;
-    end;
-  end else
-    EndNode:=StartNode.Parent;
-  Node:=Node.Parent;
-  while (Node<>nil) do begin
+  repeat
     if (Node.Desc in AllNodeCacheDescs) then begin
       if (Node.Cache=nil) then
         CreateNewNodeCache(Node);
@@ -9079,7 +9070,7 @@ begin
           end;
           {$ENDIF}
           CurNodeCache.Add(Params.Identifier,
-                           CleanStartPos,CleanEndPos,
+                           Self,CleanStartPos,CleanEndPos,
                            NewNode,NewTool,NewCleanPos,SearchRangeFlags);
           {$IFDEF ShowNodeCache}
           if BeVerbose then begin
@@ -9091,8 +9082,7 @@ begin
       end;
     end;
     Node:=Node.Parent;
-    if (EndNode=Node) then break;
-  end;
+  until (Node=nil) or (EndNode=Node) or EndNode.HasAsParent(Node);
   {$IFDEF ShowNodeCache}
   if BeVerbose then begin
     DebugLn('=========================))))))))))))))))))))))))))))))))');
