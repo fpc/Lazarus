@@ -2352,8 +2352,8 @@ end;
 
 function DbgS(const r: TRect): string;
 begin
-  Result:='x1='+IntToStr(r.Left)+',y1='+IntToStr(r.Top)
-         +',x2='+IntToStr(r.Right)+',y2='+IntToStr(r.Bottom);
+  Result:='l='+IntToStr(r.Left)+',t='+IntToStr(r.Top)
+         +',r='+IntToStr(r.Right)+',b='+IntToStr(r.Bottom);
 end;
 
 function DbgS(const p: TPoint): string;
