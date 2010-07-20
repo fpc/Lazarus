@@ -142,8 +142,13 @@ begin
 end;
 
 procedure TChmHelpViewer.SetHelpLabel(AValue: String);
+var
+  i: Integer;
 begin
  fHelpLabel := AValue;
+ for i := 1 to Length(fHelpLabel) do
+   if not (fHelpLabel[i] in ['a'..'z', '0'..'9', 'A'..'Z']) then
+     fHelpLabel[i] := '_';
 end;
 
 function TChmHelpViewer.CheckBuildLHelp: Integer;
@@ -360,7 +365,7 @@ begin
   else
     DocsDir := fChmsFilePath;
 
-  FileName := DocsDir+FileName;
+  FileName := IncludeTrailingPathDelimiter(DocsDir)+FileName;
 
   fHelpConnection.StartHelpServer(HelpLabel, HelpExe);
   Res := fHelpConnection.OpenURL(FileName, Url);
@@ -384,7 +389,7 @@ begin
     Viewer:=TChmHelpViewer(Source);
     HelpEXE:=Viewer.HelpEXE;
     HelpLabel:=Viewer.HelpLabel;
-    HelpFilesPath:=IncludeTrailingPathDelimiter(Viewer.HelpFilesPath);
+    HelpFilesPath:=Viewer.HelpFilesPath;
   end;
   inherited Assign(Source);
 end;
@@ -393,7 +398,7 @@ procedure TChmHelpViewer.Load(Storage: TConfigStorage);
 begin
   HelpEXE:=Storage.GetValue('CHMHelp/Exe','');
   HelpLabel:=Storage.GetValue('CHMHelp/Name','lazhelp');
-  HelpFilesPath := IncludeTrailingPathDelimiter(Storage.GetValue('CHMHelp/FilesPath',''));
+  HelpFilesPath := Storage.GetValue('CHMHelp/FilesPath','');
 end;
 
 procedure TChmHelpViewer.Save(Storage: TConfigStorage);
