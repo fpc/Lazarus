@@ -3973,7 +3973,7 @@ end;
 
 procedure TCustomGrid.WMVScroll(var message: TLMVScroll);
 var
-  C, TL, CTL, MaxPos: Integer;
+  C, TL, CTL: Integer;
   R: TRect;
 
   function NextRowHeight(aRow: Integer; Delta: Integer): integer;
