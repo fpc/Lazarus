@@ -39,6 +39,12 @@
   the LCL calls AdjustSize instead.
 ------------------------------------------------------------------------------}
 procedure TControl.AdjustSize;
+
+  procedure RaiseLoop;
+  begin
+    raise Exception.Create('TControl.AdjustSize loop detected '+DbgSName(Self)+' Bounds='+dbgs(BoundsRect));
+  end;
+
 begin
   {$IFDEF VerboseAdjustSize}
   if (not (cfAutoSizeNeeded in FControlFlags))
@@ -53,9 +59,12 @@ begin
   begin
     if Parent <> nil then
       Parent.AdjustSize
-    else
-    if not AutoSizeDelayed then
-      DoAllAutoSize;
+    else begin
+      if cfKillAdjustSize in FControlFlags then
+        RaiseLoop;
+      if not AutoSizeDelayed then
+        DoAllAutoSize;
+    end;
   end;
 end;
 
@@ -2416,9 +2425,12 @@ begin
         Include(FControlFlags,cfKillChangeBounds);
       if i=2000 then
         Include(FControlFlags,cfKillInvalidatePreferredSize);
+      if i=3000 then
+        Include(FControlFlags,cfKillAdjustSize);
     end;
   finally
-    FControlFlags:=FControlFlags-[cfKillChangeBounds,cfKillInvalidatePreferredSize];
+    FControlFlags:=FControlFlags-[cfKillChangeBounds,
+                                cfKillInvalidatePreferredSize,cfKillAdjustSize];
     FAutoSizingAll := False;
   end;
   {$IFDEF VerboseAllAutoSize}

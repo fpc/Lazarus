@@ -3294,7 +3294,7 @@ begin
     {$IFDEF VerboseAllAutoSize}
     DebugLn(['TWinControl.DoAutoSize DELAYED AutoSizePhase=',AutoSizePhaseNames[AutoSizePhase]]);
     {$ENDIF}
-    Include(FControlFlags,cfAutoSizeNeeded);
+    AdjustSize;
     exit;
   end;
 
@@ -7304,7 +7304,6 @@ begin
       TControl(FControls[i]).ParentFormHandleInitialized;
   end;
   //debugln('TWinControl.ParentFormHandleInitialized A ',DbgSName(Self));
-  if cfAutoSizeNeeded in FControlFlags then AdjustSize;
 end;
 
 {------------------------------------------------------------------------------
