@@ -37,7 +37,7 @@ unit ExtractProcTool;
 
 {$mode objfpc}{$H+}
 
-{ $define CTDEBUG}
+{off $define CTDEBUG}
 
 interface
 
@@ -299,11 +299,16 @@ var
 begin
   Result:=false;
   MissingIdentifiers:=nil;
-  if not InitExtractProc(StartPos,EndPos,MethodPossible,SubProcSameLvlPossible)
-  then exit;
-  MissingIdentifiers:=CreateTreeOfPCodeXYPosition;
-  if not ScanNodesForVariables(StartPos,EndPos,BlockStartPos,BlockEndPos,
-                               ProcNode,VarTree,nil,MissingIdentifiers) then exit;
+  ActivateGlobalWriteLock;
+  try
+    if not InitExtractProc(StartPos,EndPos,MethodPossible,SubProcSameLvlPossible)
+    then exit;
+    MissingIdentifiers:=CreateTreeOfPCodeXYPosition;
+    if not ScanNodesForVariables(StartPos,EndPos,BlockStartPos,BlockEndPos,
+                                 ProcNode,VarTree,nil,MissingIdentifiers) then exit;
+  finally
+    DeactivateGlobalWriteLock;
+  end;
   Result:=true;
 end;
 
@@ -315,12 +320,6 @@ function TExtractProcTool.ExtractProc(const StartPos, EndPos: TCodeXYPosition;
   FunctionResultVariableStartPos: integer): boolean;
 const
   ShortProcFormat = [phpWithoutClassKeyword];
-  {$IFDEF CTDebug}
-  ParameterTypeNames: array[TParameterType] of string = (
-    'ptNone', 'ptConst', 'ptVar', 'ptOut', 'ptNoSpecifier');
-  {$ENDIF}
-type
-  TParameterType = (ptNone, ptConst, ptVar, ptOut, ptNoSpecifier);
 var
   BlockStartPos, BlockEndPos: integer; // the selection
   ProcNode: TCodeTreeNode; // the main proc node of the selection
@@ -1074,7 +1073,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDebug}
-  DebugLn('ExtractProc A ProcName="',ProcName,'" ProcType=',ExtractProcTypeNames[ProcType],' FunctionResultVariableStartPos=',FunctionResultVariableStartPos);
+  DebugLn(['ExtractProc A ProcName="',ProcName,'" ProcType=',ExtractProcTypeNames[ProcType],' FunctionResultVariableStartPos=',FunctionResultVariableStartPos]);
   {$ENDIF}
   if not InitExtractProc(StartPos,EndPos,MethodPossible,SubProcSameLvlPossible)
   then exit;
@@ -1131,6 +1130,26 @@ function TExtractProcTool.ScanNodesForVariables(const StartPos,
   ): boolean;
 type
   TParameterType = (ptNone, ptConst, ptVar, ptOut, ptNoSpecifier);
+  {$IFDEF CTDebug}
+const
+  ParameterTypeNames: array[TParameterType] of string = (
+    'ptNone', 'ptConst', 'ptVar', 'ptOut', 'ptNoSpecifier');
+  {$ENDIF}
+var
+  VarCandidates: TAVLTree; // tree of PChar
+
+  procedure ScanForLocalVariables(Node: TCodeTreeNode);
+  begin
+    if Node=nil then exit;
+    if Node.Desc=ctnVarDefinition then begin
+      VarCandidates.Add(@Src[Node.StartPos]);
+    end;
+    Node:=Node.FirstChild;
+    while Node<>nil do begin
+      ScanForLocalVariables(Node);
+      Node:=Node.NextBrother;
+    end;
+  end;
 
   procedure AddVariableToTree(VarNode: TCodeTreeNode; IsInSelection,
     IsAfterSelection, IsChanged: boolean; ParameterType: TParameterType);
@@ -1139,9 +1158,9 @@ type
     ProcVar: TExtractedProcVariable;
   begin
     {$IFDEF CTDebug}
-    DebugLn('AddVariableToTree A Ident=',GetIdentifier(@Src[VarNode.StartPos]),
+    DebugLn(['AddVariableToTree A Ident=',GetIdentifier(@Src[VarNode.StartPos]),
       ' IsInSelection=',dbgs(IsInSelection),
-      ' ParameterType=',ParameterTypeNames[ParameterType]);
+      ' ParameterType=',ParameterTypeNames[ParameterType]]);
     {$ENDIF}
     if VarTree=nil then exit;
     
@@ -1214,6 +1233,12 @@ type
     NewCodePos: TCodeXYPosition;
   begin
     Result:=false;
+
+    // check if there is a local variable with this name
+    if VarCandidates.Find(@Src[CurPos.StartPos])=nil then exit(true);
+
+    // now do a real search
+
     // find start of variable
     VarStartPos:=FindStartOfTerm(CurPos.StartPos,false);
     if (IgnoreIdentifiers<>nil) then begin
@@ -1338,15 +1363,20 @@ type
 
 begin
   Result:=false;
-  if CaretToCleanPos(StartPos,BlockStartPos)<>0 then exit;
-  if CaretToCleanPos(EndPos,BlockEndPos)<>0 then exit;
-  BuildSubTree(BlockStartPos);
-  ProcNode:=FindDeepestNodeAtPos(BlockStartPos,true).GetNodeOfType(ctnProcedure);
-
   ActivateGlobalWriteLock;
+  VarCandidates:=TAVLTree.Create(@CompareIdentifierPtrs);
   try
+    if CaretToCleanPos(StartPos,BlockStartPos)<>0 then exit;
+    if CaretToCleanPos(EndPos,BlockEndPos)<>0 then exit;
+    BuildSubTree(BlockStartPos);
+    ProcNode:=FindDeepestNodeAtPos(BlockStartPos,true).GetNodeOfType(ctnProcedure);
+
+    // collect local variables to speed up search
+    ScanForLocalVariables(ProcNode);
+
     if not ScanNodesForVariablesRecursive(ProcNode) then exit;
   finally
+    VarCandidates.Free;
     DeactivateGlobalWriteLock;
   end;
   Result:=true;
