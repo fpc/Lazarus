@@ -6373,6 +6373,14 @@ var
           if BndStackTop = 0 then
             ShowBand(b.FooterBand) else
             Dec(BndStackTop);
+        end else
+        if b.PrintIfSubsetEmpty then begin
+          if b.HeaderBand <> nil then
+            ShowBand(b.HeaderBand);
+          if b.FooterBand <> nil then begin
+            b.FooterBand.InitValues;
+            ShowBand(b.FooterBand);
+          end;
         end;
       finally
       end;
