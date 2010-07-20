@@ -338,12 +338,8 @@ var
   end;
 
   procedure CheckLoop;
-  var
-    TopParent: TControl;
   begin
-    TopParent:=Self;
-    while TopParent.Parent<>nil do TopParent:=TopParent.Parent;
-    if (not KeepBase) and (cfKillChangeBounds in TopParent.FControlFlags) then
+    if (not KeepBase) and (cfKillChangeBounds in GetTopParent.FControlFlags) then
       raise Exception.Create('TControl.ChangeBounds loop detected '+DbgSName(Self)
         +' Left='+dbgs(Left)+',Top='+dbgs(Top)+',Width='+dbgs(Width)+',Height='+dbgs(Height)
         +' NewLeft='+dbgs(aLeft)+',NewTop='+dbgs(aTop)+',NewWidth='+dbgs(aWidth)+',NewHeight='+dbgs(aHeight)

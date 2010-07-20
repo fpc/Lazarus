@@ -1602,7 +1602,8 @@ type
     wcfBoundsRealized,       // bounds were sent to the interface
     wcfUpdateShowing,
     wcfHandleVisible,
-    wcfAdjustedLogicalClientRectValid
+    wcfAdjustedLogicalClientRectValid,
+    wcfKillIntfSetBounds
     );
   TWinControlFlags = set of TWinControlFlag;
 

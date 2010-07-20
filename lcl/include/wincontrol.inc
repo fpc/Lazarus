@@ -3442,6 +3442,9 @@ procedure TWinControl.DoAllAutoSize;
       AWinControl.UpdateShowing;
   end;
 
+var
+  RealizeCounter: Integer;
+  UpdateShowingCounter: Integer;
 begin
   if wcfAllAutoSizing in FWinControlFlags then exit;
   if AutoSizeDelayed then exit;
@@ -3462,6 +3465,8 @@ begin
       exit;
     end;
 
+    RealizeCounter:=0;
+    UpdateShowingCounter:=0;
     while (not AutoSizeDelayed) do
     begin
       // compute all sizes for LCL objects without touching the widgetset
@@ -3475,8 +3480,13 @@ begin
       {$IFDEF VerboseAllAutoSize}
       DebugLn(['TWinControl.DoAllAutoSize REALIZE BOUNDS ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
       {$ENDIF}
+      inc(RealizeCounter);
+      if RealizeCounter=100 then
+        Include(FWinControlFlags,wcfKillIntfSetBounds);
       RealizeBoundsRecursive;
       if (cfAutoSizeNeeded in FControlFlags) then continue; // repeat computing bounds
+      RealizeCounter:=0;
+      inc(UpdateShowingCounter);
       // make child handles visible
       {$IFDEF VerboseAllAutoSize}
       DebugLn(['TWinControl.DoAllAutoSize UPDATESHOWING ',DbgSName(Self),' lclbounds=',dbgs(BoundsRect)]);
@@ -3494,7 +3504,7 @@ begin
     DebugLn(['TWinControl.DoAllAutoSize END ',DbgSName(Self),' ',dbgs(BoundsRect)]);
     {$ENDIF}
   finally
-    Exclude(FWinControlFlags,wcfAllAutoSizing);
+    FWinControlFlags:=FWinControlFlags-[wcfAllAutoSizing,wcfKillIntfSetBounds];
   end;
   // make handle visible => this can trigger events like Form.OnShow where
   // application does arbitrary stuff
@@ -6571,6 +6581,14 @@ end;
 procedure TWinControl.WMMove(var Message: TLMMove);
 var
   NewWidth, NewHeight: Integer;
+  NewBoundsRealized: TRect;
+  TopParent: TControl;
+
+  procedure RaiseLoop;
+  begin
+    raise Exception.Create('TWinControl.WMMove loop detected: '+DbgSName(Self)+' BoundsRealized='+dbgs(FBoundsRealized)+' NewBoundsRealized='+dbgs(NewBoundsRealized));
+  end;
+
 begin
   {$IF defined (VerboseSizeMsg) or defined(VerboseIntfSizing)}
   if (Message.MoveType and Move_SourceIsInterface)>0 then
@@ -6592,7 +6610,17 @@ begin
     // skip size update when window is minimized
     if HandleAllocated and (not IsIconic(Handle)) then
       GetWindowSize(Handle, NewWidth, NewHeight);
-    FBoundsRealized := Bounds(Message.XPos, Message.YPos, NewWidth, NewHeight);
+
+    NewBoundsRealized:=Bounds(Message.XPos, Message.YPos, NewWidth, NewHeight);
+    if CompareRect(@NewBoundsRealized,@FBoundsRealized) then exit;
+
+    TopParent:=GetTopParent;
+    if (TopParent is TWinControl)
+      and (wcfKillIntfSetBounds in TWinControl(TopParent).FWinControlFlags)
+    then
+      RaiseLoop;
+
+    FBoundsRealized := NewBoundsRealized;
     if ([caspCreatingHandles,caspComputingBounds]*AutoSizePhases<>[])
     then begin
       // while the LCL is creating handles the widgetset may send default bounds
@@ -6626,6 +6654,13 @@ procedure TWinControl.WMSize(var Message: TLMSize);
 var
   NewLeft, NewTop: integer;
   NewBoundsRealized: TRect;
+  TopParent: TControl;
+
+  procedure RaiseLoop;
+  begin
+    raise Exception.Create('TWinControl.WMSize loop detected: '+DbgSName(Self)+' BoundsRealized='+dbgs(FBoundsRealized)+' NewBoundsRealized='+dbgs(NewBoundsRealized));
+  end;
+
 begin
   {$IF defined(VerboseSizeMsg) or defined(CHECK_POSITION) or defined(VerboseIntfSizing)}
   {$IFDEF CHECK_POSITION}
@@ -6672,6 +6707,12 @@ begin
       ' BoundsRealized=',dbgs(FBoundsRealized),
       ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
     {$ENDIF}
+
+    TopParent:=GetTopParent;
+    if (TopParent is TWinControl)
+      and (wcfKillIntfSetBounds in TWinControl(TopParent).FWinControlFlags)
+    then
+      RaiseLoop;
 
     FBoundsRealized := NewBoundsRealized;
     //DebugLn(['TWinControl.WMSize ',DbgSName(Self),' phases=',dbgs(AutoSizePhases)]);
@@ -6722,6 +6763,13 @@ procedure TWinControl.WMWindowPosChanged(var Message: TLMWindowPosChanged);
 var
   NewLeft, NewTop, NewWidth, NewHeight: integer;
   NewBoundsRealized: TRect;
+  TopParent: TControl;
+
+  procedure RaiseLoop;
+  begin
+    raise Exception.Create('TWinControl.WMWindowPosChanged loop detected: '+DbgSName(Self)+' BoundsRealized='+dbgs(FBoundsRealized)+' NewBoundsRealized='+dbgs(NewBoundsRealized));
+  end;
+
 begin
   if Message.WindowPos=nil then exit;
 
@@ -6766,6 +6814,13 @@ begin
     ' BoundsRealized=',dbgs(FBoundsRealized),
     ' wcfClientRectNeedsUpdate=',wcfClientRectNeedsUpdate in FWinControlFlags]);
   { $ENDIF}
+
+  TopParent:=GetTopParent;
+  if (TopParent is TWinControl)
+    and (wcfKillIntfSetBounds in TWinControl(TopParent).FWinControlFlags)
+  then
+    RaiseLoop;
+
   FBoundsRealized := NewBoundsRealized;
   //DebugLn(['TWinControl.WMSize ',DbgSName(Self),' phases=',dbgs(AutoSizePhases)]);
   if ([caspCreatingHandles,caspComputingBounds]*AutoSizePhases<>[])
