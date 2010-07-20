@@ -6655,10 +6655,19 @@ var
   NewLeft, NewTop: integer;
   NewBoundsRealized: TRect;
   TopParent: TControl;
+  OldClientSize: TSize;
+  NewClientSize: TSize;
 
   procedure RaiseLoop;
+  var
+    s: String;
   begin
-    raise Exception.Create('TWinControl.WMSize loop detected: '+DbgSName(Self)+' BoundsRealized='+dbgs(FBoundsRealized)+' NewBoundsRealized='+dbgs(NewBoundsRealized));
+    s:='TWinControl.WMSize loop detected: '+DbgSName(Self)+' BoundsRealized='+dbgs(FBoundsRealized)+' NewBoundsRealized='+dbgs(NewBoundsRealized);
+    if (OldClientSize.cx<>NewClientSize.cx)
+      or (OldClientSize.cy<>NewClientSize.cy)
+    then
+      s:=s+' OldClientSize='+dbgs(OldClientSize)+' NewClientSize='+dbgs(NewClientSize);
+    raise Exception.Create(s);
   end;
 
 begin
@@ -6699,9 +6708,16 @@ begin
       GetWindowRelativePosition(Handle, NewLeft, NewTop);
     //DebugLn('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
     NewBoundsRealized := Bounds(NewLeft, NewTop, Message.Width, Message.Height);
-    if CompareRect(@NewBoundsRealized,@FBoundsRealized)
-    and (not (wcfClientRectNeedsUpdate in FWinControlFlags)) then
-      exit;
+    if CompareRect(@NewBoundsRealized,@FBoundsRealized) then begin
+      OldClientSize:=Size(FClientWidth,FClientHeight);
+      if not (wcfClientRectNeedsUpdate in FWinControlFlags) then exit;
+      NewClientSize:=Size(ClientWidth,ClientHeight);
+      if (OldClientSize.cx=NewClientSize.cx)
+      and (OldClientSize.cy=NewClientSize.cy) then exit;
+    end else begin
+      OldClientSize:=Size(0,0);
+      NewClientSize:=Size(0,0);
+    end;
     {$IFDEF VerboseAllAutoSize}
     DebugLn(['TWinControl.WMSize Changed From Intf ',dbgsname(Self),' Message=',Message.Width,',',Message.Height,
       ' BoundsRealized=',dbgs(FBoundsRealized),
