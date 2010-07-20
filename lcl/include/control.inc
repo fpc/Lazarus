@@ -328,6 +328,19 @@ var
     Result:=(not SizeChanged) and (not PosChanged);
   end;
 
+  procedure CheckLoop;
+  var
+    TopParent: TControl;
+  begin
+    TopParent:=Self;
+    while TopParent.Parent<>nil do TopParent:=TopParent.Parent;
+    if (not KeepBase) and (cfKillChangeBounds in TopParent.FControlFlags) then
+      raise Exception.Create('TControl.ChangeBounds loop detected '+DbgSName(Self)
+        +' Left='+dbgs(Left)+',Top='+dbgs(Top)+',Width='+dbgs(Width)+',Height='+dbgs(Height)
+        +' NewLeft='+dbgs(aLeft)+',NewTop='+dbgs(aTop)+',NewWidth='+dbgs(aWidth)+',NewHeight='+dbgs(aHeight)
+        );
+  end;
+
 begin
   {$IFDEF VerboseSizeMsg}
   DebugLn(['TControl.ChangeBounds A ',DbgSName(Self),
@@ -336,7 +349,8 @@ begin
     ' KeepBase=',KeepBase]);
   //if (Parent=nil) and (Left>0) and (ALeft=0) then DumpStack; // This can happen if the interface has not yet moved the window and for some reason something applies the interface coords back to the LCL
   {$ENDIF}
-  if not KeepBase then UpdateAlignIndex;
+  if not KeepBase then
+    UpdateAlignIndex;
 
   // constraint the size
   DoConstrainedResize(ALeft, ATop, AWidth, AHeight);
@@ -345,6 +359,8 @@ begin
   SizeChanged := (FWidth <> AWidth) or (FHeight <> AHeight);
   PosChanged := (FLeft <> ALeft) or (FTop <> ATop);
   if (not SizeChanged) and (not PosChanged) then Exit;
+
+  CheckLoop;
 
   OldLeft := FLeft;
   OldTop := FTop;
@@ -2373,6 +2389,8 @@ procedure TControl.DoAllAutoSize;
     Result := True;
   end;
 
+var
+  i: Integer;
 begin
   if Parent <> nil then
     raise EInvalidOperation.Create('TControl.DoAllAutoSize Parent <> nil');
@@ -2384,6 +2402,7 @@ begin
   {$ENDIF}
   //writeln(GetStackTrace(true));
   try
+    i:=0;
     while (not AutoSizeDelayed) and (cfAutoSizeNeeded in FControlFlags) do
     begin
       {$IFDEF VerboseAllAutoSize}
@@ -2392,8 +2411,14 @@ begin
       AutoSizeControl(Self);
       if not (cfAutoSizeNeeded in FControlFlags) then
         CallAllOnResize(Self);
+      inc(i);
+      if i=1000 then
+        Include(FControlFlags,cfKillChangeBounds);
+      if i=2000 then
+        Include(FControlFlags,cfKillInvalidatePreferredSize);
     end;
   finally
+    FControlFlags:=FControlFlags-[cfKillChangeBounds,cfKillInvalidatePreferredSize];
     FAutoSizingAll := False;
   end;
   {$IFDEF VerboseAllAutoSize}
@@ -4660,6 +4685,12 @@ end;
   Invalidate the cache of the preferred size of this and all parent controls.
  ------------------------------------------------------------------------------}
 procedure TControl.InvalidatePreferredSize;
+
+  procedure RaiseLoop;
+  begin
+    raise Exception.Create('TControl.InvalidatePreferredSize loop detected '+DbgSName(Self)+' Bounds='+dbgs(BoundsRect));
+  end;
+
 var
   AControl: TControl;
 begin
@@ -4670,6 +4701,10 @@ begin
     if AControl is TWinControl then
       Exclude(TWinControl(AControl).FWinControlFlags,wcfAdjustedLogicalClientRectValid);
     if not AControl.IsControlVisible then break;
+    if (AControl.Parent=nil)
+      and (cfKillInvalidatePreferredSize in AControl.FControlFlags)
+    then
+      RaiseLoop;
     AControl:=AControl.Parent;
   end;
 end;

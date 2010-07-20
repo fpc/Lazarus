@@ -830,7 +830,9 @@ type
     cfPreferredSizeValid,
     cfPreferredMinSizeValid,
     cfOnChangeBoundsNeeded,
-    cfProcessingWMPaint
+    cfProcessingWMPaint,
+    cfKillChangeBounds,
+    cfKillInvalidatePreferredSize
     );
   TControlFlags = set of TControlFlag;
 
