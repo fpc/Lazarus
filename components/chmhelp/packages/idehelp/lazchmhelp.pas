@@ -384,7 +384,7 @@ begin
     Viewer:=TChmHelpViewer(Source);
     HelpEXE:=Viewer.HelpEXE;
     HelpLabel:=Viewer.HelpLabel;
-    HelpFilesPath:=Viewer.HelpFilesPath;
+    HelpFilesPath:=IncludeTrailingPathDelimiter(Viewer.HelpFilesPath);
   end;
   inherited Assign(Source);
 end;
@@ -393,7 +393,7 @@ procedure TChmHelpViewer.Load(Storage: TConfigStorage);
 begin
   HelpEXE:=Storage.GetValue('CHMHelp/Exe','');
   HelpLabel:=Storage.GetValue('CHMHelp/Name','lazhelp');
-  HelpFilesPath := Storage.GetValue('CHMHelp/FilesPath','');
+  HelpFilesPath := IncludeTrailingPathDelimiter(Storage.GetValue('CHMHelp/FilesPath',''));
 end;
 
 procedure TChmHelpViewer.Save(Storage: TConfigStorage);
