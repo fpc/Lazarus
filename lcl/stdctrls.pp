@@ -1189,6 +1189,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure Click; override;
+    procedure DoClickOnChange; virtual;
     function RetrieveState: TCheckBoxState;
     procedure InitializeWnd; override;
     procedure Toggle; virtual;
@@ -1323,6 +1324,7 @@ type
     procedure SetChecked(Value: Boolean); override;
     procedure DoChange(var Msg); message LM_CHANGED;
     procedure DoApplyChanges;
+    procedure DoClickOnChange; override;
     procedure CreateParams(var Params: TCreateParams); override;
   public
     constructor Create(TheOwner: TComponent); override;

@@ -105,6 +105,12 @@ begin
   end;
 end;
 
+procedure TRadioButton.DoClickOnChange;
+begin
+  if State = cbChecked then
+    inherited DoClickOnChange;
+end;
+
 procedure TRadioButton.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);

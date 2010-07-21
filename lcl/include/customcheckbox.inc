@@ -56,12 +56,11 @@ procedure TCustomCheckBox.DoChange(var Msg);
 var
   NewState: TCheckBoxState;
 begin
-  //debugln('TCustomCheckBox.DoChange START ',dbgsname(Self),' ',dbgs(ord(FState)));
   NewState := RetrieveState;
   if FState = NewState then exit;
   FState := NewState;
-  //debugln('TCustomCheckBox.DoChange CHANGED ',dbgsname(Self),' ',dbgs(ord(FState)));
-  inherited Click; // emulate delphi OnClick behaviour
+  // emulate delphi OnClick behaviour
+  DoClickOnChange;
 end;
 
 class procedure TCustomCheckBox.WSRegisterClass;
@@ -156,8 +155,8 @@ begin
       TCustomAction(Action).Checked := FState = cbChecked;
     ApplyChanges;
     DoOnChange;
-    if (not ClicksDisabled) then
-      inherited Click;
+    if not ClicksDisabled then
+      DoClickOnChange;
   end;
 end;
 
@@ -246,6 +245,11 @@ procedure TCustomCheckBox.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or BS_3STATE;
+end;
+
+procedure TCustomCheckBox.DoClickOnChange;
+begin
+  inherited Click;
 end;
 
 function TCustomCheckBox.DialogChar(var Message: TLMKey): boolean;
