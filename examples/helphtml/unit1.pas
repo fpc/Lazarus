@@ -89,6 +89,10 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   HTMLHelpDatabase1.BaseURL:='file://html';
+  {$ifdef darwin}
+  Edit1.Text:='Edit1 - Press '+#$e2#$8c#$98'?'+' for help';
+  Edit2.Text:='Edit2 - Press '+#$e2#$8c#$98'?'+' for help';
+  {$endif}
 end;
 
 initialization
