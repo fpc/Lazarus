@@ -92,6 +92,7 @@ type
                                    const ABorderIcons: TBorderIcons); override;}
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
     class procedure ShowModal(const AForm: TCustomForm); override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
                                    const ABorderIcons: TBorderIcons); override;
@@ -266,7 +267,6 @@ var
   AResizable: gint;
 begin
   // Start of old CreateForm method
-
   ACustomForm := TCustomForm(AWinControl);
 
   if (AParams.Style and WS_CHILD) = 0 then
@@ -312,8 +312,9 @@ begin
     if (AParams.WndParent <> 0) then
       gtk_window_set_transient_for(PGtkWindow(P), PGtkWindow(AParams.WndParent))
     else
-    if not (csDesigning in ACustomForm.ComponentState) and (ACustomForm.FormStyle = fsStayOnTop) then
-        gtk_window_set_keep_above(PGtkWindow(P), gboolean(True));
+    if not (csDesigning in ACustomForm.ComponentState) and
+      (ACustomForm.FormStyle in fsAllStayOnTop) then
+      gtk_window_set_keep_above(PGtkWindow(P), gboolean(True));
 
     // the clipboard needs a widget
     if (ClipboardWidget = nil) then
@@ -487,17 +488,13 @@ end;
 
 class procedure TGtk2WSCustomForm.SetFormStyle(const AForm: TCustomform;
   const AFormStyle, AOldFormStyle: TFormStyle);
-var
-  above   : gboolean;
-  Widget  : PGtkWidget;
 begin
   if not WSCheckHandleAllocated(AForm, 'SetFormStyle') then
     exit;
   if (csDesigning in AForm.ComponentState) then
     exit;
-  above := AFormStyle in fsAllStayOnTop;
-  Widget := PGtkWidget(AForm.Handle);
-  gtk_window_set_keep_above(PGtkWindow(Widget), above);
+  gtk_window_set_keep_above(PGtkWindow(AForm.Handle),
+    GBoolean(AFormStyle in fsAllStayOnTop));
 end;
 
 {class function TGtk2WSCustomForm.GetDefaultClientRect(
@@ -539,6 +536,24 @@ begin
   then Exit;
 
   SetFormShowInTaskbar(AForm,AValue);
+end;
+
+class procedure TGtk2WSCustomForm.ShowHide(const AWinControl: TWinControl);
+var
+  AForm: TCustomForm;
+begin
+  AForm := TCustomForm(AWinControl);
+  if not (csDesigning in AForm.ComponentState) then
+  begin
+    if AForm.HandleObjectShouldBeVisible then
+      gtk_window_set_keep_above(PGtkWIndow(AForm.Handle),
+        GBoolean(AForm.FormStyle in fsAllStayOnTop))
+    else
+    if (AForm.FormStyle in fsAllStayOnTop) and
+      not (csDestroying in AWinControl.ComponentState) then
+        gtk_window_set_keep_above(PGtkWIndow(AForm.Handle), GBoolean(False));
+  end;
+  Gtk2WidgetSet.SetVisible(AWinControl, AForm.HandleObjectShouldBeVisible);
 end;
 
 class procedure TGtk2WSCustomForm.ShowModal(const AForm: TCustomForm);
