@@ -577,6 +577,7 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   end;
 
   { TQtGroupBox }
@@ -5096,6 +5097,16 @@ procedure TQtRadioButton.DetachEvents;
 begin
   QAbstractButton_hook_destroy(FClickedHook);
   inherited DetachEvents;
+end;
+
+function TQtRadioButton.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  Result := inherited EventFilter(Sender, Event);
+  if (LCLObject <> nil) and
+    (QEvent_type(Event) in [QEventMouseButtonPress, QEventMouseButtonRelease])
+  then
+    Result := not (LCLObject.Parent is TRadioGroup);
 end;
 
 { TQtGroupBox }
