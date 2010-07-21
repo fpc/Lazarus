@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, fpImage, FPReadBMP, FPWriteBMP, BMPComn, FPCAdds,
-  AvgLvlTree, LCLType, LCLversion,
+  AvgLvlTree, LCLType, LCLversion, Math,
   LCLProc, GraphType, LCLIntf, FPReadPNG, FPWritePNG, FPReadTiff, FPWriteTiff,
   IcnsTypes;
 
@@ -250,6 +250,7 @@ type
     procedure FillPixels(const Color: TFPColor); virtual;
     procedure CopyPixels(ASource: TFPCustomImage; XDst: Integer = 0; YDst: Integer = 0;
                          AlphaMask: Boolean = False; AlphaTreshold: Word = 0); virtual;
+    procedure AlphaBlend(ASource, ASourceAlpha: TLazIntfImage; const ADestX, ADestY: Integer);
     procedure AlphaFromMask(AKeepAlpha: Boolean = True);
     procedure GetXYDataPosition(x, y: integer; out Position: TRawImagePosition);
     procedure GetXYMaskPosition(x, y: integer; out Position: TRawImagePosition);
@@ -3415,6 +3416,64 @@ begin
   end;
 
   // ToDo: mask
+end;
+
+{
+  Merges an image to a canvas using alpha blend acording to a separate image
+  containing the alpha channel. White pixels in the alpha channel will correspond
+  to the source image pixel being fully drawn, grey ones are merged and
+  black ones ignored.
+}
+procedure TLazIntfImage.AlphaBlend(ASource, ASourceAlpha: TLazIntfImage;
+  const ADestX, ADestY: Integer);
+var
+  x, y, CurX, CurY: Integer;
+  MaskValue, InvMaskValue: Word;
+  CurColor: TFPColor;
+  lDrawWidth, lDrawHeight: Integer;
+begin
+  // Take care not to draw outside the destination area
+  lDrawWidth := Min(Self.Width - ADestX, ASource.Width);
+  lDrawHeight := Min(Self.Height - ADestY, ASource.Height);
+  for y := 0 to lDrawHeight - 1 do
+  begin
+    for x := 0 to lDrawWidth - 1 do
+    begin
+      CurX := ADestX + x;
+      CurY := ADestY + y;
+
+      // Never draw outside the destination
+      if (CurX < 0) or (CurY < 0) then Continue;
+
+      // All channels in the Alpha should have the same value
+      // So getting any of them should be enough
+      MaskValue := ASourceAlpha.Colors[x, y].red;
+      InvMaskValue := $FFFF - MaskValue;
+
+      if MaskValue = $FFFF then
+      begin
+        Self.Colors[CurX, CurY] := ASource.Colors[x, y];
+      end
+      else if MaskValue > $00 then
+      begin
+        CurColor := Self.Colors[CurX, CurY];
+
+        CurColor.Red := Round(
+          CurColor.Red * InvMaskValue / $FFFF +
+          ASource.Colors[x, y].Red * MaskValue / $FFFF);
+
+        CurColor.Green := Round(
+          CurColor.Green * InvMaskValue / $FFFF +
+          ASource.Colors[x, y].Green * MaskValue / $FFFF);
+
+        CurColor.Blue := Round(
+          CurColor.Blue * InvMaskValue / $FFFF +
+          ASource.Colors[x, y].Blue * MaskValue / $FFFF);
+
+        Self.Colors[CurX, CurY] := CurColor;
+      end;
+    end;
+  end;
 end;
 
 procedure TLazIntfImage.CopyPixels(ASource: TFPCustomImage; XDst, YDst: Integer;
