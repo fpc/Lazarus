@@ -1197,6 +1197,7 @@ begin
       W := PGtkWidget(AForm.Handle);
       Flags := gdk_window_get_state(W^.Window);
       if (AForm.Parent = nil) and
+        not (csDesigning in AForm.ComponentState) and
         (AForm.FormStyle in TGtk2TopForms[ASystemTopAlso]) and
          GTK_WIDGET_VISIBLE(W) and
          not gtk_window_get_modal(PGtkWindow(W)) and
@@ -1229,6 +1230,7 @@ begin
       W := PGtkWidget(AForm.Handle);
       Flags := gdk_window_get_state(W^.Window);
       if (AForm.Parent = nil) and
+        not (csDesigning in AForm.ComponentState) and
         (AForm.FormStyle in TGtk2TopForms[ASystemTopAlso]) and
          GTK_WIDGET_VISIBLE(W) and
          not gtk_window_get_modal(PGtkWindow(W)) and

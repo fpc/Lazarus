@@ -546,12 +546,12 @@ begin
   if not (csDesigning in AForm.ComponentState) then
   begin
     if AForm.HandleObjectShouldBeVisible then
-      gtk_window_set_keep_above(PGtkWIndow(AForm.Handle),
+      gtk_window_set_keep_above(PGtkWindow(AForm.Handle),
         GBoolean(AForm.FormStyle in fsAllStayOnTop))
     else
     if (AForm.FormStyle in fsAllStayOnTop) and
       not (csDestroying in AWinControl.ComponentState) then
-        gtk_window_set_keep_above(PGtkWIndow(AForm.Handle), GBoolean(False));
+        gtk_window_set_keep_above(PGtkWindow(AForm.Handle), GBoolean(False));
   end;
   Gtk2WidgetSet.SetVisible(AWinControl, AForm.HandleObjectShouldBeVisible);
 end;
