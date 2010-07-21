@@ -5104,7 +5104,11 @@ function TQtRadioButton.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
   Result := inherited EventFilter(Sender, Event);
   if (LCLObject <> nil) and
-    (QEvent_type(Event) in [QEventMouseButtonPress, QEventMouseButtonRelease])
+    ((QEvent_type(Event) in [QEventMouseButtonPress, QEventMouseButtonRelease])
+    or
+    ((QEvent_type(Event) in [QEventKeyPress, QEventKeyRelease]) and
+     (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Space) and
+     isChecked))
   then
     Result := not (LCLObject.Parent is TRadioGroup);
 end;
