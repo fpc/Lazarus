@@ -2980,7 +2980,7 @@ begin
       COLOR_HIGHLIGHTTEXT           : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
       COLOR_BTNFACE                 : Result:=GetColor(QPaletteActive,   QPaletteButton);
       COLOR_BTNSHADOW               : Result:=GetColor(QPaletteActive,   QPaletteDark);
-      COLOR_GRAYTEXT                : Result:=GetColor(QPaletteActive,   QPaletteText);
+      COLOR_GRAYTEXT                : Result:=GetColor(QPaletteDisabled,   QPaletteText);
       COLOR_BTNTEXT                 : Result:=GetColor(QPaletteActive,   QPaletteButtonText);
       COLOR_BTNHIGHLIGHT            : Result:=GetColor(QPaletteActive,   QPaletteLight);
       COLOR_3DDKSHADOW              : Result:=GetColor(QPaletteActive,   QPaletteShadow);
