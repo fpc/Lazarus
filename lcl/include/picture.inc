@@ -57,6 +57,7 @@ begin
   Add(TCursorImage.GetFileExtensions, rsCursor, TCursorImage);
   Add(TJpegImage.GetFileExtensions, rsJpeg, TJpegImage);
   Add(TTiffImage.GetFileExtensions, rsTiff, TTiffImage);
+  Add(TGIFImage.GetFileExtensions, rsGIF, TGIFImage);
 end;
 
 procedure TPicFileFormatsList.Clear;

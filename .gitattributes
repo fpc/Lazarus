@@ -4508,6 +4508,7 @@ lcl/include/finddialog.inc svneol=native#text/pascal
 lcl/include/font.inc svneol=native#text/pascal
 lcl/include/fontdialog.inc svneol=native#text/pascal
 lcl/include/fpimagebitmap.inc svneol=native#text/pascal
+lcl/include/gifimage.inc svneol=native#text/pascal
 lcl/include/glyphlist.inc svneol=native#text/pascal
 lcl/include/graphic.inc svneol=native#text/pascal
 lcl/include/graphiccontrol.inc svneol=native#text/pascal

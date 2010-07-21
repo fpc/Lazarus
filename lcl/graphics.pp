@@ -40,6 +40,7 @@ uses
   FPReadPNM, FPWritePNM,   // PNM (Portable aNyMap) support
   FPReadJpeg, FPWriteJpeg, // jpg support
   FPReadTiff, FPTiffCmn,   // tiff support
+  FPReadGif,
   IntfGraphics,
   AvgLvlTree,
   LCLStrConsts, LCLType, LCLProc, LMessages, LCLIntf, LResources, LCLResCache,
@@ -425,6 +426,7 @@ type
   TPortableNetworkGraphic = class;  // png
   TPortableAnyMapGraphic = class;   // pnm formats: pbm, pgm and ppm
   TJpegImage = class;               // jpg
+  TGIFImage = class;                // gif (read only)
 
   { TGraphicsObject
     In Delphi VCL this is the ancestor of TFont, TPen and TBrush.
@@ -1825,6 +1827,32 @@ type
     property YResolution: TTiffRational read FYResolution write FYResolution;
   end;
 
+  { TSharedGIFImage }
+
+  TSharedGIFImage = class(TSharedCustomBitmap)
+  end;
+
+  { TGIFImage }
+
+  TGIFImage = class(TFPImageBitmap)
+  private
+    FTransparent: Boolean;
+    FInterlaced: Boolean;
+    FBitsPerPixel: byte;
+  protected
+    procedure InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader); override;
+    procedure FinalizeReader(AReader: TFPCustomImageReader); override;
+    class function GetReaderClass: TFPCustomImageReaderClass; override;
+    class function GetSharedImageClass: TSharedRasterImageClass; override;
+  public
+    constructor Create; override;
+    class function IsStreamFormatSupported(Stream: TStream): Boolean; override;
+    class function GetFileExtensions: string; override;
+  public
+    property Transparent: Boolean read FTransparent;
+    property Interlaced: Boolean read FInterlaced;
+    property BitsPerPixel: byte read FBitsPerPixel;
+  end;
 
 function GraphicFilter(GraphicClass: TGraphicClass): string;
 function GraphicExtension(GraphicClass: TGraphicClass): string;
@@ -2181,7 +2209,7 @@ end;
 procedure Register;
 begin
   RegisterClasses([TBitmap,TPixmap,TPortableNetworkGraphic,
-                   TPortableAnyMapGraphic,TJpegImage,TPicture,
+                   TPortableAnyMapGraphic,TJpegImage,TGIFImage,TPicture,
                    TFont,TPen,TBrush,TRegion]);
 end;
 
@@ -2554,6 +2582,7 @@ end;
 {$I fpimagebitmap.inc}
 {$I bitmap.inc}
 {$I tiffimage.inc}
+{$I gifimage.inc}
 
 function LocalGetSystemFont: HFont;
 begin
