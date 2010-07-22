@@ -597,12 +597,8 @@ end;
 class procedure TWin32WSWinControl.DestroyHandle(const AWinControl: TWinControl);
 var
   Handle: HWND;
-  AccelTable: HACCEL;
 begin
   Handle := AWinControl.Handle;
-  AccelTable := GetWin32WindowInfo(Handle)^.Accel;
-  if AccelTable <> 0 then
-    DestroyAcceleratorTable(AccelTable);
   DestroyWindow(Handle);
 end;
 

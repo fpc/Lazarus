@@ -284,7 +284,6 @@ end;
 procedure TWinCEWidgetSet.AppProcessMessages;
 var
   AMessage: TMsg;
-  AccelTable: HACCEL;
   retVal, index: dword;
   pHandles: Windows.LPHANDLE;
 begin
@@ -315,13 +314,8 @@ begin
     begin
       while PeekMessage(AMessage, HWnd(nil), 0, 0, PM_REMOVE) do
       begin
-        AccelTable := GetWindowInfo(AMessage.HWnd)^.Accel;
-        if (AccelTable = HACCEL(nil))
-          or (TranslateAccelerator(AMessage.HWnd, AccelTable, @AMessage) = 0) then
-        begin
-          TranslateMessage(@AMessage);
-          DispatchMessage(@AMessage);
-        end;
+        TranslateMessage(@AMessage);
+        DispatchMessage(@AMessage);
       end;
       if FWaitHandleCount = 0 then
         break;

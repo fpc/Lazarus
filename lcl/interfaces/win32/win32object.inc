@@ -336,7 +336,6 @@ end;
 procedure TWin32WidgetSet.AppProcessMessages;
 var
   AMessage: TMsg;
-  AccelTable: HACCEL;
   retVal, index: dword;
   pHandles: Windows.LPHANDLE;
 
@@ -378,19 +377,17 @@ begin
           PostQuitMessage(AMessage.wParam);
           break;
         end;
-        AccelTable := GetWin32WindowInfo(AMessage.HWnd)^.Accel;
-        if (AccelTable = HACCEL(nil)) or (TranslateAccelerator(AMessage.HWnd, AccelTable, @AMessage) = 0) then
-        begin
-          TranslateMessage(@AMessage);
+        // todo: maybe check the keyboard messages here before their applying to window
+        // to prevent system keys mix with LCL shortcuts?
+        TranslateMessage(@AMessage);
 {$IFDEF WindowsUnicodeSupport}
-          if UnicodeEnabledOS then
-            DispatchMessageW(@AMessage)
-          else
-            DispatchMessage(@AMessage);
-{$ELSE}
+        if UnicodeEnabledOS then
+          DispatchMessageW(@AMessage)
+        else
           DispatchMessage(@AMessage);
+{$ELSE}
+        DispatchMessage(@AMessage);
 {$ENDIF}
-        end;
       end;
     end else
     if retVal = WAIT_TIMEOUT then

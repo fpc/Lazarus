@@ -43,8 +43,6 @@ Type
 
   PWin32WindowInfo = ^TWin32WindowInfo;
   TWin32WindowInfo = record
-    AccelGroup: HACCEL;
-    Accel: HACCEL;
     Overlay: HWND;           // overlay, transparent window on top, used by designer
     UpDown: HWND;
     PopupMenu: TPopupMenu;
@@ -88,11 +86,6 @@ procedure CallEvent(Const Target: TObject; Event: TNotifyEvent;
 function ObjectToHWND(Const AObject: TObject): HWND;
 function LCLControlSizeNeedsUpdate(Sender: TWinControl;
   SendSizeMsgOnDiff: boolean): boolean;
-procedure SetAccelGroup(Const Control: HWND; Const AnAccelGroup: HACCEL);
-function GetAccelGroup(Const Control: HWND): HACCEL;
-procedure SetAccelKey(Window: HWND; Const CommandId: Word; Const AKey: word;
-  Const AModifier: TShiftState);
-function GetAccelKey(Const Control: HWND): LPACCEL;
 function GetLCLClientBoundsOffset(Sender: TObject; var ORect: TRect): boolean;
 function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
 procedure LCLBoundsToWin32Bounds(Sender: TObject;
@@ -774,99 +767,6 @@ begin
     end;
     DeliverMessage(Sender, LMessage);
   end;
-end;
-
-// ----------------------------------------------------------------------
-// The Accelgroup and AccelKey is needed by menus
-// ----------------------------------------------------------------------
-procedure SetAccelGroup(Const Control: HWND; Const AnAccelGroup: HACCEL);
-var
-  WindowInfo: PWin32WindowInfo;
-begin
-  Assert(False, 'Trace:TODO: Code SetAccelGroup');
-  WindowInfo := GetWin32WindowInfo(Control);
-  if WindowInfo <> @DefaultWindowInfo then
-  begin
-    WindowInfo^.AccelGroup := AnAccelGroup;
-  end else begin
-    DebugLn('Win32 - SetAccelGroup: no window info to store accelgroup in!');
-  end;
-end;
-
-function GetAccelGroup(Const Control: HWND): HACCEL;
-begin
-  Assert(False, 'Trace:TODO: Code GetAccelGroup');
-  Result := GetWin32WindowInfo(Control)^.AccelGroup;
-end;
-
-procedure SetAccelKey(Window: HWND; Const CommandId: Word; Const AKey: word; Const AModifier: TShiftState);
-var AccelCount: integer; {number of accelerators in table}
-    NewCount: integer; {total sum of accelerators in the table}
-    ControlIndex: integer; {index of new (modified) accelerator in table}
-    OldAccel: HACCEL; {old accelerator table}
-    NewAccel: LPACCEL; {new accelerator table}
-    NullAccel: LPACCEL; {nil pointer}
-
-  function ControlInTable: integer;
-  var i: integer;
-  begin
-    Result:=AccelCount;
-    i:=0;
-    while i < AccelCount do
-    begin
-      if NewAccel[i].cmd = CommandId then
-      begin
-        Result:=i;
-        exit;
-      end;
-      inc(i);
-    end;
-  end;
-
-  function GetVirtFromState(const AState: TShiftState): Byte;
-  begin
-    Result := FVIRTKEY;
-    if ssAlt in AState then Result := Result or FALT;
-    if ssCtrl in AState then Result := Result or FCONTROL;
-    if ssShift in AState then Result := Result or FSHIFT;
-  end;
-
-var
-  WindowInfo: PWin32WindowInfo;
-begin
-  WindowInfo := GetWin32WindowInfo(Window);
-  OldAccel := WindowInfo^.Accel;
-  NullAccel := nil;
-  AccelCount := CopyAcceleratorTable(OldAccel, NullAccel, 0);
-  Assert(False,Format('Trace: AccelCount=%d',[AccelCount]));
-  NewAccel := LPACCEL(LocalAlloc(LPTR, AccelCount * sizeof(ACCEL)));
-  CopyAcceleratorTable(OldAccel, NewAccel, AccelCount);
-  ControlIndex := ControlInTable;
-  if ControlIndex = AccelCount then {realocating the accelerator array, adding new accelerator}
-  begin
-    LocalFree(HLOCAL(NewAccel));
-    NewAccel := LPACCEL(LocalAlloc(LPTR, (AccelCount+1) * sizeof(ACCEL)));
-    CopyAcceleratorTable(OldAccel, NewAccel, AccelCount);
-    NewCount := AccelCount+1;
-  end
-  else NewCount := AccelCount;
-  NewAccel[ControlIndex].cmd := CommandId;
-  NewAccel[ControlIndex].fVirt := GetVirtFromState(AModifier);
-  NewAccel[ControlIndex].key := AKey;
-  DestroyAcceleratorTable(OldAccel);
-  if WindowInfo <> @DefaultWindowInfo then
-  begin
-    WindowInfo^.Accel := CreateAcceleratorTable(NewAccel, NewCount);
-  end else begin
-    DebugLn('Win32 - SetAccelKey: no windowinfo to put accelerator table in!');
-  end;
-end;
-
-function GetAccelKey(Const Control: HWND): LPACCEL;
-begin
-  Assert(False, 'Trace:TODO: Code GetAccelKey');
-  //Result := GeWin32tWindowInfo(Control)^.AccelKey;
-  Result := nil;
 end;
 
 {-------------------------------------------------------------------------------
