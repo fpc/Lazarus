@@ -116,6 +116,17 @@ type
 
   EParserAbort = class(ECodeToolError)
   end;
+
+  { TCodeTreeNodeParseError }
+
+  TCodeTreeNodeParseError = class
+  public
+    Node: TCodeTreeNode;
+    CleanPos: integer;
+    NicePos: TCodeXYPosition;
+    Msg: string;
+    constructor Create(ANode: TCodeTreeNode);
+  end;
   
   { TCustomCodeTool }
 
@@ -130,6 +141,7 @@ type
     FScanner: TLinkScanner;
     FOnTreeChange: TCodeTreeChangeEvent;
     FTreeChangeStep: integer;
+    FNodeParseErrors: TAVLTree; // tree of TCodeTreeNodeParseError
   protected
     FIgnoreErrorAfter: TCodePosition;
     KeyWordFuncList: TKeyWordFunctionList;
@@ -319,6 +331,12 @@ type
     function CleanPosIsAfterIgnorePos(CleanPos: integer): boolean;
     function LastErrorIsInFrontOfCleanedPos(ACleanedPos: integer): boolean;
     procedure RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos: integer);
+    function GetNodeParserError(Node: TCodeTreeNode): TCodeTreeNodeParseError;
+    function SetNodeParserError(Node: TCodeTreeNode; const ErrorMsg: string;
+      const ErrorCleanPos: integer;
+      const ErrorNiceCleanPos: TCodeXYPosition
+      ): TCodeTreeNodeParseError;
+    procedure RaiseNodeParserError(Node: TCodeTreeNode);
     property OnParserProgress: TOnParserProgress
       read FOnParserProgress write FOnParserProgress;
 
@@ -337,7 +355,25 @@ type
 var
   RaiseUnhandableExceptions: boolean;
 
+function CompareCodeTreeNodeParserError(Error1, Error2: Pointer): integer;
+function CompareNodeWithCodeTreeNodeParserError(Node, Error: Pointer): integer;
+
 implementation
+
+function CompareCodeTreeNodeParserError(Error1, Error2: Pointer): integer;
+var
+  AnError1: TCodeTreeNodeParseError absolute Error1;
+  AnError2: TCodeTreeNodeParseError absolute Error2;
+begin
+  Result:=ComparePointers(AnError1.Node,AnError2.Node);
+end;
+
+function CompareNodeWithCodeTreeNodeParserError(Node, Error: Pointer): integer;
+var
+  AnError: TCodeTreeNodeParseError absolute Error;
+begin
+  Result:=ComparePointers(Node,AnError.Node);
+end;
 
 { TCustomCodeTool }
 
@@ -438,8 +474,8 @@ end;
 
 procedure TCustomCodeTool.RaiseLastError;
 begin
+  MoveCursorToCleanPos(LastErrorCurPos.StartPos);
   CurPos:=LastErrorCurPos;
-  CurNode:=nil;
   CurrentPhase:=LastErrorPhase;
   ErrorNicePosition:=LastErrorNicePosition;
   SaveRaiseException(LastErrorMessage,false);
@@ -1899,6 +1935,59 @@ begin
   //DebugLn('TCustomCodeTool.RaiseLastErrorIfInFrontOfCleanedPos END ');
 end;
 
+function TCustomCodeTool.GetNodeParserError(Node: TCodeTreeNode
+  ): TCodeTreeNodeParseError;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  if (Node=nil) or (FNodeParseErrors=nil) then
+    Result:=nil
+  else begin
+    AVLNode:=FNodeParseErrors.FindKey(Node,@CompareNodeWithCodeTreeNodeParserError);
+    if AVLNode<>nil then
+      Result:=TCodeTreeNodeParseError(AVLNode.Data)
+    else
+      Result:=nil;
+  end;
+end;
+
+function TCustomCodeTool.SetNodeParserError(Node: TCodeTreeNode;
+  const ErrorMsg: string; const ErrorCleanPos: integer;
+  const ErrorNiceCleanPos: TCodeXYPosition): TCodeTreeNodeParseError;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  //debugln(['TCustomCodeTool.SetNodeParserError ',Node.DescAsString,' Msg="',ErrorMsg,'" ',CleanPosToStr(ErrorCleanPos)]);
+  if Node=nil then
+    RaiseCatchableException('');
+  if FNodeParseErrors=nil then
+    FNodeParseErrors:=TAVLTree.Create(@CompareCodeTreeNodeParserError);
+  AVLNode:=FNodeParseErrors.FindKey(Node,@CompareNodeWithCodeTreeNodeParserError);
+  if AVLNode<>nil then begin
+    Result:=TCodeTreeNodeParseError(AVLNode.Data)
+  end else begin
+    Result:=TCodeTreeNodeParseError.Create(Node);
+    FNodeParseErrors.Add(Result);
+  end;
+  Node.SubDesc:=Node.SubDesc or ctnsHasParseError;
+  Result.Msg:=ErrorMsg;
+  Result.CleanPos:=ErrorCleanPos;
+  Result.NicePos:=ErrorNiceCleanPos;
+end;
+
+procedure TCustomCodeTool.RaiseNodeParserError(Node: TCodeTreeNode);
+var
+  NodeError: TCodeTreeNodeParseError;
+begin
+  //debugln(['TCustomCodeTool.SetNodeParserError ',Node.DescAsString,' ',(ctnsHasParseError and Node.SubDesc)>0]);
+  if (ctnsHasParseError and Node.SubDesc)=0 then exit;
+  NodeError:=GetNodeParserError(Node);
+  //debugln(['TCustomCodeTool.RaiseNodeParserError ',Node.DescAsString,' Msg="',NodeError.Msg,'" ',CleanPosToStr(NodeError.CleanPos)]);
+  MoveCursorToCleanPos(NodeError.CleanPos);
+  ErrorNicePosition:=NodeError.NicePos;
+  RaiseException(NodeError.Msg,false);
+end;
+
 function TCustomCodeTool.StringIsKeyWord(const Word: string): boolean;
 begin
   Result:=(Word<>'') and IsIdentStartChar[Word[1]]
@@ -2092,6 +2181,10 @@ begin
   // already parsed
   Node:=CurNode;
   while (Node<>nil) do begin
+    if (ctnsNeedJITParsing and Node.SubDesc)>0 then begin
+      SetNodeParserError(Node,TheException.Message,CurPos.StartPos,
+                         ErrorNicePosition);
+    end;
     if (Node.StartPos>=Node.EndPos) then
       Node.EndPos:=CursorPos;
     Node:=Node.Parent;
@@ -2610,6 +2703,10 @@ begin
     IncreaseTreeChangeStep(true);
     // then change
     Tree.Clear;
+    if FNodeParseErrors<>nil then begin
+      FNodeParseErrors.FreeAndClear;
+      FreeAndNil(FNodeParseErrors);
+    end;
   end;
 end;
 
@@ -2793,6 +2890,13 @@ begin
   Result:=PtrUInt(InstanceSize)
     +MemSizeString(Src)
     +MemSizeString(GapSrc);
+end;
+
+{ TCodeTreeNodeParseError }
+
+constructor TCodeTreeNodeParseError.Create(ANode: TCodeTreeNode);
+begin
+  Node:=ANode;
 end;
 
 initialization

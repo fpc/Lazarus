@@ -286,7 +286,7 @@ function GetEnvironmentVariableUTF8(const EnvVar: String): String;
 
 
 // basic utility -> should go to RTL
-function ComparePointers(p1, p2: Pointer): integer;
+function ComparePointers(p1, p2: Pointer): integer; inline;
 procedure MergeSort(List: PPointer; ListLength: PtrInt;
                     Compare: TListSortCompare);
 function GetNextDelimitedItem(const List: string; Delimiter: char;

@@ -703,12 +703,6 @@ end;
 procedure TPascalParserTool.BuildSubTreeForClass(ClassNode: TCodeTreeNode);
 // reparse a quick parsed class and build the child nodes
 
-  procedure RaiseClassNodeNil;
-  begin
-    RaiseException(
-       'TPascalParserTool.BuildSubTreeForClass: Classnode=nil',true);
-  end;
-  
   procedure RaiseClassDescInvalid;
   begin
     RaiseException('[TPascalParserTool.BuildSubTreeForClass] ClassNode.Desc='
@@ -724,21 +718,17 @@ procedure TPascalParserTool.BuildSubTreeForClass(ClassNode: TCodeTreeNode);
   
 var OldPhase: integer;
 begin
-  if (ClassNode<>nil)
-  and ((ClassNode.FirstChild<>nil)
-    or ((ClassNode.SubDesc and ctnsNeedJITParsing)=0))
-  then
+  if (ClassNode.SubDesc and ctnsNeedJITParsing)=0 then
     // class already parsed
     exit;
+  if not (ClassNode.Desc in AllClassObjects) then
+    RaiseClassDescInvalid;
   // avoid endless loop
-  ClassNode.SubDesc:=ClassNode.SubDesc and (not ctnsNeedJITParsing);
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
   try
-    if ClassNode=nil then
-      RaiseClassNodeNil;
-    if not (ClassNode.Desc in AllClassObjects) then
-      RaiseClassDescInvalid;
+    if (ctnsHasParseError and ClassNode.SubDesc)>0 then
+      RaiseNodeParserError(ClassNode);
     // set CursorPos after class head
     MoveCursorToNodeStart(ClassNode);
     // parse
@@ -802,6 +792,7 @@ begin
     CurNode.EndPos:=CurPos.StartPos;
     EndChildNode;
     CurrentPhase:=OldPhase;
+    ClassNode.SubDesc:=ClassNode.SubDesc and (not ctnsNeedJITParsing);
   except
     CurrentPhase:=OldPhase;
     {$IFDEF ShowIgnoreErrorAfter}
@@ -839,15 +830,12 @@ begin
   if (BeginNode.SubDesc and ctnsNeedJITParsing)=0 then
     // block already parsed
     exit;
-  // avoid endless loop
-  BeginNode.SubDesc:=BeginNode.SubDesc and (not ctnsNeedJITParsing);
-  if (BeginNode.FirstChild<>nil) then
-    // block already parsed
-    exit;
 
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
   try
+    if (ctnsHasParseError and BeginNode.SubDesc)>0 then
+      RaiseNodeParserError(BeginNode);
     // set CursorPos on 'begin'
     MoveCursorToNodeStart(BeginNode);
     ReadNextAtom;
@@ -867,6 +855,7 @@ begin
         ReadWithStatement(true,true);
     until (CurPos.StartPos>=MaxPos);
     CurrentPhase:=OldPhase;
+    BeginNode.SubDesc:=BeginNode.SubDesc and (not ctnsNeedJITParsing);
   except
     CurrentPhase:=OldPhase;
     {$IFDEF ShowIgnoreErrorAfter}
@@ -4895,6 +4884,7 @@ var HasForwardModifier, IsFunction, IsOperator, IsMethod: boolean;
   ParseAttr: TParseProcHeadAttributes;
   OldPhase: integer;
   IsProcType: Boolean;
+  ProcHeadNode: TCodeTreeNode;
 begin
   if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
   if ProcNode.Desc=ctnMethodMap then begin
@@ -4912,14 +4902,15 @@ begin
     RaiseException('[TPascalParserTool.BuildSubTreeForProcHead] '
       +'internal error: invalid ProcNode');
   end;
-  if ProcNode.FirstChild<>nil then begin
-    if (ProcNode.FirstChild.SubDesc and ctnsNeedJITParsing)=0 then exit;
-    ProcNode.FirstChild.SubDesc:=
-                       ProcNode.FirstChild.SubDesc and (not ctnsNeedJITParsing);
-  end;
+  ProcHeadNode:=ProcNode.FirstChild;
+  if (ProcHeadNode<>nil)
+  and ((ProcHeadNode.SubDesc and ctnsNeedJITParsing)=0) then exit;
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
   try
+    if (ProcHeadNode<>nil) and ((ctnsHasParseError and ProcHeadNode.SubDesc)>0)
+    then
+      RaiseNodeParserError(ProcHeadNode);
     IsMethod:=ProcNode.Parent.Desc in (AllClasses+AllClassSections);
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
@@ -4930,9 +4921,12 @@ begin
     IsProcType:=ProcNode.Desc=ctnProcedureType;
     // read procedure head (= [name] + parameterlist + resulttype;)
     ReadNextAtom;// read first atom of head
-    CurNode:=ProcNode.FirstChild;
+    CurNode:=ProcHeadNode;
     if CurNode=nil then
-      RaiseStringExpectedButAtomFound('identifier');
+      if ProcNode.Desc=ctnProcedureType then
+        RaiseCharExpectedButAtomFound(';')
+      else
+        RaiseStringExpectedButAtomFound('identifier');
     if not IsProcType then begin
       if not IsOperator then AtomIsIdentifier(true);
       ReadNextAtom;
@@ -4952,6 +4946,7 @@ begin
     if IsProcType then Include(ParseAttr,pphIsType);
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
     CurrentPhase:=OldPhase;
+    ProcHeadNode.SubDesc:=ProcHeadNode.SubDesc and (not ctnsNeedJITParsing);
   except
     CurrentPhase:=OldPhase;
     {$IFDEF ShowIgnoreErrorAfter}

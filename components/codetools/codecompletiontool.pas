@@ -73,6 +73,7 @@ interface
 {$I codetools.inc}
 
 {off $DEFINE CTDEBUG}
+{$DEFINE VerboseCompletionAdds}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -6170,6 +6171,9 @@ begin
       if (ProcCode<>'') and (ProcCode[length(ProcCode)]<>';') then begin
         // add missing semicolon at end of procedure head
         UndoReadNextAtom;
+        {$IFDEF VerboseCompletionAdds}
+        debugln(['TCodeCompletionCodeTool.InsertMissingClassSemicolons add missing semicolon at end of procedure head ProcCode="',dbgstr(ProcCode),'"']);
+        {$ENDIF}
         if not ASourceChangeCache.Replace(gtNone,gtNone,
           CurPos.EndPos,CurPos.EndPos,';') then
             RaiseException('InsertMissingClassSemicolons: unable to insert semicolon');
@@ -6179,6 +6183,9 @@ begin
       then begin
         // add missing semicolon in front of proc modifiers
         UndoReadNextAtom;
+        {$IFDEF VerboseCompletionAdds}
+        debugln(['TCodeCompletionCodeTool.InsertMissingClassSemicolons add missing semicolon in front of proc modifiers ProcCode="',dbgstr(ProcCode),'"']);
+        {$ENDIF}
         if not ASourceChangeCache.Replace(gtNone,gtNone,
           CurPos.EndPos,CurPos.EndPos,';') then
             RaiseException('InsertMissingClassSemicolons: unable to insert semicolon');
