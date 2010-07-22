@@ -335,13 +335,13 @@ begin
   Result:=false;
 end;
 
-function TWidgetSet.Frame(DC: HDC; const ARect: TRect) : integer;
+function TWidgetSet.Frame(DC: HDC; const ARect: TRect): integer;
 begin
   Result:= 0;
 end;
 
 function TWidgetSet.Frame3d(DC: HDC; var ARect: TRect;
-  const FrameWidth: integer; const Style: TGraphicsBevelCut) : boolean;
+  const FrameWidth: integer; const Style: TGraphicsBevelCut): boolean;
 begin
   Result:= false;
 end;
@@ -414,7 +414,7 @@ function TWidgetSet.GetAcceleratorString(const AVKey: Byte;
       VK_SUBTRACT   :AddPart('-');
       VK_DECIMAL    :AddPart('.');
       VK_DIVIDE     :AddPart('/');
-      VK_F1..VK_F24 : AddPart('F'+IntToStr(AVKey-VK_F1+1));
+      VK_F1..VK_F24: AddPart('F'+IntToStr(AVKey-VK_F1+1));
       VK_NUMLOCK    :AddPart(ifsVK_NUMLOCK);
       VK_SCROLL     :AddPart(ifsVK_SCROLL);
 //    VK_EQUAL      :AddPart('=');
@@ -442,7 +442,7 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.GetClientBounds(Handle : HWND; var ARect: TRect) : Boolean;
+function TWidgetSet.GetClientBounds(Handle: HWND; var ARect: TRect): Boolean;
 begin
   Result := false;
 end;
@@ -497,7 +497,7 @@ begin
   Result := false;
 end;
 
-function TWidgetSet.GetWindowRelativePosition(Handle : hwnd;
+function TWidgetSet.GetWindowRelativePosition(Handle: hwnd;
   var Left, Top: integer): boolean;
 { returns the position of the left, top coordinate relative to the clientorigin
   of its parent. This is normally the Left, Top of a TWinControl. But not
@@ -522,7 +522,7 @@ begin
   Result := true;
 end;
 
-function TWidgetSet.GetWindowSize(Handle : hwnd;
+function TWidgetSet.GetWindowSize(Handle: hwnd;
   var Width, Height: integer): boolean;
 // Returns the current Width and Height
 begin
@@ -534,8 +534,8 @@ begin
   Result:=false;
 end;
 
-function TWidgetSet.InvalidateFrame(aHandle : HWND; ARect : pRect;
-  bErase : Boolean; BorderWidth: integer) : Boolean;
+function TWidgetSet.InvalidateFrame(aHandle: HWND; ARect: pRect;
+  bErase: Boolean; BorderWidth: integer): Boolean;
 
   function Min(i1, i2: integer): integer;
   begin
@@ -575,7 +575,7 @@ begin
   Result := False;
 end;
 
-function TWidgetSet.MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;
+function TWidgetSet.MoveWindowOrgEx(dc: hdc; dX,dY: Integer): boolean;
 var
   P: TPoint;
   lResult: Integer;
@@ -593,9 +593,9 @@ Begin
   {$endif}
 end;
 
-function TWidgetSet.PromptUser(const DialogCaption, DialogMessage : String;
-  DialogType : longint; Buttons : PLongint;
-  ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;
+function TWidgetSet.PromptUser(const DialogCaption, DialogMessage: String;
+  DialogType: longint; Buttons: PLongint;
+  ButtonCount, DefaultIndex, EscapeResult: Longint): Longint;
 begin
   if PromptDialogFunction <> nil then
     Result := PromptDialogFunction(DialogCaption, DialogMessage, DialogType,
@@ -605,10 +605,10 @@ begin
 end;
 
 function TWidgetSet.PromptUserAtXY(const DialogCaption,
-  DialogMessage : String;
-  DialogType : longint; Buttons : PLongint;
-  ButtonCount, DefaultIndex, EscapeResult : Longint;
-  X, Y : Longint) : Longint;
+  DialogMessage: String;
+  DialogType: longint; Buttons: PLongint;
+  ButtonCount, DefaultIndex, EscapeResult: Longint;
+  X, Y: Longint): Longint;
 begin
   if PromptDialogFunction<>nil then
     Result:=PromptDialogFunction(DialogCaption, DialogMessage, DialogType,
@@ -620,7 +620,7 @@ end;
 function TWidgetSet.RadialArc(DC: HDC;
   left, top, right, bottom, sx, sy, ex, ey: Integer): Boolean;
 var
-  A1, A2 : Extended;
+  A1, A2: Extended;
 begin
   Coords2Angles(left, top, right-left, bottom-top, sx, sy, ex, ey, A1, A2);
   Result := Arc(DC, left, top, right, bottom, RoundToInt(A1), RoundToInt(A2));
@@ -629,7 +629,7 @@ end;
 function TWidgetSet.RadialChord(DC: HDC;
   x1, y1, x2, y2, sx, sy, ex, ey: Integer): Boolean;
 var
-  A1, A2 : Extended;
+  A1, A2: Extended;
 Begin
   Coords2Angles(x1, y1, x2-x1, y2-y1, sx, sy, ex, ey, A1, A2);
   Result := AngleChord(DC, x1, y1, x2, y2, RoundToInt(A1), RoundToInt(A2));
@@ -638,8 +638,8 @@ End;
 function TWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2,
   Angle1, Angle2: Integer): Boolean;
 var
-  Points : PPoint;
-  Count : Longint;
+  Points: PPoint;
+  Count: Longint;
 begin
   Result := False;
   Points := nil;
@@ -654,7 +654,7 @@ begin
   Result := True;
 end;
 
-function TWidgetSet.RegroupMenuItem(hndMenu: HMENU; GroupIndex: Integer) : Boolean;
+function TWidgetSet.RegroupMenuItem(hndMenu: HMENU; GroupIndex: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -676,8 +676,8 @@ begin
   Result := ReleaseDC(hWnd, DC);
 end;
 
-function TWidgetSet.RequestInput(const InputCaption, InputPrompt : String;
-  MaskInput : Boolean; var Value : String) : Boolean;
+function TWidgetSet.RequestInput(const InputCaption, InputPrompt: String;
+  MaskInput: Boolean; var Value: String): Boolean;
 begin
   if InputDialogFunction<>nil then
     Result := InputDialogFunction(InputCaption, InputPrompt, MaskInput, Value)

@@ -200,8 +200,8 @@ begin
   Result := WidgetSet.Frame(DC, ARect);
 end;
 
-function Frame3d(DC : HDC; var ARect : TRect; const FrameWidth : integer;
-  const Style: TGraphicsBevelCut) : boolean;
+function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth: integer;
+  const Style: TGraphicsBevelCut): boolean;
 begin
   Result := WidgetSet.Frame3d(DC, ARect, FrameWidth, Style);
 end;
@@ -298,7 +298,7 @@ end;
 
   Returns the Left, Top, relative to the client origin of its parent.
 ------------------------------------------------------------------------------}
-function GetWindowRelativePosition(Handle : hwnd;
+function GetWindowRelativePosition(Handle: hwnd;
   var Left, Top: integer): boolean;
 begin
   Result := WidgetSet.GetWindowRelativePosition(Handle,Left,Top);
@@ -315,12 +315,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean;
-    BorderWidth: integer) : Boolean;
+  function InvalidateFrame(aHandle: HWND; ARect: pRect; bErase: Boolean;
+    BorderWidth: integer): Boolean;
 
   Calls InvalidateRect for the borderframe.
 ------------------------------------------------------------------------------}
-function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; BorderWidth: integer) : Boolean;
+function InvalidateFrame(aHandle: HWND; ARect: pRect; bErase: Boolean; BorderWidth: integer): Boolean;
 begin
   Result := WidgetSet.InvalidateFrame(aHandle,ARect,bErase,BorderWidth);
 end;
@@ -330,31 +330,31 @@ begin
   Result := WidgetSet.IsDesignerDC(WindowHandle, DC);
 end;
 
-function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;
+function MoveWindowOrgEx(dc: hdc; dX,dY: Integer): boolean;
 begin
   Result := WidgetSet.MoveWindowOrgEx(DC, dX, dY);
 end;
 
-function PromptUser(const DialogMessage : String; DialogType : longint; Buttons : PLongint;
-  ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;
+function PromptUser(const DialogMessage: String; DialogType: longint; Buttons: PLongint;
+  ButtonCount, DefaultIndex, EscapeResult: Longint): Longint;
 begin
   Result := WidgetSet.PromptUser('', DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex, EscapeResult);
 end;
 
-function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : PLongint;
-  ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;
+function PromptUser(const DialogCaption, DialogMessage: String; DialogType: longint; Buttons: PLongint;
+  ButtonCount, DefaultIndex, EscapeResult: Longint): Longint;
 begin
   Result := WidgetSet.PromptUser(DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex, EscapeResult);
 end;
 
-function PromptUserAtXY(const DialogMessage : String; DialogType : longint; Buttons : PLongint;
-  ButtonCount, DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
+function PromptUserAtXY(const DialogMessage: String; DialogType: longint; Buttons: PLongint;
+  ButtonCount, DefaultIndex, EscapeResult: Longint; X, Y: Longint): Longint;
 begin
   Result := WidgetSet.PromptUserAtXY('', DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex, EscapeResult, X, Y);
 end;
 
-function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : PLongint;
-  ButtonCount, DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
+function PromptUserAtXY(const DialogCaption, DialogMessage: String; DialogType: longint; Buttons: PLongint;
+  ButtonCount, DefaultIndex, EscapeResult: Longint; X, Y: Longint): Longint;
 begin
   Result := WidgetSet.PromptUserAtXY(DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex, EscapeResult, X, Y);
 end;
@@ -375,7 +375,7 @@ begin
   Result := WidgetSet.RadialPie(DC, x1, y1, x2, y2, Angle1, Angle2);
 end;
 
-function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer) : Boolean;
+function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean;
 begin
   Result := WidgetSet.RegroupMenuItem(hndMenu,GroupIndex);
 end;
@@ -400,7 +400,7 @@ begin
   WidgetSet.RemovePipeEventHandler(AHandler);
 end;
 
-function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
+function RequestInput(const InputCaption, InputPrompt: String; MaskInput: Boolean; var Value: String): Boolean;
 begin
   Result := WidgetSet.RequestInput(InputCaption, InputPrompt, MaskInput, Value);
 end;
@@ -463,54 +463,54 @@ end;
       ComplexRegion
 
  ------------------------------------------------------------------------------}
-function ExcludeClipRgn(dc: hdc; rgn : hrgn) : Integer;
+function ExcludeClipRgn(dc: hdc; rgn: hrgn): Integer;
 begin
   Result := ExtSelectClipRGN(DC, RGN, RGN_DIFF);
 end;
 
-procedure NotifyUser(const DialogMessage : String; DialogType : longint);
+procedure NotifyUser(const DialogMessage: String; DialogType: longint);
 begin
   PromptUser(DialogMessage, DialogType, [idButtonOK], 0, -1);
 end;
 
-procedure NotifyUser(const DialogCaption, DialogMessage : String; DialogType : longint);
+procedure NotifyUser(const DialogCaption, DialogMessage: String; DialogType: longint);
 begin
   PromptUser(DialogCaption, DialogMessage, DialogType, [idButtonOK], 0, -1);
 end;
 
-procedure NotifyUserAtXY(const DialogMessage : String; DialogType : longint; X, Y : Longint);
+procedure NotifyUserAtXY(const DialogMessage: String; DialogType: longint; X, Y: Longint);
 begin
   PromptUserAtXY(DialogMessage, DialogType, [idButtonOK], 0, -1, X, Y);
 end;
 
-procedure NotifyUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; X, Y : Longint);
+procedure NotifyUserAtXY(const DialogCaption, DialogMessage: String; DialogType: longint; X, Y: Longint);
 begin
   PromptUserAtXY(DialogCaption, DialogMessage, DialogType, [idButtonOK], 0, -1, X, Y);
 end;
 
-function PromptUser(const DialogMessage : String; DialogType : longint; Buttons : Array of Longint;
-  DefaultIndex, EscapeResult : Longint) : Longint;
+function PromptUser(const DialogMessage: String; DialogType: longint; Buttons: Array of Longint;
+  DefaultIndex, EscapeResult: Longint): Longint;
 begin
   Result := PromptUser(DialogMessage, DialogType, @Buttons[Low(Buttons)],
     High(Buttons) - Low(Buttons) + 1, DefaultIndex, EscapeResult);
 end;
 
-function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint;
-  DefaultIndex, EscapeResult : Longint) : Longint;
+function PromptUser(const DialogCaption, DialogMessage: String; DialogType: longint; Buttons: Array of Longint;
+  DefaultIndex, EscapeResult: Longint): Longint;
 begin
   Result := PromptUser(DialogCaption, DialogMessage, DialogType, @Buttons[Low(Buttons)],
     High(Buttons) - Low(Buttons) + 1, DefaultIndex, EscapeResult);
 end;
 
-function PromptUserAtXY(const DialogMessage : String; DialogType : longint; Buttons : Array of Longint;
-  DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
+function PromptUserAtXY(const DialogMessage: String; DialogType: longint; Buttons: Array of Longint;
+  DefaultIndex, EscapeResult: Longint; X, Y: Longint): Longint;
 begin
   Result := PromptUserAtXY(DialogMessage, DialogType, @Buttons[Low(Buttons)],
     High(Buttons) - Low(Buttons) + 1, DefaultIndex, EscapeResult, X, Y);
 end;
 
-function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint;
-  DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
+function PromptUserAtXY(const DialogCaption, DialogMessage: String; DialogType: longint; Buttons: Array of Longint;
+  DefaultIndex, EscapeResult: Longint; X, Y: Longint): Longint;
 begin
   Result := PromptUserAtXY(DialogCaption, DialogMessage, DialogType, @Buttons[Low(Buttons)],
     High(Buttons) - Low(Buttons) + 1, DefaultIndex, EscapeResult, X, Y);
