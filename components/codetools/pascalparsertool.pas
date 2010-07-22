@@ -5012,12 +5012,16 @@ end;
 function TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos(
   StartNode: TCodeTreeNode; P: integer; ExceptionOnNotFound: boolean
   ): TCodeTreeNode;
+var
+  Node: TCodeTreeNode;
 begin
   Result:=FindDeepestNodeAtPos(StartNode,P,ExceptionOnNotFound);
   //debugln('TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos A ',Result.DescAsString,' ',dbgs(NodeNeedsBuildSubTree(Result)));
   while NodeNeedsBuildSubTree(Result) do begin
     BuildSubTree(Result);
-    Result:=FindDeepestNodeAtPos(Result,P,ExceptionOnNotFound);
+    Node:=FindDeepestNodeAtPos(Result,P,ExceptionOnNotFound);
+    if Node=Result then exit;
+    Result:=Node;
     //debugln('TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos B ',Result.DescAsString,' ',dbgs(NodeNeedsBuildSubTree(Result)));
   end;
 end;
