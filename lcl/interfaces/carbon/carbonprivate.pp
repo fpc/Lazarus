@@ -141,6 +141,7 @@ type
     procedure Draw; override;
     procedure GetInfo(out AImageSize, AViewSize, ALineSize: HISize; out AOrigin: HIPoint); virtual;
     procedure ScrollTo(const ANewOrigin: HIPoint); virtual;
+    procedure Invalidate(Rect:PRect=nil);override;
   public
     procedure AddToWidget(AParent: TCarbonWidget); override;
     procedure SetColor(const AColor: TColor); override;
@@ -650,7 +651,7 @@ begin
   {$ENDIF}
 
   (AWidget as TCarbonCustomControl).GetInfo(ImageHISize, ViewHISize, LineHISize, HIOrigin);
-  
+
   OSError(SetEventParameter(AEvent, kEventParamImageSize, typeHISize,
     SizeOf(HISize), @ImageHISize), SName, SSetEvent, 'kEventParamImageSize');
   OSError(SetEventParameter(AEvent, kEventParamViewSize, typeHISize,
@@ -917,6 +918,24 @@ begin
   
   OSError(
     HiViewSetNeedsDisplay(Widget, True), Self, 'ScrollTo', SViewNeedsDisplay);
+end;
+
+procedure TCarbonCustomControl.Invalidate(Rect:PRect);
+var
+  v : HIViewRef;
+begin
+  inherited Invalidate(Rect);
+
+  // Forced invalidation of ScrollBars
+  if Assigned(FScrollView) then
+  begin
+    v:=HIViewGetFirstSubview(FScrollView);
+    while ASsigned(v) do
+    begin
+      HIViewSetNeedsDisplay(v, true);
+      v:=HIViewGetNextView(v);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
