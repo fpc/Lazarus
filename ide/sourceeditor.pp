@@ -2851,6 +2851,9 @@ begin
     if Assigned(Manager.OnSetBookmark) then
       Manager.OnSetBookmark(Self, Command - ecToggleMarker0, True);
 
+  ecSelectAll:
+    Manager.AddJumpPointClicked(Self);
+
   end;
   //debugln('TSourceEditor.ProcessCommand B IdentCompletionTimer.AutoEnabled=',dbgs(SourceCompletionTimer.AutoEnabled));
 end;
