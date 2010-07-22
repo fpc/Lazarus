@@ -1514,7 +1514,7 @@ begin
     WM_GETDLGCODE:
     begin
       LMessage.Result := DLGC_WANTALLKEYS;
-      WinProcess := false;
+      WinProcess := False;
     end;
     WM_HELP:
     begin

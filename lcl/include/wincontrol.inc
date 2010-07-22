@@ -5613,50 +5613,45 @@ var
   ShiftState: TShiftState;
   AParent: TWinControl;
 begin
-  Result:=true;
+  Result := True;
   
   ShiftState := KeyDataToShiftState(Message.KeyData);
 
   // check popup menu
-  if Assigned(FPopupMenu) then
-  begin
-    if FPopupMenu.IsShortCut(Message) then
-      exit;
-  end;
+  if Assigned(FPopupMenu) and FPopupMenu.IsShortCut(Message) then
+    Exit;
 
   // let each parent form handle shortcuts
-  AParent:=Parent;
-  while (AParent<>nil) do begin
-    if (AParent is TCustomForm) then begin
-      if TCustomForm(AParent).IsShortcut(Message) then
-        exit;
-    end;
-    AParent:=AParent.Parent;
+  AParent := Parent;
+  while Assigned(AParent) do
+  begin
+    if (AParent is TCustomForm) and TCustomForm(AParent).IsShortcut(Message) then
+      Exit;
+    AParent := AParent.Parent;
   end;
 
   // let application handle shortcut
   if Assigned(Application) and Application.IsShortcut(Message) then
-    exit;
+    Exit;
 
   // let parent(s) handle key from child key
-  if Assigned(Parent) then
-    if Parent.ChildKey(Message) then
-      exit;
+  if Assigned(Parent) and Parent.ChildKey(Message) then
+    Exit;
 
   // handle LCL special keys
-  ControlKeyDown(Message.CharCode,ShiftState);
-  if Message.CharCode=VK_UNKNOWN then exit;
+  ControlKeyDown(Message.CharCode, ShiftState);
+  if Message.CharCode = VK_UNKNOWN then Exit;
 
   //DebugLn('TWinControl.WMKeyDown ',Name,':',ClassName);
   if not (csNoStdEvents in ControlStyle) then
   begin
     KeyDownAfterInterface(Message.CharCode, ShiftState);
-    if Message.CharCode=VK_UNKNOWN then exit;
+    if Message.CharCode = VK_UNKNOWN then Exit;
     // Note: Message.CharCode can now be different or even 0
   end;
 
   // let application handle the remaining key
-  if Application<>nil then
+  if Assigned(Application) then
     Application.NotifyKeyDownHandler(Self, Message.CharCode, ShiftState);
   if Message.CharCode = VK_UNKNOWN then Exit;
 
