@@ -80,7 +80,7 @@ implementation
 {$R *.lfm}
 
 uses
-  TAChartUtils;
+  TAChartUtils, TADrawUtils, TATypes;
 
 { TForm1 }
 
@@ -270,6 +270,7 @@ begin
   FPie.Title := 'pie';
   FPie.Marks.LabelBrush.Color := $80FFFF;
   FPie.Marks.LinkPen.Width := 2;
+  FPie.Marks.OverlapPolicy := opHideNeighbour;
   Chart1.AddSeries(FPie);
 end;
 
