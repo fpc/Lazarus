@@ -1962,26 +1962,27 @@ begin
   begin
     FOnShortcut(Message, Result);
     if Result then
-      exit;
+      Exit;
   end;
 
   // next: if there is a modal form, let it handle the short cut
-  ModalForm:=Screen.GetCurrentModalForm;
-  if ModalForm<>nil then begin
-    Result := ModalForm.IsShortcut(Message);
-  end else begin
-    // there is no modal form
-
-    // let the current focused form handle the shortcut
-    if Screen.ActiveCustomForm<>nil then begin
+  ModalForm := Screen.GetCurrentModalForm;
+  if Assigned(ModalForm) and IsWindowEnabled(ModalForm.Handle) then
+    Result := ModalForm.IsShortcut(Message)
+  else
+  begin
+    // no modal form - let the current focused form handle the shortcut
+    if Assigned(Screen.ActiveCustomForm) and IsWindowEnabled(Screen.ActiveCustomForm.Handle) then
+    begin
       Result := Screen.ActiveCustomForm.IsShortcut(Message);
-      if Result then exit;
+      if Result then Exit;
     end;
 
     // let the main form handle the shortcut
-    if (MainForm<>nil) and (Screen.ActiveCustomForm<>MainForm) then begin
+    if Assigned(MainForm) and (Screen.ActiveCustomForm <> MainForm) and IsWindowEnabled(MainForm.Handle) then
+    begin
       Result := FMainForm.IsShortcut(Message);
-      if Result then exit;
+      if Result then Exit;
     end;
   end;
 end;
