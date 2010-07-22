@@ -209,6 +209,7 @@ function PointDistY(const A, B: TPoint): Integer; inline;
 function RectIntersectsRect(
   var ARect: TDoubleRect; const AFixed: TDoubleRect): Boolean;
 
+function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint;
 function RoundChecked(A: Double): Integer; inline;
 
 function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
@@ -222,9 +223,15 @@ procedure UpdateMinMax(AValue: Double; var AMin, AMax: Double);
 operator +(const A: TPoint; B: TSize): TPoint; overload; inline;
 operator +(const A, B: TPoint): TPoint; overload; inline;
 operator +(const A, B: TDoublePoint): TDoublePoint; overload; inline;
+operator -(const A: TPoint): TPoint; overload; inline;
 operator -(const A, B: TPoint): TPoint; overload; inline;
 operator -(const A, B: TDoublePoint): TDoublePoint; overload; inline;
+operator div(const A: TPoint; ADivisor: Integer): TPoint; inline;
+operator *(const A: TPoint; AMultiplier: Integer): TPoint; inline;
 operator =(const A, B: TMethod): Boolean; overload; inline;
+
+operator :=(const APoint: TPoint): TSize; inline;
+operator :=(const ASize: TSize): TPoint; inline;
 
 implementation
 
@@ -607,6 +614,15 @@ begin
       RangesIntersect(a.Y, b.Y, AFixed.a.Y, AFixed.b.Y, a.Y, b.Y);
 end;
 
+function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint;
+var
+  sa, ca: Extended;
+begin
+  SinCos(AAngle, sa, ca);
+  Result.X := Round(ca * APoint.X - sa * APoint.Y);
+  Result.Y := Round(sa * APoint.X + ca * APoint.Y);
+end;
+
 function RoundChecked(A: Double): Integer;
 begin
   Result := Round(EnsureRange(A, -MaxInt, MaxInt));
@@ -655,21 +671,51 @@ begin
   Result.Y := A.Y + B.Y;
 end;
 
+operator - (const A: TPoint): TPoint;
+begin
+  Result.X := - A.X;
+  Result.Y := - A.Y;
+end;
+
 operator - (const A, B: TPoint): TPoint;
 begin
   Result.X := A.X - B.X;
   Result.Y := A.Y - B.Y;
 end;
 
-operator - (const A, B: TDoublePoint): TDoublePoint; overload; inline;
+operator - (const A, B: TDoublePoint): TDoublePoint;
 begin
   Result.X := A.X - B.X;
   Result.Y := A.Y - B.Y;
 end;
 
+operator div(const A: TPoint; ADivisor: Integer): TPoint;
+begin
+  Result.X := A.X div ADivisor;
+  Result.Y := A.Y div ADivisor;
+end;
+
+operator * (const A: TPoint; AMultiplier: Integer): TPoint;
+begin
+  Result.X := A.X * AMultiplier;
+  Result.Y := A.Y * AMultiplier;
+end;
+
 operator = (const A, B: TMethod): Boolean;
 begin
   Result := (A.Code = B.Code) and (A.Data = B.Data);
+end;
+
+operator := (const APoint: TPoint): TSize;
+begin
+  Result.cx := APoint.X;
+  Result.cy := APoint.Y;
+end;
+
+operator := (const ASize: TSize): TPoint;
+begin
+  Result.X := ASize.cx;
+  Result.Y := ASize.cy;
 end;
 
 { TIntervalList }

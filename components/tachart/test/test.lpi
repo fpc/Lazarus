@@ -2,7 +2,7 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="7"/>
+    <Version Value="8"/>
     <General>
       <Flags>
         <MainUnitHasCreateFormStatements Value="False"/>

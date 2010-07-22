@@ -45,10 +45,12 @@ type
   TGeometryTest = class(TTestCase)
   private
     procedure AssertEquals(const Expected, Actual: TDoublePoint); overload;
+    procedure AssertEquals(const Expected, Actual: TPoint); overload;
   published
     procedure TestLineIntersectsLine;
     procedure TestLineIntersectsRect;
     procedure TestPointOnLine;
+    procedure TestPointOperations;
     procedure TestPointInPolygon;
     procedure TestPolygonIntersectsPolygon;
   end;
@@ -126,6 +128,12 @@ end;
 { TGeometryTest }
 
 procedure TGeometryTest.AssertEquals(const Expected, Actual: TDoublePoint);
+begin
+  AssertEquals(Expected.X, Actual.X);
+  AssertEquals(Expected.Y, Actual.Y);
+end;
+
+procedure TGeometryTest.AssertEquals(const Expected, Actual: TPoint);
 begin
   AssertEquals(Expected.X, Actual.X);
   AssertEquals(Expected.Y, Actual.Y);
@@ -216,6 +224,13 @@ begin
 
   AssertTrue(IsPointOnLine(Point(0, 0), Point(-1, 0), Point(1, 0)));
   AssertFalse(IsPointOnLine(Point(0, 1), Point(-1, 0), Point(1, 0)));
+end;
+
+procedure TGeometryTest.TestPointOperations;
+begin
+  AssertEquals(Point(1, 0), RotatePoint(Point(1, 0), 0.0));
+  AssertEquals(Point(0, 1), RotatePoint(Point(1, 0), Pi / 2));
+  AssertEquals(Point(14, 0), RotatePoint(Point(10, 10), -Pi / 4));
 end;
 
 procedure TGeometryTest.TestPolygonIntersectsPolygon;
