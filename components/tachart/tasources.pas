@@ -22,14 +22,17 @@ unit TASources;
 interface
 
 uses
-  Classes, Graphics, SysUtils, Types, TAChartUtils;
+  Classes, SysUtils, Types, TAChartUtils;
 
 type
   EEditableSourceRequired = class(EChartError);
 
+  // Like TColor, but avoiding dependency on Graphics.
+  TChartColor = -$7FFFFFFF-1..$7FFFFFFF;
+
   TChartDataItem = record
     X, Y: Double;
-    Color: TColor;
+    Color: TChartColor;
     Text: String;
   end;
   PChartDataItem = ^TChartDataItem;
@@ -85,7 +88,7 @@ type
     FSorted: Boolean;
 
     procedure AddAt(
-      APos: Integer; AX, AY: Double; const ALabel: String; AColor: TColor);
+      APos: Integer; AX, AY: Double; const ALabel: String; AColor: TChartColor);
     procedure ClearCaches;
     procedure SetDataPoints(AValue: TStrings);
     procedure SetSorted(AValue: Boolean);
@@ -98,7 +101,7 @@ type
     destructor Destroy; override;
   public
     function Add(
-      AX, AY: Double; const ALabel: String; AColor: TColor): Integer;
+      AX, AY: Double; const ALabel: String; AColor: TChartColor): Integer;
     procedure Clear;
     procedure CopyForm(ASource: TCustomChartSource);
     procedure Delete(AIndex: Integer); inline;
@@ -217,7 +220,7 @@ procedure SetDataItemDefaults(var AItem: TChartDataItem);
 implementation
 
 uses
-  LCLIntf, Math, StrUtils, TADrawUtils;
+  Math, StrUtils;
 
 {$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
 {$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}
@@ -231,13 +234,13 @@ type
     FSource: TListChartSource;
     procedure Parse(const AString: String; ADataItem: PChartDataItem);
   protected
-    function Get(Index: Integer): string; override;
+    function Get(Index: Integer): String; override;
     function GetCount: Integer; override;
-    procedure Put(Index: Integer; const S: string); override;
+    procedure Put(Index: Integer; const S: String); override;
   public
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
-    procedure Insert(Index: Integer; const S: string); override;
+    procedure Insert(Index: Integer; const S: String); override;
   end;
 
 procedure Register;
@@ -457,7 +460,7 @@ begin
   FSource.Delete(Index);
 end;
 
-function TListChartSourceStrings.Get(Index: Integer): string;
+function TListChartSourceStrings.Get(Index: Integer): String;
 begin
   with FSource[Index]^ do
     Result := Format('%g|%g|%s|%s',
@@ -469,7 +472,7 @@ begin
   Result := FSource.Count;
 end;
 
-procedure TListChartSourceStrings.Insert(Index: Integer; const S: string);
+procedure TListChartSourceStrings.Insert(Index: Integer; const S: String);
 var
   item: PChartDataItem;
 begin
@@ -498,7 +501,7 @@ begin
   end;
 end;
 
-procedure TListChartSourceStrings.Put(Index: Integer; const S: string);
+procedure TListChartSourceStrings.Put(Index: Integer; const S: String);
 begin
   Parse(S, FSource[Index]);
 end;
@@ -506,7 +509,7 @@ end;
 { TListChartSource }
 
 function TListChartSource.Add(
-  AX, AY: Double; const ALabel: String; AColor: TColor): Integer;
+  AX, AY: Double; const ALabel: String; AColor: TChartColor): Integer;
 begin
   Result := FData.Count;
   if Sorted then
@@ -520,8 +523,8 @@ begin
   AddAt(Result, AX, AY, ALabel, AColor);
 end;
 
-procedure TListChartSource.AddAt(APos: Integer; AX, AY: Double;
-  const ALabel: String; AColor: TColor);
+procedure TListChartSource.AddAt(
+  APos: Integer; AX, AY: Double; const ALabel: String; AColor: TChartColor);
 var
   pcd: PChartDataItem;
 begin
@@ -781,7 +784,7 @@ begin
   inherited Create(AOwner);
   FCurItem.Color := clTAColor;
   FRNG := TMWCRandomGenerator.Create;
-  RandSeed := GetTickCount;
+  RandSeed := Trunc(Frac(Now) * MaxInt);
 end;
 
 destructor TRandomChartSource.Destroy;

@@ -34,6 +34,7 @@ uses
 const
   CHART_COMPONENT_IDE_PAGE = 'Chart';
   PERCENT = 0.01;
+  clTAColor = $20000000; // = clDefault, but avoiding dependency on Graphics
 
 type
   EChartError = class(Exception);

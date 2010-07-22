@@ -27,7 +27,6 @@ const
   Colors: array [1..15] of TColor = (
     clRed, clGreen, clYellow, clBlue, clWhite, clGray, clFuchsia,
     clTeal, clNavy, clMaroon, clLime, clOlive, clPurple, clSilver, clAqua);
-  clTAColor = clScrollBar;
 
 type
   TPenBrushFont = set of (pbfPen, pbfBrush, pbfFont);
