@@ -391,7 +391,7 @@ begin
   FAxisList := TChartAxisList.Create(Self);
   with TChartAxis.Create(FAxisList) do begin
     Alignment := calLeft;
-    Title.Font.Orientation := FONT_VERTICAL;
+    Title.LabelFont.Orientation := FONT_VERTICAL;
   end;
   with TChartAxis.Create(FAxisList) do
     Alignment := calBottom;

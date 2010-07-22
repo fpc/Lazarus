@@ -26,30 +26,44 @@ uses
   Classes, Graphics, SysUtils, Types,
   TAChartUtils, TASources, TATransformations, TATypes;
 
+const
+  DEF_TICK_LENGTH = 4;
+  DEF_TITLE_DISTANCE = 4;
+
 type
+
+  TChartAxisBrush = class(TBrush)
+  published
+    property Style default bsClear;
+  end;
+
+  TChartAxisFramePen = class(TChartPen)
+  published
+    property Style default psClear;
+  end;
 
   { TChartAxisTitle }
 
-  TChartAxisTitle = class(TChartElement)
+  TChartAxisTitle = class(
+    specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>)
   private
     FCaption: String;
-    FDistance: TChartDistance;
-    FFont: TFont;
 
+    function GetFont: TFont;
     procedure SetCaption(AValue: String);
-    procedure SetDistance(AValue: TChartDistance);
     procedure SetFont(AValue: TFont);
   public
     constructor Create(AOwner: TCustomChart);
-    destructor Destroy; override;
 
   public
     procedure Assign(Source: TPersistent); override;
   published
     property Caption: String read FCaption write SetCaption;
-    property Distance: TChartDistance
-      read FDistance write SetDistance default DEF_TITLE_DISTANCE;
-    property Font: TFont read FFont write SetFont;
+    property Distance default DEF_TITLE_DISTANCE;
+    property LabelBrush;
+     // Use LabelFont instead.
+    property Font: TFont read GetFont write SetFont; deprecated;
+    property Frame;
     property Visible default false;
   end;
 
@@ -67,16 +81,6 @@ type
   TChartAxisPen = class(TChartPen)
   published
     property Style default psDot;
-  end;
-
-  TChartAxisBrush = class(TBrush)
-  published
-    property Style default bsClear;
-  end;
-
-  TChartAxisFramePen = class(TChartPen)
-  published
-    property Style default psClear;
   end;
 
   { TChartAxisMarks }
@@ -99,6 +103,7 @@ type
     property Format stored IsFormatStored;
     property Frame;
     property LabelBrush;
+    property OverlapPolicy;
     property Source: TCustomChartSource read FSource write SetSource;
     property Style default smsValue;
   end;
@@ -202,10 +207,7 @@ type
 implementation
 
 uses
-  LResources, Math, TADrawUtils;
-
-const
-  FONT_SLOPE_VERTICAL = 45 * 10;
+  LResources, Math, PropEdits, TADrawUtils;
 
 var
   VIdentityTransform: TChartAxisTransformations;
@@ -236,10 +238,8 @@ end;
 procedure TChartAxisTitle.Assign(Source: TPersistent);
 begin
   if Source is TChartAxisTitle then
-    with TChartAxisTitle(Source) do begin
+    with TChartAxisTitle(Source) do
       FCaption := Caption;
-      FFont.Assign(Font);
-    end;
   inherited Assign(Source);
 end;
 
@@ -247,32 +247,26 @@ constructor TChartAxisTitle.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FDistance := DEF_TITLE_DISTANCE;
-  InitHelper(FFont, TFont);
+  FFrame.Style := psClear;
+  FLabelBrush.Style := bsClear;
+  FVisible := false;
 end;
 
-destructor TChartAxisTitle.Destroy;
+function TChartAxisTitle.GetFont: TFont;
 begin
-  FreeAndNil(FFont);
-  inherited;
+  Result := LabelFont;
 end;
 
 procedure TChartAxisTitle.SetCaption(AValue: String);
 begin
+  if FCaption = AValue then exit;
   FCaption := AValue;
-  StyleChanged(Self);
-end;
-
-procedure TChartAxisTitle.SetDistance(AValue: TChartDistance);
-begin
-  if FDistance = AValue then exit;
-  FDistance := AValue;
   StyleChanged(Self);
 end;
 
 procedure TChartAxisTitle.SetFont(AValue: TFont);
 begin
-  FFont.Assign(AValue);
-  StyleChanged(Self);
+  LabelFont := AValue;
 end;
 
 { TChartAxisMarks }
@@ -435,31 +429,19 @@ procedure TChartAxis.DrawTitle(
   ACanvas: TCanvas; const ACenter: TPoint; var ARect: TRect);
 var
   p: TPoint;
-  sz: TSize;
-  pbf: TPenBrushFontRecall;
+  dummy: TPointArray = nil;
+  d: Integer;
 begin
   if not Visible or (FTitleSize = 0) then exit;
-  // FIXME: Angle assumed to be either ~0 or ~90 degrees
-  pbf := TPenBrushFontRecall.Create(ACanvas, [pbfFont]);
-  try
-    ACanvas.Font := Title.Font;
-    sz := ACanvas.TextExtent(Title.Caption);
-    if Title.Font.Orientation >= FONT_SLOPE_VERTICAL then begin
-      Exchange(sz.cx, sz.cy);
-      sz.cy := -sz.cy;
-    end;
-    p.X := ACenter.X - sz.cx div 2;
-    p.Y := ACenter.Y - sz.cy div 2;
-    case Alignment of
-      calLeft: p.X := ARect.Left - FTitleSize;
-      calTop: p.Y := ARect.Top - FTitleSize;
-      calRight: p.X := ARect.Right + Title.Distance;
-      calBottom: p.Y := ARect.Bottom + Title.Distance;
-    end;
-    ACanvas.TextOut(p.X, p.Y, Title.Caption);
-  finally
-    pbf.Free;
+  p := ACenter;
+  d := (FTitleSize + Title.Distance) div 2;
+  case Alignment of
+    calLeft: p.X := ARect.Left - d;
+    calTop: p.Y := ARect.Top - d;
+    calRight: p.X := ARect.Right + d;
+    calBottom: p.Y := ARect.Bottom + d;
   end;
+  Title.DrawLabel(ACanvas, p, p, Title.Caption, dummy);
   SideByAlignment(ARect, Alignment, FTitleSize);
 end;
 
@@ -519,7 +501,6 @@ procedure TChartAxis.Measure(
   var
     i: Integer;
     t: String;
-    sz: TSize;
   begin
     Result := Size(0, 0);
     if AMin = AMax then exit;
@@ -533,31 +514,20 @@ procedure TChartAxis.Measure(
       t := FMarkTexts[i];
       if AFirstPass then
         t += SOME_DIGIT;
-      sz := Marks.MeasureLabel(ACanvas, t);
-      Result.cx := Max(sz.cx, Result.cx);
-      Result.cy := Max(sz.cy, Result.cy);
+      with Marks.MeasureLabel(ACanvas, t) do begin
+        Result.cx := Max(cx, Result.cx);
+        Result.cy := Max(cy, Result.cy);
+      end;
     end;
   end;
 
   procedure CalcTitleSize;
   var
-    d: Integer;
     sz: TSize;
-    pbf: TPenBrushFontRecall;
   begin
     if not Title.Visible or (Title.Caption = '') then exit;
-    pbf := TPenBrushFontRecall.Create(ACanvas, [pbfFont]);
-    try
-      ACanvas.Font := Title.Font;
-      sz := ACanvas.TextExtent(Title.Caption);
-    finally
-      pbf.Free;
-    end;
-    if (Title.Font.Orientation < FONT_SLOPE_VERTICAL) = IsVertical then
-      d := sz.cx
-    else
-      d := sz.cy;
-    FTitleSize := d + Title.Distance;
+    sz := Title.MeasureLabel(ACanvas, Title.Caption);
+    FTitleSize := IfThen(IsVertical, sz.cx, sz.cy) + Title.Distance;
   end;
 
 begin
@@ -710,6 +680,8 @@ begin
   RegisterPropertyToSkip(TChartAxis, 'Offset', TRANSFORM_NOTE, '');
   RegisterPropertyToSkip(TChartAxis, 'Scale', TRANSFORM_NOTE, '');
   RegisterPropertyToSkip(TChartAxis, 'Transformation', TRANSFORM_NOTE, '');
+  RegisterPropertyEditor(
+    TypeInfo(TFont), TChartAxisTitle, 'Font', THiddenPropertyEditor);
 end;
 
 initialization

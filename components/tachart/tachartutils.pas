@@ -199,6 +199,8 @@ function IsPolygonIntersectsPolygon(const AP1, AP2: array of TPoint): Boolean;
 function LineIntersectsRect(
   var AA, AB: TDoublePoint; const ARect: TDoubleRect): Boolean;
 
+function MeasureRotatedRect(const ASize: TPoint; AAngle: Double): TSize;
+
 procedure NormalizeRect(var ARect: TRect); overload;
 procedure NormalizeRect(var ARect: TDoubleRect); overload;
 
@@ -553,6 +555,16 @@ begin
     cotBoth: exit(false);
   end;
   Result := true;
+end;
+
+function MeasureRotatedRect(const ASize: TPoint; AAngle: Double): TSize;
+var
+  pt1, pt2: TPoint;
+begin
+  pt1 := RotatePoint(ASize, AAngle);
+  pt2 := RotatePoint(Point(ASize.X, -ASize.Y), AAngle);
+  Result.cx := Max(Abs(pt1.X), Abs(pt2.X));
+  Result.cy := Max(Abs(pt1.Y), Abs(pt2.Y));
 end;
 
 procedure NormalizeRect(var ARect: TRect);

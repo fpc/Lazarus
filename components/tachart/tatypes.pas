@@ -37,8 +37,6 @@ const
   DEF_MARGIN = 4;
   DEF_MARKS_DISTANCE = 20;
   DEF_POINTER_SIZE = 4;
-  DEF_TICK_LENGTH = 4;
-  DEF_TITLE_DISTANCE = 4;
 
 type
   TCustomChart = class(TCustomControl)
@@ -153,19 +151,19 @@ type
     function MeasureLabel(ACanvas: TCanvas; const AText: String): TSize;
 
   public
+    property Format: String read FFormat write SetFormat;
     property Frame: _TFramePen read FFrame write SetFrame;
     property LabelBrush: _TLabelBrush read FLabelBrush write SetLabelBrush;
     property LinkPen: _TLinkPen read FLinkPen write SetLinkPen;
-  published
-    // If false, labels may overlap axises and legend.
-    property Clipped: Boolean read FClipped write SetClipped default true;
-    // Distance between series point and label.
-    property Distance: TChartDistance read FDistance write SetDistance;
-    property Format: String read FFormat write SetFormat;
-    property LabelFont: TFont read FLabelFont write SetLabelFont;
     property OverlapPolicy: TChartMarksOverlapPolicy
       read FOverlapPolicy write SetOverlapPolicy default opIgnore;
     property Style: TSeriesMarksStyle read FStyle write SetStyle;
+  published
+    // If false, labels may overlap axises and legend.
+    property Clipped: Boolean read FClipped write SetClipped default true;
+    // Distance between labelled object and label.
+    property Distance: TChartDistance read FDistance write SetDistance;
+    property LabelFont: TFont read FLabelFont write SetLabelFont;
     property Visible default true;
   end;
 
@@ -187,9 +185,11 @@ type
     constructor Create(AOwner: TCustomChart);
   published
     property Distance default DEF_MARKS_DISTANCE;
+    property Format;
     property Frame;
     property LabelBrush;
     property LinkPen;
+    property OverlapPolicy;
     property Style default smsNone;
   end;
 
@@ -418,12 +418,14 @@ begin
   inherited Assign(Source);
   if Source is Self.ClassType then
     with TGenericChartMarks(Source) do begin
+      Self.FClipped := FClipped;
       Self.FDistance := FDistance;
-      Self.FFrame.Assign(FFrame);
       Self.FFormat := FFormat;
+      Self.FFrame.Assign(FFrame);
       Self.FLabelBrush.Assign(FLabelBrush);
       Self.FLabelFont.Assign(FLabelFont);
       Self.FLinkPen.Assign(FLinkPen);
+      Self.FOverlapPolicy := FOverlapPolicy;
       Self.FStyle := FStyle;
     end;
 end;
@@ -522,19 +524,13 @@ end;
 function TGenericChartMarks.MeasureLabel(
   ACanvas: TCanvas; const AText: String): TSize;
 var
-  pt1, pt2: TPoint;
-  a: Double;
+  sz: TPoint;
 begin
   ACanvas.Font.Assign(LabelFont);
-  pt1 := ACanvas.TextExtent(AText) div 2;
+  sz := ACanvas.TextExtent(AText);
   if IsMarginRequired then
-    pt1 += Point(MARKS_MARGIN_X, MARKS_MARGIN_Y);
-  pt2 := Point(pt1.X, -pt1.Y);
-  a := LabelAngle;
-  pt1 := RotatePoint(pt1, a);
-  pt2 := RotatePoint(pt2, a);
-  Result.cx := Max(Abs(pt1.X), Abs(pt2.X)) * 2;
-  Result.cy := Max(Abs(pt1.Y), Abs(pt2.Y)) * 2;
+    sz += Point(MARKS_MARGIN_X, MARKS_MARGIN_Y) * 2;
+  Result := MeasureRotatedRect(sz, LabelAngle);
 end;
 
 procedure TGenericChartMarks.SetClipped(const AValue: Boolean);
