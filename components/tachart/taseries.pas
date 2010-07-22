@@ -44,7 +44,6 @@ type
 
   TBasicPointSeries = class(TChartSeries)
   private
-    FPrevLabelRect: TRect;
     procedure SetUseReticule(AValue: Boolean);
 
   protected
@@ -679,6 +678,8 @@ end;
 { TBasicPointSeries }
 
 procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas);
+var
+  prevLabelPoly: TPointArray;
 
   procedure DrawLabel(
     const AText: String; const ADataPoint: TPoint; ADir: TLabelDirection);
@@ -686,7 +687,6 @@ procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas);
     OFFSETS: array [TLabelDirection] of TPoint =
       ((X: -1; Y: 0), (X: 0; Y: -1), (X: 1; Y: 0), (X: 0; Y: 1));
   var
-    labelRect: TRect;
     center: TPoint;
     sz: TSize;
   begin
@@ -696,15 +696,7 @@ procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas);
     center := ADataPoint;
     center.X += OFFSETS[ADir].X * (Marks.Distance + sz.cx div 2);
     center.Y += OFFSETS[ADir].Y * (Marks.Distance + sz.cy div 2);
-    with center do
-      labelRect := BoundsSize(X - sz.cx div 2, Y - sz.cy div 2, sz);
-    if Marks.IsLabelHiddenDueToOverlap(FPrevLabelRect, labelRect) then exit;
-
-    // Link between the label and the bar.
-    ACanvas.Pen.Assign(Marks.LinkPen);
-    ACanvas.Line(ADataPoint, center);
-
-    Marks.DrawLabel(ACanvas, labelRect, AText);
+    Marks.DrawLabel(ACanvas, ADataPoint, center, AText, prevLabelPoly);
   end;
 
 var
@@ -791,8 +783,6 @@ begin
       d := IfThen(dir in [ldLeft, ldRight], cx, cy);
     m[dir] := Max(m[dir], d + Marks.Distance + LABEL_TO_BORDER);
   end;
-
-  FPrevLabelRect := Rect(0, 0, 0, 0);
 end;
 
 { TBarSeries }
@@ -969,7 +959,7 @@ var
     SetLength(labelTexts, Count);
     for i := 0 to Count - 1 do begin
       labelTexts[i] := FormattedMark(i);
-      with ACanvas.TextExtent(labelTexts[i]) do begin
+      with Marks.MeasureLabel(ACanvas, labelTexts[i]) do begin
         labelWidths[i] := cx;
         labelHeights[i] := cy;
       end;
@@ -992,9 +982,10 @@ var
 var
   i, radius: Integer;
   prevAngle: Double = 0;
-  angleStep, sliceCenterAngle: Double;
-  a, b, c, center: TPoint;
-  r: TRect;
+  d, angleStep, sliceCenterAngle: Double;
+  c, center: TPoint;
+  sa, ca: Extended;
+  prevLabelPoly: TPointArray = nil;
 const
   RAD_TO_DEG16 = 360 * 16;
 begin
@@ -1023,21 +1014,14 @@ begin
 
     if not Marks.IsMarkLabelsVisible then continue;
 
-    a := LineEndPoint(c, sliceCenterAngle, radius);
-    b := LineEndPoint(c, sliceCenterAngle, radius + Marks.Distance);
-
-    // line from mark to pie
-    ACanvas.Pen.Assign(Marks.LinkPen);
-    ACanvas.Line(a, b);
-
-    if b.x < center.x then
-      b.x -= labelWidths[i];
-    if b.y < center.y then
-      b.y -= labelHeights[i];
-
-    r := Bounds(b.x, b.y, labelWidths[i], labelHeights[i]);
-    InflateRect(r, MARKS_MARGIN_X, MARKS_MARGIN_Y);
-    Marks.DrawLabel(ACanvas, r, labelTexts[i]);
+    // This is a crude approximation of label "radius", it may be improved.
+    SinCos(DegToRad(sliceCenterAngle / 16), sa, ca);
+    d := Max(Abs(labelWidths[i] * ca), Abs(labelHeights[i] * sa)) / 2;
+    Marks.DrawLabel(
+      ACanvas,
+      LineEndPoint(c, sliceCenterAngle, radius),
+      LineEndPoint(c, sliceCenterAngle, radius + Marks.Distance + d),
+      labelTexts[i], prevLabelPoly);
   end;
 end;
 

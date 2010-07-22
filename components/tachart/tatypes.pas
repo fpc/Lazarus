@@ -116,6 +116,8 @@ type
 
   generic TGenericChartMarks<_TLabelBrush, _TLinkPen, _TFramePen> =
     class(TChartElement)
+  private
+    function LabelAngle: Double; inline;
   protected
     FClipped: Boolean;
     FDistance: TChartDistance;
@@ -145,9 +147,8 @@ type
   public
     procedure Assign(Source: TPersistent); override;
     procedure DrawLabel(
-      ACanvas: TCanvas; const ALabelRect: TRect; const AText: String);
-    function IsLabelHiddenDueToOverlap(
-      var APrevLabelRect: TRect; const ALabelRect: TRect): Boolean;
+      ACanvas: TCanvas; const ADataPoint, ALabelCenter: TPoint;
+      const AText: String; var APrevLabelPoly: TPointArray);
     function IsMarkLabelsVisible: Boolean;
     function MeasureLabel(ACanvas: TCanvas; const AText: String): TSize;
 
@@ -277,7 +278,7 @@ type
 implementation
 
 uses
-  TASources;
+  Math, TASources;
 
 { TChartPen }
 
@@ -450,39 +451,54 @@ begin
 end;
 
 procedure TGenericChartMarks.DrawLabel(
-  ACanvas: TCanvas; const ALabelRect: TRect; const AText: String);
+  ACanvas: TCanvas; const ADataPoint, ALabelCenter: TPoint;
+  const AText: String; var APrevLabelPoly: TPointArray);
 var
   wasClipping: Boolean = false;
-  pt: TPoint;
+  labelPoly: TPointArray;
+  ptSize, ptText: TPoint;
+  a: Double;
+  i: Integer;
 begin
+  ACanvas.Font.Assign(LabelFont);
+  ptText := ACanvas.TextExtent(AText);
+  ptSize := ptText;
+  if IsMarginRequired then
+    ptSize += Point(MARKS_MARGIN_X, MARKS_MARGIN_Y) * 2;
+
+  SetLength(labelPoly, 4);
+  labelPoly[0] := -ptSize div 2;
+  labelPoly[2] := labelPoly[0] + ptSize;
+  labelPoly[1] := Point(labelPoly[2].X, labelPoly[0].Y);
+  labelPoly[3] := Point(labelPoly[0].X, labelPoly[2].Y);
+  a := LabelAngle;
+  for i := 0 to High(labelPoly) do
+    labelPoly[i] := RotatePoint(labelPoly[i], a) + ALabelCenter;
+
+  if
+    (OverlapPolicy = opHideNeighbour) and
+    IsPolygonIntersectsPolygon(APrevLabelPoly, labelPoly)
+  then
+    exit;
+  APrevLabelPoly := labelPoly;
+
   if not Clipped and ACanvas.Clipping then begin
     ACanvas.Clipping := false;
     wasClipping := true;
   end;
-  pt := ALabelRect.TopLeft;
-  ACanvas.Font.Assign(LabelFont);
+
+  ACanvas.Pen.Assign(LinkPen);
+  ACanvas.Line(ADataPoint, ALabelCenter);
   ACanvas.Brush.Assign(LabelBrush);
   if IsMarginRequired then begin
     ACanvas.Pen.Assign(Frame);
-    ACanvas.Rectangle(ALabelRect);
-    pt += Point(MARKS_MARGIN_X, MARKS_MARGIN_Y);
+    ACanvas.Polygon(labelPoly);
   end;
-  ACanvas.TextOut(pt.X, pt.Y, AText);
+
+  ptText := RotatePoint(-ptText div 2, a) + ALabelCenter;
+  ACanvas.TextOut(ptText.X, ptText.Y, AText);
   if wasClipping then
     ACanvas.Clipping := true;
-end;
-
-function TGenericChartMarks.IsLabelHiddenDueToOverlap(
-  var APrevLabelRect: TRect; const ALabelRect: TRect): Boolean;
-var
-  dummy: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
-begin
-  Result :=
-    (OverlapPolicy = opHideNeighbour) and
-    not IsRectEmpty(APrevLabelRect) and
-    IntersectRect(dummy, ALabelRect, APrevLabelRect);
-  if not Result then
-    APrevLabelRect := ALabelRect;
 end;
 
 function TGenericChartMarks.IsMarginRequired: Boolean;
@@ -497,15 +513,28 @@ begin
   Result := Visible and (Style <> smsNone) and (Format <> '');
 end;
 
+function TGenericChartMarks.LabelAngle: Double;
+begin
+  // Negate to take into account top-down Y axis.
+  Result := -DegToRad(LabelFont.Orientation / 10);
+end;
+
 function TGenericChartMarks.MeasureLabel(
   ACanvas: TCanvas; const AText: String): TSize;
+var
+  pt1, pt2: TPoint;
+  a: Double;
 begin
   ACanvas.Font.Assign(LabelFont);
-  Result := ACanvas.TextExtent(AText);
-  if IsMarginRequired then begin
-    Result.cx += 2 * MARKS_MARGIN_X;
-    Result.cy += 2 * MARKS_MARGIN_Y;
-  end;
+  pt1 := ACanvas.TextExtent(AText) div 2;
+  if IsMarginRequired then
+    pt1 += Point(MARKS_MARGIN_X, MARKS_MARGIN_Y);
+  pt2 := Point(pt1.X, -pt1.Y);
+  a := LabelAngle;
+  pt1 := RotatePoint(pt1, a);
+  pt2 := RotatePoint(pt2, a);
+  Result.cx := Max(Abs(pt1.X), Abs(pt2.X)) * 2;
+  Result.cy := Max(Abs(pt1.Y), Abs(pt2.Y)) * 2;
 end;
 
 procedure TGenericChartMarks.SetClipped(const AValue: Boolean);

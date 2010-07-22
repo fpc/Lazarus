@@ -361,20 +361,19 @@ procedure TChartAxis.Draw(
   const ATransf: ICoordTransformer; var ARect: TRect);
 
 var
-  prevLabelRect: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
+  prevLabelPoly: TPointArray = nil;
 
-  procedure DrawLabelAndTick(const ALabelRect, ATickRect: TRect; const AText: String);
+  procedure DrawLabelAndTick(
+    const ALabelCenter: TPoint; const ATickRect: TRect; const AText: String);
   begin
-    if Marks.IsLabelHiddenDueToOverlap(prevLabelRect, ALabelRect) then exit;
     PrepareSimplePen(ACanvas, TickColor);
     ACanvas.Line(ATickRect);
-    Marks.DrawLabel(ACanvas, ALabelRect, AText);
+    Marks.DrawLabel(ACanvas, ALabelCenter, ALabelCenter, AText, prevLabelPoly);
   end;
 
   procedure DrawXMark(AY: Integer; AMark: Double; const AText: String);
   var
-    x, t: Integer;
-    sz: TSize;
+    x, d: Integer;
   begin
     x := ATransf.XGraphToImage(AMark);
 
@@ -386,18 +385,17 @@ var
         x, ATransf.YGraphToImage(AExtent.b.Y));
     end;
 
-    sz := Marks.MeasureLabel(ACanvas, AText);
-    t := TickLength + Marks.Distance;
-    t := IfThen(Alignment = calTop, - t - sz.cy, t);
+    d :=
+      TickLength + Marks.Distance + Marks.MeasureLabel(ACanvas, AText).cy div 2;
+    if Alignment = calTop then
+      d := -d;
     DrawLabelAndTick(
-      BoundsSize(x - sz.cx div 2, AY + t, sz),
-      Rect(x, AY - TickLength, x, AY + TickLength), AText);
+      Point(x, AY + d), Rect(x, AY - TickLength, x, AY + TickLength), AText);
   end;
 
   procedure DrawYMark(AX: Integer; AMark: Double; const AText: String);
   var
-    y, t: Integer;
-    sz: TSize;
+    y, d: Integer;
   begin
     y := ATransf.YGraphToImage(AMark);
 
@@ -409,12 +407,12 @@ var
         ATransf.XGraphToImage(AExtent.b.X), y);
     end;
 
-    sz := Marks.MeasureLabel(ACanvas, AText);
-    t := TickLength + Marks.Distance;
-    t := IfThen(Alignment = calLeft, - t - sz.cx, t);
+    d :=
+      TickLength + Marks.Distance + Marks.MeasureLabel(ACanvas, AText).cx div 2;
+    if Alignment = calLeft then
+      d := -d;
     DrawLabelAndTick(
-      BoundsSize(AX + t, y - sz.cy div 2, sz),
-      Rect(AX - TickLength, y, AX + TickLength, y), AText);
+      Point(AX + d, y), Rect(AX - TickLength, y, AX + TickLength, y), AText);
   end;
 
 var
@@ -515,33 +513,30 @@ procedure TChartAxis.Measure(
   ACanvas: TCanvas; const AExtent: TDoubleRect; AFirstPass: Boolean;
   var AMargins: TChartAxisMargins);
 
-const
-  SOME_DIGIT = '0';
-
-  procedure CalcVertSize;
+  function CalcMarksSize(AMin, AMax: Double): TSize;
+  const
+    SOME_DIGIT = '0';
   var
     i: Integer;
+    t: String;
+    sz: TSize;
   begin
-    if AExtent.a.Y = AExtent.b.Y then exit;
-    GetMarkValues(AExtent.a.Y, AExtent.b.Y);
-    FSize := 0;
-    for i := 0 to High(FMarkTexts) do
-      with Marks.MeasureLabel(ACanvas, FMarkTexts[i]) do
-        FSize := Max(cx, FSize);
-    // CalculateTransformationCoeffs changes axis interval, so it is possibile
-    // that a new mark longer then existing ones is introduced.
-    // That will change marks width and reduce view area,
-    // requiring another call to CalculateTransformationCoeffs...
-    // So punt for now and just reserve space for extra digit unconditionally.
-    if AFirstPass then
-      FSize += ACanvas.TextWidth(SOME_DIGIT);
-  end;
-
-  procedure CalcHorSize;
-  begin
-    if AExtent.a.X = AExtent.b.X then exit;
-    GetMarkValues(AExtent.a.X, AExtent.b.X);
-    FSize := Marks.MeasureLabel(ACanvas, SOME_DIGIT).cy;
+    Result := Size(0, 0);
+    if AMin = AMax then exit;
+    GetMarkValues(AMin, AMax);
+    for i := 0 to High(FMarkTexts) do begin
+      // CalculateTransformationCoeffs changes axis interval, so it is possibile
+      // that a new mark longer then existing ones is introduced.
+      // That will change marks width and reduce view area,
+      // requiring another call to CalculateTransformationCoeffs...
+      // So punt for now and just reserve space for extra digit unconditionally.
+      t := FMarkTexts[i];
+      if AFirstPass then
+        t += SOME_DIGIT;
+      sz := Marks.MeasureLabel(ACanvas, t);
+      Result.cx := Max(sz.cx, Result.cx);
+      Result.cy := Max(sz.cy, Result.cy);
+    end;
   end;
 
   procedure CalcTitleSize;
@@ -570,9 +565,9 @@ begin
   FTitleSize := 0;
   if not Visible then exit;
   if IsVertical then
-    CalcVertSize
+    FSize := CalcMarksSize(AExtent.a.Y, AExtent.b.Y).cx
   else
-    CalcHorSize;
+    FSize := CalcMarksSize(AExtent.a.X, AExtent.b.X).cy;
   if FSize > 0 then
     FSize += TickLength + Marks.Distance;
   CalcTitleSize;
