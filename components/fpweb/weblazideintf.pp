@@ -376,6 +376,8 @@ function TFileDescWebDataModule.GetImplementationSource(const Filename, SourceNa
 
 begin
   Result:=Inherited GetImplementationSource(FileName,SourceName,ResourceName);
+  if GetResourceType = rtRes then
+    Result:=Result+'initialization'+LineEnding;
   Result:=Result+'  RegisterHTTPModule(''T'+ResourceName+''',T'+ResourceName+');'+LineEnding;
 end;
 
@@ -392,7 +394,7 @@ end;
 function TFileDescHTMLModule.GetInterfaceUsesSection: string;
 begin
   Result:=inherited GetInterfaceUsesSection;
-  Result:=Result+',LResources,HTTPDefs,websession,fpHTTP,htmlwriter,htmlelements,fphtml';
+  Result:=Result+',HTTPDefs,websession,fpHTTP,htmlwriter,htmlelements,fphtml';
 end;
 
 function TFileDescHTMLModule.GetLocalizedName: string;
@@ -409,6 +411,8 @@ function TFileDescHTMLModule.GetImplementationSource(const Filename, SourceName,
 
 begin
   Result:=Inherited GetImplementationSource(FileName,SourceName,ResourceName);
+  if GetResourceType = rtRes then
+    Result:=Result+'initialization'+LineEnding;
   Result:=Result+'  RegisterHTTPModule(''T'+ResourceName+''',T'+ResourceName+');'+LineEnding;
 end;
 
