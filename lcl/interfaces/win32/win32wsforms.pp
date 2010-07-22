@@ -360,6 +360,7 @@ var
   Params: TCreateWindowExParams;
   lForm: TCustomForm absolute AWinControl;
   Bounds: TRect;
+  SystemMenu: HMenu;
 begin
   // general initialization of Params
   PrepareCreateWindow(AWinControl, AParams, Params);
@@ -403,6 +404,18 @@ begin
   FinishCreateWindow(AWinControl, Params, false);
 
   Result := Params.Window;
+
+  // remove system menu items for bsDialog
+  if lForm.BorderStyle = bsDialog then
+  begin
+    SystemMenu := GetSystemMenu(Result, False);
+    DeleteMenu(SystemMenu, SC_RESTORE, MF_BYCOMMAND);
+    DeleteMenu(SystemMenu, SC_SIZE, MF_BYCOMMAND);
+    DeleteMenu(SystemMenu, SC_MINIMIZE, MF_BYCOMMAND);
+    DeleteMenu(SystemMenu, SC_MAXIMIZE, MF_BYCOMMAND);
+    DeleteMenu(SystemMenu, 1, MF_BYPOSITION); // remove the separator between move and close
+  end;
+
   // Beginning with Windows 2000 the UI in an application may hide focus
   // rectangles and accelerator key indication. According to msdn we need to
   // initialize all root windows with this message
