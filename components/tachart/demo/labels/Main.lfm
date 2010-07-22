@@ -1,42 +1,49 @@
 object Form1: TForm1
   Left = 1326
-  Height = 322
+  Height = 386
   Top = 177
-  Width = 448
+  Width = 496
   Caption = 'Form1'
-  ClientHeight = 322
-  ClientWidth = 448
+  ClientHeight = 386
+  ClientWidth = 496
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object pcMain: TPageControl
     Left = 0
-    Height = 284
+    Height = 336
     Top = 0
-    Width = 448
+    Width = 496
     ActivePage = tsBar
     Align = alClient
     TabIndex = 0
     TabOrder = 0
     object tsBar: TTabSheet
       Caption = 'Bar'
-      ClientHeight = 258
-      ClientWidth = 440
+      ClientHeight = 310
+      ClientWidth = 488
       object Chart1: TChart
         Left = 0
-        Height = 258
+        Height = 310
         Top = 0
-        Width = 440
+        Width = 488
         AxisList = <        
           item
             Alignment = calLeft
             Marks.LabelBrush.Color = clSkyBlue
             Marks.LabelBrush.Style = bsSolid
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'Left axis title'
+            Title.LabelBrush.Style = bsSolid
             Title.Font.Orientation = 900
           end        
           item
             Alignment = calBottom
             Marks.LabelBrush.Color = clSkyBlue
             Marks.LabelBrush.Style = bsSolid
+            Title.Visible = True
+            Title.Caption = 'Bottom axis title'
+            Title.Frame.Style = psSolid
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -59,60 +66,90 @@ object Form1: TForm1
   end
   object pnlControls: TPanel
     Left = 0
-    Height = 38
-    Top = 284
-    Width = 448
+    Height = 50
+    Top = 336
+    Width = 496
     Align = alBottom
     BevelOuter = bvNone
-    ClientHeight = 38
-    ClientWidth = 448
+    ClientHeight = 50
+    ClientWidth = 496
     TabOrder = 1
-    object seAxisAngle: TSpinEdit
-      Left = 72
-      Height = 21
-      Top = 9
-      Width = 50
-      Increment = 5
-      MaxValue = 360
-      MinValue = -360
-      OnChange = seAxisAngleChange
-      TabOrder = 0
-    end
-    object seSeriesAngle: TSpinEdit
-      Left = 216
-      Height = 21
-      Top = 9
-      Width = 50
-      Increment = 5
-      MaxValue = 360
-      MinValue = -360
-      OnChange = seSeriesAngleChange
-      TabOrder = 1
-    end
     object cbHideOverlapping: TCheckBox
-      Left = 300
+      Left = 352
       Height = 17
-      Top = 9
+      Top = 16
       Width = 130
       Caption = 'Hide overlapping labels'
       OnChange = cbHideOverlappingChange
-      TabOrder = 2
+      TabOrder = 0
     end
-    object lblAxisAngle: TLabel
-      Left = 8
-      Height = 14
-      Top = 12
-      Width = 50
-      Caption = 'Axis angle'
-      ParentColor = False
-    end
-    object lblSeriesAngle: TLabel
-      Left = 144
-      Height = 14
-      Top = 12
-      Width = 59
-      Caption = 'Series angle'
-      ParentColor = False
+    object gbAngles: TGroupBox
+      Left = 0
+      Height = 50
+      Top = 0
+      Width = 312
+      Align = alLeft
+      Caption = ' Angles '
+      ClientHeight = 32
+      ClientWidth = 308
+      TabOrder = 1
+      object seAxisAngle: TSpinEdit
+        Left = 32
+        Height = 21
+        Top = 4
+        Width = 50
+        Increment = 5
+        MaxValue = 360
+        MinValue = -360
+        OnChange = seAxisAngleChange
+        TabOrder = 0
+      end
+      object lblAxisAngle: TLabel
+        Left = 6
+        Height = 14
+        Top = 8
+        Width = 21
+        Caption = 'Axis'
+        ParentColor = False
+      end
+      object lblSeriesAngle: TLabel
+        Left = 98
+        Height = 14
+        Top = 8
+        Width = 30
+        Caption = 'Series'
+        ParentColor = False
+      end
+      object seSeriesAngle: TSpinEdit
+        Left = 134
+        Height = 21
+        Top = 4
+        Width = 50
+        Increment = 5
+        MaxValue = 360
+        MinValue = -360
+        OnChange = seSeriesAngleChange
+        TabOrder = 1
+      end
+      object lblTitleAngle: TLabel
+        Left = 202
+        Height = 14
+        Top = 8
+        Width = 21
+        Caption = 'Title'
+        ParentColor = False
+      end
+      object seTitleAngle: TSpinEdit
+        Left = 226
+        Height = 21
+        Top = 4
+        Width = 50
+        Increment = 5
+        MaxValue = 360
+        MinValue = -360
+        OnChange = seTitleAngleChange
+        TabOrder = 2
+      end
     end
   end
   object RandomChartSource1: TRandomChartSource
