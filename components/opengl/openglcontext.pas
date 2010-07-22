@@ -454,11 +454,10 @@ class function TWSOpenGLControl.CreateHandle(const AWinControl: TWinControl;
 var
   OpenGlControl: TCustomOpenGLControl;
   AttrControl: TCustomOpenGLControl;
-  ParentWidgetClass: TWSLCLComponentClass;
 begin
   if csDesigning in AWinControl.ComponentState then begin
-    ParentWidgetClass:=FindWSComponentClass(TWinControl);
-    Result:=TWSWinControlClass(ParentWidgetClass).CreateHandle(AWinControl,AParams);
+    // do not use "inherited CreateHandle", because the LCL changes the hierarchy at run time
+    Result:=TWSWinControlClass(ClassParent).CreateHandle(AWinControl,AParams);
   end
   else begin
     OpenGlControl:=AWinControl as TCustomOpenGLControl;
@@ -474,12 +473,10 @@ begin
 end;
 
 class procedure TWSOpenGLControl.DestroyHandle(const AWinControl: TWinControl);
-var
-  ParentWidgetClass: TWSLCLComponentClass;
 begin
   LOpenGLDestroyContextInfo(AWinControl);
-  ParentWidgetClass:=FindWSComponentClass(TWinControl);
-  TWSWinControlClass(ParentWidgetClass).DestroyHandle(AWinControl);
+  // do not use "inherited DestroyHandle", because the LCL changes the hierarchy at run time
+  TWSWinControlClass(ClassParent).DestroyHandle(AWinControl);
 end;
 
 initialization
