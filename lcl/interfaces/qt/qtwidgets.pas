@@ -7548,8 +7548,12 @@ begin
         else
           ButtonRect.Bottom := R1.Bottom;
 
-        Pt := Point(P.X, P.Y);
+        if ButtonRect.Top = 0 then
+          ButtonRect.Top := R.Top;
+        if ButtonRect.Bottom = 0 then
+          ButtonRect.Bottom := ButtonRect.Top + (R.Bottom - R.Top);
 
+        Pt := Point(P.X, P.Y);
         if PtInRect(ButtonRect, Pt) then
           TCustomComboBox(LCLObject).IntfGetItems;
       end;
