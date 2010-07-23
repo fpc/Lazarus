@@ -29,8 +29,7 @@ begin
   if FDataLink.Field <> nil then begin
     //use the right EditMask if any
     //EditMask := FDataLink.Field.EditMask; doesn't exist yet
-    if Alignment <> FDataLink.Field.Alignment then
-      Alignment := FDataLink.Field.Alignment;
+    Alignment := FDataLink.Field.Alignment;
 
     //if we are focused its possible to edit,
     //if the field is currently modifiable
