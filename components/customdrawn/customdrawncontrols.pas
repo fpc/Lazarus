@@ -159,6 +159,8 @@ procedure TCustomBitmappedButton.DoButtonDown();
 var
   NewState: TBitmappedButtonState;
 begin
+  NewState := FState;
+
   case FState of
   bbsNormal, bbsFocused: NewState := bbsDown;
   //  bbsChecked, bbsCheckedSelected: NewState := bbsCheckedDown;
@@ -175,6 +177,8 @@ procedure TCustomBitmappedButton.DoButtonUp();
 var
   NewState: TBitmappedButtonState;
 begin
+  NewState := FState;
+
   case FState of
   bbsDown:
   begin
@@ -199,13 +203,15 @@ constructor TCustomBitmappedButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  FOptions := [{bboDrawSelectionRectangle}];
-
   FImageBtn := TPicture.Create;
   FImageBtnDown := TPicture.Create;
   FImageBtnMouseOver := TPicture.Create;
   FImageBtnFocused := TPicture.Create;
   FImageBtnChecked := TPicture.Create;
+
+  FOptions := [{bboDrawSelectionRectangle}];
+
+  TabStop := True;
 end;
 
 destructor TCustomBitmappedButton.Destroy;
@@ -232,11 +238,12 @@ end;
 function TCustomBitmappedButton.GetStateBitmap(): TBitmap;
 begin
   case FState of
-  bbsNormal:    Result := FImageBtn.Bitmap;
   bbsDown:      Result := FImageBtnDown.Bitmap;
 //  bbsMouseOver: Result := FImageBtnMouseOver;
   bbsFocused:  Result := FImageBtnFocused.Bitmap;
 //  bbsChecked:   Result := FImageBtnChecked;
+  else
+    Result := FImageBtn.Bitmap;
   end;
 end;
 
