@@ -1325,8 +1325,8 @@ initialization
 
   OSError(
     ATSUCreateStyle(DefaultTextStyle), 'CarbonProc.initialization', SCreateStyle);
-  RGBColorSpace := CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-  GrayColorSpace := CGColorSpaceCreateWithName(kCGColorSpaceGenericGray);
+  RGBColorSpace := CGColorSpaceCreateDeviceRGB;
+  GrayColorSpace := CGColorSpaceCreateDeviceGray;
 
   EventSpec[0].eventClass := kEventClassHIObject;
   EventSpec[0].eventKind := kEventHIObjectConstruct;
