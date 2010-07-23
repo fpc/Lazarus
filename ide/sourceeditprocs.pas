@@ -36,8 +36,9 @@ interface
 uses
   Classes, SysUtils, LCLProc, LCLType, GraphType, Graphics, Controls, SynEdit,
   SynEditHighlighter, SynRegExpr, SynCompletion, BasicCodeTools, CodeTree,
-  CodeAtom, CodeCache, SourceChanger, CodeToolManager, PascalParserTool,
-  KeywordFuncLists, FileProcs, IdentCompletionTool, PascalReaderTool, SourceLog,
+  CodeAtom, CodeCache, SourceChanger, CustomCodeTool, CodeToolManager,
+  PascalParserTool, KeywordFuncLists, FileProcs, IdentCompletionTool,
+  PascalReaderTool, SourceLog,
   LazIDEIntf, TextTools, IDETextConverter, DialogProcs, MainIntf, EditorOptions,
   IDEImagesIntf, CodeToolsOptions;
 
@@ -399,7 +400,11 @@ begin
                 ctnObjCProtocol: s:=s+'objcprotocol';
                 ctnDispinterface: s:=s+'dispinterface';
                 end;
-                IdentItem.Tool.BuildSubTree(ANode);
+                try
+                  IdentItem.Tool.BuildSubTree(ANode);
+                except
+                  on ECodeToolError do ;
+                end;
                 SubNode:=IdentItem.Tool.FindInheritanceNode(ANode);
                 if SubNode<>nil then
                   s:=s+IdentItem.Tool.ExtractNode(SubNode,[]);
