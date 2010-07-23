@@ -70,6 +70,43 @@ BEGIN
     -2, 2, 4, 0x18, 0, 0, 1
 END
 
+// only 1 top-level item
+20004 MENU DISCARDABLE
+BEGIN
+  MENUITEM " ", 1
+END
+
+20004 RCDATA DISCARDABLE
+BEGIN
+    20004, 2,
+    -2, 1, 8, 0x10, 0, 0, 0xFFFF
+END
+
+// only 1 popup
+20005 MENU DISCARDABLE
+BEGIN
+  POPUP "POPUP1"
+  BEGIN
+    MENUITEM "SUB1", 1
+  END
+END
+
+20005 RCDATA DISCARDABLE
+BEGIN
+    20005, 2,
+    -2, 1, 4, 0x18, 0, 0, 0
+END
+
+// no menu
+20006 MENU DISCARDABLE
+BEGIN
+END
+
+20006 RCDATA DISCARDABLE
+BEGIN
+    20006, 2
+END
+
 //*****************************************************
 // Uncomment the line below to run application in real VGA mode
 // HI_RES_AWARE CEUX {1}

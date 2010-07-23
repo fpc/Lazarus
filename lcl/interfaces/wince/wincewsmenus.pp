@@ -86,6 +86,9 @@ const
   MenuBarID_PopUp_Item = 20001;
   MenuBarID_Item_Popup = 20002;
   MenuBarID_Popups = 20003;
+  MenuBarID_1_Item = 20004;
+  MenuBarID_1_Popup = 20005;
+  MenuBarID_Empty = 20006;
   MenuBarID_L = 1;
   MenuBarID_R = 2;
   StartMenuItem = 200;
@@ -140,6 +143,7 @@ var
   LeftMenuCount: Integer = -1;
   RightMenuCount: Integer = -1;
   MenuBarRLID: integer;
+  VisibleTopLevelCount: Integer = 0;
 begin
   {$ifdef VerboseWinCEMenu}
   DebugLn('[CeSetMenu]');
@@ -185,6 +189,8 @@ begin
       begin
         if LCLMenu.Items.Items[j].Visible then
         begin
+          Inc(VisibleTopLevelCount);
+
           if LeftMenuCount = -1 then
             LeftMenuCount := LCLMenu.Items.Items[j].Count
           else if RightMenuCount = -1 then
@@ -194,14 +200,26 @@ begin
       end;
     end;
 
-    if (LeftMenuCount >= 1) and (RightMenuCount >= 1) then
-      mbi.nToolBarId := MenuBarID_Popups
-    else if (LeftMenuCount >= 1) then
-      mbi.nToolBarId := MenuBarID_PopUp_Item
-    else if (RightMenuCount >= 1) then
-      mbi.nToolBarId := MenuBarID_Item_Popup
+    // Chooses the best style
+    if VisibleTopLevelCount = 0 then
+      mbi.nToolBarId := MenuBarID_Empty
+    else if VisibleTopLevelCount = 1 then
+    begin
+      if (LeftMenuCount >= 1) then
+        mbi.nToolBarId := MenuBarID_1_Popup
+      else mbi.nToolBarId := MenuBarID_1_Item;
+    end
     else
-      mbi.nToolBarId := MenuBarID_Items;
+    begin
+      if (LeftMenuCount >= 1) and (RightMenuCount >= 1) then
+        mbi.nToolBarId := MenuBarID_Popups
+      else if (LeftMenuCount >= 1) then
+        mbi.nToolBarId := MenuBarID_PopUp_Item
+      else if (RightMenuCount >= 1) then
+        mbi.nToolBarId := MenuBarID_Item_Popup
+      else
+        mbi.nToolBarId := MenuBarID_Items;
+    end;
 
     if not SHCreateMenuBar(@mbi) then
     begin
@@ -263,7 +281,14 @@ begin
           tbbi.dwMask := TBIF_TEXT or TBIF_COMMAND or TBIF_STATE;
 
           // Without setting idCommand the top-level items don't respond to clicks
-          tbbi.idCommand := StartMenuItem + MenuBarRLID;
+          case mbi.nToolBarId of
+          MenuBarID_Popups:     tbbi.idCommand := MenuBarRLID;
+          MenuBarID_PopUp_Item: tbbi.idCommand := MenuBarRLID;
+          MenuBarID_Item_Popup: tbbi.idCommand := MenuBarRLID;
+          MenuBarID_Items:      tbbi.idCommand := StartMenuItem + MenuBarRLID;
+          MenuBarID_1_Popup:    tbbi.idCommand := MenuBarRLID;
+          MenuBarID_1_Item:     tbbi.idCommand := StartMenuItem + MenuBarRLID;
+          end;
           // Update the MenuItem Command to use latter
           TMenuItemAccess(LCLMenu.Items.Items[j]).FCommand := MenuBarRLID;
 
