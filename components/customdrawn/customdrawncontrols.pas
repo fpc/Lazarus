@@ -19,7 +19,7 @@ uses
 type
 
   // commented items are not yet supported
-  TBitmappedButtonOption = (bboUseAlphaBlending, bboUseImageForSelection
+  TBitmappedButtonOption = (bboUseImageForSelection
     {bboUseImageForMouseOver, bboDrawFocusRectangle,}
     (*bboCheckable,*));
 
@@ -40,27 +40,26 @@ type
     FImageBtnMouseOver: TPicture;
     FImageBtnFocused: TPicture;
     FImageBtnChecked: TPicture;
-    FImageBtnAlpha: TPicture;
     FOptions: TBitmappedButtonOptions;
     FState: TBitmappedButtonState;
     // keyboard
-//    procedure DoEnter; override;
-//    procedure DoExit; override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     // mouse
-    procedure Click; override;
-    procedure DblClick; override;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure MouseEnter; override;
     procedure MouseLeave; override;
+    // button state change
+    procedure DoButtonDown();
+    procedure DoButtonUp();
   protected
     // Properties
     property ImageBtn: TPicture read FImageBtn;
     property ImageBtnDown: TPicture read FImageBtnDown;
     property ImageBtnFocused: TPicture read FImageBtnFocused;
-    property ImageBtnAlpha: TPicture read FImageBtnAlpha;
     property Options: TBitmappedButtonOptions read FOptions write FOptions;
     // Events
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -86,7 +85,6 @@ type
     property ImageBtn;
     property ImageBtnDown;
     property ImageBtnFocused;
-    property ImageBtnAlpha;
     property Options;
     // Events
     property OnChange;
@@ -103,34 +101,67 @@ end;
 
 { TCustomBitmappedButton }
 
+procedure TCustomBitmappedButton.DoEnter;
+begin
+  DoButtonUp();
+
+  inherited DoEnter;
+end;
+
+procedure TCustomBitmappedButton.DoExit;
+begin
+  DoButtonUp();
+
+  inherited DoExit;
+end;
+
 procedure TCustomBitmappedButton.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
+
+  if Key = VK_SPACE then DoButtonDown();
 end;
 
 procedure TCustomBitmappedButton.KeyUp(var Key: Word; Shift: TShiftState);
 begin
+  DoButtonUp();
+
   inherited KeyUp(Key, Shift);
-end;
-
-procedure TCustomBitmappedButton.Click;
-begin
-  inherited Click;
-end;
-
-procedure TCustomBitmappedButton.DblClick;
-begin
-  inherited DblClick;
 end;
 
 procedure TCustomBitmappedButton.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+begin
+  DoButtonDown();
+
+  inherited MouseDown(Button, Shift, X, Y);
+end;
+
+procedure TCustomBitmappedButton.MouseUp(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  DoButtonUp();
+
+  inherited MouseUp(Button, Shift, X, Y);
+end;
+
+procedure TCustomBitmappedButton.MouseEnter;
+begin
+  inherited MouseEnter;
+end;
+
+procedure TCustomBitmappedButton.MouseLeave;
+begin
+  inherited MouseLeave;
+end;
+
+procedure TCustomBitmappedButton.DoButtonDown();
 var
   NewState: TBitmappedButtonState;
 begin
   case FState of
   bbsNormal, bbsFocused: NewState := bbsDown;
-//  bbsChecked, bbsCheckedSelected: NewState := bbsCheckedDown;
+  //  bbsChecked, bbsCheckedSelected: NewState := bbsCheckedDown;
   end;
 
   if NewState <> FState then
@@ -138,12 +169,9 @@ begin
     FState := NewState;
     Invalidate;
   end;
-
-  inherited MouseDown(Button, Shift, X, Y);
 end;
 
-procedure TCustomBitmappedButton.MouseUp(Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TCustomBitmappedButton.DoButtonUp();
 var
   NewState: TBitmappedButtonState;
 begin
@@ -165,18 +193,6 @@ begin
     FState := NewState;
     Invalidate;
   end;
-
-  inherited MouseUp(Button, Shift, X, Y);
-end;
-
-procedure TCustomBitmappedButton.MouseEnter;
-begin
-  inherited MouseEnter;
-end;
-
-procedure TCustomBitmappedButton.MouseLeave;
-begin
-  inherited MouseLeave;
 end;
 
 constructor TCustomBitmappedButton.Create(AOwner: TComponent);
@@ -190,7 +206,6 @@ begin
   FImageBtnMouseOver := TPicture.Create;
   FImageBtnFocused := TPicture.Create;
   FImageBtnChecked := TPicture.Create;
-  FImageBtnAlpha := TPicture.Create;
 end;
 
 destructor TCustomBitmappedButton.Destroy;
@@ -200,7 +215,6 @@ begin
   if Assigned(FImageBtnMouseOver) then FImageBtnMouseOver.Free;
   if Assigned(FImageBtnFocused) then FImageBtnFocused.Free;
   if Assigned(FImageBtnChecked) then FImageBtnChecked.Free;
-  if Assigned(FImageBtnAlpha) then FImageBtnAlpha.Free;
 
   inherited Destroy;
 end;
@@ -211,27 +225,8 @@ begin
 end;
 
 procedure TCustomBitmappedButton.Paint;
-{var
-  lBitmap: TBitmap;
-  lImageIntf, lAlphaIntf: TLazIntfImage;}
 begin
-{  if [bboUseAlphaBlending] in FOptions then
-  begin
-    lBitmap := TBitmap.Create;
-    lImageIntf := TLazIntfImage.Create(0, 0);
-    lAlphaIntf := TLazIntfImage.Create(0, 0);
-    try
-      lImageIntf.LoadFromBitmap(lBitmap.Handle, lBitmap.MaskHandle);
-      lImageIntf
-      Canvas.Draw(0, 0, lBitmap);
-    finally
-      lBitmap.Free;
-      lImageIntf.Free;
-      lAlphaIntf.Free;
-    end;
-  end
-  else}
-    Canvas.Draw(0, 0, GetStateBitmap());
+  Canvas.Draw(0, 0, GetStateBitmap());
 end;
 
 function TCustomBitmappedButton.GetStateBitmap(): TBitmap;
