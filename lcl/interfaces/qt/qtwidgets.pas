@@ -7528,33 +7528,12 @@ begin
           opt, QStyleSC_ComboBoxArrow, QComboBoxH(Widget));
         QStyleOptionComboBox_destroy(opt);
 
-
-        if R1.Left < 0 then
-          ButtonRect.Left := R.Right - R.Left - (-R1.Left)
-        else
-          ButtonRect.Left := R1.Left;
-
-        if R1.Top < 0 then
-          ButtonRect.Top := R.Top + (-R1.Top)
-        else
-          ButtonRect.Top := R.Top + R1.Top;
-
-        if R1.Right < 0 then
-          ButtonRect.Right := R.Right - R.Left - (-R1.Right)
-        else
-          ButtonRect.Right := R1.Right;
-
-        if R1.Bottom < 0 then
-          ButtonRect.Bottom := R.Bottom - (-R1.Bottom)
-        else
-          ButtonRect.Bottom := R.Bottom - R1.Bottom;
-
-        if ButtonRect.Top = 0 then
-          ButtonRect.Top := R.Top;
-        if ButtonRect.Bottom = 0 then
-          ButtonRect.Bottom := ButtonRect.Top + (R.Bottom - R.Top);
-
         Pt := Point(P.X, P.Y);
+
+        R := Rect(0, 0, R.Right - R.Left, R.Bottom - R.Top);
+        ButtonRect := Rect(R.Right + R1.Left, R.Top,
+          R.Right - R1.Right, R.Bottom);
+
         if PtInRect(ButtonRect, Pt) then
           TCustomComboBox(LCLObject).IntfGetItems;
       end;
