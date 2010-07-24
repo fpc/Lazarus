@@ -705,6 +705,7 @@ procedure TPascalParserTool.BuildSubTreeForClass(ClassNode: TCodeTreeNode);
 
   procedure RaiseClassDescInvalid;
   begin
+    MoveCursorToNodeStart(ClassNode);
     RaiseException('[TPascalParserTool.BuildSubTreeForClass] ClassNode.Desc='
                    +ClassNode.DescAsString,true);
   end;
