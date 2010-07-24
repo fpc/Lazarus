@@ -265,9 +265,12 @@ var
   aUnitName: String;
   Cnt: Integer;
   Filename: String;
+  SourceCache: TFPCSourceCache;
+  i: Integer;
 begin
   UnitToSrc:=UnitSet.GetUnitToSourceTree(false);
   ConfigCache:=UnitSet.GetConfigCache(false);
+  SourceCache:=UnitSet.GetSourceCache(false);
   if ConfigCache.Units<>nil then begin
     Cnt:=0;
     Node:=ConfigCache.Units.Tree.FindLowest;
@@ -281,6 +284,11 @@ begin
           inc(Cnt);
           if Cnt=1 then writeln;
           writeln('WARNING: no source found for PPU file: '+Filename);
+          for i:=0 to SourceCache.Files.Count-1 do begin
+            if SysUtils.CompareText(ExtractFileNameOnly(SourceCache.Files[i]),aUnitName)=0
+            then
+              writeln('      Candidate: ',SourceCache.Files[i]);
+          end;
         end;
       end;
       Node:=ConfigCache.Units.Tree.FindSuccessor(Node);
