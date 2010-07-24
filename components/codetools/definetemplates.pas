@@ -1480,6 +1480,7 @@ begin
                             UnitPaths,Defines,Undefines);
   finally
     List.Free;
+    DeleteFileUTF8(TestFilename);
   end;
 end;
 
