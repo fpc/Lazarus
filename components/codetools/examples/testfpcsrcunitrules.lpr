@@ -28,7 +28,8 @@ program TestFPCSrcUnitRules;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CustApp, CodeToolManager, DefineTemplates, FileProcs;
+  Classes, SysUtils, CustApp, AVL_Tree, CodeToolManager, DefineTemplates,
+  FileProcs, CodeToolsStructs;
 
 const
   ConfigFilename = 'codetools.config';
@@ -45,6 +46,7 @@ type
     procedure WriteHelp; virtual;
     procedure Error(Msg: string; DoWriteHelp: Boolean);
     procedure WriteCompilerInfo(ConfigCache: TFPCTargetConfigCache);
+    procedure WriteDuplicatesInPPUPath(ConfigCache: TFPCTargetConfigCache);
   end;
 
 { TMyApplication }
@@ -103,6 +105,7 @@ begin
 
   WriteCompilerInfo(ConfigCache);
 
+  WriteDuplicatesInPPUPath(ConfigCache);
 
   SourceCache:=UnitSet.GetSourceCache(true);
 
@@ -164,6 +167,73 @@ begin
       writeln('Config=',CfgFile.Filename,' Exists=',CfgFile.FileExists);
     end;
   end;
+end;
+
+procedure TTestFPCSourceUnitRules.WriteDuplicatesInPPUPath(
+  ConfigCache: TFPCTargetConfigCache);
+var
+  i: Integer;
+  Directory: String;
+  FileInfo: TSearchRec;
+  ShortFilename: String;
+  Filename: String;
+  Ext: String;
+  LowerUnitname: String;
+  SearchPaths: TStrings;
+  IsSource: Boolean;
+  IsPPU: Boolean;
+  SourceFiles: TStringList;
+  Units: TStringToStringTree;
+  Item: PStringToStringTreeItem;
+  Node: TAVLTreeNode;
+begin
+  SearchPaths:=ConfigCache.UnitPaths;
+  if SearchPaths=nil then exit;
+  SourceFiles:=TStringList.Create;
+  Units:=TStringToStringTree.Create(false);
+  for i:=SearchPaths.Count-1 downto 0 do begin
+    Directory:=CleanAndExpandDirectory(SearchPaths[i]);
+    if FindFirstUTF8(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
+      repeat
+        ShortFilename:=FileInfo.Name;
+        if (ShortFilename='') or (ShortFilename='.') or (ShortFilename='..') then
+          continue;
+        Filename:=Directory+ShortFilename;
+        Ext:=LowerCase(ExtractFileExt(ShortFilename));
+        IsSource:=(Ext='.pas') or (Ext='.pp') or (Ext='.p');
+        IsPPU:=(Ext='.ppu');
+        if IsSource then
+          SourceFiles.Add(Filename);
+        if IsSource or IsPPU then begin
+          LowerUnitname:=lowercase(ExtractFileNameOnly(Filename));
+          if Units.Contains(LowerUnitname) then
+            Units[LowerUnitname]:=Units[LowerUnitname]+';'+Filename
+          else
+            Units[LowerUnitname]:=Filename;
+        end;
+      until FindNextUTF8(FileInfo)<>0;
+    end;
+    FindCloseUTF8(FileInfo);
+  end;
+  if SourceFiles.Count<>0 then begin
+    // source files in PPU search path
+    writeln;
+    writeln('WARNING: source files found in PPU search paths:');
+    writeln(SourceFiles.Text);
+    writeln;
+  end;
+  Node:=Units.Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToStringTreeItem(Node.Data);
+    Filename:=Item^.Value;
+    if System.Pos(';',Filename)>0 then begin
+      // duplicate units
+      writeln('WARNING: duplicate unit in PPU path: '+Filename);
+    end;
+    Node:=Units.Tree.FindSuccessor(Node);
+  end;
+  Units.Free;
+  SourceFiles.Free;
 end;
 
 var
