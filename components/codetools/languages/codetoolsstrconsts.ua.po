@@ -354,6 +354,10 @@ msgstr ""
 msgid "gtk2 interface directory"
 msgstr "тека інтерфейсу gtk2"
 
+#: codetoolsstrconsts.ctshaserror
+msgid "HasError"
+msgstr ""
+
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "Тека IDE"

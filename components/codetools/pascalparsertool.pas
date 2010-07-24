@@ -718,17 +718,19 @@ procedure TPascalParserTool.BuildSubTreeForClass(ClassNode: TCodeTreeNode);
   
 var OldPhase: integer;
 begin
-  if (ClassNode.SubDesc and ctnsNeedJITParsing)=0 then
-    // class already parsed
-    exit;
   if not (ClassNode.Desc in AllClassObjects) then
     RaiseClassDescInvalid;
+  if (ClassNode.SubDesc and ctnsNeedJITParsing)=0 then begin
+    // class already parsed
+    if (ctnsHasParseError and ClassNode.SubDesc)>0 then
+      RaiseNodeParserError(ClassNode);
+    exit;
+  end;
   // avoid endless loop
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
   try
-    if (ctnsHasParseError and ClassNode.SubDesc)>0 then
-      RaiseNodeParserError(ClassNode);
+    ClassNode.SubDesc:=ClassNode.SubDesc and (not ctnsNeedJITParsing);
     // set CursorPos after class head
     MoveCursorToNodeStart(ClassNode);
     // parse
@@ -746,7 +748,7 @@ begin
     then
       RaiseClassKeyWordExpected;
     ReadNextAtom;
-    // parse modifiers                              :
+    // parse modifiers
     if CurPos.Flag=cafWord then begin
       if UpAtomIs('SEALED') then begin
         while UpAtomIs('SEALED') do begin
@@ -792,7 +794,6 @@ begin
     CurNode.EndPos:=CurPos.StartPos;
     EndChildNode;
     CurrentPhase:=OldPhase;
-    ClassNode.SubDesc:=ClassNode.SubDesc and (not ctnsNeedJITParsing);
   except
     CurrentPhase:=OldPhase;
     {$IFDEF ShowIgnoreErrorAfter}
@@ -827,15 +828,17 @@ begin
     RaiseException(
        'TPascalParserTool.BuildSubTreeForBeginBlock: BeginNode.Desc='
        +BeginNode.DescAsString);
-  if (BeginNode.SubDesc and ctnsNeedJITParsing)=0 then
+  if (BeginNode.SubDesc and ctnsNeedJITParsing)=0 then begin
     // block already parsed
+    if (ctnsHasParseError and BeginNode.SubDesc)>0 then
+      RaiseNodeParserError(BeginNode);
     exit;
+  end;
 
   OldPhase:=CurrentPhase;
   CurrentPhase:=CodeToolPhaseParse;
   try
-    if (ctnsHasParseError and BeginNode.SubDesc)>0 then
-      RaiseNodeParserError(BeginNode);
+    BeginNode.SubDesc:=BeginNode.SubDesc and (not ctnsNeedJITParsing);
     // set CursorPos on 'begin'
     MoveCursorToNodeStart(BeginNode);
     ReadNextAtom;
@@ -855,7 +858,6 @@ begin
         ReadWithStatement(true,true);
     until (CurPos.StartPos>=MaxPos);
     CurrentPhase:=OldPhase;
-    BeginNode.SubDesc:=BeginNode.SubDesc and (not ctnsNeedJITParsing);
   except
     CurrentPhase:=OldPhase;
     {$IFDEF ShowIgnoreErrorAfter}
@@ -4904,13 +4906,16 @@ begin
   end;
   ProcHeadNode:=ProcNode.FirstChild;
   if (ProcHeadNode<>nil)
-  and ((ProcHeadNode.SubDesc and ctnsNeedJITParsing)=0) then exit;
-  OldPhase:=CurrentPhase;
-  CurrentPhase:=CodeToolPhaseParse;
-  try
+  and ((ProcHeadNode.SubDesc and ctnsNeedJITParsing)=0) then begin
+    // proc head already parsed
     if (ProcHeadNode<>nil) and ((ctnsHasParseError and ProcHeadNode.SubDesc)>0)
     then
       RaiseNodeParserError(ProcHeadNode);
+    exit;
+  end;
+  OldPhase:=CurrentPhase;
+  CurrentPhase:=CodeToolPhaseParse;
+  try
     IsMethod:=ProcNode.Parent.Desc in (AllClasses+AllClassSections);
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
@@ -4927,6 +4932,8 @@ begin
         RaiseCharExpectedButAtomFound(';')
       else
         RaiseStringExpectedButAtomFound('identifier');
+    ProcHeadNode.SubDesc:=ProcHeadNode.SubDesc and (not ctnsNeedJITParsing);
+
     if not IsProcType then begin
       if not IsOperator then AtomIsIdentifier(true);
       ReadNextAtom;
@@ -4946,7 +4953,6 @@ begin
     if IsProcType then Include(ParseAttr,pphIsType);
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
     CurrentPhase:=OldPhase;
-    ProcHeadNode.SubDesc:=ProcHeadNode.SubDesc and (not ctnsNeedJITParsing);
   except
     CurrentPhase:=OldPhase;
     {$IFDEF ShowIgnoreErrorAfter}
@@ -5020,10 +5026,13 @@ begin
   while NodeNeedsBuildSubTree(Result) do begin
     BuildSubTree(Result);
     Node:=FindDeepestNodeAtPos(Result,P,ExceptionOnNotFound);
-    if Node=Result then exit;
+    if Node=Result then break;
     Result:=Node;
     //debugln('TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos B ',Result.DescAsString,' ',dbgs(NodeNeedsBuildSubTree(Result)));
   end;
+  // re-raise parse errors
+  if (Result<>nil) and ((ctnsHasParseError and Result.SubDesc)>0) then
+    RaiseNodeParserError(Result);
 end;
 
 function TPascalParserTool.FindInterfaceNode: TCodeTreeNode;

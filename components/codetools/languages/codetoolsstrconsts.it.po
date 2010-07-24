@@ -358,6 +358,10 @@ msgstr "identificatore generico"
 msgid "gtk2 interface directory"
 msgstr "gtk2 directory di interfaccia"
 
+#: codetoolsstrconsts.ctshaserror
+msgid "HasError"
+msgstr ""
+
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "Directory dell'IDE"

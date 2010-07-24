@@ -361,6 +361,10 @@ msgstr "obecný identifikátor"
 msgid "gtk2 interface directory"
 msgstr "adresář rozhraní gtk2"
 
+#: codetoolsstrconsts.ctshaserror
+msgid "HasError"
+msgstr ""
+
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "Adresář IDE"

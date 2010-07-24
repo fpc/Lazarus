@@ -362,6 +362,10 @@ msgstr "通用标识符"
 msgid "gtk2 interface directory"
 msgstr "gtk2 接口目录"
 
+#: codetoolsstrconsts.ctshaserror
+msgid "HasError"
+msgstr ""
+
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr "IDE 目录"

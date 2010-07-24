@@ -336,7 +336,8 @@ type
       const ErrorCleanPos: integer;
       const ErrorNiceCleanPos: TCodeXYPosition
       ): TCodeTreeNodeParseError;
-    procedure RaiseNodeParserError(Node: TCodeTreeNode);
+    procedure RaiseNodeParserError(Node: TCodeTreeNode;
+      CheckIgnoreErrorPos: boolean = true);
     property OnParserProgress: TOnParserProgress
       read FOnParserProgress write FOnParserProgress;
 
@@ -585,6 +586,7 @@ begin
       if (SubDesc and ctnsNeedJITParsing)>0 then Result:=Result+ctsUnparsed;
     end;
   end;
+  if (SubDesc and ctnsHasParseError)>0 then Result:=Result+','+ctsHasError;
 end;
 
 function TCustomCodeTool.AtomIs(const AnAtom: shortstring): boolean;
@@ -1975,13 +1977,15 @@ begin
   Result.NicePos:=ErrorNiceCleanPos;
 end;
 
-procedure TCustomCodeTool.RaiseNodeParserError(Node: TCodeTreeNode);
+procedure TCustomCodeTool.RaiseNodeParserError(Node: TCodeTreeNode;
+  CheckIgnoreErrorPos: boolean);
 var
   NodeError: TCodeTreeNodeParseError;
 begin
   //debugln(['TCustomCodeTool.SetNodeParserError ',Node.DescAsString,' ',(ctnsHasParseError and Node.SubDesc)>0]);
   if (ctnsHasParseError and Node.SubDesc)=0 then exit;
   NodeError:=GetNodeParserError(Node);
+  if CleanPosIsAfterIgnorePos(NodeError.CleanPos) then exit;
   //debugln(['TCustomCodeTool.RaiseNodeParserError ',Node.DescAsString,' Msg="',NodeError.Msg,'" ',CleanPosToStr(NodeError.CleanPos)]);
   MoveCursorToCleanPos(NodeError.CleanPos);
   ErrorNicePosition:=NodeError.NicePos;

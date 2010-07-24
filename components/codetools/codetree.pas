@@ -196,10 +196,10 @@ const
 
   // CodeTreeNodeSubDescriptors
   ctnsNone                = 0;
-  ctnsForwardDeclaration  = 1 shl 0;
   ctnsNeedJITParsing      = 1 shl 1;
   ctnsHasParseError       = 1 shl 2;
-  ctnsHasDefaultValue     = 1 shl 3;
+  ctnsForwardDeclaration  = 1 shl 3;
+  ctnsHasDefaultValue     = 1 shl 4;
 
   ClassSectionNodeType: array[TPascalClassSection] of TCodeTreeNodeDesc = (
     ctnClassPrivate,

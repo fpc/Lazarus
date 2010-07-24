@@ -38,7 +38,8 @@ ResourceString
   ctsUnknownSubDescriptor = '(unknown subdescriptor %s)';
   ctsForward = 'Forward';
   ctsUnparsed = 'Unparsed';
-  
+  ctsHasError = 'HasError';
+
   // linkscanner
   ctsInvalidFlagValueForDirective = 'invalid flag value "%s" for directive %s';
   ctsInvalidMode = 'invalid mode "%s"';

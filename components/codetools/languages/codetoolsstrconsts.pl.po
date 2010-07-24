@@ -363,6 +363,10 @@ msgstr ""
 msgid "gtk2 interface directory"
 msgstr "katalog interfejsu gtk2"
 
+#: codetoolsstrconsts.ctshaserror
+msgid "HasError"
+msgstr ""
+
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
 msgstr ""
