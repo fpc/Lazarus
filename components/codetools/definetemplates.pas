@@ -5941,12 +5941,10 @@ begin
       d(LazarusSrcDir+'/ide;'
        +LazarusSrcDir+'/ide/frames;'
        +LazarusSrcDir+'/designer;'
-       +LazarusSrcDir+'/designer/jitform;'
        +LazarusSrcDir+'/debugger;'
        +LazarusSrcDir+'/debugger/frames;'
        +LazarusSrcDir+'/converter;'
        +LazarusSrcDir+'/packager;'
-       +LazarusSrcDir+'/packager/frames;'
        +LazarusSrcDir+'/packager/registration;'
        +LazarusSrcDir+'/components/custom;'
        +LazarusSrcDir+'/components/mpaslex;')

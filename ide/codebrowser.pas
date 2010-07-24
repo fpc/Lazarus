@@ -1452,7 +1452,8 @@ var
       DebugLn(['AddFilesOfIDE WARNING: codetools define templates for src path of lazarus ide directory not found']);
       exit;
     end;
-    SrcPath:=LazIDESrcPath.Value;
+    SrcPath:=StringReplace(LazIDESrcPath.Value,'$(#LazarusDir)',LazDir,
+                           [rfReplaceAll, rfIgnoreCase]);
     AddFilesOfSearchPath(SrcPath+';.',LazDir+'ide'+PathDelim,true);
   end;
 
