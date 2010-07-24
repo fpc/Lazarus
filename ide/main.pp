@@ -1022,8 +1022,8 @@ type
     procedure DoShowSourceOfActiveDesignerForm;
     procedure SetDesigning(AComponent: TComponent; Value: Boolean);
     procedure SetDesignInstance(AComponent: TComponent; Value: Boolean);
-    procedure CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
-                                         AComponent: TComponent);
+    function CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
+                                         AComponent: TComponent): TCustomForm;
     procedure InvalidateAllDesignerForms;
     procedure UpdateIDEComponentPalette;
     procedure ShowDesignerForm(AForm: TCustomForm);
@@ -3259,8 +3259,8 @@ begin
   end;
 end;
 
-procedure TMainIDE.CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
-  AComponent: TComponent);
+function TMainIDE.CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
+  AComponent: TComponent): TCustomForm;
 var
   DesignerForm: TCustomForm;
 begin
@@ -3272,6 +3272,7 @@ begin
     DesignerForm := TCustomForm(AComponent)
   else
     DesignerForm := FormEditor1.CreateNonFormForm(AComponent);
+  Result:=DesignerForm;
   // set component and designer form into design mode (csDesigning)
   SetDesigning(AComponent, True);
   if AComponent <> DesignerForm then
@@ -6162,12 +6163,14 @@ begin
   DesignerForm := nil;
   if not (ofLoadHiddenResource in OpenFlags) then
   begin
-    CreateDesignerForComponent(AnUnitInfo,NewComponent);
     DesignerForm := FormEditor1.GetDesignerForm(NewComponent);
+    if DesignerForm=nil then
+      DesignerForm := CreateDesignerForComponent(AnUnitInfo,NewComponent);
   end;
 
   // select the new form (object inspector, formeditor, control selection)
-  if ([ofProjectLoading,ofLoadHiddenResource] * OpenFlags=[]) then
+  if (DesignerForm <> nil)
+  and ([ofProjectLoading,ofLoadHiddenResource] * OpenFlags=[]) then
   begin
     FDisplayState := dsForm;
     GlobalDesignHook.LookupRoot := NewComponent;
