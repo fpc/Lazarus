@@ -601,6 +601,18 @@ msgstr ""
 msgid "Code Creation"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcodefoldenableboth
+msgid "Both"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcodefoldenablefold
+msgid "Fold"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcodefoldenablehide
+msgid "Hide"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcodefoldingmouse
 msgctxt "lazarusidestrconsts.dlgcodefoldingmouse"
 msgid "Mouse"
@@ -3403,6 +3415,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddtoincludesearchpath
+msgid "Add to include search path?"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddtoproject
@@ -11379,14 +11395,6 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: lazarusidestrconsts.lispleasecheckthecompilername
-msgid "Please check the compiler name"
-msgstr ""
-
-#: lazarusidestrconsts.lispleasecheckthefpcsourcedirectory
-msgid "Please check the freepascal source directory"
-msgstr ""
-
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr ""
@@ -12780,6 +12788,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
+msgstr ""
+
+#: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
+msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
 msgstr ""
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory

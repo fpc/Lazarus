@@ -605,6 +605,18 @@ msgstr "תוספת נתיב למנפה השגיאות (none):"
 msgid "Code Creation"
 msgstr "יצירת קוד"
 
+#: lazarusidestrconsts.dlgcodefoldenableboth
+msgid "Both"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcodefoldenablefold
+msgid "Fold"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcodefoldenablehide
+msgid "Hide"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcodefoldingmouse
 msgctxt "lazarusidestrconsts.dlgcodefoldingmouse"
 msgid "Mouse"
@@ -3418,6 +3430,10 @@ msgstr "הוסף חבילה לפרוייקט"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "הוסף סוגריים של פרמטר"
+
+#: lazarusidestrconsts.lisaddtoincludesearchpath
+msgid "Add to include search path?"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
@@ -11414,14 +11430,6 @@ msgstr "הראה קישורי משתמש"
 msgid "User"
 msgstr "משתמש"
 
-#: lazarusidestrconsts.lispleasecheckthecompilername
-msgid "Please check the compiler name"
-msgstr "אנא בדוק את שם המהדר"
-
-#: lazarusidestrconsts.lispleasecheckthefpcsourcedirectory
-msgid "Please check the freepascal source directory"
-msgstr "אנא בדוק את ספריית קוד המקור של freepascal"
-
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "אנא פתח יחידה לפני הרצה."
@@ -12822,6 +12830,10 @@ msgstr "קובץ ה LFM (טופס לזארוס) מכיל תכונות לא חו�
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
 msgstr "השם %s%s%s אינו שם חוקי למזהה פסקל."
+
+#: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
+msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+msgstr ""
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"

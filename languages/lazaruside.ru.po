@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-16 02:54+0300\n"
+"PO-Revision-Date: 2010-07-25 02:57+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -615,6 +615,18 @@ msgstr "Дополнения к путям отладчика (нет):"
 #: lazarusidestrconsts.dlgcodecreation
 msgid "Code Creation"
 msgstr "Создание кода"
+
+#: lazarusidestrconsts.dlgcodefoldenableboth
+msgid "Both"
+msgstr "Сворачивать и скрывать"
+
+#: lazarusidestrconsts.dlgcodefoldenablefold
+msgid "Fold"
+msgstr "Сворачивать"
+
+#: lazarusidestrconsts.dlgcodefoldenablehide
+msgid "Hide"
+msgstr "Скрывать"
 
 #: lazarusidestrconsts.dlgcodefoldingmouse
 msgctxt "lazarusidestrconsts.dlgcodefoldingmouse"
@@ -3454,6 +3466,10 @@ msgstr "Добавить пакет к проекту"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "Добавлять скобки для параметров"
+
+#: lazarusidestrconsts.lisaddtoincludesearchpath
+msgid "Add to include search path?"
+msgstr "Добавить к путям поиска включаемых файлов?"
 
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
@@ -11457,14 +11473,6 @@ msgstr "Показывать пользовательские ссылки"
 msgid "User"
 msgstr "Пользовательские"
 
-#: lazarusidestrconsts.lispleasecheckthecompilername
-msgid "Please check the compiler name"
-msgstr "Проверьте имя компилятора"
-
-#: lazarusidestrconsts.lispleasecheckthefpcsourcedirectory
-msgid "Please check the freepascal source directory"
-msgstr "Проверьте каталог исходного кода FreePascal"
-
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "Откройте модуль перед запуском."
@@ -12865,6 +12873,10 @@ msgstr "LFM-файл (файл формы Lazarus) содержит некорр
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
 msgstr "Имя %s%s%s - неверный идентификатор Паскаля."
+
+#: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
+msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+msgstr "Путь к новому включаемому файлу отсутствует в списке путей поиска включаемых файлов.%sДобавить каталог %s?"
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"

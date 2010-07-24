@@ -602,6 +602,18 @@ msgstr "デバッガパス追加(なし):"
 msgid "Code Creation"
 msgstr "コード作成"
 
+#: lazarusidestrconsts.dlgcodefoldenableboth
+msgid "Both"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcodefoldenablefold
+msgid "Fold"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcodefoldenablehide
+msgid "Hide"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcodefoldingmouse
 msgctxt "lazarusidestrconsts.dlgcodefoldingmouse"
 msgid "Mouse"
@@ -3447,6 +3459,10 @@ msgstr ""
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "パラメータの括弧を追加"
+
+#: lazarusidestrconsts.lisaddtoincludesearchpath
+msgid "Add to include search path?"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
@@ -11468,14 +11484,6 @@ msgstr "ユーザーリンクを表示"
 msgid "User"
 msgstr "ユーザー"
 
-#: lazarusidestrconsts.lispleasecheckthecompilername
-msgid "Please check the compiler name"
-msgstr "コンパイラ名をチェックしてください"
-
-#: lazarusidestrconsts.lispleasecheckthefpcsourcedirectory
-msgid "Please check the freepascal source directory"
-msgstr "Free Pascalのソースディレクトリをチェックしてください"
-
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "実行する前にユニットを開いて下さい。"
@@ -12876,6 +12884,10 @@ msgstr "そのLFM(Lazarus form)は無効なプロパティを含んでいます�
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
 msgstr "その名前%s%s%sは有効なpascal識別子ではありません。"
+
+#: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
+msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+msgstr ""
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"

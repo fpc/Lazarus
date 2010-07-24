@@ -601,6 +601,18 @@ msgstr "Debugger pad toevoeging (geen):"
 msgid "Code Creation"
 msgstr "Codecreatie"
 
+#: lazarusidestrconsts.dlgcodefoldenableboth
+msgid "Both"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcodefoldenablefold
+msgid "Fold"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcodefoldenablehide
+msgid "Hide"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcodefoldingmouse
 msgctxt "lazarusidestrconsts.dlgcodefoldingmouse"
 msgid "Mouse"
@@ -3441,6 +3453,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddtoincludesearchpath
+msgid "Add to include search path?"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddtoproject
@@ -11455,14 +11471,6 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: lazarusidestrconsts.lispleasecheckthecompilername
-msgid "Please check the compiler name"
-msgstr "Controleer compiler naam"
-
-#: lazarusidestrconsts.lispleasecheckthefpcsourcedirectory
-msgid "Please check the freepascal source directory"
-msgstr "Controleer de FP bron directory"
-
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "A.u.b. een unit openen .."
@@ -12863,6 +12871,10 @@ msgstr "Het LFM (Lazarus form) bestand bevat ongeldige properties. Dit kan betek
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
 msgstr "De naam %s%s%s is geen geldige pascal identifier."
+
+#: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
+msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+msgstr ""
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"

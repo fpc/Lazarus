@@ -601,6 +601,18 @@ msgstr "Afegeix la trajectòria addicional del depurador (cap):"
 msgid "Code Creation"
 msgstr "Creació del codi"
 
+#: lazarusidestrconsts.dlgcodefoldenableboth
+msgid "Both"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcodefoldenablefold
+msgid "Fold"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcodefoldenablehide
+msgid "Hide"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcodefoldingmouse
 msgctxt "lazarusidestrconsts.dlgcodefoldingmouse"
 msgid "Mouse"
@@ -3439,6 +3451,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddtoincludesearchpath
+msgid "Add to include search path?"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddtoproject
@@ -11449,14 +11465,6 @@ msgstr ""
 msgid "User"
 msgstr ""
 
-#: lazarusidestrconsts.lispleasecheckthecompilername
-msgid "Please check the compiler name"
-msgstr "Si us plau, comproveu el nom del compilador"
-
-#: lazarusidestrconsts.lispleasecheckthefpcsourcedirectory
-msgid "Please check the freepascal source directory"
-msgstr "Si us plau, comproveu el directori del codi font de FreePascal"
-
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr "Si us plau, obriu una unitat abans d'executar."
@@ -12855,6 +12863,10 @@ msgstr "El fitxer LFM (Lazarus Form) conté propietats no vàlides. Això vol di
 #: lazarusidestrconsts.listhenameisnotavalidpascalidentifier
 msgid "The name %s%s%s is not a valid pascal identifier."
 msgstr "El nom %s%s%s no és un identificador pascal vàlid."
+
+#: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
+msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
+msgstr ""
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"

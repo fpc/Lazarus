@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-14 04:30+0300\n"
+"PO-Revision-Date: 2010-07-25 03:06+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -255,7 +255,7 @@ msgstr "конец записи не найден"
 
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
-msgstr "ожидается end., а найдено %s"
+msgstr "ожидается end., но найдено %s"
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
 msgid "End of source not found"
@@ -315,7 +315,7 @@ msgstr "файл только для чтения"
 
 #: codetoolsstrconsts.ctsforward
 msgid "Forward"
-msgstr "Вперёд"
+msgstr "Предваряющее"
 
 #: codetoolsstrconsts.ctsforwardclassdefinitionnotresolved
 msgid "Forward class definition not resolved: %s"
@@ -361,7 +361,7 @@ msgstr "каталог интерфейса gtk2"
 
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
-msgstr ""
+msgstr "Ошибка"
 
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
@@ -525,7 +525,7 @@ msgstr "ключевое слово"
 
 #: codetoolsstrconsts.ctskeywordexampleexpectedbutatomfound
 msgid "keyword (e.g. %s) expected, but %s found"
-msgstr "ключевое слово (напр., %s) ожидается, найдено %s"
+msgstr "ожидается ключевое слово (например, %s), но найдено %s"
 
 #: codetoolsstrconsts.ctskeywordin
 msgid "keyword \"in\""
@@ -817,7 +817,7 @@ msgstr "(неизвестный субдескриптор %s)"
 
 #: codetoolsstrconsts.ctsunparsed
 msgid "Unparsed"
-msgstr "Не обработано"
+msgstr "Неразобранное"
 
 #: codetoolsstrconsts.ctsusedunitisnotapascalunit
 msgid "used unit is not a pascal unit"
