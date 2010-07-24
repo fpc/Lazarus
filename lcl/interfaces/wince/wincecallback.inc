@@ -255,7 +255,8 @@ Var
     if PopupMenu <> nil then //processing popup menu
     begin
       WindowInfo^.PopupMenu := nil;
-      Result := PopupMenu.FindItem(LOWORD(WParam) - StartMenuItem, fkCommand);
+      // LOWORD(WParam) = MENUITEM_ID
+      Result := PopupMenu.FindItem(LOWORD(WParam), fkCommand);
     end;
     {$ifndef win32}
     if Result = nil then //if Result is still nil, process main menu

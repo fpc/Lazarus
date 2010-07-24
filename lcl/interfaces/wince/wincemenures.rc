@@ -4,17 +4,17 @@
 //
 // The MENU resource data has the following format:
 //
-// TOOLBAR_ID MENU DISCARDABLE
+// MENU_ID MENU DISCARDABLE
 // BEGIN
-//   MENUITEM Caption, MENU_ID
+//   MENUITEM Caption, MENUITEM_ID
 // END
 //
 // POPUP menus in this structure can't have a MENU_ID
 //
 // The RCDATA after that is the Toolbar information:
 //
-// TOOLBAR_ID, Number of menu items,
-// Image, MENU_ID, Toolbar state, Toolbar Style, ?, 0, either NOMENU (popup) or 0 (menuitem)
+// MENU_ID, Number of menu items,
+// Image, MENUITEM_ID, Toolbar state, Toolbar Style, ?, 0, either NOMENU (popup) or 0 (menuitem)
 //
 // NOMENU = 0xFFFF
 //

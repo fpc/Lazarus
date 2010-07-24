@@ -92,7 +92,6 @@ const
   MenuBarID_Empty = 20006;
   MenuBarID_L = 1001;
   MenuBarID_R = 1002;
-  StartMenuItem = 200;
 var
   MenuItemsList: TStringList;
   MenuHandleList, MenuLCLObjectList: TFPList;
@@ -175,6 +174,8 @@ begin
     FillChar(mbi, SizeOf(mbi), 0);
     mbi.cbSize := SizeOf(mbi);
     mbi.hwndParent := Wnd;
+    // SHCMBC_HMENU makes it read only the MENU rc info, not the RCDATA which is
+    // the Toolbar info
     //mbi.dwFlags := SHCMBF_HMENU;// This options ruins smartphone menu setting
     mbi.hInstRes := HINSTANCE;
 
@@ -285,7 +286,7 @@ begin
           tbbi.idCommand := MenuBarRLID;
 
           // And we also need to update the MenuItem Command
-          TMenuItemAccess(LCLMenu.Items.Items[j]).FCommand := tbbi.idCommand - StartMenuItem;
+          TMenuItemAccess(LCLMenu.Items.Items[j]).FCommand := tbbi.idCommand;
 
           {$ifdef VerboseWinCEMenu}
           DebugLn('[CeSetMenu] atKeyPadDevice Set FCommand from ', LCLMenu.Items.Items[j].Name, ' to: ',
@@ -476,7 +477,7 @@ begin
   MenuInfo.cbSize := menuiteminfosize;
   MenuInfo.fMask := MIIM_TYPE;
   MenuInfo.dwTypeData := nil;  // don't retrieve caption
-  GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command + StartMenuItem, false, @MenuInfo);
+  GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
   if Value then
     MenuInfo.fType := MenuInfo.fType or Flag
   else
@@ -487,7 +488,7 @@ begin
   {$else}
   MenuInfo.dwTypeData := PWideChar(wCaption);
   {$endif}
-  Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command + StartMenuItem, false, @MenuInfo);
+  Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
   TriggerFormUpdate(AMenuItem);
 end;
 
@@ -526,7 +527,7 @@ begin
   DebugLn('[UpdateCaption] SetMenuItemInfo for ' + AMenuItem.Name +
     ' with ButtonID = AMenuItem.Command + StartMenuItem = ' + IntToStr(AMenuItem.Command + StartMenuItem));
   {$endif}
-  if not SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command + StartMenuItem, false, @MenuInfo) then
+  if not SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo) then
     DebugLn('SetMenuItemInfo failed: ', GetLastErrorText(GetLastError));
   TriggerFormUpdate(AMenuItem);
 end;
@@ -560,7 +561,7 @@ begin
     DebugLn('[TWinCEWSMenuItem.AttachMenuEx] GetMenuItemInfo for '
       + AMenuItem.Parent.Name + ' with ButtonID = AMenuItem.Parent.Command + StartMenuItem = ' + IntToStr(AMenuItem.Parent.Command + StartMenuItem));
     {$endif}
-    if not GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command + StartMenuItem, False, @MenuInfo) then
+    if not GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo) then
       DebugLn('[TWinCEWSMenuItem.AttachMenuEx] GetMenuItemInfo failed');
     if MenuInfo.hSubmenu = 0 then // the parent menu item is not yet defined with submenu flag
     begin
@@ -590,7 +591,7 @@ begin
   if AMenuItem.Checked then
     fState := fState or MF_CHECKED;
 
-  cmd := AMenuItem.Command + StartMenuItem; {value may only be 16 bit wide!}
+  cmd := AMenuItem.Command; {value may only be 16 bit wide!}
   if (AMenuItem.Count > 0) then
   begin
     fState := fState or MF_POPUP;
@@ -638,7 +639,7 @@ begin
   if not SetMenuItemInfoW(AParentHandle, Index, True, @MenuInfo) then
     DebugLn('[TWinCEWSMenuItem.AttachMenuEx] SetMenuItemInfoW failed for ', dbgsName(AMenuItem), ' : ', GetLastErrorText(GetLastError));
 
-  MenuItemsList.AddObject(IntToStr(AMenuItem.Command + StartMenuItem), AMenuItem);
+  MenuItemsList.AddObject(IntToStr(AMenuItem.Command), AMenuItem);
   TriggerFormUpdate(AMenuItem);
 
 //  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
@@ -674,7 +675,7 @@ begin
       fState:=fState or MF_GRAYED;
     if mi.fState and MFS_CHECKED <> 0 then
       fState:=fState or MF_CHECKED;
-    uIDNewItem := mi.wID + StartMenuItem;
+    uIDNewItem := mi.wID;
     if mi.hSubMenu <>  0 then
     begin
       uIDNewItem  := mi.hSubMenu;
@@ -701,7 +702,7 @@ end;
 class procedure TWinCEWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 begin
   if Assigned(AMenuItem.Parent) then
-    DeleteMenu(AMenuItem.Parent.Handle, AMenuItem.Command + StartMenuItem, MF_BYCOMMAND);
+    DeleteMenu(AMenuItem.Parent.Handle, AMenuItem.Command, MF_BYCOMMAND);
   DestroyMenu(AMenuItem.Handle);
   TriggerFormUpdate(AMenuItem);
 end;
@@ -761,7 +762,7 @@ begin
         if AMenu.Items.Items[j].Visible then Inc(i);
       end;
 
-      MenuBarRLID := StartMenuItem + AMenu.Items.Items[j].Command;
+      MenuBarRLID := AMenu.Items.Items[j].Command;
 //      if i = 0 then MenuBarRLID := StartMenuItem + MenuBarID_L
 //      else MenuBarRLID := StartMenuItem + MenuBarID_R;
 
@@ -792,7 +793,7 @@ begin
     uCheck := MF_CHECKED
   else
     uCheck := MF_UNCHECKED;
-  Result := Boolean(Windows.CheckMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command + StartMenuItem, uCheck));
+  Result := Boolean(Windows.CheckMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, uCheck));
 end;
 
 class procedure TWinCEWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
@@ -808,7 +809,7 @@ begin
   EnableFlag := MF_BYCOMMAND;
   if AMenuItem.Enabled then EnableFlag := EnableFlag or MF_ENABLED
   else EnableFlag := EnableFlag or MF_GRAYED;
-  Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command + StartMenuItem, EnableFlag));
+  Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag));
   TriggerFormUpdate(AMenuItem);
 end;
 
