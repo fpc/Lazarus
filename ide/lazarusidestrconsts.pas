@@ -1270,6 +1270,9 @@ resourcestring
   dlgFindTextatCursor = 'Find text at cursor';
   dlgUseSyntaxHighlight = 'Use syntax highlight';
   dlgUseCodeFolding = 'Code folding';
+  dlgCodeFoldEnableFold = 'Fold';
+  dlgCodeFoldEnableHide = 'Hide';
+  dlgCodeFoldEnableBoth = 'Both';
   dlgCodeFoldingMouse = 'Mouse';
   dlfMousePredefinedScheme = 'Use predefined scheme';
   dlfNoPredefinedScheme = '< None >';

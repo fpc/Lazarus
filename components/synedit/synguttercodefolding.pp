@@ -44,8 +44,12 @@ type
     FMouseActionsExpanded: TSynEditMouseActions;
     FPopUp: TPopupMenu;
     FMenuInf: Array of TFoldViewNodeInfo;
+    FIsFoldHidePreviousLine: Boolean;
     procedure SetMouseActionsCollapsed(const AValue: TSynEditMouseActions);
     procedure SetMouseActionsExpanded(const AValue: TSynEditMouseActions);
+    function  FoldTypeForLine(AScreenLine: Integer): TSynEditFoldLineCapability;
+    function  IsFoldHidePreviousLine(AScreenLine: Integer): Boolean;
+    function  IsSingleLineHide(AScreenLine: Integer): Boolean;
   protected
     procedure DoChange(Sender: TObject); override;
     procedure PopClicked(Sender: TObject);
@@ -89,6 +93,62 @@ begin
     FMouseActionsExpanded.Clear
   else
     FMouseActionsExpanded.Assign(AValue);
+end;
+
+function TSynGutterCodeFolding.FoldTypeForLine(AScreenLine: Integer): TSynEditFoldLineCapability;
+var
+  tmp, tmp2: TSynEditFoldLineCapabilities;
+begin
+  tmp := FFoldView.FoldType[AScreenLine];
+  tmp2 := FFoldView.FoldType[AScreenLine-1];
+  FIsFoldHidePreviousLine := False;
+
+  if (AScreenLine = 0) and (FFoldView.TextIndexToViewPos(FFoldView.TextIndex[0]) = 1) and
+     (cfCollapsedHide in tmp2)
+  then begin
+    Result := cfCollapsedHide;
+    FIsFoldHidePreviousLine := True;
+  end
+  //if tmp * [cfHideStart, cfFoldStart, cfCollapsedFold] = [cfHideStart, cfFoldStart, cfCollapsedFold]
+  //                               then Result := cfHideStart
+  else if cfCollapsedFold in tmp then Result := cfCollapsedFold
+  else if cfCollapsedHide in tmp then Result := cfCollapsedHide
+  else if cfFoldStart     in tmp then Result := cfFoldStart
+  else if cfHideStart     in tmp then Result := cfHideStart
+  else if cfFoldEnd       in tmp then Result := cfFoldEnd
+  else if cfFoldBody      in tmp then Result := cfFoldBody
+  else
+    Result := cfNone;
+
+  if Result in [cfFoldBody, cfFoldEnd] then begin
+    tmp := FFoldView.FoldType[AScreenLine - 1];
+    if tmp * [cfHideStart, cfFoldStart, cfCollapsedFold, cfCollapsedHide]
+       = [cfHideStart, cfFoldStart]
+    then begin
+      FIsFoldHidePreviousLine := True;
+      Result := cfHideStart // hide for previous line
+    end;
+  end;
+end;
+
+function TSynGutterCodeFolding.IsFoldHidePreviousLine(AScreenLine: Integer): Boolean;
+begin
+  FoldTypeForLine(AScreenLine);
+  Result := FIsFoldHidePreviousLine;
+end;
+
+function TSynGutterCodeFolding.IsSingleLineHide(AScreenLine: Integer): Boolean;
+var
+  tmp: TSynEditFoldLineCapabilities;
+begin
+  Result := False;
+  tmp := FFoldView.FoldType[AScreenLine];
+  if tmp * [cfHideStart, cfFoldStart, cfCollapsedFold] =
+     [cfHideStart, cfFoldStart, cfCollapsedFold]
+  then
+    Result := True;
+  if cfSingleLineHide in tmp then
+    Result := True;
 end;
 
 procedure TSynGutterCodeFolding.DoChange(Sender: TObject);
@@ -152,14 +212,18 @@ end;
 
 function TSynGutterCodeFolding.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
   HandleActionProc: TSynEditMouseActionHandler): Boolean;
+var
+  tmp: TSynEditFoldLineCapability;
 begin
   Result := False;
-  case FFoldView.FoldType[FFoldView.TextIndexToScreenLine(AnInfo.NewCaret.LinePos-1)] of
-    cfCollapsed :
+  tmp := FoldTypeForLine(FFoldView.TextIndexToScreenLine(AnInfo.NewCaret.LinePos-1));
+  case tmp of
+    cfCollapsedFold, cfCollapsedHide:
       Result := HandleActionProc(MouseActionsCollapsed, AnInfo);
-    cfExpanded  :
+    cfFoldStart, cfHideStart:
       Result := HandleActionProc(MouseActionsExpanded, AnInfo);
   end;
+
   if not Result then
     Result := HandleActionProc(MouseActions, AnInfo);
 end;
@@ -167,17 +231,30 @@ end;
 function TSynGutterCodeFolding.DoHandleMouseAction(AnAction: TSynEditMouseAction;
   var AnInfo: TSynEditMouseActionInfo): Boolean;
 var
-  c, i, line: Integer;
+  c, i, line, ScrLine: Integer;
   inf: TFoldViewNodeInfo;
   m: TMenuItem;
   s, s2: String;
   ACommand: Word;
+  KeepVisible: Integer;
 begin
   Result := False;
   if AnAction = nil then exit;
   ACommand := AnAction.Command;
   if (ACommand = emcNone) then exit;
   line := AnInfo.NewCaret.LinePos;
+  ScrLine := FFoldView.TextIndexToScreenLine(Line-1);
+  KeepVisible := 1;
+  if FoldTypeForLine(ScrLine) = cfHideStart then KeepVisible := 0;
+
+  if (FoldTypeForLine(ScrLine) = cfCollapsedHide) then begin
+    if IsFoldHidePreviousLine(ScrLine) then
+      line := FFoldView.TextIndex[ScrLine-1] + 1;
+    inc(line);
+    KeepVisible := 0;
+  end
+  else
+    if IsFoldHidePreviousLine(ScrLine) then dec(line);
 
   Result := True;
   case ACommand of
@@ -185,26 +262,32 @@ begin
       begin
         case AnAction.Option of
           emcoCodeFoldCollapsOne:
-            FFoldView.FoldAtTextIndex(Line-1, -1, 1, True);
+            begin
+              FFoldView.FoldAtTextIndex(Line-1, -1, 1, True, KeepVisible);
+            end;
           emcoCodeFoldCollapsAll:
-            FFoldView.FoldAtTextIndex(Line-1, -1, 0);
+            begin
+              FFoldView.FoldAtTextIndex(Line-1, -1, 0, False, KeepVisible);
+            end;
           emcoCodeFoldCollapsAtCaret:
+            // Keyword at mouseclick/caret position
             begin
               i := FFoldView.LogicalPosToNodeIndex(Line-1, AnInfo.NewCaret.BytePos, False);
               if i >= 0 then
-                FFoldView.FoldAtTextIndex(Line-1, i, 1, False)
+                FFoldView.FoldAtTextIndex(Line-1, i, 1, False, KeepVisible)
               else
                 Result := False;
             end;
           emcoCodeFoldCollapsPreCaret:
+            // mouseclick/caret position anywhere inside the fold
             begin
               i := FFoldView.LogicalPosToNodeIndex(Line-1, AnInfo.NewCaret.BytePos, True);
               if i >= 0 then
-                FFoldView.FoldAtTextIndex(Line-1, i, 1, False)
+                FFoldView.FoldAtTextIndex(Line-1, i, 1, False, KeepVisible)
               else begin
                 i := FFoldView.ExpandedLineForBlockAtLine(Line);
                 if i > 0 then
-                  FFoldView.FoldAtTextIndex(i-1, -1, 1, True);
+                  FFoldView.FoldAtTextIndex(i-1, -1, 1, True, KeepVisible);
               end;
             end;
         end;
@@ -213,9 +296,9 @@ begin
       begin
         case AnAction.Option of
           emcoCodeFoldExpandOne:
-            FFoldView.UnFoldAtTextIndex(line-1, 0, 1, True);
+            FFoldView.UnFoldAtTextIndex(line-1, 0, 1, True, KeepVisible);
           emcoCodeFoldExpandAll:
-            FFoldView.UnFoldAtTextIndex(line-1);
+            FFoldView.UnFoldAtTextIndex(line-1, -1, 0, False, KeepVisible);
         end;
       end;
     emcCodeFoldContextMenu:
@@ -264,17 +347,26 @@ var
   iLine: integer;
   rcLine: TRect;
   rcCodeFold: TRect;
-  tmp: TSynEditCodeFoldType;
+  tmp: TSynEditFoldLineCapability;
   LineHeight, LineOffset, BoxSize: Integer;
 
-  procedure DrawNodeBox(rcCodeFold: TRect; Collapsed: boolean);
+  procedure DrawNodeBox(rcCodeFold: TRect; NodeType: TSynEditFoldLineCapability);
   var
     rcNode: TRect;
     ptCenter : TPoint;
+    isPrevLine: Boolean;
+    Points: Array [0..3] of TPoint;
   begin
+    isPrevLine := IsFoldHidePreviousLine(iLine);
+    LineOffset := 0;
+
     //center of the draw area
     ptCenter.X := (rcCodeFold.Left + rcCodeFold.Right) div 2;
     ptCenter.Y := (rcCodeFold.Top + rcCodeFold.Bottom) div 2;
+
+    // If belongs to line above, draw at very top
+    if isPrevLine then
+      ptCenter.Y := rcCodeFold.Top + (BoxSize div 2) - 1;
 
     //area of drawbox
     rcNode.Left   := ptCenter.X - (BoxSize div 2) + 1;
@@ -284,25 +376,79 @@ var
 
     Canvas.Brush.Style := bsClear;
 
+    //draw Paragraph end
+    if isPrevLine and (cfFoldEnd in FFoldView.FoldType[iLine]) and
+       (rcCodeFold.Bottom-1 > rcNode.Bottom)
+    then begin
+      Canvas.MoveTo(ptCenter.X, rcNode.Bottom);
+      Canvas.LineTo(ptCenter.X, rcCodeFold.Bottom-1);
+      Canvas.LineTo(rcCodeFold.Right, rcCodeFold.Bottom-1);
+      LineOffset := min(2, (rcCodeFold.Top + rcCodeFold.Bottom) div 2);
+    end
+    else
     //draw bottom handle to paragraph line
-    Canvas.MoveTo(ptCenter.X, rcNode.Bottom);
-    Canvas.LineTo(ptCenter.X, rcCodeFold.Bottom);
+    if (cfFoldBody in FFoldView.FoldType[iLine + 1]) and
+       (not IsSingleLineHide(iLine))
+    then begin
+      Canvas.MoveTo(ptCenter.X, rcNode.Bottom);
+      Canvas.LineTo(ptCenter.X, rcCodeFold.Bottom);
+    end;
 
-    if Collapsed and (MarkupInfo.FrameColor <> clNone) then
+    if (NodeType in [cfCollapsedFold, cfCollapsedHide]) and
+       (MarkupInfo.FrameColor <> clNone)
+    then
       Canvas.Pen.Color := MarkupInfo.FrameColor;
+
     Canvas.Rectangle(rcNode);
 
-    //draw unfolded sign in node box
-    Canvas.MoveTo(ptCenter.X - 2, ptCenter.Y);
-    Canvas.LineTo(ptCenter.X + 3, ptCenter.Y);
-
     //draw folded sign
-    if Collapsed then
-    begin
-      Canvas.MoveTo(ptCenter.X, ptCenter.Y - 2);
-      Canvas.LineTo(ptCenter.X, ptCenter.Y + 3);
+    case NodeType of
+      cfFoldStart:
+        begin
+          // [-]
+          Canvas.MoveTo(ptCenter.X - 2, ptCenter.Y);
+          Canvas.LineTo(ptCenter.X + 3, ptCenter.Y);
+        end;
+      cfHideStart:
+        begin
+          // [.]
+          Canvas.MoveTo(ptCenter.X, ptCenter.Y);
+          Canvas.LineTo(ptCenter.X + 1, ptCenter.Y);
+        end;
+      cfCollapsedFold:
+        begin
+          // [+]
+          Canvas.MoveTo(ptCenter.X - 2, ptCenter.Y);
+          Canvas.LineTo(ptCenter.X + 3, ptCenter.Y);
+          Canvas.MoveTo(ptCenter.X, ptCenter.Y - 2);
+          Canvas.LineTo(ptCenter.X, ptCenter.Y + 3);
+        end;
+      cfCollapsedHide:
+        begin
+          if isPrevLine then begin
+            // [v]
+            Points[0].X := ptCenter.X;
+            Points[0].y := ptCenter.Y - 2;
+            Points[1].X := ptCenter.X - 2;
+            Points[1].y := ptCenter.Y;
+            Points[2].X := ptCenter.X + 2;
+            Points[2].y := ptCenter.Y;
+            Points[3].X := ptCenter.X;
+            Points[3].y := ptCenter.Y - 2;
+          end else begin
+            // [v]
+            Points[0].X := ptCenter.X;
+            Points[0].y := ptCenter.Y + 2;
+            Points[1].X := ptCenter.X - 2;
+            Points[1].y := ptCenter.Y;
+            Points[2].X := ptCenter.X + 2;
+            Points[2].y := ptCenter.Y;
+            Points[3].X := ptCenter.X;
+            Points[3].y := ptCenter.Y + 2;
+          end;
+          Canvas.Polygon(Points);
+        end;
     end;
-    LineOffset := 0;
     Canvas.Pen.Color := MarkupInfo.Foreground;
     Canvas.Brush.Style := bsSolid;
   end;
@@ -336,16 +482,15 @@ begin
   if not Visible then exit;
   LineHeight := TSynEdit(SynEdit).LineHeight;
   LineOffset := 0;
-  if (FirstLine > 0) and (FFoldView.FoldType[FirstLine-1] = cfEnd) then
+  if (FirstLine > 0) and
+     (FFoldView.FoldType[FirstLine-1] - [cfFoldBody] = [cfFoldEnd]) then
     LineOffset := 2;
   BoxSize := Min(Width, LineHeight - cNodeOffset*2);
 
   if MarkupInfo.Background <> clNone then
   begin
     Canvas.Brush.Color := MarkupInfo.Background;
-  {$IFDEF SYN_LAZARUS}
     LCLIntf.SetBkColor(Canvas.Handle, Canvas.Brush.Color);
-  {$ENDIF}
     Canvas.FillRect(AClip);
   end;
 
@@ -366,14 +511,16 @@ begin
       rcCodeFold.Top := rcLine.Top;
       rcCodeFold.Bottom := rcLine.Bottom;
 
-      tmp := FFoldView.FoldType[iLine];
-
+      tmp := FoldTypeForLine(iLine);
       case tmp of
-        cfCollapsed: DrawNodeBox(rcCodeFold, True);
-        cfExpanded: DrawNodeBox(rcCodeFold, False);
-        cfContinue: DrawParagraphContinue(rcCodeFold);
-        cfEnd: DrawParagraphEnd(rcCodeFold);
-        else LineOffset := 0;
+        cfFoldStart, cfHideStart, cfCollapsedFold, cfCollapsedHide:
+          DrawNodeBox(rcCodeFold, tmp);
+        cfFoldBody:
+          DrawParagraphContinue(rcCodeFold);
+        cfFoldEnd:
+          DrawParagraphEnd(rcCodeFold);
+        else
+          LineOffset := 0;
       end;
     end;
   end;

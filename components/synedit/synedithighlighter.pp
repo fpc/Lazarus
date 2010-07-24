@@ -312,6 +312,7 @@ type
 
     procedure ScanRanges;
     function  IdleScanRanges: Boolean; // Scan little by little during OnIdle; Return True, if more work avail
+    function NeedScan: Boolean;
     procedure ScanAllRanges;
     procedure SetRange(Value: Pointer); virtual;
     procedure ResetRange; virtual;
@@ -1299,7 +1300,9 @@ begin
   end;
   StartIndex := CurrentRanges.NeedsReScanRealStartIndex; // include idle scanned
   CurrentRanges.ClearReScanNeeded;
-  CurrentLines.SendHighlightChanged(StartIndex, EndIndex - StartIndex + 1);
+  // Invalidate one line above, since folds can change depending on next line
+  // TODO: only classes with end-fold-last-line
+  CurrentLines.SendHighlightChanged(StartIndex - 1, EndIndex - StartIndex + 1);
 end;
 
 function TSynCustomHighlighter.IdleScanRanges: Boolean;
@@ -1326,13 +1329,19 @@ begin
     StartIndex := CurrentRanges.NeedsReScanRealStartIndex; // include idle scanned
 //debugln(['=== IDLE SendHighlightChanged ',StartIndex,' - ',EndIndex]);
     CurrentRanges.ClearReScanNeeded;
-    CurrentLines.SendHighlightChanged(StartIndex, EndIndex - StartIndex + 1);
+  // Invalidate one line above, since folds can change depending on next line
+    CurrentLines.SendHighlightChanged(StartIndex - 1, EndIndex - StartIndex + 1);
     exit;
   end
   else begin
     CurrentRanges.AdjustReScanStart(EndIndex);
     Result := True;
   end;
+end;
+
+function TSynCustomHighlighter.NeedScan: Boolean;
+begin
+  Result := (CurrentRanges.NeedsReScanStartIndex >= 0);
 end;
 
 function TSynCustomHighlighter.PerformScan(StartIndex, EndIndex: Integer;

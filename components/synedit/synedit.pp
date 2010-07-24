@@ -448,6 +448,7 @@ type
     FOnSpecialLineMarkup: TSpecialLineMarkupEvent;// needed, because bug fpc 11926
     FOnClickLink: TMouseEvent;
     FOnMouseLink: TSynMouseLinkEvent;
+    FPendingFoldState: String;
 
     procedure AquirePrimarySelection;
     function GetChangeStamp: int64;
@@ -2990,10 +2991,15 @@ begin
   if (iLine<=0) or (iLine>FTheLinesView.Count) then exit;
   dec(iLine);
 //DebugLn(['****** FoldAction at ',iLine,' scrline=',FFoldedLinesView.TextIndexToScreenLine(iLine), ' type ', SynEditCodeFoldTypeNames[FFoldedLinesView.FoldType[FFoldedLinesView.TextIndexToScreenLine(iLine)]],  '  view topline=',FFoldedLinesView.TopLine  ]);
-  case FFoldedLinesView.FoldType[FFoldedLinesView.TextIndexToScreenLine(iLine)] of
-    cfCollapsed : FFoldedLinesView.UnFoldAtTextIndex(iLine);
-    cfExpanded  : FFoldedLinesView.FoldAtTextIndex(iLine);
-  end;
+  if FFoldedLinesView.FoldType[FFoldedLinesView.TextIndexToScreenLine(iLine)]
+     * [cfCollapsedFold, cfCollapsedHide] <> []
+  then
+    FFoldedLinesView.UnFoldAtTextIndex(iLine)
+  else
+  if FFoldedLinesView.FoldType[FFoldedLinesView.TextIndexToScreenLine(iLine)]
+     * [cfFoldStart] <> []
+  then
+    FFoldedLinesView.FoldAtTextIndex(iLine);
 end;
 
 function TCustomSynEdit.FindNextUnfoldedLine(iLine: integer; Down: boolean
@@ -3001,9 +3007,12 @@ function TCustomSynEdit.FindNextUnfoldedLine(iLine: integer; Down: boolean
 // iLine is 1 based
 begin
   Result:=iLine;
-  while (Result>0) and (Result<=FTheLinesView.Count)
-  and (FFoldedLinesView.FoldedAtTextIndex[Result-1]) do
-    if Down then inc(Result) else dec(Result);
+  if Down then
+    while (Result<FTheLinesView.Count) and (FFoldedLinesView.FoldedAtTextIndex[Result-1]) do
+      inc(Result)
+  else
+    while (Result>1) and (FFoldedLinesView.FoldedAtTextIndex[Result-1]) do
+      dec(Result);
 end;
 
 function TCustomSynEdit.CreateGutter(AOwner : TSynEditBase;
@@ -3317,7 +3326,7 @@ var
         LCLIntf.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
       end;
 
-      if FFoldedLinesView.FoldType[CurLine] = cfCollapsed then
+      if FFoldedLinesView.FoldType[CurLine] * [cfCollapsedFold, cfCollapsedHide] <> [] then
       begin
         FillFCol := Font.Color;
         FillBCol := colEditorBG;
@@ -4209,6 +4218,9 @@ begin
   Value := Max(Value, 1);
   if FFoldedLinesView.FoldedAtTextIndex[Value-1] then
     Value := FindNextUnfoldedLine(Value, False);
+  if FFoldedLinesView.FoldedAtTextIndex[Value-1] then
+    Value := FindNextUnfoldedLine(Value, True);
+  Value := Min(Value, CurrentMaxTopLine);
   FFoldedLinesView.TopTextIndex := fTopLine - 1;
   if Value <> fTopLine then begin
     fTopLine := Value;
@@ -4757,6 +4769,8 @@ begin
   InvalidateLines(AIndex + 1, AIndex + 1 + ACount);
   InvalidateGutterLines(AIndex + 1, AIndex + 1 + ACount);
   FFoldedLinesView.FixFoldingAtTextIndex(AIndex, AIndex + ACount);
+  if FPendingFoldState <> '' then
+    SetFoldState(FPendingFoldState);
 end;
 
 procedure TCustomSynEdit.ListCleared(Sender: TObject);
@@ -4789,8 +4803,8 @@ begin
   if eoAlwaysVisibleCaret in fOptions2 then
     MoveCaretToVisibleArea;
   UpdateScrollBars;
-  if Index + 1 > ScreenRowToRow(LinesInWindow + 1) then exit;
-  if Index + 1 < TopLine then Index := TopLine;
+  if Index + 1 > Max(1, ScreenRowToRow(LinesInWindow + 1)) then exit;
+  if Index + 1 < TopLine then Index := TopLine - 1;
   InvalidateLines(Index + 1, -1);
   InvalidateGutterLines(Index + 1, -1);
 end;
@@ -5093,10 +5107,22 @@ end;
 
 procedure TCustomSynEdit.SetFoldState(const AValue: String);
 begin
+  if assigned(fHighlighter) then begin
+    fHighlighter.CurrentLines := FTheLinesView;
+    if fHighlighter.NeedScan then begin
+      FPendingFoldState := AValue;
+      exit;
+    end;
+  end;
+  if sfAfterLoadFromFileNeeded in fStateFlags then begin
+    FPendingFoldState := AValue;
+    exit;
+  end;
   FFoldedLinesView.Lock;
   FFoldedLinesView.ApplyFoldDescription(0, 0, -1, -1, PChar(AValue), length(AValue), True);
   TopLine := TopLine; // Todo: reset topline on foldedview
   FFoldedLinesView.UnLock;
+  FPendingFoldState := '';
 end;
 
 procedure TCustomSynEdit.SetMouseActions(const AValue: TSynEditMouseActions);
@@ -5555,6 +5581,7 @@ end;
 procedure TCustomSynEdit.SetHighlighter(const Value: TSynCustomHighlighter);
 begin
   if Value <> fHighlighter then begin
+    FPendingFoldState := '';
     RemoveHooksFromHighlighter;
     if Assigned(Value) then begin
       Value.HookAttrChangeEvent(
@@ -5944,7 +5971,7 @@ begin
         end;
       ecEditorTop, ecSelEditorTop:
         begin
-          FCaret.LineCharPos := Point(1, 1);
+          FCaret.LineCharPos := Point(1, FFoldedLinesView.ViewPosToTextIndex(1)+1);
         end;
       ecEditorBottom, ecSelEditorBottom:
         begin
@@ -5955,7 +5982,7 @@ begin
         end;
       ecColSelEditorTop:
         begin
-          FCaret.LinePos := 1;
+          FCaret.LinePos := FFoldedLinesView.ViewPosToTextIndex(1)+1;
         end;
       ecColSelEditorBottom:
         begin
@@ -6517,6 +6544,8 @@ begin
     ScanRanges;
     FFoldedLinesView.UnfoldAll;
     FFoldedLinesView.CollapseDefaultFolds;
+    if FPendingFoldState <> '' then
+      SetFoldState(FPendingFoldState);
     TopLine := TopLine;
   end;
 end;

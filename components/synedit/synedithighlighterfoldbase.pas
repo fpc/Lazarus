@@ -37,20 +37,58 @@ uses
 
 type
 
+  TSynFoldAction = (sfaOpen,     // At this node a new Fold can start
+                    sfaClose,    // At this node a fold ends
+                    sfaMarkup,   // This node can be highlighted, by the matching Word-Pair Markup
+                    sfaFold,     // Part of a fold- or hide-able block (FoldConf.Enabled = True)
+                    sfaFoldFold, // Part of a fold-able block (FoldConf.Enabled = True / smFold in Modes)
+                    sfaFoldHide, // Part of a hide-able block (FoldConf.Enabled = True / smHide in Modes)
+                    sfaInvalid,  // Wrong Index
+                    sfaDefaultCollapsed,
+                    sfaOneLineOpen,  // Open, but closes on same line; *only* if hide-able has [sfaOpen, sfaFold]; always has [sfaFoldFold, sfaFoldHide]
+                    sfaOneLineClose, // Open, but closes on same line;
+                    sfaLastLineClose // Fold is incomplete, and closed at last line of file
+                   );
+  TSynFoldActions = set of TSynFoldAction;
+
+  TSynFoldNodeInfo = record
+    LineIndex: Integer;
+    NodeIndex: Integer;          // Indicates the position within the list of info nodes (depends on search-Filter)
+    LogXStart, LogXEnd: Integer; // -1 previous line
+    FoldLvlStart, FoldLvlEnd: Integer; // FoldLvl within each FoldGroup
+    NestLvlStart, NestLvlEnd: Integer; // include disabled nodes, e.g markup (within each FoldGroup)
+    FoldAction: TSynFoldActions;
+    FoldType: Pointer;           // e.g.cfbtBeginEnd, cfbtcfbtProcedure ...
+    FoldGroup: Integer;          // independend/overlapping folds, e.g begin/end; ifdef, region
+  end;
+
+  TSynCustomFoldConfigMode = (fmFold, fmHide);
+  TSynCustomFoldConfigModes = set of TSynCustomFoldConfigMode;
+
   { TSynCustomFoldConfig }
 
   TSynCustomFoldConfig = class(TPersistent)
   private
     FEnabled: Boolean;
+    FFoldActions: TSynFoldActions;
+    FModes: TSynCustomFoldConfigModes;
     FOnChange: TNotifyEvent;
+    FSupportedModes: TSynCustomFoldConfigModes;
     procedure SetFEnabled(const AValue: Boolean);
+    procedure SetModes(const AValue: TSynCustomFoldConfigModes);
   protected
     procedure DoOnChange;
   public
+    constructor Create;
     procedure Assign(Src: TSynCustomFoldConfig); reintroduce; virtual;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property SupportedModes: TSynCustomFoldConfigModes
+             read FSupportedModes write FSupportedModes;
+    // Actions representing the modes
+    property FoldActions: TSynFoldActions read FFoldActions;
   published
     property Enabled: Boolean read FEnabled write SetFEnabled;
+    property Modes: TSynCustomFoldConfigModes read FModes write SetModes default [fmFold];
   end;
 
   { TSynCustomCodeFoldBlock }
@@ -108,27 +146,6 @@ type
 
   TSynCustomHighlighterRanges = class;
 
-  TSynFoldAction = (sfaOpen,    // At this node a new Fold can start
-                    sfaClose,   // At this node a fold ends
-                    sfaMarkup,  // This node can be highlighted, by the matching Word-Pair Markup
-                    sfaFold,    // Part of a foldable block
-                    sfaInvalid, // Wrong Index
-                    sfaDefaultCollapsed,
-                    sfaOneLineOpen, // Open, but closes on same line; does *not* have sfaOpen
-                    sfaOneLineClose // Open, but closes on same line; does *not* have sfaOpen
-                   );
-  TSynFoldActions = set of TSynFoldAction;
-
-  TSynFoldNodeInfo = record
-    LineIndex: Integer;
-    NodeIndex: Integer;          // Indicates the position within the list of info nodes (depends on search-Filter
-    LogXStart, LogXEnd: Integer; // -1 previous line
-    FoldLvlStart, FoldLvlEnd: Integer;
-    FoldAction: TSynFoldActions;
-    FoldType: Pointer;
-    FoldGroup: Integer;
-  end;
-
   { TSynCustomFoldHighlighter }
 
   TSynCustomFoldHighlighter = class(TSynCustomHighlighter)
@@ -178,8 +195,9 @@ type
     function FoldNestCount(ALineIndex: Integer; AType: Integer = 0): integer; virtual;
     function FoldTypeCount: integer; virtual;
     function FoldTypeAtNodeIndex(ALineIndex, FoldIndex: Integer;
-             UseCloseNodes: boolean = false): integer; virtual;
+             UseCloseNodes: boolean = false): integer; virtual; // TODO: could be deprecated ./ only child-classes
     function FoldLineLength(ALineIndex, FoldIndex: Integer): integer; virtual;
+    function FoldEndLine(ALineIndex, FoldIndex: Integer): integer; virtual;     // FoldEndLine, can be more than given by FoldLineLength, since Length my cut off early
 
     // All fold-nodes
     property FoldNodeInfo[Line, Index: Integer; Filter: TSynFoldActions]: TSynFoldNodeInfo read GetFoldNodeInfo;
@@ -358,8 +376,18 @@ begin
 end;
 
 function TSynCustomFoldHighlighter.FoldLineLength(ALineIndex, FoldIndex: Integer): integer;
+begin
+  Result := FoldLineLength(ALineIndex, FoldIndex);
+  // check if fold last line of block (not mixed "end begin")
+  if (EndFoldLevel(Result) > MinimumFoldLevel(Result)) then
+    dec(Result);
+  // Amount of lines, that will become invisible (excludes the cfCollapsed line)
+  Result := Result - ALineIndex;
+end;
+
+function TSynCustomFoldHighlighter.FoldEndLine(ALineIndex, FoldIndex: Integer): integer;
 var
-  i, lvl, cnt: Integer;
+  lvl, cnt: Integer;
   e, m: Integer;
 begin
   //atype := FoldTypeAtNodeIndex(ALineIndex, FoldIndex);
@@ -367,20 +395,16 @@ begin
   e := EndFoldLevel(ALineIndex);
   m := MinimumFoldLevel(ALineIndex);
   lvl := Min(m+1+FoldIndex, e);
-  i := ALineIndex + 1;
-  while (i < cnt) and (MinimumFoldLevel(i) >= lvl) do inc(i);
-  // check if fold last line of block (not mixed "end begin")
-  // and not lastlinefix
-  if (i = cnt) or (EndFoldLevel(i) > MinimumFoldLevel(i)) then
-    dec(i);
-  // Amount of lines, that will become invisible (excludes the cfCollapsed line)
-  Result := i - ALineIndex;
+  Result := ALineIndex + 1;
+  while (Result < cnt) and (MinimumFoldLevel(Result) >= lvl) do inc(Result);
+  if (Result = cnt) then
+    dec(Result);
 end;
 
 function TSynCustomFoldHighlighter.GetFoldNodeInfoCount(Line: Integer;
   Filter: TSynFoldActions): Integer;
 begin
-  Result := 0;
+  Result := -1;
 end;
 
 function TSynCustomFoldHighlighter.GetFoldConfig(Index: Integer): TSynCustomFoldConfig;
@@ -832,15 +856,35 @@ begin
   DoOnChange;
 end;
 
+procedure TSynCustomFoldConfig.SetModes(const AValue: TSynCustomFoldConfigModes);
+begin
+  if FModes = AValue then exit;
+  FModes := AValue;
+  FFoldActions := [];
+  if AValue <> [] then FFoldActions := FFoldActions + [sfaFold];
+  if fmFold in AValue then FFoldActions := FFoldActions + [sfaFoldFold];
+  if fmHide in AValue then FFoldActions := FFoldActions + [sfaFoldHide];
+  DoOnChange;
+end;
+
 procedure TSynCustomFoldConfig.DoOnChange;
 begin
   if assigned(FOnChange) then
     FOnChange(self);
 end;
 
+constructor TSynCustomFoldConfig.Create;
+begin
+  Inherited;
+  FSupportedModes := [fmFold];
+  Modes := [fmFold];
+end;
+
 procedure TSynCustomFoldConfig.Assign(Src: TSynCustomFoldConfig);
 begin
   Enabled := Src.Enabled;
+  SupportedModes := Src.SupportedModes;
+  Modes := Src.Modes;
 end;
 
 end.

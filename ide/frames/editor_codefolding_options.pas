@@ -40,6 +40,12 @@ type
     chkCodeFoldingEnabled: TCheckBox;
     LanguageLabel: TLabel;
     LanguageComboBox: TComboBox;
+    pnlFoldHide: TPanel;
+    chkFold: TRadioButton;
+    chkHide: TRadioButton;
+    chkBoth: TRadioButton;
+    procedure chkFoldChange(Sender: TObject);
+    procedure FoldConfigCheckListBoxClick(Sender: TObject);
     procedure FoldConfigCheckListBoxClickCheck(Sender: TObject);
     procedure FoldConfigCheckListBoxKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure LanguageComboBoxChange(Sender: TObject);
@@ -50,6 +56,8 @@ type
     FHighlighters: array[TLazSyntaxHighlighter] of TSrcIDEHighlighter;
     FCurHighlighter: TSrcIDEHighlighter;
     FCurFoldInfo: TEditorOptionsFoldRecord;
+    FModeLock: Boolean;
+    procedure UpdateFoldHideRadio;
   protected
     function GetHighlighter(SynType: TLazSyntaxHighlighter;
       CreateIfNotExists: Boolean): TSrcIDEHighlighter;
@@ -88,6 +96,7 @@ var
   ComboBox: TComboBox absolute Sender;
   tp: TLazSyntaxHighlighter;
   i: Integer;
+  Hl: TSynCustomFoldHighlighter;
 begin
   tp := EditorOpts.HighlighterList
           [EditorOpts.HighlighterList.FindByName(ComboBox.Text)].TheType;
@@ -97,23 +106,77 @@ begin
   FoldConfigCheckListBox.Clear;
   if not (assigned(FCurHighlighter) and
          (FCurHighlighter is TSynCustomFoldHighlighter)) then exit;
+  Hl := TSynCustomFoldHighlighter(FCurHighlighter);
 
   for i := 0 to FCurFoldInfo.Count - 1 do begin
     FoldConfigCheckListBox.Items.add(FCurFoldInfo.Info^[i].Name);
     FoldConfigCheckListBox.Checked[i] :=
-      TSynCustomFoldHighlighter(FCurHighlighter).FoldConfig[FCurFoldInfo.Info^[i].Index].Enabled;
+      Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Enabled;
   end;
 end;
 
 procedure TEditorCodefoldingOptionsFrame.FoldConfigCheckListBoxClickCheck(Sender: TObject);
 var
   i: Integer;
+  Hl: TSynCustomFoldHighlighter;
 begin
   if not (assigned(FCurHighlighter) and
          (FCurHighlighter is TSynCustomFoldHighlighter)) then exit;
+  Hl := TSynCustomFoldHighlighter(FCurHighlighter);
   for i := 0 to FCurFoldInfo.Count - 1 do
-    TSynCustomFoldHighlighter(FCurHighlighter).FoldConfig[FCurFoldInfo.Info^[i].Index].Enabled
+    Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Enabled
       := FoldConfigCheckListBox.Checked[i];
+
+  UpdateFoldHideRadio;
+end;
+
+procedure TEditorCodefoldingOptionsFrame.UpdateFoldHideRadio;
+var
+  i: LongInt;
+  AvailModes, Modes: TSynCustomFoldConfigModes;
+  Hl: TSynCustomFoldHighlighter;
+begin
+  if not (assigned(FCurHighlighter) and
+         (FCurHighlighter is TSynCustomFoldHighlighter)) then exit;
+  Hl := TSynCustomFoldHighlighter(FCurHighlighter);
+  FModeLock := True;
+  i := FoldConfigCheckListBox.ItemIndex;
+  AvailModes := [];
+  Modes := [fmFold];
+  if i >= 0 then begin
+    i := FCurFoldInfo.Info^[i].Index;
+    AvailModes := Hl.FoldConfig[i].SupportedModes;
+    Modes := Hl.FoldConfig[i].Modes;
+  end;
+  chkFold.Checked := Modes = [fmFold];
+  chkHide.Checked := Modes = [fmHide];
+  chkBoth.Checked := Modes = [fmFold, fmHide];
+  pnlFoldHide.Enabled := AvailModes = [fmFold, fmHide];
+  FModeLock := False;
+end;
+
+procedure TEditorCodefoldingOptionsFrame.FoldConfigCheckListBoxClick(Sender: TObject);
+begin
+  UpdateFoldHideRadio;
+end;
+
+procedure TEditorCodefoldingOptionsFrame.chkFoldChange(Sender: TObject);
+var
+  Hl: TSynCustomFoldHighlighter;
+  Modes: TSynCustomFoldConfigModes;
+  i: LongInt;
+begin
+  if FModeLock then exit;
+  if not (assigned(FCurHighlighter) and
+         (FCurHighlighter is TSynCustomFoldHighlighter)) then exit;
+  i := FoldConfigCheckListBox.ItemIndex;
+  if i < 0 then exit;
+  i := FCurFoldInfo.Info^[i].Index;
+  Hl := TSynCustomFoldHighlighter(FCurHighlighter);
+  Modes := [fmFold];
+  if chkHide.Checked then Modes := [fmHide];
+  if chkBoth.Checked then Modes := [fmFold, fmHide];
+  Hl.FoldConfig[i].Modes := Modes;
 end;
 
 procedure TEditorCodefoldingOptionsFrame.FoldConfigCheckListBoxKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -159,7 +222,11 @@ end;
 procedure TEditorCodefoldingOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   chkCodeFoldingEnabled.Caption := dlgUseCodeFolding;
+  chkFold.Caption := dlgCodeFoldEnableFold;
+  chkHide.Caption := dlgCodeFoldEnableHide;
+  chkBoth.Caption := dlgCodeFoldEnableBoth;
   LanguageLabel.Caption := dlgLang;
+  FModeLock := False;
 end;
 
 procedure TEditorCodefoldingOptionsFrame.ReadSettings(
@@ -168,6 +235,7 @@ var
   i: Integer;
   rf: TEditorOptionsFoldRecord;
 begin
+  FModeLock := False;
   with AOptions as TEditorOptions do
   begin
     chkCodeFoldingEnabled.Checked := UseCodeFolding;
@@ -184,6 +252,7 @@ begin
     LanguageComboBox.ItemIndex := 0;
     LanguageComboBoxExit(LanguageComboBox);
   end;
+  UpdateFoldHideRadio;
 end;
 
 procedure TEditorCodefoldingOptionsFrame.WriteSettings(

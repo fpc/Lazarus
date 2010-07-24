@@ -461,9 +461,6 @@ const
       (Name:  dlgFoldPasRecord;        Xml:     'Record';
        Index: ord(cfbtRecord);       Enabled: True),
 
-      (Name:  dlgFoldPasNestedComment; Xml:     'NestedComment';
-       Index: ord(cfbtNestedComment);Enabled: True),
-
       (Name:  dlgFoldPasIfDef;         Xml:     'IfDef';
        Index: ord(cfbtIfDef);        Enabled: False),
       (Name:  dlgFoldPasUserRegion;    Xml:     'UserRegion';
@@ -474,7 +471,10 @@ const
       (Name:  dlgFoldPasBorComment;    Xml:     'BorComment';
        Index: ord(cfbtBorCommand);   Enabled: True),
       (Name:  dlgFoldPasSlashComment;    Xml:     'SlashComment';
-       Index: ord(cfbtSlashComment); Enabled: False)
+       Index: ord(cfbtSlashComment); Enabled: False),
+
+      (Name:  dlgFoldPasNestedComment; Xml:     'NestedComment';
+       Index: ord(cfbtNestedComment);Enabled: True)
     );
 
   EditorOptionsFoldInfoLFM: Array [0..2] of TEditorOptionsFoldInfo
@@ -1488,12 +1488,12 @@ begin
   EditorOptionsFoldInfoPas[14].Name := dlgFoldPasClass;
   EditorOptionsFoldInfoPas[15].Name := dlgFoldPasClassSection;
   EditorOptionsFoldInfoPas[16].Name := dlgFoldPasRecord;
-  EditorOptionsFoldInfoPas[17].Name := dlgFoldPasNestedComment;
-  EditorOptionsFoldInfoPas[18].Name := dlgFoldPasIfDef;
-  EditorOptionsFoldInfoPas[19].Name := dlgFoldPasUserRegion;
-  EditorOptionsFoldInfoPas[20].Name := dlgFoldPasAnsiComment;
-  EditorOptionsFoldInfoPas[21].Name := dlgFoldPasBorComment;
-  EditorOptionsFoldInfoPas[22].Name := dlgFoldPasSlashComment;
+  EditorOptionsFoldInfoPas[17].Name := dlgFoldPasIfDef;
+  EditorOptionsFoldInfoPas[18].Name := dlgFoldPasUserRegion;
+  EditorOptionsFoldInfoPas[19].Name := dlgFoldPasAnsiComment;
+  EditorOptionsFoldInfoPas[20].Name := dlgFoldPasBorComment;
+  EditorOptionsFoldInfoPas[21].Name := dlgFoldPasSlashComment;
+  EditorOptionsFoldInfoPas[22].Name := dlgFoldPasNestedComment;
 
   EditorOptionsFoldInfoHTML[0].Name := dlgFoldHtmlNode;
   EditorOptionsFoldInfoHTML[1].Name := dlgFoldHtmlComment;
