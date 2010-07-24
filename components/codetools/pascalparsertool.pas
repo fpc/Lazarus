@@ -719,7 +719,7 @@ procedure TPascalParserTool.BuildSubTreeForClass(ClassNode: TCodeTreeNode);
   
 var OldPhase: integer;
 begin
-  if not (ClassNode.Desc in AllClassObjects) then
+  if not (ClassNode.Desc in AllClasses) then
     RaiseClassDescInvalid;
   if (ClassNode.SubDesc and ctnsNeedJITParsing)=0 then begin
     // class already parsed
