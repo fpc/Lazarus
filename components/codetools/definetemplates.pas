@@ -7510,10 +7510,10 @@ begin
       ExtraOptions:=Trim(ExtraOptions);
 
       // get real OS and CPU
-      Info:=RunFPCInfo(Compiler,[fpciCompilerOS,fpciCompilerProcessor],ExtraOptions);
-      ParseFPCInfo(Info,[fpciCompilerOS,fpciCompilerProcessor],Infos);
-      RealTargetOS:=Infos[fpciCompilerOS];
-      RealTargetCPU:=Infos[fpciCompilerProcessor];
+      Info:=RunFPCInfo(Compiler,[fpciTargetOS,fpciTargetProcessor],ExtraOptions);
+      ParseFPCInfo(Info,[fpciTargetOS,fpciTargetProcessor],Infos);
+      RealTargetOS:=Infos[fpciTargetOS];
+      RealTargetCPU:=Infos[fpciTargetProcessor];
 
       // run fpc and parse output
       RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
