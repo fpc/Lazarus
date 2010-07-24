@@ -48,6 +48,7 @@ type
     procedure WriteCompilerInfo(ConfigCache: TFPCTargetConfigCache);
     procedure WriteDuplicatesInPPUPath(ConfigCache: TFPCTargetConfigCache);
     procedure WriteMissingPPUSources(UnitSet: TFPCUnitSetCache);
+    procedure WriteDuplicateSources(UnitSet: TFPCUnitSetCache);
   end;
 
 { TMyApplication }
@@ -108,6 +109,7 @@ begin
   WriteDuplicatesInPPUPath(ConfigCache);
 
   WriteMissingPPUSources(UnitSet);
+  WriteDuplicateSources(UnitSet);
 
   // stop program loop
   Terminate;
@@ -272,6 +274,32 @@ begin
     end;
     if Cnt>0 then writeln;
   end;
+end;
+
+procedure TTestFPCSourceUnitRules.WriteDuplicateSources(
+  UnitSet: TFPCUnitSetCache);
+var
+  SrcDuplicates: TStringToStringTree;
+  Node: TAVLTreeNode;
+  Cnt: Integer;
+  Item: PStringToStringTreeItem;
+  aUnitName: String;
+  Files: String;
+begin
+  SrcDuplicates:=UnitSet.GetSourceDuplicates(false);
+  if SrcDuplicates=nil then exit;
+  Cnt:=0;
+  Node:=SrcDuplicates.Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToStringTreeItem(Node.Data);
+    if Cnt=0 then writeln;
+    inc(Cnt);
+    aUnitName:=Item^.Name;
+    Files:=Item^.Value;
+    writeln('WARNING: duplicate source files: unit=',aUnitName,' files=',Files);
+    Node:=SrcDuplicates.Tree.FindSuccessor(Node);
+  end;
+  if Cnt>0 then writeln;
 end;
 
 var
