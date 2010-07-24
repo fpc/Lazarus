@@ -15961,6 +15961,7 @@ var
   Owners: TFPList;
   i: Integer;
   APackage: TLazPackage;
+  ShortDir: String;
 begin
   DependencyAdded:=false;
   if UnitInfo.IsVirtual then exit;
@@ -15991,14 +15992,16 @@ begin
       end;
     end;
     // unit is not in a package => extend unit path
+    ShortDir:=CurDirectory;
+    if (not Project1.IsVirtual) then
+      ShortDir:=CreateRelativePath(ShortDir,Project1.ProjectDirectory);
     if MessageDlg(lisAddToUnitSearchPath,
       Format(lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory, [
         #13, CurDirectory]),
       mtConfirmation,[mbYes,mbNo],0)=mrYes
     then begin
       Project1.CompilerOptions.OtherUnitFiles:=
-            MergeSearchPaths(Project1.CompilerOptions.OtherUnitFiles,
-                             CurDirectory);
+            MergeSearchPaths(Project1.CompilerOptions.OtherUnitFiles,ShortDir);
     end;
   end;
 end;
@@ -16013,9 +16016,11 @@ var
   DependencyAdded: boolean;
 begin
   Result:=mrOk;
+  //debugln(['TMainIDE.ProjInspectorAddUnitToProject ',AnUnitInfo.Filename]);
   BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
   AnUnitInfo.IsPartOfProject:=true;
-  CheckUnitDirIsInSearchPath(AnUnitInfo,false,DependencyAdded);
+  if FilenameIsPascalUnit(AnUnitInfo.Filename) then
+    CheckUnitDirIsInSearchPath(AnUnitInfo,false,DependencyAdded);
   if FilenameIsPascalUnit(AnUnitInfo.Filename)
   and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
   then begin
