@@ -47,6 +47,7 @@ type
     procedure Error(Msg: string; DoWriteHelp: Boolean);
     procedure WriteCompilerInfo(ConfigCache: TFPCTargetConfigCache);
     procedure WriteDuplicatesInPPUPath(ConfigCache: TFPCTargetConfigCache);
+    procedure WriteMissingPPUSources(UnitSet: TFPCUnitSetCache);
   end;
 
 { TMyApplication }
@@ -60,7 +61,6 @@ var
   FPCSrcDir: String;
   UnitSet: TFPCUnitSetCache;
   ConfigCache: TFPCTargetConfigCache;
-  SourceCache: TFPCSourceCache;
 begin
   // quick check parameters
   ErrorMsg:=CheckOptions('hcTPF','help compiler targetos targetcpu fpcsrcdir');
@@ -101,13 +101,13 @@ begin
 
   UnitSet:=CodeToolBoss.FPCDefinesCache.FindUnitSet(CompilerFilename,
                                           TargetOS,TargetCPU,'',FPCSrcDir,true);
-  ConfigCache:=UnitSet.GetConfigCache(true);
+  UnitSet.Init;
+  ConfigCache:=UnitSet.GetConfigCache(false);
 
   WriteCompilerInfo(ConfigCache);
-
   WriteDuplicatesInPPUPath(ConfigCache);
 
-  SourceCache:=UnitSet.GetSourceCache(true);
+  WriteMissingPPUSources(UnitSet);
 
   // stop program loop
   Terminate;
@@ -223,17 +223,55 @@ begin
     writeln;
   end;
   Node:=Units.Tree.FindLowest;
+  i:=0;
   while Node<>nil do begin
     Item:=PStringToStringTreeItem(Node.Data);
     Filename:=Item^.Value;
     if System.Pos(';',Filename)>0 then begin
       // duplicate units
+      if i=0 then writeln;
+      inc(i);
       writeln('WARNING: duplicate unit in PPU path: '+Filename);
     end;
     Node:=Units.Tree.FindSuccessor(Node);
   end;
+  if i>0 then writeln;
   Units.Free;
   SourceFiles.Free;
+end;
+
+procedure TTestFPCSourceUnitRules.WriteMissingPPUSources(
+  UnitSet: TFPCUnitSetCache);
+var
+  UnitToSrc: TStringToStringTree;
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+  ConfigCache: TFPCTargetConfigCache;
+  aUnitName: String;
+  Cnt: Integer;
+  Filename: String;
+begin
+  UnitToSrc:=UnitSet.GetUnitToSourceTree(false);
+  ConfigCache:=UnitSet.GetConfigCache(false);
+  if ConfigCache.Units<>nil then begin
+    Cnt:=0;
+    Node:=ConfigCache.Units.Tree.FindLowest;
+    while Node<>nil do begin
+      Item:=PStringToStringTreeItem(Node.Data);
+      aUnitName:=Item^.Name;
+      Filename:=Item^.Value;
+      if CompareFileExt(Filename,'ppu',false)=0 then begin
+        // a ppu in the PPU search path
+        if UnitToSrc[aUnitName]='' then begin
+          inc(Cnt);
+          if Cnt=1 then writeln;
+          writeln('WARNING: no source found for PPU file: '+Filename);
+        end;
+      end;
+      Node:=ConfigCache.Units.Tree.FindSuccessor(Node);
+    end;
+    if Cnt>0 then writeln;
+  end;
 end;
 
 var
