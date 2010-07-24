@@ -471,7 +471,7 @@ const
       (Name:  dlgFoldPasBorComment;    Xml:     'BorComment';
        Index: ord(cfbtBorCommand);   Enabled: True),
       (Name:  dlgFoldPasSlashComment;    Xml:     'SlashComment';
-       Index: ord(cfbtSlashComment); Enabled: False),
+       Index: ord(cfbtSlashComment); Enabled: True),
 
       (Name:  dlgFoldPasNestedComment; Xml:     'NestedComment';
        Index: ord(cfbtNestedComment);Enabled: True)
