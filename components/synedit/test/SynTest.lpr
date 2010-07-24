@@ -6,6 +6,7 @@ uses
   Interfaces, Forms, GuiTestRunner, TestBase,
   TestBasicSynEdit, TestSynSelection,
   TestSynBeautifier, TestTrimSpace, TestSyncroEdit,
+  TestHighlightPas, TestMarkupwordGroup, TestFoldedView,
   TestHighlightXml, TestHighlightMulti;
 
 {$IFDEF WINDOWS}{  $R SynTest.rc}{$ENDIF}
