@@ -285,18 +285,43 @@ var
   Item: PStringToStringTreeItem;
   aUnitName: String;
   Files: String;
+  Units: TStringToStringTree;
+  PPUFile: string;
 begin
   SrcDuplicates:=UnitSet.GetSourceDuplicates(false);
   if SrcDuplicates=nil then exit;
+  Units:=UnitSet.GetConfigCache(false).Units;
+
+  // first list all duplicates with a ppu file (important)
   Cnt:=0;
   Node:=SrcDuplicates.Tree.FindLowest;
   while Node<>nil do begin
     Item:=PStringToStringTreeItem(Node.Data);
-    if Cnt=0 then writeln;
-    inc(Cnt);
     aUnitName:=Item^.Name;
     Files:=Item^.Value;
-    writeln('WARNING: duplicate source files: unit=',aUnitName,' files=',Files);
+    PPUFile:=Units[aUnitName];
+    if CompareFileExt(PPUFile,'ppu',false)=0 then begin
+      if Cnt=0 then writeln;
+      inc(Cnt);
+      writeln('WARNING: duplicate source file for ppu ',aUnitName,' files=',Files);
+    end;
+    Node:=SrcDuplicates.Tree.FindSuccessor(Node);
+  end;
+  if Cnt>0 then writeln;
+
+  // then list all duplicates without a ppu file (unimportant)
+  Cnt:=0;
+  Node:=SrcDuplicates.Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToStringTreeItem(Node.Data);
+    aUnitName:=Item^.Name;
+    Files:=Item^.Value;
+    PPUFile:=Units[aUnitName];
+    if PPUFile='' then begin
+      if Cnt=0 then writeln;
+      inc(Cnt);
+      writeln('HINT: duplicate source files: unit=',aUnitName,' files=',Files);
+    end;
     Node:=SrcDuplicates.Tree.FindSuccessor(Node);
   end;
   if Cnt>0 then writeln;
