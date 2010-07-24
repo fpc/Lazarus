@@ -355,6 +355,16 @@ begin
             Inc(k);
           end;
         end;
+
+        // Don't use the default ID, force one, at least for the first two buttons
+        // But only do that for the main form, so that secondary forms
+        // can have unique numbers
+        if Wnd = Application.MainForm.Handle then
+        begin
+          if i = 0 then mi.wID := MenuBarID_L
+          else if i = 1 then mi.wID := MenuBarID_R;
+        end;
+
         // Update the MenuItem Command to use latter
         TMenuItemAccess(LCLMenu.Items.Items[j]).FCommand := mi.wID;
 
@@ -363,7 +373,8 @@ begin
         tb.iBitmap:=I_IMAGENONE;
         tb.idCommand := mi.wID;
         {$ifdef VerboseWinCEMenu}
-        DebugLn('[CeSetMenu] p3 atPDA menu ' + LCLMenu.Items.Items[j].Name + ' Set FCommand = mi.wID = ' + IntToStr(tb.idCommand));
+        DebugLn('[CeSetMenu] p3 atPDA menuname: ' + LCLMenu.Items.Items[j].Name +
+          ' Set FCommand = mi.wID = ' + IntToStr(tb.idCommand));
         {$endif}
 
         tb.iString:=SendMessage(mbi.hwndMB, TB_ADDSTRING, 0, LPARAM(@buf));
@@ -525,7 +536,7 @@ begin
   end;
   {$ifdef VerboseWinCEMenu}
   DebugLn('[UpdateCaption] SetMenuItemInfo for ' + AMenuItem.Name +
-    ' with ButtonID = AMenuItem.Command + StartMenuItem = ' + IntToStr(AMenuItem.Command + StartMenuItem));
+    ' with ButtonID = AMenuItem.Command = ' + IntToStr(AMenuItem.Command));
   {$endif}
   if not SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo) then
     DebugLn('SetMenuItemInfo failed: ', GetLastErrorText(GetLastError));
@@ -559,7 +570,7 @@ begin
     end;
     {$ifdef VerboseWinCEMenu}
     DebugLn('[TWinCEWSMenuItem.AttachMenuEx] GetMenuItemInfo for '
-      + AMenuItem.Parent.Name + ' with ButtonID = AMenuItem.Parent.Command + StartMenuItem = ' + IntToStr(AMenuItem.Parent.Command + StartMenuItem));
+      + AMenuItem.Parent.Name + ' with ButtonID = AMenuItem.Parent.Command = ' + IntToStr(AMenuItem.Parent.Command));
     {$endif}
     if not GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo) then
       DebugLn('[TWinCEWSMenuItem.AttachMenuEx] GetMenuItemInfo failed');
@@ -713,7 +724,7 @@ var
   bi: TBBUTTONINFO;
   w: WideString;
   h: THandle;
-  i, j, MenuBarRLID: Integer;
+  i, MenuBarRLID: Integer;
   FormFound: Boolean;
   AMenu: TMenu;
 {$endif}
@@ -721,14 +732,19 @@ begin
   // The code to set top-level menus is different then ordinary items under WinCE
   {$ifndef Win32}
   AMenu := AMenuItem.GetParentMenu;
-//  DebugLn(Format('[TWinCEWSMenuItem.SetCaption] A AItem.Menu:%d', [PtrInt(AMenu)]));
+  {$ifdef VerboseWinCEMenu}
+  DebugLn(Format('[TWinCEWSMenuItem.SetCaption] ACaption:%s ACommand:%d',
+    [AMenuItem.Caption, AMenuItem.Command]));
+  {$endif}
 
   // Top-Level menu items for PDA systems
   if (Application.ApplicationType in [atPDA, atKeyPadDevice]) and
     (AMenu <> nil) and (AMenu is TMainMenu) and
     (AMenuItem.Parent = AMenu.Items) then
   begin
-//    DebugLn('[TWinCEWSMenuItem.SetCaption] B');
+    {$ifdef VerboseWinCEMenu}
+    DebugLn('[TWinCEWSMenuItem.SetCaption] Top-level menu item');
+    {$endif}
 
     // Iterate through all forms to find the parent
     FormFound := False;
@@ -740,9 +756,11 @@ begin
         Break;
       end;
 
-//    DebugLn('[TWinCEWSMenuItem.SetCaption] C');
     if not FormFound then Exit;
-//    DebugLn('[TWinCEWSMenuItem.SetCaption] D');
+
+    {$ifdef VerboseWinCEMenu}
+    DebugLn('[TWinCEWSMenuItem.SetCaption] Form found');
+    {$endif}
 
     FillChar(bi, SizeOf(TBBUTTONINFO), 0);
     bi.cbSize := SizeOf(TBBUTTONINFO);
@@ -750,34 +768,12 @@ begin
     w := UTF8Decode(ACaption);
     bi.pszText := PWideChar(w);
 
-    // Under Windows the Command numbering is different
-    // Here we need to find the position of the button
-    // in the list of visible buttons and use MenuBarID_L or _R
-    if (Application.ApplicationType = atKeyPadDevice) then
-    begin
-      i := 0; // Counts only really visible menus
-      for j := 0 to AMenu.Items.Count - 1 do
-      begin
-        if AMenuItem = AMenu.Items.Items[j] then Break;
-        if AMenu.Items.Items[j].Visible then Inc(i);
-      end;
+    MenuBarRLID := AMenuItem.Command;
 
-      MenuBarRLID := AMenu.Items.Items[j].Command;
-//      if i = 0 then MenuBarRLID := StartMenuItem + MenuBarID_L
-//      else MenuBarRLID := StartMenuItem + MenuBarID_R;
-
-      {$ifdef VerboseWinCEMenu}
-      DebugLn('[TWinCEWSMenuItem.SetCaption] TB_SETBUTTONINFO with ButtonID: ' + IntToStr(MenuBarRLID));
-      {$endif}
-      SendMessageW(h, TB_SETBUTTONINFO, MenuBarRLID, LPARAM(@bi));
-    end
-    else
-    begin
-      {$ifdef VerboseWinCEMenu}
-      DebugLn('[TWinCEWSMenuItem.SetCaption] TB_SETBUTTONINFO with ButtonID: ' + IntToStr(AMenuItem.Command));
-      {$endif}
-      SendMessageW(h, TB_SETBUTTONINFO, AMenuItem.Command, LPARAM(@bi));
-    end;
+    {$ifdef VerboseWinCEMenu}
+    DebugLn('[TWinCEWSMenuItem.SetCaption] TB_SETBUTTONINFO with ButtonID: ' + IntToStr(MenuBarRLID));
+    {$endif}
+    SendMessageW(h, TB_SETBUTTONINFO, MenuBarRLID, LPARAM(@bi));
   end
   else
   {$endif}
