@@ -324,15 +324,17 @@ type
 
   TIdentCompletionTool = class(TFindDeclarationTool)
   private
-    LastGatheredIdentParent: TCodeTreeNode;
-    LastGatheredIdentLevel: integer;
-    ClassAndAncestors: TFPList;// list of PCodeXYPosition
-    FoundPublicProperties: TAVLTree;// tree of PChar (pointing to the
+    FLastGatheredIdentParent: TCodeTreeNode;
+    FLastGatheredIdentLevel: integer;
+    FICTClassAndAncestors: TFPList;// list of PCodeXYPosition
+    FIDCTFoundPublicProperties: TAVLTree;// tree of PChar (pointing to the
                                     // property names in source)
-    FoundMethods: TAVLTree;// tree of TCodeTreeNodeExtension Txt=clean text
+    FIDTFoundMethods: TAVLTree;// tree of TCodeTreeNodeExtension Txt=clean text
+    FIDTTreeOfUnitFiles: TAVLTree;// tree of TUnitFileInfo
+    procedure AddToTreeOfUnitFileInfo(const AFilename: string);
   protected
     CurrentIdentifierList: TIdentifierList;
-    CurrentContexts: TCodeContextInfo;
+    CurrentIdentifierContexts: TCodeContextInfo;
     function CollectAllIdentifiers(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
     procedure GatherPredefinedIdentifiers(CleanPos: integer;
@@ -878,6 +880,11 @@ end;
 
 { TIdentCompletionTool }
 
+procedure TIdentCompletionTool.AddToTreeOfUnitFileInfo(const AFilename: string);
+begin
+  AddToTreeOfUnitFiles(FIDTTreeOfUnitFiles,AFilename,false);
+end;
+
 function TIdentCompletionTool.CollectAllIdentifiers(
   Params: TFindDeclarationParams; const FoundContext: TFindContext
   ): TIdentifierFoundResult;
@@ -890,7 +897,7 @@ var
     CurClassNode: TCodeTreeNode;
     p: TFindContext;
   begin
-    if ClassAndAncestors<>nil then begin
+    if FICTClassAndAncestors<>nil then begin
       // start of the identifier completion is in a method or class
       // => all protected ancestor classes are allowed as well.
       CurClassNode:=FoundContext.Node;
@@ -899,7 +906,7 @@ var
         CurClassNode:=CurClassNode.Parent;
       if CurClassNode=nil then exit;
       p:=CreateFindContext(Params.NewCodeTool,CurClassNode);
-      if IndexOfFindContext(ClassAndAncestors,@p)>=0 then begin
+      if IndexOfFindContext(FICTClassAndAncestors,@p)>=0 then begin
         // this class node is the class or one of the ancestors of the class
         // of the start context of the identifier completion
         exit(true);
@@ -913,9 +920,9 @@ var
   function PropertyIsOverridenPublicPublish: boolean;
   begin
     // protected properties can be made public in child classes.
-    //debugln('PropertyIsOverridenPublicPublish Identifier=',GetIdentifier(Ident),' Find=',dbgs((FoundPublicProperties<>nil) and (FoundPublicProperties.Find(Ident)<>nil)));
-    if FoundPublicProperties<>nil then begin
-      if FoundPublicProperties.Find(Ident)<>nil then begin
+    //debugln('PropertyIsOverridenPublicPublish Identifier=',GetIdentifier(Ident),' Find=',dbgs((FIDCTFoundPublicProperties<>nil) and (FIDCTFoundPublicProperties.Find(Ident)<>nil)));
+    if FIDCTFoundPublicProperties<>nil then begin
+      if FIDCTFoundPublicProperties.Find(Ident)<>nil then begin
         // there is a public/published property with the same name
         exit(true);
       end;
@@ -925,16 +932,16 @@ var
   
   procedure SavePublicPublishedProperty;
   begin
-    if FoundPublicProperties=nil then begin
+    if FIDCTFoundPublicProperties=nil then begin
       // create tree
-      FoundPublicProperties:=
+      FIDCTFoundPublicProperties:=
                          TAVLTree.Create(TListSortCompare(@CompareIdentifiers))
-    end else if FoundPublicProperties.Find(Ident)<>nil then begin
+    end else if FIDCTFoundPublicProperties.Find(Ident)<>nil then begin
       // identifier is already public
       exit;
     end;
-    FoundPublicProperties.Add(Ident);
-    //debugln('SavePublicPublishedProperty Identifier=',GetIdentifier(Ident),' Find=',dbgs(FoundPublicProperties.Find(Ident)<>nil));
+    FIDCTFoundPublicProperties.Add(Ident);
+    //debugln('SavePublicPublishedProperty Identifier=',GetIdentifier(Ident),' Find=',dbgs(FIDCTFoundPublicProperties.Find(Ident)<>nil));
   end;
   
 var
@@ -953,10 +960,10 @@ begin
   {$ENDIF}
 
   CurContextParent:=FoundContext.Node.GetFindContextParent;
-  if LastGatheredIdentParent<>CurContextParent then begin
+  if FLastGatheredIdentParent<>CurContextParent then begin
     // new context level
-    LastGatheredIdentParent:=CurContextParent;
-    inc(LastGatheredIdentLevel);
+    FLastGatheredIdentParent:=CurContextParent;
+    inc(FLastGatheredIdentLevel);
   end;
 
   ProtectedForeignClass:=false;
@@ -1074,7 +1081,7 @@ begin
                             false,
                             0,
                             Ident,
-                            LastGatheredIdentLevel,
+                            FLastGatheredIdentLevel,
                             FoundContext.Node,
                             FoundContext.Tool,
                             ctnNone);
@@ -1394,47 +1401,13 @@ end;
 
 procedure TIdentCompletionTool.GatherUnitnames(CleanPos: integer;
   const Context: TFindContext; BeautifyCodeOptions: TBeautifyCodeOptions);
-var
-  TreeOfUnitFiles: TAVLTree;
 
-  {$IFDEF EnableFPCCache}
   procedure GatherUnitsFromSet;
   begin
     // collect all unit files in fpc unit paths
-    //DirectoryCache.IterateFPCUnitsInSet();
+    DirectoryCache.IterateFPCUnitsInSet(@AddToTreeOfUnitFileInfo);
   end;
-  {$ELSE}
-  procedure GatherUnitsFromUnitLinks;
-  var
-    UnitLinks: string;
-    UnitLinkStart: Integer;
-    UnitLinkEnd: LongInt;
-    UnitLinkLen: Integer;
-    Filename: String;
-  begin
-    UnitLinks:=Scanner.Values[ExternalMacroStart+'UnitLinks'];
-    UnitLinkStart:=1;
-    while UnitLinkStart<=length(UnitLinks) do begin
-      while (UnitLinkStart<=length(UnitLinks))
-      and (UnitLinks[UnitLinkStart] in [#10,#13]) do
-        inc(UnitLinkStart);
-      UnitLinkEnd:=UnitLinkStart;
-      while (UnitLinkEnd<=length(UnitLinks)) and (UnitLinks[UnitLinkEnd]<>' ')
-      do
-        inc(UnitLinkEnd);
-      UnitLinkLen:=UnitLinkEnd-UnitLinkStart;
-      if UnitLinkLen>0 then begin
-        Filename:=copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart);
-        AddToTreeOfUnitFiles(TreeOfUnitFiles,Filename,false);
-      end;
-      UnitLinkStart:=UnitLinkEnd+1;
-      while (UnitLinkStart<=length(UnitLinks))
-      and (not (UnitLinks[UnitLinkStart] in [#10,#13])) do
-        inc(UnitLinkStart);
-    end;
-  end;
-  {$ENDIF}
-  
+
 var
   UnitPath, SrcPath: string;
   BaseDir: String;
@@ -1450,27 +1423,23 @@ begin
   GatherUnitAndSrcPath(UnitPath,SrcPath);
   //DebugLn('TIdentCompletionTool.GatherUnitnames UnitPath="',UnitPath,'" SrcPath="',SrcPath,'"');
   BaseDir:=ExtractFilePath(MainFilename);
-  TreeOfUnitFiles:=nil;
+  FIDTTreeOfUnitFiles:=nil;
   try
     // search in unitpath
     UnitExt:='pp;pas;ppu';
     if Scanner.CompilerMode=cmMacPas then
       UnitExt:=UnitExt+';p';
-    GatherUnitFiles(BaseDir,UnitPath,UnitExt,false,true,TreeOfUnitFiles);
+    GatherUnitFiles(BaseDir,UnitPath,UnitExt,false,true,FIDTTreeOfUnitFiles);
     // search in srcpath
     SrcExt:='pp;pas';
     if Scanner.CompilerMode=cmMacPas then
       SrcExt:=SrcExt+';p';
-    GatherUnitFiles(BaseDir,SrcPath,SrcExt,false,true,TreeOfUnitFiles);
+    GatherUnitFiles(BaseDir,SrcPath,SrcExt,false,true,FIDTTreeOfUnitFiles);
     // add unitlinks
-    {$IFDEF EnableFPCCache}
     GatherUnitsFromSet;
-    {$ELSE}
-    GatherUnitsFromUnitLinks;
-    {$ENDIF}
     // create list
     CurSourceName:=GetSourceName;
-    ANode:=TreeOfUnitFiles.FindLowest;
+    ANode:=FIDTTreeOfUnitFiles.FindLowest;
     while ANode<>nil do begin
       UnitFileInfo:=TUnitFileInfo(ANode.Data);
       if CompareIdentifiers(PChar(Pointer(UnitFileInfo.FileUnitName)),
@@ -1482,10 +1451,10 @@ begin
             0,nil,nil,ctnUnit);
         CurrentIdentifierList.Add(NewItem);
       end;
-      ANode:=TreeOfUnitFiles.FindSuccessor(ANode);
+      ANode:=FIDTTreeOfUnitFiles.FindSuccessor(ANode);
     end;
   finally
-    FreeTreeOfUnitFiles(TreeOfUnitFiles);
+    FreeTreeOfUnitFiles(FIDTTreeOfUnitFiles);
   end;
 end;
 
@@ -1700,8 +1669,8 @@ begin
   if IdentifierList=nil then IdentifierList:=TIdentifierList.Create;
   CurrentIdentifierList:=IdentifierList;
   CurrentIdentifierList.Clear;
-  LastGatheredIdentParent:=nil;
-  LastGatheredIdentLevel:=0;
+  FLastGatheredIdentParent:=nil;
+  FLastGatheredIdentLevel:=0;
   CurrentIdentifierList.StartContextPos:=CursorPos;
   StartContext := CurrentIdentifierList.StartContext;
   StartContext.Tool := Self;
@@ -1846,30 +1815,30 @@ begin
   case FoundContext.Node.Desc of
   ctnProcedure:
     begin
-      //DebugLn('TIdentCompletionTool.CollectAllContexts CurrentContexts.ProcNameAtom.StartPos=',dbgs(CurrentContexts.ProcNameAtom.StartPos));
-      if (CurrentContexts.ProcName='') then exit;
+      //DebugLn('TIdentCompletionTool.CollectAllContexts CurrentContexts.ProcNameAtom.StartPos=',dbgs(CurrentIdentifierContexts.ProcNameAtom.StartPos));
+      if (CurrentIdentifierContexts.ProcName='') then exit;
       FoundContext.Tool.MoveCursorToProcName(FoundContext.Node,true);
       //DebugLn(['TIdentCompletionTool.CollectAllContexts ProcName=',GetIdentifier(@FoundContext.Tool.Src[FoundContext.Tool.CurPos.StartPos])]);
       if not FoundContext.Tool.CompareSrcIdentifiers(
         FoundContext.Tool.CurPos.StartPos,
-        PChar(CurrentContexts.ProcName))
+        PChar(CurrentIdentifierContexts.ProcName))
       then exit;
     end;
   ctnProperty:
     begin
-      if (CurrentContexts.ProcName='') then exit;
+      if (CurrentIdentifierContexts.ProcName='') then exit;
       FoundContext.Tool.MoveCursorToPropName(FoundContext.Node);
       if not FoundContext.Tool.CompareSrcIdentifiers(
         FoundContext.Tool.CurPos.StartPos,
-        PChar(CurrentContexts.ProcName))
+        PChar(CurrentIdentifierContexts.ProcName))
       then exit;
     end;
   ctnVarDefinition:
     begin
-      if (CurrentContexts.ProcName='') then exit;
+      if (CurrentIdentifierContexts.ProcName='') then exit;
       if not FoundContext.Tool.CompareSrcIdentifiers(
         FoundContext.Node.StartPos,
-        PChar(CurrentContexts.ProcName))
+        PChar(CurrentIdentifierContexts.ProcName))
       then exit;
     end;
   else
@@ -1882,24 +1851,24 @@ end;
 procedure TIdentCompletionTool.AddCollectionContext(Tool: TFindDeclarationTool;
   Node: TCodeTreeNode);
 begin
-  if CurrentContexts=nil then
-    CurrentContexts:=TCodeContextInfo.Create;
-  CurrentContexts.Add(CreateExpressionType(xtContext,xtNone,
+  if CurrentIdentifierContexts=nil then
+    CurrentIdentifierContexts:=TCodeContextInfo.Create;
+  CurrentIdentifierContexts.Add(CreateExpressionType(xtContext,xtNone,
                                            CreateFindContext(Tool,Node)));
   //DebugLn('TIdentCompletionTool.AddCollectionContext ',Node.DescAsString,' ',ExtractNode(Node,[]));
 end;
 
 procedure TIdentCompletionTool.InitFoundMethods;
 begin
-  if FoundMethods<>nil then ClearFoundMethods;
-  FoundMethods:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+  if FIDTFoundMethods<>nil then ClearFoundMethods;
+  FIDTFoundMethods:=TAVLTree.Create(@CompareCodeTreeNodeExt);
 end;
 
 procedure TIdentCompletionTool.ClearFoundMethods;
 begin
-  if FoundMethods=nil then exit;
-  NodeExtMemManager.DisposeAVLTree(FoundMethods);
-  FoundMethods:=nil;
+  if FIDTFoundMethods=nil then exit;
+  NodeExtMemManager.DisposeAVLTree(FIDTFoundMethods);
+  FIDTFoundMethods:=nil;
 end;
 
 function TIdentCompletionTool.CollectMethods(
@@ -1922,7 +1891,7 @@ begin
   if FoundContext.Node.Desc=ctnProcedure then begin
     ProcText:=FoundContext.Tool.ExtractProcHead(FoundContext.Node,
                               [phpWithoutClassKeyword,phpWithHasDefaultValues]);
-    AVLNode:=FindCodeTreeNodeExtAVLNode(FoundMethods,ProcText);
+    AVLNode:=FindCodeTreeNodeExtAVLNode(FIDTFoundMethods,ProcText);
     if AVLNode<>nil then begin
       // method is overriden => ignore
     end else begin
@@ -1931,7 +1900,7 @@ begin
       NodeExt.Node:=FoundContext.Node;
       NodeExt.Data:=FoundContext.Tool;
       NodeExt.Txt:=ProcText;
-      FoundMethods.Add(NodeExt);
+      FIDTFoundMethods.Add(NodeExt);
     end;
   end;
 end;
@@ -2024,7 +1993,7 @@ begin
       GatherSourceNames(GatherContext);
     end else begin
       // find class and ancestors if existing (needed for protected identifiers)
-      FindContextClassAndAncestors(IdentStartXY,ClassAndAncestors);
+      FindContextClassAndAncestors(IdentStartXY,FICTClassAndAncestors);
 
       FindCollectionContext(Params,IdentStartPos,CursorNode,
                            GatherContext,ContextExprStartPos,StartInSubContext);
@@ -2179,8 +2148,8 @@ begin
 
     Result:=true;
   finally
-    FreeListOfPFindContext(ClassAndAncestors);
-    FreeAndNil(FoundPublicProperties);
+    FreeListOfPFindContext(FICTClassAndAncestors);
+    FreeAndNil(FIDCTFoundPublicProperties);
     Params.Free;
     ClearIgnoreErrorAfter;
     DeactivateGlobalWriteLock;
@@ -2301,23 +2270,23 @@ var
     
     // it is a parameter -> create context
     Result:=true;
-    if CurrentContexts=nil then
-      CurrentContexts:=TCodeContextInfo.Create;
-    CurrentContexts.Tool:=Self;
-    CurrentContexts.ParameterIndex:=ParameterIndex+1;
-    CurrentContexts.ProcNameAtom:=ProcNameAtom;
-    CurrentContexts.ProcName:=GetAtom(ProcNameAtom);
+    if CurrentIdentifierContexts=nil then
+      CurrentIdentifierContexts:=TCodeContextInfo.Create;
+    CurrentIdentifierContexts.Tool:=Self;
+    CurrentIdentifierContexts.ParameterIndex:=ParameterIndex+1;
+    CurrentIdentifierContexts.ProcNameAtom:=ProcNameAtom;
+    CurrentIdentifierContexts.ProcName:=GetAtom(ProcNameAtom);
 
-    AddPredefinedProcs(CurrentContexts,ProcNameAtom);
+    AddPredefinedProcs(CurrentIdentifierContexts,ProcNameAtom);
 
     MoveCursorToAtomPos(ProcNameAtom);
     ReadNextAtom; // read opening bracket
-    CurrentContexts.StartPos:=CurPos.EndPos;
+    CurrentIdentifierContexts.StartPos:=CurPos.EndPos;
     // read closing bracket
     if ReadTilBracketClose(false) then
-      CurrentContexts.EndPos:=CurPos.StartPos
+      CurrentIdentifierContexts.EndPos:=CurPos.StartPos
     else
-      CurrentContexts.EndPos:=SrcLen+1;
+      CurrentIdentifierContexts.EndPos:=SrcLen+1;
 
     FindCollectionContext(Params,ProcNameAtom.StartPos,CursorNode,
                           GatherContext,ContextExprStartPos,StartInSubContext);
@@ -2345,7 +2314,7 @@ begin
   Result:=false;
 
   IdentifierList:=nil;
-  CurrentContexts:=CodeContexts;
+  CurrentIdentifierContexts:=CodeContexts;
 
   ActivateGlobalWriteLock;
   Params:=TFindDeclarationParams.Create;
@@ -2357,7 +2326,7 @@ begin
     if IdentEndPos=0 then ;
 
     // find class and ancestors if existing (needed for protected identifiers)
-    FindContextClassAndAncestors(CursorPos,ClassAndAncestors);
+    FindContextClassAndAncestors(CursorPos,FICTClassAndAncestors);
 
     if CursorNode<>nil then begin
       if not CheckContextIsParameter(Result) then begin
@@ -2366,7 +2335,7 @@ begin
       end;
     end;
 
-    if CurrentContexts=nil then begin
+    if CurrentIdentifierContexts=nil then begin
       // create default
       AddCollectionContext(Self,CursorNode);
     end;
@@ -2374,13 +2343,13 @@ begin
     Result:=true;
   finally
     if Result then begin
-      CodeContexts:=CurrentContexts;
-      CurrentContexts:=nil;
+      CodeContexts:=CurrentIdentifierContexts;
+      CurrentIdentifierContexts:=nil;
     end else begin
-      FreeAndNil(CurrentContexts);
+      FreeAndNil(CurrentIdentifierContexts);
     end;
-    FreeListOfPFindContext(ClassAndAncestors);
-    FreeAndNil(FoundPublicProperties);
+    FreeListOfPFindContext(FICTClassAndAncestors);
+    FreeAndNil(FIDCTFoundPublicProperties);
     Params.Free;
     ClearIgnoreErrorAfter;
     DeactivateGlobalWriteLock;
@@ -2437,8 +2406,8 @@ begin
     InitFoundMethods;
     FindIdentifierInContext(Params);
 
-    if FoundMethods<>nil then begin
-      AVLNode:=FoundMethods.FindLowest;
+    if FIDTFoundMethods<>nil then begin
+      AVLNode:=FIDTFoundMethods.FindLowest;
       while AVLNode<>nil do begin
         NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
         ANode:=NodeExt.Node;
@@ -2454,7 +2423,7 @@ begin
             raise Exception.Create('TIdentCompletionTool.FindAbstractMethods inconsistency');
           AddCodePosition(ListOfPCodeXYPosition,ProcXYPos);
         end;
-        AVLNode:=FoundMethods.FindSuccessor(AVLNode);
+        AVLNode:=FIDTFoundMethods.FindSuccessor(AVLNode);
       end;
     end;
 
@@ -2565,28 +2534,28 @@ var
   m: PtrUint;
 begin
   inherited CalcMemSize(Stats);
-  if ClassAndAncestors<>nil then
+  if FICTClassAndAncestors<>nil then
     Stats.Add('TIdentCompletionTool.ClassAndAncestors',
-        ClassAndAncestors.Count*(SizeOf(TAVLTreeNode)+SizeOf(TCodeXYPosition)));
-  if FoundPublicProperties<>nil then
+        FICTClassAndAncestors.Count*(SizeOf(TAVLTreeNode)+SizeOf(TCodeXYPosition)));
+  if FIDCTFoundPublicProperties<>nil then
     Stats.Add('TIdentCompletionTool.FoundPublicProperties',
-              FoundPublicProperties.Count*SizeOf(TAVLTreeNode));
-  if FoundMethods<>nil then begin
-    m:=PtrUint(FoundMethods.Count)*SizeOf(TAVLTreeNode);
-    Node:=FoundMethods.FindLowest;
+              FIDCTFoundPublicProperties.Count*SizeOf(TAVLTreeNode));
+  if FIDTFoundMethods<>nil then begin
+    m:=PtrUint(FIDTFoundMethods.Count)*SizeOf(TAVLTreeNode);
+    Node:=FIDTFoundMethods.FindLowest;
     while Node<>nil do begin
       Ext:=TCodeTreeNodeExtension(Node.Data);
       inc(m,Ext.CalcMemSize);
-      Node:=FoundMethods.FindSuccessor(Node);
+      Node:=FIDTFoundMethods.FindSuccessor(Node);
     end;
     STats.Add('TIdentCompletionTool.FoundMethods',m);
   end;
   if CurrentIdentifierList<>nil then
     Stats.Add('TIdentCompletionTool.CurrentIdentifierList',
       CurrentIdentifierList.CalcMemSize);
-  if CurrentContexts<>nil then
+  if CurrentIdentifierContexts<>nil then
     Stats.Add('TIdentCompletionTool.CurrentContexts',
-              CurrentContexts.CalcMemSize);
+              CurrentIdentifierContexts.CalcMemSize);
 end;
 
 { TIdentifierListItem }

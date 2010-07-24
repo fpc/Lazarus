@@ -928,7 +928,6 @@ type
 
     // methods for codetools
     procedure InitCodeToolBoss;
-    procedure UpdateEnglishErrorMsgFilename;
     procedure ActivateCodeToolAbortableMode;
     function BeginCodeTools: boolean; override;
     function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
@@ -1279,7 +1278,7 @@ begin
   TOutputFilterProcess := TProcessUTF8;
   {$ENDIF}
 
-  MainBuildBoss:=TBuildManager.Create;
+  MainBuildBoss:=TBuildManager.Create(nil);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create BUILD MANAGER');{$ENDIF}
 
   // load options
@@ -4371,7 +4370,7 @@ begin
     PkgBoss.TranslateResourceStrings;
   end;
   // set global variables
-  UpdateEnglishErrorMsgFilename;
+  MainBuildBoss.UpdateEnglishErrorMsgFilename;
   MacroValueChanged:=false;
   FPCSrcDirChanged:=false;
   FPCCompilerChanged:=OldCompilerFilename<>EnvironmentOptions.CompilerFilename;
@@ -4380,8 +4379,9 @@ begin
   ChangeMacroValue('FPCSrcDir',EnvironmentOptions.FPCSourceDirectory);
 
   if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
+  debugln(['TMainIDE.DoEnvironmentOptionsAfterWrite FPCCompilerChanged=',FPCCompilerChanged,' FPCSrcDirChanged=',FPCSrcDirChanged,' LazarusSrcDirChanged=',LazarusSrcDirChanged]);
   if FPCCompilerChanged or FPCSrcDirChanged then
-    MainBuildBoss.RescanCompilerDefines(true, false);
+    MainBuildBoss.RescanCompilerDefines(true,false);
 
   // update environment
   UpdateDesigners;
@@ -4545,7 +4545,7 @@ begin
   begin
     TBaseCompilerOptions(Sender).Modified := True;
     IncreaseCompilerParseStamp;
-    MainBuildBoss.RescanCompilerDefines(True, True);
+    MainBuildBoss.RescanCompilerDefines(True, False);
     IncreaseCompilerParseStamp;
     UpdateHighlighters; // because of FPC/Delphi mode
   end;
@@ -4574,7 +4574,7 @@ end;
 
 procedure TMainIDE.mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
 begin
-  MainBuildBoss.RescanCompilerDefines(true,false);
+  MainBuildBoss.RescanCompilerDefines(false,true);
 end;
 
 procedure TMainIDE.SaveEnvironment;
@@ -7586,7 +7586,7 @@ begin
     .BuildModeGraph:=DefaultBuildModeGraph;
   {$ENDIF}
 
-  MainBuildBoss.RescanCompilerDefines(true,true);
+  MainBuildBoss.RescanCompilerDefines(true,false);
 
   // load required packages
   PkgBoss.OpenProjectDependencies(Project1,true);
@@ -9614,7 +9614,7 @@ begin
       PkgBoss.AddDefaultDependencies(Project1);
 
       // rebuild codetools defines
-      MainBuildBoss.RescanCompilerDefines(true,true);
+      MainBuildBoss.RescanCompilerDefines(true,false);
 
       // (i.e. remove old project specific things and create new)
       IncreaseCompilerParseStamp;
@@ -12977,10 +12977,10 @@ begin
     if SearchInPath(StartUnitPath,AFilename,Result) then exit;
 
     // search unit in fpc source directory
-    Result:=CodeToolBoss.FindUnitInUnitLinks(BaseDir,
-                                             ExtractFilenameOnly(AFilename));
+    Result:=CodeToolBoss.FindUnitInUnitSet(BaseDir,
+                                           ExtractFilenameOnly(AFilename));
     {$IFDEF VerboseFindSourceFile}
-    debugln(['TMainIDE.FindSourceFile trying unit links Result=',Result]);
+    debugln(['TMainIDE.FindSourceFile tried unitset Result=',Result]);
     {$ENDIF}
     if Result<>'' then exit;
   end;
@@ -13300,31 +13300,15 @@ end;
 procedure TMainIDE.InitCodeToolBoss;
 // initialize the CodeToolBoss, which is the frontend for the codetools.
 //  - sets a basic set of compiler macros
-
-  procedure AddTemplate(ADefTempl: TDefineTemplate; AddToPool: boolean;
-    const ErrorMsg: string);
-  begin
-    if ADefTempl = nil then 
-    begin
-      DebugLn('');
-      DebugLn(UTF8ToConsole(ErrorMsg));
-    end else 
-    begin
-      if AddToPool then
-        CodeToolBoss.DefinePool.Add(ADefTempl.CreateCopy(false,true,true));
-      CodeToolBoss.DefineTree.Add(ADefTempl);
-    end;
-  end;
-
-var CompilerUnitSearchPath, CompilerUnitLinks: string;
-  ADefTempl: TDefineTemplate;
+var
   AFilename: string;
-  UnitLinksChanged: boolean;
-  TargetOS, TargetProcessor: string;
   InteractiveSetup: boolean;
 begin
   InteractiveSetup:=true;
   OpenEditorsOnCodeToolChange:=false;
+
+  // load caches
+  MainBuildBoss.LoadFPCDefinesCaches;
 
   CodeToolBoss.DefinePool.OnProgress:=@CodeToolBossProgress;
   CodeToolBoss.SourceCache.ExpirationTimeInDays:=365;
@@ -13341,101 +13325,54 @@ begin
     'PROJECT',nil,@CTMacroFunctionProject);
 
   CodeToolsOpts.AssignTo(CodeToolBoss);
-  if (not FileExistsUTF8(EnvironmentOptions.CompilerFilename)) then begin
+  if (not FileExistsCached(EnvironmentOptions.CompilerFilename)) then begin
     DebugLn('');
-    DebugLn('NOTE: Compiler Filename not set! (see Environment Options)');
+    DebugLn('NOTE: Compiler filename not set! (see Environment / Options ... / Environment / Files)');
   end;
 
   if (EnvironmentOptions.LazarusDirectory='')
   or not DirPathExists(EnvironmentOptions.LazarusDirectory) then begin
     DebugLn('');
     DebugLn(
-      'NOTE: Lazarus Source Directory not set!  (see Environment Options)');
+      'NOTE: Lazarus source directory not set!  (see Environment / Options ... / Environment / Files)');
   end;
-  if (EnvironmentOptions.FPCSourceDirectory='')
-  or not DirPathExists(EnvironmentOptions.GetFPCSourceDirectory) then begin
+  if (EnvironmentOptions.FPCSourceDirectory='') then begin
+    // Note: the FPCSourceDirectory can contain the macro FPCVer, which depend
+    //       on the compiler. Do not check if file exists here.
     DebugLn('');
-    DebugLn('NOTE: FPC Source Directory not set! (see Environment Options)');
+    DebugLn('NOTE: FPC source directory not set! (see Environment / Options ... / Environment / Files)');
   end;
 
-  // set global variables
+  // create a test unit needed to get from the compiler all macros and search paths
+  CodeToolBoss.FPCDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
+
+  // set global macros
   with CodeToolBoss.GlobalValues do begin
     Variables[ExternalMacroStart+'LazarusDir']:=
       EnvironmentOptions.LazarusDirectory;
     Variables[ExternalMacroStart+'ProjPath']:=VirtualDirectory;
     Variables[ExternalMacroStart+'LCLWidgetType']:=
       LCLPlatformDirNames[GetDefaultLCLWidgetType];
-    Variables[ExternalMacroStart+'FPCSrcDir']:=
-      EnvironmentOptions.GetFPCSourceDirectory;
   end;
 
-  // build DefinePool and Define Tree
-  UpdateEnglishErrorMsgFilename;
-  with CodeToolBoss.DefinePool do begin
-    // start the compiler and ask for his settings
-    TargetOS:='';
-    SetupCompilerFilename(InteractiveSetup);
-    TargetProcessor:='';
-    MainBuildBoss.CurDefinesCompilerFilename:=EnvironmentOptions.CompilerFilename;
-    MainBuildBoss.CurDefinesCompilerOptions:='';
-    MainBuildBoss.GetFPCCompilerParamsForEnvironmentTest(
-                                       MainBuildBoss.CurDefinesCompilerOptions);
-    //DebugLn('TMainIDE.InitCodeToolBoss CurDefinesCompilerOptions="',CurDefinesCompilerOptions,'"');
-    CreateUseDefaultsFlagTemplate;
+  // find the compiler executable
+  SetupCompilerFilename(InteractiveSetup);
+  // find the FPC source directory
+  SetupFPCSourceDirectory(InteractiveSetup);
+  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir']:=
+    EnvironmentOptions.GetFPCSourceDirectory;
 
-    ADefTempl:=CreateFPCTemplate(MainBuildBoss.CurDefinesCompilerFilename,
-                       MainBuildBoss.CurDefinesCompilerOptions,
-                       CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
-                       TargetOS,TargetProcessor,CodeToolsOpts);
-    AddTemplate(ADefTempl,false,
-             'NOTE: Could not create Define Template for Free Pascal Compiler');
+  // the first template is the "use default" flag
+  CreateUseDefaultsFlagTemplate;
 
-    // the compiler version was updated, now update the FPCSrcDir
-    SetupFPCSourceDirectory(InteractiveSetup);
-    CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir']:=
-      EnvironmentOptions.GetFPCSourceDirectory;
+  // create defines for the lazarus sources
+  SetupLazarusDirectory(InteractiveSetup);
 
-    // create compiler macros to simulate the Makefiles of the FPC sources
-    InputHistories.FPCConfigCache.CompilerPath:=
-                                            EnvironmentOptions.CompilerFilename;
-    CompilerUnitLinks:=InputHistories.FPCConfigCache.GetUnitLinks('');
-    UnitLinksChanged:=InputHistories.LastFPCUnitLinksNeedsUpdate('',
-                  CompilerUnitSearchPath,EnvironmentOptions.GetFPCSourceDirectory);
-    ADefTempl:=CreateFPCSourceTemplate(
-            CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
-            CompilerUnitSearchPath,
-            CodeToolBoss.GetCompiledSrcExtForDirectory(''),
-            TargetOS,TargetProcessor,
-            not UnitLinksChanged,CompilerUnitLinks,
-            CodeToolsOpts);
-
-    // save unitlinks
-    if UnitLinksChanged
-    or (CompilerUnitLinks<>InputHistories.FPCConfigCache.GetUnitLinks(''))
-    then begin
-      InputHistories.SetLastFPCUnitLinks(EnvironmentOptions.CompilerFilename,
-                                         '', // default options ''
-                                         CompilerUnitSearchPath,
-                                         EnvironmentOptions.GetFPCSourceDirectory,
-                                         CompilerUnitLinks);
-      InputHistories.Save;
-    end;
-    AddTemplate(ADefTempl,false,
-      lisNOTECouldNotCreateDefineTemplateForFreePascal);
-
-    // create compiler macros for the lazarus sources
-    SetupLazarusDirectory(InteractiveSetup);
-    ADefTempl:=CreateLazarusSourceTemplate(
-      '$('+ExternalMacroStart+'LazarusDir)',
-      '$('+ExternalMacroStart+'LCLWidgetType)',
-      MiscellaneousOptions.BuildLazOpts.ExtraOptions,CodeToolsOpts);
-    AddTemplate(ADefTempl,true,
-      lisNOTECouldNotCreateDefineTemplateForLazarusSources);
-  end;
+  MainBuildBoss.RescanCompilerDefines(true,false);
 
   // load include file relationships
   AFilename:=AppendPathDelim(GetPrimaryConfigPath)+CodeToolsIncludeLinkFile;
-  if FileExistsUTF8(AFilename) then
+  if FileExistsCached(AFilename) then
     CodeToolBoss.SourceCache.LoadIncludeLinksFromFile(AFilename);
 
   with CodeToolBoss do begin
@@ -13456,14 +13393,6 @@ begin
 
   // codetools consistency check
   CodeToolBoss.ConsistencyCheck;
-end;
-
-procedure TMainIDE.UpdateEnglishErrorMsgFilename;
-begin
-  if EnvironmentOptions.LazarusDirectory<>'' then
-    CodeToolBoss.DefinePool.EnglishErrorMsgFilename:=
-      AppendPathDelim(EnvironmentOptions.LazarusDirectory)+
-      'components'+PathDelim+'codetools'+PathDelim+'fpc.errore.msg';
 end;
 
 procedure TMainIDE.ActivateCodeToolAbortableMode;

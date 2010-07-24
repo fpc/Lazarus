@@ -697,6 +697,7 @@ type
     function NeedsUpdate: boolean;
     function Update(TestFilename: string; ExtraOptions: string = '';
                     const OnProgress: TDefinePoolProgress = nil): boolean;
+    function GetFPCVer(out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
     procedure IncreaseChangeStamp;
     property ChangeStamp: integer read FChangeStamp;
   end;
@@ -830,6 +831,7 @@ type
     function GetSourceDuplicates(AutoUpdate: boolean): TStringToStringTree; // lower case unit to semicolon separated list of files
     function GetUnitSrcFile(const AUnitName: string): string;
     property ChangeStamp: integer read FChangeStamp;
+    function GetInvalidChangeStamp: integer;
     procedure IncreaseChangeStamp;
     function GetUnitSetID: string;
   end;
@@ -840,6 +842,7 @@ type
   private
     FConfigCaches: TFPCTargetConfigCaches;
     FConfigCachesSaveStamp: integer;
+    FExtraOptions: string;
     FSourceCaches: TFPCSourceCaches;
     FSourceCachesSaveStamp: integer;
     FTestFilename: string;
@@ -859,6 +862,7 @@ type
     property SourceCaches: TFPCSourceCaches read FSourceCaches write SetSourceCaches;
     property ConfigCaches: TFPCTargetConfigCaches read FConfigCaches write SetConfigCaches;
     property TestFilename: string read FTestFilename write FTestFilename; // an empty file to test the compiler, will be auto created
+    property ExtraOptions: string read FExtraOptions write FExtraOptions; // additional compiler options not used as key
     function FindUnitSet(const CompilerFilename, TargetOS, TargetCPU,
                                 Options, FPCSrcDir: string;
                                 CreateIfNotExists: boolean): TFPCUnitSetCache;
@@ -888,6 +892,7 @@ function CreateDefinesInDirectories(const SourcePaths, FlagName: string
 
 function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string;
                      const OnProgress: TDefinePoolProgress): TStringList;
+function MakeRelativeFileList(Files: TStrings; out BaseDir: string): TStringList;
 function Compress1FileList(Files: TStrings): TStringList;
 function Decompress1FileList(Files: TStrings): TStringList;
 function RunTool(const Filename, Params: string;
@@ -896,6 +901,8 @@ function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
                       out Infos: TFPCInfoStrings): boolean;
 function RunFPCInfo(const CompilerFilename: string;
                    InfoTypes: TFPCInfoTypes; const Options: string =''): string;
+function SplitFPCVersion(const FPCVersionString: string;
+                        out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
 function ParseFPCVerbose(List: TStrings; // fpc -va output
                          out ConfigFiles: TStrings; // prefix '-' for file not found, '+' for found and read
                          out CompilerFilename: string; // what compiler is used by fpc
@@ -1063,6 +1070,46 @@ begin
   end;
 end;
 
+function MakeRelativeFileList(Files: TStrings; out BaseDir: string
+  ): TStringList;
+var
+  BaseDirLen: Integer;
+  i: Integer;
+  Filename: string;
+begin
+  BaseDir:='';
+  Result:=TStringList.Create;
+  if (Files=nil) or (Files.Count=0) then exit;
+  Result.Assign(Files);
+  // delete empty lines
+  for i:=Result.Count-1 downto 0 do
+    if Result[i]='' then Result.Delete(i);
+  if Result.Count=0 then exit;
+  // find shortest common BaseDir
+  BaseDir:=ChompPathDelim(ExtractFilepath(Result[0]));
+  BaseDirLen:=length(BaseDir);
+  for i:=1 to Result.Count-1 do begin
+    Filename:=Result[i];
+    while (BaseDirLen>0) do begin
+      if (BaseDirLen<=length(Filename))
+      and ((BaseDirLen=length(Filename)) or (Filename[BaseDirLen+1]=PathDelim))
+      and (CompareFilenames(BaseDir,copy(Filename,1,BaseDirLen))=0) then
+        break;
+      BaseDir:=ChompPathDelim(ExtractFilePath(copy(BaseDir,1,BaseDirLen-1)));
+      BaseDirLen:=length(BaseDir);
+    end;
+  end;
+  // create relative paths
+  if BaseDir<>'' then
+    for i:=0 to Result.Count-1 do begin
+      Filename:=Result[i];
+      Filename:=copy(Filename,BaseDirLen+1,length(Filename));
+      if (Filename<>'') and (Filename[1]=PathDelim) then
+        System.Delete(Filename,1,1);
+      Result[i]:=Filename;
+    end;
+end;
+
 function Compress1FileList(Files: TStrings): TStringList;
 var
   i: Integer;
@@ -1124,6 +1171,7 @@ begin
   if not FileIsExecutable(Filename) then exit(nil);
   Result:=TStringList.Create;
   try
+    debugln(['RunTool ',Filename,' ',Params]);
     TheProcess := TProcess.Create(nil);
     try
       CmdLine:=UTF8ToSys(Filename);
@@ -1216,6 +1264,44 @@ begin
   finally
     List.free;
   end;
+end;
+
+function SplitFPCVersion(const FPCVersionString: string; out FPCVersion,
+  FPCRelease, FPCPatch: integer): boolean;
+// for example 2.5.1
+var
+  p: PChar;
+
+  function ReadWord(out v: integer): boolean;
+  var
+    Empty: Boolean;
+  begin
+    v:=0;
+    Empty:=true;
+    while (p^ in ['0'..'9']) do begin
+      if v>10000 then exit(false);
+      v:=v*10+ord(p^)-ord('0');
+      inc(p);
+      Empty:=false;
+    end;
+    Result:=not Empty;
+  end;
+
+begin
+  Result:=false;
+  FPCVersion:=0;
+  FPCRelease:=0;
+  FPCPatch:=0;
+  if FPCVersionString='' then exit;
+  p:=PChar(FPCVersionString);
+  if not ReadWord(FPCVersion) then exit;
+  if (p^<>'.') then exit;
+  inc(p);
+  if not ReadWord(FPCRelease) then exit;
+  if (p^<>'.') then exit;
+  inc(p);
+  if not ReadWord(FPCPatch) then exit;
+  Result:=true;
 end;
 
 function ParseFPCVerbose(List: TStrings; out ConfigFiles: TSTrings;
@@ -4704,7 +4790,7 @@ begin
     if CompilerOptions<>'' then
       CmdLine:=CmdLine+CompilerOptions+' ';
     CmdLine:=CmdLine+TestPascalFile;
-    //DebugLn('TDefinePool.CreateFPCTemplate CmdLine="',CmdLine,'"');
+    DebugLn('TDefinePool.CreateFPCTemplate CmdLine="',CmdLine,'"');
 
     TheProcess := TProcess.Create(nil);
     TheProcess.CommandLine := UTF8ToSys(CmdLine);
@@ -7117,6 +7203,7 @@ var
   UnitList: TStringList;
   Unit_Name: String;
   Filename: String;
+  BaseDir: String;
 begin
   Clear;
 
@@ -7171,6 +7258,16 @@ begin
     List.StrictDelimiter:=true;
     List.DelimitedText:=s;
     UnitPaths:=Decompress1FileList(List);
+    BaseDir:=TrimFilename(AppendPathDelim(XMLConfig.GetValue(Path+'UnitPaths/BaseDir','')));
+    if BaseDir<>'' then
+      for i:=0 to UnitPaths.Count-1 do
+        UnitPaths[i]:=ChompPathDelim(TrimFilename(BaseDir+UnitPaths[i]))
+    else
+      for i:=UnitPaths.Count-1 downto 0 do
+        if UnitPaths[i]='' then
+          UnitPaths.Delete(i)
+        else
+          UnitPaths[i]:=ChompPathDelim(TrimFilename(UnitPaths[i]));
     // do not sort, order is important (e.g. for httpd.ppu)
   finally
     List.Free;
@@ -7178,7 +7275,7 @@ begin
 
   // units: format: Units/Values semicolon separated list of compressed filename
   List:=TStringList.Create;
-  UnitList:=TStringList.Create;
+  UnitList:=nil;
   try
     s:=XMLConfig.GetValue(Path+'Units/Value','');
     List.Delimiter:=';';
@@ -7213,6 +7310,8 @@ var
   Filename: String;
   List: TStringList;
   s: String;
+  BaseDir: string;
+  RelativeUnitPaths: TStringList;
 begin
   XMLConfig.SetDeleteValue(Path+'TargetOS',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'TargetCPU',TargetCPU,'');
@@ -7259,18 +7358,23 @@ begin
 
   // UnitPaths: write as semicolon separated compressed list
   s:='';
+  BaseDir:='';
   if UnitPaths<>nil then begin
-    List:=TStringList.Create;
+    List:=nil;
+    RelativeUnitPaths:=nil;
     try
-      List:=Compress1FileList(UnitPaths);
+      RelativeUnitPaths:=MakeRelativeFileList(UnitPaths,BaseDir);
+      List:=Compress1FileList(RelativeUnitPaths);
       // do not sort, order is important (e.g. for httpd.ppu)
       List.Delimiter:=';';
       List.StrictDelimiter:=true;
       s:=List.DelimitedText;
     finally
+      RelativeUnitPaths.Free;
       List.Free;
     end;
   end;
+  XMLConfig.SetDeleteValue(Path+'UnitPaths/BaseDir',BaseDir,'');
   XMLConfig.SetDeleteValue(Path+'UnitPaths/Value',s,'');
 
   // Units: Units/Values semicolon separated list of compressed filenames
@@ -7395,6 +7499,7 @@ begin
     OldOptions.Assign(Self);
     Clear;
 
+    debugln(['TFPCTargetConfigCache.Update ',Compiler,' TargetOS=',TargetOS,' TargetCPU=',TargetCPU,' CompilerOptions=',CompilerOptions,' ExtraOptions=',ExtraOptions]);
     CompilerDate:=FileAgeCached(Compiler);
     if FileExistsCached(Compiler) then begin
 
@@ -7415,6 +7520,8 @@ begin
       // run fpc and parse output
       RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
                     Defines,Undefines,ExtraOptions);
+      for i:=0 to UnitPaths.Count-1 do
+        UnitPaths[i]:=ChompPathDelim(TrimFilename(UnitPaths[i]));
       // store the real compiler file and date
       if (RealCompiler<>'') and FileExistsCached(RealCompiler) then
         RealCompilerDate:=FileAgeCached(RealCompiler);
@@ -7440,12 +7547,28 @@ begin
       end;
     end;
     // check for changes
-    if not Equals(OldOptions) then
+    if not Equals(OldOptions) then begin
       IncreaseChangeStamp;
+      debugln(['TFPCTargetConfigCache.Update: has changed']);
+    end;
     Result:=true;
   finally
     CfgFiles.Free;
     OldOptions.Free;
+  end;
+end;
+
+function TFPCTargetConfigCache.GetFPCVer(out FPCVersion, FPCRelease,
+  FPCPatch: integer): boolean;
+var
+  v: string;
+begin
+  v:={$I %FPCVERSION%};
+  Result:=SplitFPCVersion(v,FPCVersion,FPCRelease,FPCPatch);
+  if Defines<>nil then begin
+    FPCVersion:=StrToIntDef(Defines['FPC_VERSION'],FPCVersion);
+    FPCRelease:=StrToIntDef(Defines['FPC_RELEASE'],FPCRelease);
+    FPCPatch:=StrToIntDef(Defines['FPC_PATCH'],FPCPatch);
   end;
 end;
 
@@ -7852,12 +7975,15 @@ begin
   Files:=nil;
   try
     if (Directory<>'') then begin
+      debugln(['TFPCSourceCache.Update ',Directory,' ...']);
       Files:=GatherFiles(Directory,'{.svn,CVS}',
                               '{*.pas,*.pp,*.p,*.inc,Makefile.fpc}',OnProgress);
     end;
     if ((Files=nil)<>(OldFiles=nil))
-    or ((Files<>nil) and (Files.Text<>OldFiles.Text)) then
+    or ((Files<>nil) and (Files.Text<>OldFiles.Text)) then begin
       IncreaseChangeStamp;
+      debugln(['TFPCSourceCache.Update ',Directory,' has changed.']);
+    end;
   finally
     OldFiles.Free;
   end;
@@ -8095,6 +8221,7 @@ end;
 procedure TFPCDefinesCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
+  debugln(['TFPCDefinesCache.SaveToXMLConfig ']);
   if ConfigCaches<>nil then begin
     ConfigCaches.SaveToXMLConfig(XMLConfig,Path+'FPCConfigs/');
     FConfigCachesSaveStamp:=ConfigCaches.ChangeStamp;
@@ -8372,7 +8499,7 @@ begin
     FConfigCache.FreeNotification(Self);
   end;
   if AutoUpdate and FConfigCache.NeedsUpdate then
-    FConfigCache.Update(Caches.TestFilename);
+    FConfigCache.Update(Caches.TestFilename,Caches.ExtraOptions);
   Result:=FConfigCache;
 end;
 
@@ -8436,6 +8563,7 @@ begin
                                                    NewSrcDuplicates,SrcRules);
       if NewUnitToSourceTree=nil then
         NewUnitToSourceTree:=TStringToStringTree.Create(true);
+      // ToDo: add/replace sources in FPC search paths
       if not fUnitToSourceTree.Equals(NewUnitToSourceTree) then begin
         fUnitToSourceTree.Assign(NewUnitToSourceTree);
         IncreaseChangeStamp;
@@ -8470,6 +8598,15 @@ begin
     Result:=''
   else
     Result:=FPCSourceDirectory+Tree[LowerCase(AUnitName)];
+end;
+
+function TFPCUnitSetCache.GetInvalidChangeStamp: integer;
+begin
+  Result:=ChangeStamp;
+  if Result>Low(Result) then
+    dec(Result)
+  else
+    Result:=High(Result);
 end;
 
 procedure TFPCUnitSetCache.IncreaseChangeStamp;

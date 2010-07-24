@@ -813,9 +813,7 @@ resourcestring
   lisProjectChanged = 'Project changed';
 
   lisFPCSourceDirectoryError = 'FPC Source Directory error';
-  lisPleaseCheckTheFPCSourceDirectory = 'Please check the freepascal source directory';
   lisCompilerError = 'Compiler error';
-  lisPleaseCheckTheCompilerName = 'Please check the compiler name';
   lisAboutLazarus = 'About Lazarus';
   lisVersion = 'Version';
   lisVerToClipboard = 'Copy version information to clipboard';

@@ -746,7 +746,7 @@ begin
     then
       RaiseClassKeyWordExpected;
     ReadNextAtom;
-    // parse modifiers
+    // parse modifiers                              :
     if CurPos.Flag=cafWord then begin
       if UpAtomIs('SEALED') then begin
         while UpAtomIs('SEALED') do begin

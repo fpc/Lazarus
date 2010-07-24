@@ -568,10 +568,11 @@ end;
 procedure TCodeToolsDefinesEditor.InsertFPCProjectDefinesTemplateMenuItemClick(
   Sender: TObject);
 var InputFileDlg: TInputFileDialog;
-  UnitSearchPath, UnitLinkList, DefaultFPCSrcDir, DefaultCompiler,
+  DefaultFPCSrcDir, DefaultCompiler,
   CompilerPath, FPCSrcDir: string;
-  DirTemplate, FPCTemplate, FPCSrcTemplate: TDefineTemplate;
+  DirTemplate, FPCTemplate: TDefineTemplate;
   TargetOS, TargetProcessor: string;
+  UnitSetCache: TFPCUnitSetCache;
 begin
   InputFileDlg:=GetInputFileDialog;
   InputFileDlg.Macros:=Macros;
@@ -579,9 +580,7 @@ begin
   
     DefaultFPCSrcDir:='$(FPCSrcDir)';
     DefaultCompiler:='$(CompPath)';
-    UnitSearchPath:='';
-    UnitLinkList:='';
-    
+
     BeginUpdate;
     Caption:=lisCodeToolsDefsCreateFPCMacrosAndPathsForAFPCProjectDirectory;
 
@@ -607,31 +606,20 @@ begin
     EndUpdate;
     if ShowModal=mrCancel then exit;
 
+    FPCSrcDir:=FileNames[2];
+    if Macros<>nil then Macros.SubstituteStr(FPCSrcDir);
+    if FPCSrcDir='' then FPCSrcDir:=DefaultFPCSrcDir;
+    DebugLn('  FPCSrcDir="',FPCSrcDir,'"');
+
     // ask the compiler for Macros
     CompilerPath:=FileNames[1];
     if Macros<>nil then Macros.SubstituteStr(CompilerPath);
     DebugLn('  CompilerPath="',CompilerPath,'"');
     TargetOS:='';
     TargetProcessor:='';
-    if (CompilerPath<>'') and (CompilerPath<>DefaultCompiler) then
-      FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,'',
-                                CreateCompilerTestPascalFilename,UnitSearchPath,
-                                TargetOS,TargetProcessor,
-                                CodeToolsOpts)
-    else
-      FPCTemplate:=nil;
 
-    // create path defines
-    FPCSrcDir:=FileNames[2];
-    if Macros<>nil then Macros.SubstituteStr(FPCSrcDir);
-    DebugLn('  FPCSrcDir="',FPCSrcDir,'"');
-    if (FPCSrcDir<>'') and (FPCSrcDir<>DefaultFPCSrcDir)
-    and (UnitSearchPath<>'') then
-      FPCSrcTemplate:=CreateFPCSourceTemplate(FPCSrcDir,
-                      UnitSearchPath, 'ppu', TargetOS, TargetProcessor, false,
-                      UnitLinkList, CodeToolsOpts)
-    else
-      FPCSrcTemplate:=nil;
+    UnitSetCache:=Boss.FPCDefinesCache.FindUnitSet(CompilerPath,
+                                    TargetOS,TargetProcessor,'',FPCSrcDir,true);
 
     // create directory defines
     DirTemplate:=TDefineTemplate.Create('FPC Project ('+FileNames[0]+')',
@@ -640,20 +628,13 @@ begin
     if (DefaultFPCSrcDir=Filenames[2]) and (DefaultCompiler=Filenames[1]) then
     begin
       // a normal fpc project -> nothing special needed
-      FPCTemplate.Free;
-      FPCSrcTemplate.Free;
     end else begin
       // a special fpc project -> create a world of its own
       DirTemplate.AddChild(TDefineTemplate.Create('Reset All',
          'Reset all values','','',da_UndefineAll));
+      FPCTemplate:=CreateFPCTemplate(UnitSetCache,CodeToolsOpts);
       if FPCTemplate<>nil then
         DirTemplate.AddChild(FPCTemplate);
-      if UnitLinkList<>'' then begin
-        DirTemplate.AddChild(TDefineTemplate.Create('FPC Unit Links',
-          'Source filenames for standard FPC units',
-          ExternalMacroStart+'UnitLinks',UnitLinkList,da_DefineRecurse));
-      end;
-      FPCSrcTemplate.Free;
     end;
 
     DirTemplate.SetDefineOwner(CodeToolsOpts,true);
@@ -707,16 +688,15 @@ end;
 procedure TCodeToolsDefinesEditor.InsertFPCSourceDirDefinesTemplateMenuItemClick
   (Sender: TObject);
 var InputFileDlg: TInputFileDialog;
-  UnitSearchPath, UnitLinks, DefaultCompiler, CompilerPath, FPCSrcDir: string;
+  DefaultCompiler, CompilerPath, FPCSrcDir: string;
   TargetOS, TargetProcessor: string;
-  ResetAllTemplate, FPCSrcTemplate, FPCSrcDirTemplate,
-  FPCTemplate: TDefineTemplate;
+  FPCSrcTemplate: TDefineTemplate;
+  UnitSetCache: TFPCUnitSetCache;
 begin
   InputFileDlg:=GetInputFileDialog;
   InputFileDlg.Macros:=Macros;
   with InputFileDlg do begin
     DefaultCompiler:='$(CompPath)';
-    UnitSearchPath:='';
 
     BeginUpdate;
     Caption:=lisCodeToolsDefsCreateDefinesForFreePascalSVNSources;
@@ -724,7 +704,7 @@ begin
 
     FileTitles[0]:=lisCodeToolsDefsFPCSVNSourceDirectory;
     FileDescs[0]:=lisCodeToolsDefsTheFreePascalSVNSourceDir;
-    FileNames[0]:='~/fpc_sources/2.1/fpc';
+    FileNames[0]:='~/fpc_sources/2.4.1/fpc';
     FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
 
     FileTitles[1]:=lisCodeToolsDefscompilerPath;
@@ -743,39 +723,24 @@ begin
 
     TargetOS:='';
     TargetProcessor:='';
-    FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,'',
-                               CreateCompilerTestPascalFilename,UnitSearchPath,
-                               TargetOS,TargetProcessor,CodeToolsOpts);
-    if FPCTemplate=nil then begin
-      DebugLn('ERROR: unable to get FPC Compiler Macros from "',CompilerPath,'"');
-      exit;
-    end;
-      
-    // create FPC Source defines
     FPCSrcDir:=FileNames[0];
     if Macros<>nil then Macros.SubstituteStr(FPCSrcDir);
     DebugLn('  FPCSrcDir="',FPCSrcDir,'"');
-    FPCSrcTemplate:=CreateFPCSourceTemplate(FPCSrcDir,
-                        UnitSearchPath, 'ppu', TargetOS, TargetProcessor, false,
-                        UnitLinks, CodeToolsOpts);
+
+    UnitSetCache:=Boss.FPCDefinesCache.FindUnitSet(CompilerPath,
+                                    TargetOS,TargetProcessor,'',FPCSrcDir,true);
+    // create FPC Source defines
+    FPCSrcTemplate:=CreateFPCSrcTemplate(UnitSetCache,CodeToolsOpts);
     if FPCSrcTemplate=nil then begin
       DebugLn('ERROR: unable to create FPC CVS Src defines for "',FPCSrcDir,'"');
-      FPCTemplate.Free;
       exit;
     end;
 
     // create directory defines
-    FPCSrcDirTemplate:=FPCSrcTemplate.FirstChild.Next;
-    FPCSrcDirTemplate.UnBind;
-    FPCSrcTemplate.Free;
-    FPCSrcDirTemplate.Name:='FPC CVS Sources ('+FileNames[0]+')';
-    ResetAllTemplate:=TDefineTemplate.Create('Reset All','Reset all values',
-                  '','',da_UndefineAll);
-    ResetAllTemplate.InsertInFront(FPCSrcDirTemplate.FirstChild);
-    FPCTemplate.InsertBehind(ResetAllTemplate);
+    FPCSrcTemplate.Name:='FPC SVN Sources ('+FileNames[0]+')';
 
-    FPCSrcDirTemplate.SetDefineOwner(CodeToolsOpts,true);
-    InsertTemplate(FPCSrcDirTemplate);
+    FPCSrcTemplate.SetDefineOwner(CodeToolsOpts,true);
+    InsertTemplate(FPCSrcTemplate);
   end;
 end;
 

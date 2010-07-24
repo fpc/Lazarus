@@ -312,6 +312,8 @@ function TOutputFilter.Execute(TheProcess: TProcessUTF8; aCaller: TObject;
   aTool: TIDEExternalToolOptions): boolean;
 const
   BufSize = 4096;
+  NormalWait = ((double(1)/86400)/15); // 15 times per second
+  LongWait = ((double(1)/86400)/4); // 4 times per second
 var
   i, Count, LineStart : longint;
   OutputLine, Buf : String;
@@ -319,6 +321,7 @@ var
   LastProcessMessages: TDateTime;
   EndUpdateNeeded: Boolean;
   ExceptionMsg: String;
+  Wait: double;
 begin
   Result:=true;
   FHasRaisedException := False;
@@ -358,8 +361,9 @@ begin
     fProcess.Execute;
 
     LastProcessMessages:=Now-1;// force one update at start
+    Wait:=NormalWait;
     repeat
-      if (Application<>nil) and (abs(LastProcessMessages-Now)>((1/86400)/15))
+      if (Application<>nil) and (abs(LastProcessMessages-Now)>Wait)
       then begin
         LastProcessMessages:=Now;
         if EndUpdateNeeded then begin
@@ -424,6 +428,13 @@ begin
           LineStart:=i+1;
         end;
         inc(i);
+      end;
+      if Count=length(Buf) then begin
+        // the buffer is full => process more and update the view less
+        Wait:=LongWait;
+      end else begin
+        // the buffer was not full  => update more often
+        Wait:=NormalWait;
       end;
       OutputLine:=OutputLine+copy(Buf,LineStart,Count-LineStart+1);
     until false;

@@ -38,6 +38,7 @@ uses
   LConvEncoding, InterfaceBase, LCLProc, Dialogs, FileUtil, Forms, Controls,
   // codetools
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
+  Laz_XMLCfg, CodeToolsStructs,
   // IDEIntf
   SrcEditorIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   LazIDEIntf,
@@ -54,6 +55,7 @@ type
   TBuildManager = class(TBaseBuildManager)
   private
     CurrentParsedCompilerOption: TParsedCompilerOptions;
+    FUnitSetCache: TFPCUnitSetCache;
     FScanningCompilerDisabled: boolean;
     function OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
                                         const UnparsedValue: string;
@@ -106,15 +108,16 @@ type
     procedure OnCmdLineCreate(var CmdLine: string; var Abort: boolean);
     function OnRunCompilerWithOptions(ExtTool: TIDEExternalToolOptions;
                            CompOptions: TBaseCompilerOptions): TModalResult;
+    procedure SetUnitSetCache(const AValue: TFPCUnitSetCache);
   protected
     OverrideTargetOS: string;
     OverrideTargetCPU: string;
     OverrideLCLWidgetType: string;
+    FUnitSetChangeStamp: integer;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
   public
-    CurDefinesCompilerFilename: String;
-    CurDefinesCompilerOptions: String;
-
-    constructor Create;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure SetupTransferMacros;
     procedure SetupCompilerInterface;
@@ -134,10 +137,13 @@ type
     function IsTestUnitFilename(const AFilename: string): boolean; override;
     function GetTargetUnitFilename(AnUnitInfo: TUnitInfo): string; override;
 
-    procedure GetFPCCompilerParamsForEnvironmentTest(out Params: string);
-    procedure RescanCompilerDefines(ResetBuildTarget, OnlyIfCompilerChanged: boolean);
+    procedure UpdateEnglishErrorMsgFilename;
+    procedure RescanCompilerDefines(ResetBuildTarget, ClearCaches: boolean);
     property ScanningCompilerDisabled: boolean read FScanningCompilerDisabled
                                               write FScanningCompilerDisabled;
+    procedure LoadFPCDefinesCaches;
+    procedure SaveFPCDefinesCaches;
+    property UnitSetCache: TFPCUnitSetCache read FUnitSetCache write SetUnitSetCache;
 
     function CheckAmbiguousSources(const AFilename: string;
                                    Compiling: boolean): TModalResult; override;
@@ -207,10 +213,10 @@ begin
     GlobalMacroList.SubstituteStr(Result,CompilerOptionMacroNormal);
 end;
 
-constructor TBuildManager.Create;
+constructor TBuildManager.Create(AOwner: TComponent);
 begin
   MainBuildBoss:=Self;
-  inherited Create;
+  inherited Create(AOwner);
 
   OnBackupFileInteractive:=@BackupFile;
   RunCompilerWithOptions:=@OnRunCompilerWithOptions;
@@ -322,6 +328,7 @@ begin
     Result:='';
   if (Result='') or (Result='default') then
     Result:=GetDefaultTargetOS;
+  Result:=LowerCase(Result);
 end;
 
 function TBuildManager.GetTargetCPU(UseCache: boolean): string;
@@ -335,6 +342,7 @@ begin
     Result:='';
   if (Result='') or (Result='default') then
     Result:=GetDefaultTargetCPU;
+  Result:=LowerCase(Result);
 end;
 
 function TBuildManager.GetLCLWidgetType(UseCache: boolean): string;
@@ -486,34 +494,53 @@ begin
     Result:=AnUnitInfo.Filename;
 end;
 
-procedure TBuildManager.GetFPCCompilerParamsForEnvironmentTest(out
-  Params: string);
-var
-  CurTargetOS: string;
-  CurTargetCPU: string;
+procedure TBuildManager.UpdateEnglishErrorMsgFilename;
 begin
-  Params:='';
-  CurTargetOS:=GetTargetOS(false);
-  if CurTargetOS<>'' then
-    Params:=AddCmdLineParameter(Params,'-T'+CurTargetOS);
-  CurTargetCPU:=GetTargetCPU(false);
-  if CurTargetCPU<>'' then
-    Params:=AddCmdLineParameter(Params,'-P'+CurTargetCPU);
+  if EnvironmentOptions.LazarusDirectory<>'' then begin
+    CodeToolBoss.DefinePool.EnglishErrorMsgFilename:=
+      AppendPathDelim(EnvironmentOptions.LazarusDirectory)+
+        SetDirSeparators('components/codetools/fpc.errore.msg');
+    CodeToolBoss.FPCDefinesCache.ExtraOptions:=
+                          '-Fr'+CodeToolBoss.DefinePool.EnglishErrorMsgFilename;
+  end;
 end;
 
 procedure TBuildManager.RescanCompilerDefines(ResetBuildTarget,
-  OnlyIfCompilerChanged: boolean);
+  ClearCaches: boolean);
 var
-  CompilerTemplate, FPCSrcTemplate: TDefineTemplate;
-  CompilerUnitSearchPath, CompilerUnitLinks: string;
-  CurOptions: String;
-  TargetOS, TargetProcessor: string;
-  UnitLinksValid: boolean;
-  i: Integer;
+  TargetOS, TargetCPU: string;
+  CompilerFilename: String;
+  FPCSrcDir: string;
+  ADefTempl: TDefineTemplate;
+
+  procedure AddTemplate(ADefTempl: TDefineTemplate; AddToPool: boolean;
+    const ErrorMsg: string);
+  begin
+    if ADefTempl = nil then
+    begin
+      DebugLn('');
+      DebugLn(ErrorMsg);
+    end else
+    begin
+      if AddToPool then
+        CodeToolBoss.DefinePool.Add(ADefTempl.CreateCopy(false,true,true));
+      CodeToolBoss.DefineTree.ReplaceRootSameName(ADefTempl);
+    end;
+  end;
 
   function FoundSystemPPU: boolean;
+  var
+    ConfigCache: TFPCTargetConfigCache;
+    AFilename: string;
   begin
-    Result:=System.Pos('system ',CompilerUnitLinks)>0;
+    Result:=false;
+    ConfigCache:=UnitSetCache.GetConfigCache(false);
+    if ConfigCache=nil then exit;
+    if ConfigCache.Units=nil then exit;
+    AFilename:=ConfigCache.Units['system'];
+    if AFilename='' then exit;
+    if CompareFileExt(AFilename,'.ppu')<>0 then exit;
+    Result:=true;
   end;
 
 begin
@@ -521,99 +548,134 @@ begin
   if ResetBuildTarget then
     SetBuildTarget('','','',true);
   
-  GetFPCCompilerParamsForEnvironmentTest(CurOptions);
+  // start the compiler and ask for his settings
+  // provide an english message file
+  UpdateEnglishErrorMsgFilename;
+
+  // use current TargetOS, TargetCPU, compilerfilename and FPC source dir
+  TargetOS:=GetTargetOS(true);
+  TargetCPU:=GetTargetCPU(true);
+  CompilerFilename:=EnvironmentOptions.CompilerFilename;
+  FPCSrcDir:=EnvironmentOptions.GetFPCSourceDirectory;
+
   {$IFDEF VerboseFPCSrcScan}
-  debugln(['TMainIDE.RescanCompilerDefines A ',CurOptions,
-    ' OnlyIfCompilerChanged=',OnlyIfCompilerChanged,
-    ' Valid=',InputHistories.FPCConfigCache.Valid(true),
-    ' ID=',InputHistories.FPCConfigCache.FindItem(CurOptions),
-    ' CurDefinesCompilerFilename=',CurDefinesCompilerFilename,
-    ' EnvCompilerFilename=',EnvironmentOptions.CompilerFilename,
-    ' CurDefinesCompilerOptions="',CurDefinesCompilerOptions,'"',
-    ' CurOptions="',CurOptions,'"',
+  debugln(['TMainIDE.RescanCompilerDefines A ',
+    ' ClearCaches=',ClearCaches,
+    ' CompilerFilename=',CompilerFilename,
+    ' TargetOS=',TargetOS,
+    ' TargetCPU=',TargetCPU,
+    ' EnvFPCSrcDir=',EnvironmentOptions.FPCSourceDirectory,
+    ' FPCSrcDir=',FPCSrcDir,
     '']);
   {$ENDIF}
-  // rescan compiler defines
-  // ask the compiler for its settings
-  if OnlyIfCompilerChanged
-  and (CurDefinesCompilerFilename=EnvironmentOptions.CompilerFilename)
-  and (CurDefinesCompilerOptions=CurOptions) then
+
+  if ClearCaches then begin
+    { $IFDEF VerboseFPCSrcScan}
+    debugln(['TBuildManager.RescanCompilerDefines clear caches']);
+    { $ENDIF}
+    CodeToolBoss.FPCDefinesCache.ConfigCaches.Clear;
+    CodeToolBoss.FPCDefinesCache.SourceCaches.Clear;
+  end;
+
+  UnitSetCache:=CodeToolBoss.FPCDefinesCache.FindUnitSet(
+    CompilerFilename,TargetOS,TargetCPU,'',FPCSrcDir,true);
+
+  UnitSetCache.Init;
+  if FUnitSetChangeStamp=UnitSetCache.ChangeStamp then begin
+    {$IFDEF VerboseFPCSrcScan}
+    debugln(['TBuildManager.RescanCompilerDefines nothing changed']);
+    {$ENDIF}
     exit;
+  end;
+  FUnitSetChangeStamp:=UnitSetCache.ChangeStamp;
+
   {$IFDEF VerboseFPCSrcScan}
-  debugln('TMainIDE.RescanCompilerDefines B rebuilding FPC templates CurOptions="',CurOptions,'"');
+  debugln(['TBuildManager.RescanCompilerDefines UnitSet changed => rebuilding defines',
+    ' ClearCaches=',ClearCaches,
+    ' CompilerFilename=',CompilerFilename,
+    ' TargetOS=',TargetOS,
+    ' TargetCPU=',TargetCPU,
+    ' EnvFPCSrcDir=',EnvironmentOptions.FPCSourceDirectory,
+    ' FPCSrcDir=',FPCSrcDir,
+    '']);
   {$ENDIF}
-  SetupInputHistories;
-  CompilerTemplate:=CodeToolBoss.DefinePool.CreateFPCTemplate(
-                    EnvironmentOptions.CompilerFilename,CurOptions,
-                    CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
-                    TargetOS,TargetProcessor,CodeToolsOpts);
-  //DebugLn('TMainIDE.RescanCompilerDefines CompilerUnitSearchPath="',CompilerUnitSearchPath,'"');
 
-  if CompilerTemplate<>nil then begin
-    CurDefinesCompilerFilename:=EnvironmentOptions.CompilerFilename;
-    CurDefinesCompilerOptions:=CurOptions;
-    CodeToolBoss.DefineTree.ReplaceRootSameNameAddFirst(CompilerTemplate);
-    // the compiler version was updated, update the FPCSrcDir
-    CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir']:=
-      EnvironmentOptions.GetFPCSourceDirectory;
-    UnitLinksValid:=OnlyIfCompilerChanged
-                    and InputHistories.FPCConfigCache.Valid(true);
-    if UnitLinksValid then begin
-      i:=InputHistories.FPCConfigCache.FindItem(CurOptions);
-      if i<0 then begin
-        UnitLinksValid:=false;
-      end
-      else if CompareFilenames(InputHistories.FPCConfigCache.Items[i].FPCSrcDir,
-          EnvironmentOptions.GetFPCSourceDirectory)<>0
-      then
-        UnitLinksValid:=false;
-    end;
-    {$IFDEF VerboseFPCSrcScan}
-    debugln(['TMainIDE.RescanCompilerDefines B rescanning FPC sources  UnitLinksValid=',UnitLinksValid]);
-    {$ENDIF}
+  // save caches
+  SaveFPCDefinesCaches;
 
-    // create compiler macros to simulate the Makefiles of the FPC sources
-    CompilerUnitLinks:='';
-    if UnitLinksValid then
-      CompilerUnitLinks:=InputHistories.FPCConfigCache.GetUnitLinks(CurOptions);
-    if not FoundSystemPPU then begin
-      UnitLinksValid:=false;
-    end;
+  // rebuild the define templates
+  // create template for FPC settings
+  ADefTempl:=CreateFPCTemplate(UnitSetCache,nil);
+  AddTemplate(ADefTempl,false,
+           'NOTE: Could not create Define Template for Free Pascal Compiler');
+  // create template for FPC source directory
+  ADefTempl:=CreateFPCSrcTemplate(UnitSetCache,nil);
+  AddTemplate(ADefTempl,false,lisNOTECouldNotCreateDefineTemplateForFreePascal);
 
-    FPCSrcTemplate:=CreateFPCSourceTemplate(
-      CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
-      CompilerUnitSearchPath,
-      CodeToolBoss.GetCompiledSrcExtForDirectory(''),
-      TargetOS,TargetProcessor,
-      UnitLinksValid, CompilerUnitLinks, CodeToolsOpts);
-    {$IFDEF VerboseFPCSrcScan}
-    debugln('TMainIDE.RescanCompilerDefines C UnitLinks=',copy(CompilerUnitLinks,1,100));
-    {$ENDIF}
-    if not FoundSystemPPU then begin
-      IDEMessageDialog(lisCCOErrorCaption,
-        Format(lisTheProjectUsesTargetOSAndCPUTheSystemPpuForThisTar, [
-          TargetOS, TargetProcessor, #13, #13]),
-        mtError,[mbOk]);
-    end;
+  // create compiler macros for the lazarus sources
+  if CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSrcDir,true
+    )=nil
+  then begin
+    ADefTempl:=CreateLazarusSourceTemplate(
+      '$('+ExternalMacroStart+'LazarusDir)',
+      '$('+ExternalMacroStart+'LCLWidgetType)',
+      MiscellaneousOptions.BuildLazOpts.ExtraOptions,nil);
+    AddTemplate(ADefTempl,true,
+      lisNOTECouldNotCreateDefineTemplateForLazarusSources);
+  end;
 
-    if FPCSrcTemplate<>nil then begin
-      CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
-                                                           FPCSrcTemplate.Name);
-      FPCSrcTemplate.InsertBehind(CompilerTemplate);
-      CodeToolBoss.DefineTree.ClearCache;
-      // save unitlinks
-      InputHistories.SetLastFPCUnitLinks(EnvironmentOptions.CompilerFilename,
-                                         CurOptions,CompilerUnitSearchPath,
-                                         EnvironmentOptions.GetFPCSourceDirectory,
-                                         CompilerUnitLinks);
-      InputHistories.Save;
-    end else begin
-      IDEMessageDialog(lisFPCSourceDirectoryError,
-        lisPleaseCheckTheFPCSourceDirectory,mtError,[mbOk]);
+  CodeToolBoss.DefineTree.ClearCache;
+
+  if not FoundSystemPPU then begin
+    IDEMessageDialog(lisCCOErrorCaption,
+      Format(lisTheProjectUsesTargetOSAndCPUTheSystemPpuForThisTar, [
+        TargetOS, TargetCPU, #13, #13]),
+      mtError,[mbOk]);
+  end;
+end;
+
+procedure TBuildManager.LoadFPCDefinesCaches;
+var
+  aFilename: String;
+  XMLConfig: TXMLConfig;
+begin
+  aFilename:=AppendPathDelim(GetPrimaryConfigPath)+'fpcdefines.xml';
+  CopySecondaryConfigFile(ExtractFilename(aFilename));
+  if not FileExistsUTF8(aFilename) then exit;
+  try
+    XMLConfig:=TXMLConfig.Create(aFilename);
+    try
+      CodeToolBoss.FPCDefinesCache.LoadFromXMLConfig(XMLConfig,'');
+    finally
+      XMLConfig.Free;
     end;
-  end else begin
-    IDEMessageDialog(lisCompilerError,lisPleaseCheckTheCompilerName,mtError,
-                     [mbOk]);
+  except
+    on E: Exception do begin
+      debugln(['LoadFPCDefinesCaches Error loadinf file '+aFilename+':'+E.Message]);
+    end;
+  end;
+end;
+
+procedure TBuildManager.SaveFPCDefinesCaches;
+var
+  aFilename: String;
+  XMLConfig: TXMLConfig;
+begin
+  aFilename:=AppendPathDelim(GetPrimaryConfigPath)+'fpcdefines.xml';
+  if FileExistsCached(aFilename)
+  and (not CodeToolBoss.FPCDefinesCache.NeedsSave) then
+    exit;
+  try
+    XMLConfig:=TXMLConfig.CreateClean(aFilename);
+    try
+      CodeToolBoss.FPCDefinesCache.SaveToXMLConfig(XMLConfig,'');
+    finally
+      XMLConfig.Free;
+    end;
+  except
+    on E: Exception do begin
+      debugln(['LoadFPCDefinesCaches Error loadinf file '+aFilename+':'+E.Message]);
+    end;
   end;
 end;
 
@@ -1258,14 +1320,31 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
   var Abort: boolean): string;
 var
   FPCVersion, FPCRelease, FPCPatch: integer;
-  Def: TDefineTemplate;
+  TargetOS: String;
+  TargetCPU: String;
+  CompilerFilename: String;
+  ConfigCache: TFPCTargetConfigCache;
 begin
-  Result:={$I %FPCVERSION%};
+  Result:={$I %FPCVERSION%};   // Version.Release.Patch
   if CodeToolBoss<>nil then begin
-    Def:=CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplFPC,true);
-    CodeToolBoss.DefinePool.GetFPCVerFromFPCTemplate(Def,FPCVersion,FPCRelease,FPCPatch);
-    if FPCVersion<>0 then
-      Result:=IntToStr(FPCVersion)+'.'+IntToStr(FPCRelease)+'.'+IntToStr(FPCPatch);
+    // fetch the FPC version from the current compiler
+    // Not from the fpc.exe, but from the real compiler
+    CompilerFilename:=EnvironmentOptions.CompilerFilename;
+    if CompilerFilename='' then exit;
+    TargetOS:=GetTargetOS(true);
+    TargetCPU:=GetTargetCPU(true);
+    ConfigCache:=CodeToolBoss.FPCDefinesCache.ConfigCaches.Find(
+                                   CompilerFilename,'',TargetOS,TargetCPU,true);
+    if ConfigCache=nil then exit;
+    if (ConfigCache.CompilerDate=0) and ConfigCache.NeedsUpdate then begin
+      // ask compiler
+      if not ConfigCache.Update(CodeToolBoss.FPCDefinesCache.TestFilename,
+                           CodeToolBoss.FPCDefinesCache.ExtraOptions,nil)
+      then
+        exit;
+    end;
+    ConfigCache.GetFPCVer(FPCVersion,FPCRelease,FPCPatch);
+    Result:=IntToStr(FPCVersion)+'.'+IntToStr(FPCRelease)+'.'+IntToStr(FPCPatch);
   end;
 end;
 
@@ -1444,6 +1523,26 @@ begin
     LazarusIDE.DoCheckFilesOnDisk;
 end;
 
+procedure TBuildManager.SetUnitSetCache(const AValue: TFPCUnitSetCache);
+begin
+  if FUnitSetCache=AValue then exit;
+  FUnitSetCache:=AValue;
+  if UnitSetCache<>nil then begin
+    FreeNotification(UnitSetCache);
+    FUnitSetChangeStamp:=UnitSetCache.GetInvalidChangeStamp;
+  end;
+end;
+
+procedure TBuildManager.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then begin
+    if FUnitSetCache=AComponent then
+      FUnitSetCache:=nil;
+  end;
+end;
+
 procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU,
   LCLWidgetType: string; DoNotScanFPCSrc: boolean);
 var
@@ -1459,9 +1558,9 @@ begin
   OldTargetOS:=GetTargetOS(true);
   OldTargetCPU:=GetTargetCPU(true);
   OldLCLWidgetType:=GetLCLWidgetType(true);
-  OverrideTargetOS:=TargetOS;
-  OverrideTargetCPU:=TargetCPU;
-  OverrideLCLWidgetType:=LCLWidgetType;
+  OverrideTargetOS:=lowercase(TargetOS);
+  OverrideTargetCPU:=lowercase(TargetCPU);
+  OverrideLCLWidgetType:=lowercase(LCLWidgetType);
   NewTargetOS:=GetTargetOS(false);
   NewTargetCPU:=GetTargetCPU(false);
   NewLCLWidgetType:=GetLCLWidgetType(false);
@@ -1476,7 +1575,7 @@ begin
   if LCLTargetChanged then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',NewLCLWidgetType);
   if FPCTargetChanged and (not DoNotScanFPCSrc) then
-    RescanCompilerDefines(false,true);
+    RescanCompilerDefines(false,false);
 
   if FPCTargetChanged or LCLTargetChanged then begin
     IncreaseCompilerParseStamp;

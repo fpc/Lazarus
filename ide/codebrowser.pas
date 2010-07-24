@@ -48,8 +48,8 @@ uses
   Menus,
   // codetools
   CodeAtom, BasicCodeTools, DefineTemplates, CodeTree, CodeCache,
-  CodeToolManager, PascalParserTool, LinkScanner, FileProcs, CodeIndex,
-  StdCodeTools, SourceLog,
+  CodeToolsStructs, CodeToolManager, PascalParserTool, LinkScanner, FileProcs,
+  CodeIndex, StdCodeTools, SourceLog,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage,
   PackageIntf, TextTools, IDECommands, LazIDEIntf,
@@ -1323,35 +1323,36 @@ var
   procedure AddFilesOfPackageFCL;
   var
     LazDir: String;
-    UnitLinks: String;
-    SpacePos: LongInt;
+    UnitSetID: string;
+    UnitSetChanged: Boolean;
+    UnitSet: TFPCUnitSetCache;
     Filename: String;
-    StartPos: Integer;
-    EndPos: LongInt;
+    ConfigCache: TFPCTargetConfigCache;
+    Node: TAVLTreeNode;
+    Item: PStringToStringTreeItem;
   begin
-    // use unitlinks of the lazarus source directory
+    // use unitset of the lazarus source directory
     LazDir:=AppendPathDelim(EnvironmentOptions.LazarusDirectory);
     if (LazDir='') or (not FilenameIsAbsolute(LazDir)) then exit;
-    UnitLinks:=CodeToolBoss.GetUnitLinksForDirectory(LazDir);
-    StartPos:=1;
-    while StartPos<=length(UnitLinks) do begin
-      EndPos:=StartPos;
-      while (EndPos<=length(UnitLinks))
-      and (not (UnitLinks[EndPos] in [#10,#13])) do
-        inc(EndPos);
-      if EndPos>StartPos then begin
-        SpacePos:=StartPos;
-        while (SpacePos<=length(UnitLinks)) and (UnitLinks[SpacePos]<>' ') do
-          inc(SpacePos);
-        if (SpacePos>StartPos) and (SpacePos<EndPos) then begin
-          Filename:=copy(UnitLinks,SpacePos+1,EndPos-SpacePos-1);
-          AddFile(Filename,true);
-        end;
+    UnitSetID:=CodeToolBoss.GetUnitSetIDForDirectory(LazDir);
+    if UnitSetID='' then exit;
+    UnitSetChanged:=false;
+    UnitSet:=CodeToolBoss.FPCDefinesCache.FindUnitSetWithID(UnitSetID,
+                                                          UnitSetChanged,false);
+    if UnitSet=nil then exit;
+    ConfigCache:=UnitSet.GetConfigCache(false);
+    if (ConfigCache=nil) or (ConfigCache.Units=nil) then exit;
+    Node:=ConfigCache.Units.Tree.FindLowest;
+    while Node<>nil do begin
+      Item:=PStringToStringTreeItem(Node.Data);
+      Filename:=Item^.Value;
+      if (CompareFileExt(Filename,'ppu',false)=0) then begin
+        // search source in fpc sources
+        Filename:=UnitSet.GetUnitSrcFile(ExtractFileNameOnly(Filename));
       end;
-      StartPos:=EndPos;
-      while (StartPos<=length(UnitLinks))
-      and (UnitLinks[StartPos] in [#10,#13]) do
-        inc(StartPos);
+      if FilenameIsPascalUnit(Filename) then
+        AddFile(Filename,false);
+      Node:=ConfigCache.Units.Tree.FindSuccessor(Node);
     end;
   end;
   

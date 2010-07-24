@@ -612,6 +612,8 @@ begin
     Project1.CompilerOptions.TargetCPU:=CPUOverride;
   if (Length(WidgetSetOverride) <> 0) then
     Project1.CompilerOptions.LCLWidgetType:=WidgetSetOverride;
+  MainBuildBoss.SetBuildTarget(Project1.CompilerOptions.TargetOS,
+    Project1.CompilerOptions.TargetCPU,Project1.CompilerOptions.LCLWidgetType);
 
   if not SkipDependencies then begin
     // compile required packages
@@ -646,7 +648,6 @@ begin
   else
     CompilerFilename:=Project1.GetCompilerFilename;
   //DebugLn(['TMainIDE.DoBuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
-
   CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,nil,[])
                   +' '+PrepareCmdLineOption(SrcFilename);
 
@@ -745,7 +746,7 @@ begin
   
   CreatePrimaryConfigPath;
 
-  MainBuildBoss:=TBuildManager.Create;
+  MainBuildBoss:=TBuildManager.Create(nil);
   MainBuildBoss.ScanningCompilerDisabled:=true;
   LoadEnvironmentOptions;
   LoadMiscellaneousOptions;

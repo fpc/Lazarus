@@ -40,9 +40,9 @@ type
 
   { TBaseBuildManager }
 
-  TBaseBuildManager = class
+  TBaseBuildManager = class(TComponent)
   public
-    constructor Create;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
     function GetTargetOS(UseCache: boolean): string; virtual; abstract;
@@ -80,10 +80,10 @@ implementation
 
 { TBaseBuildManager }
 
-constructor TBaseBuildManager.Create;
+constructor TBaseBuildManager.Create(AOwner: TComponent);
 begin
   BuildBoss:=Self;
-  inherited Create;
+  inherited Create(AOwner);
 end;
 
 destructor TBaseBuildManager.Destroy;

@@ -590,7 +590,7 @@ begin
   ConfFileName:=SetDirSeparators(
                              GetPrimaryConfigPath+'/'+DefaultCodeToolsOptsFile);
   CopySecondaryConfigFile(DefaultCodeToolsOptsFile);
-  if (not FileExistsUTF8(ConfFileName)) then begin
+  if (not FileExistsCached(ConfFileName)) then begin
     debugln(UTF8ToConsole(lisCompilerNOTECodetoolsConfigFileNotFoundUsingDefaults));
   end;
   FFilename:=ConfFilename;

@@ -22,6 +22,7 @@ type
     procedure TestSetSelText(Value: String; PasteMode: TSynSelectionMode = smNormal);
     property ViewedTextBuffer;
     property TextBuffer;
+    property TextView; // foldedview
   end;
 
   { TTestBase }
@@ -84,6 +85,10 @@ type
     procedure TestIsCaret(Name: String; X, Y: Integer); // logical caret
     procedure TestIsCaretPhys(Name: String; X, Y: Integer);
 
+    procedure TestCompareString(Name, Expect, Value: String; DbgInfo: String = '');
+    procedure TestCompareString(Name: String; Expect, Value: Array of String; DbgInfo: String = '');
+    procedure TestCompareString(Name, Expect: String; Value: Array of String; DbgInfo: String = '');
+    procedure TestCompareString(Name: String; Expect: Array of String; Value: String; DbgInfo: String = '');
     // exclude trimspaces, as seen by other objects
     procedure TestIsText(Name, Text: String; FullText: Boolean = False);
     procedure TestIsText(Name: String; Lines: Array of String);
@@ -95,8 +100,19 @@ type
 
   end;
 
+  function MyDbg(t: String): String;
 
 implementation
+
+function MyDbg(t: String): String;
+begin
+  Result := '';
+  while(pos(LineEnding, t) > 0) do begin
+    Result := Result +  '"' + copy(t, 1, pos(LineEnding, t)-1) + '"   Len='+IntTostr(pos(LineEnding, t)-1) + DbgStr(copy(t, 1, pos(LineEnding, t)-1)) + LineEnding;
+    system.Delete(t, 1, pos(LineEnding, t)-1+length(LineEnding));
+  end;
+  Result := Result + '"' + t + '"   Len='+IntTostr(length(t)) + DbgStr(t);
+end;
 
 { TTestSynEdit }
 
@@ -179,46 +195,63 @@ begin
              Format('X/Y=(%d, %d)', [SynEdit.CaretXY.X, SynEdit.CaretXY.Y]));
 end;
 
-procedure TTestBase.TestIsText(Name, Text: String; FullText: Boolean = False);
+procedure TTestBase.TestCompareString(Name, Expect, Value: String; DbgInfo: String);
 var
   i, j, x, y: Integer;
   s: String;
-  function MyDbg(t: String): String;
-  begin
-    Result := '';
-    while(pos(LineEnding, t) > 0) do begin
-      Result := Result +  '"' + copy(t, 1, pos(LineEnding, t)-1) + '"   Len='+IntTostr(pos(LineEnding, t)-1) + DbgStr(copy(t, 1, pos(LineEnding, t)-1)) + LineEnding;
-      system.Delete(t, 1, pos(LineEnding, t)-1+length(LineEnding));
-    end;
-    Result := Result + '"' + t + '"   Len='+IntTostr(length(t)) + DbgStr(t);
+begin
+  if Value = Expect then exit;
+
+  i := 1; j := 1; x:= 1; y:= 1;
+  while i <= Min(length(Value), length(Expect)) do begin
+    if Value[i] <> Expect[i] then break;
+    if copy(Expect, i, length(LineEnding)) = LineEnding then begin
+      inc(y);
+      x := 1;
+      j := i + length(lineEnding);
+      inc(i, length(LineEnding));
+    end
+    else
+      inc(i);
   end;
+
+  Debugln([DbgInfo,' - Failed at x/y=(',x,', ',y,') Expected: ',LineEnding, MyDbg(Expect), LineEnding,
+           'Got: ',LineEnding, MyDbg(Value), LineEnding ]);
+  TestFail(Name, Format('IsText - Failed at x/y=(%d, %d)%sExpected: "%s"...%sGot: "%s"%s%s ',
+                        [x, y, LineEnding,
+                         DbgStr(copy(Expect,j, i-j+5)), LineEnding,
+                         DbgStr(copy(Value,j, i-j+5)), LineEnding, LineEnding]),
+           '"'+DbgStr(Expect)+'"', '"'+DbgStr(Value)+'"');
+end;
+
+procedure TTestBase.TestCompareString(Name: String; Expect, Value: array of String;
+  DbgInfo: String);
+begin
+  TestCompareString(Name, LinesToText(Expect), LinesToText(Value), DbgInfo);
+end;
+
+procedure TTestBase.TestCompareString(Name, Expect: String; Value: array of String;
+  DbgInfo: String);
+begin
+  TestCompareString(Name, Expect, LinesToText(Value), DbgInfo);
+end;
+
+procedure TTestBase.TestCompareString(Name: String; Expect: array of String; Value: String;
+  DbgInfo: String);
+begin
+  TestCompareString(Name, LinesToText(Expect), Value, DbgInfo);
+end;
+
+procedure TTestBase.TestIsText(Name, Text: String; FullText: Boolean = False);
+var
+  s: String;
 begin
   if FullText then
     s := SynEdit.TestFullText
   else
     s := SynEdit.Text;
-  if (s <> Text) then begin
-    i := 1; j := 1; x:= 1; y:= 1;
-    while i <= Min(length(s), length(Text)) do begin
-      if s[i] <> Text[i] then break;
-      if copy(Text, i, length(LineEnding)) = LineEnding then begin
-        inc(y);
-        x := 1;
-        j := i + length(lineEnding);
-        inc(i, length(LineEnding));
-      end
-      else
-        inc(i);
-    end;
 
-    Debugln(['IsText - Failed at x/y=(',x,', ',y,') Expected: ',LineEnding, MyDbg(Text), LineEnding,
-             'Got: ',LineEnding, MyDbg(s), LineEnding ]);
-    TestFail(Name, Format('IsText - Failed at x/y=(%d, %d)%sExpected: "%s"...%sGot: "%s"%s%s ',
-                          [x, y, LineEnding,
-                           DbgStr(copy(Text,j, i-j+5)), LineEnding,
-                           DbgStr(copy(s,j, i-j+5)), LineEnding, LineEnding]),
-             '"'+DbgStr(Text)+'"', '"'+DbgStr(s)+'"');
-  end;
+  TestCompareString(Name, Text, s, 'IsText');
 end;
 
 procedure TTestBase.TestIsText(Name: String; Lines: array of String);
@@ -486,6 +519,7 @@ end;
 
 procedure TTestBase.PopBaseName;
 begin
+  if length(FBaseTestNames) = 0 then exit;
   SetLength(FBaseTestNames, length(FBaseTestNames) - 1);
   FBaseTestName := LinesToText(FBaseTestNames, ' ');
 end;

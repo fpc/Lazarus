@@ -298,7 +298,7 @@ type
     function GetUnitLinksForDirectory(const Directory: string;
                                       UseCache: boolean = false): string;
     function FindUnitInUnitSet(const Directory, AUnitName: string): string;
-    function GetUnitSetForDirectory(const Directory: string;
+    function GetUnitSetIDForDirectory(const Directory: string;
                                     UseCache: boolean = false): string;
     function GetFPCUnitPathForDirectory(const Directory: string;
                                         UseCache: boolean = false): string;// unit paths reported by FPC
@@ -912,15 +912,7 @@ var
   FPCSrcDefines: TDefineTemplate;
   LazarusSrcDefines: TDefineTemplate;
   CurFPCOptions: String;
-  {$IFDEF EnableFPCCache}
   UnitSetCache: TFPCUnitSetCache;
-  {$ELSE}
-  FPCUnitPath: String;
-  TargetOS: String;
-  TargetProcessor: String;
-  ATestPascalFile: String;
-  UnitLinkList: String;
-  {$ENDIF}
 
   procedure AddFPCOption(s: string);
   begin
@@ -939,7 +931,6 @@ begin
     Variables[ExternalMacroStart+'ProjectDir']:=Config.ProjectDir;
   end;
 
-  {$IFDEF EnableFPCCache}
   FPCDefinesCache.ConfigCaches.Assign(Config.ConfigCaches);
   FPCDefinesCache.SourceCaches.Assign(Config.SourceCaches);
   FPCDefinesCache.TestFilename:=Config.TestPascalFile;
@@ -972,55 +963,6 @@ begin
   // save
   Config.ConfigCaches.Assign(FPCDefinesCache.ConfigCaches);
   Config.SourceCaches.Assign(FPCDefinesCache.SourceCaches);
-  {$ELSE}
-
-  // build DefinePool
-  FPCUnitPath:=Config.FPCUnitPath;
-  TargetOS:=Config.TargetOS;
-  TargetProcessor:=Config.TargetProcessor;
-  ATestPascalFile:=Config.TestPascalFile;
-  if ATestPascalFile='' then
-    ATestPascalFile:=GetTempFilename('fpctest.pas','');
-  CurFPCOptions:=Config.FPCOptions;
-  with DefinePool do begin
-    if TargetOS<>'' then AddFPCOption('-T'+TargetOS);
-    if TargetProcessor<>'' then AddFPCOption('-P'+TargetProcessor);
-    FPCDefines:=CreateFPCTemplate(Config.FPCPath, CurFPCOptions,
-                          ATestPascalFile,
-                          FPCUnitPath, TargetOS, TargetProcessor,
-                          nil);
-    if Config.TargetOS='' then
-      Config.TargetOS:=TargetOS;
-    if Config.TargetProcessor='' then
-      Config.TargetProcessor:=TargetProcessor;
-    if FPCDefines=nil then begin
-      raise Exception.Create('TCodeToolManager.Init: Unable to execute '+Config.FPCPath+' to get compiler values');
-    end;
-    Add(FPCDefines);
-    Config.FPCUnitPath:=FPCUnitPath;
-    Config.TargetOS:=TargetOS;
-    Config.TargetProcessor:=TargetProcessor;
-    UnitLinkList:=Config.UnitLinkList;
-    FPCSrcDefines:=CreateFPCSrcTemplate(Config.FPCSrcDir,Config.FPCUnitPath,
-                          Config.PPUExt,
-                          Config.TargetOS, Config.TargetProcessor,
-                          Config.UnitLinkListValid,UnitLinkList,
-                          nil);
-    Add(FPCSrcDefines);
-    Config.UnitLinkListValid:=UnitLinkList<>'';
-    Config.UnitLinkList:=UnitLinkList;
-    LazarusSrcDefines:=CreateLazarusSrcTemplate('$(#LazarusSrcDir)',
-                                 '$(#LCLWidgetType)',
-                                 Config.LazarusSrcOptions,nil);
-    Add(LazarusSrcDefines);
-  end;
-  // build define tree
-  DefineTree.Add(FPCDefines.CreateCopy);
-  DefineTree.Add(FPCSrcDefines.CreateCopy);
-  DefineTree.Add(LazarusSrcDefines.CreateCopy);
-  DefineTree.Add(DefinePool.CreateLCLProjectTemplate(
-                 '$(#LazarusSrcDir)','$(#LCLWidgetType)','$(#ProjectDir)',nil));
-  {$ENDIF}
 end;
 
 procedure TCodeToolManager.SimpleInit(const ConfigFilename: string);
@@ -1492,7 +1434,7 @@ begin
   Result:=DirectoryCachePool.FindUnitInUnitSet(Directory,AUnitName);
 end;
 
-function TCodeToolManager.GetUnitSetForDirectory(const Directory: string;
+function TCodeToolManager.GetUnitSetIDForDirectory(const Directory: string;
   UseCache: boolean): string;
 var
   Evaluator: TExpressionEvaluator;
@@ -5286,7 +5228,7 @@ begin
   ctdcsIncludePath: Result:=GetIncludePathForDirectory(ADirectory,false);
   ctdcsCompleteSrcPath: Result:=GetCompleteSrcPathForDirectory(ADirectory,false);
   ctdcsUnitLinks: Result:=GetUnitLinksForDirectory(ADirectory,false);
-  ctdcsUnitSet: Result:=GetUnitSetForDirectory(ADirectory,false);
+  ctdcsUnitSet: Result:=GetUnitSetIDForDirectory(ADirectory,false);
   ctdcsFPCUnitPath: Result:=GetFPCUnitPathForDirectory(ADirectory,false);
   else RaiseCatchableException('');
   end;
