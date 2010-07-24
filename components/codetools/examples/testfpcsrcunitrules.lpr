@@ -29,7 +29,7 @@ program TestFPCSrcUnitRules;
 
 uses
   Classes, SysUtils, CustApp, AVL_Tree, CodeToolManager, DefineTemplates,
-  FileProcs, CodeToolsStructs;
+  CodeToolsConfig, FileProcs, CodeToolsStructs;
 
 const
   ConfigFilename = 'codetools.config';
@@ -62,6 +62,7 @@ var
   FPCSrcDir: String;
   UnitSet: TFPCUnitSetCache;
   ConfigCache: TFPCTargetConfigCache;
+  Options: TCodeToolsOptions;
 begin
   // quick check parameters
   ErrorMsg:=CheckOptions('hcTPF','help compiler targetos targetcpu fpcsrcdir');
@@ -98,16 +99,28 @@ begin
   if not DirPathExists(FPCSrcDir) then
     Error('FPC source directory not found: '+FPCSrcDir,false);
 
-  CodeToolBoss.SimpleInit(ConfigFilename);
+  Options:=TCodeToolsOptions.Create;
+  Options.InitWithEnvironmentVariables;
+  if FileExistsUTF8(ConfigFilename) then
+    Options.LoadFromFile(ConfigFilename);
+  Options.FPCPath:=CompilerFilename;
+  Options.FPCOptions:='';
+  Options.TargetOS:=TargetOS;
+  Options.TargetProcessor:=TargetCPU;
+  Options.FPCSrcDir:=FPCSrcDir;
+
+  CodeToolBoss.Init(Options);
 
   UnitSet:=CodeToolBoss.FPCDefinesCache.FindUnitSet(CompilerFilename,
                                           TargetOS,TargetCPU,'',FPCSrcDir,true);
   UnitSet.Init;
-  ConfigCache:=UnitSet.GetConfigCache(false);
 
+  Options.SaveToFile(ConfigFilename);
+  Options.Free;
+
+  ConfigCache:=UnitSet.GetConfigCache(false);
   WriteCompilerInfo(ConfigCache);
   WriteDuplicatesInPPUPath(ConfigCache);
-
   WriteMissingPPUSources(UnitSet);
   WriteDuplicateSources(UnitSet);
 
