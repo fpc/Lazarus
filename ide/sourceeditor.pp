@@ -7305,12 +7305,12 @@ var
   MousePos: TPoint;
   AControl: TControl;
 begin
-  //DebugLn(['TSourceNotebook.HintTimer ']);
   FMouseHintTimer.Enabled := False;
   FMouseHintTimer.AutoEnabled := False;
+  if not IsVisible then exit;
   MousePos := Mouse.CursorPos;
   AControl:=FindLCLControl(MousePos);
-  if (AControl=nil) or (GetParentForm(AControl)<>Self) then exit;
+  if (AControl=nil) or (not ContainsControl(AControl)) then exit;
   if AControl is TSynEdit then
     ShowSynEditHint(MousePos);
 end;
