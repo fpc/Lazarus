@@ -2051,13 +2051,18 @@ var
       Result := ExpandFileNameUTF8(Result);
   end;
 
+var
+  fm: Byte;
 begin
   DebugText := nil;
   DebugFileName := GetDebugFileName;
   if (length(DebugFileName)>0) and
-    (DirPathExists(ExtractFileDir(DebugFileName))) then begin
+    (DirPathExists(ExtractFileDir(DebugFileName))) then
+  begin
+    fm:=Filemode;
     new(DebugText);
     try
+      Filemode:=fmShareDenyNone;
       Assign(DebugText^, DebugFileName);
       if FileExistsUTF8(DebugFileName) then
         Append(DebugText^)
@@ -2069,6 +2074,7 @@ begin
       // Add extra line ending: a dialog will be shown in windows gui application
       writeln(StdOut, 'Cannot open file: ', DebugFileName+LineEnding);
     end;
+    Filemode:=fm;
   end;
   if DebugText=nil then
   begin
