@@ -4788,6 +4788,9 @@ resourcestring
   lisAddPackageToProject2 = 'Add package to project';
   lisAddUnitNotRecommended = 'Add unit (not recommended)';
   lisAddPackageToProject = 'Add package %s to project?';
+  lisAddToIncludeSearchPath = 'Add to include search path?';
+  lisTheNewIncludeFileIsNotYetInTheIncludeSearchPathAdd = 'The new include '
+    +'file is not yet in the include search path.%sAdd directory %s?';
   lisOnBreakLineIEReturnOrEnterKey = 'On break line (i.e. return or enter key)';
   lisSetupDefaultIndentation = '(Setup default indentation)';
   lisIndentationForPascalSources = 'Indentation for pascal sources';
