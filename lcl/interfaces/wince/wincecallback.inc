@@ -1104,7 +1104,7 @@ begin
 
         if Hi(WParam) < 2 then //1 for accelerator 0 for menu
         begin
-          TargetObject := GetMenuItemObject
+          TargetObject := GetMenuItemObject();
         end
         else // menuitem or shortcut
         begin

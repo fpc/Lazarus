@@ -43,6 +43,7 @@ type
 
   TWinCEWSMenuItem = class(TWSMenuItem)
   public
+    class procedure UpdateCaption(const AMenuItem: TMenuItem; ACaption: String);
     class procedure AttachMenuEx(const AMenuItem: TMenuItem; const AParentHandle: HMENU);
     class procedure CopyMenuToHandle(const AMenuItem: TMenuItem; const ADest: HMENU);
   published
@@ -89,8 +90,8 @@ const
   MenuBarID_1_Item = 20004;
   MenuBarID_1_Popup = 20005;
   MenuBarID_Empty = 20006;
-  MenuBarID_L = 1;
-  MenuBarID_R = 2;
+  MenuBarID_L = 1001;
+  MenuBarID_R = 1002;
   StartMenuItem = 200;
 var
   MenuItemsList: TStringList;
@@ -237,10 +238,10 @@ begin
 
   // Clear any previously set menu items
   while SendMessage(mbi.hwndMB, TB_DELETEBUTTON, 0, 0) <> 0 do
-  {$ifdef VerboseWinCEMenu}
-  DebugLn('[CeSetMenu] TB_DELETEBUTTON')
-  {$endif}
-  ;
+    {$ifdef VerboseWinCEMenu}
+    DebugLn('[CeSetMenu] TB_DELETEBUTTON')
+    {$endif}
+    ;
 
   // Now we will add the buttons in the menu
   //
@@ -281,16 +282,10 @@ begin
           tbbi.dwMask := TBIF_TEXT or TBIF_COMMAND or TBIF_STATE;
 
           // Without setting idCommand the top-level items don't respond to clicks
-          case mbi.nToolBarId of
-          MenuBarID_Popups:     tbbi.idCommand := MenuBarRLID;
-          MenuBarID_PopUp_Item: tbbi.idCommand := MenuBarRLID;
-          MenuBarID_Item_Popup: tbbi.idCommand := MenuBarRLID;
-          MenuBarID_Items:      tbbi.idCommand := StartMenuItem + MenuBarRLID;
-          MenuBarID_1_Popup:    tbbi.idCommand := MenuBarRLID;
-          MenuBarID_1_Item:     tbbi.idCommand := StartMenuItem + MenuBarRLID;
-          end;
-          // Update the MenuItem Command to use latter
-          TMenuItemAccess(LCLMenu.Items.Items[j]).FCommand := MenuBarRLID;
+          tbbi.idCommand := MenuBarRLID;
+
+          // And we also need to update the MenuItem Command
+          TMenuItemAccess(LCLMenu.Items.Items[j]).FCommand := tbbi.idCommand - StartMenuItem;
 
           {$ifdef VerboseWinCEMenu}
           DebugLn('[CeSetMenu] atKeyPadDevice Set FCommand from ', LCLMenu.Items.Items[j].Name, ' to: ',
@@ -298,15 +293,17 @@ begin
           DebugLn('[CeSetMenu] atKeyPadDevice Message TB_SETBUTTONINFO with ButtonID: MenuBarRLID = ' + IntToStr(MenuBarRLID));
           {$endif}
 
-          if SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, MenuBarRLID, LPARAM(@tbbi)) = 0 then
+          if SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, tbbi.idCommand, LPARAM(@tbbi)) = 0 then
             DebugLn('[CeSetMenu] TB_SETBUTTONINFO failed');
+
+          MenuItemsList.AddObject(IntToStr(tbbi.idCommand), LCLMenu.Items.Items[j]);
 
           // Adds subitems to a top-level item
           {$ifdef VerboseWinCEMenu}
           DebugLn('[CeSetMenu] atKeyPadDevice Message TB_GETBUTTONINFO with ButtonID: MenuBarRLID = ' + IntToStr(MenuBarRLID));
           {$endif}
           tbbi.dwMask := TBIF_LPARAM;
-          if SendMessage(mbi.hwndMB, TB_GETBUTTONINFO, MenuBarRLID, LPARAM(@tbbi)) = - 1 then
+          if SendMessage(mbi.hwndMB, TB_GETBUTTONINFO, tbbi.idCommand, LPARAM(@tbbi)) = - 1 then
             DebugLn('[CeSetMenu] TB_GETBUTTONINFO failed');
 
           // Remove any present buttons, for example the one from the .rc file
@@ -320,12 +317,12 @@ begin
         end;
       end;
 
-      if i = 1 then
-      begin
-        tbbi.dwMask := TBIF_STATE;
-        tbbi.fsState:=0;
-        SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, 2, LPARAM(@tbbi));
-      end;
+//      if i = 1 then
+//      begin
+//        tbbi.dwMask := TBIF_STATE;
+//        tbbi.fsState:=0;
+//        SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, 2, LPARAM(@tbbi));
+//      end;
     end;
   end
   else
@@ -496,7 +493,7 @@ end;
 
 { TWinCEWSMenuItem }
 
-procedure UpdateCaption(const AMenuItem: TMenuItem; ACaption: String);
+class procedure TWinCEWSMenuItem.UpdateCaption(const AMenuItem: TMenuItem; ACaption: String);
 var
   MenuInfo: MENUITEMINFO;
   wCaption: WideString;
@@ -764,8 +761,9 @@ begin
         if AMenu.Items.Items[j].Visible then Inc(i);
       end;
 
-      if i = 0 then MenuBarRLID := StartMenuItem + MenuBarID_L
-      else MenuBarRLID := StartMenuItem + MenuBarID_R;
+      MenuBarRLID := StartMenuItem + AMenu.Items.Items[j].Command;
+//      if i = 0 then MenuBarRLID := StartMenuItem + MenuBarID_L
+//      else MenuBarRLID := StartMenuItem + MenuBarID_R;
 
       {$ifdef VerboseWinCEMenu}
       DebugLn('[TWinCEWSMenuItem.SetCaption] TB_SETBUTTONINFO with ButtonID: ' + IntToStr(MenuBarRLID));

@@ -1,19 +1,36 @@
 //*****************************************************
 // Resource file necessary for menu support
 //*****************************************************
+//
+// The MENU resource data has the following format:
+//
+// TOOLBAR_ID MENU DISCARDABLE
+// BEGIN
+//   MENUITEM Caption, MENU_ID
+// END
+//
+// POPUP menus in this structure can't have a MENU_ID
+//
+// The RCDATA after that is the Toolbar information:
+//
+// TOOLBAR_ID, Number of menu items,
+// Image, MENU_ID, Toolbar state, Toolbar Style, ?, 0, either NOMENU (popup) or 0 (menuitem)
+//
+// NOMENU = 0xFFFF
+//
 
 // 2 simple menu items
 20000 MENU DISCARDABLE
 BEGIN
-  MENUITEM " ", 1
-  MENUITEM " ", 2
+  MENUITEM " ", 1001
+  MENUITEM " ", 1002
 END
 
 20000 RCDATA DISCARDABLE
 BEGIN
     20000, 2,
-    -2, 1, 8, 0x10, 0, 0, 0xFFFF,
-    -2, 2, 8, 0x10, 0, 0, 0xFFFF
+    -2, 1001, 8, 0x10, 0, 0, 0xFFFF,
+    -2, 1002, 8, 0x10, 0, 0, 0xFFFF
 END
 
 // popup and simple menu item
@@ -21,33 +38,33 @@ END
 BEGIN
   POPUP " "
   BEGIN
-    MENUITEM " ", 1
+    MENUITEM " ", 1001
   END
-  MENUITEM " ", 2
+  MENUITEM " ", 1002
 END
 
 20001 RCDATA DISCARDABLE
 BEGIN
     20001, 2,
-    -2, 1, 4, 0x18, 0, 0, 0,
-    -2, 2, 4, 0x10, 0, 0, 0xFFFF
+    -2, 1001, 4, 0x18, 0, 0, 0,
+    -2, 1002, 4, 0x10, 0, 0, 0xFFFF
 END
 
 // simple item and popup menu
 20002 MENU DISCARDABLE
 BEGIN
-  MENUITEM " ", 1
+  MENUITEM " ", 1001
   POPUP " "
   BEGIN
-    MENUITEM " ", 2
+    MENUITEM " ", 1002
   END
 END
 
 20002 RCDATA DISCARDABLE
 BEGIN
     20002, 2,
-    -2, 1, 4, 0x10, 0, 0, 0xFFFF,
-    -2, 2, 4, 0x18, 0, 0, 1
+    -2, 1001, 4, 0x10, 0, 0, 0xFFFF,
+    -2, 1002, 4, 0x18, 0, 0, 1
 END
 
 // 2 popup menus
@@ -55,31 +72,31 @@ END
 BEGIN
   POPUP "POPUP1"
   BEGIN
-    MENUITEM "SUB1", 1
+    MENUITEM "SUB1", 1001
   END
   POPUP "POPUP2"
   BEGIN
-    MENUITEM "SUB2", 2
+    MENUITEM "SUB2", 1002
   END
 END
 
 20003 RCDATA DISCARDABLE
 BEGIN
     20003, 2,
-    -2, 1, 4, 0x18, 0, 0, 0,
-    -2, 2, 4, 0x18, 0, 0, 1
+    -2, 1001, 4, 0x18, 0, 0, 0,
+    -2, 1002, 4, 0x18, 0, 0, 1
 END
 
 // only 1 top-level item
 20004 MENU DISCARDABLE
 BEGIN
-  MENUITEM " ", 1
+  MENUITEM " ", 1001
 END
 
 20004 RCDATA DISCARDABLE
 BEGIN
-    20004, 2,
-    -2, 1, 8, 0x10, 0, 0, 0xFFFF
+    20004, 1,
+    -2, 1001, 8, 0x10, 0, 0, 0xFFFF
 END
 
 // only 1 popup
@@ -87,14 +104,14 @@ END
 BEGIN
   POPUP "POPUP1"
   BEGIN
-    MENUITEM "SUB1", 1
+    MENUITEM "SUB1", 1001
   END
 END
 
 20005 RCDATA DISCARDABLE
 BEGIN
-    20005, 2,
-    -2, 1, 4, 0x18, 0, 0, 0
+    20005, 1,
+    -2, 1001, 4, 0x18, 0, 0, 0
 END
 
 // no menu
@@ -104,7 +121,7 @@ END
 
 20006 RCDATA DISCARDABLE
 BEGIN
-    20006, 2
+    20006, 0
 END
 
 //*****************************************************
