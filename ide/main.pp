@@ -6164,7 +6164,7 @@ begin
   if not (ofLoadHiddenResource in OpenFlags) then
   begin
     DesignerForm := FormEditor1.GetDesignerForm(NewComponent);
-    if DesignerForm=nil then
+    if (DesignerForm=nil) or (DesignerForm.Designer=nil) then
       DesignerForm := CreateDesignerForComponent(AnUnitInfo,NewComponent);
   end;
 
@@ -10012,6 +10012,7 @@ begin
     // select a form (object inspector, formeditor, control selection)
     if FLastFormActivated<>nil then begin
       LastDesigner:=TDesigner(FLastFormActivated.Designer);
+      debugln(['TMainIDE.DoOpenProjectFile ',DbgSName(FLastFormActivated),' ',DbgSName(FLastFormActivated.Designer)]);
       LastDesigner.SelectOnlyThisComponent(LastDesigner.LookupRoot);
     end;
 
