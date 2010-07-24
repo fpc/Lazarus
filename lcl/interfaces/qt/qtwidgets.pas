@@ -7566,9 +7566,11 @@ begin
           not getEditable) then
       begin
         if not FDropListVisibleInternal then
-          TCustomComboBox(LCLObject).IntfGetItems;
-      end;
-      Result := inherited EventFilter(Sender, Event);
+          TCustomComboBox(LCLObject).IntfGetItems
+        else
+          Result := inherited EventFilter(Sender, Event);
+      end else
+        Result := inherited EventFilter(Sender, Event);
     end;
     else
       Result := inherited EventFilter(Sender, Event);
