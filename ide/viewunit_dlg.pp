@@ -154,9 +154,9 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self,450,300);
   mniMultiSelect.Caption := dlgMultiSelect;
 
-  ButtonPanel.OKButton.OnClick := @OKButtonClick;
-  ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
-  ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
+  ButtonPanel.OKButton.Caption:=lisOk;
+  ButtonPanel.HelpButton.Caption:=lisMenuHelp;
+  ButtonPanel.CancelButton.Caption:=dlgCancel;
 end;
 
 Procedure TViewUnitDialog.OKButtonClick(Sender : TOBject);

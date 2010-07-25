@@ -3,8 +3,10 @@ object ViewUnitDialog: TViewUnitDialog
   Height = 301
   Top = 280
   Width = 378
-  ActiveControl = Edit
-  AutoScroll = True
+  HorzScrollBar.Page = 377
+  HorzScrollBar.Range = 112
+  VertScrollBar.Page = 300
+  VertScrollBar.Range = 163
   BorderIcons = [biSystemMenu]
   Caption = 'View Project Units'
   ClientHeight = 301
@@ -17,7 +19,6 @@ object ViewUnitDialog: TViewUnitDialog
     Top = 6
     Width = 366
     Align = alTop
-    Anchors = [akLeft]
     AutoSize = False
     AutoSelect = False
     BorderSpacing.Around = 6
@@ -27,14 +28,11 @@ object ViewUnitDialog: TViewUnitDialog
     TabOrder = 1
   end
   object Listbox: TListBox
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 212
+    Height = 218
     Top = 37
     Width = 366
     Align = alClient
-    Anchors = [akBottom]
     BorderSpacing.Around = 6
     ClickOnSelChange = False
     ItemHeight = 0
@@ -43,13 +41,24 @@ object ViewUnitDialog: TViewUnitDialog
     OnKeyDown = ListboxKeyDown
     PopupMenu = popListBox
     TabOrder = 0
-    TopIndex = -1
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 255
+    Height = 34
+    Top = 261
     Width = 366
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&ОК'
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Справка'
+    HelpButton.OnClick = HelpButtonClick
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Закрыть'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Отмена'
+    CancelButton.OnClick = CancelButtonClick
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
