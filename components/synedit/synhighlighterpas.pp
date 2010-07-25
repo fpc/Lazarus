@@ -85,8 +85,7 @@ type
     rsAtClass,
     rsAfterClass,
     rsAtClosingBracket, // ')'
-    rsAtCaseLabel,
-    rsLineIsAllComment
+    rsAtCaseLabel
   );
   TRangeStates = set of TRangeState;
 
@@ -2108,7 +2107,6 @@ begin
   FNodeInfoLine := -1;
   fLineNumber := LineNumber;
   FAtLineStart := True;
-  Exclude(fRange, rsLineIsAllComment);
   if not FCatchNodeInfo then
     Next;
 end; { SetLine }
@@ -2604,7 +2602,7 @@ begin
   if fLine[Run+1] = '/' then begin
     fTokenID := tkComment;
     if FAtLineStart then begin
-      fRange := fRange + [rsSlash, rsLineIsAllComment];
+      fRange := fRange + [rsSlash];
       fStringLen := 2; // length of "//"
       if not(TopPascalCodeFoldBlockType = cfbtSlashComment) then
         StartPascalCodeFoldBlock(cfbtSlashComment);
@@ -2866,7 +2864,6 @@ begin
   inherited SetRange(Value);
   CompilerMode := PasCodeFoldRange.Mode;
   fRange := TRangeStates(Integer(PtrUInt(CodeFoldRange.RangeType)));
-  Exclude(fRange, rsLineIsAllComment);
   FNodeInfoLine := -1;
   FSynPasRangeInfo := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[LineIndex-1];
 end;
