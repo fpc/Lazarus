@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, Graphics, Menus, LCLIntf, SynGutterBase, SynEditMiscProcs,
-  SynEditFoldedView, SynEditMouseCmds, SynEditHighlighterFoldBase, LCLProc;
+  SynEditFoldedView, SynEditMouseCmds, SynEditHighlighterFoldBase, LCLProc, ImgList;
 
 type
 
@@ -45,11 +45,17 @@ type
     FPopUp: TPopupMenu;
     FMenuInf: Array of TFoldViewNodeInfo;
     FIsFoldHidePreviousLine: Boolean;
+    FPopUpImageList: TImageList;
+    FReversePopMenuOrder: Boolean;
     procedure SetMouseActionsCollapsed(const AValue: TSynEditMouseActions);
     procedure SetMouseActionsExpanded(const AValue: TSynEditMouseActions);
     function  FoldTypeForLine(AScreenLine: Integer): TSynEditFoldLineCapability;
     function  IsFoldHidePreviousLine(AScreenLine: Integer): Boolean;
     function  IsSingleLineHide(AScreenLine: Integer): Boolean;
+    procedure InitPopUpImageList;
+    procedure DrawNodeSymbol(Canvas: TCanvas; Rect: TRect;
+                             NodeType: TSynEditFoldLineCapability;
+                             SubType: Integer);
   protected
     procedure DoChange(Sender: TObject); override;
     procedure PopClicked(Sender: TObject);
@@ -71,6 +77,8 @@ type
       read FMouseActionsExpanded write SetMouseActionsExpanded;
     property MouseActionsCollapsed: TSynEditMouseActions
       read FMouseActionsCollapsed write SetMouseActionsCollapsed;
+    property ReversePopMenuOrder: Boolean
+      read FReversePopMenuOrder write FReversePopMenuOrder default True;
   end;
 
 implementation
@@ -151,6 +159,44 @@ begin
     Result := True;
 end;
 
+procedure TSynGutterCodeFolding.InitPopUpImageList;
+var
+  img: TBitmap;
+  procedure NewImg;
+  begin
+    img := TBitmap.Create;
+    img.SetSize(16, 16);
+    img.Canvas.Brush.Color := clWhite;
+    img.Canvas.FillRect(0,0,16,16);
+    img.TransparentColor := clWhite;
+    img.Canvas.Pen.Color := clBlack;
+    img.Canvas.Pen.Width := 1;
+  end;
+begin
+  FPopUpImageList.DrawingStyle := dsTransparent;
+
+  NewImg;
+  DrawNodeSymbol(img.Canvas, Rect(3,3,14,14), cfFoldStart, 0);  // [-]
+  FPopUpImageList.Add(img, nil);
+  img.Free;
+
+  NewImg;
+  DrawNodeSymbol(img.Canvas, Rect(3,3,14,14), cfCollapsedFold, 0);  // [+]
+  FPopUpImageList.Add(img, nil);
+  img.Free;
+
+  NewImg;
+  DrawNodeSymbol(img.Canvas, Rect(3,3,14,14), cfHideStart, 0);  // [.]
+  FPopUpImageList.Add(img, nil);
+  img.Free;
+
+  NewImg;
+  DrawNodeSymbol(img.Canvas, Rect(3,3,14,14), cfCollapsedHide, 0);  // [v]
+  FPopUpImageList.Add(img, nil);
+  img.Free;
+
+end;
+
 procedure TSynGutterCodeFolding.DoChange(Sender: TObject);
 begin
   if AutoSize then
@@ -161,6 +207,7 @@ end;
 constructor TSynGutterCodeFolding.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FReversePopMenuOrder := true;
   FFoldView := Gutter.FoldView;
   FMouseActions := TSynEditMouseActionsGutterFold.Create(self);
   FMouseActionsExpanded := TSynEditMouseActionsGutterFoldExpanded.Create(self);
@@ -174,7 +221,11 @@ begin
   MarkupInfo.FrameColor := clNone;
 
   FWidth := 10;
+
+  FPopUpImageList := TImageList.Create(nil);
+  InitPopUpImageList;
   FPopUp := TPopupMenu.Create(nil);
+  FPopUp.Images := FPopUpImageList;
 end;
 
 destructor TSynGutterCodeFolding.Destroy;
@@ -183,6 +234,7 @@ begin
   FreeAndNil(FMouseActionsCollapsed);
   FreeAndNil(FMouseActionsExpanded);
   FreeAndNil(FPopUp);
+  FreeAndNil(FPopUpImageList);
   inherited Destroy;
 end;
 
@@ -199,10 +251,13 @@ var
   inf: TFoldViewNodeInfo;
 begin
    inf := FMenuInf[(Sender as TMenuItem).tag];
-   if inf.Folded then
-     FFoldView.UnFoldAtTextIndex(inf.LineNum-1, inf.ColIndex, 1, False)
-   else
-     FFoldView.FoldAtTextIndex(inf.LineNum-1, inf.ColIndex, 1, False);
+   if inf.LineNum < 0 then exit;
+   case (Sender as TMenuItem).ImageIndex of
+     0: FFoldView.FoldAtTextIndex(inf.LineNum-1, inf.ColIndex, 1, False);
+     1: FFoldView.UnFoldAtTextIndex(inf.LineNum-1, inf.ColIndex, 1, False);
+     2: FFoldView.FoldAtTextIndex(inf.LineNum-1, inf.ColIndex, 1, False, 0);
+     3: FFoldView.UnFoldAtTextIndex(inf.LineNum-1, inf.ColIndex, 1, False, 0);
+   end;
 end;
 
 procedure TSynGutterCodeFolding.DoOnGutterClick(X, Y : integer);
@@ -230,6 +285,16 @@ end;
 
 function TSynGutterCodeFolding.DoHandleMouseAction(AnAction: TSynEditMouseAction;
   var AnInfo: TSynEditMouseActionInfo): Boolean;
+
+  function AddPopUpItem: TMenuItem;
+  begin
+    Result := TMenuItem.Create(FPopUp);
+    Result.OnClick := {$IFDEF FPC}@{$ENDIF}PopClicked;
+    if FReversePopMenuOrder then
+      FPopUp.Items.Add(Result)
+    else
+      FPopUp.Items.Insert(0, Result);
+  end;
 var
   c, i, line, ScrLine: Integer;
   inf: TFoldViewNodeInfo;
@@ -314,10 +379,9 @@ begin
             FMenuInf[i] := inf;
             if (i < c-1) and (FMenuInf[i+1].LineNum = line) and (inf.LineNum <> line)
             then begin
-              m := TMenuItem.Create(FPopUp);
+              m := AddPopUpItem;
               m.Caption := cLineCaption;
               m.Tag := -1;
-              FPopUp.Items.Add(m);
             end;
             s := copy(inf.Text, 1, inf.HNode.LogXStart-1);
             if length(s) > 30 then s := copy(s,1,15) + '...' + copy(s, inf.HNode.LogXStart-11,10);
@@ -325,19 +389,102 @@ begin
             s2 := '';
             if inf.OpenCount > 1 then
               s2 := format(' (%d/%d)', [inf.ColIndex+1, inf.OpenCount]);
-            m := TMenuItem.Create(FPopUp);
-            m.Caption := format('%4d %-12s %s', [ inf.LineNum, inf.Keyword+s2+':', s]);
-            m.ShowAlwaysCheckable := true;
-            m.Checked := inf.Folded;
-            m.Tag := i;
-            m.OnClick := {$IFDEF FPC}@{$ENDIF}PopClicked;
-            FPopUp.Items.Add(m);
+
+            if inf.FNode.IsInFold then begin
+              m := AddPopUpItem;
+              m.Caption := format('%4d %-12s '#9'%s', [ inf.LineNum, inf.Keyword+s2+':', s]);
+              m.Tag := i;
+              if inf.FNode.IsHide then
+                m.ImageIndex := 3
+              else
+                m.ImageIndex := 1;
+            end
+            else begin
+              if sfaFoldFold in inf.HNode.FoldAction then begin
+                m := AddPopUpItem;
+                m.Caption := format('%4d %-12s '#9'%s', [ inf.LineNum, inf.Keyword+s2+':', s]);
+                m.Tag := i;
+                m.ImageIndex := 0;
+              end;
+              if sfaFoldHide in inf.HNode.FoldAction then begin
+                m := AddPopUpItem;
+                if sfaFoldFold in inf.HNode.FoldAction then
+                  m.Caption := format('%4d %-12s ', [ inf.LineNum, inf.Keyword+s2 ])
+                else
+                  m.Caption := format('%4d %-12s '#9'%s', [ inf.LineNum, inf.Keyword+s2+':', s]);
+                m.Tag := i;
+                m.ImageIndex := 2;
+              end;
+            end;
+
           end;
           FPopUp.PopUp;
         end;
       end;
     else
       Result := False;
+  end;
+end;
+
+procedure TSynGutterCodeFolding.DrawNodeSymbol(Canvas: TCanvas; Rect: TRect;
+  NodeType: TSynEditFoldLineCapability; SubType: Integer);
+var
+  Points: Array [0..3] of TPoint;
+  X, Y: Integer;
+begin
+  Canvas.Rectangle(Rect);
+  X := (Rect.Left - 1 + Rect.Right) div 2;
+  Y := (Rect.Top - 1 + Rect.Bottom) div 2;
+
+  case NodeType of
+    cfFoldStart:
+      begin
+        // [-]
+        Canvas.MoveTo(X - 2, Y);
+        Canvas.LineTo(X + 3, Y);
+      end;
+    cfHideStart:
+      begin
+        // [.]
+        Canvas.MoveTo(X, Y);
+        Canvas.LineTo(X + 1, Y);
+      end;
+    cfCollapsedFold:
+      begin
+        // [+]
+        Canvas.MoveTo(X - 2, Y);
+        Canvas.LineTo(X + 3, Y);
+        Canvas.MoveTo(X, Y - 2);
+        Canvas.LineTo(X, Y + 3);
+      end;
+    cfCollapsedHide:
+      begin
+        case SubType of
+          0: begin
+              // [v]
+              Points[0].X := X;
+              Points[0].y := Y + 2;
+              Points[1].X := X - 2;
+              Points[1].y := Y;
+              Points[2].X := X + 2;
+              Points[2].y := Y;
+              Points[3].X := X;
+              Points[3].y := Y + 2;
+          end;
+          1: begin
+              // [v]
+              Points[0].X := X;
+              Points[0].y := Y - 2;
+              Points[1].X := X - 2;
+              Points[1].y := Y;
+              Points[2].X := X + 2;
+              Points[2].y := Y;
+              Points[3].X := X;
+              Points[3].y := Y - 2;
+          end;
+        end;
+        Canvas.Polygon(Points);
+      end;
   end;
 end;
 
@@ -355,7 +502,7 @@ var
     rcNode: TRect;
     ptCenter : TPoint;
     isPrevLine: Boolean;
-    Points: Array [0..3] of TPoint;
+    i: Integer;
   begin
     isPrevLine := IsFoldHidePreviousLine(iLine);
     LineOffset := 0;
@@ -399,56 +546,10 @@ var
     then
       Canvas.Pen.Color := MarkupInfo.FrameColor;
 
-    Canvas.Rectangle(rcNode);
+    i:= 0;
+    if isPrevLine and (NodeType = cfCollapsedHide) then i := 1;
+    DrawNodeSymbol(Canvas, rcNode, NodeType, i);
 
-    //draw folded sign
-    case NodeType of
-      cfFoldStart:
-        begin
-          // [-]
-          Canvas.MoveTo(ptCenter.X - 2, ptCenter.Y);
-          Canvas.LineTo(ptCenter.X + 3, ptCenter.Y);
-        end;
-      cfHideStart:
-        begin
-          // [.]
-          Canvas.MoveTo(ptCenter.X, ptCenter.Y);
-          Canvas.LineTo(ptCenter.X + 1, ptCenter.Y);
-        end;
-      cfCollapsedFold:
-        begin
-          // [+]
-          Canvas.MoveTo(ptCenter.X - 2, ptCenter.Y);
-          Canvas.LineTo(ptCenter.X + 3, ptCenter.Y);
-          Canvas.MoveTo(ptCenter.X, ptCenter.Y - 2);
-          Canvas.LineTo(ptCenter.X, ptCenter.Y + 3);
-        end;
-      cfCollapsedHide:
-        begin
-          if isPrevLine then begin
-            // [v]
-            Points[0].X := ptCenter.X;
-            Points[0].y := ptCenter.Y - 2;
-            Points[1].X := ptCenter.X - 2;
-            Points[1].y := ptCenter.Y;
-            Points[2].X := ptCenter.X + 2;
-            Points[2].y := ptCenter.Y;
-            Points[3].X := ptCenter.X;
-            Points[3].y := ptCenter.Y - 2;
-          end else begin
-            // [v]
-            Points[0].X := ptCenter.X;
-            Points[0].y := ptCenter.Y + 2;
-            Points[1].X := ptCenter.X - 2;
-            Points[1].y := ptCenter.Y;
-            Points[2].X := ptCenter.X + 2;
-            Points[2].y := ptCenter.Y;
-            Points[3].X := ptCenter.X;
-            Points[3].y := ptCenter.Y + 2;
-          end;
-          Canvas.Polygon(Points);
-        end;
-    end;
     Canvas.Pen.Color := MarkupInfo.Foreground;
     Canvas.Brush.Style := bsSolid;
   end;

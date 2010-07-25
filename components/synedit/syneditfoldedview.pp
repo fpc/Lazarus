@@ -222,11 +222,11 @@ type
   TFoldChangedEvent = procedure(aLine: Integer) of object;
 
   TFoldViewNodeInfo = record
-    HNode: TSynFoldNodeInfo;
+    HNode: TSynFoldNodeInfo;    // Highlighter Node
+    FNode: TSynTextFoldAVLNode; // AvlFoldNode
     Text, Keyword: String;
     LineNum, ColIndex: Integer;
     OpenCount: Integer;
-    Folded: boolean;
   end;
 
   TSynEditFoldLineCapability = (
@@ -249,17 +249,16 @@ type
   TSynEditFoldProvider = class
   private
     FHighlighter: TSynCustomFoldHighlighter;
-    function GetFoldOpenCount(ALineIdx: Integer): Integer;
     function GetLineCapabilities(ALineIdx: Integer): TSynEditFoldLineCapabilities;
     procedure SetHighLighter(const AValue: TSynCustomFoldHighlighter);
   public
-    property HighLighter: TSynCustomFoldHighlighter read FHighlighter write SetHighLighter;
-    property FoldOpenCount[ALineIdx: Integer]: Integer read GetFoldOpenCount;
+    function FoldOpenCount(ALineIdx: Integer; AType: Integer = 0): Integer;
     //property FoldOpenInfo[ALineIdx, AColumnIdx: Integer]: Integer read GetFoldOpenInfo;
     //property FoldInfoCount[ALineIdx: Integer]: Integer read GetFoldInfoCount;
     //property FoldInfo[ALineIdx, AColumnIdx: Integer]: Integer read GetFoldInfo;
     property LineCapabilities[ALineIdx: Integer]: TSynEditFoldLineCapabilities
              read GetLineCapabilities;
+    property HighLighter: TSynCustomFoldHighlighter read FHighlighter write SetHighLighter;
   end;
 
   { TSynTextFoldedView
@@ -1025,7 +1024,7 @@ procedure TSynEditFoldExportCoder.AddNode(aX, aY, aLen: Integer; aFoldType: TSyn
 
   <Stream> = { <TypeStream> };
 
-  <TypeStream> = " T" <TypeId>  <TypeData>;        (* Stores all folds for the given type (eg cfbtBeginEnd) *)
+  <TypeStream> = " T" <TypeId>  <TypeData>;        [* Stores all folds for the given type (eg cfbtBeginEnd) *]
 
   <TypeId>   = ord(cfbtBeginEnd) or similar
   <TypeData> = [<HideInfo>],
@@ -1037,11 +1036,11 @@ procedure TSynEditFoldExportCoder.AddNode(aX, aY, aLen: Integer; aFoldType: TSyn
   <FoldList> = [{ <ConsecutiveFoldedCount>,  <ConsecutiveUnFoldedCount> }],
                <ConsecutiveFoldedCount>,
                ;
-  (* NodePos: is the  position of a folded node (of the type matching the current stream)
+  [* NodePos: is the  position of a folded node (of the type matching the current stream)
      ConsecutiveFoldedCount: more folded nodes of the same type, without any
                              unfolded node (of this type) inbetween.
      ConsecutiveUnFoldedCount: amount of unfolded nodes (of this type) before the next folded node.
-  *)
+  *]
 
   <NodePos> =  <YOffset> <XPos> <len>;
   <YOffset>                  = <Number>
@@ -1051,14 +1050,14 @@ procedure TSynEditFoldExportCoder.AddNode(aX, aY, aLen: Integer; aFoldType: TSyn
   <ConsecutiveUnFoldedCount> = <ExNumber>
 
   <FoldListEndCont> = ' p', <SumFoldedLines>;
-    (* FoldListEndCont is mandotory, if another block of <NodePos>, <FoldList> is coming *)
+    [* FoldListEndCont is mandotory, if another block of <NodePos>, <FoldList> is coming *]
   <FoldListEnd>     = ' P'  <SumFoldedLines>, <EndY>, <EndX>;
-    (* FoldListEnd is optional. It is expected if the previous <FoldList> has more than 10 folded lines*)
+    [* FoldListEnd is optional. It is expected if the previous <FoldList> has more than 10 folded lines*]
 
   <SumFoldedLines> = <Number>
-  (* The sum of all lines folded by folds in <ConsecutiveFoldedCount>.
+  [* The sum of all lines folded by folds in <ConsecutiveFoldedCount>.
      Not including the fold in <NodePos>, which has it's own len.
-  *)
+  *]
 
   <Number> = bigger numbers
   <ExNumber> = for numbers expected below 467; specially 0..80
@@ -2948,23 +2947,33 @@ begin
     if FHighlighter.FoldOpenCount(ALineIdx) > 0 then include(Result, cfFoldStart);
 end;
 
-function TSynEditFoldProvider.GetFoldOpenCount(ALineIdx: Integer): Integer;
-begin
-  if (FHighlighter = nil) or (ALineIdx < 0) then exit(0);
-  //if c > 0 then begin
-    Result := FHighlighter.FoldNodeInfoCount[ALineIdx, [sfaOpen, sfaFold]];
-    //Result := Result + FHighlighter.FoldNodeInfoCount[ALineIdx, [sfaOpen, sfaFoldHide]];
-    //Result := Result + FHighlighter.FoldNodeInfoCount[ALineIdx, [sfaOneLineOpen, sfaFoldHide]];
-  //end
-  //else
-  if Result < 0 then
-    Result := FHighlighter.FoldOpenCount(ALineIdx);
-end;
-
 procedure TSynEditFoldProvider.SetHighLighter(const AValue: TSynCustomFoldHighlighter);
 begin
   if FHighlighter = AValue then exit;
   FHighlighter := AValue;
+end;
+
+function TSynEditFoldProvider.FoldOpenCount(ALineIdx: Integer; AType: Integer = 0): Integer;
+var
+  i: Integer;
+begin
+  if (FHighlighter = nil) or (ALineIdx < 0) then exit(0);
+
+  Result := FHighlighter.FoldNodeInfoCount[ALineIdx, [sfaOpen, sfaFold]];
+  if (result > 0) and (AType > 0) then begin
+    i := Result ;
+    Result := 0;
+    while i > 0 do begin
+      dec(i);
+      if FHighlighter.FoldNodeInfo[ALineIdx, i, [sfaOpen, sfaFold]].FoldGroup = AType then
+        inc(Result);
+    end;
+  end
+  //Result := Result + FHighlighter.FoldNodeInfoCount[ALineIdx, [sfaOpen, sfaFoldHide]];
+  //Result := Result + FHighlighter.FoldNodeInfoCount[ALineIdx, [sfaOneLineOpen, sfaFoldHide]];
+  else
+  if Result < 0 then
+    Result := FHighlighter.FoldOpenCount(ALineIdx, AType);
 end;
 
 { TSynEditFoldedView }
@@ -3689,7 +3698,7 @@ begin
 
   // AStartIndex is 0-based
   // FoldTree is 1-based AND first line remains visble
-  NodeCount := FoldProvider.FoldOpenCount[AStartIndex];
+  NodeCount := FoldProvider.FoldOpenCount(AStartIndex);
   if ColCount = 0 then
     ColCount := NodeCount;
 
@@ -3764,7 +3773,7 @@ begin
   if not assigned(hl) then
     exit;
   top := TopTextIndex;
-  c := FoldProvider.FoldOpenCount[AStartIndex];
+  c := FoldProvider.FoldOpenCount(AStartIndex);
 
   r := -1;
   if ColCount = 0 then begin
@@ -3904,7 +3913,7 @@ var
       if (FldLine > PrevFldLine) then
         AtColumn := 0;
       // check the fold-length
-      MaxCol := FoldProvider.FoldOpenCount[FldIndex] - 1;
+      MaxCol := FoldProvider.FoldOpenCount(FldIndex) - 1;
       FldCol := node.FoldIndex;
       IsHide := node.SourceLineOffset = 0;
       if (FldCol < AtColumn) then FldCol := AtColumn;
@@ -4039,7 +4048,7 @@ begin
   hl := TSynCustomFoldHighlighter(HighLighter);
   if not assigned(hl) then
     exit(-1);
-  Result := hl.FoldNestCount(AStartIndex-1) + FoldProvider.FoldOpenCount[AStartIndex];
+  Result := hl.FoldNestCount(AStartIndex-1) + FoldProvider.FoldOpenCount(AStartIndex);
 end;
 
 function TSynEditFoldedView.OpenFoldInfo(aStartIndex, ColIndex: Integer): TFoldViewNodeInfo;
@@ -4054,7 +4063,7 @@ var
   begin
     for i := 1 to TypeCnt do begin
       EndLvl[i] := hl.FoldNestCount(l-1, i);
-      EndLvl[i] := EndLvl[i] + hl.FoldOpenCount(l, i);
+      EndLvl[i] := EndLvl[i] + FoldProvider.FoldOpenCount(l, i);
       CurLvl[i] := EndLvl[i];
     end
   end;
@@ -4067,52 +4076,53 @@ begin
   Lvl := hl.FoldNestCount(AStartIndex-1);
   i := 0;
   if ColIndex >= Lvl then begin
-    // search current line
-    Lvl := Lvl + hl.FoldOpenCount(aStartIndex);
-    i := 1;
-  end;
-  SetLength(EndLvl, TypeCnt+1);
-  SetLength(CurLvl, TypeCnt+1);
-  GetEndLvl(aStartIndex);
-  GetEndLvl(aStartIndex);
-  aStartIndex := aStartIndex + i;
-  while (ColIndex < Lvl) and (aStartIndex > 0) do begin
-    dec(aStartIndex);
-    if (hl.FoldOpenCount(aStartIndex) > 0) or
-       (hl.FoldCloseCount(aStartIndex) > 0) then begin
+    n := ColIndex - Lvl;
+    o :=  hl.FoldNodeInfoCount[aStartIndex, [sfaOpen, sfaFold]];
+    nd := hl.FoldNodeInfo[aStartIndex, n, [sfaOpen, sfaFold]];
+  end
+  else begin
+    SetLength(EndLvl, TypeCnt+1);
+    SetLength(CurLvl, TypeCnt+1);
+    GetEndLvl(aStartIndex);
+    aStartIndex := aStartIndex + i;
+    while (ColIndex < Lvl) and (aStartIndex > 0) do begin
+      dec(aStartIndex);
       o := hl.FoldOpenCount(AStartIndex);
-      n := o;
-      for i := hl.FoldNodeInfoCount[aStartIndex, []] - 1 downto 0 do begin
-        nd := hl.FoldNodeInfo[aStartIndex, i, []];
-        if not(sfaFold in nd.FoldAction) then
-          continue;
-        t := nd.FoldGroup;
-        if sfaOpen in nd.FoldAction then begin
-          dec(n);
-          dec(CurLvl[t]);
-          if CurLvl[t] < EndLvl[t] then begin
-            dec(EndLvl[t]);
-            dec(Lvl);
-            if ColIndex = Lvl then begin
-              break;
+      if (o > 0) or (hl.FoldCloseCount(aStartIndex) > 0) then begin
+        n := o;
+        for i := hl.FoldNodeInfoCount[aStartIndex, []] - 1 downto 0 do begin
+          nd := hl.FoldNodeInfo[aStartIndex, i, []];
+          if not(sfaFold in nd.FoldAction) then
+            continue;
+          t := nd.FoldGroup;
+          if sfaOpen in nd.FoldAction then begin
+            dec(n);
+            dec(CurLvl[t]);
+            if CurLvl[t] < EndLvl[t] then begin
+              dec(EndLvl[t]);
+              dec(Lvl);
+              if ColIndex = Lvl then begin
+                break;
+              end;
             end;
+          end else
+          if sfaClose in nd.FoldAction then begin
+            inc(CurLvl[t]);
           end;
-        end else
-        if sfaClose in nd.FoldAction then begin
-          inc(CurLvl[t]);
         end;
-      end;
-    end
-    else
-    if hl.FoldNestCount(AStartIndex-1) = 0 then break;
+      end
+      else
+      if hl.FoldNestCount(AStartIndex-1) = 0 then break;
+    end;
   end;
   Result.HNode := nd;
   Result.OpenCount := o;
   Result.Text := fLines[aStartIndex];
-  Result.Keyword := copy(Result.Text, 1 + nd.LogXStart, nd.LogXEnd-nd.LogXStart);
+  if not(sfaInvalid in nd.FoldAction) then
+    Result.Keyword := copy(Result.Text, 1 + nd.LogXStart, nd.LogXEnd-nd.LogXStart);
   Result.LineNum := aStartIndex + 1;
   Result.ColIndex := n;
-  Result.Folded := IsFoldedAtTextIndex(aStartIndex, n);
+  Result.FNode := FoldNodeAtTextIndex(aStartIndex, n);
 end;
 
 function TSynEditFoldedView.ExpandedLineForBlockAtLine(ALine : Integer;
