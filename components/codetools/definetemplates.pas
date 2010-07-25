@@ -678,9 +678,9 @@ type
     RealTargetCPU: string;
     ConfigFiles: TFPCConfigFileStateList;
     UnitPaths: TStrings;
-    Defines: TStringToStringTree; // upper case macro to value
-    Undefines: TStringToStringTree; // upper case macro
-    Units: TStringToStringTree; // lowercase unit name to file name
+    Defines: TStringToStringTree; // macro to value
+    Undefines: TStringToStringTree; // macro
+    Units: TStringToStringTree; // unit name to file name
     ErrorMsg: string;
     ErrorTranslatedMsg: string;
     Caches: TFPCTargetConfigCaches;
@@ -798,10 +798,10 @@ type
     fSourceCache: TFPCSourceCache;
     fSourceRules: TFPCSourceRules;
     fRulesStampOfConfig: integer; // fSourceCache.ChangeStamp while creation of fFPCSourceRules
-    fUnitToSourceTree: TStringToStringTree; // lowercase unit name to file name (maybe relative)
+    fUnitToSourceTree: TStringToStringTree; // unit name to file name (maybe relative)
     fUnitStampOfFiles: integer; // fSourceCache.ChangeStamp at creation of fUnitToSourceTree
     fUnitStampOfRules: integer; // fSourceRules.ChangeStamp at creation of fUnitToSourceTree
-    fSrcDuplicates: TStringToStringTree; // lower case unit to semicolon separated list of files
+    fSrcDuplicates: TStringToStringTree; // unit to semicolon separated list of files
     fFlags: TFPCUnitToSrcCacheFlags;
     procedure SetCompilerFilename(const AValue: string);
     procedure SetCompilerOptions(const AValue: string);
@@ -827,8 +827,8 @@ type
     function GetConfigCache(AutoUpdate: boolean): TFPCTargetConfigCache;
     function GetSourceCache(AutoUpdate: boolean): TFPCSourceCache;
     function GetSourceRules(AutoUpdate: boolean): TFPCSourceRules;
-    function GetUnitToSourceTree(AutoUpdate: boolean): TStringToStringTree; // lowercase unit name to file name (maybe relative)
-    function GetSourceDuplicates(AutoUpdate: boolean): TStringToStringTree; // lower case unit to semicolon separated list of files
+    function GetUnitToSourceTree(AutoUpdate: boolean): TStringToStringTree; // unit name to file name (maybe relative)
+    function GetSourceDuplicates(AutoUpdate: boolean): TStringToStringTree; // unit to semicolon separated list of files
     function GetUnitSrcFile(const AUnitName: string): string;
     property ChangeStamp: integer read FChangeStamp;
     function GetInvalidChangeStamp: integer;
@@ -915,22 +915,23 @@ function RunFPCVerbose(const CompilerFilename, TestFilename: string;
                        out Defines, Undefines: TStringToStringTree;
                        const Options: string = ''): boolean;
 function GatherUnitsInSearchPaths(SearchPaths: TStrings;
-                    const OnProgress: TDefinePoolProgress): TStringToStringTree; // upper unit names to full file name
+                    const OnProgress: TDefinePoolProgress): TStringToStringTree; // unit names to full file name
 procedure AdjustFPCSrcRulesForPPUPaths(Units: TStringToStringTree;
                                        Rules: TFPCSourceRules);
 function GatherUnitsInFPCSources(Files: TStringList;
                    TargetOS: string = ''; TargetCPU: string = '';
-                   Duplicates: TStringToStringTree = nil; // lower case unit to semicolon separated list of files
-                   Rules: TFPCSourceRules = nil): TStringToStringTree;
+                   Duplicates: TStringToStringTree = nil; // unit to semicolon separated list of files
+                   Rules: TFPCSourceRules = nil;
+                   const DebugUnitName: string = ''): TStringToStringTree;
 function CreateFPCTemplate(Config: TFPCTargetConfigCache;
                            Owner: TObject): TDefineTemplate; overload;
 function CreateFPCTemplate(Config: TFPCUnitSetCache;
                            Owner: TObject): TDefineTemplate; overload;
 function CreateFPCSrcTemplate(Config: TFPCUnitSetCache;
                               Owner: TObject): TDefineTemplate; overload;
-procedure CheckPPUSources(PPUFiles,  // lowercase unitname to filename
-                          UnitToSource, // lowercase unitname to file name
-                          UnitToDuplicates: TStringToStringTree; // lowercase unitname to semicolon separated list of files
+procedure CheckPPUSources(PPUFiles,  // unitname to filename
+                          UnitToSource, // unitname to file name
+                          UnitToDuplicates: TStringToStringTree; // unitname to semicolon separated list of files
                           var Duplicates, Missing: TStringToStringTree);
 procedure LoadFPCCacheFromFile(Filename: string;
             var Configs: TFPCTargetConfigCaches; var Sources: TFPCSourceCaches);
@@ -1308,18 +1309,18 @@ function ParseFPCVerbose(List: TStrings; out ConfigFiles: TSTrings;
   out CompilerFilename: string; out UnitPaths: TStrings;
   out Defines, Undefines: TStringToStringTree): boolean;
 
-  procedure UndefineSymbol(const UpperName: string);
+  procedure UndefineSymbol(const MacroName: string);
   begin
-    //DebugLn(['UndefineSymbol ',UpperName]);
-    Defines.Remove(UpperName);
-    Undefines[UpperName]:='';
+    //DebugLn(['UndefineSymbol ',MacroName]);
+    Defines.Remove(MacroName);
+    Undefines[MacroName]:='';
   end;
 
-  procedure DefineSymbol(const UpperName, Value: string);
+  procedure DefineSymbol(const MacroName, Value: string);
   begin
-    //DebugLn(['DefineSymbol ',UpperName]);
-    Undefines.Remove(UpperName);
-    Defines[UpperName]:=Value;
+    //DebugLn(['DefineSymbol ',MacroName]);
+    Undefines.Remove(MacroName);
+    Defines[MacroName]:=Value;
   end;
 
   procedure ProcessOutputLine(Line: string);
@@ -1423,8 +1424,8 @@ begin
   ConfigFiles:=TStringList.Create;
   CompilerFilename:='';
   UnitPaths:=TStringList.Create;
-  Defines:=TStringToStringTree.Create(true);
-  Undefines:=TStringToStringTree.Create(true);
+  Defines:=TStringToStringTree.Create(false);
+  Undefines:=TStringToStringTree.Create(false);
   try
     for i:=0 to List.Count-1 do
       ProcessOutputLine(List[i]);
@@ -1487,7 +1488,7 @@ end;
 function GatherUnitsInSearchPaths(SearchPaths: TStrings;
   const OnProgress: TDefinePoolProgress): TStringToStringTree;
 { returns a stringtree,
-  where name is lowercase unitname and value is the full file name
+  where name is unitname and value is the full file name
 
   SearchPaths are searched from last to start
   first found wins
@@ -1502,9 +1503,9 @@ var
   ShortFilename: String;
   Filename: String;
   Ext: String;
-  LowerUnitname: String;
+  Unit_Name: String;
 begin
-  Result:=TStringToStringTree.Create(true);
+  Result:=TStringToStringTree.Create(false);
   FileCount:=0;
   Abort:=false;
   for i:=SearchPaths.Count-1 downto 0 do begin
@@ -1523,11 +1524,11 @@ begin
         Filename:=Directory+ShortFilename;
         Ext:=LowerCase(ExtractFileExt(ShortFilename));
         if (Ext='.pas') or (Ext='.pp') or (Ext='.p') or (Ext='.ppu') then begin
-          LowerUnitname:=lowercase(ExtractFileNameOnly(Filename));
-          if (not Result.Contains(LowerUnitname))
-          or ((Ext<>'.ppu') and (CompareFileExt(Result[LowerUnitname],'ppu',false)=0))
+          Unit_Name:=ExtractFileNameOnly(Filename);
+          if (not Result.Contains(Unit_Name))
+          or ((Ext<>'.ppu') and (CompareFileExt(Result[Unit_Name],'ppu',false)=0))
           then
-            Result[LowerUnitname]:=Filename;
+            Result[Unit_Name]:=Filename;
         end;
       until FindNextUTF8(FileInfo)<>0;
     end;
@@ -1541,6 +1542,8 @@ var
   Filename: string;
   Rule: TFPCSourceRule;
 begin
+  if Units.CaseSensitive then
+    raise Exception.Create('AdjustFPCSrcRulesForPPUPaths Units is case sensitive');
   // check unit httpd
   Filename:=Units['httpd'];
   if Filename<>'' then begin
@@ -1554,8 +1557,8 @@ end;
 
 function GatherUnitsInFPCSources(Files: TStringList; TargetOS: string;
   TargetCPU: string; Duplicates: TStringToStringTree;
-  Rules: TFPCSourceRules): TStringToStringTree;
-{ returns tree lowercase unit name to file name (maybe relative)
+  Rules: TFPCSourceRules; const DebugUnitName: string): TStringToStringTree;
+{ returns tree unit name to file name (maybe relative)
 }
 
   function CountMatches(Targets, aTxt: PChar): integer;
@@ -1616,6 +1619,9 @@ begin
   Result:=nil;
   if (Files=nil) or (Files.Count=0) then exit;
 
+  if (Duplicates<>nil) and Duplicates.CaseSensitive then
+    raise Exception.Create('GatherUnitsInFPCSources: Duplicates case sensitive');
+
   // get default targets
   if Rules=nil then Rules:=DefaultFPCSourceRules;
   Targets:=Rules.GetDefaultTargets(TargetOS,TargetOS);
@@ -1658,6 +1664,9 @@ begin
         // add or update unitlink
         Unit_Name:=ExtractFileNameOnly(Filename);
         Node:=Links.FindKey(Pointer(Unit_Name),@CompareUnitNameWithUnitNameLink);
+        if (DebugUnitName<>'') and (SysUtils.CompareText(Unit_Name,DebugUnitName)=0)
+        then
+          debugln(['GatherUnitsInFPCSources Unit_Name=',Unit_Name,' File=',Filename,' Node=',Node<>nil,' Score=',Score]);
         if Node<>nil then begin
           // duplicate unit
           Link:=TUnitNameLink(Node.Data);
@@ -2157,6 +2166,16 @@ var
   SrcFilename: string;
   DuplicateFilenames: string;
 begin
+  if PPUFiles.CaseSensitive then
+    raise Exception.Create('CheckPPUSources PPUFiles is case sensitive');
+  if UnitToSource.CaseSensitive then
+    raise Exception.Create('CheckPPUSources UnitToSource is case sensitive');
+  if UnitToDuplicates.CaseSensitive then
+    raise Exception.Create('CheckPPUSources UnitToDuplicates is case sensitive');
+  if (Duplicates<>nil) and Duplicates.CaseSensitive then
+    raise Exception.Create('CheckPPUSources Duplicates is case sensitive');
+  if (Missing<>nil) and Missing.CaseSensitive then
+    raise Exception.Create('CheckPPUSources Missing is case sensitive');
   Node:=PPUFiles.Tree.FindLowest;
   while Node<>nil do begin
     Item:=PStringToStringTreeItem(Node.Data);
@@ -2166,7 +2185,7 @@ begin
       SrcFilename:=UnitToSource[Unit_Name];
       if SrcFilename<>'' then begin
         DuplicateFilenames:=UnitToDuplicates[Unit_Name];
-        if (DuplicateFilenames<>'') then
+        if (DuplicateFilenames<>'') and (Duplicates<>nil) then
           Duplicates[Unit_Name]:=DuplicateFilenames;
       end else begin
         if Missing<>nil then
@@ -7158,13 +7177,13 @@ begin
     RealTargetCPU:=Item.RealTargetCPU;
     ConfigFiles.Assign(Item.ConfigFiles);
     if Item.Defines<>nil then begin
-      if Defines=nil then Defines:=TStringToStringTree.Create(true);
+      if Defines=nil then Defines:=TStringToStringTree.Create(false);
       Defines.Assign(Item.Defines);
     end else begin
       FreeAndNil(Defines);
     end;
     if Item.Undefines<>nil then begin
-      if Undefines=nil then Undefines:=TStringToStringTree.Create(true);
+      if Undefines=nil then Undefines:=TStringToStringTree.Create(false);
       Undefines.Assign(Item.Undefines);
     end else begin
       FreeAndNil(Undefines);
@@ -7176,7 +7195,7 @@ begin
       FreeAndNil(UnitPaths);
     end;
     if Item.Units<>nil then begin
-      if Units=nil then Units:=TStringToStringTree.Create(true);
+      if Units=nil then Units:=TStringToStringTree.Create(false);
       Units.Assign(Item.Units);
     end else begin
       FreeAndNil(Units);
@@ -7228,7 +7247,7 @@ begin
     end;
     DefineValue:=XMLConfig.GetValue(SubPath+'Value','');
     if Defines=nil then
-      Defines:=TStringToStringTree.Create(true);
+      Defines:=TStringToStringTree.Create(false);
     Defines[DefineName]:=DefineValue;
   end;
 
@@ -7242,7 +7261,7 @@ begin
       DefineName:=copy(s,StartPos,p-StartPos);
       if (DefineName<>'') and IsValidIdent(DefineName) then begin
         if Undefines=nil then
-          Undefines:=TStringToStringTree.Create(true);
+          Undefines:=TStringToStringTree.Create(false);
         Undefines[DefineName]:='';
       end;
       inc(p);
@@ -7289,7 +7308,7 @@ begin
         continue;
       end;
       if Units=nil then
-        Units:=TStringToStringTree.Create(true);
+        Units:=TStringToStringTree.Create(false);
       Units[Unit_Name]:=Filename;
     end;
   finally
@@ -7542,7 +7561,7 @@ begin
         Units:=GatherUnitsInSearchPaths(UnitPaths,OnProgress)
       else begin
         debugln(['TFPCTargetConfigCache.Update WARNING: no unit paths: ',Compiler,' ',ExtraOptions]);
-        Units:=TStringToStringTree.Create(true);
+        Units:=TStringToStringTree.Create(false);
       end;
     end;
     // check for changes
@@ -8461,8 +8480,8 @@ constructor TFPCUnitSetCache.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FCaches:=TheOwner as TFPCDefinesCache;
-  fUnitToSourceTree:=TStringToStringTree.Create(true);
-  fSrcDuplicates:=TStringToStringTree.Create(true);
+  fUnitToSourceTree:=TStringToStringTree.Create(false);
+  fSrcDuplicates:=TStringToStringTree.Create(false);
   fSourceRules:=TFPCSourceRules.Create;
   fFlags:=[fuscfUnitTreeNeedsUpdate,fuscfSrcRulesNeedUpdate];
 end;
@@ -8546,6 +8565,7 @@ var
   SrcRules: TFPCSourceRules;
   NewUnitToSourceTree: TStringToStringTree;
   NewSrcDuplicates: TStringToStringTree;
+  ConfigCache: TFPCTargetConfigCache;
 begin
   Src:=GetSourceCache(AutoUpdate);
   SrcRules:=GetSourceRules(AutoUpdate);
@@ -8554,15 +8574,17 @@ begin
   or (fUnitStampOfFiles<>Src.ChangeStamp)
   or (fUnitStampOfRules<>SrcRules.ChangeStamp) then begin
     Exclude(fFlags,fuscfUnitTreeNeedsUpdate);
+    ConfigCache:=GetConfigCache(false);
     NewSrcDuplicates:=nil;
     NewUnitToSourceTree:=nil;
     try
-      NewSrcDuplicates:=TStringToStringTree.Create(true);
-      NewUnitToSourceTree:=GatherUnitsInFPCSources(Src.Files,TargetOS,TargetCPU,
-                                                   NewSrcDuplicates,SrcRules);
+      NewSrcDuplicates:=TStringToStringTree.Create(false);
+      NewUnitToSourceTree:=GatherUnitsInFPCSources(Src.Files,
+                     ConfigCache.RealTargetOS,ConfigCache.RealTargetCPU,
+                     NewSrcDuplicates,SrcRules);
       if NewUnitToSourceTree=nil then
-        NewUnitToSourceTree:=TStringToStringTree.Create(true);
-      // ToDo: add/replace sources in FPC search paths
+        NewUnitToSourceTree:=TStringToStringTree.Create(false);
+      // ToDo: add/replace sources in PPU search paths
       if not fUnitToSourceTree.Equals(NewUnitToSourceTree) then begin
         fUnitToSourceTree.Assign(NewUnitToSourceTree);
         IncreaseChangeStamp;

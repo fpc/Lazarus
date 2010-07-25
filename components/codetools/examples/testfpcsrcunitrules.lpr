@@ -246,7 +246,7 @@ begin
       // duplicate units
       if i=0 then writeln;
       inc(i);
-      writeln('WARNING: duplicate unit in PPU path: '+Filename);
+      writeln('HINT: duplicate unit in PPU path: '+Filename);
     end;
     Node:=Units.Tree.FindSuccessor(Node);
   end;
@@ -267,6 +267,8 @@ var
   Filename: String;
   SourceCache: TFPCSourceCache;
   i: Integer;
+  SrcRules: TFPCSourceRules;
+  aTree: TStringToStringTree;
 begin
   UnitToSrc:=UnitSet.GetUnitToSourceTree(false);
   ConfigCache:=UnitSet.GetConfigCache(false);
@@ -286,8 +288,14 @@ begin
           writeln('WARNING: no source found for PPU file: '+Filename);
           for i:=0 to SourceCache.Files.Count-1 do begin
             if SysUtils.CompareText(ExtractFileNameOnly(SourceCache.Files[i]),aUnitName)=0
-            then
+            then begin
               writeln('      Candidate: ',SourceCache.Files[i]);
+              SrcRules:=UnitSet.GetSourceRules(false);
+              aTree:=GatherUnitsInFPCSources(SourceCache.Files,
+                ConfigCache.RealTargetOS,ConfigCache.RealTargetCPU,nil,
+                SrcRules,aUnitName);
+              aTree.Free;
+            end;
           end;
         end;
       end;
