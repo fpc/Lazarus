@@ -619,6 +619,10 @@ msgctxt "lazarusidestrconsts.dlgcodefoldingmouse"
 msgid "Mouse"
 msgstr "マウス"
 
+#: lazarusidestrconsts.dlgcodefoldpopuporder
+msgid "Reverse fold-order in Popup"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcodegeneration
 #, fuzzy
 #| msgid "Code"
