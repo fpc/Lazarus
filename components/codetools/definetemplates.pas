@@ -8618,7 +8618,7 @@ begin
   if Tree=nil then
     Result:=''
   else
-    Result:=FPCSourceDirectory+Tree[LowerCase(AUnitName)];
+    Result:=FPCSourceDirectory+Tree[AUnitName];
 end;
 
 function TFPCUnitSetCache.GetInvalidChangeStamp: integer;
