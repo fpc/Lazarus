@@ -1273,6 +1273,7 @@ resourcestring
   dlgCodeFoldEnableFold = 'Fold';
   dlgCodeFoldEnableHide = 'Hide';
   dlgCodeFoldEnableBoth = 'Both';
+  dlgCodeFoldPopUpOrder = 'Reverse fold-order in Popup';
   dlgCodeFoldingMouse = 'Mouse';
   dlfMousePredefinedScheme = 'Use predefined scheme';
   dlfNoPredefinedScheme = '< None >';

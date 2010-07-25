@@ -35,6 +35,7 @@ type
 
   TEditorCodefoldingOptionsFrame = class(TAbstractIDEOptionsEditor)
     Bevel1: TBevel;
+    chkPopOrder: TCheckBox;
     FoldConfigCheckListBox: TCheckListBox;
     FoldConfPanel: TPanel;
     chkCodeFoldingEnabled: TCheckBox;
@@ -225,6 +226,7 @@ begin
   chkFold.Caption := dlgCodeFoldEnableFold;
   chkHide.Caption := dlgCodeFoldEnableHide;
   chkBoth.Caption := dlgCodeFoldEnableBoth;
+  chkPopOrder.Caption := dlgCodeFoldPopUpOrder;
   LanguageLabel.Caption := dlgLang;
   FModeLock := False;
 end;
@@ -251,6 +253,7 @@ begin
     end;
     LanguageComboBox.ItemIndex := 0;
     LanguageComboBoxExit(LanguageComboBox);
+    chkPopOrder.Checked := ReverseFoldPopUpOrder;
   end;
   UpdateFoldHideRadio;
 end;
@@ -267,6 +270,7 @@ begin
       if assigned(FHighlighters[i]) then
          WriteHighlighterFoldSettings(FHighlighters[i]);
     end;
+    ReverseFoldPopUpOrder := chkPopOrder.Checked;
   end;
 end;
 

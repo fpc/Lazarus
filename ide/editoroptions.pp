@@ -1001,9 +1001,12 @@ type
 
     // Code Folding
     FUseCodeFolding: Boolean;
+    FReverseFoldPopUpOrder: Boolean;
 
     // Multi window
     FMultiWinEditAccessOrder: TEditorOptionsEditAccessOrderList;
+
+    FDefaultValues: TEditorOptions;
 
     function OldAdditionalAttributeName(NewAha:String): string;
   public
@@ -1012,7 +1015,9 @@ type
     procedure DoAfterWrite; override;
   public
     constructor Create;
+    constructor CreateDefaultOnly;
     destructor Destroy; override;
+    procedure Init;
     procedure Load;
     procedure Save;
     function GetAdditionalAttributeName(aha:TAdditionalHilightAttribute): string;
@@ -1046,7 +1051,7 @@ type
                              AddHilightAttr: TAdditionalHilightAttribute;
                              aMarkup: TSynSelectedColor);
     procedure SetMarkupColors(aSynEd: TSynEdit);
-  published
+  public
     // general options
     property SynEditOptions: TSynEditorOptions
       read fSynEditOptions write fSynEditOptions default SynEditDefaultOptions;
@@ -1163,6 +1168,12 @@ type
     // Multi window
     property MultiWinEditAccessOrder: TEditorOptionsEditAccessOrderList
         read FMultiWinEditAccessOrder write FMultiWinEditAccessOrder;
+
+  published { use RTTIConf}
+    // Code Folding
+    property ReverseFoldPopUpOrder: Boolean
+        read FReverseFoldPopUpOrder write FReverseFoldPopUpOrder default True;
+
   end;
 
 const
@@ -3188,7 +3199,57 @@ begin
   end;
 
   // set defaults
+  Init;
 
+  // code templates (dci file)
+  fCodeTemplateFileName :=
+    TrimFilename(GetPrimaryConfigPath+PathDelim+DefaultCodeTemplatesFilename);
+  CopySecondaryConfigFile(DefaultCodeTemplatesFilename);
+  if not FileExistsUTF8(CodeTemplateFileName) then
+  begin
+    res := LazarusResources.Find('lazarus_dci_file');
+    if (res <> Nil) and (res.Value <> '') and (res.ValueType = 'DCI') then
+      try
+        InvalidateFileStateCache;
+        fs := TFileStream.Create(UTF8ToSys(CodeTemplateFileName), fmCreate);
+        try
+          fs.Write(res.Value[1], length(res.Value));
+        finally
+          fs.Free;
+        end;
+      except
+        DebugLn('WARNING: unable to write code template file "',
+          CodeTemplateFileName, '"');
+      end;
+  end;
+
+  FMultiWinEditAccessOrder := TEditorOptionsEditAccessOrderList.Create;
+  FMultiWinEditAccessOrder.InitDefaults;
+
+  FDefaultValues := TEditorOptions.CreateDefaultOnly;
+end;
+
+constructor TEditorOptions.CreateDefaultOnly;
+begin
+  inherited Create;
+  Init;
+  FDefaultValues := nil;
+end;
+
+destructor TEditorOptions.Destroy;
+begin
+  FreeAndNil(FUserColorSchemeSettings);
+  fKeyMap.Free;
+  FreeAndNil(FMultiWinEditAccessOrder);
+  XMLConfig.Free;
+  FUserMouseSettings.Free;
+  FTempMouseSettings.Free;
+  FreeAndNil(FDefaultValues);
+  inherited Destroy;
+end;
+
+procedure TEditorOptions.Init;
+begin
   // General options
   fShowTabCloseButtons := True;
   FHideSingleTabInWindow := False;
@@ -3231,41 +3292,8 @@ begin
   // Code Tools options
   FCompletionLongLineHintType := sclpExtendRightOnly;
 
-  // code templates (dci file)
-  fCodeTemplateFileName :=
-    TrimFilename(GetPrimaryConfigPath+PathDelim+DefaultCodeTemplatesFilename);
-  CopySecondaryConfigFile(DefaultCodeTemplatesFilename);
-  if not FileExistsUTF8(CodeTemplateFileName) then
-  begin
-    res := LazarusResources.Find('lazarus_dci_file');
-    if (res <> Nil) and (res.Value <> '') and (res.ValueType = 'DCI') then
-      try
-        InvalidateFileStateCache;
-        fs := TFileStream.Create(UTF8ToSys(CodeTemplateFileName), fmCreate);
-        try
-          fs.Write(res.Value[1], length(res.Value));
-        finally
-          fs.Free;
-        end;
-      except
-        DebugLn('WARNING: unable to write code template file "',
-          CodeTemplateFileName, '"');
-      end;
-  end;
-
-  FMultiWinEditAccessOrder := TEditorOptionsEditAccessOrderList.Create;
-  FMultiWinEditAccessOrder.InitDefaults;
-end;
-
-destructor TEditorOptions.Destroy;
-begin
-  FreeAndNil(FUserColorSchemeSettings);
-  fKeyMap.Free;
-  FreeAndNil(FMultiWinEditAccessOrder);
-  XMLConfig.Free;
-  FUserMouseSettings.Free;
-  FTempMouseSettings.Free;
-  inherited Destroy;
+  // Code folding
+  FReverseFoldPopUpOrder := True;
 end;
 
 type
@@ -3283,6 +3311,8 @@ var
 begin
   try
     FileVersion:=XMLConfig.GetValue('EditorOptions/Version', 0);
+
+    XMLConfig.ReadObject('EditorOptions/Misc/', Self, FDefaultValues);
 
     // general options
     for SynEditOpt := Low(TSynEditorOption) to High(TSynEditorOption) do
@@ -3490,6 +3520,8 @@ var
 begin
   try
     XMLConfig.SetValue('EditorOptions/Version', EditorOptsFormatVersion);
+
+    XMLConfig.WriteObject('EditorOptions/Misc/', Self, FDefaultValues);
 
     // general options
     for SynEditOpt := Low(TSynEditorOption) to High(TSynEditorOption) do
@@ -4135,6 +4167,7 @@ begin
   ASynEdit.Gutter.CodeFoldPart.Visible := FUseCodeFolding;
   if not FUseCodeFolding then
     ASynEdit.UnfoldAll;
+  ASynEdit.Gutter.CodeFoldPart.ReversePopMenuOrder := ReverseFoldPopUpOrder;
 
   ASynEdit.Gutter.Width := fGutterWidth;
   ASynEdit.Gutter.SeparatorPart.Visible := FGutterSeparatorIndex <> -1;

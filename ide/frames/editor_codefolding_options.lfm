@@ -139,4 +139,16 @@ inherited EditorCodefoldingOptionsFrame: TEditorCodefoldingOptionsFrame
       end
     end
   end
+  object chkPopOrder: TCheckBox[5]
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 421
+    Height = 19
+    Top = 0
+    Width = 90
+    Anchors = [akTop, akRight]
+    Caption = 'chkPopOrder'
+    TabOrder = 3
+  end
 end
