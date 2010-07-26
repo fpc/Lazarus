@@ -684,6 +684,7 @@ type
     ErrorMsg: string;
     ErrorTranslatedMsg: string;
     Caches: TFPCTargetConfigCaches;
+    HasPPUs: boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear; // values, not keys
@@ -829,7 +830,9 @@ type
     function GetSourceRules(AutoUpdate: boolean): TFPCSourceRules;
     function GetUnitToSourceTree(AutoUpdate: boolean): TStringToStringTree; // unit name to file name (maybe relative)
     function GetSourceDuplicates(AutoUpdate: boolean): TStringToStringTree; // unit to semicolon separated list of files
-    function GetUnitSrcFile(const AUnitName: string): string;
+    function GetUnitSrcFile(const AUnitName: string;
+                            MustHavePPU: boolean = true;
+                            SkipPPUCheckIfNoneExists: boolean = true): string;
     property ChangeStamp: integer read FChangeStamp;
     function GetInvalidChangeStamp: integer;
     procedure IncreaseChangeStamp;
@@ -7148,6 +7151,7 @@ begin
     or (RealCompilerDate<>Item.RealCompilerDate)
     or (RealTargetOS<>Item.RealTargetOS)
     or (RealTargetCPU<>Item.RealTargetCPU)
+    or (HasPPUs<>Item.HasPPUs)
     or (not ConfigFiles.Equals(Item.ConfigFiles,true))
   then
     exit;
@@ -7175,6 +7179,7 @@ begin
     RealCompilerDate:=Item.RealCompilerDate;
     RealTargetOS:=Item.RealTargetOS;
     RealTargetCPU:=Item.RealTargetCPU;
+    HasPPUs:=Item.HasPPUs;
     ConfigFiles.Assign(Item.ConfigFiles);
     if Item.Defines<>nil then begin
       if Defines=nil then Defines:=TStringToStringTree.Create(false);
@@ -7234,6 +7239,7 @@ begin
   RealCompilerDate:=XMLConfig.GetValue(Path+'RealCompiler/Date',0);
   RealTargetOS:=XMLConfig.GetValue(Path+'RealCompiler/OS','');
   RealTargetCPU:=XMLConfig.GetValue(Path+'RealCompiler/CPU','');
+  HasPPUs:=XMLConfig.GetValue(Path+'HasPPUs',true);
   ConfigFiles.LoadFromXMLConfig(XMLConfig,Path+'Configs/');
 
   // defines: format: Define<Number>/Name,Value
@@ -7340,6 +7346,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'RealCompiler/Date',RealCompilerDate,0);
   XMLConfig.SetDeleteValue(Path+'RealCompiler/OS',RealTargetOS,'');
   XMLConfig.SetDeleteValue(Path+'RealCompiler/CPU',RealTargetCPU,'');
+  XMLConfig.SetDeleteValue(Path+'HasPPUs',HasPPUs,true);
   ConfigFiles.SaveToXMLConfig(XMLConfig,Path+'Configs/');
 
   // Defines: write as Define<Number>/Name,Value
@@ -7534,6 +7541,7 @@ begin
       ParseFPCInfo(Info,[fpciTargetOS,fpciTargetProcessor],Infos);
       RealTargetOS:=Infos[fpciTargetOS];
       RealTargetCPU:=Infos[fpciTargetProcessor];
+      HasPPUs:=false;
 
       // run fpc and parse output
       RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
@@ -7563,6 +7571,8 @@ begin
         debugln(['TFPCTargetConfigCache.Update WARNING: no unit paths: ',Compiler,' ',ExtraOptions]);
         Units:=TStringToStringTree.Create(false);
       end;
+      // check if the system ppu exists
+      HasPPUs:=CompareFileExt(Units['system'],'ppu',false)=0;
     end;
     // check for changes
     if not Equals(OldOptions) then begin
@@ -8610,15 +8620,38 @@ begin
   Result:=fSrcDuplicates;
 end;
 
-function TFPCUnitSetCache.GetUnitSrcFile(const AUnitName: string): string;
+function TFPCUnitSetCache.GetUnitSrcFile(const AUnitName: string;
+  MustHavePPU: boolean; SkipPPUCheckIfNoneExists: boolean): string;
 var
   Tree: TStringToStringTree;
+  ConfigCache: TFPCTargetConfigCache;
 begin
+  Result:='';
   Tree:=GetUnitToSourceTree(false);
-  if Tree=nil then
-    Result:=''
-  else
-    Result:=FPCSourceDirectory+Tree[AUnitName];
+  if MustHavePPU then begin
+    ConfigCache:=GetConfigCache(false);
+    if (ConfigCache.Units<>nil)
+      and (CompareFileExt(ConfigCache.Units[AUnitName],'ppu',false)<>0)
+    then begin
+      // unit has no ppu in the FPC ppu search path
+      if ConfigCache.HasPPUs then begin
+        // but there are other ppu files
+        exit;
+      end else begin
+        // no ppu exists at all
+        // => the fpc is not installed properly for this target
+        if not SkipPPUCheckIfNoneExists then
+          exit;
+        // => search directly in the sources
+        // this allows cross editing even if FPC is not installed for this target
+      end;
+    end;
+  end;
+  if Tree<>nil then begin
+    Result:=Tree[AUnitName];
+    if Result<>'' then
+      Result:=FPCSourceDirectory+Result;
+  end;
 end;
 
 function TFPCUnitSetCache.GetInvalidChangeStamp: integer;
