@@ -394,14 +394,14 @@ end;
 function TLFMFixer.Repair: TModalResult;
 var
   CurError: TLFMError;
-  MissingObjectTypes: TStringList;
+//  MissingObjectTypes: TStringList;  <- Remove. Must be a left-over from something.
   ConvTool: TConvDelphiCodeTool;
   TypeName: String;
   LoopCount: integer;
 begin
   Result:=mrCancel;
-  MissingObjectTypes:=TStringList.Create;
-  try
+//  MissingObjectTypes:=TStringList.Create;
+//  try
     fLFMTree:=DefaultLFMTrees.GetLFMTree(fLFMBuffer, true);
     if not fLFMTree.ParseIfNeeded then exit;
     // Change a type that main form inherits from to a fall-back type if needed.
@@ -421,7 +421,7 @@ begin
         exit;
       end;
       // collect all missing object types
-      CurError:=fLFMTree.FirstError;
+{      CurError:=fLFMTree.FirstError;
       while CurError<>nil do begin
         if CurError.IsMissingObjectType then begin
           TypeName:=(CurError.Node as TLFMObjectNode).TypeName;
@@ -430,15 +430,16 @@ begin
         end;
         CurError:=CurError.NextError;
       end;
+}
       // Rename / remove properties and types interactively.
       Result:=ShowRepairLFMWizard;
       Inc(LoopCount);
     until (Result in [mrOK, mrCancel]) or (LoopCount=10);
     // Show remaining errors to user.
     WriteLFMErrors;
-  finally
+{  finally
     MissingObjectTypes.Free;
-  end;
+  end; }
 end;
 
 
