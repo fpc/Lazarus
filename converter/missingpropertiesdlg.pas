@@ -68,6 +68,8 @@ type
   TLFMFixer = class(TLFMChecker)
   private
     fSettings: TConvertSettings;
+    // List of property values which need to be adjusted.
+    fValueTreeNodes: TList;
     fHasMissingProperties: Boolean;         // LFM file has unknown properties.
     fHasMissingObjectTypes: Boolean;        // LFM file has unknown object types.
     // References to controls in UI:
@@ -409,34 +411,35 @@ begin
     try
       if not ConvTool.FixMainClassAncestor(TLFMObjectNode(fLFMTree.Root).TypeName,
                                            fSettings.ReplaceTypes) then exit;
+      LoopCount:=0;
+      repeat
+        if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
+                                 fRootMustBeClassInIntf,fObjectsMustExists) then begin
+          Result:=mrOk;
+          exit;
+        end;
+// ToDo:    if not ConvTool.CheckTopOffsets(fLFMBuffer,fLFMTree,fValueTreeNodes) then exit;
+
+        // To be removed:  collect all missing object types
+{      CurError:=fLFMTree.FirstError;
+        while CurError<>nil do begin
+          if CurError.IsMissingObjectType then begin
+            TypeName:=(CurError.Node as TLFMObjectNode).TypeName;
+            if MissingObjectTypes.IndexOf(TypeName)<0 then
+              MissingObjectTypes.Add(TypeName);
+          end;
+          CurError:=CurError.NextError;
+        end;
+}
+        // Rename / remove properties and types interactively.
+        Result:=ShowRepairLFMWizard;
+        Inc(LoopCount);
+      until (Result in [mrOK, mrCancel]) or (LoopCount=10);
+      // Show remaining errors to user.
+      WriteLFMErrors;
     finally
       ConvTool.Free;
     end;
-    LoopCount:=0;
-    repeat
-      if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
-                               fRootMustBeClassInIntf,fObjectsMustExists)
-      or (Result=mrOK) then begin // mrOK was returned from ShowRepairLFMWizard.
-        Result:=mrOk;
-        exit;
-      end;
-      // collect all missing object types
-{      CurError:=fLFMTree.FirstError;
-      while CurError<>nil do begin
-        if CurError.IsMissingObjectType then begin
-          TypeName:=(CurError.Node as TLFMObjectNode).TypeName;
-          if MissingObjectTypes.IndexOf(TypeName)<0 then
-            MissingObjectTypes.Add(TypeName);
-        end;
-        CurError:=CurError.NextError;
-      end;
-}
-      // Rename / remove properties and types interactively.
-      Result:=ShowRepairLFMWizard;
-      Inc(LoopCount);
-    until (Result in [mrOK, mrCancel]) or (LoopCount=10);
-    // Show remaining errors to user.
-    WriteLFMErrors;
 {  finally
     MissingObjectTypes.Free;
   end; }
