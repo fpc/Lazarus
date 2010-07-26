@@ -227,6 +227,7 @@ begin
 
   ActionUPP := NewControlActionUPP(@CarbonCommon_TrackProgress);
   try
+
     if OSError(
       SetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP,
         SizeOf(ActionUPP), @ActionUPP), SName, SSetEvent, SControlAction) then Exit;
@@ -234,14 +235,17 @@ begin
     // this does not return until the mouse is released
     LastMousePos := AWidget.GetMousePos;
     Result := CallNextEventHandler(ANextHandler, AEvent);
-
     if OSError(
       SetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP,
         SizeOf(OldActionUPP), @OldActionUPP), SName, SSetEvent, SControlAction) then Exit;
   finally
     DisposeControlActionUPP(ActionUPP);
   end;
-  
+
+  // if button state has not changed, then there's no need to emulate mouse up
+  // because the button has not yet been released!
+  if MouseButton=GetCurrentEventButtonState then Exit;
+
   FillChar(Msg, SizeOf(Msg), 0);
 
   if  (MouseButton >= Low(MSGKIND)) and (MouseButton <= High(MSGKIND)) then
