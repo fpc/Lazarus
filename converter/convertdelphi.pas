@@ -548,10 +548,7 @@ begin
     Result:=FixMissingUnits;
     if Result<>mrOk then exit;
     // Check from the project if this is a console application.
-    if Assigned(fOwnerConverter) then
-      ConsApp:=fOwnerConverter.fIsConsoleApp
-    else
-      ConsApp:=False;
+    ConsApp:=Assigned(fOwnerConverter) and fOwnerConverter.fIsConsoleApp;
     // Do the actual code conversion.
     ConvTool.Ask:=Assigned(fOwnerConverter);
     ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
