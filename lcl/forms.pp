@@ -1944,6 +1944,7 @@ initialization
   RegisterPropertyToSkip(TForm, 'OldCreateOrder', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TForm, 'TextHeight', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TForm, 'Scaled', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TForm, 'TransparentColorValue', 'VCL compatibility property', '');
   LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
   Screen:=TScreen.Create(nil);
   Application:=TApplication.Create(nil);
