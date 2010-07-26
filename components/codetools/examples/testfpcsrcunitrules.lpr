@@ -38,6 +38,8 @@ type
   { TTestFPCSourceUnitRules }
 
   TTestFPCSourceUnitRules = class(TCustomApplication)
+  private
+    FCheckUnitName: string;
   protected
     procedure DoRun; override;
   public
@@ -49,6 +51,8 @@ type
     procedure WriteDuplicatesInPPUPath(ConfigCache: TFPCTargetConfigCache);
     procedure WriteMissingPPUSources(UnitSet: TFPCUnitSetCache);
     procedure WriteDuplicateSources(UnitSet: TFPCUnitSetCache);
+    procedure WriteUnitReport(UnitSet: TFPCUnitSetCache; const AnUnitName: string);
+    property CheckUnitName: string read FCheckUnitName write FCheckUnitName;
   end;
 
 { TMyApplication }
@@ -65,7 +69,7 @@ var
   Options: TCodeToolsOptions;
 begin
   // quick check parameters
-  ErrorMsg:=CheckOptions('hcTPF','help compiler targetos targetcpu fpcsrcdir');
+  ErrorMsg:=CheckOptions('hc:T:P:F:u:','help compiler: targetos: targetcpu: fpcsrcdir: checkunit:');
   if ErrorMsg<>'' then begin
     ShowException(Exception.Create(ErrorMsg));
     Terminate;
@@ -93,6 +97,7 @@ begin
   TargetCPU:=GetOptionValue('P','targetcpu');
   FPCSrcDir:=GetOptionValue('F','fpcsrcdir');
   FPCSrcDir:=CleanAndExpandDirectory(FPCSrcDir);
+  CheckUnitName:=GetOptionValue('u','checkunit');
 
   if not FileExistsUTF8(CompilerFilename) then
     Error('compiler file not found: '+CompilerFilename,false);
@@ -123,6 +128,8 @@ begin
   WriteDuplicatesInPPUPath(ConfigCache);
   WriteMissingPPUSources(UnitSet);
   WriteDuplicateSources(UnitSet);
+  if CheckUnitName<>'' then
+    WriteUnitReport(UnitSet,CheckUnitName);
 
   // stop program loop
   Terminate;
@@ -143,14 +150,24 @@ procedure TTestFPCSourceUnitRules.WriteHelp;
 begin
   writeln('Usage: ',ExeName,' -h');
   writeln;
-  writeln('  -c <compiler file name>');
-  writeln('  --compiler=<compiler file name>');
-  writeln('  -T <target OS>');
-  writeln('  --targetos=<target OS>');
-  writeln('  -P <target CPU>');
-  writeln('  --targetcpu=<target CPU>');
-  writeln('  -F <FPC source directory>');
-  writeln('  --fpcsrcdir=<FPC source directory>');
+  writeln('  -c <compiler file name>, --compiler=<compiler file name>');
+  writeln('         Default is to use environment variable PP.');
+  writeln('         If this is not set, search for '+GetDefaultCompilerFilename);
+  writeln;
+  writeln('  -T <target OS>, --targetos=<target OS>');
+  writeln('         Default is to use environment variable FPCTARGET.');
+  writeln('         If this is not set, use the default of the compiler.');
+  writeln;
+  writeln('  -P <target CPU>, --targetcpu=<target CPU>');
+  writeln('         Default is to use environment variable FPCTARGETCPU.');
+  writeln('         If this is not set, use the default of the compiler.');
+  writeln;
+  writeln('  -F <FPC source directory>, --fpcsrcdir=<FPC source directory>');
+  writeln('         Default is to use environment variable FPCDIR.');
+  writeln('         There is no default.');
+  writeln;
+  writeln('  -u <unit name>, --checkunit=<unit name>');
+  writeln('         Write a detailed report about this unit.');
 end;
 
 procedure TTestFPCSourceUnitRules.Error(Msg: string; DoWriteHelp: Boolean);
@@ -355,6 +372,40 @@ begin
     Node:=SrcDuplicates.Tree.FindSuccessor(Node);
   end;
   if Cnt>0 then writeln;
+end;
+
+procedure TTestFPCSourceUnitRules.WriteUnitReport(UnitSet: TFPCUnitSetCache;
+  const AnUnitName: string);
+var
+  ConfigCache: TFPCTargetConfigCache;
+  PPUFile: String;
+  SourceCache: TFPCSourceCache;
+  aTree: TStringToStringTree;
+  SrcRules: TFPCSourceRules;
+begin
+  writeln;
+  writeln('Unit report for ',AnUnitName);
+  ConfigCache:=UnitSet.GetConfigCache(false);
+
+  // in ppu search path
+  PPUFile:='';
+  if ConfigCache.Units<>nil then
+    PPUFile:=ConfigCache.Units[AnUnitName];
+  if PPUFile='' then
+    writeln('  WARNING: ',AnUnitName,' is not in PPU search path')
+  else if CompareFileExt(PPUFile,'ppu',false)=0 then
+    writeln('  WARNING: fpc ppu search path has a source and not a ppu for ',AnUnitName,': ',PPUFile)
+  else
+    writeln('  in PPU search path: ',PPUFile);
+
+  SourceCache:=UnitSet.GetSourceCache(false);
+  SrcRules:=UnitSet.GetSourceRules(false);
+  if SourceCache.Files<>nil then begin
+    aTree:=GatherUnitsInFPCSources(SourceCache.Files,
+      ConfigCache.RealTargetOS,ConfigCache.RealTargetCPU,nil,
+      SrcRules,AnUnitName);
+    aTree.Free;
+  end;
 end;
 
 var

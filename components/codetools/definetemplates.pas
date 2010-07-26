@@ -1667,14 +1667,14 @@ begin
         // add or update unitlink
         Unit_Name:=ExtractFileNameOnly(Filename);
         Node:=Links.FindKey(Pointer(Unit_Name),@CompareUnitNameWithUnitNameLink);
-        if (DebugUnitName<>'') and (SysUtils.CompareText(Unit_Name,DebugUnitName)=0)
-        then
-          debugln(['GatherUnitsInFPCSources Unit_Name=',Unit_Name,' File=',Filename,' Node=',Node<>nil,' Score=',Score]);
         if Node<>nil then begin
           // duplicate unit
           Link:=TUnitNameLink(Node.Data);
           if Link.Score<Score then begin
             // found a better unit
+            if (DebugUnitName<>'') and (SysUtils.CompareText(Unit_Name,DebugUnitName)=0)
+            then
+              debugln(['GatherUnitsInFPCSources UnitName=',Unit_Name,' File=',Filename,' Score=',Score,' => better than ',Link.Score]);
             Link.Unit_Name:=Unit_Name;
             Link.Filename:=Filename;
             Link.ConflictFilename:='';
@@ -1682,6 +1682,9 @@ begin
           end else if Link.Score=Score then begin
             // unit with same Score => maybe a conflict
             // be deterministic and choose the highest
+            if (DebugUnitName<>'') and (SysUtils.CompareText(Unit_Name,DebugUnitName)=0)
+            then
+              debugln(['GatherUnitsInFPCSources UnitName=',Unit_Name,' File=',Filename,' Score=',Score,' => duplicate']);
             if CompareStr(Filename,Link.Filename)>0 then begin
               if Link.ConflictFilename<>'' then
                 Link.ConflictFilename:=Link.ConflictFilename+';'+Link.Filename
@@ -1694,6 +1697,9 @@ begin
           end;
         end else begin
           // new unit source found => add to list
+          if (DebugUnitName<>'') and (SysUtils.CompareText(Unit_Name,DebugUnitName)=0)
+          then
+            debugln(['GatherUnitsInFPCSources UnitName=',Unit_Name,' File=',Filename,' Score=',Score]);
           Link:=TUnitNameLink.Create;
           Link.Unit_Name:=Unit_Name;
           Link.Filename:=Filename;
