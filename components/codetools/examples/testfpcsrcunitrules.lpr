@@ -124,6 +124,7 @@ begin
   Options.Free;
 
   ConfigCache:=UnitSet.GetConfigCache(false);
+  writeln('FPCSrcDir=',UnitSet.FPCSourceDirectory);
   WriteCompilerInfo(ConfigCache);
   WriteDuplicatesInPPUPath(ConfigCache);
   WriteMissingPPUSources(UnitSet);
