@@ -23,6 +23,10 @@ Add('packages/httpd22/examples');
 Score:=10;
 Targets:='wince';
 Add('packages/winceunits');
+Score:=-10;
+Targets:='win32,win64';
+Add('packages/winceunits');
+
 Targets:='win';
 Add('packages/winunits-base');
 
