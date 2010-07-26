@@ -1225,16 +1225,20 @@ function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
   out Infos: TFPCInfoStrings): boolean;
 var
   i: TFPCInfoType;
-  p: Integer;
-  StartPos: LongInt;
+  p: PChar;
+  StartPos: PChar;
 begin
-  p:=1;
+  Result:=false;
+  if FPCInfo='' then exit(InfoTypes=[]);
+  if copy(FPCInfo,1,6)='Error:' then exit(false);
+
+  p:=PChar(FPCInfo);
   for i:=low(TFPCInfoType) to high(TFPCInfoType) do begin
     if not (i in InfoTypes) then continue;
     StartPos:=p;
-    while (p<=length(FPCInfo)) and (FPCInfo[p]<>' ') do inc(p);
+    while (p^<>' ') do inc(p);
     if p=StartPos then exit(false);
-    Infos[i]:=copy(FPCInfo,StartPos,p-StartPos);
+    Infos[i]:=copy(FPCInfo,StartPos-PChar(FPCInfo)+1,p-StartPos);
     // skip space
     inc(p);
   end;
@@ -1265,6 +1269,7 @@ begin
     List:=RunTool(CompilerFilename,Params);
     if (List=nil) or (List.Count<1) then exit;
     Result:=List[0];
+    if copy(Result,1,6)='Error:' then Result:='';
   finally
     List.free;
   end;
@@ -6927,7 +6932,7 @@ begin
   Result.Score:=Score;
   Result.Targets:=Targets;
   //DebugLn(['TFPCSourceRules.Add Targets="',Result.Targets,'" Priority=',Result.Score]);
-  Result.Filename:=SetDirSeparators(Filename);
+  Result.Filename:=lowercase(SetDirSeparators(Filename));
   FItems.Add(Result);
   IncreaseChangeStamp;
 end;
@@ -6970,9 +6975,11 @@ var
   Node: TAVLTreeNode;
   Rule: TFPCSourceRule;
   cmp: LongInt;
+  Cnt: Integer;
 begin
   Result:=0;
   if Filename='' then exit;
+  Filename:=LowerCase(Filename);
   {Node:=RulesSortedForFilenameStart.FindLowest;
   while Node<>nil do begin
     Rule:=TFPCSourceRule(Node.Data);
@@ -6981,15 +6988,12 @@ begin
   end;}
   // find first rule for Filename
   Node:=RulesSortedForFilenameStart.Root;
-  // find nearest node
   while true do begin
     Rule:=TFPCSourceRule(Node.Data);
     cmp:=CompareStr(Filename,Rule.Filename);
     //DebugLn(['TFPCSourceRules.GetScore Rule.Filename=',Rule.Filename,' Filename=',Filename,' cmp=',cmp]);
-    if cmp=0 then begin
-      inc(Result,Rule.Score);
+    if cmp=0 then
       break;
-    end;
     if cmp<0 then begin
       if Node.Left<>nil then
         Node:=Node.Left
@@ -7002,14 +7006,30 @@ begin
         break;
     end;
   end;
+  { The rules are sorted for the file name. Shorter file names comes before
+    longer ones.
+       packages/httpd20/examples
+       packages/httpd22
+       packages/httpd22/examples
+    A filename packages/httpd22/examples matches
+           packages/httpd22
+       and packages/httpd22/examples
+    If a file name has no exact match the binary search for packages/httpd22/e
+    can either point to
+           packages/httpd22
+        or packages/httpd22/examples
+  }
+
   // run through all fitting rules (the Filename is >= Rule.Filename)
+  Cnt:=0;
   while Node<>nil do begin
+    inc(Cnt);
     Rule:=TFPCSourceRule(Node.Data);
-    if Rule.Filename[1]<>Filename[1] then exit;
     if Rule.FitsFilename(Filename) then
-      inc(Result,Rule.Score);
+      inc(Result,Rule.Score)
+    else if Cnt>1 then
+      break;
     Node:=RulesSortedForFilenameStart.FindPrecessor(Node);
-    if Node=nil then exit;
   end;
 end;
 
@@ -7544,9 +7564,17 @@ begin
 
       // get real OS and CPU
       Info:=RunFPCInfo(Compiler,[fpciTargetOS,fpciTargetProcessor],ExtraOptions);
-      ParseFPCInfo(Info,[fpciTargetOS,fpciTargetProcessor],Infos);
-      RealTargetOS:=Infos[fpciTargetOS];
-      RealTargetCPU:=Infos[fpciTargetProcessor];
+      if ParseFPCInfo(Info,[fpciTargetOS,fpciTargetProcessor],Infos) then begin
+        RealTargetOS:=Infos[fpciTargetOS];
+        RealTargetCPU:=Infos[fpciTargetProcessor];
+      end else begin
+        RealTargetOS:=TargetOS;
+        if RealTargetOS='' then
+          RealTargetOS:=GetCompiledTargetOS;
+        RealTargetCPU:=TargetCPU;
+        if RealTargetCPU='' then
+          RealTargetCPU:=GetCompiledTargetCPU;
+      end;
       HasPPUs:=false;
 
       // run fpc and parse output

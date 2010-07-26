@@ -22,6 +22,7 @@ Add('packages/httpd22/examples');
 
 Score:=10;
 Targets:='wince';
+Add('rtl/wince');
 Add('packages/winceunits');
 Score:=-10;
 Targets:='win32,win64';

@@ -73,6 +73,7 @@ function CompareFilenames(const Filename1, Filename2: string): integer;
 function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer;
 function CompareFileExt(const Filename, Ext: string;
                         CaseSensitive: boolean): integer;
+function CompareFilenameStarts(const Filename1, Filename2: string): integer;
 function DirPathExists(DirectoryName: string): boolean;
 function DirectoryIsWritable(const DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
@@ -963,6 +964,27 @@ begin
     Result:=FindDiskFilename(Result);
     {$ENDIF}
   {$ENDIF}
+end;
+
+function CompareFilenameStarts(const Filename1, Filename2: string): integer;
+var
+  len1: Integer;
+  len2: Integer;
+begin
+  len1:=length(Filename1);
+  len2:=length(Filename2);
+  if len1=len2 then begin
+    Result:=CompareFilenames(Filename1,Filename2);
+    exit;
+  end else if len1>len2 then
+    Result:=CompareFilenames(copy(Filename1,1,len2),Filename2)
+  else
+    Result:=CompareFilenames(Filename1,copy(Filename2,1,len1));
+  if Result<>0 then exit;
+  if len1<len2 then
+    Result:=-1
+  else
+    Result:=1;
 end;
 
 function DirPathExists(DirectoryName: string): boolean;
