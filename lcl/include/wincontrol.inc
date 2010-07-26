@@ -5577,6 +5577,24 @@ begin
       KeyDownBeforeInterface(CharCode, ShiftState);
       if CharCode = VK_UNKNOWN then Exit;
     end;
+
+    // check the shortcuts
+    // check popup menu
+    if Assigned(FPopupMenu) and FPopupMenu.IsShortCut(Message) then
+      Exit;
+
+    // let each parent form handle shortcuts
+    AParent := Parent;
+    while Assigned(AParent) do
+    begin
+      if (AParent is TCustomForm) and TCustomForm(AParent).IsShortcut(Message) then
+        Exit;
+      AParent := AParent.Parent;
+    end;
+
+    // let application handle shortcut
+    if Assigned(Application) and Application.IsShortcut(Message) then
+      Exit;
   end;
 
   Result := False;
@@ -5611,28 +5629,10 @@ end;
 function TWinControl.DoRemainingKeyDown(var Message: TLMKeyDown): Boolean;
 var
   ShiftState: TShiftState;
-  AParent: TWinControl;
 begin
   Result := True;
   
   ShiftState := KeyDataToShiftState(Message.KeyData);
-
-  // check popup menu
-  if Assigned(FPopupMenu) and FPopupMenu.IsShortCut(Message) then
-    Exit;
-
-  // let each parent form handle shortcuts
-  AParent := Parent;
-  while Assigned(AParent) do
-  begin
-    if (AParent is TCustomForm) and TCustomForm(AParent).IsShortcut(Message) then
-      Exit;
-    AParent := AParent.Parent;
-  end;
-
-  // let application handle shortcut
-  if Assigned(Application) and Application.IsShortcut(Message) then
-    Exit;
 
   // let parent(s) handle key from child key
   if Assigned(Parent) and Parent.ChildKey(Message) then

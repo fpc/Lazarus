@@ -377,8 +377,6 @@ begin
           PostQuitMessage(AMessage.wParam);
           break;
         end;
-        // todo: maybe check the keyboard messages here before their applying to window
-        // to prevent system keys mix with LCL shortcuts?
         TranslateMessage(@AMessage);
 {$IFDEF WindowsUnicodeSupport}
         if UnicodeEnabledOS then
