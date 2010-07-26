@@ -1936,6 +1936,16 @@ begin
           Assigned(TWinCEWidgetSet(WidgetSet).FOnAsyncSocketMsg) then
         exit(TWinCEWidgetSet(WidgetSet).FOnAsyncSocketMsg(WParam, LParam))
     end;
+    WM_HOTKEY:
+    begin
+      // Implements back-key sending to edits, instead of hiding the form
+      // See http://bugs.freepascal.org/view.php?id=16699
+      if HIWORD(lParam) = VK_ESCAPE then
+      begin
+        SHSendBackToFocusWindow(Msg, wParam, lParam);
+        Exit;
+      end;
+    end;
   else
     // pass along user defined messages
     if Msg >= WM_USER then

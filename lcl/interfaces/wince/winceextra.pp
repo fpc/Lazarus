@@ -86,6 +86,10 @@ function ImageList_Copy(himlDst: HIMAGELIST; iDst: longint; himlSrc: HIMAGELIST;
 function ImageList_Copy(himlDst: HIMAGELIST; iDst: longint; himlSrc: HIMAGELIST; Src: longint; uFlags: UINT): BOOL; cdecl; external KernelDLL;
 {$endif}
 
+{$ifdef wince}
+procedure SHSendBackToFocusWindow(uMsg: UINT; wp: WPARAM; lp: LPARAM); cdecl; external 'aygshell' index 97;
+{$endif}
+
 const
   // BlendOp flags
   AC_SRC_OVER = $00;

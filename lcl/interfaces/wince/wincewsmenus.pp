@@ -232,6 +232,14 @@ begin
     end;
   end;
 
+  // Implements back-key sending to edits, instead of hiding the form
+  // See http://bugs.freepascal.org/view.php?id=16699
+  if mbi.hwndMB <> 0 then
+  begin
+    SendMessage(mbi.hwndMB, SHCMBM_OVERRIDEKEY, VK_ESCAPE,
+     MAKELPARAM(SHMBOF_NODEFAULT or SHMBOF_NOTIFY, SHMBOF_NODEFAULT or SHMBOF_NOTIFY));
+  end;
+
   {$ifdef VerboseWinCEMenu}
   DebugLn('[CeSetMenu] menu bar window = ' + IntToStr(mbi.hwndMB) +
     ' mbi.nToolBarId = ' + IntToStr(mbi.nToolBarId));
