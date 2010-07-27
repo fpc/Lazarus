@@ -5348,6 +5348,9 @@ var
         CursorBlockLvl:=Stack.Top;
         if CursorBlockLvl<0 then begin
           // cursor outside blocks or on first atom of first block
+          {$IFDEF ShowCompleteBlock}
+          DebugLn(['ReadStatements no completion: cursor outside blocks or on first atom of first block ',CleanPosToStr(CurPos.StartPos)]);
+          {$ENDIF}
           exit;
         end else begin
           CursorBlock:=Stack.Stack[CursorBlockLvl];
@@ -5356,6 +5359,9 @@ var
           if (CursorBlockInnerIndent<=CursorBlockOuterIndent)
           and OnlyIfCursorBlockIndented then begin
             // cursor block not indented
+            {$IFDEF ShowCompleteBlock}
+            DebugLn(['ReadStatements no completion: cursor block not indented ',CleanPosToStr(CurPos.StartPos),' CursorBlockOuterIndent=',CursorBlockOuterIndent,' CursorBlockInnerIndent=',CursorBlockInnerIndent]);
+            {$ENDIF}
             exit;
           end;
           AtomInFrontOfCursor:=LastAtoms.GetValueAt(0);
@@ -5392,11 +5398,11 @@ var
                  and not PositionsInSameLine(Src,LastPos,CurPos.StartPos);
       if LineStart then
         Indent:=GetLineIndent(Src,CurPos.StartPos);
-
       if LineStart and (NeedCompletion=0) then begin
         // atom is in same block as cursor (not sub block)
         // and first atom of a line
         // => check indent
+        //debugln(['CompleteStatements first atom of line in cursor block: ',GetAtom,' Indent=',Indent,' CursorBlockOuterIndent=',CursorBlockOuterIndent,' CursorBlockOuterIndent=',CursorBlockOuterIndent]);
         if (Indent=CursorBlockOuterIndent) then begin
           if (CursorBlockLvl>0)
           and (Stack.Stack[CursorBlockLvl-1].InnerIndent=Indent)
