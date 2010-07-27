@@ -241,7 +241,7 @@ procedure TControlScrollBar.AutoCalcRange;
     PreferredHeight: Integer;
   begin
     GetPreferredClientRect(PreferredWidth,PreferredHeight);
-    //DebugLn(['AutoCalcVRange ',DbgSName(FControl),' AutoSize=',FControl.AutoSize,' Bounds=',dbgs(FControl.BoundsRect),' Client=',dbgs(FControl.ClientRect),' TmpRange=',TmpRange,' pref=',PreferredWidth,'x',PreferredHeight]);
+    //DebugLn(['AutoCalcVRange ',DbgSName(FControl),' AutoSize=',FControl.AutoSize,' Bounds=',dbgs(FControl.BoundsRect),' Client=',dbgs(FControl.ClientRect),' ' pref=',PreferredWidth,'x',PreferredHeight]);
     InternalSetRange(PreferredHeight);
   end;
 
@@ -515,13 +515,17 @@ end;
 function TControlScrollBar.GetHorzScrollBar: TControlScrollBar;
 begin
   if FControl is TScrollingWinControl then
-    Result := TScrollingWinControl(FControl).HorzScrollBar;
+    Result := TScrollingWinControl(FControl).HorzScrollBar
+  else
+    Result:=nil;
 end;
 
 function TControlScrollBar.GetVertScrollBar: TControlScrollBar;
 begin
   if FControl is TScrollingWinControl then
-    Result := TScrollingWinControl(FControl).VertScrollBar;
+    Result := TScrollingWinControl(FControl).VertScrollBar
+  else
+    Result:=nil;
 end;
 
 // included by forms.pp
