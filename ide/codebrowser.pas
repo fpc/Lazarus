@@ -45,14 +45,14 @@ interface
 uses
   Classes, SysUtils, types, LCLProc, LResources, Forms, Controls, Graphics,
   Dialogs, Clipbrd, LCLIntf, AVL_Tree, StdCtrls, ExtCtrls, ComCtrls, Buttons,
-  Menus,
+  Menus, HelpIntfs,
   // codetools
   CodeAtom, BasicCodeTools, DefineTemplates, CodeTree, CodeCache,
   CodeToolsStructs, CodeToolManager, PascalParserTool, LinkScanner, FileProcs,
-  CodeIndex, StdCodeTools, SourceLog,
+  CodeIndex, StdCodeTools, SourceLog, CustomCodeTool,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage,
-  PackageIntf, TextTools, IDECommands, LazIDEIntf,
+  IDEHelpIntf, PackageIntf, TextTools, IDECommands, LazIDEIntf,
   // IDE
   Project, DialogProcs, PackageSystem, PackageDefs, LazarusIDEStrConsts,
   IDEOptionDefs, MsgQuickFixes, BasePkgManager, AddToProjectDlg,
@@ -322,6 +322,7 @@ type
     procedure InitImageList;
     function GetNodeImage(CodeNode: TObject): integer;
     function GetTVNodeHint(TVNode: TTreeNode): string;
+    function GetCodeHelp(TVNode: TTreeNode; out BaseURL, HTMLHint: string): boolean;
     procedure ExpandCollapseAllNodesInTreeView(NodeType: TExpandableNodeType;
                                                Expand: boolean);
     procedure CopyNode(TVNode: TTreeNode; NodeType: TCopyNodeType);
@@ -2452,6 +2453,83 @@ begin
       if Line>0 then
         Result:=Result+' ('+IntToStr(Line)+','+IntToStr(Column)+')';
     end;
+  end;
+end;
+
+function TCodeBrowserView.GetCodeHelp(TVNode: TTreeNode; out BaseURL,
+  HTMLHint: string): boolean;
+var
+  NodeData: TObject;
+  Node: TCodeBrowserNode;
+  Tool: TCodeTool;
+  CleanPos: integer;
+  CTNode: TCodeTreeNode;
+  NewCodePos: TCodeXYPosition;
+begin
+  Result:=false;
+  BaseURL:='';
+  HTMLHint:='';
+  if (TVNode=nil) or (TVNode.Data=nil) then exit;
+  NodeData:=TObject(TVNode.Data);
+  if NodeData is TCodeBrowserNode then begin
+    Node:=TCodeBrowserNode(NodeData);
+    if Node.CodePos.Code=nil then exit;
+    if not LazarusIDE.BeginCodeTools then // commit source editor changes to codetools
+      exit;
+    // parse unit
+    CodeToolBoss.Explore(Node.CodePos.Code,Tool,false,false);
+    if Tool=nil then exit;
+    // find source position in parsed code
+    CleanPos:=Node.CodePos.P;
+    // find node
+    CTNode:=Tool.FindDeepestNodeAtPos(CleanPos,false);
+    if (CTNode=nil) or (CTNode.Desc<>Node.Desc) then
+      exit; // source has changed
+
+    // find cleanpos of identifier
+    case CTNode.Desc of
+    ctnProcedure:
+      begin
+        if SysUtils.CompareText(Tool.ExtractProcName(CTNode,[]),Node.Identifier)<>0
+        then
+          exit; // source has changed
+        Tool.MoveCursorToProcName(CTNode,true);
+        CleanPos:=Tool.CurPos.StartPos;
+      end;
+    ctnProperty:
+      begin
+        if SysUtils.CompareText(Tool.ExtractPropName(CTNode,false),Node.Identifier)<>0
+        then
+          exit; // source has changed
+        Tool.MoveCursorToPropName(CTNode);
+        CleanPos:=Tool.CurPos.StartPos;
+      end;
+    ctnGenericType:
+      begin
+        Tool.ExtractDefinitionName(CTNode);
+        if CTNode.FirstChild<>nil then
+          CleanPos:=CTNode.FirstChild.StartPos;
+        if SysUtils.CompareText(Tool.ExtractIdentifier(CleanPos),Node.Identifier)<>0
+        then
+          exit; // source has changed
+      end;
+    ctnVarDefinition,ctnTypeDefinition,ctnConstDefinition,
+    ctnEnumIdentifier:
+      if SysUtils.CompareText(Tool.ExtractIdentifier(CleanPos),Node.Identifier)<>0
+      then
+        exit; // source has changed
+    else
+      exit;
+    end;
+
+    // get source position
+    if not Tool.CleanPosToCaret(CleanPos,NewCodePos) then exit;
+
+    // ask the help system about the identifier
+    if LazarusHelp.GetHintForSourcePosition(NewCodePos.Code.Filename,
+      Point(NewCodePos.X,NewCodePos.Y),BaseURL,HTMLHint)<>shrSuccess then exit;
+
+    Result:=true;
   end;
 end;
 

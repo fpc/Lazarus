@@ -168,7 +168,7 @@ type
                     out HintWinRect: TRect): boolean; override;
     function GetHintForSourcePosition(const ExpandedFilename: string;
                                       const CodePos: TPoint;
-                                      out BaseURL, HTMLHint: string): TShowHelpResult;
+                                      out BaseURL, HTMLHint: string): TShowHelpResult; override;
 
     function ConvertSourcePosToPascalHelpContext(const CaretPos: TPoint;
                const Filename: string): TPascalHelpContextList; override;
