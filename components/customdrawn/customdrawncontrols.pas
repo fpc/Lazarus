@@ -159,7 +159,7 @@ procedure TCustomBitmappedButton.DoButtonDown();
 var
   NewState: TBitmappedButtonState;
 begin
-  NewState := FState;
+  NewState := bbsDown;
 
   case FState of
   bbsNormal, bbsFocused: NewState := bbsDown;
@@ -177,20 +177,16 @@ procedure TCustomBitmappedButton.DoButtonUp();
 var
   NewState: TBitmappedButtonState;
 begin
-  NewState := FState;
+  if Focused then NewState := bbsFocused
+  else NewState := bbsNormal;
 
-  case FState of
-  bbsDown:
-  begin
-    if Focused then NewState := bbsFocused
-    else NewState := bbsNormal;
-  end;
-{  bbsCheckedDown:
+{  case FState of
+  bbsCheckedDown:
   begin
     if Focused then NewState := bbsCheckedSelected
     else NewState := bbsChecked;
-  end;}
   end;
+  end;}
 
   if NewState <> FState then
   begin
@@ -240,7 +236,12 @@ begin
   case FState of
   bbsDown:      Result := FImageBtnDown.Bitmap;
 //  bbsMouseOver: Result := FImageBtnMouseOver;
-  bbsFocused:  Result := FImageBtnFocused.Bitmap;
+  bbsFocused:
+  begin
+    if bboUseImageForSelection in Options then
+      Result := FImageBtnFocused.Bitmap
+    else Result := FImageBtn.Bitmap;
+  end;
 //  bbsChecked:   Result := FImageBtnChecked;
   else
     Result := FImageBtn.Bitmap;
