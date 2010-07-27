@@ -7580,8 +7580,9 @@ begin
       // run fpc and parse output
       RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
                     Defines,Undefines,ExtraOptions);
-      for i:=0 to UnitPaths.Count-1 do
-        UnitPaths[i]:=ChompPathDelim(TrimFilename(UnitPaths[i]));
+      if UnitPaths<>nil then
+        for i:=0 to UnitPaths.Count-1 do
+          UnitPaths[i]:=ChompPathDelim(TrimFilename(UnitPaths[i]));
       // store the real compiler file and date
       if (RealCompiler<>'') and FileExistsCached(RealCompiler) then
         RealCompilerDate:=FileAgeCached(RealCompiler);
