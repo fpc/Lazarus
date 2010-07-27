@@ -116,9 +116,6 @@ uses strutils;
 const
   SpaceBetweenIcons = 5;
 
-var
-  menuiteminfosize : DWORD = 0;
-
 type
   TCaptionFlags = (cfBold, cfUnderline);
   TCaptionFlagsSet = set of TCaptionFlags;
@@ -326,6 +323,9 @@ begin
           // Careful that using TB_DELETEBUTTON doesnt work here
           while RemoveMenu(HMENU(tbbi.lParam), 0, MF_BYPOSITION) do DebugLn('[CeSetMenu] RemoveMenu');
 
+          {$ifdef VerboseWinCEMenu}
+          DebugLn(Format('[CeSetMenu] Installing %d Subitems', [LCLMenu.Items.Items[j].Count]));
+          {$endif}
           for k := 0 to LCLMenu.Items.Items[j].Count - 1 do
             TWinCEWSMenuItem.AttachMenuEx(
               LCLMenu.Items.Items[j].Items[k], HMENU(tbbi.lParam));
@@ -467,7 +467,7 @@ var
 begin
   Result := MakeLResult(0, 0);
   MenuItemIndex := -1;
-  ItemInfo.cbSize := menuiteminfosize;
+  ItemInfo.cbSize := SizeOf(MENUITEMINFO);
   ItemInfo.fMask := MIIM_DATA;
   if not GetMenuItemInfo(AMenuHandle, 0, true, @ItemInfo) then Exit;
   FirstMenuItem := TMenuItem(ItemInfo.dwItemData);
@@ -503,7 +503,7 @@ var
   MenuInfo: MENUITEMINFO;
   wCaption : WideString;
 begin
-  MenuInfo.cbSize := menuiteminfosize;
+  MenuInfo.cbSize := SizeOf(MENUITEMINFO);
   MenuInfo.fMask := MIIM_TYPE;
   MenuInfo.dwTypeData := nil;  // don't retrieve caption
   GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
@@ -530,31 +530,29 @@ var
 begin
   wCaption := UTF8Decode(ACaption);
   FillChar(MenuInfo, SizeOf(MenuInfo), 0);
-  with MenuInfo do
+  MenuInfo.cbsize := SizeOf(MenuInfo);
+  MenuInfo.fMask := MIIM_TYPE or MIIM_STATE;
+  if ACaption <> cLineCaption then
   begin
-    cbsize := menuiteminfosize;
-    fMask := MIIM_TYPE or MIIM_STATE;
-    if ACaption <> cLineCaption then
-    begin
-      fType := MFT_STRING;
-      if AMenuItem.Enabled then fState := MF_ENABLED
-      else fState := MF_GRAYED;
-      {$ifdef win32}
-      dwTypeData:=PChar(PWideChar(wCaption));
-      {$else}
-      dwTypeData:=PWideChar(wCaption);
-      {$endif}
-      cch := Length(aCaption);
-    end
-    else
-    begin
-      fType := MFT_SEPARATOR;
-      fState := MFS_DISABLED;
-   end;
+    MenuInfo.fType := MFT_STRING;
+    if AMenuItem.Enabled then MenuInfo.fState := MF_ENABLED
+    else MenuInfo.fState := MF_GRAYED;
+    {$ifdef win32}
+    MenuInfo.dwTypeData := PChar(PWideChar(wCaption));
+    {$else}
+    MenuInfo.dwTypeData := PWideChar(wCaption);
+    {$endif}
+    MenuInfo.cch := Length(aCaption);
+  end
+  else
+  begin
+    MenuInfo.fType := MFT_SEPARATOR;
+    MenuInfo.fState := MFS_DISABLED;
   end;
   {$ifdef VerboseWinCEMenu}
-  DebugLn('[UpdateCaption] SetMenuItemInfo for ' + AMenuItem.Name +
-    ' with ButtonID = AMenuItem.Command = ' + IntToStr(AMenuItem.Command));
+  DebugLn(Format('[UpdateCaption] SetMenuItemInfo for %s with ' +
+    'Caption: %s ButtonID = AMenuItem.Command = %d',
+    [AMenuItem.Name, AMenuItem.Caption, AMenuItem.Command]));
   {$endif}
   if not SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo) then
     DebugLn('SetMenuItemInfo failed: ', GetLastErrorText(GetLastError));
@@ -570,7 +568,7 @@ var
   Index, fstate, cmd: integer;
 begin
   {$ifdef VerboseWinCEMenu}
-  DebugLn('[TWinCEWSMenuItem.AttachMenuEx] Start');
+  DebugLn('[TWinCEWSMenuItem.AttachMenuEx] START');
   {$endif}
 
   FillChar(MenuInfo, SizeOf(MenuInfo), 0);
@@ -581,11 +579,10 @@ begin
     (Application.ApplicationType <> atKeyPadDevice) then
   begin
     ParentOfParent := AMenuItem.Parent.Parent.Handle;
-    with MenuInfo do
-    begin
-      cbSize := menuiteminfosize;
-      fMask := MIIM_SUBMENU;
-    end;
+
+    MenuInfo.cbSize := SizeOf(MENUITEMINFO);
+    MenuInfo.fMask := MIIM_SUBMENU;
+
     {$ifdef VerboseWinCEMenu}
     DebugLn('[TWinCEWSMenuItem.AttachMenuEx] GetMenuItemInfo for '
       + AMenuItem.Parent.Name + ' with ButtonID = AMenuItem.Parent.Command = ' + IntToStr(AMenuItem.Parent.Command));
@@ -751,7 +748,7 @@ begin
   {$ifndef Win32}
   AMenu := AMenuItem.GetParentMenu;
   {$ifdef VerboseWinCEMenu}
-  DebugLn(Format('[TWinCEWSMenuItem.SetCaption] ACaption:%s ACommand:%d',
+  DebugLn(Format('START [TWinCEWSMenuItem.SetCaption] ACaption: %s ACommand: %d',
     [AMenuItem.Caption, AMenuItem.Command]));
   {$endif}
 
@@ -792,6 +789,13 @@ begin
     DebugLn('[TWinCEWSMenuItem.SetCaption] TB_SETBUTTONINFO with ButtonID: ' + IntToStr(MenuBarRLID));
     {$endif}
     SendMessageW(h, TB_SETBUTTONINFO, MenuBarRLID, LPARAM(@bi));
+  end
+  // Second-Level menu items for atKeyPadDevice systems
+  else if (Application.ApplicationType = atKeyPadDevice) and
+    (AMenu <> nil) and (AMenu is TMainMenu) and
+    (AMenuItem.Parent.Parent = AMenu.Items) then
+  begin
+
   end
   else
   {$endif}
@@ -882,7 +886,6 @@ end;
 
 initialization
 
-  menuiteminfosize := SizeOf(TMenuItemInfo);
   MenuItemsList := TStringList.Create;
 
   MenuHandleList := TFPList.Create;
