@@ -120,8 +120,8 @@ type
     bbtDefinition,  // child of bbtTypeSection,bbtConstSection,bbtVarSection,bbtResourceStringSection,bbtLabelSection
     // type blocks
     bbtRecord,
-    bbtClass,
-    bbtClassInterface,
+    bbtClass,        // class, object, objcclass, objccategory
+    bbtClassInterface, // interface, dispinterface, objcprotocol
     bbtClassSection, // public, private, protected, published
     bbtTypeRoundBracket,
     bbtTypeEdgedBracket,
@@ -634,6 +634,13 @@ var
     while Stack.Top>=i do EndBlock;
   end;
 
+  procedure BeginClass;
+  begin
+    BeginBlock(bbtClass);
+    // the first section is created automatically
+    BeginBlock(bbtClassSection);
+  end;
+
   procedure EndStatements;
   begin
     while Stack.TopType in bbtAllStatements do EndBlock;
@@ -834,24 +841,37 @@ begin
         end;
       'L': // CL
         if CompareIdentifiers('CLASS',r)=0 then begin
-          if Stack.TopType=bbtDefinition then begin
-            BeginBlock(bbtClass);
-            // the first section is created automatically
-            BeginBlock(bbtClassSection);
-          end;
+          if Stack.TopType=bbtDefinition then
+            BeginClass;
         end;
       'O': // CO
         if CompareIdentifiers('CONST',r)=0 then
           StartIdentifierSection(bbtConstSection)
         else if CompareIdentifiers('CONSTRUCTOR',r)=0 then
           StartProcedure(bbtProcedure);
+      'P': // CP
+        if CompareIdentifiers('CPPCLASS',r)=0 then begin
+          if Stack.TopType=bbtDefinition then
+            BeginClass;
+        end;
       end;
     'D':
-      if CompareIdentifiers('DO',r)=0 then begin
-        if Stack.TopType=bbtFor then
-          BeginBlock(bbtForDo);
-      end else if CompareIdentifiers('DESTRUCTOR',r)=0 then
-        StartProcedure(bbtProcedure);
+      case UpChars[r[1]] of
+      'O':
+        if CompareIdentifiers('DO',r)=0 then begin
+          if Stack.TopType=bbtFor then
+            BeginBlock(bbtForDo);
+        end;
+      'E':
+        if CompareIdentifiers('DESTRUCTOR',r)=0 then
+          StartProcedure(bbtProcedure);
+      'I':
+        if CompareIdentifiers('DISPINTERFACE',r)=0 then begin
+          if Stack.TopType=bbtDefinition then begin
+            BeginBlock(bbtClassInterface);
+          end;
+        end;
+      end;
     'E':
       case UpChars[r[1]] of
       'L': // EL
@@ -1007,6 +1027,31 @@ begin
         StartIdentifierSection(bbtLabelSection);
     'O':
       case UpChars[r[1]] of
+      'B':
+        case UpChars[r[2]] of
+        'J':
+          case UpChars[r[3]] of
+          'C':
+            case UpChars[r[4]] of
+            'C':
+              if (CompareIdentifiers('ObjCCategory',r)=0)
+              or (CompareIdentifiers('ObjCClass',r)=0) then begin
+                if Stack.TopType=bbtDefinition then
+                  BeginClass;
+              end;
+            'P':
+              if CompareIdentifiers('ObjCProtocol',r)=0 then begin
+                if Stack.TopType=bbtDefinition then
+                  BeginBlock(bbtClassInterface);
+              end;
+            end;
+          'E':
+            if CompareIdentifiers('OBJECT',r)=0 then begin
+              if Stack.TopType=bbtDefinition then
+                BeginClass;
+            end;
+          end;
+        end;
       'F': // OF
         if CompareIdentifiers('OF',r)=0 then begin
           case Stack.TopType of
@@ -1122,8 +1167,7 @@ begin
         bbtClassSection,bbtClass:
           begin
             if (LastAtomStart>0)
-            and ((CompareIdentifiers('CLASS',@Src[LastAtomStart])=0)
-                or (CompareIdentifiers('INTERFACE',@Src[LastAtomStart])=0)) then
+            and (LastAtomStart=Stack.Stack[Stack.Top].StartPos) then
             begin
               if Stack.TopType=bbtClassSection then
                 EndBlock;
