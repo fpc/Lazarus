@@ -1471,6 +1471,7 @@ begin
     fs:=TFileStream.Create(TestFilename,fmCreate);
     fs.Free;
   except
+    debugln(['RunFPCVerbose unable to create test file '+TestFilename]);
     exit;
   end;
 
@@ -1484,7 +1485,10 @@ begin
   try
     //DebugLn(['RunFPCVerbose ',CompilerFilename,' ',Params,' ',WorkDir]);
     List:=RunTool(CompilerFilename,Params,WorkDir);
-    if (List=nil) or (List.Count=0) then exit;
+    if (List=nil) or (List.Count=0) then begin
+      debugln(['RunFPCVerbose failed: ',CompilerFilename,' ',Params]);
+      exit;
+    end;
     Result:=ParseFPCVerbose(List,ConfigFiles,TargetCompilerFilename,
                             UnitPaths,Defines,Undefines);
   finally
