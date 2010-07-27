@@ -140,13 +140,13 @@ begin
   Result := False;
 
   // page (must be smaller than Range and at least 1)
-  NewPage := Max(1,Min(VertScrollbar.ClientSize - 1, High(HorzScrollbar.FPage)));
+  NewPage := Max(1,Min(VertScrollbar.ClientSize, High(HorzScrollbar.FPage)));
   if NewPage <> HorzScrollbar.FPage then
   begin
     HorzScrollbar.FPage := NewPage;
     Result := True;
   end;
-  NewPage := Max(1,Min(HorzScrollbar.ClientSize - 1, High(VertScrollbar.FPage)));
+  NewPage := Max(1,Min(HorzScrollbar.ClientSize, High(VertScrollbar.FPage)));
   if NewPage <> VertScrollbar.FPage then
   begin
     VertScrollbar.FPage := NewPage;

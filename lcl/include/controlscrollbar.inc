@@ -292,7 +292,7 @@ begin
       ScrollInfo.nTrackPos := TrackToPolicyMap[FTracking];
       SetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo, FVisible);
     end;
-    NewVisible := Visible and (ScrollInfo.nMax - ScrollInfo.nPage > 0);
+    NewVisible := Visible and (ScrollInfo.nMax > ScrollInfo.nPage);
     ShowScrollBar(FControl.Handle, IntfBarKind[Kind], NewVisible);
     {$IFDEF VerboseScrollingWinControl}
     if DebugCondition then
