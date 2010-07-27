@@ -65,16 +65,16 @@ type
     FEditors: TFPList;// list of TCompOptsExprEditor
     procedure SetBuildMacros(const AValue: TIDEBuildMacros);
     procedure RebuildTreeView;
-    procedure TreeViewAddBuildMacro(BuildProperty: TLazBuildMacro);
+    procedure TreeViewAddBuildMacro(aBuildMacro: TLazBuildMacro);
     procedure TreeViewAddValue(ValuesTVNode: TTreeNode; aValue: string);
     function GetNodeInfo(Node: TTreeNode; out BuildProperty: TLazBuildMacro): TCBMNodeType;
-    function GetSelectedNode(out BuildProperty: TLazBuildMacro;
+    function GetSelectedNode(out aBuildMacro: TLazBuildMacro;
                              out NodeType: TCBMNodeType): TTreeNode;
-    function GetBuildMacroTVNode(BuildProperty: TLazBuildMacro): TTreeNode;
-    function GetValuesTVNode(BuildProperty: TLazBuildMacro): TTreeNode;
+    function GetBuildMacroTVNode(aBuildMacro: TLazBuildMacro): TTreeNode;
+    function GetValuesTVNode(aBuildMacro: TLazBuildMacro): TTreeNode;
     procedure FreeEditors;
-    function GetEditor(BuildProperty: TLazBuildMacro): TCompOptsExprEditor;
-    function GetVariablePrefix: string;
+    function GetEditor(aBuildMacro: TLazBuildMacro): TCompOptsExprEditor;
+    function GetMacroNamePrefix: string;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -93,7 +93,7 @@ var
   NewBuildMacro: TLazBuildMacro;
   SetResultNode: TCompOptCondNode;
 begin
-  NewIdentifier:=DefaultBuildModeGraph.GetUniqueVarName(GetVariablePrefix,BuildMacros);
+  NewIdentifier:=DefaultBuildModeGraph.GetUniqueVarName(GetMacroNamePrefix,BuildMacros);
   NewBuildMacro:=BuildMacros.Add(NewIdentifier);
   // add a node
   SetResultNode:=TCompOptCondNode.Create(NewBuildMacro.DefaultValue);
@@ -308,7 +308,7 @@ begin
 end;
 
 procedure TCompOptBuildMacrosFrame.TreeViewAddBuildMacro(
-  BuildProperty: TLazBuildMacro);
+  aBuildMacro: TLazBuildMacro);
 var
   TVNode: TTreeNode;
   ValuesTVNode: TTreeNode;
@@ -318,7 +318,7 @@ var
   Editor: TCompOptsExprEditor;
 begin
   // create node for the build macro
-  TVNode:=BuildMacrosTreeView.Items.AddObject(nil,BuildProperty.Identifier,BuildProperty);
+  TVNode:=BuildMacrosTreeView.Items.AddObject(nil,aBuildMacro.Identifier,aBuildMacro);
   TVNode.ImageIndex:=fVarImgID;
   TVNode.SelectedIndex:=TVNode.ImageIndex;
   // second level
@@ -328,7 +328,7 @@ begin
     ValuesTVNode.ImageIndex:=fValuesImgID;
     ValuesTVNode.SelectedIndex:=ValuesTVNode.ImageIndex;
     // a node for each value
-    Values:=BuildProperty.Values;
+    Values:=aBuildMacro.Values;
     for i:=0 to Values.Count-1 do
       TreeViewAddValue(ValuesTVNode,Values[i]);
     // a node for the default value
@@ -342,7 +342,7 @@ begin
     Editor.DefaultValueType:=cocvtResult;
     FEditors.Add(Editor);
     Editor.Setup(BuildMacrosTreeView,DefValueTVNode,
-                 BuildProperty.DefaultValue as TCompOptConditionals,[cocvtResult]);
+                 aBuildMacro.DefaultValue as TCompOptConditionals,[cocvtResult]);
   end;
   //DebugLn(['TCompOptBuildMacrosFrame.TreeViewAddBuildMacro ',TVNode.Text]);
   TVNode.Expand(true);
@@ -392,26 +392,26 @@ begin
 end;
 
 function TCompOptBuildMacrosFrame.GetSelectedNode(out
-  BuildProperty: TLazBuildMacro; out NodeType: TCBMNodeType): TTreeNode;
+  aBuildMacro: TLazBuildMacro; out NodeType: TCBMNodeType): TTreeNode;
 begin
   Result:=BuildMacrosTreeView.Selected;
-  NodeType:=GetNodeInfo(Result,BuildProperty);
+  NodeType:=GetNodeInfo(Result,aBuildMacro);
 end;
 
-function TCompOptBuildMacrosFrame.GetBuildMacroTVNode(BuildProperty: TLazBuildMacro
+function TCompOptBuildMacrosFrame.GetBuildMacroTVNode(aBuildMacro: TLazBuildMacro
   ): TTreeNode;
 begin
   Result:=BuildMacrosTreeView.Items.GetFirstNode;
-  while (Result<>nil) and (TObject(Result.Data)<>BuildProperty) do
+  while (Result<>nil) and (TObject(Result.Data)<>aBuildMacro) do
     Result:=Result.GetNextSibling;
 end;
 
-function TCompOptBuildMacrosFrame.GetValuesTVNode(BuildProperty: TLazBuildMacro
+function TCompOptBuildMacrosFrame.GetValuesTVNode(aBuildMacro: TLazBuildMacro
   ): TTreeNode;
 var
   BuildMacroTVNode: TTreeNode;
 begin
-  BuildMacroTVNode:=GetBuildMacroTVNode(BuildProperty);
+  BuildMacroTVNode:=GetBuildMacroTVNode(aBuildMacro);
   if (BuildMacroTVNode<>nil) then
     Result:=BuildMacroTVNode.GetFirstChild
   else
@@ -427,19 +427,19 @@ begin
   FEditors.Clear;
 end;
 
-function TCompOptBuildMacrosFrame.GetEditor(BuildProperty: TLazBuildMacro
+function TCompOptBuildMacrosFrame.GetEditor(aBuildMacro: TLazBuildMacro
   ): TCompOptsExprEditor;
 var
   i: Integer;
 begin
   for i:=0 to FEditors.Count-1 do begin
     Result:=TCompOptsExprEditor(FEditors[i]);
-    if Result.Conditionals=BuildProperty.DefaultValue then exit;
+    if Result.Conditionals=aBuildMacro.DefaultValue then exit;
   end;
   Result:=nil;
 end;
 
-function TCompOptBuildMacrosFrame.GetVariablePrefix: string;
+function TCompOptBuildMacrosFrame.GetMacroNamePrefix: string;
 begin
   Result:='BuildMacro';
   if (BuildMacros=nil) or (BuildMacros.Owner=nil) then exit;
