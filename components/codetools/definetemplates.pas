@@ -39,9 +39,6 @@
     
     The TDefinePool contains a list of TDefineTemplate trees, and can generate
     some default templates for Lazarus and FPC sources.
-    
-  ToDo:
-    Better Error handling of DefinePool
 }
 unit DefineTemplates;
 
@@ -676,6 +673,7 @@ type
     RealCompilerDate: longint;
     RealTargetOS: string;
     RealTargetCPU: string;
+    RealCompilerInPath: string; // the ppc<target> in PATH
     ConfigFiles: TFPCConfigFileStateList;
     UnitPaths: TStrings;
     Defines: TStringToStringTree; // macro to value
@@ -698,6 +696,7 @@ type
     function NeedsUpdate: boolean;
     function Update(TestFilename: string; ExtraOptions: string = '';
                     const OnProgress: TDefinePoolProgress = nil): boolean;
+    function FindRealCompilerInPath(aTargetCPU: string; ResolveLinks: boolean): string;
     function GetFPCVer(out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
     procedure IncreaseChangeStamp;
     property ChangeStamp: integer read FChangeStamp;
@@ -887,7 +886,7 @@ procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
   var CPU, OS, WidgetSet: string);
 function GetCompiledTargetOS: string;
 function GetCompiledTargetCPU: string;
-function GetDefaultCompilerFilename: string;
+function GetDefaultCompilerFilename(const TargetCPU: string = ''): string;
 
 // functions to quickly setup some defines
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
@@ -2526,9 +2525,27 @@ begin
   Result:=lowerCase({$I %FPCTARGETCPU%});
 end;
 
-function GetDefaultCompilerFilename: string;
+function GetDefaultCompilerFilename(const TargetCPU: string = ''): string;
 begin
-  Result:='fpc'+ExeExt;
+  if TargetCPU='' then
+    Result:='fpc'
+  else if SysUtils.CompareText(TargetCPU,'i386')=0 then
+    Result:='ppc386'
+  else if SysUtils.CompareText(TargetCPU,'powerpc')=0 then
+    Result:='ppcppc'
+  else if SysUtils.CompareText(TargetCPU,'sparc')=0 then
+    Result:='ppcsparc'
+  else if SysUtils.CompareText(TargetCPU,'m68k')=0 then
+    Result:='ppc86k'
+  else if SysUtils.CompareText(TargetCPU,'alpha')=0 then
+    Result:='ppcalpha'
+  else if SysUtils.CompareText(TargetCPU,'x86_64')=0 then
+    Result:='ppcx64'
+  else if SysUtils.CompareText(TargetCPU,'arm')=0 then
+    Result:='ppcarm'
+  else
+    Result:='fpc';
+  Result:=Result+ExeExt;
 end;
 
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
@@ -7128,6 +7145,8 @@ begin
   RealCompilerDate:=0;
   RealTargetCPU:='';
   RealTargetOS:='';
+  RealCompilerInPath:='';
+  HasPPUs:=false;
   ConfigFiles.Clear;
   ErrorMsg:='';
   ErrorTranslatedMsg:='';
@@ -7181,6 +7200,7 @@ begin
     or (RealCompilerDate<>Item.RealCompilerDate)
     or (RealTargetOS<>Item.RealTargetOS)
     or (RealTargetCPU<>Item.RealTargetCPU)
+    or (RealCompilerInPath<>Item.RealCompilerInPath)
     or (HasPPUs<>Item.HasPPUs)
     or (not ConfigFiles.Equals(Item.ConfigFiles,true))
   then
@@ -7209,6 +7229,7 @@ begin
     RealCompilerDate:=Item.RealCompilerDate;
     RealTargetOS:=Item.RealTargetOS;
     RealTargetCPU:=Item.RealTargetCPU;
+    RealCompilerInPath:=Item.RealCompilerInPath;
     HasPPUs:=Item.HasPPUs;
     ConfigFiles.Assign(Item.ConfigFiles);
     if Item.Defines<>nil then begin
@@ -7269,6 +7290,7 @@ begin
   RealCompilerDate:=XMLConfig.GetValue(Path+'RealCompiler/Date',0);
   RealTargetOS:=XMLConfig.GetValue(Path+'RealCompiler/OS','');
   RealTargetCPU:=XMLConfig.GetValue(Path+'RealCompiler/CPU','');
+  RealCompilerInPath:=XMLConfig.GetValue(Path+'RealCompiler/InPath','');
   HasPPUs:=XMLConfig.GetValue(Path+'HasPPUs',true);
   ConfigFiles.LoadFromXMLConfig(XMLConfig,Path+'Configs/');
 
@@ -7376,6 +7398,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'RealCompiler/Date',RealCompilerDate,0);
   XMLConfig.SetDeleteValue(Path+'RealCompiler/OS',RealTargetOS,'');
   XMLConfig.SetDeleteValue(Path+'RealCompiler/CPU',RealTargetCPU,'');
+  XMLConfig.SetDeleteValue(Path+'RealCompiler/InPath',RealCompilerInPath,'');
   XMLConfig.SetDeleteValue(Path+'HasPPUs',HasPPUs,true);
   ConfigFiles.SaveToXMLConfig(XMLConfig,Path+'Configs/');
 
@@ -7492,21 +7515,30 @@ function TFPCTargetConfigCache.NeedsUpdate: boolean;
 var
   i: Integer;
   Cfg: TFPCConfigFileState;
+  AFilename: String;
 begin
   Result:=true;
   if (not FileExistsCached(Compiler)) then begin
-    debugln(['TFPCTargetConfigCache.NeedsUpdate compiler file missing ',Compiler]);
+    debugln(['TFPCTargetConfigCache.NeedsUpdate compiler file missing "',Compiler,'"']);
     exit;
   end;
   if (FileAgeCached(Compiler)<>CompilerDate) then begin
-    debugln(['TFPCTargetConfigCache.NeedsUpdate compiler file changed ',Compiler,' FileAge=',FileAgeCached(Compiler),' StoredAge=',CompilerDate]);
+    debugln(['TFPCTargetConfigCache.NeedsUpdate compiler file changed "',Compiler,'" FileAge=',FileAgeCached(Compiler),' StoredAge=',CompilerDate]);
     exit;
   end;
   if (RealCompiler<>'') and (CompareFilenames(RealCompiler,Compiler)<>0)
   then begin
     if (not FileExistsCached(RealCompiler))
     or (FileAgeCached(RealCompiler)<>RealCompilerDate) then begin
-      debugln(['TFPCTargetConfigCache.NeedsUpdate real compiler file changed ',RealCompiler]);
+      debugln(['TFPCTargetConfigCache.NeedsUpdate real compiler file changed "',RealCompiler,'"']);
+      exit;
+    end;
+    // fpc searches via PATH for the real compiler, resolves any symlink
+    // and that is the RealCompiler
+    // check if PATH
+    AFilename:=FindRealCompilerInPath(TargetCPU,true);
+    if RealCompilerInPath<>AFilename then begin
+      debugln(['TFPCTargetConfigCache.NeedsUpdate real compiler in PATH changed from "',RealCompilerInPath,'" to "',AFilename,'"']);
       exit;
     end;
   end;
@@ -7514,11 +7546,11 @@ begin
     Cfg:=ConfigFiles[i];
     if Cfg.Filename='' then continue;
     if FileExistsCached(Cfg.Filename)<>Cfg.FileExists then begin
-      debugln(['TFPCTargetConfigCache.NeedsUpdate config fileexists changed ',Cfg.Filename]);
+      debugln(['TFPCTargetConfigCache.NeedsUpdate config fileexists changed "',Cfg.Filename,'"']);
       exit;
     end;
     if Cfg.FileExists and (FileAgeCached(Cfg.Filename)<>Cfg.FileDate) then begin
-      debugln(['TFPCTargetConfigCache.NeedsUpdate config file changed ',Cfg.Filename]);
+      debugln(['TFPCTargetConfigCache.NeedsUpdate config file changed "',Cfg.Filename,'"']);
       exit;
     end;
   end;
@@ -7579,9 +7611,10 @@ begin
         if RealTargetCPU='' then
           RealTargetCPU:=GetCompiledTargetCPU;
       end;
-      HasPPUs:=false;
+      RealCompilerInPath:=FindRealCompilerInPath(TargetCPU,true);
 
       // run fpc and parse output
+      HasPPUs:=false;
       RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
                     Defines,Undefines,ExtraOptions);
       if UnitPaths<>nil then
@@ -7623,6 +7656,20 @@ begin
     CfgFiles.Free;
     OldOptions.Free;
   end;
+end;
+
+function TFPCTargetConfigCache.FindRealCompilerInPath(aTargetCPU: string;
+  ResolveLinks: boolean): string;
+begin
+  if aTargetCPU='' then
+    aTargetCPU:=GetCompiledTargetCPU;
+  Result:=GetDefaultCompilerFilename(aTargetCPU);
+  if Result='' then exit;
+  Result:=SearchFileInPath(Result,GetCurrentDirUTF8,
+    GetEnvironmentVariableUTF8('PATH'),PathSeparator,ctsfcDefault);
+  if Result='' then exit;
+  if ResolveLinks then
+    Result:=TryReadAllLinks(Result);
 end;
 
 function TFPCTargetConfigCache.GetFPCVer(out FPCVersion, FPCRelease,

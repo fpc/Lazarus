@@ -194,6 +194,7 @@ begin
   writeln('RealCompiler=',ConfigCache.RealCompiler);
   writeln('RealTargetOS=',ConfigCache.RealTargetOS);
   writeln('RealTargetCPU=',ConfigCache.RealTargetCPU);
+  writeln('RealCompilerInPATH=',ConfigCache.RealCompilerInPath);
   if ConfigCache.ConfigFiles<>nil then begin
     for i:=0 to ConfigCache.ConfigFiles.Count-1 do begin
       CfgFile:=ConfigCache.ConfigFiles[i];

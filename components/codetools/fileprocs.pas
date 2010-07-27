@@ -109,6 +109,9 @@ function FindDiskFilename(const Filename: string): string;
 {$IFDEF darwin}
 function GetDarwinSystemFilename(Filename: string): string;
 {$ENDIF}
+function ReadAllLinks(const Filename: string;
+                      ExceptionOnError: boolean): string;
+function TryReadAllLinks(const Filename: string): string;
 
 function CompareAnsiStringFilenames(Data1, data2: Pointer): integer;
 function CompareFilenameOnly(Filename: PChar; FilenameLen: integer;
@@ -752,6 +755,64 @@ begin
     end;
     StartPos:=EndPos+1;
   until StartPos>length(Result);
+end;
+
+{------------------------------------------------------------------------------
+  function ReadAllLinks(const Filename: string;
+    ExceptionOnError: boolean): string;
+ ------------------------------------------------------------------------------}
+function ReadAllLinks(const Filename: string;
+  ExceptionOnError: boolean): string;
+{$IFNDEF WINDOWS}
+var
+  LinkFilename: string;
+  AText: string;
+{$ENDIF}
+begin
+  Result:=Filename;
+  {$IFDEF WINDOWS}
+
+  {$ELSE}
+  repeat
+    LinkFilename:=FpReadLink(Result);
+    if LinkFilename='' then begin
+      AText:='"'+Filename+'"';
+      case fpGetErrno() of
+      ESysEAcces:
+        AText:='read access denied for '+AText;
+      ESysENoEnt:
+        AText:='a directory component in '+AText
+                            +' does not exist or is a dangling symlink';
+      ESysENotDir:
+        AText:='a directory component in '+AText+' is not a directory';
+      ESysENoMem:
+        AText:='insufficient memory';
+      ESysELoop:
+        AText:=AText+' has a circular symbolic link';
+      else
+        // not a symbolic link, just a regular file
+        exit;
+      end;
+      if (not ExceptionOnError) then begin
+        Result:='';
+        exit;
+      end;
+      raise EFOpenError.Create(AText);
+    end else begin
+      if not FilenameIsAbsolute(LinkFilename) then
+        Result:=ExpandFileNameUTF8(ExtractFilePath(Result)+LinkFilename)
+      else
+        Result:=LinkFilename;
+    end;
+  until false;
+  {$ENDIF}
+end;
+
+function TryReadAllLinks(const Filename: string): string;
+begin
+  Result:=ReadAllLinks(Filename,false);
+  if Result='' then
+    Result:=Filename;
 end;
 
 {$IFDEF darwin}
