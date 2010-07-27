@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit Compiler_BuildVar_Options;
+unit Compiler_BuildMacro_Options;
 
 {$mode objfpc}{$H+}
 

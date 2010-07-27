@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, StdCtrls, ExtCtrls,
-  Compiler_CondTree, Compiler_BuildVar_Options;
+  Compiler_CondTree, Compiler_BuildMacro_Options;
 
 type
 
