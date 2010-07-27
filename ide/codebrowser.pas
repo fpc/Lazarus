@@ -402,6 +402,13 @@ const
   ProgressUpdateTreeViewStart=ProgressGetViewOptionsStart+ProgressGetViewOptionsSize;
   ProgressUpdateTreeViewSize=1000;
   ProgressTotal=ProgressUpdateTreeViewStart+ProgressUpdateTreeViewSize;
+const
+  ProcDescFlags = [phpWithStart,phpWithParameterNames,
+                   phpWithVarModifiers,phpWithResultType,phpWithoutSemicolon];
+  ProcIdentifierFlags = [phpWithoutClassKeyword,phpWithParameterNames,
+                   phpWithoutSemicolon];
+  PropDescFlags = [phpWithoutClassKeyword,phpWithParameterNames,
+                   phpWithVarModifiers,phpWithResultType];
 
 function StringToCodeBrowserTextFilter(const s: string): TCodeBrowserTextFilter;
 begin
@@ -1880,12 +1887,6 @@ var
     procedure GetNodeDescription(CTNode: TCodeTreeNode;
       out Description, Identifier: string);
     const
-      ProcDescFlags = [phpWithStart,phpWithParameterNames,
-                       phpWithVarModifiers,phpWithResultType,phpWithoutSemicolon];
-      ProcIdentifierFlags = [phpWithoutClassKeyword,phpWithParameterNames,
-                       phpWithoutSemicolon];
-      PropDescFlags = [phpWithoutClassKeyword,phpWithParameterNames,
-                       phpWithVarModifiers,phpWithResultType];
       NodeFlags = [];
     var
       Inheritance: String;
@@ -2490,7 +2491,8 @@ begin
     case CTNode.Desc of
     ctnProcedure:
       begin
-        if SysUtils.CompareText(Tool.ExtractProcName(CTNode,[]),Node.Identifier)<>0
+        if SysUtils.CompareText(Tool.ExtractProcHead(CTNode,ProcIdentifierFlags),
+          Node.Identifier)<>0
         then
           exit; // source has changed
         Tool.MoveCursorToProcName(CTNode,true);
