@@ -137,7 +137,7 @@ var
   mi: MENUITEMINFO;
   tb: TBButton;
   tbbi: TBBUTTONINFO;
-  i, j, k: integer;
+  i, j, k, lIndex: integer;
   buf: array[0..255] of WideChar;
   R, BR, WR: TRect;
   LeftMenuCount: Integer = -1;
@@ -164,6 +164,12 @@ begin
 
     mbi.hwndMB := 0;
   end;}
+
+  // Remove previously installed top-level menu click handlers
+  if MenuItemsList.Find('1001', lIndex) then
+    MenuItemsList.Delete(lIndex);
+  if MenuItemsList.Find('1002', lIndex) then
+    MenuItemsList.Delete(lIndex);
 
   GetWindowRect(Wnd, BR);
 
@@ -305,6 +311,7 @@ begin
           if SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, tbbi.idCommand, LPARAM(@tbbi)) = 0 then
             DebugLn('[CeSetMenu] TB_SETBUTTONINFO failed');
 
+          // Add to the list to receive click events though WM_COMMAND
           MenuItemsList.AddObject(IntToStr(tbbi.idCommand), LCLMenu.Items.Items[j]);
 
           // Adds subitems to a top-level item
@@ -402,6 +409,9 @@ begin
         {$endif}
         if SendMessage(mbi.hwndMB, TB_INSERTBUTTON, i, LPARAM(@tb)) = 0 then
           DebugLn('TB_INSERTBUTTON failed');
+
+        // Add to the list to receive click events though WM_COMMAND
+        MenuItemsList.AddObject(IntToStr(tb.idCommand), LCLMenu.Items.Items[j]);
 
         Inc(i);
       end;
