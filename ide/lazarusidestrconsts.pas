@@ -4650,14 +4650,14 @@ resourcestring
   lisValue = 'Value:';
   lisValues = 'Values';
   lisDefaultValue = 'Default value';
-  lisBuildVariables = 'Build variables';
+  lisBuildMacros = 'Build macros';
   lisConfirmDelete = 'Confirm delete';
-  lisDeleteBuildVar = 'Delete build variable %s%s%s?';
+  lisDeleteBuildMacro = 'Delete build macro %s%s%s?';
   lisValue2 = 'Value%s';
   lisDeleteValue = 'Delete value %s%s%s';
-  lisInvalidBuildVarTheBuildVarMustBeAPascalIdentifie = 'Invalid build '
-    +'variable %s%s%s. The build variable must be a pascal identifier.';
-  lisThereIsAlreadyABuildVarWithTheName = 'There is already a build variable '
+  lisInvalidBuildMacroTheBuildMacroMustBeAPascalIdentifie = 'Invalid build '
+    +'macro %s%s%s. The build macro must be a pascal identifier.';
+  lisThereIsAlreadyABuildMacroWithTheName = 'There is already a build macro '
     +'with the name %s%s%s.';  
   lisDuplicateFoundOfValue = 'Duplicate found of value %s%s%s.';
   lisSetValue = 'Set value';

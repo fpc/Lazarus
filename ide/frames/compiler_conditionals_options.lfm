@@ -40,7 +40,7 @@ object CompOptsConditionalsFrame: TCompOptsConditionalsFrame
     Align = alTop
     ResizeAnchor = akTop
   end
-    inline BuildVariablesFrame: TCompOptBuildVarsFrame
+    inline BuildMacrosFrame: TCompOptBuildMacrosFrame
       Left = 51
       Top = 13
 Align = alClient

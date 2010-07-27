@@ -7587,7 +7587,7 @@ begin
   EnvironmentOptions.Save(false);
 
   {$IFDEF EnableBuildModes}
-  TIDEBuildVariables(Project1.CompilerOptions.BuildVariables)
+  TIDEBuildMacros(Project1.CompilerOptions.BuildMacros)
     .BuildModeGraph:=DefaultBuildModeGraph;
   {$ENDIF}
 
@@ -9791,7 +9791,7 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject B');{$ENDIF}
   // deactivate project build properties
   if Project1<>nil then
-    TIDEBuildVariables(Project1.CompilerOptions.BuildVariables).BuildModeGraph:=nil;
+    TIDEBuildMacros(Project1.CompilerOptions.BuildMacros).BuildModeGraph:=nil;
   IncreaseCompilerParseStamp;
   // close Project
   if ProjInspector<>nil then ProjInspector.LazProject:=nil;

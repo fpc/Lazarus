@@ -1,4 +1,4 @@
-object CompOptBuildVarsFrame: TCompOptBuildVarsFrame
+object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
   Left = 0
   Height = 233
   Top = 0
@@ -9,34 +9,34 @@ object CompOptBuildVarsFrame: TCompOptBuildVarsFrame
   Visible = False
   DesignLeft = 349
   DesignTop = 520
-  object BuildVarsGroupBox: TGroupBox
+  object BuildMacrosGroupBox: TGroupBox
     Left = 0
     Height = 233
     Top = 0
     Width = 492
     Align = alClient
-    Caption = 'BuildVarsGroupBox'
-    ClientHeight = 214
-    ClientWidth = 488
+    Caption = 'BuildMacrosGroupBox'
+    ClientHeight = 212
+    ClientWidth = 484
     TabOrder = 0
-    object BuildVarsTreeView: TTreeView
+    object BuildMacrosTreeView: TTreeView
       Left = 0
-      Height = 214
+      Height = 212
       Top = 0
-      Width = 488
+      Width = 484
       Align = alClient
       DefaultItemHeight = 19
-      PopupMenu = BuildVarsTVPopupMenu
+      PopupMenu = BuildMacrosTVPopupMenu
       RightClickSelect = True
       TabOrder = 0
-      OnEdited = BuildVarsTreeViewEdited
-      OnEditing = BuildVarsTreeViewEditing
-      OnStartDrag = BuildVarsTreeViewStartDrag
+      OnEdited = BuildMacrosTreeViewEdited
+      OnEditing = BuildMacrosTreeViewEditing
+      OnStartDrag = BuildMacrosTreeViewStartDrag
       Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     end
   end
-  object BuildVarsTVPopupMenu: TPopupMenu
-    OnPopup = BuildVarsTVPopupMenuPopup
+  object BuildMacrosTVPopupMenu: TPopupMenu
+    OnPopup = BuildMacrosTVPopupMenuPopup
     left = 99
     top = 77
   end

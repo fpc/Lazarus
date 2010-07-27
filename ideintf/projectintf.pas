@@ -158,15 +158,14 @@ type
     property Root: TCompOptCondNode read FRoot write FRoot;
   end;
 
-  { TLazBuildVariable
-    Build variables are like macros. Every package/project can define build
-    variables. A variable has a name, a description, a list of possible values
-    and a default value. The default value can be an expression using other
-    build variables.
-    The IDE defines various variables like TargetOS and TargetCPU.
-    The LCL package defines the variable LCLWidgetType. }
+  { TLazBuildMacro
+    Every package/project can define build macros. A build macro has a name,
+    a description, a list of possible values and a default value.
+    The default value can be an expression using other build macros.
+    The IDE defines basic macros like TargetOS and TargetCPU.
+    The LCL package defines the macro LCLWidgetType. }
 
-  TLazBuildVariable = class
+  TLazBuildMacro = class
   protected
     FDefaultValue: TLazCompOptConditionals;
     FIdentifier: string;
@@ -178,7 +177,7 @@ type
     procedure SetValueDescriptions(const AValue: TStrings); virtual; abstract;
     procedure SetValues(const AValue: TStrings); virtual; abstract;
   public
-    procedure Assign(Source: TLazBuildVariable); virtual; abstract;
+    procedure Assign(Source: TLazBuildMacro); virtual; abstract;
     procedure SetDefaultValue(const AValue: string); virtual; abstract;
     property Identifier: string read FIdentifier write SetIdentifier;
     property Description: string read FDescription write SetDescription;
@@ -187,25 +186,25 @@ type
     property DefaultValue: TLazCompOptConditionals read FDefaultValue;
   end;
 
-  { TLazBuildVariables
-    The list of build variables of a package/project.
+  { TLazBuildMacros
+    The list of build macros of a package/project.
     They are stored in the compiler options. }
 
-  TLazBuildVariables = class
+  TLazBuildMacros = class
   private
     FOwner: TObject;
   protected
-    function GetItems(Index: integer): TLazBuildVariable; virtual; abstract;
+    function GetItems(Index: integer): TLazBuildMacro; virtual; abstract;
   public
     constructor Create(TheOwner: TObject); virtual;
-    function Add(Identifier: string): TLazBuildVariable; virtual; abstract;
+    function Add(Identifier: string): TLazBuildMacro; virtual; abstract;
     procedure Delete(Index: integer); virtual; abstract;
     procedure Move(OldIndex, NewIndex: integer); virtual; abstract;
     function IndexOfIdentifier(Identifier: string): integer; virtual; abstract;
-    function VarWithIdentifier(Identifier: string): TLazBuildVariable; virtual; abstract;
+    function VarWithIdentifier(Identifier: string): TLazBuildMacro; virtual; abstract;
     function Count: integer; virtual; abstract;
     procedure Clear; virtual; abstract;
-    property Items[Index: integer]: TLazBuildVariable read GetItems; default;
+    property Items[Index: integer]: TLazBuildMacro read GetItems; default;
     property Owner: TObject read FOwner;
   end;
 
@@ -246,7 +245,7 @@ type
 
     // conditionals / build modes
     FConditionals: TLazCompOptConditionals;
-    fBuildVariables: TLazBuildVariables;
+    fBuildMacros: TLazBuildMacros;
     fLCLWidgetType: string;
 
     // Parsing:
@@ -360,7 +359,7 @@ type
 
     // conditional / build modes
     property Conditionals: TLazCompOptConditionals read FConditionals;
-    property BuildVariables: TLazBuildVariables read fBuildVariables;
+    property BuildMacros: TLazBuildMacros read fBuildMacros;
     // Beware: eventually LCLWidgetType will be replaced by a more generic solution
     property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
 
@@ -1700,9 +1699,9 @@ begin
   inherited Destroy;
 end;
 
-{ TLazBuildVariables }
+{ TLazBuildMacros }
 
-constructor TLazBuildVariables.Create(TheOwner: TObject);
+constructor TLazBuildMacros.Create(TheOwner: TObject);
 begin
   FOwner:=TheOwner
 end;

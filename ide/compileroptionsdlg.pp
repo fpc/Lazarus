@@ -183,7 +183,7 @@ type
     ConditionalPage: TPage;
     ConditionalOptionsFrame: TCompOptsCondTreeFrame;
     ConditionalsGroupBox: TGroupBox;
-    BuildVarsFrame: TCompOptBuildVarsFrame;
+    BuildMacrosFrame: TCompOptBuildMacrosFrame;
 
     { Inherited Options }
     InheritedPage: TPage;
@@ -788,7 +788,7 @@ begin
     // conditional
     {$IFDEF EnableBuildModes}
     ConditionalOptionsFrame.Conditionals:=Options.Conditionals as TCompOptConditionals;
-    BuildVarsFrame.BuildVariables:=Options.BuildVariables as TIDEBuildVariables;
+    BuildMacrosFrame.BuildMacros:=Options.BuildMacros as TIDEBuildMacros;
     {$ENDIF}
 
     // inherited tab

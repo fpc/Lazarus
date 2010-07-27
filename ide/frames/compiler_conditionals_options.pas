@@ -16,8 +16,13 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
+
+  Author: Mattias Gaertner
+
+  Abstract:
+    Frame for compiler options to edit build macros and conditionals.
 }
-unit compiler_conditionals_options;
+unit Compiler_Conditionals_Options;
 
 {$mode objfpc}
 
@@ -32,8 +37,8 @@ type
   { TCompOptsConditionalsFrame }
 
   TCompOptsConditionalsFrame = class(TFrame)
-    BuildVariablesFrame: TCompOptBuildVarsFrame;
-    BuildVarsGroupBox: TGroupBox;
+    BuildMacrosFrame: TCompOptBuildMacrosFrame;
+    BuildMacrosGroupBox: TGroupBox;
     ConditionalsGroupBox: TGroupBox;
     ConditionalsSplitter: TSplitter;
     ConditionalsTreeFrame: TCompOptsCondTreeFrame;

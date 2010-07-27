@@ -28,7 +28,7 @@
 
   Abstract:
     This unit contains the implementation of the conditional compiler options
-    that depend on build variables/modes and environment.
+    that depend on build macros/modes and environment.
 }
 unit CompOptsModes;
 

@@ -26,88 +26,89 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, StdCtrls,
   Grids, Buttons, ExtCtrls, Dialogs, ComCtrls, Menus, AvgLvlTree,
-  IDEImagesIntf, ProjectIntf, CompilerOptions,
+  IDEImagesIntf, ProjectIntf, PackageIntf, CompilerOptions,
   Compiler_CondTree, LazarusIDEStrConsts, CompOptsModes;
 
 type
   TCBMNodeType = (
     cbmntNone,
-    cbmntBuildVar,
+    cbmntBuildMacro,
     cbmntValues,
     cbmntValue,
     cbmntDefaultValue,
     cbmntDefaultValueEditor
     );
 
-  { TCompOptBuildVarsFrame }
+  { TCompOptBuildMacrosFrame }
 
-  TCompOptBuildVarsFrame = class(TFrame)
-    BuildVarsGroupBox: TGroupBox;
-    BuildVarsTreeView: TTreeView;
-    BuildVarsTVPopupMenu: TPopupMenu;
-    procedure BuildVarsTreeViewEdited(Sender: TObject; Node: TTreeNode;
+  TCompOptBuildMacrosFrame = class(TFrame)
+    BuildMacrosGroupBox: TGroupBox;
+    BuildMacrosTreeView: TTreeView;
+    BuildMacrosTVPopupMenu: TPopupMenu;
+    procedure BuildMacrosTreeViewEdited(Sender: TObject; Node: TTreeNode;
       var S: string);
-    procedure BuildVarsTreeViewEditing(Sender: TObject; Node: TTreeNode;
+    procedure BuildMacrosTreeViewEditing(Sender: TObject; Node: TTreeNode;
       var AllowEdit: Boolean);
-    procedure BuildVarsTreeViewStartDrag(Sender: TObject;
+    procedure BuildMacrosTreeViewStartDrag(Sender: TObject;
       var DragObject: TDragObject);
-    procedure BuildVarsTVPopupMenuPopup(Sender: TObject);
-    procedure DeleteBuildVarClick(Sender: TObject);
-    procedure NewBuildVarClick(Sender: TObject);
+    procedure BuildMacrosTVPopupMenuPopup(Sender: TObject);
+    procedure DeleteBuildMacroClick(Sender: TObject);
+    procedure NewBuildMacroClick(Sender: TObject);
     procedure NewValueClick(Sender: TObject);
     procedure DeleteValueClick(Sender: TObject);
   private
-    FBuildVariables: TIDEBuildVariables;
+    FBuildMacros: TIDEBuildMacros;
     fVarImgID: LongInt;
     fValuesImgID: LongInt;
     fValueImgID: LongInt;
     fDefValueImgID: LongInt;
     FEditors: TFPList;// list of TCompOptsExprEditor
-    procedure SetBuildProperties(const AValue: TIDEBuildVariables);
+    procedure SetBuildMacros(const AValue: TIDEBuildMacros);
     procedure RebuildTreeView;
-    procedure TreeViewAddBuildVar(BuildProperty: TLazBuildVariable);
+    procedure TreeViewAddBuildMacro(BuildProperty: TLazBuildMacro);
     procedure TreeViewAddValue(ValuesTVNode: TTreeNode; aValue: string);
-    function GetNodeInfo(Node: TTreeNode; out BuildProperty: TLazBuildVariable): TCBMNodeType;
-    function GetSelectedNode(out BuildProperty: TLazBuildVariable;
+    function GetNodeInfo(Node: TTreeNode; out BuildProperty: TLazBuildMacro): TCBMNodeType;
+    function GetSelectedNode(out BuildProperty: TLazBuildMacro;
                              out NodeType: TCBMNodeType): TTreeNode;
-    function GetBuildVarTVNode(BuildProperty: TLazBuildVariable): TTreeNode;
-    function GetValuesTVNode(BuildProperty: TLazBuildVariable): TTreeNode;
+    function GetBuildMacroTVNode(BuildProperty: TLazBuildMacro): TTreeNode;
+    function GetValuesTVNode(BuildProperty: TLazBuildMacro): TTreeNode;
     procedure FreeEditors;
-    function GetEditor(BuildProperty: TLazBuildVariable): TCompOptsExprEditor;
+    function GetEditor(BuildProperty: TLazBuildMacro): TCompOptsExprEditor;
+    function GetVariablePrefix: string;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    property BuildVariables: TIDEBuildVariables read FBuildVariables write SetBuildProperties;
+    property BuildMacros: TIDEBuildMacros read FBuildMacros write SetBuildMacros;
   end;
 
 implementation
 
 {$R *.lfm}
 
-{ TCompOptBuildVarsFrame }
+{ TCompOptBuildMacrosFrame }
 
-procedure TCompOptBuildVarsFrame.NewBuildVarClick(Sender: TObject);
+procedure TCompOptBuildMacrosFrame.NewBuildMacroClick(Sender: TObject);
 var
   NewIdentifier: String;
-  NewBuildVar: TLazBuildVariable;
+  NewBuildMacro: TLazBuildMacro;
   SetResultNode: TCompOptCondNode;
 begin
-  NewIdentifier:=DefaultBuildModeGraph.GetUniqueVarName(BuildVariables);
-  NewBuildVar:=BuildVariables.Add(NewIdentifier);
+  NewIdentifier:=DefaultBuildModeGraph.GetUniqueVarName(GetVariablePrefix,BuildMacros);
+  NewBuildMacro:=BuildMacros.Add(NewIdentifier);
   // add a node
-  SetResultNode:=TCompOptCondNode.Create(NewBuildVar.DefaultValue);
+  SetResultNode:=TCompOptCondNode.Create(NewBuildMacro.DefaultValue);
   SetResultNode.NodeType:=cocntSetValue;
   SetResultNode.ValueType:=cocvtResult;
-  NewBuildVar.DefaultValue.Root.AddLast(SetResultNode);
+  NewBuildMacro.DefaultValue.Root.AddLast(SetResultNode);
   // add to TreeView
-  BuildVarsTreeView.BeginUpdate;
-  TreeViewAddBuildVar(NewBuildVar);
-  BuildVarsTreeView.EndUpdate;
+  BuildMacrosTreeView.BeginUpdate;
+  TreeViewAddBuildMacro(NewBuildMacro);
+  BuildMacrosTreeView.EndUpdate;
 end;
 
-procedure TCompOptBuildVarsFrame.NewValueClick(Sender: TObject);
+procedure TCompOptBuildMacrosFrame.NewValueClick(Sender: TObject);
 var
-  BuildProperty: TLazBuildVariable;
+  BuildProperty: TLazBuildMacro;
   NodeType: TCBMNodeType;
   i: Integer;
   NewValueStr: String;
@@ -122,16 +123,16 @@ begin
     inc(i);
   until false;
   BuildProperty.Values.Add(NewValueStr);
-  BuildVarsTreeView.BeginUpdate;
+  BuildMacrosTreeView.BeginUpdate;
   ValuesTVNode:=GetValuesTVNode(BuildProperty);
   TreeViewAddValue(ValuesTVNode,NewValueStr);
   ValuesTVNode.Expand(true);
-  BuildVarsTreeView.EndUpdate;
+  BuildMacrosTreeView.EndUpdate;
 end;
 
-procedure TCompOptBuildVarsFrame.DeleteValueClick(Sender: TObject);
+procedure TCompOptBuildMacrosFrame.DeleteValueClick(Sender: TObject);
 var
-  BuildProperty: TLazBuildVariable;
+  BuildProperty: TLazBuildMacro;
   NodeType: TCBMNodeType;
   SelTVNode: TTreeNode;
   aValue: String;
@@ -146,38 +147,38 @@ begin
   then exit;
   i:=BuildProperty.Values.IndexOf(aValue);
   if i>=0 then BuildProperty.Values.Delete(i);
-  BuildVarsTreeView.BeginUpdate;
+  BuildMacrosTreeView.BeginUpdate;
   SelTVNode.Delete;
-  BuildVarsTreeView.EndUpdate;
+  BuildMacrosTreeView.EndUpdate;
 end;
 
-procedure TCompOptBuildVarsFrame.DeleteBuildVarClick(Sender: TObject);
+procedure TCompOptBuildMacrosFrame.DeleteBuildMacroClick(Sender: TObject);
 var
-  BuildProperty: TIDEBuildVariable;
+  aBuildMacro: TIDEBuildMacro;
   SelTVNode: TTreeNode;
   NodeType: TCBMNodeType;
   i: LongInt;
   Editor: TCompOptsExprEditor;
 begin
-  SelTVNode:=GetSelectedNode(TLazBuildVariable(BuildProperty),NodeType);
-  if BuildProperty=nil then exit;
+  SelTVNode:=GetSelectedNode(TLazBuildMacro(aBuildMacro),NodeType);
+  if aBuildMacro=nil then exit;
   if MessageDlg(lisConfirmDelete,
-    Format(lisDeleteBuildVar, ['"', BuildProperty.Identifier, '"']),
+    Format(lisDeleteBuildMacro, ['"', aBuildMacro.Identifier, '"']),
     mtConfirmation,[mbYes,mbCancel],0)<>mrYes
   then exit;
-  i:=BuildVariables.IndexOfIdentifier(BuildProperty.Identifier);
-  Editor:=GetEditor(BuildProperty);
+  i:=BuildMacros.IndexOfIdentifier(aBuildMacro.Identifier);
+  Editor:=GetEditor(aBuildMacro);
   FEditors.Remove(Editor);
   Editor.Free;
-  BuildVariables.Delete(i);
-  BuildVarsTreeView.BeginUpdate;
+  BuildMacros.Delete(i);
+  BuildMacrosTreeView.BeginUpdate;
   SelTVNode.Delete;
-  BuildVarsTreeView.EndUpdate;
+  BuildMacrosTreeView.EndUpdate;
 end;
 
-procedure TCompOptBuildVarsFrame.BuildVarsTVPopupMenuPopup(Sender: TObject);
+procedure TCompOptBuildMacrosFrame.BuildMacrosTVPopupMenuPopup(Sender: TObject);
 var
-  BuildProperty: TLazBuildVariable;
+  BuildProperty: TLazBuildMacro;
   NodeType: TCBMNodeType;
   Editor: TCompOptsExprEditor;
 
@@ -186,79 +187,79 @@ var
     Result:=TMenuItem.Create(Self);
     Result.Caption:=aCaption;
     Result.OnClick:=OnClickEvent;
-    BuildVarsTVPopupMenu.Items.Add(Result);
+    BuildMacrosTVPopupMenu.Items.Add(Result);
   end;
 
   function AddSeparator: TMenuItem;
   begin
     Result:=nil;
-    if BuildVarsTVPopupMenu.Items.Count=0 then exit;
+    if BuildMacrosTVPopupMenu.Items.Count=0 then exit;
     Result:=TMenuItem.Create(Self);
     Result.Caption:='-';
-    BuildVarsTVPopupMenu.Items.Add(Result);
+    BuildMacrosTVPopupMenu.Items.Add(Result);
   end;
 
 begin
-  BuildVarsTVPopupMenu.Items.Clear;
+  BuildMacrosTVPopupMenu.Items.Clear;
   GetSelectedNode(BuildProperty,NodeType);
 
-  if NodeType in [cbmntBuildVar,cbmntValues,cbmntValue] then
+  if NodeType in [cbmntBuildMacro,cbmntValues,cbmntValue] then
     Add('New value',@NewValueClick);
   if NodeType in [cbmntValue] then
     Add('Delete value ...',@DeleteValueClick);
   AddSeparator;
-  Add('New build variable',@NewBuildVarClick);
-  if NodeType in [cbmntBuildVar] then
-    Add('Delete build variable ...',@DeleteBuildVarClick);
+  Add('New build macro',@NewBuildMacroClick);
+  if NodeType in [cbmntBuildMacro] then
+    Add('Delete build macro ...',@DeleteBuildMacroClick);
   if NodeType in [cbmntDefaultValue,cbmntDefaultValueEditor] then begin
     Editor:=GetEditor(BuildProperty);
-    Editor.FillPopupMenu(BuildVarsTVPopupMenu);
+    Editor.FillPopupMenu(BuildMacrosTVPopupMenu);
   end;
 end;
 
-procedure TCompOptBuildVarsFrame.BuildVarsTreeViewEditing(Sender: TObject;
+procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewEditing(Sender: TObject;
   Node: TTreeNode; var AllowEdit: Boolean);
 var
-  BuildProperty: TLazBuildVariable;
+  BuildProperty: TLazBuildMacro;
   NodeType: TCBMNodeType;
 begin
   NodeType:=GetNodeInfo(Node,BuildProperty);
-  AllowEdit:=NodeType in [cbmntBuildVar,cbmntValue];
+  AllowEdit:=NodeType in [cbmntBuildMacro,cbmntValue];
 end;
 
-procedure TCompOptBuildVarsFrame.BuildVarsTreeViewStartDrag(Sender: TObject;
+procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewStartDrag(Sender: TObject;
   var DragObject: TDragObject);
 begin
 
 end;
 
-procedure TCompOptBuildVarsFrame.BuildVarsTreeViewEdited(Sender: TObject;
+procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewEdited(Sender: TObject;
   Node: TTreeNode; var S: string);
 var
-  BuildProperty: TLazBuildVariable;
+  BuildProperty: TLazBuildMacro;
   NodeType: TCBMNodeType;
-  ConflictBuildProperty: TIDEBuildVariable;
+  ConflictBuildProperty: TIDEBuildMacro;
   Index: LongInt;
 begin
   NodeType:=GetNodeInfo(Node,BuildProperty);
   case NodeType of
 
-  cbmntBuildVar:
+  cbmntBuildMacro:
     if S<>BuildProperty.Identifier then begin
-      // rename build variable
+      // rename build macro
       if (S='') or (not IsValidIdent(S)) then begin
         MessageDlg(lisCCOErrorCaption,
-          Format(lisInvalidBuildVarTheBuildVarMustBeAPascalIdentifie, ['"',
+          Format(lisInvalidBuildMacroTheBuildMacroMustBeAPascalIdentifie, ['"',
             S, '"']),
           mtError,[mbCancel],0);
         S:=BuildProperty.Identifier;
         exit;
       end;
-      ConflictBuildProperty:=BuildVariables.VarWithIdentifier(S);
+      ConflictBuildProperty:=BuildMacros.VarWithIdentifier(S);
       if (ConflictBuildProperty<>nil) and (ConflictBuildProperty<>BuildProperty) then
       begin
         MessageDlg(lisCCOErrorCaption,
-          Format(lisThereIsAlreadyABuildVarWithTheName, ['"', S, '"']),
+          Format(lisThereIsAlreadyABuildMacroWithTheName, ['"', S, '"']),
           mtError,[mbCancel],0);
         S:=BuildProperty.Identifier;
         exit;
@@ -283,31 +284,31 @@ begin
   end;
 end;
 
-procedure TCompOptBuildVarsFrame.SetBuildProperties(
-  const AValue: TIDEBuildVariables);
+procedure TCompOptBuildMacrosFrame.SetBuildMacros(
+  const AValue: TIDEBuildMacros);
 begin
-  if FBuildVariables=AValue then exit;
-  FBuildVariables:=AValue;
+  if FBuildMacros=AValue then exit;
+  FBuildMacros:=AValue;
   RebuildTreeView;
 end;
 
-procedure TCompOptBuildVarsFrame.RebuildTreeView;
+procedure TCompOptBuildMacrosFrame.RebuildTreeView;
 var
   i: Integer;
 begin
-  BuildVarsTreeView.BeginUpdate;
-  BuildVarsTreeView.Items.Clear;
+  BuildMacrosTreeView.BeginUpdate;
+  BuildMacrosTreeView.Items.Clear;
   FreeEditors;
-  if BuildVariables<>nil then begin
-    // first level: build variables
-    for i:=0 to BuildVariables.Count-1 do
-      TreeViewAddBuildVar(BuildVariables.Items[i]);
+  if BuildMacros<>nil then begin
+    // first level: build macros
+    for i:=0 to BuildMacros.Count-1 do
+      TreeViewAddBuildMacro(BuildMacros.Items[i]);
   end;
-  BuildVarsTreeView.EndUpdate;
+  BuildMacrosTreeView.EndUpdate;
 end;
 
-procedure TCompOptBuildVarsFrame.TreeViewAddBuildVar(
-  BuildProperty: TLazBuildVariable);
+procedure TCompOptBuildMacrosFrame.TreeViewAddBuildMacro(
+  BuildProperty: TLazBuildMacro);
 var
   TVNode: TTreeNode;
   ValuesTVNode: TTreeNode;
@@ -316,14 +317,14 @@ var
   DefValueTVNode: TTreeNode;
   Editor: TCompOptsExprEditor;
 begin
-  // create node for the build variable
-  TVNode:=BuildVarsTreeView.Items.AddObject(nil,BuildProperty.Identifier,BuildProperty);
+  // create node for the build macro
+  TVNode:=BuildMacrosTreeView.Items.AddObject(nil,BuildProperty.Identifier,BuildProperty);
   TVNode.ImageIndex:=fVarImgID;
   TVNode.SelectedIndex:=TVNode.ImageIndex;
   // second level
   begin
     // parent node for values
-    ValuesTVNode:=BuildVarsTreeView.Items.AddChild(TVNode, lisValues);
+    ValuesTVNode:=BuildMacrosTreeView.Items.AddChild(TVNode, lisValues);
     ValuesTVNode.ImageIndex:=fValuesImgID;
     ValuesTVNode.SelectedIndex:=ValuesTVNode.ImageIndex;
     // a node for each value
@@ -331,7 +332,7 @@ begin
     for i:=0 to Values.Count-1 do
       TreeViewAddValue(ValuesTVNode,Values[i]);
     // a node for the default value
-    DefValueTVNode:=BuildVarsTreeView.Items.AddChild(TVNode,
+    DefValueTVNode:=BuildMacrosTreeView.Items.AddChild(TVNode,
       lisDefaultValue);
     DefValueTVNode.ImageIndex:=fDefValueImgID;
     DefValueTVNode.SelectedIndex:=DefValueTVNode.ImageIndex;
@@ -340,25 +341,25 @@ begin
     Editor.DefaultNodeType:=cocntSetValue;
     Editor.DefaultValueType:=cocvtResult;
     FEditors.Add(Editor);
-    Editor.Setup(BuildVarsTreeView,DefValueTVNode,
+    Editor.Setup(BuildMacrosTreeView,DefValueTVNode,
                  BuildProperty.DefaultValue as TCompOptConditionals,[cocvtResult]);
   end;
-  //DebugLn(['TCompOptBuildVarsFrame.TreeViewAddBuildVar ',TVNode.Text]);
+  //DebugLn(['TCompOptBuildMacrosFrame.TreeViewAddBuildMacro ',TVNode.Text]);
   TVNode.Expand(true);
 end;
 
-procedure TCompOptBuildVarsFrame.TreeViewAddValue(ValuesTVNode: TTreeNode;
+procedure TCompOptBuildMacrosFrame.TreeViewAddValue(ValuesTVNode: TTreeNode;
   aValue: string);
 var
   ValueTVNode: TTreeNode;
 begin
-  ValueTVNode:=BuildVarsTreeView.Items.AddChild(ValuesTVNode,aValue);
+  ValueTVNode:=BuildMacrosTreeView.Items.AddChild(ValuesTVNode,aValue);
   ValueTVNode.ImageIndex:=fValueImgID;
   ValueTVNode.SelectedIndex:=ValueTVNode.ImageIndex;
 end;
 
-function TCompOptBuildVarsFrame.GetNodeInfo(Node: TTreeNode; out
-  BuildProperty: TLazBuildVariable): TCBMNodeType;
+function TCompOptBuildMacrosFrame.GetNodeInfo(Node: TTreeNode; out
+  BuildProperty: TLazBuildMacro): TCBMNodeType;
 
   function GetNodeType(CurNode: TTreeNode): TCBMNodeType;
   var
@@ -366,13 +367,13 @@ function TCompOptBuildVarsFrame.GetNodeInfo(Node: TTreeNode; out
   begin
     if CurNode=nil then
       Result:=cbmntNone
-    else if TObject(CurNode.Data) is TLazBuildVariable then begin
-      BuildProperty:=TLazBuildVariable(CurNode.Data);
-      Result:=cbmntBuildVar;
+    else if TObject(CurNode.Data) is TLazBuildMacro then begin
+      BuildProperty:=TLazBuildMacro(CurNode.Data);
+      Result:=cbmntBuildMacro;
     end else begin
       ParentType:=GetNodeType(CurNode.Parent);
       case ParentType of
-      cbmntBuildVar:
+      cbmntBuildMacro:
         if CurNode.Text=lisValues then
           Result:=cbmntValues
         else if CurNode.Text=lisDefaultValue then
@@ -390,34 +391,34 @@ begin
   Result:=GetNodeType(Node);
 end;
 
-function TCompOptBuildVarsFrame.GetSelectedNode(out
-  BuildProperty: TLazBuildVariable; out NodeType: TCBMNodeType): TTreeNode;
+function TCompOptBuildMacrosFrame.GetSelectedNode(out
+  BuildProperty: TLazBuildMacro; out NodeType: TCBMNodeType): TTreeNode;
 begin
-  Result:=BuildVarsTreeView.Selected;
+  Result:=BuildMacrosTreeView.Selected;
   NodeType:=GetNodeInfo(Result,BuildProperty);
 end;
 
-function TCompOptBuildVarsFrame.GetBuildVarTVNode(BuildProperty: TLazBuildVariable
+function TCompOptBuildMacrosFrame.GetBuildMacroTVNode(BuildProperty: TLazBuildMacro
   ): TTreeNode;
 begin
-  Result:=BuildVarsTreeView.Items.GetFirstNode;
+  Result:=BuildMacrosTreeView.Items.GetFirstNode;
   while (Result<>nil) and (TObject(Result.Data)<>BuildProperty) do
     Result:=Result.GetNextSibling;
 end;
 
-function TCompOptBuildVarsFrame.GetValuesTVNode(BuildProperty: TLazBuildVariable
+function TCompOptBuildMacrosFrame.GetValuesTVNode(BuildProperty: TLazBuildMacro
   ): TTreeNode;
 var
-  BuildVarTVNode: TTreeNode;
+  BuildMacroTVNode: TTreeNode;
 begin
-  BuildVarTVNode:=GetBuildVarTVNode(BuildProperty);
-  if (BuildVarTVNode<>nil) then
-    Result:=BuildVarTVNode.GetFirstChild
+  BuildMacroTVNode:=GetBuildMacroTVNode(BuildProperty);
+  if (BuildMacroTVNode<>nil) then
+    Result:=BuildMacroTVNode.GetFirstChild
   else
     Result:=nil;
 end;
 
-procedure TCompOptBuildVarsFrame.FreeEditors;
+procedure TCompOptBuildMacrosFrame.FreeEditors;
 var
   i: Integer;
 begin
@@ -426,7 +427,7 @@ begin
   FEditors.Clear;
 end;
 
-function TCompOptBuildVarsFrame.GetEditor(BuildProperty: TLazBuildVariable
+function TCompOptBuildMacrosFrame.GetEditor(BuildProperty: TLazBuildMacro
   ): TCompOptsExprEditor;
 var
   i: Integer;
@@ -438,20 +439,28 @@ begin
   Result:=nil;
 end;
 
-constructor TCompOptBuildVarsFrame.Create(TheOwner: TComponent);
+function TCompOptBuildMacrosFrame.GetVariablePrefix: string;
+begin
+  Result:='BuildMacro';
+  if (BuildMacros=nil) or (BuildMacros.Owner=nil) then exit;
+  if BuildMacros.Owner is TIDEPackage then
+    Result:=TIDEPackage(BuildMacros.Owner).Name+'_macro';
+end;
+
+constructor TCompOptBuildMacrosFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 
   FEditors:=TFPList.Create;
-  BuildVarsTreeView.Images := IDEImages.Images_24;
+  BuildMacrosTreeView.Images := IDEImages.Images_24;
   fVarImgID:=IDEImages.LoadImage(24,'da_define');
   fValueImgID:=IDEImages.LoadImage(24,'da_define');
   fDefValueImgID:=IDEImages.LoadImage(24,'da_define');
 
-  BuildVarsGroupBox.Caption:=lisBuildVariables;
+  BuildMacrosGroupBox.Caption:=lisBuildMacros;
 end;
 
-destructor TCompOptBuildVarsFrame.Destroy;
+destructor TCompOptBuildMacrosFrame.Destroy;
 begin
   FreeEditors;
   FreeAndNil(FEditors);

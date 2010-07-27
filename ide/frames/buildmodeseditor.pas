@@ -72,8 +72,8 @@ type
     procedure UpdateIndexInGroup(aRow: integer);
     procedure UpdateTypePickList;
     procedure UpdateValuePickList;
-    procedure FindBuildVariable(const Identifier: string;
-      out Vars: TLazBuildVariables; out aVariable: TLazBuildVariable);
+    procedure FindBuildMacro(const Identifier: string;
+      out Vars: TLazBuildMacros; out aMacro: TLazBuildMacro);
     function SelectCell(aCol, aRow: Integer): boolean; override;
     procedure BuildModesGridEditButtonClick(Sender: TObject);
     procedure GetCheckBoxState(const aCol, aRow: Integer;
@@ -286,14 +286,14 @@ procedure TBuildModesGrid.UpdateTypePickList;
 var
   Identifiers: TStringToStringTree;
 
-  procedure AddVar(V: TLazBuildVariable);
+  procedure AddVar(V: TLazBuildMacro);
   begin
     if (V.Identifier='') or (not IsValidIdent(V.Identifier)) then exit;
     if Identifiers.Contains(V.Identifier) then exit;
     Identifiers[V.Identifier]:='';
   end;
 
-  procedure AddVars(Vars: TLazBuildVariables);
+  procedure AddVars(Vars: TLazBuildMacros);
   var
     i: Integer;
   begin
@@ -317,10 +317,10 @@ begin
     Identifiers['TargetOS']:='';
     Identifiers['TargetCPU']:='';
     // add project variable names
-    AddVars(Project1.CompilerOptions.BuildVariables);
+    AddVars(Project1.CompilerOptions.BuildMacros);
     // add package variable names
     for i:=0 to PackageGraph.Count-1 do
-      AddVars(PackageGraph.Packages[i].CompilerOptions.BuildVariables);
+      AddVars(PackageGraph.Packages[i].CompilerOptions.BuildMacros);
 
     sl:=TStringList.Create;
     Node:=Identifiers.Tree.FindLowest;
@@ -344,8 +344,8 @@ var
   ValueCol: Integer;
   Identifier: String;
   i: integer;
-  Vars: TLazBuildVariables;
-  aVariable: TLazBuildVariable;
+  Vars: TLazBuildMacros;
+  aVariable: TLazBuildMacro;
 begin
   ValueCol:=GetTypeCol+1;
   if ValueCol>=Columns.Count then exit;
@@ -354,7 +354,7 @@ begin
   try
     if (CurModeRow<>nil) and (CurModeRow.Flag<>nil) then begin
       Identifier:=CurModeRow.Flag.Variable;
-      // check standard variables
+      // check standard macros
       if SysUtils.CompareText(Identifier,'TargetOS')=0 then begin
         for i:=low(FPCOperatingSystemNames) to high(FPCOperatingSystemNames) do
           sl.Add(FPCOperatingSystemNames[i]);
@@ -364,8 +364,8 @@ begin
           sl.Add(FPCProcessorNames[i]);
       end
       else begin
-        // search build variable
-        FindBuildVariable(Identifier,Vars,aVariable);
+        // search build macro
+        FindBuildMacro(Identifier,Vars,aVariable);
         if aVariable<>nil then
           sl.Assign(aVariable.Values);
       end;
@@ -378,20 +378,20 @@ begin
   end;
 end;
 
-procedure TBuildModesGrid.FindBuildVariable(const Identifier: string; out
-  Vars: TLazBuildVariables; out aVariable: TLazBuildVariable);
+procedure TBuildModesGrid.FindBuildMacro(const Identifier: string; out
+  Vars: TLazBuildMacros; out aMacro: TLazBuildMacro);
 
-  function CheckVars(CurVars: TLazBuildVariables): boolean;
+  function CheckMacros(CurMacros: TLazBuildMacros): boolean;
   var
-    CurVar: TLazBuildVariable;
+    CurVar: TLazBuildMacro;
     i: Integer;
   begin
-    for i:=0 to CurVars.Count-1 do begin
-      CurVar:=CurVars[i];
+    for i:=0 to CurMacros.Count-1 do begin
+      CurVar:=CurMacros[i];
       if SysUtils.CompareText(Identifier,CurVar.Identifier)=0 then
       begin
-        Vars:=CurVars;
-        aVariable:=CurVar;
+        Vars:=CurMacros;
+        aMacro:=CurVar;
         exit(true);
       end;
     end;
@@ -402,14 +402,14 @@ var
   i: Integer;
 begin
   Vars:=nil;
-  aVariable:=nil;
+  aMacro:=nil;
 
   // check project variables
-  if CheckVars(Project1.CompilerOptions.BuildVariables) then
+  if CheckMacros(Project1.CompilerOptions.BuildMacros) then
     exit;
   // check package variables
   for i:=0 to PackageGraph.Count-1 do
-    if CheckVars(PackageGraph.Packages[i].CompilerOptions.BuildVariables) then
+    if CheckMacros(PackageGraph.Packages[i].CompilerOptions.BuildMacros) then
       exit;
 end;
 
