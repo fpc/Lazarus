@@ -3022,7 +3022,6 @@ end;
 function TSynPasSyn.FoldEndLine(ALineIndex, FoldIndex: Integer): integer;
 var
   lvl, cnt, atype : Integer;
-  e, m: Integer;
   node: TSynFoldNodeInfo;
 begin
   node := GetFoldNodeInfo(ALineIndex, FoldIndex, [sfaOpen, sfaFold]);
