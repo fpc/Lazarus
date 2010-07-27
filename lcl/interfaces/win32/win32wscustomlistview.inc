@@ -673,6 +673,9 @@ begin
   {$else}
     ListView_SetItemText(ALV.Handle, AIndex, ASubIndex, PChar(AText));
   {$endif}
+  if ALV.Column[ASubIndex].AutoSize then begin
+    ListView_SetColumnWidth(ALV.Handle, ASubIndex, LVSCW_AUTOSIZE);
+  end;
 end;
 
 class procedure TWin32WSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);

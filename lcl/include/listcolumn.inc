@@ -94,7 +94,11 @@ begin
   WSC.ColumnSetCaption(LV, Index, Self, FCaption);
   WSC.ColumnSetMaxWidth(LV, Index, Self, FMaxWidth);
   WSC.ColumnSetMinWidth(LV, Index, Self, FMinWidth);
-  WSC.ColumnSetWidth(LV, Index, Self, FWidth);
+  if FAutoSize then begin
+    WSC.ColumnSetAutosize(LV, Index, Self, FAutosize);
+  end else begin
+    WSC.ColumnSetWidth(LV, Index, Self, FWidth);
+  end;
   WSC.ColumnSetImage(LV, Index, Self, FImageIndex);
   WSC.ColumnSetVisible(LV, Index, Self, FVisible);
 end;
