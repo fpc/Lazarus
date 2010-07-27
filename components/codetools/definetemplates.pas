@@ -1389,7 +1389,7 @@ function ParseFPCVerbose(List: TStrings; out ConfigFiles: TSTrings;
     'U':
       if (StrLComp(@UpLine[CurPos], 'USING UNIT PATH: ', 17) = 0) then begin
         Inc(CurPos, 17);
-        NewPath:=copy(Line,CurPos,len);
+        NewPath:=SetDirSeparators(copy(Line,CurPos,len));
         if not FilenameIsAbsolute(NewPath) then
           NewPath:=ExpandFileNameUTF8(AnsiToUtf8(NewPath));
         NewPath:=ChompPathDelim(TrimFilename(NewPath));
@@ -1403,7 +1403,7 @@ function ParseFPCVerbose(List: TStrings; out ConfigFiles: TSTrings;
       begin
         // skip keywords
         Inc(CurPos, 19);
-        Filename:=copy(Line,CurPos,length(Line));
+        Filename:=SetDirSeparators(copy(Line,CurPos,length(Line)));
         ConfigFiles.Add('-'+Filename);
       end else if StrLComp(@UpLine[CurPos], 'COMPILER: ', 10) = 0 then begin
         // skip keywords
@@ -1415,7 +1415,7 @@ function ParseFPCVerbose(List: TStrings; out ConfigFiles: TSTrings;
       begin
         // skip keywords
         Inc(CurPos, 26);
-        Filename:=copy(Line,CurPos,length(Line));
+        Filename:=SetDirSeparators(copy(Line,CurPos,length(Line)));
         if (ConfigFiles.Count>0)
         and (ConfigFiles[ConfigFiles.Count-1]='-'+Filename) then
           ConfigFiles.Delete(ConfigFiles.Count-1);
