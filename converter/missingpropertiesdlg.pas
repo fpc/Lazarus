@@ -69,7 +69,7 @@ type
   private
     fSettings: TConvertSettings;
     // List of property values which need to be adjusted.
-    fValueTreeNodes: TList;
+    //fValueTreeNodes: TList;
     fHasMissingProperties: Boolean;         // LFM file has unknown properties.
     fHasMissingObjectTypes: Boolean;        // LFM file has unknown object types.
     // References to controls in UI:
@@ -395,10 +395,10 @@ end;
 
 function TLFMFixer.Repair: TModalResult;
 var
-  CurError: TLFMError;
+//  CurError: TLFMError;
 //  MissingObjectTypes: TStringList;  <- Remove. Must be a left-over from something.
   ConvTool: TConvDelphiCodeTool;
-  TypeName: String;
+//  TypeName: String;
   LoopCount: integer;
 begin
   Result:=mrCancel;
