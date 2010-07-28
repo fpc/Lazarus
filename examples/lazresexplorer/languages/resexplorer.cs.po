@@ -1,0 +1,103 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Chronos <robie@centrum.cz>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: reconstsunit.sabout
+msgid "About..."
+msgstr "O..."
+
+#: reconstsunit.sbuilddate
+msgid "Build date : "
+msgstr "Datum sestavení : "
+
+#: reconstsunit.scarbonwidgetset
+msgid "Carbon widget set"
+msgstr "Sada widgetů Carbon"
+
+#: reconstsunit.sexit
+msgid "Exit"
+msgstr "Odejít"
+
+#: reconstsunit.sfile
+msgid "File"
+msgstr "Soubor"
+
+#: reconstsunit.sfpcversion
+msgid "FPC version : "
+msgstr "Verze FPC : "
+
+#: reconstsunit.sfpguiwidgetset
+msgid "FpGUI widget set"
+msgstr "Sada widgetů FpGUI"
+
+#: reconstsunit.sgtk2widgetset
+msgid "GTK 2 widget set"
+msgstr "Sada widgetů GTK 2"
+
+#: reconstsunit.sgtkwidgetset
+msgid "GTK widget set"
+msgstr "Sada widgetů GTK"
+
+#: reconstsunit.shelp
+msgid "Help"
+msgstr "Nápověda"
+
+#: reconstsunit.simage
+msgid "Image"
+msgstr "Obrázek"
+
+#: reconstsunit.slclversion
+msgid "LCL Version: "
+msgstr "Verze LCL: "
+
+#: reconstsunit.slicense
+msgid "This program is free software under GNU GPL 2 license, see COPYING file"
+msgstr "Tento program je svobodný software pod licencí GNU GPL 2, podívejte se do souboru COPYING"
+
+#: reconstsunit.sopen
+msgid "Open..."
+msgstr "Otevřít..."
+
+#: reconstsunit.sotherguiwidgetset
+msgid "Other gui"
+msgstr "Jiné GUI"
+
+#: reconstsunit.sqtwidgetset
+msgid "QT widget set"
+msgstr "Sada widgetů QT"
+
+#: reconstsunit.sresourceexplorer
+msgid "Resource explorer"
+msgstr "Prohlížeč zdrojů"
+
+#: reconstsunit.ssaveresource
+msgid "Save resource..."
+msgstr "Uložit zdroj..."
+
+#: reconstsunit.sstrings
+msgid "Strings"
+msgstr "Řetězce"
+
+#: reconstsunit.stargetcpu
+msgid "Target CPU : "
+msgstr "Cílový CPU : "
+
+#: reconstsunit.stargetos
+msgid "Target OS : "
+msgstr "Cílový OS : "
+
+#: reconstsunit.swin32_64widgetset
+msgid "Win32/Win64 widget set"
+msgstr "Sada widgetů Win32/Win64"
+
+#: reconstsunit.swincewidgetset
+msgid "WinCE widget set"
+msgstr "Sada widgetů WinCE"
+

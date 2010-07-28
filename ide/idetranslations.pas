@@ -127,7 +127,7 @@ begin
     Result:=rsLanguageSlovak
   else if CompareText(ID,'tr')=0 then
     Result:=rsLanguageTurkish
-  else if CompareText(ID,'cz')=0 then
+  else if CompareText(ID,'cs')=0 then
     Result:=rsLanguageCzech
   else
     Result:=ID;

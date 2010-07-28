@@ -2,13 +2,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-13 12:48+0100\n"
+"PO-Revision-Date: 2010-07-19 13:36+0100\n"
 "Last-Translator: Chronos <robie@centrum.cz>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Translation-Source: http://tv.zdechov.net/svn/lazarus_czech/\n"
 "X-Poedit-Language: Czech\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
@@ -146,7 +145,7 @@ msgstr "Zkontrolujte nastavení datové sady"
 
 #: objinspstrconsts.fesdata
 msgid "&Data"
-msgstr ""
+msgstr "&Data"
 
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
@@ -158,7 +157,7 @@ msgstr "Upravit pole..."
 
 #: objinspstrconsts.fesfieldcantbec
 msgid "Field %s cannot be created!"
-msgstr ""
+msgstr "Pole %s nemůže být vytvořeno!"
 
 #: objinspstrconsts.fesfieldprops
 msgid "Field properties"
@@ -289,7 +288,7 @@ msgstr "OEM 8"
 
 #: objinspstrconsts.lisoemcomma
 msgid "OEM comma"
-msgstr "OEM čarka"
+msgstr "OEM čárka"
 
 #: objinspstrconsts.lisoemminus
 msgid "OEM minus"
@@ -377,7 +376,7 @@ msgstr "&Přidat položku"
 
 #: objinspstrconsts.oisaddfields
 msgid "&Add fields"
-msgstr "&Přidat ple"
+msgstr "&Přidat pole"
 
 #: objinspstrconsts.oisaddfieldsfromfielddefs
 msgid "Add fields from FieldDefs"
@@ -539,7 +538,7 @@ msgstr "Skok na deklaraci"
 
 #: objinspstrconsts.oisfloat
 msgid "Float"
-msgstr "Destinné číslo"
+msgstr "Desetinné číslo"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor..."
@@ -571,7 +570,7 @@ msgstr "Číslo"
 
 #: objinspstrconsts.oisinterface
 msgid "Interface"
-msgstr "Rozhranní"
+msgstr "Rozhraní"
 
 #: objinspstrconsts.oisinvalidpropertyvalue
 msgid "Invalid property value"
@@ -772,7 +771,7 @@ msgstr "Řetězec"
 
 #: objinspstrconsts.oisstringseditordialog
 msgid "Strings Editor Dialog"
-msgstr "Dialog editoru Strings"
+msgstr "Dialog editoru řetězců"
 
 #: objinspstrconsts.oistdactcolorselect1headline
 msgid "Select &Color..."
@@ -1075,7 +1074,7 @@ msgstr "Metoda %s%s%s není kompatibilní s touto událostí (%s).%sStiskněte Z
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Metoda %s%s%s není zveřejněná.%sStiskněte Zrušit pro návraz zpět,%sstiskněte Ignorovat pro vynucení."
+msgstr "Metoda %s%s%s není zveřejněná.%sStiskněte Zrušit pro návrat zpět,%sstiskněte Ignorovat pro vynucení."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
@@ -1189,7 +1188,7 @@ msgstr "Editor sloupce"
 
 #: objinspstrconsts.rscdinvalidnumericvalue
 msgid "Invalid numeric Value"
-msgstr "Neplatná číslená hodnota"
+msgstr "Neplatná číselná hodnota"
 
 #: objinspstrconsts.rscdleft
 msgctxt "objinspstrconsts.rscdleft"
@@ -1254,7 +1253,7 @@ msgstr "Vyčistit"
 
 #: objinspstrconsts.sccsiledtcrop
 msgid "Crop"
-msgstr "Öříznout"
+msgstr "Oříznout"
 
 #: objinspstrconsts.sccsiledtdelete
 msgctxt "objinspstrconsts.sccsiledtdelete"
@@ -1397,7 +1396,7 @@ msgstr "Vyčistit"
 
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
-msgstr "String Grid"
+msgstr "Řetězcová mřížka"
 
 #: objinspstrconsts.sccssgedtload
 msgid "Load..."
@@ -1534,7 +1533,7 @@ msgstr "Zrušit"
 
 #: objinspstrconsts.srvk_capital
 msgid "Capital"
-msgstr "Výlká písmena"
+msgstr "Velká písmena"
 
 #: objinspstrconsts.srvk_clear
 msgctxt "objinspstrconsts.srvk_clear"

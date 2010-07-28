@@ -1,0 +1,99 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Chronos <robie@centrum.cz>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: todoliststrconsts.dlgfropts
+msgid "Options"
+msgstr "volby"
+
+#: todoliststrconsts.dlgunitdeprefresh
+msgid "Refresh"
+msgstr "Obnovit"
+
+#: todoliststrconsts.lisctinsertmacro
+msgid "Insert Macro"
+msgstr "Vložit makro"
+
+#: todoliststrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Text"
+
+#: todoliststrconsts.lisprint
+msgid "Print"
+msgstr "Tisk"
+
+#: todoliststrconsts.listddinserttodo
+msgid "Insert ToDo"
+msgstr "Vložit úkol"
+
+#: todoliststrconsts.listodoexport
+msgid "Export"
+msgstr "Export"
+
+#: todoliststrconsts.listodogoto
+msgid "Goto"
+msgstr "Přejít"
+
+#: todoliststrconsts.listodoldescription
+msgid "Description"
+msgstr "Popis"
+
+#: todoliststrconsts.listodoldone
+msgid "Done"
+msgstr "Hotovo"
+
+#: todoliststrconsts.listodolfile
+msgid "Module"
+msgstr "Modul"
+
+#: todoliststrconsts.listodolist
+msgid "ToDo list"
+msgstr "Seznam úkolů"
+
+#: todoliststrconsts.listodolistcaption
+msgid "ToDo List"
+msgstr "Seznam úkolů"
+
+#: todoliststrconsts.listodolistgotoline
+msgid "Goto selected source line"
+msgstr "Jít na zdrojový řádek"
+
+#: todoliststrconsts.listodolistoptions
+msgid "ToDo options..."
+msgstr "Volby úkolů..."
+
+#: todoliststrconsts.listodolistprintlist
+msgid "Print todo items"
+msgstr "Tisk položek úkolů"
+
+#: todoliststrconsts.listodolistrefresh
+msgid "Refresh todo items"
+msgstr "Obnovit položky úkolů"
+
+#: todoliststrconsts.listodolline
+msgid "Line"
+msgstr "Řádek"
+
+#: todoliststrconsts.listodolowner
+msgid "Owner"
+msgstr "Vlastník"
+
+#: todoliststrconsts.listodolpriority
+msgid "Priority"
+msgstr "Priorita"
+
+#: todoliststrconsts.listtodolcategory
+msgid "Category"
+msgstr "Kategorie"
+
+#: todoliststrconsts.lisviewtodolist
+msgid "View ToDo list"
+msgstr "Ukázat seznamk úkolů"
+

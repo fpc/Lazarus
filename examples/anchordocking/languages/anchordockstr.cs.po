@@ -1,0 +1,259 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Chronos <robie@centrum.cz>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
+msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
+msgstr ""
+
+#: anchordockstr.adrsallfiles
+msgid "All files"
+msgstr "Všechny soubory"
+
+#: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
+msgid "Amount of pixel the mouse has to drag before drag starts"
+msgstr ""
+
+#: anchordockstr.adrsanchordockinglayout
+msgid "Anchor Docking Layout"
+msgstr ""
+
+#: anchordockstr.adrsanchorisnotsplitternodeanchors
+msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgstr ""
+
+#: anchordockstr.adrsanchornotfoundnodeanchors
+msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgstr ""
+
+#: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
+msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgstr ""
+
+#: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
+msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
+msgstr ""
+
+#: anchordockstr.adrsautomatically
+msgid "Automatically"
+msgstr "Automaticky"
+
+#: anchordockstr.adrsbottom
+msgid "bottom"
+msgstr "dole"
+
+#: anchordockstr.adrsclose
+msgid "Close"
+msgstr "Zavřít"
+
+#: anchordockstr.adrscontrolisalreadyadocksite
+msgid "control is already a docksite"
+msgstr ""
+
+#: anchordockstr.adrscustomdocksitecanhaveonlyonesite
+msgid "Custom dock site %s%s%s can have only one site."
+msgstr ""
+
+#: anchordockstr.adrsdockingenabledrequiresarestartoftheide
+msgid "Docking enabled (Requires a restart of the IDE)"
+msgstr "Ukotvení povoleno (Vyžaduje restart IDE)"
+
+#: anchordockstr.adrsdockingoptions
+msgid "Docking options"
+msgstr "Volby ukotvení"
+
+#: anchordockstr.adrsdraganddockc
+msgid "Use the mouse to drag and dock window \"%c\""
+msgstr "Použijte myš k uchopení a ukotvení okna \"%c\""
+
+#: anchordockstr.adrsdragthreshold
+msgid "Drag threshold"
+msgstr ""
+
+#: anchordockstr.adrsduplicatename
+msgid "Duplicate name: "
+msgstr "Vícenásobné jméno:"
+
+#: anchordockstr.adrsemptyname
+msgid "Empty name: "
+msgstr "Prázdné jméno:"
+
+#: anchordockstr.adrsenlarge
+msgid "Enlarge"
+msgstr "Rozšířit"
+
+#: anchordockstr.adrsenlargeside
+msgid "Enlarge %s side"
+msgstr "Rozšířit %s stranu"
+
+#: anchordockstr.adrserror
+msgid "Error"
+msgstr "Chyba"
+
+#: anchordockstr.adrserrorloadingwindowlayoutfromfile
+msgid "Error loading window layout from file \"%s\"%s%s"
+msgstr "Chyba načítání rozvržení oken ze souboru \"%s\"%s%s"
+
+#: anchordockstr.adrserrorwritingwindowlayouttofile
+msgid "Error writing window layout to file \"%s\"%s%s"
+msgstr "Chyba zapisování rozvržení oken do souboru \"%s\"%s%s"
+
+#: anchordockstr.adrsgeneraldockingoptions
+msgid "General docking options"
+msgstr "Obecné volby ukotvení"
+
+#: anchordockstr.adrsheaderalignleft
+msgid "Header align left"
+msgstr ""
+
+#: anchordockstr.adrsheaderaligntop
+msgid "Header align top"
+msgstr ""
+
+#: anchordockstr.adrsheaderposition
+msgid "Header position"
+msgstr "Pozice hlavičky"
+
+#: anchordockstr.adrshideheadercaptionsforsiteswithonlyonedockedcontrol
+msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
+msgstr ""
+
+#: anchordockstr.adrsleft
+msgid "left"
+msgstr "vlevo"
+
+#: anchordockstr.adrsloadwindowlayoutfromfile
+msgid "Load window layout from file ..."
+msgstr "Načíst rozvržení oken ze souboru..."
+
+#: anchordockstr.adrsloadwindowlayoutfromfilexml
+msgid "Load window layout from file (*.xml)"
+msgstr "Načíst rozvržení oken ze souboru (*.xml)"
+
+#: anchordockstr.adrslocked
+msgid "Locked"
+msgstr "Uzamčeno"
+
+#: anchordockstr.adrsmerge
+msgid "Merge"
+msgstr "Sloučit"
+
+#: anchordockstr.adrsmissingcontrolname
+msgid "missing control name"
+msgstr "chybějící jméno prvku"
+
+#: anchordockstr.adrsmodalformscannotbemadedockable
+msgid "modal forms can not be made dockable"
+msgstr "nelze ukotvit modální formuláře"
+
+#: anchordockstr.adrsmoveheadertoleftwhenwidthheight100headeralignleft
+msgid "Move header to left when (Width/Height)*100>=HeaderAlignLeft"
+msgstr ""
+
+#: anchordockstr.adrsmoveheadertotopwhenwidthheight100headeraligntop
+msgid "Move header to top when (Width/Height)*100<=HeaderAlignTop"
+msgstr ""
+
+#: anchordockstr.adrsmovepageleft
+msgid "Move page left"
+msgstr ""
+
+#: anchordockstr.adrsmovepageleftmost
+msgid "Move page leftmost"
+msgstr ""
+
+#: anchordockstr.adrsmovepageright
+msgid "Move page right"
+msgstr ""
+
+#: anchordockstr.adrsmovepagerightmost
+msgid "Move page rightmost"
+msgstr ""
+
+#: anchordockstr.adrsnocaptionsforfloatingsites
+msgid "No captions for floating sites"
+msgstr ""
+
+#: anchordockstr.adrsnochildrenallowedfornodetype
+msgid "No children allowed for Node=%s%s%s Type=%s"
+msgstr ""
+
+#: anchordockstr.adrsnotsupportedhasparent
+msgid "Not supported: %s has parent %s"
+msgstr ""
+
+#: anchordockstr.adrsquit
+msgid "Quit %s"
+msgstr "Ukončit %s"
+
+#: anchordockstr.adrsrequestedbutcreated
+msgid "%s requested, but %s created"
+msgstr ""
+
+#: anchordockstr.adrsright
+msgid "right"
+msgstr "vpravo"
+
+#: anchordockstr.adrssavewindowlayoutasdefault
+msgid "Save window layout as default"
+msgstr "Uložit rozvržení oken jako výchozí"
+
+#: anchordockstr.adrssavewindowlayouttofile
+msgid "Save window layout to file ..."
+msgstr "Uložit rozvržení oken do souboru..."
+
+#: anchordockstr.adrssavewindowlayouttofilexml
+msgid "Save window layout to file (*.xml)"
+msgstr "Uložit rozvržení oken do souboru (*.xml)"
+
+#: anchordockstr.adrsscaleonresize
+msgid "Scale on resize"
+msgstr ""
+
+#: anchordockstr.adrsscalesubsiteswhenasiteisresized
+msgid "Scale sub sites when a site is resized"
+msgstr ""
+
+#: anchordockstr.adrsshowcaptionsofdockedcontrolsintheheader
+msgid "Show captions of docked controls in the header"
+msgstr ""
+
+#: anchordockstr.adrsshowheadercaptions
+msgid "Show header captions"
+msgstr ""
+
+#: anchordockstr.adrssplitterthickness
+msgid "Splitter thickness"
+msgstr "Tloušťka rozdělovače"
+
+#: anchordockstr.adrssplitterwidth
+msgid "Splitter width"
+msgstr "Šířka oddělovače"
+
+#: anchordockstr.adrstabposition
+msgid "Tab position"
+msgstr "Pozice záložek"
+
+#: anchordockstr.adrsthereisanotherdockmasterinstalledonlyonedockingpac
+msgid "There is another dock master installed. Only one docking package can be installed at a time. Please uninstall the other dock master %s and restart the IDE"
+msgstr "Už je instalován jiný správce ukotvení. Může být instalován najednou pouze jeden ukotvovací balíček. Prosíme odinstalujte jiný správce ukotvení %sa restartujte IDE"
+
+#: anchordockstr.adrstop
+msgid "top"
+msgstr "nahoře"
+
+#: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
+msgid "To use anchordocking you must first uninstall %s"
+msgstr "K použití anchordicking musíte nejdříve odinstalovat %s"
+
+#: anchordockstr.adrsundock
+msgid "Undock"
+msgstr "Odkotvit"
+
