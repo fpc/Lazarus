@@ -548,7 +548,7 @@ type
     );
 
 const
-  DefaultFindSmartFlags = [fsfIncludeDirective];
+  DefaultFindSmartFlags = [fsfIncludeDirective,fsfFindMainDeclaration];
 
 type
   //----------------------------------------------------------------------------
@@ -2126,162 +2126,165 @@ var
   NodeStr: String;
 begin
   Result:='';
-  if FindDeclaration(CursorPos,DefaultFindSmartFlags,
+  if not FindDeclaration(CursorPos,DefaultFindSmartFlags,
     NewTool,NewNode,NewPos,NewTopLine) then
   begin
-    { Examples:
-        var i: integer
-        /home/.../codetools/finddeclarationtools.pas(1224,7)
-    }
-    IdentAdded:=false;
-    // identifier category and identifier
-    if NewNode<>nil then begin
-      // class visibility
-      if NewNode.Parent<>nil then begin
-        ANode:=NewNode.Parent;
-        while ANode<>nil do begin
-          if ANode.Desc in AllClassSections then begin
-            case ANode.Desc of
-            ctnClassPrivate,ctnClassTypePrivate,ctnClassVarPrivate:
-              Result:=Result+'private ';
-            ctnClassProtected,ctnClassTypeProtected,ctnClassVarProtected:
-              Result:=Result+'protected ';
-            ctnClassPublic,ctnClassTypePublic,ctnClassVarPublic:
-              Result:=Result+'public ';
-            ctnClassPublished,ctnClassTypePublished,ctnClassVarPublished:
-              Result:=Result+'published ';
+    // identifier not found or already at declaration
+    exit;
+  end;
+
+  { Examples:
+      var i: integer
+      /home/.../codetools/finddeclarationtools.pas(1224,7)
+  }
+  IdentAdded:=false;
+  // identifier category and identifier
+  if NewNode<>nil then begin
+    // class visibility
+    if NewNode.Parent<>nil then begin
+      ANode:=NewNode.Parent;
+      while ANode<>nil do begin
+        if ANode.Desc in AllClassSections then begin
+          case ANode.Desc of
+          ctnClassPrivate,ctnClassTypePrivate,ctnClassVarPrivate:
+            Result:=Result+'private ';
+          ctnClassProtected,ctnClassTypeProtected,ctnClassVarProtected:
+            Result:=Result+'protected ';
+          ctnClassPublic,ctnClassTypePublic,ctnClassVarPublic:
+            Result:=Result+'public ';
+          ctnClassPublished,ctnClassTypePublished,ctnClassVarPublished:
+            Result:=Result+'published ';
+          end;
+          break;
+        end else if ANode.Desc in ([ctnParameterList]+AllClasses) then
+          break;
+        ANode:=ANode.Parent;
+      end;
+    end;
+
+    case NewNode.Desc of
+    ctnVarDefinition, ctnTypeDefinition, ctnConstDefinition,
+    ctnEnumIdentifier, ctnGenericType:
+      begin
+        case NewNode.Desc of
+        ctnVarDefinition: Result:=Result+'var ';
+        ctnTypeDefinition: Result:=Result+'type ';
+        ctnConstDefinition: Result:=Result+'const ';
+        ctnEnumIdentifier: Result:=Result+'enum ';
+        ctnGenericType: Result:=Result+'generic type ';
+        end;
+
+        // add class name
+        ClassStr := NewTool.ExtractClassName(NewNode, False);
+        if ClassStr <> '' then Result := Result + ClassStr + '.';
+
+        Result:=Result+NewTool.ExtractDefinitionName(NewNode);
+        IdentAdded:=true;
+        TypeNode:=NewTool.FindTypeNodeOfDefinition(NewNode);
+        if TypeNode<>nil then begin
+          case TypeNode.Desc of
+          ctnIdentifier, ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
+          ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass:
+            begin
+              NewTool.MoveCursorToNodeStart(TypeNode);
+              NewTool.ReadNextAtom;
+              Result:=Result+': '+NewTool.GetAtom;
             end;
-            break;
-          end else if ANode.Desc in ([ctnParameterList]+AllClasses) then
-            break;
-          ANode:=ANode.Parent;
+          ctnConstant:
+            begin
+              NodeStr:=' = '+NewTool.ExtractNode(TypeNode,[]);
+              Result:=Result+copy(NodeStr,1,50);
+            end;
+          end;
+        end else begin
+          case NewNode.Desc of
+          ctnConstDefinition:
+            begin
+              DebugLn('TFindDeclarationTool.FindSmartHint const without subnode "',NewTool.ExtractNode(NewNode,[]),'"');
+              NodeStr:=NewTool.ExtractCode(NewNode.StartPos
+                                 +GetIdentLen(@NewTool.Src[NewNode.StartPos]),
+                                 NewNode.EndPos,[]);
+              Result:=Result+copy(NodeStr,1,50);
+            end;
+          end;
         end;
       end;
 
-      case NewNode.Desc of
-      ctnVarDefinition, ctnTypeDefinition, ctnConstDefinition,
-      ctnEnumIdentifier, ctnGenericType:
-        begin
-          case NewNode.Desc of
-          ctnVarDefinition: Result:=Result+'var ';
-          ctnTypeDefinition: Result:=Result+'type ';
-          ctnConstDefinition: Result:=Result+'const ';
-          ctnEnumIdentifier: Result:=Result+'enum ';
-          ctnGenericType: Result:=Result+'generic type ';
-          end;
-          
-          // add class name
+    ctnProcedure,ctnProcedureHead:
+      begin
+
+        // ToDo: ppu, ppw, dcu files
+
+        Result:=Result+NewTool.ExtractProcHead(NewNode,
+          [phpAddClassName,phpWithStart,phpWithVarModifiers,phpWithParameterNames,
+           phpWithDefaultValues,phpWithResultType,phpWithOfObject]);
+        IdentAdded:=true;
+      end;
+
+    ctnProperty,
+    ctnProgram,ctnUnit,ctnPackage,ctnLibrary:
+      begin
+        IdentNode:=NewNode;
+
+        // ToDo: ppu, ppw, dcu files
+
+        NewTool.MoveCursorToNodeStart(IdentNode);
+        NewTool.ReadNextAtom;
+        Result:=Result+NewTool.GetAtom+' ';
+
+        if NewNode.Desc = ctnProperty then
+        begin // add class name
           ClassStr := NewTool.ExtractClassName(NewNode, False);
           if ClassStr <> '' then Result := Result + ClassStr + '.';
-          
-          Result:=Result+NewTool.ExtractDefinitionName(NewNode);
-          IdentAdded:=true;
-          TypeNode:=NewTool.FindTypeNodeOfDefinition(NewNode);
-          if TypeNode<>nil then begin
-            case TypeNode.Desc of
-            ctnIdentifier, ctnClass, ctnClassInterface, ctnDispinterface, ctnObject,
-            ctnObjCClass, ctnObjCCategory, ctnObjCProtocol, ctnCPPClass:
-              begin
-                NewTool.MoveCursorToNodeStart(TypeNode);
-                NewTool.ReadNextAtom;
-                Result:=Result+': '+NewTool.GetAtom;
-              end;
-            ctnConstant:
-              begin
-                NodeStr:=' = '+NewTool.ExtractNode(TypeNode,[]);
-                Result:=Result+copy(NodeStr,1,50);
-              end;
-            end;
-          end else begin
-            case NewNode.Desc of
-            ctnConstDefinition:
-              begin
-                DebugLn('TFindDeclarationTool.FindSmartHint const without subnode "',NewTool.ExtractNode(NewNode,[]),'"');
-                NodeStr:=NewTool.ExtractCode(NewNode.StartPos
-                                   +GetIdentLen(@NewTool.Src[NewNode.StartPos]),
-                                   NewNode.EndPos,[]);
-                Result:=Result+copy(NodeStr,1,50);
-              end;
-            end;
-          end;
-        end;
-        
-      ctnProcedure,ctnProcedureHead:
-        begin
-
-          // ToDo: ppu, ppw, dcu files
-
-          Result:=Result+NewTool.ExtractProcHead(NewNode,
-            [phpAddClassName,phpWithStart,phpWithVarModifiers,phpWithParameterNames,
-             phpWithDefaultValues,phpWithResultType,phpWithOfObject]);
-          IdentAdded:=true;
-        end;
-        
-      ctnProperty,
-      ctnProgram,ctnUnit,ctnPackage,ctnLibrary:
-        begin
-          IdentNode:=NewNode;
-
-          // ToDo: ppu, ppw, dcu files
-        
-          NewTool.MoveCursorToNodeStart(IdentNode);
-          NewTool.ReadNextAtom;
-          Result:=Result+NewTool.GetAtom+' ';
-          
-          if NewNode.Desc = ctnProperty then
-          begin // add class name
-            ClassStr := NewTool.ExtractClassName(NewNode, False);
-            if ClassStr <> '' then Result := Result + ClassStr + '.';
-          end;
-          
-          NewTool.ReadNextAtom;
-          Result:=Result+NewTool.GetAtom+' ';
-          IdentAdded:=true;
-        end;
-        
-      ctnGlobalProperty:
-        begin
-          IdentNode:=NewNode;
-
-          // ToDo: ppu, ppw, dcu files
-
-          NewTool.MoveCursorToNodeStart(IdentNode);
-          Result:=Result+'property ';
-          NewTool.ReadNextAtom;
-          Result:=Result+NewTool.GetAtom+' ';
-          IdentAdded:=true;
         end;
 
-
-      else
-        DebugLn('ToDo: TFindDeclarationTool.FindSmartHint ',NewNode.DescAsString);
+        NewTool.ReadNextAtom;
+        Result:=Result+NewTool.GetAtom+' ';
+        IdentAdded:=true;
       end;
-    end;
-    // read the identifier if not already done
-    if not IdentAdded then begin
-      CursorPos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,AbsCursorPos);
-      GetIdentStartEndAtPosition(CursorPos.Code.Source,
-        AbsCursorPos,IdentStartPos,IdentEndPos);
-      if IdentStartPos<IdentEndPos then begin
-        Result:=Result+copy(CursorPos.Code.Source,IdentStartPos,IdentEndPos-IdentStartPos);
-        // type
 
-        // ToDo
+    ctnGlobalProperty:
+      begin
+        IdentNode:=NewNode;
 
-        Result:=Result+' ';
+        // ToDo: ppu, ppw, dcu files
+
+        NewTool.MoveCursorToNodeStart(IdentNode);
+        Result:=Result+'property ';
+        NewTool.ReadNextAtom;
+        Result:=Result+NewTool.GetAtom+' ';
+        IdentAdded:=true;
       end;
+
+
+    else
+      DebugLn('ToDo: TFindDeclarationTool.FindSmartHint ',NewNode.DescAsString);
     end;
-    // filename
-    if Result<>'' then Result:=Result+LineEnding;
-    Result:=Result+NewPos.Code.Filename;
-    // file position
-    if NewPos.Y>=1 then begin
-      Result:=Result+'('+IntToStr(NewPos.Y);
-      if NewPos.X>=1 then begin
-        Result:=Result+','+IntToStr(NewPos.X);
-      end;
-      Result:=Result+')';
+  end;
+  // read the identifier if not already done
+  if not IdentAdded then begin
+    CursorPos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,AbsCursorPos);
+    GetIdentStartEndAtPosition(CursorPos.Code.Source,
+      AbsCursorPos,IdentStartPos,IdentEndPos);
+    if IdentStartPos<IdentEndPos then begin
+      Result:=Result+copy(CursorPos.Code.Source,IdentStartPos,IdentEndPos-IdentStartPos);
+      // type
+
+      // ToDo
+
+      Result:=Result+' ';
     end;
+  end;
+  // filename
+  if Result<>'' then Result:=Result+LineEnding;
+  Result:=Result+NewPos.Code.Filename;
+  // file position
+  if NewPos.Y>=1 then begin
+    Result:=Result+'('+IntToStr(NewPos.Y);
+    if NewPos.X>=1 then begin
+      Result:=Result+','+IntToStr(NewPos.X);
+    end;
+    Result:=Result+')';
   end;
 end;
 
