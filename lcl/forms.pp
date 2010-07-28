@@ -1616,7 +1616,7 @@ function GetLongHint(const Hint: string): string;
 
 
 var
-  Application: TApplication = nil; //bla
+  Application: TApplication = nil;
   Screen: TScreen = nil;
   ExceptionObject: TExceptObject;
   HintWindowClass: THintWindowClass = THintWindow;
