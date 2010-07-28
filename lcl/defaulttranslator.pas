@@ -17,14 +17,15 @@ unit DefaultTranslator;
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 }
 {This unit is needed for using translated form strings made by Lazarus IDE.
-It seeks for localized .mo file in some common places. If you want to find
-.mo file anywhere else, don't use this unit but initialize LRSMoFile variable
-from LResources in your project by yourself. If you need standard translation,
-just use this unit in your project and enable i18n in project options.
+It searches for translated .po/.mo files in some common places. If you need
+to have .po/.mo files anywhere else, don't use this unit but initialize
+LRSMoFile variable from LResources in your project by yourself.
+If you need standard translation, just use this unit in your project and enable
+i18n in project options.
 
-Another reason for including this unit may be using localized LCL stuff. This
-unit localizes LCL too, if it finds lcl.xxx.mo at that place, where main
-localization found.
+Another reason for including this unit may be using translated LCL messages.
+This unit localizes LCL too, if it finds lclstrconsts.xx.po/lclstrconsts.xx.mo
+in directory where your program translation files are placed.
 }
 {$mode objfpc}{$H+}
 
@@ -124,13 +125,13 @@ var
         exit;
 
       Result := ExtractFilePath(ParamStrUTF8(0)) + 'locale' + DirectorySeparator
-        + LangID + DirectorySeparator + 'LC_MESSAGES' + DirectorySeparator +
+        + LangShortID + DirectorySeparator + 'LC_MESSAGES' + DirectorySeparator +
         ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
       if FileExistsUTF8(Result) then
         exit;
 
       //Full language in file name - this will be default for the project
-      //We need more carefull handling, as it MAY result in incorrect filename
+      //We need more careful handling, as it MAY result in incorrect filename
       try
         Result := ExtractFilePath(ParamStrUTF8(0)) + ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangID) + LCExt;
         if FileExistsUTF8(Result) then
