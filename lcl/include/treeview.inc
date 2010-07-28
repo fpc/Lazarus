@@ -5064,9 +5064,9 @@ procedure TCustomTreeView.EditorKeyDown(Sender: TObject; var Key: Word;
 var
   WasFocused: Boolean;
 begin
-  if Key=VK_ESCAPE then begin
+  if (Key=VK_ESCAPE) or (Key=VK_RETURN) then begin
     WasFocused:=(FEditor<>nil) and FEditor.Focused;
-    EndEditing(true);
+    EndEditing(Key=VK_ESCAPE);
     if WasFocused then
       SetFocus;
     Key:=0; // key was handled
