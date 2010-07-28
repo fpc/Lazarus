@@ -2435,6 +2435,7 @@ var
   CurUnit: TCodeBrowserUnit;
   Node: TCodeBrowserNode;
   Line, Column: integer;
+  //BaseURL, HTMLHint: string;
 begin
   Result:='';
   if (TVNode=nil) or (TVNode.Data=nil) then exit;
@@ -2453,6 +2454,7 @@ begin
       Node.CodePos.Code.AbsoluteToLineCol(Node.CodePos.P,Line,Column);
       if Line>0 then
         Result:=Result+' ('+IntToStr(Line)+','+IntToStr(Column)+')';
+      //GetCodeHelp(TVNode,BaseURL,HTMLHint);
     end;
   end;
 end;
@@ -2481,7 +2483,7 @@ begin
     CodeToolBoss.Explore(Node.CodePos.Code,Tool,false,false);
     if Tool=nil then exit;
     // find source position in parsed code
-    CleanPos:=Node.CodePos.P;
+    if Tool.CodePosToCleanPos(Node.CodePos,CleanPos)<>0 then exit;
     // find node
     CTNode:=Tool.FindDeepestNodeAtPos(CleanPos,false);
     if (CTNode=nil) or (CTNode.Desc<>Node.Desc) then
