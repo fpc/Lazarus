@@ -6703,15 +6703,15 @@ begin
       GetWindowRelativePosition(Handle, NewLeft, NewTop);
     //DebugLn('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
     NewBoundsRealized := Bounds(NewLeft, NewTop, Message.Width, Message.Height);
+    OldClientSize:=Size(0,0);
+    NewClientSize:=Size(0,0);
     if CompareRect(@NewBoundsRealized,@FBoundsRealized) then begin
-      OldClientSize:=Size(FClientWidth,FClientHeight);
-      if not (wcfClientRectNeedsUpdate in FWinControlFlags) then exit;
-      NewClientSize:=Size(ClientWidth,ClientHeight);
-      if (OldClientSize.cx=NewClientSize.cx)
-      and (OldClientSize.cy=NewClientSize.cy) then exit;
-    end else begin
-      OldClientSize:=Size(0,0);
-      NewClientSize:=Size(0,0);
+      if not (wcfClientRectNeedsUpdate in FWinControlFlags) then begin
+        OldClientSize:=Size(FClientWidth,FClientHeight);
+        NewClientSize:=Size(ClientWidth,ClientHeight);
+        if (OldClientSize.cx=NewClientSize.cx)
+        and (OldClientSize.cy=NewClientSize.cy) then exit;
+      end;
     end;
     {$IFDEF VerboseAllAutoSize}
     DebugLn(['TWinControl.WMSize Changed From Intf ',dbgsname(Self),' Message=',Message.Width,',',Message.Height,
