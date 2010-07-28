@@ -78,6 +78,9 @@ function CompareCTCSVariables(Var1, Var2: Pointer): integer;
 function ComparePCharWithCTCSVariableName(Name, aVar: Pointer): integer;
 function AreCTCSVariablesEqual(const V1, V2: PCTCfgScriptVariable): Boolean;
 function AreCTCSVariablesExactEqual(const V1, V2: PCTCfgScriptVariable): Boolean;
+function NewCTCSVariable: PCTCfgScriptVariable;
+function NewCTCSVariable(CloneName: PChar): PCTCfgScriptVariable;
+function CloneCTCSVariable(const V: PCTCfgScriptVariable): PCTCfgScriptVariable;
 procedure FreeCTCSVariable(var V: PCTCfgScriptVariable);
 procedure ClearCTCSVariable(const V: PCTCfgScriptVariable);
 function CTCSNumberEqualsString(const Number: int64; const P: PChar): boolean; inline;
@@ -144,6 +147,48 @@ begin
   ctcsvNumber: if V1^.Number<>V2^.Number then exit;
   end;
   Result:=true;
+end;
+
+function NewCTCSVariable: PCTCfgScriptVariable;
+begin
+  New(Result);
+  FillByte(Result^,SizeOf(Result),0);
+end;
+
+function NewCTCSVariable(CloneName: PChar): PCTCfgScriptVariable;
+var
+  l: LongInt;
+begin
+  Result:=NewCTCSVariable();
+  l:=GetIdentLen(CloneName);
+  if l>0 then begin
+    Result^.Name:=GetMem(l+1);
+    System.Move(CloneName^,Result^.Name^,l);
+    Result^.Name[l]:=#0;
+  end;
+end;
+
+function CloneCTCSVariable(const V: PCTCfgScriptVariable): PCTCfgScriptVariable;
+var
+  l: LongInt;
+begin
+  Result:=NewCTCSVariable(V^.Name);
+  Result^.ValueType:=V^.ValueType;
+  case V^.ValueType of
+  ctcsvNone: ;
+  ctcsvString:
+    begin
+      l:=V^.StrLen;
+      Result^.StrLen:=l;
+      if l>0 then begin
+        Result^.StrStart:=GetMem(l+1);
+        System.Move(V^.StrStart^,Result^.StrStart^,l);
+        Result^.StrStart[l]:=#0;
+      end;
+    end;
+  ctcsvNumber:
+    Result^.Number:=V^.Number;
+  end;
 end;
 
 procedure FreeCTCSVariable(var V: PCTCfgScriptVariable);
@@ -285,20 +330,31 @@ procedure TCTCfgScriptVariables.Assign(Source: TCTCfgScriptVariables);
 var
   Node: TAVLTreeNode;
   Item: PCTCfgScriptVariable;
+  NewItem: PCTCfgScriptVariable;
 begin
   Clear;
   Node:=Source.FItems.FindLowest;
   while Node<>nil do begin
     Item:=PCTCfgScriptVariable(Node.Data);
-    if Item=nil then ;
+    NewItem:=CloneCTCSVariable(Item);
+    FItems.Add(NewItem);
     Node:=Source.FItems.FindSuccessor(Node);
   end;
 end;
 
 function TCTCfgScriptVariables.GetVariable(const Name: PChar;
   CreateIfNotExists: Boolean): PCTCfgScriptVariable;
+var
+  Node: TAVLTreeNode;
 begin
-  Result:=nil;
+  Node:=FItems.FindKey(Name,@ComparePCharWithCTCSVariableName);
+  if Node<>nil then
+    Result:=PCTCfgScriptVariable(Node.Data)
+  else if CreateIfNotExists then begin
+    Result:=NewCTCSVariable(Name);
+    FItems.Add(Result);
+  end else
+    Result:=nil;
 end;
 
 { TCTConfigScriptEngine }
