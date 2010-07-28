@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-26 02:25+0300\n"
+"PO-Revision-Date: 2010-07-29 01:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3887,6 +3887,10 @@ msgstr "собрать IDE с пакетами"
 msgid "Building Lazarus failed"
 msgstr "Сборка Lazarus не удалась"
 
+#: lazarusidestrconsts.lisbuildmacros
+msgid "Build macros"
+msgstr "Макросы сборки"
+
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
 msgstr "Режим сборки"
@@ -3898,10 +3902,6 @@ msgstr "Собрать новый проект"
 #: lazarusidestrconsts.lisbuildnumber
 msgid "Build Number"
 msgstr "Номер сборки"
-
-#: lazarusidestrconsts.lisbuildvariables
-msgid "Build variables"
-msgstr "Переменные сборки"
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
@@ -5959,6 +5959,10 @@ msgstr "Удалить точку останова"
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "Удалить точку останова в%s\"%s\" на строке %d?"
 
+#: lazarusidestrconsts.lisdeletebuildmacro
+msgid "Delete build macro %s%s%s?"
+msgstr "Удалить макрос сборки %s%s%s?"
+
 #: lazarusidestrconsts.lisdeletebuildmode
 msgid "Delete build mode"
 msgstr "Удалить режим сборки"
@@ -5970,10 +5974,6 @@ msgstr "Удалить режим сборки?"
 #: lazarusidestrconsts.lisdeletebuildmode3
 msgid "Delete build mode %s%s%s?"
 msgstr "Удалить режим сборки %s%s%s?"
-
-#: lazarusidestrconsts.lisdeletebuildvar
-msgid "Delete build variable %s%s%s?"
-msgstr "Удалить переменную сборки %s%s%s?"
 
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -7586,9 +7586,9 @@ msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall packages"
 msgstr "Установка/удаление пакетов"
 
-#: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
-msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
-msgstr "Неверная переменная сборки %s%s%s. Она должна являться идентификатором Паскаля."
+#: lazarusidestrconsts.lisinvalidbuildmacrothebuildmacromustbeapascalidentifie
+msgid "Invalid build macro %s%s%s. The build macro must be a pascal identifier."
+msgstr "Макрос сборки %s%s%s некорректен. Он должен являться идентификатором Паскаля."
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -12966,9 +12966,9 @@ msgstr "В каталоге есть и другие файлы с таким ж
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "На диске есть файл с таким же именем и похожим расширением%sФайл: %s%sФайл с дублирующимся именем: %s%s%sУдалить второй файл?"
 
-#: lazarusidestrconsts.listhereisalreadyabuildvarwiththename
-msgid "There is already a build variable with the name %s%s%s."
-msgstr "Переменная сборки с именем %s%s%s уже имеется."
+#: lazarusidestrconsts.listhereisalreadyabuildmacrowiththename
+msgid "There is already a build macro with the name %s%s%s."
+msgstr "Макрос сборки с именем %s%s%s уже существует."
 
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"

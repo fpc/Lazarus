@@ -3876,6 +3876,10 @@ msgstr "kartu su IKA daryti ir paketus"
 msgid "Building Lazarus failed"
 msgstr "Lazarus darymas nepavyko"
 
+#: lazarusidestrconsts.lisbuildmacros
+msgid "Build macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
 msgstr "Darymo veiksena"
@@ -3887,10 +3891,6 @@ msgstr "Daryti naująjį projektą"
 #: lazarusidestrconsts.lisbuildnumber
 msgid "Build Number"
 msgstr "Darymo numeris"
-
-#: lazarusidestrconsts.lisbuildvariables
-msgid "Build variables"
-msgstr "Darymo kintamieji"
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
@@ -5953,6 +5953,10 @@ msgstr "Pašalinti stabdos tašką"
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "Pašalinti stabdos tašką, esantį%s„%s“ failo %d eilutėje?"
 
+#: lazarusidestrconsts.lisdeletebuildmacro
+msgid "Delete build macro %s%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletebuildmode
 msgid "Delete build mode"
 msgstr "Šalinti darymo veikseną"
@@ -5964,10 +5968,6 @@ msgstr "Ar pašalinti darymo veikseną?"
 #: lazarusidestrconsts.lisdeletebuildmode3
 msgid "Delete build mode %s%s%s?"
 msgstr "Ar pašalinti darymo veikseną %s%s%s?"
-
-#: lazarusidestrconsts.lisdeletebuildvar
-msgid "Delete build variable %s%s%s?"
-msgstr "Ar pašalinti darymo kintamąjį %s%s%s?"
 
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -7580,9 +7580,9 @@ msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall packages"
 msgstr ""
 
-#: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
-msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
-msgstr "Darymo kintamasis %s%s%s yra klaidingas. Darymo kintamasis turi būti paskalio identifikatorius."
+#: lazarusidestrconsts.lisinvalidbuildmacrothebuildmacromustbeapascalidentifie
+msgid "Invalid build macro %s%s%s. The build macro must be a pascal identifier."
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -12966,9 +12966,9 @@ msgstr "Aplanke yra failų, kurių pavadinimai%sskiriasi tik raidžių lygiais:%
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "Rastas kitas failas tokiu pat pavadinimu bei panašiu plėtiniu.%sFailas: %s%sNeaiškusis failas: %s%s%sPašalinti neaiškųjį failą?"
 
-#: lazarusidestrconsts.listhereisalreadyabuildvarwiththename
-msgid "There is already a build variable with the name %s%s%s."
-msgstr "Darymo kintamasis pavadinimu %s%s%s jau yra."
+#: lazarusidestrconsts.listhereisalreadyabuildmacrowiththename
+msgid "There is already a build macro with the name %s%s%s."
+msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"

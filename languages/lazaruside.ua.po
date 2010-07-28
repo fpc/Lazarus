@@ -3871,6 +3871,10 @@ msgstr ""
 msgid "Building Lazarus failed"
 msgstr ""
 
+#: lazarusidestrconsts.lisbuildmacros
+msgid "Build macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
 msgstr ""
@@ -3882,10 +3886,6 @@ msgstr "Побудувати новий проект"
 #: lazarusidestrconsts.lisbuildnumber
 msgid "Build Number"
 msgstr "Номер побудови"
-
-#: lazarusidestrconsts.lisbuildvariables
-msgid "Build variables"
-msgstr ""
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
@@ -5945,6 +5945,10 @@ msgstr ""
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr ""
 
+#: lazarusidestrconsts.lisdeletebuildmacro
+msgid "Delete build macro %s%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletebuildmode
 msgid "Delete build mode"
 msgstr ""
@@ -5955,10 +5959,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdeletebuildmode3
 msgid "Delete build mode %s%s%s?"
-msgstr ""
-
-#: lazarusidestrconsts.lisdeletebuildvar
-msgid "Delete build variable %s%s%s?"
 msgstr ""
 
 #: lazarusidestrconsts.lisdeletefilefailed
@@ -7570,8 +7570,8 @@ msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall packages"
 msgstr ""
 
-#: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
-msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
+#: lazarusidestrconsts.lisinvalidbuildmacrothebuildmacromustbeapascalidentifie
+msgid "Invalid build macro %s%s%s. The build macro must be a pascal identifier."
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidcircle
@@ -12959,8 +12959,8 @@ msgstr "В теці є і інші файли з такою самою назв�
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "На диску є файл з такою самою назвою і схожим розширенням%sФайл: %s%sСхожий файл: %s%s%sВидалити інший файл?"
 
-#: lazarusidestrconsts.listhereisalreadyabuildvarwiththename
-msgid "There is already a build variable with the name %s%s%s."
+#: lazarusidestrconsts.listhereisalreadyabuildmacrowiththename
+msgid "There is already a build macro with the name %s%s%s."
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname

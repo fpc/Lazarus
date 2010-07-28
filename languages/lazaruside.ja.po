@@ -3881,6 +3881,10 @@ msgstr "パッケージ付きのIDEを構築"
 msgid "Building Lazarus failed"
 msgstr "Lazarusの構築の失敗"
 
+#: lazarusidestrconsts.lisbuildmacros
+msgid "Build macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
 msgstr "構築モード"
@@ -3892,10 +3896,6 @@ msgstr "新規プロジェクトを構築"
 #: lazarusidestrconsts.lisbuildnumber
 msgid "Build Number"
 msgstr "構築番号"
-
-#: lazarusidestrconsts.lisbuildvariables
-msgid "Build variables"
-msgstr ""
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
@@ -5955,6 +5955,10 @@ msgstr "ブレークポイントを削除"
 msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr "%d行の%s\"%s\"にあるブレークポイントを削除しますか？"
 
+#: lazarusidestrconsts.lisdeletebuildmacro
+msgid "Delete build macro %s%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeletebuildmode
 msgid "Delete build mode"
 msgstr "構築モードの削除"
@@ -5966,10 +5970,6 @@ msgstr "構築モードを削除しますか"
 #: lazarusidestrconsts.lisdeletebuildmode3
 msgid "Delete build mode %s%s%s?"
 msgstr "構築モード %s%s%s を削除しますか。"
-
-#: lazarusidestrconsts.lisdeletebuildvar
-msgid "Delete build variable %s%s%s?"
-msgstr "ビルド変数 %s%s%s を削除しますか。"
 
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -7584,9 +7584,9 @@ msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall packages"
 msgstr ""
 
-#: lazarusidestrconsts.lisinvalidbuildvarthebuildvarmustbeapascalidentifie
-msgid "Invalid build variable %s%s%s. The build variable must be a pascal identifier."
-msgstr "無効なビルド変数です %s%s%s。ビルド変数は、パスカル識別子でなければいけません。"
+#: lazarusidestrconsts.lisinvalidbuildmacrothebuildmacromustbeapascalidentifie
+msgid "Invalid build macro %s%s%s. The build macro must be a pascal identifier."
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -12977,9 +12977,9 @@ msgstr "ディレクトリに大文字小文字だけが異なる同じ名前を
 msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgstr "ディスクに同じ名前で類似した拡張子をもつファイルがあります。%sファイル： %s%s紛らわしいファイル: %s%s%s紛らわしいファイルを削除しますか？"
 
-#: lazarusidestrconsts.listhereisalreadyabuildvarwiththename
-msgid "There is already a build variable with the name %s%s%s."
-msgstr "既に%s%s%sという名前のビルド変数があります。"
+#: lazarusidestrconsts.listhereisalreadyabuildmacrowiththename
+msgid "There is already a build macro with the name %s%s%s."
+msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
