@@ -395,7 +395,7 @@ begin
     PPUFile:=ConfigCache.Units[AnUnitName];
   if PPUFile='' then
     writeln('  WARNING: ',AnUnitName,' is not in PPU search path')
-  else if CompareFileExt(PPUFile,'ppu',false)=0 then
+  else if CompareFileExt(PPUFile,'ppu',false)<>0 then
     writeln('  WARNING: fpc ppu search path has a source and not a ppu for ',AnUnitName,': ',PPUFile)
   else
     writeln('  in PPU search path: ',PPUFile);
