@@ -206,11 +206,15 @@ type
       ExceptionOnNotFound: boolean): TCodeTreeNode; {$IFDEF UseInline}inline;{$ENDIF}
     function FindDeepestNodeAtPos(StartNode: TCodeTreeNode; P: integer;
       ExceptionOnNotFound: boolean): TCodeTreeNode;
-    function CaretToCleanPos(Caret: TCodeXYPosition;
+    function CaretToCleanPos(const Caret: TCodeXYPosition;
         out CleanPos: integer): integer;  // 0=valid CleanPos
                           //-1=CursorPos was skipped, CleanPos between two links
                           // 1=CursorPos beyond scanned code
                           //-2=X,Y beyond source
+    function CodePosToCleanPos(const CodePos: TCodePosition;
+        out CleanPos: integer): integer;  // 0=valid CleanPos
+                          //-1=CursorPos was skipped, CleanPos between two links
+                          // 1=CursorPos beyond scanned code
     function CleanPosToCodePos(CleanPos: integer;
         out CodePos:TCodePosition): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToCaret(CleanPos: integer;
@@ -2380,7 +2384,7 @@ begin
   end;
 end;
 
-function TCustomCodeTool.CaretToCleanPos(Caret: TCodeXYPosition;
+function TCustomCodeTool.CaretToCleanPos(const Caret: TCodeXYPosition;
   out CleanPos: integer): integer;
 begin
   CleanPos:=0;
@@ -2392,6 +2396,12 @@ begin
   else
     Result:=-2; // x,y beyond source
   //DebugLn('TCustomCodeTool.CaretToCleanPos C CleanPos=',CleanPos,' Result=',Result);
+end;
+
+function TCustomCodeTool.CodePosToCleanPos(const CodePos: TCodePosition; out
+  CleanPos: integer): integer;
+begin
+  Result:=Scanner.CursorToCleanPos(CodePos.P,CodePos.Code,CleanPos);
 end;
 
 function TCustomCodeTool.CleanPosToCodePos(CleanPos: integer;
