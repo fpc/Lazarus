@@ -304,6 +304,11 @@ var
     Result.Caption:=ACaption;
     Result.OnClick:=AnEvent;
     Result.Enabled:=EnabledFlag;
+    Result.Checked:=false;
+    Result.ShowAlwaysCheckable:=false;
+    Result.Visible:=true;
+    Result.RadioItem:=false;
+    Result.ImageIndex:=-1;
     inc(ItemCnt);
   end;
 

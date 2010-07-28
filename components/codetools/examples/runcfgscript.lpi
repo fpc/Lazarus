@@ -33,30 +33,12 @@
         <PackageName Value="CodeTools"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="1">
       <Unit0>
-        <Filename Value="runcfgscript.pas"/>
+        <Filename Value="runcfgscript.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="RunCfgScript"/>
       </Unit0>
-      <Unit1>
-        <Filename Value="scanexamples/brokenfilenames.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="BrokenFilenames"/>
-      </Unit1>
-      <Unit2>
-        <Filename Value="scanexamples/brokenincfiles.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="scanexamples/empty.inc"/>
-        <IsPartOfProject Value="True"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="scanexamples/indentation.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="Indentation"/>
-      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
