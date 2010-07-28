@@ -46,6 +46,8 @@ type
     class procedure UpdateCaption(const AMenuItem: TMenuItem; ACaption: String);
     class procedure AttachMenuEx(const AMenuItem: TMenuItem; const AParentHandle: HMENU);
     class procedure CopyMenuToHandle(const AMenuItem: TMenuItem; const ADest: HMENU);
+    class function FindMenuForm(const AMenu: TMenu; var AMenuBarHandle: THandle;
+      var AForm: TForm): Boolean;
   published
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
@@ -150,7 +152,8 @@ begin
   mbi.hwndMB := SHFindMenuBar(Wnd);
 
   {$ifdef VerboseWinCEMenu}
-  DebugLn('[CeSetMenu] p1 menu bar window = ' + IntToStr(mbi.hwndMB));
+  DebugLn(Format('[CeSetMenu] p1 menu bar window = %d Wnd %d Menu %d',
+    [mbi.hwndMB, Wnd, Menu]));
   {$endif}
 
   // It is necessary to always create a new menu bar for atKeyPadDevice?
@@ -649,7 +652,8 @@ begin
   Index := AMenuItem.Parent.VisibleIndexOf(AMenuItem);
 
   {$ifdef VerboseWinCEMenu}
-  DebugLn('[TWinCEWSMenuItem.AttachMenuEx] InsertMenuW item = ', AMenuItem.Name, ' cmd = ', IntToStr(cmd));
+  DebugLn(Format('[TWinCEWSMenuItem.AttachMenuEx] InsertMenuW itemname = %s caption %s cmd %d',
+    [AMenuItem.Name, AMenuItem.Caption, cmd]));
   {$endif}
   if not InsertMenuW(AParentHandle, Index, fState, cmd, PWideChar(wCaption)) then
     DebugLn('[TWinCEWSMenuItem.AttachMenuEx] InsertMenuW failed for ', dbgsName(AMenuItem), ' : ', GetLastErrorText(GetLastError));
@@ -712,6 +716,23 @@ begin
   end;
 end;
 
+class function TWinCEWSMenuItem.FindMenuForm(const AMenu: TMenu;
+  var AMenuBarHandle: THandle; var AForm: TForm): Boolean;
+var
+  i: Integer;
+begin
+  // Iterate through all forms to find the parent
+  Result := False;
+  for i := 0 to Screen.FormCount - 1 do
+    if Screen.Forms[i].Menu = AMenu then
+    begin
+      AMenuBarHandle := SHFindMenuBar(Screen.Forms[i].Handle);
+      AForm := Screen.Forms[i];
+      Result := True;
+      Break;
+    end;
+end;
+
 class procedure TWinCEWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 begin
   AttachMenuEx(AMenuItem, AMenuItem.Parent.Handle);
@@ -738,10 +759,12 @@ class procedure TWinCEWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const AC
 var
   bi: TBBUTTONINFO;
   w: WideString;
-  h: THandle;
   i, MenuBarRLID: Integer;
   FormFound: Boolean;
   AMenu: TMenu;
+  lMenuBarHandle: THandle;
+  lForm: TForm;
+  lMenu: LongInt;
 {$endif}
 begin
   // The code to set top-level menus is different then ordinary items under WinCE
@@ -761,15 +784,7 @@ begin
     DebugLn('[TWinCEWSMenuItem.SetCaption] Top-level menu item');
     {$endif}
 
-    // Iterate through all forms to find the parent
-    FormFound := False;
-    for i := 0 to Screen.FormCount - 1 do
-      if Screen.Forms[i].Menu = AMenu then
-      begin
-        h := SHFindMenuBar(Screen.Forms[i].Handle);
-        FormFound := True;
-        Break;
-      end;
+    FormFound := FindMenuForm(AMenu, lMenuBarHandle, lForm);
 
     if not FormFound then Exit;
 
@@ -788,18 +803,44 @@ begin
     {$ifdef VerboseWinCEMenu}
     DebugLn('[TWinCEWSMenuItem.SetCaption] TB_SETBUTTONINFO with ButtonID: ' + IntToStr(MenuBarRLID));
     {$endif}
-    SendMessageW(h, TB_SETBUTTONINFO, MenuBarRLID, LPARAM(@bi));
+    SendMessageW(lMenuBarHandle, TB_SETBUTTONINFO, MenuBarRLID, LPARAM(@bi));
   end
   // Second-Level menu items for atKeyPadDevice systems
   else if (Application.ApplicationType = atKeyPadDevice) and
     (AMenu <> nil) and (AMenu is TMainMenu) and
+    (AMenuItem.Parent <> nil) and
     (AMenuItem.Parent.Parent = AMenu.Items) then
   begin
+    // The only solution is removing and reinserting the item, or the whole menu
 
+    FormFound := FindMenuForm(AMenu, lMenuBarHandle, lForm);
+
+    {$ifdef VerboseWinCEMenu}
+    DebugLn(Format('[TWinCEWSMenuItem.SetCaption] Second-Level menu items for atKeyPadDevice systems'
+      + ' lMenuBarHandle %d AMenu.Handle %d', [lMenuBarHandle, AMenu.Handle]));
+    {$endif}
+
+    if not FormFound then Exit;
+
+    // And one easy solution to make it work is just recreating the whole menu
+    SetMenu(lForm.Handle, AMenu.Handle);
+
+    // The following code tryes to avoid that by only replacing the icon, but doesn't work
+(*    lMenu := SendMessage(lMenuBarHandle, SHCMBM_GETSUBMENU, 0, 1);
+
+    if not DeleteMenu(AMenu.Handle, AMenuItem.Command, MF_BYCOMMAND) then
+    {$ifdef VerboseWinCEMenu}
+    DebugLn(Format('[TWinCEWSMenuItem.SetCaption] DeleteMenu failed lMenu %d '
+      + ' Caption %s Command %d', [lMenu, AMenuItem.Caption, AMenuItem.Command]))
+    {$endif}
+    ;
+
+    w := UTF8Decode(ACaption);
+    InsertMenu(lMenu, AMenuItem.Command, MF_BYCOMMAND, AMenuItem.Command, @W);*)
   end
   else
   {$endif}
-    UpdateCaption(AMenuItem, aCaption);
+    UpdateCaption(AMenuItem, ACaption);
 end;
 
 class function TWinCEWSMenuItem.SetCheck(const AMenuItem: TMenuItem;

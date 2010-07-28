@@ -1936,6 +1936,7 @@ begin
           Assigned(TWinCEWidgetSet(WidgetSet).FOnAsyncSocketMsg) then
         exit(TWinCEWidgetSet(WidgetSet).FOnAsyncSocketMsg(WParam, LParam))
     end;
+    {$ifdef wince}
     WM_HOTKEY:
     begin
       // Implements back-key sending to edits, instead of hiding the form
@@ -1946,6 +1947,7 @@ begin
         Exit;
       end;
     end;
+    {$endif}
   else
     // pass along user defined messages
     if Msg >= WM_USER then
