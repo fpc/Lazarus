@@ -27,7 +27,7 @@ uses
   Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, StdCtrls,
   Grids, Buttons, ExtCtrls, Dialogs, ComCtrls, Menus, AvgLvlTree,
   IDEImagesIntf, ProjectIntf, PackageIntf, CompilerOptions,
-  Compiler_CondTree, LazarusIDEStrConsts, CompOptsModes;
+  Compiler_CondTree, LazarusIDEStrConsts, CompOptsModes, PackageDefs;
 
 type
   TCBMNodeType = (
@@ -49,6 +49,8 @@ type
       var S: string);
     procedure BuildMacrosTreeViewEditing(Sender: TObject; Node: TTreeNode;
       var AllowEdit: Boolean);
+    procedure BuildMacrosTreeViewKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure BuildMacrosTreeViewStartDrag(Sender: TObject;
       var DragObject: TDragObject);
     procedure BuildMacrosTVPopupMenuPopup(Sender: TObject);
@@ -178,7 +180,7 @@ end;
 
 procedure TCompOptBuildMacrosFrame.BuildMacrosTVPopupMenuPopup(Sender: TObject);
 var
-  BuildProperty: TLazBuildMacro;
+  aBuildMacro: TLazBuildMacro;
   NodeType: TCBMNodeType;
   Editor: TCompOptsExprEditor;
 
@@ -201,7 +203,7 @@ var
 
 begin
   BuildMacrosTVPopupMenu.Items.Clear;
-  GetSelectedNode(BuildProperty,NodeType);
+  GetSelectedNode(aBuildMacro,NodeType);
 
   if NodeType in [cbmntBuildMacro,cbmntValues,cbmntValue] then
     Add('New value',@NewValueClick);
@@ -212,7 +214,7 @@ begin
   if NodeType in [cbmntBuildMacro] then
     Add('Delete build macro ...',@DeleteBuildMacroClick);
   if NodeType in [cbmntDefaultValue,cbmntDefaultValueEditor] then begin
-    Editor:=GetEditor(BuildProperty);
+    Editor:=GetEditor(aBuildMacro);
     Editor.FillPopupMenu(BuildMacrosTVPopupMenu);
   end;
 end;
@@ -225,6 +227,12 @@ var
 begin
   NodeType:=GetNodeInfo(Node,BuildProperty);
   AllowEdit:=NodeType in [cbmntBuildMacro,cbmntValue];
+end;
+
+procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+
 end;
 
 procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewStartDrag(Sender: TObject;
@@ -443,8 +451,8 @@ function TCompOptBuildMacrosFrame.GetMacroNamePrefix: string;
 begin
   Result:='BuildMacro';
   if (BuildMacros=nil) or (BuildMacros.Owner=nil) then exit;
-  if BuildMacros.Owner is TIDEPackage then
-    Result:=TIDEPackage(BuildMacros.Owner).Name+'_macro';
+  if BuildMacros.Owner is TPkgCompilerOptions then
+    Result:=TPkgCompilerOptions(BuildMacros.Owner).LazPackage.Name+'_macro';
 end;
 
 constructor TCompOptBuildMacrosFrame.Create(TheOwner: TComponent);

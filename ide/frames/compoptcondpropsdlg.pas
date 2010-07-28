@@ -16,6 +16,11 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
+
+  Author: Mattias Gaertner
+
+  Abstract:
+
 }
 unit CompOptCondPropsDlg;
 
@@ -24,7 +29,7 @@ unit CompOptCondPropsDlg;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
+  Math, Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ButtonPanel, StdCtrls,
   ProjectIntf,
   LazarusIDEStrConsts;
@@ -46,6 +51,7 @@ type
     procedure ButtonPanel1OkClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure NodeTypeComboBoxEditingDone(Sender: TObject);
+    procedure PropsGroupBoxResize(Sender: TObject);
     procedure ValueEditEditingDone(Sender: TObject);
     procedure ValueTypeComboBoxEditingDone(Sender: TObject);
   private
@@ -127,6 +133,13 @@ procedure TCompOptCondPropsDialog.NodeTypeComboBoxEditingDone(Sender: TObject);
 begin
   GetNodeType;
   UpdateValueControls;
+end;
+
+procedure TCompOptCondPropsDialog.PropsGroupBoxResize(Sender: TObject);
+begin
+  NodeTypeComboBox.Left:=6+Max(Max(NodeTypeLabel.Left+NodeTypeLabel.Width,
+                                 ValueTypeLabel.Left+ValueTypeLabel.Width),
+                                 ValueLabel.Left+ValueLabel.Width);
 end;
 
 procedure TCompOptCondPropsDialog.ValueEditEditingDone(Sender: TObject);
@@ -252,6 +265,7 @@ begin
   else ValueLabel.Caption:='?';
   end;
   ValueEdit.Text:=FValue;
+  PropsGroupBoxResize(nil);
 end;
 
 procedure TCompOptCondPropsDialog.SetValue(const AValue: string);

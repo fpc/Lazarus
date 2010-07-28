@@ -31,6 +31,7 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       TabOrder = 0
       OnEdited = BuildMacrosTreeViewEdited
       OnEditing = BuildMacrosTreeViewEditing
+      OnKeyDown = BuildMacrosTreeViewKeyDown
       OnStartDrag = BuildMacrosTreeViewStartDrag
       Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     end

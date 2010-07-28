@@ -16,6 +16,11 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
+
+  Author: Mattias Gaertner
+
+  Abstract:
+    TCompOptsCondTreeFrame is a frame to edit conditional compiler options.
 }
 unit Compiler_CondTree;
 
