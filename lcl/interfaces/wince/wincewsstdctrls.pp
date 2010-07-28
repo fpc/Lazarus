@@ -166,6 +166,10 @@ type
     class procedure Copy(const ACustomEdit: TCustomEdit); override;
     class procedure Paste(const ACustomEdit: TCustomEdit); override;
     class procedure Undo(const ACustomEdit: TCustomEdit); override;
+
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer;
+      WithThemeSpace: Boolean); override;
   end;
 
   { TWinCEWSCustomMemo }
@@ -236,9 +240,11 @@ type
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 //    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
 //    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
-//    class procedure GetPreferredSize(const AWinControl: TWinControl;
-//                        var PreferredWidth, PreferredHeight: integer); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer;
+      WithThemeSpace: Boolean); override;
   end;
+
   { TWinCEWSCustomCheckBox }
 
   TWinCEWSCustomCheckBox = class(TWSCustomCheckBox)
@@ -1004,6 +1010,17 @@ begin
   SendMessage(ACustomEdit.Handle, EM_UNDO, 0, 0)
 end;
 
+class procedure TWinCEWSCustomEdit.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
+  begin
+    Inc(PreferredWidth, 5);
+    Inc(PreferredHeight, 5);
+  end;
+end;
+
 { TWinCEWSCustomMemo }
 
 class function TWinCEWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
@@ -1178,6 +1195,10 @@ begin
     Inc(PreferredWidth, 20);
     Inc(PreferredHeight, 12);
   end;
+  {$ifdef WinCEDebugHiRes}
+  DebugLn(Format('[TWinCEWSButtonControl.GetPreferredSize] CX %d CY %d',
+    [PreferredWidth, PreferredHeight]));
+  {$endif}
 end;
 
 
@@ -1192,6 +1213,8 @@ class function TWinCEWSButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   Params: TCreateWindowExParams;
+  PreferredWidth: integer;
+  PreferredHeight: integer;
 begin
   {$ifdef VerboseWinCE}
   DebugLn('TWinCEWSButton.CreateHandle');
@@ -1221,6 +1244,13 @@ begin
    ' Height ' + IntToStr(AWinControl.Height) +
    ' ParentHandle ' + IntToStr(AWinControl.Parent.Handle));
   {$endif}
+end;
+
+class procedure TWinCEWSButton.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  TWinCEWSButtonControl.GetPreferredSize(AWinControl, PreferredWidth, PreferredHeight,
+    WithThemeSpace);
 end;
 
 { TWinCEWSCustomCheckBox }
