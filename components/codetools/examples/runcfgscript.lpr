@@ -37,6 +37,7 @@ var
   Filename: String;
   Src: String;
   Engine: TCTConfigScriptEngine;
+  i: Integer;
 begin
   if Paramcount>0 then begin
     if Paramcount<>1 then begin
@@ -51,12 +52,19 @@ begin
       raise Exception.Create('unable to read '+Filename);
     Src:=Code.Source;
   end else begin
-    Src:='if (TargetOS=''win32'') then Result:=3';
+    Src:='if defined(bla) then Result:=3';
+    //Src:='if (TargetOS=''win32'') then Result:=3';
   end;
 
   Engine:=TCTConfigScriptEngine.Create;
   try
-    Engine.Execute(Src);
+    if not Engine.Execute(Src) then begin
+      writeln('Script failed to run:');
+      for i:=0 to Engine.ErrorCount-1 do
+        writeln(Engine.GetErrorStr(i));
+    end else begin
+      writeln('Result="',Engine.Variables['Result'],'"');
+    end;
   except
     on E: Exception do begin
       writeln(E.Message);

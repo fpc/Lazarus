@@ -30,7 +30,8 @@ unit CodeToolsCfgScript;
 interface
 
 uses
-  Classes, SysUtils, BasicCodeTools, AVL_Tree, KeywordFuncLists, FileProcs;
+  Classes, SysUtils, BasicCodeTools, AVL_Tree, KeywordFuncLists, FileProcs,
+  typinfo;
 
 type
   TCTCSValueType = (
@@ -56,6 +57,8 @@ type
   TCTCfgScriptVariables = class
   private
     FItems: TAVLTree; // tree of PCTCfgScriptVariable sorted for name
+    function GetValues(const Name: string): string;
+    procedure SetValues(const Name: string; const AValue: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -64,17 +67,22 @@ type
     procedure Assign(Source: TCTCfgScriptVariables);
     function GetVariable(const Name: PChar;
                       CreateIfNotExists: Boolean = false): PCTCfgScriptVariable;
+    property Values[const Name: string]: string read GetValues write SetValues; default;
   end;
 
 type
   TCTCfgScriptStackItemType = (
     ctcssNone,
     ctcssStatement,
+    ctcssBegin,
     ctcssIf,
     ctcssIfThen,
     ctcssIfElse,
+    ctcssExpression,
     ctcssRoundBracketOpen,
-    ctcssBegin
+    ctcssOperand,
+    ctcssOperator,
+    ctcssAssignment
     );
 const
   ctcssAllStatementStarts = [ctcssNone,ctcssIfThen,ctcssIfElse,ctcssBegin];
@@ -121,8 +129,18 @@ type
     function GetErrors(Index: integer): TCTCfgScriptError;
     procedure AddError(const aMsg: string; ErrorPos: PChar); overload;
     procedure AddError(const aMsg: string); overload;
-    procedure ParseStatement;
-    procedure ParseBegin;
+    procedure PushNumberConstant;
+    procedure PushBooleanValue(b: boolean);
+    procedure PushNumberValue(const Number: int64);
+    function RunDefined(Negate: boolean): boolean;
+    procedure PushStringConstant;
+    procedure RunStatement(Skip: boolean);
+    procedure RunBegin(Skip: boolean);
+    procedure RunIf(Skip: boolean);
+    procedure RunAssignment(Skip: boolean);
+    function RunExpression(var Value: TCTCfgScriptVariable): boolean;
+    function AtomIsKeyWord: boolean;
+    function ExecuteStack(Level: integer): boolean;
   public
     Src: PChar;
     AtomStart: PChar;
@@ -136,6 +154,7 @@ type
     function ErrorCount: integer;
     property Errors[Index: integer]: TCTCfgScriptError read GetErrors;
     function GetAtom: string;
+    function GetAtomOrNothing: string;
     function PosToLineCol(p: PChar; out Line, Column: integer): boolean;
     function PosToStr(p: PChar): string;
     function GetErrorStr(Index: integer): string;
@@ -150,8 +169,18 @@ function NewCTCSVariable(CloneName: PChar): PCTCfgScriptVariable;
 function CloneCTCSVariable(const V: PCTCfgScriptVariable): PCTCfgScriptVariable;
 procedure FreeCTCSVariable(var V: PCTCfgScriptVariable);
 procedure ClearCTCSVariable(const V: PCTCfgScriptVariable);
+procedure SetCTCSVariableAsString(const V: PCTCfgScriptVariable; const s: string);
+procedure SetCTCSVariableAsNumber(const V: PCTCfgScriptVariable; const i: int64);
+procedure SetCTCSVariableValue(const Src, Dest: PCTCfgScriptVariable);
+function GetCTCSVariableAsString(const V: PCTCfgScriptVariable): string;
 function CTCSNumberEqualsString(const Number: int64; const P: PChar): boolean; inline;
 function CTCSStringToNumber(P: PChar; out Number: int64): boolean;
+function CTCSVariableIsTrue(const V: PCTCfgScriptVariable): boolean; inline;
+function CTCSVariableIsFalse(const V: PCTCfgScriptVariable): boolean;
+
+function dbgs(const t: TCTCfgScriptStackItemType): string; overload;
+function dbgs(const t: TCTCSValueType): string; overload;
+function dbgs(const V: PCTCfgScriptVariable): string; overload;
 
 implementation
 
@@ -258,6 +287,44 @@ begin
   end;
 end;
 
+procedure SetCTCSVariableValue(const Src, Dest: PCTCfgScriptVariable);
+var
+  l: LongInt;
+begin
+  if Src=Dest then exit;
+  case Src^.ValueType of
+  ctcsvNone:
+    ClearCTCSVariable(Dest);
+  ctcsvString:
+    begin
+      if Dest^.ValueType<>ctcsvString then begin
+        Dest^.ValueType:=ctcsvString;
+        Dest^.StrStart:=nil;
+      end;
+      l:=Src^.StrLen;
+      Dest^.StrLen:=l;
+      ReAllocMem(Dest^.StrStart,l);
+      if l>0 then
+        System.Move(Src^.StrStart^,Dest^.StrStart^,l);
+    end;
+  ctcsvNumber:
+    begin
+      case Dest^.ValueType of
+      ctcsvNone:
+        Dest^.ValueType:=ctcsvNumber;
+      ctcsvString:
+        begin
+          Dest^.ValueType:=ctcsvNumber;
+          if Dest^.StrStart<>nil then
+            Freemem(Dest^.StrStart);
+        end;
+      ctcsvNumber: ;
+      end;
+      Dest^.Number:=Src^.Number;
+    end;
+  end;
+end;
+
 procedure FreeCTCSVariable(var V: PCTCfgScriptVariable);
 begin
   ClearCTCSVariable(V);
@@ -335,7 +402,119 @@ begin
   Result:=true;
 end;
 
+function CTCSVariableIsTrue(const V: PCTCfgScriptVariable): boolean;
+begin
+  Result:=not CTCSVariableIsFalse(V);
+end;
+
+function CTCSVariableIsFalse(const V: PCTCfgScriptVariable): boolean;
+begin
+  case V^.ValueType of
+  ctcsvNone:
+    Result:=false;
+  ctcsvString:
+    Result:=(V^.StrLen=1) and (V^.StrStart^='0');
+  ctcsvNumber:
+    Result:=V^.Number=0;
+  end;
+end;
+
+function dbgs(const t: TCTCfgScriptStackItemType): string;
+begin
+  Result:=GetEnumName(typeinfo(t),ord(t));
+end;
+
+function dbgs(const t: TCTCSValueType): string;
+begin
+  Result:=GetEnumName(typeinfo(t),ord(t));
+end;
+
+function dbgs(const V: PCTCfgScriptVariable): string;
+var
+  l: Integer;
+begin
+  Result:=GetIdentifier(V^.Name)+':';
+  case V^.ValueType of
+  ctcsvNone:
+    Result:=Result+'none';
+  ctcsvString:
+    begin
+      Result:=Result+'string=';
+      l:=length(Result);
+      SetLength(Result,l+V^.StrLen);
+      if V^.StrLen>0 then
+        System.Move(V^.StrStart^,Result[l+1],V^.StrLen);
+    end;
+  ctcsvNumber:
+    Result:=Result+'int64='+IntToStr(V^.Number);
+  end;
+end;
+
+function GetCTCSVariableAsString(const V: PCTCfgScriptVariable): string;
+begin
+  case V^.ValueType of
+  ctcsvNone: Result:='';
+  ctcsvString:
+    begin
+      SetLength(Result,V^.StrLen);
+      if Result<>'' then
+        System.Move(V^.StrStart^,Result[1],length(Result));
+    end;
+  ctcsvNumber: Result:=IntToStr(V^.Number);
+  else Result:='';
+  end;
+end;
+
+procedure SetCTCSVariableAsString(const V: PCTCfgScriptVariable; const s: string
+  );
+var
+  l: Integer;
+begin
+  if V^.ValueType<>ctcsvString then begin
+    V^.ValueType:=ctcsvString;
+    V^.StrLen:=0;
+    V^.StrStart:=nil;
+  end;
+  l:=length(s);
+  V^.StrLen:=l;
+  ReAllocMem(V^.StrStart,l);
+  if l>0 then
+    System.Move(s[1],V^.StrStart^,l);
+end;
+
+procedure SetCTCSVariableAsNumber(const V: PCTCfgScriptVariable; const i: int64
+  );
+begin
+  if (V^.ValueType=ctcsvString) and (V^.StrStart<>nil) then
+    Freemem(V^.StrStart);
+  V^.ValueType:=ctcsvNumber;
+  V^.Number:=i;
+end;
+
 { TCTCfgScriptVariables }
+
+function TCTCfgScriptVariables.GetValues(const Name: string): string;
+var
+  v: PCTCfgScriptVariable;
+begin
+  if Name='' then
+    exit('');
+  v:=GetVariable(PChar(Name));
+  if v=nil then
+    exit('');
+  Result:=GetCTCSVariableAsString(v);
+end;
+
+procedure TCTCfgScriptVariables.SetValues(const Name: string;
+  const AValue: string);
+var
+  v: PCTCfgScriptVariable;
+begin
+  if Name='' then
+    exit;
+  v:=GetVariable(PChar(Name),true);
+  SetCTCSVariableAsString(v,AValue);
+end;
 
 constructor TCTCfgScriptVariables.Create;
 begin
@@ -446,14 +625,16 @@ begin
   AddError(aMsg,AtomStart);
 end;
 
-procedure TCTConfigScriptEngine.ParseStatement;
+procedure TCTConfigScriptEngine.RunStatement(Skip: boolean);
+{ Examples:
+    begin..
+    if...
+    variable:=
+}
 
   procedure ErrorUnexpectedAtom;
   begin
-    if Src>AtomStart then
-      AddError('expected statement, but found '+GetAtom)
-    else
-      AddError('expected statement, but nothing found');
+    AddError('expected statement, but found '+GetAtomOrNothing)
   end;
 
 var
@@ -462,6 +643,7 @@ begin
   debugln(['TCTConfigScriptEngine.ParseStatement Atom=',GetAtom]);
   case AtomStart^ of
   #0: ;
+  ';': ; // empty statement
   'a'..'z','A'..'Z':
     begin
       // identifier or keyword
@@ -470,31 +652,21 @@ begin
       'B':
         if CompareIdentifiers('BEGIN',AtomStart)=0 then begin
           IsKeyword:=true;
-          ParseBegin;
-        end;
-      'E':
-        case UpChars[AtomStart[1]] of
-        'L':
-          if CompareIdentifiers('ELSE',AtomStart)=0 then begin
-            IsKeyword:=true;
-          end;
-        'N':
-          if CompareIdentifiers('END',AtomStart)=0 then begin
-            IsKeyword:=true;
-          end;
+          RunBegin(Skip);
         end;
       'I':
         if CompareIdentifiers('IF',AtomStart)=0 then begin
           IsKeyword:=true;
+          RunIf(Skip);
         end;
-      'T':
-        if CompareIdentifiers('THEN',AtomStart)=0 then begin
-          IsKeyword:=true;
-        end;
+      end;
+      if (not IsKeyword) and AtomIsKeyWord then begin
+        AddError('unexpected keyword '+GetAtom);
+        exit;
       end;
       if not IsKeyword then begin
         // parse assignment
-        debugln(['TCTConfigScriptEngine.Execute Identifier="',GetAtom,'" Variable exists=',Variables.GetVariable(AtomStart)<>nil]);
+        RunAssignment(Skip);
       end;
     end;
   else
@@ -502,11 +674,18 @@ begin
   end;
 end;
 
-procedure TCTConfigScriptEngine.ParseBegin;
+procedure TCTConfigScriptEngine.RunBegin(Skip: boolean);
+{ Examples:
+    begin
+    end
+    begin
+      statement statement
+    end
+}
 var
   BeginStart: PChar;
 
-  procedure AddMissingEnd;
+  procedure ErrorMissingEnd;
   begin
     AddError('begin at '+PosToStr(BeginStart)+' without end');
   end;
@@ -516,13 +695,578 @@ begin
   FStack.Push(ctcssBegin,AtomStart);
   repeat
     ReadRawNextPascalAtom(Src,AtomStart);
-    if (Src=#0) then begin
-      AddMissingEnd;
+    if (AtomStart=#0) then begin
+      ErrorMissingEnd;
+      break;
     end else if CompareIdentifiers('END',AtomStart)=0 then begin
       FStack.Pop;
+      break;
     end;
-    ParseStatement;
+    RunStatement(Skip);
   until false;
+end;
+
+procedure TCTConfigScriptEngine.RunIf(Skip: boolean);
+{ Examples:
+    if expression then statement else statement
+}
+var
+  IfStart: PChar;
+  Value: TCTCfgScriptVariable;
+  ExprIsTrue: Boolean;
+begin
+  IfStart:=AtomStart;
+  FStack.Push(ctcssIf,IfStart);
+  ReadRawNextPascalAtom(Src,AtomStart);
+  FillByte(Value,SizeOf(Value),0);
+  ExprIsTrue:=RunExpression(Value) and CTCSVariableIsTrue(@Value);
+
+  // read then
+  if CompareIdentifiers(AtomStart,'then')<>0 then
+    AddError('then expected, but '+GetAtomOrNothing+' found');
+  // then statement
+  ReadRawNextPascalAtom(Src,AtomStart);
+  RunStatement(not ExprIsTrue);
+  if CompareIdentifiers(AtomStart,'else')=0 then begin
+    // else statement
+    ReadRawNextPascalAtom(Src,AtomStart);
+    RunStatement(ExprIsTrue);
+  end;
+end;
+
+procedure TCTConfigScriptEngine.RunAssignment(Skip: boolean);
+{ Examples:
+    a:=3;
+}
+var
+  VarStart: PChar;
+  OperatorStart: PChar;
+  Value: TCTCfgScriptVariable;
+  Variable: PCTCfgScriptVariable;
+begin
+  VarStart:=AtomStart;
+  debugln(['TCTConfigScriptEngine.RunAssignment ',GetIdentifier(VarStart)]);
+  FStack.Push(ctcssAssignment,VarStart);
+  ReadRawNextPascalAtom(Src,AtomStart);
+  debugln(['TCTConfigScriptEngine.RunAssignment Operator=',GetAtom]);
+  OperatorStart:=AtomStart;
+  // read :=
+  if AtomStart^=#0 then begin
+    AddError('missing :=');
+    exit;
+  end;
+  if (not (AtomStart^ in [':','+','-','*','/'])) or (AtomStart[1]<>'=') then begin
+    AddError('expected :=, but '+GetAtom+' found');
+    exit;
+  end;
+  // read expression
+  ReadRawNextPascalAtom(Src,AtomStart);
+  FillByte(Value,SizeOf(Value),0);
+  RunExpression(Value);
+  if (not Skip) then begin
+    Variable:=Variables.GetVariable(VarStart,true);
+    debugln(['TCTConfigScriptEngine.RunAssignment ',GetIdentifier(VarStart),'=(Old=',dbgs(Variable),') := ',dbgs(PCTCfgScriptVariable(@Value))]);
+    if OperatorStart=nil then ;
+    SetCTCSVariableValue(@Value,Variable);
+    debugln(['TCTConfigScriptEngine.RunAssignment ',GetIdentifier(VarStart),' = ',dbgs(Variable)]);
+  end;
+end;
+
+procedure TCTConfigScriptEngine.PushNumberValue(const Number: int64);
+var
+  Item: PCTCfgScriptStackItem;
+begin
+  FStack.Push(ctcssOperand,AtomStart);
+  Item:=@FStack.Items[FStack.Top];
+  Item^.Operand.ValueType:=ctcsvNumber;
+  Item^.Operand.Number:=Number;
+end;
+
+function TCTConfigScriptEngine.RunDefined(Negate: boolean): boolean;
+var
+  VarStart: PChar;
+  b: Boolean;
+begin
+  Result:=false;
+  ReadRawNextPascalAtom(Src,AtomStart);
+  if AtomStart^<>'(' then begin
+    AddError('expected (, but found '+GetAtomOrNothing);
+    exit;
+  end;
+  ReadRawNextPascalAtom(Src,AtomStart);
+  if (not IsIdentStartChar[AtomStart^]) or AtomIsKeyWord then begin
+    AddError('expected identifier, but found '+GetAtomOrNothing);
+    exit;
+  end;
+  VarStart:=AtomStart;
+  ReadRawNextPascalAtom(Src,AtomStart);
+  if AtomStart^<>')' then begin
+    AddError('expected (, but found '+GetAtomOrNothing);
+    exit;
+  end;
+  b:=Variables.GetVariable(VarStart)<>nil;
+  if Negate then b:=not b;
+  PushBooleanValue(b);
+  Result:=true;
+end;
+
+procedure TCTConfigScriptEngine.PushStringConstant;
+var
+  Item: PCTCfgScriptStackItem;
+
+  procedure Add(p: PChar; Count: integer);
+  var
+    OldLen: LongInt;
+    NewLen: Integer;
+  begin
+    if Count=0 then exit;
+    OldLen:=Item^.Operand.StrLen;
+    NewLen:=OldLen+Count;
+    ReAllocMem(Item^.Operand.StrStart,NewLen);
+    System.Move(p^,Item^.Operand.StrStart[OldLen],Count);
+    Item^.Operand.StrLen:=NewLen;
+  end;
+
+var
+  p: PChar;
+  StartPos: PChar;
+  i: Integer;
+  c: char;
+begin
+  FStack.Push(ctcssOperand,AtomStart);
+  Item:=@FStack.Items[FStack.Top];
+  Item^.Operand.ValueType:=ctcsvString;
+  Item^.Operand.StrLen:=0;
+  Item^.Operand.StrStart:=nil;
+  p:=AtomStart;
+  while true do begin
+    case p^ of
+    #0:
+      break;
+    '#':
+      begin
+        inc(p);
+        StartPos:=p;
+        i:=0;
+        while (p^ in ['0'..'9']) do begin
+          i:=i*10+ord(p^)-ord('0');
+          if (i>255) then begin
+            AddError('character constant out of range');
+            while (p^ in ['0'..'9']) do inc(p);
+            break;
+          end;
+          inc(p);
+        end;
+        c:=chr(i);
+        Add(@c,1);
+      end;
+    '''':
+      begin
+        inc(p);
+        StartPos:=p;
+        while not (p^ in ['''',#0]) do
+          inc(p);
+        Add(StartPos,p-StartPos);
+        if p^='''' then
+          inc(p);
+      end;
+    else
+      break;
+    end;
+  end;
+end;
+
+procedure TCTConfigScriptEngine.PushNumberConstant;
+var
+  Item: PCTCfgScriptStackItem;
+  p: PChar;
+  Number: int64;
+  l: integer;
+  c: Char;
+begin
+  FStack.Push(ctcssOperand,AtomStart);
+  Item:=@FStack.Items[FStack.Top];
+  p:=AtomStart;
+  c:=p^;
+  if not (c in ['0'..'9']) then inc(p);
+  Number:=0;
+  try
+    while true do begin
+      case c of
+      '%':
+        case p^ of
+        '0': Number:=Number*2;
+        '1': Number:=Number*2+1;
+        else break;
+        end;
+      '&':
+        case p^ of
+        '0'..'7': Number:=Number*8+ord(p^)-ord('0');
+        else break;
+        end;
+      '$':
+        case p^ of
+        '0'..'9': Number:=Number*16+ord(p^)-ord('0');
+        'a'..'f': Number:=Number*16+ord(p^)-ord('a')+10;
+        'A'..'F': Number:=Number*16+ord(p^)-ord('A')+10;
+        else break;
+        end;
+      else
+        case p^ of
+        '0'..'9': Number:=Number*10+ord(p^)-ord('0');
+        else break;
+        end;
+      end;
+      inc(p);
+    end;
+  except
+    p:=AtomStart;
+  end;
+  if p=Src then begin
+    // a number
+    Item^.Operand.ValueType:=ctcsvNumber;
+    Item^.Operand.Number:=Number;
+  end else begin
+    // string constant
+    Item^.Operand.ValueType:=ctcsvString;
+    l:=Src-AtomStart;
+    Item^.Operand.StrLen:=l;
+    Item^.Operand.StrStart:=GetMem(l);
+    System.Move(AtomStart^,Item^.Operand.StrStart^,l);
+  end;
+end;
+
+procedure TCTConfigScriptEngine.PushBooleanValue(b: boolean);
+var
+  Item: PCTCfgScriptStackItem;
+begin
+  FStack.Push(ctcssOperand,AtomStart);
+  Item:=@FStack.Items[FStack.Top];
+  Item^.Operand.ValueType:=ctcsvNumber;
+  if b then
+    Item^.Operand.Number:=1
+  else
+    Item^.Operand.Number:=0;
+end;
+
+function TCTConfigScriptEngine.RunExpression(var Value: TCTCfgScriptVariable
+  ): boolean;
+{ Examples:
+    A   is false if A=0 or A='0'
+    defined(A)
+    (A)
+    unary operators:
+
+    binary operators:
+
+}
+  procedure ErrorUnexpectedRoundBracketClose;
+  begin
+    AddError('expression expected, but ) found');
+  end;
+
+  function OperandAllowed: boolean;
+  begin
+    case FStack.TopTyp of
+    ctcssExpression,ctcssOperator,ctcssRoundBracketOpen:
+      Result:=true;
+    else
+      debugln(['TCTConfigScriptEngine.RunExpression.OperandAllowed no']);
+      AddError('operator expected but '+GetAtom+' found');
+      Result:=false;
+    end;
+  end;
+
+  function BinaryOperatorAllowed: boolean;
+  begin
+    case FStack.TopTyp of
+    ctcssOperand:
+      Result:=true;
+    else
+      debugln(['TCTConfigScriptEngine.RunExpression.BinaryOperatorAllowed no']);
+      AddError('operand expected but '+GetAtom+' found');
+      Result:=false;
+    end;
+  end;
+
+  function PushBinaryOperator: boolean;
+  begin
+    Result:=BinaryOperatorAllowed;
+    if not Result then exit;
+    FStack.Push(ctcssOperator,AtomStart);
+  end;
+
+var
+  ExprStart: PChar;
+  IsKeyword: Boolean;
+  Item: PCTCfgScriptStackItem;
+  StartTop: LongInt;
+begin
+  Result:=true;
+  ExprStart:=AtomStart;
+  StartTop:=FStack.Top;
+  FStack.Push(ctcssExpression,ExprStart);
+  while true do begin
+    debugln(['TCTConfigScriptEngine.RunExpression Atom=',GetAtom]);
+    case AtomStart^ of
+    #0:
+      break;
+    '(':
+      begin
+        if not OperandAllowed then break;
+        FStack.Push(ctcssRoundBracketOpen,AtomStart);
+      end;
+    ')':
+      begin
+        if FStack.TopTyp=ctcssRoundBracketOpen then
+          FStack.Pop
+        else
+          ErrorUnexpectedRoundBracketClose;
+      end;
+    '+','-','=','>','<','*','/':
+      if not PushBinaryOperator then break;
+    'a'..'z','A'..'Z':
+      begin
+        // a keyword or an identifier
+
+        debugln(['TCTConfigScriptEngine.RunExpression StackTop=',dbgs(FStack.TopTyp)]);
+        // execute
+        IsKeyword:=false;
+        case UpChars[AtomStart^] of
+        'A':
+          if CompareIdentifiers('and',AtomStart)=0 then begin
+            IsKeyword:=true;
+            if not PushBinaryOperator then break;
+          end;
+        'D':
+          case UpChars[AtomStart[1]] of
+          'E':
+            if CompareIdentifiers('defined',AtomStart)=0 then begin
+              IsKeyword:=true;
+              if not OperandAllowed then break;
+              if not RunDefined(false) then break;
+            end;
+          'I':
+            if CompareIdentifiers('div',AtomStart)=0 then begin
+              IsKeyword:=true;
+              if not PushBinaryOperator then break;
+            end;
+          end;
+        'E':
+          case UpChars[AtomStart[1]] of
+          'L':
+            if CompareIdentifiers('else',AtomStart)=0 then
+              break;
+          'N':
+            if CompareIdentifiers('end',AtomStart)=0 then
+              break;
+          end;
+        'F':
+          if CompareIdentifiers('false',AtomStart)=0 then begin
+            IsKeyword:=true;
+            if not OperandAllowed then break;
+            PushBooleanValue(false);
+          end;
+        'M':
+          if CompareIdentifiers('mod',AtomStart)=0 then begin
+            IsKeyword:=true;
+            if not PushBinaryOperator then break;
+          end;
+        'N':
+          if CompareIdentifiers('not',AtomStart)=0 then begin
+            IsKeyword:=true;
+            if not OperandAllowed then break;
+            FStack.Push(ctcssOperator,AtomStart);
+          end;
+        'O':
+          if CompareIdentifiers('or',AtomStart)=0 then begin
+            IsKeyword:=true;
+            if not PushBinaryOperator then break;
+          end;
+        'T':
+          case UpChars[AtomStart[1]] of
+          'H':
+            if CompareIdentifiers('then',AtomStart)=0 then begin
+              break;
+            end;
+          'R':
+            if CompareIdentifiers('true',AtomStart)=0 then begin
+              IsKeyword:=true;
+              if not OperandAllowed then break;
+              PushBooleanValue(true);
+            end;
+          end;
+        'U':
+          if CompareIdentifiers('undefined',AtomStart)=0 then begin
+            IsKeyword:=true;
+            if not OperandAllowed then break;
+            if not RunDefined(true) then break;
+          end;
+        'X':
+          if CompareIdentifiers('xor',AtomStart)=0 then begin
+            IsKeyword:=true;
+            if not PushBinaryOperator then break;
+          end;
+        end;
+        if (not IsKeyword) and AtomIsKeyWord then begin
+          AddError('unexpected keyword '+GetAtom);
+          break;
+        end;
+        if not IsKeyword then begin
+          // a variable
+          if not OperandAllowed then break;
+
+          debugln(['TCTConfigScriptEngine.RunExpression todo variable']);
+        end;
+      end;
+    '#','''':
+      begin
+        if not OperandAllowed then break;
+        PushStringConstant;
+      end;
+    '0'..'9','$','%','&':
+      begin
+        // float, decimal, hex, octal, binary constant
+        if not OperandAllowed then break;
+        PushNumberConstant;
+      end;
+    else
+      if FStack.TopTyp in [ctcssOperator,ctcssRoundBracketOpen]
+      then begin
+        AddError('operand expected, but '+GetAtom+' found');
+        Result:=false;
+      end;
+      break;
+    end;
+    ReadRawNextPascalAtom(Src,AtomStart);
+  end;
+
+  if Result then begin
+    if FStack.Top=StartTop+1 then begin
+      // empty expression
+      AddError('operand expected, but '+GetAtom+' found');
+    end else if (FStack.TopTyp<>ctcssOperand) or (FStack.Top<>StartTop+2) then begin
+      // unfinished expression
+      if FStack.TopTyp in [ctcssOperator,ctcssRoundBracketOpen]
+      then
+        AddError('operand expected, but '+GetAtom+' found')
+      else
+        AddError('operator expected, but '+GetAtom+' found');
+      Result:=false;
+    end
+    else begin
+      // success
+      Item:=@FStack.Items[FStack.Top];
+      SetCTCSVariableValue(@Item^.Operand,@Value);
+      debugln(['TCTConfigScriptEngine.RunExpression Result="',dbgs(PCTCfgScriptVariable(@Value)),'" ',dbgs(@Value)]);
+    end;
+  end;
+
+  // clean up stack
+  while (FStack.Top>StartTop) do FStack.Pop;
+end;
+
+function TCTConfigScriptEngine.AtomIsKeyWord: boolean;
+begin
+  Result:=false;
+  case UpChars[AtomStart^] of
+  'A':
+    if CompareIdentifiers('and',AtomStart)=0 then
+      exit(true);
+  'B':
+    if CompareIdentifiers('begin',AtomStart)=0 then
+      exit(true);
+  'C':
+    if CompareIdentifiers('case',AtomStart)=0 then
+      exit(true);
+  'D':
+    case UpChars[AtomStart[1]] of
+    'E':
+      if CompareIdentifiers('defined',AtomStart)=0 then
+        exit(true);
+    'I':
+      if CompareIdentifiers('div',AtomStart)=0 then
+        exit(true);
+    end;
+  'E':
+    case UpChars[AtomStart[1]] of
+    'L':
+      if CompareIdentifiers('else',AtomStart)=0 then
+        exit(true);
+    'N':
+      if CompareIdentifiers('end',AtomStart)=0 then
+        exit(true);
+    end;
+  'F':
+    case UpChars[AtomStart[1]] of
+    'A':
+      if CompareIdentifiers('false',AtomStart)=0 then
+        exit(true);
+    'U':
+      if CompareIdentifiers('function',AtomStart)=0 then
+        exit(true);
+    end;
+  'I':
+    case UpChars[AtomStart[1]] of
+    'F':
+      if CompareIdentifiers('if',AtomStart)=0 then
+        exit(true);
+    'N':
+      if CompareIdentifiers('in',AtomStart)=0 then
+        exit(true);
+    end;
+  'M':
+    if CompareIdentifiers('mod',AtomStart)=0 then
+      exit(true);
+  'N':
+    if CompareIdentifiers('not',AtomStart)=0 then
+      exit(true);
+  'O':
+    case UpChars[AtomStart[1]] of
+    'F':
+      if CompareIdentifiers('of',AtomStart)=0 then
+        exit(true);
+    'R':
+      if CompareIdentifiers('or',AtomStart)=0 then
+        exit(true);
+    end;
+  'P':
+    if CompareIdentifiers('procedure',AtomStart)=0 then
+      exit(true);
+  'S':
+    case UpChars[AtomStart[1]] of
+    'H':
+      case UpChars[AtomStart[2]] of
+      'L':
+        if CompareIdentifiers('shl',AtomStart)=0 then
+          exit(true);
+      'R':
+        if CompareIdentifiers('shr',AtomStart)=0 then
+          exit(true);
+      end;
+    end;
+  'T':
+    case UpChars[AtomStart[1]] of
+    'H':
+      if CompareIdentifiers('then',AtomStart)=0 then
+        exit(true);
+    'R':
+      if CompareIdentifiers('true',AtomStart)=0 then
+        exit(true);
+    end;
+  'X':
+    if CompareIdentifiers('xor',AtomStart)=0 then
+      exit(true);
+  'U':
+    if CompareIdentifiers('undefined',AtomStart)=0 then
+      exit(true);
+  end;
+end;
+
+function TCTConfigScriptEngine.ExecuteStack(Level: integer): boolean;
+begin
+  Result:=false;
+
 end;
 
 constructor TCTConfigScriptEngine.Create;
@@ -571,7 +1315,7 @@ begin
   // execute all statements
   ReadRawNextPascalAtom(Src,AtomStart);
   while Src^<>#0 do begin
-    ParseStatement;
+    RunStatement(false);
     ReadRawNextPascalAtom(Src,AtomStart);
   end;
 
@@ -590,6 +1334,17 @@ begin
   SetLength(Result,Src-AtomStart);
   if Result<>'' then
     System.Move(AtomStart^,Result[1],length(Result));
+end;
+
+function TCTConfigScriptEngine.GetAtomOrNothing: string;
+begin
+  if (AtomStart=nil) or (AtomStart>Src) then
+    Result:='nothing'
+  else begin
+    SetLength(Result,Src-AtomStart);
+    if Result<>'' then
+      System.Move(AtomStart^,Result[1],length(Result));
+  end;
 end;
 
 function TCTConfigScriptEngine.PosToLineCol(p: PChar; out Line, Column: integer

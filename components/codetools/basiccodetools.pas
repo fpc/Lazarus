@@ -1783,7 +1783,7 @@ begin
   '''','#':  // string constant
     begin
       while true do begin
-        case (Src^) of
+        case Src^ of
         #0:
           if (SrcEnd=nil) or (Src>=SrcEnd) then
             break
@@ -1792,7 +1792,7 @@ begin
         '#':
           begin
             inc(Src);
-            while (Src^ in ['0'..'9']) do
+            while Src^ in ['0'..'9'] do
               inc(Src);
           end;
         '''':
