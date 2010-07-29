@@ -201,6 +201,10 @@ begin
       writeln('Config=',CfgFile.Filename,' Exists=',CfgFile.FileExists);
     end;
   end;
+  if (ConfigCache.UnitPaths=nil) or (ConfigCache.UnitPaths.Count=0) then
+    writeln('WARNING: no ppu search paths')
+  else
+    writeln('Number of PPU search paths=',ConfigCache.UnitPaths.Count);
 end;
 
 procedure TTestFPCSourceUnitRules.WriteDuplicatesInPPUPath(
