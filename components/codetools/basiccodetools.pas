@@ -1637,8 +1637,8 @@ begin
   SrcStart:=PChar(Source);
   SrcPos:=@Source[Position];
   ReadRawNextPascalAtom(SrcPos,SrcAtomStart,SrcStart+len);
-  Position:=SrcPos-SrcStart;
-  AtomStart:=SrcAtomStart-SrcStart;
+  Position:=SrcPos-SrcStart+1;
+  AtomStart:=SrcAtomStart-SrcStart+1;
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
