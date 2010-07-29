@@ -89,6 +89,7 @@ type
     class procedure SetIcon(const AForm: TCustomForm; const Small, Big: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TWinCEWSForm }
@@ -126,7 +127,7 @@ type
 
 implementation
 
-uses Winceint;
+uses Winceint, wincewsmenus;
 
 { TWinCEWSScrollBox }
 
@@ -452,6 +453,22 @@ class procedure TWinCEWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 begin
   ShowWindow(ACustomForm.Handle, SW_SHOW);
   BringWindowToTop(ACustomForm.Handle);
+end;
+
+class procedure TWinCEWSCustomForm.ShowHide(const AWinControl: TWinControl);
+var
+  lForm: TCustomForm absolute AWinControl;
+begin
+  TWinCEWSWinControl.ShowHide(AWinControl);
+
+  // In atPDA mode, if there is no menu installed, we need to remove
+  // the menu of the previously focused application, otherwise it will
+  // remain visible
+  if (Application.ApplicationType = atKeyPadDevice) and
+    (lForm.Menu = nil) then
+  begin
+    CeSetMenu(AWinControl.Handle, 0, nil);
+  end;
 end;
 
 end.
