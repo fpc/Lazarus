@@ -10,7 +10,7 @@ uses
   Forms
   { you can add units after this }, Unit1;
 
-{$IFDEF WINDOWS}{$R project1.rc}{$ENDIF}
+{$R *.res}
 
 begin
   Application.Initialize;

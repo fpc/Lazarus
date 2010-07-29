@@ -34,6 +34,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TForm1 }
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -143,9 +145,6 @@ procedure TForm1.RGClick(Sender: TObject);
 begin
   PB.Invalidate;
 end;
-
-initialization
-  {$I unit1.lrs}  
 
 end.
 
