@@ -57,7 +57,6 @@ begin
   Engine:=TCTConfigScriptEngine.Create;
   try
     Engine.Execute(Src);
-
   except
     on E: Exception do begin
       writeln(E.Message);

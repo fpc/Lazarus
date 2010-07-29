@@ -81,7 +81,7 @@ const
 type
   TCTCfgScriptStackItem = record
     Typ: TCTCfgScriptStackItemType;
-    StartPos: integer;
+    StartPos: PChar;
     Operand: TCTCfgScriptVariable;
   end;
   PCTCfgScriptStackItem = ^TCTCfgScriptStackItem;
@@ -98,7 +98,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure Push(Typ: TCTCfgScriptStackItemType; StartPos: integer);
+    procedure Push(Typ: TCTCfgScriptStackItemType; const StartPos: PChar);
     procedure Pop;
   end;
 
@@ -121,6 +121,8 @@ type
     function GetErrors(Index: integer): TCTCfgScriptError;
     procedure AddError(const aMsg: string; ErrorPos: PChar); overload;
     procedure AddError(const aMsg: string); overload;
+    procedure ParseStatement;
+    procedure ParseBegin;
   public
     Src: PChar;
     AtomStart: PChar;
@@ -444,6 +446,85 @@ begin
   AddError(aMsg,AtomStart);
 end;
 
+procedure TCTConfigScriptEngine.ParseStatement;
+
+  procedure ErrorUnexpectedAtom;
+  begin
+    if Src>AtomStart then
+      AddError('expected statement, but found '+GetAtom)
+    else
+      AddError('expected statement, but nothing found');
+  end;
+
+var
+  IsKeyword: Boolean;
+begin
+  debugln(['TCTConfigScriptEngine.ParseStatement Atom=',GetAtom]);
+  case AtomStart^ of
+  #0: ;
+  'a'..'z','A'..'Z':
+    begin
+      // identifier or keyword
+      IsKeyword:=false;
+      case UpChars[AtomStart^] of
+      'B':
+        if CompareIdentifiers('BEGIN',AtomStart)=0 then begin
+          IsKeyword:=true;
+          ParseBegin;
+        end;
+      'E':
+        case UpChars[AtomStart[1]] of
+        'L':
+          if CompareIdentifiers('ELSE',AtomStart)=0 then begin
+            IsKeyword:=true;
+          end;
+        'N':
+          if CompareIdentifiers('END',AtomStart)=0 then begin
+            IsKeyword:=true;
+          end;
+        end;
+      'I':
+        if CompareIdentifiers('IF',AtomStart)=0 then begin
+          IsKeyword:=true;
+        end;
+      'T':
+        if CompareIdentifiers('THEN',AtomStart)=0 then begin
+          IsKeyword:=true;
+        end;
+      end;
+      if not IsKeyword then begin
+        // parse assignment
+        debugln(['TCTConfigScriptEngine.Execute Identifier="',GetAtom,'" Variable exists=',Variables.GetVariable(AtomStart)<>nil]);
+      end;
+    end;
+  else
+    ErrorUnexpectedAtom;
+  end;
+end;
+
+procedure TCTConfigScriptEngine.ParseBegin;
+var
+  BeginStart: PChar;
+
+  procedure AddMissingEnd;
+  begin
+    AddError('begin at '+PosToStr(BeginStart)+' without end');
+  end;
+
+begin
+  BeginStart:=AtomStart;
+  FStack.Push(ctcssBegin,AtomStart);
+  repeat
+    ReadRawNextPascalAtom(Src,AtomStart);
+    if (Src=#0) then begin
+      AddMissingEnd;
+    end else if CompareIdentifiers('END',AtomStart)=0 then begin
+      FStack.Pop;
+    end;
+    ParseStatement;
+  until false;
+end;
+
 constructor TCTConfigScriptEngine.Create;
 begin
   FVariables:=TCTCfgScriptVariables.Create;
@@ -471,14 +552,6 @@ end;
 
 function TCTConfigScriptEngine.Execute(const Source: string;
   StopAfterErrors: integer): boolean;
-
-  procedure ErrorUnexpectedAtom;
-  begin
-    AddError('expected statement, but found '+GetAtom);
-  end;
-
-var
-  IsKeyword: Boolean;
 begin
   FStack.Clear;
   ClearErrors;
@@ -494,50 +567,12 @@ begin
   SrcEnd:=SrcStart+length(Source);
   Src:=SrcStart;
   AtomStart:=Src;
-  // execute all statements
-  while true do begin
-    ReadRawNextPascalAtom(Src,AtomStart);
-    debugln(['TCTConfigScriptEngine.Execute Atom=',GetAtom]);
-    case AtomStart^ of
-    #0: break;
-    'a'..'z','A'..'Z':
-      begin
-        // identifier or keyword
-        IsKeyword:=false;
-        case UpChars[AtomStart^] of
-        'B':
-          if CompareIdentifiers('BEGIN',AtomStart)=0 then begin
-            IsKeyword:=true;
-          end;
-        'E':
-          case UpChars[AtomStart[1]] of
-          'L':
-            if CompareIdentifiers('ELSE',AtomStart)=0 then begin
-              IsKeyword:=true;
-            end;
-          'N':
-            if CompareIdentifiers('END',AtomStart)=0 then begin
-              IsKeyword:=true;
-            end;
-          end;
-        'I':
-          if CompareIdentifiers('IF',AtomStart)=0 then begin
-            IsKeyword:=true;
-          end;
-        'T':
-          if CompareIdentifiers('THEN',AtomStart)=0 then begin
-            IsKeyword:=true;
-          end;
-        end;
-        if not IsKeyword then begin
-          // parse assignment
-          debugln(['TCTConfigScriptEngine.Execute Identifier="',GetAtom,'" Variable exists=',Variables.GetVariable(AtomStart)<>nil]);
-        end;
-      end;
-    else
-      ErrorUnexpectedAtom;
-    end;
 
+  // execute all statements
+  ReadRawNextPascalAtom(Src,AtomStart);
+  while Src^<>#0 do begin
+    ParseStatement;
+    ReadRawNextPascalAtom(Src,AtomStart);
   end;
 
   Result:=ErrorCount=0;
@@ -636,7 +671,7 @@ begin
 end;
 
 procedure TCTCfgScriptStack.Push(Typ: TCTCfgScriptStackItemType;
-  StartPos: integer);
+  const StartPos: PChar);
 var
   OldCapacity: LongInt;
   Item: PCTCfgScriptStackItem;

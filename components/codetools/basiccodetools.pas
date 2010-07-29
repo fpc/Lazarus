@@ -1703,7 +1703,7 @@ begin
       if (Src[1]='/') then begin
         // comment start -> read til line end
         inc(Src);
-        while not (Src^ in [#10,#13]) do
+        while not (Src^ in [#0,#10,#13]) do
           inc(Src);
       end else
         break;
@@ -1798,9 +1798,10 @@ begin
         '''':
           begin
             inc(Src);
-            while (Src^<>'''') do
+            while not (Src^ in ['''',#0]) do
               inc(Src);
-            inc(Src);
+            if Src^='''' then
+              inc(Src);
           end;
         else
           break;
@@ -1810,7 +1811,7 @@ begin
   '$':  // hex constant
     begin
       inc(Src);
-      while (IsHexNumberChar[Src^]) do
+      while IsHexNumberChar[Src^] do
         inc(Src);
     end;
   '&':  // octal constant
@@ -1848,7 +1849,7 @@ begin
     if (Src[1]='*') then begin
       // compiler directive -> read til comment end
       inc(Src,2);
-      while (Src^<>'*') or (Src[1]<>')') do
+      while (Src^<>#0) and ((Src^<>'*') or (Src[1]<>')')) do
         inc(Src);
       inc(Src,2);
     end else
