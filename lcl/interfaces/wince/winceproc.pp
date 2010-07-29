@@ -103,6 +103,7 @@ function WideStrCmp(W1, W2: PWideChar): Integer;
 { Automatic detection of platform }
 function GetWinCEPlatform: TApplicationType;
 function GetWinCEVersion: TWinCEVersion;
+function IsHiResMode: Boolean;
 
 var
   DefaultWindowInfo: TWindowInfo;
@@ -1304,6 +1305,15 @@ begin
   end;
 end;
 {$endif}
+
+function IsHiResMode: Boolean;
+begin
+  {$ifdef Win32}
+  Result := False;
+  {$else}
+  Result := Screen.Width > 240;
+  {$endif}
+end;
 
 
 {-------------------------------------------------------------------------------

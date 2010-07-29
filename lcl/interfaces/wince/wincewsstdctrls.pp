@@ -1288,7 +1288,8 @@ begin
     iconHeight := GetSystemMetrics(SM_CYMENUCHECK);
     if iconHeight > PreferredHeight then
       PreferredHeight := iconHeight;
-    if WithThemeSpace then begin
+    if WithThemeSpace then
+    begin
       Inc(PreferredWidth, 6);
       Inc(PreferredHeight, 6);
     end;
@@ -1296,6 +1297,10 @@ begin
     // All TCustomCheckBox descendents were consistently too small
     // on autosize, so an extra spacing is added it to fix that
     Inc(PreferredWidth, 10);
+
+    // In Hi-res aware software the checkbox width needs to be even larger
+    if IsHiResMode() then
+      Inc(PreferredWidth, 20);
   end;
 end;
 
