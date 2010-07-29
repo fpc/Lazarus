@@ -539,7 +539,7 @@ var
     if ConfigCache.Units=nil then exit;
     AFilename:=ConfigCache.Units['system'];
     if AFilename='' then exit;
-    if CompareFileExt(AFilename,'.ppu')<>0 then exit;
+    if CompareFileExt(AFilename,'.ppu',false)<>0 then exit;
     Result:=true;
   end;
 
