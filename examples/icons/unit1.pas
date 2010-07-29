@@ -34,6 +34,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TForm1 }
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -75,9 +77,6 @@ begin
     TrackBar1Change(TrackBar1);
   end;
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 

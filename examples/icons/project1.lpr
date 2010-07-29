@@ -11,7 +11,7 @@ uses
   Forms
   { you can add units after this }, Unit1, IcnsTypes;
 
-{$IFDEF WINDOWS}{$R manifest.rc}{$ENDIF}
+{$R *.res}
 
 begin
   Application.Initialize;

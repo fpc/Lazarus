@@ -3111,11 +3111,10 @@ examples/htmlhelp_ipro/htmlhelpsample.lpi svneol=native#text/plain
 examples/htmlhelp_ipro/htmlhelpsample.lpr svneol=native#text/plain
 examples/icons/icons/lazarus.icns -text svneol=unset#image/x-icns
 examples/icons/icons/lazarus.ico -text svneol=unset#image/icon
-examples/icons/manifest.rc svneol=native#text/plain
 examples/icons/project1.lpi svneol=native#text/plain
 examples/icons/project1.lpr svneol=native#text/plain
+examples/icons/project1.res -text
 examples/icons/unit1.lfm svneol=native#text/plain
-examples/icons/unit1.lrs svneol=native#text/pascal
 examples/icons/unit1.pas svneol=native#text/pascal
 examples/idequickfix/quickfixdemo1.pas svneol=native#text/plain
 examples/idequickfix/quickfixexample.lpk svneol=native#text/plain
