@@ -30,7 +30,7 @@ unit CodeToolsCfgScript;
 interface
 
 uses
-  Classes, SysUtils, BasicCodeTools, AVL_Tree, KeywordFuncLists;
+  Classes, SysUtils, BasicCodeTools, AVL_Tree, KeywordFuncLists, FileProcs;
 
 type
   TCTCSValueType = (
@@ -107,8 +107,8 @@ type
   TCTCfgScriptError = class
   public
     Msg: string;
-    ErrorPos: integer;
-    constructor Create(const aMsg: string; anErrorPos: integer);
+    ErrorPos: PChar;
+    constructor Create(const aMsg: string; anErrorPos: PChar);
   end;
 
   { TCTConfigScriptEngine }
@@ -124,7 +124,8 @@ type
   public
     Src: PChar;
     AtomStart: PChar;
-    SrcStart: PChar;
+    SrcStart, SrcEnd: PChar;
+    MaxErrorCount: integer;
     constructor Create;
     destructor Destroy; override;
     procedure ClearErrors;
@@ -133,6 +134,9 @@ type
     function ErrorCount: integer;
     property Errors[Index: integer]: TCTCfgScriptError read GetErrors;
     function GetAtom: string;
+    function PosToLineCol(p: PChar; out Line, Column: integer): boolean;
+    function PosToStr(p: PChar): string;
+    function GetErrorStr(Index: integer): string;
   end;
 
 function CompareCTCSVariables(Var1, Var2: Pointer): integer;
@@ -429,8 +433,10 @@ procedure TCTConfigScriptEngine.AddError(const aMsg: string; ErrorPos: PChar);
 var
   Err: TCTCfgScriptError;
 begin
-  Err:=TCTCfgScriptError.Create(aMsg,ErrorPos-SrcStart);
+  Err:=TCTCfgScriptError.Create(aMsg,ErrorPos);
   FErrors.Add(Err);
+  if ErrorCount>=MaxErrorCount then
+    raise Exception.Create(GetErrorStr(ErrorCount-1));
 end;
 
 procedure TCTConfigScriptEngine.AddError(const aMsg: string);
@@ -458,7 +464,7 @@ procedure TCTConfigScriptEngine.ClearErrors;
 var
   i: Integer;
 begin
-  for i:=0 to FErrors.Count do
+  for i:=0 to FErrors.Count-1 do
     TObject(FErrors[i]).Free;
   FErrors.Clear;
 end;
@@ -471,23 +477,62 @@ function TCTConfigScriptEngine.Execute(const Source: string;
     AddError('expected statement, but found '+GetAtom);
   end;
 
+var
+  IsKeyword: Boolean;
 begin
   FStack.Clear;
   ClearErrors;
+  MaxErrorCount:=StopAfterErrors;
+  SrcStart:=#0;
+  SrcEnd:=SrcStart;
+  Src:=SrcStart;
+  AtomStart:=SrcStart;
 
   if Source='' then exit(true);
 
   SrcStart:=PChar(Source);
+  SrcEnd:=SrcStart+length(Source);
   Src:=SrcStart;
   AtomStart:=Src;
   // execute all statements
   while true do begin
     ReadRawNextPascalAtom(Src,AtomStart);
-    case UpChars[Src^] of
+    debugln(['TCTConfigScriptEngine.Execute Atom=',GetAtom]);
+    case AtomStart^ of
     #0: break;
-    'I':
-      if CompareIdentifiers('IF',Src)=0 then begin
-
+    'a'..'z','A'..'Z':
+      begin
+        // identifier or keyword
+        IsKeyword:=false;
+        case UpChars[AtomStart^] of
+        'B':
+          if CompareIdentifiers('BEGIN',AtomStart)=0 then begin
+            IsKeyword:=true;
+          end;
+        'E':
+          case UpChars[AtomStart[1]] of
+          'L':
+            if CompareIdentifiers('ELSE',AtomStart)=0 then begin
+              IsKeyword:=true;
+            end;
+          'N':
+            if CompareIdentifiers('END',AtomStart)=0 then begin
+              IsKeyword:=true;
+            end;
+          end;
+        'I':
+          if CompareIdentifiers('IF',AtomStart)=0 then begin
+            IsKeyword:=true;
+          end;
+        'T':
+          if CompareIdentifiers('THEN',AtomStart)=0 then begin
+            IsKeyword:=true;
+          end;
+        end;
+        if not IsKeyword then begin
+          // parse assignment
+          debugln(['TCTConfigScriptEngine.Execute Identifier="',GetAtom,'" Variable exists=',Variables.GetVariable(AtomStart)<>nil]);
+        end;
       end;
     else
       ErrorUnexpectedAtom;
@@ -510,6 +555,54 @@ begin
   SetLength(Result,Src-AtomStart);
   if Result<>'' then
     System.Move(AtomStart^,Result[1],length(Result));
+end;
+
+function TCTConfigScriptEngine.PosToLineCol(p: PChar; out Line, Column: integer
+  ): boolean;
+var
+  run: PChar;
+begin
+  Line:=1;
+  Column:=1;
+  if (p<SrcStart) or (p>SrcEnd) then exit(false);
+  run:=SrcStart;
+  while run<p do begin
+    if Run^ in [#10,#13] then begin
+      inc(Line);
+      Column:=1;
+      if (Run[1] in [#10,#13]) and (Run^<>Run[1]) then
+        inc(Run,2)
+      else
+        inc(Run);
+    end else begin
+      inc(Run);
+      inc(Column);
+    end;
+  end;
+end;
+
+function TCTConfigScriptEngine.PosToStr(p: PChar): string;
+var
+  Line: integer;
+  Column: integer;
+begin
+  if PosToLineCol(p,Line,Column) then
+    Result:='('+IntToStr(Line)+','+IntToStr(Column)+')'
+  else
+    Result:='';
+end;
+
+function TCTConfigScriptEngine.GetErrorStr(Index: integer): string;
+var
+  Err: TCTCfgScriptError;
+  s: String;
+begin
+  Err:=Errors[Index];
+  Result:='Error: ';
+  s:=PosToStr(Err.ErrorPos);
+  if s<>'' then
+    Result:=Result+s+' ';
+  Result:=Result+Err.Msg;
 end;
 
 { TCTCfgScriptStack }
@@ -589,7 +682,7 @@ end;
 
 { TCTCfgScriptError }
 
-constructor TCTCfgScriptError.Create(const aMsg: string; anErrorPos: integer);
+constructor TCTCfgScriptError.Create(const aMsg: string; anErrorPos: PChar);
 begin
   Msg:=aMsg;
   ErrorPos:=anErrorPos;

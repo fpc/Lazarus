@@ -55,7 +55,14 @@ begin
   end;
 
   Engine:=TCTConfigScriptEngine.Create;
+  try
+    Engine.Execute(Src);
 
+  except
+    on E: Exception do begin
+      writeln(E.Message);
+    end;
+  end;
   Engine.Free;
 end.
 
