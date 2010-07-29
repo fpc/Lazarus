@@ -8,6 +8,7 @@ object CodeBrowserView: TCodeBrowserView
   ClientHeight = 563
   ClientWidth = 623
   OnCreate = FormCreate
+  OnDeactivate = FormDeactivate
   OnDestroy = FormDestroy
   LCLVersion = '0.9.29'
   object ScopeGroupBox: TGroupBox
@@ -147,6 +148,7 @@ object CodeBrowserView: TCodeBrowserView
     ShowHint = True
     TabOrder = 2
     OnMouseDown = BrowseTreeViewMouseDown
+    OnMouseMove = BrowseTreeViewMouseMove
     OnShowHint = BrowseTreeViewShowHint
     Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end

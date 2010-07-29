@@ -215,6 +215,9 @@ type
     UnitFilterBeginsSpeedButton: TSpeedButton;
     UnitFilterContainsSpeedButton: TSpeedButton;
     UnitFilterEdit: TEdit;
+    procedure BrowseTreeViewMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
+    procedure FormDeactivate(Sender: TObject);
     procedure UseIdentifierInCurUnitMenuItemClick(Sender: TObject);
     procedure UsePkgInCurUnitMenuItemClick(Sender: TObject);
     procedure UsePkgInProjectMenuItemClick(Sender: TObject);
@@ -248,6 +251,7 @@ type
     procedure ShowPrivateCheckBoxChange(Sender: TObject);
     procedure ShowUnitsCheckBoxChange(Sender: TObject);
   private
+    FHintWindow: THintWindow;
     FIDEDescription: string;
     FOptions: TCodeBrowserViewOptions;
     FOptionsChangeStamp: integer;
@@ -333,6 +337,7 @@ type
     function GetCurPackageInSrcEditor: TLazPackage;
     procedure OpenTVNode(TVNode: TTreeNode);
     procedure UseUnitInSrcEditor(InsertIdentifier: boolean);
+    procedure CloseHintWindow;
   public
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -433,6 +438,7 @@ end;
 
 procedure TCodeBrowserView.FormCreate(Sender: TObject);
 begin
+  FHintWindow := nil;
   FOptions:=TCodeBrowserViewOptions.Create;
   
   FIDEDescription:=lisLazarusIDE;
@@ -2435,7 +2441,7 @@ var
   CurUnit: TCodeBrowserUnit;
   Node: TCodeBrowserNode;
   Line, Column: integer;
-  //BaseURL, HTMLHint: string;
+  BaseURL, HTMLHint: String;
 begin
   Result:='';
   if (TVNode=nil) or (TVNode.Data=nil) then exit;
@@ -2454,7 +2460,8 @@ begin
       Node.CodePos.Code.AbsoluteToLineCol(Node.CodePos.P,Line,Column);
       if Line>0 then
         Result:=Result+' ('+IntToStr(Line)+','+IntToStr(Column)+')';
-      //GetCodeHelp(TVNode,BaseURL,HTMLHint);
+        if GetCodeHelp(TVNode, BaseURL, HTMLHint) then
+           Result := HTMLHint;
     end;
   end;
 end;
@@ -2533,7 +2540,8 @@ begin
     if LazarusHelp.GetHintForSourcePosition(NewCodePos.Code.Filename,
       Point(NewCodePos.X,NewCodePos.Y),BaseURL,HTMLHint)<>shrSuccess then exit;
 
-    Result:=true;
+    if HTMLHint <> '' then
+       Result:=true;
   end;
 end;
 
@@ -2866,6 +2874,7 @@ var
   TVNode: TTreeNode;
   HintStr: String;
   MousePos: TPoint;
+  HintWinRect : TRect;
 begin
   //DebugLn(['TCodeBrowserView.BrowseTreeViewShowHint ',dbgs(HintInfo^.CursorPos)]);
   HintStr:='';
@@ -2875,7 +2884,27 @@ begin
     HintStr:=GetTVNodeHint(TVNode);
     //DebugLn(['TCodeBrowserView.BrowseTreeViewShowHint HintStr="',HintStr,'"']);
   end;
-  HintInfo^.HintStr:=HintStr;
+
+  HintInfo^.HintStr:=''; // do not use the normal mechanism
+
+  // open a THintWindow with LazarusHelp instead
+  if hintstr = '' then
+     exit;
+  if csDestroying in ComponentState then exit;
+  if FHintWindow <> nil then
+    FHintWindow.Visible := false;
+  if FHintWindow = nil then
+    FHintWindow := THintWindow.Create(Self);
+  if LazarusHelp.CreateHint(FHintWindow, HintInfo^.HintPos, '', HintStr, HintWinRect) then
+      FHintWindow.ActivateHint(HintWinRect, HintStr);
+end;
+
+procedure TCodeBrowserView.CloseHintWindow;
+begin
+  if FHintWindow <> nil then begin
+    FHintWindow.Close;
+    FHintWindow := nil;
+  end;
 end;
 
 procedure TCodeBrowserView.CollapseAllPackagesMenuItemClick(Sender: TObject);
@@ -2968,6 +2997,17 @@ end;
 procedure TCodeBrowserView.UseIdentifierInCurUnitMenuItemClick(Sender: TObject);
 begin
   UseUnitInSrcEditor(true);
+end;
+
+procedure TCodeBrowserView.BrowseTreeViewMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  CloseHintWindow;
+end;
+
+procedure TCodeBrowserView.FormDeactivate(Sender: TObject);
+begin
+  CloseHintWindow;
 end;
 
 { TCodeBrowserViewOptions }
