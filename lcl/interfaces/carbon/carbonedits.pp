@@ -183,6 +183,8 @@ type
   private
     FScrollView: HIViewRef;
     FScrollBars: TScrollStyle;
+    FDrawBorder: Boolean;
+    FBorder: HIViewRef;
     procedure SetScrollBars(const AValue: TScrollStyle);
   protected
     function GetFrame(Index: Integer): ControlRef; override;
@@ -192,7 +194,9 @@ type
     function GetCreationOptions: TXNFrameOptions; virtual;
     function GetTXNSelection(var iStart, iEnd: Integer): Boolean;
     function SetTXNSelection(iStart, iEnd: Integer): Boolean;
+    procedure RegisterEvents; override;
   public
+    procedure BoundsChanged; override;
     procedure AllowMenuProcess(MenuHotKey: AnsiChar; State: TShiftState; var AllowMenu: Boolean); override;
     procedure TextDidChange; override;
     function GetTextObject: TXNObject;
@@ -213,6 +217,9 @@ type
     procedure SetReadOnly(AReadOnly: Boolean); override;
     procedure SetWordWrap(AWordWrap: Boolean); virtual;
     function SetText(const S: String): Boolean; override;
+    procedure SetBorderVisible(ABorderVisbile: Boolean); virtual;
+
+    function SetBounds(const ARect: TRect): Boolean; override;
   public
     function GetLineCount: Integer;
     function GetLine(AIndex: Integer): String;
@@ -221,6 +228,8 @@ type
     function GetCaretPos: TPoint; override;
   public
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
+    property Border: HIViewRef read FBorder;
+    property ScrollView: HIViewRef read FScrollView;
   end;
 
 implementation
@@ -1486,7 +1495,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonMemo.GetFrame(Index: Integer): ControlRef;
 begin
-  Result := FScrollView;
+  Result:=FBorder;
 end;
 
 
@@ -1513,6 +1522,14 @@ begin
   FScrollBars := (LCLObject as TCustomMemo).ScrollBars;
   FScrollView := EmbedInScrollView(FScrollBars);
 
+  FBorder:= CreateCustomHIView(ParamsToHIRect(AParams), LCLObject.ControlStyle);
+  HIViewAddSubview(FBorder, FScrollView);
+  HIViewSetVisible(FScrollView, True);
+  OSError(
+    SetControlProperty(FBorder, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
+    Self, 'AddControlPart', SSetControlProp);
+
+
   inherited;
 
   FMaxLength := 0;
@@ -1528,6 +1545,7 @@ begin
   inherited DestroyWidget;
   
   DisposeControl(FScrollView);
+  DisposeControl(FBorder);
 end;
 
 {------------------------------------------------------------------------------
@@ -1662,6 +1680,104 @@ begin
   Result := not OSError( TXNSetSelection( HITextViewGetTXNObject(Widget), iStart, iEnd),
       Self, 'SetSelSTart', 'SetTXNSelection', '');
   if Result then Invalidate(nil);
+end;
+
+procedure TCarbonMemo.BoundsChanged;
+var
+  r : CGRect;
+begin
+  inherited BoundsChanged;
+  HIViewGetFrame(FBorder, r);
+  if FDrawBorder then
+  begin
+    //todo: use themed metrics for TextFrame, instead of hard-coded values!
+    r.origin.x:=1;
+    r.origin.y:=1;
+    r.size.width:=r.size.width-2;
+    r.size.height:=r.size.height-2;
+  end
+  else
+  begin
+    r.origin.x:=0;
+    r.origin.y:=0;
+  end;
+  HIViewSetFrame(FScrollView, r);
+end;
+
+function CarbonMemoBorder_Resized(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  Result:=CallNextEventHandler(ANextHandler, AEvent);
+  if Assigned(AWidget) then
+    TCarbonMemo(AWidget).BoundsChanged;
+end;
+
+function CarbonMemoBorder_Draw(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  ctx   : CGContextRef;
+  cg    : CGRect;
+  clips : array [0..1] of CGRect;
+  frm   : HIThemeFrameDrawInfo;
+const
+  ScrollSz = 16;
+begin
+  Result:=CallNextEventHandler(ANextHandler, AEvent);
+  if Assigned(AWidget) then
+  begin
+    if OSError(
+      GetEventParameter(AEvent, kEventParamCGContextRef, typeCGContextRef, nil,
+        SizeOf(CGContextRef), nil, @ctx),
+      'CarbonMemoBorder_Draw', SGetEvent, 'kEventParamCGContextRef') then Exit;
+    if not Assigned(ctx) then Exit;
+    HIViewGetBounds(TCarbonMemo(AWidget).FBorder, cg);
+    cg.origin.x:=0.5;
+    cg.origin.y:=0.5;
+    cg.size.width:=cg.size.width-2;
+    cg.size.height:=cg.size.height-1;
+
+    if TCarbonMemo(AWidget).FDrawBorder then
+    begin
+      if TCarbonMemo(AWidget).ScrollBars in [ssBoth] then begin
+        clips[0].origin.x:=0;
+        clips[0].origin.y:=0;
+        clips[0].size.width:=cg.size.width+2;
+        clips[0].size.height:=cg.size.height-ScrollSz+1;
+        clips[1].origin.x:=0;
+        clips[1].origin.y:=cg.size.height-ScrollSz;
+        clips[1].size.width:=cg.size.width-ScrollSz+2;
+        clips[1].size.height:=ScrollSz+1;
+        CGContextClipToRects(ctx, @clips, 2);
+      end;
+      FillChar(frm, sizeof(frm), 0);
+      frm.kind:=kHIThemeFrameTextFieldSquare;
+      frm.state:=kThemeStateActive;
+      HIThemeDrawFrame( cg, frm, ctx, 0);
+    end;
+  end;
+end;
+
+
+procedure TCarbonMemo.RegisterEvents;
+var
+  TmpSpec: EventTypeSpec;
+begin
+  inherited RegisterEvents;
+
+  if GetEditPart >= 0 then
+  begin
+    TmpSpec := MakeEventSpec(kEventClassControl, kEventControlBoundsChanged);
+    InstallControlEventHandler(FBorder,
+      RegisterEventHandler(@CarbonMemoBorder_Resized),
+      1, @TmpSpec, Pointer(Self), nil);
+
+    TmpSpec := MakeEventSpec(kEventClassControl, kEventControlDraw);
+    InstallControlEventHandler(FBorder,
+      RegisterEventHandler(@CarbonMemoBorder_Draw),
+      1, @TmpSpec, Pointer(Self), nil);
+  end;
 end;
 
 procedure TCarbonMemo.AllowMenuProcess(MenuHotKey: AnsiChar; State: TShiftState; var AllowMenu: Boolean);
@@ -1867,6 +1983,21 @@ function TCarbonMemo.SetText(const S: String): Boolean;
 begin
   Result:=inherited SetText(S);
   Invalidate;
+end;
+
+procedure TCarbonMemo.SetBorderVisible(ABorderVisbile:Boolean);
+begin
+  FDrawBorder:=ABorderVisbile;
+  BoundsChanged;
+end;
+
+function TCarbonMemo.SetBounds(const ARect:TRect):Boolean;
+var
+  r : TRect;
+begin
+  Result:=inherited SetBounds(ARect);
+  BoundsChanged;
+  GetBounds(r);
 end;
 
 {------------------------------------------------------------------------------

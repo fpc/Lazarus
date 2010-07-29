@@ -153,6 +153,7 @@ type
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
 
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
   end;
 
   { TCarbonWSEdit }
@@ -923,6 +924,7 @@ var
 begin
   Memo:=TCarbonMemo.Create(AWinControl, AParams);
   Memo.SetWordWrap(TCustomMemo(AWinControl).WordWrap);
+  Memo.SetBorderVisible(TCustomMemo(AWinControl).BorderStyle=bsSingle);
   Result := TLCLIntfHandle(Memo);
 end;
 
@@ -1010,6 +1012,14 @@ begin
   if not CheckHandle(ACustomMemo, Self, 'SetWordWrap') then Exit;
 
   TCarbonMemo(ACustomMemo.Handle).SetWordWrap(NewWordWrap);
+end;
+
+class procedure TCarbonWSCustomMemo.SetBorderStyle(const AWinControl:TWinControl;
+  const ABorderStyle:TBorderStyle);
+begin
+  if not CheckHandle(AWinControl, Self, 'SetBorderStyle') then Exit;
+
+  TCarbonMemo(AWinControl.Handle).SetBorderVisible(ABorderStyle=bsSingle);
 end;
 
 { TCarbonWSButton }
