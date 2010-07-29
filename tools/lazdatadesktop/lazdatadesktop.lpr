@@ -12,7 +12,7 @@ uses
   ddfiles, conneditor, datapanel, querypanel, frmselectconnectiontype,
   lazdatadeskstr, lazdbexport;
 
-{$IFDEF WINDOWS}{$R lazdatadesktop.rc}{$ENDIF}
+{$R *.res}
 
 begin
   Application.Title:='Lazarus Data Desktop';

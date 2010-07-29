@@ -60,6 +60,8 @@ Function GetTableList(DDE : TFPDDEngine; L : TStrings; Out UpdateExisting : Bool
 
 implementation
 
+{$R *.lfm}
+
 Function GetTableList(DDE : TFPDDEngine; L : TStrings; Out UpdateExisting : Boolean) : Boolean;
 
 Var
@@ -122,9 +124,6 @@ begin
   For I:=0 to LBItems.Items.Count-1 do
     LBItems.Checked[i]:=DoSelect;
 end;
-
-initialization
-  {$I frmimportdd.lrs}
 
 end.
 

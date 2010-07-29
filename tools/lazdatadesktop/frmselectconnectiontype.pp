@@ -29,6 +29,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses fpdatadict;
 
 { TSelectConnectionTypeForm }
@@ -81,9 +83,6 @@ begin
   else
     Result:=TengineObject(LBConnections.Items.Objects[LBConnections.ItemIndex]).EngineName;
 end;
-
-initialization
-  {$I frmselectconnectiontype.lrs}
 
 end.
 

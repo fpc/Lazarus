@@ -68,6 +68,8 @@ function GetSQLDBConnectString(HostSupported : Boolean; Initial : String): Strin
 
 implementation
 
+{$R *.lfm}
+
 uses fpddsqldb,strutils;
 
 function GetSQLDBConnectString(HostSupported : Boolean; Initial : String): String;
@@ -154,9 +156,6 @@ begin
     4 : ECharset.Text:=Avalue;
   end;
 end;
-
-initialization
-  {$I frmsqlconnect.lrs}
 
 end.
 

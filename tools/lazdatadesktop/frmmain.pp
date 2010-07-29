@@ -255,6 +255,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses
   frmselectconnectiontype,
   // Data dictionary support for
@@ -1608,7 +1610,6 @@ begin
 end;
 
 initialization
-  {$I frmmain.lrs}
   TranslateStrs;
 
 end.

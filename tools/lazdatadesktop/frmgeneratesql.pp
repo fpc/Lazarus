@@ -99,6 +99,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TGenerateSQLForm }
   
 procedure TGenerateSQLForm.TSResize(Sender: TObject);
@@ -323,9 +325,6 @@ begin
   GenerateSQL;
 end;
 
-
-initialization
-  {$I frmgeneratesql.lrs}
 
 end.
 
