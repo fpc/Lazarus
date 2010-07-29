@@ -22,7 +22,7 @@ unit ChmPopup;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, IpHtml;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, IpHtml;
 
 type
 
@@ -41,8 +41,7 @@ var
 
 implementation
 
-initialization
-  {$I chmpopup.lrs}
+{$R *.lfm}
 
 end.
 

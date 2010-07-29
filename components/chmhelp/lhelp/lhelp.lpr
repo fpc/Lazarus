@@ -26,14 +26,13 @@ uses
   Controls,
   Dialogs,
   Forms
-  { add your units here }, TurboPowerIPro, chmpopup, lhelpcontrolpkg, lhelpcore,
-  LResources;
+  { add your units here }, TurboPowerIPro, chmpopup, lhelpcontrolpkg, lhelpcore;
 
 var
  X: Integer;
  S: TStringList;
 
-{$IFDEF WINDOWS}{$R lhelp.rc}{$ENDIF}
+{$R *.res}
 
 begin
   Application.Initialize;

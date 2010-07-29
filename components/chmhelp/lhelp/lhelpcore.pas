@@ -111,7 +111,11 @@ var
 const INVALID_FILE_TYPE = 1;
 
 implementation
-uses LHelpControl;
+
+{$R *.lfm}
+
+uses 
+  LHelpControl;
 
 { THelpForm }
 
@@ -471,9 +475,6 @@ begin
   fContentProvider.Free;
   inherited Destroy;
 end;
-
-initialization
-  {$I lhelpcore.lrs}
 
 end.
 

@@ -382,7 +382,6 @@ components/chmhelp/lhelp/basecontentprovider.pas svneol=native#text/plain
 components/chmhelp/lhelp/chmcontentprovider.pas svneol=native#text/plain
 components/chmhelp/lhelp/chmdataprovider.pas svneol=native#text/plain
 components/chmhelp/lhelp/chmpopup.lfm svneol=native#text/plain
-components/chmhelp/lhelp/chmpopup.lrs svneol=native#text/pascal
 components/chmhelp/lhelp/chmpopup.pas svneol=native#text/plain
 components/chmhelp/lhelp/chmspecialparser.pas svneol=native#text/plain
 components/chmhelp/lhelp/filecontentprovider.pas svneol=native#text/plain
@@ -395,10 +394,8 @@ components/chmhelp/lhelp/images/table_open.png -text
 components/chmhelp/lhelp/lhelp.ico -text svneol=unset#image/icon
 components/chmhelp/lhelp/lhelp.lpi svneol=native#text/plain
 components/chmhelp/lhelp/lhelp.lpr svneol=native#text/plain
-components/chmhelp/lhelp/lhelp.manifest svneol=native#text/plain
-components/chmhelp/lhelp/lhelp.rc svneol=native#text/plain
+components/chmhelp/lhelp/lhelp.res -text
 components/chmhelp/lhelp/lhelpcore.lfm svneol=native#text/plain
-components/chmhelp/lhelp/lhelpcore.lrs svneol=native#text/pascal
 components/chmhelp/lhelp/lhelpcore.pas svneol=native#text/plain
 components/chmhelp/lhelp/lnethttpdataprovider.pas svneol=native#text/plain
 components/chmhelp/packages/help/Makefile svneol=native#text/plain
