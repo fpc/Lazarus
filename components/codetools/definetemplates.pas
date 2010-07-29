@@ -1183,7 +1183,7 @@ begin
       if Params<>'' then
         CmdLine:=CmdLine+' '+Params;
       //DebugLn(['RunTool ',Params]);
-      TheProcess.CommandLine := CmdLine;
+      TheProcess.CommandLine := UTF8ToSys(CmdLine);
       TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
       TheProcess.ShowWindow := swoHide;
       TheProcess.CurrentDirectory:=WorkingDirectory;
@@ -1467,7 +1467,7 @@ begin
 
   // create empty file
   try
-    fs:=TFileStream.Create(TestFilename,fmCreate);
+    fs:=TFileStream.Create(UTF8ToSys(TestFilename),fmCreate);
     fs.Free;
   except
     debugln(['RunFPCVerbose unable to create test file '+TestFilename]);
