@@ -30,7 +30,7 @@ unit CodeToolsCfgScript;
 interface
 
 uses
-  Classes, SysUtils, BasicCodeTools, AVL_Tree;
+  Classes, SysUtils, BasicCodeTools, AVL_Tree, KeywordFuncLists;
 
 type
   TCTCSValueType = (
@@ -66,7 +66,7 @@ type
                       CreateIfNotExists: Boolean = false): PCTCfgScriptVariable;
   end;
 
-
+type
   TCTCfgScriptStackItemType = (
     ctcssNone,
     ctcssStatement,
@@ -76,6 +76,9 @@ type
     ctcssRoundBracketOpen,
     ctcssBegin
     );
+const
+  ctcssAllStatementStarts = [ctcssNone,ctcssIfThen,ctcssIfElse,ctcssBegin];
+type
   TCTCfgScriptStackItem = record
     Typ: TCTCfgScriptStackItemType;
     StartPos: integer;
@@ -83,12 +86,14 @@ type
   end;
   PCTCfgScriptStackItem = ^TCTCfgScriptStackItem;
 
+type
   { TCTCfgScriptStack }
 
   TCTCfgScriptStack = class
   public
     Items: PCTCfgScriptStackItem;
     Top: integer; // current item, -1 = empty
+    TopTyp: TCTCfgScriptStackItemType;
     Capacity: integer;
     constructor Create;
     destructor Destroy; override;
@@ -97,17 +102,37 @@ type
     procedure Pop;
   end;
 
+  { TCTCfgScriptError }
+
+  TCTCfgScriptError = class
+  public
+    Msg: string;
+    ErrorPos: integer;
+    constructor Create(const aMsg: string; anErrorPos: integer);
+  end;
+
   { TCTConfigScriptEngine }
 
   TCTConfigScriptEngine = class
   private
     FVariables: TCTCfgScriptVariables;
     FStack: TCTCfgScriptStack;
+    FErrors: TFPList; // list of TCTCfgScriptError
+    function GetErrors(Index: integer): TCTCfgScriptError;
+    procedure AddError(const aMsg: string; ErrorPos: PChar); overload;
+    procedure AddError(const aMsg: string); overload;
   public
+    Src: PChar;
+    AtomStart: PChar;
+    SrcStart: PChar;
     constructor Create;
     destructor Destroy; override;
+    procedure ClearErrors;
     property Variables: TCTCfgScriptVariables read FVariables;
-    procedure Execute(const Src: string; StopAfterErrors: integer = 1);
+    function Execute(const Source: string; StopAfterErrors: integer = 1): boolean;// true if no errors
+    function ErrorCount: integer;
+    property Errors[Index: integer]: TCTCfgScriptError read GetErrors;
+    function GetAtom: string;
   end;
 
 function CompareCTCSVariables(Var1, Var2: Pointer): integer;
@@ -395,30 +420,96 @@ end;
 
 { TCTConfigScriptEngine }
 
+function TCTConfigScriptEngine.GetErrors(Index: integer): TCTCfgScriptError;
+begin
+  Result:=TCTCfgScriptError(FErrors[Index]);
+end;
+
+procedure TCTConfigScriptEngine.AddError(const aMsg: string; ErrorPos: PChar);
+var
+  Err: TCTCfgScriptError;
+begin
+  Err:=TCTCfgScriptError.Create(aMsg,ErrorPos-SrcStart);
+  FErrors.Add(Err);
+end;
+
+procedure TCTConfigScriptEngine.AddError(const aMsg: string);
+begin
+  AddError(aMsg,AtomStart);
+end;
+
 constructor TCTConfigScriptEngine.Create;
 begin
   FVariables:=TCTCfgScriptVariables.Create;
   FStack:=TCTCfgScriptStack.Create;
+  FErrors:=TFPList.Create;
 end;
 
 destructor TCTConfigScriptEngine.Destroy;
 begin
+  ClearErrors;
+  FreeAndNil(FErrors);
   FreeAndNil(FVariables);
   FreeAndNil(FStack);
   inherited Destroy;
 end;
 
-procedure TCTConfigScriptEngine.Execute(const Src: string;
-  StopAfterErrors: integer);
+procedure TCTConfigScriptEngine.ClearErrors;
 var
-  p: PChar;
+  i: Integer;
+begin
+  for i:=0 to FErrors.Count do
+    TObject(FErrors[i]).Free;
+  FErrors.Clear;
+end;
+
+function TCTConfigScriptEngine.Execute(const Source: string;
+  StopAfterErrors: integer): boolean;
+
+  procedure ErrorUnexpectedAtom;
+  begin
+    AddError('expected statement, but found '+GetAtom);
+  end;
+
 begin
   FStack.Clear;
+  ClearErrors;
 
-  if Src='' then exit;
+  if Source='' then exit(true);
 
-  p:=PChar(Src);
-  while p^<>#0 do inc(p);
+  SrcStart:=PChar(Source);
+  Src:=SrcStart;
+  AtomStart:=Src;
+  // execute all statements
+  while true do begin
+    ReadRawNextPascalAtom(Src,AtomStart);
+    case UpChars[Src^] of
+    #0: break;
+    'I':
+      if CompareIdentifiers('IF',Src)=0 then begin
+
+      end;
+    else
+      ErrorUnexpectedAtom;
+    end;
+
+  end;
+
+  Result:=ErrorCount=0;
+end;
+
+function TCTConfigScriptEngine.ErrorCount: integer;
+begin
+  Result:=FErrors.Count;
+end;
+
+function TCTConfigScriptEngine.GetAtom: string;
+begin
+  if (AtomStart=nil) or (AtomStart>Src) then
+    exit('');
+  SetLength(Result,Src-AtomStart);
+  if Result<>'' then
+    System.Move(AtomStart^,Result[1],length(Result));
 end;
 
 { TCTCfgScriptStack }
@@ -437,10 +528,16 @@ end;
 procedure TCTCfgScriptStack.Clear;
 var
   i: Integer;
+  Item: PCTCfgScriptStackItem;
 begin
-  for i:=0 to Top do
-    ClearCTCSVariable(@Items[i].Operand);
+  for i:=0 to Top do begin
+    Item:=@Items[i];
+    ClearCTCSVariable(@Item^.Operand);
+    if Item^.Operand.Name<>nil then
+      ReAllocMem(Item^.Operand.Name,0);
+  end;
   Top:=-1;
+  TopTyp:=ctcssNone;
   Capacity:=0;
   ReAllocMem(Items,0);
 end;
@@ -464,6 +561,7 @@ begin
   Item:=@Items[Top];
   Item^.Typ:=Typ;
   Item^.StartPos:=StartPos;
+  TopTyp:=Typ;
 end;
 
 procedure TCTCfgScriptStack.Pop;
@@ -480,7 +578,21 @@ begin
     RaiseTooManyPop;
   Item:=@Items[Top];
   ClearCTCSVariable(@Item^.Operand);
+  if Item^.Operand.Name<>nil then
+    ReAllocMem(Item^.Operand.Name,0);
   dec(Top);
+  if Top>=0 then
+    TopTyp:=Items[0].Typ
+  else
+    TopTyp:=ctcssNone;
+end;
+
+{ TCTCfgScriptError }
+
+constructor TCTCfgScriptError.Create(const aMsg: string; anErrorPos: integer);
+begin
+  Msg:=aMsg;
+  ErrorPos:=anErrorPos;
 end;
 
 end.
