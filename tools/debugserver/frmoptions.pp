@@ -55,6 +55,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TOptionsForm }
 
 function TOptionsForm.GetCB(AIndex : Integer) : TCheckBox;
@@ -76,9 +78,6 @@ procedure TOptionsForm.SetB(AIndex: integer; const AValue: Boolean);
 begin
   GetCb(AIndex).Checked:=AValue;
 end;
-
-initialization
-  {$I frmoptions.lrs}
 
 end.
 

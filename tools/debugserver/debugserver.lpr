@@ -7,14 +7,13 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, frmmain, LResources, frmOptions
+  Forms, frmmain, frmOptions
   { you can add units after this };
 
-{$IFDEF WINDOWS}{$R debugserver.rc}{$ENDIF}
+{$R *.res}
 
 begin
   Application.Title:='FPC/Lazarus debug message server';
-  {$I debugserver.lrs}
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.Run;

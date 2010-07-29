@@ -5393,14 +5393,10 @@ tools/debugserver/README.txt svneol=native#text/plain
 tools/debugserver/debugserver.ico -text
 tools/debugserver/debugserver.lpi svneol=native#text/plain
 tools/debugserver/debugserver.lpr svneol=native#text/plain
-tools/debugserver/debugserver.lrs svneol=native#text/plain
-tools/debugserver/debugserver.manifest svneol=native#text/plain
-tools/debugserver/debugserver.rc svneol=native#text/plain
+tools/debugserver/debugserver.res -text
 tools/debugserver/frmmain.lfm svneol=native#text/plain
-tools/debugserver/frmmain.lrs svneol=native#text/plain
 tools/debugserver/frmmain.pp svneol=native#text/pascal
 tools/debugserver/frmoptions.lfm svneol=native#text/plain
-tools/debugserver/frmoptions.lrs svneol=native#text/plain
 tools/debugserver/frmoptions.pp svneol=native#text/pascal
 tools/delete_non_svn_files.pl svneol=native#text/plain
 tools/find_missing_lpl_files.sh svneol=native#text/plain

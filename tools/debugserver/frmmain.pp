@@ -140,6 +140,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses inifiles,frmoptions;
 
 { TMainForm }
@@ -543,7 +545,6 @@ begin
 end;
 
 initialization
-  {$I frmmain.lrs}
   OnGetApplicationName:=@MyGetAppName;
 end.
 
