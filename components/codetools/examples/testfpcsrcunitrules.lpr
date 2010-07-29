@@ -48,6 +48,7 @@ type
     procedure WriteHelp; virtual;
     procedure Error(Msg: string; DoWriteHelp: Boolean);
     procedure WriteCompilerInfo(ConfigCache: TFPCTargetConfigCache);
+    procedure WriteNonExistingPPUPaths(ConfigCache: TFPCTargetConfigCache);
     procedure WriteDuplicatesInPPUPath(ConfigCache: TFPCTargetConfigCache);
     procedure WriteMissingPPUSources(UnitSet: TFPCUnitSetCache);
     procedure WriteDuplicateSources(UnitSet: TFPCUnitSetCache);
@@ -126,6 +127,7 @@ begin
   ConfigCache:=UnitSet.GetConfigCache(false);
   writeln('FPCSrcDir=',UnitSet.FPCSourceDirectory);
   WriteCompilerInfo(ConfigCache);
+  WriteNonExistingPPUPaths(ConfigCache);
   WriteDuplicatesInPPUPath(ConfigCache);
   WriteMissingPPUSources(UnitSet);
   WriteDuplicateSources(UnitSet);
@@ -205,6 +207,23 @@ begin
     writeln('WARNING: no ppu search paths')
   else
     writeln('Number of PPU search paths=',ConfigCache.UnitPaths.Count);
+end;
+
+procedure TTestFPCSourceUnitRules.WriteNonExistingPPUPaths(
+  ConfigCache: TFPCTargetConfigCache);
+var
+  SearchPaths: TStrings;
+  i: Integer;
+  Dir: String;
+begin
+  SearchPaths:=ConfigCache.UnitPaths;
+  if SearchPaths=nil then exit;
+  for i:=0 to SearchPaths.Count-1 do begin
+    Dir:=CleanAndExpandDirectory(SearchPaths[i]);
+    if not DirPathExists(Dir) then begin
+      writeln('WARNING: ppu search path does not exist: ',SearchPaths[i]);
+    end;
+  end;
 end;
 
 procedure TTestFPCSourceUnitRules.WriteDuplicatesInPPUPath(
