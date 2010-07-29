@@ -360,6 +360,7 @@ type
     procedure RenewColWidths;
   protected
     procedure AddAutomaticColumns;
+    procedure AssignTo(Dest: TPersistent); override;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
     procedure BeginLayout;
     procedure CellClick(const aCol,aRow: Integer; const Button:TMouseButton); override;
@@ -1496,6 +1497,14 @@ begin
     Exclude(FGridStatus, gsAddingAutoColumns);
   end;
 
+end;
+
+procedure TCustomDBGrid.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TCustomDbGrid then begin
+    // TODO
+  end else
+    inherited AssignTo(Dest);
 end;
 
 procedure TCustomDBGrid.UpdateAutoSizeColumns;

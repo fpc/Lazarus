@@ -796,6 +796,7 @@ type
     fGridState: TGridState;
     class procedure WSRegisterClass; override;
     procedure AdjustEditorBounds(NewCol,NewRow:Integer); virtual;
+    procedure AssignTo(Dest: TPersistent); override;
     procedure AutoAdjustColumn(aCol: Integer); virtual;
     procedure BeforeMoveSelection(const DCol,DRow: Integer); virtual;
     function  BoxRect(ALeft,ATop,ARight,ABottom: Longint): TRect;
@@ -1425,6 +1426,7 @@ type
       procedure WriteCells(Writer: TWriter);
       procedure CopyCellRectToClipboard(const R:TRect);
     protected
+      procedure AssignTo(Dest: TPersistent); override;
       procedure AutoAdjustColumn(aCol: Integer); override;
       procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); override;
       procedure DefineProperties(Filer: TFiler); override;
@@ -2547,6 +2549,53 @@ begin
   SetColRow(NewCol,NewRow);
   if EditorMode then
     EditorPos;
+end;
+
+procedure TCustomGrid.AssignTo(Dest: TPersistent);
+var
+  Target: TCustomGrid;
+begin
+  if Dest is TCustomGrid then begin
+
+    Target := TCustomGrid(Dest);
+    Target.BeginUpdate;
+
+    // structure
+    Target.FixedCols := 0;
+    Target.FixedRows := 0;
+    if Columns.Enabled then
+      Target.Columns.Assign(Columns)
+    else begin
+      Target.ColCount :=ColCount;
+    end;
+    Target.RowCount := RowCount;
+    Target.FixedCols := FixedCols;
+    Target.FixedRows := FixedRows;
+    Target.DefaultRowHeight := DefaultRowHeight;
+    Target.DefaultColWidth := DefaultColWidth;
+    if not Columns.Enabled then
+      Target.FCols.Assign(FCols);
+    Target.FRows.Assign(FRows);
+
+    // Options
+    Target.Options := Options;
+    Target.Color := Color;
+    Target.FixedColor := FixedColor;
+    Target.AlternateColor := AlternateColor;
+    Target.Font := Font;
+    Target.TitleFont := TitleFont;
+
+    // position
+    Target.TopRow := TopRow;
+    Target.LeftCol := LeftCol;
+    Target.Col := Col;
+    Target.Row := Row;
+    Target.FRange := FRange;
+
+    Target.EndUpdate;
+
+  end else
+    inherited AssignTo(Dest);
 end;
 
 procedure TCustomGrid.SetColCount(AValue: Integer);
@@ -9103,6 +9152,21 @@ begin
     SelStr := SelStr + #13#10;
   end;
   Clipboard.AsText := SelStr;
+end;
+
+procedure TCustomStringGrid.AssignTo(Dest: TPersistent);
+var
+  i, j: Integer;
+begin
+  if Dest is TCustomStringGrid then begin
+    BeginUpdate;
+    inherited AssignTo(Dest);
+    for i:=0 to ColCount-1 do
+      for j:=0 to RowCount-1 do
+        TCustomStringGrid(Dest).Cells[i,j] := Cells[i,j];
+    EndUpdate;
+  end else
+    inherited AssignTo(Dest);
 end;
 
 procedure TCustomStringGrid.AutoAdjustColumn(aCol: Integer);
