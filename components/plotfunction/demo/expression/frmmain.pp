@@ -36,6 +36,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TMainForm }
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -71,9 +73,6 @@ begin
   FPanel.Identifiers.IdentifierByName('c').AsFloat:=C;
   FPanel.Invalidate;
 end;
-
-initialization
-  {$I frmmain.lrs}
 
 end.
 

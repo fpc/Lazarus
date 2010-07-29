@@ -8,9 +8,9 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms
-  { you can add units after this }, frmmain, LResources;
+  { you can add units after this }, frmmain;
 
-{$IFDEF WINDOWS}{$R ploteventdemo.rc}{$ENDIF}
+{$R *.res}
 
 begin
   Application.Initialize;

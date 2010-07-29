@@ -27,6 +27,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TMainForm }
 
 procedure TMainForm.CreatePlotter(Sender: TObject);
@@ -42,9 +44,6 @@ procedure TMainForm.PlotResult(const X: TPlotFloat; out Y: TPlotFloat);
 begin
   Y:=X*X/100;
 end;
-
-initialization
-  {$I frmmain.lrs}
 
 end.
 
