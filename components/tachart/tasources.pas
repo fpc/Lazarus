@@ -111,7 +111,7 @@ type
     procedure Sort;
   published
     property DataPoints: TStrings read FDataPoints write SetDataPoints;
-    property Sorted: Boolean read FSorted write SetSorted;
+    property Sorted: Boolean read FSorted write SetSorted default false;
   end;
 
   { TMWCRandomGenerator }
@@ -211,7 +211,7 @@ type
       read FOnGetChartDataItem write SetOnGetChartDataItem;
     property PointsNumber: Integer
       read FPointsNumber write SetPointsNumber default 0;
-    property Sorted: Boolean read FSorted write FSorted;
+    property Sorted: Boolean read FSorted write FSorted default false;
   end;
 
 procedure Register;
