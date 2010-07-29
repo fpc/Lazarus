@@ -3123,8 +3123,8 @@ examples/imagelist/images/edit-clear.png -text svneol=unset#image/png
 examples/imagelist/images/edit-find-replace.png -text svneol=unset#image/png
 examples/imagelist/project1.lpi svneol=native#text/plain
 examples/imagelist/project1.lpr svneol=native#text/plain
+examples/imagelist/project1.res -text
 examples/imagelist/unit1.lfm svneol=native#text/plain
-examples/imagelist/unit1.lrs svneol=native#text/pascal
 examples/imagelist/unit1.pas svneol=native#text/pascal
 examples/imgviewer/file.bmp -text svneol=native#image/bmp
 examples/imgviewer/file.xpm -text svneol=native#image/x-xpixmap

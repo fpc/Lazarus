@@ -44,6 +44,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TForm1 }
 
 function LoadBitmapFromFile(AFileName: String): TCustomBitmap;
@@ -126,9 +128,6 @@ begin
   end;
   bmp.Free;
 end;
-
-initialization
-  {$I unit1.lrs}
 
 end.
 
