@@ -1632,19 +1632,19 @@ begin
   // read til next atom
   while (Position<=Len) do begin
     case Src[Position-1] of
-     #0..#32:  // spaces and special characters
+    #0..#32:  // spaces and special characters
       begin
         inc(Position);
       end;
-      #$EF:
-        if (Src[Position]=#$BB)
-        and (Src[Position+1]=#$BF) then begin
-          // skip UTF BOM
-          inc(Position,3);
-        end else begin
-          break;
-        end;
-     '{':    // comment start or compiler directive
+    #$EF:
+      if (Src[Position]=#$BB)
+      and (Src[Position+1]=#$BF) then begin
+        // skip UTF BOM
+        inc(Position,3);
+      end else begin
+        break;
+      end;
+    '{':    // comment start or compiler directive
       begin
         if (Position<Len) and (Src[Position]='$') then
           // compiler directive
@@ -1672,7 +1672,7 @@ begin
           end;
         end;
       end;
-     '/':  // comment or real division
+    '/':  // comment or real division
       if (Position<Len) and (Src[Position]='/') then begin
         // comment start -> read til line end
         inc(Position);
@@ -1680,7 +1680,7 @@ begin
           inc(Position);
       end else
         break;
-     '(':  // comment, bracket or compiler directive
+    '(':  // comment, bracket or compiler directive
       if (Position<Len) and (Src[Position]='*') then begin
         if (Position+2<=Len) and (Src[Position+1]='$') then
           // compiler directive

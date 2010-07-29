@@ -66,12 +66,48 @@ type
                       CreateIfNotExists: Boolean = false): PCTCfgScriptVariable;
   end;
 
+
+  TCTCfgScriptStackItemType = (
+    ctcssNone,
+    ctcssStatement,
+    ctcssIf,
+    ctcssIfThen,
+    ctcssIfElse,
+    ctcssRoundBracketOpen,
+    ctcssBegin
+    );
+  TCTCfgScriptStackItem = record
+    Typ: TCTCfgScriptStackItemType;
+    StartPos: integer;
+    Operand: TCTCfgScriptVariable;
+  end;
+  PCTCfgScriptStackItem = ^TCTCfgScriptStackItem;
+
+  { TCTCfgScriptStack }
+
+  TCTCfgScriptStack = class
+  public
+    Items: PCTCfgScriptStackItem;
+    Top: integer; // current item, -1 = empty
+    Capacity: integer;
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Push(Typ: TCTCfgScriptStackItemType; StartPos: integer);
+    procedure Pop;
+  end;
+
   { TCTConfigScriptEngine }
 
   TCTConfigScriptEngine = class
+  private
+    FVariables: TCTCfgScriptVariables;
+    FStack: TCTCfgScriptStack;
   public
     constructor Create;
     destructor Destroy; override;
+    property Variables: TCTCfgScriptVariables read FVariables;
+    procedure Execute(const Src: string; StopAfterErrors: integer = 1);
   end;
 
 function CompareCTCSVariables(Var1, Var2: Pointer): integer;
@@ -361,12 +397,90 @@ end;
 
 constructor TCTConfigScriptEngine.Create;
 begin
-
+  FVariables:=TCTCfgScriptVariables.Create;
+  FStack:=TCTCfgScriptStack.Create;
 end;
 
 destructor TCTConfigScriptEngine.Destroy;
 begin
+  FreeAndNil(FVariables);
+  FreeAndNil(FStack);
   inherited Destroy;
+end;
+
+procedure TCTConfigScriptEngine.Execute(const Src: string;
+  StopAfterErrors: integer);
+var
+  p: PChar;
+begin
+  FStack.Clear;
+
+  if Src='' then exit;
+
+  p:=PChar(Src);
+  while p^<>#0 do inc(p);
+end;
+
+{ TCTCfgScriptStack }
+
+constructor TCTCfgScriptStack.Create;
+begin
+  Top:=-1;
+end;
+
+destructor TCTCfgScriptStack.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TCTCfgScriptStack.Clear;
+var
+  i: Integer;
+begin
+  for i:=0 to Top do
+    ClearCTCSVariable(@Items[i].Operand);
+  Top:=-1;
+  Capacity:=0;
+  ReAllocMem(Items,0);
+end;
+
+procedure TCTCfgScriptStack.Push(Typ: TCTCfgScriptStackItemType;
+  StartPos: integer);
+var
+  OldCapacity: LongInt;
+  Item: PCTCfgScriptStackItem;
+begin
+  inc(Top);
+  if Top>=Capacity then begin
+    OldCapacity:=Capacity;
+    if Capacity<10 then
+      Capacity:=10
+    else
+      Capacity:=Capacity*2;
+    ReAllocMem(Items,Capacity*SizeOf(TCTCfgScriptStackItem));
+    FillByte(Items[OldCapacity],(Capacity-OldCapacity)*SizeOf(TCTCfgScriptStackItem),0);
+  end;
+  Item:=@Items[Top];
+  Item^.Typ:=Typ;
+  Item^.StartPos:=StartPos;
+end;
+
+procedure TCTCfgScriptStack.Pop;
+
+  procedure RaiseTooManyPop;
+  begin
+    raise Exception.Create('TCTCfgScriptStack.Pop too many pop');
+  end;
+
+var
+  Item: PCTCfgScriptStackItem;
+begin
+  if Top<0 then
+    RaiseTooManyPop;
+  Item:=@Items[Top];
+  ClearCTCSVariable(@Item^.Operand);
+  dec(Top);
 end;
 
 end.
