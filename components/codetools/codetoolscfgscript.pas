@@ -26,6 +26,7 @@
 unit CodeToolsCfgScript;
 
 {$mode objfpc}{$H+}
+{$inline on}
 
 interface
 
@@ -70,6 +71,51 @@ type
     property Values[const Name: string]: string read GetValues write SetValues; default;
   end;
 
+type
+  TCTCfgScriptOperator = (
+    ctcsoNone,
+    ctcsoNot,
+    ctcsoAnd,
+    ctcsoOr,
+    ctcsoXor,
+    ctcsoShL,
+    ctcsoShR,
+    ctcsoDiv,
+    ctcsoMod,
+    ctcsoPlus,
+    ctcsoMinus,
+    ctcsoMultiply,
+    ctcsoDivide,
+    ctcsoEqual,
+    ctcsoNotEqual,
+    ctcsoLowerThan,
+    ctcsoLowerOrEqualThan,
+    ctcsoGreaterThan,
+    ctcsoGreaterOrEqualThan
+    );
+  TCTCfgScriptOperators = set of TCTCfgScriptOperator;
+const
+  CTCfgScriptOperatorLvl: array[TCTCfgScriptOperator] of integer = (
+    0, //ctcsoNone,
+    1, //ctcsoNot,
+    1, //ctcsoAnd,
+    2, //ctcsoOr,
+    2, //ctcsoXor,
+    1, //ctcsoShL,
+    1, //ctcsoShR,
+    1, //ctcsoDiv,
+    1, //ctcsoMod,
+    2, //ctcsoPlus,
+    2, //ctcsoMinus,
+    1, //ctcsoMultiply,
+    1, //ctcsoDivide,
+    4, //ctcsoEqual,
+    4, //ctcsoNotEqual,
+    4, //ctcsoLowerThan,
+    4, //ctcsoLowerOrEqualThan,
+    4, //ctcsoGreaterThan,
+    4  //ctcsoGreaterOrEqualThan
+    );
 type
   TCTCfgScriptStackItemType = (
     ctcssNone,
@@ -140,7 +186,8 @@ type
     procedure RunAssignment(Skip: boolean);
     function RunExpression(var Value: TCTCfgScriptVariable): boolean;
     function AtomIsKeyWord: boolean;
-    function ExecuteStack(Level: integer): boolean;
+    function ExecuteStack(MaxLevel: integer): boolean;
+    function GetOperatorLevel(P: PChar): integer;
   public
     Src: PChar;
     AtomStart: PChar;
@@ -155,6 +202,7 @@ type
     property Errors[Index: integer]: TCTCfgScriptError read GetErrors;
     function GetAtom: string;
     function GetAtomOrNothing: string;
+    function GetAtom(P: PChar): string;
     function PosToLineCol(p: PChar; out Line, Column: integer): boolean;
     function PosToStr(p: PChar): string;
     function GetErrorStr(Index: integer): string;
@@ -177,6 +225,8 @@ function CTCSNumberEqualsString(const Number: int64; const P: PChar): boolean; i
 function CTCSStringToNumber(P: PChar; out Number: int64): boolean;
 function CTCSVariableIsTrue(const V: PCTCfgScriptVariable): boolean; inline;
 function CTCSVariableIsFalse(const V: PCTCfgScriptVariable): boolean;
+
+function AtomToCTCfgOperator(p: PChar): TCTCfgScriptOperator;
 
 function dbgs(const t: TCTCfgScriptStackItemType): string; overload;
 function dbgs(const t: TCTCSValueType): string; overload;
@@ -416,6 +466,73 @@ begin
     Result:=(V^.StrLen=1) and (V^.StrStart^='0');
   ctcsvNumber:
     Result:=V^.Number=0;
+  end;
+end;
+
+function AtomToCTCfgOperator(p: PChar): TCTCfgScriptOperator;
+begin
+  Result:=ctcsoNone;
+  case UpChars[p^] of
+  'A':
+    if CompareIdentifiers('and',p)=0 then Result:=ctcsoAnd;
+  'D':
+    if CompareIdentifiers('div',p)=0 then Result:=ctcsoDiv;
+  'M':
+    if CompareIdentifiers('mod',p)=0 then Result:=ctcsoMod;
+  'N':
+    if CompareIdentifiers('not',p)=0 then Result:=ctcsoNot;
+  'O':
+    if CompareIdentifiers('or',p)=0 then Result:=ctcsoOr;
+  'S':
+    case UpChars[p[1]] of
+    'H':
+      case UpChars[p[2]] of
+      'L': if CompareIdentifiers('shl',p)=0 then Result:=ctcsoShL;
+      'R': if CompareIdentifiers('shr',p)=0 then Result:=ctcsoShR;
+      end;
+    end;
+  'X':
+    if CompareIdentifiers('xor',p)=0 then Result:=ctcsoXor;
+  '=':
+    Result:=ctcsoEqual;
+  '<':
+    case p[1] of
+    '>': Result:=ctcsoNotEqual;
+    '=': Result:=ctcsoLowerOrEqualThan;
+    else { < lower than } Result:=ctcsoLowerThan;
+    end;
+  '>':
+    case p[1] of
+    '=': Result:=ctcsoGreaterOrEqualThan;
+    else { > greater than } Result:=ctcsoGreaterThan;
+    end;
+  '*':
+    case p[1] of
+    '*': ;
+    '=': ;
+    else { * multiply } Result:=ctcsoMultiply;
+    end;
+  '/':
+    case p[1] of
+    '/': ;
+    '=': ;
+    else { / divide } Result:=ctcsoDivide;
+    end;
+  '+':
+    case p[1] of
+    '=': ;
+    else { + plus } Result:=ctcsoPlus;
+    end;
+  '-':
+    case p[1] of
+    '=': ;
+    else { - minus } Result:=ctcsoMinus;
+    end;
+  ':':
+    case p[1] of
+    '=': ;
+    else { : colon } ;
+    end;
   end;
 end;
 
@@ -780,6 +897,7 @@ begin
   Item:=@FStack.Items[FStack.Top];
   Item^.Operand.ValueType:=ctcsvNumber;
   Item^.Operand.Number:=Number;
+  ExecuteStack(0);
 end;
 
 function TCTConfigScriptEngine.RunDefined(Negate: boolean): boolean;
@@ -874,6 +992,7 @@ begin
       break;
     end;
   end;
+  ExecuteStack(0);
 end;
 
 procedure TCTConfigScriptEngine.PushNumberConstant;
@@ -934,6 +1053,7 @@ begin
     Item^.Operand.StrStart:=GetMem(l);
     System.Move(AtomStart^,Item^.Operand.StrStart^,l);
   end;
+  ExecuteStack(0);
 end;
 
 procedure TCTConfigScriptEngine.PushBooleanValue(b: boolean);
@@ -947,6 +1067,7 @@ begin
     Item^.Operand.Number:=1
   else
     Item^.Operand.Number:=0;
+  ExecuteStack(0);
 end;
 
 function TCTConfigScriptEngine.RunExpression(var Value: TCTCfgScriptVariable
@@ -993,6 +1114,7 @@ function TCTConfigScriptEngine.RunExpression(var Value: TCTCfgScriptVariable
   begin
     Result:=BinaryOperatorAllowed;
     if not Result then exit;
+    ExecuteStack(GetOperatorLevel(AtomStart));
     FStack.Push(ctcssOperator,AtomStart);
   end;
 
@@ -1018,13 +1140,13 @@ begin
       end;
     ')':
       begin
-        if FStack.TopTyp=ctcssRoundBracketOpen then
-          FStack.Pop
+        if FStack.TopTyp=ctcssRoundBracketOpen then begin
+          ExecuteStack(5);
+          FStack.Pop;
+        end
         else
           ErrorUnexpectedRoundBracketClose;
       end;
-    '+','-','=','>','<','*','/':
-      if not PushBinaryOperator then break;
     'a'..'z','A'..'Z':
       begin
         // a keyword or an identifier
@@ -1076,6 +1198,7 @@ begin
           if CompareIdentifiers('not',AtomStart)=0 then begin
             IsKeyword:=true;
             if not OperandAllowed then break;
+            // Note: no execute, "not" is unary operator for the next operand
             FStack.Push(ctcssOperator,AtomStart);
           end;
         'O':
@@ -1263,10 +1386,44 @@ begin
   end;
 end;
 
-function TCTConfigScriptEngine.ExecuteStack(Level: integer): boolean;
-begin
-  Result:=false;
+function TCTConfigScriptEngine.ExecuteStack(MaxLevel: integer): boolean;
+{ execute all operators on stack with level <= maxlevel
+}
+var
+  OperatorItem: PCTCfgScriptStackItem;
+  Typ: TCTCfgScriptOperator;
 
+  procedure ErrorInvalidOperator;
+  begin
+    raise Exception.Create('TCTConfigScriptEngine.ExecuteStack invalid operator: '+GetAtom(OperatorItem^.StartPos));
+  end;
+
+begin
+  Result:=true;
+  repeat
+    if (FStack.TopTyp<>ctcssOperand) or (FStack.Top<=0) then
+      exit;
+    OperatorItem:=@FStack.Items[FStack.Top-1];
+    if (OperatorItem^.Typ<>ctcssOperator)
+    or (GetOperatorLevel(OperatorItem^.StartPos)>MaxLevel) then
+      exit;
+    //OperandItem:=@FStack.Items[FStack.Top];
+
+    // execute operator
+    Typ:=AtomToCTCfgOperator(OperatorItem^.StartPos);
+    case Typ of
+    ctcsoNot:
+      // ToDo
+      ErrorInvalidOperator;
+    else
+      ErrorInvalidOperator;
+    end;
+  until false;
+end;
+
+function TCTConfigScriptEngine.GetOperatorLevel(P: PChar): integer;
+begin
+  Result:=CTCfgScriptOperatorLvl[AtomToCTCfgOperator(P)];
 end;
 
 constructor TCTConfigScriptEngine.Create;
@@ -1345,6 +1502,16 @@ begin
     if Result<>'' then
       System.Move(AtomStart^,Result[1],length(Result));
   end;
+end;
+
+function TCTConfigScriptEngine.GetAtom(P: PChar): string;
+var
+  StartPos: PChar;
+begin
+  ReadRawNextPascalAtom(P,StartPos);
+  SetLength(Result,p-StartPos);
+  if Result<>'' then
+    System.Move(StartPos^,Result[1],length(Result));
 end;
 
 function TCTConfigScriptEngine.PosToLineCol(p: PChar; out Line, Column: integer
