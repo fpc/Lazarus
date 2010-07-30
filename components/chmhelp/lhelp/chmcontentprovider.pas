@@ -21,7 +21,7 @@ unit chmcontentprovider;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, XMLCfg,
   FileUtil, Forms, StdCtrls, ExtCtrls, ComCtrls, Controls, Buttons, Menus,
   BaseContentProvider, FileContentProvider, IpHtml, ChmReader, ChmDataProvider;
 
@@ -84,6 +84,8 @@ type
     procedure SearchResultsDblClick(Sender: TObject);
     procedure SearchComboKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     {$ENDIF}
+    procedure LoadPreferences(ACfg: TXMLConfig); override;
+    procedure SavePreferences(ACfg: TXMLConfig); override;
   public
     function CanGoBack: Boolean; override;
     function CanGoForward: Boolean; override;
@@ -578,6 +580,18 @@ begin
     VK_RETURN: SearchButtonClick(nil);
 
   end;
+end;
+
+procedure TChmContentProvider.LoadPreferences(ACfg: TXMLConfig);
+begin
+  inherited LoadPreferences(ACfg);
+  fTabsControl.Width := ACfg.GetValue(ClassName+'/TabControlWidth/Value', fTabsControl.Width);
+end;
+
+procedure TChmContentProvider.SavePreferences(ACfg: TXMLConfig);
+begin
+  inherited SavePreferences(ACfg);
+  ACfg.SetValue(ClassName+'/TabControlWidth/Value', fTabsControl.Width);
 end;
 
 procedure TChmContentProvider.SearchButtonClick ( Sender: TObject ) ;

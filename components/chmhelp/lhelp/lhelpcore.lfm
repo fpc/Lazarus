@@ -50,6 +50,7 @@ object HelpForm: THelpForm
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyUp = FormKeyUp
+  OnShow = FormShow
   Position = poScreenCenter
   ShowInTaskBar = stAlways
   LCLVersion = '0.9.29'
@@ -263,6 +264,10 @@ object HelpForm: THelpForm
         Caption = '&Open...'
         ShortCut = 16463
         OnClick = FileMenuOpenItemClick
+      end
+      object FileMenuOpenRecentItem: TMenuItem
+        Caption = 'Open Recent'
+        Enabled = False
       end
       object FileMenuOpenURLItem: TMenuItem
         Caption = 'Open &URL...'

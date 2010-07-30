@@ -28,7 +28,7 @@ unit lhelpcore;
 interface
 
 uses
-  Classes, SysUtils, SimpleIPC,
+  Classes, SysUtils, SimpleIPC, XMLCfg,
   FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   Buttons, LCLProc, StdCtrls, IpHtml, ComCtrls, ExtCtrls, Menus, LCLType,
   BaseContentProvider, FileContentProvider, ChmContentProvider{$IFDEF USE_LNET}, HTTPContentProvider{$ENDIF};
@@ -62,6 +62,7 @@ type
     FileMenuOpenURLItem: TMenuItem;
     HelpMenuItem: TMenuItem;
     AboutItem: TMenuItem;
+    FileMenuOpenRecentItem: TMenuItem;
     PageControl: TPageControl;
     Panel1: TPanel;
     ForwardBttn: TSpeedButton;
@@ -79,6 +80,7 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
     procedure ForwardToolBtnClick(Sender: TObject);
     procedure HomeToolBtnClick(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
@@ -92,6 +94,12 @@ type
     fOutputIPC: TSimpleIPCClient;
     fServerTimer: TTimer;
     fContext: LongInt; // used once when we are started on the command line with --context
+    fConfig: TXMLConfig;
+    FHasShowed: Boolean;
+    procedure LoadPreferences(AIPCName: String);
+    procedure SavePreferences(AIPCName: String);
+    procedure AddRecentFile(AFileName: String);
+    procedure OpenRecentItemClick(Sender: TObject);
     procedure SendResponse(Response: DWord);
     procedure ServerMessage(Sender: TObject);
     procedure ReadCommandLineOptions;
@@ -119,6 +127,13 @@ implementation
 
 uses 
   LHelpControl;
+
+type
+  TRecentMenuItem = class(TMenuItem)
+  public
+    URL: String;
+  end;
+
 
 { THelpForm }
 
@@ -156,7 +171,8 @@ procedure THelpForm.FileMenuOpenItemClick(Sender: TObject);
 begin
   if OpenDialog1.Execute then
   begin
-    OpenURL('file://'+OpenDialog1.FileName);
+    if OpenURL('file://'+OpenDialog1.FileName) = Ord(srSuccess) then
+      AddRecentFile('file://'+OpenDialog1.FileName);
     RefreshState;
   end;
 end;
@@ -184,7 +200,8 @@ begin
 
   if InputQuery('Please Enter a URL', 'Supported URL type(s): (' +URLSAllowed+ ')', fRes) then
   begin
-    OpenURL(fRes);
+    if OpenURL(fRes) = ord(srSuccess) then
+      AddRecentFile(fRes);
     RefreshState;
   end;
 end;
@@ -195,6 +212,7 @@ begin
   Application.ProcessMessages;
   FileMenuCloseItemClick(Sender);
   StopServer;
+  SavePreferences(fServerName);
 end;
 
 procedure THelpForm.FormCreate(Sender: TObject);
@@ -205,7 +223,6 @@ begin
     StartServer(fServerName);
   end;
   RefreshState;
-
   SetKeyUp(Self);
 end;
 
@@ -214,6 +231,14 @@ procedure THelpForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
 begin
   if Key = VK_ESCAPE then
     Close;
+end;
+
+procedure THelpForm.FormShow(Sender: TObject);
+begin
+  if FHasShowed then
+    Exit;
+  FHasShowed := True;
+  LoadPreferences(fServerName);
 end;
 
 procedure THelpForm.ForwardToolBtnClick(Sender: TObject);
@@ -252,6 +277,85 @@ begin
     end;
 end;
 
+procedure THelpForm.LoadPreferences(AIPCName: String);
+var
+  PrefFile: String;
+  RecentCount: Integer;
+  i: Integer;
+begin
+  PrefFile := GetAppConfigDirUTF8(False);
+  ForceDirectoriesUTF8(PrefFile);
+  PrefFile:=Format('%slhelp-%s.conf',[IncludeTrailingPathDelimiter(PrefFile), AIPCName]);
+
+  fConfig := TXMLConfig.Create(Self);
+  fConfig.Filename:=PrefFile;
+
+  Left   := fConfig.GetValue('Position/Left/Value',   Left);
+  Top    := fConfig.GetValue('Position/Top/Value',    Top);
+  Width  := fConfig.GetValue('Position/Width/Value',  Width);
+  Height := fConfig.GetValue('Position/Height/Value', Height);
+
+  RecentCount:= fConfig.GetValue('Recent/ItemCount/Value', 0);
+
+  for i := RecentCount-1 downto 0 do // downto since oldest are knocked off the list
+    AddRecentFile(fConfig.GetValue('Recent/Item/'+IntToStr(i)+'/Value',''));
+end;
+
+procedure THelpForm.SavePreferences(AIPCName: String);
+var
+  i: Integer;
+begin
+  fConfig.SetValue('Position/Left/Value',   Left);
+  fConfig.SetValue('Position/Top/Value',    Top);
+  fConfig.SetValue('Position/Width/Value',  Width);
+  fConfig.SetValue('Position/Height/Value', Height);
+
+  fConfig.SetValue('Recent/ItemCount/Value', FileMenuOpenRecentItem.Count);
+  for i := 0 to FileMenuOpenRecentItem.Count-1 do // downto since oldest are knocked off the list
+    fConfig.SetValue('Recent/Item/'+IntToStr(i)+'/Value', TRecentMenuItem(FileMenuOpenRecentItem.Items[I]).URL);
+
+
+  fConfig.Flush;
+  fConfig.Free;
+end;
+
+procedure THelpForm.AddRecentFile(AFileName: String);
+var
+  Item : TRecentMenuItem;
+  MaxHistory: longint;
+  i: Integer;
+begin
+  for i := FileMenuOpenRecentItem.Count-1 downto 0 do
+    if TRecentMenuItem(FileMenuOpenRecentItem.Items[i]).URL = AFileName then
+    begin
+      FileMenuOpenRecentItem.Delete(i);
+    end;
+  Item := TRecentMenuItem.Create(FileMenuOpenRecentItem);
+  Item.Caption:=ExtractFileNameOnly(AFileName);
+  Item.URL:=AFileName;
+  Item.OnClick:=@OpenRecentItemClick;
+  Item.Hint:=Item.URL;
+  FileMenuOpenRecentItem.Insert(0, Item);
+
+  MaxHistory := fConfig.GetValue('Recent/HistoryCount/Value', 5);
+
+  if FileMenuOpenRecentItem.Count > 0 then
+    FileMenuOpenRecentItem.Enabled:=True;
+
+  if FileMenuOpenRecentItem.Count > MaxHistory then
+    FileMenuOpenRecentItem.Items[MaxHistory-1].Free;
+
+
+end;
+
+procedure THelpForm.OpenRecentItemClick(Sender: TObject);
+var
+  Item: TRecentMenuItem absolute Sender;
+begin
+  OpenURL(Item.URL);
+  AddRecentFile(Item.URL);
+end;
+
 procedure THelpForm.SendResponse(Response: DWord);
 var
   Stream: TMemoryStream;
@@ -278,6 +382,7 @@ var
   ConReq: TContextRequest;
   Stream: TStream;
   Res: LongWord;
+  Url: String;
 begin
   if fInputIPC.PeekMessage(5, True) then begin
     Stream := fInputIPC.MsgData;
@@ -285,25 +390,36 @@ begin
     Stream.Read(FileReq, SizeOf(FileReq));
     case FileReq.RequestType of
       rtFile    : begin
-                    Res := OpenURL('file://'+FileReq.FileName);
+                    Url := 'file://'+FileReq.FileName;
+                    Res := OpenURL(URL);
                   end;
       rtUrl     : begin
                     Stream.Position := 0;
                     Stream.Read(UrlReq, SizeOf(UrlReq));
                     if UrlReq.FileRequest.FileName <> '' then
-                      Res := OpenUrl('file://'+UrlReq.FileRequest.FileName+'://'+UrlReq.Url)
+                    begin
+                      Url := 'file://'+UrlReq.FileRequest.FileName;
+                      Res := OpenUrl(URL+'://'+UrlReq.Url)
+                    end
                     else
-                      Res := OpenURL(UrlReq.Url);
+                    begin
+                      Url := UrlReq.Url;
+                      Res := OpenURL(Url);
+                    end;
                   end;
       rtContext : begin
                     Stream.Position := 0;
                     Stream.Read(ConReq, SizeOf(ConReq));
-                    Res := OpenURL('file://'+FileReq.FileName, ConReq.HelpContext);
+                    Url := 'file://'+FileReq.FileName;
+                    Res := OpenURL(Url, ConReq.HelpContext);
                   end;
     end;
+    if Res = Ord(srSuccess) then
+      AddRecentFile(Url);
     SendResponse(Res);
     Self.SendToBack;
     Self.BringToFront;
+    Self.ShowOnTop;
   end;
 end;
 
@@ -394,7 +510,7 @@ var
  fURLPrefix: String;
  fContentProvider: TBaseContentProviderClass;
  fRealContentProvider: TBaseContentProviderClass;
- fNewPage: TContentTab;
+ fPage: TContentTab = nil;
  I: Integer;
 begin
  Result := Ord(srUnknown);
@@ -417,6 +533,7 @@ begin
  
  for I := 0 to PageControl.PageCount-1 do begin
    if fRealContentProvider.ClassName = TContentTab(PageControl.Pages[I]).ContentProvider.ClassName then begin
+     fPage := TContentTab(PageControl.Pages[I]);
      if TContentTab(PageControl.Pages[I]).ContentProvider.LoadURL(AURL, AContext) then
      begin
        PageControl.ActivePage := PageControl.Pages[I];
@@ -427,27 +544,36 @@ begin
      Exit;
    end;
  end;
- 
- //no page was found already to handle this content so create one
- fNewPage := TContentTab.Create(PageControl);
- fNewPage.ContentProvider := fRealContentProvider.Create(fNewPage, ImageList1);
- fNewPage.Parent := PageControl;
- SetKeyUp(fNewPage);
- ShowOnTop;
- 
- if fNewPage.ContentProvider.LoadURL(AURL, AContext) then
+
+ if fPage = nil then
  begin
-   PageControl.ActivePage := fNewPage;
+   //no page was found already to handle this content so create one
+   fPage := TContentTab.Create(PageControl);
+   fPage.ContentProvider := fRealContentProvider.Create(fPage, ImageList1);
+   fPage.Parent := PageControl;
+   SetKeyUp(fPage);
+   fPage.ContentProvider.LoadPreferences(fConfig);
+ end;
+
+ 
+ if fPage.ContentProvider.LoadURL(AURL, AContext) then
+ begin
+   PageControl.ActivePage := fPage;
    RefreshState;
    Result := Ord(srSuccess);
  end
  else
    Result := Ord(srInvalidFile);
+
+ ShowOnTop;
 end;
+
 
 procedure THelpForm.LateOpenURL ( Url: PStringItem ) ;
 begin
-  OpenURL(URL^.FString, fContext);
+  if OpenURL(URL^.FString, fContext) = ord(srSuccess) then
+    AddRecentFile(URL^.FString);
+
   Dispose(Url);
   RefreshState;
 end;

@@ -5,7 +5,7 @@ unit BaseContentProvider;
 interface
 
 uses
-  Classes, SysUtils, Controls;
+  Classes, SysUtils, Controls, XMLCfg;
   
 type
 
@@ -16,6 +16,7 @@ type
   private
     fParent: TWinControl;
     FTitle: String;
+    FConfig: TXMLConfig;
   protected
     fImageList: TImageList;
     function GetTitle: String; virtual;
@@ -28,8 +29,11 @@ type
     procedure GoHome; virtual; abstract;
     procedure GoBack; virtual; abstract;
     procedure GoForward; virtual; abstract;
+    procedure LoadPreferences(ACfg: TXMLConfig); virtual;
+    procedure SavePreferences(ACfg: TXMLConfig); virtual;
     class function GetProperContentProvider(const AURL: String): TBaseContentProviderClass; virtual; abstract;
     constructor Create(AParent: TWinControl; AImageList: TImageList); virtual;
+    destructor Destroy; override;
     property Parent: TWinControl read fParent;
     property Title: String read GetTitle write SetTitle;
   end;
@@ -90,10 +94,26 @@ begin
   FTitle := AValue;
 end;
 
+procedure TBaseContentProvider.LoadPreferences(ACfg: TXMLConfig);
+begin
+  FConfig := ACfg;
+end;
+
+procedure TBaseContentProvider.SavePreferences(ACfg: TXMLConfig);
+begin
+
+end;
+
 constructor TBaseContentProvider.Create(AParent: TWinControl; AImageList: TImageList);
 begin
   fParent:= AParent;
   fImageList:= AImageList;
+end;
+
+destructor TBaseContentProvider.Destroy;
+begin
+  SavePreferences(FConfig);
+  inherited Destroy;
 end;
 
 initialization
