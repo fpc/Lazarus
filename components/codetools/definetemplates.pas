@@ -1186,7 +1186,7 @@ begin
       TheProcess.CommandLine := UTF8ToSys(CmdLine);
       TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
       TheProcess.ShowWindow := swoHide;
-      TheProcess.CurrentDirectory:=WorkingDirectory;
+      TheProcess.CurrentDirectory:=UTF8ToSys(WorkingDirectory);
       TheProcess.Execute;
       OutputLine:='';
       SetLength(buf,4096);
