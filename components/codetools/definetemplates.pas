@@ -1177,7 +1177,7 @@ begin
     debugln(['RunTool ',Filename,' ',Params]);
     TheProcess := TProcess.Create(nil);
     try
-      CmdLine:=UTF8ToSys(Filename);
+      CmdLine:=Filename;
       if (System.Pos(' ',CmdLine)>0) and (CmdLine[1]<>'"') then
         CmdLine:='"'+CmdLine+'"';
       if Params<>'' then
