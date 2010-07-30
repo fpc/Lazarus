@@ -56,6 +56,7 @@ type
     fHistoryIndex: Integer;
     fStopTimer: Boolean;
     fFillingToc: Boolean;
+    fActiveChmTitle: String;
 
     function  MakeURI(AUrl: String; AChm: TChmReader): String;
 
@@ -74,6 +75,7 @@ type
     procedure ContentsTreeSelectionChanged(Sender: TObject);
     procedure IndexViewDblClick(Sender: TObject);
     procedure ViewMenuContentsClick(Sender: TObject);
+    procedure UpdateTitle;
     procedure SetTitle(const AValue: String); override;
     procedure SearchEditChange(Sender: TObject);
     procedure TOCExpand(Sender: TObject; Node: TTreeNode);
@@ -201,7 +203,7 @@ begin
   // Code Here has been moved to the OpenFile handler
 
   //FileMenuCloseItem.Enabled := True;
-  if fChms.Chm[0].Title <> '' then SetTitle(fChms.Chm[0].Title);
+  UpdateTitle;
 end;
 
 procedure TChmContentProvider.DoCloseChm;
@@ -215,6 +217,7 @@ begin
       fChms.Chm[i].Free;
   end;
   FreeAndNil(fChms);
+  UpdateTitle;
 end;
 
 procedure TChmContentProvider.DoLoadContext(Context: THelpContext);
@@ -314,6 +317,7 @@ begin
   {$ENDIF}
   if fChm <> nil then begin
     ParentNode := fContentsTree.Items.AddChildObject(nil, fChm.Title, fChm);
+    UpdateTitle;
     ParentNode.ImageIndex := 0;
     ParentNode.SelectedIndex := 0;
     {$IFDEF CHM_BINARY_INDEX_TOC}
@@ -385,7 +389,7 @@ begin
 
   fSearchTab.TabVisible := HasSearchIndex;
   {$ENDIF}
-
+  UpdateTitle;
 end;
 
 procedure TChmContentProvider.IpHtmlPanelDocumentOpen(Sender: TObject);
@@ -417,7 +421,8 @@ begin
   if not(fContentsTree.Selected is TContentTreeNode) then
   begin
     fChm := TChmReader(fContentsTree.Selected.Data);
-    SetTitle(fChm.Title);
+    fActiveChmTitle:= fChm.Title;
+    UpdateTitle;
     if fChm.DefaultPage <> '' then
       DoLoadUri(MakeURI(fChm.DefaultPage, fChm));
     Exit;
@@ -462,6 +467,29 @@ begin
   //TMenuItem(Sender).Checked := not TMenuItem(Sender).Checked;
   //fSplitter.Visible := TMenuItem(Sender).Checked;
   //TabPanel.Visible := Splitter1.Visible;
+end;
+
+procedure TChmContentProvider.UpdateTitle;
+var
+  Item: TTreeNode;
+  NewTitle: String;
+begin
+  Item := fContentsTree.Items.GetFirstNode;
+  NewTitle:=fActiveChmTitle +' [';
+  while Item <> nil do
+  begin
+    if ITem.Text <> fActiveChmTitle then
+    begin
+      NewTitle:=NewTitle+Item.Text;
+      if (Item.GetNextSibling <> nil)
+      and ((Item.GetNextSibling.GetNextSibling <> nil) or (Item.GetNextSibling.Text <>  fActiveChmTitle))
+      then
+        NewTitle:=NewTitle+', ';
+    end;
+    Item := Item.GetNextSibling;
+  end;
+  NewTitle:=NewTitle+']';
+  Title := NewTitle;
 end;
 
 procedure TChmContentProvider.SetTitle(const AValue: String);
@@ -529,7 +557,8 @@ begin
   begin
     if FileName = ExtractFileName(fChms.FileName[i]) then
     begin
-      SetTitle(fChms.Chm[i].Title);
+      fActiveChmTitle:= fChms.Chm[i].Title;
+      UpdateTitle;
 
       RootNode := fContentsTree.Items.FindNodeWithData(fChms.Chm[i]);
       if URL = fChms.Chm[i].DefaultPage then
@@ -806,7 +835,7 @@ begin
   if fURL <> '' then
     DoLoadUri(MakeURI(fURL, fChms.Chm[FileIndex]))
   else
-    GoHome;
+    DoLoadUri(MakeURI(fChms.Chm[FileIndex].DefaultPage, fChms.Chm[FileIndex]));
   Result := True;
 
   if LoadTOC and (FileIndex = 0) then

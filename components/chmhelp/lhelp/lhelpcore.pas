@@ -99,6 +99,7 @@ type
     procedure LoadPreferences(AIPCName: String);
     procedure SavePreferences(AIPCName: String);
     procedure AddRecentFile(AFileName: String);
+    procedure ContentTitleChange(sender: TObject);
     procedure OpenRecentItemClick(Sender: TObject);
     procedure SendResponse(Response: DWord);
     procedure ServerMessage(Sender: TObject);
@@ -348,6 +349,14 @@ begin
 
 end;
 
+procedure THelpForm.ContentTitleChange(sender: TObject);
+begin
+  //if ActivePage = nil then
+  //  Exit;
+
+  Caption := 'LHelp - ' + ActivePage.fContentProvider.Title;
+end;
+
 procedure THelpForm.OpenRecentItemClick(Sender: TObject);
 var
   Item: TRecentMenuItem absolute Sender;
@@ -550,6 +559,7 @@ begin
    //no page was found already to handle this content so create one
    fPage := TContentTab.Create(PageControl);
    fPage.ContentProvider := fRealContentProvider.Create(fPage, ImageList1);
+   fPAge.ContentProvider.OnTitleChange:=@ContentTitleChange;
    fPage.Parent := PageControl;
    SetKeyUp(fPage);
    fPage.ContentProvider.LoadPreferences(fConfig);

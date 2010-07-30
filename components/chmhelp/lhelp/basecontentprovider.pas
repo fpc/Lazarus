@@ -14,6 +14,7 @@ type
   TBaseContentProviderClass = Class of TBaseContentProvider;
   TBaseContentProvider = class(TObject)
   private
+    FOnTitleChange: TNotifyEvent;
     fParent: TWinControl;
     FTitle: String;
     FConfig: TXMLConfig;
@@ -36,6 +37,7 @@ type
     destructor Destroy; override;
     property Parent: TWinControl read fParent;
     property Title: String read GetTitle write SetTitle;
+    property OnTitleChange: TNotifyEvent read FOnTitleChange write FOnTitleChange;
   end;
   
 
@@ -86,12 +88,14 @@ end;
 
 function TBaseContentProvider.GetTitle: String;
 begin
-  Result := '';
+  Result := FTitle;
 end;
 
 procedure TBaseContentProvider.SetTitle(const AValue: String);
 begin
   FTitle := AValue;
+  if Assigned(FOnTitleChange) then
+    FOnTitleChange(Self);
 end;
 
 procedure TBaseContentProvider.LoadPreferences(ACfg: TXMLConfig);
