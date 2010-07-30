@@ -26,7 +26,7 @@ uses
   Controls,
   Dialogs,
   Forms
-  { add your units here }, TurboPowerIPro, chmpopup, lhelpcontrolpkg, lhelpcore;
+  { add your units here }, SimpleIPC, TurboPowerIPro, chmpopup, lhelpcontrolpkg, lhelpcore;
 
 var
  X: Integer;
@@ -60,6 +60,15 @@ begin
     end;
   Application.CreateForm(THelpForm, HelpForm);
   Application.CreateForm(THelpPopupForm, HelpPopupForm);
+  try
   Application.Run;
+  except
+    // try to remove stale names pipes so that a new instance can use them
+    if IPCServer <> nil then
+    try
+    FreeAndNil(IPCServer);
+    except
+    end;
+  end;
 end.
 

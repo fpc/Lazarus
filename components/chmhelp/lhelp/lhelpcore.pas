@@ -30,7 +30,7 @@ interface
 uses
   Classes, SysUtils, SimpleIPC,
   FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, LCLProc, StdCtrls, IpHtml, ComCtrls, ExtCtrls, Menus,
+  Buttons, LCLProc, StdCtrls, IpHtml, ComCtrls, ExtCtrls, Menus, LCLType,
   BaseContentProvider, FileContentProvider, ChmContentProvider{$IFDEF USE_LNET}, HTTPContentProvider{$ENDIF};
 
 type
@@ -78,6 +78,7 @@ type
     procedure FileMenuOpenURLItemClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ForwardToolBtnClick(Sender: TObject);
     procedure HomeToolBtnClick(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
@@ -101,6 +102,7 @@ type
     function ActivePage: TContentTab;
     procedure RefreshState;
     procedure ShowError(AError: String);
+    procedure SetKeyUp(AControl: TControl);
   public
     { public declarations }
   end;
@@ -108,6 +110,7 @@ type
 
 var
   HelpForm: THelpForm;
+  IPCServer: TSimpleIPCServer;
 const INVALID_FILE_TYPE = 1;
 
 implementation
@@ -188,6 +191,8 @@ end;
 
 procedure THelpForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
+  Visible:= False;
+  Application.ProcessMessages;
   FileMenuCloseItemClick(Sender);
   StopServer;
 end;
@@ -200,6 +205,15 @@ begin
     StartServer(fServerName);
   end;
   RefreshState;
+
+  SetKeyUp(Self);
+end;
+
+procedure THelpForm.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
+  );
+begin
+  if Key = VK_ESCAPE then
+    Close;
 end;
 
 procedure THelpForm.ForwardToolBtnClick(Sender: TObject);
@@ -344,6 +358,8 @@ begin
   fInputIPC.ServerID := ServerName;
   fInputIPC.Global := True;
   fInputIPC.Active := True;
+  IPCServer := fInputIPC;
+
   fServerTimer := TTimer.Create(nil);
   fServerTimer.OnTimer := @ServerMessage;
   fServerTimer.Interval := 200;
@@ -362,6 +378,7 @@ begin
      fInputIPC.Active := False;
 
    FreeAndNil(fInputIPC);
+   IPCServer := nil;
    FreeAndNil(fServerTimer);
 end;
 
@@ -415,7 +432,7 @@ begin
  fNewPage := TContentTab.Create(PageControl);
  fNewPage.ContentProvider := fRealContentProvider.Create(fNewPage, ImageList1);
  fNewPage.Parent := PageControl;
-
+ SetKeyUp(fNewPage);
  ShowOnTop;
  
  if fNewPage.ContentProvider.LoadURL(AURL, AContext) then
@@ -463,6 +480,18 @@ begin
   ShowMessage(AError);
 end;
 
+procedure THelpForm.SetKeyUp(AControl: TControl);
+var
+  WCont: TWinControl absolute AControl;
+  i: Integer;
+begin
+  if (AControl = nil) or not (AControl.InheritsFrom(TWinControl)) then
+    Exit;
+  for i := 0 to WCont.ControlCount-1 do
+      SetKeyUp(WCont.Controls[i]);
+  WCont.OnKeyUp:=@FormKeyUp;
+end;
+
 { TContentTab }
 
 constructor TContentTab.Create(AOwner: TComponent);
@@ -475,6 +504,13 @@ begin
   fContentProvider.Free;
   inherited Destroy;
 end;
+
+finalization
+  if IPCServer <> nil then
+    try
+    FreeAndNil(IPCServer);
+    except
+    end;
 
 end.
 

@@ -97,6 +97,7 @@
     <PathDelim Value="\"/>
     <SearchPaths>
       <Libraries Value="\emul\linux\x86\lib\;\emul\linux\x86\usr\lib32\"/>
+      <OtherUnitFiles Value="..\..\..\..\fpc\packages\chm\src\"/>
       <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
     </SearchPaths>
     <Parsing>

@@ -303,7 +303,7 @@ begin
     exit;
   end;
   fFillingToc := True;
-  fContentsTree.Visible := False;
+  //fContentsTree.Visible := False;
   fContentsPanel.Caption := 'Table of Contents Loading. Please Wait...';
   Application.ProcessMessages;
   fChm := TChmReader(Data);
@@ -705,7 +705,7 @@ begin
       if (Length(DocURL) > 0) and (DocURL[1] <> '/') then
         Insert('/', DocURL, 1);
       if DocTitle = '' then
-        Doctitle := 'untitled';
+        DocTitle := 'untitled';
       ListItem := fSearchResults.Items.Add;
       ListItem.Caption := DocTitle;
       ListItem.Data := fChms.Chm[i];

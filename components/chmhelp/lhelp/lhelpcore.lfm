@@ -5,7 +5,7 @@ object HelpForm: THelpForm
   Width = 758
   ActiveControl = Panel1
   Caption = 'LHelp'
-  ClientHeight = 515
+  ClientHeight = 512
   ClientWidth = 758
   Icon.Data = {
     7E04000000000100010010100000010020006804000016000000280000001000
@@ -49,9 +49,11 @@ object HelpForm: THelpForm
   Menu = MainMenu1
   OnClose = FormClose
   OnCreate = FormCreate
+  OnKeyUp = FormKeyUp
   Position = poScreenCenter
   ShowInTaskBar = stAlways
   LCLVersion = '0.9.29'
+  Visible = True
   object Panel1: TPanel
     Left = 0
     Height = 32
@@ -242,7 +244,7 @@ object HelpForm: THelpForm
   end
   object PageControl: TPageControl
     Left = 0
-    Height = 483
+    Height = 503
     Top = 32
     Width = 758
     Align = alClient
