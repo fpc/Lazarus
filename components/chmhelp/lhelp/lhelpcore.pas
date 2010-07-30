@@ -170,7 +170,6 @@ end;
 
 procedure THelpForm.FileMenuOpenItemClick(Sender: TObject);
 begin
-
   if OpenDialog1.Execute then
   begin
     if OpenURL('file://'+OpenDialog1.FileName) = Ord(srSuccess) then
@@ -309,10 +308,13 @@ procedure THelpForm.SavePreferences(AIPCName: String);
 var
   i: Integer;
 begin
-  fConfig.SetValue('Position/Left/Value',   Left);
-  fConfig.SetValue('Position/Top/Value',    Top);
-  fConfig.SetValue('Position/Width/Value',  Width);
-  fConfig.SetValue('Position/Height/Value', Height);
+  if not (WindowState = wsMaximized) then
+  begin
+    fConfig.SetValue('Position/Left/Value',   Left);
+    fConfig.SetValue('Position/Top/Value',    Top);
+    fConfig.SetValue('Position/Width/Value',  Width);
+    fConfig.SetValue('Position/Height/Value', Height);
+  end;
 
   fConfig.SetValue('LastFileOpen/Value', OpenDialog1.FileName);
 
@@ -356,8 +358,8 @@ end;
 
 procedure THelpForm.ContentTitleChange(sender: TObject);
 begin
-  //if ActivePage = nil then
-  //  Exit;
+  if ActivePage = nil then
+    Exit;
 
   Caption := 'LHelp - ' + ActivePage.fContentProvider.Title;
 end;
