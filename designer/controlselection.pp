@@ -414,8 +414,8 @@ type
     procedure UpdateBounds;
     procedure RestoreBounds;
 
-    procedure MoveSelection(dx, dy: integer);
-    function MoveSelectionWithSnapping(TotalDX, TotalDY: integer): boolean;
+    function MoveSelection(dx, dy: integer; TotalDeltas: Boolean): Boolean;
+    function MoveSelectionWithSnapping(TotalDx, TotalDy: integer): Boolean;
     procedure SizeSelection(dx, dy: integer);
     procedure SetBounds(NewLeft,NewTop,NewWidth,NewHeight: integer);
     procedure AlignComponents(HorizAlignment,VertAlignment:TComponentAlignment);
@@ -1678,19 +1678,20 @@ begin
     Result:=ABottom;
 end;
 
-function TControlSelection.SnapGrabberMousePos(const CurMousePos: TPoint
-  ): TPoint;
+function TControlSelection.SnapGrabberMousePos(const CurMousePos: TPoint): TPoint;
 begin
-  Result:=CurMousePos;
-  if (not EnvironmentOptions.SnapToGrid) or (ActiveGrabber=nil) then exit;
+  Result := CurMousePos;
+  if (not EnvironmentOptions.SnapToGrid) or (ActiveGrabber = nil) then exit;
   if gpLeft in ActiveGrabber.Positions then
-    Result.X:=FindNearestSnapLeft(Result.X)
-  else if gpRight in ActiveGrabber.Positions then
-    Result.X:=FindNearestSnapRight(Result.X);
+    Result.X := FindNearestSnapLeft(Result.X)
+  else
+  if gpRight in ActiveGrabber.Positions then
+    Result.X := FindNearestSnapRight(Result.X);
   if gpTop in ActiveGrabber.Positions then
-    Result.Y:=FindNearestSnapTop(Result.Y)
-  else if gpBottom in ActiveGrabber.Positions then
-    Result.Y:=FindNearestSnapBottom(Result.Y);
+    Result.Y := FindNearestSnapTop(Result.Y)
+  else
+  if gpBottom in ActiveGrabber.Positions then
+    Result.Y := FindNearestSnapBottom(Result.Y);
 end;
 
 function TControlSelection.GetLeftGuideLine(var ALine: TRect): boolean;
@@ -2169,44 +2170,60 @@ begin
   Result:=(Count=1) and (Items[0].Persistent=APersistent);
 end;
 
-procedure TControlSelection.MoveSelection(dx, dy: integer);
-begin
-  if (Count=0) or (IsResizing) then exit;
-  if (dx=0) and (dy=0) then exit;
-  //DebugLn('[TControlSelection.MoveSelection] A  %d,%d',[dx,dy]);
-  BeginResizing;
-  //DebugLn('[TControlSelection.MoveSelection] B  %d',[FResizeLockCount]);
-  inc(FLeft,dx);
-  inc(FTop,dy);
-  EndResizing(true);
-end;
-
-function TControlSelection.MoveSelectionWithSnapping(TotalDX, TotalDY: integer
-  ): boolean;
+function TControlSelection.MoveSelection(dx, dy: integer; TotalDeltas: Boolean): Boolean;
 var
   NewLeft, NewTop: integer;
 begin
-  Result:=false;
-  if (Count=0) or (IsResizing) then exit;
-  NewLeft:=FindNearestSnapLeft(FOldLeft+TotalDX,FWidth);
-  NewTop:=FindNearestSnapTop(FOldTop+TotalDY,FHeight);
+  Result := False;
+  if (Count = 0) or IsResizing then Exit;
+  //DebugLn('[TControlSelection.MoveSelection] A  %d,%d',[dx,dy]);
+  //DebugLn('[TControlSelection.MoveSelection] B  %d',[FResizeLockCount]);
+  if TotalDeltas then
+  begin
+    NewLeft := FOldLeft + dx;
+    NewTop := FOldTop + dy;
+  end
+  else
+  begin
+    NewLeft := FLeft + dx;
+    NewTop := FTop + dy
+  end;
+  if (NewLeft <> FLeft) or (NewTop <> FTop) then
+  begin
+    Result := True;
+    BeginResizing;
+    FLeft := NewLeft;
+    FTop := NewTop;
+    EndResizing(True);
+  end;
+end;
+
+function TControlSelection.MoveSelectionWithSnapping(TotalDx, TotalDy: integer): boolean;
+var
+  NewLeft, NewTop: integer;
+begin
+  Result := False;
+  if (Count = 0) or IsResizing then Exit;
+  NewLeft := FindNearestSnapLeft(FOldLeft + TotalDx, FWidth);
+  NewTop := FindNearestSnapTop(FOldTop + TotalDy, FHeight);
   {$IFDEF VerboseDesigner}
   DebugLn('[TControlSelection.MoveSelectionWithSnapping] A  ',
-    'TotalD='+dbgs(TotalDX)+','+dbgs(TotalDY),
+    'TotalD='+dbgs(TotalDx)+','+dbgs(TotalDy),
     ' CurBounds='+dbgs(FLeft)+','+dbgs(FTop)+','+dbgs(FWidth)+','+dbgs(FHeight),
     ' OldBounds='+dbgs(FOldLeft)+','+dbgs(FOldTop)+','+dbgs(FOldWidth)+','+dbgs(FOldHeight)
     +' NewPos='+dbgs(NewLeft)+','+dbgs(NewTop));
   {$ENDIF}
-  if (NewLeft<>FLeft) or (NewTop<>FTop) then begin
-    Result:=true;
+  if (NewLeft <> FLeft) or (NewTop <> FTop) then
+  begin
+    Result := True;
     BeginResizing;
-    FLeft:=NewLeft;
-    FTop:=NewTop;
+    FLeft := NewLeft;
+    FTop := NewTop;
     {$IFDEF VerboseDesigner}
     DebugLn('[TControlSelection.MoveSelectionWithSnapping] B  ',
       ' Bounds='+dbgs(FLeft)+','+dbgs(FTop)+','+dbgs(FWidth)+','+dbgs(FHeight));
     {$ENDIF}
-    EndResizing(true);
+    EndResizing(True);
   end;
 end;
 

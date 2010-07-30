@@ -670,7 +670,7 @@ begin
   {$ENDIF}
   if (ControlSelection.SelectionForm<>Form)
   or ControlSelection.LookupRootSelected then exit;
-  ControlSelection.MoveSelection(DiffX, DiffY);
+  ControlSelection.MoveSelection(DiffX, DiffY, False);
   Modified;
 end;
 
@@ -1600,61 +1600,64 @@ procedure TDesigner.GetMouseMsgShift(TheMessage: TLMMouse;
 begin
   Shift := [];
   if (TheMessage.Keys and MK_Shift) = MK_Shift then
-    Include(Shift,ssShift);
+    Include(Shift, ssShift);
   if (TheMessage.Keys and MK_Control) = MK_Control then
-    Include(Shift,ssCtrl);
+    Include(Shift, ssCtrl);
+
+  if GetKeyState(VK_MENU) < 0 then Include(Shift, ssAlt);
+  if (GetKeyState(VK_LWIN) < 0) or (GetKeyState(VK_RWIN) < 0) then Include(Shift, ssMeta);
 
   case TheMessage.Msg of
   LM_LBUTTONUP,LM_LBUTTONDBLCLK,LM_LBUTTONTRIPLECLK,LM_LBUTTONQUADCLK:
     begin
-      Include(Shift,ssLeft);
-      Button:=mbLeft;
+      Include(Shift, ssLeft);
+      Button := mbLeft;
     end;
   LM_MBUTTONUP,LM_MBUTTONDBLCLK,LM_MBUTTONTRIPLECLK,LM_MBUTTONQUADCLK:
     begin
-      Include(Shift,ssMiddle);
-      Button:=mbMiddle;
+      Include(Shift, ssMiddle);
+      Button := mbMiddle;
     end;
   LM_RBUTTONUP,LM_RBUTTONDBLCLK,LM_RBUTTONTRIPLECLK,LM_RBUTTONQUADCLK:
     begin
-      Include(Shift,ssRight);
-      Button:=mbRight;
+      Include(Shift, ssRight);
+      Button := mbRight;
     end;
   else
     if (TheMessage.Keys and MK_MButton) <> 0 then
     begin
-      Include(Shift,ssMiddle);
-      Button:=mbMiddle;
+      Include(Shift, ssMiddle);
+      Button := mbMiddle;
     end;
     if (TheMessage.Keys and MK_RButton) <> 0 then
     begin
-      Include(Shift,ssRight);
-      Button:=mbRight;
+      Include(Shift, ssRight);
+      Button := mbRight;
     end;
     if (TheMessage.Keys and MK_LButton) <> 0 then
     begin
-      Include(Shift,ssLeft);
-      Button:=mbLeft;
+      Include(Shift, ssLeft);
+      Button := mbLeft;
     end;
     if (TheMessage.Keys and MK_XBUTTON1) <> 0 then
     begin
-      Include(Shift,ssExtra1);
-      Button:=mbExtra1;
+      Include(Shift, ssExtra1);
+      Button := mbExtra1;
     end;
     if (TheMessage.Keys and MK_XBUTTON2) <> 0 then
     begin
-      Include(Shift,ssExtra2);
-      Button:=mbExtra2;
+      Include(Shift, ssExtra2);
+      Button := mbExtra2;
     end;
   end;
 
   case TheMessage.Msg of
   LM_LBUTTONDBLCLK,LM_MBUTTONDBLCLK,LM_RBUTTONDBLCLK,LM_XBUTTONDBLCLK:
-    Include(Shift,ssDouble);
+    Include(Shift, ssDouble);
   LM_LBUTTONTRIPLECLK,LM_MBUTTONTRIPLECLK,LM_RBUTTONTRIPLECLK,LM_XBUTTONTRIPLECLK:
-    Include(Shift,ssTriple);
+    Include(Shift, ssTriple);
   LM_LBUTTONQUADCLK,LM_MBUTTONQUADCLK,LM_RBUTTONQUADCLK,LM_XBUTTONQUADCLK:
-    Include(Shift,ssQuad);
+    Include(Shift, ssQuad);
   end;
 end;
 
@@ -2251,9 +2254,9 @@ begin
   begin
     if Grabber = nil then
       ACursor := crDefault
-    else begin
+    else
       ACursor := Grabber.Cursor;
-    end;
+
     if ACursor <> LastFormCursor then
     begin
       LastFormCursor := ACursor;
@@ -2276,8 +2279,17 @@ begin
             ControlSelection.SaveBounds;
             Include(FFlags, dfHasSized);
           end;
-          OldSnappedMousePos := ControlSelection.SnapGrabberMousePos(OldMouseMovePos);
-          CurSnappedMousePos:= ControlSelection.SnapGrabberMousePos(LastMouseMovePos);
+          // skip snapping when Alt is pressed
+          if not (ssAlt in Shift) then
+          begin
+            OldSnappedMousePos := ControlSelection.SnapGrabberMousePos(OldMouseMovePos);
+            CurSnappedMousePos := ControlSelection.SnapGrabberMousePos(LastMouseMovePos);
+          end
+          else
+          begin
+            OldSnappedMousePos := OldMouseMovePos;
+            CurSnappedMousePos := LastMouseMovePos;
+          end;
           ControlSelection.SizeSelection(
             CurSnappedMousePos.X - OldSnappedMousePos.X,
             CurSnappedMousePos.Y - OldSnappedMousePos.Y);
@@ -2289,7 +2301,7 @@ begin
         SelectedCompClass := GetSelectedComponentClass;
         if (not ControlSelection.RubberBandActive) and
            (SelectedCompClass=nil) and
-           (Shift=[ssLeft]) and
+           ((Shift=[ssLeft]) or (Shift=[ssAlt, ssLeft])) and
            (ControlSelection.Count>=1) and
            (not ControlSelection.LookupRootSelected) then
         begin // move selection
@@ -2299,9 +2311,8 @@ begin
             Include(FFlags, dfHasSized);
           end;
           //debugln('TDesigner.MouseMoveOnControl Move MouseDownComponent=',dbgsName(MouseDownComponent),' OldMouseMovePos=',dbgs(OldMouseMovePos),' MouseMovePos',dbgs(LastMouseMovePos),' MouseDownPos=',dbgs(MouseDownPos));
-          if ControlSelection.MoveSelectionWithSnapping(
-              LastMouseMovePos.X - MouseDownPos.X,
-              LastMouseMovePos.Y - MouseDownPos.Y) then
+          if ((ssAlt in Shift) and ControlSelection.MoveSelection(LastMouseMovePos.X - MouseDownPos.X, LastMouseMovePos.Y - MouseDownPos.Y, True)) or
+             ControlSelection.MoveSelectionWithSnapping(LastMouseMovePos.X - MouseDownPos.X, LastMouseMovePos.Y - MouseDownPos.Y) then
             DoModified;
         end
         else
@@ -2880,7 +2891,7 @@ end;
 
 procedure TDesigner.OnSnapToGridOptionMenuClick(Sender: TObject);
 begin
-  EnvironmentOptions.SnapToGrid:=not EnvironmentOptions.SnapToGrid;
+  EnvironmentOptions.SnapToGrid := not EnvironmentOptions.SnapToGrid;
 end;
 
 procedure TDesigner.OnShowOptionsMenuItemClick(Sender: TObject);
@@ -2890,7 +2901,7 @@ end;
 
 procedure TDesigner.OnSnapToGuideLinesOptionMenuClick(Sender: TObject);
 begin
-  EnvironmentOptions.SnapToGuideLines:=not EnvironmentOptions.SnapToGuideLines;
+  EnvironmentOptions.SnapToGuideLines := not EnvironmentOptions.SnapToGuideLines;
 end;
 
 procedure TDesigner.OnViewLFMMenuClick(Sender: TObject);
@@ -2978,7 +2989,7 @@ end;
 
 function TDesigner.GetSnapToGrid: boolean;
 begin
-  Result:=EnvironmentOptions.SnapToGrid;
+  Result := EnvironmentOptions.SnapToGrid;
 end;
 
 procedure TDesigner.SetShowGrid(const AValue: boolean);
