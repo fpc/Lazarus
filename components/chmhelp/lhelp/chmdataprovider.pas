@@ -41,6 +41,7 @@ uses
 type
 
   THelpPopupEvent = procedure(HelpFile: String; URL: String);
+  THtmlPageLoadStreamEvent = procedure (var AStream: TStream) of object;
 
   { TIpChmDataProvider }
 
@@ -49,6 +50,7 @@ type
     fChm: TChmFileList;
     fCurrentPage: String;
     fCurrentPath: String;
+    FOnGetHtmlPage: THtmlPageLoadStreamEvent;
     fOnHelpPopup: THelpPopupEvent;
     function StripInPageLink(AURL: String): String;
   protected
@@ -71,6 +73,7 @@ type
     property OnHelpPopup: THelpPopupEvent read fOnHelpPopup write fOnHelpPopup;
     property CurrentPage: String read fCurrentPage;
     property CurrentPath: String read fCurrentPath write fCurrentPath;
+    property OnGetHtmlPage: THtmlPageLoadStreamEvent read FOnGetHtmlPage write FOnGetHtmlPage;
 
   end;
 
@@ -98,6 +101,8 @@ begin
     Result := TMemoryStream.Create;
     Result.Write('<HTML>Page cannot be found!</HTML>',33);
   end;
+  if Assigned(FOnGetHtmlPage) then
+      FOnGetHtmlPage(Result);
 end;
 
 function TIpChmDataProvider.DoCheckURL(const URL: string;

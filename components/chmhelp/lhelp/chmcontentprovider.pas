@@ -57,6 +57,7 @@ type
     fStopTimer: Boolean;
     fFillingToc: Boolean;
     fActiveChmTitle: String;
+    FLoadingSearchURL: Boolean; // use this to try to highlight search terms
 
     function  MakeURI(AUrl: String; AChm: TChmReader): String;
 
@@ -67,6 +68,7 @@ type
     procedure DoLoadUri(Uri: String; AChm: TChmReader = nil);
     procedure DoError(Error: Integer);
     procedure NewChmOpened(ChmFileList: TChmFileList; Index: Integer);
+    procedure LoadingHTMLStream(var AStream: TStream);
 
     procedure FillTOC(Data: PtrInt);
     procedure IpHtmlPanelDocumentOpen(Sender: TObject);
@@ -292,6 +294,14 @@ begin
   // Fill the table of contents.
   if Index <> 0 then
     Application.QueueAsyncCall(@FillToc, PtrInt(ChmFileList.Chm[Index]));
+end;
+
+procedure TChmContentProvider.LoadingHTMLStream(var AStream: TStream);
+begin
+  if not FLoadingSearchURL then
+    Exit;
+  // load html and add tags to highlight words then save back to stream
+
 end;
 
 procedure TChmContentProvider.FillTOC(Data: PtrInt);
@@ -788,8 +798,9 @@ begin
   Item := fSearchResults.Selected;
   if (Item = nil) or (Item.Data = nil) then
     Exit;
-
+  FLoadingSearchURL:= True;
   DoLoadUri(MakeURI(Item.SubItems[2], TChmReader(Item.Data)));
+  FLoadingSearchURL:= False;
 end;
 {$ENDIF}
 
@@ -1068,6 +1079,7 @@ begin
   fHtml := TIpHtmlPanel.Create(Parent);
   with fHtml do begin
     DataProvider := TIpChmDataProvider.Create(fHtml, fChms);
+    TIpChmDataProvider(DataProvider).OnGetHtmlPage:=@LoadingHTMLStream;
     OnDocumentOpen := @IpHtmlPanelDocumentOpen;
     OnHotChange := @IpHtmlPanelHotChange;
     Parent := AParent;

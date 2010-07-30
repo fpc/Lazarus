@@ -170,6 +170,7 @@ end;
 
 procedure THelpForm.FileMenuOpenItemClick(Sender: TObject);
 begin
+
   if OpenDialog1.Execute then
   begin
     if OpenURL('file://'+OpenDialog1.FileName) = Ord(srSuccess) then
@@ -296,6 +297,8 @@ begin
   Width  := fConfig.GetValue('Position/Width/Value',  Width);
   Height := fConfig.GetValue('Position/Height/Value', Height);
 
+  OpenDialog1.FileName := fConfig.GetValue('LastFileOpen/Value', OpenDialog1.FileName);
+
   RecentCount:= fConfig.GetValue('Recent/ItemCount/Value', 0);
 
   for i := RecentCount-1 downto 0 do // downto since oldest are knocked off the list
@@ -310,6 +313,8 @@ begin
   fConfig.SetValue('Position/Top/Value',    Top);
   fConfig.SetValue('Position/Width/Value',  Width);
   fConfig.SetValue('Position/Height/Value', Height);
+
+  fConfig.SetValue('LastFileOpen/Value', OpenDialog1.FileName);
 
   fConfig.SetValue('Recent/ItemCount/Value', FileMenuOpenRecentItem.Count);
   for i := 0 to FileMenuOpenRecentItem.Count-1 do // downto since oldest are knocked off the list
