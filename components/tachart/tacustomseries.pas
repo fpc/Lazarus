@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils,
-  TAChartUtils, TAGraph, TASources, TATypes;
+  TAChartAxis, TAChartUtils, TAGraph, TASources, TATypes;
 
 const
   DEF_AXIS_INDEX = -1;
@@ -60,6 +60,8 @@ type
     function AxisToGraph(const APoint: TDoublePoint): TDoublePoint;
     function AxisToGraphX(AX: Double): Double; override;
     function AxisToGraphY(AY: Double): Double; override;
+    function GetAxisX: TChartAxis;
+    function GetAxisY: TChartAxis;
     function GraphToAxisX(AX: Double): Double; override;
     function GraphToAxisY(AY: Double): Double; override;
 
@@ -103,6 +105,8 @@ type
     function GetGraphPointY(AIndex: Integer): Double; inline;
     function GetSeriesColor: TColor; virtual;
     function GetXMaxVal: Integer;
+    procedure VisitSources(
+      AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -124,7 +128,8 @@ type
     procedure SetYValue(AIndex: Integer; AValue: Double); inline;
   public
     function Add(AValue: Double; XLabel: String; Color: TColor): Integer; inline;
-    function AddXY(X, Y: Double; XLabel: String; Color: TColor): Integer; virtual; overload;
+    function AddXY(
+      X, Y: Double; XLabel: String; Color: TColor): Integer; virtual; overload;
     function AddXY(X, Y: Double): Integer; overload; inline;
     procedure Clear; inline;
     function Count: Integer; inline;
@@ -148,7 +153,7 @@ type
 implementation
 
 uses
-  Math, TAChartAxis;
+  Math;
 
 { TCustomChartSeries }
 
@@ -177,6 +182,22 @@ begin
   FShowInLegend := true;
   FAxisIndexX := DEF_AXIS_INDEX;
   FAxisIndexY := DEF_AXIS_INDEX;
+end;
+
+function TCustomChartSeries.GetAxisX: TChartAxis;
+begin
+  if InRange(AxisIndexX, 0, FChart.AxisList.Count - 1) then
+    Result := FChart.AxisList[AxisIndexX]
+  else
+    Result := FChart.BottomAxis;
+end;
+
+function TCustomChartSeries.GetAxisY: TChartAxis;
+begin
+  if InRange(AxisIndexY, 0, FChart.AxisList.Count - 1) then
+    Result := FChart.AxisList[AxisIndexY]
+  else
+    Result := FChart.LeftAxis;
 end;
 
 procedure TCustomChartSeries.GetGraphBounds(var ABounds: TDoubleRect);
@@ -542,6 +563,13 @@ end;
 procedure TChartSeries.SetYValue(AIndex: Integer; AValue: Double); inline;
 begin
   ListSource.SetYValue(AIndex, AValue);
+end;
+
+procedure TChartSeries.VisitSources(
+  AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData);
+begin
+  if (AAxis = GetAxisX) or (AAxis = GetAxisY) then
+    AVisitor(Source, AData);
 end;
 
 end.

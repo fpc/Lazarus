@@ -65,6 +65,8 @@ type
     procedure SetShowInLegend(AValue: Boolean); virtual; abstract;
     procedure SetZPosition(AValue: TChartDistance); virtual; abstract;
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); virtual;
+    procedure VisitSources(
+      AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData); virtual;
 
   protected
     function AxisToGraphX(AX: Double): Double; virtual;
@@ -196,6 +198,8 @@ type
     procedure SetTitle(Value: TChartTitle);
     procedure SetToolset(const AValue: TBasicChartToolset);
     procedure UpdateExtent;
+    procedure VisitSources(
+      AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData);
   protected
     procedure Clean(ACanvas: TCanvas; ARect: TRect);
     procedure DisplaySeries(ACanvas: TCanvas);
@@ -389,6 +393,7 @@ begin
   FFoot := TChartTitle.Create(Self);
 
   FAxisList := TChartAxisList.Create(Self);
+  FAxisList.OnVisitSources := @VisitSources;
   with TChartAxis.Create(FAxisList) do begin
     Alignment := calLeft;
     Title.LabelFont.Orientation := FONT_VERTICAL;
@@ -1067,6 +1072,17 @@ begin
   end;
 end;
 
+procedure TChart.VisitSources(
+  AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData);
+var
+  i: Integer;
+begin
+  for i := 0 to SeriesCount - 1 do
+    with Series[i] do
+      if Active then
+        VisitSources(AVisitor, AAxis, AData);
+end;
+
 procedure TChart.ZoomFull;
 begin
   if not FIsZoomed then exit;
@@ -1140,6 +1156,13 @@ procedure TBasicChartSeries.UpdateMargins(
   ACanvas: TCanvas; var AMargins: TRect);
 begin
   Unused(ACanvas, AMargins);
+end;
+
+procedure TBasicChartSeries.VisitSources(
+  AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData);
+begin
+  Unused(AVisitor, AAxis);
+  Unused(AData);
 end;
 
 { TChartSeriesList }

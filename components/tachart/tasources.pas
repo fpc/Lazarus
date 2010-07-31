@@ -69,7 +69,7 @@ type
     function IsSorted: Boolean; virtual;
     procedure ValuesInRange(
       AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
-      out AValues: TDoubleDynArray; out ATexts: TStringDynArray); virtual;
+      var AValues: TDoubleDynArray; var ATexts: TStringDynArray); virtual;
     function ValuesTotal: Double; virtual;
     function XOfMax: Double;
     function XOfMin: Double;
@@ -181,7 +181,7 @@ type
   public
     procedure ValuesInRange(
       AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
-      out AValues: TDoubleDynArray; out ATexts: TStringDynArray); override;
+      var AValues: TDoubleDynArray; var ATexts: TStringDynArray); override;
   end;
 
   TUserDefinedChartSource = class;
@@ -397,14 +397,14 @@ end;
 
 procedure TCustomChartSource.ValuesInRange(
   AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
-  out AValues: TDoubleDynArray; out ATexts: TStringDynArray);
+  var AValues: TDoubleDynArray; var ATexts: TStringDynArray);
 var
   i, cnt: Integer;
   v: Double;
 begin
-  cnt := 0;
-  SetLength(AValues, Count);
-  SetLength(ATexts, Count);
+  cnt := Length(AValues);
+  SetLength(AValues, cnt + Count);
+  SetLength(ATexts, cnt + Count);
   for i := 0 to Count - 1 do begin
     v := IfThen(AUseY, Item[i]^.Y, Item[i]^.X);
     if not InRange(v, AMin, AMax) then continue;
@@ -901,11 +901,12 @@ end;
 
 procedure TIntervalChartSource.ValuesInRange(
   AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
-  out AValues: TDoubleDynArray; out ATexts: TStringDynArray);
+  var AValues: TDoubleDynArray; var ATexts: TStringDynArray);
 var
   i: Integer;
 begin
   Unused(AUseY);
+  if AMin > AMax then exit;
   AValues := GetIntervals(AMin, AMax, false);
   SetLength(ATexts, Length(AValues));
   for i := 0 to High(AValues) do

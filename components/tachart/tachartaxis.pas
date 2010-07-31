@@ -88,10 +88,13 @@ type
   TChartAxisMarks = class(
     specialize TGenericChartMarks<TChartAxisBrush, TChartPen, TChartAxisFramePen>)
   private
+    FAtDataOnly: Boolean;
     FDefaultSource: TIntervalChartSource;
     FListener: TListener;
     FSource: TCustomChartSource;
+
     function IsFormatStored: Boolean;
+    procedure SetAtDataOnly(AValue: Boolean);
     procedure SetSource(AValue: TCustomChartSource);
   public
     constructor Create(AOwner: TCustomChart);
@@ -99,6 +102,8 @@ type
 
     function SourceDef: TCustomChartSource;
   published
+    property AtDataOnly: Boolean
+      read FAtDataOnly write SetAtDataOnly default false;
     property Distance default 1;
     property Format stored IsFormatStored;
     property Frame;
@@ -118,6 +123,7 @@ type
     FSize: Integer;
     FTitleSize: Integer;
 
+    procedure VisitSource(ASource: TCustomChartSource; var AData);
     procedure GetMarkValues(AMin, AMax: Double);
   private
     FAlignment: TChartAxisAlignment;
@@ -179,11 +185,17 @@ type
       read FOnMarkToText write SetOnMarkToText;
   end;
 
+  TChartOnSourceVisitor =
+    procedure (ASource: TCustomChartSource; var AData) of object;
+  TChartOnVisitSources = procedure (
+    AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData) of object;
+
   { TChartAxisList }
 
   TChartAxisList = class(TCollection)
   private
     FChart: TCustomChart;
+    FOnVisitSources: TChartOnVisitSources;
     function GetAxes(AIndex: Integer): TChartAxis;
   protected
     function GetOwner: TPersistent; override;
@@ -197,6 +209,8 @@ type
     property Axes[AIndex: Integer]: TChartAxis read GetAxes; default;
     property BottomAxis: TChartAxis index 1 read GetAxis write SetAxis;
     property LeftAxis: TChartAxis index 2 read GetAxis write SetAxis;
+    property OnVisitSources: TChartOnVisitSources
+      read FOnVisitSources write FOnVisitSources;
   end;
 
   function SideByAlignment(
@@ -208,6 +222,11 @@ implementation
 
 uses
   LResources, Math, PropEdits, TADrawUtils;
+
+type
+  TAxisDataExtent = record
+    FMin, FMax: Double;
+  end;
 
 var
   VIdentityTransform: TChartAxisTransformations;
@@ -293,6 +312,13 @@ end;
 function TChartAxisMarks.IsFormatStored: Boolean;
 begin
   Result := FStyle <> smsValue;
+end;
+
+procedure TChartAxisMarks.SetAtDataOnly(AValue: Boolean);
+begin
+  if FAtDataOnly = AValue then exit;
+  FAtDataOnly := AValue;
+  StyleChanged(Self);
 end;
 
 procedure TChartAxisMarks.SetSource(AValue: TCustomChartSource);
@@ -462,12 +488,23 @@ end;
 procedure TChartAxis.GetMarkValues(AMin, AMax: Double);
 var
   i: Integer;
+  d: TAxisDataExtent;
+  vis: TChartOnVisitSources;
 begin
   AMin := GetTransform.GraphToAxis(AMin);
   AMax := GetTransform.GraphToAxis(AMax);
   EnsureOrder(AMin, AMax);
-  Marks.SourceDef.ValuesInRange(
-    AMin, AMax, Marks.Format, IsVertical, FMarkValues, FMarkTexts);
+  SetLength(FMarkValues, 0);
+  SetLength(FMarkTexts, 0);
+  vis := TChartAxisList(Collection).OnVisitSources;
+  if Marks.AtDataOnly and Assigned(vis) then begin
+    d.FMin := AMin;
+    d.FMax := AMax;
+    vis(@VisitSource, Self, d);
+  end
+  else
+    Marks.SourceDef.ValuesInRange(
+      AMin, AMax, Marks.Format, IsVertical, FMarkValues, FMarkTexts);
   if Inverted then
     for i := 0 to High(FMarkValues) div 2 do begin
       Exchange(FMarkValues[i], FMarkValues[High(FMarkValues) - i]);
@@ -623,6 +660,26 @@ begin
     if ASender is TAxisTransform then
       ZoomFull;
     Invalidate;
+  end;
+end;
+
+procedure TChartAxis.VisitSource(ASource: TCustomChartSource; var AData);
+var
+  lmin, lmax: Double;
+  ext: TDoubleRect;
+begin
+  ext := ASource.Extent;
+  with TAxisDataExtent(AData) do begin
+    if IsVertical then begin
+      lmin := Max(ext.a.Y, FMin);
+      lmax := Min(ext.b.Y, FMax);
+    end
+    else begin
+      lmin := Max(ext.a.X, FMin);
+      lmax := Min(ext.b.X, FMax);
+    end;
+    Marks.SourceDef.ValuesInRange(
+      lmin, lmax, Marks.Format, IsVertical, FMarkValues, FMarkTexts);
   end;
 end;
 
