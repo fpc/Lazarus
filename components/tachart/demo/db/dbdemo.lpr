@@ -10,8 +10,6 @@ uses
   Forms, Main, MemDSLaz, TAChartLazarusPkg
   { you can add units after this };
 
-{$IFDEF WINDOWS}{$R dbdemo.rc}{$ENDIF}
-
 begin
   Application.Title := 'Chart db-aware demo';
   Application.Initialize;

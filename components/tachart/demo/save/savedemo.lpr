@@ -10,8 +10,6 @@ uses
   Forms, main, TAChartLazarusPkg
   { you can add units after this };
 
-{$IFDEF WINDOWS}{$R savedemo.rc}{$ENDIF}
-
 begin
   Application.Title := 'Saving chart as image demo';
   Application.Initialize;

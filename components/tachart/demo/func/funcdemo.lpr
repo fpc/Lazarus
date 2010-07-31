@@ -10,8 +10,6 @@ uses
   Forms
   { you can add units after this }, main, TAChartLazarusPkg;
 
-{$IFDEF WINDOWS}{$R funcdemo.rc}{$ENDIF}
-
 begin
   Application.Title := 'TAChart function series demo';
   Application.Initialize;

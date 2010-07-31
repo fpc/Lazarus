@@ -10,8 +10,6 @@ uses
   Forms, Main, TAChartLazarusPkg
   { you can add units after this };
 
-{$IFDEF WINDOWS}{$R dragdropdemo.rc}{$ENDIF}
-
 begin
   Application.Title := 'Chart mouse events demo';
   Application.Initialize;
