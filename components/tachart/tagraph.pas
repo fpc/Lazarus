@@ -628,28 +628,23 @@ end;
 procedure TChart.DrawAxis(ACanvas: TCanvas);
 var
   axisMargin: TChartAxisMargins = (0, 0, 0, 0);
-  i: Integer;
-  r: TRect;
   a: TChartAxisAlignment;
 begin
-  if not FAxisVisible then begin
+  if not FAxisVisible or (AxisList.Count = 0) then begin
     FClipRect.Left += Depth;
     FClipRect.Bottom -= Depth;
     exit;
   end;
 
-  for i := 0 to AxisList.Count - 1 do
-    AxisList[i].Measure(ACanvas, FCurrentExtent, true, axisMargin);
+  AxisList.PrepareGroups;
+  AxisList.Measure(ACanvas, FCurrentExtent, true, axisMargin);
   axisMargin[calLeft] := Max(axisMargin[calLeft], Depth);
   axisMargin[calBottom] := Max(axisMargin[calBottom], Depth);
   for a := Low(a) to High(a) do
     SideByAlignment(FClipRect, a, -axisMargin[a]);
 
   CalculateTransformationCoeffs(GetMargins(ACanvas));
-  for a := Low(a) to High(a) do
-    axisMargin[a] := 0;
-  for i := 0 to AxisList.Count - 1 do
-    AxisList[i].Measure(ACanvas, FCurrentExtent, false, axisMargin);
+  AxisList.Measure(ACanvas, FCurrentExtent, false, axisMargin);
 
   // Background
   with ACanvas do begin
@@ -662,11 +657,7 @@ begin
       Rectangle(Left, Top, Right + 1, Bottom + 1);
   end;
 
-  r := FClipRect;
-  for i := 0 to AxisList.Count - 1 do begin
-    AxisList[i].Draw(ACanvas, FCurrentExtent, Self, r);
-    AxisList[i].DrawTitle(ACanvas, CenterPoint(FClipRect), r);
-  end;
+  AxisList.Draw(ACanvas, FCurrentExtent, Self, FClipRect);
   // Z axis
   if Depth > 0 then
     with FClipRect do

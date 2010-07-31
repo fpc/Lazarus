@@ -113,6 +113,12 @@ type
     property Style default smsValue;
   end;
 
+
+  TChartAxisMeasureData = record
+    FSize: Integer;
+    FTitleSize: Integer;
+  end;
+
   { TChartAxis }
 
   TChartAxis = class(TCollectionItem)
@@ -120,14 +126,13 @@ type
     FListener: TListener;
     FMarkTexts: TStringDynArray;
     FMarkValues: TDoubleDynArray;
-    FSize: Integer;
-    FTitleSize: Integer;
 
     procedure GetMarkValues(AMin, AMax: Double);
     procedure VisitSource(ASource: TCustomChartSource; var AData);
   private
     FAlignment: TChartAxisAlignment;
     FGrid: TChartAxisPen;
+    FGroup: Integer;
     FInverted: Boolean;
     FMarks: TChartAxisMarks;
     FOnMarkToText: TChartAxisMarkToTextEvent;
@@ -140,6 +145,7 @@ type
     function GetTransform: TChartAxisTransformations;
     procedure SetAlignment(AValue: TChartAxisAlignment);
     procedure SetGrid(AValue: TChartAxisPen);
+    procedure SetGroup(AValue: Integer);
     procedure SetInverted(AValue: Boolean);
     procedure SetMarks(const AValue: TChartAxisMarks);
     procedure SetOnMarkToText(const AValue: TChartAxisMarkToTextEvent);
@@ -161,16 +167,17 @@ type
       ACanvas: TCanvas; const AExtent: TDoubleRect;
       const ATransf: ICoordTransformer; var ARect: TRect);
     procedure DrawTitle(
-      ACanvas: TCanvas; const ACenter: TPoint; var ARect: TRect);
+      ACanvas: TCanvas; const ACenter: TPoint;
+      const AMeasureData: TChartAxisMeasureData; var ARect: TRect);
     function IsVertical: Boolean; inline;
     procedure Measure(
       ACanvas: TCanvas; const AExtent: TDoubleRect; AFirstPass: Boolean;
-      var AMargins: TChartAxisMargins);
-
+      var AMeasureData: TChartAxisMeasureData);
   published
     property Alignment: TChartAxisAlignment
       read FAlignment write SetAlignment default calLeft;
     property Grid: TChartAxisPen read FGrid write SetGrid;
+    property Group: Integer read FGroup write SetGroup default 0;
     // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
     property Marks: TChartAxisMarks read FMarks write SetMarks;
@@ -198,13 +205,24 @@ type
     FChart: TCustomChart;
     FOnVisitSources: TChartOnVisitSources;
     function GetAxes(AIndex: Integer): TChartAxis;
+  private
+    FCounts: TIntegerDynArray;
+    FMeasureData: array of TChartAxisMeasureData;
+    FOrder: TIntegerDynArray;
   protected
     function GetOwner: TPersistent; override;
   public
     constructor Create(AOwner: TCustomChart);
   public
     function Add: TChartAxis; inline;
+    procedure Draw(
+      ACanvas: TCanvas; const AExtent: TDoubleRect;
+      const ATransf: ICoordTransformer; const ARect: TRect);
     function GetAxis(AIndex: Integer): TChartAxis;
+    procedure Measure(
+      ACanvas: TCanvas; const AExtent: TDoubleRect;
+      AFirstPass: Boolean; var AMargins: TChartAxisMargins);
+    procedure PrepareGroups;
     procedure SetAxis(AIndex: Integer; AValue: TChartAxis);
 
     property Axes[AIndex: Integer]: TChartAxis read GetAxes; default;
@@ -442,7 +460,7 @@ var
 begin
   if not Visible then exit;
   ACanvas.Font := Marks.LabelFont;
-  coord := SideByAlignment(ARect, Alignment, FSize);
+  coord := SideByAlignment(ARect, Alignment, 0);
   for i := 0 to High(FMarkValues) do begin
     v := GetTransform.AxisToGraph(FMarkValues[i]);
     if IsVertical then
@@ -453,15 +471,16 @@ begin
 end;
 
 procedure TChartAxis.DrawTitle(
-  ACanvas: TCanvas; const ACenter: TPoint; var ARect: TRect);
+  ACanvas: TCanvas; const ACenter: TPoint;
+  const AMeasureData: TChartAxisMeasureData; var ARect: TRect);
 var
   p: TPoint;
   dummy: TPointArray = nil;
   d: Integer;
 begin
-  if not Visible or (FTitleSize = 0) then exit;
+  if not Visible or (AMeasureData.FTitleSize = 0) then exit;
   p := ACenter;
-  d := (FTitleSize + Title.Distance) div 2;
+  d := (AMeasureData.FTitleSize + Title.Distance) div 2;
   case Alignment of
     calLeft: p.X := ARect.Left - d;
     calTop: p.Y := ARect.Top - d;
@@ -469,7 +488,6 @@ begin
     calBottom: p.Y := ARect.Bottom + d;
   end;
   Title.DrawLabel(ACanvas, p, p, Title.Caption, dummy);
-  SideByAlignment(ARect, Alignment, FTitleSize);
 end;
 
 function TChartAxis.GetDisplayName: string;
@@ -530,8 +548,8 @@ begin
 end;
 
 procedure TChartAxis.Measure(
-  ACanvas: TCanvas; const AExtent: TDoubleRect; AFirstPass: Boolean;
-  var AMargins: TChartAxisMargins);
+  ACanvas: TCanvas; const AExtent: TDoubleRect;
+  AFirstPass: Boolean; var AMeasureData: TChartAxisMeasureData);
 
   function CalcMarksSize(AMin, AMax: Double): TSize;
   const
@@ -559,27 +577,31 @@ procedure TChartAxis.Measure(
     end;
   end;
 
-  procedure CalcTitleSize;
+  function CalcTitleSize: Integer;
   var
     sz: TSize;
   begin
-    if not Title.Visible or (Title.Caption = '') then exit;
+    if not Title.Visible or (Title.Caption = '') then
+      exit(0);
     sz := Title.MeasureLabel(ACanvas, Title.Caption);
-    FTitleSize := IfThen(IsVertical, sz.cx, sz.cy) + Title.Distance;
+
+    Result := IfThen(IsVertical, sz.cx, sz.cy) + Title.Distance;
   end;
 
+var
+  sz: Integer;
 begin
-  FSize := 0;
-  FTitleSize := 0;
   if not Visible then exit;
   if IsVertical then
-    FSize := CalcMarksSize(AExtent.a.Y, AExtent.b.Y).cx
+    sz := CalcMarksSize(AExtent.a.Y, AExtent.b.Y).cx
   else
-    FSize := CalcMarksSize(AExtent.a.X, AExtent.b.X).cy;
-  if FSize > 0 then
-    FSize += TickLength + Marks.Distance;
-  CalcTitleSize;
-  AMargins[Alignment] += FSize + FTitleSize;
+    sz := CalcMarksSize(AExtent.a.X, AExtent.b.X).cy;
+  if sz > 0 then
+    sz += TickLength + Marks.Distance;
+  with AMeasureData do begin
+    FSize := Max(sz, FSize);
+    FTitleSize := Max(CalcTitleSize, FTitleSize);
+  end;
 end;
 
 procedure TChartAxis.SetAlignment(AValue: TChartAxisAlignment);
@@ -595,8 +617,16 @@ begin
   StyleChanged(Self);
 end;
 
+procedure TChartAxis.SetGroup(AValue: Integer);
+begin
+  if FGroup = AValue then exit;
+  FGroup := AValue;
+  StyleChanged(Self);
+end;
+
 procedure TChartAxis.SetInverted(AValue: Boolean);
 begin
+  if FInverted = AValue then exit;
   FInverted := AValue;
   StyleChanged(Self);
 end;
@@ -700,6 +730,31 @@ begin
   FChart := AOwner;
 end;
 
+procedure TChartAxisList.Draw(
+  ACanvas: TCanvas; const AExtent: TDoubleRect;
+  const ATransf: ICoordTransformer; const ARect: TRect);
+var
+  i, j, ai: Integer;
+  r: TRect;
+  axis: TChartAxis;
+begin
+  r := ARect;
+  ai := 0;
+  for i := 0 to High(FCounts) do begin
+    for j := 0 to FCounts[i] - 1 do begin
+      axis := Axes[FOrder[ai + j]];
+      axis.Draw(ACanvas, AExtent, ATransf, r);
+    end;
+    SideByAlignment(r, axis.Alignment, FMeasureData[i].FSize);
+    for j := 0 to FCounts[i] - 1 do begin
+      axis := Axes[FOrder[ai]];
+      axis.DrawTitle(ACanvas, CenterPoint(ARect), FMeasureData[i], r);
+      ai += 1;
+    end;
+    SideByAlignment(r, axis.Alignment, FMeasureData[i].FTitleSize);
+  end;
+end;
+
 function TChartAxisList.GetAxes(AIndex: Integer): TChartAxis;
 begin
   Result := TChartAxis(Items[AIndex]);
@@ -718,6 +773,58 @@ end;
 function TChartAxisList.GetOwner: TPersistent;
 begin
   Result := FChart;
+end;
+
+procedure TChartAxisList.Measure(
+  ACanvas: TCanvas; const AExtent: TDoubleRect;
+  AFirstPass: Boolean; var AMargins: TChartAxisMargins);
+var
+  i, j, ai: Integer;
+  axis: TChartAxis;
+  d: ^TChartAxisMeasureData;
+begin
+  ai := 0;
+  for i := 0 to High(FCounts) do begin
+    d := @FMeasureData[i];
+    d^.FSize := 0;
+    d^.FTitleSize := 0;
+    for j := 0 to FCounts[i] - 1 do begin
+      axis := Axes[FOrder[ai]];
+      axis.Measure(ACanvas, AExtent, AFirstPass, d^);
+      ai += 1;
+    end;
+    if AFirstPass then
+      AMargins[axis.Alignment] += d^.FSize + d^.FTitleSize;
+  end;
+end;
+
+procedure TChartAxisList.PrepareGroups;
+var
+  i, j, g, m, groupCount: Integer;
+begin
+  SetLength(FOrder, Count);
+  for i := 0 to Count - 1 do
+    FOrder[i] := i;
+  for i := 0 to High(FOrder) - 1 do begin
+    m := i;
+    for j := i + 1 to High(FOrder) do
+      if Axes[FOrder[j]].Group < Axes[FOrder[m]].Group then
+        m := j;
+    if m <> i then
+      Exchange(FOrder[i], FOrder[m]);
+  end;
+  SetLength(FCounts, Count);
+  FCounts[0] := 1;
+  for i := 1 to High(FCounts) do
+    FCounts[i] := 0;
+  groupCount := 1;
+  for i := 1 to High(FOrder) do begin
+    g := Axes[FOrder[i]].Group;
+    groupCount += Ord((g = 0) or (g <> Axes[FOrder[i - 1]].Group));
+    FCounts[groupCount - 1] += 1;
+  end;
+  SetLength(FCounts, groupCount);
+  SetLength(FMeasureData, groupCount);
 end;
 
 procedure TChartAxisList.SetAxis(AIndex: Integer; AValue: TChartAxis);
