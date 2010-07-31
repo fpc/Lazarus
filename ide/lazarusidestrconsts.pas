@@ -4846,6 +4846,11 @@ resourcestring
   lisToInstallYouMustCompileAndRestartTheIDE = 'To install you must compile '
     +'and restart the IDE';
 
+  synfUnfoldAllInSelection      = 'Unfold all in Selection';
+  synfUnfoldCommentsInSelection = 'Unfold comments in Selection';
+  synfFoldCommentsInSelection   = 'Fold comments in selection';
+  synfHideCommentsInSelection   = 'Hide comments in selection';
+
 implementation
 
 end.

@@ -37,10 +37,12 @@ interface
 {$I ide.inc}
 
 uses
-  Classes, SysUtils, LCLProc, Graphics, SynEdit, SynEditMiscClasses, SynGutter,
+  Classes, SysUtils, LCLProc, Graphics, Menus, LazarusIDEStrConsts,
+  SynEdit, SynEditMiscClasses, SynGutter,
   SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
   SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase,
-  SynPluginTemplateEdit, SynPluginSyncroEdit;
+  SynPluginTemplateEdit, SynPluginSyncroEdit,
+  SynEditHighlighterFoldBase, SynHighlighterPas;
 
 type
 
@@ -109,6 +111,17 @@ type
     function SourceLineToDebugLine(aLinePos: Integer; AdjustOnError: Boolean = False): Integer;
   end;
 
+  { TIDESynGutterCodeFolding }
+
+  TIDESynGutterCodeFolding = class(TSynGutterCodeFolding)
+  protected
+    procedure PopClickedUnfoldAll(Sender: TObject);
+    procedure PopClickedUnfoldComment(Sender: TObject);
+    procedure PopClickedFoldComment(Sender: TObject);
+    procedure PopClickedHideComment(Sender: TObject);
+    procedure CreatePopUpMenuEntries(APopUp: TPopupMenu; ALine: Integer); override;
+  end;
+
 implementation
 
 { TIDESynEditor }
@@ -148,7 +161,7 @@ begin
     Name := 'SynGutterChanges1';
   with TSynGutterSeparator.Create(Parts) do
     Name := 'SynGutterSeparator1';
-  with TSynGutterCodeFolding.Create(Parts) do
+  with TIDESynGutterCodeFolding.Create(Parts) do
     Name := 'SynGutterCodeFolding1';
 end;
 
@@ -350,6 +363,179 @@ end;
 procedure TIDESynDebugMarkInfo.DecRefCount;
 begin
   dec(FRefCount);
+end;
+
+{ TIDESynGutterCodeFolding }
+
+procedure TIDESynGutterCodeFolding.PopClickedUnfoldAll(Sender: TObject);
+var
+  i, y1, y2: Integer;
+begin
+  if not TSynEdit(SynEdit).SelAvail then exit;
+  y1 := TSynEdit(SynEdit).BlockBegin.Y;
+  y2 := TSynEdit(SynEdit).BlockEnd.Y;
+  if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+  for i := y1-1 to y2-1 do
+    FoldView.UnFoldAtTextIndex(i);
+end;
+
+procedure TIDESynGutterCodeFolding.PopClickedUnfoldComment(Sender: TObject);
+var
+  i, j, y1, y2: Integer;
+  FldInf: TSynFoldNodeInfo;
+begin
+  if not TSynEdit(SynEdit).SelAvail then exit;
+  y1 := TSynEdit(SynEdit).BlockBegin.Y;
+  y2 := TSynEdit(SynEdit).BlockEnd.Y;
+  if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+  for i := y1-1 to y2-1 do begin
+    j := FoldView.FoldProvider.FoldOpenCount(i);
+    while j > 0 do begin
+      dec(j);
+      if FoldView.IsFoldedAtTextIndex(i,j) then begin
+        FldInf := FoldView.FoldProvider.FoldOpenInfo(i, j);
+        if TPascalCodeFoldBlockType(PtrUInt(FldInf.FoldType)) in
+           [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]
+        then begin
+          FoldView.UnFoldAtTextIndex(i, j, 1, False, 0);
+          FoldView.UnFoldAtTextIndex(i, j, 1, False, 1);
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TIDESynGutterCodeFolding.PopClickedFoldComment(Sender: TObject);
+var
+  i, j, y1, y2: Integer;
+  FldInf: TSynFoldNodeInfo;
+begin
+  if not TSynEdit(SynEdit).SelAvail then exit;
+  y1 := TSynEdit(SynEdit).BlockBegin.Y;
+  y2 := TSynEdit(SynEdit).BlockEnd.Y;
+  if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+  for i := y1-1 to y2-1 do begin
+    j := FoldView.FoldProvider.FoldOpenCount(i);
+    while j > 0 do begin
+      dec(j);
+      FldInf := FoldView.FoldProvider.FoldOpenInfo(i, j);
+      if (TPascalCodeFoldBlockType(PtrUInt(FldInf.FoldType)) in
+          [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]) and
+         (sfaFoldFold in FldInf.FoldAction)
+      then begin
+        FoldView.FoldAtTextIndex(i, j, 1, False, 1);
+      end;
+    end;
+  end;
+end;
+
+procedure TIDESynGutterCodeFolding.PopClickedHideComment(Sender: TObject);
+var
+  i, j, y1, y2: Integer;
+  FldInf: TSynFoldNodeInfo;
+begin
+  if not TSynEdit(SynEdit).SelAvail then exit;
+  y1 := TSynEdit(SynEdit).BlockBegin.Y;
+  y2 := TSynEdit(SynEdit).BlockEnd.Y;
+  if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+  for i := y1-1 to y2-1 do begin
+    j := FoldView.FoldProvider.FoldOpenCount(i);
+    while j > 0 do begin
+      dec(j);
+      FldInf := FoldView.FoldProvider.FoldOpenInfo(i, j);
+      if (TPascalCodeFoldBlockType(PtrUInt(FldInf.FoldType)) in
+          [cfbtAnsiComment, cfbtBorCommand, cfbtSlashComment]) and
+         (sfaFoldHide in FldInf.FoldAction)
+      then begin
+        FoldView.FoldAtTextIndex(i, j, 1, False, 0);
+      end;
+    end;
+  end;
+end;
+
+procedure TIDESynGutterCodeFolding.CreatePopUpMenuEntries(APopUp: TPopupMenu; ALine: Integer);
+var
+  i, j, y1, y2: Integer;
+  HasFolds, HasHideableComments, HasFoldableComments, HasCollapsedComments: Boolean;
+  ft: TPascalCodeFoldBlockType;
+  Foldable, HideAble: TPascalCodeFoldBlockTypes;
+  lc: TSynEditFoldLineCapabilities;
+
+  procedure CheckFoldConf(Val: TPascalCodeFoldBlockType);
+  begin
+    if not TSynPasSyn(FoldView.HighLighter).FoldConfig[ord(Val)].Enabled then
+      exit;
+    if fmFold in TSynPasSyn(FoldView.HighLighter).FoldConfig[ord(Val)].Modes then
+      include(Foldable, Val);
+    if fmHide in TSynPasSyn(FoldView.HighLighter).FoldConfig[ord(Val)].Modes then
+      include(HideAble, Val);
+  end;
+
+  function AddPopUpItem(const ACaption: String): TMenuItem;
+  begin
+    Result := TMenuItem.Create(APopUp);
+    Result.Caption := ACaption;
+    APopUp.Items.Add(Result);
+  end;
+
+
+begin
+  inherited CreatePopUpMenuEntries(APopUp, ALine);
+  if not TSynEdit(SynEdit).SelAvail then exit;
+
+  y1 := TSynEdit(SynEdit).BlockBegin.Y;
+  y2 := TSynEdit(SynEdit).BlockEnd.Y;
+  if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
+
+  HasFolds := FoldView.TextIndexToViewPos(y2) - FoldView.TextIndexToViewPos(y1) <> y2 - y1;
+  debugln(['*** HasFolds=', HasFolds, ' y1=',y1, ' y2=',y2, ' VP1=',FoldView.TextIndexToViewPos(y1), ' VP2=',FoldView.TextIndexToViewPos(y2)]);
+
+  HasHideableComments := False;
+  HasFoldableComments := False;
+  HasCollapsedComments := False;
+  if FoldView.HighLighter is TSynPasSyn then begin
+    Foldable := [];
+    HideAble := [];
+    CheckFoldConf(cfbtAnsiComment);
+    CheckFoldConf(cfbtBorCommand);
+    CheckFoldConf(cfbtSlashComment);
+    if (Foldable <> []) or (HideAble <> []) then begin
+      i := y1-1;
+      while i < y2 do begin
+        lc := FoldView.FoldProvider.LineCapabilities[i];
+        j := FoldView.FoldProvider.FoldOpenCount(i);
+        while j > 0 do begin
+          dec(j);
+          ft := TPascalCodeFoldBlockType(PtrUInt(FoldView.FoldProvider.FoldOpenInfo(i, j).FoldType));
+          if ((ft in Foldable) or (ft in HideAble)) and FoldView.IsFoldedAtTextIndex(i,j) then
+            HasCollapsedComments := True
+          else begin
+            if (ft in Foldable) and (cfFoldStart in lc) then
+              HasFoldableComments := True;
+            if (ft in HideAble) and (cfHideStart in lc) then
+              HasHideableComments := True;
+          end;
+        end;
+        if HasFoldableComments and HasHideableComments and
+           (HasCollapsedComments or not HasFolds)
+        then
+          break;
+        inc(i);
+      end;
+    end;
+  end;
+
+  if HasFolds or HasCollapsedComments or HasFoldableComments or HasHideableComments then
+    AddPopUpItem(cLineCaption);
+
+  If HasFolds then
+    AddPopUpItem(synfUnfoldAllInSelection).OnClick := {$IFDEF FPC}@{$ENDIF}PopClickedUnfoldAll;
+  If HasCollapsedComments then
+    AddPopUpItem(synfUnfoldCommentsInSelection).OnClick := {$IFDEF FPC}@{$ENDIF}PopClickedUnfoldComment;
+  If HasFoldableComments then
+    AddPopUpItem(synfFoldCommentsInSelection).OnClick := {$IFDEF FPC}@{$ENDIF}PopClickedFoldComment;
+  If HasHideableComments then
+    AddPopUpItem(synfHideCommentsInSelection).OnClick := {$IFDEF FPC}@{$ENDIF}PopClickedHideComment;
 end;
 
 end.
