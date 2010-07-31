@@ -25,8 +25,6 @@ uses
 
 type
 
-  { TIntervalListTest }
-
   { TListSourceTest }
 
   TListSourceTest = class(TTestCase)
@@ -38,6 +36,13 @@ type
   published
     procedure Basic;
     procedure DataPoint;
+  end;
+
+  { TRandomSourceTest }
+
+  TRandomSourceTest = class(TTestCase)
+  published
+    procedure Extent;
   end;
 
 implementation
@@ -87,9 +92,34 @@ begin
   inherited TearDown;
 end;
 
+{ TRandomSourceTest }
+
+procedure TRandomSourceTest.Extent;
+var
+  s: TRandomChartSource;
+  ext: TDoubleRect;
+begin
+  s := TRandomChartSource.Create(nil);
+  try
+    s.XMin := 10;
+    s.XMax := 20;
+    s.YMin := 5;
+    s.YMax := 6;
+    s.PointsNumber := 1000;
+    ext := s.Extent;
+    AssertEquals(10, ext.a.X);
+    AssertEquals(20, ext.b.X);
+    Assert(ext.a.Y > 5);
+    Assert(ext.b.Y < 6);
+    Assert(ext.a.Y < ext.b.Y);
+  finally
+    s.Free;
+  end;
+end;
+
 initialization
 
-  RegisterTests([TListSourceTest]);
+  RegisterTests([TListSourceTest, TRandomSourceTest]);
 
 end.
 
