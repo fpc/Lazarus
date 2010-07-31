@@ -15,15 +15,12 @@ object Form1: TForm1
     AxisList = <    
       item
         Alignment = calLeft
+        Title.LabelFont.Orientation = 900
         Title.Font.Orientation = 900
-        Transformation.Offset = 0
-        Transformation.Scale = 1
         Visible = False
       end    
       item
         Alignment = calBottom
-        Transformation.Offset = 0
-        Transformation.Scale = 1
         Visible = False
       end>
     BackColor = clSkyBlue
@@ -177,22 +174,22 @@ object Form1: TForm1
   end
   object ListChartSource1: TListChartSource
     DataPoints.Strings = (
-      '0|0||'
-      '1|2||'
-      '2|5||'
-      '3|1||'
-      '4|6||'
+      '0|0|?|'
+      '1|2|?|'
+      '2|5|?|'
+      '3|1|?|'
+      '4|6|?|'
     )
     left = 380
     top = 168
   end
   object ListChartSource2: TListChartSource
     DataPoints.Strings = (
-      '0|5||'
-      '0|6||'
-      '0,2|4||'
-      '0|7||'
-      '0|2||'
+      '0|5|?|'
+      '0|6|?|'
+      '0,2|4|?|'
+      '0|7|?|'
+      '0|2|?|'
     )
     left = 380
     top = 228
