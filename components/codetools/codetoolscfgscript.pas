@@ -153,7 +153,8 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure Push(Typ: TCTCfgScriptStackItemType; const StartPos: PChar);
-    procedure Pop;
+    procedure Pop(Count: integer = 1);
+    procedure Delete(Index: integer);
   end;
 
   { TCTCfgScriptError }
@@ -214,6 +215,8 @@ function CompareCTCSVariables(Var1, Var2: Pointer): integer;
 function ComparePCharWithCTCSVariableName(Name, aVar: Pointer): integer;
 function AreCTCSVariablesEqual(const V1, V2: PCTCfgScriptVariable): Boolean;
 function AreCTCSVariablesExactEqual(const V1, V2: PCTCfgScriptVariable): Boolean;
+function CompareCTCSVariables(const Left, Right: PCTCfgScriptVariable;
+                           out Equal, LeftIsLowerThanRight: boolean): boolean;
 function NewCTCSVariable: PCTCfgScriptVariable;
 function NewCTCSVariable(CloneName: PChar): PCTCfgScriptVariable;
 function CloneCTCSVariable(const V: PCTCfgScriptVariable): PCTCfgScriptVariable;
@@ -259,7 +262,7 @@ begin
   Result:=false;
   case V1^.ValueType of
   ctcsvNone:
-    if V2^.ValueType<>ctcsvNone then exit;
+    exit; // invalid is never equal to anything
   ctcsvString:
     case V2^.ValueType of
     ctcsvNone: exit;
@@ -295,6 +298,129 @@ begin
                      and (not CompareMem(V1^.StrStart,V2^.StrStart,V1^.StrLen)))
                then exit;
   ctcsvNumber: if V1^.Number<>V2^.Number then exit;
+  end;
+  Result:=true;
+end;
+
+function CompareCTCSVariables(const Left, Right: PCTCfgScriptVariable; out
+  Equal, LeftIsLowerThanRight: boolean): boolean;
+{ Rules:
+    If one of the values is invalid, return false
+    If both are numbers, compare as numbers
+    Otherwise compare as string alphabetically case sensitive A<B, A<AA
+}
+
+  procedure CompareNumberWithString(Number: int64; p: PChar);
+  var
+    i: Integer;
+    Cnt: integer;
+    s: array[0..30] of char;
+  begin
+    if p=nil then begin
+      Equal:=false;
+      LeftIsLowerThanRight:=false;
+      exit;
+    end;
+    // convert number to decimal string
+    if Number=0 then begin
+      Cnt:=1;
+      s[0]:='0';
+    end else begin
+      Cnt:=0;
+      if Number<0 then begin
+        Cnt:=1;
+        s[0]:='-';
+        Number:=-Number;
+      end;
+      while Number>0 do begin
+        s[Cnt]:=chr(Number mod 10+ord('0'));
+        inc(Cnt);
+        Number:=Number div 10;
+      end;
+    end;
+    for i:=1 to Cnt do begin
+      if p^<>s[i] then begin
+        Equal:=false;
+        LeftIsLowerThanRight:=s[i]<p^;
+        exit;
+      end;
+    end;
+    if p^=#0 then begin
+      Equal:=true;
+      LeftIsLowerThanRight:=false;
+    end else begin
+      Equal:=False;
+      LeftIsLowerThanRight:=true;
+    end;
+  end;
+
+var
+  V1: PChar;
+  V2: PChar;
+begin
+  Result:=false;
+  Equal:=false;
+  LeftIsLowerThanRight:=false;
+  case Left^.ValueType of
+  ctcsvNone:
+    exit; // invalid is never equal to anything
+  ctcsvString:
+    case Right^.ValueType of
+    ctcsvNone: exit;
+    ctcsvString:
+      begin
+        // compare two strings
+        V1:=Left^.StrStart;
+        V2:=Right^.StrStart;
+        if V1=nil then begin
+          if V2=nil then begin
+            Equal:=true;
+            LeftIsLowerThanRight:=false;
+          end else begin
+            Equal:=False;
+            LeftIsLowerThanRight:=true; // left is shorter than right
+          end;
+        end else begin
+          if V2=nil then begin
+            Equal:=False;
+            LeftIsLowerThanRight:=false; // left is longer than right
+          end else begin
+            repeat
+              if V1^=V2^ then begin
+                if V1^=#0 then begin
+                  Equal:=true;
+                  LeftIsLowerThanRight:=false;
+                  break;
+                end else begin
+                  inc(V1);
+                  inc(V2);
+                end;
+              end else begin
+                Equal:=false;
+                LeftIsLowerThanRight:=V1^<V2^;
+                break;
+              end;
+            until false;
+          end;
+        end;
+      end;
+    ctcsvNumber:
+      begin
+        CompareNumberWithString(Right^.Number,Left^.StrStart);
+        LeftIsLowerThanRight:=not LeftIsLowerThanRight;
+      end;
+    end;
+  ctcsvNumber:
+    case Right^.ValueType of
+    ctcsvNone: exit;
+    ctcsvString:
+      CompareNumberWithString(Left^.Number,Right^.StrStart);
+    ctcsvNumber:
+      begin
+        Equal:=Left^.Number=Right^.Number;
+        LeftIsLowerThanRight:=Left^.Number<Right^.Number;
+      end;
+    end;
   end;
   Result:=true;
 end;
@@ -1163,12 +1289,32 @@ begin
       end;
     ')':
       begin
+        ExecuteStack(5);
         if FStack.TopTyp=ctcssRoundBracketOpen then begin
-          ExecuteStack(5);
-          FStack.Pop;
+          AddError('operand expected, but '+GetAtom+' found');
+        end else if (FStack.TopTyp=ctcssOperand)
+        and (FStack.Top>0) and (FStack.Items[FStack.Top-1].Typ=ctcssRoundBracketOpen)
+        then begin
+          WriteDebugReportStack('AAA1');
+          FStack.Delete(FStack.Top-1);
+          WriteDebugReportStack('AAA2');
         end
         else
           ErrorUnexpectedRoundBracketClose;
+      end;
+    '=':
+      if not PushBinaryOperator then break;
+    '<':
+      if (Src-AtomStart=1) or (AtomStart[1] in ['=','>']) then begin
+        if not PushBinaryOperator then break;
+      end else begin
+        AddError('invalid operator '+GetAtom);
+      end;
+    '>':
+      if (Src-AtomStart=1) or (AtomStart[1] in ['=']) then begin
+        if not PushBinaryOperator then break;
+      end else begin
+        AddError('invalid operator '+GetAtom);
       end;
     'a'..'z','A'..'Z':
       begin
@@ -1423,6 +1569,9 @@ var
   Typ: TCTCfgScriptOperator;
   OperandItem: PCTCfgScriptStackItem;
   b: Boolean;
+  LeftOperandItem: PCTCfgScriptStackItem;
+  OperandsEqual: boolean;
+  LeftIsLowerThanRight: boolean;
 
   procedure ErrorInvalidOperator;
   begin
@@ -1445,49 +1594,63 @@ begin
     Typ:=AtomToCTCfgOperator(OperatorItem^.StartPos);
     debugln(['TCTConfigScriptEngine.ExecuteStack execute operator "',GetAtom(OperatorItem^.StartPos),'" Typ=',dbgs(Typ)]);
     case Typ of
+
     ctcsoNot:
       begin
         b:=CTCSVariableIsTrue(@OperandItem^.Operand);
-        FStack.Pop;
-        FStack.Pop;
+        FStack.Pop(2);
         PushBooleanValue(not b);
       end;
-    ctcsoAnd:
+
+    ctcsoAnd,ctcsoOr,ctcsoXOr:
       begin
         b:=CTCSVariableIsTrue(@OperandItem^.Operand);
-        FStack.Pop;
-        FStack.Pop;
+        FStack.Pop(2);
         if (FStack.Top>=0) then begin
           OperandItem:=@FStack.Items[FStack.Top];
-          b:=b and CTCSVariableIsTrue(@OperandItem^.Operand);
+          case Typ of
+          ctcsoAnd: b:=b and CTCSVariableIsTrue(@OperandItem^.Operand);
+          ctcsoOr:  b:=b or CTCSVariableIsTrue(@OperandItem^.Operand);
+          ctcsoXOr: b:=b xor CTCSVariableIsTrue(@OperandItem^.Operand);
+          end;
           FStack.Pop;
         end;
         PushBooleanValue(b);
       end;
-    ctcsoOr:
+
+    ctcsoEqual, ctcsoNotEqual, ctcsoLowerThan, ctcsoLowerOrEqualThan,
+    ctcsoGreaterThan, ctcsoGreaterOrEqualThan:
       begin
-        b:=CTCSVariableIsTrue(@OperandItem^.Operand);
-        FStack.Pop;
-        FStack.Pop;
-        if (FStack.Top>=0) then begin
-          OperandItem:=@FStack.Items[FStack.Top];
-          b:=b or CTCSVariableIsTrue(@OperandItem^.Operand);
-          FStack.Pop;
+        b:=false;
+        if (FStack.Top>=2) then begin
+          LeftOperandItem:=@FStack.Items[FStack.Top-2];
+          if not CompareCTCSVariables(@LeftOperandItem^.Operand,@OperandItem^.Operand,
+                               OperandsEqual,LeftIsLowerThanRight)
+          then begin
+             b:=false;
+          end else begin
+            case Typ of
+            ctcsoEqual:
+              b:=OperandsEqual;
+            ctcsoNotEqual:
+              b:=not OperandsEqual;
+            ctcsoLowerThan:
+              b:=(not OperandsEqual) and LeftIsLowerThanRight;
+            ctcsoLowerOrEqualThan:
+              b:=OperandsEqual or LeftIsLowerThanRight;
+            ctcsoGreaterThan:
+              b:=(not OperandsEqual) and not LeftIsLowerThanRight;
+            ctcsoGreaterOrEqualThan:
+              b:=OperandsEqual or not LeftIsLowerThanRight;
+            end;
+          end;
+          FStack.Pop(3);
+        end else begin
+          FStack.Pop(2);
         end;
         PushBooleanValue(b);
       end;
-    ctcsoXOr:
-      begin
-        b:=CTCSVariableIsTrue(@OperandItem^.Operand);
-        FStack.Pop;
-        FStack.Pop;
-        if (FStack.Top>=0) then begin
-          OperandItem:=@FStack.Items[FStack.Top];
-          b:=b xor CTCSVariableIsTrue(@OperandItem^.Operand);
-          FStack.Pop;
-        end;
-        PushBooleanValue(b);
-      end;
+
     else
       ErrorInvalidOperator;
     end;
@@ -1707,7 +1870,7 @@ begin
   TopTyp:=Typ;
 end;
 
-procedure TCTCfgScriptStack.Pop;
+procedure TCTCfgScriptStack.Pop(Count: integer);
 
   procedure RaiseTooManyPop;
   begin
@@ -1717,17 +1880,38 @@ procedure TCTCfgScriptStack.Pop;
 var
   Item: PCTCfgScriptStackItem;
 begin
-  if Top<0 then
+  if Top<Count-1 then
     RaiseTooManyPop;
-  Item:=@Items[Top];
+  while Count>0 do begin
+    Item:=@Items[Top];
+    ClearCTCSVariable(@Item^.Operand);
+    if Item^.Operand.Name<>nil then
+      ReAllocMem(Item^.Operand.Name,0);
+    dec(Top);
+    if Top>=0 then
+      TopTyp:=Items[0].Typ
+    else
+      TopTyp:=ctcssNone;
+    dec(Count);
+  end;
+end;
+
+procedure TCTCfgScriptStack.Delete(Index: integer);
+var
+  Item: PCTCfgScriptStackItem;
+begin
+  if (Index<0) or (Index>Top) then exit;
+  Item:=@Items[Index];
   ClearCTCSVariable(@Item^.Operand);
   if Item^.Operand.Name<>nil then
     ReAllocMem(Item^.Operand.Name,0);
+  if Index<Top then begin
+    System.Move(Items[Index+1],Items[Index],SizeOf(TCTCfgScriptStackItem)*(Top-Index));
+    Item:=@Items[Top];
+    Item^.Typ:=ctcssNone;
+    FillByte(Item^.Operand,SizeOf(Item^.Operand),0);
+  end;
   dec(Top);
-  if Top>=0 then
-    TopTyp:=Items[0].Typ
-  else
-    TopTyp:=ctcssNone;
 end;
 
 { TCTCfgScriptError }

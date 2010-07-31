@@ -52,7 +52,7 @@ begin
       raise Exception.Create('unable to read '+Filename);
     Src:=Code.Source;
   end else begin
-    Src:='a:=true; b:=false; if a or b then Result:=3';
+    Src:='a:=2; b:=2; if a<=b then Result:=3';
     //Src:='if (TargetOS=''win32'') then Result:=3';
   end;
 
