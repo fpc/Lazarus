@@ -488,7 +488,7 @@ begin
   if TSynEdit(SynEdit).BlockEnd.X = 1 then dec(y2);
 
   HasFolds := FoldView.TextIndexToViewPos(y2) - FoldView.TextIndexToViewPos(y1) <> y2 - y1;
-  debugln(['*** HasFolds=', HasFolds, ' y1=',y1, ' y2=',y2, ' VP1=',FoldView.TextIndexToViewPos(y1), ' VP2=',FoldView.TextIndexToViewPos(y2)]);
+  //debugln(['*** HasFolds=', HasFolds, ' y1=',y1, ' y2=',y2, ' VP1=',FoldView.TextIndexToViewPos(y1), ' VP2=',FoldView.TextIndexToViewPos(y2)]);
 
   HasHideableComments := False;
   HasFoldableComments := False;
@@ -525,7 +525,9 @@ begin
     end;
   end;
 
-  if HasFolds or HasCollapsedComments or HasFoldableComments or HasHideableComments then
+  if (HasFolds or HasCollapsedComments or HasFoldableComments or HasHideableComments) and
+     (APopUp.Items.Count > 0)
+  then
     AddPopUpItem(cLineCaption);
 
   If HasFolds then
