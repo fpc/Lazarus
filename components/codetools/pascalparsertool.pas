@@ -3372,7 +3372,8 @@ begin
   // read all variable definitions  Name : Type; [cvar;] [public [name '']]
   repeat
     ReadNextAtom;  // name
-    if AtomIsIdentifier(false) then begin
+    if AtomIsIdentifier(false)
+    then begin
       CreateChildNode;
       CurNode.Desc:=ctnVarDefinition;
       LastIdentifierEnd:=CurPos.EndPos;
