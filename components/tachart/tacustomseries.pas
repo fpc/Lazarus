@@ -40,7 +40,6 @@ type
     procedure SetAxisIndexY(AValue: Integer);
 
   protected
-    procedure BeforeDraw; override;
     procedure GetGraphBounds(var ABounds: TDoubleRect); override;
     procedure SetActive(AValue: Boolean); override;
     procedure SetDepth(AValue: TChartDistance); override;
@@ -171,13 +170,6 @@ begin
   Result := TransformByAxis(FChart.AxisList, AxisIndexY).AxisToGraph(AY)
 end;
 
-procedure TCustomChartSeries.BeforeDraw;
-begin
-  inherited BeforeDraw;
-  TransformByAxis(FChart.AxisList, AxisIndexX).SetChart(FChart);
-  TransformByAxis(FChart.AxisList, AxisIndexY).SetChart(FChart);
-end;
-
 constructor TCustomChartSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -191,14 +183,8 @@ procedure TCustomChartSeries.GetGraphBounds(var ABounds: TDoubleRect);
 begin
   GetBounds(ABounds);
   with ABounds do begin
-    if not IsInfinite(a.X) then
-      a.X := AxisToGraphX(a.X);
-    if not IsInfinite(a.Y) then
-      a.Y := AxisToGraphY(a.Y);
-    if not IsInfinite(b.X) then
-      b.X := AxisToGraphX(b.X);
-    if not IsInfinite(b.Y) then
-      b.Y := AxisToGraphY(b.Y);
+    TransformByAxis(FChart.AxisList, AxisIndexX).UpdateBounds(a.X, b.X);
+    TransformByAxis(FChart.AxisList, AxisIndexY).UpdateBounds(a.Y, b.Y);
     if IsRotated then begin
       Exchange(a.X, a.Y);
       Exchange(b.X, b.Y);

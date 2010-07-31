@@ -48,7 +48,8 @@ type
   protected
     FDrawData: TDrawDataItem;
     function GetDrawDataClass: TDrawDataItemClass; virtual;
-    procedure SetChart(AChart: TObject);
+    procedure SetChart(AChart: TObject); virtual;
+    procedure UpdateBounds(var AMin, AMax: Double); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -87,6 +88,7 @@ type
     function AxisToGraph(AX: Double): Double;
     function GraphToAxis(AX: Double): Double;
     procedure SetChart(AChart: TObject);
+    procedure UpdateBounds(var AMin, AMax: Double);
 
     property Broadcaster: TBroadcaster read FBroadcaster;
   published
@@ -115,6 +117,34 @@ type
     property Scale: Double read FScale write SetScale stored ScaleIsStored;
   end;
 
+  { TAutoScaleAxisTransform }
+
+  TAutoScaleAxisTransform = class(TAxisTransform)
+  private
+    FMaxValue: Double;
+    FMinValue: Double;
+    function MaxValueIsStored: boolean;
+    function MinValueIsStored: boolean;
+    procedure SetMaxValue(const AValue: Double);
+    procedure SetMinValue(const AValue: Double);
+  protected
+    function GetDrawDataClass: TDrawDataItemClass; override;
+    procedure SetChart(AChart: TObject); override;
+    procedure UpdateBounds(var AMin, AMax: Double); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  public
+    procedure Assign(Source: TPersistent); override;
+
+    function AxisToGraph(AX: Double): Double; override;
+    function GraphToAxis(AX: Double): Double; override;
+  published
+    property MaxValue: Double
+      read FMaxValue write SetMaxValue stored MaxValueIsStored;
+    property MinValue: Double
+      read FMinValue write SetMinValue stored MinValueIsStored;
+  end;
+
   { TLogarithmAxisTransform }
 
   TLogarithmAxisTransform = class(TAxisTransform)
@@ -138,6 +168,9 @@ resourcestring
   tasAxisTransformsEditorTitle = 'Edit axis transformations';
 
 implementation
+
+{$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
+{$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}
 
 uses
   ComponentEditors, Forms, Math, PropEdits,
@@ -172,6 +205,11 @@ type
     function GetChildrenList: TFPList; override;
     function MakeSubcomponent(
       AOwner: TComponent; ATag: Integer): TComponent; override;
+  end;
+
+  TAutoScaleTransformData = class (TDrawDataItem)
+  private
+    FMin, FMax, FOffset, FScale: Double;
   end;
 
 var
@@ -341,7 +379,7 @@ begin
   if GetDrawDataClass = nil then exit;
   FDrawData := DrawData.Find(AChart, Self);
   if FDrawData <> nil then exit;
-  FDrawData := GetDrawDataClass.Create;
+  FDrawData := GetDrawDataClass.Create(AChart, Self);
   DrawData.Add(FDrawData);
 end;
 
@@ -372,6 +410,14 @@ begin
   FTransformations := AValue;
   if FTransformations <> nil then
     FTransformations.List.Add(Self);
+end;
+
+procedure TAxisTransform.UpdateBounds(var AMin, AMax: Double);
+begin
+  if not IsInfinite(AMin) then
+    AMin := AxisToGraph(AMin);
+  if not IsInfinite(AMax) then
+    AMax := AxisToGraph(AMax);
 end;
 
 { TChartAxisTransformations }
@@ -418,7 +464,7 @@ var
   i: Integer;
 begin
   Result := AX;
-  for i := 0 to List.Count - 1 do
+  for i := List.Count - 1 downto 0 do
     with TAxisTransform(List[i]) do
       if Enabled then
         Result := GraphToAxis(Result);
@@ -429,7 +475,9 @@ var
   i: Integer;
 begin
   for i := 0 to List.Count - 1 do
-    TAxisTransform(List[i]).SetChart(AChart);
+    with TAxisTransform(List[i]) do
+      if Enabled then
+        TAxisTransform(List[i]).SetChart(AChart);
 end;
 
 procedure TChartAxisTransformations.SetChildOrder(
@@ -442,6 +490,16 @@ begin
     List.Move(i, Order);
 end;
 
+procedure TChartAxisTransformations.UpdateBounds(var AMin, AMax: Double);
+var
+  i: Integer;
+begin
+  for i := 0 to List.Count - 1 do
+    with TAxisTransform(List[i]) do
+      if Enabled then
+        UpdateBounds(AMin, AMax);
+end;
+
 { TLinearAxisTransform }
 
 procedure TLinearAxisTransform.Assign(Source: TPersistent);
@@ -450,9 +508,8 @@ begin
     with Source as TLinearAxisTransform do begin
       Self.FOffset := Offset;
       Self.FScale := Scale;
-    end
-  else
-    inherited Assign(Source);
+    end;
+  inherited Assign(Source);
 end;
 
 function TLinearAxisTransform.AxisToGraph(AX: Double): Double;
@@ -509,10 +566,12 @@ end;
 
 function TLogarithmAxisTransform.AxisToGraph(AX: Double): Double;
 begin
+  {$R-}{$Q-}
   if AX > 0 then
     Result := LogN(Base, AX)
   else
     Result := NegInfinity;
+  {$IFDEF OverflowChecking}{$Q+}{$ENDIF}{$IFDEF RangeChecking}{$R+}{$ENDIF}
 end;
 
 constructor TLogarithmAxisTransform.Create(AOwner: TComponent);
@@ -533,9 +592,100 @@ begin
   Changed;
 end;
 
+{ TAutoScaleAxisTransform }
+
+procedure TAutoScaleAxisTransform.Assign(Source: TPersistent);
+begin
+  if Source is TAutoScaleAxisTransform then
+    with TAutoScaleAxisTransform(Source) do begin
+      Self.FMinValue := FMinValue;
+      Self.FMaxValue := FMaxValue;
+    end;
+  inherited Assign(Source);
+end;
+
+function TAutoScaleAxisTransform.AxisToGraph(AX: Double): Double;
+begin
+  with TAutoScaleTransformData(FDrawData) do
+    Result := AX * FScale + FOffset;
+end;
+
+constructor TAutoScaleAxisTransform.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FMaxValue := 1.0;
+end;
+
+function TAutoScaleAxisTransform.GetDrawDataClass: TDrawDataItemClass;
+begin
+  Result := TAutoScaleTransformData;
+end;
+
+function TAutoScaleAxisTransform.GraphToAxis(AX: Double): Double;
+begin
+  with TAutoScaleTransformData(FDrawData) do
+    Result := (AX - FOffset) / FScale;
+end;
+
+function TAutoScaleAxisTransform.MaxValueIsStored: boolean;
+begin
+  Result := MaxValue <> 1.0;
+end;
+
+function TAutoScaleAxisTransform.MinValueIsStored: boolean;
+begin
+  Result := MinValue <> 0.0;
+end;
+
+procedure TAutoScaleAxisTransform.SetChart(AChart: TObject);
+begin
+  inherited SetChart(AChart);
+  {$R-}{$Q-}
+  with TAutoScaleTransformData(FDrawData) do begin
+    FMin := Infinity;
+    FMax := NegInfinity;
+    FScale := 1.0;
+  end;
+  {$IFDEF OverflowChecking}{$Q+}{$ENDIF}{$IFDEF RangeChecking}{$R+}{$ENDIF}
+end;
+
+procedure TAutoScaleAxisTransform.SetMaxValue(const AValue: Double);
+begin
+  if FMaxValue = AValue then exit;
+  FMaxValue := AValue;
+  Changed;
+end;
+
+procedure TAutoScaleAxisTransform.SetMinValue(const AValue: Double);
+begin
+  if FMinValue = AValue then exit;
+  FMinValue := AValue;
+  Changed;
+end;
+
+procedure TAutoScaleAxisTransform.UpdateBounds(var AMin, AMax: Double);
+begin
+  {$R-}{$Q-}
+  with TAutoScaleTransformData(FDrawData) do begin
+    UpdateMinMax(AMin, FMin, FMax);
+    UpdateMinMax(AMax, FMin, FMax);
+    if FMax = FMin then
+      FScale := 1.0
+    else
+      FScale := (MaxValue - MinValue) / (FMax - FMin);
+    FOffset := MinValue - FMin * FScale;
+  end;
+  {$IFDEF OverflowChecking}{$Q+}{$ENDIF}{$IFDEF RangeChecking}{$R+}{$ENDIF}
+  if not IsInfinite(AMin) then
+    AMin := MinValue;
+  if not IsInfinite(AMax) then
+    AMax := MaxValue;
+end;
+
 initialization
 
   AxisTransformsClassRegistry := TStringList.Create;
+  RegisterAxisTransformClass(TAutoScaleAxisTransform, 'Auto scale');
   RegisterAxisTransformClass(TLinearAxisTransform, 'Linear');
   RegisterAxisTransformClass(TLogarithmAxisTransform, 'Logarithmic');
 

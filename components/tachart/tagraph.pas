@@ -81,8 +81,8 @@ type
       ADistFunc: TPointDistFunc; const APoint: TPoint;
       out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
       virtual;
-    procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); virtual;
     function IsEmpty: Boolean; virtual; abstract;
+    procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); virtual;
 
     property Active: Boolean read FActive write SetActive default true;
     property Depth: TChartDistance read FDepth write SetDepth default 0;
@@ -465,6 +465,10 @@ begin
   FClipRect := ARect;
   InflateRect(FClipRect, -2, -2);
 
+  for i := 0 to AxisList.Count - 1 do
+    with AxisList[i] do
+      if Transformations <> nil then
+        Transformations.SetChart(Self);
   for i := 0 to SeriesCount - 1 do
     Series[i].BeforeDraw;
 

@@ -160,6 +160,7 @@ type
     FChart: TObject;
     FOwner: TObject;
   public
+    constructor Create(AChart, AOwner: TObject);
     property Chart: TObject read FChart;
     property Owner: TObject read FOwner;
   end;
@@ -946,6 +947,14 @@ begin
   if i < 0 then
     raise EListenerError.Create('Listener not found');
   Delete(i);
+end;
+
+{ TDrawDataItem }
+
+constructor TDrawDataItem.Create(AChart, AOwner: TObject);
+begin
+  FChart := AChart;
+  FOwner := AOwner;
 end;
 
 { TDrawDataRegistry }
