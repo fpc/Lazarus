@@ -206,6 +206,8 @@ type
     function PosToLineCol(p: PChar; out Line, Column: integer): boolean;
     function PosToStr(p: PChar): string;
     function GetErrorStr(Index: integer): string;
+
+    procedure WriteDebugReportStack(Title: string);
   end;
 
 function CompareCTCSVariables(Var1, Var2: Pointer): integer;
@@ -230,7 +232,9 @@ function AtomToCTCfgOperator(p: PChar): TCTCfgScriptOperator;
 
 function dbgs(const t: TCTCfgScriptStackItemType): string; overload;
 function dbgs(const t: TCTCSValueType): string; overload;
+function dbgs(const t: TCTCfgScriptOperator): string; overload;
 function dbgs(const V: PCTCfgScriptVariable): string; overload;
+
 
 implementation
 
@@ -546,6 +550,11 @@ begin
   Result:=GetEnumName(typeinfo(t),ord(t));
 end;
 
+function dbgs(const t: TCTCfgScriptOperator): string;
+begin
+  Result:=GetEnumName(typeinfo(t),ord(t));
+end;
+
 function dbgs(const V: PCTCfgScriptVariable): string;
 var
   l: Integer;
@@ -837,6 +846,7 @@ begin
   ReadRawNextPascalAtom(Src,AtomStart);
   FillByte(Value,SizeOf(Value),0);
   ExprIsTrue:=RunExpression(Value) and CTCSVariableIsTrue(@Value);
+  debugln(['TCTConfigScriptEngine.RunIf expression=',ExprIsTrue]);
 
   // read then
   if CompareIdentifiers(AtomStart,'then')<>0 then
@@ -897,7 +907,7 @@ begin
   Item:=@FStack.Items[FStack.Top];
   Item^.Operand.ValueType:=ctcsvNumber;
   Item^.Operand.Number:=Number;
-  ExecuteStack(0);
+  ExecuteStack(1);
 end;
 
 function TCTConfigScriptEngine.RunDefined(Negate: boolean): boolean;
@@ -992,7 +1002,7 @@ begin
       break;
     end;
   end;
-  ExecuteStack(0);
+  ExecuteStack(1);
 end;
 
 procedure TCTConfigScriptEngine.PushNumberConstant;
@@ -1053,7 +1063,7 @@ begin
     Item^.Operand.StrStart:=GetMem(l);
     System.Move(AtomStart^,Item^.Operand.StrStart^,l);
   end;
-  ExecuteStack(0);
+  ExecuteStack(1);
 end;
 
 procedure TCTConfigScriptEngine.PushBooleanValue(b: boolean);
@@ -1067,7 +1077,7 @@ begin
     Item^.Operand.Number:=1
   else
     Item^.Operand.Number:=0;
-  ExecuteStack(0);
+  ExecuteStack(1);
 end;
 
 function TCTConfigScriptEngine.RunExpression(var Value: TCTCfgScriptVariable
@@ -1392,6 +1402,8 @@ function TCTConfigScriptEngine.ExecuteStack(MaxLevel: integer): boolean;
 var
   OperatorItem: PCTCfgScriptStackItem;
   Typ: TCTCfgScriptOperator;
+  OperandItem: PCTCfgScriptStackItem;
+  b: Boolean;
 
   procedure ErrorInvalidOperator;
   begin
@@ -1401,20 +1413,26 @@ var
 begin
   Result:=true;
   repeat
+    WriteDebugReportStack('ExecuteStack MaxLevel='+dbgs(MaxLevel));
     if (FStack.TopTyp<>ctcssOperand) or (FStack.Top<=0) then
       exit;
     OperatorItem:=@FStack.Items[FStack.Top-1];
     if (OperatorItem^.Typ<>ctcssOperator)
     or (GetOperatorLevel(OperatorItem^.StartPos)>MaxLevel) then
       exit;
-    //OperandItem:=@FStack.Items[FStack.Top];
+    OperandItem:=@FStack.Items[FStack.Top];
 
     // execute operator
     Typ:=AtomToCTCfgOperator(OperatorItem^.StartPos);
+    debugln(['TCTConfigScriptEngine.ExecuteStack execute operator "',GetAtom(OperatorItem^.StartPos),'" Typ=',dbgs(Typ)]);
     case Typ of
     ctcsoNot:
-      // ToDo
-      ErrorInvalidOperator;
+      begin
+        b:=CTCSVariableIsTrue(@OperandItem^.Operand);
+        FStack.Pop;
+        FStack.Pop;
+        PushBooleanValue(not b);
+      end;
     else
       ErrorInvalidOperator;
     end;
@@ -1508,6 +1526,8 @@ function TCTConfigScriptEngine.GetAtom(P: PChar): string;
 var
   StartPos: PChar;
 begin
+  if P=nil then
+    exit('');
   ReadRawNextPascalAtom(P,StartPos);
   SetLength(Result,p-StartPos);
   if Result<>'' then
@@ -1560,6 +1580,24 @@ begin
   if s<>'' then
     Result:=Result+s+' ';
   Result:=Result+Err.Msg;
+end;
+
+procedure TCTConfigScriptEngine.WriteDebugReportStack(Title: string);
+var
+  i: Integer;
+  Item: PCTCfgScriptStackItem;
+begin
+  debugln(['TCTConfigScriptEngine.WriteDebugReportStack FStack.Top=',FStack.Top,' ',Title]);
+  for i:=0 to FStack.Top do begin
+    dbgout(GetIndentStr(i*2+2));
+    Item:=@FStack.Items[i];
+    dbgout(dbgs(Item^.Typ),' StartPos=',GetAtom(Item^.StartPos));
+    if Item^.Typ=ctcssOperator then
+      dbgout(' level='+dbgs(GetOperatorLevel(Item^.StartPos)));
+    if Item^.Typ=ctcssOperand then
+      dbgout(' ',dbgs(PCTCfgScriptVariable(@Item^.Operand)));
+    debugln;
+  end;
 end;
 
 { TCTCfgScriptStack }
