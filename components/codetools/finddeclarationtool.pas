@@ -5299,7 +5299,7 @@ var
   StackPtr: integer;
   
   procedure ExecuteStack(Complete: boolean);
-  { Executes the oerand+operator stack
+  { Executes the operand+operator stack
     Examples:
       Position Operand Operator
          0      AWord     *
@@ -5326,9 +5326,10 @@ var
     {$ENDIF}
     while (StackPtr>0)
     and (Complete
-     or (ExprStack[StackPtr-1].OperatorLvl>=ExprStack[StackPtr].OperatorLvl)) do
+     or (ExprStack[StackPtr-1].OperatorLvl<=ExprStack[StackPtr].OperatorLvl)) do
     begin
-      // next operand has a lower or equal priority/precedence
+      // next operand has a higher or equal precedence
+      // (lower is computed before higher)
       // -> calculate last two operands
       NewOperand:=CalculateBinaryOperator(ExprStack[StackPtr-1].Operand,
         ExprStack[StackPtr].Operand,ExprStack[StackPtr-1].theOperator,
