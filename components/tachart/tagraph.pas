@@ -420,6 +420,7 @@ begin
   FreeAndNil(FMargins);
   FreeAndNil(FBuiltinToolset);
 
+  DrawData.DeleteByChart(Self);
   inherited;
 end;
 

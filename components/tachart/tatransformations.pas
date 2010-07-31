@@ -45,6 +45,10 @@ type
     procedure Changed;
     function GetIndex: Integer; override;
     procedure SetIndex(AValue: Integer); override;
+  protected
+    FDrawData: TDrawDataItem;
+    function GetDrawDataClass: TDrawDataItemClass; virtual;
+    procedure SetChart(AChart: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -82,6 +86,7 @@ type
   public
     function AxisToGraph(AX: Double): Double;
     function GraphToAxis(AX: Double): Double;
+    procedure SetChart(AChart: TObject);
 
     property Broadcaster: TBroadcaster read FBroadcaster;
   published
@@ -292,7 +297,13 @@ end;
 destructor TAxisTransform.Destroy;
 begin
   Transformations := nil;
+  DrawData.DeleteByOwner(Self);
   inherited;
+end;
+
+function TAxisTransform.GetDrawDataClass: TDrawDataItemClass;
+begin
+  Result := nil;
 end;
 
 function TAxisTransform.GetIndex: Integer;
@@ -323,6 +334,15 @@ begin
   inherited ReadState(Reader);
   if Reader.Parent is TChartAxisTransformations then
     Transformations := Reader.Parent as TChartAxisTransformations;
+end;
+
+procedure TAxisTransform.SetChart(AChart: TObject);
+begin
+  if GetDrawDataClass = nil then exit;
+  FDrawData := DrawData.Find(AChart, Self);
+  if FDrawData <> nil then exit;
+  FDrawData := GetDrawDataClass.Create;
+  DrawData.Add(FDrawData);
 end;
 
 procedure TAxisTransform.SetEnabled(AValue: Boolean);
@@ -402,6 +422,14 @@ begin
     with TAxisTransform(List[i]) do
       if Enabled then
         Result := GraphToAxis(Result);
+end;
+
+procedure TChartAxisTransformations.SetChart(AChart: TObject);
+var
+  i: Integer;
+begin
+  for i := 0 to List.Count - 1 do
+    TAxisTransform(List[i]).SetChart(AChart);
 end;
 
 procedure TChartAxisTransformations.SetChildOrder(

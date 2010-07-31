@@ -120,6 +120,7 @@ end;
 
 procedure TDbChartSource.AfterDraw;
 begin
+  inherited AfterDraw;
   if not FDataLink.Active or (FBookmark = nil) then exit;
   try
     FDataLink.DataSet.GotoBookmark(FBookmark);
@@ -131,6 +132,7 @@ end;
 
 procedure TDbChartSource.BeforeDraw;
 begin
+  inherited BeforeDraw;
   if FDataLink.Active then
     FBookmark := FDataLink.DataSet.GetBookmark;
 end;

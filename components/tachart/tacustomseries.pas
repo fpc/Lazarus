@@ -40,6 +40,7 @@ type
     procedure SetAxisIndexY(AValue: Integer);
 
   protected
+    procedure BeforeDraw; override;
     procedure GetGraphBounds(var ABounds: TDoubleRect); override;
     procedure SetActive(AValue: Boolean); override;
     procedure SetDepth(AValue: TChartDistance); override;
@@ -168,6 +169,13 @@ end;
 function TCustomChartSeries.AxisToGraphY(AY: Double): Double;
 begin
   Result := TransformByAxis(FChart.AxisList, AxisIndexY).AxisToGraph(AY)
+end;
+
+procedure TCustomChartSeries.BeforeDraw;
+begin
+  inherited BeforeDraw;
+  TransformByAxis(FChart.AxisList, AxisIndexX).SetChart(FChart);
+  TransformByAxis(FChart.AxisList, AxisIndexY).SetChart(FChart);
 end;
 
 constructor TCustomChartSeries.Create(AOwner: TComponent);
@@ -325,11 +333,13 @@ end;
 
 procedure TChartSeries.AfterDraw;
 begin
+  inherited AfterDraw;
   Source.AfterDraw;
 end;
 
 procedure TChartSeries.BeforeDraw;
 begin
+  inherited BeforeDraw;
   Source.BeforeDraw;
 end;
 
