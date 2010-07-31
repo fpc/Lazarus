@@ -3373,6 +3373,8 @@ begin
   repeat
     ReadNextAtom;  // name
     if AtomIsIdentifier(false)
+    and ((not (Scanner.CompilerMode in [cmOBJFPC,cmFPC]))
+         or (not UpAtomIs('PROPERTY')))
     then begin
       CreateChildNode;
       CurNode.Desc:=ctnVarDefinition;
