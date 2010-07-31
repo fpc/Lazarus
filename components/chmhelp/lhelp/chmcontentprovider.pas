@@ -161,7 +161,7 @@ begin
    for i := 0 to Words.Count-1 do
    begin
      aWord := Words[i];
-     fPos := Pos(aWord, ATextNode.TextContent);
+     fPos := Pos(aWord, LowerCase(ATextNode.TextContent));
      while fpos > 0 do
      begin
        WordStart:= TDOMText(ATextNode).SplitText(fPos-1);
