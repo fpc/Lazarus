@@ -60,19 +60,6 @@ type
     procedure DoFill(ParentNode: TTreeNode);
   end;
   
-  { TIndexFiller }
-
-  TIndexFiller = class(TObject)
-  private
-    fListView: TListView;
-    fSitemap: TChmSiteMap;
-    fChm: Tobject;
-    procedure AddItem(Item: TChmSiteMapItem; ASubItem: Boolean);
-  public
-    constructor Create(AListView: TListView; ASiteMap: TChmSiteMap; AChm: TObject);
-    procedure DoFill;
-  end;
-
 implementation
 
 function FixURL(URL: String):String;
@@ -105,12 +92,16 @@ begin
   NewNode := TContentTreeNode(fTreeView.Items.AddChild(AParentNode, AItem.Text));
   NewNode.Url:=FixURL('/'+AItem.Local);
   NewNode.Data:=fChm;
-  NewNode.ImageIndex := 3;
-  NewNode.SelectedIndex := 3;
-  if (AParentNode.ImageIndex < 0) or (AParentNode.ImageIndex > 2) then
+  if fTreeView.Images <> nil then
   begin
-    AParentNode.ImageIndex := 1;
-    AParentNode.SelectedIndex := 1;
+    NewNode.ImageIndex := 3;
+    NewNode.SelectedIndex := 3;
+
+    if (AParentNode.ImageIndex < 0) or (AParentNode.ImageIndex > 2) then
+    begin
+      AParentNode.ImageIndex := 1;
+      AParentNode.SelectedIndex := 1;
+    end;
   end;
   Inc(fBranchCount);
 
@@ -148,48 +139,6 @@ begin
   fTreeView.EndUpdate;
 end;
 
-{ TIndexFiller }
-
-procedure TIndexFiller.AddItem(Item: TChmSiteMapItem; ASubItem: Boolean);
-var
-  NewItem: TIndexItem;
-  X: Integer;
-begin
-  NewItem := TIndexItem.Create(fListView.Items);
-  if ASubItem then
-    NewItem.Caption := '  ' + Item.Text
-  else
-    NewItem.Caption := Item.Text;
-  NewItem.Url       := FixURL('/' + Item.Local);
-  NewItem.Data      := fChm;
-  fListView.Items.AddItem(NewItem);
-  if Item.Children.Count > 0 then
-    for X := 0 to Item.Children.Count-1 do
-      AddItem(Item.Children.Item[X], True);
-
-end;
-
-constructor TIndexFiller.Create(AListView: TListView;  ASiteMap: TChmSiteMap; AChm: TObject);
-begin
- inherited Create;
- fListView := AListView;
- fSitemap := ASiteMap;
- fChm := AChm;
-
-end;
-
-procedure TIndexFiller.DoFill;
-var
-  X: Integer;
-begin
-  fListView.BeginUpdate;
-  fListView.Items.Clear;
-
-  for X := 0 to fSitemap.Items.Count-1 do
-    AddItem(fSitemap.Items.Item[X], False);
-
-  fListView.EndUpdate;
-end;
 
 end.
 

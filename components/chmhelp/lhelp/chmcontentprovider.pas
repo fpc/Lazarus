@@ -37,7 +37,7 @@ type
          fContentsTree: TTreeView;
       fIndexTab: TTabSheet;
         fIndexEdit: TLabeledEdit;
-        fIndexView: TListView;
+        fIndexView: TTreeView;//TListView;
       fSearchTab: TTabSheet;
         fKeywordLabel: TLabel;
         fKeywordCombo: TComboBox;
@@ -76,6 +76,7 @@ type
     procedure PopupCopyClick(Sender: TObject);
     procedure ContentsTreeSelectionChanged(Sender: TObject);
     procedure IndexViewDblClick(Sender: TObject);
+    procedure IndexViewStopCollapse(Sender: TObject; Node: TTreeNode; var AllowCollapse: Boolean);
     procedure ViewMenuContentsClick(Sender: TObject);
     procedure UpdateTitle;
     procedure SetTitle(const AValue: String); override;
@@ -432,7 +433,8 @@ begin
     exit;
   end;
   fFillingToc := True;
-  //fContentsTree.Visible := False;
+  fContentsTree.Visible := False;
+  fContentsTree.BeginUpdate;
   fContentsPanel.Caption := 'Table of Contents Loading. Please Wait...';
   Application.ProcessMessages;
   fChm := TChmReader(Data);
@@ -484,17 +486,19 @@ begin
       end;
       {$ENDIF}
       if SM <> nil then begin
-        with TIndexFiller.Create(fIndexView, SM, fChm) do begin
-          DoFill;
+        with TContentsFiller.Create(fIndexView, SM, @fStopTimer, fChm) do begin
+          DoFill(nil);
           Free;
         end;
         SM.Free;
+        fIndexView.FullExpand;
       end;
     end;
   end;
   fIndexTab.TabVisible := fIndexView.Items.Count > 0;
   if ParentNode.Index = 0 then ParentNode.Expanded := True;
 
+  fContentsTree.EndUpdate;
   fContentsTree.Visible := True;
   fContentsPanel.Caption := '';
   {$IFDEF CHM_DEBUG_TIME}
@@ -570,18 +574,19 @@ end;
 
 procedure TChmContentProvider.IndexViewDblClick(Sender: TObject);
 var
-  SelectedItem: TListItem;
-  RealItem: TIndexItem;
+  ATreeNode: TContentTreeNode;
 begin
-  SelectedItem := fIndexView.Selected;
-  if SelectedItem = nil then Exit;
+  if fIndexView.Selected = nil then Exit;
+  ATreeNode := TContentTreeNode(fIndexView.Selected);
 
-  RealItem := TIndexItem(SelectedItem);
-  if not fIndexEdit.Focused then
-    fIndexEdit.Text := Trim(RealItem.Caption);
-  if RealItem.Url <> '' then begin
-    DoLoadUri(MakeURI(RealItem.Url, TChmReader(RealItem.Data)));
-  end;
+  //find the chm associated with this branch
+   DoLoadUri(MakeURI(ATreeNode.Url, TChmReader(ATreeNode.Data)));
+end;
+
+procedure TChmContentProvider.IndexViewStopCollapse(Sender: TObject;
+  Node: TTreeNode; var AllowCollapse: Boolean);
+begin
+  AllowCollapse:=False;
 end;
 
 procedure TChmContentProvider.ViewMenuContentsClick(Sender: TObject);
@@ -623,22 +628,25 @@ end;
 
 procedure TChmContentProvider.SearchEditChange(Sender: TObject);
 var
-  I: Integer;
   ItemName: String;
   SearchText: String;
+  Node: TTreeNode;
 begin
-  if fIndexEdit.Text = '' then Exit;
-  if not fIndexEdit.Focused then Exit;
+if not fIndexEdit.Focused then Exit;
   SearchText := LowerCase(fIndexEdit.Text);
-  for I := 0 to fIndexView.Items.Count-1 do begin
-    ItemName := LowerCase(Copy(fIndexView.Items.Item[I].Caption, 1, Length(SearchText)));
+  Node := fIndexView.Items.GetFirstNode;
+  while Node<>nil do begin
+
+    ItemName := LowerCase(Copy(Node.Text, 1, Length(SearchText)));
     if ItemName = SearchText then begin
-      fIndexView.Items.Item[fIndexView.Items.Count-1].MakeVisible(False);
-      fIndexView.Items.Item[I].MakeVisible(False);
-      fIndexView.Items.Item[I].Selected := True;
+      fIndexView.Items.GetLastNode.MakeVisible;
+      Node.MakeVisible;
+      Node.Selected:=True;
       Exit;
     end;
+    Node := Node.GetNextSibling;
   end;
+  fIndexView.Selected:=nil;
 end;
 
 procedure TChmContentProvider.TOCExpand(Sender: TObject; Node: TTreeNode);
@@ -1071,19 +1079,9 @@ begin
     OnChange := @SearchEditChange;
     Visible := True;
   end;
-  fIndexView := TListView.Create(fIndexTab);
+
+  fIndexView := TTreeView.Create(fIndexTab);
   with fIndexView do begin
-    Parent := fIndexTab;
-    ShowColumnHeaders := False;
-    ViewStyle := vsReport;
-    with Columns.Add do
-    begin
-      Width := 400; {$NOTE TListView.Column.AutoSize does not seem to work}
-      AutoSize := True;
-    end;
-
-
-
     Anchors := [akLeft, akTop, akRight, akBottom];
     BorderSpacing.Around := 6;
     AnchorSide[akLeft].Control := fIndexTab;
@@ -1093,10 +1091,16 @@ begin
     AnchorSide[akTop].Side := asrBottom;
     AnchorSide[akBottom].Control := fIndexTab;
     AnchorSide[akBottom].Side := asrBottom;
-    Visible := True;
-    OnDblClick := @IndexViewDblClick;
+    Parent := fIndexTab;
+    BorderSpacing.Around := 6;
     ReadOnly := True;
+    Visible := True;
+    ShowButtons:=False;
+    ShowLines:=False;
+    OnCollapsing:=@IndexViewStopCollapse;
+    OnDblClick := @IndexViewDblClick;
   end;
+
 
  // {$IFDEF CHM_SEARCH}
   fSearchTab := TTabSheet.Create(fTabsControl);
@@ -1169,7 +1173,7 @@ begin
     with Columns.Add do
     begin
       Width := 400;
-      AutoSize := True;
+      //AutoSize := True;
     end;
     {$ELSE}
     ViewStyle := vsReport;
@@ -1182,11 +1186,6 @@ begin
   end;
  // {$ENDIF}
 
-  fSplitter := TSplitter.Create(Parent);
-  with fSplitter do begin
-    Align  := alLeft;
-    Parent := AParent
-  end;
 
   fHtml := TIpHtmlPanel.Create(Parent);
   with fHtml do begin
@@ -1197,6 +1196,17 @@ begin
     Parent := AParent;
     Align := alClient;
   end;
+
+  fSplitter := TSplitter.Create(Parent);
+  with fSplitter do begin
+    //Align  := alLeft;
+    Parent := AParent;
+    AnchorSide[akLeft].Control := fTabsControl;
+    AnchorSide[akLeft].Side:= asrRight;
+    AnchorSide[akRight].Control := fHtml;
+    AnchorSide[akRight].Side := asrLeft;
+  end;
+
 
   fPopUp := TPopupMenu.Create(fHtml);
   fPopUp.Items.Add(TMenuItem.Create(fPopup));
