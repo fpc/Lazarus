@@ -52,7 +52,7 @@ interface
 
 uses
   Classes, SysUtils, CodeToolsStrConsts, ExprEval, DirectoryCacher,
-  Laz_XMLCfg, AVL_Tree, CodeToolsStructs,
+  BasicCodeTools, Laz_XMLCfg, AVL_Tree, CodeToolsStructs,
   Process, KeywordFuncLists, FileProcs;
 
 const
@@ -6754,20 +6754,32 @@ function TDefinePool.CreateFPCCommandLineDefines(const Name, CmdLine: string;
     AddDefine(AName,ADescription,AVariable,AValue,NewAction);
   end;
 
-  procedure AddDefine(const AName: string; const AValue: string = '');
+  procedure AddDefine(const AParam: string);
+  var
+    Identifier: String;
+    AValue: String;
   begin
-    AddDefine('Define '+AName,ctsDefine+AName,AName,AValue);
+    Identifier:=GetIdentifier(PChar(AParam));
+    if Identifier='' then exit;
+    AValue:='';
+    if length(Identifier)<length(AParam) then begin
+      if copy(AParam,length(Identifier)+1,2)=':=' then
+        AValue:=copy(AParam,length(Identifier)+3,length(AParam));
+    end;
+    AddDefine('Define '+Identifier,ctsDefine+AParam,Identifier,AValue);
   end;
 
-  procedure AddUndefine(const AName: string);
+  procedure AddUndefine(const AParam: string);
   var
     NewAction: TDefineAction;
+    Identifier: String;
   begin
     if RecursiveDefines then
       NewAction:=da_UndefineRecurse
     else
       NewAction:=da_Undefine;
-    AddDefine('Undefine '+AName,ctsUndefine+AName,AName,'',NewAction);
+    Identifier:=GetIdentifier(PChar(AParam));
+    AddDefine('Undefine '+Identifier,ctsUndefine+AParam,Identifier,'',NewAction);
   end;
 
   procedure AddDefineUndefine(const AName: string; Define: boolean);
