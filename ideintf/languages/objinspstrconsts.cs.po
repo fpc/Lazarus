@@ -12,7 +12,7 @@ msgstr ""
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
-msgstr "(Všechno)"
+msgstr "(Vše)"
 
 #: objinspstrconsts.cactionlisteditordatabasecategory
 msgid "Database"
@@ -86,7 +86,7 @@ msgstr "Při přidání zkontrolovat zdvojené položky"
 
 #: objinspstrconsts.cgcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
-msgstr "Položka \"%s\" již je v seznamu. Stejně přidat?"
+msgstr "Položka \"%s\" již je v seznamu. Přesto přidat?"
 
 #: objinspstrconsts.cgcheckgroupeditor
 msgid "CheckGroup Editor"
@@ -837,20 +837,20 @@ msgstr "Poslední"
 
 #: objinspstrconsts.oistdactdatasetnextheadline
 msgid "&Next"
-msgstr "&Následující"
+msgstr "&Další"
 
 #: objinspstrconsts.oistdactdatasetnexthint
 msgctxt "objinspstrconsts.oistdactdatasetnexthint"
 msgid "Next"
-msgstr "Následující"
+msgstr "Další"
 
 #: objinspstrconsts.oistdactdatasetpostheadline
 msgid "P&ost"
-msgstr "&Poslat"
+msgstr "&Následující"
 
 #: objinspstrconsts.oistdactdatasetposthint
 msgid "Post"
-msgstr "Poslat"
+msgstr "Následující"
 
 #: objinspstrconsts.oistdactdatasetpriorheadline
 msgid "&Prior"
@@ -1070,7 +1070,7 @@ msgstr "Identifikátor %s%s%s není metoda.%sStiskněte Zrušit k návratu zpět
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
 msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Metoda %s%s%s není kompatibilní s touto událostí (%s).%sStiskněte Zrušit pro návrat zpět, %sstiskněte"
+msgstr "Metoda %s%s%s není kompatibilní s touto událostí (%s).%sStiskněte Zrušit pro návrat zpět, %sstiskněte Ignorovat pro vynucení."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
 msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
@@ -1244,7 +1244,7 @@ msgstr "Editor ImageList"
 
 #: objinspstrconsts.sccsiledtcenter
 msgid "Center"
-msgstr "Vycentrovat"
+msgstr "Vystředit"
 
 #: objinspstrconsts.sccsiledtclear
 msgctxt "objinspstrconsts.sccsiledtclear"
