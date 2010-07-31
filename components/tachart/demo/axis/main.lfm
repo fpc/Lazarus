@@ -24,7 +24,7 @@ object Form1: TForm1
       ClientWidth = 525
       object ChartT: TChart
         Left = 0
-        Height = 307
+        Height = 278
         Top = 0
         Width = 525
         AxisList = <        
@@ -40,6 +40,7 @@ object Form1: TForm1
             Title.Caption = 'Summer temperature, °C'
             Title.Font.Color = clRed
             Title.Font.Orientation = 900
+            Transformations = catTAuto
           end        
           item
             Alignment = calBottom
@@ -72,6 +73,7 @@ object Form1: TForm1
         Align = alClient
         ParentColor = False
         object ChartTSummer: TLineSeries
+          AxisIndexY = 0
           LinePen.Color = clRed
           LinePen.Width = 2
           SeriesColor = clRed
@@ -90,6 +92,25 @@ object Form1: TForm1
           BarBrush.Style = bsDiagCross
           SeriesColor = clBlue
           Source = rcsTWinter
+        end
+      end
+      object pnlAutoControls: TPanel
+        Left = 0
+        Height = 29
+        Top = 278
+        Width = 525
+        Align = alBottom
+        ClientHeight = 29
+        ClientWidth = 525
+        TabOrder = 1
+        object cbAuto: TCheckBox
+          Left = 4
+          Height = 17
+          Top = 5
+          Width = 70
+          Caption = 'Auto scale'
+          OnChange = cbAutoChange
+          TabOrder = 0
         end
       end
     end
@@ -255,9 +276,12 @@ object Form1: TForm1
   object catT: TChartAxisTransformations
     left = 352
     top = 60
-    object catTCelToFahr: TLinearAxisTransform
+    object catTFahrToCel: TLinearAxisTransform
       Offset = -17.777777777
       Scale = 0.5555555555
+    end
+    object catTAutoScaleAxisTransform1: TAutoScaleAxisTransform
+      Enabled = False
     end
   end
   object rcsTSummer: TRandomChartSource
@@ -279,5 +303,12 @@ object Form1: TForm1
     YMin = -15
     left = 87
     top = 156
+  end
+  object catTAuto: TChartAxisTransformations
+    left = 352
+    top = 112
+    object catTAutoAutoScaleAxisTransform1: TAutoScaleAxisTransform
+      Enabled = False
+    end
   end
 end

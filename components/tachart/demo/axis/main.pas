@@ -6,13 +6,17 @@ interface
 
 uses
   ComCtrls, ExtCtrls, Forms, StdCtrls, TAGraph, TASeries, TASources,
-  TATransformations;
+  TATransformations, Classes;
 
 type
 
   { TForm1 }
 
   TForm1 = class(TForm)
+    catTAutoAutoScaleAxisTransform1: TAutoScaleAxisTransform;
+    catTAutoScaleAxisTransform1: TAutoScaleAxisTransform;
+    catTAuto: TChartAxisTransformations;
+    cbAuto: TCheckBox;
     ChartLog: TChart;
     cfsLog: TFuncSeries;
     cbLog: TCheckBox;
@@ -23,7 +27,7 @@ type
     ChartAxisTransformations1LinearAxisTransform2: TLinearAxisTransform;
     ChartAxisTransformations1LogarithmAxisTransform1: TLogarithmAxisTransform;
     catT: TChartAxisTransformations;
-    catTCelToFahr: TLinearAxisTransform;
+    catTFahrToCel: TLinearAxisTransform;
     ChartCustomMarks: TChart;
     ChartCustomMarksBarSeries1: TBarSeries;
     ChartTSummer: TLineSeries;
@@ -31,11 +35,13 @@ type
     lcsMarks: TListChartSource;
     PageControl1: TPageControl;
     pnlLogControls: TPanel;
+    pnlAutoControls: TPanel;
     rcsTSummer: TRandomChartSource;
     rcsTWinter: TRandomChartSource;
     lsLinear: TTabSheet;
     tsLog: TTabSheet;
     tsCustomMarks: TTabSheet;
+    procedure cbAutoChange(Sender: TObject);
     procedure cbLogChange(Sender: TObject);
     procedure ChartLogFuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure FormCreate(Sender: TObject);
@@ -58,6 +64,12 @@ begin
 end;
 
 { TForm1 }
+
+procedure TForm1.cbAutoChange(Sender: TObject);
+begin
+  catTAutoAutoScaleAxisTransform1.Enabled := cbAuto.Checked;
+  catTAutoScaleAxisTransform1.Enabled := cbAuto.Checked;
+end;
 
 procedure TForm1.cbLogChange(Sender: TObject);
 begin
