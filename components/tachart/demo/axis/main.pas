@@ -17,6 +17,7 @@ type
     catTAutoScaleAxisTransform1: TAutoScaleAxisTransform;
     catTAuto: TChartAxisTransformations;
     cbAuto: TCheckBox;
+    ChartAxisGroup: TChart;
     ChartLog: TChart;
     cfsLog: TFuncSeries;
     cbLog: TCheckBox;
@@ -39,6 +40,7 @@ type
     rcsTSummer: TRandomChartSource;
     rcsTWinter: TRandomChartSource;
     lsLinear: TTabSheet;
+    tsAxisGroup: TTabSheet;
     tsLog: TTabSheet;
     tsCustomMarks: TTabSheet;
     procedure cbAutoChange(Sender: TObject);
@@ -54,7 +56,7 @@ var
 implementation
 
 uses
-  Math;
+  Math, TAChartAxis;
 
 {$R *.lfm}
 
@@ -82,14 +84,42 @@ begin
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
+const
+  COLORS: array [1..5] of Integer =
+    ($0000A0, $002080, $004060, $006040, $008020);
 var
-  i: Integer;
+  i, j: Integer;
   x: Double;
+  ls: TLineSeries;
+  tr: TChartAxisTransformations;
 begin
   for i := 0 to 50 do begin
     with cfsLog.Extent do
       x := i / 50 * (XMax - XMin) + XMin;
     clsLogPoints.AddXY(x + Random - 0.5, MyFunc(x) + Random - 0.5);
+  end;
+  for i := 1 to 5 do begin
+    ls := TLineSeries.Create(Self);
+    ChartAxisGroup.AddSeries(ls);
+    ls.SeriesColor := COLORS[i];
+    ls.LinePen.Width := 2;
+    for j := 1 to 20 do
+      ls.AddXY(j, Random * 8);
+    tr := TChartAxisTransformations.Create(Self);
+    with TAutoScaleAxisTransform.Create(Self) do begin
+      Transformations := tr;
+      MinValue := i;
+      MaxValue := i + 0.8;
+    end;
+    with TChartAxis.Create(ChartAxisGroup.AxisList) do begin
+      Transformations := tr;
+      Marks.AtDataOnly := true;
+      Marks.LabelFont.Orientation := 900;
+      Marks.LabelFont.Color := COLORS[i];
+      TickColor := COLORS[i];
+      Group := 1;
+    end;
+    ls.AxisIndexY := ChartAxisGroup.AxisList.Count - 1;
   end;
 end;
 

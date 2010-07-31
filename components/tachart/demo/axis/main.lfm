@@ -14,9 +14,9 @@ object Form1: TForm1
     Height = 333
     Top = 0
     Width = 533
-    ActivePage = lsLinear
+    ActivePage = tsAxisGroup
     Align = alClient
-    TabIndex = 0
+    TabIndex = 3
     TabOrder = 0
     object lsLinear: TTabSheet
       Caption = 'Linear transform'
@@ -29,11 +29,10 @@ object Form1: TForm1
         Width = 525
         AxisList = <        
           item
-            Alignment = calLeft
             Grid.Visible = False
             Marks.LabelFont.Color = clRed
+            Marks.AtDataOnly = True
             TickColor = clRed
-            Title.Distance = 0
             Title.LabelFont.Color = clRed
             Title.LabelFont.Orientation = 900
             Title.Visible = True
@@ -52,8 +51,8 @@ object Form1: TForm1
             Grid.Visible = False
             Marks.Distance = 4
             Marks.LabelFont.Color = clBlue
+            Marks.AtDataOnly = True
             TickColor = clBlue
-            Title.Distance = 0
             Title.LabelFont.Color = clBlue
             Title.LabelFont.Orientation = 900
             Title.Visible = True
@@ -125,7 +124,6 @@ object Form1: TForm1
         Width = 525
         AxisList = <        
           item
-            Alignment = calLeft
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'Left'
@@ -209,7 +207,6 @@ object Form1: TForm1
         Width = 525
         AxisList = <        
           item
-            Alignment = calLeft
             Marks.Distance = 0
             Marks.Format = '$%0:.9g'
             Marks.Frame.Style = psSolid
@@ -248,6 +245,37 @@ object Form1: TForm1
           SeriesColor = clGreen
           Source = lcsMarks
         end
+      end
+    end
+    object tsAxisGroup: TTabSheet
+      Caption = 'Axis groups'
+      ClientHeight = 307
+      ClientWidth = 525
+      object ChartAxisGroup: TChart
+        Left = 0
+        Height = 307
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Grid.Visible = False
+            Group = 2
+            TickLength = 0
+            Title.LabelFont.Orientation = 900
+            Title.Font.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
       end
     end
   end
