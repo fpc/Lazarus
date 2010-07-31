@@ -80,7 +80,7 @@ implementation
 {$R *.lfm}
 
 uses
-  TAChartUtils, TADrawUtils, TATypes;
+  TAChartUtils, TATypes;
 
 { TForm1 }
 

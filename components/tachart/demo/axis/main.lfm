@@ -33,16 +33,18 @@ object Form1: TForm1
             Grid.Visible = False
             Marks.LabelFont.Color = clRed
             TickColor = clRed
-            Title.Caption = 'Summer temperature, °C'
             Title.Distance = 0
+            Title.LabelFont.Color = clRed
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'Summer temperature, °C'
             Title.Font.Color = clRed
             Title.Font.Orientation = 900
-            Title.Visible = True
           end        
           item
             Alignment = calBottom
-            Title.Caption = 'Year'
             Title.Visible = True
+            Title.Caption = 'Year'
           end        
           item
             Alignment = calRight
@@ -50,11 +52,13 @@ object Form1: TForm1
             Marks.Distance = 4
             Marks.LabelFont.Color = clBlue
             TickColor = clBlue
-            Title.Caption = 'Winter temperature, °F'
             Title.Distance = 0
+            Title.LabelFont.Color = clBlue
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'Winter temperature, °F'
             Title.Font.Color = clBlue
             Title.Font.Orientation = 900
-            Title.Visible = True
             Transformations = catT
           end>
         Foot.Brush.Color = clBtnFace
@@ -101,23 +105,25 @@ object Form1: TForm1
         AxisList = <        
           item
             Alignment = calLeft
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
             Title.Caption = 'Left'
             Title.Font.Orientation = 900
-            Title.Visible = True
             Transformations = catLog
           end        
           item
             Alignment = calBottom
-            Title.Caption = 'Bottom'
             Title.Distance = 0
             Title.Visible = True
+            Title.Caption = 'Bottom'
           end        
           item
             Alignment = calRight
             Grid.Visible = False
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
             Title.Caption = 'Right 1'
             Title.Font.Orientation = 900
-            Title.Visible = True
           end        
           item
             Alignment = calTop
@@ -173,11 +179,11 @@ object Form1: TForm1
     end
     object tsCustomMarks: TTabSheet
       Caption = 'Customized marks'
-      ClientHeight = 278
+      ClientHeight = 307
       ClientWidth = 525
       object ChartCustomMarks: TChart
         Left = 0
-        Height = 278
+        Height = 307
         Top = 0
         Width = 525
         AxisList = <        
@@ -185,21 +191,22 @@ object Form1: TForm1
             Alignment = calLeft
             Marks.Distance = 0
             Marks.Format = '$%0:.9g'
-            Marks.Style = smsCustom
             Marks.Frame.Style = psSolid
             Marks.LabelBrush.Color = clMoneyGreen
             Marks.LabelBrush.Style = bsSolid
             Marks.Source = lcsMarks
+            Marks.Style = smsCustom
+            Title.LabelFont.Orientation = 900
             Title.Font.Orientation = 900
           end        
           item
             Alignment = calBottom
             Grid.Visible = False
-            Marks.Format = '%2:s'
             Marks.LabelFont.Height = -13
             Marks.LabelFont.Style = [fsBold]
-            Marks.Style = smsLabel
+            Marks.Format = '%2:s'
             Marks.Source = lcsMarks
+            Marks.Style = smsLabel
             TickLength = 0
           end>
         Foot.Brush.Color = clBtnFace
