@@ -60,10 +60,10 @@ type
   published
     property Caption: String read FCaption write SetCaption;
     property Distance default DEF_TITLE_DISTANCE;
-    property LabelBrush;
      // Use LabelFont instead.
     property Font: TFont read GetFont write SetFont; deprecated;
     property Frame;
+    property LabelBrush;
     property Visible default false;
   end;
 
@@ -123,8 +123,8 @@ type
     FSize: Integer;
     FTitleSize: Integer;
 
-    procedure VisitSource(ASource: TCustomChartSource; var AData);
     procedure GetMarkValues(AMin, AMax: Double);
+    procedure VisitSource(ASource: TCustomChartSource; var AData);
   private
     FAlignment: TChartAxisAlignment;
     FGrid: TChartAxisPen;
@@ -168,7 +168,8 @@ type
       var AMargins: TChartAxisMargins);
 
   published
-    property Alignment: TChartAxisAlignment read FAlignment write SetAlignment;
+    property Alignment: TChartAxisAlignment
+      read FAlignment write SetAlignment default calLeft;
     property Grid: TChartAxisPen read FGrid write SetGrid;
     // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
