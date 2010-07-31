@@ -58,7 +58,9 @@ type
                              SubType: Integer);
   protected
     procedure DoChange(Sender: TObject); override;
+    procedure CreatePopUpMenuEntries(APopUp: TPopupMenu; ALine: Integer); virtual;
     procedure PopClicked(Sender: TObject);
+    property FoldView: TSynEditFoldedView read FFoldView;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -204,6 +206,73 @@ begin
   inherited DoChange(Sender);
 end;
 
+procedure TSynGutterCodeFolding.CreatePopUpMenuEntries(APopUp: TPopupMenu;
+  ALine: Integer);
+
+  function AddPopUpItem(const ACaption: String): TMenuItem;
+  begin
+    Result := TMenuItem.Create(APopUp);
+    Result.OnClick := {$IFDEF FPC}@{$ENDIF}PopClicked;
+    Result.Caption := ACaption;
+    if FReversePopMenuOrder then
+      APopUp.Items.Add(Result)
+    else
+      APopUp.Items.Insert(0, Result);
+  end;
+
+var
+  c, i: Integer;
+  inf: TFoldViewNodeInfo;
+  m: TMenuItem;
+  s, s2: String;
+begin
+  c := FFoldView.OpenFoldCount(ALine-1);
+  if c > 0 then begin
+    SetLength(FMenuInf,c);
+    for i := c-1 downto 0 do begin
+      inf := FFoldView.OpenFoldInfo(ALine-1, i);
+      if sfaInvalid in inf.HNode.FoldAction then
+        continue;
+      FMenuInf[i] := inf;
+      if (i < c-1) and (FMenuInf[i+1].LineNum = ALine) and (inf.LineNum <> ALine)
+      then begin
+        m := AddPopUpItem(cLineCaption);
+        m.Tag := -1;
+      end;
+      s := copy(inf.Text, 1, inf.HNode.LogXStart-1);
+      if length(s) > 30 then s := copy(s,1,15) + '...' + copy(s, inf.HNode.LogXStart-11,10);
+      s := s + copy(inf.Text, inf.HNode.LogXStart, 30 + (30 - length(s)));
+      s2 := '';
+      if inf.OpenCount > 1 then
+        s2 := format(' (%d/%d)', [inf.ColIndex+1, inf.OpenCount]);
+
+      if inf.FNode.IsInFold then begin
+        m := AddPopUpItem(format('%4d %s '#9'%s', [ inf.LineNum, inf.Keyword+s2+':', s]));
+        m.Tag := i;
+        if inf.FNode.IsHide then
+          m.ImageIndex := 3
+        else
+          m.ImageIndex := 1;
+      end
+      else begin
+        if sfaFoldFold in inf.HNode.FoldAction then begin
+          m := AddPopUpItem(format('%4d %s '#9'%s', [ inf.LineNum, inf.Keyword+s2+':', s]));
+          m.Tag := i;
+          m.ImageIndex := 0;
+        end;
+        if sfaFoldHide in inf.HNode.FoldAction then begin
+          if sfaFoldFold in inf.HNode.FoldAction then
+            m := AddPopUpItem(format('%4d %s ', [ inf.LineNum, inf.Keyword+s2 ]))
+          else
+            m := AddPopUpItem(format('%4d %s '#9'%s', [ inf.LineNum, inf.Keyword+s2+':', s]));
+          m.Tag := i;
+          m.ImageIndex := 2;
+        end;
+      end;
+    end;
+  end;
+end;
+
 constructor TSynGutterCodeFolding.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -285,21 +354,8 @@ end;
 
 function TSynGutterCodeFolding.DoHandleMouseAction(AnAction: TSynEditMouseAction;
   var AnInfo: TSynEditMouseActionInfo): Boolean;
-
-  function AddPopUpItem: TMenuItem;
-  begin
-    Result := TMenuItem.Create(FPopUp);
-    Result.OnClick := {$IFDEF FPC}@{$ENDIF}PopClicked;
-    if FReversePopMenuOrder then
-      FPopUp.Items.Add(Result)
-    else
-      FPopUp.Items.Insert(0, Result);
-  end;
 var
-  c, i, line, ScrLine: Integer;
-  inf: TFoldViewNodeInfo;
-  m: TMenuItem;
-  s, s2: String;
+  i, line, ScrLine: Integer;
   ACommand: Word;
   KeepVisible: Integer;
 begin
@@ -369,57 +425,8 @@ begin
     emcCodeFoldContextMenu:
       begin
         FPopUp.Items.Clear;
-        c := FFoldView.OpenFoldCount(line-1);
-        if c > 0 then begin
-          SetLength(FMenuInf,c);
-          for i := c-1 downto 0 do begin
-            inf := FFoldView.OpenFoldInfo(line-1, i);
-            if sfaInvalid in inf.HNode.FoldAction then
-              continue;
-            FMenuInf[i] := inf;
-            if (i < c-1) and (FMenuInf[i+1].LineNum = line) and (inf.LineNum <> line)
-            then begin
-              m := AddPopUpItem;
-              m.Caption := cLineCaption;
-              m.Tag := -1;
-            end;
-            s := copy(inf.Text, 1, inf.HNode.LogXStart-1);
-            if length(s) > 30 then s := copy(s,1,15) + '...' + copy(s, inf.HNode.LogXStart-11,10);
-            s := s + copy(inf.Text, inf.HNode.LogXStart, 30 + (30 - length(s)));
-            s2 := '';
-            if inf.OpenCount > 1 then
-              s2 := format(' (%d/%d)', [inf.ColIndex+1, inf.OpenCount]);
-
-            if inf.FNode.IsInFold then begin
-              m := AddPopUpItem;
-              m.Caption := format('%4d %-12s '#9'%s', [ inf.LineNum, inf.Keyword+s2+':', s]);
-              m.Tag := i;
-              if inf.FNode.IsHide then
-                m.ImageIndex := 3
-              else
-                m.ImageIndex := 1;
-            end
-            else begin
-              if sfaFoldFold in inf.HNode.FoldAction then begin
-                m := AddPopUpItem;
-                m.Caption := format('%4d %-12s '#9'%s', [ inf.LineNum, inf.Keyword+s2+':', s]);
-                m.Tag := i;
-                m.ImageIndex := 0;
-              end;
-              if sfaFoldHide in inf.HNode.FoldAction then begin
-                m := AddPopUpItem;
-                if sfaFoldFold in inf.HNode.FoldAction then
-                  m.Caption := format('%4d %-12s ', [ inf.LineNum, inf.Keyword+s2 ])
-                else
-                  m.Caption := format('%4d %-12s '#9'%s', [ inf.LineNum, inf.Keyword+s2+':', s]);
-                m.Tag := i;
-                m.ImageIndex := 2;
-              end;
-            end;
-
-          end;
-          FPopUp.PopUp;
-        end;
+        CreatePopUpMenuEntries(FPopUp, line);
+        FPopUp.PopUp;
       end;
     else
       Result := False;

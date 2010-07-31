@@ -110,7 +110,7 @@ type
     cfbtRepeat,
     cfbtAsm,
     cfbtCase,
-    cfbtIfDef,        // {$IfDef} directive, ths is not counted in the Range-Node
+    cfbtIfDef,        // {$IfDef} directive, this is not counted in the Range-Node
     cfbtRegion,       // {%Region} user folds, not counted in the Range-Node
     cfbtAnsiComment,  // (* ... *)
     cfbtBorCommand,   // { ... }

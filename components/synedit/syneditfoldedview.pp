@@ -253,6 +253,7 @@ type
     procedure SetHighLighter(const AValue: TSynCustomFoldHighlighter);
   public
     function FoldOpenCount(ALineIdx: Integer; AType: Integer = 0): Integer;
+    function FoldOpenInfo(ALineIdx, AFoldIdx: Integer; AType: Integer = 0): TSynFoldNodeInfo;
     //property FoldOpenInfo[ALineIdx, AColumnIdx: Integer]: Integer read GetFoldOpenInfo;
     //property FoldInfoCount[ALineIdx: Integer]: Integer read GetFoldInfoCount;
     //property FoldInfo[ALineIdx, AColumnIdx: Integer]: Integer read GetFoldInfo;
@@ -302,7 +303,6 @@ type
     Procedure CalculateMaps;
     function  LengthForFoldAtTextIndex(ALine, AFoldIndex : Integer; HideLen: Boolean = False) : Integer;
     function  FoldNodeAtTextIndex(AStartIndex, ColIndex: Integer): TSynTextFoldAVLNode; (* Returns xth Fold at nth TextIndex (all lines in buffer) / 1-based *)
-    function  IsFoldedAtTextIndex(AStartIndex, ColIndex: Integer): Boolean;      (* Checks xth Fold at nth TextIndex (all lines in buffer) / 1-based *)
     function  FixFolding(AStart : Integer; AMinEnd : Integer; aFoldTree : TSynTextFoldAVLTree) : Boolean;
 
     procedure DoCaretChanged(Sender : TObject);
@@ -410,6 +410,7 @@ type
 
     function GetPhysicalCharWidths(Index: Integer): TPhysicalCharWidths;
 
+    function  IsFoldedAtTextIndex(AStartIndex, ColIndex: Integer): Boolean;      (* Checks xth Fold at nth TextIndex (all lines in buffer) / 1-based *)
     property FoldedAtTextIndex [index : integer] : Boolean read IsFolded;
 
     property OnFoldChanged: TFoldChangedEvent  (* reports 1-based line *) {TODO: synedit expects 0 based }
@@ -2974,6 +2975,32 @@ begin
   else
   if Result < 0 then
     Result := FHighlighter.FoldOpenCount(ALineIdx, AType);
+end;
+
+function TSynEditFoldProvider.FoldOpenInfo(ALineIdx, AFoldIdx: Integer;
+  AType: Integer = 0): TSynFoldNodeInfo;
+var
+  i, x: Integer;
+begin
+  Result.FoldAction := [sfaInvalid];
+  if (FHighlighter = nil) or (ALineIdx < 0) then exit;
+
+  if AType = 0 then
+    Result := FHighlighter.FoldNodeInfo[ALineIdx, AFoldIdx, [sfaOpen, sfaFold]]
+  else begin
+    x := FHighlighter.FoldNodeInfoCount[ALineIdx, [sfaOpen, sfaFold]];
+    i := 0;
+    while i < x do begin
+      Result := FHighlighter.FoldNodeInfo[ALineIdx, i, [sfaOpen, sfaFold]];
+      if (Result.FoldGroup = AType) then begin
+        if AFoldIdx = 0 then
+          exit;
+        dec(AFoldIdx);
+      end;
+      inc(i);
+    end;
+    Result.FoldAction := [sfaInvalid];
+  end;
 end;
 
 { TSynEditFoldedView }
