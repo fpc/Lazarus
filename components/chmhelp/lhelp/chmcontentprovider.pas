@@ -88,6 +88,7 @@ type
     procedure SearchResultsDblClick(Sender: TObject);
     procedure SearchComboKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     {$ENDIF}
+  public
     procedure LoadPreferences(ACfg: TXMLConfig); override;
     procedure SavePreferences(ACfg: TXMLConfig); override;
   public
@@ -153,7 +154,6 @@ var
   WordStart,
   After: TDOMText;
   Span: TDomElement;
-  NewNode: TDOMText;
   aWord: String;
   Parent: TDomNode;
 begin
@@ -421,7 +421,6 @@ end;
 
 procedure TChmContentProvider.FillTOC(Data: PtrInt);
 var
- Stream: TMemoryStream;
  fChm: TChmReader;
  ParentNode: TTreeNode;
  i: Integer;
@@ -442,7 +441,6 @@ begin
   {$ENDIF}
   if fChm <> nil then begin
     ParentNode := fContentsTree.Items.AddChildObject(nil, fChm.Title, fChm);
-    UpdateTitle;
     ParentNode.ImageIndex := 0;
     ParentNode.SelectedIndex := 0;
     {$IFDEF CHM_BINARY_INDEX_TOC}
@@ -514,7 +512,6 @@ begin
 
   fSearchTab.TabVisible := HasSearchIndex;
   {$ENDIF}
-  UpdateTitle;
 end;
 
 procedure TChmContentProvider.IpHtmlPanelDocumentOpen(Sender: TObject);
