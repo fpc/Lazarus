@@ -40,6 +40,7 @@ type
   EChartError = class(Exception);
   EChartIntervalError = class(EChartError);
   EListenerError = class(EChartError);
+  EDrawDataError = class(EChartError);
 
   TDoublePoint = record
     X, Y: Double;
@@ -152,6 +153,35 @@ type
     procedure Unsubscribe(AListener: TListener);
   end;
 
+  { TDrawDataItem }
+
+  TDrawDataItem = class
+  private
+    FChart: TObject;
+    FOwner: TObject;
+  public
+    property Chart: TObject read FChart;
+    property Owner: TObject read FOwner;
+  end;
+
+  TDrawDataItemClass = class of TDrawDataItem;
+
+  { TDrawDataRegistry }
+
+  TDrawDataRegistry = class
+  private
+    // Probably should be replaced by more efficiend data structure.
+    FItems: TFPList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  public
+    procedure Add(AItem: TDrawDataItem);
+    procedure DeleteByChart(AChart: TObject);
+    procedure DeleteByOwner(AOwner: TObject);
+    function Find(AChart, AOwner: TObject): TDrawDataItem;
+  end;
+
 const
   // 0-value, 1-percent, 2-label, 3-total, 4-xvalue
   SERIES_MARK_FORMATS: array [TSeriesMarksStyle] of String = (
@@ -235,6 +265,9 @@ operator =(const A, B: TMethod): Boolean; overload; inline;
 
 operator :=(const APoint: TPoint): TSize; inline;
 operator :=(const ASize: TSize): TPoint; inline;
+
+var
+  DrawData: TDrawDataRegistry;
 
 implementation
 
@@ -914,5 +947,72 @@ begin
     raise EListenerError.Create('Listener not found');
   Delete(i);
 end;
+
+{ TDrawDataRegistry }
+
+procedure TDrawDataRegistry.Add(AItem: TDrawDataItem);
+begin
+  if Find(AItem.Chart, AItem.Owner) <> nil then
+    raise EDrawDataError.Create('Duplicate DrawData');
+  FItems.Add(AItem);
+end;
+
+constructor TDrawDataRegistry.Create;
+begin
+  FItems := TFPList.Create;
+end;
+
+procedure TDrawDataRegistry.DeleteByChart(AChart: TObject);
+var
+  i: Integer;
+begin
+  for i := 0 to FItems.Count - 1 do
+    with TDrawDataItem(FItems[i]) do
+      if Chart = AChart then begin
+        Free;
+        FItems[i] := nil;
+      end;
+  FItems.Pack;
+end;
+
+procedure TDrawDataRegistry.DeleteByOwner(AOwner: TObject);
+var
+  i: Integer;
+begin
+  for i := 0 to FItems.Count - 1 do
+    with TDrawDataItem(FItems[i]) do
+      if Owner = AOwner then begin
+        Free;
+        FItems[i] := nil;
+      end;
+  FItems.Pack;
+end;
+
+destructor TDrawDataRegistry.Destroy;
+begin
+  if FItems.Count > 0 then
+    raise EDrawDataError.Create('DrawData leak');
+  FreeAndNil(FItems);
+  inherited Destroy;
+end;
+
+function TDrawDataRegistry.Find(AChart, AOwner: TObject): TDrawDataItem;
+var
+  i: Integer;
+begin
+  for i := 0 to FItems.Count - 1 do begin
+    Result := TDrawDataItem(FItems[i]);
+    if (Result.Chart = AChart) and (Result.Owner = AOwner) then exit;
+  end;
+  Result := nil;
+end;
+
+initialization
+
+  DrawData := TDrawDataRegistry.Create;
+
+finalization
+
+  FreeAndNil(DrawData);
 
 end.
