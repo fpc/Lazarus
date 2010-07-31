@@ -3326,7 +3326,10 @@ begin
       // close ctnGenericType
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
-    end else if AtomIsIdentifier(false) then begin
+    end else if AtomIsIdentifier(false)
+    and ((not (Scanner.CompilerMode in [cmOBJFPC,cmFPC]))
+         or (not UpAtomIs('PROPERTY')))
+    then begin
       CreateChildNode;
       CurNode.Desc:=ctnTypeDefinition;
       ReadEqualsType;
@@ -3430,7 +3433,10 @@ begin
     ReadNextAtom;  // name
     if CurPos.Flag=cafSemicolon then begin
       // ignore empty semicolons
-    end else if AtomIsIdentifier(false) then begin
+    end else if AtomIsIdentifier(false)
+    and ((not (Scanner.CompilerMode in [cmOBJFPC,cmFPC]))
+         or (not UpAtomIs('PROPERTY')))
+    then begin
       CreateChildNode;
       CurNode.Desc:=ctnConstDefinition;
       ReadNextAtom;
@@ -3493,7 +3499,10 @@ begin
   // read all string constants Name = 'abc';
   repeat
     ReadNextAtom;  // name
-    if AtomIsIdentifier(false) then begin
+    if AtomIsIdentifier(false)
+    and ((not (Scanner.CompilerMode in [cmOBJFPC,cmFPC]))
+         or (not UpAtomIs('PROPERTY')))
+    then begin
       CreateChildNode;
       CurNode.Desc:=ctnConstDefinition;
       ReadNextAtom;
