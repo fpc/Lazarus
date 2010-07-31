@@ -108,7 +108,95 @@ type
 
 implementation
 
-uses ChmSpecialParser{$IFDEF CHM_SEARCH}, chmFIftiMain{$ENDIF}, chmsitemap, LCLType;
+uses ChmSpecialParser{$IFDEF CHM_SEARCH}, chmFIftiMain{$ENDIF}, chmsitemap, LCLType, SAX_HTML, Dom, XMLWrite, DOM_HTML;
+
+type
+
+  { THTMLWordHighlighter }
+
+  THTMLWordHighlighter = class
+  private
+    Doc: THTMLDocument;
+    Words: TStrings;
+    Color: String;
+    procedure ScanSubNodes(ADomNode: TDOMNode);
+    function CheckTextNode(var ATextNode: TDomNode): Boolean;
+  public
+    constructor Create(AHTMLDoc: THTMLDocument);
+    procedure HighlightWords(AWords: TStrings; AColor: String);
+  end;
+
+{ THTMLWordHighlighter }
+
+procedure THTMLWordHighlighter.ScanSubNodes(ADomNode: TDOMNode);
+
+var
+  CurNode: TDomNode;
+begin
+  CurNode := ADomNode;
+  while CurNode <> nil do
+  begin
+    if CurNode.HasChildNodes then
+      ScanSubNodes(CurNode.FirstChild);
+
+    if CurNode.NodeType = TEXT_NODE then
+      CheckTextNode(CurNode);
+
+    CurNode := CurNode.NextSibling;
+  end;
+end;
+
+function THTMLWordHighlighter.CheckTextNode(var ATextNode: TDomNode): Boolean;
+var
+  i: Integer;
+  fPos: Integer;
+  WordStart,
+  After: TDOMText;
+  Span: TDomElement;
+  NewNode: TDOMText;
+  aWord: String;
+  Parent: TDomNode;
+begin
+   Parent := AtextNode.ParentNode;
+   for i := 0 to Words.Count-1 do
+   begin
+     aWord := Words[i];
+     fPos := Pos(aWord, ATextNode.TextContent);
+     while fpos > 0 do
+     begin
+       WordStart:= TDOMText(ATextNode).SplitText(fPos-1);
+       After := WordStart.SplitText(Length(aword));
+       Span := doc.CreateElement('span');
+       Span.SetAttribute('style', 'color:'+Color+';background-color:gray');
+       Parent.InsertBefore(Span, After);
+       Span.AppendChild(WordStart);
+
+       // or we'll keep finding our new node again and again
+       ATextNode := After;
+
+       fPos := Pos(aWord, ATextNode.TextContent);
+     end;
+
+   end;
+
+end;
+
+constructor THTMLWordHighlighter.Create(AHTMLDoc: THTMLDocument);
+begin
+  Doc := AHTMLDoc;
+end;
+
+procedure THTMLWordHighlighter.HighlightWords(AWords: TStrings; AColor: String);
+var
+  Elem: TDOMNode;
+begin
+  Words := AWords;
+  Color := AColor;
+  Elem := Doc.DocumentElement.FirstChild;
+
+  ScanSubNodes(Elem);
+
+end;
 
 function GetURIFileName(AURI: String): String;
 var
@@ -297,10 +385,37 @@ begin
 end;
 
 procedure TChmContentProvider.LoadingHTMLStream(var AStream: TStream);
+var
+  Doc: THTMLDocument;
+  NewStream: TMemoryStream;
+  Highlighter: THTMLWordHighlighter;
+  Words: TStringList;
 begin
   if not FLoadingSearchURL then
     Exit;
   // load html and add tags to highlight words then save back to stream
+  NewStream := TMemoryStream.Create;
+  ReadHTMLFile(Doc, AStream);
+
+  Words := TStringList.Create;
+  Words.Delimiter:=' ';
+  Words.DelimitedText:=fKeywordCombo.Text;
+
+  Highlighter := THTMLWordHighlighter.Create(Doc);
+  Highlighter.HighlightWords(Words, 'red');
+  HighLighter.Free;
+
+  Words.Free;
+
+  WriteXMLFile(Doc, NewStream);
+  AStream.Free;
+  AStream := NewStream;
+  NewStream.Position:=0;
+
+
+
+
+
 
 end;
 

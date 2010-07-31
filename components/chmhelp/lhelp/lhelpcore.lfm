@@ -245,7 +245,7 @@ object HelpForm: THelpForm
   end
   object PageControl: TPageControl
     Left = 0
-    Height = 503
+    Height = 480
     Top = 32
     Width = 758
     Align = alClient
