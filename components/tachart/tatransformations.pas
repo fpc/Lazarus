@@ -47,8 +47,9 @@ type
     procedure SetIndex(AValue: Integer); override;
   protected
     FDrawData: TDrawDataItem;
+    procedure ClearBounds; virtual;
     function GetDrawDataClass: TDrawDataItemClass; virtual;
-    procedure SetChart(AChart: TObject); virtual;
+    procedure SetChart(AChart: TObject);
     procedure UpdateBounds(var AMin, AMax: Double); virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -86,6 +87,7 @@ type
     procedure SetChildOrder(Child: TComponent; Order: Integer); override;
   public
     function AxisToGraph(AX: Double): Double;
+    procedure ClearBounds;
     function GraphToAxis(AX: Double): Double;
     procedure SetChart(AChart: TObject);
     procedure UpdateBounds(var AMin, AMax: Double);
@@ -128,8 +130,8 @@ type
     procedure SetMaxValue(const AValue: Double);
     procedure SetMinValue(const AValue: Double);
   protected
+    procedure ClearBounds; override;
     function GetDrawDataClass: TDrawDataItemClass; override;
-    procedure SetChart(AChart: TObject); override;
     procedure UpdateBounds(var AMin, AMax: Double); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -326,6 +328,11 @@ begin
     Transformations.Broadcaster.Broadcast(Self);
 end;
 
+procedure TAxisTransform.ClearBounds;
+begin
+  // empty
+end;
+
 constructor TAxisTransform.Create(AOwner: TComponent);
 begin
   FEnabled := true;
@@ -431,6 +438,16 @@ begin
     with TAxisTransform(List[i]) do
       if Enabled then
         Result := AxisToGraph(Result);
+end;
+
+procedure TChartAxisTransformations.ClearBounds;
+var
+  i: Integer;
+begin
+  for i := List.Count - 1 downto 0 do
+    with TAxisTransform(List[i]) do
+      if Enabled then
+        ClearBounds;
 end;
 
 constructor TChartAxisTransformations.Create(AOwner: TComponent);
@@ -610,6 +627,18 @@ begin
     Result := AX * FScale + FOffset;
 end;
 
+procedure TAutoScaleAxisTransform.ClearBounds;
+begin
+  inherited ClearBounds;
+  {$R-}{$Q-}
+  with TAutoScaleTransformData(FDrawData) do begin
+    FMin := Infinity;
+    FMax := NegInfinity;
+    FScale := 1.0;
+  end;
+  {$IFDEF OverflowChecking}{$Q+}{$ENDIF}{$IFDEF RangeChecking}{$R+}{$ENDIF}
+end;
+
 constructor TAutoScaleAxisTransform.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -635,18 +664,6 @@ end;
 function TAutoScaleAxisTransform.MinValueIsStored: boolean;
 begin
   Result := MinValue <> 0.0;
-end;
-
-procedure TAutoScaleAxisTransform.SetChart(AChart: TObject);
-begin
-  inherited SetChart(AChart);
-  {$R-}{$Q-}
-  with TAutoScaleTransformData(FDrawData) do begin
-    FMin := Infinity;
-    FMax := NegInfinity;
-    FScale := 1.0;
-  end;
-  {$IFDEF OverflowChecking}{$Q+}{$ENDIF}{$IFDEF RangeChecking}{$R+}{$ENDIF}
 end;
 
 procedure TAutoScaleAxisTransform.SetMaxValue(const AValue: Double);

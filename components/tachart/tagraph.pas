@@ -1046,6 +1046,11 @@ var
 begin
   Extent.CheckBoundsOrder;
 
+  for i := 0 to AxisList.Count - 1 do
+    with AxisList[i] do
+      if Transformations <> nil then
+        Transformations.ClearBounds;
+
   FLogicalExtent := EmptyExtent;
   for i := 0 to SeriesCount - 1 do begin
     s := Series[i];
