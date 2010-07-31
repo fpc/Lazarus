@@ -377,7 +377,7 @@ end;
 
 function TSynCustomFoldHighlighter.FoldLineLength(ALineIndex, FoldIndex: Integer): integer;
 begin
-  Result := FoldLineLength(ALineIndex, FoldIndex);
+  Result := FoldEndLine(ALineIndex, FoldIndex);
   // check if fold last line of block (not mixed "end begin")
   if (EndFoldLevel(Result) > MinimumFoldLevel(Result)) then
     dec(Result);
