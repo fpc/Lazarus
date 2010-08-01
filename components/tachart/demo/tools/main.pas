@@ -29,11 +29,13 @@ type
     ChartToolset1ZoomOut: TZoomClickTool;
     ChartToolset1ZoomIn: TZoomClickTool;
     cbFixedPoint: TCheckBox;
+    cbAnimate: TCheckBox;
     Panel1: TPanel;
     Panel2: TPanel;
     rgZoom: TRadioGroup;
     RandomChartSource1: TRandomChartSource;
     rgPan: TRadioGroup;
+    procedure cbAnimateClick(Sender: TObject);
     procedure cbFixedPointChange(Sender: TObject);
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure ChartToolset1DataPointDragTool1BeforeMouseMove(ATool: TChartTool;
@@ -53,6 +55,16 @@ uses
 {$R *.lfm}
 
 { TForm1 }
+
+procedure TForm1.cbAnimateClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  i := IfThen(cbAnimate.Checked, 3, 0);
+  ChartToolset1ZoomDragTool1.AnimationSteps := i;
+  ChartToolset1ZoomIn.AnimationSteps := i;
+  ChartToolset1ZoomOut.AnimationSteps := i;
+end;
 
 procedure TForm1.cbFixedPointChange(Sender: TObject);
 begin
@@ -82,12 +94,15 @@ begin
 end;
 
 procedure TForm1.rgPanClick(Sender: TObject);
+var
+  i: Integer;
 begin
-  ChartToolset1PanAny.Enabled := rgPan.ItemIndex = 0;
-  ChartToolset1PanHor.Enabled := rgPan.ItemIndex = 1;
-  ChartToolset1PanVert.Enabled := rgPan.ItemIndex = 1;
-  ChartToolset1PanClickTool1.Enabled := rgPan.ItemIndex in [2, 3];
-  ChartToolset1PanClickTool1.Interval := IfThen(rgPan.ItemIndex = 2, 0, 200);
+  i := rgPan.ItemIndex;
+  ChartToolset1PanAny.Enabled := i = 0;
+  ChartToolset1PanHor.Enabled := i = 1;
+  ChartToolset1PanVert.Enabled := i = 1;
+  ChartToolset1PanClickTool1.Enabled := i in [2, 3];
+  ChartToolset1PanClickTool1.Interval := IfThen(i = 2, 0, 200);
 end;
 
 procedure TForm1.rgZoomClick(Sender: TObject);
