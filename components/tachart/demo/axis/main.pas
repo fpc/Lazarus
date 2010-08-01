@@ -24,6 +24,8 @@ type
     cfsLog: TFuncSeries;
     cbLog: TCheckBox;
     ChartToolsetDateTime: TChartToolset;
+    ChartToolset1ZoomIn: TZoomClickTool;
+    ChartToolset1ZoomOut: TZoomClickTool;
     ChartTWinterBar: TBarSeries;
     clsLogPoints: TLineSeries;
     ChartT: TChart;
