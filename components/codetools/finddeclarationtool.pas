@@ -548,7 +548,8 @@ type
     );
 
 const
-  DefaultFindSmartFlags = [fsfIncludeDirective,fsfFindMainDeclaration];
+  DefaultFindSmartFlags = [fsfIncludeDirective];
+  DefaultFindSmartHintFlags = DefaultFindSmartFlags+[fsfFindMainDeclaration];
 
 type
   //----------------------------------------------------------------------------
@@ -792,7 +793,8 @@ type
     function SearchUnitInUnitLinks(const TheUnitName: string): string;
     function SearchUnitInUnitSet(const TheUnitName: string): string;
 
-    function FindSmartHint(const CursorPos: TCodeXYPosition): string;
+    function FindSmartHint(const CursorPos: TCodeXYPosition;
+                   Flags: TFindSmartFlags = DefaultFindSmartHintFlags): string;
     
     function BaseTypeOfNodeHasSubIdents(ANode: TCodeTreeNode): boolean;
     function FindBaseTypeOfNode(Params: TFindDeclarationParams;
@@ -1454,9 +1456,9 @@ begin
       // raise exception
       CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
     end;
-    {$IFDEF CTDEBUG}
+    { $IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChilds=',dbgs(CursorNode.FirstChild<>nil));
-    {$ENDIF}
+    { $ENDIF}
     if (not IsDirtySrcValid)
     and (CursorNode.Desc in [ctnUsesSection,ctnUseUnit]) then begin
       // in uses section
@@ -2110,8 +2112,8 @@ begin
   Result:=DirectoryCache.FindUnitInUnitSet(TheUnitName);
 end;
 
-function TFindDeclarationTool.FindSmartHint(const CursorPos: TCodeXYPosition
-  ): string;
+function TFindDeclarationTool.FindSmartHint(const CursorPos: TCodeXYPosition;
+  Flags: TFindSmartFlags): string;
 var
   NewTool: TFindDeclarationTool;
   NewNode, IdentNode, TypeNode, ANode: TCodeTreeNode;
@@ -2124,10 +2126,9 @@ var
   NodeStr: String;
 begin
   Result:='';
-  if not FindDeclaration(CursorPos,DefaultFindSmartFlags,
-    NewTool,NewNode,NewPos,NewTopLine) then
+  if not FindDeclaration(CursorPos,Flags,NewTool,NewNode,NewPos,NewTopLine) then
   begin
-    // identifier not found or already at declaration
+    // identifier not found
     exit;
   end;
 

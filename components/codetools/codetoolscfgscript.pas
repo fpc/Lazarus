@@ -21,7 +21,16 @@
   Author: Mattias Gaertner
 
   Abstract:
+    TCTConfigScriptEngine implements an interpreter for simple parscal like
+    programs.
 
+  Working:
+    if, then, else, begin..end, ;, (), not, and, or, xor, =, <>, >, <, <=, >=,
+    :=, defined(), variable,
+    constants: decimal, hex, octal, binary, string, #decimal
+  ToDo:
+    +=, string(), integer(), int64(), shl, shr, div, mod, *, +, -
+    +, - as unary operator
 }
 unit CodeToolsCfgScript;
 

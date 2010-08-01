@@ -393,7 +393,8 @@ type
           Identifier: PChar;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
-    function FindSmartHint(Code: TCodeBuffer; X,Y: integer): string;
+    function FindSmartHint(Code: TCodeBuffer; X,Y: integer;
+          Flags: TFindSmartFlags = DefaultFindSmartHintFlags): string;
     function FindDeclarationInInterface(Code: TCodeBuffer;
           const Identifier: string; out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
@@ -1857,8 +1858,8 @@ begin
   {$ENDIF}
 end;
 
-function TCodeToolManager.FindSmartHint(Code: TCodeBuffer; X, Y: integer
-  ): string;
+function TCodeToolManager.FindSmartHint(Code: TCodeBuffer; X, Y: integer;
+  Flags: TFindSmartFlags): string;
 var
   CursorPos: TCodeXYPosition;
 begin
@@ -1874,7 +1875,7 @@ begin
   DebugLn('TCodeToolManager.FindSmartHint B ',dbgs(FCurCodeTool.Scanner<>nil));
   {$ENDIF}
   try
-    Result:=FCurCodeTool.FindSmartHint(CursorPos);
+    Result:=FCurCodeTool.FindSmartHint(CursorPos,Flags);
   except
     on e: Exception do HandleException(e);
   end;
