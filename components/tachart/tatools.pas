@@ -723,7 +723,7 @@ end;
 
 procedure TZoomClickTool.MouseDown(APoint: TPoint);
 var
-  sz, center, ratio: TDoublePoint;
+  sz, center, ratio, zoom: TDoublePoint;
   ext: TDoubleRect;
 begin
   if ZoomFactor <= 0 then exit;
@@ -731,14 +731,12 @@ begin
   center := FChart.ImageToGraph(APoint);
   sz := ext.b - ext.a;
   if FixedPoint then
-    with center - ext.a do
-      ratio := DoublePoint(X / sz.X, Y / sz.Y)
+    ratio := (center - ext.a) / sz
   else
-  ratio := DoublePoint(0.5, 0.5);
-  ext.a.X := center.X - sz.X * ratio.X / ZoomFactor;
-  ext.a.Y := center.Y - sz.Y * ratio.Y / (ZoomFactor * ZoomRatio);
-  ext.b.X := center.X + sz.X * (1 - ratio.X) / ZoomFactor;
-  ext.b.Y := center.Y + sz.Y * (1 - ratio.Y) / (ZoomFactor * ZoomRatio);
+    ratio := DoublePoint(0.5, 0.5);
+  zoom := DoublePoint(ZoomFactor, ZoomFactor * ZoomRatio);
+  ext.a := center - sz * ratio / zoom;
+  ext.b := center + sz * (DoublePoint(1, 1) - ratio) / zoom;
   FChart.LogicalExtent := ext;
   Handled;
 end;

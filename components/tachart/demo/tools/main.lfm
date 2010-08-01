@@ -1,20 +1,20 @@
 object Form1: TForm1
   Left = 292
-  Height = 475
+  Height = 484
   Top = 152
   Width = 554
   Caption = 'Form1'
-  ClientHeight = 475
+  ClientHeight = 484
   ClientWidth = 554
   LCLVersion = '0.9.29'
   object Chart1: TChart
     Left = 0
-    Height = 371
+    Height = 368
     Top = 0
     Width = 554
     AxisList = <    
       item
-        Alignment = calLeft
+        Title.LabelFont.Orientation = 900
         Title.Font.Orientation = 900
       end    
       item
@@ -69,16 +69,16 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Height = 78
-    Top = 371
+    Height = 90
+    Top = 368
     Width = 554
     Align = alBottom
-    ClientHeight = 78
+    ClientHeight = 90
     ClientWidth = 554
     TabOrder = 1
     object rgZoom: TRadioGroup
       Left = 1
-      Height = 76
+      Height = 88
       Top = 1
       Width = 255
       Align = alLeft
@@ -92,7 +92,7 @@ object Form1: TForm1
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 58
+      ClientHeight = 70
       ClientWidth = 251
       ItemIndex = 2
       Items.Strings = (
@@ -102,10 +102,19 @@ object Form1: TForm1
       )
       OnClick = rgZoomClick
       TabOrder = 0
+      object cbFixedPoint: TCheckBox
+        Left = 6
+        Height = 15
+        Top = 49
+        Width = 239
+        Caption = 'Fixed point'
+        OnChange = cbFixedPointChange
+        TabOrder = 4
+      end
     end
     object rgPan: TRadioGroup
       Left = 256
-      Height = 76
+      Height = 88
       Top = 1
       Width = 292
       Align = alLeft
@@ -119,7 +128,7 @@ object Form1: TForm1
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 58
+      ClientHeight = 70
       ClientWidth = 288
       ItemIndex = 0
       Items.Strings = (
@@ -133,7 +142,7 @@ object Form1: TForm1
   object Panel2: TPanel
     Left = 0
     Height = 26
-    Top = 449
+    Top = 458
     Width = 554
     Align = alBottom
     Caption = 'Press Ctrl to activate reticlue, Alt-drag to move vertical lines'

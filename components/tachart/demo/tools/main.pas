@@ -5,7 +5,7 @@ unit main;
 interface
 
 uses
-  Classes, ExtCtrls, SysUtils, FileUtil, LResources, Forms, Controls,
+  Classes, ExtCtrls, StdCtrls, SysUtils, FileUtil, LResources, Forms, Controls,
   Graphics, Dialogs, Types, TAGraph, TASeries, TASources, TATools;
 
 type
@@ -27,11 +27,13 @@ type
     ChartToolset1ZoomDragTool1: TZoomDragTool;
     ChartToolset1ZoomOut: TZoomClickTool;
     ChartToolset1ZoomIn: TZoomClickTool;
+    cbFixedPoint: TCheckBox;
     Panel1: TPanel;
     Panel2: TPanel;
     rgZoom: TRadioGroup;
     RandomChartSource1: TRandomChartSource;
     rgPan: TRadioGroup;
+    procedure cbFixedPointChange(Sender: TObject);
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure ChartToolset1DataPointDragTool1BeforeMouseMove(ATool: TChartTool;
       APoint: TPoint);
@@ -47,6 +49,12 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
+
+procedure TForm1.cbFixedPointChange(Sender: TObject);
+begin
+  ChartToolset1ZoomIn.FixedPoint := cbFixedPoint.Checked;
+  ChartToolset1ZoomOut.FixedPoint := cbFixedPoint.Checked;
+end;
 
 procedure TForm1.Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
 begin
