@@ -136,6 +136,7 @@ object Form1: TForm1
         'Right-drag in any direction'
         'Right-drag left/right, Shift+right-drag up/down'
         'Right-click near the margin'
+        'Right-click near the margin and hold'
       )
       OnClick = rgPanClick
       TabOrder = 1

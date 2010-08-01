@@ -47,6 +47,9 @@ var
 
 implementation
 
+uses
+  Math;
+
 {$R *.lfm}
 
 { TForm1 }
@@ -83,7 +86,8 @@ begin
   ChartToolset1PanAny.Enabled := rgPan.ItemIndex = 0;
   ChartToolset1PanHor.Enabled := rgPan.ItemIndex = 1;
   ChartToolset1PanVert.Enabled := rgPan.ItemIndex = 1;
-  ChartToolset1PanClickTool1.Enabled := rgPan.ItemIndex = 2;
+  ChartToolset1PanClickTool1.Enabled := rgPan.ItemIndex in [2, 3];
+  ChartToolset1PanClickTool1.Interval := IfThen(rgPan.ItemIndex = 2, 0, 200);
 end;
 
 procedure TForm1.rgZoomClick(Sender: TObject);
