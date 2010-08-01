@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, Controls, Types,
-  TAGraph;
+  TAGraph, TATypes;
 
 type
 
@@ -161,9 +161,21 @@ const
   PAN_DIRECTIONS_ALL = [Low(TPanDirection) .. High(TPanDirection)];
 
 type
+
+  { TBasicPanTool }
+
+  TBasicPanTool = class(TChartTool)
+  protected
+    procedure PanBy(AOffset: TPoint);
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property ActiveCursor default crSizeAll;
+  end;
+
   { TPanDragTool }
 
-  TPanDragTool = class(TChartTool)
+  TPanDragTool = class(TBasicPanTool)
   private
     FDirections: TPanDirectionSet;
     FOrigin: TPoint;
@@ -173,9 +185,23 @@ type
     procedure MouseMove(APoint: TPoint); override;
     procedure MouseUp(APoint: TPoint); override;
   published
-    property ActiveCursor default crSizeAll;
     property Directions: TPanDirectionSet
       read FDirections write FDirections default PAN_DIRECTIONS_ALL;
+  end;
+
+  { TPanClickTool }
+
+  TPanClickTool = class(TBasicPanTool)
+  private
+    FMargins: TChartMargins;
+
+    function GetOffset(APoint: TPoint): TPoint;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure MouseDown(APoint: TPoint); override;
+  published
+    property Margins: TChartMargins read FMargins write FMargins;
   end;
 
 const
@@ -751,12 +777,31 @@ begin
   Result := FZoomRatio <> 1.0;
 end;
 
+{ TBasicPanTool }
+
+constructor TBasicPanTool.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FActiveCursor := crSizeAll;
+end;
+
+procedure TBasicPanTool.PanBy(AOffset: TPoint);
+var
+  dd: TDoublePoint;
+  ext: TDoubleRect;
+begin
+  dd := FChart.ImageToGraph(AOffset) - FChart.ImageToGraph(Point(0, 0));
+  ext := FChart.LogicalExtent;
+  ext.a += dd;
+  ext.b += dd;
+  FChart.LogicalExtent := ext;
+end;
+
 { TPanDragTool }
 
 constructor TPanDragTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FActiveCursor := crSizeAll;
   FDirections := PAN_DIRECTIONS_ALL;
 end;
 
@@ -770,8 +815,6 @@ end;
 procedure TPanDragTool.MouseMove(APoint: TPoint);
 var
   d: TPoint;
-  dd: TDoublePoint;
-  ext: TDoubleRect;
 begin
   d := FOrigin - APoint;
   FOrigin := APoint;
@@ -781,11 +824,7 @@ begin
   if not (pdUp in Directions) then d.Y := Max(d.Y, 0);
   if not (pdDown in Directions) then d.Y := Min(d.Y, 0);
 
-  dd := FChart.ImageToGraph(d) - FChart.ImageToGraph(Point(0, 0));
-  ext := FChart.LogicalExtent;
-  ext.a += dd;
-  ext.b += dd;
-  FChart.LogicalExtent := ext;
+  PanBy(d);
   Handled;
 end;
 
@@ -793,6 +832,51 @@ procedure TPanDragTool.MouseUp(APoint: TPoint);
 begin
   Unused(APoint);
   Deactivate;
+  Handled;
+end;
+
+{ TPanClickTool }
+
+constructor TPanClickTool.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FMargins := TChartMargins.Create(nil);
+end;
+
+destructor TPanClickTool.Destroy;
+begin
+  FreeAndNil(FMargins);
+  inherited Destroy;
+end;
+
+function TPanClickTool.GetOffset(APoint: TPoint): TPoint;
+var
+  r: TRect;
+begin
+  Result := Point(0, 0);
+  r := FChart.ClipRect;
+  if not PtInRect(r, APoint) then exit;
+  with Size(r) do
+    if
+      (Margins.Left + Margins.Right >= cx) or
+      (Margins.Top + Margins.Bottom >= cy)
+    then
+      exit;
+  Result.X := Min(APoint.X - r.Left - Margins.Left, 0);
+  if Result.X = 0 then
+    Result.X := Max(Margins.Right - r.Right + APoint.X, 0);
+  Result.Y := Min(APoint.Y - r.Top - Margins.Top, 0);
+  if Result.Y = 0 then
+    Result.Y := Max(Margins.Bottom - r.Bottom + APoint.Y, 0);
+end;
+
+procedure TPanClickTool.MouseDown(APoint: TPoint);
+var
+  d: TPoint;
+begin
+  d := GetOffset(APoint);
+  if d = Point(0, 0) then exit;
+  PanBy(d);
   Handled;
 end;
 
@@ -876,11 +960,12 @@ initialization
 
   ToolsClassRegistry := TStringList.Create;
   OnInitBuiltinTools := @InitBuitlinTools;
-  RegisterChartToolClass(TZoomDragTool, 'Zoom drag tool');
-  RegisterChartToolClass(TZoomClickTool, 'Zoom click tool');
-  RegisterChartToolClass(TPanDragTool, 'Panning drag tool');
-  RegisterChartToolClass(TReticuleTool, 'Reticule tool');
-  RegisterChartToolClass(TDataPointDragTool, 'Data point drag tool');
+  RegisterChartToolClass(TZoomDragTool, 'Zoom drag');
+  RegisterChartToolClass(TZoomClickTool, 'Zoom click');
+  RegisterChartToolClass(TPanDragTool, 'Panning drag');
+  RegisterChartToolClass(TPanClickTool, 'Panning click');
+  RegisterChartToolClass(TReticuleTool, 'Reticule');
+  RegisterChartToolClass(TDataPointDragTool, 'Data point drag');
 
 finalization
 
