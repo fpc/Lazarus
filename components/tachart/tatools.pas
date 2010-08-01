@@ -138,14 +138,20 @@ type
 
   TZoomClickTool = class(TChartTool)
   private
+    FFixedPoint: Boolean;
     FZoomFactor: Double;
+    FZoomRatio: Double;
     function ZoomFactorIsStored: boolean;
+    function ZoomRatioIsStored: boolean;
   public
     constructor Create(AOwner: TComponent); override;
     procedure MouseDown(APoint: TPoint); override;
   published
+    property FixedPoint: Boolean read FFixedPoint write FFixedPoint default false;
     property ZoomFactor: Double
       read FZoomFactor write FZoomFactor stored ZoomFactorIsStored;
+    property ZoomRatio: Double
+      read FZoomRatio write FZoomRatio stored ZoomRatioIsStored;
   end;
 
   TPanDirection = (pdLeft, pdUp, pdRight, pdDown);
@@ -712,21 +718,27 @@ constructor TZoomClickTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FZoomFactor := 1.0;
+  FZoomRatio := 1.0;
 end;
 
 procedure TZoomClickTool.MouseDown(APoint: TPoint);
 var
-  sz, center: TDoublePoint;
+  sz, center, ratio: TDoublePoint;
   ext: TDoubleRect;
 begin
   if ZoomFactor <= 0 then exit;
   ext := FChart.LogicalExtent;
-  sz := ext.b - ext.a;
-  sz.X /= ZoomFactor * 2;
-  sz.Y /= ZoomFactor * 2;
   center := FChart.ImageToGraph(APoint);
-  ext.a := center - sz;
-  ext.b := center + sz;
+  sz := ext.b - ext.a;
+  if FixedPoint then
+    with center - ext.a do
+      ratio := DoublePoint(X / sz.X, Y / sz.Y)
+  else
+  ratio := DoublePoint(0.5, 0.5);
+  ext.a.X := center.X - sz.X * ratio.X / ZoomFactor;
+  ext.a.Y := center.Y - sz.Y * ratio.Y / (ZoomFactor * ZoomRatio);
+  ext.b.X := center.X + sz.X * (1 - ratio.X) / ZoomFactor;
+  ext.b.Y := center.Y + sz.Y * (1 - ratio.Y) / (ZoomFactor * ZoomRatio);
   FChart.LogicalExtent := ext;
   Handled;
 end;
@@ -734,6 +746,11 @@ end;
 function TZoomClickTool.ZoomFactorIsStored: boolean;
 begin
   Result := FZoomFactor <> 1.0;
+end;
+
+function TZoomClickTool.ZoomRatioIsStored: boolean;
+begin
+  Result := FZoomRatio <> 1.0;
 end;
 
 { TPanDragTool }
