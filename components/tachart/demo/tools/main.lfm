@@ -6,6 +6,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 484
   ClientWidth = 554
+  Position = poScreenCenter
   LCLVersion = '0.9.29'
   object Chart1: TChart
     Left = 0
@@ -134,6 +135,7 @@ object Form1: TForm1
       Items.Strings = (
         'Right-drag in any direction'
         'Right-drag left/right, Shift+right-drag up/down'
+        'Right-click near the margin'
       )
       OnClick = rgPanClick
       TabOrder = 1
@@ -185,6 +187,14 @@ object Form1: TForm1
       Shift = [ssAlt, ssLeft]
       OnBeforeMouseMove = ChartToolset1DataPointDragTool1BeforeMouseMove
       AffectedSeries = '2,3'
+    end
+    object ChartToolset1PanClickTool1: TPanClickTool
+      Enabled = False
+      Shift = [ssRight]
+      Margins.Left = 30
+      Margins.Top = 30
+      Margins.Right = 30
+      Margins.Bottom = 30
     end
   end
   object RandomChartSource1: TRandomChartSource

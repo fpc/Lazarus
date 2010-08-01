@@ -21,6 +21,7 @@ type
     ChartToolset1: TChartToolset;
     ChartToolset1DataPointDragTool1: TDataPointDragTool;
     ChartToolset1PanAny: TPanDragTool;
+    ChartToolset1PanClickTool1: TPanClickTool;
     ChartToolset1PanHor: TPanDragTool;
     ChartToolset1PanVert: TPanDragTool;
     ChartToolset1ReticuleTool1: TReticuleTool;
@@ -78,13 +79,11 @@ begin
 end;
 
 procedure TForm1.rgPanClick(Sender: TObject);
-var
-  b: Boolean;
 begin
-  b := rgPan.ItemIndex = 0;
-  ChartToolset1PanAny.Enabled := b;
-  ChartToolset1PanHor.Enabled := not b;
-  ChartToolset1PanVert.Enabled := not b;
+  ChartToolset1PanAny.Enabled := rgPan.ItemIndex = 0;
+  ChartToolset1PanHor.Enabled := rgPan.ItemIndex = 1;
+  ChartToolset1PanVert.Enabled := rgPan.ItemIndex = 1;
+  ChartToolset1PanClickTool1.Enabled := rgPan.ItemIndex = 2;
 end;
 
 procedure TForm1.rgZoomClick(Sender: TObject);
