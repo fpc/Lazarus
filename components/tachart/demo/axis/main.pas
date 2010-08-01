@@ -6,7 +6,7 @@ interface
 
 uses
   ComCtrls, ExtCtrls, Forms, StdCtrls, TAGraph, TASeries, TASources,
-  TATransformations, Classes;
+  TATools, TATransformations;
 
 type
 
@@ -17,10 +17,13 @@ type
     catTAutoScaleAxisTransform1: TAutoScaleAxisTransform;
     catTAuto: TChartAxisTransformations;
     cbAuto: TCheckBox;
+    ChartDateTime: TChart;
     ChartAxisGroup: TChart;
+    ChartDateTimeLineSeries1: TLineSeries;
     ChartLog: TChart;
     cfsLog: TFuncSeries;
     cbLog: TCheckBox;
+    ChartToolsetDateTime: TChartToolset;
     ChartTWinterBar: TBarSeries;
     clsLogPoints: TLineSeries;
     ChartT: TChart;
@@ -33,13 +36,16 @@ type
     ChartCustomMarksBarSeries1: TBarSeries;
     ChartTSummer: TLineSeries;
     ChartTWinterLine: TLineSeries;
+    DateTimeIntervalChartSource1: TDateTimeIntervalChartSource;
     lcsMarks: TListChartSource;
     PageControl1: TPageControl;
     pnlLogControls: TPanel;
     pnlAutoControls: TPanel;
+    rcsDates: TRandomChartSource;
     rcsTSummer: TRandomChartSource;
     rcsTWinter: TRandomChartSource;
     lsLinear: TTabSheet;
+    tsDateTime: TTabSheet;
     tsAxisGroup: TTabSheet;
     tsLog: TTabSheet;
     tsCustomMarks: TTabSheet;
@@ -56,7 +62,7 @@ var
 implementation
 
 uses
-  Math, TAChartAxis;
+  Math, SysUtils, TAChartAxis, TAChartUtils;
 
 {$R *.lfm}
 
@@ -120,6 +126,11 @@ begin
       Group := 1;
     end;
     ls.AxisIndexY := ChartAxisGroup.AxisList.Count - 1;
+  end;
+  with rcsDates do begin
+    XMin := Now - 5 * 365;
+    XMax := Now + 5 * 365;
+    PointsNumber := 10 * 365 * 24;
   end;
 end;
 

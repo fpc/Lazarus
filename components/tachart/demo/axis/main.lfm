@@ -14,9 +14,9 @@ object Form1: TForm1
     Height = 333
     Top = 0
     Width = 533
-    ActivePage = tsAxisGroup
+    ActivePage = lsLinear
     Align = alClient
-    TabIndex = 3
+    TabIndex = 0
     TabOrder = 0
     object lsLinear: TTabSheet
       Caption = 'Linear transform'
@@ -278,6 +278,44 @@ object Form1: TForm1
         ParentColor = False
       end
     end
+    object tsDateTime: TTabSheet
+      Caption = 'Date and time'
+      ClientHeight = 307
+      ClientWidth = 525
+      object ChartDateTime: TChart
+        Left = 0
+        Height = 307
+        Top = 0
+        Width = 525
+        AxisList = <        
+          item
+            Title.LabelFont.Orientation = 900
+            Title.Font.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Marks.Format = '%2:s'
+            Marks.OverlapPolicy = opHideNeighbour
+            Marks.Source = DateTimeIntervalChartSource1
+            Marks.Style = smsLabel
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'This series contain data points for every hour in 10 years'
+          'Zoom in to see various labels on the bottom axis'
+        )
+        Title.Visible = True
+        Align = alClient
+        ParentColor = False
+        object ChartDateTimeLineSeries1: TLineSeries
+          SeriesColor = clBlack
+          Source = rcsDates
+        end
+      end
+    end
   end
   object lcsMarks: TListChartSource
     DataPoints.Strings = (
@@ -338,5 +376,22 @@ object Form1: TForm1
     object catTAutoAutoScaleAxisTransform1: TAutoScaleAxisTransform
       Enabled = False
     end
+  end
+  object rcsDates: TRandomChartSource
+    RandSeed = 1079653020
+    XMax = 0
+    XMin = 0
+    YMax = 50
+    YMin = 5
+    left = 87
+    top = 216
+  end
+  object ChartToolsetDateTime: TChartToolset
+    left = 352
+    top = 172
+  end
+  object DateTimeIntervalChartSource1: TDateTimeIntervalChartSource
+    left = 352
+    top = 232
   end
 end
