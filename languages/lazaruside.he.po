@@ -15237,6 +15237,22 @@ msgstr "מקש (או צרוף של שני מקשים)"
 msgid "Please press a key ..."
 msgstr "לחץ על מקש כלשהו ..."
 
+#: lazarusidestrconsts.synffoldcommentsinselection
+msgid "Fold comments in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfhidecommentsinselection
+msgid "Hide comments in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldallinselection
+msgid "Unfold all in Selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldcommentsinselection
+msgid "Unfold comments in Selection"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "הקובץ לקריאה בלבד"

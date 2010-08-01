@@ -15284,6 +15284,22 @@ msgstr ""
 msgid "Please press a key ..."
 msgstr "Wciśnij klawisz ..."
 
+#: lazarusidestrconsts.synffoldcommentsinselection
+msgid "Fold comments in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfhidecommentsinselection
+msgid "Hide comments in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldallinselection
+msgid "Unfold all in Selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldcommentsinselection
+msgid "Unfold comments in Selection"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "Plik jest tylko do odczytu"

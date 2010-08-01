@@ -15278,6 +15278,22 @@ msgstr "Ключ (або комбінація з 2 ключів)"
 msgid "Please press a key ..."
 msgstr "Натисніть будь-яку клавішу..."
 
+#: lazarusidestrconsts.synffoldcommentsinselection
+msgid "Fold comments in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfhidecommentsinselection
+msgid "Hide comments in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldallinselection
+msgid "Unfold all in Selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldcommentsinselection
+msgid "Unfold comments in Selection"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "Файл тільки для читання"

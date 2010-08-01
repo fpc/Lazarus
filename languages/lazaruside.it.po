@@ -15298,6 +15298,22 @@ msgstr "Tasto (o combinazione di 2 tasti)"
 msgid "Please press a key ..."
 msgstr "Premere un tasto..."
 
+#: lazarusidestrconsts.synffoldcommentsinselection
+msgid "Fold comments in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfhidecommentsinselection
+msgid "Hide comments in selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldallinselection
+msgid "Unfold all in Selection"
+msgstr ""
+
+#: lazarusidestrconsts.synfunfoldcommentsinselection
+msgid "Unfold comments in Selection"
+msgstr ""
+
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
 msgstr "Il file è a sola lettura"

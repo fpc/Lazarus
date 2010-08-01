@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-29 01:25+0300\n"
+"PO-Revision-Date: 2010-08-02 00:17+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -12443,7 +12443,7 @@ msgstr "Приоритет размера над скоростью"
 
 #: lazarusidestrconsts.lissmatches
 msgid "Matches"
-msgstr "Соответствия"
+msgstr "Совпадения"
 
 #: lazarusidestrconsts.lissorrynotimplementedyet
 msgid "Sorry, not implemented yet"
@@ -15285,6 +15285,22 @@ msgstr "Клавиша (или двухклавишная комбинация)"
 #: lazarusidestrconsts.srkmpresskey
 msgid "Please press a key ..."
 msgstr "Нажмите любую клавишу..."
+
+#: lazarusidestrconsts.synffoldcommentsinselection
+msgid "Fold comments in selection"
+msgstr "Свернуть комментарии в выделенном"
+
+#: lazarusidestrconsts.synfhidecommentsinselection
+msgid "Hide comments in selection"
+msgstr "Скрыть комментарии в выделенном"
+
+#: lazarusidestrconsts.synfunfoldallinselection
+msgid "Unfold all in Selection"
+msgstr "Развернуть всё в выделенном"
+
+#: lazarusidestrconsts.synfunfoldcommentsinselection
+msgid "Unfold comments in Selection"
+msgstr "Развернуть комментарии в выделенном"
 
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
