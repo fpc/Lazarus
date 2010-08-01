@@ -22,7 +22,7 @@ interface
 {$H+}
 
 uses
-  Classes, Controls, Types,
+  Classes, Controls, CustomTimer, Types,
   TAGraph, TATypes;
 
 type
@@ -193,14 +193,21 @@ type
 
   TPanClickTool = class(TBasicPanTool)
   private
+    FInterval: Cardinal;
     FMargins: TChartMargins;
+    FOffset: TPoint;
+    FTimer: TCustomTimer;
 
     function GetOffset(APoint: TPoint): TPoint;
+    procedure OnTimer(ASender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure MouseDown(APoint: TPoint); override;
+    procedure MouseMove(APoint: TPoint); override;
+    procedure MouseUp(APoint: TPoint); override;
   published
+    property Interval: Cardinal read FInterval write FInterval default 0;
     property Margins: TChartMargins read FMargins write FMargins;
   end;
 
@@ -386,13 +393,13 @@ begin
   Result := TChartToolClass(ToolsClassRegistry.Objects[ATag]).Create(AOwner);
 end;
 
+{ TChartTool }
+
 procedure TChartTool.Activate;
 begin
   inherited Activate;
   SetCursor;
 end;
-
-{ TChartTool }
 
 procedure TChartTool.Assign(Source: TPersistent);
 begin
@@ -841,11 +848,15 @@ constructor TPanClickTool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FMargins := TChartMargins.Create(nil);
+  FTimer := TCustomTimer.Create(nil);
+  FTimer.Enabled := false;
+  FTimer.OnTimer := @OnTimer;
 end;
 
 destructor TPanClickTool.Destroy;
 begin
   FreeAndNil(FMargins);
+  FreeAndNil(FTimer);
   inherited Destroy;
 end;
 
@@ -871,13 +882,38 @@ begin
 end;
 
 procedure TPanClickTool.MouseDown(APoint: TPoint);
-var
-  d: TPoint;
 begin
-  d := GetOffset(APoint);
-  if d = Point(0, 0) then exit;
-  PanBy(d);
+  FOffset := GetOffset(APoint);
+  if FOffset = Point(0, 0) then exit;
+  PanBy(FOffset);
+  if Interval > 0 then begin
+    Activate;
+    FTimer.Interval := Interval;
+    FTimer.Enabled := true;
+  end;
   Handled;
+end;
+
+procedure TPanClickTool.MouseMove(APoint: TPoint);
+begin
+  if not IsActive then exit;
+  FOffset := GetOffset(APoint);
+  FTimer.Enabled := FOffset <> Point(0, 0);
+end;
+
+procedure TPanClickTool.MouseUp(APoint: TPoint);
+begin
+  Unused(APoint);
+  FTimer.Enabled := false;
+  Deactivate;
+  Handled;
+end;
+
+procedure TPanClickTool.OnTimer(ASender: TObject);
+begin
+  Unused(ASender);
+  if FOffset <> Point(0, 0) then
+    PanBy(FOffset);
 end;
 
 { TDataPointDragTool }
