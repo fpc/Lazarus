@@ -20,7 +20,7 @@ unit TASubcomponentsEditor;
 interface
 
 uses
-  Classes, ComponentEditors, Forms, Menus, PropEdits, StdCtrls;
+  Classes, ComCtrls, ComponentEditors, Forms, Menus, PropEdits, StdCtrls;
 
 type
 
@@ -56,18 +56,20 @@ type
 
   TComponentListEditorForm = class(TForm)
     ChildrenListBox: TListBox;
-    MainMenu1: TMainMenu;
-    miMoveUp: TMenuItem;
-    miMoveDown: TMenuItem;
-    miAdd: TMenuItem;
-    miDelete: TMenuItem;
+    menuAddItem: TPopupMenu;
+    tbCommands: TToolBar;
+    tbAdd: TToolButton;
+    tbDelete: TToolButton;
+    tbMoveUp: TToolButton;
+    tbMoveDown: TToolButton;
     procedure ChildrenListBoxClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure miAddClick(Sender: TObject);
-    procedure miDeleteClick(Sender: TObject);
-    procedure miMoveDownClick(Sender: TObject);
-    procedure miMoveUpClick(Sender: TObject);
+    procedure tbDeleteClick(Sender: TObject);
+    procedure tbMoveDownClick(Sender: TObject);
+    procedure tbMoveUpClick(Sender: TObject);
   private
     FComponentEditor: TSubComponentListEditor;
     FDesigner: TComponentEditorDesigner;
@@ -101,7 +103,7 @@ type
 implementation
 
 uses
-  Math, SysUtils, TAChartUtils;
+  IDEImagesIntf, Math, SysUtils, TAChartUtils;
 
 {$R *.lfm}
 
@@ -173,7 +175,7 @@ begin
   mi.OnClick := @miAddClick;
   mi.Caption := ACaption;
   mi.Tag := ATag;
-  miAdd.Add(mi);
+  menuAddItem.Items.Add(mi);
 end;
 
 procedure TComponentListEditorForm.ChildrenListBoxClick(Sender: TObject);
@@ -223,6 +225,15 @@ begin
   CloseAction := caFree;
 end;
 
+procedure TComponentListEditorForm.FormCreate(Sender: TObject);
+begin
+  tbCommands.Images := IDEImages.Images_16;
+  tbAdd.ImageIndex := IDEImages.LoadImage(16, 'laz_add');
+  tbDelete.ImageIndex := IDEImages.LoadImage(16, 'laz_delete');
+  tbMoveDown.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
+  tbMoveUp.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
+end;
+
 procedure TComponentListEditorForm.FormDestroy(Sender: TObject);
 begin
   if FComponentEditor <> nil then begin
@@ -256,33 +267,6 @@ begin
     s.Free;
     raise;
   end;
-end;
-
-procedure TComponentListEditorForm.miDeleteClick(Sender: TObject);
-var
-  i: Integer;
-  s: TComponent;
-begin
-  if ChildrenListBox.SelCount = 0 then exit;
-  for i := ChildrenListBox.Items.Count - 1 downto 0 do
-    if ChildrenListBox.Selected[i] then begin
-      s := TComponent(ChildrenListBox.Items.Objects[i]);
-      ChildrenListBox.Items.Delete(i);
-      FDesigner.PropertyEditorHook.PersistentDeleting(s);
-      s.Free;
-    end;
-  FDesigner.Modified;
-  SelectionChanged;
-end;
-
-procedure TComponentListEditorForm.miMoveDownClick(Sender: TObject);
-begin
-  MoveSelection(ChildrenListBox.Count - 1, 1);
-end;
-
-procedure TComponentListEditorForm.miMoveUpClick(Sender: TObject);
-begin
-  MoveSelection(0, -1);
 end;
 
 procedure TComponentListEditorForm.MoveSelection(AStart, ADir: Integer);
@@ -397,6 +381,33 @@ begin
   finally
     GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
   end;
+end;
+
+procedure TComponentListEditorForm.tbDeleteClick(Sender: TObject);
+var
+  i: Integer;
+  s: TComponent;
+begin
+  if ChildrenListBox.SelCount = 0 then exit;
+  for i := ChildrenListBox.Items.Count - 1 downto 0 do
+    if ChildrenListBox.Selected[i] then begin
+      s := TComponent(ChildrenListBox.Items.Objects[i]);
+      ChildrenListBox.Items.Delete(i);
+      FDesigner.PropertyEditorHook.PersistentDeleting(s);
+      s.Free;
+    end;
+  FDesigner.Modified;
+  SelectionChanged;
+end;
+
+procedure TComponentListEditorForm.tbMoveDownClick(Sender: TObject);
+begin
+  MoveSelection(ChildrenListBox.Count - 1, 1);
+end;
+
+procedure TComponentListEditorForm.tbMoveUpClick(Sender: TObject);
+begin
+  MoveSelection(0, -1);
 end;
 
 end.

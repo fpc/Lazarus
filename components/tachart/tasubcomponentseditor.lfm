@@ -4,17 +4,17 @@ object ComponentListEditorForm: TComponentListEditorForm
   Top = 283
   Width = 320
   Caption = 'ComponentListEditorForm'
-  ClientHeight = 221
+  ClientHeight = 240
   ClientWidth = 320
-  Menu = MainMenu1
   OnClose = FormClose
+  OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object ChildrenListBox: TListBox
     Left = 0
-    Height = 221
-    Top = 0
+    Height = 198
+    Top = 42
     Width = 320
     Align = alClient
     ItemHeight = 0
@@ -22,23 +22,43 @@ object ComponentListEditorForm: TComponentListEditorForm
     OnClick = ChildrenListBoxClick
     TabOrder = 0
   end
-  object MainMenu1: TMainMenu
-    left = 88
-    top = 160
-    object miAdd: TMenuItem
+  object tbCommands: TToolBar
+    Left = 0
+    Height = 42
+    Top = 0
+    Width = 320
+    AutoSize = True
+    ButtonHeight = 40
+    ButtonWidth = 44
+    ShowCaptions = True
+    TabOrder = 1
+    object tbAdd: TToolButton
+      Left = 1
+      Top = 2
       Caption = 'Add'
+      DropdownMenu = menuAddItem
     end
-    object miDelete: TMenuItem
+    object tbDelete: TToolButton
+      Left = 45
+      Top = 2
       Caption = 'Delete'
-      OnClick = miDeleteClick
+      OnClick = tbDeleteClick
     end
-    object miMoveUp: TMenuItem
-      Caption = 'Move up'
-      OnClick = miMoveUpClick
+    object tbMoveUp: TToolButton
+      Left = 89
+      Top = 2
+      Caption = 'Up'
+      OnClick = tbMoveUpClick
     end
-    object miMoveDown: TMenuItem
-      Caption = 'Move down'
-      OnClick = miMoveDownClick
+    object tbMoveDown: TToolButton
+      Left = 133
+      Top = 2
+      Caption = 'Down'
+      OnClick = tbMoveDownClick
     end
+  end
+  object menuAddItem: TPopupMenu
+    left = 88
+    top = 96
   end
 end
