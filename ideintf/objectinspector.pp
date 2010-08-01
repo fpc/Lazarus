@@ -1893,9 +1893,10 @@ end;
 
 function TOICustomPropertyGrid.GetActiveRow: TOIPropertyGridRow;
 begin
-  Result:=nil;
-  if ItemIndex<0 then exit;
-  Result:=Rows[ItemIndex];
+  if InRange(ItemIndex,0,FRows.Count-1) then
+    Result:=Rows[ItemIndex]
+  else
+    Result:=nil;
 end;
 
 procedure TOICustomPropertyGrid.SetCurrentRowValue(const NewValue: string);
