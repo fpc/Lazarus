@@ -17768,7 +17768,7 @@ begin
       if FCalcRange > 32767 then
         SetPosition(GetRealScrollPosition)
       else
-          SetPosition( FPosition + (Pos - FPosition) * FIncrement );
+        SetPosition(Pos);
     SB_THUMBTRACK:
       if Tracking then
         if FCalcRange > 32767 then
