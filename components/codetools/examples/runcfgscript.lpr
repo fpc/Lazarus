@@ -52,8 +52,10 @@ begin
       raise Exception.Create('unable to read '+Filename);
     Src:=Code.Source;
   end else begin
-    Src:='a:=string(2); b:=2; if a<=b then Result:=3';
+    //Src:='a:=2; b:=3; if a+b=5 then Result:=13';
     //Src:='if (TargetOS=''win32'') then Result:=3';
+    //Src:='a:=2; b:=3; b+=a;';
+    Src:='a:=2; b:=''3''; b+=a;';
   end;
 
   Engine:=TCTConfigScriptEngine.Create;

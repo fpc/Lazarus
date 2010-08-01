@@ -28,13 +28,12 @@
     if, then, else, begin..end, ;
     ()
     boolean operators: not, and, or, xor
-    operators: =, <>, >, <, <=, >=, :=,
+    operators: =, <>, >, <, <=, >=, +
     variables
     constants: decimal, hex, octal, binary, string, #decimal
     functions: string(), integer(), int64(), defined(), undefined()
     procedures: undefine()
-  ToDo:
-    +=, +
+    assignments: :=, +=
 }
 unit CodeToolsCfgScript;
 
@@ -249,7 +248,7 @@ function GetCTCSVariableAsString(const V: PCTCfgScriptVariable): string;
 procedure MakeCTCSVariableString(const V: PCTCfgScriptVariable);
 procedure MakeCTCSVariableInt64(const V: PCTCfgScriptVariable);
 procedure MakeCTCSVariableInteger(const V: PCTCfgScriptVariable);
-procedure AddCTCSVariables(const SumVar, AddVar: PCTCfgScriptVariable);
+procedure AddCTCSVariables(const AddVar, SumVar: PCTCfgScriptVariable);
 function CTCSNumberEqualsString(const Number: int64; const P: PChar): boolean; inline;
 function CTCSVariableIsTrue(const V: PCTCfgScriptVariable): boolean; inline;
 function CTCSVariableIsFalse(const V: PCTCfgScriptVariable): boolean;
@@ -606,9 +605,64 @@ begin
   end;
 end;
 
-procedure AddCTCSVariables(const SumVar, AddVar: PCTCfgScriptVariable);
+procedure AddCTCSVariables(const AddVar, SumVar: PCTCfgScriptVariable);
+{ If one of them is none, then save in sum the other value
+  If both are numbers, add them.
+  Otherwise concatenate as strings.
+}
+var
+  OldLen: LongInt;
+  s: String;
 begin
-
+  case SumVar^.ValueType of
+  ctcsvNone:
+    SetCTCSVariableValue(AddVar,SumVar);
+  ctcsvString:
+    case AddVar^.ValueType of
+    ctcsvNone:
+      ;
+    ctcsvString:
+      if AddVar^.StrLen>0 then begin
+        // append
+        OldLen:=SumVar^.StrLen;
+        SumVar^.StrLen+=AddVar^.StrLen;
+        ReAllocMem(SumVar^.StrStart,SumVar^.StrLen+1);
+        System.Move(AddVar^.StrStart^,SumVar^.StrStart[OldLen],AddVar^.StrLen+1);
+      end;
+    ctcsvNumber:
+      begin
+        // append as string
+        s:=IntToStr(AddVar^.Number);
+        OldLen:=SumVar^.StrLen;
+        SumVar^.StrLen+=length(s);
+        ReAllocMem(SumVar^.StrStart,SumVar^.StrLen+1);
+        System.Move(s[1],SumVar^.StrStart[OldLen],length(s)+1);
+      end;
+    end;
+  ctcsvNumber:
+    case AddVar^.ValueType of
+    ctcsvNone:
+      ;
+    ctcsvString:
+      begin
+        // convert to string and append
+        s:=IntToStr(SumVar^.Number);
+        SumVar^.ValueType:=ctcsvString;
+        SumVar^.StrLen:=length(s)+AddVar^.StrLen;
+        SumVar^.StrStart:=GetMem(SumVar^.StrLen+1);
+        System.Move(s[1],SumVar^.StrStart^,length(s));
+        if AddVar^.StrStart<>nil then
+          System.Move(AddVar^.StrStart^,SumVar^.StrStart[length(s)],AddVar^.StrLen+1)
+        else
+          SumVar^.StrStart[SumVar^.StrLen]:=#0;
+      end;
+    ctcsvNumber:
+      try
+        SumVar^.Number+=AddVar^.Number;
+      except
+      end;
+    end;
+  end;
 end;
 
 function CTCSNumberEqualsString(const Number: int64; const P: PChar): boolean;
@@ -1161,6 +1215,7 @@ var
   VarStart: PChar;
   Variable: PCTCfgScriptVariable;
   StartTop: TCTCfgScriptStackItemType;
+  OperatorStart: PChar;
 begin
   VarStart:=AtomStart;
   debugln(['TCTConfigScriptEngine.RunAssignment ',GetIdentifier(VarStart)]);
@@ -1173,7 +1228,8 @@ begin
     AddError('missing :=');
     exit;
   end;
-  if (not (AtomStart^ in [':','+','-','*','/'])) or (AtomStart[1]<>'=') then begin
+  OperatorStart:=AtomStart;
+  if (not (AtomStart^ in [':','+'])) or (AtomStart[1]<>'=') then begin
     AddError('expected :=, but '+GetAtom+' found');
     exit;
   end;
@@ -1181,9 +1237,15 @@ begin
   ReadRawNextPascalAtom(Src,AtomStart);
   if RunExpression and (not Skip) then begin
     Variable:=Variables.GetVariable(VarStart,true);
-    debugln(['TCTConfigScriptEngine.RunAssignment ',GetIdentifier(VarStart),'=(Old=',dbgs(Variable),') := ',dbgs(FStack.TopItemOperand)]);
-    SetCTCSVariableValue(FStack.TopItemOperand,Variable);
-    debugln(['TCTConfigScriptEngine.RunAssignment ',GetIdentifier(VarStart),' = ',dbgs(Variable)]);
+    debugln(['TCTConfigScriptEngine.RunAssignment BEFORE ',GetIdentifier(VarStart),'=(Old=',dbgs(Variable),') ',GetAtom(OperatorStart),' ',dbgs(FStack.TopItemOperand)]);
+    case OperatorStart^ of
+    ':': // :=
+      SetCTCSVariableValue(FStack.TopItemOperand,Variable);
+    '+': // +=
+      AddCTCSVariables(FStack.TopItemOperand,Variable);
+    end;
+
+    debugln(['TCTConfigScriptEngine.RunAssignment AFTER ',GetIdentifier(VarStart),' = ',dbgs(Variable)]);
   end;
   // clean up stack
   while FStack.TopTyp>StartTop do FStack.Pop;
@@ -1860,10 +1922,13 @@ begin
       begin
         if (FStack.Top>=2) then begin
           LeftOperandItem:=@FStack.Items[FStack.Top-2];
-
-          FStack.Pop(3);
+          // add right operand to left oprerand on stack
+          AddCTCSVariables(@OperandItem^.Operand,@LeftOperandItem^.Operand);
+          // remove right operand and +
+          FStack.Pop(2);
         end else begin
           // unary operator
+          // just remove the +
           FStack.Delete(FStack.Top-1);
         end;
       end;
