@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, Controls, CustomTimer, Types,
-  TAGraph, TATypes;
+  TAChartUtils, TAGraph, TATypes;
 
 type
 
@@ -120,9 +120,35 @@ type
     property Tools: TChartTools read FTools;
   end;
 
+  { TBasicZoomTool }
+
+  TBasicZoomTool = class(TChartTool)
+  private
+    FAnimationInterval: Cardinal;
+    FAnimationSteps: Cardinal;
+    FCurrentStep: Cardinal;
+    FExtDst: TDoubleRect;
+    FExtSrc: TDoubleRect;
+    FFullZoom: Boolean;
+    FTimer: TCustomTimer;
+
+    procedure OnTimer(ASender: TObject);
+  protected
+    procedure DoZoom(const ANewExtent: TDoubleRect; AFull: Boolean);
+    function IsAnimating: Boolean; inline;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property AnimationInterval: Cardinal
+      read FAnimationInterval write FAnimationInterval default 0;
+    property AnimationSteps: Cardinal
+      read FAnimationSteps write FAnimationSteps default 0;
+  end;
+
   { TZoomDragTool }
 
-  TZoomDragTool = class(TChartTool)
+  TZoomDragTool = class(TBasicZoomTool)
   private
     FProportional: Boolean;
     FSelectionRect: TRect;
@@ -136,7 +162,7 @@ type
 
   { TZoomClickTool }
 
-  TZoomClickTool = class(TChartTool)
+  TZoomClickTool = class(TBasicZoomTool)
   private
     FFixedPoint: Boolean;
     FZoomFactor: Double;
@@ -258,7 +284,7 @@ implementation
 
 uses
   ComponentEditors, Forms, GraphMath, Math, PropEdits, SysUtils,
-  TAChartUtils, TADrawUtils, TASubcomponentsEditor;
+  TADrawUtils, TASubcomponentsEditor;
 
 {$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
 {$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}
@@ -641,6 +667,72 @@ begin
     Tools.Move(i, Order);
 end;
 
+{ TBasicZoomTool }
+
+constructor TBasicZoomTool.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FTimer := TCustomTimer.Create(nil);
+  FTimer.Enabled := false;
+  FTimer.OnTimer := @OnTimer;
+end;
+
+destructor TBasicZoomTool.Destroy;
+begin
+  FreeAndNil(FTimer);
+  inherited Destroy;
+end;
+
+procedure TBasicZoomTool.DoZoom(const ANewExtent: TDoubleRect; AFull: Boolean);
+begin
+  if (AnimationInterval = 0) or (AnimationSteps = 0) then begin
+    if IsActive then
+      Deactivate;
+    if AFull then
+      FChart.ZoomFull
+    else
+      FChart.LogicalExtent := ANewExtent;
+    exit;
+  end;
+  if not IsActive then
+    Activate;
+  FExtSrc := FChart.LogicalExtent;
+  FExtDst := ANewExtent;
+  FFullZoom := AFull;
+  FCurrentStep := 0;
+  FTimer.Interval := AnimationInterval;
+  FTimer.Enabled := true;
+end;
+
+function TBasicZoomTool.IsAnimating: Boolean;
+begin
+  Result := FTimer.Enabled;
+end;
+
+procedure TBasicZoomTool.OnTimer(ASender: TObject);
+var
+  ext: TDoubleRect;
+  t: Double;
+  r, r1: TDoublePoint;
+begin
+  Unused(ASender);
+  FCurrentStep += 1;
+  FTimer.Enabled := FCurrentStep < AnimationSteps;
+  if FFullZoom and not IsAnimating then
+    FChart.ZoomFull
+  else begin
+    t := FCurrentStep / AnimationSteps;
+    r := DoublePoint(t, t);
+    r1 := DoublePoint(1 - t, 1 - t);
+    ext.a := FExtSrc.a * r1 + FExtDst.a * r;
+    ext.b := FExtSrc.b * r1 + FExtDst.b * r;
+    NormalizeRect(ext);
+    FChart.LogicalExtent := ext;
+  end;
+  if not IsAnimating then
+    Deactivate;
+end;
+
 { TZoomDragTool }
 
 procedure TZoomDragTool.MouseDown(APoint: TPoint);
@@ -654,7 +746,7 @@ end;
 
 procedure TZoomDragTool.MouseMove(APoint: TPoint);
 begin
-  if not IsActive then exit;
+  if not IsActive or IsAnimating then exit;
   PrepareXorPen(FChart.Canvas);
   FChart.Canvas.Rectangle(FSelectionRect);
   FSelectionRect.BottomRight := APoint;
@@ -686,13 +778,12 @@ var
 
 begin
   Unused(APoint);
-  Deactivate;
 
   PrepareXorPen(FChart.Canvas);
   FChart.Canvas.Rectangle(FSelectionRect);
   with FSelectionRect do begin
     if (Left >= Right) or (Top >= Bottom) then begin
-      FChart.ZoomFull;
+      DoZoom(FChart.Extent.Extent, true);
       exit;
     end;
     ext.a := FChart.ImageToGraph(TopLeft);
@@ -700,7 +791,7 @@ begin
   end;
   NormalizeRect(ext);
   CheckProportions;
-  FChart.LogicalExtent := ext;
+  DoZoom(ext, false);
   Handled;
 end;
 
@@ -770,7 +861,7 @@ begin
   zoom := DoublePoint(ZoomFactor, ZoomFactor * ZoomRatio);
   ext.a := center - sz * ratio / zoom;
   ext.b := center + sz * (DoublePoint(1, 1) - ratio) / zoom;
-  FChart.LogicalExtent := ext;
+  DoZoom(ext, false);
   Handled;
 end;
 
