@@ -2953,6 +2953,10 @@ msgstr "Globale Schema Einstellungen verwenden"
 msgid "Use syntax highlight"
 msgstr "Nutze Syntaxhervorhebung"
 
+#: lazarusidestrconsts.dlgusetabshistory
+msgid "Use tab history when closing tabs"
+msgstr ""
+
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
 msgid "Value"

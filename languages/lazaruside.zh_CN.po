@@ -2938,6 +2938,10 @@ msgstr ""
 msgid "Use syntax highlight"
 msgstr "使用语法高亮"
 
+#: lazarusidestrconsts.dlgusetabshistory
+msgid "Use tab history when closing tabs"
+msgstr ""
+
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
 msgid "Value"

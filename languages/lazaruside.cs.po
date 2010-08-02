@@ -2918,6 +2918,10 @@ msgstr "Použít nastavení globálního schéma"
 msgid "Use syntax highlight"
 msgstr "Použít zvýraznění syntaxe"
 
+#: lazarusidestrconsts.dlgusetabshistory
+msgid "Use tab history when closing tabs"
+msgstr ""
+
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
 msgid "Value"

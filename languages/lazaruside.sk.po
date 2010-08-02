@@ -2936,6 +2936,10 @@ msgstr ""
 msgid "Use syntax highlight"
 msgstr "Použiť zvýrazňovanie syntaxe"
 
+#: lazarusidestrconsts.dlgusetabshistory
+msgid "Use tab history when closing tabs"
+msgstr ""
+
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
 msgid "Value"

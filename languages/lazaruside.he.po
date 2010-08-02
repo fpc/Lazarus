@@ -2923,6 +2923,10 @@ msgstr "השתמש בהגדרות סכמה גלובליות"
 msgid "Use syntax highlight"
 msgstr "השתמש בהדגשת תחביר"
 
+#: lazarusidestrconsts.dlgusetabshistory
+msgid "Use tab history when closing tabs"
+msgstr ""
+
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
 msgid "Value"

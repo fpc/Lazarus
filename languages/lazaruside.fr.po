@@ -2956,6 +2956,10 @@ msgstr "Utiliser les paramètres globaux du programme"
 msgid "Use syntax highlight"
 msgstr "Utiliser la coloration syntaxique"
 
+#: lazarusidestrconsts.dlgusetabshistory
+msgid "Use tab history when closing tabs"
+msgstr ""
+
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
 msgid "Value"

@@ -2934,6 +2934,10 @@ msgstr ""
 msgid "Use syntax highlight"
 msgstr "構文強調表示を使用"
 
+#: lazarusidestrconsts.dlgusetabshistory
+msgid "Use tab history when closing tabs"
+msgstr ""
+
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
 msgid "Value"

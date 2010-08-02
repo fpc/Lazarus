@@ -2944,6 +2944,10 @@ msgstr "Usar o esquema global de configurações"
 msgid "Use syntax highlight"
 msgstr "Usar realce de sintaxe"
 
+#: lazarusidestrconsts.dlgusetabshistory
+msgid "Use tab history when closing tabs"
+msgstr ""
+
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
 msgid "Value"
