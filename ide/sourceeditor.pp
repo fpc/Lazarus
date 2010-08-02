@@ -604,6 +604,7 @@ type
     FLastCodeBuffer: TCodeBuffer;
     FProcessingCommand: boolean;
     FSourceEditorList: TList; // list of TSourceEditor
+    FHistoryList: TList; // list of TSourceEditor page order for when a window closes
   private
     FUpdateTabAndPageTimer: TTimer;
     // PopupMenu
@@ -735,6 +736,12 @@ type
     procedure CloseOtherPagesClicked(Sender: TObject);
     procedure ToggleFormUnitClicked(Sender: TObject);
     procedure ToggleObjectInspClicked(Sender: TObject);
+
+    // editor page history
+    procedure HistorySetMostRecent(APage: TPage);
+    procedure HistoryAdd(APage: TPage);
+    procedure HistoryRemove(APage: TPage);
+    function  HistoryGetTopPageIndex: Integer;
 
     // incremental find
     procedure BeginIncrementalFind;
@@ -4820,6 +4827,7 @@ begin
   FProcessingCommand := false;
 
   FSourceEditorList := TList.Create;
+  FHistoryList := TList.create;
 
   // key mapping
   FKeyStrokes:=TSynEditKeyStrokes.Create(Self);
@@ -4869,6 +4877,7 @@ begin
     Editors[i].Free;
   FKeyStrokes.Free;
   FSourceEditorList.Free;
+  FHistoryList.Free;
 
   Application.RemoveOnUserInputHandler(@OnApplicationUserInput);
   FreeThenNil(FMouseHintTimer);
@@ -5449,6 +5458,7 @@ begin
     FNotebook.PageIndex := FPageIndex;
     if snNotbookPageChangedNeeded in States then
       NotebookPageChanged(nil);
+    HistorySetMostRecent(FNotebook.Page[FPageIndex]);
   end;
 end;
 
@@ -5854,6 +5864,7 @@ begin
     FNotebook.Visible := True;
     NotebookPages[Index] := S;
   end;
+  HistoryAdd(FNotebook.Page[Index]);
   UpdateTabsAndPageTitle;
 end;
 
@@ -5864,11 +5875,18 @@ begin
     // widgetset will choose one and will send a message
     // if this is the current page, switch to right APageIndex (if possible)
     //todo: determine whether we can use SetPageIndex instead
+    HistoryRemove(FNotebook.Page[APageIndex]);
     if PageIndex = APageIndex then begin
-      if APageIndex < PageCount - 1 then
-        FPageIndex := APageIndex + 1
+      if EditorOpts.UseTabHistory then
+        FPageIndex := HistoryGetTopPageIndex
       else
-        FPageIndex := APageIndex - 1;
+        FPageIndex := -1;
+      // default if not in history or not using history
+      if FPageIndex = -1 then
+        if APageIndex < PageCount - 1 then
+          FPageIndex := APageIndex + 1
+        else
+          FPageIndex := APageIndex - 1;
       FNoteBook.PageIndex := FPageIndex;
     end;
     NotebookPages.Delete(APageIndex);
@@ -6703,6 +6721,40 @@ procedure TSourceNotebook.ToggleObjectInspClicked(Sender: TObject);
 begin
   if assigned(Manager) and Assigned(Manager.OnToggleObjectInspClicked) then
     Manager.OnToggleObjectInspClicked(Sender);
+end;
+
+procedure TSourceNotebook.HistorySetMostRecent(APage: TPage);
+var
+  Index: Integer;
+begin
+   if APage = nil then
+     Exit;
+   Index := FHistoryList.IndexOf(APage);
+   if Index <> -1 then
+     FHistoryList.Delete(Index);
+   FHistoryList.Insert(0, APage);
+end;
+
+procedure TSourceNotebook.HistoryAdd(APage: TPage);
+begin
+  FHistoryList.Add(APage);
+end;
+
+procedure TSourceNotebook.HistoryRemove(APage: TPage);
+var
+  Index: Integer;
+begin
+  Index := FHistoryList.IndexOf(APage);
+   if Index <> -1 then
+     FHistoryList.Delete(Index);
+end;
+
+function TSourceNotebook.HistoryGetTopPageIndex: Integer;
+begin
+  Result := -1;
+  if FHistoryList.Count = 0 then
+    Exit;
+  Result := FNotebook.IndexOf(TCustomPage(FHistoryList.Items[0]));
 end;
 
 procedure TSourceNotebook.InsertCharacter(const C: TUTF8Char);

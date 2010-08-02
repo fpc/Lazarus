@@ -941,6 +941,7 @@ type
     fFindTextAtCursor: Boolean;
     fShowTabCloseButtons: Boolean;
     fShowTabNumbers: Boolean;
+    fUseTabHistory: Boolean;
     fTabPosition: TTabPosition;
     fSynEditOptions: TSynEditorOptions;
     fSynEditOptions2: TSynEditorOptions2;
@@ -1173,6 +1174,7 @@ type
     // Code Folding
     property ReverseFoldPopUpOrder: Boolean
         read FReverseFoldPopUpOrder write FReverseFoldPopUpOrder default True;
+    property UseTabHistory: Boolean read fUseTabHistory write fUseTabHistory;
 
   end;
 

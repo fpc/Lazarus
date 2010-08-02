@@ -1256,6 +1256,7 @@ resourcestring
   dlgHideSingleTabInNotebook = 'Hide tab in single page windows';
   dlgTabNumbersNotebook = 'Show tab numbers in notebook';
   dlgNotebookTabPos = 'Source notebook tabs position';
+  dlgUseTabsHistory = 'Use tab history when closing tabs';
   dlgNotebookTabPosTop = 'Top';
   dlgNotebookTabPosBottom = 'Bottom';
   dlgNotebookTabPosLeft = 'Left';
