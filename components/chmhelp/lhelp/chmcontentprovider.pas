@@ -577,7 +577,9 @@ begin
   try
     fContentsTree.OnSelectionChanged := nil;
     if ATreeNode.Url <> '' then begin
-      DoLoadUri(MakeURI(ATreeNode.Url, fChm));
+      Uri := MakeURI(ATreeNode.Url, fChm);
+      if ((fHtml.MasterFrame <> nil) and (MakeURI(fHtml.CurURL, fChm)  = Uri)) = False then
+        DoLoadUri(MakeURI(ATreeNode.Url, fChm));
     end;
   finally
     fContentsTree.OnSelectionChanged := @ContentsTreeSelectionChanged;
