@@ -548,6 +548,7 @@ var
 ATreeNode: TContentTreeNode;
 ARootNode: TTreeNode;
 fChm: TChmReader = nil;
+Uri: String;
 begin
   if (fContentsTree.Selected = nil) then Exit;
   if fContentsTree.Selected.Parent = nil then
@@ -556,8 +557,13 @@ begin
     fActiveChmTitle:= fChm.Title;
     UpdateTitle;
     if fChm.DefaultPage <> '' then
-      DoLoadUri(MakeURI(fChm.DefaultPage, fChm));
+    begin
+      Uri := MakeURI(fChm.DefaultPage, fChm);
+      if ((fHtml.MasterFrame <> nil) and (MakeURI(fHtml.CurURL, fChm)  = Uri)) = False then
+        DoLoadUri(Uri);
+    end;
     Exit;
+
   end;
 
   ATreeNode := TContentTreeNode(fContentsTree.Selected);
