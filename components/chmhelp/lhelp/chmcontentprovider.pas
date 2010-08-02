@@ -111,7 +111,7 @@ type
 
 implementation
 
-uses ChmSpecialParser{$IFDEF CHM_SEARCH}, chmFIftiMain{$ENDIF}, chmsitemap, LCLType, SAX_HTML, Dom, XMLWrite, DOM_HTML;
+uses ChmSpecialParser{$IFDEF CHM_SEARCH}, chmFIftiMain{$ENDIF}, chmsitemap, LCLType, SAX_HTML, Dom, XMLWrite, DOM_HTML, HTMWrite;
 
 type
 
@@ -386,27 +386,44 @@ var
   NewStream: TMemoryStream;
   Highlighter: THTMLWordHighlighter;
   Words: TStringList;
+  UseOrigStream: Boolean;
 begin
   if not FLoadingSearchURL then
     Exit;
   // load html and add tags to highlight words then save back to stream
   NewStream := TMemoryStream.Create;
-  ReadHTMLFile(Doc, AStream);
 
   Words := TStringList.Create;
   Words.Delimiter:=' ';
   Words.DelimitedText:=fKeywordCombo.Text;
 
-  Highlighter := THTMLWordHighlighter.Create(Doc);
-  Highlighter.HighlightWords(Words, 'red');
-  HighLighter.Free;
+  try
+    UseOrigStream := True;
+    ReadHTMLFile(Doc, AStream);
+    Highlighter := THTMLWordHighlighter.Create(Doc);
+    Highlighter.HighlightWords(Words, 'red');
+    WriteHTMLFile(Doc, NewStream);
+    UseOrigStream := False;
+  finally
+    try
+      Doc.Free;
+      Highlighter.Free;
+    finally
+    end;
+  end;
 
   Words.Free;
 
-  WriteXMLFile(Doc, NewStream);
-  AStream.Free;
-  AStream := NewStream;
-  NewStream.Position:=0;
+  if not UseOrigStream then
+  begin
+    AStream.Free;
+    AStream := NewStream;
+    NewStream.Position:=0;
+  end
+  else
+    NewStream.Free;
+
+  AStream.Position := 0;
 end;
 
 procedure TChmContentProvider.FillTOC(Data: PtrInt);
