@@ -53,7 +53,6 @@ type
     fChm: TObject;
     fBranchCount: DWord;
     fStop: PBoolean;
-    procedure CustomCreateContentTreeItem(Sender: TCustomTreeView; var ATreeNode: TTreenode);
     procedure AddItem(AItem: TChmSiteMapItem; AParentNode: TTreeNode);
   public
     constructor Create(ATreeView: TTreeView; ASitemap: TChmSiteMap; StopBoolean: PBoolean; AChm: TObject);
@@ -76,12 +75,6 @@ begin
 end;
 
 { TContentsFiller }
-
-procedure TContentsFiller.CustomCreateContentTreeItem(Sender: TCustomTreeView;
-  var ATreeNode: TTreenode);
-begin
-  ATreeNode := TContentTreeNode.Create(TTreeView(Sender).Items);
-end;
 
 procedure TContentsFiller.AddItem(AItem: TChmSiteMapItem; AParentNode: TTreeNode);
 var
@@ -126,15 +119,10 @@ var
  OrigEvent: TTVCustomCreateNodeEvent;
  X: Integer;
 begin
-  OrigEvent := fTreeView.OnCustomCreateItem;
-  fTreeView.OnCustomCreateItem := @CustomCreateContentTreeItem;
-  
   fTreeView.BeginUpdate;
 
   for X := 0 to fSitemap.Items.Count-1 do
     AddItem(fSitemap.Items.Item[X], ParentNode);
-
-  fTreeView.OnCustomCreateItem := OrigEvent;
 
   fTreeView.EndUpdate;
 end;

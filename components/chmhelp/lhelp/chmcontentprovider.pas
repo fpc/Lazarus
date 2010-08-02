@@ -43,7 +43,7 @@ type
         fKeywordCombo: TComboBox;
         fSearchBtn: TButton;
         fResultsLabel: TLabel;
-        fSearchResults: TListView;
+        fSearchResults: TTreeView;
     fSplitter: TSplitter;
     fHtml: TIpHtmlPanel;
     fPopUp: TPopUpMenu;
@@ -76,7 +76,7 @@ type
     procedure PopupCopyClick(Sender: TObject);
     procedure ContentsTreeSelectionChanged(Sender: TObject);
     procedure IndexViewDblClick(Sender: TObject);
-    procedure IndexViewStopCollapse(Sender: TObject; Node: TTreeNode; var AllowCollapse: Boolean);
+    procedure TreeViewStopCollapse(Sender: TObject; Node: TTreeNode; var AllowCollapse: Boolean);
     procedure ViewMenuContentsClick(Sender: TObject);
     procedure UpdateTitle;
     procedure SetTitle(const AValue: String); override;
@@ -88,6 +88,7 @@ type
     procedure SearchButtonClick(Sender: TObject);
     procedure SearchResultsDblClick(Sender: TObject);
     procedure SearchComboKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure GetTreeNodeClass(Sender: TCustomTreeView; var NodeClass: TTreeNodeClass);
     {$ENDIF}
   public
     procedure LoadPreferences(ACfg: TXMLConfig); override;
@@ -122,7 +123,7 @@ type
     Words: TStrings;
     Color: String;
     procedure ScanSubNodes(ADomNode: TDOMNode);
-    function CheckTextNode(var ATextNode: TDomNode): Boolean;
+    procedure CheckTextNode(var ATextNode: TDomNode);
   public
     constructor Create(AHTMLDoc: THTMLDocument);
     procedure HighlightWords(AWords: TStrings; AColor: String);
@@ -148,7 +149,7 @@ begin
   end;
 end;
 
-function THTMLWordHighlighter.CheckTextNode(var ATextNode: TDomNode): Boolean;
+procedure THTMLWordHighlighter.CheckTextNode(var ATextNode: TDomNode);
 var
   i: Integer;
   fPos: Integer;
@@ -168,7 +169,7 @@ begin
        WordStart:= TDOMText(ATextNode).SplitText(fPos-1);
        After := WordStart.SplitText(Length(aword));
        Span := doc.CreateElement('span');
-       Span.SetAttribute('style', 'color:'+Color+';background-color:gray');
+       Span.SetAttribute('style', 'color:'+Color+';background-color:lightgray');
        Parent.InsertBefore(Span, After);
        Span.AppendChild(WordStart);
 
@@ -177,9 +178,7 @@ begin
 
        fPos := Pos(aWord, ATextNode.TextContent);
      end;
-
    end;
-
 end;
 
 constructor THTMLWordHighlighter.Create(AHTMLDoc: THTMLDocument);
@@ -293,7 +292,6 @@ begin
 
   // Code Here has been moved to the OpenFile handler
 
-  //FileMenuCloseItem.Enabled := True;
   UpdateTitle;
 end;
 
@@ -352,9 +350,6 @@ begin
   TIpChmDataProvider(fHtml.DataProvider).CurrentPath := ExtractFileDir(URI)+'/';
 
   AddHistory(Uri);
-  {WriteLn(iphtml.Aspect);
-  iphtml.ScaleFonts := True;
-  iphtml.Aspect := 2;}
 end;
 
 
@@ -412,12 +407,6 @@ begin
   AStream.Free;
   AStream := NewStream;
   NewStream.Position:=0;
-
-
-
-
-
-
 end;
 
 procedure TChmContentProvider.FillTOC(Data: PtrInt);
@@ -544,7 +533,7 @@ ARootNode: TTreeNode;
 fChm: TChmReader = nil;
 begin
   if (fContentsTree.Selected = nil) then Exit;
-  if not(fContentsTree.Selected is TContentTreeNode) then
+  if fContentsTree.Selected.Parent = nil then
   begin
     fChm := TChmReader(fContentsTree.Selected.Data);
     fActiveChmTitle:= fChm.Title;
@@ -583,7 +572,7 @@ begin
    DoLoadUri(MakeURI(ATreeNode.Url, TChmReader(ATreeNode.Data)));
 end;
 
-procedure TChmContentProvider.IndexViewStopCollapse(Sender: TObject;
+procedure TChmContentProvider.TreeViewStopCollapse(Sender: TObject;
   Node: TTreeNode; var AllowCollapse: Boolean);
 begin
   AllowCollapse:=False;
@@ -727,8 +716,6 @@ begin
     fContentsTree.Selected := nil;
 
   fContentsTree.OnSelectionChanged := TmpHolder;
-
-
 end;
 
 {$IFDEF CHM_SEARCH}
@@ -739,6 +726,12 @@ begin
     VK_RETURN: SearchButtonClick(nil);
 
   end;
+end;
+
+procedure TChmContentProvider.GetTreeNodeClass(Sender: TCustomTreeView;
+  var NodeClass: TTreeNodeClass);
+begin
+  NodeClass := TContentTreeNode;
 end;
 
 procedure TChmContentProvider.LoadPreferences(ACfg: TXMLConfig);
@@ -822,7 +815,7 @@ var
   i: Integer;
   j: Integer;
   k: Integer;
-  ListItem: TListItem;
+  Item: TContentTreeNode;
 begin
   SearchWords := TStringList.Create;
   SearchWords.Delimiter := ' ';
@@ -830,7 +823,7 @@ begin
   if fKeywordCombo.Items.IndexOf(fKeywordCombo.Text) = -1 then
     fKeywordCombo.Items.Add(fKeywordCombo.Text);
   fSearchResults.BeginUpdate;
-  fSearchResults.Clear;
+  fSearchResults.Items.Clear;
   //WriteLn('Search words: ', SearchWords.Text);
   for i := 0 to fChms.Count-1 do
   begin
@@ -870,6 +863,7 @@ begin
 
     // clear out results that don't contain all the words we are looking for
 
+    Item := nil;
     // now lookup titles and urls to add to final search results
     for j := 0 to High(FoundTopics) do
     begin
@@ -879,12 +873,9 @@ begin
         Insert('/', DocURL, 1);
       if DocTitle = '' then
         DocTitle := 'untitled';
-      ListItem := fSearchResults.Items.Add;
-      ListItem.Caption := DocTitle;
-      ListItem.Data := fChms.Chm[i];
-      ListItem.SubItems.Add(IntToStr(FoundTopics[j].Hits));
-      ListItem.SubItems.Add(IntToStr(FoundTopics[j].TitleHits));
-      ListITem.SubItems.Add(DocURL);
+      Item := TContentTreeNode(fSearchResults.Items.Add(Item, DocTitle));
+      Item.Data:= fChms.Chm[i];
+      Item.Url:= DocURL;
     except
       //WriteLn('Exception');
       // :)
@@ -898,28 +889,20 @@ begin
   SearchWords.Free;
   if fSearchResults.Items.Count = 0 then
   begin
-    ListItem := fSearchResults.Items.Add;
-    ListItem.Caption := 'No Results';
+    fSearchResults.Items.Add(nil, 'No Results');
   end;
- { fSearchResults.SortColumn := 1;        // causes the listview data to be mixed up!
-  fSearchResults.SortType := stNone;
-  fSearchResults.SortType := stText;
-  fSearchResults.SortColumn := 2;
-  fSearchResults.SortType := stNone;
-  fSearchResults.SortType := stText;}
   fSearchResults.EndUpdate;
-  //WriteLn('THE DUDE');
 end;
 
 procedure TChmContentProvider.SearchResultsDblClick ( Sender: TObject ) ;
 var
-  Item: TListItem;
+  Item: TContentTreeNode;
 begin
-  Item := fSearchResults.Selected;
+  Item := TContentTreeNode(fSearchResults.Selected);
   if (Item = nil) or (Item.Data = nil) then
     Exit;
   FLoadingSearchURL:= True;
-  DoLoadUri(MakeURI(Item.SubItems[2], TChmReader(Item.Data)));
+  DoLoadUri(MakeURI(Item.Url, TChmReader(Item.Data)));
   FLoadingSearchURL:= False;
 end;
 {$ENDIF}
@@ -955,14 +938,16 @@ begin
     fURL := Copy(fFile, fPos+3, Length(fFIle));
     fFile := Copy(fFIle, 1, fPos-1);
   end;
-  //writeln(fURL);
+
   LoadTOC := (fChms = nil) or (fChms.IndexOf(fFile) < 0);
   DoOpenChm(fFile, False);
+
   // in case of exception fChms can be still = nil
   if fChms <> nil then
     FileIndex := fChms.IndexOf(fFile)
   else
     Exit;
+
   if fURL <> '' then
     DoLoadUri(MakeURI(fURL, fChms.Chm[FileIndex]))
   else
@@ -1040,7 +1025,6 @@ begin
     Align := alClient;
     BevelOuter := bvNone;
     Caption := '';
-
     Visible := True;
   end;
   fContentsTree := TTreeView.Create(fContentsPanel);
@@ -1053,6 +1037,7 @@ begin
     OnSelectionChanged := @ContentsTreeSelectionChanged;
     OnExpanded := @TOCExpand;
     OnCollapsed := @TOCCollapse;
+    OnCreateNodeClass:=@GetTreeNodeClass;
     Images := fImageList;
     //StateImages := fImageList;
   end;
@@ -1097,8 +1082,10 @@ begin
     Visible := True;
     ShowButtons:=False;
     ShowLines:=False;
-    OnCollapsing:=@IndexViewStopCollapse;
+    ShowRoot:=False;
+    OnCollapsing:=@TreeViewStopCollapse;
     OnDblClick := @IndexViewDblClick;
+    OnCreateNodeClass:=@GetTreeNodeClass;
   end;
 
 
@@ -1154,7 +1141,7 @@ begin
     Caption := 'Search Results:';
     AutoSize := True;
   end;
-  fSearchResults := TListView.Create(fSearchTab);
+  fSearchResults := TTreeView.Create(fSearchTab);
   with fSearchResults do begin
     Parent := fSearchTab;
     Anchors := [akLeft, akTop, akRight, akBottom];
@@ -1167,22 +1154,12 @@ begin
     AnchorSide[akBottom].Control := fSearchTab;
     AnchorSide[akBottom].Side := asrBottom;
     ReadOnly := True;
-    ShowColumnHeaders := False;
-    {$IFDEF MSWINDOWS}
-    ViewStyle := vsReport;
-    with Columns.Add do
-    begin
-      Width := 400;
-      //AutoSize := True;
-    end;
-    {$ELSE}
-    ViewStyle := vsReport;
-    Columns.Add.AutoSize := True; // title
-    Columns.Add.Visible := False; // topic hits
-    Columns.Add.Visible := False; // title hits
-    Columns.Add.Visible := False; // url
-    {$ENDIF}
+    ShowButtons := False;
+    ShowLines := False;
+    ShowRoot:=False;
     OnDblClick := @SearchResultsDblClick;
+    OnCollapsing:=@TreeViewStopCollapse;
+    OnCreateNodeClass:=@GetTreeNodeClass;
   end;
  // {$ENDIF}
 
@@ -1200,11 +1177,12 @@ begin
   fSplitter := TSplitter.Create(Parent);
   with fSplitter do begin
     //Align  := alLeft;
-    Parent := AParent;
+
     AnchorSide[akLeft].Control := fTabsControl;
     AnchorSide[akLeft].Side:= asrRight;
     AnchorSide[akRight].Control := fHtml;
     AnchorSide[akRight].Side := asrLeft;
+    Parent := AParent;
   end;
 
 
