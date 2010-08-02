@@ -1735,7 +1735,6 @@ components/printers/samples/dialogs/selectprinter.lpr svneol=native#text/pascal
 components/printers/samples/rawmode/rawmodetest.lpi svneol=native#text/plain
 components/printers/samples/rawmode/rawmodetest.lpr svneol=native#text/pascal
 components/printers/samples/rawmode/unitmain.lfm svneol=native#text/plain
-components/printers/samples/rawmode/unitmain.lrs svneol=native#text/pascal
 components/printers/samples/rawmode/unitmain.pas svneol=native#text/pascal
 components/printers/unix/cupsdyn.pp svneol=native#text/pascal
 components/printers/unix/cupslcl.pas svneol=native#text/plain

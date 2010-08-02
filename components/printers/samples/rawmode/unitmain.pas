@@ -14,15 +14,18 @@ type
 
   TForm1 = class(TForm)
     Button1: TButton;
-    Edit1: TEdit;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     ListBox1: TListBox;
+    Memo1: TMemo;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     { private declarations }
+    procedure PrintString(S:String);
+    procedure PrintStream(St:TStream);
+    procedure PrintSample;
   public
     { public declarations }
   end; 
@@ -32,6 +35,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TForm1 }
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -40,13 +45,39 @@ begin
   Listbox1.Items.Assign(Printer.Printers);
 end;
 
-procedure PrintRawString(const S:String);
+procedure TForm1.PrintString(S: String);
 var
   Written: Integer;
 begin
-  Printer.BeginDoc;
   Printer.Write(S[1], Length(S), Written);
-  Printer.EndDoc;
+end;
+
+const
+  MaxBufSize = 256;
+
+procedure TForm1.PrintStream(St: TStream);
+var
+  Written: Integer;
+  Buffer: array[0..MaxBufSize-1] of byte;
+begin
+  while St.Position<St.Size do begin
+    Written := St.Read(Buffer, MaxBufSize);
+    Printer.Write(Buffer, Written, Written);
+  end;
+end;
+
+procedure TForm1.PrintSample;
+var
+  S: TStringStream;
+begin
+  // print a plain string
+  PrintString('===   FIRST A STRING   ==='+LineEnding);
+  PrintString(Memo1.Text);
+  PrintString('=== NOW USING A STREAM ==='+LineEnding);
+  // print using a stream
+  S := TStringStream.Create(Memo1.Text);
+  PrintStream(S);
+  S.Free;
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -55,18 +86,15 @@ begin
     ShowMessage('Select a printer from the list');
     exit;
   end;
-  if Edit1.Text='' then begin
-    ShowMessage('There is nothing to print!');
-    exit;
-  end;
+
   Printer.PrinterIndex := Listbox1.ItemIndex;
+  Printer.SetPrinter(ListBox1.Items[Listbox1.ItemIndex]);
   Printer.Title := Caption;
   Printer.RawMode := True;
-  PrintRawString(Edit1.Text);
+  Printer.BeginDoc;
+  PrintSample;
+  Printer.EndDoc;
+
 end;
-
-initialization
-  {$I unitmain.lrs}
-
 end.
 

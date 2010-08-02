@@ -1,39 +1,39 @@
 object Form1: TForm1
   Left = 265
-  Height = 302
+  Height = 356
   Top = 181
-  Width = 428
+  Width = 452
   HorzScrollBar.Page = 427
   VertScrollBar.Page = 301
-  ActiveControl = ListBox1
   Caption = 'RawMode Print Test'
-  ClientHeight = 302
-  ClientWidth = 428
+  ClientHeight = 356
+  ClientWidth = 452
   Constraints.MaxHeight = 400
   Constraints.MinHeight = 240
   OnCreate = FormCreate
+  LCLVersion = '0.9.29'
   object Label1: TLabel
     Left = 15
-    Height = 13
+    Height = 14
     Top = 5
-    Width = 69
+    Width = 61
     Caption = 'Printers List:'
     ParentColor = False
   end
   object Label2: TLabel
     Left = 11
-    Height = 13
+    Height = 14
     Top = 150
-    Width = 78
-    Caption = 'String to print:'
+    Width = 65
+    Caption = 'Text to print:'
     ParentColor = False
   end
   object Label3: TLabel
-    Left = 96
-    Height = 80
-    Top = 204
-    Width = 320
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Left = 98
+    Height = 60
+    Top = 286
+    Width = 344
+    Anchors = [akLeft, akRight, akBottom]
     AutoSize = False
     Caption = 'NOTE: This sample is meant to sent an alphanumeric string to a Dot-Matrix class printer which doesn''t need special codes to start printing. Label, LaserJet or DeskJet printers might need'#10'some special prefix codes to work correctly.'
     ParentColor = False
@@ -43,27 +43,37 @@ object Form1: TForm1
     Left = 11
     Height = 115
     Top = 25
-    Width = 406
+    Width = 430
     Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 0
     TabOrder = 0
-    TopIndex = -1
   end
   object Button1: TButton
     Left = 11
     Height = 25
-    Top = 205
+    Top = 321
     Width = 75
+    Anchors = [akLeft, akBottom]
     BorderSpacing.InnerBorder = 4
     Caption = 'Print'
     OnClick = Button1Click
     TabOrder = 1
   end
-  object Edit1: TEdit
+  object Memo1: TMemo
     Left = 11
-    Height = 23
-    Top = 170
-    Width = 405
-    Anchors = [akTop, akLeft, akRight]
+    Height = 112
+    Top = 168
+    Width = 430
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Lines.Strings = (
+      ''
+      'H E L L O'
+      ''
+      'Sending raw data to attached printer'
+      'is very easy with Printer.RawMode'
+      ''
+      'And it''s portable!'
+    )
     TabOrder = 2
   end
 end
