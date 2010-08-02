@@ -130,6 +130,7 @@ begin
   chkHideSingleTab.Caption := dlgHideSingleTabInNotebook;
   chkShowNumbers.Caption := dlgTabNumbersNotebook;
   chkShowCloseBtn.Caption := dlgCloseButtonsNotebook;
+  chkUseTabHustory.Caption := dlgUseTabsHistory;
 end;
 
 procedure TEditorMultiWindowOptionsFrame.ReadSettings(
