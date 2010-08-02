@@ -1501,20 +1501,21 @@ end;
 
 procedure SetGDIColorRef(var GDIColor: TGDIColor; NewColorRef: TColorRef);
 begin
-  if GDIColor.ColorRef=NewColorRef then exit;
+  if GDIColor.ColorRef = NewColorRef then Exit;
   FreeGDIColor(@GDIColor);
-  GDIColor.ColorRef:=NewColorRef;
+  GDIColor.ColorRef := NewColorRef;
 end;
 
-Procedure AllocGDIColor(DC: hDC; GDIColor: PGDIColor);
+procedure AllocGDIColor(DC: hDC; GDIColor: PGDIColor);
 var
   RGBColor : Longint;
 begin
-  if DC=0 then ;
-  if not (cfColorAllocated in GDIColor^.ColorFlags) then begin
+  if not (cfColorAllocated in GDIColor^.ColorFlags) then
+  begin
     RGBColor := ColorToRGB(GDIColor^.ColorRef);
 
-    With GDIColor^.Color do begin
+    with GDIColor^.Color do
+    begin
       Red := gushort(GetRValue(RGBColor)) shl 8;
       Green := gushort(GetGValue(RGBColor)) shl 8;
       Blue := gushort(GetBValue(RGBColor)) shl 8;
