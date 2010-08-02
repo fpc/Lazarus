@@ -56,6 +56,7 @@ type
     fHistoryIndex: Integer;
     fStopTimer: Boolean;
     fFillingToc: Boolean;
+    fFillingIndex: Boolean;
     fActiveChmTitle: String;
     FLoadingSearchURL: Boolean; // use this to try to highlight search terms
 
@@ -70,6 +71,7 @@ type
     procedure NewChmOpened(ChmFileList: TChmFileList; Index: Integer);
     procedure LoadingHTMLStream(var AStream: TStream);
 
+    procedure QueueFillToc(AChm: TChmReader);
     procedure FillTOC(Data: PtrInt);
     procedure IpHtmlPanelDocumentOpen(Sender: TObject);
     procedure IpHtmlPanelHotChange(Sender: TObject);
@@ -324,8 +326,14 @@ var
   NewUrl: String;
   FilteredURL: String;
   fPos: Integer;
+  StartTime: TDateTime;
+  EndTime: TDateTime;
+  Time: String;
 begin
   if (fChms = nil) and (AChm = nil) then exit;
+  fStatusBar.SimpleText :='Loading: '+Uri;
+  Application.ProcessMessages;
+  StartTime := Now;
 
   fPos := Pos('#', Uri);
   if fPos > 0 then
@@ -350,6 +358,10 @@ begin
   TIpChmDataProvider(fHtml.DataProvider).CurrentPath := ExtractFileDir(URI)+'/';
 
   AddHistory(Uri);
+  EndTime := Now;
+
+  Time := INtToStr(DateTimeToTimeStamp(EndTime).Time - DateTimeToTimeStamp(StartTime).Time);
+  fStatusBar.SimpleText :='Loaded: '+Uri+' in '+ Time+'ms';
 end;
 
 
@@ -363,7 +375,6 @@ procedure TChmContentProvider.NewChmOpened(ChmFileList: TChmFileList;
   Index: Integer);
 begin
   if Index = 0 then begin
-    fContentsTree.Items.Clear;
     if fContext > -1 then begin
       DoLoadContext(fContext);
       fContext := -1;
@@ -377,7 +388,7 @@ begin
 
   // Fill the table of contents.
   if Index <> 0 then
-    Application.QueueAsyncCall(@FillToc, PtrInt(ChmFileList.Chm[Index]));
+    QueueFillToc(ChmFileList.Chm[Index]);
 end;
 
 procedure TChmContentProvider.LoadingHTMLStream(var AStream: TStream);
@@ -426,6 +437,15 @@ begin
   AStream.Position := 0;
 end;
 
+procedure TChmContentProvider.QueueFillToc(AChm: TChmReader);
+begin
+  fContentsTree.Visible := False;
+  fContentsPanel.Caption := 'Table of Contents Loading. Please Wait...';
+  fStatusBar.SimpleText:= 'Table of Contents Loading...';
+  Application.ProcessMessages;
+  Application.QueueAsyncCall(@FillToc, PtrInt(AChm));
+end;
+
 procedure TChmContentProvider.FillTOC(Data: PtrInt);
 var
  fChm: TChmReader;
@@ -434,15 +454,13 @@ var
  SM: TChmSiteMap;
  HasSearchIndex: Boolean = False;
 begin
-  if fFillingToc = True then begin
+  if fFillingToc or fFillingIndex then begin
     Application.QueueAsyncCall(@FillToc, Data);
     exit;
   end;
   fFillingToc := True;
-  fContentsTree.Visible := False;
   fContentsTree.BeginUpdate;
-  fContentsPanel.Caption := 'Table of Contents Loading. Please Wait...';
-  Application.ProcessMessages;
+
   fChm := TChmReader(Data);
   {$IFDEF CHM_DEBUG_TIME}
   writeln('Start: ',FormatDateTime('hh:nn:ss.zzz', Now));
@@ -455,6 +473,7 @@ begin
     SM := fChm.GetTOCSitemap;
     {$ELSE}
     SM := nil;
+    fFillingIndex := True;
     Stream := TMemoryStream(fchm.GetObject(fChm.TOCFile));
     if Stream <> nil then begin
       SM := TChmSiteMap.Create(stTOC);
@@ -466,7 +485,6 @@ begin
       {$IFDEF CHM_DEBUG_TIME}
       writeln('Stream read: ',FormatDateTime('hh:nn:ss.zzz', Now));
       {$ENDIF}
-
       with TContentsFiller.Create(fContentsTree, SM, @fStopTimer, fChm) do begin
         DoFill(ParentNode);
         Free;
@@ -475,7 +493,15 @@ begin
       if (fContentsTree.Selected = nil) and (fHistory.Count > 0) then
         SelectTreeItemFromURL(fHistory.Strings[fHistoryIndex]);
     end;
+    if ParentNode.Index = 0 then ParentNode.Expanded := True;
+    fFillingToc := False;
+    fContentsTree.EndUpdate;
+    fContentsTree.Visible := True;
+    fContentsPanel.Caption := '';
     fContentsTab.TabVisible := fContentsTree.Items.Count > 1;
+    Application.ProcessMessages;
+    fFillingIndex := True;
+
 
     // we fill the index here too but only for the main file
     if fChms.IndexOfObject(fChm) < 1 then
@@ -492,25 +518,28 @@ begin
       end;
       {$ENDIF}
       if SM <> nil then begin
+        fStatusBar.SimpleText:= 'Index Loading...';
+        Application.ProcessMessages;
         with TContentsFiller.Create(fIndexView, SM, @fStopTimer, fChm) do begin
           DoFill(nil);
           Free;
         end;
         SM.Free;
         fIndexView.FullExpand;
+
       end;
     end;
   end;
+  fFillingIndex := False;
   fIndexTab.TabVisible := fIndexView.Items.Count > 0;
-  if ParentNode.Index = 0 then ParentNode.Expanded := True;
 
-  fContentsTree.EndUpdate;
-  fContentsTree.Visible := True;
-  fContentsPanel.Caption := '';
+  fStatusBar.SimpleText:= '';
+
   {$IFDEF CHM_DEBUG_TIME}
   writeln('Eind: ',FormatDateTime('hh:nn:ss.zzz', Now));
   {$ENDIF}
-  fFillingToc := False;
+
+
 
   {$IFDEF CHM_SEARCH}
   i := 0;
@@ -973,17 +1002,18 @@ begin
   else
     Exit;
 
+  if LoadTOC and (FileIndex = 0) then
+  begin
+    QueueFillToc(fChms.Chm[FileIndex]);
+  end;
+
+
   if fURL <> '' then
     DoLoadUri(MakeURI(fURL, fChms.Chm[FileIndex]))
   else
     DoLoadUri(MakeURI(fChms.Chm[FileIndex].DefaultPage, fChms.Chm[FileIndex]));
   Result := True;
 
-  if LoadTOC and (FileIndex = 0) then
-  begin
-    Application.ProcessMessages;
-    Application.QueueAsyncCall(@FillToc, PtrInt(fChms.Chm[FileIndex]));
-  end;
   fChms.OnOpenNewFile := @NewChmOpened;
 end;
 

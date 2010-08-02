@@ -98,7 +98,7 @@ begin
   end;
   Inc(fBranchCount);
 
-  if fBranchCount mod 400 = 0 then
+  if fBranchCount mod 200 = 0 then
     Application.ProcessMessages;
 
   for X := 0 to AItem.Children.Count-1 do
