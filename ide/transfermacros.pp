@@ -131,8 +131,12 @@ type
 var
   CompilerParseStamp: integer; // TimeStamp of base value for macros
   CompilerParseStampIncreased: TCompilerParseStampIncreasedEvent = nil;
+  BuildMacroChangeStamp: integer; // TimeStamp of base value for build macros
 
 procedure IncreaseCompilerParseStamp;
+procedure IncreaseBuildMacroChangeStamp; { called when a package dependency change
+                                or when project build macro values change.
+                                Automatically calls IncreaseCompilerParseStamp }
 
 implementation
 
@@ -147,6 +151,15 @@ begin
     CompilerParseStamp:=MinParseStamp;
   if Assigned(CompilerParseStampIncreased) then
     CompilerParseStampIncreased();
+end;
+
+procedure IncreaseBuildMacroChangeStamp;
+begin
+  IncreaseCompilerParseStamp;
+  if BuildMacroChangeStamp<MaxParseStamp then
+    inc(BuildMacroChangeStamp)
+  else
+    BuildMacroChangeStamp:=MinParseStamp;
 end;
 
 { TTransferMacro }

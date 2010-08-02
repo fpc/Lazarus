@@ -28,6 +28,52 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
+
+  build modes:
+
+  Done:
+  - IDEIntf build macro: TLazBuildMacro: identifier, description,
+       values, valuedescriptions, defaultvalue:string,
+  - IDE build macro: TIDEBuildMacro, load/save to xmlconfig
+  - BuildMacroChangeStamp:
+     - changed on used packages
+
+  ToDo:
+  - remove TBuildModeGraph
+  - remove TBuildModeFlag
+  - remove TBuildMode
+  - remove TDefaultBuildModeGraph
+  - Every package and project can define a list of build macros.
+     - load/save to xmlconfig
+     - edit in compiler options:
+        - new
+        - rename
+        - delete
+        - add value
+        - delete value
+        - edit default value
+  - project can define values for build macros
+      - store in lpi
+      - store in lps (override lpi)
+  - every package/project needs a function to compute all values of its build macros
+      - build macros depend on used packages and project build macro values
+         - add a changestamp for this
+  - every package/project needs a function to substitute macros
+      - check local macros (pkgdir, pkgoutdir, ...)
+      - first check active project values
+      - then check default values of build macros of used packages
+      - finally use default global macros
+  - every package/project needs conditionals
+      - conditionals are executed when a path is computed
+      - before run conditionals require all build macros
+      - after run conditionals have path/option additions
+  - every path must use its base path plus the inherited plus the conditional
+      and resolve the macros
+  - move the project target file to compiler options
+  - a project can save the set of build macros and compiler options
+  - i18n for descriptions
+  - keyword help for a build macro
+
 }
 unit CompilerOptions;
 
@@ -57,14 +103,19 @@ type
     ccomlNone
     );
 
+  TIDEBuildMacros = class;
+
   { TIDEBuildMacro }
 
   TIDEBuildMacro = class(TLazBuildMacro)
+  private
+    FChangeStamp: integer;
   protected
     procedure SetIdentifier(const AValue: string); override;
     procedure SetDescription(const AValue: string); override;
     procedure SetValueDescriptions(const AValue: TStrings); override;
     procedure SetValues(const AValue: TStrings); override;
+    procedure SetDefaultValue(const AValue: string); override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -75,10 +126,10 @@ type
                               UsePathDelim: TPathDelimSwitch);
     procedure CreateDiff(OtherMode: TLazBuildMacro; Tool: TCompilerDiffTool);
     procedure Assign(Source: TIDEBuildMacro);
-    procedure SetDefaultValue(const AValue: string); override;
+    procedure IncreaseChangeStamp;
+    property ChangeStamp: integer read FChangeStamp;
   end;
 
-type
   TBuildModeGraph = class;
 
   { TIDEBuildMacros
@@ -86,8 +137,7 @@ type
       every build macro has
       - a list of possible values
       - and has a default value, or an expression to define the default
-      the expression can use other build macros }
-
+        the expression can use other build macros }
   TIDEBuildMacros = class(TLazBuildMacros)
   private
     FBuildModeGraph: TBuildModeGraph;
@@ -120,7 +170,6 @@ type
     The project can set global values, which are used to set the
     build macros (TIDEBuildMacro). Either directly or indirectly via the
     conditionals (TLazCompOptConditionals). }
-
   TBuildModeFlag = class(TPersistent)
   private
     FValue: string;
@@ -1207,21 +1256,21 @@ procedure TBaseCompilerOptions.SetTargetCPU(const AValue: string);
 begin
   if fTargetCPU=AValue then exit;
   fTargetCPU:=AValue;
-  IncreaseCompilerParseStamp;
+  IncreaseBuildMacroChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetTargetProc(const AValue: string);
 begin
   if fTargetProc=AValue then exit;
   fTargetProc:=AValue;
-  IncreaseCompilerParseStamp;
+  IncreaseBuildMacroChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetTargetOS(const AValue: string);
 begin
   if fTargetOS=AValue then exit;
   fTargetOS:=AValue;
-  IncreaseCompilerParseStamp;
+  IncreaseBuildMacroChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetTargetFilename(const AValue: String);
@@ -4043,24 +4092,29 @@ begin
   if (AValue='') or (not IsValidIdent(AValue)) then
     raise Exception.Create('TIDEBuildMacro.SetIdentifier invalid identifier: '+AValue);
   FIdentifier:=AValue;
+  IncreaseChangeStamp;
+  IncreaseBuildMacroChangeStamp;
 end;
 
 procedure TIDEBuildMacro.SetDescription(const AValue: string);
 begin
   if FDescription=AValue then exit;
   FDescription:=AValue;
+  IncreaseChangeStamp;
 end;
 
 procedure TIDEBuildMacro.SetValueDescriptions(const AValue: TStrings);
 begin
-  if FValueDescriptions=AValue then exit;
+  if (FValueDescriptions=AValue) or FValueDescriptions.Equals(AValue) then exit;
   FValueDescriptions.Assign(AValue);
+  IncreaseChangeStamp;
 end;
 
 procedure TIDEBuildMacro.SetValues(const AValue: TStrings);
 begin
-  if FValues=AValue then exit;
+  if (FValues=AValue) or AValue.Equals(AValue) then exit;
   FValues.Assign(AValue);
+  IncreaseChangeStamp;
 end;
 
 constructor TIDEBuildMacro.Create;
@@ -4079,11 +4133,11 @@ end;
 
 procedure TIDEBuildMacro.Assign(Source: TLazBuildMacro);
 begin
-  FIdentifier:=Source.Identifier;
-  FDefaultValue:=Source.DefaultValue;
-  FDescription:=Source.Description;
-  FValueDescriptions.Assign(Source.ValueDescriptions);
-  FValues.Assign(Source.Values);
+  Identifier:=Source.Identifier;
+  DefaultValue:=Source.DefaultValue;
+  Description:=Source.Description;
+  ValueDescriptions:=Source.ValueDescriptions;
+  Values:=Source.Values;
 end;
 
 procedure TIDEBuildMacro.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
@@ -4131,10 +4185,20 @@ begin
   ValueDescriptions:=Source.ValueDescriptions;
 end;
 
+procedure TIDEBuildMacro.IncreaseChangeStamp;
+begin
+  if FChangeStamp=High(FChangeStamp) then
+    FChangeStamp:=low(FChangeStamp)
+  else
+    inc(FChangeStamp);
+end;
+
 procedure TIDEBuildMacro.SetDefaultValue(const AValue: string);
 begin
   if DefaultValue=AValue then exit;
   FDefaultValue:=AValue;
+  IncreaseChangeStamp;
+  IncreaseBuildMacroChangeStamp;
 end;
 
 { TIDEBuildMacros }
@@ -5131,6 +5195,7 @@ end;
 initialization
   CompilerParseStamp:=1;
   CompilerParseStampIncreased:=nil;
+  BuildMacroChangeStamp:=1;
 
 end.
 

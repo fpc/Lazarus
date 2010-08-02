@@ -176,14 +176,14 @@ type
     procedure SetDescription(const AValue: string); virtual; abstract;
     procedure SetValueDescriptions(const AValue: TStrings); virtual; abstract;
     procedure SetValues(const AValue: TStrings); virtual; abstract;
+    procedure SetDefaultValue(const AValue: string); virtual; abstract;
   public
     procedure Assign(Source: TLazBuildMacro); virtual; abstract;
-    procedure SetDefaultValue(const AValue: string); virtual; abstract;
     property Identifier: string read FIdentifier write SetIdentifier;
     property Description: string read FDescription write SetDescription;
     property Values: TStrings read FValues write SetValues;
     property ValueDescriptions: TStrings read FValueDescriptions write SetValueDescriptions;
-    property DefaultValue: string read FDefaultValue;
+    property DefaultValue: string read FDefaultValue write SetDefaultValue;
   end;
 
   { TLazBuildMacros

@@ -4149,7 +4149,6 @@ begin
   BeginUpdate(true);
   APackage.AddRequiredDependency(Dependency);
   Dependency.LoadPackageResult:=lprUndefined;
-  IncreaseCompilerParseStamp;
   OpenDependency(Dependency,false);
   EndUpdate;
 end;
@@ -4172,6 +4171,7 @@ begin
     APackage.RemoveRequiredDependency(Dependency)
   else
     APackage.DeleteRequiredDependency(Dependency);
+  IncreaseBuildMacroChangeStamp;
   EndUpdate;
 end;
 
@@ -4182,6 +4182,7 @@ begin
   BeginUpdate(true);
   Dependency.Assign(NewDependency);
   Dependency.LoadPackageResult:=lprUndefined;
+  IncreaseBuildMacroChangeStamp;
   OpenDependency(Dependency,false);
   DoDependencyChanged(Dependency);
   EndUpdate;
@@ -4284,6 +4285,7 @@ begin
       end;
     end;
     fChanged:=true;
+    IncreaseBuildMacroChangeStamp;
     EndUpdate;
   end;
   Result:=Dependency.LoadPackageResult;
