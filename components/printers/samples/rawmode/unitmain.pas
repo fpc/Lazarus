@@ -87,7 +87,9 @@ begin
     exit;
   end;
 
-  Printer.PrinterIndex := Listbox1.ItemIndex;
+  // on a freshly retrieved printer list, either method could
+  // be used to select a printer: SetPrinter or PrinterIndex
+  //Printer.PrinterIndex := Listbox1.ItemIndex;
   Printer.SetPrinter(ListBox1.Items[Listbox1.ItemIndex]);
   Printer.Title := Caption;
   Printer.RawMode := True;
