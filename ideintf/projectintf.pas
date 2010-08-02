@@ -167,7 +167,7 @@ type
 
   TLazBuildMacro = class
   protected
-    FDefaultValue: TLazCompOptConditionals;
+    FDefaultValue: string;
     FIdentifier: string;
     FDescription: string;
     FValueDescriptions: TStrings;
@@ -183,7 +183,7 @@ type
     property Description: string read FDescription write SetDescription;
     property Values: TStrings read FValues write SetValues;
     property ValueDescriptions: TStrings read FValueDescriptions write SetValueDescriptions;
-    property DefaultValue: TLazCompOptConditionals read FDefaultValue;
+    property DefaultValue: string read FDefaultValue;
   end;
 
   { TLazBuildMacros

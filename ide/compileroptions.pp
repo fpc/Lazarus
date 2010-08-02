@@ -69,9 +69,9 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TLazBuildMacro); override;
-    procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string;
+    procedure LoadFromXMLConfig(aXMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean);
-    procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string;
+    procedure SaveToXMLConfig(aXMLConfig: TXMLConfig; const Path: string;
                               UsePathDelim: TPathDelimSwitch);
     procedure CreateDiff(OtherMode: TLazBuildMacro; Tool: TCompilerDiffTool);
     procedure Assign(Source: TIDEBuildMacro);
@@ -4067,23 +4067,20 @@ constructor TIDEBuildMacro.Create;
 begin
   FValues:=TStringList.Create;
   FValueDescriptions:=TStringList.Create;
-  FDefaultValue:=TCompOptConditionals.Create(DefaultBuildModeGraph.Evaluator);
-  FDefaultValue.Root.NodeType:=cocntAddValue;
-  FDefaultValue.Root.ValueType:=cocvtNone;
+  FDefaultValue:='';
 end;
 
 destructor TIDEBuildMacro.Destroy;
 begin
   FreeAndNil(FValues);
   FreeAndNil(FValueDescriptions);
-  FreeAndNil(FDefaultValue);
   inherited Destroy;
 end;
 
 procedure TIDEBuildMacro.Assign(Source: TLazBuildMacro);
 begin
   FIdentifier:=Source.Identifier;
-  FDefaultValue.Assign(Source.DefaultValue);
+  FDefaultValue:=Source.DefaultValue;
   FDescription:=Source.Description;
   FValueDescriptions.Assign(Source.ValueDescriptions);
   FValues.Assign(Source.Values);
@@ -4097,8 +4094,7 @@ begin
   FDescription:=AXMLConfig.GetValue(Path+'Description/Value','');
   LoadStringList(AXMLConfig,FValues,Path+'Values/');
   LoadStringList(AXMLConfig,FValueDescriptions,Path+'ValueDescriptions/');
-  TCompOptConditionals(FDefaultValue).LoadFromXMLConfig(AXMLConfig,Path+'DefaultValue',
-                                                        DoSwitchPathDelims);
+  FDefaultValue:=AXMLConfig.GetValue(Path+'Default/Value','');
 
   while ValueDescriptions.Count>Values.Count do
     ValueDescriptions.Delete(ValueDescriptions.Count-1);
@@ -4113,8 +4109,7 @@ begin
   AXMLConfig.SetDeleteValue(Path+'Description/Value',FDescription,'');
   SaveStringList(AXMLConfig,FValues,Path+'Values/');
   SaveStringList(AXMLConfig,FValueDescriptions,Path+'ValueDescriptions/');
-  TCompOptConditionals(FDefaultValue).SaveToXMLConfig(AXMLConfig,Path+'DefaultValue',
-                                                      UsePathDelim);
+  AXMLConfig.SetDeleteValue(Path+'DefaultValue/Value',FDefaultValue,'');
 end;
 
 procedure TIDEBuildMacro.CreateDiff(OtherMode: TLazBuildMacro;
@@ -4124,28 +4119,22 @@ begin
   Tool.AddDiff('Description',Description,OtherMode.Description);
   Tool.AddStringsDiff('Values',Values,OtherMode.Values);
   Tool.AddStringsDiff('ValueDescriptions',ValueDescriptions,OtherMode.ValueDescriptions);
-  TCompOptConditionals(DefaultValue).CreateDiff(OtherMode.DefaultValue,Tool);
+  Tool.AddDiff('DefaultValue',DefaultValue,OtherMode.DefaultValue);
 end;
 
 procedure TIDEBuildMacro.Assign(Source: TIDEBuildMacro);
 begin
   Identifier:=Source.Identifier;
   Values:=Source.Values;
-  DefaultValue.Assign(Source.DefaultValue);
+  FDefaultValue:=Source.DefaultValue;
   Description:=Source.Description;
   ValueDescriptions:=Source.ValueDescriptions;
 end;
 
 procedure TIDEBuildMacro.SetDefaultValue(const AValue: string);
-var
-  Node: TCompOptCondNode;
 begin
-  DefaultValue.Root.ClearNodes;
-  Node:=TCompOptCondNode.Create(DefaultValue);
-  Node.NodeType:=cocntSetValue;
-  Node.ValueType:=cocvtResult;
-  Node.Value:=AValue;
-  DefaultValue.Root.AddLast(Node);
+  if DefaultValue=AValue then exit;
+  FDefaultValue:=AValue;
 end;
 
 { TIDEBuildMacros }

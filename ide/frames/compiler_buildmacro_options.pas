@@ -34,9 +34,7 @@ type
     cbmntNone,
     cbmntBuildMacro,
     cbmntValues,
-    cbmntValue,
-    cbmntDefaultValue,
-    cbmntDefaultValueEditor
+    cbmntValue
     );
 
   { TCompOptBuildMacrosFrame }
@@ -75,7 +73,6 @@ type
     function GetBuildMacroTVNode(aBuildMacro: TLazBuildMacro): TTreeNode;
     function GetValuesTVNode(aBuildMacro: TLazBuildMacro): TTreeNode;
     procedure FreeEditors;
-    function GetEditor(aBuildMacro: TLazBuildMacro): TCompOptsExprEditor;
     function GetMacroNamePrefix: string;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -93,15 +90,9 @@ procedure TCompOptBuildMacrosFrame.NewBuildMacroClick(Sender: TObject);
 var
   NewIdentifier: String;
   NewBuildMacro: TLazBuildMacro;
-  SetResultNode: TCompOptCondNode;
 begin
   NewIdentifier:=DefaultBuildModeGraph.GetUniqueVarName(GetMacroNamePrefix,BuildMacros);
   NewBuildMacro:=BuildMacros.Add(NewIdentifier);
-  // add a node
-  SetResultNode:=TCompOptCondNode.Create(NewBuildMacro.DefaultValue);
-  SetResultNode.NodeType:=cocntSetValue;
-  SetResultNode.ValueType:=cocvtResult;
-  NewBuildMacro.DefaultValue.Root.AddLast(SetResultNode);
   // add to TreeView
   BuildMacrosTreeView.BeginUpdate;
   TreeViewAddBuildMacro(NewBuildMacro);
@@ -160,7 +151,6 @@ var
   SelTVNode: TTreeNode;
   NodeType: TCBMNodeType;
   i: LongInt;
-  Editor: TCompOptsExprEditor;
 begin
   SelTVNode:=GetSelectedNode(TLazBuildMacro(aBuildMacro),NodeType);
   if aBuildMacro=nil then exit;
@@ -169,9 +159,6 @@ begin
     mtConfirmation,[mbYes,mbCancel],0)<>mrYes
   then exit;
   i:=BuildMacros.IndexOfIdentifier(aBuildMacro.Identifier);
-  Editor:=GetEditor(aBuildMacro);
-  FEditors.Remove(Editor);
-  Editor.Free;
   BuildMacros.Delete(i);
   BuildMacrosTreeView.BeginUpdate;
   SelTVNode.Delete;
@@ -182,7 +169,6 @@ procedure TCompOptBuildMacrosFrame.BuildMacrosTVPopupMenuPopup(Sender: TObject);
 var
   aBuildMacro: TLazBuildMacro;
   NodeType: TCBMNodeType;
-  Editor: TCompOptsExprEditor;
 
   function Add(const aCaption: string; const OnClickEvent: TNotifyEvent): TMenuItem;
   begin
@@ -213,10 +199,6 @@ begin
   Add('New build macro',@NewBuildMacroClick);
   if NodeType in [cbmntBuildMacro] then
     Add('Delete build macro ...',@DeleteBuildMacroClick);
-  if NodeType in [cbmntDefaultValue,cbmntDefaultValueEditor] then begin
-    Editor:=GetEditor(aBuildMacro);
-    Editor.FillPopupMenu(BuildMacrosTVPopupMenu);
-  end;
 end;
 
 procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewEditing(Sender: TObject;
@@ -322,8 +304,6 @@ var
   ValuesTVNode: TTreeNode;
   Values: TStrings;
   i: Integer;
-  DefValueTVNode: TTreeNode;
-  Editor: TCompOptsExprEditor;
 begin
   // create node for the build macro
   TVNode:=BuildMacrosTreeView.Items.AddObject(nil,aBuildMacro.Identifier,aBuildMacro);
@@ -339,18 +319,6 @@ begin
     Values:=aBuildMacro.Values;
     for i:=0 to Values.Count-1 do
       TreeViewAddValue(ValuesTVNode,Values[i]);
-    // a node for the default value
-    DefValueTVNode:=BuildMacrosTreeView.Items.AddChild(TVNode,
-      lisDefaultValue);
-    DefValueTVNode.ImageIndex:=fDefValueImgID;
-    DefValueTVNode.SelectedIndex:=DefValueTVNode.ImageIndex;
-    // add default value nodes
-    Editor:=TCompOptsExprEditor.Create(Self);
-    Editor.DefaultNodeType:=cocntSetValue;
-    Editor.DefaultValueType:=cocvtResult;
-    FEditors.Add(Editor);
-    Editor.Setup(BuildMacrosTreeView,DefValueTVNode,
-                 aBuildMacro.DefaultValue as TCompOptConditionals,[cocvtResult]);
   end;
   //DebugLn(['TCompOptBuildMacrosFrame.TreeViewAddBuildMacro ',TVNode.Text]);
   TVNode.Expand(true);
@@ -383,13 +351,9 @@ function TCompOptBuildMacrosFrame.GetNodeInfo(Node: TTreeNode; out
       case ParentType of
       cbmntBuildMacro:
         if CurNode.Text=lisValues then
-          Result:=cbmntValues
-        else if CurNode.Text=lisDefaultValue then
-          Result:=cbmntDefaultValue;
+          Result:=cbmntValues;
       cbmntValues:
         Result:=cbmntValue;
-      cbmntDefaultValue:
-        Result:=cbmntDefaultValueEditor;
       end;
     end;
   end;
@@ -433,18 +397,6 @@ begin
   for i:=0 to FEditors.Count-1 do
     TObject(FEditors[i]).Free;
   FEditors.Clear;
-end;
-
-function TCompOptBuildMacrosFrame.GetEditor(aBuildMacro: TLazBuildMacro
-  ): TCompOptsExprEditor;
-var
-  i: Integer;
-begin
-  for i:=0 to FEditors.Count-1 do begin
-    Result:=TCompOptsExprEditor(FEditors[i]);
-    if Result.Conditionals=aBuildMacro.DefaultValue then exit;
-  end;
-  Result:=nil;
 end;
 
 function TCompOptBuildMacrosFrame.GetMacroNamePrefix: string;
