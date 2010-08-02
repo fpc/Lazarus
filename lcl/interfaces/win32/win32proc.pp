@@ -65,6 +65,7 @@ Type
     DispInfoTextA: array [0..LV_DISP_INFO_COUNT-1] of AnsiString; // buffer for ListView LVN_GETDISPINFO notification
     DispInfoTextW: array [0..LV_DISP_INFO_COUNT-1] of WideString; // it's recommended to keep buffer unchanged
     DispInfoIndex: Integer;                    // between 2 calls of LVN_GETDISPINFO  
+    IMEComposed: Boolean;
     case integer of
       0: (spinValue: Double);
       1: (

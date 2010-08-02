@@ -1024,6 +1024,12 @@ begin
       end;
     end;
     lWinControl := WindowInfo^.AWinControl;
+    {for ComboBox IME sends WM_IME_NOTIFY with WParam=WM_IME_ENDCOMPOSITION}
+    if (Msg = WM_IME_NOTIFY) and (WPARAM=WM_IME_ENDCOMPOSITION) then
+    begin
+      if Assigned(WindowInfo) then WindowInfo^.IMEComposed:=True;
+    end;    
+    
     // filter messages we want to pass on to LCL
     if (Msg <> WM_KILLFOCUS) and (Msg <> WM_SETFOCUS) and (Msg <> WM_NCDESTROY)
       and ((Msg < WM_KEYFIRST) or (Msg > WM_KEYLAST))
@@ -1094,6 +1100,11 @@ begin
           LMessage.LParam := LParam;
         end;
       end;
+    end;
+    WM_IME_ENDCOMPOSITION:
+    begin
+      {IME Windows the composition has finished}
+      if Assigned(WindowInfo) then WindowInfo^.IMEComposed:=True;    
     end;
     BM_SETCHECK:
     begin
@@ -1562,6 +1573,7 @@ begin
         Assert(False,Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
         Assert(False,'  lWinControl= '+TComponent(lWinControl).Name+':'+lWinControl.ClassName);
       end;
+      if Assigned(WindowInfo) then WindowInfo^.IMEComposed:=False;
       WinProcess := false;
     end;
     WM_KEYUP:
@@ -1577,6 +1589,7 @@ begin
         Assert(False,Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       end;
       WinProcess := false;
+      if Assigned(WindowInfo) and WindowInfo^.IMEComposed then LMKey.Msg:=LM_NULL;
     end;
     WM_KILLFOCUS:
     begin
