@@ -686,7 +686,6 @@ type
     FStateFileDate: longint;
     FStateFlags: TLazProjectStateFlags;
     FStorePathDelim: TPathDelimSwitch;
-    FTargetFileExt: String;
     FUnitList: TFPList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
     FUseAppBundle: Boolean;
@@ -973,7 +972,6 @@ type
     property StateFlags: TLazProjectStateFlags read FStateFlags write FStateFlags;
     property SessionStorePathDelim: TPathDelimSwitch read FSessionStorePathDelim write FSessionStorePathDelim;
     property StorePathDelim: TPathDelimSwitch read FStorePathDelim write FStorePathDelim;
-    property TargetFileExt: String read FTargetFileExt write FTargetFileExt;
     property TargetFilename: string
                                  read GetTargetFilename write SetTargetFilename;
     property Units[Index: integer]: TUnitInfo read GetUnits;
@@ -2448,7 +2446,6 @@ begin
   UpdateProjectDirectory;
   FPublishOptions:=TPublishProjectOptions.Create(Self);
   FRunParameterOptions:=TRunParamsOptions.Create;
-  FTargetFileExt := GetExecutableExt;
   Title := '';
   FUnitList := TFPList.Create;  // list of TUnitInfo
   FMacros:=TProjectBuildMacros.Create;
@@ -2642,7 +2639,6 @@ begin
       xmlconfig.SetDeleteValue(Path+'General/MainUnit/Value', MainUnitID,0);
       xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
                                AutoCreateForms,true);
-      xmlconfig.SetValue(Path+'General/TargetFileExt/Value',TargetFileExt);
       xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
       xmlconfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
 
@@ -3093,8 +3089,6 @@ begin
       NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', NewMainUnitID);
       AutoCreateForms := xmlconfig.GetValue(
          Path+'General/AutoCreateForms/Value', true);
-      TargetFileExt := xmlconfig.GetValue(
-         Path+'General/TargetFileExt/Value', GetExecutableExt);
       Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
       UseAppBundle := xmlconfig.GetValue(Path+'General/UseAppBundle/Value', True);
 
@@ -3418,7 +3412,6 @@ begin
   ClearSourceDirectories;
   UpdateProjectDirectory;
   FPublishOptions.Clear;
-  FTargetFileExt := GetExecutableExt;
   Title := '';
   FMacros.Clear;
 
