@@ -42,20 +42,27 @@
   - remove TBuildMode
   - remove TDefaultBuildModeGraph
   - project can define values for build macros
-     - load/save to xmlconfig
+    - load/save to xmlconfig
+  - project can define values for build macros
+    - edit them in the compiler options
+      - edit name
+      - edit value
+  - Every package and project can define a list of build macros.
+    - load/save to xmlconfig
+  - Every package and project can define a list of build macros.
+    - edit in compiler options:
+      - new
+      - rename
+      - delete
+      - add value
+      - delete value
+      - edit default value
 
   ToDo:
-  - Every package and project can define a list of build macros.
-     - load/save to xmlconfig
-     - edit in compiler options:
-        - new
-        - rename
-        - delete
-        - add value
-        - delete value
-        - edit default value
   - project can define values for build macros
-      - edit them in the compiler options
+    - edit them in the compiler options
+      - add value
+      - delete value
   - every package/project needs a function to compute all values of its build macros
       - build macros depend on used packages and project build macro values
          - add a changestamp for this
@@ -126,6 +133,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TLazBuildMacro); override;
+    function Equals(Other: TLazBuildMacro): boolean; reintroduce;
     procedure LoadFromXMLConfig(aXMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean);
     procedure SaveToXMLConfig(aXMLConfig: TXMLConfig; const Path: string;
@@ -3668,15 +3676,26 @@ begin
   Values:=Source.Values;
 end;
 
+function TIDEBuildMacro.Equals(Other: TLazBuildMacro): boolean;
+begin
+  Result:=false;
+  if Identifier<>Other.Identifier then exit;
+  if Description<>Other.Description then exit;
+  if not Values.Equals(Other.Values) then exit;
+  if not ValueDescriptions.Equals(Other.ValueDescriptions) then exit;
+  if DefaultValue<>Other.DefaultValue then exit;
+  Result:=true;
+end;
+
 procedure TIDEBuildMacro.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
   const Path: string; DoSwitchPathDelims: boolean);
 begin
   FIdentifier:=AXMLConfig.GetValue(Path+'Identifier/Value','');
   if not IsValidIdent(FIdentifier) then FIdentifier:='';
-  FDescription:=AXMLConfig.GetValue(Path+'Description/Value','');
+  FDescription:=ConvertLineEndings(AXMLConfig.GetValue(Path+'Description/Value',''));
   LoadStringList(AXMLConfig,FValues,Path+'Values/');
   LoadStringList(AXMLConfig,FValueDescriptions,Path+'ValueDescriptions/');
-  FDefaultValue:=AXMLConfig.GetValue(Path+'Default/Value','');
+  FDefaultValue:=ConvertLineEndings(AXMLConfig.GetValue(Path+'Default/Value',''));
 
   while ValueDescriptions.Count>Values.Count do
     ValueDescriptions.Delete(ValueDescriptions.Count-1);
@@ -3688,10 +3707,12 @@ procedure TIDEBuildMacro.SaveToXMLConfig(AXMLConfig: TXMLConfig;
   const Path: string; UsePathDelim: TPathDelimSwitch);
 begin
   AXMLConfig.SetDeleteValue(Path+'Identifier/Value',FIdentifier,'');
-  AXMLConfig.SetDeleteValue(Path+'Description/Value',FDescription,'');
+  AXMLConfig.SetDeleteValue(Path+'Description/Value',
+                                    LineBreaksToDelimiter(FDescription,#10),'');
   SaveStringList(AXMLConfig,FValues,Path+'Values/');
   SaveStringList(AXMLConfig,FValueDescriptions,Path+'ValueDescriptions/');
-  AXMLConfig.SetDeleteValue(Path+'DefaultValue/Value',FDefaultValue,'');
+  AXMLConfig.SetDeleteValue(Path+'DefaultValue/Value',
+                                   LineBreaksToDelimiter(FDefaultValue,#10),'');
 end;
 
 procedure TIDEBuildMacro.CreateDiff(OtherMode: TLazBuildMacro;
@@ -3722,9 +3743,12 @@ begin
 end;
 
 procedure TIDEBuildMacro.SetDefaultValue(const AValue: string);
+var
+  NewValue: String;
 begin
-  if DefaultValue=AValue then exit;
-  FDefaultValue:=AValue;
+  NewValue:=ConvertLineEndings(AValue);
+  if DefaultValue=NewValue then exit;
+  FDefaultValue:=NewValue;
   IncreaseChangeStamp;
   IncreaseBuildMacroChangeStamp;
 end;
@@ -3814,7 +3838,9 @@ begin
     NewItem:=TIDEBuildMacro.Create;
     NewItem.LoadFromXMLConfig(AXMLConfig,Path+'Item'+IntToStr(i+1)+'/',DoSwitchPathDelims);
     if (NewItem.Identifier<>'') and IsValidIdent(NewItem.Identifier) then
-      FItems.Add(NewItem);
+      FItems.Add(NewItem)
+    else
+      NewItem.Free;
   end;
 end;
 

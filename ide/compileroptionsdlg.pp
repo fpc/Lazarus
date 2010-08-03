@@ -784,7 +784,7 @@ begin
 
     edtErrorCnt.Text := IntToStr(Options.StopAfterErrCount);
 
-    // conditional
+    // conditional + build macros
     {$IFDEF EnableBuildModes}
     ConditionalOptionsFrame.Conditionals:=Options.Conditionals as TCompOptConditionals;
     BuildMacrosFrame.BuildMacros:=Options.BuildMacros as TIDEBuildMacros;
@@ -1524,7 +1524,7 @@ begin
   ConditionalPage:=MainNoteBook.Page[Page];
   ConditionalPage.Caption:=dlgCOConditionals;
   {$IFDEF EnableBuildModes}
-  CategoryTreeView.Items.AddObject(nil,MainNoteBook.Page[Page].Caption,MainNoteBook.Page[Page]);
+  CategoryTreeView.Items.AddObject(nil,ConditionalPage.Caption,ConditionalPage);
   {$ENDIF}
   ConditionalsGroupBox.Caption:=dlgOIOptions;
 end;

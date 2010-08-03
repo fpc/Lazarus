@@ -639,7 +639,7 @@ type
     FEditorInfoList: TUnitEditorInfoList;
     FAutoCreateForms: boolean;
     FEnableI18NForLFM: boolean;
-    FMacros: TProjectBuildMacros;
+    FMacroValues: TProjectBuildMacros;
     FTmpAutoCreatedForms: TStrings; // temporary, used to apply auto create forms changes
     FAutoOpenDesignerFormsDisabled: boolean;
     FBookmarks: TProjectBookmarkList;
@@ -939,7 +939,7 @@ type
                                           write FLastCompilerFilename;
     property LastCompilerParams: string read FLastCompilerParams
                                         write FLastCompilerParams;
-    property Macros: TProjectBuildMacros read FMacros;
+    property MacroValues: TProjectBuildMacros read FMacroValues;
     property MainFilename: String read GetMainFilename;
     property MainProject: boolean read FMainProject write SetMainProject;
     property MainUnitID: Integer read FMainUnitID write SetMainUnitID;
@@ -2448,7 +2448,7 @@ begin
   FRunParameterOptions:=TRunParamsOptions.Create;
   Title := '';
   FUnitList := TFPList.Create;  // list of TUnitInfo
-  FMacros:=TProjectBuildMacros.Create;
+  FMacroValues:=TProjectBuildMacros.Create;
   
   FResources := TProjectResources.Create(Self);
   FResources.OnModified := @EmbeddedObjectModified;
@@ -2462,7 +2462,7 @@ begin
   FDefineTemplates.Active := False;
   FDestroying := True;
   Clear;
-  FreeAndNil(FMacros);
+  FreeAndNil(FMacroValues);
   FreeAndNil(FEditorInfoList);
   FreeThenNil(FResources);
   FreeThenNil(FBookmarks);
@@ -2632,8 +2632,8 @@ begin
                                ProjectSessionStorageNames[SessionStorage],
                                ProjectSessionStorageNames[pssInProjectInfo]);
 
-      // save macros
-      Macros.SaveToXMLConfig(xmlconfig,Path+'Macros/');
+      // save MacroValues
+      MacroValues.SaveToXMLConfig(xmlconfig,Path+'MacroValues/');
 
       // properties
       xmlconfig.SetDeleteValue(Path+'General/MainUnit/Value', MainUnitID,0);
@@ -3081,8 +3081,8 @@ begin
                                  ProjectSessionStorageNames[pssInProjectInfo]));
       //DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
 
-      // load macros
-      Macros.SaveToXMLConfig(xmlconfig,Path+'Macros/');
+      // load MacroValues
+      MacroValues.SaveToXMLConfig(xmlconfig,Path+'MacroValues/');
 
       // load properties
       if FileVersion<9 then NewMainUnitID:=-1 else NewMainUnitID:=0;
@@ -3413,7 +3413,7 @@ begin
   UpdateProjectDirectory;
   FPublishOptions.Clear;
   Title := '';
-  FMacros.Clear;
+  FMacroValues.Clear;
 
   Modified := false;
   SessionModified := false;
@@ -3527,7 +3527,7 @@ begin
     PublishOptions.Modified := False;
     CompilerOptions.Modified := False;
     Resources.Modified := False;
-    Macros.Modified:=false;
+    MacroValues.Modified:=false;
     SessionModified := False;
   end;
 end;
