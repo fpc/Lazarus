@@ -1029,6 +1029,9 @@ begin
           // Upon activation of a form, rebuild it's menu
           if lWinControl is TCustomForm then
           begin
+            {$ifdef VerboseWinCEMenu}
+            DebugLn('[wincecallback] WM_ACTIVATE -> Rebuilding the menu');
+            {$endif}
             if (lWinControl as TCustomForm).Menu <> nil then
             begin
               TWinCEWidgetset(Widgetset).SetMenu(lWinControl.Handle,

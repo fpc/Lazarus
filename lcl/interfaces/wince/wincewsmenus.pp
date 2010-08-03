@@ -167,9 +167,9 @@ begin
   end;}
 
   // Remove previously installed top-level menu click handlers
-  if MenuItemsList.Find('1001', lIndex) then
+  while MenuItemsList.Find('1001', lIndex) do
     MenuItemsList.Delete(lIndex);
-  if MenuItemsList.Find('1002', lIndex) then
+  while MenuItemsList.Find('1002', lIndex) do
     MenuItemsList.Delete(lIndex);
 
   GetWindowRect(Wnd, BR);
@@ -304,13 +304,15 @@ begin
           TMenuItemAccess(LCLMenu.Items.Items[j]).FCommand := tbbi.idCommand;
 
           {$ifdef VerboseWinCEMenu}
-          DebugLn('[CeSetMenu] atKeyPadDevice Set FCommand from ', LCLMenu.Items.Items[j].Name, ' to: ',
-            dbgs(TMenuItemAccess(LCLMenu.Items.Items[j]).FCommand));
-          DebugLn('[CeSetMenu] atKeyPadDevice Message TB_SETBUTTONINFO with ButtonID: MenuBarRLID = ' + IntToStr(MenuBarRLID));
+          DebugLn(Format('[CeSetMenu] atKeyPadDevice i=%d Set FCommand from %s to %d',
+            [i, LCLMenu.Items.Items[j].Name, TMenuItemAccess(LCLMenu.Items.Items[j]).FCommand]));
           {$endif}
 
           if SendMessage(mbi.hwndMB, TB_SETBUTTONINFO, tbbi.idCommand, LPARAM(@tbbi)) = 0 then
-            DebugLn('[CeSetMenu] TB_SETBUTTONINFO failed');
+            {$ifdef VerboseWinCEMenu}
+            DebugLn('[CeSetMenu] TB_SETBUTTONINFO failed')
+            {$endif}
+            ;
 
           // Add to the list to receive click events though WM_COMMAND
           MenuItemsList.AddObject(IntToStr(tbbi.idCommand), LCLMenu.Items.Items[j]);
@@ -432,6 +434,9 @@ begin
           ;
 
         // Add to the list to receive click events though WM_COMMAND
+        {$ifdef VerboseWinCEMenu}
+        DebugLn('[CeSetMenu] Adding menuitem to MenuItemsList');
+        {$endif}
         MenuItemsList.AddObject(IntToStr(tb.idCommand), LCLMenu.Items.Items[j]);
 
         Inc(i);
@@ -576,7 +581,10 @@ begin
     [AMenuItem.Name, AMenuItem.Caption, AMenuItem.Command]));
   {$endif}
   if not SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo) then
-    DebugLn('SetMenuItemInfo failed: ', GetLastErrorText(GetLastError));
+    {$ifdef VerboseWinCEMenu}
+    DebugLn('SetMenuItemInfo failed: ', GetLastErrorText(GetLastError))
+    {$endif}
+    ;
   TriggerFormUpdate(AMenuItem);
 end;
 

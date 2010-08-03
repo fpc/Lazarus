@@ -461,13 +461,14 @@ var
 begin
   TWinCEWSWinControl.ShowHide(AWinControl);
 
-  // In atKeyPadDevice mode, if there is no menu installed, we need to remove
-  // the menu of the previously focused application, otherwise it will
-  // remain visible
+  // In atKeyPadDevice mode, we need to install the menu upon showing
   if (Application.ApplicationType = atKeyPadDevice) and
-    (lForm.Menu = nil) then
+    lForm.HandleObjectShouldBeVisible then
   begin
-    CeSetMenu(AWinControl.Handle, 0, nil);
+    if (lForm.Menu = nil) then
+      CeSetMenu(AWinControl.Handle, 0, nil)
+    else
+      CeSetMenu(AWinControl.Handle, lForm.Menu.Handle, lForm.Menu);
   end;
 end;
 
