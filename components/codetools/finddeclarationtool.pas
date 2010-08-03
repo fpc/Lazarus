@@ -1456,9 +1456,9 @@ begin
       // raise exception
       CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
     end;
-    { $IFDEF CTDEBUG}
+    {$IFDEF CTDEBUG}
     DebugLn('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChilds=',dbgs(CursorNode.FirstChild<>nil));
-    { $ENDIF}
+    {$ENDIF}
     if (not IsDirtySrcValid)
     and (CursorNode.Desc in [ctnUsesSection,ctnUseUnit]) then begin
       // in uses section
