@@ -132,8 +132,8 @@ function MSCharacterSets: TStringList;
 function MSHexCharacterSets: TStringList;
 
 const
-  DefaultLanguage = '0409';
-  DefaultCharSet = '04E4';
+  DefaultLanguage = '0409'; // U.S. English
+  DefaultCharSet = '04E4'; // Multilingual
 
 implementation
 
@@ -567,6 +567,8 @@ begin
   inherited Create;
   FStringTable := TProjectVersionStringTable.Create('00000000');
   FStringTable.OnModified := @DoModified;
+  HexLang:=DefaultLanguage;
+  HexCharSet:=DefaultCharSet;
 end;
 
 destructor TProjectVersionInfo.Destroy;
