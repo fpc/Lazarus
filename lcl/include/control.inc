@@ -2659,7 +2659,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.SetHint(const Value: TTranslateString);
 begin
-  if FHint <> Value then FHint := Value;
+  if FHint = Value then exit;
+  FHint := Value;
+
 end;
 
 {------------------------------------------------------------------------------
