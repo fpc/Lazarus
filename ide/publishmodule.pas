@@ -273,6 +273,7 @@ procedure TPublishModuleOptions.LoadDefaults;
 begin
   DestinationDirectory:=GetDefaultDestinationDir;
   CommandAfter:='';
+  IgnoreBinaries:=true;
   UseIncludeFileFilter:=true;
   IncludeFilterSimpleSyntax:=true;
   IncludeFileFilter:=DefPublModIncFilter;
