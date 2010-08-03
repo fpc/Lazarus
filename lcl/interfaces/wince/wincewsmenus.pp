@@ -166,11 +166,25 @@ begin
     mbi.hwndMB := 0;
   end;}
 
+  {$ifdef VerboseWinCEMenu}
+  DebugLn('[CeSetMenu] MenuItemsList.Text ' + MenuItemsList.Text);
+  {$endif}
   // Remove previously installed top-level menu click handlers
+  MenuItemsList.Sort;
   while MenuItemsList.Find('1001', lIndex) do
+  begin
     MenuItemsList.Delete(lIndex);
+    {$ifdef VerboseWinCEMenu}
+    DebugLn(Format('[CeSetMenu] MenuItemsList.Delete 1001 Index %d', [lIndex]));
+    {$endif}
+  end;
   while MenuItemsList.Find('1002', lIndex) do
+  begin
     MenuItemsList.Delete(lIndex);
+    {$ifdef VerboseWinCEMenu}
+    DebugLn(Format('[CeSetMenu] MenuItemsList.Delete 1002 Index %d', [lIndex]));
+    {$endif}
+  end;
 
   GetWindowRect(Wnd, BR);
 
@@ -315,6 +329,10 @@ begin
             ;
 
           // Add to the list to receive click events though WM_COMMAND
+          {$ifdef VerboseWinCEMenu}
+          DebugLn(Format('[CeSetMenu] MenuItemsList.AddObject %d Name %s',
+            [tbbi.idCommand, LCLMenu.Items.Items[j].Name]));
+          {$endif}
           MenuItemsList.AddObject(IntToStr(tbbi.idCommand), LCLMenu.Items.Items[j]);
 
           // Adds subitems to a top-level item

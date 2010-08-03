@@ -278,8 +278,11 @@ Var
     end;
     {$endif}
 
-//    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-//      'MenuClickResponse: ' + IntToStr(PtrInt(Result)));
+    {$ifdef VerboseWinCEMenu}
+    if Result <> nil then
+      DebugLn(Format('[wincecallback] GetMenuItemObject found menu item %s caption %s',
+        [TMenuItem(Result).Name, TMenuItem(Result).Caption]));
+    {$endif}
   end;
 
   function GetIsNativeControl(AWindow: HWND): Boolean;
@@ -1122,6 +1125,9 @@ begin
 
         if Hi(WParam) < 2 then //1 for accelerator 0 for menu
         begin
+          {$ifdef VerboseWinCEMenu}
+          DebugLn('[wincecallback] Hi(WParam) < 2');
+          {$endif}
           TargetObject := GetMenuItemObject();
         end
         else // menuitem or shortcut
@@ -1131,6 +1137,10 @@ begin
 
         if TargetObject is TMenuItem then
         begin
+          {$ifdef VerboseWinCEMenu}
+          DebugLn('[wincecallback] Sending menuitem Click');
+          {$endif}
+
           LMessage.Msg := LM_ACTIVATE;
           TargetObject.Dispatch(LMessage);
           lWinControl := nil;
