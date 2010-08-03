@@ -86,7 +86,7 @@ type
     procedure AddValue(const ValueType: TCOCValueType; Value: string);
     procedure SetValue(const ValueType: TCOCValueType; Value: string);
   public
-    constructor Create(TheEvaluator: TExpressionEvaluator);
+    constructor Create;
     destructor Destroy; override;
     procedure Clear;
     procedure ClearNodes;
@@ -257,15 +257,16 @@ begin
   FValues[ValueType]:=Trim(Value);
 end;
 
-constructor TCompOptConditionals.Create(TheEvaluator: TExpressionEvaluator);
+constructor TCompOptConditionals.Create;
 begin
-  FEvaluator:=TheEvaluator;
+  FEvaluator:=TExpressionEvaluator.Create;
   inherited Create;
 end;
 
 destructor TCompOptConditionals.Destroy;
 begin
   Clear;
+  FreeAndNil(FEvaluator);
   inherited Destroy;
 end;
 

@@ -91,7 +91,7 @@ var
   NewIdentifier: String;
   NewBuildMacro: TLazBuildMacro;
 begin
-  NewIdentifier:=DefaultBuildModeGraph.GetUniqueVarName(GetMacroNamePrefix,BuildMacros);
+  NewIdentifier:=GetMacroNamePrefix+IntToStr(BuildMacros.Count+1);
   NewBuildMacro:=BuildMacros.Add(NewIdentifier);
   // add to TreeView
   BuildMacrosTreeView.BeginUpdate;

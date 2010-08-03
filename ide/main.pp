@@ -7586,11 +7586,6 @@ begin
   EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
   EnvironmentOptions.Save(false);
 
-  {$IFDEF EnableBuildModes}
-  TIDEBuildMacros(Project1.CompilerOptions.BuildMacros)
-    .BuildModeGraph:=DefaultBuildModeGraph;
-  {$ENDIF}
-
   MainBuildBoss.RescanCompilerDefines(true,false);
 
   // load required packages
@@ -9789,9 +9784,6 @@ begin
     SourceEditorManager.DecUpdateLock;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject B');{$ENDIF}
-  // deactivate project build properties
-  if Project1<>nil then
-    TIDEBuildMacros(Project1.CompilerOptions.BuildMacros).BuildModeGraph:=nil;
   IncreaseCompilerParseStamp;
   // close Project
   if ProjInspector<>nil then ProjInspector.LazProject:=nil;

@@ -220,8 +220,6 @@ begin
 
   OnBackupFileInteractive:=@BackupFile;
   RunCompilerWithOptions:=@OnRunCompilerWithOptions;
-  DefaultBuildModeGraph:=TDefaultBuildModeGraph.Create;
-  DefaultBuildModeGraph.AddStandardModes;
 end;
 
 destructor TBuildManager.Destroy;
@@ -229,7 +227,6 @@ begin
   LazConfMacroFunc:=nil;
   OnBackupFileInteractive:=nil;
   FreeAndNil(InputHistories);
-  FreeAndNil(DefaultBuildModeGraph);
 
   inherited Destroy;
   MainBuildBoss:=nil;

@@ -1,26 +1,24 @@
-object BuildModesEditorFrame: TBuildModesEditorFrame
-  Left = 0
+inherited BuildModesEditorFrame: TBuildModesEditorFrame
   Height = 306
-  Top = 0
   Width = 419
   ClientHeight = 306
   ClientWidth = 419
   TabOrder = 0
   DesignLeft = 460
   DesignTop = 269
-  object BuildModeBtnPanel: TPanel
+  object BuildModeBtnPanel: TPanel[0]
     Left = 0
-    Height = 31
+    Height = 24
     Top = 0
     Width = 419
     Align = alTop
     AutoSize = True
-    ClientHeight = 31
+    ClientHeight = 24
     ClientWidth = 419
     TabOrder = 0
     object NewBuildModeSpeedButton: TSpeedButton
       Left = 1
-      Height = 29
+      Height = 22
       Top = 1
       Width = 23
       Align = alLeft
@@ -31,22 +29,9 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
       ShowHint = True
       ParentShowHint = False
     end
-    object NewBuildFlagSpeedButton: TSpeedButton
-      Left = 24
-      Height = 29
-      Top = 1
-      Width = 23
-      Align = alLeft
-      AutoSize = True
-      Color = clBtnFace
-      NumGlyphs = 0
-      OnClick = NewBuildFlagButtonClick
-      ShowHint = True
-      ParentShowHint = False
-    end
     object DeleteBMRowSpeedButton: TSpeedButton
-      Left = 47
-      Height = 29
+      Left = 24
+      Height = 22
       Top = 1
       Width = 23
       Align = alLeft
@@ -57,21 +42,8 @@ object BuildModesEditorFrame: TBuildModesEditorFrame
       ShowHint = True
       ParentShowHint = False
     end
-    object NewBuildGroupSpeedButton: TSpeedButton
-      Left = 70
-      Height = 29
-      Top = 1
-      Width = 23
-      Align = alLeft
-      AutoSize = True
-      Color = clBtnFace
-      NumGlyphs = 0
-      OnClick = NewBuildGroupButtonClick
-      ShowHint = True
-      ParentShowHint = False
-    end
   end
-  object BuildModesPopupMenu: TPopupMenu
+  object BuildModesPopupMenu: TPopupMenu[1]
     left = 83
     top = 115
   end

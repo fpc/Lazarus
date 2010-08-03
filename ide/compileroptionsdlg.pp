@@ -655,7 +655,6 @@ begin
         FBuildModesTVNode:=CategoryTreeView.Items.AddObject(fPathsTVNode,
                                          BuildModesPage.Caption,BuildModesPage);
       end;
-      fBuildModeFrame.SetGraph(TProjectCompilerOptions(Options).BuildModes);
     end else begin
       // hide build modes
       if FBuildModesTVNode<>nil then begin
