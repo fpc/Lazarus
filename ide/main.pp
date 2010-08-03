@@ -9604,8 +9604,10 @@ begin
     Project1.BeginUpdate(true);
     try
       Project1.CompilerOptions.CompilerPath:='$(CompPath)';
-      if pfUseDefaultCompilerOptions in Project1.Flags then
+      if pfUseDefaultCompilerOptions in Project1.Flags then begin
         DoLoadDefaultCompilerOptions(Project1);
+        Project1.Flags:=Project1.Flags-[pfUseDefaultCompilerOptions];
+      end;
       Project1.AutoAddOutputDirToIncPath;
       UpdateCaption;
       if ProjInspector<>nil then ProjInspector.LazProject:=Project1;

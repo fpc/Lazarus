@@ -2923,6 +2923,7 @@ var
       SetFlag(pfRunnable,
                    OldProjectType in [ptProgram,ptApplication,ptCustomProgram]);
     end;
+    FFlags:=FFlags-[pfUseDefaultCompilerOptions];
   end;
   
   procedure LoadSessionInfo(XMLConfig: TXMLConfig; const Path: string;
