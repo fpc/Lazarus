@@ -591,6 +591,36 @@ type
     property Active: boolean read FActive write SetActive;
   end;
 
+  { TProjectBuildMacros }
+
+  TProjectBuildMacros = class
+  private
+    FChangeStamp: integer;
+    fLastSavedChangeStamp: integer;
+    FItems: TStrings;
+    function GetMacros(const Name: string): string;
+    function GetModified: boolean;
+    function GetNames(Index: integer): string;
+    function GetValues(const Name: string): string;
+    procedure SetModified(const AValue: boolean);
+    procedure SetValues(const Name: string; const AValue: string);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function Equals(Other: TProjectBuildMacros): boolean; reintroduce;
+    procedure Assign(Src: TProjectBuildMacros);
+    function Count: integer;
+    property Names[Index: integer]: string read GetNames;
+    function ValueFromIndex(Index: integer): string;
+    property Values[const Name: string]: string read GetValues write SetValues;
+    property ChangeStamp: integer read FChangeStamp;
+    procedure IncreaseChangeStamp;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    property Modified: boolean read GetModified write SetModified;
+  end;
+
   { TProject }
   
   TEndUpdateProjectEvent =
@@ -609,6 +639,7 @@ type
     FEditorInfoList: TUnitEditorInfoList;
     FAutoCreateForms: boolean;
     FEnableI18NForLFM: boolean;
+    FMacros: TProjectBuildMacros;
     FTmpAutoCreatedForms: TStrings; // temporary, used to apply auto create forms changes
     FAutoOpenDesignerFormsDisabled: boolean;
     FBookmarks: TProjectBookmarkList;
@@ -909,6 +940,7 @@ type
                                           write FLastCompilerFilename;
     property LastCompilerParams: string read FLastCompilerParams
                                         write FLastCompilerParams;
+    property Macros: TProjectBuildMacros read FMacros;
     property MainFilename: String read GetMainFilename;
     property MainProject: boolean read FMainProject write SetMainProject;
     property MainUnitID: Integer read FMainUnitID write SetMainUnitID;
@@ -2413,13 +2445,13 @@ begin
   FSourceDirectories:=TFileReferenceList.Create;
   FSourceDirectories.OnChanged:=@SourceDirectoriesChanged;
   FUseAppBundle := True;
-
   UpdateProjectDirectory;
   FPublishOptions:=TPublishProjectOptions.Create(Self);
   FRunParameterOptions:=TRunParamsOptions.Create;
   FTargetFileExt := GetExecutableExt;
   Title := '';
   FUnitList := TFPList.Create;  // list of TUnitInfo
+  FMacros:=TProjectBuildMacros.Create;
   
   FResources := TProjectResources.Create(Self);
   FResources.OnModified := @EmbeddedObjectModified;
@@ -2433,6 +2465,7 @@ begin
   FDefineTemplates.Active := False;
   FDestroying := True;
   Clear;
+  FreeAndNil(FMacros);
   FreeAndNil(FEditorInfoList);
   FreeThenNil(FResources);
   FreeThenNil(FBookmarks);
@@ -2594,12 +2627,18 @@ begin
 
     try
       Path:='ProjectOptions/';
+      // format
       xmlconfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[fCurStorePathDelim],'/');
       xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
       SaveFlags(XMLConfig,Path);
       xmlconfig.SetDeleteValue(Path+'General/SessionStorage/Value',
                                ProjectSessionStorageNames[SessionStorage],
                                ProjectSessionStorageNames[pssInProjectInfo]);
+
+      // save macros
+      Macros.SaveToXMLConfig(xmlconfig,Path+'Macros/');
+
+      // properties
       xmlconfig.SetDeleteValue(Path+'General/MainUnit/Value', MainUnitID,-1);
       xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
                                AutoCreateForms,true);
@@ -3024,6 +3063,7 @@ begin
     NewMainUnitID:=-1;
     try
       Path:='ProjectOptions/';
+      // get format
       StorePathDelim:=CheckPathDelim(
         XMLConfig.GetValue(Path+'PathDelim/Value', '/'),fPathDelimChanged);
       fCurStorePathDelim:=StorePathDelim;
@@ -3044,6 +3084,10 @@ begin
                                  ProjectSessionStorageNames[pssInProjectInfo]));
       //DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
 
+      // load macros
+      Macros.SaveToXMLConfig(xmlconfig,Path+'Macros/');
+
+      // load properties
       NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', -1);
       AutoCreateForms := xmlconfig.GetValue(
          Path+'General/AutoCreateForms/Value', true);
@@ -3374,6 +3418,7 @@ begin
   FPublishOptions.Clear;
   FTargetFileExt := GetExecutableExt;
   Title := '';
+  FMacros.Clear;
 
   Modified := false;
   SessionModified := false;
@@ -3487,6 +3532,7 @@ begin
     PublishOptions.Modified := False;
     CompilerOptions.Modified := False;
     Resources.Modified := False;
+    Macros.Modified:=false;
     SessionModified := False;
   end;
 end;
@@ -6081,6 +6127,137 @@ constructor TUCDComponentProperty.Create(const SrcPath, DestPath: string);
 begin
   UsedByPropPath:=SrcPath;
   RequiresPropPath:=DestPath;
+end;
+
+{ TProjectBuildMacros }
+
+function TProjectBuildMacros.GetMacros(const Name: string): string;
+begin
+  if (Name='') or not IsValidIdent(Name) then exit('');
+  Result:=FItems.Values[Name];
+end;
+
+function TProjectBuildMacros.GetModified: boolean;
+begin
+  Result:=ChangeStamp<>fLastSavedChangeStamp;
+end;
+
+function TProjectBuildMacros.GetNames(Index: integer): string;
+begin
+  Result:=FItems.Names[Index];
+end;
+
+function TProjectBuildMacros.GetValues(const Name: string): string;
+begin
+  if (Name='') or not IsValidIdent(Name) then exit('');
+  Result:=FItems.Values[Name];
+end;
+
+procedure TProjectBuildMacros.SetModified(const AValue: boolean);
+begin
+  if not AValue then
+    fLastSavedChangeStamp:=ChangeStamp;
+end;
+
+procedure TProjectBuildMacros.SetValues(const Name: string; const AValue: string
+  );
+begin
+  if (Name='') or not IsValidIdent(Name) then exit;
+  if Values[Name]=AValue then exit;
+  FItems.Values[Name]:=AValue;
+  IncreaseChangeStamp;
+end;
+
+constructor TProjectBuildMacros.Create;
+begin
+  FItems:=TStringList.Create;
+end;
+
+destructor TProjectBuildMacros.Destroy;
+begin
+  FreeAndNil(FItems);
+  inherited Destroy;
+end;
+
+procedure TProjectBuildMacros.Clear;
+begin
+  if FItems.Count=0 then exit;
+  IncreaseChangeStamp;
+  FItems.Clear;
+end;
+
+function TProjectBuildMacros.Equals(Other: TProjectBuildMacros): boolean;
+begin
+  Result:=FItems.Equals(Other.FItems);
+end;
+
+procedure TProjectBuildMacros.Assign(Src: TProjectBuildMacros);
+begin
+  if Equals(Src) then exit;
+  FItems.Assign(Src.FItems);
+  IncreaseChangeStamp;
+end;
+
+function TProjectBuildMacros.Count: integer;
+begin
+  Result:=FItems.Count;
+end;
+
+function TProjectBuildMacros.ValueFromIndex(Index: integer): string;
+begin
+  Result:=FItems.ValueFromIndex[Index];
+end;
+
+procedure TProjectBuildMacros.IncreaseChangeStamp;
+begin
+  if FChangeStamp=High(FChangeStamp) then
+    FChangeStamp:=low(FChangeStamp)
+  else
+    inc(FChangeStamp);
+end;
+
+procedure TProjectBuildMacros.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  NewItems: TStringList;
+  Cnt: LongInt;
+  i: Integer;
+  SubPath: String;
+  NewName: String;
+  NewValue: String;
+begin
+  NewItems:=TStringList.Create;
+  try
+    Cnt:=XMLConfig.GetValue(Path+'Count',0);
+    for i:=1 to Cnt do begin
+      SubPath:=Path+'Macro'+IntToStr(i)+'/';
+      NewName:=XMLConfig.GetValue(SubPath+'Name','');
+      if (NewName='') or not IsValidIdent(NewName) then continue;
+      NewValue:=XMLConfig.GetValue(SubPath+'Value','');
+      NewItems.Values[NewName]:=NewValue;
+    end;
+    if not FItems.Equals(NewItems) then begin
+      IncreaseChangeStamp;
+      FItems.Assign(NewItems);
+    end;
+    fLastSavedChangeStamp:=ChangeStamp;
+  finally
+    NewItems.Free;
+  end;
+end;
+
+procedure TProjectBuildMacros.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  i: Integer;
+  SubPath: String;
+begin
+  XMLConfig.SetDeleteValue(Path+'Count',Count,0);
+  for i:=0 to Count-1 do begin
+    SubPath:=Path+'Macro'+IntToStr(i+1)+'/';
+    XMLConfig.SetDeleteValue(SubPath+'Name',Names[i],'');
+    XMLConfig.SetDeleteValue(SubPath+'Value',ValueFromIndex(i),'');
+  end;
 end;
 
 initialization

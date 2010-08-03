@@ -36,13 +36,15 @@
        values, valuedescriptions, defaultvalue:string,
   - IDE build macro: TIDEBuildMacro, load/save to xmlconfig
   - BuildMacroChangeStamp:
-     - changed on used packages
-
-  ToDo:
+    - changed on used packages
   - remove TBuildModeGraph
   - remove TBuildModeFlag
   - remove TBuildMode
   - remove TDefaultBuildModeGraph
+  - project can define values for build macros
+     - load/save to xmlconfig
+
+  ToDo:
   - Every package and project can define a list of build macros.
      - load/save to xmlconfig
      - edit in compiler options:
@@ -53,8 +55,7 @@
         - delete value
         - edit default value
   - project can define values for build macros
-      - store in lpi
-      - store in lps (override lpi)
+      - edit them in the compiler options
   - every package/project needs a function to compute all values of its build macros
       - build macros depend on used packages and project build macro values
          - add a changestamp for this
@@ -72,6 +73,10 @@
       and resolve the macros
   - move the project target file to compiler options
   - a project can save the set of build macros and compiler options
+    - add changestamp, assign, equals to compiler options
+    - refactor compiler options (default options, load, save to file)
+    - store sets in lpi
+    - store sets in lps
   - i18n for descriptions
   - keyword help for a build macro
 
