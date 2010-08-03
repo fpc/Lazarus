@@ -4701,8 +4701,7 @@ var
   {$ENDIF}
 begin
   {$ifdef DEBUG_WINDOW_ORG}
-  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-    ':> [TWinControl.PaintControls] A');
+  DebugLn(':> [TWinControl.PaintControls] A');
   {$endif}
 
   //DebugLn('[TWinControl.PaintControls] ',Name,':',ClassName,'  DC=',DbgS(DC,8));
@@ -4720,8 +4719,7 @@ begin
   if FControls <> nil then
   begin
     {$ifdef DEBUG_WINDOW_ORG}
-    DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
-      ':> [TWinControl.PaintControls] B');
+    DebugLn(':> [TWinControl.PaintControls] B');
     {$endif}
     I := 0;
     if First <> nil then
@@ -4734,7 +4732,7 @@ begin
     begin
       TempControl := TControl(FControls.Items[I]);
       {$ifdef DEBUG_WINDOW_ORG}
-      DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+      DebugLn(
         Format(':> [TWinControl.PaintControls] C  DC=%d TempControl=%s Left=%d Top=%d Width=%d Height=%d',
         [DC, TempControl.Name, TempControl.Left, TempControl.Top, TempControl.Width, TempControl.Height]));
       {$endif}
@@ -4749,7 +4747,7 @@ begin
             SaveIndex := SaveDC(DC);
 
             {$ifdef DEBUG_WINDOW_ORG}
-            DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log',
+            DebugLn(
               Format(':> [TWinControl.PaintControls] Control=%s Left=%d Top=%d Width=%d Height=%d',
               [Self.Name, Left, Top, Width, Height]));
             {$endif}

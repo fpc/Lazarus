@@ -138,6 +138,7 @@ var
   tbbi: TBBUTTONINFO;
   i, j, k, lIndex: integer;
   buf: array[0..255] of WideChar;
+  wbuf: widestring;
   R, BR, WR: TRect;
   LeftMenuCount: Integer = -1;
   RightMenuCount: Integer = -1;
@@ -324,7 +325,11 @@ begin
 
           // Remove any present buttons, for example the one from the .rc file
           // Careful that using TB_DELETEBUTTON doesnt work here
-          while RemoveMenu(HMENU(tbbi.lParam), 0, MF_BYPOSITION) do DebugLn('[CeSetMenu] RemoveMenu');
+          while RemoveMenu(HMENU(tbbi.lParam), 0, MF_BYPOSITION) do
+          {$ifdef VerboseWinCEMenu}
+          DebugLn('[CeSetMenu] RemoveMenu')
+          {$endif}
+          ;
 
           {$ifdef VerboseWinCEMenu}
           DebugLn(Format('[CeSetMenu] Installing %d Subitems', [LCLMenu.Items.Items[j].Count]));
@@ -386,7 +391,12 @@ begin
         // Update the MenuItem Command to use latter
         TMenuItemAccess(LCLMenu.Items.Items[j]).FCommand := mi.wID;
 
-        buf[mi.cch]:=#0;
+        // Setting the caption
+        // old code: buf[mi.cch]:=#0;
+        wbuf := UTF8Decode(LCLMenu.Items.Items[j].Caption);
+        buf := wbuf;
+        buf[Length(wbuf)] := #0;
+
         FillChar(tb, SizeOf(tb), 0);
         tb.iBitmap:=I_IMAGENONE;
         tb.idCommand := mi.wID;

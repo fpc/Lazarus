@@ -2933,9 +2933,15 @@ var
   i: Integer;
 begin
   Result := False;
-  for i := 0 to WinCEWSMenus.MenuHandleList.Count - 1 do
-    if WinCEWSMenus.MenuHandleList.Items[i] = Pointer(AMenuHandle) then Break;
-  lLCLMenu := TMenu(MenuLCLObjectList.Items[i]);
+
+  if AMenuHandle = 0 then
+    lLCLMenu := nil
+  else
+  begin
+    for i := 0 to WinCEWSMenus.MenuHandleList.Count - 1 do
+      if WinCEWSMenus.MenuHandleList.Items[i] = Pointer(AMenuHandle) then Break;
+    lLCLMenu := TMenu(MenuLCLObjectList.Items[i]);
+  end;
 
   CeSetMenu(AWindowHandle, AMenuHandle, lLCLMenu);
   AddToChangedMenus(AWindowHandle);

@@ -359,6 +359,8 @@ implementation
 
 uses gettext;
 
+const
+  Str_LCL_Debug_File = 'lcldebug.log';
 
 var
   InterfaceInitializationHandlers: TFPList = nil;
@@ -2151,7 +2153,7 @@ end;
 procedure DebugLn(const s: string);
 begin
   {$ifdef WinCE}
-  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + '1.log', s);
+  DbgAppendToFile(ExtractFilePath(ParamStr(0)) + Str_LCL_Debug_File, s);
   {$else}
   if not Assigned(DebugText) then exit;
   writeln(DebugText^, ConvertLineEndings(s));
@@ -2273,7 +2275,7 @@ end;
 procedure DBGOut(const s: string);
 begin
   {$ifdef WinCE}
-  DbgAppendToFileWithoutLn(ExtractFilePath(ParamStr(0)) + '1.log', s);
+  DbgAppendToFileWithoutLn(ExtractFilePath(ParamStr(0)) + Str_LCL_Debug_File, s);
   {$else}
   if Assigned(DebugText) then
     write(DebugText^, s);

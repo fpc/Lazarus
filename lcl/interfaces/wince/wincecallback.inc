@@ -1024,7 +1024,21 @@ begin
       case Lo(WParam) Of
         WA_ACTIVE, WA_CLICKACTIVE:
         begin
-          LMessage.Msg := LM_ACTIVATE
+          LMessage.Msg := LM_ACTIVATE;
+
+          // Upon activation of a form, rebuild it's menu
+          if lWinControl is TCustomForm then
+          begin
+            if (lWinControl as TCustomForm).Menu <> nil then
+            begin
+              TWinCEWidgetset(Widgetset).SetMenu(lWinControl.Handle,
+                (lWinControl as TCustomForm).Menu.Handle);
+            end
+            else
+            begin
+              TWinCEWidgetset(Widgetset).SetMenu(lWinControl.Handle, 0);
+            end;
+          end;
         end;
         WA_INACTIVE:
         begin

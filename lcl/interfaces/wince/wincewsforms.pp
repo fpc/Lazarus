@@ -461,7 +461,7 @@ var
 begin
   TWinCEWSWinControl.ShowHide(AWinControl);
 
-  // In atPDA mode, if there is no menu installed, we need to remove
+  // In atKeyPadDevice mode, if there is no menu installed, we need to remove
   // the menu of the previously focused application, otherwise it will
   // remain visible
   if (Application.ApplicationType = atKeyPadDevice) and
