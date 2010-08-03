@@ -340,6 +340,8 @@ begin
   ChildSizing.ControlsPerLine:=100;
   ChildSizing.EnlargeHorizontal:=crsScaleChilds;
   ChildSizing.ShrinkHorizontal:=crsScaleChilds;
+  ChildSizing.EnlargeVertical:=crsScaleChilds;
+  ChildSizing.ShrinkVertical:=crsScaleChilds;
   FDataLink:=TDBNavDataLink.Create(Self);
   FVisibleButtons:=DefaultDBNavigatorButtons;
   FHints:=TStringList.Create;

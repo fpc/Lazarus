@@ -1213,6 +1213,7 @@ type
     property BorderStyle;
     property BorderWidth;
     property Caption;
+    property ChildSizing;
     property ClientHeight;
     property ClientWidth;
     property Color default clBackground;
