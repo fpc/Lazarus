@@ -391,6 +391,7 @@ end;
 procedure TProjectVersionInfo.WriteToProjectFile(AConfig: TObject; Path: string);
 var
   i: integer;
+  Key: string;
 begin
   with TXMLConfig(AConfig) do
   begin
@@ -406,9 +407,12 @@ begin
 
     // write string info
     DeletePath(Path + 'VersionInfo/StringTable');
-    for i := 0 to StringTable.Count - 1 do
-      SetValue(Path + 'VersionInfo/StringTable/' + StringTable.Keys[i],
-        StringTable.ValuesByIndex[i]);
+    for i := 0 to StringTable.Count - 1 do begin
+      Key:=StringTable.Keys[i];
+      if Key='FileVersion' then continue; // FileVersion is create automatically
+      SetDeleteValue(Path + 'VersionInfo/StringTable/' + StringTable.Keys[i],
+        StringTable.ValuesByIndex[i],'');
+    end;
   end;
 end;
 
