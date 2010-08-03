@@ -321,7 +321,10 @@ begin
           {$endif}
           tbbi.dwMask := TBIF_LPARAM;
           if SendMessage(mbi.hwndMB, TB_GETBUTTONINFO, tbbi.idCommand, LPARAM(@tbbi)) = - 1 then
-            DebugLn('[CeSetMenu] TB_GETBUTTONINFO failed');
+            {$ifdef VerboseWinCEMenu}
+            DebugLn('[CeSetMenu] TB_GETBUTTONINFO failed')
+            {$endif}
+            ;
 
           // Remove any present buttons, for example the one from the .rc file
           // Careful that using TB_DELETEBUTTON doesnt work here
@@ -363,7 +366,9 @@ begin
         // Find the winapi menu item
         if not GetMenuItemInfo(Menu, i, True, @mi) then
         begin
+          {$ifdef VerboseWinCEMenu}
           DebugLn('GetMenuItemInfo i=', dbgs(i), ' failed, breaking');
+          {$endif}
           Break;
         end;
 
@@ -421,7 +426,10 @@ begin
         DebugLn('[CeSetMenu] atPDA Message TB_INSERTBUTTON with ButtonID: i = ' + IntToStr(i));
         {$endif}
         if SendMessage(mbi.hwndMB, TB_INSERTBUTTON, i, LPARAM(@tb)) = 0 then
-          DebugLn('TB_INSERTBUTTON failed');
+          {$ifdef VerboseWinCEMenu}
+          DebugLn('TB_INSERTBUTTON failed')
+          {$endif}
+          ;
 
         // Add to the list to receive click events though WM_COMMAND
         MenuItemsList.AddObject(IntToStr(tb.idCommand), LCLMenu.Items.Items[j]);
