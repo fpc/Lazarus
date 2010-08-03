@@ -1005,7 +1005,7 @@ function dbgs(Flags: TUnitInfoFlags): string; overload;
 implementation
 
 const
-  ProjectInfoFileVersion = 8;
+  ProjectInfoFileVersion = 9;
 
 procedure AddCompileReasonsDiff(Tool: TCompilerDiffTool;
   const PropertyName: string; const Old, New: TCompileReasons);
@@ -2628,8 +2628,8 @@ begin
     try
       Path:='ProjectOptions/';
       // format
-      xmlconfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[fCurStorePathDelim],'/');
       xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
+      xmlconfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[fCurStorePathDelim],'/');
       SaveFlags(XMLConfig,Path);
       xmlconfig.SetDeleteValue(Path+'General/SessionStorage/Value',
                                ProjectSessionStorageNames[SessionStorage],
@@ -2639,7 +2639,7 @@ begin
       Macros.SaveToXMLConfig(xmlconfig,Path+'Macros/');
 
       // properties
-      xmlconfig.SetDeleteValue(Path+'General/MainUnit/Value', MainUnitID,-1);
+      xmlconfig.SetDeleteValue(Path+'General/MainUnit/Value', MainUnitID,0);
       xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
                                AutoCreateForms,true);
       xmlconfig.SetValue(Path+'General/TargetFileExt/Value',TargetFileExt);
@@ -3089,7 +3089,8 @@ begin
       Macros.SaveToXMLConfig(xmlconfig,Path+'Macros/');
 
       // load properties
-      NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', -1);
+      if FileVersion<9 then NewMainUnitID:=-1 else NewMainUnitID:=0;
+      NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', NewMainUnitID);
       AutoCreateForms := xmlconfig.GetValue(
          Path+'General/AutoCreateForms/Value', true);
       TargetFileExt := xmlconfig.GetValue(
