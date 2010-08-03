@@ -487,11 +487,11 @@ msgstr "Náhled (max. délka řádku = 1)"
 
 #: lazarusidestrconsts.dlgcdtreadprefix
 msgid "Read prefix"
-msgstr "Číst prefix"
+msgstr "Prefix čtení"
 
 #: lazarusidestrconsts.dlgcdtstoredpostfix
 msgid "Stored postfix"
-msgstr "Uložený prefix"
+msgstr "Prefix uložení"
 
 #: lazarusidestrconsts.dlgcdtuppercase
 msgid "UPPERCASE"
@@ -503,7 +503,7 @@ msgstr "Prefix proměnné"
 
 #: lazarusidestrconsts.dlgcdtwriteprefix
 msgid "Write prefix"
-msgstr "Prefix zápisu"
+msgstr "Prefix nastavení"
 
 #: lazarusidestrconsts.dlgcentercursorline
 msgid "Center Cursor Line"
@@ -626,7 +626,7 @@ msgstr "Myš"
 
 #: lazarusidestrconsts.dlgcodefoldpopuporder
 msgid "Reverse fold-order in Popup"
-msgstr "Opačné pořadí-svinutí v Popup"
+msgstr "Opačné pořadí svinutí v Popup"
 
 #: lazarusidestrconsts.dlgcodegeneration
 #| msgid "Code"
@@ -1028,7 +1028,7 @@ msgstr "Soubory editoru"
 #: lazarusidestrconsts.dlgedidcomlet
 msgctxt "lazarusidestrconsts.dlgedidcomlet"
 msgid "Identifier completion"
-msgstr "Dokončení identifikátoru"
+msgstr "Dokončení identifikátorů"
 
 #: lazarusidestrconsts.dlgedinvert
 msgid "Invert"
@@ -1298,7 +1298,7 @@ msgstr "Begin/End (vnořené)"
 
 #: lazarusidestrconsts.dlgfoldpasborcomment
 msgid "Comment { }"
-msgstr "Koment85 { }"
+msgstr "Komentář { }"
 
 #: lazarusidestrconsts.dlgfoldpascase
 msgid "Case"
@@ -1326,7 +1326,7 @@ msgstr "Vnořené komentáře"
 
 #: lazarusidestrconsts.dlgfoldpasprocbeginend
 msgid "Begin/End (procedure)"
-msgstr "Begin/End (procedure)"
+msgstr "Begin/End (procedura)"
 
 #: lazarusidestrconsts.dlgfoldpasprocedure
 msgctxt "lazarusidestrconsts.dlgfoldpasprocedure"
@@ -2719,7 +2719,7 @@ msgstr "Přichycovat k vodícím čarám"
 #: lazarusidestrconsts.dlgspacenotcosmos
 msgctxt "lazarusidestrconsts.dlgspacenotcosmos"
 msgid "Space"
-msgstr "Mezera"
+msgstr "Mezery"
 
 #: lazarusidestrconsts.dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
@@ -2920,7 +2920,7 @@ msgstr "Použít zvýraznění syntaxe"
 
 #: lazarusidestrconsts.dlgusetabshistory
 msgid "Use tab history when closing tabs"
-msgstr ""
+msgstr "Použít historii záložek při zavření záložky"
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
@@ -3695,7 +3695,7 @@ msgstr "nepřidávat znak"
 
 #: lazarusidestrconsts.lisautomaticfeatures
 msgid "Automatic features"
-msgstr "Automatická vlastnost"
+msgstr "Automatické vlastnosti"
 
 #: lazarusidestrconsts.lisautoshowobjectinspector
 msgid "Auto show"
@@ -3849,7 +3849,7 @@ msgstr "Sestavení Lazarusu selhalo"
 
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
-msgstr ""
+msgstr "Sestavit makra"
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
@@ -5109,7 +5109,7 @@ msgstr "Chyba zápisu"
 
 #: lazarusidestrconsts.liscodetoolsoptsat
 msgid "At"
-msgstr "u"
+msgstr "Zavináč"
 
 #: lazarusidestrconsts.liscodetoolsoptsbracket
 msgid "Bracket"
@@ -5152,7 +5152,7 @@ msgstr "Ok"
 
 #: lazarusidestrconsts.liscodetoolsoptspoint
 msgid "Point"
-msgstr "Bod"
+msgstr "Tečka"
 
 #: lazarusidestrconsts.liscodetoolsoptssemicolon
 msgid "Semicolon"
@@ -5917,7 +5917,7 @@ msgstr "Smazat bod přerušení na%s\"%s\"řádku %d?"
 
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"
-msgstr ""
+msgstr "Smazat sestavovací makro %s%s%s?"
 
 #: lazarusidestrconsts.lisdeletebuildmode
 msgid "Delete build mode"
@@ -7542,7 +7542,7 @@ msgstr "Instalovat/Odinstalovat balíčky"
 
 #: lazarusidestrconsts.lisinvalidbuildmacrothebuildmacromustbeapascalidentifie
 msgid "Invalid build macro %s%s%s. The build macro must be a pascal identifier."
-msgstr ""
+msgstr "Neplatné sestavovací makro %s%s%s. Sestavovací makro musí být identifikátor Pascalu."
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -12892,7 +12892,7 @@ msgstr "Na disku už je soubor se stejným jménem a podobnou koncovkou%sSoubor:
 
 #: lazarusidestrconsts.listhereisalreadyabuildmacrowiththename
 msgid "There is already a build macro with the name %s%s%s."
-msgstr ""
+msgstr "Sestavovací makro se jménem %s%s%s již existuje."
 
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
@@ -15203,19 +15203,19 @@ msgstr "Prosím stiskněte klávesu..."
 
 #: lazarusidestrconsts.synffoldcommentsinselection
 msgid "Fold comments in selection"
-msgstr ""
+msgstr "Zabalit komentáře ve výběru"
 
 #: lazarusidestrconsts.synfhidecommentsinselection
 msgid "Hide comments in selection"
-msgstr ""
+msgstr "Skrýt komentáře ve výběru"
 
 #: lazarusidestrconsts.synfunfoldallinselection
 msgid "Unfold all in Selection"
-msgstr ""
+msgstr "Rozbalit všechny komentáře ve výběru"
 
 #: lazarusidestrconsts.synfunfoldcommentsinselection
 msgid "Unfold comments in Selection"
-msgstr ""
+msgstr "Rozbalit komentáře ve výběru"
 
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
