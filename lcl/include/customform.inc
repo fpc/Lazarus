@@ -1677,7 +1677,6 @@ var
   AdaptBorderIcons: boolean;
 begin
   if FFormBorderStyle = NewStyle then exit;
-  //TODO: Finish SETBORDERSTYLE
 
   // AutoScroll is only available for bsSizeable, bsSizeToolWin windows
   if not (NewStyle in BorderStylesAllowAutoScroll) then
@@ -1687,19 +1686,22 @@ begin
                       (BorderIcons = DefaultBorderIcons[FFormBorderStyle]);
   FFormBorderStyle := NewStyle;
   
-  // if Form had default border icons before change, it should keep the default
-  if AdaptBorderIcons then
-    BorderIcons := DefaultBorderIcons[FFormBorderStyle];
-    
-  Include(FFormState, fsBorderStyleChanged);
-  // ToDo: implement it.
-  // We can not use inherited SetBorderStyle(NewStyle),
-  // because TBorderStyle <> TFormBorderStyle;
-  if HandleAllocated then
+  if not (csDesigning in ComponentState) then
   begin
-    TWSCustomFormClass(WidgetSetClass).SetFormBorderStyle(Self, NewStyle);
-    Perform(CM_ICONCHANGED, 0, 0);
-    UpdateMenu;
+    // if Form had default border icons before change, it should keep the default
+    if AdaptBorderIcons then
+      BorderIcons := DefaultBorderIcons[FFormBorderStyle];
+
+    Include(FFormState, fsBorderStyleChanged);
+    // ToDo: implement it.
+    // We can not use inherited SetBorderStyle(NewStyle),
+    // because TBorderStyle <> TFormBorderStyle;
+    if HandleAllocated then
+    begin
+      TWSCustomFormClass(WidgetSetClass).SetFormBorderStyle(Self, NewStyle);
+      Perform(CM_ICONCHANGED, 0, 0);
+      UpdateMenu;
+    end;
   end;
 end;
 

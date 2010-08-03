@@ -371,7 +371,7 @@ begin
     pClassName := @ClsName[0];
     WindowTitle := StrCaption;
     AdjustFormBounds(lForm, Bounds);
-    if lForm.Position in [poDefault, poDefaultPosOnly] then
+    if (lForm.Position in [poDefault, poDefaultPosOnly]) and not (csDesigning in lForm.ComponentState) then
     begin
       Left := CW_USEDEFAULT;
       Top := CW_USEDEFAULT;
@@ -381,7 +381,7 @@ begin
       Left := Bounds.Left;
       Top := Bounds.Top;
     end;
-    if lForm.Position in [poDefault, poDefaultSizeOnly] then
+    if (lForm.Position in [poDefault, poDefaultSizeOnly]) and not (csDesigning in lForm.ComponentState) then
     begin
       Width := CW_USEDEFAULT;
       Height := CW_USEDEFAULT;
@@ -401,12 +401,12 @@ begin
   end;
   SetStdBiDiModeParams(AWinControl, Params);
   // create window
-  FinishCreateWindow(AWinControl, Params, false);
+  FinishCreateWindow(AWinControl, Params, False);
 
   Result := Params.Window;
 
   // remove system menu items for bsDialog
-  if lForm.BorderStyle = bsDialog then
+  if (lForm.BorderStyle = bsDialog) and not (csDesigning in lForm.ComponentState) then
   begin
     SystemMenu := GetSystemMenu(Result, False);
     DeleteMenu(SystemMenu, SC_RESTORE, MF_BYCOMMAND);
