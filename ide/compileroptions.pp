@@ -64,8 +64,12 @@
   - every package/project needs a function to compute all values of its build macros
       - build macros depend on used packages and project build macro values
          - add a changestamp for this
+         - conditionals needs macro values of project, default macro values of
+           required packages and current package
+         - default value of a build macro requires values of project and
+           default macro values of required packages
   - every package/project needs a function to substitute macros
-      - check local macros (pkgdir, pkgoutdir, ...)
+      - check local macros (pkgdir, pkgoutdir)
       - first check active project values
       - then check default values of build macros of used packages
       - finally use default global macros
