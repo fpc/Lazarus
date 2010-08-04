@@ -47,6 +47,8 @@
     - edit them in the compiler options
       - edit name
       - edit value
+      - add value
+      - delete value
   - Every package and project can define a list of build macros.
     - load/save to xmlconfig
   - Every package and project can define a list of build macros.
@@ -59,10 +61,6 @@
       - edit default value
 
   ToDo:
-  - project can define values for build macros
-    - edit them in the compiler options
-      - add value
-      - delete value
   - every package/project needs a function to compute all values of its build macros
       - build macros depend on used packages and project build macro values
          - add a changestamp for this

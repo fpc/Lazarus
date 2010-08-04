@@ -744,6 +744,7 @@ type
     function GetFiles(Index: integer): TLazProjectFile; virtual; abstract;
     procedure SetTitle(const AValue: String); virtual;
     procedure SetFlags(const AValue: TProjectFlags); virtual;
+    function GetModified: boolean; virtual;
     function GetProjectInfoFile: string; virtual; abstract;
     procedure SetProjectInfoFile(const NewFilename: string); virtual; abstract;
     procedure SetProjectSessionFile(const AValue: string); virtual;
@@ -786,7 +787,7 @@ type
                            read FProjectSessionFile write SetProjectSessionFile;
     property SessionStorage: TProjectSessionStorage read FSessionStorage
                                                     write SetSessionStorage;
-    property Modified: boolean read fModified
+    property Modified: boolean read GetModified
                        write SetModified; // project data (not units, session),
                                           // units have their own Modified
     property SessionModified: boolean read FSessionModified
@@ -1563,6 +1564,11 @@ begin
   if FLazDocPaths=AValue then exit;
   FLazDocPaths:=AValue;
   Modified:=true;
+end;
+
+function TLazProject.GetModified: boolean;
+begin
+  Result:=fModified;
 end;
 
 procedure TLazProject.SetExecutableType(const AValue: TProjectExecutableType);

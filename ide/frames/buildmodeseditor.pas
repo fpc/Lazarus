@@ -40,7 +40,6 @@ uses
 
 type
 
-
   { TBuildModesEditorFrame }
 
   TBuildModesEditorFrame = class(TAbstractIDEOptionsEditor)
@@ -49,20 +48,22 @@ type
     BuildModesGroupBox: TGroupBox;
     BuildModesPopupMenu: TPopupMenu;
     Splitter1: TSplitter;
-    procedure BuildMacroValuesStringGridEditButtonClick(Sender: TObject);
-    procedure BuildMacroValuesStringGridMouseUp(Sender: TObject;
-      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure BuildMacroValuesStringGridPickListSelect(Sender: TObject);
     procedure BuildMacroValuesStringGridSelectCell(Sender: TObject; aCol,
       aRow: Integer; var CanSelect: Boolean);
     procedure BuildMacroValuesStringGridSelectEditor(Sender: TObject; aCol,
       aRow: Integer; var Editor: TWinControl);
+    procedure BuildMacroValuesStringGridSelection(Sender: TObject; aCol,
+      aRow: Integer);
   private
     FMacroValues: TProjectBuildMacros;
     FProject: TProject;
     procedure UpdateMacrosControls;
     function GetAllBuildMacros: TStrings;
+    procedure CleanMacrosGrid;
+    procedure Save;
   public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
@@ -77,51 +78,6 @@ implementation
 {$R *.lfm}
 
 { TBuildModesEditorFrame }
-
-procedure TBuildModesEditorFrame.BuildMacroValuesStringGridEditButtonClick(
-  Sender: TObject);
-var
-  Grid: TStringGrid;
-begin
-  Grid:=BuildMacroValuesStringGrid;
-  //debugln(['TBuildModesEditorFrame.BuildMacroValuesStringGridEditButtonClick Col=',Grid.Col,' Row=',Grid.Row]);
-  if Grid.Col=0 then begin
-    if Grid.Row=MacroValues.Count+1 then begin
-      // add new row
-
-    end else if Grid.Row>0 then begin
-      // delete row
-
-    end;
-  end;
-end;
-
-procedure TBuildModesEditorFrame.BuildMacroValuesStringGridMouseUp(
-  Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  Grid: TStringGrid;
-  ACol: Longint;
-  ARow: Longint;
-begin
-  Grid:=BuildMacroValuesStringGrid;
-  Grid.MouseToCell(X,Y,ACol,ARow);
-  //debugln(['TBuildModesEditorFrame.BuildMacroValuesStringGridMouseUp ',ACol,',',ARow]);
-  if ARow=MacroValues.Count+1 then begin
-
-  end;
-end;
-
-procedure TBuildModesEditorFrame.BuildMacroValuesStringGridPickListSelect(
-  Sender: TObject);
-begin
-  //debugln(['TBuildModesEditorFrame.BuildMacroValuesStringGridPickListSelect ',Grid.Col,',',Grid.Row]);
-end;
-
-procedure TBuildModesEditorFrame.BuildMacroValuesStringGridSelectCell(
-  Sender: TObject; aCol, aRow: Integer; var CanSelect: Boolean);
-begin
-  //debugln(['TBuildModesEditorFrame.BuildMacroValuesStringGridSelectCell ',Grid.Col,',',Grid.Row,' ',aCol,',',aRow]);
-end;
 
 procedure TBuildModesEditorFrame.BuildMacroValuesStringGridSelectEditor(
   Sender: TObject; aCol, aRow: Integer; var Editor: TWinControl);
@@ -144,7 +100,7 @@ begin
     sl:=TStringList.Create;
     Macros:=nil;
     try
-      if aRow=MacroValues.Count+1 then
+      if aRow=Grid.RowCount-1 then
         sl.Add('(none)')
       else
         sl.Add('(delete)');
@@ -181,6 +137,18 @@ begin
       sl.Free;
     end;
   end;
+end;
+
+procedure TBuildModesEditorFrame.BuildMacroValuesStringGridSelection(
+  Sender: TObject; aCol, aRow: Integer);
+begin
+  CleanMacrosGrid;
+end;
+
+procedure TBuildModesEditorFrame.BuildMacroValuesStringGridSelectCell(
+  Sender: TObject; aCol, aRow: Integer; var CanSelect: Boolean);
+begin
+
 end;
 
 procedure TBuildModesEditorFrame.UpdateMacrosControls;
@@ -222,6 +190,7 @@ var
   i: Integer;
 begin
   Result:=TStringList.Create;
+  if AProject=nil then exit;
   Add(AProject.CompilerOptions);
   PkgList:=nil;
   try
@@ -239,6 +208,62 @@ begin
   end;
 
   TStringList(Result).Sort;
+end;
+
+procedure TBuildModesEditorFrame.CleanMacrosGrid;
+var
+  Grid: TStringGrid;
+  aRow: Integer;
+  MacroName: string;
+  NeedNewRow: Boolean;
+begin
+  Grid:=BuildMacroValuesStringGrid;
+  // delete rows
+  for aRow:=Grid.RowCount-2 downto 1 do begin
+    if aRow=Grid.Row then continue; // row is selected
+    MacroName:=Grid.Cells[0,aRow];
+    if (MacroName<>'') and IsValidIdent(MacroName) then continue; // valid macro name
+    // delete row
+    Grid.DeleteColRow(false,aRow);
+  end;
+  NeedNewRow:=Grid.RowCount<2;
+  if (not NeedNewRow) then begin
+    MacroName:=Grid.Cells[0,Grid.RowCount-1];
+    if (MacroName<>'') and IsValidIdent(MacroName) then
+      NeedNewRow:=true;
+  end;
+  if NeedNewRow then begin
+    Grid.RowCount:=Grid.RowCount+1;
+    Grid.Cells[0,Grid.RowCount-1]:='(new)';
+    Grid.Cells[1,Grid.RowCount-1]:='';
+  end;
+end;
+
+procedure TBuildModesEditorFrame.Save;
+var
+  Grid: TStringGrid;
+  aRow: Integer;
+  MacroName: string;
+begin
+  Grid:=BuildMacroValuesStringGrid;
+  MacroValues.Clear;
+  for aRow:=1 to Grid.RowCount-1 do begin
+    MacroName:=Grid.Cells[0,aRow];
+    if (MacroName='') or (not IsValidIdent(MacroName)) then continue;
+    MacroValues.Values[MacroName]:=Grid.Cells[1,aRow];
+  end;
+end;
+
+constructor TBuildModesEditorFrame.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FMacroValues:=TProjectBuildMacros.Create;
+end;
+
+destructor TBuildModesEditorFrame.Destroy;
+begin
+  FreeAndNil(FMacroValues);
+  inherited Destroy;
 end;
 
 function TBuildModesEditorFrame.GetTitle: String;
@@ -270,14 +295,20 @@ begin
   if AOptions is TProjectCompilerOptions then begin
     PCOptions:=TProjectCompilerOptions(AOptions);
     FProject:=PCOptions.Project;
-    FMacroValues:=FProject.MacroValues;
+    MacroValues.Assign(FProject.MacroValues);
     UpdateMacrosControls;
   end;
 end;
 
 procedure TBuildModesEditorFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  PCOptions: TProjectCompilerOptions;
 begin
-
+  if AOptions is TProjectCompilerOptions then begin
+    PCOptions:=TProjectCompilerOptions(AOptions);
+    Save;
+    PCOptions.Project.MacroValues.Assign(MacroValues);
+  end;
 end;
 
 class function TBuildModesEditorFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

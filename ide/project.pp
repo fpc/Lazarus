@@ -617,7 +617,7 @@ type
     property ChangeStamp: integer read FChangeStamp;
     procedure IncreaseChangeStamp;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string; ClearModified: boolean = true);
     property Modified: boolean read GetModified write SetModified;
   end;
 
@@ -727,6 +727,7 @@ type
     procedure SetMainFileID(const AValue: Integer); override;
     function GetFiles(Index: integer): TLazProjectFile; override;
     procedure SetFlags(const AValue: TProjectFlags); override;
+    function GetModified: boolean; override;
     function GetProjectInfoFile: string; override;
     procedure SetProjectInfoFile(const NewFilename: string); override;
     procedure SetSessionStorage(const AValue: TProjectSessionStorage); override;
@@ -3082,7 +3083,7 @@ begin
       //DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
 
       // load MacroValues
-      MacroValues.SaveToXMLConfig(xmlconfig,Path+'MacroValues/');
+      MacroValues.LoadFromXMLConfig(xmlconfig,Path+'MacroValues/');
 
       // load properties
       if FileVersion<9 then NewMainUnitID:=-1 else NewMainUnitID:=0;
@@ -3498,6 +3499,13 @@ end;
 procedure TProject.SetFlags(const AValue: TProjectFlags);
 begin
   inherited SetFlags(AValue);
+end;
+
+function TProject.GetModified: boolean;
+begin
+  Result:=inherited GetModified;
+  if (not Result) and (MacroValues<>nil) then
+    Result:=MacroValues.Modified;
 end;
 
 procedure TProject.SetMainUnitID(const AValue: Integer);
@@ -6242,7 +6250,7 @@ begin
 end;
 
 procedure TProjectBuildMacros.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+  const Path: string; ClearModified: boolean);
 var
   i: Integer;
   SubPath: String;
@@ -6253,6 +6261,8 @@ begin
     XMLConfig.SetDeleteValue(SubPath+'Name',Names[i],'');
     XMLConfig.SetDeleteValue(SubPath+'Value',ValueFromIndex(i),'');
   end;
+  if ClearModified then
+    Modified:=false;
 end;
 
 initialization
