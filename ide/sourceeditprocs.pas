@@ -540,11 +540,7 @@ begin
     exit;
   end;
 
-  if not CodeToolBoss.IdentItemCheckHasChilds(IdentItem) then begin
-    ValueType := icvNone;
-    MainIDEInterface.DoJumpToCodeToolBossError;
-    exit;
-  end;
+  CodeToolBoss.IdentItemCheckHasChilds(IdentItem);
 
   CanAddSemicolon:=CodeToolsOpts.IdentComplAddSemicolon and (AddChar<>';');
   CanAddComma:=(AddChar<>',');

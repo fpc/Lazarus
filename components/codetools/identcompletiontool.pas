@@ -2787,6 +2787,7 @@ begin
     and (BaseExprType.Context.Node.Desc in (AllClasses+[ctnRecordType]))
   then
     Include(Flags,iliHasChilds);
+  Result:=true;
 end;
 
 function TIdentifierListItem.CanBeAssigned: boolean;
