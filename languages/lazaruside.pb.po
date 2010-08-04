@@ -5719,6 +5719,10 @@ msgstr "Coluna do cursor no editor atual"
 msgid "Cursor row in current editor"
 msgstr "Linha do cursor no editor atual"
 
+#: lazarusidestrconsts.liscustombuildmacros
+msgid "Custom build macros"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
 msgstr "Opções personalizadas"

@@ -5689,6 +5689,10 @@ msgstr "העמודה בה נמצא הסמן בעורך הנוכחי"
 msgid "Cursor row in current editor"
 msgstr "השורה בה נמצא הסמן בעורך הנוכחי"
 
+#: lazarusidestrconsts.liscustombuildmacros
+msgid "Custom build macros"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
 msgstr "אפשרויות מותאמות אישית"

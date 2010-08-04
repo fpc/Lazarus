@@ -5724,6 +5724,10 @@ msgstr "当前代码编辑器中光标所在列"
 msgid "Cursor row in current editor"
 msgstr "当前代码编辑器中光标所在行"
 
+#: lazarusidestrconsts.liscustombuildmacros
+msgid "Custom build macros"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
 msgstr "自定义选项"

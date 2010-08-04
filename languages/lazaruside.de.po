@@ -5741,6 +5741,10 @@ msgstr "Cursor-Spalte im aktuellem Editor"
 msgid "Cursor row in current editor"
 msgstr "Cursor-Zeile im aktuellem Editor"
 
+#: lazarusidestrconsts.liscustombuildmacros
+msgid "Custom build macros"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
 msgstr "Benutzerdefinierte Einstellungen"

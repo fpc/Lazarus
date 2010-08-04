@@ -5722,6 +5722,10 @@ msgstr "Stĺpec kurzora v aktuálnom editore"
 msgid "Cursor row in current editor"
 msgstr "Riadok kurzora v aktuálnom editore"
 
+#: lazarusidestrconsts.liscustombuildmacros
+msgid "Custom build macros"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
 msgstr "vlastné voľby"

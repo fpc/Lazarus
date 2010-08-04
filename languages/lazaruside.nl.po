@@ -5713,6 +5713,10 @@ msgstr "Cursor kolom in huidige editor"
 msgid "Cursor row in current editor"
 msgstr "Cursor rij in huidige editor"
 
+#: lazarusidestrconsts.liscustombuildmacros
+msgid "Custom build macros"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
 msgstr "aanpasbare opties"

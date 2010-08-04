@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-08-02 22:29+0300\n"
+"PO-Revision-Date: 2010-08-05 03:17+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5724,6 +5724,10 @@ msgstr "Номер столбца под курсором в текущем ре
 #: lazarusidestrconsts.liscursorrowincurrenteditor
 msgid "Cursor row in current editor"
 msgstr "Номер строки под курсором в текущем редакторе"
+
+#: lazarusidestrconsts.liscustombuildmacros
+msgid "Custom build macros"
+msgstr "Пользовательские макросы сборки"
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"

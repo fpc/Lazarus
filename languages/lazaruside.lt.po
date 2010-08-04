@@ -5719,6 +5719,10 @@ msgstr "Žymeklio stulpelis veikiamojoje rengyklėje"
 msgid "Cursor row in current editor"
 msgstr "Žymeklio eilutė veikiamojoje rengyklėje"
 
+#: lazarusidestrconsts.liscustombuildmacros
+msgid "Custom build macros"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
 msgstr "naudotojo parinktys"

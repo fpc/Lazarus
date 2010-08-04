@@ -5717,6 +5717,10 @@ msgstr "Kolom kursor dalam editor saat ini"
 msgid "Cursor row in current editor"
 msgstr "Baris kursor dalam editor saat ini"
 
+#: lazarusidestrconsts.liscustombuildmacros
+msgid "Custom build macros"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
 msgstr "opsi kustom"

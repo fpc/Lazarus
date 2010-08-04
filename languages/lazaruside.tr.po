@@ -5679,6 +5679,10 @@ msgstr "Şu anki düzenleyicinin imleç sütunu"
 msgid "Cursor row in current editor"
 msgstr "Şu anki düzenleyicinin imleç satırı"
 
+#: lazarusidestrconsts.liscustombuildmacros
+msgid "Custom build macros"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
 msgstr ""

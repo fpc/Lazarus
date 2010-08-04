@@ -5678,6 +5678,10 @@ msgstr "Sloupec kurzoru v aktuálním editoru"
 msgid "Cursor row in current editor"
 msgstr "Řádek kurzoru v aktuálním editoru"
 
+#: lazarusidestrconsts.liscustombuildmacros
+msgid "Custom build macros"
+msgstr ""
+
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
 msgstr "vlastní nastavení"
