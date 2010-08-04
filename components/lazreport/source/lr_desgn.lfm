@@ -5053,6 +5053,7 @@ inherited frDesignerForm: TfrDesignerForm
   end
   object OpenDialog1: TOpenDialog[8]
     FilterIndex = 0
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
     left = 288
     top = 200
   end
