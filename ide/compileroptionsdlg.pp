@@ -183,6 +183,7 @@ type
     ConditionalPage: TPage;
     ConditionalOptionsFrame: TCompOptsCondTreeFrame;
     ConditionalsGroupBox: TGroupBox;
+    BuildMacrosGroupBox: TGroupBox;
     BuildMacrosFrame: TCompOptBuildMacrosFrame;
 
     { Inherited Options }
@@ -1527,6 +1528,7 @@ begin
   CategoryTreeView.Items.AddObject(nil,ConditionalPage.Caption,ConditionalPage);
   {$ENDIF}
   ConditionalsGroupBox.Caption:=dlgOIOptions;
+  BuildMacrosGroupBox.Caption:=lisCustomBuildMacros;
 end;
 
 {------------------------------------------------------------------------------

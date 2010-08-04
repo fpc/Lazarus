@@ -4851,6 +4851,7 @@ resourcestring
   synfUnfoldCommentsInSelection = 'Unfold comments in Selection';
   synfFoldCommentsInSelection   = 'Fold comments in selection';
   synfHideCommentsInSelection   = 'Hide comments in selection';
+  lisCustomBuildMacros = 'Custom build macros';
 
 implementation
 

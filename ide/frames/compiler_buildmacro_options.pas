@@ -16,6 +16,10 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
+
+  Abstract:
+    Frame to edit build macros of compiler options (project+packages).
+
 }
 unit Compiler_BuildMacro_Options;
 
@@ -41,10 +45,10 @@ type
   TCompOptBuildMacrosFrame = class(TFrame)
     BMDefValSynEdit: TSynEdit;
     BMDefValSynPasSyn: TSynPasSyn;
-    BuildMacroDefValGroupBox: TGroupBox;
-    BuildMacrosGroupBox: TGroupBox;
+    BuildMacroSelectedGroupBox: TGroupBox;
     BuildMacrosTreeView: TTreeView;
     BuildMacrosTVPopupMenu: TPopupMenu;
+    BuildMacroDefaultLabel: TLabel;
     Splitter1: TSplitter;
     procedure BMDefValSynEditExit(Sender: TObject);
     procedure BuildMacrosTreeViewEdited(Sender: TObject; Node: TTreeNode;
@@ -389,16 +393,15 @@ var
   aBuildMacro: TLazBuildMacro;
   NodeType: TCBMNodeType;
 begin
-  BuildMacroDefValGroupBox.Caption:='Default value';
   GetSelectedNode(aBuildMacro,NodeType);
   if aBuildMacro<>nil then begin
-    BuildMacroDefValGroupBox.Caption:='Default value of macro '+aBuildMacro.Identifier;
-    BuildMacroDefValGroupBox.Enabled:=true;
+    BuildMacroSelectedGroupBox.Caption:='Macro '+aBuildMacro.Identifier;
+    BuildMacroSelectedGroupBox.Enabled:=true;
     BMDefValSynEdit.Lines.Text:=aBuildMacro.DefaultValue;
     BMDefValSynEdit.Enabled:=true;
   end else begin
-    BuildMacroDefValGroupBox.Caption:='Default value of macro (none)';
-    BuildMacroDefValGroupBox.Enabled:=false;
+    BuildMacroSelectedGroupBox.Caption:='No macro selected';
+    BuildMacroSelectedGroupBox.Enabled:=false;
     BMDefValSynEdit.Lines.Text:='';
     BMDefValSynEdit.Enabled:=false;
   end;
@@ -423,7 +426,7 @@ begin
   fValueImgID:=IDEImages.LoadImage(24,'da_define');
   fDefValueImgID:=IDEImages.LoadImage(24,'da_define');
 
-  BuildMacrosGroupBox.Caption:=lisBuildMacros;
+  BuildMacroDefaultLabel.Caption:='Default value or expression:';
 end;
 
 destructor TCompOptBuildMacrosFrame.Destroy;

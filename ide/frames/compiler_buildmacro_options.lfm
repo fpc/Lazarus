@@ -9,47 +9,22 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
   Visible = False
   DesignLeft = 349
   DesignTop = 520
-  object BuildMacrosGroupBox: TGroupBox
-    Left = 0
+  object BuildMacroSelectedGroupBox: TGroupBox
+    Left = 244
     Height = 233
     Top = 0
-    Width = 230
-    Align = alLeft
-    Caption = 'BuildMacrosGroupBox'
-    ClientHeight = 212
-    ClientWidth = 222
-    TabOrder = 0
-    object BuildMacrosTreeView: TTreeView
-      Left = 0
-      Height = 212
-      Top = 0
-      Width = 222
-      Align = alClient
-      DefaultItemHeight = 19
-      PopupMenu = BuildMacrosTVPopupMenu
-      RightClickSelect = True
-      TabOrder = 0
-      OnEdited = BuildMacrosTreeViewEdited
-      OnEditing = BuildMacrosTreeViewEditing
-      OnSelectionChanged = BuildMacrosTreeViewSelectionChanged
-      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
-    end
-  end
-  object BuildMacroDefValGroupBox: TGroupBox
-    Left = 235
-    Height = 233
-    Top = 0
-    Width = 343
+    Width = 334
     Align = alClient
-    Caption = 'BuildMacroDefValGroupBox'
-    ClientHeight = 212
-    ClientWidth = 335
-    TabOrder = 1
+    BorderSpacing.Left = 6
+    Caption = 'BuildMacroSelectedGroupBox'
+    ClientHeight = 214
+    ClientWidth = 330
+    TabOrder = 0
     inline BMDefValSynEdit: TSynEdit
       Left = 0
-      Height = 212
-      Top = 0
-      Width = 335
+      Height = 196
+      Top = 18
+      Width = 330
       Align = alClient
       Font.Height = -13
       Font.Name = 'Courier New'
@@ -740,12 +715,37 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
         end
       end
     end
+    object BuildMacroDefaultLabel: TLabel
+      Left = 0
+      Height = 18
+      Top = 0
+      Width = 330
+      Align = alTop
+      Caption = 'BuildMacroDefaultLabel'
+      ParentColor = False
+    end
   end
   object Splitter1: TSplitter
-    Left = 230
+    Left = 233
     Height = 233
     Top = 0
     Width = 5
+  end
+  object BuildMacrosTreeView: TTreeView
+    Left = 0
+    Height = 233
+    Top = 0
+    Width = 227
+    Align = alLeft
+    BorderSpacing.Right = 6
+    DefaultItemHeight = 19
+    PopupMenu = BuildMacrosTVPopupMenu
+    RightClickSelect = True
+    TabOrder = 2
+    OnEdited = BuildMacrosTreeViewEdited
+    OnEditing = BuildMacrosTreeViewEditing
+    OnSelectionChanged = BuildMacrosTreeViewSelectionChanged
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
   end
   object BuildMacrosTVPopupMenu: TPopupMenu
     OnPopup = BuildMacrosTVPopupMenuPopup
