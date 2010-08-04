@@ -7140,6 +7140,8 @@ constructor TFPCTargetConfigCache.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ConfigFiles:=TFPCConfigFileStateList.Create;
+  if Owner is TFPCTargetConfigCaches then
+    Caches:=TFPCTargetConfigCaches(Owner);
 end;
 
 destructor TFPCTargetConfigCache.Destroy;
@@ -7754,7 +7756,7 @@ begin
     Node:=Caches.fItems.FindLowest;
     while Node<>nil do begin
       SrcItem:=TFPCTargetConfigCache(Node.Data);
-      NewItem:=TFPCTargetConfigCache.Create(nil);
+      NewItem:=TFPCTargetConfigCache.Create(Self);
       NewItem.Assign(SrcItem);
       fItems.Add(NewItem);
       Node:=Caches.fItems.FindSuccessor(Node);
@@ -7774,7 +7776,7 @@ begin
   Clear;
   Cnt:=XMLConfig.GetValue(Path+'Count',0);
   for i:=1 to Cnt do begin
-    Item:=TFPCTargetConfigCache.Create(nil);
+    Item:=TFPCTargetConfigCache.Create(Self);
     Item.LoadFromXMLConfig(XMLConfig,Path+'Item'+IntToStr(i)+'/');
     if (Item.Compiler<>'') then
       fItems.Add(Item)
@@ -7841,7 +7843,7 @@ var
   Node: TAVLTreeNode;
   Cmp: TFPCTargetConfigCache;
 begin
-  Cmp:=TFPCTargetConfigCache.Create(nil);
+  Cmp:=TFPCTargetConfigCache.Create(Self);
   try
     Cmp.Compiler:=CompilerFilename;
     Cmp.CompilerOptions:=CompilerOptions;
@@ -7853,7 +7855,6 @@ begin
     end else if CreateIfNotExists then begin
       Result:=cmp;
       cmp:=nil;
-      Result.Caches:=Self;
       fItems.Add(Result);
     end else begin
       Result:=nil;
@@ -7993,6 +7994,8 @@ constructor TFPCSourceCache.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Files:=TStringList.Create;
+  if Owner is TFPCSourceCaches then
+    Caches:=TFPCSourceCaches(Owner);
 end;
 
 destructor TFPCSourceCache.Destroy;
@@ -8161,7 +8164,7 @@ begin
     Node:=Caches.fItems.FindLowest;
     while Node<>nil do begin
       SrcItem:=TFPCSourceCache(Node.Data);
-      NewItem:=TFPCSourceCache.Create(nil);
+      NewItem:=TFPCSourceCache.Create(Self);
       NewItem.Assign(SrcItem);
       fItems.Add(NewItem);
       Node:=Caches.fItems.FindSuccessor(Node);
@@ -8201,7 +8204,7 @@ begin
   Clear;
   Cnt:=XMLConfig.GetValue(Path+'Count',0);
   for i:=1 to Cnt do begin
-    Item:=TFPCSourceCache.Create(nil);
+    Item:=TFPCSourceCache.Create(Self);
     Item.LoadFromXMLConfig(XMLConfig,Path+'Item'+IntToStr(i)+'/');
     if (Item.Directory='') or (fItems.Find(Item)<>nil) then
       Item.Free
@@ -8272,9 +8275,8 @@ begin
   if Node<>nil then begin
     Result:=TFPCSourceCache(Node.Data);
   end else if CreateIfNotExists then begin
-    Result:=TFPCSourceCache.Create(nil);
+    Result:=TFPCSourceCache.Create(Self);
     Result.Directory:=Directory;
-    Result.Caches:=Self;
     fItems.Add(Result);
   end else begin
     Result:=nil;

@@ -659,9 +659,11 @@ var
   XMLConfig: TXMLConfig;
 begin
   aFilename:=AppendPathDelim(GetPrimaryConfigPath)+'fpcdefines.xml';
+  //debugln(['TBuildManager.SaveFPCDefinesCaches check if save needed ...']);
   if FileExistsCached(aFilename)
   and (not CodeToolBoss.FPCDefinesCache.NeedsSave) then
     exit;
+  //debugln(['TBuildManager.SaveFPCDefinesCaches saving ...']);
   try
     XMLConfig:=TXMLConfig.CreateClean(aFilename);
     try
@@ -671,7 +673,7 @@ begin
     end;
   except
     on E: Exception do begin
-      debugln(['LoadFPCDefinesCaches Error loadinf file '+aFilename+':'+E.Message]);
+      debugln(['LoadFPCDefinesCaches Error loading file '+aFilename+':'+E.Message]);
     end;
   end;
 end;
