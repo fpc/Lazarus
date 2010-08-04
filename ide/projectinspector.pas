@@ -177,7 +177,10 @@ procedure TProjectInspectorForm.ItemsTreeViewKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   if Key = 27 then
+  begin
+    Key:=0;
     Close;
+  end;
 end;
 
 procedure TProjectInspectorForm.ItemsTreeViewSelectionChanged(Sender: TObject);
