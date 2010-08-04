@@ -262,7 +262,7 @@ var
     begin
       TextFlags := DST_PREFIXTEXT;
 
-      if not UseThemes and (AState = bsDisabled) then
+      if (AState = bsDisabled) then
         TextFlags := TextFlags or DSS_DISABLED;
 
       if not ShowAccel then
