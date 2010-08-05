@@ -14,7 +14,8 @@ unit customdrawncontrols;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, LCLType, LCLIntf, IntfGraphics;
+  Classes, SysUtils, Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
+  Math;
 
 type
 
@@ -34,6 +35,8 @@ type
   TCustomBitmappedButton = class(TCustomControl)
   private
     FOnChange: TNotifyEvent;
+    BmpBuffer: TBitmap;
+    StrBuffer: TStringList;
   protected
     FImageBtn: TPicture;
     FImageBtnDown: TPicture;
@@ -74,25 +77,77 @@ type
   {@@
     TBitmappedButton is a simple custom drawn button which bases it's drawing
     on provided raster images. Currently the following states are supported:
-    normal, down and focused. The button may be drawn flat or alpha blended
-    using a separate image for the Alpha channel. While pixels in the alpha
-    channel will result in the button pixel being fully drawn, while black
-    pixels represent pixels which aren't drawn. grey pixels are alpha blended.
+    normal, down and focused.
+
+    The Caption of this button may have multiple lines of text, separated by any
+    line separator. The text is drawn centralized in the button.
+
+    Some work was done trying to achieve alpha blending for the button, but this
+    wasn't successfull. It would work like this: The button may be drawn flat
+    or alpha blended using a separate image for the Alpha channel. While pixels
+    in the alpha channel will result in the button pixel being fully drawn,
+    while black pixels represent pixels which aren't drawn. grey pixels are
+    alpha blended.
   }
 
   TBitmappedButton = class(TCustomBitmappedButton)
   published
+    // LCL properties and events
+    property Action;
+    property Anchors;
+    property AnchorSide;
+//    property BidiMode;
+//    property BorderSpacing;
+//    property Cancel;
+    property Caption;
+    property Constraints;
+//    property Default;
+//    property DragCursor;
+//    property DragKind;
+//    property DragMode;
+    property Enabled;
+    property Font;
+//    property ParentBidiMode;
+//    property ModalResult;
+    property OnChangeBounds;
+    property OnClick;
+    property OnContextPopup;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnStartDrag;
+    property OnUTF8KeyPress;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    // Specific properties
     property ImageBtn;
     property ImageBtnDown;
     property ImageBtnFocused;
     property Options;
-    // Events
-    property OnChange;
   end;
 
 procedure Register;
 
 implementation
+
+const
+  INT_BitmappedButton_LineSpacing = 5;
 
 procedure Register;
 begin
@@ -199,6 +254,9 @@ constructor TCustomBitmappedButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
+  BmpBuffer := TBitmap.Create;
+  StrBuffer := TStringList.Create;
+
   FImageBtn := TPicture.Create;
   FImageBtnDown := TPicture.Create;
   FImageBtnMouseOver := TPicture.Create;
@@ -218,6 +276,9 @@ begin
   if Assigned(FImageBtnFocused) then FImageBtnFocused.Free;
   if Assigned(FImageBtnChecked) then FImageBtnChecked.Free;
 
+  BmpBuffer.Free;
+  StrBuffer.Free;
+
   inherited Destroy;
 end;
 
@@ -227,8 +288,45 @@ begin
 end;
 
 procedure TCustomBitmappedButton.Paint;
+var
+  lTextX, lTextY, lTextCX, lTextCY, lTmp, lTextHeightPlusLineSpacing: integer;
+  i: Integer;
 begin
-  Canvas.Draw(0, 0, GetStateBitmap());
+  // First draw the button image
+  BmpBuffer.Width := Width;
+  BmpBuffer.Height := Height;
+  BmpBuffer.Canvas.Draw(0, 0, GetStateBitmap());
+
+  // Now measure the text position
+
+  BmpBuffer.Canvas.Font.Assign(Self.Font);
+  BmpBuffer.Canvas.Brush.Style := bsClear;
+
+  StrBuffer.Text := Caption;
+
+  lTextCX := 0;
+  for i := 0 to StrBuffer.Count - 1 do
+  begin
+    lTmp := BmpBuffer.Canvas.TextWidth(StrBuffer.Strings[i]);
+    lTextCX := Max(lTextCX, lTmp);
+  end;
+
+  lTextHeightPlusLineSpacing := BmpBuffer.Canvas.TextHeight(Caption) + INT_BitmappedButton_LineSpacing;
+  lTextCY := BmpBuffer.Canvas.TextHeight(Caption) * StrBuffer.Count
+    + INT_BitmappedButton_LineSpacing * (StrBuffer.Count - 1);
+
+  lTextX := Width div 2 - lTextCX div 2;
+  lTextY := Height div 2 - lTextCY div 2;
+
+  // Draw the text
+
+  for i := 0 to StrBuffer.Count - 1 do
+  begin
+    BmpBuffer.Canvas.TextOut(lTextX, lTextY + lTextHeightPlusLineSpacing * i, StrBuffer.Strings[i]);
+  end;
+
+  // And flush the buffer to the screen
+  Canvas.Draw(0, 0, BmpBuffer);
 end;
 
 function TCustomBitmappedButton.GetStateBitmap(): TBitmap;
