@@ -4407,9 +4407,10 @@ begin
     ScrollInfo.nPage := CharsInWindow;
     ScrollInfo.nPos := LeftChar;
     SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
-    {$IFnDEF SynScrollBarWorkaround}
-      ShowScrollBar(Handle, SB_Horz, sfHorizScrollbarVisible in fStateFlags);
-    {$ENDIF}
+    {$IFNDEF LCLWin32} {$IFnDEF SynScrollBarWorkaround}
+    if not (sfHorizScrollbarVisible in fStateFlags) then
+      ShowScrollBar(Handle, SB_Horz, False);
+    {$ENDIF} {$ENDIF}
     //DebugLn('[TCustomSynEdit.UpdateScrollbars] nMin=',ScrollInfo.nMin,' nMax=',ScrollInfo.nMax,
     //' nPage=',ScrollInfo.nPage,' nPos=',ScrollInfo.nPos,' ClientW=',ClientWidth);
 
@@ -4432,9 +4433,10 @@ begin
     ScrollInfo.nPage := LinesInWindow;
     ScrollInfo.nPos := FFoldedLinesView.TextIndexToViewPos(TopLine-1);
     SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
-    {$IFnDEF SynScrollBarWorkaround}
-    ShowScrollBar(Handle, SB_Vert, sfVertScrollbarVisible in fStateFlags);
-    {$ENDIF}
+    {$IFNDEF LCLWin32} {$IFnDEF SynScrollBarWorkaround}
+    if not (sfVertScrollbarVisible in fStateFlags) then
+      ShowScrollBar(Handle, SB_Vert, False);
+    {$ENDIF} {$ENDIF}
   end;
 end;
 
