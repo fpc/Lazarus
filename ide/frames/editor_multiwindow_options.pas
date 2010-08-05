@@ -142,6 +142,7 @@ begin
     chkHideSingleTab.Checked := HideSingleTabInWindow;
     chkShowNumbers.Checked := ShowTabNumbers;
     chkShowCloseBtn.Checked := ShowTabCloseButtons;
+    chkUseTabHistory.Checked := UseTabHistory;
   end;
   FMultiWinEditAccessOrder.Assign(TEditorOptions(AOptions).MultiWinEditAccessOrder);
 
@@ -165,6 +166,7 @@ begin
     HideSingleTabInWindow := chkHideSingleTab.Checked;
     ShowTabNumbers := chkShowNumbers.Checked;
     ShowTabCloseButtons := chkShowCloseBtn.Checked;
+    UseTabHistory := chkUseTabHistory.Checked;
   end;
 end;
 
