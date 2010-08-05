@@ -46,33 +46,22 @@ begin
     Result := nil;
 end;
 
-function GetHintInfoAtMouse: THintInfoAtMouse;
+function GetHintInfoAt(CursorPos: TPoint): THintInfoAtMouse;
 begin
-  if Mouse <> nil then
+  Result.MousePos := CursorPos;
+  Result.Control := GetHintControl(FindControlAtPosition(Result.MousePos, True));
+  Result.ControlHasHint := Assigned(Result.Control) and Assigned(Application) and
+    Application.ShowHint and  (GetCapture = 0) and
+   ((GetKeyState(VK_LBUTTON) and $80) = 0) and
+   ((GetKeyState(VK_MBUTTON) and $80) = 0) and
+   ((GetKeyState(VK_RBUTTON) and $80) = 0);
+  if Result.ControlHasHint then
   begin
-    Result.MousePos := Mouse.CursorPos;
-    Result.Control := GetHintControl(FindControlAtPosition(Result.MousePos, True));
-    Result.ControlHasHint:=
-      (Result.Control <> nil)
-      and (Application <> nil) and (Application.ShowHint)
-      and (GetCapture = 0)
-      and ((GetKeyState(VK_LBUTTON) and $80) = 0)
-      and ((GetKeyState(VK_MBUTTON) and $80) = 0)
-      and ((GetKeyState(VK_RBUTTON) and $80) = 0);
-    if Result.ControlHasHint then
-    begin
-      // if there is a modal form, then don't show hints for other forms
-      if (Screen.FFocusedForm<>nil)
-      and (fsModal in Screen.FFocusedForm.FormState)
-      and (GetParentForm(Result.Control) <> Screen.FFocusedForm)
-      then
-        Result.ControlHasHint := False;
-    end;
-  end else
-  begin
-    Result.MousePos := Point(0, 0);
-    Result.Control := nil;
-    Result.ControlHasHint := False;
+    // if there is a modal form, then don't show hints for other forms
+    if Assigned(Screen.FFocusedForm) and
+       (fsModal in Screen.FFocusedForm.FormState) and
+       (GetParentForm(Result.Control) <> Screen.FFocusedForm) then
+      Result.ControlHasHint := False;
   end;
 end;
 
@@ -181,6 +170,47 @@ begin
   CaptureExceptions:=false;
   LCLProc.SendApplicationMessageFunction:=nil;
   OnGetApplicationName := nil;
+end;
+
+procedure TApplication.ActivateHint(CursorPos: TPoint;
+  CheckHintControlChange: Boolean);
+var
+  Info: THintInfoAtMouse;
+  HintControlChanged: Boolean;
+begin
+  Info := GetHintInfoAt(CursorPos);
+
+  {$ifdef DebugHintWindow}
+    DebugLn('TApplication.DoOnMouseMove Info.ControlHasHint=',dbgs(Info.ControlHasHint),' Type=',dbgs(ord(FHintTimerType)),' FHintControl=',DbgSName(FHintControl),' Info.Control=',DbgSName(Info.Control));
+  {$endif}
+  HintControlChanged := not CheckHintControlChange or (FHintControl <> Info.Control);
+  if Info.ControlHasHint then
+  begin
+    if HintControlChanged then
+    begin
+      StopHintTimer;
+      HideHint;
+      FHintControl := Info.Control;
+      FHintRect := FHintControl.BoundsRect;
+    end;
+    case FHintTimerType of
+      ahttNone, ahttHideHint:
+        //react only if the hint control changed or if the mouse leave the previously set hint rect
+        if HintControlChanged or (not PtInRect(FHintRect, FHintControl.ScreenToClient(Info.MousePos))) then
+        begin
+          //if a hint is visible immediately query the app to show a new hint...
+          if FHintTimerType = ahttHideHint then
+            ShowHintWindow(Info);
+          //...if there's no hint window visible at this point than schedule a new query
+          if (FHintTimerType = ahttNone) or (FHintWindow = nil) or not FHintWindow.Visible then
+            StartHintTimer(HintPause, ahttShowHint);
+        end;
+      ahttShowHint:
+        StartHintTimer(HintPause, ahttShowHint);
+    end;
+  end
+  else
+    CancelHint;
 end;
 
 {------------------------------------------------------------------------------
@@ -693,42 +723,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.DoOnMouseMove;
 var
-  Info: THintInfoAtMouse;
-  HintControlChanged: Boolean;
+  CursorPos: TPoint;
 begin
-  Info := GetHintInfoAtMouse;
+  if not GetCursorPos(CursorPos) then
+    Exit;
 
-  {$ifdef DebugHintWindow}
-    DebugLn('TApplication.DoOnMouseMove Info.ControlHasHint=',dbgs(Info.ControlHasHint),' Type=',dbgs(ord(FHintTimerType)),' FHintControl=',DbgSName(FHintControl),' Info.Control=',DbgSName(Info.Control));
-  {$endif}
-  HintControlChanged := FHintControl <> Info.Control;
-  if Info.ControlHasHint then
-  begin
-    if HintControlChanged then
-    begin
-      StopHintTimer;
-      HideHint;
-      FHintControl := Info.Control;
-      FHintRect := FHintControl.BoundsRect;
-    end;
-    case FHintTimerType of
-      ahttNone, ahttHideHint:
-        //react only if the hint control changed or if the mouse leave the previously set hint rect
-        if HintControlChanged or (not PtInRect(FHintRect, FHintControl.ScreenToClient(Info.MousePos))) then
-        begin
-          //if a hint is visible immediately query the app to show a new hint...
-          if FHintTimerType = ahttHideHint then
-            ShowHintWindow(Info);
-          //...if there's no hint window visible at this point than schedule a new query
-          if (FHintTimerType = ahttNone) or (FHintWindow = nil) or not FHintWindow.Visible then
-            StartHintTimer(HintPause, ahttShowHint);
-        end;
-      ahttShowHint:
-        StartHintTimer(HintPause, ahttShowHint);
-    end;
-  end
-  else
-    CancelHint;
+  ActivateHint(CursorPos, True);
 end;
 
 {------------------------------------------------------------------------------
@@ -882,6 +882,7 @@ end;
 procedure TApplication.OnHintTimer(Sender: TObject);
 var
   Info: THintInfoAtMouse;
+  CursorPos: TPoint;
 begin
   {$ifdef DebugHintWindow}
     DebugLn('TApplication.OnHintTimer Type=', IntToStr(ord(FHintTimerType)));
@@ -890,11 +891,16 @@ begin
   case FHintTimerType of
     ahttShowHint:
       begin
-        Info := GetHintInfoAtMouse;
-        if Info.ControlHasHint then
-          ShowHintWindow(Info)
+        if not GetCursorPos(CursorPos) then
+          HideHint
         else
-          HideHint;
+        begin
+          Info := GetHintInfoAt(CursorPos);
+          if Info.ControlHasHint then
+            ShowHintWindow(Info)
+          else
+            HideHint;
+        end;
       end;
     ahttHideHint:
       begin

@@ -1292,6 +1292,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure ActivateHint(CursorPos: TPoint; CheckHintControlChange: Boolean = False);
     procedure ControlDestroyed(AControl: TControl);
     function BigIconHandle: HIcon;
     function SmallIconHandle: HIcon;
