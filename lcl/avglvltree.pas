@@ -49,11 +49,14 @@ type
   end;
   PAvgLvlTreeNode = ^TAvgLvlTreeNode;
 
+  TAvgLvlTreeNodeMemManager = class;
+
   { TAvgLvlTree }
 
   TAvgLvlTree = class
   private
     FCount: integer;
+    FNodeMemManager: TAvgLvlTreeNodeMemManager;
     FOnCompare: TListSortCompare;
     FOnObjectCompare: TObjectSortCompare;
     procedure BalanceAfterInsert(ANode: TAvgLvlTreeNode);
@@ -101,6 +104,7 @@ type
     function ConsistencyCheck: integer;
     procedure WriteReportToStream(s: TStream; var StreamSize: TStreamSeekType);
     function ReportAsString: string;
+    property NodeMemManager: TAvgLvlTreeNodeMemManager read FNodeMemManager write FNodeMemManager;
     constructor Create(OnCompareMethod: TListSortCompare);
     constructor CreateObjectCompare(OnCompareMethod: TObjectSortCompare);
     constructor Create;
@@ -218,9 +222,6 @@ function ComparePAnsiStringWithStrToStrItemI(Key, Data: Pointer): Integer;
 implementation
 
 
-var NodeMemManager: TAvgLvlTreeNodeMemManager;
-
-
 function ComparePointer(Data1, Data2: Pointer): integer;
 begin
   if Data1>Data2 then Result:=-1
@@ -266,7 +267,10 @@ end;
 
 function TAvgLvlTree.Add(Data: Pointer): TAvgLvlTreeNode;
 begin
-  Result:=NodeMemManager.NewNode;
+  if NodeMemManager<>nil then
+    Result:=NodeMemManager.NewNode
+  else
+    Result:=TAvgLvlTreeNode.Create;
   Result.Data:=Data;
   Add(Result);
 end;
@@ -605,7 +609,10 @@ procedure TAvgLvlTree.Clear;
       if ANode.Left<>nil then DeleteNode(ANode.Left);
       if ANode.Right<>nil then DeleteNode(ANode.Right);
     end;
-    NodeMemManager.DisposeNode(ANode);
+    if NodeMemManager<>nil then
+      NodeMemManager.DisposeNode(ANode)
+    else
+      ANode.Free;
   end;
 
 // Clear
@@ -661,7 +668,10 @@ begin
       Root:=nil;
     end;
     dec(FCount);
-    NodeMemManager.DisposeNode(ANode);
+    if NodeMemManager<>nil then
+      NodeMemManager.DisposeNode(ANode)
+    else
+      ANode.Free;
     exit;
   end;
   if (ANode.Right=nil) then begin
@@ -684,7 +694,10 @@ begin
       Root:=OldLeft;
     end;
     dec(FCount);
-    NodeMemManager.DisposeNode(ANode);
+    if NodeMemManager<>nil then
+      NodeMemManager.DisposeNode(ANode)
+    else
+      ANode.Free;
     exit;
   end;
   if (ANode.Left=nil) then begin
@@ -707,7 +720,10 @@ begin
       Root:=OldRight;
     end;
     dec(FCount);
-    NodeMemManager.DisposeNode(ANode);
+    if NodeMemManager<>nil then
+      NodeMemManager.DisposeNode(ANode)
+    else
+      ANode.Free;
     exit;
   end;
   // DelNode has both: Left and Right
@@ -1652,12 +1668,5 @@ begin
     Node:=Tree.FindPrecessor(Node);
   Result:=GetNode(Node,PrevKey,PrevValue);
 end;
-
-initialization
-  NodeMemManager:=TAvgLvlTreeNodeMemManager.Create;
-
-finalization
-  NodeMemManager.Free;
-  NodeMemManager:=nil;
 
 end.
