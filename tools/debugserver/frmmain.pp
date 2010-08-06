@@ -104,6 +104,7 @@ type
     FSrv : TSimpleIPCServer;
     FShowOnStartUp,
     FShowOnmessage,
+    FKeepVisible : Boolean;
     FAtBottom : Boolean;
     FQuitting : Boolean;
     FDiscarded : Int64;
@@ -389,6 +390,8 @@ begin
     LI.SubItems.Add(Msg.Msg);
   finally
     LVmessages.Items.EndUpdate;
+    if FKeepVisible then
+      LI.MakeVisible(False);
   end;
   If FShowOnMessage then
     ShowMessageWindow;
@@ -454,11 +457,13 @@ begin
     ShowOnStartUp:=FShowOnStartUp;
     ShowOnMessage:=FShowOnmessage;
     NewMessageAtBottom:=FAtBottom;
+    NewMessageVisible:=FKeepVisible;
     If (ShowModal=mrOk) then
       begin
       FShowOnStartUp:=ShowOnStartUp;
       FShowOnmessage:=ShowOnMessage;
       FAtBottom:=NewMessageAtBottom;
+      FKeepVisible:=NewMessageVisible;
       SaveSettings;
       end;
     end;
@@ -497,6 +502,7 @@ Const
   KeyShowOnStartup = 'ShowOnStartup';
   KeyShowOnMessage = 'ShowOnMessage';
   KeyAtBottom      = 'NewAtBottom';
+  KeyNewVisible    = 'NewVisible';
   KeyStayOnTop     = 'StayOnTop';
   KeyToolBar       = 'ShowToolBar';
 
@@ -512,6 +518,7 @@ begin
       FShowOnStartUp:=ReadBool(SSettings,KeyShowOnStartup,True);
       FShowOnMessage:=ReadBool(SSettings,KeyShowOnMessage,True);
       FAtBottom:=ReadBool(SSettings,KeyAtBottom,False);
+      FKeepVisible:=ReadBool(SSettings,KeyNewVisible,True);
       StayOnTop:=ReadBool(SSettings,KeyStayOnTop,False);
       ShowToolBar:=ReadBool(SSettings,KeyToolBar,True);
     finally
@@ -531,6 +538,7 @@ begin
       WriteBool(SSettings,KeyShowOnStartup,FShowOnStartUp);
       WriteBool(SSettings,KeyShowOnMessage,FShowOnMessage);
       WriteBool(SSettings,KeyAtBottom,FAtBottom);
+      WriteBool(SSettings,KeyNewVisible,FKeepVisible);
       WriteBool(SSettings,KeyStayOnTop,StayOnTop);
       WriteBool(SSettings,KeyToolBar,ShowToolBar);
     finally

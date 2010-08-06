@@ -33,6 +33,7 @@ type
 
   TOptionsForm = class(TForm)
     ButtonPanel1: TButtonPanel;
+    CBNewVisible: TCheckBox;
     CBShowOnStartUp: TCheckBox;
     CBShowOnMessage: TCheckBox;
     CBNewAtBottom: TCheckBox;
@@ -48,6 +49,7 @@ type
     Property ShowOnStartup : Boolean Index 0 Read GetB Write SetB;
     Property ShowOnMessage : Boolean Index 1 Read GetB Write SetB;
     Property NewMessageAtBottom : Boolean Index 2 Read GetB Write SetB;
+    Property NewMessageVisible: Boolean Index 3 Read GetB Write SetB;
   end;
 
 var
@@ -66,6 +68,7 @@ begin
     0 : Result:=CBShowOnStartUp;
     1 : Result:=CBShowOnMessage;
     2 : Result:=CBNewAtBottom;
+    3 : Result:=CBNewVisible;
   end;
 end;
 

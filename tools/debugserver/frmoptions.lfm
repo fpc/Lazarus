@@ -1,18 +1,29 @@
 object OptionsForm: TOptionsForm
-  Left = 412
-  Height = 223
-  Top = 217
+  Left = 390
+  Height = 230
+  Top = 239
   Width = 390
+  ActiveControl = CBShowOnStartUp
   Caption = 'Options'
-  ClientHeight = 223
+  ClientHeight = 230
   ClientWidth = 390
   Position = poMainFormCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 38
-    Top = 179
+    Height = 34
+    Top = 190
     Width = 378
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
   end
@@ -44,20 +55,28 @@ object OptionsForm: TOptionsForm
   end
   object GBMessages: TGroupBox
     Left = 16
-    Height = 59
+    Height = 75
     Top = 109
     Width = 300
     Caption = 'Messages'
-    ClientHeight = 43
+    ClientHeight = 59
     ClientWidth = 296
     TabOrder = 2
     object CBNewAtBottom: TCheckBox
       Left = 13
       Height = 21
-      Top = 10
+      Top = 5
       Width = 204
       Caption = 'Show new messages at bottom'
       TabOrder = 0
+    end
+    object CBNewVisible: TCheckBox
+      Left = 14
+      Height = 21
+      Top = 29
+      Width = 200
+      Caption = 'Scroll new messages into view'
+      TabOrder = 1
     end
   end
 end

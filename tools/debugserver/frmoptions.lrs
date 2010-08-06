@@ -1,0 +1,27 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TOptionsForm','FORMDATA',[
+  'TPF0'#12'TOptionsForm'#11'OptionsForm'#4'Left'#3#134#1#6'Height'#3#230#0#3'T'
+  +'op'#3#239#0#5'Width'#3#134#1#13'ActiveControl'#7#15'CBShowOnStartUp'#7'Capt'
+  +'ion'#6#7'Options'#12'ClientHeight'#3#230#0#11'ClientWidth'#3#134#1#8'Positi'
+  +'on'#7#16'poMainFormCenter'#10'LCLVersion'#6#6'0.9.29'#0#12'TButtonPanel'#12
+  +'ButtonPanel1'#4'Left'#2#6#6'Height'#2'"'#3'Top'#3#190#0#5'Width'#3'z'#1#13
+  +'OKButton.Name'#6#8'OKButton'#16'OKButton.Caption'#6#3'&OK'#15'HelpButton.Na'
+  +'me'#6#10'HelpButton'#18'HelpButton.Caption'#6#5'&Help'#18'HelpButton.Enable'
+  +'d'#8#16'CloseButton.Name'#6#11'CloseButton'#19'CloseButton.Caption'#6#6'&Cl'
+  +'ose'#19'CloseButton.Enabled'#8#17'CancelButton.Name'#6#12'CancelButton'#20
+  +'CancelButton.Caption'#6#6'Cancel'#8'TabOrder'#2#0#11'ShowButtons'#11#4'pbOK'
+  +#8'pbCancel'#0#0#0#9'TGroupBox'#8'GBWindow'#4'Left'#2#16#6'Height'#2'Q'#3'To'
+  +'p'#2#16#5'Width'#3','#1#7'Caption'#6#19'Show message window'#12'ClientHeigh'
+  +'t'#2'A'#11'ClientWidth'#3'('#1#8'TabOrder'#2#1#0#9'TCheckBox'#15'CBShowOnSt'
+  +'artUp'#4'Left'#2#14#6'Height'#2#21#3'Top'#2#9#5'Width'#2'u'#7'Caption'#6#15
+  +'Show on startup'#8'TabOrder'#2#0#0#0#9'TCheckBox'#15'CBShowOnMessage'#4'Lef'
+  +'t'#2#13#6'Height'#2#21#3'Top'#2'%'#5'Width'#3#156#0#7'Caption'#6#19'Show on'
+  +' new message'#8'TabOrder'#2#1#0#0#0#9'TGroupBox'#10'GBMessages'#4'Left'#2#16
+  +#6'Height'#2'K'#3'Top'#2'm'#5'Width'#3','#1#7'Caption'#6#8'Messages'#12'Clie'
+  +'ntHeight'#2';'#11'ClientWidth'#3'('#1#8'TabOrder'#2#2#0#9'TCheckBox'#13'CBN'
+  +'ewAtBottom'#4'Left'#2#13#6'Height'#2#21#3'Top'#2#5#5'Width'#3#204#0#7'Capti'
+  +'on'#6#27'Show new messages at bottom'#8'TabOrder'#2#0#0#0#9'TCheckBox'#12'C'
+  +'BNewVisible'#4'Left'#2#14#6'Height'#2#21#3'Top'#2#29#5'Width'#3#200#0#7'Cap'
+  +'tion'#6#29'Scroll new messages into view'#8'TabOrder'#2#1#0#0#0#0
+]);
