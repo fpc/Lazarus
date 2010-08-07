@@ -131,13 +131,18 @@ type
     FAreaLinesPen: TPen;
     FInvertedStairs: Boolean;
     FStairs: Boolean;
+    FUseZeroLevel: Boolean;
+    FZeroLevel: Double;
 
+    function IsZeroLevelStored: boolean;
     procedure SetAreaBrush(AValue: TBrush);
     procedure SetAreaContourPen(AValue: TPen);
     procedure SetAreaLinesPen(AValue: TPen);
     procedure SetInvertedStairs(Value: Boolean);
     procedure SetSeriesColor(AValue: TColor);
     procedure SetStairs(Value: Boolean);
+    procedure SetUseZeroLevel(AValue: Boolean);
+    procedure SetZeroLevel(AValue: Double);
   protected
     function GetLabelDirection(AIndex: Integer): TLabelDirection; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
@@ -162,6 +167,10 @@ type
     property Source;
     property Stairs: Boolean read FStairs write SetStairs default false;
     property UseReticule;
+    property UseZeroLevel: Boolean
+      read FUseZeroLevel write SetUseZeroLevel default false;
+    property ZeroLevel: Double
+      read FZeroLevel write SetZeroLevel stored IsZeroLevelStored;
   end;
 
   TSeriesPointerDrawEvent = procedure (
@@ -1114,7 +1123,7 @@ var
   i: Integer;
   a, b: TDoublePoint;
   ext, ext2: TDoubleRect;
-  zeroLevel: Double;
+  z: Double;
 begin
   if Count = 0 then exit;
 
@@ -1129,13 +1138,15 @@ begin
   SetLength(pts, Length(FGraphPoints) * 2 + 2);
   numPts := 0;
 
-  if IsRotated then
-    zeroLevel := ext2.a.X
+  if UseZeroLevel then
+    z := ZeroLevel
+  else if IsRotated then
+    z := ext2.a.X
   else
-    zeroLevel := ext2.a.Y;
+    z := ext2.a.Y;
 
   a := ProjToRect(FGraphPoints[0], ext2);
-  PushPoint(ProjToLine(a, zeroLevel));
+  PushPoint(ProjToLine(a, z));
   PushPoint(a);
   for i := 0 to High(FGraphPoints) - 1 do begin
     a := FGraphPoints[i];
@@ -1153,7 +1164,7 @@ begin
   end;
   a := ProjToRect(FGraphPoints[High(FGraphPoints)], ext2);
   PushPoint(a);
-  PushPoint(ProjToLine(a, zeroLevel));
+  PushPoint(ProjToLine(a, z));
 
   ACanvas.Brush.Assign(AreaBrush);
   ACanvas.Pen.Assign(AreaContourPen);
@@ -1162,7 +1173,7 @@ begin
     ACanvas.Pen.Assign(AreaLinesPen);
     for i := 1 to High(FGraphPoints) - 1 do begin
       a := ProjToRect(FGraphPoints[i], ext2);
-      b := ProjToLine(a, zeroLevel);
+      b := ProjToLine(a, z);
       ACanvas.Line(ParentChart.GraphToImage(a), ParentChart.GraphToImage(b));
     end;
   end;
@@ -1185,6 +1196,11 @@ end;
 function TAreaSeries.GetSeriesColor: TColor;
 begin
   Result := FAreaBrush.Color;
+end;
+
+function TAreaSeries.IsZeroLevelStored: boolean;
+begin
+  Result := ZeroLevel <> 0.0;
 end;
 
 procedure TAreaSeries.SetAreaBrush(AValue: TBrush);
@@ -1219,6 +1235,20 @@ end;
 procedure TAreaSeries.SetStairs(Value: Boolean);
 begin
   FStairs := Value;
+  UpdateParentChart;
+end;
+
+procedure TAreaSeries.SetUseZeroLevel(AValue: Boolean);
+begin
+  if FUseZeroLevel = AValue then exit;
+  FUseZeroLevel := AValue;
+  UpdateParentChart;
+end;
+
+procedure TAreaSeries.SetZeroLevel(AValue: Double);
+begin
+  if FZeroLevel = AValue then exit;
+  FZeroLevel := AValue;
   UpdateParentChart;
 end;
 
