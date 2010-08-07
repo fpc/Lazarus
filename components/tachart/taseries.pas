@@ -127,11 +127,14 @@ type
   TAreaSeries = class(TBasicPointSeries)
   private
     FAreaBrush: TBrush;
+    FAreaContourPen: TPen;
     FAreaLinesPen: TPen;
     FInvertedStairs: Boolean;
     FStairs: Boolean;
 
-    procedure SetAreaBrush(Value: TBrush);
+    procedure SetAreaBrush(AValue: TBrush);
+    procedure SetAreaContourPen(AValue: TPen);
+    procedure SetAreaLinesPen(AValue: TPen);
     procedure SetInvertedStairs(Value: Boolean);
     procedure SetSeriesColor(AValue: TColor);
     procedure SetStairs(Value: Boolean);
@@ -149,7 +152,8 @@ type
     property AxisIndexY;
   published
     property AreaBrush: TBrush read FAreaBrush write SetAreaBrush;
-    property AreaLinesPen: TPen read FAreaLinesPen write FAreaLinesPen;
+    property AreaContourPen: TPen read FAreaContourPen write SetAreaContourPen;
+    property AreaLinesPen: TPen read FAreaLinesPen write SetAreaLinesPen;
     property Depth;
     property InvertedStairs: Boolean
       read FInvertedStairs write SetInvertedStairs default false;
@@ -1066,82 +1070,100 @@ end;
 constructor TAreaSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FAreaLinesPen := TPen.Create;
-  FAreaLinesPen.OnChange := @StyleChanged;
-
   FAreaBrush := TBrush.Create;
   FAreaBrush.OnChange := @StyleChanged;
+  FAreaContourPen := TPen.Create;
+  FAreaContourPen.OnChange := @StyleChanged;
+  FAreaLinesPen := TPen.Create;
+  FAreaLinesPen.OnChange := @StyleChanged;
 end;
 
 destructor TAreaSeries.Destroy;
 begin
-  FreeAndNil(FAreaLinesPen);
   FreeAndNil(FAreaBrush);
+  FreeAndNil(FAreaContourPen);
+  FreeAndNil(FAreaLinesPen);
   inherited;
 end;
 
 procedure TAreaSeries.Draw(ACanvas: TCanvas);
 var
-  pts: array [0..4] of TPoint;
+  pts: TPointArray;
   numPts: Integer;
 
-  procedure PushPoint(const A: TPoint);
+  procedure PushPoint(const A: TDoublePoint);
+  var
+    p: TPoint;
   begin
-    pts[numPts] := A;
-    Inc(numPts);
+    p := ParentChart.GraphToImage(A);
+    if (numPts > 0) and (p = pts[numPts - 1]) then exit;
+    pts[numPts] := p;
+    numPts += 1;
+  end;
+
+  function ProjToLine(const APt: TDoublePoint; ACoord: Double): TDoublePoint;
+  begin
+    Result := APt;
+    if IsRotated then
+      Result.X := ACoord
+    else
+      Result.Y := ACoord;
   end;
 
 var
-  i, ax, bx, ymin: Integer;
+  i: Integer;
   a, b: TDoublePoint;
   ext, ext2: TDoubleRect;
-  imageRect: TRect;
+  zeroLevel: Double;
 begin
   if Count = 0 then exit;
-
-  ACanvas.Brush.Assign(AreaBrush);
-  ACanvas.Pen.Assign(AreaLinesPen);
 
   ext := ParentChart.CurrentExtent;
   ext2 := ext;
   ExpandRange(ext2.a.X, ext2.b.X, 0.1);
-  ExpandRange(ext2.a.Y, ext2.b.Y, 1.0);
+  ExpandRange(ext2.a.Y, ext2.b.Y, 0.1);
 
-  ymin := ParentChart.ClipRect.Bottom - 1;
+  PrepareGraphPoints(ext, true);
+  if Length(FGraphPoints) = 0 then exit;
 
-  for i := 0 to Count - 2 do begin
-    a := GetGraphPoint(i);
-    b := GetGraphPoint(i + 1);
-    if a.X > b.X then
-      Exchange(a, b);
-    if (a.X > ext.b.X) or (b.X < ext.a.X) then continue;
+  SetLength(pts, Length(FGraphPoints) * 2 + 2);
+  numPts := 0;
+
+  if IsRotated then
+    zeroLevel := ext2.a.X
+  else
+    zeroLevel := ext2.a.Y;
+
+  a := ProjToRect(FGraphPoints[0], ext2);
+  PushPoint(ProjToLine(a, zeroLevel));
+  PushPoint(a);
+  for i := 0 to High(FGraphPoints) - 1 do begin
+    a := FGraphPoints[i];
+    b := FGraphPoints[i + 1];
     if Stairs then begin
       if InvertedStairs then
         a.Y := b.Y
       else
         b.Y := a.Y;
     end;
-    ax := ParentChart.XGraphToImage(Max(a.X, ext2.a.X));
-    bx := ParentChart.XGraphToImage(Min(b.X, ext2.b.X));
-
     if LineIntersectsRect(a, b, ext2) then begin
-      numPts := 0;
-      PushPoint(Point(ax, ymin));
-      if a.Y = ext2.b.Y then
-        PushPoint(Point(ax, ParentChart.YGraphToImage(a.Y)));
-      PushPoint(ParentChart.GraphToImage(a));
-      PushPoint(ParentChart.GraphToImage(b));
-      if b.Y = ext2.b.Y then
-        PushPoint(Point(bx, ParentChart.YGraphToImage(b.Y)));
-      PushPoint(Point(bx, ymin));
-      ACanvas.Polygon(pts, false, 0, numPts);
-    end
-    else begin
-      if a.Y > ext.b.Y then begin
-        imageRect := Rect(ax, ParentChart.ClipRect.Top - 1, bx, ymin);
-        NormalizeRect(imageRect);
-        ACanvas.Rectangle(imageRect);
-      end;
+      PushPoint(a);
+      PushPoint(b);
+    end;
+  end;
+  a := ProjToRect(FGraphPoints[High(FGraphPoints)], ext2);
+  PushPoint(a);
+  PushPoint(ProjToLine(a, zeroLevel));
+
+  ACanvas.Brush.Assign(AreaBrush);
+  ACanvas.Pen.Assign(AreaContourPen);
+  ACanvas.Polygon(pts, false, 0, numPts);
+  if AreaLinesPen.Style <> psClear then begin
+    ACanvas.Pen.Assign(AreaLinesPen);
+    for i := 1 to High(FGraphPoints) - 1 do begin
+      a := ProjToRect(FGraphPoints[i], ext2);
+      b := ProjToLine(a, zeroLevel);
+      ACanvas.Line(ParentChart.GraphToImage(a), ParentChart.GraphToImage(b));
     end;
   end;
   DrawLabels(ACanvas);
@@ -1165,9 +1187,21 @@ begin
   Result := FAreaBrush.Color;
 end;
 
-procedure TAreaSeries.SetAreaBrush(Value: TBrush);
+procedure TAreaSeries.SetAreaBrush(AValue: TBrush);
 begin
-  FAreaBrush.Assign(Value);
+  FAreaBrush.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TAreaSeries.SetAreaContourPen(AValue: TPen);
+begin
+  FAreaContourPen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TAreaSeries.SetAreaLinesPen(AValue: TPen);
+begin
+  FAreaLinesPen.Assign(AValue);
   UpdateParentChart;
 end;
 

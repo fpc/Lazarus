@@ -241,6 +241,9 @@ function PointDist(const A, B: TPoint): Integer; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
 function PointDistY(const A, B: TPoint): Integer; inline;
 
+function ProjToRect(
+  const APt: TDoublePoint; const ARect: TDoubleRect): TDoublePoint;
+
 function RectIntersectsRect(
   var ARect: TDoubleRect; const AFixed: TDoubleRect): Boolean;
 
@@ -649,6 +652,13 @@ begin
   a1x := A1.X;
   a1y := A1.Y;
   Result := Sign((AP.X - a1x) * (A2.Y - a1y) - (AP.Y - a1y) * (A2.X - a1x));
+end;
+
+function ProjToRect(
+  const APt: TDoublePoint; const ARect: TDoubleRect): TDoublePoint;
+begin
+  Result.X := EnsureRange(APt.X, ARect.a.X, ARect.b.X);
+  Result.Y := EnsureRange(APt.Y, ARect.a.Y, ARect.b.Y);
 end;
 
 function RectIntersectsRect(
