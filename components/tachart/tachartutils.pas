@@ -208,6 +208,7 @@ function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 
 function DoublePoint(AX, AY: Double): TDoublePoint; inline;
 function DoubleRect(AX1, AY1, AX2, AY2: Double): TDoubleRect; inline;
+function DoubleInterval(AStart, AEnd: Double): TDoubleInterval; inline;
 
 procedure EnsureOrder(var A, B: Integer); overload; inline;
 procedure EnsureOrder(var A, B: Double); overload; inline;
@@ -363,6 +364,12 @@ begin
   Result.a.Y := AY1;
   Result.b.X := AX2;
   Result.b.Y := AY2;
+end;
+
+function DoubleInterval(AStart, AEnd: Double): TDoubleInterval;
+begin
+  Result.FStart := AStart;
+  Result.FEnd := AEnd;
 end;
 
 procedure EnsureOrder(var A, B: Integer); overload; inline;
@@ -812,8 +819,7 @@ begin
     for k := High(FIntervals) downto i do
       FIntervals[k] := FIntervals[k - 1];
   end;
-  FIntervals[i].FStart := AStart;
-  FIntervals[i].FEnd := AEnd;
+  FIntervals[i] := DoubleInterval(AStart, AEnd);
   Changed;
 end;
 
