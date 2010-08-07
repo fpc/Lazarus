@@ -122,6 +122,8 @@ type
     property Source;
   end;
 
+  TConnectType = (ctLine, ctStepXY, ctStepYX);
+
   { TAreaSeries }
 
   TAreaSeries = class(TBasicPointSeries)
@@ -129,8 +131,7 @@ type
     FAreaBrush: TBrush;
     FAreaContourPen: TPen;
     FAreaLinesPen: TPen;
-    FInvertedStairs: Boolean;
-    FStairs: Boolean;
+    FConnectType: TConnectType;
     FUseZeroLevel: Boolean;
     FZeroLevel: Double;
 
@@ -138,9 +139,8 @@ type
     procedure SetAreaBrush(AValue: TBrush);
     procedure SetAreaContourPen(AValue: TPen);
     procedure SetAreaLinesPen(AValue: TPen);
-    procedure SetInvertedStairs(Value: Boolean);
+    procedure SetConnectType(AValue: TConnectType);
     procedure SetSeriesColor(AValue: TColor);
-    procedure SetStairs(Value: Boolean);
     procedure SetUseZeroLevel(AValue: Boolean);
     procedure SetZeroLevel(AValue: Double);
   protected
@@ -159,13 +159,12 @@ type
     property AreaBrush: TBrush read FAreaBrush write SetAreaBrush;
     property AreaContourPen: TPen read FAreaContourPen write SetAreaContourPen;
     property AreaLinesPen: TPen read FAreaLinesPen write SetAreaLinesPen;
+    property ConnectType: TConnectType
+      read FConnectType write SetConnectType default ctLine;
     property Depth;
-    property InvertedStairs: Boolean
-      read FInvertedStairs write SetInvertedStairs default false;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor default clWhite;
     property Source;
-    property Stairs: Boolean read FStairs write SetStairs default false;
     property UseReticule;
     property UseZeroLevel: Boolean
       read FUseZeroLevel write SetUseZeroLevel default false;
@@ -353,7 +352,7 @@ type
 implementation
 
 uses
-  GraphMath, Math, PropEdits, SysUtils, Types;
+  GraphMath, LResources, Math, PropEdits, SysUtils, Types;
 
 { TLineSeries }
 
@@ -1151,11 +1150,18 @@ begin
   for i := 0 to High(FGraphPoints) - 1 do begin
     a := FGraphPoints[i];
     b := FGraphPoints[i + 1];
-    if Stairs then begin
-      if InvertedStairs then
-        a.Y := b.Y
-      else
-        b.Y := a.Y;
+    case ConnectType of
+      ctLine: ;
+      ctStepXY:
+        if IsRotated then
+          b.X := a.X
+        else
+          b.Y := a.Y;
+      ctStepYX:
+        if IsRotated then
+          a.X := b.X
+        else
+          a.Y := b.Y;
     end;
     // Avoid integer overflow at extreme zoom levels.
     if LineIntersectsRect(a, b, ext2) then begin
@@ -1227,21 +1233,16 @@ begin
   UpdateParentChart;
 end;
 
-procedure TAreaSeries.SetInvertedStairs(Value: Boolean);
+procedure TAreaSeries.SetConnectType(AValue: TConnectType);
 begin
-  FInvertedStairs := Value;
+  if FConnectType = AValue then exit;
+  FConnectType := AValue;
   UpdateParentChart;
 end;
 
 procedure TAreaSeries.SetSeriesColor(AValue: TColor);
 begin
   FAreaBrush.Color := AValue;
-end;
-
-procedure TAreaSeries.SetStairs(Value: Boolean);
-begin
-  FStairs := Value;
-  UpdateParentChart;
 end;
 
 procedure TAreaSeries.SetUseZeroLevel(AValue: Boolean);
@@ -1419,6 +1420,16 @@ begin
   UpdateParentChart;
 end;
 
+procedure SkipObsoleteProperties;
+const
+  STAIRS_NOTE = 'Obsolete, use ConnectType instead';
+begin
+  RegisterPropertyEditor(
+    TypeInfo(Boolean), TLineSeries, 'ShowLines', THiddenPropertyEditor);
+  RegisterPropertyToSkip(TAreaSeries, 'Stairs', STAIRS_NOTE, '');
+  RegisterPropertyToSkip(TAreaSeries, 'InvertedStairs', STAIRS_NOTE, '');
+end;
+
 initialization
   RegisterSeriesClass(TLineSeries, 'Line series');
   RegisterSeriesClass(TAreaSeries, 'Area series');
@@ -1428,7 +1439,6 @@ initialization
   RegisterSeriesClass(TUserDrawnSeries, 'User-drawn series');
   RegisterSeriesClass(TConstantLine, 'Constant line');
   {$WARNINGS OFF}RegisterSeriesClass(TLine, '');{$WARNINGS ON}
-  RegisterPropertyEditor(
-    TypeInfo(Boolean), TLineSeries, 'ShowLines', THiddenPropertyEditor);
+  SkipObsoleteProperties;
 
 end.
