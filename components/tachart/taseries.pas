@@ -47,10 +47,15 @@ type
     procedure SetUseReticule(AValue: Boolean);
 
   protected
+    FGraphPoints: array of TDoublePoint;
+    FLoBound: Integer;
+    FUpBound: Integer;
     FUseReticule: Boolean;
 
     procedure DrawLabels(ACanvas: TCanvas);
     function GetLabelDirection(AIndex: Integer): TLabelDirection; virtual;
+    procedure PrepareGraphPoints(
+      const AExtent: TDoubleRect; AFilterByExtent: Boolean);
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); override;
     property UseReticule: Boolean
       read FUseReticule write SetUseReticule default false;
@@ -149,7 +154,7 @@ type
     property InvertedStairs: Boolean
       read FInvertedStairs write SetInvertedStairs default false;
     property SeriesColor: TColor
-      read GetSeriesColor write SetSeriesColor default clTAColor;
+      read GetSeriesColor write SetSeriesColor default clWhite;
     property Source;
     property Stairs: Boolean read FStairs write SetStairs default false;
     property UseReticule;
@@ -395,9 +400,6 @@ var
     pointCount += 1;
   end;
 
-var
-  gp: array of TDoublePoint;
-
   procedure DrawLines;
   var
     i, j: Integer;
@@ -407,26 +409,26 @@ var
     // For extremely long series (10000 points or more), the Canvas.Line
     // call becomes a bottleneck. So represent a serie as a sequence of polylines.
     // This achieves approximately 3x speedup for the typical case.
-    SetLength(points, 2 * Length(gp));
-    SetLength(breaks, Length(gp) + 1);
+    SetLength(points, 2 * Length(FGraphPoints));
+    SetLength(breaks, Length(FGraphPoints) + 1);
     case LineType of
       ltFromPrevious: begin
-        for i := 0 to High(gp) - 1 do
-          CacheLine(gp[i], gp[i + 1]);
+        for i := 0 to High(FGraphPoints) - 1 do
+          CacheLine(FGraphPoints[i], FGraphPoints[i + 1]);
       end;
       ltFromOrigin: begin
         orig := AxisToGraph(ZeroDoublePoint);
-        for i := 0 to High(gp) do
-          CacheLine(orig, gp[i]);
+        for i := 0 to High(FGraphPoints) do
+          CacheLine(orig, FGraphPoints[i]);
       end;
       ltStepXY, ltStepYX: begin
-        for i := 0 to High(gp) - 1 do begin
+        for i := 0 to High(FGraphPoints) - 1 do begin
           if (LineType = ltStepXY) xor IsRotated then
-            m := DoublePoint(gp[i + 1].X, gp[i].Y)
+            m := DoublePoint(FGraphPoints[i + 1].X, FGraphPoints[i].Y)
           else
-            m := DoublePoint(gp[i].X, gp[i + 1].Y);
-          CacheLine(gp[i], m);
-          CacheLine(m, gp[i + 1]);
+            m := DoublePoint(FGraphPoints[i].X, FGraphPoints[i + 1].Y);
+          CacheLine(FGraphPoints[i], m);
+          CacheLine(m, FGraphPoints[i + 1]);
         end;
       end;
     end;
@@ -450,9 +452,10 @@ var
   end;
 
 var
-  i, lb, ub: Integer;
+  i: Integer;
   ai: TPoint;
   ext: TDoubleRect;
+  p: TDoublePoint;
 begin
   // Do not draw anything if the series extent does not intersect CurrentExtent.
   ext.a := AxisToGraph(Source.Extent.a);
@@ -461,36 +464,16 @@ begin
     ExpandRect(ext, AxisToGraph(ZeroDoublePoint));
   if not RectIntersectsRect(ext, ParentChart.CurrentExtent) then exit;
 
-  // Find an interval of x-values intersecting the CurrentExtent.
-  // Requires monotonic (but not necessarily increasing) axis transformation.
-  lb := 0;
-  ub := Count - 1;
-  if LineType <> ltFromOrigin then begin
-    if IsRotated then
-      Source.FindBounds(GraphToAxisY(ext.a.Y), GraphToAxisY(ext.b.Y), lb, ub)
-    else
-      Source.FindBounds(GraphToAxisX(ext.a.X), GraphToAxisX(ext.b.X), lb, ub);
-    lb := Max(lb - 1, 0);
-    ub := Min(ub + 1, Count - 1);
-  end;
-
-  SetLength(gp, ub - lb + 1);
-  if (AxisIndexX < 0) and (AxisIndexY < 0) then
-    // Optimization: bypass transformations in the default case.
-    for i := lb to ub do
-      with Source[i]^ do
-        gp[i - lb] := DoublePoint(X, Y)
-  else
-    for i := lb to ub do
-      gp[i - lb] := GetGraphPoint(i);
+  PrepareGraphPoints(ext, LineType <> ltFromOrigin);
 
   DrawLines;
   DrawLabels(ACanvas);
 
   if FShowPoints then
-    for i := lb to ub do begin
-      if not ParentChart.IsPointInViewPort(gp[i - lb]) then continue;
-      ai := ParentChart.GraphToImage(gp[i - lb]);
+    for i := FLoBound to FUpBound do begin
+      p := FGraphPoints[i - FLoBound];
+      if not ParentChart.IsPointInViewPort(p) then continue;
+      ai := ParentChart.GraphToImage(p);
       FPointer.Draw(ACanvas, ai, GetColor(i));
       if Assigned(FOnDrawPointer) then
         FOnDrawPointer(Self, ACanvas, i, ai);
@@ -753,6 +736,38 @@ begin
     AIndex := SetXValue(AIndex, p.X);
     SetYValue(AIndex, p.Y);
   end;
+end;
+
+procedure TBasicPointSeries.PrepareGraphPoints(
+  const AExtent: TDoubleRect; AFilterByExtent: Boolean);
+var
+  axisExtent: TDoubleInterval;
+  i: Integer;
+begin
+  // Find an interval of x-values intersecting the extent.
+  // Requires monotonic (but not necessarily increasing) axis transformation.
+  FLoBound := 0;
+  FUpBound := Count - 1;
+  if AFilterByExtent then begin
+    with AExtent do
+      if IsRotated then
+        axisExtent := DoubleInterval(GraphToAxisY(a.Y), GraphToAxisY(b.Y))
+      else
+        axisExtent := DoubleInterval(GraphToAxisX(a.X), GraphToAxisX(b.X));
+    Source.FindBounds(axisExtent.FStart, axisExtent.FEnd, FLoBound, FUpBound);
+    FLoBound := Max(FLoBound - 1, 0);
+    FUpBound := Min(FUpBound + 1, Count - 1);
+  end;
+
+  SetLength(FGraphPoints, FUpBound - FLoBound + 1);
+  if (AxisIndexX < 0) and (AxisIndexY < 0) then
+    // Optimization: bypass transformations in the default case.
+    for i := FLoBound to FUpBound do
+      with Source[i]^ do
+        FGraphPoints[i - FLoBound] := DoublePoint(X, Y)
+  else
+    for i := FLoBound to FUpBound do
+      FGraphPoints[i - FLoBound] := GetGraphPoint(i);
 end;
 
 procedure TBasicPointSeries.SetUseReticule(AValue: Boolean);
