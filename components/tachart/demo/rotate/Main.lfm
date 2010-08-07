@@ -55,6 +55,7 @@ object Form1: TForm1
       AxisIndexY = 0
       AreaContourPen.Width = 2
       AreaLinesPen.Color = clRed
+      Depth = 10
       Source = RandomChartSource1
       UseZeroLevel = True
     end

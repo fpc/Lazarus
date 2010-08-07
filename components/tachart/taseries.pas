@@ -1139,7 +1139,7 @@ begin
   numPts := 0;
 
   if UseZeroLevel then
-    z := ZeroLevel
+    z := AxisToGraphY(ZeroLevel)
   else if IsRotated then
     z := ext2.a.X
   else
@@ -1157,6 +1157,7 @@ begin
       else
         b.Y := a.Y;
     end;
+    // Avoid integer overflow at extreme zoom levels.
     if LineIntersectsRect(a, b, ext2) then begin
       PushPoint(a);
       PushPoint(b);
@@ -1168,6 +1169,10 @@ begin
 
   ACanvas.Brush.Assign(AreaBrush);
   ACanvas.Pen.Assign(AreaContourPen);
+  if Depth > 0 then
+    // Rendering is incorrect when values cross zero level.
+    for i := 0 to numPts - 2 do
+      DrawLineDepth(ACanvas, pts[i], pts[i + 1], Depth);
   ACanvas.Polygon(pts, false, 0, numPts);
   if AreaLinesPen.Style <> psClear then begin
     ACanvas.Pen.Assign(AreaLinesPen);
@@ -1182,10 +1187,11 @@ end;
 
 function TAreaSeries.GetLabelDirection(AIndex: Integer): TLabelDirection;
 const
-  DIR: array [Boolean] of TLabelDirection = (ldTop, ldRight);
+  DIR: array [Boolean, Boolean] of TLabelDirection =
+    ((ldTop, ldBottom), (ldRight, ldLeft));
 begin
-  Unused(AIndex);
-  Result := DIR[IsRotated];
+  Result :=
+    DIR[IsRotated, UseZeroLevel and (GetGraphPointY(AIndex) < ZeroLevel)];
 end;
 
 procedure TAreaSeries.GetLegendItems(AItems: TChartLegendItems);
