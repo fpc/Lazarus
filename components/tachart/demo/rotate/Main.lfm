@@ -6,6 +6,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 372
   ClientWidth = 456
+  Position = poScreenCenter
   LCLVersion = '0.9.29'
   object Chart1: TChart
     Left = 0
@@ -14,7 +15,7 @@ object Form1: TForm1
     Width = 456
     AxisList = <    
       item
-        Alignment = calLeft
+        Title.LabelFont.Orientation = 900
         Title.Font.Orientation = 900
       end    
       item
@@ -49,6 +50,13 @@ object Form1: TForm1
       SeriesColor = clMoneyGreen
       Source = RandomChartSource1
     end
+    object Chart1AreaSeries1: TAreaSeries
+      AxisIndexX = 1
+      AxisIndexY = 0
+      AreaContourPen.Width = 2
+      AreaLinesPen.Color = clRed
+      Source = RandomChartSource1
+    end
   end
   object Panel1: TPanel
     Left = 0
@@ -78,13 +86,22 @@ object Form1: TForm1
       TabOrder = 1
     end
     object cbNegative: TCheckBox
-      Left = 200
+      Left = 292
       Height = 17
       Top = 10
       Width = 97
       Caption = 'Negative values'
       OnChange = cbNegativeChange
       TabOrder = 2
+    end
+    object cbRotateArea: TCheckBox
+      Left = 200
+      Height = 17
+      Top = 10
+      Width = 78
+      Caption = 'Rotate area'
+      OnChange = cbRotateAreaChange
+      TabOrder = 3
     end
   end
   object RandomChartSource1: TRandomChartSource

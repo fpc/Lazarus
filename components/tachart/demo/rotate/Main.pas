@@ -15,13 +15,16 @@ type
   TForm1 = class(TForm)
     cbRotateBar: TCheckBox;
     cbNegative: TCheckBox;
+    cbRotateArea: TCheckBox;
     Chart1: TChart;
+    Chart1AreaSeries1: TAreaSeries;
     Chart1BarSeries1: TBarSeries;
     Chart1LineSeries1: TLineSeries;
     cbRotateLine: TCheckBox;
     Panel1: TPanel;
     RandomChartSource1: TRandomChartSource;
     procedure cbNegativeChange(Sender: TObject);
+    procedure cbRotateAreaChange(Sender: TObject);
     procedure cbRotateBarChange(Sender: TObject);
     procedure cbRotateLineChange(Sender: TObject);
   end;
@@ -49,6 +52,11 @@ end;
 procedure TForm1.cbNegativeChange(Sender: TObject);
 begin
   RandomChartSource1.YMin := -RandomChartSource1.YMin;
+end;
+
+procedure TForm1.cbRotateAreaChange(Sender: TObject);
+begin
+  Rotate(Chart1AreaSeries1)
 end;
 
 procedure TForm1.cbRotateBarChange(Sender: TObject);
