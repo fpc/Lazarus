@@ -602,6 +602,7 @@ begin
 
   Screen.Cursor:=crHourGlass;
   Owners:=nil;
+  lvTodo.BeginUpdate;
   try
     fBuild:=True;
     CodeToolBoss.ActivateWriteLock;
@@ -678,6 +679,7 @@ begin
       Node:=fScannedFiles.FindSuccessor(Node);
     end;
   finally
+    lvTodo.EndUpdate;
     CodeToolBoss.DeactivateWriteLock;
     Owners.Free;
     Screen.Cursor:=crDefault;
