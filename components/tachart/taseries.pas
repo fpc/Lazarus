@@ -884,9 +884,10 @@ begin
   ExpandRange(ext2.a.X, ext2.b.X, 1.0);
   ExpandRange(ext2.a.Y, ext2.b.Y, 1.0);
 
+  PrepareGraphPoints(ext2, true);
   ACanvas.Brush.Assign(BarBrush);
-  for i := 0 to Count - 1 do begin
-    p := GetGraphPoint(i);
+  for i := FLoBound to FUpBound do begin
+    p := FGraphPoints[i - FLoBound];
     w := CalcBarWidth(GetGraphPointX(i), i);
     if IsRotated then
       graphBar := DoubleRect(AxisToGraphX(0), p.Y - w, p.X, p.Y + w)
