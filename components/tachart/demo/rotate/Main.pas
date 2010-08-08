@@ -36,6 +36,9 @@ implementation
 
 {$R *.lfm}
 
+uses
+  TACustomSeries;
+
 procedure Rotate(ASeries: TBasicPointSeries);
 var
   t: Integer;

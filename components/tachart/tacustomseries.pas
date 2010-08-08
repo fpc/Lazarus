@@ -150,10 +150,39 @@ type
     property OnGetMark: TChartGetMarkEvent read FOnGetMark write SetOnGetMark;
   end;
 
+  TLabelDirection = (ldLeft, ldTop, ldRight, ldBottom);
+
+  { TBasicPointSeries }
+
+  TBasicPointSeries = class(TChartSeries)
+  private
+    procedure SetUseReticule(AValue: Boolean);
+
+  protected
+    FGraphPoints: array of TDoublePoint;
+    FLoBound: Integer;
+    FUpBound: Integer;
+    FUseReticule: Boolean;
+
+    procedure DrawLabels(ACanvas: TCanvas);
+    function GetLabelDirection(AIndex: Integer): TLabelDirection; virtual;
+    procedure PrepareGraphPoints(
+      const AExtent: TDoubleRect; AFilterByExtent: Boolean);
+    procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); override;
+    property UseReticule: Boolean
+      read FUseReticule write SetUseReticule default false;
+  public
+    function GetNearestPoint(
+      ADistFunc: TPointDistFunc; const APoint: TPoint;
+      out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+      override;
+    procedure MovePoint(var AIndex: Integer; const ANewPos: TPoint); override;
+  end;
+
 implementation
 
 uses
-  Math;
+  Math, Types;
 
 { TCustomChartSeries }
 
@@ -570,6 +599,148 @@ procedure TChartSeries.VisitSources(
 begin
   if (AAxis = GetAxisX) or (AAxis = GetAxisY) then
     AVisitor(Source, AData);
+end;
+
+{ TBasicPointSeries }
+
+procedure TBasicPointSeries.DrawLabels(ACanvas: TCanvas);
+var
+  prevLabelPoly: TPointArray;
+
+  procedure DrawLabel(
+    const AText: String; const ADataPoint: TPoint; ADir: TLabelDirection);
+  const
+    OFFSETS: array [TLabelDirection] of TPoint =
+      ((X: -1; Y: 0), (X: 0; Y: -1), (X: 1; Y: 0), (X: 0; Y: 1));
+  var
+    center: TPoint;
+    sz: TSize;
+  begin
+    if AText = '' then exit;
+
+    sz := Marks.MeasureLabel(ACanvas, AText);
+    center := ADataPoint;
+    center.X += OFFSETS[ADir].X * (Marks.Distance + sz.cx div 2);
+    center.Y += OFFSETS[ADir].Y * (Marks.Distance + sz.cy div 2);
+    Marks.DrawLabel(ACanvas, ADataPoint, center, AText, prevLabelPoly);
+  end;
+
+var
+  g: TDoublePoint;
+  i: Integer;
+begin
+  if not Marks.IsMarkLabelsVisible then exit;
+  for i := 0 to Count - 1 do begin
+    g := GetGraphPoint(i);
+    with ParentChart do
+      if IsPointInViewPort(g) then
+        DrawLabel(FormattedMark(i), GraphToImage(g), GetLabelDirection(i));
+  end;
+end;
+
+function TBasicPointSeries.GetLabelDirection(AIndex: Integer): TLabelDirection;
+const
+  DIR: array [Boolean, Boolean] of TLabelDirection =
+    ((ldTop, ldBottom), (ldRight, ldLeft));
+begin
+  Result := DIR[IsRotated, GetGraphPointY(AIndex) < 0];
+end;
+
+function TBasicPointSeries.GetNearestPoint(
+  ADistFunc: TPointDistFunc; const APoint: TPoint;
+  out AIndex: Integer; out AImg: TPoint; out AValue: TDoublePoint): Boolean;
+var
+  dist, minDist, i: Integer;
+  pt: TPoint;
+begin
+  Result := UseReticule and (Count > 0);
+  minDist := MaxInt;
+  for i := 0 to Count - 1 do begin
+    pt := Point(GetXImgValue(i), GetYImgValue(i));
+    dist := ADistFunc(APoint, pt);
+    if dist >= minDist then
+      Continue;
+    minDist := dist;
+    AIndex := i;
+    AImg := pt;
+    AValue.X := GetXValue(i);
+    AValue.Y := GetYValue(i);
+  end;
+end;
+
+procedure TBasicPointSeries.MovePoint(
+  var AIndex: Integer; const ANewPos: TPoint);
+var
+  p: TDoublePoint;
+begin
+  if not InRange(AIndex, 0, Count - 1) then exit;
+  p := FChart.ImageToGraph(ANewPos);
+  with ListSource do begin
+    AIndex := SetXValue(AIndex, p.X);
+    SetYValue(AIndex, p.Y);
+  end;
+end;
+
+procedure TBasicPointSeries.PrepareGraphPoints(
+  const AExtent: TDoubleRect; AFilterByExtent: Boolean);
+var
+  axisExtent: TDoubleInterval;
+  i: Integer;
+begin
+  // Find an interval of x-values intersecting the extent.
+  // Requires monotonic (but not necessarily increasing) axis transformation.
+  FLoBound := 0;
+  FUpBound := Count - 1;
+  if AFilterByExtent then begin
+    with AExtent do
+      if IsRotated then
+        axisExtent := DoubleInterval(GraphToAxisY(a.Y), GraphToAxisY(b.Y))
+      else
+        axisExtent := DoubleInterval(GraphToAxisX(a.X), GraphToAxisX(b.X));
+    Source.FindBounds(axisExtent.FStart, axisExtent.FEnd, FLoBound, FUpBound);
+    FLoBound := Max(FLoBound - 1, 0);
+    FUpBound := Min(FUpBound + 1, Count - 1);
+  end;
+
+  SetLength(FGraphPoints, FUpBound - FLoBound + 1);
+  if (AxisIndexX < 0) and (AxisIndexY < 0) then
+    // Optimization: bypass transformations in the default case.
+    for i := FLoBound to FUpBound do
+      with Source[i]^ do
+        FGraphPoints[i - FLoBound] := DoublePoint(X, Y)
+  else
+    for i := FLoBound to FUpBound do
+      FGraphPoints[i - FLoBound] := GetGraphPoint(i);
+end;
+
+procedure TBasicPointSeries.SetUseReticule(AValue: Boolean);
+begin
+  if FUseReticule = AValue then exit;
+  FUseReticule := AValue;
+  UpdateParentChart;
+end;
+
+procedure TBasicPointSeries.UpdateMargins(ACanvas: TCanvas; var AMargins: TRect);
+const
+  LABEL_TO_BORDER = 4;
+var
+  i, d: Integer;
+  labelText: String;
+  dir: TLabelDirection;
+  m: array [TLabelDirection] of Integer absolute AMargins;
+begin
+  if not Marks.IsMarkLabelsVisible then exit;
+
+  for i := 0 to Count - 1 do begin
+    if not ParentChart.IsPointInViewPort(GetGraphPoint(i)) then continue;
+    labelText := FormattedMark(i);
+    if labelText = '' then continue;
+
+    dir := GetLabelDirection(i);
+    with Marks.MeasureLabel(ACanvas, labelText) do
+      d := IfThen(dir in [ldLeft, ldRight], cx, cy);
+    m[dir] := Max(m[dir], d + Marks.Distance + LABEL_TO_BORDER);
+  end;
 end;
 
 end.
