@@ -74,12 +74,15 @@ type
     FBarBrush: TBrush;
     FBarPen: TPen;
     FBarWidthPercent: Integer;
+    FZeroLevel: Double;
 
     function CalcBarWidth(AX: Double; AIndex: Integer): Double;
+    function IsZeroLevelStored: boolean;
     procedure SetBarBrush(Value: TBrush);
     procedure SetBarPen(Value: TPen);
     procedure SetBarWidthPercent(Value: Integer);
     procedure SetSeriesColor(AValue: TColor);
+    procedure SetZeroLevel(AValue: Double);
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
@@ -101,6 +104,8 @@ type
       read GetSeriesColor write SetSeriesColor default clTAColor;
     property Source;
     property UseReticule;
+    property ZeroLevel: Double
+      read FZeroLevel write SetZeroLevel stored IsZeroLevelStored;
   end;
 
   { TPieSeries }
@@ -890,9 +895,9 @@ begin
     p := FGraphPoints[i - FLoBound];
     w := CalcBarWidth(GetGraphPointX(i), i);
     if IsRotated then
-      graphBar := DoubleRect(AxisToGraphX(0), p.Y - w, p.X, p.Y + w)
+      graphBar := DoubleRect(AxisToGraphX(ZeroLevel), p.Y - w, p.X, p.Y + w)
     else
-      graphBar := DoubleRect(p.X - w, AxisToGraphY(0), p.X + w, p.Y);
+      graphBar := DoubleRect(p.X - w, AxisToGraphY(ZeroLevel), p.X + w, p.Y);
     if not RectIntersectsRect(graphBar, ext2) then continue;
 
     with imageBar do begin
@@ -917,7 +922,7 @@ var
 begin
   Result := inherited Extent;
   if IsEmpty then exit;
-  UpdateMinMax(0, Result.a.Y, Result.b.Y);
+  UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
   // Show first and last bars fully.
   x := GetGraphPointX(0);
   Result.a.X := Min(Result.a.X, x - CalcBarWidth(x, 0));
@@ -933,6 +938,11 @@ end;
 function TBarSeries.GetSeriesColor: TColor;
 begin
   Result := FBarBrush.Color;
+end;
+
+function TBarSeries.IsZeroLevelStored: boolean;
+begin
+  Result := ZeroLevel <> 0.0;
 end;
 
 procedure TBarSeries.SetBarBrush(Value: TBrush);
@@ -955,6 +965,13 @@ end;
 procedure TBarSeries.SetSeriesColor(AValue: TColor);
 begin
   FBarBrush.Color := AValue;
+end;
+
+procedure TBarSeries.SetZeroLevel(AValue: Double);
+begin
+  if FZeroLevel = AValue then exit;
+  FZeroLevel := AValue;
+  UpdateParentChart;
 end;
 
 { TPieSeries }
