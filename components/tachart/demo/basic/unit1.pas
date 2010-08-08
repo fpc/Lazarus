@@ -239,8 +239,6 @@ begin
   FArea := TAreaSeries.Create(Chart1);
   FArea.SeriesColor := clFuchsia;
   FArea.Title := 'area';
-  //FArea.Stairs := true;
-  FArea.InvertedStairs := false;
   Chart1.AddSeries(FArea);
 end;
 
