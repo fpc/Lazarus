@@ -918,7 +918,7 @@ var
   DoActivate: Boolean;
   EventKind: UInt32;
   Control: ControlRef;
-  FocusWidget: TCarbonControl;
+  FocusWidget: TCarbonWidget;
 begin
   {$IFDEF VerboseWindowEvent}
     DebugLn('CarbonWindow_ActivateProc ', DbgSName(AWidget.LCLObject));
@@ -952,13 +952,18 @@ begin
   // force set and kill focus of focused control
   Control := nil;
   OSError(GetKeyboardFocus(TCarbonWindow(AWidget).fWindowRef, Control), 'CarbonWindow_ActivateProc', SGetKeyboardFocus);
-  if Control <> nil then
-  begin
-    FocusWidget := GetCarbonControl(Control);
+  if Control <> nil
+  then FocusWidget := GetCarbonControl(Control)
+  else FocusWidget := nil;
 
-    if FocusWidget <> nil then
-      if DoActivate then FocusWidget.FocusSet
-      else FocusWidget.FocusKilled;
+  // Focusing the form without controls
+  if (FocusWidget = nil) and DoActivate then FocusWidget:=AWidget;
+
+  if FocusWidget <> nil then
+  begin
+    if DoActivate
+    then FocusWidget.FocusSet
+    else FocusWidget.FocusKilled;
   end;
 end;
 
