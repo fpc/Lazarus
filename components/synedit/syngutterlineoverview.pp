@@ -18,7 +18,6 @@ type
   private
     FColor: TColor;
     FHeight: Integer;
-    FProviderList: TSynGutterLineOverviewProviderList;
     FGutterPart: TSynGutterLineOverview;
     FPriority: Integer;
     FRGBColor: TColor;
@@ -331,8 +330,6 @@ end;
 
 procedure TSynGutterLineOverview.LineCountChanged(Sender: TSynEditStrings; AIndex,
   ACount: Integer);
-var
-  r: TRect;
 begin
   if not SynEdit.HandleAllocated then exit;
   FWinControl.Invalidate;

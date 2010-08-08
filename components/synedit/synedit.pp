@@ -634,7 +634,7 @@ type
     procedure SetTopView(const AValue : Integer);
     {$ENDIF}
     procedure Loaded; override;
-    procedure MarkListChange(Sender: TObject);
+    procedure MarkListChange(Sender: TSynEditMark; Changes: TSynEditMarkChangeReasons);
 {$IFDEF SYN_MBCSSUPPORT}
     procedure MBCSGetSelRangeInLineWhenColumnSelectionMode(const s: string;
       var ColFrom, ColTo: Integer);
@@ -1118,26 +1118,11 @@ const
 
 type
 
-  { TSynStatusChangedHandlerList }
-
-  TStatusChangeEventHandlerListEntry = record
-    FHandler: TStatusChangeEvent;
-    FChanges: TSynStatusChanges;
-  end;
-
-  TSynStatusChangedHandlerList = Class
-  private
-    FCount: Integer;
-    FItems: Array of TStatusChangeEventHandlerListEntry;
-  protected
-    function IndexOf(AHandler: TStatusChangeEvent): Integer;
-    function NextDownIndex(var Index: integer): boolean;
+  TSynStatusChangedHandlerList = Class(TSynFilteredMethodList)
   public
-    constructor Create;
     procedure Add(AHandler: TStatusChangeEvent; Changes: TSynStatusChanges);
     procedure Remove(AHandler: TStatusChangeEvent);
     procedure CallStatusChangedHandlers(Sender: TObject; Changes: TSynStatusChanges);
-    property Count: Integer read FCount;
   end;
 
   { TSynEditUndoCaret }
@@ -1745,7 +1730,8 @@ begin
   FMouseActionExecHandlerList := TSynEditMouseActionExecList.Create;
 
   fMarkList := TSynEditMarkList.Create(self, FTheLinesView);
-  fMarkList.OnChange := {$IFDEF FPC}@{$ENDIF}MarkListChange;
+  fMarkList.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}MarkListChange,
+    [low(TSynEditMarkChangeReason)..high(TSynEditMarkChangeReason)]);
   fRightEdgeColor := clSilver;
 {$IFDEF SYN_MBCSSUPPORT}
   fImeCount := 0;
@@ -6553,14 +6539,16 @@ begin
   end;
 end;
 
-{ Called by FMarkList if change }
-procedure TCustomSynEdit.MarkListChange(Sender: TObject);
+procedure TCustomSynEdit.MarkListChange(Sender: TSynEditMark; Changes: TSynEditMarkChangeReasons);
 begin
-  {$IFDEF SYN_LAZARUS}
-  Invalidate; // marks can have special line colors
-  {$ELSE}
-  InvalidateGutter;
-  {$ENDIF}
+  if (not Sender.Visible) and (not (smcrVisible in Changes)) then
+    exit;
+  if smcrLine in Changes then begin
+    InvalidateLine(Sender.OldLine);
+    InvalidateGutterLines(Sender.OldLine, Sender.OldLine);
+  end;
+  InvalidateLine(Sender.Line);
+  InvalidateGutterLines(Sender.Line, Sender.Line);
 end;
 
 {$IFDEF SYN_LAZARUS}
@@ -8715,60 +8703,15 @@ begin
 end;
 
 { TSynStatusChangedHandlerList }
-
-function TSynStatusChangedHandlerList.IndexOf(AHandler: TStatusChangeEvent): Integer;
-begin
-  Result := FCount - 1;
-  while (Result >= 0) and (FItems[Result].FHandler <> AHandler) do
-    dec(Result);
-end;
-
-function TSynStatusChangedHandlerList.NextDownIndex(var Index: integer): boolean;
-begin
-  if Self<>nil then begin
-    dec(Index);
-    if (Index>=FCount) then
-      Index:=FCount-1;
-  end else
-    Index:=-1;
-  Result:=(Index>=0);
-end;
-
-constructor TSynStatusChangedHandlerList.Create;
-begin
-  FCount := 0;
-end;
-
 procedure TSynStatusChangedHandlerList.Add(AHandler: TStatusChangeEvent;
   Changes: TSynStatusChanges);
-var
-  i: Integer;
 begin
-  i := IndexOf(AHandler);
-  if i >= 0 then
-    FItems[i].FChanges := FItems[i].FChanges + Changes
-  else begin
-    if FCount >= high(FItems) then
-      SetLength(FItems, Max(8, FCount * 2));
-    FItems[FCount].FHandler := AHandler;
-    FItems[FCount].FChanges := Changes;
-    inc(FCount);
-  end;
+  AddBitFilter(TMethod(AHandler), Pointer(PtrUInt(Changes)));
 end;
 
 procedure TSynStatusChangedHandlerList.Remove(AHandler: TStatusChangeEvent);
-var
-  i: Integer;
 begin
-  i := IndexOf(AHandler);
-  if i < 0 then exit;
-  while i < FCount - 1 do begin
-    FItems[i] := FItems[i + 1];
-    inc(i);
-  end;
-  dec(FCount);
-  if length(FItems) > FCount * 4 then
-    SetLength(FItems, FCount * 2);
+  inherited Remove(TMethod(AHandler));
 end;
 
 procedure TSynStatusChangedHandlerList.CallStatusChangedHandlers(Sender: TObject;
@@ -8777,9 +8720,8 @@ var
   i: Integer;
 begin
   i:=Count;
-  while NextDownIndex(i) do
-    if FItems[i].FChanges * Changes <> [] then
-      FItems[i].FHandler(Sender, Changes);
+  while NextDownIndexBitFilter(i, Pointer(PtrUInt(Changes))) do
+    TStatusChangeEvent(FItems[i].FHandler)(Sender, Changes);
 end;
 
 initialization

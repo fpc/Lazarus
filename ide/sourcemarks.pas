@@ -53,20 +53,15 @@ type
     FSourceMark: TSourceMark;
     FSynEdit: TSynEdit;
     FOnChange: TNotifyEvent;
-    FChangeLock: Integer;
+    FChangeLock2: Integer;
   protected
-    procedure Changed;
+    procedure DoChange(AChanges: TSynEditMarkChangeReasons); override;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     procedure Assign(Src: TSourceSynMark);
   public
     constructor Create(AOwner: TSourceMark; AEditor: TSourceEditorInterface);
     destructor Destroy; override;
     function GetEdit: TSynEdit; override;
-    procedure SetColumn(const Value: Integer); override;
-    procedure SetImage(const Value: Integer); override;
-    procedure SetLine(const Value: Integer); override;
-    procedure SetPriority(const AValue: integer); override;
-    procedure SetVisible(const Value: boolean); override;
     property SourceMark: TSourceMark read FSourceMark write FSourceMark;
   end;
 
@@ -315,16 +310,18 @@ begin
   Result := -AMark.CompareEditorAndLine(EditorAndLine^.EditorID, EditorAndLine^.Line);
 end;
 
-procedure TSourceSynMark.Changed;
+procedure TSourceSynMark.DoChange(AChanges: TSynEditMarkChangeReasons);
 begin
-  if FChangeLock > 0 then exit;
+  inherited DoChange(AChanges);
+  if FChangeLock2 > 0 then exit;
   if assigned(FOnChange) then
     FOnChange(Self);
 end;
 
 procedure TSourceSynMark.Assign(Src: TSourceSynMark);
 begin
-  inc(FChangeLock);
+  inc(FChangeLock2);
+  IncChangeLock;
   try
     Line := Src.Line;
     Column := Src.Column;
@@ -334,9 +331,9 @@ begin
     InternalImage := Src.InternalImage;
     BookmarkNumber := Src.BookmarkNumber;
   finally
-    dec(FChangeLock);
+    DecChangeLock;
+    dec(FChangeLock2);
   end;
-  Changed;
 end;
 
 constructor TSourceSynMark.Create(AOwner: TSourceMark; AEditor: TSourceEditorInterface);
@@ -345,7 +342,7 @@ begin
   FSourceEditor := AEditor;
   FSynEdit := TSynEdit(FSourceEditor.EditorControl);
   Inherited Create(FSynEdit);
-  FChangeLock := 0;
+  FChangeLock2 := 0;
   if FSynEdit <> nil then
     FSynEdit.Marks.Add(Self);
 end;
@@ -493,36 +490,6 @@ end;
 function TSourceSynMark.GetEdit: TSynEdit;
 begin
   Result := FSynEdit;
-end;
-
-procedure TSourceSynMark.SetColumn(const Value: Integer);
-begin
-  inherited SetColumn(Value);
-  Changed;
-end;
-
-procedure TSourceSynMark.SetImage(const Value: Integer);
-begin
-  inherited SetImage(Value);
-  Changed;
-end;
-
-procedure TSourceSynMark.SetLine(const Value: Integer);
-begin
-  inherited SetLine(Value);
-  Changed;
-end;
-
-procedure TSourceSynMark.SetPriority(const AValue: integer);
-begin
-  inherited SetPriority(AValue);
-  Changed;
-end;
-
-procedure TSourceSynMark.SetVisible(const Value: boolean);
-begin
-  inherited SetVisible(Value);
-  Changed;
 end;
 
 { TSourceMark }

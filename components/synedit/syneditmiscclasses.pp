@@ -371,6 +371,35 @@ type
       read GetObjectItems write SetObjectItems; default;
   end;
 
+  TSynFilteredMethodListEntry = record
+    FHandler: TMethod;
+    FFilter: Pointer;
+  end;
+
+  { TSynFilteredMethodList }
+
+  TSynFilteredMethodList = Class
+  private
+    FCount: Integer;
+  protected
+    FItems: Array of TSynFilteredMethodListEntry;
+    function IndexOf(AHandler: TMethod): Integer;
+    function IndexOf(AHandler: TMethod; AFilter: Pointer): Integer;
+    function NextDownIndex(var Index: integer): boolean;
+    function NextDownIndexNumFilter(var Index: integer; AFilter: Pointer): boolean;
+    function NextDownIndexBitFilter(var Index: integer; AFilter: Pointer): boolean;
+    procedure Delete(AIndex: Integer);
+  public
+    constructor Create;
+    procedure AddNumFilter(AHandler: TMethod; AFilter: Pointer);                         // Separate entries for same method with diff filter
+    procedure AddBitFilter(AHandler: TMethod; AFilter: Pointer);                    // Filter is bitmask
+    procedure Remove(AHandler: TMethod);
+    procedure Remove(AHandler: TMethod; AFilter: Pointer);
+    procedure CallNotifyEventsNumFilter(Sender: TObject; AFilter: Pointer);
+    procedure CallNotifyEventsBitFilter(Sender: TObject; AFilter: Pointer);         // filter is Bitmask
+    property Count: Integer read FCount;
+  end;
+
 const
   synClipTagText = TSynClipboardStreamTag(1);
   synClipTagExtText = TSynClipboardStreamTag(2);
@@ -1240,6 +1269,132 @@ begin
     for i := 0 to AList.CountByObject(AOwner) - 1 do
       Add(AList.ItemsByObject[AOwner, i], True);
   end;
+end;
+
+{ TSynFilteredMethodList }
+
+function TSynFilteredMethodList.IndexOf(AHandler: TMethod): Integer;
+begin
+  Result := FCount - 1;
+  while (Result >= 0) and
+        (FItems[Result].FHandler.Code <> AHandler.Code) and
+        (FItems[Result].FHandler.Data <> AHandler.Data)
+  do
+    dec(Result);
+end;
+
+function TSynFilteredMethodList.IndexOf(AHandler: TMethod; AFilter: Pointer): Integer;
+begin
+  Result := FCount - 1;
+  while (Result >= 0) and
+        (FItems[Result].FHandler.Code <> AHandler.Code) and
+        (FItems[Result].FHandler.Data <> AHandler.Data) and
+        (FItems[Result].FFilter <> AFilter)
+  do
+    dec(Result);
+end;
+
+function TSynFilteredMethodList.NextDownIndex(var Index: integer): boolean;
+begin
+  if Self<>nil then begin
+    dec(Index);
+    if (Index>=FCount) then
+      Index:=FCount-1;
+  end else
+    Index:=-1;
+  Result:=(Index>=0);
+end;
+
+function TSynFilteredMethodList.NextDownIndexNumFilter(var Index: integer;
+  AFilter: Pointer): boolean;
+begin
+  Repeat
+    Result := NextDownIndex(Index);
+  until (not Result) or (FItems[Index].FFilter = AFilter);
+end;
+
+function TSynFilteredMethodList.NextDownIndexBitFilter(var Index: integer;
+  AFilter: Pointer): boolean;
+begin
+  Repeat
+    Result := NextDownIndex(Index);
+  until (not Result) or (PtrUInt(FItems[Index].FFilter) and PtrUInt(AFilter) <> 0);
+end;
+
+procedure TSynFilteredMethodList.Delete(AIndex: Integer);
+begin
+  if AIndex < 0 then exit;
+  while AIndex < FCount - 1 do begin
+    FItems[AIndex] := FItems[AIndex + 1];
+    inc(AIndex);
+  end;
+  dec(FCount);
+  if length(FItems) > FCount * 4 then
+    SetLength(FItems, FCount * 2);
+end;
+
+constructor TSynFilteredMethodList.Create;
+begin
+  FCount := 0;
+end;
+
+procedure TSynFilteredMethodList.AddNumFilter(AHandler: TMethod; AFilter: Pointer);
+var
+  i: Integer;
+begin
+  i := IndexOf(AHandler, AFilter);
+  if i >= 0 then
+    raise Exception.Create('Duplicate');
+
+  if FCount >= high(FItems) then
+    SetLength(FItems, Max(8, FCount * 2));
+  FItems[FCount].FHandler := AHandler;
+  FItems[FCount].FFilter := AFilter;
+  inc(FCount);
+end;
+
+procedure TSynFilteredMethodList.AddBitFilter(AHandler: TMethod; AFilter: Pointer);
+var
+  i: Integer;
+begin
+  i := IndexOf(AHandler);
+  if i >= 0 then
+    FItems[i].FFilter := Pointer( PtrUInt(FItems[i].FFilter) or PtrUInt(AFilter) )
+  else begin
+    if FCount >= high(FItems) then
+      SetLength(FItems, Max(8, FCount * 2));
+    FItems[FCount].FHandler := AHandler;
+    FItems[FCount].FFilter := AFilter;
+    inc(FCount);
+  end;
+end;
+
+procedure TSynFilteredMethodList.Remove(AHandler: TMethod);
+begin
+  Delete(IndexOf(AHandler));
+end;
+
+procedure TSynFilteredMethodList.Remove(AHandler: TMethod; AFilter: Pointer);
+begin
+  Delete(IndexOf(AHandler, AFilter));
+end;
+
+procedure TSynFilteredMethodList.CallNotifyEventsNumFilter(Sender: TObject; AFilter: Pointer);
+var
+  i: Integer;
+begin
+  i:=Count;
+  while NextDownIndexNumFilter(i, AFilter) do
+    TNotifyEvent(FItems[i].FHandler)(Sender);
+end;
+
+procedure TSynFilteredMethodList.CallNotifyEventsBitFilter(Sender: TObject; AFilter: Pointer);
+var
+  i: Integer;
+begin
+  i:=Count;
+  while NextDownIndexBitFilter(i, AFilter) do
+    TNotifyEvent(FItems[i].FHandler)(Sender);
 end;
 
 end.

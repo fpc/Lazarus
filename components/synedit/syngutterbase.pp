@@ -253,7 +253,6 @@ end;
 procedure TSynGutterBase.RecalcBounds;
 var
   NewTop, NewLeft, NewHeight: Integer;
-  i: Integer;
 begin
   // gutters act as alLeft or alRight, so Width is not computed here
   NewTop := 0;

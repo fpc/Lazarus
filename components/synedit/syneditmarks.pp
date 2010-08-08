@@ -14,26 +14,56 @@ const
 
 type
 
+  TSynEditMarkList = class;
+  TSynEditMark = class;
+
+  TSynEditMarkChangeReason = (smcrAdded, smcrRemoved, smcrLine, smcrVisible, smcrChanged);
+  TSynEditMarkChangeReasons = set of TSynEditMarkChangeReason;
+
+  TSynEditMarkChangeEvent = procedure(Sender: TSynEditMark; Changes: TSynEditMarkChangeReasons)
+    of object;
+
+  { TSynEditMarkChangedHandlerList }
+
+  TSynEditMarkChangedHandlerList = Class(TSynFilteredMethodList)
+  public
+    procedure Add(AHandler: TSynEditMarkChangeEvent; Changes: TSynEditMarkChangeReasons);
+    procedure Remove(AHandler: TSynEditMarkChangeEvent);
+    procedure CallMarkChangedHandlers(Sender: TSynEditMark; Changes: TSynEditMarkChangeReasons);
+  end;
+
   { TSynEditMark }
 
   TSynEditMark = class
+  private
+    FOldLine: integer;
+    procedure SetMarkList(const AValue: TSynEditMarkList);
   protected
     FLine, FColumn, FImage, FPriority: Integer;
     FEdit: TSynEditBase;
+    FMarkList: TSynEditMarkList;
     FVisible: boolean;
     FInternalImage: boolean;
     FBookmarkNum: integer;
-    function GetEdit: TSynEditBase; virtual;
+    FChangeLock: Integer;
+    FChanges: TSynEditMarkChangeReasons;
+    function  GetEdit: TSynEditBase; virtual;
     procedure SetColumn(const Value: Integer); virtual;
     procedure SetImage(const Value: Integer); virtual;
     procedure SetLine(const Value: Integer); virtual;
     procedure SetPriority(const AValue: integer); virtual;
-    procedure SetVisible(const Value: boolean); virtual; //MWE: Laz needs to know when a line gets visible, so the editor color can be updated
+    procedure SetVisible(const Value: boolean); virtual;
     procedure SetInternalImage(const Value: boolean);
-    function GetIsBookmark: boolean;
+    function  GetIsBookmark: boolean;
+    procedure DoChange(AChanges: TSynEditMarkChangeReasons); virtual;
+    procedure ForceChange(AChanges: TSynEditMarkChangeReasons);
   public
     constructor Create(AOwner: TSynEditBase);
+    destructor Destroy; override;
+    procedure IncChangeLock;
+    procedure DecChangeLock;
     property Line: integer read FLine write SetLine;
+    property OldLine: integer read FOldLine;
     property Column: integer read FColumn write SetColumn;
     property Priority: integer read FPriority write SetPriority;
     property ImageIndex: integer read FImage write SetImage;
@@ -41,6 +71,7 @@ type
     property Visible: boolean read FVisible write SetVisible;
     property InternalImage: boolean read FInternalImage write SetInternalImage;
     property IsBookmark: boolean read GetIsBookmark;
+    property MarkList: TSynEditMarkList read FMarkList write SetMarkList;
   end;
 
   TPlaceMarkEvent = procedure(Sender: TObject; var Mark: TSynEditMark) of object;
@@ -57,7 +88,9 @@ type
     FEdit: TSynEditBase;
     FLines: TSynEditStrings;
     fOnChange: TNotifyEvent;
+    FChangeHandlers: TSynEditMarkChangedHandlerList;
     procedure DoChange;
+    procedure MarkChanged(Sender: TSynEditMark; AChanges: TSynEditMarkChangeReasons); virtual;
     function Get(Index: Integer): TSynEditMark;
     procedure Put(Index: Integer; Item: TSynEditMark);
     procedure DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
@@ -74,6 +107,8 @@ type
     function Last: TSynEditMark;
     procedure Place(Mark: TSynEditMark);
     function Remove(Item: TSynEditMark): Integer;
+    procedure RegisterChangeHandler(Handler: TSynEditMarkChangeEvent; Filter: TSynEditMarkChangeReasons);
+    procedure UnRegisterChangeHandler(Handler: TSynEditMarkChangeEvent);
   public
     property Items[Index: Integer]: TSynEditMark read Get write Put; default;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -84,9 +119,6 @@ function DoMarksCompareBookmarksLast(Item1, Item2: Pointer): Integer;
 
 implementation
 uses SynEdit;
-
-type  // This is until InvalidateGutterLines, can be moved to an accessible place
-  SynEditAccess = Class(TCustomSynEdit);
 
 function DoMarksCompareBookmarksFirst(Item1, Item2: Pointer): Integer;
 var
@@ -162,6 +194,17 @@ begin
   FPriority := AValue;
 end;
 
+procedure TSynEditMark.SetMarkList(const AValue: TSynEditMarkList);
+begin
+  if AValue = nil then begin
+    DoChange([smcrRemoved]);
+    ForceChange(FChanges);
+  end;
+  FMarkList := AValue;
+  if FMarkList <> nil then
+    DoChange([smcrAdded]);
+end;
+
 function TSynEditMark.GetEdit: TSynEditBase;
 begin
   if FEdit <> nil then try
@@ -178,45 +221,61 @@ begin
   Result := (fBookmarkNum >= 0);
 end;
 
+procedure TSynEditMark.DoChange(AChanges: TSynEditMarkChangeReasons);
+begin
+  if FChangeLock > 0 then begin
+    FChanges := FChanges + AChanges;
+    exit;
+  end;
+  ForceChange(AChanges);
+end;
+
+procedure TSynEditMark.ForceChange(AChanges: TSynEditMarkChangeReasons);
+begin
+  if (FMarkList <> nil) and (AChanges <> []) then
+    FMarkList.MarkChanged(Self, AChanges);
+  FChanges := [];
+end;
+
 procedure TSynEditMark.SetColumn(const Value: Integer);
 begin
+  if FColumn = Value then
+    exit;
   FColumn := Value;
+  DoChange([smcrChanged]);
 end;
 
 procedure TSynEditMark.SetImage(const Value: Integer);
 begin
+  if FImage = Value then
+    exit;
   FImage := Value;
-  if FVisible and Assigned(FEdit) then
-    SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(FLine, FLine);
+  DoChange([smcrChanged]);
 end;
 
 procedure TSynEditMark.SetInternalImage(const Value: boolean);
 begin
+  if FInternalImage = Value then
+    exit;
   FInternalImage := Value;
-  if FVisible and Assigned(FEdit) then
-    SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(FLine, FLine);
+  DoChange([smcrChanged]);
 end;
 
 procedure TSynEditMark.SetLine(const Value: Integer);
 begin
-  if FVisible and Assigned(FEdit) then
-  begin
-    if FLine > 0 then
-      SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(FLine, FLine);
-    FLine := Value;
-    SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(FLine, FLine);
-  end else
-    FLine := Value;
+  if FLine = Value then
+    exit;
+  FOldLine := FLine;
+  FLine := Value;
+  DoChange([smcrLine]);
 end;
 
 procedure TSynEditMark.SetVisible(const Value: boolean);
 begin
-  if FVisible <> Value then
-  begin
-    FVisible := Value;
-    if Assigned(FEdit) then
-      SynEditAccess(Pointer(FEdit)).InvalidateGutterLines(FLine, FLine);
-  end;
+  if FVisible = Value then
+    exit;
+  FVisible := Value;
+  DoChange([smcrVisible]);
 end;
 
 constructor TSynEditMark.Create(AOwner: TSynEditBase);
@@ -227,10 +286,32 @@ begin
   FPriority := 0;
 end;
 
+destructor TSynEditMark.Destroy;
+begin
+  if FMarkList <> nil then begin
+    DoChange([smcrRemoved]);
+    FMarkList.Remove(self);
+  end;
+  inherited Destroy;
+end;
+
+procedure TSynEditMark.IncChangeLock;
+begin
+  inc(FChangeLock);
+end;
+
+procedure TSynEditMark.DecChangeLock;
+begin
+  dec(FChangeLock);
+  if (FChangeLock = 0) and (FChanges <> []) then
+    DoChange(FChanges);
+end;
+
 { TSynEditMarkList }
 
 function TSynEditMarkList.Add(Item: TSynEditMark): Integer;
 begin
+  Item.MarkList := self;;
   Result := inherited Add(Item);
   DoChange;
 end;
@@ -245,6 +326,7 @@ end;
 
 constructor TSynEditMarkList.Create(AOwner: TSynEditBase; ALines: TSynEditStrings);
 begin
+  FChangeHandlers := TSynEditMarkChangedHandlerList.Create;
   inherited Create;
   FEdit := AOwner;
   FLines := ALines;
@@ -252,17 +334,17 @@ begin
 end;
 
 destructor TSynEditMarkList.Destroy;
-var
-  i: integer;
 begin
   FLines.RemoveEditHandler(@DoLinesEdited);
-  for i := 0 to Pred(Count) do
-    Get(i).Free;
+  while Count > 0 do
+    Get(0).Free;
   inherited Destroy;
+  FreeAndNil(FChangeHandlers);
 end;
 
 procedure TSynEditMarkList.Delete(Index: Integer);
 begin
+  Items[Index].MarkList := nil;
   inherited Delete(Index);
   DoChange;
 end;
@@ -271,6 +353,12 @@ procedure TSynEditMarkList.DoChange;
 begin
   if Assigned(FOnChange) then
     FOnChange(Self);
+end;
+
+procedure TSynEditMarkList.MarkChanged(Sender: TSynEditMark;
+  AChanges: TSynEditMarkChangeReasons);
+begin
+  FChangeHandlers.CallMarkChangedHandlers(Sender, AChanges);
 end;
 
 function TSynEditMarkList.First: TSynEditMark;
@@ -311,6 +399,7 @@ end;
 
 procedure TSynEditMarkList.Insert(Index: Integer; Item: TSynEditMark);
 begin
+  Item.MarkList := Self;
   inherited Insert(Index, Item);
   DoChange;
 end;
@@ -384,8 +473,43 @@ end;
 
 function TSynEditMarkList.Remove(Item: TSynEditMark): Integer;
 begin
+  Item.MarkList := nil;
   Result := inherited Remove(Item);
   DoChange;
+end;
+
+procedure TSynEditMarkList.RegisterChangeHandler(Handler: TSynEditMarkChangeEvent;
+  Filter: TSynEditMarkChangeReasons);
+begin
+  FChangeHandlers.Add(Handler, Filter);
+end;
+
+procedure TSynEditMarkList.UnRegisterChangeHandler(Handler: TSynEditMarkChangeEvent);
+begin
+  FChangeHandlers.Remove(Handler);
+end;
+
+{ TSynEditMarkChangedHandlerList }
+
+procedure TSynEditMarkChangedHandlerList.Add(AHandler: TSynEditMarkChangeEvent;
+  Changes: TSynEditMarkChangeReasons);
+begin
+  AddBitFilter(TMethod(AHandler), Pointer(PtrUInt(Changes)));
+end;
+
+procedure TSynEditMarkChangedHandlerList.Remove(AHandler: TSynEditMarkChangeEvent);
+begin
+  inherited Remove(TMethod(AHandler));
+end;
+
+procedure TSynEditMarkChangedHandlerList.CallMarkChangedHandlers(Sender: TSynEditMark;
+  Changes: TSynEditMarkChangeReasons);
+var
+  i: Integer;
+begin
+  i:=Count;
+  while NextDownIndexBitFilter(i, Pointer(PtrUInt(Changes))) do
+    TSynEditMarkChangeEvent(FItems[i].FHandler)(Sender, Changes);
 end;
 
 end.
