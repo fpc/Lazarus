@@ -1027,6 +1027,7 @@ begin
   end;
   FSourceMark:=AValue;
   if FSourceMark<>nil then begin
+    FSourceMark.IncChangeLock;
     FSourceMark.AddPositionChangedHandler(@OnSourceMarkPositionChanged);
     FSourceMark.AddBeforeFreeHandler(@OnSourceMarkBeforeFree);
     FSourceMark.Data:=Self;
@@ -1036,6 +1037,7 @@ begin
     FSourceMark.AddGetHintHandler(@OnSourceMarkGetHint);
     FSourceMark.AddCreatePopupMenuHandler(@OnSourceMarkCreatePopupMenu);
     UpdateSourceMark;
+    FSourceMark.DecChangeLock;
   end;
 end;
 

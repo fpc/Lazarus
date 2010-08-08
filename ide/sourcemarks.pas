@@ -89,6 +89,8 @@ type
     procedure InvalidateLine(ALine: Integer);
     procedure DeleteWithSourceEditor(ASrcEditor: TSourceEditorInterface);
     function IndexOfSourceEditor(AEditor: TSourceEditorInterface): Integer;
+    procedure IncChangeLock;
+    procedure DecChangeLock;
   public
     property Line: integer read GetLine write SetLine;
     property Column: integer read GetColumn write SetColumn;
@@ -162,6 +164,8 @@ type
     function GetFilename: string;
     function GetHint: string; virtual;
     procedure CreatePopupMenuItems(const AddMenuItemProc: TAddMenuItemProc);
+    procedure IncChangeLock;
+    procedure DecChangeLock;
   public    // handlers
     procedure RemoveAllHandlersForObject(HandlerObject: TObject);
     procedure AddPositionChangedHandler(OnPositionChanged: TNotifyEvent);
@@ -485,6 +489,22 @@ begin
     dec(Result);
 end;
 
+procedure TSourceSynMarkList.IncChangeLock;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    Items[i].IncChangeLock;
+end;
+
+procedure TSourceSynMarkList.DecChangeLock;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+    Items[i].DecChangeLock;
+end;
+
 { TSourceSynMark }
 
 function TSourceSynMark.GetEdit: TSynEdit;
@@ -745,6 +765,16 @@ begin
   while FHandlers[smhCreatePopupMenu].NextDownIndex(i) do
     TCreateSourceMarkPopupMenuEvent(FHandlers[smhCreatePopupMenu][i])
       (Self,AddMenuItemProc);
+end;
+
+procedure TSourceMark.IncChangeLock;
+begin
+  FSynMarks.IncChangeLock;
+end;
+
+procedure TSourceMark.DecChangeLock;
+begin
+  FSynMarks.DecChangeLock;
 end;
 
 procedure TSourceMark.RemoveAllHandlersForObject(HandlerObject: TObject);
