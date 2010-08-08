@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, Graphics, LCLType, LCLIntf, Menus,
-  SynEditMarks, SynEditMiscClasses, SynEditMiscProcs, SynEditFoldedView,
+  SynEditMarks, SynEditMiscClasses, SynEditMiscProcs,
   SynTextDrawer, SynGutterBase, SynGutterLineNumber, SynGutterCodeFolding,
   SynGutterMarks, SynGutterChanges, SynEditMouseCmds;
 
@@ -18,51 +18,31 @@ type
 
   TSynGutter = class(TSynGutterBase)
   private
-    // List of all gutters
-    FEdit: TSynEditBase;
-
-    FWidth: integer;
-    FRightOffset, FLeftOffset: integer;
-    FOnChange: TNotifyEvent;
     FCursor: TCursor;
-    FVisible: boolean;
-    FAutoSize: boolean;
     FOnGutterClick: TGutterClickEvent;
     FMouseDownPart: Integer;
-    procedure SetAutoSize(const Value: boolean);
-    procedure SetLeftOffset(Value: integer);
-    procedure SetRightOffset(Value: integer);
-    procedure SetVisible(Value: boolean);
-    procedure SetWidth(Value: integer);
     function PixelToPartIndex(X: Integer): Integer;
   protected
-    procedure DoChange(Sender: TObject); override;
     procedure DoDefaultGutterClick(Sender: TObject; X, Y, Line: integer;
       mark: TSynEditMark); override;
+    function CreatePartList: TSynGutterPartListBase; override;
     procedure CreateDefaultGutterParts; virtual;
   public
-    property SynEdit: TSynEditBase read FEdit;
-  public
-    constructor Create(AOwner : TSynEditBase; AFoldedLinesView: TSynEditFoldedView;
+    constructor Create(AOwner : TSynEditBase; ASide: TSynGutterSide;
                       ATextDrawer: TheTextDrawer);
     destructor Destroy; override;
-    procedure Assign(Source: TPersistent); override;
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
-    function  RealGutterWidth(CharWidth: integer): integer;
-    function HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean;
+    function  HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure MouseMove(Shift: TShiftState; X, Y: Integer);
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
+    function  MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
                          HandleActionProc: TSynEditMouseActionHandler): Boolean;
     function DoHandleMouseAction(AnAction: TSynEditMouseAction;
                                  var AnInfo: TSynEditMouseActionInfo): Boolean;
     procedure DoOnGutterClick(X, Y: integer);
     property  OnGutterClick: TGutterClickEvent
       read FOnGutterClick write FOnGutterClick;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    // A Methods for access from the Gutter; to be replaced
-    procedure AutoSizeDigitCount(LinesCount: integer); // Forward to Line Number
   public
     // Access to well known parts
     Function LineNumberPart(Index: Integer = 0): TSynGutterLineNumber;
@@ -71,15 +51,13 @@ type
     Function MarksPart(Index: Integer = 0): TSynGutterMarks;
     Function SeparatorPart(Index: Integer = 0): TSynGutterSeparator;
   published
-    property AutoSize: boolean read FAutoSize write SetAutoSize default True;
+    property AutoSize;
     property Color;
     property Cursor: TCursor read FCursor write FCursor default crDefault;
-    property LeftOffset: integer read FLeftOffset write SetLeftOffset
-      default 0;
-    property RightOffset: integer read FRightOffset write SetRightOffset
-      default 0;
-    property Visible: boolean read FVisible write SetVisible default TRUE;
-    property Width: integer read FWidth write SetWidth default 30;
+    property LeftOffset;
+    property RightOffset;
+    property Visible;
+    property Width;
     property Parts;
     property MouseActions;
   end;
@@ -87,10 +65,11 @@ type
   { TSynGutterSeparator }
 
   TSynGutterSeparator = class(TSynGutterPartBase)
+  protected
+    function  PreferedWidth: Integer; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer); override;
-    function RealGutterWidth(CharWidth: integer): integer;  override;
   end;
 
   { TSynEditMouseActionsGutter }
@@ -107,19 +86,13 @@ uses
 
 { TSynGutter }
 
-constructor TSynGutter.Create(AOwner: TSynEditBase;
-  AFoldedLinesView: TSynEditFoldedView; ATextDrawer: TheTextDrawer);
+constructor TSynGutter.Create(AOwner: TSynEditBase; ASide: TSynGutterSide;
+  ATextDrawer: TheTextDrawer);
 begin
-  FEdit := AOwner;
-  inherited Create(AOwner, AFoldedLinesView, ATextDrawer);
+  inherited;
 
   FMouseActions := TSynEditMouseActionsGutter.Create(self);
   FMouseActions.ResetDefaults;
-  Visible := True;
-  Width := 30;
-  LeftOffset := 0;
-  FRightOffset := 0;
-  AutoSize := True;
 
   if not(csLoading in AOwner.ComponentState) then
     CreateDefaultGutterParts;
@@ -127,13 +100,17 @@ end;
 
 destructor TSynGutter.Destroy;
 begin
+  OnChange := nil;
+  OnResize := nil;
   FreeAndNil(FMouseActions);
-  FOnChange := nil;
   inherited Destroy;
 end;
 
 procedure TSynGutter.CreateDefaultGutterParts;
 begin
+  if Side <> gsLeft then
+    exit;
+
   // Todo: currently there is only one Gutter so names can be fixed
   with TSynGutterMarks.Create(Parts) do
     Name := 'SynGutterMarks1';
@@ -147,93 +124,10 @@ begin
     Name := 'SynGutterCodeFolding1';
 end;
 
-procedure TSynGutter.Assign(Source: TPersistent);
-var
-  Src: TSynGutter;
-begin
-  inherited;
-  if Assigned(Source) and (Source is TSynGutter) then
-  begin
-    Src := TSynGutter(Source);
-    FVisible := Src.FVisible;
-    FWidth := Src.FWidth;
-    FRightOffset := Src.FRightOffset;
-    FAutoSize := Src.FAutoSize;
-
-    DoChange(Self);
-  end else
-end;
-
-function TSynGutter.RealGutterWidth(CharWidth: integer): integer;
-var
-  i: Integer;
-begin
-  if not FVisible then
-  begin
-    Result := 0;
-    Exit;
-  end;
-
-  Result := FLeftOffset + FRightOffset;
-
-  for i := PartCount-1 downto 0 do
-    Result := Result + Parts[i].RealGutterWidth(CharWidth);
-end;
-
-procedure TSynGutter.SetLeftOffset(Value: integer);
-begin
-  Value := Max(0, Value);
-  if FLeftOffset <> Value then
-  begin
-    FLeftOffset := Value;
-    DoChange(Self);
-  end;
-end;
-
-procedure TSynGutter.SetAutoSize(const Value: boolean);
-begin
-  if FAutoSize <> Value then
-  begin
-    FAutoSize := Value;
-    DoChange(Self);
-  end;
-end;
-
-procedure TSynGutter.SetRightOffset(Value: integer);
-begin
-  Value := Max(0, Value);
-  if FRightOffset <> Value then
-  begin
-    FRightOffset := Value;
-    DoChange(Self);
-  end;
-end;
-
-procedure TSynGutter.SetVisible(Value: boolean);
-begin
-  if FVisible <> Value then
-  begin
-    FVisible := Value;
-    DoChange(Self);
-  end;
-end;
-
-procedure TSynGutter.SetWidth(Value: integer);
-begin
-  if FAutoSize then
-    Value := RealGutterWidth(TextDrawer.CharWidth);
-  Value := Max(0, Value);
-  if (FWidth <> Value) then
-  begin
-    FWidth := Value;
-    DoChange(Self);
-  end;
-end;
-
 function TSynGutter.PixelToPartIndex(X: Integer): Integer;
 begin
   Result := 0;
-  x := x - FLeftOffset;
+  x := x - LeftOffset;
   while Result < PartCount-1 do begin
     if Parts[Result].Visible then begin
       if x >= Parts[Result].Width then
@@ -245,17 +139,25 @@ begin
   end;
 end;
 
-procedure TSynGutter.DoChange(Sender: TObject);
-begin
-  If FAutoSize then
-    FWidth := RealGutterWidth(TextDrawer.CharWidth);
-  if Assigned(FOnChange) then
-    FOnChange(Self);
-end;
-
 procedure TSynGutter.DoDefaultGutterClick(Sender: TObject; X, Y, Line: integer;
   mark: TSynEditMark);
 begin
+end;
+
+function TSynGutter.CreatePartList: TSynGutterPartListBase;
+begin
+  case Side of
+    gsLeft:
+      begin
+        Result := TSynGutterPartList.Create(SynEdit, self); //left side gutter
+        Result.Name := 'SynLeftGutterPartList1';
+      end;
+    gsRight:
+      begin
+        Result := TSynRightGutterPartList.Create(SynEdit, self);
+        Result.Name := 'SynRightGutterPartList1';
+      end;
+  end;
 end;
 
 procedure TSynGutter.DoOnGutterClick(X, Y: integer);
@@ -278,13 +180,17 @@ begin
   // Clear all
   TextDrawer.BeginDrawing(dc);
   TextDrawer.SetBackColor(Color);
-  TextDrawer.SetForeColor(TSynEdit(FEdit).Font.Color);
+  TextDrawer.SetForeColor(TSynEdit(SynEdit).Font.Color);
   TextDrawer.SetFrameColor(clNone);
    with AClip do
      TextDrawer.ExtTextOut(Left, Top, ETO_OPAQUE, AClip, nil, 0);
   TextDrawer.EndDrawing;
 
-  AClip.Left := FLeftOffset;
+  if Side = gsLeft then
+    AClip.Left := LeftOffset
+  else
+    AClip.Left := SynEdit.ClientWidth - Width - ScrollBarWidth + LeftOffset;
+
   rcLine := AClip;
   rcLine.Right := rcLine.Left;
   for i := 0 to PartCount -1 do
@@ -297,14 +203,6 @@ begin
       Parts[i].Paint(Canvas, rcLine, FirstLine, LastLine);
     end;
   end;
-end;
-
-procedure TSynGutter.AutoSizeDigitCount(LinesCount : integer);
-var
-  i: Integer;
-begin
-  for i := 0 to Parts.ByClassCount[TSynGutterLineNumber] - 1 do
-    TSynGutterLineNumber(Parts.ByClass[TSynGutterLineNumber, i]).AutoSizeDigitCount(LinesCount);
 end;
 
 function TSynGutter.HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean;
@@ -395,10 +293,14 @@ end;
 
 { TSynGutterSeparator }
 
+function TSynGutterSeparator.PreferedWidth: Integer;
+begin
+  Result := 2;
+end;
+
 constructor TSynGutterSeparator.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FWidth := 2;
   MarkupInfo.Background := clWhite;
   MarkupInfo.Foreground := clDkGray;
 end;
@@ -418,14 +320,6 @@ begin
       LineTo(AClip.Left+1, AClip.Bottom);
     end;
   end;
-end;
-
-function TSynGutterSeparator.RealGutterWidth(CharWidth: integer): integer;
-begin
-  If Visible then
-    Result := Width
-  else
-    Result := 0;
 end;
 
 { TSynEditMouseActionsGutter }

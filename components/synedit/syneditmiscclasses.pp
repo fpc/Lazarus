@@ -100,11 +100,13 @@ type
     function GetCaretObj: TSynEditCaret; virtual; abstract;
     procedure SetLines(Value: TStrings); virtual; abstract;
     function GetViewedTextBuffer: TSynEditStrings; virtual; abstract;
+    function GetFoldedTextBuffer: TObject; virtual; abstract;
     function GetTextBuffer: TSynEditStrings; virtual; abstract;
 
     property MarkupMgr: TObject read GetMarkupMgr;
+    property FoldedTextBuffer: TObject read GetFoldedTextBuffer;                // TSynEditFoldedView
     property ViewedTextBuffer: TSynEditStrings read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
-    property TextBuffer: TSynEditStrings read GetTextBuffer;                    // No uncommited (trailing/trimmable) spaces
+    property TextBuffer: TSynEditStrings read GetTextBuffer;                    // (TSynEditStringList) No uncommited (trailing/trimmable) spaces
     property WordBreaker: TSynWordBreaker read FWordBreaker;
   public
     property Lines: TStrings read GetLines write SetLines;
@@ -116,15 +118,19 @@ type
   private
     FFriendEdit: TSynEditBase;
     function GetCaretObj: TSynEditCaret;
+    function GetFoldedTextBuffer: TObject;
     function GetIsRedoing: Boolean;
     function GetIsUndoing: Boolean;
     function GetMarkupMgr: TObject;
     function GetSelectionObj: TSynEditSelection;
+    function GetTextBuffer: TSynEditStrings;
     function GetViewedTextBuffer: TSynEditStrings;
     function GetWordBreaker: TSynWordBreaker;
   protected
     property FriendEdit: TSynEditBase read FFriendEdit write FFriendEdit;
+    property FoldedTextBuffer: TObject read GetFoldedTextBuffer;                // TSynEditFoldedView
     property ViewedTextBuffer: TSynEditStrings read GetViewedTextBuffer;        // As viewed internally (with uncommited spaces / TODO: expanded tabs, folds). This may change, use with care
+    property TextBuffer: TSynEditStrings read GetTextBuffer;                    // (TSynEditStringList)
     property CaretObj: TSynEditCaret read GetCaretObj;
     property SelectionObj: TSynEditSelection read GetSelectionObj;
     property MarkupMgr: TObject read GetMarkupMgr;
@@ -143,8 +149,10 @@ type
     FList: TList;
     FOnChange: TNotifyEvent;
     FOwner: TComponent;
+    FSorted: Boolean;
     function GetBasePart(Index: Integer): TSynObjectListItem;
     procedure PutBasePart(Index: Integer; const AValue: TSynObjectListItem);
+    procedure SetSorted(const AValue: Boolean);
   protected
     function GetChildOwner: TComponent; override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
@@ -162,6 +170,8 @@ type
     Function  Count: Integer;
     Function  IndexOf(AnItem: TSynObjectListItem): Integer;
     Procedure Move(AOld, ANew: Integer);
+    procedure Sort;
+    property Sorted: Boolean read FSorted write SetSorted;
     property Owner: TComponent read FOwner;
     property BaseItems[Index: Integer]: TSynObjectListItem
       read GetBasePart write PutBasePart; default;
@@ -170,14 +180,17 @@ type
 
   { TSynObjectListItem }
 
-  TSynObjectListItem = class(TComponent)
+  TSynObjectListItem = class(TSynEditFriend)
   private
     FOwner: TSynObjectList;
     function GetIndex: Integer;
     procedure SetIndex(const AValue: Integer);
   protected
+    function Compare(Other: TSynObjectListItem): Integer; virtual;
     function GetDisplayName: String; virtual;
     property Owner: TSynObjectList read FOwner;
+    // Use Init to setup things that are needed before Owner.RegisterItem (bur require Owner to be set)
+    procedure Init; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -389,6 +402,11 @@ begin
   Result := FFriendEdit.FBlockSelection;
 end;
 
+function TSynEditFriend.GetTextBuffer: TSynEditStrings;
+begin
+  Result := FFriendEdit.TextBuffer;
+end;
+
 function TSynEditFriend.GetIsRedoing: Boolean;
 begin
   Result := FFriendEdit.ViewedTextBuffer.IsRedoing;
@@ -397,6 +415,11 @@ end;
 function TSynEditFriend.GetCaretObj: TSynEditCaret;
 begin
   Result := FFriendEdit.GetCaretObj;
+end;
+
+function TSynEditFriend.GetFoldedTextBuffer: TObject;
+begin
+  Result := FFriendEdit.FoldedTextBuffer;
 end;
 
 function TSynEditFriend.GetIsUndoing: Boolean;
@@ -673,9 +696,9 @@ end;
 
 destructor TSynObjectList.Destroy;
 begin
-  inherited Destroy;
   Clear;
   FreeAndNil(FList);
+  inherited Destroy;
 end;
 
 procedure TSynObjectList.Assign(Source: TPersistent);
@@ -720,15 +743,33 @@ begin
   DoChange(self);
 end;
 
+procedure TSynObjectList.SetSorted(const AValue: Boolean);
+begin
+  if FSorted = AValue then exit;
+  FSorted := AValue;
+  Sort;
+end;
+
 procedure TSynObjectList.DoChange(Sender: TObject);
 begin
   if Assigned(FOnChange) then
     FOnChange(Self);
 end;
 
+function CompareSynObjectListItems(Item1, Item2: Pointer): Integer;
+begin
+  Result := TSynObjectListItem(Item1).Compare(TSynObjectListItem(Item2));
+end;
+
+procedure TSynObjectList.Sort;
+begin
+  FList.Sort({$IFDEF FPC}@{$ENDIF}CompareSynObjectListItems);
+end;
+
 function TSynObjectList.Add(AnItem: TSynObjectListItem): Integer;
 begin
   Result := FList.Add(Pointer(AnItem));
+  if FSorted then Sort;
   DoChange(self);
 end;
 
@@ -758,6 +799,7 @@ end;
 
 procedure TSynObjectList.Move(AOld, ANew: Integer);
 begin
+  if FSorted then raise Exception.Create('not allowed');
   FList.Move(AOld, ANew);
   DoChange(self);;
 end;
@@ -774,9 +816,19 @@ begin
   Result := Name + ' (' + ClassName + ')';
 end;
 
+procedure TSynObjectListItem.Init;
+begin
+  //
+end;
+
 procedure TSynObjectListItem.SetIndex(const AValue: Integer);
 begin
   Owner.Move(GetIndex, AValue);
+end;
+
+function TSynObjectListItem.Compare(Other: TSynObjectListItem): Integer;
+begin
+  Result := PtrUInt(self) - PtrUInt(Other);
 end;
 
 constructor TSynObjectListItem.Create(AOwner: TComponent);
@@ -784,6 +836,7 @@ begin
   inherited Create(AOwner);
   SetAncestor(True);
   FOwner := AOwner as TSynObjectList;
+  Init;
   FOwner.RegisterItem(self);
 end;
 

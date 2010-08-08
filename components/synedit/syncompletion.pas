@@ -43,7 +43,7 @@ interface
 uses
   LCLProc, LCLIntf, LCLType, SynEditMiscProcs,
   Classes, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Menus,
-  SysUtils, SynEditKeyCmds, SynEdit;
+  SysUtils, SynEditKeyCmds, SynEdit, SynEditTypes;
 
 type
   TSynBaseCompletionPaintItem =
@@ -835,7 +835,8 @@ begin
     TSynEdit(fCurrentEditor).UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged);
   fCurrentEditor := AValue;
   if (fCurrentEditor <> nil) and Visible then
-    TSynEdit(fCurrentEditor).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged);
+    TSynEdit(fCurrentEditor).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged,
+                                                          [scTopLine]);
 end;
 
 procedure TSynBaseCompletionForm.SetVisible(Value: Boolean);
@@ -844,7 +845,8 @@ begin
   inherited SetVisible(Value);
   if (fCurrentEditor <> nil) then begin
     if Visible then
-      TSynEdit(fCurrentEditor).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged)
+      TSynEdit(fCurrentEditor).RegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged,
+                                                            [scTopLine])
     else
       TSynEdit(fCurrentEditor).UnRegisterStatusChangedHandler({$IFDEF FPC}@{$ENDIF}EditorStatusChanged);
   end;

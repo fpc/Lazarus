@@ -383,7 +383,7 @@ begin
   XY := ColorPreview.PixelsToRowColumn(MouseXY);
   NewNode := nil;
   // Gutter Colors
-  if X <= ColorPreview.GutterWidth then begin
+  if X <= ColorPreview.Gutter.Width then begin
     for i := 0 to ColorPreview.Gutter.Parts.Count-1 do begin
       if ColorPreview.Gutter.Parts[i].Width > X then begin
         if ColorPreview.Gutter.Parts[i] is TSynGutterLineNumber then

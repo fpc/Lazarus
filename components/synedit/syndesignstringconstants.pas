@@ -13,6 +13,7 @@ resourcestring
   syndsChangeMarker = 'Change Marker';
   syndsBookmarks = 'Bookmarks';
   syndsSeparator = 'Separator';
+  syndsLineOverview = 'Line Overview';
 
 
 implementation

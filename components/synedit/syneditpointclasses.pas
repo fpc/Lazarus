@@ -34,7 +34,7 @@ unit SynEditPointClasses;
 interface
 
 uses
-  Classes, SysUtils, LCLProc,
+  Classes, SysUtils, LCLProc, LCLType, LCLIntf,
   {$IFDEF SYN_MBCSSUPPORT}
   Imm,
   {$ENDIF}
@@ -241,6 +241,70 @@ type
     property AllowPastEOL: Boolean read FAllowPastEOL write SetAllowPastEOL;
     property KeepCaretX: Boolean read FKeepCaretX write SetKeepCaretX;
     property MaxLeftChar: PInteger write FMaxLeftChar;
+  end;
+
+  TSynCaretType = (ctVerticalLine, ctHorizontalLine, ctHalfBlock, ctBlock);
+
+  { TSynEditScreenCaret }
+
+  TSynEditScreenCaret = class
+  private
+    FCharHeight: Integer;
+    FCharWidth: Integer;
+    FClipRight: Integer;
+    FClipBottom: Integer;
+    FClipLeft: Integer;
+    FClipTop: Integer;
+    FDisplayPos: TPoint;
+    FDisplayType: TSynCaretType;
+    FExtraLineChars: Integer;
+    FHandle: HWND;
+    FOnExtraLineCharsChanged: TNotifyEvent;
+    FVisible: Boolean;
+    procedure SetCharHeight(const AValue: Integer);
+    procedure SetCharWidth(const AValue: Integer);
+    procedure SetClipRight(const AValue: Integer);
+    procedure SetDisplayPos(const AValue: TPoint);
+    procedure SetDisplayType(const AType: TSynCaretType);
+    procedure SetVisible(const AValue: Boolean);
+  private
+    FPixelWidth, FPixelHeight: Integer;
+    FOffsetX, FOffsetY: Integer;
+    FCurrentPosX, FCurrentPosY: Integer;
+    FCurrentVisible, FCurrentCreated: Boolean;
+    FCurrentClippedWidth: Integer;
+    FLockCount: Integer;
+    FLockedUpdateNeeded: Boolean;
+    procedure SetClipBottom(const AValue: Integer);
+    procedure SetClipLeft(const AValue: Integer);
+    procedure SetClipRect(const AValue: TRect);
+    procedure SetClipTop(const AValue: Integer);
+    procedure SetHandle(const AValue: HWND);
+    procedure UpdateDisplayType;
+    procedure UpdateDisplay;
+    procedure ShowCaret;
+    procedure HideCaret;
+  public
+    constructor Create(AHandle: HWND);
+    destructor Destroy; override;
+    procedure  Hide; // Keep visible = true
+    procedure  DestroyCaret;
+    procedure  Lock;
+    procedure  UnLock;
+    property Handle:      HWND read FHandle write SetHandle;
+    property CharWidth:   Integer read FCharWidth write SetCharWidth;
+    property CharHeight:  Integer read FCharHeight write SetCharHeight;
+    property ClipLeft:    Integer read FClipLeft write SetClipLeft;
+    property ClipRight:   Integer read FClipRight write SetClipRight;           // First pixel outside the allowed area
+    property ClipTop:     Integer read FClipTop write SetClipTop;
+    property ClipRect:    TRect write SetClipRect;
+    property ClipBottom:  Integer read FClipBottom write SetClipBottom;
+    property Visible:     Boolean read FVisible write SetVisible;
+    property DisplayType: TSynCaretType read FDisplayType write SetDisplayType;
+    property DisplayPos:  TPoint  read FDisplayPos write SetDisplayPos;
+    property ExtraLineChars: Integer read FExtraLineChars; // Extend the longest line by x chars
+    property OnExtraLineCharsChanged: TNotifyEvent
+             read FOnExtraLineCharsChanged write FOnExtraLineCharsChanged;
   end;
 
 implementation
@@ -1474,6 +1538,239 @@ begin
     StartLineBytePos := Caret.LineBytePos
   else
     StartLineBytePos := StartLineBytePos;
+end;
+
+{ TSynEditScreenCaret }
+
+constructor TSynEditScreenCaret.Create(AHandle: HWND);
+begin
+  inherited Create;
+  FHandle := AHandle;
+  FVisible := False;
+  FCurrentVisible := False;
+  FCurrentCreated := False;
+  FCurrentPosX := -1;
+  FCurrentPosY := -1;
+  FCurrentClippedWidth := -1;
+  FLockCount := 0;
+end;
+
+destructor TSynEditScreenCaret.Destroy;
+begin
+  DestroyCaret;
+  inherited Destroy;
+end;
+
+procedure TSynEditScreenCaret.Hide;
+begin
+  HideCaret;
+end;
+
+procedure TSynEditScreenCaret.DestroyCaret;
+begin
+  if FCurrentCreated then
+    LCLIntf.DestroyCaret(FHandle);
+  FCurrentCreated := False;
+  FCurrentVisible := False;
+end;
+
+procedure TSynEditScreenCaret.Lock;
+begin
+  inc(FLockCount);
+end;
+
+procedure TSynEditScreenCaret.UnLock;
+begin
+  dec(FLockCount);
+  if (FLockCount=0) and FLockedUpdateNeeded then
+    UpdateDisplay;
+end;
+
+procedure TSynEditScreenCaret.SetClipRight(const AValue: Integer);
+begin
+  if FClipRight = AValue then exit;
+  FClipRight := AValue;
+  UpdateDisplay;
+end;
+
+procedure TSynEditScreenCaret.SetCharHeight(const AValue: Integer);
+begin
+  if FCharHeight = AValue then exit;
+  FCharHeight := AValue;
+  UpdateDisplayType;
+end;
+
+procedure TSynEditScreenCaret.SetCharWidth(const AValue: Integer);
+begin
+  if FCharWidth = AValue then exit;
+  FCharWidth := AValue;
+  UpdateDisplayType;
+end;
+
+procedure TSynEditScreenCaret.SetDisplayPos(const AValue: TPoint);
+begin
+  if (FDisplayPos.x = AValue.x) and (FDisplayPos.y = AValue.y) and
+     (FVisible = FCurrentVisible)
+  then
+    exit;
+  FDisplayPos := AValue;
+  UpdateDisplay;
+end;
+
+procedure TSynEditScreenCaret.SetDisplayType(const AType: TSynCaretType);
+begin
+  if FDisplayType = AType then exit;
+  FDisplayType := AType;
+  UpdateDisplayType;
+end;
+
+procedure TSynEditScreenCaret.SetVisible(const AValue: Boolean);
+begin
+  if FVisible = AValue then exit;
+  FVisible := AValue;
+  UpdateDisplay;
+end;
+
+procedure TSynEditScreenCaret.UpdateDisplayType;
+var
+  OldExtraChars: Integer;
+begin
+  OldExtraChars := FExtraLineChars;
+  case FDisplayType of
+    ctVerticalLine:
+      begin
+        FPixelWidth     := 2;
+        FPixelHeight    := FCharHeight - 2;
+        FOffsetX        := -1;
+        FOffsetY        :=  1;
+        FExtraLineChars :=  0;
+      end;
+    ctBlock:
+      begin
+        FPixelWidth     := FCharWidth;
+        FPixelHeight    := FCharHeight - 2;
+        FOffsetX        := 0;
+        FOffsetY        := 1;
+        FExtraLineChars := 1;
+      end;
+    ctHalfBlock:
+      begin
+        FPixelWidth     := FCharWidth;
+        FPixelHeight    := (FCharHeight - 2) div 2;
+        FOffsetX        := 0;
+        FOffsetY        := FPixelHeight + 1;
+        FExtraLineChars := 1;
+      end;
+    ctHorizontalLine:
+      begin
+        FPixelWidth     := FCharWidth;
+        FPixelHeight    := 2;
+        FOffsetX        := 0;
+        FOffsetY        := FCharHeight - 1;
+        FExtraLineChars := 1;
+      end;
+  end;
+  if (FExtraLineChars <> OldExtraChars) and assigned(FOnExtraLineCharsChanged) then
+    FOnExtraLineCharsChanged(Self);
+  UpdateDisplay;
+end;
+
+procedure TSynEditScreenCaret.SetHandle(const AValue: HWND);
+begin
+  DestroyCaret;
+  FHandle := AValue;
+  UpdateDisplay;
+end;
+
+procedure TSynEditScreenCaret.SetClipBottom(const AValue: Integer);
+begin
+  if FClipBottom = AValue then exit;
+  FClipBottom := AValue;
+  UpdateDisplay;
+end;
+
+procedure TSynEditScreenCaret.SetClipLeft(const AValue: Integer);
+begin
+  if FClipLeft = AValue then exit;
+  FClipLeft := AValue;
+  UpdateDisplay;
+end;
+
+procedure TSynEditScreenCaret.SetClipRect(const AValue: TRect);
+begin
+  FClipLeft   := AValue.Left;
+  FClipRight  := AValue.Right;
+  FClipTop    := AValue.Top;
+  FClipBottom := AValue.Bottom;
+  UpdateDisplay;
+end;
+
+procedure TSynEditScreenCaret.SetClipTop(const AValue: Integer);
+begin
+  if FClipTop = AValue then exit;
+  FClipTop := AValue;
+  UpdateDisplay;
+end;
+
+procedure TSynEditScreenCaret.UpdateDisplay;
+begin
+  if FLockCount > 0 then begin
+    FLockedUpdateNeeded := True;
+    exit;
+  end;
+  FLockedUpdateNeeded := False;
+  if FVisible then
+    ShowCaret
+  else
+    HideCaret;
+end;
+
+procedure TSynEditScreenCaret.ShowCaret;
+var
+  x, y, w: Integer;
+begin
+  if FHandle = 0 then exit;
+  x := FDisplayPos.x + FOffsetX;
+  y := FDisplayPos.y + FOffsetY;
+  w := FPixelWidth;
+  if x + w >= FClipRight then
+    w := FClipRight - x - 1;
+  if (w <= 0) or
+     (x < FClipLeft) or (x >= FClipRight) or
+     (y < FClipTop) or (y >= FClipBottom)
+  then begin
+    HideCaret;
+    exit;
+  end;
+
+  if (not FCurrentCreated) or (FCurrentClippedWidth <> w) then begin
+    //if FCurrentCreated then
+    //  LCLIntf.DestroyCaret(FHandle);
+    // // Create caret includes destroy
+    CreateCaret(FHandle, 0, w, FPixelHeight);
+    FCurrentCreated := True;
+    FCurrentVisible := False;
+    FCurrentClippedWidth := w;
+    FCurrentPosX := x - 1;
+  end;
+  if (x <> FCurrentPosX) or (y <> FCurrentPosY) then
+    SetCaretPosEx(FHandle, x, y);
+  if (not FCurrentVisible) and LCLIntf.ShowCaret(Handle) then
+    FCurrentVisible := True;
+end;
+
+procedure TSynEditScreenCaret.HideCaret;
+var
+  x, y: Integer;
+begin
+  if FHandle = 0 then exit;
+  if not FCurrentCreated then exit;
+  x := FDisplayPos.x + FOffsetX;
+  y := FDisplayPos.y + FOffsetY;
+  if FCurrentVisible and LCLIntf.HideCaret(Handle) then
+    FCurrentVisible := False;
+  //if (x <> FCurrentPosX) or (y <> FCurrentPosY) then
+  //  SetCaretPosEx(FHandle, x, y);
 end;
 
 end.

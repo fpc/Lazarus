@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, LCLType, LCLIntf, SynGutterBase,
-  SynEditMiscProcs, SynTextDrawer, SynEditFoldedView, SynEditMouseCmds;
+  SynEditMiscProcs, SynTextDrawer, SynEditMouseCmds, SynEditTextBuffer, SynEditTextBase;
 
 type
 
@@ -18,7 +18,6 @@ type
 
   TSynGutterLineNumber = class(TSynGutterPartBase)
   private
-    FFoldView: TSynEditFoldedView;
     FTextDrawer: TheTextDrawer;
 
     FDigitCount: integer;
@@ -33,7 +32,12 @@ type
     procedure SetZeroStart(const AValue : boolean);
     function FormatLineNumber(Line: integer; IsDot: boolean): string;
   protected
-    procedure DoChange(Sender: TObject); override;
+    procedure Init; override;
+    function  PreferedWidth: Integer; override;
+    procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
+    procedure BufferChanged(Sender: TObject);
+    procedure FontChanged(Sender: TObject);
+    procedure SetAutoSize(const AValue : boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -41,13 +45,11 @@ type
 
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
       override;
-    procedure AutoSizeDigitCount(LinesCount: integer);
-    function RealGutterWidth(CharWidth: integer): integer;  override;
   published
     property MarkupInfo;
     property DigitCount: integer read FDigitCount write SetDigitCount;
     property ShowOnlyLineNumbersMultiplesOf: integer
-      read FShowOnlyLineNumbersMultiplesOf write SetShowOnlyLineNumbersMultiplesOf;
+             read FShowOnlyLineNumbersMultiplesOf write SetShowOnlyLineNumbersMultiplesOf;
     property ZeroStart: boolean read FZeroStart write SetZeroStart;
     property LeadingZeros: boolean read FLeadingZeros write SetLeadingZeros;
   end;
@@ -60,9 +62,6 @@ uses
 
 constructor TSynGutterLineNumber.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  FFoldView := Gutter.FoldView;
-  FTextDrawer := Gutter.TextDrawer;
   FMouseActions := TSynEditMouseActionsLineNum.Create(self);
   FMouseActions.ResetDefaults;
 
@@ -71,11 +70,23 @@ begin
   FShowOnlyLineNumbersMultiplesOf := 1;
   FLeadingZeros := false;
   FZeroStart := False;
-  FWidth := 25;
+  inherited Create(AOwner);
+end;
+
+procedure TSynGutterLineNumber.Init;
+begin
+  inherited Init;
+  FTextDrawer := Gutter.TextDrawer;
+  TSynEditStringList(TextBuffer).AddGenericHandler(senrLineCount, TMethod({$IFDEF FPC}@{$ENDIF}LineCountChanged));
+  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod({$IFDEF FPC}@{$ENDIF}BufferChanged));
+  FTextDrawer.RegisterOnFontChangeHandler({$IFDEF FPC}@{$ENDIF}FontChanged);
+  LineCountchanged(nil, 0, 0);
 end;
 
 destructor TSynGutterLineNumber.Destroy;
 begin
+  TSynEditStringList(TextBuffer).RemoveHanlders(self);
+  FTextDrawer.UnRegisterOnFontChangeHandler({$IFDEF FPC}@{$ENDIF}FontChanged);
   FreeAndNil(FMouseActions);
   inherited Destroy;
 end;
@@ -102,7 +113,11 @@ begin
   if FDigitCount <> AValue then
   begin
     FDigitCount := AValue;
-    FAutoSizeDigitCount := FDigitCount;
+    if AutoSize then begin
+      FAutoSizeDigitCount := Max(FDigitCount, FAutoSizeDigitCount);
+      DoAutoSize;
+    end else
+      FAutoSizeDigitCount := FDigitCount;
     DoChange(Self);
   end;
 end;
@@ -130,40 +145,8 @@ begin
   if FZeroStart <> AValue then
   begin
     FZeroStart := AValue;
-    DoChange(Self);
-  end;
-end;
-
-function TSynGutterLineNumber.RealGutterWidth(CharWidth : integer) : integer;
-begin
-  if not Visible then
-  begin
-    Result := 0;
-    Exit;
-  end;
-
-  if AutoSize then
-    RealWidth := FAutoSizeDigitCount * CharWidth + 1;
-  Result := Width;
-end;
-
-procedure TSynGutterLineNumber.AutoSizeDigitCount(LinesCount: integer);
-var
-  nDigits: integer;
-begin
-  if Visible and AutoSize then
-  begin
-    if FZeroStart then Dec(LinesCount);
-    nDigits := Max(Length(IntToStr(LinesCount)), FDigitCount);
-    if FAutoSizeDigitCount <> nDigits then
-    begin
-      FAutoSizeDigitCount := nDigits;
-      DoChange(Self);
-    end;
-  end
-  else
-  if FAutoSizeDigitCount <> FDigitCount then begin
-    FAutoSizeDigitCount := FDigitCount;
+    if AutoSize then
+      DoAutoSize;
     DoChange(Self);
   end;
 end;
@@ -191,11 +174,44 @@ begin
   end;
 end;
 
-procedure TSynGutterLineNumber.DoChange(Sender: TObject);
+function TSynGutterLineNumber.PreferedWidth: Integer;
 begin
-  if AutoSize then
-    FWidth := RealGutterWidth(FTextDrawer.CharWidth);
-  inherited DoChange(Sender);
+  Result := FAutoSizeDigitCount * FTextDrawer.CharWidth + 1;
+end;
+
+procedure TSynGutterLineNumber.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
+var
+  LineCnt, nDigits: integer;
+begin
+  if not(Visible and AutoSize) then exit;
+
+  LineCnt := TextBuffer.Count;
+  if FZeroStart and (LineCnt > 0) then Dec(LineCnt);
+
+  nDigits := Max(Length(IntToStr(LineCnt)), FDigitCount);
+  if FAutoSizeDigitCount <> nDigits then begin
+    FAutoSizeDigitCount := nDigits;
+    DoAutoSize;
+  end;
+end;
+
+procedure TSynGutterLineNumber.BufferChanged(Sender: TObject);
+begin
+  TSynEditStringList(Sender).RemoveHanlders(self);
+  TSynEditStringList(TextBuffer).AddGenericHandler(senrLineCount, TMethod({$IFDEF FPC}@{$ENDIF}LineCountChanged));
+  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged, TMethod({$IFDEF FPC}@{$ENDIF}BufferChanged));
+  LineCountChanged(nil, 0, 0);
+end;
+
+procedure TSynGutterLineNumber.FontChanged(Sender: TObject);
+begin
+  DoAutoSize;
+end;
+
+procedure TSynGutterLineNumber.SetAutoSize(const AValue: boolean);
+begin
+  inherited SetAutoSize(AValue);
+  if AValue then LineCountChanged(nil, 0, 0);
 end;
 
 procedure TSynGutterLineNumber.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, LastLine : integer);
@@ -219,9 +235,7 @@ begin
   else
     Canvas.Brush.Color := Gutter.Color;
   dc := Canvas.Handle;
-  {$IFDEF SYN_LAZARUS}
   LCLIntf.SetBkColor(dc, Canvas.Brush.Color);
-  {$ENDIF}
   FTextDrawer.BeginDrawing(dc);
   try
     if MarkupInfo.Background <> clNone then
@@ -239,7 +253,7 @@ begin
     rcLine.Bottom := FirstLine * LineHeight;
     for i := FirstLine to LastLine do
     begin
-      iLine := FFoldView.DisplayNumber[i];
+      iLine := FoldView.DisplayNumber[i];
       // next line rect
       rcLine.Top := rcLine.Bottom;
       // Must show a dot instead of line number if

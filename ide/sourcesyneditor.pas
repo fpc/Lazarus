@@ -37,12 +37,13 @@ interface
 {$I ide.inc}
 
 uses
-  Classes, SysUtils, LCLProc, Graphics, Menus, LazarusIDEStrConsts,
-  SynEdit, SynEditMiscClasses, SynGutter,
+  Classes, SysUtils, LCLProc, Graphics, Menus, math, LazarusIDEStrConsts,
+  SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase,
   SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
+  SynGutterLineOverview,
   SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase,
   SynPluginTemplateEdit, SynPluginSyncroEdit,
-  SynEditHighlighterFoldBase, SynHighlighterPas;
+  SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterPas;
 
 type
 
@@ -56,7 +57,7 @@ type
     FTemplateEdit: TSynPluginTemplateEdit;
     function GetIDEGutterMarks: TIDESynGutterMarks;
   protected
-    function CreateGutter(AOwner : TSynEditBase; AFoldedLinesView: TSynEditFoldedView;
+    function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
                           ATextDrawer: TheTextDrawer): TSynGutter; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -66,6 +67,69 @@ type
     property TextBuffer;
     property TemplateEdit: TSynPluginTemplateEdit read FTemplateEdit;
     property SyncroEdit: TSynPluginSyncroEdit read FSyncroEdit;
+  end;
+
+  TIDESynHighlighterPasRangeList = class(TSynHighlighterPasRangeList)
+  protected
+    FInterfaceLine, FImplementationLine,
+    FInitializationLine, FFinalizationLine: Integer;
+  end;
+
+  { TIDESynPasSyn }
+
+  TIDESynPasSyn = class(TSynPasSyn)
+  private
+    function GetFinalizationLine: Integer;
+    function GetImplementationLine: Integer;
+    function GetInitializationLine: Integer;
+    function GetInterfaceLine: Integer;
+  protected
+    function CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList; override;
+    function StartCodeFoldBlock(ABlockType: Pointer;
+              IncreaseLevel: Boolean = true): TSynCustomCodeFoldBlock; override;
+  public
+    procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: string;
+      LineNumber: Integer); override;
+    property InterfaceLine: Integer read GetInterfaceLine;
+    property ImplementationLine: Integer read GetImplementationLine;
+    property InitializationLine: Integer read GetInitializationLine;
+    property FinalizationLine: Integer read GetFinalizationLine;
+  end;
+
+  { TIDESynFreePasSyn }
+
+  TIDESynFreePasSyn = class(TIDESynPasSyn)
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure ResetRange; override;
+  end;
+
+  { TIDESynGutterLOvProviderPascal }
+
+  TIDESynGutterLOvProviderPascal = class(TSynGutterLineOverviewProvider)
+  private
+    FColor2: TColor;
+    FInterfaceLine, FImplementationLine,
+    FInitializationLine, FFinalizationLine: Integer;
+    FPixInterfaceLine, FPixImplementationLine,
+    FPixInitializationLine, FPixFinalizationLine: Integer;
+    FPixEndInterfaceLine, FPixEndImplementationLine,
+    FPixEndInitializationLine, FPixEndFinalizationLine: Integer;
+    FSingleLine: Boolean;
+    FRGBColor2: TColor;
+    procedure SetColor2(const AValue: TColor);
+    procedure SetSingleLine(const AValue: Boolean);
+  protected
+    procedure BufferChanged(Sender: TObject);
+    procedure HighlightChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
+    procedure ReCalc; override;
+
+    procedure Paint(Canvas: TCanvas; AClip: TRect; TopOffset: integer); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor  Destroy; override;
+    property SingleLine: Boolean read FSingleLine write SetSingleLine;
+    property Color2: TColor read FColor2 write SetColor2;
   end;
 
   { TIDESynGutter }
@@ -131,10 +195,10 @@ begin
   Result := TIDESynGutterMarks(Gutter.Parts.ByClass[TIDESynGutterMarks, 0]);
 end;
 
-function TIDESynEditor.CreateGutter(AOwner: TSynEditBase;
-  AFoldedLinesView: TSynEditFoldedView; ATextDrawer: TheTextDrawer): TSynGutter;
+function TIDESynEditor.CreateGutter(AOwner: TSynEditBase; ASide: TSynGutterSide;
+  ATextDrawer: TheTextDrawer): TSynGutter;
 begin
-  Result := TIDESynGutter.Create(AOwner, AFoldedLinesView, ATextDrawer);
+  Result := TIDESynGutter.Create(AOwner, ASide, ATextDrawer);
 end;
 
 constructor TIDESynEditor.Create(AOwner: TComponent);
@@ -149,20 +213,320 @@ begin
   Result := TextView.TextIndexToViewPos(aTextIndex - 1);
 end;
 
+{ TIDESynPasSyn }
+
+function TIDESynPasSyn.GetFinalizationLine: Integer;
+begin
+  Result := TIDESynHighlighterPasRangeList(CurrentRanges).FFinalizationLine;
+end;
+
+function TIDESynPasSyn.GetImplementationLine: Integer;
+begin
+  Result := TIDESynHighlighterPasRangeList(CurrentRanges).FImplementationLine;
+end;
+
+function TIDESynPasSyn.GetInitializationLine: Integer;
+begin
+  Result := TIDESynHighlighterPasRangeList(CurrentRanges).FInitializationLine;
+end;
+
+function TIDESynPasSyn.GetInterfaceLine: Integer;
+begin
+  Result := TIDESynHighlighterPasRangeList(CurrentRanges).FInterfaceLine;
+end;
+
+function TIDESynPasSyn.CreateRangeList(ALines: TSynEditStringsBase): TSynHighlighterRangeList;
+begin
+  Result := TIDESynHighlighterPasRangeList.Create;
+  TIDESynHighlighterPasRangeList(Result).FInterfaceLine := -1;
+  TIDESynHighlighterPasRangeList(Result).FImplementationLine := -1;
+  TIDESynHighlighterPasRangeList(Result).FInitializationLine := -1;
+  TIDESynHighlighterPasRangeList(Result).FFinalizationLine := -1;
+end;
+
+function TIDESynPasSyn.StartCodeFoldBlock(ABlockType: Pointer;
+  IncreaseLevel: Boolean): TSynCustomCodeFoldBlock;
+begin
+  if (ABlockType = Pointer(PtrInt(cfbtUnitSection))) or
+     (ABlockType = Pointer(PtrInt(cfbtUnitSection)) + PtrUInt(CountPascalCodeFoldBlockOffset))
+  then begin
+    if KeyComp('Interface') then
+      TIDESynHighlighterPasRangeList(CurrentRanges).FInterfaceLine := LineIndex  + 1;
+    if KeyComp('Implementation') then
+      TIDESynHighlighterPasRangeList(CurrentRanges).FImplementationLine := LineIndex  + 1;
+    if KeyComp('Initialization') then
+      TIDESynHighlighterPasRangeList(CurrentRanges).FInitializationLine := LineIndex  + 1;
+    if KeyComp('Finalization') then
+      TIDESynHighlighterPasRangeList(CurrentRanges).FFinalizationLine := LineIndex  + 1;
+  end;
+  Result := inherited;
+end;
+
+procedure TIDESynPasSyn.SetLine(const NewValue: string; LineNumber: Integer);
+begin
+  if assigned(CurrentRanges) then begin
+    if TIDESynHighlighterPasRangeList(CurrentRanges).FInterfaceLine = LineNumber + 1 then
+      TIDESynHighlighterPasRangeList(CurrentRanges).FInterfaceLine := -1;
+    if TIDESynHighlighterPasRangeList(CurrentRanges).FImplementationLine = LineNumber + 1 then
+      TIDESynHighlighterPasRangeList(CurrentRanges).FImplementationLine := -1;
+    if TIDESynHighlighterPasRangeList(CurrentRanges).FInitializationLine = LineNumber + 1 then
+      TIDESynHighlighterPasRangeList(CurrentRanges).FInitializationLine := -1;
+    if TIDESynHighlighterPasRangeList(CurrentRanges).FFinalizationLine = LineNumber + 1 then
+      TIDESynHighlighterPasRangeList(CurrentRanges).FFinalizationLine := -1;
+  end;
+  inherited SetLine(NewValue, LineNumber);
+end;
+
+{ TIDESynFreePasSyn }
+
+constructor TIDESynFreePasSyn.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  CompilerMode:=pcmObjFPC;
+end;
+
+procedure TIDESynFreePasSyn.ResetRange;
+begin
+  inherited ResetRange;
+  CompilerMode:=pcmObjFPC;
+end;
+
+{ TIDESynGutterLOvProviderPascal }
+
+procedure TIDESynGutterLOvProviderPascal.SetSingleLine(const AValue: Boolean);
+begin
+  if FSingleLine = AValue then exit;
+  FSingleLine := AValue;
+  InvalidatePixelLines(0, Height);
+end;
+
+procedure TIDESynGutterLOvProviderPascal.SetColor2(const AValue: TColor);
+begin
+  if FColor2 = AValue then exit;
+  FColor2 := AValue;
+  FRGBColor2 := ColorToRGB(AValue);
+  DoChange(Self);
+end;
+
+procedure TIDESynGutterLOvProviderPascal.BufferChanged(Sender: TObject);
+begin
+  TSynEditStringList(Sender).RemoveHanlders(self);
+  TSynEditStringList(TextBuffer).AddGenericHandler(senrHighlightChanged,
+    TMethod({$IFDEF FPC}@{$ENDIF}HighlightChanged));
+  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged,
+    TMethod({$IFDEF FPC}@{$ENDIF}BufferChanged));
+  //LineCountChanged(nil, 0, 0);
+end;
+
+procedure TIDESynGutterLOvProviderPascal.HighlightChanged(Sender: TSynEditStrings; AIndex,
+  ACount: Integer);
+var
+  hl: TIDESynPasSyn;
+  procedure Update(var TheVal: Integer; NewVal: Integer);
+  begin
+    if TheVal = NewVal then exit;
+    if FSingleLine then begin
+      InvalidatePixelLines(TheVal, TheVal);
+      InvalidatePixelLines(NewVal, NewVal);
+    end else begin
+      InvalidatePixelLines(Min(TheVal, NewVal), Height);
+    end;
+
+    TheVal := NewVal;
+  end;
+var i1,i1e,i2,i2e,i3,i3e,i4,i4e: Integer;
+begin
+  i1  := FPixInterfaceLine;
+  i1e := FPixEndInterfaceLine;
+  i2  := FPixImplementationLine;
+  i2e := FPixEndImplementationLine;
+  i3  := FPixInitializationLine;
+  i3e := FPixEndInitializationLine;
+  i4  := FPixFinalizationLine;
+  i4e := FPixEndFinalizationLine;
+  if not(TSynEdit(SynEdit).Highlighter is TIDESynPasSyn) then begin
+    FInterfaceLine := -1;
+    FInterfaceLine := -1;
+    FInitializationLine := -1;
+    FFinalizationLine := -1;
+  end else begin
+    hl := TSynEdit(SynEdit).Highlighter as TIDESynPasSyn;
+    if hl.CurrentLines = nil then exit;
+    FInterfaceLine :=      hl.InterfaceLine;
+    FImplementationLine := hl.ImplementationLine;
+    FInitializationLine := hl.InitializationLine;
+    FFinalizationLine :=   hl.FinalizationLine;
+  end;
+
+  ReCalc;
+
+  if (i1 <> FPixInterfaceLine) or (i1e <> FPixEndInterfaceLine) then begin
+    InvalidatePixelLines(i1,i1e);
+    InvalidatePixelLines(FPixInterfaceLine, FPixEndInterfaceLine);
+  end;
+  if (i2 <> FPixImplementationLine) or (i2e <> FPixEndImplementationLine) then begin
+    InvalidatePixelLines(i2,i2e);
+    InvalidatePixelLines(FPixImplementationLine, FPixEndImplementationLine);
+  end;
+  if (i3 <> FPixInitializationLine) or (i3e <> FPixEndInitializationLine) then begin
+    InvalidatePixelLines(i3,i3e);
+    InvalidatePixelLines(FPixInitializationLine, FPixEndInitializationLine);
+  end;
+  if (i4 <> FPixFinalizationLine) or (i4e <> FPixEndFinalizationLine) then begin
+    InvalidatePixelLines(i4,i4e);
+    InvalidatePixelLines(FPixFinalizationLine, FPixEndFinalizationLine);
+  end;
+end;
+
+procedure TIDESynGutterLOvProviderPascal.ReCalc;
+begin
+  FPixInterfaceLine      := TextLineToPixel(FInterfaceLine);
+  FPixImplementationLine := TextLineToPixel(FImplementationLine);
+  FPixInitializationLine := TextLineToPixel(FInitializationLine);
+  FPixFinalizationLine   := TextLineToPixel(FFinalizationLine);
+
+  if SingleLine then begin
+    if FPixInterfaceLine < 0 then
+      FPixEndInterfaceLine := -1
+    else
+      FPixEndInterfaceLine      := FPixInterfaceLine + PixLineHeight;
+
+    if FPixImplementationLine < 0 then
+      FPixEndImplementationLine := -1
+    else
+      FPixEndImplementationLine := FPixImplementationLine + PixLineHeight;
+
+    if FPixInitializationLine < 0 then
+      FPixEndInitializationLine := -1
+    else
+      FPixEndInitializationLine := FPixInitializationLine + PixLineHeight;
+
+    if FPixFinalizationLine < 0 then
+      FPixEndFinalizationLine := -1
+    else
+      FPixEndFinalizationLine   := FPixFinalizationLine + PixLineHeight;
+  end else begin
+    if FPixInterfaceLine < 0 then
+      FPixEndInterfaceLine := -1
+    else if FPixImplementationLine >= 0 then
+      FPixEndInterfaceLine := FPixImplementationLine - 1
+    else if FPixInitializationLine >= 0 then
+      FPixEndInterfaceLine := FPixInitializationLine - 1
+    else if FPixFinalizationLine >= 0 then
+      FPixEndInterfaceLine := FPixFinalizationLine - 1
+    else
+      FPixEndInterfaceLine := Height - 1;
+
+    if FPixImplementationLine < 0 then
+      FPixEndImplementationLine := -1
+    else if FPixInitializationLine >= 0 then
+      FPixEndImplementationLine := FPixInitializationLine - 1
+    else if FPixFinalizationLine >= 0 then
+      FPixEndImplementationLine := FPixFinalizationLine - 1
+    else
+      FPixEndImplementationLine := Height - 1;
+
+    if FPixInitializationLine < 0 then
+      FPixEndInitializationLine := -1
+    else if FPixFinalizationLine >= 0 then
+      FPixEndInitializationLine := FPixFinalizationLine - 1
+    else
+      FPixEndInitializationLine := Height - 1;
+
+    if FPixFinalizationLine < 0 then
+      FPixEndFinalizationLine := -1
+    else
+      FPixEndFinalizationLine := Height - 1;
+  end;
+end;
+
+procedure TIDESynGutterLOvProviderPascal.Paint(Canvas: TCanvas; AClip: TRect;
+  TopOffset: integer);
+  procedure DrawArea(AStartLine, AEndLine: Integer; C: TColor);
+  var r: TRect;
+  begin
+    if (C = clNone) and SingleLine then
+      c := Color;
+    if (C = clNone) then
+      exit;
+
+    if (AStartLine + TopOffset > AClip.Bottom) or
+       (AEndLine + TopOffset < AClip.Top)
+    then
+      exit;
+    r := AClip;
+    r.Top    := Max(r.Top, AStartLine + TopOffset);
+    r.Bottom := Min(r.Bottom, AEndLine + 1 + TopOffset);
+    Canvas.Brush.Color := C;
+    Canvas.FillRect(r);
+  end;
+var
+  C2, C3: TColor;
+begin
+  if FPixInterfaceLine >= 0 then
+    DrawArea(FPixInterfaceLine, FPixEndInterfaceLine, Color);
+
+  if FPixImplementationLine >= 0 then
+    DrawArea(FPixImplementationLine, FPixEndImplementationLine, Color2);
+
+  C2 := Color;
+  C3 := Color2;
+  if FPixImplementationLine < 0 then begin
+    C2 := Color2;
+    if FPixInitializationLine >= 0 then
+      C3 := Color;
+  end;
+
+  if FPixInitializationLine >= 0 then
+    DrawArea(FPixInitializationLine, FPixEndInitializationLine, C2);
+
+  if FPixFinalizationLine >= 0 then
+    DrawArea(FPixFinalizationLine, FPixEndFinalizationLine, C3);
+end;
+
+constructor TIDESynGutterLOvProviderPascal.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  SingleLine := False;
+  Color  := $acacac;
+  Color2 := clLtGray;
+  TSynEditStringList(TextBuffer).AddGenericHandler(senrHighlightChanged,
+    TMethod({$IFDEF FPC}@{$ENDIF}HighlightChanged));
+  TSynEditStringList(TextBuffer).AddGenericHandler(senrTextBufferChanged,
+    TMethod({$IFDEF FPC}@{$ENDIF}BufferChanged));
+end;
+
+destructor TIDESynGutterLOvProviderPascal.Destroy;
+begin
+  TSynEditStringList(TextBuffer).RemoveHanlders(self);
+  inherited Destroy;
+end;
+
 { TIDESynGutter }
 
 procedure TIDESynGutter.CreateDefaultGutterParts;
 begin
-  with TIDESynGutterMarks.Create(Parts) do
-    Name := 'SynGutterMarks1';
-  with TSynGutterLineNumber.Create(Parts) do
-    Name := 'SynGutterLineNumber1';
-  with TSynGutterChanges.Create(Parts) do
-    Name := 'SynGutterChanges1';
-  with TSynGutterSeparator.Create(Parts) do
-    Name := 'SynGutterSeparator1';
-  with TIDESynGutterCodeFolding.Create(Parts) do
-    Name := 'SynGutterCodeFolding1';
+  if Side = gsLeft then begin
+    with TIDESynGutterMarks.Create(Parts) do
+      Name := 'SynGutterMarks1';
+    with TSynGutterLineNumber.Create(Parts) do
+      Name := 'SynGutterLineNumber1';
+    with TSynGutterChanges.Create(Parts) do
+      Name := 'SynGutterChanges1';
+    with TSynGutterSeparator.Create(Parts) do
+      Name := 'SynGutterSeparator1';
+    with TIDESynGutterCodeFolding.Create(Parts) do
+      Name := 'SynGutterCodeFolding1';
+  //end
+  //else begin
+  //  with TSynGutterLineOverview.Create(Parts) do begin
+  //    Name := 'SynGutterLineOverview1';
+  //    with TSynGutterLOvProviderCurrentPage.Create(Providers) do
+  //      Priority := 1;
+  //    with TIDESynGutterLOvProviderPascal.Create(Providers) do
+  //      Priority := 0;
+  //  end;
+  end;
 end;
 
 { TIDESynGutterMarks }
@@ -215,7 +579,7 @@ begin
   CheckTextBuffer;
   aGutterOffs := 0;
   HasAnyMark := PaintMarks(aScreenLine, Canvas, AClip, aGutterOffs);
-  TxtIdx := FFoldView.TextIndex[aScreenLine];
+  TxtIdx := FoldView.TextIndex[aScreenLine];
   if (not HasAnyMark) and (HasDebugMarks) and (TxtIdx < FDebugMarkInfo.Count) and
      (FDebugMarkInfo.SrcLineToMarkLine[TxtIdx] > 0)
   then

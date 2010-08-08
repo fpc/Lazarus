@@ -38,7 +38,7 @@ uses
 {$ELSE}
   Graphics, FileUtil, LCLProc, LCLIntf, LCLType, Registry, IniFiles,
 {$ENDIF}
-  SynEditTypes, SynEditMiscClasses, SynEditTextBase, SynEditTextBuffer;
+  SynEditTypes, SynEditTextBase;
 
 {$DEFINE _Gp_MustEnhanceRegistry}
 {$IFDEF SYN_COMPILER_4_UP}
@@ -1219,6 +1219,7 @@ end;
 procedure TSynCustomHighlighter.SetLine(const NewValue: String; LineNumber: Integer);
 begin
   FIsInNextToEOL := False;
+  FLineIndex := LineNumber;
 end;
 
 procedure TSynCustomHighlighter.SetAttributesOnChange(AEvent: TNotifyEvent);

@@ -213,6 +213,9 @@ type
     // Begin/EndDrawing calling count
     FDrawingCount: Integer;
     ForceEto: Boolean;
+
+    FOnFontChangedHandlers: TMethodList;
+    FOnFontChangedLock: Integer;
   protected
     procedure ReleaseETODist; virtual;
     procedure AfterStyleSet; virtual;
@@ -249,6 +252,10 @@ type
     procedure SetFrameColor(AValue: TColor); virtual;
     procedure SetCharExtra(Value: Integer); virtual;
     procedure ReleaseTemporaryResources; virtual;
+
+    procedure RegisterOnFontChangeHandler(AHandlerProc: TNotifyEvent);
+    procedure UnRegisterOnFontChangeHandler(AHandlerProc: TNotifyEvent);
+
     property CharWidth: Integer read GetCharWidth;
     property CharHeight: Integer read GetCharHeight;
     property BaseFont: TFont write SetBaseFont;
@@ -958,10 +965,14 @@ begin
   FColor := clWindowText;
   FBkColor := clWindow;
   FFrameColor := clNone;
+
+  FOnFontChangedHandlers := TMethodList.Create;
+  FOnFontChangedLock := 0;
 end;
 
 destructor TheTextDrawer.Destroy;
 begin
+  FreeANdNil(FOnFontChangedHandlers);
   FFontStock.Free;
   ReleaseETODist;
 
@@ -1063,19 +1074,25 @@ procedure TheTextDrawer.SetBaseFont(Value: TFont);
 begin
   if Assigned(Value) then
   begin
-    {$IFDEF SYNFONTDEBUG}
-    Debugln(['TheTextDrawer.SetBaseFont Name=', Value.Name, ' Size=', Value.Size, 'Style=', Integer(Value.Style)]);
-    {$ENDIF}
-    ReleaseETODist;
-    with FFontStock do
-    begin
-      SetBaseFont(Value);
-      //debugln('TheTextDrawer.SetBaseFont B ',Value.Name);
-      FBaseCharWidth := 0;
-      FBaseCharHeight := 0;
+    inc(FOnFontChangedLock);
+    try
+      {$IFDEF SYNFONTDEBUG}
+      Debugln(['TheTextDrawer.SetBaseFont Name=', Value.Name, ' Size=', Value.Size, 'Style=', Integer(Value.Style)]);
+      {$ENDIF}
+      ReleaseETODist;
+      with FFontStock do
+      begin
+        SetBaseFont(Value);
+        //debugln('TheTextDrawer.SetBaseFont B ',Value.Name);
+        FBaseCharWidth := 0;
+        FBaseCharHeight := 0;
+      end;
+      BaseStyle := Value.Style;
+      SetStyle(Value.Style);
+    finally
+      dec(FOnFontChangedLock);
     end;
-    BaseStyle := Value.Style;
-    SetStyle(Value.Style);
+    FOnFontChangedHandlers.CallNotifyEvents(Self);
   end
   else
     raise EheTextDrawerException.Create('SetBaseFont: ''Value'' must be specified.');
@@ -1098,6 +1115,8 @@ begin
                ' FBaseCharWidth=', FBaseCharWidth, ' FBaseCharHeight=',FBaseCharHeight]);
       {$ENDIF}
     end;
+    if FOnFontChangedLock = 0 then
+      FOnFontChangedHandlers.CallNotifyEvents(Self);
   end;
 end;
 
@@ -1287,6 +1306,16 @@ end;
 procedure TheTextDrawer.ReleaseTemporaryResources;
 begin
   FFontStock.ReleaseFontHandles;
+end;
+
+procedure TheTextDrawer.RegisterOnFontChangeHandler(AHandlerProc: TNotifyEvent);
+begin
+  FOnFontChangedHandlers.Add(TMethod(AHandlerProc));
+end;
+
+procedure TheTextDrawer.UnRegisterOnFontChangeHandler(AHandlerProc: TNotifyEvent);
+begin
+  FOnFontChangedHandlers.Remove(TMethod(AHandlerProc));
 end;
 
 { TheTextDrawerEx }

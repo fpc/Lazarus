@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, LCLType, LCLIntf, SynGutterBase,
-  SynEditMiscClasses, SynEditMiscProcs, SynEditFoldedView, SynEditMarks;
+  SynEditMiscClasses, SynEditMarks;
 
 type
 
@@ -17,10 +17,10 @@ type
     FDebugMarksImageIndex: Integer;
     FInternalImage: TSynInternalImage;
   protected
-    FFoldView: TSynEditFoldedView;
     FBookMarkOpt: TSynBookMarkOpt;
-    procedure DoChange(Sender: TObject); override;
-    function PaintMarks(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect;
+    procedure Init; override;
+    function  PreferedWidth: Integer; override;
+    function  PaintMarks(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect;
                        var aGutterOffs: integer): Boolean;
     Procedure PaintLine(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect); virtual;
   public
@@ -28,7 +28,6 @@ type
     destructor Destroy; override;
 
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer); override;
-    function RealGutterWidth(CharWidth: integer): integer;  override;
     property DebugMarksImageIndex: Integer read FDebugMarksImageIndex write FDebugMarksImageIndex;
   end;
 
@@ -39,36 +38,28 @@ uses
 
 { TSynGutterMarks }
 
-procedure TSynGutterMarks.DoChange(Sender: TObject);
-begin
-  if AutoSize then
-    FWidth := RealGutterWidth(0);
-  inherited DoChange(Sender);
-end;
-
 constructor TSynGutterMarks.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  FFoldView := Gutter.FoldView;
-  FBookMarkOpt := TSynEdit(SynEdit).BookMarkOptions;
   FInternalImage := nil;
   FDebugMarksImageIndex := -1;
+  inherited Create(AOwner);
+end;
 
-  FWidth := 23;
+procedure TSynGutterMarks.Init;
+begin
+  inherited Init;
+  FBookMarkOpt := TSynEdit(SynEdit).BookMarkOptions;
+end;
+
+function TSynGutterMarks.PreferedWidth: Integer;
+begin
+  Result := 22 + FBookMarkOpt.LeftMargin
 end;
 
 destructor TSynGutterMarks.Destroy;
 begin
   FreeAndNil(FInternalImage);
   inherited Destroy;
-end;
-
-function TSynGutterMarks.RealGutterWidth(CharWidth: integer) : integer;
-begin
-  if Visible then
-    Result := 22 + FBookMarkOpt.LeftMargin
-  else
-    Result := 0;
 end;
 
 function TSynGutterMarks.PaintMarks(aScreenLine: Integer; Canvas : TCanvas;
@@ -121,7 +112,7 @@ var
   Marks: TSynEditMarks;
 begin
   LineHeight := TSynEdit(SynEdit).LineHeight;
-  iLine := FFoldView.TextIndex[aScreenLine] + 1;
+  iLine := FoldView.TextIndex[aScreenLine] + 1;
   TSynEdit(SynEdit).Marks.GetMarksForLine(iLine, Marks);
   Result := False;
   for j := Low(Marks) to High(Marks) do

@@ -730,7 +730,7 @@ begin
   if SynEdit.HandleAllocated then begin
     rcInval := GetGutterGlyphRect;
     // and make sure we trigger the Markup // TODO: triigger markup on gutter paint too
-    rcInval.Right := Max(rcInval.Right, TSynEdit(SynEdit).GutterWidth + 2);
+    rcInval.Right := Max(rcInval.Right, TSynEdit(SynEdit).Gutter.Width + 2);
     InvalidateRect(SynEdit.Handle, @rcInval, False);
   end;
 end;

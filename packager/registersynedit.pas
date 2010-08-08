@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils,
   SynGutter, SynGutterCodeFolding, SynGutterChanges, SynGutterLineNumber,
-  SynGutterMarks, SynGutterBase,
+  SynGutterMarks, SynGutterBase, SynGutterLineOverview,
   SynEditLazDsgn, SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder,
   SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
   SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
@@ -233,6 +233,7 @@ begin
   RegisterGutterPartClass(TSynGutterChanges, syndsChangeMarker);
   RegisterGutterPartClass(TSynGutterMarks, syndsBookmarks);
   RegisterGutterPartClass(TSynGutterSeparator, syndsSeparator);
+  RegisterGutterPartClass(TSynGutterLineOverview, syndsLineOverview);
 
 end;
 

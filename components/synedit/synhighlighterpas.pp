@@ -288,7 +288,6 @@ type
     {$ELSE}
     function KeyHash(ToHash: PChar): Integer;
     {$ENDIF}
-    function KeyComp(const aKey: string): Boolean;
     function Func15: TtkTokenKind;
     function Func19: TtkTokenKind;
     function Func20: TtkTokenKind;
@@ -418,6 +417,7 @@ type
     procedure CreateDividerDrawConfig;
     procedure DestroyDividerDrawConfig;
   protected
+    function KeyComp(const aKey: string): Boolean;
     function GetIdentChars: TSynIdentChars; override;
     function IsFilterStored: boolean; override;                                 //mh 2000-10-08
   protected
@@ -3294,8 +3294,7 @@ begin
   end;
   if not FoldBlock then
     p := PtrInt(CountPascalCodeFoldBlockOffset);
-  Result:=TSynCustomCodeFoldBlock(
-     inherited StartCodeFoldBlock(p+Pointer(PtrInt(ABlockType)), FoldBlock));
+  Result:=TSynCustomCodeFoldBlock(StartCodeFoldBlock(p+Pointer(PtrInt(ABlockType)), FoldBlock));
 end;
 
 procedure TSynPasSyn.EndPascalCodeFoldBlock(NoMarkup: Boolean = False);

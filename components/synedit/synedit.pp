@@ -77,7 +77,7 @@ uses
   SynEditTextBase, SynEditTextTrimmer, SynEditFoldedView, SynEditTextTabExpander,
   SynEditTextDoubleWidthChars,
   SynGutterBase, SynGutter, SynGutterCodeFolding, SynGutterChanges,
-  SynGutterLineNumber, SynGutterMarks,
+  SynGutterLineNumber, SynGutterMarks, SynGutterLineOverview,
   SynEditMiscClasses, SynEditTextBuffer, SynEditHighlighter, SynTextDrawer,
   SynEditLines,
   LResources, Clipbrd
@@ -161,7 +161,7 @@ type
     var AMode: TSynSelectionMode; ALogStartPos: TPoint;
     var AnAction: TSynCopyPasteAction) of object;
 
-  TSynEditCaretType = (ctVerticalLine, ctHorizontalLine, ctHalfBlock, ctBlock);
+  TSynEditCaretType = SynEditPointClasses.TSynCaretType;
   TSynCaretAdjustMode = ( // used in TextBetweenPointsEx
     scamIgnore, // Caret stays at the same numeric values, if text is inserted before caret, the text moves, but the caret stays
     scamAdjust, // Caret moves with text, if text is inserted
@@ -169,13 +169,14 @@ type
     scamBegin
   );
 
-  TSynStateFlag = (sfCaretVisible, sfCaretChanged, sfHideCursor,
+  TSynStateFlag = (sfCaretChanged, sfHideCursor,
     sfEnsureCursorPos, sfEnsureCursorPosAtResize,
     sfIgnoreNextChar, sfPainting, sfHasScrolled,
     sfScrollbarChanged, sfHorizScrollbarVisible, sfVertScrollbarVisible,
     sfAfterLoadFromFileNeeded,
     // Mouse-states
-    sfDblClicked, sfGutterClick, sfTripleClicked, sfQuadClicked,
+    sfLeftGutterClick, sfRightGutterClick,
+    sfDblClicked, sfTripleClicked, sfQuadClicked,
     sfWaitForDragging, sfIsDragging, sfMouseSelecting, sfMouseDoneSelecting,
     sfIgnoreUpClick
     );                                           //mh 2000-10-30
@@ -271,9 +272,8 @@ const
 
 type
 // use scAll to update a statusbar when another TCustomSynEdit got the focus
-  TSynStatusChange = (scAll, scCaretX, scCaretY, scLeftChar, scTopLine,
-    scInsertMode, scModified, scSelection, scReadOnly);
-  TSynStatusChanges = set of TSynStatusChange;
+  TSynStatusChange = SynEditTypes.TSynStatusChange;
+  TSynStatusChanges = SynEditTypes.TSynStatusChanges;
 
   TStatusChangeEvent = procedure(Sender: TObject; Changes: TSynStatusChanges)
     of object;
@@ -306,13 +306,6 @@ type
       var Command: TSynEditorCommand; var ComboKeyStrokes: TSynEditKeyStrokes);
   end;
 
-  { TSynStatusChangedHandlerList }
-
-  TSynStatusChangedHandlerList = Class(TMethodList)
-  public
-    procedure CallStatusChangedHandlers(Sender: TObject; Changes: TSynStatusChanges);
-  end;
-
   TSynMouseLinkEvent = procedure (
     Sender: TObject; X, Y: Integer; var AllowMouseLink: Boolean) of object;
 
@@ -341,6 +334,7 @@ type
     FCaret: TSynEditCaret;
     FInternalCaret: TSynEditCaret;
     FInternalBlockSelection: TSynEditSelection;
+    FScreenCaret: TSynEditScreenCaret;
     FMouseSelectionMode: TSynSelectionMode;
     fCtrlMouseActive: boolean;                                                  // deprecated since 0.9.29
     fMarkupManager : TSynEditMarkupManager;
@@ -405,8 +399,6 @@ type
     fHideSelection: boolean;
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
-    FCaretOffset: TPoint;
-    FCaretWidth: Integer; // Width of caret in chars (for Overwrite caret)
     FKeyStrokes, FLastKeyStrokes: TSynEditKeyStrokes;
     FMouseActions, FMouseSelActions: TSynEditMouseActions;
     FMouseActionSearchHandlerList: TSynEditMouseActionSearchList;
@@ -415,7 +407,7 @@ type
     fExtraLineSpacing: integer;
     FUseUTF8: boolean;
     fWantTabs: boolean;
-    FGutter: TSynGutter;
+    FLeftGutter, FRightGutter: TSynGutter;
     fTabWidth: integer;
     fTextDrawer: TheTextDrawer;
     fStateFlags: TSynStateFlags;
@@ -425,7 +417,7 @@ type
     fTSearch: TSynEditSearch;
     fHookedCommandHandlers: TList;
     FHookedKeyTranslationList: TSynHookedKeyTranslationList;
-    FStatusChangedList: TSynStatusChangedHandlerList;
+    FStatusChangedList: TObject;
     FPlugins: TList;
     fScrollTimer: TTimer;
     fScrollDeltaX, fScrollDeltaY: Integer;
@@ -454,6 +446,7 @@ type
     function GetChangeStamp: int64;
     function GetDefSelectionMode: TSynSelectionMode;
     function GetFoldState: String;
+    function GetGutterWidth: Integer; deprecated; // deprecated in 0.9.29 (08/2010)
     function GetModified: Boolean;
     function GetPaintLockOwner: TSynEditBase;
     function GetPlugin(Index: Integer): TSynEditPlugin;
@@ -516,6 +509,7 @@ type
     procedure SetTrimSpaceType(const AValue: TSynEditStringTrimmingType);
     function SynGetText: string;
     procedure GutterChanged(Sender: TObject);
+    procedure GutterResized(Sender: TObject);
     function IsPointInSelection(Value: TPoint): boolean;
     procedure LockUndo;
     procedure MoveCaretHorz(DX: integer);
@@ -534,6 +528,7 @@ type
     procedure SetCaretY(const Value: Integer);
     procedure SetExtraLineSpacing(const Value: integer);
     procedure SetGutter(const Value: TSynGutter);
+    procedure SetRightGutter(const AValue: TSynGutter);
     procedure SetHideSelection(const Value: boolean);
     procedure SetHighlighter(const Value: TSynCustomHighlighter);
     procedure RemoveHooksFromHighlighter;
@@ -578,6 +573,7 @@ type
     procedure UpdateScrollBars;
     procedure ChangeTextBuffer(NewBuffer: TSynEditStringList);
     procedure RemoveHandlers(ALines: TSynEditStrings = nil);
+    procedure ExtraLineCharsChanged(Sender: TObject);
   protected
     procedure CreateHandle; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -602,6 +598,7 @@ type
     procedure RealSetText(const Value: TCaption); override;
     function GetLines: TStrings; override;
     function GetViewedTextBuffer: TSynEditStrings; override;
+    function GetFoldedTextBuffer: TObject; override;
     function GetTextBuffer: TSynEditStrings; override;
     procedure SetLines(Value: TStrings);  override;
     function GetMarkupMgr: TObject; override;
@@ -617,9 +614,7 @@ type
       State: TDragState; var Accept: Boolean); override;
     procedure FontChanged(Sender: TObject); {$IFDEF SYN_LAZARUS}override;{$ENDIF}
     function GetReadOnly: boolean; virtual;
-    procedure HideCaret;
     procedure HighlighterAttrChanged(Sender: TObject);
-    procedure InitializeCaret;
     // note: FirstLine and LastLine don't need to be in correct order
     procedure InvalidateGutterLines(FirstLine, LastLine: integer);
     procedure InvalidateLines(FirstLine, LastLine: integer);
@@ -663,12 +658,10 @@ type
     procedure SetReadOnly(Value: boolean); virtual;
     procedure SetSelTextPrimitive(PasteMode: TSynSelectionMode; Value: PChar;
       AddToUndoList: Boolean = false);
-    procedure ShowCaret;
     procedure UndoItem(Item: TSynEditUndoItem);
     procedure UpdateCursor;
     property PaintLockOwner: TSynEditBase read GetPaintLockOwner write SetPaintLockOwner;
   protected
-    fGutterWidth: Integer;
     {$IFDEF EnableDoubleBuf}
     BufferBitmap: TBitmap; // the double buffer
     {$ENDIF}
@@ -704,7 +697,7 @@ type
     function PasteFromClipboardEx(ClipHelper: TSynClipboardStream): Boolean;
     function FindNextUnfoldedLine(iLine: integer; Down: boolean): Integer;
     // Todo: Reduce the argument list of Creategutter
-    function CreateGutter(AOwner : TSynEditBase; AFoldedLinesView: TSynEditFoldedView;
+    function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
                           ATextDrawer: TheTextDrawer): TSynGutter; virtual;
   public
     procedure FindMatchingBracket; virtual;
@@ -808,7 +801,7 @@ type
     procedure RegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent);
     procedure UnRegisterKeyTranslationHandler(AHandlerProc: THookedKeyTranslationEvent);
 
-    procedure RegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent);
+    procedure RegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent; AChanges: TSynStatusChanges);
     procedure UnRegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent);
 
     function RowColumnToPixels(
@@ -860,7 +853,7 @@ type
     property SelEnd: Integer read GetSelEnd write SetSelEnd;
     property UseIncrementalColor : Boolean write SetUseIncrementalColor;
     {$ENDIF}
-    property GutterWidth: Integer read fGutterWidth;
+    property GutterWidth: Integer read GetGutterWidth; deprecated; // deprecated in 0.9.29 (08/2010)
     property Highlighter: TSynCustomHighlighter
       read fHighlighter write SetHighlighter;
     property LeftChar: Integer read fLeftChar write SetLeftChar;
@@ -911,7 +904,8 @@ type
       read fExtraCharSpacing write SetExtraCharSpacing default 0;
     property ExtraLineSpacing: integer
       read fExtraLineSpacing write SetExtraLineSpacing default 0;
-    property Gutter: TSynGutter read fGutter write SetGutter;
+    property Gutter: TSynGutter read FLeftGutter write SetGutter;
+    property RightGutter: TSynGutter read FRightGutter write SetRightGutter;
     property HideSelection: boolean read fHideSelection write SetHideSelection
       default false;
     property InsertCaret: TSynEditCaretType read FInsertCaret
@@ -1061,6 +1055,7 @@ type
     property ExtraCharSpacing;
     property ExtraLineSpacing;
     property Gutter;
+    property RightGutter;
     property HideSelection;
     property Highlighter;
     property InsertCaret;
@@ -1118,7 +1113,32 @@ implementation
 
 // { $R SynEdit.res}
 
+const
+  GutterTextDist = 2; //Pixel
+
 type
+
+  { TSynStatusChangedHandlerList }
+
+  TStatusChangeEventHandlerListEntry = record
+    FHandler: TStatusChangeEvent;
+    FChanges: TSynStatusChanges;
+  end;
+
+  TSynStatusChangedHandlerList = Class
+  private
+    FCount: Integer;
+    FItems: Array of TStatusChangeEventHandlerListEntry;
+  protected
+    function IndexOf(AHandler: TStatusChangeEvent): Integer;
+    function NextDownIndex(var Index: integer): boolean;
+  public
+    constructor Create;
+    procedure Add(AHandler: TStatusChangeEvent; Changes: TSynStatusChanges);
+    procedure Remove(AHandler: TStatusChangeEvent);
+    procedure CallStatusChangedHandlers(Sender: TObject; Changes: TSynStatusChanges);
+    property Count: Integer read FCount;
+  end;
 
   { TSynEditUndoCaret }
 
@@ -1370,6 +1390,11 @@ begin
   Result := FFoldedLinesView.GetFoldDescription(0, 0, -1, -1, True);
 end;
 
+function TCustomSynEdit.GetGutterWidth: Integer;
+begin
+  Result := FLeftGutter.Width;
+end;
+
 function TCustomSynEdit.GetModified: Boolean;
 begin
   Result := TSynEditStringList(FLines).Modified;
@@ -1416,7 +1441,7 @@ function TCustomSynEdit.PixelsToRowColumn(Pixels: TPoint): TPoint;
 var
   f: Single;
 begin
-  f := ((Pixels.X+(fLeftChar-1)*fCharWidth-fGutterWidth-2)/fCharWidth)+1;
+  f := ((Pixels.X+(fLeftChar-1)*fCharWidth-FLeftGutter.Width-2)/fCharWidth)+1;
   // don't return a partially visible last line
   if Pixels.Y >= fLinesInWindow * fTextHeight then begin
     Pixels.Y := fLinesInWindow * fTextHeight - 1;
@@ -1556,6 +1581,8 @@ begin
   SetInline(True);
   ControlStyle:=ControlStyle+[csOwnedChildrenNotSelectable];
 
+  FStatusChangedList := TSynStatusChangedHandlerList.Create;
+
   FBeautifier := SynDefaultBeautifier;
 
   FLines := TSynEditStringList.Create;
@@ -1605,6 +1632,9 @@ begin
     AddNotifyHandler(senrDecOwnedPaintLock, {$IFDEF FPC}@{$ENDIF}DoDecForeignPaintLock);
   end;
 
+  FScreenCaret := TSynEditScreenCaret.Create(0);
+  FScreenCaret.OnExtraLineCharsChanged := {$IFDEF FPC}@{$ENDIF}ExtraLineCharsChanged;
+
   FUndoList := TSynEditStringList(fLines).UndoList;
   FRedoList := TSynEditStringList(fLines).RedoList;
   FUndoList.OnNeedCaretUndo := {$IFDEF FPC}@{$ENDIF}GetCaretUndo;
@@ -1634,10 +1664,14 @@ begin
   fBookMarkOpt.OnChange := {$IFDEF FPC}@{$ENDIF}BookMarkOptionsChanged;
 // fRightEdge has to be set before FontChanged is called for the first time
   fRightEdge := 80;
-  fGutter := CreateGutter(self, FFoldedLinesView, FTextDrawer);
-  fGutter.OnChange := {$IFDEF FPC}@{$ENDIF}GutterChanged;
-  fGutterWidth := fGutter.Width;
-  fTextOffset := fGutterWidth + 2;
+  FLeftGutter := CreateGutter(self, gsLeft, FTextDrawer);
+  FLeftGutter.OnChange := {$IFDEF FPC}@{$ENDIF}GutterChanged;
+  FLeftGutter.OnResize := {$IFDEF FPC}@{$ENDIF}GutterResized;
+  FRightGutter := CreateGutter(self, gsRight, FTextDrawer);
+  FRightGutter.OnChange := {$IFDEF FPC}@{$ENDIF}GutterChanged;
+  FRightGutter.OnResize := {$IFDEF FPC}@{$ENDIF}GutterResized;
+
+  fTextOffset := FLeftGutter.Width + GutterTextDist;
 
   ControlStyle := ControlStyle + [csOpaque, csSetCaption
                     {$IFDEF SYN_LAZARUS}, csTripleClicks, csQuadClicks{$ENDIF}];
@@ -1646,7 +1680,6 @@ begin
   Cursor := crIBeam;
   fPlugins := TList.Create;
   FHookedKeyTranslationList := TSynHookedKeyTranslationList.Create;
-  FStatusChangedList := TSynStatusChangedHandlerList.Create;
 {$IFDEF SYN_LAZARUS}
   // needed before setting color
   fMarkupHighCaret := TSynEditMarkupHighlightAllCaret.Create(self);
@@ -1744,8 +1777,10 @@ end;
 
 procedure TCustomSynEdit.GetChildren(Proc: TGetChildProc; Root: TComponent);
 begin
-  if root = self then
-    Proc(FGutter.Parts);
+  if root = self then begin
+    Proc(FLeftGutter.Parts);
+    Proc(FRightGutter.Parts);
+  end;
 end;
 
 procedure TCustomSynEdit.CreateParams(var Params: TCreateParams);
@@ -1823,6 +1858,7 @@ begin
   FFoldedLinesView.Lock; //DecPaintLock triggers ScanFrom, and folds must wait
   FTrimmedLinesView.Lock; // Lock before caret
   FCaret.Lock;
+  FScreenCaret.Lock;
 end;
 
 procedure TCustomSynEdit.DoDecPaintLock(Sender: TObject);
@@ -1840,7 +1876,6 @@ begin
       end;
       FChangedLinesStart:=0;
       FChangedLinesEnd:=0;
-      FGutter.AutoSizeDigitCount(FTheLinesView.Count); // Todo: Make the LineNumberGutterPart an observer
     end;
     FCaret.Unlock;            // Maybe after FFoldedLinesView
     FTrimmedLinesView.UnLock; // Must be unlocked after caret // May Change lines
@@ -1868,6 +1903,7 @@ begin
       if fStatusChanges <> [] then
         DoOnStatusChange(fStatusChanges);
     end;
+    FScreenCaret.UnLock;
   finally
     FIsInDecPaintLock := False;
   end;
@@ -1901,7 +1937,6 @@ begin
   RemoveHandlers;
 
   FreeAndNil(FHookedKeyTranslationList);
-  FreeAndNil(FStatusChangedList);
   fHookedCommandHandlers:=nil;
   fPlugins:=nil;
   FCaret.Lines := nil;
@@ -1915,7 +1950,8 @@ begin
   FreeAndNil(FMouseActionExecHandlerList);
   FreeAndNil(FMouseActions);
   FreeAndNil(FMouseSelActions);
-  FreeAndNil(fGutter);
+  FreeAndNil(FLeftGutter);
+  FreeAndNil(FRightGutter);
   FreeAndNil(fTextDrawer);
   FreeAndNil(fFontDummy);
   FreeAndNil(FWordBreaker);
@@ -1931,6 +1967,8 @@ begin
     FreeAndNil(fLines);
   FreeAndNil(fCaret);
   FreeAndNil(fInternalCaret);
+  FreeAndNil(FScreenCaret);
+  FreeAndNil(FStatusChangedList);
   inherited Destroy;
 end;
 
@@ -2001,7 +2039,7 @@ end;
 
 function TCustomSynEdit.GetOnGutterClick : TGutterClickEvent;
 begin
-  Result := fGutter.OnGutterClick;
+  Result := FLeftGutter.OnGutterClick;
 end;
 
 function TCustomSynEdit.GetSelectedColor : TSynSelectedColor;
@@ -2046,6 +2084,11 @@ begin
   Result := FTheLinesView;
 end;
 
+function TCustomSynEdit.GetFoldedTextBuffer: TObject;
+begin
+  Result := FFoldedLinesView;
+end;
+
 procedure TCustomSynEdit.SetBracketHighlightStyle(
   const AValue: TSynEditBracketHighlightStyle);
 begin
@@ -2054,7 +2097,7 @@ end;
 
 procedure TCustomSynEdit.SetOnGutterClick(const AValue : TGutterClickEvent);
 begin
-  fGutter.OnGutterClick := AValue;
+  FLeftGutter.OnGutterClick := AValue; // Todo: the IDE uses this for the left gutter only
 end;
 
 procedure TCustomSynEdit.SetUseIncrementalColor(const AValue : Boolean);
@@ -2119,16 +2162,6 @@ begin
     Result := '';
 end;
 
-procedure TCustomSynEdit.HideCaret;
-begin
-  //DebugLn('[TCustomSynEdit.HideCaret] ',Name,' ',sfCaretVisible in fStateFlags,' ',eoPersistentCaret in Options);
-  if sfCaretVisible in fStateFlags then begin
-    // Todo: If Show/HideCaret fails while we have the Focus => somone else may have stolen the caret(Windows)
-    if LCLIntf.HideCaret(Handle) then
-      Exclude(fStateFlags, sfCaretVisible);
-  end;
-end;
-
 {$IFDEF SYN_MBCSSUPPORT}
 procedure TCustomSynEdit.WMImeComposition(var Msg: TMessage);
 var
@@ -2182,7 +2215,7 @@ begin
   InvalidateGutterLines(-1, -1);
 end;
 
-procedure TCustomSynEdit.InvalidateGutterLines(FirstLine, LastLine: integer);
+procedure TCustomSynEdit.InvalidateGutterLines(FirstLine, LastLine: integer);   // Todo: move to gutter
 var
   rcInval: TRect;
   TopFoldLine: LongInt;
@@ -2190,7 +2223,14 @@ begin
   if sfPainting in fStateFlags then exit;
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
-      rcInval := Rect(0, 0, fGutterWidth, ClientHeight - ScrollBarWidth);
+      rcInval := Rect(0, 0, FLeftGutter.Width, ClientHeight - ScrollBarWidth);
+      {$IFDEF VerboseSynEditInvalidate}
+      DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' ALL ',dbgs(rcInval)]);
+      {$ENDIF}
+      InvalidateRect(Handle, @rcInval, FALSE);
+      // right gutter
+      rcInval := Rect(ClientWidth - FRightGutter.Width - ScrollBarWidth, 0,
+                      ClientWidth - ScrollBarWidth, ClientHeight - ScrollBarWidth);
       {$IFDEF VerboseSynEditInvalidate}
       DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' ALL ',dbgs(rcInval)]);
       {$ENDIF}
@@ -2214,7 +2254,14 @@ begin
       { any line visible? }
       if (LastLine >= FirstLine) then begin
         rcInval := Rect(0, fTextHeight * FirstLine,
-          fGutterWidth, fTextHeight * LastLine);
+          FLeftGutter.Width, fTextHeight * LastLine);
+        {$IFDEF VerboseSynEditInvalidate}
+        DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' PART ',dbgs(rcInval)]);
+        {$ENDIF}
+        InvalidateRect(Handle, @rcInval, FALSE);
+        // right gutter
+        rcInval.Left := ClientWidth - FRightGutter.Width - ScrollBarWidth;
+        rcInval.Right := ClientWidth - ScrollBarWidth;
         {$IFDEF VerboseSynEditInvalidate}
         DebugLn(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self),' PART ',dbgs(rcInval)]);
         {$ENDIF}
@@ -2235,7 +2282,8 @@ begin
   if Visible and HandleAllocated then
     if (FirstLine = -1) and (LastLine = -1) then begin
       rcInval := ClientRect;
-      rcInval.Left := fGutterWidth;
+      rcInval.Left := FLeftGutter.Width;
+      rcInval.Right := ClientWidth - FRightGutter.Width - ScrollBarWidth;
       {$IFDEF VerboseSynEditInvalidate}
       DebugLn(['TCustomSynEdit.InvalidateLines ',DbgSName(self),' ALL ',dbgs(rcInval)]);
       {$ENDIF}
@@ -2258,8 +2306,8 @@ begin
       f := Max(0, f);
       { any line visible? }
       if (l >= f) then begin
-        rcInval := Rect(fGutterWidth, fTextHeight * f,
-          ClientWidth-ScrollBarWidth, fTextHeight * l);
+        rcInval := Rect(FLeftGutter.Width, fTextHeight * f,
+          ClientWidth - FRightGutter.Width - ScrollBarWidth, fTextHeight * l);
         {$IFDEF VerboseSynEditInvalidate}
         DebugLn(['TCustomSynEdit.InvalidateLines ',DbgSName(self),' PART ',dbgs(rcInval)]);
         {$ENDIF}
@@ -2344,7 +2392,6 @@ end;
 procedure TCustomSynEdit.Loaded;
 begin
   inherited Loaded;
-  GutterChanged(Self);
 end;
 
 procedure TCustomSynEdit.UTF8KeyPress(var Key: TUTF8Char);
@@ -2442,7 +2489,7 @@ begin
     Result := FMouseActionExecHandlerList.CallExecHandlers(AnAction, AnInfo);
     // Gutter
     if not Result then
-      Result := FGutter.DoHandleMouseAction(AnAction, AnInfo);
+      Result := FLeftGutter.DoHandleMouseAction(AnAction, AnInfo);
 
     if Result then begin
       if (not AnInfo.CaretDone) and AnAction.MoveCaret then
@@ -2589,13 +2636,19 @@ begin
     then
       exit;
     // mouse event occured in Gutter ?
-    if  (X < fGutterWidth) then begin
-      FGutter.MaybeHandleMouseAction(Info, {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction);
+    if  (X < FLeftGutter.Width) then begin
+      FLeftGutter.MaybeHandleMouseAction(Info, {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction);
+      exit;
+      // No fallback to text actions
+    end;
+    if  (X > ClientWidth - FRightGutter.Width - ScrollBarWidth) then begin
+      FRightGutter.MaybeHandleMouseAction(Info, {$IFDEF FPC}@{$ENDIF}DoHandleMouseAction);
       exit;
       // No fallback to text actions
     end;
     // mouse event occured in selected block ?
-    if SelAvail and (X >= fGutterWidth + 2) and
+    if SelAvail and (X >= FLeftGutter.Width + GutterTextDist) and
+       //(x < ClientWidth - FRightGutter.Width - ScrollBarWidth) and
        IsPointInSelection(FInternalCaret.LineBytePos)
     then
       if DoHandleMouseAction(FMouseSelActions, Info) then
@@ -2626,7 +2679,8 @@ begin
   fMouseDownY := Y;
 
   fStateFlags := fStateFlags - [sfDblClicked, sfTripleClicked, sfQuadClicked,
-                                sfGutterClick, sfMouseSelecting, sfMouseDoneSelecting,
+                                sfLeftGutterClick, sfRightGutterClick,
+                                sfMouseSelecting, sfMouseDoneSelecting,
                                 sfWaitForDragging, sfIgnoreUpClick
                                ];
 
@@ -2648,9 +2702,13 @@ begin
   FMouseClickDoPopUp := False;
   IncPaintLock;
   try
-    if (X < fGutterWidth) then begin
-      Include(fStateFlags, sfGutterClick);
-      FGutter.MouseDown(Button, Shift, X, Y);
+    if (X < FLeftGutter.Width) then begin
+      Include(fStateFlags, sfLeftGutterClick);
+      FLeftGutter.MouseDown(Button, Shift, X, Y);
+    end;
+    if (X > ClientWidth - FRightGutter.Width - ScrollBarWidth) then begin
+      Include(fStateFlags, sfRightGutterClick);
+      FRightGutter.MouseDown(Button, Shift, X, Y);
     end;
     FindAndHandleMouseAction(Button, Shift, X, Y, CType, cdDown);
   finally
@@ -2676,9 +2734,10 @@ begin
     MouseCapture := True;
   {$ENDIF}
   inherited MouseMove(Shift, x, y);
-  if (sfGutterClick in fStateFlags) then begin
-    FGutter.MouseMove(Shift, X, Y);
-  end;
+  if (sfLeftGutterClick in fStateFlags) then
+    FLeftGutter.MouseMove(Shift, X, Y);
+  if (sfRightGutterClick in fStateFlags) then
+    FRightGutter.MouseMove(Shift, X, Y);
 
   FLastMousePoint := Point(X,Y);
   LastMouseCaret := PixelsToRowColumn(Point(X,Y));
@@ -2705,8 +2764,9 @@ begin
     FInternalCaret.AssignFrom(FCaret);
     FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
 
-    if ((X >= fGutterWidth) or (fLeftChar <= 1)) and
-       ((X < ClientWidth-ScrollBarWidth) or (LeftChar >= CurrentMaxLeftChar)) and
+    if ((X >= FLeftGutter.Width) or (fLeftChar <= 1)) and
+       ( (X < ClientWidth - FRightGutter.Width - ScrollBarWidth)
+         or (LeftChar >= CurrentMaxLeftChar)) and
        ((Y >= 0) or (fTopLine <= 1)) and
        ((Y < ClientHeight-ScrollBarWidth) or (fTopLine >= CurrentMaxTopLine))
     then begin
@@ -2718,7 +2778,7 @@ begin
     end
     else begin
       // begin scrolling?
-      Dec(X, fGutterWidth);
+      Dec(X, FLeftGutter.Width);
       // calculate chars past right
       Z := X - (fCharsInWindow * fCharWidth);
       if Z > 0 then
@@ -2776,7 +2836,7 @@ begin
     CurMousePos:=ScreenToClient(CurMousePos);
     C := PixelsToLogicalPos(CurMousePos);
     // recalculate scroll deltas
-    Dec(CurMousePos.X, fGutterWidth);
+    Dec(CurMousePos.X, FLeftGutter.Width);
     // calculate chars past right
     Z := CurMousePos.X - (fCharsInWindow * fCharWidth);
     if Z > 0 then
@@ -2893,9 +2953,13 @@ begin
   FMouseClickDoPopUp := False;
   IncPaintLock;
   try
-    if (sfGutterClick in fStateFlags) then begin
-      FGutter.MouseUp(Button, Shift, X, Y);
-      Exclude(fStateFlags, sfGutterClick);
+    if (sfLeftGutterClick in fStateFlags) then begin
+      FLeftGutter.MouseUp(Button, Shift, X, Y);
+      Exclude(fStateFlags, sfLeftGutterClick);
+    end;
+    if (sfRightGutterClick in fStateFlags) then begin
+      FRightGutter.MouseUp(Button, Shift, X, Y);
+      Exclude(fStateFlags, sfRightGutterClick);
     end;
     FindAndHandleMouseAction(Button, Shift, X, Y, CType, cdUp);
   finally
@@ -2912,75 +2976,62 @@ var
   nL1, nL2, nC1, nC2: integer;
 begin
   // Get the invalidated rect. Compute the invalid area in lines / columns.
-  {$IFDEF SYN_LAZARUS}
-    {$IFDEF EnableDoubleBuf}
-    //rcClip:=Rect(0,0,ClientWidth,ClientHeight);
-    rcClip := Canvas.ClipRect;
-    StartPaintBuffer(rcClip);
-    {$ELSE}
-    rcClip := Canvas.ClipRect;
-    //DebugLn(['TCustomSynEdit.Paint rcClip=',dbgs(rcClip)]);
-    {$ENDIF}
-
-      {$IFDEF SYNSCROLLDEBUG}
-      debugln(['PAINT ',DbgSName(self),' sfHasScrolled=',dbgs(sfHasScrolled in fStateFlags),' rect=',dbgs(rcClip)]);
-      {$ENDIF}
+  rcClip := Canvas.ClipRect;
+  {$IFDEF EnableDoubleBuf}
+  //rcClip:=Rect(0,0,ClientWidth,ClientHeight);
+  StartPaintBuffer(rcClip);
+  {$ENDIF}
+  {$IFDEF SYNSCROLLDEBUG}
+  debugln(['PAINT ',DbgSName(self),' sfHasScrolled=',dbgs(sfHasScrolled in fStateFlags),' rect=',dbgs(rcClip)]);
+  {$ENDIF}
 
   Include(fStateFlags,sfPainting);
   Exclude(fStateFlags, sfHasScrolled);
-  {$ELSE}
-  rcClip := Canvas.ClipRect;
-  {$ENDIF}
   // columns
   nC1 := LeftChar;
-  if (rcClip.Left > fGutterWidth + 2) then
-    Inc(nC1, (rcClip.Left - fGutterWidth - 2) div CharWidth);
-  nC2 := {$IFDEF SYN_LAZARUS}LeftChar{$ELSE}nC1{$ENDIF} +
-    (rcClip.Right - fGutterWidth - 2 + CharWidth - 1) div CharWidth;
+  if (rcClip.Left > FLeftGutter.Width + GutterTextDist) then
+    Inc(nC1, (rcClip.Left - FLeftGutter.Width - GutterTextDist) div CharWidth);
+  nC2 := LeftChar +
+    ( Min(rcClip.Right, ClientWidth - FRightGutter.Width - ScrollBarWidth)
+     - FLeftGutter.Width - GutterTextDist + CharWidth - 1) div CharWidth;
   // lines
-  nL1 := Max({$IFDEF SYN_LAZARUS}
-             rcClip.Top div fTextHeight, 0
-             {$ELSE}
-             TopLine + rcClip.Top div fTextHeight, TopLine
-             {$ENDIF}
-             );
-  nL2 := Min({$IFDEF SYN_LAZARUS}
-             (rcClip.Bottom-1) div fTextHeight, FFoldedLinesView.Count - FFoldedLinesView.TopLine
-             {$ELSE}
-             TopLine + (rcClip.Bottom + fTextHeight - 1) div fTextHeight, Lines.Count
-             {$ENDIF}
-             );
-      {$IFDEF SYNSCROLLDEBUG}
-      debugln(['PAINT ',DbgSName(self),' rect=',dbgs(rcClip), ' L1=',nL1, '  Nl2=',nL2]);
-      {$ENDIF}
+  nL1 := Max(rcClip.Top div fTextHeight, 0);
+  nL2 := Min((rcClip.Bottom-1) div fTextHeight,
+             FFoldedLinesView.Count - FFoldedLinesView.TopLine);
+  {$IFDEF SYNSCROLLDEBUG}
+  debugln(['PAINT ',DbgSName(self),' rect=',dbgs(rcClip), ' L1=',nL1, '  Nl2=',nL2]);
+  {$ENDIF}
   //DebugLn('TCustomSynEdit.Paint LinesInWindow=',dbgs(LinesInWindow),' nL1=',dbgs(nL1),' nL2=',dbgs(nL2));
   // Now paint everything while the caret is hidden.
-  HideCaret;
+  FScreenCaret.Hide;
   try
     // First paint the gutter area if it was (partly) invalidated.
-    if (rcClip.Left < fGutterWidth) then begin
+    if (rcClip.Left < FLeftGutter.Width) then begin
       rcDraw := rcClip;
-      rcDraw.Right := fGutterWidth;
-      fGutter.Paint(Canvas, rcDraw, nL1, nL2);
+      rcDraw.Right := FLeftGutter.Width;
+      FLeftGutter.Paint(Canvas, rcDraw, nL1, nL2);
     end;
     // Then paint the text area if it was (partly) invalidated.
-    if (rcClip.Right > fGutterWidth) then begin
+    if (rcClip.Right > FLeftGutter.Width) then begin
       rcDraw := rcClip;
-      rcDraw.Left := Max(rcDraw.Left, fGutterWidth);
+      rcDraw.Left  := Max(rcDraw.Left, FLeftGutter.Width); // Todo: This is also checked in paintLines (together with right side)
+      rcDraw.Right := Min(rcDraw.Right, ClientWidth - FRightGutter.Width - ScrollBarWidth);
       PaintTextLines(rcDraw, nL1, nL2, nC1, nC2);
+    end;
+    // right gutter
+    if (rcClip.Right > ClientWidth - FRightGutter.Width - ScrollBarWidth) then begin
+      rcDraw := rcClip;
+      rcDraw.Left := ClientWidth - FRightGutter.Width - ScrollBarWidth;
+      FRightGutter.Paint(Canvas, rcDraw, nL1, nL2);
     end;
     // If there is a custom paint handler call it.
     DoOnPaint;
   finally
-    {$IFDEF SYN_LAZARUS}
-      {$IFDEF EnableDoubleBuf}
+    {$IFDEF EnableDoubleBuf}
     EndPaintBuffer(rcClip);
-      {$ENDIF}
     {$ENDIF}
     UpdateCaret;
-    {$IFDEF SYN_LAZARUS}
     Exclude(fStateFlags,sfPainting);
-    {$ENDIF}
   end;
 end;
 
@@ -3015,10 +3066,10 @@ begin
       dec(Result);
 end;
 
-function TCustomSynEdit.CreateGutter(AOwner : TSynEditBase;
-  AFoldedLinesView: TSynEditFoldedView; ATextDrawer: TheTextDrawer): TSynGutter;
+function TCustomSynEdit.CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
+  ATextDrawer: TheTextDrawer): TSynGutter;
 begin
-  Result := TSynGutter.Create(AOwner, AFoldedLinesView, ATextDrawer);
+  Result := TSynGutter.Create(AOwner, ASide, ATextDrawer);
 end;
 
 procedure TCustomSynEdit.UnfoldAll;
@@ -3261,6 +3312,8 @@ var
       end;
       // Paint the chars
       rcToken.Right := ScreenColumnToXValue(TokenAccu.PhysicalEndPos+1);
+      if rcToken.Right > AClip.Right then
+        rcToken.Right := AClip.Right;
       with TokenAccu do PaintToken(p, Len, PhysicalStartPos);
     end;
 
@@ -3698,13 +3751,13 @@ var
       end else begin
         // draw splitter line
         DividerInfo := fHighlighter.DrawDivider[CurTextIndex];
-        if (DividerInfo.Color <> clNone) and (nRightEdge > fGutterWidth-1) then
+        if (DividerInfo.Color <> clNone) and (nRightEdge > FLeftGutter.Width-1) then
         begin
           ypos := rcToken.Bottom - 1;
           cl := DividerInfo.Color;
           if cl = clDefault then
             cl := fRightEdgeColor;
-          fTextDrawer.DrawLine(nRightEdge, ypos, fGutterWidth - 1, ypos, cl);
+          fTextDrawer.DrawLine(nRightEdge, ypos, FLeftGutter.Width - 1, ypos, cl);
           dec(rcToken.Bottom);
         end;
         // Initialize highlighter with line text and range info. It is
@@ -3739,7 +3792,9 @@ var
 { end local procedures }
 
 begin
-  if (AClip.Right < fGutterWidth) then exit;
+  if (AClip.Right < FLeftGutter.Width) then exit;
+  if (AClip.Left > ClientWidth - FRightGutter.Width) then exit;
+
   //DebugLn(['TCustomSynEdit.PaintTextLines ',dbgs(AClip)]);
   CurLine:=-1;
   FillChar(TokenAccu,SizeOf(TokenAccu),0);
@@ -3752,9 +3807,10 @@ begin
   bDoRightEdge := FALSE;
   if (fRightEdge > 0) then begin // column value
     nRightEdge := fTextOffset + fRightEdge * fCharWidth; // pixel value
-    if (nRightEdge >= AClip.Left) and (nRightEdge <= AClip.Right) then begin
+    if (nRightEdge >= AClip.Left) and (nRightEdge <= AClip.Right) then
       bDoRightEdge := TRUE;
-    end;
+    if nRightEdge > AClip.Right then
+      nRightEdge := AClip.Right; // for divider draw lines (don't draw into right gutter)
   end
   else
     nRightEdge := AClip.Right;
@@ -3767,8 +3823,8 @@ begin
 
   // Adjust the invalid area to not include the gutter (nor the 2 ixel offset to the guttter).
   EraseLeft := AClip.Left;
-  if (AClip.Left < fGutterWidth + 2) then
-    AClip.Left := fGutterWidth + 2;
+  if (AClip.Left < FLeftGutter.Width + GutterTextDist) then
+    AClip.Left := FLeftGutter.Width + GutterTextDist;
   DrawLeft := AClip.Left;
 
   if (LastLine >= FirstLine) then begin
@@ -3860,8 +3916,9 @@ end;
 
 procedure TCustomSynEdit.Invalidate;
 begin
-  //DebugLn('TCustomSynEdit.Invalidate A');
-  //RaiseGDBException('');
+  {$IFDEF VerboseSynEditInvalidate}
+  DebugLn(['TCustomSynEdit.Invalidate ',DbgSName(self)]);
+  {$ENDIF}
   inherited Invalidate;
 end;
 
@@ -4088,7 +4145,7 @@ begin
   Result := FTheLinesView.LengthOfLongestLine;
   if (eoScrollPastEol in Options) and (Result < fMaxLeftChar) then
     Result := fMaxLeftChar;
-  Result := Result - fCharsInWindow + 1 + FCaretWidth;
+  Result := Result - fCharsInWindow + 1 + FScreenCaret.ExtraLineChars;
 end;
 
 procedure TCustomSynEdit.SetLeftChar(Value: Integer);
@@ -4097,7 +4154,7 @@ begin
   Value := Max(Value, 1);
   if Value <> fLeftChar then begin
     fLeftChar := Value;
-    fTextOffset := fGutterWidth + 2 - (LeftChar - 1) * fCharWidth;
+    fTextOffset := FLeftGutter.Width + GutterTextDist - (LeftChar - 1) * fCharWidth;
     UpdateScrollBars;
     InvalidateLines(-1, -1);
     StatusChanged([scLeftChar]);
@@ -4142,6 +4199,12 @@ begin
   DoIncPaintLock(nil);
   try
     inherited CreateHandle;   //SizeOrFontChanged will be called
+    FLeftGutter.RecalcBounds;
+    FRightGutter.RecalcBounds;
+    FScreenCaret.ClipRect := Rect(FLeftGutter.Width, 0,
+                                  ClientWidth - FRightGutter.Width - ScrollBarWidth,
+                                  ClientHeight - ScrollBarWidth);
+    FScreenCaret.Handle := Handle;
     UpdateScrollBars;
   finally
     DoDecPaintLock(nil);
@@ -4276,21 +4339,6 @@ begin
     MoveCaretToVisibleArea;
 end;
 
-procedure TCustomSynEdit.ShowCaret;
-begin
-  //DebugLn(' [TCustomSynEdit.ShowCaret] ShowCaret ',Name,' ',sfCaretVisible in fStateFlags,' ',eoPersistentCaret in fOptions);
-  if not (eoNoCaret in Options) and not (sfCaretVisible in fStateFlags) then
-  begin
-    SetCaretRespondToFocus(Handle,not (eoPersistentCaret in fOptions));
-    // Todo: If Show/HideCaret fails while we have the Focus => somone else may have stolen the caret(Windows)
-    if LCLIntf.ShowCaret(Handle) then
-    begin
-      //DebugLn('[TCustomSynEdit.ShowCaret] A ',Name);
-      Include(fStateFlags, sfCaretVisible);
-    end;
-  end;
-end;
-
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.MoveCaretToVisibleArea;
 // scroll to make the caret visible
@@ -4304,8 +4352,8 @@ begin
   NewCaretXY:=CaretXY;
   if NewCaretXY.X < fLeftChar then
     NewCaretXY.X := fLeftChar
-  else if NewCaretXY.X > fLeftChar + fCharsInWindow - FCaretWidth then
-    NewCaretXY.X := fLeftChar + fCharsInWindow - FCaretWidth;
+  else if NewCaretXY.X > fLeftChar + fCharsInWindow - FScreenCaret.ExtraLineChars then
+    NewCaretXY.X := fLeftChar + fCharsInWindow - FScreenCaret.ExtraLineChars;
   if NewCaretXY.Y < fTopLine then
     NewCaretXY.Y := fTopLine
   else begin
@@ -4334,9 +4382,8 @@ end;
 {$ENDIF}
 
 procedure TCustomSynEdit.UpdateCaret(IgnorePaintLock: Boolean = False);
-var
-  CX, CY: Integer;
 {$IFDEF SYN_MBCSSUPPORT}
+var
   cf: TCompositionForm;
 {$ENDIF}
 begin
@@ -4349,21 +4396,9 @@ begin
     Exclude(fStateFlags, sfCaretChanged);
     if eoAlwaysVisibleCaret in fOptions2 then
       MoveCaretToVisibleArea;
-    CX := CaretXPix + FCaretOffset.X;
-    CY := CaretYPix + FCaretOffset.Y;
-    if (CX >= fGutterWidth) and
-       (CX < ClientWidth - ScrollBarWidth) and
-       (CY >= 0) and
-       (CY < ClientHeight - ScrollBarWidth)
-    then begin
-      SetCaretPosEx(Handle ,CX, CY);
-      //DebugLn(' [TCustomSynEdit.UpdateCaret] ShowCaret ',Name);
-      ShowCaret;
-    end else begin
-      //DebugLn(' [TCustomSynEdit.UpdateCaret] HideCaret ',Name);
-      HideCaret;
-      SetCaretPosEx(Handle ,CX, CY);
-    end;
+
+    FScreenCaret.DisplayPos := Point(CaretXPix, CaretYPix);
+
 {$IFDEF SYN_MBCSSUPPORT}
     if HandleAllocated then begin
       cf.dwStyle := CFS_POINT;
@@ -4391,7 +4426,7 @@ begin
     ScrollInfo.nMax := FTheLinesView.LengthOfLongestLine + 1;
     if (eoScrollPastEol in Options) and (ScrollInfo.nMax < fMaxLeftChar + 1) then
       ScrollInfo.nMax := fMaxLeftChar + 1;
-    inc(ScrollInfo.nMax, FCaretWidth);
+    inc(ScrollInfo.nMax, FScreenCaret.ExtraLineChars);
     if ((fScrollBars in [ssBoth, ssHorizontal]) or
         ((fScrollBars in [ssAutoBoth, ssAutoHorizontal]) and (ScrollInfo.nMax - 1 > CharsInWindow))
        ) xor (sfHorizScrollbarVisible in fStateFlags)
@@ -4534,8 +4569,8 @@ begin
   LastMouseCaret:=Point(-1,-1);
   // Todo: Under Windows, keeping the Caret only works, if no other component creates a caret
   if not (eoPersistentCaret in fOptions) then begin
-    HideCaret;
-    LCLIntf.DestroyCaret(Handle);
+    FScreenCaret.Visible := False;
+    FScreenCaret.DestroyCaret;
   end;
   if FHideSelection and SelAvail then
     Invalidate;
@@ -4550,7 +4585,7 @@ begin
   {$IFDEF VerboseFocus}
   DebugLn('[TCustomSynEdit.WMSetFocus] A ',Name,':',ClassName);
   {$ENDIF}
-  InitializeCaret;
+  FScreenCaret.Visible := True;
   //if FHideSelection and SelAvail then
   //  Invalidate;
   inherited;
@@ -4563,10 +4598,20 @@ begin
   if (not HandleAllocated) or ((ClientWidth = FOldWidth) and (ClientHeight = FOldHeight)) then exit;
   FOldWidth := ClientWidth;
   FOldHeight := ClientHeight;
-  SizeOrFontChanged(FALSE);
-  if sfEnsureCursorPosAtResize in fStateFlags then
-    EnsureCursorPosVisible;
-  Exclude(fStateFlags, sfEnsureCursorPosAtResize);
+  FScreenCaret.Lock;
+  try
+    FLeftGutter.RecalcBounds;
+    FRightGutter.RecalcBounds;
+    SizeOrFontChanged(FALSE);
+    if sfEnsureCursorPosAtResize in fStateFlags then
+      EnsureCursorPosVisible;
+    Exclude(fStateFlags, sfEnsureCursorPosAtResize);
+    FScreenCaret.ClipRect := Rect(FLeftGutter.Width, 0,
+                                  ClientWidth - FRightGutter.Width - ScrollBarWidth,
+                                  ClientHeight - ScrollBarWidth);
+  finally
+    FScreenCaret.UnLock;
+  end;
   //debugln('TCustomSynEdit.Resize ',dbgs(Width),',',dbgs(Height),',',dbgs(ClientWidth),',',dbgs(ClientHeight));
   // SetLeftChar(LeftChar);                                                     //mh 2000-10-19
 end;
@@ -4786,7 +4831,7 @@ begin
   // scroll to start of text
   TopLine := 1;
   LeftChar := 1;
-  Include(fStatusChanges, scAll);
+  StatusChanged(scTextCleared);
 end;
 
 {$IFDEF SYN_LAZARUS}
@@ -5015,7 +5060,8 @@ begin
     exit;
   end;
 
-  if (FLastMousePoint.X >= FGutterWidth) and (FLastMousePoint.X < ClientWidth - ScrollBarWidth) and
+  if (FLastMousePoint.X >= FLeftGutter.Width) and
+     (FLastMousePoint.X < ClientWidth - FRightGutter.Width - ScrollBarWidth) and
      (FLastMousePoint.Y >= 0) and (FLastMousePoint.Y < ClientHeight - ScrollBarWidth) then
   begin
     if Assigned(FMarkupCtrlMouse) and (FMarkupCtrlMouse.Cursor <> crDefault) then
@@ -5205,6 +5251,7 @@ begin
 
   RemoveHandlers(OldBuffer);
   FLines.SendNotification(senrTextBufferChanged, OldBuffer); // Send the old buffer
+  OldBuffer.SendNotification(senrTextBufferChanged, OldBuffer); // Send the old buffer
 end;
 
 procedure TCustomSynEdit.ShareTextBufferFrom(AShareEditor: TCustomSynEdit);
@@ -5256,6 +5303,11 @@ begin
   TSynEditStringList(ALines).RemoveHanlders(fMarkupManager);
   for i := 0 to fMarkupManager.Count - 1 do
     TSynEditStringList(ALines).RemoveHanlders(fMarkupManager.Markup[i]);
+end;
+
+procedure TCustomSynEdit.ExtraLineCharsChanged(Sender: TObject);
+begin
+  UpdateScrollBars;
 end;
 
 procedure TCustomSynEdit.SetTextBetweenPoints(aStartPoint, aEndPoint: TPoint;
@@ -5627,72 +5679,20 @@ procedure TCustomSynEdit.SetInsertMode(const Value: boolean);
 begin
   if fInserting <> Value then begin
     fInserting := Value;
-    if not (csDesigning in ComponentState) then
-      // Reset the caret.
-      InitializeCaret;
+    if InsertMode then
+      FScreenCaret.DisplayType := FInsertCaret
+    else
+      FScreenCaret.DisplayType := FOverwriteCaret;
     StatusChanged([scInsertMode]);
   end;
-end;
-
-procedure TCustomSynEdit.InitializeCaret;
-var
-  ct: TSynEditCaretType;
-  cw, ch, OldWidth: integer;
-begin
-  // CreateCaret automatically destroys the previous one, so we don't have to
-  // worry about cleaning up the old one here with DestroyCaret.
-  // Ideally, we will have properties that control what these two carets look like.
-
-  Exclude(fStateFlags, sfCaretVisible);
-  // Windows allows only one Caret per "Queue" (App/Window ?)
-  // an unfocused SynEdit must not steal the caret
-  if not Focused then exit;
-
-  if InsertMode
-  then ct := FInsertCaret
-  else ct := FOverwriteCaret;
-
-  OldWidth := FCaretWidth;
-  FCaretWidth := 0;
-  case ct of
-    ctHorizontalLine:
-      begin
-        cw := fCharWidth;
-        ch := 2;
-        FCaretOffset := Point(0, fTextHeight - 1);
-        FCaretWidth := 1;
-      end;
-    ctHalfBlock:
-      begin
-        cw := fCharWidth;
-        ch := (fTextHeight - 2) div 2;
-        FCaretOffset := Point(0, ch + 1);
-        FCaretWidth := 1;
-      end;
-    ctBlock:
-      begin
-        cw := fCharWidth;
-        ch := fTextHeight - 2;
-        FCaretOffset := Point(0, 1);
-        FCaretWidth := 1;
-      end;
-    else begin // ctVerticalLine
-      cw := 2;
-      ch := fTextHeight - 2;
-      FCaretOffset := Point(-1, 1);
-    end;
-  end;
-  CreateCaret(Handle, 0, cw, ch);
-  if FCaretWidth <> OldWidth then
-    UpdateScrollBars;
-  UpdateCaret;
 end;
 
 procedure TCustomSynEdit.SetInsertCaret(const Value: TSynEditCaretType);
 begin
   if FInsertCaret <> Value then begin
     FInsertCaret := Value;
-    InitializeCaret;
+    if InsertMode then
+      FScreenCaret.DisplayType := fInsertCaret;
   end;
 end;
 
@@ -5700,7 +5700,8 @@ procedure TCustomSynEdit.SetOverwriteCaret(const Value: TSynEditCaretType);
 begin
   if FOverwriteCaret <> Value then begin
     FOverwriteCaret := Value;
-    InitializeCaret;
+    if not InsertMode then
+      FScreenCaret.DisplayType := fOverwriteCaret;
   end;
 end;
 
@@ -5766,8 +5767,8 @@ begin
       ' LeftChar='+dbgs(LeftChar), '');}
     if MinX < LeftChar then
       LeftChar := MinX
-    else if LeftChar < MaxX - (CharsInWindow - 1 - FCaretWidth) then
-      LeftChar := MaxX - (CharsInWindow - 1 - FCaretWidth)
+    else if LeftChar < MaxX - (CharsInWindow - 1 - FScreenCaret.ExtraLineChars) then
+      LeftChar := MaxX - (CharsInWindow - 1 - FScreenCaret.ExtraLineChars)
     else
       LeftChar := LeftChar;                                                     //mh 2000-10-19
     //DebugLn(['TCustomSynEdit.EnsureCursorPosVisible B LeftChar=',LeftChar,' MinX=',MinX,' MaxX=',MaxX,' CharsInWindow=',CharsInWindow]);
@@ -6707,7 +6708,7 @@ end;
 procedure TCustomSynEdit.MarkTextAsSaved;
 begin
   TSynEditStringList(fLines).MarkSaved;
-  if fGutter.Visible and fGutter.ChangesPart(0).Visible then
+  if FLeftGutter.Visible and FLeftGutter.ChangesPart(0).Visible then
     InvalidateGutter; // Todo: Make the ChangeGutterPart an observer
 end;
 
@@ -6719,29 +6720,34 @@ end;
 
 procedure TCustomSynEdit.SetGutter(const Value: TSynGutter);
 begin
-  fGutter.Assign(Value);
+  FLeftGutter.Assign(Value);
+end;
+
+procedure TCustomSynEdit.SetRightGutter(const AValue: TSynGutter);
+begin
+  FRightGutter.Assign(AValue);
 end;
 
 procedure TCustomSynEdit.GutterChanged(Sender: TObject);
-var
-  nW: integer;
 begin
-  if not (csLoading in ComponentState) then begin
-    FGutter.AutoSizeDigitCount(FTheLinesView.Count);  // Todo: Make the LineNumberGutterPart an observer
-    fGutter.RealGutterWidth(fCharWidth);
-    nW := fGutter.Width;
-    if nW = fGutterWidth then
-      InvalidateGutter
-    else
-      fGutterWidth := nw;
-      fTextOffset := fGutterWidth + 2 - (LeftChar - 1) * fCharWidth;
-      if HandleAllocated then begin
-        fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2 - ScrollBarWidth)
-                                div fCharWidth);
-        //debugln('TCustomSynEdit.SetGutterWidth A ClientWidth=',dbgs(ClientWidth),' fGutterWidth=',dbgs(fGutterWidth),' ScrollBarWidth=',dbgs(ScrollBarWidth),' fCharWidth=',dbgs(fCharWidth));
-        UpdateScrollBars;
-        Invalidate;
-      end;
+  if (csLoading in ComponentState) then exit;
+  InvalidateGutter; //Todo: move to gutter
+end;
+
+procedure TCustomSynEdit.GutterResized(Sender: TObject);
+begin
+  if (csLoading in ComponentState) then exit;
+  FScreenCaret.ClipRect := Rect(FLeftGutter.Width, 0,
+                                ClientWidth - FRightGutter.Width - ScrollBarWidth,
+                                ClientHeight - ScrollBarWidth);
+  GutterChanged(Sender);
+  fTextOffset := FLeftGutter.Width + GutterTextDist - (LeftChar - 1) * fCharWidth;
+  if HandleAllocated then begin
+    FCharsInWindow := Max(1, (ClientWidth - FLeftGutter.Width - FRightGutter.Width
+                        - GutterTextDist - ScrollBarWidth) div fCharWidth);
+    //debugln('TCustomSynEdit.SetGutterWidth A ClientWidth=',dbgs(ClientWidth),' FLeftGutter.Width=',dbgs(FLeftGutter.Width),' ScrollBarWidth=',dbgs(ScrollBarWidth),' fCharWidth=',dbgs(fCharWidth));
+    UpdateScrollBars;
+    Invalidate;
   end;
 end;
 
@@ -7241,11 +7247,9 @@ begin
     RecalcCharsAndLinesInWin(False);
 
     //DebugLn('TCustomSynEdit.SizeOrFontChanged fLinesInWindow=',dbgs(fLinesInWindow),' ClientHeight=',dbgs(ClientHeight),' ',dbgs(fTextHeight));
-    //debugln('TCustomSynEdit.SizeOrFontChanged A ClientWidth=',dbgs(ClientWidth),' fGutterWidth=',dbgs(fGutterWidth),' ScrollBarWidth=',dbgs(ScrollBarWidth),' fCharWidth=',dbgs(fCharWidth),' fCharsInWindow=',dbgs(fCharsInWindow),' Width=',dbgs(Width));
+    //debugln('TCustomSynEdit.SizeOrFontChanged A ClientWidth=',dbgs(ClientWidth),' FLeftGutter.Width=',dbgs(FLeftGutter.Width),' ScrollBarWidth=',dbgs(ScrollBarWidth),' fCharWidth=',dbgs(fCharWidth),' fCharsInWindow=',dbgs(fCharsInWindow),' Width=',dbgs(Width));
     if bFont then begin
-      GutterChanged(self); // Todo: Make the LineNumberGutterPart (and others) an observer
       UpdateScrollbars;
-      InitializeCaret;
       Exclude(fStateFlags, sfCaretChanged);
       Invalidate;
     end else
@@ -7260,11 +7264,12 @@ end;
 
 procedure TCustomSynEdit.RecalcCharsAndLinesInWin(CheckCaret: Boolean);
 begin
-  FCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2 - ScrollBarWidth)
-                          div fCharWidth);
+  FCharsInWindow := Max(1, (ClientWidth - FLeftGutter.Width - FRightGutter.Width
+                            - GutterTextDist - ScrollBarWidth) div fCharWidth);
   FLinesInWindow := Max(0,ClientHeight - ScrollBarWidth) div Max(1,fTextHeight);
   FFoldedLinesView.LinesInWindow := fLinesInWindow;
   FMarkupManager.LinesInWindow:= fLinesInWindow;
+  StatusChanged([scLinesInWindow]);
   if CheckCaret then begin
     if not (eoScrollPastEol in Options) then
       LeftChar := LeftChar;
@@ -7366,13 +7371,16 @@ begin
     CharExtra := fExtraCharSpacing;
     fTextHeight := CharHeight + fExtraLineSpacing;
     fCharWidth := CharWidth;
+    FScreenCaret.Lock;
+    FScreenCaret.CharWidth := fCharWidth;
+    FScreenCaret.CharHeight := fTextHeight;
+    FScreenCaret.UnLock;
   end;
   {$IFDEF SYN_LAZARUS}
   FUseUTF8:=fTextDrawer.UseUTF8;
   FLines.IsUtf8 := FUseUTF8;
   //debugln('TCustomSynEdit.RecalcCharExtent UseUTF8=',dbgs(UseUTF8),' Font.CanUTF8=',dbgs(Font.CanUTF8));
   {$ENDIF}
-  GutterChanged(Self);
 end;
 
 procedure TCustomSynEdit.HighlighterAttrChanged(Sender: TObject);
@@ -8465,14 +8473,15 @@ begin
   FHookedKeyTranslationList.Remove(TMEthod(AHandlerProc));
 end;
 
-procedure TCustomSynEdit.RegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent);
+procedure TCustomSynEdit.RegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent;
+  AChanges: TSynStatusChanges);
 begin
-  FStatusChangedList.Add(TMethod(AStatusChangeProc));
+  TSynStatusChangedHandlerList(FStatusChangedList).Add(AStatusChangeProc, AChanges);
 end;
 
 procedure TCustomSynEdit.UnRegisterStatusChangedHandler(AStatusChangeProc: TStatusChangeEvent);
 begin
-  FStatusChangedList.Remove(TMethod(AStatusChangeProc));
+  TSynStatusChangedHandlerList(FStatusChangedList).Remove(AStatusChangeProc);
 end;
 
 procedure TCustomSynEdit.NotifyHookedCommandHandlers(AfterProcessing: boolean;
@@ -8529,7 +8538,7 @@ end;
 
 procedure TCustomSynEdit.DoOnStatusChange(Changes: TSynStatusChanges);
 begin
-  FStatusChangedList.CallStatusChangedHandlers(Self, Changes);
+  TSynStatusChangedHandlerList(FStatusChangedList).CallStatusChangedHandlers(Self, Changes);
   if Assigned(fOnStatusChange) then begin
     fOnStatusChange(Self, fStatusChanges);
     fStatusChanges := [];
@@ -8658,8 +8667,10 @@ end;
 
 procedure Register;
 begin
-  RegisterClasses([TSynGutterPartList, TSynGutterSeparator, TSynGutterCodeFolding,
-                  TSynGutterLineNumber, TSynGutterChanges, TSynGutterMarks]);
+  RegisterClasses([TSynGutterPartList, TSynRightGutterPartList,
+                   TSynGutterSeparator, TSynGutterCodeFolding,
+                   TSynGutterLineNumber, TSynGutterChanges, TSynGutterMarks,
+                   TSynGutterLineOverview]);
 
   RegisterPropertyToSkip(TSynSelectedColor, 'OnChange', '', '');
   RegisterPropertyToSkip(TSynSelectedColor, 'StartX', '', '');
@@ -8705,6 +8716,61 @@ end;
 
 { TSynStatusChangedHandlerList }
 
+function TSynStatusChangedHandlerList.IndexOf(AHandler: TStatusChangeEvent): Integer;
+begin
+  Result := FCount - 1;
+  while (Result >= 0) and (FItems[Result].FHandler <> AHandler) do
+    dec(Result);
+end;
+
+function TSynStatusChangedHandlerList.NextDownIndex(var Index: integer): boolean;
+begin
+  if Self<>nil then begin
+    dec(Index);
+    if (Index>=FCount) then
+      Index:=FCount-1;
+  end else
+    Index:=-1;
+  Result:=(Index>=0);
+end;
+
+constructor TSynStatusChangedHandlerList.Create;
+begin
+  FCount := 0;
+end;
+
+procedure TSynStatusChangedHandlerList.Add(AHandler: TStatusChangeEvent;
+  Changes: TSynStatusChanges);
+var
+  i: Integer;
+begin
+  i := IndexOf(AHandler);
+  if i >= 0 then
+    FItems[i].FChanges := FItems[i].FChanges + Changes
+  else begin
+    if FCount >= high(FItems) then
+      SetLength(FItems, Max(8, FCount * 2));
+    FItems[FCount].FHandler := AHandler;
+    FItems[FCount].FChanges := Changes;
+    inc(FCount);
+  end;
+end;
+
+procedure TSynStatusChangedHandlerList.Remove(AHandler: TStatusChangeEvent);
+var
+  i: Integer;
+begin
+  i := IndexOf(AHandler);
+  if i < 0 then exit;
+  while i < FCount - 1 do begin
+    FItems[i] := FItems[i + 1];
+    inc(i);
+  end;
+  dec(FCount);
+  if length(FItems) > FCount * 4 then
+    SetLength(FItems, FCount * 2);
+end;
+
 procedure TSynStatusChangedHandlerList.CallStatusChangedHandlers(Sender: TObject;
   Changes: TSynStatusChanges);
 var
@@ -8712,7 +8778,8 @@ var
 begin
   i:=Count;
   while NextDownIndex(i) do
-    TStatusChangeEvent(Items[i])(Sender, Changes);
+    if FItems[i].FChanges * Changes <> [] then
+      FItems[i].FHandler(Sender, Changes);
 end;
 
 initialization

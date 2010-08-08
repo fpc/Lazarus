@@ -32,8 +32,11 @@ unit SynEditHighlighterFoldBase;
 interface
 
 uses
-  SysUtils, Classes, math, LCLProc, SynEditHighlighter, SynEditTextBuffer,
+  SysUtils, Classes, math, LCLProc, SynEditHighlighter, SynEditTypes,
   AvgLvlTree;
+
+const
+  NullRange = TSynEditRange(nil);
 
 type
 

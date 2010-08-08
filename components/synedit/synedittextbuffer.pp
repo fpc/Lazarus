@@ -43,10 +43,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLIntf, LCLType,
-  SynEditTextBase, SynEditTypes, SynEditMiscProcs, SynEditMiscClasses;
-
-const
-  NullRange = TSynEditRange(nil);
+  SynEditTextBase, SynEditMiscProcs, SynEditMiscClasses;
 
 type
   TSynEditFlagsClass = class end; // For Register

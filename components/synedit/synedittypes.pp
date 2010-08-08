@@ -80,6 +80,16 @@ type
   TSynEditRange = pointer;
   {$ENDIF}
 
+  TSynStatusChange = (scCaretX, scCaretY,
+    scLeftChar, scTopLine, scLinesInWindow,
+    scInsertMode, scModified, scSelection, scReadOnly
+   );
+  TSynStatusChanges = set of TSynStatusChange;
+
+const
+  scTextCleared = [scCaretX, scCaretY, scLeftChar, scTopLine, scModified, scSelection];
+
+
 implementation
 
 end.

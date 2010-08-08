@@ -5197,7 +5197,7 @@ begin
     SrcEditMenuMoveEditorLast.MenuItem.Enabled:= (PageCount>1) and (PageIndex<(PageCount-1));
 
     EditorPopupPoint:=EditorComp.ScreenToClient(SrcPopUpMenu.PopupPoint);
-    if EditorPopupPoint.X>EditorComp.GutterWidth then begin
+    if EditorPopupPoint.X>EditorComp.Gutter.Width then begin
       // user clicked on text
       // collect some flags
       SelAvail:=ASrcEdit.EditorComponent.SelAvail;

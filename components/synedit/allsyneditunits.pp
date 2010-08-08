@@ -41,7 +41,8 @@ uses
   SynHighlighterVB, 
   SynHighlighterXML,
   SynHighlighterDiff,
-  SynGutter, SynGutterChanges, SynGutterCodeFolding, SynGutterLineNumber, SynGutterMarks,
+  SynGutter, SynGutterChanges, SynGutterCodeFolding, SynGutterLineNumber,
+  SynGutterMarks, SynGutterLineOverview,
   SynPropertyEditObjectList, SynDesignStringConstants;
 
 implementation

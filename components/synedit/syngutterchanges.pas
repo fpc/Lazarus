@@ -5,27 +5,23 @@ unit SynGutterChanges;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LCLType, LCLIntf, SynGutterBase,
-  SynTextDrawer, SynEditFoldedView;
+  Classes, Graphics, LCLType, LCLIntf, SynGutterBase;
 
 type
   { TSynGutterChanges }
 
   TSynGutterChanges = class(TSynGutterPartBase)
   private
-    FFoldView: TSynEditFoldedView;
     function GetModifiedColor: TColor;
     function GetSavedColor: TColor;
     procedure SetModifiedColor(const AValue: TColor);
     procedure SetSavedColor(const AValue: TColor);
   protected
-    procedure DoChange(Sender: TObject); override;
+    function  PreferedWidth: Integer; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer); override;
-    function RealGutterWidth(CharWidth: integer): integer;  override;
   published
     property ModifiedColor: TColor read GetModifiedColor write SetModifiedColor;
     property SavedColor: TColor read GetSavedColor write SetSavedColor;
@@ -40,13 +36,10 @@ uses
 constructor TSynGutterChanges.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FFoldView := Gutter.FoldView;
 
   MarkupInfo.Background := clNone;
   MarkupInfo.Foreground := clGreen;
   MarkupInfo.FrameColor := $00E9FC;
-
-  FWidth := 4;
 end;
 
 destructor TSynGutterChanges.Destroy;
@@ -74,24 +67,9 @@ begin
   MarkupInfo.Foreground := AValue;
 end;
 
-procedure TSynGutterChanges.DoChange(Sender: TObject);
+function TSynGutterChanges.PreferedWidth: Integer;
 begin
-  if AutoSize then
-    FWidth := 4;
-  inherited DoChange(Sender);
-end;
-
-function TSynGutterChanges.RealGutterWidth(CharWidth: integer): integer;
-begin
-  if not Visible then
-  begin
-    Result := 0;
-    Exit;
-  end;
-
-  if AutoSize then
-    RealWidth := 4;
-  Result := Width;
+  Result := 4;
 end;
 
 procedure TSynGutterChanges.Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
@@ -121,7 +99,7 @@ begin
   rcLine.Bottom := FirstLine * LineHeight;
   for i := FirstLine to LastLine do
   begin
-    iLine := FFoldView.TextIndex[i];
+    iLine := FoldView.TextIndex[i];
     // next line rect
     rcLine.Top := rcLine.Bottom;
     Inc(rcLine.Bottom, LineHeight);

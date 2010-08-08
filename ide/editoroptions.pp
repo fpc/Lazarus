@@ -45,6 +45,7 @@ uses
   SynGutter, SynGutterBase, SynGutterCodeFolding, SynGutterLineNumber,
   SynGutterChanges, SynCompletion,
   SynEditMarkupBracket, SynEditMarkupHighAll, SynEditMarkupWordGroup,
+  SourceSynEditor,
   // SynEdit Highlighters
   SynEditHighlighter, SynEditHighlighterFoldBase,
   SynHighlighterCPP, SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM,
@@ -594,7 +595,7 @@ const
 
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of
     TCustomSynClass =
-    (nil, nil, TSynFreePascalSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn,
+    (nil, nil, TIDESynFreePasSyn, TIDESynPasSyn, TSynLFMSyn, TSynXMLSyn,
     TSynHTMLSyn, TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
     TSynPythonSyn, TSynPHPSyn, TSynSQLSyn, TSynJScriptSyn, TSynDiffSyn);
 

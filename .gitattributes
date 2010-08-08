@@ -2060,6 +2060,7 @@ components/synedit/syngutterbase.pp svneol=native#text/plain
 components/synedit/syngutterchanges.pas svneol=native#text/pascal
 components/synedit/synguttercodefolding.pp svneol=native#text/plain
 components/synedit/syngutterlinenumber.pp svneol=native#text/plain
+components/synedit/syngutterlineoverview.pp svneol=native#text/pascal
 components/synedit/synguttermarks.pp svneol=native#text/plain
 components/synedit/synhighlighterany.pas svneol=native#text/plain
 components/synedit/synhighlightercpp.pp svneol=native#text/pascal
