@@ -65,7 +65,7 @@ uses
   LazarusIDEStrConsts, IDEProcs, KeyMapping, LazConf, typinfo;
 
 type
-  TPreviewPasSyn = TSynFreePascalSyn;
+  TPreviewPasSyn = TIDESynFreePasSyn;
   TSrcIDEHighlighter = TSynCustomHighlighter;
   TSynHighlightElement = TSynHighlighterAttributes;
   TCustomSynClass = class of TSrcIDEHighlighter;
