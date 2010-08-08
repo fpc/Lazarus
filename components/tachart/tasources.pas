@@ -26,6 +26,7 @@ uses
 
 type
   EEditableSourceRequired = class(EChartError);
+  EYCountError = class(EChartError);
 
   // Like TColor, but avoiding dependency on Graphics.
   TChartColor = -$7FFFFFFF-1..$7FFFFFFF;
@@ -34,6 +35,7 @@ type
     X, Y: Double;
     Color: TChartColor;
     Text: String;
+    YList: TDoubleDynArray;
   end;
   PChartDataItem = ^TChartDataItem;
 
@@ -50,8 +52,10 @@ type
     FValuesTotalIsValid: Boolean;
     function GetCount: Integer; virtual; abstract;
     function GetItem(AIndex: Integer): PChartDataItem; virtual; abstract;
+    function GetYCount: Cardinal; virtual;
     procedure InvalidateCaches;
     procedure Notify;
+    procedure SetYCount(AValue: Cardinal); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -77,6 +81,7 @@ type
     property Broadcaster: TBroadcaster read FBroadcaster;
     property Count: Integer read GetCount;
     property Item[AIndex: Integer]: PChartDataItem read GetItem; default;
+    property YCount: Cardinal read GetYCount write SetYCount default 1;
   end;
 
   { TListChartSource }
@@ -86,16 +91,20 @@ type
     FData: TFPList;
     FDataPoints: TStrings;
     FSorted: Boolean;
+    FYCount: Cardinal;
 
     procedure AddAt(
       APos: Integer; AX, AY: Double; const ALabel: String; AColor: TChartColor);
     procedure ClearCaches;
+    function NewItem: PChartDataItem;
     procedure SetDataPoints(AValue: TStrings);
     procedure SetSorted(AValue: Boolean);
     procedure UpdateCachesAfterAdd(AX, AY: Double);
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
+    function GetYCount: Cardinal; override;
+    procedure SetYCount(AValue: Cardinal); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -112,6 +121,7 @@ type
   published
     property DataPoints: TStrings read FDataPoints write SetDataPoints;
     property Sorted: Boolean read FSorted write SetSorted default false;
+    property YCount;
   end;
 
   { TMWCRandomGenerator }
@@ -286,6 +296,7 @@ begin
   AItem.Y := 0;
   AItem.Color := clTAColor;
   AItem.Text := '';
+  AItem.YList := nil;
 end;
 
 { TCustomChartSource }
@@ -403,6 +414,11 @@ begin
   end;
 end;
 
+function TCustomChartSource.GetYCount: Cardinal;
+begin
+  Result := 1;
+end;
+
 procedure TCustomChartSource.InvalidateCaches;
 begin
   FExtentIsValid := false;
@@ -423,6 +439,12 @@ procedure TCustomChartSource.Notify;
 begin
   if not IsUpdating then
     FBroadcaster.Broadcast(Self);
+end;
+
+procedure TCustomChartSource.SetYCount(AValue: Cardinal);
+begin
+  Unused(AValue);
+  raise EYCountError.Create('Can not set YCount');
 end;
 
 procedure TCustomChartSource.ValuesInRange(
@@ -491,10 +513,18 @@ begin
 end;
 
 function TListChartSourceStrings.Get(Index: Integer): String;
+var
+  i: Integer;
 begin
-  with FSource[Index]^ do
-    Result := Format('%g|%g|%s|%s',
-      [X, Y, IfThen(Color = clTAColor, '?', '$' + IntToHex(Color, 6)), Text]);
+  with FSource[Index]^ do begin
+    Result := Format('%g', [X]);
+    if FSource.YCount > 0 then
+      Result += Format('|%g', [Y]);
+    for i := 0 to High(YList) do
+      Result += Format('|%g', [YList[i]]);
+    Result += Format('|%s|%s',
+      [IfThen(Color = clTAColor, '?', '$' + IntToHex(Color, 6)), Text]);
+  end;
 end;
 
 function TListChartSourceStrings.GetCount: Integer;
@@ -506,28 +536,48 @@ procedure TListChartSourceStrings.Insert(Index: Integer; const S: String);
 var
   item: PChartDataItem;
 begin
-  New(item);
-  FSource.FData.Insert(Index, item);
+  item := FSource.NewItem;
   Parse(S, item);
+  FSource.FData.Insert(Index, item);
   FSource.UpdateCachesAfterAdd(item^.X, item^.Y);
 end;
 
 procedure TListChartSourceStrings.Parse(
   const AString: String; ADataItem: PChartDataItem);
 var
-  p: Integer = 1;
+  p: Integer = 0;
+  parts: TStringList;
 
   function NextPart: String;
   begin
-    Result := ExtractSubstr(AString, p, ['|']);
+    if p < parts.Count then
+      Result := parts[p]
+    else
+      Result := '';
+    p += 1;
   end;
 
+var
+  i: Integer;
 begin
-  with ADataItem^ do begin
-    X := StrToFloatDef(NextPart, 0.0);
-    Y := StrToFloatDef(NextPart, 0.0);
-    Color := StrToIntDef(NextPart, clTAColor);
-    Text := NextPart;
+  parts := TStringList.Create;
+  try
+    parts.Delimiter := '|';
+    parts.DelimitedText := AString;
+    if FSource.YCount + 3 < Cardinal(parts.Count) then
+      FSource.YCount := parts.Count - 3;
+    with ADataItem^ do begin
+      X := StrToFloatDef(NextPart, 0.0);
+      if FSource.YCount > 0 then begin
+        Y := StrToFloatDef(NextPart, 0.0);
+        for i := 0 to High(YList) do
+          YList[i] := StrToFloatDef(NextPart, 0.0);
+      end;
+      Color := StrToIntDef(NextPart, clTAColor);
+      Text := NextPart;
+    end;
+  finally
+    parts.Free;
   end;
 end;
 
@@ -558,13 +608,13 @@ procedure TListChartSource.AddAt(
 var
   pcd: PChartDataItem;
 begin
-  New(pcd);
+  pcd := NewItem;
   pcd^.X := AX;
   pcd^.Y := AY;
   pcd^.Color := AColor;
   pcd^.Text := ALabel;
-  UpdateCachesAfterAdd(AX, AY);
   FData.Insert(APos, pcd);
+  UpdateCachesAfterAdd(AX, AY);
   Notify;
 end;
 
@@ -609,6 +659,7 @@ begin
   FData := TFPList.Create;
   FDataPoints := TListChartSourceStrings.Create;
   TListChartSourceStrings(FDataPoints).FSource := Self;
+  FYCount := 1;
   ClearCaches;
 end;
 
@@ -644,9 +695,20 @@ begin
   Result := PChartDataItem(FData.Items[AIndex]);
 end;
 
+function TListChartSource.GetYCount: Cardinal;
+begin
+  Result := FYCount;
+end;
+
 function TListChartSource.IsSorted: Boolean;
 begin
   Result := Sorted;
+end;
+
+function TListChartSource.NewItem: PChartDataItem;
+begin
+  New(Result);
+  SetLength(Result^.YList, Max(YCount - 1, 0));
 end;
 
 procedure TListChartSource.SetDataPoints(AValue: TStrings);
@@ -710,6 +772,16 @@ begin
       FData.Move(AIndex, Result);
   end;
   Notify;
+end;
+
+procedure TListChartSource.SetYCount(AValue: Cardinal);
+var
+  i: Integer;
+begin
+  if AValue = FYCount then exit;
+  FYCount := AValue;
+  for i := 0 to Count - 1 do
+    SetLength(Item[i]^.YList, Max(FYCount - 1, 0));
 end;
 
 procedure TListChartSource.SetYValue(AIndex: Integer; AValue: Double);
