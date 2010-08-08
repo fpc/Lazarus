@@ -664,6 +664,7 @@ resourcestring
   lisnewProject = '%s - (new project)';
   liscompiling = '%s (compiling ...)';
   lisdebugging = '%s (debugging ...)';
+  lisRunning = '%s (running ...)';
   lisUnableToFindFile = 'Unable to find file %s%s%s.';
   lisUnableToFindFileCheckSearchPathInProjectCompilerOption = 'Unable to find '
     +'file %s%s%s.%sIf it belongs to your project, check search path '

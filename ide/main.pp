@@ -12285,7 +12285,13 @@ begin
   end;
   case ToolStatus of
     itBuilder:  NewCaption := Format(liscompiling, [NewCaption]);
-    itDebugger: NewCaption := Format(lisdebugging, [NewCaption]);
+    itDebugger:
+    begin
+      if DebugBoss.Commands - [dcRun, dcStop, dcEnvironment] <> [] then
+        NewCaption := Format(lisDebugging, [NewCaption])
+      else
+        NewCaption := Format(lisRunning, [NewCaption]);
+    end;
   end;
   MainIDEBar.Caption := NewCaption;
   Application.Title := NewTitle;
