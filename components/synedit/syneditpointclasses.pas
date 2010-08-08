@@ -1760,17 +1760,11 @@ begin
 end;
 
 procedure TSynEditScreenCaret.HideCaret;
-var
-  x, y: Integer;
 begin
   if FHandle = 0 then exit;
   if not FCurrentCreated then exit;
-  x := FDisplayPos.x + FOffsetX;
-  y := FDisplayPos.y + FOffsetY;
   if FCurrentVisible and LCLIntf.HideCaret(Handle) then
     FCurrentVisible := False;
-  //if (x <> FCurrentPosX) or (y <> FCurrentPosY) then
-  //  SetCaretPosEx(FHandle, x, y);
 end;
 
 end.
