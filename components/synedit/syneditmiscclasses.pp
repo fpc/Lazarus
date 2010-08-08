@@ -373,7 +373,7 @@ type
 
   TSynFilteredMethodListEntry = record
     FHandler: TMethod;
-    FFilter: Pointer;
+    FFilter: LongInt;
   end;
 
   { TSynFilteredMethodList }
@@ -384,19 +384,19 @@ type
   protected
     FItems: Array of TSynFilteredMethodListEntry;
     function IndexOf(AHandler: TMethod): Integer;
-    function IndexOf(AHandler: TMethod; AFilter: Pointer): Integer;
+    function IndexOf(AHandler: TMethod; AFilter: LongInt): Integer;
     function NextDownIndex(var Index: integer): boolean;
-    function NextDownIndexNumFilter(var Index: integer; AFilter: Pointer): boolean;
-    function NextDownIndexBitFilter(var Index: integer; AFilter: Pointer): boolean;
+    function NextDownIndexNumFilter(var Index: integer; AFilter: LongInt): boolean;
+    function NextDownIndexBitFilter(var Index: integer; AFilter: LongInt): boolean;
     procedure Delete(AIndex: Integer);
   public
     constructor Create;
-    procedure AddNumFilter(AHandler: TMethod; AFilter: Pointer);                         // Separate entries for same method with diff filter
-    procedure AddBitFilter(AHandler: TMethod; AFilter: Pointer);                    // Filter is bitmask
+    procedure AddNumFilter(AHandler: TMethod; AFilter: LongInt);                         // Separate entries for same method with diff filter
+    procedure AddBitFilter(AHandler: TMethod; AFilter: LongInt);                    // Filter is bitmask
     procedure Remove(AHandler: TMethod);
-    procedure Remove(AHandler: TMethod; AFilter: Pointer);
-    procedure CallNotifyEventsNumFilter(Sender: TObject; AFilter: Pointer);
-    procedure CallNotifyEventsBitFilter(Sender: TObject; AFilter: Pointer);         // filter is Bitmask
+    procedure Remove(AHandler: TMethod; AFilter: LongInt);
+    procedure CallNotifyEventsNumFilter(Sender: TObject; AFilter: LongInt);
+    procedure CallNotifyEventsBitFilter(Sender: TObject; AFilter: LongInt);         // filter is Bitmask
     property Count: Integer read FCount;
   end;
 
@@ -1283,7 +1283,7 @@ begin
     dec(Result);
 end;
 
-function TSynFilteredMethodList.IndexOf(AHandler: TMethod; AFilter: Pointer): Integer;
+function TSynFilteredMethodList.IndexOf(AHandler: TMethod; AFilter: LongInt): Integer;
 begin
   Result := FCount - 1;
   while (Result >= 0) and
@@ -1306,7 +1306,7 @@ begin
 end;
 
 function TSynFilteredMethodList.NextDownIndexNumFilter(var Index: integer;
-  AFilter: Pointer): boolean;
+  AFilter: LongInt): boolean;
 begin
   Repeat
     Result := NextDownIndex(Index);
@@ -1314,11 +1314,11 @@ begin
 end;
 
 function TSynFilteredMethodList.NextDownIndexBitFilter(var Index: integer;
-  AFilter: Pointer): boolean;
+  AFilter: LongInt): boolean;
 begin
   Repeat
     Result := NextDownIndex(Index);
-  until (not Result) or (PtrUInt(FItems[Index].FFilter) and PtrUInt(AFilter) <> 0);
+  until (not Result) or ((FItems[Index].FFilter and AFilter) <> 0);
 end;
 
 procedure TSynFilteredMethodList.Delete(AIndex: Integer);
@@ -1338,7 +1338,7 @@ begin
   FCount := 0;
 end;
 
-procedure TSynFilteredMethodList.AddNumFilter(AHandler: TMethod; AFilter: Pointer);
+procedure TSynFilteredMethodList.AddNumFilter(AHandler: TMethod; AFilter: LongInt);
 var
   i: Integer;
 begin
@@ -1353,13 +1353,13 @@ begin
   inc(FCount);
 end;
 
-procedure TSynFilteredMethodList.AddBitFilter(AHandler: TMethod; AFilter: Pointer);
+procedure TSynFilteredMethodList.AddBitFilter(AHandler: TMethod; AFilter: LongInt);
 var
   i: Integer;
 begin
   i := IndexOf(AHandler);
   if i >= 0 then
-    FItems[i].FFilter := Pointer( PtrUInt(FItems[i].FFilter) or PtrUInt(AFilter) )
+    FItems[i].FFilter := FItems[i].FFilter or AFilter
   else begin
     if FCount >= high(FItems) then
       SetLength(FItems, Max(8, FCount * 2));
@@ -1374,12 +1374,12 @@ begin
   Delete(IndexOf(AHandler));
 end;
 
-procedure TSynFilteredMethodList.Remove(AHandler: TMethod; AFilter: Pointer);
+procedure TSynFilteredMethodList.Remove(AHandler: TMethod; AFilter: LongInt);
 begin
   Delete(IndexOf(AHandler, AFilter));
 end;
 
-procedure TSynFilteredMethodList.CallNotifyEventsNumFilter(Sender: TObject; AFilter: Pointer);
+procedure TSynFilteredMethodList.CallNotifyEventsNumFilter(Sender: TObject; AFilter: LongInt);
 var
   i: Integer;
 begin
@@ -1388,7 +1388,7 @@ begin
     TNotifyEvent(FItems[i].FHandler)(Sender);
 end;
 
-procedure TSynFilteredMethodList.CallNotifyEventsBitFilter(Sender: TObject; AFilter: Pointer);
+procedure TSynFilteredMethodList.CallNotifyEventsBitFilter(Sender: TObject; AFilter: LongInt);
 var
   i: Integer;
 begin

@@ -494,7 +494,7 @@ end;
 procedure TSynEditMarkChangedHandlerList.Add(AHandler: TSynEditMarkChangeEvent;
   Changes: TSynEditMarkChangeReasons);
 begin
-  AddBitFilter(TMethod(AHandler), Pointer(PtrUInt(Changes)));
+  AddBitFilter(TMethod(AHandler), LongInt(Changes));
 end;
 
 procedure TSynEditMarkChangedHandlerList.Remove(AHandler: TSynEditMarkChangeEvent);
@@ -508,7 +508,7 @@ var
   i: Integer;
 begin
   i:=Count;
-  while NextDownIndexBitFilter(i, Pointer(PtrUInt(Changes))) do
+  while NextDownIndexBitFilter(i, LongInt(Changes)) do
     TSynEditMarkChangeEvent(FItems[i].FHandler)(Sender, Changes);
 end;
 

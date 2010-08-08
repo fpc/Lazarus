@@ -8706,7 +8706,7 @@ end;
 procedure TSynStatusChangedHandlerList.Add(AHandler: TStatusChangeEvent;
   Changes: TSynStatusChanges);
 begin
-  AddBitFilter(TMethod(AHandler), Pointer(PtrUInt(Changes)));
+  AddBitFilter(TMethod(AHandler), LongInt(Changes));
 end;
 
 procedure TSynStatusChangedHandlerList.Remove(AHandler: TStatusChangeEvent);
@@ -8720,7 +8720,7 @@ var
   i: Integer;
 begin
   i:=Count;
-  while NextDownIndexBitFilter(i, Pointer(PtrUInt(Changes))) do
+  while NextDownIndexBitFilter(i, LongInt(Changes)) do
     TStatusChangeEvent(FItems[i].FHandler)(Sender, Changes);
 end;
 
