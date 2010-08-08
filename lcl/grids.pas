@@ -112,7 +112,7 @@ type
 
   TGridDrawState = set of (gdSelected, gdFocused, gdFixed, gdHot, gdPushed);
   TGridState =(gsNormal, gsSelecting, gsRowSizing, gsColSizing, gsRowMoving,
-    gsColMoving, gsHeaderClicking);
+    gsColMoving, gsHeaderClicking, gsButtonColumnClicking);
 
   TGridZone = (gzNormal, gzFixedCols, gzFixedRows, gzFixedCells, gzInvalid);
   TGridZoneSet = set of TGridZone;
@@ -128,7 +128,8 @@ type
     cbsNone,
     cbsPickList,
     cbsCheckboxColumn,
-    cbsButton
+    cbsButton,
+    cbsButtonColumn
   );
 
   TTitleStyle = (tsLazarus, tsStandard, tsNative);
@@ -693,6 +694,7 @@ type
     procedure CheckCount(aNewColCount, aNewRowCount: Integer; FixEditor: boolean=true);
     procedure CheckIndex(IsColumn: Boolean; Index: Integer);
     function  CheckTopLeft(aCol,aRow: Integer; CheckCols,CheckRows: boolean): boolean;
+    function  IsCellButtonColumn(ACell: TPoint): boolean;
     function  GetSelectedColumn: TGridColumn;
     function IsDefRowHeightStored: boolean;
     function IsTitleImageListStored: boolean;
@@ -829,6 +831,7 @@ type
     function  DoCompareCells(Acol,ARow,Bcol,BRow: Integer): Integer; virtual;
     procedure DoCopyToClipboard; virtual;
     procedure DoCutToClipboard; virtual;
+    procedure DoEditButtonClick(const ACol,ARow: Integer); virtual;
     procedure DoEditorHide; virtual;
     procedure DoEditorShow; virtual;
     procedure DoExit; override;
@@ -1118,6 +1121,7 @@ type
     FMouseWheelOption: TMouseWheelOption;
     function CellNeedsCheckboxBitmaps(const aCol,aRow: Integer): boolean;
     procedure DrawCellCheckboxBitmaps(const aCol,aRow: Integer; const aRect: TRect);
+    procedure DrawCellButtonColumn(const aCol,aRow: Integer; aRect: TRect; const aState:TGridDrawState);
   protected
     FGrid: TVirtualGrid;
     procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); virtual;
@@ -1859,23 +1863,30 @@ procedure TCustomGrid.HeadersMouseMove(const X, Y: Integer);
 var
   P: TPoint;
   Gz: TGridZone;
+  ButtonColumn: boolean;
+  OldAOE: boolean;
 begin
 
   with FGCache do begin
 
     Gz := MouseToGridZone(X,Y);
+    oldAOE := AllowOutboundEvents;
+    AllowOutboundEvents := false;
     P := MouseToCell(Point(X,Y));
+    AllowOutBoundEvents := OldAOE;
+    ButtonColumn := IsCellButtonColumn(P);
 
-    if (goHeaderHotTracking in Options) and
-      ((gz<>HotGridZone) or (P.x<>HotCell.x) or (P.y<>HotCell.y)) then begin
+    if (gz<>HotGridZone) or (P.x<>HotCell.x) or (P.y<>HotCell.y) then begin
       ResetHotCell;
-      if Gz in FHeaderHotZones then begin
-        InvalidateCell(P.X, P.Y);
-        HotCell := P;
+      if (P.x>=0) and (P.y>=0) then begin
+        if ButtonColumn or (goHeaderHotTracking in Options) then begin
+          InvalidateCell(P.X, P.Y);
+          HotCell := P;
+        end;
       end;
     end;
 
-    if goHeaderPushedLook in Options then begin
+    if ButtonColumn or (goHeaderPushedLook in Options) then begin
       if ClickCellPushed then begin
         if (P.X<>PushedCell.x) or (P.Y<>PushedCell.Y) then
           ResetPushedCell(False);
@@ -3615,27 +3626,12 @@ begin
 end;
 
 procedure TCustomGrid.EditButtonClicked(Sender: TObject);
-var
-  OldCol,OldRow: Integer;
 begin
   if Assigned(OnEditButtonClick) then begin
-    if Sender=FButtonEditor then begin
-      OldCol:=FCol;
-      OldRow:=FRow;
-      try
-        FCol:=FButtonEditor.Col;
-        FRow:=FButtonEditor.Row;
-        OnEditButtonClick(Self);
-      finally
-        if (FCol=FButtonEditor.Col) and (FRow=FButtonEditor.Row) then
-        begin
-          // didn't change FRow or FCol, restore old index.
-          FCol:=OldCol;
-          FRow:=OldRow;
-        end;
-      end;
-    end else
-      OnEditButtonClick(Self);
+    if Sender=FButtonEditor then
+      DoEditButtonClick(FButtonEditor.Col, FButtonEditor.Row)
+    else
+      DoEditButtonClick(FCol, FRow);
   end;
 end;
 
@@ -4521,6 +4517,15 @@ begin
   Result := not PointIgual(OldTopleft,FTopLeft);
   if Result then
     doTopleftChange(False)
+end;
+
+function TCustomGrid.IsCellButtonColumn(ACell: TPoint): boolean;
+var
+  Column: TGridColumn;
+begin
+  Column := ColumnFromGridColumn(ACell.X);
+  result := (Column<>nil) and (Column.ButtonStyle=cbsButtonColumn) and
+            (ACell.y>=FixedRows);
 end;
 
 function TCustomGrid.GetIsCellSelected(aCol, aRow: Integer): boolean;
@@ -5435,7 +5440,7 @@ end;
 function TCustomGrid.EditorByStyle(Style: TColumnButtonStyle): TWinControl;
 begin
   case Style of
-    cbsNone, cbsCheckboxColumn:   //SSY
+    cbsNone, cbsCheckboxColumn, cbsButtonColumn:
       Result := nil;
     cbsEllipsis:
       Result := FButtonStringEditor;
@@ -5458,7 +5463,6 @@ var
   procedure DoPushCell;
   begin
     with FGCache do
-    if (goHeaderPushedLook in Options) and (HotGridZone in FHeaderPushZones) then
     begin
       PushedCell := ClickCell;
       ClickCellPushed:=True;
@@ -5498,7 +5502,9 @@ begin
     gzFixedCells:
       begin
         FGridState := gsHeaderClicking;
-        DoPushCell;
+        if ((goHeaderPushedLook in Options) and
+            (FGCache.HotGridZone in FHeaderPushZones)) then
+          DoPushCell;
       end;
 
     gzFixedCols:
@@ -5511,7 +5517,9 @@ begin
           // ColMoving or Clicking
           fGridState:=gsColMoving;
           FMoveLast:=Point(-1,-1);
-          DoPushCell;
+          if ((goHeaderPushedLook in Options) and
+              (FGCache.HotGridZone in FHeaderPushZones)) then
+            DoPushCell;
         end;
       end;
 
@@ -5524,7 +5532,9 @@ begin
         // RowMoving or Clicking
         fGridState:=gsRowMoving;
         FMoveLast:=Point(-1,-1);
-        DoPushCell;
+        if ((goHeaderPushedLook in Options) and
+            (FGCache.HotGridZone in FHeaderPushZones)) then
+          DoPushCell;
       end;
 
     gzNormal:
@@ -5534,6 +5544,11 @@ begin
         if not WasFocused then
           SetFocus;
 
+        if IsCellButtonColumn(FGCache.ClickCell) then begin
+          fGridState := gsButtonColumnClicking;
+          DoPushCell;
+          Exit;
+        end else
         if FExtendedColSizing and
           (Cursor=crHSplit) and
           (goColSizing in Options) then begin
@@ -5599,7 +5614,7 @@ begin
 
   case FGridState of
 
-    gsHeaderClicking:
+    gsHeaderClicking, gsButtonColumnClicking:
       ;
 
     gsSelecting:
@@ -5642,9 +5657,14 @@ begin
 
   case fGridState of
 
-    gsHeaderClicking:
-      if (Cur.X=FGCache.ClickCell.X) and (Cur.Y=FGCache.ClickCell.Y) then
-        HeaderClick(True, FGCache.ClickCell.X);
+    gsHeaderClicking, gsButtonColumnClicking:
+      if (Cur.X=FGCache.ClickCell.X) and (Cur.Y=FGCache.ClickCell.Y) then begin
+        if fGridState=gsHeaderClicking then
+          HeaderClick(True, FGCache.ClickCell.X)
+        else
+        if Assigned(OnEditButtonClick) then
+          DoEditButtonClick(Cur.X, Cur.Y);
+      end;
 
     gsNormal:
       if not FixedGrid then
@@ -5715,11 +5735,11 @@ begin
       end;
 
   end;
+
   fGridState:=gsNormal;
   GridFlags := GridFlags - [gfNeedsSelectActive, gfSizingStarted];
 
-  if (goHeaderPushedLook in Options) and IsPushCellActive() then
-  begin
+  if IsPushCellActive() then begin
     ResetPushedCell;
   end;
 
@@ -5850,6 +5870,26 @@ end;
 
 procedure TCustomGrid.DoCutToClipboard;
 begin
+end;
+
+procedure TCustomGrid.DoEditButtonClick(const ACol, ARow: Integer);
+var
+  OldCol,OldRow: Integer;
+begin
+  OldCol:=FCol;
+  OldRow:=FRow;
+  try
+    FCol:=ACol;
+    FRow:=ARow;
+    OnEditButtonClick(Self);
+  finally
+    if (FCol=ACol) and (FRow=ARow) then
+    begin
+      // didn't change FRow or FCol, restore old index.
+      FCol:=OldCol;
+      FRow:=OldRow;
+    end;
+  end;
 end;
 
 procedure TCustomGrid.DoEditorHide;
@@ -8596,6 +8636,22 @@ begin
   DrawGridCheckboxBitmaps(aCol, aRow, aRect, aState);
 end;
 
+procedure TCustomDrawGrid.DrawCellButtonColumn(const aCol, aRow: Integer;
+  aRect: TRect; const aState:TGridDrawState);
+var
+  details: TThemedElementDetails;
+begin
+  InflateRect(aRect, -2, 0);
+  if gdPushed in aState then
+    Details := ThemeServices.GetElementDetails(tbPushButtonPressed)
+  else
+  if gdHot in aState then
+    Details := ThemeServices.GetElementDetails(tbPushButtonHot)
+  else
+    Details := ThemeServices.GetElementDetails(tbPushButtonNormal);
+  ThemeSErvices.DrawElement(Canvas.Handle, Details, aRect, nil);
+end;
+
 procedure TCustomDrawGrid.CalcCellExtent(acol, aRow: Integer; var aRect: TRect);
 begin
   //
@@ -8937,7 +8993,10 @@ begin
   DrawFillRect(Canvas, aRect);
 
   if CellNeedsCheckboxBitmaps(aCol,aRow) then
-    DrawCellCheckboxBitmaps(aCol,aRow,aRect);
+    DrawCellCheckboxBitmaps(aCol,aRow,aRect)
+  else
+  if (aRow>=FixedRows) and IsCellButtonColumn(Point(aCol,aRow)) then
+    DrawCellButtonColumn(aCol,aRow,aRect,aState);
 
   if FTitleStyle<>tsNative then
     DrawColumnText(aCol,aRow,aRect,aState);
@@ -10232,7 +10291,7 @@ end;
 
 function TGridColumn.GetDefaultAlignment: TAlignment;
 begin
-  if ButtonStyle=cbsCheckboxColumn then
+  if ButtonStyle in [cbsCheckboxColumn,cbsButtonColumn] then
     result := taCenter
   else
     result := taLeftJustify;
