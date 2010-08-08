@@ -23,6 +23,8 @@
 
 {off $define VerboseModifiermap}
 
+{$define HideKeyTableWarnings}
+
 {off $DEFINE VerboseTimer}
 
 {off $DEFINE VerboseMouseBugfix}
