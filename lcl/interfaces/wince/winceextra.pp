@@ -86,9 +86,14 @@ function ImageList_Copy(himlDst: HIMAGELIST; iDst: longint; himlSrc: HIMAGELIST;
 function ImageList_Copy(himlDst: HIMAGELIST; iDst: longint; himlSrc: HIMAGELIST; Src: longint; uFlags: UINT): BOOL; cdecl; external KernelDLL;
 {$endif}
 
-{$ifdef wince}
-procedure SHSendBackToFocusWindow(uMsg: UINT; wp: WPARAM; lp: LPARAM); cdecl; external 'aygshell' index 97;
+{$ifdef win32}
+function ScrollWindowPtr(hWnd:HWND; XAmount:longint; YAmount:longint; lpRect: pointer; lpClipRect: pointer):WINBOOL; stdcall; external 'user32' name 'ScrollWindow';
+{$else}
+function ScrollWindowPtr(hWnd:HWND; dx:longint; dy:longint; prcScroll: lpRECT; prcClip: lpRECT;
+  hrgnUpdate: HRGN; prcUpdate: LPRECT; flags:UINT):longint; cdecl; external KernelDll name 'ScrollWindowEx';
 {$endif}
+
+
 
 const
   // BlendOp flags
@@ -96,11 +101,19 @@ const
   // AlphaFormat flags
   AC_SRC_ALPHA = $01;
 
-// AlphaBlend is only defined for CE5 and up
-// load dynamic and use ownfunction if not defined
 var
-  AlphaBlend: function(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
+  // AlphaBlend is only defined for CE5 and up
+  // load dynamic and use ownfunction if not defined
+  AlphaBlend: function(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; cdecl;
 
+  // SHSendBackToFocusWindow should be available since a long time, but in practice some
+  // devices don't have it in their aygshell.dll library
+  // see:
+  SHSendBackToFocusWindow: procedure(uMsg: UINT; wp: WPARAM; lp: LPARAM); cdecl;
+  // For reference the previous static loading:
+  //{$ifdef wince}
+  //procedure SHSendBackToFocusWindow(uMsg: UINT; wp: WPARAM; lp: LPARAM); cdecl; external 'aygshell' index 97;
+  //{$endif}
 
 implementation
 
@@ -695,39 +708,58 @@ begin
   then DeleteObject(AlphaBmp);
 end;
 
-var
-  kerneldllhandle: THandle = 0;
-
-procedure Initialize;
-var
-  p: Pointer;
-begin                
-  AlphaBlend := @_AlphaBlend;
-  {$ifndef win32}
-  kerneldllhandle := LoadLibrary(KernelDLL);
-  if kerneldllhandle <> 0
-  then begin 
-    p := GetProcAddressA(kerneldllhandle, 'AlphaBlend');
-    if p <> nil
-    then Pointer(AlphaBlend) := p;
-  end;
+procedure _SHSendBackToFocusWindow_(uMsg: UINT; wp: WPARAM; lp: LPARAM); cdecl;
+begin
+  {$ifdef VerboseWinCE}
+  DebugLn('Calling _SHSendBackToFocusWindow_, this routine is called when the real one fails dynamic loading ');
   {$endif}
 end;
 
-procedure Finalize;
-begin
-  AlphaBlend := @_AlphaBlend;
-  if kerneldllhandle <> 0
-  then FreeLibrary(kerneldllhandle);
-  kerneldllhandle := 0;
-end;
+var
+  kerneldllhandle: THandle = 0;
+  aygshelldllhandle: THandle = 0;
+  p: Pointer;
 
 initialization
-  Initialize;
+
+  // AlphaBlend initialization
+  AlphaBlend := @_AlphaBlend;
+  {$ifndef win32}
+  kerneldllhandle := LoadLibrary(KernelDLL);
+  if kerneldllhandle <> 0 then
+  begin
+    p := GetProcAddress(kerneldllhandle, 'AlphaBlend');
+    if p <> nil then Pointer(AlphaBlend) := p;
+  end;
+  {$endif}
+
+
+  // SHSendBackToFocusWindow
+  {$ifndef win32}
+  aygshelldllhandle := LoadLibrary('aygshell');
+  if aygshelldllhandle <> 0 then
+  begin
+    p := GetProcAddress(aygshelldllhandle, 'SHSendBackToFocusWindow');
+    if p <> nil then Pointer(SHSendBackToFocusWindow) := p
+    else SHSendBackToFocusWindow := @_SHSendBackToFocusWindow_;
+  end
+  else
+    SHSendBackToFocusWindow := @_SHSendBackToFocusWindow_;
+  {$endif}
+
 
 finalization
-  Finalize;
-  
+
+  // AlphaBlend finalization
+  AlphaBlend := @_AlphaBlend;
+  if kerneldllhandle <> 0 then FreeLibrary(kerneldllhandle);
+  kerneldllhandle := 0;
+
+  // SHSendBackToFocusWindow
+  SHSendBackToFocusWindow := @_SHSendBackToFocusWindow;
+  if aygshelldllhandle <> 0 then FreeLibrary(aygshelldllhandle);
+  aygshelldllhandle := 0;
+
 end.
 
 
