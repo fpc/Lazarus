@@ -229,11 +229,7 @@ type
   TFourBytes = packed record
     B0,B1,B2,B3: Byte;
   end;
-  
-const
-                        // riboLSBFirst, riboMSBFirst
-  COMPONENT_MASK: array[TRawImageByteOrder] of Byte = (0, 3);
-  
+
 var
   GdiObject: PGDIObject absolute ABitmap;
   GdiMaskObject: PGDIObject absolute AMask;
@@ -315,10 +311,7 @@ begin
         end;
 
         // check if the pixels are in order, pixbuf expects them in R-G-B-A
-        Ridx := (Desc.RedShift shr 3) xor COMPONENT_MASK[Desc.ByteOrder];
-        Gidx := (Desc.GreenShift shr 3) xor COMPONENT_MASK[Desc.ByteOrder];
-        Bidx := (Desc.BlueShift shr 3) xor COMPONENT_MASK[Desc.ByteOrder];
-        Aidx := (Desc.AlphaShift shr 3) xor COMPONENT_MASK[Desc.ByteOrder];
+        Desc.GetRGBIndices(Ridx, Gidx, Bidx, Aidx);
 
         if (Ridx <> 0) or (Gidx <> 1) or (Bidx <> 2) or (AIdx <> 3)
         then begin

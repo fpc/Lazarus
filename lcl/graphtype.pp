@@ -160,6 +160,8 @@ type
     function GetDescriptionFromMask: TRawImageDescription;
     function GetDescriptionFromAlpha: TRawImageDescription;
 
+    //returns indices of channels in four-element array
+    procedure GetRGBIndices(out Ridx, Gidx, Bidx, Aidx:Byte);
 
     function BytesPerLine: PtrUInt;
     function BitsPerLine: PtrUInt;
@@ -834,6 +836,17 @@ begin
   Result.BitsPerPixel := BitsPerPixel;
   Result.RedPrec      := AlphaPrec;
   Result.RedShift     := AlphaShift;
+end;
+
+procedure TRawImageDescription.GetRGBIndices(out Ridx, Gidx, Bidx, Aidx: Byte);
+const
+                        // riboLSBFirst, riboMSBFirst
+  COMPONENT_MASK: array[TRawImageByteOrder] of Byte = (0, 3);
+begin
+  Ridx := (RedShift shr 3) xor COMPONENT_MASK[ByteOrder];
+  Gidx := (GreenShift shr 3) xor COMPONENT_MASK[ByteOrder];
+  Bidx := (BlueShift shr 3) xor COMPONENT_MASK[ByteOrder];
+  Aidx := (AlphaShift shr 3) xor COMPONENT_MASK[ByteOrder];
 end;
 
 function TRawImageDescription.AsString: string;
