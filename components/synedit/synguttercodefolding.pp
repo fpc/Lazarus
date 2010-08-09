@@ -204,6 +204,7 @@ procedure TSynGutterCodeFolding.CreatePopUpMenuEntries(APopUp: TPopupMenu;
     Result := TMenuItem.Create(APopUp);
     Result.OnClick := {$IFDEF FPC}@{$ENDIF}PopClicked;
     Result.Caption := ACaption;
+    Result.GlyphShowMode := gsmAlways;
     if FReversePopMenuOrder then
       APopUp.Items.Add(Result)
     else
