@@ -602,28 +602,35 @@ end;
 function TWin32WidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage; out ABitmap, AMask: HBitmap; ASkipMask: Boolean): Boolean;
 var
   ADesc: TRawImageDescription absolute ARawImage.Description;
-  DC: HDC;
-  Info: record
-    Header: Windows.TBitmapInfoHeader;
-    Colors: array[0..1] of Cardinal; // reserve extra color for mono bitmaps
-  end;
-  BitsPtr: Pointer;
-  DataSize: PtrUInt;
-  Align: Byte;
-begin
-  Result := False;
-  AMask := 0;
 
-  if not ((ADesc.BitsPerPixel = 1) and (ADesc.LineEnd = rileWordBoundary)) then
+  function DoBitmap: Boolean;
+  var
+    DC: HDC;
+    Info: record
+      Header: Windows.TBitmapInfoHeader;
+      Colors: array[0..1] of Cardinal; // reserve extra color for mono bitmaps
+    end;
+    DstLinePtr, SrcLinePtr: PByte;
+    SrcPixelPtr, DstPixelPtr: PByte;
+    DstLineSize, SrcLineSize: PtrUInt;
+    x, y: Integer;
+    Ridx, Gidx, Bidx, Aidx, Align: Byte;
   begin
+    if (ADesc.BitsPerPixel = 1) and (ADesc.LineEnd = rileWordBoundary)
+    then begin
+      // default BW, word aligned bitmap
+      ABitmap := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Data);
+      Exit(ABitmap <> 0);
+    end;
+
     FillChar(Info, SizeOf(Info), 0);
     Info.Header.biSize := SizeOf(Info.Header);
     Info.Header.biWidth := ADesc.Width;
     Info.Header.biHeight := -ADesc.Height; // create top to bottom
     Info.Header.biPlanes := 1;
-    Info.Header.biBitCount := ADesc.BitsPerPixel;
+    Info.Header.biBitCount := ADesc.Depth;
     Info.Header.biCompression := BI_RGB;
-    {BitmapInfo.bmiHeader.biSizeImage := 0;}
+    {Info.Header.biSizeImage := 0;}
     { first color is black, second color is white, for monochrome bitmap }
     Info.Colors[1] := $FFFFFFFF;
 
@@ -631,31 +638,88 @@ begin
     // Use createDIBSection, since only devicedepth bitmaps can be selected into a DC
     // when they are created with createDIBitmap
     //  ABitmap := Windows.CreateDIBitmap(DC, Info.Header, CBM_INIT, ARawImage.Data, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS);
-    ABitmap := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, BitsPtr, 0, 0);
+    ABitmap := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, DstLinePtr, 0, 0);
     Windows.ReleaseDC(0, DC);
 
-    if ABitmap = 0 then
-    begin
+    if ABitmap = 0
+    then begin
       DebugLn('Windows.CreateDIBSection returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
-      Exit;
+      Exit(False);
     end;
-    if BitsPtr = nil then Exit;
+    if DstLinePtr = nil then Exit(False);
+
+    DstLineSize := (Windows.MulDiv(ADesc.Depth, ADesc.Width, 8) + 3) and not 3;
+    Align := DstLineSize and 3;
+    if Align > 0
+    then Inc(DstLineSize, 4 - Align);
+
+    SrcLinePtr := ARawImage.Data;
+    SrcLineSize := ADesc.BytesPerLine;
 
     // copy the image data
-    DataSize := (Windows.MulDiv(ADesc.BitsPerPixel, ADesc.Width, 8) + 3) and not 3;
-    Align := DataSize and 3;
-    if Align <> 0
-    then DataSize := DataSize + PtrUInt(4 - Align);
-    DataSize := DataSize * ADesc.Height;
-    if DataSize > ARawImage.DataSize
-    then DataSize := ARawImage.DataSize;
-    Move(ARawImage.Data^, BitsPtr^, DataSize);
-  end
-  else
-    ABitmap := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Data);
-    
+    if ADesc.Depth >= 24
+    then begin
+      // check if a pixel copy is needed
+      // 1) Windows uses alpha channel in 32 bpp modes, despite documentation statement that it is ignored. Tested under Windows XP SP3
+      // Wine also relies on this undocumented behaviour!
+      // So, we need to cut unused A-channel, otherwise we would get black image
+      //
+      // 2) incompatible channel order
+      ADesc.GetRGBIndices(Ridx, Gidx, Bidx, Aidx);
+
+      if ((ADesc.BitsPerPixel = 32) and (ADesc.Depth = 24))
+      or (Bidx <> 0) or (Gidx <> 1) or (Ridx <> 2)
+      then begin
+        // copy pixels
+
+        for y := 0 to ADesc.Height - 1 do
+        begin
+          DstPixelPtr := DstLinePtr;
+          SrcPixelPtr := SrcLinePtr;
+          for x := 0 to ADesc.Width - 1 do
+          begin
+            DstPixelPtr[0] := SrcPixelPtr[Bidx];
+            DstPixelPtr[1] := SrcPixelPtr[Gidx];
+            DstPixelPtr[2] := SrcPixelPtr[Ridx];
+
+            Inc(DstPixelPtr, 3); //move to the next dest RGB triple
+            Inc(SrcPixelPtr, 4);
+          end;
+
+          Inc(DstLinePtr, DstLineSize);
+          Inc(SrcLinePtr, SrcLineSize);
+        end;
+
+        Exit(True);
+      end;
+    end;
+
+    // no pixelcopy needed
+    // check if we can move using one call
+    if ADesc.LineEnd = rileDWordBoundary
+    then begin
+      Move(SrcLinePtr^, DstLinePtr^, DstLineSize * ADesc.Height);
+      Exit(True);
+    end;
+
+    //Can't use just one move, as different alignment
+    for y := 0 to ADesc.Height - 1 do
+    begin
+      Move(SrcLinePtr^, DstLinePtr^, DstLineSize);
+      Inc(DstLinePtr, DstLineSize);
+      Inc(SrcLinePtr, SrcLineSize);
+    end;
+
+    Result := True;
+  end;
+
+begin
+  AMask := 0;
+  Result := DoBitmap;
+  if not Result then Exit;
+
   //DbgDumpBitmap(ABitmap, 'CreateBitmaps - Image');
-  if ASkipMask then Exit(True);
+  if ASkipMask then Exit;
 
   AMask := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Mask);
   if AMask = 0 then  
