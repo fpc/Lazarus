@@ -12149,6 +12149,10 @@ msgstr "Tolygiai rikiuoti pagal dešiniuosius kraštus"
 msgid "Root"
 msgstr "Šakninis"
 
+#: lazarusidestrconsts.lisrunning
+msgid "%s (running ...)"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr "Failas nėra vykdomasis"

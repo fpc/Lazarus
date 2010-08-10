@@ -12171,6 +12171,10 @@ msgstr "Espacement droit égal"
 msgid "Root"
 msgstr "Racine"
 
+#: lazarusidestrconsts.lisrunning
+msgid "%s (running ...)"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr "Fichier non exécutable"

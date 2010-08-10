@@ -12165,6 +12165,10 @@ msgstr "Spazia a destra equidistante"
 msgid "Root"
 msgstr ""
 
+#: lazarusidestrconsts.lisrunning
+msgid "%s (running ...)"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr "File non eseguibile"

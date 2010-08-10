@@ -12189,6 +12189,10 @@ msgstr "Rechter Abstand gleich"
 msgid "Root"
 msgstr "Wurzel"
 
+#: lazarusidestrconsts.lisrunning
+msgid "%s (running ...)"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr "Datei ist nicht ausführbar"

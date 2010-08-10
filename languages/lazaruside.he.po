@@ -12107,6 +12107,10 @@ msgstr "רווח מימין במידה שווה"
 msgid "Root"
 msgstr "Root"
 
+#: lazarusidestrconsts.lisrunning
+msgid "%s (running ...)"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr "הקובץ אינו קובץ ריצה"

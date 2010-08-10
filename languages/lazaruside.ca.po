@@ -12142,6 +12142,10 @@ msgstr "Iguala l'espai dret"
 msgid "Root"
 msgstr ""
 
+#: lazarusidestrconsts.lisrunning
+msgid "%s (running ...)"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr "El fitxer no és executable"

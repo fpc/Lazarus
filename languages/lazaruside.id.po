@@ -12158,6 +12158,10 @@ msgstr "Kanan spasi secara sama"
 msgid "Root"
 msgstr ""
 
+#: lazarusidestrconsts.lisrunning
+msgid "%s (running ...)"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr "File bukan eksekutabel"

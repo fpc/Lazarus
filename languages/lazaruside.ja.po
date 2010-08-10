@@ -12163,6 +12163,10 @@ msgstr "右側の間隔を均等に"
 msgid "Root"
 msgstr ""
 
+#: lazarusidestrconsts.lisrunning
+msgid "%s (running ...)"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr "ファイルは実行可能ではありません"

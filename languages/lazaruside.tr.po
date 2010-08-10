@@ -12102,6 +12102,10 @@ msgstr ""
 msgid "Root"
 msgstr ""
 
+#: lazarusidestrconsts.lisrunning
+msgid "%s (running ...)"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr ""

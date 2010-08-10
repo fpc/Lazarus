@@ -12069,6 +12069,10 @@ msgstr "Stejná pravá vzdálenost"
 msgid "Root"
 msgstr "Kořen"
 
+#: lazarusidestrconsts.lisrunning
+msgid "%s (running ...)"
+msgstr ""
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr "Soubor není spustitelný"

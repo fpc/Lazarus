@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-08-05 03:17+0300\n"
+"PO-Revision-Date: 2010-08-11 03:26+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -12149,6 +12149,10 @@ msgstr "Равномерно по правым краям"
 msgid "Root"
 msgstr "Корневой элемент"
 
+#: lazarusidestrconsts.lisrunning
+msgid "%s (running ...)"
+msgstr "%s (идёт исполнение ...)"
+
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
 msgstr "Файл не исполняемый"
@@ -13024,7 +13028,7 @@ msgstr "Эти модули не были найдены:"
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
-msgstr "Пробный каталог не найден:%s%s%s%s%s (смотрите параметры окружения)"
+msgstr "Пробный каталог не найден:%s%s%s%s%s(смотрите параметры окружения)"
 
 #: lazarusidestrconsts.listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
