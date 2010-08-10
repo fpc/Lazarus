@@ -149,6 +149,7 @@ type
     FRandSeed: Integer;
     FXMax: Double;
     FXMin: Double;
+    FYCount: Cardinal;
     FYMax: Double;
     FYMin: Double;
   private
@@ -166,6 +167,8 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
+    function GetYCount: Cardinal; override;
+    procedure SetYCount(AValue: Cardinal); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -178,6 +181,7 @@ type
     property RandSeed: Integer read FRandSeed write SetRandSeed;
     property XMax: Double read FXMax write SetXMax;
     property XMin: Double read FXMin write SetXMin;
+    property YCount;
     property YMax: Double read FYMax write SetYMax;
     property YMin: Double read FYMin write SetYMin;
   end;
@@ -537,8 +541,8 @@ var
   item: PChartDataItem;
 begin
   item := FSource.NewItem;
-  Parse(S, item);
   FSource.FData.Insert(Index, item);
+  Parse(S, item);
   FSource.UpdateCachesAfterAdd(item^.X, item^.Y);
 end;
 
@@ -886,6 +890,7 @@ begin
   inherited Create(AOwner);
   FCurItem.Color := clTAColor;
   FRNG := TMWCRandomGenerator.Create;
+  FYCount := 1;
   RandSeed := Trunc(Frac(Now) * MaxInt);
 end;
 
@@ -901,6 +906,17 @@ begin
 end;
 
 function TRandomChartSource.GetItem(AIndex: Integer): PChartDataItem;
+
+  function GetRandomY: Double;
+  begin
+    if YMax <= YMin then
+      Result := YMin
+    else
+      Result := FRNG.Get / High(LongWord) * (YMax - YMin) + YMin;
+  end;
+
+var
+  i: Integer;
 begin
   if FCurIndex > AIndex then begin
     FRNG.Seed := FRandSeed;
@@ -917,12 +933,19 @@ begin
         FCurItem.X := FCurIndex / (Count - 1);
       FCurItem.X := FCurItem.X * (XMax - XMin) + XMin;
     end;
-    if YMax <= YMin then
-      FCurItem.Y := YMin
-    else
-      FCurItem.Y := FRNG.Get / High(LongWord) * (YMax - YMin) + YMin;
+    if YCount > 0 then begin
+      FCurItem.Y := GetRandomY;
+      SetLength(FCurItem.YList, Max(YCount - 1, 0));
+      for i := 0 to YCount - 2 do
+        FCurItem.YList[i] := GetRandomY;
+    end;
   end;
   Result := @FCurItem;
+end;
+
+function TRandomChartSource.GetYCount: Cardinal;
+begin
+  Result := FYCount;
 end;
 
 function TRandomChartSource.IsSorted: Boolean;
@@ -968,6 +991,14 @@ procedure TRandomChartSource.SetXMin(const AValue: Double);
 begin
   if FXMin = AValue then exit;
   FXMin := AValue;
+  InvalidateCaches;
+  Notify;
+end;
+
+procedure TRandomChartSource.SetYCount(AValue: Cardinal);
+begin
+  if YCount = AValue then exit;
+  FYCount := AValue;
   InvalidateCaches;
   Notify;
 end;
