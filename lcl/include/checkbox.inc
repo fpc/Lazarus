@@ -1,6 +1,9 @@
 {%MainUnit ../stdctrls.pp}
 
-{
+{******************************************************************************
+                               checkbox.inc
+ ******************************************************************************
+
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -14,27 +17,17 @@
  *                                                                           *
  *****************************************************************************
 }
-{------------------------------------------------------------------------------}
-
-class procedure TToggleBox.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterToggleBox;
-end;
-
-procedure TToggleBox.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-  Params.Style := (Params.Style and not BS_3STATE) or BS_AUTOCHECKBOX or BS_PUSHLIKE;
-end;
-
-constructor TToggleBox.Create(TheOwner : TComponent);
-begin
-  inherited Create(TheOwner);
-  fCompStyle := csToggleBox;
-  TabStop := True;
-end;
-
-{------------------------------------------------------------------------------}
 
 // included by stdctrls.pp
+
+{ TCheckBox }
+
+constructor TCheckBox.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  fCompStyle := csCheckbox;
+  TabStop := True;
+  AutoSize := True;
+  //FState := cbUnchecked;
+  //FAllowGrayed := false;
+end;

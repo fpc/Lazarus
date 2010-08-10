@@ -1204,10 +1204,8 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
   public
-    property AutoSize default true;
     property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default false;
     property State: TCheckBoxState read GetState write SetState default cbUnchecked;
-    property TabStop default true;
     property OnChange;
   end;
 
@@ -1216,12 +1214,14 @@ type
   { TCheckBox }
 
   TCheckBox = class(TCustomCheckBox)
+  public
+    constructor Create(TheOwner: TComponent); override;
   published
     property Action;
     property Align;
     property AllowGrayed;
     property Anchors;
-    property AutoSize;
+    property AutoSize default True;
     property BidiMode;
     property BorderSpacing;
     property Caption;
@@ -1263,7 +1263,7 @@ type
     property ShowHint;
     property State;
     property TabOrder;
-    property TabStop;
+    property TabStop default True;
     property Visible;
   end;
 
@@ -1278,7 +1278,7 @@ type
   published
     property AllowGrayed;
     property Anchors;
-    property AutoSize default false;
+    property AutoSize;
     property BorderSpacing;
     property Caption;
     property Checked;
@@ -1305,7 +1305,7 @@ type
     property ShowHint;
     property State;
     property TabOrder;
-    property TabStop;
+    property TabStop default True;
     property Visible;
   end;
 
@@ -1323,9 +1323,8 @@ type
     constructor Create(TheOwner: TComponent); override;
   published
     property Align;
-    property AllowGrayed;
     property Anchors;
-    property AutoSize;
+    property AutoSize default True;
     property BidiMode;
     property BorderSpacing;
     property Caption;
@@ -1363,9 +1362,8 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
-    property State;
     property TabOrder;
-    property TabStop;
+    property TabStop default False;
     property Visible;
   end;
 
@@ -1564,6 +1562,7 @@ end;
 {$I buttoncontrol.inc}
 {$I buttons.inc}
 
+{$I checkbox.inc}
 {$I radiobutton.inc}
 {$I togglebox.inc}
 

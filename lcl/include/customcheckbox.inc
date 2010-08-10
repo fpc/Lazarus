@@ -92,13 +92,9 @@ end;
 constructor TCustomCheckBox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  fCompStyle := csCheckbox;
-  FState := cbUnchecked;
-  FAllowGrayed := false;
-  TabStop := true;
+  //todo: move to TButtonControl
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
-  AutoSize := true;
 end;
 
 {------------------------------------------------------------------------------
