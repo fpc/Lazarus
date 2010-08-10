@@ -1041,13 +1041,11 @@ type
     function IsCheckedStored: boolean;
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
   protected
-    FLastCheckedOnChange: boolean;
     class procedure WSRegisterClass; override;
     function GetChecked: Boolean; virtual;
     procedure SetChecked(Value: Boolean); virtual;
     procedure DoOnChange; virtual;
     procedure Click; override;
-    procedure Loaded; override;
     procedure CMWantSpecialKey(var Message: TLMessage); message CM_WANTSPECIALKEY;
   protected
     property Checked: Boolean read GetChecked write SetChecked stored IsCheckedStored default False;
@@ -1317,13 +1315,8 @@ type
   TRadioButton = class(TCustomCheckBox)
   protected
     class procedure WSRegisterClass; override;
-    procedure Click; override;
     function DialogChar(var Message: TLMKey): boolean; override;
     procedure RealSetText(const Value: TCaption); override;
-    procedure ApplyChanges; override;
-    procedure SetChecked(Value: Boolean); override;
-    procedure DoChange(var Msg); message LM_CHANGED;
-    procedure DoApplyChanges;
     procedure DoClickOnChange; override;
     procedure CreateParams(var Params: TCreateParams); override;
   public

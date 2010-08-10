@@ -53,13 +53,8 @@ begin
 end;
 
 procedure TCustomCheckBox.DoChange(var Msg);
-var
-  NewState: TCheckBoxState;
 begin
-  NewState := RetrieveState;
-  if FState = NewState then exit;
-  FState := NewState;
-  // emulate delphi OnClick behaviour
+  FState := RetrieveState;
   DoClickOnChange;
 end;
 
@@ -154,8 +149,10 @@ begin
     if Assigned(Action) and (Action is TCustomAction) then
       TCustomAction(Action).Checked := FState = cbChecked;
     ApplyChanges;
-    DoOnChange;
-    if not ClicksDisabled then
+    //some widgetsets (gtk*) does not allow to uncheck a radio button
+    //only call OnChange if effectivelly changed
+    FState := RetrieveState;
+    if FState <> OldState then
       DoClickOnChange;
   end;
 end;
@@ -249,7 +246,11 @@ end;
 
 procedure TCustomCheckBox.DoClickOnChange;
 begin
-  inherited Click;
+  // emulate delphi OnClick behaviour (click will call OnChange)
+  if not ClicksDisabled then
+    inherited Click
+  else
+    DoOnChange;
 end;
 
 function TCustomCheckBox.DialogChar(var Message: TLMKey): boolean;

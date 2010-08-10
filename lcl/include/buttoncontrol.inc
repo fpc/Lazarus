@@ -47,17 +47,10 @@ end;
 
 procedure TButtonControl.DoOnChange;
 begin
-  if Checked = FLastCheckedOnChange then Exit;
-  FLastCheckedOnChange := Checked;
+
   if [csLoading, csDestroying, csDesigning] * ComponentState <> [] then Exit;
   EditingDone;
   if Assigned(OnChange) then OnChange(Self);
-end;
-
-procedure TButtonControl.Loaded;
-begin
-  inherited Loaded;
-  fLastCheckedOnChange:=Checked;
 end;
 
 procedure TButtonControl.CMWantSpecialKey(var Message: TLMessage);
