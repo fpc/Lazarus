@@ -1060,13 +1060,19 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+var
+  QtCheckBox: TQtCheckBox;
 begin
+  //enclose the call between Begin/EndUpdate to avoid send LM_CHANGE message
+  QtCheckBox := TQtCheckBox(ACustomCheckBox.Handle);
+  QtCheckBox.BeginUpdate;
   case NewState of
-    cbGrayed: TQtCheckBox(ACustomCheckBox.Handle).setCheckState(QtPartiallyChecked);
-    cbChecked: TQtCheckBox(ACustomCheckBox.Handle).setCheckState(QtChecked);
+    cbGrayed: QtCheckBox.setCheckState(QtPartiallyChecked);
+    cbChecked: QtCheckBox.setCheckState(QtChecked);
   else
-    TQtCheckBox(ACustomCheckBox.Handle).setCheckState(QtUnchecked);
+    QtCheckBox.setCheckState(QtUnchecked);
   end;
+  QtCheckBox.EndUpdate;
 end;
 
 {------------------------------------------------------------------------------
@@ -1120,8 +1126,14 @@ end;
   Sets the state of the control
  ------------------------------------------------------------------------------}
 class procedure TQtWSRadioButton.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+var
+  QtRadioButton: TQtRadioButton;
 begin
-  TQtRadioButton(ACustomCheckBox.Handle).setChecked(NewState = cbChecked);
+  //enclose the call between Begin/EndUpdate to avoid send LM_CHANGE message
+  QtRadioButton := TQtRadioButton(ACustomCheckBox.Handle);
+  QtRadioButton.BeginUpdate;
+  QtRadioButton.setChecked(NewState = cbChecked);
+  QtRadioButton.EndUpdate;
 end;
 
 {------------------------------------------------------------------------------

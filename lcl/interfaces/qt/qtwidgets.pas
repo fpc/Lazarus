@@ -460,7 +460,6 @@ type
     procedure SignalReleased; cdecl;
     procedure SignalClicked(Checked: Boolean = False); cdecl;
     procedure SignalClicked2; cdecl;
-    procedure SignalToggled(Checked: Boolean); cdecl;
   end;
 
   { TQtPushButton }
@@ -571,12 +570,13 @@ type
 
   TQtRadioButton = class(TQtAbstractButton)
   private
-    FClickedHook: QAbstractButton_hookH;
+    FToggledHook: QAbstractButton_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    procedure SignalToggled(Checked: Boolean); cdecl;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   end;
 
@@ -4360,17 +4360,6 @@ begin
   DeliverMessage(Msg);
 end;
 
-{------------------------------------------------------------------------------
-  Function: TQtAbstractButton.SignalToggled
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtAbstractButton.SignalToggled(Checked: Boolean); cdecl;
-begin
- {use this for TToggleButton }
-end;
-
-
 { TQtPushButton }
 
 function TQtPushButton.CreateWidget(const AParams: TCreateParams): QWidgetH;
@@ -5060,9 +5049,12 @@ procedure TQtCheckBox.signalStateChanged(p1: Integer); cdecl;
 var
   Msg: TLMessage;
 begin
-  FillChar(Msg, SizeOf(Msg), #0);
-  Msg.Msg := LM_CHANGED;
-  DeliverMessage(Msg);
+  if not InUpdate then
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
+    Msg.Msg := LM_CHANGED;
+    DeliverMessage(Msg);
+  end;
 end;
 
 { TQtRadioButton }
@@ -5088,19 +5080,29 @@ end;
 procedure TQtRadioButton.AttachEvents;
 begin
   inherited AttachEvents;
-  FClickedHook := QAbstractButton_hook_create(Widget);
-  
-  QAbstractButton_hook_hook_clicked(FClickedHook, @SignalClicked);
+  FToggledHook := QAbstractButton_hook_create(Widget);
+  QAbstractButton_hook_hook_toggled(FToggledHook, @SignalToggled);
 end;
 
 procedure TQtRadioButton.DetachEvents;
 begin
-  QAbstractButton_hook_destroy(FClickedHook);
+  QAbstractButton_hook_destroy(FToggledHook);
   inherited DetachEvents;
 end;
 
-function TQtRadioButton.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-  cdecl;
+procedure TQtRadioButton.SignalToggled(Checked: Boolean); cdecl;
+var
+  Msg: TLMessage;
+begin
+  if not InUpdate then
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
+    Msg.Msg := LM_CHANGED;
+    DeliverMessage(Msg);
+  end;
+end;
+
+function TQtRadioButton.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
   Result := inherited EventFilter(Sender, Event);
   if (LCLObject <> nil) and
@@ -5110,7 +5112,7 @@ begin
      (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Space) and
      isChecked))
   then
-    Result := not (LCLObject.Parent is TRadioGroup);
+    Result := False;
 end;
 
 { TQtGroupBox }
