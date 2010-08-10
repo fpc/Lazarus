@@ -521,6 +521,11 @@ begin
   then Result := [cdrSkipDefault];
 end;
 
+function TCustomListView.GetUpdateCount: Integer;
+begin
+  Result := FUpdateCount;
+end;
+
 procedure TCustomListView.DoGetOwnerData(Item: TListItem); 
 begin
   if Assigned(OnData) then OnData(Self, Item);

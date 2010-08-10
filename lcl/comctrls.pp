@@ -1107,7 +1107,8 @@ type
     function CustomDrawItem(AItem: TListItem; AState: TCustomDrawState; AStage: TCustomDrawStage): Boolean; virtual;                       //
     function CustomDrawSubItem(AItem: TListItem; ASubItem: Integer; AState: TCustomDrawState; AStage: TCustomDrawStage): Boolean; virtual; //
     function IntfCustomDraw(ATarget: TCustomDrawTarget; AStage: TCustomDrawStage; AItem, ASubItem: Integer; AState: TCustomDrawState; const ARect: PRect): TCustomDrawResult;
-    
+    function GetUpdateCount: Integer;
+
     procedure DoGetOwnerData(Item: TListItem); virtual;
   protected
     property AllocBy: Integer read FAllocBy write SetAllocBy default 0;

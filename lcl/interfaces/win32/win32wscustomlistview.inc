@@ -17,7 +17,7 @@
 
 { TWin32WSCustomListView }
 const
-  AutoSizeWidth = LVSCW_AUTOSIZE{_USEHEADER};
+  AutoSizeWidth = LVSCW_AUTOSIZE_USEHEADER;
 
 type
   TLVStyleType = (lsStyle, lsInvert, lsExStyle);
@@ -673,9 +673,13 @@ begin
   {$else}
     ListView_SetItemText(ALV.Handle, AIndex, ASubIndex, PChar(AText));
   {$endif}
-  if ALV.Column[ASubIndex].AutoSize then begin
-    ListView_SetColumnWidth(ALV.Handle, ASubIndex, LVSCW_AUTOSIZE);
-  end;
+  // autosize is an *exteme* performance bottleneck, even if WM_SETREDRAW
+  // was set to false it will ignore this and still redraw all columns.
+  // We will therefore postpone all autosizing until EndUpdate where we do
+  // it only once per column.
+
+  if ALV.Column[ASubIndex].AutoSize and (TCustomListViewAccess(ALV).GetUpdateCount = 0) then
+    ListView_SetColumnWidth(ALV.Handle, ASubIndex, AutoSizeWidth);
 end;
 
 class procedure TWin32WSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
@@ -731,11 +735,29 @@ begin
 end;
 
 class procedure TWin32WSCustomListView.EndUpdate(const ALV: TCustomListView);
+var
+  ColIndex : Integer;
 begin
   if not WSCheckHandleAllocated(ALV, 'EndUpdate')
   then Exit;
 
+  // we have skipped all column resizing in ItemSetText()
+  // for performance reasons, so now we need to do it here.
+  //
+  // A further significant perfomance boost and reduced flickering
+  // can be achieved by setting the widget to invisible during the
+  // following operation (it ignores the state of WM_SETREDRAW for
+  // column resizing, but this way we we can really enforce it).
+  // ShowWindow() itself does not force an immediate redraw,
+  // so it won't flicker at all.
+  ShowWindow(ALV.Handle, SW_HIDE);
+  for ColIndex := 0 to TCustomListViewAccess(ALV).Columns.Count - 1 do
+    if ALV.Column[ColIndex].AutoSize then
+      ListView_SetColumnWidth(ALV.Handle, ColIndex, AutoSizeWidth);
+
   SendMessage(ALV.Handle,WM_SETREDRAW,WPARAM(True),0);
+  if ALV.Visible then
+    ShowWindow(ALV.Handle, SW_SHOW);
 end;
 
 class function TWin32WSCustomListView.GetBoundingRect(const ALV: TCustomListView): TRect;
