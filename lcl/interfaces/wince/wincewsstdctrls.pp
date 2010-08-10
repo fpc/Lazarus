@@ -1330,7 +1330,8 @@ begin
   else
     Flags := Windows.WParam(BST_INDETERMINATE);
   end;
-  Windows.SendMessage(ACustomCheckBox.Handle, BM_SETCHECK, Flags, 0);
+  //Pass the same state through lParam to avoid the OnChange event be fired
+  Windows.SendMessage(ACustomCheckBox.Handle, BM_SETCHECK, Flags, LPARAM(Flags));
 end;
 
 { TWinCEWSToggleBox }
