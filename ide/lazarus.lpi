@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="7"/>
+    <Version Value="9"/>
     <General>
       <Flags>
         <MainUnitHasUsesSectionForAllUnits Value="False"/>
@@ -11,8 +11,6 @@
         <LRSInOutputDirectory Value="False"/>
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
-      <MainUnit Value="0"/>
-      <TargetFileExt Value=""/>
       <Title Value="Lazarus"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
@@ -23,7 +21,7 @@
       <MinorVersionNr Value="9"/>
       <RevisionNr Value="29"/>
       <CharSet Value="04B0"/>
-      <StringTable Comments="" CompanyName="" FileDescription="" FileVersion="0.9.29.0" InternalName="" LegalCopyright="" LegalTrademarks="" OriginalFilename="" ProductName="Lazarus IDE" ProductVersion="0.9.29.0"/>
+      <StringTable ProductName="Lazarus IDE" ProductVersion=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
