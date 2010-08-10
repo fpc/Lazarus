@@ -559,16 +559,22 @@ var
   var
     Parent: TWinControl;
     Sibling: TControl;
+    WinControl: TWinControlAccess absolute Sibling;
+    PreviousCheckState: LRESULT;
     i: Integer;
   begin
     Parent := RadioButton.Parent;
     for i:= 0 to Parent.ControlCount - 1 do
     begin
       Sibling := Parent.Controls[i];
-      if (Sibling is TRadioButton) and (Sibling<>RadioButton) and
-         (TRadioButton(Sibling).HandleAllocated) then
-         Windows.SendMessage(TRadioButton(Sibling).Handle, BM_SETCHECK,
-            Windows.WParam(BST_UNCHECKED), 0);
+      if (Sibling is TRadioButton) and (Sibling <> RadioButton) then
+      begin
+        // Pass previous state through LParam so the event handling can decide
+        // when to propagate LM_CHANGE (New State <> Previous State)
+        PreviousCheckState := Windows.SendMessage(WinControl.WindowHandle, BM_GETCHECK, 0, 0);
+        Windows.SendMessage(WinControl.WindowHandle, BM_SETCHECK,
+          Windows.WParam(BST_UNCHECKED), Windows.LParam(PreviousCheckState));
+      end;
     end;
   end;
 
@@ -1106,10 +1112,6 @@ begin
       {IME Windows the composition has finished}
       if Assigned(WindowInfo) then WindowInfo^.IMEComposed:=True;    
     end;
-    BM_SETCHECK:
-    begin
-      LMessage.Msg := LM_CHANGED;
-    end;
     WM_CANCELMODE:
     begin
       LMessage.Msg := LM_CANCELMODE;
@@ -1240,17 +1242,21 @@ begin
                 // to handle checkbox state ourselves, according to msdn state
                 // sequence goes from checked->cleared->grayed etc.
                 Flags := SendMessage(lWinControl.Handle, BM_GETCHECK, 0, 0);
-                if (Flags=BST_CHECKED) then
-                  Flags := BST_UNCHECKED
-                else
-                if (Flags=BST_UNCHECKED) and
-                   TCustomCheckbox(lWinControl).AllowGrayed then
-                  Flags := BST_INDETERMINATE
-                else
-                  Flags := BST_CHECKED;
-                Windows.SendMessage(lWinControl.Handle, BM_SETCHECK,
-                                                    Windows.WPARAM(flags), 0);
-
+                //dont update the check state if is TRadioButton and is already checked
+                if (Flags <> BST_CHECKED) or not (lWinControl is TRadioButton) then
+                begin
+                  if (Flags=BST_CHECKED) then
+                    Flags := BST_UNCHECKED
+                  else
+                  if (Flags=BST_UNCHECKED) and
+                     TCustomCheckbox(lWinControl).AllowGrayed then
+                    Flags := BST_INDETERMINATE
+                  else
+                    Flags := BST_CHECKED;
+                  //pass a different values in WParam and WParam to force sending LM_CHANGE
+                  Windows.SendMessage(lWinControl.Handle, BM_SETCHECK,
+                    Windows.WPARAM(Flags), Windows.LPARAM(Flags + 1));
+                end;
                 LMessage.Msg := LM_CLICKED;
               end;
             BN_KILLFOCUS:
@@ -2334,8 +2340,16 @@ begin
     end;
     BM_SETCHECK:
     begin
-      if (WParam = BST_CHECKED) and (lWinControl is TRadioButton) then
-        ClearSiblingRadioButtons(TRadioButton(lWinControl));
+      //LParam holds previous state
+      //Propagate LM_CHANGED when state is changed
+      if LParam <> WParam then
+        LMessage.Msg := LM_CHANGED;
+      if lWinControl is TRadioButton then
+      begin
+        //Uncheck siblings
+        if WParam = BST_CHECKED then
+          ClearSiblingRadioButtons(TRadioButton(lWinControl));
+      end;
     end;
     WM_ENDSESSION:
     begin
