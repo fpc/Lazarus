@@ -1195,42 +1195,44 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.LineTo(X, Y: Integer);
 var
-  deltaX, deltaY, absDeltaX, absDeltaY, clipDeltaX, clipDeltaY: Float32;
+  deltaX, deltaY, absDeltaX, absDeltaY: Integer;
+  clipDeltaX, clipDeltaY: Float32;
+  tx,ty:Float32;
 begin
   deltaX := X - PenPos.x;
   deltaY := Y - PenPos.y;
+  if (deltaX=0) and (deltaY=0) then Exit;
+
   absDeltaX := Abs(deltaX);
   absDeltaY := Abs(deltaY);
-
-  if absDeltaX > absDeltaY then
+  if (absDeltaX<=1) and (absDeltaY<=1) then
   begin
-    if deltaX > 0 then clipDeltaX := -1.0 else clipDeltaX := 1.0;
-    clipDeltaY := clipDeltaX * deltaY / deltaX;
+    // special case for 1-pixel lines
+    tx := FPenPos.x + 0.55;
+    ty := FPenPos.y + 0.55;
   end
   else
   begin
-    if deltaY > 0 then clipDeltaY := -1.0 else clipDeltaY := 1.0;
-    clipDeltaX := clipDeltaY * deltaX / deltaY;
+    // exclude the last pixel from the line
+    if absDeltaX > absDeltaY then
+    begin
+      if deltaX > 0 then clipDeltaX := -1.0 else clipDeltaX := 1.0;
+      clipDeltaY := clipDeltaX * deltaY / deltaX;
+    end
+    else
+    begin
+      if deltaY > 0 then clipDeltaY := -1.0 else clipDeltaY := 1.0;
+      clipDeltaX := clipDeltaY * deltaX / deltaY;
+    end;
+    tx := X + clipDeltaX + 0.5;
+    ty := Y + clipDeltaY + 0.5;
   end;
 
-  // exclude the end-point from the rasterization
-  if (absDeltaX > 1.0) or (absDeltaY > 1.0) then
-  begin
-    CGContextBeginPath(CGContext);
-    // add 0.5 to both coordinates for better rasterization
-    CGContextMoveToPoint(CGContext, PenPos.x + 0.5, PenPos.y + 0.5);
-    CGContextAddLineToPoint(CGContext, X + clipDeltaX + 0.5, Y + clipDeltaY + 0.5);
-    CGContextStrokePath(CGContext);
-  end
-  // But also draw lines with width=1, but note that nothing will be drawn
-  // for width = 0 (end point = start point)
-  else
-  begin
-    CGContextBeginPath(CGContext);
-    CGContextMoveToPoint(CGContext, PenPos.x, PenPos.y);
-    CGContextAddLineToPoint(CGContext, X + clipDeltaX + 0.5, Y + clipDeltaY + 0.5);
-    CGContextStrokePath(CGContext);
-  end;
+  CGContextBeginPath(CGContext);
+  CGContextMoveToPoint(CGContext, PenPos.x + 0.5, PenPos.y + 0.5);
+  CGContextAddLineToPoint(CGContext, tx, ty);
+  CGContextStrokePath(CGContext);
+
   FPenPos.x := X;
   FPenPos.y := Y;
 end;
