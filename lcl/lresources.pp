@@ -638,17 +638,21 @@ end;
 function TPropertiesToSkip.IndexOf(AClass: TPersistentClass;
   APropertyName: String): Integer;
 var
-  i: integer;
+  PropertyInfo: PRemovedProperty;
 begin
-  Result := -1;
   APropertyName := LowerCase(APropertyName);
-  for i := 0 to Count - 1 do
-    if AClass.InheritsFrom(Items[i]^.PersistentClass) and
-       (APropertyName = Items[i]^.PropertyName) then
+  Result := Count - 1;
+  while Result >= 0 do
+  begin
+    PropertyInfo := Items[Result];
+    if AClass.InheritsFrom(PropertyInfo^.PersistentClass) and
+       (APropertyName = PropertyInfo^.PropertyName) then
     begin
-      Result := i;
       Exit;
     end;
+    Dec(Result);
+  end;
+  Result := -1;
 end;
 
 function TPropertiesToSkip.Add(APersistentClass: TPersistentClass;
