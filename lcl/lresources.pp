@@ -563,7 +563,7 @@ function CompareLRPositionLinkWithLFMPosition(Item1, Item2: Pointer): integer;
 function CompareLRPositionLinkWithLRSPosition(Item1, Item2: Pointer): integer;
 
 procedure RegisterPropertyToSkip(PersistentClass: TPersistentClass;
-  PropertyName, Note, HelpKeyWord: string);
+  const PropertyName, Note, HelpKeyWord: string);
 
 procedure Register;
 
@@ -3536,7 +3536,7 @@ begin
 end;
 
 procedure RegisterPropertyToSkip(PersistentClass: TPersistentClass;
-  PropertyName, Note, HelpKeyWord: string);
+  const PropertyName, Note, HelpKeyWord: string);
 begin
   PropertiesToSkip.Add(PersistentClass, PropertyName, Note, HelpKeyWord);
 end;
