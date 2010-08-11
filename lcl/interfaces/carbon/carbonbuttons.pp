@@ -41,13 +41,14 @@ type
   { TCarbonCustomCheckBox }
 
   TCarbonCustomCheckBox = class(TCarbonControl)
+  private
+    fSupressNotify : Boolean;
   public
     class function GetValidEvents: TCarbonControlEvents; override;
     procedure Hit(AControlPart: ControlPartCode); override;
     procedure ValueChanged; override;
-
     function RetrieveState: Integer; virtual;
-    procedure SetState(AState: Integer); virtual;
+    procedure SetState(AState: Integer; NotifyChangeState: Boolean); virtual;
   end;
 
   { TCarbonCheckBox }
@@ -146,7 +147,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonCustomCheckBox.ValueChanged;
 begin
-  LCLSendChangedMsg(LCLObject);
+  if not fSupressNotify then
+    LCLSendChangedMsg(LCLObject)
+  else
+    fSupressNotify := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -164,8 +168,10 @@ end;
 
   Sets the new state of Carbon custom check box
  ------------------------------------------------------------------------------}
-procedure TCarbonCustomCheckBox.SetState(AState: Integer);
+procedure TCarbonCustomCheckBox.SetState(AState: Integer; NotifyChangeState: Boolean);
 begin
+  if RetrieveState=AState then Exit;
+  fSupressNotify := not NotifyChangeState;
   SetControl32BitValue(ControlRef(Widget), AState);
 end;
 
@@ -286,7 +292,7 @@ begin
       begin
         ctrl := GetCarbonControl(v);
         if ctrl is TCarbonRadioButton then
-          TCarbonRadioButton(ctrl).SetState(kControlCheckBoxUncheckedValue);
+          TCarbonRadioButton(ctrl).SetState(kControlCheckBoxUncheckedValue, True);
       end;
       v := HIViewGetNextView(v);
     end;

@@ -1108,8 +1108,7 @@ const
     (kControlCheckBoxUncheckedValue, kControlCheckBoxCheckedValue, kControlCheckBoxMixedValue);
 begin
   if not CheckHandle(ACustomCheckBox, Self, 'SetState') then Exit;
-
-  TCarbonCustomCheckBox(ACustomCheckBox.Handle).SetState(CarbonBtnState[NewState]);
+  TCarbonCustomCheckBox(ACustomCheckBox.Handle).SetState(CarbonBtnState[NewState], False);
 end;
 
 
