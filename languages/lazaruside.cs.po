@@ -5680,7 +5680,7 @@ msgstr "Řádek kurzoru v aktuálním editoru"
 
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
-msgstr ""
+msgstr "Vlastní sestavovací makra"
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
@@ -12071,7 +12071,7 @@ msgstr "Kořen"
 
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
-msgstr ""
+msgstr "%s (běžící ...)"
 
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
