@@ -2465,6 +2465,9 @@ var
   begin
     ContextNode:=Params.ContextNode;
     if ContextNode=nil then RaiseInternalError;
+    {$IFDEF CheckNodeTool}
+    CheckNodeTool(ContextNode);
+    {$ENDIF}
     StartContextNode:=ContextNode;
     FirstSearchedNode:=nil;
     LastSearchedNode:=nil;
@@ -6587,6 +6590,10 @@ var
         Params.Load(OldInput,true);
         ExprType:=FindExpressionTypeOfPredefinedIdentifier(CurAtom.StartPos,
                                                            Params);
+        {$IFDEF CheckNodeTool}
+        if ExprType.Desc=xtContext then
+          ExprType.Context.Tool.CheckNodeTool(ExprType.Context.Node);
+        {$ENDIF}
       end;
 
       // ToDo: check if identifier in 'Protected' section
@@ -6994,6 +7001,9 @@ begin
     ' StartContext=',StartContext.Node.DescAsString,'=',dbgstr(copy(StartContext.Tool.Src,StartContext.Node.StartPos,15))
   );
   {$ENDIF}
+  {$IFDEF CheckNodeTool}
+  StartContext.Tool.CheckNodeTool(StartContext.Node);
+  {$ENDIF}
 
   if not InitAtomQueue then exit;
   {$IFDEF ShowExprEval}
@@ -7379,8 +7389,15 @@ begin
             begin
               // array with explicit range
               // Low(array[SubRange])  has the type of the subrange
-              MoveCursorToNodeStart(ParamNode.FirstChild);
-              Result:=ReadOperandTypeAtCursor(Params);
+              Result.Context.Tool.MoveCursorToNodeStart(ParamNode.FirstChild);
+              SubParams:=TFindDeclarationParams.Create;
+              try
+                SubParams.Flags:=fdfDefaultForExpressions;
+                SubParams.ContextNode:=ParamNode;
+                Result:=Result.Context.Tool.ReadOperandTypeAtCursor(SubParams);
+              finally
+                SubParams.Free;
+              end;
             end;
 
           else
