@@ -55,7 +55,7 @@ type
 
 procedure FillStandardDescription(var Desc: TRawImageDescription);
 function GetPixelsPerInch: Integer;
-function GetUtf8String(S: String): WideString;
+function GetUtf8String(const S: String): WideString;
 
 implementation
 
@@ -100,10 +100,10 @@ begin
 //  Desc.MaskShift := 0;
 end;
 
-function GetUtf8String(S: String): WideString;
+function GetUtf8String(const S: String): WideString;
 begin
   Result := UTF8ToUTF16(S);
-  if (Result = '') and (S <> '') then
+  if Result = '' then
     Result := S;
 end;
 
