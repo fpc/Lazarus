@@ -936,7 +936,7 @@ type
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); virtual;
     procedure ResetEditor;
     procedure ResetOffset(chkCol, ChkRow: Boolean);
-    procedure ResetSizes;
+    procedure ResetSizes; virtual;
     procedure ResizeColumn(aCol, aWidth: Integer);
     procedure ResizeRow(aRow, aHeight: Integer);
     procedure RowHeightsChanged; virtual;
