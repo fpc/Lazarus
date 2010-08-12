@@ -67,6 +67,9 @@ type
 
 implementation
 
+uses
+  LResources;
+
 class function  TWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 begin
   Result := 0.0;

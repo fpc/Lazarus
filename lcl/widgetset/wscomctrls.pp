@@ -226,6 +226,9 @@ type
 
 implementation
 
+uses
+  LResources;
+
 
 { TWSStatusBar }
 

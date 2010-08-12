@@ -114,6 +114,9 @@ type
 
 implementation
 
+uses
+  LResources;
+
 class function  TWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
   Result := 0;

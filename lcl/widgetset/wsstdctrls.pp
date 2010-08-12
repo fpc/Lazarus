@@ -267,6 +267,9 @@ type
 
 implementation
 
+uses
+  LResources;
+
 { TWSScrollBar }
 
 class procedure TWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);

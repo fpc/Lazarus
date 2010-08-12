@@ -73,7 +73,11 @@ type
   procedure RegisterCustomBitBtn;
   procedure RegisterCustomSpeedButton;
 
-implementation 
+implementation
+
+uses
+  LResources;
+
 
 // TODO: Can't be virtual abstract ?
 
