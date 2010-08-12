@@ -816,11 +816,37 @@ procedure TBarSeries.Draw(ACanvas: TCanvas);
   end;
 
 var
-  i: Integer;
-  ext2, graphBar: TDoubleRect;
-  imageBar: TRect;
-  w: Double;
+  ext2: TDoubleRect;
+  w, cumulHeight: Double;
   p: TDoublePoint;
+
+  procedure BuildBar(AY: Double);
+  var
+    graphBar: TDoubleRect;
+    imageBar: TRect;
+  begin
+    if IsRotated then
+      graphBar := DoubleRect(cumulHeight, p.Y - w, cumulHeight + AY, p.Y + w)
+    else
+      graphBar := DoubleRect(p.X - w, cumulHeight, p.X + w, cumulHeight + AY);
+    cumulHeight += AY;
+    if not RectIntersectsRect(graphBar, ext2) then exit;
+
+    with imageBar do begin
+      TopLeft := ParentChart.GraphToImage(graphBar.a);
+      BottomRight := ParentChart.GraphToImage(graphBar.b);
+      NormalizeRect(imageBar);
+
+      // Draw a line instead of an empty rectangle.
+      if Bottom = Top then Dec(Top);
+      if Left = Right then Inc(Right);
+    end;
+    DrawBar(imageBar);
+  end;
+
+var
+  i, j: Integer;
+  z: Double;
 begin
   if IsEmpty then exit;
 
@@ -834,22 +860,14 @@ begin
     p := FGraphPoints[i - FLoBound];
     w := CalcBarWidth(GetGraphPointX(i), i);
     if IsRotated then
-      graphBar := DoubleRect(AxisToGraphX(ZeroLevel), p.Y - w, p.X, p.Y + w)
+      z := AxisToGraphX(ZeroLevel)
     else
-      graphBar := DoubleRect(p.X - w, AxisToGraphY(ZeroLevel), p.X + w, p.Y);
-    if not RectIntersectsRect(graphBar, ext2) then continue;
-
-    with imageBar do begin
-      TopLeft := ParentChart.GraphToImage(graphBar.a);
-      BottomRight := ParentChart.GraphToImage(graphBar.b);
-      NormalizeRect(imageBar);
-
-      // Draw a line instead of an empty rectangle.
-      if Bottom = Top then Dec(Top);
-      if Left = Right then Inc(Right);
-    end;
+      z := AxisToGraphY(ZeroLevel);
+    cumulHeight := z;
     ACanvas.Brush.Color := GetColor(i);
-    DrawBar(imageBar);
+    BuildBar(p.Y - z);
+    for j := 0 to Source.YCount - 2 do
+      BuildBar(Source[i]^.YList[j]);
   end;
 
   DrawLabels(ACanvas);
@@ -857,11 +875,20 @@ end;
 
 function TBarSeries.Extent: TDoubleRect;
 var
-  x: Double;
+  x, h: Double;
+  i, j: Integer;
 begin
   Result := inherited Extent;
   if IsEmpty then exit;
   UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
+  if Source.YCount >= 2 then begin
+    for i := 0 to Count - 1 do begin
+      h := Source[i]^.Y;
+      for j := 0 to Source.YCount - 2 do
+        h += Source[i]^.YList[j];
+      UpdateMinMax(h, Result.a.Y, Result.b.Y);
+    end;
+  end;
   // Show first and last bars fully.
   x := GetGraphPointX(0);
   Result.a.X := Min(Result.a.X, x - CalcBarWidth(x, 0));
