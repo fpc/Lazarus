@@ -369,7 +369,7 @@ cleanup:
   if(memdc<>0)   then DeleteDC(memdc);
 end;
 
-function _AlphaBlend(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
+function _AlphaBlend(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; cdecl;
 var
   SCA: Byte absolute blendFunction.SourceConstantAlpha;
   
@@ -756,12 +756,10 @@ finalization
   kerneldllhandle := 0;
 
   // SHSendBackToFocusWindow
-  SHSendBackToFocusWindow := @_SHSendBackToFocusWindow;
+  SHSendBackToFocusWindow := @_SHSendBackToFocusWindow_;
   if aygshelldllhandle <> 0 then FreeLibrary(aygshelldllhandle);
   aygshelldllhandle := 0;
 
 end.
-
-
 
 
