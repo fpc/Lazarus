@@ -61,7 +61,7 @@ type
     property Caption: String read FCaption write SetCaption;
     property Distance default DEF_TITLE_DISTANCE;
      // Use LabelFont instead.
-    property Font: TFont read GetFont write SetFont; deprecated;
+    property Font: TFont read GetFont write SetFont stored false; deprecated;
     property Frame;
     property LabelBrush;
     property Visible default false;
