@@ -41,9 +41,3 @@ begin
     FDataLink.Field.AsString := '';
 end;
 
-class procedure TDBListBox.WSRegisterClass;
-begin
-  inherited WSRegisterClass;
-  RegisterPropertyToSkip(TDBListBox, 'Items', 'Removed in 0.9.29. DB control should not save/load their data from stream.', '');
-end;
-
