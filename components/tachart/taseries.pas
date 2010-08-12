@@ -576,19 +576,23 @@ end;
 procedure TBubbleSeries.Draw(ACanvas: TCanvas);
 var
   i: Integer;
-  pt, r: TPoint;
-  y: Double;
+  pt, d: TPoint;
+  r: Double;
 begin
   if Source.YCount < 2 then exit;
-  PrepareGraphPoints(ParentChart.CurrentExtent, true);
+  r := 0;
+  for i := 0 to Count - 1 do
+    r := Max(Source[i]^.YList[0], r);
+  with ParentChart.CurrentExtent do
+    PrepareGraphPoints(DoubleRect(a.X - r, a.Y - r, b.X + r, b.Y + r), true);
   ACanvas.Pen.Assign(BubblePen);
   ACanvas.Brush.Assign(BubbleBrush);
   for i := 0 to High(FGraphPoints) do begin
     pt := ParentChart.GraphToImage(FGraphPoints[i]);
-    y := Source[i + FLoBound]^.YList[0];
-    r.X := ParentChart.XGraphToImage(y) - ParentChart.XGraphToImage(0);
-    r.Y := ParentChart.YGraphToImage(y) - ParentChart.YGraphToImage(0);
-    ACanvas.EllipseC(pt.X, pt.Y, r.X, r.Y);
+    r := Source[i + FLoBound]^.YList[0];
+    d.X := ParentChart.XGraphToImage(r) - ParentChart.XGraphToImage(0);
+    d.Y := ParentChart.YGraphToImage(r) - ParentChart.YGraphToImage(0);
+    ACanvas.EllipseC(pt.X, pt.Y, d.X, d.Y);
   end;
 end;
 
