@@ -441,8 +441,7 @@ var
         x, ATransf.YGraphToImage(AExtent.b.Y));
     end;
 
-    d :=
-      TickLength + Marks.Distance + Marks.MeasureLabel(ACanvas, AText).cy div 2;
+    d := TickLength + Marks.CenterOffset(ACanvas, AText).cy;
     if Alignment = calTop then
       d := -d;
     DrawLabelAndTick(
@@ -463,8 +462,7 @@ var
         ATransf.XGraphToImage(AExtent.b.X), y);
     end;
 
-    d :=
-      TickLength + Marks.Distance + Marks.MeasureLabel(ACanvas, AText).cx div 2;
+    d := TickLength + Marks.CenterOffset(ACanvas, AText).cx;
     if Alignment = calLeft then
       d := -d;
     DrawLabelAndTick(
@@ -572,7 +570,7 @@ procedure TChartAxis.Measure(
   const
     SOME_DIGIT = '0';
   var
-    i: Integer;
+    i, d: Integer;
     t: String;
   begin
     Result := Size(0, 0);
@@ -587,9 +585,10 @@ procedure TChartAxis.Measure(
       t := FMarkTexts[i];
       if AFirstPass then
         t += SOME_DIGIT;
+      d := IfThen(Marks.DistanceToCenter, 2, 1);
       with Marks.MeasureLabel(ACanvas, t) do begin
-        Result.cx := Max(cx, Result.cx);
-        Result.cy := Max(cy, Result.cy);
+        Result.cx := Max(cx div d, Result.cx);
+        Result.cy := Max(cy div d, Result.cy);
       end;
     end;
   end;

@@ -115,7 +115,9 @@ type
   generic TGenericChartMarks<_TLabelBrush, _TLinkPen, _TFramePen> =
     class(TChartElement)
   private
+    FDistanceToCenter: Boolean;
     function LabelAngle: Double; inline;
+    procedure SetDistanceToCenter(AValue: Boolean);
   protected
     FClipped: Boolean;
     FDistance: TChartDistance;
@@ -148,6 +150,7 @@ type
       ACanvas: TCanvas; const ADataPoint, ALabelCenter: TPoint;
       const AText: String; var APrevLabelPoly: TPointArray);
     function IsMarkLabelsVisible: Boolean;
+    function CenterOffset(ACanvas: TCanvas; const AText: String): TSize;
     function MeasureLabel(ACanvas: TCanvas; const AText: String): TSize;
 
   public
@@ -163,6 +166,8 @@ type
     property Clipped: Boolean read FClipped write SetClipped default true;
     // Distance between labelled object and label.
     property Distance: TChartDistance read FDistance write SetDistance;
+    property DistanceToCenter: Boolean
+      read FDistanceToCenter write SetDistanceToCenter default false;
     property LabelFont: TFont read FLabelFont write SetLabelFont;
     property Visible default true;
   end;
@@ -430,6 +435,14 @@ begin
     end;
 end;
 
+function TGenericChartMarks.CenterOffset(
+  ACanvas: TCanvas; const AText: String): TSize;
+begin
+  Result := Point(Distance, Distance);
+  if not DistanceToCenter then
+    Result += MeasureLabel(ACanvas, AText) div 2;
+end;
+
 constructor TGenericChartMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
@@ -544,6 +557,13 @@ procedure TGenericChartMarks.SetDistance(AValue: TChartDistance);
 begin
   if FDistance = AValue then exit;
   FDistance := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TGenericChartMarks.SetDistanceToCenter(AValue: Boolean);
+begin
+  if FDistanceToCenter = AValue then exit;
+  FDistanceToCenter := AValue;
   StyleChanged(Self);
 end;
 

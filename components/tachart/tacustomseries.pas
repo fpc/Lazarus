@@ -614,14 +614,9 @@ var
       ((X: -1; Y: 0), (X: 0; Y: -1), (X: 1; Y: 0), (X: 0; Y: 1));
   var
     center: TPoint;
-    sz: TSize;
   begin
     if AText = '' then exit;
-
-    sz := Marks.MeasureLabel(ACanvas, AText);
-    center := ADataPoint;
-    center.X += OFFSETS[ADir].X * (Marks.Distance + sz.cx div 2);
-    center.Y += OFFSETS[ADir].Y * (Marks.Distance + sz.cy div 2);
+    center := ADataPoint + OFFSETS[ADir] * Marks.CenterOffset(ACanvas, AText);
     Marks.DrawLabel(ACanvas, ADataPoint, center, AText, prevLabelPoly);
   end;
 
@@ -724,7 +719,7 @@ procedure TBasicPointSeries.UpdateMargins(ACanvas: TCanvas; var AMargins: TRect)
 const
   LABEL_TO_BORDER = 4;
 var
-  i, d: Integer;
+  i, dist, d: Integer;
   labelText: String;
   dir: TLabelDirection;
   m: array [TLabelDirection] of Integer absolute AMargins;
@@ -737,9 +732,10 @@ begin
     if labelText = '' then continue;
 
     dir := GetLabelDirection(i);
+    d := IfThen(Marks.DistanceToCenter, 2, 1);
     with Marks.MeasureLabel(ACanvas, labelText) do
-      d := IfThen(dir in [ldLeft, ldRight], cx, cy);
-    m[dir] := Max(m[dir], d + Marks.Distance + LABEL_TO_BORDER);
+      dist := IfThen(dir in [ldLeft, ldRight], cx, cy) div d;
+    m[dir] := Max(m[dir], dist + Marks.Distance + LABEL_TO_BORDER);
   end;
 end;
 
