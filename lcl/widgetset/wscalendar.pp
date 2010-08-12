@@ -94,6 +94,7 @@ const
 begin
   if Done then exit;
   WSRegisterCustomCalendar;
+  RegisterPropertyToSkip(TCalendar, 'ReadOnly', 'Obsoleted property', '');
 //  if not WSRegisterCustomCalendar then
 //    RegisterWSComponent(TCustomCalendar, TWSCustomCalendar);
   Done := True;

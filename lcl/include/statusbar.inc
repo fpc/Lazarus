@@ -69,8 +69,6 @@ end;
 class procedure TStatusBar.WSRegisterClass;
 begin
   inherited WSRegisterClass;
-  RegisterPropertyToSkip(TStatusBar, 'Font', 'VCL compatibility property', '');
-  RegisterPropertyToSkip(TStatusBar, 'UseSystemFont', 'VCL compatibility property', '');
   RegisterStatusBar;
 end;
 

@@ -5031,8 +5031,6 @@ end;
 class procedure TCustomTreeView.WSRegisterClass;
 begin
   inherited WSRegisterClass;
-  RegisterPropertyToSkip(TCustomTreeView, 'BevelInner', 'VCL compatibility property', '');
-  RegisterPropertyToSkip(TCustomTreeView, 'MultiSelect', 'VCL compatibility property', '');
   RegisterCustomTreeView;
 end;
 

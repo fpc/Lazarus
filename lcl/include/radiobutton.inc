@@ -94,8 +94,6 @@ class procedure TRadioButton.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterRadioButton;
-  RegisterPropertyToSkip(TRadioButton, 'State', 'Removed in 0.9.29. It should not be allowed to set the State directly', '');
-  RegisterPropertyToSkip(TRadioButton, 'AllowGrayed', 'Removed in 0.9.29. Grayed state is not supported by TRadioButton', '');
 end;
 
 function TRadioButton.DialogChar(var Message: TLMKey): boolean;

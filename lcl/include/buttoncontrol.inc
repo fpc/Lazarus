@@ -28,9 +28,6 @@ end;
 
 class procedure TButtonControl.WSRegisterClass;
 begin
-  RegisterPropertyToSkip(TButtonControl, 'UseOnChange',
-    'Removed in 0.9.27. It was an old workaround which is not needed anymore.',
-    '');
   inherited WSRegisterClass;
   RegisterButtonControl;
 end;

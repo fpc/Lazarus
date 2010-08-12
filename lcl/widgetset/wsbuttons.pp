@@ -107,6 +107,7 @@ const
 begin
   if Done then exit;
   WSRegisterCustomBitBtn;
+  RegisterPropertyToSkip(TBitBtn, 'Style', 'VCL compatibility property', '');
 //  if not WSRegisterCustomBitBtn then
 //    RegisterWSComponent(TCustomBitBtn, TWSBitBtn);
   Done := True;

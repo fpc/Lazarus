@@ -136,6 +136,7 @@ begin
   if Done then exit;
   if not WSRegisterCommonDialog then
     RegisterWSComponent(TCommonDialog, TWSCommonDialog);
+  RegisterPropertyToSkip(TCommonDialog, 'Ctl3D', 'VCL compatibility property', '');
   Done := True;
 end;
 

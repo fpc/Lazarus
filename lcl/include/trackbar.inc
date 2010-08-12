@@ -297,7 +297,6 @@ end;
 class procedure TCustomTrackBar.WSRegisterClass;
 begin
   inherited WSRegisterClass;
-  RegisterPropertyToSkip(TCustomTrackBar, 'ThumbLength', 'VCL compatibility property', '');
   RegisterCustomTrackBar;
 end;
 

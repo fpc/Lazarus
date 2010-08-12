@@ -424,7 +424,6 @@ end;
 class procedure TCustomListView.WSRegisterClass;
 begin
   inherited WSRegisterClass;
-  RegisterPropertyToSkip(TListColumn, 'WidthType', 'VCL compatibility property', '');
   RegisterCustomListView;
 end;
 

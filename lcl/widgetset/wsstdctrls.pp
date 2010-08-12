@@ -648,6 +648,9 @@ const
 begin
   if Done then exit;
   WSRegisterCustomComboBox;
+  RegisterPropertyToSkip(TCustomComboBox, 'BevelInner', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomComboBox, 'BevelKind', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomComboBox, 'BevelOuter', 'VCL compatibility property', '');
 //  if not WSRegisterCustomComboBox then
 //    RegisterWSComponent(TCustomComboBox, TWSCustomComboBox);
   Done := True;
@@ -692,6 +695,9 @@ const
 begin
   if Done then exit;
   WSRegisterButtonControl;
+  RegisterPropertyToSkip(TButtonControl, 'UseOnChange',
+    'Removed in 0.9.27. It was an old workaround which is not needed anymore.',
+    '');
 //  if not WSRegisterButtonControl then
 //    RegisterWSComponent(TButtonControl, TWSButtonControl);
   Done := True;
@@ -714,6 +720,7 @@ const
 begin
   if Done then exit;
   WSRegisterCustomCheckBox;
+  RegisterPropertyToSkip(TCustomCheckBox, 'Alignment', 'VCL compatibility property', '');
 //  if not WSRegisterCustomCheckBox then
 //    RegisterWSComponent(TCustomCheckBox, TWSCustomCheckBox);
   Done := True;
@@ -736,6 +743,8 @@ const
 begin
   if Done then exit;
   WSRegisterRadioButton;
+  RegisterPropertyToSkip(TRadioButton, 'State', 'Removed in 0.9.29. It should not be allowed to set the State directly', '');
+  RegisterPropertyToSkip(TRadioButton, 'AllowGrayed', 'Removed in 0.9.29. Grayed state is not supported by TRadioButton', '');
 //  if not WSRegisterRadioButton then
 //    RegisterWSComponent(TRadioButton, TWSRadioButton);
   Done := True;

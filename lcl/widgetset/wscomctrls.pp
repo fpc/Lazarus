@@ -571,6 +571,8 @@ const
 begin
   if Done then exit;
   WSRegisterStatusBar;
+  RegisterPropertyToSkip(TStatusBar, 'Font', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TStatusBar, 'UseSystemFont', 'VCL compatibility property', '');
 //  if not WSRegisterStatusBar then
 //    RegisterWSComponent(TStatusBar, TWSStatusBar);
   Done := True;
@@ -593,6 +595,9 @@ const
 begin
   if Done then exit;
   WSRegisterPageControl;
+  RegisterPropertyToSkip(TPageControl, 'Style', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TPageControl, 'HotTrack', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TPageControl, 'MultiLine', 'VCL compatibility property', '');
 //  if not WSRegisterPageControl then
 //    RegisterWSComponent(TPageControl, TWSPageControl);
   Done := True;
@@ -604,6 +609,7 @@ const
 begin
   if Done then exit;
   WSRegisterCustomListView;
+  RegisterPropertyToSkip(TListColumn, 'WidthType', 'VCL compatibility property', '');
 //  if not WSRegisterCustomListView then
 //    RegisterWSComponent(TCustomListView, TWSCustomListView);
   Done := True;
@@ -659,6 +665,7 @@ const
 begin
   if Done then exit;
   WSRegisterCustomTrackBar;
+  RegisterPropertyToSkip(TCustomTrackBar, 'ThumbLength', 'VCL compatibility property', '');
 //  if not WSRegisterCustomTrackBar then
 //    RegisterWSComponent(TCustomTrackBar, TWSCustomTrackBar);
   Done := True;
@@ -670,6 +677,8 @@ const
 begin
   if Done then exit;
   WSRegisterCustomTreeView;
+  RegisterPropertyToSkip(TCustomTreeView, 'BevelInner', 'VCL compatibility property', '');
+  RegisterPropertyToSkip(TCustomTreeView, 'MultiSelect', 'VCL compatibility property', '');
 //  if not WSRegisterStatusBar then
 //    RegisterWSComponent(TCustomTreeView, TWSCustomTreeView);
   Done := True;
