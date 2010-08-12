@@ -1,0 +1,75 @@
+object Form1: TForm1
+  Left = 386
+  Height = 373
+  Top = 218
+  Width = 471
+  Caption = 'Form1'
+  ClientHeight = 373
+  ClientWidth = 471
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 373
+    Top = 0
+    Width = 471
+    ActivePage = tsBubble
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object tsBubble: TTabSheet
+      Caption = 'Bubble'
+      ClientHeight = 347
+      ClientWidth = 463
+      object chBubble: TChart
+        Left = 0
+        Height = 347
+        Top = 0
+        Width = 463
+        AxisList = <        
+          item
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+            Marks.Distance = 0
+            Marks.DistanceToCenter = True
+            Marks.LabelBrush.Style = bsSolid
+            TickLength = 0
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Proportional = True
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object Chart1BubbleSeries1: TBubbleSeries
+          Marks.Distance = 0
+          Marks.DistanceToCenter = True
+          Marks.Format = '%0:.9g'
+          Marks.Style = smsValue
+          BubbleBrush.Color = clRed
+          BubbleBrush.Style = bsDiagCross
+          Source = lcsBubble
+        end
+      end
+    end
+  end
+  object lcsBubble: TListChartSource
+    DataPoints.Strings = (
+      '10|50|3|?|'
+      '20|30|1|?|'
+      '50|40|6|?|'
+      '80|60|2|?|'
+      '60|50|15|?|'
+      '35|20|9|?|'
+    )
+    YCount = 2
+    left = 130
+    top = 65
+  end
+end
