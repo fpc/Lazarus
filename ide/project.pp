@@ -3086,8 +3086,13 @@ begin
       MacroValues.LoadFromXMLConfig(xmlconfig,Path+'MacroValues/');
 
       // load properties
-      if FileVersion<9 then NewMainUnitID:=-1 else NewMainUnitID:=0;
-      NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', NewMainUnitID);
+      // Note: in FileVersion<9 the default value was -1
+      //   Since almost all projects have a MainUnit the value was always saved.
+      //   Changing the default value to 0 avoids the redundancy and
+      //   automatically fixes broken lpi files.
+      //   When opening a new project in an old IDE the MainUnit is set to -1
+      //   which means the project is not compilable.
+      NewMainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', 0);
       AutoCreateForms := xmlconfig.GetValue(
          Path+'General/AutoCreateForms/Value', true);
       Title := xmlconfig.GetValue(Path+'General/Title/Value', '');
