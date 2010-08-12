@@ -594,6 +594,7 @@ begin
     d.Y := ParentChart.YGraphToImage(r) - ParentChart.YGraphToImage(0);
     ACanvas.EllipseC(pt.X, pt.Y, d.X, d.Y);
   end;
+  DrawLabels(ACanvas);
 end;
 
 function TBubbleSeries.Extent: TDoubleRect;
