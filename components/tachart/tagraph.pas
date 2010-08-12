@@ -166,6 +166,7 @@ type
     FCurrentExtent: TDoubleRect;
     FIsZoomed: Boolean;
     FOffset: TDoublePoint;   // Coordinates transformation
+    FProportional: Boolean;
     FReticuleMode: TReticuleMode;
     FReticulePos: TPoint;
     FScale: TDoublePoint;    // Coordinates transformation
@@ -193,6 +194,7 @@ type
     procedure SetLegend(Value: TChartLegend);
     procedure SetLogicalExtent(const AValue: TDoubleRect);
     procedure SetMargins(AValue: TChartMargins);
+    procedure SetProportional(AValue: Boolean);
     procedure SetReticuleMode(const AValue: TReticuleMode);
     procedure SetReticulePos(const AValue: TPoint);
     procedure SetTitle(Value: TChartTitle);
@@ -279,6 +281,8 @@ type
     property LeftAxis: TChartAxis index 2 read GetAxis write SetAxis stored false;
     property Legend: TChartLegend read FLegend write SetLegend;
     property Margins: TChartMargins read FMargins write SetMargins;
+    property Proportional: Boolean
+      read FProportional write SetProportional default false;
     property ReticuleMode: TReticuleMode
       read FReticuleMode write SetReticuleMode default rmNone;
     property Series: TChartSeriesList read FSeries;
@@ -532,6 +536,12 @@ begin
     @FCurrentExtent.a.Y, @FCurrentExtent.b.Y);
   FScale.X := rX.CalcScale(1);
   FScale.Y := rY.CalcScale(-1);
+  if Proportional then begin
+    if FScale.X > FScale.Y then
+      FScale.X := FScale.Y
+    else
+      FScale.Y := FScale.Y;
+  end;
   FOffset.X := rX.CalcOffset(FScale.X);
   FOffset.Y := rY.CalcOffset(FScale.Y);
   rX.UpdateMinMax(@XImageToGraph);
@@ -900,6 +910,13 @@ end;
 procedure TChart.SetMargins(AValue: TChartMargins);
 begin
   FMargins.Assign(AValue);
+  Invalidate;
+end;
+
+procedure TChart.SetProportional(AValue: Boolean);
+begin
+  if FProportional = AValue then exit;
+  FProportional := AValue;
   Invalidate;
 end;
 
