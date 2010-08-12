@@ -91,6 +91,17 @@ begin
   end;
 end;
 
+class procedure TDBText.WSRegisterClass;
+const
+  Done: Boolean = False;
+begin
+  if Done then
+    Exit;
+  inherited WSRegisterClass;
+  RegisterPropertyToSkip(TDBText, 'Caption', 'Removed in 0.9.29. DB control should not save/load their data from stream.', '');
+  Done := True;
+end;
+
 { Public Methods}
 constructor TDBText.Create(AOwner: TComponent);
 begin

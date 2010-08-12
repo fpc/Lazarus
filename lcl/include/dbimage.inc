@@ -193,6 +193,17 @@ begin
     DataChange(Self);
 end;
 
+class procedure TDBImage.WSRegisterClass;
+const
+  Done: Boolean = False;
+begin
+  if Done then
+    Exit;
+  inherited WSRegisterClass;
+  RegisterPropertyToSkip(TDBImage, 'Picture', 'Removed in 0.9.29. DB control should not save/load their data from stream.', '');
+  Done := True;
+end;
+
 constructor TDBImage.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);

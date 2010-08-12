@@ -285,6 +285,7 @@ Type
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
+    class procedure WSRegisterClass; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -382,6 +383,7 @@ Type
   protected
     procedure DataChange(Sender: TObject); override;
     procedure UpdateData(Sender: TObject); override;
+    class procedure WSRegisterClass; override;
   public
     // we need to overrride the write method for db aware.
     // the Read isn't an issue since the list will be updated
@@ -845,6 +847,7 @@ Type
     procedure Change; override;
     procedure KeyPress(var Key:Char); override;
     procedure WndProc(var AMessage : TLMessage); override;
+    class procedure WSRegisterClass; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -975,6 +978,7 @@ Type
     procedure PictureChanged(Sender: TObject); override;
     procedure LoadPicture; virtual;
     procedure Loaded; override;
+    class procedure WSRegisterClass; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -1691,10 +1695,6 @@ end;
 
 
 initialization
-  RegisterPropertyToSkip(TDBImage, 'Picture', 'Removed in 0.9.29. DB control should not save/load their data from stream.', '');
-  RegisterPropertyToSkip(TDBListBox, 'Items', 'Removed in 0.9.29. DB control should not save/load their data from stream.', '');
-  RegisterPropertyToSkip(TDBMemo, 'Lines', 'Removed in 0.9.29. DB control should not save/load their data from stream.', '');
-  RegisterPropertyToSkip(TDBText, 'Caption', 'Removed in 0.9.29. DB control should not save/load their data from stream.', '');
   {$I lcl_dbnav_images.lrs}
 
 finalization

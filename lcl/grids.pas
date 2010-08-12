@@ -1481,6 +1481,8 @@ type
   { TStringGrid }
 
   TStringGrid = class(TCustomStringGrid)
+  protected
+    class procedure WSRegisterClass; override;
   public
     property Modified;
   published
@@ -10980,9 +10982,20 @@ begin
   FEditors[i].ActiveControl:=ActiveCtrl;
 end;
 
-initialization
-  RegisterPropertyToSkip(TStringGrid, 'VisibleRowCount',
+{ TStringGrid }
+
+class procedure TStringGrid.WSRegisterClass;
+const
+  Done: Boolean = False;
+begin
+  if Done then
+    Exit;
+  RegisterPropertyToSkip(Self, 'VisibleRowCount',
     'Property streamed in by older compiler', '');
-  RegisterPropertyToSkip(TStringGrid, 'VisibleColCount',
+  RegisterPropertyToSkip(Self, 'VisibleColCount',
     'Property streamed in by older compiler', '');
+  inherited WSRegisterClass;
+  Done := True;
+end;
+
 end.
