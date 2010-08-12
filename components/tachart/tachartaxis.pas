@@ -232,6 +232,23 @@ type
       read FOnVisitSources write FOnVisitSources;
   end;
 
+  TAxisConvFunc = function (AX: Integer): Double of object;
+
+  { TAxisCoeffHelper }
+
+  TAxisCoeffHelper = object
+    FAxis: TChartAxis;
+    FImageLo, FImageHi, FMarginLo, FMarginHi: Integer;
+    FLo, FHi: Integer;
+    FMin, FMax: PDouble;
+    constructor Init(
+      AAxis: TChartAxis; AImageLo, AImageHi, AMarginLo, AMarginHi: Integer;
+      AMin, AMax: PDouble);
+    function CalcScale(ASign: Integer): Double;
+    function CalcOffset(AScale: Double): Double;
+    procedure UpdateMinMax(AConv: TAxisConvFunc);
+  end;
+
   function SideByAlignment(
     var ARect: TRect; AAlignment: TChartAxisAlignment; ADelta: Integer): Integer;
   function TransformByAxis(
@@ -836,6 +853,44 @@ begin
     a := Add;
   a.Assign(AValue);
   a.FAlignment := AXIS_INDEX[AIndex];
+end;
+
+{ TAxisCoeffHelper }
+
+constructor TAxisCoeffHelper.Init(
+  AAxis: TChartAxis; AImageLo, AImageHi, AMarginLo, AMarginHi: Integer;
+  AMin, AMax: PDouble);
+begin
+  FAxis := AAxis;
+  FImageLo := AImageLo;
+  FImageHi := AImageHi;
+  FMarginLo := AMarginLo;
+  FMarginHi := AMarginHi;
+  FMin := AMin;
+  FMax := AMax;
+  FLo := FImageLo + FMarginLo;
+  FHi := FImageHi + FMarginHi;
+end;
+
+function TAxisCoeffHelper.CalcScale(ASign: Integer): Double;
+begin
+  if (FMax^ = FMin^) or (Sign(FHi - FLo) <> ASign) then exit(1.0);
+  if (FAxis <> nil) and FAxis.Inverted then
+    Exchange(FLo, FHi);
+  Result := (FHi - FLo) / (FMax^ - FMin^);
+end;
+
+function TAxisCoeffHelper.CalcOffset(AScale: Double): Double;
+begin
+  Result := (FLo + FHi) / 2 - AScale * (FMin^ + FMax^) / 2;
+end;
+
+procedure TAxisCoeffHelper.UpdateMinMax(AConv: TAxisConvFunc);
+begin
+  FMin^ := AConv(FImageLo);
+  FMax^ := AConv(FImageHi);
+  if (FAxis <> nil) and FAxis.Inverted then
+    Exchange(FMin^, FMax^);
 end;
 
 procedure SkipObsoleteAxisProperties;

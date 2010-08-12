@@ -521,45 +521,21 @@ begin
 end;
 
 procedure TChart.CalculateTransformationCoeffs(const AMargin: TRect);
-type
-  TConvFunc = function (AX: Integer): Double of object;
-
-  procedure CalcOneCoord(
-    AAxis: TChartAxis; AConv: TConvFunc; var AGraphMin, AGraphMax: Double;
-    AImageLo, AImageHi, AMarginLo, AMarginHi, ASign: Integer;
-    out AScale, AOffset: Double);
-  var
-    lo, hi: Integer;
-  begin
-    lo := AImageLo + AMarginLo;
-    hi := AImageHi + AMarginHi;
-
-    if (AGraphMax = AGraphMin) or (Sign(hi - lo) <> ASign) then begin
-      AScale := 1;
-      AOffset := 0;
-      exit;
-    end;
-
-    if (AAxis <> nil) and AAxis.Inverted then
-      Exchange(lo, hi);
-
-    AScale := (hi - lo) / (AGraphMax - AGraphMin);
-    AOffset := hi - AScale * AGraphMax;
-    AGraphMin := AConv(AImageLo);
-    AGraphMax := AConv(AImageHi);;
-    if (AAxis <> nil) and AAxis.Inverted then
-      Exchange(AGraphMin, AGraphMax);
-  end;
-
+var
+  rX, rY: TAxisCoeffHelper;
 begin
-  CalcOneCoord(
-    BottomAxis, @XImageToGraph, FCurrentExtent.a.X, FCurrentExtent.b.X,
-    FClipRect.Left, FClipRect.Right, AMargin.Left, -AMargin.Right, 1,
-    FScale.X, FOffset.X);
-  CalcOneCoord(
-    LeftAxis, @YImageToGraph, FCurrentExtent.a.Y, FCurrentExtent.b.Y,
-    FClipRect.Bottom, FClipRect.Top, -AMargin.Bottom, AMargin.Top, -1,
-    FScale.Y, FOffset.Y);
+  rX.Init(
+    BottomAxis, FClipRect.Left, FClipRect.Right, AMargin.Left, -AMargin.Right,
+    @FCurrentExtent.a.X, @FCurrentExtent.b.X);
+  rY.Init(
+    LeftAxis, FClipRect.Bottom, FClipRect.Top, -AMargin.Bottom, AMargin.Top,
+    @FCurrentExtent.a.Y, @FCurrentExtent.b.Y);
+  FScale.X := rX.CalcScale(1);
+  FScale.Y := rY.CalcScale(-1);
+  FOffset.X := rX.CalcOffset(FScale.X);
+  FOffset.Y := rY.CalcOffset(FScale.Y);
+  rX.UpdateMinMax(@XImageToGraph);
+  rY.UpdateMinMax(@YImageToGraph);
 end;
 
 procedure TChart.Clean(ACanvas: TCanvas; ARect: TRect);
@@ -637,14 +613,14 @@ begin
   end;
 
   AxisList.PrepareGroups;
-  AxisList.Measure(ACanvas, FCurrentExtent, true, axisMargin);
+  AxisList.Measure(ACanvas, CurrentExtent, true, axisMargin);
   axisMargin[calLeft] := Max(axisMargin[calLeft], Depth);
   axisMargin[calBottom] := Max(axisMargin[calBottom], Depth);
   for a := Low(a) to High(a) do
     SideByAlignment(FClipRect, a, -axisMargin[a]);
 
   CalculateTransformationCoeffs(GetMargins(ACanvas));
-  AxisList.Measure(ACanvas, FCurrentExtent, false, axisMargin);
+  AxisList.Measure(ACanvas, CurrentExtent, false, axisMargin);
 
   // Background
   with ACanvas do begin
@@ -657,7 +633,7 @@ begin
       Rectangle(Left, Top, Right + 1, Bottom + 1);
   end;
 
-  AxisList.Draw(ACanvas, FCurrentExtent, Self, FClipRect);
+  AxisList.Draw(ACanvas, CurrentExtent, Self, FClipRect);
   // Z axis
   if Depth > 0 then
     with FClipRect do
