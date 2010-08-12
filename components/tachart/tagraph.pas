@@ -537,10 +537,10 @@ begin
   FScale.X := rX.CalcScale(1);
   FScale.Y := rY.CalcScale(-1);
   if Proportional then begin
-    if FScale.X > FScale.Y then
-      FScale.X := FScale.Y
+    if Abs(FScale.X) > Abs(FScale.Y) then
+      FScale.X := Abs(FScale.Y) * Sign(FScale.X)
     else
-      FScale.Y := FScale.Y;
+      FScale.Y := Abs(FScale.X) * Sign(FScale.Y);
   end;
   FOffset.X := rX.CalcOffset(FScale.X);
   FOffset.Y := rY.CalcOffset(FScale.Y);
