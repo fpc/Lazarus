@@ -1660,7 +1660,11 @@ begin
   NewSource.Add('begin');
   NewSource.Add('  Application:='+C+'.Create(nil);');
   If (T<>'') then
+    begin
+    AProject.Flags:=AProject.Flags+[pfMainUnitHasTitleStatement];
+    AProject.Title:=T;
     NewSource.Add('  Application.Title:='''+T+''';');
+    end;
   NewSource.Add('  Application.Run;');
   NewSource.Add('  Application.Free;');
   NewSource.Add('end.');
