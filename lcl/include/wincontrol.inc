@@ -4527,8 +4527,10 @@ end;
 {------------------------------------------------------------------------------
   TWinControl IsControlMouseMsg
 ------------------------------------------------------------------------------}
-function TWinControl.IsControlMouseMsg(var TheMessage: TLMMouse) : Boolean;
+function TWinControl.IsControlMouseMsg(var TheMessage): Boolean;
 var
+  MouseMessage: TLMMouse absolute TheMessage;
+  MouseEventMessage: TLMMouseEvent;
   Control: TControl;
   ScrolledOffset, P: TPoint;
   ClientBounds: TRect;
@@ -4545,7 +4547,7 @@ begin
   else
   begin
     // do query wincontrol childs, in case they overlap
-    Control := ControlAtPos(SmallPointToPoint(TheMessage.Pos),
+    Control := ControlAtPos(SmallPointToPoint(MouseMessage.Pos),
                             [capfAllowWinControls]);
     if Control is TWinControl then
     begin
@@ -4561,16 +4563,16 @@ begin
   if Control <> nil then
   begin
     // map mouse coordinates to control
-    ScrolledOffset:=GetClientScrollOffset;
+    ScrolledOffset := GetClientScrollOffset;
 
-    P.X := TheMessage.XPos - Control.Left + ScrolledOffset.X;
-    P.Y := TheMessage.YPos - Control.Top + ScrolledOffset.Y;
+    P.X := MouseMessage.XPos - Control.Left + ScrolledOffset.X;
+    P.Y := MouseMessage.YPos - Control.Top + ScrolledOffset.Y;
     if (Control is TWinControl) and TWinControl(Control).HandleAllocated then
     begin
       // map coordinates to client area of control
-      LCLIntf.GetClientBounds(TWinControl(Control).Handle,ClientBounds);
-      dec(P.X,ClientBounds.Left);
-      dec(P.Y,ClientBounds.Top);
+      LCLIntf.GetClientBounds(TWinControl(Control).Handle, ClientBounds);
+      dec(P.X, ClientBounds.Left);
+      dec(P.Y, ClientBounds.Top);
       {$IFDEF VerboseMouseBugfix}
       DebugLn(['TWinControl.IsControlMouseMsg ',Name,' -> ',Control.Name,
       ' MsgPos=',TheMessage.Pos.X,',',TheMessage.Pos.Y,
@@ -4581,8 +4583,17 @@ begin
       );
       {$ENDIF}
     end;
-    TheMessage.Result := Control.Perform(TheMessage.Msg, WParam(TheMessage.Keys),
-                         LParam(Integer(PointToSmallPoint(P))));
+    if MouseMessage.Msg = LM_MOUSEWHEEL then
+    begin
+      MouseEventMessage := TLMMouseEvent(TheMessage);
+      MouseEventMessage.X := P.X;
+      MouseEventMessage.Y := P.Y;
+      Dispatch(MouseEventMessage);
+      MouseMessage.Result := MouseEventMessage.Result;
+    end
+    else
+      MouseMessage.Result := Control.Perform(MouseMessage.Msg, WParam(MouseMessage.Keys),
+                             LParam(Integer(PointToSmallPoint(P))));
     Result := True;
   end;
 end;
@@ -5158,7 +5169,7 @@ begin
          DebugLn('TWinControl.WndPRoc A ',Name,':',ClassName);
          {$ENDIF}
          //if Message.Msg=LM_RBUTTONUP then begin DebugLn(['TWinControl.WndProc ',DbgSName(Self)]); DumpStack end;
-         if IsControlMouseMSG(TLMMouse(Message)) then
+         if IsControlMouseMSG(Message) then
            Exit
          else
          begin

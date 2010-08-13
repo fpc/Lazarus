@@ -1014,7 +1014,7 @@ end;
        TControl.Perform
 
 ------------------------------------------------------------------------------}
-function TControl.Perform(Msg:Cardinal; WParam: WParam; LParam: LParam): LRESULT;
+function TControl.Perform(Msg: Cardinal; WParam: WParam; LParam: LParam): LRESULT;
 var
   Message : TLMessage;
 begin
@@ -2225,7 +2225,6 @@ procedure TControl.WMMouseWheel(var Message: TLMMouseEvent);
 var
   MousePos: TPoint;
 begin
-  Assert(False, Format('Trace: [TControl.LMMouseWheel] %s', [ClassName]));
   DoBeforeMouseMessage;
 
   MousePos.X := Message.X;

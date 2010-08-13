@@ -1330,7 +1330,7 @@ type
     function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; virtual;
     function  GetTextLen: Integer; virtual;
     procedure SetTextBuf(Buffer: PChar); virtual;
-    function  Perform(Msg:Cardinal; WParam: WParam; LParam: LParam): LRESULT;
+    function  Perform(Msg: Cardinal; WParam: WParam; LParam: LParam): LRESULT;
     function  ScreenToClient(const APoint: TPoint): TPoint;
     function  ClientToScreen(const APoint: TPoint): TPoint;
     function  ScreenToControl(const APoint: TPoint): TPoint;
@@ -1828,7 +1828,7 @@ type
     function  GetClientRect: TRect; override;
     function  GetControlOrigin: TPoint; override;
     function  GetDeviceContext(var WindowHandle: HWND): HDC; override;
-    function  IsControlMouseMsg(var TheMessage: TLMMouse): Boolean;
+    function  IsControlMouseMsg(var TheMessage): Boolean;
     procedure CreateHandle; virtual;
     procedure CreateParams(var Params: TCreateParams); virtual;
     procedure CreateWnd; virtual; //creates the window
