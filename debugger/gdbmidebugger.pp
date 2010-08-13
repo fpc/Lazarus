@@ -3957,7 +3957,7 @@ begin
   ValMode := #0;
   Value := 0;
 
-  P := @AExpression[1];
+  P := PChar(AExpression);
   for n := 1 to Length(AExpression) do
   begin
     if InString
