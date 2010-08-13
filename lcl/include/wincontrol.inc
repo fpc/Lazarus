@@ -5435,7 +5435,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.KeyDownBeforeInterface(var Key: Word; Shift: TShiftState);
 begin
-  KeyDown(Key,Shift);
+  KeyDown(Key, Shift);
 end;
 
 {------------------------------------------------------------------------------
@@ -5528,7 +5528,34 @@ end;
   
   returns true if handled
 ------------------------------------------------------------------------------}
-function TWinControl.DoKeyDownBeforeInterface(var Message: TLMKey): Boolean;
+function TWinControl.DoKeyDownBeforeInterface(var Message: TLMKey; IsRecurseCall: Boolean): Boolean;
+
+  function IsShortCut: Boolean;
+  var
+    AParent: TWinControl;
+  begin
+    Result := False;
+    // check popup menu
+    if Assigned(FPopupMenu) and FPopupMenu.IsShortCut(Message) then
+      Exit(True);
+
+    if IsRecurseCall then
+      Exit;
+
+    // let each parent form handle shortcuts
+    AParent := Parent;
+    while Assigned(AParent) do
+    begin
+      if (AParent is TCustomForm) and TCustomForm(AParent).IsShortcut(Message) then
+        Exit(True);
+      AParent := AParent.Parent;
+    end;
+
+    // let application handle shortcut
+    if Assigned(Application) and Application.IsShortcut(Message) then
+      Exit(True);
+  end;
+
 var
   F: TCustomForm;
   ShiftState: TShiftState;
@@ -5543,30 +5570,35 @@ begin
     ShiftState := KeyDataToShiftState(KeyData);
     
     // let application handle the key
-    if Application<>nil then
-      Application.NotifyKeyDownBeforeHandler(Self, CharCode, ShiftState);
-    if CharCode = VK_UNKNOWN then Exit;
-
-    // let each parent form with keypreview handle the key
-    AParent := Parent;
-    while (AParent <> nil) do
+    if not IsRecurseCall and Assigned(Application) then
     begin
-      if (AParent is TCustomForm) then
-      begin
-        F := TCustomForm(AParent);
-        if (F.KeyPreview) and (F.DoKeyDownBeforeInterface(Message)) then Exit;
-      end;
-      AParent := AParent.Parent;
+      Application.NotifyKeyDownBeforeHandler(Self, CharCode, ShiftState);
+      if CharCode = VK_UNKNOWN then Exit;
     end;
 
-    if CharCode = VK_UNKNOWN then Exit;
-    ShiftState := KeyDataToShiftState(KeyData);
-
-    // let drag object handle the key
-    if DragManager.IsDragging then
+    // let each parent form with keypreview handle the key
+    if not IsRecurseCall then
     begin
-      DragManager.KeyDown(CharCode, ShiftState);
+      AParent := Parent;
+      while Assigned(AParent) do
+      begin
+        if (AParent is TCustomForm) then
+        begin
+          F := TCustomForm(AParent);
+          if (F.KeyPreview) and (F.DoKeyDownBeforeInterface(Message, True)) then Exit;
+        end;
+        AParent := AParent.Parent;
+      end;
+
       if CharCode = VK_UNKNOWN then Exit;
+      ShiftState := KeyDataToShiftState(KeyData);
+
+      // let drag object handle the key
+      if DragManager.IsDragging then
+      begin
+        DragManager.KeyDown(CharCode, ShiftState);
+        if CharCode = VK_UNKNOWN then Exit;
+      end;
     end;
 
     // let user handle the key
@@ -5577,22 +5609,7 @@ begin
     end;
 
     // check the shortcuts
-    // check popup menu
-    if Assigned(FPopupMenu) and FPopupMenu.IsShortCut(Message) then
-      Exit;
-
-    // let each parent form handle shortcuts
-    AParent := Parent;
-    while Assigned(AParent) do
-    begin
-      if (AParent is TCustomForm) and TCustomForm(AParent).IsShortcut(Message) then
-        Exit;
-      AParent := AParent.Parent;
-    end;
-
-    // let application handle shortcut
-    if Assigned(Application) and Application.IsShortcut(Message) then
-      Exit;
+    if IsShortCut then Exit;
   end;
 
   Result := False;
@@ -6868,7 +6885,7 @@ end;
 procedure TWinControl.CNKeyDown(var Message: TLMKeyDown);
 begin
   //DebugLn('TWinControl.CNKeyDown ',Name,':',ClassName);
-  if DoKeyDownBeforeInterface(Message) then 
+  if DoKeyDownBeforeInterface(Message, False) then
     Message.Result := 1
   else
     {inherited};  // there is nothing to inherit
@@ -6879,7 +6896,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CNSysKeyDown(var Message: TLMKeyDown);
 begin
-  if DoKeyDownBeforeInterface(Message) then 
+  if DoKeyDownBeforeInterface(Message, False) then
     Message.Result := 1
   else
     {inherited};  // there is nothing to inherit

@@ -1799,7 +1799,7 @@ type
     // mouse and keyboard
     procedure DoEnter; virtual;
     procedure DoExit; virtual;
-    function  DoKeyDownBeforeInterface(var Message: TLMKey): Boolean;
+    function  DoKeyDownBeforeInterface(var Message: TLMKey; IsRecurseCall: Boolean): Boolean;
     function  DoRemainingKeyDown(var Message: TLMKeyDown): Boolean;
     function  DoRemainingKeyUp(var Message: TLMKeyDown): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
