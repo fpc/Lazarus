@@ -43,14 +43,13 @@ type
   { TCompOptBuildMacrosFrame }
 
   TCompOptBuildMacrosFrame = class(TFrame)
-    BMDefValSynEdit: TSynEdit;
-    BMDefValSynPasSyn: TSynPasSyn;
+    BuildMacroDescriptionEdit: TEdit;
     BuildMacroSelectedGroupBox: TGroupBox;
     BuildMacrosTreeView: TTreeView;
     BuildMacrosTVPopupMenu: TPopupMenu;
     BuildMacroDefaultLabel: TLabel;
+    BuildMacroDescriptionLabel: TLabel;
     Splitter1: TSplitter;
-    procedure BMDefValSynEditExit(Sender: TObject);
     procedure BuildMacrosTreeViewEdited(Sender: TObject; Node: TTreeNode;
       var S: string);
     procedure BuildMacrosTreeViewEditing(Sender: TObject; Node: TTreeNode;
@@ -66,6 +65,7 @@ type
     fVarImgID: LongInt;
     fValueImgID: LongInt;
     fDefValueImgID: LongInt;
+    procedure SaveItemProperties;
     procedure SetBuildMacros(const AValue: TIDEBuildMacros);
     procedure RebuildTreeView;
     function TreeViewAddBuildMacro(aBuildMacro: TLazBuildMacro): TTreeNode;
@@ -75,8 +75,7 @@ type
                              out NodeType: TCBMNodeType): TTreeNode;
     function GetBuildMacroTVNode(aBuildMacro: TLazBuildMacro): TTreeNode;
     function GetMacroNamePrefix: string;
-    procedure UpdateDefaultValueControls;
-    procedure SaveDefaultValue;
+    procedure UpdateItemPropertyControls;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -108,7 +107,7 @@ begin
   TVNode:=TreeViewAddBuildMacro(NewBuildMacro);
   BuildMacrosTreeView.Selected:=TVNode;
   BuildMacrosTreeView.EndUpdate;
-  UpdateDefaultValueControls;
+  UpdateItemPropertyControls;
 end;
 
 procedure TCompOptBuildMacrosFrame.NewValueClick(Sender: TObject);
@@ -226,7 +225,7 @@ end;
 procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewSelectionChanged(
   Sender: TObject);
 begin
-  UpdateDefaultValueControls;
+  UpdateItemPropertyControls;
 end;
 
 procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewEdited(Sender: TObject;
@@ -280,18 +279,13 @@ begin
   end;
 end;
 
-procedure TCompOptBuildMacrosFrame.BMDefValSynEditExit(Sender: TObject);
-begin
-  SaveDefaultValue;
-end;
-
 procedure TCompOptBuildMacrosFrame.SetBuildMacros(
   const AValue: TIDEBuildMacros);
 begin
   if FBuildMacros=AValue then exit;
   FBuildMacros:=AValue;
   RebuildTreeView;
-  UpdateDefaultValueControls;
+  UpdateItemPropertyControls;
 end;
 
 procedure TCompOptBuildMacrosFrame.RebuildTreeView;
@@ -388,7 +382,7 @@ begin
     Result:=TPkgCompilerOptions(BuildMacros.Owner).LazPackage.Name+'_macro';
 end;
 
-procedure TCompOptBuildMacrosFrame.UpdateDefaultValueControls;
+procedure TCompOptBuildMacrosFrame.UpdateItemPropertyControls;
 var
   aBuildMacro: TLazBuildMacro;
   NodeType: TCBMNodeType;
@@ -397,24 +391,24 @@ begin
   if aBuildMacro<>nil then begin
     BuildMacroSelectedGroupBox.Caption:='Macro '+aBuildMacro.Identifier;
     BuildMacroSelectedGroupBox.Enabled:=true;
-    BMDefValSynEdit.Lines.Text:=aBuildMacro.DefaultValue;
-    BMDefValSynEdit.Enabled:=true;
+    BuildMacroDescriptionEdit.Enabled:=true;
+    BuildMacroDescriptionEdit.Text:=aBuildMacro.Description;
   end else begin
     BuildMacroSelectedGroupBox.Caption:='No macro selected';
     BuildMacroSelectedGroupBox.Enabled:=false;
-    BMDefValSynEdit.Lines.Text:='';
-    BMDefValSynEdit.Enabled:=false;
+    BuildMacroDescriptionEdit.Enabled:=false;
+    BuildMacroDescriptionEdit.Text:='';
   end;
 end;
 
-procedure TCompOptBuildMacrosFrame.SaveDefaultValue;
+procedure TCompOptBuildMacrosFrame.SaveItemProperties;
 var
   BuildMacro: TLazBuildMacro;
   NodeType: TCBMNodeType;
 begin
   GetSelectedNode(BuildMacro,NodeType);
   if BuildMacro=nil then exit;
-  BuildMacro.DefaultValue:=BMDefValSynEdit.Lines.Text;
+  BuildMacro.Description:=BuildMacroDescriptionEdit.Text;
 end;
 
 constructor TCompOptBuildMacrosFrame.Create(TheOwner: TComponent);
@@ -426,7 +420,8 @@ begin
   fValueImgID:=IDEImages.LoadImage(24,'da_define');
   fDefValueImgID:=IDEImages.LoadImage(24,'da_define');
 
-  BuildMacroDefaultLabel.Caption:='Default value or expression:';
+  BuildMacroDefaultLabel.Caption:='Hint: A default value can be defined in the conditionals.';
+  BuildMacroDescriptionLabel.Caption:='Description:';
 end;
 
 destructor TCompOptBuildMacrosFrame.Destroy;

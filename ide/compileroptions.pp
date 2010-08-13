@@ -36,7 +36,7 @@
        values, valuedescriptions, defaultvalue:string,
   - IDE build macro: TIDEBuildMacro, load/save to xmlconfig
   - BuildMacroChangeStamp:
-    - changed on used packages
+    - changed on used packages, IncreaseBuildMacroChangeStamp
   - remove TBuildModeGraph
   - remove TBuildModeFlag
   - remove TBuildMode
@@ -70,9 +70,11 @@
            default macro values of required packages
   - every package/project needs a function to substitute macros
       - check local macros (pkgdir, pkgoutdir)
-      - first check active project values
-      - then check default values of build macros of used packages
-      - finally use default global macros
+      - check active project values
+      - check default values of build macros of used packages
+      - check default values of build macros of self
+      - check conditionals
+      - use default global macros
   - every package/project needs conditionals
       - using config script
       - conditionals are executed when a path is computed
@@ -103,7 +105,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, FileUtil, InterfaceBase, LCLProc, Forms,
-  Controls, Laz_XMLCfg, ExprEval, DefineTemplates,
+  Controls, Laz_XMLCfg, ExprEval, DefineTemplates, CodeToolsCfgScript,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, IDEOptionsIntf,
   // IDE
@@ -130,7 +132,6 @@ type
     procedure SetDescription(const AValue: string); override;
     procedure SetValueDescriptions(const AValue: TStrings); override;
     procedure SetValues(const AValue: TStrings); override;
-    procedure SetDefaultValue(const AValue: string); override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -715,6 +716,10 @@ function MergeLinkerOptions(const OldOptions, AddOptions: string): string;
 function MergeCustomOptions(const OldOptions, AddOptions: string): string;
 function ConvertSearchPathToCmdLine(const switch, paths: String): String;
 function ConvertOptionsToCmdLine(const Delim, Switch, OptionStr: string): string;
+
+{
+procedure GetBuildMacroValues(Owner: TObject; IncludeSelf: boolean);
+}
 
 function LoadXMLCompileReasons(const AConfig: TXMLConfig;
   const APath: String; const DefaultReasons: TCompileReasons): TCompileReasons;
@@ -3672,7 +3677,6 @@ end;
 procedure TIDEBuildMacro.Assign(Source: TLazBuildMacro);
 begin
   Identifier:=Source.Identifier;
-  DefaultValue:=Source.DefaultValue;
   Description:=Source.Description;
   ValueDescriptions:=Source.ValueDescriptions;
   Values:=Source.Values;
@@ -3685,7 +3689,6 @@ begin
   if Description<>Other.Description then exit;
   if not Values.Equals(Other.Values) then exit;
   if not ValueDescriptions.Equals(Other.ValueDescriptions) then exit;
-  if DefaultValue<>Other.DefaultValue then exit;
   Result:=true;
 end;
 
@@ -3724,14 +3727,12 @@ begin
   Tool.AddDiff('Description',Description,OtherMode.Description);
   Tool.AddStringsDiff('Values',Values,OtherMode.Values);
   Tool.AddStringsDiff('ValueDescriptions',ValueDescriptions,OtherMode.ValueDescriptions);
-  Tool.AddDiff('DefaultValue',DefaultValue,OtherMode.DefaultValue);
 end;
 
 procedure TIDEBuildMacro.Assign(Source: TIDEBuildMacro);
 begin
   Identifier:=Source.Identifier;
   Values:=Source.Values;
-  FDefaultValue:=Source.DefaultValue;
   Description:=Source.Description;
   ValueDescriptions:=Source.ValueDescriptions;
 end;
@@ -3742,17 +3743,6 @@ begin
     FChangeStamp:=low(FChangeStamp)
   else
     inc(FChangeStamp);
-end;
-
-procedure TIDEBuildMacro.SetDefaultValue(const AValue: string);
-var
-  NewValue: String;
-begin
-  NewValue:=ConvertLineEndings(AValue);
-  if DefaultValue=NewValue then exit;
-  FDefaultValue:=NewValue;
-  IncreaseChangeStamp;
-  IncreaseBuildMacroChangeStamp;
 end;
 
 { TIDEBuildMacros }
