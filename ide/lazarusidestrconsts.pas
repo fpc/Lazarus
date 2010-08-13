@@ -2814,6 +2814,9 @@ resourcestring
   // codetools defines
   lisCodeToolsDefsCodeToolsDefinesPreview = 'CodeTools Defines Preview';
   lisCodeToolsDefsWriteError = 'Write error';
+  lisUnableToWriteToFile2 = 'Unable to write to file "%s".';
+  lisUnableToWriteTheProjectSessionFileError = 'Unable to write the project '
+    +'session file%s"%s".%sError: %s';
   lisStopDebugging2 = 'Stop debugging?';
   lisStopCurrentDebuggingAndRebuildProject = 'Stop current debugging and '
     +'rebuild project?';

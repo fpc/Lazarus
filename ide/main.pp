@@ -12213,7 +12213,8 @@ begin
     NewProjectFilename:=DestDir+ExtractFilename(CurProject.ProjectInfoFile);
     DeleteFileUTF8(NewProjectFilename);
     Result:=CurProject.WriteProject(CurProject.PublishOptions.WriteFlags
-           +[pwfSkipDebuggerSettings,pwfSkipJumpPoints,pwfDoNotSaveSessionInfo],
+           +[pwfSkipDebuggerSettings,pwfSkipJumpPoints,pwfDoNotSaveSessionInfo,
+             pwfIgnoreModified],
            NewProjectFilename);
     if Result<>mrOk then begin
       debugln('TMainIDE.DoPublishModule CurProject.WriteProject failed');

@@ -51,7 +51,8 @@ type
     pwfSkipDebuggerSettings,
     pwfSkipJumpPoints,
     pwfDoNotSaveProjectInfo,
-    pwfDoNotSaveSessionInfo
+    pwfDoNotSaveSessionInfo,
+    pwfIgnoreModified  // write always even if nothing modified (e.g. to upgrade to a newer lpi version)
     );
   TProjectWriteFlags = set of TProjectWriteFlag;
 

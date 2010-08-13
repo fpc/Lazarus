@@ -2572,9 +2572,11 @@ var
   Path: String;
   xmlconfig: TXMLConfig;
   SaveSessionInfoInLPI: Boolean;
-  CurSessionFilename: String;
+  CurSessionFilename: String; // only set if session should be saved to a separate file
   CurFlags: TProjectWriteFlags;
   SessionSaveResult: TModalResult;
+  WriteLPI: Boolean;
+  WriteLPS: Boolean;
 begin
   Result := mrCancel;
   fCurStorePathDelim:=StorePathDelim;
@@ -2583,13 +2585,7 @@ begin
     CfgFilename := OverrideProjectInfoFile
   else
     CfgFilename := ProjectInfoFile;
-  if Assigned(fOnFileBackup) then begin
-    Result:=fOnFileBackup(CfgFilename);
-    if Result=mrAbort then exit;
-  end;
   CfgFilename:=SetDirSeparators(CfgFilename);
-  
-  UpdateUsageCounts(CfgFilename);
 
   CurSessionFilename := '';
   if (not (pwfDoNotSaveSessionInfo in ProjectWriteFlags))
@@ -2600,6 +2596,8 @@ begin
       CurSessionFilename := ChangeFileExt(OverrideProjectInfoFile,'.lps')
     else
       CurSessionFilename := ProjectSessionFile;
+    if (CompareFilenames(CurSessionFilename,CfgFilename)=0) then
+      CurSessionFilename:='';
   end;
 
   // first save the .lpi file
@@ -2608,130 +2606,163 @@ begin
   if (pwfDoNotSaveSessionInfo in ProjectWriteFlags)
   or (SessionStorage=pssNone) then
     SaveSessionInfoInLPI:=false;
-  repeat
-    try
-      xmlconfig := TCodeBufXMLConfig.CreateWithCache(CfgFilename,false);
-    except
-      on E: Exception do begin
-        DebugLn('Error: ', E.Message);
-        MessageDlg(lisCodeToolsDefsWriteError,
-          Format(lisUnableToWriteTheProjectInfoFileError, [#13, '"',
-            ProjectInfoFile, '"', #13, E.Message])
-          ,mtError,[mbOk],0);
-        Result:=mrCancel;
-        exit;
-      end;
+
+  // check if modified
+  if not (pwfIgnoreModified in ProjectWriteFlags) then
+  begin
+    WriteLPI:=Modified or (not FileExistsUTF8(CfgFilename));
+    if (CompareFilenames(ProjectInfoFile,CfgFilename)=0) then begin
+      // save to default lpi
+      WriteLPI:=WriteLPI or (fProjectInfoFileDate<>FileAgeCached(CfgFilename));
+    end else begin
+      // save to another file
+      WriteLPI:=true;
     end;
-
-    try
-      Path:='ProjectOptions/';
-      // format
-      xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
-      xmlconfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[fCurStorePathDelim],'/');
-      SaveFlags(XMLConfig,Path);
-      xmlconfig.SetDeleteValue(Path+'General/SessionStorage/Value',
-                               ProjectSessionStorageNames[SessionStorage],
-                               ProjectSessionStorageNames[pssInProjectInfo]);
-
-      // save MacroValues
-      MacroValues.SaveToXMLConfig(xmlconfig,Path+'MacroValues/');
-
-      // properties
-      xmlconfig.SetDeleteValue(Path+'General/MainUnit/Value', MainUnitID,0);
-      xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
-                               AutoCreateForms,true);
-      xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
-      xmlconfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
-
-      // lazdoc
-      xmlconfig.SetDeleteValue(Path+'LazDoc/Paths',
-         SwitchPathDelims(CreateRelativeSearchPath(LazDocPaths,ProjectDirectory),
-                          fCurStorePathDelim),
-         '');
-      
-      // i18n
-      xmlconfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
-      xmlconfig.SetDeleteValue(Path+'i18n/EnableI18N/LFM', EnableI18NForLFM, true);
-      xmlconfig.SetDeleteValue(Path+'i18n/OutDir/Value',
-         SwitchPathDelims(CreateRelativePath(POOutputDirectory,ProjectDirectory),
-                          fCurStorePathDelim) ,
-         '');
-
-      // Resources
-      Resources.WriteToProjectFile(xmlconfig, Path);
-
-      // save custom data
-      SaveStringToStringTree(xmlconfig,CustomData,Path+'CustomData/');
-
-      // Save the compiler options
-      CompilerOptions.SaveToXMLConfig(XMLConfig,'CompilerOptions/');
-      
-      // save the Publish Options
-      PublishOptions.SaveToXMLConfig(xmlconfig,Path+'PublishOptions/',fCurStorePathDelim);
-
-      // save the Run Parameter Options
-      RunParameterOptions.Save(xmlconfig,Path,fCurStorePathDelim);
-      
-      // save dependencies
-      SavePkgDependencyList(xmlconfig,Path+'RequiredPackages/',
-        FFirstRequiredDependency,pdlRequires,fCurStorePathDelim);
-
-      // save units
-      SaveUnits(XMLConfig,Path,true,SaveSessionInfoInLPI);
-
-      // save session info
-      if SaveSessionInfoInLPI then begin
-        SaveSessionInfo(XMLConfig,Path);
-      end;
-
-      if Assigned(OnSaveProjectInfo) then begin
-        CurFlags:=ProjectWriteFlags;
-        if not SaveSessionInfoInLPI then
-          CurFlags:=CurFlags+[pwfDoNotSaveSessionInfo];
-        OnSaveProjectInfo(Self,XMLConfig,CurFlags);
-      end;
-
-      InvalidateFileStateCache;
-      xmlconfig.Flush;
-      Modified:=false;
-      if SaveSessionInfoInLPI then
-        SessionModified:=false;
-      
-      Result:=mrOk;
-    except
-      on E: Exception do begin
-        Result:=MessageDlg(lisCodeToolsDefsWriteError, Format(
-          lisUnableToWriteToFile, ['"', CfgFilename, '"']),
-          mtError,[mbRetry,mbAbort],0);
-      end;
+    if CurSessionFilename='' then begin
+      WriteLPS:=false;
+      WriteLPI:=WriteLPI or SessionModified;
+    end else begin
+      WriteLPS:=WriteLPI or SessionModified
+                or (not FileExistsUTF8(CurSessionFilename));
     end;
-    if CompareFilenames(ProjectInfoFile,xmlconfig.Filename)=0 then begin
-      fProjectInfoFileBuffer:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
+    if (not WriteLPI) and (not WriteLPS) then exit(mrOk);
+  end else begin
+    WriteLPI:=true;
+    WriteLPS:=true;
+  end;
+
+  // backup
+  if WriteLPI and Assigned(fOnFileBackup) then begin
+    Result:=fOnFileBackup(CfgFilename);
+    if Result=mrAbort then exit;
+  end;
+
+  // increase usage counters
+  UpdateUsageCounts(CfgFilename);
+
+  if WriteLPI then begin
+    repeat
       try
-        fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
+        xmlconfig := TCodeBufXMLConfig.CreateWithCache(CfgFilename,false);
+      except
+        on E: Exception do begin
+          DebugLn('Error: ', E.Message);
+          MessageDlg(lisCodeToolsDefsWriteError,
+            Format(lisUnableToWriteTheProjectInfoFileError, [#13, '"',
+              ProjectInfoFile, '"', #13, E.Message])
+            ,mtError,[mbOk],0);
+          Result:=mrCancel;
+          exit;
+        end;
+      end;
+
+      try
+        Path:='ProjectOptions/';
+        // format
+        xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
+        xmlconfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[fCurStorePathDelim],'/');
+        SaveFlags(XMLConfig,Path);
+        xmlconfig.SetDeleteValue(Path+'General/SessionStorage/Value',
+                                 ProjectSessionStorageNames[SessionStorage],
+                                 ProjectSessionStorageNames[pssInProjectInfo]);
+
+        // save MacroValues
+        MacroValues.SaveToXMLConfig(xmlconfig,Path+'MacroValues/');
+
+        // properties
+        xmlconfig.SetDeleteValue(Path+'General/MainUnit/Value', MainUnitID,0);
+        xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
+                                 AutoCreateForms,true);
+        xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
+        xmlconfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
+
+        // lazdoc
+        xmlconfig.SetDeleteValue(Path+'LazDoc/Paths',
+           SwitchPathDelims(CreateRelativeSearchPath(LazDocPaths,ProjectDirectory),
+                            fCurStorePathDelim),
+           '');
+
+        // i18n
+        xmlconfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
+        xmlconfig.SetDeleteValue(Path+'i18n/EnableI18N/LFM', EnableI18NForLFM, true);
+        xmlconfig.SetDeleteValue(Path+'i18n/OutDir/Value',
+           SwitchPathDelims(CreateRelativePath(POOutputDirectory,ProjectDirectory),
+                            fCurStorePathDelim) ,
+           '');
+
+        // Resources
+        Resources.WriteToProjectFile(xmlconfig, Path);
+
+        // save custom data
+        SaveStringToStringTree(xmlconfig,CustomData,Path+'CustomData/');
+
+        // Save the compiler options
+        CompilerOptions.SaveToXMLConfig(XMLConfig,'CompilerOptions/');
+
+        // save the Publish Options
+        PublishOptions.SaveToXMLConfig(xmlconfig,Path+'PublishOptions/',fCurStorePathDelim);
+
+        // save the Run Parameter Options
+        RunParameterOptions.Save(xmlconfig,Path,fCurStorePathDelim);
+
+        // save dependencies
+        SavePkgDependencyList(xmlconfig,Path+'RequiredPackages/',
+          FFirstRequiredDependency,pdlRequires,fCurStorePathDelim);
+
+        // save units
+        SaveUnits(XMLConfig,Path,true,SaveSessionInfoInLPI);
+
+        // save session info
+        if SaveSessionInfoInLPI then begin
+          SaveSessionInfo(XMLConfig,Path);
+        end;
+
+        if Assigned(OnSaveProjectInfo) then begin
+          CurFlags:=ProjectWriteFlags;
+          if not SaveSessionInfoInLPI then
+            CurFlags:=CurFlags+[pwfDoNotSaveSessionInfo];
+          OnSaveProjectInfo(Self,XMLConfig,CurFlags);
+        end;
+
+        InvalidateFileStateCache;
+        xmlconfig.Flush;
+        Modified:=false;
+        if SaveSessionInfoInLPI then
+          SessionModified:=false;
+
+        Result:=mrOk;
+      except
+        on E: Exception do begin
+          Result:=MessageDlg(lisCodeToolsDefsWriteError, Format(
+            lisUnableToWriteToFile, ['"', CfgFilename, '"']),
+            mtError,[mbRetry,mbAbort],0);
+        end;
+      end;
+      if CompareFilenames(ProjectInfoFile,xmlconfig.Filename)=0 then begin
+        fProjectInfoFileBuffer:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
+        try
+          fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
+        except
+        end;
+      end;
+      try
+        xmlconfig.Free;
       except
       end;
-    end;
-    try
-      xmlconfig.Free;
-    except
-    end;
-    xmlconfig:=nil;
-  until Result<>mrRetry;
+      xmlconfig:=nil;
+    until Result<>mrRetry;
+  end;
 
-  if (not (pwfDoNotSaveSessionInfo in ProjectWriteFlags))
-  and (SessionStorage in [pssInProjectDir,pssInIDEConfig])
-  and (CurSessionFilename<>'')
-  and (CompareFilenames(CurSessionFilename,CfgFilename)<>0) then begin
+  if (CurSessionFilename<>'') and WriteLPS then begin
     // save session in separate file .lps
 
     //DebugLn('TProject.WriteProject Write Session File="',CurSessionFilename,'"');
 
+    CurSessionFilename:=SetDirSeparators(CurSessionFilename);
     if Assigned(fOnFileBackup) then begin
       Result:=fOnFileBackup(CurSessionFilename);
       if Result=mrAbort then exit;
     end;
-    CurSessionFilename:=SetDirSeparators(CurSessionFilename);
     SessionSaveResult:=mrCancel;
     repeat
       try
@@ -2739,10 +2770,9 @@ begin
       except
         on E: Exception do begin
           DebugLn('ERROR: ',E.Message);
-          MessageDlg('Write error',
-            'Unable to write the project session file'#13
-            +'"'+ProjectSessionFile+'".'#13
-            +'Error: '+E.Message
+          MessageDlg(lisCodeToolsDefsWriteError,
+            Format(lisUnableToWriteTheProjectSessionFileError, [#13,
+              ProjectSessionFile, #13, E.Message])
             ,mtError,[mbOk],0);
           Result:=mrCancel;
           exit;
@@ -2770,8 +2800,8 @@ begin
         SessionSaveResult:=mrOk;
       except
         on E: Exception do begin
-          SessionSaveResult:=MessageDlg('Write error',
-            'Unable to write to file "'+CurSessionFilename+'".',
+          SessionSaveResult:=MessageDlg(lisCodeToolsDefsWriteError,
+            Format(lisUnableToWriteToFile2, [CurSessionFilename]),
             mtError,[mbRetry,mbAbort],0);
         end;
       end;
