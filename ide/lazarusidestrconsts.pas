@@ -4856,6 +4856,8 @@ resourcestring
   synfFoldCommentsInSelection   = 'Fold comments in selection';
   synfHideCommentsInSelection   = 'Hide comments in selection';
   lisCustomBuildMacros = 'Custom build macros';
+  lisCanNotCompileProject = 'Can not compile project';
+  lisTheProjectHasNoMainSourceFile = 'The project has no main source file.';
 
 implementation
 

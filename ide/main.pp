@@ -10641,7 +10641,9 @@ var
   FPCVersion, FPCRelease, FPCPatch: integer;
 begin
   if Project1.MainUnitInfo=nil then begin
-    // this project has not source to compile
+    // this project has no source to compile
+    IDEMessageDialog(lisCanNotCompileProject,
+      lisTheProjectHasNoMainSourceFile, mtError, [mbCancel], '');
     exit(mrCancel);
   end;
 
