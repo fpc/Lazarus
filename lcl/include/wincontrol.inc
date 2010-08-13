@@ -4588,7 +4588,7 @@ begin
       MouseEventMessage := TLMMouseEvent(TheMessage);
       MouseEventMessage.X := P.X;
       MouseEventMessage.Y := P.Y;
-      Dispatch(MouseEventMessage);
+      Control.Dispatch(MouseEventMessage);
       MouseMessage.Result := MouseEventMessage.Result;
     end
     else
