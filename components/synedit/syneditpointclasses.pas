@@ -550,7 +550,7 @@ end;
 procedure TSynEditCaret.InternalSetLineCharPos(NewLine, NewCharPos: Integer;
   KeepLastCharPos: Boolean = False; ForceSet: Boolean = False);
 var
-  nMaxX: Integer;
+  nMaxX, i: Integer;
   Line: string;
 begin
   Lock;
@@ -568,11 +568,12 @@ begin
         NewLine := 1;
         if (not FAllowPastEOL) and (FForcePastEOL = 0) then
           nMaxX := 1;
-      end else
-        if (not FAllowPastEOL) and (FForcePastEOL = 0) then begin
-          Line := Lines[NewLine - 1];
-          nMaxX := Lines.LogicalToPhysicalCol(Line, NewLine - 1, length(Line)+1);
-        end;
+      end else begin
+        Line := Lines[NewLine - 1];
+        i := Lines.LogicalToPhysicalCol(Line, NewLine - 1, length(Line)+1);
+        if ((not FAllowPastEOL) and (FForcePastEOL = 0)) or (nMaxX < i) then
+          nMaxX := i;
+      end;
       if NewCharPos > nMaxX then
         NewCharPos := nMaxX;
       if NewCharPos < 1 then
