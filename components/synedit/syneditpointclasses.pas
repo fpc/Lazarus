@@ -1548,6 +1548,7 @@ end;
 constructor TSynEditScreenCaret.Create(AHandle: HWND);
 begin
   inherited Create;
+  FPersistentCaret := False;
   FHandle := AHandle;
   FVisible := False;
   FCurrentVisible := False;
@@ -1687,10 +1688,14 @@ end;
 
 procedure TSynEditScreenCaret.SetPersistentCaret(const AValue: Boolean);
 begin
-  if FPersistentCaret = AValue then exit;
-  FPersistentCaret := AValue;
-  if FCurrentCreated then
-    SetCaretRespondToFocus(Handle, not FPersistentCaret);
+  (* Do nothing, keep Value always False.
+     Most Widgetsets do not even implement it. SynEdit handles it in WMSetFocus/WMKillFocus
+     QT goes weird, if it is set
+  *)
+  //if FPersistentCaret = AValue then exit;
+  //FPersistentCaret := AValue;
+  //if FCurrentCreated then
+  //  SetCaretRespondToFocus(Handle, not FPersistentCaret);
 end;
 
 procedure TSynEditScreenCaret.SetClipBottom(const AValue: Integer);

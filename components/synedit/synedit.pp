@@ -4571,6 +4571,7 @@ begin
   {$IFDEF VerboseFocus}
   DebugLn('[TCustomSynEdit.WMSetFocus] A ',Name,':',ClassName);
   {$ENDIF}
+  FScreenCaret.DestroyCaret; // Ensure recreation. On Windows only one caret exists, and it must be moved to the focused editor
   FScreenCaret.Visible := True;
   //if FHideSelection and SelAvail then
   //  Invalidate;
