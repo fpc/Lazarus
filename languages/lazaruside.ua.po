@@ -3912,6 +3912,10 @@ msgstr "Скасувати завантаження модуля"
 msgid "Cancel renaming"
 msgstr "Скасувати зміну назви"
 
+#: lazarusidestrconsts.liscannotcompileproject
+msgid "Cannot compile project"
+msgstr ""
+
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
 msgstr "Не можу скопіювати компонент верхнього рівня."
@@ -12943,6 +12947,10 @@ msgstr "Програму %smake%s не знайдено.%sЦей інструм�
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
 msgstr ""
 
+#: lazarusidestrconsts.listheprojecthasnomainsourcefile
+msgid "The project has no main source file."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "Файл відомостей проекту %s%s%s%sзбігається з головним кодом!"
@@ -13596,11 +13604,19 @@ msgstr "Не можу записати файл %s%s%s%sError: %s"
 msgid "Unable to write the project info file%s%s%s%s.%sError: %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
+msgid "Unable to write the project session file%s\"%s\".%sError: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletowritetofile
 #, fuzzy
 #| msgid "Unable to write to file %s%s%s!"
 msgid "Unable to write to file %s%s%s."
 msgstr "Не можу записати в файл %s%s%s!"
+
+#: lazarusidestrconsts.lisunabletowritetofile2
+msgid "Unable to write to file \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
 msgid "Unable to write xml stream to %s%sError: %s"

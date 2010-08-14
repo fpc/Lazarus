@@ -3892,6 +3892,10 @@ msgstr "בטל את טעינת היחידה"
 msgid "Cancel renaming"
 msgstr "בטל את שינוי השם"
 
+#: lazarusidestrconsts.liscannotcompileproject
+msgid "Cannot compile project"
+msgstr ""
+
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
 msgstr "לא יכול להעתיק רכיב של הרמה העליונה."
@@ -12907,6 +12911,10 @@ msgstr "התוכנית make לא נמצאה. כלי זה דרוש לבניית �
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
 msgstr "הפרוייקט לא משתמש ביחידות ממשקים של LCL, אבל נראה שהיא זקוקה להן. תקבל שגיאות מקשר מוזרות אם תשתמש בטפסי LCL ללא ממשקים."
 
+#: lazarusidestrconsts.listheprojecthasnomainsourcefile
+msgid "The project has no main source file."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "קובץ מידע הפרוייקט %s%s%s%s זהה לקובץ הקוד הראשי של הפרוייקט!"
@@ -13558,9 +13566,17 @@ msgstr "לא יכול לכתוב קובץ %s%s%s%s שגיאה: %s"
 msgid "Unable to write the project info file%s%s%s%s.%sError: %s"
 msgstr "לא יכול לכתוב את קובץ מידע הפרוייקט %s%s%s%s. שגיאה: s%"
 
+#: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
+msgid "Unable to write the project session file%s\"%s\".%sError: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletowritetofile
 msgid "Unable to write to file %s%s%s."
 msgstr "לא יכול לכתוב קובץ %s%s%s."
+
+#: lazarusidestrconsts.lisunabletowritetofile2
+msgid "Unable to write to file \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
 msgid "Unable to write xml stream to %s%sError: %s"

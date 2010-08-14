@@ -3917,6 +3917,10 @@ msgstr "Atsisakyti modulio įkėlimo"
 msgid "Cancel renaming"
 msgstr "Atsisakyti pervadinimo"
 
+#: lazarusidestrconsts.liscannotcompileproject
+msgid "Cannot compile project"
+msgstr ""
+
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
 msgstr "Aukščiausiame lygyje esančių komponenčių kopijuoti negalima."
@@ -12950,6 +12954,10 @@ msgstr "Nerasta programa %ssmake%s.%sŠi programa reikalinga Lazarus darymui.%s"
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
 msgstr "Projekte nenaudojamos LCL modulio sąsajos, bet, panašu į tai, kad jam jos būtinos.%Jei LCL formos naudojamos be sąsajų, saistyklė gali pranešti apie keistas klaidas."
 
+#: lazarusidestrconsts.listheprojecthasnomainsourcefile
+msgid "The project has no main source file."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "Projekto informacinis failas %s%s%s%s toks pat kaip ir projekto pagrindinio pirminio kodo failas!"
@@ -13606,10 +13614,18 @@ msgstr "Nepavyko rašyti į failą %s%s%s%sKlaida: %s"
 msgid "Unable to write the project info file%s%s%s%s.%sError: %s"
 msgstr "Nepavyko rašyti į projekto informacinį failą%s%s%s%s.%sKlaida: %s"
 
+#: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
+msgid "Unable to write the project session file%s\"%s\".%sError: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletowritetofile
 #| msgid "Unable to write to file %s%s%s!"
 msgid "Unable to write to file %s%s%s."
 msgstr "Nepavyko rašyti į failą %s%s%s."
+
+#: lazarusidestrconsts.lisunabletowritetofile2
+msgid "Unable to write to file \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
 msgid "Unable to write xml stream to %s%sError: %s"

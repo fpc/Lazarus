@@ -3939,6 +3939,10 @@ msgstr "Laden der Unit abbrechen"
 msgid "Cancel renaming"
 msgstr "Umbenennen abbrechen"
 
+#: lazarusidestrconsts.liscannotcompileproject
+msgid "Cannot compile project"
+msgstr ""
+
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
 msgstr "Kann die obere Komponente nicht kopieren"
@@ -12990,6 +12994,10 @@ msgstr "Das Programm %smake%s wurde nicht gefunden.%sEs wird für das Kompiliere
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
 msgstr "Das Projekt bindet die LCL-Unit-Schnittstelllen nicht ein, scheint sie aber zu brauchen.%sEs führt zu Linker-Fehlern, wenn die LCL-Fenster ohne ihre Interfaces eingebunden werden."
 
+#: lazarusidestrconsts.listheprojecthasnomainsourcefile
+msgid "The project has no main source file."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "Die Projekt-Infodatei %s%s%s%sist identisch zur Haupt-Quelltextdatei des Projekts!"
@@ -13643,11 +13651,19 @@ msgstr "Kann die Datei %s%s%snicht schreiben%sFehler: %s"
 msgid "Unable to write the project info file%s%s%s%s.%sError: %s"
 msgstr "Kann die Projekt-Infodatei%s%s%s%snicht schreiben.%sFehler: %s"
 
+#: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
+msgid "Unable to write the project session file%s\"%s\".%sError: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletowritetofile
 #, fuzzy
 #| msgid "Unable to write to file %s%s%s!"
 msgid "Unable to write to file %s%s%s."
 msgstr "Kann die Datei %s%s%s nicht schreiben!"
+
+#: lazarusidestrconsts.lisunabletowritetofile2
+msgid "Unable to write to file \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
 msgid "Unable to write xml stream to %s%sError: %s"

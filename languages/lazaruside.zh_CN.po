@@ -3926,6 +3926,10 @@ msgstr "取消载入单元"
 msgid "Cancel renaming"
 msgstr "取消重命名"
 
+#: lazarusidestrconsts.liscannotcompileproject
+msgid "Cannot compile project"
+msgstr ""
+
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
 msgstr "不能复制最高层的组件."
@@ -12963,6 +12967,10 @@ msgstr "程序 %smake%s 未找到.%s构建 Lazarus 这个工具是必须的.%s"
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
 msgstr ""
 
+#: lazarusidestrconsts.listheprojecthasnomainsourcefile
+msgid "The project has no main source file."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "工程信息文件 %s%s%s%s和工程主文件是等价的!"
@@ -13616,11 +13624,19 @@ msgstr "无法写入文件 %s%s%s%s错误: %s"
 msgid "Unable to write the project info file%s%s%s%s.%sError: %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
+msgid "Unable to write the project session file%s\"%s\".%sError: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletowritetofile
 #, fuzzy
 #| msgid "Unable to write to file %s%s%s!"
 msgid "Unable to write to file %s%s%s."
 msgstr "无法写入文件 %s%s%s!"
+
+#: lazarusidestrconsts.lisunabletowritetofile2
+msgid "Unable to write to file \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
 msgid "Unable to write xml stream to %s%sError: %s"

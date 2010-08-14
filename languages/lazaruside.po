@@ -3872,6 +3872,10 @@ msgstr ""
 msgid "Cancel renaming"
 msgstr ""
 
+#: lazarusidestrconsts.liscannotcompileproject
+msgid "Cannot compile project"
+msgstr ""
+
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
 msgstr ""
@@ -12853,6 +12857,10 @@ msgstr ""
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
 msgstr ""
 
+#: lazarusidestrconsts.listheprojecthasnomainsourcefile
+msgid "The project has no main source file."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr ""
@@ -13504,8 +13512,16 @@ msgstr ""
 msgid "Unable to write the project info file%s%s%s%s.%sError: %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
+msgid "Unable to write the project session file%s\"%s\".%sError: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletowritetofile
 msgid "Unable to write to file %s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts.lisunabletowritetofile2
+msgid "Unable to write to file \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritexmlstreamtoerror

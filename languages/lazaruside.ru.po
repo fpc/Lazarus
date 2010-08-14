@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-08-11 03:26+0300\n"
+"PO-Revision-Date: 2010-08-15 00:37+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3927,6 +3927,11 @@ msgstr "Отменить загрузку модуля"
 #: lazarusidestrconsts.liscancelrenaming
 msgid "Cancel renaming"
 msgstr "Отменить переименование"
+
+#: lazarusidestrconsts.liscannotcompileproject
+#| msgid "Can not compile project"
+msgid "Cannot compile project"
+msgstr "Невозможно собрать проект"
 
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
@@ -12950,6 +12955,10 @@ msgstr "Программа %smake%s не найдена.%sЭто средств�
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
 msgstr "Проект не использует модуль LCL Interfaces, но, вероятно, требует его.%sКомпоновщик будет выдавать непонятные ошибки, если формы LCL будут использоваться без модуля Interfaces."
 
+#: lazarusidestrconsts.listheprojecthasnomainsourcefile
+msgid "The project has no main source file."
+msgstr "Проект не имеет главного файла исходного кода."
+
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "Файл сведений проекта %s%s%s%sсовпадает с главным файлом исходного кода!"
@@ -13603,10 +13612,18 @@ msgstr "Невозможно записать файл %s%s%s%sОшибка: %s"
 msgid "Unable to write the project info file%s%s%s%s.%sError: %s"
 msgstr "Невозможно записать файл информации о проекте%s%s%s%s.%sОшибка: %s"
 
+#: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
+msgid "Unable to write the project session file%s\"%s\".%sError: %s"
+msgstr "Невозможно записать файл сессии проекта%s\"%s\".%sОшибка: %s"
+
 #: lazarusidestrconsts.lisunabletowritetofile
 #| msgid "Unable to write to file %s%s%s!"
 msgid "Unable to write to file %s%s%s."
 msgstr "Невозможно записать в файл %s%s%s."
+
+#: lazarusidestrconsts.lisunabletowritetofile2
+msgid "Unable to write to file \"%s\"."
+msgstr "Невозможно произвести запись в файл \"%s\"."
 
 #: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
 msgid "Unable to write xml stream to %s%sError: %s"

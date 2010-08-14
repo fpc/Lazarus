@@ -3884,6 +3884,10 @@ msgstr "Zrušit načítání jednotky"
 msgid "Cancel renaming"
 msgstr "Zrušit přejmenování"
 
+#: lazarusidestrconsts.liscannotcompileproject
+msgid "Cannot compile project"
+msgstr ""
+
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
 msgstr "Nelze zkopírovat komponentu na nejvyšší úrovni."
@@ -12870,6 +12874,10 @@ msgstr "Program %smake%s nebyl nalezen.%sTento nástroj je nutný k sestavení L
 msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
 msgstr "Projekt nepoužívá rozhraní jednotek LCL, ale zdá se, že je potřebuje.%sDostanete různé chyby při linkování, pokud použijete LCL formulář bez rozhraní."
 
+#: lazarusidestrconsts.listheprojecthasnomainsourcefile
+msgid "The project has no main source file."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgstr "Informační soubor projektu %s%s%s%sje shodný s hlavním souborem zdrojového kódu!"
@@ -13521,9 +13529,17 @@ msgstr "Nelze zapisovat do souboru %s%s%s%sChyba: %s"
 msgid "Unable to write the project info file%s%s%s%s.%sError: %s"
 msgstr "Nelze zapisovat do informačního souboru projektu %s%s%s%sChyba: %s"
 
+#: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
+msgid "Unable to write the project session file%s\"%s\".%sError: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletowritetofile
 msgid "Unable to write to file %s%s%s."
 msgstr "Nelze zapsat do souboru %s%s%s."
+
+#: lazarusidestrconsts.lisunabletowritetofile2
+msgid "Unable to write to file \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
 msgid "Unable to write xml stream to %s%sError: %s"
