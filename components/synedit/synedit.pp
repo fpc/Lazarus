@@ -7111,7 +7111,7 @@ begin
     if (eoDropFiles in ChangedOptions) and not (csDesigning in ComponentState) and HandleAllocated then
       ; // ToDo DragAcceptFiles
     if (eoPersistentCaret in ChangedOptions) and HandleAllocated then begin
-      SetCaretRespondToFocus(Handle,not (eoPersistentCaret in fOptions));
+      FScreenCaret.PersistentCaret := eoPersistentCaret in fOptions;
       UpdateCaret;
     end;
     if (eoShowSpecialChars in ChangedOptions) and HandleAllocated then

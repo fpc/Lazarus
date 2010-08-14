@@ -268,6 +268,7 @@ type
     procedure SetDisplayType(const AType: TSynCaretType);
     procedure SetVisible(const AValue: Boolean);
   private
+    FPersistentCaret: Boolean;
     FPixelWidth, FPixelHeight: Integer;
     FOffsetX, FOffsetY: Integer;
     FCurrentPosX, FCurrentPosY: Integer;
@@ -280,6 +281,7 @@ type
     procedure SetClipRect(const AValue: TRect);
     procedure SetClipTop(const AValue: Integer);
     procedure SetHandle(const AValue: HWND);
+    procedure SetPersistentCaret(const AValue: Boolean);
     procedure UpdateDisplayType;
     procedure UpdateDisplay;
     procedure ShowCaret;
@@ -305,6 +307,7 @@ type
     property ExtraLineChars: Integer read FExtraLineChars; // Extend the longest line by x chars
     property OnExtraLineCharsChanged: TNotifyEvent
              read FOnExtraLineCharsChanged write FOnExtraLineCharsChanged;
+    property PersistentCaret: Boolean read FPersistentCaret write SetPersistentCaret;
   end;
 
 implementation
@@ -1682,6 +1685,14 @@ begin
   UpdateDisplay;
 end;
 
+procedure TSynEditScreenCaret.SetPersistentCaret(const AValue: Boolean);
+begin
+  if FPersistentCaret = AValue then exit;
+  FPersistentCaret := AValue;
+  if FCurrentCreated then
+    SetCaretRespondToFocus(Handle, not FPersistentCaret);
+end;
+
 procedure TSynEditScreenCaret.SetClipBottom(const AValue: Integer);
 begin
   if FClipBottom = AValue then exit;
@@ -1752,6 +1763,7 @@ begin
     FCurrentVisible := False;
     FCurrentClippedWidth := w;
     FCurrentPosX := x - 1;
+    SetCaretRespondToFocus(Handle, not FPersistentCaret);
   end;
   if (x <> FCurrentPosX) or (y <> FCurrentPosY) then
     SetCaretPosEx(FHandle, x, y);
