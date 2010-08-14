@@ -148,6 +148,8 @@ end;
   TUntabbedNotebook Constructor
  ------------------------------------------------------------------------------}
 constructor TUntabbedNotebook.Create(TheOwner: TComponent);
+var
+  lSize: TSize;
 begin
   inherited Create(TheOwner);
 
@@ -157,6 +159,10 @@ begin
 
   ControlStyle := []; // do not add csAcceptsControls
   TabStop := true;
+
+  // Initial size
+  lSize := GetControlClassDefaultSize();
+  SetInitialBounds(0, 0, lSize.CX, lSize.CY);
 end;
 
 destructor TUntabbedNotebook.Destroy;
