@@ -319,6 +319,68 @@ type
     property TabStop;
   end;
 
+  { TUNBPages }
+
+  TUntabbedNotebook = class;
+
+  TUNBPages = class(TStrings)
+  private
+    FPageList: TListWithEvent;
+    FUNotebook: TUntabbedNotebook;
+    procedure PageListChange(Ptr: Pointer; AnAction: TListNotification);
+  protected
+    function GetObject(Index: Integer): TObject; override;
+  public
+    constructor Create(thePageList: TListWithEvent;
+                       theUNotebook: TUntabbedNotebook);
+    procedure Clear; override;
+    procedure Delete(Index: Integer); override;
+    procedure Insert(Index: Integer; const S: String); override;
+  end;
+
+  { TUNBPage }
+
+  TUNBPage = class(TCustomControl)
+  public
+  end;
+
+  { TUntabbedNotebook }
+
+  TUntabbedNotebook = class(TCustomControl)
+  private
+    FPages: TStrings; // TUNBPages
+    FPageIndex: Integer;
+    FPageList: TListWithEvent;
+{    function GetActivePage: String;
+    function GetActivePageComponent: TCustomPage;}
+    function GetPage(AIndex: Integer): TUNBPage;
+//    function GetPageCount : integer;
+    function GetPageIndex: Integer;
+{    function FindVisiblePage(Index: Integer): Integer;}
+    procedure InsertPage(APage: TUNBPage; Index: Integer);
+{    procedure MovePage(APage: TCustomPage; NewIndex: Integer);
+    procedure RemovePage(Index: Integer);
+    procedure SetActivePage(const Value: String);}
+    procedure SetPageIndex(AValue: Integer);
+{    procedure ShowCurrentPage;}
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+{    function TabIndexAtClientPos(ClientPos: TPoint): integer;
+    function TabRect(AIndex: Integer): TRect;
+    function GetImageIndex(ThePageIndex: Integer): Integer; virtual;
+    function IndexOf(APage: TCustomPage): integer;
+    function CustomPage(Index: integer): TCustomPage;}
+  public
+    property Page[Index: Integer]: TUNBPage read GetPage;
+//    property PageCount: integer read GetPageCount;
+//    property PageList: TList read FPageList;
+  published
+//    property TabStop default true;
+    property PageIndex: Integer read GetPageIndex write SetPageIndex default -1;
+    property Pages: TStrings read FPages;
+//    property ActivePage: String read GetActivePage write SetActivePage;
+  end;
 
   { Timer }
 
@@ -1250,15 +1312,16 @@ procedure Register;
 begin
   RegisterComponents('Standard',[TRadioGroup,TCheckGroup,TPanel]);
   RegisterComponents('Additional',[TImage,TShape,TBevel,TPaintBox,TNotebook,
-                                   TLabeledEdit,TSplitter,TTrayIcon]);
+      TUntabbedNotebook, TLabeledEdit, TSplitter, TTrayIcon]);
   RegisterComponents('System',[TTimer,TIdleTimer]);
-  RegisterNoIcon([TPage]);
+  RegisterNoIcon([TPage, TUNBPage]);
 end;
 
 {$I custompage.inc}
 {$I page.inc}
 {$I customnotebook.inc}
 {$I notebook.inc}
+{$I untabbednotebook.inc}
 {$I timer.inc}
 {$I idletimer.inc}
 {$I shape.inc}

@@ -262,7 +262,23 @@ type
     function Notebook: TCustomNotebook; virtual;
   end;
   
-  
+  { TUntabbedNotebookComponentEditor
+    The default component editor for TUntabbedNotebook. }
+    TUntabbedNotebookComponentEditor = class(TDefaultComponentEditor)
+    protected
+      procedure AddNewPageToDesigner(Index: integer); virtual;
+      procedure DoAddPage; virtual;
+      procedure DoDeletePage; virtual;
+      procedure AddMenuItemsForPages(ParentMenuItem: TMenuItem); virtual;
+      procedure ShowPageMenuItemClick(Sender: TObject);
+    public
+      procedure ExecuteVerb(Index: Integer); override;
+      function GetVerb(Index: Integer): string; override;
+      function GetVerbCount: Integer; override;
+      procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); override;
+      function UNotebook: TUntabbedNotebook; virtual;
+    end;
+
 { TPageComponentEditor
   The default component editor for TCustomPage. }
   TPageComponentEditor = class(TNotebookComponentEditor)
@@ -815,6 +831,117 @@ begin
   Result:=TCustomNotebook(GetComponent);
 end;
 
+{ TUntabbedNotebookComponentEditor }
+
+const
+  unbvAddPage       = 0;
+  unbvDeletePage    = 1;
+  unbvShowPage      = 2;
+
+procedure TUntabbedNotebookComponentEditor.AddNewPageToDesigner(Index: integer
+  );
+var
+  Hook: TPropertyEditorHook;
+  NewPage: TUNBPage;
+  NewName: string;
+begin
+  Hook:=nil;
+  if not GetHook(Hook) then exit;
+  NewPage:=UNoteBook.Page[Index];
+  NewName:=GetDesigner.CreateUniqueComponentName(NewPage.ClassName);
+  NewPage.Caption:=NewName;
+  NewPage.Name:=NewName;
+  UNoteBook.PageIndex:=Index;
+  Hook.PersistentAdded(NewPage,true);
+  Modified;
+end;
+
+procedure TUntabbedNotebookComponentEditor.DoAddPage;
+begin
+  if not HasHook then exit;
+  UNoteBook.Pages.Add('');
+  AddNewPageToDesigner(UNoteBook.Pages.Count-1);
+end;
+
+procedure TUntabbedNotebookComponentEditor.DoDeletePage;
+var
+  Hook: TPropertyEditorHook;
+  OldIndex: integer;
+  PageComponent: TPersistent;
+begin
+  OldIndex := UNotebook.PageIndex;
+  if (OldIndex>=0) and (OldIndex<UNotebook.Pages.Count) then
+  begin
+    if not GetHook(Hook) then exit;
+    PageComponent := TPersistent(UNoteBook.Pages.Objects[OldIndex]);
+    Hook.DeletePersistent(PageComponent);
+  end;
+end;
+
+procedure TUntabbedNotebookComponentEditor.AddMenuItemsForPages(
+  ParentMenuItem: TMenuItem);
+var
+  i: integer;
+  NewMenuItem: TMenuItem;
+begin
+  ParentMenuItem.Enabled:=UNoteBook.Pages.Count>0;
+  for i:=0 to UNoteBook.Pages.Count-1 do
+  begin
+    NewMenuItem:=TMenuItem.Create(ParentMenuItem);
+    NewMenuItem.Name:='ShowPage'+IntToStr(i);
+    NewMenuItem.Caption:=UNotebook.Page[i].Name+' "'+UNotebook.Pages[i]+'"';
+    NewMenuItem.OnClick:=@ShowPageMenuItemClick;
+    ParentMenuItem.Add(NewMenuItem);
+  end;
+end;
+
+procedure TUntabbedNotebookComponentEditor.ShowPageMenuItemClick(Sender: TObject
+  );
+begin
+
+end;
+
+procedure TUntabbedNotebookComponentEditor.ExecuteVerb(Index: Integer);
+begin
+  case Index of
+    unbvAddPage:       DoAddPage;
+    unbvDeletePage:    DoDeletePage; // beware: this can free the editor itself
+  end;
+end;
+
+function TUntabbedNotebookComponentEditor.GetVerb(Index: Integer): string;
+begin
+  // Here we reuse the strings from TNotebook, since they are indeed the same ones
+  case Index of
+    unbvAddPage:       Result:=nbcesAddPage;
+    unbvDeletePage:    Result:=nbcesDeletePage;
+    unbvShowPage:      Result:=nbcesShowPage;
+  else
+    Result:='';
+  end;
+end;
+
+function TUntabbedNotebookComponentEditor.GetVerbCount: Integer;
+begin
+  Result := 3;
+end;
+
+procedure TUntabbedNotebookComponentEditor.PrepareItem(Index: Integer;
+  const AnItem: TMenuItem);
+begin
+  inherited PrepareItem(Index, AnItem);
+  case Index of
+    unbvAddPage:       ;
+    unbvDeletePage:    AnItem.Enabled:=UNotebook.PageIndex>=0;
+    unbvShowPage:      AddMenuItemsForPages(AnItem);
+  end;
+end;
+
+function TUntabbedNotebookComponentEditor.UNotebook: TUntabbedNotebook;
+begin
+  Result:=TUntabbedNotebook(GetComponent);
+end;
+
 { TPageComponentEditor }
 
 function TPageComponentEditor.Notebook: TCustomNotebook;
@@ -1282,6 +1409,7 @@ end;
 initialization
   RegisterComponentEditorProc := @DefaultRegisterComponentEditorProc;
   RegisterComponentEditor(TCustomNotebook, TNotebookComponentEditor);
+  RegisterComponentEditor(TUntabbedNotebook, TUntabbedNotebookComponentEditor);
   RegisterComponentEditor(TCustomPage, TPageComponentEditor);
   RegisterComponentEditor(TCustomTabControl, TTabControlComponentEditor);
   RegisterComponentEditor(TStringGrid, TStringGridComponentEditor);
