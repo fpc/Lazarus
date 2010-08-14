@@ -330,6 +330,7 @@ type
     procedure PageListChange(Ptr: Pointer; AnAction: TListNotification);
   protected
     function GetObject(Index: Integer): TObject; override;
+    function GetCount: Integer; override;
   public
     constructor Create(thePageList: TListWithEvent;
                        theUNotebook: TUntabbedNotebook);
