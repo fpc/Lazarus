@@ -1377,7 +1377,7 @@ end;
 procedure TCarbonDataBrowser.ShowItem(AIndex: Integer; Partial: Boolean);
 begin
   // TODO: partial show
-  OSError(RevealDataBrowserItem(Widget, AIndex, CheckPropertyID,
+  OSError(RevealDataBrowserItem(Widget, AIndex, kDataBrowserNoItem,
     kDataBrowserRevealWithoutSelecting), Self, 'ShowItem', 'RevealDataBrowserItem');
 end;
 

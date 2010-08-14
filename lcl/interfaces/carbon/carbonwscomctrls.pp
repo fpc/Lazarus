@@ -266,8 +266,13 @@ end;
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomListView.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
+var
+  clv : TCarbonListView;
 begin
-  Result := TLCLIntfHandle(TCarbonListView.Create(AWinControl, AParams));
+  clv:=TCarbonListView.Create(AWinControl, AParams);
+  Result := TLCLIntfHandle(clv);
+  if Assigned(clv) then
+    clv.SetSelectionMode(True, TListView(AWinControl).MultiSelect);
 end;
 
 class procedure TCarbonWSCustomListView.ColumnDelete
