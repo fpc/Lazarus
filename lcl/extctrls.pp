@@ -329,14 +329,17 @@ type
     FUNotebook: TUntabbedNotebook;
     procedure PageListChange(Ptr: Pointer; AnAction: TListNotification);
   protected
-    function GetObject(Index: Integer): TObject; override;
+    function Get(Index: Integer): String; override;
     function GetCount: Integer; override;
+    function GetObject(Index: Integer): TObject; override;
+    procedure Put(Index: Integer; const S: String); override;
   public
     constructor Create(thePageList: TListWithEvent;
                        theUNotebook: TUntabbedNotebook);
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: String); override;
+//    procedure Move(CurIndex, NewIndex: Integer); override;
   end;
 
   { TUNBPage }

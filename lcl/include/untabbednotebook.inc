@@ -37,24 +37,25 @@ end;
   procedure TUNBPages.PageListChange(Ptr: Pointer; AnAction: TListNotification);
  ------------------------------------------------------------------------------}
 procedure TUNBPages.PageListChange(Ptr: Pointer; AnAction: TListNotification);
-{var
-  APage: TCustomPage;}
+var
+  APage: TUNBPage;
 begin
-{  if (AnAction=lnAdded) then begin
-    APage:=TObject(Ptr) as TCustomPage;
+{  if (AnAction=lnAdded) then
+  begin
+    APage:=TObject(Ptr) as TUNBPage;
     if not (pfInserting in APage.FFlags) then
       APage.Parent:=fNotebook;
   end;}
 end;
 
 {------------------------------------------------------------------------------
-  TUNBPages GetObject
+  TUNBPages Get
  ------------------------------------------------------------------------------}
-function TUNBPages.GetObject(Index: Integer): TObject;
+function TUNBPages.Get(Index: Integer): string;
 begin
-{  if (Index<0) or (Index>=fPageList.Count) then
-    RaiseGDBException('TNBPages.GetObject Index out of bounds');
-  Result := TCustomPage(fPageList[Index]);}
+  if (Index<0) or (Index>=fPageList.Count) then
+    RaiseGDBException('TUNBPages.Get Index out of bounds');
+  Result := TUNBPage(fPageList[Index]).Caption;
 end;
 
 {------------------------------------------------------------------------------
@@ -66,12 +67,33 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  TUNBPages GetObject
+ ------------------------------------------------------------------------------}
+function TUNBPages.GetObject(Index: Integer): TObject;
+begin
+  if (Index<0) or (Index>=fPageList.Count) then
+    RaiseGDBException('TUNBPages.GetObject Index out of bounds');
+  Result := TUNBPage(fPageList[Index]);
+end;
+
+{------------------------------------------------------------------------------
+  TUNBPages Put
+ ------------------------------------------------------------------------------}
+procedure TUNBPages.Put(Index: Integer; const S: String);
+begin
+  if (Index<0) or (Index>=fPageList.Count) then
+    RaiseGDBException('TUNBPages.Put Index out of bounds');
+  //debugln(['TUNBPages.Put ',DbgSName(FNotebook),' ',Index,' S="',S,'"']);
+  TUNBPage(fPageList[Index]).Caption := S;
+end;
+
+{------------------------------------------------------------------------------
   TUNBPages Clear
  ------------------------------------------------------------------------------}
 procedure TUNBPages.Clear;
 begin
-{  while fPageList.Count>0 do
-    Delete(fPageList.Count-1);}
+  while fPageList.Count>0 do
+    Delete(fPageList.Count-1);
 end;
 
 {------------------------------------------------------------------------------
