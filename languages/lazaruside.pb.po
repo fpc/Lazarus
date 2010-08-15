@@ -617,15 +617,15 @@ msgstr "Criação de código"
 
 #: lazarusidestrconsts.dlgcodefoldenableboth
 msgid "Both"
-msgstr ""
+msgstr "Ambos"
 
 #: lazarusidestrconsts.dlgcodefoldenablefold
 msgid "Fold"
-msgstr ""
+msgstr "Retrair"
 
 #: lazarusidestrconsts.dlgcodefoldenablehide
 msgid "Hide"
-msgstr ""
+msgstr "Ocultar"
 
 #: lazarusidestrconsts.dlgcodefoldingmouse
 msgctxt "lazarusidestrconsts.dlgcodefoldingmouse"
@@ -634,7 +634,7 @@ msgstr "Mouse"
 
 #: lazarusidestrconsts.dlgcodefoldpopuporder
 msgid "Reverse fold-order in Popup"
-msgstr ""
+msgstr "Inverter ordem-retração no \"Popup\""
 
 #: lazarusidestrconsts.dlgcodegeneration
 #| msgid "Code"
@@ -2946,7 +2946,7 @@ msgstr "Usar realce de sintaxe"
 
 #: lazarusidestrconsts.dlgusetabshistory
 msgid "Use tab history when closing tabs"
-msgstr ""
+msgstr "Usar aba histórico quando fechando abas"
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
@@ -3470,7 +3470,7 @@ msgstr "Adicionar parênteses parâmetros"
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
-msgstr ""
+msgstr "Adicionar ao caminho busca arquivos inclusão"
 
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
@@ -3886,7 +3886,7 @@ msgstr "Construção Lazarus falhou"
 
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
-msgstr ""
+msgstr "Construir macros"
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
@@ -3923,7 +3923,7 @@ msgstr "Cancelar renomeação"
 
 #: lazarusidestrconsts.liscannotcompileproject
 msgid "Cannot compile project"
-msgstr ""
+msgstr "Impossível compilar projeto"
 
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
@@ -5725,7 +5725,7 @@ msgstr "Linha do cursor no editor atual"
 
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
-msgstr ""
+msgstr "Personaliza construção macros"
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
@@ -5967,7 +5967,7 @@ msgstr "Excluir ponto de parada na%s\"%s\" linha %d?"
 
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"
-msgstr ""
+msgstr "Excluir construção macro %s%s%s?"
 
 #: lazarusidestrconsts.lisdeletebuildmode
 msgid "Delete build mode"
@@ -6191,7 +6191,7 @@ msgstr "não compilar dependências"
 
 #: lazarusidestrconsts.lisdonotinstall
 msgid "Do not install"
-msgstr ""
+msgstr "Não instalar"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -7591,11 +7591,11 @@ msgstr "Instalar Seleção"
 #: lazarusidestrconsts.lisinstalluninstallpackages
 msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall packages"
-msgstr ""
+msgstr "Instalar/Desinstalar pacotes"
 
 #: lazarusidestrconsts.lisinvalidbuildmacrothebuildmacromustbeapascalidentifie
 msgid "Invalid build macro %s%s%s. The build macro must be a pascal identifier."
-msgstr ""
+msgstr "Macro construção inválida %s%s%s. A macro construção deve ser um identificador pascal."
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -7786,11 +7786,10 @@ msgid "Configure Help"
 msgstr "Configurar Ajuda"
 
 #: lazarusidestrconsts.liskmconfigureinstalledpackages
-#, fuzzy
 #| msgid "Configure installed packages"
 msgctxt "lazarusidestrconsts.liskmconfigureinstalledpackages"
 msgid "Install/Uninstall packages"
-msgstr "Configurar pacotes instalados"
+msgstr "Instalar/Desinstalar pacotes"
 
 #: lazarusidestrconsts.liskmcontextsensitivehelp
 msgid "Context sensitive help"
@@ -8915,10 +8914,9 @@ msgid "Edit context sensitive Help"
 msgstr "Editar Ajuda contexto sensível"
 
 #: lazarusidestrconsts.lismenueditinstallpkgs
-#, fuzzy
 #| msgid "Configure installed packages ..."
 msgid "Install/Uninstall packages ..."
-msgstr "Configurar pacotes instalados ..."
+msgstr "Instalar/Desinstalar pacotes ..."
 
 #: lazarusidestrconsts.lismenueditor
 msgid "Menu Editor..."
@@ -12056,7 +12054,7 @@ msgstr "Núm. Repetição:"
 
 #: lazarusidestrconsts.lisreplacementfuncs
 msgid "Replacement functions"
-msgstr ""
+msgstr "Funções de substituição"
 
 #: lazarusidestrconsts.lisreplacements
 msgid "Replacements"
@@ -12146,7 +12144,7 @@ msgstr "Raiz"
 
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
-msgstr ""
+msgstr "%s (executando ...)"
 
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
@@ -12887,7 +12885,7 @@ msgstr "O nome %s%s%s não é um identificador Pascal válido."
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
 msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
-msgstr ""
+msgstr "O novo arquivo de inclusão não está no caminho de busca.%sAdicionar diretório %s?"
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
@@ -12947,7 +12945,7 @@ msgstr "O projeto não usa a unidade interfaces LCL, mas parece que necessita de
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."
-msgstr ""
+msgstr "O projeto não possui um arquivo fonte principal."
 
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
@@ -12979,7 +12977,7 @@ msgstr "Há um arquivo com o mesmo nome e extensão similar no disco:%sArquivo: 
 
 #: lazarusidestrconsts.listhereisalreadyabuildmacrowiththename
 msgid "There is already a build macro with the name %s%s%s."
-msgstr ""
+msgstr "Já existe uma macro construção com o mesmo nome %s%s%s."
 
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
@@ -13151,7 +13149,7 @@ msgstr "Alterar exibição nomes de arquivo com caminho completo ou relativo"
 
 #: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
 msgid "To install you must compile and restart the IDE"
-msgstr ""
+msgstr "Para instalar você deve compilar e reiniciar a IDE"
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
@@ -13603,7 +13601,7 @@ msgstr "Impossível gravar o arquivo info. projeto%s%s%s%s.%sErro: %s"
 
 #: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
 msgid "Unable to write the project session file%s\"%s\".%sError: %s"
-msgstr ""
+msgstr "Incapaz de gravar o arquivo de sessão do projeto%s\"%s\".%sErro: %s"
 
 #: lazarusidestrconsts.lisunabletowritetofile
 #| msgid "Unable to write to file %s%s%s!"
@@ -13612,7 +13610,7 @@ msgstr "Impossível gravar para arquivo %s%s%s!"
 
 #: lazarusidestrconsts.lisunabletowritetofile2
 msgid "Unable to write to file \"%s\"."
-msgstr ""
+msgstr "Incapaz de gravar o arquivo \"%s\"."
 
 #: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
 msgid "Unable to write xml stream to %s%sError: %s"
@@ -15303,19 +15301,19 @@ msgstr "Favor pressionar uma tecla ..."
 
 #: lazarusidestrconsts.synffoldcommentsinselection
 msgid "Fold comments in selection"
-msgstr ""
+msgstr "Retrair comentários na seleção"
 
 #: lazarusidestrconsts.synfhidecommentsinselection
 msgid "Hide comments in selection"
-msgstr ""
+msgstr "Ocultar comentários na seleção"
 
 #: lazarusidestrconsts.synfunfoldallinselection
 msgid "Unfold all in Selection"
-msgstr ""
+msgstr "Expandir tudo na Seleção"
 
 #: lazarusidestrconsts.synfunfoldcommentsinselection
 msgid "Unfold comments in Selection"
-msgstr ""
+msgstr "Expandir comentários na Seleção"
 
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"

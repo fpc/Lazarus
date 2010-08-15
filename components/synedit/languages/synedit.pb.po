@@ -35,7 +35,7 @@ msgstr "Parênteses"
 
 #: syneditstrconst.syns_attrcaselabel
 msgid "Case label"
-msgstr ""
+msgstr "Rótulo \"Case\""
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"

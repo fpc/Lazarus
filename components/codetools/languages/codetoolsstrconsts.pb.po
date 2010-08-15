@@ -131,23 +131,23 @@ msgstr "classe ancestral padrão \"TObject\" não encontrada"
 
 #: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
 msgid "Default fpc source Operating System 2"
-msgstr ""
+msgstr "Sistema Operacional 2 fonte fpc padrão"
 
 #: codetoolsstrconsts.ctsdefaultfpcsourceoperatingsystem
 msgid "Default fpc source Operating System"
-msgstr ""
+msgstr "Sistema Operacional fonte fpc padrão"
 
 #: codetoolsstrconsts.ctsdefaultfpcsymbol
 msgid "Default fpc symbol"
-msgstr ""
+msgstr "Símbolo fpc padrão"
 
 #: codetoolsstrconsts.ctsdefaultfpctargetoperatingsystem
 msgid "Default fpc target Operating System"
-msgstr ""
+msgstr "Sistema Operacional alvo fpc padrão"
 
 #: codetoolsstrconsts.ctsdefaultfpctargetprocessor
 msgid "Default fpc target processor"
-msgstr ""
+msgstr "Processador alvo fpc padrão"
 
 #: codetoolsstrconsts.ctsdefaultinterfaceancestoriinterfacenotfound
 msgid "default interface ancestor IInterface not found"
@@ -361,7 +361,7 @@ msgstr "diretório de interface gtk2"
 
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
-msgstr ""
+msgstr "Há Erros"
 
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
