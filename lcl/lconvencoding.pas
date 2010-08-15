@@ -89,6 +89,7 @@ function UTF8ToCP850(const s: string): string;  // DOS western europe
 function UTF8ToCP866(const s: string): string;  // DOS and Windows console's cyrillic
 function UTF8ToCP874(const s: string): string;  // thai
 function UTF8ToKOI8(const s: string): string;  // russian cyrillic
+function UTF8ToCP936(const s: string): string;  // chinese, essentially the same as GB 2312 and a predecessor to GB 18030
 function UTF8ToSingleByte(const s: string;
                           const UTF8CharConvFunc: TUnicodeToCharID): string;
 function UTF8ToUCS2LE(const s: string): string; // UCS2-LE 2byte little endian
@@ -5611,6 +5612,48 @@ end;
 function UTF8ToKOI8(const s: string): string;
 begin
   Result:=UTF8ToSingleByte(s,@UnicodeToKOI8);
+end;
+
+// Converts an UTF8 to
+// CP936, chinese, essentially the same as GB 2312 and a predecessor to GB 18030
+function UTF8ToCP936(const s: string): string;
+var
+  len: Integer;
+  Src: PChar;
+  c: Char;
+  CharStr: string;
+
+  function UTF8CharToCP936(const AChar: string): string;
+  begin
+
+  end;
+
+begin
+  Result:='';
+  if s='' then Exit;
+
+  len:=length(s);
+  Src:=PChar(s);
+  while len>0 do
+  begin
+    c:=Src^;
+    if c<#128 then
+    begin
+      CharStr := c;
+      Result := Result + UTF8CharToCP936(CharStr);
+      inc(Src);
+      dec(len);
+    end
+    else
+    begin
+      CharStr := c;
+      Inc(Src);
+      CharStr := CharStr + Src^;
+      Result := Result + UTF8CharToCP936(CharStr);
+      inc(Src);
+      dec(len, 2);
+    end;
+  end;
 end;
 
 function UTF8ToSingleByte(const s: string;
