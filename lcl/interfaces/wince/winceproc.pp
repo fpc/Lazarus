@@ -1265,7 +1265,10 @@ begin
     else if WideStrCmp(@buf, 'SmartPhone') = 0 then
       Result := atKeyPadDevice
     else
-      Result := atPDA;
+      // Other devices can set anything for the platform name,
+      // see http://bugs.freepascal.org/view.php?id=16615
+      // Here we just suppose that they are atDesktop
+      Result := atDesktop;
   end
   else if GetLastError = ERROR_ACCESS_DENIED then
     Result := atKeyPadDevice

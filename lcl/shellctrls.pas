@@ -71,6 +71,7 @@ type
       AMask: string; AObjectTypes: TObjectTypes; AResult: TStrings; AFileSortType: TFileSortType = fstNone);
     { Other methods specific to Lazarus }
     function  GetPathFromNode(ANode: TTreeNode): string;
+    function  GetSelectedNodePath(): string;
 
     { Properties }
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
@@ -592,6 +593,11 @@ begin
   // Check, maybe the base path won't be necessary in the future
   // if the base directory is added to the items list
   Result := GetBasePath + rootDir;
+end;
+
+function TCustomShellTreeView.GetSelectedNodePath(): string;
+begin
+  Result := GetPathFromNode(Selected);
 end;
 
 { TCustomShellListView }
