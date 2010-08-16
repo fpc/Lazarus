@@ -2670,7 +2670,7 @@ begin
         MacroValues.SaveToXMLConfig(xmlconfig,Path+'MacroValues/');
 
         // properties
-        xmlconfig.SetDeleteValue(Path+'General/MainUnit/Value', MainUnitID,0);
+        xmlconfig.SetValue(Path+'General/MainUnit/Value', MainUnitID); // always write a value to support opening by older IDEs
         xmlconfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
                                  AutoCreateForms,true);
         xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
