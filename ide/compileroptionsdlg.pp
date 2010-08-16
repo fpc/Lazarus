@@ -47,7 +47,7 @@ uses
   TransferMacros, PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf,
   IDEProcs, IDEImagesIntf, ShowCompilerOpts, Project, PackageDefs, IDEMsgIntf,
   CompilerOptions, CheckCompilerOpts, CompOptsModes, BuildModesEditor,
-  Compiler_CondTree, Compiler_BuildMacro_Options, CheckLst;
+  Compiler_BuildMacro_Options, CheckLst;
 
 type
   { TfrmCompilerOptions }
@@ -115,7 +115,6 @@ type
 
     grpTargetPlatform: TGroupBox;
     lblTargetOS : TLabel;
-    ConditionalSplitter: TSplitter;
     CategorySplitter: TSplitter;
     TargetOSComboBox: TComboBox;
     lblTargetCPU : TLabel;
@@ -179,11 +178,8 @@ type
     grpCustomOptions: TGroupBox;
     memCustomOptions: TMemo;
 
-    { Conditionals }
-    ConditionalPage: TPage;
-    ConditionalOptionsFrame: TCompOptsCondTreeFrame;
-    ConditionalsGroupBox: TGroupBox;
-    BuildMacrosGroupBox: TGroupBox;
+    { Build Macros and Conditionals }
+    MacrosPage: TPage;
     BuildMacrosFrame: TCompOptBuildMacrosFrame;
 
     { Inherited Options }
@@ -264,7 +260,7 @@ type
     procedure SetupVerbosityTab(Page: integer);
     procedure SetupConfigMsgTab(Page: integer);
     procedure SetupOtherTab(Page: integer);
-    procedure SetupConditionalsTab(Page: integer);
+    procedure SetupMacrosTab(Page: integer);
     procedure SetupInheritedTab(Page: integer);
     procedure SetupCompilationTab(Page: integer);
     procedure SetupButtonBar;
@@ -451,7 +447,7 @@ begin
     inc(Page);
     SetupOtherTab(Page);
     inc(Page);
-    SetupConditionalsTab(Page);
+    SetupMacrosTab(Page);
     inc(Page);
     SetupInheritedTab(Page);
     inc(Page);
@@ -785,10 +781,9 @@ begin
 
     edtErrorCnt.Text := IntToStr(Options.StopAfterErrCount);
 
-    // conditional + build macros
+    // conditionals + build macros
     {$IFDEF EnableBuildModes}
-    ConditionalOptionsFrame.Conditionals:=Options.Conditionals as TCompOptConditionals;
-    BuildMacrosFrame.BuildMacros:=Options.BuildMacros as TIDEBuildMacros;
+    BuildMacrosFrame.Options:=Options;
     {$ENDIF}
 
     // inherited tab
@@ -1520,15 +1515,13 @@ begin
   grpCustomOptions.Caption:=lisCustomOptions2;
 end;
 
-procedure TfrmCompilerOptions.SetupConditionalsTab(Page: integer);
+procedure TfrmCompilerOptions.SetupMacrosTab(Page: integer);
 begin
-  ConditionalPage:=MainNoteBook.Page[Page];
-  ConditionalPage.Caption:=dlgCOConditionals;
+  MacrosPage:=MainNoteBook.Page[Page];
+  MacrosPage.Caption:='Build macros';
   {$IFDEF EnableBuildModes}
-  CategoryTreeView.Items.AddObject(nil,ConditionalPage.Caption,ConditionalPage);
+  CategoryTreeView.Items.AddObject(nil,MacrosPage.Caption,MacrosPage);
   {$ENDIF}
-  ConditionalsGroupBox.Caption:=dlgOIOptions;
-  BuildMacrosGroupBox.Caption:=lisCustomBuildMacros;
 end;
 
 {------------------------------------------------------------------------------

@@ -30,7 +30,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, StdCtrls, Grids,
   Buttons, ExtCtrls, Dialogs, ComCtrls, Menus, AvgLvlTree, IDEImagesIntf,
-  ProjectIntf, PackageIntf, CompilerOptions, Compiler_CondTree,
+  ProjectIntf, PackageIntf, CompilerOptions,
   LazarusIDEStrConsts, CompOptsModes, PackageDefs, SynEdit, SynHighlighterPas;
 
 type
@@ -49,6 +49,11 @@ type
     BuildMacrosTVPopupMenu: TPopupMenu;
     BuildMacroDefaultLabel: TLabel;
     BuildMacroDescriptionLabel: TLabel;
+    ConditionalsGroupBox: TGroupBox;
+    ConditionalsSynPasSyn: TSynPasSyn;
+    CondSynEdit: TSynEdit;
+    MacrosGroupBox: TGroupBox;
+    MacrosSplitter: TSplitter;
     Splitter1: TSplitter;
     procedure BuildMacrosTreeViewEdited(Sender: TObject; Node: TTreeNode;
       var S: string);
@@ -62,12 +67,14 @@ type
     procedure DeleteValueClick(Sender: TObject);
   private
     FBuildMacros: TIDEBuildMacros;
+    FOptions: TBaseCompilerOptions;
     fVarImgID: LongInt;
     fValueImgID: LongInt;
     fDefValueImgID: LongInt;
     procedure SaveItemProperties;
     procedure SetBuildMacros(const AValue: TIDEBuildMacros);
     procedure RebuildTreeView;
+    procedure SetOptions(const AValue: TBaseCompilerOptions);
     function TreeViewAddBuildMacro(aBuildMacro: TLazBuildMacro): TTreeNode;
     procedure TreeViewAddValue(ValuesTVNode: TTreeNode; aValue: string);
     function GetNodeInfo(Node: TTreeNode; out BuildMacro: TLazBuildMacro): TCBMNodeType;
@@ -80,6 +87,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     property BuildMacros: TIDEBuildMacros read FBuildMacros write SetBuildMacros;
+    property Options: TBaseCompilerOptions read FOptions write SetOptions;
   end;
 
 implementation
@@ -302,6 +310,15 @@ begin
   BuildMacrosTreeView.EndUpdate;
 end;
 
+procedure TCompOptBuildMacrosFrame.SetOptions(const AValue: TBaseCompilerOptions
+  );
+begin
+  if FOptions=AValue then exit;
+  FOptions:=AValue;
+  BuildMacros:=Options.BuildMacros as TIDEBuildMacros;
+  CondSynEdit.Lines.Text:=Options.Conditionals;
+end;
+
 function TCompOptBuildMacrosFrame.TreeViewAddBuildMacro(
   aBuildMacro: TLazBuildMacro): TTreeNode;
 var
@@ -409,12 +426,14 @@ begin
   GetSelectedNode(BuildMacro,NodeType);
   if BuildMacro=nil then exit;
   BuildMacro.Description:=BuildMacroDescriptionEdit.Text;
+  Options.Conditionals:=CondSynEdit.Lines.Text;
 end;
 
 constructor TCompOptBuildMacrosFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 
+  MacrosGroupBox.Caption:='Build macros:';
   BuildMacrosTreeView.Images := IDEImages.Images_24;
   fVarImgID:=IDEImages.LoadImage(24,'da_define');
   fValueImgID:=IDEImages.LoadImage(24,'da_define');
@@ -422,6 +441,8 @@ begin
 
   BuildMacroDefaultLabel.Caption:='Hint: A default value can be defined in the conditionals.';
   BuildMacroDescriptionLabel.Caption:='Description:';
+
+  ConditionalsGroupBox.Caption:='Conditionals:';
 end;
 
 destructor TCompOptBuildMacrosFrame.Destroy;

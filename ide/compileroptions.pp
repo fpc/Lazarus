@@ -61,6 +61,7 @@
       - edit default value
 
   ToDo:
+  - warn for macro name conflicts
   - every package/project needs a function to compute all values of its build macros
       - build macros depend on used packages and project build macro values
          - add a changestamp for this
@@ -69,11 +70,11 @@
          - default value of a build macro requires values of project and
            default macro values of required packages
   - every package/project needs a function to substitute macros
-      - check local macros (pkgdir, pkgoutdir)
       - check active project values
       - check default values of build macros of used packages
       - check default values of build macros of self
       - check conditionals
+      - check local macros (pkgdir, pkgoutdir)
       - use default global macros
   - every package/project needs conditionals
       - using config script
@@ -88,6 +89,7 @@
     - refactor compiler options (default options, load, save to file)
     - store sets in lpi
     - store sets in lps
+  - when package is renamed, rename macros too
   - i18n for descriptions
   - keyword help for a build macro
 
@@ -300,7 +302,6 @@ type
 
   TParsedCompilerOptions = class
   private
-    FConditionals: TCompOptConditionals;
     FInvalidateParseOnChange: boolean;
     FOnLocalSubstitute: TLocalSubstitutionEvent;
     FOutputDirectoryOverride: string;
@@ -315,7 +316,7 @@ type
     ParsedPIValues: array[TParsedCompilerOptString] of string;
     ParsedPIStamp: array[TParsedCompilerOptString] of integer;
     ParsingPI: array[TParsedCompilerOptString] of boolean;
-    constructor Create(TheConditionals: TCompOptConditionals);
+    constructor Create;
     function GetParsedValue(Option: TParsedCompilerOptString;
                             WithOverrides: boolean = true): string;
     function GetParsedPIValue(Option: TParsedCompilerOptString): string;// platform independent
@@ -334,7 +335,6 @@ type
                                               write FInvalidateParseOnChange;
     property OutputDirectoryOverride: string read FOutputDirectoryOverride
                                              write SetOutputDirectoryOverride;
-    property Conditionals: TCompOptConditionals read FConditionals;
   end;
 
   TParseStringEvent =
@@ -475,6 +475,7 @@ type
   protected
     procedure SetBaseDirectory(const AValue: string); override;
     procedure SetCompilerPath(const AValue: String); override;
+    procedure SetConditionals(const AValue: string); override;
     procedure SetCustomOptions(const AValue: string); override;
     procedure SetIncludePaths(const AValue: String); override;
     procedure SetLibraryPaths(const AValue: String); override;
@@ -613,7 +614,6 @@ type
   TAdditionalCompilerOptions = class
   private
     FBaseDirectory: string;
-    FConditionals: TCompOptConditionals;
     FCustomOptions: string;
     FIncludePath: string;
     FLibraryPath: string;
@@ -653,7 +653,6 @@ type
     property CustomOptions: string read FCustomOptions write SetCustomOptions;
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
     property ParsedOpts: TParsedCompilerOptions read FParsedOpts;
-    property Conditionals: TCompOptConditionals read FConditionals;
   end;
 
 
@@ -1010,8 +1009,7 @@ constructor TBaseCompilerOptions.Create(const AOwner: TObject;
   const AToolClass: TCompilationToolClass);
 begin
   inherited Create(AOwner);
-  FConditionals := TCompOptConditionals.Create;
-  FParsedOpts := TParsedCompilerOptions.Create(TCompOptConditionals(FConditionals));
+  FParsedOpts := TParsedCompilerOptions.Create;
   FExecuteBefore := AToolClass.Create;
   FExecuteAfter := AToolClass.Create;
   fBuildMacros := TIDEBuildMacros.Create(Self);
@@ -1110,6 +1108,13 @@ begin
   if fCompilerPath=AValue then exit;
   fCompilerPath:=AValue;
   ParsedOpts.SetUnparsedValue(pcosCompilerPath,fCompilerPath);
+end;
+
+procedure TBaseCompilerOptions.SetConditionals(const AValue: string);
+begin
+  if FConditionals=AValue then exit;
+  FConditionals:=AValue;
+  IncreaseBuildMacroChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetDefaultMakeOptionsFlags(
@@ -1295,8 +1300,7 @@ begin
   SrcPath := sp(XMLConfigFile.GetValue(p+'SrcPath/Value', ''));
 
   { Conditionals }
-  TCompOptConditionals(FConditionals).LoadFromXMLConfig(XMLConfigFile,
-                                          Path+'Conditionals/',PathDelimChange);
+  FConditionals:=XMLConfigFile.GetValue(Path+'Conditionals/Value','');
   TIDEBuildMacros(fBuildMacros).LoadFromXMLConfig(XMLConfigFile,
                                        Path+'BuildMacros/',PathDelimChange);
   // ToDo: replace this with conditional compiler options
@@ -1509,10 +1513,9 @@ begin
   XMLConfigFile.SetDeleteValue(p+'SrcPath/Value', f(SrcPath),'');
 
   { Conditionals }
-  TCompOptConditionals(FConditionals).SaveToXMLConfig(XMLConfigFile,
-                                             Path+'Conditionals/',UsePathDelim);
+  XMLConfigFile.SetDeleteValue(Path+'Conditionals/Value',Conditionals,'');
   TIDEBuildMacros(fBuildMacros).SaveToXMLConfig(XMLConfigFile,
-                                          Path+'BuildMacros/',UsePathDelim);
+                                              Path+'BuildMacros/',UsePathDelim);
   // ToDo: remove
   XMLConfigFile.SetDeleteValue(p+'LCLWidgetType/Value', LCLWidgetType,'');
 
@@ -2931,7 +2934,7 @@ begin
   DebugPath := CompOpts.DebugPath;
 
   // conditionals
-  Conditionals.Assign(CompOpts.Conditionals);
+  Conditionals:=CompOpts.Conditionals;
   TIDEBuildMacros(BuildMacros).Assign(CompOpts.BuildMacros);
   fLCLWidgetType := CompOpts.fLCLWidgetType;
 
@@ -3063,8 +3066,8 @@ begin
   Tool.AddPathsDiff('DebugPath',fDebugPath,CompOpts.fDebugPath);
 
   // conditionals
-  Tool.Path:='Conditionals';
-  TCompOptConditionals(Conditionals).CreateDiff(CompOpts.Conditionals,Tool);
+  Tool.AddPathsDiff('Conditionals',FConditionals,CompOpts.FConditionals);
+  Tool.Path:='BuildModes';
   TIDEBuildMacros(fBuildMacros).CreateDiff(CompOpts.BuildMacros,Tool);
   Tool.AddDiff('LCLWidgetType',fLCLWidgetType,CompOpts.fLCLWidgetType);
 
@@ -3224,15 +3227,13 @@ end;
 constructor TAdditionalCompilerOptions.Create(TheOwner: TObject);
 begin
   fOwner:=TheOwner;
-  FConditionals:=TCompOptConditionals.Create;
-  FParsedOpts:=TParsedCompilerOptions.Create(FConditionals);
+  FParsedOpts:=TParsedCompilerOptions.Create;
   Clear;
 end;
 
 destructor TAdditionalCompilerOptions.Destroy;
 begin
   FreeThenNil(FParsedOpts);
-  FreeThenNil(FConditionals);// free conditionals before FParsedOpts
   inherited Destroy;
 end;
 
@@ -3262,7 +3263,6 @@ begin
   LinkerOptions:=f(XMLConfig.GetValue(Path+'LinkerOptions/Value',''));
   ObjectPath:=f(XMLConfig.GetValue(Path+'ObjectPath/Value',''));
   UnitPath:=f(XMLConfig.GetValue(Path+'UnitPath/Value',''));
-  FConditionals.LoadFromXMLConfig(XMLConfig,Path+'Conditionals/',AdjustPathDelims);
 end;
 
 procedure TAdditionalCompilerOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -3280,7 +3280,6 @@ begin
   XMLConfig.SetDeleteValue(Path+'LinkerOptions/Value',f(fLinkerOptions),'');
   XMLConfig.SetDeleteValue(Path+'ObjectPath/Value',f(FObjectPath),'');
   XMLConfig.SetDeleteValue(Path+'UnitPath/Value',f(FUnitPath),'');
-  FConditionals.SaveToXMLConfig(XMLConfig,Path+'Conditionals/',UsePathDelim);
 end;
 
 function TAdditionalCompilerOptions.GetOwnerName: string;
@@ -3323,9 +3322,8 @@ begin
     DebugLn(['TParsedCompilerOptions.SetOutputDirectoryOverride using default']);
 end;
 
-constructor TParsedCompilerOptions.Create(TheConditionals: TCompOptConditionals);
+constructor TParsedCompilerOptions.Create;
 begin
-  FConditionals:=TheConditionals;
   Clear;
 end;
 
@@ -3405,29 +3403,8 @@ function TParsedCompilerOptions.DoParseOption(const OptionText: string;
 var
   s: String;
   BaseDirectory: String;
-  cocOption: TCOCValueType;
-  h: string;
 begin
   s:=OptionText;
-  // add conditional additions
-  if Conditionals<>nil then begin
-    cocOption:=ParsedCompOptToConditional[Option];
-    case Option of
-    pcosUnitPath,pcosSrcPath,pcosIncludePath,pcosObjectPath,pcosLibraryPath,
-    pcosDebugPath:
-      // add search path
-      s:=MergeSearchPaths(s,FConditionals.Values[cocOption]);
-    pcosLinkerOptions,pcosCustomOptions:
-      begin
-        // add command line option
-        h:=FConditionals.Values[cocOption];
-        if (h<>'') then begin
-          if s<>'' then s:=s+' ';
-          s:=s+h;
-        end;
-      end;
-    end;
-  end;
   // parse locally
   //DebugLn(['TParsedCompilerOptions.DoParseOption local "',s,'" ...']);
   if Assigned(OnLocalSubstitute) then

@@ -1,7 +1,7 @@
 object frmCompilerOptions: TfrmCompilerOptions
-  Left = 318
+  Left = 305
   Height = 528
-  Top = 150
+  Top = 157
   Width = 659
   ActiveControl = CategoryTreeView
   Align = alClient
@@ -1051,63 +1051,22 @@ object frmCompilerOptions: TfrmCompilerOptions
         end
       end
     end
-    object ConditionalPage: TPage
-      Caption = 'ConditionalPage'
+    object MacrosPage: TPage
+      Caption = 'MacrosPage'
       ClientWidth = 531
       ClientHeight = 435
-      object ConditionalsGroupBox: TGroupBox
-        Left = 0
-        Height = 214
-        Top = 0
-        Width = 531
-        Align = alTop
-        Caption = 'ConditionalsGroupBox'
-        ClientHeight = 195
-        ClientWidth = 527
-        TabOrder = 1
-        inline ConditionalOptionsFrame: TCompOptsCondTreeFrame
-          Height = 195
-          Width = 527
-          Align = alClient
-          ClientHeight = 195
-          ClientWidth = 527
-          Visible = True
-          inherited COCTreeView: TTreeView
-            Height = 195
-            Width = 527
-          end
-        end
-      end
-      object ConditionalSplitter: TSplitter
-        Cursor = crVSplit
-        Left = 0
-        Height = 5
-        Top = 214
-        Width = 531
-        Align = alTop
-        ResizeAnchor = akTop
-      end
-      object BuildMacrosGroupBox: TGroupBox
-        Left = 0
-        Height = 216
-        Top = 219
+      inline BuildMacrosFrame: TCompOptBuildMacrosFrame
+        Height = 435
         Width = 531
         Align = alClient
-        Caption = 'BuildMacrosGroupBox'
-        ClientHeight = 197
-        ClientWidth = 527
-        TabOrder = 0
-        inline BuildMacrosFrame: TCompOptBuildMacrosFrame
-          Height = 197
-          Width = 527
-          Align = alClient
-          ClientHeight = 197
+        ClientHeight = 435
+        ClientWidth = 531
+        Visible = True
+        inherited MacrosGroupBox: TGroupBox
+          Width = 531
           ClientWidth = 527
-          Visible = True
           inherited BuildMacroSelectedGroupBox: TGroupBox
-            Height = 197
             Width = 283
-            ClientHeight = 178
             ClientWidth = 279
             inherited BuildMacroDefaultLabel: TLabel
               Width = 267
@@ -1119,11 +1078,18 @@ object frmCompilerOptions: TfrmCompilerOptions
               Width = 267
             end
           end
-          inherited Splitter1: TSplitter
-            Height = 197
-          end
-          inherited BuildMacrosTreeView: TTreeView
-            Height = 197
+        end
+        inherited MacrosSplitter: TSplitter
+          Width = 531
+        end
+        inherited ConditionalsGroupBox: TGroupBox
+          Height = 187
+          Width = 531
+          ClientHeight = 168
+          ClientWidth = 527
+          inherited CondSynEdit: TSynEdit
+            Height = 168
+            Width = 527
           end
         end
       end

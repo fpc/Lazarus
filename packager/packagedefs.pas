@@ -372,6 +372,7 @@ type
     procedure SetSrcPath(const AValue: string); override;
     procedure SetUnitPaths(const AValue: string); override;
     procedure SetUnitOutputDir(const AValue: string); override;
+    procedure SetConditionals(const AValue: string); override;
   public
     constructor Create(const AOwner: TObject); override;
     procedure Clear; override;
@@ -3644,6 +3645,16 @@ begin
   inherited SetUnitOutputDir(AValue);
   if LazPackage<>nil then
     LazPackage.DefineTemplates.OutputDirectoryChanged;
+end;
+
+procedure TPkgCompilerOptions.SetConditionals(const AValue: string);
+var
+  NewValue: String;
+begin
+  NewValue:=Trim(AValue);
+  if Conditionals=NewValue then exit;
+  InvalidateOptions;
+  inherited SetConditionals(NewValue);
 end;
 
 constructor TPkgCompilerOptions.Create(const AOwner: TObject);

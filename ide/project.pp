@@ -507,6 +507,7 @@ type
     procedure SetSrcPath(const AValue: string); override;
     procedure SetUnitPaths(const AValue: string); override;
     procedure SetUnitOutputDir(const AValue: string); override;
+    procedure SetConditionals(const AValue: string); override;
     procedure UpdateGlobals; virtual;
   public
     constructor Create(const AOwner: TObject); override;
@@ -5504,6 +5505,16 @@ begin
   inherited SetUnitOutputDir(AValue);
   if Project<>nil then
     Project.DefineTemplates.OutputDirectoryChanged;
+end;
+
+procedure TProjectCompilerOptions.SetConditionals(const AValue: string);
+var
+  NewValue: String;
+begin
+  NewValue:=Trim(AValue);
+  if Conditionals=NewValue then exit;
+  InvalidateOptions;
+  inherited SetConditionals(NewValue);
 end;
 
 procedure TProjectCompilerOptions.Assign(Source: TPersistent);
