@@ -102,8 +102,7 @@ begin
   Canvas.Draw(0,0,Bitmap1);
 end;
 
-initialization
-  {$I unit3.lrs}
+{$R *.lfm}
 
 end.
 
