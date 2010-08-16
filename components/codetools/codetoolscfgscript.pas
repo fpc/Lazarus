@@ -925,6 +925,7 @@ end;
 destructor TCTCfgScriptVariables.Destroy;
 begin
   Clear;
+  FreeAndNil(FItems);
   inherited Destroy;
 end;
 
