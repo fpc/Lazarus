@@ -13,7 +13,6 @@ uses
 {$IFDEF WINDOWS}{$R AggPasInLCLDemo1.rc}{$ENDIF}
 
 begin
-  {$I AggPasInLCLDemo1.lrs}
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;
