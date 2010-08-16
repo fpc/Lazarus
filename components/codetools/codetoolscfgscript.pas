@@ -78,11 +78,14 @@ type
     procedure Clear;
     function Equals(Vars: TCTCfgScriptVariables): boolean; reintroduce;
     procedure Assign(Source: TCTCfgScriptVariables);
+    procedure AddOverrides(Source: TCTCfgScriptVariables);
+    procedure AddOverride(Source: PCTCfgScriptVariable);
     function GetVariable(const Name: PChar;
                       CreateIfNotExists: Boolean = false): PCTCfgScriptVariable;
     property Values[const Name: string]: string read GetValues write SetValues; default;
     procedure Undefine(Name: PChar);
     procedure Define(Name: PChar; const Value: string);
+    property Tree: TAVLTree read FItems;
   end;
 
 type
@@ -983,6 +986,34 @@ begin
     NewItem:=CloneCTCSVariable(Item);
     FItems.Add(NewItem);
     Node:=Source.FItems.FindSuccessor(Node);
+  end;
+end;
+
+procedure TCTCfgScriptVariables.AddOverrides(Source: TCTCfgScriptVariables);
+var
+  Item: PCTCfgScriptVariable;
+  Node: TAVLTreeNode;
+begin
+  Node:=Source.FItems.FindLowest;
+  while Node<>nil do begin
+    Item:=PCTCfgScriptVariable(Node.Data);
+    AddOverride(Item);
+    Node:=Source.FItems.FindSuccessor(Node);
+  end;
+end;
+
+procedure TCTCfgScriptVariables.AddOverride(Source: PCTCfgScriptVariable);
+var
+  Node: TAVLTreeNode;
+  Item: PCTCfgScriptVariable;
+begin
+  Node:=FItems.Find(Source);
+  if Node<>nil then begin
+    Item:=PCTCfgScriptVariable(Node.Data);
+    SetCTCSVariableValue(Source,Item);
+  end else begin
+    Item:=CloneCTCSVariable(Source);
+    FItems.Add(Item);
   end;
 end;
 
@@ -1985,6 +2016,8 @@ end;
 
 function TCTConfigScriptEngine.Execute(const Source: string;
   StopAfterErrors: integer): boolean;
+var
+  Err: TCTCfgScriptError;
 begin
   FStack.Clear;
   ClearErrors;
@@ -2001,13 +2034,22 @@ begin
   Src:=SrcStart;
   AtomStart:=Src;
 
-  // execute all statements
-  ReadRawNextPascalAtom(Src,AtomStart);
-  while Src^<>#0 do begin
-    RunStatement(false);
+  try
+    // execute all statements
     ReadRawNextPascalAtom(Src,AtomStart);
+    while Src^<>#0 do begin
+      RunStatement(false);
+      ReadRawNextPascalAtom(Src,AtomStart);
+    end;
+  except
+    on E: Exception do begin
+      // too many errors
+      if ErrorCount=0 then begin
+        Err:=TCTCfgScriptError.Create(E.Message,nil);
+        FErrors.Add(Err);
+      end;
+    end;
   end;
-
   Result:=ErrorCount=0;
 end;
 

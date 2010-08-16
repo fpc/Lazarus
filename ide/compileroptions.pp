@@ -61,7 +61,6 @@
       - edit default value
 
   ToDo:
-  - warn for macro name conflicts
   - every package/project needs a function to compute all values of its build macros
       - build macros depend on used packages and project build macro values
          - add a changestamp for this
@@ -89,6 +88,11 @@
     - refactor compiler options (default options, load, save to file)
     - store sets in lpi
     - store sets in lps
+  - warn for macro name conflicts
+    - with macros fom other packages/projects
+    - with standard macros
+      - on renaming
+      - on loading
   - when package is renamed, rename macros too
   - i18n for descriptions
   - keyword help for a build macro
@@ -310,13 +314,21 @@ type
     UnparsedValues: array[TParsedCompilerOptString] of string;
     // parsed
     ParsedValues: array[TParsedCompilerOptString] of string;
-    ParsedStamp: array[TParsedCompilerOptString] of integer;
+    ParsedStamp: array[TParsedCompilerOptString] of integer; // see CompilerParseStamp
     Parsing: array[TParsedCompilerOptString] of boolean;
     // parsed except for platform macros
     ParsedPIValues: array[TParsedCompilerOptString] of string;
-    ParsedPIStamp: array[TParsedCompilerOptString] of integer;
+    ParsedPIStamp: array[TParsedCompilerOptString] of integer; // see CompilerParseStamp
     ParsingPI: array[TParsedCompilerOptString] of boolean;
+    // macro values
+    InheritedMacroValues: TCTCfgScriptVariables;
+    InheritedMacroValuesStamp: integer; // see BuildMacroChangeStamp
+    InheritedMacroValuesParsing: boolean;
+    MacroValues: TCTConfigScriptEngine;
+    MacroValuesStamp: integer; // see BuildMacroChangeStamp
+    MacroValuesParsing: boolean;
     constructor Create;
+    destructor Destroy; override;
     function GetParsedValue(Option: TParsedCompilerOptString;
                             WithOverrides: boolean = true): string;
     function GetParsedPIValue(Option: TParsedCompilerOptString): string;// platform independent
@@ -716,9 +728,11 @@ function MergeCustomOptions(const OldOptions, AddOptions: string): string;
 function ConvertSearchPathToCmdLine(const switch, paths: String): String;
 function ConvertOptionsToCmdLine(const Delim, Switch, OptionStr: string): string;
 
-{
-procedure GetBuildMacroValues(Owner: TObject; IncludeSelf: boolean);
-}
+type
+  TGetBuildMacroValues = function(Options: TBaseCompilerOptions;
+             IncludeSelf: boolean): TCTCfgScriptVariables of object;
+var
+  GetBuildMacroValues: TGetBuildMacroValues = nil; // set by TPkgManager
 
 function LoadXMLCompileReasons(const AConfig: TXMLConfig;
   const APath: String; const DefaultReasons: TCompileReasons): TCompileReasons;
@@ -3324,7 +3338,16 @@ end;
 
 constructor TParsedCompilerOptions.Create;
 begin
+  InheritedMacroValues:=TCTCfgScriptVariables.Create;
+  MacroValues:=TCTConfigScriptEngine.Create;
   Clear;
+end;
+
+destructor TParsedCompilerOptions.Destroy;
+begin
+  FreeAndNil(InheritedMacroValues);
+  FreeAndNil(MacroValues);
+  inherited Destroy;
 end;
 
 function TParsedCompilerOptions.GetParsedValue(Option: TParsedCompilerOptString;
@@ -3465,6 +3488,9 @@ begin
     ParsedPIValues[Option]:='';
     UnparsedValues[Option]:='';
   end;
+  InheritedMacroValues.Clear;
+  MacroValues.Variables.Clear;
+  MacroValues.ClearErrors;
 end;
 
 procedure TParsedCompilerOptions.InvalidateAll;
@@ -3476,6 +3502,8 @@ begin
     ParsedStamp[Option]:=InvalidParseStamp;
     ParsedPIStamp[Option]:=InvalidParseStamp;
   end;
+  InheritedMacroValuesStamp:=InvalidParseStamp;
+  MacroValuesStamp:=InvalidParseStamp;
 end;
 
 procedure TParsedCompilerOptions.InvalidateFiles;

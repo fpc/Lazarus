@@ -47,7 +47,7 @@ uses
   TypInfo, Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, Menus,
   StringHashList, Translations, LResources,
   // codetools
-  CodeToolsConfig, CodeToolManager, CodeCache,
+  CodeToolsCfgScript, CodeToolsConfig, CodeToolManager, CodeCache,
   BasicCodeTools, FileProcs, Laz_XMLCfg,
   // IDE Interface
   SrcEditorIntf, NewItemIntf, ProjectIntf, PackageIntf,
@@ -103,6 +103,7 @@ type
     procedure OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
                               const AFilename: string; var TheUnitName: string;
                               var HasRegisterProc: boolean);
+
     // package graph
     function PackageGraphExplorerOpenPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
@@ -138,6 +139,9 @@ type
     procedure IDEComponentPaletteOpenPackage(Sender: TObject);
     procedure IDEComponentPaletteOpenUnit(Sender: TObject);
 
+    // source editor
+    procedure OnOpenPackageForCurrentSrcEditFile(Sender: TObject);
+
     // LCL
     procedure OnApplicationIdle(Sender: TObject; var Done: Boolean);
 
@@ -155,9 +159,10 @@ type
     procedure PackageFileLoaded(Sender: TObject);
     procedure OnCheckInstallPackageList(PkgIDList: TFPList; var Ok: boolean);
     function LoadDependencyList(FirstDependency: TPkgDependency): TModalResult;
-    procedure OnOpenPackageForCurrentSrcEditFile(Sender: TObject);
     procedure CreateIDEWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
+    function OnGetBuildMacroValues(Options: TBaseCompilerOptions;
+                                   IncludeSelf: boolean): TCTCfgScriptVariables;
   private
     // helper functions
     FLastLazarusSrcDir: string;
@@ -175,7 +180,6 @@ type
     procedure LoadAutoInstallPackages;
     procedure AddUnitToProjectMainUsesSection(AProject: TProject;
                                     const AnUnitName, AnUnitInFilename: string);
-                                    
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -744,6 +748,134 @@ begin
     APackage:=PackageGraph.FindAPackageWithName(APackageName,nil);
     if APackage=nil then exit;
     AForm:=PackageEditors.OpenEditor(APackage);
+  end;
+end;
+
+function TPkgManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
+  IncludeSelf: boolean): TCTCfgScriptVariables;
+
+  procedure AddAllInherited(FirstDependency: TPkgDependency;
+    AddTo: TCTCfgScriptVariables);
+  var
+    List: TFPList;
+    i: Integer;
+    APackage: TLazPackage;
+    Values: TCTCfgScriptVariables;
+    OtherOpts: TPkgCompilerOptions;
+    j: Integer;
+    Macro: TLazBuildMacro;
+    Value: PCTCfgScriptVariable;
+  begin
+    if FirstDependency=nil then exit;
+    List:=nil;
+    try
+      PackageGraph.GetAllRequiredPackages(FirstDependency,List);
+      if List=nil then exit;
+      for i:=0 to List.Count-1 do begin
+        // add values of build macros of used package
+        APackage:=TLazPackage(List[i]);
+        OtherOpts:=APackage.CompilerOptions;
+        if OtherOpts.BuildMacros=nil then continue;
+        Values:=OnGetBuildMacroValues(OtherOpts,true);
+        if Values=nil then continue;
+        for j:=0 to OtherOpts.BuildMacros.Count-1 do begin
+          Macro:=OtherOpts.BuildMacros[j];
+          if Macro.Identifier='' then continue;
+          Value:=Values.GetVariable(PChar(Macro.Identifier));
+          if Value=nil then begin
+            debugln(['AddAllInherited InhPkg=',APackage.Name,' Macro="',Macro.Identifier,'" no value']);
+            continue;
+          end else begin
+            debugln(['AddAllInherited InhPkg=',APackage.Name,' Macro="',Macro.Identifier,'" Value="',dbgs(Value),'"']);
+            AddTo.AddOverride(Value);
+          end;
+        end;
+      end;
+    finally
+      List.Free;
+    end;
+  end;
+
+var
+  ParseOpts: TParsedCompilerOptions;
+  Values: TCTCfgScriptVariables;
+begin
+  Result:=nil;
+  if Options=nil then begin
+    // return the values of the active project
+    if (Project1=nil) or (Project1.MacroValues=nil) then exit;
+    Result:=Project1.MacroValues.CfgVars;
+    exit;
+  end;
+
+  ParseOpts:=Options.ParsedOpts;
+  if ParseOpts=nil then exit;
+
+  if ParseOpts.MacroValuesParsing then begin
+    // circle
+    debugln(['TPkgManager.OnGetBuildMacroValues circle computing macros of ',dbgsname(Options.Owner)]);
+    exit;
+  end;
+
+  if IncludeSelf then begin
+    Result:=ParseOpts.MacroValues.Variables;
+
+    if ParseOpts.MacroValuesStamp<>BuildMacroChangeStamp then begin
+      // compute macro values
+
+      if ParseOpts.MacroValuesParsing then begin
+        debugln(['TPkgManager.OnGetBuildMacroValues circle computing inherited macros of ',dbgsname(Options.Owner)]);
+        exit;
+      end;
+
+      ParseOpts.MacroValuesParsing:=true;
+      try
+        Result.Clear;
+
+        // use inherited as default
+        Values:=OnGetBuildMacroValues(Options,false);
+
+        // add macro values of self
+        if Values<>nil then
+          Result.Assign(Values);
+        if not ParseOpts.MacroValues.Execute(Options.Conditionals) then begin
+          debugln(['TPkgManager.OnGetBuildMacroValues Error: ',ParseOpts.MacroValues.GetErrorStr(0)]);
+          debugln(Options.Conditionals);
+        end;
+
+        ParseOpts.MacroValuesStamp:=BuildMacroChangeStamp;
+      finally
+        ParseOpts.MacroValuesParsing:=false;
+      end;
+    end;
+  end else begin
+    Result:=ParseOpts.InheritedMacroValues;
+
+    if ParseOpts.InheritedMacroValuesStamp<>BuildMacroChangeStamp then begin
+      // compute inherited values
+      ParseOpts.InheritedMacroValuesParsing:=true;
+      try
+        Result.Clear;
+
+        // add inherited
+        if (PackageGraph<>nil) then begin
+          if Options.Owner is TProject then
+            AddAllInherited(TProject(Options.Owner).FirstRequiredDependency,Result)
+          else if Options.Owner is TLazPackage then
+            AddAllInherited(TLazPackage(Options.Owner).FirstRequiredDependency,Result);
+        end;
+
+        // set the macro values of the active project
+        Values:=OnGetBuildMacroValues(nil,false);
+        if Values<>nil then begin
+          Result.AddOverrides(Values);
+        end;
+
+        ParseOpts.InheritedMacroValuesStamp:=BuildMacroChangeStamp;
+      finally
+        ParseOpts.InheritedMacroValuesParsing:=false;
+      end;
+    end;
   end;
 end;
 
@@ -1625,6 +1757,8 @@ begin
   OnGetDependencyOwnerDirectory:=@GetDependencyOwnerDirectory;
   OnGetWritablePkgOutputDirectory:=@GetWritablePkgOutputDirectory;
   OnPackageFileLoaded:=@PackageFileLoaded;
+
+  GetBuildMacroValues:=@OnGetBuildMacroValues;
 
   // componentpalette
   IDEComponentPalette:=TComponentPalette.Create;

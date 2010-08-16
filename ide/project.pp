@@ -52,7 +52,7 @@ uses
   FileUtil, Controls, Dialogs, InterfaceBase,
   // codetools
   Laz_XMLCfg, CodeToolsConfig, ExprEval, FileProcs, DefineTemplates,
-  CodeToolManager, CodeCache,
+  CodeToolsCfgScript, CodeToolManager, CodeCache,
   // IDEIntf
   ProjectIntf, MacroIntf, LazIDEIntf,
   // IDE
@@ -596,6 +596,7 @@ type
 
   TProjectBuildMacros = class
   private
+    FCfgVars: TCTCfgScriptVariables;
     FChangeStamp: integer;
     fLastSavedChangeStamp: integer;
     FItems: TStrings;
@@ -620,6 +621,7 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string; ClearModified: boolean = true);
     property Modified: boolean read GetModified write SetModified;
+    property CfgVars: TCTCfgScriptVariables read FCfgVars;
   end;
 
   { TProject }
@@ -6214,17 +6216,20 @@ begin
   if (Name='') or not IsValidIdent(Name) then exit;
   if Values[Name]=AValue then exit;
   FItems.Values[Name]:=AValue;
+  FCfgVars.Define(PChar(Name),AValue);
   IncreaseChangeStamp;
 end;
 
 constructor TProjectBuildMacros.Create;
 begin
   FItems:=TStringList.Create;
+  FCfgVars:=TCTCfgScriptVariables.Create;
 end;
 
 destructor TProjectBuildMacros.Destroy;
 begin
   FreeAndNil(FItems);
+  FreeAndNil(FCfgVars);
   inherited Destroy;
 end;
 
@@ -6233,6 +6238,7 @@ begin
   if FItems.Count=0 then exit;
   IncreaseChangeStamp;
   FItems.Clear;
+  FCfgVars.Clear;
 end;
 
 function TProjectBuildMacros.Equals(Other: TProjectBuildMacros): boolean;
@@ -6244,6 +6250,7 @@ procedure TProjectBuildMacros.Assign(Src: TProjectBuildMacros);
 begin
   if Equals(Src) then exit;
   FItems.Assign(Src.FItems);
+  CfgVars.Assign(Src.CfgVars);
   IncreaseChangeStamp;
 end;
 
