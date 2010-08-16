@@ -66,6 +66,7 @@ type
     procedure OutputString(S:string);
     function BlockFor(var w: word):integer;
     procedure ResetLastFont;
+    function UnicodeToGlyph(w: word): string;
     property Font: string read FFont write SetFont;
     property FontSize: Integer read FFontSize write SetFontSize;
     property FOntStyle: Integer read FFontStyle write SetFontStyle;
@@ -526,6 +527,16 @@ end;
 procedure TPsUnicode.ResetLastFont;
 begin
   FLastFontIndex:=-1;
+end;
+
+function TPsUnicode.UnicodeToGlyph(w: word): string;
+var
+  i: word;
+begin
+  if FGlyphs.GetData(w, i) then
+    result := GlyphsArr[i].Name
+  else
+    result := '';
 end;
 
 end.
