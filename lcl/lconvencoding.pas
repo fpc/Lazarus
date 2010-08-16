@@ -5625,7 +5625,7 @@ var
 
   function UTF8CharToCP936(const AChar: string): string;
   begin
-
+    Result:=AChar;
   end;
 
 begin
@@ -5640,6 +5640,7 @@ begin
     if c<#128 then
     begin
       CharStr := c;
+      // ToDo: do not use slow string operations, (see for example UTF8ToUCS2BE)
       Result := Result + UTF8CharToCP936(CharStr);
       inc(Src);
       dec(len);
@@ -5649,6 +5650,7 @@ begin
       CharStr := c;
       Inc(Src);
       CharStr := CharStr + Src^;
+      // ToDo: do not use slow string operations
       Result := Result + UTF8CharToCP936(CharStr);
       inc(Src);
       dec(len, 2);
