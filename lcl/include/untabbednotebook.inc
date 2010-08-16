@@ -37,8 +37,8 @@ end;
   procedure TUNBPages.PageListChange(Ptr: Pointer; AnAction: TListNotification);
  ------------------------------------------------------------------------------}
 procedure TUNBPages.PageListChange(Ptr: Pointer; AnAction: TListNotification);
-var
-  APage: TUNBPage;
+{var
+  APage: TUNBPage;}
 begin
 {  if (AnAction=lnAdded) then
   begin
