@@ -26,6 +26,7 @@ uses
 
 const
   DEF_BOX_WIDTH = 50;
+  DEF_WHISKERS_WIDTH = 25;
 
 type
 
@@ -65,12 +66,13 @@ type
     FBoxWidth: Integer;
     FMedianPen: TPen;
     FWhiskersPen: TPen;
-    function CalcBoxWidth(AX: Double; AIndex: Integer): Double;
+    FWhiskersWidth: Integer;
     procedure SetBoxBrush(AValue: TBrush);
     procedure SetBoxPen(AValue: TPen);
     procedure SetBoxWidth(AValue: Integer);
     procedure SetMedianPen(AValue: TPen);
     procedure SetWhiskersPen(AValue: TPen);
+    procedure SetWhiskersWidth(AValue: Integer);
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
@@ -87,6 +89,8 @@ type
       read FBoxWidth write SetBoxWidth default DEF_BOX_WIDTH;
     property MedianPen: TPen read FMedianPen write SetMedianPen;
     property WhiskersPen: TPen read FWhiskersPen write SetWhiskersPen;
+    property WhiskersWidth: Integer
+      read FWhiskersWidth write SetWhiskersWidth default DEF_WHISKERS_WIDTH;
   published
     property AxisIndexX;
     property AxisIndexY;
@@ -183,11 +187,6 @@ end;
 
 { TBoxAndWhiskerSeries }
 
-function TBoxAndWhiskerSeries.CalcBoxWidth(AX: Double; AIndex: Integer): Double;
-begin
-  Result := GetXRange(AX, AIndex) * FBoxWidth * PERCENT / 2;
-end;
-
 constructor TBoxAndWhiskerSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -200,6 +199,7 @@ begin
   FMedianPen.OnChange := @StyleChanged;
   FWhiskersPen := TPen.Create;
   FWhiskersPen.OnChange := @StyleChanged;
+  FWhiskersWidth := DEF_WHISKERS_WIDTH;
 end;
 
 destructor TBoxAndWhiskerSeries.Destroy;
@@ -238,7 +238,7 @@ procedure TBoxAndWhiskerSeries.Draw(ACanvas: TCanvas);
 
 var
   ext2: TDoubleRect;
-  x, ymin, yqmin, ymed, yqmax, ymax, w: Double;
+  x, ymin, yqmin, ymed, yqmax, ymax, wb, ww, w: Double;
   i: Integer;
 begin
   if IsEmpty or (Source.YCount < 5) then exit;
@@ -258,20 +258,22 @@ begin
       yqmax := AxisToGraphY(YList[2]);
       ymax := AxisToGraphY(YList[3]);
     end;
-    w := CalcBoxWidth(GetGraphPointX(i), i);
+    w := GetXRange(x, i) * PERCENT / 2;
+    wb := w * BoxWidth;
+    ww := w * WhiskersWidth;
 
     ACanvas.Pen := WhiskersPen;
     ACanvas.Brush.Style := bsClear;
-    DoLine(x - w, ymin, x + w, ymin);
+    DoLine(x - ww, ymin, x + ww, ymin);
     DoLine(x, ymin, x, yqmin);
-    DoLine(x - w, ymax, x + w, ymax);
+    DoLine(x - ww, ymax, x + ww, ymax);
     DoLine(x, ymax, x, yqmax);
     ACanvas.Pen := BoxPen;
     ACanvas.Brush:= BoxBrush;
-    DoRect(x - w, yqmin, x + w, yqmax);
+    DoRect(x - wb, yqmin, x + wb, yqmax);
     ACanvas.Pen := MedianPen;
     ACanvas.Brush.Style := bsClear;
-    DoLine(x - w, ymed, x + w, ymed);
+    DoLine(x - wb, ymed, x + wb, ymed);
   end;
 end;
 
@@ -279,6 +281,12 @@ function TBoxAndWhiskerSeries.Extent: TDoubleRect;
 var
   i, j: Integer;
   x: Double;
+
+  function ExtraWidth(AIndex: Integer): Double;
+  begin
+    Result := GetXRange(x, AIndex) * Max(BoxWidth, WhiskersWidth) * PERCENT / 2;
+  end;
+
 begin
   Result := EmptyExtent;
   if Source.YCount < 5 then exit;
@@ -289,9 +297,9 @@ begin
         UpdateMinMax(YList[j], Result.a.Y, Result.b.Y);
   // Show first and last boxes fully.
   x := GetGraphPointX(0);
-  Result.a.X := Min(Result.a.X, x - CalcBoxWidth(x, 0));
+  Result.a.X := Min(Result.a.X, x - ExtraWidth(0));
   x := GetGraphPointX(Count - 1);
-  Result.b.X := Max(Result.b.X, x + CalcBoxWidth(x, Count - 1));
+  Result.b.X := Max(Result.b.X, x + ExtraWidth(Count - 1));
 end;
 
 procedure TBoxAndWhiskerSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -336,6 +344,13 @@ procedure TBoxAndWhiskerSeries.SetWhiskersPen(AValue: TPen);
 begin
   if FWhiskersPen = AValue then exit;
   FWhiskersPen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TBoxAndWhiskerSeries.SetWhiskersWidth(AValue: Integer);
+begin
+  if FWhiskersWidth = AValue then exit;
+  FWhiskersWidth := AValue;
   UpdateParentChart;
 end;
 
