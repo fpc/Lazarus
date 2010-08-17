@@ -24,6 +24,9 @@ uses
   Classes, Graphics,
   TAChartUtils, TACustomSeries, TALegend;
 
+const
+  DEF_BOX_WIDTH = 50;
+
 type
 
   TBubbleRadiusTransform = (brtNone, brtX, brtY);
@@ -34,7 +37,7 @@ type
   private
     FBubbleBrush: TBrush;
     FBubblePen: TPen;
-    procedure SetBubbleBrush(const AValue: TBrush);
+    procedure SetBubbleBrush(AValue: TBrush);
     procedure SetBubblePen(AValue: TPen);
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
@@ -50,6 +53,43 @@ type
     property AxisIndexY;
     property BubbleBrush: TBrush read FBubbleBrush write SetBubbleBrush;
     property BubblePen: TPen read FBubblePen write SetBubblePen;
+    property Source;
+  end;
+
+  { TBoxAndWhiskerSeries }
+
+  TBoxAndWhiskerSeries = class(TBasicPointSeries)
+  private
+    FBoxBrush: TBrush;
+    FBoxPen: TPen;
+    FBoxWidth: Integer;
+    FMedianPen: TPen;
+    FWhiskersPen: TPen;
+    function CalcBoxWidth(AX: Double; AIndex: Integer): Double;
+    procedure SetBoxBrush(AValue: TBrush);
+    procedure SetBoxPen(AValue: TPen);
+    procedure SetBoxWidth(AValue: Integer);
+    procedure SetMedianPen(AValue: TPen);
+    procedure SetWhiskersPen(AValue: TPen);
+  protected
+    procedure GetLegendItems(AItems: TChartLegendItems); override;
+    function GetSeriesColor: TColor; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor  Destroy; override;
+
+    procedure Draw(ACanvas: TCanvas); override;
+    function Extent: TDoubleRect; override;
+  published
+    property BoxBrush: TBrush read FBoxBrush write SetBoxBrush;
+    property BoxPen: TPen read FBoxPen write SetBoxPen;
+    property BoxWidth: Integer
+      read FBoxWidth write SetBoxWidth default DEF_BOX_WIDTH;
+    property MedianPen: TPen read FMedianPen write SetMedianPen;
+    property WhiskersPen: TPen read FWhiskersPen write SetWhiskersPen;
+  published
+    property AxisIndexX;
+    property AxisIndexY;
     property Source;
   end;
 
@@ -127,21 +167,180 @@ begin
   Result := FBubbleBrush.Color;
 end;
 
-procedure TBubbleSeries.SetBubbleBrush(const AValue: TBrush);
+procedure TBubbleSeries.SetBubbleBrush(AValue: TBrush);
 begin
   if FBubbleBrush = AValue then exit;
-  FBubbleBrush := AValue;
+  FBubbleBrush.Assign(AValue);
   UpdateParentChart;
 end;
 
 procedure TBubbleSeries.SetBubblePen(AValue: TPen);
 begin
   if FBubblePen = AValue then exit;
-  FBubblePen := AValue;
+  FBubblePen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+{ TBoxAndWhiskerSeries }
+
+function TBoxAndWhiskerSeries.CalcBoxWidth(AX: Double; AIndex: Integer): Double;
+begin
+  Result := GetXRange(AX, AIndex) * FBoxWidth * PERCENT / 2;
+end;
+
+constructor TBoxAndWhiskerSeries.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FBoxBrush := TBrush.Create;
+  FBoxBrush.OnChange := @StyleChanged;
+  FBoxPen := TPen.Create;
+  FBoxPen.OnChange := @StyleChanged;
+  FBoxWidth := DEF_BOX_WIDTH;
+  FMedianPen := TPen.Create;
+  FMedianPen.OnChange := @StyleChanged;
+  FWhiskersPen := TPen.Create;
+  FWhiskersPen.OnChange := @StyleChanged;
+end;
+
+destructor TBoxAndWhiskerSeries.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FBoxBrush);
+  FreeAndNil(FBoxPen);
+  FreeAndNil(FMedianPen);
+  FreeAndNil(FWhiskersPen);
+end;
+
+procedure TBoxAndWhiskerSeries.Draw(ACanvas: TCanvas);
+
+  function MaybeRotate(AX, AY: Double): TPoint;
+  begin
+    if IsRotated then
+      Exchange(AX, AY);
+    Result := ParentChart.GraphToImage(DoublePoint(AX, AY));
+  end;
+
+  procedure DoLine(AX1, AY1, AX2, AY2: Double);
+  begin
+    ACanvas.Line(MaybeRotate(AX1, AY1), MaybeRotate(AX2, AY2));
+  end;
+
+  procedure DoRect(AX1, AY1, AX2, AY2: Double);
+  var
+    r: TRect;
+  begin
+    with ParentChart do begin
+      r.TopLeft := MaybeRotate(AX1, AY1);
+      r.BottomRight := MaybeRotate(AX2, AY2);
+    end;
+    ACanvas.Rectangle(r);
+  end;
+
+var
+  ext2: TDoubleRect;
+  x, ymin, yqmin, ymed, yqmax, ymax, w: Double;
+  i: Integer;
+begin
+  if IsEmpty or (Source.YCount < 5) then exit;
+
+  ext2 := ParentChart.CurrentExtent;
+  ExpandRange(ext2.a.X, ext2.b.X, 1.0);
+  ExpandRange(ext2.a.Y, ext2.b.Y, 1.0);
+
+  PrepareGraphPoints(ext2, true);
+
+  for i := FLoBound to FUpBound do begin
+    x := GetGraphPointX(i);
+    ymin := GetGraphPointY(i);
+    with Source[i]^ do begin
+      yqmin := AxisToGraphY(YList[0]);
+      ymed := AxisToGraphY(YList[1]);
+      yqmax := AxisToGraphY(YList[2]);
+      ymax := AxisToGraphY(YList[3]);
+    end;
+    w := CalcBoxWidth(GetGraphPointX(i), i);
+
+    ACanvas.Pen := WhiskersPen;
+    ACanvas.Brush.Style := bsClear;
+    DoLine(x - w, ymin, x + w, ymin);
+    DoLine(x, ymin, x, yqmin);
+    DoLine(x - w, ymax, x + w, ymax);
+    DoLine(x, ymax, x, yqmax);
+    ACanvas.Pen := BoxPen;
+    ACanvas.Brush:= BoxBrush;
+    DoRect(x - w, yqmin, x + w, yqmax);
+    ACanvas.Pen := MedianPen;
+    ACanvas.Brush.Style := bsClear;
+    DoLine(x - w, ymed, x + w, ymed);
+  end;
+end;
+
+function TBoxAndWhiskerSeries.Extent: TDoubleRect;
+var
+  i, j: Integer;
+  x: Double;
+begin
+  Result := EmptyExtent;
+  if Source.YCount < 5 then exit;
+  Result := inherited Extent;
+  for i := 0 to Count - 1 do
+    with Source[i]^ do
+      for j := 0 to High(YList) do
+        UpdateMinMax(YList[j], Result.a.Y, Result.b.Y);
+  // Show first and last boxes fully.
+  x := GetGraphPointX(0);
+  Result.a.X := Min(Result.a.X, x - CalcBoxWidth(x, 0));
+  x := GetGraphPointX(Count - 1);
+  Result.b.X := Max(Result.b.X, x + CalcBoxWidth(x, Count - 1));
+end;
+
+procedure TBoxAndWhiskerSeries.GetLegendItems(AItems: TChartLegendItems);
+begin
+  AItems.Add(TLegendItemBrushRect.Create(BoxBrush, Title));
+end;
+
+function TBoxAndWhiskerSeries.GetSeriesColor: TColor;
+begin
+  Result := BoxBrush.Color;
+end;
+
+procedure TBoxAndWhiskerSeries.SetBoxBrush(AValue: TBrush);
+begin
+  if FBoxBrush = AValue then exit;
+  FBoxBrush.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TBoxAndWhiskerSeries.SetBoxPen(AValue: TPen);
+begin
+  if FBoxPen = AValue then exit;
+  FBoxPen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TBoxAndWhiskerSeries.SetBoxWidth(AValue: Integer);
+begin
+  if FBoxWidth = AValue then exit;
+  FBoxWidth := AValue;
+  UpdateParentChart;
+end;
+
+procedure TBoxAndWhiskerSeries.SetMedianPen(AValue: TPen);
+begin
+  if FMedianPen = AValue then exit;
+  FMedianPen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TBoxAndWhiskerSeries.SetWhiskersPen(AValue: TPen);
+begin
+  if FWhiskersPen = AValue then exit;
+  FWhiskersPen.Assign(AValue);
   UpdateParentChart;
 end;
 
 initialization
   RegisterSeriesClass(TBubbleSeries, 'Bubble series');
+  RegisterSeriesClass(TBoxAndWhiskerSeries, 'Box-and-whiskers series');
 
 end.
