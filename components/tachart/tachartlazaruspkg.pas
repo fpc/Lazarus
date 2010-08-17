@@ -9,7 +9,8 @@ interface
 uses
     TAChartAxis, TAChartUtils, TACustomSeries, TADbSource, TAGraph, TASeries, 
   TASeriesEditor, TASources, TASubcomponentsEditor, TATools, 
-  TATransformations, TATypes, TADrawUtils, TAMultiSeries, LazarusPackageIntf;
+  TATransformations, TATypes, TADrawUtils, TAMultiSeries, TALegend, 
+  LazarusPackageIntf;
 
 implementation
 

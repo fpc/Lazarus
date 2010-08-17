@@ -16,7 +16,7 @@ Authors: Alexander Klenin
 
 unit TAMultiSeries;
 
-{$mode objfpc}{$H+}
+{$H+}
 
 interface
 
