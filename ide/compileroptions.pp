@@ -94,6 +94,7 @@
       - on renaming
       - on loading
   - when package is renamed, rename macros too
+  - conditionals for project
   - i18n for descriptions
   - keyword help for a build macro
 
@@ -1031,7 +1032,6 @@ begin
   FreeThenNil(fExecuteBefore);
   FreeThenNil(fExecuteAfter);
   FreeThenNil(FParsedOpts);
-  FreeThenNil(FConditionals); // free FConditionals before FParsedOpts
   inherited Destroy;
 end;
 

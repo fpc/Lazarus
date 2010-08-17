@@ -120,6 +120,7 @@ object CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       ParentColor = False
       ParentFont = False
       TabOrder = 0
+      OnExit = CondSynEditExit
       Gutter.Width = 55
       Gutter.MouseActions = <      
         item

@@ -18,7 +18,8 @@
  ***************************************************************************
 
   Abstract:
-    Frame to edit build macros of compiler options (project+packages).
+    Frame to edit build macros and conditionals of compiler options
+    (project+packages).
 
 }
 unit Compiler_BuildMacro_Options;
@@ -61,6 +62,7 @@ type
       var AllowEdit: Boolean);
     procedure BuildMacrosTreeViewSelectionChanged(Sender: TObject);
     procedure BuildMacrosTVPopupMenuPopup(Sender: TObject);
+    procedure CondSynEditExit(Sender: TObject);
     procedure DeleteBuildMacroClick(Sender: TObject);
     procedure NewBuildMacroClick(Sender: TObject);
     procedure NewValueClick(Sender: TObject);
@@ -218,6 +220,11 @@ begin
   Add('New build macro',@NewBuildMacroClick);
   if NodeType in [cbmntBuildMacro] then
     Add('Delete build macro ...',@DeleteBuildMacroClick);
+end;
+
+procedure TCompOptBuildMacrosFrame.CondSynEditExit(Sender: TObject);
+begin
+  Options.Conditionals:=CondSynEdit.Lines.Text;
 end;
 
 procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewEditing(Sender: TObject;
