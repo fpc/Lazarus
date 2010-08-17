@@ -25,7 +25,7 @@
  for details about the copyright.
 "/>
     <Version Major="1"/>
-    <Files Count="13">
+    <Files Count="14">
       <Item1>
         <Filename Value="tachartaxis.pas"/>
         <UnitName Value="TAChartAxis"/>
@@ -84,6 +84,10 @@
         <Filename Value="tadrawutils.pas"/>
         <UnitName Value="TADrawUtils"/>
       </Item13>
+      <Item14>
+        <Filename Value="tamultiseries.pas"/>
+        <UnitName Value="TAMultiSeries"/>
+      </Item14>
     </Files>
     <LazDoc Paths="$(LazarusDir)\components\tachart\fpdoc\"/>
     <Type Value="RunAndDesignTime"/>

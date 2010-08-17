@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, ComCtrls, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  TAGraph, TASeries, TASources;
+  TAGraph, TAMultiSeries, TASeries, TASources;
 
 type
 

@@ -2216,6 +2216,7 @@ components/tachart/tadrawutils.pas svneol=native#text/pascal
 components/tachart/tagraph.lrs svneol=native#text/pascal
 components/tachart/tagraph.pas svneol=native#text/plain
 components/tachart/talegend.pas svneol=native#text/plain
+components/tachart/tamultiseries.pas svneol=native#text/pascal
 components/tachart/taseries.pas svneol=native#text/plain
 components/tachart/taserieseditor.pas svneol=native#text/plain
 components/tachart/tasources.pas svneol=native#text/pascal
