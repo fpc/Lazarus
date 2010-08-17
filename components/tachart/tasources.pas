@@ -116,6 +116,7 @@ type
     procedure Delete(AIndex: Integer); inline;
     function IsSorted: Boolean; override;
     function SetXValue(AIndex: Integer; AValue: Double): Integer;
+    procedure SetYList(AIndex: Integer; const AYList: array of Double);
     procedure SetYValue(AIndex: Integer; AValue: Double);
     procedure Sort;
   published
@@ -786,6 +787,16 @@ begin
   FYCount := AValue;
   for i := 0 to Count - 1 do
     SetLength(Item[i]^.YList, Max(FYCount - 1, 0));
+end;
+
+procedure TListChartSource.SetYList(
+  AIndex: Integer; const AYList: array of Double);
+var
+  i: Integer;
+begin
+  with Item[AIndex]^ do
+    for i := 0 to Min(High(AYList), High(YList)) do
+      YList[i] := AYList[i];
 end;
 
 procedure TListChartSource.SetYValue(AIndex: Integer; AValue: Double);
