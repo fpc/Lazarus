@@ -651,15 +651,7 @@ end;
 
 function TBarSeries.CalcBarWidth(AX: Double; AIndex: Integer): Double;
 begin
-  case CASE_OF_TWO[AIndex > 0, AIndex < Count - 1] of
-    cotNone: Result := 1.0;
-    cotFirst: Result := Abs(AX - GetGraphPointX(AIndex - 1));
-    cotSecond: Result := Abs(AX - GetGraphPointX(AIndex + 1));
-    cotBoth: Result := Min(
-      Abs(AX - GetGraphPointX(AIndex - 1)),
-      Abs(AX - GetGraphPointX(AIndex + 1)));
-  end;
-  Result *= FBarWidthPercent * PERCENT / 2;
+  Result := GetXRange(AX, AIndex) * FBarWidthPercent * PERCENT / 2;
 end;
 
 constructor TBarSeries.Create(AOwner: TComponent);

@@ -166,6 +166,7 @@ type
 
     procedure DrawLabels(ACanvas: TCanvas);
     function GetLabelDirection(AIndex: Integer): TLabelDirection; virtual;
+    function GetXRange(AX: Double; AIndex: Integer): Double;
     procedure PrepareGraphPoints(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); override;
@@ -660,6 +661,18 @@ begin
     AImg := pt;
     AValue.X := GetXValue(i);
     AValue.Y := GetYValue(i);
+  end;
+end;
+
+function TBasicPointSeries.GetXRange(AX: Double; AIndex: Integer): Double;
+begin
+  case CASE_OF_TWO[AIndex > 0, AIndex < Count - 1] of
+    cotNone: Result := 1.0;
+    cotFirst: Result := Abs(AX - GetGraphPointX(AIndex - 1));
+    cotSecond: Result := Abs(AX - GetGraphPointX(AIndex + 1));
+    cotBoth: Result := Min(
+      Abs(AX - GetGraphPointX(AIndex - 1)),
+      Abs(AX - GetGraphPointX(AIndex + 1)));
   end;
 end;
 
