@@ -154,6 +154,7 @@ begin
 
   APage.Parent := Self;
   APage.Align := alClient;
+  APage.Visible := False;
 
   if PageIndex = -1 then SetPageIndex(Index);
 end;
