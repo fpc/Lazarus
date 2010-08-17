@@ -47,7 +47,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Graphics, Forms, FileUtil,
   AvgLvlTree, AVL_Tree, LazConfigStorage,
-  DefineTemplates, CodeToolManager, Laz_XMLCfg, CodeCache,
+  CodeToolsCfgScript, DefineTemplates, CodeToolManager, Laz_XMLCfg, CodeCache,
   PropEdits, LazIDEIntf, MacroIntf, PackageIntf,
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs,
   LazarusIDEStrConsts, IDEProcs, ComponentReg,
@@ -665,8 +665,8 @@ type
     function GetUnitPath(RelativeToBaseDir: boolean): string;
     function GetIncludePath(RelativeToBaseDir: boolean): string;
     function NeedsDefineTemplates: boolean;
-    function SubstitutePkgMacro(const s: string;
-                                PlatformIndependent: boolean): string;
+    function SubstitutePkgMacros(const s: string;
+                                 PlatformIndependent: boolean): string;
     procedure WriteInheritedUnparsedOptions;
     // files
     function IndexOfPkgFile(PkgFile: TPkgFile): integer;
@@ -1532,7 +1532,7 @@ begin
     fFullFilenameStamp:=CompilerParseStamp;
     if LazPackage<>nil then begin
       // substitute locally
-      LazPackage.SubstitutePkgMacro(fFullFilename,false);
+      LazPackage.SubstitutePkgMacros(fFullFilename,false);
     end;
     // substitute globally
     IDEMacros.SubstituteMacros(fFullFilename);
@@ -1633,7 +1633,7 @@ end;
 
 function TPkgFile.GetShortFilename(UseUp: boolean): string;
 begin
-  Result:=Filename;
+  Result:=GetFullFilename;
   LazPackage.ShortenFilename(Result,UseUp);
 end;
 
@@ -2028,7 +2028,31 @@ end;
 procedure TLazPackage.OnMacroListSubstitution(TheMacro: TTransferMacro;
   const MacroName: string; var s: string; const Data: PtrInt;
   var Handled, Abort: boolean; Depth: integer);
+{$IFDEF EnableBuildModes}
+var
+  Values: TCTCfgScriptVariables;
+  Macro: PCTCfgScriptVariable;
+{$ENDIF}
 begin
+  {$IFDEF EnableBuildModes}
+  // check build macros
+  if (MacroName<>'') and IsValidIdent(MacroName) then
+  begin
+    Values:=GetBuildMacroValues(CompilerOptions,true);
+    if Values<>nil then begin
+      Macro:=Values.GetVariable(PChar(MacroName));
+      if Macro<>nil then
+      begin
+        s:=GetCTCSVariableAsString(Macro);
+        debugln(['TLazPackage.OnMacroListSubstitution Pkg=',Name,' Macro=',MacroName,' Value="',s,'"']);
+        Handled:=true;
+        exit;
+      end;
+    end;
+  end;
+  {$ENDIF}
+
+  // check local macros
   if CompareText(s,'PkgOutDir')=0 then begin
     Handled:=true;
     if Data=CompilerOptionMacroNormal then
@@ -2048,7 +2072,7 @@ begin
   FUserReadOnly:=AValue;
 end;
 
-function TLazPackage.SubstitutePkgMacro(const s: string;
+function TLazPackage.SubstitutePkgMacros(const s: string;
   PlatformIndependent: boolean): string;
 begin
   Result:=s;
@@ -2379,10 +2403,10 @@ begin
   FMacros.OnSubstitution:=@OnMacroListSubstitution;
   FCompilerOptions:=TPkgCompilerOptions.Create(Self);
   FCompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
-  FCompilerOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;
+  FCompilerOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacros;
   FCompilerOptions.DefaultMakeOptionsFlags:=[ccloNoLinkerOpts];
   FUsageOptions:=TPkgAdditionalCompilerOptions.Create(Self);
-  FUsageOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;
+  FUsageOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacros;
   FDefineTemplates:=TLazPackageDefineTemplates.Create(Self);
   fPublishOptions:=TPublishPackageOptions.Create(Self);
   FProvides:=TStringList.Create;
@@ -3366,7 +3390,7 @@ end;
 
 function TLazPackage.GetPOOutDirectory: string;
 begin
-  Result:=TrimFilename(SubstitutePkgMacro(fPOOutputDirectory,false));
+  Result:=TrimFilename(SubstitutePkgMacros(fPOOutputDirectory,false));
   LongenFilename(Result);
   IDEMacros.SubstituteMacros(Result);
   Result:=TrimFilename(Result);

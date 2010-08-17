@@ -3413,11 +3413,11 @@ var
   BaseDirectory: String;
 begin
   s:=OptionText;
-  // parse locally
+  // parse locally (macros depending on owner, like pkgdir and build macros)
   //DebugLn(['TParsedCompilerOptions.DoParseOption local "',s,'" ...']);
   if Assigned(OnLocalSubstitute) then
     s:=OnLocalSubstitute(s,PlatformIndependent);
-  // parse globally
+  // parse globally (general macros)
   //DebugLn(['TParsedCompilerOptions.DoParseOption global "',s,'" ...']);
   s:=ParseString(Self,s,PlatformIndependent);
   //DebugLn(['TParsedCompilerOptions.DoParseOption complete "',s,'" ...']);

@@ -221,9 +221,8 @@ begin
       );
     OpenPackageMenuItem.Visible:=true;
     ShownFilename:=PkgComponent.PkgFile.Filename;
-    UnitFilename:=APackage.SubstitutePkgMacro(ShownFilename,true);
-    IDEMacros.SubstituteMacros(UnitFilename);
-    if not FileExistsUTF8(UnitFilename) then begin
+    UnitFilename:=PkgComponent.PkgFile.GetFullFilename;
+    if not FileExistsCached(UnitFilename) then begin
       UnitFilename:=LazarusIDE.FindSourceFile(ExtractFilename(UnitFilename),
                                               APackage.Directory,[]);
       if FileExistsUTF8(UnitFilename) then
@@ -231,7 +230,7 @@ begin
     end;
     OpenUnitMenuItem.Caption:=Format(lisCPOpenUnit, [ShownFilename]);
     OpenUnitMenuItem.Visible:=true;
-    OpenUnitMenuItem.Enabled:=FileExistsUTF8(UnitFilename);
+    OpenUnitMenuItem.Enabled:=FileExistsCached(UnitFilename);
   end;
 end;
 

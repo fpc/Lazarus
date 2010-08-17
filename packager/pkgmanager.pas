@@ -811,12 +811,6 @@ begin
   ParseOpts:=Options.ParsedOpts;
   if ParseOpts=nil then exit;
 
-  if ParseOpts.MacroValuesParsing then begin
-    // circle
-    debugln(['TPkgManager.OnGetBuildMacroValues circle computing macros of ',dbgsname(Options.Owner)]);
-    exit;
-  end;
-
   if IncludeSelf then begin
     Result:=ParseOpts.MacroValues.Variables;
 
@@ -824,7 +818,7 @@ begin
       // compute macro values
 
       if ParseOpts.MacroValuesParsing then begin
-        debugln(['TPkgManager.OnGetBuildMacroValues circle computing inherited macros of ',dbgsname(Options.Owner)]);
+        debugln(['TPkgManager.OnGetBuildMacroValues circle computing macros of ',dbgsname(Options.Owner)]);
         exit;
       end;
 
@@ -853,6 +847,10 @@ begin
 
     if ParseOpts.InheritedMacroValuesStamp<>BuildMacroChangeStamp then begin
       // compute inherited values
+      if ParseOpts.InheritedMacroValuesParsing then begin
+        debugln(['TPkgManager.OnGetBuildMacroValues circle computing inherited macros of ',dbgsname(Options.Owner)]);
+        exit;
+      end;
       ParseOpts.InheritedMacroValuesParsing:=true;
       try
         Result.Clear;
