@@ -50,55 +50,6 @@ type
     rtRes    // fpc resources
   );
 
-  TCOCNodeType = (
-    cocntNone,
-    cocntIf,
-    cocntIfdef,
-    cocntIfNdef,
-    cocntElseIf,
-    cocntElse,
-    cocntAddValue,
-    cocntSetValue
-  );
-  TCOCNodeTypes = set of TCOCNodeType;
-  TCOCValueType = (
-    cocvtNone,
-    cocvtResult,
-    cocvtUnitPath,
-    cocvtSrcPath,
-    cocvtIncludePath,
-    cocvtObjectPath,
-    cocvtLibraryPath,
-    cocvtDebugPath,
-    cocvtLinkerOptions,
-    cocvtCustomOptions
-    );
-  TCOCValueTypes = set of TCOCValueType;
-
-const
-  COCNodeTypeNames: array[TCOCNodeType] of string = (
-    'None',
-    'If',
-    'Ifdef',
-    'IfNdef',
-    'ElseIf',
-    'Else',
-    'AddValue',
-    'SetValue'
-    );
-  COCValueTypeNames: array[TCOCValueType] of string = (
-    'None',
-    'Result',
-    'UnitPath',
-    'SrcPath',
-    'IncludePath',
-    'ObjectPath',
-    'LibraryPath',
-    'DebugPath',
-    'LinkerOptions',
-    'CustomOptions'
-    );
-
 type
 
   { TLazBuildMacro
@@ -811,10 +762,6 @@ function ProjectFlagsToStr(Flags: TProjectFlags): string;
 function StrToProjectSessionStorage(const s: string): TProjectSessionStorage;
 function CompilationExecutableTypeNameToType(const s: string
                                              ): TCompilationExecutableType;
-function COCNodeTypeNameToType(const s: string): TCOCNodeType;
-function COCNodeTypeLocalizedName(const nt: TCOCNodeType): string;
-function COCValueTypeNameToType(const s: string): TCOCValueType;
-function COCValueTypeLocalizedName(const vt: TCOCValueType): string;
 
 procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor);
 procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor);
@@ -829,52 +776,6 @@ procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor;
 
 
 implementation
-
-function COCNodeTypeNameToType(const s: string): TCOCNodeType;
-begin
-  for Result:=Low(TCOCNodeType) to High(TCOCNodeType) do
-    if SysUtils.CompareText(s,COCNodeTypeNames[Result])=0 then exit;
-  Result:=cocntNone;
-end;
-
-function COCNodeTypeLocalizedName(const nt: TCOCNodeType): string;
-begin
-  case nt of
-  cocntNone:   Result:=sccsILEdtNone;
-  cocntIf:     Result:=liisIf;
-  cocntIfdef:  Result:=liisIfDef;
-  cocntIfNdef: Result:=liisIfNDef;
-  cocntElseIf: Result:=liisElseIf;
-  cocntElse:   Result:=liisElse;
-  cocntAddValue: Result:=liisAddValue;
-  cocntSetValue: Result:=liisSetValue;
-  else         Result:='?';
-  end;
-end;
-
-function COCValueTypeNameToType(const s: string): TCOCValueType;
-begin
-  for Result:=Low(TCOCValueType) to High(TCOCValueType) do
-    if SysUtils.CompareText(s,COCValueTypeNames[Result])=0 then exit;
-  Result:=cocvtNone;
-end;
-
-function COCValueTypeLocalizedName(const vt: TCOCValueType): string;
-begin
-  case vt of
-  cocvtNone:           Result:=sccsILEdtNone;
-  cocvtResult:         Result:=pirsResult;
-  cocvtUnitPath:       Result:=pirsUnitSearchPath;
-  cocvtSrcPath:        Result:=pirsUnitSourceSearchPath;
-  cocvtIncludePath:    Result:=pirsIncludeSearchPath;
-  cocvtObjectPath:     Result:=pirsObjectSearchPath;
-  cocvtLibraryPath:    Result:=pirsLibrarySearchPath;
-  cocvtDebugPath:      Result:=pirsDebugSearchPath;
-  cocvtLinkerOptions: Result:=pirsLinkerOptions;
-  cocvtCustomOptions: Result:=pirsCustomOptions;
-  else                Result:='?';
-  end;
-end;
 
 procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor);
 begin

@@ -246,7 +246,7 @@ const
     
   ParsedCompilerOptStringNames: array[TParsedCompilerOptString] of string = (
     'pcosNone',
-    'pcosBaseDir',
+    'pcosBaseDir', // only auto created packages can have macros
     'pcosUnitPath',
     'pcosIncludePath',
     'pcosObjectPath',
@@ -258,21 +258,6 @@ const
     'pcosCompilerPath',
     'pcosDebugPath'
     );
-  ParsedCompOptToConditional: array[TParsedCompilerOptString] of TCOCValueType = (
-    cocvtNone,        // pcosNone
-    cocvtNone,        // pcosBaseDir
-    cocvtUnitPath,    // pcosUnitPath
-    cocvtIncludePath, // pcosIncludePath
-    cocvtObjectPath,  // pcosObjectPath
-    cocvtLibraryPath, // pcosLibraryPath
-    cocvtSrcPath,     // pcosSrcPath
-    cocvtLinkerOptions, // pcosLinkerOptions
-    cocvtCustomOptions, // pcosCustomOptions
-    cocvtNone,        // pcosOutputDir
-    cocvtNone,        // pcosCompilerPath
-    cocvtDebugPath    // pcosDebugPath
-    );
-    
   InheritedToParsedCompilerOption: array[TInheritedCompilerOption] of
     TParsedCompilerOptString = (
       pcosNone,
