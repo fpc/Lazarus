@@ -319,6 +319,13 @@ type
     property TabStop;
   end;
 
+  { TUNBPage }
+
+  TUNBPage = class(TCustomControl)
+  public
+    destructor Destroy; override;
+  end;
+
   { TUNBPages }
 
   TUntabbedNotebook = class;
@@ -340,12 +347,6 @@ type
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: String); override;
 //    procedure Move(CurIndex, NewIndex: Integer); override;
-  end;
-
-  { TUNBPage }
-
-  TUNBPage = class(TCustomControl)
-  public
   end;
 
   { TUntabbedNotebook }
@@ -1312,13 +1313,16 @@ implementation
 uses
   Math, WSExtCtrls;
 
+{.$define INSTALL_TUNTABBEDNOTEBOOK}
+
 procedure Register;
 begin
   RegisterComponents('Standard',[TRadioGroup,TCheckGroup,TPanel]);
   RegisterComponents('Additional',[TImage,TShape,TBevel,TPaintBox,TNotebook,
-      TUntabbedNotebook, TLabeledEdit, TSplitter, TTrayIcon]);
+    {$ifdef INSTALL_TUNTABBEDNOTEBOOK} TUntabbedNotebook, {$ENDIF}
+    TLabeledEdit, TSplitter, TTrayIcon]);
   RegisterComponents('System',[TTimer,TIdleTimer]);
-  RegisterNoIcon([TPage, TUNBPage]);
+  RegisterNoIcon([TPage{$ifdef INSTALL_TUNTABBEDNOTEBOOK}, TUNBPage{$ENDIF}]);
 end;
 
 {$I custompage.inc}

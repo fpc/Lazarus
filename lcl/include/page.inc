@@ -19,6 +19,25 @@
 
 { TPage }
 
+{ TUNBPage }
+
+destructor TUNBPage.Destroy;
+begin
+  {$ifdef DEBUG_NEW_NOTEBOOK}
+  DebugLn('[TUNBPage.Destroy]');
+  {$endif}
+
+  if (Parent <> nil) and (Parent is TUntabbedNotebook) then
+  begin
+    {$ifdef DEBUG_NEW_NOTEBOOK}
+    DebugLn('[TUNBPage.Destroy] FPageList.Remove(Self)');
+    {$endif}
+    TUntabbedNotebook(Parent).FPageList.Remove(Self);
+  end;
+
+  inherited Destroy;
+end;
+
 
 
 // included by extctrls.pp
