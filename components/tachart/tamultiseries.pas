@@ -279,7 +279,6 @@ end;
 
 function TBoxAndWhiskerSeries.Extent: TDoubleRect;
 var
-  i, j: Integer;
   x: Double;
 
   function ExtraWidth(AIndex: Integer): Double;
@@ -288,13 +287,8 @@ var
   end;
 
 begin
-  Result := EmptyExtent;
-  if Source.YCount < 5 then exit;
-  Result := inherited Extent;
-  for i := 0 to Count - 1 do
-    with Source[i]^ do
-      for j := 0 to High(YList) do
-        UpdateMinMax(YList[j], Result.a.Y, Result.b.Y);
+  if Source.YCount < 5 then exit(EmptyExtent);
+  Result := Source.ExtentList;
   // Show first and last boxes fully.
   x := GetGraphPointX(0);
   Result.a.X := Min(Result.a.X, x - ExtraWidth(0));

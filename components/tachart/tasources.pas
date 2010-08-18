@@ -67,7 +67,8 @@ type
     function IsUpdating: Boolean; inline;
   public
     class procedure CheckFormat(const AFormat: String);
-    function Extent: TDoubleRect; virtual;
+    function Extent: TDoubleRect;
+    function ExtentList: TDoubleRect;
     procedure FindBounds(AXMin, AXMax: Double; out ALB, AUB: Integer);
     function FormatItem(const AFormat: String; AIndex: Integer): String;
     function IsSorted: Boolean; virtual;
@@ -357,6 +358,17 @@ begin
     end;
   FExtentIsValid := true;
   Result := FExtent;
+end;
+
+function TCustomChartSource.ExtentList: TDoubleRect;
+var
+  i, j: Integer;
+begin
+  Result := Extent;
+  for i := 0 to Count - 1 do
+    with Item[i]^ do
+      for j := 0 to High(YList) do
+        UpdateMinMax(YList[j], Result.a.Y, Result.b.Y);
 end;
 
 procedure TCustomChartSource.FindBounds(
