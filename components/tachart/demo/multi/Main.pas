@@ -13,6 +13,8 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    chStackedArea: TChart;
+    chStackedAreaAreaSeries1: TAreaSeries;
     chStackedLines: TChart;
     chStackedLinesLineSeries1: TLineSeries;
     chWhiskers: TChart;
@@ -24,6 +26,7 @@ type
     lcsBubble: TListChartSource;
     PageControl1: TPageControl;
     rcsStacked: TRandomChartSource;
+    tsStackedArea: TTabSheet;
     tsStackedLines: TTabSheet;
     tsWhiskers: TTabSheet;
     tsStackedBar: TTabSheet;

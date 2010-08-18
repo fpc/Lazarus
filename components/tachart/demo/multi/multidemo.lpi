@@ -5,6 +5,7 @@
     <PathDelim Value="\"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
+      <MainUnit Value="0"/>
       <Title Value="Bubble series demo"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
