@@ -164,6 +164,7 @@ type
     FPointer: TSeriesPointer;
     FShowPoints: Boolean;
 
+    procedure DrawSingleLineInStack(ACanvas: TCanvas);
     function GetShowLines: Boolean;
     procedure SetLinePen(AValue: TPen);
     procedure SetLineType(AValue: TLineType);
@@ -364,6 +365,21 @@ end;
 
 procedure TLineSeries.Draw(ACanvas: TCanvas);
 var
+  ext: TDoubleRect;
+begin
+  // Do not draw anything if the series extent does not intersect CurrentExtent.
+  ext.a := AxisToGraph(Source.Extent.a);
+  ext.b := AxisToGraph(Source.Extent.b);
+  if LineType = ltFromOrigin then
+    ExpandRect(ext, AxisToGraph(ZeroDoublePoint));
+  if not RectIntersectsRect(ext, ParentChart.CurrentExtent) then exit;
+
+  PrepareGraphPoints(ext, LineType <> ltFromOrigin);
+  DrawSingleLineInStack(ACanvas);
+end;
+
+procedure TLineSeries.DrawSingleLineInStack(ACanvas: TCanvas);
+var
   points: array of TPoint;
   pointCount: Integer = 0;
   breaks: TIntegerDynArray;
@@ -443,18 +459,8 @@ var
 var
   i: Integer;
   ai: TPoint;
-  ext: TDoubleRect;
   p: TDoublePoint;
 begin
-  // Do not draw anything if the series extent does not intersect CurrentExtent.
-  ext.a := AxisToGraph(Source.Extent.a);
-  ext.b := AxisToGraph(Source.Extent.b);
-  if LineType = ltFromOrigin then
-    ExpandRect(ext, AxisToGraph(ZeroDoublePoint));
-  if not RectIntersectsRect(ext, ParentChart.CurrentExtent) then exit;
-
-  PrepareGraphPoints(ext, LineType <> ltFromOrigin);
-
   DrawLines;
   DrawLabels(ACanvas);
 
