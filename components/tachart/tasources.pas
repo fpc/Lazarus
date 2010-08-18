@@ -245,6 +245,7 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
+    procedure SetYCount(AValue: Cardinal); override;
   public
     function IsSorted: Boolean; override;
     procedure Reset; inline;
@@ -1214,6 +1215,14 @@ procedure TUserDefinedChartSource.SetPointsNumber(const AValue: Integer);
 begin
   if FPointsNumber = AValue then exit;
   FPointsNumber := AValue;
+  Reset;
+end;
+
+procedure TUserDefinedChartSource.SetYCount(AValue: Cardinal);
+begin
+  if FYCount = AValue then exit;
+  FYCount := AValue;
+  SetLength(FItem.YList, Max(YCount - 1, 0));
   Reset;
 end;
 
