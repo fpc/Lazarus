@@ -72,7 +72,7 @@ type
       read FBarWidthPercent write SetBarWidthPercent default DEF_BAR_WIDTH_PERCENT;
     property Depth;
     property SeriesColor: TColor
-      read GetSeriesColor write SetSeriesColor default clTAColor;
+      read GetSeriesColor write SetSeriesColor stored false default clRed;
     property Source;
     property UseReticule;
     property ZeroLevel: Double
@@ -139,7 +139,7 @@ type
       read FConnectType write SetConnectType default ctLine;
     property Depth;
     property SeriesColor: TColor
-      read GetSeriesColor write SetSeriesColor default clWhite;
+      read GetSeriesColor write SetSeriesColor stored false default clWhite;
     property Source;
     property UseReticule;
     property UseZeroLevel: Boolean
@@ -195,7 +195,7 @@ type
       read FOnDrawPointer write FOnDrawPointer;
     property Pointer: TSeriesPointer read FPointer write SetPointer;
     property SeriesColor: TColor
-      read GetSeriesColor write SetSeriesColor default clTAColor;
+      read GetSeriesColor write SetSeriesColor stored false default clBlack;
     property ShowLines: Boolean
       read GetShowLines write SetShowLines stored false default true;
     property ShowPoints: Boolean
