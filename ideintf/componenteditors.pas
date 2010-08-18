@@ -936,10 +936,17 @@ begin
   end;
 end;
 
-procedure TUntabbedNotebookComponentEditor.ShowPageMenuItemClick(Sender: TObject
-  );
+procedure TUntabbedNotebookComponentEditor.ShowPageMenuItemClick(Sender: TObject);
+var
+  AMenuItem: TMenuItem;
+  NewPageIndex: integer;
 begin
-
+  AMenuItem:=TMenuItem(Sender);
+  if (AMenuItem=nil) or (not (AMenuItem is TMenuItem)) then exit;
+  NewPageIndex:=AMenuItem.MenuIndex;
+  if (NewPageIndex<0) or (NewPageIndex>=Notebook.Pages.Count) then exit;
+  NoteBook.PageIndex:=NewPageIndex;
+  GetDesigner.SelectOnlyThisComponent(NoteBook.Page[NoteBook.PageIndex]);
 end;
 
 procedure TUntabbedNotebookComponentEditor.ExecuteVerb(Index: Integer);

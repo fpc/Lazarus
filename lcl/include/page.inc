@@ -21,6 +21,19 @@
 
 { TUNBPage }
 
+constructor TUNBPage.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+
+  ControlStyle := ControlStyle +
+    [csAcceptsControls, csDesignFixedBounds, csNoDesignVisible, csNoFocus];
+
+  // height and width depends on parent, align to client rect
+  Align := alClient;
+  Caption := '';
+  Visible := False;
+end;
+
 destructor TUNBPage.Destroy;
 begin
   {$ifdef DEBUG_NEW_NOTEBOOK}

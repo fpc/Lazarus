@@ -323,6 +323,7 @@ type
 
   TUNBPage = class(TCustomControl)
   public
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   end;
 
