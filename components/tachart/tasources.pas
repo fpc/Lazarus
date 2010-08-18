@@ -45,6 +45,7 @@ type
   private
     FBroadcaster: TBroadcaster;
     FUpdateCount: Integer;
+    FYCount: Cardinal;
   protected
     FExtent: TDoubleRect;
     FExtentIsValid: Boolean;
@@ -52,10 +53,9 @@ type
     FValuesTotalIsValid: Boolean;
     function GetCount: Integer; virtual; abstract;
     function GetItem(AIndex: Integer): PChartDataItem; virtual; abstract;
-    function GetYCount: Cardinal; virtual;
     procedure InvalidateCaches;
     procedure Notify;
-    procedure SetYCount(AValue: Cardinal); virtual;
+    procedure SetYCount(AValue: Cardinal); virtual; abstract;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -83,7 +83,7 @@ type
     property Broadcaster: TBroadcaster read FBroadcaster;
     property Count: Integer read GetCount;
     property Item[AIndex: Integer]: PChartDataItem read GetItem; default;
-    property YCount: Cardinal read GetYCount write SetYCount default 1;
+    property YCount: Cardinal read FYCount write SetYCount default 1;
   end;
 
   { TListChartSource }
@@ -93,7 +93,6 @@ type
     FData: TFPList;
     FDataPoints: TStrings;
     FSorted: Boolean;
-    FYCount: Cardinal;
 
     procedure AddAt(
       APos: Integer; AX, AY: Double; const ALabel: String; AColor: TChartColor);
@@ -105,7 +104,6 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
-    function GetYCount: Cardinal; override;
     procedure SetYCount(AValue: Cardinal); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -152,7 +150,6 @@ type
     FRandSeed: Integer;
     FXMax: Double;
     FXMin: Double;
-    FYCount: Cardinal;
     FYMax: Double;
     FYMin: Double;
   private
@@ -170,7 +167,6 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
-    function GetYCount: Cardinal; override;
     procedure SetYCount(AValue: Cardinal); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -195,6 +191,7 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
+    procedure SetYCount(AValue: Cardinal); override;
   public
     procedure ValuesInRange(
       AMin, AMax: Double; const AFormat: String; AUseY: Boolean;
@@ -332,6 +329,7 @@ constructor TCustomChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FBroadcaster := TBroadcaster.Create;
+  FYCount := 1;
 end;
 
 destructor TCustomChartSource.Destroy;
@@ -449,11 +447,6 @@ begin
   end;
 end;
 
-function TCustomChartSource.GetYCount: Cardinal;
-begin
-  Result := 1;
-end;
-
 procedure TCustomChartSource.InvalidateCaches;
 begin
   FExtentIsValid := false;
@@ -474,12 +467,6 @@ procedure TCustomChartSource.Notify;
 begin
   if not IsUpdating then
     FBroadcaster.Broadcast(Self);
-end;
-
-procedure TCustomChartSource.SetYCount(AValue: Cardinal);
-begin
-  Unused(AValue);
-  raise EYCountError.Create('Can not set YCount');
 end;
 
 procedure TCustomChartSource.ValuesInRange(
@@ -728,11 +715,6 @@ end;
 function TListChartSource.GetItem(AIndex: Integer): PChartDataItem;
 begin
   Result := PChartDataItem(FData.Items[AIndex]);
-end;
-
-function TListChartSource.GetYCount: Cardinal;
-begin
-  Result := FYCount;
 end;
 
 function TListChartSource.IsSorted: Boolean;
@@ -984,11 +966,6 @@ begin
   Result := @FCurItem;
 end;
 
-function TRandomChartSource.GetYCount: Cardinal;
-begin
-  Result := FYCount;
-end;
-
 function TRandomChartSource.IsSorted: Boolean;
 begin
   Result := not RandomX;
@@ -1071,6 +1048,12 @@ function TIntervalChartSource.GetItem(AIndex: Integer): PChartDataItem;
 begin
   Unused(AIndex);
   Result := nil;
+end;
+
+procedure TIntervalChartSource.SetYCount(AValue: Cardinal);
+begin
+  Unused(AValue);
+  raise EYCountError.Create('Can not set YCount');
 end;
 
 procedure TIntervalChartSource.ValuesInRange(
