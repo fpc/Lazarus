@@ -427,7 +427,7 @@ end;
 
 function TChartSeries.Extent: TDoubleRect;
 begin
-  Result := Source.Extent;
+  Result := Source.ExtentCumulative;
 end;
 
 function TChartSeries.FormattedMark(AIndex: integer): String;

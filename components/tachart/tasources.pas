@@ -68,6 +68,7 @@ type
   public
     class procedure CheckFormat(const AFormat: String);
     function Extent: TDoubleRect;
+    function ExtentCumulative: TDoubleRect;
     function ExtentList: TDoubleRect;
     procedure FindBounds(AXMin, AXMax: Double; out ALB, AUB: Integer);
     function FormatItem(const AFormat: String; AIndex: Integer): String;
@@ -358,6 +359,23 @@ begin
     end;
   FExtentIsValid := true;
   Result := FExtent;
+end;
+
+function TCustomChartSource.ExtentCumulative: TDoubleRect;
+var
+  h: Double;
+  i, j: Integer;
+begin
+  Result := Extent;
+  if YCount < 2 then exit;
+  for i := 0 to Count - 1 do begin
+    h := Item[i]^.Y;
+    for j := 0 to YCount - 2 do begin
+      h += Item[i]^.YList[j];
+      // If some of Y values are negative, h may be non-monotonic.
+      UpdateMinMax(h, Result.a.Y, Result.b.Y);
+    end;
+  end;
 end;
 
 function TCustomChartSource.ExtentList: TDoubleRect;

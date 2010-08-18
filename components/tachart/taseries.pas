@@ -366,16 +366,28 @@ end;
 procedure TLineSeries.Draw(ACanvas: TCanvas);
 var
   ext: TDoubleRect;
+  i, j: Integer;
 begin
-  // Do not draw anything if the series extent does not intersect CurrentExtent.
-  ext.a := AxisToGraph(Source.Extent.a);
-  ext.b := AxisToGraph(Source.Extent.b);
+  with Extent do begin
+    ext.a := AxisToGraph(a);
+    ext.b := AxisToGraph(b);
+  end;
   if LineType = ltFromOrigin then
     ExpandRect(ext, AxisToGraph(ZeroDoublePoint));
+  // Do not draw anything if the series extent does not intersect CurrentExtent.
   if not RectIntersectsRect(ext, ParentChart.CurrentExtent) then exit;
 
   PrepareGraphPoints(ext, LineType <> ltFromOrigin);
   DrawSingleLineInStack(ACanvas);
+  for i := 0 to Source.YCount - 2 do begin
+    if IsRotated then
+      for j := FLoBound to FUpBound do
+        FGraphPoints[j - FLoBound].X += AxisToGraphY(Source[j]^.YList[i])
+    else
+      for j := FLoBound to FUpBound do
+        FGraphPoints[j - FLoBound].Y += AxisToGraphY(Source[j]^.YList[i]);
+    DrawSingleLineInStack(ACanvas);
+  end;
 end;
 
 procedure TLineSeries.DrawSingleLineInStack(ACanvas: TCanvas);
@@ -764,20 +776,11 @@ end;
 
 function TBarSeries.Extent: TDoubleRect;
 var
-  x, h: Double;
-  i, j: Integer;
+  x: Double;
 begin
   Result := inherited Extent;
   if IsEmpty then exit;
   UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
-  if Source.YCount >= 2 then begin
-    for i := 0 to Count - 1 do begin
-      h := Source[i]^.Y;
-      for j := 0 to Source.YCount - 2 do
-        h += Source[i]^.YList[j];
-      UpdateMinMax(h, Result.a.Y, Result.b.Y);
-    end;
-  end;
   // Show first and last bars fully.
   x := GetGraphPointX(0);
   Result.a.X := Min(Result.a.X, x - CalcBarWidth(x, 0));
