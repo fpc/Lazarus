@@ -169,6 +169,7 @@ type
     function GetXRange(AX: Double; AIndex: Integer): Double;
     procedure PrepareGraphPoints(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
+    procedure UpdateGraphPoints(AIndex: Integer);
     procedure UpdateMargins(ACanvas: TCanvas; var AMargins: TRect); override;
     property UseReticule: Boolean
       read FUseReticule write SetUseReticule default false;
@@ -726,6 +727,18 @@ begin
   if FUseReticule = AValue then exit;
   FUseReticule := AValue;
   UpdateParentChart;
+end;
+
+procedure TBasicPointSeries.UpdateGraphPoints(AIndex: Integer);
+var
+  i: Integer;
+begin
+  if IsRotated then
+    for i := FLoBound to FUpBound do
+      FGraphPoints[i - FLoBound].X += AxisToGraphY(Source[i]^.YList[AIndex])
+  else
+    for i := FLoBound to FUpBound do
+      FGraphPoints[i - FLoBound].Y += AxisToGraphY(Source[i]^.YList[AIndex]);
 end;
 
 procedure TBasicPointSeries.UpdateMargins(ACanvas: TCanvas; var AMargins: TRect);

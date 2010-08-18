@@ -128,6 +128,7 @@ type
     destructor Destroy; override;
 
     procedure Draw(ACanvas: TCanvas); override;
+    function Extent: TDoubleRect; override;
   published
     property AxisIndexX;
     property AxisIndexY;
@@ -366,7 +367,7 @@ end;
 procedure TLineSeries.Draw(ACanvas: TCanvas);
 var
   ext: TDoubleRect;
-  i, j: Integer;
+  i: Integer;
 begin
   with Extent do begin
     ext.a := AxisToGraph(a);
@@ -380,12 +381,7 @@ begin
   PrepareGraphPoints(ext, LineType <> ltFromOrigin);
   DrawSingleLineInStack(ACanvas);
   for i := 0 to Source.YCount - 2 do begin
-    if IsRotated then
-      for j := FLoBound to FUpBound do
-        FGraphPoints[j - FLoBound].X += AxisToGraphY(Source[j]^.YList[i])
-    else
-      for j := FLoBound to FUpBound do
-        FGraphPoints[j - FLoBound].Y += AxisToGraphY(Source[j]^.YList[i]);
+    UpdateGraphPoints(i);
     DrawSingleLineInStack(ACanvas);
   end;
 end;
@@ -975,14 +971,16 @@ var
   pts: TPointArray;
   numPts: Integer;
 
-  procedure PushPoint(const A: TDoublePoint);
-  var
-    p: TPoint;
+  procedure PushPoint(const AP: TPoint); overload;
   begin
-    p := ParentChart.GraphToImage(A);
-    if (numPts > 0) and (p = pts[numPts - 1]) then exit;
-    pts[numPts] := p;
+    if (numPts > 0) and (AP = pts[numPts - 1]) then exit;
+    pts[numPts] := AP;
     numPts += 1;
+  end;
+
+  procedure PushPoint(const AP: TDoublePoint); overload;
+  begin
+    PushPoint(ParentChart.GraphToImage(AP));
   end;
 
   function ProjToLine(const APt: TDoublePoint; ACoord: Double): TDoublePoint;
@@ -993,14 +991,14 @@ var
     else
       Result.Y := ACoord;
   end;
-
 var
-  i: Integer;
+  i, j, n2, numPrevPts: Integer;
   a, b: TDoublePoint;
   ext, ext2: TDoubleRect;
-  z: Double;
+  z, z1, z2: Double;
+  prevPts: TPointArray;
 begin
-  if Count = 0 then exit;
+  if IsEmpty then exit;
 
   ext := ParentChart.CurrentExtent;
   ext2 := ext;
@@ -1010,52 +1008,70 @@ begin
   PrepareGraphPoints(ext, true);
   if Length(FGraphPoints) = 0 then exit;
 
-  SetLength(pts, Length(FGraphPoints) * 2 + 2);
-  numPts := 0;
+  SetLength(pts, Length(FGraphPoints) * 4 + 4);
+  SetLength(prevPts, Length(pts));
+  numPrevPts := 0;
 
   if UseZeroLevel then
     z := AxisToGraphY(ZeroLevel)
-  else if IsRotated then
-    z := ext2.a.X
   else
-    z := ext2.a.Y;
+    z := IfThen(IsRotated, ext2.a.X, ext2.a.Y);
+  z1 := z;
+  z2 := z;
 
-  a := ProjToRect(FGraphPoints[0], ext2);
-  PushPoint(ProjToLine(a, z));
-  PushPoint(a);
-  for i := 0 to High(FGraphPoints) - 1 do begin
-    a := FGraphPoints[i];
-    b := FGraphPoints[i + 1];
-    case ConnectType of
-      ctLine: ;
-      ctStepXY:
-        if IsRotated then
-          b.X := a.X
-        else
-          b.Y := a.Y;
-      ctStepYX:
-        if IsRotated then
-          a.X := b.X
-        else
-          a.Y := b.Y;
+  for j := 0 to Source.YCount - 1 do begin
+    if j > 0 then
+      UpdateGraphPoints(j - 1);
+    numPts := 0;
+    a := ProjToRect(FGraphPoints[0], ext2);
+    PushPoint(ProjToLine(a, z1));
+    z1 := IfThen(IsRotated, a.X, a.Y);
+    for i := 0 to High(FGraphPoints) - 1 do begin
+      a := FGraphPoints[i];
+      b := FGraphPoints[i + 1];
+      case ConnectType of
+        ctLine: ;
+        ctStepXY:
+          if IsRotated then
+            b.X := a.X
+          else
+            b.Y := a.Y;
+        ctStepYX:
+          if IsRotated then
+            a.X := b.X
+          else
+            a.Y := b.Y;
+      end;
+      // Avoid integer overflow at extreme zoom levels.
+      if LineIntersectsRect(a, b, ext2) then begin
+        PushPoint(a);
+        PushPoint(b);
+      end
+      else begin
+        PushPoint(ProjToRect(a, ext2));
+        PushPoint(ProjToRect(b, ext2));
+      end;
     end;
-    // Avoid integer overflow at extreme zoom levels.
-    if LineIntersectsRect(a, b, ext2) then begin
-      PushPoint(a);
-      PushPoint(b);
-    end;
+    a := ProjToRect(FGraphPoints[High(FGraphPoints)], ext2);
+    PushPoint(ProjToLine(a, z2));
+    z2 := IfThen(IsRotated, a.X, a.Y);
+    n2 := numPts;
+
+    for i := 0 to numPrevPts - 1 do
+      PushPoint(prevPts[numPrevPts - i - 1]);
+    for i := 0 to n2 - 1 do
+      prevPts[i] := pts[i];
+    numPrevPts := n2;
+
+    ACanvas.Brush.Assign(AreaBrush);
+    ACanvas.Pen.Assign(AreaContourPen);
+    if Depth > 0 then
+      // Rendering is incorrect when values cross zero level.
+      for i := 1 to n2 - 2 do
+        DrawLineDepth(ACanvas, pts[i], pts[i + 1], Depth);
+    ACanvas.Polygon(pts, false, 0, numPts);
+    DrawLabels(ACanvas);
   end;
-  a := ProjToRect(FGraphPoints[High(FGraphPoints)], ext2);
-  PushPoint(a);
-  PushPoint(ProjToLine(a, z));
-
-  ACanvas.Brush.Assign(AreaBrush);
-  ACanvas.Pen.Assign(AreaContourPen);
-  if Depth > 0 then
-    // Rendering is incorrect when values cross zero level.
-    for i := 0 to numPts - 2 do
-      DrawLineDepth(ACanvas, pts[i], pts[i + 1], Depth);
-  ACanvas.Polygon(pts, false, 0, numPts);
   if AreaLinesPen.Style <> psClear then begin
     ACanvas.Pen.Assign(AreaLinesPen);
     for i := 1 to High(FGraphPoints) - 1 do begin
@@ -1064,7 +1080,13 @@ begin
       ACanvas.Line(ParentChart.GraphToImage(a), ParentChart.GraphToImage(b));
     end;
   end;
-  DrawLabels(ACanvas);
+end;
+
+function TAreaSeries.Extent: TDoubleRect;
+begin
+  Result := inherited Extent;
+  if not IsEmpty and UseZeroLevel then
+    UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
 end;
 
 function TAreaSeries.GetLabelDirection(AIndex: Integer): TLabelDirection;

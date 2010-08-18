@@ -17,7 +17,7 @@
 
 unit TASources;
 
-{$mode objfpc}{$H+}
+{$H+}
 
 interface
 
