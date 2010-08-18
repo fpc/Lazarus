@@ -1146,45 +1146,11 @@ msgstr "Filter-Editor"
 msgid "Filter name"
 msgstr "Filter-Name"
 
-#: objinspstrconsts.pirscustomoptions
-msgid "Custom options"
-msgstr "Benutzerdefinierte Eigenschaften"
-
-#: objinspstrconsts.pirsdebugsearchpath
-msgid "Debug search path"
-msgstr "Debugsuchpfad"
-
-#: objinspstrconsts.pirsincludesearchpath
-msgid "Include search path"
-msgstr "Suchpfad einfügen"
-
-#: objinspstrconsts.pirslibrarysearchpath
-msgid "Library search path"
-msgstr "Bibliothekssuchpfad"
-
-#: objinspstrconsts.pirslinkeroptions
-msgid "Linker options"
-msgstr "Linker-Einstellungen"
-
-#: objinspstrconsts.pirsobjectsearchpath
-msgid "Object search path"
-msgstr "Objektsuchpfad"
-
-#: objinspstrconsts.pirsresult
-msgid "Result"
-msgstr "Ergebnis"
-
 #: objinspstrconsts.pirsunit
-msgid "Unit"
+#, fuzzy
+#| msgid "Unit"
+msgid "Pascal unit"
 msgstr "Unit"
-
-#: objinspstrconsts.pirsunitsearchpath
-msgid "Unit search path"
-msgstr "Unit-Suchpfad"
-
-#: objinspstrconsts.pirsunitsourcesearchpath
-msgid "Unit source search path"
-msgstr "Unitquellen-Suchpfad"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

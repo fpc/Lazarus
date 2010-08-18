@@ -1124,44 +1124,8 @@ msgstr ""
 msgid "Filter name"
 msgstr ""
 
-#: objinspstrconsts.pirscustomoptions
-msgid "Custom options"
-msgstr ""
-
-#: objinspstrconsts.pirsdebugsearchpath
-msgid "Debug search path"
-msgstr ""
-
-#: objinspstrconsts.pirsincludesearchpath
-msgid "Include search path"
-msgstr ""
-
-#: objinspstrconsts.pirslibrarysearchpath
-msgid "Library search path"
-msgstr ""
-
-#: objinspstrconsts.pirslinkeroptions
-msgid "Linker options"
-msgstr ""
-
-#: objinspstrconsts.pirsobjectsearchpath
-msgid "Object search path"
-msgstr ""
-
-#: objinspstrconsts.pirsresult
-msgid "Result"
-msgstr ""
-
 #: objinspstrconsts.pirsunit
-msgid "Unit"
-msgstr ""
-
-#: objinspstrconsts.pirsunitsearchpath
-msgid "Unit search path"
-msgstr ""
-
-#: objinspstrconsts.pirsunitsourcesearchpath
-msgid "Unit source search path"
+msgid "Pascal unit"
 msgstr ""
 
 #: objinspstrconsts.rscdalignment

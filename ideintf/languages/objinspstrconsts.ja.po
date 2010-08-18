@@ -1139,45 +1139,9 @@ msgstr "フィルターエディタ"
 msgid "Filter name"
 msgstr "フィルター名"
 
-#: objinspstrconsts.pirscustomoptions
-msgid "Custom options"
-msgstr "カスタムオプション"
-
-#: objinspstrconsts.pirsdebugsearchpath
-msgid "Debug search path"
-msgstr "Debug検索パス"
-
-#: objinspstrconsts.pirsincludesearchpath
-msgid "Include search path"
-msgstr "Include検索パス"
-
-#: objinspstrconsts.pirslibrarysearchpath
-msgid "Library search path"
-msgstr "Library検索パス"
-
-#: objinspstrconsts.pirslinkeroptions
-msgid "Linker options"
-msgstr "リンカーオプション"
-
-#: objinspstrconsts.pirsobjectsearchpath
-msgid "Object search path"
-msgstr "Object検索パス"
-
-#: objinspstrconsts.pirsresult
-msgid "Result"
-msgstr ""
-
 #: objinspstrconsts.pirsunit
-msgid "Unit"
+msgid "Pascal unit"
 msgstr ""
-
-#: objinspstrconsts.pirsunitsearchpath
-msgid "Unit search path"
-msgstr "Unit検索パス"
-
-#: objinspstrconsts.pirsunitsourcesearchpath
-msgid "Unit source search path"
-msgstr "Unit source検索パス"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

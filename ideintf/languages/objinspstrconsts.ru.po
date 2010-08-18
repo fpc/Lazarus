@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-16 23:48+0300\n"
+"PO-Revision-Date: 2010-08-18 05:04+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -1140,45 +1140,10 @@ msgstr "Редактор фильтра"
 msgid "Filter name"
 msgstr "Имя фильтра"
 
-#: objinspstrconsts.pirscustomoptions
-msgid "Custom options"
-msgstr "Параметры пользователя"
-
-#: objinspstrconsts.pirsdebugsearchpath
-msgid "Debug search path"
-msgstr "Путь поиска информации для отладки"
-
-#: objinspstrconsts.pirsincludesearchpath
-msgid "Include search path"
-msgstr "Путь поиска включаемых файлов"
-
-#: objinspstrconsts.pirslibrarysearchpath
-msgid "Library search path"
-msgstr "Путь поиска библиотек"
-
-#: objinspstrconsts.pirslinkeroptions
-msgid "Linker options"
-msgstr "Параметры компоновщика"
-
-#: objinspstrconsts.pirsobjectsearchpath
-msgid "Object search path"
-msgstr "Путь поиска объектных файлов"
-
-#: objinspstrconsts.pirsresult
-msgid "Result"
-msgstr "Результат"
-
 #: objinspstrconsts.pirsunit
-msgid "Unit"
-msgstr "Модуль"
-
-#: objinspstrconsts.pirsunitsearchpath
-msgid "Unit search path"
-msgstr "Путь поиска модулей"
-
-#: objinspstrconsts.pirsunitsourcesearchpath
-msgid "Unit source search path"
-msgstr "Путь поиска исходного кода модулей"
+#| msgid "Unit"
+msgid "Pascal unit"
+msgstr "Модуль Паскаля"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

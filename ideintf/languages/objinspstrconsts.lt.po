@@ -1139,45 +1139,11 @@ msgstr "Failo rengyklė"
 msgid "Filter name"
 msgstr "Filtro pavadinimas"
 
-#: objinspstrconsts.pirscustomoptions
-msgid "Custom options"
-msgstr "Naudotojo parinktys"
-
-#: objinspstrconsts.pirsdebugsearchpath
-msgid "Debug search path"
-msgstr "Derinimo paieškos kelias"
-
-#: objinspstrconsts.pirsincludesearchpath
-msgid "Include search path"
-msgstr "Įdėjimo paieškos kelias"
-
-#: objinspstrconsts.pirslibrarysearchpath
-msgid "Library search path"
-msgstr "Bibliotekų paieškos kelias"
-
-#: objinspstrconsts.pirslinkeroptions
-msgid "Linker options"
-msgstr "Saistyklės parinktys"
-
-#: objinspstrconsts.pirsobjectsearchpath
-msgid "Object search path"
-msgstr "Objekto paieškos parinktys"
-
-#: objinspstrconsts.pirsresult
-msgid "Result"
-msgstr "Rezultatas"
-
 #: objinspstrconsts.pirsunit
-msgid "Unit"
+#, fuzzy
+#| msgid "Unit"
+msgid "Pascal unit"
 msgstr "Modulis"
-
-#: objinspstrconsts.pirsunitsearchpath
-msgid "Unit search path"
-msgstr "Modulio paieškos kelias"
-
-#: objinspstrconsts.pirsunitsourcesearchpath
-msgid "Unit source search path"
-msgstr "Modulio pirminio kodo paieškos kelias"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"

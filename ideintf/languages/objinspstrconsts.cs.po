@@ -1130,45 +1130,11 @@ msgstr "Editor filtru"
 msgid "Filter name"
 msgstr "Jméno filtru"
 
-#: objinspstrconsts.pirscustomoptions
-msgid "Custom options"
-msgstr "Vlastní volby"
-
-#: objinspstrconsts.pirsdebugsearchpath
-msgid "Debug search path"
-msgstr "Vyhledávací cesta Ladiče"
-
-#: objinspstrconsts.pirsincludesearchpath
-msgid "Include search path"
-msgstr "Vyhledávací cesta include"
-
-#: objinspstrconsts.pirslibrarysearchpath
-msgid "Library search path"
-msgstr "Vyhledávací cesta knihoven"
-
-#: objinspstrconsts.pirslinkeroptions
-msgid "Linker options"
-msgstr "Volby Spojovače"
-
-#: objinspstrconsts.pirsobjectsearchpath
-msgid "Object search path"
-msgstr "Vyhledávací cesta objektů"
-
-#: objinspstrconsts.pirsresult
-msgid "Result"
-msgstr "Výsledek"
-
 #: objinspstrconsts.pirsunit
-msgid "Unit"
+#, fuzzy
+#| msgid "Unit"
+msgid "Pascal unit"
 msgstr "Jednotka"
-
-#: objinspstrconsts.pirsunitsearchpath
-msgid "Unit search path"
-msgstr "Vyhledávací cesta jednotky"
-
-#: objinspstrconsts.pirsunitsourcesearchpath
-msgid "Unit source search path"
-msgstr "Zdrojová vyhledávací cesta jednotky"
 
 #: objinspstrconsts.rscdalignment
 msgid "Alignment"
