@@ -796,6 +796,15 @@ function TPkgManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
     end;
   end;
 
+  procedure SetProjectMacroValues;
+  var
+    Values: TCTCfgScriptVariables;
+  begin
+    Values:=OnGetBuildMacroValues(nil,false);
+    if Values<>nil then
+      OnGetBuildMacroValues.AddOverrides(Values);
+  end;
+
 var
   ParseOpts: TParsedCompilerOptions;
   Values: TCTCfgScriptVariables;
@@ -805,6 +814,7 @@ begin
     // return the values of the active project
     if (Project1=nil) or (Project1.MacroValues=nil) then exit;
     Result:=Project1.MacroValues.CfgVars;
+    //Result.WriteDebugReport('OnGetBuildMacroValues project values');
     exit;
   end;
 
@@ -837,6 +847,9 @@ begin
           debugln(Options.Conditionals);
         end;
 
+        // the macro values of the active project take precedence
+        SetProjectMacroValues;
+
         ParseOpts.MacroValuesStamp:=BuildMacroChangeStamp;
       finally
         ParseOpts.MacroValuesParsing:=false;
@@ -863,11 +876,8 @@ begin
             AddAllInherited(TLazPackage(Options.Owner).FirstRequiredDependency,Result);
         end;
 
-        // set the macro values of the active project
-        Values:=OnGetBuildMacroValues(nil,false);
-        if Values<>nil then begin
-          Result.AddOverrides(Values);
-        end;
+        // the macro values of the active project take precedence
+        SetProjectMacroValues;
 
         ParseOpts.InheritedMacroValuesStamp:=BuildMacroChangeStamp;
       finally

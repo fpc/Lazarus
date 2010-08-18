@@ -6294,6 +6294,7 @@ begin
     if not FItems.Equals(NewItems) then begin
       IncreaseChangeStamp;
       FItems.Assign(NewItems);
+      FCfgVars.Assign(FItems);
     end;
     fLastSavedChangeStamp:=ChangeStamp;
   finally

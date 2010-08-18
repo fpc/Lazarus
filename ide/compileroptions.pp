@@ -59,35 +59,18 @@
       - add value
       - delete value
       - edit default value
+  - a function to compute the build macro values
+    - using the project macro values
+    - using the inherited values
+    - using the conditionals
+  - build macro values are invalidated when changing project macro values or
+    any conditionals
 
   ToDo:
-  - every package/project needs a function to compute all values of its build macros
-      - build macros depend on used packages and project build macro values
-         - add a changestamp for this
-         - conditionals needs macro values of project, default macro values of
-           required packages and current package
-         - default value of a build macro requires values of project and
-           default macro values of required packages
-  - every package/project needs a function to substitute macros
-      - check active project values
-      - check default values of build macros of used packages
-      - check default values of build macros of self
-      - check conditionals
-      - check local macros (pkgdir, pkgoutdir)
-      - use default global macros
-  - every package/project needs conditionals
-      - using config script
-      - conditionals are executed when a path is computed
-      - before run conditionals require all build macros
-      - after run conditionals have path/option additions
-  - every path must use its base path plus the inherited plus the conditional
-      and resolve the macros
+  - fix bug: opening package compiler options marks package as modified
+  - use conditionals to extend paths
+  - use conditionals to extend usage paths
   - move the project target file to compiler options
-  - a project can save the set of build macros and compiler options
-    - add changestamp, assign, equals to compiler options
-    - refactor compiler options (default options, load, save to file)
-    - store sets in lpi
-    - store sets in lps
   - warn for macro name conflicts
     - with macros fom other packages/projects
     - with standard macros
@@ -95,6 +78,12 @@
       - on loading
   - when package is renamed, rename macros too
   - conditionals for project
+  - show build macros in inherited compiler options
+  - a project can save the set of build macros and compiler options
+    - add changestamp, assign, equals to compiler options
+    - refactor compiler options (default options, load, save to file)
+    - store sets in lpi
+    - store sets in lps
   - i18n for descriptions
   - keyword help for a build macro
 

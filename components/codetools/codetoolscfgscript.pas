@@ -77,7 +77,8 @@ type
     destructor Destroy; override;
     procedure Clear;
     function Equals(Vars: TCTCfgScriptVariables): boolean; reintroduce;
-    procedure Assign(Source: TCTCfgScriptVariables);
+    procedure Assign(Source: TCTCfgScriptVariables); overload;
+    procedure Assign(Source: TStrings); overload;
     procedure AddOverrides(Source: TCTCfgScriptVariables);
     procedure AddOverride(Source: PCTCfgScriptVariable);
     function GetVariable(const Name: PChar;
@@ -86,6 +87,7 @@ type
     procedure Undefine(Name: PChar);
     procedure Define(Name: PChar; const Value: string);
     property Tree: TAVLTree read FItems;
+    procedure WriteDebugReport(const Title: string; const Prefix: string = '');
   end;
 
 type
@@ -990,6 +992,21 @@ begin
   end;
 end;
 
+procedure TCTCfgScriptVariables.Assign(Source: TStrings);
+var
+  Name: string;
+  Value: string;
+  i: Integer;
+begin
+  Clear;
+  for i:=0 to Source.Count-1 do begin
+    Name:=Source.Names[i];
+    if (Name='') or not IsValidIdent(Name) then continue;
+    Value:=Source.ValueFromIndex[i];
+    Define(PChar(Name),Value);
+  end;
+end;
+
 procedure TCTCfgScriptVariables.AddOverrides(Source: TCTCfgScriptVariables);
 var
   Item: PCTCfgScriptVariable;
@@ -1060,6 +1077,21 @@ begin
     except
       SetCTCSVariableAsString(V,Value);
     end;
+  end;
+end;
+
+procedure TCTCfgScriptVariables.WriteDebugReport(const Title: string;
+  const Prefix: string);
+var
+  Node: TAVLTreeNode;
+  V: PCTCfgScriptVariable;
+begin
+  debugln([Prefix,'TCTCfgScriptVariables.WriteDebugReport Count=',Tree.Count,': ',Title]);
+  Node:=FItems.FindLowest;
+  while Node<>nil do begin
+    V:=PCTCfgScriptVariable(Node.Data);
+    debugln([Prefix,'  ',dbgs(V)]);
+    Node:=FItems.FindSuccessor(Node);
   end;
 end;
 
