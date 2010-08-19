@@ -5,14 +5,16 @@ unit Main;
 interface
 
 uses
-  Classes, ComCtrls, ExtCtrls, SysUtils, FileUtil, Forms, Controls, Graphics,
-  Dialogs, TAGraph, TAMultiSeries, TASeries, TASources;
+  Classes, ComCtrls, ExtCtrls, StdCtrls, SysUtils, FileUtil, Forms, Controls,
+  Graphics, Dialogs, TAGraph, TAMultiSeries, TASeries, TASources;
 
 type
 
   { TForm1 }
 
   TForm1 = class(TForm)
+    ccsStacked: TCalculatedChartSource;
+    cbPercentage: TCheckBox;
     chStackedAreaSeries1: TAreaSeries;
     chStackedLineSeries1: TLineSeries;
     chWhiskers: TChart;
@@ -29,6 +31,7 @@ type
     tsWhiskers: TTabSheet;
     tsStacked: TTabSheet;
     tsBubble: TTabSheet;
+    procedure cbPercentageChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure rgStackedSeriesClick(Sender: TObject);
   end;
@@ -41,6 +44,11 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
+
+procedure TForm1.cbPercentageChange(Sender: TObject);
+begin
+  ccsStacked.Percentage := cbPercentage.Checked;
+end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 var
