@@ -1794,6 +1794,8 @@ begin
     debugln(['SynEditCaret SetPos for handle=',FHandle, ' x=', x, ' y=',y]);
     {$ENDIF}
     SetCaretPosEx(FHandle, x, y);
+    FCurrentPosX := x;
+    FCurrentPosY := y;
   end;
   if (not FCurrentVisible) then begin
     {$IFDeF SynCaretDebug}
