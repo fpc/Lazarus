@@ -155,6 +155,7 @@ begin
   APage.Parent := Self;
   APage.Align := alClient;
   APage.Visible := False;
+  APage.ControlStyle := APage.ControlStyle + [csNoDesignVisible];
 
   if PageIndex = -1 then SetPageIndex(Index);
 end;
@@ -166,13 +167,20 @@ begin
 
   // Hide the previously shown page
   if (FPageIndex >= 0) and (FPageIndex < Pages.Count) then
+  begin
+    Page[FPageIndex].ControlStyle :=
+      Page[FPageIndex].ControlStyle + [csNoDesignVisible];
     Page[FPageIndex].Visible := False;
+  end;
 
   // Update the property
   FPageIndex := AValue;
 
   // And show the new one
-  Page[FPageIndex].Visible := False;
+  Page[FPageIndex].Visible := True;
+  Page[FPageIndex].ControlStyle :=
+    Page[FPageIndex].ControlStyle - [csNoDesignVisible];
+  Page[FPageIndex].Align := alClient;
 end;
 
 {------------------------------------------------------------------------------
