@@ -31,6 +31,8 @@ unit SynEditPointClasses;
 
 {$I synedit.inc}
 
+{off $DEFINE SynCaretDebug}
+
 interface
 
 uses
@@ -268,6 +270,9 @@ type
     procedure SetDisplayType(const AType: TSynCaretType);
     procedure SetVisible(const AValue: Boolean);
   private
+    {$IFDeF SynCaretDebug}
+    FDebugShowCount: Integer;
+    {$ENDIF}
     FPersistentCaret: Boolean;
     FPixelWidth, FPixelHeight: Integer;
     FOffsetX, FOffsetY: Integer;
@@ -1573,8 +1578,12 @@ end;
 
 procedure TSynEditScreenCaret.DestroyCaret;
 begin
-  if FCurrentCreated then
+  if FCurrentCreated then begin
+    {$IFDeF SynCaretDebug}
+    debugln(['SynEditCaret DestroyCaret for handle=',FHandle, ' DebugShowCount=', FDebugShowCount]);
+    {$ENDIF}
     LCLIntf.DestroyCaret(FHandle);
+  end;
   FCurrentCreated := False;
   FCurrentVisible := False;
 end;
@@ -1683,6 +1692,9 @@ end;
 procedure TSynEditScreenCaret.SetHandle(const AValue: HWND);
 begin
   DestroyCaret;
+  {$IFDeF SynCaretDebug}
+  debugln(['SynEditCaret SetHandle for (old) handle=',FHandle, ' New Handle=', AValue, ' DebugShowCount=', FDebugShowCount]);
+  {$ENDIF}
   FHandle := AValue;
   UpdateDisplay;
 end;
@@ -1715,6 +1727,9 @@ end;
 
 procedure TSynEditScreenCaret.SetClipRect(const AValue: TRect);
 begin
+  {$IFDeF SynCaretDebug}
+  debugln(['SynEditCaret ClipRect for handle=',FHandle, ' Rect=', dbgs(AValue)]);
+  {$ENDIF}
   FClipLeft   := AValue.Left;
   FClipRight  := AValue.Right;
   FClipTop    := AValue.Top;
@@ -1761,6 +1776,9 @@ begin
   end;
 
   if (not FCurrentCreated) or (FCurrentClippedWidth <> w) then begin
+    {$IFDeF SynCaretDebug}
+    debugln(['SynEditCaret CreateCaret for handle=',FHandle, ' DebugShowCount=', FDebugShowCount, ' Width=', w, ' pref-width=', FPixelWidth, ' Height=', FPixelHeight, '  FCurrentCreated=',FCurrentCreated,  ' FCurrentVisible=',FCurrentVisible]);
+    {$ENDIF}
     //if FCurrentCreated then
     //  LCLIntf.DestroyCaret(FHandle);
     // // Create caret includes destroy
@@ -1771,18 +1789,34 @@ begin
     FCurrentPosX := x - 1;
     SetCaretRespondToFocus(Handle, not FPersistentCaret);
   end;
-  if (x <> FCurrentPosX) or (y <> FCurrentPosY) then
+  if (x <> FCurrentPosX) or (y <> FCurrentPosY) then begin
+    {$IFDeF SynCaretDebug}
+    debugln(['SynEditCaret SetPos for handle=',FHandle, ' x=', x, ' y=',y]);
+    {$ENDIF}
     SetCaretPosEx(FHandle, x, y);
-  if (not FCurrentVisible) and LCLIntf.ShowCaret(Handle) then
-    FCurrentVisible := True;
+  end;
+  if (not FCurrentVisible) then begin
+    {$IFDeF SynCaretDebug}
+    debugln(['SynEditCaret ShowCaret for handle=',FHandle, ' FDebugShowCount=',FDebugShowCount]);
+    inc(FDebugShowCount);
+    {$ENDIF}
+    if LCLIntf.ShowCaret(Handle) then
+      FCurrentVisible := True;
+  end;
 end;
 
 procedure TSynEditScreenCaret.HideCaret;
 begin
   if FHandle = 0 then exit;
   if not FCurrentCreated then exit;
-  if FCurrentVisible and LCLIntf.HideCaret(Handle) then
-    FCurrentVisible := False;
+  if FCurrentVisible then begin
+    {$IFDeF SynCaretDebug}
+    debugln(['SynEditCaret HideCaret for handle=',FHandle, ' FDebugShowCount=',FDebugShowCount]);
+    dec(FDebugShowCount);
+    {$ENDIF}
+    if LCLIntf.HideCaret(Handle) then
+      FCurrentVisible := False;
+  end;
 end;
 
 end.
