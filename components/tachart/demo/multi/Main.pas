@@ -5,33 +5,32 @@ unit Main;
 interface
 
 uses
-  Classes, ComCtrls, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  TAGraph, TAMultiSeries, TASeries, TASources;
+  Classes, ComCtrls, ExtCtrls, SysUtils, FileUtil, Forms, Controls, Graphics,
+  Dialogs, TAGraph, TAMultiSeries, TASeries, TASources;
 
 type
 
   { TForm1 }
 
   TForm1 = class(TForm)
-    chStackedArea: TChart;
-    chStackedAreaAreaSeries1: TAreaSeries;
-    chStackedLines: TChart;
-    chStackedLinesLineSeries1: TLineSeries;
+    chStackedAreaSeries1: TAreaSeries;
+    chStackedLineSeries1: TLineSeries;
     chWhiskers: TChart;
-    chStackedBars: TChart;
+    chStacked: TChart;
     chBubble: TChart;
     Chart1BubbleSeries1: TBubbleSeries;
-    chStackedBarsBarSeries1: TBarSeries;
+    chStackedBarSeries1: TBarSeries;
     chWhiskersBoxAndWhiskerSeries1: TBoxAndWhiskerSeries;
     lcsBubble: TListChartSource;
     PageControl1: TPageControl;
+    pnStackedControls: TPanel;
+    rgStackedSeries: TRadioGroup;
     rcsStacked: TRandomChartSource;
-    tsStackedArea: TTabSheet;
-    tsStackedLines: TTabSheet;
     tsWhiskers: TTabSheet;
-    tsStackedBar: TTabSheet;
+    tsStacked: TTabSheet;
     tsBubble: TTabSheet;
     procedure FormCreate(Sender: TObject);
+    procedure rgStackedSeriesClick(Sender: TObject);
   end;
 
 var
@@ -58,6 +57,17 @@ begin
     end;
     chWhiskersBoxAndWhiskerSeries1.ListSource.SetYList(i - 1, ylist);
   end;
+  rgStackedSeries.ChildSizing.Layout := cclLeftToRightThenTopToBottom;
+end;
+
+procedure TForm1.rgStackedSeriesClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  i := rgStackedSeries.ItemIndex;
+  chStackedAreaSeries1.Active := i = 0;
+  chStackedBarSeries1.Active := i = 1;
+  chStackedLineSeries1.Active := i = 2;
 end;
 
 end.
