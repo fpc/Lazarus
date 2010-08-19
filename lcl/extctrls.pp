@@ -322,6 +322,8 @@ type
   { TUNBPage }
 
   TUNBPage = class(TCustomControl)
+  protected
+    procedure SetParent(AParent: TWinControl); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -382,10 +384,39 @@ type
 //    property PageCount: integer read GetPageCount;
 //    property PageList: TList read FPageList;
   published
-//    property TabStop default true;
+    // TUntabbedNotebook specific properties
     property PageIndex: Integer read GetPageIndex write SetPageIndex default -1;
     property Pages: TStrings read FPages;
 //    property ActivePage: String read GetActivePage write SetActivePage;
+    // Generic properties
+    property Align;
+    property Anchors;
+    property BorderSpacing;
+    property Constraints;
+    property DragCursor;
+    property DragMode;
+    property Enabled;
+    property OnChangeBounds;
+//    property OnChanging;
+    property OnContextPopup;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+//    property OnPageChanged;
+    property OnResize;
+    property OnStartDrag;
+//    property Options;
+//    property PageIndex;
+    property PopupMenu;
+    property TabOrder;
+    property TabStop;
   end;
 
   { Timer }
