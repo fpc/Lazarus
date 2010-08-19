@@ -1778,6 +1778,7 @@ begin
   if (not FCurrentCreated) or (FCurrentClippedWidth <> w) then begin
     {$IFDeF SynCaretDebug}
     debugln(['SynEditCaret CreateCaret for handle=',FHandle, ' DebugShowCount=', FDebugShowCount, ' Width=', w, ' pref-width=', FPixelWidth, ' Height=', FPixelHeight, '  FCurrentCreated=',FCurrentCreated,  ' FCurrentVisible=',FCurrentVisible]);
+    FDebugShowCount := 0;
     {$ENDIF}
     //if FCurrentCreated then
     //  LCLIntf.DestroyCaret(FHandle);
