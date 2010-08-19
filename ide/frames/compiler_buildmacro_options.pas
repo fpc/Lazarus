@@ -62,21 +62,18 @@ type
       var AllowEdit: Boolean);
     procedure BuildMacrosTreeViewSelectionChanged(Sender: TObject);
     procedure BuildMacrosTVPopupMenuPopup(Sender: TObject);
-    procedure CondSynEditExit(Sender: TObject);
     procedure DeleteBuildMacroClick(Sender: TObject);
     procedure NewBuildMacroClick(Sender: TObject);
     procedure NewValueClick(Sender: TObject);
     procedure DeleteValueClick(Sender: TObject);
   private
     FBuildMacros: TIDEBuildMacros;
-    FOptions: TBaseCompilerOptions;
     fVarImgID: LongInt;
     fValueImgID: LongInt;
     fDefValueImgID: LongInt;
     procedure SaveItemProperties;
     procedure SetBuildMacros(const AValue: TIDEBuildMacros);
     procedure RebuildTreeView;
-    procedure SetOptions(const AValue: TBaseCompilerOptions);
     function TreeViewAddBuildMacro(aBuildMacro: TLazBuildMacro): TTreeNode;
     procedure TreeViewAddValue(ValuesTVNode: TTreeNode; aValue: string);
     function GetNodeInfo(Node: TTreeNode; out BuildMacro: TLazBuildMacro): TCBMNodeType;
@@ -88,8 +85,9 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    property BuildMacros: TIDEBuildMacros read FBuildMacros write SetBuildMacros;
-    property Options: TBaseCompilerOptions read FOptions write SetOptions;
+    property BuildMacros: TIDEBuildMacros read FBuildMacros write SetBuildMacros; // local copy
+    procedure LoadFromOptions(Options: TBaseCompilerOptions);
+    procedure SaveToOptions(Options: TBaseCompilerOptions);
   end;
 
 implementation
@@ -222,11 +220,6 @@ begin
     Add('Delete build macro ...',@DeleteBuildMacroClick);
 end;
 
-procedure TCompOptBuildMacrosFrame.CondSynEditExit(Sender: TObject);
-begin
-  Options.Conditionals:=CondSynEdit.Lines.Text;
-end;
-
 procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewEditing(Sender: TObject;
   Node: TTreeNode; var AllowEdit: Boolean);
 var
@@ -298,7 +291,7 @@ procedure TCompOptBuildMacrosFrame.SetBuildMacros(
   const AValue: TIDEBuildMacros);
 begin
   if FBuildMacros=AValue then exit;
-  FBuildMacros:=AValue;
+  BuildMacros.Assign(AValue);
   RebuildTreeView;
   UpdateItemPropertyControls;
 end;
@@ -315,15 +308,6 @@ begin
       TreeViewAddBuildMacro(BuildMacros.Items[i]);
   end;
   BuildMacrosTreeView.EndUpdate;
-end;
-
-procedure TCompOptBuildMacrosFrame.SetOptions(const AValue: TBaseCompilerOptions
-  );
-begin
-  if FOptions=AValue then exit;
-  FOptions:=AValue;
-  BuildMacros:=Options.BuildMacros as TIDEBuildMacros;
-  CondSynEdit.Lines.Text:=Options.Conditionals;
 end;
 
 function TCompOptBuildMacrosFrame.TreeViewAddBuildMacro(
@@ -433,12 +417,13 @@ begin
   GetSelectedNode(BuildMacro,NodeType);
   if BuildMacro=nil then exit;
   BuildMacro.Description:=BuildMacroDescriptionEdit.Text;
-  Options.Conditionals:=CondSynEdit.Lines.Text;
 end;
 
 constructor TCompOptBuildMacrosFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+
+  FBuildMacros:=TIDEBuildMacros.Create(nil);
 
   MacrosGroupBox.Caption:='Build macros:';
   BuildMacrosTreeView.Images := IDEImages.Images_24;
@@ -454,7 +439,23 @@ end;
 
 destructor TCompOptBuildMacrosFrame.Destroy;
 begin
+  FreeAndNil(FBuildMacros);
   inherited Destroy;
+end;
+
+procedure TCompOptBuildMacrosFrame.LoadFromOptions(Options: TBaseCompilerOptions
+  );
+begin
+  BuildMacros:=Options.BuildMacros as TIDEBuildMacros;
+  CondSynEdit.Lines.Text:=Options.Conditionals;
+end;
+
+procedure TCompOptBuildMacrosFrame.SaveToOptions(Options: TBaseCompilerOptions
+  );
+begin
+  SaveItemProperties;
+  (Options.BuildMacros as TIDEBuildMacros).Assign(BuildMacros);
+  Options.Conditionals:=CondSynEdit.Lines.Text;
 end;
 
 end.

@@ -67,7 +67,6 @@
     any conditionals
 
   ToDo:
-  - fix bug: opening package compiler options marks package as modified
   - use conditionals to extend paths
   - use conditionals to extend usage paths
   - move the project target file to compiler options
@@ -138,7 +137,6 @@ type
     procedure SaveToXMLConfig(aXMLConfig: TXMLConfig; const Path: string;
                               UsePathDelim: TPathDelimSwitch);
     procedure CreateDiff(OtherMode: TLazBuildMacro; Tool: TCompilerDiffTool);
-    procedure Assign(Source: TIDEBuildMacro);
     procedure IncreaseChangeStamp;
     property ChangeStamp: integer read FChangeStamp;
   end;
@@ -3634,7 +3632,7 @@ end;
 
 procedure TIDEBuildMacro.SetValues(const AValue: TStrings);
 begin
-  if (FValues=AValue) or AValue.Equals(AValue) then exit;
+  if (FValues=AValue) or FValues.Equals(AValue) then exit;
   FValues.Assign(AValue);
   IncreaseChangeStamp;
 end;
@@ -3706,14 +3704,6 @@ begin
   Tool.AddDiff('Description',Description,OtherMode.Description);
   Tool.AddStringsDiff('Values',Values,OtherMode.Values);
   Tool.AddStringsDiff('ValueDescriptions',ValueDescriptions,OtherMode.ValueDescriptions);
-end;
-
-procedure TIDEBuildMacro.Assign(Source: TIDEBuildMacro);
-begin
-  Identifier:=Source.Identifier;
-  Values:=Source.Values;
-  Description:=Source.Description;
-  ValueDescriptions:=Source.ValueDescriptions;
 end;
 
 procedure TIDEBuildMacro.IncreaseChangeStamp;

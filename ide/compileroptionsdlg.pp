@@ -783,7 +783,7 @@ begin
 
     // conditionals + build macros
     {$IFDEF EnableBuildModes}
-    BuildMacrosFrame.Options:=Options;
+    BuildMacrosFrame.LoadFromOptions(Options);
     {$ENDIF}
 
     // inherited tab
@@ -1085,7 +1085,9 @@ begin
     Options.CompilerMessages.Assign(TempMessages);
 
     // conditionals
-    // these are all done via the frames
+    {$IFDEF EnableBuildModes}
+    BuildMacrosFrame.SaveToOptions(Options);
+    {$ENDIF}
 
     // other
     Options.DontUseConfigFile := not chkConfigFile.Checked;
@@ -1146,6 +1148,10 @@ begin
 
     // check for change and mark as modified
     if not OldCompOpts.IsEqual(Options) then begin
+      //Diff:=TStringList.Create;
+      //options.CreateDiff(OldCompOpts,Diff);
+      //debugln(Diff.Text);
+      //Diff.Free;
       Options.Modified:=true;
       IncreaseCompilerParseStamp;
     end;

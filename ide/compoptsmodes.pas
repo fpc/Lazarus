@@ -133,10 +133,20 @@ procedure TCompilerDiffTool.AddStringsDiff(const PropertyName: string;
   const OldList, NewList: TStrings);
 var
   i: Integer;
+  OldCnt: Integer;
+  NewCnt: Integer;
 begin
-  AddDiff(PropertyName+'/Count',OldList.Count,NewList.Count);
-  for i:=0 to OldList.Count-1 do begin
-    if (i>=NewList.Count) or (OldList[i]<>NewList[i]) then
+  OldCnt:=0;
+  if OldList<>nil then
+    OldCnt:=OldList.Count;
+  NewCnt:=0;
+  if NewList<>nil then
+    NewCnt:=NewList.Count;
+  AddDiff(PropertyName+'/Count',OldCnt,NewCnt);
+  for i:=0 to OldCnt-1 do begin
+    if (i>=NewCnt) then
+      AddDiffItem(PropertyName+'/Item'+IntToStr(i),'deleted='+OldList[i])
+    else if (OldList[i]<>NewList[i]) then
       AddDiffItem(PropertyName+'/Item'+IntToStr(i),NewList[i]);
   end;
 end;
