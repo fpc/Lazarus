@@ -1,0 +1,33 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: reglazdaemon.sdaemonappdescr
+msgid "Daemon (service) application is a non-gui application that runs in the background."
+msgstr ""
+
+#: reglazdaemon.sdaemonappname
+msgid "Daemon (service) application"
+msgstr ""
+
+#: reglazdaemon.sdaemonapps
+msgid "Daemon (service) applications"
+msgstr ""
+
+#: reglazdaemon.sdaemondescr
+msgid "Daemon Module for inclusion in a daemon application"
+msgstr ""
+
+#: reglazdaemon.sdaemonmapperdescr
+msgid ""
+"Daemon mapper for inclusion in a daemon application.\n"
+"Only one daemon mapper may exist in a daemon application.\n"
+msgstr ""
+
+#: reglazdaemon.sdaemonmappername
+msgid "Daemon mapper"
+msgstr ""
+
+#: reglazdaemon.sdaemonname
+msgid "Daemon Module"
+msgstr ""
+

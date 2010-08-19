@@ -5,12 +5,17 @@
     <AddToProjectUsesSection Value="False"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <SearchPaths>
         <IncludeFiles Value="unix/"/>
         <OtherUnitFiles Value="unix/"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -34,6 +39,10 @@
         <UnitName Value="lazdaemonapp"/>
       </Item3>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>

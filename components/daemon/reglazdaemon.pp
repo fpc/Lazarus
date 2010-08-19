@@ -69,7 +69,7 @@ uses daemonapp;
 Resourcestring
   SDaemonApps     = 'Daemon (service) applications';
   SDaemonAppName  = 'Daemon (service) application';
-  SDaemonAppDescr = 'Daemon (service) application are non-gui applications that run in the background.';
+  SDaemonAppDescr = 'Daemon (service) application is a non-gui application that runs in the background.';
   SDaemonName     = 'Daemon Module';
   SDaemonDescr    = 'Daemon Module for inclusion in a daemon application';
   SDaemonMapperName  = 'Daemon mapper';
@@ -129,6 +129,8 @@ begin
       Add('end;');
       Add('');
       Add(Result);
+      if GetResourceType = rtRes then
+        Add('initialization');
       Add('  RegisterDaemon;');
       Result:=Text;
       end;
@@ -259,6 +261,8 @@ begin
       Add('end;');
       Add('');
       Add(Result);
+      if GetResourceType = rtRes then
+        Add('initialization');
       Add('  RegisterMapper;');
       Result:=Text;
       end;
