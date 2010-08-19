@@ -1267,9 +1267,9 @@ var
 begin
   if not Percentage then exit;
   s := FItem.Y + Sum(FItem.YList);
-  FItem.Y /= s / PERCENT;
+  FItem.Y /= s * PERCENT;
   for i := 0 to High(FItem.YList) do
-    FItem.YList[i] /= s / PERCENT;
+    FItem.YList[i] /= s * PERCENT;
 end;
 
 procedure TCalculatedChartSource.Changed(ASender: TObject);
