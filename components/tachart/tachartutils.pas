@@ -918,7 +918,7 @@ end;
 constructor TListener.Create(ARef: PPointer; AOnNotify: TNotifyEvent);
 begin
   FOnNotify := AOnNotify;
-  FRef := Aref;
+  FRef := ARef;
 end;
 
 destructor TListener.Destroy;

@@ -257,6 +257,35 @@ type
     property Sorted: Boolean read FSorted write FSorted default false;
   end;
 
+  { TCalculatedChartSource }
+
+  TCalculatedChartSource = class(TCustomChartSource)
+  private
+    FIndex: Integer;
+    FItem: TChartDataItem;
+    FListener: TListener;
+    FOrigin: TCustomChartSource;
+    FPercentage: Boolean;
+
+    procedure CalcPercentage;
+    procedure Changed(ASender: TObject); inline;
+    procedure SetOrigin(AValue: TCustomChartSource);
+    procedure SetPercentage(const AValue: Boolean);
+  protected
+    function GetCount: Integer; override;
+    function GetItem(AIndex: Integer): PChartDataItem; override;
+    procedure SetYCount(AValue: Cardinal); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    function IsSorted: Boolean; override;
+  published
+    property Origin: TCustomChartSource read FOrigin write SetOrigin;
+    property Percentage: Boolean
+      read FPercentage write SetPercentage default false;
+  end;
+
 procedure Register;
 procedure SetDataItemDefaults(var AItem: TChartDataItem);
 
@@ -291,17 +320,20 @@ begin
   RegisterComponents(
     CHART_COMPONENT_IDE_PAGE, [
       TListChartSource, TRandomChartSource, TDateTimeIntervalChartSource,
-      TUserDefinedChartSource
+      TUserDefinedChartSource, TCalculatedChartSource
     ]);
 end;
 
 procedure SetDataItemDefaults(var AItem: TChartDataItem);
+var
+  i: Integer;
 begin
   AItem.X := 0;
   AItem.Y := 0;
   AItem.Color := clTAColor;
   AItem.Text := '';
-  AItem.YList := nil;
+  for i := 0 to High(AItem.YList) do
+    AItem.YList[i] := 0;
 end;
 
 { TCustomChartSource }
@@ -1224,6 +1256,97 @@ begin
   FYCount := AValue;
   SetLength(FItem.YList, Max(YCount - 1, 0));
   Reset;
+end;
+
+{ TCalculatedChartSource }
+
+procedure TCalculatedChartSource.CalcPercentage;
+var
+  s: Double;
+  i: Integer;
+begin
+  if not Percentage then exit;
+  s := FItem.Y + Sum(FItem.YList);
+  FItem.Y /= s / PERCENT;
+  for i := 0 to High(FItem.YList) do
+    FItem.YList[i] /= s / PERCENT;
+end;
+
+procedure TCalculatedChartSource.Changed(ASender: TObject);
+begin
+  Unused(ASender);
+  InvalidateCaches;
+  Notify;
+end;
+
+constructor TCalculatedChartSource.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FIndex := -1;
+  FListener := TListener.Create(@FOrigin, @Changed);
+end;
+
+destructor TCalculatedChartSource.Destroy;
+begin
+  FreeAndNil(FListener);
+  inherited Destroy;
+end;
+
+function TCalculatedChartSource.GetCount: Integer;
+begin
+  if Origin <> nil then
+    Result := Origin.GetCount
+  else
+    Result := 0;
+end;
+
+function TCalculatedChartSource.GetItem(AIndex: Integer): PChartDataItem;
+begin
+  if Origin = nil then exit(nil);
+  Result := @FItem;
+  if FIndex = AIndex then exit;
+  FItem := Origin.GetItem(AIndex)^;
+  FItem.YList := Copy(FItem.YList);
+  CalcPercentage;
+end;
+
+function TCalculatedChartSource.IsSorted: Boolean;
+begin
+  if Origin <> nil then
+    Result := Origin.IsSorted
+  else
+    Result := false;
+end;
+
+procedure TCalculatedChartSource.SetOrigin(AValue: TCustomChartSource);
+begin
+  if AValue = Self then
+      AValue := nil;
+  if FOrigin = AValue then exit;
+  if FOrigin <> nil then
+    FOrigin.FBroadcaster.Unsubscribe(FListener);
+  FOrigin := AValue;
+  if FOrigin <> nil then
+    FOrigin.FBroadcaster.Subscribe(FListener);
+  if FOrigin <> nil then
+    FYCount := FOrigin.YCount
+  else
+    FYCount := 0;
+  SetLength(FItem.YList, Max(FYCount - 1, 0));
+  Changed(nil);
+end;
+
+procedure TCalculatedChartSource.SetPercentage(const AValue: Boolean);
+begin
+  if FPercentage = AValue then exit;
+  FPercentage := AValue;
+  Changed(nil);
+end;
+
+procedure TCalculatedChartSource.SetYCount(AValue: Cardinal);
+begin
+  Unused(AValue);
+  raise EYCountError.Create('Can not set YCount');
 end;
 
 end.
