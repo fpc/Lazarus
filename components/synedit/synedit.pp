@@ -4543,7 +4543,7 @@ begin
   Exclude(FStateFlags, sfHideCursor);
   inherited;
   {$IFDEF VerboseFocus}
-  DebugLn('[TCustomSynEdit.WMKillFocus] A ',Name);
+  DebugLn(['[TCustomSynEdit.WMKillFocus] A ',Name, ' time=', dbgs(Now*86640)]);
   {$ENDIF}
   {$IF defined(LCLGTK) or defined(LCLGTK2)}
   // This is to temporarily address issue http://bugs.freepascal.org/view.php?id=12460
@@ -4569,7 +4569,7 @@ begin
   Exclude(FStateFlags, sfHideCursor);
   LastMouseCaret:=Point(-1,-1);
   {$IFDEF VerboseFocus}
-  DebugLn('[TCustomSynEdit.WMSetFocus] A ',Name,':',ClassName);
+  DebugLn(['[TCustomSynEdit.WMSetFocus] A ',Name,':',ClassName, ' time=', dbgs(Now*86640)]);
   {$ENDIF}
   FScreenCaret.DestroyCaret; // Ensure recreation. On Windows only one caret exists, and it must be moved to the focused editor
   FScreenCaret.Visible := True;
