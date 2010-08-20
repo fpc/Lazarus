@@ -266,11 +266,15 @@ type
     FListener: TListener;
     FOrigin: TCustomChartSource;
     FPercentage: Boolean;
+    FReorderYList: String;
+    FYOrder: array of Integer;
 
     procedure CalcPercentage;
     procedure Changed(ASender: TObject); inline;
     procedure SetOrigin(AValue: TCustomChartSource);
-    procedure SetPercentage(const AValue: Boolean);
+    procedure SetPercentage(AValue: Boolean);
+    procedure SetReorderYList(const AValue: String);
+    procedure UpdateYOrder;
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
@@ -284,6 +288,7 @@ type
     property Origin: TCustomChartSource read FOrigin write SetOrigin;
     property Percentage: Boolean
       read FPercentage write SetPercentage default false;
+    property ReorderYList: String read FReorderYList write SetReorderYList;
   end;
 
 procedure Register;
@@ -1301,12 +1306,18 @@ begin
 end;
 
 function TCalculatedChartSource.GetItem(AIndex: Integer): PChartDataItem;
+var
+  i: Integer;
+  t: array of Double;
 begin
   if Origin = nil then exit(nil);
   Result := @FItem;
   if FIndex = AIndex then exit;
   FItem := Origin.GetItem(AIndex)^;
-  FItem.YList := Copy(FItem.YList);
+  t := FItem.YList;
+  SetLength(FItem.YList, Length(FYOrder));
+  for i := 0 to High(FYOrder) do
+    FItem.YList[i] := t[FYOrder[i]];
   CalcPercentage;
 end;
 
@@ -1328,25 +1339,64 @@ begin
   FOrigin := AValue;
   if FOrigin <> nil then
     FOrigin.FBroadcaster.Subscribe(FListener);
-  if FOrigin <> nil then
-    FYCount := FOrigin.YCount
-  else
-    FYCount := 0;
-  SetLength(FItem.YList, Max(FYCount - 1, 0));
-  Changed(nil);
+  UpdateYOrder;
 end;
 
-procedure TCalculatedChartSource.SetPercentage(const AValue: Boolean);
+procedure TCalculatedChartSource.SetPercentage(AValue: Boolean);
 begin
   if FPercentage = AValue then exit;
   FPercentage := AValue;
   Changed(nil);
 end;
 
+procedure TCalculatedChartSource.SetReorderYList(const AValue: String);
+begin
+  if FReorderYList = AValue then exit;
+  FReorderYList := AValue;
+  UpdateYOrder;
+end;
+
 procedure TCalculatedChartSource.SetYCount(AValue: Cardinal);
 begin
   Unused(AValue);
   raise EYCountError.Create('Can not set YCount');
+end;
+
+procedure TCalculatedChartSource.UpdateYOrder;
+var
+  order: TStringList;
+  i: Integer;
+begin
+  if FOrigin = nil then begin
+    FYCount := 0;
+    FYOrder := nil;
+    FItem.YList := nil;
+    Changed(nil);
+    exit;
+  end;
+
+  if ReorderYList = '' then begin
+    FYCount := FOrigin.YCount;
+    SetLength(FYOrder,  Max(FYCount - 1, 0));
+    for i := 0 to High(FYOrder) do
+      FYOrder[i] := i;
+  end
+  else begin
+    order := TStringList.Create;
+    try
+      order.CommaText := ReorderYList;
+      SetLength(FYOrder, order.Count);
+      for i := 0 to High(FYOrder) do
+        FYOrder[i] :=
+          EnsureRange(StrToIntDef(order[i], 0), 0, FOrigin.YCount - 2);
+      FYCount := Length(FYOrder) + 1;
+    finally
+      order.Free;
+    end;
+  end;
+
+  SetLength(FItem.YList, Length(FYOrder));
+  Changed(nil);
 end;
 
 end.
