@@ -1586,6 +1586,7 @@ begin
   end;
   FCurrentCreated := False;
   FCurrentVisible := False;
+  FVisible := False;
 end;
 
 procedure TSynEditScreenCaret.Lock;
