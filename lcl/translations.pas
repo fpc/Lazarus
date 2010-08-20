@@ -153,6 +153,12 @@ procedure TranslateUnitResourceStrings(const ResUnitName, BaseFilename,
 function TranslateUnitResourceStrings(const ResUnitName, AFilename: string
   ): boolean; overload;
 function TranslateUnitResourceStrings(const ResUnitName:string; po: TPOFile): boolean; overload;
+
+// translate all resource strings
+function TranslateResourceStrings(po: TPOFile): boolean;
+function TranslateResourceStrings(const AFilename: string): boolean;
+procedure TranslateResourceStrings(const BaseFilename, Lang, FallbackLang: string);
+
 function UTF8ToSystemCharSet(const s: string): string; inline;
 
 function UpdatePoFile(Files: TStrings; const POFilename: string): boolean;
@@ -390,6 +396,50 @@ begin
     TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[FallbackLang]));
   if (Lang<>'') then
     TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[Lang]));
+end;
+
+function TranslateResourceStrings(po: TPOFile): boolean;
+begin
+  Result:=false;
+  try
+    SetResourceStrings(@Translate,po);
+    Result:=true;
+  except
+    on e: Exception do begin
+      {$IFNDEF DisableChecks}
+      DebugLn('Exception while translating:');
+      DebugLn(e.Message);
+      DumpExceptionBackTrace;
+      {$ENDIF}
+    end;
+  end;
+end;
+
+function TranslateResourceStrings(const AFilename: string): boolean;
+var po: TPOFile;
+begin
+  //debugln('TranslateResourceStrings) ResUnitName,'" AFilename="',AFilename,'"');
+  if (AFilename='') or (not FileExistsUTF8(AFilename)) then
+    exit;
+  result:=false;
+  po:=nil;
+  try
+    po:=TPOFile.Create(AFilename);
+    result:=TranslateResourceStrings(po);
+  finally
+    po.free;
+  end;
+end;
+
+procedure TranslateResourceStrings(const BaseFilename, Lang, FallbackLang: string);
+begin
+  if (BaseFilename='') then exit;
+
+  //debugln('TranslateResourceStrings BaseFilename="',BaseFilename,'"');
+  if (FallbackLang<>'') then
+    TranslateResourceStrings(Format(BaseFilename,[FallbackLang]));
+  if (Lang<>'') then
+    TranslateResourceStrings(Format(BaseFilename,[Lang]));
 end;
 
 { TPOFile }
