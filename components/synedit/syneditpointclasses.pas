@@ -1805,6 +1805,9 @@ begin
     {$ENDIF}
     if LCLIntf.ShowCaret(Handle) then
       FCurrentVisible := True;
+    {$IFDEF LCLQT}
+    SetCaretPosEx(FHandle, x, y);
+    {$ENDIF}
   end;
 end;
 
