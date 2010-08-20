@@ -176,21 +176,23 @@ var
 
 begin
   Result := '';
+  Lang := '';
+
+  for i := 1 to Paramcount - 1 do
+    if (ParamStrUTF8(i) = '--LANG') or (ParamStrUTF8(i) = '-l') or
+      (ParamStrUTF8(i) = '--lang') then
+      Lang := ParamStrUTF8(i + 1);
+
   //Win32 user may decide to override locale with LANG variable.
-  Lang := GetEnvironmentVariableUTF8('LANG');
   if Lang = '' then
-  begin
-    for i := 1 to Paramcount - 1 do
-      if (ParamStrUTF8(i) = '--LANG') or (ParamStrUTF8(i) = '-l') or
-        (ParamStrUTF8(i) = '--lang') then
-        Lang := ParamStrUTF8(i + 1);
-  end;
+    Lang := GetEnvironmentVariableUTF8('LANG');
+
   if Lang = '' then
     LCLGetLanguageIDs(Lang, T);
 
   Result := GetLocaleFileName(Lang, LCExt);
   if Result <> '' then
-    Exit;
+    exit;
 
   Result := ChangeFileExt(ParamStrUTF8(0), LCExt);
   if FileExistsUTF8(Result) then
