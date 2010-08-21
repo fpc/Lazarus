@@ -3849,7 +3849,7 @@ msgstr "Sestavení Lazarusu selhalo"
 
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
-msgstr "Sestavit makra"
+msgstr "Sestavovací makra"
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
@@ -3886,7 +3886,7 @@ msgstr "Zrušit přejmenování"
 
 #: lazarusidestrconsts.liscannotcompileproject
 msgid "Cannot compile project"
-msgstr ""
+msgstr "Nelze přeložit projekt"
 
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
@@ -12876,7 +12876,7 @@ msgstr "Projekt nepoužívá rozhraní jednotek LCL, ale zdá se, že je potřeb
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."
-msgstr ""
+msgstr "Projekt nemá hlavní soubor zdrojového kódu."
 
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
@@ -13531,7 +13531,7 @@ msgstr "Nelze zapisovat do informačního souboru projektu %s%s%s%sChyba: %s"
 
 #: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
 msgid "Unable to write the project session file%s\"%s\".%sError: %s"
-msgstr ""
+msgstr "Nelze zapsat soubor sezení projektu%s\"%s\".%sChyba: %s"
 
 #: lazarusidestrconsts.lisunabletowritetofile
 msgid "Unable to write to file %s%s%s."
@@ -13539,7 +13539,7 @@ msgstr "Nelze zapsat do souboru %s%s%s."
 
 #: lazarusidestrconsts.lisunabletowritetofile2
 msgid "Unable to write to file \"%s\"."
-msgstr ""
+msgstr "Nelze zapsat do souboru \"%s\"."
 
 #: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
 msgid "Unable to write xml stream to %s%sError: %s"
