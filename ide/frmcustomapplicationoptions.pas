@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons,
+  ExtCtrls, Buttons,ButtonPanel,
   LazarusIDEStrConsts;
 
 type
@@ -46,8 +46,7 @@ type
   { TCustomApplicationOptionsForm }
 
   TCustomApplicationOptionsForm = class(TForm)
-    BCancel: TBitBtn;
-    BOK: TBitBtn;
+    ButtonPanel:TButtonPanel;
     CGOptions: TCheckGroup;
     EClassName: TEdit;
     ETitle: TEdit;
@@ -113,6 +112,9 @@ begin
   CGOptions.Items.Add(lisConstructorCode);
   CGOptions.Items.Add(lisDestructorCode);
   CGOptions.Items.Add(lisCheckOptions);
+
+  ButtonPanel.OKButton.Caption:=lisOk;
+  ButtonPanel.CancelButton.Caption:=dlgCancel;
 
   // set all defaults to true
   for i:=0 to CGOptions.Items.Count-1 do
