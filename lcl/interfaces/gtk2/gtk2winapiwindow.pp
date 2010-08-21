@@ -798,6 +798,8 @@ begin
     end;
     
     Pixmap := ABitmap;
+    BlinkHide:=false;// start show phase
+    Invalidated:=false;
 
     if IsVisible then GTKAPIWidgetClient_ShowCaret(Client);
   end;
