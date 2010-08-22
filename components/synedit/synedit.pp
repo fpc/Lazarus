@@ -7111,10 +7111,8 @@ begin
     // (un)register HWND as drop target
     if (eoDropFiles in ChangedOptions) and not (csDesigning in ComponentState) and HandleAllocated then
       ; // ToDo DragAcceptFiles
-    if (eoPersistentCaret in ChangedOptions) and HandleAllocated then begin
-      FScreenCaret.PersistentCaret := eoPersistentCaret in fOptions;
+    if (eoPersistentCaret in ChangedOptions) and HandleAllocated then
       UpdateCaret;
-    end;
     if (eoShowSpecialChars in ChangedOptions) and HandleAllocated then
       Invalidate;
 
