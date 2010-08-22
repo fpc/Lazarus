@@ -1889,8 +1889,8 @@ begin
       if fStatusChanges <> [] then
         DoOnStatusChange(fStatusChanges);
     end;
-    FScreenCaret.UnLock;
   finally
+    FScreenCaret.UnLock;
     FIsInDecPaintLock := False;
   end;
 end;
