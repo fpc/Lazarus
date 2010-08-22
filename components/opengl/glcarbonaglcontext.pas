@@ -115,6 +115,36 @@ begin
   DisposeRgn(clipRgn);
 end;
 
+procedure ResizeOGLControl(AWidget: TCarbonWidget);
+var
+  info  : PAGLControlInfo;
+  r     : array [0..3] of Integer;
+  bnd   : HIRect;
+  str   : MacOSAll.Rect;
+begin
+  info:=GetAGLControlInfo(AWidget.Widget);
+  if not Assigned(info) then Exit;
+  HIViewGetBounds(AWidget.Widget, bnd);
+  HIViewConvertPoint(bnd.origin, AWidget.Widget, nil);
+  GetWindowBounds( HIViewGetWindow(AWidget.Widget), kWindowStructureRgn, str);
+
+  r[0]:=Round(bnd.origin.x);
+  r[1]:=Round((str.bottom-str.top)- bnd.origin.y-bnd.size.height);
+  r[2]:=Round(bnd.size.width);
+  r[3]:=Round(bnd.size.height);
+
+  aglEnable(info^.aglContext, AGL_BUFFER_RECT);
+  aglSetInteger(info^.aglContext, AGL_BUFFER_RECT, @r[0]);
+end;
+
+function CarbonGLControl_Resize(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  Result:=CallNextEventHandler(ANextHandler, AEvent);
+  ResizeOGLControl(AWidget);
+end;
+
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
   DoubleBuffered, RGBA: boolean;
@@ -127,6 +157,7 @@ var
   AttrList: PInteger;
   C: TCreateParams;
   AGLInfo: PAGLControlInfo;
+  TempSpec: EventTypeSpec;
 begin
   Result:=0;
   if AWinControl.Parent=nil then
@@ -148,16 +179,19 @@ begin
   aglContext := aglCreateContext (aglPixFmt, NIL);
   aglDestroyPixelFormat(aglPixFmt);
 
-  // use the carbon window.
-  // TODO: find a way to use only the control for the context
   aglSetDrawable(aglContext,
     GetWindowPort(TCarbonWindow(GetParentForm(AWinControl).Handle).Window));
-
   AGLControlInfo_FOURCC := MakeFourCC('ACI ');
 
   AGLInfo:=CreateAGLControlInfo(Control.Widget, AGLContext, AWinControl);
   if AGLInfo<>GetAGLControlInfo(Control.Widget) then
     RaiseGDBException('GLCarbonAGLContext.LOpenGLCreateContext inconsistency');
+
+  ResizeOGLControl(Control);
+  TempSpec:=MakeEventSpec(kEventClassControl, kEventControlBoundsChanged);
+  InstallControlEventHandler(Control.Widget, RegisterEventHandler(@CarbonGLControl_Resize),
+    1, @TempSpec, Control, nil);
+
   Result:=HWnd(Control);
   //debugln(['LOpenGLCreateContext ',dbgs(Result)]);
 end;
@@ -249,6 +283,10 @@ function GetAGLContext(Control: ControlRef): TAGLContext;
 begin
   Result:=GetAGLControlInfo(TCarbonCustomControl(Control).Widget)^.AGLContext;
 end;
+
+initialization
+
+finalization
 
 end.
 
