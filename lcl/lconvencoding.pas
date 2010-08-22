@@ -67,8 +67,13 @@ function CP850ToUTF8(const s: string): string;  // DOS western europe
 function CP866ToUTF8(const s: string): string;  // DOS and Windows console's cyrillic
 function CP874ToUTF8(const s: string): string;  // thai
 function KOI8ToUTF8(const s: string): string;  // russian cyrillic
+function CP936ToUTF8(const s: string): string;      // Chinese
+function CP950ToUTF8(const s: string): string;      // Chinese Complex
+function CP949ToUTF8(const s: string): string;      // korea
+function CP932ToUTF8(const s: string): string;      // japanese
 function SingleByteToUTF8(const s: string;
                           const Table: TCharToUTF8Table): string;
+function SingleByteToUTF8Ex(const s: string; CodeP: integer): string;                          
 function UCS2LEToUTF8(const s: string): string; // UCS2-LE 2byte little endian
 function UCS2BEToUTF8(const s: string): string; // UCS2-BE 2byte big endian
 
@@ -89,9 +94,14 @@ function UTF8ToCP850(const s: string): string;  // DOS western europe
 function UTF8ToCP866(const s: string): string;  // DOS and Windows console's cyrillic
 function UTF8ToCP874(const s: string): string;  // thai
 function UTF8ToKOI8(const s: string): string;  // russian cyrillic
-function UTF8ToCP936(const s: string): string;  // chinese, essentially the same as GB 2312 and a predecessor to GB 18030
+function UTF8ToCP936(const s: string): string;      // Chinese, essentially the same as GB 2312 and a predecessor to GB 18030
+function UTF8ToCP950(const s: string): string;      // Chinese Complex
+function UTF8ToCP949(const s: string): string;      // korea
+function UTF8ToCP932(const s: string): string;      // japanese
 function UTF8ToSingleByte(const s: string;
                           const UTF8CharConvFunc: TUnicodeToCharID): string;
+function UTF8ToSingleByteEx(const s: string;
+                          const UTF8CharConvFunc: TUnicodeToCharID): string;                          
 function UTF8ToUCS2LE(const s: string): string; // UCS2-LE 2byte little endian
 function UTF8ToUCS2BE(const s: string): string; // UCS2-BE 2byte big endian
 
@@ -102,6 +112,8 @@ implementation
 {$IFDEF Windows}
 uses Windows;
 {$ENDIF}
+
+{$include include/asiancodepages.inc}
 
 var EncodingValid: boolean = false;
     DefaultTextEncoding: string = EncodingAnsi;
@@ -4449,6 +4461,109 @@ begin
   SetLength(Result,PtrUInt(Dest)-PtrUInt(Result));
 end;
 
+function SingleByteToUTF8Ex(const s: string; CodeP: integer): string;
+var
+  len:  integer;
+  i, j:    integer;
+  Src:  PChar;
+  Dest: PChar;
+  p:    PChar;
+  c:    char;
+  tempstr: ansistring;
+  tempint: integer;
+begin
+  SetLength(tempstr, 4);
+  if s = '' then
+  begin
+    Result := s;
+    exit;
+  end;
+  len := length(s);
+  SetLength(Result, len * 6);// UTF-8 is at most 6 bytes
+  Src  := PChar(s);
+  Dest := PChar(Result);
+  //for i:=1 to len do begin
+  i    := 1;
+  while i < len do
+  begin
+    c := Src^;
+    Inc(Src);
+    i := i + 1;
+    if Ord(c) < 128 then
+    begin
+      Dest^ := c;
+      Inc(Dest);
+      //writeln(Format('%X', [Byte(c)]));
+    end
+    else
+    begin
+      //p:=Table[c];
+      TempStr[2] := c;
+      if i <= len then
+      begin
+        TempStr[1] := Src^;
+        i := i + 1;
+      end
+      else
+        TempStr[1] := #0;
+      TempStr[4]   := #0;
+      TempStr[3]   := #0;
+      tempint      := PInteger(@TempStr[1])^;
+      Inc(Src);
+      ///for i:=1 to 4 do
+      //    writeln(Format('%X', [tempint]));
+
+      case CodeP of
+        936:
+          tempint := Uni936C[SearchTable(CP936CC, tempint)];
+        950:
+          tempint := Uni950C[SearchTable(CP950CC, tempint)];
+        949:
+          tempint := Uni949C[SearchTable(CP949CC, tempint)];
+        932:
+          tempint := Uni932C[SearchTable(CP932CC, tempint)];
+        else
+          tempint := -1;
+      end;
+      //    writeln(Format('U %X ', [tempint]));
+
+      if tempint <> -1 then
+      begin
+        //PInteger(@TempStr[1])^ := CP936CU[SearchTable(CP936CC, tempint)];
+        TempStr := UnicodeToUTF8(tempint); //CP936CU[SearchTable(CP936CC, tempint)]);
+
+        for j := 1 to Length(TempStr) do
+        begin
+          Dest^ := TempStr[j];
+          Inc(Dest);
+          //      writeln(Format('%X', [Byte(TempStr[i])]));
+        end;
+      end;
+    end;
+  end;
+  SetLength(Result, PtrUInt(Dest) - PtrUInt(Result));
+end;
+
+function CP936ToUTF8(const s: string): string;
+begin
+  Result := SingleByteToUTF8Ex(s, 936);
+end;
+
+function CP950ToUTF8(const s: string): string;
+begin
+  Result := SingleByteToUTF8Ex(s, 950);
+end;
+
+function CP949ToUTF8(const s: string): string;
+begin
+  Result := SingleByteToUTF8Ex(s, 949);
+end;
+
+function CP932ToUTF8(const s: string): string;
+begin
+  Result := SingleByteToUTF8Ex(s, 932);
+end;
+
 function UCS2LEToUTF8(const s: string): string;
 var
   len: Integer;
@@ -5381,6 +5496,43 @@ begin
   end;
 end;
 
+
+function UnicodeToCP936(Unicode: cardinal): integer;
+begin
+  case Unicode of
+    0..127: Result := Unicode;
+    else
+      Result := CP936CU[SearchTable(Uni936U, Unicode)];
+  end;
+end;
+
+function UnicodeToCP950(Unicode: cardinal): integer;
+begin
+  case Unicode of
+    0..127: Result := Unicode;
+    else
+      Result := CP950CU[SearchTable(Uni950U, Unicode)];
+  end;
+end;
+
+function UnicodeToCP949(Unicode: cardinal): integer;
+begin
+  case Unicode of
+    0..127: Result := Unicode;
+    else
+      Result := CP949CU[SearchTable(Uni949U, Unicode)];
+  end;
+end;
+
+function UnicodeToCP932(Unicode: cardinal): integer;
+begin
+  case Unicode of
+    0..127: Result := Unicode;
+    else
+      Result := CP932CU[SearchTable(Uni932U, Unicode)];
+  end;
+end;
+
 function UnicodeToKOI8(Unicode: cardinal): integer;
 begin
   case Unicode of
@@ -5614,50 +5766,6 @@ begin
   Result:=UTF8ToSingleByte(s,@UnicodeToKOI8);
 end;
 
-// Converts an UTF8 to
-// CP936, chinese, essentially the same as GB 2312 and a predecessor to GB 18030
-function UTF8ToCP936(const s: string): string;
-var
-  len: Integer;
-  Src: PChar;
-  c: Char;
-  CharStr: string;
-
-  function UTF8CharToCP936(const AChar: string): string;
-  begin
-    Result:=AChar;
-  end;
-
-begin
-  Result:='';
-  if s='' then Exit;
-
-  len:=length(s);
-  Src:=PChar(s);
-  while len>0 do
-  begin
-    c:=Src^;
-    if c<#128 then
-    begin
-      CharStr := c;
-      // ToDo: do not use slow string operations, (see for example UTF8ToUCS2BE)
-      Result := Result + UTF8CharToCP936(CharStr);
-      inc(Src);
-      dec(len);
-    end
-    else
-    begin
-      CharStr := c;
-      Inc(Src);
-      CharStr := CharStr + Src^;
-      // ToDo: do not use slow string operations
-      Result := Result + UTF8CharToCP936(CharStr);
-      inc(Src);
-      dec(len, 2);
-    end;
-  end;
-end;
-
 function UTF8ToSingleByte(const s: string;
   const UTF8CharConvFunc: TUnicodeToCharID): string;
 var
@@ -5696,6 +5804,81 @@ begin
     end;
   end;
   SetLength(Result,Dest-PChar(Result));
+end;
+
+function UTF8ToSingleByteEx(const s: string;
+  const UTF8CharConvFunc: TUnicodeToCharID): string;
+var
+  len:  integer;
+  Src:  PChar;
+  Dest: PChar;
+  c:    char;
+  Unicode: longword;
+  CharLen: integer;
+  i:    integer;
+begin
+  if s = '' then
+  begin
+    Result := '';
+    exit;
+  end;
+  len := length(s);
+  SetLength(Result, len);
+  Src  := PChar(s);
+  Dest := PChar(Result);
+  while len > 0 do
+  begin
+    c := Src^;
+    if c < #128 then
+    begin
+      Dest^ := c;
+      Inc(Dest);
+      Inc(Src);
+      Dec(len);
+    end
+    else
+    begin
+      Unicode := UTF8CharacterToUnicode(Src, CharLen);
+      Inc(Src, CharLen);
+      Dec(len, CharLen);
+      i := UTF8CharConvFunc(Unicode);
+      //writeln(Format('%X', [i]));
+      if i >= 0 then
+      begin
+        if i > $ff then
+        begin
+          Dest^ := chr(i shr 8);
+          Inc(Dest);
+          Dest^ := chr(i);
+        end
+        else
+          Dest^ := chr(i);
+        Inc(Dest);
+      end;
+    end;
+  end;
+  //SetLength(Result, Dest - PChar(Result));
+  SetLength(Result, PtrUInt(Dest) - PtrUInt(Result));
+end;
+
+function UTF8ToCP936(const s: string): string;
+begin
+  Result := UTF8ToSingleByteEx(s, @UnicodeToCP936);
+end;
+
+function UTF8ToCP950(const s: string): string;
+begin
+  Result := UTF8ToSingleByteEx(s, @UnicodeToCP950);
+end;
+
+function UTF8ToCP949(const s: string): string;
+begin
+  Result := UTF8ToSingleByteEx(s, @UnicodeToCP949);
+end;
+
+function UTF8ToCP932(const s: string): string;
+begin
+  Result := UTF8ToSingleByteEx(s, @UnicodeToCP932);
 end;
 
 function UTF8ToUCS2LE(const s: string): string;
@@ -5796,6 +5979,10 @@ begin
   List.Add('CP850');
   List.Add('CP866');
   List.Add('CP874');
+  List.Add('CP936');
+  List.Add('CP950');
+  List.Add('CP949');
+  List.Add('CP932');  
   List.Add('ISO-8859-1');
   List.Add('ISO-8859-2');
   List.Add('KOI-8');
@@ -5963,6 +6150,26 @@ begin
     if ATo='cp850' then begin  Result:=UTF8ToCP850(s);  exit; end;
     if ATo='cp866' then begin  Result:=UTF8ToCP866(s);  exit; end;
     if ATo='cp874' then begin  Result:=UTF8ToCP874(s);  exit; end;
+    if ATo = 'cp936' then
+    begin
+      Result := UTF8ToCP936(s);
+      exit;
+    end;
+    if ATo = 'cp950' then
+    begin
+      Result := UTF8ToCP950(s);
+      exit;
+    end;
+    if ATo = 'cp949' then
+    begin
+      Result := UTF8ToCP949(s);
+      exit;
+    end;
+    if ATo = 'cp932' then
+    begin
+      Result := UTF8ToCP932(s);
+      exit;
+    end;
     if ATo='koi8' then begin  Result:=UTF8ToKOI8(s);  exit; end;
     if ATo=EncodingUCS2LE then begin Result:=UTF8ToUCS2LE(s); exit; end;
     if ATo=EncodingUCS2BE then begin Result:=UTF8ToUCS2BE(s); exit; end;
@@ -5988,6 +6195,26 @@ begin
     if AFrom='cp850' then begin  Result:=CP850ToUTF8(s);  exit; end;
     if AFrom='cp866' then begin  Result:=CP866ToUTF8(s);  exit; end;
     if AFrom='cp874' then begin  Result:=CP874ToUTF8(s);  exit; end;
+    if AFrom = 'cp936' then
+    begin
+      Result := CP936ToUTF8(s);
+      exit;
+    end;
+    if AFrom = 'cp950' then
+    begin
+      Result := CP950ToUTF8(s);
+      exit;
+    end;
+    if AFrom = 'cp949' then
+    begin
+      Result := CP949ToUTF8(s);
+      exit;
+    end;
+    if AFrom = 'cp932' then
+    begin
+      Result := CP932ToUTF8(s);
+      exit;
+    end;    
     if AFrom='koi8' then begin  Result:=KOI8ToUTF8(s);  exit; end;
     if AFrom=EncodingUCS2LE then begin Result:=UCS2LEToUTF8(s); exit; end;
     if AFrom=EncodingUCS2BE then begin Result:=UCS2BEToUTF8(s); exit; end;
@@ -6059,6 +6286,26 @@ begin
       Result:=CP874ToUTF8(s);
       Encoded := true;
     end
+    else if AFrom = 'cp936' then
+    begin
+      Result  := CP936ToUTF8(s);
+      Encoded := True;
+    end
+    else if AFrom = 'cp950' then
+    begin
+      Result  := CP950ToUTF8(s);
+      Encoded := True;
+    end
+    else if AFrom = 'cp949' then
+    begin
+      Result  := CP949ToUTF8(s);
+      Encoded := True;
+    end
+    else if AFrom = 'cp932' then
+    begin
+      Result  := CP932ToUTF8(s);
+      Encoded := True;
+    end    
     else if AFrom='koi8' then begin
       Result:=KOI8ToUTF8(s);
       Encoded := true;
@@ -6127,6 +6374,26 @@ begin
         Result:=UTF8ToCP874(Result);
         Encoded := true;
       end
+      else if ATo = 'cp936' then
+      begin
+        Result  := UTF8ToCP936(Result);
+        Encoded := True;
+      end
+      else if ATo = 'cp950' then
+      begin
+        Result  := UTF8ToCP950(Result);
+        Encoded := True;
+      end
+      else if ATo = 'cp949' then
+      begin
+        Result  := UTF8ToCP949(Result);
+        Encoded := True;
+      end
+      else if ATo = 'cp932' then
+      begin
+        Result  := UTF8ToCP932(Result);
+        Encoded := True;
+      end      
       else if ATo='koi8' then begin
         Result:=UTF8ToKOI8(Result);
         Encoded := true;

@@ -4444,6 +4444,7 @@ lcl/imglist.pp svneol=native#text/pascal
 lcl/include/actionlink.inc svneol=native#text/pascal
 lcl/include/application.inc svneol=native#text/pascal
 lcl/include/applicationproperties.inc svneol=native#text/pascal
+lcl/include/asiancodepages.inc svneol=native#text/plain
 lcl/include/bevel.inc svneol=native#text/pascal
 lcl/include/bitbtn.inc svneol=native#text/pascal
 lcl/include/bitmap.inc svneol=native#text/pascal
