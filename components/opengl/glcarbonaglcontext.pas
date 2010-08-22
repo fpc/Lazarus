@@ -121,12 +121,15 @@ var
   r     : array [0..3] of Integer;
   bnd   : HIRect;
   str   : MacOSAll.Rect;
+  win   : WindowRef;
 begin
   info:=GetAGLControlInfo(AWidget.Widget);
   if not Assigned(info) then Exit;
+  win:=HIViewGetWindow(AWidget.Widget);
+  if not Assigned(win) then Exit;
+  GetWindowBounds(win, kWindowStructureRgn, str);
   HIViewGetBounds(AWidget.Widget, bnd);
   HIViewConvertPoint(bnd.origin, AWidget.Widget, nil);
-  GetWindowBounds( HIViewGetWindow(AWidget.Widget), kWindowStructureRgn, str);
 
   r[0]:=Round(bnd.origin.x);
   r[1]:=Round((str.bottom-str.top)- bnd.origin.y-bnd.size.height);
@@ -143,6 +146,18 @@ function CarbonGLControl_Resize(ANextHandler: EventHandlerCallRef;
 begin
   Result:=CallNextEventHandler(ANextHandler, AEvent);
   ResizeOGLControl(AWidget);
+end;
+
+function CarbonGLControl_WindowChange(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  win : WindowRef;
+begin
+  Result:=CallNextEventHandler(ANextHandler, AEvent);
+  if GetEventParameter(AEvent, kEventParamControlCurrentOwningWindow, typeWindowRef,
+      nil, sizeof(win), nil, @win) = noErr then
+    if Assigned(win) then ResizeOGLControl(AWidget);
 end;
 
 function LOpenGLCreateContext(AWinControl: TWinControl;
@@ -190,6 +205,11 @@ begin
   ResizeOGLControl(Control);
   TempSpec:=MakeEventSpec(kEventClassControl, kEventControlBoundsChanged);
   InstallControlEventHandler(Control.Widget, RegisterEventHandler(@CarbonGLControl_Resize),
+    1, @TempSpec, Control, nil);
+  TempSpec:=MakeEventSpec(kEventClassControl, kEventControlOwningWindowChanged);
+  // The control might be embeded into a window, after the its creation
+  // the example of the situation is give at bug report #17244
+  InstallControlEventHandler(Control.Widget, RegisterEventHandler(@CarbonGLControl_WindowChange),
     1, @TempSpec, Control, nil);
 
   Result:=HWnd(Control);
