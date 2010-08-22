@@ -11941,6 +11941,10 @@ msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Abrir Projeto Recente"
 
+#: lazarusidestrconsts.lisquickfixcreatelocalvariable
+msgid "Create local variable"
+msgstr ""
+
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
 msgstr "Reparos rápidos"
@@ -11948,6 +11952,10 @@ msgstr "Reparos rápidos"
 #: lazarusidestrconsts.lisquickfixremoveunit
 msgid "Quick fix: Remove unit"
 msgstr "Correção rápida: Remover unidade"
+
+#: lazarusidestrconsts.lisquickfixsearchidentifier
+msgid "Search identifier"
+msgstr ""
 
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"

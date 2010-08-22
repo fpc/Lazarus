@@ -11947,12 +11947,20 @@ msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Atverti paskiausiąjį projektą"
 
+#: lazarusidestrconsts.lisquickfixcreatelocalvariable
+msgid "Create local variable"
+msgstr ""
+
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
 msgstr "Greiti pataisymai"
 
 #: lazarusidestrconsts.lisquickfixremoveunit
 msgid "Quick fix: Remove unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisquickfixsearchidentifier
+msgid "Search identifier"
 msgstr ""
 
 #: lazarusidestrconsts.lisquitlazarus

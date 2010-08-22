@@ -11910,6 +11910,10 @@ msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open Recent Project"
 msgstr "פתח פרוייקט אחרון"
 
+#: lazarusidestrconsts.lisquickfixcreatelocalvariable
+msgid "Create local variable"
+msgstr ""
+
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
 msgstr "תיקונים מהירים"
@@ -11917,6 +11921,10 @@ msgstr "תיקונים מהירים"
 #: lazarusidestrconsts.lisquickfixremoveunit
 msgid "Quick fix: Remove unit"
 msgstr "תיקון מהיר: הסר את היחידה"
+
+#: lazarusidestrconsts.lisquickfixsearchidentifier
+msgid "Search identifier"
+msgstr ""
 
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"

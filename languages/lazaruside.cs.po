@@ -11873,6 +11873,10 @@ msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Otevřít nedávný projekt"
 
+#: lazarusidestrconsts.lisquickfixcreatelocalvariable
+msgid "Create local variable"
+msgstr ""
+
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
 msgstr "Rychlé opravy"
@@ -11880,6 +11884,10 @@ msgstr "Rychlé opravy"
 #: lazarusidestrconsts.lisquickfixremoveunit
 msgid "Quick fix: Remove unit"
 msgstr "Rychlá oprava: Odstranit jednotku"
+
+#: lazarusidestrconsts.lisquickfixsearchidentifier
+msgid "Search identifier"
+msgstr ""
 
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"

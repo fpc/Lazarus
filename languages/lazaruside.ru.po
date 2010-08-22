@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-08-15 00:37+0300\n"
+"PO-Revision-Date: 2010-08-23 00:03+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -11953,6 +11953,10 @@ msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Открыть недавний проект"
 
+#: lazarusidestrconsts.lisquickfixcreatelocalvariable
+msgid "Create local variable"
+msgstr "Создать локальную переменную"
+
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
 msgstr "Быстрые исправления"
@@ -11960,6 +11964,10 @@ msgstr "Быстрые исправления"
 #: lazarusidestrconsts.lisquickfixremoveunit
 msgid "Quick fix: Remove unit"
 msgstr "Быстрое исправление: удалить модуль"
+
+#: lazarusidestrconsts.lisquickfixsearchidentifier
+msgid "Search identifier"
+msgstr "Найти идентификатор"
 
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
