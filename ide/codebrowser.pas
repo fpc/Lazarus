@@ -3198,7 +3198,7 @@ end;
 constructor TQuickFixIdentifierNotFound_Search.Create;
 begin
   Name:='Search identifier: Error: Identifier not found "identifier"';
-  Caption:='Search identifier';
+  Caption:=lisQuickFixSearchIdentifier;
   Steps:=[imqfoMenuItem];
 end;
 

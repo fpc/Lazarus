@@ -541,7 +541,7 @@ end;
 constructor TQuickFixIdentifierNotFoundAddLocal.Create;
 begin
   Name:='Create local variable: Error: Identifier not found "identifier"';
-  Caption:='Create local variable';
+  Caption:=lisQuickFixCreateLocalVariable;
   Steps:=[imqfoMenuItem];
 end;
 

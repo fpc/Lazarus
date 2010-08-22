@@ -1891,6 +1891,8 @@ resourcestring
   lisInvalidLineColumnInMessage = 'Invalid line, column in message%s%s';
   lisUnableToLoadFile = 'Unable to load file:%s%s';
   lisQuickFixRemoveUnit = 'Quick fix: Remove unit';
+  lisQuickFixCreateLocalVariable = 'Create local variable';
+  lisQuickFixSearchIdentifier = 'Search identifier';
   lisMessageContainsNoFilePositionInformation = 'Message contains no file '
     +'position information:%s%s';
   lisFailedToCreateApplicationBundleFor = 'Failed to create Application '
