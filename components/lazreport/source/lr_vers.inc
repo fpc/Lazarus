@@ -54,3 +54,4 @@
     {$UNDEFINE MODALDESIGNER}
   {$ENDIF}
 {$ENDIF}
+{$DEFINE Delphi5}

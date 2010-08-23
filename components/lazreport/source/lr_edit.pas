@@ -134,7 +134,7 @@ end;
 
 procedure TfrEditorForm.Button3Click(Sender: TObject);
 begin
-  frVarForm := TfrVarForm.Create(nil);
+  frVarForm := TfrVarForm.Create(Application);
   try
     with frVarForm do
     if ShowModal = mrOk then
@@ -193,7 +193,7 @@ end;
 
 procedure TfrEditorForm.Button4Click(Sender: TObject);
 begin
-  frFieldsForm := TfrFieldsForm.Create(nil);
+  frFieldsForm := TfrFieldsForm.Create(Application);
   try
     with frFieldsForm do
     begin

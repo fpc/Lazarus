@@ -1408,6 +1408,10 @@ msgstr "[Nenhum]"
 msgid "Object inspector"
 msgstr "Inspetor de Objetos"
 
+#: lr_const.sobjectnotfound
+msgid "Object \"%s\" not found"
+msgstr ""
+
 #: lr_const.sok
 msgid "Ok"
 msgstr "Ok"

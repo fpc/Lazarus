@@ -31,6 +31,7 @@ type
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
+    procedure ValListDblClick(Sender: TObject);
     procedure ValListKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
@@ -60,7 +61,8 @@ var
 procedure TfrFieldsForm.ValListKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = vk_Return then begin
+  if Key = vk_Return then
+  begin
     UpdateDBField;
     ModalResult := mrOk;
   end;
@@ -123,12 +125,12 @@ end;
 
 procedure TfrFieldsForm.ValListSelectionChange(Sender: TObject; User: boolean);
 begin
-  if User then
+{  if User then
   begin
     UpdateDbField;
     if DBField<>'' then
       ModalResult := mrOk;
-  end;
+  end;}
 end;
 
 procedure TfrFieldsForm.FormCreate(Sender: TObject);
@@ -153,6 +155,13 @@ end;
 procedure TfrFieldsForm.FormDeactivate(Sender: TObject);
 begin
   //UpdateDBField;
+end;
+
+procedure TfrFieldsForm.ValListDblClick(Sender: TObject);
+begin
+  UpdateDbField;
+  if DBField<>'' then
+    ModalResult := mrOk;
 end;
 
 end.

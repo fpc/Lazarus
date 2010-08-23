@@ -249,9 +249,11 @@ resourcestring
   sFRVariables = 'FR variables';
   sErrorOccured = 'An error occured during calculating';
   sSpecVal = 'Other';
-  sFRFError='Unsupported FRF format';
-  sClassObjectNotFound='Class Object "%s" not found';
+  sFRFError = 'Unsupported FRF format';
+  sClassObjectNotFound = 'Class Object "%s" not found';
   sDuplicatedObjectName = 'An object named "%s" already exists';
+  sObjectNotFound = 'Object "%s" not found';
+
   
   SDoc = 'Report:';
   SBand = 'Band:';

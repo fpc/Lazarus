@@ -1408,6 +1408,10 @@ msgstr "[Tidak ada]"
 msgid "Object inspector"
 msgstr "Inspektor obyek"
 
+#: lr_const.sobjectnotfound
+msgid "Object \"%s\" not found"
+msgstr ""
+
 #: lr_const.sok
 msgid "Ok"
 msgstr "Ok"

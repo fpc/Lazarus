@@ -63,7 +63,7 @@ function UTF8QuotedStr(s:string; Quote: TUTF8Char; desc:string=''): string;
 
 implementation
 
-uses LR_Class;
+uses LR_Class, LR_Const;
 
 var
   LocalDescri: string;
@@ -323,7 +323,7 @@ procedure frGetDataSetAndField(ComplexName: String; var DataSet: TfrTDataSet;
 var
   n: Integer;
   f: TComponent;
-  s1, s2, s3: String;
+  s1, s2, s3, s4: String;
 begin
   Field := nil;
   f := CurReport.Owner;
@@ -339,7 +339,17 @@ begin
       f:=FindGlobalComponent(S1);
       if f <> nil then
       begin
-        DataSet := TfrTDataSet(f.FindComponent(s2));
+        n:=Pos('.', S3);                      //test for frame name
+        if n>0 then                           //if frame name present
+        begin
+          S4:=Copy(S3, 1, n-1);
+          Delete(S3, 1, n);
+          f:=F.FindComponent(S2);
+          if Assigned(F)then
+            DataSet := TfrTDataSet(f.FindComponent(s4));
+        end
+        else
+          DataSet := TfrTDataSet(f.FindComponent(s2));
         RemoveQuotes(s3);
         if DataSet <> nil then
           Field := TfrTField(DataSet.FindField(s3));
@@ -369,7 +379,7 @@ end;
 function frFindComponent(Owner: TComponent; Name: String): TComponent;
 var
   n: Integer;
-  s1, s2: String;
+  s1, s2, s3: String;
 begin
   Result := nil;
   n := Pos('.', Name);
@@ -379,14 +389,29 @@ begin
     else
     begin
       s1 := Copy(Name, 1, n - 1);        // module name
-      s2 := Copy(Name, n + 1, 255);      // component name
+      s2 := Copy(Name, n + 1, Length(Name));      // component name
+
+      n := Pos('.', S2); //check for frames
+      if n = 0 then
+        S3:=''
+      else
+      begin
+        s3 := Copy(S2, 1, n - 1);        // module name
+        Delete(S2, 1, n);
+      end;
+
       Owner := FindGlobalComponent(s1);
       if Owner <> nil then
-        Result := Owner.FindComponent(s2);
+      begin
+        if s3<>'' then
+          Owner:=Owner.FindComponent(s3);
+        if Assigned(Owner) then
+          Result := Owner.FindComponent(s2);
+      end;
     end;
   except
     on Exception do
-      raise EClassNotFound.Create('Отсутствует ' + Name);
+      raise EClassNotFound.CreateFmt(sObjectNotFound, [Name]);
   end;
 end;
 
@@ -413,13 +438,17 @@ var
     for i := 0 to f.ComponentCount - 1 do
     begin
       c := f.Components[i];
+      if c is TFrame then
+        EnumComponents(c)
+      else
       if (c <> Skip) and (c is ClassRef) then
         if f = Owner then
           List.Add(c.Name)
-        else if ((f is TForm) or (f is TDataModule)) then
+        else
+        if ((f is TForm) or (f is TDataModule)) then
           List.Add(f.Name + '.' + c.Name)
         else
-          List.Add(TControl(f).Parent.Name + '.' + f.Name + '.' + c.Name)
+          List.Add(TControl(f).Owner.Name + '.' + f.Name + '.' + c.Name)
     end;
   end;
 
