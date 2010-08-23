@@ -1222,7 +1222,7 @@ begin
     else H := ALogFont.lfHeight;
 
   Attr := kATSUSizeTag;
-  M := Abs(ALogFont.lfHeight) shl 16;
+  M := Abs(H) shl 16;
   A := @M;
   S := SizeOf(M);
   OSError(ATSUSetAttributes(Result, 1, @Attr, @S, @A), Self, SName,
