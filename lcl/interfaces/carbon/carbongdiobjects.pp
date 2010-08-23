@@ -1158,7 +1158,7 @@ end;
 constructor TCarbonFont.Create(AGlobal: Boolean);
 begin
   inherited Create(AGlobal);
-  
+
   FStyle := DefaultTextStyle;
   FLineRotation := 0;
 end;
@@ -1195,6 +1195,7 @@ var
   S: ByteCount;
   A: ATSUAttributeValuePtr;
   ID: ATSUFontID;
+  H: Integer;
 const
   SSetAttrs = 'ATSUSetAttributes';
   SName = 'CreateStyle';
@@ -1216,15 +1217,16 @@ begin
       SSetAttrs, 'kATSUFontTag');
   end;
 
-  if ALogFont.lfHeight <> 0 then
-  begin
-    Attr := kATSUSizeTag;
-    M := Abs(ALogFont.lfHeight) shl 16;
-    A := @M;
-    S := SizeOf(M);
-    OSError(ATSUSetAttributes(Result, 1, @Attr, @S, @A), Self, SName,
-      SSetAttrs, 'kATSUSizeTag');
-  end;
+  if ALogFont.lfHeight = 0
+    then H := CarbonDefaultFontSize
+    else H := ALogFont.lfHeight;
+
+  Attr := kATSUSizeTag;
+  M := Abs(ALogFont.lfHeight) shl 16;
+  A := @M;
+  S := SizeOf(M);
+  OSError(ATSUSetAttributes(Result, 1, @Attr, @S, @A), Self, SName,
+    SSetAttrs, 'kATSUSizeTag');
 
   if ALogFont.lfWeight > FW_NORMAL then
   begin

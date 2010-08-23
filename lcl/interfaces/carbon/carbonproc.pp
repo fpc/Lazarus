@@ -64,6 +64,10 @@ var
   HIViewClassID: CFStringRef; // class CFString for HIView
   CustomControlClassID: CFStringRef; // class CFString for custom control
 
+var
+  CarbonDefaultFont     : AnsiString = '';
+  CarbonDefaultFontSize : Integer = 0;
+
 {$I mackeycodes.inc}
 
 function VirtualKeyCodeToMac(AKey: Word): Word;
@@ -494,13 +498,19 @@ end;
   Returns: Carbon font ID of font with the specified name
  ------------------------------------------------------------------------------}
 function FindCarbonFontID(const FontName: String): ATSUFontID;
+var
+  fn  : String;
 begin
   Result := 0;
 
   //DebugLn('FindCarbonFontID ' + FontName);
-  if (FontName <> '') and not SameText(FontName, 'default') then
+
+  if SameText(FontName, 'default')
+    then fn:=CarbonDefaultFont
+    else fn:=FontName;
+  if (FontName <> '') then
   begin
-    OSError(ATSUFindFontFromName(@FontName[1], Length(FontName),
+    OSError(ATSUFindFontFromName(@fn[1], Length(fn),
         kFontFullName, kFontMacintoshPlatform, kFontRomanScript,
         kFontEnglishLanguage, Result),
       'FindCarbonFontID', 'ATSUFindFontFromName');
@@ -1317,6 +1327,18 @@ begin
   end;
 end;
 
+procedure InitDefaultFont;
+var
+  s   : Str255;
+  st  : MacOSAll.Style;
+  sz  : SInt16;
+begin
+  //Note: the GetThemeFont is deprecated in 10.5. CoreText functions should be used!
+  MacOSAll.GetThemeFont(kThemeSystemFont, GetApplicationScript, @s, sz, st);
+  CarbonDefaultFont := s;
+  CarbonDefaultFontSize := sz;
+end;
+
 var
   EventSpec: Array [0..8] of EventTypeSpec;
   CustomControlHandlerUPP: EventHandlerUPP;
@@ -1356,6 +1378,8 @@ initialization
     HIObjectRegisterSubclass(CustomControlClassID, HIViewClassID, 0,
       CustomControlHandlerUPP, Length(EventSpec), @EventSpec[0], nil, nil),
     'CarbonProc.initialization', 'HIObjectRegisterSubclass');
+
+  InitDefaultFont;
 
 finalization
 
