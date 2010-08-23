@@ -732,7 +732,7 @@ begin
   UpdateActive;
   if not (gsStartEditing in FGridStatus) then begin
     SelectEditor;
-    if (dgAlwaysShowEditor in Options) then
+    if (dgAlwaysShowEditor in Options) and not EditorMode then
       EditorMode := true;
   end;
   {$Ifdef dbgDBGrid}
@@ -2841,7 +2841,7 @@ begin
       UpdateGridColumnSizes;
 
       if FDatalink.Active and (FDatalink.ActiveRecord>=0) then
-        SetColRow(Col, FixedRows + FDatalink.ActiveRecord);
+        AdjustEditorBounds(Col, FixedRows + FDatalink.ActiveRecord);
     end;
   finally
     EndUpdate;
