@@ -90,9 +90,6 @@ plotfunction
 popupnotifier
   ?
 
-prettyformat
-  Adds menu items to the IDE for beautifiying code via ptop.
-
 prettymessages
   Hide unwanted hints, warnings and all kind of messages in the message window.
 

@@ -74,12 +74,6 @@ components/opengl/*.bak
 components/opengl/example/*.bak
 components/opengl/example/units
 components/opengl/units
-components/prettyformat/*.bak
-components/prettyformat/languages/*.bak
-components/prettyformat/languages/units
-components/prettyformat/lib/*.bak
-components/prettyformat/lib/units
-components/prettyformat/units
 components/printers/*.bak
 components/printers/design/*.bak
 components/printers/design/languages/*.bak
