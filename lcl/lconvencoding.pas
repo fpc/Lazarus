@@ -15,9 +15,6 @@
 unit LConvEncoding;
 
 {$mode objfpc}{$H+}
-{$IFDEF WINDOWS}
-{$WARNING Windows/Wine/ReactOS locale conversion is not fully supported yet. Sorry.}
-{$ENDIF}
 
 interface
 
