@@ -1788,6 +1788,8 @@ begin
 end;
 
 procedure TCustomDBGrid.KeyDown(var Key: Word; Shift: TShiftState);
+type
+  TOperation=(opMoveBy,opCancel,opAppend,opInsert,opDelete);
 var
   DeltaCol,DeltaRow: Integer;
 
@@ -1798,37 +1800,40 @@ var
       OnKeyDown(Self, Key, Shift);
     {$ifdef dbgGrid}DebugLn('DoOnKeyDown FIN');{$endif}
   end;
-  procedure DoMoveBy(amount: Integer);
+  {$ifdef dbgGrid}
+  function OperToStr(AOper: TOperation): string;
   begin
-    {$IfDef dbgGrid}DebugLn('KeyDown.DoMoveBy(',IntToStr(Amount),')');{$Endif}
-    FDatalink.MoveBy(Amount);
-    {$IfDef dbgGrid}DebugLn('KeyDown.DoMoveBy FIN');{$Endif}
+    case AOper of
+      opMoveBy: result := 'opMoveBy';
+      opCancel: result := 'opCancel';
+      opAppend: result := 'opAppend';
+      opInsert: result := 'opInsert';
+      opDelete: result := 'opDelete';
+    end;
   end;
-  procedure DoCancel;
+  {$endif}
+  procedure DoOperation(AOper: TOperation; Arg: Integer = 0);
   begin
-    {$IfDef dbgGrid}DebugLn('KeyDown.doCancel INIT');{$Endif}
-    if EditorMode then
-      EditorCancelEditing;
-    FDatalink.Dataset.cancel;
-    {$IfDef dbgGrid}DebugLn('KeyDown.doCancel FIN');{$Endif}
-  end;
-  procedure DoDelete;
-  begin
-    {$IfDef dbgGrid}DebugLn('KeyDown.doDelete INIT');{$Endif}
-    FDatalink.Dataset.Delete;
-    {$IfDef dbgGrid}DebugLn('KeyDown.doDelete FIN');{$Endif}
-  end;
-  procedure DoAppend;
-  begin
-    {$IfDef dbgGrid}DebugLn('KeyDown.doAppend INIT');{$Endif}
-    FDatalink.Dataset.Append;
-    {$IfDef dbgGrid}DebugLn('KeyDown.doAppend FIN');{$Endif}
-  end;
-  procedure DoInsert;
-  begin
-    {$IfDef dbgGrid}DebugLn('KeyDown.doInsert INIT');{$Endif}
-    FDatalink.Dataset.Insert;
-    {$IfDef dbgGrid}DebugLn('KeyDown.doInsert FIN');{$Endif}
+    {$IfDef dbgGrid}DebugLn('KeyDown.DoOperation(%s,%d) INIT',[OperToStr(AOper),arg]);{$Endif}
+    GridFlags := GridFlags + [gfEditingDone];
+    case AOper of
+      opMoveBy:
+        FDatalink.MoveBy(Arg);
+      opCancel:
+        begin
+          if EditorMode then
+            EditorCancelEditing;
+          FDatalink.Dataset.Cancel;
+        end;
+      opAppend:
+        FDatalink.Dataset.Append;
+      opInsert:
+        FDatalink.Dataset.Insert;
+      opDelete:
+        FDatalink.Dataset.Delete;
+    end;
+    GridFlags := GridFlags - [gfEditingDone];
+    {$IfDef dbgGrid}DebugLn('KeyDown.DoOperation(%s,%d) DONE',[OperToStr(AOper),arg]);{$Endif}
   end;
   procedure SelectNext(const AStart,ADown:Boolean);
   var
@@ -1878,15 +1883,15 @@ var
       if IsEOF then
         result:=true
       else begin
-        doCancel;
+        doOperation(opCancel);
         result := false;
       end;
     end else begin
       result:=false;
       SelectNext(true,true);
-      doMoveBy(1);
+      doOperation(opMoveBy, 1);
       if GridCanModify and FDataLink.EOF then
-        doAppend
+        doOperation(opAppend)
       else
         SelectNext(false,true);
     end;
@@ -1896,17 +1901,36 @@ var
   begin
     {$ifdef dbgGrid}DebugLn('DoVKUP INIT');{$endif}
     if InsertCancelable then
-      doCancel
+      doOperation(opCancel)
     else begin
       SelectNext(true, false);
-      doMoveBy(-1);
+      doOperation(opMoveBy, -1);
       SelectNext(false, false);
     end;
     result := FDatalink.DataSet.BOF;
     {$ifdef dbgGrid}DebugLn('DoVKUP FIN');{$endif}
   end;
+  procedure MoveSel(AReset: boolean);
+  begin
+    if (DeltaCol<>0) or (DeltaRow<>0) then begin
+      if DeltaRow > 0 then begin
+        if doVKDown then
+          //DeltaCol:=0; // tochk: strict? already in EOF, don't change column
+      end else
+      if DeltaRow < 0 then begin
+        if doVKUP then
+          //DeltaCol:=0; // tochk: strict? already in BOF, don't change column
+      end;
+      GridFlags := GridFlags + [gfEditingDone];
+      if (DeltaCol<>0) then
+        Col := Col + DeltaCol;
+      GridFlags := GridFlags - [gfEditingDone];
+    end else
+    if AReset then
+      ResetEditor;
+  end;
 begin
-  {$IfDef dbgGrid}DebugLn('DBGrid.KeyDown ',Name,' INIT Key= ',IntToStr(Key));{$Endif}
+  {$IfDef dbgGrid}DebugLn('DBGrid.KeyDown %s INIT Key=%d',[Name,Key]);{$Endif}
   case Key of
 
     VK_TAB:
@@ -1914,20 +1938,8 @@ begin
         doOnKeyDown;
         if Key<>0 then begin
           if dgTabs in Options then begin
-            if GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow) then begin
-
-              if DeltaRow > 0 then begin
-                if doVKDown then
-                  //DeltaCol:=0; // tochk: strict? already in EOF, don't change column
-              end else
-              if DeltaRow < 0 then begin
-                if doVKUP then
-                  //DeltaCol:=0; // tochk: strict? already in BOF, don't change column
-              end;
-
-              if (DeltaCol<>0) then
-                Col := Col + DeltaCol;
-            end;
+            GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow);
+            MoveSel(false);
             Key := 0;
           end;
         end;
@@ -1941,13 +1953,8 @@ begin
           if (dgEditing in Options) and not EditorMode then
             EditorMode:=true
           else begin
-            if GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow) then begin
-              if DeltaRow > 0 then
-                doVKDown;
-              if DeltaCol <> 0 then
-                Col := Col + DeltaCol;
-            end;
-            ResetEditor;
+            GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow);
+            MoveSel(True);
           end;
         end;
       end;
@@ -1960,7 +1967,7 @@ begin
           if not (dgConfirmDelete in Options) or
             (MessageDlg(rsDeleteRecord, mtConfirmation, mbOKCancel, 0 )<>mrCancel)
           then begin
-            doDelete;
+            doOperation(opDelete);
             key := 0;
           end;
         end;
@@ -1988,7 +1995,7 @@ begin
       begin
         doOnKeyDown;
         if Key<>0 then begin
-          doMoveBy( VisibleRowCount );
+          doOperation(opMoveBy, VisibleRowCount);
           ClearSelection(true);
           Key := 0;
         end;
@@ -1998,7 +2005,7 @@ begin
       begin
         doOnKeyDown;
         if Key<>0 then begin
-          doMoveBy( -VisibleRowCount );
+          doOperation(opMoveBy, -VisibleRowCount);
           ClearSelection(true);
           key := 0;
         end;
@@ -2015,7 +2022,7 @@ begin
             Key := 0;
           end else
             if FDataLink.Active then
-              doCancel;
+              doOperation(opCancel);
         end;
       end;
 
@@ -2024,7 +2031,7 @@ begin
         doOnKeyDown;
         if Key<>0 then
           if GridCanModify then begin
-            doInsert;
+            doOperation(opCancel);
             Key:=0;
           end;
       end;
@@ -2034,10 +2041,12 @@ begin
         doOnKeyDown;
         if Key<>0 then begin
           if FDatalink.Active then begin
+            GridFlags := GridFlags + [gfEditingDone];
             if ssCTRL in Shift then
               FDataLink.DataSet.First
             else
               MoveNextSelectable(False, FixedCols, Row);
+            GridFlags := GridFlags - [gfEditingDone];
             ClearSelection(true);
             Key:=0;
           end;
@@ -2049,10 +2058,12 @@ begin
         doOnKeyDown;
         if Key<>0 then begin
           if FDatalink.Active then begin
+            GridFlags := GridFlags + [gfEditingDone];
             if ssCTRL in shift then
               FDatalink.DataSet.Last
             else
               MoveNextSelectable(False, ColCount-1, Row);
+            GridFlags := GridFlags - [gfEditingDone];
             ClearSelection(true);
             Key:=0;
           end;
@@ -2079,7 +2090,7 @@ begin
     else
       inherited KeyDown(Key, Shift);
   end;
-  {$IfDef dbgGrid}DebugLn('DBGrid.KeyDown END Key= ',IntToStr(Key));{$Endif}
+  {$IfDef dbgGrid}DebugLn('DBGrid.KeyDown END Key= %d',[Key]);{$Endif}
 end;
 
 procedure TCustomDBGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
