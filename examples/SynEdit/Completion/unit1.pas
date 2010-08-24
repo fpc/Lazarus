@@ -13,16 +13,21 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    chkSearch: TCheckBox;
+    chkExec: TCheckBox;
     Label1: TLabel;
     Label2: TLabel;
     Memo1: TMemo;
     Memo2: TMemo;
     Panel1: TPanel;
     Panel2: TPanel;
+    Panel3: TPanel;
     Splitter1: TSplitter;
     Splitter2: TSplitter;
     SynAutoComplete1: TSynAutoComplete;
     SynEdit1: TSynEdit;
+    procedure chkExecChange(Sender: TObject);
+    procedure chkSearchChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Memo1Change(Sender: TObject);
   private
@@ -56,18 +61,37 @@ procedure TForm1.DoExecute(Sender: TObject);
   end;
 begin
   SynCompletion.ItemList.Clear;
+  if chkExec.Checked then begin
+    Add('Personal Computer');
+    Add('Personal');
+    Add('Computer');
+    Add('Police Constable');
+    Add('Police');
+    Add('Constable');
+  end else begin
+    SynCompletion.ItemList.Add('Personal Computer');
+    SynCompletion.ItemList.Add('Personal');
+    SynCompletion.ItemList.Add('Computer');
+    SynCompletion.ItemList.Add('Police Constable');
+    SynCompletion.ItemList.Add('Police');
+    SynCompletion.ItemList.Add('Constable');
+  end;
+end;
 
+procedure TForm1.DoSearchPosition(var APosition: integer);
+  procedure Add(s: String);
+  begin
+    if pos(lowercase(SynCompletion.CurrentString), lowercase(s)) = 1 then
+      SynCompletion.ItemList.Add(s);
+  end;
+begin
+  SynCompletion.ItemList.Clear;
   Add('Personal Computer');
   Add('Personal');
   Add('Computer');
   Add('Police Constable');
   Add('Police');
   Add('Constable');
-end;
-
-procedure TForm1.DoSearchPosition(var APosition: integer);
-begin
-  DoExecute(nil);
   APosition := 0;
 end;
 
@@ -79,6 +103,20 @@ begin
   SynCompletion.CaseSensitive := False;
   SynCompletion.OnExecute := @DoExecute;
   SynCompletion.OnSearchPosition := @DoSearchPosition;
+end;
+
+procedure TForm1.chkExecChange(Sender: TObject);
+begin
+  SynEdit1.SetFocus;
+end;
+
+procedure TForm1.chkSearchChange(Sender: TObject);
+begin
+  if chkSearch.Checked then
+    SynCompletion.OnSearchPosition := @DoSearchPosition
+  else
+    SynCompletion.OnSearchPosition := nil;
+  SynEdit1.SetFocus;
 end;
 
 end.
