@@ -2756,6 +2756,12 @@ docs/xml/rtl/README.txt svneol=native#text/plain
 docs/xml/rtl/classes.xml svneol=native#text/xml
 docs/xml/rtl/system.xml svneol=native#text/xml
 docs/xml/rtl/sysutils.xml svneol=native#text/xml
+examples/SynEdit/Completion/SynCompletionSample.ico -text
+examples/SynEdit/Completion/SynCompletionSample.lpi svneol=native#text/plain
+examples/SynEdit/Completion/SynCompletionSample.lpr svneol=native#text/pascal
+examples/SynEdit/Completion/SynCompletionSample.res -text
+examples/SynEdit/Completion/unit1.lfm svneol=native#text/plain
+examples/SynEdit/Completion/unit1.pas svneol=native#text/pascal
 examples/address_book/addrbook.dpr svneol=native#text/pascal
 examples/address_book/addrbook.lpi svneol=native#text/plain
 examples/address_book/addrbook.lpr svneol=native#text/pascal
