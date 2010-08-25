@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-06-08 17:24+0100\n"
-"Last-Translator: samuel herzog <sam_herzog@yahoo.com>\n"
+"PO-Revision-Date: 2010-08-24 23:52+0100\n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -113,7 +113,7 @@ msgstr "Änderungen wurden nicht gespeichert. Auf dieser Seite können Änderung
 
 #: lazarusidestrconsts.dlfnopredefinedscheme
 msgid "< None >"
-msgstr ""
+msgstr "< Keine >"
 
 #: lazarusidestrconsts.dlfreadonlycolor
 msgctxt "lazarusidestrconsts.dlfreadonlycolor"
@@ -609,15 +609,15 @@ msgstr "Quelltexterzeugung"
 
 #: lazarusidestrconsts.dlgcodefoldenableboth
 msgid "Both"
-msgstr ""
+msgstr "Beides"
 
 #: lazarusidestrconsts.dlgcodefoldenablefold
 msgid "Fold"
-msgstr ""
+msgstr "Falten"
 
 #: lazarusidestrconsts.dlgcodefoldenablehide
 msgid "Hide"
-msgstr ""
+msgstr "Verbergen"
 
 #: lazarusidestrconsts.dlgcodefoldingmouse
 msgctxt "lazarusidestrconsts.dlgcodefoldingmouse"
@@ -724,7 +724,7 @@ msgstr "Compiler-Meldungen"
 
 #: lazarusidestrconsts.dlgcompilermessages
 msgid "Compiler messages language file"
-msgstr "Compiler Meldungen Sprachdatei"
+msgstr "Compilermeldungen-Sprachdatei"
 
 #: lazarusidestrconsts.dlgcompileroptions
 msgctxt "lazarusidestrconsts.dlgcompileroptions"
@@ -1299,7 +1299,7 @@ msgstr "Var/Type (lokal)"
 
 #: lazarusidestrconsts.dlgfoldpasansicomment
 msgid "Comment (* *)"
-msgstr ""
+msgstr "Kommentar (* *)"
 
 #: lazarusidestrconsts.dlgfoldpasasm
 msgid "Asm"
@@ -1311,7 +1311,7 @@ msgstr "Begin/End (verschachtelt)"
 
 #: lazarusidestrconsts.dlgfoldpasborcomment
 msgid "Comment { }"
-msgstr ""
+msgstr "Kommentar { }"
 
 #: lazarusidestrconsts.dlgfoldpascase
 msgid "Case"
@@ -1361,7 +1361,7 @@ msgstr "Repeat"
 
 #: lazarusidestrconsts.dlgfoldpasslashcomment
 msgid "Comment //"
-msgstr ""
+msgstr "Kommentar //"
 
 #: lazarusidestrconsts.dlgfoldpastry
 msgid "Try"
@@ -1535,7 +1535,7 @@ msgstr "Randleiste"
 
 #: lazarusidestrconsts.dlgguttercollapsedcolor
 msgid "Collapsed"
-msgstr ""
+msgstr "Gefaltet"
 
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
@@ -2427,7 +2427,7 @@ msgstr "Name der Eigenschaft"
 
 #: lazarusidestrconsts.dlgqautoclosecompiledialog
 msgid "Auto close compile dialog"
-msgstr "Kompilerdialog automatisch schließen"
+msgstr "Compilierdialog automatisch schließen"
 
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"
@@ -2947,7 +2947,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlguseschemedefaults
 msgid "Use global scheme settings"
-msgstr "Globale Schema Einstellungen verwenden"
+msgstr "Globale Schema-Einstellungen verwenden"
 
 #: lazarusidestrconsts.dlgusesyntaxhighlight
 msgid "Use syntax highlight"
@@ -5559,11 +5559,11 @@ msgstr "Alle Ausgaben in die Zwischenablage kopieren"
 
 #: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
 msgid "Copy all shown and hidden messages to clipboard"
-msgstr ""
+msgstr "Alle gezeigten und verborgenen Meldungen in die Zwischenablage kopieren"
 
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
 msgid "Copy all shown messages to clipboard"
-msgstr ""
+msgstr "Alle gezeigten Meldungen in die Zwischenablage kopieren"
 
 #: lazarusidestrconsts.liscopydescription
 msgid "Copy description to clipboard"
@@ -5687,7 +5687,7 @@ msgstr "Projekt anlegen"
 
 #: lazarusidestrconsts.liscreateupdatepofilewhensavingalfmfile
 msgid "Create/update .po file when saving a lfm file"
-msgstr ""
+msgstr ".po Datei beim Speichern einer lfm Datei erstellen/aktualisieren"
 
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
@@ -6214,7 +6214,7 @@ msgstr "Abhängigkeiten nicht kompilieren"
 
 #: lazarusidestrconsts.lisdonotinstall
 msgid "Do not install"
-msgstr ""
+msgstr "Nicht installiert"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -12407,7 +12407,7 @@ msgstr "Voreinstellungens setzen"
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Setup default indentation)"
-msgstr "(Einstellung Standard Einrückung)"
+msgstr "(Standard-Einrückung festlegen)"
 
 #: lazarusidestrconsts.lissetvalue
 msgid "Set value"
@@ -12471,7 +12471,7 @@ msgstr "Units anzeigen"
 
 #: lazarusidestrconsts.lisshowvaluehintswhiledebugging
 msgid "Show value hints while debugging"
-msgstr "Werte-Hinweise während dem Debuggen anzeigen"
+msgstr "Werte-Hinweise während des Debuggens anzeigen"
 
 #: lazarusidestrconsts.lisshowversionandexit
 msgid "show version and exit"
@@ -13208,7 +13208,7 @@ msgstr "Umschalten der Anzeige der Dateinamen zwischen voller/relativer Pfad"
 
 #: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
 msgid "To install you must compile and restart the IDE"
-msgstr ""
+msgstr "Zum Installieren müssen Sie die IDE kompilieren und neu starten"
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
@@ -13749,7 +13749,7 @@ msgstr "Verweise aktualisieren?"
 
 #: lazarusidestrconsts.lisupdaterevisioninc
 msgid "Update revision.inc"
-msgstr ""
+msgstr "Aktualisiere revision.inc"
 
 #: lazarusidestrconsts.lisuppercasestring
 msgid "uppercase string"
@@ -15367,19 +15367,19 @@ msgstr "Beliebige Taste drücken ..."
 
 #: lazarusidestrconsts.synffoldcommentsinselection
 msgid "Fold comments in selection"
-msgstr ""
+msgstr "Kommentare in Auswahl falten"
 
 #: lazarusidestrconsts.synfhidecommentsinselection
 msgid "Hide comments in selection"
-msgstr ""
+msgstr "Kommentare in Auswahl verbergen"
 
 #: lazarusidestrconsts.synfunfoldallinselection
 msgid "Unfold all in Selection"
-msgstr ""
+msgstr "Alles in Auswahl entfalten"
 
 #: lazarusidestrconsts.synfunfoldcommentsinselection
 msgid "Unfold comments in Selection"
-msgstr ""
+msgstr "Kommentare in Auswahl entfalten"
 
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
