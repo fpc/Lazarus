@@ -2031,7 +2031,7 @@ begin
         doOnKeyDown;
         if Key<>0 then
           if GridCanModify then begin
-            doOperation(opCancel);
+            doOperation(opInsert);
             Key:=0;
           end;
       end;
