@@ -68,6 +68,7 @@ type
     TabWidthsLabel: TLabel;
     UndoLimitComboBox: TComboBox;
     UndoLimitLabel: TLabel;
+    chkScrollHint: TCheckBox;
     procedure AlwaysVisibleCursorCheckBoxChange(Sender: TObject);
     procedure AutoIndentCheckBoxChange(Sender: TObject);
     procedure AutoIndentLinkClick(Sender: TObject);
@@ -145,6 +146,7 @@ begin
   ScrollByOneLessCheckBox.Caption := dlgScrollByOneLess;
   ScrollPastEndFileCheckBox.Caption := dlgScrollPastEndFile;
   ScrollPastEndLineCheckBox.Caption := dlgScrollPastEndLine;
+  chkScrollHint.Caption := dlgScrollHint;
 
   // indents, tabs
   IndentsTabsGroupDivider.Caption := dlgIndentsTabsGroupOptions;
@@ -190,6 +192,7 @@ begin
     ScrollByOneLessCheckBox.Checked := eoScrollByOneLess in SynEditOptions;
     ScrollPastEndFileCheckBox.Checked := eoScrollPastEoF in SynEditOptions;
     ScrollPastEndLineCheckBox.Checked := eoScrollPastEoL in SynEditOptions;
+    chkScrollHint.Checked := eoShowScrollHint in SynEditOptions;
 
     // tabs, indents
     AutoIndentCheckBox.Checked := eoAutoIndent in SynEditOptions;
@@ -254,6 +257,7 @@ begin
     UpdateOptionFromBool(ScrollByOneLessCheckBox.Checked, eoScrollByOneLess);
     UpdateOptionFromBool(ScrollPastEndFileCheckBox.Checked, eoScrollPastEoF);
     UpdateOptionFromBool(ScrollPastEndLineCheckBox.Checked, eoScrollPastEoL);
+    UpdateOptionFromBool(chkScrollHint.Checked, eoShowScrollHint);
 
     // tabs, indents
     UpdateOptionFromBool(AutoIndentCheckBox.Checked, eoAutoIndent);

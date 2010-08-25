@@ -1252,6 +1252,7 @@ resourcestring
   dlgScrollByOneLess = 'Scroll by one less';
   dlgScrollPastEndFile = 'Scroll past end of file';
   dlgScrollPastEndLine = 'Caret past end of line';
+  dlgScrollHint = 'Show scroll hint';
   lisShowSpecialCharacters = 'Show special characters';
   dlgCloseButtonsNotebook = 'Show close buttons in notebook';
   dlgHideSingleTabInNotebook = 'Hide tab in single page windows';
