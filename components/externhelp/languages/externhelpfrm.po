@@ -1,0 +1,95 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: externhelpfrm.ehrsaddnewitem
+msgid "Add new item"
+msgstr ""
+
+#: externhelpfrm.ehrsbrowse
+msgid "Browse ..."
+msgstr ""
+
+#: externhelpfrm.ehrsbrowseforpath
+msgid "Browse for path"
+msgstr ""
+
+#: externhelpfrm.ehrschooseapascalunit
+msgid "Choose a pascal unit"
+msgstr ""
+
+#: externhelpfrm.ehrsdeleteitem
+msgid "Delete item"
+msgstr ""
+
+#: externhelpfrm.ehrsdirectorynotfound
+msgid "Directory not found: %s"
+msgstr ""
+
+#: externhelpfrm.ehrseditorfile
+msgid "Editor file ..."
+msgstr ""
+
+#: externhelpfrm.ehrsexternal
+msgid "External"
+msgstr ""
+
+#: externhelpfrm.ehrsfilenotfound
+msgid "File not found: %s"
+msgstr ""
+
+#: externhelpfrm.ehrsgeneral
+msgid "General"
+msgstr ""
+
+#: externhelpfrm.ehrsgrouptitle
+msgid "Extern help"
+msgstr ""
+
+#: externhelpfrm.ehrshelp
+msgid "Help"
+msgstr ""
+
+#: externhelpfrm.ehrsincludesubdirectories
+msgid "Include sub directories"
+msgstr ""
+
+#: externhelpfrm.ehrsmacrofy
+msgid "Macrofy"
+msgstr ""
+
+#: externhelpfrm.ehrsmysettings
+msgid "My settings (default)"
+msgstr ""
+
+#: externhelpfrm.ehrsname
+msgid "Name"
+msgstr ""
+
+#: externhelpfrm.ehrsreplacecommondirectorieswithmacros
+msgid "Replace common directories with macros"
+msgstr ""
+
+#: externhelpfrm.ehrsselectafilefromthesourceeditor
+msgid "Select a file from the source editor"
+msgstr ""
+
+#: externhelpfrm.ehrsselectfile
+msgid "Select file"
+msgstr ""
+
+#: externhelpfrm.ehrsstorethisurlin
+msgid "Store this URL in"
+msgstr ""
+
+#: externhelpfrm.ehrsunitfileorunitdirectory
+msgid "Unit file or unit directory"
+msgstr ""
+
+#: externhelpfrm.ehrsurl
+msgid "URL"
+msgstr ""
+
+#: externhelpfrm.ehrswarning
+msgid "Warning"
+msgstr ""
+

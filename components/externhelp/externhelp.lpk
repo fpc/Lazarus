@@ -4,15 +4,10 @@
     <Name Value="ExternHelp"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
-      <Version Value="8"/>
+      <Version Value="9"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Parsing>
-        <SyntaxOptions>
-          <UseAnsiStrings Value="True"/>
-        </SyntaxOptions>
-      </Parsing>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -31,6 +26,10 @@
         <Type Value="Binary"/>
       </Item2>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>
