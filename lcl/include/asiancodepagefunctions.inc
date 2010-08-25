@@ -26,7 +26,6 @@ var
   i, j:    integer;
   Src:  PChar;
   Dest: PChar;
-  p:    PChar;
   c:    char;
   tempstr: ansistring;
   tempint: integer;
