@@ -256,7 +256,6 @@ const
     eoDropFiles,               //TODO Allows the editor accept file drops
     eoHideShowScrollbars,      //TODO if enabled, then the scrollbars will only show when necessary.  If you have ScrollPastEOL, then it the horizontal bar will always be there (it uses MaxLength instead)
     eoScrollHintFollows,       //TODO The scroll hint follows the mouse when scrolling vertically
-    eoShowScrollHint,          // Shows a hint of the visible line numbers when scrolling vertically
     eoSmartTabDelete,          //TODO similar to Smart Tabs, but when you delete characters
     ////eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
     eoAutoIndentOnPaste,       // Indent text inserted from clipboard
@@ -4603,8 +4602,6 @@ begin
   // SetLeftChar(LeftChar);                                                     //mh 2000-10-19
 end;
 
-{$IFNDEF SYN_LAZARUS}
-// ToDo THintWindow
 var
   ScrollHintWnd: THintWindow;
 
@@ -4615,18 +4612,16 @@ begin
     ScrollHintWnd.Visible := FALSE;
   end;
   Result := ScrollHintWnd;
+  Result.AutoHide := True;  // Because SB_ENDSCROLL never happens under LCL-GTK2
+  Result.HideInterval := 1500;
 end;
-{$ENDIF}
 
 procedure TCustomSynEdit.WMVScroll(var Msg: {$IFDEF SYN_LAZARUS}TLMScroll{$ELSE}TWMScroll{$ENDIF});
-{$IFNDEF SYN_LAZARUS}
-// ToDo HintWindow
 var
   s: ShortString;
   rc: TRect;
   pt: TPoint;
   ScrollHint: THintWindow;
-{$ENDIF}
 begin
   //debugln('TCustomSynEdit.WMVScroll A ',DbgSName(Self),' Msg.ScrollCode=',dbgs(Msg.ScrollCode),' SB_PAGEDOWN=',dbgs(SB_PAGEDOWN),' SB_PAGEUP=',dbgs(SB_PAGEUP));
   case Msg.ScrollCode of
@@ -4668,14 +4663,12 @@ begin
           {$ENDIF}
 
         if eoShowScrollHint in fOptions then begin
-          {$IFNDEF SYN_LAZARUS}
-          // ToDo HintWindow
           ScrollHint := GetScrollHint;
           if not ScrollHint.Visible then begin
             ScrollHint.Color := Application.HintColor;
             ScrollHint.Visible := TRUE;
           end;
-          s := Format(SYNS_ScrollInfoFmt, [TopLine]);
+          s := Format('line %d', [TopLine]);
 {$IFDEF SYN_COMPILER_3_UP}
           rc := ScrollHint.CalcHintRect(200, s, nil);
 {$ELSE}
@@ -4683,7 +4676,7 @@ begin
             ScrollHint.Canvas.TextHeight(s) + 4);
 {$ENDIF}
           pt := ClientToScreen(Point(
-                ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF}
+                ClientWidth-ScrollBarWidth
                         - rc.Right - 4, 10));
           OffsetRect(rc, pt.x, pt.y);
           ScrollHint.ActivateHint(rc, s);
@@ -4691,18 +4684,15 @@ begin
           ScrollHint.Invalidate;
 {$ENDIF}
           ScrollHint.Update;
-          {$ENDIF}
         end;
       end;
       // Ends scrolling
     SB_ENDSCROLL:
-      {$IFNDEF SYN_LAZARUS}
-      ifSYN_LAZARUS eoShowScrollHint in fOptions then
+      if eoShowScrollHint in fOptions then
         with GetScrollHint do begin
           Visible := FALSE;
           ActivateHint(Rect(0, 0, 0, 0), '');
         end;
-      {$ENDIF}
   end;
 end;
 
