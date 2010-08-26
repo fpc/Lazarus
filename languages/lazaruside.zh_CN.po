@@ -2556,6 +2556,11 @@ msgstr "滚动量减少"
 msgid "Scrolling:"
 msgstr "滚动:"
 
+#: lazarusidestrconsts.dlgscrollhint
+msgctxt "lazarusidestrconsts.dlgscrollhint"
+msgid "Show scroll hint"
+msgstr "显示滚动提示"
+
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
 msgstr "滚动超过文件末尾"
@@ -2689,6 +2694,7 @@ msgid "Show all procs on error"
 msgstr "错误时显示所有过程"
 
 #: lazarusidestrconsts.dlgshowscrollhint
+msgctxt "lazarusidestrconsts.dlgshowscrollhint"
 msgid "Show scroll hint"
 msgstr "显示滚动提示"
 

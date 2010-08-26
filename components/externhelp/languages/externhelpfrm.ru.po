@@ -1,0 +1,103 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: externhelpfrm.ehrsaddnewitem
+msgid "Add new item"
+msgstr "Добавить новый элемент"
+
+#: externhelpfrm.ehrsbrowse
+msgid "Browse ..."
+msgstr "Обзор ..."
+
+#: externhelpfrm.ehrsbrowseforpath
+msgid "Browse for path"
+msgstr "Выбрать путь"
+
+#: externhelpfrm.ehrschooseapascalunit
+msgid "Choose a pascal unit"
+msgstr "Выберите модуль Паскаля"
+
+#: externhelpfrm.ehrsdeleteitem
+msgid "Delete item"
+msgstr "Удалить элемент"
+
+#: externhelpfrm.ehrsdirectorynotfound
+msgid "Directory not found: %s"
+msgstr "Каталог не найден: %s"
+
+#: externhelpfrm.ehrseditorfile
+msgid "Editor file ..."
+msgstr "Файл в редакторе ..."
+
+#: externhelpfrm.ehrsexternal
+msgid "External"
+msgstr "Внешние источники"
+
+#: externhelpfrm.ehrsfilenotfound
+msgid "File not found: %s"
+msgstr "Файл не найден: %s"
+
+#: externhelpfrm.ehrsgeneral
+msgid "General"
+msgstr "Общие"
+
+#: externhelpfrm.ehrsgrouptitle
+msgid "Extern help"
+msgstr "Внешние источники справки"
+
+#: externhelpfrm.ehrshelp
+msgid "Help"
+msgstr "Справка"
+
+#: externhelpfrm.ehrsincludesubdirectories
+msgid "Include sub directories"
+msgstr "Искать в подкаталогах"
+
+#: externhelpfrm.ehrsmacrofy
+msgid "Macrofy"
+msgstr "Макросы"
+
+#: externhelpfrm.ehrsmysettings
+msgid "My settings (default)"
+msgstr "Мои параметры (по умолчанию)"
+
+#: externhelpfrm.ehrsname
+msgid "Name"
+msgstr "Имя"
+
+#: externhelpfrm.ehrsreplacecommondirectorieswithmacros
+msgid "Replace common directories with macros"
+msgstr "Заменить стандартные каталоги макросами"
+
+#: externhelpfrm.ehrsselectafilefromthesourceeditor
+msgid "Select a file from the source editor"
+msgstr "Выбрать файл из редактора исходного кода"
+
+#: externhelpfrm.ehrsselectfile
+msgid "Select file"
+msgstr "Выберите файл"
+
+#: externhelpfrm.ehrsstorethisurlin
+msgid "Store this URL in"
+msgstr "Место хранения адреса"
+
+#: externhelpfrm.ehrsunitfileorunitdirectory
+msgid "Unit file or unit directory"
+msgstr "Файл модуля либо каталог модулей"
+
+#: externhelpfrm.ehrsurl
+msgid "URL"
+msgstr "Адрес"
+
+#: externhelpfrm.ehrswarning
+msgid "Warning"
+msgstr "Предупреждение"
+

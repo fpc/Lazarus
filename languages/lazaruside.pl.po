@@ -2573,6 +2573,11 @@ msgstr "Przewiń o jeden mniej"
 msgid "Scrolling:"
 msgstr "Przewijanie:"
 
+#: lazarusidestrconsts.dlgscrollhint
+msgctxt "lazarusidestrconsts.dlgscrollhint"
+msgid "Show scroll hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
 msgstr ""
@@ -2704,6 +2709,7 @@ msgid "Show all procs on error"
 msgstr "Pokaż wszystkie procedury przy błędzie"
 
 #: lazarusidestrconsts.dlgshowscrollhint
+msgctxt "lazarusidestrconsts.dlgshowscrollhint"
 msgid "Show scroll hint"
 msgstr ""
 

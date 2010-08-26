@@ -2570,6 +2570,11 @@ msgstr "Eine Zeile weniger scrollen"
 msgid "Scrolling:"
 msgstr "Scrolleinstellungen:"
 
+#: lazarusidestrconsts.dlgscrollhint
+msgctxt "lazarusidestrconsts.dlgscrollhint"
+msgid "Show scroll hint"
+msgstr "Scroll-Hinweise anzeigen"
+
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
 msgstr "Über das Dateiende hinaus scrollen"
@@ -2702,6 +2707,7 @@ msgid "Show all procs on error"
 msgstr "Alle Prozeduren bei Fehlern anzeigen"
 
 #: lazarusidestrconsts.dlgshowscrollhint
+msgctxt "lazarusidestrconsts.dlgshowscrollhint"
 msgid "Show scroll hint"
 msgstr "Scroll-Hinweise anzeigen"
 

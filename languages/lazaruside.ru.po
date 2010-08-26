@@ -2572,6 +2572,11 @@ msgstr "Прокручивать на строку меньше"
 msgid "Scrolling:"
 msgstr "Параметры прокрутки:"
 
+#: lazarusidestrconsts.dlgscrollhint
+msgctxt "lazarusidestrconsts.dlgscrollhint"
+msgid "Show scroll hint"
+msgstr "Показывать подсказку при прокрутке"
+
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
 msgstr "Прокручивать за конец файла"
@@ -2703,6 +2708,7 @@ msgid "Show all procs on error"
 msgstr "Все процедуры при ошибках"
 
 #: lazarusidestrconsts.dlgshowscrollhint
+msgctxt "lazarusidestrconsts.dlgshowscrollhint"
 msgid "Show scroll hint"
 msgstr "Показывать подсказку при прокрутке"
 

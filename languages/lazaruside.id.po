@@ -2549,6 +2549,11 @@ msgstr "Gulung dengan kurang satu"
 msgid "Scrolling:"
 msgstr ""
 
+#: lazarusidestrconsts.dlgscrollhint
+msgctxt "lazarusidestrconsts.dlgscrollhint"
+msgid "Show scroll hint"
+msgstr "Tampilkan petunjuk menggulung"
+
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
 msgstr "Gulung ke akhir file"
@@ -2682,6 +2687,7 @@ msgid "Show all procs on error"
 msgstr "Tampilkan semua procs pada kecalahan"
 
 #: lazarusidestrconsts.dlgshowscrollhint
+msgctxt "lazarusidestrconsts.dlgshowscrollhint"
 msgid "Show scroll hint"
 msgstr "Tampilkan petunjuk menggulung"
 

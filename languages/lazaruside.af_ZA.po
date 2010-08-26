@@ -2535,6 +2535,11 @@ msgstr ""
 msgid "Scrolling:"
 msgstr ""
 
+#: lazarusidestrconsts.dlgscrollhint
+msgctxt "lazarusidestrconsts.dlgscrollhint"
+msgid "Show scroll hint"
+msgstr ""
+
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
 msgstr ""
@@ -2666,6 +2671,7 @@ msgid "Show all procs on error"
 msgstr ""
 
 #: lazarusidestrconsts.dlgshowscrollhint
+msgctxt "lazarusidestrconsts.dlgshowscrollhint"
 msgid "Show scroll hint"
 msgstr ""
 

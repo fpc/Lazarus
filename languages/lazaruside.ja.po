@@ -2552,6 +2552,11 @@ msgstr "一つ少なくスクロール"
 msgid "Scrolling:"
 msgstr "スクローリング:"
 
+#: lazarusidestrconsts.dlgscrollhint
+msgctxt "lazarusidestrconsts.dlgscrollhint"
+msgid "Show scroll hint"
+msgstr "スクロールヒントを表示"
+
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
 msgstr "ファイル末までスクロール"
@@ -2685,6 +2690,7 @@ msgid "Show all procs on error"
 msgstr "エラーのあるすべての手続きを表示"
 
 #: lazarusidestrconsts.dlgshowscrollhint
+msgctxt "lazarusidestrconsts.dlgshowscrollhint"
 msgid "Show scroll hint"
 msgstr "スクロールヒントを表示"
 

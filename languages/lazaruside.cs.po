@@ -2538,6 +2538,11 @@ msgstr "Posunout o jedno méně"
 msgid "Scrolling:"
 msgstr "Posouvání:"
 
+#: lazarusidestrconsts.dlgscrollhint
+msgctxt "lazarusidestrconsts.dlgscrollhint"
+msgid "Show scroll hint"
+msgstr "Ukázat pokyny posuvníku"
+
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
 msgstr "Posouvání za konec souboru"
@@ -2669,6 +2674,7 @@ msgid "Show all procs on error"
 msgstr "Zobrazit všechny procedury při chybě"
 
 #: lazarusidestrconsts.dlgshowscrollhint
+msgctxt "lazarusidestrconsts.dlgshowscrollhint"
 msgid "Show scroll hint"
 msgstr "Ukázat pokyny posuvníku"
 

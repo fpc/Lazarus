@@ -2572,6 +2572,11 @@ msgstr "faire défiler d'un de moins"
 msgid "Scrolling:"
 msgstr "Défilement :"
 
+#: lazarusidestrconsts.dlgscrollhint
+msgctxt "lazarusidestrconsts.dlgscrollhint"
+msgid "Show scroll hint"
+msgstr "Afficher les conseils de défilement"
+
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
 msgstr "Défilement après la fin du fichier"
@@ -2704,6 +2709,7 @@ msgid "Show all procs on error"
 msgstr "Afficher les procédures en cas d'erreur"
 
 #: lazarusidestrconsts.dlgshowscrollhint
+msgctxt "lazarusidestrconsts.dlgshowscrollhint"
 msgid "Show scroll hint"
 msgstr "Afficher les conseils de défilement"
 

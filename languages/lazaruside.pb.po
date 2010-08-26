@@ -2563,6 +2563,11 @@ msgstr "Rolar por um à menos"
 msgid "Scrolling:"
 msgstr "Rolagem:"
 
+#: lazarusidestrconsts.dlgscrollhint
+msgctxt "lazarusidestrconsts.dlgscrollhint"
+msgid "Show scroll hint"
+msgstr "Exibir dicas de rolagem"
+
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
 msgstr "Rolar para o final do arquivo"
@@ -2695,6 +2700,7 @@ msgid "Show all procs on error"
 msgstr "Exibir todos \"procs\" no erro"
 
 #: lazarusidestrconsts.dlgshowscrollhint
+msgctxt "lazarusidestrconsts.dlgshowscrollhint"
 msgid "Show scroll hint"
 msgstr "Exibir dicas de rolagem"
 

@@ -2557,6 +2557,11 @@ msgstr "Scorrimento per uno di meno"
 msgid "Scrolling:"
 msgstr "Opzioni scorrimento:"
 
+#: lazarusidestrconsts.dlgscrollhint
+msgctxt "lazarusidestrconsts.dlgscrollhint"
+msgid "Show scroll hint"
+msgstr "Mostra il suggerimento per lo scorrimento"
+
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
 msgstr "Scorrimento fino alla fine del file"
@@ -2690,6 +2695,7 @@ msgid "Show all procs on error"
 msgstr "Mostra tutti i processi in errore"
 
 #: lazarusidestrconsts.dlgshowscrollhint
+msgctxt "lazarusidestrconsts.dlgshowscrollhint"
 msgid "Show scroll hint"
 msgstr "Mostra il suggerimento per lo scorrimento"
 

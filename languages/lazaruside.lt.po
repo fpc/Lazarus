@@ -2550,6 +2550,11 @@ msgstr "Slenkant per lapą slinkti viena eilute mažiau"
 msgid "Scrolling:"
 msgstr "Slinktis:"
 
+#: lazarusidestrconsts.dlgscrollhint
+msgctxt "lazarusidestrconsts.dlgscrollhint"
+msgid "Show scroll hint"
+msgstr "Slenkant rodyti informacinį langelį"
+
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
 msgstr "Failo pabaiga nesustabdo slinkties"
@@ -2682,6 +2687,7 @@ msgid "Show all procs on error"
 msgstr "Įvykus klaidai rodyti visus procedūrų paskelbimus"
 
 #: lazarusidestrconsts.dlgshowscrollhint
+msgctxt "lazarusidestrconsts.dlgshowscrollhint"
 msgid "Show scroll hint"
 msgstr "Slenkant rodyti informacinį langelį"
 

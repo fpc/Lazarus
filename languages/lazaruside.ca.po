@@ -2549,6 +2549,11 @@ msgstr "Desplaça un menys"
 msgid "Scrolling:"
 msgstr ""
 
+#: lazarusidestrconsts.dlgscrollhint
+msgctxt "lazarusidestrconsts.dlgscrollhint"
+msgid "Show scroll hint"
+msgstr "Mostra el suggeriment deplaçat"
+
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
 msgstr "Desplaça fins el final del fitxer"
@@ -2682,6 +2687,7 @@ msgid "Show all procs on error"
 msgstr "Mostra tots els processos quan es trobi un error"
 
 #: lazarusidestrconsts.dlgshowscrollhint
+msgctxt "lazarusidestrconsts.dlgshowscrollhint"
 msgid "Show scroll hint"
 msgstr "Mostra el suggeriment deplaçat"
 

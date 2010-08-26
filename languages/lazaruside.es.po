@@ -2551,6 +2551,11 @@ msgstr "Desplazar una menos"
 msgid "Scrolling:"
 msgstr "Desplazamiento:"
 
+#: lazarusidestrconsts.dlgscrollhint
+msgctxt "lazarusidestrconsts.dlgscrollhint"
+msgid "Show scroll hint"
+msgstr "Mostrar Consejo de desplazamiento"
+
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
 msgstr "Desplazar después de fin de archivo"
@@ -2684,6 +2689,7 @@ msgid "Show all procs on error"
 msgstr "Mostrar todos los procs de error"
 
 #: lazarusidestrconsts.dlgshowscrollhint
+msgctxt "lazarusidestrconsts.dlgshowscrollhint"
 msgid "Show scroll hint"
 msgstr "Mostrar Consejo de desplazamiento"
 

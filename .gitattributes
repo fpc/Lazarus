@@ -765,6 +765,7 @@ components/externhelp/externhelp.pas svneol=native#text/plain
 components/externhelp/externhelpfrm.lfm svneol=native#text/plain
 components/externhelp/externhelpfrm.pas svneol=native#text/plain
 components/externhelp/languages/externhelpfrm.po svneol=native#text/plain
+components/externhelp/languages/externhelpfrm.ru.po svneol=native#text/plain
 components/filebrowser/frmconfigfilebrowser.lfm svneol=native#text/plain
 components/filebrowser/frmconfigfilebrowser.lrs svneol=native#text/pascal
 components/filebrowser/frmconfigfilebrowser.pp svneol=native#text/plain

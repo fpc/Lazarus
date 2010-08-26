@@ -2543,6 +2543,11 @@ msgstr "גלול אחד פחות"
 msgid "Scrolling:"
 msgstr "גלילה:"
 
+#: lazarusidestrconsts.dlgscrollhint
+msgctxt "lazarusidestrconsts.dlgscrollhint"
+msgid "Show scroll hint"
+msgstr "הראה טיפים לגלילה"
+
 #: lazarusidestrconsts.dlgscrollpastendfile
 msgid "Scroll past end of file"
 msgstr "גלול עד לסוף הקובץ"
@@ -2674,6 +2679,7 @@ msgid "Show all procs on error"
 msgstr "הראה את כל התהליכים כשיש שגיאה"
 
 #: lazarusidestrconsts.dlgshowscrollhint
+msgctxt "lazarusidestrconsts.dlgshowscrollhint"
 msgid "Show scroll hint"
 msgstr "הראה טיפים לגלילה"
 
