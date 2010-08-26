@@ -19,7 +19,7 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
-    DefaultItemHeight = 19
+    DefaultItemHeight = 15
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
@@ -66,9 +66,9 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
     Left = 235
-    Height = 18
+    Height = 14
     Top = 20
-    Width = 74
+    Width = 53
     BorderSpacing.Left = 6
     BorderSpacing.Top = 20
     Caption = 'NameLabel'
@@ -81,8 +81,8 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 235
-    Height = 27
-    Top = 38
+    Height = 21
+    Top = 34
     Width = 340
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Right = 6
@@ -96,9 +96,9 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideTop.Control = NameEdit
     AnchorSideTop.Side = asrBottom
     Left = 235
-    Height = 18
-    Top = 80
-    Width = 92
+    Height = 14
+    Top = 70
+    Width = 68
     BorderSpacing.Top = 15
     Caption = 'FilenameLabel'
     ParentColor = False
@@ -110,8 +110,8 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 235
-    Height = 27
-    Top = 98
+    Height = 21
+    Top = 84
     Width = 346
     Anchors = [akTop, akLeft, akRight]
     OnChange = FilenameEditChange
@@ -124,9 +124,9 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideTop.Control = WithSubDirsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 235
-    Height = 18
-    Top = 191
-    Width = 60
+    Height = 14
+    Top = 160
+    Width = 45
     BorderSpacing.Top = 15
     Caption = 'URLLabel'
     ParentColor = False
@@ -136,10 +136,10 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 492
-    Height = 29
-    Top = 349
-    Width = 83
+    Left = 500
+    Height = 23
+    Top = 355
+    Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -162,9 +162,9 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideTop.Control = URLMemo
     AnchorSideTop.Side = asrBottom
     Left = 235
-    Height = 18
-    Top = 287
-    Width = 70
+    Height = 14
+    Top = 252
+    Width = 52
     BorderSpacing.Top = 15
     Caption = 'StoreLabel'
     ParentColor = False
@@ -174,10 +174,10 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideTop.Control = StoreLabel
     AnchorSideTop.Side = asrBottom
     Left = 235
-    Height = 29
-    Top = 305
+    Height = 21
+    Top = 266
     Width = 157
-    ItemHeight = 0
+    ItemHeight = 13
     OnEditingDone = StoreComboBoxEditingDone
     TabOrder = 5
     Text = 'StoreComboBox'
@@ -190,9 +190,9 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideBottom.Control = FilenameEdit
     AnchorSideBottom.Side = asrBottom
     Left = 235
-    Height = 29
-    Top = 125
-    Width = 58
+    Height = 23
+    Top = 105
+    Width = 61
     AutoSize = True
     BorderSpacing.Right = 6
     Caption = 'Browse'
@@ -206,13 +206,15 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = FilenameEdit
     AnchorSideTop.Side = asrBottom
-    Left = 299
-    Height = 29
-    Top = 125
-    Width = 125
+    Left = 302
+    Height = 23
+    Top = 105
+    Width = 113
     AutoSize = True
     Caption = 'FileMacrofyButton'
     OnClick = FileMacrofyButtonClick
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 7
   end
   object URLMemo: TMemo[14]
@@ -223,7 +225,7 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideRight.Side = asrBottom
     Left = 235
     Height = 63
-    Top = 209
+    Top = 174
     Width = 346
     Anchors = [akTop, akLeft, akRight]
     Lines.Strings = (
@@ -237,9 +239,9 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideTop.Control = FileBrowseButton
     AnchorSideTop.Side = asrBottom
     Left = 235
-    Height = 22
-    Top = 154
-    Width = 164
+    Height = 17
+    Top = 128
+    Width = 123
     Caption = 'WithSubDirsCheckBox'
     OnEditingDone = WithSubDirsCheckBoxEditingDone
     TabOrder = 9
@@ -248,14 +250,16 @@ inherited ExternHelpGeneralOptsFrame: TExternHelpGeneralOptsFrame
     AnchorSideLeft.Control = FileMacrofyButton
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = FileMacrofyButton
-    Left = 430
-    Height = 29
-    Top = 125
-    Width = 132
+    Left = 421
+    Height = 23
+    Top = 105
+    Width = 116
     AutoSize = True
     BorderSpacing.Left = 6
     Caption = 'SelEditorFileButton'
     OnClick = SelEditorFileButtonClick
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 10
   end
 end
