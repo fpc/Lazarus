@@ -1041,6 +1041,7 @@ type
     FOnAdvancedCustomDrawSubItem: TLVAdvancedCustomDrawSubItemEvent;
     FProperties: TListViewProperties;
     function GetBoundingRect: TRect;
+    function GetColumnCount: Integer;
     function GetColumnFromIndex(AIndex: Integer): TListColumn;
     function GetDropTarget: TListItem;
     function GetFocused: TListItem;
@@ -1155,6 +1156,7 @@ type
     property Canvas: TCanvas read FCanvas;
     property Checkboxes: Boolean index Ord(lvpCheckboxes) read GetProperty write SetProperty default False;
     property Column[AIndex: Integer]: TListColumn read GetColumnFromIndex;
+    property ColumnCount: Integer read GetColumnCount;
     property DropTarget: TListItem read GetDropTarget write SetDropTarget;
     property FlatScrollBars: Boolean index Ord(lvpFlatScrollBars) read GetProperty write SetProperty default False;
     property FullDrag: Boolean index Ord(lvpFullDrag) read GetProperty write SetProperty default False;

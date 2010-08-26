@@ -678,7 +678,7 @@ begin
   // We will therefore postpone all autosizing until EndUpdate where we do
   // it only once per column.
 
-  if ALV.Column[ASubIndex].AutoSize and (TCustomListViewAccess(ALV).GetUpdateCount = 0) then
+  if (ASubIndex >= 0) and (ASubIndex < ALV.ColumnCount) and ALV.Column[ASubIndex].AutoSize and (TCustomListViewAccess(ALV).GetUpdateCount = 0) then
     ListView_SetColumnWidth(ALV.Handle, ASubIndex, AutoSizeWidth);
 end;
 

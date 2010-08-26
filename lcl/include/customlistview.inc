@@ -725,6 +725,11 @@ begin
   else Result := TWSCustomListViewClass(WidgetSetClass).GetBoundingRect(Self);
 end;
 
+function TCustomListView.GetColumnCount: Integer;
+begin
+  Result := FColumns.Count;
+end;
+
 function TCustomListView.GetColumnFromIndex(AIndex: Integer): TListColumn;
 begin
   Result := FColumns[AIndex];
