@@ -9288,10 +9288,10 @@ function TQtTreeWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 var
   item: QTreeWidgetItemH;
 begin
-  if LCLObject = nil then
-    exit;
   Result := False;
   QEvent_accept(Event);
+  if LCLObject = nil then
+    exit;
   if Checkable then
   begin
     if ( (QEvent_type(Event) = QEventKeyPress) or
@@ -9315,8 +9315,9 @@ begin
     end else
       Result:=inherited EventFilter(Sender, Event);
   end else
-  if (QEvent_type(Event) = QEventMouseButtonPress) or
-    (QEvent_type(Event) = QEventMouseButtonRelease) then
+  if ((QEvent_type(Event) = QEventMouseButtonPress) or
+    (QEvent_type(Event) = QEventMouseButtonRelease))
+    and (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
     {eat mouse button events -> signalItemClicked is fired}
   else
     Result:=inherited EventFilter(Sender, Event);
@@ -9325,7 +9326,8 @@ end;
 function TQtTreeWidget.itemViewViewportEventFilter(Sender: QObjectH;
   Event: QEventH): Boolean; cdecl;
 begin
-  if QEvent_type(Event) = QEventMouseButtonRelease then
+  if (QEvent_type(Event) = QEventMouseButtonRelease)
+    and (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
     PostponedMouseRelease(Event)
   else
     Result := inherited itemViewViewportEventFilter(Sender, Event);
@@ -12182,6 +12184,7 @@ begin
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick: SlotMouse(Sender, Event);
+      QEventContextMenu: Result := SlotContextMenu(Sender, Event);
       else
       begin
         if not (ViewStyle in [Ord(vsIcon), Ord(vsSmallIcon)]) then
