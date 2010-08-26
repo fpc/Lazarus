@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Graphics, Menus, math, LazarusIDEStrConsts,
-  SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase,
+  SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
   SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
   SynGutterLineOverview,
   SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase,
@@ -128,8 +128,25 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
+  published
     property SingleLine: Boolean read FSingleLine write SetSingleLine;
     property Color2: TColor read FColor2 write SetColor2;
+  end;
+
+  { TIDESynGutterLOvProviderIDEMarks }
+
+  TIDESynGutterLOvProviderIDEMarks = class(TSynGutterLOvProviderBookmarks)
+  // Bookmarsk and breakpoints
+  private
+    FBreakColor: TColor;
+    FRGBBreakColor: TColor;
+    procedure SetBreakColor(const AValue: TColor);
+  protected
+    procedure AdjustColorForMark(AMark: TSynEditMark; var AColor: TColor; var APriority: Integer); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property BreakColor: TColor read FBreakColor write SetBreakColor;
   end;
 
   { TIDESynGutter }
@@ -389,22 +406,22 @@ begin
     if FPixInterfaceLine < 0 then
       FPixEndInterfaceLine := -1
     else
-      FPixEndInterfaceLine      := FPixInterfaceLine + PixLineHeight;
+      FPixEndInterfaceLine      := TextLineToPixelEnd(FInterfaceLine) + 1;
 
     if FPixImplementationLine < 0 then
       FPixEndImplementationLine := -1
     else
-      FPixEndImplementationLine := FPixImplementationLine + PixLineHeight;
+      FPixEndImplementationLine := TextLineToPixelEnd(FImplementationLine) + 1;
 
     if FPixInitializationLine < 0 then
       FPixEndInitializationLine := -1
     else
-      FPixEndInitializationLine := FPixInitializationLine + PixLineHeight;
+      FPixEndInitializationLine := TextLineToPixelEnd(FInitializationLine) + 1;
 
     if FPixFinalizationLine < 0 then
       FPixEndFinalizationLine := -1
     else
-      FPixEndFinalizationLine   := FPixFinalizationLine + PixLineHeight;
+      FPixEndFinalizationLine   := TextLineToPixelEnd(FFinalizationLine) + 1;
   end else begin
     if FPixInterfaceLine < 0 then
       FPixEndInterfaceLine := -1
@@ -502,6 +519,32 @@ begin
   inherited Destroy;
 end;
 
+{ TIDESynGutterLOvProviderIDEMarks }
+
+procedure TIDESynGutterLOvProviderIDEMarks.SetBreakColor(const AValue: TColor);
+begin
+  if FBreakColor = AValue then exit;
+  FBreakColor := AValue;
+  FRGBBreakColor := ColorToRGB(AValue);
+  DoChange(Self);
+end;
+
+procedure TIDESynGutterLOvProviderIDEMarks.AdjustColorForMark(AMark: TSynEditMark;
+  var AColor: TColor; var APriority: Integer);
+begin
+  if not AMark.IsBookmark then begin
+    AColor := FRGBBreakColor;
+    inc(APriority);
+  end;
+  inherited AdjustColorForMark(AMark, AColor, APriority);
+end;
+
+constructor TIDESynGutterLOvProviderIDEMarks.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  BreakColor := $4466ff;
+end;
+
 { TIDESynGutter }
 
 procedure TIDESynGutter.CreateDefaultGutterParts;
@@ -521,6 +564,10 @@ begin
   //else begin
   //  with TSynGutterLineOverview.Create(Parts) do begin
   //    Name := 'SynGutterLineOverview1';
+  //    with TIDESynGutterLOvProviderIDEMarks.Create(Providers) do
+  //      Priority := 20;
+  //    with TSynGutterLOvProviderModifiedLines.Create(Providers) do
+  //      Priority := 9;
   //    with TSynGutterLOvProviderCurrentPage.Create(Providers) do
   //      Priority := 1;
   //    with TIDESynGutterLOvProviderPascal.Create(Providers) do
