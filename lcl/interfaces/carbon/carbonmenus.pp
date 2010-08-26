@@ -48,6 +48,7 @@ type
     FParentMenu: TCarbonMenu;
     FRoot: Boolean;
     FItems: TObjectList; // of TCarbonMenu
+    fDismissed: Integer;
     procedure MenuNeeded(UpdateWithParent: Boolean=True);
     function GetIndex: Integer;
   protected
@@ -76,6 +77,9 @@ type
 
     function GetShortCutKey: AnsiChar;
     procedure Update;
+
+    property Parent: TCarbonMenu read FParentMenu;
+    property Dismissed: Integer read fDismissed write fDismissed;
   end;
   
 function CheckMenu(const Menu: HMENU; const AMethodName: String; AParamName: String = ''): Boolean;
@@ -144,6 +148,31 @@ begin
 
   Result := CallNextEventHandler(ANextHandler, AEvent);
 end;
+
+{------------------------------------------------------------------------------
+  Name:  CarbonMenu_EndTracking
+  Handles menu end tracking
+ ------------------------------------------------------------------------------}
+function CarbonMenu_EndTracking(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TObject): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  dis : Integer;
+begin
+  {$IFDEF VerboseMenu}
+    DebugLn('CarbonMenu_EndTracking');
+  {$ENDIF}
+
+  if AWidget is TCarbonMenu then
+  begin
+    if GetEventParameter(AEvent, kEventParamMenuDismissed, typeUInt32, nil, sizeof(dis), nil, @dis)<>noErr then
+      dis:=0;
+    (AWidget as TCarbonMenu).Dismissed:=dis;
+  end;
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+end;
+
 
 {------------------------------------------------------------------------------
   Method:  TCarbonMenu.MenuNeeded
@@ -234,6 +263,10 @@ begin
 
   TmpSpec := MakeEventSpec(kEventClassMenu, kEventMenuClosed);
   InstallMenuEventHandler(Menu, RegisterObjectEventHandler(@CarbonMenu_Closed),
+    1, @TmpSpec, Pointer(Self), nil);
+
+  TmpSpec := MakeEventSpec(kEventClassMenu, kEventMenuEndTracking);
+  InstallMenuEventHandler(Menu, RegisterObjectEventHandler(@CarbonMenu_EndTracking),
     1, @TmpSpec, Pointer(Self), nil);
 end;
 
