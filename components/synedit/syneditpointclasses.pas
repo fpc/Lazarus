@@ -36,7 +36,7 @@ unit SynEditPointClasses;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, LCLIntf,
+  Classes, SysUtils, Controls, LCLProc, LCLType, LCLIntf,
   {$IFDEF SYN_MBCSSUPPORT}
   Imm,
   {$ENDIF}
@@ -260,9 +260,11 @@ type
     FDisplayPos: TPoint;
     FDisplayType: TSynCaretType;
     FExtraLineChars: Integer;
-    FHandle: HWND;
     FOnExtraLineCharsChanged: TNotifyEvent;
     FVisible: Boolean;
+    FHandleOwner: TWinControl;
+    function GetHandle: HWND;
+    function GetHandleAllocated: Boolean;
     procedure SetCharHeight(const AValue: Integer);
     procedure SetCharWidth(const AValue: Integer);
     procedure SetClipRight(const AValue: Integer);
@@ -284,19 +286,20 @@ type
     procedure SetClipLeft(const AValue: Integer);
     procedure SetClipRect(const AValue: TRect);
     procedure SetClipTop(const AValue: Integer);
-    procedure SetHandle(const AValue: HWND);
     procedure UpdateDisplayType;
     procedure UpdateDisplay;
     procedure ShowCaret;
     procedure HideCaret;
+    property Handle: HWND read GetHandle;
+    property HandleAllocated: Boolean read GetHandleAllocated;
   public
-    constructor Create(AHandle: HWND);
+    constructor Create(AHandleOwner: TWinControl);
     destructor Destroy; override;
     procedure  Hide; // Keep visible = true
     procedure  DestroyCaret;
     procedure  Lock;
     procedure  UnLock;
-    property Handle:      HWND read FHandle write SetHandle;
+    property HandleOwner: TWinControl read FHandleOwner;
     property CharWidth:   Integer read FCharWidth write SetCharWidth;
     property CharHeight:  Integer read FCharHeight write SetCharHeight;
     property ClipLeft:    Integer read FClipLeft write SetClipLeft;
@@ -1548,10 +1551,10 @@ end;
 
 { TSynEditScreenCaret }
 
-constructor TSynEditScreenCaret.Create(AHandle: HWND);
+constructor TSynEditScreenCaret.Create(AHandleOwner: TWinControl);
 begin
   inherited Create;
-  FHandle := AHandle;
+  FHandleOwner := AHandleOwner;
   FVisible := False;
   FCurrentVisible := False;
   FCurrentCreated := False;
@@ -1574,11 +1577,11 @@ end;
 
 procedure TSynEditScreenCaret.DestroyCaret;
 begin
-  if FCurrentCreated then begin
+  if FCurrentCreated and HandleAllocated then begin
     {$IFDeF SynCaretDebug}
-    debugln(['SynEditCaret DestroyCaret for handle=',FHandle, ' DebugShowCount=', FDebugShowCount]);
+    debugln(['SynEditCaret DestroyCaret for HandleOwner=',FHandleOwner, ' DebugShowCount=', FDebugShowCount]);
     {$ENDIF}
-    LCLIntf.DestroyCaret(FHandle);
+    LCLIntf.DestroyCaret(Handle);
   end;
   FCurrentCreated := False;
   FCurrentVisible := False;
@@ -1609,6 +1612,16 @@ begin
   if FCharHeight = AValue then exit;
   FCharHeight := AValue;
   UpdateDisplayType;
+end;
+
+function TSynEditScreenCaret.GetHandle: HWND;
+begin
+  Result :=FHandleOwner.Handle;
+end;
+
+function TSynEditScreenCaret.GetHandleAllocated: Boolean;
+begin
+  Result :=FHandleOwner.HandleAllocated;
 end;
 
 procedure TSynEditScreenCaret.SetCharWidth(const AValue: Integer);
@@ -1686,16 +1699,6 @@ begin
   UpdateDisplay;
 end;
 
-procedure TSynEditScreenCaret.SetHandle(const AValue: HWND);
-begin
-  DestroyCaret;
-  {$IFDeF SynCaretDebug}
-  debugln(['SynEditCaret SetHandle for (old) handle=',FHandle, ' New Handle=', AValue, ' DebugShowCount=', FDebugShowCount]);
-  {$ENDIF}
-  FHandle := AValue;
-  UpdateDisplay;
-end;
-
 procedure TSynEditScreenCaret.SetClipBottom(const AValue: Integer);
 begin
   if FClipBottom = AValue then exit;
@@ -1713,7 +1716,7 @@ end;
 procedure TSynEditScreenCaret.SetClipRect(const AValue: TRect);
 begin
   {$IFDeF SynCaretDebug}
-  debugln(['SynEditCaret ClipRect for handle=',FHandle, ' Rect=', dbgs(AValue)]);
+  debugln(['SynEditCaret ClipRect for HandleOwner=',FHandleOwner, ' Rect=', dbgs(AValue)]);
   {$ENDIF}
   FClipLeft   := AValue.Left;
   FClipRight  := AValue.Right;
@@ -1746,7 +1749,8 @@ procedure TSynEditScreenCaret.ShowCaret;
 var
   x, y, w: Integer;
 begin
-  if FHandle = 0 then exit;
+  if not HandleAllocated then
+    exit;
   x := FDisplayPos.x + FOffsetX;
   y := FDisplayPos.y + FOffsetY;
   w := FPixelWidth;
@@ -1762,13 +1766,13 @@ begin
 
   if (not FCurrentCreated) or (FCurrentClippedWidth <> w) then begin
     {$IFDeF SynCaretDebug}
-    debugln(['SynEditCaret CreateCaret for handle=',FHandle, ' DebugShowCount=', FDebugShowCount, ' Width=', w, ' pref-width=', FPixelWidth, ' Height=', FPixelHeight, '  FCurrentCreated=',FCurrentCreated,  ' FCurrentVisible=',FCurrentVisible]);
+    debugln(['SynEditCaret CreateCaret for HandleOwner=',FHandleOwner, ' DebugShowCount=', FDebugShowCount, ' Width=', w, ' pref-width=', FPixelWidth, ' Height=', FPixelHeight, '  FCurrentCreated=',FCurrentCreated,  ' FCurrentVisible=',FCurrentVisible]);
     FDebugShowCount := 0;
     {$ENDIF}
-    //if FCurrentCreated then
-    //  LCLIntf.DestroyCaret(FHandle);
+    //if FCurrentCreated  then
+    //  LCLIntf.DestroyCaret(Handle);
     // // Create caret includes destroy
-    CreateCaret(FHandle, 0, w, FPixelHeight);
+    CreateCaret(Handle, 0, w, FPixelHeight);
     FCurrentCreated := True;
     FCurrentVisible := False;
     FCurrentClippedWidth := w;
@@ -1781,32 +1785,33 @@ begin
   end;
   if (x <> FCurrentPosX) or (y <> FCurrentPosY) then begin
     {$IFDeF SynCaretDebug}
-    debugln(['SynEditCaret SetPos for handle=',FHandle, ' x=', x, ' y=',y]);
+    debugln(['SynEditCaret SetPos for HandleOwner=',FHandleOwner, ' x=', x, ' y=',y]);
     {$ENDIF}
-    SetCaretPosEx(FHandle, x, y);
+    SetCaretPosEx(Handle, x, y);
     FCurrentPosX := x;
     FCurrentPosY := y;
   end;
   if (not FCurrentVisible) then begin
     {$IFDeF SynCaretDebug}
-    debugln(['SynEditCaret ShowCaret for handle=',FHandle, ' FDebugShowCount=',FDebugShowCount]);
+    debugln(['SynEditCaret ShowCaret for HandleOwner=',FHandleOwner, ' FDebugShowCount=',FDebugShowCount]);
     inc(FDebugShowCount);
     {$ENDIF}
     if LCLIntf.ShowCaret(Handle) then
       FCurrentVisible := True;
     {$IFDEF LCLQT}
-    SetCaretPosEx(FHandle, x, y);
+    SetCaretPosEx(Handle, x, y);
     {$ENDIF}
   end;
 end;
 
 procedure TSynEditScreenCaret.HideCaret;
 begin
-  if FHandle = 0 then exit;
+  if not HandleAllocated then
+    exit;
   if not FCurrentCreated then exit;
   if FCurrentVisible then begin
     {$IFDeF SynCaretDebug}
-    debugln(['SynEditCaret HideCaret for handle=',FHandle, ' FDebugShowCount=',FDebugShowCount]);
+    debugln(['SynEditCaret HideCaret for HandleOwner=',FHandleOwner, ' FDebugShowCount=',FDebugShowCount]);
     dec(FDebugShowCount);
     {$ENDIF}
     if LCLIntf.HideCaret(Handle) then

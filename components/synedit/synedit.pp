@@ -1616,7 +1616,7 @@ begin
     AddNotifyHandler(senrDecOwnedPaintLock, {$IFDEF FPC}@{$ENDIF}DoDecForeignPaintLock);
   end;
 
-  FScreenCaret := TSynEditScreenCaret.Create(0);
+  FScreenCaret := TSynEditScreenCaret.Create(Self);
   FScreenCaret.OnExtraLineCharsChanged := {$IFDEF FPC}@{$ENDIF}ExtraLineCharsChanged;
 
   FUndoList := TSynEditStringList(fLines).UndoList;
@@ -4188,7 +4188,6 @@ begin
     FScreenCaret.ClipRect := Rect(FLeftGutter.Width, 0,
                                   ClientWidth - FRightGutter.Width - ScrollBarWidth,
                                   ClientHeight - ScrollBarWidth);
-    FScreenCaret.Handle := Handle;
     UpdateScrollBars;
   finally
     DoDecPaintLock(nil);
