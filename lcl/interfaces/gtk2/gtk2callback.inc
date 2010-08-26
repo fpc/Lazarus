@@ -842,7 +842,7 @@ begin
       if LCLObject is TComponent then begin
         write(' ParentLCLFocus=',TComponent(LCLObject).Name,':',LCLObject.ClassName)
       end else begin
-        write(' ParentLCLFocus=',LCLObject.ClassName)
+        write(' ParentLCLFocus=',LCLObject.ClassName);
         {$IFDEF VerboseSizeMsg}
         DebugLn(['GTKWindowStateEventCB ',DbgSName(TheForm),
           ' GTK=',GtkWidth,'x',GtkHeight,
@@ -850,7 +850,7 @@ begin
           ' SizeType=',SizeMsg.SizeType-Size_SourceIsInterface,'+Size_SourceIsInterface'
           ]);
         {$ENDIF}
-        DeliverMessage(TheForm, SizeMsg);
+        // DeliverMessage(TheForm, SizeMsg);
       end;
     end else
       write(' LCLObject=nil');
