@@ -398,6 +398,7 @@ begin
   end;
   Result := IsValid;
   FVisible := Result;
+  SetPos(FPos);
 end;
 
 function TEmulatedCaret.Hide: Boolean;
@@ -435,7 +436,9 @@ begin
     FPos := Value;
     FTimer.Enabled := False;
     FVisibleState := FWidget.Context = 0;
-    if RespondToFocus and not FCaretDirty then
+    {$note remove complete property RespondToFocus after testing}
+    // if RespondToFocus and not FCaretDirty then
+    if not FCaretDirty then
       UpdateCaret(True);
     if FCaretDirty then
     begin
