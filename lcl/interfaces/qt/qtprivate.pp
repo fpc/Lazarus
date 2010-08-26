@@ -159,11 +159,7 @@ begin
       QTextEdit_clear(TextEdit);
       QTextEdit_setPlainText(TextEdit,@W);
     end else
-    begin
-      W := StringReplace(W,'<','&lt;',[rfReplaceAll]);
-      W := StringReplace(W,'>','&gt;',[rfReplaceAll]);
       QTextEdit_append(TextEdit,@W);
-    end;
 
     if QTextEdit_alignment(TextEdit) <> AlignmentMap[TCustomMemo(FOwner).Alignment] then
       QTextEdit_setAlignment(TextEdit, AlignmentMap[TCustomMemo(FOwner).Alignment]);
@@ -393,12 +389,20 @@ begin
   if Index <= FStringList.Count then
   begin
     FStringList.Insert(Index, S);
-    // append is much faster in case when we add strings
     if TQtTextEdit(FOwner.Handle).getBlockCount - Index <= 1 then
     begin
-      W := S;
-      ExternalUpdate(W, False);
-      FTextChanged := False;
+      if (UTF8Pos('<', S) > 0) or (UTF8Pos('>',S) > 0) then
+      begin
+        // workaround for qt richtext parser bug
+        W := GetUTF8String(S);
+        TQtTextEdit(FOwner.Handle).insertLine(Index, W);
+      end else
+      begin
+        // append is much faster in case when we add strings
+        W := S;
+        ExternalUpdate(W, False);
+        FTextChanged := False;
+      end;
     end else
     begin
       W := GetUTF8String(S);
