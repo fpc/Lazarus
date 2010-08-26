@@ -204,6 +204,7 @@ type
     function getFocusPolicy: QtFocusPolicy;
     function getFrameGeometry: TRect;
     function getGeometry: TRect; virtual;
+    function getLayoutDirection: QtLayoutDirection;
     function getVisible: Boolean; virtual;
     function getVisibleTo(AWidget: QWidgetH): Boolean; virtual;
     function getParent: QWidgetH;
@@ -3297,6 +3298,11 @@ end;
 function TQtWidget.getGeometry: TRect;
 begin
   QWidget_geometry(Widget, @Result);
+end;
+
+function TQtWidget.getLayoutDirection: QtLayoutDirection;
+begin
+  Result := QWidget_layoutDirection(Widget);
 end;
 
 function TQtWidget.getVisible: boolean;
@@ -8902,8 +8908,30 @@ function TQtCheckListBox.EventFilter(Sender: QObjectH; Event: QEventH
 var
   MousePos: TQtPoint;
   Item: QListWidgetItemH;
-  x: Integer;
   Msg: TLMessage;
+
+  function MouseInCheckBox: Boolean;
+  var
+    x: Integer;
+    R: TRect;
+    P: TPoint;
+  begin
+    Result := getLayoutDirection = QtRightToLeft;
+    x := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth,
+      nil, Widget);
+    if not Result then
+      Result := (MousePos.X > 2) and (MousePos.X < (X + 2))
+    else
+    begin
+      R := getVisualItemRect(Item);
+      R.Left := R.Right - X;
+      R.Right := R.Right + X;
+      P.X := MousePos.X;
+      P.Y := MousePos.Y;
+      Result := PtInRect(R, P);
+    end;
+  end;
+
 begin
   if (QEvent_type(Event) = QEventMouseButtonPress) or
     (QEvent_type(Event) = QEventMouseButtonRelease) then
@@ -8917,9 +8945,7 @@ begin
       if (Item <> nil) and
         ((QListWidgetItem_flags(Item) and QtItemIsUserCheckable) <> 0) then
       begin
-        x := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth,
-          nil, Widget);
-        if ((MousePos.X > 2) and (MousePos.X < (X + 2))) then
+        if MouseInCheckBox then
         begin
           if QListWidgetItem_checkState(Item) = QtUnChecked then
             QListWidgetItem_setCheckState(Item, QtChecked)
