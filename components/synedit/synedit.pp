@@ -1633,6 +1633,11 @@ begin
   // No need for caret, on interanl block
 
   FWordBreaker := TSynWordBreaker.Create;
+
+  fMarkList := TSynEditMarkList.Create(self, FTheLinesView);
+  fMarkList.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}MarkListChange,
+    [low(TSynEditMarkChangeReason)..high(TSynEditMarkChangeReason)]);
+
 {$IFDEF SYN_COMPILER_4_UP}
 {$IFNDEF SYN_LAZARUS}
 // ToDo DoubleBuffered
@@ -1728,9 +1733,6 @@ begin
   FMouseActionSearchHandlerList := TSynEditMouseActionSearchList.Create;
   FMouseActionExecHandlerList := TSynEditMouseActionExecList.Create;
 
-  fMarkList := TSynEditMarkList.Create(self, FTheLinesView);
-  fMarkList.RegisterChangeHandler({$IFDEF FPC}@{$ENDIF}MarkListChange,
-    [low(TSynEditMarkChangeReason)..high(TSynEditMarkChangeReason)]);
   fRightEdgeColor := clSilver;
 {$IFDEF SYN_MBCSSUPPORT}
   fImeCount := 0;
@@ -1925,7 +1927,6 @@ begin
   FInternalCaret.Lines := nil;
   FreeAndNil(fTSearch);
   FreeAndNil(fMarkupManager);
-  FreeAndNil(fMarkList);
   FreeAndNil(fBookMarkOpt);
   FreeAndNil(fKeyStrokes);
   FreeAndNil(FMouseActionSearchHandlerList);
@@ -1936,6 +1937,7 @@ begin
   FreeAndNil(FRightGutter);
   FreeAndNil(fTextDrawer);
   FreeAndNil(fFontDummy);
+  FreeAndNil(fMarkList);
   FreeAndNil(FWordBreaker);
   FreeAndNil(FFoldedLinesView); // has reference to caret
   FreeAndNil(FInternalBlockSelection);
