@@ -1777,11 +1777,7 @@ begin
     FCurrentVisible := False;
     FCurrentClippedWidth := w;
     FCurrentPosX := x - 1;
-    {$IFDEF LCLQT}
-    SetCaretRespondToFocus(Handle, True);  // See bug 17173
-    {$ELSE}
     SetCaretRespondToFocus(Handle, False); // Only for GTK
-    {$ENDIF}
   end;
   if (x <> FCurrentPosX) or (y <> FCurrentPosY) then begin
     {$IFDeF SynCaretDebug}
@@ -1798,9 +1794,6 @@ begin
     {$ENDIF}
     if LCLIntf.ShowCaret(Handle) then
       FCurrentVisible := True;
-    {$IFDEF LCLQT}
-    SetCaretPosEx(Handle, x, y);
-    {$ENDIF}
   end;
 end;
 
