@@ -1901,10 +1901,7 @@ begin
   Application.RemoveOnIdleHandler(@IdleScanRanges);
   SurrenderPrimarySelection;
   Highlighter := nil;
-  {$IFDEF SYN_LAZARUS}
-  if HandleAllocated then LCLIntf.DestroyCaret(Handle);
   Beautifier:=nil;
-  {$ENDIF}
   // free listeners while other fields are still valid
   if Assigned(fHookedCommandHandlers) then begin
     for i := 0 to fHookedCommandHandlers.Count - 1 do
