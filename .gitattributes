@@ -2796,6 +2796,7 @@ examples/anchordocking/design/registeranchordocking.pas svneol=native#text/plain
 examples/anchordocking/doc/anchordocking.xml svneol=native#text/plain
 examples/anchordocking/languages/anchordockstr.cs.po svneol=native#text/plain
 examples/anchordocking/languages/anchordockstr.po svneol=native#text/plain
+examples/anchordocking/languages/anchordockstr.ru.po svneol=native#text/plain
 examples/anchordocking/minide/miniide1.lpi svneol=native#text/plain
 examples/anchordocking/minide/miniide1.lpr svneol=native#text/plain
 examples/anchordocking/minide/simplefrm.lfm svneol=native#text/plain
