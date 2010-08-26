@@ -19,6 +19,24 @@
 // H A N D L E R S 
 // ==================================================================
 
+
+procedure SendMenuActivate(AMenu: MenuRef; MenuIdx: MenuItemIndex);
+var
+  CarbonMenu  : TCarbonMenu;
+  Msg         : TLMessage;
+  S : ByteCount;
+begin
+  if GetMenuItemProperty(AMenu, MenuIdx, LAZARUS_FOURCC,
+       WIDGETINFO_FOURCC, SizeOf(TCarbonMenu), S, @CarbonMenu) = noErr then
+  begin
+    FillChar(Msg, SizeOf(Msg), 0);
+    Msg.msg := LM_ACTIVATE;
+    CarbonMenu.LCLMenuItem.Dispatch(Msg);
+  end;
+end;
+
+
+
 {------------------------------------------------------------------------------
   Name: CarbonWindow_Close
  ------------------------------------------------------------------------------}
@@ -679,6 +697,9 @@ const
     KeyMsg: TLMKeyDown;
     CharMsg: TLMChar;
     OrigChar: AnsiString;
+
+    Menu: MenuRef;
+    MenuIdx: MenuItemIndex;
   begin
     Result:=EventNotHandledErr;
     {$IFDEF VerboseKeyboard}
@@ -778,9 +799,14 @@ const
       if CharMsg.CharCode<>ord(KeyChar) then
         LCLCharToMacEvent(Char(CharMsg.CharCode));
 
-
       if Result<>noErr then
         Result:=CallNextEventHandler(ANextHandler, AEvent);
+
+      if IsMenuKeyEvent(nil, GetCurrentEvent, kMenuEventQueryOnly, @Menu, @MenuIdx) then
+      begin
+        // re-handling menu
+        SendMenuActivate(Menu, MenuIdx);
+      end;
 
       //Send a LM_(SYS)CHAR
       if IsSysKey then

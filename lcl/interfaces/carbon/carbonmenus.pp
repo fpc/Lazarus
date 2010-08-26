@@ -84,7 +84,6 @@ type
   
 function CheckMenu(const Menu: HMENU; const AMethodName: String; AParamName: String = ''): Boolean;
 
-
 implementation
 
 {------------------------------------------------------------------------------
@@ -768,7 +767,6 @@ begin
   else
     Result:=AnsiChar(KeyValue);
 end;
-
 
 end.
 

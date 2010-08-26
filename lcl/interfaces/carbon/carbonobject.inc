@@ -205,7 +205,7 @@ begin
           { Another possible solution of the problem, is to Post another custom event    }
           { to the loop, and report LCL about Menu pressed after the event arrives,      }
           { though it might seem, like interface is lagging }
-          if (HotChar<>#0) then
+          if (CarbonMenu.Parent.Dismissed<>kHIMenuDismissedBySelection) and (HotChar<>#0) then
           begin
             AllowMenu := True;
             Focused:=GetFocus;
@@ -215,17 +215,22 @@ begin
               if not AllowMenu then
               begin
                 Result:=eventNotHandledErr;
+                CarbonMenu.Parent.Dismissed:=0;
                 Exit;
               end;
             end;
           end;
 
-          FillChar(Msg, SizeOf(Msg), 0);
-          Msg.msg := LM_ACTIVATE;
-          CarbonMenu.LCLMenuItem.Dispatch(Msg);
-          
-          Result := noErr;
-          Exit;
+          if CarbonMenu.Parent.Dismissed=kHIMenuDismissedBySelection then begin
+            FillChar(Msg, SizeOf(Msg), 0);
+            Msg.msg := LM_ACTIVATE;
+            CarbonMenu.LCLMenuItem.Dispatch(Msg);
+            CarbonMenu.Parent.Dismissed:=0;
+            Result := noErr;
+            Exit;
+          end else
+            Result:=CallNextEventHandler(ANextHandler, AEvent);
+
         end;
       end;
     end;
