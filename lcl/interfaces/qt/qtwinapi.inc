@@ -4466,8 +4466,14 @@ begin
   if (HWND = 0) then exit;
 
   W := TQtWidget(HWND);
-  if ((Flags and SW_SCROLLCHILDREN) <> 0) or (PRcScroll = nil) then
+  if ((Flags and SW_SCROLLCHILDREN) <> 0) then
     W.scroll(dx, dy, nil)
+  else
+  if (PrcScroll = nil) then
+  begin
+    R := W.getClientBounds;
+    W.scroll(dx, dy, @R);
+  end
   else
     W.scroll(dx, dy, PRcScroll);
 
