@@ -1174,6 +1174,10 @@ type
     FItemActivatedHook: QTreeWidget_hookH;
     FItemChangedHook: QTreeWidget_hookH;
     FItemEnteredHook: QTreeWidget_hookH;
+    FSelectionChangedHook: QTreeWidget_hookH;
+    FCurrentItem: QTreeWidgetItemH;
+    FPreviousItem: QTreeWidgetItemH;
+    FMousePressed: Boolean;
     function getColCount: Integer;
     function getHeader: TQtHeaderView;
     function getItemCount: Integer;
@@ -1228,9 +1232,8 @@ type
     procedure SignalItemActivated(item: QTreeWidgetItemH; column: Integer); cdecl;
     procedure SignalItemEntered(item: QTreeWidgetItemH; column: Integer); cdecl;
     procedure SignalItemChanged(item: QTreeWidgetItemH; column: Integer); cdecl;
-    procedure SignalitemExpanded(item: QTreeWidgetItemH); cdecl;
-    procedure SignalItemCollapsed(item: QTreeWidgetItemH); cdecl;
     procedure SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH); cdecl;
+    procedure SignalSelectionChanged(); cdecl;
     procedure SignalSortIndicatorChanged(ALogicalIndex: Integer; AOrder: QtSortOrder); cdecl;
 
     property ColCount: Integer read getColCount write setColCount;
@@ -9246,6 +9249,10 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtTreeWidget.Create');
   {$endif}
+  FCurrentItem := nil;
+  FPreviousItem := nil;
+  FMousePressed := False;
+
   FSavedEvent := nil;
   FSavedEventTimer := nil;
   FSavedEventTimerHook := nil;
@@ -9330,11 +9337,15 @@ end;
 function TQtTreeWidget.itemViewViewportEventFilter(Sender: QObjectH;
   Event: QEventH): Boolean; cdecl;
 begin
-  if (QEvent_type(Event) = QEventMouseButtonRelease)
-    and (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
-    PostponedMouseRelease(Event)
-  else
-    Result := inherited itemViewViewportEventFilter(Sender, Event);
+  if (QEvent_type(Event) = QEventMouseButtonPress) and
+    (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
+    FMousePressed := True;
+
+  if (QEvent_type(Event) = QEventMouseButtonRelease) and
+    (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
+    FMousePressed := False;
+
+  Result := inherited itemViewViewportEventFilter(Sender, Event);
 end;
 
 procedure TQtTreeWidget.OwnerDataNeeded(ARect: TRect);
@@ -9717,6 +9728,9 @@ var
   AIndex: Integer;
   ASubIndex: Integer;
 begin
+  if QTreeWidget_isItemSelected(QTreeWidgetH(Widget), AItem) = ASelect then
+    exit;
+
   FillChar(Msg, SizeOf(Msg), #0);
   FillChar(NMLV, SizeOf(NMLV), #0);
   Msg.Msg := CN_NOTIFY;
@@ -9776,6 +9790,7 @@ begin
   FItemActivatedHook := QTreeWidget_hook_create(Widget);
   FItemChangedHook := QTreeWidget_hook_create(Widget);
   FItemEnteredHook := QTreeWidget_hook_create(Widget);
+  FSelectionChangedHook := QTreeWidget_hook_create(Widget);
   
   QTreeWidget_hook_hook_currentItemChanged(FCurrentItemChangedHook, @SignalCurrentItemChanged);
 
@@ -9789,6 +9804,8 @@ begin
 
   QTreeWidget_hook_hook_ItemEntered(FItemEnteredHook, @SignalItemEntered);
 
+  QTreeWidget_hook_hook_itemSelectionChanged(FSelectionChangedHook, @SignalSelectionChanged);
+
 end;
 
 procedure TQtTreeWidget.DetachEvents;
@@ -9799,6 +9816,7 @@ begin
   QTreeWidget_hook_destroy(FItemActivatedHook);
   QTreeWidget_hook_destroy(FItemChangedHook);
   QTreeWidget_hook_destroy(FItemEnteredHook);
+  QTreeWidget_hook_destroy(FSelectionChangedHook);
 
   if FSectionClicked <> nil then
     QHeaderView_hook_destroy(FSectionClicked);
@@ -9823,6 +9841,8 @@ var
 begin
   // we'll send also which item is clicked ... probably future
   // lcl implementation of OnItemClick.
+  if not Checkable then
+    exit;
   FillChar(MsgN, SizeOf(MsgN), #0);
   FillChar(NMLV, SizeOf(NMLV), #0);
 
@@ -9956,26 +9976,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtTreeWidget.SignalItemExpanded
-  Params:  Integer
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtTreeWidget.SignalitemExpanded(item: QTreeWidgetItemH) cdecl;
-begin
-{fixme}
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtTreeWidget.SignalItemCollapsed
-  Params:  Integer
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtTreeWidget.SignalItemCollapsed(item: QTreeWidgetItemH) cdecl;
-begin
-{fixme}
-end;
-
-{------------------------------------------------------------------------------
   Function: TQtTreeWidget.SignalCurrentItemChanged
   Params:  Integer
   Returns: Nothing
@@ -9988,6 +9988,12 @@ var
   ASubIndex: Integer;
   AIndex: Integer;
 begin
+  FCurrentItem := Current;
+  FPreviousItem := Previous;
+
+  if FMousePressed then
+    exit;
+
   FillChar(Msg, SizeOf(Msg), #0);
   FillChar(NMLV, SizeOf(NMLV), #0);
 
@@ -10059,6 +10065,15 @@ begin
     end;
   finally
     FSyncingItems := False;
+  end;
+end;
+
+procedure TQtTreeWidget.SignalSelectionChanged(); cdecl;
+begin
+  if FMousePressed then
+  begin
+    FMousePressed := False;
+    SignalCurrentItemChanged(FCurrentItem, FPreviousItem);
   end;
 end;
 
@@ -12187,7 +12202,7 @@ begin
     case QEvent_type(Event) of
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
-      QEventMouseButtonDblClick: SlotMouse(Sender, Event);
+      QEventMouseButtonDblClick: Result := SlotMouse(Sender, Event);
       QEventContextMenu: Result := SlotContextMenu(Sender, Event);
       else
       begin
