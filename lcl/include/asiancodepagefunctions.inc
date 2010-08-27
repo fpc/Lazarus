@@ -53,17 +53,13 @@ begin
     end
     else
     begin
-      TempStr[2] := c;
+      tempint := tempint shl 8;
       if i <= len then
       begin
-        TempStr[1] := Src^;
+        tempint := tempint + Byte(Src^);
         i := i + 1;
-      end
-      else
-        TempStr[1] := #0;
-      TempStr[4]   := #0;
-      TempStr[3]   := #0;
-      tempint      := PInteger(@TempStr[1])^;
+      end;
+
       Inc(Src);
 
       case CodeP of
