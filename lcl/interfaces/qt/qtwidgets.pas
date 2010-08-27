@@ -8947,10 +8947,14 @@ begin
       begin
         if MouseInCheckBox then
         begin
+          //we must sync itemstate under X11 because of qt bug,
+          // darwin & win32 works correct
+          {$IFDEF HASX11}
           if QListWidgetItem_checkState(Item) = QtUnChecked then
             QListWidgetItem_setCheckState(Item, QtChecked)
           else
             QListWidgetItem_setCheckState(Item, QtUnChecked);
+          {$ENDIF}
           FillChar(Msg, SizeOf(Msg), #0);
           Msg.Msg := LM_CHANGED;
           Msg.WParam := QListWidget_row(QListWidgetH(Widget), Item);
