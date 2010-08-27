@@ -53,7 +53,7 @@ begin
     end
     else
     begin
-      tempint := tempint shl 8;
+      tempint := Byte(c) shl 8;
       if i <= len then
       begin
         tempint := tempint + Byte(Src^);
