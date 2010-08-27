@@ -1315,6 +1315,7 @@ type
   TRadioButton = class(TCustomCheckBox)
   protected
     class procedure WSRegisterClass; override;
+    procedure ApplyChanges; override;
     function DialogChar(var Message: TLMKey): boolean; override;
     procedure RealSetText(const Value: TCaption); override;
     procedure DoClickOnChange; override;

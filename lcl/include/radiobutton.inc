@@ -96,6 +96,26 @@ begin
   RegisterRadioButton;
 end;
 
+procedure TRadioButton.ApplyChanges;
+var
+  Sibling: TControl;
+  i: Integer;
+begin
+  inherited ApplyChanges;
+  //the siblings are unchecked by the widgetset. When the handle is not allocated,
+  //the widgetset is not notified so it cannot update the siblings
+  if not HandleAllocated and (FState = cbChecked) and
+    (not (csLoading in ComponentState)) then
+  begin
+    for i := 0 to Parent.ControlCount - 1 do
+    begin
+      Sibling := Parent.Controls[i];
+      if (Sibling is TRadioButton) and (Sibling <> Self) then
+        TRadioButton(Sibling).Checked := False;
+    end;
+  end;
+end;
+
 function TRadioButton.DialogChar(var Message: TLMKey): boolean;
 begin
   if IsAccel(Message.CharCode, Caption) and CanFocus then
