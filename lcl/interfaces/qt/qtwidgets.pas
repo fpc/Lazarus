@@ -8939,7 +8939,7 @@ begin
   if (QEvent_type(Event) = QEventMouseButtonPress) or
     (QEvent_type(Event) = QEventMouseButtonRelease) then
   begin
-    SlotMouse(Sender, Event);
+    Result := SlotMouse(Sender, Event);
     if (QEvent_type(Event) = QEventMouseButtonPress) and
       (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
     begin
@@ -8979,7 +8979,10 @@ begin
     case QEvent_type(Event) of
       QEventMouseButtonRelease,
       QEventMouseButtonPress,
-      QEventMouseButtonDblClick: QEvent_ignore(Event);
+      QEventMouseButtonDblClick:
+        begin
+          QEvent_ignore(Event);
+        end;
       else
       begin
         {do not change selection if mousepressed and mouse moved}
