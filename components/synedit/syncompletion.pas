@@ -193,7 +193,7 @@ type
   TSynBaseCompletion = class(TComponent)
   private
     Form: TSynBaseCompletionForm;
-    OldPersistentCaret: boolean;
+    FAddedPersistentCaret: boolean;
     FOnExecute: TNotifyEvent;
     FWidth: Integer;
     function GetCaseSensitive: boolean;
@@ -978,8 +978,11 @@ procedure TSynBaseCompletion.Execute(s: string; x, y: integer);
 var
   CurSynEdit: TSynEdit;
 begin
-  //writeln('');
   //writeln('TSynBaseCompletion.Execute ',Form.CurrentEditor.Name);
+
+  //Todo: This is dangerous, if other plugins also change/changed the flag.
+  FAddedPersistentCaret := False;
+
   CurrentString := s;
   if Assigned(OnExecute) then
     OnExecute(Self);
@@ -994,8 +997,9 @@ begin
 
   if (Form.CurrentEditor is TSynEdit) then begin
     CurSynEdit:=TSynEdit(Form.CurrentEditor);
-    OldPersistentCaret:=eoPersistentCaret in CurSynEdit.Options;
-    CurSynEdit.Options:=CurSynEdit.Options+[eoPersistentCaret];
+    FAddedPersistentCaret := not(eoPersistentCaret in CurSynEdit.Options);
+    if FAddedPersistentCaret then
+      CurSynEdit.Options:=CurSynEdit.Options+[eoPersistentCaret];
   end;
   Form.SetBounds(x,y,Form.Width,Form.Height);
   Form.Show;
@@ -1165,8 +1169,9 @@ procedure TSynBaseCompletion.Deactivate;
 var
   CurSynEdit: TSynEdit;
 begin
-  if (not OldPersistentCaret)
-  and (Form<>nil) and (Form.CurrentEditor is TSynEdit) then begin
+  if FAddedPersistentCaret and
+     (Form<>nil) and (Form.CurrentEditor is TSynEdit)
+  then begin
     CurSynEdit:=TSynEdit(Form.CurrentEditor);
     CurSynEdit.Options:=CurSynEdit.Options-[eoPersistentCaret];
   end;
