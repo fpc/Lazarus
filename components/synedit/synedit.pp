@@ -4370,9 +4370,7 @@ var
   cf: TCompositionForm;
 {$ENDIF}
 begin
-  if ( (PaintLock <> 0) and not IgnorePaintLock ) or
-     (not HandleAllocated) or
-     ((not Focused) and (not (eoPersistentCaret in fOptions)))
+  if ( (PaintLock <> 0) and not IgnorePaintLock ) or (not HandleAllocated)
   then begin
     Include(fStateFlags, sfCaretChanged);
   end else begin
