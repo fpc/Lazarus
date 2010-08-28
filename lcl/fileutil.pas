@@ -235,22 +235,7 @@ uses
   Unix, BaseUnix;
 {$ENDIF}
 
-var
-  UpChars: array[char] of char;
-
 {$I fileutil.inc}
-
-procedure InternalInit;
-var
-  c: char;
-begin
-  for c:=Low(char) to High(char) do begin
-    UpChars[c]:=upcase(c);
-  end;
-end;
-
-initialization
-  InternalInit;
 
 end.
 

@@ -670,8 +670,8 @@ end;
 function CompareFileExt(const Filename, Ext: string;
   CaseSensitive: boolean): integer;
 var
+  n, e : AnsiString;
   FileLen, FilePos, ExtLen, ExtPos: integer;
-  FileChar, ExtChar: char;
 begin
   FileLen:=length(Filename);
   ExtLen:=length(Ext);
@@ -686,43 +686,16 @@ begin
   inc(FilePos);
   ExtPos:=1;
   if (ExtPos<=ExtLen) and (Ext[1]='.') then inc(ExtPos);
+
   // compare extensions
-  while true do begin
-    if FilePos<=FileLen then begin
-      if ExtPos<=ExtLen then begin
-        FileChar:=Filename[FilePos];
-        ExtChar:=Ext[ExtPos];
-        if not CaseSensitive then begin
-          FileChar:=UpChars[FileChar];
-          ExtChar:=UpChars[ExtChar];
-        end;
-        if FileChar=ExtChar then begin
-          inc(FilePos);
-          inc(ExtPos);
-        end else if FileChar>ExtChar then begin
-          Result:=1;
-          exit;
-        end else begin
-          Result:=-1;
-          exit;
-        end;
-      end else begin
-        // fileext longer than ext
-        Result:=1;
-        exit;
-      end;
-    end else begin
-      if ExtPos<=ExtLen then begin
-        // fileext shorter than ext
-        Result:=-1;
-        exit;
-      end else begin
-        // equal
-        Result:=0;
-        exit;
-      end;
-    end;
-  end;
+  n:=Copy(Filename, FilePos, length(FileName));
+  e:=Copy(Ext, ExtPos, length(Ext));
+  if CaseSensitive then
+    Result:=CompareStr(n, e)
+  else
+    Result:=AnsiCompareText(n, e);
+  if Result<0 then Result:=1
+  else if Result>0 then Result:=1;
 end;
 
 function CompareFileExt(const Filename, Ext: string): integer;
