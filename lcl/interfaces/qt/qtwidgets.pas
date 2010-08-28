@@ -8292,6 +8292,11 @@ begin
       {eat mouse button events when we are TListView class.
        Such events are handled by itemViewportEventFilter.}
     else
+    if (QEvent_type(Event) = QEventShow) then
+    begin
+      LCLObject.DoAdjustClientRectChange;
+      Result:=inherited EventFilter(Sender, Event);
+    end else
       Result:=inherited EventFilter(Sender, Event);
   end;
 end;
