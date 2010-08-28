@@ -105,7 +105,7 @@ begin
   //the siblings are unchecked by the widgetset. When the handle is not allocated,
   //the widgetset is not notified so it cannot update the siblings
   if not HandleAllocated and (FState = cbChecked) and
-    (not (csLoading in ComponentState)) then
+   (Parent <> nil) and (not (csLoading in ComponentState)) then
   begin
     for i := 0 to Parent.ControlCount - 1 do
     begin
