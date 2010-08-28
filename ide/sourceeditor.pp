@@ -7940,9 +7940,12 @@ begin
   FDefaultCompletionForm.Deactivate;
 
   if PluginFocused and (ActiveEditor<>nil) then begin
+    {$IFDEF LCLQT}
     // Need to force the correct form too (QT)
-    //TSourceEditor(ActiveEditor).EditorComponent.SetFocus;
     TSourceEditor(ActiveEditor).FocusEditor;
+    {$ELSE}
+    TSourceEditor(ActiveEditor).EditorComponent.SetFocus;
+    {$ENDIF}
   end;
 end;
 
