@@ -7940,8 +7940,9 @@ begin
   FDefaultCompletionForm.Deactivate;
 
   if PluginFocused and (ActiveEditor<>nil) then begin
-    //LCLIntf.ShowCaret(ActSE.EditorComponent.Handle);
-    TSourceEditor(ActiveEditor).EditorComponent.SetFocus;
+    // Need to force the correct form too (QT)
+    //TSourceEditor(ActiveEditor).EditorComponent.SetFocus;
+    TSourceEditor(ActiveEditor).FocusEditor;
   end;
 end;
 
