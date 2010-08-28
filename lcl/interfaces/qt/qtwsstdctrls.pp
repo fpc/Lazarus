@@ -141,7 +141,9 @@ type
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
+    class function GetCaretPos(const ACustomEdit: TCustomEdit): TPoint; override;
     class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
+    class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
@@ -766,6 +768,15 @@ begin
   TQtLineEdit(ACustomEdit.Handle).setAlignment(AlignmentMap[AAlignment]);
 end;
 
+class function TQtWSCustomEdit.GetCaretPos(const ACustomEdit: TCustomEdit
+  ): TPoint;
+begin
+  Result := Point(0,0);
+  if not WSCheckHandleAllocated(ACustomEdit, 'GetCaretPos') then
+    Exit;
+  Result.X := TQtLineEdit(ACustomEdit.Handle).getCursorPosition;
+end;
+
 class function TQtWSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit): Boolean;
 var
   Widget: TQtWidget;
@@ -777,6 +788,14 @@ begin
   Widget := TQtWidget(ACustomEdit.Handle);
   if Supports(Widget, IQtEdit, QtEdit) then
     Result := QtEdit.isUndoAvailable;
+end;
+
+class procedure TQtWSCustomEdit.SetCaretPos(const ACustomEdit: TCustomEdit;
+  const NewPos: TPoint);
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetCaretPos') then
+    Exit;
+  TQtLineEdit(ACustomEdit.Handle).setCursorPosition(NewPos.X);
 end;
 
 {------------------------------------------------------------------------------
