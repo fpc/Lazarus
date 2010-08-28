@@ -388,10 +388,8 @@ type
 
   TQtCustomControl = class(TQtAbstractScrollArea)
   private
-    FFrameOnlyAroundContents: Boolean;
     FCornerWidget: TQtWidget;
     FViewPortWidget: TQtViewPort;
-    FResizing: Boolean; // guarantees clientRect in sync
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
@@ -403,7 +401,6 @@ type
   public
     function cornerWidget: TQtWidget;
     function viewport: TQtViewPort;
-    function getClientBounds: TRect; override;
     procedure grabMouse; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure setCornerWidget(AWidget: TQtWidget);
@@ -11007,29 +11004,25 @@ end;
 
 function TQtAbstractScrollArea.getClientBounds: TRect;
 var
-  Area: QAbstractScrollAreaH;
-  W: QWidgetH;
+  HaveBar: Boolean;
 begin
-  W := viewportWidget;
-  if getVisible and not QWidget_testAttribute(W, QtWA_PendingResizeEvent) then
-    QWidget_rect(viewportWidget, @Result)
-  else
+  if not getVisible or
+    QWidget_testAttribute(viewportWidget, QtWA_PendingResizeEvent) then
   begin
     QWidget_contentsRect(Widget, @Result);
     if (QStyle_styleHint(QApplication_style(),
           QStyleSH_ScrollView_FrameOnlyAroundContents) <= 0) then
     begin
-      Area := QAbstractScrollAreaH(Widget);
-      W := QAbstractScrollArea_verticalScrollBar(Area);
+      HaveBar := Assigned(FVScrollbar);
+      if HaveBar and (verticalScrollBar.getVisibleTo(Widget)) then
+        dec(Result.Right, verticalScrollBar.getWidth);
 
-      if QWidget_isVisibleTo(W, Widget) then
-        dec(Result.Right, QWidget_width(W));
-
-      W := QAbstractScrollArea_horizontalScrollBar(Area);
-      if QWidget_isVisibleTo(W, Widget) then
-        dec(Result.Bottom, QWidget_height(W));
+      HaveBar := Assigned(FHScrollbar);
+      if HaveBar and (horizontalScrollBar.getVisibleTo(Widget)) then
+        dec(Result.Bottom, horizontalScrollBar.getHeight);
     end;
-  end;
+  end else
+    QWidget_rect(viewportWidget, @Result);
 end;
 
 function TQtAbstractScrollArea.getViewOrigin: TPoint;
@@ -11228,15 +11221,11 @@ begin
   {$endif}
   FHasPaint := True;
   FViewPortWidget := nil;
-  FResizing := False;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
     Parent := nil;
   Result := QLCLAbstractScrollArea_create(Parent);
-
-  FFrameOnlyAroundContents := QStyle_styleHint(QApplication_style(),
-    QStyleSH_ScrollView_FrameOnlyAroundContents) > 0;
 
   if (LCLObject is TScrollingWinControl) then
   begin
@@ -11281,25 +11270,12 @@ begin
      (ClassType = TQtCustomControl) then
     Result := False
   else
-  if QEvent_type(Event) = QEventResize then
-  begin
-    FResizing := True; // be sure that getClientBounds returns correct
-    Result := inherited EventFilter(Sender, Event);
-  end else
   if QEvent_type(Event) = QEventWheel then
   begin
     if not horizontalScrollBar.getVisible and not verticalScrollBar.getVisible then
       Result := inherited EventFilter(Sender, Event)
     else
       Result := False;  
-  end else
-  if QEvent_type(Event) = QEventStyleChange then
-  begin
-    Result := False;
-    QEvent_accept(Event);
-    FFrameOnlyAroundContents := QStyle_styleHint(QApplication_style(),
-      QStyleSH_ScrollView_FrameOnlyAroundContents) > 0;
-    Result := inherited EventFilter(Sender, Event);
   end else
   {$IFDEF MSWINDOWS}
   {sometimes our IDE completely freezes, after screensaver activated
@@ -11341,8 +11317,6 @@ begin
         (QEvent_type(Event) = QEventMouseButtonDblClick);
 
       retval^ := True;
-      if FResizing and (QEvent_type(Event) = QEventResize) then
-        FResizing := False;
 
       {$note this is workaround for infinite loop with some
        applications since qt doesn't have scrollbars on forms yet.
@@ -11438,28 +11412,6 @@ function TQtCustomControl.viewport: TQtViewport;
 begin
   viewportNeeded;
   Result := FViewPortWidget;
-end;
-
-function TQtCustomControl.getClientBounds: TRect;
-var
-  HaveBar: Boolean;
-begin
-  if FResizing or
-    QWidget_testAttribute(viewportWidget, QtWA_PendingResizeEvent) then
-  begin
-    QWidget_contentsRect(Widget, @Result);
-    if not FFrameOnlyAroundContents then
-    begin
-      HaveBar := Assigned(FVScrollbar);
-      if HaveBar and (verticalScrollBar.getVisibleTo(Widget)) then
-        dec(Result.Right, verticalScrollBar.getWidth);
-
-      HaveBar := Assigned(FHScrollbar);
-      if HaveBar and (horizontalScrollBar.getVisibleTo(Widget)) then
-        dec(Result.Bottom, horizontalScrollBar.getHeight);
-    end;
-  end else
-    QWidget_rect(viewportWidget, @Result);
 end;
 
 procedure TQtCustomControl.grabMouse;
