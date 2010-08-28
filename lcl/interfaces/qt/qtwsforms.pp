@@ -77,6 +77,7 @@ type
     class procedure UpdateWindowFlags(const AWidget: TQtMainWindow;
       ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons; AFormStyle: TFormStyle);
   published
+    class function  CanFocus(const AWinControl: TWinControl): Boolean; override;
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
@@ -561,6 +562,19 @@ begin
     AWidget.setWindowFlags(Flags);
   AWidget.setVisible(AVisible);
   AWidget.EndUpdate;
+end;
+
+class function TQtWSCustomForm.CanFocus(const AWinControl: TWinControl
+  ): Boolean;
+var
+  Widget: TQtWidget;
+begin
+  if AWinControl.HandleAllocated then
+  begin
+    Widget := TQtWidget(AWinControl.Handle);
+    Result := Widget.getVisible and Widget.getEnabled;
+  end else
+    Result := False;
 end;
 
 { TQtWSHintWindow }
