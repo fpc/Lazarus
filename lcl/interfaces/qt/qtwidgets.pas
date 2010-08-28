@@ -8292,11 +8292,6 @@ begin
       {eat mouse button events when we are TListView class.
        Such events are handled by itemViewportEventFilter.}
     else
-    if (QEvent_type(Event) = QEventShow) then
-    begin
-      LCLObject.DoAdjustClientRectChange;
-      Result:=inherited EventFilter(Sender, Event);
-    end else
       Result:=inherited EventFilter(Sender, Event);
   end;
 end;
@@ -11011,8 +11006,30 @@ begin
 end;
 
 function TQtAbstractScrollArea.getClientBounds: TRect;
+var
+  Area: QAbstractScrollAreaH;
+  W: QWidgetH;
 begin
-  QWidget_rect(viewportWidget, @Result);
+  W := viewportWidget;
+  if getVisible and not QWidget_testAttribute(W, QtWA_PendingResizeEvent) then
+    QWidget_rect(viewportWidget, @Result)
+  else
+  begin
+    QWidget_contentsRect(Widget, @Result);
+    if (QStyle_styleHint(QApplication_style(),
+          QStyleSH_ScrollView_FrameOnlyAroundContents) <= 0) then
+    begin
+      Area := QAbstractScrollAreaH(Widget);
+      W := QAbstractScrollArea_verticalScrollBar(Area);
+
+      if QWidget_isVisibleTo(W, Widget) then
+        dec(Result.Right, QWidget_width(W));
+
+      W := QAbstractScrollArea_horizontalScrollBar(Area);
+      if QWidget_isVisibleTo(W, Widget) then
+        dec(Result.Bottom, QWidget_height(W));
+    end;
+  end;
 end;
 
 function TQtAbstractScrollArea.getViewOrigin: TPoint;
@@ -11427,7 +11444,8 @@ function TQtCustomControl.getClientBounds: TRect;
 var
   HaveBar: Boolean;
 begin
-  if FResizing then
+  if FResizing or
+    QWidget_testAttribute(viewportWidget, QtWA_PendingResizeEvent) then
   begin
     QWidget_contentsRect(Widget, @Result);
     if not FFrameOnlyAroundContents then
