@@ -65,11 +65,22 @@ type
   { TSynGutterSeparator }
 
   TSynGutterSeparator = class(TSynGutterPartBase)
+  private
+    FLineOffset: Integer;
+    FLineOnRight: Boolean;
+    FLineWidth: Integer;
+    procedure SetLineOffset(const AValue: Integer);
+    procedure SetLineOnRight(const AValue: Boolean);
+    procedure SetLineWidth(const AValue: Integer);
   protected
     function  PreferedWidth: Integer; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer); override;
+  published
+    property LineWidth: Integer read FLineWidth write SetLineWidth default 1;
+    property LineOffset: Integer read FLineOffset write SetLineOffset default 0;
+    property LineOnRight: Boolean read FLineOnRight write SetLineOnRight default True;
   end;
 
   { TSynEditMouseActionsGutter }
@@ -293,6 +304,27 @@ end;
 
 { TSynGutterSeparator }
 
+procedure TSynGutterSeparator.SetLineWidth(const AValue: Integer);
+begin
+  if FLineWidth = AValue then exit;
+  FLineWidth := AValue;
+  DoChange(Self);
+end;
+
+procedure TSynGutterSeparator.SetLineOffset(const AValue: Integer);
+begin
+  if FLineOffset = AValue then exit;
+  FLineOffset := AValue;
+  DoChange(Self);
+end;
+
+procedure TSynGutterSeparator.SetLineOnRight(const AValue: Boolean);
+begin
+  if FLineOnRight = AValue then exit;
+  FLineOnRight := AValue;
+  DoChange(Self);
+end;
+
 function TSynGutterSeparator.PreferedWidth: Integer;
 begin
   Result := 2;
@@ -303,22 +335,27 @@ begin
   inherited Create(AOwner);
   MarkupInfo.Background := clWhite;
   MarkupInfo.Foreground := clDkGray;
+  FLineWidth := 1;
+  FLineOffset := 0;
+  FLineOnRight := True;
 end;
 
 procedure TSynGutterSeparator.Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
 begin
   with Canvas do
   begin
-    Pen.Color := MarkupInfo.Background;
-    Pen.Width := 1;
-    with AClip do
-    begin
-      MoveTo(AClip.Left, AClip.Top);
-      LineTo(AClip.Left, AClip.Bottom);
-      Pen.Color := MarkupInfo.Foreground;
-      MoveTo(AClip.Left+1, AClip.Top);
-      LineTo(AClip.Left+1, AClip.Bottom);
+    Brush.Color := MarkupInfo.Background;
+    Brush.Style := bsSolid;
+    FillRect(AClip);
+    if FLineOnRight then begin
+      dec(AClip.Right, FLineOffset);
+      AClip.Left := AClip.Right - FLineWidth;
+    end else begin
+      inc(AClip.Left, FLineOffset);
+      AClip.Right := AClip.Left + FLineWidth;
     end;
+    Brush.Color := MarkupInfo.Foreground;
+    FillRect(AClip);
   end;
 end;
 
