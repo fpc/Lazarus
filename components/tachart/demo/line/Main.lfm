@@ -13,9 +13,9 @@ object Form1: TForm1
     Height = 479
     Top = 0
     Width = 589
-    ActivePage = tsFast
+    ActivePage = tsStats
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object tsFast: TTabSheet
       Caption = 'Fast drawing'
@@ -148,20 +148,70 @@ object Form1: TForm1
         end
       end
     end
+    object tsStats: TTabSheet
+      Caption = 'Statistics'
+      ClientHeight = 453
+      ClientWidth = 581
+      object chCalc: TChart
+        Left = 0
+        Height = 453
+        Top = 0
+        Width = 581
+        AxisList = <        
+          item
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Legend.Alignment = laTopLeft
+        Legend.Margin = 30
+        Legend.UseSidebar = False
+        Legend.Visible = True
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        ParentColor = False
+        object chCalcLineSeries1: TLineSeries
+          Title = 'Data'
+          LineType = ltNone
+          ShowPoints = True
+          Source = RandomChartSource1
+        end
+        object chCalcLineSeriesSum: TLineSeries
+          Title = 'Cumulative'
+          LinePen.Color = clMaroon
+          LinePen.Width = 2
+          Source = ccsSum
+        end
+        object chCalcLineSeriesAvg: TLineSeries
+          Title = 'Running average'
+          ZPosition = 1
+          LinePen.Color = clTeal
+          LinePen.Width = 2
+          Source = ccsAvg
+        end
+      end
+    end
   end
   object RandomChartSource1: TRandomChartSource
-    PointsNumber = 15
+    PointsNumber = 25
     RandSeed = -840176578
     XMax = 20
     XMin = -10
-    YMax = 20
-    YMin = -10
+    YMax = 8
+    YMin = 1
     left = 464
     top = 208
   end
   object ChartToolset1: TChartToolset
     left = 464
-    top = 272
+    top = 264
     object ChartToolset1DataPointDragTool1: TDataPointDragTool
       Shift = [ssLeft]
       AffectedSeries = '1'
@@ -172,5 +222,19 @@ object Form1: TForm1
     object ChartToolset1PanDragTool1: TPanDragTool
       Shift = [ssRight]
     end
+  end
+  object ccsAvg: TCalculatedChartSource
+    AccumulationMethod = camAverage
+    AccumulationRange = 5
+    Origin = RandomChartSource1
+    left = 464
+    top = 148
+  end
+  object ccsSum: TCalculatedChartSource
+    AccumulationMethod = camSum
+    AccumulationRange = 100
+    Origin = RandomChartSource1
+    left = 464
+    top = 96
   end
 end

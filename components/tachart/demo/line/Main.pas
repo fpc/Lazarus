@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, ComCtrls, ExtCtrls, StdCtrls, SysUtils, FileUtil, Forms, Controls,
-  Graphics, Dialogs, TAGraph, TASeries, TASources, TATools;
+  Graphics, Dialogs, TAGraph, TASeries, TASources, TATools, TACustomSeries;
 
 type
 
@@ -15,10 +15,16 @@ type
   TForm1 = class(TForm)
     btnAddSeries: TButton;
     btnRefresh: TButton;
+    ccsAvg: TCalculatedChartSource;
     cb3D: TCheckBox;
     cbLineType: TComboBox;
     cbRotated: TCheckBox;
     cbSorted: TCheckBox;
+    ccsSum: TCalculatedChartSource;
+    chCalc: TChart;
+    chCalcLineSeries1: TLineSeries;
+    chCalcLineSeriesSum: TLineSeries;
+    chCalcLineSeriesAvg: TLineSeries;
     chFast: TChart;
     chFastConstantLine1: TConstantLine;
     chFastLineSeries1: TLineSeries;
@@ -31,6 +37,7 @@ type
     PageControl2: TPageControl;
     Panel1: TPanel;
     RandomChartSource1: TRandomChartSource;
+    tsStats: TTabSheet;
     tsFast: TTabSheet;
     procedure btnAddSeriesClick(Sender: TObject);
     procedure btnRefreshClick(Sender: TObject);
