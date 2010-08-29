@@ -321,10 +321,12 @@ type
     FRopMode: Integer;
     FPenPos: TQtPoint;
     FOwnPainter: Boolean;
-    SelFont: TQTFont;
-    SelBrush: TQTBrush;
+    SelFont: TQtFont;
+    SelBrush: TQtBrush;
     SelPen: TQtPen;
     PenColor: TQColor;
+    FMetrics: TQtFontMetrics;
+    function GetMetrics: TQtFontMetrics;
     function GetRop: Integer;
     function DeviceSupportsComposition: Boolean;
     function DeviceSupportsRasterOps: Boolean;
@@ -419,6 +421,7 @@ type
     procedure save;
     procedure restore;
     procedure translate(dx: Double; dy: Double);
+    property Metrics: TQtFontMetrics read GetMetrics;
     property Rop2: Integer read GetRop write SetRop;
   end;
   
@@ -1257,7 +1260,9 @@ begin
     WriteLn('TQtFont.Destroy');
   {$endif}
 
-  FMetrics.Free;
+  if FMetrics <> nil then
+    FMetrics.Free;
+
   if not FShared and (Widget <> nil) then
     QFont_destroy(Widget);
     
@@ -1888,6 +1893,7 @@ begin
     end;
   end;
 
+  FMetrics := nil;
   FRopMode := R2_COPYPEN;
   FOwnPainter := True;
   CreateObjects;
@@ -1897,6 +1903,7 @@ end;
 
 constructor TQtDeviceContext.CreatePrinterContext(ADevice: QPrinterH);
 begin
+  FMetrics := nil;
   Parent := nil;
   Widget := QPainter_Create(ADevice);
   FRopMode := R2_COPYPEN;
@@ -1908,6 +1915,7 @@ end;
 
 constructor TQtDeviceContext.CreateFromPainter(APainter: QPainterH);
 begin
+  FMetrics := nil;
   FRopMode := R2_COPYPEN;
   Widget := APainter;
   Parent := nil;
@@ -1929,8 +1937,11 @@ begin
   if (vClipRect <> nil) then
     dispose(vClipRect);
 
+  if FMetrics <> nil then
+    FMetrics.Free;
+
   DestroyObjects;
-  
+
   if (Widget <> nil) and FOwnPainter then
     QPainter_destroy(Widget);
 
@@ -2290,6 +2301,21 @@ begin
   Result := FRopMode;
 end;
 
+function TQtDeviceContext.GetMetrics: TQtFontMetrics;
+begin
+  {$note this is workaround for qt bug when QPainter refuses to
+   set font (Vista & Win7 themes).See #16646.
+   No harm for other platforms with this patch.}
+  if FOwnPainter then
+    Result := Font.Metrics
+  else
+  begin
+    if FMetrics = nil then
+      FMetrics := TQtFontMetrics.Create(QPainter_font(Widget));
+    Result := FMetrics;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtDeviceContext.RestoreTextColor
   Params:  None
@@ -2367,15 +2393,15 @@ begin
     Rotate(-0.1 * Font.Angle);
   end;
 
-  // what about Font.Metrics.descent and Font.Metrics.leading ?
-  y := y + Font.Metrics.ascent;
+  // what about Metrics.descent and Metrics.leading ?
+  y := y + Metrics.ascent;
 
   RestoreTextColor;
 
   // The ascent is only applied here, because it also needs
   // to be rotated
   if Font.Angle <> 0 then
-    QPainter_drawText(Widget, 0, Font.Metrics.ascent, s)
+    QPainter_drawText(Widget, 0, Metrics.ascent, s)
   else
     QPainter_drawText(Widget, x, y, s);
   
@@ -2384,13 +2410,13 @@ begin
   // Restore previous angle
   if Font.Angle <> 0 then
   begin
-    y := y - Font.Metrics.ascent;
+    y := y - Metrics.ascent;
     Rotate(0.1 * Font.Angle);
     Translate(-x, -y);
   end;
 
   {$ifdef VerboseQt}
-  WriteLn(' Font metrics height: ', Font.Metrics.height, ' Angle: ',
+  WriteLn(' Font metrics height: ', Metrics.height, ' Angle: ',
     Round(0.1 * Font.Angle));
   {$endif}
 end;

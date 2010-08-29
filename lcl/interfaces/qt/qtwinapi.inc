@@ -1262,7 +1262,7 @@ begin
 
   F := DTFlagsToQtFlags(Flags);
 
-  QtDC.font.Metrics.BoundingRect(@R, @ARect, F, @WideStr);
+  QtDC.Metrics.BoundingRect(@R, @ARect, F, @WideStr);
 
   //TODO: result should be different when DT_VCENTER or DT_BOTTOM is set
   Result := R.Bottom - R.Top;
@@ -3458,8 +3458,8 @@ begin
   if not IsValidDC(DC) then Exit;
 
   WideStr := GetUtf8String(Str);
-  Size.cx := QtDC.font.Metrics.width(@WideStr, Count);
-  Size.cy := QtDC.font.Metrics.height;
+  Size.cx := QtDC.Metrics.width(@WideStr, Count);
+  Size.cy := QtDC.Metrics.height;
 
   Result := True;
 end;
@@ -3485,7 +3485,7 @@ begin
 
   if Result then
   begin
-    QtFontMetrics := QtDC.font.Metrics;
+    QtFontMetrics := QtDC.Metrics;
     TM.tmHeight := QtFontMetrics.height;
     TM.tmAscent := QtFontMetrics.ascent;
     TM.tmDescent := QtFontMetrics.descent;
