@@ -628,7 +628,11 @@ var
     Info.Header.biWidth := ADesc.Width;
     Info.Header.biHeight := -ADesc.Height; // create top to bottom
     Info.Header.biPlanes := 1;
-    Info.Header.biBitCount := ADesc.Depth;
+    // for 24 bits images, BPP can be 24 or 32
+    // 32 shouldn't be use since we don't fill the alpha channel
+    if ADesc.Depth = 24
+    then Info.Header.biBitCount := 24
+    else Info.Header.biBitCount := ADesc.BitsPerPixel;
     Info.Header.biCompression := BI_RGB;
     {Info.Header.biSizeImage := 0;}
     { first color is black, second color is white, for monochrome bitmap }
