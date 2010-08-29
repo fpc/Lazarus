@@ -770,11 +770,16 @@ end;
 
 class function TQtWSCustomEdit.GetCaretPos(const ACustomEdit: TCustomEdit
   ): TPoint;
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
 begin
   Result := Point(0,0);
   if not WSCheckHandleAllocated(ACustomEdit, 'GetCaretPos') then
     Exit;
-  Result.X := TQtLineEdit(ACustomEdit.Handle).getCursorPosition;
+  Widget := TQtWidget(ACustomEdit.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    Result.X := QtEdit.getCursorPosition;
 end;
 
 class function TQtWSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit): Boolean;
@@ -792,10 +797,15 @@ end;
 
 class procedure TQtWSCustomEdit.SetCaretPos(const ACustomEdit: TCustomEdit;
   const NewPos: TPoint);
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetCaretPos') then
     Exit;
-  TQtLineEdit(ACustomEdit.Handle).setCursorPosition(NewPos.X);
+  Widget := TQtWidget(ACustomEdit.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    QtEdit.setCursorPosition(NewPos.X);
 end;
 
 {------------------------------------------------------------------------------

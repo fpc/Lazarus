@@ -73,6 +73,7 @@ type
 
   IQtEdit = interface
     ['{035CA259-4442-4E82-9E70-96A114DD3BC6}']
+    function getCursorPosition: Integer;
     function getMaxLength: Integer;
     function getSelectionStart: Integer;
     function getSelectionLength: Integer;
@@ -82,6 +83,7 @@ type
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
     procedure setBorder(const ABorder: Boolean);
+    procedure setCursorPosition(const ACursorPosition: Integer);
     procedure Cut;
     procedure Copy;
     procedure Paste;
@@ -651,7 +653,7 @@ type
     procedure selectAll;
     procedure setAlignment(const AAlignment: QtAlignment);
     procedure setBorder(const ABorder: Boolean);
-    procedure setCursorPosition(const AValue: Integer);
+    procedure setCursorPosition(const ACursorPosition: Integer);
     procedure setDefaultColorRoles; override;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setInputMask(const AMask: WideString);
@@ -698,7 +700,7 @@ type
     procedure removeLine(const AIndex: integer);
     procedure setAlignment(const AAlignment: QtAlignment);
     procedure setBorder(const ABorder: Boolean);
-    procedure setCursorPosition(const AValue: Integer);
+    procedure setCursorPosition(const ACursorPosition: Integer);
     procedure setDefaultColorRoles; override;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setLineWrapMode(const AMode: QTextEditLineWrapMode);
@@ -800,6 +802,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     // IQtEdit implementation
+    function getCursorPosition: Integer;
     function getMaxLength: Integer;
     function getSelectionStart: Integer;
     function getSelectionLength: Integer;
@@ -808,6 +811,7 @@ type
     procedure setMaxLength(const ALength: Integer);
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
+    procedure setCursorPosition(const ACursorPosition: Integer);
     procedure Cut;
     procedure Copy;
     procedure Paste;
@@ -865,6 +869,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
     // IQtEdit implementation
+    function getCursorPosition: Integer;
     function getMaxLength: Integer;
     function getSelectionStart: Integer;
     function getSelectionLength: Integer;
@@ -872,6 +877,7 @@ type
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setMaxLength(const ALength: Integer);
     procedure setSelection(const AStart, ALength: Integer);
+    procedure setCursorPosition(const ACursorPosition: Integer);
     procedure Cut;
     procedure Copy;
     procedure Paste;
@@ -6075,9 +6081,9 @@ begin
   PreferredWidth := Size.cx;
 end;
 
-procedure TQtLineEdit.setCursorPosition(const AValue: Integer);
+procedure TQtLineEdit.setCursorPosition(const ACursorPosition: Integer);
 begin
-  QLineEdit_setCursorPosition(QLineEditH(Widget), AValue);
+  QLineEdit_setCursorPosition(QLineEditH(Widget), ACursorPosition);
 end;
 
 procedure TQtLineEdit.setDefaultColorRoles;
@@ -6469,14 +6475,14 @@ begin
     QFrame_setFrameShape(QFrameH(Widget), QFrameNoFrame);
 end;
 
-procedure TQtTextEdit.setCursorPosition(const AValue: Integer);
+procedure TQtTextEdit.setCursorPosition(const ACursorPosition: Integer);
 var
   TextCursor: QTextCursorH;
 begin
   TextCursor := QTextCursor_create();
   QTextEdit_textCursor(QTextEditH(Widget), TextCursor);
   if not QTextCursor_isNull(TextCursor) then
-    QTextCursor_setPosition(TextCursor, AValue);
+    QTextCursor_setPosition(TextCursor, ACursorPosition);
   QTextCursor_destroy(TextCursor);
 end;
 
@@ -7118,6 +7124,14 @@ begin
   FOwnerDrawn := False;
 end;
 
+function TQtComboBox.getCursorPosition: Integer;
+begin
+  if LineEdit <> nil then
+    Result := LineEdit.getCursorPosition
+  else
+    Result := 0;
+end;
+
 function TQtComboBox.getMaxLength: Integer;
 begin
   if LineEdit <> nil then
@@ -7176,6 +7190,12 @@ procedure TQtComboBox.setSelection(const AStart, ALength: Integer);
 begin
   if LineEdit <> nil then
     LineEdit.setSelection(AStart, ALength);
+end;
+
+procedure TQtComboBox.setCursorPosition(const ACursorPosition: Integer);
+begin
+  if LineEdit <> nil then
+    LineEdit.setCursorPosition(ACursorPosition);
 end;
 
 procedure TQtComboBox.Cut;
@@ -7743,6 +7763,12 @@ begin
   QAbstractSpinBox_setFrame(QAbstractSpinBoxH(Widget), ABorder);
 end;
 
+procedure TQtAbstractSpinBox.setCursorPosition(const ACursorPosition: Integer);
+begin
+  if LineEdit <> nil then
+    QLineEdit_setCursorPosition(LineEdit, ACursorPosition);
+end;
+
 procedure TQtAbstractSpinBox.setDefaultColorRoles;
 begin
   WidgetColorRole := QPaletteBase;
@@ -7794,6 +7820,14 @@ procedure TQtAbstractSpinBox.Undo;
 begin
   if LineEdit <> nil then
     QLineEdit_undo(LineEdit);
+end;
+
+function TQtAbstractSpinBox.getCursorPosition: Integer;
+begin
+  if LineEdit <> nil then
+    Result := QLineEdit_cursorPosition(LineEdit)
+  else
+    Result := 0;
 end;
 
 function TQtAbstractSpinBox.getReadOnly: Boolean;
