@@ -64,6 +64,7 @@ type
   private
     // Set when the QuitEventHandler terminates
     FTerminating: Boolean;
+    FUserTerm: Boolean;
     FMainEventQueue: EventQueueRef;
     FTimerMap: TMap; // the map contains all installed timers
     FCurrentCursor: HCURSOR;

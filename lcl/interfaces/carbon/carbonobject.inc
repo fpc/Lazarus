@@ -48,7 +48,7 @@ Q&A 1061 in Developer Documentation Technical Q&As.
 
 function QuitEventHandler(inHandlerCallRef: EventHandlerCallRef;
                           inEvent: EventRef;
-                          inUserData: Pointer): OSStatus; stdcall;
+                          inUserData: Pointer): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
   // This event handler is used to override the kEventClassApplication
   // kEventAppQuit event while inside our event loop (EventLoopEventHandler).
   // It simply calls through to the next handler and, if that handler returns
@@ -70,7 +70,7 @@ end;
 
 function EventLoopEventHandler(inHandlerCallRef: EventHandlerCallRef;
                                inEvent: EventRef;
-                               inUserData: Pointer): OSStatus; stdcall;
+                               inUserData: Pointer): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
   // This code contains the standard Carbon event dispatch loop,
   // as per "Inside Macintosh: Handling Carbon Events", Listing 3-10,
   // except:
@@ -109,7 +109,7 @@ var
 begin
   // Get our TApplicationMainLoop
   Result := noErr;
-  if (not Assigned(inUserData)) then Exit;
+  if (not Assigned(inUserData)) or TCarbonWidgetSet(inUserData).FUserTerm then Exit;
   Loop := TCarbonWidgetSet(inUserData).FAppLoop;
   if not Assigned(Loop) then Exit;
 
@@ -499,7 +499,10 @@ begin
     end;
 
     SignalFirstAppEvent;
-    RunApplicationEventLoop;
+    if not FUserTerm then
+    begin
+      RunApplicationEventLoop;
+    end;
     FAppStdEvents:=True;
 
   finally
@@ -1066,7 +1069,7 @@ begin
   {$IFDEF VerboseObject}
     DebugLn('TCarbonWidgetSet.AppTerminate');
   {$ENDIF}
-  
+  FUserTerm:=True;
   QuitApplicationEventLoop;
 end;
 
