@@ -257,20 +257,29 @@ type
     property Sorted: Boolean read FSorted write FSorted default false;
   end;
 
+  TChartAccumulationMethod = (camNone, camSum, camAverage);
+
   { TCalculatedChartSource }
 
   TCalculatedChartSource = class(TCustomChartSource)
   private
+    FAccumulationMethod: TChartAccumulationMethod;
+    FAccumulationRange: Integer;
     FIndex: Integer;
     FItem: TChartDataItem;
     FListener: TListener;
     FOrigin: TCustomChartSource;
     FPercentage: Boolean;
     FReorderYList: String;
+    FHistory: array of TChartDataItem;
     FYOrder: array of Integer;
 
+    procedure CalcAccumulation(AIndex: Integer);
     procedure CalcPercentage;
     procedure Changed(ASender: TObject); inline;
+    procedure ExtractItem(var AItem: TChartDataItem; AIndex: Integer);
+    procedure SetAccumulationMethod(AValue: TChartAccumulationMethod);
+    procedure SetAccumulationRange(AValue: Integer);
     procedure SetOrigin(AValue: TCustomChartSource);
     procedure SetPercentage(AValue: Boolean);
     procedure SetReorderYList(const AValue: String);
@@ -285,6 +294,11 @@ type
 
     function IsSorted: Boolean; override;
   published
+    property AccumulationMethod: TChartAccumulationMethod
+      read FAccumulationMethod write SetAccumulationMethod default camNone;
+    property AccumulationRange: Integer
+      read FAccumulationRange write SetAccumulationRange default 0;
+
     property Origin: TCustomChartSource read FOrigin write SetOrigin;
     property Percentage: Boolean
       read FPercentage write SetPercentage default false;
@@ -1265,6 +1279,33 @@ end;
 
 { TCalculatedChartSource }
 
+procedure TCalculatedChartSource.CalcAccumulation(AIndex: Integer);
+var
+  i, j: Integer;
+begin
+  SetLength(FHistory, AccumulationRange);
+  if FIndex = AIndex - 1 then begin
+    for i := High(FHistory) downto 1 do
+      FHistory[i] := FHistory[i - 1];
+    ExtractItem(FHistory[0], AIndex);
+  end
+  else
+    for i := 0 to Min(High(FHistory), AIndex) do
+      ExtractItem(FHistory[i], AIndex - i);
+  SetDataItemDefaults(FItem);
+  for i := 0 to Min(High(FHistory), AIndex) do begin
+    FItem.Y += FHistory[i].Y;
+    for j := 0 to High(FItem.YList) do
+      FItem.YList[j] += FHistory[i].YList[j];
+  end;
+  FItem.X := FHistory[0].X;
+  if AccumulationMethod = camAverage then begin
+    FItem.Y /= AccumulationRange;
+    for j := 0 to High(FItem.YList) do
+      FItem.YList[j] /= AccumulationRange;
+  end;
+end;
+
 procedure TCalculatedChartSource.CalcPercentage;
 var
   s: Double;
@@ -1297,6 +1338,20 @@ begin
   inherited Destroy;
 end;
 
+procedure TCalculatedChartSource.ExtractItem(
+  var AItem: TChartDataItem; AIndex: Integer);
+var
+  t: TDoubleDynArray;
+  i: Integer;
+begin
+  AItem := Origin.GetItem(AIndex)^;
+  t := FItem.YList;
+  FItem.YList := nil;
+  SetLength(FItem.YList, Length(FYOrder));
+  for i := 0 to High(FYOrder) do
+    FItem.YList[i] := t[FYOrder[i]];
+end;
+
 function TCalculatedChartSource.GetCount: Integer;
 begin
   if Origin <> nil then
@@ -1306,19 +1361,16 @@ begin
 end;
 
 function TCalculatedChartSource.GetItem(AIndex: Integer): PChartDataItem;
-var
-  i: Integer;
-  t: array of Double;
 begin
   if Origin = nil then exit(nil);
   Result := @FItem;
   if FIndex = AIndex then exit;
-  FItem := Origin.GetItem(AIndex)^;
-  t := FItem.YList;
-  SetLength(FItem.YList, Length(FYOrder));
-  for i := 0 to High(FYOrder) do
-    FItem.YList[i] := t[FYOrder[i]];
+  if (AccumulationMethod = camNone) or (AccumulationRange = 0) then
+    ExtractItem(FItem, AIndex)
+  else
+    CalcAccumulation(AIndex);
   CalcPercentage;
+  FIndex := AIndex;
 end;
 
 function TCalculatedChartSource.IsSorted: Boolean;
@@ -1327,6 +1379,21 @@ begin
     Result := Origin.IsSorted
   else
     Result := false;
+end;
+
+procedure TCalculatedChartSource.SetAccumulationMethod(
+  AValue: TChartAccumulationMethod);
+begin
+  if FAccumulationMethod = AValue then exit;
+  FAccumulationMethod := AValue;
+  Changed(nil);
+end;
+
+procedure TCalculatedChartSource.SetAccumulationRange(AValue: Integer);
+begin
+  if FAccumulationRange = AValue then exit;
+  FAccumulationRange := AValue;
+  Changed(nil);
 end;
 
 procedure TCalculatedChartSource.SetOrigin(AValue: TCustomChartSource);
