@@ -686,6 +686,7 @@ type
     procedure append(AStr: WideString);
     function getAlignment: QtAlignment;
     function getBlockCount: Integer;
+    function getCursorPosition: Integer;
     function getMaxLength: Integer;
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
@@ -697,6 +698,7 @@ type
     procedure removeLine(const AIndex: integer);
     procedure setAlignment(const AAlignment: QtAlignment);
     procedure setBorder(const ABorder: Boolean);
+    procedure setCursorPosition(const AValue: Integer);
     procedure setDefaultColorRoles; override;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setLineWrapMode(const AMode: QTextEditLineWrapMode);
@@ -6192,6 +6194,19 @@ begin
   Result := QTextDocument_blockCount(QTextEdit_document(QTextEditH(Widget)));
 end;
 
+function TQtTextEdit.getCursorPosition: Integer;
+var
+  TextCursor: QTextCursorH;
+begin
+  TextCursor := QTextCursor_create();
+  QTextEdit_textCursor(QTextEditH(Widget), TextCursor);
+  if QTextCursor_isNull(TextCursor) then
+    Result := 0
+  else
+    Result := QTextCursor_position(TextCursor);
+  QTextCursor_destroy(TextCursor);
+end;
+
 function TQtTextEdit.getMaxLength: Integer;
 begin
   {$note implement TQtTextEdit.getMaxLength}
@@ -6452,6 +6467,17 @@ begin
     QFrame_setFrameShape(QFrameH(Widget), QFrameStyledPanel)
   else
     QFrame_setFrameShape(QFrameH(Widget), QFrameNoFrame);
+end;
+
+procedure TQtTextEdit.setCursorPosition(const AValue: Integer);
+var
+  TextCursor: QTextCursorH;
+begin
+  TextCursor := QTextCursor_create();
+  QTextEdit_textCursor(QTextEditH(Widget), TextCursor);
+  if not QTextCursor_isNull(TextCursor) then
+    QTextCursor_setPosition(TextCursor, AValue);
+  QTextCursor_destroy(TextCursor);
 end;
 
 procedure TQtTextEdit.setDefaultColorRoles;
