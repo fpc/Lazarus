@@ -1,132 +1,152 @@
 object Form1: TForm1
-  Left = 326
-  Height = 457
-  Top = 189
-  Width = 571
+  Left = 293
+  Height = 479
+  Top = 182
+  Width = 589
   Caption = 'Form1'
-  ClientHeight = 457
-  ClientWidth = 571
+  ClientHeight = 479
+  ClientWidth = 589
   Position = poScreenCenter
   LCLVersion = '0.9.29'
-  object Panel1: TPanel
+  object PageControl2: TPageControl
     Left = 0
-    Height = 42
+    Height = 479
     Top = 0
-    Width = 571
-    Align = alTop
-    ClientHeight = 42
-    ClientWidth = 571
-    TabOrder = 0
-    object cbLineType: TComboBox
-      Left = 8
-      Height = 21
-      Top = 8
-      Width = 120
-      ItemHeight = 13
-      ItemIndex = 1
-      Items.Strings = (
-        'None'
-        'Previous'
-        'Origin'
-        'StepXY'
-        'StepYX'
-      )
-      OnChange = cbLineTypeChange
-      Style = csDropDownList
-      TabOrder = 0
-      Text = 'Previous'
-    end
-    object cb3D: TCheckBox
-      Left = 136
-      Height = 17
-      Top = 12
-      Width = 33
-      Caption = '3D'
-      OnChange = cb3DChange
-      TabOrder = 1
-    end
-    object cbRotated: TCheckBox
-      Left = 176
-      Height = 17
-      Top = 12
-      Width = 59
-      Caption = 'Rotated'
-      OnChange = cbRotatedChange
-      TabOrder = 2
-    end
-    object btnAddSeries: TButton
-      Left = 296
-      Height = 25
-      Top = 8
-      Width = 75
-      Caption = 'More series'
-      OnClick = btnAddSeriesClick
-      TabOrder = 3
-    end
-    object edTime: TEdit
-      Left = 468
-      Height = 21
-      Top = 8
-      Width = 76
-      Alignment = taRightJustify
-      TabOrder = 4
-    end
-    object btnRefresh: TButton
-      Left = 376
-      Height = 25
-      Top = 8
-      Width = 88
-      Caption = 'Timed refresh:'
-      OnClick = btnRefreshClick
-      TabOrder = 5
-    end
-    object cbSorted: TCheckBox
-      Left = 240
-      Height = 17
-      Top = 12
-      Width = 52
-      Caption = 'Sorted'
-      OnChange = cbSortedChange
-      TabOrder = 6
-    end
-  end
-  object Chart1: TChart
-    Left = 0
-    Height = 415
-    Top = 42
-    Width = 571
-    AxisList = <    
-      item
-        Alignment = calLeft
-        Title.Font.Orientation = 900
-      end    
-      item
-        Alignment = calBottom
-      end>
-    Foot.Brush.Color = clBtnFace
-    Foot.Font.Color = clBlue
-    Title.Brush.Color = clBtnFace
-    Title.Font.Color = clBlue
-    Title.Text.Strings = (
-      'TAChart'
-    )
-    Toolset = ChartToolset1
+    Width = 589
+    ActivePage = tsFast
     Align = alClient
-    DoubleBuffered = True
-    ParentColor = False
-    object Chart1LineSeries1: TLineSeries
-      LinePen.Color = clTeal
-      LinePen.Width = 3
-      SeriesColor = clTeal
-      Source = RandomChartSource1
-    end
-    object Chart1ConstantLine1: TConstantLine
-      LineStyle = lsVertical
-      Pen.Color = clAqua
-      Pen.Width = 2
-      Position = 0
-      SeriesColor = clAqua
-      ZPosition = 1
+    TabIndex = 0
+    TabOrder = 0
+    object tsFast: TTabSheet
+      Caption = 'Fast drawing'
+      ClientHeight = 453
+      ClientWidth = 581
+      object chFast: TChart
+        Left = 0
+        Height = 411
+        Top = 42
+        Width = 581
+        AxisList = <        
+          item
+            Title.LabelFont.Orientation = 900
+          end        
+          item
+            Alignment = calBottom
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Toolset = ChartToolset1
+        Align = alClient
+        DoubleBuffered = True
+        ParentColor = False
+        object chFastLineSeries1: TLineSeries
+          LinePen.Color = clTeal
+          LinePen.Width = 3
+          Source = RandomChartSource1
+        end
+        object chFastConstantLine1: TConstantLine
+          LineStyle = lsVertical
+          Pen.Color = clAqua
+          Pen.Width = 2
+          Position = 0
+          SeriesColor = clAqua
+          ZPosition = 1
+        end
+      end
+      object Panel1: TPanel
+        Left = 0
+        Height = 42
+        Top = 0
+        Width = 581
+        Align = alTop
+        ClientHeight = 42
+        ClientWidth = 581
+        TabOrder = 1
+        object cbLineType: TComboBox
+          Left = 8
+          Height = 21
+          Top = 8
+          Width = 120
+          ItemHeight = 13
+          ItemIndex = 1
+          Items.Strings = (
+            'None'
+            'Previous'
+            'Origin'
+            'StepXY'
+            'StepYX'
+          )
+          OnChange = cbLineTypeChange
+          Style = csDropDownList
+          TabOrder = 0
+          Text = 'Previous'
+        end
+        object cb3D: TCheckBox
+          Left = 136
+          Height = 17
+          Top = 12
+          Width = 33
+          Caption = '3D'
+          OnChange = cb3DChange
+          TabOrder = 1
+        end
+        object cbRotated: TCheckBox
+          Left = 176
+          Height = 17
+          Top = 12
+          Width = 59
+          Caption = 'Rotated'
+          OnChange = cbRotatedChange
+          TabOrder = 2
+        end
+        object btnAddSeries: TButton
+          Left = 296
+          Height = 25
+          Top = 8
+          Width = 75
+          Caption = 'More series'
+          OnClick = btnAddSeriesClick
+          TabOrder = 3
+        end
+        object edTime: TEdit
+          Left = 468
+          Height = 21
+          Top = 8
+          Width = 76
+          Alignment = taRightJustify
+          TabOrder = 4
+        end
+        object btnRefresh: TButton
+          Left = 376
+          Height = 25
+          Top = 8
+          Width = 88
+          Caption = 'Timed refresh:'
+          OnClick = btnRefreshClick
+          TabOrder = 5
+        end
+        object cbSorted: TCheckBox
+          Left = 240
+          Height = 17
+          Top = 12
+          Width = 52
+          Caption = 'Sorted'
+          OnChange = cbSortedChange
+          TabOrder = 6
+        end
+        object PageControl1: TPageControl
+          Left = 114
+          Height = 200
+          Top = 41
+          Width = 200
+          TabOrder = 7
+        end
+      end
     end
   end
   object RandomChartSource1: TRandomChartSource
