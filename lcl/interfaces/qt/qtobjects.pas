@@ -740,6 +740,8 @@ function Clipboard: TQtClipboard;
 function QtDefaultContext: TQtDeviceContext;
 function QtScreenContext: TQtDeviceContext;
 
+procedure AssignQtFont(FromFont: QFontH; ToFont: QFontH);
+
 implementation
 
 uses
@@ -829,6 +831,25 @@ begin
   if FScreenContext = nil then
     FScreenContext := TQtDeviceContext.Create(QApplication_desktop(), False);
   Result := FScreenContext;
+end;
+
+procedure AssignQtFont(FromFont: QFontH; ToFont: QFontH);
+var
+  FntFam: WideString;
+begin
+  QFont_family(FromFont, @FntFam);
+  QFont_setFamily(ToFont, @FntFam);
+  if QFont_pixelSize(FromFont) > 0 then
+    QFont_setPixelSize(ToFont, QFont_pixelSize(FromFont))
+  else
+    QFont_setPointSize(ToFont, QFont_pointSize(FromFont));
+  QFont_setWeight(ToFont, QFont_weight(FromFont));
+  QFont_setBold(ToFont, QFont_bold(FromFont));
+  QFont_setItalic(ToFont, QFont_italic(FromFont));
+  QFont_setUnderline(ToFont, QFont_underline(FromFont));
+  QFont_setStrikeOut(ToFont, QFont_strikeOut(FromFont));
+  QFont_setStyle(ToFont, QFont_style(FromFont));
+  QFont_setStyleStrategy(ToFont, QFont_styleStrategy(FromFont));
 end;
 
 { TQtObject }
@@ -2303,17 +2324,7 @@ end;
 
 function TQtDeviceContext.GetMetrics: TQtFontMetrics;
 begin
-  {$note this is workaround for qt bug when QPainter refuses to
-   set font (Vista & Win7 themes).See #16646.
-   No harm for other platforms with this patch.}
-  if FOwnPainter then
-    Result := Font.Metrics
-  else
-  begin
-    if FMetrics = nil then
-      FMetrics := TQtFontMetrics.Create(QPainter_font(Widget));
-    Result := FMetrics;
-  end;
+  Result := Font.Metrics
 end;
 
 {------------------------------------------------------------------------------
@@ -2635,6 +2646,8 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.setFont(AFont: TQtFont);
+var
+  QFnt: QFontH;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.setFont() ');
@@ -2642,7 +2655,12 @@ begin
   SelFont := AFont;
   if (AFont.Widget <> nil) and (Widget <> nil) then
   begin
-    QPainter_setFont(Widget, QFontH(AFont.Widget));
+    if not FOwnPainter then
+    begin
+      QFnt := QPainter_font(Widget);
+      AssignQtFont(AFont.Widget, QFnt);
+    end else
+      QPainter_setFont(Widget, QFontH(AFont.Widget));
     vFont.Angle := AFont.Angle;
   end;
 end;
