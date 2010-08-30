@@ -3090,11 +3090,13 @@ begin
   end;
 
   Result := DeliverMessage(Msg) <> 0;
+
   if Result then
     QEvent_accept(Event)
   else
   begin
-    QEvent_ignore(Event);
+    if Assigned(LCLObject.PopupMenu) then
+      QEvent_ignore(Event);
     QWidget_setAttribute(QWidgetH(Sender), QtWA_NoMousePropagation, False);
   end;
 
