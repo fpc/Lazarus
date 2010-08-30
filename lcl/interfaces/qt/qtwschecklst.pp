@@ -164,7 +164,9 @@ begin
   QtListWidget := TQtCheckListBox(ACheckListBox.Handle);
   AListWidget := QListWidgetH(QtListWidget.Widget);
   AItem := QListWidget_item(AListWidget, AIndex);
+  QtListWidget.BeginUpdate;
   QListWidgetItem_setCheckState(AItem, LCLCheckStateToQtCheckStateMap[AState]);
+  QtListWidget.EndUpdate;
 end;
 
 end.

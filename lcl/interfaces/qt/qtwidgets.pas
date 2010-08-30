@@ -1102,15 +1102,20 @@ type
   { TQtCheckListBox }
 
   TQtCheckListBox = class (TQtListWidget)
+  private
+    FItemChangedHook: QListWidget_hookH;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+
     function itemViewViewportEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
 
     procedure signalCurrentItemChanged(current: QListWidgetItemH; previous: QListWidgetItemH); cdecl; override;
     procedure signalItemClicked(item: QListWidgetItemH); cdecl; override;
     procedure signalSelectionChanged(); cdecl; override;
+    procedure signalItemChanged(item: QListWidgetItemH); cdecl;
   end;
 
   { TQtHeaderView }
@@ -8963,67 +8968,17 @@ begin
   Result := QListWidget_create(Parent);
 end;
 
-function TQtCheckListBox.EventFilter(Sender: QObjectH; Event: QEventH
-  ): Boolean; cdecl;
-var
-  MousePos: TQtPoint;
-  Item: QListWidgetItemH;
-  Msg: TLMessage;
-
-  function MouseInCheckBox: Boolean;
-  var
-    x: Integer;
-    R: TRect;
-    P: TPoint;
-  begin
-    Result := getLayoutDirection = QtRightToLeft;
-    x := QStyle_pixelMetric(QApplication_style(), QStylePM_IndicatorWidth,
-      nil, Widget);
-    if not Result then
-      Result := (MousePos.X > 2) and (MousePos.X < (X + 2))
-    else
-    begin
-      R := getVisualItemRect(Item);
-      R.Left := R.Right - X;
-      R.Right := R.Right + X;
-      P.X := MousePos.X;
-      P.Y := MousePos.Y;
-      Result := PtInRect(R, P);
-    end;
-  end;
-
+procedure TQtCheckListBox.AttachEvents;
 begin
-  if (QEvent_type(Event) = QEventMouseButtonPress) or
-    (QEvent_type(Event) = QEventMouseButtonRelease) then
-  begin
-    Result := SlotMouse(Sender, Event);
-    if (QEvent_type(Event) = QEventMouseButtonPress) and
-      (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
-    begin
-      MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
-      Item := itemAt(MousePos.x, MousePos.y);
-      if (Item <> nil) and
-        ((QListWidgetItem_flags(Item) and QtItemIsUserCheckable) <> 0) then
-      begin
-        if MouseInCheckBox then
-        begin
-          //we must sync itemstate under X11 because of qt bug,
-          // darwin & win32 works correct
-          {$IFDEF HASX11}
-          if QListWidgetItem_checkState(Item) = QtUnChecked then
-            QListWidgetItem_setCheckState(Item, QtChecked)
-          else
-            QListWidgetItem_setCheckState(Item, QtUnChecked);
-          {$ENDIF}
-          FillChar(Msg, SizeOf(Msg), #0);
-          Msg.Msg := LM_CHANGED;
-          Msg.WParam := QListWidget_row(QListWidgetH(Widget), Item);
-          DeliverMessage(Msg);
-        end;
-      end;
-    end;
-  end else
-    Result := inherited EventFilter(Sender, Event);
+  inherited AttachEvents;
+  FItemChangedHook := QListWidget_hook_create(Widget);
+  QListWidget_hook_hook_itemChanged(FItemChangedHook, @signalItemChanged);
+end;
+
+procedure TQtCheckListBox.DetachEvents;
+begin
+  QListWidget_hook_destroy(FItemChangedHook);
+  inherited DetachEvents;
 end;
 
 function TQtCheckListBox.itemViewViewportEventFilter(Sender: QObjectH;
@@ -9038,7 +8993,7 @@ begin
       QEventMouseButtonPress,
       QEventMouseButtonDblClick:
         begin
-          QEvent_ignore(Event);
+          Result := inherited itemViewViewportEventFilter(Sender, Event);
         end;
       else
       begin
@@ -9059,15 +9014,42 @@ begin
 end;
 
 procedure TQtCheckListBox.signalItemClicked(item: QListWidgetItemH); cdecl;
+var
+  AGlobalPos: TQtPoint;
+  APos: TQtPoint;
+  AMouseEvent: QMouseEventH;
 begin
-  // DO NOTHING
-  //inherited signalItemClicked(item);
+  // fires only when checkBox clicked.
+  QCursor_pos(@AGlobalPos);
+  QWidget_mapFromGlobal(Widget, @APos, @AGlobalPos);
+  AMouseEvent := QMouseEvent_create(QEventMouseButtonPress, @APos,
+    @AGlobalPos, QtLeftButton, QtLeftButton,
+    QApplication_keyboardModifiers());
+  SlotMouse(Widget, AMouseEvent);
+  QMouseEvent_destroy(AMouseEvent);
+
+  AMouseEvent := QMouseEvent_create(QEventMouseButtonRelease, @APos,
+    @AGlobalPos, QtLeftButton, QtLeftButton,
+    QApplication_keyboardModifiers());
+  SlotMouse(Widget, AMouseEvent);
+  QMouseEvent_destroy(AMouseEvent);
 end;
 
 procedure TQtCheckListBox.signalSelectionChanged(); cdecl;
 begin
   // DO NOTHING
   // inherited signalSelectionChanged;
+end;
+
+procedure TQtCheckListBox.signalItemChanged(item: QListWidgetItemH); cdecl;
+var
+  Msg: TLMessage;
+begin
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_CHANGED;
+  Msg.WParam := QListWidget_row(QListWidgetH(Widget), Item);
+  if not InUpdate then
+    DeliverMessage(Msg);
 end;
 
 { TQtHeaderView }
