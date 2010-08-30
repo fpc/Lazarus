@@ -6702,7 +6702,10 @@ begin
     QEventMouseButtonDblClick:
       begin
         if QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton then
+        begin
           Result := SlotTabBarMouse(Sender, Event);
+          QWidget_setAttribute(QWidgetH(Sender), QtWA_NoMousePropagation, False);
+        end;
       end;
   else
     QEvent_ignore(Event);
