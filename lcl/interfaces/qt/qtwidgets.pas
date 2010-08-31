@@ -12634,10 +12634,15 @@ begin
 end;
 
 procedure TQtDesignWidget.ResizeDesigner;
+var
+  R: TRect;
 begin
   if FDesignControl = nil then
     Exit;
-  with getClientBounds do
+  // FDesignControl must be same as form area,
+  // since we use QWidget, not QMainWindow in design time.
+  QWidget_contentsRect(Widget, @R);
+  with R do
   begin
     QWidget_move(FDesignControl, Left, Top);
     QWidget_resize(FDesignControl, Right - Left, Bottom - Top);
@@ -12709,12 +12714,13 @@ begin
         end;
       end else
       begin
-        p := QMouseEvent_pos(QMouseEventH(Event))^;
+        p := QMouseEvent_globalPos(QMouseEventH(Event))^;
         WidgetToNotify := QApplication_widgetAt(@p);
         if (WidgetToNotify <> nil) then
         begin
           if TQtMainWindow(Self).MenuBar.Widget <> nil then
           begin
+            p := QMouseEvent_Pos(QMouseEventH(Event))^;
             QWidget_geometry(TQtMainWindow(Self).MenuBar.Widget, @R);
             pt := Point(P.X, P.Y);
             if LCLIntf.PtInRect(R, pt) then
