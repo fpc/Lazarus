@@ -3020,8 +3020,9 @@ begin
   if not Assigned(LCLObject) then exit;
 
   // do not loop with LCL but do not apply it to TQtMainWindow !
-  if not (ClassType = TQtMainWindow) and InUpdate then
-    exit;
+  if not (csDesigning in LCLObject.ComponentState) then
+    if not (ClassType = TQtMainWindow) and InUpdate then
+      exit;
   
   if (NewSize.cx <> LCLObject.Width) or (NewSize.cy <> LCLObject.Height) or
      (LCLObject.ClientRectNeedsInterfaceUpdate) then
