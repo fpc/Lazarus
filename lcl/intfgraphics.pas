@@ -5764,9 +5764,27 @@ begin
 end;
 
 procedure TLazReaderPNG.HandleAlpha;
+{$ifdef VER2_4}
+var
+  n: Integer;
+  c: TFPColor;
+{$endif}
 begin
   inherited HandleAlpha;
   FAlphaPalette := Header.ColorType = 3;
+
+  // check for fpc 2.4, it expands the alpha channel wrong, so the MSByte isn't set
+  {$ifdef VER2_4}
+  if not FAlphaPalette then Exit;
+  for n := 0 to ThePalette.Count - 1 do
+  begin
+    c := ThePalette[n];
+    if c.Alpha and $FF00 <> 0 then Continue;
+    if c.Alpha = 0 then Continue;
+    c.Alpha := c.Alpha shl 8 or c.Alpha;
+    ThePalette[n] := c;
+  end;
+  {$endif}
 end;
 
 procedure TLazReaderPNG.InternalRead(Str: TStream; Img: TFPCustomImage);
