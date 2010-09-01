@@ -265,7 +265,7 @@ type
     property PopupMenu;
     property TabOrder stored False;
     property Visible stored False;
-  end;
+  end deprecated;
 
 
   { TNotebook }
@@ -317,7 +317,7 @@ type
     property ShowTabs;
     property TabOrder;
     property TabStop;
-  end;
+  end deprecated;
 
   { TUNBPage }
 
@@ -1350,11 +1350,11 @@ uses
 procedure Register;
 begin
   RegisterComponents('Standard',[TRadioGroup,TCheckGroup,TPanel]);
-  RegisterComponents('Additional',[TImage,TShape,TBevel,TPaintBox,TNotebook,
+  RegisterComponents('Additional',[TImage,TShape,TBevel,TPaintBox,
     {$ifdef INSTALL_TUNTABBEDNOTEBOOK} TUntabbedNotebook, {$ENDIF}
     TLabeledEdit, TSplitter, TTrayIcon]);
   RegisterComponents('System',[TTimer,TIdleTimer]);
-  RegisterNoIcon([TPage{$ifdef INSTALL_TUNTABBEDNOTEBOOK}, TUNBPage{$ENDIF}]);
+  RegisterNoIcon([TNotebook, TPage{$ifdef INSTALL_TUNTABBEDNOTEBOOK}, TUNBPage{$ENDIF}]);
 end;
 
 {$I custompage.inc}
