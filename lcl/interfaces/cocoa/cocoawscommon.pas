@@ -10,7 +10,7 @@ uses
   Classes,
   Controls,
   WSControls, LCLType,
-  CocoaPrivate, CocoaUtils, LCLMessageGlue;
+  CocoaPrivate, CocoaGDIObjects, CocoaUtils, LCLMessageGlue;
 
 type
 
@@ -26,7 +26,7 @@ type
     procedure MouseUp(x,y: Integer); override;
     procedure MouseClick(clickCount: Integer); override;
     procedure MouseMove(x,y: Integer); override;
-    procedure Draw(ControlContext: NSGraphicsContext; dirty: NSRect); override;
+    procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); override;
   end;
 
   { TCocoaWSWinControl }
@@ -82,7 +82,6 @@ constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TControl);
 begin
   inherited Create(AOwner);
   Target:=ATarget;
-  Context:=TCocoaContext.Create;
 end;
 
 destructor TLCLCommonCallback.Destroy;
@@ -111,13 +110,19 @@ begin
   LCLSendMouseMoveMsg(Target, x,y, []);
 end;
 
-procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext; dirty:NSRect);
+procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext;
+  const bounds, dirty:NSRect);
 var
   struct : TPaintStruct;
 begin
-  FillChar(struct, SizeOf(TPaintStruct), 0);
-  struct.hdc := HDC(Context);
-  LCLSendPaintMsg(Target, HDC(Context), @struct);
+  if not Assigned(Context) then Context:=TCocoaContext.Create;
+
+  Context.ctx:=ControlContext;
+  if Context.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then begin
+    FillChar(struct, SizeOf(TPaintStruct), 0);
+    struct.hdc := HDC(Context);
+    LCLSendPaintMsg(Target, HDC(Context), @struct);
+  end;
 end;
 
 { TCocoaWSWinControl }

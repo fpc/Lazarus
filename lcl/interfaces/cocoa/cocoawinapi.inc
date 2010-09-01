@@ -73,4 +73,89 @@ begin
     {todo: GetNSViewFrame(NSView(Handle), ARect)};
 end;
 
+function TCocoaWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
+var
+  ctx : TCocoaContext;
+begin
+  ctx:=CheckDC(DC);
+  Result:=Assigned(ctx);
+  if not Result then Exit;
+
+  ctx.MoveTo(x,y);
+end;
+
+function TCocoaWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
+var
+  ctx : TCocoaContext;
+begin
+  ctx:=CheckDC(DC);
+  Result:=Assigned(ctx);
+  if not Result then Exit;
+
+  if Assigned(OldPoint) then OldPoint^:=ctx.PenPos;
+  ctx.LineTo(x,y);
+end;
+
+{-------------------------- REGION ROUTINES -----------------------------------}
+
+{------------------------------------------------------------------------------
+  Method:  CreatePolygonRgn
+  Params:  Points   - Pointer to array of polygon points
+           NumPts   - Number of points passed
+           FillMode - Filling mode
+  Returns: The new polygonal region
+
+  Creates a new polygonal region from the specified points
+ ------------------------------------------------------------------------------}
+function TCocoaWidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
+  FillMode: integer): HRGN;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.CreatePolygonRgn NumPts: ' + DbgS(NumPts) +
+      ' FillMode: ' + DbgS(FillMode));
+  {$ENDIF}
+
+  Result := HRGN(TCocoaRegion.Create(Points, NumPts, FillMode=ALTERNATE));
+end;
+
+function CocoaCombineMode(fnCombineMode: Integer): TCocoaCombine;
+begin
+  case fnCombineMode of
+    RGN_AND:  Result:=cc_And;
+    RGN_OR:   Result:=cc_Or;
+    RGN_XOR:  Result:=cc_Xor;
+    RGN_DIFF: Result:=cc_Diff;
+  else
+    Result:=cc_Copy;
+  end;
+end;
+
+function TCocoaWidgetSet.CombineRgn(Dest, Src1, Src2: HRGN;
+  fnCombineMode: Longint): Longint;
+begin
+  Result := LCLType.Error;
+  if (Dest = 0) or (Src1 = 0) or (fnCombineMode<RGN_AND) or (fnCombineMode>RGN_COPY) then Exit;
+  if (fnCombineMode <> RGN_COPY) and (Src2 = 0) then Exit;
+
+  TCocoaRegion(Dest).CombineWith(TCocoaRegion(Src1), cc_Copy);
+
+  if fnCombineMode <> RGN_COPY then
+    TCocoaRegion(Dest). CombineWith(TCocoaRegion(Src2), CocoaCombineMode(fnCombineMode));
+end;
+
+function TCocoaWidgetSet.CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.CreateRectRgn R: ' + DbgS(Classes.Rect(X1, Y1, X2, Y2)));
+  {$ENDIF}
+
+  Result := HRGN(TCocoaRegion.Create(X1, Y1, X2, Y2));
+end;
+
+//todo:
+//function TCocoaWidgetSet.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
+//begin
+//end;
+
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

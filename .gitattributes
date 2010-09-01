@@ -4742,6 +4742,7 @@ lcl/interfaces/carbon/pascocoa/foundation/NSZone.inc svneol=native#text/plain
 lcl/interfaces/carbon/pascocoa/foundation/foundation.pas svneol=native#text/plain
 lcl/interfaces/cocoa/Makefile svneol=native#text/plain
 lcl/interfaces/cocoa/Makefile.fpc svneol=native#text/plain
+lcl/interfaces/cocoa/cocoagdiobjects.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoaint.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoaobject.inc svneol=native#text/plain
 lcl/interfaces/cocoa/cocoaprivate.pp svneol=native#text/plain

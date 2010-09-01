@@ -9,17 +9,10 @@ uses
   MacOSAll, CocoaAll,
   Types, LCLType;
 
-type
-
-  { TCocoaContext }
-
-  TCocoaContext = class(TObject)
-  public
-    ctx : NSGraphicsContext;
-  end;
-
-
 function GetNSPoint(x,y: single): NSPoint; inline;
+
+function GetCGRect(x1, y1, x2, y2: Integer): CGRect;
+function CGRectToRect(const c: CGRect): TRect;
 
 function GetNSRect(x, y, width, height: Integer): NSRect; inline;
 function RectToNSRect(const r: TRect): NSRect;
@@ -164,6 +157,24 @@ begin
   Result.origin.y:=y;
   Result.size.width:=width;
   Result.size.height:=height;
+end;
+
+function GetCGRect(x1, y1, x2, y2: Integer): CGRect;
+begin
+  Result.origin.x:=x1;
+  Result.origin.y:=y1;
+  Result.size.width:=x2-x1;
+  Result.size.height:=y2-y1;
+end;
+
+function CGRectToRect(const c:CGRect):TRect;
+begin
+  with Result do begin
+    Left:=round(c.origin.x);
+    Top:=round(c.origin.y);
+    Right:=round(c.origin.x+c.size.width);
+    Bottom:=round(c.origin.y+c.size.height);
+  end;
 end;
 
 function RectToNSRect(const r: TRect): NSRect;

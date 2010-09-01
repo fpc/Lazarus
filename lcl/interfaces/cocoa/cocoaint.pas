@@ -37,7 +37,7 @@ uses
   // interfacebase
   InterfaceBase, GraphType,
   // private
-  CocoaAll, CocoaPrivate, CocoaUtils,
+  CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   CocoaWSFactory;
@@ -105,6 +105,13 @@ var
   CocoaWidgetSet: TCocoaWidgetSet;
 
 implementation
+
+function CheckDC(dc: HDC): TCocoaContext;
+begin
+  //todo: a better check!
+  Result:=TCocoaContext(dc);
+end;
+
 
 // the implementation of the winapi compatibility methods
 {$I cocoawinapi.inc}

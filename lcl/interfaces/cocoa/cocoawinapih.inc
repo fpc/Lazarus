@@ -46,10 +46,10 @@ function ClipboardGetFormats(ClipboardType: TClipboardType;
 function ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
   Formats: PClipboardFormat): boolean; override;
-function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; override;
+function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; override;}
 
 function CombineRgn(Dest, Src1, Src2: HRGN; fnCombineMode: Longint): Longint;  override;
-function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
+{function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; Width, Height : Integer) : Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
@@ -58,10 +58,10 @@ function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
 function CreateIconIndirect(IconInfo: PIconInfo): HICON; override;
-function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
+function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;}
 function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; override;
 function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;
-
+{
 procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
 function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; override;
@@ -135,13 +135,13 @@ function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer;
 function IsWindowEnabled(Handle: HWND): boolean; override;
 function IsWindowVisible(Handle: HWND): boolean; override;
 
-procedure LeaveCriticalSection(var CritSection: TCriticalSection); override;
+procedure LeaveCriticalSection(var CritSection: TCriticalSection); override;}
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 
-function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; override;
+{function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; override;}
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 
-function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; override;
+{function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; override;
 function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: boolean): boolean; override;
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean; override;
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; override;

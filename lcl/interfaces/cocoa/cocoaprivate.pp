@@ -43,7 +43,7 @@ type
     procedure MouseUp(x,y: Integer); virtual; abstract;
     procedure MouseClick(ClickCount: Integer); virtual; abstract;
     procedure MouseMove(x,y: Integer); virtual; abstract;
-    procedure Draw(ctx: NSGraphicsContext; r: NSRect); virtual; abstract;
+    procedure Draw(ctx: NSGraphicsContext; const bounds, dirty: NSRect); virtual; abstract;
   end;
 
   { TWindowCallback }
@@ -316,7 +316,7 @@ end;
 procedure TCocoaCustomControl.drawRect(dirtyRect:NSRect);
 begin
   inherited drawRect(dirtyRect);
-  callback.Draw(NSGraphicsContext.currentContext, dirtyRect);
+  callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
 end;
 
 end.
