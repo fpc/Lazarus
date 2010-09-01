@@ -202,6 +202,7 @@ class function TCocoaWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   win : TCocoaWindow;
+  cnt : TCocoaCustomControl;
 const
   WinMask = NSTitledWindowMask or NSClosableWindowMask or NSMiniaturizableWindowMask or NSResizableWindowMask;
 begin
@@ -218,6 +219,10 @@ begin
   win.setDelegate(win);
   win.setTitle(NSStringUtf8(AWinControl.Caption));
   win.setAcceptsMouseMovedEvents(True);
+
+  cnt:=TCocoaCustomControl.alloc.init;
+  cnt.callback:=TCocoaWindow(win).callback;
+  win.setContentView(cnt);
 
   Result := TLCLIntfHandle(win);
 end;

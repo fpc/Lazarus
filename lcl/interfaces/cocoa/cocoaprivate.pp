@@ -43,6 +43,7 @@ type
     procedure MouseUp(x,y: Integer); virtual; abstract;
     procedure MouseClick(ClickCount: Integer); virtual; abstract;
     procedure MouseMove(x,y: Integer); virtual; abstract;
+    procedure Draw(ctx: NSGraphicsContext; r: NSRect); virtual; abstract;
   end;
 
   { TWindowCallback }
@@ -56,13 +57,6 @@ type
     procedure CloseQuery(var CanClose: Boolean); virtual; abstract;
     procedure Close; virtual; abstract;
     procedure Resize; virtual; abstract;
-  end;
-
-  { TCocoaWindowContentView }
-
-  TCocoaWindowContentView = objcclass(NSView)
-  public
-    procedure drawRect(r: NSRect); override;
   end;
 
   {todo: consider using common protocol for all TCocoa* derived objcclasses }
@@ -106,6 +100,8 @@ type
     function acceptsFirstResponder: Boolean; override;
   end;
 
+  { TCocoaWindow }
+
   TCocoaWindow = objcclass(NSWindow)
   protected
     function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
@@ -125,19 +121,14 @@ type
     procedure mouseMoved(event: NSEvent); override;
   end;
 
+  { TCocoaCustomControl }
+
   TCocoaCustomControl = objcclass(NSControl)
     callback  : TCommonCallback;
+    procedure drawRect(dirtyRect: NSRect); override;
   end;
 
 implementation
-
-{ TCocoaWindowContentView }
-
-procedure TCocoaWindowContentView.drawRect(r: NSRect);
-begin
-  //LCLSendPaintMsg();
-  inherited drawRect(r);
-end;
 
 { TCocoaButton }
 
@@ -318,6 +309,14 @@ end;
 constructor TWindowCallback.Create(AOwner: NSWindow);
 begin
   Owner:=AOwner;
+end;
+
+{ TCocoaCustomControl }
+
+procedure TCocoaCustomControl.drawRect(dirtyRect:NSRect);
+begin
+  inherited drawRect(dirtyRect);
+  callback.Draw(NSGraphicsContext.currentContext, dirtyRect);
 end;
 
 end.

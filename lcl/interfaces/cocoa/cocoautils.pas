@@ -9,6 +9,16 @@ uses
   MacOSAll, CocoaAll,
   Types, LCLType;
 
+type
+
+  { TCocoaContext }
+
+  TCocoaContext = class(TObject)
+  public
+    ctx : NSGraphicsContext;
+  end;
+
+
 function GetNSPoint(x,y: single): NSPoint; inline;
 
 function GetNSRect(x, y, width, height: Integer): NSRect; inline;

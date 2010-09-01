@@ -19,11 +19,14 @@ type
   TLCLCommonCallback = class(TCommonCallback)
   public
     Target  : TControl;
+    Context : TCocoaContext;
     constructor Create(AOwner: NSObject; ATarget: TControl);
+    destructor Destroy; override;
     procedure MouseDown(x,y: Integer); override;
     procedure MouseUp(x,y: Integer); override;
     procedure MouseClick(clickCount: Integer); override;
     procedure MouseMove(x,y: Integer); override;
+    procedure Draw(ControlContext: NSGraphicsContext; dirty: NSRect); override;
   end;
 
   { TCocoaWSWinControl }
@@ -79,6 +82,13 @@ constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TControl);
 begin
   inherited Create(AOwner);
   Target:=ATarget;
+  Context:=TCocoaContext.Create;
+end;
+
+destructor TLCLCommonCallback.Destroy;
+begin
+  Context.Free;
+  inherited Destroy;
 end;
 
 procedure TLCLCommonCallback.MouseDown(x, y: Integer);
@@ -99,6 +109,15 @@ end;
 procedure TLCLCommonCallback.MouseMove(x, y: Integer);
 begin
   LCLSendMouseMoveMsg(Target, x,y, []);
+end;
+
+procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext; dirty:NSRect);
+var
+  struct : TPaintStruct;
+begin
+  FillChar(struct, SizeOf(TPaintStruct), 0);
+  struct.hdc := HDC(Context);
+  LCLSendPaintMsg(Target, HDC(Context), @struct);
 end;
 
 { TCocoaWSWinControl }
