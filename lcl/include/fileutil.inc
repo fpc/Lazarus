@@ -21,44 +21,6 @@ var
   FNeedRTLAnsi: boolean = false;
   FNeedRTLAnsiValid: boolean = false;
 
-function NeedRTLAnsi: boolean;
-{$IFDEF WinCE}
-// CP_UTF8 is missing in the windows unit of the Windows CE RTL
-const
-  CP_UTF8 = 65001;
-{$ENDIF}
-{$IFNDEF windows}
-var
-  Lang: String;
-  i: LongInt;
-  Encoding: String;
-{$ENDIF}
-begin
-  if FNeedRTLAnsiValid then
-    exit(FNeedRTLAnsi);
-  {$IFDEF Windows}
-  FNeedRTLAnsi:=GetACP<>CP_UTF8;
-  {$ELSE}
-  FNeedRTLAnsi:=false;
-  Lang := SysUtils.GetEnvironmentVariable('LC_ALL');
-  if Length(lang) = 0 then
-  begin
-    Lang := SysUtils.GetEnvironmentVariable('LC_MESSAGES');
-    if Length(Lang) = 0 then
-    begin
-      Lang := SysUtils.GetEnvironmentVariable('LANG');
-    end;
-  end;
-  i:=System.Pos('.',Lang);
-  if (i>0) then begin
-    Encoding:=copy(Lang,i+1,length(Lang)-i);
-    FNeedRTLAnsi:=(SysUtils.CompareText(Encoding,'UTF-8')=0)
-              or (SysUtils.CompareText(Encoding,'UTF8')=0);
-  end;
-  {$ENDIF}
-  FNeedRTLAnsiValid:=true;
-  Result:=FNeedRTLAnsi;
-end;
 
 procedure SetNeedRTLAnsi(NewValue: boolean);
 begin
@@ -80,40 +42,6 @@ begin
     Result := UTF8ToAnsi(s)
   else
     Result := s;
-end;
-
-function ConsoleToUTF8(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
-{$ifdef MSWindows}
-var
-  Dst: PChar;
-{$endif}
-begin
-  {$ifdef MSWindows}
-  Dst := AllocMem((Length(s) + 1) * SizeOf(Char));
-  if OemToChar(PChar(s), Dst) then 
-    Result := StrPas(Dst)
-  else
-    Result := s;
-  FreeMem(Dst);
-  Result := SysToUTF8(Result);
-  {$else}
-  Result := SysToUTF8(S);
-  {$endif}
-end;
-
-function UTF8ToConsole(const s: string): string;
-{$ifdef MSWindows}
-var
-  Dst: PChar;
-{$endif}
-begin
-  Result := UTF8ToSys(s);
-  {$ifdef MSWindows}
-  Dst := AllocMem((Length(Result) + 1) * SizeOf(Char));
-  if CharToOEM(PChar(Result), Dst) then
-    Result := StrPas(Dst);
-  FreeMem(Dst);
-  {$endif}
 end;
 
 function SysToUTF8(const s: string): string;
@@ -142,20 +70,9 @@ begin
 end;
 {$ENDIF}
 
-
-function FileExistsUTF8(const Filename: string): boolean;
-begin
-  Result:=SysUtils.FileExists(UTF8ToSys(Filename));
-end;
-
 function FileAgeUTF8(const FileName: String): Longint;
 begin
   Result:=SysUtils.FileAge(UTF8ToSys(Filename));
-end;
-
-function DirectoryExistsUTF8(const Directory: string): Boolean;
-begin
-  Result:=SysUtils.DirectoryExists(UTF8ToSys(Directory));
 end;
 
 function ExpandFileNameUTF8(const FileName: string): string;
@@ -177,83 +94,9 @@ begin
   {$endif}
 end;
 
-function FindFirstUTF8(const Path: string; Attr: Longint; out Rslt: TSearchRec
-  ): Longint;
-begin
-  Result:=SysUtils.FindFirst(UTF8ToSys(Path),Attr,Rslt);
-  Rslt.Name:=SysToUTF8(Rslt.Name);
-end;
-
-function FindNextUTF8(var Rslt: TSearchRec): Longint;
-begin
-  Rslt.Name:=UTF8ToSys(Rslt.Name);
-  Result:=SysUtils.FindNext(Rslt);
-  Rslt.Name:=SysToUTF8(Rslt.Name);
-end;
-
-procedure FindCloseUTF8(var F: TSearchrec);
-begin
-  SysUtils.FindClose(F);
-end;
-
 function FileSetDateUTF8(const FileName: String; Age: Longint): Longint;
 begin
   Result:=SysUtils.FileSetDate(UTF8ToSys(Filename),Age);
-end;
-
-function FileGetAttrUTF8(const FileName: String): Longint;
-begin
-  Result:=SysUtils.FileGetAttr(UTF8ToSys(Filename));
-end;
-
-function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
-begin
-  Result:=SysUtils.FileSetAttr(UTF8ToSys(Filename),Attr);
-end;
-
-function DeleteFileUTF8(const FileName: String): Boolean;
-begin
-  Result:=SysUtils.DeleteFile(UTF8ToSys(Filename));
-end;
-
-function RenameFileUTF8(const OldName, NewName: String): Boolean;
-begin
-  Result:=SysUtils.RenameFile(UTF8ToSys(OldName),UTF8ToSys(NewName));
-end;
-
-function FileSearchUTF8(const Name, DirList: String): String;
-begin
-  Result:=SysToUTF8(SysUtils.FileSearch(UTF8ToSys(Name),UTF8ToSys(DirList)));
-end;
-
-function FileIsReadOnlyUTF8(const FileName: String): Boolean;
-begin
-  Result:=SysUtils.FileIsReadOnly(UTF8ToSys(Filename));
-end;
-
-function GetCurrentDirUTF8: String;
-begin
-  Result:=SysToUTF8(SysUtils.GetCurrentDir);
-end;
-
-function SetCurrentDirUTF8(const NewDir: String): Boolean;
-begin
-  Result:=SysUtils.SetCurrentDir(UTF8ToSys(NewDir));
-end;
-
-function CreateDirUTF8(const NewDir: String): Boolean;
-begin
-  Result:=SysUtils.CreateDir(UTF8ToSys(NewDir));
-end;
-
-function RemoveDirUTF8(const Dir: String): Boolean;
-begin
-  Result:=SysUtils.RemoveDir(UTF8ToSys(Dir));
-end;
-
-function ForceDirectoriesUTF8(const Dir: string): Boolean;
-begin
-  Result:=SysUtils.ForceDirectories(UTF8ToSys(Dir));
 end;
 
 function ParamStrUTF8(Param: Integer): string;
@@ -417,20 +260,6 @@ begin
       Result:=Len1-Len2;
     {$ENDIF}
   end;
-end;
-
-{------------------------------------------------------------------------------
-  function FilenameIsAbsolute(const TheFilename: string):boolean;
- ------------------------------------------------------------------------------}
-function FilenameIsAbsolute(const TheFilename: string):boolean;
-begin
-  {$IFDEF WINDOWS}
-  // windows
-  Result:=FilenameIsWinAbsolute(TheFilename);
-  {$ELSE}
-  // unix
-  Result:=FilenameIsUnixAbsolute(TheFilename);
-  {$ENDIF}
 end;
 
 function FilenameIsWinAbsolute(const TheFilename: string): boolean;
@@ -769,271 +598,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  procedure CheckIfFileIsSymlink(const AFilename: string);
- ------------------------------------------------------------------------------}
-procedure CheckIfFileIsSymlink(const AFilename: string);
-{$IFNDEF WINDOWS}
-var
-  AText: string;
-{$ENDIF}
-begin
-  // to get good error messages consider the OS
-  if not FileExistsUTF8(AFilename) then begin
-    raise Exception.Create('file "'+AFilename+'" does not exist');
-  end;
-  {$IFDEF WINDOWS}
-  raise Exception.Create('"'+AFilename+'" is not symlink');
-  {$ELSE}
-  if FpReadLink(AFilename)='' then begin
-    AText:='"'+AFilename+'"';
-    case fpGetErrno() of
-    ESysEAcces:
-      AText:='read access denied for '+AText;
-    ESysENoEnt:
-      AText:='a directory component in '+AText
-                          +' does not exist or is a dangling symlink';
-    ESysENotDir:
-      AText:='a directory component in '+Atext+' is not a directory';
-    ESysENoMem:
-      AText:='insufficient memory';
-    ESysELoop:
-      AText:=AText+' has a circular symbolic link';
-    else
-      AText:=AText+' is not a symbolic link';
-    end;
-    raise Exception.Create(AText);
-  end;
-  {$ENDIF}
-end;
-
-{------------------------------------------------------------------------------
-  function FileIsSymlink(const AFilename: string): boolean;
- ------------------------------------------------------------------------------}
-function FileIsSymlink(const AFilename: string): boolean;
-{$IFDEF WINDOWS}
-var
-  FileHandle: THandle;
-  FileInfo: TBYHANDLEFILEINFORMATION;
-{$ENDIF}
-begin
-  {$IFDEF WINDOWS}
-  FileHandle := FileOpen(UTF8ToSys(AFileName), fmOpenRead or fmShareDenyNone);
-  if FileHandle <> feInvalidHandle then
-  begin
-    GetFileInformationByHandle(HFile(FileHandle), FileInfo);
-    Result := FileInfo.nNumberOfLinks > 1;
-    FileClose(FileHandle);
-  end
-  else
-    Result := False;
-  {$ELSE}
-  Result := FpReadLink(AFilename) <> '';
-  {$ENDIF}
-end;
-
-{------------------------------------------------------------------------------
-  function FileIsReadable(const AFilename: string): boolean;
- ------------------------------------------------------------------------------}
-function FileIsReadable(const AFilename: string): boolean;
-begin
-  {$IFDEF WINDOWS}
-  Result:=true;
-  {$ELSE}
-  Result:= BaseUnix.FpAccess(AFilename,BaseUnix.R_OK)=0;
-  {$ENDIF}
-end;
-
-{------------------------------------------------------------------------------
-  FileIsWritable
- ------------------------------------------------------------------------------}
-function FileIsWritable(const AFilename: string): boolean;
-begin
-  {$IFDEF WINDOWS}
-  Result:=((FileGetAttrUTF8(AFilename) and faReadOnly)=0);
-  {$ELSE}
-  Result:= BaseUnix.FpAccess(AFilename,BaseUnix.W_OK)=0;
-  {$ENDIF}
-end;
-
-function FileSize(const Filename: string): int64;
-{$IFDEF Unix}
-var
-  st: baseunix.stat;
-begin
-  if not fpstat(pointer(Filename),st)>=0 then
-    exit(-1);
-  Result:=st.st_size;
-end;
-{$ELSE}
-var
-  FindData: TWIN32FindDataW;
-  FindHandle: THandle;
-  Str: widestring;
-begin
-  // Fix for the bug 14360:
-  // Don't assign the widestring to TSearchRec.name because it is of type
-  // string, which will generate a conversion to the system encoding
-  Str := UTF8Decode(Filename);
-  FindHandle:=Windows.FindFirstFileW(PWideChar(Str), FindData);
-  if FindHandle=Windows.Invalid_Handle_value then
-  begin
-    Result:=-1;
-    exit;
-  end;
-  Result:=(int64(FindData.nFileSizeHigh) shl 32)+FindData.nFileSizeLow;
-  Windows.FindClose(FindHandle);
-end;
-{$ENDIF}
-
-{------------------------------------------------------------------------------
-  GetFileDescription
- ------------------------------------------------------------------------------}
-function GetFileDescription(const AFilename: string): string;
-{$IFDEF WINDOWS}
-{$ELSE}
-var
-  info: Stat;
-  // permissions
-  // user
-  // group
-  // size
-  // date
-  // time
-  mode: mode_t;
-{$ENDIF}
-begin
-  Result:='';
-  {$IFDEF WINDOWS}
-
-  {$ELSE}
-  if not (FpStat(AFilename,info)=0) then exit;
-  
-  // permissions
-  // file type
-  mode:= info.st_mode;
-  if STAT_IFLNK and mode=STAT_IFLNK then
-    Result:=Result+'l'
-  else
-  if STAT_IFDIR and mode=STAT_IFDIR then
-    Result:=Result+'d'
-  else
-  if STAT_IFBLK and mode=STAT_IFBLK then
-    Result:=Result+'b'
-  else
-  if STAT_IFCHR and mode=STAT_IFCHR then
-    Result:=Result+'c'
-  else
-    Result:=Result+'-';
-  // user permissions
-  if STAT_IRUSR and mode=STAT_IRUsr then
-    Result:=Result+'r'
-  else
-    Result:=Result+'-';
-  if STAT_IWUsr and mode=STAT_IWUsr then
-    Result:=Result+'w'
-  else
-    Result:=Result+'-';
-  if STAT_IXUsr and mode=STAT_IXUsr then
-    Result:=Result+'x'
-  else
-    Result:=Result+'-';
-  // group permissions
-  if STAT_IRGRP and mode=STAT_IRGRP then
-    Result:=Result+'r'
-  else
-    Result:=Result+'-';
-  if STAT_IWGRP and mode=STAT_IWGRP then
-    Result:=Result+'w'
-  else
-    Result:=Result+'-';
-  if STAT_IXGRP and mode=STAT_IXGRP then
-    Result:=Result+'x'
-  else
-    Result:=Result+'-';
-  // other permissions
-  if STAT_IROTH and mode=STAT_IROTH then
-    Result:=Result+'r'
-  else
-    Result:=Result+'-';
-  if STAT_IWOTH and mode=STAT_IWOTH then
-    Result:=Result+'w'
-  else
-    Result:=Result+'-';
-  if STAT_IXOTH and mode=STAT_IXOTH then
-    Result:=Result+'x'
-  else
-    Result:=Result+'-';
-
-
-  // user name
-  //Result:=Result+' Owner: '+IntToStr(info.uid)+'.'+IntToStr(info.gid);
-
-  // size
-  Result:=Result+rsSize+IntToStr(info.st_size);
-  
-  {$ENDIF}
-  // date + time
-  Result:=Result+rsModified;
-  try
-    Result:=Result+FormatDateTime('DD/MM/YYYY hh:mm',
-                           FileDateToDateTime(FileAgeUTF8(AFilename)));
-  except
-    Result:=Result+'?';
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  function ReadAllLinks(const Filename: string;
-    ExceptionOnError: boolean): string;
- ------------------------------------------------------------------------------}
-function ReadAllLinks(const Filename: string;
-  ExceptionOnError: boolean): string;
-{$IFNDEF WINDOWS}
-var
-  LinkFilename: string;
-  AText: string;
-{$ENDIF}
-begin
-  Result:=Filename;
-  {$IFDEF WINDOWS}
-
-  {$ELSE}
-  repeat
-    LinkFilename:=FpReadLink(Result);
-    if LinkFilename='' then begin
-      AText:='"'+Filename+'"';
-      case fpGetErrno() of
-      ESysEAcces:
-        AText:='read access denied for '+AText;
-      ESysENoEnt:
-        AText:='a directory component in '+AText
-                            +' does not exist or is a dangling symlink';
-      ESysENotDir:
-        AText:='a directory component in '+AText+' is not a directory';
-      ESysENoMem:
-        AText:='insufficient memory';
-      ESysELoop:
-        AText:=AText+' has a circular symbolic link';
-      else
-        // not a symbolic link, just a regular file
-        exit;
-      end;
-      if (not ExceptionOnError) then begin
-        Result:='';
-        exit;
-      end;
-      raise EFOpenError.Create(AText);
-    end else begin
-      if not FilenameIsAbsolute(LinkFilename) then
-        Result:=ExpandFileNameUTF8(ExtractFilePath(Result)+LinkFilename)
-      else
-        Result:=LinkFilename;
-    end;
-  until false;
-  {$ENDIF}
-end;
-
 function TryReadAllLinks(const Filename: string): string;
 begin
   Result:=ReadAllLinks(Filename,false);
@@ -1062,63 +626,6 @@ begin
   Result:=copy(AFilename,StartPos,ExtPos-StartPos);
 end;
 
-{------------------------------------------------------------------------------
-  function FileIsExecutable(const AFilename: string): boolean;
- ------------------------------------------------------------------------------}
-function FileIsExecutable(const AFilename: string): boolean;
-{$IFNDEF WINDOWS}
-var
-  Info : Stat;
-{$ENDIF}
-begin
-  {$IFDEF WINDOWS}
-  Result:=FileExistsUTF8(AFilename);
-  {$ELSE}
-  // first check AFilename is not a directory and then check if executable
-  Result:= (FpStat(AFilename,info)<>-1) and FPS_ISREG(info.st_mode) and
-           (BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0);
-  {$ENDIF}
-end;
-
-{------------------------------------------------------------------------------
-  procedure CheckIfFileIsExecutable(const AFilename: string);
- ------------------------------------------------------------------------------}
-procedure CheckIfFileIsExecutable(const AFilename: string);
-{$IFNDEF WINDOWS}
-var AText: string;
-{$ENDIF}
-begin
-  // TProcess does not report, if a program can not be executed
-  // to get good error messages consider the OS
-  if not FileExistsUTF8(AFilename) then begin
-    raise Exception.Create('file "'+AFilename+'" does not exist');
-  end;
-  if DirPathExists(AFilename) then begin
-    raise Exception.Create('file "'+AFilename+'" is a directory and not an executable');
-  end;
-  {$IFNDEF WINDOWS}
-  if not FileIsExecutable(AFilename) then
-  begin
-    AText:='"'+AFilename+'"';
-    case fpGetErrno() of
-    ESysEAcces:
-      AText:='read access denied for '+AText;
-    ESysENoEnt:
-      AText:='a directory component in '+AText
-             +' does not exist or is a dangling symlink';
-    ESysENotDir:
-      AText:='a directory component in '+Atext+' is not a directory';
-    ESysENoMem:
-      AText:='insufficient memory';
-    ESysELoop:
-      AText:=AText+' has a circular symbolic link';
-    else
-      AText:=AText+' is not executable';
-    end;
-    raise Exception.Create(AText);
-  end;
-  {$ENDIF}
-end;
 
 {------------------------------------------------------------------------------
   function ForceDirectory(DirectoryName: string): boolean;
@@ -1940,4 +1447,95 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  function FileSearchUTF8(const Name, DirList: String): String;
+ ------------------------------------------------------------------------------}
+function FileSearchUTF8(const Name, DirList: String; ImplicitCurrentDir : Boolean = True): String;
+Var
+  I : longint;
+  Temp : String;
+
+begin
+  Result:=Name;
+  temp:=SetDirSeparators(DirList);
+  // Start with checking the file in the current directory
+  If ImplicitCurrentDir and (Result <> '') and FileExistsUTF8(Result) Then
+    exit;
+  while True do begin
+    If Temp = '' then
+      Break; // No more directories to search - fail
+    I:=pos(PathSeparator,Temp);
+    If I<>0 then
+      begin
+        Result:=Copy (Temp,1,i-1);
+        system.Delete(Temp,1,I);
+      end
+    else
+      begin
+        Result:=Temp;
+        Temp:='';
+      end;
+    If Result<>'' then
+      Result:=IncludeTrailingPathDelimiter(Result)+name;
+    If (Result <> '') and FileExistsUTF8(Result) Then
+      exit;
+  end;
+  Result:='';
+end;
+
+{------------------------------------------------------------------------------
+  function ForceDirectoriesUTF8(const Dir: string): Boolean;
+ ------------------------------------------------------------------------------}
+function ForceDirectoriesUTF8(const Dir: string): Boolean;
+
+  var
+    E: EInOutError;
+    ADrv : String;
+
+  function DoForceDirectories(Const Dir: string): Boolean;
+  var
+    ADir : String;
+    APath: String;
+  begin
+    Result:=True;
+    ADir:=ExcludeTrailingPathDelimiter(Dir);
+    if (ADir='') then Exit;
+    if Not DirectoryExistsUTF8(ADir) then
+      begin
+        APath := ExtractFilePath(ADir);
+        //this can happen on Windows if user specifies Dir like \user\name/test/
+        //and would, if not checked for, cause an infinite recusrsion and a stack overflow
+        if (APath = ADir) then Result := False
+          else Result:=DoForceDirectories(APath);
+      If Result then
+        Result := CreateDirUTF8(ADir);
+      end;
+  end;
+
+  function IsUncDrive(const Drv: String): Boolean;
+  begin
+    Result := (Length(Drv) > 2) and (Drv[1] = PathDelim) and (Drv[2] = PathDelim);
+  end;
+
+begin
+  Result := False;
+  ADrv := ExtractFileDrive(Dir);
+  if (ADrv<>'') and (not DirectoryExistsUTF8(ADrv))
+  {$IFNDEF FORCEDIR_NO_UNC_SUPPORT} and (not IsUncDrive(ADrv)){$ENDIF} then Exit;
+  if Dir='' then
+    begin
+      E:=EInOutError.Create(SCannotCreateEmptyDir);
+      E.ErrorCode:=3;
+      Raise E;
+    end;
+  Result := DoForceDirectories(SetDirSeparators(Dir));
+end;
+
+{------------------------------------------------------------------------------
+  function ForceDirectoriesUTF8(const Dir: string): Boolean;
+ ------------------------------------------------------------------------------}
+function FileIsReadOnlyUTF8(const FileName: String): Boolean;
+begin
+  Result:=FileGetAttrUTF8(FileName) and faReadOnly > 0;
+end;
 

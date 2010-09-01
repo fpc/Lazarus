@@ -27,7 +27,7 @@ interface
 
 uses
   // For Smart Linking: Do not use the LCL!
-  Classes, SysUtils, LCLStrConsts, Masks;
+  SysConst, Classes, SysUtils, LCLStrConsts, Masks;
   
 {$if defined(Windows) or defined(darwin)}
 {$define CaseInsensitiveFilenames}
@@ -205,7 +205,7 @@ function FileGetAttrUTF8(const FileName: String): Longint;
 function FileSetAttrUTF8(const Filename: String; Attr: longint): Longint;
 function DeleteFileUTF8(const FileName: String): Boolean;
 function RenameFileUTF8(const OldName, NewName: String): Boolean;
-function FileSearchUTF8(const Name, DirList : String): String;
+function FileSearchUTF8(const Name, DirList : String; ImplicitCurrentDir : Boolean = True): String;
 function FileIsReadOnlyUTF8(const FileName: String): Boolean;
 function GetCurrentDirUTF8: String;
 function SetCurrentDirUTF8(const NewDir: String): Boolean;
@@ -236,6 +236,13 @@ uses
 {$ENDIF}
 
 {$I fileutil.inc}
+{$IFDEF windows}
+  {$i winfileutil.inc}
+{$ELSE}
+  {$i unixfileutil.inc}
+{$ENDIF}
 
+initialization
+  InitFileUtils;
 end.
 
