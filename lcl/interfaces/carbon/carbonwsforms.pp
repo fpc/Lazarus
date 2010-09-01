@@ -174,8 +174,8 @@ begin
   frm:=TCustomForm(AWinControl);
   if Assigned(frm) then
   begin
-    if Assigned(frm.PopupParent) then
-      SetPopupParent(frm, frm.PopupMode, frm.PopupParent);
+    if (AParams.WndParent<>0) and ((AParams.Style and WS_CHILD) = 0) then
+      SetWindowGroup(TCarbonWindow(Result).Window, GetWindowGroupOfClass(kHelpWindowClass));
   end;
 end;
 
