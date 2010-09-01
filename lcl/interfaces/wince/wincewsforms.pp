@@ -454,6 +454,7 @@ var
 begin
   TWinCEWSWinControl.ShowHide(AWinControl);
 
+  {$ifndef Win32}
   // In atKeyPadDevice mode, we need to install the menu upon showing
   if (Application.ApplicationType = atKeyPadDevice) and
     lForm.HandleObjectShouldBeVisible then
@@ -463,6 +464,7 @@ begin
     else
       CeSetMenu(AWinControl.Handle, lForm.Menu.Handle, lForm.Menu);
   end;
+  {$endif}
 end;
 
 end.

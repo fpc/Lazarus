@@ -46,8 +46,10 @@ type
     class procedure UpdateCaption(const AMenuItem: TMenuItem; ACaption: String);
     class procedure AttachMenuEx(const AMenuItem: TMenuItem; const AParentHandle: HMENU);
     class procedure CopyMenuToHandle(const AMenuItem: TMenuItem; const ADest: HMENU);
+    {$ifndef Win32}
     class function FindMenuForm(const AMenu: TMenu; var AMenuBarHandle: THandle;
       var AForm: TForm): Boolean;
+    {$endif}
   published
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
@@ -760,6 +762,7 @@ begin
   end;
 end;
 
+{$ifndef Win32}
 class function TWinCEWSMenuItem.FindMenuForm(const AMenu: TMenu;
   var AMenuBarHandle: THandle; var AForm: TForm): Boolean;
 var
@@ -776,6 +779,7 @@ begin
       Break;
     end;
 end;
+{$endif}
 
 class procedure TWinCEWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 begin

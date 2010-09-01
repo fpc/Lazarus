@@ -1181,17 +1181,7 @@ end;}
 
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.ExcludeClipRect(dc: hdc;  Left, Top, Right, Bottom: Integer): Integer;
-var
-  P: TPoint;
 begin
-  // Fixes the following bug: http://bugs.freepascal.org/view.php?id=17249
-  if LCLIntf.GetWindowOrgEx(DC, @P) > 0 then
-  begin
-    Left := Left + P.x;
-    Top := Top + P.y;
-    Right := Right + P.x;
-    Bottom := Bottom + P.y;
-  end;
   Result := Windows.ExcludeClipRect(dc, Left, Top, Right, Bottom);
 end;
 
@@ -1442,13 +1432,8 @@ end;
 
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
-var
-  P: TPoint;
 begin
   Result := Windows.GetClipBox(DC, Windows.LPRECT(lpRect));
-  // Fixes the following bug: http://bugs.freepascal.org/view.php?id=17249
-  if LCLIntf.GetWindowOrgEx(DC, @P) > 0 then
-    OffsetRect(lpRect^, -P.x, -P.y);
 end;
 
 {------------------------------------------------------------------------------
@@ -2023,6 +2008,18 @@ begin
   {$else}
     Result := 0;
   {$endif}
+end;
+
+function TWinCEWidgetSet.MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;
+var
+  P: TPoint;
+  lResult: Integer;
+Begin
+  lResult := GetViewPortOrgEx(dc, @P);
+  if lResult <> 0 then
+    Result := SetViewPortOrgEx(dc, P.x+dX, P.y+dY, @P)
+  else
+    Result := False;
 end;
 
 { This routine isn't used directly by the LCL

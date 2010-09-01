@@ -142,6 +142,7 @@ function GetTextColor(DC: HDC) : TColorRef; override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
 function GetViewPortExtEx(DC: HDC; Size: PSize): Integer; override;
+function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean; override;
 function GetViewPortOrgEx(DC: HDC; P: PPoint): Integer; override;
 function GetWindowExtEx(DC: HDC; Size: PSize): Integer; override;
 function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;
