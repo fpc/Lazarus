@@ -1269,7 +1269,12 @@ begin
 
   if (Flags and DT_CALCRECT) = DT_CALCRECT then
   begin
-    ARect.Right := ARect.Left + R.Right - R.Left;
+    if (Flags and DT_WORDBREAK = DT_WORDBREAK) and
+    ((R.Bottom - R.Top) > (ARect.Bottom - ARect.Top)) then
+      // MSDN says do not touch rect width when we have DT_WORDBREAK flag
+      // and new text is multiline (if R height > ARect height).See #17329.
+    else
+      ARect.Right := ARect.Left + R.Right - R.Left;
     ARect.Bottom := ARect.Top + R.Bottom - R.Top;
     {$ifdef VerboseQtWinAPI}
       WriteLn('[WinAPI DrawText] Rect=', dbgs(ARect));
@@ -1287,6 +1292,18 @@ begin
   begin
     Pt := Point(ARect.Left, ARect.Top);
     CalculateOffsetWithAngle(QtDC.font.Angle, Pt.X, Pt.Y);
+  end;
+
+  // we cannot fit into rectangle, so use DT_SINGLELINE.See #17329.
+  // http://msdn.microsoft.com/en-us/library/dd162498%28v=VS.85%29.aspx
+  if QtDC.getClipping and
+    (Flags and DT_NOCLIP = DT_NOCLIP) and
+    (Flags and DT_WORDBREAK = DT_WORDBREAK) and
+    (Flags and DT_SINGLELINE = DT_SINGLELINE) and
+    ((R.Bottom - R.Top) >= (ARect.Bottom - ARect.Top)) then
+  begin
+    Flags := Flags and not DT_WORDBREAK;
+    F := DTFlagsToQtFlags(Flags);
   end;
 
   with ARect do
