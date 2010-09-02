@@ -990,9 +990,15 @@ var
         {$IFDEF VerboseMenuIntf}
         debugln('TIDEMenuSection.UpdateNeedTopSeparator CREATE TopSeparator Name="',Name,'" ContainerMenuIndex=',dbgs(ContainerMenuIndex),' ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count));
         {$ENDIF}
-        if ContainerMenuIndex>ContainerMenuItem.Count then begin
+        if ContainerMenuIndex>ContainerMenuItem.Count then
+        begin
           debugln('TIDEMenuSection.UpdateNeedTopSeparator CREATE TopSeparator Name="',Name,'" ContainerMenuIndex=',dbgs(ContainerMenuIndex),' ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count));
           GetRoot.WriteDebugReport(' Top ',true);
+          {$IFDEF VerboseMenuIntf}
+          debugln('TIDEMenuSection.UpdateNeedTopSeparator CREATE TopSeparator Name="',Name,'" ContainerMenuIndex ** FORCED VALUE ** FROM ContainerMenuItem.Count=',dbgs(ContainerMenuItem.Count));
+          {$ENDIF}
+          // there's no yet available room for new FTopSeparator.fixes #17321.
+          ContainerMenuIndex := ContainerMenuItem.Count;
         end;
         ContainerMenuItem.Insert(ContainerMenuIndex,FTopSeparator);
       end;
