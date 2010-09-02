@@ -425,7 +425,7 @@ end;
 
 procedure TCustomEdit.KeyUpAfterInterface(var Key: Word; Shift: TShiftState);
 begin
-  inherited KeyUp(Key, Shift);
+  inherited KeyUpAfterInterface(Key, Shift);
   if Key = VK_RETURN then
   begin
     EditingDone;
