@@ -37,7 +37,7 @@ uses
   // interfacebase
   InterfaceBase, GraphType,
   // private
-  CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects,
+  CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaTextLayout,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   CocoaWSFactory;
@@ -106,10 +106,16 @@ var
 
 implementation
 
+//todo: a better check!
+
 function CheckDC(dc: HDC): TCocoaContext;
 begin
-  //todo: a better check!
   Result:=TCocoaContext(dc);
+end;
+
+function CheckGDIOBJ(obj: HGDIOBJ): TCocoaGDIObject;
+begin
+  Result:=TCocoaGDIObject(obj);
 end;
 
 

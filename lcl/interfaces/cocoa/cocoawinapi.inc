@@ -39,7 +39,7 @@
 function TCocoaWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 begin
   {$ifdef VerboseCocoaWinAPI}
-    WriteLn('[WinAPI ShowWindow]');
+    DebugLn('TCocoaWidgetSet.ShowWindow');
   {$endif}
 
   case nCmdShow of
@@ -73,6 +73,13 @@ begin
     {todo: GetNSViewFrame(NSView(Handle), ARect)};
 end;
 
+{--------------------------------- DRAWING ------------------------------------}
+
+
+type
+  TPointArray = array [word] of TPoint;
+  PPointArray = ^TPointArray;
+
 function TCocoaWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 var
   ctx : TCocoaContext;
@@ -81,7 +88,7 @@ begin
   Result:=Assigned(ctx);
   if not Result then Exit;
 
-  ctx.MoveTo(x,y);
+  ctx.LineTo(x,y);
 end;
 
 function TCocoaWidgetSet.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
@@ -93,10 +100,68 @@ begin
   if not Result then Exit;
 
   if Assigned(OldPoint) then OldPoint^:=ctx.PenPos;
-  ctx.LineTo(x,y);
+  ctx.MoveTo(x,y);
 end;
 
-{-------------------------- REGION ROUTINES -----------------------------------}
+function TCocoaWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean;
+var
+  ctx : TCocoaContext;
+begin
+  ctx:=CheckDC(DC);
+  Result:=Assigned(ctx) and Assigned(Points) and (NumPts>=2);
+  if not Result then Exit;
+
+  ctx.Polygon(PPointArray(Points)^, NumPts, Winding);
+  Result:=True;
+end;
+
+function TCocoaWidgetSet.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
+var
+  ctx : TCocoaContext;
+begin
+  ctx:=CheckDC(DC);
+  Result:=Assigned(ctx) and Assigned(Points) and (NumPts>0);
+  if not Result then Exit;
+
+  ctx.Polyline(PPointArray(Points)^, NumPts);
+  Result:=True;
+end;
+
+function TCocoaWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
+var
+  ctx : TCocoaContext;
+begin
+  ctx:=CheckDC(DC);
+  Result:=Assigned(ctx);
+  if not Result then Exit;
+  ctx.Rectangle(X1, Y1, X2, Y2, False, nil);
+  Result:=True;
+end;
+
+function TCocoaWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
+var
+  ctx : TCocoaContext;
+  br  : TCocoaGDIObject;
+begin
+  ctx:=CheckDC(DC);
+  br:=CheckGDIOBJ(Brush);
+  Result:=Assigned(ctx) and (not Assigned(br) or (br is TCocoaBrush));
+  if not Result then Exit;
+  with Rect do
+    ctx.Rectangle(Left, Top, Right, Bottom, True, TCocoaBrush(br));
+end;
+
+function TCocoaWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
+var
+  ctx : TCocoaContext;
+begin
+  ctx:=CheckDC(DC);
+  Result:=Assigned(ctx);
+  if not Result then Exit;
+  ctx.Ellipse(x1, y1, x2, y2);
+end;
+
+{----------------------------------- REGION -----------------------------------}
 
 {------------------------------------------------------------------------------
   Method:  CreatePolygonRgn
@@ -111,7 +176,7 @@ function TCocoaWidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
   FillMode: integer): HRGN;
 begin
   {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.CreatePolygonRgn NumPts: ' + DbgS(NumPts) +
+    DebugLn('TCocoaWidgetSet.CreatePolygonRgn NumPts: ' + DbgS(NumPts) +
       ' FillMode: ' + DbgS(FillMode));
   {$ENDIF}
 
@@ -146,7 +211,7 @@ end;
 function TCocoaWidgetSet.CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN;
 begin
   {$IFDEF VerboseWinAPI}
-    DebugLn('TCarbonWidgetSet.CreateRectRgn R: ' + DbgS(Classes.Rect(X1, Y1, X2, Y2)));
+    DebugLn('TCocoaWidgetSet.CreateRectRgn R: ' + DbgS(Classes.Rect(X1, Y1, X2, Y2)));
   {$ENDIF}
 
   Result := HRGN(TCocoaRegion.Create(X1, Y1, X2, Y2));
@@ -156,6 +221,118 @@ end;
 //function TCocoaWidgetSet.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
 //begin
 //end;
+
+{---------------------------- PEN AND BRUSH -----------------------------------}
+
+function TCocoaWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
+var
+  p   : TCocoaPen;
+  cl  : DWORD;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.CreatePenIndirect');
+  {$ENDIF}
+  p:=TCocoaPen.Create;
+  if LogPen.lopnWidth.x>0 then p.Width:=LogPen.lopnWidth.x;
+  p.Style:=LogPen.lopnStyle;
+  if LogPen.lopnColor and $8000000 > 0 then cl:=GetSysColor(LogPen.lopnColor)
+  else cl:=LogPen.lopnColor;
+  //todo:!
+  p.R:=(cl and $FF) / $FF;
+  p.G:=((cl shr 8) and $FF) / $FF;
+  p.B:=((cl shr 16) and $FF) / $FF;
+  Result := HPEN(p);//TCocoaPen.Create(LogPen));
+end;
+
+{------------------------------- DEVICE CONTEXT -------------------------------}
+
+function TCocoaWidgetSet.SelectObject(ADC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
+var
+  dc: TCocoaContext;
+  gdi: TCocoaGDIObject;
+const
+  SName = 'TCarbonWidgetSet.SelectObject';
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.SelectObject DC: ' + DbgS(DC) + ' GDIObj: ' +  DbgS(GDIObj));
+  {$ENDIF}
+  Result := 0;
+
+  dc:=CheckDC(ADC);
+  gdi:=CheckGDIOBJ(GDIObj);
+  if not Assigned(dc) then Exit;
+
+  if gdi is TCocoaBrush then begin // select brush
+    Result := HBRUSH(dc.Brush);
+    dc.Brush := TCocoaBrush(gdi);
+  end else if gdi is TCocoaPen then begin // select pen
+    Result := HPEN(dc.Pen);
+    dc.Pen := TCocoaPen(gdi);
+  end else if gdi is TCocoaFont then begin // select font
+    Result := HFONT(dc.Font);
+    dc.Font := TCocoaFont(gdi);
+  end else if gdi is TCocoaRegion then begin // select region
+    Result := HBRUSH(dc.Region);
+    dc.Region := TCocoaRegion(gdi);
+  end else if gdi is TCocoaBitmap then begin // select bitmap
+    {if not (ADC is TCarbonBitmapContext) then
+    begin
+      DebugLn(SName + ' Error - The specified device context is not bitmap context!');
+      Exit;
+    end;}
+    Result := HBITMAP(dc.Bitmap);
+    dc.Bitmap:=TCocoaBitmap(gdi);
+    //TCarbonBitmapContext(ADC).Bitmap := TCarbonBitmap(GDIObj);
+  end;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.SelectObject Result: ' + DbgS(Result));
+  {$ENDIF}
+end;
+
+function TCocoaWidgetSet.RectVisible(DC: HDC; const ARect: TRect): Boolean;
+var
+  ClipBox: CGRect;
+  ctx : TCocoaContext;
+  R: TRect;
+begin
+  Result := False;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.RectVisible DC: ' + DbgS(DC) + ' R: ' + DbgS(ARect));
+  {$ENDIF}
+
+  ctx:=CheckDC(DC);
+  if not Assigned(ctx) or (ARect.Right <= ARect.Left) or (ARect.Bottom <= ARect.Top) then Exit;
+
+  // In Quartz 2D there is no direct access to clipping path of CGContext,
+  // therefore we can only test bounding box of the clipping path.
+
+  ClipBox := CGContextGetClipBoundingBox(ctx.CGContext);
+  Result := IntersectRect(R, ARect, CGRectToRect(ClipBox));
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.RectVisible Result: ' + DbgS(Result) + ' Clip: ' + DbgS(CGRectToRect(ClipBox)));
+  {$ENDIF}
+end;
+
+{------------------------------------ TEXT ------------------------------------}
+
+function TCocoaWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+var
+  ctx : TCocoaContext;
+begin
+  ctx:=CheckDC(DC);
+  Result:=Assigned(ctx);
+  if not Assigned(ctx) then Exit;
+
+  ctx.TextOut(X,Y, Str, Count, Dx);
+end;
+
+function TCocoaWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
+begin
+  Result:=ExtTextOut(DC, X, Y, 0, nil, Str, Count, nil);
+end;
 
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

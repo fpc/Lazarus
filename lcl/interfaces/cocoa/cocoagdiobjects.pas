@@ -45,24 +45,90 @@ type
   { TCocoaBrush }
 
   TCocoaBrush = class(TCocoaGDIObject)
-
+    R,G,B : Single;
+    procedure Apply(cg: CGContextRef);
   end;
 
   { TCocoaPen }
 
-  TCocoaPen = class(TCocoaGDIObject);
+  TCocoaPen = class(TCocoaGDIObject)
+  public
+    Style : Integer;
+    Width : Integer;
+    R,G,B : Single;
+    procedure Apply(cg: CGContextRef);
+    constructor Create;
+  end;
+
+  { TCocoaFont }
+
+  TCocoaFontStyle = set of (cfs_Bold, cfs_Italic, cfs_Underline, cfs_Strikeout);
+
+  TCocoaFont = class(TCocoaGDIObject)
+    Name  : AnsiString;
+    Size  : Integer;
+    Style : TCocoaFontStyle;
+    R,G,B : Single;
+    Antialiased: Boolean;
+  end;
+
+  { TCocoaBitmap }
+
+  TCocoaBitmap = class(TCocoaGDIObject);
+
+  { TCocoaTextLayout }
+
+  TCocoaTextLayout = class(TObject)
+  public
+    constructor Create; virtual;
+    procedure SetFont(AFont: TCocoaFont); virtual; abstract;
+    procedure SetText(UTF8Text: PChar; ByteSize: Integer); virtual; abstract;
+    function GetSize: TSize; virtual; abstract;
+
+    procedure Draw(cg: CGContextRef; X, Y: Integer; DX: PInteger; DXCount: Integer); virtual; abstract;
+  end;
+  TCocoaTextLayoutClass = class of TCocoaTextLayout;
 
   { TCocoaContext }
 
   TCocoaContext = class(TObject)
+  private
+    fText    : TCocoaTextLayout;
+    fBrush   : TCocoaBrush;
+    fPen     : TCocoaPen;
+    fFont    : TCocoaFont;
+    fRegion  : TCocoaRegion;
+    fBitmap  : TCocoaBitmap;
+    procedure SetBitmap(const AValue: TCocoaBitmap);
+    procedure SetBrush(const AValue: TCocoaBrush);
+    procedure SetFont(const AValue: TCocoaFont);
+    procedure SetPen(const AValue: TCocoaPen);
+    procedure SetRegion(const AValue: TCocoaRegion);
+  protected
+    ContextSize : TSize;
   public
-    ctx    : NSGraphicsContext;
-    PenPos : TPoint;
+    ctx     : NSGraphicsContext;
+    PenPos  : TPoint;
+    constructor Create;
+    destructor Destroy; override;
     function InitDraw(width, height: Integer): Boolean;
     procedure MoveTo(x,y: Integer);
     procedure LineTo(x,y: Integer);
+    procedure Polygon(const Points: array of TPoint; NumPts: Integer; Winding: boolean);
+    procedure Polyline(const Points: array of TPoint; NumPts: Integer);
+    procedure Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; UseBrush: TCocoaBrush);
+    procedure Ellipse(X1, Y1, X2, Y2: Integer);
+    procedure TextOut(X,Y: Integer; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
     function CGContext: CGContextRef; virtual;
+    property Brush: TCocoaBrush read fBrush write SetBrush;
+    property Pen: TCocoaPen read fPen write SetPen;
+    property Font: TCocoaFont read fFont write SetFont;
+    property Region: TCocoaRegion read fRegion write SetRegion;
+    property Bitmap: TCocoaBitmap read fBitmap write SetBitmap;
   end;
+
+var
+  TextLayoutClass : TCocoaTextLayoutClass = nil;
 
 implementation
 
@@ -73,6 +139,44 @@ begin
   Result:=CGContextRef(ctx.graphicsPort);
 end;
 
+procedure TCocoaContext.SetBitmap(const AValue: TCocoaBitmap);
+begin
+  fBitmap:=AValue;
+end;
+
+procedure TCocoaContext.SetBrush(const AValue: TCocoaBrush);
+begin
+  fBrush:=AValue;
+  if Assigned(fBrush) then fBrush.Apply(CGContext);
+end;
+
+procedure TCocoaContext.SetFont(const AValue: TCocoaFont);
+begin
+  fFont:=AValue;
+end;
+
+procedure TCocoaContext.SetPen(const AValue: TCocoaPen);
+begin
+  fPen:=AValue;
+  if Assigned(fPen) then fPen.Apply(CGContext);
+end;
+
+procedure TCocoaContext.SetRegion(const AValue: TCocoaRegion);
+begin
+  fRegion:=AValue;
+end;
+
+constructor TCocoaContext.Create;
+begin
+  fText:=TextLayoutClass.Create;
+end;
+
+destructor TCocoaContext.Destroy;
+begin
+  fText.Free;
+  inherited Destroy;
+end;
+
 function TCocoaContext.InitDraw(width,height:Integer): Boolean;
 var
   cg  : CGContextRef;
@@ -80,6 +184,9 @@ begin
   cg:=CGContext;
   Result:=Assigned(cg);
   if not Result then Exit;
+
+  ContextSize.cx:=width;
+  ContextSize.cy:=height;
 
   CGContextTranslateCTM(cg, 0, height);
   CGContextScaleCTM(cg, 1, -1);
@@ -138,11 +245,125 @@ begin
   p[1].x:=tx;
   p[1].y:=ty;
 
+  CGContextBeginPath(cg);
   CGContextAddLines(cg, @p, 2);
   CGContextStrokePath(cg);
 
   PenPos.x := X;
   PenPos.y := Y;
+end;
+
+procedure CGContextAddLCLPoints(cg: CGContextRef; const Points: array of TPoint;NumPts:Integer);
+var
+  cp  : array of CGPoint;
+  i   : Integer;
+begin
+  SetLength(cp, NumPts);
+  for i:=0 to NumPts-1 do begin
+    cp[i].x:=Points[i].X+0.5;
+    cp[i].y:=Points[i].Y+0.5;
+  end;
+  CGContextAddLines(cg, @cp[0], NumPts);
+end;
+
+procedure CGContextAddLCLRect(cg: CGContextRef; x1, y1, x2, y2: Integer); overload;
+var
+  r  : CGRect;
+begin
+  r.origin.x:=x1+0.5;
+  r.origin.y:=y1+0.5;
+  r.size.width:=x2-x1-1;
+  r.size.height:=y2-y1-1;
+  CGContextAddRect(cg, r);
+end;
+
+procedure CGContextAddLCLRect(cg: CGContextRef; const R: TRect); overload;
+begin
+  CGContextAddLCLRect(cg, r.Left, r.Top, r.Right, r.Bottom);
+end;
+
+procedure TCocoaContext.Polygon(const Points:array of TPoint;NumPts:Integer;
+  Winding:boolean);
+var
+  cg  : CGContextRef;
+begin
+  cg:=CGContext;
+  if not Assigned(cg) or (NumPts<=0) then Exit;
+
+  CGContextBeginPath(cg);
+  CGContextAddLCLPoints(cg, Points, NumPts);
+  CGContextClosePath(cg);
+
+  if Winding then
+    CGContextDrawPath(cg, kCGPathFillStroke)
+  else
+    CGContextDrawPath(cg, kCGPathEOFillStroke);
+end;
+
+procedure TCocoaContext.Polyline(const Points: array of TPoint; NumPts: Integer);
+var
+  cg  : CGContextRef;
+begin
+  cg:=CGContext;
+  if not Assigned(cg) or (NumPts<=0) then Exit;
+
+  CGContextBeginPath(cg);
+  CGContextAddLCLPoints(cg, Points, NumPts);
+  CGContextStrokePath(cg);
+end;
+
+procedure TCocoaContext.Rectangle(X1,Y1,X2,Y2:Integer;FillRect:Boolean; UseBrush: TCocoaBrush);
+var
+  cg  : CGContextRef;
+begin
+  cg:=CGContext;
+  if not Assigned(cg) then Exit;
+
+  CGContextBeginPath(cg);
+  CGContextAddLCLRect(cg, X1,Y1,X2,Y2);
+  if FillRect then begin
+    //using the brush
+    if Assigned(UseBrush) then UseBrush.Apply(cg);
+    CGContextFillPath(cg);
+    //restore the brush
+    if Assigned(UseBrush) and Assigned(fBrush) then fBrush.Apply(cg);
+  end else
+    CGContextStrokePath(cg);
+end;
+
+procedure TCocoaContext.Ellipse(X1,Y1,X2,Y2:Integer);
+var
+  cg : CGContextRef;
+  r  : CGRect;
+begin
+  cg:=CGContext;
+  if not Assigned(cg) then Exit;
+  r.origin.x:=x1+0.5;
+  r.origin.y:=y1+0.5;
+  r.size.width:=x2-x1-1;
+  r.size.height:=y2-y1-1;
+  CGContextBeginPath(CGContext);
+  CGContextAddEllipseInRect(CGContext, R);
+  CGContextDrawPath(CGContext, kCGPathFillStroke);
+end;
+
+procedure TCocoaContext.TextOut(X,Y:Integer;UTF8Chars:PChar;Count:Integer;
+  CharsDelta:PInteger);
+var
+  cg      : CGContextRef;
+  transf  : CGAffineTransform;
+begin
+  cg:=CGContext;
+  if not Assigned(cg) then Exit;
+
+  CGContextScaleCTM(cg, 1, -1);
+  CGContextTranslateCTM(cg, 0, -ContextSize.cy);
+
+  fText.SetText(UTF8Chars, Count);
+  fText.Draw(cg, X, ContextSize.cy-Y, CharsDelta, Count);
+
+  CGContextTranslateCTM(cg, 0, ContextSize.cy);
+  CGContextScaleCTM(cg, 1, -1);
 end;
 
 
@@ -315,6 +536,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCocoaRegion.Apply(cg: CGContextRef);
 begin
+  exit;
   if not Assigned(cg) then Exit;
   if HIShapeIsEmpty(FShape) or (HIShapeReplacePathInCGContext(FShape, cg)<>noErr) then
     Exit;
@@ -409,5 +631,34 @@ begin
   end;
 end;
 
+{ TCocoaPen }
+
+procedure TCocoaPen.Apply(cg:CGContextRef);
+begin
+  if not Assigned(cg) then Exit;
+  CGContextSetRGBStrokeColor(cg, r, g, b, 1);
+  CGContextSetLineWidth(cg, Width);
+  //todo: style
+end;
+
+constructor TCocoaPen.Create;
+begin
+  inherited Create;
+  Width:=1;
+end;
+
+{ TCocoaBrush }
+
+procedure TCocoaBrush.Apply(cg:CGContextRef);
+begin
+  CGContextSetRGBFillColor(cg, R,G,B, 1);
+end;
+
+{ TCocoaTextLayout }
+
+constructor TCocoaTextLayout.Create;
+begin
+  inherited Create;
+end;
 
 end.

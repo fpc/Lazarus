@@ -286,7 +286,6 @@ begin
 
   {todo:}
   GetViewFrame( NSWindow(AWinControl.Handle).contentView, ARect );
-  writeln('GetClientRect ... ', ARect.Left, ' ',ARect.Top);
 end;
 
 class procedure TCocoaWSCustomForm.SetBounds(const AWinControl: TWinControl;
@@ -298,7 +297,6 @@ begin
   {todo: setFrame_display(, true)? }
   sf:=NSScreen.mainScreen.frame;
 
-  writeln('SetBounds: ', ALeft, ' ',ATop, ' ',AWidth,' ',AHeight);
   LCLToCocoaRect( GetNSRect(ALeft,ATop,AWidth,AHeight), sf, wf);
 
   NSWindow(AWinControl.Handle).setFrame_display(wf, false);
