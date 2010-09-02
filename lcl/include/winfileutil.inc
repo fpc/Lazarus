@@ -1,3 +1,4 @@
+{%MainUnit ../filectrl.pp}
 {------------------------------------------------------------------------------
   procedure CheckIfFileIsExecutable(const AFilename: string);
  ------------------------------------------------------------------------------}
@@ -285,7 +286,7 @@ begin
     FindWideToAnsi(wide, Rslt.FindData);
     Result := FindMatch(Rslt);
   end else
-    Result := GetLastError;
+    Result := Integer(GetLastError);
 end;
 
 {------------------------------------------------------------------------------
@@ -312,7 +313,7 @@ end;
 
 function FileGetAttrWide(const FileName: String): Longint;
 begin
-  Result:=Windows.GetFileAttributesW(PWideChar(UTF8Decode(FileName)));
+  Result:=Integer(Windows.GetFileAttributesW(PWideChar(UTF8Decode(FileName))));
 end;
 
 {------------------------------------------------------------------------------
@@ -328,7 +329,7 @@ begin
   if Windows.SetFileAttributesW(PWideChar(UTF8Decode(FileName)), Attr) then
     Result:=0
   else
-    Result := Windows.GetLastError;
+    Result := Integer(Windows.GetLastError);
 end;
 
 {------------------------------------------------------------------------------
