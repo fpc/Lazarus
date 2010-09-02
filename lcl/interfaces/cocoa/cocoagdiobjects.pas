@@ -15,7 +15,12 @@ uses
 type
   { TCocoaGDIObject }
 
-  TCocoaGDIObject = class(TObject);
+  TCocoaGDIObject = class(TObject)
+  public
+    RefCount: Integer;
+    procedure AddRef;
+    procedure Release;
+  end;
 
   TCocoaRegionType = (crt_Empty, crt_Rectangle, crt_Complex);
   TCocoaCombine = (cc_And, cc_Xor, cc_Or, cc_Diff, cc_Copy);
@@ -85,7 +90,7 @@ type
     procedure SetText(UTF8Text: PChar; ByteSize: Integer); virtual; abstract;
     function GetSize: TSize; virtual; abstract;
 
-    procedure Draw(cg: CGContextRef; X, Y: Integer; DX: PInteger; DXCount: Integer); virtual; abstract;
+    procedure Draw(cg: CGContextRef; X, Y: Integer; DX: PInteger); virtual; abstract;
   end;
   TCocoaTextLayoutClass = class of TCocoaTextLayout;
 
@@ -360,7 +365,7 @@ begin
   CGContextTranslateCTM(cg, 0, -ContextSize.cy);
 
   fText.SetText(UTF8Chars, Count);
-  fText.Draw(cg, X, ContextSize.cy-Y, CharsDelta, Count);
+  fText.Draw(cg, X, ContextSize.cy-Y, CharsDelta);
 
   CGContextTranslateCTM(cg, 0, ContextSize.cy);
   CGContextScaleCTM(cg, 1, -1);
@@ -536,7 +541,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCocoaRegion.Apply(cg: CGContextRef);
 begin
-  exit;
   if not Assigned(cg) then Exit;
   if HIShapeIsEmpty(FShape) or (HIShapeReplacePathInCGContext(FShape, cg)<>noErr) then
     Exit;
@@ -659,6 +663,19 @@ end;
 constructor TCocoaTextLayout.Create;
 begin
   inherited Create;
+end;
+
+{ TCocoaGDIObject }
+
+procedure TCocoaGDIObject.AddRef;
+begin
+  if RefCount>=0 then inc(RefCount);
+end;
+
+procedure TCocoaGDIObject.Release;
+begin
+  if RefCount>0 then Dec(RefCount)
+  else if RefCount=0 then Free;
 end;
 
 end.

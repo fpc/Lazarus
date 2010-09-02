@@ -246,6 +246,15 @@ end;
 
 {------------------------------- DEVICE CONTEXT -------------------------------}
 
+function TCocoaWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
+var
+  gdi: TCocoaGDIObject;
+begin
+  Result:=True;
+  gdi:=CheckGDIOBJ(GdiObject);
+  if Assigned(gdi) then gdi.Release;
+end;
+
 function TCocoaWidgetSet.SelectObject(ADC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
 var
   dc: TCocoaContext;
@@ -285,6 +294,9 @@ begin
     //TCarbonBitmapContext(ADC).Bitmap := TCarbonBitmap(GDIObj);
   end;
 
+  if Result<>0 then TCocoaGDIObject(Result).Release;
+  if Assigned(gdi) then gdi.AddRef;
+
   {$IFDEF VerboseWinAPI}
     DebugLn('TCocoaWidgetSet.SelectObject Result: ' + DbgS(Result));
   {$ENDIF}
@@ -316,7 +328,27 @@ begin
   {$ENDIF}
 end;
 
-{------------------------------------ TEXT ------------------------------------}
+{------------------------------- FONT AND TEXT --------------------------------}
+
+function TCocoaWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
+begin
+  Result:=CreateFontIndirectEx(LogFont, LogFont.lfFaceName);
+end;
+
+function TCocoaWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT;
+var
+  cf  : TCocoaFont;
+begin
+  cf:=TCocoaFont.Create;
+  cf.Size:=LogFont.lfHeight;
+  cf.Name:=LongFontName;
+  if LogFont.lfWeight>FW_NORMAL then Include(cf.Style, cfs_Bold);
+  if LogFont.lfItalic>0 then Include(cf.Style, cfs_Italic);
+  if LogFont.lfUnderline>0 then Include(cf.Style, cfs_Underline);
+  if LogFont.lfStrikeOut>0 then Include(cf.Style, cfs_Strikeout);
+  cf.Antialiased:=logFont.lfQuality>=ANTIALIASED_QUALITY;
+  Result:=HFONT(cf);
+end;
 
 function TCocoaWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
@@ -333,6 +365,5 @@ function TCocoaWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Int
 begin
   Result:=ExtTextOut(DC, X, Y, 0, nil, Str, Count, nil);
 end;
-
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

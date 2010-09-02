@@ -1,4 +1,5 @@
 unit CocoaTextLayout;
+//todo: Implement TCoreTextLayout using CoreText API for newer OSes
 
 interface
 
@@ -14,10 +15,12 @@ type
   // legacy layout used for Mac OS X 10.4
   TASTUITextLayout = class(TCocoaTextLayout)
   private
-    fBuffer : WideString;
-    fUTF8   : String;
-    FLayout : ATSUTextLayout;
-    FStyle  : ATSUStyle;
+    fBuffer     : WideString;
+    fUTF8       : String;
+    FDX         : PIntegerArray;
+
+    FLayout     : ATSUTextLayout;
+    FStyle      : ATSUStyle;
 
     FTextBefore : ATSUTextMeasurement;
     FTextAfter  : ATSUTextMeasurement;
@@ -26,18 +29,18 @@ type
 
     FValidSize  : Boolean;
     procedure RecountSize;
+    procedure DoJustify(iLineRef: ATSULineRef; var Handled: Boolean);
   public
     constructor Create; override;
     destructor Destroy; override;
     procedure SetFont(AFont: TCocoaFont); override;
     procedure SetText(UTF8Text: PChar; ByteSize: Integer); override;
     function GetSize: TSize; override;
-    procedure Draw(cg: CGContextRef; X, Y: Integer; DX: PInteger; DXCount: Integer); override;
+    procedure Draw(cg: CGContextRef; X, Y: Integer; DX: PInteger); override;
   end;
 
   { TCoreTextLayout }
 
-  //todo: use CoreText for newer OSes
   //TCoreTextLayout = class(TCocoaTextLayout);
 
 implementation
@@ -183,13 +186,66 @@ begin
   Result.cy := FixToInt(FDescent + FAscent);
 end;
 
-procedure TASTUITextLayout.Draw(cg:CGContextRef;X,Y:Integer;DX:PInteger;DXCount: Integer);
 var
-  MX, MY      : Integer;
+  ATSUDirectUPP : ATSUDirectLayoutOperationOverrideUPP = nil; //NewATSUDirectLayoutOperationOverrideUPP(@ATSUCallback)
+
+function ATSUCallback(iCurrentOperation: ATSULayoutOperationSelector; iLineRef: ATSULineRef; iRefCon: UInt32; iOperationCallbackParameterPtr: UnivPtr;
+  var oCallbackStatus: ATSULayoutOperationCallbackStatus ): OSStatus; {$ifdef DARWIN}mwpascal;{$endif}
+var
+  Buffer  : TASTUITextLayout;
+  Handled : Boolean;
+begin
+  Result := noErr;
+  Buffer := TASTUITextLayout(iRefCon);
+  oCallbackStatus:=kATSULayoutOperationCallbackStatusHandled;
+
+  if Assigned(Buffer) then
+    Buffer.DoJustify(iLineRef, Handled);
+end;
+
+procedure TASTUITextLayout.DoJustify(iLineRef: ATSULineRef; var Handled: Boolean);
+type
+	ATSLayoutRecord1 = packed record
+		glyphID: ATSGlyphRef;
+		flags: ATSGlyphInfoFlags;
+		originalOffset: ByteCount;
+		realPos: Fixed;
+	end;
+
+type
+  TATSLayoutRecordArray = array [Word] of ATSLayoutRecord1;
+  PATSLayoutRecordArray = ^TATSLayoutRecordArray;
+var
+  i, ofs  : Integer;
+  Layouts   : PATSLayoutRecordArray;
+  LayCount  : ItemCount;
+begin
+  if not Assigned(FDX) then Exit;
+  Laycount:=0;
+  ATSUDirectGetLayoutDataArrayPtrFromLineRef( iLineRef,
+    kATSUDirectDataLayoutRecordATSLayoutRecordVersion1, true, @Layouts, Laycount);
+  if Assigned(Layouts) and (Laycount>0) then
+  begin
+    ofs:=0;
+    for i:=0 to LayCount-1 do
+    begin
+      Layouts^[i].realPos:=Long2Fix(ofs);
+      inc(ofs, FDX^[i]);
+    end;
+  end;
+  ATSUDirectReleaseLayoutDataArrayPtr(iLineRef, kATSUDirectDataLayoutRecordATSLayoutRecordCurrent, @Layouts );
+  Handled:=True;
+end;
+
+
+procedure TASTUITextLayout.Draw(cg:CGContextRef;X,Y:Integer;DX:PInteger);
+var
+  MX, MY    : Integer;
 
   Tag       : ATSUAttributeTag;
-  DataSize  : ByteCount;
-  PValue    : ATSUAttributeValuePtr;
+  Size      : ByteCount;
+  Value     : ATSUAttributeValuePtr;
+  OverSpec  : ATSULayoutOperationOverrideSpecifier;
 begin
   if not Assigned(cg) then Exit;
   if not FValidSize then RecountSize;
@@ -197,22 +253,43 @@ begin
   MX:=0;
   MY:=0;
   Tag := kATSUCGContextTag;
-  DataSize := sizeOf(CGContextRef);
-  PValue := @cg;
-  ATSUSetLayoutControls(FLayout, 1, @Tag, @DataSize, @PValue);
+  Size := sizeOf(CGContextRef);
+  Value := @cg;
+  ATSUSetLayoutControls(FLayout, 1, @Tag, @Size, @Value);
+
+  Tag := kATSULayoutOperationOverrideTag;
+  Size := sizeof (ATSULayoutOperationOverrideSpecifier);
+  Value := @OverSpec;
+  FillChar(OverSpec, sizeof(OverSpec), 0);
+  if Assigned(Dx) then begin
+    FDX := PIntegerArray(Dx);
+    OverSpec.operationSelector := kATSULayoutOperationPostLayoutAdjustment;
+    if not Assigned(ATSUDirectUPP) then ATSUDirectUPP:=NewATSUDirectLayoutOperationOverrideUPP(@ATSUCallback);
+    OverSpec.overrideUPP := ATSUDirectUPP;
+  end else
+    FDX:=nil;
+  ATSUSetLayoutControls (FLayout, 1, @Tag, @Size, @Value);
 
   ATSUDrawText(FLayout, kATSUFromTextBeginning, kATSUToTextEnd,
     IntToFix(X)- FTextBefore + MX, IntToFix(Y) - FAscent + MY);
 end;
 
-
 procedure InitTextLayout;
 begin
-  if not Assigned(TextLayoutClass) then
+  if not Assigned(TextLayoutClass) then begin
     TextLayoutClass:=TASTUITextLayout;
+  end;
+end;
+
+procedure ReleaseTextLayout;
+begin
+  if Assigned(ATSUDirectUPP) then DisposeATSUDirectLayoutOperationOverrideUPP(ATSUDirectUPP);
 end;
 
 initialization
   InitTextLayout;
+
+finalization
+  ReleaseTextLayout;
 
 end.
