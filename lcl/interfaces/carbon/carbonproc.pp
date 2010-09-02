@@ -508,7 +508,7 @@ begin
   if SameText(FontName, 'default')
     then fn:=CarbonDefaultFont
     else fn:=FontName;
-  if (FontName <> '') then
+  if (fn <> '') then
   begin
     OSError(ATSUFindFontFromName(@fn[1], Length(fn),
         kFontFullName, kFontMacintoshPlatform, kFontRomanScript,
