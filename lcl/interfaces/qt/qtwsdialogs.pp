@@ -329,10 +329,9 @@ begin
   QWidget_setWindowFlags(FileDialog.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint);
   {$endif}
 
-  {$note qt-4.5.0,qt-4.5.1 currently supports macosx only,
-   others are non native when NOT QT_NATIVE_DIALOGS setted up.}
+  {$note WE MUST USE NON NATIVE DIALOGS HERE, OTHERWISE NO SIGNALS #16532.}
   QFileDialog_setOption(QFileDialogH(FileDialog.Widget),
-    QFileDialogDontUseNativeDialog, False);
+    QFileDialogDontUseNativeDialog, True);
 
   FileDialog.AttachEvents;
   
