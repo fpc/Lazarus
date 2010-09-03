@@ -1,4 +1,4 @@
-{%MainUnit cocoaint.pp}
+{%MainUnit cocoaint.pas}
 { $Id: cocoawinapi.inc 15525 2008-06-23 06:39:58Z paul $ }
 {******************************************************************************
   All Cocoa Winapi implementations.
@@ -32,6 +32,18 @@
   nCmdShow:
     SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
 ------------------------------------------------------------------------------}
+
+procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;
+begin
+  R:=(cl and $FF) / $FF;
+  G:=((cl shr 8) and $FF) / $FF;
+  B:=((cl shr 16) and $FF) / $FF;
+end;
+
+function RGBToColorFloat(r,g,b: Single): TColorRef; inline;
+begin
+  Result:=(Round(b*$FF) shl 16) or (Round(g*$FF) shl 8) or Round(r*$FF);
+end;
 
 function TCocoaWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 begin
@@ -131,6 +143,7 @@ begin
   ctx:=CheckDC(DC);
   Result:=Assigned(ctx);
   if not Result then Exit;
+
   ctx.Rectangle(X1, Y1, X2, Y2, False, nil);
   Result:=True;
 end;
@@ -144,6 +157,7 @@ begin
   br:=CheckGDIOBJ(Brush);
   Result:=Assigned(ctx) and (not Assigned(br) or (br is TCocoaBrush));
   if not Result then Exit;
+
   with Rect do
     ctx.Rectangle(Left, Top, Right, Bottom, True, TCocoaBrush(br));
 end;
@@ -155,6 +169,7 @@ begin
   ctx:=CheckDC(DC);
   Result:=Assigned(ctx);
   if not Result then Exit;
+
   ctx.Ellipse(x1, y1, x2, y2);
 end;
 
@@ -235,10 +250,44 @@ begin
   if LogPen.lopnColor and $8000000 > 0 then cl:=GetSysColor(LogPen.lopnColor)
   else cl:=LogPen.lopnColor;
   //todo:!
-  p.R:=(cl and $FF) / $FF;
-  p.G:=((cl shr 8) and $FF) / $FF;
-  p.B:=((cl shr 16) and $FF) / $FF;
+  ColorToRGBFloat(cl, p.R, p.G, p.B);
   Result := HPEN(p);//TCocoaPen.Create(LogPen));
+end;
+
+function TCocoaWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
+var
+  b     : TCocoaBrush;
+begin
+  b:=TCocoaBrush.Create;
+  with b do ColorToRGBFloat(LogBrush.lbColor, R, G, B);
+  Result:=HBRUSH(b);
+end;
+
+{------------------------------- SYNC OBJECTS ---------------------------------}
+
+procedure TCocoaWidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
+begin
+  CritSection:=TCriticalSection(NSRecursiveLock.alloc);
+end;
+
+procedure TCocoaWidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection);
+begin
+  if CritSection=0 then Exit;
+  NSRecursiveLock(CritSection).release;
+  CritSection:=0;
+end;
+
+procedure TCocoaWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
+begin
+  if CritSection=0 then Exit;
+  // if it doesn't compile, please follow bug #17341
+  NSRecursiveLock(CritSection).lock;
+end;
+
+procedure TCocoaWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection);
+begin
+  if CritSection=0 then Exit;
+  NSRecursiveLock(CritSection).unlock;
 end;
 
 {------------------------------- DEVICE CONTEXT -------------------------------}
@@ -335,6 +384,21 @@ begin
   {$ENDIF}
 end;
 
+function TCocoaWidgetSet.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
+var
+  ctx : TCocoaContext;
+begin
+  Result := False;
+  ctx:=CheckDC(DC);
+  if not Assigned(ctx) then Exit;
+
+  {$IFDEF VerboseWinAPI}
+  DebugLn('TCarbonWidgetSet.MoveWindowOrgEx DC: ' + DbgS(DC) + ' ' + DbgS(DX) + ', ' + DbgS(DY));
+  {$ENDIF}
+  ctx.MoveOrigin(dX, dY);
+  Result := True;
+end;
+
 {------------------------------- FONT AND TEXT --------------------------------}
 
 function TCocoaWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
@@ -342,7 +406,8 @@ begin
   Result:=CreateFontIndirectEx(LogFont, LogFont.lfFaceName);
 end;
 
-function TCocoaWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT;
+function TCocoaWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
+  const LongFontName: string): HFONT;
 var
   cf  : TCocoaFont;
 begin
@@ -357,7 +422,8 @@ begin
   Result:=HFONT(cf);
 end;
 
-function TCocoaWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+function TCocoaWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
+  Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
   ctx : TCocoaContext;
 begin
@@ -367,12 +433,28 @@ begin
   ctx.TextOut(X,Y, Str, Count, Dx);
 end;
 
+function TCocoaWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
+var
+  ctx : TCocoaContext;
+begin
+  ctx:=CheckDC(DC);
+  if not Assigned(ctx) then begin
+    Result:=0;
+    Exit;
+  end;
+  with ctx do begin
+    Result:=RGBToColorFloat(TR, TG, TB);
+    ColorToRGBFloat(Color, TR, TG, TB);
+  end;
+end;
+
 function TCocoaWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 begin
   Result:=ExtTextOut(DC, X, Y, 0, nil, Str, Count, nil);
 end;
 
-function TCocoaWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint;
+function TCocoaWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont;
+  Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint;
 var
   fontManager : NSFontManager;
   arr         : NSArray;
@@ -403,6 +485,47 @@ begin
     end;
   end;
   arr.release;
+end;
+
+function TCocoaWidgetSet.SaveDC(DC: HDC): Integer;
+var
+  ctx : TCocoaContext;
+  cg  : CGContextRef;
+begin
+  ctx := CheckDC(DC);
+  if not Assigned(ctx) then begin
+    Result:=0;
+    Exit;
+  end;
+  cg:=ctx.CGContext;
+  if Assigned(cg) then begin
+    CGContextSaveGState(cg);
+    inc(ctx.Stack);
+    Result:=ctx.Stack;
+  end else
+    Result:=0;
+end;
+
+function TCocoaWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
+var
+  ctx : TCocoaContext;
+  cg  : CGContextRef;
+  cnt : Integer;
+  i   : Integer;
+begin
+  Result:=False;
+  ctx := CheckDC(DC);
+  cg:=ctx.CGContext;
+  if not Assigned(ctx) or not Assigned(cg) then Exit;
+
+  if SavedDC<0 then cnt:=1
+  else cnt:=ctx.Stack-SavedDC+1;
+  Result:=cnt>0;
+
+  if Result then begin
+    for i:=1 to cnt do CGContextRestoreGState(cg);
+    dec(ctx.Stack, cnt);
+  end;
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

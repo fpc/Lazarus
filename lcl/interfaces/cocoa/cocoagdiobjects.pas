@@ -73,7 +73,6 @@ type
     Name  : AnsiString;
     Size  : Integer;
     Style : TCocoaFontStyle;
-    R,G,B : Single;
     Antialiased: Boolean;
   end;
 
@@ -112,8 +111,10 @@ type
   protected
     ContextSize : TSize;
   public
-    ctx     : NSGraphicsContext;
-    PenPos  : TPoint;
+    ctx      : NSGraphicsContext;
+    PenPos   : TPoint;
+    Stack    : Integer;
+    TR,TG,TB : Single;
     constructor Create;
     destructor Destroy; override;
     function InitDraw(width, height: Integer): Boolean;
@@ -124,6 +125,7 @@ type
     procedure Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; UseBrush: TCocoaBrush);
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
     procedure TextOut(X,Y: Integer; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
+    procedure MoveOrigin(X,Y: Integer);
     function CGContext: CGContextRef; virtual;
     property Brush: TCocoaBrush read fBrush write SetBrush;
     property Pen: TCocoaPen read fPen write SetPen;
@@ -356,7 +358,6 @@ procedure TCocoaContext.TextOut(X,Y:Integer;UTF8Chars:PChar;Count:Integer;
   CharsDelta:PInteger);
 var
   cg      : CGContextRef;
-  transf  : CGAffineTransform;
 begin
   cg:=CGContext;
   if not Assigned(cg) then Exit;
@@ -364,11 +365,23 @@ begin
   CGContextScaleCTM(cg, 1, -1);
   CGContextTranslateCTM(cg, 0, -ContextSize.cy);
 
+  CGContextSetRGBFillColor(cg, TR, TG, TB, 1);
   fText.SetText(UTF8Chars, Count);
   fText.Draw(cg, X, ContextSize.cy-Y, CharsDelta);
 
+  if Assigned(fBrush) then fBrush.Apply(cg);
+
   CGContextTranslateCTM(cg, 0, ContextSize.cy);
   CGContextScaleCTM(cg, 1, -1);
+end;
+
+procedure TCocoaContext.MoveOrigin(X,Y:Integer);
+var
+  cg  : CGContextRef;
+begin
+  cg:=CGContext;
+  if not Assigned(cg) then Exit;
+  if Assigned(cg) then CGContextTranslateCTM(cg, X, Y);
 end;
 
 
