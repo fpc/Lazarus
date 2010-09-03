@@ -6,10 +6,6 @@
   methods defined in the
   lcl/include/winapi.inc
 
-
-  !! Keep alphabetical !!
-
-
  ******************************************************************************
  Implementation
  ******************************************************************************
@@ -36,6 +32,7 @@
   nCmdShow:
     SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
 ------------------------------------------------------------------------------}
+
 function TCocoaWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 begin
   {$ifdef VerboseCocoaWinAPI}
@@ -246,6 +243,16 @@ end;
 
 {------------------------------- DEVICE CONTEXT -------------------------------}
 
+function TCocoaWidgetSet.GetDC(hWnd: HWND): HDC;
+begin
+  if hWnd=0 then begin
+    if not Assigned(ScreenContext) then ScreenContext:=TCocoaContext.Create;
+    Result:=HDC(ScreenContext);
+  end else
+    //todo:!
+    Result:=0;
+end;
+
 function TCocoaWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 var
   gdi: TCocoaGDIObject;
@@ -357,13 +364,45 @@ begin
   ctx:=CheckDC(DC);
   Result:=Assigned(ctx);
   if not Assigned(ctx) then Exit;
-
   ctx.TextOut(X,Y, Str, Count, Dx);
 end;
 
 function TCocoaWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 begin
   Result:=ExtTextOut(DC, X, Y, 0, nil, Str, Count, nil);
+end;
+
+function TCocoaWidgetSet.EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint;
+var
+  fontManager : NSFontManager;
+  arr         : NSArray;
+  fname       : NSString;
+  i           : Integer;
+
+  ELogFont    : TEnumLogFontEx;
+  Metric      : TNewTextMetricEx;
+  FontName    : AnsiString;
+begin
+  Result:=0;
+  if not Assigned(Callback) then Exit;
+  fontManager:=NSFontManager.sharedFontManager;
+  arr:=fontManager.availableFontFamilies;
+  for i:=0 to arr.count-1 do begin
+    fname:=NSString(arr.objectAtIndex(i));
+    try
+      FontName:=NSStringToString(fname);
+      FillChar(ELogFont, SizeOf(ELogFont), #0);
+      FillChar(Metric, SizeOf(Metric), #0);
+      ELogFont.elfLogFont.lfFaceName := FontName;
+      ELogFont.elfFullName := FontName;
+      //todo: read the data from all fonts of the fontfamily
+      Result:=CallBack(ELogFont, Metric, TRUETYPE_FONTTYPE, lparam);
+      if Result=0 then Break;
+    except
+      Break;
+    end;
+  end;
+  arr.release;
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

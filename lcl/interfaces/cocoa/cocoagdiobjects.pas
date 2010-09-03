@@ -133,7 +133,7 @@ type
   end;
 
 var
-  TextLayoutClass : TCocoaTextLayoutClass = nil;
+  TextLayoutClass  : TCocoaTextLayoutClass = nil;
 
 implementation
 

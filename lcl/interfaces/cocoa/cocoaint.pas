@@ -106,6 +106,9 @@ var
 
 implementation
 
+var
+  ScreenContext : TCocoaContext = nil;
+
 //todo: a better check!
 
 function CheckDC(dc: HDC): TCocoaContext;
@@ -382,7 +385,7 @@ end;
 
 procedure InternalFinal;
 begin
-
+  if Assigned(ScreenContext) then ScreenContext.Free;
 end;
 
 

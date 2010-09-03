@@ -121,6 +121,7 @@ begin
   if Context.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then begin
     FillChar(struct, SizeOf(TPaintStruct), 0);
     struct.hdc := HDC(Context);
+    writeln('target = ', Integer(Target),' ', Target.ClassName);
     LCLSendPaintMsg(Target, HDC(Context), @struct);
   end;
 end;
