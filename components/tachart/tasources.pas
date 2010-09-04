@@ -45,12 +45,13 @@ type
   private
     FBroadcaster: TBroadcaster;
     FUpdateCount: Integer;
-    FYCount: Cardinal;
   protected
     FExtent: TDoubleRect;
     FExtentIsValid: Boolean;
     FValuesTotal: Double;
     FValuesTotalIsValid: Boolean;
+    FYCount: Cardinal;
+
     function GetCount: Integer; virtual; abstract;
     function GetItem(AIndex: Integer): PChartDataItem; virtual; abstract;
     procedure InvalidateCaches;
@@ -718,9 +719,12 @@ begin
   BeginUpdate;
   try
     Clear;
+    YCount := ASource.YCount;
     for i := 0 to ASource.Count - 1 do
-      with ASource[i]^ do
+      with ASource[i]^ do begin
         AddAt(FData.Count, X, Y, Text, Color);
+        SetYList(FData.Count - 1, YList);
+      end;
     if Sorted and not ASource.IsSorted then Sort;
   finally
     EndUpdate;

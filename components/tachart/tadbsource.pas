@@ -16,7 +16,7 @@
 }
 unit TADbSource;
 
-{$mode objfpc}{$H+}
+{$H+}
 
 interface
 
@@ -36,6 +36,7 @@ type
     FFieldText: String;
     FFieldX: String;
     FFieldY: String;
+    FFieldYList: TStringList;
 
     function GetDataSource: TDataSource;
     procedure SetDataSource(AValue: TDataSource);
@@ -46,6 +47,7 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
+    procedure SetYCount(AValue: Cardinal); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -66,7 +68,7 @@ procedure Register;
 implementation
 
 uses
-  SysUtils;
+  Math, SysUtils;
 
 type
 
@@ -141,11 +143,13 @@ constructor TDbChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDataLink := TDbChartSourceDataLink.Create(Self);
+  FFieldYList := TStringList.Create;
 end;
 
 destructor TDbChartSource.Destroy;
 begin
   FreeAndNil(FDataLink);
+  FreeAndNil(FFieldYList);
   inherited;
 end;
 
@@ -165,6 +169,7 @@ end;
 function TDbChartSource.GetItem(AIndex: Integer): PChartDataItem;
 var
   ds: TDataSet;
+  i: Integer;
 begin
   Result := @FCurItem;
   SetDataItemDefaults(FCurItem);
@@ -188,8 +193,11 @@ begin
   if ds.RecNo <> AIndex then exit;
   if FieldX <> '' then
     FCurItem.X := ds.FieldByName(FieldX).AsFloat;
-  if FieldY <> '' then
-    FCurItem.Y := ds.FieldByName(FieldY).AsFloat;
+  if FYCount > 0 then begin
+    FCurItem.Y := ds.FieldByName(FFieldYList[0]).AsFloat;
+    for i := 0 to High(FCurItem.YList) do
+      FCurItem.YList[i] := ds.FieldByName(FFieldYList[i + 1]).AsFloat;
+  end;
   if FieldColor <> '' then
     FCurItem.Color := ds.FieldByName(FieldColor).AsInteger;
   if FieldText <> '' then
@@ -233,7 +241,19 @@ procedure TDbChartSource.SetFieldY(const AValue: String);
 begin
   if FFieldY = AValue then exit;
   FFieldY := AValue;
+  if FFieldY = '' then
+    FFieldYList.Clear
+  else
+    FFieldYList.CommaText := FFieldY;
+  FYCount := FFieldYList.Count;
+  SetLength(FCurItem.YList, Max(FYCount - 1, 0));
   Reset;
+end;
+
+procedure TDbChartSource.SetYCount(AValue: Cardinal);
+begin
+  Unused(AValue);
+  raise EYCountError.Create('Set FieldY instead');
 end;
 
 end.
