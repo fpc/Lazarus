@@ -85,7 +85,8 @@ type
     FBackgroundBrush: TChartLegendBrush;
     FFont: TFont;
     FFrame: TChartPen;
-    FMargin: TChartDistance;
+    FMarginX: TChartDistance;
+    FMarginY: TChartDistance;
     FSpacing: TChartDistance;
     FSymbolWidth: TChartDistance;
     FUseSidebar: Boolean;
@@ -95,6 +96,8 @@ type
     procedure SetFont(AValue: TFont);
     procedure SetFrame(AValue: TChartPen);
     procedure SetMargin(AValue: TChartDistance);
+    procedure SetMarginX(AValue: TChartDistance);
+    procedure SetMarginY(AValue: TChartDistance);
     procedure SetSpacing(AValue: TChartDistance);
     procedure SetSymbolWidth(AValue: TChartDistance);
     procedure SetUseSidebar(AValue: Boolean);
@@ -116,7 +119,11 @@ type
     property Font: TFont read FFont write SetFont;
     property Frame: TChartPen read FFrame write SetFrame;
     property Margin: TChartDistance
-      read FMargin write SetMargin default DEF_LEGEND_MARGIN;
+      read FMarginX write SetMargin stored false; deprecated;
+    property MarginX: TChartDistance
+      read FMarginX write SetMarginX default DEF_LEGEND_MARGIN;
+    property MarginY: TChartDistance
+      read FMarginY write SetMarginY default DEF_LEGEND_MARGIN;
     property Spacing: TChartDistance
       read FSpacing write SetSpacing default DEF_LEGEND_SPACING;
     property SymbolWidth: TChartDistance
@@ -128,7 +135,7 @@ type
 implementation
 
 uses
-  Math, Types, TADrawUtils;
+  Math, PropEdits, Types, TADrawUtils;
 
 const
   SYMBOL_TEXT_SPACING = 4;
@@ -209,7 +216,8 @@ constructor TChartLegend.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
   FAlignment := laTopRight;
-  FMargin := DEF_LEGEND_MARGIN;
+  FMarginX := DEF_LEGEND_MARGIN;
+  FMarginY := DEF_LEGEND_MARGIN;
   FSpacing := DEF_LEGEND_SPACING;
   FSymbolWidth := DEF_LEGEND_SYMBOL_WIDTH;
   FUseSidebar := true;
@@ -279,23 +287,23 @@ begin
     legendWidth += 2 * Spacing + SYMBOL_TEXT_SPACING + SymbolWidth;
     textHeight := TypicalTextHeight(ACanvas);
     legendHeight := Spacing + AItems.Count * (textHeight + Spacing);
-    w := legendWidth + 2 * Margin;
+    w := legendWidth + 2 * MarginX;
 
     // Determine position according to the alignment.
     if Alignment in [laTopLeft, laBottomLeft] then begin
-      x := AClipRect.Left + Margin;
+      x := AClipRect.Left + MarginX;
       if UseSidebar then
         AClipRect.Left += w;
     end
     else begin
-      x := AClipRect.Right - legendWidth - Margin;
+      x := AClipRect.Right - legendWidth - MarginX;
       if UseSidebar then
         AClipRect.Right -= w;
     end;
     if Alignment in [laTopLeft, laTopRight] then
-      y := AClipRect.Top + Margin
+      y := AClipRect.Top + MarginY
     else
-      y := AClipRect.Bottom - Margin - legendHeight;
+      y := AClipRect.Bottom - MarginY - legendHeight;
 
     Result := Bounds(x, y, legendWidth, legendHeight);
   finally
@@ -330,8 +338,21 @@ end;
 
 procedure TChartLegend.SetMargin(AValue: TChartDistance);
 begin
-  if FMargin = AValue then exit;
-  FMargin := AValue;
+  SetMarginX(AValue);
+  SetMarginY(AValue);
+end;
+
+procedure TChartLegend.SetMarginX(AValue: TChartDistance);
+begin
+  if FMarginX = AValue then exit;
+  FMarginX := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartLegend.SetMarginY(AValue: TChartDistance);
+begin
+  if FMarginY = AValue then exit;
+  FMarginY := AValue;
   StyleChanged(Self);
 end;
 
@@ -355,6 +376,15 @@ begin
   FUseSidebar := AValue;
   StyleChanged(Self);
 end;
+
+procedure SkipObsoleteProperties;
+begin
+  RegisterPropertyEditor(
+    TypeInfo(TChartDistance), TChartLegend, 'Margin', THiddenPropertyEditor);
+end;
+
+initialization
+  SkipObsoleteProperties;
 
 end.
 
