@@ -122,6 +122,9 @@ function ConsoleToUTF8(const s: string): string;// converts UTF8 string to conso
 var
   Dst: PChar;
 begin
+  {$ifdef WinCE}
+  Result := SysToUTF8(s);
+  {$else}
   Dst := AllocMem((Length(s) + 1) * SizeOf(Char));
   if OemToChar(PChar(s), Dst) then
     Result := StrPas(Dst)
@@ -129,22 +132,28 @@ begin
     Result := s;
   FreeMem(Dst);
   Result := SysToUTF8(Result);
+  {$endif}
 end;
 
 function UTF8ToConsole(const s: string): string;
 var
   Dst: PChar;
 begin
+  {$ifdef WinCE}
+  Result := UTF8ToSys(s);
+  {$else}
   Result := UTF8ToSys(s);
   Dst := AllocMem((Length(Result) + 1) * SizeOf(Char));
   if CharToOEM(PChar(Result), Dst) then
     Result := StrPas(Dst);
   FreeMem(Dst);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
   FileSize
  ------------------------------------------------------------------------------}
+{$ifndef WinCE}
 function FileSizeAnsi(const Filename: string): int64;
 var
   FindData: TWIN32FindDataA;
@@ -164,6 +173,7 @@ begin
   Result:=(int64(FindData.nFileSizeHigh) shl 32)+FindData.nFileSizeLow;
   Windows.FindClose(FindHandle);
 end;
+{$endif}
 
 function FileSizeWide(const Filename: string): int64;
 var
@@ -188,18 +198,23 @@ end;
 {------------------------------------------------------------------------------
   FindFirstUTF8
  ------------------------------------------------------------------------------}
+{$ifndef WinCE}
 function FindFirstAnsi(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
 begin
   Result:=SysUtils.FindFirst(UTF8ToSys(Path),Attr,Rslt);
   Rslt.Name:=SysToUTF8(Rslt.Name);
 end;
+{$endif}
 
 function WinToDosTime (Var Wtime : TFileTime;var DTime:longint):longbool;
 var
   lft : TFileTime;
 begin
-  WinToDosTime:=FileTimeToLocalFileTime(WTime,lft) and
-                FileTimeToDosDateTime(lft,Longrec(Dtime).Hi,LongRec(DTIME).lo);
+  WinToDosTime:=FileTimeToLocalFileTime(WTime,lft)
+    {$ifndef WinCE}
+    and FileTimeToDosDateTime(lft,Longrec(Dtime).Hi,LongRec(DTIME).lo)
+    {$endif}
+    ;
 end;
 
 function FindMatch(var f: TSearchRec) : Longint;
@@ -226,6 +241,9 @@ var
   ws : WideString;
   an : AnsiString;
 begin
+  {$ifdef WinCE}
+  ansi := wide;
+  {$else}
   SetLength(ws, length(wide.cAlternateFileName));
   Move(wide.cAlternateFileName[0], ws[1], length(ws)*2);
   an:=ws; // no need to utf8 for cAlternateFileName (it's always ansi encoded)
@@ -236,7 +254,8 @@ begin
   ansi.cFileName:=an;
   if length(an)<length(ansi.cFileName) then ansi.cFileName[ length(an)]:=#0;
 
-  with ansi do begin
+  with ansi do
+  begin
     dwFileAttributes := wide.dwFileAttributes;
     ftCreationTime := wide.ftCreationTime;
     ftLastAccessTime := wide.ftLastAccessTime;
@@ -246,6 +265,7 @@ begin
     dwReserved0 := wide.dwReserved0;
     dwReserved1 := wide.dwReserved1;
   end;
+  {$endif}
 end;
 
 function FindFirstWide(const Path: string; Attr: Longint; out Rslt: TSearchRec): Longint;
@@ -271,31 +291,37 @@ end;
 {------------------------------------------------------------------------------
   FindNextUTF8
  ------------------------------------------------------------------------------}
+{$ifndef WinCE}
 function FindNextAnsi(var Rslt: TSearchRec): Longint;
 begin
   Rslt.Name:=UTF8ToSys(Rslt.Name);
   Result:=SysUtils.FindNext(Rslt);
   Rslt.Name:=SysToUTF8(Rslt.Name);
 end;
+{$endif}
 
 function FindNextWide(var Rslt: TSearchRec): Longint;
 var
   wide  : TWIN32FINDDATAW;
 begin
-  if FindNextFileW(Rslt.FindHandle, wide) then begin
+  if FindNextFileW(Rslt.FindHandle, wide) then
+  begin
     FindWideToAnsi(wide, Rslt.FindData);
     Result := FindMatch(Rslt);
-  end else
+  end
+  else
     Result := Integer(GetLastError);
 end;
 
 {------------------------------------------------------------------------------
   FindNextUTF8
  ------------------------------------------------------------------------------}
+{$ifndef WinCE}
 procedure FindCloseAnsi(var F: TSearchrec);
 begin
   SysUtils.FindClose(F);
 end;
+{$endif}
 
 procedure FindCloseWide(var F: TSearchrec);
 begin
@@ -306,10 +332,12 @@ end;
 {------------------------------------------------------------------------------
   FileGetAttrUTF8
  ------------------------------------------------------------------------------}
+{$ifndef WinCE}
 function FileGetAttrAnsi(const FileName: String): Longint;
 begin
   Result:=SysUtils.FileGetAttr(UTF8ToSys(Filename));
 end;
+{$endif}
 
 function FileGetAttrWide(const FileName: String): Longint;
 begin
@@ -319,10 +347,12 @@ end;
 {------------------------------------------------------------------------------
   FileSetAttrUTF8
  ------------------------------------------------------------------------------}
+{$ifndef WinCE}
 function FileSetAttrAnsi(const Filename: String; Attr: longint): Longint;
 begin
   Result:=SysUtils.FileSetAttr(UTF8ToSys(Filename),Attr);
 end;
+{$endif}
 
 function FileSetAttrWide(const Filename: String; Attr: longint): Longint;
 begin
@@ -335,10 +365,12 @@ end;
 {------------------------------------------------------------------------------
   DeleteFileUTF8
  ------------------------------------------------------------------------------}
+{$ifndef WinCE}
 function DeleteFileAnsi(const FileName: String): Boolean;
 begin
   Result:=SysUtils.DeleteFile(UTF8ToSys(Filename));
 end;
+{$endif}
 
 function DeleteFileWide(const FileName: String): Boolean;
 begin
@@ -348,10 +380,12 @@ end;
 {------------------------------------------------------------------------------
   RenameFileUTF8
  ------------------------------------------------------------------------------}
+{$ifndef WinCE}
 function RenameFileAnsi(const OldName, NewName: String): Boolean;
 begin
   Result:=SysUtils.RenameFile(UTF8ToSys(OldName),UTF8ToSys(NewName));
 end;
+{$endif}
 
 function RenameFileWide(const OldName, NewName: String): Boolean;
 begin
@@ -361,43 +395,57 @@ end;
 {------------------------------------------------------------------------------
   GetCurrentDirUTF8
  ------------------------------------------------------------------------------}
+{$ifndef WinCE}
 function GetCurrentDirAnsi: String;
 begin
   Result:=SysToUTF8(SysUtils.GetCurrentDir);
 end;
+{$endif}
 
 function GetCurrentDirWide: String;
 var
   w   : WideString;
   res : Integer;
 begin
+  {$ifdef WinCE}
+  raise Exception.Create('[GetCurrentDirWide] The concept of the current directory doesn''t exist in Windows CE');
+  {$else}
   res:=GetCurrentDirectoryW(0, nil);
   SetLength(w, res);
   res:=Windows.GetCurrentDirectoryW(res, @w[1]);
   SetLength(w, res);
   Result:=UTF8Encode(w);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
   SetCurrentDirUTF8
  ------------------------------------------------------------------------------}
+{$ifndef WinCE}
 function SetCurrentDirAnsi(const NewDir: String): Boolean;
 begin
   Result:=SysUtils.SetCurrentDir(UTF8ToSys(NewDir));
 end;
+{$endif}
 
 function SetCurrentDirWide(const NewDir: String): Boolean;
 begin
+  {$ifdef WinCE}
+  raise Exception.Create('[SetCurrentDirWide] The concept of the current directory doesn''t exist in Windows CE');
+  {$else}
   Result:=Windows.SetCurrentDirectoryW(PWidechar(UTF8Decode(NewDir)));
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
   CreateDirUTF8
  ------------------------------------------------------------------------------}
+{$ifndef WinCE}
 function CreateDirAnsi(const NewDir: String): Boolean;
 begin
   Result:=SysUtils.CreateDir(UTF8ToSys(NewDir));
 end;
+{$endif}
 
 function CreateDirWide(const NewDir: String): Boolean;
 begin
@@ -407,10 +455,12 @@ end;
 {------------------------------------------------------------------------------
   RemoveDirUTF8
  ------------------------------------------------------------------------------}
+{$ifndef WinCE}
 function RemoveDirAnsi(const Dir: String): Boolean;
 begin
   Result:=SysUtils.RemoveDir(UTF8ToSys(Dir));
 end;
+{$endif}
 
 function RemoveDirWide(const Dir: String): Boolean;
 begin
@@ -418,19 +468,19 @@ begin
 end;
 
 var
-  FileSize_        : function (const Filename: string): int64 = @FileSizeAnsi;
+  FileSize_        : function (const Filename: string): int64 = @FileSizeWide;
   FindFirst_       : function (const Path: string; Attr: Longint;
-                       out Rslt: TSearchRec): Longint = @FindFirstAnsi;
-  FindNext_        : function (var Rslt: TSearchRec): Longint = @FindNextAnsi;
-  FindClose_       : procedure (var F: TSearchrec) = @FindCloseAnsi;
-  FileGetAttr_     : function (const FileName: String): Longint = @FileGetAttrAnsi;
-  FileSetAttr_     : function (const Filename: String; Attr: longint): Longint = @FileSetAttrAnsi;
-  DeleteFile_      : function (const FileName: String): Boolean = @DeleteFileAnsi;
-  RenameFile_      : function (const OldName, NewName: String): Boolean = @RenameFileAnsi;
-  GetCurrentDir_   : function : String = @GetCurrentDirAnsi;
-  SetCurrentDir_   : function (const NewDir: String): Boolean = @SetCurrentDirAnsi;
-  CreateDir_       : function (const NewDir: String): Boolean = @CreateDirAnsi;
-  RemoveDir_       : function (const Dir: String): Boolean = @RemoveDirAnsi;
+                       out Rslt: TSearchRec): Longint = @FindFirstWide;
+  FindNext_        : function (var Rslt: TSearchRec): Longint = @FindNextWide;
+  FindClose_       : procedure (var F: TSearchrec) = @FindCloseWide;
+  FileGetAttr_     : function (const FileName: String): Longint = @FileGetAttrWide;
+  FileSetAttr_     : function (const Filename: String; Attr: longint): Longint = @FileSetAttrWide;
+  DeleteFile_      : function (const FileName: String): Boolean = @DeleteFileWide;
+  RenameFile_      : function (const OldName, NewName: String): Boolean = @RenameFileWide;
+  GetCurrentDir_   : function : String = @GetCurrentDirWide;
+  SetCurrentDir_   : function (const NewDir: String): Boolean = @SetCurrentDirWide;
+  CreateDir_       : function (const NewDir: String): Boolean = @CreateDirWide;
+  RemoveDir_       : function (const Dir: String): Boolean = @RemoveDirWide;
 
 function FileSize(const Filename: string): int64;
 begin
@@ -516,18 +566,21 @@ end;
 
 procedure InitFileUtils;
 begin
-  if Win32MajorVersion > 4 then begin
-    FileSize_:=@FileSizeWide;
-    FileGetAttr_:=@FileGetAttrWide;
-    FileSetAttr_:=@FileSetAttrWide;
-    DeleteFile_:=@DeleteFileWide;
-    RenameFile_:=@RenameFileWide;
-    SetCurrentDir_:=@SetCurrentDirWide;
-    GetCurrentDir_:=@GetCurrentDirWide;
-    CreateDir_:=@CreateDirWide;
-    RemoveDir_:=@RemoveDirWide;
-    FindFirst_:=@FindFirstWide;
-    FindNext_:=@FindNextWide;
-    FindClose_:=@FindCloseWide;
+  {$ifndef WinCE}
+  if Win32MajorVersion <= 4 then
+  begin
+    FileSize_:=@FileSizeAnsi;
+    FileGetAttr_:=@FileGetAttrAnsi;
+    FileSetAttr_:=@FileSetAttrAnsi;
+    DeleteFile_:=@DeleteFileAnsi;
+    RenameFile_:=@RenameFileAnsi;
+    SetCurrentDir_:=@SetCurrentDirAnsi;
+    GetCurrentDir_:=@GetCurrentDirAnsi;
+    CreateDir_:=@CreateDirAnsi;
+    RemoveDir_:=@RemoveDirAnsi;
+    FindFirst_:=@FindFirstAnsi;
+    FindNext_:=@FindNextAnsi;
+    FindClose_:=@FindCloseAnsi;
   end;
+  {$endif}
 end;
