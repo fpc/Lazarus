@@ -5,7 +5,7 @@ unit main;
 interface
 
 uses
-  ExtCtrls, Spin, StdCtrls, Forms, TAGraph, TASeries, TASources;
+  ExtCtrls, Spin, StdCtrls, Forms, TAGraph, TASeries, TASources, Classes;
 
 type
 
@@ -17,20 +17,23 @@ type
     Chart1LineSeries1: TLineSeries;
     Chart1PieSeries1: TPieSeries;
     cbUseSidebar: TCheckBox;
-    lblSymbolWidth: TLabel;
     lblSpacing: TLabel;
-    lblMargin: TLabel;
+    lblMarginX: TLabel;
+    lblSymbolWidth: TLabel;
+    lblMarginY: TLabel;
     ListChartSource1: TListChartSource;
     ListChartSource2: TListChartSource;
     pnControls: TPanel;
     rgAlignment: TRadioGroup;
     RandomChartSource1: TRandomChartSource;
-    seSymbolWidth: TSpinEdit;
     seSpacing: TSpinEdit;
-    seMargin: TSpinEdit;
+    seMarginX: TSpinEdit;
+    seSymbolWidth: TSpinEdit;
+    seMarginY: TSpinEdit;
     procedure cbUseSidebarChange(Sender: TObject);
     procedure rgAlignmentClick(Sender: TObject);
-    procedure seMarginChange(Sender: TObject);
+    procedure seMarginXChange(Sender: TObject);
+    procedure seMarginYChange(Sender: TObject);
     procedure seSpacingChange(Sender: TObject);
     procedure seSymbolWidthChange(Sender: TObject);
   end;
@@ -63,9 +66,14 @@ begin
     end;
 end;
 
-procedure TForm1.seMarginChange(Sender: TObject);
+procedure TForm1.seMarginXChange(Sender: TObject);
 begin
-  Chart1.Legend.Margin := seMargin.Value;
+  Chart1.Legend.MarginX := seMarginX.Value;
+end;
+
+procedure TForm1.seMarginYChange(Sender: TObject);
+begin
+  Chart1.Legend.MarginY := seMarginY.Value;
 end;
 
 procedure TForm1.seSpacingChange(Sender: TObject);

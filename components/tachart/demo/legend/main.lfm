@@ -14,9 +14,7 @@ object Form1: TForm1
     Width = 510
     AxisList = <    
       item
-        Alignment = calLeft
         Title.LabelFont.Orientation = 900
-        Title.Font.Orientation = 900
         Visible = False
       end    
       item
@@ -40,7 +38,6 @@ object Form1: TForm1
       Title = 'Line'
       LinePen.Color = clRed
       Pointer.Brush.Color = clRed
-      SeriesColor = clRed
       ShowPoints = True
       Source = ListChartSource1
     end
@@ -48,7 +45,6 @@ object Form1: TForm1
       Title = 'Area'
       AreaBrush.Color = clGreen
       AreaBrush.Style = bsCross
-      SeriesColor = clGreen
       Source = RandomChartSource1
     end
     object Chart1PieSeries1: TPieSeries
@@ -67,50 +63,32 @@ object Form1: TForm1
     ClientHeight = 62
     ClientWidth = 510
     TabOrder = 1
-    object seSpacing: TSpinEdit
+    object lblMarginY: TLabel
+      Left = 8
+      Height = 14
+      Top = 33
+      Width = 42
+      Caption = 'Y margin'
+      ParentColor = False
+    end
+    object seMarginY: TSpinEdit
       Left = 60
       Height = 21
-      Top = 8
+      Top = 33
       Width = 54
       MaxValue = 20
-      OnChange = seSpacingChange
+      OnChange = seMarginYChange
       TabOrder = 0
       Value = 4
     end
-    object lblSpacing: TLabel
-      Left = 8
-      Height = 14
-      Top = 8
-      Width = 38
-      Caption = 'Spacing'
-      ParentColor = False
-    end
-    object lblMargin: TLabel
-      Left = 12
-      Height = 14
-      Top = 33
-      Width = 33
-      Caption = 'Margin'
-      ParentColor = False
-    end
-    object seMargin: TSpinEdit
-      Left = 60
-      Height = 21
-      Top = 33
-      Width = 54
-      MaxValue = 20
-      OnChange = seMarginChange
-      TabOrder = 1
-      Value = 4
-    end
     object seSymbolWidth: TSpinEdit
-      Left = 200
+      Left = 196
       Height = 21
       Top = 8
       Width = 54
       MaxValue = 50
       OnChange = seSymbolWidthChange
-      TabOrder = 2
+      TabOrder = 1
       Value = 20
     end
     object lblSymbolWidth: TLabel
@@ -148,10 +126,10 @@ object Form1: TForm1
         'BottomRight'
       )
       OnClick = rgAlignmentClick
-      TabOrder = 3
+      TabOrder = 2
     end
     object cbUseSidebar: TCheckBox
-      Left = 128
+      Left = 256
       Height = 17
       Top = 33
       Width = 56
@@ -159,7 +137,43 @@ object Form1: TForm1
       Checked = True
       OnChange = cbUseSidebarChange
       State = cbChecked
+      TabOrder = 3
+    end
+    object lblSpacing: TLabel
+      Left = 128
+      Height = 14
+      Top = 33
+      Width = 38
+      Caption = 'Spacing'
+      ParentColor = False
+    end
+    object seSpacing: TSpinEdit
+      Left = 196
+      Height = 21
+      Top = 33
+      Width = 54
+      MaxValue = 20
+      OnChange = seSpacingChange
       TabOrder = 4
+      Value = 4
+    end
+    object lblMarginX: TLabel
+      Left = 8
+      Height = 14
+      Top = 8
+      Width = 42
+      Caption = 'X margin'
+      ParentColor = False
+    end
+    object seMarginX: TSpinEdit
+      Left = 60
+      Height = 21
+      Top = 8
+      Width = 54
+      MaxValue = 20
+      OnChange = seMarginXChange
+      TabOrder = 5
+      Value = 4
     end
   end
   object RandomChartSource1: TRandomChartSource
