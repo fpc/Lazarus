@@ -363,8 +363,12 @@ begin
 
   FileDialog := TFileDialog(ACommonDialog);
   QtFileDialog := TQtFileDialog(FileDialog.Handle);
-  
+
   UpdateProperties(FileDialog, QtFileDialog);
+  {$ifndef QT_NATIVE_DIALOGS}
+  // set kbd shortcuts in case when we are not native dialog.
+  QtFileDialog.setShortcuts(FileDialog is TOpenDialog);
+  {$endif}
 
   {------------------------------------------------------------------------------
     Code to call the dialog
@@ -409,7 +413,6 @@ begin
     end else
       FileDialog.UserChoice := mrCancel;
     {$else}
-
 
     QFileDialog_setOption(QFileDialogH(QtFileDialog.Widget),
       QFileDialogDontConfirmOverwrite,

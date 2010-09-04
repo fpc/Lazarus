@@ -1414,6 +1414,23 @@ type
 
   TQtFileDialog = class(TQtDialog)
   private
+    {$ifndef QT_NATIVE_DIALOGS}
+    FBackBtn: QWidgetH;
+    FForwardBtn: QWidgetH;
+    FUpBtn: QWidgetH;
+    FFileNameEdit: QWidgetH;
+    FComboType: QWidgetH;
+    FComboHistory: QWidgetH;
+    FSideView: QWidgetH;
+    FTreeView: QWidgetH;
+    FListView: QWidgetH;
+    FTreeViewEventFilter: QObject_hookH;
+    FListViewEventFilter: QObject_hookH;
+    FSideViewEventFilter: QObject_hookH;
+    FFileNameEditEventFilter: QObject_hookH;
+    FComboTypeEventFilter: QObject_hookH;
+    FComboHistoryEventFilter: QObject_hookH;
+    {$endif}
     FCurrentChangedHook: QFileDialog_hookH;
     FDirecotyEnteredHook: QFileDialog_hookH;
     FFilterSelectedHook: QFileDialog_hookH;
@@ -1422,6 +1439,9 @@ type
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+    {$ifndef QT_NATIVE_DIALOGS}
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+    {$endif}
     procedure CurrentChangedEvent(path: PWideString); cdecl;
     procedure FilterSelectedEvent(filter: PWideString); cdecl;
     procedure DirectoryEnteredEvent(directory: PWideString); cdecl;
@@ -1439,6 +1459,9 @@ type
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelectedFilter(const ASelFilter: WideString);
     procedure setViewMode(const AMode: QFileDialogViewMode);
+    {$ifndef QT_NATIVE_DIALOGS}
+    procedure setShortcuts(const AIsOpenDialog: Boolean);
+    {$endif}
   end;
 
   { TQtMessageBox }
@@ -12402,6 +12425,24 @@ end;
 function TQtFileDialog.CreateWidget(parent: QWidgetH; f: QtWindowFlags): QWidgetH;
 begin
   Result := QFileDialog_create(parent, f);
+  {$ifndef QT_NATIVE_DIALOGS}
+  FBackBtn := nil;
+  FForwardBtn := nil;
+  FUpBtn := nil;
+  FFileNameEdit := nil;
+  FComboType := nil;
+  FComboHistory := nil;
+  FSideView := nil;;
+  FTreeView := nil;
+  FListView := nil;
+
+  FTreeViewEventFilter := nil; // detailed view
+  FListViewEventFilter := nil; // small icons
+  FSideViewEventFilter := nil; // sidebar
+  FFileNameEditEventFilter := nil; // filename editor
+  FComboTypeEventFilter := nil;
+  FComboHistoryEventFilter := nil;
+  {$endif}
 end;
 
 procedure TQtFileDialog.AttachEvents;
@@ -12424,9 +12465,155 @@ begin
   QFileDialog_hook_destroy(FCurrentChangedHook);
   QFileDialog_hook_destroy(FFilterSelectedHook);
   QFileDialog_hook_destroy(FDirecotyEnteredHook);
-
+  {$ifndef QT_NATIVE_DIALOGS}
+  if FTreeViewEventFilter <> nil then
+  begin
+    QObject_hook_destroy(FTreeViewEventFilter);
+    FTreeViewEventFilter := nil;
+  end;
+  if FListViewEventFilter <> nil then
+  begin
+    QObject_hook_destroy(FListViewEventFilter);
+    FListViewEventFilter := nil;
+  end;
+  if FSideViewEventFilter <> nil then
+  begin
+    QObject_hook_destroy(FSideViewEventFilter);
+    FSideViewEventFilter := nil;
+  end;
+  if FFileNameEditEventFilter <> nil then
+  begin
+    QObject_hook_destroy(FFileNameEditEventFilter);
+    FFileNameEditEventFilter := nil;
+  end;
+  if FComboTypeEventFilter <> nil then
+  begin
+    QObject_hook_destroy(FComboTypeEventFilter);
+    FComboTypeEventFilter := nil;
+  end;
+  if FComboHistoryEventFilter <> nil then
+  begin
+    QObject_hook_destroy(FComboHistoryEventFilter);
+    FComboHistoryEventFilter := nil;
+  end;
+  {$endif}
   inherited DetachEvents;
 end;
+
+{$ifndef QT_NATIVE_DIALOGS}
+function TQtFileDialog.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  Result := False;
+  if Sender <> Widget then
+  begin
+    // TODO: Ctrl + Letter for Open/Save button trigger
+    // ALT + Left, Up, Right to navigate (Backward, Up parent, Forward) in list.
+    // ALT + E to focus fileedit
+    // ALT + H to focus lookInCombo (history combo)
+    // ALT + L to focus view
+    // ALT + N to create new folder (TODO)
+    // ALT + S to select sidebar
+    // ALT + T to focus file type combo
+    // ALT + V to change view style (TODO)
+    case QEvent_type(Event) of
+      QEventKeyPress:
+        begin
+          if (QKeyEvent_modifiers(QKeyEventH(Event)) and QtAltModifier <> 0) then
+          begin
+            case QKeyEvent_key(QKeyEventH(Event)) of
+              QtKey_Left:
+                begin
+                  if Assigned(FBackBtn) and QWidget_isVisible(FBackBtn) and
+                    QWidget_isEnabled(FBackBtn) then
+                    QAbstractButton_click(QAbstractButtonH(FBackBtn));
+                  Result := True;
+                end;
+              QtKey_Right:
+                begin
+                  if Assigned(FForwardBtn) and QWidget_isVisible(FForwardBtn) and
+                    QWidget_isEnabled(FForwardBtn) then
+                    QAbstractButton_click(QAbstractButtonH(FForwardBtn));
+                  Result := True;
+                end;
+              QtKey_Up:
+                begin
+                  if Assigned(FUpBtn) and QWidget_isVisible(FUpBtn) and
+                    QWidget_isEnabled(FUpBtn) then
+                    QAbstractButton_click(QAbstractButtonH(FUpBtn));
+                  Result := True;
+                end;
+              QtKey_E:
+                begin
+                  if Assigned(FFileNameEdit) and
+                    QWidget_isVisible(FFileNameEdit) and
+                    QWidget_isEnabled(FFileNameEdit) and
+                    not QWidget_hasFocus(FFileNameEdit) then
+                    QWidget_setFocus(FFileNameEdit);
+                  Result := True;
+                end;
+              QtKey_H:
+                begin
+                  if Assigned(FComboHistory) and
+                    QWidget_isVisible(FComboHistory) and
+                    QWidget_isEnabled(FComboHistory) and
+                    not QWidget_hasFocus(FComboHistory) then
+                      QWidget_setFocus(FComboHistory);
+                  Result := True;
+                end;
+              QtKey_L:
+                begin
+                  if Assigned(FTreeView) and
+                    QWidget_isVisible(FTreeView) and
+                    QWidget_isEnabled(FTreeView) and
+                    not QWidget_hasFocus(FTreeView) then
+                    QWidget_setFocus(FTreeView)
+                  else
+                  if Assigned(FListView) and
+                    QWidget_isVisible(FListView) and
+                    QWidget_isEnabled(FListView) and
+                    not QWidget_hasFocus(FListView) then
+                    QWidget_setFocus(FListView);
+                  Result := True;
+                end;
+              QtKey_N:
+                begin
+                  //TODO: create newfolder
+                  Result := True;
+                end;
+              QtKey_S:
+                begin
+                  // select sidebar
+                  if Assigned(FSideView) and
+                    QWidget_isVisible(FSideView) and
+                    QWidget_isEnabled(FSideView) and
+                    not QWidget_hasFocus(FSideView) then
+                    QWidget_setFocus(FSideView);
+                  Result := True;
+                end;
+              QtKey_T:
+                begin
+                  // focus combo filetype
+                  if Assigned(FComboType) and
+                    QWidget_isVisible(FComboType) and
+                    QWidget_isEnabled(FComboType) and
+                    not QWidget_hasFocus(FComboType) then
+                      QWidget_setFocus(FComboType);
+                  Result := True;
+                end;
+              QtKey_V:
+                begin
+                  //TODO: change viewStyle
+                  Result := True;
+                end;
+            end;
+          end;
+        end;
+    end;
+  end else
+    Result := inherited EventFilter(Sender, Event);
+end;
+{$endif}
 
 function TQtFileDialog.selectFile: WideString;
 begin
@@ -12502,6 +12689,134 @@ procedure TQtFileDialog.setViewMode(const AMode: QFileDialogViewMode);
 begin
   QFileDialog_setViewMode(QFileDialogH(Widget), AMode);
 end;
+
+{------------------------------------------------------------------------------
+  Function: TQtFileDialog.setShortcuts
+  Params:  None
+  Returns: Nothing
+  Qt non-native dialogs doesn't set keyboard shortcuts, so we must do that.
+  This functions hooks eventFilter of all widgets on QFileDialog.
+ ------------------------------------------------------------------------------}
+{$ifndef QT_NATIVE_DIALOGS}
+procedure TQtFileDialog.setShortcuts(const AIsOpenDialog: Boolean);
+var
+  AnIter: TQtObjectDump;
+  i: Integer;
+  Obj: QObjectH;
+  WStr: WideString;
+  ToolTip: WideString;
+  W: QWidgetH;
+begin
+  // if there's auto recognition enabled then don''t set shortcuts
+  // cause we are maybe native dialog and then boomer.
+  if not QFileDialog_testOption(QFileDialogH(Widget),
+    QFileDialogDontUseNativeDialog) then
+    exit;
+  FForwardBtn := nil;
+  FBackBtn := nil;
+  FUpBtn := nil;
+
+  AnIter := TQtObjectDump.Create(Widget);
+  try
+    AnIter.DumpObject;
+
+    for i := 0 to AnIter.ObjList.Count - 1 do
+    begin
+      Obj := QObjectH(AnIter.Objlist.Items[i]);
+      if AnIter.IsWidget(Obj) then
+      begin
+        WStr := AnIter.GetObjectName(Obj);
+        if (WStr = 'treeView') or (WStr = 'listView') or (WStr = 'sidebar') then
+        begin
+          if FForwardBtn = nil then
+          begin
+            FForwardBtn := AnIter.FindWidgetByName('forwardButton');
+            if FForwardBtn <> nil then
+            begin
+              ToolTip := 'Forward (Alt + Right)';
+              QWidget_setToolTip(FForwardBtn, @ToolTip);
+            end;
+          end;
+          if FBackBtn = nil then
+          begin
+            FBackBtn := AnIter.FindWidgetByName('backButton');
+            if FBackBtn <> nil then
+            begin
+              ToolTip := 'Back (Alt + Left)';
+              QWidget_setToolTip(FBackBtn, @ToolTip);
+            end;
+          end;
+          if FUpBtn = nil then
+          begin
+            FUpBtn := AnIter.FindWidgetByName('toParentButton');
+            if FUpBtn <> nil then
+            begin
+              ToolTip := 'To parent directory (Alt + Up)';
+              QWidget_setToolTip(FUpBtn, @ToolTip);
+            end;
+          end;
+
+          if FForwardBtn <> nil then
+          begin
+            if WStr = 'treeView' then
+            begin
+              FTreeView := QWidgetH(Obj);
+              FTreeViewEventFilter := QObject_hook_create(Obj);
+              QObject_hook_hook_events(FTreeViewEventFilter, @EventFilter);
+              ToolTip := 'Alt + L to focus this widget';
+              QWidget_setToolTip(FTreeView, @ToolTip);
+            end else
+            if WStr = 'listView' then
+            begin
+              FListView := QWidgetH(Obj);
+              FListViewEventFilter := QObject_hook_create(Obj);
+              QObject_hook_hook_events(FListViewEventFilter, @EventFilter);
+              ToolTip := 'Alt + L to focus this widget';
+              QWidget_setToolTip(FListView, @ToolTip);
+            end else
+            if WStr = 'sidebar' then
+            begin
+              FSideView := QWidgetH(Obj);
+              FSideViewEventFilter := QObject_hook_create(Obj);
+              QObject_hook_hook_events(FSideViewEventFilter, @EventFilter);
+              ToolTip := 'Alt + S to focus this widget';
+              QWidget_setToolTip(FSideView, @ToolTip);
+            end;
+
+          end;
+        end else
+        if WStr = 'fileNameEdit' then
+        begin
+          FFileNameEdit := QWidgetH(Obj);
+          FFileNameEditEventFilter := QObject_hook_create(Obj);
+          QObject_hook_hook_events(FFileNameEditEventFilter, @EventFilter);
+          ToolTip := 'Alt + E to focus this widget';
+          QWidget_setToolTip(FFileNameEdit, @ToolTip);
+        end else
+        if WStr = 'fileTypeCombo' then
+        begin
+          FComboType := QWidgetH(Obj);
+          FComboTypeEventFilter := QObject_hook_create(Obj);
+          QObject_hook_hook_events(FComboTypeEventFilter, @EventFilter);
+          ToolTip := 'Alt + T to focus this widget';
+          QWidget_setToolTip(FComboType, @ToolTip);
+        end else
+        if WStr = 'lookInCombo' then
+        begin
+          FComboHistory := QWidgetH(Obj);
+          FComboHistoryEventFilter := QObject_hook_create(Obj);
+          QObject_hook_hook_events(FComboHistoryEventFilter, @EventFilter);
+          ToolTip := 'Alt + H to focus this widget';
+          QWidget_setToolTip(FComboHistory, @ToolTip);
+        end;
+      end;
+    end;
+
+  finally
+    AnIter.Free;
+  end;
+end;
+{$endif}
 
 procedure TQtFileDialog.FilterSelectedEvent(filter: PWideString); cdecl;
 var

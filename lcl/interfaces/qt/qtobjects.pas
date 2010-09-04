@@ -724,6 +724,28 @@ type
     property InReload: Boolean read FInReload;
   end;
 
+  {TQtObjectDump}
+
+  TQtObjectDump = class(TObject) // helper class to dump complete children tree
+  private
+    FRoot: QObjectH;
+    FObjList: TFPList;
+    FList: TStrings;
+    procedure Iterator(ARoot: QObjectH);
+    procedure AddToList(AnObject: QObjectH);
+  public
+    constructor Create(AnObject: QObjectH);
+    destructor Destroy; override;
+    procedure DumpObject;
+    function findWidgetByName(const AName: WideString): QWidgetH;
+    function IsWidget(AnObject: QObjectH): Boolean;
+    function GetObjectName(AnObject: QObjectH): WideString;
+    function InheritsQtClass(AnObject: QObjectH; AQtClass: WideString): Boolean;
+    property List: TStrings read FList;
+    property ObjList: TFPList read FObjList;
+  end;
+
+
 const
   LCLQt_Destroy = QEventType(Ord(QEventUser) + $1000);
   
@@ -4464,6 +4486,100 @@ end;
 procedure TQtActionGroup.setDisabled(ADisabled: Boolean);
 begin
   QActionGroup_setDisabled(FHandle, ADisabled);
+end;
+
+{ TQtObjectDump }
+
+procedure TQtObjectDump.Iterator(ARoot: QObjectH);
+var
+  i: Integer;
+  Children: TPtrIntArray;
+begin
+  QObject_children(ARoot, @Children);
+  AddToList(ARoot);
+  for i := 0 to High(Children) do
+    Iterator(QObjectH(Children[i]))
+end;
+
+procedure TQtObjectDump.AddToList(AnObject: QObjectH);
+// var
+//  ObjName: WideString;
+begin
+  if AnObject <> nil then
+  begin
+    // QObject_objectName(AnObject, @ObjName);
+    if FObjList.IndexOf(AnObject) < 0 then
+    begin
+      FList.Add(dbghex(PtrUInt(AnObject)));
+      FObjList.Add(AnObject);
+    end else
+      raise Exception.Create('TQtObjectDump: Duplicated object in list '+dbghex(PtrUInt(AnObject)));
+  end;
+end;
+
+procedure TQtObjectDump.DumpObject;
+begin
+  if FRoot = nil then
+    raise Exception.Create('TQtObjectDump: Invalid FRoot '+dbghex(PtrUInt(FRoot)));
+  Iterator(FRoot);
+end;
+
+function TQtObjectDump.findWidgetByName(const AName: WideString): QWidgetH;
+var
+  j: Integer;
+  WS: WideString;
+begin
+  Result := nil;
+  if AName = '' then
+    exit;
+  for j := 0 to FObjList.Count - 1 do
+  begin
+    QObject_objectName(QObjectH(FObjList.Items[j]), @WS);
+    if (WS = AName) and QObject_isWidgetType(QObjectH(FObjList.Items[j])) then
+    begin
+      Result := QWidgetH(FObjList.Items[j]);
+      break;
+    end;
+  end;
+end;
+
+function TQtObjectDump.IsWidget(AnObject: QObjectH): Boolean;
+begin
+  if AnObject <> nil then
+    Result := QObject_IsWidgetType(AnObject)
+  else
+    Result := False;
+end;
+
+function TQtObjectDump.GetObjectName(AnObject: QObjectH): WideString;
+begin
+  Result := '';
+  if AnObject = nil then
+    exit;
+  QObject_objectName(AnObject, @Result);
+end;
+
+function TQtObjectDump.InheritsQtClass(AnObject: QObjectH;
+  AQtClass: WideString): Boolean;
+begin
+  if (AnObject = nil) or (AQtClass = '') then
+    Result := False
+  else
+    Result := QObject_inherits(AnObject, @AQtClass);
+end;
+
+constructor TQtObjectDump.Create(AnObject: QObjectH);
+begin
+  FRoot := AnObject;
+  FList := TStringList.Create;
+  FObjList := TFPList.Create;
+end;
+
+destructor TQtObjectDump.Destroy;
+begin
+  FList.Free;
+  FObjList.Free;
+  inherited Destroy;
 end;
 
 end.
