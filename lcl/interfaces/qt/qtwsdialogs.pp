@@ -318,6 +318,10 @@ begin
     ATitle := GetUTF8String(AFileDialog.FileName);
     QFileDialog_selectFile(QFileDialogH(QtFileDialog.Widget), @ATitle);
   end;
+  {$ifndef QT_NATIVE_DIALOGS}
+  // set kbd shortcuts in case when we are not native dialog.
+  QtFileDialog.setShortcuts(AFileDialog is TOpenDialog);
+  {$endif}
 end;
 
 class function TQtWSFileDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
@@ -365,10 +369,6 @@ begin
   QtFileDialog := TQtFileDialog(FileDialog.Handle);
 
   UpdateProperties(FileDialog, QtFileDialog);
-  {$ifndef QT_NATIVE_DIALOGS}
-  // set kbd shortcuts in case when we are not native dialog.
-  QtFileDialog.setShortcuts(FileDialog is TOpenDialog);
-  {$endif}
 
   {------------------------------------------------------------------------------
     Code to call the dialog
@@ -539,6 +539,10 @@ begin
     QtFileDialog.setViewMode(QFileDialogDetail)
   else
     QtFileDialog.setViewMode(QFileDialogList);
+  {$ifndef QT_NATIVE_DIALOGS}
+  // set kbd shortcuts in case when we are not native dialog.
+  QtFileDialog.setShortcuts(False);
+  {$endif}
 end;
 
 class function TQtWSSelectDirectoryDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
@@ -554,7 +558,7 @@ begin
 
   {$note qt-4.5.0,qt-4.5.1 currently supports macosx only.}
   QFileDialog_setOption(QFileDialogH(FileDialog.Widget),
-    QFileDialogDontUseNativeDialog, False);
+    QFileDialogDontUseNativeDialog, True);
 
   FileDialog.setFileMode(QFileDialogDirectoryOnly);
 
