@@ -224,6 +224,8 @@ type
     procedure boundingRect(retval: PRect; r: PRect; flags: Integer; text: PWideString; tabstops: Integer = 0; tabarray: PInteger = nil);
     function charWidth(str: WideString; pos: Integer): Integer;
     function averageCharWidth: Integer;
+    function elidedText(const AText: WideString;
+      const AMode: QtTextElideMode; const AWidth: Integer): WideString;
   end;
 
   { TQtBrush }
@@ -1525,6 +1527,12 @@ end;
 function TQtFontMetrics.averageCharWidth: Integer;
 begin
   Result := QFontMetrics_averageCharWidth(Widget);
+end;
+
+function TQtFontMetrics.elidedText(const AText: WideString;
+  const AMode: QtTextElideMode; const AWidth: Integer): WideString;
+begin
+  QFontMetrics_elidedText(Widget, @Result, @AText, AMode, AWidth, 0);
 end;
 
 { TQtBrush }

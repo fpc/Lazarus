@@ -1306,6 +1306,13 @@ begin
     F := DTFlagsToQtFlags(Flags);
   end;
 
+  if (Flags and DT_MODIFYSTRING = DT_MODIFYSTRING) and
+  (Flags and DT_END_ELLIPSIS = DT_END_ELLIPSIS) then
+  begin
+    with ARect do
+      WideStr := QtDC.Metrics.elidedText(WideStr, QtElideRight, Right - Left);
+  end;
+
   with ARect do
     QtDC.DrawText(Left + Pt.X, Top + Pt.Y, Right-Left, Bottom-Top, F, @WideStr);
 end;
