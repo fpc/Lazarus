@@ -316,28 +316,34 @@ class procedure TQtWSWinControl.SetChildZPosition(const AWinControl,
                 AChild: TWinControl; const AOldPos, ANewPos: Integer; const AChildren: TFPList);
 var
   n: Integer;
-  child: TWinControl;
+  Child: TWinControl;
+  Reorder: TFPList;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetChildZPosition') then
     Exit;
+  if not WSCheckHandleAllocated(AChild, 'SetChildZPosition (child)') then
+    Exit;
 
-  if ANewPos < AChildren.Count div 2
-  then begin
-    // move down (and others below us)
-    for n := ANewPos downto 0 do
+  if (ANewPos <= 0) or (ANewPos >= AChildren.Count - 1) then
+  begin
+    // simple
+    if ANewPos <= 0 then // bottom
+      TQtWidget(AChild.Handle).lowerWidget
+    else
+      TQtWidget(AChild.Handle).raiseWidget;
+  end else
+  begin
+    if (ANewPos >= 0) and (ANewPos < AChildren.Count -1) then
     begin
-      child := TWinControl(AChildren[n]);
-      if child.HandleAllocated then
-        TQtWidget(child.Handle).lowerWidget;
-    end;
-  end
-  else begin
-    // move up (and others above us)
-    for n := ANewPos to AChildren.Count - 1 do
-    begin
-      child := TWinControl(AChildren[n]);
-      if child.HandleAllocated then
-        TQtWidget(child.Handle).raiseWidget;
+      Reorder := TFPList.Create;
+      for n := AChildren.Count - 1 downto 0 do
+        Reorder.Add(AChildren[n]);
+      Child := TWinControl(Reorder[ANewPos + 1]);
+      if Child.HandleAllocated then
+        TQtWidget(AChild.Handle).stackUnder(TQtWidget(Child.Handle).Widget)
+      else
+        TQtWidget(AChild.Handle).lowerWidget;
+      Reorder.Free;
     end;
   end;
 end;

@@ -228,6 +228,7 @@ type
     procedure move(ANewLeft, ANewTop: Integer); virtual;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual;
     procedure raiseWidget; virtual;
+    procedure stackUnder(AWidget: QWidgetH); virtual;
     procedure frame_resize(ANewWidth, ANewHeight: Integer);
     procedure resize(ANewWidth, ANewHeight: Integer); virtual;
     procedure releaseMouse;
@@ -420,6 +421,7 @@ type
     function CanPaintBackground: Boolean; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure scroll(dx, dy: integer; ARect: PRect = nil); override;
+    procedure stackUnder(AWidget: QWidgetH); override;
   end;
   
   { TQtGraphicView }
@@ -3477,6 +3479,11 @@ end;
 procedure TQtWidget.raiseWidget;
 begin
   QWidget_raise(Widget);
+end;
+
+procedure TQtWidget.stackUnder(AWidget: QWidgetH);
+begin
+  QWidget_stackUnder(Widget, AWidget);
 end;
 
 procedure TQtWidget.frame_resize(ANewWidth, ANewHeight: Integer);
@@ -11054,6 +11061,12 @@ begin
   inherited scroll(dx, dy, ARect);
   FScrollX := FScrollX + dx;
   FScrollY := FScrollY + dy;
+end;
+
+procedure TQtViewPort.stackUnder(AWidget: QWidgetH);
+begin
+  // do nothing for TQtViewPort
+  // inherited stackUnder(AWidget);
 end;
 
 {------------------------------------------------------------------------------
