@@ -22,7 +22,7 @@
   Author: Paul Ishenin
 
   Abstract:
-    Types, consts and functions we need to read MAC osx icon resource files - icns
+    Types, consts and functions we need to read Mac OS X icon resource files - icns
   Most defines present here were taken from univint package of fpc
 }
 unit IcnsTypes;

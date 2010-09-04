@@ -265,7 +265,7 @@ resourceString
   rsPortableGrayMap = 'Portable GrayMap';
   rsPortablePixmap = 'Portable PixMap';
   rsIcon = 'Icon';
-  rsIcns = 'OSX Icon Resource';
+  rsIcns = 'Mac OS X Icon';
   rsCursor = 'Cursor';
   rsJpeg = 'Joint Picture Expert Group';
   rsTiff = 'Tagged Image File Format';
