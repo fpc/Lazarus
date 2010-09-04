@@ -617,25 +617,27 @@ begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetChildZPosition')
   then Exit;
 
-  if ANewPos < AChildren.Count div 2 then
+  if not WSCheckHandleAllocated(AChild, 'SetChildZPosition (child)') then
+    Exit;
+
+  if (ANewPos <= 0) or (ANewPos >= AChildren.Count - 1) then
   begin
-    // move down (and others below us)
-    for n := ANewPos downto 0 do
-    begin
-      child := TWinControlHack(AChildren[n]);
-      if child.HandleAllocated then
-        TGtkPrivateWidgetClass(
-          child.WidgetSetClass.WSPrivate).SetZPosition(child, wszpBack);
-    end;
+    // simple
+    Child := TWinControlHack(AChild);
+    if ANewPos <= 0 then // bottom
+      TGtkPrivateWidgetClass(
+          Child.WidgetSetClass.WSPrivate).SetZPosition(Child, wszpBack)
+    else
+      TGtkPrivateWidgetClass(
+          Child.WidgetSetClass.WSPrivate).SetZPosition(Child, wszpFront);
   end else
   begin
-    // move up (and others above us)
-    for n := ANewPos to AChildren.Count - 1 do
+    for n := 1 to AChildren.Count - 1 do
     begin
-      child := TWinControlHack(AChildren[n]);
-      if child.HandleAllocated then
+      Child := TWinControlHack(AChildren[n]);
+      if Child.HandleAllocated then
         TGtkPrivateWidgetClass(
-          child.WidgetSetClass.WSPrivate).SetZPosition(child, wszpFront);
+          Child.WidgetSetClass.WSPrivate).SetZPosition(Child, wszpBack);
     end;
   end;
 end;
