@@ -170,7 +170,21 @@ type
     procedure drawRect(dirtyRect: NSRect); override;
   end;
 
+  { TCocoaScrollView }
+
   TCocoaScrollView = objcclass(NSScrollView)
+    callback  : TCommonCallback;
+  end;
+
+  { TCocoaComboBox }
+
+  TCocoaComboBox = objcclass(NSComboBox)
+    callback  : TCommonCallback;
+  end;
+
+  { TCocoaScrollBar }
+
+  TCocoaScrollBar = objcclass(NSScroller)
     callback  : TCommonCallback;
   end;
 

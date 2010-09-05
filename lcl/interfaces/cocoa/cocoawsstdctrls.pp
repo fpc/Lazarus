@@ -42,11 +42,9 @@ type
   { TCocoaWSScrollBar }
 
   TCocoaWSScrollBar = class(TWSScrollBar)
-  private
-  protected
-  public
-//    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-//    class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
+  published
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
   end;
 
   { TCocoaWSCustomGroupBox }
@@ -69,11 +67,9 @@ type
   { TCocoaWSCustomComboBox }
 
   TCocoaWSCustomComboBox = class(TWSCustomComboBox)
-  private
-  protected
-  public
-{    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
+  published
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    {class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -84,9 +80,9 @@ type
     class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
     class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
-
+    }
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
-    class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;}
+    {class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;}
   end;
 
   { TCocoaWSComboBox }
@@ -230,10 +226,8 @@ type
   { TCocoaWSToggleBox }
 
   TCocoaWSToggleBox = class(TWSToggleBox)
-  private
-  protected
-  public
-//    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+  published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCocoaWSRadioButton }
@@ -610,6 +604,7 @@ var
   scr : TCocoaScrollView;
 begin
   txt:=TCocoaTextView( NSView(TCocoaTextView.alloc).lclInitWithCreateParams(AParams));
+  txt.callback:=TLCLCommonCallback.Create(txt, AWinControl);
   txt.textStorage.mutableString.setString(NSStringUtf8(AParams.Caption));
   scr:=EmbedInScrollView(txt);
   scr.callback:=txt.callback;
@@ -660,6 +655,62 @@ begin
   Result:=Assigned(txt);
   if Result then
     AText:=NSStringToString(txt.textStorage.string_);
+end;
+
+{ TCocoaWSCustomComboBox }
+
+class function TCocoaWSCustomComboBox.CreateHandle(const AWinControl:TWinControl;
+  const AParams:TCreateParams):TLCLIntfHandle;
+var
+  cmb : TCocoaComboBox;
+begin
+  cmb := NSView(TCocoaComboBox.alloc).lclInitWithCreateParams(AParams);
+  cmb.callback:=TLCLCommonCallback.Create(cmb, AWinControl);
+  Result:=TLCLIntfHandle(cmb);
+end;
+
+class function TCocoaWSCustomComboBox.GetItems(const ACustomComboBox:
+  TCustomComboBox):TStrings;
+begin
+  //todo: implement cocoa string items
+  Result:=TStringList.Create;
+end;
+
+{ TCocoaWSToggleBox }
+
+class function TCocoaWSToggleBox.CreateHandle(const AWinControl:TWinControl;
+  const AParams:TCreateParams):TLCLIntfHandle;
+var
+  btn : NSButton;
+  cl  : NSButtonCell;
+begin
+  btn:=AllocButton(AWinControl, AParams, NSTexturedRoundedBezelStyle, NSToggleButton);
+  cl:=NSButtonCell(NSButton(btn).cell);
+  cl.setShowsStateBy(cl.showsStateBy or NSContentsCellMask);
+  Result:=TLCLIntfHandle(btn);
+end;
+
+{ TCocoaWSScrollBar }
+
+class function TCocoaWSScrollBar.CreateHandle(const AWinControl:TWinControl;
+  const AParams:TCreateParams):TLCLIntfHandle;
+var
+  scr : TCocoaScrollBar;
+begin
+  scr:=NSView(TCocoaScrollBar.alloc).lclInitWithCreateParams(AParams);
+  scr.callback:=TLCLCommonCallback.Create(scr, AWinControl);
+  Result:=TLCLIntfHandle(scr);
+end;
+
+class procedure TCocoaWSScrollBar.SetParams(const AScrollBar:TCustomScrollBar);
+begin
+  if not Assigned(AScrollBar) or (AScrollBar.Handle=0) then Exit;
+  with AScrollBar do
+   if Max>0 then begin
+     TCocoaScrollBar(Handle).setFloatValue_knobProportion( Position/Max, PageSize/Max);
+     //if TCocoaScrollBar(Handle).setKnobProportion( PageSize/Max );
+     //if TCocoaScrollBar(Handle).setDoubleValue( Position/Max );
+   end;
 end;
 
 end.

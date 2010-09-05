@@ -241,7 +241,8 @@ end;
 // StdCtrls
 function RegisterCustomScrollBar: Boolean; alias : 'WSRegisterCustomScrollBar';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomScrollBar, TCocoaWSScrollBar);
+  Result:=True;
 end;
 
 function RegisterCustomGroupBox: Boolean; alias : 'WSRegisterCustomGroupBox';
@@ -251,7 +252,8 @@ end;
 
 function RegisterCustomComboBox: Boolean; alias : 'WSRegisterCustomComboBox';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomComboBox, TCocoaWSCustomComboBox);
+  Result := True;
 end;
 
 function RegisterCustomListBox: Boolean; alias : 'WSRegisterCustomListBox';
@@ -290,7 +292,8 @@ end;
 
 function RegisterToggleBox: Boolean; alias : 'WSRegisterToggleBox';
 begin
-  Result := False;
+  RegisterWSComponent(TToggleBox, TCocoaWSToggleBox);
+  Result := True;
 end;
 
 function RegisterRadioButton: Boolean; alias : 'WSRegisterRadioButton';

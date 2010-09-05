@@ -6,6 +6,7 @@ unit CocoaWSCommon;
 interface
 
 uses
+  Types,
   MacOSAll, CocoaAll,
   Classes,
   Controls,
@@ -82,7 +83,6 @@ function EmbedInScrollView(AView:NSView):TCocoaScrollView;
 var
   r : TRect;
   p : NSView;
-  f : NSRect;
 begin
   if not Assigned(AView) then begin
     Result:=nil;
@@ -241,25 +241,25 @@ end;
 
 function LCLWSViewExtension.lclInitWithCreateParams(const AParams:TCreateParams): id;
 var
-  r: TRect;
+  p: NSView;
+  ns: NSRect;
 begin
-  Result:=initWithFrame(NSNullRect);
-  if not Assigned(Result) then Exit;
-
+  p:=nil;
   if (AParams.WndParent<>0) then begin
     if (NSObject(AParams.WndParent).isKindOfClass_(NSView)) then
-      NSView(AParams.WndParent).addSubview(Self)
+      p:=NSView(AParams.WndParent)
     else if (NSObject(AParams.WndParent).isKindOfClass_(NSWindow)) then
-      NSWindow(AParams.WndParent).contentView.addSubview(Self)
+      p:=NSWindow(AParams.WndParent).contentView;
   end;
-  with AParams do begin
-    r.left:=X;
-    r.Top:=Y;
-    r.Right:=X+Width;
-    r.Bottom:=X+Height;
-  end;
-  Self.lclSetFrame(r);
+  with AParams do
+    if Assigned(p)
+      then LCLToNSRect(Types.Bounds(X,Y,Width, Height), p.frame.size.height, ns)
+      else LCLToNSRect(Types.Bounds(X,Y,Width, Height), ns);
 
+  Result:=initWithFrame(ns);
+  if not Assigned(Result) then Exit;
+
+  if Assigned(p) then p.addSubview(Self);
   SetViewDefaults(Self);
 end;
 
