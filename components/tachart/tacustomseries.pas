@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils,
-  TAChartAxis, TAChartUtils, TAGraph, TASources, TATypes;
+  TAChartAxis, TAChartUtils, TAGraph, TASources, TAStyles, TATypes;
 
 const
   DEF_AXIS_INDEX = -1;
@@ -88,12 +88,15 @@ type
     FMarks: TChartMarks;
     FOnGetMark: TChartGetMarkEvent;
     FSource: TCustomChartSource;
+    FStyles: TChartStyles;
+    FStylesListener: TListener;
 
     function GetSource: TCustomChartSource;
     function IsSourceStored: boolean;
     procedure SetMarks(const AValue: TChartMarks);
     procedure SetOnGetMark(const AValue: TChartGetMarkEvent);
     procedure SetSource(AValue: TCustomChartSource);
+    procedure SetStyles(AValue: TChartStyles);
   protected
     procedure AfterAdd; override;
     procedure AfterDraw; override;
@@ -107,6 +110,8 @@ type
     function GetXMaxVal: Integer;
     procedure VisitSources(
       AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData); override;
+  protected
+    property Styles: TChartStyles read FStyles write SetStyles;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -411,6 +416,7 @@ begin
   FBuiltinSource.Name := BUILTIN_SOURCE_NAME;
   FBuiltinSource.Broadcaster.Subscribe(FListener);
   FMarks := TChartMarks.Create(FChart);
+  FStylesListener := TListener.Create(@FStyles,  @StyleChanged);
 end;
 
 procedure TChartSeries.Delete(AIndex: Integer);
@@ -423,6 +429,7 @@ begin
   FreeAndNil(FListener);
   FreeAndNil(FBuiltinSource);
   FreeAndNil(FMarks);
+  FreeAndNil(FStylesListener);
   inherited;
 end;
 
@@ -583,6 +590,16 @@ begin
     Source.Broadcaster.Unsubscribe(FListener);
   FSource := AValue;
   Source.Broadcaster.Subscribe(FListener);
+  UpdateParentChart;
+end;
+
+procedure TChartSeries.SetStyles(AValue: TChartStyles);
+begin
+  if FStyles = AValue then exit;
+  if FStylesListener.IsListening then
+    Styles.Broadcaster.Unsubscribe(FStylesListener);
+  FStyles := AValue;
+  Styles.Broadcaster.Subscribe(FStylesListener);
   UpdateParentChart;
 end;
 

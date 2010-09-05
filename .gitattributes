@@ -2213,6 +2213,7 @@ components/tachart/tamultiseries.pas svneol=native#text/pascal
 components/tachart/taseries.pas svneol=native#text/plain
 components/tachart/taserieseditor.pas svneol=native#text/plain
 components/tachart/tasources.pas svneol=native#text/pascal
+components/tachart/tastyles.pas svneol=native#text/pascal
 components/tachart/tasubcomponentseditor.lfm svneol=native#text/plain
 components/tachart/tasubcomponentseditor.pas svneol=native#text/pascal
 components/tachart/tatools.pas svneol=native#text/pascal
