@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, ComCtrls, ExtCtrls, StdCtrls, SysUtils, FileUtil, Forms, Controls,
-  Graphics, Dialogs, TAGraph, TAMultiSeries, TASeries, TASources;
+  Graphics, Dialogs, TAGraph, TAMultiSeries, TASeries, TASources, TAStyles;
 
 type
 
@@ -15,6 +15,7 @@ type
   TForm1 = class(TForm)
     ccsStacked: TCalculatedChartSource;
     cbPercentage: TCheckBox;
+    ChartStyles1: TChartStyles;
     chStackedAreaSeries1: TAreaSeries;
     chStackedLineSeries1: TLineSeries;
     chWhiskers: TChart;

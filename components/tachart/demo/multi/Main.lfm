@@ -91,21 +91,22 @@ object Form1: TForm1
           BarBrush.Color = clRed
           Depth = 10
           Source = ccsStacked
+          Styles = ChartStyles1
         end
         object chStackedLineSeries1: TLineSeries
           Active = False
           Depth = 10
-          LinePen.Color = clYellow
           Source = ccsStacked
+          Styles = ChartStyles1
         end
         object chStackedAreaSeries1: TAreaSeries
           ZPosition = 5
-          AreaBrush.Color = clMaroon
           AreaContourPen.Color = clGreen
           AreaContourPen.EndCap = pecSquare
           AreaContourPen.Width = 2
           Depth = 10
           Source = ccsStacked
+          Styles = ChartStyles1
           UseZeroLevel = True
           ZeroLevel = 1
         end
@@ -160,13 +161,13 @@ object Form1: TForm1
     end
     object tsWhiskers: TTabSheet
       Caption = 'Box-and-whiskers'
-      ClientHeight = 347
-      ClientWidth = 463
+      ClientHeight = 433
+      ClientWidth = 521
       object chWhiskers: TChart
         Left = 0
-        Height = 347
+        Height = 433
         Top = 0
-        Width = 463
+        Width = 521
         AxisList = <        
           item
             Grid.Visible = False
@@ -219,8 +220,24 @@ object Form1: TForm1
   end
   object ccsStacked: TCalculatedChartSource
     Origin = rcsStacked
-    ReorderYList = '1'
     left = 244
     top = 136
+  end
+  object ChartStyles1: TChartStyles
+    Styles = <    
+      item
+        Brush.Color = clRed
+        Pen.Style = psDot
+      end    
+      item
+        Brush.Color = clLime
+        Pen.Color = clGreen
+        Pen.Width = 2
+      end    
+      item
+        Brush.Color = clBlue
+      end>
+    left = 244
+    top = 208
   end
 end
