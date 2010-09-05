@@ -45,6 +45,8 @@ begin
   Result:=(Round(b*$FF) shl 16) or (Round(g*$FF) shl 8) or Round(r*$FF);
 end;
 
+{--------------------------------- WINDOWS ------------------------------------}
+
 function TCocoaWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 begin
   {$ifdef VerboseCocoaWinAPI}
@@ -72,17 +74,149 @@ end;
   Retrieves the screen bounding rectangle of the specified window
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
+var
+  dx, dy: Integer;
 begin
-  Result:=0;
-  if Handle=0 then Exit;
-
-  if NSObject(Handle).isKindOfClass_(NSWindow) then
-    GetNSWindowFrame(NSWindow(Handle), ARect)
-  else
-    {todo: GetNSViewFrame(NSView(Handle), ARect)};
+  if Handle<>0 then begin
+    ARect:=NSObject(Handle).lclFrame;
+    if not NSObject(Handle).isKindOfClass_(NSWindow) then begin
+      dx:=0; dy:=0;
+      NSObject(Handle).lclLocalToScreen(dx, dx);
+      MoveRect(ARect, dx, dy);
+    end;
+    Result:=1;
+  end else
+    Result:=0;
 end;
 
-{--------------------------------- DRAWING ------------------------------------}
+function TCocoaWidgetSet.IsWindowEnabled(Handle: HWND): boolean;
+begin
+  if Handle<>0
+    then Result:=NSObject(Handle).lclIsEnabled
+    else Result:=False;
+end;
+
+function TCocoaWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
+begin
+  if hWnd<>0
+    then NSObject(hWnd).lclSetEnabled(bEnable)
+    else Result:=False;
+end;
+
+function TCocoaWidgetSet.IsWindowVisible(Handle: HWND): boolean;
+begin
+  if Handle<>0
+    then Result:=NSObject(Handle).lclIsVisible
+    else Result:=False;
+end;
+
+function TCocoaWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
+begin
+  if Handle<>0 then begin
+    Result:=True;
+    ARect:=NSObject(handle).lclClientFrame;
+  end else
+    Result:=False;
+end;
+
+function TCocoaWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
+var
+  dx, dy: Integer;
+begin
+  if Handle<>0 then begin
+    Result:=True;
+    ARect:=NSObject(handle).lclClientFrame;
+    dx:=0; dy:=0;
+    NSObject(Handle).lclLocalToScreen(dx, dy);
+    MoveRect(ARect, dx, dy);
+  end else
+    Result:=False;
+end;
+
+function TCocoaWidgetSet.GetParent(Handle : HWND): HWND;
+begin
+  if Handle<>0 then
+    Result:=HWND(NSObject(Handle).lclParent)
+  else
+    Result:=0;
+end;
+
+function TCocoaWidgetSet.GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean;
+begin
+  if Handle<>0 then begin
+    Result:=True;
+    NSObject(handle).lclRelativePos(Left, Top);
+  end else
+    Result:=False;
+end;
+
+function TCocoaWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean;
+var
+  r   : TRect;
+begin
+  if Handle<>0 then begin
+    Result:=True;
+    r:=NSObject(Handle).lclFrame;
+    Width:=R.Right-R.Left;
+    Height:=R.Bottom-R.Top;
+  end else
+    Result:=False;
+end;
+
+function TCocoaWidgetSet.InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean): Boolean;
+begin
+  if aHandle<>0 then begin
+    Result:=True;
+    if Assigned(Rect)
+      then NSObject(aHandle).lclInvalidateRect(Rect^)
+      else NSObject(aHandle).lclInvalidate;
+  end else
+    Result:=False;
+end;
+
+function TCocoaWidgetSet.UpdateWindow(Handle: HWND): Boolean;
+begin
+  Result:=InvalidateRect(Handle, nil, false);
+end;
+
+function TCocoaWidgetSet.GetProp(Handle : hwnd; Str : PChar): Pointer;
+begin
+  Result:=nil;
+end;
+
+function TCocoaWidgetSet.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
+begin
+  Result:=False;
+end;
+
+{----------------------------- WINDOWS SCROLLING ------------------------------}
+
+function TCocoaWidgetSet.GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
+begin
+  Result:=0;
+end;
+
+function TCocoaWidgetSet.GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean;
+begin
+  Result:=False;
+end;
+
+function TCocoaWidgetSet.GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean;
+begin
+  Result:=False;
+end;
+
+function TCocoaWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
+begin
+  Result:=0;
+end;
+
+function TCocoaWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean;
+begin
+  Result:=False;
+end;
+
+{----------------------------------- DRAWING ----------------------------------}
 
 
 type
@@ -277,10 +411,16 @@ begin
   CritSection:=0;
 end;
 
+type
+  //workaround for CocoaInt bug
+  NSLockExtension = objccategory(NSRecursiveLock)
+    procedure lock; message 'lock';
+    procedure unlock; message 'unlock';
+  end; external;
+
 procedure TCocoaWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
 begin
   if CritSection=0 then Exit;
-  // if it doesn't compile, please follow bug #17341
   NSRecursiveLock(CritSection).lock;
 end;
 
@@ -395,8 +535,21 @@ begin
   {$IFDEF VerboseWinAPI}
   DebugLn('TCarbonWidgetSet.MoveWindowOrgEx DC: ' + DbgS(DC) + ' ' + DbgS(DX) + ', ' + DbgS(DY));
   {$ENDIF}
-  ctx.MoveOrigin(dX, dY);
+  ctx.SetOrigin(dX, dY);
   Result := True;
+end;
+
+function TCocoaWidgetSet.GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
+var
+  ctx : TCocoaContext;
+begin
+  ctx:=CheckDC(dc);
+  if not Assigned(ctx) or not Assigned(P) then
+    Result:=0
+  else begin
+    ctx.GetOrigin(p^.X, p^.Y);
+    Result:=1;
+  end;
 end;
 
 {------------------------------- FONT AND TEXT --------------------------------}
@@ -446,6 +599,18 @@ begin
     Result:=RGBToColorFloat(TR, TG, TB);
     ColorToRGBFloat(Color, TR, TG, TB);
   end;
+end;
+
+function TCocoaWidgetSet.GetTextColor(DC: HDC) : TColorRef;
+var
+  ctx : TCocoaContext;
+begin
+  ctx:=CheckDC(DC);
+  if not Assigned(ctx) then begin
+    Result:=0;
+    Exit;
+  end;
+  with ctx do Result:=RGBToColorFloat(TR, TG, TB);
 end;
 
 function TCocoaWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;

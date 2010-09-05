@@ -121,7 +121,6 @@ begin
   if Context.InitDraw(Round(bounds.size.width), Round(bounds.size.height)) then begin
     FillChar(struct, SizeOf(TPaintStruct), 0);
     struct.hdc := HDC(Context);
-    writeln('target = ', Integer(Target),' ', Target.ClassName);
     LCLSendPaintMsg(Target, HDC(Context), @struct);
   end;
 end;
@@ -181,21 +180,21 @@ class function TCocoaWSWinControl.GetClientBounds(const AWincontrol: TWinControl
 begin
   Result:=(AWinControl.Handle<>0);
   if not Result then Exit;
-  GetViewFrame(NSView(AWinControl.Handle), ARect);
+  ARect:=NSObject(AWinControl.Handle).lclClientFrame;
 end;
 
 class function TCocoaWSWinControl.GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean;
 begin
   Result:=(AWinControl.Handle<>0);
   if not Result then Exit;
-  NSRectToRect(NSView(AWinControl.Handle).bounds, ARect);
+  ARect:=NSObject(AWinControl.Handle).lclClientFrame;
 end;
 
 class procedure TCocoaWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  if (AWinControl.Handle=0) then Exit;
-  SetViewFrame(NSView(AWinControl.Handle), ALeft, ATop, AWidth, AHeight);
+  if (AWinControl.Handle<>0) then
+    NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
 end;
 
 { TCocoaWSCustomControl }

@@ -72,9 +72,9 @@ function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal):
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var ARect: TRect; Flags: Cardinal): Integer; override;}
 
 function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; override;
-{function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;
+{function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;}
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
-function EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer; override;}
+{function EndPaint(Handle: hwnd; var PS: TPaintStruct): Integer; override;}
 procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
 function EnumFontFamiliesEx(DC: HDC; lpLogFont: PLogFont; Callback: FontEnumExProc; Lparam: LParam; Flags: dword): longint; override;
 {function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
@@ -91,10 +91,10 @@ function GetActiveWindow : HWND; override;
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; override;
 function GetCapture: HWND; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
-function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;
+function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;}
 function GetClientBounds(handle : HWND; var ARect : TRect) : Boolean; override;
 function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
-function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
+{function GetClipBox(DC : hDC; lpRect : PRect) : Longint; override;
 function GetClipRGN(DC: hDC; RGN: hRGN): Longint; override;
 function GetCursorPos(var lpPoint: TPoint ): Boolean; override;}
 function GetDC(hWnd: HWND): HDC; override;
@@ -104,35 +104,35 @@ function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetFocus: HWND; override;
 function GetKeyState(nVirtKey: Integer): Smallint; override;
-function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
+function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;}
 function GetParent(Handle : HWND): HWND; override;
 function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
-function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
-function GetROP2(DC: HDC): Integer; override;
+{function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
+function GetROP2(DC: HDC): Integer; override;}
 function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
 function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean; override;
-function GetStockObject(Value: Integer): THandle; override;
+{function GetStockObject(Value: Integer): THandle; override;
 function GetSysColor(nIndex: Integer): DWORD; override;
-function GetSystemMetrics(nIndex: Integer): Integer; override;
+function GetSystemMetrics(nIndex: Integer): Integer; override;}
 function GetTextColor(DC: HDC) : TColorRef; Override;
-function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
+{function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
-function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;
-function GetWindowOrgEx(dc : hdc; P : PPoint): Integer; override;}
+function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;}
+function GetWindowOrgEx(dc : hdc; P : PPoint): Integer; override;
 function GetWindowRect(Handle: hwnd; var ARect: TRect): Integer; override;
-{function GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean; override;
+function GetWindowRelativePosition(Handle: hwnd; var Left, Top: Integer): boolean; override;
 function GetWindowSize(Handle: hwnd; var Width, Height: Integer): boolean; override;
-function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
+{function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
   Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; override;
 
-function HideCaret(hWnd: HWND): Boolean; override;
+function HideCaret(hWnd: HWND): Boolean; override;}
 
-function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;}
+function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
-{function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
+{function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;}
 function IsWindowEnabled(Handle: HWND): boolean; override;
-function IsWindowVisible(Handle: HWND): boolean; override;}
+function IsWindowVisible(Handle: HWND): boolean; override;
 
 procedure LeaveCriticalSection(var CritSection: TCriticalSection); override;
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
@@ -169,13 +169,13 @@ function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean
 function SetCursor(ACursor: HCURSOR): HCURSOR; override;
 function SetCursorPos(X, Y: Integer): Boolean; override;
 function SetFocus(hWnd: HWND): HWND; override;
-function SetForegroundWindow(HWnd: HWND): boolean; override;
+function SetForegroundWindow(HWnd: HWND): boolean; override;}
 function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
-function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;}
+function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 {function SetWindowOrgEx(DC : HDC; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
-function ShowCaret(hWnd: HWND): Boolean; override;
-function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; override;}
+function ShowCaret(hWnd: HWND): Boolean; override;}
+function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; override;
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;
 {function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean; override;
@@ -185,8 +185,8 @@ function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
 function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer; fWinIni: DWord): LongBool; override;}
 
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
-{function UpdateWindow(Handle: HWND): Boolean; override;
-function WindowFromPoint(Point: TPoint): HWND; override;}
+function UpdateWindow(Handle: HWND): Boolean; override;
+{function WindowFromPoint(Point: TPoint): HWND; override;}
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 

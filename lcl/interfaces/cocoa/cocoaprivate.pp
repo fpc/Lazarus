@@ -32,6 +32,49 @@ uses
   MacOSAll, CocoaAll, CocoaUtils;
 
 type
+  { LCLObjectExtension }
+
+  LCLObjectExtension = objccategory(NSObject)
+    function lclIsEnabled: Boolean; message 'lclIsEnabled';
+    procedure lclSetEnabled(AEnabled: Boolean); message 'lclSetEnabled:';
+    function lclIsVisible: Boolean; message 'lclIsVisible';
+
+    procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:';
+    procedure lclInvalidate; message 'lclInvalidate';
+    procedure lclRelativePos(var Left, Top: Integer); message 'lclRelativePos::';
+    procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::';
+    function lclParent: id; message 'lclParent';
+    function lclFrame: TRect; message 'lclFrame';
+    procedure lclSetFrame(const r: TRect); message 'lclSetFrame:';
+    function lclClientFrame: TRect; message 'lclClientFrame';
+  end;
+
+  { LCLControlExtension }
+
+  LCLControlExtension = objccategory(NSControl)
+    function lclIsEnabled: Boolean; message 'lclIsEnabled';
+    procedure lclSetEnabled(AEnabled: Boolean); message 'lclSetEnabled:';
+    function lclIsVisible: Boolean; message 'lclIsVisible';
+    procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:';
+    procedure lclInvalidate; message 'lclInvalidate';
+    procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::';
+    function lclParent: id; message 'lclParent';
+    function lclFrame: TRect; message 'lclFrame';
+    procedure lclSetFrame(const r: TRect); message 'lclSetFrame:';
+    function lclClientFrame: TRect; message 'lclClientFrame';
+  end;
+
+  { LCLWindowExtension }
+
+  LCLWindowExtension = objccategory(NSWindow)
+    function lclIsVisible: Boolean; message 'lclIsVisible';
+    procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:';
+    procedure lclInvalidate; message 'lclInvalidate';
+    procedure lclLocalToScreen(var X,Y: Integer); message 'lclLocalToScreen::';
+    function lclFrame: TRect; message 'lclFrame';
+    procedure lclSetFrame(const r: TRect); message 'lclSetFrame:';
+    function lclClientFrame: TRect; message 'lclClientFrame';
+  end;
 
   { TCommonCallback }
 
@@ -317,6 +360,200 @@ procedure TCocoaCustomControl.drawRect(dirtyRect:NSRect);
 begin
   inherited drawRect(dirtyRect);
   callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
+end;
+
+{ LCLObjectExtension }
+
+function LCLObjectExtension.lclIsEnabled:Boolean;
+begin
+  Result:=False;
+end;
+
+procedure LCLObjectExtension.lclSetEnabled(AEnabled:Boolean);
+begin
+end;
+
+function LCLObjectExtension.lclIsVisible:Boolean;
+begin
+  Result:=False;
+end;
+
+procedure LCLObjectExtension.lclInvalidateRect(const r:TRect);
+begin
+
+end;
+
+procedure LCLObjectExtension.lclInvalidate;
+begin
+
+end;
+
+procedure LCLObjectExtension.lclRelativePos(var Left,Top:Integer);
+begin
+
+end;
+
+procedure LCLObjectExtension.lclLocalToScreen(var X,Y:Integer);
+begin
+
+end;
+
+function LCLObjectExtension.lclParent:id;
+begin
+  Result:=nil;
+end;
+
+function LCLObjectExtension.lclFrame:TRect;
+begin
+  FillChar(Result, sizeof(Result), 0);
+end;
+
+procedure LCLObjectExtension.lclSetFrame(const r:TRect);
+begin
+
+end;
+
+function LCLObjectExtension.lclClientFrame:TRect;
+begin
+  FillChar(Result, sizeof(Result), 0);
+end;
+
+{ LCLControlExtension }
+
+function RectToViewCoord(view: NSView; const r: TRect): NSRect;
+var
+  b: NSRect;
+begin
+  if not Assigned(view) then Exit;
+  b:=view.bounds;
+  Result.origin.x:=r.Left;
+  Result.origin.y:=b.size.height-r.Top;
+  Result.size.width:=r.Right-r.Left;
+  Result.size.height:=r.Bottom-r.Top;
+end;
+
+function LCLControlExtension.lclIsEnabled:Boolean;
+begin
+  Result:=IsEnabled;
+end;
+
+procedure LCLControlExtension.lclSetEnabled(AEnabled:Boolean);
+begin
+  SetEnabled(AEnabled);
+end;
+
+function LCLControlExtension.lclIsVisible:Boolean;
+begin
+  Result:=not isHidden;
+end;
+
+procedure LCLControlExtension.lclInvalidateRect(const r:TRect);
+begin
+  setNeedsDisplayInRect(RectToViewCoord(Self, r));
+end;
+
+procedure LCLControlExtension.lclInvalidate;
+begin
+  setNeedsDisplay;
+end;
+
+procedure LCLControlExtension.lclLocalToScreen(var X,Y:Integer);
+begin
+
+end;
+
+function LCLControlExtension.lclParent:id;
+begin
+  Result:=superView;
+end;
+
+function LCLControlExtension.lclFrame: TRect;
+var
+  v : NSView;
+begin
+  v:=superview;
+  if Assigned(v)
+    then NSToLCLRect(frame, v.frame.size.height, Result)
+    else NSToLCLRect(frame, Result);
+end;
+
+procedure LCLControlExtension.lclSetFrame(const r:TRect);
+var
+  ns : NSRect;
+begin
+  if Assigned(superview)
+    then LCLToNSRect(r, superview.frame.size.height, ns)
+    else LCLToNSRect(r, ns);
+  setFrame(ns);
+end;
+
+function LCLControlExtension.lclClientFrame:TRect;
+var
+  r: NSRect;
+begin
+  r:=bounds;
+  Result.Left:=0;
+  Result.Top:=0;
+  Result.Right:=Round(r.size.width);
+  Result.Bottom:=Round(r.size.height);
+end;
+
+{ LCLWindowExtension }
+
+function LCLWindowExtension.lclIsVisible:Boolean;
+begin
+  Result:=isVisible;
+end;
+
+procedure LCLWindowExtension.lclInvalidateRect(const r:TRect);
+begin
+  contentView.lclInvalidateRect(r);
+end;
+
+procedure LCLWindowExtension.lclInvalidate;
+begin
+  contentView.lclInvalidate;
+end;
+
+procedure LCLWindowExtension.lclLocalToScreen(var X,Y:Integer);
+var
+  f   : NSRect;
+begin
+  if Assigned(screen) then begin
+    f:=frame;
+    x:=Round(f.origin.x+x);
+    y:=Round(screen.frame.size.height-f.size.height-f.origin.y);
+  end;
+end;
+
+function LCLWindowExtension.lclFrame:TRect;
+begin
+  if Assigned(screen)
+    then NSToLCLRect(frame, screen.frame.size.height, Result)
+    else NSToLCLRect(frame, Result);
+end;
+
+procedure LCLWindowExtension.lclSetFrame(const r:TRect);
+var
+  ns : NSREct;
+begin
+  if Assigned(screen)
+    then LCLToNSRect(r, screen.frame.size.height, ns)
+    else LCLToNSRect(r, ns);
+  setFrame_display(ns, isVisible);
+end;
+
+function LCLWindowExtension.lclClientFrame:TRect;
+var
+  wr  : NSRect;
+  b   : NSRect;
+begin
+  wr:=frame;
+  b:=contentView.frame;
+  Result.Left:=Round(b.origin.x);
+  Result.Top:=Round(wr.size.height-b.origin.y);
+  Result.Right:=Round(b.origin.x+b.size.width);
+  Result.Bottom:=Round(Result.Top+b.size.height);
 end;
 
 end.

@@ -16,7 +16,13 @@ function CGRectToRect(const c: CGRect): TRect;
 
 function GetNSRect(x, y, width, height: Integer): NSRect; inline;
 function RectToNSRect(const r: TRect): NSRect;
-procedure NSRectToRect(const ns: NSRect; var r: TRect);
+
+procedure NSToLCLRect(const ns: NSRect; var lcl: TRect); overload;
+procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; var lcl: TRect); overload;
+
+procedure LCLToNSRect(const lcl: TRect; var ns: NSRect); overload;
+procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; var ns: NSRect); overload;
+
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
 
 function NSStringUtf8(s: PChar): NSString;
@@ -27,21 +33,11 @@ function GetNSObjectView(obj: NSObject): NSView;
 procedure AddViewToNSObject(ctrl: NSView; obj: NSObject);
 procedure AddViewToNSObject(ctrl: NSView; obj: NSObject; X,Y: integer);
 
-procedure SetViewFramePos(view: NSView; X,Y: Single; invalidateView: Boolean=false);
-procedure SetViewFrame(view: NSView; X,Y,W,H: Single; invalidateView: Boolean=false);
-procedure GetViewFrame(view: NSView; var FrameRect: TRect);
-
 procedure SetNSText(text: NSText; const s: String); inline;
 function GetNSText(text: NSText): string; inline;
 
 procedure SetNSControlValue(c: NSControl; const S: String); inline;
 function GetNSControlValue(c: NSControl): String; inline;
-
-procedure LCLToCocoaRect(const lcl, parent: NSRect; var cocoa: NSRect); inline;
-procedure CocoaToLCLRect(const cocoa, parent: NSRect; var lcl: NSRect); inline;
-
-function GetNSWindowFrame(win: NSWindow; var lcl: TRect): Boolean; inline;
-function GetNSViewFrame(view: NSView; var lcl: TRect): boolean; inline;
 
 implementation
 
@@ -80,48 +76,6 @@ begin
   end;
 end;
 
-{X,Y - coordinates relative to Left-Top (LCL-style)}
-procedure SetViewFramePos(view: NSView; X,Y: Single; invalidateView: Boolean);
-var
-  f : NSRect;
-begin
-  f:=view.frame;
-  SetViewFrame(view,x,y,f.size.width, f.size.height, invalidateView);
-end;
-
-{X,Y - coordinates relative to Left-Top (LCL-style)}
-{W,H - width and height of the NSView}
-procedure SetViewFrame(view: NSView; X,Y,W,H: single; invalidateView: Boolean=false); overload;
-var
-  parent : NSView;
-  pb, b  : NSRect;
-begin
-  parent:=view.superView;
-  if not Assigned(parent) then Exit;
-  pb:=parent.bounds;
-  b:=view.frame;
-  b.origin.x:=X;
-  b.origin.y:=pb.size.height-y-h;
-  b.size.width:=w;
-  b.size.height:=h;
-  view.setFrame(b);
-  if invalidateView then view.setNeedsDisplay_(true);
-end;
-
-procedure GetViewFrame(view: NSView; var FrameRect: TRect);
-var
-  parent : NSView;
-  pb, f  : NSRect;
-begin
-  f:=view.frame;
-  parent:=view.superView;
-  if Assigned(parent) then begin
-    pb:=parent.bounds;
-    f.origin.y:=pb.size.height-f.origin.y-f.size.height;
-  end;
-  NSRectToRect(f, FrameRect);
-end;
-
 function GetNSObjectView(obj: NSObject): NSView;
 begin
   Result:=nil;
@@ -142,7 +96,7 @@ end;
 procedure AddViewToNSObject(ctrl: NSView; obj: NSObject; X,Y: integer);
 begin
   AddViewToNSObject(ctrl, obj);
-  SetViewFramePos(ctrl, x,y);
+  //SetViewFramePos(ctrl, x,y);
 end;
 
 function GetNSPoint(x, y: single): NSPoint;
@@ -182,13 +136,38 @@ begin
   Result:=GetNSRect(r.Left,r.Top,r.Right-r.Left,r.Bottom-r.Top);
 end;
 
-procedure NSRectToRect(const ns: NSRect; var r: TRect);
+procedure NSToLCLRect(const ns: NSRect; var lcl: TRect);
 begin
-  r.Left:=round(ns.origin.x);
-  r.Top:=round(ns.origin.y);
-  r.Right:=round(ns.origin.x+ns.size.width);
-  r.Bottom:=round(ns.origin.y+ns.size.height);
+  lcl.Left:=round(ns.origin.x);
+  lcl.Top:=round(ns.origin.y);
+  lcl.Right:=round(ns.origin.x+ns.size.width);
+  lcl.Bottom:=round(ns.origin.y+ns.size.height);
 end;
+
+procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; var lcl: TRect);
+begin
+  lcl.Left:=Round(ns.origin.x);
+  lcl.Top:=Round(ParentHeight-ns.size.height-ns.origin.y);
+  lcl.Right:=Round(ns.origin.x+ns.size.width);
+  lcl.Bottom:=Round(lcl.Top+ns.size.height);
+end;
+
+procedure LCLToNSRect(const lcl: TRect; var ns: NSRect); overload;
+begin
+  ns.origin.x:=lcl.Left;
+  ns.origin.y:=lcl.Top;
+  ns.size.width:=lcl.Right-lcl.Left;
+  ns.size.height:=lcl.Bottom-lcl.Top;
+end;
+
+procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; var ns: NSRect); overload;
+begin
+  ns.origin.x:=lcl.left;
+  ns.origin.y:=ParentHeight-(lcl.bottom-lcl.Top)-lcl.Top;
+  ns.size.width:=lcl.Right-lcl.Left;
+  ns.size.height:=lcl.Bottom-lcl.Top;
+end;
+
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
 begin
@@ -247,46 +226,7 @@ begin
 end;
 
 
-procedure LCLToCocoaRect(const lcl, parent: NSRect; var cocoa: NSRect);
-begin
-  cocoa.origin.x:=lcl.origin.x;
-  cocoa.origin.y:=parent.size.height - lcl.size.height - lcl.origin.y;
-  cocoa.size:=lcl.size;
-end;
-
-procedure CocoaToLCLRect(const cocoa, parent: NSRect; var lcl: NSRect);
-begin
-  lcl.origin.x:=cocoa.origin.x;
-  lcl.origin.y:=parent.size.height-cocoa.size.height-cocoa.origin.y;
-  lcl.size:=cocoa.size;
-end;
-
-function GetNSWindowFrame(win: NSWindow; var lcl: TRect): Boolean;
-var
-  f : NSRect;
-begin
-  if Assigned(win.screen) then begin
-    CocoaToLCLRect( win.frame, win.screen.frame, f);
-    NSRectToRect(f, lcl);
-  end else
-    NSRectToRect(win.frame, lcl);
-  Result:=true;
-end;
-
-function GetNSViewFrame(view: NSView; var lcl: TRect): boolean; inline;
-var
-  f : NSRect;
-begin
-  if Assigned(view.superview) then begin
-    CocoaToLCLRect( view.frame, view.superview.frame, f);
-    NSRectToRect(f, lcl);
-  end else
-    NSRectToRect(view.frame, lcl);
-  Result:=true;
-end;
-
 initialization
-
 
 end.
 

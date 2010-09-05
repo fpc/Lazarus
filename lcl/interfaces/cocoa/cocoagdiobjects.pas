@@ -125,7 +125,8 @@ type
     procedure Rectangle(X1, Y1, X2, Y2: Integer; FillRect: Boolean; UseBrush: TCocoaBrush);
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
     procedure TextOut(X,Y: Integer; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
-    procedure MoveOrigin(X,Y: Integer);
+    procedure SetOrigin(X,Y: Integer);
+    procedure GetOrigin(var X,Y: Integer);
     function CGContext: CGContextRef; virtual;
     property Brush: TCocoaBrush read fBrush write SetBrush;
     property Pen: TCocoaPen read fPen write SetPen;
@@ -375,13 +376,25 @@ begin
   CGContextScaleCTM(cg, 1, -1);
 end;
 
-procedure TCocoaContext.MoveOrigin(X,Y:Integer);
+procedure TCocoaContext.SetOrigin(X,Y:Integer);
 var
   cg  : CGContextRef;
 begin
   cg:=CGContext;
   if not Assigned(cg) then Exit;
   if Assigned(cg) then CGContextTranslateCTM(cg, X, Y);
+end;
+
+procedure TCocoaContext.GetOrigin(var X,Y: Integer);
+var
+  cg  : CGContextRef;
+  t   : CGAffineTransform;
+begin
+  cg:=CGContext;
+  if not Assigned(cg) then Exit;
+  t:=CGContextGetCTM(cg);
+  X := Round(t.tx);
+  Y := ContextSize.cy - Round(t.ty);
 end;
 
 
