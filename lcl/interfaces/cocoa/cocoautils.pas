@@ -9,6 +9,9 @@ uses
   MacOSAll, CocoaAll,
   Types, LCLType;
 
+const
+  NSNullRect : NSRect = (origin:(x:0; y:0); size:(width:0; height:0));
+
 function GetNSPoint(x,y: single): NSPoint; inline;
 
 function GetCGRect(x1, y1, x2, y2: Integer): CGRect;

@@ -49,11 +49,9 @@ type
     function lclClientFrame: TRect; message 'lclClientFrame';
   end;
 
-  { LCLControlExtension }
+  { LCLViewExtension }
 
-  LCLControlExtension = objccategory(NSControl)
-    function lclIsEnabled: Boolean; message 'lclIsEnabled';
-    procedure lclSetEnabled(AEnabled: Boolean); message 'lclSetEnabled:';
+  LCLViewExtension = objccategory(NSView)
     function lclIsVisible: Boolean; message 'lclIsVisible';
     procedure lclInvalidateRect(const r: TRect); message 'lclInvalidateRect:';
     procedure lclInvalidate; message 'lclInvalidate';
@@ -62,6 +60,13 @@ type
     function lclFrame: TRect; message 'lclFrame';
     procedure lclSetFrame(const r: TRect); message 'lclSetFrame:';
     function lclClientFrame: TRect; message 'lclClientFrame';
+  end;
+
+  { LCLControlExtension }
+
+  LCLControlExtension = objccategory(NSControl)
+    function lclIsEnabled: Boolean; message 'lclIsEnabled';
+    procedure lclSetEnabled(AEnabled: Boolean); message 'lclSetEnabled:';
   end;
 
   { LCLWindowExtension }
@@ -101,12 +106,6 @@ type
     procedure Close; virtual; abstract;
     procedure Resize; virtual; abstract;
   end;
-
-  {todo: consider using common protocol for all TCocoa* derived objcclasses }
-  {TCocoaTopLeftRect = objcprotocol
-    procedure getTopLeftFrame(var r: TRect); message 'getTopLeftFrame:';
-    procedure setTopLeftFrame(const r: TRect); message 'setTopLeftFrame:';
-  end;}
 
   { TCocoaButton }
 
@@ -169,6 +168,10 @@ type
   TCocoaCustomControl = objcclass(NSControl)
     callback  : TCommonCallback;
     procedure drawRect(dirtyRect: NSRect); override;
+  end;
+
+  TCocoaScrollView = objcclass(NSScrollView)
+    callback  : TCommonCallback;
   end;
 
 implementation
@@ -442,32 +445,32 @@ begin
   SetEnabled(AEnabled);
 end;
 
-function LCLControlExtension.lclIsVisible:Boolean;
+function LCLViewExtension.lclIsVisible:Boolean;
 begin
   Result:=not isHidden;
 end;
 
-procedure LCLControlExtension.lclInvalidateRect(const r:TRect);
+procedure LCLViewExtension.lclInvalidateRect(const r:TRect);
 begin
   setNeedsDisplayInRect(RectToViewCoord(Self, r));
 end;
 
-procedure LCLControlExtension.lclInvalidate;
+procedure LCLViewExtension.lclInvalidate;
 begin
-  setNeedsDisplay;
+  setNeedsDisplay_(True);
 end;
 
-procedure LCLControlExtension.lclLocalToScreen(var X,Y:Integer);
+procedure LCLViewExtension.lclLocalToScreen(var X,Y:Integer);
 begin
 
 end;
 
-function LCLControlExtension.lclParent:id;
+function LCLViewExtension.lclParent:id;
 begin
   Result:=superView;
 end;
 
-function LCLControlExtension.lclFrame: TRect;
+function LCLViewExtension.lclFrame: TRect;
 var
   v : NSView;
 begin
@@ -477,7 +480,7 @@ begin
     else NSToLCLRect(frame, Result);
 end;
 
-procedure LCLControlExtension.lclSetFrame(const r:TRect);
+procedure LCLViewExtension.lclSetFrame(const r:TRect);
 var
   ns : NSRect;
 begin
@@ -487,7 +490,7 @@ begin
   setFrame(ns);
 end;
 
-function LCLControlExtension.lclClientFrame:TRect;
+function LCLViewExtension.lclClientFrame:TRect;
 var
   r: NSRect;
 begin

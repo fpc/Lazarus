@@ -151,14 +151,18 @@ type
   { TCocoaWSCustomMemo }
 
   TCocoaWSCustomMemo = class(TWSCustomMemo)
-  {published
+  published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
 
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
-    class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
+    {class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;}
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
+
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
   end;
 
   { TCocoaWSEdit }
@@ -264,21 +268,15 @@ function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams
 
 implementation
 
-procedure DefaultViewSettings(view: NSView);
-begin
-  view.setAutoresizingMask(NSViewMinYMargin or NSViewMaxXMargin);
-end;
-
 function AllocButton(ATarget: TWinControl; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): NSButton;
 begin
-  Result:=TCocoaButton.alloc;
+  Result:=TCocoaButton.alloc.lclInitWithCreateParams(AParams);
   if Assigned(Result) then begin
     TCocoaButton(Result).callback:=TLCLCommonCallback.Create(Result, ATarget);
     Result.initWithFrame(CreateParamsToNSRect(AParams));
     Result.setTitle(NSStringUTF8(AParams.Caption));
     if btnBezel<>0 then Result.setBezelStyle(btnBezel);
     Result.setButtonType(btnType);
-    DefaultViewSettings(Result);
   end;
 end;
 
@@ -288,19 +286,16 @@ begin
   if Assigned(Result) then begin
     TCocoaTextView(Result).callback:=TLCLCommonCallback.Create(Result, ATarget);
     Result.initWithFrame(CreateParamsToNSRect(AParams));
-    DefaultViewSettings(Result);
-    Result.setFieldEditor(fieldEditor);
   end;
 end;
 
 function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaTextField;
 begin
-  Result:=TCocoaTextField(TCocoaTextField.alloc);
+  Result:=TCocoaTextField(TCocoaTextField.alloc.lclInitWithCreateParams(AParams));
   if Assigned(Result) then begin
     TCocoaTextField(Result).callback:=TLCLCommonCallback.Create(Result, ATarget);
     Result.initWithFrame(CreateParamsToNSRect(AParams));
     SetNSControlValue(Result, AParams.Caption);
-    DefaultViewSettings(Result);
   end;
 end;
 
@@ -311,7 +306,6 @@ begin
     TCocoaSecureTextField(Result).callback:=TLCLCommonCallback.Create(Result, ATarget);
     Result.initWithFrame(CreateParamsToNSRect(AParams));
     SetNSText(Result.currentEditor, AParams.Caption);
-    DefaultViewSettings(Result);
   end;
 end;
 
@@ -422,7 +416,6 @@ var
   btn : NSButton;
 begin
   btn:=AllocButton(AWinControl, AParams, 0, NSRadioButton);
-  SetCreateParamsToControl(btn, AParams);
   Result:=TLCLIntfHandle(btn);
 end;
 
@@ -435,7 +428,6 @@ begin
   if TCustomEdit(AWinControl).PasswordChar=#0
     then field:=NSTextField(AllocTextField(AWinControl, AParams))
     else field:=NSTextField(AllocSecureTextField(AWinControl, AParams));
-  SetCreateParamsToControl(field, AParams);
   Result:=TLCLIntfHandle(field);
 end;
 
@@ -477,6 +469,197 @@ end;
 class procedure TCocoaWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
 begin
 //  NSTextField(ACustomEdit.Handle).setEditable(not NewReadOnly);
+end;
+
+
+type
+
+  { TCocoaMemoStrings }
+
+  TCocoaMemoStrings = class(TStrings)
+  private
+    fTextView : NSTextView;
+  protected
+    function GetTextStr: string; override;
+    procedure SetTextStr(const Value: string); override;
+    function GetCount: Integer; override;
+    function Get(Index: Integer): string; override;
+  public
+    constructor Create(AText: NSTextView);
+    procedure Clear; override;
+    procedure Delete(Index: Integer); override;
+    procedure Insert(Index: Integer; const S: string); override;
+  end;
+
+{ TCocoaMemoStrings }
+
+constructor TCocoaMemoStrings.Create(AText:NSTextView);
+begin
+  fTextView:=AText;
+  inherited Create;
+end;
+
+function TCocoaMemoStrings.GetTextStr:string;
+begin
+  Result:=NSStringToString(fTextView.textStorage.string_);
+end;
+
+procedure TCocoaMemoStrings.SetTextStr(const Value:string);
+begin
+  fTextView.textStorage.mutableString.setString(NSStringUtf8(Value));
+end;
+
+procedure GetLineStart(const s: AnsiString; LineIndex: Integer; var Offset, LinesSkipped: Integer);
+var
+  i : Integer;
+begin
+  i:=1;
+  LinesSkipped:=0;
+  while (LinesSkipped<>LineIndex) and (i<=length(s)) do begin
+    if s[i] in [#10, #13] then begin
+      inc(i);
+      inc(LinesSkipped);
+      if (i<=length(s)) and (s[i] in [#10,#13]) and (s[i-1]<>s[i]) then
+        inc(i);
+    end else
+      inc(i);
+  end;
+  Offset:=i;
+end;
+
+function GetLinesCount(const s: AnsiString): Integer;
+var
+  ofs : Integer;
+begin
+  GetLineStart(s, -1, ofs, Result);
+end;
+
+function TCocoaMemoStrings.GetCount:Integer;
+begin
+  Result:=GetLinesCount(GetTextStr);
+  inc(Result);
+end;
+
+function TCocoaMemoStrings.Get(Index:Integer):string;
+var
+  s     : AnsiString;
+  ofs   : Integer;
+  eofs  : Integer;
+  t     : Integer;
+begin
+  s:=GetTextStr;
+  GetLineStart(s, Index, ofs, t);
+  eofs:=ofs;
+  while (eofs<=length(s)) and not (s[eofs] in [#10,#13]) do
+    inc(eofs);
+  Result:=Copy(s, ofs, eofs-ofs);
+end;
+
+procedure TCocoaMemoStrings.Clear;
+begin
+  SetTextStr('');
+end;
+
+procedure TCocoaMemoStrings.Delete(Index:Integer);
+var
+  s     : AnsiString;
+  ofs   : Integer;
+  eofs  : Integer;
+  t     : Integer;
+begin
+  s:=GetTextStr;
+  GetLineStart(s, Index, ofs, t);
+  eofs:=ofs;
+  while (eofs<=length(s)) and not (s[eofs] in [#10,#13]) do
+    inc(eofs);
+  if eofs<=length(s) then begin
+    inc(eofs);
+    if (eofs<=length(s)) and (s[eofs] in [#10,#13]) and (s[eofs-1]<>s[eofs]) then
+      inc(eofs);
+  end;
+  System.Delete(s, ofs, eofs-ofs);
+  SetTextStr(s);
+end;
+
+procedure TCocoaMemoStrings.Insert(Index:Integer;const S:string);
+var
+  txt   : AnsiString;
+  ofs   : Integer;
+  t     : Integer;
+begin
+  txt:=GetTextStr;
+  GetLineStart(txt, Index, ofs, t);
+  System.Insert(s+LineEnding, txt, ofs);
+  SetTextStr(txt)
+end;
+
+{ TCocoaWSCustomMemo }
+
+function MemoTextView(AWinControl: TWinControl): TCocoaTextView;
+begin
+  if not Assigned(AWinControl) or (AWinControl.Handle=0) then
+    Result:=nil
+  else
+    Result:=TCocoaTextView(NSScrollView(AWinControl.Handle).documentView);
+end;
+
+class function TCocoaWSCustomMemo.CreateHandle(const AWinControl:TWinControl;
+  const AParams:TCreateParams):TLCLIntfHandle;
+var
+  txt : TCocoaTextView;
+  scr : TCocoaScrollView;
+begin
+  txt:=TCocoaTextView( NSView(TCocoaTextView.alloc).lclInitWithCreateParams(AParams));
+  txt.textStorage.mutableString.setString(NSStringUtf8(AParams.Caption));
+  scr:=EmbedInScrollView(txt);
+  scr.callback:=txt.callback;
+  Result:=TLCLIntfHandle(scr);
+end;
+
+class function TCocoaWSCustomMemo.GetStrings(const ACustomMemo:TCustomMemo): TStrings;
+var
+  txt : TCocoaTextView;
+begin
+  txt:=MemoTextView(ACustomMemo);
+  if Assigned(txt) then
+    Result := TCocoaMemoStrings.Create(txt)
+  else
+    Result := nil
+end;
+
+class procedure TCocoaWSCustomMemo.AppendText(const ACustomMemo:TCustomMemo;
+  const AText:string);
+begin
+  //todo:
+end;
+
+class procedure TCocoaWSCustomMemo.SetReadOnly(const ACustomEdit:TCustomEdit;
+  NewReadOnly:boolean);
+var
+  txt : TCocoaTextView;
+begin
+  txt:=MemoTextView(ACustomEdit);
+  if not Assigned(txt) then Exit;
+  txt.setEditable(not NewReadOnly);
+end;
+
+class procedure TCocoaWSCustomMemo.SetText(const AWinControl:TWinControl;const AText:String);
+var
+  txt : TCocoaTextView;
+begin
+  txt:=MemoTextView(AWinControl);
+  if not Assigned(txt) then Exit;
+  txt.textStorage.mutableString.setString(NSStringUtf8(AText));
+end;
+
+class function TCocoaWSCustomMemo.GetText(const AWinControl:TWinControl;var AText:String):Boolean;
+var
+  txt : TCocoaTextView;
+begin
+  txt:=MemoTextView(AWinControl);
+  Result:=Assigned(txt);
+  if Result then
+    AText:=NSStringToString(txt.textStorage.string_);
 end;
 
 end.

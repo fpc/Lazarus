@@ -14,6 +14,12 @@ uses
 
 type
 
+  { LCLWSViewExtension }
+
+  LCLWSViewExtension = objccategory(NSView)
+    function lclInitWithCreateParams(const AParams: TCreateParams): id; message 'lclInitWithCreateParams:';
+  end;
+
   { TLCLCommonCallback }
 
   TLCLCommonCallback = class(TCommonCallback)
@@ -53,10 +59,12 @@ type
       const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
+
 // Utility WS functions
 
 function AllocCustomControl(const AWinControl: TWinControl): TCocoaCustomControl;
-procedure SetCreateParamsToControl(AControl: NSControl; const AParams: TCreateParams);
+function EmbedInScrollView(AView: NSView): TCocoaScrollView;
+procedure SetViewDefaults(AView: NSView);
 
 implementation
 
@@ -70,11 +78,31 @@ begin
   Result.callback:=TLCLCommonCallback.Create(Result, AWinControl);
 end;
 
-procedure SetCreateParamsToControl(AControl: NSControl; const AParams: TCreateParams);
+function EmbedInScrollView(AView:NSView):TCocoaScrollView;
+var
+  r : TRect;
+  p : NSView;
+  f : NSRect;
 begin
-  if not Assigned(AControl) then Exit;
-  AddViewToNSObject(AControl, NSObject(AParams.WndParent), AParams.X, AParams.Y);
+  if not Assigned(AView) then begin
+    Result:=nil;
+    Exit;
+  end;
+  r:=AView.lclFrame;
+  p:=AView.superview;
+  Result:=TCocoaScrollView.alloc.initWithFrame(NSNullRect);
+  if Assigned(p) then p.addSubView(Result);
+  Result.lclSetFrame(r);
+  Result.setDocumentView(AView);
+  SetViewDefaults(Result);
 end;
+
+procedure SetViewDefaults(AView:NSView);
+begin
+  if not Assigned(AView) then Exit;
+  AView.setAutoresizingMask(NSViewMinYMargin or NSViewMaxXMargin);
+end;
+
 
 { TLCLCommonCallback }
 
@@ -204,9 +232,35 @@ class function TCocoaWSCustomControl.CreateHandle(const AWinControl: TWinControl
 var
   ctrl  : TCocoaCustomControl;
 begin
-  ctrl:=AllocCustomControl(AWinControl);
-  SetCreateParamsToControl(ctrl, AParams);
+  ctrl:=TCocoaCustomControl( NSView(TCocoaCustomControl.alloc).lclInitWithCreateParams(AParams));
+  ctrl.callback:=TLCLCommonCallback.Create(ctrl, AWinControl);
   Result:=TLCLIntfHandle(ctrl);
+end;
+
+{ LCLWSViewExtension }
+
+function LCLWSViewExtension.lclInitWithCreateParams(const AParams:TCreateParams): id;
+var
+  r: TRect;
+begin
+  Result:=initWithFrame(NSNullRect);
+  if not Assigned(Result) then Exit;
+
+  if (AParams.WndParent<>0) then begin
+    if (NSObject(AParams.WndParent).isKindOfClass_(NSView)) then
+      NSView(AParams.WndParent).addSubview(Self)
+    else if (NSObject(AParams.WndParent).isKindOfClass_(NSWindow)) then
+      NSWindow(AParams.WndParent).contentView.addSubview(Self)
+  end;
+  with AParams do begin
+    r.left:=X;
+    r.Top:=Y;
+    r.Right:=X+Width;
+    r.Bottom:=X+Height;
+  end;
+  Self.lclSetFrame(r);
+
+  SetViewDefaults(Self);
 end;
 
 end.
