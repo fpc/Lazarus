@@ -74,6 +74,7 @@ type
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clRed;
     property Source;
+    property Styles;
     property UseReticule;
     property ZeroLevel: Double
       read FZeroLevel write SetZeroLevel stored IsZeroLevelStored;
@@ -142,6 +143,7 @@ type
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clWhite;
     property Source;
+    property Styles;
     property UseReticule;
     property UseZeroLevel: Boolean
       read FUseZeroLevel write SetUseZeroLevel default false;
@@ -165,7 +167,7 @@ type
     FPointer: TSeriesPointer;
     FShowPoints: Boolean;
 
-    procedure DrawSingleLineInStack(ACanvas: TCanvas);
+    procedure DrawSingleLineInStack(ACanvas: TCanvas; AIndex: Integer);
     function GetShowLines: Boolean;
     procedure SetLinePen(AValue: TPen);
     procedure SetLineType(AValue: TLineType);
@@ -202,6 +204,7 @@ type
     property ShowPoints: Boolean
       read FShowPoints write SetShowPoints default false;
     property Source;
+    property Styles;
     property UseReticule default true;
   end;
 
@@ -379,14 +382,14 @@ begin
   if not RectIntersectsRect(ext, ParentChart.CurrentExtent) then exit;
 
   PrepareGraphPoints(ext, LineType <> ltFromOrigin);
-  DrawSingleLineInStack(ACanvas);
+  DrawSingleLineInStack(ACanvas, 0);
   for i := 0 to Source.YCount - 2 do begin
     UpdateGraphPoints(i);
-    DrawSingleLineInStack(ACanvas);
+    DrawSingleLineInStack(ACanvas, i + 1);
   end;
 end;
 
-procedure TLineSeries.DrawSingleLineInStack(ACanvas: TCanvas);
+procedure TLineSeries.DrawSingleLineInStack(ACanvas: TCanvas; AIndex: Integer);
 var
   points: array of TPoint;
   pointCount: Integer = 0;
@@ -450,14 +453,19 @@ var
     SetLength(points, pointCount);
     SetLength(breaks, breakCount);
 
-    ACanvas.Pen.Assign(LinePen);
+    if Styles = nil then
+      ACanvas.Pen.Assign(LinePen)
+    else
+      Styles.Apply(ACanvas, AIndex);
     if Depth = 0 then
       for i := 0 to High(breaks) - 1 do
         ACanvas.Polyline(points, breaks[i], breaks[i + 1] - breaks[i])
     else begin
-      ACanvas.Brush.Style := bsSolid;
-      ACanvas.Brush.Color := LinePen.Color;
-      ACanvas.Pen.Color := clBlack;
+      if Styles = nil then begin
+        ACanvas.Brush.Style := bsSolid;
+        ACanvas.Brush.Color := LinePen.Color;
+        ACanvas.Pen.Color := clBlack;
+      end;
       for i := 0 to High(breaks) - 1 do
         for j := breaks[i] to breaks[i + 1] - 2 do
           DrawLineDepth(ACanvas, points[j], points[j + 1], Depth);
@@ -691,14 +699,16 @@ end;
 
 procedure TBarSeries.Draw(ACanvas: TCanvas);
 
-  procedure DrawBar(const AR: TRect);
+  procedure DrawBar(const AR: TRect; AIndex: Integer);
   var
     sz: TSize;
   begin
     sz := Size(AR);
-    if (sz.cx > 2) and (sz.cy > 2) then
-      ACanvas.Pen.Assign(BarPen)
-    else begin
+    if Styles <> nil then
+      Styles.Apply(ACanvas, AIndex)
+    else
+      ACanvas.Pen.Assign(BarPen);
+    if (sz.cx <= 2) or (sz.cy <= 2) then begin
       // Bars are too small to distinguish border from interior.
       ACanvas.Pen.Color := ACanvas.Brush.Color;
       ACanvas.Pen.Style := psSolid;
@@ -717,7 +727,7 @@ var
   w, cumulHeight: Double;
   p: TDoublePoint;
 
-  procedure BuildBar(AY: Double);
+  procedure BuildBar(AY: Double; AIndex: Integer);
   var
     graphBar: TDoubleRect;
     imageBar: TRect;
@@ -738,7 +748,7 @@ var
       if Bottom = Top then Dec(Top);
       if Left = Right then Inc(Right);
     end;
-    DrawBar(imageBar);
+    DrawBar(imageBar, AIndex);
   end;
 
 var
@@ -762,9 +772,9 @@ begin
       z := AxisToGraphY(ZeroLevel);
     cumulHeight := z;
     ACanvas.Brush.Color := GetColor(i);
-    BuildBar(p.Y - z);
+    BuildBar(p.Y - z, 0);
     for j := 0 to Source.YCount - 2 do
-      BuildBar(Source[i]^.YList[j]);
+      BuildBar(Source[i]^.YList[j], j + 1);
   end;
 
   DrawLabels(ACanvas);
@@ -1063,8 +1073,12 @@ begin
       prevPts[i] := pts[i];
     numPrevPts := n2;
 
-    ACanvas.Brush.Assign(AreaBrush);
-    ACanvas.Pen.Assign(AreaContourPen);
+    if Styles = nil then begin
+      ACanvas.Brush.Assign(AreaBrush);
+      ACanvas.Pen.Assign(AreaContourPen);
+    end
+    else
+      Styles.Apply(ACanvas, j);
     if Depth > 0 then
       // Rendering is incorrect when values cross zero level.
       for i := 1 to n2 - 2 do
