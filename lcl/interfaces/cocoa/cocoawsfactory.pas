@@ -242,12 +242,13 @@ end;
 function RegisterCustomScrollBar: Boolean; alias : 'WSRegisterCustomScrollBar';
 begin
   RegisterWSComponent(TCustomScrollBar, TCocoaWSScrollBar);
-  Result:=True;
+  Result := True;
 end;
 
 function RegisterCustomGroupBox: Boolean; alias : 'WSRegisterCustomGroupBox';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomGroupBox, TCocoaWSCustomGroupBox);
+  Result := True;
 end;
 
 function RegisterCustomComboBox: Boolean; alias : 'WSRegisterCustomComboBox';
@@ -258,7 +259,8 @@ end;
 
 function RegisterCustomListBox: Boolean; alias : 'WSRegisterCustomListBox';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomListBox, TCocoaWSCustomListBox);
+  Result := True;
 end;
 
 function RegisterCustomEdit: Boolean; alias : 'WSRegisterCustomEdit';

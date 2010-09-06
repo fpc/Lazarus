@@ -50,10 +50,8 @@ type
   { TCocoaWSCustomGroupBox }
 
   TCocoaWSCustomGroupBox = class(TWSCustomGroupBox)
-  private
-  protected
-  public
-//    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+  published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TCocoaWSGroupBox }
@@ -96,17 +94,15 @@ type
   { TCocoaWSCustomListBox }
 
   TCocoaWSCustomListBox = class(TWSCustomListBox)
-  private
-  protected
-  public
-{    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
+  published
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    {class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
     class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
-    class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
+    class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;}
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
-    class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
+    {class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
 
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
@@ -711,6 +707,63 @@ begin
      //if TCocoaScrollBar(Handle).setKnobProportion( PageSize/Max );
      //if TCocoaScrollBar(Handle).setDoubleValue( Position/Max );
    end;
+end;
+
+{ TCocoaWSCustomGroupBox }
+
+class function TCocoaWSCustomGroupBox.CreateHandle(const AWinControl:TWinControl;
+  const AParams:TCreateParams):TLCLIntfHandle;
+var
+  box : TCocoaGroupBox;
+begin
+  box := NSView(TCocoaGroupBox.alloc).lclInitWithCreateParams(AParams);
+  box.callback:=TLCLCommonCallback.Create(box, AWinControl);
+  Result:=TLCLIntfHandle(box);
+end;
+
+{ TCocoaWSCustomListBox }
+
+function GetListView(AWinControl: TWinControl): TCocoaListView;
+begin
+  if not Assigned(AWinControl) or (AWinControl.Handle=0) then
+    Result:=nil
+  else
+    Result:=TCocoaListView(TCocoaScrollView(AWinControl.Handle).documentView);
+end;
+
+class function TCocoaWSCustomListBox.CreateHandle(const AWinControl:TWinControl;
+  const AParams:TCreateParams):TLCLIntfHandle;
+var
+  list    : TCocoaListView;
+  scroll  : TCocoaScrollView;
+begin
+  list:=NSView(TCocoaListView.alloc).lclInitWithCreateParams(AParams);
+  list.callback:=TLCLCommonCallback.Create(list, AWinControl);
+  list.list:=TCocoaStringList.Create(list);
+  list.addTableColumn(NSTableColumn.alloc.init);
+  list.setHeaderView(nil);
+  list.setDataSource(list);
+
+  if not Assigned(list) then begin
+    Result:=0;
+    Exit;
+  end;
+  scroll:=EmbedInScrollView(list);
+  scroll.callback:=list.callback;
+  scroll.setHasVerticalScroller(true);
+  scroll.setAutohidesScrollers(true);
+  Result:=TLCLIntfHandle(scroll);
+end;
+
+class function TCocoaWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox):TStrings;
+var
+  view : TCocoaListView;
+begin
+  view:=GetListView(ACustomListBox);
+  if not Assigned(view) then
+    Result:=nil
+  else
+    Result:=view.list;
 end;
 
 end.

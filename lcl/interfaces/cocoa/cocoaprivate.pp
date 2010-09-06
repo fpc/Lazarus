@@ -188,6 +188,35 @@ type
     callback  : TCommonCallback;
   end;
 
+  TCocoaListView = objcclass;
+
+  { TCocoaStringList }
+
+  TCocoaStringList = class(TStringList)
+  protected
+    procedure Changed; override;
+  public
+    Owner : TCocoaListView;
+    constructor Create(AOwner: TCocoaListView);
+  end;
+
+  { TCocoaListView }
+
+  TCocoaListView = objcclass(NSTableView)
+    callback  : TCommonCallback;
+    list      : TCocoaStringList;
+    function numberOfRowsInTableView(aTableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
+    function tableView_objectValueForTableColumn_row(tableView: NSTableView;
+      objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
+      message 'tableView:objectValueForTableColumn:row:';
+  end;
+
+  { TCocoaGroupBox }
+
+  TCocoaGroupBox = objcclass(NSBox)
+    callback  : TCommonCallback;
+  end;
+
 implementation
 
 { TCocoaButton }
@@ -571,6 +600,40 @@ begin
   Result.Top:=Round(wr.size.height-b.origin.y);
   Result.Right:=Round(b.origin.x+b.size.width);
   Result.Bottom:=Round(Result.Top+b.size.height);
+end;
+
+{ TCocoaListView }
+
+function TCocoaListView.numberOfRowsInTableView(aTableView:NSTableView): NSInteger;
+begin
+  if Assigned(list)
+    then Result:=list.Count
+    else Result:=0;
+end;
+
+function TCocoaListView.tableView_objectValueForTableColumn_row(tableView: NSTableView;
+  objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
+begin
+  if not Assigned(list) then
+    Result:=nil
+  else begin
+    if row>=list.count then Result:=nil
+    else Result:=NSStringUtf8(list[row]);
+  end;
+end;
+
+{ TCocoaStringList }
+
+procedure TCocoaStringList.Changed;
+begin
+  inherited Changed;
+  Owner.reloadData;
+end;
+
+constructor TCocoaStringList.Create(AOwner:TCocoaListView);
+begin
+  Owner:=AOwner;
+  inherited Create;
 end;
 
 end.
