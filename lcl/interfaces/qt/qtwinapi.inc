@@ -3655,9 +3655,7 @@ end;
 function TQtWidgetSet.GetWindowRect(Handle: HWND; var ARect: TRect): Integer;
 var
   APos: TQtPoint;
-  AParent: QWidgetH;
-  R1: TRect;
-  W: TQtWidget;
+  R: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetWindowRect]');
@@ -3665,18 +3663,11 @@ begin
 
   Result := 0;
 
-  APos := TQtWidget(Handle).getPos;
-  AParent := TQtWidget(Handle).getParent;
+  APos := QtPoint(0,0);
+  QWidget_mapToGlobal(TQtWidget(Handle).Widget, @APos, @APos);
 
-  if AParent <> nil then
-  begin
-    W := TQtWidget(HwndFromWidgetH(AParent));
-    if W = nil then
-      QWidget_mapToGlobal(AParent, @APos, @APos);
-  end;
-
-  R1 := TQtWidget(Handle).getFrameGeometry;
-  ARect:=Bounds(APos.X,APos.Y,R1.Right-R1.Left,R1.Bottom-R1.Top);
+  R := TQtWidget(Handle).getFrameGeometry;
+  ARect := Bounds(APos.X,APos.Y,R.Right-R.Left,R.Bottom-R.Top);
 
   Result := -1;
 end;
