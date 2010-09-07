@@ -15,6 +15,34 @@
 }
 //---------------------------------------------------------------
 
+{$IFDEF HASX11}
+// palette initialisation for X11, fixed delayed initialization of palettes
+// with various styles under X11.
+procedure QtX11InitializePalettes;
+var
+  StyleName: WideString;
+  Palette: QPaletteH;
+  Brush: QBrushH;
+begin
+  QObject_objectName(QApplication_style(), @StyleName);
+
+  //palette for disabled viewports and edit controls
+  Palette := QPalette_create();
+  QApplication_palette(Palette);
+  Brush := QPalette_window(Palette);
+  QPalette_setBrush(Palette, QPaletteDisabled, QPaletteBase, Brush);
+  QApplication_setPalette(Palette);
+  QPalette_destroy(Palette);
+
+  //palette for inactive titlebars
+  Palette := QPalette_create();
+  QApplication_palette(Palette);
+  Brush := QPalette_dark(Palette);
+  QPalette_setBrush(Palette, QPaletteInactive, QPaletteHighlight, Brush);
+  QApplication_setPalette(Palette);
+  QPalette_destroy(Palette);
+end;
+{$ENDIF}
 {------------------------------------------------------------------------------
   Method: TQtWidgetSet.Create
   Params:  None
@@ -42,6 +70,7 @@ begin
   FEatNextDeactivate := False;
   {$IFDEF HASX11}
   FLastMinimizeEvent := 0;
+  QtX11InitializePalettes;
   {$ENDIF}
 end;
 
