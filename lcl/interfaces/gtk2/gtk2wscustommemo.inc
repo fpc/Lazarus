@@ -279,11 +279,15 @@ end;
 class procedure TGtk2WSCustomMemo.SetReadOnly(const ACustomEdit: TCustomEdit;
   NewReadOnly: boolean);
 var
-  Widget: PGtkWidget;
+  TextView: PGtkTextView;
 begin
-  Widget:=PGtkWidget(ACustomEdit.Handle);
-  if GtkWidgetIsA(Widget, GTK_TYPE_ENTRY) then
-    gtk_entry_set_editable(GTK_ENTRY(Widget), not ACustomEdit.ReadOnly);
+
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetReadOnly') then
+    Exit;
+
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomEdit.Handle), False)^.CoreWidget);
+  if TextView <> nil then
+    gtk_text_view_set_editable(TextView, not ACustomEdit.ReadOnly);
 end;
 
 class procedure TGtk2WSCustomMemo.SetText(const AWinControl: TWinControl;
