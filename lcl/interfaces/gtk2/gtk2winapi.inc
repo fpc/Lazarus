@@ -8710,6 +8710,7 @@ function TGtk2WidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
 var
   Widget: PGTKWidget;
   FixedWidget: PGtkWidget;
+  Allocation: TGTKAllocation;
 begin
   Result:=false;
   Widget:=PGtkWidget(hWnd);
@@ -8719,14 +8720,49 @@ begin
     ' SWP_NOSIZE=',(SWP_NOSIZE and uFlags)<>0,
     ' SWP_NOMOVE=',(SWP_NOMOVE and uFlags)<>0,
     '');}
-  if GtkWidgetIsA(Widget,GTK_TYPE_WINDOW) then begin
+  if GtkWidgetIsA(Widget,GTK_TYPE_WINDOW) then
+  begin
+    Result := True;
+    exit;
     { case hWndInsertAfter of
         HWND_BOTTOM: ;  //gdk_window_lower(Widget^.Window);
         HWND_TOP:    gtk_window_set_position(PGtkWindow(hWnd),GTK_WIN_POS_CENTER);
                     //gdk_window_raise(Widget^.Window);
       end;
     }
-  end else if (SWP_NOZORDER and uFlags)=0 then begin
+  end;
+
+  if (SWP_NOMOVE and uFlags = 0) and (SWP_NOSIZE and uFlags = 0) then
+  begin
+    // optimize if pos & size needed, so we allocate in one shot.
+    Allocation.X := X;
+    Allocation.Y := Y;
+    Allocation.Width := cx;
+    Allocation.Height := cy;
+    gtk_widget_size_allocate(Widget, @Allocation);
+  end else
+  begin
+    if (SWP_NOMOVE and uFlags = 0) then
+    begin
+      Allocation.X := X;
+      Allocation.Y := Y;
+      Allocation.Width := Widget^.Allocation.Width;
+      Allocation.Height := Widget^.Allocation.Height;
+      gtk_widget_size_allocate(Widget, @Allocation);
+    end;
+
+    if (SWP_NOSIZE and uFlags = 0) then
+    begin
+      Allocation.X := Widget^.Allocation.x;
+      Allocation.Y := Widget^.Allocation.y;
+      Allocation.Width := cx;
+      Allocation.Height := cy;
+      gtk_widget_size_allocate(Widget, @Allocation);
+    end;
+  end;
+
+  if (SWP_NOZORDER and uFlags)=0 then
+  begin
     FixedWidget:=Widget^.Parent;
     if FixedWidget=nil then exit;
 
