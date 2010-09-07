@@ -1022,9 +1022,14 @@ begin
 end;
 
 procedure TCustomDBGrid.UpdateBufferCount;
+var
+  BCount: Integer;
 begin
   if FDataLink.Active then begin
-    FDataLink.BufferCount:= GetBufferCount;
+    BCount := GetBufferCount;
+    if BCount<1 then
+      BCount := 1;
+    FDataLink.BufferCount:= BCount;
     {$ifdef dbgDBGrid}
     DebugLn('%s (%s), FDatalink.BufferCount=%d',[ClassName,Name,FDataLink.BufferCount]);
     {$endif}
