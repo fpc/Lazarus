@@ -173,7 +173,7 @@ type
     function SlotKey(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function SlotMouse(Sender: QObjectH; Event: QEventH): Boolean; virtual; cdecl;
     procedure SlotNCMouse(Sender: QObjectH; Event: QEventH); cdecl;
-    procedure SlotMouseEnter(Sender: QObjectH; Event: QEventH); cdecl;
+    function SlotMouseEnter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function SlotMouseMove(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     procedure SlotMouseWheel(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotMove(Event: QEventH); cdecl;
@@ -2056,7 +2056,7 @@ begin
         end;
       QEventDestroy: SlotDestroy;
       QEventEnter,
-      QEventLeave: SlotMouseEnter(Sender, Event);
+      QEventLeave: Result := SlotMouseEnter(Sender, Event);
       
       QEventHoverEnter,
       QEventHoverLeave,
@@ -2745,10 +2745,11 @@ begin
   end;
 end;
 
-procedure TQtWidget.SlotMouseEnter(Sender: QObjectH; Event: QEventH); cdecl;
+function TQtWidget.SlotMouseEnter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   Msg: TLMessage;
 begin
+  Result := False;
   FillChar(Msg, SizeOf(Msg), #0);
   case QEvent_type(Event) of
     QEventEnter: Msg.Msg := CM_MOUSEENTER;
@@ -2797,10 +2798,70 @@ function TQtWidget.SlotMouseMove(Sender: QObjectH; Event: QEventH): Boolean; cde
 var
   Msg: TLMMouseMove;
   MousePos: TQtPoint;
+  GlobPos: TQtPoint;
+  R: TRect;
+  P: TPoint;
+  NewEvent: QEventH;
+  W: QWidgetH;
+  FrameBorder: Integer;
+  TitleBarHeight: Integer;
 begin
   Result := False;
   if not CanSendLCLMessage then
     Exit;
+
+  if not (csCaptureMouse in LCLObject.ControlStyle) and
+    not QWidget_isWindow(Widget) then
+  begin
+    MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+    GlobPos := QMouseEvent_globalPos(QMouseEventH(Event))^;
+
+    // get parent form, so check if mouse is out of parent form first.
+    W := QWidget_window(Widget);
+
+    if W <> nil then
+    begin
+      QWidget_frameGeometry(W, @R);
+
+      // exclude borders from frame
+      FrameBorder := QStyle_pixelMetric(QApplication_style(),
+        QStylePM_DefaultFrameWidth, nil, W);
+      TitleBarHeight := QStyle_pixelMetric(QApplication_style(),
+        QStylePM_TitleBarHeight, nil, W);
+
+      inc(R.Left, FrameBorder);
+      inc(R.Top, TitleBarHeight);
+      dec(R.Right, FrameBorder);
+      dec(R.Bottom, FrameBorder);
+
+      P := Point(GlobPos.X, GlobPos.Y);
+      if not PtInRect(R, P) then
+        MousePos := QtPoint(-1, -1);
+
+      if not QWidget_underMouse(Widget) then
+      begin
+        if (MousePos.X >= 0) and (MousePos.Y >= 0) then
+        begin
+          QWidget_setAttribute(Widget, QtWA_UnderMouse, True);
+          NewEvent := QEvent_create(QEventEnter);
+          QCoreApplication_postEvent(Widget, NewEvent, 100);
+        end;
+      end;
+    end;
+
+    if not (csCaptureMouse in LCLObject.ControlStyle) and
+      (QApplication_mouseButtons() <> QtNoButton) and
+      ((MousePos.X < 0) or (MousePos.Y < 0)) then
+    begin
+      if not QWidget_underMouse(Widget) then
+        exit;
+      setCursor(FDefaultCursor);
+      NewEvent := QEvent_create(QEventLeave);
+      QCoreApplication_postEvent(Widget, NewEvent, 100);
+      exit;
+    end;
+  end;
+
   FillChar(Msg, SizeOf(Msg), #0);
   
   MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
