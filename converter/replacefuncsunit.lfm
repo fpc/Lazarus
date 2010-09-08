@@ -62,7 +62,7 @@ object ReplaceFuncsForm: TReplaceFuncsForm
     PopupMenu = PopupMenu1
     RowCount = 2
     TabOrder = 1
-    OnDrawCell = GridDrawCell
+    OnPrepareCanvas = GridPrepareCanvas
     ColWidths = (
       100
       150
@@ -77,15 +77,14 @@ object ReplaceFuncsForm: TReplaceFuncsForm
     AnchorSideRight.Control = Splitter1
     AnchorSideBottom.Control = ButtonPanel
     Left = 0
-    Height = 546
-    Top = 29
+    Height = 544
+    Top = 31
     Width = 157
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 5
     ItemHeight = 0
     OnClickCheck = CategoryListBoxClickCheck
     TabOrder = 2
-    TopIndex = -1
   end
   object Splitter1: TSplitter
     Left = 157
@@ -96,9 +95,9 @@ object ReplaceFuncsForm: TReplaceFuncsForm
   end
   object CategoriesLabel: TLabel
     Left = 6
-    Height = 16
+    Height = 18
     Top = 8
-    Width = 131
+    Width = 149
     Caption = 'Categories to convert :'
     Font.Height = -13
     ParentColor = False

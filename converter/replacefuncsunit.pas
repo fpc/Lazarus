@@ -83,7 +83,7 @@ type
     procedure PopupMenu1Popup(Sender: TObject);
     procedure InsertRow1Click(Sender: TObject);
     procedure DeleteRow1Click(Sender: TObject);
-    procedure GridDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect;
+    procedure GridPrepareCanvas(sender: TObject; aCol, aRow: Integer;
       aState: TGridDrawState);
     procedure GridEditingDone(Sender: TObject);
     procedure GridSetEditText(Sender: TObject; ACol, ARow: Integer; const Value: string);
@@ -388,8 +388,8 @@ begin
   Grid.DeleteColRow(False, Grid.Row);
 end;
 
-procedure TReplaceFuncsForm.GridDrawCell(Sender: TObject; aCol, aRow: Integer;
-  aRect: TRect; aState: TGridDrawState);
+procedure TReplaceFuncsForm.GridPrepareCanvas(sender: TObject;
+  aCol, aRow: Integer; aState: TGridDrawState);
 var
   SGrid: TStringGrid;
   Categ: string;
