@@ -1349,6 +1349,8 @@ components/lazreport/samples/editor/calleditorwithpkg.lpi svneol=native#text/pla
 components/lazreport/samples/editor/calleditorwithpkg.lpr svneol=native#text/pascal
 components/lazreport/samples/editor/calleditorwithpkg.res -text
 components/lazreport/samples/editor/csvtest.lrf svneol=LF#text/xml eol=lf
+components/lazreport/samples/editor/db/companies.dbf -text
+components/lazreport/samples/editor/db/countries.dbf -text
 components/lazreport/samples/editor/db/disco.dbf -text
 components/lazreport/samples/editor/db/disco.mdx -text
 components/lazreport/samples/editor/languages/calleditorwithpkg.de.po svneol=native#text/plain

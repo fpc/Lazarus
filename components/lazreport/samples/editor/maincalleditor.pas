@@ -30,7 +30,7 @@ uses
   Buttons, StdCtrls, LR_Const, LR_Class, LR_Desgn, Dbf, DB, DBGrids, LR_DBSet,
   LR_PGrid, Menus, ComCtrls, ActnList, Lr_e_txt, Lr_e_htm, LR_E_CSV, LR_DSet,
   LR_BarC, LR_RRect, LR_Shape, LR_ChBox, lr_e_pdf, lconvencoding, lr_e_gen,
-  lr_utils, LCLProc;
+  lr_utils, LCLProc, custompreview;
 
 type
 
@@ -50,20 +50,36 @@ type
     accThumbnails: TAction;
     accExportToDbg: TAction;
     accComposite: TAction;
+    accCustomPreview: TAction;
     ActionList1: TActionList;
     ApplicationProperties1: TApplicationProperties;
     btnCallEditor: TButton;
-    Button1: TButton;
-    Button2: TButton;
-    Button3: TButton;
-    Button4: TButton;
+    btnCustomPreview: TButton;
+    btnPrintGrid: TButton;
+    btnPreviewReport: TButton;
+    btnEditReport: TButton;
+    btnPrintReport: TButton;
     btnOpenReport: TButton;
     btnImageList: TButton;
-    Button5: TButton;
+    btnComposite: TButton;
     comboIndex: TComboBox;
-    Datasource1: TDatasource;
-    Dbf1: TDbf;
-    dbGrid1: TdbGrid;
+    srcDetail: TDatasource;
+    DetailAUTHOR: TStringField;
+    DetailCOMPANY1: TStringField;
+    DetailCOMPANYID: TLongintField;
+    DetailCOUNTRY1: TStringField;
+    DetailCOUNTRYID: TLongintField;
+    DetailIN_STOCK: TBooleanField;
+    DetailLAST_SELL: TDateField;
+    DetailNOTE: TStringField;
+    DetailPRICE: TFloatField;
+    DetailQTY: TSmallintField;
+    DetailTITLE: TStringField;
+    DetailYEAR: TSmallintField;
+    Detail: TDbf;
+    LookCountries: TDbf;
+    LookCompanies: TDbf;
+    grid: TDBGrid;
     frBarCodeObject1: TfrBarCodeObject;
     frCheckBoxObject1: TfrCheckBoxObject;
     Composite: TfrCompositeReport;
@@ -91,10 +107,11 @@ type
     MenuItem8: TMenuItem;
     MenuItem9: TMenuItem;
     OpenDialog1: TOpenDialog;
-    PG: TfrPrintGrid;
+    PrintGrid: TFrPrintGrid;
     sbar: TStatusBar;
     TheReport: TfrReport;
     procedure accCompositeExecute(Sender: TObject);
+    procedure accCustomPreviewExecute(Sender: TObject);
     procedure accExportToCSVExecute(Sender: TObject);
     procedure accExportToDbgExecute(Sender: TObject);
     procedure accExportToHtmlExecute(Sender: TObject);
@@ -110,7 +127,7 @@ type
     procedure accPrintGridExecute(Sender: TObject);
     procedure accPrintReportExecute(Sender: TObject);
     procedure comboIndexSelect(Sender: TObject);
-    procedure dbGrid1TitleClick(Column: TColumn);
+    procedure gridTitleClick(Column: TColumn);
     procedure frmMainCreate(Sender: TObject);
     procedure TheReportBeginDoc;
     procedure TheReportEnterRect(Memo: TStringList; View: TfrView);
@@ -258,6 +275,21 @@ begin
   Composite.ShowReport;
 end;
 
+procedure TfrmMain.accCustomPreviewExecute(Sender: TObject);
+var
+  F: TfrmCustomPreview;
+begin
+  F := TfrmCustomPreview.Create(self);
+  try
+    TheReport.Preview := F.frPreview1;
+    TheReport.ShowReport;
+    F.ShowModal;
+  finally
+    TheReport.Preview := nil;
+    F.Free;
+  end;
+end;
+
 procedure TfrmMain.accExportToDbgExecute(Sender: TObject);
 begin
   if TheReport.PrepareReport then begin
@@ -300,7 +332,7 @@ end;
 
 procedure TfrmMain.accPrintGridExecute(Sender: TObject);
 begin
-  PG.PreviewReport;
+  PrintGrid.PreviewReport;
 end;
 
 procedure TfrmMain.accPrintReportExecute(Sender: TObject);
@@ -323,15 +355,15 @@ begin
   end;
 end;
 
-procedure TfrmMain.dbGrid1TitleClick(Column: TColumn);
+procedure TfrmMain.gridTitleClick(Column: TColumn);
 begin
   if CompareText(Column.FieldName,'year')=0 then
     SetIndex('ByYear')
   else
-  if CompareText(Column.FieldName,'company')=0 then
+  if CompareText(Column.FieldName,'company1')=0 then
     SetIndex('ByCompany')
   else
-  if CompareText(Column.FieldName,'country')=0 then
+  if CompareText(Column.FieldName,'country1')=0 then
     SetIndex('ByCountry')
   else
     SetIndex('');
@@ -346,16 +378,26 @@ var
 begin
 
   UpdateAppTranslation;
-  
-  dbf1.close;
-  dbf1.FilePath := 'db/';
-  dbf1.TableName := 'disco.dbf';
-  dbf1.open;
+
+  LookCountries.Close;
+  LookCountries.FilePath := 'db/';
+  LookCountries.TableName := 'countries.dbf';
+  LookCountries.open;
+
+  LookCompanies.Close;
+  LookCompanies.FilePath := 'db/';
+  LookCompanies.TableName := 'companies.dbf';
+  LookCompanies.Open;
+
+  Detail.close;
+  Detail.FilePath := 'db/';
+  Detail.TableName := 'disco.dbf';
+  Detail.open;
   
   comboIndex.Clear;
   comboIndex.Items.Add(cerNone);
-  for i:=0 to Dbf1.Indexes.Count-1 do
-    comboIndex.Items.Add(Dbf1.Indexes[i].Name);
+  for i:=0 to Detail.Indexes.Count-1 do
+    comboIndex.Items.Add(Detail.Indexes[i].Name);
   SetIndex('');
   
   if FileExistsUTF8(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf') then
@@ -419,8 +461,8 @@ end;
 
 procedure TfrmMain.SetIndex(const aIndexName: string);
 begin
-  dbf1.IndexName := aIndexName;
-  lblExpr.Caption:= format(cerIndexFields, [dbf1.IndexFieldNames]);
+  Detail.IndexName := aIndexName;
+  lblExpr.Caption:= format(cerIndexFields, [Detail.IndexFieldNames]);
 end;
 
 procedure TfrmMain.OpenReport(const aFileName: string);

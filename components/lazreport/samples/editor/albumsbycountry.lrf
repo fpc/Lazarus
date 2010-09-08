@@ -53,7 +53,7 @@
             <Script Value=""/>
           </Data>
           <BandType Value="btGroupHeader"/>
-          <Condition Value="Dbf1.&quot;COUNTRY&quot;"/>
+          <Condition Value="Dbf1.&quot;COUNTRY1&quot;"/>
           <DatasetStr Value=""/>
         </Object1>
         <Object2>
@@ -139,7 +139,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;COUNTRY&quot;]&#xD;&#xA;"/>
+            <Memo Value="[Dbf1.&quot;COUNTRY1&quot;]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -268,7 +268,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;COMPANY&quot;]&#xD;&#xA;"/>
+            <Memo Value="[Dbf1.&quot;COMPANY1&quot;]&#xD;&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -469,7 +469,7 @@
           <Size>
             <Left Value="56"/>
             <Top Value="308"/>
-            <Width Value="672"/>
+            <Width Value="680"/>
             <Height Value="0"/>
           </Size>
           <Flags Value="1"/>
@@ -830,9 +830,9 @@
           <Typ Value="gtLine"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="67"/>
+            <Left Value="56"/>
             <Top Value="154"/>
-            <Width Value="667"/>
+            <Width Value="680"/>
             <Height Value="0"/>
           </Size>
           <Flags Value="1"/>

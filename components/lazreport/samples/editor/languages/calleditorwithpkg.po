@@ -109,6 +109,15 @@ msgctxt "maincalleditor.certhumbnails"
 msgid "Thumbnails"
 msgstr ""
 
+#: TFRMCUSTOMPREVIEW.FRMCUSTOMPREVIEW.CAPTION
+msgid "frmCustomPreview"
+msgstr ""
+
+#: TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION
+msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
+msgid "frPreview1"
+msgstr ""
+
 #: TFRMMAIN.ACCCLOSE.CAPTION
 msgid "Close"
 msgstr ""
@@ -116,6 +125,10 @@ msgstr ""
 #: TFRMMAIN.ACCCOMPOSITE.CAPTION
 msgctxt "TFRMMAIN.ACCCOMPOSITE.CAPTION"
 msgid "Composite"
+msgstr ""
+
+#: TFRMMAIN.ACCCUSTOMPREVIEW.CAPTION
+msgid "Custom Preview"
 msgstr ""
 
 #: TFRMMAIN.ACCEDITREPORT.CAPTION
@@ -164,8 +177,8 @@ msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
 msgid "Thumbnails"
 msgstr ""
 
-#: TFRMMAIN.CAPTION
-msgctxt "TFRMMAIN.CAPTION"
+#: TFRMMAIN.FRMMAIN.CAPTION
+msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
 msgid "LazReport Test Suite"
 msgstr ""
 

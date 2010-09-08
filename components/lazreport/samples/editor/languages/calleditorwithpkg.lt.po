@@ -117,6 +117,15 @@ msgctxt "maincalleditor.certhumbnails"
 msgid "Thumbnails"
 msgstr "Miniatiūros"
 
+#: TFRMCUSTOMPREVIEW.FRMCUSTOMPREVIEW.CAPTION
+msgid "frmCustomPreview"
+msgstr ""
+
+#: TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION
+msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
+msgid "frPreview1"
+msgstr ""
+
 #: TFRMMAIN.ACCCLOSE.CAPTION
 msgid "Close"
 msgstr "Užverti"
@@ -125,6 +134,10 @@ msgstr "Užverti"
 msgctxt "TFRMMAIN.ACCCOMPOSITE.CAPTION"
 msgid "Composite"
 msgstr "Mišrus"
+
+#: TFRMMAIN.ACCCUSTOMPREVIEW.CAPTION
+msgid "Custom Preview"
+msgstr ""
 
 #: TFRMMAIN.ACCEDITREPORT.CAPTION
 msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
@@ -172,8 +185,8 @@ msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
 msgid "Thumbnails"
 msgstr "Miniatiūros"
 
-#: TFRMMAIN.CAPTION
-msgctxt "TFRMMAIN.CAPTION"
+#: TFRMMAIN.FRMMAIN.CAPTION
+msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
 msgid "LazReport Test Suite"
 msgstr "LazReport testavimo paketas"
 
@@ -197,5 +210,4 @@ msgstr "Testai"
 #: TFRMMAIN.MENUITEM9.CAPTION
 msgid "Export"
 msgstr "Eksportas"
-
 

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="7"/>
+    <Version Value="9"/>
     <General>
       <Flags>
         <SaveClosedFiles Value="False"/>
@@ -10,7 +10,6 @@
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <TargetFileExt Value=""/>
       <Title Value="LazReport Designer"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
@@ -19,9 +18,6 @@
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <VersionInfo>
-      <StringTable Comments="" CompanyName="" FileDescription="" FileVersion="0.0.0.0" InternalName="" LegalCopyright="" LegalTrademarks="" OriginalFilename="" ProductName="" ProductVersion="0.0.0.0"/>
-    </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -58,7 +54,7 @@
         <MinVersion Minor="1" Release="1" Valid="True"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="3">
       <Unit0>
         <Filename Value="calleditorwithpkg.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -71,10 +67,17 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="maincalleditor"/>
       </Unit1>
+      <Unit2>
+        <Filename Value="custompreview.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmCustomPreview"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="custompreview"/>
+      </Unit2>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="8"/>
+    <Version Value="9"/>
     <Target>
       <Filename Value="calleditorwithpkg"/>
     </Target>
@@ -83,7 +86,11 @@
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
+    <CompileReasons Run="False"/>
   </CompilerOptions>
 </CONFIG>
