@@ -793,7 +793,8 @@ begin
     end;
     if not fSettings.AutoReplaceUnits then begin
       // Edit, then remove or replace units.
-      Result:=EditMap(MapToEdit, 'Units to replace in '+ExtractFileName(fOrigUnitFilename));
+      Result:=EditMap(MapToEdit, 'Units to replace in '+ExtractFileName(fOrigUnitFilename),
+                      lisConvDelphiName, lisConvNewName);
       if Result<>mrOK then exit;
       // Iterate the map and rename / remove.
       Node:=MapToEdit.Tree.FindLowest;

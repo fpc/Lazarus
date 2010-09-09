@@ -1,7 +1,7 @@
 object ReplaceFuncsForm: TReplaceFuncsForm
-  Left = 508
+  Left = 374
   Height = 626
-  Top = 104
+  Top = 49
   Width = 928
   Caption = 'Functions to replace'
   ClientHeight = 626

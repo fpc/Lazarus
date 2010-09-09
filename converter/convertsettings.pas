@@ -59,6 +59,8 @@ type
     fReplaceUnits: TStringToStringTree;
     // Delphi types mapped to Lazarus types, will be replaced.
     fReplaceTypes: TStringToStringTree;
+    // Top coordinate shift of components in a visual container.
+    fVisualOffsets: TStringToStringTree;
     // Delphi global function names mapped to FCL/LCL functions.
     fReplaceFuncs: TFuncsAndCategories;
     // Getter / setter:
@@ -96,6 +98,7 @@ type
     property AutoRemoveProperties: boolean read fAutoRemoveProperties;
     property ReplaceUnits: TStringToStringTree read fReplaceUnits;
     property ReplaceTypes: TStringToStringTree read fReplaceTypes;
+    property VisualOffsets: TStringToStringTree read fVisualOffsets;
     property ReplaceFuncs: TFuncsAndCategories read fReplaceFuncs;
   end;
 
@@ -106,6 +109,7 @@ type
     AutoReplaceUnitsCheckBox: TCheckBox;
     BackupCheckBox: TCheckBox;
     ButtonPanel: TButtonPanel;
+    VisualOffsetsButton: TBitBtn;
     TypeReplacementsButton: TBitBtn;
     SameDFMCheckBox: TCheckBox;
     ProjectPathEdit: TLabeledEdit;
@@ -117,6 +121,7 @@ type
     AutoRemovePropCheckBox: TCheckBox;
     procedure FuncReplacementsButtonClick(Sender: TObject);
     procedure TypeReplacementsButtonClick(Sender: TObject);
+    procedure VisualOffsetsButtonClick(Sender: TObject);
     procedure UnitReplacementsButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -283,6 +288,7 @@ begin
   fMainPath:='';
   fReplaceUnits:=TStringToStringTree.Create(false);
   fReplaceTypes:=TStringToStringTree.Create(false);
+  fVisualOffsets:=TStringToStringTree.Create(true);
   fReplaceFuncs:=TFuncsAndCategories.Create;
   // Load settings from ConfigStorage.
   fConfigStorage:=GetIDEConfigStorage('delphiconverter.xml', true);
@@ -293,6 +299,7 @@ begin
   fAutoRemoveProperties :=fConfigStorage.GetValue('AutoRemoveProperties', true);
   LoadStringToStringTree(fConfigStorage, 'UnitReplacements/', fReplaceUnits);
   LoadStringToStringTree(fConfigStorage, 'TypeReplacements/', fReplaceTypes);
+  LoadStringToStringTree(fConfigStorage, 'VisualTopOffsets/', fVisualOffsets);
   LoadFuncReplacements  (fConfigStorage, 'FuncReplacements/', 'Categories/', fReplaceFuncs);
 
   // Add default values for configuration if ConfigStorage doesn't have them.
@@ -335,6 +342,11 @@ begin
   // Tnt* third party components.
   MapReplacement('^TTnt(.+)LX$',      'T$1');
   MapReplacement('^TTnt(.+[^L][^X])$','T$1');
+
+  // Top coordinate offsets for some visual containers.
+  TheMap:=fVisualOffsets;
+  MapReplacement('TGroupBox',         '10');
+  MapReplacement('TPanel',            '2');
 
   // Map Delphi function names to FCL/LCL functions.
   with fReplaceFuncs do begin
@@ -387,12 +399,14 @@ begin
   fConfigStorage.SetDeleteValue('AutoRemoveProperties', fAutoRemoveProperties, false);
   SaveStringToStringTree(fConfigStorage, 'UnitReplacements/', fReplaceUnits);
   SaveStringToStringTree(fConfigStorage, 'TypeReplacements/', fReplaceTypes);
+  SaveStringToStringTree(fConfigStorage, 'VisualTopOffsets/', fVisualOffsets);
   SaveFuncReplacements  (fConfigStorage, 'FuncReplacements/', 'Categories/', fReplaceFuncs);
   // Free stuff
   fConfigStorage.Free;
   fReplaceFuncs.Clear;
   fReplaceFuncs.Free;
   fReplaceTypes.Free;
+  fVisualOffsets.Free;
   fReplaceUnits.Free;
   inherited Destroy;
 end;
@@ -553,6 +567,8 @@ begin
   UnitReplacementsButton.Hint:=lisConvUnitReplHint;
   TypeReplacementsButton.Caption:=lisConvTypeReplacements;
   TypeReplacementsButton.Hint:=lisConvTypeReplHint;
+  VisualOffsetsButton.Caption:=lisConvTopCoordOffs;
+  VisualOffsetsButton.Hint:=lisConvTopCoordHint;
   FuncReplacementsButton.Caption:=lisConvFuncReplacements;
   FuncReplacementsButton.Hint:=lisConvFuncReplHint;
   TargetRadioGroupClick(TargetRadioGroup);
@@ -576,12 +592,17 @@ end;
 
 procedure TConvertSettingsForm.UnitReplacementsButtonClick(Sender: TObject);
 begin
-  EditMap(fSettings.ReplaceUnits, lisConvUnitsToReplace);
+  EditMap(fSettings.ReplaceUnits, lisConvUnitsToReplace, lisConvDelphiName, lisConvNewName);
 end;
 
 procedure TConvertSettingsForm.TypeReplacementsButtonClick(Sender: TObject);
 begin
-  EditMap(fSettings.ReplaceTypes, lisConvTypesToReplace);
+  EditMap(fSettings.ReplaceTypes, lisConvTypesToReplace, lisConvDelphiName, lisConvNewName);
+end;
+
+procedure TConvertSettingsForm.VisualOffsetsButtonClick(Sender: TObject);
+begin
+  EditMap(fSettings.VisualOffsets, lisConvTopCoordOffs, lisConvParentContainer, lisConvTopCoordOff);
 end;
 
 procedure TConvertSettingsForm.FuncReplacementsButtonClick(Sender: TObject);

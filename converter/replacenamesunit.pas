@@ -58,14 +58,15 @@ type
 
   end; 
 
-var
-  ReplaceNamesForm: TReplaceNamesForm;
+//var
+//  ReplaceNamesForm: TReplaceNamesForm;
 
 
 function FromMapToGrid(AMap: TStringToStringTree; AGrid: TStringGrid): boolean;
 function FromGridToMap(AMap: TStringToStringTree; AGrid: TStringGrid;
                        AllowEmptyValues: boolean = true): boolean;
-function EditMap(AMap: TStringToStringTree; ATitle: string): TModalResult;
+function EditMap(AMap: TStringToStringTree;
+                 AFormTitle, ACol1Title, ACol2Title: string): TModalResult;
 
 implementation
 
@@ -116,13 +117,16 @@ begin
   end;
 end;
 
-function EditMap(AMap: TStringToStringTree; ATitle: string): TModalResult;
+function EditMap(AMap: TStringToStringTree;
+                 AFormTitle, ACol1Title, ACol2Title: string): TModalResult;
 var
   RNForm: TReplaceNamesForm;
 begin
   RNForm:=TReplaceNamesForm.Create(nil);
   try
-    RNForm.Caption:=ATitle;
+    RNForm.Caption:=AFormTitle;
+    RNForm.Grid.Columns[0].Title.Caption:=ACol1Title;
+    RNForm.Grid.Columns[1].Title.Caption:=ACol2Title;
     FromMapToGrid(AMap, RNForm.Grid);
     Result:=RNForm.ShowModal;
     if Result=mrOK then

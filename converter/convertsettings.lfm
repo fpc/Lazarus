@@ -1,10 +1,10 @@
 object ConvertSettingsForm: TConvertSettingsForm
-  Left = 366
-  Height = 443
-  Top = 299
+  Left = 346
+  Height = 462
+  Top = 298
   Width = 637
   Caption = 'Convert Delphi unit, project or package '
-  ClientHeight = 443
+  ClientHeight = 462
   ClientWidth = 637
   Constraints.MinHeight = 400
   OnCreate = FormCreate
@@ -16,21 +16,21 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 0
-    Height = 178
+    Height = 192
     Top = 219
     Width = 637
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     Caption = 'Units, Types and Properties'
-    ClientHeight = 160
+    ClientHeight = 173
     ClientWidth = 633
     TabOrder = 0
     object AutoRemovePropCheckBox: TCheckBox
       Left = 303
-      Height = 17
+      Height = 21
       Hint = 'If unchecked, there will be interactive dialogs for editing / accepting changes.'
       Top = 40
-      Width = 218
+      Width = 282
       Caption = 'Automatic removal of unknown properties'
       ParentShowHint = False
       ShowHint = True
@@ -52,7 +52,7 @@ object ConvertSettingsForm: TConvertSettingsForm
       Left = 11
       Height = 30
       Hint = 'Unknown types in form file (DFM/LFM)'
-      Top = 60
+      Top = 52
       Width = 272
       Caption = 'Type Replacements'
       OnClick = TypeReplacementsButtonClick
@@ -62,10 +62,10 @@ object ConvertSettingsForm: TConvertSettingsForm
     end
     object AutoReplaceUnitsCheckBox: TCheckBox
       Left = 303
-      Height = 17
+      Height = 21
       Hint = 'If unchecked, there will be interactive dialogs for editing / accepting changes.'
       Top = 12
-      Width = 196
+      Width = 255
       Caption = 'Automatic replacement of unit names'
       ParentShowHint = False
       ShowHint = True
@@ -75,13 +75,25 @@ object ConvertSettingsForm: TConvertSettingsForm
       Left = 11
       Height = 30
       Hint = 'Some Delphi functions can be replaced with a LCL function'
-      Top = 108
+      Top = 132
       Width = 272
       Caption = 'Function Replacements'
       OnClick = FuncReplacementsButtonClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 4
+    end
+    object VisualOffsetsButton: TBitBtn
+      Left = 11
+      Height = 30
+      Hint = 'Some Delphi functions can be replaced with a LCL function'
+      Top = 92
+      Width = 272
+      Caption = 'Top Coordinate Offsets'
+      OnClick = VisualOffsetsButtonClick
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 5
     end
   end
   object SettingsGroupBox: TGroupBox
@@ -90,7 +102,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     Top = 80
     Width = 637
     Anchors = [akTop, akLeft, akRight]
-    ClientHeight = 118
+    ClientHeight = 117
     ClientWidth = 633
     TabOrder = 1
     object TargetRadioGroup: TRadioGroup
@@ -109,7 +121,7 @@ object ConvertSettingsForm: TConvertSettingsForm
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 94
+      ClientHeight = 93
       ClientWidth = 268
       ItemIndex = 0
       Items.Strings = (
@@ -126,10 +138,10 @@ object ConvertSettingsForm: TConvertSettingsForm
       AnchorSideLeft.Control = TargetRadioGroup
       AnchorSideLeft.Side = asrBottom
       Left = 303
-      Height = 17
+      Height = 21
       Hint = 'Separate form files allow different properties'
       Top = 62
-      Width = 239
+      Width = 312
       BorderSpacing.Left = 13
       BorderSpacing.Around = 7
       Caption = 'Lazarus uses the same DFM form file as Delphi'
@@ -152,10 +164,10 @@ object ConvertSettingsForm: TConvertSettingsForm
     EditLabel.AnchorSideTop.Side = asrCenter
     EditLabel.AnchorSideRight.Control = ProjectPathEdit
     EditLabel.AnchorSideBottom.Control = ProjectPathEdit
-    EditLabel.Left = 73
-    EditLabel.Height = 14
-    EditLabel.Top = 18
-    EditLabel.Width = 64
+    EditLabel.Left = 59
+    EditLabel.Height = 16
+    EditLabel.Top = 17
+    EditLabel.Width = 78
     EditLabel.Caption = 'Project Path:'
     EditLabel.ParentColor = False
     LabelPosition = lpLeft
@@ -169,10 +181,10 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Control = ProjectPathEdit
     AnchorSideTop.Side = asrBottom
     Left = 16
-    Height = 17
+    Height = 21
     Hint = 'Creates a Backup directory under project directory'
     Top = 48
-    Width = 159
+    Width = 208
     BorderSpacing.Top = 5
     BorderSpacing.Around = 7
     Caption = 'Make backup of changed files'
@@ -184,8 +196,8 @@ object ConvertSettingsForm: TConvertSettingsForm
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 403
+    Height = 39
+    Top = 417
     Width = 625
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'

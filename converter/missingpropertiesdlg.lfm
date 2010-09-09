@@ -67,6 +67,30 @@ object FixLFMDialog: TFixLFMDialog
           Option = 0
           Priority = 0
         end>
+      RightGutter.Width = 0
+      RightGutter.MouseActions = <      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbLeft
+          ClickCount = ccAny
+          ClickDir = cdDown
+          Command = 13
+          MoveCaret = False
+          Option = 0
+          Priority = 0
+        end      
+        item
+          Shift = []
+          ShiftMask = []
+          Button = mbRight
+          ClickCount = ccSingle
+          ClickDir = cdUp
+          Command = 12
+          MoveCaret = False
+          Option = 0
+          Priority = 0
+        end>
       Highlighter = SynLFMSyn1
       Keystrokes = <      
         item
@@ -520,7 +544,7 @@ object FixLFMDialog: TFixLFMDialog
       OnSpecialLineMarkup = LFMSynEditSpecialLineMarkup
       inline TSynGutterPartList
         object TSynGutterMarks
-          Width = 23
+          Width = 24
         end
         object TSynGutterLineNumber
           Width = 19
@@ -625,6 +649,8 @@ object FixLFMDialog: TFixLFMDialog
             end>
         end
       end
+      inline SynRightGutterPartList1: TSynRightGutterPartList
+      end
     end
   end
   object ErrorsGroupBox: TGroupBox
@@ -678,7 +704,7 @@ object FixLFMDialog: TFixLFMDialog
       Left = 6
       Height = 26
       Top = 6
-      Width = 193
+      Width = 218
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Fix unknown properties and types'

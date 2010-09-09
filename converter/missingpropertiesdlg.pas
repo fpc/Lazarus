@@ -42,9 +42,9 @@ uses
   // IDE
   IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf, DialogProcs,
   CustomFormEditor, LazarusIDEStrConsts, IDEProcs, OutputFilter,
-  EditorOptions, CheckLFMDlg,
+  EditorOptions, CheckLFMDlg, IDEMsgIntf,
   // Converter
-  ConvertSettings, ReplaceNamesUnit, ConvCodeTool;
+  ConverterTypes, ConvertSettings, ReplaceNamesUnit, ConvCodeTool;
 
 type
 
@@ -69,13 +69,13 @@ type
   private
     fSettings: TConvertSettings;
     // List of property values which need to be adjusted.
-    //fValueTreeNodes: TList;
     fHasMissingProperties: Boolean;         // LFM file has unknown properties.
     fHasMissingObjectTypes: Boolean;        // LFM file has unknown object types.
     // References to controls in UI:
     fPropReplaceGrid: TStringGrid;
     fTypeReplaceGrid: TStringGrid;
     function ReplaceAndRemoveAll: TModalResult;
+    function ReplaceTopOffsets(aOffsetList: TList): TModalResult;
     // Fill StringGrids with missing properties and types from fLFMTree.
     procedure FillReplaceGrids;
   protected
@@ -286,6 +286,8 @@ begin
             StartPos:=ObjNode.TypeNamePosition;
             EndPos:=StartPos+Length(OldIdent);
             AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
+            IDEMessagesWindow.AddMsg(Format(
+                      'Replaced type "%s" with "%s".',[OldIdent, NewIdent]),'',-1);
             Result:=mrRetry;
           end;
         end
@@ -296,8 +298,13 @@ begin
             OldIdent:=copy(fLFMBuffer.Source,StartPos,EndPos-StartPos);
             NewIdent:=PropReplacements[OldIdent];
             // Delete the whole property line if no replacement.
-            if NewIdent='' then
+            if NewIdent='' then begin
               FindNiceNodeBounds(TheNode,StartPos,EndPos);
+              IDEMessagesWindow.AddMsg(Format('Removed property "%s".',[OldIdent]),'',-1);
+            end
+            else
+              IDEMessagesWindow.AddMsg(Format(
+                      'Replaced property "%s" with "%s".',[OldIdent, NewIdent]),'',-1);
             AddReplacement(ChgEntryRepl,StartPos,EndPos,NewIdent);
           end;
         end;
@@ -317,6 +324,34 @@ begin
     TypeReplacements.Free;
     PropReplacements.Free;
     ChgEntryRepl.Free;
+  end;
+end;
+
+function TLFMFixer.ReplaceTopOffsets(aOffsetList: TList): TModalResult;
+// Replace top coordinates of controls in visual containers.
+// Returns mrOK if no types were changed, and mrCancel if there was an error.
+var
+  TopOffset: TTopOffset;
+  Len, Offs, OldNun, i: integer;
+  OffsStr, OldText, NewText: string;
+begin
+  Result:=mrOK;
+  // Add offset to top coordinates.
+  for i := aOffsetList.Count-1 downto 0 do begin
+    TopOffset:=TTopOffset(aOffsetList[i]);
+    OffsStr:=fSettings.VisualOffsets[TopOffset.ParentType];
+    if OffsStr<>'' then begin
+      Len:=0;
+      while fLFMBuffer.Source[TopOffset.StartPos+Len] in ['-', '0'..'9'] do
+        Inc(Len);
+      OldText:=Copy(fLFMBuffer.Source, TopOffset.StartPos, Len);
+      OldNun:=StrToInt(OldText);
+      Offs:=StrToInt(OffsStr);
+      NewText:=IntToStr(OldNun+Offs);
+      fLFMBuffer.Replace(TopOffset.StartPos, Len, NewText);
+      IDEMessagesWindow.AddMsg(Format('Changed Top coord of %s from "%s" to "%s" inside %s.',
+              [TopOffset.ChildType, OldText, NewText, TopOffset.ParentType]),'',-1);
+    end;
   end;
 end;
 
@@ -377,7 +412,7 @@ begin
     LoadLFM;
     if (fSettings.AutoRemoveProperties or not fHasMissingProperties)
     and not fHasMissingObjectTypes then
-      Result:=ReplaceAndRemoveAll
+      Result:=ReplaceAndRemoveAll  // Can return mrRetry.
     else begin
       // Cursor is earlier set to HourGlass. Show normal cursor while in dialog.
       PrevCursor:=Screen.Cursor;
@@ -395,54 +430,42 @@ end;
 
 function TLFMFixer.Repair: TModalResult;
 var
-//  CurError: TLFMError;
-//  MissingObjectTypes: TStringList;  <- Remove. Must be a left-over from something.
   ConvTool: TConvDelphiCodeTool;
-//  TypeName: String;
+  ValueTreeNodes: TObjectList;
   LoopCount: integer;
 begin
   Result:=mrCancel;
-//  MissingObjectTypes:=TStringList.Create;
-//  try
-    fLFMTree:=DefaultLFMTrees.GetLFMTree(fLFMBuffer, true);
-    if not fLFMTree.ParseIfNeeded then exit;
-    // Change a type that main form inherits from to a fall-back type if needed.
-    ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
-    try
-      if not ConvTool.FixMainClassAncestor(TLFMObjectNode(fLFMTree.Root).TypeName,
-                                           fSettings.ReplaceTypes) then exit;
-      LoopCount:=0;
-      repeat
-        if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
-                                 fRootMustBeClassInIntf,fObjectsMustExists) then begin
-          Result:=mrOk;
-          exit;
-        end;
-// ToDo:    if not ConvTool.CheckTopOffsets(fLFMBuffer,fLFMTree,fValueTreeNodes) then exit;
-
-        // To be removed:  collect all missing object types
-{      CurError:=fLFMTree.FirstError;
-        while CurError<>nil do begin
-          if CurError.IsMissingObjectType then begin
-            TypeName:=(CurError.Node as TLFMObjectNode).TypeName;
-            if MissingObjectTypes.IndexOf(TypeName)<0 then
-              MissingObjectTypes.Add(TypeName);
-          end;
-          CurError:=CurError.NextError;
-        end;
-}
-        // Rename / remove properties and types interactively.
-        Result:=ShowRepairLFMWizard;
-        Inc(LoopCount);
-      until (Result in [mrOK, mrCancel]) or (LoopCount=10);
-      // Show remaining errors to user.
-      WriteLFMErrors;
-    finally
-      ConvTool.Free;
+  fLFMTree:=DefaultLFMTrees.GetLFMTree(fLFMBuffer, true);
+  if not fLFMTree.ParseIfNeeded then exit;
+  // Change a type that main form inherits from to a fall-back type if needed.
+  ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
+  ValueTreeNodes:=TObjectList.Create;
+  try
+    if not ConvTool.FixMainClassAncestor(TLFMObjectNode(fLFMTree.Root).TypeName,
+                                         fSettings.ReplaceTypes) then exit;
+    LoopCount:=0;
+    repeat
+      if CodeToolBoss.CheckLFM(fPascalBuffer,fLFMBuffer,fLFMTree,
+                               fRootMustBeClassInIntf,fObjectsMustExists) then
+        Result:=mrOk
+      else                     // Rename/remove properties and types interactively.
+        Result:=ShowRepairLFMWizard;  // Can return mrRetry.
+      Inc(LoopCount);
+    until (Result in [mrOK, mrCancel]) or (LoopCount=10);
+    // Show remaining errors to user.
+    WriteLFMErrors;
+    if Result=mrOK then begin
+      // Fix top offsets of some components in visual containers
+      if ConvTool.CheckTopOffsets(fLFMBuffer, fLFMTree,
+                                  fSettings.VisualOffsets, ValueTreeNodes) then
+        Result:=ReplaceTopOffsets(ValueTreeNodes)
+      else
+        Result:=mrCancel;
     end;
-{  finally
-    MissingObjectTypes.Free;
-  end; }
+  finally
+    ValueTreeNodes.Free;
+    ConvTool.Free;
+  end;
 end;
 
 

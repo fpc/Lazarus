@@ -115,6 +115,11 @@ begin
   RFForm:=TReplaceFuncsForm.Create(nil);
   try
     RFForm.Caption:=aTitle;
+    RFForm.Grid.Columns[0].Title.Caption:=lisCEOModeCategory;
+    RFForm.Grid.Columns[1].Title.Caption:=lisConvDelphiFunc;
+    RFForm.Grid.Columns[2].Title.Caption:=lisReplacement;
+    RFForm.Grid.Columns[3].Title.Caption:=lisPackage;
+    RFForm.Grid.Columns[4].Title.Caption:=lisUIDUnit;
     RFForm.FromFuncListToUI(aFuncsAndCateg);
     Result:=RFForm.ShowModal;
     if Result=mrOK then
