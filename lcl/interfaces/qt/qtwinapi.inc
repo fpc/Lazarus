@@ -5682,29 +5682,58 @@ var
   Widget: QWidgetH;
   AForm: TCustomForm;
 begin
+  {$note QApplication_widgetAt() is very expensive operation,
+    we must do some kind of caching here like gtk2 does.}
+  Result := 0;
   Widget := QApplication_widgetAt(Point.x, Point.y);
-  if Widget <> nil then
+  if (Widget = nil) then
+    exit;
+
+  // according to MSDN disabled widget shouldn't be in result
+  if not QWidget_isEnabled(Widget) or not QWidget_isVisible(Widget) then
+    exit;
+
+  Result := HWND(QtObjectFromWidgetH(Widget));
+
+  // maybe we are viewport of native QAbstractScrollArea (eg. QTextEdit).
+  if (Result = 0) then
   begin
-    Result := HWND(QtObjectFromWidgetH(Widget));
-    if (Result <> 0) and not
-     (TQtWidget(Result) is TQtMainWindow) and
-     (TQtWidget(Result).LCLObject <> nil) then
+    if QWidget_parentWidget(Widget) <> nil then
     begin
-      AForm := GetParentForm(TQtWidget(Result).LCLObject);
-      if AForm <> nil then
-        Result := AForm.Handle;
-    end else
-    begin
-      Widget := QApplication_topLevelAt(Point.x, Point.y);
-      if Widget <> nil then
-        Result := HWND(QtObjectFromWidgetH(Widget))
-      else
-        Result := 0;
+      Widget := QWidget_parentWidget(Widget);
+      Result := HWND(QtObjectFromWidgetH(Widget));
     end;
+  end;
+
+  if (Result <> 0) and
+    not (TQtWidget(Result) is TQtMainWindow) then
+  begin
+    // just in case we are an orphan
+    if TQtWidget(Result).LCLObject = nil then
+    begin
+      while Widget <> nil do
+      begin
+        Widget := QWidget_parentWidget(Widget);
+        if Widget <> nil then
+        begin
+          Result := HWND(QtObjectFromWidgetH(Widget));
+          if (Result <> 0) and (TQtWidget(Result).LCLObject <> nil) then
+            break;
+        end;
+      end;
+    end;
+
+    //if we are TQtViewPort -> return correct handle -> TQtCustomControl !
+    if (Result <> 0) and (TQtWidget(Result) is TQtViewPort) then
+    begin
+      Widget := QWidget_parentWidget(TQtWidget(Result).Widget);
+      Result := HWND(QtObjectFromWidgetH(Widget));
+    end;
+
   end else
   begin
     Widget := QApplication_topLevelAt(Point.x, Point.y);
-    if Widget <> nil then
+    if (Widget <> nil) and QWidget_isEnabled(Widget) then
       Result := HWND(QtObjectFromWidgetH(Widget))
     else
       Result := 0;
