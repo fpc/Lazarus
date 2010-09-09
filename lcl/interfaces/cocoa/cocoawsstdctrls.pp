@@ -54,41 +54,29 @@ type
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
-  { TCocoaWSGroupBox }
-
-  TCocoaWSGroupBox = class(TWSGroupBox)
-  private
-  protected
-  public
-  end;
-
   { TCocoaWSCustomComboBox }
 
   TCocoaWSCustomComboBox = class(TWSCustomComboBox)
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     {class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
-    class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;}
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
-    class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
+    {class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
 
     class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
-    class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
+    class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;}
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
-    class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
-    class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
+    {class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
+    class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;}
     class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
-    }
+    class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); override;
+
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     {class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;}
-  end;
 
-  { TCocoaWSComboBox }
-
-  TCocoaWSComboBox = class(TWSComboBox)
-  private
-  protected
-  public
+    class function GetItemHeight(const ACustomComboBox: TCustomComboBox): Integer; override;
+    class procedure SetItemHeight(const ACustomComboBox: TCustomComboBox; const AItemHeight: Integer); override;
   end;
 
   { TCocoaWSCustomListBox }
@@ -112,14 +100,6 @@ type
     class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;}
-  end;
-
-  { TCocoaWSListBox }
-
-  TCocoaWSListBox = class(TWSListBox)
-  private
-  protected
-  public
   end;
 
   { TCocoaWSCustomEdit }
@@ -157,43 +137,6 @@ type
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
   end;
 
-  { TCocoaWSEdit }
-
-  TCocoaWSEdit = class(TWSEdit)
-  private
-  protected
-  public
-  end;
-
-  { TCocoaWSMemo }
-
-  TCocoaWSMemo = class(TWSMemo)
-  private
-  protected
-  public
-  end;
-
-  { TCocoaWSCustomLabel }
-
-  {TCocoaWSCustomLabel = class(TWSCustomLabel)
-  private
-  protected
-  public
-  end;}
-
-  { TCocoaWSLabel }
-
-  {TCocoaWSLabel = class(TWSLabel)
-  private
-  protected
-  public
-  end;}
-
-  { TCocoaWSButtonControl }
-
-  TCocoaWSButtonControl = class(TWSButtonControl)
-  end;
-
   { TCocoaWSButton }
 
   TCocoaWSButton = class(TWSButton)
@@ -209,14 +152,6 @@ type
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
-  end;
-
-  { TCocoaWSCheckBox }
-
-  TCocoaWSCheckBox = class(TWSCheckBox)
-  private
-  protected
-  public
   end;
 
   { TCocoaWSToggleBox }
@@ -241,14 +176,6 @@ type
   public
 //    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 //    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
-  end;
-
-  { TCocoaWSStaticText }
-
-  TCocoaWSStaticText = class(TWSStaticText)
-  private
-  protected
-  public
   end;
 
 function AllocTextView(ATarget: TWinControl; const AParams: TCreateParams; fieldEditor: Boolean): NSTextView;
@@ -659,17 +586,72 @@ class function TCocoaWSCustomComboBox.CreateHandle(const AWinControl:TWinControl
   const AParams:TCreateParams):TLCLIntfHandle;
 var
   cmb : TCocoaComboBox;
+  ns  : NSRect;
 begin
   cmb := NSView(TCocoaComboBox.alloc).lclInitWithCreateParams(AParams);
+  if not Assigned(cmb) then begin
+    Result:=0;
+    Exit;
+  end;
+
   cmb.callback:=TLCLCommonCallback.Create(cmb, AWinControl);
+  cmb.list:=TCocoaComboBoxList.Create(cmb);
+  cmb.setUsesDataSource(true);
+  cmb.setDataSource(cmb);
   Result:=TLCLIntfHandle(cmb);
+  //todo: 26 pixels is the height of 'normal' combobox. The value is taken from the Interface Builder!
+  //      use the correct way to set the size constraints
+  AWinControl.Constraints.SetInterfaceConstraints(0,26,0,26);
 end;
 
-class function TCocoaWSCustomComboBox.GetItems(const ACustomComboBox:
-  TCustomComboBox):TStrings;
+class function TCocoaWSCustomComboBox.GetItemIndex(const ACustomComboBox:
+  TCustomComboBox):integer;
 begin
-  //todo: implement cocoa string items
-  Result:=TStringList.Create;
+  if Assigned(ACustomComboBox) and (ACustomComboBox.Handle<>0) then
+    Result:=TCocoaComboBox(ACustomComboBox.Handle).indexOfSelectedItem;
+end;
+
+class procedure TCocoaWSCustomComboBox.SetItemIndex(const ACustomComboBox:
+  TCustomComboBox;NewIndex:integer);
+begin
+  if Assigned(ACustomComboBox) and (ACustomComboBox.Handle<>0) then
+    TCocoaComboBox(ACustomComboBox.Handle).selectItemAtIndex(NewIndex);
+end;
+
+class procedure TCocoaWSCustomComboBox.SetReadOnly(const ACustomComboBox:
+  TCustomComboBox;NewReadOnly:boolean);
+begin
+  if Assigned(ACustomComboBox) and (ACustomComboBox.Handle<>0) then begin
+    TCocoaComboBox(ACustomComboBox.Handle).setEditable(not NewReadOnly);
+    TCocoaComboBox(ACustomComboBox.Handle).setSelectable(True);
+  end;
+end;
+
+class procedure TCocoaWSCustomComboBox.SetDropDownCount(const ACustomComboBox:
+  TCustomComboBox;NewCount:Integer);
+begin
+  if Assigned(ACustomComboBox) and (ACustomComboBox.Handle<>0) then
+    TCocoaComboBox(ACustomComboBox.Handle).setNumberOfVisibleItems(NewCount);
+end;
+
+class function TCocoaWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox):TStrings;
+begin
+  if Assigned(ACustomComboBox) and (ACustomComboBox.Handle<>0) then
+    Result:=TCocoaComboBox(ACustomComboBox.Handle).list;
+end;
+
+class function TCocoaWSCustomComboBox.GetItemHeight(const ACustomComboBox:
+  TCustomComboBox):Integer;
+begin
+  if Assigned(ACustomComboBox) and (ACustomComboBox.Handle<>0) then
+    Result:=Round(TCocoaComboBox(ACustomComboBox.Handle).itemHeight);
+end;
+
+class procedure TCocoaWSCustomComboBox.SetItemHeight(const ACustomComboBox:
+  TCustomComboBox;const AItemHeight:Integer);
+begin
+  if Assigned(ACustomComboBox) and (ACustomComboBox.Handle<>0) then
+    TCocoaComboBox(ACustomComboBox.Handle).setItemHeight(AItemHeight);
 end;
 
 { TCocoaWSToggleBox }

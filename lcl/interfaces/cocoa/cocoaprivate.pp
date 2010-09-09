@@ -176,10 +176,31 @@ type
     callback  : TCommonCallback;
   end;
 
+
+  TCocoaComboBox = objcclass;
+
+  { TCocoaComboBoxList }
+
+  TCocoaComboBoxList = class(TStringList)
+  private
+    fOwner  : TCocoaComboBox;
+  protected
+    procedure Changed; override;
+  public
+    constructor Create(AOwner: TCocoaComboBox);
+    property Owner: TCocoaComboBox read fOwner;
+  end;
+
   { TCocoaComboBox }
 
   TCocoaComboBox = objcclass(NSComboBox)
     callback  : TCommonCallback;
+    list      : TCocoaComboBoxList;
+    function comboBox_objectValueForItemAtIndex_(combo: TCocoaComboBox; row: NSInteger): id;
+      message 'comboBox:objectValueForItemAtIndex:';
+    function numberOfItemsInComboBox(combo: TCocoaComboBox): NSInteger;
+      message 'numberOfItemsInComboBox:';
+    procedure dealloc; override;
   end;
 
   { TCocoaScrollBar }
@@ -634,6 +655,44 @@ constructor TCocoaStringList.Create(AOwner:TCocoaListView);
 begin
   Owner:=AOwner;
   inherited Create;
+end;
+
+{ TCocoaComboBoxList }
+
+procedure TCocoaComboBoxList.Changed;
+begin
+  fOwner.reloadData;
+  inherited Changed;
+end;
+
+constructor TCocoaComboBoxList.Create(AOwner:TCocoaComboBox);
+begin
+  fOwner:=AOwner;
+end;
+
+{ TCocoaComboBox }
+
+function TCocoaComboBox.comboBox_objectValueForItemAtIndex_(combo:TCocoaComboBox;
+  row: NSInteger):id;
+begin
+  if not Assigned(list) or (row<0) or (row>=list.Count)
+    then Result:=nil
+    else Result:=NSStringUtf8(list[row]);
+end;
+
+function TCocoaComboBox.numberOfItemsInComboBox(combo:TCocoaComboBox):NSInteger;
+begin
+  if not Assigned(list) then Result:=0
+  else Result:=list.Count;
+end;
+
+procedure TCocoaComboBox.dealloc;
+begin
+  if Assigned(list) then begin
+    list.Free;
+    list:=nil;
+  end;
+  inherited release;
 end;
 
 end.
