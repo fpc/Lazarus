@@ -852,6 +852,7 @@ type
     procedure DrawFillRect(aCanvas:TCanvas; R:TRect);// Use FillRect after calc the new rect depened on Right To Left
     procedure DrawCell(aCol,aRow:Integer; aRect:TRect; aState:TGridDrawState); virtual;
     procedure DrawCellGrid(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); virtual;
+    procedure DrawTextInCell(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); virtual;
     procedure DrawCellText(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState; aText: String); virtual;
     procedure DrawGridCheckboxBitmaps(const aCol,aRow: Integer; const aRect: TRect;
                                         const aState: TCheckboxState); virtual;
@@ -1438,7 +1439,7 @@ type
       procedure DoCopyToClipboard; override;
       procedure DoCutToClipboard; override;
       procedure DoPasteFromClipboard; override;
-      procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
+      procedure DrawTextInCell(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); override;
       procedure DrawCellAutonumbering(aCol,aRow: Integer; aRect: TRect; const aValue: string); override;
       //procedure EditordoGetValue; override;
       //procedure EditordoSetValue; override;
@@ -3778,6 +3779,12 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TCustomGrid.DrawTextInCell(aCol, aRow: Integer; aRect: TRect;
+  aState: TGridDrawState);
+begin
+  //
 end;
 
 procedure TCustomGrid.DrawCellText(aCol, aRow: Integer; aRect: TRect;
@@ -8671,7 +8678,7 @@ begin
   if Assigned(OnDrawCell) and not(CsDesigning in ComponentState) then begin
     PrepareCanvas(aCol, aRow, aState);
     if DefaultDrawing then
-      DrawFillRect(Canvas, aRect);
+      DefaultDrawCell(aCol, aRow, aRect, aState);
     OnDrawCell(Self,aCol,aRow,aRect,aState)
   end else begin
     OldDefaultDrawing:=FDefaultDrawing;
@@ -8995,15 +9002,19 @@ begin
   if CellNeedsCheckboxBitmaps(aCol,aRow) then
     DrawCellCheckboxBitmaps(aCol,aRow,aRect)
   else
-  if (aRow>=FixedRows) and IsCellButtonColumn(Point(aCol,aRow)) then
-    DrawCellButtonColumn(aCol,aRow,aRect,aState);
+  if IsCellButtonColumn(Point(aCol,aRow)) then
+    DrawCellButtonColumn(aCol,aRow,aRect,aState)
+  else
+  if (aRow>=FixedRows) then begin
 
-  if FTitleStyle<>tsNative then
+    if (aCol=0) and (goFixedRowNumbering in Options) and (FixedCols >= 1) then
+      DrawCellAutonumbering(aCol, aRow, aRect, IntToStr(aRow-FixedRows+1));
+
+    DrawTextInCell(aCol,aRow, aRect,aState);
+  end
+  else
+  if (FTitleStyle<>tsNative) then
     DrawColumnText(aCol,aRow,aRect,aState);
-
-  if (goFixedRowNumbering in Options) and (FixedCols >= 1) and
-     (aCol = 0) and (aRow >= FixedRows) then
-    DrawCellAutonumbering(aCol, aRow, aRect, IntToStr(aRow-FixedRows+1));
 end;
 
 { TCustomStringGrid }
@@ -9372,18 +9383,10 @@ begin
   end;
 end;
 
-procedure TCustomStringGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
+procedure TCustomStringGrid.DrawTextInCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
-  inherited DrawCell(aCol, aRow, aRect, aState);
-  if DefaultDrawing then begin
-    if Columns.Enabled and (gdFixed in aState) and
-      (aCol>=FixedCols) and (aRow=0) then
-      //inherited already did
-    else
-    if not CellNeedsCheckboxBitmaps(aCol, aRow) then
-      DrawCellText(aCol, aRow, aRect, aState, Cells[aCol,aRow]);
-  end;
+  DrawCellText(aCol, aRow, aRect, aState, Cells[aCol,aRow]);
 end;
 
 procedure TCustomStringGrid.DrawCellAutonumbering(aCol, aRow: Integer;
