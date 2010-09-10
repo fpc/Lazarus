@@ -493,8 +493,9 @@ begin
     exit;
   if (csDesigning in AForm.ComponentState) then
     exit;
-  gtk_window_set_keep_above(PGtkWindow(AForm.Handle),
-    GBoolean(AFormStyle in fsAllStayOnTop));
+  if GTK_IS_WINDOW(PGtkWindow(AForm.Handle)) then
+    gtk_window_set_keep_above(PGtkWindow(AForm.Handle),
+      GBoolean(AFormStyle in fsAllStayOnTop));
 end;
 
 {class function TGtk2WSCustomForm.GetDefaultClientRect(
@@ -545,9 +546,10 @@ begin
   AForm := TCustomForm(AWinControl);
   if not (csDesigning in AForm.ComponentState) then
   begin
-    if AForm.HandleObjectShouldBeVisible then
-      gtk_window_set_keep_above(PGtkWindow(AForm.Handle),
-        GBoolean(AForm.FormStyle in fsAllStayOnTop))
+    if AForm.HandleObjectShouldBeVisible and
+      GTK_IS_WINDOW(PGtkWindow(AForm.Handle)) then
+        gtk_window_set_keep_above(PGtkWindow(AForm.Handle),
+          GBoolean(AForm.FormStyle in fsAllStayOnTop))
     else
     if (AForm.FormStyle in fsAllStayOnTop) and
       not (csDestroying in AWinControl.ComponentState) then
