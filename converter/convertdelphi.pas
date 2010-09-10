@@ -744,7 +744,7 @@ var
       exit;
     end;
     // Remove Windows unit from the list if target is "Windows only".
-    if fSettings.Target=ctLazarusWin then begin
+    if (fSettings.Target=ctLazarusWin) and Assigned(fMissingUnits) then begin
       for i:=fMissingUnits.Count-1 downto 0 do
         if LowerCase(fMissingUnits[i])='windows' then begin
           fMissingUnits.Delete(i);
