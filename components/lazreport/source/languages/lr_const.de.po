@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
-"PO-Revision-Date: 2010-03-28 20:36+0100\n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"PO-Revision-Date: 2010-09-05 14:15+0100\n"
 "Project-Id-Version: lazreport\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1421,7 +1421,7 @@ msgstr "Objektinspektor"
 
 #: lr_const.sobjectnotfound
 msgid "Object \"%s\" not found"
-msgstr ""
+msgstr "Objekt \"%s\" nicht gefunden"
 
 #: lr_const.sok
 msgid "Ok"

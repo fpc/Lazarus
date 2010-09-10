@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -163,7 +163,7 @@ msgstr "Quelldatei gehört nicht zum Projekt. Fügen Sie sie zunächst hinzu."
 
 #: svnclasses.rssvnsettings
 msgid "SVN settings"
-msgstr ""
+msgstr "SVN-Einstellungen"
 
 #: svnclasses.rssvntools
 msgid "SVN tools"
