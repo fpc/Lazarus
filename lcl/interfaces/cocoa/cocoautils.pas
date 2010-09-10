@@ -9,6 +9,21 @@ uses
   MacOSAll, CocoaAll,
   Types, LCLType;
 
+type
+  { NSObjectExtensionExternal }
+
+  NSObjectExtensionExternal = objccategory(NSObject)
+    //the method is available at NSObject, but not declared in NSObject,
+    // for some reason
+    function className: NSString; message 'className';
+  end; external;
+
+  { NSLCLDebugExtension }
+
+  NSLCLDebugExtension = objccategory(NSObject)
+    function lclClassName: shortstring; message 'lclClassName';
+  end;
+
 const
   NSNullRect : NSRect = (origin:(x:0; y:0); size:(width:0; height:0));
 
@@ -228,6 +243,13 @@ begin
     Result:='';
 end;
 
+
+{ NSLCLDebugExtension }
+
+function NSLCLDebugExtension.lclClassName: shortstring;
+begin
+  Result:=NSStringToString(self.className);
+end;
 
 initialization
 

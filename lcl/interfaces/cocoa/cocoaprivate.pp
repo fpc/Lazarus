@@ -107,6 +107,20 @@ type
     procedure Resize; virtual; abstract;
   end;
 
+  { TCocoaMenu }
+
+  TCocoaMenu = objcclass(NSMenu)
+  public
+    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
+  end;
+
+  { TCocoaMenuItem }
+
+  TCocoaMenuItem = objcclass(NSMenuItem)
+  public
+    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
+  end;
+
   { TCocoaButton }
 
   TCocoaButton = objcclass(NSButton)
@@ -693,6 +707,20 @@ begin
     list:=nil;
   end;
   inherited release;
+end;
+
+{ TCocoaMenu }
+
+procedure TCocoaMenu.lclItemSelected(sender:id);
+begin
+
+end;
+
+{ TCocoaMenuITem }
+
+procedure TCocoaMenuItem.lclItemSelected(sender:id);
+begin
+
 end;
 
 end.

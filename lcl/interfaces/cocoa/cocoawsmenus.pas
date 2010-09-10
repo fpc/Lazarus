@@ -23,11 +23,13 @@
 unit CocoaWSMenus;
 
 {$mode objfpc}{$H+}
+{$modeswitch objectivec1}
 
 interface
 
 uses
   // Libs
+  CocoaAll,
 {$ifdef ver2_2_0}
   FPCMacOSAll,
 {$else}
@@ -38,7 +40,7 @@ uses
   // Widgetset
   WSMenus, WSLCLClasses,
   // LCL Cocoa
-  CocoaPrivate;
+  CocoaPrivate, CocoaWSCommon, CocoaUtils;
 
 type
 
@@ -62,7 +64,7 @@ type
 
   TCocoaWSMenu = class(TWSMenu)
   published
-    class function  CreateHandle(const AMenu: TMenu): HMENU; override;
+    class function CreateHandle(const AMenu: TMenu): HMENU; override;
   end;
 
   { TCocoaWSMainMenu }
@@ -83,6 +85,33 @@ type
 
 implementation
 
+// used from the MenuMadness example
+function NSMenuCheckmark: NSImage;
+begin
+  Result:=NSImage.imageNamed(NSString.alloc.initWithCString('NSMenuCheckmark'));
+end;
+
+function NSMenuRadio: NSImage;
+begin
+  Result:=NSImage.imageNamed(NSString.alloc.initWithCString('NSMenuRadio'))
+end;
+
+function isSeparator(const ACaption: AnsiString): Boolean;
+begin
+  Result:=ACaption='-';
+end;
+
+function MenuCaption(const ACaption: AnsiString): AnsiString;
+var
+  i : Integer;
+begin
+  i:=Pos('&', ACaption);
+  if i>0 then
+    Result:=Copy(ACaption, 1, i-1)+Copy(ACaption,i+1, length(ACaption))
+  else
+    Result:=ACaption;
+end;
+
 { TCocoaWSMenu }
 
 {------------------------------------------------------------------------------
@@ -94,8 +123,7 @@ implementation
  ------------------------------------------------------------------------------}
 class function TCocoaWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 begin
-//  Result := HMENU(TCocoaMenu.Create(AMenu.Items, True));
-  Result:=0;
+  Result:=HMENU(TCocoaMenu.alloc.initWithTitle(NSString.alloc.initWithCString('hello world')));
 end;
 
 { TCocoaWSMenuItem }
@@ -107,8 +135,25 @@ end;
   Attaches menu item to its parent menu in Cocoa interface
  ------------------------------------------------------------------------------}
 class procedure TCocoaWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
+var
+  ParObj  : NSObject;
+  Parent  : TCocoaMenu;
+  item    : NSMenuItem;
 begin
+  if not Assigned(AMenuItem) or (AMenuItem.Handle=0) or not Assigned(AMenuItem.Parent) or (AMenuItem.Parent.Handle=0) then Exit;
+  ParObj:=NSObject(AMenuItem.Parent.Handle);
 
+  if ParObj.isKindOfClass_(NSMenuItem) then begin
+    item:=NSMenuItem(AMenuItem.Handle);
+    if not item.hasSubmenu then item.setSubmenu(TCocoaMenu.alloc.initWithTitle(NSString.alloc.init));
+    Parent:=TCocoaMenu(item.submenu);
+  end else if ParObj.isKindOfClass_(NSMenu) then
+    Parent:=TCocoaMenu(ParObj)
+  else
+    Exit;
+
+  item:=NSMenuItem(AMenuItem.Handle);
+  Parent.insertItem_atIndex(item, Parent.itemArray.count);
 end;
 
 {------------------------------------------------------------------------------
@@ -119,9 +164,22 @@ end;
   Creates new menu item in Cocoa interface
  ------------------------------------------------------------------------------}
 class function TCocoaWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
+var
+  item    : NSMenuItem;
 begin
-//  Result := HMENU(TCocoaMenu.Create(AMenuItem));
-  Result:=0;
+  if not Assigned(AMenuItem) then Exit;
+
+  if AMenuItem.Caption='-' then
+    item:=NSMenuItem.separatorItem
+  else begin
+    item:=TCocoaMenuItem.alloc.initWithTitle_action_keyEquivalent(
+      NSStringUtf8(AMenuItem.Caption),
+      objcselector('lclItemSelected:'), NSString.alloc.init);
+    item.setTarget(item);
+    item.setEnabled(AMenuItem.Enabled);
+  end;
+
+  Result:=HMENU(item);
 end;
 
 {------------------------------------------------------------------------------
@@ -142,10 +200,10 @@ end;
 
   Sets the caption of menu item in Cocoa interface
  ------------------------------------------------------------------------------}
-class procedure TCocoaWSMenuItem.SetCaption(const AMenuItem: TMenuItem;
-  const ACaption: string);
+class procedure TCocoaWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
 begin
-
+  if not Assigned(AMenuItem) or (AMenuItem.Handle=0) then Exit;
+  NSMenuItem(AMenuItem.Handle).setTitle( NSStringUtf8(ACaption) );
 end;
 
 {------------------------------------------------------------------------------
@@ -172,7 +230,8 @@ end;
 class procedure TCocoaWSMenuItem.SetVisible(const AMenuItem: TMenuItem;
   const Visible: boolean);
 begin
-
+  if not Assigned(AMenuItem) or (AMenuItem.Handle=0) then Exit;
+  NSMenuItem(AMenuItem.Handle).setHidden( not Visible );
 end;
 
 {------------------------------------------------------------------------------
@@ -185,8 +244,13 @@ end;
  ------------------------------------------------------------------------------}
 class function TCocoaWSMenuItem.SetCheck(const AMenuItem: TMenuItem;
   const Checked: boolean): boolean;
+const
+  menustate : array [Boolean] of NSInteger = (NSOffState, NSOnState);
 begin
-  Result:=false;
+  Result:=Assigned(AMenuItem) and (AMenuItem.Handle<>0);
+  if not Result then Exit;
+  NSMenuItem(AMenuItem.Handle).setOnStateImage( NSMenuCheckmark );
+  NSMenuItem(AMenuItem.Handle).setState( menustate[Checked] );
 end;
 
 {------------------------------------------------------------------------------
@@ -200,7 +264,9 @@ end;
 class function TCocoaWSMenuItem.SetEnable(const AMenuItem: TMenuItem;
   const Enabled: boolean): boolean;
 begin
-  Result:=false;
+  Result:=Assigned(AMenuItem) and (AMenuItem.Handle<>0);
+  if not Result then Exit;
+  NSMenuItem(AMenuItem.Handle).setEnabled( Enabled );
 end;
 
 {------------------------------------------------------------------------------
@@ -213,8 +279,14 @@ end;
  ------------------------------------------------------------------------------}
 class function TCocoaWSMenuItem.SetRadioItem(const AMenuItem: TMenuItem;
   const RadioItem: boolean): boolean;
+const
+  menustate : array [Boolean] of NSInteger = (NSOffState, NSOnState);
 begin
-  Result:=false;
+  Result:=Assigned(AMenuItem) and (AMenuItem.Handle<>0);
+  if not Result then Exit;
+  //todo: disable relative radio items
+  NSMenuItem(AMenuItem.Handle).setOnStateImage( NSMenuRadio );
+  NSMenuItem(AMenuItem.Handle).setState( menustate[RadioItem] );
 end;
 
 { TCocoaWSPopupMenu }
@@ -226,9 +298,18 @@ end;
 
   Popups menu in Cocoa interface
  ------------------------------------------------------------------------------}
-class procedure TCocoaWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
-  Y: integer);
+class procedure TCocoaWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
+var
+  w : NSWindow;
 begin
+  // todo: there's no way to control X,Y coordinates of the Popup menu in the OSX
+  // prior to 10.6. Check the if there's the method and use it, if available
+  if Assigned(APopupMenu) and (APopupMenu.Handle<>0) then begin
+    w:=NSApp.keyWindow;
+    if Assigned(w) then
+      NSMenu.popUpContextMenu_withEvent_forView( TCocoaMenu(APopupMenu.Handle),
+        NSApp.currentEvent, NSView(w.contentView));
+  end;
 end;
 
 end.

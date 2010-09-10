@@ -477,12 +477,14 @@ end;
 // Menus
 function RegisterMenuItem: Boolean; alias : 'WSRegisterMenuItem';
 begin
-  Result := False;
+  RegisterWSComponent(TMenuItem, TCocoaWSMenuItem);
+  Result := True;
 end;
 
 function RegisterMenu: Boolean; alias : 'WSRegisterMenu';
 begin
-  Result := False;
+  RegisterWSComponent(TMenu, TCocoaWSMenu);
+  Result := True;
 end;
 
 function RegisterMainMenu: Boolean; alias : 'WSRegisterMainMenu';
@@ -492,7 +494,8 @@ end;
 
 function RegisterPopupMenu: Boolean; alias : 'WSRegisterPopupMenu';
 begin
-  Result := False;
+  RegisterWSComponent(TPopupMenu, TCocoaWSPopupMenu);
+  Result := True;
 end;
 
 function RegisterPairSplitterSide: Boolean; alias : 'WSRegisterPairSplitterSide';
