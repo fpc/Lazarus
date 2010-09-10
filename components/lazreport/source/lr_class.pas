@@ -9463,8 +9463,12 @@ begin
     else if (DataSet = nil) or (Field = nil) then
     begin
       s1 := Trim(string(p2));
-      if s1 = '' then
-        s1 := CurBand.View.Name;
+      if s1 = '' then begin
+        if (dk=dkCount) and (p1+''<>'') then
+          s1 := p1
+        else
+          s1 := CurBand.View.Name;
+      end;
       if dk <> dkCount then
         s2 := Trim(string(p3)) else
         s2 := Trim(string(p2));
