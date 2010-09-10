@@ -1,10 +1,11 @@
 object frmMain: TfrmMain
-  Left = 157
+  Left = 98
   Height = 545
-  Top = 100
+  Top = 111
   Width = 828
+  ActiveControl = Panel1
   Caption = 'LazReport Test Suite'
-  ClientHeight = 525
+  ClientHeight = 522
   ClientWidth = 828
   Menu = MainMenu1
   OnCreate = frmMainCreate
@@ -14,89 +15,31 @@ object frmMain: TfrmMain
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = grid
     Left = 6
-    Height = 14
-    Top = 44
-    Width = 29
+    Height = 16
+    Top = 103
+    Width = 35
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Index'
     ParentColor = False
   end
   object lblExpr: TLabel
-    AnchorSideRight.Control = btnComposite
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = grid
-    Left = 602
-    Height = 14
-    Top = 44
-    Width = 53
+    Left = 752
+    Height = 16
+    Top = 103
+    Width = 70
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Expression'
     ParentColor = False
   end
-  object btnCallEditor: TButton
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = btnOpenReport
-    Left = 287
-    Height = 23
-    Top = 6
-    Width = 83
-    Action = accNewReport
-    Anchors = [akTop, akRight]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    TabOrder = 0
-  end
-  object grid: TDBGrid
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = btnComposite
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideBottom.Control = sbar
-    Left = 0
-    Height = 438
-    Top = 64
-    Width = 828
-    Align = alBottom
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    Color = clWhite
-    Columns = <>
-    DataSource = srcDetail
-    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
-    TabOrder = 5
-    OnTitleClick = gridTitleClick
-  end
-  object btnPrintGrid: TButton
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 752
-    Height = 23
-    Top = 6
-    Width = 70
-    Action = accPrintGrid
-    Anchors = [akTop, akRight]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    TabOrder = 1
-  end
-  object btnPreviewReport: TButton
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = btnPrintReport
-    Left = 556
-    Height = 23
-    Top = 6
-    Width = 100
-    Action = accPreviewReport
-    Anchors = [akTop, akRight]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    TabOrder = 2
-  end
   object sbar: TStatusBar
     Left = 0
-    Height = 23
-    Top = 502
+    Height = 17
+    Top = 505
     Width = 828
     Panels = <    
       item
@@ -104,104 +47,181 @@ object frmMain: TfrmMain
       end>
     SimplePanel = False
   end
-  object btnEditReport: TButton
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = btnPreviewReport
-    Left = 470
-    Height = 23
-    Top = 6
-    Width = 80
-    Action = accEditReport
-    Anchors = [akTop, akRight]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    TabOrder = 3
-  end
-  object btnPrintReport: TButton
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = btnPrintGrid
-    Left = 662
-    Height = 23
-    Top = 6
-    Width = 84
-    Action = accPrintReport
-    Anchors = [akTop, akRight]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    TabOrder = 4
-  end
-  object btnOpenReport: TButton
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = btnEditReport
-    Left = 376
-    Height = 23
-    Top = 6
-    Width = 88
-    Action = accOpenReport
-    Anchors = [akTop, akRight]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    TabOrder = 6
-  end
   object comboIndex: TComboBox
     AnchorSideLeft.Control = lblIndex
     AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Panel1
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = lblExpr
     AnchorSideBottom.Control = grid
-    Left = 41
-    Height = 21
-    Top = 37
-    Width = 555
-    Anchors = [akLeft, akRight, akBottom]
+    Left = 47
+    Height = 29
+    Top = 90
+    Width = 699
+    Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
-    ItemHeight = 13
+    ItemHeight = 0
     OnSelect = comboIndexSelect
-    TabOrder = 8
+    TabOrder = 2
   end
-  object btnImageList: TButton
-    AnchorSideTop.Control = btnPrintGrid
+  object mastergrid: TDBGrid
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = comboIndex
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = grid
+    AnchorSideBottom.Control = sbar
+    Left = 0
+    Height = 380
+    Top = 125
+    Width = 204
+    Anchors = [akTop, akLeft, akBottom]
+    Color = clMoneyGreen
+    Columns = <>
+    DataSource = srcMaster
+    TabOrder = 3
+    Visible = False
+  end
+  object grid: TDBGrid
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = comboIndex
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 743
-    Height = 23
-    Top = 35
-    Width = 79
-    Action = accThumbnails
-    Anchors = [akTop, akRight]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    TabOrder = 9
+    AnchorSideBottom.Control = sbar
+    Left = 0
+    Height = 380
+    Top = 125
+    Width = 828
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Color = clWhite
+    Columns = <>
+    DataSource = srcDetail
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+    TabOrder = 0
+    OnTitleClick = gridTitleClick
   end
-  object btnComposite: TButton
-    AnchorSideTop.Control = btnPrintReport
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = btnImageList
-    Left = 661
-    Height = 23
-    Top = 35
-    Width = 76
-    Action = accComposite
-    Anchors = [akTop, akRight]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    TabOrder = 10
-  end
-  object btnCustomPreview: TButton
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = btnCallEditor
-    Left = 178
-    Height = 23
-    Top = 6
-    Width = 103
-    Action = accCustomPreview
-    Anchors = [akTop, akRight]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    TabOrder = 11
+  object Panel1: TPanel
+    Left = 0
+    Height = 84
+    Top = 0
+    Width = 828
+    Align = alTop
+    BevelOuter = bvNone
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 5
+    ClientHeight = 84
+    ClientWidth = 828
+    TabOrder = 4
+    object btnNewReport: TButton
+      Left = 6
+      Height = 33
+      Top = 6
+      Width = 169
+      Action = accNewReport
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 0
+    end
+    object btnOpenReport: TButton
+      Left = 181
+      Height = 33
+      Top = 6
+      Width = 146
+      Action = accOpenReport
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 2
+    end
+    object btnEditReport: TButton
+      Left = 333
+      Height = 33
+      Top = 6
+      Width = 136
+      Action = accEditReport
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 3
+    end
+    object btnPreviewReport: TButton
+      Left = 475
+      Height = 33
+      Top = 6
+      Width = 160
+      Action = accPreviewReport
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 4
+    end
+    object btnPrintReport: TButton
+      Left = 641
+      Height = 33
+      Top = 6
+      Width = 181
+      Action = accPrintReport
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 5
+    end
+    object btnCustomPreview: TButton
+      Left = 6
+      Height = 33
+      Top = 45
+      Width = 169
+      Action = accCustomPreview
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 1
+    end
+    object btnPrintGrid: TButton
+      AnchorSideRight.Side = asrBottom
+      Left = 181
+      Height = 33
+      Top = 45
+      Width = 146
+      Action = accPrintGrid
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 6
+    end
+    object btnComposite: TButton
+      AnchorSideTop.Side = asrBottom
+      Left = 333
+      Height = 33
+      Top = 45
+      Width = 136
+      Action = accComposite
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 8
+    end
+    object btnImageList: TButton
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      Left = 475
+      Height = 33
+      Top = 45
+      Width = 160
+      Action = accThumbnails
+      AutoSize = True
+      BorderSpacing.Around = 6
+      TabOrder = 7
+    end
+    object btnMasterDetail: TToggleBox
+      Left = 641
+      Height = 33
+      Top = 45
+      Width = 181
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Master-Detail Test'
+      OnClick = btnMasterDetailClick
+      TabOrder = 9
+    end
   end
   object TheReport: TfrReport
-    Dataset = frDBDataSet1
+    Dataset = frDbDetail
     InitialZoom = pzDefault
     Options = []
     PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
@@ -369,7 +389,7 @@ object frmMain: TfrmMain
     left = 184
     top = 248
   end
-  object frDBDataSet1: TfrDBDataSet
+  object frDbDetail: TfrDBDataSet
     DataSet = Detail
     left = 112
     top = 192
@@ -446,8 +466,8 @@ object frmMain: TfrmMain
   object ApplicationProperties1: TApplicationProperties
     HintPause = 10
     OnShowHint = ApplicationProperties1ShowHint
-    left = 520
-    top = 152
+    left = 500
+    top = 160
   end
   object ActionList1: TActionList
     left = 48
@@ -526,8 +546,8 @@ object frmMain: TfrmMain
   object OpenDialog1: TOpenDialog
     Filter = 'LazReport Files|*.lrf|FreeReport Files|*.frf|All Files|*.*'
     FilterIndex = 0
-    left = 520
-    top = 88
+    left = 572
+    top = 160
   end
   object frCSVExport1: TfrCSVExport
     left = 352
@@ -574,16 +594,28 @@ object frmMain: TfrmMain
     top = 72
   end
   object LookCompanies: TDbf
-    IndexDefs = <    
-      item
-        IndexFile = 'BYCOMPANY'
-        SortField = 'COMPANY'
-        Options = [ixExpression]
-      end>
+    IndexDefs = <>
     TableName = 'companies.dbf'
     TableLevel = 3
     FilterOptions = []
     left = 184
     top = 128
+  end
+  object master: TDbf
+    IndexDefs = <>
+    TableLevel = 4
+    FilterOptions = []
+    left = 184
+    top = 312
+  end
+  object srcMaster: TDatasource
+    DataSet = master
+    left = 184
+    top = 368
+  end
+  object frDbMaster: TfrDBDataSet
+    DataSet = master
+    left = 112
+    top = 312
   end
 end

@@ -80,3 +80,16 @@ After the project has been modified, recompile and run the program.
   found in File->Report Options->Two-Pass report.
   
 The resulting report can be found in thumbnails.lrf file.
+
+2. Master-Detail sample.
+
+The button "Master-Detail test" adds another dataset to project and
+modify all dataset and controls layout and properties to create a 
+master-detail relationship. 
+
+This test use the masterdetail.lrf report file included in this directory.
+
+In this project some aggregate functions are evaluated: COUNT and SUM. 
+Note how COUNT function references the detail band name to count the number 
+or records. The SUM function used to sum the result of the expression 
+QTY*PRICE for each record.

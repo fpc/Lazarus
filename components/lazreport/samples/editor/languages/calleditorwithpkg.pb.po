@@ -182,6 +182,10 @@ msgctxt "TFRMMAIN.ACCTHUMBNAILS.CAPTION"
 msgid "Thumbnails"
 msgstr "Miniaturas"
 
+#: TFRMMAIN.BTNMASTERDETAIL.CAPTION
+msgid "Master-Detail Test"
+msgstr ""
+
 #: TFRMMAIN.FRMMAIN.CAPTION
 msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
 msgid "LazReport Test Suite"

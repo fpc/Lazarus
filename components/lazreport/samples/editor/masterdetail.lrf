@@ -13,7 +13,7 @@
     <ReportAutor Value=""/>
     <Pages>
       <PrintToDefault Value="False"/>
-      <DoublePass Value="False"/>
+      <DoublePass Value="True"/>
       <SelectedPrinter Value="LaserJet1100"/>
       <PageCount Value="1"/>
       <Page1>
@@ -22,7 +22,7 @@
         <Visible Value="1"/>
         <Width Value="1"/>
         <Height Value="1" PageType="0"/>
-        <PgSize Value="119"/>
+        <PgSize Value="1"/>
         <Margins>
           <left Value="0"/>
           <Top Value="0"/>
@@ -37,24 +37,24 @@
         <LayoutOrder Value="loColumns"/>
         <ObjectCount Value="22"/>
         <Object1>
-          <Name Value="GroupHeader1"/>
+          <Name Value="DatosMaestros1"/>
           <ClassName Value="TfrBandView"/>
           <Visible Value="1"/>
           <Typ Value="gtBand"/>
           <StreamMode Value="0"/>
           <Size>
             <Left Value="0"/>
-            <Top Value="68"/>
+            <Top Value="192"/>
             <Width Value="773"/>
-            <Height Value="32"/>
+            <Height Value="40"/>
           </Size>
-          <Flags Value="112"/>
+          <Flags Value="48"/>
           <Data>
             <Script Value=""/>
           </Data>
-          <BandType Value="btGroupHeader"/>
-          <Condition Value="Detail.&quot;COUNTRY1&quot;"/>
-          <DatasetStr Value=""/>
+          <BandType Value="btMasterData"/>
+          <Condition Value=""/>
+          <DatasetStr Value="frDbMaster"/>
         </Object1>
         <Object2>
           <Name Value="bndDetail"/>
@@ -64,47 +64,47 @@
           <StreamMode Value="0"/>
           <Size>
             <Left Value="0"/>
-            <Top Value="192"/>
+            <Top Value="316"/>
             <Width Value="773"/>
-            <Height Value="17"/>
+            <Height Value="16"/>
           </Size>
           <Flags Value="48"/>
           <Data>
             <Script Value=""/>
           </Data>
-          <BandType Value="btMasterData"/>
+          <BandType Value="btDetailData"/>
           <Condition Value=""/>
           <DatasetStr Value="frDbDetail"/>
         </Object2>
         <Object3>
-          <Name Value="GroupFooter1"/>
+          <Name Value="EncabezadoDe detalle1"/>
           <ClassName Value="TfrBandView"/>
           <Visible Value="1"/>
           <Typ Value="gtBand"/>
           <StreamMode Value="0"/>
           <Size>
             <Left Value="0"/>
-            <Top Value="304"/>
+            <Top Value="268"/>
             <Width Value="773"/>
-            <Height Value="60"/>
+            <Height Value="24"/>
           </Size>
           <Flags Value="48"/>
           <Data>
             <Script Value=""/>
           </Data>
-          <BandType Value="btGroupFooter"/>
+          <BandType Value="btDetailHeader"/>
           <Condition Value=""/>
           <DatasetStr Value=""/>
         </Object3>
         <Object4>
-          <Name Value="MasterHeader1"/>
+          <Name Value="PieDe detalle1"/>
           <ClassName Value="TfrBandView"/>
           <Visible Value="1"/>
           <Typ Value="gtBand"/>
           <StreamMode Value="0"/>
           <Size>
             <Left Value="0"/>
-            <Top Value="128"/>
+            <Top Value="372"/>
             <Width Value="773"/>
             <Height Value="28"/>
           </Size>
@@ -112,7 +112,7 @@
           <Data>
             <Script Value=""/>
           </Data>
-          <BandType Value="btMasterHeader"/>
+          <BandType Value="btDetailFooter"/>
           <Condition Value=""/>
           <DatasetStr Value=""/>
         </Object4>
@@ -123,9 +123,9 @@
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="44"/>
-            <Top Value="68"/>
-            <Width Value="692"/>
+            <Left Value="32"/>
+            <Top Value="196"/>
+            <Width Value="704"/>
             <Height Value="30"/>
           </Size>
           <Flags Value="3"/>
@@ -139,7 +139,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="[Detail.&quot;COUNTRY1&quot;]&#xA;"/>
+            <Memo Value="[Master.&quot;COUNTRY&quot;]&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -166,9 +166,9 @@
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="120"/>
-            <Top Value="192"/>
-            <Width Value="140"/>
+            <Left Value="124"/>
+            <Top Value="316"/>
+            <Width Value="136"/>
             <Height Value="17"/>
           </Size>
           <Flags Value="3"/>
@@ -210,7 +210,7 @@
           <StreamMode Value="0"/>
           <Size>
             <Left Value="264"/>
-            <Top Value="192"/>
+            <Top Value="316"/>
             <Width Value="200"/>
             <Height Value="17"/>
           </Size>
@@ -252,8 +252,8 @@
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="472"/>
-            <Top Value="192"/>
+            <Left Value="468"/>
+            <Top Value="316"/>
             <Width Value="84"/>
             <Height Value="17"/>
           </Size>
@@ -296,7 +296,7 @@
           <StreamMode Value="0"/>
           <Size>
             <Left Value="64"/>
-            <Top Value="192"/>
+            <Top Value="316"/>
             <Width Value="52"/>
             <Height Value="17"/>
           </Size>
@@ -338,8 +338,8 @@
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="68"/>
-            <Top Value="312"/>
+            <Left Value="60"/>
+            <Top Value="376"/>
             <Width Value="672"/>
             <Height Value="20"/>
           </Size>
@@ -381,8 +381,8 @@
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="564"/>
-            <Top Value="192"/>
+            <Left Value="560"/>
+            <Top Value="316"/>
             <Width Value="36"/>
             <Height Value="17"/>
           </Size>
@@ -424,8 +424,8 @@
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="608"/>
-            <Top Value="192"/>
+            <Left Value="604"/>
+            <Top Value="316"/>
             <Width Value="56"/>
             <Height Value="17"/>
           </Size>
@@ -468,7 +468,7 @@
           <StreamMode Value="0"/>
           <Size>
             <Left Value="56"/>
-            <Top Value="308"/>
+            <Top Value="376"/>
             <Width Value="680"/>
             <Height Value="0"/>
           </Size>
@@ -486,8 +486,8 @@
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="668"/>
-            <Top Value="192"/>
+            <Left Value="664"/>
+            <Top Value="316"/>
             <Width Value="72"/>
             <Height Value="17"/>
           </Size>
@@ -530,7 +530,7 @@
           <StreamMode Value="0"/>
           <Size>
             <Left Value="64"/>
-            <Top Value="132"/>
+            <Top Value="268"/>
             <Width Value="56"/>
             <Height Value="18"/>
           </Size>
@@ -573,7 +573,7 @@
           <StreamMode Value="0"/>
           <Size>
             <Left Value="124"/>
-            <Top Value="132"/>
+            <Top Value="268"/>
             <Width Value="136"/>
             <Height Value="18"/>
           </Size>
@@ -616,7 +616,7 @@
           <StreamMode Value="0"/>
           <Size>
             <Left Value="264"/>
-            <Top Value="132"/>
+            <Top Value="268"/>
             <Width Value="200"/>
             <Height Value="18"/>
           </Size>
@@ -659,7 +659,7 @@
           <StreamMode Value="0"/>
           <Size>
             <Left Value="468"/>
-            <Top Value="132"/>
+            <Top Value="268"/>
             <Width Value="84"/>
             <Height Value="18"/>
           </Size>
@@ -702,7 +702,7 @@
           <StreamMode Value="0"/>
           <Size>
             <Left Value="560"/>
-            <Top Value="132"/>
+            <Top Value="268"/>
             <Width Value="36"/>
             <Height Value="18"/>
           </Size>
@@ -744,8 +744,8 @@
           <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="608"/>
-            <Top Value="132"/>
+            <Left Value="604"/>
+            <Top Value="268"/>
             <Width Value="52"/>
             <Height Value="18"/>
           </Size>
@@ -788,7 +788,7 @@
           <StreamMode Value="0"/>
           <Size>
             <Left Value="664"/>
-            <Top Value="132"/>
+            <Top Value="268"/>
             <Width Value="72"/>
             <Height Value="18"/>
           </Size>
@@ -831,7 +831,7 @@
           <StreamMode Value="0"/>
           <Size>
             <Left Value="56"/>
-            <Top Value="154"/>
+            <Top Value="290"/>
             <Width Value="680"/>
             <Height Value="0"/>
           </Size>

@@ -7,7 +7,7 @@ uses
   Forms,
   maincalleditor,
   lazreportpdfexport,
-  lazreport, custompreview;
+  lazreport;
 
 {$R calleditorwithpkg.res}
 

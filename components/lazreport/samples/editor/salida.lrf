@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <LazReport>
-    <Version Value="24"/>
+    <Version Value="25"/>
     <Title Value=""/>
     <Subject Value=""/>
     <KeyWords Value=""/>
@@ -14,14 +14,14 @@
     <Pages>
       <PrintToDefault Value="False"/>
       <DoublePass Value="True"/>
-      <SelectedPrinter Value="HP1100"/>
+      <SelectedPrinter Value="LaserJet1100"/>
       <PageCount Value="1"/>
       <Page1>
         <Name Value="Page1"/>
         <ClassName Value="TfrPageReport"/>
         <Visible Value="1"/>
-        <Width Value="547"/>
-        <Height Value="770" PageType="0"/>
+        <Width Value="1"/>
+        <Height Value="1" PageType="0"/>
         <PgSize Value="9"/>
         <Margins>
           <left Value="0"/>
@@ -74,7 +74,7 @@
           </Data>
           <BandType Value="btMasterData"/>
           <Condition Value=""/>
-          <DatasetStr Value="frDBDataSet1"/>
+          <DatasetStr Value="frDbDetail"/>
         </Object2>
         <Object3>
           <Name Value="Memo1"/>
@@ -91,10 +91,10 @@
           <Flags Value="3"/>
           <FillColor Value="clSilver"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
           </Frames>
           <Data>
             <Format Value="556"/>
@@ -134,15 +134,15 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;TITLE&quot;] &#xA;"/>
+            <Memo Value="[Detail.&quot;TITLE&quot;]&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -177,15 +177,15 @@
           <Flags Value="3"/>
           <FillColor Value="clWhite"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clBlack"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>
             <FormatStr Value=""/>
-            <Memo Value="[Dbf1.&quot;AUTHOR&quot;] &#xA;"/>
+            <Memo Value="[Detail.&quot;AUTHOR&quot;]&#xA;"/>
             <Script Value=""/>
           </Data>
           <Font>
@@ -220,10 +220,10 @@
           <Flags Value="3"/>
           <FillColor Value="clNone"/>
           <Frames>
-            <FrameWidth Value="1"/>
             <FrameColor Value="clNone"/>
-            <FrameBorders Value=""/>
             <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
           </Frames>
           <Data>
             <Format Value="556"/>

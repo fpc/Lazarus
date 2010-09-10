@@ -30,7 +30,7 @@ uses
   Buttons, StdCtrls, LR_Const, LR_Class, LR_Desgn, Dbf, DB, DBGrids, LR_DBSet,
   LR_PGrid, Menus, ComCtrls, ActnList, Lr_e_txt, Lr_e_htm, LR_E_CSV, LR_DSet,
   LR_BarC, LR_RRect, LR_Shape, LR_ChBox, lr_e_pdf, lconvencoding, lr_e_gen,
-  lr_utils, LCLProc, custompreview;
+  lr_utils, LCLProc, ExtCtrls, custompreview;
 
 type
 
@@ -53,7 +53,8 @@ type
     accCustomPreview: TAction;
     ActionList1: TActionList;
     ApplicationProperties1: TApplicationProperties;
-    btnCallEditor: TButton;
+    btnMasterDetail: TToggleBox;
+    btnNewReport: TButton;
     btnCustomPreview: TButton;
     btnPrintGrid: TButton;
     btnPreviewReport: TButton;
@@ -63,6 +64,11 @@ type
     btnImageList: TButton;
     btnComposite: TButton;
     comboIndex: TComboBox;
+    frDbMaster: TfrDBDataSet;
+    mastergrid: TDBGrid;
+    Panel1: TPanel;
+    srcMaster: TDatasource;
+    master: TDbf;
     srcDetail: TDatasource;
     DetailAUTHOR: TStringField;
     DetailCOMPANY1: TStringField;
@@ -84,7 +90,7 @@ type
     frCheckBoxObject1: TfrCheckBoxObject;
     Composite: TfrCompositeReport;
     frCSVExport1: TfrCSVExport;
-    frDBDataSet1: TfrDBDataSet;
+    frDbDetail: TfrDBDataSet;
     frRoundRectObject1: TfrRoundRectObject;
     frShapeObject1: TfrShapeObject;
     frUserDataset1: TfrUserDataset;
@@ -126,6 +132,7 @@ type
     procedure accPreviewReportExecute(Sender: TObject);
     procedure accPrintGridExecute(Sender: TObject);
     procedure accPrintReportExecute(Sender: TObject);
+    procedure btnMasterDetailClick(Sender: TObject);
     procedure comboIndexSelect(Sender: TObject);
     procedure gridTitleClick(Column: TColumn);
     procedure frmMainCreate(Sender: TObject);
@@ -138,10 +145,12 @@ type
     FImageList: TStringList;
     FImageListIndex: Integer;
     FObjCount: Integer;
+    FCountryIndex: Integer;
     procedure UpdateAppTranslation;
     procedure SetIndex(const aIndexName: string);
     procedure OpenReport(const aFileName:string);
     procedure UpdateActiveReport;
+    procedure MasterDetail;
   public
     { public declarations }
   end; 
@@ -327,7 +336,15 @@ end;
 
 procedure TfrmMain.accPreviewReportExecute(Sender: TObject);
 begin
+  if btnMasterDetail.Checked then begin
+    grid.DataSource := nil;
+    MasterGrid.Datasource := nil;
+  end;
   TheReport.ShowReport;
+  if btnMasterDetail.Checked then begin
+    MasterGrid.DataSource := srcMaster;
+    grid.Datasource := srcDetail;
+  end;
 end;
 
 procedure TfrmMain.accPrintGridExecute(Sender: TObject);
@@ -341,6 +358,11 @@ begin
     TheReport.PrintPreparedReport('1',1)
   else
     ShowMessage(cerPrepareFailed);
+end;
+
+procedure TfrmMain.btnMasterDetailClick(Sender: TObject);
+begin
+  MasterDetail;
 end;
 
 procedure TfrmMain.comboIndexSelect(Sender: TObject);
@@ -393,11 +415,15 @@ begin
   Detail.FilePath := 'db/';
   Detail.TableName := 'disco.dbf';
   Detail.open;
+
+  Master.Close;
+  Master.TableName := 'db/countries.dbf';
   
   comboIndex.Clear;
   comboIndex.Items.Add(cerNone);
   for i:=0 to Detail.Indexes.Count-1 do
     comboIndex.Items.Add(Detail.Indexes[i].Name);
+  FCountryIndex := ComboIndex.Items.IndexOf('BYCOUNTRY');
   SetIndex('');
   
   if FileExistsUTF8(ExtractFilePath(ParamStrUTF8(0))+'salida.lrf') then
@@ -474,6 +500,30 @@ end;
 procedure TfrmMain.UpdateActiveReport;
 begin
   SBar.Panels[0].Text:= format(cerActiveReport, [TheReport.FileName]);
+end;
+
+procedure TfrmMain.MasterDetail;
+begin
+  if mastergrid.Visible then begin
+    MasterGrid.Visible := false;
+    Grid.AnchorSideLeft.Control := Self;
+    Grid.AnchorSideLeft.Side := asrTop;
+    detail.MasterSource := nil;
+    detail.MasterFields := '';
+    detail.IndexName := '';
+    comboIndexSelect(self);
+    comboIndex.Enabled := true;
+  end else begin
+    Master.Open;
+    detail.MasterSource := srcMaster;
+    detail.MasterFields := 'CountryID';
+    comboIndex.ItemIndex := FCountryIndex;
+    comboIndexSelect(self);
+    MasterGrid.Visible := true;
+    Grid.AnchorSideLeft.Control := MasterGrid;
+    Grid.AnchorSideLeft.Side := asrBottom;
+    comboIndex.Enabled := false;
+  end;
 end;
 
 procedure TranslateResStrings;

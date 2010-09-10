@@ -1364,6 +1364,7 @@ components/lazreport/samples/editor/languages/calleditorwithpkg.po svneol=native
 components/lazreport/samples/editor/languages/calleditorwithpkg.ru.po svneol=native#text/plain
 components/lazreport/samples/editor/maincalleditor.lfm svneol=native#text/plain
 components/lazreport/samples/editor/maincalleditor.pas svneol=native#text/pascal
+components/lazreport/samples/editor/masterdetail.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/editor/readme.txt svneol=native#text/plain
 components/lazreport/samples/editor/rpta.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/editor/rptb.lrf svneol=LF#text/xml eol=lf
