@@ -35,7 +35,6 @@ type
     fLowerCaseRes: boolean;
     fDfmDirectiveStart: integer;
     fDfmDirectiveEnd: integer;
-    fTarget: TConvertTarget;
     // List of units to remove.
     fUnitsToRemove: TStringList;
     // Units to rename. Map of unit name -> real unit name.
@@ -44,8 +43,10 @@ type
     fUnitsToComment: TStringList;
     // Delphi Function names to replace with FCL/LCL functions.
     fDefinedProcNames: TStringList;
-    fReplaceFuncs: TFuncsAndCategories;
-    fFuncsToReplace: TObjectList;           // List of TFuncReplacement.
+    // List of TFuncReplacement.
+    fFuncsToReplace: TObjectList;
+    fSettings: TConvertSettings;          // Conversion settings.
+
     function AddDelphiAndLCLSections: boolean;
     function AddModeDelphiDirective: boolean;
     function RenameResourceDirectives: boolean;
@@ -70,11 +71,10 @@ type
     property Ask: Boolean read fAsk write fAsk;
     property HasFormFile: boolean read fHasFormFile write fHasFormFile;
     property LowerCaseRes: boolean read fLowerCaseRes write fLowerCaseRes;
-    property Target: TConvertTarget read fTarget write fTarget;
     property UnitsToRemove: TStringList read fUnitsToRemove write fUnitsToRemove;
     property UnitsToRename: TStringToStringTree read fUnitsToRename write fUnitsToRename;
     property UnitsToComment: TStringList read fUnitsToComment write fUnitsToComment;
-    property ReplaceFuncs: TFuncsAndCategories read fReplaceFuncs write fReplaceFuncs;
+    property Settings: TConvertSettings read fSettings write fSettings;
   end;
 
 
@@ -88,7 +88,6 @@ begin
   // Default values for vars.
   fAsk:=true;
   fLowerCaseRes:=false;
-  fTarget:=ctLazarus;
   fUnitsToRemove:=nil;            // These are set from outside.
   fUnitsToComment:=nil;
   fUnitsToRename:=nil;
@@ -141,17 +140,18 @@ begin
       // these changes can be applied together without rescan
       if not AddModeDelphiDirective then exit;
       if not RenameResourceDirectives then exit;
-      if not ReplaceFuncCalls(aIsConsoleApp) then exit;
+      if fSettings.EnableReplaceFuncs then
+        if not ReplaceFuncCalls(aIsConsoleApp) then exit;
       if not fSrcCache.Apply then exit;
     finally
       fSrcCache.EndUpdate;
     end;
-    if fTarget=ctLazarus then begin
+    if fSettings.Target=ctLazarus then begin
       // One way conversion -> remove, rename and comment out units.
       if not RemoveUnits then exit;
       if not RenameUnits then exit;
     end;
-    if fTarget=ctLazarusAndDelphi then begin
+    if fSettings.Target=ctLazarusAndDelphi then begin
       // Support Delphi. Add IFDEF blocks for units.
       if not AddDelphiAndLCLSections then exit;
     end
@@ -278,7 +278,7 @@ begin
       ReadNextAtom; // semicolon
       InsertPos:=CurPos.EndPos;
       nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
-      if fTarget=ctLazarusAndDelphi then
+      if fSettings.Target=ctLazarusAndDelphi then
         s:='{$IFDEF FPC}'+nl+'  {$MODE Delphi}'+nl+'{$ENDIF}'
       else
         s:='{$MODE Delphi}';
@@ -323,7 +323,7 @@ begin
         if (LowKey='dfm') or (LowKey='xfm') then begin
           // Lowercase existing key. (Future, when the same dfm file can be used)
 //          faUseDfm: if Key<>LowKey then NewKey:=LowKey;
-          if fTarget=ctLazarusAndDelphi then begin
+          if fSettings.Target=ctLazarusAndDelphi then begin
             // Later IFDEF will be added so that Delphi can still use .dfm.
             fDfmDirectiveStart:=ACleanPos;
             fDfmDirectiveEnd:=ParamPos+6;
@@ -348,7 +348,7 @@ begin
       ACleanPos:=FindCommentEnd(Src, ACleanPos, Scanner.NestedComments);
     until false;
   // if there is already .lfm file, don't add IFDEF for .dfm / .lfm.
-  if (fTarget=ctLazarusAndDelphi) and (fDfmDirectiveStart<>-1) and not AlreadyIsLfm then
+  if (fSettings.Target=ctLazarusAndDelphi) and (fDfmDirectiveStart<>-1) and not AlreadyIsLfm then
   begin
     // Add IFDEF for .lfm and .dfm allowing Delphi to use .dfm.
     nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
@@ -705,14 +705,14 @@ var
     with fCodeTool do begin
       while (IdentEndPos<=MaxPos) and (IsIdentChar[Src[IdentEndPos]]) do
         inc(IdentEndPos);
-      for i:=0 to fReplaceFuncs.Funcs.Count-1 do begin
-        FuncName:=fReplaceFuncs.Funcs[i];
+      for i:=0 to fSettings.ReplaceFuncs.Funcs.Count-1 do begin
+        FuncName:=fSettings.ReplaceFuncs.Funcs[i];
         if (IdentEndPos-xStart=length(FuncName))
         and (CompareIdentifiers(PChar(Pointer(FuncName)),@Src[xStart])=0)
         and not fDefinedProcNames.Find(FuncName, x)
         then begin
-          FuncDefInfo:=fReplaceFuncs.FuncAtInd(i);
-          if fReplaceFuncs.Categories.Find(FuncDefInfo.Category, x)
+          FuncDefInfo:=fSettings.ReplaceFuncs.FuncAtInd(i);
+          if fSettings.ReplaceFuncs.Categories.Find(FuncDefInfo.Category, x)
           and not (aIsConsoleApp and (FuncDefInfo.Category='UTF8Names'))
           then begin
             // Create a new replacement object for params, position and other info.
@@ -1113,7 +1113,6 @@ var
     const GrandParentContext, ClassContext: TFindContext): boolean;
   var
     CurLFMNode: TLFMTreeNode;
-    i: Integer;
   begin
     CurLFMNode:=LFMObject.FirstChild;
     while CurLFMNode<>nil do begin

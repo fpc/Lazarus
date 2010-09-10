@@ -1,10 +1,10 @@
 object ConvertSettingsForm: TConvertSettingsForm
   Left = 346
-  Height = 462
+  Height = 483
   Top = 298
   Width = 637
   Caption = 'Convert Delphi unit, project or package '
-  ClientHeight = 462
+  ClientHeight = 483
   ClientWidth = 637
   Constraints.MinHeight = 400
   OnCreate = FormCreate
@@ -16,84 +16,125 @@ object ConvertSettingsForm: TConvertSettingsForm
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 0
-    Height = 192
+    Height = 213
     Top = 219
     Width = 637
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
-    Caption = 'Units, Types and Properties'
-    ClientHeight = 173
+    Caption = 'Replacements'
+    ClientHeight = 194
     ClientWidth = 633
     TabOrder = 0
-    object AutoRemovePropCheckBox: TCheckBox
-      Left = 303
-      Height = 21
-      Hint = 'If unchecked, there will be interactive dialogs for editing / accepting changes.'
-      Top = 40
-      Width = 282
-      Caption = 'Automatic removal of unknown properties'
+    object UnitReplaceButton: TBitBtn
+      Left = 11
+      Height = 30
+      Hint = 'Unit names in uses section of a source unit'
+      Top = 36
+      Width = 272
+      Caption = 'Unit Replacements'
+      OnClick = UnitReplaceButtonClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
     end
-    object UnitReplacementsButton: TBitBtn
+    object TypeReplaceButton: TBitBtn
       Left = 11
       Height = 30
-      Hint = 'Unit names in uses section of a source unit'
-      Top = 12
+      Hint = 'Unknown types in form file (DFM/LFM)'
+      Top = 76
       Width = 272
-      Caption = 'Unit Replacements'
-      OnClick = UnitReplacementsButtonClick
+      Caption = 'Type Replacements'
+      OnClick = TypeReplaceButtonClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
     end
-    object TypeReplacementsButton: TBitBtn
-      Left = 11
-      Height = 30
-      Hint = 'Unknown types in form file (DFM/LFM)'
-      Top = 52
-      Width = 272
-      Caption = 'Type Replacements'
-      OnClick = TypeReplacementsButtonClick
+    object UnitReplaceAutoCheckBox: TCheckBox
+      Left = 303
+      Height = 21
+      Hint = 'If unchecked, there will be interactive dialogs for editing / accepting changes.'
+      Top = 41
+      Width = 161
+      Caption = 'Replace automatically'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 2
     end
-    object AutoReplaceUnitsCheckBox: TCheckBox
-      Left = 303
-      Height = 21
-      Hint = 'If unchecked, there will be interactive dialogs for editing / accepting changes.'
-      Top = 12
-      Width = 255
-      Caption = 'Automatic replacement of unit names'
+    object FuncReplaceButton: TBitBtn
+      Left = 11
+      Height = 30
+      Hint = 'Some Delphi functions can be replaced with a LCL function'
+      Top = 116
+      Width = 272
+      Caption = 'Function Replacements'
+      OnClick = FuncReplaceButtonClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 3
     end
-    object FuncReplacementsButton: TBitBtn
+    object VisualOffsButton: TBitBtn
       Left = 11
       Height = 30
       Hint = 'Some Delphi functions can be replaced with a LCL function'
-      Top = 132
+      Top = 156
       Width = 272
-      Caption = 'Function Replacements'
-      OnClick = FuncReplacementsButtonClick
+      Caption = 'Top Coordinate Offsets'
+      OnClick = VisualOffsButtonClick
       ParentShowHint = False
       ShowHint = True
       TabOrder = 4
     end
-    object VisualOffsetsButton: TBitBtn
-      Left = 11
-      Height = 30
-      Hint = 'Some Delphi functions can be replaced with a LCL function'
-      Top = 92
-      Width = 272
-      Caption = 'Top Coordinate Offsets'
-      OnClick = VisualOffsetsButtonClick
+    object PropRemoveAutoCheckBox: TCheckBox
+      Left = 303
+      Height = 21
+      Hint = 'If unchecked, there will be interactive dialogs for editing / accepting changes.'
+      Top = 4
+      Width = 161
+      Caption = 'Remove automatically'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 5
+    end
+    object Label1: TLabel
+      AnchorSideRight.Control = UnitReplaceButton
+      AnchorSideRight.Side = asrBottom
+      Left = 135
+      Height = 16
+      Top = 6
+      Width = 148
+      Anchors = [akTop, akRight]
+      Caption = 'Unknown properties'
+      Font.Color = clBtnShadow
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object TypeReplInfoLabel: TLabel
+      Left = 303
+      Height = 16
+      Top = 84
+      Width = 67
+      Caption = 'Interactive'
+      ParentColor = False
+    end
+    object VisualOffsEnableCheckBox: TCheckBox
+      Left = 303
+      Height = 21
+      Top = 161
+      Width = 65
+      Caption = 'Enable'
+      TabOrder = 6
+    end
+    object FuncReplaceEnableCheckBox: TCheckBox
+      Left = 303
+      Height = 21
+      Hint = 'If unchecked, there will be interactive dialogs for editing / accepting changes.'
+      Top = 121
+      Width = 65
+      Caption = 'Enable'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 7
     end
   end
   object SettingsGroupBox: TGroupBox
@@ -109,7 +150,7 @@ object ConvertSettingsForm: TConvertSettingsForm
       Left = 11
       Height = 112
       Hint = 'Converter adds conditional compilation to support different targets'
-      Top = 3
+      Top = -1
       Width = 272
       AutoFill = True
       Caption = 'Target'
@@ -140,11 +181,12 @@ object ConvertSettingsForm: TConvertSettingsForm
       Left = 303
       Height = 21
       Hint = 'Separate form files allow different properties'
-      Top = 62
+      Top = 7
       Width = 312
       BorderSpacing.Left = 13
       BorderSpacing.Around = 7
       Caption = 'Lazarus uses the same DFM form file as Delphi'
+      OnChange = SameDFMCheckBoxChange
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
@@ -197,7 +239,7 @@ object ConvertSettingsForm: TConvertSettingsForm
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 39
-    Top = 417
+    Top = 438
     Width = 625
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'

@@ -454,7 +454,7 @@ begin
     until (Result in [mrOK, mrCancel]) or (LoopCount=10);
     // Show remaining errors to user.
     WriteLFMErrors;
-    if Result=mrOK then begin
+    if (Result=mrOK) and fSettings.EnableVisualOffs then begin
       // Fix top offsets of some components in visual containers
       if ConvTool.CheckTopOffsets(fLFMBuffer, fLFMTree,
                                   fSettings.VisualOffsets, ValueTreeNodes) then

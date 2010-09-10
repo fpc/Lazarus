@@ -465,11 +465,9 @@ resourcestring
   lisConvertTargetHint = 'Converter adds conditional compilation to support different targets';
   lisConvUseSameDFM = 'Lazarus uses the same DFM form file as Delphi';
   lisConvUseSameDFMHint = 'Separate form files allow different properties';
-  lisConvUnitsTypesProp = 'Units, Types and Properties';
-  lisConvAutoRemoveProp = 'Automatic removal of unknown properties';
-  lisConvAutoRemovePropHint = 'If unchecked, there will be interactive dialogs for editing / accepting changes';
-  lisConvAutoReplaceUnits = 'Automatic replacement of unit names';
-  lisConvAutoReplaceUnitHint = 'If unchecked, there will be interactive dialogs for editing / accepting changes.';
+  lisConvAutoReplace = 'Replace automatically';
+  lisConvAutoRemove = 'Remove automatically';
+  lisConvAutoHint = 'If unchecked, there will be interactive dialogs for editing / accepting changes';
   lisConvUnitsToReplace = 'Units to replace';
   lisConvTypesToReplace = 'Types to replace';
   lisConvTopCoordOff = 'Top coordinate offset';
@@ -488,6 +486,8 @@ resourcestring
   lisConvDelphiFunc = 'Delphi Function';
   lisReplacement = 'Replacement';
   lisReplacements = 'Replacements';
+  lisInteractive = 'Interactive';
+  lisEnable = 'Enable';
   lisProperties = 'Properties (replace or delete)';
   lisTypes = 'Types (not removed if no replacement)';
   lisReplaceRemoveUnknown = 'Fix unknown properties and types';

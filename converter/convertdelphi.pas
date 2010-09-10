@@ -553,8 +553,7 @@ begin
     ConvTool.Ask:=Assigned(fOwnerConverter);
     ConvTool.LowerCaseRes:=FileExistsUTF8(ChangeFileExt(fLazUnitFilename, '.res'));
     ConvTool.HasFormFile:=DfmFilename<>'';
-    ConvTool.Target:=fSettings.Target;
-    ConvTool.ReplaceFuncs:=fSettings.ReplaceFuncs;
+    ConvTool.Settings:=fSettings;
     ConvTool.UnitsToRemove:=fUnitsToRemove;
     ConvTool.UnitsToRename:=fUnitsToRename;
     ConvTool.UnitsToComment:=fUnitsToComment;
