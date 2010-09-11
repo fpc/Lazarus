@@ -226,6 +226,7 @@ type
     procedure DropDown; override;
     procedure CloseUp; override;
     procedure Select; override;
+    procedure Change; override;
     procedure msg_GetValue(var Msg: TGridMessage); message GM_GETVALUE;
     procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
     procedure msg_SetValue(var Msg: TGridMessage); message GM_SETVALUE;
@@ -9528,12 +9529,14 @@ end;
 
 procedure TCustomStringGrid.SetEditText(aCol, aRow: Longint; const aValue: string);
 begin
-  GridFlags := GridFlags + [gfEditorUpdateLock];
-  try
-    if Cells[aCol, aRow]<>aValue then
-      Cells[aCol, aRow]:= aValue;
-  finally
-    GridFlags := GridFlags - [gfEditorUpdateLock];
+  if not EditorIsReadOnly then begin
+    GridFlags := GridFlags + [gfEditorUpdateLock];
+    try
+      if Cells[aCol, aRow]<>aValue then
+        Cells[aCol, aRow]:= aValue;
+    finally
+      GridFlags := GridFlags - [gfEditorUpdateLock];
+    end;
   end;
   inherited SetEditText(aCol, aRow, aValue);
 end;
@@ -10746,12 +10749,18 @@ end;
 procedure TPickListCellEditor.Select;
 begin
   if FGrid<>nil then begin
-    if FGrid.EditorIsReadOnly then
-      exit;
     FGrid.SetEditText(FCol, FRow, Text);
     FGrid.PickListItemSelected(Self);
   end;
   inherited Select;
+end;
+
+procedure TPickListCellEditor.Change;
+begin
+  if FGrid<>nil then begin
+    FGrid.SetEditText(FCol, FRow, Text);
+  end;
+  inherited Change;
 end;
 
 procedure TPickListCellEditor.msg_GetValue(var Msg: TGridMessage);
