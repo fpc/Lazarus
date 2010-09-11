@@ -89,6 +89,7 @@ begin
   topidx := chklistCompMsg.TopIndex;
   chklistCompMsg.Items.BeginUpdate;
   try
+    //debugln(['TCompilerMessagesOptionsFrame.UpdateMessages ',EnvironmentOptions.CompilerMessagesFilename]);
     if FileExistsUTF8(EnvironmentOptions.CompilerMessagesFilename) then begin
       try
         // FPC messages file is expected to be UTF8 encoded, no matter for the current code page is
