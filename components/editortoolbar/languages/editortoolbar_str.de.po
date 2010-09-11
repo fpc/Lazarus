@@ -1,0 +1,47 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: editortoolbar_str.rsadddivider
+msgid "Add Divider"
+msgstr "Trenner hinzufügen"
+
+#: editortoolbar_str.rscancel
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: editortoolbar_str.rsconfiguretoo
+msgid "Configure Toolbar"
+msgstr "Toolbar konfigurieren"
+
+#: editortoolbar_str.rseditortoolbarconfigform
+msgid "Editor Toolbar Configuration"
+msgstr "Editor-Toolbar-Konfiguration"
+
+#: editortoolbar_str.rsjumpto
+msgid "Jump To"
+msgstr "Springe zu"
+
+#: editortoolbar_str.rsmenutree
+msgid "Menu Tree"
+msgstr "Menü-Baum"
+
+#: editortoolbar_str.rsok
+msgid "OK"
+msgstr "OK"
+
+#: editortoolbar_str.rstoolbar
+msgid "Toolbar"
+msgstr "Toolbar"
+
+#: editortoolbar_str.serrcouldnotfind
+msgid "Could not find <%s>"
+msgstr "Kann <%s> nicht finden"
+

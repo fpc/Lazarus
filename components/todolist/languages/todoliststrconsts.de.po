@@ -1,0 +1,99 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: todoliststrconsts.dlgfropts
+msgid "Options"
+msgstr "Einstellungen"
+
+#: todoliststrconsts.dlgunitdeprefresh
+msgid "Refresh"
+msgstr "Aktualisieren"
+
+#: todoliststrconsts.lisctinsertmacro
+msgid "Insert Macro"
+msgstr "Makro einfügen"
+
+#: todoliststrconsts.lispkgfiletypetext
+msgid "Text"
+msgstr "Text"
+
+#: todoliststrconsts.lisprint
+msgid "Print"
+msgstr ""
+
+#: todoliststrconsts.listddinserttodo
+msgid "Insert ToDo"
+msgstr "ToDo einfügen"
+
+#: todoliststrconsts.listodoexport
+msgid "Export"
+msgstr "Export"
+
+#: todoliststrconsts.listodogoto
+msgid "Goto"
+msgstr "Gehe zu"
+
+#: todoliststrconsts.listodoldescription
+msgid "Description"
+msgstr "Beschreibung"
+
+#: todoliststrconsts.listodoldone
+msgid "Done"
+msgstr ""
+
+#: todoliststrconsts.listodolfile
+msgid "Module"
+msgstr "Modul"
+
+#: todoliststrconsts.listodolist
+msgid "ToDo list"
+msgstr "ToDo-Liste"
+
+#: todoliststrconsts.listodolistcaption
+msgid "ToDo List"
+msgstr "ToDo-Liste"
+
+#: todoliststrconsts.listodolistgotoline
+msgid "Goto selected source line"
+msgstr ""
+
+#: todoliststrconsts.listodolistoptions
+msgid "ToDo options..."
+msgstr "ToDo-Einstellungen..."
+
+#: todoliststrconsts.listodolistprintlist
+msgid "Print todo items"
+msgstr ""
+
+#: todoliststrconsts.listodolistrefresh
+msgid "Refresh todo items"
+msgstr "Aktualisiert die ToDo-Elemente"
+
+#: todoliststrconsts.listodolline
+msgid "Line"
+msgstr "Zeile"
+
+#: todoliststrconsts.listodolowner
+msgid "Owner"
+msgstr ""
+
+#: todoliststrconsts.listodolpriority
+msgid "Priority"
+msgstr "Priorität"
+
+#: todoliststrconsts.listtodolcategory
+msgid "Category"
+msgstr "Kategorie"
+
+#: todoliststrconsts.lisviewtodolist
+msgid "View ToDo list"
+msgstr "ToDo-Liste anzeigen"
+
