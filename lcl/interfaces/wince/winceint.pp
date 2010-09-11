@@ -277,7 +277,7 @@ var
   MouseDownWindow: HWND = 0;
   MouseDownFocusWindow: HWND;
   MouseDownFocusStatus: TMouseDownFocusStatus = mfNone;
-  ComboBoxHandleSizeWindow: HWND = 0;//just dont know the use yet
+  ComboBoxHandleSizeWindow: HWND = 0;//just do not know the use yet
   IgnoreNextCharWindow: HWND = 0;  // ignore next WM_(SYS)CHAR message
   OnClipBoardRequest: TClipboardRequestEvent = nil;
 

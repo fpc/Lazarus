@@ -37,7 +37,7 @@ uses
 procedure DbgDumpBitmap(ABitmap: PGdkBitmap; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
 procedure DbgDumpPixmap(APixmap: PGdkPixmap; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
 procedure DbgDumpPixbuf(APixbuf: PGdkPixbuf; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
-// dont debug images on gtk1, we cannot ref, unref them and thus we cannot rely that they will not be destroyed
+// do not debug images on gtk1, we cannot ref, unref them and thus we cannot rely that they will not be destroyed
 procedure DbgDumpImage(AImage: PGdkImage; ATitle: String = ''; AWidth: Integer = -1; AHeight: Integer = -1);
 
 implementation

@@ -233,7 +233,7 @@ end;
 
 { Return the caption associated with the akind value.
   This function replaces BitBtnCaption const because the localizing
-  dont work with an const array }
+  do not work with an const array }
 function TCustomBitBtn.GetCaptionOfKind(AKind: TBitBtnKind): String;
 begin
   Result := GetButtonCaption(BitBtnImages[Kind]);

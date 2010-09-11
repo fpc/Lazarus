@@ -102,6 +102,6 @@ begin
   Window := PGTkNotebook(Widget)^.event_window;
   if Window <> nil then
     SetWindowCursor(Window, AInfo^.ControlCursor, False);
-  // dont know how to set cursor under tabs
+  // do not know how to set cursor under tabs
 end;
 

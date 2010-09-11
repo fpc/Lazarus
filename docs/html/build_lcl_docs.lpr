@@ -159,7 +159,7 @@ procedure AddFilesToList(Dir: String; Ext: String; List: TStrings);
 var
   FRec: TSearchRec;
   Res: Longint;
-  SubDirs: String; // we dont want the PasSrcDir in this string but the subfolders only
+  SubDirs: String; // we do not want the PasSrcDir in this string but the subfolders only
 begin
   Res := FindFirst(Dir+'*', faAnyFile, FRec);
   while Res = 0 do begin

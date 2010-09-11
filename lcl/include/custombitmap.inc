@@ -402,7 +402,7 @@ end;
 function TCustomBitmap.UpdateHandles(ABitmap, AMask: HBITMAP): Boolean;
 begin
   // Update sets the handles corresponding to our rawimage and/or savestream, so
-  // we dont free them here.
+  // we do not free them here.
   
   Result := False;
 

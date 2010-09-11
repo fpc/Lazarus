@@ -5554,7 +5554,7 @@ begin
   begin
     inc(X, dx);        // shift destination
     dec(Width, dx);    // substract width
-    dec(SrcWidth, dx); // and dont forget about SrcWidth or we will get unneeded stretching
+    dec(SrcWidth, dx); // and do not forget about SrcWidth or we will get unneeded stretching
   end;
 
   if dy <> 0 then

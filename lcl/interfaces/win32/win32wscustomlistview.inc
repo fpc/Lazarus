@@ -300,7 +300,7 @@ begin
   if not WSCheckHandleAllocated(ALV, 'ColumnGetWidth')
   then Exit;
 
-  // dont use ListView_GetColumnWidth since we cant detect errors
+  // do not use ListView_GetColumnWidth since we cant detect errors
   lvc.Mask := LVCF_WIDTH;
   if ListView_GetColumn(ALV.Handle, AIndex, lvc) <> 0
   then Result := lvc.cx;

@@ -270,7 +270,7 @@ begin
     bad to break just before one }
     if IsUnaryOperator(pcToken) then
     begin
-      { dont break between unary operator and operand }
+      { do not break between unary operator and operand }
       piScoreAfter := BAD4;
     end
     else

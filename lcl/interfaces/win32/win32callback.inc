@@ -1242,7 +1242,7 @@ begin
                 // to handle checkbox state ourselves, according to msdn state
                 // sequence goes from checked->cleared->grayed etc.
                 Flags := SendMessage(lWinControl.Handle, BM_GETCHECK, 0, 0);
-                //dont update the check state if is TRadioButton and is already checked
+                //do not update the check state if is TRadioButton and is already checked
                 if (Flags <> BST_CHECKED) or not (lWinControl is TRadioButton) then
                 begin
                   if (Flags=BST_CHECKED) then

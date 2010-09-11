@@ -2908,7 +2908,7 @@ begin
     gdk_drawable_get_size(ADrawable, @Width, @Height);
     Depth := gdk_drawable_get_depth(ADrawable);
     Visual := gdk_window_get_visual(ADrawable);
-    // pixmaps and bitmaps dont have a visual, but for pixmaps we need one
+    // pixmaps and bitmaps do not have a visual, but for pixmaps we need one
     if Visual = nil
     then Visual := gdk_visual_get_best_with_depth(Depth);
     IsBitmap := Depth = 1;

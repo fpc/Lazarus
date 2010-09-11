@@ -1462,7 +1462,7 @@ begin
   if P >= 0 then
   begin
     // Since we can have many resources that have the same name but different type
-    // we should look before and after found position (dont forget that we are searching
+    // we should look before and after found position (do not forget that we are searching
     // them by dividing intervals)
   
     // look before position

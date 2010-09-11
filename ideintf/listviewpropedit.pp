@@ -24,7 +24,7 @@
    22/01/2006 TG - Dialog converted to lfm.
                    
    ToDo :
-     Select the first item on show editor ... dont work :o(
+     Select the first item on show editor ... do not work :o(
 }
 unit ListViewPropEdit;
 

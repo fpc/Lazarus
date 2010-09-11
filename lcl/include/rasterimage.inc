@@ -213,7 +213,7 @@ begin
     ImgHandle := CreateDefaultBitmapHandle(DevDesc);
   end;
 
-  // if we dont have new mask then either use old one or use none
+  // if we do not have new mask then either use old one or use none
   if SkipMask and MaskHandleAllocated
   then UpdateHandles(ImgHandle, MaskHandle)
   else UpdateHandles(ImgHandle, ImgMaskHandle);

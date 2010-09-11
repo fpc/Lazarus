@@ -212,7 +212,7 @@ begin
 
      // drh 4/6/98:
      // the following was moved here from end of "ScanDir", just in
-     // case multiple searches are being carried out (dont want
+     // case multiple searches are being carried out (do not want
      // multiple end of search events being fired).
      if Assigned( fFinishEvent ) then
         fFinishEvent( Self );         // notify user that searching is complete.

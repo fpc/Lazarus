@@ -79,7 +79,7 @@ type
     procedure SetText(const Value: string);
     procedure SetWidth(Value: Integer);
   protected
-    // field to use by interface. dont use it in the LCL
+    // field to use by interface. do not use it in the LCL
     FIntfFlag: Integer;
     function GetDisplayName: string; override;
     procedure PanelChanged(const Parts: TPanelParts);

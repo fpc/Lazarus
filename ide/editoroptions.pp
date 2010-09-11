@@ -4424,7 +4424,7 @@ begin
   end
   else begin
     if (Defaults <> Self) and (Defaults <> nil) then begin
-      // dont copy (Stored)Name or Features ...
+      // do not copy (Stored)Name or Features ...
       Background := Defaults.Background;
       Foreground := Defaults.Foreground;
       FrameColor := Defaults.FrameColor;

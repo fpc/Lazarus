@@ -143,7 +143,7 @@ Result := true;
   Result := (-3 <= moveX) and (moveX <= 3) and (-3 <= moveY) and (moveY <= 3);}
 end;
 
-//roozbeh...any need for this?as we dont have opaque in wince!
+//roozbeh...any need for this?as we do not have opaque in wince!
 function GetNeedParentPaint(AWindowInfo: PWindowInfo; AWinControl: TWinControl): boolean;
 begin
   Result := AWindowInfo^.needParentPaint
@@ -769,7 +769,7 @@ Var
           end;
         end;
 
-     //roozbeh : we dont have these in wince!
+     //roozbeh : we do not have these in wince!
      { SC_MINIMIZE:
         begin
 
@@ -1164,7 +1164,7 @@ begin
                   // to handle checkbox state ourselves, according to msdn state
                   // sequence goes from checked->cleared->grayed etc.
                   Flags := SendMessage(lWinControl.Handle, BM_GETCHECK, 0, 0);
-                  //dont update the check state if is TRadioButton and is already checked
+                  //do not update the check state if is TRadioButton and is already checked
                   if (Flags <> BST_CHECKED) or not (lWinControl is TRadioButton) then
                   begin
                     if (Flags=BST_CHECKED) then
@@ -1191,7 +1191,7 @@ begin
               BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
             end
           // TCustomMemo and TCustomFloatSpinEdit are also TCustomEdit
-          // so dont check first only for TCustomEdit
+          // so do not check first only for TCustomEdit
           // Fixes bug http://bugs.freepascal.org/view.php?id=14378
           else if (lWinControl is TCustomEdit) then
           begin
@@ -2099,7 +2099,7 @@ begin
       end;
     end;
 
-    //roozbeh : dont have these on ce!
+    //roozbeh : do not have these on ce!
     {WM_ENDSESSION:
     begin
       if (Application<>nil) and (TWinCEWidgetSet(WidgetSet).AppHandle=Window) and

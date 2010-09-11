@@ -739,7 +739,7 @@ function TCTDirectoryCache.FindFile(const ShortFilename: string;
   
   procedure RaiseDontKnow;
   begin
-    raise Exception.Create('dont know FileCase '+IntToStr(ord(FileCase)));
+    raise Exception.Create('do not know FileCase '+IntToStr(ord(FileCase)));
   end;
   
 var

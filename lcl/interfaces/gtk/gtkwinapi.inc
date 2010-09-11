@@ -1224,7 +1224,7 @@ begin
   Result := 0;
   pNewDC := NewDC;
 
-  // dont copy
+  // do not copy
   // In a compatible DC you have to select a bitmap into it
 (*
   if IsValidDC(DC) then
@@ -7798,7 +7798,7 @@ begin
       FreeGDIColor(aDC.CurrentBackColor);}
 
       try
-        { On root window, we don't allocate a graphics context and so we dont free}
+        { On root window, we don't allocate a graphics context and so we do not free}
         if aDC.HasGC then
         begin
           gdk_gc_unref(aDC.GC);

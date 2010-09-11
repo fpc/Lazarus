@@ -1859,7 +1859,7 @@ end;
 function TThemeServices.GetDetailSize(Details: TThemedElementDetails): TSize;
 begin
   // default values here
-  // -1 mean that we dont know size of detail
+  // -1 mean that we do not know size of detail
   Result := Size(-1, -1);
   case Details.Element of
     teButton:

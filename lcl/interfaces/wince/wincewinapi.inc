@@ -1592,7 +1592,7 @@ begin
 
   if lpH.biWidth mod nPadWidth <> 0  then
   pad := nPadWidth - lpH.biWidth mod nPadWidth;
-  // there are problems with padding. i dont know the rules
+  // there are problems with padding. i do not know the rules
   // anymore...
   pad := 0;
   // This is wrong when the infoheader is followed by color data...
@@ -2192,7 +2192,7 @@ begin
   if not Result then Exit;
 
   // No special handling for maximized windows
-  // they dont exist in wince anyway, they are
+  // they do not exist in wince anyway, they are
   // emulated by calculating the desktop size
   Width := R.Right - R.Left;
   Height := R.Bottom - R.Top;

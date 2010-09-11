@@ -455,7 +455,7 @@ begin
     Setting modal flags is done in TQtWSCustomControl.ShowHide
     Since that flags has effect only when Widget is not visible
     
-    We can of course hide widget, set flags here and then show it, but we dont
+    We can of course hide widget, set flags here and then show it, but we do not
     want window flickering :)
   }
 end;

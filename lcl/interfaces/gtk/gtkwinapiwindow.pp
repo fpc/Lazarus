@@ -588,7 +588,7 @@ begin
 
 
   // DO NOT supress further processing. The next one who changes that please do the debugging too.
-  // just dont.
+  // just do not.
   
 {$ifdef gtk2}
   Result := gtk_False;

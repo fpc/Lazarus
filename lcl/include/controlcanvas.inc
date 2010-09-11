@@ -87,7 +87,7 @@ begin
       debugln(['TControlCanvas.CreateHandle WARNING: accessing the canvas of '+DbgSName(FControl)+' is not supported outside of paint message']);
     if FDeviceContext = 0 then
     begin
-      // store the handle locally since  we need it to check (and dont
+      // store the handle locally since  we need it to check (and do not
       // want to fire creation events)
       FDeviceContext := FControl.GetDeviceContext(FWindowHandle);
     end;

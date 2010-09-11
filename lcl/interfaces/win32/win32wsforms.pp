@@ -556,7 +556,7 @@ begin
   H := SizeRect.Bottom - SizeRect.Top;
   
   // we are calling setbounds in TWinControl.Initialize
-  // if position is default it will be changed to designed. We dont want this.
+  // if position is default it will be changed to designed. We do not want this.
   if wcfInitializing in TWinControlAccess(AWinControl).FWinControlFlags then
   begin
     if GetWindowRect(AForm.Handle, CurRect) then

@@ -116,7 +116,7 @@ begin
 
   StyleOption := QStyleOption_create(1, integer(QStyleOptionSO_Default));
   try
-    // I dont know the reason, but under windows down arrow size is very small
+    // I do not know the reason, but under windows down arrow size is very small
     // and is not dependent on passed ARect.
     // There is nothing in qt source that can cause such bad painting.
     // Other styles draw down arrow very well.

@@ -441,7 +441,7 @@ class procedure TDockHeader.Draw(ACanvas: TCanvas; ACaption: String; DockBtnImag
 var
   BtnRect: TRect;
   DrawRect: TRect;
-  // LCL dont handle orientation in TFont
+  // LCL do not handle orientation in TFont
   OldFont, RotatedFont: HFONT;
   OldMode: Integer;
   ALogFont: TLogFont;

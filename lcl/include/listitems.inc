@@ -621,7 +621,7 @@ begin
   for I := 0 to Count - 1 do
   begin
     ListItem := Item[I];
-    // dont force subitem creation
+    // do not force subitem creation
     if ListItem.FSubItems = nil then Continue;
     for J := 0 to  ListItem.SubItems.Count - 1 do
     begin

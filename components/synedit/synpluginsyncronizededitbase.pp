@@ -510,7 +510,7 @@ begin
          (Cells[i].LogStart.y < aRow) ) and
        ( ((Cells[i].LogEnd.y = aRow) and (Cells[i].LogEnd.x > Col)) or
          (Cells[i].LogEnd.y > aRow) ) and
-       (Cells[i].Group >= 0) // dont't display negative groups
+       (Cells[i].Group >= 0) // do not't display negative groups
     then begin
       if i = CurrentCell then
         Result := MarkupInfoCurrent

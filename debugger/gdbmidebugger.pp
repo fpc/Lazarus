@@ -705,7 +705,7 @@ begin
   if Map = nil then Exit(0);
 
   ID.Line := ALine;
-  // since we dont have column info we map all on column 0
+  // since we do not have column info we map all on column 0
   // ID.Column := AColumn;
   ID.Column := 0;
   if (Map = nil) then Exit(0);
@@ -2775,7 +2775,7 @@ begin
   then begin
     Map := TMap(FSourceNames.Objects[idx]);
     ID.Line := ALine;
-    // since we dont have column info we map all on column 0
+    // since we do not have column info we map all on column 0
     // ID.Column := AColumn;
     ID.Column := 0;
     Result := (Map <> nil);
@@ -3316,7 +3316,7 @@ begin
   if StrToIntDef('$'+S, 0) <> ATag then Exit;
 
   // we're stopped in our thread
-  if FPauseWaitState = pwsInternal then Exit; // internal, dont care
+  if FPauseWaitState = pwsInternal then Exit; // internal, do not care
 
   S := '';
   if not ExecuteCommand('-thread-list-ids', [cfIgnoreError], R) then Exit;
@@ -4100,7 +4100,7 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
 
     // We are here in 2 cases
     // 1) there are no symbols at all
-    //    We dont have to know the calling convention
+    //    We do not have to know the calling convention
     // 2) target is compiled with an earlier version than 1.9.2
     //    params are passes by stack
     Exclude(FTargetFlags, tfRTLUsesRegCall);

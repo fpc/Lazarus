@@ -5683,7 +5683,7 @@ begin
 
     // Paul: if we have a mask in the description then we need to set it manually
     // by Masked[x, y] := Color.Alpha = AlphaTransparent, but to do that we must
-    // read format ourself. fpReaders set alpha instead - they dont have Masked[].
+    // read format ourself. fpReaders set alpha instead - they do not have Masked[].
     // So if we want true description with mask we must teach our SetInternalColor
     // method to handle Alpha if mask needed (or do it any other way). In other words
     // this is now unimplemented and we'll get randomly masked image.

@@ -662,60 +662,60 @@ var
   
   procedure AddM;
   begin
-    AddModRM([modMem], OperandSize32, reg0 {dont care});
+    AddModRM([modMem], OperandSize32, reg0 {do not care});
   end;
 
   procedure AddMa;
   begin
-    AddModRM([modMem], OperandSize32, reg0 {dont care});
+    AddModRM([modMem], OperandSize32, reg0 {do not care});
   end;
 
   procedure AddMb;
   begin
-    AddModRM([modMem], os8, reg0 {dont care});
+    AddModRM([modMem], os8, reg0 {do not care});
   end;
 
   procedure AddMd;
   begin
-    AddModRM([modMem], os32, reg0 {dont care});
+    AddModRM([modMem], os32, reg0 {do not care});
   end;
   
   procedure AddMd_q;
   begin
     if flagRex in Flags
-    then AddModRM([modMem], os64, reg0 {dont care})
-    else AddModRM([modMem], os32, reg0 {dont care});
+    then AddModRM([modMem], os64, reg0 {do not care})
+    else AddModRM([modMem], os32, reg0 {do not care});
   end;
 
   procedure AddMdq;
   begin
-    AddModRM([modMem], os128, reg0 {dont care})
+    AddModRM([modMem], os128, reg0 {do not care})
   end;
 
   procedure AddMp;
   begin
     if OperandSize32 = os16 //XXXX:XXXX
-    then AddModRM([modMem], os32, reg0 {dont care})
-    else AddModRM([modMem], os48, reg0 {dont care});
+    then AddModRM([modMem], os32, reg0 {do not care})
+    else AddModRM([modMem], os48, reg0 {do not care});
   end;
 
   procedure AddMq;
   begin
-    AddModRM([modMem], os64, reg0 {dont care});
+    AddModRM([modMem], os64, reg0 {do not care});
   end;
 
   procedure AddMs;
   begin
     if A64Bit
-    then AddModRM([modMem], os80, reg0 {dont care})
-    else AddModRM([modMem], os48, reg0 {dont care});
+    then AddModRM([modMem], os80, reg0 {do not care})
+    else AddModRM([modMem], os48, reg0 {do not care});
   end;
 
   procedure AddMw_Rv;
   begin
     if Code[ModRMIdx] shr 6 = 3 // mode = 3 -> reg
     then AddModRM([modReg], OperandSize32, OPERAND_REG[OperandSize32])
-    else AddModRM([modMem], os16, reg0 {dont care});
+    else AddModRM([modMem], os16, reg0 {do not care});
   end;
 
   procedure AddOb;
@@ -923,32 +923,32 @@ var
     
     procedure AddMem14_28Env;
     begin
-      AddModRM([modMem], OperandSize32, reg0 {dont care});
+      AddModRM([modMem], OperandSize32, reg0 {do not care});
     end;
 
     procedure AddMem98_108Env;
     begin
-      AddModRM([modMem], OperandSize32, reg0 {dont care});
+      AddModRM([modMem], OperandSize32, reg0 {do not care});
     end;
 
     procedure AddMem16;
     begin
-      AddModRM([modMem], os16, reg0 {dont care});
+      AddModRM([modMem], os16, reg0 {do not care});
     end;
     
     procedure AddMem32;
     begin
-      AddModRM([modMem], os32, reg0 {dont care});
+      AddModRM([modMem], os32, reg0 {do not care});
     end;
     
     procedure AddMem64;
     begin
-      AddModRM([modMem], os64, reg0 {dont care});
+      AddModRM([modMem], os64, reg0 {do not care});
     end;
     
     procedure AddMem80;
     begin
-      AddModRM([modMem], os80, reg0 {dont care});
+      AddModRM([modMem], os80, reg0 {do not care});
     end;
 
     procedure AddReg(AIndex: Byte);

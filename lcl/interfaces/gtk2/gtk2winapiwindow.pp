@@ -420,7 +420,7 @@ function GTKAPIWidgetClient_KeyPress(Widget: PGTKWidget;
 begin
   if (Widget=nil) or (Event=nil) then ;
   // DO NOT supress further processing. The next one who changes that please do the debugging too.
-  // just dont.
+  // just do not.
   Result := gtk_False;
 end;
 

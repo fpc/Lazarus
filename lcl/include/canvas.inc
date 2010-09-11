@@ -194,7 +194,7 @@ begin
   if (OldHandle <> HBRUSH(Brush.Reference.Handle)) and (FSavedBrushHandle=0) then
     FSavedBrushHandle := OldHandle;
   Include(FState, csBrushValid);
-  // dont use color for hatched brushes. windows cannot draw hatches when SetBkColor is called
+  // do not use color for hatched brushes. windows cannot draw hatches when SetBkColor is called
   if ([Brush.Style] * HatchBrushes) = [] then
     SetBkColor(FHandle, Brush.Color);
   if Brush.Style = bsSolid then

@@ -130,7 +130,7 @@ begin
       with ARect do
       begin
         Left := Right;
-        Top := 30; // dont know how to get relative coord
+        Top := 30; // do not know how to get relative coord
         Right := ADialogRect.Right - 4;
         Bottom := ADialogRect.Bottom;
       end;

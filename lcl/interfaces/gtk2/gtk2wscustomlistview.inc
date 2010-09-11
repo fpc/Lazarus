@@ -635,7 +635,7 @@ begin
 
   //set clickable
   gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
-// dont set these here, it will be set by the lcl
+// do not set these here, it will be set by the lcl
 (*
   // set title
   gtk_tree_view_column_set_title(column, PChar(AColumn.Caption));

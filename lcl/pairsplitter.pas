@@ -326,10 +326,10 @@ end;
 
 function TCustomPairSplitter.GetCursor: TCursor;
 begin
-  // Paul Ishenin: I dont know another method to tell internal splitter about
+  // Paul Ishenin: I do not know another method to tell internal splitter about
   // cursor changes
   
-  // if widgetset class dont want to get cursor (has no internal splitter) then
+  // if widgetset class do not want to get cursor (has no internal splitter) then
   // use default lcl handler
   if not TWSCustomPairSplitterClass(WidgetSetClass).GetSplitterCursor(Self, Result) then
     Result := inherited GetCursor;
@@ -340,7 +340,7 @@ begin
   FLoadCursor := Value;
   if not HandleAllocated then
     Exit;
-  // if widgetset class dont want to set cursor (has no internal splitter) then
+  // if widgetset class do not want to set cursor (has no internal splitter) then
   // use default lcl handler
   if not TWSCustomPairSplitterClass(WidgetSetClass).SetSplitterCursor(Self, Value) then
     inherited SetCursor(Value);
