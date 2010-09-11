@@ -38,8 +38,8 @@ unit ComponentPalette;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, Dialogs, Graphics, ExtCtrls, Buttons,
-  FileUtil, Menus, LResources, AVL_Tree,
+  Classes, SysUtils, LCLProc, Controls, Dialogs, Graphics, ExtCtrls, ComCtrls,
+  Buttons, FileUtil, Menus, LResources, AVL_Tree,
   PropEdits, FormEditingIntf, LazIDEIntf, MacroIntf,
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
@@ -68,7 +68,7 @@ type
     procedure PopupMenuPopup(Sender: TObject);
   private
     fComponents: TAVLTree; // tree of TRegisteredComponent sorted for componentclass
-    FNoteBook: TNotebook;
+    FPageControl: TPageControl;
     fNoteBookNeedsUpdate: boolean;
     FOnOpenPackage: TNotifyEvent;
     FOnOpenUnit: TNotifyEvent;
@@ -76,8 +76,8 @@ type
     FSelectionMode: TComponentSelectionMode;
     fUnregisteredIcon: TCustomBitmap;
     fSelectButtonIcon: TCustomBitmap;
-    fUpdatingNotebook: boolean;
-    procedure SetNoteBook(const AValue: TNotebook);
+    fUpdatingPageControl: boolean;
+    procedure SetPageControl(const AValue: TPageControl);
     procedure SelectionToolClick(Sender: TObject);
     procedure ComponentBtnClick(Sender: TObject);
     procedure ComponentBtnDblClick(Sender: TObject);
@@ -100,7 +100,7 @@ type
     function GetSelectButtonIcon: TCustomBitmap;
     procedure ClearButtons; override;
     function SelectButton(Button: TComponent): boolean;
-    procedure ReAlignButtons(Page: TPage);
+    procedure ReAlignButtons(Page: TTabSheet);
     procedure UpdateNoteBookButtons;
     procedure OnGetNonVisualCompIcon(Sender: TObject;
                                      AComponent: TComponent; var Icon: TCustomBitmap);
@@ -110,7 +110,7 @@ type
                        const RegisterProc: RegisterUnitComponentProc); override;
     procedure UpdateVisible; override;
   public
-    property NoteBook: TNotebook read FNoteBook write SetNoteBook;
+    property PageControl: TPageControl read FPageControl write SetPageControl;
     property Selected: TRegisteredComponent read FSelected write SetSelected;
     property SelectionMode: TComponentSelectionMode read FSelectionMode write FSelectionMode;
     property OnOpenPackage: TNotifyEvent read FOnOpenPackage write FOnOpenPackage;
@@ -159,17 +159,17 @@ end;
 
 procedure TComponentPalette.ActivePageChanged(Sender: TObject);
 begin
-  if FNoteBook=nil then exit;
+  if FPageControl=nil then exit;
   if (FSelected<>nil)
-  and (FSelected.Page.PageComponent=FNoteBook.ActivePageComponent)
+  and (FSelected.Page.PageComponent=FPageControl.ActivePage)
   then exit;
   Selected:=nil;
 end;
 
 procedure TComponentPalette.OnPageResize(Sender: TObject);
 begin
-  if Sender is TPage then
-    ReAlignButtons(TPage(Sender));
+  if Sender is TTabSheet then
+    ReAlignButtons(TTabSheet(Sender));
 end;
 
 procedure TComponentPalette.OpenPackageClicked(Sender: TObject);
@@ -234,13 +234,13 @@ begin
   end;
 end;
 
-procedure TComponentPalette.SetNoteBook(const AValue: TNotebook);
+procedure TComponentPalette.SetPageControl(const AValue: TPageControl);
 begin
-  if FNoteBook=AValue then exit;
+  if FPageControl=AValue then exit;
   ClearButtons;
-  FNoteBook:=AValue;
-  if FNoteBook<>nil then begin
-    FNoteBook.OnPageChanged:=@ActivePageChanged;
+  FPageControl:=AValue;
+  if FPageControl<>nil then begin
+    FPageControl.OnPageChanged:=@ActivePageChanged;
   end;
   UpdateNoteBookButtons;
 end;
@@ -308,8 +308,8 @@ begin
     or (not FSelected.CanBeCreatedInDesigner) then
       FSelected:=nil;
   end;
-  if FNoteBook=nil then exit;
-  // unselect all other buttons on all other notebook pages
+  if FPageControl=nil then exit;
+  // unselect all other buttons on all other PageControl pages
   for i:=0 to Count-1 do begin
     CurPage:=Pages[i];
     if (FSelected=nil) or (FSelected.Page<>CurPage) then begin
@@ -318,9 +318,9 @@ begin
     end;
   end;
   // select button
-  if (FSelected<>nil) and (FNoteBook<>nil) then begin
+  if (FSelected<>nil) and (FPageControl<>nil) then begin
     TSpeedButton(FSelected.Button).Down:=true;
-    FNoteBook.ActivePageComponent:=TPage(FSelected.Page.PageComponent);
+    FPageControl.ActivePage:=TTabSheet(FSelected.Page.PageComponent);
   end;
 end;
 
@@ -416,7 +416,7 @@ destructor TComponentPalette.Destroy;
 begin
   if OnComponentIsInvisible=@CheckComponentDesignerVisible then
     OnComponentIsInvisible:=nil;
-  NoteBook:=nil;
+  PageControl:=nil;
   FreeAndNil(fComponents);
   FreeAndNil(fUnregisteredIcon);
   FreeAndNil(fSelectButtonIcon);
@@ -450,8 +450,8 @@ end;
 
 procedure TComponentPalette.ClearButtons;
 begin
-  if FNoteBook<>nil then
-    FNoteBook.DisableAlign;
+  if FPageControl<>nil then
+    FPageControl.DisableAlign;
   Selected:=nil;
   if PopupMenu<>nil then begin
     PopupMenu.Free;
@@ -459,8 +459,8 @@ begin
     OpenPackageMenuItem:=nil;
   end;
   inherited ClearButtons;
-  if FNoteBook<>nil then
-    FNoteBook.EnableAlign;
+  if FPageControl<>nil then
+    FPageControl.EnableAlign;
 end;
 
 function TComponentPalette.SelectButton(Button: TComponent): boolean;
@@ -472,7 +472,7 @@ begin
   Result := (Selected = NewComponent);
 end;
 
-procedure TComponentPalette.ReAlignButtons(Page: TPage);
+procedure TComponentPalette.ReAlignButtons(Page: TTabSheet);
 var
   j: integer;
   buttonx: integer;
@@ -483,8 +483,8 @@ var
   Node: TAVLTreeNode;
 begin
   //DebugLn(['TComponentPalette.ReAlignButtons ',Page.Caption,' ',Page.ClientWidth]);
-  if FNoteBook<>nil then
-    NoteBook.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
+  if FPageControl<>nil then
+    PageControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
   ButtonTree:=nil;
   try
     ButtonTree:=TAVLTree.Create(@CompareControlsWithTag);
@@ -520,8 +520,8 @@ begin
       Node:=ButtonTree.FindSuccessor(Node);
     end;
   finally
-    if NoteBook<>nil then
-      NoteBook.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
+    if PageControl<>nil then
+      PageControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
     FreeAndNil(ButtonTree);
   end;
 end;
@@ -531,32 +531,32 @@ var
   i: Integer;
   PageIndex: Integer;
   CurPage: TBaseComponentPage;
-  CurNoteBookPage: TPage;
+  CurNoteBookPage: TTabSheet;
   CurComponent: TPkgComponent;
   CurBtn: TSpeedButton;
   CurPageIndex: Integer;
   j: Integer;
-  OldActivePage: String;
+  OldActivePage: TTabSheet;
   BtnIndex: Integer;
 begin
-  if fUpdatingNotebook then exit;
+  if fUpdatingPageControl then exit;
   if IsUpdateLocked then begin
     fNoteBookNeedsUpdate:=true;
     exit;
   end;
-  if FNoteBook=nil then begin
+  if FPageControl=nil then begin
     fNoteBookNeedsUpdate:=false;
     exit;
   end;
   //writeln('TComponentPalette.UpdateNoteBookButtons A');
   // lock
-  fUpdatingNotebook:=true;
-  FNoteBook.DisableAlign;
+  fUpdatingPageControl:=true;
+  FPageControl.DisableAlign;
   try
-    OldActivePage:=FNoteBook.ActivePage;
-    // remove every page in the notebook without a visible page
-    for i:=FNoteBook.PageCount-1 downto 0 do begin
-      PageIndex:=IndexOfPageComponent(FNoteBook.Page[i]);
+    OldActivePage:=FPageControl.ActivePage;
+    // remove every page in the PageControl without a visible page
+    for i:=FPageControl.PageCount-1 downto 0 do begin
+      PageIndex:=IndexOfPageComponent(FPageControl.Pages[i]);
       if (PageIndex<0) or (not Pages[PageIndex].Visible) then begin
         if PageIndex>=0 then begin
           CurPage:=Pages[PageIndex];
@@ -565,22 +565,22 @@ begin
           CurBtn.Free;
           Pages[PageIndex].PageComponent:=nil;
         end;
-        FNoteBook.Pages.Delete(i);
+        FPageControl.Pages[i].Free;
       end;
     end;
-    // insert a notebook page for every visible palette page
+    // insert a PageControl page for every visible palette page
     PageIndex:=0;
     for i:=0 to Count-1 do begin
       if not Pages[i].Visible then continue;
       if Pages[i].PageComponent=nil then begin
-        // insert a new notebook page
-        FNoteBook.Pages.Insert(PageIndex,Pages[i].PageName);
-        Pages[i].PageComponent:=FNoteBook.Page[PageIndex];
+        // insert a new PageControl page
+        TCustomNotebook(FPageControl).Pages.Insert(PageIndex,Pages[i].PageName);
+        Pages[i].PageComponent:=FPageControl.Page[PageIndex];
       end else begin
         // move to the right position
-        CurPageIndex:=TPage(Pages[i].PageComponent).PageIndex;
+        CurPageIndex:=TTabSheet(Pages[i].PageComponent).PageIndex;
         if CurPageIndex<>PageIndex then
-          FNoteBook.Pages.Move(CurPageIndex,PageIndex);
+          TCustomNotebook(FPageControl).Pages.Move(CurPageIndex,PageIndex);
       end;
       inc(PageIndex);
     end;
@@ -588,8 +588,8 @@ begin
     for i:=0 to Count-1 do begin
       CurPage:=Pages[i];
       if not CurPage.Visible then continue;
-      CurNoteBookPage:=TPage(CurPage.PageComponent);
-      if not (CurNoteBookPage is TPage) then RaiseException('CurNoteBookPage');
+      CurNoteBookPage:=TTabSheet(CurPage.PageComponent);
+      if not (CurNoteBookPage is TTabSheet) then RaiseException('CurNoteBookPage');
       CurNoteBookPage.OnResize:=@OnPageResize;
       //DebugLn(['TComponentPalette.UpdateNoteBookButtons PAGE=',CurPage.PageName,' PageIndex=',CurNoteBookPage.PageIndex]);
 
@@ -657,17 +657,17 @@ begin
       ReAlignButtons(CurNoteBookPage);
     end;
     // restore active page
-    if (OldActivePage<>'') and (FNoteBook.Pages.IndexOf(OldActivePage)>=0) then
+    if (OldActivePage<>nil) and (FPageControl.IndexOf(OldActivePage)>=0) then
     begin
-      FNoteBook.ActivePage:=OldActivePage;
-    end else if FNoteBook.PageCount>0 then begin
-      FNoteBook.PageIndex:=0;
+      FPageControl.ActivePage:=OldActivePage;
+    end else if FPageControl.PageCount>0 then begin
+      FPageControl.PageIndex:=0;
     end;
   finally
     // unlock
-    fUpdatingNotebook:=false;
+    fUpdatingPageControl:=false;
     fNoteBookNeedsUpdate:=false;
-    FNoteBook.EnableAlign;
+    FPageControl.EnableAlign;
   end;
   //writeln('TComponentPalette.UpdateNoteBookButtons END');
 end;
@@ -712,11 +712,11 @@ end;
 
 procedure TComponentPalette.UpdateVisible;
 begin
-  NoteBook.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ShowHideControls'){$ENDIF};
+  PageControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ShowHideControls'){$ENDIF};
   try
     inherited UpdateVisible;
   finally
-    NoteBook.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ShowHideControls'){$ENDIF};
+    PageControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ShowHideControls'){$ENDIF};
   end;
 end;
 

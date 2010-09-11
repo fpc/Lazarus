@@ -337,7 +337,7 @@ type
       //itmHelpTools: TIDEMenuSection;
 
     // component palette
-    ComponentNotebook : TNotebook;
+    ComponentPageControl: TPageControl;
     GlobalMouseSpeedButton: TSpeedButton;
   private
     FOldWindowState: TWindowState;

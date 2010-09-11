@@ -1825,9 +1825,9 @@ end;
 procedure TMainIDE.SetupComponentNoteBook;
 begin
   // Component Notebook
-  MainIDEBar.ComponentNotebook := TNotebook.Create(OwningComponent);
-  with MainIDEBar.ComponentNotebook do begin
-    Name := 'ComponentNotebook';
+  MainIDEBar.ComponentPageControl := TPageControl.Create(OwningComponent);
+  with MainIDEBar.ComponentPageControl do begin
+    Name := 'ComponentPageControl';
     Align := alClient;
     Visible:=EnvironmentOptions.ComponentPaletteVisible;
     Parent := MainIDEBar;
@@ -1843,9 +1843,9 @@ begin
   if EnvironmentOptions=nil then exit;
   // update all hints in the component palette
   CurShowHint:=EnvironmentOptions.ShowHintsForComponentPalette;
-  for i:=0 to MainIDEBar.ComponentNotebook.PageCount-1 do begin
-    for j:=0 to MainIDEBar.ComponentNotebook.Page[i].ControlCount-1 do begin
-      AControl:=MainIDEBar.ComponentNotebook.Page[i].Controls[j];
+  for i:=0 to MainIDEBar.ComponentPageControl.PageCount-1 do begin
+    for j:=0 to MainIDEBar.ComponentPageControl.Page[i].ControlCount-1 do begin
+      AControl:=MainIDEBar.ComponentPageControl.Page[i].Controls[j];
       AControl.ShowHint:=CurShowHint;
     end;
   end;
@@ -3364,9 +3364,9 @@ procedure TMainIDE.DoToggleViewComponentPalette;
 var
   ComponentPaletteVisible: boolean;
 begin
-  ComponentPaletteVisible:=not MainIDEBar.ComponentNotebook.Visible;
+  ComponentPaletteVisible:=not MainIDEBar.ComponentPageControl.Visible;
   MainIDEBar.itmViewComponentPalette.Checked:=ComponentPaletteVisible;
-  MainIDEBar.ComponentNotebook.Visible:=ComponentPaletteVisible;
+  MainIDEBar.ComponentPageControl.Visible:=ComponentPaletteVisible;
   EnvironmentOptions.ComponentPaletteVisible:=ComponentPaletteVisible;
 end;
 

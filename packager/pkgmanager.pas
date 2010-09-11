@@ -1833,7 +1833,7 @@ end;
 destructor TPkgManager.Destroy;
 begin
   if IDEComponentPalette<>nil then
-    TComponentPalette(IDEComponentPalette).Notebook:=nil;
+    TComponentPalette(IDEComponentPalette).PageControl:=nil;
   FreeThenNil(LazPackageDescriptors);
   PackageGraph.FreeAutoInstallDependencies;
   FreeThenNil(PackageGraphExplorer);
@@ -1955,7 +1955,7 @@ end;
 
 procedure TPkgManager.UpdateVisibleComponentPalette;
 begin
-  TComponentPalette(IDEComponentPalette).NoteBook:=MainIDEBar.ComponentNotebook;
+  TComponentPalette(IDEComponentPalette).PageControl:=MainIDEBar.ComponentPageControl;
   TComponentPalette(IDEComponentPalette).UpdateNoteBookButtons;
 end;
 
