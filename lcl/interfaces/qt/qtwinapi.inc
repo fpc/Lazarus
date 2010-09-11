@@ -5677,21 +5677,53 @@ end;
   If the point is over a static text control,
   the return value is a handle to the window under the static text control.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.WindowFromPoint(Point: TPoint): HWND;
+function TQtWidgetSet.WindowFromPoint(APoint: TPoint): HWND;
 var
   Widget: QWidgetH;
   AForm: TCustomForm;
 begin
-  {$note QApplication_widgetAt() is very expensive operation,
-    we must do some kind of caching here like gtk2 does.}
+  // we use cachedresults instead of calling very expensive widgetAt
+  if (FLastWFPResult <> 0) then
+  begin
+    if not IsValidHandle(FLastWFPResult) then
+      FLastWFPResult := 0
+    else
+    if (APoint.X = FLastWFPMousePos.X) and (APoint.Y = FLastWFPMousePos.Y) and
+      TQtWidget(FLastWFPResult).getVisible and
+      TQtWidget(FLastWFPResult).getEnabled then
+    begin
+      // return from cache
+      exit(FLastWFPResult);
+    end;
+  end;
+
   Result := 0;
-  Widget := QApplication_widgetAt(Point.x, Point.y);
+  Widget := QApplication_widgetAt(APoint.x, APoint.y);
+
   if (Widget = nil) then
+  begin
+    if (APoint.X = FLastWFPMousePos.X) and (APoint.Y = FLastWFPMousePos.Y) then
+    begin
+      FLastWFPMousePos := Point(MaxInt, MaxInt);
+      FLastWFPResult := 0;
+    end;
     exit;
+  end;
 
   // according to MSDN disabled widget shouldn't be in result
+  // but win32 returns first enabled and visible parent !
   if not QWidget_isEnabled(Widget) or not QWidget_isVisible(Widget) then
-    exit;
+  begin
+    while Widget <> nil do
+    begin
+      Widget := QWidget_parentWidget(Widget);
+      if (Widget <> nil) and QWidget_IsVisible(Widget) and
+        QWidget_isEnabled(Widget) then
+          break;
+    end;
+    if Widget = nil then
+      exit;
+  end;
 
   Result := HWND(QtObjectFromWidgetH(Widget));
 
@@ -5700,44 +5732,34 @@ begin
   begin
     if QWidget_parentWidget(Widget) <> nil then
     begin
-      Widget := QWidget_parentWidget(Widget);
-      Result := HWND(QtObjectFromWidgetH(Widget));
+      while (Widget <> nil) do
+      begin
+        Widget := QWidget_parentWidget(Widget);
+        if Widget <> nil then
+          Result := HWND(QtObjectFromWidgetH(Widget));
+        if Result <> 0 then
+          break;
+      end;
     end;
   end;
 
   if (Result <> 0) and
     not (TQtWidget(Result) is TQtMainWindow) then
   begin
-    // just in case we are an orphan
-    if TQtWidget(Result).LCLObject = nil then
-    begin
-      while Widget <> nil do
-      begin
-        Widget := QWidget_parentWidget(Widget);
-        if Widget <> nil then
-        begin
-          Result := HWND(QtObjectFromWidgetH(Widget));
-          if (Result <> 0) and (TQtWidget(Result).LCLObject <> nil) then
-            break;
-        end;
-      end;
-    end;
-
-    //if we are TQtViewPort -> return correct handle -> TQtCustomControl !
-    if (Result <> 0) and (TQtWidget(Result) is TQtViewPort) then
-    begin
-      Widget := QWidget_parentWidget(TQtWidget(Result).Widget);
-      Result := HWND(QtObjectFromWidgetH(Widget));
-    end;
-
+    if TQtWidget(Result).getOwner <> nil then
+      Result := HWND(TQtWidget(Result).getOwner);
   end else
   begin
-    Widget := QApplication_topLevelAt(Point.x, Point.y);
+    Widget := QApplication_topLevelAt(APoint.x, APoint.y);
     if (Widget <> nil) and QWidget_isEnabled(Widget) then
       Result := HWND(QtObjectFromWidgetH(Widget))
     else
       Result := 0;
   end;
+
+  // add to cache
+  FLastWFPResult := Result;
+  FLastWFPMousePos := APoint;
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line

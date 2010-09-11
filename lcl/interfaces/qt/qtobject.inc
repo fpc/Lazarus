@@ -52,6 +52,9 @@ end;
  ------------------------------------------------------------------------------}
 constructor TQtWidgetSet.Create;
 begin
+  FLastWFPMousePos := Point(MaxInt, MaxInt);
+  FLastWFPResult := 0;
+
   inherited Create;
 
   App := QApplication_Create(@argc, argv);
@@ -455,6 +458,9 @@ function TQtWidgetSet.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cd
 var
   AObject: TQtObject;
   W: TQtMainWindow;
+  R: TRect;
+  P: TPoint;
+  Pt: TQtPoint;
 begin
   Result := False;
   case QEvent_type(Event) of
@@ -489,6 +495,21 @@ begin
         begin
           ClearCachedColors;
           FreeSysColorBrushes(True);
+        end;
+      end;
+    QEventShow,
+    QEventHide:
+      begin
+        // invalidate widgetAt cache if needed
+        if QObject_isWidgetType(Sender) and IsValidHandle(FLastWFPResult) then
+        begin
+          QWidget_geometry(QWidgetH(Sender), @R);
+          Pt.x := 0;
+          Pt.y := 0;
+          QWidget_mapToGlobal(QWidgetH(Sender), @Pt, @Pt);
+          R := Rect(Pt.X, Pt.Y, Pt.X + (R.Right - R.Left), Pt.Y + (R.Bottom - R.Top));
+          if PtInRect(R, FLastWFPMousePos) then
+            InvalidateWidgetAtCache;
         end;
       end;
     LCLQt_Destroy:
@@ -699,6 +720,24 @@ begin
   System.EnterCriticalsection(CriticalSection);
   Result := SavedHandlesList.HasId(TObject(AHandle));
   System.LeaveCriticalsection(CriticalSection);
+end;
+
+{Params: HWND
+ This function is needed by cache used in TQtWidgetSet.WindowFromPoint().
+ Returns: True if we are cached (FLastWFPResult).
+}
+function TQtWidgetSet.IsWidgetAtCache(AHandle: HWND): Boolean;
+begin
+  Result := AHandle = FLastWFPResult;
+end;
+
+{Params: none
+ Invalidates TQtWidgetSet.WindowFromPoint() cache (FLastWFPResult).
+ Returns: nothing
+}
+procedure TQtWidgetSet.InvalidateWidgetAtCache;
+begin
+  FLastWFPResult := 0;
 end;
 
 function TQtWidgetSet.DragImageList_BeginDrag(AImage: QImageH;

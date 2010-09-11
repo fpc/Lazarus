@@ -209,6 +209,7 @@ type
     function getLayoutDirection: QtLayoutDirection;
     function getVisible: Boolean; virtual;
     function getVisibleTo(AWidget: QWidgetH): Boolean; virtual;
+    function getOwner: TQtWidget;
     function getParent: QWidgetH;
     function getPos: TQtPoint;
     function getFrameSize: TSize;
@@ -2046,6 +2047,11 @@ begin
   if LCLObject <> nil then
   begin
     case QEvent_type(Event) of
+      QEventEnabledChange:
+        begin
+          if QtWidgetSet.IsWidgetAtCache(HWND(Self)) then
+            QtWidgetSet.InvalidateWidgetAtCache;
+        end;
       QEventShow: SlotShow(True);
       QEventHide: SlotShow(False);
       QEventClose:
@@ -2950,6 +2956,8 @@ begin
     WriteLn('TQtWidget.SlotMove');
   {$endif}
 
+  if QtWidgetSet.IsWidgetAtCache(HWND(Self)) then
+    QtWidgetSet.InvalidateWidgetAtCache;
   // do not loop with LCL
   if InUpdate then
     exit;
@@ -3094,7 +3102,10 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotResize');
   {$endif}
-  
+
+  if QtWidgetSet.IsWidgetAtCache(HWND(Self)) then
+    QtWidgetSet.InvalidateWidgetAtCache;
+
   // return size w/o frame
   NewSize := QResizeEvent_size(QResizeEventH(Event))^;
 {
@@ -3379,6 +3390,8 @@ end;
 
 function TQtWidget.getEnabled: Boolean;
 begin
+  if Widget = nil then
+    exit(False);
   Result := QWidget_isEnabled(Widget);
 end;
 
@@ -3409,12 +3422,21 @@ end;
 
 function TQtWidget.getVisible: boolean;
 begin
+  if Widget = nil then
+    exit(False);
   Result := QWidget_isVisible(Widget);
 end;
 
 function TQtWidget.getVisibleTo(AWidget: QWidgetH): Boolean;
 begin
+  if Widget = nil then
+    exit(False);
   Result := QWidget_isVisibleTo(Widget, AWidget);
+end;
+
+function TQtWidget.getOwner: TQtWidget;
+begin
+  Result := FOwner;
 end;
 
 function TQtWidget.getParent: QWidgetH;
@@ -10539,6 +10561,8 @@ end;
 
 function TQtMenu.getVisible: Boolean;
 begin
+  if ActionHandle = nil then
+    exit(False);
   Result := QAction_isVisible(ActionHandle);
 end;
 

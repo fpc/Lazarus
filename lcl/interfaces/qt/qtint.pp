@@ -57,6 +57,11 @@ type
   TQtWidgetSet = Class(TWidgetSet)
   private
     App: QApplicationH;
+
+    // cache for WindowFromPoint
+    FLastWFPMousePos: TPoint;
+    FLastWFPResult: HWND;
+
     FEatNextDeactivate: Boolean;
     FOverrideCursor: TObject;
     SavedDCList: TFPList;
@@ -134,6 +139,11 @@ type
     procedure AddHandle(AHandle: TObject);
     procedure RemoveHandle(AHandle: TObject);
     function IsValidHandle(AHandle: HWND): Boolean;
+
+    // cache for WindowFromPoint to reduce very expensive calls
+    // of QApplication_widgetAt() inside WindowFromPoint().
+    function IsWidgetAtCache(AHandle: HWND): Boolean;
+    procedure InvalidateWidgetAtCache;
 
     // drag image list
     function DragImageList_BeginDrag(AImage: QImageH; AHotSpot: TPoint): Boolean;

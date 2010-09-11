@@ -215,7 +215,7 @@ function SystemParametersInfo(uiAction: DWord; uiParam: DWord; pvParam: Pointer;
 
 function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
 function UpdateWindow(Handle: HWND): Boolean; override;
-function WindowFromPoint(Point: TPoint): HWND; override;
+function WindowFromPoint(APoint: TPoint): HWND; override;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
