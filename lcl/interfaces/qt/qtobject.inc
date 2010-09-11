@@ -501,14 +501,14 @@ begin
     QEventHide:
       begin
         // invalidate widgetAt cache if needed
-        if QObject_isWidgetType(Sender) and IsValidHandle(FLastWFPResult) then
+        if QObject_isWidgetType(Sender) and IsValidWidgetAtCachePointer then
         begin
           QWidget_geometry(QWidgetH(Sender), @R);
           Pt.x := 0;
           Pt.y := 0;
           QWidget_mapToGlobal(QWidgetH(Sender), @Pt, @Pt);
           R := Rect(Pt.X, Pt.Y, Pt.X + (R.Right - R.Left), Pt.Y + (R.Bottom - R.Top));
-          if PtInRect(R, FLastWFPMousePos) then
+          if PtInRect(R, GetWidgetAtCachePoint) then
             InvalidateWidgetAtCache;
         end;
       end;
@@ -738,6 +738,25 @@ end;
 procedure TQtWidgetSet.InvalidateWidgetAtCache;
 begin
   FLastWFPResult := 0;
+end;
+
+{Params: none
+ Returns: True if last cached FLastWFPResult is valid otherwise False.
+}
+function TQtWidgetSet.IsValidWidgetAtCachePointer: Boolean;
+begin
+  if FLastWFPResult = 0 then
+    exit(False);
+  Result := IsValidHandle(FLastWFPResult);
+end;
+
+{Params: none
+ Returns last cached FLastWFPMousePos
+ Returns: TPoint
+}
+function TQtWidgetSet.GetWidgetAtCachePoint: TPoint;
+begin
+  Result := FLastWFPMousePos;
 end;
 
 function TQtWidgetSet.DragImageList_BeginDrag(AImage: QImageH;

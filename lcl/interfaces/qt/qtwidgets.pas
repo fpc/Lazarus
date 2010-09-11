@@ -2032,6 +2032,8 @@ var
   QColor, OldColor: TQColor;
   Color: TColor;
   QtEdit: IQtEdit;
+  R: TRect;
+  Pt: TQtPoint;
 begin
   BeginEventProcessing;
   Result := False;
@@ -2049,8 +2051,19 @@ begin
     case QEvent_type(Event) of
       QEventEnabledChange:
         begin
+          // if we are disabled, imediatelly invalidate widgetAt cache
           if QtWidgetSet.IsWidgetAtCache(HWND(Self)) then
-            QtWidgetSet.InvalidateWidgetAtCache;
+            QtWidgetSet.InvalidateWidgetAtCache
+          else
+          if QtWidgetSet.IsValidWidgetAtCachePointer then
+          begin
+            Pt := QtPoint(0, 0);
+            QWidget_mapToGlobal(Widget, @Pt, @Pt);
+            QWidget_geometry(Widget, @R);
+            R := Rect(Pt.X, Pt.Y, Pt.X + (R.Right - R.Left), Pt.Y + (R.Bottom - R.Top));
+            if PtInRect(R, QtWidgetSet.GetWidgetAtCachePoint) then
+              QtWidgetSet.InvalidateWidgetAtCache;
+          end;
         end;
       QEventShow: SlotShow(True);
       QEventHide: SlotShow(False);

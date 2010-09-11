@@ -5685,7 +5685,7 @@ begin
   // we use cachedresults instead of calling very expensive widgetAt
   if (FLastWFPResult <> 0) then
   begin
-    if not IsValidHandle(FLastWFPResult) then
+    if not IsValidWidgetAtCachePointer then
       FLastWFPResult := 0
     else
     if (APoint.X = FLastWFPMousePos.X) and (APoint.Y = FLastWFPMousePos.Y) and

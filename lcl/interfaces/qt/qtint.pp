@@ -144,6 +144,8 @@ type
     // of QApplication_widgetAt() inside WindowFromPoint().
     function IsWidgetAtCache(AHandle: HWND): Boolean;
     procedure InvalidateWidgetAtCache;
+    function IsValidWidgetAtCachePointer: Boolean;
+    function GetWidgetAtCachePoint: TPoint;
 
     // drag image list
     function DragImageList_BeginDrag(AImage: QImageH; AHotSpot: TPoint): Boolean;
