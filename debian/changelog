@@ -2,7 +2,94 @@ lazarus (0.9.29-0) unstable; urgency=low
 
   * Snapshot building.
 
- -- Abou Al Montacir <abou.almontacir@sfr.fr>  Sat, 17 Nov 2009 20:08:00 +0100
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Sat, 11 Nov 2010 01:03:00 +0200
+
+lazarus (0.9.28.2-12) unstable; urgency=low
+
+  * Fixed a bug causing safe-upgrade to fail because lazarus-ide-qt4 is
+    installed to fix dependencies of lazarus-ide and that Qt based IDE is not
+    packaged. The lazarus-ide-qt4 now installs the GTK based IDE by depending
+    on lazarus-ide-gtk until Qt IDE gets packaged. (Closes: Bug#594611)
+  * Removed lintian warning by addeing lcl-gtk2 as first alternative for
+    lcl-units dependency list.
+  * Bumped standard version to 3.9.1.
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Mon, 30 Aug 2010 13:32:00 +0100
+
+lazarus (0.9.28.2-11) unstable; urgency=low
+
+  * Fixed scrolling window under GTK implementing ScrollBy method.
+  * Changed new release scanning to be uscan based.
+  * Fixed dependency issue : lcl-units depends on lcl-gtk but was providing it
+    causing lcl-gtk2 not being installed. (Closes: Bug#580557, Bug#579128)
+  * Fixed logic bug in code tools when adding published field of a class.
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Sun, 20 Jun 2010 16:53:00 +0100
+
+lazarus (0.9.28.2-10) unstable; urgency=low
+
+  * Fixed memory leak in GTK based lazarus IDE binary  (Closes: Bug#571997)
+  * Fixed crach by avoiding trapping some FPU exceptions which occurs in linked
+    C code. (Closes: Bug#571998) 
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Mon, 09 Apr 2010 00:23:00 +0100
+
+lazarus (0.9.28.2-9) unstable; urgency=low
+
+  * Bumped standard version.
+  * Split lazarus-ide package into the following packages in order to reduce
+    its size and afford more widgetsets support. (Closes: Bug#553519)
+      + lazarus-ide-gtk2 : contains IDE linked to GTK+2 backend
+      + lazarus-ide-qt4  : contains IDE linked to Qt4 backend
+      + lazarus-ide : contains lazarus launcher and depending on either above
+        packges
+      + lcl-utils: contains command line tools (lazbuild, ...)
+      + lcl-units : contains widgetset independent binary units depending on
+        either follwing packages
+      + lcl-nogui : contains NOGUI backend based LCL interface units
+      + lcl-gtk2 : contains GTK+2 backend based LCL interface untis
+      + lcl-qt4 : contains Qt4 backend based LCL interface units
+      + lcl : metapackage depending on lcl-units and lcl-utils.
+  * Fixed help for FPC identifiers applying a ptch from upstream and filled
+    correct FPC source directory. (Closes: Bug#507523)
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Mon, 15 Mar 2010 20:02:00 +0100
+
+lazarus (0.9.28.2-8) unstable; urgency=low
+
+  * Added dependency on ${misc:Depends} as required for packages using
+    debhelper.
+  * Removed pre-dependency on dpkg (>= 1.10.24).
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Mon, 25 Jan 2010 23:48:00 +0100
+
+lazarus (0.9.28.2-7) unstable; urgency=low
+
+  * Removed image files from sources as these are not used by the code tool.
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Sat, 07 Jan 2010 19:04:00 +0100
+
+lazarus (0.9.28.2-6) unstable; urgency=low
+
+  * Removed lintian warnings : empty directories in source package.
+  * Removed lintian warnings : Fixed spell errors.
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Sat, 06 Jan 2010 23:05:00 +0100
+
+lazarus (0.9.28.2-5) unstable; urgency=low
+
+  * Included quilt.make in rules file. (Closes: Bug#538553)
+  * Build against fpc_2.2.4-5. (Closes: Bug#563236)
+  * Removed lintian warnings.
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Sat, 03 Jan 2010 19:18:00 +0100
+
+lazarus (0.9.28.2-4) unstable; urgency=low
+
+  * Use default X web browser instead of epiphany. 
+  * Fixed online help default page URL.
+
+ -- Abou Al Montacir <abou.almontacir@sfr.fr>  Sat, 29 Nov 2009 22:52:00 +0100
 
 lazarus (0.9.28.2-3) unstable; urgency=low
 
@@ -205,7 +292,7 @@ lazarus (0.9.24-0-6) unstable; urgency=low
     + lazarus-ide : for IDE and binary files
     + lazarus-src : for source files
     + lazarus-doc : for documentation
-    + lazarus : a meta package depending on previous packages
+    + lazarus : a metapackage depending on previous packages
 
   [ Torsten Werner ]
   * Add Build-Depends: fp-units-gtk2, fp-units-i386 [i386].

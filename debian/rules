@@ -55,7 +55,7 @@ ifndef FPCDIR
 export FPCDIR=/usr/share/fpcsrc/${FPCVER}
 endif
 # Configure patch system
-export QUILT_PATCHES=debian/patches
+include /usr/share/quilt/quilt.make
 
 #export DH_VERBOSE=1
 
@@ -82,17 +82,8 @@ clean-patched:
 	${RM} lazarus startlazarus lazbuild
 	$(MAKE) distclean ${BUILDOPTS}
 	$(MAKE) -C docs/html clean
-	find '(' -name '*.a' -or -name '*.o' -or -name '*.so' -or -name '*.ppu' ')' -exec ${RM} '{}' ';'
+	find -regex '.*\.\(a\|o\|so\.*\|ppu\)' -delete
 
-patch: patch-stamp
-
-patch-stamp:
-	test ! -s ${QUILT_PATCHES}/series || quilt push -a
-	touch patch-stamp
-
-unpatch:
-	test ! -s ${QUILT_PATCHES}/series || quilt pop -a
-	rm -rf patch-stamp debian/patched
 
 ###################
 # Debian files
@@ -127,6 +118,7 @@ build-arch-stamp:
 	dh_testdir
 	$(MAKE) lcl packager/registration ideintf bigidecomponents examples $(BUILDOPTS)
 	$(MAKE) bigide USESVN2REVISIONINC=0 $(BUILDOPTS)
+	mv $(CURDIR)/lazarus $(CURDIR)/lazarus-gtk2
 	$(MAKE) lazbuilder $(BUILDOPTS)
 	$(MAKE) tools $(BUILDOPTS)
 	touch build-arch-stamp
@@ -143,7 +135,7 @@ install-arch-stamp:
 	install -d $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}/tools
 	# Install the IDE & its accessories
 	${CP} -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION} \
-		$(CURDIR)/lazarus \
+		$(CURDIR)/lazarus-gtk2 \
 		$(CURDIR)/lazbuild \
 		$(CURDIR)/startlazarus \
 		$(CURDIR)/languages
@@ -153,7 +145,7 @@ install-arch-stamp:
 		$(CURDIR)/tools/svn2revisioninc \
 		$(CURDIR)/tools/updatepofiles
 	# Install the library files
-	find -name '*.ppu' -or -name '*.[oa]' -or -name '*.so*' | xargs ${CP} --parents -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}
+	find -regex '.*\.\(a\|o\|so\.*\|ppu\)' | xargs ${CP} --parents -t $(INSTALL_DIR)/usr/lib/lazarus/${DEB_UPSTREAM_MAIN_VERSION}
 	# copy icons and menu entries for the GNOME menu
 	install -d $(INSTALL_DIR)/usr/share/pixmaps
 	install -d $(INSTALL_DIR)/usr/share/applications
@@ -172,6 +164,7 @@ install-arch-stamp:
 		$(CURDIR)/docs/Contributors.txt \
 		$(CURDIR)/docs/contributors.utf8 \
 		$(CURDIR)/docs/acknowledgements.txt
+	# Install lintian override files
 	set -x; cd debian/overrides ; for PACKAGE in * ; do \
 	  if [ -d ../$${PACKAGE} ] ; \
 	  then \
@@ -179,6 +172,7 @@ install-arch-stamp:
 	      ../$${PACKAGE}/usr/share/lintian/overrides/$${PACKAGE} ; \
 	  fi ; \
 	done
+	find ${INSTALL_DIR} -empty -delete
 	touch install-arch-stamp
 
 arrange-arch: install-arch arrange-arch-stamp
@@ -196,7 +190,7 @@ install-indep:
 # Documentation
 #
 
-build-doc: build-arch build-doc-stamp
+build-doc: patch debian-files build-doc-stamp
 build-doc-stamp:
 	@echo "--- Building Documentation"
 	dh_testdir
@@ -213,6 +207,7 @@ install-doc-stamp:
 	cd docs ; ${CP} --parents -t ${DOC_DIR} \
 	  index.html \
 	  images/laztitle.png
+	find ${DOC_DIR} -empty -delete
 	touch install-doc-stamp
 
 ###################
@@ -240,8 +235,9 @@ install-source-stamp:
 		$(CURDIR)/packager \
 		$(CURDIR)/test \
 		$(CURDIR)/tools
-	find $(INSTALL_DIR) -name '*.bmp' -exec chmod 644 '{}' ';'
+	find ${SRC_DIR} -regex '.*\.\(bmp\|jpg\|png\|xpm\)' -delete
 	$(RM) ${SRC_DIR}/components/lazreport/license*.txt
+	find ${SRC_DIR} -empty -delete
 	touch install-source-stamp
 
 ###################
@@ -257,13 +253,14 @@ binary: binary-arch binary-indep
 # Deb building
 #
 
-binary-indep: build-doc install-doc clean-patched install-source debian-files
+binary-indep: clean-patched build-doc install-doc install-source debian-files
 	@echo "--- Building: arch-indep packages"
 	dh_testdir
 	dh_testroot
-	dh_installdocs -i
+	dh_installdocs -i -X.in
 	dh_installchangelogs -i
 	dh_install -i --sourcedir=debian/tmp --list-missing
+	# Install lintian override files
 	set -x; cd debian/overrides ; for PACKAGE in * ; do \
 	  if [ -d ../$${PACKAGE} ] ; \
 	  then \
@@ -304,4 +301,4 @@ binary-arch: arrange-arch
 	configure
 
 get-orig-source:
-	sh debian/orig-tar.sh $(DEB_UPSTREAM_VERSION)
+	-uscan --upstream-version=0 --rename
