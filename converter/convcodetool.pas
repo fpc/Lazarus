@@ -689,8 +689,10 @@ var
           end;
         end;
       end
-      else
+      else begin
+        FuncInfo.EndPos:=CurPos.StartPos;
         CheckSemiColon(FuncInfo);
+      end;
     end;
     FuncInfo.UpdateReplacement;
   end;
