@@ -272,7 +272,7 @@ type
     function GotoLine(Value: Integer): Integer;
 
     procedure CreateEditor(AOwner: TComponent; AParent: TWinControl);
-    procedure UpdateNoteBook(const ANewNoteBook: TSourceNotebook; ANewPage: TPage);
+    procedure UpdateNoteBook(const ANewNoteBook: TSourceNotebook; ANewPage: TTabSheet);
     procedure SetVisible(Value: boolean);
     procedure UnbindEditor;
   protected
@@ -611,7 +611,7 @@ type
     procedure BuildPopupMenu;
     procedure AssignPopupMenu;
     //forwarders to FNoteBook
-    function GetNoteBookPage(Index: Integer): TPage;
+    function GetNoteBookPage(Index: Integer): TTabSheet;
     function GetNotebookPages: TStrings;
     function GetPageCount: Integer;
     function GetPageIndex: Integer;
@@ -636,13 +636,13 @@ type
     procedure UpdatePageNames;
     procedure UpdateProjectFiles;
 
-    property NoteBookPage[Index: Integer]: TPage read GetNoteBookPage;
+    property NoteBookPage[Index: Integer]: TTabSheet read GetNoteBookPage;
     procedure NoteBookInsertPage(Index: Integer; const S: string);
     procedure NoteBookDeletePage(APageIndex: Integer);
     procedure UpdateTabsAndPageTitle;
     procedure UpdateTabsAndPageTimeReached(Sender: TObject);
   protected
-    function NoteBookIndexOfPage(APage: TPage): Integer;
+    function NoteBookIndexOfPage(APage: TTabSheet): Integer;
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
     procedure DragCanceled; override;
@@ -738,9 +738,9 @@ type
     procedure ToggleObjectInspClicked(Sender: TObject);
 
     // editor page history
-    procedure HistorySetMostRecent(APage: TPage);
-    procedure HistoryAdd(APage: TPage);
-    procedure HistoryRemove(APage: TPage);
+    procedure HistorySetMostRecent(APage: TTabSheet);
+    procedure HistoryAdd(APage: TTabSheet);
+    procedure HistoryRemove(APage: TTabSheet);
     function  HistoryGetTopPageIndex: Integer;
 
     // incremental find
@@ -932,7 +932,7 @@ type
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
     procedure GetDefaultLayout(Sender: TObject; aFormName: string;
              out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
-    function  SourceWindowWithPage(const APage: TPage): TSourceNotebook;
+    function  SourceWindowWithPage(const APage: TTabSheet): TSourceNotebook;
     property  SourceWindowByLastFocused[Index: Integer]: TSourceNotebook
               read GetSourceNbByLastFocused;
     // Editors
@@ -2284,7 +2284,7 @@ end;
 
 { The constructor for @link(TSourceEditor).
   AOwner is the @link(TSourceNotebook)
-  and the AParent is usually a page of a @link(TNotebook) }
+  and the AParent is usually a page of a @link(TPageControl) }
 constructor TSourceEditor.Create(AOwner: TComponent; AParent: TWinControl;
   ASharedEditor: TSourceEditor = nil);
 var
@@ -3843,7 +3843,7 @@ begin
   end;
 end;
 
-procedure TSourceEditor.UpdateNoteBook(const ANewNoteBook: TSourceNotebook; ANewPage: TPage);
+procedure TSourceEditor.UpdateNoteBook(const ANewNoteBook: TSourceNotebook; ANewPage: TTabSheet);
 begin
   if FSourceNoteBook = ANewNoteBook then exit;
 
@@ -3859,7 +3859,7 @@ begin
 end;
 
 { AOwner is the TSourceNotebook
-  AParent is a page of the TNotebook }
+  AParent is a page of the TPageControl }
 Procedure TSourceEditor.CreateEditor(AOwner: TComponent; AParent: TWinControl);
 var
   NewName: string;
@@ -4893,6 +4893,8 @@ begin
 end;
 
 Procedure TSourceNotebook.CreateNotebook;
+var
+  APage: TTabSheet;
 Begin
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.CreateNotebook] START');
@@ -4911,13 +4913,12 @@ Begin
     Name:='SrcEditNotebook';
     Parent := Self;
     {$IFDEF IDE_DEBUG}
-    writeln('[TSourceNotebook.CreateNotebook] C');
+    debugln('[TSourceNotebook.CreateNotebook] C');
     {$ENDIF}
     Align := alClient;
-    if PageCount>0 then
-      Pages.Strings[0] := 'unit1'
-    else
-      Pages.Add('unit1');
+    APage:=TTabSheet.Create(FNotebook);
+    APage.Caption:='unit1';
+    APage.Parent:=FNotebook;
     PageIndex := 0;   // Set it to the first page
     if not (nbcPageListPopup in GetCapabilities) then
       PopupMenu := SrcPopupMenu;
@@ -4937,12 +4938,12 @@ Begin
     ShowHint:=true;
     OnShowHint:=@NotebookShowTabHint;
     {$IFDEF IDE_DEBUG}
-    writeln('[TSourceNotebook.CreateNotebook] D');
+    debugln('[TSourceNotebook.CreateNotebook] D');
     {$ENDIF}
     Visible := False;
   end; //with
   {$IFDEF IDE_DEBUG}
-  writeln('[TSourceNotebook.CreateNotebook] END');
+  debugln('[TSourceNotebook.CreateNotebook] END');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}
   CheckHeapWrtMemCnt('[TSourceNotebook.CreateNotebook] END ');
@@ -5411,10 +5412,10 @@ begin
   {$ENDIF}
 end;
 
-function TSourceNotebook.GetNoteBookPage(Index: Integer): TPage;
+function TSourceNotebook.GetNoteBookPage(Index: Integer): TTabSheet;
 begin
   if FNotebook.Visible then
-    Result := FNotebook.Page[Index]
+    Result := FNotebook.Pages[Index]
   else
     Result := nil;
 end;
@@ -5422,7 +5423,7 @@ end;
 function TSourceNotebook.GetNotebookPages: TStrings;
 begin
   if FNotebook.Visible then
-    Result := FNotebook.Pages
+    Result := TCustomNotebook(FNotebook).Pages
   else
     Result := nil;
 end;
@@ -5458,7 +5459,7 @@ begin
     FNotebook.PageIndex := FPageIndex;
     if snNotbookPageChangedNeeded in States then
       NotebookPageChanged(nil);
-    HistorySetMostRecent(FNotebook.Page[FPageIndex]);
+    HistorySetMostRecent(FNotebook.Pages[FPageIndex]);
   end;
 end;
 
@@ -5864,7 +5865,7 @@ begin
     FNotebook.Visible := True;
     NotebookPages[Index] := S;
   end;
-  HistoryAdd(FNotebook.Page[Index]);
+  HistoryAdd(FNotebook.Pages[Index]);
   UpdateTabsAndPageTitle;
 end;
 
@@ -5875,7 +5876,7 @@ begin
     // widgetset will choose one and will send a message
     // if this is the current page, switch to right APageIndex (if possible)
     //todo: determine whether we can use SetPageIndex instead
-    HistoryRemove(FNotebook.Page[APageIndex]);
+    HistoryRemove(FNotebook.Pages[APageIndex]);
     if PageIndex = APageIndex then begin
       if EditorOpts.UseTabHistory then
         FPageIndex := HistoryGetTopPageIndex
@@ -5912,7 +5913,7 @@ begin
   UpdateTabsAndPageTitle;
 end;
 
-function TSourceNotebook.NoteBookIndexOfPage(APage: TPage): Integer;
+function TSourceNotebook.NoteBookIndexOfPage(APage: TTabSheet): Integer;
 begin
   Result := FNoteBook.IndexOf(APage);
 end;
@@ -6723,7 +6724,7 @@ begin
     Manager.OnToggleObjectInspClicked(Sender);
 end;
 
-procedure TSourceNotebook.HistorySetMostRecent(APage: TPage);
+procedure TSourceNotebook.HistorySetMostRecent(APage: TTabSheet);
 var
   Index: Integer;
 begin
@@ -6735,12 +6736,12 @@ begin
    FHistoryList.Insert(0, APage);
 end;
 
-procedure TSourceNotebook.HistoryAdd(APage: TPage);
+procedure TSourceNotebook.HistoryAdd(APage: TTabSheet);
 begin
   FHistoryList.Add(APage);
 end;
 
-procedure TSourceNotebook.HistoryRemove(APage: TPage);
+procedure TSourceNotebook.HistoryRemove(APage: TTabSheet);
 var
   Index: Integer;
 begin
@@ -6892,10 +6893,10 @@ End;
 function TSourceNotebook.FindPageWithEditor(
   ASourceEditor: TSourceEditor):integer;
 begin
-  if (ASourceEditor.EditorComponent.Parent is TPage) and
-     (TPage(ASourceEditor.EditorComponent.Parent).Parent = FNotebook)
+  if (ASourceEditor.EditorComponent.Parent is TTabSheet) and
+     (TTabSheet(ASourceEditor.EditorComponent.Parent).Parent = FNotebook)
   then
-    Result:=TPage(ASourceEditor.EditorComponent.Parent).PageIndex
+    Result:=TTabSheet(ASourceEditor.EditorComponent.Parent).PageIndex
   else
     Result:=-1;
 end;
@@ -8174,7 +8175,7 @@ begin
   end;
 end;
 
-function TSourceEditorManager.SourceWindowWithPage(const APage: TPage
+function TSourceEditorManager.SourceWindowWithPage(const APage: TTabSheet
   ): TSourceNotebook;
 var
   i: Integer;

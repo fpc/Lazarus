@@ -2747,8 +2747,8 @@ var
   PageIndex: integer;
   NB: TSourceNotebook;
 begin
-  if Sender is TPage then begin
-    NB := SourceEditorManager.SourceWindowWithPage(TPage(Sender));
+  if Sender is TTabSheet then begin
+    NB := SourceEditorManager.SourceWindowWithPage(TTabSheet(Sender));
     if NB = nil then exit;
     PageIndex := NB.NotebookPages.IndexOfObject(Sender);
   end else begin
@@ -2792,8 +2792,8 @@ var
 begin
   if InvertedClose then begin
     // close all source editors except the clicked
-    if Sender is TPage then begin
-      ActiveSrcNoteBook := SourceEditorManager.SourceWindowWithPage(TPage(Sender));
+    if Sender is TTabSheet then begin
+      ActiveSrcNoteBook := SourceEditorManager.SourceWindowWithPage(TTabSheet(Sender));
       if ActiveSrcNoteBook = nil then exit;
       PageIndex := ActiveSrcNoteBook.NotebookPages.IndexOfObject(Sender);
     end else begin

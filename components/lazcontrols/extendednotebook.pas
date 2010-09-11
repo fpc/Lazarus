@@ -1,6 +1,6 @@
 { DividerBevel
 
-  Copyright (C) 2010 <name of author> <contact>
+  Copyright (C) 2010 Lazarus team
 
   This library is free software; you can redistribute it and/or modify it
   under the same terms as the Lazarus Component Library (LCL)
@@ -16,8 +16,8 @@ unit ExtendedNotebook;
 interface
 
 uses
-  Classes, sysutils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  LCLIntf, LCLType, math;
+  Classes, sysutils, math, LCLIntf, LCLType, LResources, Forms, Controls,
+  Graphics, Dialogs, ExtCtrls, ComCtrls;
 
 type
 
@@ -32,7 +32,7 @@ type
 
   { TExtendedNotebook }
 
-  TExtendedNotebook = class(TNotebook)
+  TExtendedNotebook = class(TPageControl)
   private
     FDraggingTabIndex: Integer;
     FOnTabDragDrop: TDragDropEvent;
@@ -180,7 +180,7 @@ end;
 procedure TExtendedNotebook.DragOver(Source: TObject; X, Y: Integer; State: TDragState;
   var Accept: Boolean);
 var
-  TabIndex: Integer;
+  TabId: Integer;
   LastRect, LastNRect: TRect;
   LastIndex: Integer;
   LastRight, NeedInvalidate: Boolean;
@@ -196,15 +196,15 @@ begin
   end;
 
   // Tab drag over
-  TabIndex := TabIndexForDrag(X,Y);
+  TabId := TabIndexForDrag(X,Y);
 
   Accept := (FTabDragAcceptMode = dmAutomatic) and (Source = Self) and
-            (TabIndex >= 0) and (TabIndex <> FDraggingTabIndex);
+            (TabId >= 0) and (TabId <> FDraggingTabIndex);
 
   if Assigned(FOnTabDragOver) then
     FOnTabDragOver(Self,Source,X,Y,State,Accept);
 
-  if ((state = dsDragLeave) or (TabIndex < 0)) and
+  if ((state = dsDragLeave) or (TabId < 0)) and
      (FDragOverIndex >= 0)
   then begin
     InvalidateRect(FDragOverTabRect);
@@ -212,7 +212,7 @@ begin
     FDragOverIndex := -1;
   end;
 
-  if (TabIndex < 0) then
+  if (TabId < 0) then
     exit;
 
   Ctrl := (GetKeyState(VK_CONTROL) and $8000)<>0;
@@ -225,12 +225,12 @@ begin
   LastRight := FDragToRightSide;
   LastRect  := FDragOverTabRect;
   LastNRect := FDragNextToTabRect;
-  FDragOverIndex   := TabIndex;
-  FDragOverTabRect := TabRectEx(TabIndex, X, Y, FDragToRightSide);
+  FDragOverIndex   := TabId;
+  FDragOverTabRect := TabRectEx(TabId, X, Y, FDragToRightSide);
 
-  if (Source = Self) and (TabIndex = FDraggingTabIndex - 1) then
+  if (Source = Self) and (TabId = FDraggingTabIndex - 1) then
     FDragToRightSide := False;
-  if (Source = Self) and (TabIndex = FDraggingTabIndex + 1) then
+  if (Source = Self) and (TabId = FDraggingTabIndex + 1) then
     FDragToRightSide := True;
 
   NeedInvalidate := (FDragOverIndex <> LastIndex) or (FDragToRightSide <> LastRight);
@@ -242,22 +242,22 @@ begin
   end;
 
   if FDragToRightSide then begin
-    inc(TabIndex);
-    if TabIndex < PageCount then
-      FDragNextToTabRect := TabRect(TabIndex);
+    inc(TabId);
+    if TabId < PageCount then
+      FDragNextToTabRect := TabRect(TabId);
   end else begin
-    if TabIndex > 0 then
-      FDragNextToTabRect := TabRect(TabIndex - 1);
+    if TabId > 0 then
+      FDragNextToTabRect := TabRect(TabId - 1);
   end;
   if NeedInvalidate then
     InvalidateRect(FDragNextToTabRect);
 
   Src := TExtendedNotebook(Source);
-  if (Source = self) and (TabIndex > Src.DraggingTabIndex) then
-    dec(TabIndex);
+  if (Source = self) and (TabId > Src.DraggingTabIndex) then
+    dec(TabId);
 
   if Assigned(FOnTabDragOverEx) then
-    FOnTabDragOverEx(Self, Source, Src.DraggingTabIndex, TabIndex, Ctrl, Accept);
+    FOnTabDragOverEx(Self, Source, Src.DraggingTabIndex, TabId, Ctrl, Accept);
 
   if (not Accept) or (state = dsDragLeave) then begin
     InvalidateRect(FDragOverTabRect);
@@ -380,7 +380,7 @@ end;
 
 procedure TExtendedNotebook.DragDrop(Source: TObject; X, Y: Integer);
 var
-  TabIndex, TabIndex2: Integer;
+  TabId, TabId2: Integer;
   ToRight: Boolean;
   Ctrl: Boolean;
   Src: TExtendedNotebook;
@@ -404,34 +404,34 @@ begin
   FDragOverIndex := -1;
   DragCursor := crDrag;
 
-  TabIndex := TabIndexForDrag(X,Y);
-  TabRectEx(TabIndex, X, Y, ToRight);
+  TabId := TabIndexForDrag(X,Y);
+  TabRectEx(TabId, X, Y, ToRight);
 
-  if (Source = Self) and (TabIndex = FDraggingTabIndex - 1) then
+  if (Source = Self) and (TabId = FDraggingTabIndex - 1) then
     ToRight := False;
-  if (Source = Self) and (TabIndex = FDraggingTabIndex + 1) then
+  if (Source = Self) and (TabId = FDraggingTabIndex + 1) then
     ToRight := True;
   if ToRight then
-    inc(TabIndex);
+    inc(TabId);
 
   Src := TExtendedNotebook(Source);
-  TabIndex2 := TabIndex;
-  if (Source = self) and (TabIndex > Src.DraggingTabIndex) then
-    dec(TabIndex);
+  TabId2 := TabId;
+  if (Source = self) and (TabId > Src.DraggingTabIndex) then
+    dec(TabId);
 
   if assigned(FOnTabDragDropEx) then begin
     Ctrl := (GetKeyState(VK_CONTROL) and $8000)<>0;
     Accept := True;
     if Assigned(FOnTabDragOverEx) then
-      FOnTabDragOverEx(Self, Source, Src.DraggingTabIndex, TabIndex, Ctrl, Accept);
+      FOnTabDragOverEx(Self, Source, Src.DraggingTabIndex, TabId, Ctrl, Accept);
  	if Accept then
-      FOnTabDragDropEx(Self, Source, Src.DraggingTabIndex, TabIndex, Ctrl, FTabDragged);
+      FOnTabDragDropEx(Self, Source, Src.DraggingTabIndex, TabId, Ctrl, FTabDragged);
   end;
 
   if (not FTabDragged) and (FTabDragAcceptMode = dmAutomatic) and
-     (Source = Self) and (TabIndex2 >= 0) and (TabIndex2 <> FDraggingTabIndex)
+     (Source = Self) and (TabId2 >= 0) and (TabId2 <> FDraggingTabIndex)
   then begin
-    Pages.Move(Src.DraggingTabIndex, TabIndex);
+    TCustomNotebook(Self).Pages.Move(Src.DraggingTabIndex, TabId);
     FTabDragged := True;
   end;
 end;
