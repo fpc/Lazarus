@@ -1784,129 +1784,122 @@ end;
 function TPascalParserTool.ReadConstant(ExceptionOnError, Extract: boolean;
   const Attr: TProcHeadAttributes): boolean;
 // after reading, the CurPos will be on the atom after the constant
+
+ procedure RaiseConstantExpected;
+ begin
+   if ExceptionOnError then
+     RaiseStringExpectedButAtomFound(ctsConstant);
+ end;
+
 var
   BracketType: TCommonAtomFlag;
-  c: char;
+  p: PChar;
 begin
   Result:=false;
-  if CurPos.Flag in AllCommonAtomWords then begin
-    // word (identifier or keyword)
-    if AtomIsKeyWord and (not IsKeyWordInConstAllowed.DoItCaseInsensitive(Src,
-            CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)) then begin
-      if ExceptionOnError then
-        RaiseUnexpectedKeyWord
-      else exit;
-    end;
-    if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-    if CurPos.Flag=cafPoint then begin
-      // Unitname.Constant 
-      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-      Result:=ReadConstant(ExceptionOnError,Extract,Attr);
-      exit;
-    end;
-    if WordIsTermOperator.DoItCaseInsensitive(Src,
-         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
-    then begin
-      // identifier + operator + ?
-      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-      Result:=ReadConstant(ExceptionOnError,Extract,Attr);
-      exit;
-    end else if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
-    begin
-      // type cast or constant array
-      BracketType:=CurPos.Flag;
-      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-      if not ReadConstant(ExceptionOnError,Extract,Attr) then exit;
-      if (BracketType=cafRoundBracketOpen)
-      and (CurPos.Flag<>cafRoundBracketClose) then
-        if ExceptionOnError then
-          RaiseCharExpectedButAtomFound('(')
-        else exit;
-      if (BracketType=cafEdgedBracketOpen)
-      and (CurPos.Flag<>cafEdgedBracketClose) then
-        if ExceptionOnError then
-          RaiseCharExpectedButAtomFound('[')
-        else exit;
-      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-    end;
-  end else if AtomIsNumber or AtomIsStringConstant then begin
-    // number or '...' or #...
-    if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-    if WordIsTermOperator.DoItCaseInsensitive(Src,
-         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
-    then begin
-      // number + operator + ?
-      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-      Result:=ReadConstant(ExceptionOnError,Extract,Attr);
-      exit;
-    end;
-  end else begin
-    if CurPos.EndPos-CurPos.StartPos=1 then begin
-      c:=Src[CurPos.StartPos];
-      case c of
-        '(':
-          begin
-            // open bracket + ? + close bracket
-            if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-            if not ReadConstant(ExceptionOnError,Extract,Attr) then exit;
-            if (c='(') and (CurPos.Flag<>cafRoundBracketClose) then
-              if ExceptionOnError then
-                RaiseCharExpectedButAtomFound(')')
-              else exit;
-            if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-            if WordIsTermOperator.DoItCaseInsensitive(Src,
-                 CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
-            then begin
-              // open bracket + ? + close bracket + operator + ?
-              if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-              Result:=ReadConstant(ExceptionOnError,Extract,Attr);
-              exit;
-            end;
-          end;
-        '[':
-          begin
-            // open bracket + ? + close bracket
-            if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-            repeat
-              if (CurPos.Flag=cafEdgedBracketClose) then break;
-              // read
-              if not ReadConstant(ExceptionOnError,Extract,Attr) then exit;
-              if (CurPos.Flag=cafComma) or AtomIs('..') then begin
-                // continue
-                if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-              end else if (CurPos.Flag<>cafEdgedBracketClose) then begin
-                if ExceptionOnError then
-                  RaiseCharExpectedButAtomFound(']')
-                else exit;
-              end;
-            until false;
-            if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-            if WordIsTermOperator.DoItCaseInsensitive(Src,
-                 CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
-            then begin
-              // open bracket + ? + close bracket + operator + ?
-              if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-              Result:=ReadConstant(ExceptionOnError,Extract,Attr);
-              exit;
-            end;
-          end;
-        '+','-':
-          begin
-            // sign
-            if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-            if not ReadConstant(ExceptionOnError,Extract,Attr) then exit;
-          end;
+  repeat
+    // read unary operators
+    repeat
+      if (CurPos.StartPos>SrcLen) then begin
+        RaiseConstantExpected;
+        exit;
+      end;
+      p:=@Src[CurPos.StartPos];
+      case p^ of
+        '-','+','@':
+          if CurPos.EndPos-CurPos.StartPos<>1 then break;
+        'n','N':
+          if not UpAtomIs('NOT') then break;
+        'i','I':
+          if not UpAtomIs('INHERITED') then break;
       else
+        break;
+      end;
+      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+    until false;
+    // read operand
+    if CurPos.Flag in AllCommonAtomWords then begin
+      // word (identifier or keyword)
+      if AtomIsKeyWord and (not IsKeyWordInConstAllowed.DoItCaseInsensitive(Src,
+              CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)) then begin
         if ExceptionOnError then
-          RaiseStringExpectedButAtomFound(ctsConstant)
+          RaiseUnexpectedKeyWord
         else exit;
       end;
-    end else
-      // syntax error
-      if ExceptionOnError then
-        RaiseStringExpectedButAtomFound(ctsConstant)
-      else exit;
-  end;
+      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+      if CurPos.Flag=cafPoint then begin
+        // Unitname.Constant
+        if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+        if AtomIsKeyWord and (not IsKeyWordInConstAllowed.DoItCaseInsensitive(Src,
+                CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)) then begin
+          if ExceptionOnError then
+            RaiseUnexpectedKeyWord
+          else exit;
+        end;
+        if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+      end;
+      if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then
+      begin
+        // type cast or constant array
+        BracketType:=CurPos.Flag;
+        if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+        if not ReadConstant(ExceptionOnError,Extract,Attr) then exit;
+        if (BracketType=cafRoundBracketOpen)
+        and (CurPos.Flag<>cafRoundBracketClose) then
+          if ExceptionOnError then
+            RaiseCharExpectedButAtomFound('(')
+          else exit;
+        if (BracketType=cafEdgedBracketOpen)
+        and (CurPos.Flag<>cafEdgedBracketClose) then
+          if ExceptionOnError then
+            RaiseCharExpectedButAtomFound('[')
+          else exit;
+        if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+      end;
+    end else if AtomIsNumber or AtomIsStringConstant then begin
+      // number or '...' or #...
+      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+    end else begin
+      if CurPos.Flag=cafRoundBracketOpen then begin
+        // open bracket + ? + close bracket
+        if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+        if not ReadConstant(ExceptionOnError,Extract,Attr) then exit;
+        if ExceptionOnError then
+          RaiseCharExpectedButAtomFound(')')
+        else exit;
+        if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+      end else if CurPos.Flag=cafEdgedBracketOpen then begin
+        // open bracket + ? + close bracket
+        if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+        repeat
+          if (CurPos.Flag=cafEdgedBracketClose) then break;
+          // read
+          if not ReadConstant(ExceptionOnError,Extract,Attr) then exit;
+          if (CurPos.Flag=cafComma) or AtomIs('..') then begin
+            // continue
+            if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+          end else if (CurPos.Flag<>cafEdgedBracketClose) then begin
+            if ExceptionOnError then
+              RaiseCharExpectedButAtomFound(']')
+            else exit;
+          end;
+        until false;
+        if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+      end else begin
+        // syntax error
+        RaiseConstantExpected;
+        exit;
+      end;
+    end;
+    if CurPos.StartPos>SrcLen then break;
+    if not WordIsTermOperator.DoItCaseInsensitive(Src,
+         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+    then begin
+      // not a operator
+      break;
+    end;
+    // operator => read further
+    if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+  until false;
   Result:=true;
 end;
 
