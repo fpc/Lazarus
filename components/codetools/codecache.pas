@@ -403,9 +403,10 @@ var
       Same:=Same*10+ord(Result[p])-ord('0');
       inc(p);
     end;
-    inc(p);
-    Result:=copy(LastLine,1,Same)+copy(Result,p,length(Result));
+    while (p<=length(Result)) and (Result[p]<>':') do inc(p);
+    Result:=copy(LastLine,1,Same)+copy(Result,p+1,length(Result));
     LastLine:=Result;
+    //debugln(['NextUncompressedLine "',Result,'"']);
   end;
 
 var
@@ -428,6 +429,10 @@ begin
     IncludedByFile:=NextUncompressedLine;
     if IncludedByFile='' then begin
       debugln(['TCodeCache.LoadIncludeLinksDataFromList missing IncludedByFile: IncludeFilename=',IncludeFilename,' line=',Index]);
+      exit;
+    end;
+    if not FilenameIsAbsolute(IncludedByFile) then begin
+      debugln(['TCodeCache.LoadIncludeLinksDataFromList ignoring relative IncludedByFile: IncludeFilename=',IncludeFilename,' line=',Index]);
       exit;
     end;
     p:=System.Pos(';',IncludedByFile);
@@ -544,7 +549,7 @@ var
       inc(p2);
     end;
     p:=p1-PChar(Line);
-    List.Add(IntToStr(p-1)+':'+copy(Line,p,length(Line)));
+    List.Add(IntToStr(p)+':'+copy(Line,p,length(Line)));
     LastLine:=Line;
   end;
 
