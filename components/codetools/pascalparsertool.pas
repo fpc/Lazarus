@@ -1677,6 +1677,9 @@ begin
     if (pphIsMethod in ParseAttr) then
       IsSpecifier:=IsKeyWordMethodSpecifier.DoItCaseInsensitive(Src,
         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+    else if pphIsType in ParseAttr then
+      IsSpecifier:=IsKeyWordProcedureTypeSpecifier.DoItCaseInsensitive(Src,
+        CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
     else
       IsSpecifier:=IsKeyWordProcedureSpecifier.DoItCaseInsensitive(Src,
         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
@@ -1688,6 +1691,11 @@ begin
         ReadNextAtom;
         if not (CurPos.Flag in [cafSemicolon,cafEND]) then
           ReadConstant(true,false,[]);
+      end else if UpAtomIs('IS') then begin
+        ReadNextAtom;
+        if not UpAtomIs('NESTED') then
+          RaiseStringExpectedButAtomFound('nested');
+        ReadNextAtom;
       end else if UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL') or UpAtomIs('PUBLIC') then begin
         HasForwardModifier:=UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL');
         ReadNextAtom;
@@ -4040,20 +4048,28 @@ begin
         begin
           UndoReadNextAtom;
           break;
-        end else begin
+        end;
+        if UpAtomIs('IS') then begin
           ReadNextAtom;
-          if CurPos.Flag<>cafSemicolon then begin
-            if (CurPos.Flag=cafEqual) then begin
-              break;
-            end;
-            // delphi/fpc allow proc modifiers without semicolons
-            if not IsKeyWordProcedureTypeSpecifier.DoItCaseInsensitive(Src,
-              CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
-            begin
-              RaiseCharExpectedButAtomFound(';');
-            end;
-            UndoReadNextAtom;
+          if not UpAtomIs('NESTED') then
+            RaiseStringExpectedButAtomFound('nested');
+        end else if UpAtomIs('OF') then begin
+          ReadNextAtom;
+          if not UpAtomIs('OBJECT') then
+            RaiseStringExpectedButAtomFound('object');
+        end;
+        ReadNextAtom;
+        if CurPos.Flag<>cafSemicolon then begin
+          if (CurPos.Flag=cafEqual) then begin
+            break;
           end;
+          // delphi/fpc allow proc modifiers without semicolons
+          if not IsKeyWordProcedureTypeSpecifier.DoItCaseInsensitive(Src,
+            CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+          begin
+            RaiseCharExpectedButAtomFound(';');
+          end;
+          UndoReadNextAtom;
         end;
         ReadNextAtom;
       until false;

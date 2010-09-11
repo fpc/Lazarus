@@ -843,6 +843,7 @@ begin
     Add('VARARGS'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXPERIMENTAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LIBRARY'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IS'           ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
   IsKeyWordCallingConvention:=TKeyWordFunctionList.Create;
@@ -854,7 +855,7 @@ begin
     Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('POPSTACK'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    // Note: inline is not a calling specifier
+    // Note: 'inline' and 'is nested' are not a calling specifiers
   end;
 
   IsKeyWordProcedureBracketSpecifier:=TKeyWordFunctionList.Create;
