@@ -51,7 +51,7 @@ var
 begin
   // Paul: This will happen only once if Style = lbStandard then CheckListBox is
   // OwnerDrawFixed in real (under windows). Handle is not allocated and we
-  // cant use Canvas since it will cause recursion but we need correct font height
+  // can not use Canvas since it will cause recursion but we need correct font height
   B := TBitmap.Create;
   try
     B.Canvas.Font := Font;

@@ -6,7 +6,7 @@ Uses InterfaceBase, LCLIntf, WinVer, WinUtilPrn;
 
 // todo: this ^ is a mess: mixed WinUtilPrn/Windows units clean...
 
-// todo: this should be a method, cant be atm because mixed units ^
+// todo: this should be a method, can not be atm because mixed units ^
 function GetCurrentDevMode(out DM:PDeviceMode): boolean;
 var
   PDev: TPrinterDevice;

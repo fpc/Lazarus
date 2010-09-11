@@ -374,7 +374,7 @@ var
     // maybe user entered nonexistent dir
     if ((AFileName<>'') and (IsPathDelimiter(AFileName, Length(AFileName)))) then
     begin
-      // cant jump to nonexistent dir
+      // can not jump to nonexistent dir
       if not (ofNoChangeDir in TOpenDialog(TheDialog).Options) then
         MessageDlg(rsfdDirectoryMustExist, Format(rsfdDirectoryNotExist,[AFileName]),
                    mtError, [mbCancel], 0); // GTK2 shows "The folder contents could not be displayed"

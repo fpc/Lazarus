@@ -390,7 +390,7 @@ begin
         // create a GdkPixmap
         if ImgData <> nil
         then begin
-          { The gdk_pixmap_create_from_data creates only a two-color pixmap so we cant use it }
+          { The gdk_pixmap_create_from_data creates only a two-color pixmap so we can not use it }
 
           GdkImage := gdk_image_new(GDK_IMAGE_FASTEST, Visual, ImgWidth, ImgHeight);
 

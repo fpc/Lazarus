@@ -1924,7 +1924,7 @@ begin
 
       if Scope.Next <> nil
       then begin
-        // scope.Childvalid is true, otherwise we cant have a next.
+        // scope.Childvalid is true, otherwise we can not have a next.
         // So no need to check
         if lefSearchSibling in AFlags
         then begin

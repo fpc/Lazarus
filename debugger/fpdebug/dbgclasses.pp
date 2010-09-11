@@ -584,7 +584,7 @@ function TDbgProcess.HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
       end;
     end
     else begin
-      // if we cant get the context, we probable weren't able to set it either
+      // if we can not get the context, we probable weren't able to set it either
       Log('Thread %u: Unable to get context', [ADebugEvent.dwThreadId]);
     end;
 

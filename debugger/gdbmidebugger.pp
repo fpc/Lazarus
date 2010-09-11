@@ -5798,7 +5798,7 @@ begin
         else Result := SolveMath(ADebugger, Left, Left^.Next, Value, Info);
       end;
       eoDereference: begin
-        Result := (ARight = '') // right part cant have value
+        Result := (ARight = '') // right part can not have value
               and SolveDeref(ADebugger, Left, Value, Info);
       end;
       eoAddress: begin

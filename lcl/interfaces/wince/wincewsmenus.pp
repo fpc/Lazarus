@@ -302,7 +302,7 @@ begin
           if LCLMenu.Items.Items[j].Checked then
             tbbi.fsState:=tbbi.fsState or TBSTATE_CHECKED;
 
-          // Adds a top-level item (We cant really add it, so we find
+          // Adds a top-level item (We can not really add it, so we find
           // and modify the existing top-level item)
           if i = 2 then Break; // smartphones have maximum 2 top level menu items.
 

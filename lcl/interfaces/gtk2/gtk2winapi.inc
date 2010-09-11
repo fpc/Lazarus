@@ -5631,7 +5631,7 @@ begin
         Data := GetLCLObject(Pointer(Handle));
         if Data is TControl
         then Result := PtrInt(@(TControl(Data).WindowProc));
-        // TODO fix this, a method pointer (2 pointers) cant be casted to a longint
+        // TODO fix this, a method pointer (2 pointers) can not be casted to a longint
       end;
 }
 {    GWL_HWNDPARENT :
