@@ -9065,35 +9065,68 @@ var
   Window: PgdkWindow;
   Widget: PgtkWidget;
   p: TPoint;
+  WidgetInfo: PWidgetInfo;
 begin
-  // return cached value to prevent heavy gdk_window_at_pointer call
-  if (APoint = LastWFPMousePos) and GTK_IS_OBJECT(Pointer(LastWFPResult)) then
+  // return cached value to prevent heavy gdk_display_get_window_at_pointer call
+  if (APoint = LastWFPMousePos) and GTK_IS_OBJECT(Pointer(LastWFPResult)) and
+    GTK_WIDGET_VISIBLE(PGtkWidget(LastWFPResult)) and
+    GTK_WIDGET_IS_SENSITIVE(PGtkWidget(LastWFPResult)) then
     Exit(LastWFPResult);
   Result := 0;
 
-  // !!!gdk_window_at_pointer changes the coordinates!!!
-  // -> using local variable p
+  WidgetInfo := nil;
+  // we are using gdk_display_get_window_at_pointer instead of
+  // gdk_window_at_pointer because of multihead support.
+  // !! changes the coordinates !! -> using local variable p
   p := APoint;
-  Window := gdk_window_at_pointer(@p.x, @p.Y);
+  Window := gdk_display_get_window_at_pointer(gdk_display_get_default,
+    @p.x, @p.y);
   if window <> nil then
   begin
     FillChar(ev, SizeOf(ev), 0);
     ev.any.window := Window;
     Widget := gtk_get_event_widget(@ev);
     Result := PtrUInt(Widget);
+    if Result <> 0 then
+    begin
+      WidgetInfo := GetWidgetInfo(Widget);
+      if WidgetInfo = nil then
+      begin
+        // complex controls eg. ScrollBar of TTreeView
+        WidgetInfo := GetWidgetInfo(Widget^.parent);
+        if WidgetInfo <> nil then
+          Result := PtrUInt(Widget^.parent);
+      end;
+    end;
   end;
   // disconnect old handler
   if GTK_IS_OBJECT(Pointer(LastWFPResult)) then
   begin
     g_signal_handlers_disconnect_by_func(GPointer(LastWFPResult),
-                     TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
+      TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
   end;
+
+  // see issue #17389
+  if (WidgetInfo <> nil) and (WidgetInfo^.LCLObject <> nil)
+  and (WidgetInfo^.LCLObject is TWinControl) then
+    Result := TWinControl(WidgetInfo^.LCLObject).Handle;
+
+  // now we must check if we are visible and enabled
+  if Result <> 0 then
+  begin
+    if not GTK_WIDGET_VISIBLE(PGtkWidget(Result)) or
+      not GTK_WIDGET_IS_SENSITIVE(PGtkWidget(Result)) then
+        Result := 0;
+  end;
+
   LastWFPMousePos := APoint;
   LastWFPResult := Result;
   // connect handler
   if LastWFPResult <> 0 then
+  begin
     g_signal_connect(GPointer(LastWFPResult), 'destroy',
-                     TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
+      TGTKSignalFunc(@DestroyWindowFromPointCB), nil);
+  end;
 end;
 
 //##apiwiz##eps##   // Do not remove
