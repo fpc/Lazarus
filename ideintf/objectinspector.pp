@@ -594,7 +594,7 @@ type
     FindDeclarationPopupmenuItem: TMenuItem;
     OptionsSeparatorMenuItem: TMenuItem;
     MainPopupMenu: TPopupMenu;
-    NoteBook: TNoteBook;
+    NoteBook: TPageControl;
     OptionsSeparatorMenuItem2: TMenuItem;
     PastePopupmenuItem: TMenuItem;
     PropertyGrid: TOICustomPropertyGrid;
@@ -4781,37 +4781,40 @@ const
     tkSString, tkLString, tkAString, tkWString, tkVariant,
     {tkArray, tkRecord, tkInterface,} tkClass, tkObject, tkWChar, tkBool,
     tkInt64, tkQWord];
+  function AddPage(PageName, TabCaption: string): TTabSheet;
+  begin
+    Result:=TTabSheet.Create(Self);
+    Result.Name:=PageName;
+    Result.Caption:=TabCaption;
+    Result.Parent:=NoteBook;
+  end;
+var
+  APage: TTabSheet;
 begin
   DestroyNoteBook;
 
   // NoteBook
-  NoteBook:=TNoteBook.Create(Self);
+  NoteBook:=TPageControl.Create(Self);
   with NoteBook do
   begin
     Name := 'NoteBook';
     Parent := Self;
     Align := alClient;
-    if PageCount > 0 then
-      Pages.Strings[0] := oisProperties
-    else
-      Pages.Add(oisProperties);
-    Page[0].Name := DefaultOIPageNames[oipgpProperties];
-    
-    Pages.Add(oisEvents);
-    Page[1].Name := DefaultOIPageNames[oipgpEvents];
-    
-    Pages.Add(oisFavorites);
-    Page[2].Name := DefaultOIPageNames[oipgpFavourite];
-    Page[2].TabVisible := ShowFavorites;
-    
-    Pages.Add(oisRestricted);
-    Page[3].Name := DefaultOIPageNames[oipgpRestricted];
-    Page[3].TabVisible := ShowRestricted;
-    Page[3].OnShow := @RestrictedPageShow;
-    
-    PageIndex:=0;
     PopupMenu := MainPopupMenu;
   end;
+
+  AddPage(DefaultOIPageNames[oipgpProperties],oisProperties);
+
+  AddPage(DefaultOIPageNames[oipgpEvents],oisEvents);
+
+  APage:=AddPage(DefaultOIPageNames[oipgpFavourite],oisFavorites);
+  APage.TabVisible := ShowFavorites;
+
+  APage:=AddPage(DefaultOIPageNames[oipgpRestricted],oisRestricted);
+  APage.TabVisible := ShowRestricted;
+  APage.OnShow := @RestrictedPageShow;
+    
+  NoteBook.PageIndex:=0;
 
   PropertyGrid := CreateGrid(PROPS, oipgpProperties, 0);
   EventGrid := CreateGrid([tkMethod], oipgpEvents, 1);
