@@ -238,7 +238,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Width = 622
     Frequency = 250
     Max = 4000
-    Min = 500
+    Min = 10
     OnChange = AutoDelayTrackBarChange
     Position = 500
     Anchors = [akTop, akLeft, akRight]
@@ -259,7 +259,7 @@ inherited EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Width = 622
     Frequency = 250
     Max = 4000
-    Min = 500
+    Min = 10
     OnChange = AutoDelayTrackBarChange
     Position = 500
     Anchors = [akTop, akLeft, akRight]
