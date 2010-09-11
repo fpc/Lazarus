@@ -1834,7 +1834,7 @@ begin
         else exit;
       end;
       if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
-      if CurPos.Flag=cafPoint then begin
+      while CurPos.Flag=cafPoint do begin
         // Unitname.Constant
         if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
         if AtomIsKeyWord and (not IsKeyWordInConstAllowed.DoItCaseInsensitive(Src,
