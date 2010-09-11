@@ -82,7 +82,7 @@ clean-patched:
 	${RM} lazarus startlazarus lazbuild
 	$(MAKE) distclean ${BUILDOPTS}
 	$(MAKE) -C docs/html clean
-	find -regex '.*\.\(a\|o\|so\.*\|ppu\)' -delete
+	find -regex '.*\.\(a\|or?\|so\.*\|ppu\)' -delete
 
 
 ###################
