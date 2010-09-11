@@ -1092,7 +1092,7 @@ begin
       CurMenuItem.Caption := SourceEditorManager.SourceEditors[i].PageName;
       CurMenuItem.MenuItem.Checked := SourceEditorManager.ActiveEditor = SourceEditorManager.SourceEditors[i] ;
       CurMenuItem.OnClick := @mnuWindowSourceItemClick;
-      CurMenuItem.Tag := PtrInt(Pointer(SourceEditorManager.SourceEditors[i]));
+      CurMenuItem.Tag := Integer(Pointer(SourceEditorManager.SourceEditors[i]));
       inc(ItemCount);
     end;
   end;
