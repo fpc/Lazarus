@@ -2813,6 +2813,7 @@ var
   ANode: TCodeTreeNode;
 begin
   if (iliBaseExprTypeValid in Flags) then exit;
+  Include(Flags,iliBaseExprTypeValid);
   BaseExprType:=CleanExpressionType;
   BaseExprType.Desc:=xtNone;
   ANode:=Node;
@@ -2828,7 +2829,6 @@ begin
       Tool.DeactivateGlobalWriteLock;
     end;
   end;
-  Include(Flags,iliBaseExprTypeValid);
 end;
 
 function TIdentifierListItem.HasChilds: boolean;
