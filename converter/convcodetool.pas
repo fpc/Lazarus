@@ -432,7 +432,7 @@ begin
   with fCodeTool do begin
     BuildTree(true);
     // Find the class name that the main class inherits from.
-    ANode:=FindClassNodeInInterface(AClassName,true,false,false);
+    ANode:=FindClassNodeInUnit(AClassName,true,false,false,false);
     if ANode=nil then exit;
     BuildSubTreeForClass(ANode);
     InheritanceNode:=FindInheritanceNode(ANode);
