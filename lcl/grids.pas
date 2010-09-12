@@ -9917,6 +9917,9 @@ end;
 
 function TGridColumn.GetSizePriority: Integer;
 begin
+  if not Visible then
+    result := 0
+  else
   if FSizePriority=nil then
     result := GetDefaultSizePriority
   else
