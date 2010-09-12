@@ -1145,7 +1145,7 @@ var
     if LookupRootTypeName='' then exit;
 
     // find root type
-    RootClassNode:=fCodeTool.FindClassNodeInInterface(LookupRootTypeName,true,false,false);
+    RootClassNode:=fCodeTool.FindClassNodeInUnit(LookupRootTypeName,true,false,false,false);
     RootContext:=CleanFindContext;
     RootContext.Node:=RootClassNode;
     RootContext.Tool:=fCodeTool;
