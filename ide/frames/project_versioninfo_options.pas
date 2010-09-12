@@ -162,6 +162,7 @@ procedure TProjectVersionInfoOptionsFrame.WriteSettings(AOptions: TAbstractIDEOp
 var
   VersionInfo: TProjectVersionInfo;
   i: integer;
+  t: TProjectVersionStringTable;
 begin
   VersionInfo := TProjectVersionInfo((AOptions as TProject).Resources[TProjectVersionInfo]);
   VersionInfo.UseVersionInfo := UseVersionInfoCheckBox.Checked;
@@ -173,9 +174,14 @@ begin
   VersionInfo.HexLang := MSLanguageToHex(LanguageSelectionComboBox.Text);
   VersionInfo.HexCharSet := MSCharacterSetToHex(CharacterSetComboBox.Text);
   // write string info
-  VersionInfo.StringTable.Clear;
-  for i := 1 to StringInfo.RowCount - 1 do
-    VersionInfo.StringTable[StringInfo.Cells[0, i]] := StringInfo.Cells[1, i];
+  t:=TProjectVersionStringTable.Create('01234567');
+  try
+    for i := 1 to StringInfo.RowCount - 1 do
+      t[StringInfo.Cells[0, i]] := StringInfo.Cells[1, i];
+    VersionInfo.StringTable.Assign(t); // use Assign to check for changes
+  finally
+    t.Free;
+  end;
 end;
 
 class function TProjectVersionInfoOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

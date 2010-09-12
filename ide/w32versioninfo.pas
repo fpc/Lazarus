@@ -63,6 +63,8 @@ type
     constructor Create(const aName: string); reintroduce;
     procedure Add(const aKey, aValue: string); reintroduce;
     procedure AddDefault;
+    function Equals(aTable: TProjectVersionStringTable): boolean; reintroduce;
+    procedure Assign(aTable: TProjectVersionStringTable); virtual;
     procedure AddRequired;
     procedure Clear; reintroduce;
     procedure Delete(const aIndex: integer); overload; reintroduce;
@@ -631,6 +633,37 @@ begin
   Add('ProductName', '');
   Add('ProductVersion', '');
   // - SpecialBuild
+end;
+
+function TProjectVersionStringTable.Equals(aTable: TProjectVersionStringTable
+  ): boolean;
+var
+  i: Integer;
+begin
+  Result:=true;
+  for i:=0 to Count-1 do begin
+    if aTable.Values[Keys[i]]<>ValuesByIndex[i] then begin
+      debugln(['TProjectVersionStringTable.Equals differ Key=',Keys[i],' my=',ValuesByIndex[i],' other=',aTable.Values[Keys[i]]]);
+      Result:=false;
+    end;
+  end;
+  for i:=0 to aTable.Count-1 do begin
+    if Values[aTable.Keys[i]]<>aTable.ValuesByIndex[i] then begin
+      debugln(['TProjectVersionStringTable.Equals differ Key=',aTable.Keys[i],' my=',Values[aTable.Keys[i]],' other=',aTable.ValuesByIndex[i]]);
+      Result:=false;
+    end;
+  end;
+end;
+
+procedure TProjectVersionStringTable.Assign(aTable: TProjectVersionStringTable);
+var
+  i: Integer;
+begin
+  if Equals(aTable) then exit;
+  Clear;
+  for i := 0 to Count - 1 do
+    inherited Add(aTable.Keys[i],aTable.ValuesByIndex[i]);
+  DoModified;
 end;
 
 function TProjectVersionStringTable.KeyToIndex(const aKey: String): Integer;

@@ -11,6 +11,7 @@
         <LRSInOutputDirectory Value="False"/>
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
+      <MainUnit Value="0"/>
       <Title Value="Lazarus"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>

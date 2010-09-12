@@ -3570,6 +3570,8 @@ procedure TProject.SetModified(const AValue: boolean);
 begin
   if AValue = Modified then exit;
   inherited SetModified(AValue);
+  if Modified then
+    debugln(['TProject.SetModified ']);
   if not Modified then 
   begin
     PublishOptions.Modified := False;
