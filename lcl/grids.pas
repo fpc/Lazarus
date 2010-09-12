@@ -9725,9 +9725,7 @@ procedure TGridColumnTitle.SetCaption(const AValue: TCaption);
 begin
   if (FCaption=nil)or(AValue<>FCaption^) then begin
     if FCaption<>nil then
-      StrDispose(FCaption)
-    else if (AValue=GetDefaultCaption) then
-      exit;
+      StrDispose(FCaption);
     FCaption := StrNew(PChar(AValue));
     FColumn.ColumnChanged;
   end;
