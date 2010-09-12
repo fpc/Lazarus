@@ -969,10 +969,9 @@ begin
         Result:=ConvertFormFile;
         Result:=CheckFailed(Result);
         if Result<>mrOK then exit;
-        // Loading the form makes it appear in forms list. (Is there a better way?)
-        //  fUnitInfo is set for projects only.
-        if Assigned(fUnitInfo) then
-          LazarusIDE.GetDesignerWithProjectFile(TUnitInfo(fUnitInfo), true);
+        // Load the unit and add it to project. fUnitInfo is set for projects only.
+        if Assigned(fUnitInfo) then                    //ofAddToRecent,
+          LazarusIDE.DoOpenEditorFile(fLazUnitFilename,0,[ofAddToProject,ofQuiet]);
         // Close unit file after processing.
         Result:=LazarusIDE.DoCloseEditorFile(fLazUnitFilename,[cfSaveFirst,cfQuiet]);
         if Result<>mrOK then exit;
