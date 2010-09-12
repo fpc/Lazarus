@@ -3987,7 +3987,13 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.AutoFillColumns">
-        <short>Automatically fill columns with default values if nothing else specified</short>
+        <short>Automatically resize columns so they fill all grid's visible area</short>
+        <descr>
+          <p>When this option is turned on, the grid will resize all columns to fill the grid's client width. What columns are resized is determined by the following conditions:</p>
+          <p>1. <i>Fixed Columns</i> are not resized.
+2. If the grid has <i>Custom Columns</i>, all columns with SizePriority=0 are not resized.</p>
+          <p>Note that Custom Columns are initially created with SizePriority=1. For TDbGrid, which automatically adds <i>Custom Columns</i>, this means the user will not be able to resize such columns using the mouse.</p>
+        </descr>
       </element>
       <!-- property Visibility: protected -->
       <element link="#LCL.Controls.TWinControl.BorderStyle" name="TCustomGrid.BorderStyle">
