@@ -3,6 +3,7 @@
   <Package Version="3">
     <Name Value="lazwebextra"/>
     <AddToProjectUsesSection Value="False"/>
+    <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
       <Version Value="9"/>
       <SearchPaths>
@@ -23,7 +24,11 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="30">
+    <Description Value="Extra Web functionality for Lazarus. Only install with FPC 2.5.1 or higher.
+HTML editing functionality by Alexei Lagunov"/>
+    <License Value="LGPL"/>
+    <Version Minor="9"/>
+    <Files Count="40">
       <Item1>
         <Filename Value="reglazwebextra.pp"/>
         <HasRegisterProc Value="True"/>
@@ -154,6 +159,46 @@
         <Filename Value="fpwebnewhtmltagtrunit.pas"/>
         <UnitName Value="fpwebNewHtmlTagTRUnit"/>
       </Item30>
+      <Item31>
+        <Filename Value="fpwebfieldsettagunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item31>
+      <Item32>
+        <Filename Value="fpwebfieldsettagunit.pas"/>
+        <UnitName Value="fpWebFieldSetTagUnit"/>
+      </Item32>
+      <Item33>
+        <Filename Value="fpwebhrefeditunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item33>
+      <Item34>
+        <Filename Value="fpwebhrefeditunit.pas"/>
+        <UnitName Value="fpWebHREFEditUnit"/>
+      </Item34>
+      <Item35>
+        <Filename Value="fpwebhtmltaglegendunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item35>
+      <Item36>
+        <Filename Value="fpwebhtmltaglegendunit.pas"/>
+        <UnitName Value="fpWebHtmlTagLegendUnit"/>
+      </Item36>
+      <Item37>
+        <Filename Value="fpwebselectoptionsunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item37>
+      <Item38>
+        <Filename Value="fpwebselectoptionsunit.pas"/>
+        <UnitName Value="fpWebSelectOptionsUnit"/>
+      </Item38>
+      <Item39>
+        <Filename Value="fpwebselecttagunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item39>
+      <Item40>
+        <Filename Value="fpwebselecttagunit.pas"/>
+        <UnitName Value="fpWebSelectTagUnit"/>
+      </Item40>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

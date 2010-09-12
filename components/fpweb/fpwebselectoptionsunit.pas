@@ -27,7 +27,8 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 }
-unit fpwebNewHTMLListUnit;
+
+unit fpWebSelectOptionsUnit;
 
 {$mode objfpc}{$H+}
 
@@ -35,42 +36,39 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, Spin, ExtCtrls;
+  StdCtrls;
 
 type
 
-  { TfpwebNewHTMLListForm }
+  { TfpWebSelectOptionsForm }
 
-  TfpwebNewHTMLListForm = class(TForm)
+  TfpWebSelectOptionsForm = class(TForm)
     ButtonPanel1: TButtonPanel;
+    edtCaption: TEdit;
+    edtValue: TEdit;
     Label1: TLabel;
-    RGStyle: TRadioGroup;
-    SERows: TSpinEdit;
+    Label2: TLabel;
   private
     { private declarations }
   public
     function HtmlText:string;
-  end; 
+  end;
 
 var
-  fpwebNewHTMLListForm: TfpwebNewHTMLListForm;
+  fpWebSelectOptionsForm: TfpWebSelectOptionsForm;
 
 implementation
-uses strutils;
 
 {$R *.lfm}
 
-{ TfpwebNewHTMLListForm }
+{ TfpWebSelectOptionsForm }
 
-function TfpwebNewHTMLListForm.HtmlText: string;
-var
-  i:integer;
+function TfpWebSelectOptionsForm.HtmlText: string;
 begin
-  Result:=DupeString('<li>  </li>'+LineEnding, SERows.Value);
-  if RGStyle.ItemIndex = 0 then
-    Result:='<ol>' + LineEnding + Result + '</ol>'
-  else
-    Result:='ul>' + LineEnding + Result + '</ul>';
+  Result:='<option ';
+  if edtValue.Text <> '' then
+    Result:=Result + ' value="'+edtValue.Text+'"';
+  Result:=Result + '>'+edtCaption.Text+'</option>';
 end;
 
 end.

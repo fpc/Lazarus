@@ -27,50 +27,51 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 }
-unit fpwebNewHTMLListUnit;
+
+unit fpWebFieldSetTagUnit;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, Spin, ExtCtrls;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
+  ButtonPanel, StdCtrls;
 
 type
 
-  { TfpwebNewHTMLListForm }
+  { TfpWebFieldSetTagForm }
 
-  TfpwebNewHTMLListForm = class(TForm)
+  TfpWebFieldSetTagForm = class(TForm)
     ButtonPanel1: TButtonPanel;
+    EdtLegend: TEdit;
     Label1: TLabel;
-    RGStyle: TRadioGroup;
-    SERows: TSpinEdit;
+    Label2: TLabel;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    TabSheet3: TTabSheet;
   private
     { private declarations }
   public
-    function HtmlText:string;
-  end; 
+    function HtmlText(const S:string):string;
+  end;
 
 var
-  fpwebNewHTMLListForm: TfpwebNewHTMLListForm;
+  fpWebFieldSetTagForm: TfpWebFieldSetTagForm;
 
 implementation
-uses strutils;
 
 {$R *.lfm}
 
-{ TfpwebNewHTMLListForm }
+{ TfpWebFieldSetTagForm }
 
-function TfpwebNewHTMLListForm.HtmlText: string;
-var
-  i:integer;
+function TfpWebFieldSetTagForm.HtmlText(const S: string): string;
 begin
-  Result:=DupeString('<li>  </li>'+LineEnding, SERows.Value);
-  if RGStyle.ItemIndex = 0 then
-    Result:='<ol>' + LineEnding + Result + '</ol>'
-  else
-    Result:='ul>' + LineEnding + Result + '</ul>';
+  Result:='<fieldset>'+LineEnding;
+  if EdtLegend.Text<>'' then
+    Result:=Result + '  <LEGEND >'+EdtLegend.Text+'</LEGEND>'+LineEnding;
+  Result:=Result + S+LineEnding + '</fieldset>';
 end;
 
 end.

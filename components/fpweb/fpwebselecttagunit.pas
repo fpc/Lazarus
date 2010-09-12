@@ -27,7 +27,8 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 }
-unit fpwebNewHTMLInputUnit;
+
+unit fpWebSelectTagUnit;
 
 {$mode objfpc}{$H+}
 
@@ -35,99 +36,84 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  ComCtrls, StdCtrls, EditBtn, ExtCtrls;
+  ComCtrls, StdCtrls, Spin, Grids;
 
 type
 
-  { TfpwebNewHTMLInputForm }
+  { TfpWebSelectTagForm }
 
-  TfpwebNewHTMLInputForm = class(TForm)
+  TfpWebSelectTagForm = class(TForm)
     ButtonPanel1: TButtonPanel;
-    cgOptions: TCheckGroup;
-    cbType: TComboBox;
-    cbAlign: TComboBox;
+    CBMultiple: TCheckBox;
+    CBDisabled: TCheckBox;
+    CBOnFocus: TComboBox;
+    ComboBox2: TComboBox;
+    CBOnChange: TComboBox;
     edtName: TEdit;
-    EdtOnClick: TEdit;
-    EdtOnDblClick: TEdit;
-    edtValue: TEdit;
-    edtAlt: TEdit;
-    edtSize: TEdit;
-    edtMaxLen: TEdit;
-    edtTab: TEdit;
-    edtKey: TEdit;
-    EdtID: TEdit;
-    EdtClass: TEdit;
-    edtSrc: TEditButton;
+    EdtTab: TEdit;
     Label1: TLabel;
-    Label10: TLabel;
-    Label11: TLabel;
-    Label12: TLabel;
-    Label13: TLabel;
-    Label14: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
-    Label8: TLabel;
-    Label9: TLabel;
     PageControl1: TPageControl;
+    edtSize: TSpinEdit;
+    SECount: TSpinEdit;
+    StringGrid1: TStringGrid;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
+    TabSheet4: TTabSheet;
     procedure FormCreate(Sender: TObject);
+    procedure SECountChange(Sender: TObject);
   private
     { private declarations }
   public
     function HtmlText:string;
-  end; 
+  end;
 
 var
-  fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm;
+  fpWebSelectTagForm: TfpWebSelectTagForm;
 
 implementation
 
-
-uses fpwebstrconsts;
 {$R *.lfm}
 
-{ TfpwebNewHTMLInputForm }
+{ TfpWebSelectTagForm }
 
-procedure TfpwebNewHTMLInputForm.FormCreate(Sender: TObject);
+procedure TfpWebSelectTagForm.FormCreate(Sender: TObject);
 begin
-   Caption:=SHTMLInputFormCaption;
-   Label1.Caption:=SHTMLInputFormType;
-   Label2.Caption:=SHTMLInputFormName;
-   Label3.Caption:=SHTMLInputFormValue;
-   Label4.Caption:=SHTMLInputFormSize;
-   Label5.Caption:=SHTMLInputFormMaxLen;
-   Label6.Caption:=SHTMLInputFormAlt;
-   Label7.Caption:=SHTMLInputFormImageSrc;
-   Label8.Caption:=SHTMLInputFormTabIndex;
-   Label9.Caption:=SHTMLInputFormAlign;
-   Label10.Caption:=SHTMLInputFormAccessKey;
+  SECountChange(nil);
 end;
 
-function TfpwebNewHTMLInputForm.HtmlText: string;
+procedure TfpWebSelectTagForm.SECountChange(Sender: TObject);
 begin
-  { TODO : temp code - need rewrite }
-  Result:='<INPUT type="' + cbType.Text + '" ' +
-          'name="'+edtName.Text+'"';
+  StringGrid1.RowCount:=SECount.Value + 1;
+end;
 
-  if edtValue.Text <> '' then
-    Result:=Result + ' value="'+edtValue.Text+'" ';
+function TfpWebSelectTagForm.HtmlText: string;
+var
+  i:integer;
+begin
+  Result:='<SELECT name="'+edtName.Text+'"';
+  if EdtTab.Text <> '' then
+    Result:=Result + ' tabindex="'+EdtTab.Text+'"';
 
-  if (Trim(edtSize.Text) <> '') then
-    Result:=Result + ' size="'+trim(edtSize.Text)+'" ';
+  if edtSize.Value > 1 then
+    Result:=Result + ' size="'+IntToStr(edtSize.Value)+'"';
 
-  if edtMaxLen.Text<>'' then
-    Result:=Result + ' maxlength="'+edtMaxLen.Text+'"';
-  if cbAlign.Text <> '' then
-    Result:=Result + ' align="'+cbAlign.Text+'"';
-  if cgOptions.Checked[2] then
-    Result:=Result + ' readonly ';
-  Result:=Result + '>';
+  Result:=Result + '>'+LineEnding;
+
+  for i:=0 to SECount.Value - 1  do
+  begin
+     Result:=Result + '  <option';
+     if StringGrid1.Cells[1, i+1]<>'' then
+       Result:=Result + ' value="'+StringGrid1.Cells[1, i+1]+'"';
+     Result:=Result + '>'+StringGrid1.Cells[0, i+1]+'</option>'+LineEnding;
+  end;
+  Result:=Result + '</SELECT>';
 end;
 
 end.

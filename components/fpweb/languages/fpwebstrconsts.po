@@ -51,6 +51,50 @@ msgctxt "fpwebstrconsts.shtmlfiledesc"
 msgid "Create new HTML file..."
 msgstr ""
 
+#: fpwebstrconsts.shtmlinputformaccesskey
+msgid "Access key"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformalign
+msgid "Align"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformalt
+msgid "Alt"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformcaption
+msgid "Tag property: INPUT"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformimagesrc
+msgid "Image src"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformmaxlen
+msgid "Max length"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformname
+msgid "Name"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformsize
+msgid "Size"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformtabindex
+msgid "Tab Index"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformtype
+msgid "Type"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformvalue
+msgid "Value"
+msgstr ""
+
 #: fpwebstrconsts.shtmljsfile
 msgid "&Javascript file"
 msgstr ""
@@ -129,9 +173,41 @@ msgctxt "fpwebstrconsts.smihtmleditor"
 msgid "HTML Editor"
 msgstr ""
 
+#: fpwebstrconsts.smihtmlformbuttton
+msgid "Insert Button control"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformcheckbox
+msgid "Insert CheckBox control"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformfieldset
+msgid "Insert FieldSet"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformlegend
+msgid "Insert Legend"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformradiobtn
+msgid "Insert RadioBtn control"
+msgstr ""
+
 #: fpwebstrconsts.smihtmlforms
 msgctxt "fpwebstrconsts.smihtmlforms"
 msgid "Forms"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformselect
+msgid "Insert Select control"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformselectopt
+msgid "Insert Select options"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformselectoptwd
+msgid "Insert Select options with dialog"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlinsertbr
@@ -195,6 +271,10 @@ msgstr ""
 
 #: fpwebstrconsts.smihtmlinsertinputsubmit
 msgid "Insert \"Submit\" button "
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertlink
+msgid "Insert link (HREF)"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlinsertlist

@@ -50,6 +50,21 @@ Type
     function GetImplementationSource(const Filename, SourceName, ResourceName: string): string;override;
   end;
 
+  { TSQLFileDescriptor }
+
+  { TJSFileDescriptor }
+
+  TJSFileDescriptor = class(TProjectFileDescriptor)
+  public
+    constructor Create; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    function GetResourceSource(const ResourceName: string): string; override;
+    function CreateSource(const Filename, SourceName,
+                          ResourceName: string): string; override;
+    procedure UpdateDefaultPascalFileExtension(const DefPasExt: string); override;
+  end;
+
   TJSSyntaxChecker = Class(TComponent)
   private
     FSFN: String;
@@ -350,6 +365,45 @@ begin
   finally
     IDEMessagesWindow.EndBlock;
   end;
+end;
+
+{ TJSFileDescriptor }
+
+constructor TJSFileDescriptor.Create;
+begin
+  Name:='SQL Script file';
+  DefaultFilename:='script.sql';
+  DefaultResFileExt:='';
+  DefaultFileExt:='.sql';
+  VisibleInNewDialog:=true;
+end;
+
+function TJSFileDescriptor.GetLocalizedName: string;
+begin
+  Result:=inherited GetLocalizedName;
+end;
+
+function TJSFileDescriptor.GetLocalizedDescription: string;
+begin
+  Result:=inherited GetLocalizedDescription;
+end;
+
+function TJSFileDescriptor.GetResourceSource(const ResourceName: string
+  ): string;
+begin
+  Result:=inherited GetResourceSource(ResourceName);
+end;
+
+function TJSFileDescriptor.CreateSource(const Filename, SourceName,
+  ResourceName: string): string;
+begin
+  Result:=inherited CreateSource(Filename, SourceName, ResourceName);
+end;
+
+procedure TJSFileDescriptor.UpdateDefaultPascalFileExtension(
+  const DefPasExt: string);
+begin
+  inherited UpdateDefaultPascalFileExtension(DefPasExt);
 end;
 
 finalization

@@ -1,0 +1,82 @@
+object fpWebSelectOptionsForm: TfpWebSelectOptionsForm
+  Left = 535
+  Height = 240
+  Top = 314
+  Width = 320
+  ActiveControl = edtCaption
+  Caption = 'Property for <Options>'
+  ClientHeight = 240
+  ClientWidth = 320
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 200
+    Width = 308
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&ОК'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = 'C&lose'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = '&Cancel'
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 15
+    Top = 6
+    Width = 44
+    BorderSpacing.Around = 6
+    Caption = '&Caption'
+    FocusControl = edtCaption
+    ParentColor = False
+  end
+  object Label2: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtCaption
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 55
+    Width = 31
+    BorderSpacing.Around = 6
+    Caption = '&Value'
+    FocusControl = edtValue
+    ParentColor = False
+  end
+  object edtCaption: TEdit
+    AnchorSideLeft.Control = Label1
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 12
+    Height = 22
+    Top = 27
+    Width = 302
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    TabOrder = 1
+  end
+  object edtValue: TEdit
+    AnchorSideLeft.Control = Label2
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 12
+    Height = 22
+    Top = 76
+    Width = 302
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    TabOrder = 2
+  end
+end

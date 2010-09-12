@@ -7,6 +7,7 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
   Caption = 'Tag property: INPUT'
   ClientHeight = 476
   ClientWidth = 628
+  OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object ButtonPanel1: TButtonPanel

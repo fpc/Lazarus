@@ -1,0 +1,86 @@
+object fpIDEExtEditorInsertFileNameForm: TfpIDEExtEditorInsertFileNameForm
+  Left = 472
+  Height = 406
+  Top = 229
+  Width = 503
+  ActiveControl = CBFullPath
+  Caption = 'Select file...'
+  ClientHeight = 406
+  ClientWidth = 503
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object EFileName: TEdit
+    AnchorSideLeft.Control = LEFileName
+    AnchorSideTop.Control = LEFileName
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 11
+    Height = 22
+    Top = 27
+    Width = 486
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    TabOrder = 0
+  end
+  object LEFileName: TLabel
+    AnchorSideTop.Control = Owner
+    Left = 5
+    Height = 15
+    Top = 6
+    Width = 57
+    BorderSpacing.Around = 6
+    Caption = '&Select file'
+    FocusControl = EFileName
+    ParentColor = False
+  end
+  object CBFullPath: TCheckBox
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 401
+    Height = 21
+    Top = 6
+    Width = 96
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 6
+    Caption = 'With full path'
+    TabOrder = 1
+  end
+  object LBFiles: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = EFileName
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 305
+    Top = 55
+    Width = 491
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    OnDblClick = LBFilesDblClick
+    TabOrder = 2
+    TopIndex = -1
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 366
+    Width = 491
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&ОК'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = 'C&lose'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = '&Cancel'
+    TabOrder = 3
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+end

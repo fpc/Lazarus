@@ -1,0 +1,753 @@
+object fpWebHREFEditForm: TfpWebHREFEditForm
+  Left = 516
+  Height = 535
+  Top = 121
+  Width = 537
+  ActiveControl = PageControl1
+  Caption = 'Tag property: A'
+  ClientHeight = 535
+  ClientWidth = 537
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 489
+    Top = 0
+    Width = 537
+    ActivePage = TabSheet1
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Caption = 'Main'
+      ClientHeight = 461
+      ClientWidth = 533
+      object Label1: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = TabSheet1
+        Left = 6
+        Height = 15
+        Top = 6
+        Width = 29
+        BorderSpacing.Around = 6
+        Caption = 'H&REF'
+        FocusControl = cbHREF
+        ParentColor = False
+      end
+      object cbHREF: TComboBox
+        AnchorSideLeft.Control = Label1
+        AnchorSideTop.Control = Label1
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = SpeedButton1
+        Left = 12
+        Height = 23
+        Top = 27
+        Width = 492
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        ItemHeight = 0
+        TabOrder = 0
+      end
+      object SpeedButton1: TSpeedButton
+        AnchorSideTop.Control = cbHREF
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = cbHREF
+        AnchorSideBottom.Side = asrBottom
+        Left = 504
+        Height = 23
+        Top = 27
+        Width = 23
+        Anchors = [akTop, akRight, akBottom]
+        BorderSpacing.Right = 6
+        Color = clBtnFace
+        Glyph.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000060000
+          0013000000160000001600000016000000160000001600000016000000160000
+          0016000000160000001600000016000000160000001300000006BCA48D64B098
+          81B4AD957DB6AD957DB6AD957DB6AD957DB6AD957DB6AD957DB6AD957DB6AD95
+          7DB6AD957DB6AD957DB6AD957DB6AD957DB6B09880B4BCA48D65F8C194AAF9CD
+          A3FEF8CDA3FFF7CCA3FFF7CCA3FFF7CCA3FFF7CCA3FFF7CCA3FFF7CCA3FFF7CD
+          A3FFF8CDA3FFF9CDA3FFF9CDA3FFF9CDA3FFF9CCA2FFF7BF92ADF3B280B9FACE
+          A5FBF8CFA7FFF8D3AEFFF9D4AFFFF9D4AFFFF9D4AFFFF9D4AFFFF8D3AFFFF7D1
+          ADFFF7CEA7FFFACFA6FFFACFA7FFFACFA7FFF9CDA3FFF3B27EBDEEAB77C7F8C6
+          9AF9F6C69CFFFBD0AAFFFDD3ADFFFCD3ADFFFDD3ADFFFCD2ACFFFBD1ABFFF9CF
+          A9FFF5CAA3FFF4C59BFFF7C69AFFF8C69AFFF8C599FEEEAB76CAE9A168D6F6B7
+          85F8F3B686FFF7BF93FFF9C196FFF9C196FFF9C196FFF8C195FFF8C094FFF6BE
+          93FFF5BE92FFF3BA8DFFF1B484FFF5B684FFF5B684FCE9A168D8E4955AE1F1A7
+          70F6EFA671FFF3AF7EFFF4B180FFF4B180FFF4B281FFF4B180FFF3B07FFFF2AF
+          7EFFF1AE7DFFF1AE7DFFEEA977FFEEA670FFF1A770FBE49559E3DD9860F3EAAF
+          81F9E8AE81FFEAB287FFEBB388FFEBB388FFEBB388FFEBB388FFEBB388FFEAB2
+          87FFEAB287FFEAB287FFE9B186FFE8AE80FFEAAF81FCE09F6CF4D286498ED892
+          59EFCD905EFFE0BA9CFFE8C5A9FFE8C5A9FFE8C5A9FFE8C6AAFFE9C6AAFFE8C5
+          A9FFE6C4A8FFE6C4A7FFDFB99BFFCD905EFFD89259EFD48A508EE3925A23E29F
+          6CDFCCA07BFFECE8E5FFFCFDFDFFFCFCFDFFFDFDFEFFFDFEFFFFFEFFFFFFFEFF
+          FFFFFDFEFFFFFDFEFFFFEEEAE7FFCCA07BFFE29F6CDFE3925A23E3925923E4A6
+          76DFCFA888FFEBE7E4FFFAFBFBFFFBFBFBFFFBFBFBFFFCFCFCFFFDFDFDFFFDFD
+          FDFFFEFEFEFFFFFFFFFFF0ECE8FFD0A988FFE4A676DFE3915923E2905723E6AB
+          7EDFD2B093FFEAE7E4FFF9F9F9FFFAFAFAFFFAFAFAFFFBFBFBFFFCFCFCFFFCFC
+          FCFFFCFCFCFFFDFEFEFFEFEBE8FFD2AB8CFFE6A879DEE3915822E2905722E8AC
+          80DED3B195FFE9E6E3FFF7F7F7FFF8F8F8FFF9F9F9FFFAFAFAFFFBFBFBFFFBFB
+          FBFFFBFBFBFFFCFCFCFFEEEBE9F5C295759DE59A6569E3945C0DE3935B0CE59C
+          6766C195769DE8E5E2F5F6F6F6FFF6F6F6FFF8F8F8FFF9F9F9FFFAFAFAFFFAFA
+          FAFFFAFAFAFFFBFBFBFFEEEEEEEA87878736BBBBBB000000000000000000B1B1
+          B10080808031E0E0E0D6EDEDEDEAEEEEEDE9EFEFEEE9F0F0EFE9F0F0F0E9F1F1
+          F1E9F1F1F1E9F2F2F2EAE6E6E6D67E7E7E33C0C0C00000000000000000008181
+          81005050500E9F9F9F36AAAAA93AAAAAAA3AAAAAAA3AABABAB3AABABAB3AABAB
+          AB3AACACAB3AACACAC3AA1A1A1365151510E8282820000000000
+        }
+        NumGlyphs = 0
+        OnClick = SpeedButton1Click
+      end
+      object Label2: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = edtLinkText
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 105
+        Width = 34
+        BorderSpacing.Around = 6
+        Caption = '&Name'
+        FocusControl = edtLinkName
+        ParentColor = False
+      end
+      object Label3: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = edtLinkName
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 154
+        Width = 18
+        BorderSpacing.Around = 6
+        Caption = 'R&el'
+        FocusControl = EdtRel
+        ParentColor = False
+      end
+      object Label4: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideLeft.Side = asrCenter
+        AnchorSideTop.Control = edtLinkName
+        AnchorSideTop.Side = asrBottom
+        Left = 256
+        Height = 15
+        Top = 154
+        Width = 21
+        BorderSpacing.Around = 6
+        Caption = 'Rev'
+        FocusControl = EdtRev
+        ParentColor = False
+      end
+      object Label5: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = EdtRel
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 204
+        Width = 26
+        BorderSpacing.Around = 6
+        Caption = 'T&ype'
+        FocusControl = cbType
+        ParentColor = False
+      end
+      object edtLinkName: TEdit
+        AnchorSideLeft.Control = Label2
+        AnchorSideTop.Control = Label2
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 22
+        Top = 126
+        Width = 515
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        TabOrder = 1
+      end
+      object Label6: TLabel
+        AnchorSideLeft.Control = Label4
+        AnchorSideTop.Control = EdtRev
+        AnchorSideTop.Side = asrBottom
+        Left = 256
+        Height = 15
+        Top = 204
+        Width = 36
+        BorderSpacing.Top = 6
+        Caption = 'T&arget'
+        FocusControl = cbTarg
+        ParentColor = False
+      end
+      object cbType: TComboBox
+        AnchorSideLeft.Control = Label5
+        AnchorSideTop.Control = Label5
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Label4
+        Left = 12
+        Height = 23
+        Top = 225
+        Width = 238
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        ItemIndex = 0
+        Items.Strings = (
+          ''
+          'text/html'
+          'image/jpeg'
+          'image/gif'
+          'image/png'
+          'model/vrml'
+          'video/quicktime'
+          'application/java'
+          'text/css'
+          'text/javascript'
+        )
+        TabOrder = 2
+      end
+      object cbTarg: TComboBox
+        AnchorSideLeft.Control = Label6
+        AnchorSideTop.Control = Label6
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 262
+        Height = 23
+        Top = 225
+        Width = 265
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        Items.Strings = (
+          ''
+          '_blank'
+          '_self'
+          '_parent'
+          '_top'
+        )
+        TabOrder = 3
+      end
+      object Label10: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = cbType
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 254
+        Width = 50
+        BorderSpacing.Around = 6
+        Caption = 'OnFocus'
+        FocusControl = CBOnFocus
+        ParentColor = False
+      end
+      object Label11: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = CBOnFocus
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 304
+        Width = 40
+        BorderSpacing.Around = 6
+        Caption = 'OnBlur'
+        FocusControl = CBOnBlur
+        ParentColor = False
+      end
+      object CBOnFocus: TComboBox
+        AnchorSideLeft.Control = Label10
+        AnchorSideTop.Control = Label10
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 23
+        Top = 275
+        Width = 515
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 4
+      end
+      object CBOnBlur: TComboBox
+        AnchorSideLeft.Control = Label11
+        AnchorSideTop.Control = Label11
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 23
+        Top = 325
+        Width = 515
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 5
+      end
+      object Label22: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = cbHREF
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 56
+        Width = 48
+        BorderSpacing.Around = 6
+        Caption = '&Link text'
+        FocusControl = edtLinkText
+        ParentColor = False
+      end
+      object edtLinkText: TEdit
+        AnchorSideLeft.Control = Label22
+        AnchorSideTop.Control = Label22
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 22
+        Top = 77
+        Width = 515
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        TabOrder = 6
+      end
+      object EdtRel: TComboBox
+        AnchorSideLeft.Control = Label3
+        AnchorSideTop.Control = Label3
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Label4
+        Left = 12
+        Height = 23
+        Top = 175
+        Width = 238
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 7
+        Text = 'EdtRel'
+      end
+      object EdtRev: TComboBox
+        AnchorSideLeft.Control = Label4
+        AnchorSideTop.Control = Label4
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 262
+        Height = 23
+        Top = 175
+        Width = 265
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 8
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Core'
+      ClientHeight = 461
+      ClientWidth = 533
+      object Label7: TLabel
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = TabSheet2
+        Left = 6
+        Height = 15
+        Top = 6
+        Width = 12
+        BorderSpacing.Around = 6
+        Caption = 'ID'
+        FocusControl = CBID
+        ParentColor = False
+      end
+      object CBID: TComboBox
+        AnchorSideLeft.Control = Label7
+        AnchorSideTop.Control = Label7
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 23
+        Top = 27
+        Width = 515
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 0
+        Text = 'CBID'
+      end
+      object Label8: TLabel
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = CBID
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 56
+        Width = 33
+        BorderSpacing.Around = 6
+        Caption = 'Class'
+        FocusControl = CBClass
+        ParentColor = False
+      end
+      object CBClass: TComboBox
+        AnchorSideLeft.Control = Label8
+        AnchorSideTop.Control = Label8
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 23
+        Top = 77
+        Width = 515
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 1
+        Text = 'CBClass'
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Events'
+      ClientHeight = 461
+      ClientWidth = 533
+      object Label12: TLabel
+        AnchorSideRight.Side = asrCenter
+        AnchorSideBottom.Control = CBOnClick
+        AnchorSideBottom.Side = asrBottom
+        Left = 144
+        Height = 15
+        Top = 14
+        Width = 43
+        Anchors = [akRight, akBottom]
+        BorderSpacing.Right = 6
+        Caption = 'OnClick'
+        ParentColor = False
+      end
+      object Label13: TLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Label12
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = CBOnDblClick
+        AnchorSideBottom.Side = asrBottom
+        Left = 126
+        Height = 15
+        Top = 43
+        Width = 61
+        Anchors = [akRight, akBottom]
+        Caption = 'OnDblClick'
+        ParentColor = False
+      end
+      object Label14: TLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Label12
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = ComboBox10
+        AnchorSideBottom.Side = asrBottom
+        Left = 102
+        Height = 15
+        Top = 72
+        Width = 85
+        Anchors = [akRight, akBottom]
+        Caption = 'OnMouseDown'
+        ParentColor = False
+      end
+      object Label15: TLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Label12
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = CBOnMouseUp
+        AnchorSideBottom.Side = asrBottom
+        Left = 118
+        Height = 15
+        Top = 101
+        Width = 69
+        Anchors = [akRight, akBottom]
+        Caption = 'OnMouseUp'
+        ParentColor = False
+      end
+      object Label16: TLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Label12
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = ComboBox12
+        AnchorSideBottom.Side = asrBottom
+        Left = 106
+        Height = 15
+        Top = 130
+        Width = 81
+        Anchors = [akRight, akBottom]
+        Caption = 'OnMouseOver'
+        ParentColor = False
+      end
+      object Label17: TLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Label12
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = CBOnMouseMove
+        AnchorSideBottom.Side = asrBottom
+        Left = 104
+        Height = 15
+        Top = 159
+        Width = 83
+        Anchors = [akRight, akBottom]
+        Caption = 'OnMouseMove'
+        ParentColor = False
+      end
+      object Label18: TLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Label12
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = CBOnMouseOut
+        AnchorSideBottom.Side = asrBottom
+        Left = 113
+        Height = 15
+        Top = 188
+        Width = 74
+        Anchors = [akRight, akBottom]
+        Caption = 'OnMouseOut'
+        ParentColor = False
+      end
+      object Label19: TLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Label12
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = CBOnKeyPress
+        AnchorSideBottom.Side = asrBottom
+        Left = 118
+        Height = 15
+        Top = 217
+        Width = 69
+        Anchors = [akRight, akBottom]
+        Caption = 'OnKeyPress'
+        ParentColor = False
+      end
+      object Label20: TLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Label12
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = CBOnKeyDown
+        AnchorSideBottom.Side = asrBottom
+        Left = 120
+        Height = 15
+        Top = 246
+        Width = 67
+        Anchors = [akRight, akBottom]
+        Caption = 'OnKeyDown'
+        ParentColor = False
+      end
+      object Label21: TLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Label12
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = CBonKeyUp
+        AnchorSideBottom.Side = asrBottom
+        Left = 136
+        Height = 15
+        Top = 275
+        Width = 51
+        Anchors = [akRight, akBottom]
+        Caption = 'OnKeyUp'
+        ParentColor = False
+      end
+      object CBOnClick: TComboBox
+        AnchorSideLeft.Control = Label12
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = TabSheet3
+        AnchorSideRight.Control = TabSheet3
+        AnchorSideRight.Side = asrBottom
+        Left = 193
+        Height = 23
+        Top = 6
+        Width = 334
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 0
+        Text = 'CBOnClick'
+      end
+      object CBOnDblClick: TComboBox
+        AnchorSideLeft.Control = Label12
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = CBOnClick
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet3
+        AnchorSideRight.Side = asrBottom
+        Left = 193
+        Height = 23
+        Top = 35
+        Width = 334
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 1
+        Text = 'CBOnDblClick'
+      end
+      object ComboBox10: TComboBox
+        AnchorSideLeft.Control = Label12
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = CBOnDblClick
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet3
+        AnchorSideRight.Side = asrBottom
+        Left = 193
+        Height = 23
+        Top = 64
+        Width = 334
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 2
+        Text = 'CBOnMouseDown'
+      end
+      object CBOnMouseUp: TComboBox
+        AnchorSideLeft.Control = Label12
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ComboBox10
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet3
+        AnchorSideRight.Side = asrBottom
+        Left = 193
+        Height = 23
+        Top = 93
+        Width = 334
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 3
+        Text = 'CBOnMouseUp'
+      end
+      object ComboBox12: TComboBox
+        AnchorSideLeft.Control = Label12
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = CBOnMouseUp
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet3
+        AnchorSideRight.Side = asrBottom
+        Left = 193
+        Height = 23
+        Top = 122
+        Width = 334
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 4
+        Text = 'CBOnMouseOver'
+      end
+      object CBOnMouseMove: TComboBox
+        AnchorSideLeft.Control = Label12
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ComboBox12
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet3
+        AnchorSideRight.Side = asrBottom
+        Left = 193
+        Height = 23
+        Top = 151
+        Width = 334
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 5
+        Text = 'CBOnMouseMove'
+      end
+      object CBOnMouseOut: TComboBox
+        AnchorSideLeft.Control = Label12
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = CBOnMouseMove
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet3
+        AnchorSideRight.Side = asrBottom
+        Left = 193
+        Height = 23
+        Top = 180
+        Width = 334
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 6
+        Text = 'CBOnMouseOut'
+      end
+      object CBOnKeyPress: TComboBox
+        AnchorSideLeft.Control = Label12
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = CBOnMouseOut
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet3
+        AnchorSideRight.Side = asrBottom
+        Left = 193
+        Height = 23
+        Top = 209
+        Width = 334
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 7
+        Text = 'CBOnKeyPress'
+      end
+      object CBOnKeyDown: TComboBox
+        AnchorSideLeft.Control = Label12
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = CBOnKeyPress
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet3
+        AnchorSideRight.Side = asrBottom
+        Left = 193
+        Height = 23
+        Top = 238
+        Width = 334
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 8
+        Text = 'CBOnKeyDown'
+      end
+      object CBonKeyUp: TComboBox
+        AnchorSideLeft.Control = Label12
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = CBOnKeyDown
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet3
+        AnchorSideRight.Side = asrBottom
+        Left = 193
+        Height = 23
+        Top = 267
+        Width = 334
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 9
+        Text = 'CBonKeyUp'
+      end
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 495
+    Width = 525
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&ОК'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = 'C&lose'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = '&Cancel'
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object Label9: TLabel
+    Left = 22
+    Height = 15
+    Top = 12
+    Width = 38
+    Caption = 'Label9'
+    ParentColor = False
+  end
+  object OpenDialog1: TOpenDialog
+    left = 341
+    top = 42
+  end
+end

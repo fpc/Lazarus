@@ -29,6 +29,7 @@ resourcestring
   SmiHTMLInsertHR           = 'Insert horizontal line';
   SmiHTMLInsertComment      = 'Insert HTML comment';
   SmiHTMLInsertIMG          = 'Insert image';
+  SmiHTMLInsertLink         = 'Insert link (HREF)';
   SmiHTMLTextAlignLeft      = 'Text align left';
   SmiHTMLTextAlignRight     = 'Text align right';
   SmiHTMLTextAlignCenter    = 'Text align center';
@@ -57,9 +58,17 @@ resourcestring
 
 
   SmiHTMLInsertForm         = 'Insert HTML Form';
+  SmiHTMLFormSelect         = 'Insert Select control';
+  SmiHTMLFormSelectOpt      = 'Insert Select options';
+  SmiHTMLFormSelectOptWD    = 'Insert Select options with dialog';
+  SmiHTMLFormCheckBox       = 'Insert CheckBox control';
+  SmiHTMLFormRadioBtn       = 'Insert RadioBtn control';
+  SmiHTMLFormButtton        = 'Insert Button control';
   SmiHTMLInsertInput        = 'Insert HTML Input tag';
   SmiHTMLInsertInputSubmit  = 'Insert "Submit" button ';
   SmiHTMLInsertInputReset   = 'Insert "Reset" button';
+  SmiHTMLFormFieldSet       = 'Insert FieldSet';
+  SmiHTMLFormLegend         = 'Insert Legend';
 
   SmiOtherInsertFN          = 'Insert file name';
 
@@ -87,6 +96,18 @@ resourcestring
   SHTMLTableFormCellspacing  = 'Cell spacing';
   SHTMLTableFormWidth        = 'Width';
   SHTMLTableFormHeaderBGColor= 'Header bg color';
+
+  SHTMLInputFormCaption      = 'Tag property: INPUT';
+  SHTMLInputFormType         = 'Type';
+  SHTMLInputFormName         = 'Name';
+  SHTMLInputFormValue        = 'Value';
+  SHTMLInputFormSize         = 'Size';
+  SHTMLInputFormMaxLen       = 'Max length';
+  SHTMLInputFormAlt          = 'Alt';
+  SHTMLInputFormImageSrc     = 'Image src';
+  SHTMLInputFormTabIndex     = 'Tab Index';
+  SHTMLInputFormAlign        = 'Align';
+  SHTMLInputFormAccessKey    = 'Access key';
 
 
 implementation

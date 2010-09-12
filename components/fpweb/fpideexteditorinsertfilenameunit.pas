@@ -27,50 +27,83 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 }
-unit fpwebNewHTMLListUnit;
+unit fpIDEExtEditorInsertFileNameUnit;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  StdCtrls, Spin, ExtCtrls;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ButtonPanel;
 
 type
 
-  { TfpwebNewHTMLListForm }
+  { TfpIDEExtEditorInsertFileNameForm }
 
-  TfpwebNewHTMLListForm = class(TForm)
+  TfpIDEExtEditorInsertFileNameForm = class(TForm)
     ButtonPanel1: TButtonPanel;
-    Label1: TLabel;
-    RGStyle: TRadioGroup;
-    SERows: TSpinEdit;
+    CBFullPath: TCheckBox;
+    EFileName: TEdit;
+    LEFileName: TLabel;
+    LBFiles: TListBox;
+    procedure FormCreate(Sender: TObject);
+    procedure LBFilesDblClick(Sender: TObject);
   private
-    { private declarations }
+    procedure FillFilesList;
   public
-    function HtmlText:string;
+    function SelectedFile:string;
   end; 
 
 var
-  fpwebNewHTMLListForm: TfpwebNewHTMLListForm;
+  fpIDEExtEditorInsertFileNameForm: TfpIDEExtEditorInsertFileNameForm;
 
 implementation
-uses strutils;
+uses fpWebStrConsts, SrcEditorIntf, ProjectIntf, LazIDEIntf;
 
 {$R *.lfm}
 
-{ TfpwebNewHTMLListForm }
+{ TfpIDEExtEditorInsertFileNameForm }
 
-function TfpwebNewHTMLListForm.HtmlText: string;
+procedure TfpIDEExtEditorInsertFileNameForm.FormCreate(Sender: TObject);
+begin
+  FillFilesList;
+end;
+
+procedure TfpIDEExtEditorInsertFileNameForm.LBFilesDblClick(Sender: TObject);
+begin
+  ModalResult:=mrOk;
+end;
+
+procedure TfpIDEExtEditorInsertFileNameForm.FillFilesList;
 var
   i:integer;
+  S, Ext:string;
 begin
-  Result:=DupeString('<li>  </li>'+LineEnding, SERows.Value);
-  if RGStyle.ItemIndex = 0 then
-    Result:='<ol>' + LineEnding + Result + '</ol>'
+  LBFiles.Items.Clear;
+  if Assigned(LazarusIDE) and Assigned(LazarusIDE.ActiveProject) then
+  begin
+    for i:=0 to LazarusIDE.ActiveProject.FileCount - 1 do
+    begin
+      if LazarusIDE.ActiveProject.Files[i].IsPartOfProject then
+      begin
+        S:=LazarusIDE.ActiveProject.Files[i].Filename;
+        LBFiles.Items.Add(S);
+      end;
+    end;
+  end;
+end;
+
+function TfpIDEExtEditorInsertFileNameForm.SelectedFile: string;
+begin
+  if (LBFiles.Items.Count>0) and (LBFiles.ItemIndex>-1) and (LBFiles.ItemIndex < LBFiles.Items.Count) then
+  begin
+    Result:=LBFiles.Items[LBFiles.ItemIndex];
+    if not CBFullPath.Checked then
+      Result:=ExtractFileNameOnly(Result);
+  end
   else
-    Result:='ul>' + LineEnding + Result + '</ul>';
+    Result:='';
 end;
 
 end.

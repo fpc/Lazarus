@@ -58,6 +58,7 @@ procedure ProcHTMLHR(Sender: TObject);
 procedure ProcHTMLBR(Sender: TObject);
 procedure ProcHTMLNBSP(Sender: TObject);
 procedure ProcHTMLComment(Sender: TObject);
+procedure ProcHTMLLink(Sender: TObject);
 procedure ProcHTMLImageTag(Sender: TObject);
 procedure ProcHTMLTextAlignLeft(Sender: TObject);
 procedure ProcHTMLTextAlignRight(Sender: TObject);
@@ -83,9 +84,18 @@ procedure ProcHTMLColor(Sender: TObject);
 
 
 procedure ProcHTMLForm(Sender: TObject);
+procedure ProcHTMLSelect(Sender: TObject);
+procedure ProcHTMLSelectOptions(Sender: TObject);
+procedure ProcHTMLSelectOptionsWD(Sender: TObject);
+procedure ProcHTMLCheckButton(Sender: TObject);
+procedure ProcHTMLRadioButton(Sender: TObject);
+procedure ProcHTMLButton(Sender: TObject);
 procedure ProcHTMLInputTag(Sender: TObject);
 procedure ProcHTMLInputSubmitTag(Sender: TObject);
 procedure ProcHTMLInputResetTag(Sender: TObject);
+procedure ProcHTMLFormFieldSet(Sender: TObject);
+procedure ProcHTMLFormLegend(Sender: TObject);
+
 
 procedure ProcOtherInsertFileName(Sender: TObject);
 
@@ -99,7 +109,10 @@ uses LResources, NewItemIntf, Forms, Controls, IDECommands,
   fpwebNewHTMLListUnit, fpwebNewHtmlTagTRUnit, fpwebNewHTMLFormUnit,
   fpwebNewHTMLInputUnit, fpwebNewHTMLImgUnit,
   //Other
-  fpIDEExtEditorInsertFileNameUnit;
+  fpIDEExtEditorInsertFileNameUnit,
+  fpWebHREFEditUnit, fpWebSelectOptionsUnit,
+  fpWebSelectTagUnit, fpWebHtmlTagLegendUnit,
+  fpWebFieldSetTagUnit;
 
 var
   //Standart items
@@ -111,7 +124,7 @@ var
   //Paragraph
   CmdHTMLNBSP : TIDECommand;
   //----
-  //Link
+  CmdHTMLLink    : TIDECommand ;
   CmdHTMLIMG : TIDECommand;
   CmdHTMLHR : TIDECommand;
   CmdHTMLComment : TIDECommand;
@@ -141,10 +154,18 @@ var
 
 
 
-  CmdHTMLFrom : TIDECommand;
-  CmdHTMLInput : TIDECommand;
-  CmdHTMLInputSubmit : TIDECommand;
-  CmdHTMLInputReset : TIDECommand;
+  CmdHTMLFrom             : TIDECommand;
+  CmdHTMLFormSelect       : TIDECommand;
+  CmdHTMLFormSelectOpt    : TIDECommand;
+  CmdHTMLFormSelectOptWD  : TIDECommand;
+  CmdHTMLFormCheckBtn     : TIDECommand;
+  CmdHTMLFormRadioBtn     : TIDECommand;
+  CmdHTMLFormButton       : TIDECommand;
+  CmdHTMLInput            : TIDECommand;
+  CmdHTMLInputSubmit      : TIDECommand;
+  CmdHTMLInputReset       : TIDECommand;
+  CmdHTMLFormFieldSet     : TIDECommand;
+  CmdHTMLFormLegend       : TIDECommand;
 
 
   CmdOtherInsFileName : TIDECommand;
@@ -178,6 +199,7 @@ begin
   CmdHTMLHR := RegisterIDECommand(Cat, 'HTMLHR', SmiHTMLInsertHR, Key, nil, @ProcHTMLHR);
   CmdHTMLComment := RegisterIDECommand(Cat, 'HTMLComment', SmiHTMLInsertComment, Key, nil, @ProcHTMLComment);
   CmdHTMLIMG := RegisterIDECommand(Cat, 'HTMLIMG', SmiHTMLInsertIMG, Key, nil, @ProcHTMLImageTag);
+  CmdHTMLLink:= RegisterIDECommand(Cat, 'HTMLLink', SmiHTMLInsertLink, Key, nil, @ProcHTMLLink);
 
   CmdHTMLTextAlignLeft :=RegisterIDECommand(Cat, 'HTMLTextAlignLeft', SmiHTMLTextAlignLeft, Key, nil, @ProcHTMLTextAlignLeft);
   CmdHTMLTextAlignRight :=RegisterIDECommand(Cat, 'HTMLTextAlignRight', SmiHTMLTextAlignRight, Key, nil, @ProcHTMLTextAlignRight);
@@ -202,6 +224,19 @@ begin
   CmdHTMLColor := RegisterIDECommand(Cat, 'HTMLColor', SmiHTMLInsertColor, Key, nil, @ProcHTMLColor);
 
 
+  //Forms---
+  CmdHTMLFrom := RegisterIDECommand(Cat, 'HTMLForm', SmiHTMLInsertForm, Key, nil, @ProcHTMLForm);
+  CmdHTMLFormSelect      := RegisterIDECommand(Cat, 'HTMLFormSelect', SmiHTMLFormSelect, Key, nil, @ProcHTMLSelect);
+  CmdHTMLFormSelectOpt   := RegisterIDECommand(Cat, 'HTMLFormSelectOpt', SmiHTMLFormSelectOpt, Key, nil, @ProcHTMLSelectOptionsWD);
+  CmdHTMLFormSelectOptWD := RegisterIDECommand(Cat, 'HTMLFormSelectOptWD', SmiHTMLFormSelectOptWD, Key, nil, @ProcHTMLSelectOptions);
+  CmdHTMLFormCheckBtn    := RegisterIDECommand(Cat, 'HTMLFormCheckBtn', SmiHTMLFormCheckBox, Key, nil, @ProcHTMLCheckButton);
+  CmdHTMLFormRadioBtn    := RegisterIDECommand(Cat, 'HTMLFormRadioBtn', SmiHTMLFormRadioBtn, Key, nil, @ProcHTMLRadioButton);
+  CmdHTMLFormButton      := RegisterIDECommand(Cat, 'HTMLFormButton', SmiHTMLFormButtton, Key, nil, @ProcHTMLButton);
+  CmdHTMLInput           := RegisterIDECommand(Cat, 'HTMLInput', SmiHTMLInsertInput, Key, nil, @ProcHTMLInputTag);
+  CmdHTMLInputSubmit     := RegisterIDECommand(Cat, 'HTMLInputSubmit', SmiHTMLInsertInputSubmit, Key, nil, @ProcHTMLInputSubmitTag);
+  CmdHTMLInputReset      := RegisterIDECommand(Cat, 'HTMLInputReset', SmiHTMLInsertInputReset, Key, nil, @ProcHTMLInputResetTag);
+  CmdHTMLFormFieldSet    := RegisterIDECommand(Cat, 'HTMLFormFieldSet', SmiHTMLFormFieldSet, Key, nil, @ProcHTMLFormFieldSet);
+  CmdHTMLFormLegend      := RegisterIDECommand(Cat, 'HTMLFormLegend', SmiHTMLFormLegend, Key, nil, @ProcHTMLFormLegend);
   CmdHTMLFrom := RegisterIDECommand(Cat, 'HTMLForm', SmiHTMLInsertForm, Key, nil, @ProcHTMLForm);
   CmdHTMLInput:= RegisterIDECommand(Cat, 'HTMLInput', SmiHTMLInsertInput, Key, nil, @ProcHTMLInputTag);
   CmdHTMLInputSubmit := RegisterIDECommand(Cat, 'HTMLInputSubmit', SmiHTMLInsertInputSubmit, Key, nil, @ProcHTMLInputSubmitTag);
@@ -223,7 +258,7 @@ begin
     //Paragraph
     RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLNBSP', SmiHTMLInsertNBSP, nil, nil, CmdHTMLNBSP, 'tag_nbsp');
     RegisterIDEMenuCommand(mnuHTMLStandart, '', '-', nil, nil, nil, '');
-    //Link
+    RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLLink', SmiHTMLInsertLink, nil, nil, CmdHTMLLink, 'tag_a');
     RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLIMG', SmiHTMLInsertIMG, nil, nil, CmdHTMLIMG, 'tag_image');
     RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLHR', SmiHTMLInsertHR, nil, nil, CmdHTMLHR, 'tag_hr');
     RegisterIDEMenuCommand(mnuHTMLStandart, 'HTMLComment', SmiHTMLInsertComment, nil, nil, CmdHTMLComment, 'tag_comm');
@@ -269,16 +304,25 @@ begin
       CmdHTMLTableDataWD, 'tag_table_data');
 
 
+  //Forms menu
   mnuHTMLForms := RegisterIDESubMenu(mnuHTMLSection, 'HTMLForms', SmiHTMLForms, nil, nil);
-    RegisterIDEMenuCommand(mnuHTMLForms, 'HTMLForm', SmiHTMLInsertForm, nil, nil,
-      CmdHTMLFrom, 'HTMLForm');
-    RegisterIDEMenuCommand(mnuHTMLForms, 'HTMLInput', SmiHTMLInsertInput, nil, nil,
-      CmdHTMLInput, 'lineedit');
-    RegisterIDEMenuCommand(mnuHTMLForms, 'HTMLInputSubmit', SmiHTMLInsertInputSubmit, nil, nil,
-      CmdHTMLInputSubmit, 'submit');
-    RegisterIDEMenuCommand(mnuHTMLForms, 'HTMLInputReset', SmiHTMLInsertInputReset, nil, nil,
-      CmdHTMLInputReset, 'reset');
+    RegisterIDEMenuCommand(mnuHTMLForms, 'HTMLForm', SmiHTMLInsertForm, nil, nil, CmdHTMLFrom, 'HTMLForm');
+    RegisterIDEMenuCommand(mnuHTMLForms, '', '-', nil, nil, nil, '');
+    RegisterIDEMenuCommand(mnuHTMLForms, 'HTMLFormSelect', SmiHTMLFormSelect, nil, nil, CmdHTMLFormSelect, 'select');
+    RegisterIDEMenuCommand(mnuHTMLForms, 'HTMLFormSelectOpt', SmiHTMLFormSelectOpt, nil, nil, CmdHTMLFormSelectOpt, 'tag_li');
+    RegisterIDEMenuCommand(mnuHTMLForms, 'HTMLFormSelectOptWD', SmiHTMLFormSelectOptWD, nil, nil, CmdHTMLFormSelectOptWD, 'tag_li');
+    RegisterIDEMenuCommand(mnuHTMLForms, 'HTMLFormCheckBtn', SmiHTMLFormCheckBox, nil, nil, CmdHTMLFormCheckBtn, 'check');
+    RegisterIDEMenuCommand(mnuHTMLForms, 'HTMLFormRadioBtn', SmiHTMLFormRadioBtn, nil, nil, CmdHTMLFormRadioBtn, 'radio');
+    RegisterIDEMenuCommand(mnuHTMLForms, 'HTMLFormButton', SmiHTMLFormButtton, nil, nil, CmdHTMLFormButton, 'button');
+    RegisterIDEMenuCommand(mnuHTMLForms, '', '-', nil, nil, nil, '');
+    RegisterIDEMenuCommand(mnuHTMLForms, 'HTMLInput', SmiHTMLInsertInput, nil, nil, CmdHTMLInput, 'lineedit');
+    RegisterIDEMenuCommand(mnuHTMLForms, 'HTMLInputSubmit', SmiHTMLInsertInputSubmit, nil, nil, CmdHTMLInputSubmit, 'submit');
+    RegisterIDEMenuCommand(mnuHTMLForms, 'HTMLInputReset', SmiHTMLInsertInputReset, nil, nil, CmdHTMLInputReset, 'reset');
+    RegisterIDEMenuCommand(mnuHTMLForms, '', '-', nil, nil, nil, '');
+    RegisterIDEMenuCommand(mnuHTMLForms, 'HTMLFormFieldSet', SmiHTMLFormFieldSet, nil, nil, CmdHTMLFormFieldSet, 'tag_element');
+    RegisterIDEMenuCommand(mnuHTMLForms, 'HTMLFormLegend', SmiHTMLFormLegend, nil, nil, CmdHTMLFormLegend, 'tag_attribute');
 
+  //Other tools
   mnuHTMLOther :=RegisterIDESubMenu(mnuHTMLSection, 'HTMLOther', SmiHTMLOther, nil, nil);
     RegisterIDEMenuCommand(mnuHTMLOther, 'OtherInsFN', SmiOtherInsertFN, nil, nil,
       CmdOtherInsFileName, '');
@@ -303,15 +347,39 @@ begin
       Selection:=AText;
 end;
 
+Function CheckEditor : Boolean;
+
+begin
+  Result:=Assigned(SourceEditorManagerIntf) and Assigned(SourceEditorManagerIntf.ActiveEditor);
+end;
+
 Procedure InsertHTMLTag(Const ATag : String; Const AAttribute : String = '');
 
 begin
-  if Assigned(SourceEditorManagerIntf) and Assigned(SourceEditorManagerIntf.ActiveEditor) then
+  If CheckEditor then
     With SourceEditorManagerIntf.ActiveEditor do
       if (AAttribute='') then
         Selection:='<'+ATag+'>'+Selection+'</'+ATag+'>'
       else
         Selection:='<'+ATag+' '+AAttribute+' >'+Selection+'</'+ATag+'>';
+end;
+
+function ShowEditInputTagForm(const ATagType:string; const ADefValue:string = ''):string;
+
+begin
+  If Not CheckEditor then Exit;
+  With TFpwebNewHTMLInputForm.Create(Application) do
+    try
+      cbType.Text:=ATagType;
+      if ADefValue<>'' then
+        edtValue.Text:=ADefValue
+      else
+        edtValue.Text:=SourceEditorManagerIntf.ActiveEditor.Selection;
+      if ShowModal = mrOk then
+        InsertHTMLSnippet(HtmlText);
+    finally
+      Free;
+    end;
 end;
 
 procedure ProcHTMLTableRow(Sender: TObject);
@@ -402,15 +470,16 @@ end;
 
 procedure ProcHTMLComment(Sender: TObject);
 begin
-  if Assigned(SourceEditorManagerIntf) and Assigned(SourceEditorManagerIntf.ActiveEditor) then
-    with SourceEditorManagerIntf.ActiveEditor do
-      Selection:='<!-- '+Selection+' -->';
+  If Not CheckEditor then Exit;
+  with SourceEditorManagerIntf.ActiveEditor do
+    Selection:='<!-- '+Selection+' -->';
 end;
 
 procedure ProcHTMLColor(Sender: TObject);
 var
   Dlg:TColorDialog;
 begin
+  If Not CheckEditor then Exit;
   Dlg:=TColorDialog.Create(Application);
   try
     if Dlg.Execute then
@@ -422,6 +491,7 @@ end;
 
 procedure ProcHTMLTable(Sender: TObject);
 begin
+  If Not CheckEditor then Exit;
   With TfpWebNewHtmlTableForm.Create(Application) do
     try
       if ShowModal = mrOk then
@@ -433,6 +503,7 @@ end;
 
 procedure ProcHTMLGenList(Sender: TObject);
 begin
+  If Not CheckEditor then Exit;
   With TfpWebNewHTMLListForm.Create(Application) do
     try
       if ShowModal = mrOk then
@@ -444,6 +515,7 @@ end;
 
 procedure ProcHTMLTableRowWD(Sender: TObject);
 begin
+  If Not CheckEditor then Exit;
   With TfpWebNewHtmlTagTRForm.Create(Application) do
     try
       if ShowModal = mrOk then
@@ -460,6 +532,7 @@ end;
 
 procedure ProcHTMLForm(Sender: TObject);
 begin
+  If Not CheckEditor then Exit;
   With TfpWebNewHTMLFormForm.Create(Application) do
     try
       InsertHTMLSnippet(HtmlText(SourceEditorManagerIntf.ActiveEditor.Selection));
@@ -468,8 +541,9 @@ begin
     end;
 end;
 
-procedure ProcHTMLInputTag(Sender: TObject);
+{procedure ProcHTMLInputTag(Sender: TObject);
 begin
+  If Not CheckEditor then Exit;
   With TfpWebNewHTMLInputForm.Create(Application) do
     try
       if ShowModal = mrOk then
@@ -477,40 +551,116 @@ begin
     finally
       Free;
     end;
-end;
+end;}
 
-procedure ProcHTMLInputSubmitTag(Sender: TObject);
-begin
-  With TfpWebNewHTMLInputForm.Create(Application) do
-    try
-      cbType.Text:='submit';
-      edtValue.Text:=SHTMLTagCaptionSubmit;
-      if ShowModal = mrOk then
-         InsertHTMLSnippet(HtmlText);
-    finally
-      Free;
-    end;
-end;
-
-procedure ProcHTMLInputResetTag(Sender: TObject);
-begin
-  With TfpWebNewHTMLInputForm.Create(Application) do
-    try
-      cbType.Text:='reset';
-      edtValue.Text:=SHTMLTagCaptionReset;
-      if ShowModal = mrOk then
-         InsertHTMLSnippet(HtmlText);
-    finally
-      Free;
-    end;
-end;
 
 procedure ProcHTMLImageTag(Sender: TObject);
 begin
+  If Not CheckEditor then Exit;
   With TfpWebNewHTMLImgForm.Create(Application) do
     try
       if ShowModal = mrOk then
        InsertHTMLSnippet(HtmlText);
+    finally
+      Free;
+    end;
+end;
+
+procedure ProcHTMLSelect(Sender: TObject);
+begin
+  If Not CheckEditor then Exit;
+  With TfpWebSelectTagForm.Create(Application) do
+    try
+      edtName.Text:=SourceEditorManagerIntf.ActiveEditor.Selection;
+      if ShowModal = mrOk then
+        InsertHTMLSnippet(HtmlText);
+    finally
+      Free;
+    end;
+end;
+
+procedure ProcHTMLSelectOptions(Sender: TObject);
+begin
+  InsertHTMLTag('option');
+end;
+
+procedure ProcHTMLSelectOptionsWD(Sender: TObject);
+begin
+  If Not CheckEditor then exit;
+  With TfpWebSelectOptionsForm.Create(Application) do
+    try
+      edtCaption.Text:=SourceEditorManagerIntf.ActiveEditor.Selection;
+      if ShowModal = mrOk then
+         InsertHTMLSnippet(HtmlText);
+    finally
+      Free;
+    end;
+end;
+
+procedure ProcHTMLCheckButton(Sender: TObject);
+begin
+  ShowEditInputTagForm('checkbox');
+end;
+
+procedure ProcHTMLRadioButton(Sender: TObject);
+
+begin
+  ShowEditInputTagForm('radio');
+end;
+
+procedure ProcHTMLButton(Sender: TObject);
+begin
+  ShowEditInputTagForm('button');
+end;
+
+procedure ProcHTMLInputTag(Sender: TObject);
+begin
+  ShowEditInputTagForm('');
+end;
+
+procedure ProcHTMLInputSubmitTag(Sender: TObject);
+begin
+  ShowEditInputTagForm('checkbox', SHTMLTagCaptionSubmit);
+end;
+
+procedure ProcHTMLInputResetTag(Sender: TObject);
+begin
+  ShowEditInputTagForm('checkbox', SHTMLTagCaptionReset);
+end;
+
+procedure ProcHTMLFormFieldSet(Sender: TObject);
+begin
+  If Not CheckEditor then exit;
+  With TfpWebFieldSetTagForm.Create(Application) do
+    try
+      if ShowModal = mrOk then
+        InsertHTMLSnippet(HtmlText(SourceEditorManagerIntf.ActiveEditor.Selection));
+    Finally
+      Free;
+    end;
+end;
+
+procedure ProcHTMLFormLegend(Sender: TObject);
+begin
+  If Not CheckEditor then exit;
+  With TfpWebHtmlTagLegendForm.Create(Application) do
+    try
+      edtCaption.Text:=SourceEditorManagerIntf.ActiveEditor.Selection;
+      if ShowModal = mrOk then
+        InsertHTMLSnippet(HtmlText);
+    finally
+      Free;
+    end;
+end;
+
+procedure ProcHTMLLink(Sender: TObject);
+begin
+  If Not CheckEditor then exit;
+  With TfpWebHREFEditForm.Create(Application) do
+    try
+      edtLinkText.Text:=SourceEditorManagerIntf.ActiveEditor.Selection;
+      if ShowModal = mrOk then
+        InsertHTMLSnippet(HtmlText);
     finally
       Free;
     end;
