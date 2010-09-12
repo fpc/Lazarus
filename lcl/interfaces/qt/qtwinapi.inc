@@ -5727,6 +5727,13 @@ begin
 
   Result := HWND(QtObjectFromWidgetH(Widget));
 
+  // return from cache if we are same TQtWidget, just update point
+  if IsValidWidgetAtCachePointer and (Result = FLastWFPResult) then
+  begin
+    FLastWFPMousePos := APoint;
+    exit(FLastWFPResult);
+  end;
+
   // maybe we are viewport of native QAbstractScrollArea (eg. QTextEdit).
   if (Result = 0) then
   begin
