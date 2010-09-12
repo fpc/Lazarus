@@ -1,5 +1,9 @@
 unit SQLStringsPropertyEditorDlg;
 
+{$IFDEF VER2_5_1}
+{$DEFINE HASSQLPARSER}
+{$ENDIF}
+
 {$mode objfpc}{$H+}
 
 interface
@@ -31,31 +35,44 @@ type
     SaveToolButton: TToolButton;
     DividerToolButton: TToolButton;
     ExecuteToolButton: TToolButton;
+    TBCheck: TToolButton;
     procedure ExecuteToolButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure OpenToolButtonClick(Sender: TObject);
     procedure SaveToolButtonClick(Sender: TObject);
+    procedure TBCheckClick(Sender: TObject);
   private
     { private declarations }
     FConnection:TSQLConnection;
+    FISSQLScript: Boolean;
     FTransaction:TSQLTransaction;
 
     function CheckConnection:boolean;
+    procedure CheckSQLSyntax(SQL: TStrings);
   public
     { public declarations }
     constructor Create(AOwner:TComponent);override;
   published
     property Connection: TSQLConnection   read FConnection  write FConnection;
     property Transaction:TSQLTransaction read FTransaction write FTransaction;
+    Property IsSQLScript : Boolean Read FISSQLScript Write FIsSQLScript;
   end; 
 
 implementation
+
+{$IFDEF HASSQLPARSER}
+uses fpsqltree,fpsqlparser;
+{$ENDIF}
 
 {$R *.lfm}
 
 resourcestring
   SSQLTabCaption    = 'SQL Code';
   SResultTabCaption = 'Results';
+  SSQLOK            = 'SQL OK';
+  SQLSyntaxOK       = 'No syntax errors in SQL statement.';
+  SSQLError         = 'SQL Error';
+  SSQLSyntaxError   = 'Syntax error in SQL statement:'+slineBreak+'%s';
 
 { TSQLStringsPropertyEditorDlg }
 
@@ -104,6 +121,11 @@ Var
   D : TSQLDialect;
 
 begin
+  {$IFDEF HASSQLPARSER}
+  TBCheck.Visible:=True;
+  {$ELSE}
+  TBCheck.Visible:=False;
+  {$ENDIF}
   D:=sqlStandard;
   If Assigned(FConnection) then
     begin
@@ -144,5 +166,52 @@ begin
     SQLEditor.Lines.SaveToFile(UTF8ToSys(SaveDialog.FileName));
 end;
 
+procedure TSQLStringsPropertyEditorDlg.TBCheckClick(Sender: TObject);
+begin
+  CheckSQLSyntax(SQLEditor.Lines)
+end;
+
+procedure TSQLStringsPropertyEditorDlg.CheckSQLSyntax(SQL : TStrings);
+{$IFDEF HASSQLPARSER}
+Var
+  S : TStream;
+  P : TSQLParser;
+  E : TSQLElement;
+  EL : TSQLElementList;
+  Msg : String;
+{$ENDIF}
+begin
+  {$IFDEF HASSQLPARSER}
+  S:=TMemoryStream.Create;
+  try
+    SQL.SaveToStream(S);
+    S.Position:=0;
+    P:=TSQLParser.Create(S);
+    try
+      try
+        E:=Nil;
+        EL:=Nil;
+        If IsSQLScript then
+          EL:=P.ParseScript
+        else
+          E:=P.Parse;
+        E.Free;
+        EL.Free;
+        MessageDLG(SSQLOK,SQLSyntaxOK,mtInformation,[mbOK],0);
+      except
+        On E : Exception do
+          begin
+          Msg:=Format(SSQLSyntaxError,[E.Message]);
+          MessageDLG(SSQLError,Msg,mtError,[mbOK],0);
+          end;
+      end;
+    finally
+      P.Free;
+    end;
+  finally
+    S.Free;
+  end;
+  {$ENDIF}
+end;
 end.
 

@@ -25,6 +25,10 @@ unit registersqldb;
 {$DEFINE HASSQLITE3CONNECTION}
 {$ENDIF}
 
+{$IFDEF VER2_5_1}
+{$DEFINE HASSQLPARSER}
+{$ENDIF}
+
 interface
 
 uses
@@ -46,7 +50,10 @@ uses
   sqlstringspropertyeditordlg,
   controls,
   forms,
-  LazarusPackageIntf;
+{$IFDEF HASSQLPARSER}
+  sqlscript, fpsqltree, fpsqlparser,
+{$ENDIF HASSQLPARSER}
+  LazarusPackageIntf,lazideintf,srceditorintf,idemsgintf;
 
 Type
   { TSQLStringsPropertyEditor }
@@ -65,6 +72,23 @@ Type
     function GetFilter: String; override;
     function GetInitialDirectory: string; override;
   end;
+
+{$IFDEF HASSQLPARSER}
+  TSQLSyntaxChecker = Class(TComponent)
+  private
+    FStatementCount,
+    FSQLErr : Integer;
+    FSFN: String;
+    procedure CheckSQLStatement(Sender: TObject; Statement: TStrings; var StopExecution: Boolean);
+  Public
+    Procedure ShowMessage(Const Msg : String);
+    Procedure ShowMessage(Const Fmt : String; Args : Array of const);
+    Procedure ShowException(Const Msg : String; E : Exception);
+    function CheckSQL(S : TStream): TModalResult;
+    function CheckSource(Sender: TObject; var Handled: boolean): TModalResult;
+    Property SourceFileName : String Read FSFN;
+ end;
+{$ENDIF HASSQLPARSER}
 
 procedure Register;
 
@@ -128,18 +152,19 @@ begin
   TheDialog := CreateEnhancedDlg(Strings);
   try
     TheDialog.Caption := Format(SSQLStringsPropertyEditorDlgTitle, [GetPropInfo^.Name]);
-    if(GetComponent(0) is TSQLQuery)then
+    if (GetComponent(0) is TSQLQuery) then
       begin
       Query := (GetComponent(0) as TSQLQuery);
       TheDialog.Connection  := (Query.DataBase as TSQLConnection);
       TheDialog.Transaction := (Query.Transaction as TSQLTransaction);
-      end;
+      end
+    else if (GetComponent(0) is TSQLScript) then
+      TheDialog.IsSQLScript:=True;
     if(TheDialog.ShowModal = mrOK)then
       begin
       Strings.Text := TheDialog.SQLEditor.Text;
       Modified;
       end;
-
   finally
     FreeAndNil(TheDialog);
   end;
@@ -170,6 +195,130 @@ begin
   Result := [paMultiSelect, paDialog, paRevertable, paReadOnly];
 end;
 
+{$IFDEF HASSQLPARSER}
+{ TSQLSyntaxChecker }
+
+procedure TSQLSyntaxChecker.CheckSQLStatement(Sender: TObject;
+  Statement: TStrings; var StopExecution: Boolean);
+
+Var
+  P : TSQLParser;
+  S : TMemoryStream;
+  E : TSQLElement;
+
+begin
+  Inc(FStatementCount);
+  S:=TMemoryStream.Create;
+  try
+    Statement.SaveToStream(S);
+    S.Position:=0;
+    P:=TSQLParser.Create(S);
+    try
+      try
+        E:=P.Parse;
+        E.Free;
+        StopExecution:=False;
+      except
+        On E : Exception do
+          begin
+          ShowException('',E);
+          inc(FSQLErr);
+          end;
+      end;
+    finally
+      P.Free;
+    end;
+  finally
+    S.Free;
+  end;
+
+end;
+
+procedure TSQLSyntaxChecker.ShowMessage(const Msg: String);
+begin
+  IDEMessagesWindow.AddMsg(SourceFileName+' : '+Msg,'',0,Nil);
+end;
+
+procedure TSQLSyntaxChecker.ShowMessage(const Fmt: String;
+  Args: array of const);
+begin
+  ShowMessage(Format(Fmt,Args));
+end;
+
+procedure TSQLSyntaxChecker.ShowException(const Msg: String; E: Exception);
+begin
+  If (Msg<>'') then
+    ShowMessage(Msg+' : '+E.Message)
+  else
+    ShowMessage(Msg+' : '+E.Message);
+end;
+
+function TSQLSyntaxChecker.CheckSQL(S : TStream): TModalResult;
+
+Var
+  SQL : TEventSQLScript;
+
+begin
+  SQL:=TEventSQLScript.Create(Self);
+  try
+    FStatementCount:=0;
+    FSQLErr:=0;
+    SQL.UseSetTerm:=True;
+    SQL.OnSQLStatement:=@CheckSQLStatement;
+    SQL.Script.LoadFromStream(S);
+    SQL.Execute;
+    If (FSQLErr=0) then
+      ShowMessage('SQL Syntax OK: %d statements',[FStatementCount])
+    else
+      ShowMessage('SQL Syntax: %d errors in %d statements',[FSQLErr,FStatementCount]);
+  finally
+    SQL.free;
+  end;
+  Result:=mrOK;
+end;
+
+function TSQLSyntaxChecker.CheckSource(Sender: TObject; var Handled: boolean
+  ): TModalResult;
+
+Var
+  AE : TSourceEditorInterface;
+  E : String;
+  S : TStringStream;
+
+begin
+  IDEMessagesWindow.BeginBlock(False);
+  try
+    try
+    Handled:=False;
+    result:=mrNone;
+    AE:=SourceEditorManagerIntf.ActiveEditor;
+    If (AE<>Nil) then
+      begin
+      E:=ExtractFileExt(AE.FileName);
+      FSFN:=ExtractFileName(AE.FileName);
+      Handled:=CompareText(E,'.sql')=0;
+      If Handled then
+        begin
+        S:=TStringStream.Create(AE.SourceText);
+        try
+          Result:=CheckSQL(S);
+        finally
+          S.Free;
+        end;
+        end;
+      end;
+    except
+      On E : Exception do
+        ShowException('Error during syntax check',E);
+    end;
+  finally
+    IDEMessagesWindow.EndBlock;
+  end;
+end;
+
+Var
+  AChecker : TSQLSyntaxChecker;
+{$ENDIF HASSQLPARSER}
 
 procedure Register;
 begin
@@ -182,9 +331,17 @@ begin
   RegisterPropertyEditor(TStrings.ClassInfo, TSQLScript, 'Script'   , TSQLStringsPropertyEditor);
 
   RegisterUnit('sqldb',@RegisterUnitSQLdb);
+{$IFDEF HASSQLPARSER}
+  AChecker:=TSQLSyntaxChecker.Create(Nil);
+  LazarusIDE.AddHandlerOnQuickSyntaxCheck(@AChecker.CheckSource,False);
+{$ENDIF HASSQLPARSER}
 end;
 
 initialization
  {$i registersqldb.lrs}
 
+{$IFDEF HASSQLPARSER}
+finalization
+  FreeAndNil(AChecker);
+{$ENDIF HASSQLPARSER}
 end.
