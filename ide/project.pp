@@ -2635,7 +2635,7 @@ begin
     WriteLPI:=true;
     WriteLPS:=true;
   end;
-  debugln(['TProject.WriteProject WriteLPI=',WriteLPI,' WriteLPS=',WriteLPS,' Modifed=',Modified,' SessionModified=',SessionModified]);
+  //debugln(['TProject.WriteProject WriteLPI=',WriteLPI,' WriteLPS=',WriteLPS,' Modifed=',Modified,' SessionModified=',SessionModified]);
 
   // backup
   if WriteLPI and Assigned(fOnFileBackup) then begin
@@ -4915,7 +4915,7 @@ function TProject.SomethingModified(CheckData, CheckSession: boolean): boolean;
 begin
   Result := True;
   if CheckData and SomeDataModified then exit;
-  if CheckSession and SessionModified then exit;
+  if CheckSession and SomeSessionModified then exit;
   Result := False;
 end;
 
