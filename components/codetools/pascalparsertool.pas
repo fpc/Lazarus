@@ -1854,12 +1854,12 @@ begin
         if (BracketType=cafRoundBracketOpen)
         and (CurPos.Flag<>cafRoundBracketClose) then
           if ExceptionOnError then
-            RaiseCharExpectedButAtomFound('(')
+            RaiseCharExpectedButAtomFound(')')
           else exit;
         if (BracketType=cafEdgedBracketOpen)
         and (CurPos.Flag<>cafEdgedBracketClose) then
           if ExceptionOnError then
-            RaiseCharExpectedButAtomFound('[')
+            RaiseCharExpectedButAtomFound(']')
           else exit;
         if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
       end;
@@ -1871,9 +1871,10 @@ begin
         // open bracket + ? + close bracket
         if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
         if not ReadConstant(ExceptionOnError,Extract,Attr) then exit;
-        if ExceptionOnError then
-          RaiseCharExpectedButAtomFound(')')
-        else exit;
+        if (CurPos.Flag<>cafRoundBracketClose) then
+          if ExceptionOnError then
+            RaiseCharExpectedButAtomFound(')')
+          else exit;
         if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
       end else if CurPos.Flag=cafEdgedBracketOpen then begin
         // open bracket + ? + close bracket
