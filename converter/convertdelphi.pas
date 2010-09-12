@@ -444,8 +444,16 @@ begin
     Result:=CopyAndLoadFile;
     if Result=mrOK then begin
       Result:=ConvertUnitFile;
-      if Result=mrOk then
-        Result:=ConvertFormFile;
+      if Result=mrOk then begin
+        Result:=SaveCodeBufferToFile(fPascalBuffer,fLazUnitFilename);
+        if Result=mrOk then begin
+          Result:=LazarusIDE.DoOpenEditorFile(fLazUnitFilename,0,
+                                              [ofOnlyIfExists,ofQuiet]);
+          if Result=mrOk then begin
+            Result:=ConvertFormFile;
+          end;
+        end;
+      end;
     end;
   end;
   if Result=mrOk then
