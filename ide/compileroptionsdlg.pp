@@ -55,10 +55,10 @@ type
   TfrmCompilerOptions = class(TForm)
     CategoryTreeView: TTreeView;
     chkUseAsDefault: TCheckBox;
-    MainNoteBook: TNoteBook;
+    MainNoteBook: TPageControl;
 
     { Search Paths Controls }
-    PathPage: TPage;
+    PathPage: TTabSheet;
     
     lblOtherUnits: TLabel;
     edtOtherUnits: TEdit;
@@ -88,17 +88,17 @@ type
     LCLWidgetTypeComboBox: TComboBox;
 
     { Build modes }
-    BuildModesPage: TPage;
+    BuildModesPage: TTabSheet;
 
     { Parsing Controls }
-    ParsingPage: TPage;
+    ParsingPage: TTabSheet;
     grpAsmStyle: TRadioGroup;
     grpSyntaxOptions: TCheckGroup;
     grpSyntaxMode: TGroupBox;
     cmbSyntaxMode: TComboBox;
 
     { Code Generation Controls }
-    CodeGenPage: TPage;
+    CodeGenPage: TTabSheet;
 
     grpSmartLinkUnit: TGroupBox;
     chkSmartLinkUnit: TCheckBox;
@@ -133,7 +133,7 @@ type
     chkOptSmaller: TCheckBox;
 
     { Linking Controls }
-    LinkingPage: TPage;
+    LinkingPage: TTabSheet;
     grpDebugging: TGroupBox;
     chkDebugGDB: TCheckBox;
     chkUseLineInfoUnit: TCheckBox;
@@ -155,7 +155,7 @@ type
     chkWin32GraphicApp: TCheckBox;
 
     { Messages Controls }
-    MsgPage: TPage;
+    MsgPage: TTabSheet;
     grpVerbosity: TCheckGroup;
     grpErrorCnt: TGroupBox;
 
@@ -166,11 +166,11 @@ type
     chkUseMsgFile: TCheckBox;
     editMsgFileName: TEdit;
     grpCompilerMessages: TGroupBox;
-    CfgCmpMsgPage: TPage;
+    CfgCmpMsgPage: TTabSheet;
 
 
     { 'Other' Controls }
-    OtherPage: TPage;
+    OtherPage: TTabSheet;
     grpConfigFile: TGroupBox;
     chkConfigFile: TCheckBox;
     chkCustomConfigFile: TCheckBox;
@@ -179,18 +179,18 @@ type
     memCustomOptions: TMemo;
 
     { Build Macros and Conditionals }
-    MacrosPage: TPage;
+    MacrosPage: TTabSheet;
     BuildMacrosFrame: TCompOptBuildMacrosFrame;
 
     { Inherited Options }
-    InheritedPage: TPage;
+    InheritedPage: TTabSheet;
     InhSplitter: TSplitter;
     InhNoteLabel: TLabel;
     InhTreeView: TTreeView;
     InhItemMemo: TMemo;
 
     { Compilation }
-    CompilationPage: TPage;
+    CompilationPage: TTabSheet;
 
     chkCreateMakefile: TCheckBox;
 
@@ -529,8 +529,8 @@ var
 begin
   Node:=CategoryTreeView.Selected;
   if Node=nil then exit;
-  if TObject(Node.Data) is TPage then begin
-    MainNoteBook.ActivePageComponent:=TPage(Node.Data);
+  if TObject(Node.Data) is TTabSheet then begin
+    MainNoteBook.ActivePage:=TTabSheet(Node.Data);
   end;
 end;
 
@@ -1523,7 +1523,7 @@ end;
 
 procedure TfrmCompilerOptions.SetupMacrosTab(Page: integer);
 begin
-  MacrosPage:=MainNoteBook.Page[Page];
+  MacrosPage:=MainNoteBook.Pages[Page];
   MacrosPage.Caption:='Build macros';
   {$IFDEF EnableBuildModes}
   CategoryTreeView.Items.AddObject(nil,MacrosPage.Caption,MacrosPage);

@@ -2635,7 +2635,7 @@ begin
     WriteLPI:=true;
     WriteLPS:=true;
   end;
-  //debugln(['TProject.WriteProject WriteLPI=',WriteLPI,' WriteLPS=',WriteLPS,' Modifed=',Modified,' SessionModified=',SessionModified]);
+  debugln(['TProject.WriteProject WriteLPI=',WriteLPI,' WriteLPS=',WriteLPS,' Modifed=',Modified,' SessionModified=',SessionModified]);
 
   // backup
   if WriteLPI and Assigned(fOnFileBackup) then begin
