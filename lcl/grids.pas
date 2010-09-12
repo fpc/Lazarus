@@ -758,7 +758,7 @@ type
     procedure ResetHotCell;
     procedure ResetPushedCell(ResetColRow: boolean=True);
     procedure SaveColumns(cfg: TXMLConfig; Version: integer);
-    function  ScrollToCell(const aCol,aRow: Integer): Boolean;
+    function  ScrollToCell(const aCol,aRow: Integer; wResetOffs: boolean): Boolean;
     function  ScrollGrid(Relative:Boolean; DCol,DRow: Integer): TPoint;
     procedure SetCol(AValue: Integer);
     procedure SetColwidths(Acol: Integer; Avalue: Integer);
@@ -3050,7 +3050,7 @@ begin
 end;
 
 { Scroll the grid until cell[aCol,aRow] is shown }
-function TCustomGrid.ScrollToCell(const aCol,aRow: Integer): Boolean;
+function TCustomGrid.ScrollToCell(const aCol,aRow: Integer; wResetOffs:boolean): Boolean;
 var
   RNew: TRect;
   OldTopLeft:TPoint;
@@ -3104,6 +3104,7 @@ begin
 
     doTopleftChange(False)
   end else
+  if not (goSmoothScroll in Options) or wResetOffs then
     ResetOffset(True, True);
 end;
 
@@ -5916,7 +5917,7 @@ procedure TCustomGrid.DoEditorShow;
 begin
   //DebugLn(['TCustomGrid.DoEditorShow ']);
   {$ifdef dbgGrid}DebugLn('grid.DoEditorShow [',Editor.ClassName,'] INIT');{$endif}
-  ScrollToCell(FCol,FRow);
+  ScrollToCell(FCol,FRow,true);
   Editor.Parent := nil;
   EditorSetValue;
   Editor.Parent:=Self;
@@ -6333,6 +6334,7 @@ end;
 function TCustomGrid.MoveExtend(Relative: Boolean; DCol, DRow: Integer): Boolean;
 var
   OldRange: TRect;
+  ForceReset: boolean;
 begin
 
   Result:=TryMoveSelection(Relative,DCol,DRow);
@@ -6358,7 +6360,10 @@ begin
     end else
       FRange:=NormalizarRect(Rect(Fpivot.x,FPivot.y, DCol, DRow));
 
-  if not ScrollToCell(DCol, DRow) then
+  ForceReset := ((DCol=FTopLeft.x) and (FGCache.TLColOff<>0)) or
+    ((DRow=FTopLeft.y) and (FGCache.TLRowOff<>0));
+
+  if not ScrollToCell(DCol, DRow, ForceReset) then
     InvalidateMovement(DCol, DRow, OldRange);
 
   SwapInt(DCol,FCol);
