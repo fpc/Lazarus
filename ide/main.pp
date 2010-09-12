@@ -8270,6 +8270,8 @@ begin
     exit;
   end;
   AnUnitInfo := AnEditorInfo.UnitInfo;
+  AnUnitInfo.SessionModified:=true;
+  //debugln(['TMainIDE.DoCloseEditorFile File=',AnUnitInfo.Filename,' UnitSession=',AnUnitInfo.SessionModified,' ProjSession=',project1.SessionModified]);
   if AnUnitInfo.OpenEditorInfoCount > 1 then begin
     SourceEditorManager.CloseFile(AEditor);
     Result:=mrOk;
