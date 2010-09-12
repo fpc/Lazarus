@@ -1,0 +1,590 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: fpwebstrconsts.scssfile
+msgctxt "fpwebstrconsts.scssfile"
+msgid "CSS file"
+msgstr "CSS файл"
+
+#: fpwebstrconsts.scssfiledesc
+msgctxt "fpwebstrconsts.scssfiledesc"
+msgid "Create new CSS file..."
+msgstr "Создать новый CSS файл..."
+
+#: fpwebstrconsts.scsssource
+msgid "Enter your classes/style definitions here"
+msgstr ""
+
+#: fpwebstrconsts.senteryoutext
+msgctxt "fpwebstrconsts.senteryoutext"
+msgid "Enter your text..."
+msgstr "Введите свой HTML код здесь..."
+
+#: fpwebstrconsts.shtmlautor
+msgid "Html &author - <meta name=\"author\">"
+msgstr ""
+
+#: fpwebstrconsts.shtmlcharset
+msgid "HTML chars&et"
+msgstr ""
+
+#: fpwebstrconsts.shtmlcopyright
+msgid "Html cop&yright - meta name=\"copyright\">"
+msgstr ""
+
+#: fpwebstrconsts.shtmlcssfile
+msgid "&CSS file"
+msgstr ""
+
+#: fpwebstrconsts.shtmldesign
+msgctxt "fpwebstrconsts.shtmldesign"
+msgid "HTML design"
+msgstr "Редактор HTML"
+
+#: fpwebstrconsts.shtmlfile
+msgctxt "fpwebstrconsts.shtmlfile"
+msgid "HTML file"
+msgstr "Файл HTML"
+
+#: fpwebstrconsts.shtmlfiledesc
+msgctxt "fpwebstrconsts.shtmlfiledesc"
+msgid "Create new HTML file..."
+msgstr "Создать новый HTML файл..."
+
+#: fpwebstrconsts.shtmljsfile
+msgid "&Javascript file"
+msgstr ""
+
+#: fpwebstrconsts.shtmltableformborderwidth
+msgctxt "fpwebstrconsts.shtmltableformborderwidth"
+msgid "Border width"
+msgstr "Ширина рамки"
+
+#: fpwebstrconsts.shtmltableformcaption
+msgctxt "fpwebstrconsts.shtmltableformcaption"
+msgid "New HTML table..."
+msgstr "Новая HTML таблица..."
+
+#: fpwebstrconsts.shtmltableformcellpadding
+msgid "Cell padding"
+msgstr ""
+
+#: fpwebstrconsts.shtmltableformcellspacing
+msgid "Cell spacing"
+msgstr ""
+
+#: fpwebstrconsts.shtmltableformcolumncount
+msgctxt "fpwebstrconsts.shtmltableformcolumncount"
+msgid "Column count"
+msgstr "Количество колонок"
+
+#: fpwebstrconsts.shtmltableformheaderbgcolor
+msgctxt "fpwebstrconsts.shtmltableformheaderbgcolor"
+msgid "Header bg color"
+msgstr "Цвет фона заголовка"
+
+#: fpwebstrconsts.shtmltableformrowcount
+msgctxt "fpwebstrconsts.shtmltableformrowcount"
+msgid "Row count"
+msgstr "Количество строк"
+
+#: fpwebstrconsts.shtmltableformuseheader
+msgctxt "fpwebstrconsts.shtmltableformuseheader"
+msgid "Use header row"
+msgstr "Использовать заголовок"
+
+#: fpwebstrconsts.shtmltableformwidth
+msgctxt "fpwebstrconsts.shtmltableformwidth"
+msgid "Width"
+msgstr "Ширина"
+
+#: fpwebstrconsts.shtmltagcaptionreset
+msgctxt "fpwebstrconsts.shtmltagcaptionreset"
+msgid "Reset"
+msgstr "Сброс"
+
+#: fpwebstrconsts.shtmltagcaptionsubmit
+msgctxt "fpwebstrconsts.shtmltagcaptionsubmit"
+msgid "Submit"
+msgstr "Передать"
+
+#: fpwebstrconsts.shtmltitle
+msgid "Html &title - <title>"
+msgstr ""
+
+#: fpwebstrconsts.sjsfile
+msgid "Javascript file"
+msgstr ""
+
+#: fpwebstrconsts.sjsfiledesc
+msgid "Create new javascript file..."
+msgstr ""
+
+#: fpwebstrconsts.sjssource
+msgid "Enter your javascript code here"
+msgstr ""
+
+#: fpwebstrconsts.smihtmleditor
+msgctxt "fpwebstrconsts.smihtmleditor"
+msgid "HTML Editor"
+msgstr "Редактор HTML"
+
+#: fpwebstrconsts.smihtmlforms
+msgctxt "fpwebstrconsts.smihtmlforms"
+msgid "Forms"
+msgstr "Формы"
+
+#: fpwebstrconsts.smihtmlinsertbr
+msgctxt "fpwebstrconsts.smihtmlinsertbr"
+msgid "Insert new line"
+msgstr "Вставить перевод строки"
+
+#: fpwebstrconsts.smihtmlinsertcolor
+msgctxt "fpwebstrconsts.smihtmlinsertcolor"
+msgid "Insert HTML Color"
+msgstr "Вставить цвет HTML"
+
+#: fpwebstrconsts.smihtmlinsertcomment
+msgctxt "fpwebstrconsts.smihtmlinsertcomment"
+msgid "Insert HTML comment"
+msgstr "Вставить HTML коментарий"
+
+#: fpwebstrconsts.smihtmlinsertform
+msgctxt "fpwebstrconsts.smihtmlinsertform"
+msgid "Insert HTML Form"
+msgstr "Вставить форму HTML"
+
+#: fpwebstrconsts.smihtmlinsertheader1level
+msgid "Insert HTML level 1 header"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertheader2level
+msgid "Insert HTML level 2 header"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertheader3level
+msgid "Insert HTML level 3 header"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertheader4level
+msgid "Insert HTML level 4 header"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertheader5level
+msgid "Insert HTML level 5 header"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinserthr
+msgctxt "fpwebstrconsts.smihtmlinserthr"
+msgid "Insert horizontal line"
+msgstr "Вставить горизонтальную линию"
+
+#: fpwebstrconsts.smihtmlinsertimg
+msgctxt "fpwebstrconsts.smihtmlinsertimg"
+msgid "Insert image"
+msgstr "Вставить изображение"
+
+#: fpwebstrconsts.smihtmlinsertinput
+msgctxt "fpwebstrconsts.smihtmlinsertinput"
+msgid "Insert HTML Input tag"
+msgstr "Вставить HTML тэг INPUT"
+
+#: fpwebstrconsts.smihtmlinsertinputreset
+msgid "Insert \"Reset\" button"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertinputsubmit
+msgid "Insert \"Submit\" button "
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertlist
+msgctxt "fpwebstrconsts.smihtmlinsertlist"
+msgid "Insert HTML list"
+msgstr "Вставить список"
+
+#: fpwebstrconsts.smihtmlinsertnbsp
+msgctxt "fpwebstrconsts.smihtmlinsertnbsp"
+msgid "Insert Non Breaking Space"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinserttable
+msgctxt "fpwebstrconsts.smihtmlinserttable"
+msgid "Insert HTML table"
+msgstr "Встаивть HTML таблицу..."
+
+#: fpwebstrconsts.smihtmlinserttabledata
+msgctxt "fpwebstrconsts.smihtmlinserttabledata"
+msgid "Insert HTML table data"
+msgstr "Вставить данные таблицы"
+
+#: fpwebstrconsts.smihtmlinserttabledatawd
+msgctxt "fpwebstrconsts.smihtmlinserttabledatawd"
+msgid "Insert HTML table data with dialog"
+msgstr "Вставить данные с диалогом"
+
+#: fpwebstrconsts.smihtmlinserttablerow
+msgctxt "fpwebstrconsts.smihtmlinserttablerow"
+msgid "Insert HTML table row"
+msgstr "Вставить строку таблицы"
+
+#: fpwebstrconsts.smihtmlinserttablerowwd
+msgctxt "fpwebstrconsts.smihtmlinserttablerowwd"
+msgid "Insert HTML table row with dialog"
+msgstr "Вставить строку таблицыи с диалогом"
+
+#: fpwebstrconsts.smihtmllists
+msgctxt "fpwebstrconsts.smihtmllists"
+msgid "Lists"
+msgstr "Списки"
+
+#: fpwebstrconsts.smihtmlother
+msgctxt "fpwebstrconsts.smihtmlother"
+msgid "Other"
+msgstr "Прочее"
+
+#: fpwebstrconsts.smihtmlstandart
+msgid "Standard"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlstyle
+msgctxt "fpwebstrconsts.smihtmlstyle"
+msgid "Style"
+msgstr "Стили"
+
+#: fpwebstrconsts.smihtmltables
+msgctxt "fpwebstrconsts.smihtmltables"
+msgid "Tables"
+msgstr "Таблицы"
+
+#: fpwebstrconsts.smihtmltextaligncenter
+msgctxt "fpwebstrconsts.smihtmltextaligncenter"
+msgid "Text align center"
+msgstr "Выровнять текст по центру"
+
+#: fpwebstrconsts.smihtmltextalignjustify
+msgctxt "fpwebstrconsts.smihtmltextalignjustify"
+msgid "Text align justify"
+msgstr "Выровнять текст по ширине"
+
+#: fpwebstrconsts.smihtmltextalignleft
+msgctxt "fpwebstrconsts.smihtmltextalignleft"
+msgid "Text align left"
+msgstr "Выровнять текст по левому краю"
+
+#: fpwebstrconsts.smihtmltextalignright
+msgctxt "fpwebstrconsts.smihtmltextalignright"
+msgid "Text align right"
+msgstr "Выравнять текст по правому краю"
+
+#: fpwebstrconsts.smihtmltextbold
+msgctxt "fpwebstrconsts.smihtmltextbold"
+msgid "Bold"
+msgstr "Полужирное начертание"
+
+#: fpwebstrconsts.smihtmltextitalic
+msgctxt "fpwebstrconsts.smihtmltextitalic"
+msgid "Italic"
+msgstr "Наклонное начертание"
+
+#: fpwebstrconsts.smihtmltextunderline
+msgctxt "fpwebstrconsts.smihtmltextunderline"
+msgid "Underline"
+msgstr "Подчёркнуто"
+
+#: fpwebstrconsts.smiotherinsertfn
+msgctxt "fpwebstrconsts.smiotherinsertfn"
+msgid "Insert file name"
+msgstr "Вставить имя файла проекта"
+
+#: fpwebstrconsts.snewhtmlfileprops
+msgid "New Html file properties"
+msgstr ""
+
+#: rxwebstrconsts.scssfile
+msgctxt "rxwebstrconsts.scssfile"
+msgid "CSS file"
+msgstr "CSS файл"
+
+#: rxwebstrconsts.scssfiledesc
+msgctxt "rxwebstrconsts.scssfiledesc"
+msgid "Create new CSS file..."
+msgstr "Создать новый CSS файл..."
+
+#: rxwebstrconsts.senteryoutext
+msgctxt "rxwebstrconsts.senteryoutext"
+msgid "Enter your text..."
+msgstr "Введите свой HTML код здесь..."
+
+#: rxwebstrconsts.shtmlautor
+msgid "Html autor - <meta name=\"author\">"
+msgstr "Автор HTML - <meta name=\"author\">"
+
+#: rxwebstrconsts.shtmlcharset
+msgid "HTML charset"
+msgstr "Набор символов HTML"
+
+#: rxwebstrconsts.shtmlcopyright
+msgid "Html copyright - meta name=\"copyright\">"
+msgstr "Авторские права на HTML - meta name=\"copyright\">"
+
+#: rxwebstrconsts.shtmlcssfile
+msgctxt "rxwebstrconsts.shtmlcssfile"
+msgid "CSS file"
+msgstr "CSS файл"
+
+#: rxwebstrconsts.shtmldesign
+msgctxt "rxwebstrconsts.shtmldesign"
+msgid "HTML design"
+msgstr "Редактор HTML"
+
+#: rxwebstrconsts.shtmlfile
+msgctxt "rxwebstrconsts.shtmlfile"
+msgid "HTML file"
+msgstr "Файл HTML"
+
+#: rxwebstrconsts.shtmlfiledesc
+msgctxt "rxwebstrconsts.shtmlfiledesc"
+msgid "Create new HTML file..."
+msgstr "Создать новый HTML файл..."
+
+#: rxwebstrconsts.shtmltableformborderwidth
+msgctxt "rxwebstrconsts.shtmltableformborderwidth"
+msgid "Border width"
+msgstr "Ширина рамки"
+
+#: rxwebstrconsts.shtmltableformcaption
+msgctxt "rxwebstrconsts.shtmltableformcaption"
+msgid "New HTML table..."
+msgstr "Новая HTML таблица..."
+
+#: rxwebstrconsts.shtmltableformcellpadding
+msgid "Cellpadding"
+msgstr ""
+
+#: rxwebstrconsts.shtmltableformcellspacing
+msgid "Cellspacing"
+msgstr ""
+
+#: rxwebstrconsts.shtmltableformcolumncount
+msgctxt "rxwebstrconsts.shtmltableformcolumncount"
+msgid "Column count"
+msgstr "Количество колонок"
+
+#: rxwebstrconsts.shtmltableformheaderbgcolor
+msgctxt "rxwebstrconsts.shtmltableformheaderbgcolor"
+msgid "Header bg color"
+msgstr "Цвет фона заголовка"
+
+#: rxwebstrconsts.shtmltableformrowcount
+msgctxt "rxwebstrconsts.shtmltableformrowcount"
+msgid "Row count"
+msgstr "Количество строк"
+
+#: rxwebstrconsts.shtmltableformuseheader
+msgctxt "rxwebstrconsts.shtmltableformuseheader"
+msgid "Use header row"
+msgstr "Использовать заголовок"
+
+#: rxwebstrconsts.shtmltableformwidth
+msgctxt "rxwebstrconsts.shtmltableformwidth"
+msgid "Width"
+msgstr "Ширина"
+
+#: rxwebstrconsts.shtmltagcaptionreset
+msgctxt "rxwebstrconsts.shtmltagcaptionreset"
+msgid "Reset"
+msgstr "Сброс"
+
+#: rxwebstrconsts.shtmltagcaptionsubmit
+msgctxt "rxwebstrconsts.shtmltagcaptionsubmit"
+msgid "Submit"
+msgstr "Передать"
+
+#: rxwebstrconsts.shtmltitle
+msgid "Html title - <title>"
+msgstr "Заголовок HTML - <title>"
+
+#: rxwebstrconsts.sjsfile
+msgid "Java script file"
+msgstr "Файл Java Script"
+
+#: rxwebstrconsts.sjsfiledesc
+msgid "Create new java script file..."
+msgstr "Создать новый файл Java Script"
+
+#: rxwebstrconsts.smihtmleditor
+msgctxt "rxwebstrconsts.smihtmleditor"
+msgid "HTML Editor"
+msgstr "Редактор HTML"
+
+#: rxwebstrconsts.smihtmlforms
+msgctxt "rxwebstrconsts.smihtmlforms"
+msgid "Forms"
+msgstr "Формы"
+
+#: rxwebstrconsts.smihtmlinsertbr
+msgctxt "rxwebstrconsts.smihtmlinsertbr"
+msgid "Insert new line"
+msgstr "Вставить перевод строки"
+
+#: rxwebstrconsts.smihtmlinsertcolor
+msgctxt "rxwebstrconsts.smihtmlinsertcolor"
+msgid "Insert HTML Color"
+msgstr "Вставить цвет HTML"
+
+#: rxwebstrconsts.smihtmlinsertcomment
+msgctxt "rxwebstrconsts.smihtmlinsertcomment"
+msgid "Insert HTML comment"
+msgstr "Вставить HTML коментарий"
+
+#: rxwebstrconsts.smihtmlinsertform
+msgctxt "rxwebstrconsts.smihtmlinsertform"
+msgid "Insert HTML Form"
+msgstr "Вставить форму HTML"
+
+#: rxwebstrconsts.smihtmlinsertheader1level
+msgid "Insert HTML header 1 level"
+msgstr "Вставить заголовок HTML 1-го уровня"
+
+#: rxwebstrconsts.smihtmlinsertheader2level
+msgid "Insert HTML header 2 level"
+msgstr "Вставить заголовок HTML 2-го уровня"
+
+#: rxwebstrconsts.smihtmlinsertheader3level
+msgid "Insert HTML header 3 level"
+msgstr "Вставить заголовок HTML 3-го уровня"
+
+#: rxwebstrconsts.smihtmlinsertheader4level
+msgid "Insert HTML header 4 level"
+msgstr "Вставить заголовок HTML 4-го уровня"
+
+#: rxwebstrconsts.smihtmlinsertheader5level
+msgid "Insert HTML header 5 level"
+msgstr "Вставить заголовок HTML 5-го уровня"
+
+#: rxwebstrconsts.smihtmlinserthr
+msgctxt "rxwebstrconsts.smihtmlinserthr"
+msgid "Insert horizontal line"
+msgstr "Вставить горизонтальную линию"
+
+#: rxwebstrconsts.smihtmlinsertimg
+msgctxt "rxwebstrconsts.smihtmlinsertimg"
+msgid "Insert image"
+msgstr "Вставить изображение"
+
+#: rxwebstrconsts.smihtmlinsertinput
+msgctxt "rxwebstrconsts.smihtmlinsertinput"
+msgid "Insert HTML Input tag"
+msgstr "Вставить HTML тэг INPUT"
+
+#: rxwebstrconsts.smihtmlinsertinputreset
+msgid "Insert button Reset"
+msgstr "Вставить кнопку ОЧИСТИТЬ"
+
+#: rxwebstrconsts.smihtmlinsertinputsubmit
+msgid "Insert button Submit"
+msgstr "Вставить кнопку ПЕРЕДАТЬ"
+
+#: rxwebstrconsts.smihtmlinsertlist
+msgctxt "rxwebstrconsts.smihtmlinsertlist"
+msgid "Insert HTML list"
+msgstr "Вставить список"
+
+#: rxwebstrconsts.smihtmlinsertnbsp
+msgctxt "rxwebstrconsts.smihtmlinsertnbsp"
+msgid "Insert Non Breaking Space"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlinserttable
+msgctxt "rxwebstrconsts.smihtmlinserttable"
+msgid "Insert HTML table"
+msgstr "Встаивть HTML таблицу..."
+
+#: rxwebstrconsts.smihtmlinserttabledata
+msgctxt "rxwebstrconsts.smihtmlinserttabledata"
+msgid "Insert HTML table data"
+msgstr "Вставить данные таблицы"
+
+#: rxwebstrconsts.smihtmlinserttabledatawd
+msgctxt "rxwebstrconsts.smihtmlinserttabledatawd"
+msgid "Insert HTML table data with dialog"
+msgstr "Вставить данные с диалогом"
+
+#: rxwebstrconsts.smihtmlinserttablerow
+msgctxt "rxwebstrconsts.smihtmlinserttablerow"
+msgid "Insert HTML table row"
+msgstr "Вставить строку таблицы"
+
+#: rxwebstrconsts.smihtmlinserttablerowwd
+msgctxt "rxwebstrconsts.smihtmlinserttablerowwd"
+msgid "Insert HTML table row with dialog"
+msgstr "Вставить строку таблицыи с диалогом"
+
+#: rxwebstrconsts.smihtmllists
+msgctxt "rxwebstrconsts.smihtmllists"
+msgid "Lists"
+msgstr "Списки"
+
+#: rxwebstrconsts.smihtmlother
+msgctxt "rxwebstrconsts.smihtmlother"
+msgid "Other"
+msgstr "Прочее"
+
+#: rxwebstrconsts.smihtmlstandart
+msgid "Standart"
+msgstr "Стандартное"
+
+#: rxwebstrconsts.smihtmlstyle
+msgctxt "rxwebstrconsts.smihtmlstyle"
+msgid "Style"
+msgstr "Стили"
+
+#: rxwebstrconsts.smihtmltables
+msgctxt "rxwebstrconsts.smihtmltables"
+msgid "Tables"
+msgstr "Таблицы"
+
+#: rxwebstrconsts.smihtmltextaligncenter
+msgctxt "rxwebstrconsts.smihtmltextaligncenter"
+msgid "Text align center"
+msgstr "Выровнять текст по центру"
+
+#: rxwebstrconsts.smihtmltextalignjustify
+msgctxt "rxwebstrconsts.smihtmltextalignjustify"
+msgid "Text align justify"
+msgstr "Выровнять текст по ширине"
+
+#: rxwebstrconsts.smihtmltextalignleft
+msgctxt "rxwebstrconsts.smihtmltextalignleft"
+msgid "Text align left"
+msgstr "Выровнять текст по левому краю"
+
+#: rxwebstrconsts.smihtmltextalignright
+msgctxt "rxwebstrconsts.smihtmltextalignright"
+msgid "Text align right"
+msgstr "Выравнять текст по правому краю"
+
+#: rxwebstrconsts.smihtmltextbold
+msgctxt "rxwebstrconsts.smihtmltextbold"
+msgid "Bold"
+msgstr "Полужирное начертание"
+
+#: rxwebstrconsts.smihtmltextitalic
+msgctxt "rxwebstrconsts.smihtmltextitalic"
+msgid "Italic"
+msgstr "Наклонное начертание"
+
+#: rxwebstrconsts.smihtmltextunderline
+msgctxt "rxwebstrconsts.smihtmltextunderline"
+msgid "Underline"
+msgstr "Подчёркнуто"
+
+#: rxwebstrconsts.smiotherinsertfn
+msgctxt "rxwebstrconsts.smiotherinsertfn"
+msgid "Insert file name"
+msgstr "Вставить имя файла проекта"
+
+#: rxwebstrconsts.snewhtmlfileprops
+msgid "New Html file propertys"
+msgstr "Свойства нового HTML файла"
+

@@ -6,10 +6,11 @@ interface
 
 uses
   Classes, SysUtils, fpwebdata,
-  sqldbwebdata, LazIDEIntf,
+  sqldbwebdata, LazIDEIntf,srceditorintf,idemsgintf,
   ProjectIntf, fpextjs,
   extjsjson, extjsxml,
-  fpjsonrpc,
+  fpjsonrpc, controls, dialogs, forms,
+  jstree,jsparser,
   fpextdirect,
   webjsonrpc;
 
@@ -49,6 +50,18 @@ Type
     function GetImplementationSource(const Filename, SourceName, ResourceName: string): string;override;
   end;
 
+  TJSSyntaxChecker = Class(TComponent)
+  private
+    FSFN: String;
+  Public
+    Procedure ShowMessage(Const Msg : String);
+    Procedure ShowMessage(Const Fmt : String; Args : Array of const);
+    Procedure ShowException(Const Msg : String; E : Exception);
+    function CheckJavaScript (S : TStream): TModalResult;
+    function CheckSource(Sender: TObject; var Handled: boolean): TModalResult;
+    Property SourceFileName : String Read FSFN;
+ end;
+
 Procedure Register;
 
 resourcestring
@@ -67,10 +80,12 @@ Var
    FileDescriptorWebProviderDataModule: TFileDescWebProviderDataModule;
    FileDescriptorJSONRPCModule : TFileDescWebJSONRPCModule;
    FileDescriptorExtDirectModule : TFileDescExtDirectModule;
+   AChecker : TJSSyntaxChecker;
 
 implementation
 
-uses FormEditingIntf, controls, forms,frmrpcmoduleoptions;
+uses propedits,FormEditingIntf, frmrpcmoduleoptions,
+     sqlstringspropertyeditordlg, registersqldb;
 
 Procedure Register;
 
@@ -91,6 +106,13 @@ begin
    FormEditingHook.RegisterDesignerBaseClass(TFPWebProviderDataModule);
    FormEditingHook.RegisterDesignerBaseClass(TJSONRPCModule);
    FormEditingHook.RegisterDesignerBaseClass(TExtDirectModule);
+   AChecker:=TJSSyntaxChecker.Create(Nil);
+   LazarusIDE.AddHandlerOnQuickSyntaxCheck(@AChecker.CheckSource,False);
+   RegisterPropertyEditor(TStrings.ClassInfo, TSQLDBWebDataProvider,  'SelectSQL', TSQLStringsPropertyEditor);
+   RegisterPropertyEditor(TStrings.ClassInfo, TSQLDBWebDataProvider,  'InsertSQL', TSQLStringsPropertyEditor);
+   RegisterPropertyEditor(TStrings.ClassInfo, TSQLDBWebDataProvider,  'DeleteSQL', TSQLStringsPropertyEditor);
+   RegisterPropertyEditor(TStrings.ClassInfo, TSQLDBWebDataProvider,  'UpdateSQL', TSQLStringsPropertyEditor);
+
 end;
 
 { TFileDescWebProviderDataModule }
@@ -246,6 +268,92 @@ begin
   If RH then
     Result:=Result+'  JSONRPCHandlerManager.RegisterDatamodule(T'+ResourceName+','''+HP+''',);'+LineEnding;
 end;
+
+{ TJSSyntaxChecker }
+
+
+procedure TJSSyntaxChecker.ShowMessage(const Msg: String);
+begin
+  IDEMessagesWindow.AddMsg(SourceFileName+' : '+Msg,'',0,Nil);
+end;
+
+procedure TJSSyntaxChecker.ShowMessage(const Fmt: String;
+  Args: array of const);
+begin
+  ShowMessage(Format(Fmt,Args));
+end;
+
+procedure TJSSyntaxChecker.ShowException(const Msg: String; E: Exception);
+begin
+  If (Msg<>'') then
+    ShowMessage(Msg+' : '+E.Message)
+  else
+    ShowMessage(Msg+' : '+E.Message);
+end;
+
+function TJSSyntaxChecker.CheckJavaScript(S : TStream): TModalResult;
+
+Var
+  P : TJSParser;
+  E : TJSElement;
+begin
+  P:=TJSParser.Create(S);
+  try
+    try
+      E:=P.Parse;
+      E.Free;
+      ShowMessage('Javascript syntax OK');
+    except
+      On E : Exception do
+        ShowException('Javascript syntax error',E);
+    end;
+  finally
+    P.free;
+  end;
+end;
+
+function TJSSyntaxChecker.CheckSource(Sender: TObject; var Handled: boolean
+  ): TModalResult;
+
+Var
+  AE : TSourceEditorInterface;
+  E : String;
+  S : TStringStream;
+
+begin
+  IDEMessagesWindow.BeginBlock(False);
+  try
+    try
+    Handled:=False;
+    result:=mrNone;
+    AE:=SourceEditorManagerIntf.ActiveEditor;
+    If (AE<>Nil) then
+      begin
+      E:=ExtractFileExt(AE.FileName);
+      FSFN:=ExtractFileName(AE.FileName);
+      Handled:=CompareText(E,'.js')=0;
+      If Handled then
+        begin
+        S:=TStringStream.Create(AE.SourceText);
+        try
+          CheckJavaScript(S);
+          Result:=mrOK;
+        finally
+          S.Free;
+        end;
+        end;
+      end;
+    except
+      On E : Exception do
+        ShowException('Error during syntax check',E);
+    end;
+  finally
+    IDEMessagesWindow.EndBlock;
+  end;
+end;
+
+finalization
+  FreeAndNil(AChecker);
 
 end.
 

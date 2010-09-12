@@ -1,0 +1,84 @@
+object fpwebNewHTMLListForm: TfpwebNewHTMLListForm
+  Left = 424
+  Height = 194
+  Top = 262
+  Width = 320
+  ActiveControl = SERows
+  Caption = 'Generate list'
+  ClientHeight = 194
+  ClientWidth = 320
+  LCLVersion = '0.9.29'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 154
+    Width = 308
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&ОК'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = 'C&lose'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = '&Cancel'
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 6
+    Width = 31
+    BorderSpacing.Around = 6
+    Caption = '&Rows'
+    FocusControl = SERows
+    ParentColor = False
+  end
+  object SERows: TSpinEdit
+    AnchorSideLeft.Control = Label1
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 22
+    Top = 27
+    Width = 138
+    BorderSpacing.Around = 6
+    TabOrder = 1
+    Value = 1
+  end
+  object RGStyle: TRadioGroup
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = SERows
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 70
+    Top = 55
+    Width = 308
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Style'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 54
+    ClientWidth = 304
+    Items.Strings = (
+      'Ordered'
+      'Unsorted'
+    )
+    TabOrder = 2
+  end
+end

@@ -1,0 +1,350 @@
+object fpwebNewHTMLFormForm: TfpwebNewHTMLFormForm
+  Left = 400
+  Height = 369
+  Top = 199
+  Width = 470
+  ActiveControl = PageControl1
+  Caption = 'HTML Form properties'
+  ClientHeight = 369
+  ClientWidth = 470
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 329
+    Width = 458
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&ОК'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Справка'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Закрыть'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Отмена'
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 323
+    Top = 0
+    Width = 470
+    ActivePage = TabSheet1
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 1
+    object TabSheet1: TTabSheet
+      Caption = 'Main'
+      ClientHeight = 295
+      ClientWidth = 466
+      object Label1: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = TabSheet1
+        Left = 6
+        Height = 15
+        Top = 6
+        Width = 35
+        BorderSpacing.Around = 6
+        Caption = 'Action'
+        ParentColor = False
+      end
+      object Label2: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = cbAction
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 56
+        Width = 35
+        BorderSpacing.Around = 6
+        Caption = 'Metod'
+        ParentColor = False
+      end
+      object Label3: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = cbMetod
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 106
+        Width = 45
+        BorderSpacing.Around = 6
+        Caption = 'Enctype'
+        ParentColor = False
+      end
+      object cbAction: TComboBox
+        AnchorSideLeft.Control = Label1
+        AnchorSideTop.Control = Label1
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 23
+        Top = 27
+        Width = 448
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 0
+      end
+      object cbMetod: TComboBox
+        AnchorSideLeft.Control = Label2
+        AnchorSideTop.Control = Label2
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 23
+        Top = 77
+        Width = 448
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        Items.Strings = (
+          ''
+          'GET'
+          'POST'
+        )
+        TabOrder = 1
+      end
+      object cbEncType: TComboBox
+        AnchorSideLeft.Control = Label3
+        AnchorSideTop.Control = Label3
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 23
+        Top = 127
+        Width = 448
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        Items.Strings = (
+          ''
+          'application/x-www-form-urlencoded'
+          'multipart/form-data'
+        )
+        TabOrder = 2
+      end
+      object Label4: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = cbEncType
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 156
+        Width = 36
+        BorderSpacing.Around = 6
+        Caption = 'Target'
+        ParentColor = False
+      end
+      object Label5: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideLeft.Side = asrCenter
+        AnchorSideTop.Control = cbEncType
+        AnchorSideTop.Side = asrBottom
+        Left = 191
+        Height = 15
+        Top = 156
+        Width = 85
+        BorderSpacing.Around = 6
+        Caption = 'Accept charset'
+        ParentColor = False
+      end
+      object cbTarget: TComboBox
+        AnchorSideLeft.Control = Label4
+        AnchorSideTop.Control = Label4
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = Label5
+        Left = 12
+        Height = 23
+        Top = 177
+        Width = 173
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        Items.Strings = (
+          ''
+          '_blank'
+          '_self'
+          '_parent'
+          '_top'
+        )
+        TabOrder = 3
+      end
+      object cbAcceptCharset: TComboBox
+        AnchorSideLeft.Control = Label5
+        AnchorSideTop.Control = Label5
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 197
+        Height = 23
+        Top = 177
+        Width = 263
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 4
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Core'
+      ClientHeight = 295
+      ClientWidth = 466
+      object Label6: TLabel
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = TabSheet2
+        Left = 6
+        Height = 18
+        Top = 6
+        Width = 14
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        Caption = 'ID'
+        ParentColor = False
+      end
+      object Label7: TLabel
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = ComboBox6
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 18
+        Top = 65
+        Width = 35
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        Caption = 'Class'
+        ParentColor = False
+      end
+      object Label8: TLabel
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = ComboBox7
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 18
+        Top = 124
+        Width = 33
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        Caption = 'Style'
+        ParentColor = False
+      end
+      object ComboBox6: TComboBox
+        AnchorSideLeft.Control = Label6
+        AnchorSideTop.Control = Label6
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 29
+        Top = 30
+        Width = 452
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        ItemHeight = 0
+        TabOrder = 0
+        Text = 'ComboBox6'
+      end
+      object ComboBox7: TComboBox
+        AnchorSideLeft.Control = Label7
+        AnchorSideTop.Control = Label7
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 29
+        Top = 89
+        Width = 452
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        ItemHeight = 0
+        TabOrder = 1
+        Text = 'ComboBox7'
+      end
+      object EditButton1: TEditButton
+        AnchorSideLeft.Control = Label8
+        AnchorSideTop.Control = Label8
+        AnchorSideTop.Side = asrBottom
+        Left = 12
+        Height = 27
+        Top = 148
+        Width = 424
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        ButtonWidth = 23
+        CharCase = ecNormal
+        MaxLength = 0
+        NumGlyphs = 1
+        TabOrder = 2
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Events'
+      ClientHeight = 295
+      ClientWidth = 466
+      object Label9: TLabel
+        AnchorSideLeft.Control = TabSheet3
+        AnchorSideTop.Control = TabSheet3
+        Left = 6
+        Height = 18
+        Top = 6
+        Width = 48
+        BorderSpacing.Around = 6
+        Caption = 'OnClick'
+        ParentColor = False
+      end
+      object Label10: TLabel
+        AnchorSideLeft.Control = TabSheet3
+        AnchorSideTop.Control = ComboBox8
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 18
+        Top = 65
+        Width = 69
+        BorderSpacing.Around = 6
+        Caption = 'OnDblClick'
+        ParentColor = False
+      end
+      object ComboBox8: TComboBox
+        AnchorSideLeft.Control = Label9
+        AnchorSideTop.Control = Label9
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet3
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 29
+        Top = 30
+        Width = 446
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 0
+        Text = 'ComboBox8'
+      end
+      object ComboBox9: TComboBox
+        AnchorSideLeft.Control = Label10
+        AnchorSideTop.Control = Label10
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet3
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 29
+        Top = 89
+        Width = 446
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 1
+        Text = 'ComboBox9'
+      end
+    end
+  end
+end

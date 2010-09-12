@@ -1,0 +1,271 @@
+object fpWebNewHtmlTableForm: TfpWebNewHtmlTableForm
+  Left = 543
+  Height = 514
+  Top = 118
+  Width = 544
+  ActiveControl = edtColCount
+  Caption = 'New HTML table'
+  ClientHeight = 514
+  ClientWidth = 544
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 15
+    Top = 6
+    Width = 79
+    BorderSpacing.Around = 6
+    Caption = 'Column count'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    AnchorSideLeft.Control = edtColCount
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 136
+    Height = 15
+    Top = 6
+    Width = 59
+    BorderSpacing.Around = 6
+    Caption = 'Row count'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtColCount
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 55
+    Width = 74
+    BorderSpacing.Around = 6
+    Caption = 'Border width'
+    ParentColor = False
+  end
+  object edtColCount: TSpinEdit
+    AnchorSideLeft.Control = Label1
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 22
+    Top = 27
+    Width = 118
+    BorderSpacing.Around = 6
+    OnChange = edtColCountChange
+    TabOrder = 0
+    Value = 3
+  end
+  object edtRowCount: TSpinEdit
+    AnchorSideLeft.Control = Label2
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    Left = 142
+    Height = 22
+    Top = 27
+    Width = 130
+    BorderSpacing.Around = 6
+    OnChange = edtColCountChange
+    TabOrder = 1
+    Value = 3
+  end
+  object Label4: TLabel
+    AnchorSideLeft.Control = edtBorderWidth
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = edtColCount
+    AnchorSideTop.Side = asrBottom
+    Left = 126
+    Height = 15
+    Top = 55
+    Width = 71
+    BorderSpacing.Around = 6
+    Caption = 'Cell padding'
+    ParentColor = False
+  end
+  object lblCellspacing: TLabel
+    AnchorSideLeft.Control = edtCellpadding
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = edtColCount
+    AnchorSideTop.Side = asrBottom
+    Left = 222
+    Height = 15
+    Top = 55
+    Width = 70
+    BorderSpacing.Around = 6
+    Caption = 'Cell spacing'
+    ParentColor = False
+  end
+  object cbUseHeader: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtCellspacing
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 21
+    Top = 104
+    Width = 114
+    BorderSpacing.Around = 6
+    Caption = 'Use header row'
+    TabOrder = 2
+  end
+  object Label6: TLabel
+    AnchorSideLeft.Control = cbUseHeader
+    AnchorSideTop.Control = cbUseHeader
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = ColorBox1
+    AnchorSideBottom.Side = asrBottom
+    Left = 12
+    Height = 15
+    Top = 134
+    Width = 92
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'Header bg color'
+    ParentColor = False
+  end
+  object ColorBox1: TColorBox
+    AnchorSideLeft.Control = Label6
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbUseHeader
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 110
+    Height = 24
+    Top = 131
+    Width = 428
+    Selected = clWhite
+    Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    OnChange = ColorBox1Change
+    TabOrder = 3
+  end
+  object CheckBox2: TCheckBox
+    AnchorSideLeft.Control = edtCellspacing
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = edtColCount
+    AnchorSideTop.Side = asrBottom
+    Left = 318
+    Height = 21
+    Top = 55
+    Width = 53
+    BorderSpacing.Around = 6
+    Caption = 'Width'
+    TabOrder = 4
+  end
+  object edtTableWidth: TSpinEdit
+    AnchorSideLeft.Control = CheckBox2
+    AnchorSideTop.Control = lblCellspacing
+    AnchorSideTop.Side = asrBottom
+    Left = 324
+    Height = 22
+    Top = 76
+    Width = 108
+    BorderSpacing.Around = 6
+    MaxValue = 4000
+    TabOrder = 5
+    Value = 100
+  end
+  object cbTableWidthUnits: TComboBox
+    AnchorSideLeft.Control = edtTableWidth
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblCellspacing
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 438
+    Height = 24
+    Top = 76
+    Width = 100
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ItemHeight = 0
+    Items.Strings = (
+      'Percent'
+      'Pixels'
+    )
+    Style = csDropDownList
+    TabOrder = 6
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 474
+    Width = 532
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&ОК'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = 'C&lose'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = '&Cancel'
+    TabOrder = 7
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object edtCellpadding: TSpinEdit
+    AnchorSideLeft.Control = Label4
+    AnchorSideTop.Control = Label4
+    AnchorSideTop.Side = asrBottom
+    Left = 132
+    Height = 22
+    Top = 76
+    Width = 84
+    BorderSpacing.Around = 6
+    TabOrder = 8
+    Value = 1
+  end
+  object edtCellspacing: TSpinEdit
+    AnchorSideLeft.Control = lblCellspacing
+    AnchorSideTop.Control = lblCellspacing
+    AnchorSideTop.Side = asrBottom
+    Left = 228
+    Height = 22
+    Top = 76
+    Width = 84
+    BorderSpacing.Around = 6
+    TabOrder = 9
+    Value = 1
+  end
+  object edtBorderWidth: TSpinEdit
+    AnchorSideLeft.Control = Label3
+    AnchorSideTop.Control = Label3
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 22
+    Top = 76
+    Width = 108
+    BorderSpacing.Around = 6
+    TabOrder = 10
+    Value = 1
+  end
+  object StringGrid1: TStringGrid
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ColorBox1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 307
+    Top = 161
+    Width = 532
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFillColumns = True
+    BorderSpacing.Around = 6
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
+    TabOrder = 11
+    ColWidths = (
+      105
+      105
+      105
+      105
+      108
+    )
+  end
+end

@@ -1,0 +1,258 @@
+object fpWebNewHTMLFileForm: TfpWebNewHTMLFileForm
+  Left = 399
+  Height = 441
+  Top = 220
+  Width = 591
+  ActiveControl = PageControl1
+  Caption = 'fpWebNewHTMLFileForm'
+  ClientHeight = 441
+  ClientWidth = 591
+  OnClose = FormClose
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 401
+    Width = 579
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&ОК'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = 'C&lose'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = '&Cancel'
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 395
+    Top = 0
+    Width = 591
+    ActivePage = TabSheet2
+    Align = alClient
+    TabIndex = 1
+    TabOrder = 1
+    object TabSheet1: TTabSheet
+      Caption = 'Main'
+      ClientHeight = 367
+      ClientWidth = 587
+      object cbCharset: TComboBox
+        AnchorSideLeft.Control = Label4
+        AnchorSideTop.Control = Label4
+        AnchorSideTop.Side = asrBottom
+        Left = 12
+        Height = 24
+        Top = 225
+        Width = 172
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        ItemIndex = 0
+        Items.Strings = (
+          'UTF-8'
+        )
+        Style = csDropDownList
+        TabOrder = 0
+        Text = 'UTF-8'
+      end
+      object edtTitle: TEdit
+        AnchorSideLeft.Control = Label3
+        AnchorSideTop.Control = Label3
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 22
+        Top = 78
+        Width = 569
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        TabOrder = 1
+      end
+      object Label4: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = edtCopyr
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 204
+        Width = 46
+        BorderSpacing.Around = 6
+        Caption = 'Chars&et'
+        FocusControl = cbCharset
+        ParentColor = False
+      end
+      object Label3: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = cbShema
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 57
+        Width = 25
+        BorderSpacing.Around = 6
+        Caption = '&Title'
+        FocusControl = edtTitle
+        ParentColor = False
+      end
+      object edtCopyr: TEdit
+        AnchorSideLeft.Control = Label2
+        AnchorSideTop.Control = Label2
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 22
+        Top = 176
+        Width = 569
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        TabOrder = 2
+      end
+      object Label2: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = edtAutor
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 155
+        Width = 55
+        BorderSpacing.Around = 6
+        Caption = 'Cop&yright'
+        FocusControl = edtCopyr
+        ParentColor = False
+      end
+      object edtAutor: TEdit
+        AnchorSideLeft.Control = Label1
+        AnchorSideTop.Control = Label1
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 22
+        Top = 127
+        Width = 569
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        TabOrder = 3
+      end
+      object Label1: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = edtTitle
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 106
+        Width = 38
+        BorderSpacing.Around = 6
+        Caption = '&Author'
+        FocusControl = edtAutor
+        ParentColor = False
+      end
+      object Label7: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = TabSheet1
+        Left = 6
+        Height = 15
+        Top = 6
+        Width = 82
+        BorderSpacing.Around = 6
+        Caption = '&DTD / Schema'
+        FocusControl = cbShema
+        ParentColor = False
+      end
+      object cbShema: TComboBox
+        AnchorSideLeft.Control = Label7
+        AnchorSideTop.Control = Label7
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 24
+        Top = 27
+        Width = 569
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        ItemIndex = 0
+        Items.Strings = (
+          'HTML 4.01 Transitional'
+          'HTML 4.01 Strict'
+          'HTML 4.01 Frameset'
+          'XHTML 1.0 Transitional'
+          'XHTML 1.0 Strict'
+          'XHTML 1.0 Frameset'
+          'XHTML 1.0 Basic'
+          'XHTML 1.1'
+        )
+        Style = csDropDownList
+        TabOrder = 4
+        Text = 'HTML 4.01 Transitional'
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Links'
+      ClientHeight = 367
+      ClientWidth = 587
+      object edtJS: TComboBox
+        AnchorSideLeft.Control = Label5
+        AnchorSideTop.Control = Label6
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 23
+        Top = 77
+        Width = 569
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 0
+      end
+      object edtCSS: TComboBox
+        AnchorSideLeft.Control = Label5
+        AnchorSideTop.Control = Label5
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 23
+        Top = 27
+        Width = 569
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        TabOrder = 1
+      end
+      object Label6: TLabel
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = edtCSS
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 56
+        Width = 33
+        BorderSpacing.Around = 6
+        Caption = '&JS file'
+        FocusControl = edtJS
+        ParentColor = False
+      end
+      object Label5: TLabel
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideTop.Control = TabSheet2
+        Left = 6
+        Height = 15
+        Top = 6
+        Width = 46
+        BorderSpacing.Around = 6
+        Caption = '&CSS file'
+        FocusControl = edtCSS
+        ParentColor = False
+      end
+    end
+  end
+end

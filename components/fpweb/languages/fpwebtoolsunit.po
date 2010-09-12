@@ -1,0 +1,15 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: rxwebtoolsunit.shtmldesign
+msgid "HTML design"
+msgstr ""
+
+#: rxwebtoolsunit.shtmlfile
+msgid "HTML file"
+msgstr ""
+
+#: rxwebtoolsunit.shtmlfiledesc
+msgid "Create new HTML file..."
+msgstr ""
+

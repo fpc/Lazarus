@@ -1,0 +1,226 @@
+object fpwebNewHTMLImgForm: TfpwebNewHTMLImgForm
+  Left = 455
+  Height = 470
+  Top = 212
+  Width = 454
+  ActiveControl = edtFileName
+  Caption = 'Tag property: IMG'
+  ClientHeight = 470
+  ClientWidth = 454
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 430
+    Width = 442
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&ОК'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = 'C&lose'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = '&Cancel'
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object Label1: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 8
+    Width = 79
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'Image &source'
+    FocusControl = edtFileName
+    ParentColor = False
+  end
+  object edtFileName: TFileNameEdit
+    AnchorSideLeft.Control = Label1
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
+    Left = 12
+    Height = 22
+    Top = 29
+    Width = 416
+    OnAcceptFileName = edtFileNameAcceptFileName
+    DialogOptions = []
+    FilterIndex = 0
+    HideDirectories = False
+    ButtonWidth = 23
+    NumGlyphs = 0
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    MaxLength = 0
+    TabOrder = 1
+  end
+  object Label2: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtFileName
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 57
+    Width = 31
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = '&Width'
+    FocusControl = edtWidth
+    ParentColor = False
+  end
+  object Label3: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = edtFileName
+    AnchorSideTop.Side = asrBottom
+    Left = 209
+    Height = 15
+    Top = 57
+    Width = 37
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'H&eigth'
+    FocusControl = edtHeigth
+    ParentColor = False
+  end
+  object Label4: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtWidth
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 106
+    Width = 44
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'HSp&ace'
+    FocusControl = edtHSpace
+    ParentColor = False
+  end
+  object Label5: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Side = asrCenter
+    AnchorSideTop.Control = edtHeigth
+    AnchorSideTop.Side = asrBottom
+    Left = 206
+    Height = 15
+    Top = 106
+    Width = 43
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'VS&pace'
+    FocusControl = edtVSpace
+    ParentColor = False
+  end
+  object edtWidth: TEdit
+    AnchorSideLeft.Control = Label2
+    AnchorSideTop.Control = Label2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Label3
+    Left = 12
+    Height = 22
+    Top = 78
+    Width = 191
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    TabOrder = 2
+  end
+  object edtHeigth: TEdit
+    AnchorSideLeft.Control = Label3
+    AnchorSideTop.Control = Label3
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 215
+    Height = 22
+    Top = 78
+    Width = 233
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    TabOrder = 3
+  end
+  object edtHSpace: TEdit
+    AnchorSideLeft.Control = Label4
+    AnchorSideTop.Control = Label4
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Label3
+    Left = 12
+    Height = 22
+    Top = 127
+    Width = 191
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    TabOrder = 4
+  end
+  object edtVSpace: TEdit
+    AnchorSideLeft.Control = Label5
+    AnchorSideTop.Control = Label5
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 212
+    Height = 22
+    Top = 127
+    Width = 236
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    TabOrder = 5
+  end
+  object Label6: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtHSpace
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 155
+    Width = 77
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = '&Alternate text'
+    FocusControl = edtAlt
+    ParentColor = False
+  end
+  object edtAlt: TEdit
+    AnchorSideLeft.Control = Label6
+    AnchorSideTop.Control = Label6
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 12
+    Height = 22
+    Top = 176
+    Width = 436
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    TabOrder = 6
+  end
+  object Image1: TImage
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = edtAlt
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 220
+    Top = 204
+    Width = 442
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Center = True
+  end
+end

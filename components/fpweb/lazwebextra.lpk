@@ -23,7 +23,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="11">
+    <Files Count="30">
       <Item1>
         <Filename Value="reglazwebextra.pp"/>
         <HasRegisterProc Value="True"/>
@@ -77,20 +77,100 @@
         <Type Value="Virtual Unit"/>
         <UnitName Value="webjsonrpc"/>
       </Item11>
+      <Item12>
+        <Filename Value="fpwebnewhtmlformunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item12>
+      <Item13>
+        <Filename Value="fpwebnewhtmlformunit.pas"/>
+        <UnitName Value="fpwebNewHTMLFormUnit"/>
+      </Item13>
+      <Item14>
+        <Filename Value="fpwebnewhtmltableunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item14>
+      <Item15>
+        <Filename Value="fpwebnewhtmltableunit.pas"/>
+        <UnitName Value="fpWebNewHtmlTableUnit"/>
+      </Item15>
+      <Item16>
+        <Filename Value="fpwebstrconsts.pas"/>
+        <UnitName Value="fpWebStrConsts"/>
+      </Item16>
+      <Item17>
+        <Filename Value="fpwebtoolsunit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="fpWebToolsUnit"/>
+      </Item17>
+      <Item18>
+        <Filename Value="fpideexteditorinsertfilenameunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item18>
+      <Item19>
+        <Filename Value="fpideexteditorinsertfilenameunit.pas"/>
+        <UnitName Value="fpIDEExtEditorInsertFileNameUnit"/>
+      </Item19>
+      <Item20>
+        <Filename Value="fpweb_images.inc"/>
+        <Type Value="Include"/>
+      </Item20>
+      <Item21>
+        <Filename Value="fpwebnewhtmlfileunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item21>
+      <Item22>
+        <Filename Value="fpwebnewhtmlfileunit.pas"/>
+        <UnitName Value="fpWebNewHTMLFileUnit"/>
+      </Item22>
+      <Item23>
+        <Filename Value="fpwebnewhtmlimgunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item23>
+      <Item24>
+        <Filename Value="fpwebnewhtmlimgunit.pas"/>
+        <UnitName Value="fpwebNewHTMLImgUnit"/>
+      </Item24>
+      <Item25>
+        <Filename Value="fpwebnewhtmlinputunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item25>
+      <Item26>
+        <Filename Value="fpwebnewhtmlinputunit.pas"/>
+        <UnitName Value="fpwebNewHTMLInputUnit"/>
+      </Item26>
+      <Item27>
+        <Filename Value="fpwebnewhtmllistunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item27>
+      <Item28>
+        <Filename Value="fpwebnewhtmllistunit.pas"/>
+        <UnitName Value="fpwebNewHTMLListUnit"/>
+      </Item28>
+      <Item29>
+        <Filename Value="fpwebnewhtmltagtrunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item29>
+      <Item30>
+        <Filename Value="fpwebnewhtmltagtrunit.pas"/>
+        <UnitName Value="fpwebNewHtmlTagTRUnit"/>
+      </Item30>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="2">
+    <RequiredPkgs Count="3">
       <Item1>
-        <PackageName Value="weblaz"/>
+        <PackageName Value="sqldblaz"/>
       </Item1>
       <Item2>
+        <PackageName Value="weblaz"/>
+      </Item2>
+      <Item3>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item2>
+      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)/"/>
