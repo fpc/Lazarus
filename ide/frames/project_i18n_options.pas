@@ -106,8 +106,10 @@ var
 begin
   with AOptions as TProject do
   begin
-    AFilename := TrimFilename(POOutDirEdit.Text);
-    if (not FilenameIsAbsolute(AFilename)) and (not IsVirtual) then
+    AFilename := ChompPathDelim(TrimFilename(POOutDirEdit.Text));
+    if EnableI18NCheckBox.Checked
+    and (AFilename<>'')
+    and (not FilenameIsAbsolute(AFilename)) and (not IsVirtual) then
       AFilename:=AppendPathDelim(ProjectDirectory)+AFilename;
     POOutputDirectory := AFilename;
     EnableI18N := EnableI18NCheckBox.Checked;

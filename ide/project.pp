@@ -3570,9 +3570,7 @@ procedure TProject.SetModified(const AValue: boolean);
 begin
   if AValue = Modified then exit;
   inherited SetModified(AValue);
-  if Modified then
-    debugln(['TProject.SetModified ']);
-  if not Modified then 
+  if not Modified then
   begin
     PublishOptions.Modified := False;
     CompilerOptions.Modified := False;
@@ -3941,9 +3939,12 @@ begin
 end;
 
 procedure TProject.SetPOOutputDirectory(const AValue: string);
+var
+  NewValue: String;
 begin
-  if FPOOutputDirectory=AValue then exit;
-  FPOOutputDirectory:=AValue;
+  NewValue:=ChompPathDelim(TrimFilename(AValue));
+  if FPOOutputDirectory=NewValue then exit;
+  FPOOutputDirectory:=NewValue;
   Modified:=true;
 end;
 
