@@ -67,7 +67,6 @@
     any conditionals
 
   ToDo:
-  - fix bug: opening project options marks project modified
   - use conditionals to extend paths
   - use conditionals to extend usage paths
   - move the project target file to compiler options
