@@ -545,6 +545,7 @@ type
     property OnDragDrop;
     property OnDragOver;
     property OnEditButtonClick;
+    property OnEditingDone;
     //property OnEndDock;
     property OnEndDrag;
     property OnEnter;
