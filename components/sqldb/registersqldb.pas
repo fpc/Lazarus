@@ -53,7 +53,11 @@ uses
 {$IFDEF HASSQLPARSER}
   sqlscript, fpsqltree, fpsqlparser,
 {$ENDIF HASSQLPARSER}
-  LazarusPackageIntf,lazideintf,srceditorintf,idemsgintf;
+  LazarusPackageIntf,
+  lazideintf,
+  srceditorintf,
+  ProjectIntf,
+  idemsgintf;
 
 Type
   { TSQLStringsPropertyEditor }
@@ -72,6 +76,19 @@ Type
     function GetFilter: String; override;
     function GetInitialDirectory: string; override;
   end;
+
+  { TSQLFileDescriptor }
+
+  TSQLFileDescriptor = class(TProjectFileDescriptor)
+  public
+    constructor Create; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    function GetResourceSource(const ResourceName: string): string; override;
+    function CreateSource(const Filename, SourceName,
+                          ResourceName: string): string; override;
+  end;
+
 
 {$IFDEF HASSQLPARSER}
   TSQLSyntaxChecker = Class(TComponent)
@@ -120,6 +137,10 @@ end;
 
 
 Resourcestring
+  SSQLScript     = 'SQL Script file';
+  SSQLScriptDesc = 'Create a new SQL Script file';
+  SSQLSource = 'Insert your SQL statements here';
+
   SFireBirdDatabases = 'Firebird databases';
   SInterbaseDatabases = 'Interbase databases';
   SSQLStringsPropertyEditorDlgTitle = 'Editing %s';
@@ -329,12 +350,47 @@ begin
   RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery,  'DeleteSQL', TSQLStringsPropertyEditor);
   RegisterPropertyEditor(TStrings.ClassInfo, TSQLQuery,  'UpdateSQL', TSQLStringsPropertyEditor);
   RegisterPropertyEditor(TStrings.ClassInfo, TSQLScript, 'Script'   , TSQLStringsPropertyEditor);
+  RegisterProjectFileDescriptor(TSQLFileDescriptor.Create);
 
   RegisterUnit('sqldb',@RegisterUnitSQLdb);
 {$IFDEF HASSQLPARSER}
   AChecker:=TSQLSyntaxChecker.Create(Nil);
   LazarusIDE.AddHandlerOnQuickSyntaxCheck(@AChecker.CheckSource,False);
 {$ENDIF HASSQLPARSER}
+end;
+
+{ TSQLFileDescriptor }
+
+constructor TSQLFileDescriptor.Create;
+begin
+  inherited Create;
+  Name:='SQL script file';
+  DefaultFilename:='sqlscript.sql';
+  DefaultResFileExt:='';
+  DefaultFileExt:='.sql';
+  VisibleInNewDialog:=true;
+end;
+
+function TSQLFileDescriptor.GetLocalizedName: string;
+begin
+  Result:=SSQLScript;
+end;
+
+function TSQLFileDescriptor.GetLocalizedDescription: string;
+begin
+  Result:=SSQLScriptDesc;
+end;
+
+function TSQLFileDescriptor.GetResourceSource(const ResourceName: string
+  ): string;
+begin
+  Result:='';
+end;
+
+function TSQLFileDescriptor.CreateSource(const Filename, SourceName,
+  ResourceName: string): string;
+begin
+  Result:='/* '+SSQLSource+ '*/';
 end;
 
 initialization
