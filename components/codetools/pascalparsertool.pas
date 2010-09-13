@@ -1417,7 +1417,7 @@ begin
         end else
           break;
         if (phpCreateNodes in Attr) then begin
-          CurNode.EndPos:=CurPos.EndPos;
+          CurNode.EndPos:=CurPos.StartPos;
           EndChildNode;
         end;
       end;
@@ -1528,16 +1528,18 @@ begin
         if not AtomIsIdentifier(ExceptionOnError) then exit;
         if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
       end;
-      if (phpCreateNodes in Attr) then
+      if (phpCreateNodes in Attr) then begin
+        CurNode.EndPos:=CurPos.StartPos;
         EndChildNode;
+      end;
     end;
     if (phpCreateNodes in Attr) then begin
       if IsFileType then begin
-        CurNode.EndPos:=CurPos.EndPos;
+        CurNode.EndPos:=CurPos.StartPos;
         EndChildNode;
       end;
       if IsArrayType then begin
-        CurNode.EndPos:=CurPos.EndPos;
+        CurNode.EndPos:=CurPos.StartPos;
         EndChildNode;
       end;
     end;
