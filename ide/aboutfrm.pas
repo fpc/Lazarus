@@ -26,8 +26,8 @@ interface
 
 uses
   Classes, SysUtils, FPCAdds, Forms, Controls, Graphics, Dialogs, LResources,
-  StdCtrls, Buttons, LazConf, LazarusIDEStrConsts, ExtCtrls, EnvironmentOpts,
-  Clipbrd, FileUtil, Menus, LCLIntf;
+  StdCtrls, Buttons, LazConf, LazarusIDEStrConsts, ExtCtrls, ComCtrls,
+  EnvironmentOpts, Clipbrd, FileUtil, Menus, LCLIntf;
 
 type
 
@@ -76,16 +76,16 @@ type
     miVerToClipboard: TMenuItem;
     OfficialLabel: TLabel;
     OfficialURLLabel: TLabel;
-    VersionPage: TPage;
+    VersionPage: TTabSheet;
     ButtonPanel: TPanel;
     PlatformLabel: TLabel;
     PopupMenu1: TPopupMenu;
     VersionLabel: TLABEL;
     RevisionLabel: TLabel;
-    Notebook:TNotebook;
-    AboutPage:TPage;
-    ContributorsPage:TPage;
-    AcknowledgementsPage:TPage;
+    Notebook: TPageControl;
+    AboutPage: TTabSheet;
+    ContributorsPage: TTabSheet;
+    AcknowledgementsPage:TTabSheet;
     procedure AboutFormCreate(Sender:TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure miVerToClipboardClick(Sender: TObject);
@@ -209,9 +209,9 @@ end;
 procedure TAboutForm.NotebookPageChanged(Sender: TObject);
 begin
   if Assigned(Contributors) then
-    Contributors.Active:=NoteBook.ActivePage = lisContributors;
+    Contributors.Active:=NoteBook.ActivePage = ContributorsPage;
   if Assigned(Acknowledgements) then
-    Acknowledgements.Active:=NoteBook.ActivePage = lisAcknowledgements;
+    Acknowledgements.Active:=NoteBook.ActivePage = AcknowledgementsPage;
 end;
 
 procedure TAboutForm.URLLabelMouseDown(Sender: TObject;

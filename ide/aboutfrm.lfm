@@ -12,16 +12,15 @@ object AboutForm: TAboutForm
   PopupMenu = PopupMenu1
   Position = poScreenCenter
   LCLVersion = '0.9.29'
-  object Notebook: TNotebook
+  object Notebook: TPageControl
     Left = 0
     Height = 326
     Top = 0
     Width = 460
     Align = alClient
     OnPageChanged = NotebookPageChanged
-    PageIndex = 0
     TabOrder = 0
-    object VersionPage: TPage
+    object VersionPage: TTabSheet
       Caption = 'Version'
       ClientWidth = 458
       ClientHeight = 299
@@ -115,7 +114,7 @@ object AboutForm: TAboutForm
         ParentFont = False
       end
     end
-    object AboutPage: TPage
+    object AboutPage: TTabSheet
       Caption = 'About'
       ClientWidth = 458
       ClientHeight = 299
@@ -197,10 +196,10 @@ object AboutForm: TAboutForm
         TabOrder = 0
       end
     end
-    object ContributorsPage: TPage
+    object ContributorsPage: TTabSheet
       Caption = 'Contributors'
     end
-    object AcknowledgementsPage: TPage
+    object AcknowledgementsPage: TTabSheet
       Caption = 'Acknowledgements'
     end
   end
