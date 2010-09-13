@@ -61,10 +61,10 @@ type
     FileButtonPanel: TButtonPanel;
     DependButtonPanel: TButtonPanel;
     // notebook
-    NoteBook: TNoteBook;
-    AddEditorFilePage: TPage;
-    NewDependPage: TPage;
-    AddFilesPage: TPage;
+    NoteBook: TPageControl;
+    AddEditorFilePage: TTabSheet;
+    NewDependPage: TTabSheet;
+    AddFilesPage: TTabSheet;
     // add file page
     AddFileLabel: TLabel;
     AddFileListBox: TListBox;
