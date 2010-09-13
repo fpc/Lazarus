@@ -72,8 +72,8 @@ type
     MenuItem29: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem30: TMenuItem;
-    ValueAsTextPage: TPage;
-    ValueAsPathsPage: TPage;
+    ValueAsTextPage: TTabSheet;
+    ValueAsPathsPage: TTabSheet;
     MainSplitter: TSplitter;
     MainMenu: TMainMenu;
     
@@ -167,7 +167,7 @@ type
     DescriptionEdit: TEdit;
     VariableLabel: TLabel;
     VariableEdit: TEdit;
-    ValueNoteBook: TNoteBook;
+    ValueNoteBook: TPageControl;
     ValueAsTextSynEdit: TSynEdit;
     ValueAsFilePathsSynEdit: TSynEdit;
     MoveFilePathUpBitBtn: TBitBtn;

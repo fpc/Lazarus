@@ -75,7 +75,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
       Caption = 'VariableLabel'
       ParentColor = False
     end
-    object ValueNoteBook: TNotebook
+    object ValueNoteBook: TPageControl
       Left = 6
       Height = 198
       Top = 106
@@ -84,9 +84,8 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       OnPageChanged = ValueNoteBookPageChanged
-      PageIndex = 0
       TabOrder = 0
-      object ValueAsTextPage: TPage
+      object ValueAsTextPage: TTabSheet
         Caption = 'ValueAsTextPage'
         ClientWidth = 508
         ClientHeight = 170
@@ -698,7 +697,7 @@ object CodeToolsDefinesEditor: TCodeToolsDefinesEditor
           end
         end
       end
-      object ValueAsPathsPage: TPage
+      object ValueAsPathsPage: TTabSheet
         Caption = 'ValueAsPathsPage'
         ClientWidth = 508
         ClientHeight = 168

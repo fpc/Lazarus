@@ -628,7 +628,7 @@ type
     procedure ConnectMainBarEvents;
     procedure SetupSpeedButtons;
     procedure SetupDialogs;
-    procedure SetupComponentNoteBook;
+    procedure SetupComponentPalette;
     procedure SetupHints;
     procedure SetupOutputFilter;
     procedure SetupObjectInspector;
@@ -1324,7 +1324,7 @@ begin
     SetupStandardIDEMenuItems;
     SetupMainMenu;
     SetupSpeedButtons;
-    SetupComponentNoteBook;
+    SetupComponentPalette;
     ConnectMainBarEvents;
   finally
     MainIDEBar.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.Create'){$ENDIF};
@@ -1822,9 +1822,9 @@ begin
   TestCompilerOptions:=@OnCompilerOptionsDialogTest;
 end;
 
-procedure TMainIDE.SetupComponentNoteBook;
+procedure TMainIDE.SetupComponentPalette;
 begin
-  // Component Notebook
+  // Component palette
   MainIDEBar.ComponentPageControl := TPageControl.Create(OwningComponent);
   with MainIDEBar.ComponentPageControl do begin
     Name := 'ComponentPageControl';
