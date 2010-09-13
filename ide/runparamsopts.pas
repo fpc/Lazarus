@@ -139,9 +139,9 @@ type
     SystemVariablesGroupBox: TGroupBox;
     SystemVariablesListView: TListView;
     UserOverridesListView: TListView;
-    Notebook: TNotebook;
-    GeneralPage:    TPage;
-    EnvVarsPage:    TPage;
+    Notebook: TPageControl;
+    GeneralPage: TTabSheet;
+    EnvVarsPage: TTabSheet;
     procedure EnvVarsPageResize(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);

@@ -9,16 +9,15 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
   ClientWidth = 500
   Position = poScreenCenter
   LCLVersion = '0.9.29'
-  object Notebook: TNotebook
+  object Notebook: TPageControl
     Left = 0
     Height = 463
     Top = 0
     Width = 500
     Align = alClient
     BorderSpacing.Bottom = 6
-    PageIndex = 1
     TabOrder = 0
-    object GeneralPage: TPage
+    object GeneralPage: TTabSheet
       Caption = 'GeneralPage'
       ClientWidth = 498
       ClientHeight = 432
@@ -210,7 +209,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
         end
       end
     end
-    object EnvVarsPage: TPage
+    object EnvVarsPage: TTabSheet
       Caption = 'EnvVarsPage'
       ClientWidth = 492
       ClientHeight = 437
