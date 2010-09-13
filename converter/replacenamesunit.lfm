@@ -1,6 +1,6 @@
-  Left = 314
 object ReplaceForm: TReplaceForm
   Height = 472
+  Left = 314
   Top = 438
   Width = 433
   Caption = 'Properties and Types to replace'
