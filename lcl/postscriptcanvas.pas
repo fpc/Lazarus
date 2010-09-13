@@ -1761,7 +1761,7 @@ procedure TPostScriptPrinterCanvas.RoundRect(X1, Y1, X2, Y2: Integer; RX,
 var
   ellipsePath : string;
   //fs:TFormatSettings;
-  pp1,pp2:TpsPoint;
+  pp1,pp2,r:TpsPoint;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
@@ -1784,18 +1784,22 @@ begin
   save current matrix, translate to center of ellipse, scale by rx ry, and draw
   a circle of unit radius in counterclockwise dir, return to original matrix
   arguments are (cx, cy, rx, ry, startAngle, endAngle)}
-  ellipsePath:='matrix currentmatrix %f %f translate %d %d scale 0 0 1 %d %d arc setmatrix';
+  ellipsePath:='matrix currentmatrix %f %f translate %f %f scale 0 0 1 %d %d arc setmatrix';
 
+  PixelsToPoints(RX,RY,r.fx,r.fy);
   {choice between newpath and moveto beginning of arc
    go with newpath for precision, does this violate any assumptions in code???
    write(format('%d %d moveto',[x1+rx, y1]),Lst  # this also works}
-  WriteB('newpath');
-  WriteB(Format(ellipsePath,[pp1.fx+rx,pp1.fy-ry,rx,ry,90,180],FFs));
-  WriteB(Format(ellipsePath,[pp1.fx+rx,pp2.fy+ry,rx,ry,180,270],FFs));
-  WriteB(Format(ellipsePath,[pp2.fx-rx,pp2.fy+ry,rx,ry,270,360],FFs));
-  WriteB(Format(ellipsePath,[pp2.fx-rx,pp1.fy-ry,rx,ry,0,90],FFs));
-  WriteB('closepath');
-    
+  with r do
+  begin
+    WriteB('newpath');
+    WriteB(Format(ellipsePath,[pp1.fx+fx,pp1.fy-fy,fx,fy,90,180],FFs));
+    WriteB(Format(ellipsePath,[pp1.fx+fx,pp2.fy+fy,fx,fy,180,270],FFs));
+    WriteB(Format(ellipsePath,[pp2.fx-fx,pp2.fy+fy,fx,fy,270,360],FFs));
+    WriteB(Format(ellipsePath,[pp2.fx-fx,pp1.fy-fy,fx,fy,0,90],FFs));
+    WriteB('closepath');
+  end;
+
   SetBrushFillPattern(True,True);
   
   MoveToLastPos;
