@@ -30,7 +30,7 @@ object UnitInfoDialog: TUnitInfoDialog
     NumGlyphs = 0
     TabOrder = 0
   end
-  object Notebook: TNotebook
+  object Notebook: TPageControl
     AnchorSideBottom.Control = OkButton
     Left = 6
     Height = 239
@@ -39,9 +39,8 @@ object UnitInfoDialog: TUnitInfoDialog
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    PageIndex = 2
     TabOrder = 1
-    object GeneralPage: TPage
+    object GeneralPage: TTabSheet
       Caption = 'GeneralPage'
       ClientWidth = 480
       ClientHeight = 206
@@ -212,7 +211,7 @@ object UnitInfoDialog: TUnitInfoDialog
         TabOrder = 0
       end
     end
-    object UnitPathsPage: TPage
+    object UnitPathsPage: TTabSheet
       Caption = 'UnitPathsPage'
       ClientWidth = 480
       ClientHeight = 206
@@ -228,7 +227,7 @@ object UnitInfoDialog: TUnitInfoDialog
         TabOrder = 0
       end
     end
-    object IncludePathsPage: TPage
+    object IncludePathsPage: TTabSheet
       Caption = 'IncludePathsPage'
       ClientWidth = 480
       ClientHeight = 213
@@ -244,7 +243,7 @@ object UnitInfoDialog: TUnitInfoDialog
         TabOrder = 0
       end
     end
-    object CompleteUnitPathsPage: TPage
+    object CompleteUnitPathsPage: TTabSheet
       Caption = 'CompleteUnitPathsPage'
       ClientWidth = 480
       ClientHeight = 206

@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, Controls, StdCtrls, Forms, Buttons,
-  FileProcs, ExtCtrls,
+  FileProcs, ExtCtrls, ComCtrls,
   CodeToolsDefPreview, CodeToolManager,
   LazarusIDEStrConsts;
 
@@ -44,7 +44,7 @@ type
     UnitPathMemo: TMemo;
     IncludePathMemo: TMemo;
     SrcPathMemo: TMemo;
-    Notebook: TNotebook;
+    Notebook: TPageControl;
     OutIncludedBy: TLabel;
     OutInProject: TLabel;
     OutLines: TLabel;
@@ -52,10 +52,10 @@ type
     OutPath: TLabel;
     OutSize: TLabel;
     OutType: TLabel;
-    GeneralPage: TPage;
-    UnitPathsPage: TPage;
-    IncludePathsPage: TPage;
-    CompleteUnitPathsPage: TPage;
+    GeneralPage: TTabSheet;
+    UnitPathsPage: TTabSheet;
+    IncludePathsPage: TTabSheet;
+    CompleteUnitPathsPage: TTabSheet;
     PathsGroupBox: TGroupBox;
     UIncludedBy: TLabel;
     UInProject: TLabel;
