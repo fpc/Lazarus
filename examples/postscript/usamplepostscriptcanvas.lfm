@@ -1,19 +1,19 @@
 object Form1: TForm1
-  Left = 310
+  Left = 420
   Height = 118
-  Top = 163
+  Top = 276
   Width = 486
   ActiveControl = Button1
   Caption = 'Form1'
   ClientHeight = 118
   ClientWidth = 486
   OnCreate = FormCreate
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.29'
   object Label1: TLabel
     Left = 108
     Height = 16
     Top = 8
-    Width = 106
+    Width = 112
     Caption = 'Select Paper Size'
     ParentColor = False
   end
@@ -21,7 +21,7 @@ object Form1: TForm1
     Left = 8
     Height = 16
     Top = 8
-    Width = 73
+    Width = 78
     Caption = 'Resolution X'
     ParentColor = False
   end
@@ -29,7 +29,7 @@ object Form1: TForm1
     Left = 8
     Height = 16
     Top = 64
-    Width = 75
+    Width = 77
     Caption = 'Resolution Y'
     ParentColor = False
   end
@@ -67,7 +67,7 @@ object Form1: TForm1
   end
   object txtResX: TEdit
     Left = 8
-    Height = 23
+    Height = 21
     Top = 28
     Width = 80
     TabOrder = 3
@@ -75,7 +75,7 @@ object Form1: TForm1
   end
   object txtResY: TEdit
     Left = 8
-    Height = 23
+    Height = 21
     Top = 84
     Width = 80
     TabOrder = 4

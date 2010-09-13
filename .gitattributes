@@ -3373,7 +3373,6 @@ examples/postscript/samplepostscriptcanvas.lpi svneol=native#text/plain
 examples/postscript/samplepostscriptcanvas.lpr svneol=native#text/pascal
 examples/postscript/small.png -text
 examples/postscript/usamplepostscriptcanvas.lfm svneol=native#text/plain
-examples/postscript/usamplepostscriptcanvas.lrs svneol=native#text/pascal
 examples/postscript/usamplepostscriptcanvas.pas svneol=native#text/pascal
 examples/progressbar.lpi svneol=native#text/plain
 examples/progressbar.pp svneol=native#text/pascal

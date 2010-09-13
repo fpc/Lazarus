@@ -43,6 +43,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TForm1 }
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -54,6 +56,7 @@ var
     png : TPortableNetworkGraphic;
     x,y,tmp : Integer;
     PsCanvas: TPostscriptCanvas;
+    R   : TRect;
 
     function Sx(AX: Integer): Integer;
     begin
@@ -71,6 +74,12 @@ var
     begin
       Result.X:= Sx(Ax);
       Result.Y:= Sy(Ay);
+    end;
+
+    function RectS(Ax1,Ay1,Ax2,AY2: Integer): TRect;
+    begin
+      Result.TopLeft := PointS(AX1,AY1);
+      Result.BottomRight := PointS(AX2,AY2);
     end;
 
     function Pt2Pix(Pt: Integer): Integer;
@@ -259,10 +268,13 @@ begin
 
     BrushSamples(Sx(100),Sy(100));
 
+    R := RectS(100,500,200,520);
     PSCanvas.Brush.Style:=bsSolid;
     PSCanvas.Brush.Color:=clWhite;
-    PSCanvas.Rectangle(Rect(100,500,200,520));
-    PSCanvas.TextRect(Rect(100,500,200,520),100,500, 'Testing clip rect on TextRect');
+    PSCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+    PSCanvas.ClipRect := R;
+    PSCanvas.TextRect(R, R.Left, R.Top, 'Testing clip rect on TextRect', PSCanvas.TextStyle);
+    PSCanvas.ClipRect := Rect(0,0,0,0);
 
     EndDoc;
     SaveToFile('test1.ps');
@@ -320,9 +332,6 @@ procedure TForm1.FormCreate(Sender: TObject);
 begin
   ListBox1.ItemIndex:=0;
 end;
-
-initialization
-  {$I usamplepostscriptcanvas.lrs}
 
 end.
 
