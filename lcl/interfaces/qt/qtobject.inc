@@ -459,7 +459,6 @@ var
   AObject: TQtObject;
   W: TQtMainWindow;
   R: TRect;
-  P: TPoint;
   Pt: TQtPoint;
 begin
   Result := False;

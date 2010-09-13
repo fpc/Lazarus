@@ -12816,7 +12816,6 @@ var
   Obj: QObjectH;
   WStr: WideString;
   ToolTip: WideString;
-  W: QWidgetH;
 begin
   // if there's auto recognition enabled then don''t set shortcuts
   // cause we are maybe native dialog and then boomer.

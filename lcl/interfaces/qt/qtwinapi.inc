@@ -5680,7 +5680,6 @@ end;
 function TQtWidgetSet.WindowFromPoint(APoint: TPoint): HWND;
 var
   Widget: QWidgetH;
-  AForm: TCustomForm;
 begin
   // we use cachedresults instead of calling very expensive widgetAt
   if (FLastWFPResult <> 0) then
