@@ -34,6 +34,7 @@ type
     Name: string[21];
   end;
 
+// TODO: modify GlyphsArr sorted by Name
 {$i glyphlist.inc}
 
 type
@@ -50,9 +51,9 @@ type
     FOutLst, FBaseFonts,FEncodedFonts,FUsedFonts: TStringList;
     FLastFontIndex: Integer;
     FFont: string;
+    procedure CountPSChars;
     procedure CreateGlyphMap;
     procedure CreateUniCodeBlocks;
-    procedure CountPSChars;
     function FindEncodingIndex(ABlock: Integer): Integer;
     function IndexOfFont(AFontName:string; AFontSize,AFontStyle,ABlock:Integer): Integer;
     function SelectFont(AFontName:string; AFontSize,AFontStyle,ABlock:Integer): string;
@@ -89,9 +90,15 @@ procedure TPsUnicode.CreateGlyphMap;
 var
   i: word;
 begin
+
+  if FGlyphs<>nil then
+    exit;
+
   FGlyphs := TMap.Create(itu2, SizeOf(word));
   for i:=0 to GLYPHCOUNT-1 do
     FGlyphs.Add(GlyphsArr[i].Code, i);
+
+  CountPSChars;
 end;
 
 procedure TPsUnicode.CreateUniCodeBlocks;
@@ -105,6 +112,8 @@ procedure TPsUnicode.CreateUniCodeBlocks;
     FBlocks[i].Fin:=Fin;
   end;
 begin
+  if Length(FBlocks)>0 then
+    exit;
   //(^([A-Z0-9 \-]+)*).U\+([A-F0-9]+).U\+([A-F0-9]+)
   //  AddBlock\(\$$3,\$$4); // $1
 
@@ -289,9 +298,6 @@ end;
 constructor TPsUnicode.create;
 begin
   inherited create;
-  CreateUnicodeBlocks;
-  CreateGlyphMap;
-  CountPSChars;
   FBaseFonts := TStringList.Create;
   FEncodedFonts := TStringList.Create;
   FUsedFonts := TStringList.Create;
@@ -331,6 +337,10 @@ var
   end;
 
 begin
+
+  CreateUnicodeBlocks;
+  CreateGlyphMap;
+
   UStr := UTF8Decode(S);
   SubStr := '';
   for i:=1 to Length(UStr) do begin
@@ -373,6 +383,7 @@ function TPsUnicode.BlockFor(var w: word): integer;
 var
   i: Integer;
 begin
+  CreateUnicodeBlocks;
   for i:=0 to Length(FBlocks)-1 do begin
     if FBlocks[i].PSCount=0 then
       continue;
@@ -479,6 +490,7 @@ var
   S: string;
   n: Integer;
 begin
+  CreateGlyphMap;
   n := FBlocks[i].Fin-FBlocks[i].Ini+1;
   g := FBlocks[i].Ini;
   S := '';
@@ -533,6 +545,8 @@ function TPsUnicode.UnicodeToGlyph(w: word): string;
 var
   i: word;
 begin
+  CreateGlyphMap;
+
   if FGlyphs.GetData(w, i) then
     result := GlyphsArr[i].Name
   else
