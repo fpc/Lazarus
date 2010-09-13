@@ -5,7 +5,7 @@ unit BuildFileDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Graphics,
+  Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Graphics, ComCtrls,
   Dialogs, Buttons, ExtCtrls, StdCtrls, BasicCodeTools, FileUtil, IDEProcs,
   InputHistory, LazarusIDEStrConsts, EnvironmentOpts, TransferMacros,
   IDEContextHelpEdit, ButtonPanel;
@@ -72,16 +72,16 @@ type
     BuildScanForMakeMsgCheckbox: TCHECKBOX;
     BuildWorkDirCombobox: TCOMBOBOX;
     BuildWorkingDirGroupbox: TGROUPBOX;
-    BuildPage: TPAGE;
+    BuildPage: TTabSheet;
     ButtonPanel: TButtonPanel;
-    GeneralPage: TPAGE;
-    Notebook1: TNOTEBOOK;
+    GeneralPage: TTabSheet;
+    Notebook1: TPageControl;
     OverrideBuildProjectCheckbox: TCHECKBOX;
     OverrideRunProjectCheckbox: TCHECKBOX;
     RunBrowseWorkDirButton: TBUTTON;
     RunCommandGroupbox: TGROUPBOX;
     RunCommandMemo: TMEMO;
-    RunPage: TPAGE;
+    RunPage: TTabSheet;
     RunWorkDirCombobox: TCOMBOBOX;
     RunWorkDirGroupbox: TGROUPBOX;
     WhenFileIsActiveGroupbox: TGROUPBOX;

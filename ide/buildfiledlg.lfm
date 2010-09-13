@@ -13,16 +13,15 @@ object BuildFileDialog: TBuildFileDialog
   OnKeyDown = BuildFileDialogKEYDOWN
   Position = poScreenCenter
   LCLVersion = '0.9.27'
-  object Notebook1: TNotebook
+  object Notebook1: TPageControl
     Left = 0
     Height = 379
     Top = 0
     Width = 451
     Align = alClient
     BorderSpacing.Bottom = 6
-    PageIndex = 2
     TabOrder = 0
-    object GeneralPage: TPage
+    object GeneralPage: TTabSheet
       Caption = 'Options'
       ClientWidth = 443
       ClientHeight = 337
@@ -60,7 +59,7 @@ object BuildFileDialog: TBuildFileDialog
         end
       end
     end
-    object BuildPage: TPage
+    object BuildPage: TTabSheet
       Caption = 'Build'
       ClientWidth = 443
       ClientHeight = 337
@@ -152,7 +151,7 @@ object BuildFileDialog: TBuildFileDialog
         end
       end
     end
-    object RunPage: TPage
+    object RunPage: TTabSheet
       Caption = 'Run'
       ClientWidth = 443
       ClientHeight = 353
