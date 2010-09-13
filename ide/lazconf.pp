@@ -337,7 +337,8 @@ begin
   else if (CompareText(TargetOS, 'linux') = 0)
   or (CompareText(TargetOS, 'freebsd') = 0)
   or (CompareText(TargetOS, 'openbsd') = 0)
-  or (CompareText(TargetOS, 'netbsd') = 0) then
+  or (CompareText(TargetOS, 'netbsd') = 0)
+  or (CompareText(TargetOS, 'haiku') = 0) then
     Result:='.so'
   else
     Result:='';
