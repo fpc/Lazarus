@@ -448,7 +448,7 @@ begin
         Result:=SaveCodeBufferToFile(fPascalBuffer,fLazUnitFilename);
         if Result=mrOk then begin
           Result:=LazarusIDE.DoOpenEditorFile(fLazUnitFilename,0,
-                                              [ofOnlyIfExists,ofQuiet]);
+                                              [ofAddToRecent,ofQuiet]);
           if Result=mrOk then begin
             Result:=ConvertFormFile;
           end;
