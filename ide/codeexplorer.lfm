@@ -11,7 +11,7 @@ object CodeExplorerView: TCodeExplorerView
   OnCreate = CodeExplorerViewCREATE
   OnDestroy = CodeExplorerViewDestroy
   LCLVersion = '0.9.29'
-  object MainNotebook: TNotebook
+  object MainNotebook: TPageControl
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 515
@@ -20,9 +20,8 @@ object CodeExplorerView: TCodeExplorerView
     Align = alClient
     BorderSpacing.Top = 2
     OnPageChanged = MainNotebookPageChanged
-    PageIndex = 0
     TabOrder = 0
-    object CodePage: TPage
+    object CodePage: TTabSheet
       Caption = 'CodePage'
       ClientWidth = 216
       ClientHeight = 482
@@ -110,7 +109,7 @@ object CodeExplorerView: TCodeExplorerView
         end
       end
     end
-    object DirectivesPage: TPage
+    object DirectivesPage: TTabSheet
       Caption = 'DirectivesPage'
       ClientWidth = 211
       ClientHeight = 482

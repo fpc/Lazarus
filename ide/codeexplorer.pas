@@ -118,14 +118,14 @@ type
 
   TCodeExplorerView = class(TForm)
     CodeFilterEdit: TEdit;
-    CodePage: TPage;
+    CodePage: TTabSheet;
     CodeTreeview: TTreeView;
     DirectivesFilterEdit: TEdit;
-    DirectivesPage: TPage;
+    DirectivesPage: TTabSheet;
     DirectivesTreeView: TTreeView;
     IdleTimer1: TIdleTimer;
     Imagelist1: TImageList;
-    MainNotebook: TNotebook;
+    MainNotebook: TPageControl;
     MenuItem1: TMenuItem;
     CodeTreeviewButtonPanel: TPanel;
     OptionsSpeedButton: TSpeedButton;
@@ -399,7 +399,7 @@ begin
   Name:=NonModalIDEWindowNames[nmiwCodeExplorerName];
   Caption := lisMenuViewCodeExplorer;
 
-  MainNotebook.ActivePageComponent:=CodePage;
+  MainNotebook.ActivePage:=CodePage;
 
   RefreshSpeedButton.Hint:=dlgUnitDepRefresh;
   OptionsSpeedButton.Hint:=dlgFROpts;
@@ -650,9 +650,9 @@ end;
 
 function TCodeExplorerView.GetCurrentPage: TCodeExplorerPage;
 begin
-  if MainNotebook.ActivePageComponent=CodePage then
+  if MainNotebook.ActivePage=CodePage then
     Result:=cepCode
-  else if MainNotebook.ActivePageComponent=DirectivesPage then
+  else if MainNotebook.ActivePage=DirectivesPage then
     Result:=cepDirectives
   else
     Result:=cepNone;
@@ -1523,8 +1523,8 @@ end;
 procedure TCodeExplorerView.SetCurrentPage(const AValue: TCodeExplorerPage);
 begin
   case AValue of
-  cepCode:       MainNotebook.ActivePageComponent:=CodePage;
-  cepDirectives: MainNotebook.ActivePageComponent:=DirectivesPage;
+  cepCode:       MainNotebook.ActivePage:=CodePage;
+  cepDirectives: MainNotebook.ActivePage:=DirectivesPage;
   end;
 end;
 
