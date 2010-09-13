@@ -2590,7 +2590,7 @@ begin
         if e <> 0 then Exit;
 
         S := Lowercase(ResultInfo.TypeName);
-        case StringCase(S, ['char', 'character', 'ansistring', '__vtbl_ptr_type', 'wchar']) of
+        case StringCase(S, ['char', 'character', 'ansistring', '__vtbl_ptr_type', 'wchar', 'widechar']) of
           0, 1, 2: begin
             if Addr = 0
             then
@@ -2608,7 +2608,7 @@ begin
               AResult := 'class of ' + S + ' ' + AResult;
             end;
           end;
-          4: begin
+          4,5: begin
             // widestring handling
             if Addr = 0
             then AResult := ''''''
