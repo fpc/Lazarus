@@ -75,7 +75,7 @@ type
     fPropReplaceGrid: TStringGrid;
     fTypeReplaceGrid: TStringGrid;
     function ReplaceAndRemoveAll: TModalResult;
-    function ReplaceTopOffsets(aOffsetList: TList): TModalResult;
+    function ReplaceTopOffsets(aSrcOffsets: TList): TModalResult;
     // Fill StringGrids with missing properties and types from fLFMTree.
     procedure FillReplaceGrids;
   protected
@@ -328,30 +328,35 @@ begin
   end;
 end;
 
-function TLFMFixer.ReplaceTopOffsets(aOffsetList: TList): TModalResult;
+function TLFMFixer.ReplaceTopOffsets(aSrcOffsets: TList): TModalResult;
 // Replace top coordinates of controls in visual containers.
 // Returns mrOK if no types were changed, and mrCancel if there was an error.
 var
-  TopOffset: TTopOffset;
-  Len, Offs, OldNun, i: integer;
-  OffsStr, OldText, NewText: string;
+  TopOffs: TSrcPropOffset;
+  VisOffs: TVisualOffset;
+  OldNum, Ofs, NewNum, Len, ind, i: integer;
 begin
   Result:=mrOK;
   // Add offset to top coordinates.
-  for i := aOffsetList.Count-1 downto 0 do begin
-    TopOffset:=TTopOffset(aOffsetList[i]);
-    OffsStr:=fSettings.VisualOffsets[TopOffset.ParentType];
-    if OffsStr<>'' then begin
+  for i := aSrcOffsets.Count-1 downto 0 do begin
+    TopOffs:=TSrcPropOffset(aSrcOffsets[i]);
+    if fSettings.VisualOffsets.Find(TopOffs.ParentType, ind) then begin
+      VisOffs:=fSettings.VisualOffsets[ind];
       Len:=0;
-      while fLFMBuffer.Source[TopOffset.StartPos+Len] in ['-', '0'..'9'] do
+      while fLFMBuffer.Source[TopOffs.StartPos+Len] in ['-', '0'..'9'] do
         Inc(Len);
-      OldText:=Copy(fLFMBuffer.Source, TopOffset.StartPos, Len);
-      OldNun:=StrToInt(OldText);
-      Offs:=StrToInt(OffsStr);
-      NewText:=IntToStr(OldNun+Offs);
-      fLFMBuffer.Replace(TopOffset.StartPos, Len, NewText);
-      IDEMessagesWindow.AddMsg(Format('Changed Top coord of %s from "%s" to "%s" inside %s.',
-              [TopOffset.ChildType, OldText, NewText, TopOffset.ParentType]),'',-1);
+      try
+        OldNum:=StrToInt(Copy(fLFMBuffer.Source, TopOffs.StartPos, Len));
+      except on EConvertError do
+        OldNum:=0;
+      end;
+      Ofs:=VisOffs.ByProperty(TopOffs.PropName);
+      NewNum:=OldNum-Ofs;
+      if NewNum<0 then
+        NewNum:=0;
+      fLFMBuffer.Replace(TopOffs.StartPos, Len, IntToStr(NewNum));
+      IDEMessagesWindow.AddMsg(Format('Changed %s coord of %s from "%d" to "%d" inside %s.',
+        [TopOffs.PropName, TopOffs.ChildType, OldNum, NewNum, TopOffs.ParentType]),'',-1);
     end;
   end;
 end;

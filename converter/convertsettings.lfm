@@ -3,6 +3,7 @@ object ConvertSettingsForm: TConvertSettingsForm
   Height = 483
   Top = 298
   Width = 637
+  ActiveControl = ProjectPathEdit
   Caption = 'Convert Delphi unit, project or package '
   ClientHeight = 483
   ClientWidth = 637
@@ -78,7 +79,7 @@ object ConvertSettingsForm: TConvertSettingsForm
       Hint = 'Some Delphi functions can be replaced with a LCL function'
       Top = 156
       Width = 272
-      Caption = 'Top Coordinate Offsets'
+      Caption = 'Coordinate Offsets'
       OnClick = VisualOffsButtonClick
       ParentShowHint = False
       ShowHint = True

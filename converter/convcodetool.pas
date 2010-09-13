@@ -66,7 +66,7 @@ type
     function FixMainClassAncestor(const AClassName: string;
                                   AReplaceTypes: TStringToStringTree): boolean;
     function CheckTopOffsets(LFMBuf: TCodeBuffer; LFMTree: TLFMTree;
-               ParentOffsets: TStringToStringTree; ValueNodes: TObjectList): boolean;
+               VisOffsets: TVisualOffsets; ValueNodes: TObjectList): boolean;
   public
     property Ask: Boolean read fAsk write fAsk;
     property HasFormFile: boolean read fHasFormFile write fHasFormFile;
@@ -856,11 +856,11 @@ begin
 end;
 
 function TConvDelphiCodeTool.CheckTopOffsets(LFMBuf: TCodeBuffer; LFMTree: TLFMTree;
-                     ParentOffsets: TStringToStringTree; ValueNodes: TObjectList): boolean;
+                     VisOffsets: TVisualOffsets; ValueNodes: TObjectList): boolean;
 // Collect a list of Top attributes for components that are inside
 //  a visual container component. An offset will be added to those attributes.
 // Parameters: ParentOffsets has names of parent visual container types.
-//             ValueNodes - the found Top attributes are added here as TTopOffset objects.
+//   ValueNodes - the found Top attributes are added here as TSrcPropOffset objects.
 // Based on function CheckLFM.
 var
   RootContext: TFindContext;
@@ -1077,21 +1077,22 @@ var
   // ParentContext is the context, where properties are searched.
   //               This can be a class or a property.
   var
-    i: Integer;
+    i, ind: Integer;
     ValNode: TLFMValueNode;
-    CurName, GrandName: string;
+    CurName, GrandName, Prop: string;
     CurPropertyContext: TFindContext;
     SearchContext: TFindContext;
   begin
     // find complete property name
-    if LFMProperty.CompleteName='' then exit;
-    if LFMProperty.CompleteName='Top' then begin
+    Prop:=LFMProperty.CompleteName;
+    if Prop='' then exit;
+    if (Prop='Top') or (Prop='Left') then begin
       CurName:=ParentContext.Tool.ExtractClassName(ParentContext.Node, False);
       GrandName:=GrandParentContext.Tool.ExtractClassName(GrandParentContext.Node, False);
-      if ParentOffsets[GrandName]<>'' then begin
+      if VisOffsets.Find(GrandName, ind) then begin
         if LFMProperty.FirstChild is TLFMValueNode then begin
           ValNode:=LFMProperty.FirstChild as TLFMValueNode;
-          ValueNodes.Add(TTopOffset.Create(GrandName, CurName, ValNode.StartPos));
+          ValueNodes.Add(TSrcPropOffset.Create(GrandName,CurName,Prop,ValNode.StartPos));
         end;
       end;
     end;

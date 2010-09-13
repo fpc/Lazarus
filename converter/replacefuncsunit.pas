@@ -95,9 +95,6 @@ type
     function FromUIToFuncList(aFuncsAndCateg: TFuncsAndCategories): boolean;
   end;
 
-var
-  ReplaceFuncsForm: TReplaceFuncsForm;
-
 
 function EditFuncReplacements(aFuncsAndCateg: TFuncsAndCategories;
                               aTitle: string): TModalResult;

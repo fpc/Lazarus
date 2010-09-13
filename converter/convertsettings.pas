@@ -31,9 +31,9 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, IDEProcs,
-  StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, LazarusIDEStrConsts,
-  CodeToolsStructs, AVL_Tree, BaseIDEIntf, LazConfigStorage,
-  ButtonPanel, ReplaceNamesUnit, ReplaceFuncsUnit;
+  StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, ButtonPanel,
+  LazarusIDEStrConsts, CodeToolsStructs, AVL_Tree, BaseIDEIntf, LazConfigStorage,
+  ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
 
 type
 
@@ -61,10 +61,10 @@ type
     fReplaceUnits: TStringToStringTree;
     // Delphi types mapped to Lazarus types, will be replaced.
     fReplaceTypes: TStringToStringTree;
-    // Top coordinate shift of components in a visual container.
-    fVisualOffsets: TStringToStringTree;
     // Delphi global function names mapped to FCL/LCL functions.
     fReplaceFuncs: TFuncsAndCategories;
+    // Coordinate offsets of components in a visual container.
+    fVisualOffsets: TVisualOffsets;
     // Getter / setter:
     function GetBackupPath: String;
     procedure SetMainFilename(const AValue: String);
@@ -102,8 +102,8 @@ type
     property EnableVisualOffs: boolean read fEnableVisualOffs;
     property ReplaceUnits: TStringToStringTree read fReplaceUnits;
     property ReplaceTypes: TStringToStringTree read fReplaceTypes;
-    property VisualOffsets: TStringToStringTree read fVisualOffsets;
     property ReplaceFuncs: TFuncsAndCategories read fReplaceFuncs;
+    property VisualOffsets: TVisualOffsets read fVisualOffsets;
   end;
 
 
@@ -127,9 +127,9 @@ type
     UnitReplaceButton: TBitBtn;
     SettingsGroupBox: TGroupBox;
     MissingStuffGroupBox: TGroupBox;
-    procedure FuncReplaceButtonClick(Sender: TObject);
     procedure SameDFMCheckBoxChange(Sender: TObject);
     procedure TypeReplaceButtonClick(Sender: TObject);
+    procedure FuncReplaceButtonClick(Sender: TObject);
     procedure VisualOffsButtonClick(Sender: TObject);
     procedure UnitReplaceButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -268,6 +268,47 @@ begin
   end;
 end;
 
+// Load and store configuration in VisualOffsets :
+
+procedure LoadVisualOffsets(Config: TConfigStorage; const Path: string;
+  aVisualOffsets: TVisualOffsets);
+var
+  ParentType, SubPath: String;
+  xTop, xLeft: Integer;
+  Cnt, i: Integer;
+begin
+  aVisualOffsets.Clear;
+  Cnt:=Config.GetValue(Path+'Count', 0);
+  for i:=0 to Cnt-1 do begin
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    ParentType:=Config.GetValue(SubPath+'ParentType','');
+    xTop :=Config.GetValue(SubPath+'Top',0);
+    xLeft:=Config.GetValue(SubPath+'Left',0);
+    aVisualOffsets.Add(TVisualOffset.Create(ParentType, xTop, xLeft));
+  end;
+end;
+
+procedure SaveVisualOffsets(Config: TConfigStorage; const Path: string;
+  aVisualOffsets: TVisualOffsets);
+var
+  offs: TVisualOffset;
+  SubPath: String;
+  i: Integer;
+begin
+  Config.SetDeleteValue(Path+'Count', aVisualOffsets.Count, 0);
+  for i:=0 to aVisualOffsets.Count-1 do begin
+    offs:=aVisualOffsets[i];
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    Config.SetDeleteValue(SubPath+'ParentType',offs.ParentType,'');
+    Config.SetDeleteValue(SubPath+'Top'       ,offs.Top,0);
+    Config.SetDeleteValue(SubPath+'Left'      ,offs.Left,0);
+  end;
+  // Remove leftover items in case the list has become shorter.
+  for i:=aVisualOffsets.Count to aVisualOffsets.Count+10 do begin
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    Config.DeletePath(SubPath);
+  end;
+end;
 
 { TConvertSettings }
 
@@ -297,8 +338,8 @@ begin
   fMainPath:='';
   fReplaceUnits:=TStringToStringTree.Create(false);
   fReplaceTypes:=TStringToStringTree.Create(false);
-  fVisualOffsets:=TStringToStringTree.Create(true);
   fReplaceFuncs:=TFuncsAndCategories.Create;
+  fVisualOffsets:=TVisualOffsets.Create;
   // Load settings from ConfigStorage.
   fConfigStorage:=GetIDEConfigStorage('delphiconverter.xml', true);
   fBackupFiles          :=fConfigStorage.GetValue('BackupFiles', true);
@@ -310,8 +351,8 @@ begin
   fEnableVisualOffs     :=fConfigStorage.GetValue('EnableVisualOffs', true);
   LoadStringToStringTree(fConfigStorage, 'UnitReplacements/', fReplaceUnits);
   LoadStringToStringTree(fConfigStorage, 'TypeReplacements/', fReplaceTypes);
-  LoadStringToStringTree(fConfigStorage, 'VisualTopOffsets/', fVisualOffsets);
-  LoadFuncReplacements  (fConfigStorage, 'FuncReplacements/', 'Categories/', fReplaceFuncs);
+  LoadFuncReplacements(fConfigStorage, 'FuncReplacements/', 'Categories/', fReplaceFuncs);
+  LoadVisualOffsets(fConfigStorage, 'VisualOffsets/', fVisualOffsets);
 
   // Add default values for configuration if ConfigStorage doesn't have them.
 
@@ -354,10 +395,13 @@ begin
   MapReplacement('^TTnt(.+)LX$',      'T$1');
   MapReplacement('^TTnt(.+[^L][^X])$','T$1');
 
-  // Top coordinate offsets for some visual containers.
-  TheMap:=fVisualOffsets;
-  MapReplacement('TGroupBox',         '10');
-  MapReplacement('TPanel',            '2');
+  // Coordinate offsets for some visual containers.
+  with fVisualOffsets do begin
+    AddVisualOffset('TGroupBox' , 10,2);
+    AddVisualOffset('TPanel',      2,2);
+    AddVisualOffset('RadioGroup', 10,2);
+    AddVisualOffset('CheckGroup', 10,2);
+  end;
 
   // Map Delphi function names to FCL/LCL functions.
   with fReplaceFuncs do begin
@@ -412,15 +456,15 @@ begin
   fConfigStorage.SetDeleteValue('EnableVisualOffs',     fEnableVisualOffs, true);
   SaveStringToStringTree(fConfigStorage, 'UnitReplacements/', fReplaceUnits);
   SaveStringToStringTree(fConfigStorage, 'TypeReplacements/', fReplaceTypes);
-  SaveStringToStringTree(fConfigStorage, 'VisualTopOffsets/', fVisualOffsets);
-  SaveFuncReplacements  (fConfigStorage, 'FuncReplacements/', 'Categories/', fReplaceFuncs);
+  SaveFuncReplacements(fConfigStorage, 'FuncReplacements/', 'Categories/', fReplaceFuncs);
+  SaveVisualOffsets(fConfigStorage, 'VisualOffsets/', fVisualOffsets);
   // Free stuff
   fConfigStorage.Free;
   fReplaceFuncs.Clear;
   fReplaceFuncs.Free;
   fReplaceTypes.Free;
-  fVisualOffsets.Free;
   fReplaceUnits.Free;
+  fVisualOffsets.Free;
   inherited Destroy;
 end;
 
@@ -590,8 +634,8 @@ begin
   FuncReplaceButton.Hint:=lisConvFuncReplHint;
   FuncReplaceEnableCheckBox.Caption:=lisEnable;
 
-  VisualOffsButton.Caption:=lisConvTopCoordOffs;
-  VisualOffsButton.Hint:=lisConvTopCoordHint;
+  VisualOffsButton.Caption:=lisConvCoordOffs;
+  VisualOffsButton.Hint:=lisConvCoordHint;
   VisualOffsEnableCheckBox.Caption:=lisEnable;
 
   TargetRadioGroup.Items.Clear;
@@ -630,22 +674,22 @@ end;
 
 procedure TConvertSettingsForm.UnitReplaceButtonClick(Sender: TObject);
 begin
-  EditMap(fSettings.ReplaceUnits, lisConvUnitsToReplace, lisConvDelphiName, lisConvNewName);
+  EditMap(fSettings.ReplaceUnits, lisConvUnitsToReplace);
 end;
 
 procedure TConvertSettingsForm.TypeReplaceButtonClick(Sender: TObject);
 begin
-  EditMap(fSettings.ReplaceTypes, lisConvTypesToReplace, lisConvDelphiName, lisConvNewName);
-end;
-
-procedure TConvertSettingsForm.VisualOffsButtonClick(Sender: TObject);
-begin
-  EditMap(fSettings.VisualOffsets, lisConvTopCoordOffs, lisConvParentContainer, lisConvTopCoordOff);
+  EditMap(fSettings.ReplaceTypes, lisConvTypesToReplace);
 end;
 
 procedure TConvertSettingsForm.FuncReplaceButtonClick(Sender: TObject);
 begin
   EditFuncReplacements(fSettings.ReplaceFuncs, lisConvFuncsToReplace);
+end;
+
+procedure TConvertSettingsForm.VisualOffsButtonClick(Sender: TObject);
+begin
+  EditVisualOffsets(fSettings.VisualOffsets, lisConvCoordOffs);
 end;
 
 

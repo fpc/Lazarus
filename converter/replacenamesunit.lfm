@@ -1,5 +1,5 @@
-object ReplaceNamesForm: TReplaceNamesForm
   Left = 314
+object ReplaceForm: TReplaceForm
   Height = 472
   Top = 438
   Width = 433

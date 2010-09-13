@@ -36,9 +36,9 @@ type
     function AddUnique(AOldIdent: string): string;
   end;
 
-  { TReplaceNamesForm }
+  { TReplaceForm }
 
-  TReplaceNamesForm = class(TForm)
+  TReplaceForm = class(TForm)
     ButtonPanel: TButtonPanel;
     InsertRow1: TMenuItem;
     DeleteRow1: TMenuItem;
@@ -58,15 +58,12 @@ type
 
   end; 
 
-//var
-//  ReplaceNamesForm: TReplaceNamesForm;
-
 
 function FromMapToGrid(AMap: TStringToStringTree; AGrid: TStringGrid): boolean;
 function FromGridToMap(AMap: TStringToStringTree; AGrid: TStringGrid;
                        AllowEmptyValues: boolean = true): boolean;
-function EditMap(AMap: TStringToStringTree;
-                 AFormTitle, ACol1Title, ACol2Title: string): TModalResult;
+function EditMap(AMap: TStringToStringTree; AFormTitle: string): TModalResult;
+function EditVisualOffsets(AOffs: TVisualOffsets; aTitle: string): TModalResult;
 
 implementation
 
@@ -117,22 +114,87 @@ begin
   end;
 end;
 
-function EditMap(AMap: TStringToStringTree;
-                 AFormTitle, ACol1Title, ACol2Title: string): TModalResult;
+function EditMap(AMap: TStringToStringTree; AFormTitle: string): TModalResult;
 var
-  RNForm: TReplaceNamesForm;
+  RNForm: TReplaceForm;
 begin
-  RNForm:=TReplaceNamesForm.Create(nil);
+  RNForm:=TReplaceForm.Create(nil);
   try
     RNForm.Caption:=AFormTitle;
-    RNForm.Grid.Columns[0].Title.Caption:=ACol1Title;
-    RNForm.Grid.Columns[1].Title.Caption:=ACol2Title;
+    RNForm.Grid.Columns[0].Title.Caption:=lisConvDelphiName;
+    RNForm.Grid.Columns[1].Title.Caption:=lisConvNewName;
     FromMapToGrid(AMap, RNForm.Grid);
     Result:=RNForm.ShowModal;
     if Result=mrOK then
       FromGridToMap(AMap, RNForm.Grid);
   finally
     RNForm.Free;
+  end;
+end;
+
+// Functions for visual offsets values:
+
+function FromListToGrid(AOffs: TVisualOffsets; AGrid: TStringGrid): boolean;
+// Copy strings from coordinale list to grid.
+var
+  i: Integer;
+begin
+  Result:=true;
+  AGrid.BeginUpdate;
+  for i:=1 to AOffs.Count do begin  // Skip the fixed row in grid.
+    if AGrid.RowCount<i+2 then
+      AGrid.RowCount:=i+2;         // Leave one empty row to the end.
+    AGrid.Cells[0,i]:=AOffs[i-1].ParentType;
+    AGrid.Cells[1,i]:=IntToStr(AOffs[i-1].Top);
+    AGrid.Cells[2,i]:=IntToStr(AOffs[i-1].Left);
+  end;
+  AGrid.EndUpdate;
+end;
+
+function FromGridToList(AOffs: TVisualOffsets; AGrid: TStringGrid): boolean;
+var
+  ParentType: string;
+  i, xTop, xLeft: Integer;
+begin
+  Result:=true;
+  AOffs.Clear;
+  // Collect (maybe edited) properties from StringGrid to fStringMap.
+  for i:=1 to AGrid.RowCount-1 do begin // Skip the fixed row.
+    ParentType:=AGrid.Cells[0,i];
+    if ParentType<>'' then begin
+      xTop:=0;
+      try
+        xTop:=StrToInt(AGrid.Cells[1,i]);
+      except on EConvertError do
+        ShowMessage('Top value must be a number. Now: '+AGrid.Cells[1,i]);
+      end;
+      xLeft:=0;
+      try
+        xLeft:=StrToInt(AGrid.Cells[2,i]);
+      except on EConvertError do
+        ShowMessage('Left value must be a number. Now: '+AGrid.Cells[2,i]);
+      end;
+      AOffs.Add(TVisualOffset.Create(ParentType, xTop, xLeft));
+    end;
+  end;
+end;
+
+function EditVisualOffsets(AOffs: TVisualOffsets; aTitle: string): TModalResult;
+var
+  xForm: TReplaceForm;
+begin
+  xForm:=TReplaceForm.Create(nil);
+  try
+    xForm.Caption:=aTitle;
+    xForm.Grid.Columns[0].Title.Caption:=lisConvParentContainer;
+    xForm.Grid.Columns[1].Title.Caption:=lisConvTopOff;
+    xForm.Grid.Columns.Add.Title.Caption:=lisConvLeftOff;
+    FromListToGrid(AOffs, xForm.Grid);
+    Result:=xForm.ShowModal;
+    if Result=mrOK then
+      FromGridToList(AOffs, xForm.Grid);
+  finally
+    xForm.Free;
   end;
 end;
 
@@ -221,9 +283,9 @@ begin
 end;
 
 
-{ TReplaceNamesForm }
+{ TReplaceForm }
 
-procedure TReplaceNamesForm.FormCreate(Sender: TObject);
+procedure TReplaceForm.FormCreate(Sender: TObject);
 begin
   Caption:=lisReplacements;
   ButtonPanel.OKButton.Caption := lisOk;
@@ -232,7 +294,7 @@ begin
   IsLasRow:=false;
 end;
 
-procedure TReplaceNamesForm.PopupMenu1Popup(Sender: TObject);
+procedure TReplaceForm.PopupMenu1Popup(Sender: TObject);
 var
   ControlCoord, NewCell: TPoint;
 begin
@@ -242,19 +304,19 @@ begin
   Grid.Row:=NewCell.Y;
 end;
 
-procedure TReplaceNamesForm.InsertRow1Click(Sender: TObject);
+procedure TReplaceForm.InsertRow1Click(Sender: TObject);
 begin
   Grid.InsertColRow(False, Grid.Row);
 end;
 
-procedure TReplaceNamesForm.DeleteRow1Click(Sender: TObject);
+procedure TReplaceForm.DeleteRow1Click(Sender: TObject);
 begin
   Grid.DeleteColRow(False, Grid.Row);
 end;
 
 // Add rows automatically to the end of the grid
 //  using OnSetEditText and OnEditingDone handlers and IsLasRow flag.
-procedure TReplaceNamesForm.GridEditingDone(Sender: TObject);
+procedure TReplaceForm.GridEditingDone(Sender: TObject);
 var
   sg: TStringGrid;
 begin
@@ -265,14 +327,14 @@ begin
   end;
 end;
 
-procedure TReplaceNamesForm.GridSetEditText(Sender: TObject; ACol,
+procedure TReplaceForm.GridSetEditText(Sender: TObject; ACol,
   ARow: Integer; const Value: string);
 begin
   if ARow = (Sender as TStringGrid).RowCount-1 then
     IsLasRow:=Value<>'';
 end;
 
-procedure TReplaceNamesForm.btnOKClick(Sender: TObject);
+procedure TReplaceForm.btnOKClick(Sender: TObject);
 begin
   ModalResult:=mrOK;
 end;
