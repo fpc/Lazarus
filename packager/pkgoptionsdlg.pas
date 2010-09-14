@@ -39,8 +39,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LCLProc, Forms, Controls, Buttons, 
-  ExtCtrls, StdCtrls, Spin, Dialogs, PathEditorDlg, IDEProcs, IDEWindowIntf,
-  IDEDialogs, MacroIntf, PackageIntf,
+  ExtCtrls, ComCtrls, StdCtrls, Spin, Dialogs, PathEditorDlg,
+  IDEProcs, IDEWindowIntf, IDEDialogs, MacroIntf, PackageIntf,
   LazarusIDEStrConsts,
   BrokenDependenciesDlg, PackageDefs, PackageSystem, CompilerOptions,
   ButtonPanel;
@@ -55,13 +55,13 @@ type
     ButtonPanel1: TButtonPanel;
     EnableI18NCheckBox: TCheckBox;
     ConditionalsGroupBox: TGroupBox;
-    Usage2Page: TPage;
+    Usage2Page: TTabSheet;
     ProjectGroupBox: TGroupBox;
     I18NGroupBox: TGroupBox;
     ProvidesGroupBox: TGroupBox;
     LazDocGroupBox: TGroupBox;
     ProvidesMemo: TMemo;
-    i18n: TPage;
+    i18n: TTabSheet;
     POOutDirButton: TButton;
     POOutDirEdit: TEdit;
     PkgTypeRadioGroup: TRadioGroup;
@@ -93,16 +93,16 @@ type
     AddOptionsGroupBox: TGroupBox;
     AuthorEdit: TEdit;
     UnitPathLabel: TLabel;
-    Notebook: TNotebook;
+    Notebook: TPageControl;
     UnitPathEdit: TEdit;
     PoOutDirLabel: TLabel;
     IncludePathLabel: TLabel;
     ObjectPathLabel: TLabel;
     LibraryPathLabel: TLabel;
-    UsagePage: TPage;
-    DescriptionPage: TPage;
-    IDEPage: TPage;
-    ProvidesPage: TPage;
+    UsagePage: TTabSheet;
+    DescriptionPage: TTabSheet;
+    IDEPage: TTabSheet;
+    ProvidesPage: TTabSheet;
     VersionBuildLabel: TLabel;
     VersionMinorSpinEdit: TSpinEdit;
     VersionBuildSpinEdit: TSpinEdit;
