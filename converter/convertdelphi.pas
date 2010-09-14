@@ -447,7 +447,7 @@ begin
       if Result=mrOk then begin
         Result:=SaveCodeBufferToFile(fPascalBuffer,fLazUnitFilename);
         if Result=mrOk then begin
-          Result:=LazarusIDE.DoOpenEditorFile(fLazUnitFilename,0,
+          Result:=LazarusIDE.DoOpenEditorFile(fLazUnitFilename,0,0,
                                               [ofAddToRecent,ofQuiet]);
           if Result=mrOk then begin
             Result:=ConvertFormFile;
@@ -970,7 +970,7 @@ begin
         if Result<>mrOK then exit;
         // Load the unit and add it to project. fUnitInfo is set for projects only.
         if Assigned(fUnitInfo) then                    //ofAddToRecent,
-          LazarusIDE.DoOpenEditorFile(fLazUnitFilename,0,[ofAddToProject,ofQuiet]);
+          LazarusIDE.DoOpenEditorFile(fLazUnitFilename,0,0,[ofAddToProject,ofQuiet]);
         // Close unit file after processing.
         Result:=LazarusIDE.DoCloseEditorFile(fLazUnitFilename,[cfSaveFirst,cfQuiet]);
         if Result<>mrOK then exit;
