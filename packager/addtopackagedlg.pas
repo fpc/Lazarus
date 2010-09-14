@@ -96,11 +96,11 @@ type
     NewFileCancelButton: TBitBtn;
     NewFileOkButton: TBitBtn;
     // notebook
-    NoteBook: TNoteBook;
-    NewFilePage: TPage;
-    NewComponentPage: TPage;
-    NewRequirementPage: TPage;
-    AddFilesPage: TPage;
+    NoteBook: TPageControl;
+    NewFilePage: TTabSheet;
+    NewComponentPage: TTabSheet;
+    NewRequirementPage: TTabSheet;
+    AddFilesPage: TTabSheet;
     // new file page
     NewFileTreeView: TTreeView;
     NewFileDescriptionGroupBox: TGroupBox;

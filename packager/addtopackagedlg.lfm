@@ -14,7 +14,7 @@ object AddToPackageDlg: TAddToPackageDlg
   OnKeyDown = AddToPackageDlgKeyDown
   Position = poScreenCenter
   LCLVersion = '0.9.29'
-  object NoteBook: TNotebook
+  object NoteBook: TPageControl
     Left = 0
     Height = 322
     Top = 0
@@ -22,7 +22,7 @@ object AddToPackageDlg: TAddToPackageDlg
     Align = alClient
     PageIndex = 1
     TabOrder = 0
-    object NewFilePage: TPage
+    object NewFilePage: TTabSheet
       Caption = 'New File'
       ClientWidth = 656
       ClientHeight = 295
@@ -184,7 +184,7 @@ object AddToPackageDlg: TAddToPackageDlg
         end
       end
     end
-    object NewComponentPage: TPage
+    object NewComponentPage: TTabSheet
       Caption = 'New Component'
       ClientWidth = 654
       ClientHeight = 289
@@ -505,7 +505,7 @@ object AddToPackageDlg: TAddToPackageDlg
         ParentShowHint = False
       end
     end
-    object NewRequirementPage: TPage
+    object NewRequirementPage: TTabSheet
       Caption = 'New Requirement'
       ClientWidth = 656
       ClientHeight = 295
@@ -703,7 +703,7 @@ object AddToPackageDlg: TAddToPackageDlg
         end
       end
     end
-    object AddFilesPage: TPage
+    object AddFilesPage: TTabSheet
       Caption = 'Add Files'
       ClientWidth = 654
       ClientHeight = 289
