@@ -1344,7 +1344,7 @@ begin
     if CurPath<>'' then begin
       if (BaseDir<>'') and (not FilenameIsAbsolute(CurPath)) then
         CurPath:=BaseDir+CurPath;
-      CurPath:=AppendPathDelim(TrimFilename(CurPath));
+      CurPath:=ChompPathDelim(TrimFilename(CurPath));
       if Result<>'' then
         CurPath:=';'+CurPath;
       if CurPath<>'' then
