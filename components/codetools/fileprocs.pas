@@ -1816,6 +1816,8 @@ begin
     CurDir:=copy(Result,StartPos,EndPos-StartPos);
     if FilenameIsAbsolute(CurDir) then begin
       NewCurDir:=CreateRelativePath(CurDir,BaseDirectory);
+      if (NewCurDir<>CurDir) and (NewCurDir='') then
+        NewCurDir:='.';
       if NewCurDir<>CurDir then begin
         DiffLen:=length(NewCurDir)-length(CurDir);
         Result:=copy(Result,1,StartPos-1)+NewCurDir
