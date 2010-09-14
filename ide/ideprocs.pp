@@ -1347,7 +1347,10 @@ begin
       CurPath:=AppendPathDelim(TrimFilename(CurPath));
       if Result<>'' then
         CurPath:=';'+CurPath;
-      Result:=Result+CurPath;
+      if CurPath<>'' then
+        Result:=Result+CurPath
+      else
+        Result:=Result+'.';
     end;
   end;
 end;
