@@ -664,6 +664,7 @@ type
     function GetPOOutDirectory: string;
     function GetUnitPath(RelativeToBaseDir: boolean): string;
     function GetIncludePath(RelativeToBaseDir: boolean): string;
+    function GetSrcPath(RelativeToBaseDir: boolean): string;
     function NeedsDefineTemplates: boolean;
     function SubstitutePkgMacros(const s: string;
                                  PlatformIndependent: boolean): string;
@@ -3404,6 +3405,11 @@ end;
 function TLazPackage.GetIncludePath(RelativeToBaseDir: boolean): string;
 begin
   Result:=CompilerOptions.GetIncludePath(RelativeToBaseDir);
+end;
+
+function TLazPackage.GetSrcPath(RelativeToBaseDir: boolean): string;
+begin
+  Result:=CompilerOptions.GetSrcPath(RelativeToBaseDir);
 end;
 
 function TLazPackage.NeedsDefineTemplates: boolean;

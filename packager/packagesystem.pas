@@ -695,7 +695,7 @@ begin
   FuncData:=PReadFunctionData(Data);
   Result:=GetPackageFromMacroParameter(FuncData^.Param,APackage);
   if Result then
-    FuncData^.Result:=APackage.SourceDirectories.CreateSearchPathFromAllFiles;
+    FuncData^.Result:=APackage.GetUnitPath(false)+';'+APackage.GetSrcPath(false);
 end;
 
 function TLazPackageGraph.MacroFunctionCTPkgUnitPath(Data: Pointer): boolean;
