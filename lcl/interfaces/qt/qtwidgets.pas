@@ -9621,6 +9621,11 @@ var
   Item: QTreeWidgetItemH;
 begin
   Item := takeTopLevelItem(AIndex);
+  if (Item = FCurrentItem) then
+    FCurrentItem := nil
+  else
+  if (Item = FPreviousItem) then
+    FPreviousItem := nil;
   if Item <> nil then
     QTreeWidgetItem_destroy(Item);
 end;
@@ -10247,7 +10252,8 @@ begin
   if FMousePressed then
   begin
     FMousePressed := False;
-    SignalCurrentItemChanged(FCurrentItem, FPreviousItem);
+    if FCurrentItem <> nil then
+      SignalCurrentItemChanged(FCurrentItem, FPreviousItem);
   end;
 end;
 
