@@ -56,6 +56,8 @@ type
     d2ptNewFile
     );
     
+  { TAddToPkgResult }
+
   TAddToPkgResult = class
   public
     Pkg: TLazPackage;
