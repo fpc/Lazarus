@@ -633,7 +633,9 @@ var
     FillChar(Info, SizeOf(Info), 0);
     Info.Header.biSize := SizeOf(Info.Header);
     Info.Header.biWidth := ADesc.Width;
-    Info.Header.biHeight := -ADesc.Height; // create top to bottom
+    if ADesc.LineOrder = riloTopToBottom
+    then Info.Header.biHeight := -ADesc.Height // create top to bottom
+    else Info.Header.biHeight := ADesc.Height; // create bottom to top
     Info.Header.biPlanes := 1;
     Info.Header.biBitCount := DstBpp;
     Info.Header.biCompression := BI_RGB;
