@@ -101,9 +101,9 @@ var
   MenuHandleList, MenuLCLObjectList: TFPList;
 
 function FindMenuItemAccelerator(const ACharCode: char; const AMenuHandle: HMENU): integer;
-{$ifndef Win32}
 procedure PocketPCAddMenuToToolbar(Wnd: HWND; Menu: HMENU; LCLMenu: TMenu; toolBar: Handle);
 procedure CeSetMenuDesktop(Wnd: HWND; Menu: HMENU; LCLMenu: TMenu);
+{$ifndef Win32}
 procedure CeSetMenu(Wnd: HWND; Menu: HMENU; LCLMenu: TMenu);
 {$endif}
 
@@ -129,7 +129,6 @@ type
 
 //menus
 
-{$ifndef Win32}
 procedure PocketPCAddMenuToToolbar(Wnd: HWND; Menu: HMENU; LCLMenu: TMenu; toolBar: Handle);
 var
   mi: MENUITEMINFO;
@@ -329,6 +328,7 @@ begin
   PocketPCAddMenuToToolbar(Wnd, Menu, LCLMenu, menuBar);
 end;
 
+{$ifndef Win32}
 {
   The main menu setting routine, it is called by LCLIntf.SetMenu, which
   associates a menu with a window.

@@ -1,4 +1,4 @@
-// included by win32int.pp
+{%MainUnit winceint.pp}
 
 {******************************************************************************
                                  win32listslh.inc

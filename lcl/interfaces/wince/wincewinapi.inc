@@ -1,4 +1,4 @@
-{%MainUnit ../lclintf.pp}
+{%MainUnit winceint.pp}
 
 (******************************************************************************
   All Winapi related stuff goes here.
@@ -2939,11 +2939,19 @@ begin
 end;
 
 function TWinCEWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
-{$ifndef Win32}
+{$ifdef Win32WithWin32Menus}
+begin
+  Result := Windows.SetMenu(AWindowHandle, AMenuHandle);
+end;
+{$else}
 var
   lLCLMenu: TMenu;
   i: Integer;
 begin
+  {$ifdef VerboseWinCEMenu}
+  DebugLn('[TWinCEWidgetSet.SetMenu]');
+  {$endif}
+
   Result := False;
 
   if AMenuHandle = 0 then
@@ -2955,13 +2963,13 @@ begin
     lLCLMenu := TMenu(MenuLCLObjectList.Items[i]);
   end;
 
+  {$ifdef Win32}
+  CeSetMenuDesktop(AWindowHandle, AMenuHandle, lLCLMenu);
+  {$else}
   CeSetMenu(AWindowHandle, AMenuHandle, lLCLMenu);
+  {$endif}
   AddToChangedMenus(AWindowHandle);
   Result := True;
-end;
-{$else}
-begin
-  Result := Windows.SetMenu(AWindowHandle, AMenuHandle);
 end;
 {$endif}
 
