@@ -225,6 +225,10 @@ msgctxt "fpwebstrconsts.smihtmlinsertcomment"
 msgid "Insert HTML comment"
 msgstr ""
 
+#: fpwebstrconsts.smihtmlinsertdivblock
+msgid "Insert DIV Block"
+msgstr ""
+
 #: fpwebstrconsts.smihtmlinsertform
 msgctxt "fpwebstrconsts.smihtmlinsertform"
 msgid "Insert HTML Form"
@@ -285,6 +289,22 @@ msgstr ""
 #: fpwebstrconsts.smihtmlinsertnbsp
 msgctxt "fpwebstrconsts.smihtmlinsertnbsp"
 msgid "Insert Non Breaking Space"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertpre
+msgid "Insert Pre"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertspantext
+msgid "Insert Span Text"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertsub
+msgid "Insert Subscript"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertsuper
+msgid "Insert Superscript"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlinserttable

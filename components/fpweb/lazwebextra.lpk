@@ -28,7 +28,7 @@
 HTML editing functionality by Alexei Lagunov"/>
     <License Value="LGPL"/>
     <Version Minor="9"/>
-    <Files Count="40">
+    <Files Count="41">
       <Item1>
         <Filename Value="reglazwebextra.pp"/>
         <HasRegisterProc Value="True"/>
@@ -199,23 +199,30 @@ HTML editing functionality by Alexei Lagunov"/>
         <Filename Value="fpwebselecttagunit.pas"/>
         <UnitName Value="fpWebSelectTagUnit"/>
       </Item40>
+      <Item41>
+        <Filename Value="fpwebnewhtmltagpreunit.pas"/>
+        <UnitName Value="fpwebnewhtmltagpreunit"/>
+      </Item41>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
     <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="4">
       <Item1>
-        <PackageName Value="sqldblaz"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="weblaz"/>
+        <PackageName Value="sqldblaz"/>
       </Item2>
       <Item3>
+        <PackageName Value="weblaz"/>
+      </Item3>
+      <Item4>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item3>
+      </Item4>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)/"/>

@@ -13,7 +13,7 @@ msgstr "Создать новый CSS файл..."
 
 #: fpwebstrconsts.scsssource
 msgid "Enter your classes/style definitions here"
-msgstr ""
+msgstr "Введите свой определния стилей/классов здесь"
 
 #: fpwebstrconsts.senteryoutext
 msgctxt "fpwebstrconsts.senteryoutext"
@@ -22,7 +22,7 @@ msgstr "Введите свой HTML код здесь..."
 
 #: fpwebstrconsts.shtmlautor
 msgid "Html &author - <meta name=\"author\">"
-msgstr ""
+msgstr "Автор Html - <meta name=\"author\""
 
 #: fpwebstrconsts.shtmlcharset
 msgid "HTML chars&et"
@@ -225,6 +225,10 @@ msgctxt "fpwebstrconsts.smihtmlinsertcomment"
 msgid "Insert HTML comment"
 msgstr "Вставить HTML коментарий"
 
+#: fpwebstrconsts.smihtmlinsertdivblock
+msgid "Insert DIV Block"
+msgstr ""
+
 #: fpwebstrconsts.smihtmlinsertform
 msgctxt "fpwebstrconsts.smihtmlinsertform"
 msgid "Insert HTML Form"
@@ -285,6 +289,22 @@ msgstr "Вставить список"
 #: fpwebstrconsts.smihtmlinsertnbsp
 msgctxt "fpwebstrconsts.smihtmlinsertnbsp"
 msgid "Insert Non Breaking Space"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertpre
+msgid "Insert Pre"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertspantext
+msgid "Insert Span Text"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertsub
+msgid "Insert Subscript"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertsuper
+msgid "Insert Superscript"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlinserttable

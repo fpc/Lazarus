@@ -1,0 +1,83 @@
+object fpWebNewHtmlTagPreForm: TfpWebNewHtmlTagPreForm
+  Left = 659
+  Height = 358
+  Top = 437
+  Width = 501
+  ActiveControl = PageControl1
+  Caption = 'Tag property: PRE'
+  ClientHeight = 358
+  ClientWidth = 501
+  Position = poScreenCenter
+  LCLVersion = '0.9.29'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 310
+    Width = 489
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&ОК'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Справка'
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Закрыть'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Отмена'
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 304
+    Top = 0
+    Width = 501
+    ActivePage = TabSheet1
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 1
+    object TabSheet1: TTabSheet
+      Caption = 'Main'
+      ClientHeight = 273
+      ClientWidth = 497
+      object Label1: TLabel
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = TabSheet1
+        Left = 6
+        Height = 18
+        Top = 6
+        Width = 66
+        BorderSpacing.Around = 6
+        Caption = 'Alignment'
+        ParentColor = False
+      end
+      object ComboBox1: TComboBox
+        AnchorSideLeft.Control = Label1
+        AnchorSideTop.Control = Label1
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        Left = 12
+        Height = 29
+        Top = 30
+        Width = 479
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Around = 6
+        ItemHeight = 0
+        Items.Strings = (
+          ''
+          'left'
+          'center'
+          'right'
+          'justify'
+        )
+        TabOrder = 0
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Core'
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Events'
+    end
+  end
+end

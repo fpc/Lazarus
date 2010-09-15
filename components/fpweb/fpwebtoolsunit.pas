@@ -75,12 +75,18 @@ procedure ProcHTMLTableData(Sender: TObject);
 procedure ProcHTMLTableRowWD(Sender: TObject);
 procedure ProcHTMLTableDataWD(Sender: TObject);
 
+//-- Styles
+procedure ProcHTMLDIVBlock(Sender: TObject);
+procedure ProcHTMLSpanText(Sender: TObject);
+procedure ProcHTMLPre(Sender: TObject);
+procedure ProcHTMLSub(Sender: TObject);
+procedure ProcHTMLSuper(Sender: TObject);
+procedure ProcHTMLColor(Sender: TObject);
 procedure ProcHTMLTextHeader1(Sender: TObject);
 procedure ProcHTMLTextHeader2(Sender: TObject);
 procedure ProcHTMLTextHeader3(Sender: TObject);
 procedure ProcHTMLTextHeader4(Sender: TObject);
 procedure ProcHTMLTextHeader5(Sender: TObject);
-procedure ProcHTMLColor(Sender: TObject);
 
 
 procedure ProcHTMLForm(Sender: TObject);
@@ -107,12 +113,11 @@ uses LResources, NewItemIntf, Forms, Controls, IDECommands,
   //HTML
   fpWebNewHTMLFileUnit, fpWebStrConsts, fpWebNewHtmlTableUnit,
   fpwebNewHTMLListUnit, fpwebNewHtmlTagTRUnit, fpwebNewHTMLFormUnit,
-  fpwebNewHTMLInputUnit, fpwebNewHTMLImgUnit,
+  fpwebNewHTMLInputUnit, fpwebNewHTMLImgUnit, fpWebNewHtmlTagPreUnit,
+  fpWebHREFEditUnit, fpWebSelectOptionsUnit, fpWebSelectTagUnit,
+  fpWebHtmlTagLegendUnit,  fpWebFieldSetTagUnit,
   //Other
-  fpIDEExtEditorInsertFileNameUnit,
-  fpWebHREFEditUnit, fpWebSelectOptionsUnit,
-  fpWebSelectTagUnit, fpWebHtmlTagLegendUnit,
-  fpWebFieldSetTagUnit;
+  fpIDEExtEditorInsertFileNameUnit;
 
 var
   //Standart items
@@ -145,12 +150,18 @@ var
   CmdHTMLTableRowWD : TIDECommand;
   CmdHTMLTableDataWD : TIDECommand;
 
+  //Styles
+  CmdHTMLDIVBlock    : TIDECommand;
+  CmdHTMLSpanText    : TIDECommand;
+  CmdHTMLPre         : TIDECommand;
+  CmdHTMLSub         : TIDECommand;
+  CmdHTMLSuper       : TIDECommand;
+  CmdHTMLColor       : TIDECommand;
   CmdHTMLTextStyleH1 : TIDECommand;
   CmdHTMLTextStyleH2 : TIDECommand;
   CmdHTMLTextStyleH3 : TIDECommand;
   CmdHTMLTextStyleH4 : TIDECommand;
   CmdHTMLTextStyleH5 : TIDECommand;
-  CmdHTMLColor : TIDECommand;
 
 
 
@@ -216,12 +227,18 @@ begin
   CmdHTMLTableRowWD  := RegisterIDECommand(Cat, 'HTMLTableRowWD', SmiHTMLInsertTableRowWD, Key, nil, @ProcHTMLTableRowWD);
   CmdHTMLTableDataWD := RegisterIDECommand(Cat, 'HTMLTableDataWD', SmiHTMLInsertTableDataWD, Key, nil, @ProcHTMLTableDataWD);
 
+  //Styles
+  CmdHTMLDIVBlock    := RegisterIDECommand(Cat, 'HTMLDIVBlock', SmiHTMLInsertDIVBlock, Key, nil, @ProcHTMLDIVBlock);
+  CmdHTMLSpanText    := RegisterIDECommand(Cat, 'HTMLSpanText', SmiHTMLInsertSpanText, Key, nil, @ProcHTMLSpanText);
+  CmdHTMLPre         := RegisterIDECommand(Cat, 'HTMLPre', SmiHTMLInsertPre, Key, nil, @ProcHTMLPre);
+  CmdHTMLSub         := RegisterIDECommand(Cat, 'HTMLSub', SmiHTMLInsertSub, Key, nil, @ProcHTMLSub);
+  CmdHTMLSuper       := RegisterIDECommand(Cat, 'HTMLSuper', SmiHTMLInsertSuper, Key, nil, @ProcHTMLSuper);
+  CmdHTMLColor       := RegisterIDECommand(Cat, 'HTMLColor', SmiHTMLInsertColor, Key, nil, @ProcHTMLColor);
   CmdHTMLTextStyleH1 := RegisterIDECommand(Cat, 'HTMLTextStyleH1', SmiHTMLInsertHeader1Level, Key, nil, @ProcHTMLTextHeader1);
   CmdHTMLTextStyleH2 := RegisterIDECommand(Cat, 'HTMLTextStyleH2', SmiHTMLInsertHeader2Level, Key, nil, @ProcHTMLTextHeader2);
   CmdHTMLTextStyleH3 := RegisterIDECommand(Cat, 'HTMLTextStyleH3', SmiHTMLInsertHeader3Level, Key, nil, @ProcHTMLTextHeader3);
   CmdHTMLTextStyleH4 := RegisterIDECommand(Cat, 'HTMLTextStyleH4', SmiHTMLInsertHeader4Level, Key, nil, @ProcHTMLTextHeader4);
   CmdHTMLTextStyleH5 := RegisterIDECommand(Cat, 'HTMLTextStyleH5', SmiHTMLInsertHeader5Level, Key, nil, @ProcHTMLTextHeader5);
-  CmdHTMLColor := RegisterIDECommand(Cat, 'HTMLColor', SmiHTMLInsertColor, Key, nil, @ProcHTMLColor);
 
 
   //Forms---
@@ -277,18 +294,19 @@ begin
 
   //Style's
   mnuHTMLStyles :=RegisterIDESubMenu(mnuHTMLSection, 'HTMLStyle', SmiHTMLStyle, nil, nil);
-    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLTextHeader1', SmiHTMLInsertHeader1Level, nil, nil,
-      CmdHTMLTextStyleH1, 'tag_h1');
-    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLTextHeader2', SmiHTMLInsertHeader2Level, nil, nil,
-      CmdHTMLTextStyleH2, 'tag_h2');
-    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLTextHeader3', SmiHTMLInsertHeader3Level, nil, nil,
-      CmdHTMLTextStyleH3, 'tag_h3');
-    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLTextHeader4', SmiHTMLInsertHeader4Level, nil, nil,
-      CmdHTMLTextStyleH4, 'tag_h4');
-    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLTextHeader5', SmiHTMLInsertHeader5Level, nil, nil,
-      CmdHTMLTextStyleH5, 'tag_h5');
-    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLColor', SmiHTMLInsertColor, nil, nil,
-      CmdHTMLColor, 'color-picker');
+    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLDIVBlock', SmiHTMLInsertDIVBlock, nil, nil, CmdHTMLDIVBlock, 'div_justify');
+    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLSpanText', SmiHTMLInsertSpanText, nil, nil, CmdHTMLSpanText, 'tag_font');
+    RegisterIDEMenuCommand(mnuHTMLStyles, '', '-', nil, nil, nil, '');
+    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLPre', SmiHTMLInsertPre, nil, nil, CmdHTMLPre, 'tag_pre');
+    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLSub', SmiHTMLInsertSub, nil, nil, CmdHTMLSub, 'tag_sub');
+    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLSuper', SmiHTMLInsertSuper, nil, nil, CmdHTMLSuper, 'tag_sup');
+    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLColor', SmiHTMLInsertColor, nil, nil, CmdHTMLColor, 'color-picker');
+    RegisterIDEMenuCommand(mnuHTMLStyles, '', '-', nil, nil, nil, '');
+    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLTextHeader1', SmiHTMLInsertHeader1Level, nil, nil, CmdHTMLTextStyleH1, 'tag_h1');
+    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLTextHeader2', SmiHTMLInsertHeader2Level, nil, nil, CmdHTMLTextStyleH2, 'tag_h2');
+    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLTextHeader3', SmiHTMLInsertHeader3Level, nil, nil, CmdHTMLTextStyleH3, 'tag_h3');
+    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLTextHeader4', SmiHTMLInsertHeader4Level, nil, nil, CmdHTMLTextStyleH4, 'tag_h4');
+    RegisterIDEMenuCommand(mnuHTMLStyles, 'HTMLTextHeader5', SmiHTMLInsertHeader5Level, nil, nil, CmdHTMLTextStyleH5, 'tag_h5');
 
   //Table menus
   mnuHTMLTables := RegisterIDESubMenu(mnuHTMLSection, 'HTMLTables', SmiHTMLTables, nil, nil);
@@ -473,6 +491,39 @@ begin
   If Not CheckEditor then Exit;
   with SourceEditorManagerIntf.ActiveEditor do
     Selection:='<!-- '+Selection+' -->';
+end;
+
+procedure ProcHTMLDIVBlock(Sender: TObject);
+begin
+  If Not CheckEditor then Exit;
+  With TfpWebNewHtmlTagPreForm.Create(Application) do
+  try
+    if ShowModal = mrOk then
+      InsertHTMLSnippet(HtmlText(SourceEditorManagerIntf.ActiveEditor.Selection));
+  finally
+    Free;
+  end;
+end;
+
+procedure ProcHTMLSpanText(Sender: TObject);
+begin
+  { TODO : Необходимо добавить окно диалога с запросом параметров - события/стили }
+  InsertHTMLTag('SPAN');
+end;
+
+procedure ProcHTMLPre(Sender: TObject);
+begin
+  InsertHTMLTag('pre');
+end;
+
+procedure ProcHTMLSub(Sender: TObject);
+begin
+  InsertHTMLTag('sub');
+end;
+
+procedure ProcHTMLSuper(Sender: TObject);
+begin
+  InsertHTMLTag('sup');
 end;
 
 procedure ProcHTMLColor(Sender: TObject);

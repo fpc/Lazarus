@@ -55,6 +55,11 @@ resourcestring
   SmiHTMLInsertHeader4Level = 'Insert HTML level 4 header';
   SmiHTMLInsertHeader5Level = 'Insert HTML level 5 header';
   SmiHTMLInsertColor        = 'Insert HTML Color';
+  SmiHTMLInsertDIVBlock     = 'Insert DIV Block';
+  SmiHTMLInsertSpanText     = 'Insert Span Text';
+  SmiHTMLInsertPre          = 'Insert Pre';
+  SmiHTMLInsertSub          = 'Insert Subscript';
+  SmiHTMLInsertSuper        = 'Insert Superscript';
 
 
   SmiHTMLInsertForm         = 'Insert HTML Form';
