@@ -371,6 +371,7 @@ type
     procedure CreateWnd; override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure DefaultDrawCell(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
+    function  DefaultEditorStyle(const Style:TColumnButtonStyle; const F:TField): TColumnButtonStyle;
     procedure DoExit; override;
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
@@ -1663,17 +1664,11 @@ end;
 
 function TCustomDBGrid.ColumnEditorStyle(aCol: Integer; F: TField): TColumnButtonStyle;
 begin
-  Result := cbsAuto;
+  result := cbsAuto;
   if Columns.Enabled then
-    Result := ColumnFromGridColumn(aCol).ButtonStyle;
+    result := ColumnFromGridColumn(aCol).ButtonStyle;
 
-  if (Result=cbsAuto) and (F<>nil) then
-    case F.DataType of
-      ftBoolean: Result := cbsCheckboxColumn;
-    end;
-
-  if (result = cbsCheckBoxColumn) and not (dgeCheckboxColumn in FExtraOptions) then
-    Result := cbsAuto;
+  result := DefaultEditorStyle(result, F);
 end;
 
 function TCustomDBGrid.CreateColumns: TGridColumns;
@@ -1717,20 +1712,31 @@ procedure TCustomDBGrid.DefaultDrawCell(aCol, aRow: Integer; aRect: TRect;
 var
   S: string;
   F: TField;
+  cbs: TColumnButtonStyle;
 begin
 
-  if gdFixed in aState then begin
+  // background
+  if (gdFixed in aState) and (TitleStyle=tsNative) then
+    DrawThemedCell(aCol, aRow, aRect, aState)
+  else
+    Canvas.FillRect(aRect);
 
-    if TitleStyle<>tsNative then
-      DrawFixedText(aCol, aRow, aRect, aState);
-
-  end else
+  if gdFixed in aState then
+    DrawFixedText(aCol, aRow, aRect, aState)
+  else
   if not FDrawingEmptyDataset then begin
+
     F := GetFieldFromGridColumn(aCol);
-    case ColumnEditorStyle(aCol, F) of
+    cbs := ColumnEditorStyle(aCol, F);
+    case cbs of
       cbsCheckBoxColumn:
         DrawCheckBoxBitmaps(aCol, aRect, F);
-      else begin
+      else
+      begin
+
+        if cbs=cbsButtonColumn then
+          DrawButtonCell(aCol, aRow, aRect, aState);
+
         {$ifdef dbggridpaint}
         DbgOut('Col=%d',[ACol]);
         {$endif}
@@ -1751,6 +1757,18 @@ begin
       end;
     end;
   end;
+end;
+
+function TCustomDBGrid.DefaultEditorStyle(const Style: TColumnButtonStyle;
+  const F: TField): TColumnButtonStyle;
+begin
+  result := Style;
+  if (Result=cbsAuto) and (F<>nil) then
+    case F.DataType of
+      ftBoolean: Result := cbsCheckboxColumn;
+    end;
+  if (result = cbsCheckBoxColumn) and not (dgeCheckboxColumn in FExtraOptions) then
+    Result := cbsAuto;
 end;
 
 
@@ -2206,8 +2224,7 @@ procedure TCustomDBGrid.PrepareCanvas(aCol, aRow: Integer;
   aState: TGridDrawState);
 begin
   inherited PrepareCanvas(aCol, aRow, aState);
-  if (not FDatalink.Active) and ((gdSelected in aState) or
-    (gdFocused in aState)) then
+  if (not FDatalink.Active) and ((gdSelected in aState) or (gdFocused in aState)) then
     Canvas.Brush.Color := Self.Color;
 end;
 
@@ -2557,9 +2574,6 @@ var
 begin
   PrepareCanvas(aCol, aRow, aState);
 
-  if (gdFixed in aState) or DefaultDrawing then
-    Canvas.FillRect(aRect);
-
   {$ifdef dbgGridPaint}
   DbgOut(' ',IntToStr(aCol));
   if gdSelected in aState then DbgOut('S');
@@ -2567,25 +2581,19 @@ begin
   if gdFixed in aState then DbgOut('F');
   {$endif dbgGridPaint}
 
-  if (gdFixed in aState) or DefaultDrawing then
+  if DefaultDrawing then
     DefaultDrawCell(aCol, aRow, aRect, aState);
 
   if (ARow>=FixedRows) and Assigned(OnDrawColumnCell) and
-     not (csDesigning in ComponentState) then begin
+    not (csDesigning in ComponentState) then begin
 
     DataCol := ColumnIndexFromGridColumn(aCol);
     if DataCol>=0 then
       OnDrawColumnCell(Self, aRect, DataCol, TColumn(Columns[DataCol]), aState);
+
   end;
 
   DrawCellGrid(aCol, aRow, aRect, aState);
-
-  if TitleStyle=tsNative then begin
-    if gdFixed in aState then
-      DrawFixedText(aCol,aRow,aRect,aState)
-    else
-      DrawColumnText(aCol,aRow,aRect,aState);
-  end;
 end;
 
 procedure TCustomDBGrid.DrawCheckboxBitmaps(aCol: Integer; aRect: TRect;
@@ -2650,24 +2658,16 @@ end;
 
 procedure TCustomDBGrid.DrawColumnText(aCol, aRow: Integer; aRect: TRect;
  aState: TGridDrawState);
-var F: TField;
+var
+  F: TField;
 begin
- if ((gdFixed in aState) and (aCol >= FirstGridColumn)) then
- begin
-  if (aRow = 0) then
-   begin
-    DrawColumnTitleImage(aRect, aCol);
-    DrawCellText(aCol, aRow, aRect, aState, GetColumnTitle(aCol));
-   end else
-   begin
-    if ((gdFixed in aState) and (aCol < FixedCols)) then
-     begin
-      F := GetFieldFromGridColumn(aCol);
-      if F<>nil then
-        DrawCellText(aCol, aRow, aRect, aState, F.DisplayText)
-     end;//End if (gdFixed in aState)
-   end;//End if (aRow = 0)
- end;//End if ((gdFixed in aState) and (aCol >= FirstGridColumn))
+  if GetIsCellTitle(aCol, aRow) then
+    inherited DrawColumnText(aCol, aRow, aRect, aState)
+  else begin
+    F := GetFieldFromGridColumn(aCol);
+    if F<>nil then
+      DrawCellText(aCol, aRow, aRect, aState, F.DisplayText)
+  end;
 end;
 
 procedure TCustomDBGrid.DrawIndicator(ACanvas: TCanvas; R: TRect;
@@ -3569,7 +3569,15 @@ begin
 end;
 
 function TColumn.GetDefaultAlignment: TAlignment;
+var
+  Bs: set of TColumnButtonStyle;
 begin
+  bs := [buttonStyle];
+  if Grid<>nil then
+    Include(bs, TCustomDbGrid(Grid).DefaultEditorStyle(ButtonStyle, FField));
+  if bs*[cbsCheckboxColumn,cbsButtonColumn]<>[] then
+    result := taCenter
+  else
   if FField<>nil then
     result := FField.Alignment
   else

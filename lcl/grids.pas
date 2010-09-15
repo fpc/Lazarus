@@ -697,8 +697,8 @@ type
     function  CheckTopLeft(aCol,aRow: Integer; CheckCols,CheckRows: boolean): boolean;
     function  IsCellButtonColumn(ACell: TPoint): boolean;
     function  GetSelectedColumn: TGridColumn;
-    function IsDefRowHeightStored: boolean;
-    function IsTitleImageListStored: boolean;
+    function  IsDefRowHeightStored: boolean;
+    function  IsTitleImageListStored: boolean;
     procedure SetAlternateColor(const AValue: TColor);
     procedure SetAutoFillColumns(const AValue: boolean);
     procedure SetBorderColor(const AValue: TColor);
@@ -854,9 +854,11 @@ type
     procedure DrawCell(aCol,aRow:Integer; aRect:TRect; aState:TGridDrawState); virtual;
     procedure DrawCellGrid(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); virtual;
     procedure DrawTextInCell(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); virtual;
+    procedure DrawThemedCell(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
     procedure DrawCellText(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState; aText: String); virtual;
     procedure DrawGridCheckboxBitmaps(const aCol,aRow: Integer; const aRect: TRect;
                                         const aState: TCheckboxState); virtual;
+    procedure DrawButtonCell(const aCol,aRow: Integer; aRect: TRect; const aState:TGridDrawState);
     procedure DrawColRowMoving;
     procedure DrawColumnText(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); virtual;
     procedure DrawColumnTitleImage(var ARect: TRect; AColumnIndex: Integer);
@@ -918,6 +920,7 @@ type
     procedure InvalidateGrid;
     procedure InvalidateRow(ARow: Integer);
     procedure InvalidateFocused;
+    function  GetIsCellTitle(aCol,aRow: Integer): boolean;
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; virtual;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
@@ -1123,7 +1126,6 @@ type
     FMouseWheelOption: TMouseWheelOption;
     function CellNeedsCheckboxBitmaps(const aCol,aRow: Integer): boolean;
     procedure DrawCellCheckboxBitmaps(const aCol,aRow: Integer; const aRect: TRect);
-    procedure DrawCellButtonColumn(const aCol,aRow: Integer; aRect: TRect; const aState:TGridDrawState);
   protected
     FGrid: TVirtualGrid;
     procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); virtual;
@@ -3221,7 +3223,8 @@ begin
     if IsSelected then begin
       Canvas.Brush.Color := SelectedColor;
       SetCanvasFont(GetColumnFont(aCol, False));
-      Canvas.Font.Color := clHighlightText;
+      if not IsCellButtonColumn(point(aCol,aRow)) then
+        Canvas.Font.Color := clHighlightText;
       FLastFont:=nil;
     end else begin
       AColor := GetColumnColor(aCol, gdFixed in AState);
@@ -3428,10 +3431,8 @@ end;
 procedure TCustomGrid.DrawColumnText(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
-  if (gdFixed in aState) and (aRow=0) and (aCol>=FirstGridColumn) then begin
-    DrawColumnTitleImage(aRect, aCol);
-    DrawCellText(aCol,aRow,aRect,aState,GetColumnTitle(aCol));
-  end;
+  DrawColumnTitleImage(aRect, aCol);
+  DrawCellText(aCol,aRow,aRect,aState,GetColumnTitle(aCol));
 end;
 
 procedure TCustomGrid.DrawColumnTitleImage(
@@ -3671,12 +3672,12 @@ end;
 procedure TCustomGrid.DrawCellGrid(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
 var
   dv,dh: Boolean;
-  details: TThemedElementDetails;
 begin
-  // Draw Cell Grid or Maybe in the future Borders..
+
   with Canvas, aRect do begin
-    if (gdFixed in aState) then
-    begin
+
+    // fixed cells
+    if (gdFixed in aState) then begin
       Dv := goFixedVertLine in Options;
       Dh := goFixedHorzLine in Options;
       Pen.Style := psSolid;
@@ -3684,68 +3685,45 @@ begin
         Pen.Width := 1
       else
         Pen.Width := 0;
-      if not FFlat then
-      begin
+      if not FFlat then begin
         if FTitleStyle=tsNative then
-        begin
-          if gdPushed in aState then
-            Details := ThemeServices.GetElementDetails(thHeaderItemPressed)
-          else
-          if gdHot in aState then
-            Details := ThemeServices.GetElementDetails(thHeaderItemHot)
-          else
-            Details := ThemeServices.GetElementDetails(thHeaderItemNormal);
-          ThemeSErvices.DrawElement(Handle, Details, aRect, nil);
-          exit;
-        end
+          exit
         else
-        begin
-          if FGridLineWidth > 0 then
-          begin
+        if FGridLineWidth > 0 then begin
+          if gdPushed in aState then
+            Pen.Color := cl3DShadow
+          else
+            Pen.Color := cl3DHilight;
+          if UseRightToLeftAlignment then begin
+            //the light still on the left but need to new x
+            MoveTo(Right, Top);
+            LineTo(Left + 1, Top);
+            LineTo(Left + 1, Bottom);
+          end else begin
+            MoveTo(Right - 1, Top);
+            LineTo(Left, Top);
+            LineTo(Left, Bottom);
+          end;
+          if FTitleStyle=tsStandard then begin
+            // more contrast
             if gdPushed in aState then
-              Pen.Color := cl3DShadow
+              Pen.Color := cl3DHilight
             else
-              Pen.Color := cl3DHilight;
-            if UseRightToLeftAlignment then
-            begin
-              //the light still on the left but need to new x
-              MoveTo(Right, Top);
-              LineTo(Left + 1, Top);
-              LineTo(Left + 1, Bottom);
-            end
-            else
-            begin
-              MoveTo(Right - 1, Top);
-              LineTo(Left, Top);
-              LineTo(Left, Bottom);
-            end;
-            if FTitleStyle=tsStandard then
-            begin
-              // more contrast
-              if gdPushed in aState then
-                Pen.Color := cl3DHilight
-              else
-                Pen.Color := cl3DShadow;
-              if UseRightToLeftAlignment then
-              begin
-                MoveTo(Left+2, Bottom-2);
-                LineTo(Right, Bottom-2);
-                LineTo(Right, Top);
-              end
-              else
-              begin
-                MoveTo(Left+1, Bottom-2);
-                LineTo(Right-2, Bottom-2);
-                LineTo(Right-2, Top);
-              end;
+              Pen.Color := cl3DShadow;
+            if UseRightToLeftAlignment then begin
+              MoveTo(Left+2, Bottom-2);
+              LineTo(Right, Bottom-2);
+              LineTo(Right, Top);
+            end else begin
+              MoveTo(Left+1, Bottom-2);
+              LineTo(Right-2, Bottom-2);
+              LineTo(Right-2, Top);
             end;
           end;
         end;
       end;
       Pen.Color := cl3DDKShadow;
-    end
-    else
-    begin
+    end else begin
       Dv := goVertLine in Options;
       Dh := goHorzLine in Options;
       Pen.Style := fGridLineStyle;
@@ -3753,40 +3731,50 @@ begin
       Pen.Width := fGridLineWidth;
     end;
 
-    if fGridLineWidth > 0 then
-    begin
+    // non-fixed cells
+    if fGridLineWidth > 0 then begin
       if Dh then begin
-        if UseRightToLeftAlignment then
-        begin
+        if UseRightToLeftAlignment then begin
           MoveTo(Right, Bottom - 1);
           LineTo(Left, Bottom - 1);
-        end
-        else
-        begin
+        end else begin
           MoveTo(Left, Bottom - 1);
           LineTo(Right, Bottom - 1);
         end;
       end;
       if Dv then begin
-        if UseRightToLeftAlignment then
-        begin
+        if UseRightToLeftAlignment then begin
           MoveTo(Left, Top);
           LineTo(Left, Bottom);
-        end
-        else
-        begin
+        end else begin
           MoveTo(Right - 1, Top);
           LineTo(Right - 1, Bottom);
         end;
       end;
     end;
-  end;
+
+  end; // with canvas,rect
 end;
 
 procedure TCustomGrid.DrawTextInCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
   //
+end;
+
+procedure TCustomGrid.DrawThemedCell(aCol, aRow: Integer; aRect: TRect;
+  aState: TGridDrawState);
+var
+  details: TThemedElementDetails;
+begin
+  if gdPushed in aState then
+    Details := ThemeServices.GetElementDetails(thHeaderItemPressed)
+  else
+  if gdHot in aState then
+    Details := ThemeServices.GetElementDetails(thHeaderItemHot)
+  else
+    Details := ThemeServices.GetElementDetails(thHeaderItemNormal);
+  ThemeSErvices.DrawElement(Canvas.Handle, Details, aRect, nil);
 end;
 
 procedure TCustomGrid.DrawCellText(aCol, aRow: Integer; aRect: TRect;
@@ -3863,6 +3851,22 @@ begin
       Canvas.Draw(XPos, YPos, ChkBitmap);
     end;
   end;
+end;
+
+procedure TCustomGrid.DrawButtonCell(const aCol, aRow: Integer; aRect: TRect;
+  const aState: TGridDrawState);
+var
+  details: TThemedElementDetails;
+begin
+  InflateRect(aRect, -2, 0);
+  if gdPushed in aState then
+    Details := ThemeServices.GetElementDetails(tbPushButtonPressed)
+  else
+  if gdHot in aState then
+    Details := ThemeServices.GetElementDetails(tbPushButtonHot)
+  else
+    Details := ThemeServices.GetElementDetails(tbPushButtonNormal);
+  ThemeSErvices.DrawElement(Canvas.Handle, Details, aRect, nil);
 end;
 
 procedure TCustomGrid.OnTitleFontChanged(Sender: TObject);
@@ -4535,6 +4539,11 @@ begin
   Column := ColumnFromGridColumn(ACell.X);
   result := (Column<>nil) and (Column.ButtonStyle=cbsButtonColumn) and
             (ACell.y>=FixedRows);
+end;
+
+function TCustomGrid.GetIsCellTitle(aCol, aRow: Integer): boolean;
+begin
+  result := (FixedRows>0) and (aRow=0) and Columns.Enabled and (aCol>=FirstGridColumn)
 end;
 
 function TCustomGrid.GetIsCellSelected(aCol, aRow: Integer): boolean;
@@ -8649,22 +8658,6 @@ begin
   DrawGridCheckboxBitmaps(aCol, aRow, aRect, aState);
 end;
 
-procedure TCustomDrawGrid.DrawCellButtonColumn(const aCol, aRow: Integer;
-  aRect: TRect; const aState:TGridDrawState);
-var
-  details: TThemedElementDetails;
-begin
-  InflateRect(aRect, -2, 0);
-  if gdPushed in aState then
-    Details := ThemeServices.GetElementDetails(tbPushButtonPressed)
-  else
-  if gdHot in aState then
-    Details := ThemeServices.GetElementDetails(tbPushButtonHot)
-  else
-    Details := ThemeServices.GetElementDetails(tbPushButtonNormal);
-  ThemeSErvices.DrawElement(Canvas.Handle, Details, aRect, nil);
-end;
-
 procedure TCustomDrawGrid.CalcCellExtent(acol, aRow: Integer; var aRect: TRect);
 begin
   //
@@ -8697,8 +8690,6 @@ begin
     DefaultDrawCell(aCol,aRow,aRect,aState);
   end;
   DrawCellGrid(aCol,aRow,aRect,aState);
-  if FTitleStyle=tsNative then
-    DrawColumnText(aCol,aRow,aRect,aState);
 end;
 
 procedure TCustomDrawGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
@@ -9000,27 +8991,39 @@ end;
 
 procedure TCustomDrawGrid.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
   aState: TGridDrawState);
+
+  procedure DrawText;
+  begin
+    if GetIsCellTitle(aCol, aRow) then
+      DrawColumnText(aCol, aRow, aRect, aState)
+    else
+      DrawTextInCell(aCol,aRow, aRect,aState);
+  end;
+
 begin
   if goColSpanning in Options then CalcCellExtent(acol, arow, aRect);
 
-  DrawFillRect(Canvas, aRect);
+  if (FTitleStyle=tsNative) and (gdFixed in AState) then
+    DrawThemedCell(aCol, aRow, aRect, aState)
+  else
+    DrawFillRect(Canvas, aRect);
 
   if CellNeedsCheckboxBitmaps(aCol,aRow) then
     DrawCellCheckboxBitmaps(aCol,aRow,aRect)
   else
-  if IsCellButtonColumn(Point(aCol,aRow)) then
-    DrawCellButtonColumn(aCol,aRow,aRect,aState)
-  else
-  if (aRow>=FixedRows) then begin
+  if IsCellButtonColumn(Point(aCol,aRow)) then begin
+    DrawButtonCell(aCol,aRow,aRect,aState);
+    DrawText;
+  end
+  else begin
 
-    if (aCol=0) and (goFixedRowNumbering in Options) and (FixedCols >= 1) then
+    if (goFixedRowNumbering in Options) and (ARow>=FixedRows) and (aCol=0) and
+       (FixedCols>0)
+    then
       DrawCellAutonumbering(aCol, aRow, aRect, IntToStr(aRow-FixedRows+1));
 
-    DrawTextInCell(aCol,aRow, aRect,aState);
-  end
-  else
-  if (FTitleStyle<>tsNative) then
-    DrawColumnText(aCol,aRow,aRect,aState);
+    DrawText;
+  end;
 end;
 
 { TCustomStringGrid }
