@@ -614,7 +614,7 @@ var
     SrcPixelPtr, DstPixelPtr: PByte;
     DstLineSize, SrcLineSize: PtrUInt;
     x, y: Integer;
-    Ridx, Gidx, Bidx, Aidx, Align: Byte;
+    Ridx, Gidx, Bidx, Aidx, Align, SrcBytes, DstBpp: Byte;
   begin
     if (ADesc.BitsPerPixel = 1) and (ADesc.LineEnd = rileWordBoundary)
     then begin
@@ -623,16 +623,19 @@ var
       Exit(ABitmap <> 0);
     end;
 
+    // for 24 bits images, BPP can be 24 or 32
+    // 32 shouldn't be use since we don't fill the alpha channel
+
+    if ADesc.Depth = 24
+    then DstBpp := 24
+    else DstBpp := ADesc.BitsPerPixel;
+
     FillChar(Info, SizeOf(Info), 0);
     Info.Header.biSize := SizeOf(Info.Header);
     Info.Header.biWidth := ADesc.Width;
     Info.Header.biHeight := -ADesc.Height; // create top to bottom
     Info.Header.biPlanes := 1;
-    // for 24 bits images, BPP can be 24 or 32
-    // 32 shouldn't be use since we don't fill the alpha channel
-    if ADesc.Depth = 24
-    then Info.Header.biBitCount := 24
-    else Info.Header.biBitCount := ADesc.BitsPerPixel;
+    Info.Header.biBitCount := DstBpp;
     Info.Header.biCompression := BI_RGB;
     {Info.Header.biSizeImage := 0;}
     { first color is black, second color is white, for monochrome bitmap }
@@ -652,7 +655,8 @@ var
     end;
     if DstLinePtr = nil then Exit(False);
 
-    DstLineSize := (Windows.MulDiv(ADesc.Depth, ADesc.Width, 8) + 3) and not 3;
+    DstLineSize := Windows.MulDiv(DstBpp, ADesc.Width, 8);
+    // align to DWord
     Align := DstLineSize and 3;
     if Align > 0
     then Inc(DstLineSize, 4 - Align);
@@ -675,6 +679,7 @@ var
       or (Bidx <> 0) or (Gidx <> 1) or (Ridx <> 2)
       then begin
         // copy pixels
+        SrcBytes := ADesc.BitsPerPixel div 8;
 
         for y := 0 to ADesc.Height - 1 do
         begin
@@ -687,7 +692,7 @@ var
             DstPixelPtr[2] := SrcPixelPtr[Ridx];
 
             Inc(DstPixelPtr, 3); //move to the next dest RGB triple
-            Inc(SrcPixelPtr, 4);
+            Inc(SrcPixelPtr, SrcBytes);
           end;
 
           Inc(DstLinePtr, DstLineSize);
