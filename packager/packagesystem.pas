@@ -3525,7 +3525,8 @@ begin
                             'FPCDIR='+EnvironmentOptions.GetFPCSourceDirectory);
 
     // clear old errors
-    SourceEditorManagerIntf.ClearErrorLines;
+    if SourceEditorManagerIntf<>nil then
+      SourceEditorManagerIntf.ClearErrorLines;
 
     // compile package
     Result:=RunExternalTool(FPCMakeTool);
