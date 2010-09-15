@@ -747,10 +747,10 @@ begin
   Result:=SearchPath.Count-1;
   while Result>=0 do begin
     CurPath:=SearchPath[Result];
-    if (CurPath<>'') and
-      (FileUtil.CompareFilenames(@CurPath[1],CurDirLen,
-                        @Directory[DirStartPos],CurDirLen,
-                        false)=0)
+    if (CurPath<>'')
+    and (FileUtil.CompareFilenames(@CurPath[1],length(CurPath),
+                                   @Directory[DirStartPos],CurDirLen,
+                                   false)=0)
     then begin
       // directory found
       exit;
