@@ -907,6 +907,10 @@ type
     function  GetEditMask(ACol, ARow: Longint): string; virtual;
     function  GetEditText(ACol, ARow: Longint): string; virtual;
     function  GetFixedcolor: TColor; virtual;
+    function  GetFirstVisibleColumn: Integer;
+    function  GetFirstVisibleRow: Integer;
+    function  GetLastVisibleColumn: Integer;
+    function  GetLastVisibleRow: Integer;
     function  GetSelectedColor: TColor; virtual;
     function  GridColumnFromColumnIndex(ColumnIndex: Integer): Integer;
     procedure GridMouseWheel(shift: TShiftState; Delta: Integer); virtual;
@@ -6103,6 +6107,20 @@ var
     Exclude(FGridFlags, gfEditingDone);
     Key := 0; { Flag key as handled, even if selected cell did not move }
   end;
+
+  procedure TabCheckEditorKey;
+  begin
+    if FEditorKey then begin
+      {$IFDEF dbggrid}
+      DebugLn('Got TAB, shift=',dbgs(sh));
+      {$endif}
+      if sh then
+        GridFlags := GridFlags + [gfRevEditorTab]
+      else
+        GridFlags := GridFlags + [gfEditorTab];
+    end;
+  end;
+
 const
   cBidiMove:array[Boolean] of Integer = (1, -1);
 begin
@@ -6121,18 +6139,17 @@ begin
           if GetDeltaMoveNext(Sh, DeltaCol,DeltaRow) then begin
             Sh := False;
             MoveSel(True, DeltaCol, DeltaRow);
-          end;
-          Key:=0;
-        end else
-        if FEditorKey then begin
-          {$IFDEF dbggrid}
-          DebugLn('Got TAB, shift=',dbgs(sh));
-          {$endif}
-          if sh then
-            GridFlags := GridFlags + [gfRevEditorTab]
+            Key:=0;
+          end else
+          if (AutoAdvance=aaNone) or
+             ((AutoAdvance=aaDown) and (Row>=GetLastVisibleRow)) or
+             (sh and (Col<=GetFirstVisibleColumn)) or
+             ((not sh) and (Col>=GetLastVisibleColumn)) then
+            TabCheckEditorKey
           else
-            GridFlags := GridFlags + [gfEditorTab];
-        end;
+            Key := 0;
+        end else
+          TabCheckEditorKey;
       end;
     VK_LEFT:
       begin
@@ -7565,6 +7582,34 @@ end;
 function TCustomGrid.GetFixedcolor: TColor;
 begin
   result:=FFixedColor;
+end;
+
+function TCustomGrid.GetFirstVisibleColumn: Integer;
+begin
+  result := FixedCols;
+  while (result<ColCount) and (ColWidths[result]=0) do
+    inc(result); // extreme case may return colcount
+end;
+
+function TCustomGrid.GetFirstVisibleRow: Integer;
+begin
+  result := FixedRows;
+  while (result<RowCount) and (RowHeights[result]=0) do
+    inc(result); // ditto
+end;
+
+function TCustomGrid.GetLastVisibleColumn: Integer;
+begin
+  result := ColCount-1;
+  while (result>=0) and (ColWidths[result]=0) do
+    dec(result); // extreme case may return -1
+end;
+
+function TCustomGrid.GetLastVisibleRow: integer;
+begin
+  result := RowCount-1;
+  while (result>=0) and (RowHeights[result]=0) do
+    dec(result); // ditto
 end;
 
 procedure TCustomGrid.ColWidthsChanged;

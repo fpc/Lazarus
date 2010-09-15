@@ -1962,7 +1962,22 @@ begin
         doOnKeyDown;
         if Key<>0 then begin
           if dgTabs in Options then begin
+
+            if ((ssShift in shift) and
+               (Col<=GetFirstVisibleColumn) and (Row<=GetFirstVisibleRow)) then begin
+              if EditorKey then
+                GridFlags := GridFlags + [gfRevEditorTab];
+              exit;
+            end;
+
             GetDeltaMoveNext(ssShift in Shift, DeltaCol, DeltaRow);
+
+            if (not (ssShift in Shift)) and (Row>=GetLastVisibleRow) and
+               (DeltaRow>0) and (Col=GetLastVisibleColumn) and
+               (FDatalink.Editing or not GridCanModify) then begin
+              exit;
+            end;
+
             MoveSel(false);
             Key := 0;
           end;
