@@ -102,6 +102,8 @@ var
 
 function FindMenuItemAccelerator(const ACharCode: char; const AMenuHandle: HMENU): integer;
 {$ifndef Win32}
+procedure PocketPCAddMenuToToolbar(Wnd: HWND; Menu: HMENU; LCLMenu: TMenu; toolBar: Handle);
+procedure CeSetMenuDesktop(Wnd: HWND; Menu: HMENU; LCLMenu: TMenu);
 procedure CeSetMenu(Wnd: HWND; Menu: HMENU; LCLMenu: TMenu);
 {$endif}
 
@@ -128,19 +130,215 @@ type
 //menus
 
 {$ifndef Win32}
+procedure PocketPCAddMenuToToolbar(Wnd: HWND; Menu: HMENU; LCLMenu: TMenu; toolBar: Handle);
+var
+  mi: MENUITEMINFO;
+  tb: TBButton;
+  i, j, k: integer;
+  buf: array[0..255] of WideChar;
+  wbuf: widestring;
+begin
+  FillChar(mi, SizeOf(mi), 0);
+  mi.cbSize:=SizeOf(mi);
+  mi.fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
+  mi.dwTypeData:=@buf;
+
+  // Now we will add the buttons in the menu
+  if (Menu <> 0) and (LCLMenu <> nil) then
+  begin
+    i:=0;
+    while True do
+    begin
+      mi.cch:=SizeOf(buf);
+
+      // Find the winapi menu item
+      if not GetMenuItemInfo(Menu, i, True, @mi) then
+      begin
+        {$ifdef VerboseWinCEMenu}
+        DebugLn('GetMenuItemInfo i=', dbgs(i), ' failed, breaking');
+        {$endif}
+        Break;
+      end;
+
+      // Find the associated LCL Menu item
+      k:=0; // j = counts all top-level menu items
+            // k = counts only visible ones;
+      for j:=0 to LCLMenu.Items.Count - 1 do
+      begin
+        if LCLMenu.Items.Items[j].Visible then
+        begin
+          if k = i then Break;
+          Inc(k);
+        end;
+      end;
+
+      // Don't use the default ID, force one, at least for the first two buttons
+      // But only do that for the main form, so that secondary forms
+      // can have unique numbers
+      if Wnd = Application.MainForm.Handle then
+      begin
+        if i = 0 then mi.wID := MenuBarID_L
+        else if i = 1 then mi.wID := MenuBarID_R;
+      end;
+
+      // Update the MenuItem Command to use latter
+      TMenuItemAccess(LCLMenu.Items.Items[j]).FCommand := mi.wID;
+
+      // Setting the caption
+      // old code: buf[mi.cch]:=#0;
+      wbuf := UTF8Decode(LCLMenu.Items.Items[j].Caption);
+      buf := wbuf;
+      buf[Length(wbuf)] := #0;
+
+      FillChar(tb, SizeOf(tb), 0);
+      tb.iBitmap:=I_IMAGENONE;
+      tb.idCommand := mi.wID;
+      {$ifdef VerboseWinCEMenu}
+      DebugLn('[CeSetMenu] p3 atPDA menuname: ' + LCLMenu.Items.Items[j].Name +
+        ' Set FCommand = mi.wID = ' + IntToStr(tb.idCommand));
+      {$endif}
+
+      tb.iString:=SendMessage(toolBar, TB_ADDSTRING, 0, LPARAM(@buf));
+      if mi.fState and MFS_DISABLED = 0 then
+        tb.fsState:=TBSTATE_ENABLED;
+      if mi.fState and MFS_CHECKED <> 0 then
+        tb.fsState:=tb.fsState or TBSTATE_CHECKED;
+      if mi.hSubMenu <> 0 then
+        tb.fsStyle:=TBSTYLE_DROPDOWN or $0080 or TBSTYLE_AUTOSIZE
+      else
+        tb.fsStyle:=TBSTYLE_BUTTON or TBSTYLE_AUTOSIZE;
+      tb.dwData:=mi.hSubMenu;
+
+      {roozbeh : this wont work on 2002/2003...should i uncomment it or not?works this way anyway}
+      {$ifdef VerboseWinCEMenu}
+      DebugLn('[CeSetMenu] atPDA Message TB_INSERTBUTTON with ButtonID: i = ' + IntToStr(i));
+      {$endif}
+      if SendMessage(toolBar, TB_INSERTBUTTON, i, LPARAM(@tb)) = 0 then
+        {$ifdef VerboseWinCEMenu}
+        DebugLn('TB_INSERTBUTTON failed')
+        {$endif}
+        ;
+
+      // Add to the list to receive click events though WM_COMMAND
+      {$ifdef VerboseWinCEMenu}
+      DebugLn('[CeSetMenu] Adding menuitem to MenuItemsList');
+      {$endif}
+      MenuItemsList.AddObject(IntToStr(tb.idCommand), LCLMenu.Items.Items[j]);
+
+      Inc(i);
+    end;
+  end;
+end;
+
+procedure CeSetMenuDesktop(Wnd: HWND; Menu: HMENU; LCLMenu: TMenu);
+const
+  STR_MENUBAR = 'LCL_MENUBAR_TOOLBAR';
+  ID_TOOLBAR = 10;
+var
+  menuBar: Handle;
+  IsMenuEmpty: Boolean = False;
+begin
+  {$ifdef VerboseWinCEMenu}
+  DebugLn('[CeSetMenu] atDesktop detected Wnd=' + IntToHex(Wnd, 8)
+    + ' Menu=' + IntToHex(Menu, 8)
+    + ' LCLMenu=' + IntToHex(PtrInt(LCLMenu), 8));
+  {$endif}
+
+  // Validate the parameters
+  if (Wnd = 0) then Exit;
+
+  // In atDesktop mode it looks bad if we install an empty menu bar
+  // Please see issue http://bugs.freepascal.org/view.php?id=17304
+
+  // Check if the menu is empty
+  IsMenuEmpty := (LCLMenu = nil);
+  if not IsMenuEmpty then IsMenuEmpty := (LCLMenu.Items = nil);
+  if not IsMenuEmpty then IsMenuEmpty := (LCLMenu.Items.Count = 0);
+  if not IsMenuEmpty then IsMenuEmpty := (Menu = 0);
+
+  // If there is no menu, then clean any existing menu bar
+  if IsMenuEmpty then
+  begin
+    menuBar := GetProp(Wnd, STR_MENUBAR);
+
+    {$ifdef VerboseWinCEMenu}
+    DebugLn('[CeSetMenu] The menu is empty and menuBar = ' + IntToHex(menuBar, 8));
+    {$endif}
+
+    if menuBar <> 0 then
+    begin
+      DestroyWindow(menuBar);
+      SetProp(Wnd, STR_MENUBAR, 0);
+    end;
+
+    Exit();
+
+{      // The following code applies if we were using a SHMenuBar
+      // Destroy any existing menu bar and exit
+      mbi.hwndMB := SHFindMenuBar(Wnd);
+      DestroyWindow(mbi.hwndMB);
+      Exit;}
+  end
+  // If there is a menu, then install it or modify the existing one
+  else
+  begin
+    menuBar := GetProp(Wnd, STR_MENUBAR);
+
+    {$ifdef VerboseWinCEMenu}
+    DebugLn('[CeSetMenu] The menu is not empty and menuBar = ' + IntToHex(menuBar, 8));
+    {$endif}
+
+    if menuBar = 0 then
+    begin
+      {$ifdef WINCE_USE_COMMANDBAR_FOR_ATDESKTOP_MENUS}
+      menuBar := CommandBar_Create(hInstance, Wnd, 1);
+      CommandBar_InsertMenubar(menuBar, g_hInst, IDR_MENU, 0);
+      CommandBar_AddAdornments(menuBar, 0, 0);
+      {$else}
+      menuBar := CreateToolbarEx(
+                  Wnd,                // Parent window handle
+                  WS_CHILD or WS_VISIBLE, // Toolbar window styles
+                  ID_TOOLBAR,  // Toolbar control identifier
+                  0,          // Number of button images
+                  hInstance,              // Module instance
+                  0,        // Bitmap resource identifier
+                  nil,           // Array of TBBUTTON structure
+                  0,                  // Number of buttons in toolbar
+                  0,        // Width of the button in pixels
+                  0,       // Height of the button in pixels
+                  0,         // Button image width in pixels
+                  0,        // Button image height in pixels
+                  sizeof(TBBUTTON)); // Size of a TBBUTTON structure
+
+      {$ifdef VerboseWinCEMenu}
+      DebugLn('[CeSetMenu] Creating new menuBar = ' + IntToHex(menuBar, 8));
+      {$endif}
+
+      // Tell the toolbar to resize itself, and show it.
+      SendMessage(menuBar, TB_AUTOSIZE, 0, 0);
+      ShowWindow(menuBar, SW_SHOW);
+      // Put the menu on top of all other controls, or else it won't appear
+      SetWindowPos(menuBar, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+      {$endif}
+
+      SetProp(Wnd, STR_MENUBAR, menuBar);
+    end;
+  end;
+
+  // Now the menu should be added to the toolbar
+  PocketPCAddMenuToToolbar(Wnd, Menu, LCLMenu, menuBar);
+end;
+
 {
   The main menu setting routine, it is called by LCLIntf.SetMenu, which
   associates a menu with a window.
 }
 procedure CeSetMenu(Wnd: HWND; Menu: HMENU; LCLMenu: TMenu);
+const STR_MENUBAR = 'LCL_MENUBAR';
 var
   mbi: SHMENUBARINFO;
-  mi: MENUITEMINFO;
-  tb: TBButton;
   tbbi: TBBUTTONINFO;
   i, j, k, lIndex: integer;
-  buf: array[0..255] of WideChar;
-  wbuf: widestring;
   R, BR, WR: TRect;
   LeftMenuCount: Integer = -1;
   RightMenuCount: Integer = -1;
@@ -150,6 +348,15 @@ begin
   {$ifdef VerboseWinCEMenu}
   DebugLn('[CeSetMenu]');
   {$endif}
+
+  // The atDesktop menu code was completely separated because
+  // so many different menu kinds in the same code base were
+  // causing trouble
+  if (Application.ApplicationType = atDesktop) then
+  begin
+    CeSetMenuDesktop(Wnd, Menu, LCLMenu);
+    Exit;
+  end;
 
   GetWindowRect(Wnd, BR);
   mbi.hwndMB := SHFindMenuBar(Wnd);
@@ -202,11 +409,6 @@ begin
     //mbi.dwFlags := SHCMBF_HMENU;// This options ruins smartphone menu setting
     mbi.hInstRes := HINSTANCE;
 
-    FillChar(mi, SizeOf(mi), 0);
-    mi.cbSize:=SizeOf(mi);
-    mi.fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
-    mi.dwTypeData:=@buf;
-
     // Verifies the menu to find the best match for it's layout in the .rc file
     if LCLMenu <> nil then
     begin
@@ -257,7 +459,7 @@ begin
 
   // Implements back-key sending to edits, instead of hiding the form
   // See http://bugs.freepascal.org/view.php?id=16699
-  if mbi.hwndMB <> 0 then
+  if (mbi.hwndMB <> 0) then
   begin
     SendMessage(mbi.hwndMB, SHCMBM_OVERRIDEKEY, VK_ESCAPE,
      MAKELPARAM(SHMBOF_NODEFAULT or SHMBOF_NOTIFY, SHMBOF_NODEFAULT or SHMBOF_NOTIFY));
@@ -280,11 +482,6 @@ begin
   // Note that there are two versions of this part of the code
   // First an approach like KOL-CE does, which works better for smartphones
   // and later the original code from lcl-wince, which already works for PDAs
-  FillChar(mi, SizeOf(mi), 0);
-  mi.cbSize:=SizeOf(mi);
-  mi.fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
-  mi.dwTypeData:=@buf;
-
   if (Application.ApplicationType = atKeyPadDevice) then
   begin
     if (Menu <> 0) and (LCLMenu <> nil) then
@@ -376,92 +573,7 @@ begin
   end
   else
   begin
-    // Now we will add the buttons in the menu
-  //  DebugLn('Menu: ' + IntToStr(Menu) + ' LCLMenu: ' + IntToStr(PtrInt(LCLMenu)));
-    if (Menu <> 0) and (LCLMenu <> nil) then
-    begin
-      i:=0;
-      while True do
-      begin
-        mi.cch:=SizeOf(buf);
-
-        // Find the winapi menu item
-        if not GetMenuItemInfo(Menu, i, True, @mi) then
-        begin
-          {$ifdef VerboseWinCEMenu}
-          DebugLn('GetMenuItemInfo i=', dbgs(i), ' failed, breaking');
-          {$endif}
-          Break;
-        end;
-
-        // Find the associated LCL Menu item
-        k:=0; // j = counts all top-level menu items
-              // k = counts only visible ones;
-        for j:=0 to LCLMenu.Items.Count - 1 do
-        begin
-          if LCLMenu.Items.Items[j].Visible then
-          begin
-            if k = i then Break;
-            Inc(k);
-          end;
-        end;
-
-        // Don't use the default ID, force one, at least for the first two buttons
-        // But only do that for the main form, so that secondary forms
-        // can have unique numbers
-        if Wnd = Application.MainForm.Handle then
-        begin
-          if i = 0 then mi.wID := MenuBarID_L
-          else if i = 1 then mi.wID := MenuBarID_R;
-        end;
-
-        // Update the MenuItem Command to use latter
-        TMenuItemAccess(LCLMenu.Items.Items[j]).FCommand := mi.wID;
-
-        // Setting the caption
-        // old code: buf[mi.cch]:=#0;
-        wbuf := UTF8Decode(LCLMenu.Items.Items[j].Caption);
-        buf := wbuf;
-        buf[Length(wbuf)] := #0;
-
-        FillChar(tb, SizeOf(tb), 0);
-        tb.iBitmap:=I_IMAGENONE;
-        tb.idCommand := mi.wID;
-        {$ifdef VerboseWinCEMenu}
-        DebugLn('[CeSetMenu] p3 atPDA menuname: ' + LCLMenu.Items.Items[j].Name +
-          ' Set FCommand = mi.wID = ' + IntToStr(tb.idCommand));
-        {$endif}
-
-        tb.iString:=SendMessage(mbi.hwndMB, TB_ADDSTRING, 0, LPARAM(@buf));
-        if mi.fState and MFS_DISABLED = 0 then
-          tb.fsState:=TBSTATE_ENABLED;
-        if mi.fState and MFS_CHECKED <> 0 then
-          tb.fsState:=tb.fsState or TBSTATE_CHECKED;
-        if mi.hSubMenu <> 0 then
-          tb.fsStyle:=TBSTYLE_DROPDOWN or $0080 or TBSTYLE_AUTOSIZE
-        else
-          tb.fsStyle:=TBSTYLE_BUTTON or TBSTYLE_AUTOSIZE;
-        tb.dwData:=mi.hSubMenu;
-
-        {roozbeh : this wont work on 2002/2003...should i uncomment it or not?works this way anyway}
-        {$ifdef VerboseWinCEMenu}
-        DebugLn('[CeSetMenu] atPDA Message TB_INSERTBUTTON with ButtonID: i = ' + IntToStr(i));
-        {$endif}
-        if SendMessage(mbi.hwndMB, TB_INSERTBUTTON, i, LPARAM(@tb)) = 0 then
-          {$ifdef VerboseWinCEMenu}
-          DebugLn('TB_INSERTBUTTON failed')
-          {$endif}
-          ;
-
-        // Add to the list to receive click events though WM_COMMAND
-        {$ifdef VerboseWinCEMenu}
-        DebugLn('[CeSetMenu] Adding menuitem to MenuItemsList');
-        {$endif}
-        MenuItemsList.AddObject(IntToStr(tb.idCommand), LCLMenu.Items.Items[j]);
-
-        Inc(i);
-      end;
-    end;
+    PocketPCAddMenuToToolbar(Wnd, Menu, LCLMenu, mbi.hwndMB);
   end;
 
   // Correction for the position of the window
@@ -807,12 +919,11 @@ class procedure TWinCEWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const AC
 var
   bi: TBBUTTONINFO;
   w: WideString;
-  i, MenuBarRLID: Integer;
+  MenuBarRLID: Integer;
   FormFound: Boolean;
   AMenu: TMenu;
   lMenuBarHandle: THandle;
   lForm: TForm;
-  lMenu: LongInt;
 {$endif}
 begin
   // The code to set top-level menus is different then ordinary items under WinCE
