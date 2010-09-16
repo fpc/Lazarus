@@ -22,6 +22,9 @@ procedure QtX11InitializePalettes;
 var
   StyleName: WideString;
   Palette: QPaletteH;
+  LineEditPalette: QPaletteH;
+  ComboBoxPalette: QPaletteH;
+  TextEditPalette: QPaletteH;
   Brush: QBrushH;
 begin
   QObject_objectName(QApplication_style(), @StyleName);
@@ -34,13 +37,34 @@ begin
   QApplication_setPalette(Palette);
   QPalette_destroy(Palette);
 
+  LineEditPalette := QPalette_create();
+  ComboBoxPalette := QPalette_create();
+  TextEditPalette := QPalette_create();
+
   //palette for inactive titlebars
   Palette := QPalette_create();
   QApplication_palette(Palette);
+
+  // save original palette for QLineEdit, QComboBox, QTextEdit
+  QApplication_palette(LineEditPalette, 'QLineEdit');
+  QApplication_palette(ComboBoxPalette, 'QComboBox');
+  QApplication_palette(TextEditPalette, 'QTextEdit');
+
   Brush := QPalette_dark(Palette);
   QPalette_setBrush(Palette, QPaletteInactive, QPaletteHighlight, Brush);
   QApplication_setPalette(Palette);
   QPalette_destroy(Palette);
+
+  // restore original palettes for QLineEdit, QComboBox, QTextEdit
+  // otherwise we can have inactive selection color when setting
+  // selection on invisible widgets
+  QApplication_setPalette(LineEditPalette,'QLineEdit');
+  QApplication_setPalette(ComboBoxPalette,'QComboBox');
+  QApplication_setPalette(TextEditPalette,'QTextEdit');
+
+  QPalette_destroy(LineEditPalette);
+  QPalette_destroy(ComboBoxPalette);
+  QPalette_destroy(TextEditPalette);
 end;
 {$ENDIF}
 {------------------------------------------------------------------------------
