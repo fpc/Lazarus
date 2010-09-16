@@ -6190,6 +6190,8 @@ end;
 function TQtLineEdit.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
 begin
+  Result := False;
+  QEvent_accept(Event);
   if LCLObject = nil then
     exit;
   if (ChildOfComplexWidget = ccwComboBox) and
