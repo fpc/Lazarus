@@ -8114,7 +8114,8 @@ begin
   FRange:=Rect(-1,-1,-1,-1);
   FGCache.TLColOff := 0;
   FGCache.TlRowOff := 0;
-  FGCache.HotCell := Point(-1, -1);
+  FGCache.HotCellPainted := false;
+  ResetHotCell;
   VisualChange;
   SizeChanged(OldR,OldC);
 end;
