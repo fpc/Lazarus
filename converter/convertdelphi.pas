@@ -898,7 +898,7 @@ end;
 function TConvertDelphiPBase.Convert: TModalResult;
 begin
   IDEMessagesWindow.Clear;
-  Application.AddOnIdleHandler(@OnIdle, False);
+  Application.AddOnIdleHandler(@OnIdle);
   // Get settings from user.
   Result:=fSettings.RunForm;
   Application.RemoveOnIdleHandler(@OnIdle);
