@@ -1,0 +1,698 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: fpwebstrconsts.scssfile
+msgctxt "fpwebstrconsts.scssfile"
+msgid "CSS file"
+msgstr "CSS-Datei"
+
+#: fpwebstrconsts.scssfiledesc
+msgctxt "fpwebstrconsts.scssfiledesc"
+msgid "Create new CSS file..."
+msgstr "Erzeuge neue CSS-Datei..."
+
+#: fpwebstrconsts.scsssource
+msgid "Enter your classes/style definitions here"
+msgstr ""
+
+#: fpwebstrconsts.senteryoutext
+msgctxt "fpwebstrconsts.senteryoutext"
+msgid "Enter your text..."
+msgstr ""
+
+#: fpwebstrconsts.shtmlautor
+msgid "Html &author - <meta name=\"author\">"
+msgstr ""
+
+#: fpwebstrconsts.shtmlcharset
+msgid "HTML chars&et"
+msgstr "HTML-Zeich&ensatz"
+
+#: fpwebstrconsts.shtmlcopyright
+msgid "Html cop&yright - meta name=\"copyright\">"
+msgstr ""
+
+#: fpwebstrconsts.shtmlcssfile
+msgid "&CSS file"
+msgstr "&CSS-Datei"
+
+#: fpwebstrconsts.shtmldesign
+msgctxt "fpwebstrconsts.shtmldesign"
+msgid "HTML design"
+msgstr "HTML Design"
+
+#: fpwebstrconsts.shtmlfile
+msgctxt "fpwebstrconsts.shtmlfile"
+msgid "HTML file"
+msgstr "HTML-Datei"
+
+#: fpwebstrconsts.shtmlfiledesc
+msgctxt "fpwebstrconsts.shtmlfiledesc"
+msgid "Create new HTML file..."
+msgstr "Erzeuge neue HTML-Datei"
+
+#: fpwebstrconsts.shtmlinputformaccesskey
+msgid "Access key"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformalign
+msgid "Align"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformalt
+msgid "Alt"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformcaption
+msgid "Tag property: INPUT"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformimagesrc
+msgid "Image src"
+msgstr "Bildquelle"
+
+#: fpwebstrconsts.shtmlinputformmaxlen
+msgid "Max length"
+msgstr "Max. Länge"
+
+#: fpwebstrconsts.shtmlinputformname
+msgid "Name"
+msgstr "Name"
+
+#: fpwebstrconsts.shtmlinputformsize
+msgid "Size"
+msgstr "Größe"
+
+#: fpwebstrconsts.shtmlinputformtabindex
+msgid "Tab Index"
+msgstr ""
+
+#: fpwebstrconsts.shtmlinputformtype
+msgid "Type"
+msgstr "Typ"
+
+#: fpwebstrconsts.shtmlinputformvalue
+msgid "Value"
+msgstr "Wert"
+
+#: fpwebstrconsts.shtmljsfile
+msgid "&Javascript file"
+msgstr "&Javascript-Datei"
+
+#: fpwebstrconsts.shtmltableformborderwidth
+msgctxt "fpwebstrconsts.shtmltableformborderwidth"
+msgid "Border width"
+msgstr ""
+
+#: fpwebstrconsts.shtmltableformcaption
+msgctxt "fpwebstrconsts.shtmltableformcaption"
+msgid "New HTML table..."
+msgstr "Neue HTML-Tabelle..."
+
+#: fpwebstrconsts.shtmltableformcellpadding
+msgid "Cell padding"
+msgstr ""
+
+#: fpwebstrconsts.shtmltableformcellspacing
+msgid "Cell spacing"
+msgstr ""
+
+#: fpwebstrconsts.shtmltableformcolumncount
+msgctxt "fpwebstrconsts.shtmltableformcolumncount"
+msgid "Column count"
+msgstr ""
+
+#: fpwebstrconsts.shtmltableformheaderbgcolor
+msgctxt "fpwebstrconsts.shtmltableformheaderbgcolor"
+msgid "Header bg color"
+msgstr ""
+
+#: fpwebstrconsts.shtmltableformrowcount
+msgctxt "fpwebstrconsts.shtmltableformrowcount"
+msgid "Row count"
+msgstr ""
+
+#: fpwebstrconsts.shtmltableformuseheader
+msgctxt "fpwebstrconsts.shtmltableformuseheader"
+msgid "Use header row"
+msgstr ""
+
+#: fpwebstrconsts.shtmltableformwidth
+msgctxt "fpwebstrconsts.shtmltableformwidth"
+msgid "Width"
+msgstr "Breite"
+
+#: fpwebstrconsts.shtmltagcaptionreset
+msgctxt "fpwebstrconsts.shtmltagcaptionreset"
+msgid "Reset"
+msgstr ""
+
+#: fpwebstrconsts.shtmltagcaptionsubmit
+msgctxt "fpwebstrconsts.shtmltagcaptionsubmit"
+msgid "Submit"
+msgstr ""
+
+#: fpwebstrconsts.shtmltitle
+msgid "Html &title - <title>"
+msgstr ""
+
+#: fpwebstrconsts.sjsfile
+msgid "Javascript file"
+msgstr "Javascript-Datei"
+
+#: fpwebstrconsts.sjsfiledesc
+msgid "Create new javascript file..."
+msgstr "Erzeuge neue Javascript-Datei..."
+
+#: fpwebstrconsts.sjssource
+msgid "Enter your javascript code here"
+msgstr ""
+
+#: fpwebstrconsts.smihtmleditor
+msgctxt "fpwebstrconsts.smihtmleditor"
+msgid "HTML Editor"
+msgstr "HTML-Editor"
+
+#: fpwebstrconsts.smihtmlformbuttton
+msgid "Insert Button control"
+msgstr "Button einfügen"
+
+#: fpwebstrconsts.smihtmlformcheckbox
+msgid "Insert CheckBox control"
+msgstr "Checkbox einfügen"
+
+#: fpwebstrconsts.smihtmlformfieldset
+msgid "Insert FieldSet"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformlegend
+msgid "Insert Legend"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformradiobtn
+msgid "Insert RadioBtn control"
+msgstr "RadioButton einfügen"
+
+#: fpwebstrconsts.smihtmlforms
+msgctxt "fpwebstrconsts.smihtmlforms"
+msgid "Forms"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformselect
+msgid "Insert Select control"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformselectopt
+msgid "Insert Select options"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlformselectoptwd
+msgid "Insert Select options with dialog"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertbr
+msgctxt "fpwebstrconsts.smihtmlinsertbr"
+msgid "Insert new line"
+msgstr "Neue Zeile einfügen"
+
+#: fpwebstrconsts.smihtmlinsertcolor
+msgctxt "fpwebstrconsts.smihtmlinsertcolor"
+msgid "Insert HTML Color"
+msgstr "HTML-Farbe einfügen"
+
+#: fpwebstrconsts.smihtmlinsertcomment
+msgctxt "fpwebstrconsts.smihtmlinsertcomment"
+msgid "Insert HTML comment"
+msgstr "HTML-Kommentar einfügen"
+
+#: fpwebstrconsts.smihtmlinsertdivblock
+msgid "Insert DIV Block"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertform
+msgctxt "fpwebstrconsts.smihtmlinsertform"
+msgid "Insert HTML Form"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertheader1level
+msgid "Insert HTML level 1 header"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertheader2level
+msgid "Insert HTML level 2 header"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertheader3level
+msgid "Insert HTML level 3 header"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertheader4level
+msgid "Insert HTML level 4 header"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertheader5level
+msgid "Insert HTML level 5 header"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinserthr
+msgctxt "fpwebstrconsts.smihtmlinserthr"
+msgid "Insert horizontal line"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertimg
+msgctxt "fpwebstrconsts.smihtmlinsertimg"
+msgid "Insert image"
+msgstr "Bild einfügen"
+
+#: fpwebstrconsts.smihtmlinsertinput
+msgctxt "fpwebstrconsts.smihtmlinsertinput"
+msgid "Insert HTML Input tag"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertinputreset
+msgid "Insert \"Reset\" button"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertinputsubmit
+msgid "Insert \"Submit\" button "
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertlink
+msgid "Insert link (HREF)"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertlist
+msgctxt "fpwebstrconsts.smihtmlinsertlist"
+msgid "Insert HTML list"
+msgstr "HTML-Liste einfügen"
+
+#: fpwebstrconsts.smihtmlinsertnbsp
+msgctxt "fpwebstrconsts.smihtmlinsertnbsp"
+msgid "Insert Non Breaking Space"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertpre
+msgid "Insert Pre"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertspantext
+msgid "Insert Span Text"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertsub
+msgid "Insert Subscript"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinsertsuper
+msgid "Insert Superscript"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinserttable
+msgctxt "fpwebstrconsts.smihtmlinserttable"
+msgid "Insert HTML table"
+msgstr "HTML-Tabelle einfügen"
+
+#: fpwebstrconsts.smihtmlinserttabledata
+msgctxt "fpwebstrconsts.smihtmlinserttabledata"
+msgid "Insert HTML table data"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinserttabledatawd
+msgctxt "fpwebstrconsts.smihtmlinserttabledatawd"
+msgid "Insert HTML table data with dialog"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinserttablerow
+msgctxt "fpwebstrconsts.smihtmlinserttablerow"
+msgid "Insert HTML table row"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlinserttablerowwd
+msgctxt "fpwebstrconsts.smihtmlinserttablerowwd"
+msgid "Insert HTML table row with dialog"
+msgstr ""
+
+#: fpwebstrconsts.smihtmllists
+msgctxt "fpwebstrconsts.smihtmllists"
+msgid "Lists"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlother
+msgctxt "fpwebstrconsts.smihtmlother"
+msgid "Other"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlstandart
+msgid "Standard"
+msgstr ""
+
+#: fpwebstrconsts.smihtmlstyle
+msgctxt "fpwebstrconsts.smihtmlstyle"
+msgid "Style"
+msgstr "Stil"
+
+#: fpwebstrconsts.smihtmltables
+msgctxt "fpwebstrconsts.smihtmltables"
+msgid "Tables"
+msgstr "Tabellen"
+
+#: fpwebstrconsts.smihtmltextaligncenter
+msgctxt "fpwebstrconsts.smihtmltextaligncenter"
+msgid "Text align center"
+msgstr ""
+
+#: fpwebstrconsts.smihtmltextalignjustify
+msgctxt "fpwebstrconsts.smihtmltextalignjustify"
+msgid "Text align justify"
+msgstr ""
+
+#: fpwebstrconsts.smihtmltextalignleft
+msgctxt "fpwebstrconsts.smihtmltextalignleft"
+msgid "Text align left"
+msgstr ""
+
+#: fpwebstrconsts.smihtmltextalignright
+msgctxt "fpwebstrconsts.smihtmltextalignright"
+msgid "Text align right"
+msgstr ""
+
+#: fpwebstrconsts.smihtmltextbold
+msgctxt "fpwebstrconsts.smihtmltextbold"
+msgid "Bold"
+msgstr "Fett"
+
+#: fpwebstrconsts.smihtmltextitalic
+msgctxt "fpwebstrconsts.smihtmltextitalic"
+msgid "Italic"
+msgstr "Kursiv"
+
+#: fpwebstrconsts.smihtmltextunderline
+msgctxt "fpwebstrconsts.smihtmltextunderline"
+msgid "Underline"
+msgstr "Unterstrichen"
+
+#: fpwebstrconsts.smiotherinsertfn
+msgctxt "fpwebstrconsts.smiotherinsertfn"
+msgid "Insert file name"
+msgstr "Dateiname einfügen"
+
+#: fpwebstrconsts.snewhtmlfileprops
+msgid "New Html file properties"
+msgstr ""
+
+#: rxwebstrconsts.scssfile
+msgctxt "rxwebstrconsts.scssfile"
+msgid "CSS file"
+msgstr "CSS-Datei"
+
+#: rxwebstrconsts.scssfiledesc
+msgctxt "rxwebstrconsts.scssfiledesc"
+msgid "Create new CSS file..."
+msgstr "Erzeuge neue CSS-Datei..."
+
+#: rxwebstrconsts.senteryoutext
+msgctxt "rxwebstrconsts.senteryoutext"
+msgid "Enter your text..."
+msgstr ""
+
+#: rxwebstrconsts.shtmlautor
+msgid "Html autor - <meta name=\"author\">"
+msgstr ""
+
+#: rxwebstrconsts.shtmlcharset
+msgid "HTML charset"
+msgstr "HTML-Zeichensatz"
+
+#: rxwebstrconsts.shtmlcopyright
+msgid "Html copyright - meta name=\"copyright\">"
+msgstr ""
+
+#: rxwebstrconsts.shtmlcssfile
+msgctxt "rxwebstrconsts.shtmlcssfile"
+msgid "CSS file"
+msgstr "CSS-Datei"
+
+#: rxwebstrconsts.shtmldesign
+msgctxt "rxwebstrconsts.shtmldesign"
+msgid "HTML design"
+msgstr "HTML Design"
+
+#: rxwebstrconsts.shtmlfile
+msgctxt "rxwebstrconsts.shtmlfile"
+msgid "HTML file"
+msgstr "HTML-Datei"
+
+#: rxwebstrconsts.shtmlfiledesc
+msgctxt "rxwebstrconsts.shtmlfiledesc"
+msgid "Create new HTML file..."
+msgstr "Erzeuge neue HTML-Datei..."
+
+#: rxwebstrconsts.shtmltableformborderwidth
+msgctxt "rxwebstrconsts.shtmltableformborderwidth"
+msgid "Border width"
+msgstr ""
+
+#: rxwebstrconsts.shtmltableformcaption
+msgctxt "rxwebstrconsts.shtmltableformcaption"
+msgid "New HTML table..."
+msgstr "Neue HTML-Tabelle..."
+
+#: rxwebstrconsts.shtmltableformcellpadding
+msgid "Cellpadding"
+msgstr ""
+
+#: rxwebstrconsts.shtmltableformcellspacing
+msgid "Cellspacing"
+msgstr ""
+
+#: rxwebstrconsts.shtmltableformcolumncount
+msgctxt "rxwebstrconsts.shtmltableformcolumncount"
+msgid "Column count"
+msgstr ""
+
+#: rxwebstrconsts.shtmltableformheaderbgcolor
+msgctxt "rxwebstrconsts.shtmltableformheaderbgcolor"
+msgid "Header bg color"
+msgstr ""
+
+#: rxwebstrconsts.shtmltableformrowcount
+msgctxt "rxwebstrconsts.shtmltableformrowcount"
+msgid "Row count"
+msgstr ""
+
+#: rxwebstrconsts.shtmltableformuseheader
+msgctxt "rxwebstrconsts.shtmltableformuseheader"
+msgid "Use header row"
+msgstr ""
+
+#: rxwebstrconsts.shtmltableformwidth
+msgctxt "rxwebstrconsts.shtmltableformwidth"
+msgid "Width"
+msgstr "Breite"
+
+#: rxwebstrconsts.shtmltagcaptionreset
+msgctxt "rxwebstrconsts.shtmltagcaptionreset"
+msgid "Reset"
+msgstr ""
+
+#: rxwebstrconsts.shtmltagcaptionsubmit
+msgctxt "rxwebstrconsts.shtmltagcaptionsubmit"
+msgid "Submit"
+msgstr ""
+
+#: rxwebstrconsts.shtmltitle
+msgid "Html title - <title>"
+msgstr "Html-Titel - <title>"
+
+#: rxwebstrconsts.sjsfile
+msgid "Java script file"
+msgstr ""
+
+#: rxwebstrconsts.sjsfiledesc
+msgid "Create new java script file..."
+msgstr ""
+
+#: rxwebstrconsts.smihtmleditor
+msgctxt "rxwebstrconsts.smihtmleditor"
+msgid "HTML Editor"
+msgstr "HTML-Editor"
+
+#: rxwebstrconsts.smihtmlforms
+msgctxt "rxwebstrconsts.smihtmlforms"
+msgid "Forms"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlinsertbr
+msgctxt "rxwebstrconsts.smihtmlinsertbr"
+msgid "Insert new line"
+msgstr "Neue Zeile einfügen"
+
+#: rxwebstrconsts.smihtmlinsertcolor
+msgctxt "rxwebstrconsts.smihtmlinsertcolor"
+msgid "Insert HTML Color"
+msgstr "HTML-Farbe einfügen"
+
+#: rxwebstrconsts.smihtmlinsertcomment
+msgctxt "rxwebstrconsts.smihtmlinsertcomment"
+msgid "Insert HTML comment"
+msgstr "HTML-Kommentar einfügen"
+
+#: rxwebstrconsts.smihtmlinsertform
+msgctxt "rxwebstrconsts.smihtmlinsertform"
+msgid "Insert HTML Form"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlinsertheader1level
+msgid "Insert HTML header 1 level"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlinsertheader2level
+msgid "Insert HTML header 2 level"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlinsertheader3level
+msgid "Insert HTML header 3 level"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlinsertheader4level
+msgid "Insert HTML header 4 level"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlinsertheader5level
+msgid "Insert HTML header 5 level"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlinserthr
+msgctxt "rxwebstrconsts.smihtmlinserthr"
+msgid "Insert horizontal line"
+msgstr "Horizontale Linie einfügen"
+
+#: rxwebstrconsts.smihtmlinsertimg
+msgctxt "rxwebstrconsts.smihtmlinsertimg"
+msgid "Insert image"
+msgstr "Bild einfügen"
+
+#: rxwebstrconsts.smihtmlinsertinput
+msgctxt "rxwebstrconsts.smihtmlinsertinput"
+msgid "Insert HTML Input tag"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlinsertinputreset
+msgid "Insert button Reset"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlinsertinputsubmit
+msgid "Insert button Submit"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlinsertlist
+msgctxt "rxwebstrconsts.smihtmlinsertlist"
+msgid "Insert HTML list"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlinsertnbsp
+msgctxt "rxwebstrconsts.smihtmlinsertnbsp"
+msgid "Insert Non Breaking Space"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlinserttable
+msgctxt "rxwebstrconsts.smihtmlinserttable"
+msgid "Insert HTML table"
+msgstr "HTML-Tabelle einfügen"
+
+#: rxwebstrconsts.smihtmlinserttabledata
+msgctxt "rxwebstrconsts.smihtmlinserttabledata"
+msgid "Insert HTML table data"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlinserttabledatawd
+msgctxt "rxwebstrconsts.smihtmlinserttabledatawd"
+msgid "Insert HTML table data with dialog"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlinserttablerow
+msgctxt "rxwebstrconsts.smihtmlinserttablerow"
+msgid "Insert HTML table row"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlinserttablerowwd
+msgctxt "rxwebstrconsts.smihtmlinserttablerowwd"
+msgid "Insert HTML table row with dialog"
+msgstr ""
+
+#: rxwebstrconsts.smihtmllists
+msgctxt "rxwebstrconsts.smihtmllists"
+msgid "Lists"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlother
+msgctxt "rxwebstrconsts.smihtmlother"
+msgid "Other"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlstandart
+msgid "Standart"
+msgstr ""
+
+#: rxwebstrconsts.smihtmlstyle
+msgctxt "rxwebstrconsts.smihtmlstyle"
+msgid "Style"
+msgstr "Stil"
+
+#: rxwebstrconsts.smihtmltables
+msgctxt "rxwebstrconsts.smihtmltables"
+msgid "Tables"
+msgstr "Tabellen"
+
+#: rxwebstrconsts.smihtmltextaligncenter
+msgctxt "rxwebstrconsts.smihtmltextaligncenter"
+msgid "Text align center"
+msgstr ""
+
+#: rxwebstrconsts.smihtmltextalignjustify
+msgctxt "rxwebstrconsts.smihtmltextalignjustify"
+msgid "Text align justify"
+msgstr ""
+
+#: rxwebstrconsts.smihtmltextalignleft
+msgctxt "rxwebstrconsts.smihtmltextalignleft"
+msgid "Text align left"
+msgstr ""
+
+#: rxwebstrconsts.smihtmltextalignright
+msgctxt "rxwebstrconsts.smihtmltextalignright"
+msgid "Text align right"
+msgstr ""
+
+#: rxwebstrconsts.smihtmltextbold
+msgctxt "rxwebstrconsts.smihtmltextbold"
+msgid "Bold"
+msgstr "Fett"
+
+#: rxwebstrconsts.smihtmltextitalic
+msgctxt "rxwebstrconsts.smihtmltextitalic"
+msgid "Italic"
+msgstr "Kursiv"
+
+#: rxwebstrconsts.smihtmltextunderline
+msgctxt "rxwebstrconsts.smihtmltextunderline"
+msgid "Underline"
+msgstr "Unterstrichen"
+
+#: rxwebstrconsts.smiotherinsertfn
+msgctxt "rxwebstrconsts.smiotherinsertfn"
+msgid "Insert file name"
+msgstr "Dateiname einfügen"
+
+#: rxwebstrconsts.snewhtmlfileprops
+msgid "New Html file propertys"
+msgstr ""
+
