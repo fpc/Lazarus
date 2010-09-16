@@ -853,20 +853,20 @@ begin
     end;
   end;
   Result:=true;
-end;
+end;  // ReplaceFuncCalls
 
 function TConvDelphiCodeTool.CheckTopOffsets(LFMBuf: TCodeBuffer; LFMTree: TLFMTree;
                      VisOffsets: TVisualOffsets; ValueNodes: TObjectList): boolean;
-// Collect a list of Top attributes for components that are inside
+// Collect a list of coord attributes for components that are inside
 //  a visual container component. An offset will be added to those attributes.
-// Parameters: ParentOffsets has names of parent visual container types.
-//   ValueNodes - the found Top attributes are added here as TSrcPropOffset objects.
+// Parameters: VisOffsets has names of parent container types.
+//   ValueNodes - the found coord attributes are added here as TSrcPropOffset objects.
 // Based on function CheckLFM.
 var
   RootContext: TFindContext;
 
   function CheckLFMObjectValues(LFMObject: TLFMObjectNode;
-    const GrandParentContext, ClassContext: TFindContext): boolean; forward;
+    const ClassContext: TFindContext; GrandClassName: string): boolean; forward;
 
   function FindLFMIdentifier(LFMNode: TLFMTreeNode; const IdentName: string;
     const ClassContext: TFindContext; out IdentContext: TFindContext): boolean;
@@ -962,15 +962,6 @@ var
     end;
   end;
 
-  function CreateFootNote(const Context: TFindContext): string;
-  var
-    Caret: TCodeXYPosition;
-  begin
-    Result:=' see '+Context.Tool.MainFilename;
-    if Context.Tool.CleanPosToCaret(Context.Node.StartPos,Caret) then
-      Result:=Result+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')';
-  end;
-
   function FindClassContext(const ClassName: string): TFindContext;
   var
     Params: TFindDeclarationParams;
@@ -1009,10 +1000,9 @@ var
     end;
   end;
 
-  procedure CheckLFMChildObject(LFMObject: TLFMObjectNode;
-    const GrandParentContext, ParentContext: TFindContext);
+  procedure CheckLFMChildObject(LFMObject: TLFMObjectNode; const ParentName: string);
   var
-    VariableTypeName: String;
+    VarTypeName: String;
     ChildContext: TFindContext;
     ClassContext: TFindContext;
     DefinitionNode: TCodeTreeNode;
@@ -1022,19 +1012,19 @@ var
     if FindLFMIdentifier(LFMObject, LFMObject.Name, RootContext, ChildContext) then begin
       if ChildContext.Node=nil then exit;
       // check if identifier is a variable or property
-      VariableTypeName:='';
+      VarTypeName:='';
       if (ChildContext.Node.Desc=ctnVarDefinition) then begin
         DefinitionNode:=ChildContext.Tool.FindTypeNodeOfDefinition(ChildContext.Node);
         if DefinitionNode=nil then exit;
-        VariableTypeName:=ChildContext.Tool.ExtractDefinitionNodeType(ChildContext.Node);
+        VarTypeName:=ChildContext.Tool.ExtractDefinitionNodeType(ChildContext.Node);
       end else if (ChildContext.Node.Desc=ctnProperty) then begin
         DefinitionNode:=ChildContext.Node;
-        VariableTypeName:=ChildContext.Tool.ExtractPropType(ChildContext.Node,false,false);
+        VarTypeName:=ChildContext.Tool.ExtractPropType(ChildContext.Node,false,false);
       end else
         exit;
       // check if variable/property has a compatible type
-      if (VariableTypeName<>'') and (LFMObject.TypeName<>'')
-          and (CompareIdentifiers(PChar(VariableTypeName),
+      if (VarTypeName<>'') and (LFMObject.TypeName<>'')
+          and (CompareIdentifiers(PChar(VarTypeName),
                                   PChar(LFMObject.TypeName))<>0) then  exit;
       // find class node
       ClassContext:=FindClassNodeForLFMObject(LFMObject, ChildContext.Tool, DefinitionNode);
@@ -1042,7 +1032,7 @@ var
       ClassContext:=FindClassContext(LFMObject.TypeName);  // try the object type
     // check child LFM nodes
     if ClassContext.Node<>nil then
-      CheckLFMObjectValues(LFMObject, ParentContext, ClassContext)
+      CheckLFMObjectValues(LFMObject, ClassContext, ParentName)
     else
       raise Exception.Create('No ClassContext in CheckLFMChildObject');
   end;
@@ -1070,29 +1060,28 @@ var
     end;
   end;
 
-  procedure CheckLFMProperty(LFMProperty: TLFMPropertyNode;
-    const GrandParentContext, ParentContext: TFindContext);
-  // Check properties. Eg. lines like 'OnShow = FormShow' or 'VertScrollBar.Range = 29'
-  // LFMProperty is the property node
-  // ParentContext is the context, where properties are searched.
-  //               This can be a class or a property.
+  procedure CheckLFMProperty(LFMProperty: TLFMPropertyNode; const ParentContext: TFindContext;
+    const GrandClassName, ParentClassName: string);
+  // Check properties. Stores info about Top and Left properties for later adjustment.
+  // Parameters: LFMProperty is the property node
+  //   ParentContext is the context, where properties are searched (class or property).
+  //   GrandClassName and ParentClassName are the class type names.
   var
     i, ind: Integer;
     ValNode: TLFMValueNode;
-    CurName, GrandName, Prop: string;
-    CurPropertyContext: TFindContext;
+    CurName, Prop: string;
+    CurPropContext: TFindContext;
     SearchContext: TFindContext;
   begin
     // find complete property name
     Prop:=LFMProperty.CompleteName;
     if Prop='' then exit;
     if (Prop='Top') or (Prop='Left') then begin
-      CurName:=ParentContext.Tool.ExtractClassName(ParentContext.Node, False);
-      GrandName:=GrandParentContext.Tool.ExtractClassName(GrandParentContext.Node, False);
-      if VisOffsets.Find(GrandName, ind) then begin
+      if (GrandClassName<>'') and VisOffsets.Find(GrandClassName, ind) then begin
         if LFMProperty.FirstChild is TLFMValueNode then begin
           ValNode:=LFMProperty.FirstChild as TLFMValueNode;
-          ValueNodes.Add(TSrcPropOffset.Create(GrandName,CurName,Prop,ValNode.StartPos));
+          ValueNodes.Add(TSrcPropOffset.Create(GrandClassName,ParentClassName,
+                                               Prop,ValNode.StartPos));
         end;
       end;
     end;
@@ -1105,25 +1094,28 @@ var
         if SearchContext.Node=nil then exit;
       end;
       CurName:=LFMProperty.NameParts.Names[i];
-      if not FindLFMIdentifier(LFMProperty, CurName, SearchContext, CurPropertyContext) then
+      if not FindLFMIdentifier(LFMProperty, CurName, SearchContext, CurPropContext) then
         break;
-      if CurPropertyContext.Node=nil then break;
-      SearchContext:=CurPropertyContext;
+      if CurPropContext.Node=nil then break;
+      SearchContext:=CurPropContext;
     end;
   end;
 
   function CheckLFMObjectValues(LFMObject: TLFMObjectNode;
-    const GrandParentContext, ClassContext: TFindContext): boolean;
+    const ClassContext: TFindContext; GrandClassName: string): boolean;
   var
     CurLFMNode: TLFMTreeNode;
+    ParentName: string;
   begin
+    ParentName:=ClassContext.Tool.ExtractClassName(ClassContext.Node, False);
     CurLFMNode:=LFMObject.FirstChild;
     while CurLFMNode<>nil do begin
       case CurLFMNode.TheType of
       lfmnObject:
-        CheckLFMChildObject(TLFMObjectNode(CurLFMNode), GrandParentContext, ClassContext);
+        CheckLFMChildObject(TLFMObjectNode(CurLFMNode), ParentName);
       lfmnProperty:
-        CheckLFMProperty(TLFMPropertyNode(CurLFMNode), GrandParentContext, ClassContext);
+        CheckLFMProperty(TLFMPropertyNode(CurLFMNode), ClassContext,
+                         GrandClassName, ParentName);
       end;
       CurLFMNode:=CurLFMNode.NextSibling;
     end;
@@ -1151,7 +1143,7 @@ var
     RootContext.Node:=RootClassNode;
     RootContext.Tool:=fCodeTool;
     if RootClassNode=nil then exit;
-    Result:=CheckLFMObjectValues(LookupRootLFMNode, CleanFindContext, RootContext);
+    Result:=CheckLFMObjectValues(LookupRootLFMNode, RootContext, '');
   end;
 
 var
@@ -1175,7 +1167,7 @@ begin
     fCodeTool.DeactivateGlobalWriteLock;
   end;
   Result:=LFMTree.FirstError=nil;
-end;
+end;  // CheckTopOffsets
 
 
 end.
