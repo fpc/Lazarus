@@ -560,7 +560,7 @@ var
     Parent: TWinControl;
     Sibling: TControl;
     WinControl: TWinControlAccess absolute Sibling;
-    PreviousCheckState: LRESULT;
+    LParamFlag: LRESULT;
     i: Integer;
   begin
     Parent := RadioButton.Parent;
@@ -571,9 +571,12 @@ var
       begin
         // Pass previous state through LParam so the event handling can decide
         // when to propagate LM_CHANGE (New State <> Previous State)
-        PreviousCheckState := Windows.SendMessage(WinControl.WindowHandle, BM_GETCHECK, 0, 0);
+        LParamFlag := Windows.SendMessage(WinControl.WindowHandle, BM_GETCHECK, 0, 0);
+        // Pass SKIP_LMCHANGE through LParam if previous state is already unchecked
+        if LParamFlag = BST_UNCHECKED then
+          LParamFlag := SKIP_LMCHANGE;
         Windows.SendMessage(WinControl.WindowHandle, BM_SETCHECK,
-          Windows.WParam(BST_UNCHECKED), Windows.LParam(PreviousCheckState));
+          Windows.WParam(BST_UNCHECKED), Windows.LParam(LParamFlag));
       end;
     end;
   end;
@@ -1253,9 +1256,9 @@ begin
                     Flags := BST_INDETERMINATE
                   else
                     Flags := BST_CHECKED;
-                  //pass a different values in WParam and WParam to force sending LM_CHANGE
+                  //pass 0 through LParam to force sending LM_CHANGE
                   Windows.SendMessage(lWinControl.Handle, BM_SETCHECK,
-                    Windows.WPARAM(Flags), Windows.LPARAM(Flags + 1));
+                    Windows.WPARAM(Flags), 0);
                 end;
                 LMessage.Msg := LM_CLICKED;
               end;
@@ -2340,9 +2343,8 @@ begin
     end;
     BM_SETCHECK:
     begin
-      //LParam holds previous state
-      //Propagate LM_CHANGED when state is changed
-      if LParam <> WParam then
+      //LParam holds BST_CHECKED, BST_UNCHECKED or SKIP_LMCHANGE;
+      if LParam <> SKIP_LMCHANGE then
         LMessage.Msg := LM_CHANGED;
       if lWinControl is TRadioButton then
       begin

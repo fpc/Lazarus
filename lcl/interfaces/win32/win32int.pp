@@ -87,6 +87,8 @@ const
      IDC_SIZENWSE, IDC_SIZENS, IDC_SIZENESW, IDC_SIZE, IDC_IBEAM, IDC_CROSS,
      IDC_ARROW, IDC_ARROW, IDC_ARROW);
 
+  //flag used to avoid propagating LM_CHANGE for TCustomCheckBox
+  SKIP_LMCHANGE = 1000;
 
 type
   PInitCommonControlsEx = ^TInitCommonControlsEx;
