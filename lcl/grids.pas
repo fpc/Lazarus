@@ -9745,7 +9745,7 @@ end;
 
 function TGridColumnTitle.IsCaptionStored: boolean;
 begin
-  result := FCaption <> nil;
+  result := true;
 end;
 
 function TGridColumnTitle.IsColorStored: boolean;
