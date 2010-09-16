@@ -4818,6 +4818,7 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.SetFocus(hWnd: HWND): HWND;
 begin
+  Result := 0;
   if hwnd<>0 then
   begin
     {$ifdef VerboseFocus}
