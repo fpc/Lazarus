@@ -39,16 +39,20 @@ type
 
   TConvertTarget = (ctLazarus, ctLazarusWin, ctLazarusAndDelphi);
 
+  TConvertSettingsForm = class;
+
   { TConvertSettings }
 
   TConvertSettings = class
   private
+    fEnabled: Boolean;
     fTitle: String;       // Used for form caption.
     // Unit, Project or Package top file and path.
     fMainFilename: String;
     fMainPath: String;
     // Persistent storage in XML or some other format.
     fConfigStorage: TConfigStorage;
+    fSettingsForm: TConvertSettingsForm;
     // Actual user settings.
     fBackupFiles: boolean;
     fTarget: TConvertTarget;
@@ -67,6 +71,7 @@ type
     fVisualOffsets: TVisualOffsets;
     // Getter / setter:
     function GetBackupPath: String;
+    procedure SetEnabled(const AValue: Boolean);
     procedure SetMainFilename(const AValue: String);
   public
     constructor Create(const ATitle: string);
@@ -92,6 +97,7 @@ type
     property MainFilename: String read fMainFilename write SetMainFilename;
     property MainPath: String read fMainPath;
     property BackupPath: String read GetBackupPath;
+    property Enabled: Boolean read fEnabled write SetEnabled;
 
     property BackupFiles: boolean read fBackupFiles;
     property Target: TConvertTarget read fTarget;
@@ -113,7 +119,7 @@ type
     PropRemoveAutoCheckBox: TCheckBox;
     UnitReplaceAutoCheckBox: TCheckBox;
     BackupCheckBox: TCheckBox;
-    ButtonPanel: TButtonPanel;
+    ButtonPanel1: TButtonPanel;
     FuncReplaceEnableCheckBox: TCheckBox;
     VisualOffsEnableCheckBox: TCheckBox;
     Label1: TLabel;
@@ -336,6 +342,8 @@ begin
   fTitle:=ATitle;
   fMainFilename:='';
   fMainPath:='';
+  fEnabled:=True;
+  fSettingsForm:=Nil;
   fReplaceUnits:=TStringToStringTree.Create(false);
   fReplaceTypes:=TStringToStringTree.Create(false);
   fReplaceFuncs:=TFuncsAndCategories.Create;
@@ -469,35 +477,34 @@ begin
 end;
 
 function TConvertSettings.RunForm: TModalResult;
-var
-  SettingsForm: TConvertSettingsForm;
 begin
-  SettingsForm:=TConvertSettingsForm.Create(nil, Self);
-  with SettingsForm do
+  fSettingsForm:=TConvertSettingsForm.Create(nil, Self);
   try
-    Caption:=fTitle;
-    ProjectPathEdit.Text:=fMainPath;
-    // Settings --> UI. Loaded from ConfigSettings earlier.
-    BackupCheckBox.Checked           :=fBackupFiles;
-    TargetRadioGroup.ItemIndex       :=integer(fTarget);
-    SameDFMCheckBox.Checked          :=fSameDFMFile;
-    PropRemoveAutoCheckBox.Checked   :=fAutoRemoveProperties;
-    UnitReplaceAutoCheckBox.Checked  :=fAutoReplaceUnits;
-    FuncReplaceEnableCheckBox.Checked:=fEnableReplaceFuncs;
-    VisualOffsEnableCheckBox.Checked :=fEnableVisualOffs;
-    Result:=ShowModal;         // Let the user change settings in a form.
-    if Result=mrOK then begin
-      // UI --> Settings. Will be saved to ConfigSettings later.
-      fBackupFiles         :=BackupCheckBox.Checked;
-      fTarget              :=TConvertTarget(TargetRadioGroup.ItemIndex);
-      fSameDFMFile         :=SameDFMCheckBox.Checked;
-      fAutoRemoveProperties:=PropRemoveAutoCheckBox.Checked;
-      fAutoReplaceUnits    :=UnitReplaceAutoCheckBox.Checked;
-      fEnableReplaceFuncs  :=FuncReplaceEnableCheckBox.Checked;
-      fEnableVisualOffs    :=VisualOffsEnableCheckBox.Checked;
+    with fSettingsForm do begin
+      Caption:=fTitle;
+      ProjectPathEdit.Text:=fMainPath;
+      // Settings --> UI. Loaded from ConfigSettings earlier.
+      BackupCheckBox.Checked           :=fBackupFiles;
+      TargetRadioGroup.ItemIndex       :=integer(fTarget);
+      SameDFMCheckBox.Checked          :=fSameDFMFile;
+      PropRemoveAutoCheckBox.Checked   :=fAutoRemoveProperties;
+      UnitReplaceAutoCheckBox.Checked  :=fAutoReplaceUnits;
+      FuncReplaceEnableCheckBox.Checked:=fEnableReplaceFuncs;
+      VisualOffsEnableCheckBox.Checked :=fEnableVisualOffs;
+      Result:=ShowModal;         // Let the user change settings in a form.
+      if Result=mrOK then begin
+        // UI --> Settings. Will be saved to ConfigSettings later.
+        fBackupFiles         :=BackupCheckBox.Checked;
+        fTarget              :=TConvertTarget(TargetRadioGroup.ItemIndex);
+        fSameDFMFile         :=SameDFMCheckBox.Checked;
+        fAutoRemoveProperties:=PropRemoveAutoCheckBox.Checked;
+        fAutoReplaceUnits    :=UnitReplaceAutoCheckBox.Checked;
+        fEnableReplaceFuncs  :=FuncReplaceEnableCheckBox.Checked;
+        fEnableVisualOffs    :=VisualOffsEnableCheckBox.Checked;
+      end;
     end;
   finally
-    Free;
+    FreeAndNil(fSettingsForm);
   end;
 end;
 
@@ -587,6 +594,14 @@ begin
   end;
 end;
 
+procedure TConvertSettings.SetEnabled(const AValue: Boolean);
+begin
+  if fEnabled=AValue then exit;
+  fEnabled:=AValue;
+  if Assigned(fSettingsForm) then
+    fSettingsForm.ButtonPanel1.Enabled:=fEnabled; // OKButton
+end;
+
 
 { TConvertSettingsForm }
 
@@ -610,9 +625,9 @@ begin
   BackupCheckBox.Caption:=lisBackupChangedFiles;
   BackupCheckBox.Hint:=lisBackupHint;
 
-  ButtonPanel.OKButton.Caption:=lisStartConversion;
-  ButtonPanel.HelpButton.Caption:=lisMenuHelp;
-  ButtonPanel.CancelButton.Caption:=dlgCancel;
+  ButtonPanel1.OKButton.Caption:=lisStartConversion;
+  ButtonPanel1.HelpButton.Caption:=lisMenuHelp;
+  ButtonPanel1.CancelButton.Caption:=dlgCancel;
 
   SameDFMCheckBox.Caption:=lisConvUseSameDFM;
   SameDFMCheckBox.Hint:=lisConvUseSameDFMHint;

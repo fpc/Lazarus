@@ -138,6 +138,8 @@ type
     // Units that are found and will be added to project and converted.
     fUnitsToAddToProject: TStringList;
     fSettings: TConvertSettings;
+    fDoneScan: Boolean;
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
     function ConvertSub: TModalResult;
     procedure CleanUpCompilerOptionsSearchPaths(Options: TBaseCompilerOptions);
     procedure SetCompilerModeForDefineTempl(DefTempl: TDefineTemplate);
@@ -519,7 +521,7 @@ begin
     end;
     // Create a form file name based on the unit file name.
     LfmFilename:=fSettings.DelphiToLazFilename(fOrigUnitFilename, '.lfm',
-                                             cdtlufRenameLowercase in fFlags);
+                                               cdtlufRenameLowercase in fFlags);
     if DfmFilename<>'' then begin
       if FileExistsUTF8(LfmFilename) then
         if (FileAgeUTF8(LfmFilename)<FileAgeUTF8(DfmFilename)) then
@@ -871,8 +873,6 @@ begin
   fAllMissingUnits.Sorted:=true;
   fUnitsToAddToProject:=TStringList.Create;
   fPrevSelectedPath:=fSettings.MainPath;
-  // Scan unit files a level above project path. Used later for missing units.
-  CacheUnitsInPath(TrimFilename(fSettings.MainPath+'../'));
 end;
 
 destructor TConvertDelphiPBase.Destroy;
@@ -885,13 +885,24 @@ begin
   inherited Destroy;
 end;
 
+procedure TConvertDelphiPBase.OnIdle(Sender: TObject; var Done: Boolean);
+begin
+  if not fDoneScan then begin
+    CacheUnitsInPath(TrimFilename(fSettings.MainPath+'../'));
+    fDoneScan:=True;
+  end;
+  Done:=True;
+end;
+
 // Creates or updates a lazarus project (.lpi+.lpr) or package.
 function TConvertDelphiPBase.Convert: TModalResult;
 begin
   IDEMessagesWindow.Clear;
+  Application.AddOnIdleHandler(@OnIdle, False);
   // Get settings from user.
   Result:=fSettings.RunForm;
-  if Result=mrOK then begin
+  Application.RemoveOnIdleHandler(@OnIdle);
+  if (Result=mrOK) and fDoneScan then begin
     // create/open lazarus project or package file
     fLazPFilename:=fSettings.DelphiToLazFilename(fOrigPFilename, fLazPSuffix, false);
 

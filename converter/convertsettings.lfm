@@ -15,7 +15,7 @@ object ConvertSettingsForm: TConvertSettingsForm
   object MissingStuffGroupBox: TGroupBox
     AnchorSideTop.Control = SettingsGroupBox
     AnchorSideTop.Side = asrBottom
-    AnchorSideBottom.Control = ButtonPanel
+    AnchorSideBottom.Control = ButtonPanel1
     Left = 0
     Height = 213
     Top = 219
@@ -237,7 +237,7 @@ object ConvertSettingsForm: TConvertSettingsForm
     State = cbChecked
     TabOrder = 3
   end
-  object ButtonPanel: TButtonPanel
+  object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 39
     Top = 438
