@@ -726,6 +726,7 @@ var
   DirEndPos: Integer;
   CurDirLen: Integer;
   CurPath: string;
+  CurPathLen: Integer;
 begin
   Result:=-1;
   DirLen:=length(Directory);
@@ -747,8 +748,13 @@ begin
   Result:=SearchPath.Count-1;
   while Result>=0 do begin
     CurPath:=SearchPath[Result];
-    if (CurPath<>'')
-    and (FileUtil.CompareFilenames(@CurPath[1],length(CurPath),
+    CurPathLen:=length(CurPath);
+    if CurPathLen>0 then
+    begin
+      while (CurPathLen>1) and (CurPath[CurPathLen]=PathDelim) do dec(CurPathLen);
+    end;
+    if (CurPathLen>0)
+    and (FileUtil.CompareFilenames(@CurPath[1],CurPathLen,
                                    @Directory[DirStartPos],CurDirLen,
                                    false)=0)
     then begin
