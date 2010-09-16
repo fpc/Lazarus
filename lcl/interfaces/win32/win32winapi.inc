@@ -1762,6 +1762,11 @@ begin
   Result := Windows.GetBitmapBits(Bitmap, Count, Bits);
 end;
 
+function TWin32WidgetSet.GetBkColor(DC: HDC): TColorRef;
+begin
+  Result := TColorRef(Windows.GetBkColor(DC));
+end;
+
 
 function TWin32WidgetSet.CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
   var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP;

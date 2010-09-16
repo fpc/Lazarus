@@ -315,6 +315,11 @@ begin
   Result := WidgetSet.GetBitmapBits(Bitmap, Count, Bits);
 end;
 
+function GetBkColor(DC: HDC): TColorRef;
+begin
+  Result := WidgetSet.GetBkColor(DC);
+end;
+
 function GetCapture: HWND;
 Begin
   Result := WidgetSet.GetCapture;

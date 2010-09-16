@@ -906,6 +906,11 @@ begin
   Result := 0;
 end;
 
+function TWidgetSet.GetBkColor(DC: HDC): TColorRef;
+begin
+  Result := 0;
+end;
+
 function TWidgetSet.GetCapture : HWND;
 begin
   Result := 0;
