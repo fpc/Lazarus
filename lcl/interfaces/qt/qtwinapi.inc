@@ -3474,6 +3474,52 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetTextExtentExPoint
+  Params: http://msdn.microsoft.com/en-us/library/dd144935%28VS.85%29.aspx
+  Returns: True on success
+ ------------------------------------------------------------------------------}
+function TQtWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar; Count,
+  MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: TSize
+  ): Boolean;
+var
+  i: Integer;
+  w: Integer;
+  Accumulator: Integer;
+  AStr: WideString;
+begin
+  Result := False;
+  if not IsValidDC(DC) then Exit;
+  with TQtDeviceContext(DC) do
+  begin
+    AStr := GetUtf8String(Str);
+    Size.cX := Font.Metrics.Width(@AStr, Count);
+    Size.cY := Font.Metrics.Height;
+    if PartialWidths <> nil then
+    begin
+      if MaxCount <> nil then
+        MaxCount^ := 0;
+      Accumulator := 0;
+      for i := 0 to Count - 1 do
+      begin
+        w := QFontMetrics_charWidth(Font.Metrics.Widget, @AStr, i);
+        Inc(Accumulator, w);
+        if MaxCount <> nil then
+        begin
+          if Accumulator <= MaxWidth then
+          begin
+            inc(MaxCount^);
+            PartialWidths[i] := Accumulator;
+          end else
+            break;
+        end else
+          PartialWidths[i] := Accumulator;
+      end;
+    end;
+  end;
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetTextExtentPoint
   Params:  none
   Returns: Nothing
