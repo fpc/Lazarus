@@ -2203,8 +2203,6 @@ bigidecomponents: all
 	$(MAKE) -C rtticontrols
 	$(MAKE) -C printers
 	$(MAKE) -C printers/design
-	$(MAKE) -C cgi
-	$(MAKE) -C cgi/ide
 	$(MAKE) -C turbopower_ipro
 	$(MAKE) -C turbopower_ipro/design
 	$(MAKE) -C fpcunit
@@ -2227,8 +2225,6 @@ bigideclean:
 	$(MAKE) -C rtticontrols clean
 	$(MAKE) -C printers clean
 	$(MAKE) -C printers/design clean
-	$(MAKE) -C cgi clean
-	$(MAKE) -C cgi/ide clean
 	$(MAKE) -C turbopower_ipro clean
 	$(MAKE) -C turbopower_ipro/design clean
 	$(MAKE) -C fpcunit clean
