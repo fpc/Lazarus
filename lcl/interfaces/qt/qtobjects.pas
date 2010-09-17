@@ -403,9 +403,10 @@ type
     function brush: TQtBrush;
     procedure setBrush(ABrush: TQtBrush);
     function BackgroundBrush: TQtBrush;
+    function GetBkColor: TColorRef;
     function pen: TQtPen;
     function setPen(APen: TQtPen): TQtPen;
-    function SetBkColor(Color: TcolorRef): TColorRef;
+    function SetBkColor(Color: TColorRef): TColorRef;
     function SetBkMode(BkMode: Integer): Integer;
     function getDepth: integer;
     function getDeviceSize: TPoint;
@@ -2744,6 +2745,16 @@ begin
   result := vBackGroundBrush;
 end;
 
+function TQtDeviceContext.GetBkColor: TColorRef;
+var
+  TheBrush: QBrushH;
+  TheColor: TQColor;
+begin
+  TheBrush := QPainter_background(Widget);
+  TheColor := QBrush_color(TheBrush)^;
+  TQColorToColorRef(TheColor, Result);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtDeviceContext.pen
   Params:  None
@@ -2824,15 +2835,14 @@ begin
   Result := FClipboard;
 end;
 
-function TQtDeviceContext.SetBkColor(Color: TcolorRef): TColorRef;
+function TQtDeviceContext.SetBkColor(Color: TColorRef): TColorRef;
 var
   NColor: TQColor;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.setBKColor() ');
   {$endif}
-  NColor := BackgroundBrush.getColor^;
-  TQColorToColorRef(NColor, Result);
+  Result := GetBkColor;
   ColorRefToTQColor(ColorToRGB(Color), NColor);
   BackgroundBrush.setColor(@NColor);
 end;

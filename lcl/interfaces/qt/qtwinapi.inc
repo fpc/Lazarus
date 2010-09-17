@@ -1913,6 +1913,16 @@ begin
   end;
 end;
 
+function TQtWidgetSet.GetBkColor(DC: HDC): TColorRef;
+var
+  QtDC: TQtDeviceContext;
+begin
+  Result := CLR_INVALID;
+  if not IsValidDC(DC) then Exit;
+  QtDC := TQtDeviceContext(DC);
+  Result := QtDC.GetBkColor;
+end;
+
 function TQtWidgetSet.GetCapture: HWND;
 var
   w: QWidgetH;
@@ -4699,7 +4709,7 @@ begin
     Exit;
   end;
 
-  result := TQtDeviceContext(DC).SetBkColor(Color);
+  Result := TQtDeviceContext(DC).SetBkColor(Color);
 end;
 
 {------------------------------------------------------------------------------
