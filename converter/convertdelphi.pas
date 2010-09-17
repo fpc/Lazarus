@@ -519,7 +519,9 @@ begin
       Result:=LazarusIDE.DoCloseEditorFile(DfmFilename,[cfSaveFirst]);
       if Result<>mrOk then exit;
     end;
-    if not fSettings.SameDFMFile then begin
+    if fSettings.SameDFMFile then
+      LfmFilename:=DfmFilename
+    else begin
       // Create a form file name based on the unit file name.
       LfmFilename:=fSettings.DelphiToLazFilename(fOrigUnitFilename, '.lfm',
                                                  cdtlufRenameLowercase in fFlags);
@@ -536,11 +538,13 @@ begin
           if Result<>mrOK then exit;
         end;
       end;
-      // convert .dfm file to .lfm file (without context type checking)
-      if FileExistsUTF8(LfmFilename) then begin
-        Result:=ConvertDfmToLfm(LfmFilename);
-        if Result<>mrOk then exit;
-        // Read form file code in.
+    end;
+    // convert .dfm file to .lfm file (without context type checking)
+    if FileExistsUTF8(LfmFilename) then begin
+      Result:=ConvertDfmToLfm(LfmFilename);
+      if Result<>mrOk then exit;
+      // Read form file code in.
+      if not fSettings.SameDFMFile then begin
         Result:=LoadCodeBuffer(fLFMBuffer,LfmFilename,
                                [lbfCheckIfText,lbfUpdateFromDisk],true);
         if Result<>mrOk then exit;
