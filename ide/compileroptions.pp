@@ -208,7 +208,7 @@ type
   
   TParsedCompilerOptString = (
     pcosNone,
-    pcosBaseDir,      // the base directory for the relative paths
+    pcosBaseDir,      // the base directory for the relative paths (only auto created packages can have macros in the BaseDir)
     pcosUnitPath,     // search path for pascal units
     pcosIncludePath,  // search path for pascal include files
     pcosObjectPath,   // search path for .o files
@@ -234,7 +234,7 @@ const
     
   ParsedCompilerOptStringNames: array[TParsedCompilerOptString] of string = (
     'pcosNone',
-    'pcosBaseDir', // only auto created packages can have macros
+    'pcosBaseDir', // only auto created packages can have macros in the BaseDir
     'pcosUnitPath',
     'pcosIncludePath',
     'pcosObjectPath',
@@ -282,6 +282,7 @@ type
     FInvalidateParseOnChange: boolean;
     FOnLocalSubstitute: TLocalSubstitutionEvent;
     FOutputDirectoryOverride: string;
+    FOwner: TObject;
     procedure SetOutputDirectoryOverride(const AValue: string);
   public
     UnparsedValues: array[TParsedCompilerOptString] of string;
@@ -300,7 +301,7 @@ type
     MacroValues: TCTConfigScriptEngine;
     MacroValuesStamp: integer; // see BuildMacroChangeStamp
     MacroValuesParsing: boolean;
-    constructor Create;
+    constructor Create(TheOwner: TObject);
     destructor Destroy; override;
     function GetParsedValue(Option: TParsedCompilerOptString;
                             WithOverrides: boolean = true): string;
@@ -314,6 +315,7 @@ type
     procedure InvalidateAll;
     procedure InvalidateFiles;
   public
+    property Owner: TObject read FOwner;
     property OnLocalSubstitute: TLocalSubstitutionEvent read FOnLocalSubstitute
                                                        write FOnLocalSubstitute;
     property InvalidateParseOnChange: boolean read FInvalidateParseOnChange
@@ -359,9 +361,6 @@ type
   end;
   TCompilationToolClass = class of TCompilationToolOptions;
 
-  TBaseCompilerOptionsClass = class of TBaseCompilerOptions;
-
-  
   TCompilerMessagesList = class; 
   
   { TCompilerMessageConfig }
@@ -521,29 +520,29 @@ type
     function NeedsLinkerOpts: boolean;
     function GetUnitPath(RelativeToBaseDir: boolean;
                          Parsed: TCompilerOptionsParseType = coptParsed;
-                         WithProjDir: boolean = true): string;
+                         WithBaseDir: boolean = true): string;
     function GetIncludePath(RelativeToBaseDir: boolean;
                             Parsed: TCompilerOptionsParseType = coptParsed;
-                            WithProjDir: boolean = true): string;
+                            WithBaseDir: boolean = true): string;
     function GetSrcPath(RelativeToBaseDir: boolean;
                         Parsed: TCompilerOptionsParseType = coptParsed;
-                        WithProjDir: boolean = true): string;
+                        WithBaseDir: boolean = true): string;
     function GetDebugPath(RelativeToBaseDir: boolean;
                           Parsed: TCompilerOptionsParseType = coptParsed;
-                          WithProjDir: boolean = true): string;
+                          WithBaseDir: boolean = true): string;
     function GetLibraryPath(RelativeToBaseDir: boolean;
                             Parsed: TCompilerOptionsParseType = coptParsed;
-                            WithProjDir: boolean = true): string;
+                            WithBaseDir: boolean = true): string;
     function GetUnitOutPath(RelativeToBaseDir: boolean;
                             Parsed: TCompilerOptionsParseType = coptParsed): string;
     function GetObjectPath(RelativeToBaseDir: boolean;
                            Parsed: TCompilerOptionsParseType = coptParsed;
-                           WithProjDir: boolean = true): string;
+                           WithBaseDir: boolean = true): string;
     function GetPath(Option: TParsedCompilerOptString;
                      InheritedOption: TInheritedCompilerOption;
                      RelativeToBaseDir: boolean;
                      Parsed: TCompilerOptionsParseType;
-                     WithProjDir: boolean): string;
+                     WithBaseDir: boolean): string;
     function GetParsedPath(Option: TParsedCompilerOptString;
                            InheritedOption: TInheritedCompilerOption;
                            RelativeToBaseDir: boolean;
@@ -587,7 +586,8 @@ type
     property UseAsDefault: Boolean read FUseAsDefault write FUseAsDefault;
   end;
   
-  
+  TBaseCompilerOptionsClass = class of TBaseCompilerOptions;
+
   { TAdditionalCompilerOptions
   
     Additional Compiler options are used by packages to define, what a project
@@ -996,7 +996,7 @@ constructor TBaseCompilerOptions.Create(const AOwner: TObject;
   const AToolClass: TCompilationToolClass);
 begin
   inherited Create(AOwner);
-  FParsedOpts := TParsedCompilerOptions.Create;
+  FParsedOpts := TParsedCompilerOptions.Create(Self);
   FExecuteBefore := AToolClass.Create;
   FExecuteAfter := AToolClass.Create;
   fBuildMacros := TIDEBuildMacros.Create(Self);
@@ -1811,35 +1811,35 @@ begin
 end;
 
 function TBaseCompilerOptions.GetUnitPath(RelativeToBaseDir: boolean;
-  Parsed: TCompilerOptionsParseType; WithProjDir: boolean): string;
+  Parsed: TCompilerOptionsParseType; WithBaseDir: boolean): string;
 begin
-  Result:=GetPath(pcosUnitPath,icoUnitPath,RelativeToBaseDir,Parsed,WithProjDir);
+  Result:=GetPath(pcosUnitPath,icoUnitPath,RelativeToBaseDir,Parsed,WithBaseDir);
 end;
 
 function TBaseCompilerOptions.GetIncludePath(RelativeToBaseDir: boolean;
-  Parsed: TCompilerOptionsParseType; WithProjDir: boolean): string;
+  Parsed: TCompilerOptionsParseType; WithBaseDir: boolean): string;
 begin
   Result:=GetPath(pcosIncludePath,icoIncludePath,RelativeToBaseDir,Parsed,
-                  WithProjDir);
+                  WithBaseDir);
 end;
 
 function TBaseCompilerOptions.GetSrcPath(RelativeToBaseDir: boolean;
-  Parsed: TCompilerOptionsParseType; WithProjDir: boolean): string;
+  Parsed: TCompilerOptionsParseType; WithBaseDir: boolean): string;
 begin
-  Result:=GetPath(pcosSrcPath,icoSrcPath,RelativeToBaseDir,Parsed,WithProjDir);
+  Result:=GetPath(pcosSrcPath,icoSrcPath,RelativeToBaseDir,Parsed,WithBaseDir);
 end;
 
 function TBaseCompilerOptions.GetDebugPath(RelativeToBaseDir: boolean;
-  Parsed: TCompilerOptionsParseType; WithProjDir: boolean): string;
+  Parsed: TCompilerOptionsParseType; WithBaseDir: boolean): string;
 begin
-  Result:=GetPath(pcosDebugPath,icoNone,RelativeToBaseDir,Parsed,WithProjDir);
+  Result:=GetPath(pcosDebugPath,icoNone,RelativeToBaseDir,Parsed,WithBaseDir);
 end;
 
 function TBaseCompilerOptions.GetLibraryPath(RelativeToBaseDir: boolean;
-  Parsed: TCompilerOptionsParseType; WithProjDir: boolean): string;
+  Parsed: TCompilerOptionsParseType; WithBaseDir: boolean): string;
 begin
   Result:=GetPath(pcosLibraryPath,icoLibraryPath,RelativeToBaseDir,Parsed,
-                  WithProjDir);
+                  WithBaseDir);
 end;
 
 function TBaseCompilerOptions.GetUnitOutPath(RelativeToBaseDir: boolean;
@@ -1856,15 +1856,15 @@ begin
 end;
 
 function TBaseCompilerOptions.GetObjectPath(RelativeToBaseDir: boolean;
-  Parsed: TCompilerOptionsParseType; WithProjDir: boolean): string;
+  Parsed: TCompilerOptionsParseType; WithBaseDir: boolean): string;
 begin
   Result:=GetPath(pcosObjectPath,icoObjectPath,RelativeToBaseDir,Parsed,
-                  WithProjDir);
+                  WithBaseDir);
 end;
 
 function TBaseCompilerOptions.GetPath(Option: TParsedCompilerOptString;
   InheritedOption: TInheritedCompilerOption; RelativeToBaseDir: boolean;
-  Parsed: TCompilerOptionsParseType; WithProjDir: boolean): string;
+  Parsed: TCompilerOptionsParseType; WithBaseDir: boolean): string;
 var
   AddPath: String;
 begin
@@ -1878,7 +1878,7 @@ begin
   else
     RaiseGDBException('');
   end;
-  if WithProjDir then begin
+  if WithBaseDir then begin
     if RelativeToBaseDir then
       AddPath:='.'
     else
@@ -3213,7 +3213,7 @@ end;
 constructor TAdditionalCompilerOptions.Create(TheOwner: TObject);
 begin
   fOwner:=TheOwner;
-  FParsedOpts:=TParsedCompilerOptions.Create;
+  FParsedOpts:=TParsedCompilerOptions.Create(Self);
   Clear;
 end;
 
@@ -3308,8 +3308,9 @@ begin
     DebugLn(['TParsedCompilerOptions.SetOutputDirectoryOverride using default']);
 end;
 
-constructor TParsedCompilerOptions.Create;
+constructor TParsedCompilerOptions.Create(TheOwner: TObject);
 begin
+  FOwner:=TheOwner;
   InheritedMacroValues:=TCTCfgScriptVariables.Create;
   MacroValues:=TCTConfigScriptEngine.Create;
   Clear;
@@ -3400,6 +3401,7 @@ var
   BaseDirectory: String;
 begin
   s:=OptionText;
+
   // parse locally (macros depending on owner, like pkgdir and build macros)
   //DebugLn(['TParsedCompilerOptions.DoParseOption local "',s,'" ...']);
   if Assigned(OnLocalSubstitute) then
