@@ -491,6 +491,7 @@ begin
       UnitReplaceAutoCheckBox.Checked  :=fAutoReplaceUnits;
       FuncReplaceEnableCheckBox.Checked:=fEnableReplaceFuncs;
       VisualOffsEnableCheckBox.Checked :=fEnableVisualOffs;
+      TargetRadioGroupClick(TargetRadioGroup);
       Result:=ShowModal;         // Let the user change settings in a form.
       if Result=mrOK then begin
         // UI --> Settings. Will be saved to ConfigSettings later.
@@ -659,7 +660,6 @@ begin
   TargetRadioGroup.Items.Append(lisConvertTarget3);
   TargetRadioGroup.ItemIndex:=0;
   TargetRadioGroup.Hint:=lisConvertTargetHint;
-  TargetRadioGroupClick(TargetRadioGroup);
 end;
 
 procedure TConvertSettingsForm.FormDestroy(Sender: TObject);

@@ -519,30 +519,32 @@ begin
       Result:=LazarusIDE.DoCloseEditorFile(DfmFilename,[cfSaveFirst]);
       if Result<>mrOk then exit;
     end;
-    // Create a form file name based on the unit file name.
-    LfmFilename:=fSettings.DelphiToLazFilename(fOrigUnitFilename, '.lfm',
-                                               cdtlufRenameLowercase in fFlags);
-    if DfmFilename<>'' then begin
-      if FileExistsUTF8(LfmFilename) then
-        if (FileAgeUTF8(LfmFilename)<FileAgeUTF8(DfmFilename)) then
-          DeleteFileUTF8(LfmFilename); // .lfm is older than .dfm -> remove .lfm
-      if not FileExistsUTF8(LfmFilename) then begin
-        // TODO: update project
-        if fSettings.Target=ctLazarusAndDelphi then
-          Result:=CopyFileWithErrorDialogs(DfmFilename,LfmFilename,[mbAbort])
-        else
-          Result:=fSettings.RenameFile(DfmFilename,LfmFilename);
-        if Result<>mrOK then exit;
+    if not fSettings.SameDFMFile then begin
+      // Create a form file name based on the unit file name.
+      LfmFilename:=fSettings.DelphiToLazFilename(fOrigUnitFilename, '.lfm',
+                                                 cdtlufRenameLowercase in fFlags);
+      if DfmFilename<>'' then begin
+        if FileExistsUTF8(LfmFilename) then
+          if (FileAgeUTF8(LfmFilename)<FileAgeUTF8(DfmFilename)) then
+            DeleteFileUTF8(LfmFilename); // .lfm is older than .dfm -> remove .lfm
+        if not FileExistsUTF8(LfmFilename) then begin
+          // TODO: update project
+          if fSettings.Target=ctLazarusAndDelphi then
+            Result:=CopyFileWithErrorDialogs(DfmFilename,LfmFilename,[mbAbort])
+          else
+            Result:=fSettings.RenameFile(DfmFilename,LfmFilename);
+          if Result<>mrOK then exit;
+        end;
       end;
-    end;
-    // convert .dfm file to .lfm file (without context type checking)
-    if FileExistsUTF8(LfmFilename) then begin
-      Result:=ConvertDfmToLfm(LfmFilename);
-      if Result<>mrOk then exit;
-      // Read form file code in.
-      Result:=LoadCodeBuffer(fLFMBuffer,LfmFilename,
-                             [lbfCheckIfText,lbfUpdateFromDisk],true);
-      if Result<>mrOk then exit;
+      // convert .dfm file to .lfm file (without context type checking)
+      if FileExistsUTF8(LfmFilename) then begin
+        Result:=ConvertDfmToLfm(LfmFilename);
+        if Result<>mrOk then exit;
+        // Read form file code in.
+        Result:=LoadCodeBuffer(fLFMBuffer,LfmFilename,
+                               [lbfCheckIfText,lbfUpdateFromDisk],true);
+        if Result<>mrOk then exit;
+      end;
     end;
 
     // Check LCL path for single files. They are correct when converting projects.
@@ -918,7 +920,7 @@ begin
     // Actual conversion.
     Result:=ConvertSub;
   end;
-  if Result=mrOk then
+  if Result=mrOK then
     IDEMessagesWindow.AddMsg('Conversion Ready.','',-1)
   else
     IDEMessagesWindow.AddMsg('Conversion Aborted.','',-1)

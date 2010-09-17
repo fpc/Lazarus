@@ -20,9 +20,6 @@ uses
 
 type
 
-  // For future, when .dfm form file can be used for both Delphi and Lazarus.
-{  TFormFileAction = (faUseDfm, faRenameToLfm, faUseBothDfmAndLfm); }
-
   { TConvDelphiCodeTool }
 
   TConvDelphiCodeTool = class
@@ -321,9 +318,10 @@ begin
 
         // Form file resource rename or lowercase:
         if (LowKey='dfm') or (LowKey='xfm') then begin
-          // Lowercase existing key. (Future, when the same dfm file can be used)
-//          faUseDfm: if Key<>LowKey then NewKey:=LowKey;
           if fSettings.Target=ctLazarusAndDelphi then begin
+            // Use the same dfm file. Lowercase existing key.
+            if Settings.SameDFMFile and (Key<>LowKey) then
+              NewKey:=LowKey;
             // Later IFDEF will be added so that Delphi can still use .dfm.
             fDfmDirectiveStart:=ACleanPos;
             fDfmDirectiveEnd:=ParamPos+6;
@@ -348,7 +346,8 @@ begin
       ACleanPos:=FindCommentEnd(Src, ACleanPos, Scanner.NestedComments);
     until false;
   // if there is already .lfm file, don't add IFDEF for .dfm / .lfm.
-  if (fSettings.Target=ctLazarusAndDelphi) and (fDfmDirectiveStart<>-1) and not AlreadyIsLfm then
+  if (fSettings.Target=ctLazarusAndDelphi) and not Settings.SameDFMFile
+      and (fDfmDirectiveStart<>-1) and not AlreadyIsLfm then
   begin
     // Add IFDEF for .lfm and .dfm allowing Delphi to use .dfm.
     nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
