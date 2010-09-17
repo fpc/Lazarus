@@ -104,6 +104,7 @@ function HideCaret(hWnd: HWND): Boolean; override;
 
 function GetActiveWindow : HWND; override;
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; override;
+function GetBkColor(DC: HDC): TColorRef; override;
 function GetCapture: HWND; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
 function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;

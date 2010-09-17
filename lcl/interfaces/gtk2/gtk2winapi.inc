@@ -3764,6 +3764,15 @@ begin
     DebugLn('WARNING: [TGtk2WidgetSet.GetBitmapBits] invalid Bitmap!');
 end;
 
+function TGtk2WidgetSet.GetBkColor(DC: HDC): TColorRef;
+var
+  DevCtx: TGtkDeviceContext absolute DC;
+begin
+  Result := CLR_INVALID;
+  if IsValidDC(DC) then
+    Result := DevCtx.CurrentBackColor.ColorRef;
+end;
+
 {------------------------------------------------------------------------------
   Function: GetCapture
   Params:  none
@@ -7613,8 +7622,6 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
-var
-  DevCtx: TGtkDeviceContext absolute DC;
 begin
   Assert(False, Format('trace:> [TGtk2WidgetSet.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := CLR_INVALID;
