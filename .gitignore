@@ -1,15 +1,5 @@
 /*.bak
 components/*.bak
-components/cgi/*.bak
-components/cgi/ide/*.bak
-components/cgi/ide/lib/*.bak
-components/cgi/ide/lib/units
-components/cgi/ide/units
-components/cgi/languages/*.bak
-components/cgi/languages/units
-components/cgi/lib/*.bak
-components/cgi/lib/units
-components/cgi/units
 components/chmhelp/*.bak
 components/chmhelp/democontrol/*.bak
 components/chmhelp/democontrol/units
