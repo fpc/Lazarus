@@ -218,14 +218,14 @@ begin
     {$IFDEF DARWIN}
     // open command launches url in the appropriate browser under Mac OS X
     Find('open', ABrowser);
-    AParams := '%s';
+    AParams := '"%s"';
     {$ELSE}
       ABrowser := '';
     {$ENDIF}
   {$ENDIF}
   if ABrowser = '' then
   begin
-    AParams := '%s';
+    AParams := '"%s"';
     // Then search in path. Prefer open source ;)
     if Find('xdg-open', ABrowser)  // Portland OSDL/FreeDesktop standard on Linux
     or Find('htmlview', ABrowser)  // some redhat systems
