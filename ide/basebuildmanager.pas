@@ -45,6 +45,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    function GetBuildMacroOverride(const MacroName: string): string; virtual; abstract;
+    function GetBuildMacroOverrides: TStrings; virtual; abstract;
     function GetTargetOS(UseCache: boolean): string; virtual; abstract;
     function GetTargetCPU(UseCache: boolean): string; virtual; abstract;
     function GetLCLWidgetType(UseCache: boolean): string; virtual; abstract;

@@ -45,7 +45,7 @@ uses
   {$ENDIF}
   // FCL, LCL
   TypInfo, Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, Menus,
-  StringHashList, Translations, LResources,
+  InterfaceBase, StringHashList, Translations, LResources,
   // codetools
   CodeToolsCfgScript, CodeToolsConfig, CodeToolManager, CodeCache,
   BasicCodeTools, FileProcs, Laz_XMLCfg,
@@ -783,10 +783,10 @@ function TPkgManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
           if Macro.Identifier='' then continue;
           Value:=Values.GetVariable(PChar(Macro.Identifier));
           if Value=nil then begin
-            debugln(['AddAllInherited InhPkg=',APackage.Name,' Macro="',Macro.Identifier,'" no value']);
+            //debugln(['AddAllInherited InhPkg=',APackage.Name,' Macro="',Macro.Identifier,'" no value']);
             continue;
           end else begin
-            debugln(['AddAllInherited InhPkg=',APackage.Name,' Macro="',Macro.Identifier,'" Value="',dbgs(Value),'"']);
+            //debugln(['AddAllInherited InhPkg=',APackage.Name,' Macro="',Macro.Identifier,'" Value="',dbgs(Value),'"']);
             AddTo.AddOverride(Value);
           end;
         end;
@@ -808,12 +808,45 @@ function TPkgManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
 var
   ParseOpts: TParsedCompilerOptions;
   Values: TCTCfgScriptVariables;
+  Overrides: TStrings;
+  i: Integer;
+  s: String;
 begin
   Result:=nil;
   if Options=nil then begin
     // return the values of the active project
     if (Project1=nil) or (Project1.MacroValues=nil) then exit;
     Result:=Project1.MacroValues.CfgVars;
+
+    // set overrides
+    Overrides:=BuildBoss.GetBuildMacroOverrides;
+    try
+      for i:=0 to Overrides.Count-1 do
+        Result.Values[Overrides.Names[i]]:=Overrides.ValueFromIndex[i];
+    finally
+      Overrides.Free;
+    end;
+
+    // add the defaults
+    if not Result.IsDefined('TargetOS') then begin
+      s:=Project1.CompilerOptions.TargetOS;
+      if s='' then
+        s:=GetDefaultTargetOS;
+      Result.Values['TargetOS']:=s;
+    end;
+    if not Result.IsDefined('TargetCPU') then begin
+      s:=Project1.CompilerOptions.TargetCPU;
+      if s='' then
+        s:=GetDefaultTargetCPU;
+      Result.Values['TargetCPU']:=s;
+    end;
+    if not Result.IsDefined('LCLWidgetType') then begin
+      s:=Project1.CompilerOptions.LCLWidgetType;
+      if s='' then
+        s:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
+      Result.Values['LCLWidgetType']:=s;
+    end;
+
     //Result.WriteDebugReport('OnGetBuildMacroValues project values');
     exit;
   end;
@@ -842,10 +875,13 @@ begin
         // add macro values of self
         if Values<>nil then
           Result.Assign(Values);
+        //Result.WriteDebugReport('TPkgManager.OnGetBuildMacroValues before execute: '+dbgstr(Options.Conditionals),'  ');
         if not ParseOpts.MacroValues.Execute(Options.Conditionals) then begin
           debugln(['TPkgManager.OnGetBuildMacroValues Error: ',ParseOpts.MacroValues.GetErrorStr(0)]);
           debugln(Options.Conditionals);
         end;
+
+        //Result.WriteDebugReport('TPkgManager.OnGetBuildMacroValues executed: '+dbgstr(Options.Conditionals),'  ');
 
         // the macro values of the active project take precedence
         SetProjectMacroValues;

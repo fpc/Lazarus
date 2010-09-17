@@ -2045,7 +2045,7 @@ begin
       if Macro<>nil then
       begin
         s:=GetCTCSVariableAsString(Macro);
-        debugln(['TLazPackage.OnMacroListSubstitution Pkg=',Name,' Macro=',MacroName,' Value="',s,'"']);
+        //debugln(['TLazPackage.OnMacroListSubstitution Pkg=',Name,' Macro=',MacroName,' Value="',s,'"']);
         Handled:=true;
         exit;
       end;

@@ -705,7 +705,7 @@ type
   TGetBuildMacroValues = function(Options: TBaseCompilerOptions;
              IncludeSelf: boolean): TCTCfgScriptVariables of object;
 var
-  GetBuildMacroValues: TGetBuildMacroValues = nil; // set by TPkgManager
+  GetBuildMacroValues: TGetBuildMacroValues = nil; // set by TPkgManager, do not change or free the variables
 
 function LoadXMLCompileReasons(const AConfig: TXMLConfig;
   const APath: String; const DefaultReasons: TCompileReasons): TCompileReasons;
@@ -3408,16 +3408,16 @@ begin
     Vars:=GetBuildMacroValues(TBaseCompilerOptions(Owner),true);
     if Vars<>nil then begin
       case Option of
-      pcosUnitPath: ;
-      pcosIncludePath: ;
-      pcosObjectPath: ;
-      pcosLibraryPath: ;
-      pcosSrcPath: ;
-      pcosLinkerOptions: ;
-      pcosCustomOptions: ;
-      pcosOutputDir: ;
-      pcosCompilerPath: ;
-      pcosDebugPath: ;
+      pcosUnitPath: s:=MergeSearchPaths(s,Vars['UnitPath']);
+      pcosIncludePath: s:=MergeSearchPaths(s,Vars['IncPath']);
+      pcosObjectPath: s:=MergeSearchPaths(s,Vars['ObjectPath']);
+      pcosLibraryPath: s:=MergeSearchPaths(s,Vars['LibraryPath']);
+      pcosSrcPath: s:=MergeSearchPaths(s,Vars['SrcPath']);
+      pcosLinkerOptions: s:=MergeLinkerOptions(s,Vars['LinkerOptions']);
+      pcosCustomOptions: s:=MergeCustomOptions(s,Vars['CustomOptions']);
+      pcosOutputDir: if Vars.IsDefined('OutputDirectory') then s:=Vars.Values['OutputDirectory'];
+      pcosCompilerPath: if Vars.IsDefined('CompilerPath') then s:=Vars.Values['CompilerPath'];
+      pcosDebugPath: s:=MergeSearchPaths(s,Vars['DebugPath']);
       end;
     end;
   end;

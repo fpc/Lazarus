@@ -40,6 +40,8 @@ unit CodeToolsCfgScript;
 {$mode objfpc}{$H+}
 {$inline on}
 
+{off $Define VerboseCTCfgScript}
+
 interface
 
 uses
@@ -86,6 +88,7 @@ type
     property Values[const Name: string]: string read GetValues write SetValues; default;
     procedure Undefine(Name: PChar);
     procedure Define(Name: PChar; const Value: string);
+    function IsDefined(Name: PChar): boolean;
     property Tree: TAVLTree read FItems;
     procedure WriteDebugReport(const Title: string; const Prefix: string = '');
   end;
@@ -511,9 +514,12 @@ begin
       end;
       l:=Src^.StrLen;
       Dest^.StrLen:=l;
-      ReAllocMem(Dest^.StrStart,l);
-      if l>0 then
+      if l>0 then begin
+        ReAllocMem(Dest^.StrStart,l+1);
         System.Move(Src^.StrStart^,Dest^.StrStart^,l);
+        Dest^.StrStart[l]:=#0;
+      end else
+        ReAllocMem(Dest^.StrStart,0);
     end;
   ctcsvNumber:
     begin
@@ -563,7 +569,7 @@ begin
     begin
       s:=IntToStr(V^.Number);
       V^.StrLen:=length(s);
-      V^.StrStart:= GetMem(length(s)+1);
+      V^.StrStart:=GetMem(length(s)+1);
       System.Move(s[1],V^.StrStart^,length(s)+1);
       V^.ValueType:=ctcsvString;
     end;
@@ -880,9 +886,11 @@ begin
   end;
   l:=length(s);
   V^.StrLen:=l;
-  ReAllocMem(V^.StrStart,l);
-  if l>0 then
-    System.Move(s[1],V^.StrStart^,l);
+  if l>0 then begin
+    ReAllocMem(V^.StrStart,l+1);
+    System.Move(s[1],V^.StrStart^,l+1); // +1 for the #0
+  end else
+    ReAllocMem(V^.StrStart,0);
 end;
 
 procedure SetCTCSVariableAsNumber(const V: PCTCfgScriptVariable; const i: int64
@@ -1080,6 +1088,11 @@ begin
   end;
 end;
 
+function TCTCfgScriptVariables.IsDefined(Name: PChar): boolean;
+begin
+  Result:=GetVariable(Name)<>nil;
+end;
+
 procedure TCTCfgScriptVariables.WriteDebugReport(const Title: string;
   const Prefix: string);
 var
@@ -1133,7 +1146,9 @@ var
   Handled: Boolean;
   StartTop: LongInt;
 begin
+  {$IFDEF VerboseCTCfgScript}
   debugln(['TCTConfigScriptEngine.ParseStatement Atom=',GetAtom]);
+  {$ENDIF}
   StartTop:=FStack.Top;
   case AtomStart^ of
   #0: ;
@@ -1231,7 +1246,9 @@ begin
     ExprIsTrue:=CTCSVariableIsTrue(FStack.TopItemOperand);
     FStack.Pop;
   end;
+  {$IFDEF VerboseCTCfgScript}
   debugln(['TCTConfigScriptEngine.RunIf expression=',ExprIsTrue]);
+  {$ENDIF}
 
   // read then
   if CompareIdentifiers(AtomStart,'then')<>0 then
@@ -1282,11 +1299,15 @@ var
   OperatorStart: PChar;
 begin
   VarStart:=AtomStart;
+  {$IFDEF VerboseCTCfgScript}
   debugln(['TCTConfigScriptEngine.RunAssignment ',GetIdentifier(VarStart)]);
+  {$ENDIF}
   StartTop:=FStack.TopTyp;
   FStack.Push(ctcssAssignment,VarStart);
   ReadRawNextPascalAtom(Src,AtomStart);
+  {$IFDEF VerboseCTCfgScript}
   debugln(['TCTConfigScriptEngine.RunAssignment Operator=',GetAtom]);
+  {$ENDIF}
   // read :=
   if AtomStart^=#0 then begin
     AddError('missing :=');
@@ -1301,7 +1322,9 @@ begin
   ReadRawNextPascalAtom(Src,AtomStart);
   if RunExpression and (not Skip) then begin
     Variable:=Variables.GetVariable(VarStart,true);
+    {$IFDEF VerboseCTCfgScript}
     debugln(['TCTConfigScriptEngine.RunAssignment BEFORE ',GetIdentifier(VarStart),'=(Old=',dbgs(Variable),') ',GetAtom(OperatorStart),' ',dbgs(FStack.TopItemOperand)]);
+    {$ENDIF}
     case OperatorStart^ of
     ':': // :=
       SetCTCSVariableValue(FStack.TopItemOperand,Variable);
@@ -1309,7 +1332,9 @@ begin
       AddCTCSVariables(FStack.TopItemOperand,Variable);
     end;
 
+    {$IFDEF VerboseCTCfgScript}
     debugln(['TCTConfigScriptEngine.RunAssignment AFTER ',GetIdentifier(VarStart),' = ',dbgs(Variable)]);
+    {$ENDIF}
   end;
   // clean up stack
   while FStack.TopTyp>StartTop do FStack.Pop;
@@ -1383,7 +1408,9 @@ begin
   while FStack.Top>StartTop do FStack.Pop;
 
   // execute function
+  {$IFDEF VerboseCTCfgScript}
   debugln(['TCTConfigScriptEngine.RunFunction FunctionName="',GetAtom(FunctionName),'" Parameter=',dbgs(PCTCfgScriptVariable(@Value))]);
+  {$ENDIF}
   case UpChars[FunctionName^] of
   'I':
     if CompareIdentifiers(FunctionName,'int64')=0 then
@@ -1396,7 +1423,9 @@ begin
   end;
 
   // put result on stack as operand
+  {$IFDEF VerboseCTCfgScript}
   debugln(['TCTConfigScriptEngine.RunFunction FunctionName="',GetAtom(FunctionName),'" Result=',dbgs(PCTCfgScriptVariable(@Value))]);
+  {$ENDIF}
   FStack.Push(ctcssOperand,FunctionName);
   SetCTCSVariableValue(@Value,FStack.TopItemOperand);
 
@@ -1415,9 +1444,10 @@ var
     if Count=0 then exit;
     OldLen:=Operand^.StrLen;
     NewLen:=OldLen+Count;
-    ReAllocMem(Operand^.StrStart,NewLen);
+    ReAllocMem(Operand^.StrStart,NewLen+1);
     System.Move(p^,Operand^.StrStart[OldLen],Count);
     Operand^.StrLen:=NewLen;
+    Operand^.StrStart[NewLen]:=#0;
   end;
 
 var
@@ -1603,7 +1633,9 @@ begin
   StartTop:=FStack.Top;
   FStack.Push(ctcssExpression,ExprStart);
   while true do begin
+    {$IFDEF VerboseCTCfgScript}
     debugln(['TCTConfigScriptEngine.RunExpression Atom=',GetAtom]);
+    {$ENDIF}
     case AtomStart^ of
     #0:
       break;
@@ -1623,9 +1655,7 @@ begin
         end else if (FStack.TopTyp=ctcssOperand)
         and (FStack.Top>0) and (FStack.Items[FStack.Top-1].Typ=ctcssRoundBracketOpen)
         then begin
-          WriteDebugReportStack('AAA1');
           FStack.Delete(FStack.Top-1);
-          WriteDebugReportStack('AAA2');
         end else
           break;
       end;
@@ -1659,7 +1689,9 @@ begin
       begin
         // a keyword or an identifier
 
+        {$IFDEF VerboseCTCfgScript}
         debugln(['TCTConfigScriptEngine.RunExpression StackTop=',dbgs(FStack.TopTyp),' Atom=',GetAtom]);
+        {$ENDIF}
         // execute
         Handled:=false;
         case UpChars[AtomStart^] of
@@ -1746,7 +1778,9 @@ begin
         end;
         if (not Handled) then begin
           if not OperandAllowed then break;
+          {$IFDEF VerboseCTCfgScript}
           debugln(['TCTConfigScriptEngine.RunExpression ',GetAtom(AtomStart),' ',IsFunction(AtomStart)]);
+          {$ENDIF}
           if IsFunction(AtomStart) then begin
             // a function
             if not RunFunction then begin
@@ -1808,7 +1842,9 @@ begin
       FStack.Delete(FStack.Top-1);
       Item:=FStack.TopItem;
       inc(StartTop);
+      {$IFDEF VerboseCTCfgScript}
       debugln(['TCTConfigScriptEngine.RunExpression Result="',dbgs(PCTCfgScriptVariable(@Item^.Operand)),'" ']);
+      {$ENDIF}
     end;
   end;
 
@@ -1912,7 +1948,9 @@ var
 begin
   Result:=true;
   repeat
+    {$IFDEF VerboseCTCfgScript}
     WriteDebugReportStack('ExecuteStack MaxLevel='+dbgs(MaxLevel));
+    {$ENDIF}
     if (FStack.TopTyp<>ctcssOperand) or (FStack.Top<=0) then
       exit;
     OperatorItem:=@FStack.Items[FStack.Top-1];
@@ -1923,7 +1961,9 @@ begin
 
     // execute operator
     Typ:=AtomToCTCfgOperator(OperatorItem^.StartPos);
+    {$IFDEF VerboseCTCfgScript}
     debugln(['TCTConfigScriptEngine.ExecuteStack execute operator "',GetAtom(OperatorItem^.StartPos),'" Typ=',dbgs(Typ)]);
+    {$ENDIF}
     case Typ of
 
     ctcsoNot:
@@ -1958,7 +1998,7 @@ begin
           if not CompareCTCSVariables(@LeftOperandItem^.Operand,@OperandItem^.Operand,
                                OperandsEqual,LeftIsLowerThanRight)
           then begin
-             b:=false;
+            b:=false;
           end else begin
             case Typ of
             ctcsoEqual:
@@ -1975,6 +2015,9 @@ begin
               b:=OperandsEqual or not LeftIsLowerThanRight;
             end;
           end;
+          {$IFDEF VerboseCTCfgScript}
+          debugln(['TCTConfigScriptEngine.ExecuteStack ',GetCTCSVariableAsString(@LeftOperandItem^.Operand),' ',GetCTCSVariableAsString(@OperandItem^.Operand),' Equal=',OperandsEqual,' LT=',LeftIsLowerThanRight,' Result=',Result]);
+          {$ENDIF}
           FStack.Pop(3);
         end else begin
           FStack.Pop(2);

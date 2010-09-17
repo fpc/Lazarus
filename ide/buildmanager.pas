@@ -123,6 +123,8 @@ type
     procedure SetupCompilerInterface;
     procedure SetupInputHistories;
 
+    function GetBuildMacroOverride(const MacroName: string): string; override;
+    function GetBuildMacroOverrides: TStrings; override;
     function GetTargetOS(UseCache: boolean): string; override;
     function GetTargetCPU(UseCache: boolean): string; override;
     function GetLCLWidgetType(UseCache: boolean): string; override;
@@ -312,6 +314,28 @@ begin
     SetLazarusDefaultFilename;
     Load;
   end;
+end;
+
+function TBuildManager.GetBuildMacroOverride(const MacroName: string): string;
+begin
+  Result:='';
+  if SysUtils.CompareText(MacroName,'TargetOS')=0 then
+    Result:=OverrideTargetOS
+  else if SysUtils.CompareText(MacroName,'TargetCPU')=0 then
+    Result:=OverrideTargetCPU
+  else if SysUtils.CompareText(MacroName,'LCLWidgetType')=0 then
+    Result:=OverrideLCLWidgetType;
+end;
+
+function TBuildManager.GetBuildMacroOverrides: TStrings;
+begin
+  Result:=TStringList.Create;
+  if OverrideTargetOS<>'' then
+    Result.Values['TargetOS']:=OverrideTargetOS;
+  if OverrideTargetCPU<>'' then
+    Result.Values['TargetCPU']:=OverrideTargetCPU;
+  if OverrideLCLWidgetType<>'' then
+    Result.Values['LCLWidgetType']:=OverrideLCLWidgetType;
 end;
 
 function TBuildManager.GetTargetOS(UseCache: boolean): string;
