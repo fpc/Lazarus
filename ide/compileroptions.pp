@@ -67,7 +67,7 @@
     any conditionals
 
   ToDo:
-  - use conditionals to extend paths
+  - use conditionals to extend paths: TParsedCompilerOptions.DoParseOption
   - use conditionals to extend usage paths
   - move the project target file to compiler options
   - warn for macro name conflicts
@@ -3399,8 +3399,28 @@ function TParsedCompilerOptions.DoParseOption(const OptionText: string;
 var
   s: String;
   BaseDirectory: String;
+  Vars: TCTCfgScriptVariables;
 begin
   s:=OptionText;
+
+  if Owner is TBaseCompilerOptions then
+  begin
+    Vars:=GetBuildMacroValues(TBaseCompilerOptions(Owner),true);
+    if Vars<>nil then begin
+      case Option of
+      pcosUnitPath: ;
+      pcosIncludePath: ;
+      pcosObjectPath: ;
+      pcosLibraryPath: ;
+      pcosSrcPath: ;
+      pcosLinkerOptions: ;
+      pcosCustomOptions: ;
+      pcosOutputDir: ;
+      pcosCompilerPath: ;
+      pcosDebugPath: ;
+      end;
+    end;
+  end;
 
   // parse locally (macros depending on owner, like pkgdir and build macros)
   //DebugLn(['TParsedCompilerOptions.DoParseOption local "',s,'" ...']);
