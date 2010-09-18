@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons, LCLType,
-  LCLProc, ExtCtrls, StdCtrls, ExtDlgs, LazIDEIntf, LazarusIDEStrConsts, FileCtrl;
+  LCLProc, ExtCtrls, StdCtrls, LazIDEIntf, LazarusIDEStrConsts, FileCtrl;
 
 type
 

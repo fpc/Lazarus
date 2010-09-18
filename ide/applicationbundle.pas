@@ -34,11 +34,8 @@ unit ApplicationBundle;
 interface
 
 uses
-{$IFDEF UNIX}
-  BaseUnix,
-{$ENDIF}
   Classes, SysUtils, FileUtil, Forms, Controls, Dialogs,
-  DialogProcs, LazarusIDEStrConsts;
+  DialogProcs;
 
 type
   EApplicationBundleException = Exception;

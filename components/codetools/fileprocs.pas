@@ -303,7 +303,7 @@ function AVLTreeHasDoubles(Tree: TAVLTree): TAVLTreeNode;
 
 const DateAsCfgStrFormat='YYYYMMDD';
 function DateToCfgStr(const Date: TDateTime): string;
-function CfgStrToDate(const s: string; var Date: TDateTime): boolean;
+function CfgStrToDate(const s: string; out Date: TDateTime): boolean;
 
 
 // debugging
@@ -2495,7 +2495,7 @@ begin
   //debugln('DateToCfgStr "',Result,'"');
 end;
 
-function CfgStrToDate(const s: string; var Date: TDateTime): boolean;
+function CfgStrToDate(const s: string; out Date: TDateTime): boolean;
 var
   i: Integer;
   Year, Month, Day: word;

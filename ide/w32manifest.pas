@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Process, LCLProc, Controls, Forms,
-  CodeToolManager, CodeCache, LazConf, Laz_XMLCfg, DialogProcs, LResources,
+  CodeToolManager, LazConf, Laz_XMLCfg, LResources,
   ProjectResourcesIntf, resource;
    
 type

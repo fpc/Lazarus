@@ -30,7 +30,7 @@ interface
 uses
   Classes, Math, SysUtils, Forms, Controls, Dialogs, CompilerOptions,
   Process, AsyncProcess, LCLProc, DynQueue, FileUtil, UTF8Process,
-  SourceLog, CodeCache, CodeToolManager,
+  CodeCache, CodeToolManager,
   IDEDialogs, IDEMsgIntf, IDEExternToolIntf,
   IDEProcs, LazConf;
 

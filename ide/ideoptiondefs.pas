@@ -33,9 +33,9 @@ unit IDEOptionDefs;
 interface
 
 uses
-  Math, Classes, SysUtils, types, Laz_XMLCfg, LCLProc, FileUtil,
-  Forms, Controls, StdCtrls, Buttons, BaseIDEIntf, LazConfigStorage,
-  IDEWindowIntf, LazConf, LazarusIDEStrConsts;
+  Classes, SysUtils, types, Laz_XMLCfg, LCLProc, FileUtil,
+  Forms, Controls, Buttons, BaseIDEIntf, LazConfigStorage,
+  IDEWindowIntf, LazConf;
 
 type
   { TXMLOptionsStorage }

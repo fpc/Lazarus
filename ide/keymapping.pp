@@ -33,7 +33,7 @@ interface
 
 uses
   LCLIntf, LCLType, LCLProc, AvgLvlTree,
-  Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
+  Forms, Classes, SysUtils, Buttons, LResources, Controls,
   Dialogs, StringHashList, ExtCtrls,
   SynEditKeyCmds, SynPluginTemplateEdit, SynPluginSyncroEdit, Laz_XMLCfg,
   PropEdits, IDECommands, LazarusIDEStrConsts;

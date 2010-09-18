@@ -39,7 +39,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, Process, AsyncProcess, LCLType, LCLProc, Controls, Forms,
+  Classes, SysUtils, Process, LCLType, LCLProc, Controls, Forms,
   Buttons, StdCtrls, ComCtrls, Dialogs, ExtCtrls,
   LazConfigStorage, FileUtil, UTF8Process,
   IDEExternToolIntf, IDEImagesIntf,

@@ -53,11 +53,6 @@ uses
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
   SynHighlighterJScript, SynHighlighterDiff,
   // codetools
-  {$IFDEF NewXMLCfg}
-  laz2_DOM,
-  {$ELSE}
-  Laz_DOM,
-  {$ENDIF}
   LinkScanner, CodeToolManager, Laz_XMLCfg,
   // IDEIntf
   IDECommands, SrcEditorIntf, IDEOptionsIntf,
@@ -1656,7 +1651,7 @@ begin
             tkInteger:
               begin                      // Check if this integer has a string identifier
                 IntToIdentFn := FindIntToIdent(PPropInfo(PropInfo)^.PropType);
-                if Assigned(IntToIdentFn) and IntToIdentFn(Value, Ident) then
+                if Assigned(IntToIdentFn) and IntToIdentFn(Value, Ident{%H-}) then
                   SetValue(Path, Ident) // Integer can be written a human-readable identifier
                 else
                   SetValue(Path, Value); // Integer has to be written just as number
@@ -3298,9 +3293,6 @@ begin
   // Code folding
   FReverseFoldPopUpOrder := True;
 end;
-
-type
-  TSynEditMouseSelActionsClass = class of TSynEditMouseSelActions;
 
 procedure TEditorOptions.Load;
 // load options from XML file

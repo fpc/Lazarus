@@ -418,7 +418,7 @@ type
     function Add(AMsgIndex: Integer; AMsgType: TFPCErrorType; const AMsgText: string; AIgnored: Boolean=false): TCompilerMessageConfig; virtual;
 
     procedure SetDefault(KeepIgnored: Boolean=true); virtual;
-    function GetParams(MsgIndex: Integer; var prms: array of string; var PrmCount: Integer): Integer; virtual;
+    function GetParams(MsgIndex: Integer; var prms: array of string; out PrmCount: Integer): Integer; virtual;
 
     property Msg[i: Integer]: TCompilerMessageConfig read GetMsgConfig;
     property MsgByIndex[AIndex: Integer]:  TCompilerMessageConfig read GetMsgConfigByIndex;
@@ -4026,8 +4026,8 @@ end;
 
 function TCompilerMessagesList.LoadMsgFile(const FileName: string): Boolean;
 
-  function IsMsgLine(const s: string; var msgIdx: Integer; var msgType, msgText: string; 
-   var isMultiLine: Boolean): Boolean;
+  function IsMsgLine(const s: string; out msgIdx: Integer; out msgType, msgText: string;
+    out isMultiLine: Boolean): Boolean;
   var
     i   : Integer; 
     p   : Integer; 
@@ -4399,7 +4399,7 @@ begin
 end;
 
 function TCompilerMessagesList.GetParams(MsgIndex: Integer;
-  var prms: array of string; var PrmCount: Integer): Integer;
+  var prms: array of string; out PrmCount: Integer): Integer;
 
   procedure SetParams(const Src: array of string);
   var

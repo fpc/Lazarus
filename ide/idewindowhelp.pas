@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Controls, FileUtil, Dialogs, HelpIntfs,
-  LazHelpIntf, LazConfigStorage, EnvironmentOpts, IDEOptionDefs;
+  LazConfigStorage, EnvironmentOpts, IDEOptionDefs;
   
 type
 

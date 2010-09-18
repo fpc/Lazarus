@@ -78,11 +78,11 @@ type
 
     // dialogs
     function OnIDEMessageDialog(const aCaption, aMsg: string;
-                                DlgType: TMsgDlgType; Buttons: TMsgDlgButtons;
-                                const HelpKeyword: string): Integer;
+                                {%H-}DlgType: TMsgDlgType; {%H-}Buttons: TMsgDlgButtons;
+                                const {%H-}HelpKeyword: string): Integer;
     function OnIDEQuestionDialog(const aCaption, aMsg: string;
-                                 DlgType: TMsgDlgType; Buttons: array of const;
-                                 const HelpKeyword: string): Integer;
+                                 {%H-}DlgType: TMsgDlgType; {%H-}Buttons: array of const;
+                                 const {%H-}HelpKeyword: string): Integer;
   protected
     function BuildFile(Filename: string): boolean;
 
@@ -460,7 +460,7 @@ begin
   end;
   
   // create inherited compiler options
-  PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings);
+  PkgOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings{%H-});
 
   // save
   CurResult:=SaveIDEMakeOptions(BuildLazOptions,

@@ -35,7 +35,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, Graphics, Controls, Forms, LCLProc, FileProcs, Dialogs,
-  Laz_XMLCfg, AvgLvlTree, ProjectIntf, LazConfigStorage,
+  Laz_XMLCfg, ProjectIntf,
   IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   ObjectInspector, IDEOptionDefs, IDEWindowIntf, ExtToolDialog, TransferMacros,
   IDEOptionsIntf;
@@ -534,9 +534,6 @@ const
   BakMaxCounterInfiniteTxt = 'infinite';
   
 implementation
-
-uses
-  IDEContextHelpEdit;
 
 function DebuggerNameToType(const s: string): TDebuggerType;
 begin

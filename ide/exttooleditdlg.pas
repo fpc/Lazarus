@@ -46,7 +46,7 @@ uses
   LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
   Dialogs, ExtCtrls, LCLProc, ButtonPanel,
   IDEMsgIntf, IDEExternToolIntf,
-  PropEdits, KeyMapShortCutDlg, TransferMacros, LazarusIDEStrConsts,
+  PropEdits, TransferMacros, LazarusIDEStrConsts,
   EditMsgScannersDlg;
 
 type

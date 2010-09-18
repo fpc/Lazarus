@@ -46,8 +46,11 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Graphics, Forms, FileUtil,
-  AvgLvlTree, AVL_Tree, LazConfigStorage,
-  CodeToolsCfgScript, DefineTemplates, CodeToolManager, Laz_XMLCfg, CodeCache,
+  AVL_Tree, LazConfigStorage,
+  {$IFDEF EnableBuildModes}
+  CodeToolsCfgScript,
+  {$ENDIF}
+  DefineTemplates, CodeToolManager, Laz_XMLCfg, CodeCache,
   PropEdits, LazIDEIntf, MacroIntf, PackageIntf,
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs,
   LazarusIDEStrConsts, IDEProcs, ComponentReg,

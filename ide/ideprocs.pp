@@ -1403,7 +1403,7 @@ begin
   {$IFdef MSWindows}
   OldAttr := FileGetAttrUTF8(Filename);
   {$ELSE}
-  FpStat(Filename, OldInfo);
+  FpStat(Filename, OldInfo{%H-});
   {$ENDIF}
   
   // if not a symlink => rename old file, create empty new file
@@ -2344,7 +2344,7 @@ begin
   {$IFdef MSWindows}
   OldAttr:=FileGetAttrUTF8(SrcFilename);
   {$ELSE}
-  FpStat(SrcFilename,OldInfo);
+  FpStat(SrcFilename,OldInfo{%H-});
   {$ENDIF}
   
   //writeln('CopyFileWithMethods ',SrcFilename,' ',DestFilename);

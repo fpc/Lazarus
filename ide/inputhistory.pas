@@ -885,11 +885,12 @@ begin
   i:=IndexOfName(Name);
   if i>=0 then
     Result:=Items[i]
-  else begin
+  else if CreateIfNotExists then begin
     Result:=THistoryList.Create;
     Result.Name:=Name;
     FItems.Add(Result);
-  end;
+  end else
+    Result:=nil;
 end;
 
 procedure THistoryLists.Add(const ListName, Entry: string);

@@ -37,7 +37,7 @@ unit LazarusIDEStrConsts;
 interface
 
 uses
-  Classes, SysUtils, ButtonPanel;
+  Classes, SysUtils;
 
 const
   PrimaryConfPathOptLong='--primary-config-path=';
