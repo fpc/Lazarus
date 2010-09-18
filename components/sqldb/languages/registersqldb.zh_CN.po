@@ -20,6 +20,18 @@ msgstr "Firebird数据库"
 msgid "Interbase databases"
 msgstr "Interbase数据库"
 
+#: registersqldb.ssqlscript
+msgid "SQL Script file"
+msgstr ""
+
+#: registersqldb.ssqlscriptdesc
+msgid "Create a new SQL Script file"
+msgstr ""
+
+#: registersqldb.ssqlsource
+msgid "Insert your SQL statements here"
+msgstr ""
+
 #: registersqldb.ssqlstringspropertyeditordlgtitle
 msgid "Editing %s"
 msgstr "编辑 %s"

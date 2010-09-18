@@ -18,6 +18,18 @@ msgstr "Firebird duomenų bazės"
 msgid "Interbase databases"
 msgstr "Interbase duomenų bazės"
 
+#: registersqldb.ssqlscript
+msgid "SQL Script file"
+msgstr ""
+
+#: registersqldb.ssqlscriptdesc
+msgid "Create a new SQL Script file"
+msgstr ""
+
+#: registersqldb.ssqlsource
+msgid "Insert your SQL statements here"
+msgstr ""
+
 #: registersqldb.ssqlstringspropertyeditordlgtitle
 msgid "Editing %s"
 msgstr "%s redaguojamas"

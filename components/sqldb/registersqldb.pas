@@ -26,6 +26,7 @@ unit registersqldb;
 {$ENDIF}
 
 {$IFDEF VER2_5_1}
+{$DEFINE HASMYSQL51CONNECTION}
 {$DEFINE HASSQLPARSER}
 {$ENDIF}
 
@@ -39,10 +40,14 @@ uses
 {$IFDEF HASORACLECONNECTION}
   oracleconnection,
 {$ENDIF}
+
 {$IFDEF HASMYSQL4CONNECTION}
   mysql40conn, mysql41conn,
 {$ENDIF}
   mysql50conn,
+{$IFDEF HASMYSQL51CONNECTION}
+  mysql51conn,
+{$ENDIF}
 {$IFDEF HASSQLITE3CONNECTION}
   sqlite3conn,
 {$ENDIF}
@@ -129,6 +134,9 @@ begin
                               TMySQL41Connection,
 {$ENDIF}
                               TMySQL50Connection,
+{$IFDEF HASMYSQL51CONNECTION}
+                              TMySQL51Connection,
+{$ENDIF}
 {$IFDEF HASSQLITE3CONNECTION}
                               TSQLite3Connection,
 {$ENDIF}
