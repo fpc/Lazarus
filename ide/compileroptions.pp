@@ -3403,7 +3403,7 @@ var
 begin
   s:=OptionText;
 
-  if Owner is TBaseCompilerOptions then
+  if (Owner is TBaseCompilerOptions) then
   begin
     Vars:=GetBuildMacroValues(TBaseCompilerOptions(Owner),true);
     if Vars<>nil then begin
