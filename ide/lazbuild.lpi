@@ -61,12 +61,10 @@
       <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)"/>
       <LCLWidgetType Value="nogui"/>
     </SearchPaths>
-    <Parsing>
-      <SyntaxOptions>
-        <UseAnsiStrings Value="False"/>
-      </SyntaxOptions>
-    </Parsing>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
