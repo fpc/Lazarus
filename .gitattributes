@@ -5542,6 +5542,22 @@ tools/install/win/lazarus-cross.iss svneol=native#text/plain
 tools/install/win/lazarus_install_cheetah.bmp -text svneol=unset#image/bmp
 tools/install/win/lazarus_install_cheetah_small.bmp -text svneol=unset#image/bmp
 tools/install/win/readme.txt svneol=native#text/plain
+tools/jsonviewer/README.txt svneol=native#text/plain
+tools/jsonviewer/frmmain.lfm svneol=native#text/plain
+tools/jsonviewer/frmmain.pp svneol=native#text/plain
+tools/jsonviewer/frmnewboolean.lfm svneol=native#text/plain
+tools/jsonviewer/frmnewboolean.pp svneol=native#text/plain
+tools/jsonviewer/frmnewinteger.lfm svneol=native#text/plain
+tools/jsonviewer/frmnewinteger.pp svneol=native#text/plain
+tools/jsonviewer/frmnewstring.lfm svneol=native#text/plain
+tools/jsonviewer/frmnewstring.pp svneol=native#text/plain
+tools/jsonviewer/jsonviewer.ico -text
+tools/jsonviewer/jsonviewer.lpi svneol=native#text/plain
+tools/jsonviewer/jsonviewer.lpr svneol=native#text/plain
+tools/jsonviewer/jsonviewer.res -text
+tools/jsonviewer/languages/jsonviewer.po svneol=native#text/plain
+tools/jsonviewer/mainform.ico -text
+tools/jsonviewer/msgjsonviewer.pp svneol=native#text/plain
 tools/lazdatadesktop/README.txt svneol=native#text/plain
 tools/lazdatadesktop/bitmaps/btndown.bmp -text
 tools/lazdatadesktop/bitmaps/btndown.xpm -text

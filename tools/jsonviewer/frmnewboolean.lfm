@@ -1,0 +1,57 @@
+object NewBooleanForm: TNewBooleanForm
+  Left = 423
+  Height = 124
+  Top = 305
+  Width = 375
+  ActiveControl = Ename
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'New boolean value'
+  ClientHeight = 124
+  ClientWidth = 375
+  OnCloseQuery = FormCloseQuery
+  Position = poMainFormCenter
+  LCLVersion = '0.9.29'
+  object BPNewBoolean: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 84
+    Width = 363
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object Label1: TLabel
+    Left = 17
+    Height = 15
+    Top = 12
+    Width = 83
+    Caption = '&Member name'
+    FocusControl = Ename
+    ParentColor = False
+  end
+  object CBValue: TCheckBox
+    Left = 113
+    Height = 21
+    Top = 44
+    Width = 84
+    Caption = 'Set to true'
+    TabOrder = 1
+  end
+  object Ename: TEdit
+    Left = 113
+    Height = 22
+    Top = 8
+    Width = 247
+    TabOrder = 2
+  end
+end

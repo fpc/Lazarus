@@ -1,0 +1,77 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: msgjsonviewer.sarray
+msgid "Array (%d elements)"
+msgstr ""
+
+#: msgjsonviewer.scancelclose
+msgid "Do not close the window"
+msgstr ""
+
+#: msgjsonviewer.scancelpaste
+msgid "Do not paste the new data"
+msgstr ""
+
+#: msgjsonviewer.scaption
+msgid "JSON Viewer"
+msgstr ""
+
+#: msgjsonviewer.sdiscard
+msgid "Discard changes"
+msgstr ""
+
+#: msgjsonviewer.sdocumentmodified
+msgid "JSON document modified"
+msgstr ""
+
+#: msgjsonviewer.sdocumentmodifiedaction
+msgid ""
+"The JSON data was changed but not saved.\n"
+"What do want to do ?\n"
+msgstr ""
+
+#: msgjsonviewer.sduplicatemembername
+msgid "Duplicate member name \"%s\"."
+msgstr ""
+
+#: msgjsonviewer.selement
+msgid "Element nr. %d"
+msgstr ""
+
+#: msgjsonviewer.sempty
+msgid "Empty document"
+msgstr ""
+
+#: msgjsonviewer.serrcreatingconfigdir
+msgid "Could not create the configuration files directory \"s\""
+msgstr ""
+
+#: msgjsonviewer.serrinvalidvalue
+msgid "Invalid value or wrong type: \"%s\""
+msgstr ""
+
+#: msgjsonviewer.serrnovalidjsonclipboard
+msgid "The clipboard does not contain valid JSON data"
+msgstr ""
+
+#: msgjsonviewer.snewmember
+msgid "New object member"
+msgstr ""
+
+#: msgjsonviewer.snewmembername
+msgid "Enter a name for the new member (type: %s)"
+msgstr ""
+
+#: msgjsonviewer.snull
+msgid "null"
+msgstr ""
+
+#: msgjsonviewer.sobject
+msgid "Object (%d members)"
+msgstr ""
+
+#: msgjsonviewer.ssavedata
+msgid "Save the changes"
+msgstr ""
+

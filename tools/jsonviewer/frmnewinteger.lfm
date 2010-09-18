@@ -1,0 +1,88 @@
+object NewNumberForm: TNewNumberForm
+  Left = 436
+  Height = 240
+  Top = 247
+  Width = 320
+  ActiveControl = EName
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'New number value'
+  ClientHeight = 240
+  ClientWidth = 320
+  OnCloseQuery = FormCloseQuery
+  Position = poMainFormCenter
+  LCLVersion = '0.9.29'
+  object BPNewNumber: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 200
+    Width = 308
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object EName: TEdit
+    Left = 87
+    Height = 22
+    Top = 10
+    Width = 185
+    TabOrder = 1
+  end
+  object RGType: TRadioGroup
+    Left = 83
+    Height = 105
+    Top = 44
+    Width = 185
+    AutoFill = True
+    Caption = 'Number Type'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 89
+    ClientWidth = 181
+    Items.Strings = (
+      'Float'
+      'Integer'
+      'Int64'
+    )
+    TabOrder = 2
+  end
+  object EValue: TEdit
+    Left = 84
+    Height = 22
+    Top = 161
+    Width = 164
+    TabOrder = 3
+  end
+  object Label1: TLabel
+    Left = 22
+    Height = 15
+    Top = 14
+    Width = 34
+    Caption = '&Name'
+    FocusControl = EName
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 12
+    Height = 15
+    Top = 159
+    Width = 31
+    Caption = 'Value'
+    ParentColor = False
+  end
+end

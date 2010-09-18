@@ -1,0 +1,71 @@
+object NewStringForm: TNewStringForm
+  Left = 509
+  Height = 144
+  Top = 290
+  Width = 320
+  ActiveControl = EName
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'New String value'
+  ClientHeight = 144
+  ClientWidth = 320
+  OnCloseQuery = FormCloseQuery
+  Position = poMainFormCenter
+  LCLVersion = '0.9.29'
+  object EName: TEdit
+    Left = 80
+    Height = 22
+    Top = 18
+    Width = 216
+    TabOrder = 0
+  end
+  object EValue: TEdit
+    Left = 80
+    Height = 22
+    Top = 49
+    Width = 216
+    TabOrder = 1
+  end
+  object Label1: TLabel
+    Left = 34
+    Height = 22
+    Top = 18
+    Width = 34
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Name'
+    FocusControl = EName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 37
+    Height = 22
+    Top = 49
+    Width = 31
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Value'
+    FocusControl = EValue
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object BPNewString: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 104
+    Width = 308
+    OKButton.Name = 'OKButton'
+    OKButton.Caption = '&OK'
+    HelpButton.Name = 'HelpButton'
+    HelpButton.Caption = '&Help'
+    HelpButton.Enabled = False
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = '&Close'
+    CloseButton.Enabled = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.Caption = 'Cancel'
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel]
+  end
+end
