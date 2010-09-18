@@ -24,5 +24,3 @@ create an object as root object when File-New is chosen.
 The 'Sort member names' will sort the member names in an object
 alphabetically.
 
-TODO:
-Implement a search feature.

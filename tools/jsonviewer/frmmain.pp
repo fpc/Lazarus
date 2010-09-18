@@ -38,6 +38,8 @@ type
 
   TMainForm = class(TForm)
     ACopy: TAction;
+    AFindNext: TAction;
+    AFind: TAction;
     AExpandCurrentContainer: TAction;
     AExpandAll: TAction;
     APasteAsDocument: TAction;
@@ -56,9 +58,12 @@ type
     AOpen: TAction;
     ANew: TAction;
     ActionList1: TActionList;
+    FDJSON: TFindDialog;
     ILJSON: TImageList;
     MEDit: TMenuItem;
     MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
+    MIFInd: TMenuItem;
     MIExpandCurrent: TMenuItem;
     MIExpandAll: TMenuItem;
     MIPasteAsDocument: TMenuItem;
@@ -113,6 +118,9 @@ type
     procedure AExpandAllUpdate(Sender: TObject);
     procedure AExpandCurrentContainerExecute(Sender: TObject);
     procedure AExpandCurrentContainerUpdate(Sender: TObject);
+    procedure AFindExecute(Sender: TObject);
+    procedure AFindNextExecute(Sender: TObject);
+    procedure AFindNextUpdate(Sender: TObject);
     procedure ANewArrayExecute(Sender: TObject);
     procedure ANewBooleanValueExecute(Sender: TObject);
     procedure ANewNullValueExecute(Sender: TObject);
@@ -127,6 +135,7 @@ type
     procedure ContainerAvailable(Sender: TObject);
     procedure ANewExecute(Sender: TObject);
     procedure AOpenExecute(Sender: TObject);
+    procedure FDJSONFind(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -153,9 +162,13 @@ type
     FStrict,
     FNewObject,
     FModified : Boolean;
+    FCurrentFind : TTreeNode;
     procedure AddDataToContainer(const AMemberName: String; D: TJSONData);
     procedure CopyCurrentData;
     procedure DeleteCurrentValue;
+    function FindNode(Start: TTreeNode; const AText: String;
+      CaseInsensitive: Boolean; WholeWord: Boolean): TTreeNode;
+    function GetNextSearchNode(Anode: TTreeNode): TTreeNode;
     procedure Modify;
     procedure AddNewValue(AType: TJSONType);
     function CurrentNode: TTreeNode;
@@ -385,6 +398,22 @@ end;
 procedure TMainForm.AExpandCurrentContainerUpdate(Sender: TObject);
 begin
   (Sender as TACtion).Enabled:=(CurrentContainerType<>jtUnknown)
+end;
+
+procedure TMainForm.AFindExecute(Sender: TObject);
+begin
+  With FDJSON do
+    Execute;
+end;
+
+procedure TMainForm.AFindNextExecute(Sender: TObject);
+begin
+  FDJSONFind(Sender);
+end;
+
+procedure TMainForm.AFindNextUpdate(Sender: TObject);
+begin
+  (Sender as TAction).ENabled:=(FCurrentFind<>Nil)
 end;
 
 procedure TMainForm.ADeleteValueExecute(Sender: TObject);
@@ -792,6 +821,82 @@ begin
     If Execute then
       OpenFile(FileName)
     end;
+end;
+
+procedure TMainForm.FDJSONFind(Sender: TObject);
+
+Var
+  N : TTreeNode;
+
+begin
+  If (FCurrentFind=Nil) then
+    begin
+    If (frEntireScope in FDJSON.Options) and (TVJSON.Items.Count>0) then
+      FCurrentFind:=TVJSON.Items[0]
+    else
+      FCurrentFind:=TVJSON.Selected;
+    end
+  else
+    FCurrentFind:=GetNextSearchNode(FCurrentFind);
+  If (FCurrentFind=Nil) then
+    Exit;
+  With FDJSON do
+    N:=FindNode(FCurrentFind,FindText,Not (frMatchCase in Options), frWholeWord in Options);
+  If Assigned(N) then
+    begin
+    N.MakeVisible;
+    TVJSON.Selected:=N;
+    end
+  else
+    ShowMessage(SNoMoreMatches);
+  FCurrentFind:=N;
+end;
+
+Function TMainForm.GetNextSearchNode(Anode : TTreeNode) : TTreeNode;
+
+begin
+  Result:=Nil;
+  If (ANode=Nil) then Exit;
+  If (ANode.Count>0) then
+    Result:=ANode.GetFirstChild
+  else
+    Result:=ANode.GetNextSibling;
+  While (Result=Nil) and (ANode<>Nil) do
+    begin
+    ANode:=ANode.Parent;
+    Result:=ANode.GetNextSibling;
+    end;
+end;
+
+Function TMainForm.FindNode(Start : TTreeNode; Const AText: String; CaseInsensitive : Boolean; WholeWord : Boolean) : TTreeNode;
+
+  Function Match(Const ST : String; ANode : TTreeNode) : boolean;
+
+  Var
+    NT : String;
+
+  begin
+    If CaseInsensitive then
+      NT:=Uppercase(ANode.Text)
+    else
+      NT:=ANode.Text;
+    If WholeWord then
+      Result:=(NT=ST)
+    else
+      Result:=(Pos(ST,NT)>0);
+  end;
+
+Var
+  ST : String;
+
+begin
+  If CaseInsensitive then
+    ST:=UpperCase(AText)
+  else
+    ST:=AText;
+  Result:=Start;
+  While (Result<>Nil) and not Match(ST,Result)  do
+    Result:=GetNextSearchNode(Result);
 end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
