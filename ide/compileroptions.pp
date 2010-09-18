@@ -65,19 +65,21 @@
     - using the conditionals
   - build macro values are invalidated when changing project macro values or
     any conditionals
+  - using conditionals to extend paths: TParsedCompilerOptions.DoParseOption
 
   ToDo:
-  - use conditionals to extend paths: TParsedCompilerOptions.DoParseOption
   - use conditionals to extend usage paths
   - move the project target file to compiler options
+  - conditionals for project
   - warn for macro name conflicts
+    - keywords
     - with macros fom other packages/projects
     - with standard macros
       - on renaming
       - on loading
   - when package is renamed, rename macros too
-  - conditionals for project
   - show build macros in inherited compiler options
+  - show syntax errors of conditionals
   - a project can save the set of build macros and compiler options
     - add changestamp, assign, equals to compiler options
     - refactor compiler options (default options, load, save to file)
@@ -593,30 +595,27 @@ type
     Additional Compiler options are used by packages to define, what a project
     or a package or the IDE needs to use the package.
   }
-  
-  { TAdditionalCompilerOptions }
-
   TAdditionalCompilerOptions = class
   private
     FBaseDirectory: string;
-    FCustomOptions: string;
-    FIncludePath: string;
-    FLibraryPath: string;
-    FLinkerOptions: string;
-    FObjectPath: string;
     fOwner: TObject;
     FParsedOpts: TParsedCompilerOptions;
-    FSrcPath: string;
-    FUnitPath: string;
   protected
+    function GetCustomOptions: string; virtual;
+    function GetIncludePath: string; virtual;
+    function GetLibraryPath: string; virtual;
+    function GetLinkerOptions: string; virtual;
+    function GetObjectPath: string; virtual;
+    function GetSrcPath: string; virtual;
+    function GetUnitPath: string; virtual;
     procedure SetBaseDirectory(const AValue: string); virtual;
     procedure SetCustomOptions(const AValue: string); virtual;
     procedure SetIncludePath(const AValue: string); virtual;
     procedure SetLibraryPath(const AValue: string); virtual;
     procedure SetLinkerOptions(const AValue: string); virtual;
     procedure SetObjectPath(const AValue: string); virtual;
-    procedure SetUnitPath(const AValue: string); virtual;
     procedure SetSrcPath(const AValue: string); virtual;
+    procedure SetUnitPath(const AValue: string); virtual;
   public
     constructor Create(TheOwner: TObject);
     destructor Destroy; override;
@@ -629,13 +628,13 @@ type
     function GetOption(AnOption: TInheritedCompilerOption): string;
   public
     property Owner: TObject read fOwner;
-    property UnitPath: string read FUnitPath write SetUnitPath;
-    property IncludePath: string read FIncludePath write SetIncludePath;
-    property SrcPath: string read FSrcPath write SetSrcPath;
-    property ObjectPath: string read FObjectPath write SetObjectPath;
-    property LibraryPath: string read FLibraryPath write SetLibraryPath;
-    property LinkerOptions: string read FLinkerOptions write SetLinkerOptions;
-    property CustomOptions: string read FCustomOptions write SetCustomOptions;
+    property UnitPath: string read GetUnitPath write SetUnitPath;
+    property IncludePath: string read GetIncludePath write SetIncludePath;
+    property SrcPath: string read GetSrcPath write SetSrcPath;
+    property ObjectPath: string read GetObjectPath write SetObjectPath;
+    property LibraryPath: string read GetLibraryPath write SetLibraryPath;
+    property LinkerOptions: string read GetLinkerOptions write SetLinkerOptions;
+    property CustomOptions: string read GetCustomOptions write SetCustomOptions;
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
     property ParsedOpts: TParsedCompilerOptions read FParsedOpts;
   end;
@@ -3156,16 +3155,47 @@ end;
 
 procedure TAdditionalCompilerOptions.SetCustomOptions(const AValue: string);
 begin
-  if FCustomOptions=AValue then exit;
-  FCustomOptions:=AValue;
-  ParsedOpts.SetUnparsedValue(pcosCustomOptions,fCustomOptions);
+  ParsedOpts.SetUnparsedValue(pcosCustomOptions,AValue);
 end;
 
 procedure TAdditionalCompilerOptions.SetSrcPath(const AValue: string);
 begin
-  if FSrcPath=AValue then exit;
-  FSrcPath:=AValue;
-  ParsedOpts.SetUnparsedValue(pcosSrcPath,FSrcPath);
+  ParsedOpts.SetUnparsedValue(pcosSrcPath,AValue);
+end;
+
+function TAdditionalCompilerOptions.GetUnitPath: string;
+begin
+  Result:=FParsedOpts.UnparsedValues[pcosUnitPath];
+end;
+
+function TAdditionalCompilerOptions.GetIncludePath: string;
+begin
+  Result:=FParsedOpts.UnparsedValues[pcosIncludePath];
+end;
+
+function TAdditionalCompilerOptions.GetCustomOptions: string;
+begin
+  Result:=FParsedOpts.UnparsedValues[pcosCustomOptions];
+end;
+
+function TAdditionalCompilerOptions.GetLibraryPath: string;
+begin
+  Result:=FParsedOpts.UnparsedValues[pcosLibraryPath];
+end;
+
+function TAdditionalCompilerOptions.GetLinkerOptions: string;
+begin
+  Result:=FParsedOpts.UnparsedValues[pcosLinkerOptions];
+end;
+
+function TAdditionalCompilerOptions.GetObjectPath: string;
+begin
+  Result:=FParsedOpts.UnparsedValues[pcosObjectPath];
+end;
+
+function TAdditionalCompilerOptions.GetSrcPath: string;
+begin
+  Result:=FParsedOpts.UnparsedValues[pcosSrcPath];
 end;
 
 procedure TAdditionalCompilerOptions.SetBaseDirectory(const AValue: string);
@@ -3177,37 +3207,27 @@ end;
 
 procedure TAdditionalCompilerOptions.SetIncludePath(const AValue: string);
 begin
-  if FIncludePath=AValue then exit;
-  FIncludePath:=AValue;
-  ParsedOpts.SetUnparsedValue(pcosIncludePath,FIncludePath);
+  ParsedOpts.SetUnparsedValue(pcosIncludePath,AValue);
 end;
 
 procedure TAdditionalCompilerOptions.SetLibraryPath(const AValue: string);
 begin
-  if FLibraryPath=AValue then exit;
-  FLibraryPath:=AValue;
-  ParsedOpts.SetUnparsedValue(pcosLibraryPath,FLibraryPath);
+  ParsedOpts.SetUnparsedValue(pcosLibraryPath,AValue);
 end;
 
 procedure TAdditionalCompilerOptions.SetLinkerOptions(const AValue: string);
 begin
-  if FLinkerOptions=AValue then exit;
-  FLinkerOptions:=AValue;
-  ParsedOpts.SetUnparsedValue(pcosLinkerOptions,fLinkerOptions);
+  ParsedOpts.SetUnparsedValue(pcosLinkerOptions,AValue);
 end;
 
 procedure TAdditionalCompilerOptions.SetObjectPath(const AValue: string);
 begin
-  if FObjectPath=AValue then exit;
-  FObjectPath:=AValue;
-  ParsedOpts.SetUnparsedValue(pcosObjectPath,FObjectPath);
+  ParsedOpts.SetUnparsedValue(pcosObjectPath,AValue);
 end;
 
 procedure TAdditionalCompilerOptions.SetUnitPath(const AValue: string);
 begin
-  if FUnitPath=AValue then exit;
-  FUnitPath:=AValue;
-  ParsedOpts.SetUnparsedValue(pcosUnitPath,FUnitPath);
+  ParsedOpts.SetUnparsedValue(pcosUnitPath,AValue);
 end;
 
 constructor TAdditionalCompilerOptions.Create(TheOwner: TObject);
@@ -3225,12 +3245,13 @@ end;
 
 procedure TAdditionalCompilerOptions.Clear;
 begin
-  FCustomOptions:='';
-  FIncludePath:='';
-  FLibraryPath:='';
-  FLinkerOptions:='';
-  FObjectPath:='';
-  FUnitPath:='';
+  UnitPath:='';
+  SrcPath:='';
+  IncludePath:='';
+  CustomOptions:='';
+  LibraryPath:='';
+  LinkerOptions:='';
+  ObjectPath:='';
 end;
 
 procedure TAdditionalCompilerOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -3249,6 +3270,7 @@ begin
   LinkerOptions:=f(XMLConfig.GetValue(Path+'LinkerOptions/Value',''));
   ObjectPath:=f(XMLConfig.GetValue(Path+'ObjectPath/Value',''));
   UnitPath:=f(XMLConfig.GetValue(Path+'UnitPath/Value',''));
+  SrcPath:=f(XMLConfig.GetValue(Path+'SrcPath/Value',''));
 end;
 
 procedure TAdditionalCompilerOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -3260,12 +3282,13 @@ procedure TAdditionalCompilerOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
   end;
 
 begin
-  XMLConfig.SetDeleteValue(Path+'CustomOptions/Value',f(fCustomOptions),'');
-  XMLConfig.SetDeleteValue(Path+'IncludePath/Value',f(FIncludePath),'');
-  XMLConfig.SetDeleteValue(Path+'LibraryPath/Value',f(FLibraryPath),'');
-  XMLConfig.SetDeleteValue(Path+'LinkerOptions/Value',f(fLinkerOptions),'');
-  XMLConfig.SetDeleteValue(Path+'ObjectPath/Value',f(FObjectPath),'');
-  XMLConfig.SetDeleteValue(Path+'UnitPath/Value',f(FUnitPath),'');
+  XMLConfig.SetDeleteValue(Path+'CustomOptions/Value',f(CustomOptions),'');
+  XMLConfig.SetDeleteValue(Path+'IncludePath/Value',f(IncludePath),'');
+  XMLConfig.SetDeleteValue(Path+'LibraryPath/Value',f(LibraryPath),'');
+  XMLConfig.SetDeleteValue(Path+'LinkerOptions/Value',f(LinkerOptions),'');
+  XMLConfig.SetDeleteValue(Path+'ObjectPath/Value',f(ObjectPath),'');
+  XMLConfig.SetDeleteValue(Path+'UnitPath/Value',f(UnitPath),'');
+  XMLConfig.SetDeleteValue(Path+'SrcPath/Value',f(SrcPath),'');
 end;
 
 function TAdditionalCompilerOptions.GetOwnerName: string;
