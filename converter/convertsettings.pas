@@ -673,16 +673,21 @@ var
   Trg: TConvertTarget;
 begin
   Trg:=TConvertTarget((Sender as TRadioGroup).ItemIndex);
-  if Trg<>ctLazarusAndDelphi then begin
+  // Same DFM form file can be used only with "Lazarus and Delphi) target
+  if Trg<>ctLazarusAndDelphi then
     SameDFMCheckBox.Checked:=false;
-  end;
   SameDFMCheckBox.Enabled:=Trg=ctLazarusAndDelphi;
+  //Function names are not replaced for Windows only target.
+  if Trg=ctLazarusWin then
+    FuncReplaceEnableCheckBox.Checked:=false;
+  FuncReplaceEnableCheckBox.Enabled:=Trg<>ctLazarusWin;
 end;
 
 procedure TConvertSettingsForm.SameDFMCheckBoxChange(Sender: TObject);
 begin
   if (Sender as TCheckBox).Checked then
     VisualOffsEnableCheckBox.Checked:=False;
+  VisualOffsEnableCheckBox.Enabled:=not (Sender as TCheckBox).Checked;
 end;
 
 // Edit replacements in grids

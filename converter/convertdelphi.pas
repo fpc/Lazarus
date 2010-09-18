@@ -751,6 +751,7 @@ var
   var
     CTResult: Boolean;
     i: Integer;
+    s: String;
   begin
     Result:=mrOk;
     CTResult:=CodeToolBoss.FindMissingUnits(fPascalBuffer,fMissingUnits,true);
@@ -759,13 +760,13 @@ var
       Result:=mrCancel;
       exit;
     end;
-    // Remove Windows unit from the list if target is "Windows only".
+    // Remove Windows specific units from the list if target is "Windows only".
     if (fSettings.Target=ctLazarusWin) and Assigned(fMissingUnits) then begin
-      for i:=fMissingUnits.Count-1 downto 0 do
-        if LowerCase(fMissingUnits[i])='windows' then begin
+      for i:=fMissingUnits.Count-1 downto 0 do begin
+        s:=LowerCase(fMissingUnits[i]);
+        if (s='windows') or (s='variants') or (s='shellapi') then
           fMissingUnits.Delete(i);
-          Break;
-        end;
+      end;
     end;
   end;
 
