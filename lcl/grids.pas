@@ -1171,6 +1171,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DeleteColRow(IsColumn: Boolean; index: Integer);
+    procedure DeleteCol(Index: Integer); virtual;
+    procedure DeleteRow(Index: Integer); virtual;
     procedure ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
     procedure InsertColRow(IsColumn: boolean; index: integer);
     procedure MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
@@ -8998,6 +9000,16 @@ end;
 procedure TCustomDrawGrid.DeleteColRow(IsColumn: Boolean; index: Integer);
 begin
   DoOPDeleteColRow(IsColumn, Index);
+end;
+
+procedure TCustomDrawGrid.DeleteCol(Index: Integer);
+begin
+  DeleteColRow(True, Index);
+end;
+
+procedure TCustomDrawGrid.DeleteRow(Index: Integer);
+begin
+  DeleteColRow(False, Index);
 end;
 
 procedure TCustomDrawGrid.ExchangeColRow(IsColumn: Boolean; index,
