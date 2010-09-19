@@ -248,6 +248,34 @@ const
     'pcosCompilerPath',
     'pcosDebugPath'
     );
+  ParsedCompilerOptsVars: array[TParsedCompilerOptString] of string = (
+    '',
+    '',
+    'UnitPath',
+    'IncPath',
+    'ObjectPath',
+    'LibraryPath',
+    'SrcPath',
+    'LinkerOptions',
+    'CustomOptions',
+    'OutputDir',
+    'CompilerPath',
+    'DebugPath'
+    );
+  ParsedCompilerOptsUsageVars: array[TParsedCompilerOptString] of string = (
+    '',
+    '',
+    'UsageUnitPath',
+    'UsageIncPath',
+    'UsageObjectPath',
+    'UsageLibraryPath',
+    'UsageSrcPath',
+    'UsageLinkerOptions',
+    'UsageCustomOptions',
+    '',
+    '',
+    'UsageDebugPath'
+    );
   InheritedToParsedCompilerOption: array[TInheritedCompilerOption] of
     TParsedCompilerOptString = (
       pcosNone,
@@ -305,6 +333,7 @@ type
     MacroValuesParsing: boolean;
     constructor Create(TheOwner: TObject);
     destructor Destroy; override;
+    function GetUnparsedWithConditionals(Option: TParsedCompilerOptString): string;
     function GetParsedValue(Option: TParsedCompilerOptString;
                             WithOverrides: boolean = true): string;
     function GetParsedPIValue(Option: TParsedCompilerOptString): string;// platform independent
@@ -597,10 +626,10 @@ type
   }
   TAdditionalCompilerOptions = class
   private
-    FBaseDirectory: string;
     fOwner: TObject;
     FParsedOpts: TParsedCompilerOptions;
   protected
+    function GetBaseDirectory: string;
     function GetCustomOptions: string; virtual;
     function GetIncludePath: string; virtual;
     function GetLibraryPath: string; virtual;
@@ -626,6 +655,7 @@ type
                               UsePathDelim: TPathDelimSwitch);
     function GetOwnerName: string; virtual;
     function GetOption(AnOption: TInheritedCompilerOption): string;
+    function GetBaseCompilerOptions: TBaseCompilerOptions; virtual;
   public
     property Owner: TObject read fOwner;
     property UnitPath: string read GetUnitPath write SetUnitPath;
@@ -635,7 +665,7 @@ type
     property LibraryPath: string read GetLibraryPath write SetLibraryPath;
     property LinkerOptions: string read GetLinkerOptions write SetLinkerOptions;
     property CustomOptions: string read GetCustomOptions write SetCustomOptions;
-    property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
+    property BaseDirectory: string read GetBaseDirectory write SetBaseDirectory;
     property ParsedOpts: TParsedCompilerOptions read FParsedOpts;
   end;
 
@@ -3173,6 +3203,11 @@ begin
   Result:=FParsedOpts.UnparsedValues[pcosIncludePath];
 end;
 
+function TAdditionalCompilerOptions.GetBaseDirectory: string;
+begin
+  Result:=FParsedOpts.UnparsedValues[pcosBaseDir];
+end;
+
 function TAdditionalCompilerOptions.GetCustomOptions: string;
 begin
   Result:=FParsedOpts.UnparsedValues[pcosCustomOptions];
@@ -3200,9 +3235,7 @@ end;
 
 procedure TAdditionalCompilerOptions.SetBaseDirectory(const AValue: string);
 begin
-  if FBaseDirectory=AValue then exit;
-  FBaseDirectory:=AValue;
-  ParsedOpts.SetUnparsedValue(pcosBaseDir,FBaseDirectory);
+  ParsedOpts.SetUnparsedValue(pcosBaseDir,AValue);
 end;
 
 procedure TAdditionalCompilerOptions.SetIncludePath(const AValue: string);
@@ -3316,6 +3349,12 @@ begin
   end;
 end;
 
+function TAdditionalCompilerOptions.
+  GetBaseCompilerOptions: TBaseCompilerOptions;
+begin
+  Result:=nil;
+end;
+
 { TParsedCompilerOptions }
 
 procedure TParsedCompilerOptions.SetOutputDirectoryOverride(const AValue: string
@@ -3346,6 +3385,43 @@ begin
   inherited Destroy;
 end;
 
+function TParsedCompilerOptions.GetUnparsedWithConditionals(
+  Option: TParsedCompilerOptString): string;
+var
+  Opts: TBaseCompilerOptions;
+  VarName: String;
+  Vars: TCTCfgScriptVariables;
+begin
+  Result:=UnparsedValues[Option];
+  Opts:=nil;
+  VarName:='';
+  if (Owner is TBaseCompilerOptions) then
+  begin
+    Opts:=TBaseCompilerOptions(Owner);
+    VarName:=ParsedCompilerOptsVars[Option];
+  end else if (Owner is TAdditionalCompilerOptions) then
+  begin
+    Opts:=TAdditionalCompilerOptions(Owner).GetBaseCompilerOptions;
+    VarName:=ParsedCompilerOptsUsageVars[Option];
+  end;
+  if (VarName='') or (Opts=nil) then exit;
+  Vars:=GetBuildMacroValues(Opts,true);
+  if Vars=nil then exit;
+  case Option of
+  pcosUnitPath,pcosIncludePath,pcosObjectPath,pcosLibraryPath,pcosSrcPath,
+  pcosDebugPath:
+    Result:=MergeSearchPaths(Result,Vars[VarName]);
+  pcosLinkerOptions:
+    Result:=MergeLinkerOptions(Result,Vars[VarName]);
+  pcosCustomOptions:
+    Result:=MergeCustomOptions(Result,Vars[VarName]);
+  pcosOutputDir:
+    if Vars.IsDefined(PChar(VarName)) then Result:=Vars.Values[VarName];
+  pcosCompilerPath:
+    if Vars.IsDefined(PChar(VarName)) then Result:=Vars.Values[VarName];
+  end
+end;
+
 function TParsedCompilerOptions.GetParsedValue(Option: TParsedCompilerOptString;
   WithOverrides: boolean): string;
 var
@@ -3365,7 +3441,7 @@ begin
     end;
     Parsing[Option]:=true;
     try
-      s:=DoParseOption(UnparsedValues[Option],Option,false);
+      s:=DoParseOption(GetUnparsedWithConditionals(Option),Option,false);
       ParsedValues[Option]:=s;
       ParsedStamp[Option]:=CompilerParseStamp;
       //if Option=pcosCustomOptions then begin
@@ -3390,7 +3466,7 @@ begin
     end;
     ParsingPI[Option]:=true;
     try
-      s:=DoParseOption(UnparsedValues[Option],Option,true);
+      s:=DoParseOption(GetUnparsedWithConditionals(Option),Option,true);
       ParsedPIValues[Option]:=s;
       ParsedPIStamp[Option]:=CompilerParseStamp;
       //if Option=pcosCustomOptions then begin
@@ -3422,28 +3498,8 @@ function TParsedCompilerOptions.DoParseOption(const OptionText: string;
 var
   s: String;
   BaseDirectory: String;
-  Vars: TCTCfgScriptVariables;
 begin
   s:=OptionText;
-
-  if (Owner is TBaseCompilerOptions) then
-  begin
-    Vars:=GetBuildMacroValues(TBaseCompilerOptions(Owner),true);
-    if Vars<>nil then begin
-      case Option of
-      pcosUnitPath: s:=MergeSearchPaths(s,Vars['UnitPath']);
-      pcosIncludePath: s:=MergeSearchPaths(s,Vars['IncPath']);
-      pcosObjectPath: s:=MergeSearchPaths(s,Vars['ObjectPath']);
-      pcosLibraryPath: s:=MergeSearchPaths(s,Vars['LibraryPath']);
-      pcosSrcPath: s:=MergeSearchPaths(s,Vars['SrcPath']);
-      pcosLinkerOptions: s:=MergeLinkerOptions(s,Vars['LinkerOptions']);
-      pcosCustomOptions: s:=MergeCustomOptions(s,Vars['CustomOptions']);
-      pcosOutputDir: if Vars.IsDefined('OutputDirectory') then s:=Vars.Values['OutputDirectory'];
-      pcosCompilerPath: if Vars.IsDefined('CompilerPath') then s:=Vars.Values['CompilerPath'];
-      pcosDebugPath: s:=MergeSearchPaths(s,Vars['DebugPath']);
-      end;
-    end;
-  end;
 
   // parse locally (macros depending on owner, like pkgdir and build macros)
   //DebugLn(['TParsedCompilerOptions.DoParseOption local "',s,'" ...']);

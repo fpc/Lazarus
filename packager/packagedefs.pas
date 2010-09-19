@@ -411,6 +411,7 @@ type
   public
     constructor Create(ThePackage: TLazPackage);
     function GetOwnerName: string; override;
+    function GetBaseCompilerOptions: TBaseCompilerOptions; override;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -3831,6 +3832,12 @@ end;
 function TPkgAdditionalCompilerOptions.GetOwnerName: string;
 begin
   Result:=LazPackage.IDAsString;
+end;
+
+function TPkgAdditionalCompilerOptions.
+  GetBaseCompilerOptions: TBaseCompilerOptions;
+begin
+  Result:=LazPackage.CompilerOptions;
 end;
 
 { TLazPackageDefineTemplates }
