@@ -407,6 +407,7 @@ type
     function  GetImageForCheckBox(const aCol,aRow: Integer;
                                   CheckBoxView: TCheckBoxState): TBitmap; override;
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; override;
+    function  GetIsCellTitle(aCol,aRow: Integer): boolean; override;
     procedure GetSelectedState(AState: TGridDrawState; out IsSelected:boolean); override;
     function  GridCanModify: boolean;
     procedure GetSBVisibility(out HsbVisible,VsbVisible:boolean);override;
@@ -2468,6 +2469,13 @@ function TCustomDBGrid.GetIsCellSelected(aCol, aRow: Integer): boolean;
 begin
   Result:=inherited GetIsCellSelected(aCol, aRow) or
     FDrawingMultiSelRecord;
+end;
+
+function TCustomDBGrid.GetIsCellTitle(aCol, aRow: Integer): boolean;
+begin
+  result := (FixedRows>0) and (aRow=0);
+  if result and Columns.Enabled then
+    result := (aCol>=FirstGridColumn);
 end;
 
 procedure TCustomDBGrid.GetSelectedState(AState: TGridDrawState; out

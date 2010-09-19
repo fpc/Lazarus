@@ -924,7 +924,7 @@ type
     procedure InvalidateGrid;
     procedure InvalidateRow(ARow: Integer);
     procedure InvalidateFocused;
-    function  GetIsCellTitle(aCol,aRow: Integer): boolean;
+    function  GetIsCellTitle(aCol,aRow: Integer): boolean; virtual;
     function  GetIsCellSelected(aCol, aRow: Integer): boolean; virtual;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
