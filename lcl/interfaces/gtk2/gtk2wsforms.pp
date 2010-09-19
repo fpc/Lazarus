@@ -152,6 +152,7 @@ var
   ACtl: TWinControl;
   Mess : TLMessage;
   WInfo: PWidgetInfo;
+  X,Y: Integer;
   {$IFDEF HASX}
   XDisplay: PDisplay;
   Window: TWindow;
@@ -161,6 +162,15 @@ var
 begin
   Result := CallBackDefaultReturn;
   case event^._type of
+    GDK_CONFIGURE:
+      begin
+        {fixes multiple resize events. See comments on
+        http://bugs.freepascal.org/view.php?id=17015}
+        ACtl := TWinControl(Data);
+        GetWidgetRelativePosition(PGtkWidget(ACtl.Handle), X, Y);
+        Result := (event^.configure.send_event = 1) and
+          not ((X <> ACtl.Left) or (Y <> ACtl.Top));
+      end;
     GDK_WINDOW_STATE:
       begin
         if (GDK_WINDOW_STATE_WITHDRAWN and event^.window_state.changed_mask) = 1 then
