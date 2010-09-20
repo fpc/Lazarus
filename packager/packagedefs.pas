@@ -2037,8 +2037,19 @@ procedure TLazPackage.OnMacroListSubstitution(TheMacro: TTransferMacro;
 var
   Values: TCTCfgScriptVariables;
   Macro: PCTCfgScriptVariable;
+  NewValue: String;
 {$ENDIF}
 begin
+  if Data=CompilerOptionMacroPlatformIndependent then
+  begin
+    NewValue:=GetMakefileMacroValue(MacroName);
+    if NewValue<>'' then begin
+      s:=NewValue;
+      Handled:=true;
+      exit;
+    end;
+  end;
+
   {$IFDEF EnableBuildModes}
   // check build macros
   if (MacroName<>'') and IsValidIdent(MacroName) then
@@ -2058,14 +2069,14 @@ begin
   {$ENDIF}
 
   // check local macros
-  if CompareText(s,'PkgOutDir')=0 then begin
+  if CompareText(MacroName,'PkgOutDir')=0 then begin
     Handled:=true;
     if Data=CompilerOptionMacroNormal then
       s:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir)
     else
       s:=CompilerOptions.ParsedOpts.GetParsedPIValue(pcosOutputDir);
   end
-  else if CompareText(s,'PkgDir')=0 then begin
+  else if CompareText(MacroName,'PkgDir')=0 then begin
     Handled:=true;
     s:=FDirectory;
   end;

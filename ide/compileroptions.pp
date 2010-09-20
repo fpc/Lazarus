@@ -718,7 +718,8 @@ var
 function ParseString(Options: TParsedCompilerOptions;
                      const UnparsedValue: string;
                      PlatformIndependent: boolean): string;
-                     
+function GetMakefileMacroValue(const MacroName: string): string;
+
 procedure GatherInheritedOptions(AddOptionsList: TFPList;
   Parsed: TCompilerOptionsParseType;
   var InheritedOptionStrings: TInheritedCompOptsStrings);
@@ -764,6 +765,18 @@ function ParseString(Options: TParsedCompilerOptions;
   const UnparsedValue: string; PlatformIndependent: boolean): string;
 begin
   Result:=OnParseString(Options,UnparsedValue,PlatformIndependent);
+end;
+
+function GetMakefileMacroValue(const MacroName: string): string;
+begin
+  if SysUtils.CompareText('TargetCPU',MacroName)=0 then
+    Result:='%(CPU_TARGET)'
+  else if SysUtils.CompareText('TargetOS',MacroName)=0 then
+    Result:='%(OS_TARGET)'
+  else if SysUtils.CompareText('LCLWidgetType',MacroName)=0 then
+    Result:='%(LCL_PLATFORM)'
+  else
+    Result:='';
 end;
 
 procedure GatherInheritedOptions(AddOptionsList: TFPList;
@@ -1668,7 +1681,6 @@ var
   p: TCompilerOptionsParseType;
 begin
   fInheritedOptParseStamps:=InvalidParseStamp;
-  //QWE fInheritedOptGraphStamps:=InvalidParseStamp;
   for p:=Low(TCompilerOptionsParseType) to High(TCompilerOptionsParseType) do
     for i:=Low(TInheritedCompilerOption) to High(TInheritedCompilerOption) do
     begin
@@ -3520,6 +3532,16 @@ var
   BaseDirectory: String;
 begin
   s:=OptionText;
+
+  {if (Option=pcosCustomOptions) and PlatformIndependent
+  and (Pos('LCLWidgetType',s)>0) then begin
+    DebugLn(['TParsedCompilerOptions.DoParseOption local "',s,'" ...']);
+    if Assigned(OnLocalSubstitute) then
+      s:=OnLocalSubstitute(s,PlatformIndependent);
+    DebugLn(['TParsedCompilerOptions.DoParseOption global "',s,'" ...']);
+    s:=ParseString(Self,s,PlatformIndependent);
+    DebugLn(['TParsedCompilerOptions.DoParseOption complete "',s,'" ...']);
+  end;}
 
   // parse locally (macros depending on owner, like pkgdir and build macros)
   //DebugLn(['TParsedCompilerOptions.DoParseOption local "',s,'" ...']);
