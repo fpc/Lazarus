@@ -2037,8 +2037,9 @@ procedure TLazPackage.OnMacroListSubstitution(TheMacro: TTransferMacro;
 var
   Values: TCTCfgScriptVariables;
   Macro: PCTCfgScriptVariable;
-  NewValue: String;
 {$ENDIF}
+var
+  NewValue: String;
 begin
   if Data=CompilerOptionMacroPlatformIndependent then
   begin

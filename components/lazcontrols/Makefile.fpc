@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for LazControls 0.0
 #
-#   This file was generated on 20.09.2010
+#   This file was generated on 09/20/2010
 
 [package]
 name=lazcontrols

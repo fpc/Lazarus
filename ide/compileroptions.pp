@@ -65,20 +65,21 @@
     - using the conditionals
   - build macro values are invalidated when changing project macro values or
     any conditionals
-  - using conditionals to extend paths: TParsedCompilerOptions.DoParseOption
+  - using conditionals to extend paths: TParsedCompilerOptions.GetUnparsedWithConditionals
+  - using conditionals to extend package usage paths: TParsedCompilerOptions.GetUnparsedWithConditionals
 
   ToDo:
-  - use conditionals to extend usage paths
   - move the project target file to compiler options
   - conditionals for project
   - warn for macro name conflicts
     - keywords
-    - with macros fom other packages/projects
+    - with macros from other packages/projects
     - with standard macros
       - on renaming
       - on loading
   - when package is renamed, rename macros too
   - show build macros in inherited compiler options
+  - use syntax highlighter settings like the editor previews
   - show syntax errors of conditionals
   - a project can save the set of build macros and compiler options
     - add changestamp, assign, equals to compiler options
