@@ -3484,7 +3484,6 @@ function TQtWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar; Count,
 var
   i: Integer;
   w: Integer;
-  Accumulator: Integer;
   AStr: WideString;
 begin
   Result := False;
@@ -3492,27 +3491,33 @@ begin
   with TQtDeviceContext(DC) do
   begin
     AStr := GetUtf8String(Str);
-    Size.cX := Font.Metrics.Width(@AStr, Count);
-    Size.cY := Font.Metrics.Height;
-    if PartialWidths <> nil then
+    if PartialWidths = nil then
     begin
+      Size.cX := Font.Metrics.Width(@AStr, Count);
+      Size.cY := Font.Metrics.Height;
+    end else
+    begin
+      Size.cx := 0;
+      Size.cY := Font.Metrics.Height;
       if MaxCount <> nil then
         MaxCount^ := 0;
-      Accumulator := 0;
       for i := 0 to Count - 1 do
       begin
         w := QFontMetrics_charWidth(Font.Metrics.Widget, @AStr, i);
-        Inc(Accumulator, w);
+        Inc(Size.cx, w);
         if MaxCount <> nil then
         begin
-          if Accumulator <= MaxWidth then
+          if Size.cx <= MaxWidth then
           begin
             inc(MaxCount^);
-            PartialWidths[i] := Accumulator;
+            PartialWidths[i] := Size.cx;
           end else
+          begin
+            Dec(Size.cx, w);
             break;
+          end;
         end else
-          PartialWidths[i] := Accumulator;
+          PartialWidths[i] := Size.cx;
       end;
     end;
   end;

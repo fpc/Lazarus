@@ -5557,7 +5557,10 @@ begin
                 inc(MaxCount^);
                 PartialWidths[i] := Size.cx;
               end else
+              begin
+                dec(Size.cx, Rect.Width);
                 break;
+              end;
             end else
               PartialWidths[i] := Size.cx;
             if Size.cy < Rect.Height then
