@@ -177,6 +177,7 @@ begin
   FPageIndex := AValue;
 
   // And show the new one
+  if Assigned(Page[FPageIndex].FOnBeforeShow) then Page[FPageIndex].FOnBeforeShow(Self); // OnBeforeShow event
   Page[FPageIndex].Visible := True;
   Page[FPageIndex].ControlStyle :=
     Page[FPageIndex].ControlStyle - [csNoDesignVisible];

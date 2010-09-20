@@ -322,11 +322,39 @@ type
   { TUNBPage }
 
   TUNBPage = class(TCustomControl)
+  private
+    FOnBeforeShow: TNotifyEvent;
   protected
     procedure SetParent(AParent: TWinControl); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+  published
+    // Lazarus-specific TPage events
+    // OnBeforeShow occurs before a page is displayed, so that
+    // preparations can be executed in it's user interface, for example
+    property OnBeforeShow: TNotifyEvent read FOnBeforeShow write FOnBeforeShow;
+    // Other events
+    property ChildSizing;
+    property ClientWidth;
+    property ClientHeight;
+    property Left stored False;
+    property Top stored False;
+    property Width stored False;
+    property Height stored False;
+    property OnContextPopup;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property ParentShowHint;
+    property PopupMenu;
+    property TabOrder stored False;
+    property Visible stored False;
   end;
 
   { TUNBPages }
