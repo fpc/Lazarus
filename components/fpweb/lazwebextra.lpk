@@ -28,7 +28,7 @@
 HTML editing functionality by Alexei Lagunov"/>
     <License Value="LGPL"/>
     <Version Minor="9"/>
-    <Files Count="41">
+    <Files Count="43">
       <Item1>
         <Filename Value="reglazwebextra.pp"/>
         <HasRegisterProc Value="True"/>
@@ -203,6 +203,14 @@ HTML editing functionality by Alexei Lagunov"/>
         <Filename Value="fpwebnewhtmltagpreunit.pas"/>
         <UnitName Value="fpwebnewhtmltagpreunit"/>
       </Item41>
+      <Item42>
+        <Filename Value="fpwebnewhtmltagtdunit.pas"/>
+        <UnitName Value="fpwebnewhtmltagtdunit"/>
+      </Item42>
+      <Item43>
+        <Filename Value="fpwebnewhtmltagtdunit.lfm"/>
+        <Type Value="LFM"/>
+      </Item43>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

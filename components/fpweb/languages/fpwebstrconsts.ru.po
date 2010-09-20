@@ -152,6 +152,10 @@ msgctxt "fpwebstrconsts.shtmltagcaptionsubmit"
 msgid "Submit"
 msgstr "Передать"
 
+#: fpwebstrconsts.shtmltagproperty
+msgid "Tag property : "
+msgstr ""
+
 #: fpwebstrconsts.shtmltitle
 msgid "Html &title - <title>"
 msgstr ""

@@ -7,12 +7,13 @@ object fpwebNewHtmlTagTRForm: TfpwebNewHtmlTagTRForm
   Caption = 'Tag properties: TR'
   ClientHeight = 312
   ClientWidth = 369
+  OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '0.9.29'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 272
+    Height = 44
+    Top = 262
     Width = 357
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&ОК'
@@ -28,7 +29,7 @@ object fpwebNewHtmlTagTRForm: TfpwebNewHtmlTagTRForm
   end
   object PageControl1: TPageControl
     Left = 0
-    Height = 266
+    Height = 256
     Top = 0
     Width = 369
     ActivePage = TabSheet1
@@ -37,15 +38,15 @@ object fpwebNewHtmlTagTRForm: TfpwebNewHtmlTagTRForm
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'Main'
-      ClientHeight = 238
-      ClientWidth = 365
+      ClientHeight = 221
+      ClientWidth = 363
       object Label1: TLabel
         AnchorSideLeft.Control = TabSheet1
         AnchorSideTop.Control = TabSheet1
         Left = 6
-        Height = 15
+        Height = 18
         Top = 6
-        Width = 28
+        Width = 32
         BorderSpacing.Around = 6
         Caption = '&Align'
         FocusControl = CBAlign
@@ -56,9 +57,9 @@ object fpwebNewHtmlTagTRForm: TfpwebNewHtmlTagTRForm
         AnchorSideTop.Control = CBAlign
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 15
-        Top = 57
-        Width = 34
+        Height = 18
+        Top = 67
+        Width = 40
         BorderSpacing.Around = 6
         Caption = '&VAlign'
         FocusControl = CBValign
@@ -71,9 +72,9 @@ object fpwebNewHtmlTagTRForm: TfpwebNewHtmlTagTRForm
         AnchorSideRight.Control = TabSheet1
         AnchorSideRight.Side = asrBottom
         Left = 12
-        Height = 24
-        Top = 27
-        Width = 347
+        Height = 31
+        Top = 30
+        Width = 345
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         ItemHeight = 0
@@ -95,9 +96,9 @@ object fpwebNewHtmlTagTRForm: TfpwebNewHtmlTagTRForm
         AnchorSideRight.Control = TabSheet1
         AnchorSideRight.Side = asrBottom
         Left = 12
-        Height = 24
-        Top = 78
-        Width = 347
+        Height = 31
+        Top = 91
+        Width = 345
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         ItemHeight = 0
@@ -118,9 +119,9 @@ object fpwebNewHtmlTagTRForm: TfpwebNewHtmlTagTRForm
         AnchorSideTop.Control = CBValign
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 15
-        Top = 108
-        Width = 50
+        Height = 18
+        Top = 128
+        Width = 55
         BorderSpacing.Around = 6
         Caption = 'BG color'
         FocusControl = CBColor
@@ -133,9 +134,9 @@ object fpwebNewHtmlTagTRForm: TfpwebNewHtmlTagTRForm
         AnchorSideRight.Control = TabSheet1
         AnchorSideRight.Side = asrBottom
         Left = 12
-        Height = 24
-        Top = 129
-        Width = 347
+        Height = 31
+        Top = 152
+        Width = 345
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         ItemHeight = 0
@@ -144,15 +145,15 @@ object fpwebNewHtmlTagTRForm: TfpwebNewHtmlTagTRForm
     end
     object TabSheet2: TTabSheet
       Caption = 'Core'
-      ClientHeight = 238
-      ClientWidth = 365
+      ClientHeight = 221
+      ClientWidth = 363
       object Label4: TLabel
         AnchorSideLeft.Control = TabSheet2
         AnchorSideTop.Control = TabSheet2
         Left = 6
-        Height = 15
+        Height = 18
         Top = 6
-        Width = 12
+        Width = 14
         BorderSpacing.Around = 6
         Caption = '&ID'
         FocusControl = CBId
@@ -163,9 +164,9 @@ object fpwebNewHtmlTagTRForm: TfpwebNewHtmlTagTRForm
         AnchorSideTop.Control = CBId
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 15
-        Top = 56
-        Width = 33
+        Height = 18
+        Top = 65
+        Width = 35
         BorderSpacing.Around = 6
         Caption = '&Class'
         FocusControl = CBClass
@@ -178,9 +179,9 @@ object fpwebNewHtmlTagTRForm: TfpwebNewHtmlTagTRForm
         AnchorSideRight.Control = TabSheet2
         AnchorSideRight.Side = asrBottom
         Left = 12
-        Height = 23
-        Top = 27
-        Width = 347
+        Height = 29
+        Top = 30
+        Width = 345
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         ItemHeight = 0
@@ -193,9 +194,9 @@ object fpwebNewHtmlTagTRForm: TfpwebNewHtmlTagTRForm
         AnchorSideRight.Control = TabSheet2
         AnchorSideRight.Side = asrBottom
         Left = 12
-        Height = 23
-        Top = 77
-        Width = 347
+        Height = 29
+        Top = 89
+        Width = 345
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         ItemHeight = 0

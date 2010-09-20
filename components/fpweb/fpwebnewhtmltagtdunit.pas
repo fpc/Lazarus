@@ -27,33 +27,44 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 }
-unit fpwebNewHtmlTagTRUnit;
+unit fpwebNewHtmlTagTDUnit;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel,
-  ComCtrls, StdCtrls, ColorBox;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
+  StdCtrls, ColorBox, ButtonPanel, Spin;
 
 type
 
-  { TfpwebNewHtmlTagTRForm }
+  { TfpwebNewHtmlTagTDForm }
 
-  TfpwebNewHtmlTagTRForm = class(TForm)
+  TfpwebNewHtmlTagTDForm = class(TForm)
     ButtonPanel1: TButtonPanel;
-    CBColor: TColorBox;
     CBAlign: TComboBox;
-    CBValign: TComboBox;
-    CBId: TComboBox;
     CBClass: TComboBox;
+    CBColor: TColorBox;
+    CBId: TComboBox;
+    CBValign: TComboBox;
+    CheckBox1: TCheckBox;
+    edtText: TEdit;
     Label1: TLabel;
+    Label10: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
     PageControl1: TPageControl;
+    edtWidth: TSpinEdit;
+    edtCollSpan: TSpinEdit;
+    edtHeight: TSpinEdit;
+    edtRowSpan: TSpinEdit;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
@@ -62,26 +73,50 @@ type
     { private declarations }
   public
     function HtmlText:string;
-  end; 
+  end;
 
 var
-  fpwebNewHtmlTagTRForm: TfpwebNewHtmlTagTRForm;
+  fpwebNewHtmlTagTDForm: TfpwebNewHtmlTagTDForm;
 
 implementation
 uses fpWebStrConsts;
 
 {$R *.lfm}
 
-{ TfpwebNewHtmlTagTRForm }
+{ TfpwebNewHtmlTagTDForm }
 
-procedure TfpwebNewHtmlTagTRForm.FormCreate(Sender: TObject);
+procedure TfpwebNewHtmlTagTDForm.FormCreate(Sender: TObject);
 begin
-  Caption:=SHTMLTagProperty + 'TR';
+  Caption:=SHTMLTagProperty + 'TD';
 end;
 
-function TfpwebNewHtmlTagTRForm.HtmlText: string;
+function TfpwebNewHtmlTagTDForm.HtmlText: string;
 begin
-  Result:='';
+  Result:='<TD';
+  if edtWidth.Value > 0 then
+    Result:=Result + Format(' width="%d"', [edtWidth.Value]);
+
+  if edtCollSpan.Value > 0 then
+    Result:=Result + Format(' colspan="%d"', [edtCollSpan.Value]);
+
+  if edtHeight.Value > 0 then
+    Result:=Result + Format(' height="%d"', [edtHeight.Value]);
+
+  if edtRowSpan.Value > 0 then
+    Result:=Result + Format(' rowspan="%d"', [edtRowSpan.Value]);
+
+  if CBAlign.Text<>'' then
+    Result:=Result + ' align="'+CBAlign.Text+'"';
+
+  if CBValign.Text<>'' then
+    Result:=Result + ' valign="'+CBValign.Text+'"';
+
+  if CBColor.Selected <> CBColor.NoneColorColor then
+    Result:=Result + ' bgcolor="#'+IntToHex(CBColor.Selected,6)+'"';
+
+  if CheckBox1.Checked then
+    Result:=Result + ' nowrap';
+  Result:=Result + '>'+edtText.Text+'</TD>';
 end;
 
 end.

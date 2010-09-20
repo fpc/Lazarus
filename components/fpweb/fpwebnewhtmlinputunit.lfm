@@ -12,8 +12,8 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
   LCLVersion = '0.9.29'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 436
+    Height = 42
+    Top = 428
     Width = 616
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&ОК'
@@ -29,7 +29,7 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
   end
   object PageControl1: TPageControl
     Left = 0
-    Height = 430
+    Height = 422
     Top = 0
     Width = 628
     ActivePage = TabSheet1
@@ -38,15 +38,15 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'Main'
-      ClientHeight = 402
+      ClientHeight = 391
       ClientWidth = 624
       object Label1: TLabel
         AnchorSideLeft.Control = TabSheet1
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 15
+        Height = 18
         Top = 10
-        Width = 26
+        Width = 29
         BorderSpacing.Around = 6
         Caption = 'T&ype'
         FocusControl = cbType
@@ -58,9 +58,9 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = cgOptions
         Left = 12
-        Height = 23
-        Top = 31
-        Width = 506
+        Height = 29
+        Top = 34
+        Width = 499
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         ItemHeight = 0
@@ -83,9 +83,9 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideTop.Control = cbType
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 15
-        Top = 60
-        Width = 34
+        Height = 18
+        Top = 69
+        Width = 40
         BorderSpacing.Around = 6
         Caption = '&Name'
         FocusControl = edtName
@@ -96,8 +96,8 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideTop.Control = Label2
         AnchorSideTop.Side = asrBottom
         Left = 12
-        Height = 22
-        Top = 81
+        Height = 27
+        Top = 93
         Width = 233
         BorderSpacing.Around = 6
         TabOrder = 1
@@ -108,9 +108,9 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideTop.Control = cbType
         AnchorSideTop.Side = asrBottom
         Left = 251
-        Height = 15
-        Top = 60
-        Width = 31
+        Height = 18
+        Top = 69
+        Width = 36
         BorderSpacing.Around = 6
         Caption = 'Val&ue'
         FocusControl = edtValue
@@ -121,9 +121,9 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideTop.Control = edtName
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 15
-        Top = 109
-        Width = 24
+        Height = 18
+        Top = 126
+        Width = 28
         BorderSpacing.Around = 6
         Caption = 'Si&ze'
         FocusControl = edtSize
@@ -135,9 +135,9 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideTop.Control = edtName
         AnchorSideTop.Side = asrBottom
         Left = 251
-        Height = 15
-        Top = 109
-        Width = 62
+        Height = 18
+        Top = 126
+        Width = 71
         BorderSpacing.Around = 6
         Caption = '&Max length'
         FocusControl = edtMaxLen
@@ -149,9 +149,9 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = cgOptions
         Left = 257
-        Height = 22
-        Top = 81
-        Width = 261
+        Height = 27
+        Top = 93
+        Width = 254
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         TabOrder = 2
@@ -161,9 +161,9 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideTop.Control = edtSize
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 15
-        Top = 158
-        Width = 15
+        Height = 18
+        Top = 183
+        Width = 18
         BorderSpacing.Around = 6
         Caption = 'A&lt'
         FocusControl = edtAlt
@@ -176,8 +176,8 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideRight.Control = TabSheet1
         AnchorSideRight.Side = asrBottom
         Left = 12
-        Height = 22
-        Top = 179
+        Height = 27
+        Top = 207
         Width = 606
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
@@ -190,8 +190,8 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideRight.Control = TabSheet1
         AnchorSideRight.Side = asrBottom
         Left = 257
-        Height = 22
-        Top = 130
+        Height = 27
+        Top = 150
         Width = 361
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
@@ -202,9 +202,9 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideTop.Control = edtAlt
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 15
-        Top = 207
-        Width = 58
+        Height = 18
+        Top = 240
+        Width = 64
         BorderSpacing.Around = 6
         Caption = '&Image src'
         FocusControl = edtSrc
@@ -215,9 +215,9 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideTop.Control = Label7
         AnchorSideTop.Side = asrBottom
         Left = 12
-        Height = 22
-        Top = 228
-        Width = 579
+        Height = 27
+        Top = 264
+        Width = 583
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
@@ -232,19 +232,21 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideTop.Control = edtSrc
         AnchorSideTop.Side = asrBottom
         Left = 6
-        Height = 15
-        Top = 256
-        Width = 54
+        Height = 18
+        Top = 297
+        Width = 60
         BorderSpacing.Around = 6
         Caption = 'Tab index'
         FocusControl = edtTab
         ParentColor = False
       end
       object edtTab: TEdit
+        AnchorSideLeft.Control = Label8
+        AnchorSideTop.Control = Label8
         AnchorSideTop.Side = asrBottom
         Left = 12
-        Height = 22
-        Top = 277
+        Height = 27
+        Top = 321
         Width = 119
         BorderSpacing.Around = 6
         TabOrder = 6
@@ -255,9 +257,9 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideTop.Control = edtSrc
         AnchorSideTop.Side = asrBottom
         Left = 137
-        Height = 15
-        Top = 256
-        Width = 28
+        Height = 18
+        Top = 297
+        Width = 32
         BorderSpacing.Around = 6
         Caption = 'A&lign'
         FocusControl = cbAlign
@@ -268,8 +270,8 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideTop.Control = Label9
         AnchorSideTop.Side = asrBottom
         Left = 143
-        Height = 24
-        Top = 277
+        Height = 31
+        Top = 321
         Width = 180
         BorderSpacing.Around = 6
         ItemHeight = 0
@@ -291,9 +293,9 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideTop.Control = edtSrc
         AnchorSideTop.Side = asrBottom
         Left = 329
-        Height = 15
-        Top = 256
-        Width = 64
+        Height = 18
+        Top = 297
+        Width = 72
         BorderSpacing.Around = 6
         Caption = 'Access &key'
         FocusControl = edtKey
@@ -306,8 +308,8 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideRight.Control = TabSheet1
         AnchorSideRight.Side = asrBottom
         Left = 335
-        Height = 22
-        Top = 277
+        Height = 27
+        Top = 321
         Width = 283
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
@@ -319,8 +321,8 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideTop.Control = Label4
         AnchorSideTop.Side = asrBottom
         Left = 12
-        Height = 22
-        Top = 130
+        Height = 27
+        Top = 150
         Width = 233
         BorderSpacing.Around = 6
         TabOrder = 9
@@ -329,10 +331,10 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
         AnchorSideTop.Control = TabSheet1
         AnchorSideRight.Control = TabSheet1
         AnchorSideRight.Side = asrBottom
-        Left = 524
-        Height = 79
+        Left = 517
+        Height = 82
         Top = 6
-        Width = 94
+        Width = 101
         Anchors = [akTop, akRight]
         AutoFill = True
         AutoSize = True
@@ -358,7 +360,7 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
     end
     object TabSheet2: TTabSheet
       Caption = 'Core'
-      ClientHeight = 402
+      ClientHeight = 391
       ClientWidth = 624
       object Label11: TLabel
         AnchorSideLeft.Control = TabSheet2
@@ -416,7 +418,7 @@ object fpwebNewHTMLInputForm: TfpwebNewHTMLInputForm
     end
     object TabSheet3: TTabSheet
       Caption = 'Events'
-      ClientHeight = 402
+      ClientHeight = 391
       ClientWidth = 624
       object Label13: TLabel
         AnchorSideLeft.Control = TabSheet3

@@ -92,6 +92,8 @@ resourcestring
   SCSSFileDesc               = 'Create new CSS file...';
   SCSSSource                 = 'Enter your classes/style definitions here';
 
+  SHTMLTagProperty           = 'Tag property : ';
+
   SHTMLTableFormCaption      = 'New HTML table...';
   SHTMLTableFormColumnCount  = 'Column count';
   SHTMLTableFormRowCount     = 'Row count';

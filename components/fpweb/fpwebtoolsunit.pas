@@ -115,7 +115,7 @@ uses LResources, NewItemIntf, Forms, Controls, IDECommands,
   fpwebNewHTMLListUnit, fpwebNewHtmlTagTRUnit, fpwebNewHTMLFormUnit,
   fpwebNewHTMLInputUnit, fpwebNewHTMLImgUnit, fpWebNewHtmlTagPreUnit,
   fpWebHREFEditUnit, fpWebSelectOptionsUnit, fpWebSelectTagUnit,
-  fpWebHtmlTagLegendUnit,  fpWebFieldSetTagUnit,
+  fpWebHtmlTagLegendUnit,  fpWebFieldSetTagUnit, fpwebNewHtmlTagTDUnit,
   //Other
   fpIDEExtEditorInsertFileNameUnit;
 
@@ -578,7 +578,15 @@ end;
 
 procedure ProcHTMLTableDataWD(Sender: TObject);
 begin
-
+  If Not CheckEditor then Exit;
+  With TfpwebNewHtmlTagTDForm.Create(Application) do
+  try
+    edtText.Text:=SourceEditorManagerIntf.ActiveEditor.Selection;
+    if ShowModal = mrOk then
+      InsertHTMLSnippet(HtmlText);
+  finally
+    Free;
+  end;
 end;
 
 procedure ProcHTMLForm(Sender: TObject);
@@ -586,7 +594,8 @@ begin
   If Not CheckEditor then Exit;
   With TfpWebNewHTMLFormForm.Create(Application) do
     try
-      InsertHTMLSnippet(HtmlText(SourceEditorManagerIntf.ActiveEditor.Selection));
+      if ShowModal = mrOk then
+        InsertHTMLSnippet(HtmlText(SourceEditorManagerIntf.ActiveEditor.Selection));
     finally
       Free;
     end;
@@ -671,12 +680,12 @@ end;
 
 procedure ProcHTMLInputSubmitTag(Sender: TObject);
 begin
-  ShowEditInputTagForm('checkbox', SHTMLTagCaptionSubmit);
+  ShowEditInputTagForm('submit', SHTMLTagCaptionSubmit);
 end;
 
 procedure ProcHTMLInputResetTag(Sender: TObject);
 begin
-  ShowEditInputTagForm('checkbox', SHTMLTagCaptionReset);
+  ShowEditInputTagForm('reset', SHTMLTagCaptionReset);
 end;
 
 procedure ProcHTMLFormFieldSet(Sender: TObject);
