@@ -3495,6 +3495,26 @@ end;
 
 function TParsedCompilerOptions.DoParseOption(const OptionText: string;
   Option: TParsedCompilerOptString; PlatformIndependent: boolean): string;
+
+  function GetBaseDir: string;
+  begin
+    if PlatformIndependent then
+      Result:=GetParsedPIValue(pcosBaseDir)
+    else
+      Result:=GetParsedValue(pcosBaseDir);
+  end;
+
+  procedure MakeFilenameAbsolute(var aFilename: string);
+  var
+    BaseDirectory: String;
+  begin
+    aFilename:=TrimFilename(aFilename);
+    if (aFilename<>'') and (not FilenameIsAbsolute(aFilename)) then begin
+      BaseDirectory:=GetBaseDir;
+      if (BaseDirectory<>'') then aFilename:=TrimFilename(BaseDirectory+aFilename);
+    end;
+  end;
+
 var
   s: String;
   BaseDirectory: String;
@@ -3515,34 +3535,18 @@ begin
     s:=AppendPathDelim(TrimFilename(s))
   else if Option in ParsedCompilerFilenames then begin
     // make filename absolute
-    s:=TrimFilename(s);
-    if (s<>'') and (not FilenameIsAbsolute(s)) then begin
-      if PlatformIndependent then
-        BaseDirectory:=GetParsedPIValue(pcosBaseDir)
-      else
-        BaseDirectory:=GetParsedValue(pcosBaseDir);
-      if (BaseDirectory<>'') then s:=TrimFilename(BaseDirectory+s);
-    end;
+    MakeFilenameAbsolute(s);
   end
   else if Option in ParsedCompilerDirectories then begin
     // make directory absolute
     s:=TrimFilename(s);
-    if ((s='') or (not FilenameIsAbsolute(s)))
-    and (Option<>pcosBaseDir) then begin
-      if PlatformIndependent then
-        BaseDirectory:=GetParsedPIValue(pcosBaseDir)
-      else
-        BaseDirectory:=GetParsedValue(pcosBaseDir);
-      if (BaseDirectory<>'') then s:=TrimFilename(BaseDirectory+s);
-    end;
+    if Option<>pcosBaseDir then
+      MakeFilenameAbsolute(s);
     s:=AppendPathDelim(s);
   end
   else if Option in ParsedCompilerSearchPaths then begin
     // make search paths absolute
-    if PlatformIndependent then
-      BaseDirectory:=GetParsedPIValue(pcosBaseDir)
-    else
-      BaseDirectory:=GetParsedValue(pcosBaseDir);
+    BaseDirectory:=GetBaseDir;
     s:=TrimSearchPath(s,BaseDirectory);
   end else if Option=pcosCustomOptions then begin
     s:=SpecialCharsToSpaces(s,true);
