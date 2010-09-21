@@ -1150,6 +1150,18 @@ begin
   Result:=inherited GetBitmapBits(Bitmap, Count, Bits);
 end;
 
+function TCarbonWidgetSet.GetBkColor(DC: HDC): TColorRef;
+begin
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetBkColor DC: ' + DbgS(DC));
+  {$ENDIF}
+
+  Result := CLR_INVALID;
+
+  if not CheckDC(DC, 'GetBkColor') then Exit;
+  Result := TCarbonDeviceContext(DC).BkColor;
+end;
+
 {------------------------------------------------------------------------------
   Method:  GetCapture
   Returns: The handle of the capture window
