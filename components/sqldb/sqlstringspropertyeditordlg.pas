@@ -10,8 +10,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  SynEdit, ButtonPanel, SynHighlighterSQL, ComCtrls, SQLDb, db, DBGrids,
-  SrcEditorIntf;
+  SynEdit, ButtonPanel, SynHighlighterSQL, ComCtrls, SQLDb, db, DBGrids, Menus,
+  SrcEditorIntf,clipbrd;
 
 type
 
@@ -20,6 +20,10 @@ type
   TSQLStringsPropertyEditorDlg = class(TForm)
     ButtonsPanel: TButtonPanel;
     ImageList: TImageList;
+    MICheck: TMenuItem;
+    MICreateConstant: TMenuItem;
+    MICleanup: TMenuItem;
+    PMSQL: TPopupMenu;
     ResultDBGrid: TDBGrid;
     SQLDataSource: TDatasource;
     OpenDialog: TOpenDialog;
@@ -38,6 +42,8 @@ type
     TBCheck: TToolButton;
     procedure ExecuteToolButtonClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure MICleanupClick(Sender: TObject);
+    procedure MICreateConstantClick(Sender: TObject);
     procedure OpenToolButtonClick(Sender: TObject);
     procedure SaveToolButtonClick(Sender: TObject);
     procedure TBCheckClick(Sender: TObject);
@@ -49,6 +55,8 @@ type
 
     function CheckConnection:boolean;
     procedure CheckSQLSyntax(SQL: TStrings);
+    procedure CleanupDelphiCode;
+    procedure CreateConstant;
   public
     { public declarations }
     constructor Create(AOwner:TComponent);override;
@@ -60,9 +68,11 @@ type
 
 implementation
 
+uses
 {$IFDEF HASSQLPARSER}
-uses fpsqltree,fpsqlparser;
+  fpsqltree,fpsqlparser,
 {$ENDIF}
+  strutils;
 
 {$R *.lfm}
 
@@ -123,8 +133,10 @@ Var
 begin
   {$IFDEF HASSQLPARSER}
   TBCheck.Visible:=True;
+  MICheck.Visible:=True;
   {$ELSE}
   TBCheck.Visible:=False;
+  MICheck.Visible:=True;
   {$ENDIF}
   D:=sqlStandard;
   If Assigned(FConnection) then
@@ -158,6 +170,66 @@ begin
 {$endif}
 end;
 
+procedure TSQLStringsPropertyEditorDlg.MICleanupClick(Sender: TObject);
+
+begin
+  CleanupDelphiCode;
+end;
+
+procedure TSQLStringsPropertyEditorDlg.CleanupDelphiCode;
+
+Var
+  L : TStringList;
+  I,J,K : Integer;
+  S : String;
+begin
+  L:=TStringList.Create;
+  try
+    L.Assign(SQLEditor.Lines);
+    For I:=0 to L.Count-1 do
+      begin
+      S:=L[i];
+      K:=0;
+      For J:=1 to Length(S) do
+        If S[j]='''' then
+          Inc(K);
+      if (K<>0) and ((K mod 2)=0) then
+        begin
+        J:=Pos('''',S);
+        Delete(S,1,J);
+        J:=RPos('''',S);
+        S:=Copy(S,1,J-1);
+        L[i]:=S;
+        end;
+      end;
+    SQLEditor.Lines:=L;
+  finally
+    L.Free;
+  end;
+end;
+
+procedure TSQLStringsPropertyEditorDlg.MICreateConstantClick(Sender: TObject);
+begin
+  CreateConstant;
+end;
+
+procedure TSQLStringsPropertyEditorDlg.CreateConstant;
+
+Var
+  C,S : String;
+  I : Integer;
+
+begin
+  For I:=0 to SQLEditor.Lines.Count-1 do
+    begin
+    S:=SQLEditor.Lines[i];
+    If (C<>'') then
+      C:=C+'+sLineBreak+'+sLineBreak;
+    C:=C+''''+StringReplace(S,'''','''''',[rfReplaceAll])+'''';
+    end;
+  C:='SQL = '+C+';';
+  Clipboard.AsText:=C;
+end;
 
 //------------------------------------------------------------------------//
 procedure TSQLStringsPropertyEditorDlg.SaveToolButtonClick(Sender: TObject);

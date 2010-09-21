@@ -12,8 +12,8 @@ object SQLStringsPropertyEditorDlg: TSQLStringsPropertyEditorDlg
   LCLVersion = '0.9.29'
   object ButtonsPanel: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 317
+    Height = 35
+    Top = 316
     Width = 482
     OKButton.Name = 'OKButton'
     OKButton.Caption = '&OK'
@@ -76,7 +76,7 @@ object SQLStringsPropertyEditorDlg: TSQLStringsPropertyEditorDlg
   end
   object PageControl: TPageControl
     Left = 0
-    Height = 281
+    Height = 280
     Top = 30
     Width = 494
     ActivePage = EditorTabSheet
@@ -84,11 +84,11 @@ object SQLStringsPropertyEditorDlg: TSQLStringsPropertyEditorDlg
     TabIndex = 0
     TabOrder = 2
     object EditorTabSheet: TTabSheet
-      ClientHeight = 253
+      ClientHeight = 249
       ClientWidth = 490
       inline SQLEditor: TSynEdit
         Left = 0
-        Height = 253
+        Height = 249
         Top = 0
         Width = 490
         Align = alClient
@@ -98,9 +98,34 @@ object SQLStringsPropertyEditorDlg: TSQLStringsPropertyEditorDlg
         Font.Quality = fqNonAntialiased
         ParentColor = False
         ParentFont = False
+        PopupMenu = PMSQL
         TabOrder = 0
         Gutter.Width = 61
         Gutter.MouseActions = <        
+          item
+            Shift = []
+            ShiftMask = []
+            Button = mbLeft
+            ClickCount = ccAny
+            ClickDir = cdDown
+            Command = 13
+            MoveCaret = False
+            Option = 0
+            Priority = 0
+          end        
+          item
+            Shift = []
+            ShiftMask = []
+            Button = mbRight
+            ClickCount = ccSingle
+            ClickDir = cdUp
+            Command = 12
+            MoveCaret = False
+            Option = 0
+            Priority = 0
+          end>
+        RightGutter.Width = 0
+        RightGutter.MouseActions = <        
           item
             Shift = []
             ShiftMask = []
@@ -571,7 +596,7 @@ object SQLStringsPropertyEditorDlg: TSQLStringsPropertyEditorDlg
         BracketHighlightStyle = sbhsBoth
         inline SynGutterPartList1: TSynGutterPartList
           object SynGutterMarks1: TSynGutterMarks
-            Width = 23
+            Width = 24
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
             Width = 21
@@ -676,10 +701,12 @@ object SQLStringsPropertyEditorDlg: TSQLStringsPropertyEditorDlg
               end>
           end
         end
+        inline SynRightGutterPartList1: TSynRightGutterPartList
+        end
       end
     end
     object ResultTabSheet: TTabSheet
-      ClientHeight = 253
+      ClientHeight = 249
       ClientWidth = 490
       object ResultDBGrid: TDBGrid
         Left = 0
@@ -728,7 +755,7 @@ object SQLStringsPropertyEditorDlg: TSQLStringsPropertyEditorDlg
     left = 284
     top = 156
     Bitmap = {
-      4C69040000001000000010000000FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      4C69050000001000000010000000FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
       FF00FFFFFF00EAC39DFFE6BF96FFE4BB92FFE4BB92FFD1A06CF5D09E6DF6CC96
       5FDAC479427EB2673C09FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
       FF00FFFFFF00E5BE96FFFFFFFEFFFDF3E9FFFDF3EAFFFCF2E8FFFAEFE3FFFAF2
@@ -856,7 +883,58 @@ object SQLStringsPropertyEditorDlg: TSQLStringsPropertyEditorDlg
       00000000000000000052000000FF000000FF0000001A00000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000
+      00000000000000000000000000000048783B004B7CDA004A7BE300487847FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00004A7BE50A69A6FF0B6DABFF004A7BF50048
+      7844FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00004A7BED0C72B2FF107DC1FF0A6BA9FF004A
+      7BDA00698A02008B9C82008B9C13FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF000049796F035286F40F7ABCFF107DC1FF0152
+      84F200859ACE008B9CFF008B9C29FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF0000487802004A7B95014E80F40B76B2FF0188
+      A1FF32AEBEFE1DA0B1F2008B9C3DFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF000064878100889CFE41BD
+      CDFF77DEEBFF1769B0F70036A0E4018FA0D2008C9D77008B9C15FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00008B9C5A018D9EF64FC8D8FF68DC
+      ECFF336DC8FF0D1BABFF62B1D7FF72DCEAFF43BDCCF70990A2F6018E9F9F008B
+      9C1BFFFFFF00FFFFFF00FFFFFF00FFFFFF00008B9C5F008D9EEB29A5BBF6284A
+      BBFF1D38B8FF61D8F6FF63EAFDFF6CEBFDFF7DEEFDFF88EAF8FF45BECDFA058F
+      9FF7008E9FA3008B9C40008B9C02FFFFFF00FFFFFF00008B9C070024A1D71342
+      ADFC84EAFBFF6BECFDFF84EFFDFF6DECFDFF52E9FDFF44E5FBFF65E3F3FF77DD
+      EBFF49C1CFFE1B9EAEF3008C9DEAFFFFFF00FFFFFF00FFFFFF00007F9C5F2FB0
+      C0F58AEFFDFF5FEAFDFF61EBFDFF52E9FDFF3CE6FDFF2ADBF3FF18D0E7FF10C6
+      DCFF49D2E4FF67D4E2FF018D9FE9FFFFFF00FFFFFF00FFFFFF00008B9C1A1194
+      A5F78BEDFBFF3CE5FCFF37E4FBFF2FDEF6FF23D7EEFF14CDE5FF04C3DBFF03C2
+      DAFF56D6E6FF33B6C6FB008E9FA8FFFFFF00FFFFFF00FFFFFF00FFFFFF00018E
+      A0D45ECFDDFF46DAEDFF18D0E7FF11CBE3FF07C4DCFF03C2DAFF03C2DAFF4CD3
+      E4FF58CDDCFF048E9FF4008B9C1CFFFFFF00FFFFFF00FFFFFF00FFFFFF00008B
+      9C431A9BABF66CDAE8FF10C5DCFF03C2DAFF03C2DAFF15C6DCFF5BD7E7FF56C8
+      D6FE058FA0F1008B9C3FFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00008E9FC536B5C5FA5FD8E7FF26CADFFF4ED4E5FF6DD9E7FF32B4C5FB008D
+      9EE6008B9C26FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00008B9C13008D9EE24FC3D2FD5BD3E1FF30B5C6FA0890A1F6008D9FA9008B
+      9C14FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+      FF00FFFFFF00008B9C1F008C9DED008D9EEC008D9E9E008B9C21FFFFFF00FFFF
+      FF00FFFFFF00FFFFFF00FFFFFF00
     }
+  end
+  object PMSQL: TPopupMenu
+    Images = ImageList
+    left = 155
+    top = 101
+    object MICheck: TMenuItem
+      Caption = 'Check syntax'
+      ImageIndex = 3
+      OnClick = TBCheckClick
+    end
+    object MICleanup: TMenuItem
+      Caption = 'Clean-up Delphi code'
+      ImageIndex = 4
+      OnClick = MICleanupClick
+    end
+    object MICreateConstant: TMenuItem
+      Caption = 'Create string constant'
+      OnClick = MICreateConstantClick
+    end
   end
 end
