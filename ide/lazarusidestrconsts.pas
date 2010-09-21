@@ -4872,6 +4872,8 @@ resourcestring
   lisCustomBuildMacros = 'Custom build macros';
   lisCanNotCompileProject = 'Cannot compile project';
   lisTheProjectHasNoMainSourceFile = 'The project has no main source file.';
+  lisInvalidBuildMacroTheNameIsAKeyword = 'Invalid build macro "%s". The name '
+    +'is a keyword.';
 
 implementation
 

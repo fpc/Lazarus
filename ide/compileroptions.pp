@@ -67,15 +67,17 @@
     any conditionals
   - using conditionals to extend paths: TParsedCompilerOptions.GetUnparsedWithConditionals
   - using conditionals to extend package usage paths: TParsedCompilerOptions.GetUnparsedWithConditionals
+  - conditionals editor for project
+  - warn for macro name conflicts
+    - on renaming
+      - keywords
+      - with standard macros
+      - prefix with package name
+      - with macros from other packages/projects
 
   ToDo:
-  - conditionals for project
   - warn for macro name conflicts
-    - keywords
-    - with macros from other packages/projects
-    - with standard macros
-      - on renaming
-      - on loading
+    - on loading
   - when package is renamed, rename macros too
   - show build macros in inherited compiler options
   - use syntax highlighter settings like the editor previews

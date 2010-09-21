@@ -781,7 +781,6 @@ begin
     edtErrorCnt.Text := IntToStr(Options.StopAfterErrCount);
 
     // conditionals + build macros
-    debugln(['TfrmCompilerOptions.LoadOptionsToForm ']);
     {$IFDEF EnableBuildModes}
     BuildMacrosFrame.LoadFromOptions(Options);
     {$ENDIF}

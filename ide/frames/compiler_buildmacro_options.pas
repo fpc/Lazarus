@@ -31,6 +31,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, StdCtrls, Grids,
   Buttons, ExtCtrls, Dialogs, ComCtrls, Menus, AvgLvlTree, IDEImagesIntf,
+  KeywordFuncLists, CodeToolsCfgScript,
   ProjectIntf, PackageIntf, CompilerOptions, IDEOptionsIntf,
   LazarusIDEStrConsts, CompOptsModes, PackageDefs, SynEdit, SynHighlighterPas;
 
@@ -39,6 +40,11 @@ type
     cbmntNone,
     cbmntBuildMacro,
     cbmntValue
+    );
+  TCBMPrefixType = (
+    cbmpShort,
+    cbmpMedium,
+    cbmpLong
     );
 
   { TCompOptBuildMacrosFrame }
@@ -80,7 +86,7 @@ type
     function GetSelectedNode(out aBuildMacro: TLazBuildMacro;
                              out NodeType: TCBMNodeType): TTreeNode;
     function GetBuildMacroTVNode(aBuildMacro: TLazBuildMacro): TTreeNode;
-    function GetMacroNamePrefix: string;
+    function GetMacroNamePrefix(PrefixType: TCBMPrefixType): string;
     procedure UpdateItemPropertyControls;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -110,7 +116,7 @@ var
 begin
   i:=1;
   repeat
-    NewIdentifier:=GetMacroNamePrefix+IntToStr(BuildMacros.Count+1);
+    NewIdentifier:=GetMacroNamePrefix(cbmpLong)+IntToStr(BuildMacros.Count+1);
     if BuildMacros.IndexOfIdentifier(NewIdentifier)<0 then break;
     inc(i);
   until false;
@@ -248,6 +254,10 @@ var
   NodeType: TCBMNodeType;
   ConflictBuildProperty: TIDEBuildMacro;
   Index: LongInt;
+  Prefix: String;
+  BetterName: String;
+  DlgResult: TModalResult;
+  Vars: TCTCfgScriptVariables;
 begin
   NodeType:=GetNodeInfo(Node,BuildMacro);
   case NodeType of
@@ -255,6 +265,8 @@ begin
   cbmntBuildMacro:
     if S<>BuildMacro.Identifier then begin
       // rename build macro
+
+      // check syntax
       if (S='') or (not IsValidIdent(S)) then begin
         MessageDlg(lisCCOErrorCaption,
           Format(lisInvalidBuildMacroTheBuildMacroMustBeAPascalIdentifie, ['"',
@@ -263,15 +275,65 @@ begin
         S:=BuildMacro.Identifier;
         exit;
       end;
+
+      // check for prefix
+      Prefix:=GetMacroNamePrefix(cbmpShort);
+      if (Prefix<>'') and (SysUtils.CompareText(Prefix,copy(S,1,length(Prefix)))<>0)
+      then  begin
+        BetterName:=GetMacroNamePrefix(cbmpMedium)+S;
+        DlgResult:=QuestionDlg('Warning',
+          'The build macro "'+S+'" does not begin with "'+Prefix+'".',
+          mtWarning,[mrCancel,mrYes,'Rename to '+BetterName,mrIgnore],0);
+        if DlgResult=mrIgnore then begin
+        end else if DlgResult=mrYes then
+          S:=BetterName
+        else begin
+          S:=BuildMacro.Identifier;
+          exit;
+        end;
+      end;
+
+      // check for keyword
+      if WordIsKeyWord.DoItCaseInsensitive(S) then begin
+        MessageDlg(lisCCOErrorCaption,
+          Format(lisInvalidBuildMacroTheNameIsAKeyword, [S]),
+          mtError,[mbCancel],0);
+        S:=BuildMacro.Identifier;
+        exit;
+      end;
+
+      // check for duplicates
       ConflictBuildProperty:=BuildMacros.VarWithIdentifier(S);
-      if (ConflictBuildProperty<>nil) and (ConflictBuildProperty<>BuildMacro) then
-      begin
+      if ((ConflictBuildProperty<>nil) and (ConflictBuildProperty<>BuildMacro))
+      or (SysUtils.CompareText('TargetOS',S)=0)
+      or (SysUtils.CompareText('TargetCPU',S)=0)
+      or (SysUtils.CompareText('LCLWidgetType',S)=0)
+      then begin
         MessageDlg(lisCCOErrorCaption,
           Format(lisThereIsAlreadyABuildMacroWithTheName, ['"', S, '"']),
           mtError,[mbCancel],0);
         S:=BuildMacro.Identifier;
         exit;
       end;
+
+      // check for duplicates with used packages
+      if (BuildMacros<>nil) and (BuildMacros.Owner is TBaseCompilerOptions) then
+      begin
+        Vars:=GetBuildMacroValues(TBaseCompilerOptions(BuildMacros.Owner),false);
+        if (Vars<>nil) and Vars.IsDefined(PChar(S)) then begin
+          DlgResult:=MessageDlg('Warning',
+            Format(lisThereIsAlreadyABuildMacroWithTheName, ['"', S, '"']),
+            mtWarning,[mbCancel,mbIgnore],0);
+          if DlgResult<>mrIgnore then
+          begin
+            S:=BuildMacro.Identifier;
+            exit;
+          end;
+        end;
+      end;
+
+
+      // rename build macro
       BuildMacro.Identifier:=S;
     end;
 
@@ -387,12 +449,23 @@ begin
     Result:=Result.GetNextSibling;
 end;
 
-function TCompOptBuildMacrosFrame.GetMacroNamePrefix: string;
+function TCompOptBuildMacrosFrame.GetMacroNamePrefix(PrefixType: TCBMPrefixType
+  ): string;
 begin
-  Result:='BuildMacro';
+  if PrefixType=cbmpShort then
+    Result:=''
+  else
+    Result:='BuildMacro';
   if (BuildMacros=nil) or (BuildMacros.Owner=nil) then exit;
   if BuildMacros.Owner is TPkgCompilerOptions then
-    Result:=TPkgCompilerOptions(BuildMacros.Owner).LazPackage.Name+'_macro';
+  begin
+    Result:=TPkgCompilerOptions(BuildMacros.Owner).LazPackage.Name;
+    if ord(PrefixType)>=ord(cbmpMedium) then
+      Result:=Result+'_';
+    if PrefixType=cbmpLong then
+      Result:=Result+'macro';
+  end;
+
 end;
 
 procedure TCompOptBuildMacrosFrame.UpdateItemPropertyControls;
