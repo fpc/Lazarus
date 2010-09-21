@@ -8243,8 +8243,6 @@ begin
   Result:=mrOk;
   while (AnUnitInfo.OpenEditorInfoCount > 0) and (Result = mrOK) do
     Result:=DoCloseEditorFile(AnUnitInfo.OpenEditorInfo[0].EditorComponent, Flags);
-  while (AnUnitInfo.OpenEditorInfoCount > 0) and
-    (DoCloseEditorFile(AnUnitInfo.OpenEditorInfo[0].EditorComponent, Flags) = mrOK) do;
 end;
 
 function TMainIDE.DoCloseEditorFile(AEditor: TSourceEditorInterface;
