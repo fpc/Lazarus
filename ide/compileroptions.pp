@@ -69,7 +69,6 @@
   - using conditionals to extend package usage paths: TParsedCompilerOptions.GetUnparsedWithConditionals
 
   ToDo:
-  - move the project target file to compiler options
   - conditionals for project
   - warn for macro name conflicts
     - keywords
@@ -81,6 +80,10 @@
   - show build macros in inherited compiler options
   - use syntax highlighter settings like the editor previews
   - show syntax errors of conditionals
+  - code completion
+  - move the project target file to compiler options
+  - discuss captions
+  - resourcestrings
   - a project can save the set of build macros and compiler options
     - add changestamp, assign, equals to compiler options
     - refactor compiler options (default options, load, save to file)

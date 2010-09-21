@@ -760,7 +760,6 @@ begin
       Checked[19] := Options.WriteFPCLogo;
     end;
 
-
     // compiler messages
     chkUseMsgFile.OnChange := nil;
     try
@@ -782,6 +781,7 @@ begin
     edtErrorCnt.Text := IntToStr(Options.StopAfterErrCount);
 
     // conditionals + build macros
+    debugln(['TfrmCompilerOptions.LoadOptionsToForm ']);
     {$IFDEF EnableBuildModes}
     BuildMacrosFrame.LoadFromOptions(Options);
     {$ENDIF}

@@ -31,7 +31,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, StdCtrls, Grids,
   Buttons, ExtCtrls, Dialogs, ComCtrls, Menus, AvgLvlTree, IDEImagesIntf,
-  ProjectIntf, PackageIntf, CompilerOptions,
+  ProjectIntf, PackageIntf, CompilerOptions, IDEOptionsIntf,
   LazarusIDEStrConsts, CompOptsModes, PackageDefs, SynEdit, SynHighlighterPas;
 
 type
@@ -43,7 +43,7 @@ type
 
   { TCompOptBuildMacrosFrame }
 
-  TCompOptBuildMacrosFrame = class(TFrame)
+  TCompOptBuildMacrosFrame = class(TAbstractIDEOptionsEditor)
     BuildMacroDescriptionEdit: TEdit;
     BuildMacroSelectedGroupBox: TGroupBox;
     BuildMacrosTreeView: TTreeView;
@@ -85,6 +85,11 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     property BuildMacros: TIDEBuildMacros read FBuildMacros write SetBuildMacros; // local copy
     procedure LoadFromOptions(Options: TBaseCompilerOptions);
     procedure SaveToOptions(Options: TBaseCompilerOptions);
@@ -443,6 +448,35 @@ begin
   inherited Destroy;
 end;
 
+function TCompOptBuildMacrosFrame.GetTitle: String;
+begin
+  Result:='Build macros';
+end;
+
+procedure TCompOptBuildMacrosFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+begin
+  if AOptions is TBaseCompilerOptions then
+    LoadFromOptions(TBaseCompilerOptions(AOptions));
+end;
+
+procedure TCompOptBuildMacrosFrame.Setup(ADialog: TAbstractOptionsEditorDialog
+  );
+begin
+
+end;
+
+class function TCompOptBuildMacrosFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TBaseCompilerOptions;
+end;
+
+procedure TCompOptBuildMacrosFrame.WriteSettings(AOptions: TAbstractIDEOptions
+  );
+begin
+  if AOptions is TBaseCompilerOptions then
+    SaveToOptions(TBaseCompilerOptions(AOptions));
+end;
+
 procedure TCompOptBuildMacrosFrame.LoadFromOptions(Options: TBaseCompilerOptions
   );
 begin
@@ -457,6 +491,12 @@ begin
   (Options.BuildMacros as TIDEBuildMacros).Assign(BuildMacros);
   Options.Conditionals:=CondSynEdit.Lines.Text;
 end;
+
+{$IFDEF EnableBuildModes}
+initialization
+  RegisterIDEOptionsEditor(GroupCompiler, TCompOptBuildMacrosFrame,
+    CompilerOptionsConditional);
+{$ENDIF}
 
 end.
 
