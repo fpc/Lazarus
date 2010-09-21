@@ -7756,8 +7756,9 @@ begin
         else
            aValue:=F.AsVariant
       end
-      else if (D<>nil) and (roIgnoreFieldNotFound in FReportOptions) then
-        aValue := ''
+      else if (D<>nil) and (roIgnoreFieldNotFound in FReportOptions) and
+              lrValidFieldReference(s) then
+        aValue := Null
       else if s = 'VALUE' then
         aValue:= CurValue
       else if s = frSpecFuncs[0] then

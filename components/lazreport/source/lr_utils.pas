@@ -52,6 +52,7 @@ function StrTofrTypeObject(St : string) : Byte;
 
 
 function lrGetUnBrackedStr(const S:string):string; //remove '[' from begion of string and ']' from end
+function lrValidFieldReference(s: string):boolean;
 
 // utf8 tools
 function UTF8Desc(S:string; var Desc: string): Integer;
@@ -568,6 +569,59 @@ begin
       end;
   end;
   Result:=S;
+end;
+
+function lrValidFieldReference(s: string): boolean;
+var
+  i,j,k,n: Integer;
+begin
+  result := false;
+
+  s := lrGetUnbrackedStr(Trim(s));
+
+  if length(s)<3 then
+    exit;
+
+  n := 0;
+  i := Length(s);
+  while i>0 do begin
+
+    // get item
+    j := i;
+    while (i>0) and (s[i]<>'.') do
+      dec(i);
+
+    // validate item
+    k := i+1;
+
+    // trim
+    while (k<=j) and (s[k] in [' ',#9]) do
+      inc(k);
+    while (j>=k) and (s[j] in [' ',#9,#10,#13]) do
+      dec(j);
+
+    if s[k]='"' then  // quoted field
+
+      result := (n=0) and (j>(k+1)) and (s[j]='"')
+
+    else begin  // identifier
+
+      result := (k<=j) and (s[k] in ['A'..'Z','a'..'z','_']);
+      inc(k);
+      while result and (k<=j) do begin
+        result := result and (s[k] in ['A'..'Z','a'..'z','0'..'9','_']);
+        inc(k);
+      end;
+
+    end;
+
+    if not result then
+      exit;
+
+    inc(n);
+    dec(i);
+  end;
+  result := n>1;
 end;
 
 function UTF8Desc(S: string; var Desc: string): Integer;
