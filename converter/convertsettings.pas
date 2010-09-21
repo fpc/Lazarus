@@ -56,6 +56,7 @@ type
     // Actual user settings.
     fBackupFiles: boolean;
     fTarget: TConvertTarget;
+    fKeepFileOpen: boolean;
     fSameDFMFile: boolean;
     fAutoRemoveProperties: boolean;
     fAutoReplaceUnits: boolean;
@@ -101,6 +102,7 @@ type
 
     property BackupFiles: boolean read fBackupFiles;
     property Target: TConvertTarget read fTarget;
+    property KeepFileOpen: boolean read fKeepFileOpen;
     property SameDFMFile: boolean read fSameDFMFile;
     property AutoRemoveProperties: boolean read fAutoRemoveProperties;
     property AutoReplaceUnits: boolean read fAutoReplaceUnits;
@@ -117,6 +119,7 @@ type
 
   TConvertSettingsForm = class(TForm)
     PropRemoveAutoCheckBox: TCheckBox;
+    KeepFileOpenCheckBox: TCheckBox;
     UnitReplaceAutoCheckBox: TCheckBox;
     BackupCheckBox: TCheckBox;
     ButtonPanel1: TButtonPanel;
@@ -352,6 +355,7 @@ begin
   fConfigStorage:=GetIDEConfigStorage('delphiconverter.xml', true);
   fBackupFiles          :=fConfigStorage.GetValue('BackupFiles', true);
   fTarget:=TConvertTarget(fConfigStorage.GetValue('ConvertTarget', 0));
+  fKeepFileOpen         :=fConfigStorage.GetValue('KeepFileOpen', false);
   fSameDFMFile          :=fConfigStorage.GetValue('SameDFMFile', false);
   fAutoReplaceUnits     :=fConfigStorage.GetValue('AutoReplaceUnits', true);
   fAutoRemoveProperties :=fConfigStorage.GetValue('AutoRemoveProperties', true);
@@ -457,6 +461,7 @@ begin
   // Save possibly modified settings to ConfigStorage.
   fConfigStorage.SetDeleteValue('BackupFiles',          fBackupFiles, true);
   fConfigStorage.SetDeleteValue('ConvertTarget',        integer(fTarget), 0);
+  fConfigStorage.SetDeleteValue('KeepFileOpen',         fKeepFileOpen, false);
   fConfigStorage.SetDeleteValue('SameDFMFile',          fSameDFMFile, false);
   fConfigStorage.SetDeleteValue('AutoReplaceUnits',     fAutoReplaceUnits, true);
   fConfigStorage.SetDeleteValue('AutoRemoveProperties', fAutoRemoveProperties, true);
@@ -486,6 +491,7 @@ begin
       // Settings --> UI. Loaded from ConfigSettings earlier.
       BackupCheckBox.Checked           :=fBackupFiles;
       TargetRadioGroup.ItemIndex       :=integer(fTarget);
+      KeepFileOpenCheckBox.Checked     :=fKeepFileOpen;
       SameDFMCheckBox.Checked          :=fSameDFMFile;
       PropRemoveAutoCheckBox.Checked   :=fAutoRemoveProperties;
       UnitReplaceAutoCheckBox.Checked  :=fAutoReplaceUnits;
@@ -497,6 +503,7 @@ begin
         // UI --> Settings. Will be saved to ConfigSettings later.
         fBackupFiles         :=BackupCheckBox.Checked;
         fTarget              :=TConvertTarget(TargetRadioGroup.ItemIndex);
+        fKeepFileOpen        :=KeepFileOpenCheckBox.Checked;
         fSameDFMFile         :=SameDFMCheckBox.Checked;
         fAutoRemoveProperties:=PropRemoveAutoCheckBox.Checked;
         fAutoReplaceUnits    :=UnitReplaceAutoCheckBox.Checked;
@@ -629,6 +636,9 @@ begin
   ButtonPanel1.OKButton.Caption:=lisStartConversion;
   ButtonPanel1.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel1.CancelButton.Caption:=dlgCancel;
+
+  KeepFileOpenCheckBox.Caption:=lisKeepFileOpen;
+  KeepFileOpenCheckBox.Hint:=lisKeepFileOpenHint;
 
   SameDFMCheckBox.Caption:=lisConvUseSameDFM;
   SameDFMCheckBox.Hint:=lisConvUseSameDFMHint;

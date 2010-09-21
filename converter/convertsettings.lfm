@@ -182,7 +182,7 @@ object ConvertSettingsForm: TConvertSettingsForm
       Left = 303
       Height = 21
       Hint = 'Separate form files allow different properties'
-      Top = 7
+      Top = 79
       Width = 312
       BorderSpacing.Left = 13
       BorderSpacing.Around = 7
@@ -191,6 +191,21 @@ object ConvertSettingsForm: TConvertSettingsForm
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
+    end
+    object KeepFileOpenCheckBox: TCheckBox
+      AnchorSideLeft.Control = TargetRadioGroup
+      AnchorSideLeft.Side = asrBottom
+      Left = 303
+      Height = 21
+      Hint = 'Separate form files allow different properties'
+      Top = 15
+      Width = 234
+      BorderSpacing.Left = 13
+      BorderSpacing.Around = 7
+      Caption = 'Keep converted file open in editor'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
     end
   end
   object ProjectPathEdit: TLabeledEdit

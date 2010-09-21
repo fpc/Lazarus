@@ -463,6 +463,8 @@ resourcestring
   lisConvertTarget2 = 'Lazarus / LCL for Windows only';
   lisConvertTarget3 = 'Both Lazarus / LCL and Delphi';
   lisConvertTargetHint = 'Converter adds conditional compilation to support different targets';
+  lisKeepFileOpen = 'Keep converted file open in editor';
+  lisKeepFileOpenHint = 'All project files will be open in editor after conversion';
   lisConvUseSameDFM = 'Lazarus uses the same DFM form file as Delphi';
   lisConvUseSameDFMHint = 'Separate form files allow different properties';
   lisConvAutoReplace = 'Replace automatically';
