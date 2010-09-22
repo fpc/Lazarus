@@ -491,7 +491,6 @@ procedure TfrmMain.TheReportUserFunction(const AName: String; p1, p2,
   p3: Variant; var Val: Variant);
 var
   v: variant;
-  b: boolean;
 begin
   if AName='STOCKFLAG' then begin
     v := frParser.Calc(P1);
