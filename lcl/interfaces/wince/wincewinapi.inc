@@ -148,9 +148,7 @@ var
     // * Windows control y position inside group box is too highe
     // See: http://wiki.lazarus.freepascal.org/Windows_CE_Development_Notes#Regressions
 
-    LCLIntf.GetWindowOrgEx(PaintMsg.DC, @Point);
-    LCLIntf.SetWindowOrgEx(PaintMsg.DC, 0, 0, nil);
-//    MoveWindowOrgEx(PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top);
+    MoveWindowOrgEx(PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top);
     try
       {$IFDEF DEBUG_WINCE_LABELS}
       DebugLn('Before CallDefaultWindowProc WindowOrg Temporarely set to 0,0');
@@ -159,8 +157,7 @@ var
       CallDefaultWindowProc(Handle, WM_PAINT, PaintMsg.DC, 0);
     finally
       // restore DC origin
-//      MoveWindowOrgEx(PaintMsg.DC, ClientBoundRect.Left, ClientBoundRect.Top);
-      LCLIntf.SetWindowOrgEx(PaintMsg.DC, Point.X, Point.Y, nil);
+      MoveWindowOrgEx(PaintMsg.DC, ClientBoundRect.Left, ClientBoundRect.Top);
     end;
     {$IFDEF DEBUG_WINCE_LABELS}
     DebugLn(Format('After CallDefaultWindowProc WindowOrg: %d,%d',
