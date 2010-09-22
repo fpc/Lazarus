@@ -26,11 +26,11 @@ unit maincalleditor;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, Variants, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
   Buttons, StdCtrls, LR_Const, LR_Class, LR_Desgn, Dbf, DB, DBGrids, LR_DBSet,
   LR_PGrid, Menus, ComCtrls, ActnList, Lr_e_txt, Lr_e_htm, LR_E_CSV, LR_DSet,
   LR_BarC, LR_RRect, LR_Shape, LR_ChBox, lr_e_pdf, lconvencoding, lr_e_gen,
-  lr_utils, LCLProc, ExtCtrls, custompreview;
+  lr_utils, LCLProc, ExtCtrls, custompreview, LR_Pars;
 
 type
 
@@ -140,6 +140,8 @@ type
     procedure TheReportEnterRect(Memo: TStringList; View: TfrView);
     procedure TheReportExportFilterSetup(Sender: TfrExportFilter);
     procedure TheReportGetValue(const ParName: String; var ParValue: Variant);
+    procedure TheReportUserFunction(const AName: String; p1, p2, p3: Variant;
+      var Val: Variant);
   private
     { private declarations }
     FImageList: TStringList;
@@ -482,6 +484,21 @@ begin
     else
       ParValue := '12345678901234';
     Inc(FObjCount);
+  end;
+end;
+
+procedure TfrmMain.TheReportUserFunction(const AName: String; p1, p2,
+  p3: Variant; var Val: Variant);
+var
+  v: variant;
+  b: boolean;
+begin
+  if AName='STOCKFLAG' then begin
+    v := frParser.Calc(P1);
+    if VarIsNull(V) or not boolean(v) then
+      Val := ':('
+    else
+      Val:=  ':)';
   end;
 end;
 

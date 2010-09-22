@@ -7,6 +7,7 @@ object frmMain: TfrmMain
   Caption = 'LazReport Test Suite'
   ClientHeight = 522
   ClientWidth = 828
+  Font.Name = 'Sans'
   Menu = MainMenu1
   OnCreate = frmMainCreate
   ShowHint = True
@@ -15,9 +16,9 @@ object frmMain: TfrmMain
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = grid
     Left = 6
-    Height = 16
+    Height = 18
     Top = 103
-    Width = 35
+    Width = 38
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Index'
@@ -27,10 +28,10 @@ object frmMain: TfrmMain
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = grid
-    Left = 752
-    Height = 16
+    Left = 745
+    Height = 18
     Top = 103
-    Width = 70
+    Width = 77
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Expression'
@@ -54,10 +55,10 @@ object frmMain: TfrmMain
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = lblExpr
     AnchorSideBottom.Control = grid
-    Left = 47
-    Height = 29
+    Left = 50
+    Height = 31
     Top = 90
-    Width = 699
+    Width = 689
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     ItemHeight = 0
@@ -71,14 +72,15 @@ object frmMain: TfrmMain
     AnchorSideRight.Control = grid
     AnchorSideBottom.Control = sbar
     Left = 0
-    Height = 380
-    Top = 125
+    Height = 378
+    Top = 127
     Width = 204
     Anchors = [akTop, akLeft, akBottom]
     Color = clMoneyGreen
     Columns = <>
     DataSource = srcMaster
     TabOrder = 3
+    TitleFont.Name = 'Sans'
     Visible = False
   end
   object grid: TDBGrid
@@ -89,15 +91,18 @@ object frmMain: TfrmMain
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = sbar
     Left = 0
-    Height = 380
-    Top = 125
+    Height = 378
+    Top = 127
     Width = 828
     Anchors = [akTop, akLeft, akRight, akBottom]
     Color = clWhite
     Columns = <>
     DataSource = srcDetail
+    Font.Name = 'Sans'
     Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+    ParentFont = False
     TabOrder = 0
+    TitleFont.Name = 'Sans'
     OnTitleClick = gridTitleClick
   end
   object Panel1: TPanel
@@ -118,47 +123,47 @@ object frmMain: TfrmMain
       Left = 6
       Height = 33
       Top = 6
-      Width = 169
+      Width = 170
       Action = accNewReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 0
     end
     object btnOpenReport: TButton
-      Left = 181
+      Left = 182
       Height = 33
       Top = 6
-      Width = 146
+      Width = 147
       Action = accOpenReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 2
     end
     object btnEditReport: TButton
-      Left = 333
+      Left = 335
       Height = 33
       Top = 6
-      Width = 136
+      Width = 135
       Action = accEditReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 3
     end
     object btnPreviewReport: TButton
-      Left = 475
+      Left = 476
       Height = 33
       Top = 6
-      Width = 160
+      Width = 162
       Action = accPreviewReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 4
     end
     object btnPrintReport: TButton
-      Left = 641
+      Left = 644
       Height = 33
       Top = 6
-      Width = 181
+      Width = 178
       Action = accPrintReport
       AutoSize = True
       BorderSpacing.Around = 6
@@ -168,7 +173,7 @@ object frmMain: TfrmMain
       Left = 6
       Height = 33
       Top = 45
-      Width = 169
+      Width = 170
       Action = accCustomPreview
       AutoSize = True
       BorderSpacing.Around = 6
@@ -176,10 +181,10 @@ object frmMain: TfrmMain
     end
     object btnPrintGrid: TButton
       AnchorSideRight.Side = asrBottom
-      Left = 181
+      Left = 182
       Height = 33
       Top = 45
-      Width = 146
+      Width = 147
       Action = accPrintGrid
       AutoSize = True
       BorderSpacing.Around = 6
@@ -187,10 +192,10 @@ object frmMain: TfrmMain
     end
     object btnComposite: TButton
       AnchorSideTop.Side = asrBottom
-      Left = 333
+      Left = 335
       Height = 33
       Top = 45
-      Width = 136
+      Width = 135
       Action = accComposite
       AutoSize = True
       BorderSpacing.Around = 6
@@ -199,20 +204,20 @@ object frmMain: TfrmMain
     object btnImageList: TButton
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 475
+      Left = 476
       Height = 33
       Top = 45
-      Width = 160
+      Width = 162
       Action = accThumbnails
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 7
     end
     object btnMasterDetail: TToggleBox
-      Left = 641
+      Left = 644
       Height = 33
       Top = 45
-      Width = 181
+      Width = 178
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Master-Detail Test'
@@ -223,12 +228,13 @@ object frmMain: TfrmMain
   object TheReport: TfrReport
     Dataset = frDbDetail
     InitialZoom = pzDefault
-    Options = []
+    Options = [roIgnoreFieldNotFound]
     PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
     DataType = dtDataSet
     OnBeginDoc = TheReportBeginDoc
     OnGetValue = TheReportGetValue
     OnEnterRect = TheReportEnterRect
+    OnUserFunction = TheReportUserFunction
     OnExportFilterSetup = TheReportExportFilterSetup
     left = 40
     top = 192
@@ -397,6 +403,8 @@ object frmMain: TfrmMain
   object PrintGrid: TFrPrintGrid
     DBGrid = grid
     Orientation = poLandscape
+    Font.Name = 'Sans'
+    TitleFont.Name = 'Sans'
     Caption = 'Grid'
     ShowCaption = True
     left = 352
