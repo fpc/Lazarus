@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ActnList,
-  Menus, ComCtrls, IniPropStorage, fpJSON, JSONParser, PropertyStorage;
+  Menus, ComCtrls, IniPropStorage, fpJSON, JSONParser, PropertyStorage, DefaultTranslator;
 
 type
 
@@ -143,15 +143,12 @@ type
     procedure MIdocumentClick(Sender: TObject);
     procedure MISortMembersClick(Sender: TObject);
     procedure MIStrictClick(Sender: TObject);
-    procedure PSMainRestoreProperties(Sender: TObject);
     procedure PSMainStoredValues0Restore(Sender: TStoredValue;
       var Value: TStoredType);
     procedure PSMainStoredValues1Restore(Sender: TStoredValue;
       var Value: TStoredType);
     procedure PSMainStoredValues2Restore(Sender: TStoredValue;
       var Value: TStoredType);
-    procedure TVJSONChanging(Sender: TObject; Node: TTreeNode;
-      var AllowChange: Boolean);
     procedure TVJSONEdited(Sender: TObject; Node: TTreeNode; var S: string);
     procedure TVJSONEditing(Sender: TObject; Node: TTreeNode;
       var AllowEdit: Boolean);
@@ -215,11 +212,6 @@ begin
   PSMain.StoredValue['strict']:=IntToStr(Ord(Fstrict));
 end;
 
-procedure TMainForm.PSMainRestoreProperties(Sender: TObject);
-begin
-
-end;
-
 procedure TMainForm.PSMainStoredValues0Restore(Sender: TStoredValue;
   var Value: TStoredType);
 begin
@@ -236,11 +228,6 @@ procedure TMainForm.PSMainStoredValues2Restore(Sender: TStoredValue;
   var Value: TStoredType);
 begin
   FSortObjectMembers:=StrToIntDef(Value,0)=1;
-end;
-
-procedure TMainForm.TVJSONChanging(Sender: TObject; Node: TTreeNode;
-  var AllowChange: Boolean);
-begin
 end;
 
 procedure TMainForm.TVJSONEdited(Sender: TObject; Node: TTreeNode; var S: string
