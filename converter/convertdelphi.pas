@@ -987,9 +987,6 @@ begin
       Result:=Converter.ConvertFormFile;
       Result:=Converter.CheckFailed(Result);
       if Result<>mrOK then exit;
-      // Finally save and maybe close the file.
-      Result:=SaveAndMaybeClose(Converter.fLazUnitFilename);
-      if Result<>mrOK then exit;
     end;
   finally
     Screen.Cursor:=crDefault;
@@ -1344,12 +1341,12 @@ begin
     MainUnitInfo.IsPartOfProject:=true;
     LazProject.AddFile(MainUnitInfo,false);
     LazProject.MainFileID:=0;
-    Result:=LazarusIDE.DoOpenEditorFile(MainUnitInfo.Filename,0,0,[ofQuiet]);
-    if Result<>mrOK then exit;
   end else begin
     // replace main unit in project
     LazProject.MainUnitInfo.Source:=fMainUnitConverter.fPascalBuffer;
   end;
+  Result:=LazarusIDE.DoOpenEditorFile(fMainUnitConverter.fLazUnitFilename,0,0,[ofQuiet]);
+  if Result<>mrOK then exit;
   Result:=mrOk;
 end;
 
@@ -1497,11 +1494,14 @@ var
     Result:=Converter.CheckFailed(Result);
     if Result<>mrOK then exit;
     Result:=Converter.ConvertUnitFile;
+    if Result<>mrOK then exit;
+    // Finally save and maybe close the file.
+    Result:=SaveAndMaybeClose(Converter.fLazUnitFilename);
   end;
 
-  var
-    CurUnitInfo: TUnitInfo;
-    i: Integer;
+var
+  CurUnitInfo: TUnitInfo;
+  i: Integer;
 begin
   Result:=mrOk;
   ConvUnits:=TObjectList.create;
@@ -1585,15 +1585,12 @@ begin
   UnitIndex:=LazProject.IndexOfFilename(Filename, [pfsfOnlyEditorFiles]);
   if UnitIndex<0 then exit;
   AnUnitInfo:=LazProject.Units[UnitIndex];
-  if AnUnitInfo.OpenEditorInfoCount<>1 then
-    raise Exception.Create('OpenEditorInfoCount='+IntToStr(AnUnitInfo.OpenEditorInfoCount));
-//  Assert(AnUnitInfo.OpenEditorInfoCount=1, 'OpenEditorInfoCount='+IntToStr(AnUnitInfo.OpenEditorInfoCount));
+  if AnUnitInfo.OpenEditorInfoCount=0 then exit;
   Result:=LazarusIDE.DoSaveEditorFile(AnUnitInfo.OpenEditorInfo[0].EditorComponent,
                                       [sfCheckAmbiguousFiles,sfQuietUnitCheck]);
   if not fSettings.KeepFileOpen then
     Result:=LazarusIDE.DoCloseEditorFile(AnUnitInfo.OpenEditorInfo[0].EditorComponent,
-                                         [cfQuiet]); // Filename
-  //  Result:=LazarusIDE.DoSaveEditorFile();
+                                         [cfQuiet]);
 end;
 
 procedure TConvertDelphiProject.AddPackageDependency(const PackageName: string);
