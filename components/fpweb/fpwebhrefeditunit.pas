@@ -170,14 +170,16 @@ function TfpWebHREFEditForm.HtmlText: string;
 begin
   //<A href="work/ProgectManager/www_ui/html_template/pmQuestionStatusEdit.html" name="srger" rel="Contents" type="text/html" target="_self"></A>
 
-  Result:='<a href="'+cbHREF.Text;
+  Result:='<a';
+  if cbHREF.Text<>'' then
+    Result:=Result + ' href="'+cbHREF.Text+'"';
   if edtLinkName.Text <> '' then
     Result:=Result + ' name="'+edtLinkName.Text+'"';
   if cbType.Text <> '' then
     Result:=Result + ' type="'+cbType.Text+'"';
   if cbTarg.Text <> '' then
     Result:=Result + ' target="'+cbTarg.Text+'"';
-  Result:=Result + '">'+edtLinkText.Text+'</a>';
+  Result:=Result + '>'+edtLinkText.Text+'</a>';
 end;
 
 end.
