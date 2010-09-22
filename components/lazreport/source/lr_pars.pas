@@ -16,7 +16,7 @@ interface
 
 type
   TGetPValueEvent = procedure(const s: String; var v: Variant) of object;
-  TFunctionEvent = procedure(const Name: String; p1, p2, p3: Variant;
+  TFunctionEvent = procedure(const AName: String; p1, p2, p3: Variant;
                              var Val: Variant) of object;
 
   TfrParser = class
