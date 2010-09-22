@@ -872,7 +872,7 @@ var
 begin
   if Avalue<>SelectedField then begin
     i := GetGridColumnFromField( AValue );
-    if i>=FirstGridColumn then
+    if (i>=FirstGridColumn) and (i>=FixedCols) then
       Col := i;
   end;
 end;
