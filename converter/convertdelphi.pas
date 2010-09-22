@@ -987,6 +987,9 @@ begin
       Result:=Converter.ConvertFormFile;
       Result:=Converter.CheckFailed(Result);
       if Result<>mrOK then exit;
+      // Finally save and maybe close the file.
+      Result:=SaveAndMaybeClose(Converter.fLazUnitFilename);
+      if Result<>mrOK then exit;
     end;
   finally
     Screen.Cursor:=crDefault;
@@ -1494,9 +1497,6 @@ var
     Result:=Converter.CheckFailed(Result);
     if Result<>mrOK then exit;
     Result:=Converter.ConvertUnitFile;
-    if Result<>mrOK then exit;
-    // Finally save and maybe close the file.
-    Result:=SaveAndMaybeClose(Converter.fLazUnitFilename);
   end;
 
 var
