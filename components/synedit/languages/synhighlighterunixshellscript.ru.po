@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-29 17:42+0300\n"
+"PO-Revision-Date: 2010-09-22 19:21+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -11,5 +11,5 @@ msgstr ""
 
 #: synhighlighterunixshellscript.langname
 msgid "UNIX Shell Script"
-msgstr "Скрипт UNIX Shell"
+msgstr "Сценарий UNIX Shell"
 

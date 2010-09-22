@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-29 01:22+0300\n"
+"PO-Revision-Date: 2010-09-22 19:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -512,7 +512,7 @@ msgstr "Файлы ассемблера 68HC11 (*.hc11,*.asm,*.asc)|*.HC11;*.ASM
 
 #: syneditstrconst.syns_filterawk
 msgid "AWK Script (*.awk)|*.awk"
-msgstr "Скрипты AWK (*.awk)|*.awk"
+msgstr "Сценарии AWK (*.awk)|*.awk"
 
 #: syneditstrconst.syns_filterbaan
 msgid "Baan 4GL Files (*.cln)|*.cln"
@@ -568,7 +568,7 @@ msgstr "Файлы GEMBASE (*.dml,*.gem)|*.DML;*.GEM"
 
 #: syneditstrconst.syns_filtergws
 msgid "GW-TEL Script Files (*.gws)|*.gws"
-msgstr "Скрипты GW-TEL (*.gws)|*.gws"
+msgstr "Сценарии GW-TEL (*.gws)|*.gws"
 
 #: syneditstrconst.syns_filterhp
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
@@ -588,7 +588,7 @@ msgstr "INI-файлы (*.ini)|*.ini"
 
 #: syneditstrconst.syns_filterinno
 msgid "Inno Setup Script Files (*.iss)|*.iss"
-msgstr "Установочные скрипты Inno (*.iss)|*.iss"
+msgstr "Установочные сценарии Inno (*.iss)|*.iss"
 
 #: syneditstrconst.syns_filterjava
 msgid "Java Files (*.java)|*.java"
@@ -600,7 +600,7 @@ msgstr "Файлы Javascript (*.js)|*.js"
 
 #: syneditstrconst.syns_filterkix
 msgid "KiXtart scripts (*.kix)|*.kix"
-msgstr "Скрипты KiXtart (*.kix)|*.kix"
+msgstr "Сценарии KiXtart (*.kix)|*.kix"
 
 #: syneditstrconst.syns_filterlfm
 msgid "Lazarus Form Files (*.lfm)|*.lfm"
@@ -664,7 +664,7 @@ msgstr "Файлы TeX (*.tex)|*.tex"
 
 #: syneditstrconst.syns_filterunixshellscript
 msgid "UNIX Shell Scripts (*.sh)|*.sh"
-msgstr "Скрипты UNIX Shell (*.sh)|*.sh"
+msgstr "Сценарии UNIX Shell (*.sh)|*.sh"
 
 #: syneditstrconst.syns_filtervbscript
 msgid "VBScript Files (*.vbs)|*.vbs"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-08-24 04:21+0300\n"
+"PO-Revision-Date: 2010-09-22 19:24+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -562,7 +562,7 @@ msgstr "С&крипт"
 
 #: lr_const.seditorformscript
 msgid "&Script"
-msgstr "&Скрипт"
+msgstr "&Сценарий"
 
 #: lr_const.seditorformvar
 msgctxt "lr_const.seditorformvar"

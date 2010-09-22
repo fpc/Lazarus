@@ -19,15 +19,15 @@ msgstr "Базы данных Interbase"
 
 #: registersqldb.ssqlscript
 msgid "SQL Script file"
-msgstr ""
+msgstr "Файл сценария SQL"
 
 #: registersqldb.ssqlscriptdesc
 msgid "Create a new SQL Script file"
-msgstr ""
+msgstr "Создать новый файл сценария SQL"
 
 #: registersqldb.ssqlsource
 msgid "Insert your SQL statements here"
-msgstr ""
+msgstr "Вставьте выражения SQL здесь"
 
 #: registersqldb.ssqlstringspropertyeditordlgtitle
 msgid "Editing %s"

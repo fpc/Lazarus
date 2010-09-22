@@ -5420,21 +5420,33 @@ msgstr "Talkininkai"
 msgid "Control needs parent"
 msgstr "Valdikliui reikia tėvo"
 
-#: lazarusidestrconsts.lisconvautoremoveprop
-msgctxt "lazarusidestrconsts.lisconvautoremoveprop"
-msgid "Automatic removal of unknown properties"
-msgstr "Automatiškai šalinti nežinomas savybes"
-
-#: lazarusidestrconsts.lisconvautoremoveprophint
+#: lazarusidestrconsts.lisconvautohint
+msgctxt "lazarusidestrconsts.lisconvautohint"
 msgid "If unchecked, there will be interactive dialogs for editing / accepting changes"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvautoreplaceunithint
-msgid "If unchecked, there will be interactive dialogs for editing / accepting changes."
+#: lazarusidestrconsts.lisconvautoremove
+msgid "Remove automatically"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvautoreplaceunits
-msgid "Automatic replacement of unit names"
+#: lazarusidestrconsts.lisconvautoreplace
+msgid "Replace automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvcoordhint
+msgid "An offset is added to Top coordinate of controls inside visual containers"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvcoordoffs
+msgid "Coordinate offsets"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvdelphifunc
+msgid "Delphi Function"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvdelphiname
+msgid "Delphi Name"
 msgstr ""
 
 #: lazarusidestrconsts.lisconversionerror
@@ -5492,6 +5504,22 @@ msgstr ""
 msgid "Functions / procedures to replace"
 msgstr ""
 
+#: lazarusidestrconsts.lisconvleftoff
+msgid "Left offset"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvnewname
+msgid "New Name"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvparentcontainer
+msgid "Parent Container"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvtopoff
+msgid "Top offset"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
 msgstr "Tipų keitiniai"
@@ -5515,11 +5543,6 @@ msgstr ""
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
 msgstr "Keistini moduliai"
-
-#: lazarusidestrconsts.lisconvunitstypesprop
-msgctxt "lazarusidestrconsts.lisconvunitstypesprop"
-msgid "Units, Types and Properties"
-msgstr "Moduliai, tipai ir savybės"
 
 #: lazarusidestrconsts.lisconvusesamedfm
 msgid "Lazarus uses the same DFM form file as Delphi"
@@ -6426,6 +6449,10 @@ msgstr "Ieškoti šiose klasės sekcijose:"
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
 msgstr "Tuščia"
+
+#: lazarusidestrconsts.lisenable
+msgid "Enable"
+msgstr ""
 
 #: lazarusidestrconsts.lisenableall
 msgid "&Enable All"
@@ -7598,8 +7625,16 @@ msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall packages"
 msgstr ""
 
+#: lazarusidestrconsts.lisinteractive
+msgid "Interactive"
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidbuildmacrothebuildmacromustbeapascalidentifie
 msgid "Invalid build macro %s%s%s. The build macro must be a pascal identifier."
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidbuildmacrothenameisakeyword
+msgid "Invalid build macro \"%s\". The name is a keyword."
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidcircle
@@ -7705,6 +7740,14 @@ msgstr "JITForm"
 #: lazarusidestrconsts.liskeep
 msgid "keep"
 msgstr "palikti"
+
+#: lazarusidestrconsts.liskeepfileopen
+msgid "Keep converted file open in editor"
+msgstr ""
+
+#: lazarusidestrconsts.liskeepfileopenhint
+msgid "All project files will be open in editor after conversion"
+msgstr ""
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
@@ -12071,6 +12114,10 @@ msgstr "Atveri iš naujo kitoje koduotėje"
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
 msgstr "Kartojimų kiekis:"
+
+#: lazarusidestrconsts.lisreplacement
+msgid "Replacement"
+msgstr ""
 
 #: lazarusidestrconsts.lisreplacementfuncs
 msgid "Replacement functions"

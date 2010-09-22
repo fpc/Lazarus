@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-08-23 00:03+0300\n"
+"PO-Revision-Date: 2010-09-22 19:14+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -5430,22 +5430,34 @@ msgstr "Участники"
 msgid "Control needs parent"
 msgstr "Элемент управления требует \"родителя\""
 
-#: lazarusidestrconsts.lisconvautoremoveprop
-msgctxt "lazarusidestrconsts.lisconvautoremoveprop"
-msgid "Automatic removal of unknown properties"
-msgstr "Автоматически удалять неизвестные свойства"
-
-#: lazarusidestrconsts.lisconvautoremoveprophint
+#: lazarusidestrconsts.lisconvautohint
+msgctxt "lazarusidestrconsts.lisconvautohint"
 msgid "If unchecked, there will be interactive dialogs for editing / accepting changes"
 msgstr "Если не выбрано, будут выводиться диалоги редактирования/подтверждения изменений"
 
-#: lazarusidestrconsts.lisconvautoreplaceunithint
-msgid "If unchecked, there will be interactive dialogs for editing / accepting changes."
-msgstr "Если не выбрано, будут выводиться диалоги редактирования/подтверждения изменений"
+#: lazarusidestrconsts.lisconvautoremove
+msgid "Remove automatically"
+msgstr "Удалять автоматически"
 
-#: lazarusidestrconsts.lisconvautoreplaceunits
-msgid "Automatic replacement of unit names"
-msgstr "Автоматически заменять имена модулей"
+#: lazarusidestrconsts.lisconvautoreplace
+msgid "Replace automatically"
+msgstr "Заменять автоматически"
+
+#: lazarusidestrconsts.lisconvcoordhint
+msgid "An offset is added to Top coordinate of controls inside visual containers"
+msgstr "Добавление смещения к координатам виджетов внутри визуальных контейнеров"
+
+#: lazarusidestrconsts.lisconvcoordoffs
+msgid "Coordinate offsets"
+msgstr "Смещения координат"
+
+#: lazarusidestrconsts.lisconvdelphifunc
+msgid "Delphi Function"
+msgstr "Функция Delphi"
+
+#: lazarusidestrconsts.lisconvdelphiname
+msgid "Delphi Name"
+msgstr "Имя Delphi"
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -5499,6 +5511,22 @@ msgstr "Некоторые функции Delphi могут быть замен�
 msgid "Functions / procedures to replace"
 msgstr "Заменяемые функции/процедуры"
 
+#: lazarusidestrconsts.lisconvleftoff
+msgid "Left offset"
+msgstr "Смещение слева"
+
+#: lazarusidestrconsts.lisconvnewname
+msgid "New Name"
+msgstr "Новое имя"
+
+#: lazarusidestrconsts.lisconvparentcontainer
+msgid "Parent Container"
+msgstr "Родительский контейнер"
+
+#: lazarusidestrconsts.lisconvtopoff
+msgid "Top offset"
+msgstr "Смещение сверху"
+
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
 msgstr "Замена типов"
@@ -5522,11 +5550,6 @@ msgstr "Имена модулей в выражении Uses исходного 
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
 msgstr "Заменяемые модули"
-
-#: lazarusidestrconsts.lisconvunitstypesprop
-msgctxt "lazarusidestrconsts.lisconvunitstypesprop"
-msgid "Units, Types and Properties"
-msgstr "Модули, типы и свойства"
 
 #: lazarusidestrconsts.lisconvusesamedfm
 msgid "Lazarus uses the same DFM form file as Delphi"
@@ -6433,6 +6456,10 @@ msgstr "Искать в следующих секциях класса"
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
 msgstr "Пусто"
+
+#: lazarusidestrconsts.lisenable
+msgid "Enable"
+msgstr "Включить"
 
 #: lazarusidestrconsts.lisenableall
 msgid "&Enable All"
@@ -7605,9 +7632,17 @@ msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall packages"
 msgstr "Установка/удаление пакетов"
 
+#: lazarusidestrconsts.lisinteractive
+msgid "Interactive"
+msgstr "Интерактивный режим"
+
 #: lazarusidestrconsts.lisinvalidbuildmacrothebuildmacromustbeapascalidentifie
 msgid "Invalid build macro %s%s%s. The build macro must be a pascal identifier."
 msgstr "Макрос сборки %s%s%s некорректен. Он должен являться идентификатором Паскаля."
+
+#: lazarusidestrconsts.lisinvalidbuildmacrothenameisakeyword
+msgid "Invalid build macro \"%s\". The name is a keyword."
+msgstr "Макрос сборки \"%s\" некорректен. Имя является ключевым словом."
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -7712,6 +7747,14 @@ msgstr "JIT Form"
 #: lazarusidestrconsts.liskeep
 msgid "keep"
 msgstr "оставить"
+
+#: lazarusidestrconsts.liskeepfileopen
+msgid "Keep converted file open in editor"
+msgstr "Оставлять преобразованный файл открытым в редакторе"
+
+#: lazarusidestrconsts.liskeepfileopenhint
+msgid "All project files will be open in editor after conversion"
+msgstr "Все файлы проекта будут открыты в редакторе после преобразования"
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
@@ -12077,6 +12120,10 @@ msgstr "Открыть с другой кодировкой"
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
 msgstr "Число повторов:"
+
+#: lazarusidestrconsts.lisreplacement
+msgid "Replacement"
+msgstr "Замена"
 
 #: lazarusidestrconsts.lisreplacementfuncs
 msgid "Replacement functions"

@@ -5385,22 +5385,34 @@ msgstr "Přispěvatelé"
 msgid "Control needs parent"
 msgstr "Prvek potřebuje rodiče"
 
-#: lazarusidestrconsts.lisconvautoremoveprop
-msgctxt "lazarusidestrconsts.lisconvautoremoveprop"
-msgid "Automatic removal of unknown properties"
-msgstr "Automatické odstranění neznámých vlastností"
-
-#: lazarusidestrconsts.lisconvautoremoveprophint
+#: lazarusidestrconsts.lisconvautohint
+msgctxt "lazarusidestrconsts.lisconvautohint"
 msgid "If unchecked, there will be interactive dialogs for editing / accepting changes"
 msgstr "Pokud není zaškrtnuto, zobrazí se dialog pro změnu / přijmutí změn"
 
-#: lazarusidestrconsts.lisconvautoreplaceunithint
-msgid "If unchecked, there will be interactive dialogs for editing / accepting changes."
-msgstr "Pokud není zaškrtnuto, zobrazí se dialog pro změnu / přijmutí změn."
+#: lazarusidestrconsts.lisconvautoremove
+msgid "Remove automatically"
+msgstr ""
 
-#: lazarusidestrconsts.lisconvautoreplaceunits
-msgid "Automatic replacement of unit names"
-msgstr "Automatická náhrada jména jednotky"
+#: lazarusidestrconsts.lisconvautoreplace
+msgid "Replace automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvcoordhint
+msgid "An offset is added to Top coordinate of controls inside visual containers"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvcoordoffs
+msgid "Coordinate offsets"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvdelphifunc
+msgid "Delphi Function"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvdelphiname
+msgid "Delphi Name"
+msgstr ""
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -5451,6 +5463,22 @@ msgstr "Některé funkce Delphi mohou být nahrazeny funkcemi LCL"
 msgid "Functions / procedures to replace"
 msgstr "Funkce / procedury k nahrazení"
 
+#: lazarusidestrconsts.lisconvleftoff
+msgid "Left offset"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvnewname
+msgid "New Name"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvparentcontainer
+msgid "Parent Container"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvtopoff
+msgid "Top offset"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
 msgstr "Nahrazení typu"
@@ -5474,11 +5502,6 @@ msgstr "Jména jednotek v sekci \"uses\" zdrojové jednotky"
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
 msgstr "Jednoty k nahrazení"
-
-#: lazarusidestrconsts.lisconvunitstypesprop
-msgctxt "lazarusidestrconsts.lisconvunitstypesprop"
-msgid "Units, Types and Properties"
-msgstr "Jednotky, Typy a Vlastnosti"
 
 #: lazarusidestrconsts.lisconvusesamedfm
 msgid "Lazarus uses the same DFM form file as Delphi"
@@ -6384,6 +6407,10 @@ msgstr "Hledat v těchto sekcích tříd:"
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
 msgstr "Prázdné"
+
+#: lazarusidestrconsts.lisenable
+msgid "Enable"
+msgstr ""
 
 #: lazarusidestrconsts.lisenableall
 msgid "&Enable All"
@@ -7554,9 +7581,17 @@ msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall packages"
 msgstr "Instalovat/Odinstalovat balíčky"
 
+#: lazarusidestrconsts.lisinteractive
+msgid "Interactive"
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidbuildmacrothebuildmacromustbeapascalidentifie
 msgid "Invalid build macro %s%s%s. The build macro must be a pascal identifier."
 msgstr "Neplatné sestavovací makro %s%s%s. Sestavovací makro musí být identifikátor Pascalu."
+
+#: lazarusidestrconsts.lisinvalidbuildmacrothenameisakeyword
+msgid "Invalid build macro \"%s\". The name is a keyword."
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -7661,6 +7696,14 @@ msgstr "Formulář JIT"
 #: lazarusidestrconsts.liskeep
 msgid "keep"
 msgstr "udržovat"
+
+#: lazarusidestrconsts.liskeepfileopen
+msgid "Keep converted file open in editor"
+msgstr ""
+
+#: lazarusidestrconsts.liskeepfileopenhint
+msgid "All project files will be open in editor after conversion"
+msgstr ""
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
@@ -11997,6 +12040,10 @@ msgstr "Znovuotevřít s jiným kódováním"
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
 msgstr "Počet opakování:"
+
+#: lazarusidestrconsts.lisreplacement
+msgid "Replacement"
+msgstr ""
 
 #: lazarusidestrconsts.lisreplacementfuncs
 msgid "Replacement functions"

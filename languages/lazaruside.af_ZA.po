@@ -5388,21 +5388,33 @@ msgstr "Bydraers"
 msgid "Control needs parent"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvautoremoveprop
-msgctxt "lazarusidestrconsts.lisconvautoremoveprop"
-msgid "Automatic removal of unknown properties"
-msgstr ""
-
-#: lazarusidestrconsts.lisconvautoremoveprophint
+#: lazarusidestrconsts.lisconvautohint
+msgctxt "lazarusidestrconsts.lisconvautohint"
 msgid "If unchecked, there will be interactive dialogs for editing / accepting changes"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvautoreplaceunithint
-msgid "If unchecked, there will be interactive dialogs for editing / accepting changes."
+#: lazarusidestrconsts.lisconvautoremove
+msgid "Remove automatically"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvautoreplaceunits
-msgid "Automatic replacement of unit names"
+#: lazarusidestrconsts.lisconvautoreplace
+msgid "Replace automatically"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvcoordhint
+msgid "An offset is added to Top coordinate of controls inside visual containers"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvcoordoffs
+msgid "Coordinate offsets"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvdelphifunc
+msgid "Delphi Function"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvdelphiname
+msgid "Delphi Name"
 msgstr ""
 
 #: lazarusidestrconsts.lisconversionerror
@@ -5454,6 +5466,22 @@ msgstr ""
 msgid "Functions / procedures to replace"
 msgstr ""
 
+#: lazarusidestrconsts.lisconvleftoff
+msgid "Left offset"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvnewname
+msgid "New Name"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvparentcontainer
+msgid "Parent Container"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvtopoff
+msgid "Top offset"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
 msgstr ""
@@ -5476,11 +5504,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
-msgstr ""
-
-#: lazarusidestrconsts.lisconvunitstypesprop
-msgctxt "lazarusidestrconsts.lisconvunitstypesprop"
-msgid "Units, Types and Properties"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvusesamedfm
@@ -6386,6 +6409,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
+msgstr ""
+
+#: lazarusidestrconsts.lisenable
+msgid "Enable"
 msgstr ""
 
 #: lazarusidestrconsts.lisenableall
@@ -7557,8 +7584,16 @@ msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall packages"
 msgstr ""
 
+#: lazarusidestrconsts.lisinteractive
+msgid "Interactive"
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidbuildmacrothebuildmacromustbeapascalidentifie
 msgid "Invalid build macro %s%s%s. The build macro must be a pascal identifier."
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidbuildmacrothenameisakeyword
+msgid "Invalid build macro \"%s\". The name is a keyword."
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidcircle
@@ -7663,6 +7698,14 @@ msgstr ""
 
 #: lazarusidestrconsts.liskeep
 msgid "keep"
+msgstr ""
+
+#: lazarusidestrconsts.liskeepfileopen
+msgid "Keep converted file open in editor"
+msgstr ""
+
+#: lazarusidestrconsts.liskeepfileopenhint
+msgid "All project files will be open in editor after conversion"
 msgstr ""
 
 #: lazarusidestrconsts.liskeepname
@@ -12006,6 +12049,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisrepeatcount
 msgid "Repeat Count:"
+msgstr ""
+
+#: lazarusidestrconsts.lisreplacement
+msgid "Replacement"
 msgstr ""
 
 #: lazarusidestrconsts.lisreplacementfuncs

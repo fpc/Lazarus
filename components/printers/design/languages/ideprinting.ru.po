@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-05-11 01:13+0300\n"
+"PO-Revision-Date: 2010-09-22 18:57+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -36,5 +36,5 @@ msgstr "Печать исходного кода"
 
 #: ideprinting.sprintwhat
 msgid "What would you like to print ?"
-msgstr "Что вы хотите напечатать?"
+msgstr "Что требуется напечатать?"
 

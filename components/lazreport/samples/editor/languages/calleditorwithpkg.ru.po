@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-03-08 19:12+0300\n"
+"PO-Revision-Date: 2010-09-22 16:33+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -116,12 +116,12 @@ msgstr "Эскизы"
 
 #: TFRMCUSTOMPREVIEW.FRMCUSTOMPREVIEW.CAPTION
 msgid "frmCustomPreview"
-msgstr ""
+msgstr "frmCustomPreview"
 
 #: TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION
 msgctxt "TFRMCUSTOMPREVIEW.FRPREVIEW1.CAPTION"
 msgid "frPreview1"
-msgstr ""
+msgstr "frPreview1"
 
 #: TFRMMAIN.ACCCLOSE.CAPTION
 msgid "Close"
@@ -134,7 +134,7 @@ msgstr "Составной"
 
 #: TFRMMAIN.ACCCUSTOMPREVIEW.CAPTION
 msgid "Custom Preview"
-msgstr ""
+msgstr "Пользовательский просмотр"
 
 #: TFRMMAIN.ACCEDITREPORT.CAPTION
 msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
@@ -184,7 +184,7 @@ msgstr "Эскизы"
 
 #: TFRMMAIN.BTNMASTERDETAIL.CAPTION
 msgid "Master-Detail Test"
-msgstr ""
+msgstr "Режим 'главный-подчинённый'"
 
 #: TFRMMAIN.FRMMAIN.CAPTION
 msgctxt "TFRMMAIN.FRMMAIN.CAPTION"
