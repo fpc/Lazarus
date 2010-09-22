@@ -1030,10 +1030,9 @@ var
     end else
       ClassContext:=FindClassContext(LFMObject.TypeName);  // try the object type
     // check child LFM nodes
+    // ClassContext.Node=nil when the parent class is not found in source.
     if ClassContext.Node<>nil then
-      CheckLFMObjectValues(LFMObject, ClassContext, ParentName)
-    else
-      raise Exception.Create('No ClassContext in CheckLFMChildObject');
+      CheckLFMObjectValues(LFMObject, ClassContext, ParentName);
   end;
 
   function FindClassNodeForPropertyType(LFMProperty: TLFMPropertyNode;
