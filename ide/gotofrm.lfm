@@ -3,7 +3,6 @@ object frmGoto: TfrmGoto
   Height = 101
   Top = 427
   Width = 250
-  ActiveControl = Edit1
   AutoSize = True
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
@@ -13,7 +12,7 @@ object frmGoto: TfrmGoto
   LCLVersion = '0.9.29'
   object Label1: TLabel
     Left = 6
-    Height = 18
+    Height = 14
     Top = 6
     Width = 238
     Align = alTop
@@ -22,11 +21,9 @@ object frmGoto: TfrmGoto
     ParentColor = False
   end
   object Edit1: TEdit
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 27
-    Top = 30
+    Height = 21
+    Top = 26
     Width = 238
     Align = alTop
     BorderSpacing.Around = 6
@@ -35,11 +32,9 @@ object frmGoto: TfrmGoto
     Text = 'Edit1'
   end
   object ButtonPanel1: TButtonPanel
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 34
-    Top = 63
+    Height = 26
+    Top = 53
     Width = 238
     Align = alTop
     OKButton.Name = 'OKButton'

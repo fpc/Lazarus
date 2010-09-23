@@ -53,6 +53,8 @@ begin
 
   Caption := lisGotoLine;
   Label1.Caption := lisUEGotoLine;
+  ButtonPanel1.OKButton.Caption:=lisOk;
+  ButtonPanel1.CancelButton.Caption:=dlgCancel;
   Edit1.Caption := '';
 end;
 
