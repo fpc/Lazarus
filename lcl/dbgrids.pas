@@ -1807,9 +1807,14 @@ begin
 end;
 
 procedure TCustomDBGrid.HeaderClick(IsColumn: Boolean; index: Integer);
+var
+  Column: TColumn;
 begin
-  if Assigned(OnTitleClick) and IsColumn then
-    OnTitleClick(TColumn(ColumnFromGridColumn(Index)));
+  if Assigned(OnTitleClick) and IsColumn then begin
+    Column := TColumn(ColumnFromGridColumn(Index));
+    if Column<>nil then
+      OnTitleClick(Column);
+  end;
 end;
 
 procedure TCustomDBGrid.KeyDown(var Key: Word; Shift: TShiftState);
