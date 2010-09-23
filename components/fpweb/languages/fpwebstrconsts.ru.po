@@ -279,7 +279,7 @@ msgstr "Вставить изображение"
 #: fpwebstrconsts.smihtmlinsertinput
 msgctxt "fpwebstrconsts.smihtmlinsertinput"
 msgid "Insert HTML Input tag"
-msgstr "Вставить тег ввода HTML"
+msgstr "Вставить тег HTML INPUT"
 
 #: fpwebstrconsts.smihtmlinsertinputreset
 msgid "Insert \"Reset\" button"
@@ -305,11 +305,11 @@ msgstr "Вставить неразрывный пробел"
 
 #: fpwebstrconsts.smihtmlinsertpre
 msgid "Insert Pre"
-msgstr "Вставить тег Pre"
+msgstr "Вставить тег PRE"
 
 #: fpwebstrconsts.smihtmlinsertspantext
 msgid "Insert Span Text"
-msgstr "Вставить тег Span"
+msgstr "Вставить тег SPAN"
 
 #: fpwebstrconsts.smihtmlinsertsub
 msgid "Insert Subscript"
