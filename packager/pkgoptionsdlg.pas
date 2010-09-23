@@ -404,7 +404,8 @@ begin
   Notebook.Page[4].Caption:=lisPckOptsProvides;
   Notebook.Page[5].Caption:=dlgPOI18n;
 
-  ButtonPanel1.OKButton.OnClick:=@OkButtonClick;
+  ButtonPanel1.OKButton.Caption:=lisOk;
+  ButtonPanel1.CancelButton.Caption:=dlgCancel;
 
   SetupUsagePage;
   SetupIDEPage;
