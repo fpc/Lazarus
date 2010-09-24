@@ -2034,6 +2034,7 @@ components/synedit/docs/xml/synedithighlighter.xml svneol=native#text/xml
 components/synedit/docs/xml/synedittextbase.xml svneol=native#text/xml
 components/synedit/docs/xml/synedittextbuffer.xml svneol=native#text/xml
 components/synedit/languages/README.txt svneol=native#text/plain
+components/synedit/languages/syndesign.po svneol=native#text/plain
 components/synedit/languages/synedit.ca.po svneol=native#text/plain
 components/synedit/languages/synedit.cs.po svneol=native#text/plain
 components/synedit/languages/synedit.de.po svneol=native#text/plain

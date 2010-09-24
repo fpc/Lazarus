@@ -9,7 +9,7 @@ uses
 
 resourcestring
   syndsLineNumbers = 'Line Numbers';
-  syndsCodeFolding = 'Code fFolding';
+  syndsCodeFolding = 'Code Folding';
   syndsChangeMarker = 'Change Marker';
   syndsBookmarks = 'Bookmarks';
   syndsSeparator = 'Separator';

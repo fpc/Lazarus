@@ -56,6 +56,10 @@ tools\updatepofiles %CodeTools_RST% components\codetools\languages\codetoolsstrc
 @set SynEdit_RST=components\synedit\units\%ArchOS%\SynEditStrConst.rst
 tools\updatepofiles %SynEdit_RST% components\synedit\languages\synedit.po
 
+@REM SynDesign
+@set SynDesign_RST=components\synedit\units\%ArchOS%\syndesignstringconstants.rst
+tools\updatepofiles %SynDesign_RST% components\synedit\languages\syndesign.po
+
 @REM SynMacroRecorder
 @set SynMacroRec_RST=components\synedit\units\%ArchOS%\synmacrorecorder.rst
 tools\updatepofiles %SynMacroRec_RST% components\synedit\languages\synmacrorecorder.po
@@ -67,10 +71,6 @@ tools\updatepofiles %SynUniHighLighterShellScript_RST% components\synedit\langua
 @REM LCL
 @set LCL_RST=lcl\units\%ArchOS%\lclstrconsts.rst
 tools\updatepofiles %LCL_RST% lcl\languages\lclstrconsts.po
-
-@REM CGI
-@set CGI_RST=components\cgi\lib\%ArchOSWS%\cgimodules.rst
-tools\updatepofiles %CGI_RST% components\cgi\languages\cgimodules.po
 
 @REM LazReport
 @set LazReport_RST=components\lazreport\source\lib\%ArchOS%\lr_const.rst
