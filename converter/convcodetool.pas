@@ -137,7 +137,7 @@ begin
       // these changes can be applied together without rescan
       if not AddModeDelphiDirective then exit;
       if not RenameResourceDirectives then exit;
-      if fSettings.EnableReplaceFuncs then
+      if fSettings.FuncReplaceMode=rsEnabled then
         if not ReplaceFuncCalls(aIsConsoleApp) then exit;
       if not fSrcCache.Apply then exit;
     finally
@@ -148,7 +148,7 @@ begin
       if not RemoveUnits then exit;
       if not RenameUnits then exit;
     end;
-    if fSettings.Target=ctLazarusAndDelphi then begin
+    if fSettings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then begin
       // Support Delphi. Add IFDEF blocks for units.
       if not AddDelphiAndLCLSections then exit;
     end
@@ -275,7 +275,7 @@ begin
       ReadNextAtom; // semicolon
       InsertPos:=CurPos.EndPos;
       nl:=fSrcCache.BeautifyCodeOptions.LineEnd;
-      if fSettings.Target=ctLazarusAndDelphi then
+      if fSettings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then
         s:='{$IFDEF FPC}'+nl+'  {$MODE Delphi}'+nl+'{$ENDIF}'
       else
         s:='{$MODE Delphi}';
@@ -318,9 +318,9 @@ begin
 
         // Form file resource rename or lowercase:
         if (LowKey='dfm') or (LowKey='xfm') then begin
-          if fSettings.Target=ctLazarusAndDelphi then begin
+          if fSettings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm] then begin
             // Use the same dfm file. Lowercase existing key.
-            if Settings.SameDFMFile and (Key<>LowKey) then
+            if (fSettings.Target=ctLazarusDelphiSameDfm) and (Key<>LowKey) then
               NewKey:=LowKey;
             // Later IFDEF will be added so that Delphi can still use .dfm.
             fDfmDirectiveStart:=ACleanPos;
@@ -346,8 +346,7 @@ begin
       ACleanPos:=FindCommentEnd(Src, ACleanPos, Scanner.NestedComments);
     until false;
   // if there is already .lfm file, don't add IFDEF for .dfm / .lfm.
-  if (fSettings.Target=ctLazarusAndDelphi) and not Settings.SameDFMFile
-      and (fDfmDirectiveStart<>-1) and not AlreadyIsLfm then
+  if (fSettings.Target=ctLazarusDelphi) and (fDfmDirectiveStart<>-1) and not AlreadyIsLfm then
   begin
     // Add IFDEF for .lfm and .dfm allowing Delphi to use .dfm.
     nl:=fSrcCache.BeautifyCodeOptions.LineEnd;

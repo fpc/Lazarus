@@ -521,7 +521,7 @@ begin
       Result:=LazarusIDE.DoCloseEditorFile(DfmFilename,[cfSaveFirst]);
       if Result<>mrOk then exit;
     end;
-    if fSettings.SameDFMFile then
+    if fSettings.Target=ctLazarusDelphiSameDfm then
       LfmFilename:=DfmFilename
     else begin
       // Create a form file name based on the unit file name.
@@ -533,7 +533,7 @@ begin
             DeleteFileUTF8(LfmFilename); // .lfm is older than .dfm -> remove .lfm
         if not FileExistsUTF8(LfmFilename) then begin
           // TODO: update project
-          if fSettings.Target=ctLazarusAndDelphi then
+          if fSettings.Target=ctLazarusDelphi then
             Result:=CopyFileWithErrorDialogs(DfmFilename,LfmFilename,[mbAbort])
           else
             Result:=fSettings.RenameFile(DfmFilename,LfmFilename);
@@ -546,25 +546,25 @@ begin
       Result:=ConvertDfmToLfm(LfmFilename);
       if Result<>mrOk then exit;
       // Read form file code in.
-      if not fSettings.SameDFMFile then begin
+      if fSettings.Target<>ctLazarusDelphiSameDfm then begin
         Result:=LoadCodeBuffer(fLFMBuffer,LfmFilename,
                                [lbfCheckIfText,lbfUpdateFromDisk],true);
         if Result<>mrOk then exit;
       end;
     end;
-
     // Check LCL path for single files. They are correct when converting projects.
     if not Assigned(fOwnerConverter) then begin
       Result:=CheckFilenameForLCLPaths(fLazUnitFilename);
       if Result<>mrOk then exit;
     end;
-
     // Fix include file names.
     Result:=FixIncludeFiles;
     if Result<>mrOk then exit;
     // Fix or comment missing units, show error messages.
-    Result:=FixMissingUnits;
-    if Result<>mrOk then exit;
+    if fSettings.UnitsReplaceMode<>rlDisabled then begin
+      Result:=FixMissingUnits;
+      if Result<>mrOk then exit;
+    end;
     // Check from the project if this is a console application.
     ConsApp:=Assigned(fOwnerConverter) and fOwnerConverter.fIsConsoleApp;
     // Do the actual code conversion.
@@ -660,7 +660,7 @@ begin
   repeat
     TryAgain:=False;
     Result:=AskMissingUnits(fMissingUnits, ExtractFileName(fLazUnitFilename),
-                            fSettings.Target=ctLazarusAndDelphi);
+                    fSettings.Target in [ctLazarusDelphi, ctLazarusDelphiSameDfm]);
     case Result of
       // mrOK means: comment out.
       mrOK: begin
@@ -784,7 +784,7 @@ begin
   Result:=mrOk;
   UnitUpdater:=TStringMapUpdater.Create(fSettings.ReplaceUnits);
   ConvTool:=TConvDelphiCodeTool.Create(fPascalBuffer);
-  if not fSettings.AutoReplaceUnits then
+  if fSettings.UnitsReplaceMode=rlInteractive then
     MapToEdit:=TStringToStringTree.Create(false);
   UnitNames:=nil;     // Will be created in ConvTool.UsesSectionsToUnitnames.
   fMissingUnits:=nil; // Will be created in CodeToolBoss.FindMissingUnits.
@@ -803,13 +803,13 @@ begin
         if (LowerCase(UnitN)='windows') and
             Assigned(fOwnerConverter) and fOwnerConverter.fIsConsoleApp then
           s:='';
-        if fSettings.AutoReplaceUnits then
-          RenameOrRemoveUnit(UnitN, s)         // Automatic rename / remove.
+        if fSettings.UnitsReplaceMode=rlInteractive then
+          MapToEdit[UnitN]:=s                  // Add for interactive editing.
         else
-          MapToEdit[UnitN]:=s;                 // Add for interactive editing.
+          RenameOrRemoveUnit(UnitN, s);        // Automatic rename / remove.
       end;
     end;
-    if not fSettings.AutoReplaceUnits then begin
+    if (fSettings.UnitsReplaceMode=rlInteractive) and (MapToEdit.Tree.Count>0) then begin
       // Edit, then remove or replace units.
       Result:=EditMap(MapToEdit, 'Units to replace in '+ExtractFileName(fOrigUnitFilename));
       if Result<>mrOK then exit;
@@ -846,7 +846,7 @@ begin
       IDEMessagesWindow.AddMsg(MissingUnitToMsg(fMissingUnits[i]),'',-1);
     Application.ProcessMessages;
   finally
-    if not fSettings.AutoReplaceUnits then
+    if fSettings.UnitsReplaceMode=rlInteractive then
       MapToEdit.Free;
     fMissingUnits.Free;
     UnitNames.Free;

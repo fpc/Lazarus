@@ -63,7 +63,7 @@ function FromMapToGrid(AMap: TStringToStringTree; AGrid: TStringGrid): boolean;
 function FromGridToMap(AMap: TStringToStringTree; AGrid: TStringGrid;
                        AllowEmptyValues: boolean = true): boolean;
 function EditMap(AMap: TStringToStringTree; AFormTitle: string): TModalResult;
-function EditVisualOffsets(AOffs: TVisualOffsets; aTitle: string): TModalResult;
+function EditCoordOffsets(AOffs: TVisualOffsets; aTitle: string): TModalResult;
 
 implementation
 
@@ -179,7 +179,7 @@ begin
   end;
 end;
 
-function EditVisualOffsets(AOffs: TVisualOffsets; aTitle: string): TModalResult;
+function EditCoordOffsets(AOffs: TVisualOffsets; aTitle: string): TModalResult;
 var
   xForm: TReplaceForm;
 begin

@@ -340,8 +340,8 @@ begin
   // Add offset to top coordinates.
   for i := aSrcOffsets.Count-1 downto 0 do begin
     TopOffs:=TSrcPropOffset(aSrcOffsets[i]);
-    if fSettings.VisualOffsets.Find(TopOffs.ParentType, ind) then begin
-      VisOffs:=fSettings.VisualOffsets[ind];
+    if fSettings.CoordOffsets.Find(TopOffs.ParentType, ind) then begin
+      VisOffs:=fSettings.CoordOffsets[ind];
       Len:=0;
       while fLFMBuffer.Source[TopOffs.StartPos+Len] in ['-', '0'..'9'] do
         Inc(Len);
@@ -383,7 +383,7 @@ begin
           if NewIdent<>'' then
             fHasMissingObjectTypes:=true;
         end
-        else begin
+        else if fSettings.UnknownPropsMode<>rlDisabled then begin
           OldIdent:=CurError.Node.GetIdentifier;
           PropUpdater.AddUnique(OldIdent);           // Add each property only once.
           fHasMissingProperties:=true;
@@ -416,7 +416,7 @@ begin
     fPropReplaceGrid:=FixLFMDialog.PropReplaceGrid;
     fTypeReplaceGrid:=FixLFMDialog.TypeReplaceGrid;
     LoadLFM;
-    if (fSettings.AutoRemoveProperties or not fHasMissingProperties)
+    if ((fSettings.UnknownPropsMode=rlAutomatic) or not fHasMissingProperties)
     and not fHasMissingObjectTypes then
       Result:=ReplaceAndRemoveAll  // Can return mrRetry.
     else begin
@@ -460,10 +460,10 @@ begin
     until (Result in [mrOK, mrCancel]) or (LoopCount=10);
     // Show remaining errors to user.
     WriteLFMErrors;
-    if (Result=mrOK) and fSettings.EnableVisualOffs then begin
+    if (Result=mrOK) and (fSettings.CoordOffsMode=rsEnabled) then begin
       // Fix top offsets of some components in visual containers
       if ConvTool.CheckTopOffsets(fLFMBuffer, fLFMTree,
-                                  fSettings.VisualOffsets, ValueTreeNodes) then
+                                  fSettings.CoordOffsets, ValueTreeNodes) then
         Result:=ReplaceTopOffsets(ValueTreeNodes)
       else
         Result:=mrCancel;

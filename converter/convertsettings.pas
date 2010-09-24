@@ -32,12 +32,14 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, IDEProcs,
   StdCtrls, EditBtn, Buttons, ExtCtrls, DialogProcs, ButtonPanel,
-  LazarusIDEStrConsts, CodeToolsStructs, AVL_Tree, BaseIDEIntf, LazConfigStorage,
-  ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
+  LazarusIDEStrConsts, CodeToolsStructs, DividerBevel, AVL_Tree, BaseIDEIntf,
+  LazConfigStorage, ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
 
 type
 
-  TConvertTarget = (ctLazarus, ctLazarusWin, ctLazarusAndDelphi);
+  TConvertTarget = (ctLazarus, ctLazarusDelphi, ctLazarusWin, ctLazarusDelphiSameDfm);
+  TReplaceModeLong = (rlDisabled, rlInteractive, rlAutomatic);
+  TReplaceModeShort = (rsDisabled, rsEnabled);
 
   TConvertSettingsForm = class;
 
@@ -55,13 +57,13 @@ type
     fSettingsForm: TConvertSettingsForm;
     // Actual user settings.
     fBackupFiles: boolean;
-    fTarget: TConvertTarget;
     fKeepFileOpen: boolean;
-    fSameDFMFile: boolean;
-    fAutoRemoveProperties: boolean;
-    fAutoReplaceUnits: boolean;
-    fEnableReplaceFuncs: boolean;
-    fEnableVisualOffs: boolean;
+    fTarget: TConvertTarget;
+    // Modes for replacements:
+    fUnitsReplaceMode: TReplaceModeLong;
+    fUnknownPropsMode: TReplaceModeLong;
+    fFuncReplaceMode: TReplaceModeShort;
+    fCoordOffsMode: TReplaceModeShort;
     // Delphi units mapped to Lazarus units, will be replaced or removed.
     fReplaceUnits: TStringToStringTree;
     // Delphi types mapped to Lazarus types, will be replaced.
@@ -69,7 +71,7 @@ type
     // Delphi global function names mapped to FCL/LCL functions.
     fReplaceFuncs: TFuncsAndCategories;
     // Coordinate offsets of components in a visual container.
-    fVisualOffsets: TVisualOffsets;
+    fCoordOffsets: TVisualOffsets;
     // Getter / setter:
     function GetBackupPath: String;
     procedure SetEnabled(const AValue: Boolean);
@@ -101,45 +103,44 @@ type
     property Enabled: Boolean read fEnabled write SetEnabled;
 
     property BackupFiles: boolean read fBackupFiles;
-    property Target: TConvertTarget read fTarget;
     property KeepFileOpen: boolean read fKeepFileOpen;
-    property SameDFMFile: boolean read fSameDFMFile;
-    property AutoRemoveProperties: boolean read fAutoRemoveProperties;
-    property AutoReplaceUnits: boolean read fAutoReplaceUnits;
-    property EnableReplaceFuncs: boolean read fEnableReplaceFuncs;
-    property EnableVisualOffs: boolean read fEnableVisualOffs;
+    property Target: TConvertTarget read fTarget;
+    property UnitsReplaceMode: TReplaceModeLong read fUnitsReplaceMode;
+    property UnknownPropsMode: TReplaceModeLong read fUnknownPropsMode;
+    property FuncReplaceMode: TReplaceModeShort read fFuncReplaceMode;
+    property CoordOffsMode:   TReplaceModeShort read fCoordOffsMode;
     property ReplaceUnits: TStringToStringTree read fReplaceUnits;
     property ReplaceTypes: TStringToStringTree read fReplaceTypes;
     property ReplaceFuncs: TFuncsAndCategories read fReplaceFuncs;
-    property VisualOffsets: TVisualOffsets read fVisualOffsets;
+    property CoordOffsets: TVisualOffsets read fCoordOffsets;
   end;
 
 
   { TConvertSettingsForm }
 
   TConvertSettingsForm = class(TForm)
-    PropRemoveAutoCheckBox: TCheckBox;
+    CoordOffsRadioGroup: TRadioGroup;
+    UnitReplaceRadioGroup: TRadioGroup;
+    UnknownPropsRadioGroup: TRadioGroup;
+    UnknownPropsDivider: TDividerBevel;
+    UnitReplaceDivider: TDividerBevel;
+    TypeReplaceDivider: TDividerBevel;
+    FuncReplaceDivider: TDividerBevel;
+    CoordOffsDivider: TDividerBevel;
+    FuncReplaceButton: TBitBtn;
     KeepFileOpenCheckBox: TCheckBox;
-    UnitReplaceAutoCheckBox: TCheckBox;
+    TargetRadioGroup: TRadioGroup;
     BackupCheckBox: TCheckBox;
     ButtonPanel1: TButtonPanel;
-    FuncReplaceEnableCheckBox: TCheckBox;
-    VisualOffsEnableCheckBox: TCheckBox;
-    Label1: TLabel;
-    TypeReplInfoLabel: TLabel;
-    VisualOffsButton: TBitBtn;
     TypeReplaceButton: TBitBtn;
-    SameDFMCheckBox: TCheckBox;
-    ProjectPathEdit: TLabeledEdit;
-    TargetRadioGroup: TRadioGroup;
-    FuncReplaceButton: TBitBtn;
+    TypeReplaceInfoLabel: TLabel;
     UnitReplaceButton: TBitBtn;
-    SettingsGroupBox: TGroupBox;
-    MissingStuffGroupBox: TGroupBox;
-    procedure SameDFMCheckBoxChange(Sender: TObject);
+    ProjectPathEdit: TLabeledEdit;
+    CoordOffsButton: TBitBtn;
+    FuncReplaceRadioGroup: TRadioGroup;
     procedure TypeReplaceButtonClick(Sender: TObject);
     procedure FuncReplaceButtonClick(Sender: TObject);
-    procedure VisualOffsButtonClick(Sender: TObject);
+    procedure CoordOffsButtonClick(Sender: TObject);
     procedure UnitReplaceButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -350,21 +351,20 @@ begin
   fReplaceUnits:=TStringToStringTree.Create(false);
   fReplaceTypes:=TStringToStringTree.Create(false);
   fReplaceFuncs:=TFuncsAndCategories.Create;
-  fVisualOffsets:=TVisualOffsets.Create;
+  fCoordOffsets:=TVisualOffsets.Create;
   // Load settings from ConfigStorage.
   fConfigStorage:=GetIDEConfigStorage('delphiconverter.xml', true);
-  fBackupFiles          :=fConfigStorage.GetValue('BackupFiles', true);
-  fTarget:=TConvertTarget(fConfigStorage.GetValue('ConvertTarget', 0));
-  fKeepFileOpen         :=fConfigStorage.GetValue('KeepFileOpen', false);
-  fSameDFMFile          :=fConfigStorage.GetValue('SameDFMFile', false);
-  fAutoReplaceUnits     :=fConfigStorage.GetValue('AutoReplaceUnits', true);
-  fAutoRemoveProperties :=fConfigStorage.GetValue('AutoRemoveProperties', true);
-  fEnableReplaceFuncs   :=fConfigStorage.GetValue('EnableReplaceFuncs', true);
-  fEnableVisualOffs     :=fConfigStorage.GetValue('EnableVisualOffs', true);
+  fBackupFiles                      :=fConfigStorage.GetValue('BackupFiles', true);
+  fKeepFileOpen                     :=fConfigStorage.GetValue('KeepFileOpen', false);
+  fTarget            :=TConvertTarget(fConfigStorage.GetValue('ConvertTarget', 0));
+  fUnitsReplaceMode:=TReplaceModeLong(fConfigStorage.GetValue('UnitsReplaceMode', 2));
+  fUnknownPropsMode:=TReplaceModeLong(fConfigStorage.GetValue('UnknownPropsMode', 2));
+  fFuncReplaceMode:=TReplaceModeShort(fConfigStorage.GetValue('FuncReplaceMode', 1));
+  fCoordOffsMode  :=TReplaceModeShort(fConfigStorage.GetValue('CoordOffsMode', 1));
   LoadStringToStringTree(fConfigStorage, 'UnitReplacements/', fReplaceUnits);
   LoadStringToStringTree(fConfigStorage, 'TypeReplacements/', fReplaceTypes);
   LoadFuncReplacements(fConfigStorage, 'FuncReplacements/', 'Categories/', fReplaceFuncs);
-  LoadVisualOffsets(fConfigStorage, 'VisualOffsets/', fVisualOffsets);
+  LoadVisualOffsets(fConfigStorage, 'VisualOffsets/', fCoordOffsets);
 
   // Add default values for configuration if ConfigStorage doesn't have them.
 
@@ -408,7 +408,7 @@ begin
   MapReplacement('^TTnt(.+[^L][^X])$','T$1');
 
   // Coordinate offsets for some visual containers.
-  with fVisualOffsets do begin
+  with fCoordOffsets do begin
     AddVisualOffset('TGroupBox' , 10,2);
     AddVisualOffset('TPanel',      2,2);
     AddVisualOffset('RadioGroup', 10,2);
@@ -459,25 +459,24 @@ end;
 destructor TConvertSettings.Destroy;
 begin
   // Save possibly modified settings to ConfigStorage.
-  fConfigStorage.SetDeleteValue('BackupFiles',          fBackupFiles, true);
-  fConfigStorage.SetDeleteValue('ConvertTarget',        integer(fTarget), 0);
-  fConfigStorage.SetDeleteValue('KeepFileOpen',         fKeepFileOpen, false);
-  fConfigStorage.SetDeleteValue('SameDFMFile',          fSameDFMFile, false);
-  fConfigStorage.SetDeleteValue('AutoReplaceUnits',     fAutoReplaceUnits, true);
-  fConfigStorage.SetDeleteValue('AutoRemoveProperties', fAutoRemoveProperties, true);
-  fConfigStorage.SetDeleteValue('EnableReplaceFuncs',   fEnableReplaceFuncs, true);
-  fConfigStorage.SetDeleteValue('EnableVisualOffs',     fEnableVisualOffs, true);
+  fConfigStorage.SetDeleteValue('BackupFiles',      fBackupFiles, true);
+  fConfigStorage.SetDeleteValue('KeepFileOpen',     fKeepFileOpen, false);
+  fConfigStorage.SetDeleteValue('ConvertTarget',    integer(fTarget), 0);
+  fConfigStorage.SetDeleteValue('UnitsReplaceMode', integer(fUnitsReplaceMode), 2);
+  fConfigStorage.SetDeleteValue('UnknownPropsMode', integer(fUnknownPropsMode), 2);
+  fConfigStorage.SetDeleteValue('FuncReplaceMode',  integer(fFuncReplaceMode), 1);
+  fConfigStorage.SetDeleteValue('CoordOffsMode',    integer(fCoordOffsMode), 1);
   SaveStringToStringTree(fConfigStorage, 'UnitReplacements/', fReplaceUnits);
   SaveStringToStringTree(fConfigStorage, 'TypeReplacements/', fReplaceTypes);
   SaveFuncReplacements(fConfigStorage, 'FuncReplacements/', 'Categories/', fReplaceFuncs);
-  SaveVisualOffsets(fConfigStorage, 'VisualOffsets/', fVisualOffsets);
+  SaveVisualOffsets(fConfigStorage, 'VisualOffsets/', fCoordOffsets);
   // Free stuff
   fConfigStorage.Free;
   fReplaceFuncs.Clear;
   fReplaceFuncs.Free;
   fReplaceTypes.Free;
   fReplaceUnits.Free;
-  fVisualOffsets.Free;
+  fCoordOffsets.Free;
   inherited Destroy;
 end;
 
@@ -489,26 +488,24 @@ begin
       Caption:=fTitle;
       ProjectPathEdit.Text:=fMainPath;
       // Settings --> UI. Loaded from ConfigSettings earlier.
-      BackupCheckBox.Checked           :=fBackupFiles;
-      TargetRadioGroup.ItemIndex       :=integer(fTarget);
-      KeepFileOpenCheckBox.Checked     :=fKeepFileOpen;
-      SameDFMCheckBox.Checked          :=fSameDFMFile;
-      PropRemoveAutoCheckBox.Checked   :=fAutoRemoveProperties;
-      UnitReplaceAutoCheckBox.Checked  :=fAutoReplaceUnits;
-      FuncReplaceEnableCheckBox.Checked:=fEnableReplaceFuncs;
-      VisualOffsEnableCheckBox.Checked :=fEnableVisualOffs;
+      BackupCheckBox.Checked          :=fBackupFiles;
+      KeepFileOpenCheckBox.Checked    :=fKeepFileOpen;
+      TargetRadioGroup.ItemIndex      :=integer(fTarget);
+      UnitReplaceRadioGroup.ItemIndex :=integer(fUnitsReplaceMode);
+      UnknownPropsRadioGroup.ItemIndex:=integer(fUnknownPropsMode);
+      FuncReplaceRadioGroup.ItemIndex :=integer(fFuncReplaceMode);
+      CoordOffsRadioGroup.ItemIndex   :=integer(fCoordOffsMode);
       TargetRadioGroupClick(TargetRadioGroup);
       Result:=ShowModal;         // Let the user change settings in a form.
       if Result=mrOK then begin
         // UI --> Settings. Will be saved to ConfigSettings later.
-        fBackupFiles         :=BackupCheckBox.Checked;
-        fTarget              :=TConvertTarget(TargetRadioGroup.ItemIndex);
-        fKeepFileOpen        :=KeepFileOpenCheckBox.Checked;
-        fSameDFMFile         :=SameDFMCheckBox.Checked;
-        fAutoRemoveProperties:=PropRemoveAutoCheckBox.Checked;
-        fAutoReplaceUnits    :=UnitReplaceAutoCheckBox.Checked;
-        fEnableReplaceFuncs  :=FuncReplaceEnableCheckBox.Checked;
-        fEnableVisualOffs    :=VisualOffsEnableCheckBox.Checked;
+        fBackupFiles     :=BackupCheckBox.Checked;
+        fKeepFileOpen    :=KeepFileOpenCheckBox.Checked;
+        fTarget          :=TConvertTarget(TargetRadioGroup.ItemIndex);
+        fUnitsReplaceMode:=TReplaceModeLong(UnitReplaceRadioGroup.ItemIndex);
+        fUnknownPropsMode:=TReplaceModeLong(UnknownPropsRadioGroup.ItemIndex);
+        fFuncReplaceMode :=TReplaceModeShort(FuncReplaceRadioGroup.ItemIndex);
+        fCoordOffsMode   :=TReplaceModeShort(CoordOffsRadioGroup.ItemIndex);
       end;
     end;
   finally
@@ -633,43 +630,57 @@ begin
   BackupCheckBox.Caption:=lisBackupChangedFiles;
   BackupCheckBox.Hint:=lisBackupHint;
 
-  ButtonPanel1.OKButton.Caption:=lisStartConversion;
-  ButtonPanel1.HelpButton.Caption:=lisMenuHelp;
-  ButtonPanel1.CancelButton.Caption:=dlgCancel;
-
   KeepFileOpenCheckBox.Caption:=lisKeepFileOpen;
   KeepFileOpenCheckBox.Hint:=lisKeepFileOpenHint;
 
-  SameDFMCheckBox.Caption:=lisConvUseSameDFM;
-  SameDFMCheckBox.Hint:=lisConvUseSameDFMHint;
-
-  MissingStuffGroupBox.Caption:= lisReplacements; //lisConvUnitsTypesProp;
-  PropRemoveAutoCheckBox.Caption:=lisConvAutoRemove;
-  PropRemoveAutoCheckBox.Hint:=lisConvAutoHint;
-
-  UnitReplaceButton.Caption:=lisConvUnitReplacements;
-  UnitReplaceButton.Hint:=lisConvUnitReplHint;
-  UnitReplaceAutoCheckBox.Caption:=lisConvAutoReplace; // lisMenuReplace
-  UnitReplaceAutoCheckBox.Hint:=lisConvAutoHint;
-
-  TypeReplaceButton.Caption:=lisConvTypeReplacements;
-  TypeReplaceButton.Hint:=lisConvTypeReplHint;
-  TypeReplInfoLabel.Caption:=lisInteractive;
-
-  FuncReplaceButton.Caption:=lisConvFuncReplacements;
-  FuncReplaceButton.Hint:=lisConvFuncReplHint;
-  FuncReplaceEnableCheckBox.Caption:=lisEnable;
-
-  VisualOffsButton.Caption:=lisConvCoordOffs;
-  VisualOffsButton.Hint:=lisConvCoordHint;
-  VisualOffsEnableCheckBox.Caption:=lisEnable;
-
   TargetRadioGroup.Items.Clear;
-  TargetRadioGroup.Items.Append(lisConvertTarget1);
-  TargetRadioGroup.Items.Append(lisConvertTarget2);
-  TargetRadioGroup.Items.Append(lisConvertTarget3);
+  TargetRadioGroup.Items.Add(lisConvertTarget1);
+  TargetRadioGroup.Items.Add(lisConvertTarget2);
+  TargetRadioGroup.Items.Add(lisConvertTarget3);
+  TargetRadioGroup.Items.Add(lisConvertTarget4);
   TargetRadioGroup.ItemIndex:=0;
   TargetRadioGroup.Hint:=lisConvertTargetHint;
+
+  UnitReplaceDivider.Caption:=lisConvUnitReplacements;
+  UnitReplaceButton.Caption:=lisCodeToolsDefsEdit;    // Recycled string.
+  UnitReplaceDivider.Hint:=lisConvUnitReplHint;
+  UnitReplaceButton.Hint:=lisConvUnitReplHint;
+  UnitReplaceRadioGroup.Items.Clear;
+  UnitReplaceRadioGroup.Items.Add(lisDisabled);    // 'Disabled'
+  UnitReplaceRadioGroup.Items.Add(lisInteractive); // 'Interactive'
+  UnitReplaceRadioGroup.Items.Add(lisAutomatic);   // 'Automatic'
+
+  UnknownPropsDivider.Caption:=lisConvUnknownProps;
+  UnknownPropsRadioGroup.Items.Clear;
+  UnknownPropsRadioGroup.Items.Add(lisDisabled);
+  UnknownPropsRadioGroup.Items.Add(lisInteractive);
+  UnknownPropsRadioGroup.Items.Add(lisAutomatic);
+
+  TypeReplaceDivider.Caption:=lisConvTypeReplacements;
+  TypeReplaceButton.Caption:=lisCodeToolsDefsEdit;
+  TypeReplaceDivider.Hint:=lisConvTypeReplHint;
+  TypeReplaceButton.Hint:=lisConvTypeReplHint;
+  TypeReplaceInfoLabel.Caption:=lisInteractive;
+
+  FuncReplaceDivider.Caption:=lisConvFuncReplacements;
+  FuncReplaceButton.Caption:=lisCodeToolsDefsEdit;
+  FuncReplaceDivider.Hint:=lisConvFuncReplHint;
+  FuncReplaceButton.Hint:=lisConvFuncReplHint;
+  FuncReplaceRadioGroup.Items.Clear;
+  FuncReplaceRadioGroup.Items.Add(lisDisabled);    // 'Disabled'
+  FuncReplaceRadioGroup.Items.Add(lisEnabled);     // 'Enabled'
+
+  CoordOffsDivider.Caption:=lisConvCoordOffs;
+  CoordOffsButton.Caption:=lisCodeToolsDefsEdit;
+  CoordOffsDivider.Hint:=lisConvCoordHint;
+  CoordOffsButton.Hint:=lisConvCoordHint;
+  CoordOffsRadioGroup.Items.Clear;
+  CoordOffsRadioGroup.Items.Add(lisDisabled);
+  CoordOffsRadioGroup.Items.Add(lisEnabled);
+
+  ButtonPanel1.OKButton.Caption:=lisStartConversion;
+  ButtonPanel1.HelpButton.Caption:=lisMenuHelp;
+  ButtonPanel1.CancelButton.Caption:=dlgCancel;
 end;
 
 procedure TConvertSettingsForm.FormDestroy(Sender: TObject);
@@ -683,21 +694,14 @@ var
   Trg: TConvertTarget;
 begin
   Trg:=TConvertTarget((Sender as TRadioGroup).ItemIndex);
-  // Same DFM form file can be used only with "Lazarus and Delphi) target
-  if Trg<>ctLazarusAndDelphi then
-    SameDFMCheckBox.Checked:=false;
-  SameDFMCheckBox.Enabled:=Trg=ctLazarusAndDelphi;
-  //Function names are not replaced for Windows only target.
+  // Function names are not replaced for Windows only target.
   if Trg=ctLazarusWin then
-    FuncReplaceEnableCheckBox.Checked:=false;
-  FuncReplaceEnableCheckBox.Enabled:=Trg<>ctLazarusWin;
-end;
-
-procedure TConvertSettingsForm.SameDFMCheckBoxChange(Sender: TObject);
-begin
-  if (Sender as TCheckBox).Checked then
-    VisualOffsEnableCheckBox.Checked:=False;
-  VisualOffsEnableCheckBox.Enabled:=not (Sender as TCheckBox).Checked;
+    FuncReplaceRadioGroup.ItemIndex:=integer(rsDisabled);
+  FuncReplaceRadioGroup.Enabled:=Trg<>ctLazarusWin;
+  // Coordinates are not adjusted when the same DFM form file is used.
+  if Trg=ctLazarusDelphiSameDfm then
+    CoordOffsRadioGroup.ItemIndex:=integer(rsDisabled);
+  CoordOffsRadioGroup.Enabled:=Trg<>ctLazarusDelphiSameDfm;
 end;
 
 // Edit replacements in grids
@@ -717,9 +721,9 @@ begin
   EditFuncReplacements(fSettings.ReplaceFuncs, lisConvFuncsToReplace);
 end;
 
-procedure TConvertSettingsForm.VisualOffsButtonClick(Sender: TObject);
+procedure TConvertSettingsForm.CoordOffsButtonClick(Sender: TObject);
 begin
-  EditVisualOffsets(fSettings.VisualOffsets, lisConvCoordOffs);
+  EditCoordOffsets(fSettings.CoordOffsets, lisConvCoordOffs);
 end;
 
 
