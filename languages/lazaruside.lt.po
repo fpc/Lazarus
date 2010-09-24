@@ -3704,6 +3704,10 @@ msgstr "Tęsti automatiškai"
 msgid "Auto continue after:"
 msgstr "Automatiškai tęsti po:"
 
+#: lazarusidestrconsts.lisautomatic
+msgid "Automatic"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr "„.lfm“ failus automatiškai konvertuoti į „.lrs“ failus"
@@ -5420,19 +5424,6 @@ msgstr "Talkininkai"
 msgid "Control needs parent"
 msgstr "Valdikliui reikia tėvo"
 
-#: lazarusidestrconsts.lisconvautohint
-msgctxt "lazarusidestrconsts.lisconvautohint"
-msgid "If unchecked, there will be interactive dialogs for editing / accepting changes"
-msgstr ""
-
-#: lazarusidestrconsts.lisconvautoremove
-msgid "Remove automatically"
-msgstr ""
-
-#: lazarusidestrconsts.lisconvautoreplace
-msgid "Replace automatically"
-msgstr ""
-
 #: lazarusidestrconsts.lisconvcoordhint
 msgid "An offset is added to Top coordinate of controls inside visual containers"
 msgstr ""
@@ -5471,21 +5462,26 @@ msgstr "Konvertuoti projektą ar paketą"
 
 #: lazarusidestrconsts.lisconverttarget1
 #, fuzzy
-#| msgid "Lazarus/LCL"
-msgid "Lazarus / LCL"
+#| msgid "Lazarus / LCL"
+msgctxt "lazarusidestrconsts.lisconverttarget1"
+msgid "Lazarus"
 msgstr "Lazarus/LCL"
 
 #: lazarusidestrconsts.lisconverttarget2
 #, fuzzy
-#| msgid "Lazarus/LCL for Windows only"
-msgid "Lazarus / LCL for Windows only"
+#| msgid "Lazarus / LCL for Windows only"
+msgid "Lazarus and Delphi"
 msgstr "Lazarus/LCL skirtas tik Windows"
 
 #: lazarusidestrconsts.lisconverttarget3
 #, fuzzy
-#| msgid "Both Lazarus/LCL and Delphi"
-msgid "Both Lazarus / LCL and Delphi"
+#| msgid "Both Lazarus / LCL and Delphi"
+msgid "Lazarus for Windows only"
 msgstr "Abu, Lazarus/LCL ir Delphi"
+
+#: lazarusidestrconsts.lisconverttarget4
+msgid "Lazarus and Delphi with same DFM file"
+msgstr ""
 
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
@@ -5544,12 +5540,8 @@ msgstr ""
 msgid "Units to replace"
 msgstr "Keistini moduliai"
 
-#: lazarusidestrconsts.lisconvusesamedfm
-msgid "Lazarus uses the same DFM form file as Delphi"
-msgstr ""
-
-#: lazarusidestrconsts.lisconvusesamedfmhint
-msgid "Separate form files allow different properties"
+#: lazarusidestrconsts.lisconvunknownprops
+msgid "Unknown properties"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyall
@@ -6449,10 +6441,6 @@ msgstr "Ieškoti šiose klasės sekcijose:"
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
 msgstr "Tuščia"
-
-#: lazarusidestrconsts.lisenable
-msgid "Enable"
-msgstr ""
 
 #: lazarusidestrconsts.lisenableall
 msgid "&Enable All"
@@ -7742,7 +7730,7 @@ msgid "keep"
 msgstr "palikti"
 
 #: lazarusidestrconsts.liskeepfileopen
-msgid "Keep converted file open in editor"
+msgid "Keep converted files open in editor"
 msgstr ""
 
 #: lazarusidestrconsts.liskeepfileopenhint
@@ -11107,6 +11095,7 @@ msgid "Invalid Package Name"
 msgstr "Klaidingas paketo pavadinimas"
 
 #: lazarusidestrconsts.lispkgmanglazarus
+msgctxt "lazarusidestrconsts.lispkgmanglazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 

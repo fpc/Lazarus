@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-09-22 19:14+0300\n"
+"PO-Revision-Date: 2010-09-25 01:19+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3719,6 +3719,10 @@ msgstr "Продолжать автоматически"
 msgid "Auto continue after:"
 msgstr "Продолжить после:"
 
+#: lazarusidestrconsts.lisautomatic
+msgid "Automatic"
+msgstr "Автоматически"
+
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr "Автоматически преобразовывать файлы LFM в файлы LRS"
@@ -5430,19 +5434,6 @@ msgstr "Участники"
 msgid "Control needs parent"
 msgstr "Элемент управления требует \"родителя\""
 
-#: lazarusidestrconsts.lisconvautohint
-msgctxt "lazarusidestrconsts.lisconvautohint"
-msgid "If unchecked, there will be interactive dialogs for editing / accepting changes"
-msgstr "Если не выбрано, будут выводиться диалоги редактирования/подтверждения изменений"
-
-#: lazarusidestrconsts.lisconvautoremove
-msgid "Remove automatically"
-msgstr "Удалять автоматически"
-
-#: lazarusidestrconsts.lisconvautoreplace
-msgid "Replace automatically"
-msgstr "Заменять автоматически"
-
 #: lazarusidestrconsts.lisconvcoordhint
 msgid "An offset is added to Top coordinate of controls inside visual containers"
 msgstr "Добавление смещения к координатам виджетов внутри визуальных контейнеров"
@@ -5480,19 +5471,24 @@ msgid "Convert project or package"
 msgstr "Преобразование проекта либо пакета"
 
 #: lazarusidestrconsts.lisconverttarget1
-#| msgid "Lazarus/LCL"
-msgid "Lazarus / LCL"
-msgstr "Lazarus/LCL"
+#| msgid "Lazarus / LCL"
+msgctxt "lazarusidestrconsts.lisconverttarget1"
+msgid "Lazarus"
+msgstr "Lazarus"
 
 #: lazarusidestrconsts.lisconverttarget2
-#| msgid "Lazarus/LCL for Windows only"
-msgid "Lazarus / LCL for Windows only"
-msgstr "Lazarus/LCL только для Windows"
+#| msgid "Lazarus / LCL for Windows only"
+msgid "Lazarus and Delphi"
+msgstr "Lazarus и Delphi"
 
 #: lazarusidestrconsts.lisconverttarget3
-#| msgid "Both Lazarus/LCL and Delphi"
-msgid "Both Lazarus / LCL and Delphi"
-msgstr "Lazarus/LCL и Delphi"
+#| msgid "Both Lazarus / LCL and Delphi"
+msgid "Lazarus for Windows only"
+msgstr "Только Lazarus для Windows"
+
+#: lazarusidestrconsts.lisconverttarget4
+msgid "Lazarus and Delphi with same DFM file"
+msgstr "Lazarus и Delphi с общим файлом DFM"
 
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
@@ -5551,13 +5547,9 @@ msgstr "Имена модулей в выражении Uses исходного 
 msgid "Units to replace"
 msgstr "Заменяемые модули"
 
-#: lazarusidestrconsts.lisconvusesamedfm
-msgid "Lazarus uses the same DFM form file as Delphi"
-msgstr "Использовать в Lazarus файл DFM совместно с Delphi"
-
-#: lazarusidestrconsts.lisconvusesamedfmhint
-msgid "Separate form files allow different properties"
-msgstr "Раздельные файлы форм позволяют иметь отличающиеся свойства"
+#: lazarusidestrconsts.lisconvunknownprops
+msgid "Unknown properties"
+msgstr "Неизвестные свойства"
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -6456,10 +6448,6 @@ msgstr "Искать в следующих секциях класса"
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
 msgstr "Пусто"
-
-#: lazarusidestrconsts.lisenable
-msgid "Enable"
-msgstr "Включить"
 
 #: lazarusidestrconsts.lisenableall
 msgid "&Enable All"
@@ -7749,8 +7737,9 @@ msgid "keep"
 msgstr "оставить"
 
 #: lazarusidestrconsts.liskeepfileopen
-msgid "Keep converted file open in editor"
-msgstr "Оставлять преобразованный файл открытым в редакторе"
+#| msgid "Keep converted file open in editor"
+msgid "Keep converted files open in editor"
+msgstr "Оставлять преобразованные файлы открытыми в редакторе"
 
 #: lazarusidestrconsts.liskeepfileopenhint
 msgid "All project files will be open in editor after conversion"
@@ -11114,6 +11103,7 @@ msgid "Invalid Package Name"
 msgstr "Неверное имя пакета"
 
 #: lazarusidestrconsts.lispkgmanglazarus
+msgctxt "lazarusidestrconsts.lispkgmanglazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 

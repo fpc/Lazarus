@@ -3710,6 +3710,10 @@ msgstr ""
 msgid "Auto continue after:"
 msgstr ""
 
+#: lazarusidestrconsts.lisautomatic
+msgid "Automatic"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr ""
@@ -5424,19 +5428,6 @@ msgstr "Kontributor"
 msgid "Control needs parent"
 msgstr "Kontrol membutuhkan leluhurnya"
 
-#: lazarusidestrconsts.lisconvautohint
-msgctxt "lazarusidestrconsts.lisconvautohint"
-msgid "If unchecked, there will be interactive dialogs for editing / accepting changes"
-msgstr ""
-
-#: lazarusidestrconsts.lisconvautoremove
-msgid "Remove automatically"
-msgstr ""
-
-#: lazarusidestrconsts.lisconvautoreplace
-msgid "Replace automatically"
-msgstr ""
-
 #: lazarusidestrconsts.lisconvcoordhint
 msgid "An offset is added to Top coordinate of controls inside visual containers"
 msgstr ""
@@ -5474,15 +5465,20 @@ msgid "Convert project or package"
 msgstr ""
 
 #: lazarusidestrconsts.lisconverttarget1
-msgid "Lazarus / LCL"
+msgctxt "lazarusidestrconsts.lisconverttarget1"
+msgid "Lazarus"
 msgstr ""
 
 #: lazarusidestrconsts.lisconverttarget2
-msgid "Lazarus / LCL for Windows only"
+msgid "Lazarus and Delphi"
 msgstr ""
 
 #: lazarusidestrconsts.lisconverttarget3
-msgid "Both Lazarus / LCL and Delphi"
+msgid "Lazarus for Windows only"
+msgstr ""
+
+#: lazarusidestrconsts.lisconverttarget4
+msgid "Lazarus and Delphi with same DFM file"
 msgstr ""
 
 #: lazarusidestrconsts.lisconverttargethint
@@ -5542,12 +5538,8 @@ msgstr ""
 msgid "Units to replace"
 msgstr ""
 
-#: lazarusidestrconsts.lisconvusesamedfm
-msgid "Lazarus uses the same DFM form file as Delphi"
-msgstr ""
-
-#: lazarusidestrconsts.lisconvusesamedfmhint
-msgid "Separate form files allow different properties"
+#: lazarusidestrconsts.lisconvunknownprops
+msgid "Unknown properties"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyall
@@ -6447,10 +6439,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
-msgstr ""
-
-#: lazarusidestrconsts.lisenable
-msgid "Enable"
 msgstr ""
 
 #: lazarusidestrconsts.lisenableall
@@ -7743,7 +7731,7 @@ msgid "keep"
 msgstr ""
 
 #: lazarusidestrconsts.liskeepfileopen
-msgid "Keep converted file open in editor"
+msgid "Keep converted files open in editor"
 msgstr ""
 
 #: lazarusidestrconsts.liskeepfileopenhint
@@ -11119,6 +11107,7 @@ msgid "Invalid Package Name"
 msgstr "Nama Paket Tidak Benar"
 
 #: lazarusidestrconsts.lispkgmanglazarus
+msgctxt "lazarusidestrconsts.lispkgmanglazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 

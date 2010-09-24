@@ -3683,6 +3683,10 @@ msgstr "המשך אוטומטית"
 msgid "Auto continue after:"
 msgstr "המשך אוטומטית אחרי:"
 
+#: lazarusidestrconsts.lisautomatic
+msgid "Automatic"
+msgstr ""
+
 #: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
 msgid "Automatically convert .lfm files to .lrs include files"
 msgstr "המר אוטומטית קבצי lfm. לקבצי lrs. \"כלול\""
@@ -5393,19 +5397,6 @@ msgstr "תורמים"
 msgid "Control needs parent"
 msgstr "הפקד חייב הורה"
 
-#: lazarusidestrconsts.lisconvautohint
-msgctxt "lazarusidestrconsts.lisconvautohint"
-msgid "If unchecked, there will be interactive dialogs for editing / accepting changes"
-msgstr "אם \"לא מסומן וי\" יהיה דיאלוג אינטראקטיבי לעריכה / קבלת השינויים"
-
-#: lazarusidestrconsts.lisconvautoremove
-msgid "Remove automatically"
-msgstr "הסר אוטומטית"
-
-#: lazarusidestrconsts.lisconvautoreplace
-msgid "Replace automatically"
-msgstr "החלף אוטומטית"
-
 #: lazarusidestrconsts.lisconvcoordhint
 msgid "An offset is added to Top coordinate of controls inside visual containers"
 msgstr "התווסף אופסט לקואורדינטה העליונה של פקדים בתוך המיכלים הנראים"
@@ -5443,19 +5434,27 @@ msgid "Convert project or package"
 msgstr "המר פרויקט או חבילה"
 
 #: lazarusidestrconsts.lisconverttarget1
-#| msgid "Lazarus/LCL"
-msgid "Lazarus / LCL"
+#, fuzzy
+#| msgid "Lazarus / LCL"
+msgctxt "lazarusidestrconsts.lisconverttarget1"
+msgid "Lazarus"
 msgstr "לזארוס / LCL"
 
 #: lazarusidestrconsts.lisconverttarget2
-#| msgid "Lazarus/LCL for Windows only"
-msgid "Lazarus / LCL for Windows only"
+#, fuzzy
+#| msgid "Lazarus / LCL for Windows only"
+msgid "Lazarus and Delphi"
 msgstr "לזארוס / LCL עבור חלונות בלבד"
 
 #: lazarusidestrconsts.lisconverttarget3
-#| msgid "Both Lazarus/LCL and Delphi"
-msgid "Both Lazarus / LCL and Delphi"
+#, fuzzy
+#| msgid "Both Lazarus / LCL and Delphi"
+msgid "Lazarus for Windows only"
 msgstr "גם לזארוס / LCL וגם דלפי"
+
+#: lazarusidestrconsts.lisconverttarget4
+msgid "Lazarus and Delphi with same DFM file"
+msgstr ""
 
 #: lazarusidestrconsts.lisconverttargethint
 msgid "Converter adds conditional compilation to support different targets"
@@ -5514,13 +5513,9 @@ msgstr "שמות היחידות בסעיף \"משתמש ב\" של יחידת ה�
 msgid "Units to replace"
 msgstr "יחידות להחלפה"
 
-#: lazarusidestrconsts.lisconvusesamedfm
-msgid "Lazarus uses the same DFM form file as Delphi"
-msgstr "לזארוס משתמש באותו קובץ טופס DFM כמו דלפי"
-
-#: lazarusidestrconsts.lisconvusesamedfmhint
-msgid "Separate form files allow different properties"
-msgstr "קבצי טפסים נפרדים מתירים תכונות נבדלות"
+#: lazarusidestrconsts.lisconvunknownprops
+msgid "Unknown properties"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyall
 msgid "Copy All"
@@ -6420,10 +6415,6 @@ msgstr "חפש בחלקי מחלקה אלו:"
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
 msgstr "ריק"
-
-#: lazarusidestrconsts.lisenable
-msgid "Enable"
-msgstr "אפשר"
 
 #: lazarusidestrconsts.lisenableall
 msgid "&Enable All"
@@ -7711,7 +7702,9 @@ msgid "keep"
 msgstr "שמור "
 
 #: lazarusidestrconsts.liskeepfileopen
-msgid "Keep converted file open in editor"
+#, fuzzy
+#| msgid "Keep converted file open in editor"
+msgid "Keep converted files open in editor"
 msgstr "שמור את הקובץ שהומר פתוח בעורך"
 
 #: lazarusidestrconsts.liskeepfileopenhint
@@ -11070,6 +11063,7 @@ msgid "Invalid Package Name"
 msgstr "שם החבילה לא חוקי"
 
 #: lazarusidestrconsts.lispkgmanglazarus
+msgctxt "lazarusidestrconsts.lispkgmanglazarus"
 msgid "Lazarus"
 msgstr "לזארוס"
 
