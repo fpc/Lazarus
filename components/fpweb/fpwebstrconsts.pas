@@ -35,7 +35,7 @@ resourcestring
   SmiHTMLTextAlignCenter    = 'Text align center';
   SmiHTMLTextAlignJustify   = 'Text align justify';
 
-  SmiHTMLStyle       = 'Style';
+  SmiHTMLStyle       = 'Styles';
   SmiHTMLLists       = 'Lists';
   SmiHTMLTables      = 'Tables';
   SmiHTMLForms       = 'Forms';
@@ -54,10 +54,10 @@ resourcestring
   SmiHTMLInsertHeader3Level = 'Insert HTML level 3 header';
   SmiHTMLInsertHeader4Level = 'Insert HTML level 4 header';
   SmiHTMLInsertHeader5Level = 'Insert HTML level 5 header';
-  SmiHTMLInsertColor        = 'Insert HTML Color';
-  SmiHTMLInsertDIVBlock     = 'Insert DIV Block';
-  SmiHTMLInsertSpanText     = 'Insert Span Text';
-  SmiHTMLInsertPre          = 'Insert Pre';
+  SmiHTMLInsertColor        = 'Insert HTML color value';
+  SmiHTMLInsertDIVBlock     = 'Insert HTML DIV tag';
+  SmiHTMLInsertSpanText     = 'Insert HTML SPAN tag';
+  SmiHTMLInsertPre          = 'Insert HTML PRE tag';
   SmiHTMLInsertSub          = 'Insert Subscript';
   SmiHTMLInsertSuper        = 'Insert Superscript';
 
@@ -69,11 +69,11 @@ resourcestring
   SmiHTMLFormCheckBox       = 'Insert CheckBox control';
   SmiHTMLFormRadioBtn       = 'Insert RadioBtn control';
   SmiHTMLFormButtton        = 'Insert Button control';
-  SmiHTMLInsertInput        = 'Insert HTML Input tag';
+  SmiHTMLInsertInput        = 'Insert HTML INPUT tag';
   SmiHTMLInsertInputSubmit  = 'Insert "Submit" button ';
   SmiHTMLInsertInputReset   = 'Insert "Reset" button';
-  SmiHTMLFormFieldSet       = 'Insert FieldSet';
-  SmiHTMLFormLegend         = 'Insert Legend';
+  SmiHTMLFormFieldSet       = 'Insert HTML FIELDSET tag';
+  SmiHTMLFormLegend         = 'Insert HTML LEGEND tag';
 
   SmiOtherInsertFN          = 'Insert file name';
 
@@ -92,7 +92,7 @@ resourcestring
   SCSSFileDesc               = 'Create new CSS file...';
   SCSSSource                 = 'Enter your classes/style definitions here';
 
-  SHTMLTagProperty           = 'Tag property : ';
+  SHTMLTagProperty           = 'Tag property: %s';
 
   SHTMLTableFormCaption      = 'New HTML table...';
   SHTMLTableFormColumnCount  = 'Column count';

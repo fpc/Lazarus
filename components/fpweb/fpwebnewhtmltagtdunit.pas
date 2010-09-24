@@ -87,7 +87,7 @@ uses fpWebStrConsts;
 
 procedure TfpwebNewHtmlTagTDForm.FormCreate(Sender: TObject);
 begin
-  Caption:=SHTMLTagProperty + 'TD';
+  Caption:=Format(SHTMLTagProperty, ['TD']);
 end;
 
 function TfpwebNewHtmlTagTDForm.HtmlText: string;

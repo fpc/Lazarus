@@ -138,7 +138,7 @@ msgid "Submit"
 msgstr ""
 
 #: fpwebstrconsts.shtmltagproperty
-msgid "Tag property : "
+msgid "Tag property: %s"
 msgstr ""
 
 #: fpwebstrconsts.shtmltitle
@@ -170,11 +170,11 @@ msgid "Insert CheckBox control"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlformfieldset
-msgid "Insert FieldSet"
+msgid "Insert HTML FIELDSET tag"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlformlegend
-msgid "Insert Legend"
+msgid "Insert HTML LEGEND tag"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlformradiobtn
@@ -202,7 +202,7 @@ msgid "Insert new line"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlinsertcolor
-msgid "Insert HTML Color"
+msgid "Insert HTML color value"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlinsertcomment
@@ -210,7 +210,7 @@ msgid "Insert HTML comment"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlinsertdivblock
-msgid "Insert DIV Block"
+msgid "Insert HTML DIV tag"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlinsertform
@@ -246,7 +246,7 @@ msgid "Insert image"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlinsertinput
-msgid "Insert HTML Input tag"
+msgid "Insert HTML INPUT tag"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlinsertinputreset
@@ -270,11 +270,11 @@ msgid "Insert Non Breaking Space"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlinsertpre
-msgid "Insert Pre"
+msgid "Insert HTML PRE tag"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlinsertspantext
-msgid "Insert Span Text"
+msgid "Insert HTML SPAN tag"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlinsertsub
@@ -318,7 +318,7 @@ msgid "Standard"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlstyle
-msgid "Style"
+msgid "Styles"
 msgstr ""
 
 #: fpwebstrconsts.smihtmltables

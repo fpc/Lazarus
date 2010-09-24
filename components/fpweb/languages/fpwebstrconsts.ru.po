@@ -161,8 +161,9 @@ msgid "Submit"
 msgstr "Отправить"
 
 #: fpwebstrconsts.shtmltagproperty
-msgid "Tag property : "
-msgstr "Свойства тега: "
+#| msgid "Tag property: "
+msgid "Tag property: %s"
+msgstr "Свойства тега: %s"
 
 #: fpwebstrconsts.shtmltitle
 msgid "Html &title - <title>"
@@ -194,12 +195,14 @@ msgid "Insert CheckBox control"
 msgstr "Вставить флажок"
 
 #: fpwebstrconsts.smihtmlformfieldset
-msgid "Insert FieldSet"
-msgstr "Вставить набор полей"
+#| msgid "Insert FieldSet"
+msgid "Insert HTML FIELDSET tag"
+msgstr "Вставить тег HTML FIELDSET"
 
 #: fpwebstrconsts.smihtmlformlegend
-msgid "Insert Legend"
-msgstr "Вставить заголовок набора полей"
+#| msgid "Insert Legend"
+msgid "Insert HTML LEGEND tag"
+msgstr "Вставить тег HTML LEGEND"
 
 #: fpwebstrconsts.smihtmlformradiobtn
 msgid "Insert RadioBtn control"
@@ -228,9 +231,10 @@ msgid "Insert new line"
 msgstr "Вставить новую строку"
 
 #: fpwebstrconsts.smihtmlinsertcolor
+#| msgid "Insert HTML Color"
 msgctxt "fpwebstrconsts.smihtmlinsertcolor"
-msgid "Insert HTML Color"
-msgstr "Вставить цвет HTML"
+msgid "Insert HTML color value"
+msgstr "Вставить значение цвета HTML"
 
 #: fpwebstrconsts.smihtmlinsertcomment
 msgctxt "fpwebstrconsts.smihtmlinsertcomment"
@@ -238,8 +242,9 @@ msgid "Insert HTML comment"
 msgstr "Вставить комментарий HTML"
 
 #: fpwebstrconsts.smihtmlinsertdivblock
-msgid "Insert DIV Block"
-msgstr "Вставить блок DIV"
+#| msgid "Insert DIV Block"
+msgid "Insert HTML DIV tag"
+msgstr "Вставить тег HTML DIV"
 
 #: fpwebstrconsts.smihtmlinsertform
 msgctxt "fpwebstrconsts.smihtmlinsertform"
@@ -277,8 +282,9 @@ msgid "Insert image"
 msgstr "Вставить изображение"
 
 #: fpwebstrconsts.smihtmlinsertinput
+#| msgid "Insert HTML Input tag"
 msgctxt "fpwebstrconsts.smihtmlinsertinput"
-msgid "Insert HTML Input tag"
+msgid "Insert HTML INPUT tag"
 msgstr "Вставить тег HTML INPUT"
 
 #: fpwebstrconsts.smihtmlinsertinputreset
@@ -304,12 +310,14 @@ msgid "Insert Non Breaking Space"
 msgstr "Вставить неразрывный пробел"
 
 #: fpwebstrconsts.smihtmlinsertpre
-msgid "Insert Pre"
-msgstr "Вставить тег PRE"
+#| msgid "Insert Pre"
+msgid "Insert HTML PRE tag"
+msgstr "Вставить тег HTML PRE"
 
 #: fpwebstrconsts.smihtmlinsertspantext
-msgid "Insert Span Text"
-msgstr "Вставить тег SPAN"
+#| msgid "Insert Span Text"
+msgid "Insert HTML SPAN tag"
+msgstr "Вставить тег HTML SPAN"
 
 #: fpwebstrconsts.smihtmlinsertsub
 msgid "Insert Subscript"
@@ -359,8 +367,9 @@ msgid "Standard"
 msgstr "Стандартные"
 
 #: fpwebstrconsts.smihtmlstyle
+#| msgid "Style"
 msgctxt "fpwebstrconsts.smihtmlstyle"
-msgid "Style"
+msgid "Styles"
 msgstr "Стили"
 
 #: fpwebstrconsts.smihtmltables

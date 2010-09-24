@@ -76,7 +76,7 @@ uses fpWebStrConsts;
 
 procedure TfpwebNewHtmlTagTRForm.FormCreate(Sender: TObject);
 begin
-  Caption:=SHTMLTagProperty + 'TR';
+  Caption:=Format(SHTMLTagProperty, ['TR']);
 end;
 
 function TfpwebNewHtmlTagTRForm.HtmlText: string;
