@@ -6,7 +6,7 @@ msgstr ""
 "Last-Translator: ezik shulamy <shulamy@regba.org.il>\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-07-02 19:27+0200\n"
+"PO-Revision-Date: 2010-09-24 21:31+0200\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "X-Generator: Lokalize 1.0\n"
@@ -607,15 +607,15 @@ msgstr "יצירת קוד"
 
 #: lazarusidestrconsts.dlgcodefoldenableboth
 msgid "Both"
-msgstr ""
+msgstr "שניהם"
 
 #: lazarusidestrconsts.dlgcodefoldenablefold
 msgid "Fold"
-msgstr ""
+msgstr "קפל"
 
 #: lazarusidestrconsts.dlgcodefoldenablehide
 msgid "Hide"
-msgstr ""
+msgstr "הסתר"
 
 #: lazarusidestrconsts.dlgcodefoldingmouse
 msgctxt "lazarusidestrconsts.dlgcodefoldingmouse"
@@ -624,7 +624,7 @@ msgstr "עכבר"
 
 #: lazarusidestrconsts.dlgcodefoldpopuporder
 msgid "Reverse fold-order in Popup"
-msgstr ""
+msgstr "הפוך סדר קיפול בתפריט קופץ"
 
 #: lazarusidestrconsts.dlgcodegeneration
 #, fuzzy
@@ -2931,7 +2931,7 @@ msgstr "השתמש בהדגשת תחביר"
 
 #: lazarusidestrconsts.dlgusetabshistory
 msgid "Use tab history when closing tabs"
-msgstr ""
+msgstr "השתמש בהסטוריית לשוניות בזמן סגירת לשוניות"
 
 #: lazarusidestrconsts.dlgvaluecolor
 msgctxt "lazarusidestrconsts.dlgvaluecolor"
@@ -3447,7 +3447,7 @@ msgstr "הוסף סוגריים של פרמטר"
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
-msgstr ""
+msgstr "להוסיף לנתיב החיפוש של קבצי \"כלול\""
 
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
@@ -3863,7 +3863,7 @@ msgstr "בניית לזארוס נכשלה"
 
 #: lazarusidestrconsts.lisbuildmacros
 msgid "Build macros"
-msgstr ""
+msgstr "מאקרו לבניה"
 
 #: lazarusidestrconsts.lisbuildmode
 msgid "Build mode"
@@ -3900,7 +3900,7 @@ msgstr "בטל את שינוי השם"
 
 #: lazarusidestrconsts.liscannotcompileproject
 msgid "Cannot compile project"
-msgstr ""
+msgstr "לא יכול להדר את הפרוייקט"
 
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
@@ -4540,7 +4540,7 @@ msgstr "פקודה:"
 
 #: lazarusidestrconsts.liscode
 msgid "Code"
-msgstr ""
+msgstr "קוד"
 
 #: lazarusidestrconsts.liscodebrowser
 msgid "Code browser"
@@ -5400,27 +5400,27 @@ msgstr "אם \"לא מסומן וי\" יהיה דיאלוג אינטראקטיב
 
 #: lazarusidestrconsts.lisconvautoremove
 msgid "Remove automatically"
-msgstr ""
+msgstr "הסר אוטומטית"
 
 #: lazarusidestrconsts.lisconvautoreplace
 msgid "Replace automatically"
-msgstr ""
+msgstr "החלף אוטומטית"
 
 #: lazarusidestrconsts.lisconvcoordhint
 msgid "An offset is added to Top coordinate of controls inside visual containers"
-msgstr ""
+msgstr "התווסף אופסט לקואורדינטה העליונה של פקדים בתוך המיכלים הנראים"
 
 #: lazarusidestrconsts.lisconvcoordoffs
 msgid "Coordinate offsets"
-msgstr ""
+msgstr "אופסט לקואורדינטות"
 
 #: lazarusidestrconsts.lisconvdelphifunc
 msgid "Delphi Function"
-msgstr ""
+msgstr "פונקציית דלפי"
 
 #: lazarusidestrconsts.lisconvdelphiname
 msgid "Delphi Name"
-msgstr ""
+msgstr "שם של דלפי"
 
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
@@ -5463,7 +5463,7 @@ msgstr "הממיר מוסיף הידור מותנה כדי לתמוך ביעדי
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
-msgstr ""
+msgstr "החלפת פונקציות"
 
 #: lazarusidestrconsts.lisconvfuncreplhint
 msgctxt "lazarusidestrconsts.lisconvfuncreplhint"
@@ -5472,23 +5472,23 @@ msgstr "פונקציות דלפי מסוימות ניתנות להחלפה בפ�
 
 #: lazarusidestrconsts.lisconvfuncstoreplace
 msgid "Functions / procedures to replace"
-msgstr ""
+msgstr "פונקציות/פרוצדורות להחליף"
 
 #: lazarusidestrconsts.lisconvleftoff
 msgid "Left offset"
-msgstr ""
+msgstr "אופסט שמאלי"
 
 #: lazarusidestrconsts.lisconvnewname
 msgid "New Name"
-msgstr ""
+msgstr "שם חדש"
 
 #: lazarusidestrconsts.lisconvparentcontainer
 msgid "Parent Container"
-msgstr ""
+msgstr "מיכל הורה"
 
 #: lazarusidestrconsts.lisconvtopoff
 msgid "Top offset"
-msgstr ""
+msgstr "אופסט עליון"
 
 #: lazarusidestrconsts.lisconvtypereplacements
 msgid "Type Replacements"
@@ -5724,7 +5724,7 @@ msgstr "השורה בה נמצא הסמן בעורך הנוכחי"
 
 #: lazarusidestrconsts.liscustombuildmacros
 msgid "Custom build macros"
-msgstr ""
+msgstr "מאקרו בניה מותאם אישית"
 
 #: lazarusidestrconsts.liscustomoptions
 msgid "custom options"
@@ -5965,7 +5965,7 @@ msgstr "מחק נקודת עצירה ב s%s% בשורה d%?"
 
 #: lazarusidestrconsts.lisdeletebuildmacro
 msgid "Delete build macro %s%s%s?"
-msgstr ""
+msgstr "למחוק את מאקרו הבניה %s%s%s?"
 
 #: lazarusidestrconsts.lisdeletebuildmode
 msgctxt "lazarusidestrconsts.lisdeletebuildmode"
@@ -6191,7 +6191,7 @@ msgstr "אל תהדר תלויות"
 
 #: lazarusidestrconsts.lisdonotinstall
 msgid "Do not install"
-msgstr ""
+msgstr "אל תתקין"
 
 #: lazarusidestrconsts.lisdonotshowsplashscreen
 msgid "Do not show splash screen"
@@ -6423,7 +6423,7 @@ msgstr "ריק"
 
 #: lazarusidestrconsts.lisenable
 msgid "Enable"
-msgstr ""
+msgstr "אפשר"
 
 #: lazarusidestrconsts.lisenableall
 msgid "&Enable All"
@@ -7592,19 +7592,19 @@ msgstr "התקן את מה שנבחר"
 #: lazarusidestrconsts.lisinstalluninstallpackages
 msgctxt "lazarusidestrconsts.lisinstalluninstallpackages"
 msgid "Install/Uninstall packages"
-msgstr ""
+msgstr "התקן/הסר חבילות"
 
 #: lazarusidestrconsts.lisinteractive
 msgid "Interactive"
-msgstr ""
+msgstr "אינטראקטיבי"
 
 #: lazarusidestrconsts.lisinvalidbuildmacrothebuildmacromustbeapascalidentifie
 msgid "Invalid build macro %s%s%s. The build macro must be a pascal identifier."
-msgstr ""
+msgstr "מקרו בניה לא חוקי %s%s%s . מאקרו בניה חייב להיות מזהה פסקל."
 
 #: lazarusidestrconsts.lisinvalidbuildmacrothenameisakeyword
 msgid "Invalid build macro \"%s\". The name is a keyword."
-msgstr ""
+msgstr "מקרו בניה לא חוקי %s%s%s . שם המאקרו הוא מלה שמורה.."
 
 #: lazarusidestrconsts.lisinvalidcircle
 msgid "Invalid circle"
@@ -7712,11 +7712,11 @@ msgstr "שמור "
 
 #: lazarusidestrconsts.liskeepfileopen
 msgid "Keep converted file open in editor"
-msgstr ""
+msgstr "שמור את הקובץ שהומר פתוח בעורך"
 
 #: lazarusidestrconsts.liskeepfileopenhint
 msgid "All project files will be open in editor after conversion"
-msgstr ""
+msgstr "כל קבצי הפרוייקט ישארו פתוחים בעורך אחרי ההמרה"
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
@@ -11961,7 +11961,7 @@ msgstr "פתח פרוייקט אחרון"
 
 #: lazarusidestrconsts.lisquickfixcreatelocalvariable
 msgid "Create local variable"
-msgstr ""
+msgstr "צור משתנה מקומי"
 
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
@@ -11973,7 +11973,7 @@ msgstr "תיקון מהיר: הסר את היחידה"
 
 #: lazarusidestrconsts.lisquickfixsearchidentifier
 msgid "Search identifier"
-msgstr ""
+msgstr "חפש מזהה"
 
 #: lazarusidestrconsts.lisquitlazarus
 msgid "Quit Lazarus"
@@ -12080,11 +12080,11 @@ msgstr "חזור על הספירה:"
 
 #: lazarusidestrconsts.lisreplacement
 msgid "Replacement"
-msgstr ""
+msgstr "החלפה"
 
 #: lazarusidestrconsts.lisreplacementfuncs
 msgid "Replacement functions"
-msgstr ""
+msgstr "פונקציות חלופיות"
 
 #: lazarusidestrconsts.lisreplacements
 msgid "Replacements"
@@ -12174,7 +12174,7 @@ msgstr "Root"
 
 #: lazarusidestrconsts.lisrunning
 msgid "%s (running ...)"
-msgstr ""
+msgstr "(רץ ...) %s"
 
 #: lazarusidestrconsts.lisrunparamsfilenotexecutable
 msgid "File not executable"
@@ -12914,7 +12914,7 @@ msgstr "השם %s%s%s אינו שם חוקי למזהה פסקל."
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
 msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
-msgstr ""
+msgstr "קובץ \"כלול\" החדש עדיין לא בנתיב החיפוש. האם להוסיף את התיקייה %s ?"
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
@@ -12974,7 +12974,7 @@ msgstr "הפרוייקט לא משתמש ביחידות ממשקים של LCL, �
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."
-msgstr ""
+msgstr "לפרוייקט אין קובץ קוד ראשי"
 
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
 msgid "The project info file %s%s%s%sis equal to the project main source file!"
@@ -13006,7 +13006,7 @@ msgstr "יש קובץ בעל אותו שם וסיומת דומה בדיסק קו
 
 #: lazarusidestrconsts.listhereisalreadyabuildmacrowiththename
 msgid "There is already a build macro with the name %s%s%s."
-msgstr ""
+msgstr "יש כבר מאקרו בנייה עם השם %s%s%s ."
 
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
@@ -13178,7 +13178,7 @@ msgstr "החלף בין תצוגה עם נתיב מלא לבין נתיב יחס
 
 #: lazarusidestrconsts.listoinstallyoumustcompileandrestarttheide
 msgid "To install you must compile and restart the IDE"
-msgstr ""
+msgstr "כדי להתקין אתה חייב להדר ולאתחל את ה  IDE"
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
@@ -13637,7 +13637,7 @@ msgstr "לא יכול לכתוב קובץ %s%s%s."
 
 #: lazarusidestrconsts.lisunabletowritetofile2
 msgid "Unable to write to file \"%s\"."
-msgstr ""
+msgstr "לא יכול לכתוב לקובץ \"%s\" ."
 
 #: lazarusidestrconsts.lisunabletowritexmlstreamtoerror
 msgid "Unable to write xml stream to %s%sError: %s"
@@ -13849,7 +13849,7 @@ msgstr "כאשר מופעל - האפשרויות הנוכחיות נשמרות �
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
-msgstr ""
+msgstr "כאשר הסמן של עורך הקוד נע, הראה את הצומת הנוכחית בסייר הקוד"
 
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"
@@ -15328,19 +15328,19 @@ msgstr "לחץ על מקש כלשהו ..."
 
 #: lazarusidestrconsts.synffoldcommentsinselection
 msgid "Fold comments in selection"
-msgstr ""
+msgstr "קפל הערות בזמן הבחירה"
 
 #: lazarusidestrconsts.synfhidecommentsinselection
 msgid "Hide comments in selection"
-msgstr ""
+msgstr "הסתר הערות בזמן הבחירה"
 
 #: lazarusidestrconsts.synfunfoldallinselection
 msgid "Unfold all in Selection"
-msgstr ""
+msgstr "פרוש הכל בזמן הבחירה"
 
 #: lazarusidestrconsts.synfunfoldcommentsinselection
 msgid "Unfold comments in Selection"
-msgstr ""
+msgstr "פרוש הערות בזמן הבחירה"
 
 #: lazarusidestrconsts.uefilerocap
 msgid "File is readonly"
