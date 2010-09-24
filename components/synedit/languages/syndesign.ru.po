@@ -1,0 +1,35 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: syndesignstringconstants.syndsbookmarks
+msgid "Bookmarks"
+msgstr "Закладки"
+
+#: syndesignstringconstants.syndschangemarker
+msgid "Change Marker"
+msgstr "Метка изменённой строки"
+
+#: syndesignstringconstants.syndscodefolding
+msgid "Code Folding"
+msgstr "Сворачивание кода"
+
+#: syndesignstringconstants.syndslinenumbers
+msgid "Line Numbers"
+msgstr "Номера строк"
+
+#: syndesignstringconstants.syndslineoverview
+msgid "Line Overview"
+msgstr "Граница строк"
+
+#: syndesignstringconstants.syndsseparator
+msgid "Separator"
+msgstr "Линия отделения поля (лев)"
+
