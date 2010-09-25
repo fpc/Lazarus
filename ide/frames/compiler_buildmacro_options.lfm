@@ -1,8 +1,8 @@
 inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
-  Height = 430
-  Width = 496
-  ClientHeight = 430
-  ClientWidth = 496
+  Height = 444
+  Width = 514
+  ClientHeight = 444
+  ClientWidth = 514
   TabOrder = 0
   Visible = False
   DesignLeft = 308
@@ -11,11 +11,11 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
     Left = 0
     Height = 243
     Top = 0
-    Width = 496
+    Width = 514
     Align = alTop
     Caption = 'MacrosGroupBox'
     ClientHeight = 222
-    ClientWidth = 488
+    ClientWidth = 506
     TabOrder = 0
     object BuildMacrosTreeView: TTreeView
       Left = 0
@@ -43,18 +43,18 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       Left = 244
       Height = 222
       Top = 0
-      Width = 244
+      Width = 262
       Align = alClient
       BorderSpacing.Left = 6
       Caption = 'BuildMacroSelectedGroupBox'
       ClientHeight = 201
-      ClientWidth = 236
+      ClientWidth = 254
       TabOrder = 2
       object BuildMacroDefaultLabel: TLabel
         Left = 6
         Height = 18
         Top = 72
-        Width = 224
+        Width = 242
         Align = alTop
         BorderSpacing.Top = 15
         BorderSpacing.Around = 6
@@ -65,7 +65,7 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
         Left = 6
         Height = 18
         Top = 6
-        Width = 224
+        Width = 242
         Align = alTop
         BorderSpacing.Left = 6
         BorderSpacing.Top = 6
@@ -77,7 +77,7 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
         Left = 6
         Height = 27
         Top = 24
-        Width = 224
+        Width = 242
         Align = alTop
         BorderSpacing.Left = 6
         BorderSpacing.Right = 6
@@ -91,25 +91,25 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
     Left = 0
     Height = 5
     Top = 243
-    Width = 496
+    Width = 514
     Align = alTop
     ResizeAnchor = akTop
   end
   object ConditionalsGroupBox: TGroupBox[2]
     Left = 0
-    Height = 182
+    Height = 196
     Top = 248
-    Width = 496
+    Width = 514
     Align = alClient
     Caption = 'ConditionalsGroupBox'
-    ClientHeight = 161
-    ClientWidth = 488
+    ClientHeight = 175
+    ClientWidth = 506
     TabOrder = 2
     inline CondSynEdit: TSynEdit
       Left = 0
-      Height = 161
+      Height = 153
       Top = 0
-      Width = 488
+      Width = 506
       Align = alClient
       Font.Height = 9
       Font.Name = '-misc-dejavu sans mono-*-*-*-*-*-*-*-*-*-*-iso10646-1'
@@ -714,6 +714,7 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
         'CondSynEdit'
       )
       BracketHighlightStyle = sbhsBoth
+      OnChange = CondSynEditChange
       inline SynLeftGutterPartList1: TSynGutterPartList
         object SynGutterMarks1: TSynGutterMarks
           Width = 24
@@ -823,6 +824,23 @@ inherited CompOptBuildMacrosFrame: TCompOptBuildMacrosFrame
       end
       inline SynRightGutterPartList1: TSynRightGutterPartList
       end
+    end
+    object CondStatusbar: TStatusBar
+      Left = 0
+      Height = 22
+      Top = 153
+      Width = 506
+      Panels = <      
+        item
+          Width = 50
+        end      
+        item
+          Width = 50
+        end      
+        item
+          Width = 50
+        end>
+      SimplePanel = False
     end
   end
   object BuildMacrosTVPopupMenu: TPopupMenu[3]

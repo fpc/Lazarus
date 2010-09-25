@@ -76,9 +76,9 @@
       - with macros from other packages/projects
   - show build macros in inherited compiler options
   - use syntax highlighter settings like the editor previews
+  - show syntax errors of conditionals
 
   ToDo:
-  - show syntax errors of conditionals
   - code completion
   - when package is renamed, rename macros too
   - move the project target file to compiler options

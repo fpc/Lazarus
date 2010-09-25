@@ -29,10 +29,11 @@ unit Compiler_BuildMacro_Options;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, StdCtrls, Grids,
+  Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, StdCtrls, Grids, LCLType,
   Buttons, ExtCtrls, Dialogs, ComCtrls, Menus, AvgLvlTree, IDEImagesIntf,
-  KeywordFuncLists, CodeToolsCfgScript, SynEdit, SynHighlighterPas, ProjectIntf,
-  PackageIntf, CompilerOptions, IDEOptionsIntf, EditorOptions,
+  KeywordFuncLists, CodeToolsCfgScript,
+  SynEdit, SynHighlighterPas, SynEditKeyCmds,
+  ProjectIntf, PackageIntf, CompilerOptions, IDEOptionsIntf, EditorOptions,
   LazarusIDEStrConsts, CompOptsModes, SourceSynEditor, PackageDefs;
 
 type
@@ -57,6 +58,7 @@ type
     BuildMacroDefaultLabel: TLabel;
     BuildMacroDescriptionLabel: TLabel;
     ConditionalsGroupBox: TGroupBox;
+    CondStatusbar: TStatusBar;
     CondSynEdit: TSynEdit;
     MacrosGroupBox: TGroupBox;
     MacrosSplitter: TSplitter;
@@ -67,19 +69,28 @@ type
       var AllowEdit: Boolean);
     procedure BuildMacrosTreeViewSelectionChanged(Sender: TObject);
     procedure BuildMacrosTVPopupMenuPopup(Sender: TObject);
+    procedure CondSynEditChange(Sender: TObject);
+    procedure CondSynEditStatusChange(Sender: TObject;
+      Changes: TSynStatusChanges);
     procedure DeleteBuildMacroClick(Sender: TObject);
     procedure NewBuildMacroClick(Sender: TObject);
     procedure NewValueClick(Sender: TObject);
     procedure DeleteValueClick(Sender: TObject);
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
   private
     FHighlighter: TIDESynFreePasSyn;
     FBuildMacros: TIDEBuildMacros;
+    FIdleConnected: Boolean;
+    FStatusMessage: string;
     fVarImgID: LongInt;
     fValueImgID: LongInt;
     fDefValueImgID: LongInt;
+    fEngine: TCTConfigScriptEngine;
     procedure SaveItemProperties;
     procedure SetBuildMacros(const AValue: TIDEBuildMacros);
     procedure RebuildTreeView;
+    procedure SetIdleConnected(const AValue: Boolean);
+    procedure SetStatusMessage(const AValue: string);
     function TreeViewAddBuildMacro(aBuildMacro: TLazBuildMacro): TTreeNode;
     procedure TreeViewAddValue(ValuesTVNode: TTreeNode; aValue: string);
     function GetNodeInfo(Node: TTreeNode; out BuildMacro: TLazBuildMacro): TCBMNodeType;
@@ -88,6 +99,8 @@ type
     function GetBuildMacroTVNode(aBuildMacro: TLazBuildMacro): TTreeNode;
     function GetMacroNamePrefix(PrefixType: TCBMPrefixType): string;
     procedure UpdateItemPropertyControls;
+    procedure UpdateMessages;
+    procedure UpdateStatusBar;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -99,6 +112,8 @@ type
     property BuildMacros: TIDEBuildMacros read FBuildMacros write SetBuildMacros; // local copy
     procedure LoadFromOptions(Options: TBaseCompilerOptions);
     procedure SaveToOptions(Options: TBaseCompilerOptions);
+    property IdleConnected: Boolean read FIdleConnected write SetIdleConnected;
+    property StatusMessage: string read FStatusMessage write SetStatusMessage;
   end;
 
 implementation
@@ -175,6 +190,12 @@ begin
   BuildMacrosTreeView.EndUpdate;
 end;
 
+procedure TCompOptBuildMacrosFrame.OnIdle(Sender: TObject; var Done: Boolean);
+begin
+  IdleConnected:=false;
+  UpdateMessages;
+end;
+
 procedure TCompOptBuildMacrosFrame.DeleteBuildMacroClick(Sender: TObject);
 var
   aBuildMacro: TIDEBuildMacro;
@@ -229,6 +250,18 @@ begin
   Add('New build macro',@NewBuildMacroClick);
   if NodeType in [cbmntBuildMacro] then
     Add('Delete build macro ...',@DeleteBuildMacroClick);
+end;
+
+procedure TCompOptBuildMacrosFrame.CondSynEditChange(Sender: TObject);
+begin
+  UpdateStatusBar;
+  IdleConnected:=true;
+end;
+
+procedure TCompOptBuildMacrosFrame.CondSynEditStatusChange(Sender: TObject;
+  Changes: TSynStatusChanges);
+begin
+  UpdateStatusBar;
 end;
 
 procedure TCompOptBuildMacrosFrame.BuildMacrosTreeViewEditing(Sender: TObject;
@@ -361,6 +394,7 @@ begin
   BuildMacros.Assign(AValue);
   RebuildTreeView;
   UpdateItemPropertyControls;
+  IdleConnected:=true;
 end;
 
 procedure TCompOptBuildMacrosFrame.RebuildTreeView;
@@ -375,6 +409,23 @@ begin
       TreeViewAddBuildMacro(BuildMacros.Items[i]);
   end;
   BuildMacrosTreeView.EndUpdate;
+end;
+
+procedure TCompOptBuildMacrosFrame.SetIdleConnected(const AValue: Boolean);
+begin
+  if FIdleConnected=AValue then exit;
+  FIdleConnected:=AValue;
+  if FIdleConnected then
+    Application.AddOnIdleHandler(@OnIdle)
+  else
+    Application.RemoveOnIdleHandler(@OnIdle);
+end;
+
+procedure TCompOptBuildMacrosFrame.SetStatusMessage(const AValue: string);
+begin
+  if FStatusMessage=AValue then exit;
+  FStatusMessage:=AValue;
+  CondStatusbar.Panels[2].Text := FStatusMessage;
 end;
 
 function TCompOptBuildMacrosFrame.TreeViewAddBuildMacro(
@@ -487,6 +538,31 @@ begin
   end;
 end;
 
+procedure TCompOptBuildMacrosFrame.UpdateMessages;
+begin
+  fEngine.Execute(CondSynEdit.Lines.Text,1);
+  if fEngine.ErrorCount>0 then begin
+    StatusMessage:=fEngine.GetErrorStr(0);
+  end else begin
+    StatusMessage:='No errors';
+  end;
+end;
+
+procedure TCompOptBuildMacrosFrame.UpdateStatusBar;
+var
+  PanelCharMode: String;
+  PanelXY: String;
+begin
+  PanelXY := Format(' %6d:%4d',[CondSynEdit.CaretY,CondSynEdit.CaretX]);
+  if CondSynEdit.InsertMode then
+    PanelCharMode := uepIns
+  else
+    PanelCharMode := uepOvr;
+
+  CondStatusbar.Panels[0].Text := PanelXY;
+  CondStatusbar.Panels[1].Text := PanelCharMode;
+end;
+
 procedure TCompOptBuildMacrosFrame.SaveItemProperties;
 var
   BuildMacro: TLazBuildMacro;
@@ -502,6 +578,7 @@ begin
   inherited Create(TheOwner);
 
   FBuildMacros:=TIDEBuildMacros.Create(nil);
+  fEngine:=TCTConfigScriptEngine.Create;
 
   MacrosGroupBox.Caption:='Build macros:';
   BuildMacrosTreeView.Images := IDEImages.Images_24;
@@ -513,10 +590,13 @@ begin
   BuildMacroDescriptionLabel.Caption:='Description:';
 
   ConditionalsGroupBox.Caption:='Conditionals:';
+
+  CondSynEdit.OnStatusChange:=@CondSynEditStatusChange;
 end;
 
 destructor TCompOptBuildMacrosFrame.Destroy;
 begin
+  FreeAndNil(fEngine);
   FreeAndNil(FBuildMacros);
   inherited Destroy;
 end;
@@ -563,6 +643,7 @@ begin
     CondSynEdit.Highlighter:=FHighlighter;
   end;
   EditorOpts.ReadHighlighterSettings(FHighlighter, '');
+  UpdateStatusBar;
 end;
 
 procedure TCompOptBuildMacrosFrame.SaveToOptions(Options: TBaseCompilerOptions
