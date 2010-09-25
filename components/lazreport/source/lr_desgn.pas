@@ -16,7 +16,7 @@ interface
 
 {.$Define ExtOI} // External Custom Object inspector (Christian)
 {.$Define StdOI} // External Standard Object inspector (Jesus)
-
+{$define sbod}  // status bar owner draw
 uses
   Classes, SysUtils, FileUtil, LResources, LMessages,
   Forms, Controls, Graphics, Dialogs,ComCtrls,
@@ -518,6 +518,11 @@ type
     procedure UpdScrollbars;
     procedure InsertFieldsFormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure InsertDbFields;
+    {$ifdef sbod}
+    procedure DrawStatusPanel(const ACanvas:TCanvas; const rect:  TRect);
+    procedure StatusBar1DrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel;
+      const Rect: TRect);
+    {$endif}
   public
     constructor Create(aOwner : TComponent); override;
     destructor Destroy; override;
@@ -536,6 +541,7 @@ type
     function PointsToUnits(x: Integer): Double;  override;
     function UnitsToPoints(x: Double): Integer;  override;
     procedure MoveObjects(dx, dy: Integer; aResize: Boolean);
+    procedure UpdateStatus;
 
     property CurDocName: String read FCurDocName write SetCurDocName;
     property CurPage: Integer read FCurPage write SetCurPage;
@@ -1769,7 +1775,7 @@ begin
     OffsetRect(OldRect, x - OldRect.Left, y - OldRect.Top);
     DrawFocusRect(OldRect);
     ShowSizes := True;
-    FDesigner.PBox1Paint(nil);
+    FDesigner.UpdateStatus;
     ShowSizes := False;
     Exit;
   end;
@@ -1801,7 +1807,7 @@ begin
     DrawFocusRect(OldRect);
     ShowSizes := True;
     if Cursor = crCross then
-      FDesigner.PBox1Paint(nil);
+      FDesigner.UpdateStatus;
     ShowSizes := False;
     Exit;
   end;
@@ -1934,7 +1940,7 @@ begin
     
     Inc(LastX, kx);
     Inc(LastY, ky);
-    FDesigner.PBox1Paint(nil);
+    FDesigner.UpdateStatus;
     Exit;
   end;
   
@@ -1977,7 +1983,7 @@ begin
 
     Inc(LastX, kx);
     Inc(LastY, ky);
-    FDesigner.PBox1Paint(nil);
+    FDesigner.UpdateStatus;
   end;
 {$IFDEF DebugLR}
 //  else debugLn('Down=',BoolToStr(Down),' Mode=',IntToStr(Ord(Mode)),' SelNum=',IntToStr(Selnum),' Cursor=',IntToStr(Cursor));
@@ -2209,6 +2215,11 @@ begin
   ObjInsp := TFrObjectInspector.Create(Self);
   ObjInsp.SetModifiedEvent(@OnModify);
   {$ENDIF}
+  {$ifdef sbod}
+  StatusBar1.Panels[1].Style := psOwnerDraw;
+  StatusBar1.OnDrawPanel := @StatusBar1Drawpanel;
+  Panel7.Visible := false;
+  {$endif}
 end;
 
 destructor TfrDesignerForm.Destroy;
@@ -2445,7 +2456,9 @@ end;
 procedure TfrDesignerForm.FormShow(Sender: TObject);
 begin
   Screen.Cursors[crPencil] := LoadCursorFromLazarusREsource('FR_PENCIL');
+  {$ifndef sbod}
   Panel7.Hide;
+  {$endif}
   if FirstTime then
     SetMenuBitmaps;
   FirstTime := False;
@@ -2536,8 +2549,10 @@ begin
   if PageView<>nil then
     PageView.SetPage;
   StatusBar1.Top:=Height-StatusBar1.Height-3;
+  {$ifndef sbod}
   Panel7.Top := StatusBar1.Top + 3;
   Panel7.Show;
+  {$endif}
   UpdScrollbars;
 end;
 
@@ -3110,6 +3125,15 @@ begin
   PageView.GetMultipleSelected;
 end;
 
+procedure TfrDesignerForm.UpdateStatus;
+begin
+  {$ifdef sbod}
+  StatusBar1.Update;
+  {$else}
+  PBox1Paint(nil);
+  {$endif}
+end;
+
 procedure TfrDesignerForm.DeleteObjects;
 var
   i: Integer;
@@ -3403,6 +3427,91 @@ begin
     end;
   end;
 end;
+
+{$ifdef sbod}
+procedure TfrDesignerForm.DrawStatusPanel(const ACanvas: TCanvas;
+  const rect: TRect);
+var
+  t: TfrView;
+  s: String;
+  nx, ny: Double;
+  x, y, dx, dy: Integer;
+begin
+  with ACanvas do
+  begin
+    Brush.Color := StatusBar1.Color;
+    FillRect(Rect);
+    ImageList1.Draw(ACanvas, Rect.Left + 2, Rect.Top+2, 0);
+    ImageList1.Draw(ACanvas, Rect.Left + 92, Rect.Top+2, 1);
+    if (SelNum = 1) or ShowSizes then
+    begin
+      t := nil;
+      if ShowSizes then
+      begin
+        x := OldRect.Left;
+        y := OldRect.Top;
+        dx := OldRect.Right - x;
+        dy := OldRect.Bottom - y;
+      end
+      else
+      begin
+        t := TfrView(Objects[TopSelected]);
+        x := t.x;
+        y := t.y;
+        dx := t.dx;
+        dy := t.dy;
+      end;
+
+      if FUnits = ruPixels then
+        s := IntToStr(x) + ';' + IntToStr(y)
+      else
+        s := FloatToStrF(PointsToUnits(x), ffFixed, 4, 2) + '; ' +
+              FloatToStrF(PointsToUnits(y), ffFixed, 4, 2);
+
+      TextOut(Rect.Left + 20, Rect.Top + 1, s);
+      if FUnits = ruPixels then
+        s := IntToStr(dx) + ';' + IntToStr(dy)
+      else
+        s := FloatToStrF(PointsToUnits(dx), ffFixed, 4, 2) + '; ' +
+               FloatToStrF(PointsToUnits(dy), ffFixed, 4, 2);
+      TextOut(Rect.Left + 110, Rect.Top + 1, s);
+
+      if not ShowSizes and (t.Typ = gtPicture) then
+      begin
+        with t as TfrPictureView do
+        begin
+          if (Picture.Graphic <> nil) and not Picture.Graphic.Empty then
+          begin
+            s := IntToStr(dx * 100 div Picture.Width) + ',' +
+                 IntToStr(dy * 100 div Picture.Height);
+            TextOut(Rect.Left + 170, Rect.Top + 1, '% ' + s);
+          end;
+        end;
+      end;
+    end
+    else if (SelNum > 0) and MRFlag then
+         begin
+            nx := 0;
+            ny := 0;
+            if OldRect1.Right - OldRect1.Left <> 0 then
+              nx := (OldRect.Right - OldRect.Left) / (OldRect1.Right - OldRect1.Left);
+            if OldRect1.Bottom - OldRect1.Top <> 0 then
+              ny := (OldRect.Bottom - OldRect.Top) / (OldRect1.Bottom - OldRect1.Top);
+            s := IntToStr(Round(nx * 100)) + ',' + IntToStr(Round(ny * 100));
+            TextOut(Rect.left + 170, Rect.Top + 1, '% ' + s);
+         end;
+  end;
+end;
+
+procedure TfrDesignerForm.StatusBar1DrawPanel(StatusBar: TStatusBar;
+  Panel: TStatusPanel; const Rect: TRect);
+begin
+  if Panel.Index=1 then
+    DrawStatusPanel(StatusBar.Canvas, Rect);
+end;
+
+{$endif}
+
 {$HINTS ON}
 
 function TfrDesignerForm.RectTypEnabled: Boolean;
@@ -3476,7 +3585,9 @@ begin
   end;
 
   StatusBar1.Repaint;
+  {$ifndef sbod}
   PBox1.Invalidate;
+  {$endif}
 end;
 
 procedure TfrDesignerForm.SelectionChanged;
@@ -3569,7 +3680,9 @@ procedure TfrDesignerForm.ShowPosition;
 begin
   FillInspFields;
   StatusBar1.Repaint;
+  {$ifndef sbod}
   PBox1.Invalidate;
+  {$endif}
 end;
 
 procedure TfrDesignerForm.ShowContent;
