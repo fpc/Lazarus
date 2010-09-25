@@ -29,9 +29,11 @@ type
     ButtonPanel1: TButtonPanel;
     GB1: TGroupBox;
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     procedure bClick(Sender: TObject);
+    procedure CreateOptions;
   public
     { Public declarations }
     SelectedTyp: TfrBandType;
@@ -48,6 +50,21 @@ uses LR_Desgn;
 
 
 procedure TfrBandTypesForm.FormCreate(Sender: TObject);
+begin
+  CreateOptions;
+end;
+
+procedure TfrBandTypesForm.FormShow(Sender: TObject);
+begin
+  //CreateOptions;
+end;
+
+procedure TfrBandTypesForm.bClick(Sender: TObject);
+begin
+  SelectedTyp := TfrBandType((Sender as TComponent).Tag);
+end;
+
+procedure TfrBandTypesForm.CreateOptions;
 var
   b    : TRadioButton;
   bt   : TfrBandType;
@@ -59,25 +76,11 @@ begin
     b := TRadioButton.Create(GB1);
     b.Parent := GB1;
     b.AutoSize:=True;
-
-    if Integer(bt) > 10 then
-    begin
-      b.Left := 160;
-      b.Top := (Integer(bt) - 11) * 20 + 20;
-    end
-    else
-    begin
-      b.Left := 8;
-      b.Top := Integer(bt) * 20 + 20;
-    end;
-
     b.Tag := Integer(bt);
     b.Caption := frBandNames[Bt];
-    b.Width   := 140;
     b.OnClick := @bClick;
     b.Enabled := (bt in [btMasterHeader..btSubDetailFooter,
       btGroupHeader, btGroupFooter]) or not frCheckBand(bt);
-    b.AdjustSize;
     if b.Enabled and First then
     begin
       b.Checked := True;
@@ -85,14 +88,9 @@ begin
       First := False;
     end;
   end;
-  
+
   Caption := sBandTypesFormCapt;
   GB1.Caption := sBandTypesFormBType;
-end;
-
-procedure TfrBandTypesForm.bClick(Sender: TObject);
-begin
-  SelectedTyp := TfrBandType((Sender as TComponent).Tag);
 end;
 
 end.
