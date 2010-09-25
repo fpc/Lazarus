@@ -415,6 +415,9 @@ type
     procedure P4Click(Sender: TObject);
     procedure P5Click(Sender: TObject);
     procedure P6Click(Sender: TObject);
+    function  GetTitleRect: TRect;
+    function  TitleSize: Integer;
+    procedure CalcTitleSize;
   public
     constructor Create; override;
 
@@ -1247,6 +1250,7 @@ var
   PrevY, PrevBottomY, ColumnXAdjust: Integer;
   Append, WasPF: Boolean;
   CompositeMode: Boolean;
+  MaxTitleSize: Integer = 0;
   
 {$IFDEF DebugLR}
 var
@@ -3611,6 +3615,7 @@ procedure TfrBandView.Draw(aCanvas: TCanvas);
 var
   h, oldh: HFont;
   St     : String;
+  R      : TRect;
 begin
   fFrameWidth := 1;
   if BandType in [btCrossHeader..btCrossFooter] then
@@ -3643,37 +3648,37 @@ begin
     Rectangle(x, y, x + dx + 1, y + dy + 1);
     Brush.Color := clBtnFace;
     Brush.Style := bsSolid;
+    CalcTitleSize;
+    R := GetTitleRect;
     if ShowBandTitles then
     begin
+      FillRect(R);
       if BandType in [btCrossHeader..btCrossFooter] then
       begin
-        FillRect(Rect(x - 18, y, x, y + 100));
         Pen.Color := clBtnShadow;
-        MoveTo(x - 18, y + 98); LineTo(x, y + 98);
+        MoveTo(r.left, r.Bottom-2); LineTo(r.right, r.Bottom-2);
         Pen.Color := clBlack;
-        MoveTo(x - 18, y + 99); LineTo(x, y + 99);
+        MoveTo(r.left, r.Bottom-1); LineTo(r.right, r.Bottom-1);
         Pen.Color := clBtnHighlight;
-        MoveTo(x - 18, y + 99); LineTo(x - 18, y);
+        MoveTo(r.left, r.bottom-1); lineto(r.left, r.top);
         h := Create90Font(Font);
         oldh := SelectObject(Handle, h);
         Brush.Color:=clBtnFace;
-        TextOut(x - 15, y + 94, frBandNames[BandType]);
+        TextOut(r.Left + 3, r.bottom-6, frBandNames[BandType]);
         SelectObject(Handle, oldh);
         DeleteObject(h);
       end
       else
       begin
-
-        FillRect(Rect(x, y - 18, x + 100, y));
         Pen.Color := clBtnShadow;
-        MoveTo(x + 98, y - 18);
-        LineTo(x + 98, y);
+        MoveTo(r.Right-2, r.Top);
+        LineTo(r.Right-2, r.Bottom);
         Pen.Color := clBlack;
-        MoveTo(x + 99, y - 18);
-        LineTo(x + 99, y);
+        MoveTo(r.Right-1, r.Top);
+        LineTo(r.Right-1, r.Bottom);
         st:=frBandNames[BandType];
         Brush.Color:=clBtnFace;
-        TextOut(x+4,y-17, frBandNames[BandType]);
+        TextOut(r.left+5, r.top+1, frBandNames[BandType]);
       end;
     end
     else
@@ -3684,7 +3689,7 @@ begin
         h := Create90Font(Font);
         oldh := SelectObject(Handle, h);
         Brush.Color:=clBtnFace;
-        TextOut(x + 2, y + 94, frBandNames[BandType]);
+        TextOut(x + 2, r.bottom-6, frBandNames[BandType]);
         SelectObject(Handle, oldh);
         DeleteObject(h);
       end
@@ -3713,11 +3718,9 @@ begin
   else
     R1 := CreateRectRgn(x - 10, y - 10, x + dx + 10, y + dy + 10);
 
-  if BandType in [btCrossHeader..btCrossFooter] then
-    R := CreateRectRgn(x - 18, y, x, y + 100)
-  else
-    R := CreateRectRgn(x, y - 18, x + 100, y);
-    
+  with GetTitleRect do
+    R := CreateRectRgn(Left,Top,Right,Bottom);
+
   R2:=CreateRectRgn(0,0,0,0);
 
   RR:=CombineRgn(R2, R, R1, RGN_OR);
@@ -3729,30 +3732,22 @@ begin
 end;
 
 function TfrBandView.PointInView(aX,aY: Integer): Boolean;
-Var Rc : TRect;
+var
+    Rc : TRect;
 begin
   Rc:=Bounds(x, y,dx+1,dy + 1);
   Result:=((aX>Rc.Left) and (aX<Rc.Right) and (aY>Rc.Top) and (aY<Rc.Bottom));
   {$IFDEF DebugLR}
-  DbgOut('(',IntToStr(aX),'>',InttoStr(Rc.Left),') and (',InttoStr(aX),'<',InttoStr(Rc.Right));
-  DebugLn(') and (',InttoStr(aY),'>',InttoStr(Rc.Top),') and (',InttoStR(aY),
-    '<',InttoStr(Rc.Bottom),')=',BoolToStr(Result));
+  DebugLn('PointInView, Bounds=%s Point=%d,%d Res=%s',[dbgs(rc),ax,ay,BoolToStr(result)]);
   {$ENDIF}
 
   if not Result and ShowBandTitles then
   begin
-    if BandType in [btCrossHeader..btCrossFooter] then
-      Rc:=Bounds(x-18,y, 18,100)
-    else
-      Rc:=Bounds(x,y-18,100, 18);
-
-    Result:=((aX>Rc.Left) and (aX<Rc.Right) and (aY>Rc.Top) and (aY<Rc.Bottom));
+    Rc := GetTitleRect;
+    Result := PtInRect(Rc, Point(Ax,Ay));
     {$IFDEF DebugLR}
-    DbgOut('(',InttoStr(aX),'>',InttoStr(Rc.Left),') and (',InttoStr(aX),'<',
-      IntToStr(Rc.Right),') and (',IntToStr(aY),'>');
-    DebugLn(IntToStr(Rc.Top),') and (',InttoStr(aY),'<',IntToStr(Rc.Bottom),')=',BoolToStr(Result));
+    DebugLn('PointInView, TitleRect=%s Point=%d,%d Res=%s',[dbgs(rc),ax,ay,BoolToStr(result)]);
     {$ENDIF}
-
   end;
 end;
 
@@ -3906,6 +3901,37 @@ begin
   begin
     Checked := not Checked;
     Flags := (Flags and not flBandRepeatHeader) + Word(Checked) * flBandRepeatHeader;
+  end;
+end;
+
+function TfrBandView.GetTitleRect: TRect;
+begin
+  if BandType in [btCrossHeader..btCrossFooter] then
+    result := rect(x - 18, y, x, y + TitleSize + 10)
+  else
+    result := rect(x, y-18, x + TitleSize + 10, y);
+end;
+
+function TfrBandView.TitleSize: Integer;
+begin
+  if MaxTitleSize<100 then
+    result := 100
+  else
+    result := MaxTitleSize;
+end;
+
+procedure TfrBandView.CalcTitleSize;
+var
+  Bt: TfrBandType;
+  W: Integer;
+begin
+  if MaxTitleSize=0 then begin
+    MaxTitleSize := Canvas.TextWidth('-'); // work around gtk2 first calc is not right
+    for bt := btReportTitle to btNone do begin
+      W := Canvas.TextWidth(frBandNames[bt]);
+      if W>MaxTitleSize then
+        MaxTitleSize := W;
+    end;
   end;
 end;
 
