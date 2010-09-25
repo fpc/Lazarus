@@ -74,15 +74,13 @@
       - with standard macros
       - prefix with package name
       - with macros from other packages/projects
+  - show build macros in inherited compiler options
 
   ToDo:
-  - warn for macro name conflicts
-    - on loading
-  - when package is renamed, rename macros too
-  - show build macros in inherited compiler options
   - use syntax highlighter settings like the editor previews
   - show syntax errors of conditionals
   - code completion
+  - when package is renamed, rename macros too
   - move the project target file to compiler options
   - discuss captions
   - resourcestrings
