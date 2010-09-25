@@ -1383,7 +1383,7 @@ var
   var
     s: String;
   begin
-    frBandTypesForm := TfrBandTypesForm.Create(nil);
+    frBandTypesForm := TfrBandTypesForm.Create(FDesigner);
     try
       ObjectInserted := frBandTypesForm.ShowModal = mrOk;
       if ObjectInserted then
@@ -1391,13 +1391,7 @@ var
         Objects.Add(TfrBandView.Create);
         t := TfrView(Objects.Last);
         (t as TfrBandView).BandType := frBandTypesForm.SelectedTyp;
-        s := frBandNames[frBandTypesForm.SelectedTyp];
-        if Pos(' ', s) <> 0 then
-        begin
-          s[Pos(' ', s) + 1] := UpCase(s[Pos(' ', s) + 1]);
-          Delete(s, Pos(' ', s), 1);
-        end;
-
+        s := frGetBandName(frBandTypesForm.SelectedTyp);
         THackView(t).BaseName := s;
         SendBandsToDown;
       end;

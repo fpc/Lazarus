@@ -1107,6 +1107,7 @@ procedure frRegisterFunctionLibrary(ClassRef: TClass);
 procedure frRegisterTool(const MenuCaption: String; ButtonBmp: TBitmap; OnClick: TNotifyEvent);
 function GetDefaultDataSet: TfrTDataSet;
 procedure SetBit(var w: Word; e: Boolean; m: Integer);
+function frGetBandName(BandType: TfrBandType): string;
 
 const
   frCurrentVersion = 25;
@@ -1539,6 +1540,12 @@ begin
     w:=w or m
   else
     w:=w and not m;
+end;
+
+function frGetBandName(BandType: TfrBandType): string;
+begin
+  result := GetEnumName(TypeInfo(TFrBandType), ord(BandType));
+  result := copy(result, 3, Length(result));
 end;
 
 {----------------------------------------------------------------------------}
